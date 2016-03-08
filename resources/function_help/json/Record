@@ -1,0 +1,5 @@
+{
+  "name": "Record",
+  "type": "group",
+  "description": "This group contains functions that operate on record identifiers."
+}

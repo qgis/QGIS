@@ -23,18 +23,18 @@
 
 #include <cstdlib>
 
-QgsServerLogger* QgsServerLogger::mInstance = 0;
+QgsServerLogger* QgsServerLogger::mInstance = nullptr;
 
 QgsServerLogger* QgsServerLogger::instance()
 {
-  if ( mInstance == 0 )
+  if ( !mInstance )
   {
     mInstance = new QgsServerLogger();
   }
   return mInstance;
 }
 
-QgsServerLogger::QgsServerLogger(): mLogFile( 0 )
+QgsServerLogger::QgsServerLogger(): mLogFile( nullptr )
 {
   //logfile
   QString filePath = getenv( "QGIS_SERVER_LOG_FILE" );
@@ -59,7 +59,7 @@ QgsServerLogger::QgsServerLogger(): mLogFile( 0 )
            SLOT( logMessage( QString, QString, QgsMessageLog::MessageLevel ) ) );
 }
 
-void QgsServerLogger::logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level )
+void QgsServerLogger::logMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level )
 {
   Q_UNUSED( tag );
   if ( !mLogFile.isOpen() || mLogLevel > level )

@@ -1,0 +1,10 @@
+Gradient Vectors from Direction and Length
+shapes_grid
+ParameterRaster|DIR|Direction|False
+ParameterRaster|LEN|Length|False
+ParameterNumber|STEP|Step|None|None|1
+ParameterNumber|SIZE_MIN|Size Range Min|None|None|25.0
+ParameterNumber|SIZE_MAX|Size Range Max|None|None|100.0
+ParameterSelection|AGGR|Aggregation|[0] nearest neighbour;[1] mean value
+ParameterSelection|STYLE|Style|[0] simple line;[1] arrow;[2] arrow (centered to cell)
+OutputVector|VECTORS|Gradient Vectors

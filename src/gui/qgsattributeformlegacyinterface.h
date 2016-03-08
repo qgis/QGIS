@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 13.5.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,6 +23,7 @@
 /**
  * This class helps to support legacy open form scripts to be compatible with the new
  * QgsAttributeForm style interface.
+ * @note not available in Python bindings
  */
 class GUI_EXPORT QgsAttributeFormLegacyInterface : public QgsAttributeFormInterface
 {

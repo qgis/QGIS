@@ -25,6 +25,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4.QtGui import QIcon
+
 from qgis.core import QgsFeature
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -33,6 +37,8 @@ from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class JoinAttributes(GeoAlgorithm):
@@ -44,18 +50,18 @@ class JoinAttributes(GeoAlgorithm):
     TABLE_FIELD_2 = 'TABLE_FIELD_2'
 
     def defineCharacteristics(self):
-        self.name = 'Join attributes table'
-        self.group = 'Vector general tools'
+        self.name, self.i18n_name = self.trAlgorithm('Join attributes table')
+        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterTable(self.INPUT_LAYER_2,
-            self.tr('Input layer 2'), False))
+                                         self.tr('Input layer 2'), False))
         self.addParameter(ParameterTableField(self.TABLE_FIELD,
-            self.tr('Table field'), self.INPUT_LAYER))
+                                              self.tr('Table field'), self.INPUT_LAYER))
         self.addParameter(ParameterTableField(self.TABLE_FIELD_2,
-            self.tr('Table field 2'), self.INPUT_LAYER_2))
+                                              self.tr('Table field 2'), self.INPUT_LAYER_2))
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
-            self.tr('Output layer')))
+                                    self.tr('Joined layer')))
 
     def processAlgorithm(self, progress):
         input = self.getParameterValue(self.INPUT_LAYER)
@@ -64,45 +70,38 @@ class JoinAttributes(GeoAlgorithm):
         field = self.getParameterValue(self.TABLE_FIELD)
         field2 = self.getParameterValue(self.TABLE_FIELD_2)
 
-        # Layer 1
         layer = dataobjects.getObjectFromUri(input)
         provider = layer.dataProvider()
         joinField1Index = layer.fieldNameIndex(field)
 
-        # Layer 2
         layer2 = dataobjects.getObjectFromUri(input2)
-
         joinField2Index = layer2.fieldNameIndex(field2)
 
-        # Output
-        outFields = vector.combineVectorFields(layer,layer2)
-
+        outFields = vector.combineVectorFields(layer, layer2)
         writer = output.getVectorWriter(outFields, provider.geometryType(),
-                layer.crs())
-
-        inFeat = QgsFeature()
-        inFeat2 = QgsFeature()
-        outFeat = QgsFeature()
+                                        layer.crs())
 
         # Cache attributes of Layer 2
         cache = {}
-        features2 = vector.features(layer2)
-        for inFeat2 in features2:
-            attrs2 = inFeat2.attributes()
-            joinValue2 = unicode(attrs2[joinField2Index])
-            # Put the attributes into the dict if the join key is not contained in the keys of the dict.
-            # Note: This behavior is same as previous behavior of this function,
-            # but different from the attribute cache function of QGIS core.
+        features = vector.features(layer2)
+        total = 100.0 / len(features)
+        for current, feat in features:
+            attrs = feat.attributes()
+            joinValue2 = unicode(attrs[joinField2Index])
             if joinValue2 not in cache:
-                cache[joinValue2] = attrs2
+                cache[joinValue2] = attrs
+            progress.setPercentage(int(current * total))
 
         # Create output vector layer with additional attribute
+        outFeat = QgsFeature()
         features = vector.features(layer)
-        for inFeat in features:
-            outFeat.setGeometry(inFeat.geometry())
-            attrs = inFeat.attributes()
+        total = 100.0 / len(features)
+        for current, feat in enumerate(features):
+            outFeat.setGeometry(feat.geometry())
+            attrs = feat.attributes()
             joinValue1 = unicode(attrs[joinField1Index])
             attrs.extend(cache.get(joinValue1, []))
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
+            progress.setPercentage(int(current * total))
         del writer

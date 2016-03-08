@@ -39,22 +39,22 @@ class QgsGeorefDataPoint : public QObject
     QgsPoint mapCoords() const { return mMapCoords; }
     void setMapCoords( const QgsPoint &p );
 
-    bool isEnabled() const { return mEnabled; };
+    bool isEnabled() const { return mEnabled; }
     void setEnabled( bool enabled );
 
     int id() const { return mId; }
     void setId( int id );
 
-    bool contains( const QPoint &p, bool isMapPlugin );
+    bool contains( QPoint p, bool isMapPlugin );
 
     QgsMapCanvas *srcCanvas() const { return mSrcCanvas; }
     QgsMapCanvas *dstCanvas() const { return mDstCanvas; }
 
     QPointF residual() const { return mResidual; }
-    void setResidual( const QPointF& r );
+    void setResidual( QPointF r );
 
   public slots:
-    void moveTo( const QPoint &, bool isMapPlugin );
+    void moveTo( QPoint, bool isMapPlugin );
     void updateCoords();
 
   private:

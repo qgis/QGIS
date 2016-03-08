@@ -46,7 +46,7 @@ namespace osgEarth { namespace QtGui
          * Constructs a new ViewerWidget, creating an underlying viewer.
          * @param[in ] scene Scene graph to attach to the viewer (optional)
          */
-        ViewerWidget(osg::Node* scene=0L);
+        explicit ViewerWidget(osg::Node* scene = 0);
 
         /**
          * Constructs a new ViewerWidget, attaching an existing viewer.
@@ -55,7 +55,7 @@ namespace osgEarth { namespace QtGui
          *             ownership of the Viewer. You are still respsonsile for its
          *             destruction)
          */
-        ViewerWidget(osgViewer::ViewerBase* viewer);
+        explicit ViewerWidget(osgViewer::ViewerBase* viewer);
 
         /**
          * Access the underlying viewer.

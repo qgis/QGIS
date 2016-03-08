@@ -1,0 +1,2 @@
+qgis-common: package-contains-broken-symlink usr/share/qgis/doc/LICENSE ../../common-licenses/GPL-2
+qgis-common: package-contains-broken-symlink usr/share/qgis/doc/leaflet ../../javascript/leaflet

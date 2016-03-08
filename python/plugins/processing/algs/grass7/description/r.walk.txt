@@ -1,5 +1,5 @@
 r.walk
-r.walk - Outputs a raster layer showing the anisotropic cumulative cost of moving based on friction cost.
+Outputs a raster layer showing the anisotropic cumulative cost of moving based on friction cost.
 Raster (r.*)
 ParameterRaster|elevation|Elevation raster layer|False
 ParameterRaster|friction|Friction costs layer|False
@@ -12,4 +12,4 @@ ParameterString|slope_factor|Slope factor determines travel energy cost per heig
 *ParameterBoolean|-k|Use the 'Knight's move'; slower, but more accurate|True
 *ParameterBoolean|-n|Keep null values in output map|True
 *ParameterBoolean|-r|Start with values in raster map|True
-OutputRaster|output|Output cost layer
+OutputRaster|output|Cost

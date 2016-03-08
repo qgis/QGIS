@@ -43,14 +43,14 @@ class PointsFromLines(GeoAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
     def defineCharacteristics(self):
-        self.name = 'Generate points (pixel centroids) along line'
-        self.group = 'Vector analysis tools'
+        self.name, self.i18n_name = self.trAlgorithm('Generate points (pixel centroids) along line')
+        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
-            self.tr('Raster layer')))
+                                          self.tr('Raster layer')))
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
-            self.tr('Vector layer'), [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+                                          self.tr('Vector layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Points along line')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
@@ -76,10 +76,9 @@ class PointsFromLines(GeoAlgorithm):
         self.lineId = 0
         self.pointId = 0
 
-        current = 0
         features = vector.features(layer)
         total = 100.0 / len(features)
-        for f in features:
+        for current, f in enumerate(features):
             geom = f.geometry()
             if geom.isMultipart():
                 lines = geom.asMultiPolyline()
@@ -89,9 +88,9 @@ class PointsFromLines(GeoAlgorithm):
                         p2 = line[i + 1]
 
                         (x1, y1) = raster.mapToPixel(p1.x(), p1.y(),
-                                geoTransform)
+                                                     geoTransform)
                         (x2, y2) = raster.mapToPixel(p2.x(), p2.y(),
-                                geoTransform)
+                                                     geoTransform)
 
                         self.buildLine(x1, y1, x2, y2, geoTransform,
                                        writer, outFeature)
@@ -110,7 +109,6 @@ class PointsFromLines(GeoAlgorithm):
             self.pointId = 0
             self.lineId += 1
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

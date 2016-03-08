@@ -21,13 +21,16 @@
 
 #include "ui_qgsrendererv2propsdialogbase.h"
 
+#include "qgsfeaturerequest.h"
+
 class QKeyEvent;
 
 class QgsVectorLayer;
 class QgsStyleV2;
 class QgsSymbolV2;
-
+class QgsPaintEffect;
 class QgsRendererV2Widget;
+class QgsMapCanvas;
 
 class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::QgsRendererV2PropsDialogBase
 {
@@ -35,6 +38,22 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
 
   public:
     QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyleV2* style, bool embedded = false );
+    ~QgsRendererV2PropertiesDialog();
+
+    /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @note added in QGIS 2.12
+     */
+    void setMapCanvas( QgsMapCanvas* canvas );
+
+  signals:
+    /**
+     * Emitted when expression context variables on the associated
+     * vector layers have been changed. Will request the parent dialog
+     * to re-synchronize with the variables.
+     */
+    void layerVariablesChanged();
 
   public slots:
     //! called when user changes renderer type
@@ -42,6 +61,11 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
 
     void apply();
     void onOK();
+
+  private slots:
+    void showOrderByDialog();
+
+    void changeOrderBy( const QgsFeatureRequest::OrderBy& orderBy, bool orderByEnabled );
 
   protected:
 
@@ -53,6 +77,12 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
     QgsStyleV2* mStyle;
 
     QgsRendererV2Widget* mActiveWidget;
+
+    QgsPaintEffect* mPaintEffect;
+
+    QgsMapCanvas* mMapCanvas;
+
+    QgsFeatureRequest::OrderBy mOrderBy;
 };
 
 

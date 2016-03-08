@@ -25,7 +25,7 @@
 #include <QFontDialog>
 #include <QWidget>
 
-QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QgsComposerItemBaseWidget( 0, label ), mComposerLabel( label )
+QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QgsComposerItemBaseWidget( nullptr, label ), mComposerLabel( label )
 {
   setupUi( this );
 
@@ -91,12 +91,7 @@ void QgsComposerLabelWidget::on_mFontButton_clicked()
   if ( mComposerLabel )
   {
     bool ok;
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-    // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mComposerLabel->font(), 0, QString(), QFontDialog::DontUseNativeDialog );
-#else
-    QFont newFont = QFontDialog::getFont( &ok, mComposerLabel->font() );
-#endif
+    QFont newFont = QgisGui::getFont( ok, mComposerLabel->font() );
     if ( ok )
     {
       mComposerLabel->beginCommand( tr( "Label font changed" ) );
@@ -157,7 +152,9 @@ void QgsComposerLabelWidget::on_mInsertExpressionButton_clicked()
 
   // use the atlas coverage layer, if any
   QgsVectorLayer* coverageLayer = atlasCoverageLayer();
-  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this );
+  QScopedPointer<QgsExpressionContext> context( mComposerLabel->createExpressionContext() );
+  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this, "generic", *context );
+
   exprDlg.setWindowTitle( tr( "Insert expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {

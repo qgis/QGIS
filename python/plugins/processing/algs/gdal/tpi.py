@@ -26,12 +26,18 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 
+import os
+
+from PyQt4.QtGui import QIcon
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class tpi(GdalAlgorithm):
@@ -41,27 +47,29 @@ class tpi(GdalAlgorithm):
     COMPUTE_EDGES = 'COMPUTE_EDGES'
     OUTPUT = 'OUTPUT'
 
+    #def getIcon(self):
+    #    return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'dem.png'))
+
     def defineCharacteristics(self):
-        self.name = 'TPI (Topographic Position Index)'
-        self.group = '[GDAL] Analysis'
+        self.name, self.i18n_name = self.trAlgorithm('TPI (Topographic Position Index)')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.BAND,
-            self.tr('Band number'), 1, 99, 1))
+                                          self.tr('Band number'), 1, 99, 1))
         self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
-            self.tr('Compute edges'), False))
+                                           self.tr('Compute edges'), False))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output file')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Topographic Position Index')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = ['TPI']
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
 
         arguments.append('-b')
-        arguments.append(str(self.getParameterValue(self.BAND)))
+        arguments.append(unicode(self.getParameterValue(self.BAND)))
 
         if self.getParameterValue(self.COMPUTE_EDGES):
             arguments.append('-compute_edges')
 
-        GdalUtils.runGdal(['gdaldem',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]

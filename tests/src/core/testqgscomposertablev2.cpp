@@ -25,7 +25,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfeature.h"
-#include "qgscompositionchecker.h"
+#include "qgsmultirenderchecker.h"
 #include "qgsfontutils.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
@@ -41,6 +41,7 @@ class TestQgsComposerTableV2 : public QObject
   public:
     TestQgsComposerTableV2()
         : mComposition( 0 )
+        , mMapSettings( 0 )
         , mVectorLayer( 0 )
         , mComposerAttributeTable( 0 )
         , mFrame1( 0 )
@@ -68,10 +69,16 @@ class TestQgsComposerTableV2 : public QObject
     void attributeTableRelationSource(); //test attribute table in relation mode
     void contentsContainsRow(); //test the contentsContainsRow function
     void removeDuplicates(); //test removing duplicate rows
+    void multiLineText(); //test rendering a table with multiline text
+    void align(); //test alignment of table cells
+    void wrapChar(); //test setting wrap character
+    void autoWrap(); //test auto word wrap
+    void cellStyles(); //test cell styles
+    void cellStylesRender(); //test rendering cell styles
 
   private:
     QgsComposition* mComposition;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QgsComposerAttributeTableV2* mComposerAttributeTable;
     QgsComposerFrame* mFrame1;
@@ -87,20 +94,44 @@ void TestQgsComposerTableV2::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  mMapSettings = new QgsMapSettings();
+
   //create maplayers from testdata and add to layer registry
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "points.shp" );
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/points.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      "ogr" );
   QgsMapLayerRegistry::instance()->addMapLayer( mVectorLayer );
 
+  mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings->setCrsTransformEnabled( false );
+
+  mReport = "<h1>Composer TableV2 Tests</h1>\n";
+}
+
+void TestQgsComposerTableV2::cleanupTestCase()
+{
+  delete mMapSettings;
+
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }
+  QgsApplication::exitQgis();
+}
+
+void TestQgsComposerTableV2::init()
+{
   //create composition with composer map
-  mMapSettings.setLayers( QStringList() << mVectorLayer->id() );
-  mMapSettings.setCrsTransformEnabled( false );
-  mComposition = new QgsComposition( mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 portrait
 
   mComposerAttributeTable = new QgsComposerAttributeTableV2( mComposition, false );
+  mComposition->addMultiFrame( mComposerAttributeTable );
 
   mFrame1 = new QgsComposerFrame( mComposition, mComposerAttributeTable, 5, 5, 100, 30 );
   mFrame2 = new QgsComposerFrame( mComposition, mComposerAttributeTable, 5, 40, 100, 30 );
@@ -118,31 +149,11 @@ void TestQgsComposerTableV2::initTestCase()
   mComposerAttributeTable->setContentFont( QgsFontUtils::getStandardTestFont() );
   mComposerAttributeTable->setHeaderFont( QgsFontUtils::getStandardTestFont() );
   mComposerAttributeTable->setBackgroundColor( Qt::yellow );
-
-  mReport = "<h1>Composer TableV2 Tests</h1>\n";
-}
-
-void TestQgsComposerTableV2::cleanupTestCase()
-{
-  delete mComposition;
-
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-  QgsApplication::exitQgis();
-}
-
-void TestQgsComposerTableV2::init()
-{
 }
 
 void TestQgsComposerTableV2::cleanup()
 {
+  delete mComposition;
 }
 
 void TestQgsComposerTableV2::attributeTableHeadings()
@@ -317,6 +328,7 @@ void TestQgsComposerTableV2::attributeTableRender()
 {
   mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
   QgsCompositionChecker checker( "composerattributetable_render", mComposition );
+  checker.setControlPathPrefix( "composer_table" );
   bool result = checker.testComposition( mReport );
   QVERIFY( result );
 }
@@ -326,6 +338,7 @@ void TestQgsComposerTableV2::manualColumnWidth()
   mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
   mComposerAttributeTable->columns()->at( 0 )->setWidth( 5 );
   QgsCompositionChecker checker( "composerattributetable_columnwidth", mComposition );
+  checker.setControlPathPrefix( "composer_table" );
   bool result = checker.testComposition( mReport, 0 );
   mComposerAttributeTable->columns()->at( 0 )->setWidth( 0 );
   QVERIFY( result );
@@ -340,15 +353,18 @@ void TestQgsComposerTableV2::attributeTableEmpty()
 
   mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::HeadersOnly );
   QgsCompositionChecker checker( "composerattributetable_headersonly", mComposition );
+  checker.setControlPathPrefix( "composer_table" );
   QVERIFY( checker.testComposition( mReport, 0 ) );
 
   mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::HideTable );
   QgsCompositionChecker checker2( "composerattributetable_hidetable", mComposition );
+  checker2.setControlPathPrefix( "composer_table" );
   QVERIFY( checker2.testComposition( mReport, 0 ) );
 
   mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::ShowMessage );
   mComposerAttributeTable->setEmptyTableMessage( "no rows" );
   QgsCompositionChecker checker3( "composerattributetable_showmessage", mComposition );
+  checker3.setControlPathPrefix( "composer_table" );
   QVERIFY( checker3.testComposition( mReport, 0 ) );
 
   mComposerAttributeTable->setFilterFeatures( false );
@@ -359,6 +375,7 @@ void TestQgsComposerTableV2::showEmptyRows()
   mComposerAttributeTable->setMaximumNumberOfFeatures( 3 );
   mComposerAttributeTable->setShowEmptyRows( true );
   QgsCompositionChecker checker( "composerattributetable_drawempty", mComposition );
+  checker.setControlPathPrefix( "composer_table" );
   QVERIFY( checker.testComposition( mReport, 0 ) );
   mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
   mComposerAttributeTable->setShowEmptyRows( false );
@@ -415,7 +432,7 @@ void TestQgsComposerTableV2::attributeTableAtlasSource()
 
   //setup atlas
   QgsVectorLayer* vectorLayer;
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "points.shp" );
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/points.shp" );
   vectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                     vectorFileInfo.completeBaseName(),
                                     "ogr" );
@@ -471,7 +488,7 @@ void TestQgsComposerTableV2::attributeTableAtlasSource()
 
 void TestQgsComposerTableV2::attributeTableRelationSource()
 {
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "points_relations.shp" );
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/points_relations.shp" );
   QgsVectorLayer* atlasLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
       vectorFileInfo.completeBaseName(),
       "ogr" );
@@ -498,7 +515,7 @@ void TestQgsComposerTableV2::attributeTableRelationSource()
   QVERIFY( mComposition->atlasComposition().beginRender() );
   QVERIFY( mComposition->atlasComposition().prepareForFeature( 0 ) );
 
-  QCOMPARE( mComposition->atlasComposition().currentFeature()->attribute( "Class" ).toString(), QString( "Jet" ) );
+  QCOMPARE( mComposition->atlasComposition().feature().attribute( "Class" ).toString(), QString( "Jet" ) );
   QCOMPARE( table->contents()->length(), 8 );
 
   QgsComposerTableRow row = table->contents()->at( 0 );
@@ -527,7 +544,7 @@ void TestQgsComposerTableV2::attributeTableRelationSource()
 
   //next atlas feature
   QVERIFY( mComposition->atlasComposition().prepareForFeature( 1 ) );
-  QCOMPARE( mComposition->atlasComposition().currentFeature()->attribute( "Class" ).toString(), QString( "Biplane" ) );
+  QCOMPARE( mComposition->atlasComposition().feature().attribute( "Class" ).toString(), QString( "Biplane" ) );
   QCOMPARE( table->contents()->length(), 5 );
   row = table->contents()->at( 0 );
   QCOMPARE( row.at( 0 ), QVariant( "Biplane" ) );
@@ -610,10 +627,10 @@ void TestQgsComposerTableV2::removeDuplicates()
 
   //check if removing attributes in unique mode works correctly (should result in duplicate rows,
   //which will be stripped out)
-  table->columns()->removeLast();
+  delete table->columns()->takeLast();
   table->refreshAttributes();
   QCOMPARE( table->contents()->length(), 2 );
-  table->columns()->removeLast();
+  delete table->columns()->takeLast();
   table->refreshAttributes();
   QCOMPARE( table->contents()->length(), 1 );
   table->setUniqueRowsOnly( false );
@@ -624,6 +641,359 @@ void TestQgsComposerTableV2::removeDuplicates()
   delete dupesLayer;
 }
 
+void TestQgsComposerTableV2::multiLineText()
+{
+  QgsVectorLayer* multiLineLayer = new QgsVectorLayer( "Point?field=col1:string&field=col2:string&field=col3:string", "multiline", "memory" );
+  QVERIFY( multiLineLayer->isValid() );
+  QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( "col1", "multiline\nstring" );
+  f1.setAttribute( "col2", "singleline string" );
+  f1.setAttribute( "col3", "singleline" );
+  QgsFeature f2( multiLineLayer->dataProvider()->fields(), 2 );
+  f2.setAttribute( "col1", "singleline string" );
+  f2.setAttribute( "col2", "multiline\nstring" );
+  f2.setAttribute( "col3", "singleline" );
+  QgsFeature f3( multiLineLayer->dataProvider()->fields(), 3 );
+  f3.setAttribute( "col1", "singleline" );
+  f3.setAttribute( "col2", "singleline" );
+  f3.setAttribute( "col3", "multiline\nstring" );
+  QgsFeature f4( multiLineLayer->dataProvider()->fields(), 4 );
+  f4.setAttribute( "col1", "long triple\nline\nstring" );
+  f4.setAttribute( "col2", "double\nlinestring" );
+  f4.setAttribute( "col3", "singleline" );
+  multiLineLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
+
+  mFrame2->setSceneRect( QRectF( 5, 40, 100, 90 ) );
+
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
+  mComposerAttributeTable->setVectorLayer( multiLineLayer );
+  QgsCompositionChecker checker( "composerattributetable_multiline", mComposition );
+  checker.setControlPathPrefix( "composer_table" );
+  bool result = checker.testComposition( mReport );
+  QVERIFY( result );
+
+  delete multiLineLayer;
+}
+
+void TestQgsComposerTableV2::align()
+{
+  QgsVectorLayer* multiLineLayer = new QgsVectorLayer( "Point?field=col1:string&field=col2:string&field=col3:string", "multiline", "memory" );
+  QVERIFY( multiLineLayer->isValid() );
+  QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( "col1", "multiline\nstring" );
+  f1.setAttribute( "col2", "singleline string" );
+  f1.setAttribute( "col3", "singleline" );
+  QgsFeature f2( multiLineLayer->dataProvider()->fields(), 2 );
+  f2.setAttribute( "col1", "singleline string" );
+  f2.setAttribute( "col2", "multiline\nstring" );
+  f2.setAttribute( "col3", "singleline" );
+  QgsFeature f3( multiLineLayer->dataProvider()->fields(), 3 );
+  f3.setAttribute( "col1", "singleline" );
+  f3.setAttribute( "col2", "singleline" );
+  f3.setAttribute( "col3", "multiline\nstring" );
+  QgsFeature f4( multiLineLayer->dataProvider()->fields(), 4 );
+  f4.setAttribute( "col1", "long triple\nline\nstring" );
+  f4.setAttribute( "col2", "double\nlinestring" );
+  f4.setAttribute( "col3", "singleline" );
+  multiLineLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
+
+  mFrame2->setSceneRect( QRectF( 5, 40, 100, 90 ) );
+
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
+  mComposerAttributeTable->setVectorLayer( multiLineLayer );
+
+  mComposerAttributeTable->columns()->at( 0 )->setHAlignment( Qt::AlignLeft );
+  mComposerAttributeTable->columns()->at( 0 )->setVAlignment( Qt::AlignTop );
+  mComposerAttributeTable->columns()->at( 1 )->setHAlignment( Qt::AlignHCenter );
+  mComposerAttributeTable->columns()->at( 1 )->setVAlignment( Qt::AlignVCenter );
+  mComposerAttributeTable->columns()->at( 2 )->setHAlignment( Qt::AlignRight );
+  mComposerAttributeTable->columns()->at( 2 )->setVAlignment( Qt::AlignBottom );
+  QgsCompositionChecker checker( "composerattributetable_align", mComposition );
+  checker.setControlPathPrefix( "composer_table" );
+  bool result = checker.testComposition( mReport );
+  QVERIFY( result );
+
+  delete multiLineLayer;
+}
+
+void TestQgsComposerTableV2::wrapChar()
+{
+  QgsVectorLayer* multiLineLayer = new QgsVectorLayer( "Point?field=col1:string&field=col2:string&field=col3:string", "multiline", "memory" );
+  QVERIFY( multiLineLayer->isValid() );
+  QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( "col1", "multiline\nstring" );
+  f1.setAttribute( "col2", "singleline string" );
+  f1.setAttribute( "col3", "singleline" );
+  multiLineLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
+
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 1 );
+  mComposerAttributeTable->setVectorLayer( multiLineLayer );
+  mComposerAttributeTable->setWrapString( "in" );
+
+  QList<QStringList> expectedRows;
+  QStringList row;
+  row << "multil\ne\nstr\ng" << "s\nglel\ne str\ng" << "s\nglel\ne";
+  expectedRows.append( row );
+
+  //retrieve rows and check
+  compareTable( expectedRows );
+}
+
+void TestQgsComposerTableV2::autoWrap()
+{
+  QgsVectorLayer* multiLineLayer = new QgsVectorLayer( "Point?field=col1:string&field=col2:string&field=col3:string", "multiline", "memory" );
+  QVERIFY( multiLineLayer->isValid() );
+  QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( "col1", "long multiline\nstring" );
+  f1.setAttribute( "col2", "singleline string" );
+  f1.setAttribute( "col3", "singleline" );
+  QgsFeature f2( multiLineLayer->dataProvider()->fields(), 2 );
+  f2.setAttribute( "col1", "singleline string" );
+  f2.setAttribute( "col2", "multiline\nstring" );
+  f2.setAttribute( "col3", "singleline" );
+  QgsFeature f3( multiLineLayer->dataProvider()->fields(), 3 );
+  f3.setAttribute( "col1", "singleline" );
+  f3.setAttribute( "col2", "singleline" );
+  f3.setAttribute( "col3", "multiline\nstring" );
+  QgsFeature f4( multiLineLayer->dataProvider()->fields(), 4 );
+  f4.setAttribute( "col1", "a bit long triple line string" );
+  f4.setAttribute( "col2", "double toolongtofitononeline string with some more lines on the end andanotherreallylongline" );
+  f4.setAttribute( "col3", "singleline" );
+  multiLineLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
+
+  mFrame2->setSceneRect( QRectF( 5, 40, 100, 90 ) );
+
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
+  mComposerAttributeTable->setVectorLayer( multiLineLayer );
+  mComposerAttributeTable->setWrapBehaviour( QgsComposerTableV2::WrapText );
+
+  mComposerAttributeTable->columns()->at( 0 )->setWidth( 25 );
+  mComposerAttributeTable->columns()->at( 1 )->setWidth( 25 );
+  QgsCompositionChecker checker( "composerattributetable_autowrap", mComposition );
+  checker.setControlPathPrefix( "composer_table" );
+  bool result = checker.testComposition( mReport, 0 );
+  mComposerAttributeTable->columns()->at( 0 )->setWidth( 0 );
+  QVERIFY( result );
+}
+
+void TestQgsComposerTableV2::cellStyles()
+{
+  QgsComposerTableStyle original;
+  original.enabled = true;
+  original.cellBackgroundColor = QColor( 200, 100, 150, 90 );
+
+  //write to xml
+  QDomImplementation DomImplementation;
+  QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+  QDomDocument doc( documentType );
+
+  //test writing with no node
+  QDomElement node = doc.createElement( "style" );
+  QVERIFY( original.writeXML( node, doc ) );
+
+  //read from xml
+  QgsComposerTableStyle styleFromXml;
+  styleFromXml.readXML( node );
+
+  //check
+  QCOMPARE( original.enabled, styleFromXml.enabled );
+  QCOMPARE( original.cellBackgroundColor, styleFromXml.cellBackgroundColor );
+
+
+  // check writing/reading whole set of styles
+  QgsComposerAttributeTableV2 originalTable( mComposition, false );
+
+  QgsComposerTableStyle style1;
+  style1.enabled = true;
+  style1.cellBackgroundColor = QColor( 25, 50, 75, 100 );
+  originalTable.setCellStyle( QgsComposerTableV2::FirstRow, style1 );
+  QgsComposerTableStyle style2;
+  style1.enabled = false;
+  style1.cellBackgroundColor = QColor( 60, 62, 64, 68 );
+  originalTable.setCellStyle( QgsComposerTableV2::LastColumn, style2 );
+
+  //write to XML
+  QDomElement tableElement = doc.createElement( "table" );
+  QVERIFY( originalTable.writeXML( tableElement, doc, true ) );
+
+  //read from XML
+  QgsComposerAttributeTableV2 tableFromXml( mComposition, false );
+  tableFromXml.readXML( tableElement, doc, true );
+
+  //check that styles were correctly read
+  QCOMPARE( tableFromXml.cellStyle( QgsComposerTableV2::FirstRow )->enabled, originalTable.cellStyle( QgsComposerTableV2::FirstRow )->enabled );
+  QCOMPARE( tableFromXml.cellStyle( QgsComposerTableV2::FirstRow )->cellBackgroundColor, originalTable.cellStyle( QgsComposerTableV2::FirstRow )->cellBackgroundColor );
+  QCOMPARE( tableFromXml.cellStyle( QgsComposerTableV2::LastColumn )->enabled, originalTable.cellStyle( QgsComposerTableV2::LastColumn )->enabled );
+  QCOMPARE( tableFromXml.cellStyle( QgsComposerTableV2::LastColumn )->cellBackgroundColor, originalTable.cellStyle( QgsComposerTableV2::LastColumn )->cellBackgroundColor );
+
+  //check backgroundColor method
+  //build up rules in descending order of precedence
+  mComposerAttributeTable->setBackgroundColor( QColor( 50, 50, 50, 50 ) );
+  QgsComposerTableStyle style;
+  style.enabled = true;
+  style.cellBackgroundColor = QColor( 25, 50, 75, 100 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::OddColumns, style );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 0 ), QColor( 25, 50, 75, 100 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 1 ), QColor( 50, 50, 50, 50 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 2 ), QColor( 25, 50, 75, 100 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 3 ), QColor( 50, 50, 50, 50 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 0 ), QColor( 25, 50, 75, 100 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 1 ), QColor( 50, 50, 50, 50 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 2 ), QColor( 25, 50, 75, 100 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 3 ), QColor( 50, 50, 50, 50 ) );
+  style.cellBackgroundColor = QColor( 30, 80, 90, 23 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::EvenColumns, style );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 0 ), QColor( 25, 50, 75, 100 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 1 ), QColor( 30, 80, 90, 23 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 2 ), QColor( 25, 50, 75, 100 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 3 ), QColor( 30, 80, 90, 23 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 0 ), QColor( 25, 50, 75, 100 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 1 ), QColor( 30, 80, 90, 23 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 2 ), QColor( 25, 50, 75, 100 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 3 ), QColor( 30, 80, 90, 23 ) );
+  style.cellBackgroundColor = QColor( 111, 112, 113, 114 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::OddRows, style );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 0 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 1 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 2 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 3 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 0 ), QColor( 25, 50, 75, 100 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 1 ), QColor( 30, 80, 90, 23 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 2 ), QColor( 25, 50, 75, 100 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 3 ), QColor( 30, 80, 90, 23 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 0 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 1 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 2 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 3 ), QColor( 111, 112, 113, 114 ) );
+  style.cellBackgroundColor = QColor( 222, 223, 224, 225 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::EvenRows, style );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 0 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 1 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 2 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 3 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 0 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 1 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 2 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 3 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 0 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 1 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 2 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 3 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 3, 0 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 3, 1 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 3, 2 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 3, 3 ), QColor( 222, 223, 224, 225 ) );
+  style.cellBackgroundColor = QColor( 1, 2, 3, 4 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::FirstColumn, style );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 1 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 2 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 3 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 1 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 2 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 3 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 0 ), QColor( 1, 2, 3, 4 ) );
+  style.cellBackgroundColor = QColor( 7, 8, 9, 10 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::LastColumn, style );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 1 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 2 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 5 ), QColor( 7, 8, 9, 10 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 1 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 2 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 5 ), QColor( 7, 8, 9, 10 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 5 ), QColor( 7, 8, 9, 10 ) );
+  style.cellBackgroundColor = QColor( 87, 88, 89, 90 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::HeaderRow, style );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 0 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 1 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 2 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 5 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 1 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 2 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 5 ), QColor( 7, 8, 9, 10 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 1 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 2 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 5 ), QColor( 7, 8, 9, 10 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 5 ), QColor( 7, 8, 9, 10 ) );
+  style.cellBackgroundColor = QColor( 187, 188, 189, 190 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::FirstRow, style );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 0 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 1 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 2 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 5 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 0 ), QColor( 187, 188, 189, 190 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 1 ), QColor( 187, 188, 189, 190 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 2 ), QColor( 187, 188, 189, 190 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 5 ), QColor( 187, 188, 189, 190 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 1 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 2 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 5 ), QColor( 7, 8, 9, 10 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 5 ), QColor( 7, 8, 9, 10 ) );
+  style.cellBackgroundColor = QColor( 147, 148, 149, 150 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::LastRow, style );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 0 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 1 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 2 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 5 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 0 ), QColor( 187, 188, 189, 190 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 1 ), QColor( 187, 188, 189, 190 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 2 ), QColor( 187, 188, 189, 190 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 5 ), QColor( 187, 188, 189, 190 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 1 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 2 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 5 ), QColor( 7, 8, 9, 10 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 5 ), QColor( 7, 8, 9, 10 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 9, 0 ), QColor( 147, 148, 149, 150 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 9, 1 ), QColor( 147, 148, 149, 150 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 9, 2 ), QColor( 147, 148, 149, 150 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 9, 5 ), QColor( 147, 148, 149, 150 ) );
+
+  mComposition->removeMultiFrame( &originalTable );
+  mComposition->removeMultiFrame( &tableFromXml );
+}
+
+void TestQgsComposerTableV2::cellStylesRender()
+{
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 3 );
+  mComposerAttributeTable->setShowEmptyRows( true );
+
+  QgsComposerTableStyle style;
+  style.enabled = true;
+  style.cellBackgroundColor = QColor( 25, 50, 75, 100 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::OddColumns, style );
+  style.cellBackgroundColor = QColor( 90, 110, 150, 200 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::EvenRows, style );
+  style.cellBackgroundColor = QColor( 150, 160, 210, 200 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::HeaderRow, style );
+  style.cellBackgroundColor = QColor( 0, 200, 50, 200 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::FirstColumn, style );
+  style.cellBackgroundColor = QColor( 200, 50, 0, 200 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::LastColumn, style );
+  style.cellBackgroundColor = QColor( 200, 50, 200, 200 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::FirstRow, style );
+  style.cellBackgroundColor = QColor( 50, 200, 200, 200 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::LastRow, style );
+
+  QgsCompositionChecker checker( "composerattributetable_cellstyle", mComposition );
+  checker.setColorTolerance( 10 );
+  checker.setControlPathPrefix( "composer_table" );
+  QVERIFY( checker.testComposition( mReport, 0 ) );
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
+  mComposerAttributeTable->setShowEmptyRows( false );
+}
+
 QTEST_MAIN( TestQgsComposerTableV2 )
 #include "testqgscomposertablev2.moc"
-

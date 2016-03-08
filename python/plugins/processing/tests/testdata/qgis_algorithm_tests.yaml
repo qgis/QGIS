@@ -1,0 +1,87 @@
+# See ../README.md for a description of the file format
+
+tests:
+  - name: Centroid # Human readable identifier
+    algorithm: qgis:polygoncentroids # Algorithm name
+    params: # A list of parameters (only 1 here)
+      - type: vector    # Param is a vector layer
+        name: polys.gml # file name
+    results: # A map of results (only one here)
+      OUTPUT_LAYER:
+        type: vector   # Expected result is a vector layer
+        name: expected/polys_centroid.gml # The relative filepath from the processing testdata directory
+        compare:
+          geometry:
+            precision: 7
+
+  - name: Delete Holes
+    algorithm: qgis:deleteholes
+    params:
+    - name: polys.gml
+      type: vector
+    results:
+      OUTPUT:
+        name: expected/polys_deleteholes.gml
+        type: vector
+
+  # These datasets should produce a geometry collection and not a polygon only
+  # dataset. If the algorithm is fixed, a new test should be introduced to
+  # check this behavior.
+  # This test should stay in place because for shapefiles there should always
+  # be a polygon result created since it does not support geometry collections.
+  - name: Intersection (Collection Fallback)
+    algorithm: qgis:intersection
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+      INPUT2:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/intersection_collection_fallback.shp
+        type: vector
+
+  - name: Densify geometries
+    algorithm: qgis:densifygeometries
+    params:
+    - name: multipolys.gml
+      type: vector
+    - '4'
+    results:
+      OUTPUT:
+        name: expected/multipolys_densify.gml
+        type: vector
+
+  - name: Polygons to Lines
+    algorithm: qgis:polygonstolines
+    params:
+    - name: multipolys.gml
+      type: vector
+    results:
+      OUTPUT:
+        name: expected/polys_to_lines.gml
+        type: vector
+
+  - algorithm: qgis:basicstatisticsfornumericfields
+    name: Test (qgis:basicstatisticsfornumericfields)
+    params:
+    - name: multipolys.gml
+      type: vector
+    - 'Bfloatval'
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/basic_statistics_numeric_float.html
+        type: file
+
+  - algorithm: qgis:basicstatisticsfortextfields
+    name: Test (qgis:basicstatisticsfortextfields)
+    params:
+    - name: multipolys.gml
+      type: vector
+    - 'Bname'
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/basic_statistics_string.html
+        type: file

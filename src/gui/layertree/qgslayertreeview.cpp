@@ -26,8 +26,8 @@
 
 QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
     : QTreeView( parent )
-    , mDefaultActions( 0 )
-    , mMenuProvider( 0 )
+    , mDefaultActions( nullptr )
+    , mMenuProvider( nullptr )
 {
   setHeaderHidden( true );
 
@@ -38,6 +38,7 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   setExpandsOnDoubleClick( false ); // normally used for other actions
 
   setSelectionMode( ExtendedSelection );
+  setDefaultDropAction( Qt::MoveAction );
 
   connect( this, SIGNAL( collapsed( QModelIndex ) ), this, SLOT( updateExpandedStateToNode( QModelIndex ) ) );
   connect( this, SIGNAL( expanded( QModelIndex ) ), this, SLOT( updateExpandedStateToNode( QModelIndex ) ) );
@@ -122,7 +123,7 @@ void QgsLayerTreeView::contextMenuEvent( QContextMenuEvent *event )
 }
 
 
-void QgsLayerTreeView::modelRowsInserted( QModelIndex index, int start, int end )
+void QgsLayerTreeView::modelRowsInserted( const QModelIndex& index, int start, int end )
 {
   QgsLayerTreeNode* parentNode = layerTreeModel()->index2node( index );
   if ( !parentNode )
@@ -135,7 +136,7 @@ void QgsLayerTreeView::modelRowsInserted( QModelIndex index, int start, int end 
     if ( expandedNodeKeys.isEmpty() )
       return;
 
-    foreach ( QgsLayerTreeModelLegendNode* legendNode, layerTreeModel()->layerLegendNodes( QgsLayerTree::toLayer( parentNode ) ) )
+    Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, layerTreeModel()->layerLegendNodes( QgsLayerTree::toLayer( parentNode ) ) )
     {
       QString ruleKey = legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
       if ( expandedNodeKeys.contains( ruleKey ) )
@@ -160,7 +161,7 @@ void QgsLayerTreeView::modelRowsRemoved()
   onCurrentChanged();
 }
 
-void QgsLayerTreeView::updateExpandedStateToNode( QModelIndex index )
+void QgsLayerTreeView::updateExpandedStateToNode( const QModelIndex& index )
 {
   if ( QgsLayerTreeNode* node = layerTreeModel()->index2node( index ) )
   {
@@ -197,7 +198,8 @@ void QgsLayerTreeView::onCurrentChanged()
   if ( layerCurrent )
   {
     QgsLayerTreeLayer* nodeLayer = layerTreeModel()->rootGroup()->findLayer( layerCurrentID );
-    nodeLayerIndex = layerTreeModel()->node2index( nodeLayer );
+    if ( nodeLayer )
+      nodeLayerIndex = layerTreeModel()->node2index( nodeLayer );
   }
   layerTreeModel()->setCurrentIndex( nodeLayerIndex );
 
@@ -222,7 +224,7 @@ void QgsLayerTreeView::updateExpandedStateFromNode( QgsLayerTreeNode* node )
   QModelIndex idx = layerTreeModel()->node2index( node );
   setExpanded( idx, node->isExpanded() );
 
-  foreach ( QgsLayerTreeNode* child, node->children() )
+  Q_FOREACH ( QgsLayerTreeNode* child, node->children() )
     updateExpandedStateFromNode( child );
 }
 
@@ -242,7 +244,7 @@ QgsMapLayer* QgsLayerTreeView::layerForIndex( const QModelIndex& index ) const
       return legendNode->layerNode()->layer();
   }
 
-  return 0;
+  return nullptr;
 }
 
 QgsLayerTreeNode* QgsLayerTreeView::currentNode() const
@@ -269,7 +271,12 @@ QgsLayerTreeGroup* QgsLayerTreeView::currentGroupNode() const
       return QgsLayerTree::toGroup( parent->parent() );
   }
 
-  return 0;
+  return nullptr;
+}
+
+QgsLayerTreeModelLegendNode* QgsLayerTreeView::currentLegendNode() const
+{
+  return layerTreeModel()->index2legendNode( selectionModel()->currentIndex() );
 }
 
 QList<QgsLayerTreeNode*> QgsLayerTreeView::selectedNodes( bool skipInternal ) const
@@ -280,7 +287,7 @@ QList<QgsLayerTreeNode*> QgsLayerTreeView::selectedNodes( bool skipInternal ) co
 QList<QgsLayerTreeLayer*> QgsLayerTreeView::selectedLayerNodes() const
 {
   QList<QgsLayerTreeLayer*> layerNodes;
-  foreach ( QgsLayerTreeNode* node, selectedNodes() )
+  Q_FOREACH ( QgsLayerTreeNode* node, selectedNodes() )
   {
     if ( QgsLayerTree::isLayer( node ) )
       layerNodes << QgsLayerTree::toLayer( node );
@@ -291,7 +298,7 @@ QList<QgsLayerTreeLayer*> QgsLayerTreeView::selectedLayerNodes() const
 QList<QgsMapLayer*> QgsLayerTreeView::selectedLayers() const
 {
   QList<QgsMapLayer*> list;
-  foreach ( QgsLayerTreeLayer* node, selectedLayerNodes() )
+  Q_FOREACH ( QgsLayerTreeLayer* node, selectedLayerNodes() )
   {
     if ( node->layer() )
       list << node->layer();

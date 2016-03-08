@@ -32,204 +32,205 @@ import GdalTools_utils as Utils
 
 import re
 
-class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
-  def __init__( self, iface ):
-      QWidget.__init__( self )
-      self.iface = iface
 
-      self.setupUi( self )
-      BaseBatchWidget.__init__( self, self.iface, "gdal_fillnodata.py" )
+class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
-      self.inSelector.setType( self.inSelector.FILE_LAYER )
-      self.outSelector.setType( self.outSelector.FILE )
-      self.maskSelector.setType( self.maskSelector.FILE )
+    def __init__(self, iface):
+        QWidget.__init__(self)
+        self.iface = iface
 
-      self.progressBar.setValue(0)
-      self.progressBar.hide()
-      self.formatLabel.hide()
-      self.formatCombo.hide()
+        self.setupUi(self)
+        BaseBatchWidget.__init__(self, self.iface, "gdal_fillnodata.py")
 
-      self.outputFormat = Utils.fillRasterOutputFormat()
+        self.inSelector.setType(self.inSelector.FILE_LAYER)
+        self.outSelector.setType(self.outSelector.FILE)
+        self.maskSelector.setType(self.maskSelector.FILE)
 
-      self.setParamsStatus([
-          ( self.inSelector, SIGNAL( "filenameChanged()" ) ),
-          ( self.outSelector, SIGNAL( "filenameChanged()" ) ),
-          ( self.maskSelector, SIGNAL( "filenameChanged()" ), self.maskCheck ),
-          ( self.distanceSpin, SIGNAL( "valueChanged( int )" ), self.distanceCheck ),
-          ( self.smoothSpin, SIGNAL( "valueChanged( int )" ), self.smoothCheck ),
-          ( self.bandSpin, SIGNAL( "valueChanged( int )" ), self.bandCheck ),
-          ( self.nomaskCheck, SIGNAL( "stateChanged( int )" ) )
-      ])
+        self.progressBar.setValue(0)
+        self.progressBar.hide()
+        self.formatLabel.hide()
+        self.formatCombo.hide()
 
-      self.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFile )
-      self.connect( self.outSelector, SIGNAL( "selectClicked()" ), self.fillOutputFile)
-      self.connect( self.maskSelector, SIGNAL( "selectClicked()" ), self.fillMaskFile)
-      self.connect( self.batchCheck, SIGNAL( "stateChanged( int )" ), self.switchToolMode )
+        self.outputFormat = Utils.fillRasterOutputFormat()
 
-      # add raster filters to combo
-      self.formatCombo.addItems( Utils.FileFilter.allRastersFilter().split( ";;" ) )
+        self.setParamsStatus([
+            (self.inSelector, SIGNAL("filenameChanged()")),
+            (self.outSelector, SIGNAL("filenameChanged()")),
+            (self.maskSelector, SIGNAL("filenameChanged()"), self.maskCheck),
+            (self.distanceSpin, SIGNAL("valueChanged( int )"), self.distanceCheck),
+            (self.smoothSpin, SIGNAL("valueChanged( int )"), self.smoothCheck),
+            (self.bandSpin, SIGNAL("valueChanged( int )"), self.bandCheck),
+            (self.nomaskCheck, SIGNAL("stateChanged( int )"))
+        ])
 
+        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
+        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFile)
+        self.connect(self.maskSelector, SIGNAL("selectClicked()"), self.fillMaskFile)
+        self.connect(self.batchCheck, SIGNAL("stateChanged( int )"), self.switchToolMode)
 
-  def switchToolMode( self ):
-      self.setCommandViewerEnabled( not self.batchCheck.isChecked() )
-      self.progressBar.setVisible( self.batchCheck.isChecked() )
-      self.formatLabel.setVisible( self.batchCheck.isChecked() )
-      self.formatCombo.setVisible( self.batchCheck.isChecked() )
+        # add raster filters to combo
+        self.formatCombo.addItems(Utils.FileFilter.allRastersFilter().split(";;"))
 
-      self.inSelector.setType( self.inSelector.FILE if self.batchCheck.isChecked() else self.inSelector.FILE_LAYER )
-      self.outSelector.clear()
+    def switchToolMode(self):
+        self.setCommandViewerEnabled(not self.batchCheck.isChecked())
+        self.progressBar.setVisible(self.batchCheck.isChecked())
+        self.formatLabel.setVisible(self.batchCheck.isChecked())
+        self.formatCombo.setVisible(self.batchCheck.isChecked())
 
-      if self.batchCheck.isChecked():
-        self.inFileLabel = self.label.text()
-        self.outFileLabel = self.label_1.text()
-        self.label.setText( QCoreApplication.translate( "GdalTools", "&Input directory" ) )
-        self.label_1.setText( QCoreApplication.translate( "GdalTools", "&Output directory" ) )
+        self.inSelector.setType(self.inSelector.FILE if self.batchCheck.isChecked() else self.inSelector.FILE_LAYER)
+        self.outSelector.clear()
 
-        QObject.disconnect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFile )
-        QObject.disconnect( self.outSelector, SIGNAL( "selectClicked()" ), self.fillOutputFile )
+        if self.batchCheck.isChecked():
+            self.inFileLabel = self.label.text()
+            self.outFileLabel = self.label_1.text()
+            self.label.setText(QCoreApplication.translate("GdalTools", "&Input directory"))
+            self.label_1.setText(QCoreApplication.translate("GdalTools", "&Output directory"))
 
-        QObject.connect( self.inSelector, SIGNAL( "selectClicked()" ), self. fillInputDir )
-        QObject.connect( self.outSelector, SIGNAL( "selectClicked()" ), self.fillOutputDir )
-      else:
-        self.label.setText( self.inFileLabel )
-        self.label_1.setText( self.outFileLabel )
+            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
+            QObject.disconnect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFile)
 
-        QObject.disconnect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputDir )
-        QObject.disconnect( self.outSelector, SIGNAL( "selectClicked()" ), self.fillOutputDir )
+            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self. fillInputDir)
+            QObject.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputDir)
+        else:
+            self.label.setText(self.inFileLabel)
+            self.label_1.setText(self.outFileLabel)
 
-        QObject.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFile )
-        QObject.connect( self.outSelector, SIGNAL( "selectClicked()" ), self.fillOutputFile )
+            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
+            QObject.disconnect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputDir)
 
-  def fillInputFile( self ):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
-      inputFile = Utils.FileDialog.getOpenFileName( self,
-                                                    self.tr( "Select the files to analyse" ),
-                                                    Utils.FileFilter.allRastersFilter(),
-                                                    lastUsedFilter )
-      if not inputFile:
-        return
-      Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
-      self.inSelector.setFilename( inputFile )
+            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
+            QObject.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFile)
 
-  def fillOutputFile( self ):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
-      outputFile = Utils.FileDialog.getSaveFileName( self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.saveRastersFilter(), lastUsedFilter )
-      if not outputFile:
-        return
-      Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
+    def fillInputFile(self):
+        lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+        inputFile = Utils.FileDialog.getOpenFileName(self,
+                                                     self.tr("Select the files to analyse"),
+                                                     Utils.FileFilter.allRastersFilter(),
+                                                     lastUsedFilter)
+        if not inputFile:
+            return
+        Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
+        self.inSelector.setFilename(inputFile)
 
-      self.outputFormat = Utils.fillRasterOutputFormat( lastUsedFilter, outputFile )
-      self.outSelector.setFilename( outputFile )
+    def fillOutputFile(self):
+        lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+        outputFile = Utils.FileDialog.getSaveFileName(self, self.tr("Select the raster file to save the results to"), Utils.FileFilter.saveRastersFilter(), lastUsedFilter)
+        if not outputFile:
+            return
+        Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
-  def fillMaskFile( self ):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
-      inputFile = Utils.FileDialog.getOpenFileName( self,
-                                                    self.tr( "Select the files to analyse" ),
-                                                    Utils.FileFilter.allRastersFilter(),
-                                                    lastUsedFilter )
-      if not inputFile:
-        return
-      Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
-      self.maskSelector.setFilename( inputFile )
+        self.outputFormat = Utils.fillRasterOutputFormat(lastUsedFilter, outputFile)
+        self.outSelector.setFilename(outputFile)
 
-  def fillInputDir( self ):
-      inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input directory with files" ))
-      if not inputDir:
-        return
-      self.inSelector.setFilename( inputDir )
+    def fillMaskFile(self):
+        lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+        inputFile = Utils.FileDialog.getOpenFileName(self,
+                                                     self.tr("Select the files to analyse"),
+                                                     Utils.FileFilter.allRastersFilter(),
+                                                     lastUsedFilter)
+        if not inputFile:
+            return
+        Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
+        self.maskSelector.setFilename(inputFile)
 
-  def fillOutputDir( self ):
-      outputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the output directory to save the results to" ) )
-      if not outputDir:
-        return
-      self.outSelector.setFilename( outputDir )
+    def fillInputDir(self):
+        inputDir = Utils.FileDialog.getExistingDirectory(self, self.tr("Select the input directory with files"))
+        if not inputDir:
+            return
+        self.inSelector.setFilename(inputDir)
 
-  def getArguments(self):
-      arguments = []
-      maskFile = self.maskSelector.filename()
-      if self.distanceCheck.isChecked() and self.distanceSpin.value() != 0:
-        arguments.append( "-md")
-        arguments.append( self.distanceSpin.text())
-      if self.smoothCheck.isChecked() and self.smoothSpin.value() != 0:
-        arguments.append( "-si")
-        arguments.append( str( self.smoothSpin.value() ))
-      if self.bandCheck.isChecked() and self.bandSpin.value() != 0:
-        arguments.append( "-b")
-        arguments.append( str( self.bandSpin.value() ))
-      if self.maskCheck.isChecked() and maskFile:
-        arguments.append( "-mask")
-        arguments.append( maskFile)
-      if self.nomaskCheck.isChecked():
-        arguments.append( "-nomask")
-      if self.isBatchEnabled():
-        if self.formatCombo.currentIndex() != 0:
-          arguments.append( "-of")
-          arguments.append( Utils.fillRasterOutputFormat( self.formatCombo.currentText() ))
-        return arguments
-      else:
-        outputFn = self.getOutputFileName()
-        if outputFn:
-          arguments.append( "-of")
-          arguments.append( self.outputFormat)
-        arguments.append( self.getInputFileName())
-        arguments.append( outputFn)
-        return arguments
+    def fillOutputDir(self):
+        outputDir = Utils.FileDialog.getExistingDirectory(self, self.tr("Select the output directory to save the results to"))
+        if not outputDir:
+            return
+        self.outSelector.setFilename(outputDir)
 
-  def onLayersChanged( self ):
-      self.inSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
+    def getArguments(self):
+        arguments = []
+        maskFile = self.maskSelector.filename()
+        if self.distanceCheck.isChecked() and self.distanceSpin.value() != 0:
+            arguments.append("-md")
+            arguments.append(self.distanceSpin.text())
+        if self.smoothCheck.isChecked() and self.smoothSpin.value() != 0:
+            arguments.append("-si")
+            arguments.append(unicode(self.smoothSpin.value()))
+        if self.bandCheck.isChecked() and self.bandSpin.value() != 0:
+            arguments.append("-b")
+            arguments.append(unicode(self.bandSpin.value()))
+        if self.maskCheck.isChecked() and maskFile:
+            arguments.append("-mask")
+            arguments.append(maskFile)
+        if self.nomaskCheck.isChecked():
+            arguments.append("-nomask")
+        if self.isBatchEnabled():
+            if self.formatCombo.currentIndex() != 0:
+                arguments.append("-of")
+                arguments.append(Utils.fillRasterOutputFormat(self.formatCombo.currentText()))
+            return arguments
+        else:
+            outputFn = self.getOutputFileName()
+            if outputFn:
+                arguments.append("-of")
+                arguments.append(self.outputFormat)
+            arguments.append(self.getInputFileName())
+            arguments.append(outputFn)
+            return arguments
 
-  def getInputFileName(self):
-      return self.inSelector.filename()
+    def onLayersChanged(self):
+        self.inSelector.setLayers(Utils.LayerRegistry.instance().getRasterLayers())
 
-  def getOutputFileName(self):
-      return self.outSelector.filename()
+    def getInputFileName(self):
+        return self.inSelector.filename()
 
-  def addLayerIntoCanvas(self, fileInfo):
-      self.iface.addRasterLayer(fileInfo.filePath())
+    def getOutputFileName(self):
+        return self.outSelector.filename()
 
-  def isBatchEnabled(self):
-      return self.batchCheck.isChecked()
+    def addLayerIntoCanvas(self, fileInfo):
+        self.iface.addRasterLayer(fileInfo.filePath())
 
-  def setProgressRange(self, maximum):
-      self.progressBar.setRange(0, maximum)
+    def isBatchEnabled(self):
+        return self.batchCheck.isChecked()
 
-  def updateProgress(self, index, total):
-      if index < total:
-        self.progressBar.setValue( index + 1 )
-      else:
-        self.progressBar.setValue( 0 )
+    def setProgressRange(self, maximum):
+        self.progressBar.setRange(0, maximum)
 
-  def batchRun(self):
-      exts = re.sub('\).*$', '', re.sub('^.*\(', '', self.formatCombo.currentText())).split(" ")
-      if len(exts) > 0 and exts[0] != "*" and exts[0] != "*.*":
-        outExt = exts[0].replace( "*", "" )
-      else:
-        outExt = ".tif"
+    def updateProgress(self, index, total):
+        if index < total:
+            self.progressBar.setValue(index + 1)
+        else:
+            self.progressBar.setValue(0)
 
-      self.base.enableRun( False )
-      self.base.setCursor( Qt.WaitCursor )
+    def batchRun(self):
+        exts = re.sub('\).*$', '', re.sub('^.*\(', '', self.formatCombo.currentText())).split(" ")
+        if len(exts) > 0 and exts[0] != "*" and exts[0] != "*.*":
+            outExt = exts[0].replace("*", "")
+        else:
+            outExt = ".tif"
 
-      inDir = self.getInputFileName()
-      outDir = self.getOutputFileName()
+        self.base.enableRun(False)
+        self.base.setCursor(Qt.WaitCursor)
 
-      extensions = Utils.getRasterExtensions()
-      workDir = QDir( inDir )
-      workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
-      workDir.setNameFilters( extensions )
-      files = workDir.entryList()
+        inDir = self.getInputFileName()
+        outDir = self.getOutputFileName()
 
-      self.inFiles = []
-      self.outFiles = []
+        extensions = Utils.getRasterExtensions()
+        workDir = QDir(inDir)
+        workDir.setFilter(QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot)
+        workDir.setNameFilters(extensions)
+        files = workDir.entryList()
 
-      for f in files:
-        self.inFiles.append( inDir + "/" + f )
-        if outDir is not None:
-          outFile = re.sub( "\.[a-zA-Z0-9]{2,4}", outExt, f )
-          self.outFiles.append( outDir + "/" + outFile )
+        self.inFiles = []
+        self.outFiles = []
 
-      self.errors = []
-      self.batchIndex = 0
-      self.batchTotal = len( self.inFiles )
-      self.setProgressRange( self.batchTotal )
+        for f in files:
+            self.inFiles.append(inDir + "/" + f)
+            if outDir is not None:
+                outFile = re.sub("\.[a-zA-Z0-9]{2,4}", outExt, f)
+                self.outFiles.append(outDir + "/" + outFile)
 
-      self.runItem( self.batchIndex, self.batchTotal )
+        self.errors = []
+        self.batchIndex = 0
+        self.batchTotal = len(self.inFiles)
+        self.setProgressRange(self.batchTotal)
+
+        self.runItem(self.batchIndex, self.batchTotal)

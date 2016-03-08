@@ -32,20 +32,20 @@
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
     : QTableView( parent )
-    , mMasterModel( NULL )
-    , mFilterModel( NULL )
-    , mFeatureSelectionModel( NULL )
-    , mFeatureSelectionManager( NULL )
-    , mModel( NULL )
-    , mActionPopup( NULL )
-    , mLayerCache( NULL )
+    , mMasterModel( nullptr )
+    , mFilterModel( nullptr )
+    , mFeatureSelectionModel( nullptr )
+    , mFeatureSelectionManager( nullptr )
+    , mModel( nullptr )
+    , mActionPopup( nullptr )
+    , mLayerCache( nullptr )
     , mRowSectionAnchor( 0 )
     , mCtrlDragSelectionFlag( QItemSelectionModel::Select )
 {
   QSettings settings;
   restoreGeometry( settings.value( "/BetterAttributeTable/geometry" ).toByteArray() );
 
-  verticalHeader()->setDefaultSectionSize( 20 );
+  //verticalHeader()->setDefaultSectionSize( 20 );
   horizontalHeader()->setHighlightSections( false );
 
   mTableDelegate = new QgsAttributeTableDelegate( this );
@@ -53,42 +53,21 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
 
   setSelectionBehavior( QAbstractItemView::SelectRows );
   setSelectionMode( QAbstractItemView::ExtendedSelection );
-  setSortingEnabled( true );
+  setSortingEnabled( true ); // At this point no data is in the model yet, so actually nothing is sorted.
+  horizontalHeader()->setSortIndicatorShown( false ); // So hide the indicator to avoid confusion.
 
   verticalHeader()->viewport()->installEventFilter( this );
 
   connect( verticalHeader(), SIGNAL( sectionPressed( int ) ), this, SLOT( selectRow( int ) ) );
   connect( verticalHeader(), SIGNAL( sectionEntered( int ) ), this, SLOT( _q_selectRow( int ) ) );
+  connect( horizontalHeader(), SIGNAL( sortIndicatorChanged( int, Qt::SortOrder ) ), this, SLOT( showHorizontalSortIndicator() ) );
 }
 
 QgsAttributeTableView::~QgsAttributeTableView()
 {
   delete mActionPopup;
 }
-#if 0
-void QgsAttributeTableView::setCanvasAndLayerCache( QgsMapCanvas *canvas, QgsVectorLayerCache *layerCache )
-{
-  QgsAttributeTableModel* oldModel = mMasterModel;
-  QgsAttributeTableFilterModel* filterModel = mFilterModel;
 
-  mMasterModel = new QgsAttributeTableModel( layerCache, this );
-
-  mLayerCache = layerCache;
-
-  mMasterModel->loadLayer();
-
-  mFilterModel = new QgsAttributeTableFilterModel( canvas, mMasterModel, mMasterModel );
-  setModel( mFilterModel );
-  delete mFeatureSelectionModel;
-  mFeatureSelectionModel = new QgsFeatureSelectionModel( mFilterModel, mFilterModel, new QgsVectorLayerSelectionManager( layerCache->layer(), mFilterModel ), mFilterModel );
-  connect( mFeatureSelectionModel, SIGNAL( requestRepaint( QModelIndexList ) ), this, SLOT( repaintRequested( QModelIndexList ) ) );
-  connect( mFeatureSelectionModel, SIGNAL( requestRepaint() ), this, SLOT( repaintRequested() ) );
-  setSelectionModel( mFeatureSelectionModel );
-
-  delete oldModel;
-  delete filterModel;
-}
-#endif
 bool QgsAttributeTableView::eventFilter( QObject *object, QEvent *event )
 {
   if ( object == verticalHeader()->viewport() )
@@ -125,7 +104,7 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel* filterModel 
   connect( mFilterModel, SIGNAL( destroyed() ), this, SLOT( modelDeleted() ) );
 
   delete mFeatureSelectionModel;
-  mFeatureSelectionModel = 0;
+  mFeatureSelectionModel = nullptr;
 
   if ( filterModel )
   {
@@ -203,9 +182,9 @@ void QgsAttributeTableView::keyPressEvent( QKeyEvent *event )
   }
 }
 
-void QgsAttributeTableView::repaintRequested( QModelIndexList indexes )
+void QgsAttributeTableView::repaintRequested( const QModelIndexList& indexes )
 {
-  foreach ( const QModelIndex index, indexes )
+  Q_FOREACH ( const QModelIndex& index, indexes )
   {
     update( index );
   }
@@ -226,7 +205,7 @@ void QgsAttributeTableView::selectAll()
 void QgsAttributeTableView::contextMenuEvent( QContextMenuEvent* event )
 {
   delete mActionPopup;
-  mActionPopup = 0;
+  mActionPopup = nullptr;
 
   QModelIndex idx = indexAt( event->pos() );
   if ( !idx.isValid() )
@@ -245,7 +224,7 @@ void QgsAttributeTableView::contextMenuEvent( QContextMenuEvent* event )
   // let some other parts of the application add some actions
   emit willShowContextMenu( mActionPopup, idx );
 
-  if ( mActionPopup->actions().count() > 0 )
+  if ( !mActionPopup->actions().isEmpty() )
   {
     mActionPopup->popup( event->globalPos() );
   }
@@ -263,9 +242,9 @@ void QgsAttributeTableView::_q_selectRow( int row )
 
 void QgsAttributeTableView::modelDeleted()
 {
-  mFilterModel = 0;
-  mFeatureSelectionManager = 0;
-  mFeatureSelectionModel = 0;
+  mFilterModel = nullptr;
+  mFeatureSelectionManager = nullptr;
+  mFeatureSelectionModel = nullptr;
 }
 
 void QgsAttributeTableView::selectRow( int row, bool anchor )
@@ -304,4 +283,9 @@ void QgsAttributeTableView::selectRow( int row, bool anchor )
     else
       mFeatureSelectionModel->selectFeatures( QItemSelection( tl, br ), command );
   }
+}
+
+void QgsAttributeTableView::showHorizontalSortIndicator()
+{
+  horizontalHeader()->setSortIndicatorShown( true );
 }

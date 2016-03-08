@@ -22,7 +22,7 @@ ENDIF(EXISTS "${CMAKE_BINARY_DIR}/python/qgis.gui.api")
 # add qgis.core.NULL attribute defined in <src>/python/__init__.py for QPyNullVariant
 FILE(APPEND "${QGIS_PYTHON_API_FILE}" "qgis.core.NULL?7\n")
 
-FOREACH(apiFile qgis.core.api qgis.gui.api qgis.analysis.api qgis.networkanalysis.api)
+FOREACH(apiFile qgis.core.api qgis.gui.api qgis.analysis.api qgis.networkanalysis.api qgis.server.api)
   SET(api "${CMAKE_BINARY_DIR}/python/${apiFile}")
   IF(EXISTS "${api}")
     FILE(READ "${api}" FILE_CONTENT)

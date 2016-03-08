@@ -20,8 +20,8 @@
 #include "qgis.h"
 
 QgsProviderExtentCalcEvent::QgsProviderExtentCalcEvent( QgsRectangle* layerExtent )
-    : QEvent( static_cast<QEvent::Type>( QGis::ProviderExtentCalcEvent ) ),
-    le( layerExtent )
+    : QEvent( static_cast<QEvent::Type>( QGis::ProviderExtentCalcEvent ) )
+    , le( layerExtent )
 {
   // NO-OP
 }

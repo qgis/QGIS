@@ -1,0 +1,8 @@
+{
+  "name": "to_real",
+  "type": "function",
+  "description": "Converts a string to a real number. Nothing is returned if a value cannot be converted to real (e.g '123.56asd' is invalid).  Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.",
+  "arguments": [ {"arg":"string","description":"string to convert to real number"}],
+  "examples": [ { "expression":"to_real('123.45')", "returns":"123.45"}
+  ]
+}

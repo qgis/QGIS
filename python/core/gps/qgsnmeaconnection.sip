@@ -1,4 +1,4 @@
-/**Evaluates NMEA sentences coming from a GPS device*/
+/** Evaluates NMEA sentences coming from a GPS device*/
 class QgsNMEAConnection: QgsGPSConnection {
 %TypeHeaderCode
 #include "qgsnmeaconnection.h"
@@ -8,11 +8,11 @@ class QgsNMEAConnection: QgsGPSConnection {
     ~QgsNMEAConnection();
 
   protected slots:
-    /**Parse available data source content*/
+    /** Parse available data source content*/
     void parseData();
 
   protected:
-    /**Splits mStringBuffer into sentences and calls libnmea*/
+    /** Splits mStringBuffer into sentences and calls libnmea*/
     void processStringBuffer();
     //handle the different sentence type
     void processGGASentence( const char* data, int len );

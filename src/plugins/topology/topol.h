@@ -56,7 +56,7 @@ class checkDock;
 */
 class Topol: public QObject, public QgisPlugin
 {
-    Q_OBJECT;
+    Q_OBJECT
   public:
 
     //////////////////////////////////////////////////////////////////////
@@ -70,7 +70,7 @@ class Topol: public QObject, public QgisPlugin
     * QGIS when it attempts to instantiate the plugin.
     * @param theInterface Pointer to the QgisInterface object.
      */
-    Topol( QgisInterface * theInterface );
+    explicit Topol( QgisInterface * theInterface );
     //! Destructor
     virtual ~Topol();
 

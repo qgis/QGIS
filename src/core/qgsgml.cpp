@@ -13,12 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgml.h"
+#include "qgsauthmanager.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgswkbptr.h"
+
 #include <QBuffer>
 #include <QList>
 #include <QNetworkRequest>
@@ -40,12 +43,11 @@ QgsGml::QgsGml(
     : QObject()
     , mTypeName( typeName )
     , mGeometryAttribute( geometryAttribute )
-    , mWkbType( NULL )
+    , mWkbType( nullptr )
     , mFinished( false )
-    , mCurrentFeature( 0 )
+    , mCurrentFeature( nullptr )
     , mFeatureCount( 0 )
-    , mCurrentWKB( NULL )
-    , mCurrentWKBSize( 0 )
+    , mCurrentWKB( nullptr, 0 )
     , mDimension( 2 )
     , mCoorMode( QgsGml::coordinate )
     , mEpsg( 0 )
@@ -58,7 +60,7 @@ QgsGml::QgsGml(
 
   mEndian = QgsApplication::endian();
 
-  int index = mTypeName.indexOf( ":" );
+  int index = mTypeName.indexOf( ':' );
   if ( index != -1 && index < mTypeName.length() )
   {
     mTypeName = mTypeName.mid( index + 1 );
@@ -69,12 +71,12 @@ QgsGml::~QgsGml()
 {
 }
 
-int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangle* extent, const QString& userName, const QString& password )
+int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangle* extent, const QString& userName, const QString& password , const QString& authcfg )
 {
   mUri = uri;
   mWkbType = wkbType;
 
-  XML_Parser p = XML_ParserCreateNS( NULL, NS_SEPARATOR );
+  XML_Parser p = XML_ParserCreateNS( nullptr, NS_SEPARATOR );
   XML_SetUserData( p, this );
   XML_SetElementHandler( p, QgsGml::start, QgsGml::end );
   XML_SetCharacterDataHandler( p, QgsGml::chars );
@@ -83,9 +85,21 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
   mExtent.setMinimal();
 
   QNetworkRequest request( mUri );
-  if ( !userName.isNull() || !password.isNull() )
+  if ( !authcfg.isEmpty() )
   {
-    request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( userName ).arg( password ).toAscii().toBase64() );
+    if ( !QgsAuthManager::instance()->updateNetworkRequest( request, authcfg ) )
+    {
+      QgsMessageLog::logMessage(
+        tr( "GML Getfeature network request update failed for authcfg %1" ).arg( authcfg ),
+        tr( "Network" ),
+        QgsMessageLog::CRITICAL
+      );
+      return 1;
+    }
+  }
+  else if ( !userName.isNull() || !password.isNull() )
+  {
+    request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( userName, password ).toAscii().toBase64() );
   }
   QNetworkReply* reply = QgsNetworkAccessManager::instance()->get( request );
 
@@ -93,10 +107,10 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
   connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( handleProgressEvent( qint64, qint64 ) ) );
 
   //find out if there is a QGIS main window. If yes, display a progress dialog
-  QProgressDialog* progressDialog = 0;
-  QWidget* mainWindow = 0;
+  QProgressDialog* progressDialog = nullptr;
+  QWidget* mainWindow = nullptr;
   QWidgetList topLevelWidgets = qApp->topLevelWidgets();
-  for ( QWidgetList::iterator it = topLevelWidgets.begin(); it != topLevelWidgets.end(); ++it )
+  for ( QWidgetList::const_iterator it = topLevelWidgets.constBegin(); it != topLevelWidgets.constEnd(); ++it )
   {
     if (( *it )->objectName() == "QgisApp" )
     {
@@ -122,7 +136,7 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
       atEnd = 1;
     }
     QByteArray readData = reply->readAll();
-    if ( readData.size() > 0 )
+    if ( !readData.isEmpty() )
     {
       if ( XML_Parse( p, readData.constData(), readData.size(), atEnd ) == 0 )
       {
@@ -175,7 +189,7 @@ int QgsGml::getFeatures( const QByteArray &data, QGis::WkbType* wkbType, QgsRect
   mWkbType = wkbType;
   mExtent.setMinimal();
 
-  XML_Parser p = XML_ParserCreateNS( NULL, NS_SEPARATOR );
+  XML_Parser p = XML_ParserCreateNS( nullptr, NS_SEPARATOR );
   XML_SetUserData( p, this );
   XML_SetElementHandler( p, QgsGml::start, QgsGml::end );
   XML_SetCharacterDataHandler( p, QgsGml::chars );
@@ -221,12 +235,12 @@ void QgsGml::startElement( const XML_Char* el, const XML_Char** attr )
     mCoordinateSeparator = readAttribute( "cs", attr );
     if ( mCoordinateSeparator.isEmpty() )
     {
-      mCoordinateSeparator = ",";
+      mCoordinateSeparator = ',';
     }
     mTupleSeparator = readAttribute( "ts", attr );
     if ( mTupleSeparator.isEmpty() )
     {
-      mTupleSeparator = " ";
+      mTupleSeparator = ' ';
     }
   }
   if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "pos"
@@ -273,22 +287,19 @@ void QgsGml::startElement( const XML_Char* el, const XML_Char** attr )
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "Polygon" )
   {
-    mCurrentWKBFragments.push_back( QList<unsigned char*>() );
-    mCurrentWKBFragmentSizes.push_back( QList<int>() );
+    mCurrentWKBFragments.push_back( QList<QgsWkbPtr>() );
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "MultiPoint" )
   {
     mParseModeStack.push( QgsGml::multiPoint );
     //we need one nested list for intermediate WKB
-    mCurrentWKBFragments.push_back( QList<unsigned char*>() );
-    mCurrentWKBFragmentSizes.push_back( QList<int>() );
+    mCurrentWKBFragments.push_back( QList<QgsWkbPtr>() );
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "MultiLineString" )
   {
     mParseModeStack.push( QgsGml::multiLine );
     //we need one nested list for intermediate WKB
-    mCurrentWKBFragments.push_back( QList<unsigned char*>() );
-    mCurrentWKBFragmentSizes.push_back( QList<int>() );
+    mCurrentWKBFragments.push_back( QList<QgsWkbPtr>() );
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "MultiPolygon" )
   {
@@ -366,9 +377,12 @@ void QgsGml::endElement( const XML_Char* el )
   else if ( theParseMode == feature && localName == mTypeName )
   {
     Q_ASSERT( mCurrentFeature );
-    if ( mCurrentWKBSize > 0 )
+    if ( mCurrentWKB.size() > 0 )
     {
-      mCurrentFeature->setGeometryAndOwnership( mCurrentWKB, mCurrentWKBSize );
+      QgsGeometry *g = new QgsGeometry();
+      g->fromWkb( mCurrentWKB, mCurrentWKB.size() );
+      mCurrentFeature->setGeometry( g );
+      mCurrentWKB = QgsWkbPtr( nullptr, 0 );
     }
     else if ( !mCurrentExtent.isEmpty() )
     {
@@ -376,7 +390,7 @@ void QgsGml::endElement( const XML_Char* el )
     }
     else
     {
-      mCurrentFeature->setGeometry( 0 );
+      mCurrentFeature->setGeometry( nullptr );
     }
     mCurrentFeature->setValid( true );
 
@@ -385,7 +399,7 @@ void QgsGml::endElement( const XML_Char* el )
     {
       mIdMap.insert( mCurrentFeature->id(), mCurrentFeatureId );
     }
-    mCurrentFeature = 0;
+    mCurrentFeature = nullptr;
     ++mFeatureCount;
     mParseModeStack.pop();
   }
@@ -397,13 +411,13 @@ void QgsGml::endElement( const XML_Char* el )
       //error
     }
 
-    if ( pointList.count() == 0 )
+    if ( pointList.isEmpty() )
       return;  // error
 
     if ( theParseMode == QgsGml::geometry )
     {
       //directly add WKB point to the feature
-      if ( getPointWKB( &mCurrentWKB, &mCurrentWKBSize, *( pointList.begin() ) ) != 0 )
+      if ( getPointWKB( mCurrentWKB, *( pointList.constBegin() ) ) != 0 )
       {
         //error
       }
@@ -415,23 +429,19 @@ void QgsGml::endElement( const XML_Char* el )
     }
     else //multipoint, add WKB as fragment
     {
-      unsigned char* wkb = 0;
-      int wkbSize = 0;
-      QList<unsigned char*> wkbList;
-      QList<int> wkbSizeList;
-      if ( getPointWKB( &wkb, &wkbSize, *( pointList.begin() ) ) != 0 )
+      QgsWkbPtr wkbPtr( nullptr, 0 );
+      if ( getPointWKB( wkbPtr, *( pointList.constBegin() ) ) != 0 )
       {
         //error
       }
       if ( !mCurrentWKBFragments.isEmpty() )
       {
-        mCurrentWKBFragments.last().push_back( wkb );
-        mCurrentWKBFragmentSizes.last().push_back( wkbSize );
+        mCurrentWKBFragments.last().push_back( wkbPtr );
       }
       else
       {
         QgsDebugMsg( "No wkb fragments" );
-        delete [] wkb;
+        delete [] wkbPtr;
       }
     }
   }
@@ -446,7 +456,7 @@ void QgsGml::endElement( const XML_Char* el )
     }
     if ( theParseMode == QgsGml::geometry )
     {
-      if ( getLineWKB( &mCurrentWKB, &mCurrentWKBSize, pointList ) != 0 )
+      if ( getLineWKB( mCurrentWKB, pointList ) != 0 )
       {
         //error
       }
@@ -458,22 +468,19 @@ void QgsGml::endElement( const XML_Char* el )
     }
     else //multiline, add WKB as fragment
     {
-      unsigned char* wkb = 0;
-      int wkbSize = 0;
-      QList<unsigned char*> wkbList;
-      QList<int> wkbSizeList;
-      if ( getLineWKB( &wkb, &wkbSize, pointList ) != 0 )
+      QgsWkbPtr wkbPtr( nullptr, 0 );
+      if ( getLineWKB( wkbPtr, pointList ) != 0 )
       {
         //error
       }
       if ( !mCurrentWKBFragments.isEmpty() )
       {
-        mCurrentWKBFragments.last().push_back( wkb );
-        mCurrentWKBFragmentSizes.last().push_back( wkbSize );
+        mCurrentWKBFragments.last().push_back( wkbPtr );
       }
       else
       {
         QgsDebugMsg( "no wkb fragments" );
+        delete [] wkbPtr;
       }
     }
   }
@@ -484,20 +491,20 @@ void QgsGml::endElement( const XML_Char* el )
     {
       //error
     }
-    unsigned char* wkb = 0;
-    int wkbSize = 0;
-    if ( getRingWKB( &wkb, &wkbSize, pointList ) != 0 )
+
+    QgsWkbPtr wkbPtr( nullptr, 0 );
+    if ( getRingWKB( wkbPtr, pointList ) != 0 )
     {
       //error
     }
+
     if ( !mCurrentWKBFragments.isEmpty() )
     {
-      mCurrentWKBFragments.last().push_back( wkb );
-      mCurrentWKBFragmentSizes.last().push_back( wkbSize );
+      mCurrentWKBFragments.last().push_back( wkbPtr );
     }
     else
     {
-      delete[] wkb;
+      delete[] wkbPtr;
       QgsDebugMsg( "no wkb fragments" );
     }
   }
@@ -536,7 +543,7 @@ void QgsGml::endElement( const XML_Char* el )
 void QgsGml::characters( const XML_Char* chars, int len )
 {
   //save chars in mStringCash attribute mode or coordinate mode
-  if ( mParseModeStack.size() == 0 )
+  if ( mParseModeStack.isEmpty() )
   {
     return;
   }
@@ -551,7 +558,7 @@ void QgsGml::characters( const XML_Char* chars, int len )
 void QgsGml::setAttribute( const QString& name, const QString& value )
 {
   //find index with attribute name
-  QMap<QString, QPair<int, QgsField> >::const_iterator att_it = mThematicAttributes.find( name );
+  QMap<QString, QPair<int, QgsField> >::const_iterator att_it = mThematicAttributes.constFind( name );
   if ( att_it != mThematicAttributes.constEnd() )
   {
     QVariant var;
@@ -578,7 +585,7 @@ void QgsGml::setAttribute( const QString& name, const QString& value )
 int QgsGml::readEpsgFromAttribute( int& epsgNr, const XML_Char** attr ) const
 {
   int i = 0;
-  while ( attr[i] != NULL )
+  while ( attr[i] )
   {
     if ( strcmp( attr[i], "srsName" ) == 0 )
     {
@@ -586,11 +593,11 @@ int QgsGml::readEpsgFromAttribute( int& epsgNr, const XML_Char** attr ) const
       QString epsgNrString;
       if ( epsgString.startsWith( "http" ) ) //e.g. geoserver: "http://www.opengis.net/gml/srs/epsg.xml#4326"
       {
-        epsgNrString = epsgString.section( "#", 1, 1 );
+        epsgNrString = epsgString.section( '#', 1, 1 );
       }
       else //e.g. umn mapserver: "EPSG:4326">
       {
-        epsgNrString = epsgString.section( ":", 1, 1 );
+        epsgNrString = epsgString.section( ':', 1, 1 );
       }
       bool conversionOk;
       int eNr = epsgNrString.toInt( &conversionOk );
@@ -609,11 +616,11 @@ int QgsGml::readEpsgFromAttribute( int& epsgNr, const XML_Char** attr ) const
 QString QgsGml::readAttribute( const QString& attributeName, const XML_Char** attr ) const
 {
   int i = 0;
-  while ( attr[i] != NULL )
+  while ( attr[i] )
   {
     if ( attributeName.compare( attr[i] ) == 0 )
     {
-      return QString( attr[i+1] );
+      return QString::fromUtf8( attr[i+1] );
     }
     i += 2;
   }
@@ -672,7 +679,7 @@ int QgsGml::pointsFromCoordinateString( QList<QgsPoint>& points, const QString& 
 int QgsGml::pointsFromPosListString( QList<QgsPoint>& points, const QString& coordString, int dimension ) const
 {
   // coordinates separated by spaces
-  QStringList coordinates = coordString.split( " ", QString::SkipEmptyParts );
+  QStringList coordinates = coordString.split( ' ', QString::SkipEmptyParts );
 
   if ( coordinates.size() % dimension != 0 )
   {
@@ -711,145 +718,93 @@ int QgsGml::pointsFromString( QList<QgsPoint>& points, const QString& coordStrin
   return 1;
 }
 
-int QgsGml::getPointWKB( unsigned char** wkb, int* size, const QgsPoint& point ) const
+int QgsGml::getPointWKB( QgsWkbPtr &wkbPtr, const QgsPoint& point ) const
 {
   int wkbSize = 1 + sizeof( int ) + 2 * sizeof( double );
-  *size = wkbSize;
-  *wkb = new unsigned char[wkbSize];
-  QGis::WkbType type = QGis::WKBPoint;
-  double x = point.x();
-  double y = point.y();
-  int wkbPosition = 0; //current offset from wkb beginning (in bytes)
+  wkbPtr = QgsWkbPtr( new unsigned char[wkbSize], wkbSize );
 
-  memcpy( &( *wkb )[wkbPosition], &mEndian, 1 );
-  wkbPosition += 1;
-  memcpy( &( *wkb )[wkbPosition], &type, sizeof( int ) );
-  wkbPosition += sizeof( int );
-  memcpy( &( *wkb )[wkbPosition], &x, sizeof( double ) );
-  wkbPosition += sizeof( double );
-  memcpy( &( *wkb )[wkbPosition], &y, sizeof( double ) );
+  QgsWkbPtr fillPtr( wkbPtr );
+  fillPtr << mEndian << QGis::WKBPoint << point.x() << point.y();
+
   return 0;
 }
 
-int QgsGml::getLineWKB( unsigned char** wkb, int* size, const QList<QgsPoint>& lineCoordinates ) const
+int QgsGml::getLineWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint>& lineCoordinates ) const
 {
   int wkbSize = 1 + 2 * sizeof( int ) + lineCoordinates.size() * 2 * sizeof( double );
-  *size = wkbSize;
-  *wkb = new unsigned char[wkbSize];
-  QGis::WkbType type = QGis::WKBLineString;
-  int wkbPosition = 0; //current offset from wkb beginning (in bytes)
-  double x, y;
-  int nPoints = lineCoordinates.size();
+  wkbPtr = QgsWkbPtr( new unsigned char[wkbSize], wkbSize );
 
-  //fill the contents into *wkb
-  memcpy( &( *wkb )[wkbPosition], &mEndian, 1 );
-  wkbPosition += 1;
-  memcpy( &( *wkb )[wkbPosition], &type, sizeof( int ) );
-  wkbPosition += sizeof( int );
-  memcpy( &( *wkb )[wkbPosition], &nPoints, sizeof( int ) );
-  wkbPosition += sizeof( int );
+  QgsWkbPtr fillPtr( wkbPtr );
+
+  fillPtr << mEndian << QGis::WKBLineString << lineCoordinates.size();
 
   QList<QgsPoint>::const_iterator iter;
-  for ( iter = lineCoordinates.begin(); iter != lineCoordinates.end(); ++iter )
+  for ( iter = lineCoordinates.constBegin(); iter != lineCoordinates.constEnd(); ++iter )
   {
-    x = iter->x();
-    y = iter->y();
-    memcpy( &( *wkb )[wkbPosition], &x, sizeof( double ) );
-    wkbPosition += sizeof( double );
-    memcpy( &( *wkb )[wkbPosition], &y, sizeof( double ) );
-    wkbPosition += sizeof( double );
+    fillPtr << iter->x() << iter->y();
   }
+
   return 0;
 }
 
-int QgsGml::getRingWKB( unsigned char** wkb, int* size, const QList<QgsPoint>& ringCoordinates ) const
+int QgsGml::getRingWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint>& ringCoordinates ) const
 {
   int wkbSize = sizeof( int ) + ringCoordinates.size() * 2 * sizeof( double );
-  *size = wkbSize;
-  *wkb = new unsigned char[wkbSize];
-  int wkbPosition = 0; //current offset from wkb beginning (in bytes)
-  double x, y;
-  int nPoints = ringCoordinates.size();
-  memcpy( &( *wkb )[wkbPosition], &nPoints, sizeof( int ) );
-  wkbPosition += sizeof( int );
+  wkbPtr = QgsWkbPtr( new unsigned char[wkbSize], wkbSize );
+
+  QgsWkbPtr fillPtr( wkbPtr );
+
+  fillPtr << ringCoordinates.size();
 
   QList<QgsPoint>::const_iterator iter;
-  for ( iter = ringCoordinates.begin(); iter != ringCoordinates.end(); ++iter )
+  for ( iter = ringCoordinates.constBegin(); iter != ringCoordinates.constEnd(); ++iter )
   {
-    x = iter->x();
-    y = iter->y();
-    memcpy( &( *wkb )[wkbPosition], &x, sizeof( double ) );
-    wkbPosition += sizeof( double );
-    memcpy( &( *wkb )[wkbPosition], &y, sizeof( double ) );
-    wkbPosition += sizeof( double );
+    fillPtr << iter->x() << iter->y();
   }
+
   return 0;
 }
 
 int QgsGml::createMultiLineFromFragments()
 {
-  mCurrentWKBSize = 0;
-  mCurrentWKBSize += 1 + 2 * sizeof( int );
-  mCurrentWKBSize += totalWKBFragmentSize();
+  int size = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
+  mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
 
-  mCurrentWKB = new unsigned char[mCurrentWKBSize];
-  int pos = 0;
-  QGis::WkbType type = QGis::WKBMultiLineString;
-  int numLines = mCurrentWKBFragments.begin()->size();
-  //add endian
-  memcpy( &( mCurrentWKB[pos] ), &mEndian, 1 );
-  pos += 1;
-  memcpy( &( mCurrentWKB[pos] ), &type, sizeof( int ) );
-  pos += sizeof( int );
-  memcpy( &( mCurrentWKB[pos] ), &numLines, sizeof( int ) );
-  pos += sizeof( int );
-  QList<unsigned char*>::iterator wkbIt = mCurrentWKBFragments.begin()->begin();
-  QList<int>::iterator sizeIt = mCurrentWKBFragmentSizes.begin()->begin();
+  QgsWkbPtr wkbPtr( mCurrentWKB );
+
+  wkbPtr << mEndian << QGis::WKBMultiLineString << mCurrentWKBFragments.constBegin()->size();
 
   //copy (and delete) all the wkb fragments
-  for ( ; wkbIt != mCurrentWKBFragments.begin()->end(); ++wkbIt, ++sizeIt )
+  QList<QgsWkbPtr>::const_iterator wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
+  for ( ; wkbIt != mCurrentWKBFragments.constBegin()->constEnd(); ++wkbIt )
   {
-    memcpy( &( mCurrentWKB[pos] ), *wkbIt, *sizeIt );
-    pos += *sizeIt;
+    memcpy( wkbPtr, *wkbIt, wkbIt->size() );
+    wkbPtr += wkbIt->size();
     delete[] *wkbIt;
   }
 
   mCurrentWKBFragments.clear();
-  mCurrentWKBFragmentSizes.clear();
   *mWkbType = QGis::WKBMultiLineString;
   return 0;
 }
 
 int QgsGml::createMultiPointFromFragments()
 {
-  mCurrentWKBSize = 0;
-  mCurrentWKBSize += 1 + 2 * sizeof( int );
-  mCurrentWKBSize += totalWKBFragmentSize();
-  mCurrentWKB = new unsigned char[mCurrentWKBSize];
+  int size = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
+  mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
 
-  int pos = 0;
-  QGis::WkbType type = QGis::WKBMultiPoint;
-  int numPoints = mCurrentWKBFragments.begin()->size();
+  QgsWkbPtr wkbPtr( mCurrentWKB );
+  wkbPtr << mEndian << QGis::WKBMultiPoint << mCurrentWKBFragments.constBegin()->size();
 
-  memcpy( &( mCurrentWKB[pos] ), &mEndian, 1 );
-  pos += 1;
-  memcpy( &( mCurrentWKB[pos] ), &type, sizeof( int ) );
-  pos += sizeof( int );
-  memcpy( &( mCurrentWKB[pos] ), &numPoints, sizeof( int ) );
-  pos += sizeof( int );
-
-  QList<unsigned char*>::iterator wkbIt = mCurrentWKBFragments.begin()->begin();
-  QList<int>::iterator sizeIt = mCurrentWKBFragmentSizes.begin()->begin();
-
-  for ( ; wkbIt != mCurrentWKBFragments.begin()->end(); ++wkbIt, ++sizeIt )
+  QList<QgsWkbPtr>::const_iterator wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
+  for ( ; wkbIt != mCurrentWKBFragments.constBegin()->constEnd(); ++wkbIt )
   {
-    memcpy( &( mCurrentWKB[pos] ), *wkbIt, *sizeIt );
-    pos += *sizeIt;
+    memcpy( wkbPtr, *wkbIt, wkbIt->size() );
+    wkbPtr += wkbIt->size();
     delete[] *wkbIt;
   }
 
   mCurrentWKBFragments.clear();
-  mCurrentWKBFragmentSizes.clear();
   *mWkbType = QGis::WKBMultiPoint;
   return 0;
 }
@@ -857,88 +812,55 @@ int QgsGml::createMultiPointFromFragments()
 
 int QgsGml::createPolygonFromFragments()
 {
-  mCurrentWKBSize = 0;
-  mCurrentWKBSize += 1 + 2 * sizeof( int );
-  mCurrentWKBSize += totalWKBFragmentSize();
+  int size = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
+  mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
 
-  mCurrentWKB = new unsigned char[mCurrentWKBSize];
-  int pos = 0;
-  QGis::WkbType type = QGis::WKBPolygon;
-  int numRings = mCurrentWKBFragments.begin()->size();
-  memcpy( &( mCurrentWKB[pos] ), &mEndian, 1 );
-  pos += 1;
-  memcpy( &( mCurrentWKB[pos] ), &type, sizeof( int ) );
-  pos += sizeof( int );
-  memcpy( &( mCurrentWKB[pos] ), &numRings, sizeof( int ) );
-  pos += sizeof( int );
+  QgsWkbPtr wkbPtr( mCurrentWKB );
+  wkbPtr << mEndian << QGis::WKBPolygon << mCurrentWKBFragments.constBegin()->size();
 
-  QList<unsigned char*>::iterator wkbIt = mCurrentWKBFragments.begin()->begin();
-  QList<int>::iterator sizeIt = mCurrentWKBFragmentSizes.begin()->begin();
-  for ( ; wkbIt != mCurrentWKBFragments.begin()->end(); ++wkbIt, ++sizeIt )
+  QList<QgsWkbPtr>::const_iterator wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
+  for ( ; wkbIt != mCurrentWKBFragments.constBegin()->constEnd(); ++wkbIt )
   {
-    memcpy( &( mCurrentWKB[pos] ), *wkbIt, *sizeIt );
-    pos += *sizeIt;
+    memcpy( wkbPtr, *wkbIt, wkbIt->size() );
+    wkbPtr += wkbIt->size();
     delete[] *wkbIt;
   }
 
   mCurrentWKBFragments.clear();
-  mCurrentWKBFragmentSizes.clear();
   *mWkbType = QGis::WKBPolygon;
   return 0;
 }
 
 int QgsGml::createMultiPolygonFromFragments()
 {
-  mCurrentWKBSize = 0;
-  mCurrentWKBSize += 1 + 2 * sizeof( int );
-  mCurrentWKBSize += totalWKBFragmentSize();
-  mCurrentWKBSize += mCurrentWKBFragments.size() * ( 1 + 2 * sizeof( int ) ); //fragments are just the rings
+  int size = 0;
+  size += 1 + 2 * sizeof( int );
+  size += totalWKBFragmentSize();
+  size += mCurrentWKBFragments.size() * ( 1 + 2 * sizeof( int ) ); //fragments are just the rings
 
-  mCurrentWKB = new unsigned char[mCurrentWKBSize];
-  int pos = 0;
-  QGis::WkbType type = QGis::WKBMultiPolygon;
-  QGis::WkbType polygonType = QGis::WKBPolygon;
-  int numPolys = mCurrentWKBFragments.size();
-  int numRings;
-  memcpy( &( mCurrentWKB[pos] ), &mEndian, 1 );
-  pos += 1;
-  memcpy( &( mCurrentWKB[pos] ), &type, sizeof( int ) );
-  pos += sizeof( int );
-  memcpy( &( mCurrentWKB[pos] ), &numPolys, sizeof( int ) );
-  pos += sizeof( int );
+  mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
+
+  QgsWkbPtr wkbPtr( mCurrentWKB );
+  wkbPtr << ( char ) mEndian << QGis::WKBMultiPolygon << mCurrentWKBFragments.size();
 
   //have outer and inner iterators
-  QList< QList<unsigned char*> >::iterator outerWkbIt;
-  QList< QList<int> >::iterator outerSizeIt;
-  QList< unsigned char* >::iterator innerWkbIt;
-  QList< int >::iterator innerSizeIt;
+  QList< QList<QgsWkbPtr> >::const_iterator outerWkbIt = mCurrentWKBFragments.constBegin();
 
-  outerWkbIt = mCurrentWKBFragments.begin();
-  outerSizeIt = mCurrentWKBFragmentSizes.begin();
-
-  for ( ; outerWkbIt != mCurrentWKBFragments.end(); ++outerWkbIt, ++outerSizeIt )
+  for ( ; outerWkbIt != mCurrentWKBFragments.constEnd(); ++outerWkbIt )
   {
     //new polygon
-    memcpy( &( mCurrentWKB[pos] ), &mEndian, 1 );
-    pos += 1;
-    memcpy( &( mCurrentWKB[pos] ), &polygonType, sizeof( int ) );
-    pos += sizeof( int );
-    numRings = outerWkbIt->size();
-    memcpy( &( mCurrentWKB[pos] ), &numRings, sizeof( int ) );
-    pos += sizeof( int );
+    wkbPtr << ( char ) mEndian << QGis::WKBPolygon << outerWkbIt->size();
 
-    innerWkbIt = outerWkbIt->begin();
-    innerSizeIt = outerSizeIt->begin();
-    for ( ; innerWkbIt != outerWkbIt->end(); ++innerWkbIt, ++innerSizeIt )
+    QList<QgsWkbPtr>::const_iterator innerWkbIt = outerWkbIt->constBegin();
+    for ( ; innerWkbIt != outerWkbIt->constEnd(); ++innerWkbIt )
     {
-      memcpy( &( mCurrentWKB[pos] ), *innerWkbIt, *innerSizeIt );
-      pos += *innerSizeIt;
+      memcpy( wkbPtr, *innerWkbIt, innerWkbIt->size() );
+      wkbPtr += innerWkbIt->size();
       delete[] *innerWkbIt;
     }
   }
 
   mCurrentWKBFragments.clear();
-  mCurrentWKBFragmentSizes.clear();
   *mWkbType = QGis::WKBMultiPolygon;
   return 0;
 }
@@ -946,11 +868,11 @@ int QgsGml::createMultiPolygonFromFragments()
 int QgsGml::totalWKBFragmentSize() const
 {
   int result = 0;
-  foreach ( const QList<int> &list, mCurrentWKBFragmentSizes )
+  Q_FOREACH ( const QList<QgsWkbPtr> &list, mCurrentWKBFragments )
   {
-    foreach ( int i, list )
+    Q_FOREACH ( const QgsWkbPtr &i, list )
     {
-      result += i;
+      result += i.size();
     }
   }
   return result;
@@ -963,8 +885,8 @@ void QgsGml::calculateExtentFromFeatures()
     return;
   }
 
-  QgsFeature* currentFeature = 0;
-  QgsGeometry* currentGeometry = 0;
+  QgsFeature* currentFeature = nullptr;
+  const QgsGeometry* currentGeometry = nullptr;
   bool bboxInitialised = false; //gets true once bbox has been set to the first geometry
 
   for ( int i = 0; i < mFeatures.size(); ++i )
@@ -974,7 +896,7 @@ void QgsGml::calculateExtentFromFeatures()
     {
       continue;
     }
-    currentGeometry = currentFeature->geometry();
+    currentGeometry = currentFeature->constGeometry();
     if ( currentGeometry )
     {
       if ( !bboxInitialised )

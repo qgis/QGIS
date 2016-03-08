@@ -28,10 +28,10 @@ class QgsRasterShader
      * Non-Static methods
      *
      */
-    /** \brief generates and new RGB value based on one input value */
+    /** \brief generates and new RGBA value based on one input value */
     bool shade( double, int* /Out/, int* /Out/, int* /Out/, int* /Out/ );
 
-    /** \brief generates and new RGB value based on original RGB value */
+    /** \brief generates and new RGBA value based on original RGBA value */
     bool shade( double, double, double, double, int* /Out/, int* /Out/, int* /Out/, int* /Out/ );
 
     /** \brief A public method that allows the user to set their own shader function
@@ -47,4 +47,8 @@ class QgsRasterShader
     void writeXML( QDomDocument& doc, QDomElement& parent ) const;
 
     void readXML( const QDomElement& elem );
+
+  private:
+
+    QgsRasterShader( const QgsRasterShader& rh );
 };

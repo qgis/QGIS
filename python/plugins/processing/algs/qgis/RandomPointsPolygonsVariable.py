@@ -25,10 +25,13 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
 import random
 
+from PyQt4.QtGui import QIcon
 from PyQt4.QtCore import QVariant
-from qgis.core import QGis, QgsFields, QgsField, QgsFeature, QgsPoint, QgsGeometry, QgsSpatialIndex, QgsDistanceArea
+from qgis.core import (QGis, QgsFields, QgsField, QgsFeature, QgsPoint,
+                       QgsGeometry, QgsSpatialIndex, QgsDistanceArea)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -39,6 +42,8 @@ from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class RandomPointsPolygonsVariable(GeoAlgorithm):
 
@@ -48,22 +53,25 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
     STRATEGY = 'STRATEGY'
     OUTPUT = 'OUTPUT'
 
-    STRATEGIES = ['Points count',
-                  'Points density'
-                  ]
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_points.png'))
 
     def defineCharacteristics(self):
-        self.name = 'Random points inside polygons (variable)'
-        self.group = 'Vector creation tools'
+        self.name, self.i18n_name = self.trAlgorithm('Random points inside polygons (variable)')
+        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
+
+        self.strategies = [self.tr('Points count'),
+                           self.tr('Points density')]
+
         self.addParameter(ParameterVector(self.VECTOR,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterSelection(self.STRATEGY,
-            self.tr('Sampling strategy'), self.STRATEGIES, 0))
+                                             self.tr('Sampling strategy'), self.strategies, 0))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Number field'),
-            self.VECTOR, ParameterTableField.DATA_TYPE_NUMBER))
+                                              self.tr('Number field'),
+                                              self.VECTOR, ParameterTableField.DATA_TYPE_NUMBER))
         self.addParameter(ParameterNumber(self.MIN_DISTANCE,
-            self.tr('Minimum distance'), 0.0, 9999999, 0.0))
+                                          self.tr('Minimum distance'), 0.0, None, 0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points')))
 
     def processAlgorithm(self, progress):
@@ -123,9 +131,9 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
                 nIterations += 1
 
             if nPoints < pointCount:
-                 ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                     self.tr('Can not generate requested number of random '
-                             'points. Maximum number of attempts exceeded.'))
+                ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
+                                       self.tr('Can not generate requested number of random '
+                                               'points. Maximum number of attempts exceeded.'))
 
             progress.setPercentage(0)
 

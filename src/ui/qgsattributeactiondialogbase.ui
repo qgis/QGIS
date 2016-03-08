@@ -113,7 +113,7 @@
         </property>
         <property name="icon">
          <iconset resource="../../images/images.qrc">
-          <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+          <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
         </property>
        </widget>
       </item>
@@ -499,8 +499,8 @@
      <widget class="QLabel" name="label">
       <property name="geometry">
        <rect>
-        <x>15</x>
-        <y>33</y>
+        <x>10</x>
+        <y>20</y>
         <width>41</width>
         <height>31</height>
        </rect>
@@ -543,9 +543,12 @@
   <tabstop>moveUpButton</tabstop>
   <tabstop>moveDownButton</tabstop>
   <tabstop>removeButton</tabstop>
+  <tabstop>addDefaultActionsButton</tabstop>
   <tabstop>actionType</tabstop>
   <tabstop>captureCB</tabstop>
   <tabstop>actionName</tabstop>
+  <tabstop>actionIcon</tabstop>
+  <tabstop>chooseIconButton</tabstop>
   <tabstop>actionAction</tabstop>
   <tabstop>browseButton</tabstop>
   <tabstop>insertExpressionButton</tabstop>

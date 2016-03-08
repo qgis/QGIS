@@ -29,13 +29,15 @@ from PyQt4.QtCore import QCoreApplication
 from PyQt4.QtGui import QAction, QIcon
 
 from MetaSearch.dialogs.maindialog import MetaSearchDialog
-from MetaSearch.util import StaticContext, open_url
+from MetaSearch.util import get_help_url, open_url, StaticContext
 
 LOGGER = logging.getLogger('MetaSearch')
 
 
 class MetaSearchPlugin(object):
+
     """base plugin"""
+
     def __init__(self, iface):
         """init"""
 
@@ -55,9 +57,9 @@ class MetaSearchPlugin(object):
         self.action_run = QAction(run_icon, 'MetaSearch',
                                   self.iface.mainWindow())
         self.action_run.setWhatsThis(QCoreApplication.translate('MetaSearch',
-                                     'MetaSearch plugin'))
+                                                                'MetaSearch plugin'))
         self.action_run.setStatusTip(QCoreApplication.translate('MetaSearch',
-                                     'Search Metadata Catalogues'))
+                                                                'Search Metadata Catalogues'))
 
         self.action_run.triggered.connect(self.run)
 
@@ -68,9 +70,9 @@ class MetaSearchPlugin(object):
         help_icon = QIcon('%s/%s' % (self.context.ppath, 'images/help.png'))
         self.action_help = QAction(help_icon, 'Help', self.iface.mainWindow())
         self.action_help.setWhatsThis(QCoreApplication.translate('MetaSearch',
-                                      'MetaSearch plugin help'))
+                                                                 'MetaSearch plugin help'))
         self.action_help.setStatusTip(QCoreApplication.translate('MetaSearch',
-                                      'Get Help on MetaSearch'))
+                                                                 'Get Help on MetaSearch'))
         self.action_help.triggered.connect(self.help)
 
         self.iface.addPluginToWebMenu(self.web_menu, self.action_help)
@@ -94,4 +96,4 @@ class MetaSearchPlugin(object):
     def help(self):
         """open help in user's default web browser"""
 
-        open_url(self.context.metadata.get('general', 'homepage'))
+        open_url(get_help_url())

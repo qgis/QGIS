@@ -34,7 +34,7 @@ from qgis.gui import QgsMapTool, QgsMapToolEmitPoint, QgsRubberBand
 class RectangleMapTool(QgsMapToolEmitPoint):
 
     rectangleCreated = pyqtSignal()
-    deactovated = pyqtSignal()
+    deactivated = pyqtSignal()
 
     def __init__(self, canvas):
         self.canvas = canvas

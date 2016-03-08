@@ -1,0 +1,79 @@
+<root>
+  <key>KMeansClassification</key>
+  <exec>otbcli_KMeansClassification</exec>
+  <longname>Unsupervised KMeans image classification</longname>
+  <group>Learning</group>
+  <description>Unsupervised KMeans image classification</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>Input Image</name>
+    <description>Input image to classify.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>out</key>
+    <name>Output Image</name>
+    <description>Output image containing the class indexes.</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>Available memory for processing (in MB)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>vm</key>
+    <name>Validity Mask</name>
+    <description>Validity mask. Only non-zero pixels will be used to estimate KMeans modes.</description>
+    <optional>True</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>ts</key>
+    <name>Training set size</name>
+    <description>Size of the training set (in pixels).</description>
+    <minValue />
+    <maxValue />
+    <default>100</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>nc</key>
+    <name>Number of classes</name>
+    <description>Number of modes, which will be used to generate class membership.</description>
+    <minValue />
+    <maxValue />
+    <default>5</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>maxit</key>
+    <name>Maximum number of iterations</name>
+    <description>Maximum number of iterations for the learning step.</description>
+    <minValue />
+    <maxValue />
+    <default>1000</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>ct</key>
+    <name>Convergence threshold</name>
+    <description>Convergence threshold for class centroid  (L2 distance, by default 0.0001).</description>
+    <minValue />
+    <maxValue />
+    <default>0.0001</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputFilename">OutputFile</parameter_type>
+    <key>outmeans</key>
+    <name>Centroid filename</name>
+    <description>Output text file containing centroid positions</description>
+  </parameter>
+  </root>

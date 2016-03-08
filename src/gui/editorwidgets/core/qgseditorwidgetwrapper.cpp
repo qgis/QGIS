@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 20.4.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,6 +15,7 @@
 
 #include "qgseditorwidgetwrapper.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
 #include "qgsfield.h"
 
 #include <QWidget>
@@ -25,14 +26,22 @@ QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx
 {
 }
 
-int QgsEditorWidgetWrapper::fieldIdx()
+int QgsEditorWidgetWrapper::fieldIdx() const
 {
   return mFieldIdx;
 }
 
-QgsField QgsEditorWidgetWrapper::field()
+QgsField QgsEditorWidgetWrapper::field() const
 {
-  return layer()->pendingFields()[mFieldIdx];
+  if ( mFieldIdx < layer()->fields().count() )
+    return layer()->fields().at( mFieldIdx );
+  else
+    return QgsField();
+}
+
+QVariant QgsEditorWidgetWrapper::defaultValue() const
+{
+  return layer()->dataProvider()->defaultValue( mFieldIdx );
 }
 
 QgsEditorWidgetWrapper* QgsEditorWidgetWrapper::fromWidget( QWidget* widget )

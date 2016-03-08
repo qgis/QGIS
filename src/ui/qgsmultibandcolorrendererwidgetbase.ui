@@ -254,6 +254,18 @@ enhancement</string>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mRedBandComboBox</tabstop>
+  <tabstop>mRedMinLineEdit</tabstop>
+  <tabstop>mRedMaxLineEdit</tabstop>
+  <tabstop>mGreenBandComboBox</tabstop>
+  <tabstop>mGreenMinLineEdit</tabstop>
+  <tabstop>mGreenMaxLineEdit</tabstop>
+  <tabstop>mBlueBandComboBox</tabstop>
+  <tabstop>mBlueMinLineEdit</tabstop>
+  <tabstop>mBlueMaxLineEdit</tabstop>
+  <tabstop>mContrastEnhancementAlgorithmComboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

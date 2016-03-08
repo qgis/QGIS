@@ -51,9 +51,11 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     const QMap<QString, QVariant> *options,
     QProgressDialog *progress )
     : mErrorCount( 0 )
+    , mAttributeCount( -1 )
     , mProgress( progress )
+
 {
-  mProvider = NULL;
+  mProvider = nullptr;
 
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
 
@@ -65,18 +67,16 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     return;
   }
 
-  createEmptyLayer_t * pCreateEmpty = ( createEmptyLayer_t * ) cast_to_fptr( myLib->resolve( "createEmptyLayer" ) );
+  createEmptyLayer_t * pCreateEmpty = reinterpret_cast< createEmptyLayer_t * >( cast_to_fptr( myLib->resolve( "createEmptyLayer" ) ) );
   if ( !pCreateEmpty )
   {
     delete myLib;
     mError = ErrProviderUnsupportedFeature;
-    mErrorMessage = QObject::tr( "Provider %1 has no %2 method" ).arg( providerKey ).arg( "createEmptyLayer" );
+    mErrorMessage = QObject::tr( "Provider %1 has no %2 method" ).arg( providerKey, "createEmptyLayer" );
     return;
   }
 
   delete myLib;
-
-  mAttributeCount = -1;
 
   // create an empty layer
   QString errMsg;
@@ -87,7 +87,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     return;
   }
 
-  foreach ( int idx, mOldToNewAttrIdx.values() )
+  Q_FOREACH ( int idx, mOldToNewAttrIdx )
   {
     if ( idx > mAttributeCount )
       mAttributeCount = idx;
@@ -97,7 +97,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
 
   QgsDebugMsg( "Created empty layer" );
 
-  QgsVectorDataProvider *vectorProvider = ( QgsVectorDataProvider* ) pReg->provider( providerKey, uri );
+  QgsVectorDataProvider *vectorProvider = dynamic_cast< QgsVectorDataProvider* >( pReg->provider( providerKey, uri ) );
   if ( !vectorProvider || !vectorProvider->isValid() || ( vectorProvider->capabilities() & QgsVectorDataProvider::AddFeatures ) == 0 )
   {
     mError = ErrInvalidLayer;
@@ -133,11 +133,11 @@ QString QgsVectorLayerImport::errorMessage()
 
 bool QgsVectorLayerImport::addFeature( QgsFeature& feat )
 {
-  const QgsAttributes &attrs = feat.attributes();
+  QgsAttributes attrs = feat.attributes();
 
   QgsFeature newFeat;
-  if ( feat.geometry() )
-    newFeat.setGeometry( *feat.geometry() );
+  if ( feat.constGeometry() )
+    newFeat.setGeometry( *feat.constGeometry() );
 
   newFeat.initAttributes( mAttributeCount );
 
@@ -150,7 +150,7 @@ bool QgsVectorLayerImport::addFeature( QgsFeature& feat )
       continue;
 
     QgsDebugMsgLevel( QString( "moving field from pos %1 to %2" ).arg( i ).arg( dstIdx ), 3 );
-    newFeat.setAttribute( dstIdx, attrs[i] );
+    newFeat.setAttribute( dstIdx, attrs.at( i ) );
   }
 
   mFeatureBuffer.append( newFeat );
@@ -214,13 +214,11 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
                                    QProgressDialog *progress )
 {
   const QgsCoordinateReferenceSystem* outputCRS;
-  QgsCoordinateTransform* ct = 0;
-  int shallTransform = false;
+  QgsCoordinateTransform* ct = nullptr;
+  bool shallTransform = false;
 
-  if ( layer == NULL )
-  {
+  if ( !layer )
     return ErrInvalidLayer;
-  }
 
   if ( destCRS && destCRS->isValid() )
   {
@@ -243,7 +241,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     forceSinglePartGeom = options->take( "forceSinglePartGeometryType" ).toBool();
   }
 
-  QgsFields fields = skipAttributeCreation ? QgsFields() : layer->pendingFields();
+  QgsFields fields = skipAttributeCreation ? QgsFields() : layer->fields();
   QGis::WkbType wkbType = layer->wkbType();
 
   // Special handling for Shapefiles
@@ -252,7 +250,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     // convert field names to lowercase
     for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
-      fields[fldIdx].setName( fields[fldIdx].name().toLower() );
+      fields[fldIdx].setName( fields.at( fldIdx ).name().toLower() );
     }
 
     if ( !forceSinglePartGeom )
@@ -302,7 +300,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     errorMessage->clear();
   }
 
-  QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->pendingAllAttributesList();
+  QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->attributeList();
   QgsFeature fet;
 
   QgsFeatureRequest req;
@@ -317,15 +315,11 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
 
   // Create our transform
   if ( destCRS )
-  {
     ct = new QgsCoordinateTransform( layer->crs(), *destCRS );
-  }
 
   // Check for failure
-  if ( ct == NULL )
-  {
+  if ( !ct )
     shallTransform = false;
-  }
 
   int n = 0;
 
@@ -339,14 +333,17 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     progress->setRange( 0, layer->featureCount() );
   }
 
+  bool cancelled = false;
+
   // write all features
   while ( fit.nextFeature( fet ) )
   {
     if ( progress && progress->wasCanceled() )
     {
+      cancelled = true;
       if ( errorMessage )
       {
-        *errorMessage += "\n" + QObject::tr( "Import was canceled at %1 of %2" ).arg( progress->value() ).arg( progress->maximum() );
+        *errorMessage += '\n' + QObject::tr( "Import was canceled at %1 of %2" ).arg( progress->value() ).arg( progress->maximum() );
       }
       break;
     }
@@ -355,7 +352,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     {
       if ( errorMessage )
       {
-        *errorMessage += "\n" + QObject::tr( "Stopping after %1 errors" ).arg( writer->errorCount() );
+        *errorMessage += '\n' + QObject::tr( "Stopping after %1 errors" ).arg( writer->errorCount() );
       }
       break;
     }
@@ -367,7 +364,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     {
       try
       {
-        if ( fet.geometry() )
+        if ( fet.constGeometry() )
         {
           fet.geometry()->transform( *ct );
         }
@@ -381,7 +378,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
                       .arg( fet.id() ).arg( e.what() );
         QgsMessageLog::logMessage( msg, QObject::tr( "Vector import" ) );
         if ( errorMessage )
-          *errorMessage += "\n" + msg;
+          *errorMessage += '\n' + msg;
 
         return ErrProjection;
       }
@@ -394,7 +391,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     {
       if ( writer->hasError() && errorMessage )
       {
-        *errorMessage += "\n" + writer->errorMessage();
+        *errorMessage += '\n' + writer->errorMessage();
       }
     }
     n++;
@@ -410,7 +407,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   {
     if ( writer->hasError() && errorMessage )
     {
-      *errorMessage += "\n" + writer->errorMessage();
+      *errorMessage += '\n' + writer->errorMessage();
     }
   }
   int errors = writer->errorCount();
@@ -419,7 +416,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   {
     if ( writer->hasError() && errorMessage )
     {
-      *errorMessage += "\n" + writer->errorMessage();
+      *errorMessage += '\n' + writer->errorMessage();
     }
   }
 
@@ -434,7 +431,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   {
     if ( errors > 0 )
     {
-      *errorMessage += "\n" + QObject::tr( "Only %1 of %2 features written." ).arg( n - errors ).arg( n );
+      *errorMessage += '\n' + QObject::tr( "Only %1 of %2 features written." ).arg( n - errors ).arg( n );
     }
     else
     {
@@ -442,5 +439,10 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     }
   }
 
-  return errors == 0 ? NoError : ErrFeatureWriteFailed;
+  if ( cancelled )
+    return ErrUserCancelled;
+  else if ( errors > 0 )
+    return ErrFeatureWriteFailed;
+
+  return NoError;
 }

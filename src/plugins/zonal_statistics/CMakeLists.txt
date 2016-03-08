@@ -34,13 +34,16 @@ ADD_LIBRARY (zonalstatisticsplugin MODULE
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
-     ${GDAL_INCLUDE_DIR}
      ../../core
+     ../../core/geometry
      ../../core/raster
      ../../gui
      ../../analysis/vector
      ..
      .
+)
+INCLUDE_DIRECTORIES(SYSTEM
+     ${GDAL_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(zonalstatisticsplugin

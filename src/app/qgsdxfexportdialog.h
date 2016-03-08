@@ -34,7 +34,7 @@ class FieldSelectorDelegate : public QItemDelegate
 {
     Q_OBJECT
   public:
-    FieldSelectorDelegate( QObject *parent = 0 );
+    explicit FieldSelectorDelegate( QObject *parent = nullptr );
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
@@ -45,10 +45,11 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
 {
     Q_OBJECT
   public:
-    QgsVectorLayerAndAttributeModel( QgsLayerTreeGroup* rootNode, QObject *parent = 0 );
+    QgsVectorLayerAndAttributeModel( QgsLayerTreeGroup* rootNode, QObject *parent = nullptr );
     ~QgsVectorLayerAndAttributeModel();
 
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
@@ -76,7 +77,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
 {
     Q_OBJECT
   public:
-    QgsDxfExportDialog( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsDxfExportDialog( QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
     ~QgsDxfExportDialog();
 
     QList< QPair<QgsVectorLayer *, int> > layers() const;
@@ -85,9 +86,11 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     QgsDxfExport::SymbologyExport symbologyMode() const;
     QString saveFile() const;
     bool exportMapExtent() const;
+    bool layerTitleAsName() const;
+    QString encoding() const;
 
   public slots:
-    /** change the selection of layers in the list */
+    /** Change the selection of layers in the list */
     void selectAll();
     void unSelectAll();
 

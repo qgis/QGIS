@@ -3,7 +3,7 @@
                           ---------------------------
     begin                : May 27, 2014
     copyright            : (C) 2014 by Matthias Kuhn
-    email                : matthias dot kuhn at gmx dot ch
+    email                : matthias at opengis dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -23,6 +23,7 @@
 #include <QDomNode>
 
 #include "qgsfield.h"
+#include "qgsexpression.h"
 
 /**
  * Buffers information about expression fields for a vector layer.
@@ -34,10 +35,14 @@ class CORE_EXPORT QgsExpressionFieldBuffer
   public:
     typedef struct ExpressionField
     {
-      ExpressionField() {}
-      ExpressionField( QString exp, QgsField fld ) : expression( exp ), field( fld ) {}
+      ExpressionField() : cachedExpression( expression ) {}
+      ExpressionField( const QString& exp, const QgsField& fld ) : expression( exp ), cachedExpression( exp ), field( fld ) {}
 
+      /**
+       * @deprecated use cachedExpression instead
+       */
       QString expression;
+      QgsExpression cachedExpression;
       QgsField field;
     } ExpressionField;
 
@@ -59,6 +64,16 @@ class CORE_EXPORT QgsExpressionFieldBuffer
     void removeExpression( int index );
 
     /**
+     * Changes the expression at a given index
+     *
+     * @param index The index of the expression to change
+     * @param exp   The new expression to set
+     *
+     * @note added in 2.9
+     */
+    void updateExpression( int index, const QString& exp );
+
+    /**
      * Saves expressions to xml under the layer node
      */
     void writeXml( QDomNode& layer_node, QDomDocument& document ) const;
@@ -75,7 +90,7 @@ class CORE_EXPORT QgsExpressionFieldBuffer
      */
     void updateFields( QgsFields& flds );
 
-    const QList<ExpressionField> expressions() const { return mExpressions; }
+    const QList<ExpressionField>& expressions() const { return mExpressions; }
 
   private:
     QList<ExpressionField> mExpressions;

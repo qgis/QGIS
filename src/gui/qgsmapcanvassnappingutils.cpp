@@ -3,12 +3,13 @@
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 
+#include <QApplication>
 #include <QProgressDialog>
 
 QgsMapCanvasSnappingUtils::QgsMapCanvasSnappingUtils( QgsMapCanvas* canvas, QObject* parent )
     : QgsSnappingUtils( parent )
     , mCanvas( canvas )
-    , mProgress( NULL )
+    , mProgress( nullptr )
 {
   connect( canvas, SIGNAL( extentsChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
   connect( canvas, SIGNAL( destinationCrsChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
@@ -30,16 +31,21 @@ void QgsMapCanvasSnappingUtils::canvasCurrentLayerChanged()
 
 void QgsMapCanvasSnappingUtils::prepareIndexStarting( int count )
 {
+  QApplication::setOverrideCursor( Qt::WaitCursor );
   mProgress = new QProgressDialog( tr( "Indexing data..." ), QString(), 0, count, mCanvas->topLevelWidget() );
   mProgress->setWindowModality( Qt::WindowModal );
 }
 
 void QgsMapCanvasSnappingUtils::prepareIndexProgress( int index )
 {
+  if ( !mProgress )
+    return;
+
   mProgress->setValue( index );
   if ( index == mProgress->maximum() )
   {
     delete mProgress;
-    mProgress = 0;
+    mProgress = nullptr;
+    QApplication::restoreOverrideCursor();
   }
 }

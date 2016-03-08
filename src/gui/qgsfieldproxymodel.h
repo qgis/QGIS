@@ -46,7 +46,7 @@ class GUI_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
      * @brief QgsFieldProxModel creates a proxy model with a QgsFieldModel as source model.
      * It can be used to filter the fields based on their types.
      */
-    explicit QgsFieldProxyModel( QObject *parent = 0 );
+    explicit QgsFieldProxyModel( QObject *parent = nullptr );
 
     //! sourceFieldModel returns the QgsFieldModel used in this QSortFilterProxyModel
     QgsFieldModel* sourceFieldModel() { return mModel; }
@@ -56,7 +56,7 @@ class GUI_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
      * @param filters are Filter flags
      * @note added in 2.3
      */
-    QgsFieldProxyModel* setFilters( Filters filters );
+    QgsFieldProxyModel* setFilters( const QgsFieldProxyModel::Filters& filters );
     const Filters& filters() const { return mFilters; }
 
   private:

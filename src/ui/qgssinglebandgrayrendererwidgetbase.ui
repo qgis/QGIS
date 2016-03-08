@@ -100,6 +100,13 @@ enhancement</string>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mGrayBandComboBox</tabstop>
+  <tabstop>mGradientComboBox</tabstop>
+  <tabstop>mMinLineEdit</tabstop>
+  <tabstop>mMaxLineEdit</tabstop>
+  <tabstop>mContrastEnhancementComboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

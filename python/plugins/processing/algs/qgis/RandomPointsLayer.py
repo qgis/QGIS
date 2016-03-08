@@ -25,10 +25,13 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
 import random
 
+from PyQt4.QtGui import QIcon
 from PyQt4.QtCore import QVariant
-from qgis.core import QGis, QgsGeometry, QgsFields, QgsField, QgsSpatialIndex, QgsPoint, QgsFeature, QgsFeatureRequest
+from qgis.core import (QGis, QgsGeometry, QgsFields, QgsField, QgsSpatialIndex,
+                       QgsPoint, QgsFeature, QgsFeatureRequest)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -36,6 +39,8 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class RandomPointsLayer(GeoAlgorithm):
@@ -45,15 +50,18 @@ class RandomPointsLayer(GeoAlgorithm):
     MIN_DISTANCE = 'MIN_DISTANCE'
     OUTPUT = 'OUTPUT'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_points.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Random points in layer bounds'
-        self.group = 'Vector creation tools'
+        self.name, self.i18n_name = self.trAlgorithm('Random points in layer bounds')
+        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterVector(self.VECTOR,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterNumber(self.POINT_NUMBER,
-            self.tr('Points number'), 1, 9999999, 1))
+                                          self.tr('Points number'), 1, None, 1))
         self.addParameter(ParameterNumber(self.MIN_DISTANCE,
-            self.tr('Minimum distance'), 0.0, 9999999, 0.0))
+                                          self.tr('Minimum distance'), 0.0, None, 0.0))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points')))
 
@@ -109,8 +117,8 @@ class RandomPointsLayer(GeoAlgorithm):
             nIterations += 1
 
         if nPoints < pointCount:
-             ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                 self.tr('Can not generate requested number of random points. '
-                         'Maximum number of attempts exceeded.'))
+            ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
+                                   self.tr('Can not generate requested number of random points. '
+                                           'Maximum number of attempts exceeded.'))
 
         del writer

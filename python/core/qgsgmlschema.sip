@@ -5,9 +5,7 @@ class QgsGmlFeatureClass
 {
   public:
     QgsGmlFeatureClass();
-    QgsGmlFeatureClass( QString name, QString path );
-
-    ~QgsGmlFeatureClass();
+    QgsGmlFeatureClass( const QString& name, const QString& path );
 
     QList<QgsField> & fields();
 

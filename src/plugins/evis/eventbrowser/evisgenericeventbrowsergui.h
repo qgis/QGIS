@@ -164,7 +164,7 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     void on_chkboxUseOnlyFilename_stateChanged( int );
     void on_displayArea_currentChanged( int );
     void on_dsboxCompassOffset_valueChanged( double );
-    void on_leBasePath_textChanged( QString );
+    void on_leBasePath_textChanged( const QString& );
     void on_pbtnAddFileType_clicked();
     void on_pbtnDeleteFileType_clicked();
     void on_pbtnNext_clicked();

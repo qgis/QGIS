@@ -24,6 +24,7 @@
 
 #include "qgserror.h"
 #include "qgswcscapabilities.h"
+#include "qgsauthmanager.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsgdalproviderbase.h"
 #include "qgsrectangle.h"
@@ -50,15 +51,24 @@ class QNetworkRequest;
 // TODO: merge with QgsWmsAuthorization?
 struct QgsWcsAuthorization
 {
-  QgsWcsAuthorization( const QString& userName = QString(), const QString& password = QString() ) : mUserName( userName ), mPassword( password ) {}
+  QgsWcsAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& authcfg = QString() )
+      : mUserName( userName )
+      , mPassword( password )
+      , mAuthCfg( authcfg )
+  {}
 
   //! set authorization header
-  void setAuthorization( QNetworkRequest &request ) const
+  bool setAuthorization( QNetworkRequest &request ) const
   {
-    if ( !mUserName.isNull() || !mPassword.isNull() )
+    if ( !mAuthCfg.isEmpty() )
     {
-      request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName ).arg( mPassword ).toAscii().toBase64() );
+      return QgsAuthManager::instance()->updateNetworkRequest( request, mAuthCfg );
     }
+    else if ( !mUserName.isNull() || !mPassword.isNull() )
+    {
+      request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName, mPassword ).toAscii().toBase64() );
+    }
+    return true;
   }
 
   //! Username for basic http authentication
@@ -66,6 +76,9 @@ struct QgsWcsAuthorization
 
   //! Password for basic http authentication
   QString mPassword;
+
+  //! Authentication configuration ID
+  QString mAuthCfg;
 };
 
 /**
@@ -83,20 +96,20 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
   public:
     /**
-    * Constructor for the provider.
-    *
-    * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
-    *                otherwise we contact the host directly.
-    *
-    */
-    QgsWcsProvider( QString const & uri = 0 );
+     * Constructor for the provider.
+     *
+     * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
+     *                otherwise we contact the host directly.
+     *
+     */
+    explicit QgsWcsProvider( QString const & uri = nullptr );
 
     //! Destructor
     virtual ~QgsWcsProvider();
 
-    QgsRasterInterface * clone() const override;
+    QgsWcsProvider * clone() const override;
 
-    /*! Get the QgsCoordinateReferenceSystem for this layer
+    /** Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider.
      * If the provider isn't capable of returning
      * its projection an empty srs will be return, ti will return 0
@@ -144,14 +157,14 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     void getCache( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QString crs = "" );
 
     /** Return the extent for this data layer
-    */
+     */
     virtual QgsRectangle extent() override;
 
-    /**Returns true if layer is valid
+    /** Returns true if layer is valid
      */
     bool isValid() override;
 
-    /**Returns the base url
+    /** Returns the base url
      */
     virtual QString baseUrl() const;
 
@@ -178,6 +191,8 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     void reloadData() override;
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
 
+    int colorInterpretation( int bandNo ) const override;
+
     static QMap<QString, QString> supportedMimes();
 
     /**
@@ -193,16 +208,11 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /** \brief emit a signal to notify of a progress event */
     void progressChanged( int theProgress, int theTotalSteps );
 
-    /** \brief emit a signal to be caught by qgisapp and display a msg on status bar */
-    void statusChanged( QString const &  theStatusQString );
-
     void dataChanged();
 
   private:
-    void showMessageBox( const QString& title, const QString& text );
-
     // case insensitive attribute value lookup
-    static QString nodeAttribute( const QDomElement &e, QString name, QString defValue = QString::null );
+    static QString nodeAttribute( const QDomElement &e, const QString& name, const QString& defValue = QString::null );
 
     //! parse the WCS ServiceException XML element
     static void parseServiceException( QDomElement const &e, const QString& wcsVersion, QString& errorTitle, QString& errorText );
@@ -223,7 +233,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      *
      */
 
-    bool parseUri( QString uri );
+    bool parseUri( const QString& uri );
 
     /**
      * \brief Prepare the URI so that we can later simply append param=value
@@ -232,10 +242,10 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      */
     QString prepareUri( QString uri ) const;
 
-    QString coverageMetadata( QgsWcsCoverageSummary c );
+    QString coverageMetadata( const QgsWcsCoverageSummary& c );
 
     //! remove query item and replace it with a new value
-    void setQueryItem( QUrl &url, QString key, QString value );
+    void setQueryItem( QUrl &url, const QString& key, const QString& value );
 
     //! Release cache resources
     void clearCache();
@@ -297,10 +307,10 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /** \brief Gdal data types used to represent data in in QGIS,
                may be longer than source data type to keep nulls
                indexed from 0 */
-    QList<int>mGdalDataType;
+    QList<GDALDataType> mGdalDataType;
 
     /** GDAL source data types, indexed from 0 */
-    QList<int>mSrcGdalDataType;
+    QList<GDALDataType> mSrcGdalDataType;
 
     /** \brief Cell value representing no data. e.g. -9999, indexed from 0  */
     //QList<double> mNoDataValue;
@@ -421,7 +431,7 @@ class QgsWcsDownloadHandler : public QObject
   protected:
     void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
 
-    QgsNetworkAccessManager* mNAM;
+    QgsWcsAuthorization& mAuth;
     QEventLoop* mEventLoop;
 
     QNetworkReply* mCacheReply;

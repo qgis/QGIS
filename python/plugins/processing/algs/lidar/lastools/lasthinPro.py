@@ -31,29 +31,30 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 
+
 class lasthinPro(LAStoolsAlgorithm):
 
     THIN_STEP = "THIN_STEP"
     OPERATION = "OPERATION"
-    OPERATIONS= ["lowest", "random", "highest"]
+    OPERATIONS = ["lowest", "random", "highest"]
     WITHHELD = "WITHHELD"
     CLASSIFY_AS = "CLASSIFY_AS"
     CLASSIFY_AS_CLASS = "CLASSIFY_AS_CLASS"
 
     def defineCharacteristics(self):
-        self.name = "lasthinPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasthinPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterNumber(lasthinPro.THIN_STEP,
-            self.tr("size of grid used for thinning"), 0, None, 1.0))
+                                          self.tr("size of grid used for thinning"), 0, None, 1.0))
         self.addParameter(ParameterSelection(lasthinPro.OPERATION,
-            self.tr("keep particular point per cell"), lasthinPro.OPERATIONS, 0))
+                                             self.tr("keep particular point per cell"), lasthinPro.OPERATIONS, 0))
         self.addParameter(ParameterBoolean(lasthinPro.WITHHELD,
-            self.tr("mark thinned-away points as withheld"), False))
+                                           self.tr("mark thinned-away points as withheld"), False))
         self.addParameter(ParameterBoolean(lasthinPro.CLASSIFY_AS,
-            self.tr("classify surviving points as class"), False))
+                                           self.tr("classify surviving points as class"), False))
         self.addParameter(ParameterNumber(lasthinPro.CLASSIFY_AS_CLASS,
-            self.tr("class"), 0, None, 8))
+                                          self.tr("class"), 0, None, 8))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
@@ -68,7 +69,7 @@ class lasthinPro(LAStoolsAlgorithm):
         step = self.getParameterValue(lasthinPro.THIN_STEP)
         if step != 0.0:
             commands.append("-step")
-            commands.append(str(step))
+            commands.append(unicode(step))
         operation = self.getParameterValue(lasthinPro.OPERATION)
         if operation != 0:
             commands.append("-" + self.OPERATIONS[operation])
@@ -76,7 +77,7 @@ class lasthinPro(LAStoolsAlgorithm):
             commands.append("-withheld")
         if self.getParameterValue(lasthinPro.CLASSIFY_AS):
             commands.append("-classify_as")
-            commands.append(str(self.getParameterValue(lasthinPro.CLASSIFY_AS_CLASS)))
+            commands.append(unicode(self.getParameterValue(lasthinPro.CLASSIFY_AS_CLASS)))
         self.addParametersOutputDirectoryCommands(commands)
         self.addParametersOutputAppendixCommands(commands)
         self.addParametersPointOutputFormatCommands(commands)

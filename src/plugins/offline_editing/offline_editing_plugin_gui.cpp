@@ -67,7 +67,7 @@ QVariant QgsSelectLayerTreeModel::data( const QModelIndex& index, int role ) con
 }
 
 
-QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent /*= 0*/, Qt::WindowFlags fl /*= 0*/ )
+QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
@@ -117,7 +117,7 @@ void QgsOfflineEditingPluginGui::on_mBrowseButton_clicked()
 
   if ( !fileName.isEmpty() )
   {
-    if ( !fileName.toLower().endsWith( ".sqlite" ) )
+    if ( !fileName.endsWith( ".sqlite", Qt::CaseInsensitive ) )
     {
       fileName += ".sqlite";
     }
@@ -144,7 +144,7 @@ void QgsOfflineEditingPluginGui::on_buttonBox_accepted()
   }
 
   mSelectedLayerIds.clear();
-  foreach ( QgsLayerTreeLayer* nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
+  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
   {
     if ( nodeLayer->isVisible() )
     {
@@ -176,13 +176,13 @@ void QgsOfflineEditingPluginGui::restoreState()
 
 void QgsOfflineEditingPluginGui::selectAll()
 {
-  foreach ( QgsLayerTreeLayer* nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
+  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
     nodeLayer->setVisible( Qt::Checked );
 }
 
 
 void QgsOfflineEditingPluginGui::unSelectAll()
 {
-  foreach ( QgsLayerTreeLayer* nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
+  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
     nodeLayer->setVisible( Qt::Unchecked );
 }

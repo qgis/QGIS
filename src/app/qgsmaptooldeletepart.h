@@ -21,7 +21,7 @@
 
 class QgsVertexMarker;
 
-/**Map tool to delete vertices from line/polygon features*/
+/** Map tool to delete vertices from line/polygon features*/
 class APP_EXPORT QgsMapToolDeletePart: public QgsMapToolEdit
 {
     Q_OBJECT
@@ -30,11 +30,11 @@ class APP_EXPORT QgsMapToolDeletePart: public QgsMapToolEdit
     QgsMapToolDeletePart( QgsMapCanvas* canvas );
     virtual ~QgsMapToolDeletePart();
 
-    void canvasMoveEvent( QMouseEvent * e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
-    void canvasPressEvent( QMouseEvent * e ) override;
+    void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
-    void canvasReleaseEvent( QMouseEvent * e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
     //! called when map tool is being deactivated
     void deactivate() override;

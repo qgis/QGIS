@@ -25,17 +25,17 @@ class QgsInterface;
 class QAction;
 class QMenu;
 
-/**A plugin for raster based terrain analysis (e.g. slope, aspect, ruggedness)*/
+/** A plugin for raster based terrain analysis (e.g. slope, aspect, ruggedness)*/
 class QgsRasterTerrainAnalysisPlugin: public QObject, public QgisPlugin
 {
     Q_OBJECT
   public:
-    QgsRasterTerrainAnalysisPlugin( QgisInterface* iface );
+    explicit QgsRasterTerrainAnalysisPlugin( QgisInterface* iface );
     ~QgsRasterTerrainAnalysisPlugin();
 
-    /**initialize connection to GUI*/
+    /** Initialize connection to GUI*/
     void initGui() override;
-    /**Unload the plugin and cleanup the GUI*/
+    /** Unload the plugin and cleanup the GUI*/
     void unload() override;
 
   private slots:

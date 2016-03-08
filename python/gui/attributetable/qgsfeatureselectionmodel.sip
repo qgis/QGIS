@@ -4,7 +4,7 @@ class QgsFeatureSelectionModel : QItemSelectionModel
 #include <attributetable/qgsfeatureselectionmodel.h>
 %End
   public:
-    explicit QgsFeatureSelectionModel( QAbstractItemModel* model, QgsFeatureModel* featureModel, QgsIFeatureSelectionManager* featureSelectionHandler, QObject* parent );
+    explicit QgsFeatureSelectionModel( QAbstractItemModel* model, QgsFeatureModel* featureModel, QgsIFeatureSelectionManager* featureSelectionHandler, QObject* parent /TransferThis/ );
 
     /**
      * Enables or disables synchronisation to the {@link QgsVectorLayer}
@@ -42,7 +42,7 @@ class QgsFeatureSelectionModel : QItemSelectionModel
      *
      * @param indexes The model indexes which need to be repainted
      */
-    void requestRepaint( QModelIndexList indexes );
+    void requestRepaint( const QModelIndexList& indexes );
 
     /**
      * Request a repaint of the visible items of connected views.
@@ -71,7 +71,7 @@ class QgsFeatureSelectionModel : QItemSelectionModel
      * @param selection  The QItemSelection which will be selected
      * @param command    The command to apply. Select, Deselect and ClearAndSelect are processed.
      */
-    virtual void selectFeatures( const QItemSelection &selection, SelectionFlags command );
+    virtual void selectFeatures( const QItemSelection &selection, const SelectionFlags& command );
 
     virtual void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
 };

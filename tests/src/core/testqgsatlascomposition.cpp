@@ -17,7 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgscomposition.h"
-#include "qgscompositionchecker.h"
+#include "qgsmultirenderchecker.h"
 #include "qgscomposermap.h"
 #include "qgscomposermapoverview.h"
 #include "qgsatlascomposition.h"
@@ -44,10 +44,13 @@ class TestQgsAtlasComposition : public QObject
         , mLabel2( 0 )
         , mAtlasMap( 0 )
         , mOverview( 0 )
+        , mMapSettings( 0 )
         , mVectorLayer( 0 )
         , mVectorLayer2( 0 )
         , mAtlas( 0 )
     {}
+
+    ~TestQgsAtlasComposition();
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -86,8 +89,7 @@ class TestQgsAtlasComposition : public QObject
     QgsComposerLabel* mLabel2;
     QgsComposerMap* mAtlasMap;
     QgsComposerMap* mOverview;
-    //QgsMapRenderer* mMapRenderer;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QgsVectorLayer* mVectorLayer2;
     QgsAtlasComposition* mAtlas;
@@ -99,8 +101,10 @@ void TestQgsAtlasComposition::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  mMapSettings = new QgsMapSettings();
+
   //create maplayers from testdata and add to layer registry
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "france_parts.shp" );
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/france_parts.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      "ogr" );
@@ -117,12 +121,18 @@ void TestQgsAtlasComposition::initTestCase()
   mReport = "<h1>Composer Atlas Tests</h1>\n";
 }
 
+TestQgsAtlasComposition::~TestQgsAtlasComposition()
+{
+  delete mMapSettings;
+}
+
+
 void TestQgsAtlasComposition::cleanupTestCase()
 {
   delete mComposition;
   QgsApplication::exitQgis();
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -135,15 +145,15 @@ void TestQgsAtlasComposition::cleanupTestCase()
 void TestQgsAtlasComposition::init()
 {
   //create composition with composer map
-  mMapSettings.setLayers( QStringList() << mVectorLayer->id() );
-  mMapSettings.setCrsTransformEnabled( true );
-  mMapSettings.setMapUnits( QGis::Meters );
+  mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings->setCrsTransformEnabled( true );
+  mMapSettings->setMapUnits( QGis::Meters );
 
   // select epsg:2154
   QgsCoordinateReferenceSystem crs;
   crs.createFromSrid( 2154 );
-  mMapSettings.setDestinationCrs( crs );
-  mComposition = new QgsComposition( mMapSettings );
+  mMapSettings->setDestinationCrs( crs );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   // fix the renderer, fill with green
@@ -191,7 +201,7 @@ void TestQgsAtlasComposition::init()
   // feature number label
   mLabel2 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( mLabel2 );
-  mLabel2->setText( "# [%$feature || ' / ' || $numfeatures%]" );
+  mLabel2->setText( "# [%@atlas_featurenumber || ' / ' || @atlas_totalfeatures%]" );
   mLabel2->setFont( QgsFontUtils::getStandardTestFont() );
   mLabel2->setSceneRect( QRectF( 150, 200, 60, 15 ) );
 
@@ -207,7 +217,7 @@ void TestQgsAtlasComposition::cleanup()
 
 void TestQgsAtlasComposition::filename()
 {
-  mAtlas->setFilenamePattern( "'output_' || $feature" );
+  mAtlas->setFilenamePattern( "'output_' || @atlas_featurenumber" );
   mAtlas->beginRender();
   for ( int fi = 0; fi < mAtlas->numFeatures(); ++fi )
   {
@@ -233,6 +243,7 @@ void TestQgsAtlasComposition::autoscale_render()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( QString( "atlas_autoscale%1" ).arg((( int )fit ) + 1 ), mComposition );
+    checker.setControlPathPrefix( "atlas" );
     QVERIFY( checker.testComposition( mReport, 0, 100 ) );
   }
   mAtlas->endRender();
@@ -254,6 +265,7 @@ void TestQgsAtlasComposition::autoscale_render_2_0_api()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( QString( "atlas_autoscale_old_api%1" ).arg((( int )fit ) + 1 ), mComposition );
+    checker.setControlPathPrefix( "atlas" );
     QVERIFY( checker.testComposition( mReport, 0, 100 ) );
   }
   mAtlas->endRender();
@@ -261,9 +273,11 @@ void TestQgsAtlasComposition::autoscale_render_2_0_api()
 
 void TestQgsAtlasComposition::fixedscale_render()
 {
-  mAtlasMap->setAtlasScalingMode( QgsComposerMap::Fixed );
-  mAtlasMap->setAtlasDriven( true );
+  //TODO QGIS3.0 - setting the extent AFTER setting atlas driven/fixed scaling mode should
+  //also update the set fixed scale
   mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
+  mAtlasMap->setAtlasDriven( true );
+  mAtlasMap->setAtlasScalingMode( QgsComposerMap::Fixed );
 
   mAtlas->beginRender();
 
@@ -273,6 +287,7 @@ void TestQgsAtlasComposition::fixedscale_render()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( QString( "atlas_fixedscale%1" ).arg((( int )fit ) + 1 ), mComposition );
+    checker.setControlPathPrefix( "atlas" );
     QVERIFY( checker.testComposition( mReport, 0, 100 ) );
   }
   mAtlas->endRender();
@@ -281,10 +296,10 @@ void TestQgsAtlasComposition::fixedscale_render()
 void TestQgsAtlasComposition::fixedscale_render_2_0_api()
 {
   Q_NOWARN_DEPRECATED_PUSH
+  mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
   mAtlas->setComposerMap( mAtlasMap );
   mAtlas->setFixedScale( true );
   Q_NOWARN_DEPRECATED_POP
-  mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
   mAtlas->beginRender();
 
   for ( int fit = 0; fit < 2; ++fit )
@@ -293,6 +308,7 @@ void TestQgsAtlasComposition::fixedscale_render_2_0_api()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( QString( "atlas_fixedscale_old_api%1" ).arg((( int )fit ) + 1 ), mComposition );
+    checker.setControlPathPrefix( "atlas" );
     QVERIFY( checker.testComposition( mReport, 0, 100 ) );
   }
   mAtlas->endRender();
@@ -300,17 +316,19 @@ void TestQgsAtlasComposition::fixedscale_render_2_0_api()
 
 void TestQgsAtlasComposition::predefinedscales_render()
 {
+  //TODO QGIS3.0 - setting the extent AFTER setting atlas driven/predefined scaling mode should
+  //also update the atlas map scale
+  mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
   mAtlasMap->setAtlasDriven( true );
   mAtlasMap->setAtlasScalingMode( QgsComposerMap::Predefined );
-  mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
 
-  QVector<double> scales;
-  scales << 1800000;
-  scales << 5000000;
+  QVector<qreal> scales;
+  scales << 1800000.0;
+  scales << 5000000.0;
   mAtlas->setPredefinedScales( scales );
 
   {
-    const QVector<double>& setScales = mAtlas->predefinedScales();
+    const QVector<qreal> &setScales = mAtlas->predefinedScales();
     for ( int i = 0; i < setScales.size(); i++ )
     {
       QVERIFY( setScales[i] == scales[i] );
@@ -325,6 +343,7 @@ void TestQgsAtlasComposition::predefinedscales_render()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( QString( "atlas_predefinedscales%1" ).arg((( int )fit ) + 1 ), mComposition );
+    checker.setControlPathPrefix( "atlas" );
     QVERIFY( checker.testComposition( mReport, 0, 100 ) );
   }
   mAtlas->endRender();
@@ -347,6 +366,7 @@ void TestQgsAtlasComposition::two_map_autoscale_render()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( QString( "atlas_two_maps%1" ).arg((( int )fit ) + 1 ), mComposition );
+    checker.setControlPathPrefix( "atlas" );
     QVERIFY( checker.testComposition( mReport, 0, 100 ) );
   }
   mAtlas->endRender();
@@ -354,9 +374,9 @@ void TestQgsAtlasComposition::two_map_autoscale_render()
 
 void TestQgsAtlasComposition::hiding_render()
 {
+  mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
   mAtlasMap->setAtlasDriven( true );
   mAtlasMap->setAtlasScalingMode( QgsComposerMap::Fixed );
-  mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
   mAtlas->setHideCoverage( true );
 
   mAtlas->beginRender();
@@ -367,6 +387,7 @@ void TestQgsAtlasComposition::hiding_render()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( QString( "atlas_hiding%1" ).arg((( int )fit ) + 1 ), mComposition );
+    checker.setControlPathPrefix( "atlas" );
     QVERIFY( checker.testComposition( mReport, 0, 100 ) );
   }
   mAtlas->endRender();
@@ -374,9 +395,9 @@ void TestQgsAtlasComposition::hiding_render()
 
 void TestQgsAtlasComposition::sorting_render()
 {
+  mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
   mAtlasMap->setAtlasDriven( true );
   mAtlasMap->setAtlasScalingMode( QgsComposerMap::Fixed );
-  mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
   mAtlas->setHideCoverage( false );
 
   mAtlas->setSortFeatures( true );
@@ -391,6 +412,7 @@ void TestQgsAtlasComposition::sorting_render()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( QString( "atlas_sorting%1" ).arg((( int )fit ) + 1 ), mComposition );
+    checker.setControlPathPrefix( "atlas" );
     QVERIFY( checker.testComposition( mReport, 0, 100 ) );
   }
   mAtlas->endRender();
@@ -398,9 +420,9 @@ void TestQgsAtlasComposition::sorting_render()
 
 void TestQgsAtlasComposition::filtering_render()
 {
+  mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
   mAtlasMap->setAtlasDriven( true );
   mAtlasMap->setAtlasScalingMode( QgsComposerMap::Fixed );
-  mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
   mAtlas->setHideCoverage( false );
 
   mAtlas->setSortFeatures( false );
@@ -416,6 +438,7 @@ void TestQgsAtlasComposition::filtering_render()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( QString( "atlas_filtering%1" ).arg((( int )fit ) + 1 ), mComposition );
+    checker.setControlPathPrefix( "atlas" );
     QVERIFY( checker.testComposition( mReport, 0, 100 ) );
   }
   mAtlas->endRender();
@@ -449,6 +472,7 @@ void TestQgsAtlasComposition::test_signals()
 
 void TestQgsAtlasComposition::test_remove_layer()
 {
+  QgsMapLayerRegistry::instance()->addMapLayer( mVectorLayer2 );
   mAtlas->setCoverageLayer( mVectorLayer2 );
   mAtlas->setEnabled( true );
 

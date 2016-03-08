@@ -4,7 +4,7 @@ class QgsInvertedPolygonRendererWidget : QgsRendererV2Widget
 #include <qgsinvertedpolygonrendererwidget.h>
 %End
   public:
-    /** static creation method
+    /** Static creation method
      * @param layer the layer where this renderer is applied
      * @param style
      * @param renderer the mask renderer (will take ownership)
@@ -20,4 +20,5 @@ class QgsInvertedPolygonRendererWidget : QgsRendererV2Widget
 
     /** @returns the current feature renderer */
     virtual QgsFeatureRendererV2* renderer();
+    void setMapCanvas( QgsMapCanvas* canvas );
 };

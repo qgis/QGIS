@@ -15,9 +15,20 @@
  ***************************************************************************/
 
 #include "qgsfield.h"
+#include "qgsfield_p.h"
+#include "qgis.h"
+#include "qgsapplication.h"
 
 #include <QSettings>
+#include <QDataStream>
 #include <QtCore/qmath.h>
+#include <QIcon>
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfield.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 #if 0
 QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
@@ -32,13 +43,29 @@ QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
   // names how they are now.
 }
 #endif
-
-QgsField::QgsField( QString name, QVariant::Type type, QString typeName, int len, int prec, QString comment )
-    : mName( name ), mType( type ), mTypeName( typeName )
-    , mLength( len ), mPrecision( prec ), mComment( comment )
+QgsField::QgsField( const QString& name, QVariant::Type type,
+                    const QString& typeName, int len, int prec, const QString& comment )
 {
+  d = new QgsFieldPrivate( name, type, typeName, len, prec, comment );
 }
 
+QgsField::QgsField( const QgsField &other )
+    : d( other.d )
+{
+
+}
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfield.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
+QgsField &QgsField::operator =( const QgsField & other )
+{
+  d = other.d;
+  return *this;
+}
 
 QgsField::~QgsField()
 {
@@ -46,8 +73,7 @@ QgsField::~QgsField()
 
 bool QgsField::operator==( const QgsField& other ) const
 {
-  return (( mName == other.mName ) && ( mType == other.mType )
-          && ( mLength == other.mLength ) && ( mPrecision == other.mPrecision ) );
+  return *( other.d ) == *d;
 }
 
 bool QgsField::operator!=( const QgsField& other ) const
@@ -55,65 +81,76 @@ bool QgsField::operator!=( const QgsField& other ) const
   return !( *this == other );
 }
 
-
-const QString & QgsField::name() const
+QString QgsField::name() const
 {
-  return mName;
+  return d->name;
 }
 
 QVariant::Type QgsField::type() const
 {
-  return mType;
+  return d->type;
 }
 
-const QString & QgsField::typeName() const
+QString QgsField::typeName() const
 {
-  return mTypeName;
+  return d->typeName;
 }
 
 int QgsField::length() const
 {
-  return mLength;
+  return d->length;
 }
 
 int QgsField::precision() const
 {
-  return mPrecision;
+  return d->precision;
 }
 
-const QString & QgsField::comment() const
+QString QgsField::comment() const
 {
-  return mComment;
+  return d->comment;
 }
 
-void QgsField::setName( const QString & nam )
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfield.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
+void QgsField::setName( const QString& name )
 {
-  mName = nam;
+  d->name = name;
 }
 
 void QgsField::setType( QVariant::Type type )
 {
-  mType = type;
+  d->type = type;
 }
 
-void QgsField::setTypeName( const QString & typeName )
+void QgsField::setTypeName( const QString& typeName )
 {
-  mTypeName = typeName;
+  d->typeName = typeName;
 }
 
 void QgsField::setLength( int len )
 {
-  mLength = len;
+  d->length = len;
 }
-void QgsField::setPrecision( int prec )
+void QgsField::setPrecision( int precision )
 {
-  mPrecision = prec;
+  d->precision = precision;
 }
 
-void QgsField::setComment( const QString & comment )
+void QgsField::setComment( const QString& comment )
 {
-  mComment = comment;
+  d->comment = comment;
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfield.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 QString QgsField::displayString( const QVariant& v ) const
 {
@@ -123,63 +160,173 @@ QString QgsField::displayString( const QVariant& v ) const
     return settings.value( "qgis/nullValue", "NULL" ).toString();
   }
 
-  if ( mType == QVariant::Double && mPrecision > 0 )
-    return QString::number( v.toDouble(), 'f', mPrecision );
+  if ( d->type == QVariant::Double && d->precision > 0 )
+    return QString::number( v.toDouble(), 'f', d->precision );
 
   return v.toString();
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfield.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 bool QgsField::convertCompatible( QVariant& v ) const
 {
   if ( v.isNull() )
   {
-    v.convert( mType );
+    v.convert( d->type );
     return true;
   }
 
-  if ( !v.convert( mType ) )
+  if ( d->type == QVariant::Int && v.toInt() != v.toLongLong() )
   {
+    v = QVariant( d->type );
     return false;
   }
 
-  if ( mType == QVariant::Double && mPrecision > 0 )
+  //String representations of doubles in QVariant will return false to convert( QVariant::Int )
+  //work around this by first converting to double, and then checking whether the double is convertible to int
+  if ( d->type == QVariant::Int && v.canConvert( QVariant::Double ) )
   {
-    v = qRound64( v.toDouble() * qPow( 10, mPrecision ) ) / qPow( 10, mPrecision );
+    bool ok = false;
+    double dbl = v.toDouble( &ok );
+    if ( !ok )
+    {
+      //couldn't convert to number
+      v = QVariant( d->type );
+      return false;
+    }
+
+    double round = qgsRound( dbl );
+    if ( round  > INT_MAX || round < -INT_MAX )
+    {
+      //double too large to fit in int
+      v = QVariant( d->type );
+      return false;
+    }
+    v = QVariant( qRound( dbl ) );
     return true;
+  }
+
+  if ( !v.convert( d->type ) )
+  {
+    v = QVariant( d->type );
+    return false;
+  }
+
+  if ( d->type == QVariant::Double && d->precision > 0 )
+  {
+    double s = qPow( 10, d->precision );
+    double d = v.toDouble() * s;
+    v = QVariant(( d < 0 ? ceil( d - 0.5 ) : floor( d + 0.5 ) ) / s );
+    return true;
+  }
+
+  if ( d->type == QVariant::String && d->length > 0 && v.toString().length() > d->length )
+  {
+    v = v.toString().left( d->length );
+    return false;
   }
 
   return true;
 }
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfield.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
+QDataStream& operator<<( QDataStream& out, const QgsField& field )
+{
+  out << field.name();
+  out << static_cast< quint32 >( field.type() );
+  out << field.typeName();
+  out << field.length();
+  out << field.precision();
+  out << field.comment();
+  return out;
+}
+
+QDataStream& operator>>( QDataStream& in, QgsField& field )
+{
+  quint32 type, length, precision;
+  QString name, typeName, comment;
+  in >> name >> type >> typeName >> length >> precision >> comment;
+  field.setName( name );
+  field.setType( static_cast< QVariant::Type >( type ) );
+  field.setTypeName( typeName );
+  field.setLength( static_cast< int >( length ) );
+  field.setPrecision( static_cast< int >( precision ) );
+  field.setComment( comment );
+  return in;
+}
+
 ////////////////////////////////////////////////////////////////////////////
+
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfields.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
+QgsFields::QgsFields()
+{
+  d = new QgsFieldsPrivate();
+}
+
+QgsFields::QgsFields( const QgsFields &other )
+    : d( other.d )
+{
+}
+
+QgsFields &QgsFields::operator =( const QgsFields & other )
+{
+  d = other.d;
+  return *this;
+}
+
+QgsFields::~QgsFields()
+{
+
+}
 
 void QgsFields::clear()
 {
-  mFields.clear();
-  mNameToIndex.clear();
+  d->fields.clear();
+  d->nameToIndex.clear();
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfields.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 bool QgsFields::append( const QgsField& field, FieldOrigin origin, int originIndex )
 {
-  if ( mNameToIndex.contains( field.name() ) )
+  if ( d->nameToIndex.contains( field.name() ) )
     return false;
 
   if ( originIndex == -1 && origin == OriginProvider )
-    originIndex = mFields.count();
-  mFields.append( Field( field, origin, originIndex ) );
+    originIndex = d->fields.count();
+  d->fields.append( Field( field, origin, originIndex ) );
 
-  mNameToIndex.insert( field.name(), mFields.count() - 1 );
+  d->nameToIndex.insert( field.name(), d->fields.count() - 1 );
   return true;
 }
 
 bool QgsFields::appendExpressionField( const QgsField& field, int originIndex )
 {
-  if ( mNameToIndex.contains( field.name() ) )
+  if ( d->nameToIndex.contains( field.name() ) )
     return false;
 
-  mFields.append( Field( field, OriginExpression, originIndex ) );
+  d->fields.append( Field( field, OriginExpression, originIndex ) );
 
-  mNameToIndex.insert( field.name(), mFields.count() - 1 );
+  d->nameToIndex.insert( field.name(), d->fields.count() - 1 );
   return true;
 }
 
@@ -188,8 +335,12 @@ void QgsFields::remove( int fieldIdx )
   if ( !exists( fieldIdx ) )
     return;
 
-  mNameToIndex.remove( mFields[fieldIdx].field.name() );
-  mFields.remove( fieldIdx );
+  d->fields.remove( fieldIdx );
+  d->nameToIndex.clear();
+  for ( int idx = 0; idx < count(); ++idx )
+  {
+    d->nameToIndex.insert( d->fields.at( idx ).field.name(), idx );
+  }
 }
 
 void QgsFields::extend( const QgsFields& other )
@@ -200,38 +351,206 @@ void QgsFields::extend( const QgsFields& other )
   }
 }
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfields.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
+bool QgsFields::isEmpty() const
+{
+  return d->fields.isEmpty();
+}
+
+int QgsFields::count() const
+{
+  return d->fields.count();
+}
+
+int QgsFields::size() const
+{
+  return d->fields.count();
+}
+
+bool QgsFields::exists( int i ) const
+{
+  return i >= 0 && i < d->fields.count();
+}
+
+QgsField &QgsFields::operator[]( int i )
+{
+  return d->fields[i].field;
+}
+
+const QgsField &QgsFields::at( int i ) const
+{
+  return d->fields[i].field;
+}
+
+const QgsField &QgsFields::field( int fieldIdx ) const
+{
+  return d->fields[fieldIdx].field;
+}
+
+const QgsField &QgsFields::field( const QString &name ) const
+{
+  return d->fields[ indexFromName( name )].field;
+}
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfields.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
+const QgsField &QgsFields::operator[]( int i ) const
+{
+  return d->fields[i].field;
+}
+
 QgsFields::FieldOrigin QgsFields::fieldOrigin( int fieldIdx ) const
 {
   if ( !exists( fieldIdx ) )
     return OriginUnknown;
 
-  return mFields[fieldIdx].origin;
+  return d->fields[fieldIdx].origin;
+}
+
+int QgsFields::fieldOriginIndex( int fieldIdx ) const
+{
+  return d->fields[fieldIdx].originIndex;
+}
+
+int QgsFields::indexFromName( const QString &name ) const
+{
+  return d->nameToIndex.value( name, -1 );
 }
 
 QList<QgsField> QgsFields::toList() const
 {
   QList<QgsField> lst;
-  for ( int i = 0; i < mFields.count(); ++i )
-    lst.append( mFields[i].field );
+  for ( int i = 0; i < d->fields.count(); ++i )
+    lst.append( d->fields[i].field );
   return lst;
 }
+
+bool QgsFields::operator==( const QgsFields &other ) const
+{
+  return d->fields == other.d->fields;
+}
+
+QIcon QgsFields::iconForField( int fieldIdx ) const
+{
+  static QIcon intIcon;
+  if ( intIcon.isNull() )
+    intIcon = QgsApplication::getThemeIcon( "/mIconFieldInteger.svg" );
+  static QIcon floatIcon;
+  if ( floatIcon.isNull() )
+    floatIcon = QgsApplication::getThemeIcon( "/mIconFieldFloat.svg" );
+  static QIcon stringIcon;
+  if ( stringIcon.isNull() )
+    stringIcon = QgsApplication::getThemeIcon( "/mIconFieldText.svg" );
+  static QIcon dateIcon;
+  if ( dateIcon.isNull() )
+    dateIcon = QgsApplication::getThemeIcon( "/mIconFieldDate.svg" );
+  static QIcon dateTimeIcon;
+  if ( dateTimeIcon.isNull() )
+    dateTimeIcon = QgsApplication::getThemeIcon( "/mIconFieldDateTime.svg" );
+  static QIcon timeIcon;
+  if ( timeIcon.isNull() )
+    timeIcon = QgsApplication::getThemeIcon( "/mIconFieldTime.svg" );
+
+  switch ( d->fields.at( fieldIdx ).field.type() )
+  {
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+    {
+      return intIcon;
+    }
+    case QVariant::Double:
+    {
+      return floatIcon;
+    }
+    case QVariant::String:
+    {
+      return stringIcon;
+    }
+    case QVariant::Date:
+    {
+      return dateIcon;
+    }
+    case QVariant::DateTime:
+    {
+      return dateTimeIcon;
+    }
+    case QVariant::Time:
+    {
+      return timeIcon;
+    }
+    default:
+      return QIcon();
+  }
+}
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfields.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 int QgsFields::fieldNameIndex( const QString& fieldName ) const
 {
   for ( int idx = 0; idx < count(); ++idx )
   {
-    if ( QString::compare( mFields[idx].field.name(), fieldName, Qt::CaseInsensitive ) == 0 )
-    {
+    if ( d->fields[idx].field.name() == fieldName )
       return idx;
-    }
   }
+
+  for ( int idx = 0; idx < count(); ++idx )
+  {
+    if ( QString::compare( d->fields[idx].field.name(), fieldName, Qt::CaseInsensitive ) == 0 )
+      return idx;
+  }
+
   return -1;
 }
 
 QgsAttributeList QgsFields::allAttributesList() const
 {
   QgsAttributeList lst;
-  for ( int i = 0; i < mFields.count(); ++i )
+  for ( int i = 0; i < d->fields.count(); ++i )
     lst.append( i );
   return lst;
+}
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfields.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
+QDataStream& operator<<( QDataStream& out, const QgsFields& fields )
+{
+  out << static_cast< quint32 >( fields.size() );
+  for ( int i = 0; i < fields.size(); i++ )
+  {
+    out << fields.field( i );
+  }
+  return out;
+}
+
+QDataStream& operator>>( QDataStream& in, QgsFields& fields )
+{
+  fields.clear();
+  quint32 size;
+  in >> size;
+  for ( quint32 i = 0; i < size; i++ )
+  {
+    QgsField field;
+    in >> field;
+    fields.append( field );
+  }
+  return in;
 }

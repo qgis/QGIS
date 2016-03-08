@@ -1,5 +1,35 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    versioncheck.py
+    ---------------------
+    Date                 : December 2014
+    Copyright            : (C) 2014 by Victor Olaya
+    Email                : volayaf at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Victor Olaya'
+__date__ = 'December 2014'
+__copyright__ = '(C) 2014, Victor Olaya'
+
+# This will get replaced with a git SHA1 when you do a git archive
+
+__revision__ = '$Format:%H$'
+
+
 import os
 import subprocess
+
+
 def getAlgParams(f):
     params = []
     booleanparams = []
@@ -35,9 +65,10 @@ def getAlgParams(f):
     lines.close()
     return cmdname, group, params, booleanparams, numparams
 
+
 def testDescriptionFile(f):
     usage = ""
-    cmdname,group,params,booleanparams,numparams = getAlgParams(f)
+    cmdname, group, params, booleanparams, numparams = getAlgParams(f)
     command = [r'd:\saga2.1.2\saga_cmd.exe', group, cmdname]
     for p in params:
         command.append(p)
@@ -66,7 +97,7 @@ def testDescriptionFile(f):
         print lines
         print usage
         print "Name in description:" + cmdname
-        print "Parameters in description:" + str(params)
+        print "Parameters in description:" + unicode(params)
         print "-" * 50
         print
 

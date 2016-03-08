@@ -52,8 +52,6 @@ class QgsWFSConnectionItem : public QgsDataCollectionItem
     virtual QList<QAction*> actions() override;
 
   private slots:
-    void gotCapabilities();
-
     void editConnection();
     void deleteConnection();
 
@@ -61,12 +59,13 @@ class QgsWFSConnectionItem : public QgsDataCollectionItem
     QString mUri;
 
     QgsWFSCapabilities* mCapabilities;
-    bool mGotCapabilities;
 };
 
 
 class QgsWFSLayerItem : public QgsLayerItem
 {
+    Q_OBJECT
+
   public:
     QgsWFSLayerItem( QgsDataItem* parent, QString name, QgsDataSourceURI uri, QString featureType, QString title, QString crsString );
     ~QgsWFSLayerItem();

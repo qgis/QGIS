@@ -38,6 +38,7 @@ from processing.tools import dataobjects, vector
 
 from math import sqrt
 
+
 class HubDistance(GeoAlgorithm):
     POINTS = 'POINTS'
     HUBS = 'HUBS'
@@ -58,21 +59,27 @@ class HubDistance(GeoAlgorithm):
              ]
 
     def defineCharacteristics(self):
-        self.name = 'Distance to nearest hub'
-        self.group = 'Vector analysis tools'
+        self.name, self.i18n_name = self.trAlgorithm('Distance to nearest hub')
+        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
+
+        self.units = [self.tr('Meters'),
+                      self.tr('Feet'),
+                      self.tr('Miles'),
+                      self.tr('Kilometers'),
+                      self.tr('Layer units')]
 
         self.addParameter(ParameterVector(self.POINTS,
-            self.tr('Source points layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Source points layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(self.HUBS,
-            self.tr('Destination hubs layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Destination hubs layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Hub layer name attribute'), self.HUBS))
+                                              self.tr('Hub layer name attribute'), self.HUBS))
         self.addParameter(ParameterSelection(self.GEOMETRY,
-            self.tr('Output shape type'), self.GEOMETRIES))
+                                             self.tr('Output shape type'), self.GEOMETRIES))
         self.addParameter(ParameterSelection(self.UNIT,
-            self.tr('Measurement unit'), self.UNITS))
+                                             self.tr('Measurement unit'), self.units))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance')))
 
     def processAlgorithm(self, progress):
         layerPoints = dataobjects.getObjectFromUri(
@@ -112,9 +119,8 @@ class HubDistance(GeoAlgorithm):
 
         # Scan source points, find nearest hub, and write to output file
         features = vector.features(layerPoints)
-        count = len(features)
-        total = 100.0 / float(count)
-        for count, f in enumerate(features):
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
             src = f.geometry().boundingBox().center()
 
             closest = hubs[0]
@@ -150,12 +156,13 @@ class HubDistance(GeoAlgorithm):
                 feat.setGeometry(QgsGeometry.fromPolyline([src, closest.point]))
 
             writer.addFeature(feat)
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))
 
         del writer
 
 
 class Hub:
+
     def __init__(self, point, name):
         self.point = point
         self.name = name

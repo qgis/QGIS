@@ -25,12 +25,19 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4.QtGui import QIcon
+
 from qgis.core import QGis, QgsGeometry, QgsFeature
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class Centroids(GeoAlgorithm):
@@ -38,14 +45,17 @@ class Centroids(GeoAlgorithm):
     INPUT_LAYER = 'INPUT_LAYER'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'centroids.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Polygon centroids'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Polygon centroids')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Centroids')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -60,22 +70,22 @@ class Centroids(GeoAlgorithm):
         outFeat = QgsFeature()
 
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
-        current = 0
+        total = 100.0 / len(features)
+        for current, feat in enumerate(features):
+            inGeom = feat.geometry()
+            attrs = feat.attributes()
 
-        for inFeat in features:
-            inGeom = inFeat.geometry()
-            attrs = inFeat.attributes()
-
-            outGeom = QgsGeometry(inGeom.centroid())
-            if outGeom is None:
-                raise GeoAlgorithmExecutionException(
-                    self.tr('Error calculating centroid'))
+            if not inGeom:
+                outGeom = QgsGeometry(None)
+            else:
+                outGeom = QgsGeometry(inGeom.centroid())
+                if not outGeom:
+                    raise GeoAlgorithmExecutionException(
+                        self.tr('Error calculating centroid'))
 
             outFeat.setGeometry(outGeom)
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

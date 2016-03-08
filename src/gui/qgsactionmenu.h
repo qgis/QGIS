@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 11.8.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -27,7 +27,7 @@
  * This class is a menu that is populated automatically with the actions defined for a given layer.
  */
 
-class QgsActionMenu : public QMenu
+class GUI_EXPORT QgsActionMenu : public QMenu
 {
     Q_OBJECT
 
@@ -45,7 +45,7 @@ class QgsActionMenu : public QMenu
           : actionType( Invalid )
           , actionId( 0 )
           , featureId( 0 )
-          , mapLayer( NULL )
+          , mapLayer( nullptr )
       {}
 
       ActionData( int actionId, QgsFeatureId featureId, QgsMapLayer* mapLayer )
@@ -76,8 +76,6 @@ class QgsActionMenu : public QMenu
       QgsMapLayer* mapLayer;
     };
 
-
-  public:
     /**
      * Constructs a new QgsActionMenu
      *
@@ -86,7 +84,7 @@ class QgsActionMenu : public QMenu
      *                 for the lifetime of this object.
      * @param parent   The usual QWidget parent.
      */
-    explicit QgsActionMenu( QgsVectorLayer* layer, const QgsFeature* feature, QWidget*  parent = 0 );
+    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeature *feature, QWidget *parent = nullptr );
 
     /**
      * Constructs a new QgsActionMenu
@@ -95,7 +93,7 @@ class QgsActionMenu : public QMenu
      * @param fid      The feature id of the feature for which this action will be run.
      * @param parent   The usual QWidget parent.
      */
-    explicit QgsActionMenu( QgsVectorLayer* layer, const QgsFeatureId fid, QWidget*  parent = 0 );
+    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, QWidget *parent = nullptr );
 
     /**
      * Destructor
@@ -109,12 +107,6 @@ class QgsActionMenu : public QMenu
      *                 as long as the menu is displayed and the action is running.
      */
     void setFeature( QgsFeature* feature );
-
-    /**
-     * @brief setFeature
-     * @param feature
-     */
-    void setFeature( QgsFeatureId feature );
 
   private slots:
     void triggerAction();

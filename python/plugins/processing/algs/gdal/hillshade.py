@@ -26,12 +26,18 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 
+import os
+
+from PyQt4.QtGui import QIcon
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class hillshade(GdalAlgorithm):
@@ -46,45 +52,48 @@ class hillshade(GdalAlgorithm):
     ALTITUDE = 'ALTITUDE'
     OUTPUT = 'OUTPUT'
 
+    #def getIcon(self):
+    #    return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'dem.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Hillshade'
-        self.group = '[GDAL] Analysis'
+        self.name, self.i18n_name = self.trAlgorithm('Hillshade')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.BAND,
-            self.tr('Band number'), 1, 99, 1))
+                                          self.tr('Band number'), 1, 99, 1))
         self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
-            self.tr('Compute edges'), False))
+                                           self.tr('Compute edges'), False))
         self.addParameter(ParameterBoolean(self.ZEVENBERGEN,
-            self.tr("Use Zevenbergen&Thorne formula (instead of the Horn's one)"),
-            False))
+                                           self.tr("Use Zevenbergen&Thorne formula (instead of the Horn's one)"),
+                                           False))
         self.addParameter(ParameterNumber(self.Z_FACTOR,
-            self.tr('Z factor (vertical exaggeration)'),
-            0.0, 99999999.999999, 1.0))
+                                          self.tr('Z factor (vertical exaggeration)'),
+                                          0.0, 99999999.999999, 1.0))
         self.addParameter(ParameterNumber(self.SCALE,
-            self.tr('Scale (ratio of vert. units to horiz.)'),
-            0.0, 99999999.999999, 1.0))
+                                          self.tr('Scale (ratio of vert. units to horiz.)'),
+                                          0.0, 99999999.999999, 1.0))
         self.addParameter(ParameterNumber(self.AZIMUTH,
-            self.tr('Azimuth of the light'), 0.0, 359.0, 315.0))
+                                          self.tr('Azimuth of the light'), 0.0, 359.0, 315.0))
         self.addParameter(ParameterNumber(self.ALTITUDE,
-            self.tr('Altitude of the light'), 0.0, 99999999.999999, 45.0))
+                                          self.tr('Altitude of the light'), 0.0, 99999999.999999, 45.0))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output file')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Hillshade')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = ['hillshade']
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
 
         arguments.append('-b')
-        arguments.append(str(self.getParameterValue(self.BAND)))
+        arguments.append(unicode(self.getParameterValue(self.BAND)))
         arguments.append('-z')
-        arguments.append(str(self.getParameterValue(self.Z_FACTOR)))
+        arguments.append(unicode(self.getParameterValue(self.Z_FACTOR)))
         arguments.append('-s')
-        arguments.append(str(self.getParameterValue(self.SCALE)))
+        arguments.append(unicode(self.getParameterValue(self.SCALE)))
         arguments.append('-az')
-        arguments.append(str(self.getParameterValue(self.AZIMUTH)))
+        arguments.append(unicode(self.getParameterValue(self.AZIMUTH)))
         arguments.append('-alt')
-        arguments.append(str(self.getParameterValue(self.ALTITUDE)))
+        arguments.append(unicode(self.getParameterValue(self.ALTITUDE)))
 
         if self.getParameterValue(self.COMPUTE_EDGES):
             arguments.append('-compute_edges')
@@ -93,5 +102,4 @@ class hillshade(GdalAlgorithm):
             arguments.append('-alg')
             arguments.append('ZevenbergenThorne')
 
-        GdalUtils.runGdal(['gdaldem',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]

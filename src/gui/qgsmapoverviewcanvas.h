@@ -41,7 +41,7 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     Q_OBJECT
 
   public:
-    QgsMapOverviewCanvas( QWidget * parent = 0, QgsMapCanvas* mapCanvas = NULL );
+    QgsMapOverviewCanvas( QWidget * parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
 
     ~QgsMapOverviewCanvas();
 
@@ -81,6 +81,9 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     //! Overridden paint event
     void paintEvent( QPaintEvent * pe ) override;
 
+    //! Overridden show event
+    void showEvent( QShowEvent * e ) override;
+
     //! Overridden resize event
     void resizeEvent( QResizeEvent * e ) override;
 
@@ -94,7 +97,7 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     void mouseReleaseEvent( QMouseEvent * e ) override;
 
     //! called when panning to reflect mouse movement
-    void updatePanningWidget( const QPoint& pos );
+    void updatePanningWidget( QPoint pos );
 
     //! widget for panning map in overview
     QgsPanningWidget* mPanningWidget;
@@ -114,5 +117,24 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     //! for rendering overview
     QgsMapRendererQImageJob* mJob;
 };
+
+
+/// @cond PRIVATE
+// Widget that serves as rectangle showing current extent in overview
+class QgsPanningWidget : public QWidget
+{
+    Q_OBJECT
+
+    QPolygon mPoly;
+
+  public:
+    explicit QgsPanningWidget( QWidget* parent );
+
+    void setPolygon( const QPolygon& p );
+
+    void paintEvent( QPaintEvent* pe ) override;
+
+};
+///@endcond
 
 #endif

@@ -31,7 +31,7 @@ from processing.core.parameters import ParameterMultipleInput, ParameterTableFie
 from processing.tools.system import mkdir
 
 
-def createBaseHelpFile(alg, folder):
+def baseHelpForAlgorithm(alg, folder):
     baseDir = os.path.join(folder, alg.provider.getName().lower())
     mkdir(baseDir)
 
@@ -52,7 +52,7 @@ def createBaseHelpFile(alg, folder):
         f.write('{}\n'.format(alg.name))
         f.write('{}\n\n'.format('=' * len(alg.name)))
         f.write('Description\n')
-        f.write('-----------\n\n<put algortithm description here>\n\n')
+        f.write('-----------\n\n<put algorithm description here>\n\n')
 
         # Algorithm parameters
         f.write('Parameters\n')
@@ -109,4 +109,9 @@ def createBaseHelpFiles(folder):
             continue
 
         for alg in provider.algs:
-            createBaseHelpFile(alg, folder)
+            baseHelpForAlgorithm(alg, folder)
+
+
+def createAlgorithmHelp(algName, folder):
+    alg = Processing.getAlgorithm(algName)
+    baseHelpForAlgorithm(alg, folder)

@@ -21,7 +21,7 @@
 #include "qgspointlocator.h"
 
 class QgsVertexMarker;
-class QDoubleSpinBox;
+class QgsDoubleSpinBox;
 class QGraphicsProxyWidget;
 
 class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
@@ -31,49 +31,48 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     QgsMapToolOffsetCurve( QgsMapCanvas* canvas );
     ~QgsMapToolOffsetCurve();
 
-    void canvasPressEvent( QMouseEvent * e ) override;
-    void canvasReleaseEvent( QMouseEvent * e ) override;
-    void canvasMoveEvent( QMouseEvent * e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
   private slots:
-    /**Places curve offset to value entered in the spin box*/
+    /** Places curve offset to value entered in the spin box*/
     void placeOffsetCurveToValue();
 
-  private:
+    /** Apply the offset either from the spin box or from the mouse event */
+    void applyOffset();
 
-    /**Rubberband that shows the position of the offset curve*/
+  private:
+    /** Rubberband that shows the position of the offset curve*/
     QgsRubberBand* mRubberBand;
-    /**Geometry to manipulate*/
+    /** Geometry to manipulate*/
     QgsGeometry* mOriginalGeometry;
-    /**Geometry after manipulation*/
+    /** Geometry after manipulation*/
     QgsGeometry mModifiedGeometry;
-    /**ID of manipulated feature*/
+    /** ID of manipulated feature*/
     QgsFeatureId mModifiedFeature;
-    /**Layer ID of source layer*/
+    /** Layer ID of source layer*/
     QString mSourceLayerId;
-    /**Internal flag to distinguish move from click*/
+    /** Internal flag to distinguish move from click*/
     bool mGeometryModified;
-    /**Embedded item widget for distance spinbox*/
-    QGraphicsProxyWidget* mDistanceItem;
-    /**Shows current distance value and allows numerical editing*/
-    QDoubleSpinBox* mDistanceSpinBox;
-    /**Marker to show the cursor was snapped to another location*/
+    /** Shows current distance value and allows numerical editing*/
+    QgsDoubleSpinBox* mDistanceWidget;
+    /** Marker to show the cursor was snapped to another location*/
     QgsVertexMarker* mSnapVertexMarker;
-    /**Forces geometry copy (no modification of geometry in current layer)*/
+    /** Forces geometry copy (no modification of geometry in current layer)*/
     bool mForceCopy;
     bool mMultiPartGeometry;
 
 
     void deleteRubberBandAndGeometry();
     QgsGeometry* createOriginGeometry( QgsVectorLayer* vl, const QgsPointLocator::Match& match, QgsFeature& snappedFeature );
-    void createDistanceItem();
-    void deleteDistanceItem();
-    void setOffsetForRubberBand( double offset, bool leftSide );
-    /**Creates a linestring from the polygon ring containing the snapped vertex. Caller takes ownership of the created object*/
-    QgsGeometry* linestringFromPolygon( QgsGeometry* featureGeom, int vertex );
-    /**Returns a single line from a multiline (or does nothing if geometry is already a single line). Deletes the input geometry*/
+    void createDistanceWidget();
+    void deleteDistanceWidget();
+    void setOffsetForRubberBand( double offset );
+    /** Creates a linestring from the polygon ring containing the snapped vertex. Caller takes ownership of the created object*/
+    QgsGeometry* linestringFromPolygon( const QgsGeometry *featureGeom, int vertex );
+    /** Returns a single line from a multiline (or does nothing if geometry is already a single line). Deletes the input geometry*/
     QgsGeometry* convertToSingleLine( QgsGeometry* geom, int vertex, bool& isMulti );
-    /**Converts offset line back to a multiline if necessary*/
+    /** Converts offset line back to a multiline if necessary*/
     QgsGeometry* convertToMultiLine( QgsGeometry* geom );
 };
 

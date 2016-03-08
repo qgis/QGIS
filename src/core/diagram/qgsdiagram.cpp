@@ -46,10 +46,23 @@ void QgsDiagram::clearCache()
 
 QgsExpression* QgsDiagram::getExpression( const QString& expression, const QgsFields* fields )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   if ( !mExpressions.contains( expression ) )
   {
     QgsExpression* expr = new QgsExpression( expression );
     expr->prepare( *fields );
+    mExpressions[expression] = expr;
+  }
+  return mExpressions[expression];
+  Q_NOWARN_DEPRECATED_POP
+}
+
+QgsExpression *QgsDiagram::getExpression( const QString &expression, const QgsExpressionContext &context )
+{
+  if ( !mExpressions.contains( expression ) )
+  {
+    QgsExpression* expr = new QgsExpression( expression );
+    expr->prepare( &context );
     mExpressions[expression] = expr;
   }
   return mExpressions[expression];
@@ -68,7 +81,7 @@ void QgsDiagram::setPenWidth( QPen& pen, const QgsDiagramSettings& s, const QgsR
 }
 
 
-QSizeF QgsDiagram::sizePainterUnits( const QSizeF& size, const QgsDiagramSettings& s, const QgsRenderContext& c )
+QSizeF QgsDiagram::sizePainterUnits( QSizeF size, const QgsDiagramSettings& s, const QgsRenderContext& c )
 {
   if ( s.sizeType == QgsDiagramSettings::MM )
   {
@@ -107,7 +120,7 @@ QFont QgsDiagram::scaledFont( const QgsDiagramSettings& s, const QgsRenderContex
   return f;
 }
 
-void QgsDiagram::renderDiagram( const QgsAttributes& attributes, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
+void QgsDiagram::renderDiagram( const QgsAttributes& attributes, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position )
 {
   QgsFeature feature;
   feature.setAttributes( attributes );

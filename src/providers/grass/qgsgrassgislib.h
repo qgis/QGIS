@@ -45,14 +45,14 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
   public:
     // Region term is used in modules (g.region), internaly it is hold in structure
     // Cell_head, but variables keeping that struture are usually called window
-    /*
+#if 0
     class Region
     {
-      QgsRectangle extent;
-      double ewRes; // east-west resolution
-      double nsRes; // north south resolution
+        QgsRectangle extent;
+        double ewRes; // east-west resolution
+        double nsRes; // north south resolution
     };
-    */
+#endif
 
     class Raster
     {
@@ -120,7 +120,7 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     double noDataValueForGrassType( RASTER_MAP_TYPE grassType );
 
     /** Grass does not seem to have any function to init Cell_head,
-     * initialisation is done in G__read_Cell_head_array */
+     * initialization is done in G__read_Cell_head_array */
     void initCellHead( struct Cell_head *cellhd );
 
     /** Get raster from map of opened rasters, open it if it is not yet open */
@@ -136,7 +136,7 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     void warning( QString msg );
 
   private:
-    /** pointer to canonical Singleton object */
+    /** Pointer to canonical Singleton object */
     static QgsGrassGisLib* _instance;
 
     /** Original GRASS library handle */
@@ -161,7 +161,7 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     /** Current coordinate reference system */
     QgsCoordinateReferenceSystem mCrs;
     QgsDistanceArea mDistanceArea;
-    /** lat1, lat2 used for geodesic distance calculation */
+    /** Lat1, lat2 used for geodesic distance calculation */
     double mLat1, mLat2;
 };
 

@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 10.2.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSFEATURELIST_H
-#define QGSFEATURELIST_H
+#ifndef QGSDUALVIEW_H
+#define QGSDUALVIEW_H
 
 #include <QStackedWidget>
 
 #include "ui_qgsdualviewbase.h"
 
+#include "qgsfieldconditionalformatwidget.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgscachedfeatureiterator.h"
@@ -67,7 +68,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * @brief Constructor
      * @param parent  The parent widget
      */
-    explicit QgsDualView( QWidget* parent = 0 );
+    explicit QgsDualView( QWidget* parent = nullptr );
 
     /**
      * Has to be called to initialize the dual view.
@@ -78,7 +79,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * @param request    Use a modified request to limit the shown features
      * @param context    The context in which this view is shown
      */
-    void init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request = QgsFeatureRequest(), QgsAttributeEditorContext context = QgsAttributeEditorContext() );
+    void init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request = QgsFeatureRequest(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
 
     /**
      * Change the current view mode.
@@ -125,7 +126,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * @param filteredFeatures  A list of feature ids
      *
      */
-    void setFilteredFeatures( QgsFeatureIds filteredFeatures );
+    void setFilteredFeatures( const QgsFeatureIds& filteredFeatures );
 
     QgsFeatureIds filteredFeatures() { return mFilterModel->filteredFeatures(); }
 
@@ -162,12 +163,14 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     bool saveEditChanges();
 
+    void openConditionalStyles();
+
   signals:
     /**
      * Is emitted, whenever the display expression is successfully changed
      * @param expression The expression that was applied
      */
-    void displayExpressionChanged( const QString expression );
+    void displayExpressionChanged( const QString& expression );
 
     /**
      * Is emitted, whenever the filter changes
@@ -189,9 +192,9 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void previewColumnChanged( QObject* previewAction );
 
-    void viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex );
+    void viewWillShowContextMenu( QMenu* menu, const QModelIndex& atIndex );
 
-    void previewExpressionChanged( const QString expression );
+    void previewExpressionChanged( const QString& expression );
 
     /**
      * Will be called whenever the currently shown feature form changes.
@@ -206,16 +209,19 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * @param i       The number of features already loaded
      * @param cancel  Set to true to cancel
      */
-    virtual void progress( int i, bool& cancel );
+    virtual void progress( int i, bool &cancel );
 
     /**
      * Will be called, once all the features are loaded.
-     * Use e.g. to close a dialog created from {@link progress( int i, bool& cancel )}
+     * Use e.g. to close a dialog created from progress( int i, bool &cancel )
      */
     virtual void finished();
 
+    /** Zooms to the active feature*/
+    void zoomToCurrentFeature();
+
   private:
-    void initLayerCache( QgsVectorLayer *layer );
+    void initLayerCache( QgsVectorLayer *layer, bool cacheGeometry );
     void initModels( QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request );
 
     QgsAttributeEditorContext mEditorContext;
@@ -271,4 +277,4 @@ class GUI_EXPORT QgsAttributeTableMapLayerAction : public QAction
     QModelIndex mFieldIdx;
 };
 
-#endif // QGSFEATURELIST_H
+#endif // QGSDUALVIEW_H

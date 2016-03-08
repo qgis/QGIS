@@ -12,24 +12,24 @@ class QgsMapLayer : QObject
 %ConvertToSubClassCode
   if (sipCpp->inherits("QgsMapLayer"))
   {
-    sipClass = sipClass_QgsMapLayer;
+    sipType = sipType_QgsMapLayer;
     QgsMapLayer* layer = qobject_cast<QgsMapLayer*>(sipCpp);
     if (layer->type() == QgsMapLayer::VectorLayer)
     {
-      sipClass = sipClass_QgsVectorLayer;
+      sipType = sipType_QgsVectorLayer;
     }
     else if (layer->type() == QgsMapLayer::RasterLayer)
     {
-      sipClass = sipClass_QgsRasterLayer;
+      sipType = sipType_QgsRasterLayer;
     }
     else if (layer->type() == QgsMapLayer::PluginLayer)
     {
-      sipClass = sipClass_QgsPluginLayer;
+      sipType = sipType_QgsPluginLayer;
     }
   }
   else
   {
-    sipClass = 0;
+    sipType = 0;
   }
 
 %End
@@ -48,7 +48,7 @@ class QgsMapLayer : QObject
      * @param lyrname Display Name of the layer
      * @param source datasource of layer
      */
-    QgsMapLayer( QgsMapLayer::LayerType type = QgsMapLayer::VectorLayer, QString lyrname = QString::null, QString source = QString::null );
+    QgsMapLayer( QgsMapLayer::LayerType type = QgsMapLayer::VectorLayer, const QString& lyrname = QString::null, const QString& source = QString::null );
 
     /** Destructor */
     virtual ~QgsMapLayer();
@@ -69,46 +69,153 @@ class QgsMapLayer : QObject
     /** Get the display name of the layer
      * @return the layer name
      */
-    const QString & name() const;
+    QString name() const;
 
-    /** Get the original name of the layer */
-    const QString & originalName() const;
+    /** Get the original name of the layer
+     * @return the original layer name
+     */
+    QString originalName() const;
 
+    /** Set the short name of the layer
+     *  used by QGIS Server to identify the layer
+     * @return the layer short name
+     */
+    void setShortName( const QString& shortName );
+    /** Get the short name of the layer
+     *  used by QGIS Server to identify the layer
+     * @return the layer short name
+     */
+    QString shortName() const;
+
+    /** Set the title of the layer
+     *  used by QGIS Server in GetCapabilities request
+     * @return the layer title
+     */
     void setTitle( const QString& title );
-    const QString& title() const;
+    /** Get the title of the layer
+     *  used by QGIS Server in GetCapabilities request
+     * @return the layer title
+     */
+    QString title() const;
 
+    /** Set the abstract of the layer
+     *  used by QGIS Server in GetCapabilities request
+     * @return the layer abstract
+     */
     void setAbstract( const QString& abstract );
-    const QString& abstract() const;
+    /** Get the abstract of the layer
+     *  used by QGIS Server in GetCapabilities request
+     * @return the layer abstract
+     */
+    QString abstract() const;
 
+    /** Set the keyword list of the layer
+     *  used by QGIS Server in GetCapabilities request
+     * @return the layer keyword list
+     */
     void setKeywordList( const QString& keywords );
-    const QString& keywordList() const;
+    /** Get the keyword list of the layer
+     *  used by QGIS Server in GetCapabilities request
+     * @return the layer keyword list
+     */
+    QString keywordList() const;
 
     /* Layer dataUrl information */
+    /** Set the DataUrl of the layer
+     *  used by QGIS Server in GetCapabilities request
+     *  DataUrl is a a link to the underlying data represented by a particular layer
+     * @return the layer DataUrl
+     */
     void setDataUrl( const QString& dataUrl );
-    const QString& dataUrl() const;
+    /** Get the DataUrl of the layer
+     *  used by QGIS Server in GetCapabilities request
+     *  DataUrl is a a link to the underlying data represented by a particular layer
+     * @return the layer DataUrl
+     */
+    QString dataUrl() const;
+    /** Set the DataUrl format of the layer
+     *  used by QGIS Server in GetCapabilities request
+     *  DataUrl is a a link to the underlying data represented by a particular layer
+     * @return the layer DataUrl format
+     */
     void setDataUrlFormat( const QString& dataUrlFormat );
-    const QString& dataUrlFormat() const;
+    /** Get the DataUrl format of the layer
+     *  used by QGIS Server in GetCapabilities request
+     *  DataUrl is a a link to the underlying data represented by a particular layer
+     * @return the layer DataUrl format
+     */
+    QString dataUrlFormat() const;
 
     /* Layer attribution information */
+    /** Set the attribution of the layer
+     *  used by QGIS Server in GetCapabilities request
+     *  Attribution indicates the provider of a Layer or collection of Layers.
+     * @return the layer attribution
+     */
     void setAttribution( const QString& attrib );
-    const QString& attribution() const;
+    /** Get the attribution of the layer
+     *  used by QGIS Server in GetCapabilities request
+     *  Attribution indicates the provider of a Layer or collection of Layers.
+     * @return the layer attribution
+     */
+    QString attribution() const;
+    /** Set the attribution URL of the layer
+     *  used by QGIS Server in GetCapabilities request
+     *  Attribution indicates the provider of a Layer or collection of Layers.
+     * @return the layer attribution URL
+     */
     void setAttributionUrl( const QString& attribUrl );
-    const QString& attributionUrl() const;
+    /** Get the attribution URL of the layer
+     *  used by QGIS Server in GetCapabilities request
+     *  Attribution indicates the provider of a Layer or collection of Layers.
+     * @return the layer attribution URL
+     */
+    QString attributionUrl() const;
 
     /* Layer metadataUrl information */
+    /** Set the metadata URL of the layer
+     *  used by QGIS Server in GetCapabilities request
+     *  MetadataUrl is a a link to the detailed, standardized metadata about the data.
+     * @return the layer metadata URL
+     */
     void setMetadataUrl( const QString& metaUrl );
-    const QString& metadataUrl() const;
+    /** Get the metadata URL of the layer
+     *  used by QGIS Server in GetCapabilities request
+     *  MetadataUrl is a a link to the detailed, standardized metadata about the data.
+     * @return the layer metadata URL
+     */
+    QString metadataUrl() const;
+    /** Set the metadata type of the layer
+     *  used by QGIS Server in GetCapabilities request
+     *  MetadataUrlType indicates the standard to which the metadata complies.
+     * @return the layer metadata type
+     */
     void setMetadataUrlType( const QString& metaUrlType );
-    const QString& metadataUrlType() const;
+    /** Get the metadata type of the layer
+     *  used by QGIS Server in GetCapabilities request
+     *  MetadataUrlType indicates the standard to which the metadata complies.
+     * @return the layer metadata type
+     */
+    QString metadataUrlType() const;
+    /** Set the metadata format of the layer
+     *  used by QGIS Server in GetCapabilities request
+     *  MetadataUrlType indicates how the metadata is structured.
+     * @return the layer metadata format
+     */
     void setMetadataUrlFormat( const QString& metaUrlFormat );
-    const QString& metadataUrlFormat() const;
+    /** Get the metadata format of the layer
+     *  used by QGIS Server in GetCapabilities request
+     *  MetadataUrlType indicates how the metadata is structured.
+     * @return the layer metadata format
+     */
+    QString metadataUrlFormat() const;
 
-    /* Set the blending mode used for rendering a layer */
-    void setBlendMode( const QPainter::CompositionMode &blendMode );
-    /* Returns the current blending mode for a layer */
+    /** Set the blending mode used for rendering a layer */
+    void setBlendMode( QPainter::CompositionMode blendMode );
+    /** Returns the current blending mode for a layer */
     QPainter::CompositionMode blendMode() const;
 
-    /**Synchronises with changes in the datasource
+    /** Synchronises with changes in the datasource
         */
     virtual void reload();
 
@@ -133,20 +240,20 @@ class QgsMapLayer : QObject
     /** Return the extent of the layer */
     virtual QgsRectangle extent();
 
-    /*! Return the status of the layer. An invalid layer is one which has a bad datasource
+    /** Return the status of the layer. An invalid layer is one which has a bad datasource
      * or other problem. Child classes set this flag when intialized
      * @return True if the layer is valid and can be accessed
      */
     bool isValid();
 
-    /*! Gets a version of the internal layer definition that has sensitive
+    /** Gets a version of the internal layer definition that has sensitive
       *  bits removed (for example, the password). This function should
       * be used when displaying the source name for general viewing.
      */
     QString publicSource() const;
 
     /** Returns the source for the layer */
-    const QString &source() const;
+    QString source() const;
 
     /**
      * Returns the sublayers of this layer
@@ -161,12 +268,12 @@ class QgsMapLayer : QObject
     virtual void setLayerOrder( const QStringList &layers );
 
     /** Set the visibility of the given sublayer name */
-    virtual void setSubLayerVisibility( QString name, bool vis );
+    virtual void setSubLayerVisibility( const QString& name, bool vis );
 
     /** True if the layer can be edited */
     virtual bool isEditable() const;
 
-    /** sets state from Dom document
+    /** Sets state from Dom document
        @param layerElement The Dom element corresponding to ``maplayer'' tag
        @note
 
@@ -183,34 +290,34 @@ class QgsMapLayer : QObject
     bool readLayerXML( const QDomElement& layerElement );
 
 
-    /** stores state in Dom node
-       @param layerElement is a Dom element corresponding to ``maplayer'' tag
-       @param document is a the dom document being written
-       @param relativeBasePath base path for relative paths
-       @note
-
-       The Dom node corresponds to a Dom document project file XML element to be
-       written by QgsProject.
-
-       This, in turn, calls writeXml(), which is over-rideable by sub-classes so
-       that they can write their own specific state to the given Dom node.
-
-       Invoked by QgsProject::write().
-
-       @returns true if successful
-    */
-    bool writeLayerXML( QDomElement& layerElement, QDomDocument& document, QString relativeBasePath = QString::null );
+    /** Stores state in Dom node
+     * @param layerElement is a Dom element corresponding to ``maplayer'' tag
+     * @param document is a the dom document being written
+     * @param relativeBasePath base path for relative paths
+     * @note
+     *
+     * The Dom node corresponds to a Dom document project file XML element to be
+     * written by QgsProject.
+     *
+     * This, in turn, calls writeXml(), which is over-rideable by sub-classes so
+     * that they can write their own specific state to the given Dom node.
+     *
+     * Invoked by QgsProject::write().
+     *
+     * @returns true if successful
+     */
+    bool writeLayerXML( QDomElement& layerElement, QDomDocument& document, const QString& relativeBasePath = QString::null );
 
     /** Returns the given layer as a layer definition document
-        Layer definitions store the data source as well as styling and custom properties.
-
-        Layer definitions can be used to load a layer and styling all from a single file.
-    */
-    static QDomDocument asLayerDefinition( QList<QgsMapLayer*> layers, QString relativeBasePath = QString::null );
+     *  Layer definitions store the data source as well as styling and custom properties.
+     *
+     *  Layer definitions can be used to load a layer and styling all from a single file.
+     */
+    static QDomDocument asLayerDefinition( const QList<QgsMapLayer*>& layers, const QString& relativeBasePath = QString::null );
 
     /** Creates a new layer from a layer defininition document
-    */
-    static QList<QgsMapLayer*> fromLayerDefinition( QDomDocument& document );
+     */
+    static QList<QgsMapLayer*> fromLayerDefinition( QDomDocument& document, bool addToRegistry = false, bool addToLegend = false );
     static QList<QgsMapLayer*> fromLayerDefinitionFile( const QString &qlrfile );
 
     /** Set a custom property for layer. Properties are stored in a map and saved in project file. */
@@ -235,7 +342,7 @@ class QgsMapLayer : QObject
 
     /** Returns layer's spatial reference system
     @note This was introduced in QGIS 1.4
-    */
+     */
     const QgsCoordinateReferenceSystem& crs() const;
 
     /** Sets layer's spatial reference system */
@@ -340,7 +447,7 @@ class QgsMapLayer : QObject
      * @param node node that will contain the symbology definition for this layer.
      * @param errorMessage reference to string that will be updated with any error messages
      * @return true in case of success.
-    */
+     */
     virtual bool readSymbology( const QDomNode& node, QString& errorMessage ) = 0;
 
     /** Write the symbology for the layer into the docment provided.
@@ -356,11 +463,11 @@ class QgsMapLayer : QObject
 
     /* Layer legendUrl information */
     void setLegendUrl( const QString& legendUrl );
-    const QString& legendUrl() const;
+    QString legendUrl() const;
     void setLegendUrlFormat( const QString& legendUrlFormat );
-    const QString& legendUrlFormat() const;
+    QString legendUrlFormat() const;
 
-    /** @deprecated since 2.4 - returns NULL */
+    /** @deprecated since 2.4 - returns nullptr */
     QImage *cacheImage() /Deprecated/;
     /** @deprecated since 2.4 - caches listen to repaintRequested() signal to invalidate the cached image */
     void setCacheImage( QImage * thepImage /Transfer/ ) /Deprecated/;
@@ -385,7 +492,7 @@ class QgsMapLayer : QObject
      */
     QgsMapLayerStyleManager* styleManager() const;
 
-    /**Returns the minimum scale denominator at which the layer is visible.
+    /** Returns the minimum scale denominator at which the layer is visible.
      * Scale based visibility is only used if hasScaleBasedVisibility is true.
      * @returns minimum scale denominator at which the layer will render
      * @see setMinimumScale
@@ -394,7 +501,7 @@ class QgsMapLayer : QObject
      */
     float minimumScale() const;
 
-    /**Returns the maximum scale denominator at which the layer is visible.
+    /** Returns the maximum scale denominator at which the layer is visible.
      * Scale based visibility is only used if hasScaleBasedVisibility is true.
      * @returns minimum scale denominator at which the layer will render
      * @see setMaximumScale
@@ -403,12 +510,12 @@ class QgsMapLayer : QObject
      */
     float maximumScale() const;
 
-    /**Returns whether scale based visibility is enabled for the layer.
+    /** Returns whether scale based visibility is enabled for the layer.
      * @returns true if scale based visibility is enabled
      * @see minimumScale
      * @see maximumScale
      * @see setScaleBasedVisibility
-    */
+     */
     bool hasScaleBasedVisibility() const;
 
   public slots:
@@ -416,7 +523,7 @@ class QgsMapLayer : QObject
     /** Event handler for when a coordinate transform fails due to bad vertex error */
     virtual void invalidTransformInput();
 
-    /**Sets the minimum scale denominator at which the layer will be visible.
+    /** Sets the minimum scale denominator at which the layer will be visible.
      * Scale based visibility is only used if setScaleBasedVisibility is set to true.
      * @param theMinScale minimum scale denominator at which the layer should render
      * @see minimumScale
@@ -425,7 +532,7 @@ class QgsMapLayer : QObject
      */
     void setMinimumScale( const float theMinScale );
 
-    /**Sets the maximum scale denominator at which the layer will be visible.
+    /** Sets the maximum scale denominator at which the layer will be visible.
      * Scale based visibility is only used if setScaleBasedVisibility is set to true.
      * @param theMaxScale maximum scale denominator at which the layer should render
      * @see maximumScale
@@ -434,7 +541,7 @@ class QgsMapLayer : QObject
      */
     void setMaximumScale( const float theMaxScale );
 
-    /**Sets whether scale based visibility is enabled for the layer.
+    /** Sets whether scale based visibility is enabled for the layer.
      * @param enabled set to true to enable scale based visibility
      * @see setMinimumScale
      * @see setMaximumScale
@@ -442,13 +549,14 @@ class QgsMapLayer : QObject
      */
     void setScaleBasedVisibility( const bool enabled );
 
-    /**Accessor for the scale based visilibility flag
+    /** Accessor for the scale based visilibility flag
      * @deprecated use setScaleBasedVisibility instead
-    */
+     */
     void toggleScaleBasedVisibility( bool theVisibilityFlag ) /Deprecated/;
 
     /** Clear cached image
-     *  @deprecated in 2.4 - use triggerRepaint() - caches automatically listen to repaintRequested() signal to invalidate the cached image */
+     *  @deprecated in 2.4 - use triggerRepaint() - caches automatically listen to repaintRequested() signal to invalidate the cached image
+     */
     void clearCacheImage() /Deprecated/;
 
     /**
@@ -471,7 +579,7 @@ class QgsMapLayer : QObject
     void drawingProgress( int theProgress, int theTotalSteps );
 
     /** Emit a signal with status (e.g. to be caught by QgisApp and display a msg on status bar) */
-    void statusChanged( QString theStatus );
+    void statusChanged( const QString& theStatus );
 
     /** Emit a signal that the layer name has been changed */
     void layerNameChanged();
@@ -490,11 +598,11 @@ class QgsMapLayer : QObject
     /** This is used to send a request that any mapcanvas using this layer update its extents */
     void recalculateExtents();
 
-    /** data of layer changed */
+    /** Data of layer changed */
     void dataChanged();
 
     /** Signal emitted when the blend mode is changed, through QgsMapLayer::setBlendMode() */
-    void blendModeChanged( const QPainter::CompositionMode &blendMode );
+    void blendModeChanged( QPainter::CompositionMode blendMode );
 
     /** Signal emitted when renderer is changed */
     void rendererChanged();
@@ -509,17 +617,17 @@ class QgsMapLayer : QObject
     /** Set the extent */
     virtual void setExtent( const QgsRectangle &rect );
 
-    /** set whether layer is valid or not - should be used in constructor. */
+    /** Set whether layer is valid or not - should be used in constructor. */
     void setValid( bool valid );
 
-    /** called by readLayerXML(), used by children to read state specific to them from
-        project files.
-    */
+    /** Called by readLayerXML(), used by children to read state specific to them from
+     *  project files.
+     */
     virtual bool readXml( const QDomNode& layer_node );
 
-    /** called by writeLayerXML(), used by children to write state specific to them to
-        project files.
-    */
+    /** Called by writeLayerXML(), used by children to write state specific to them to
+     *  project files.
+     */
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & document );
 
 
@@ -536,8 +644,6 @@ class QgsMapLayer : QObject
     /** Write style manager's configuration (if exists). To be called by subclasses. */
     void writeStyleManager( QDomNode& layerNode, QDomDocument& doc ) const;
 
-    /** debugging member - invoked when a connect() is made to this object */
-    void connectNotify( const char * signal );
 
     /** Add error message */
     void appendError( const QgsErrorMessage & theMessage );

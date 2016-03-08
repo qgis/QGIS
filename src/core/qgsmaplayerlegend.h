@@ -35,7 +35,7 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsMapLayerLegend( QObject *parent = 0 );
+    explicit QgsMapLayerLegend( QObject *parent = nullptr );
 
     // TODO: type, load/save settings
 
@@ -90,6 +90,8 @@ class CORE_EXPORT QgsMapLayerLegendUtils
  */
 class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
 {
+    Q_OBJECT
+
   public:
     explicit QgsDefaultVectorLayerLegend( QgsVectorLayer* vl );
 
@@ -105,6 +107,8 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
  */
 class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
 {
+    Q_OBJECT
+
   public:
     explicit QgsDefaultRasterLayerLegend( QgsRasterLayer* rl );
 
@@ -120,6 +124,8 @@ class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
  */
 class CORE_EXPORT QgsDefaultPluginLayerLegend : public QgsMapLayerLegend
 {
+    Q_OBJECT
+
   public:
     explicit QgsDefaultPluginLayerLegend( QgsPluginLayer* pl );
 

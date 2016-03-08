@@ -38,7 +38,7 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
 
   signals:
     void buildProgress( int, int ) const;
-    void buildMessage( QString ) const;
+    void buildMessage( const QString& ) const;
 
   public:
     //! Destructor

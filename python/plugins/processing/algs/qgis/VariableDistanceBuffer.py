@@ -25,6 +25,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4.QtGui import QIcon
+
 from qgis.core import QGis
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -36,6 +40,8 @@ from processing.core.outputs import OutputVector
 import Buffer as buff
 from processing.tools import dataobjects
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class VariableDistanceBuffer(GeoAlgorithm):
 
@@ -45,18 +51,21 @@ class VariableDistanceBuffer(GeoAlgorithm):
     SEGMENTS = 'SEGMENTS'
     DISSOLVE = 'DISSOLVE'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'buffer.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Variable distance buffer'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Variable distance buffer')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Distance field'), self.INPUT))
+                                              self.tr('Distance field'), self.INPUT))
         self.addParameter(ParameterNumber(self.SEGMENTS,
-            self.tr('Segments'), 1, default=5))
+                                          self.tr('Segments'), 1, default=5))
         self.addParameter(ParameterBoolean(self.DISSOLVE,
-            self.tr('Dissolve result'), False))
+                                           self.tr('Dissolve result'), False))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer')))
 

@@ -32,7 +32,7 @@ QgsMapToolShowHideLabels::QgsMapToolShowHideLabels( QgsMapCanvas* canvas )
     , mDragging( false )
 {
   mToolName = tr( "Show/hide labels" );
-  mRubberBand = 0;
+  mRubberBand = nullptr;
 }
 
 QgsMapToolShowHideLabels::~QgsMapToolShowHideLabels()
@@ -40,7 +40,7 @@ QgsMapToolShowHideLabels::~QgsMapToolShowHideLabels()
   delete mRubberBand;
 }
 
-void QgsMapToolShowHideLabels::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolShowHideLabels::canvasPressEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
   mSelectRect.setRect( 0, 0, 0, 0 );
@@ -49,7 +49,7 @@ void QgsMapToolShowHideLabels::canvasPressEvent( QMouseEvent * e )
   mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
 }
 
-void QgsMapToolShowHideLabels::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolShowHideLabels::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( e->buttons() != Qt::LeftButton )
     return;
@@ -63,7 +63,7 @@ void QgsMapToolShowHideLabels::canvasMoveEvent( QMouseEvent * e )
   QgsMapToolSelectUtils::setRubberBand( mCanvas, mSelectRect, mRubberBand );
 }
 
-void QgsMapToolShowHideLabels::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolShowHideLabels::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   //if the user simply clicked without dragging a rect
   //we will fabricate a small 1x1 pix rect and then continue
@@ -96,7 +96,7 @@ void QgsMapToolShowHideLabels::canvasReleaseEvent( QMouseEvent * e )
 
     mRubberBand->reset( QGis::Polygon );
     delete mRubberBand;
-    mRubberBand = 0;
+    mRubberBand = nullptr;
   }
 
   mDragging = false;
@@ -118,7 +118,7 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent * e )
     return;
   }
 
-  bool doHide = e->modifiers() & Qt::ShiftModifier ? true : false;
+  bool doHide = e->modifiers() & Qt::ShiftModifier;
 
   QgsFeatureIds selectedFeatIds;
 
@@ -152,7 +152,7 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent * e )
   QString editTxt = doHide ? tr( "Hid labels" ) : tr( "Showed labels" );
 
   vlayer->beginEditCommand( editTxt );
-  foreach ( const QgsFeatureId &fid, selectedFeatIds )
+  Q_FOREACH ( QgsFeatureId fid, selectedFeatIds )
   {
     if ( showHideLabel( vlayer, fid, doHide ) )
     {
@@ -261,7 +261,7 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer* vlayer,
 }
 
 bool QgsMapToolShowHideLabels::showHideLabel( QgsVectorLayer* vlayer,
-    const QgsFeatureId &fid,
+    QgsFeatureId fid,
     bool hide )
 {
 

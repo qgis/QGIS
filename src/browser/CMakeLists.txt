@@ -17,7 +17,7 @@ SET (BROWSER_MOC_HDRS
 
 IF (WIN32)
   IF (MSVC)
-    SET (BROWSER_SRCS ${BROWSER_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/../app/qgis_win32.rc)
+    SET (BROWSER_SRCS ${BROWSER_SRCS} qgis_win32.rc)
   ELSE(MSVC)
 
     # Icon for windows MINGW
@@ -34,7 +34,7 @@ IF (WIN32)
     # application icon
     # resource compilation for MinGW
     ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/icon.o
-      COMMAND ${WINDRES} -I${CMAKE_CURRENT_SOURCE_DIR} -i${CMAKE_CURRENT_SOURCE_DIR}/../app/qgis_win32.rc
+      COMMAND ${WINDRES} -I${CMAKE_CURRENT_SOURCE_DIR} -iqgis_win32.rc
       -o ${CMAKE_CURRENT_BINARY_DIR}/icon.o )
     SET(QGIS_APP_SRCS ${QGIS_APP_SRCS} ${CMAKE_CURRENT_BINARY_DIR}/icon.o)
   ENDIF (MSVC)
@@ -56,18 +56,21 @@ ADD_EXECUTABLE (qbrowser MACOSX_BUNDLE WIN32 ${BROWSER_SRCS} ${BROWSER_MOC_SRCS}
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/../core
+  ${CMAKE_CURRENT_SOURCE_DIR}/../core/geometry
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/raster
+  ${CMAKE_CURRENT_SOURCE_DIR}/../core/symbology-ng
   ${CMAKE_CURRENT_SOURCE_DIR}/../gui
   ${CMAKE_CURRENT_SOURCE_DIR}/../gui/attributetable
   ${CMAKE_CURRENT_SOURCE_DIR}/../gui/editorwidgets
   ${CMAKE_CURRENT_SOURCE_DIR}/../gui/editorwidgets/core
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
   ${CMAKE_CURRENT_BINARY_DIR}
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR} # remove once raster layer is cleaned up
+  ${SQLITE3_INCLUDE_DIR}
 )
-
-INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
 
 TARGET_LINK_LIBRARIES(qbrowser
   qgis_core
@@ -91,6 +94,10 @@ IF(APPLE)
   )
 ENDIF(APPLE)
 
+IF(MSVC)
+  INSTALL(FILES browser.ico DESTINATION ${CMAKE_INSTALL_PREFIX}/icons)
+ENDIF(MSVC)
+
 ########################################################
 # Install
 
@@ -103,4 +110,6 @@ IF (APPLE)
   INSTALL (CODE "EXECUTE_PROCESS(COMMAND ln -sfh ../../../../${QGIS_LIB_SUBDIR} \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/QGIS Browser.app/Contents/MacOS/lib\")")
   INSTALL (CODE "EXECUTE_PROCESS(COMMAND ln -sfh ../../../${QGIS_PLUGIN_SUBDIR}/.. \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/QGIS Browser.app/Contents/Plugins\")")
   INSTALL (CODE "EXECUTE_PROCESS(COMMAND ln -sfh ../../../${QGIS_DATA_SUBDIR} \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/QGIS Browser.app/Contents/Resources\")")
+  # may not exist, unless BundleUtilities are used
+  INSTALL (CODE "EXECUTE_PROCESS(COMMAND ln -sfh ../../../../share \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/QGIS Browser.app/Contents/MacOS/share\")")
 ENDIF (APPLE)

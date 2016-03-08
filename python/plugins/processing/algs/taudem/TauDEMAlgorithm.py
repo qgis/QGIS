@@ -26,19 +26,23 @@ __copyright__ = '(C) 2012, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
+from PyQt4.QtCore import QCoreApplication
 from PyQt4.QtGui import QIcon
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import \
     GeoAlgorithmExecutionException
-from processing.core.parameters import getParameterFromString
+
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterNumber
+from processing.core.parameters import getParameterFromString
 from processing.core.outputs import getOutputFromString
+
 from TauDEMUtils import TauDEMUtils
 
 
@@ -61,10 +65,12 @@ class TauDEMAlgorithm(GeoAlgorithm):
         lines = open(self.descriptionFile)
         line = lines.readline().strip('\n').strip()
         self.name = line
+        self.i18n_name = QCoreApplication.translate("TAUDEMAlgorithm", line)
         line = lines.readline().strip('\n').strip()
         self.cmdName = line
         line = lines.readline().strip('\n').strip()
         self.group = line
+        self.i18n_group = QCoreApplication.translate("TAUDEMAlgorithm", line)
 
         line = lines.readline().strip('\n').strip()
         while line != '':
@@ -76,9 +82,9 @@ class TauDEMAlgorithm(GeoAlgorithm):
                 else:
                     self.addOutput(getOutputFromString(line))
                 line = lines.readline().strip('\n').strip()
-            except Exception, e:
+            except Exception as e:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                    self.tr('Could not load TauDEM algorithm: %s\n%s' % (self.descriptionFile, line)))
+                                       self.tr('Could not load TauDEM algorithm: %s\n%s' % (self.descriptionFile, line)))
                 raise e
         lines.close()
 
@@ -93,7 +99,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
                         'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
-        commands.append(str(processNum))
+        commands.append(unicode(processNum))
         commands.append(os.path.join(TauDEMUtils.taudemPath(), self.cmdName))
 
         for param in self.parameters:
@@ -101,16 +107,16 @@ class TauDEMAlgorithm(GeoAlgorithm):
                 continue
             if isinstance(param, ParameterNumber):
                 commands.append(param.name)
-                commands.append(str(param.value))
+                commands.append(unicode(param.value))
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 commands.append(param.name)
                 commands.append(param.value)
             elif isinstance(param, ParameterBoolean):
-                if param.value and str(param.value).lower() == 'false':
+                if not param.value:
                     commands.append(param.name)
             elif isinstance(param, ParameterString):
                 commands.append(param.name)
-                commands.append(str(param.value))
+                commands.append(unicode(param.value))
 
         for out in self.outputs:
             commands.append(out.name)

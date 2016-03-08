@@ -1,0 +1,9 @@
+Random Terrain Generation
+grid_calculus
+ParameterNumber|RADIUS|Radius (cells)|None|None|10
+ParameterNumber|ITERATIONS|Iterations|None|None|10
+ParameterSelection|TARGET_TYPE|Target Dimensions|[0] User defined
+ParameterNumber|USER_CELL_SIZE|Grid Size|0.0|None|1.0
+ParameterNumber|USER_COLS|Cols|1.0|None|100
+ParameterNumber|USER_ROWS|Rows|1.0|None|100
+OutputRaster|TARGET_GRID|Grid

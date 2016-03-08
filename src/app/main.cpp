@@ -15,6 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef _MSC_VER
+#undef APP_EXPORT
+#define APP_EXPORT __declspec(dllimport)
+#endif
+
 //qt includes
 #include <QBitmap>
 #include <QDir>
@@ -35,12 +40,6 @@
 #include <QTranslator>
 #include <QImageReader>
 #include <QMessageBox>
-
-#include "qgscustomization.h"
-#include "qgsfontutils.h"
-#include "qgspluginregistry.h"
-#include "qgsmessagelog.h"
-#include "qgspythonrunner.h"
 
 #include <cstdio>
 #include <stdio.h>
@@ -76,17 +75,6 @@ typedef SInt32 SRefCon;
 #include <limits.h>
 #endif
 
-#include "qgisapp.h"
-#include "qgsmapcanvas.h"
-#include "qgsapplication.h"
-#include <qgsconfig.h>
-#include <qgscustomization.h>
-#include <qgsversion.h>
-#include "qgsexception.h"
-#include "qgsproject.h"
-#include "qgsrectangle.h"
-#include "qgslogger.h"
-
 #if ((defined(linux) || defined(__linux__)) && !defined(ANDROID)) || defined(__FreeBSD__)
 #include <unistd.h>
 #include <execinfo.h>
@@ -95,7 +83,27 @@ typedef SInt32 SRefCon;
 #include <errno.h>
 #endif
 
-/** print usage text
+#include "qgscustomization.h"
+#include "qgsfontutils.h"
+#include "qgspluginregistry.h"
+#include "qgsmessagelog.h"
+#include "qgspythonrunner.h"
+#include "qgslocalec.h"
+#include "qgisapp.h"
+#include "qgsmapcanvas.h"
+#include "qgsapplication.h"
+#include "qgsconfig.h"
+#include "qgsversion.h"
+#include "qgsexception.h"
+#include "qgsproject.h"
+#include "qgsrectangle.h"
+#include "qgslogger.h"
+#include "qgsdxfexport.h"
+#include "qgsvisibilitypresets.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsvectorlayer.h"
+
+/** Print usage text
  */
 void usage( std::string const & appName )
 {
@@ -111,14 +119,23 @@ void usage( std::string const & appName )
             << "\t[--project projectfile]\tload the given QGIS project\n"
             << "\t[--extent xmin,ymin,xmax,ymax]\tset initial map extent\n"
             << "\t[--nologo]\thide splash screen\n"
+            << "\t[--noversioncheck]\tdon't check for new version of QGIS at startup"
             << "\t[--noplugins]\tdon't restore plugins on startup\n"
             << "\t[--nocustomization]\tdon't apply GUI customization\n"
             << "\t[--customizationfile]\tuse the given ini file as GUI customization\n"
             << "\t[--optionspath path]\tuse the given QSettings path\n"
             << "\t[--configpath path]\tuse the given path for all user configuration\n"
+            << "\t[--authdbdirectory path] use the given directory for authentication database\n"
             << "\t[--code path]\trun the given python file on load\n"
             << "\t[--defaultui]\tstart by resetting user ui settings to default\n"
-            << "\t[--help]\t\tthis text\n\n"
+            << "\t[--dxf-export filename.dxf]\temit dxf output of loaded datasets to given file\n"
+            << "\t[--dxf-extent xmin,ymin,xmax,ymax]\tset extent to export to dxf\n"
+            << "\t[--dxf-symbology-mode none|symbollayer|feature]\tsymbology mode for dxf output\n"
+            << "\t[--dxf-scale-denom scale]\tscale for dxf output\n"
+            << "\t[--dxf-encoding encoding]\tencoding to use for dxf output\n"
+            << "\t[--dxf-preset visiblity-preset]\tlayer visibility preset to use for dxf output\n"
+            << "\t[--help]\t\tthis text\n"
+            << "\t[--]\t\ttreat all following arguments as FILEs\n\n"
             << "  FILE:\n"
             << "    Files specified on the command line can include rasters,\n"
             << "    vectors, and QGIS project files (.qgs): \n"
@@ -196,7 +213,7 @@ static void dumpBacktrace( unsigned int depth )
       }
 
       close( fd[1] );        // close writing end
-      execl( "/usr/bin/c++filt", "c++filt", ( char * ) 0 );
+      execl( "/usr/bin/c++filt", "c++filt", static_cast< char * >( nullptr ) );
       perror( "could not start c++filt" );
       exit( 1 );
     }
@@ -226,8 +243,10 @@ static void dumpBacktrace( unsigned int depth )
   {
     int status;
     close( STDERR_FILENO );
-    if ( dup( stderr_fd ) != STDERR_FILENO )
+    int dup_stderr = dup( stderr_fd );
+    if ( dup_stderr != STDERR_FILENO )
     {
+      close( dup_stderr );
       QgsDebugMsg( "dup to stderr failed" );
     }
     close( stderr_fd );
@@ -239,19 +258,30 @@ static void dumpBacktrace( unsigned int depth )
   SymSetOptions( SYMOPT_DEFERRED_LOADS | SYMOPT_INCLUDE_32BIT_MODULES | SYMOPT_UNDNAME );
   SymInitialize( GetCurrentProcess(), "http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/symstore", TRUE );
 
-  unsigned short nFrames = CaptureStackBackTrace( 1, depth, buffer, NULL );
+  unsigned short nFrames = CaptureStackBackTrace( 1, depth, buffer, nullptr );
   SYMBOL_INFO *symbol = ( SYMBOL_INFO * ) qgsMalloc( sizeof( SYMBOL_INFO ) + 256 );
   symbol->MaxNameLen = 255;
   symbol->SizeOfStruct = sizeof( SYMBOL_INFO );
+  IMAGEHLP_LINE *line = ( IMAGEHLP_LINE * ) qgsMalloc( sizeof( IMAGEHLP_LINE ) );
+  line->SizeOfStruct = sizeof( IMAGEHLP_LINE );
 
   for ( int i = 0; i < nFrames; i++ )
   {
+    DWORD dwDisplacement;
     SymFromAddr( GetCurrentProcess(), ( DWORD64 )( buffer[ i ] ), 0, symbol );
     symbol->Name[ 255 ] = 0;
-    myPrint( "%d: %s [%x]\n", i, symbol->Name, symbol->Address );
+    if ( SymGetLineFromAddr( GetCurrentProcess(), ( DWORD64 )( buffer[i] ), &dwDisplacement, line ) )
+    {
+      myPrint( "%s(%d) : (%s) frame %d, address %x\n", line->FileName, line->LineNumber, symbol->Name, i, symbol->Address );
+    }
+    else
+    {
+      myPrint( "%s(%d) : (%s) unknown source location, frame %d, address %x [GetLastError()=%d]\n", __FILE__, __LINE__, symbol->Name, i, symbol->Address, GetLastError() );
+    }
   }
 
   qgsFree( symbol );
+  qgsFree( line );
 #else
   Q_UNUSED( depth );
 #endif
@@ -402,6 +432,7 @@ int main( int argc, char *argv[] )
                      .arg( rescLimit.rlim_cur ).arg( rescLimit.rlim_max ) );
       }
     }
+    Q_UNUSED( oldSoft ); //avoid warnings
     QgsDebugMsg( QString( "Mac RLIMIT_NOFILE Soft/Hard ORIG: %1 / %2" )
                  .arg( oldSoft ).arg( oldHard ) );
   }
@@ -438,7 +469,7 @@ int main( int argc, char *argv[] )
 #endif
 
   // initialize random number seed
-  srand( time( NULL ) );
+  qsrand( time( nullptr ) );
 
   /////////////////////////////////////////////////////////////////
   // Command line options 'behaviour' flag setup
@@ -457,6 +488,7 @@ int main( int argc, char *argv[] )
   int mySnapshotHeight = 600;
 
   bool myHideSplash = false;
+  bool mySkipVersionCheck = false;
 #if defined(ANDROID)
   QgsDebugMsg( QString( "Android: Splash hidden" ) );
   myHideSplash = true;
@@ -465,6 +497,13 @@ int main( int argc, char *argv[] )
   bool myRestoreDefaultWindowState = false;
   bool myRestorePlugins = true;
   bool myCustomization = true;
+
+  QString dxfOutputFile;
+  QgsDxfExport::SymbologyExport dxfSymbologyMode = QgsDxfExport::SymbolLayerSymbology;
+  double dxfScaleDenom = 50000.0;
+  QString dxfEncoding = "CP1252";
+  QString dxfPreset;
+  QgsRectangle dxfExtent;
 
   // This behaviour will set initial extent of map canvas, but only if
   // there are no command line arguments. This gives a usable map
@@ -482,6 +521,7 @@ int main( int argc, char *argv[] )
   // user settings (~/.qgis) and it will be used for QSettings INI file
   QString configpath;
   QString optionpath;
+  QString authdbdirectory;
 
   QString pythonfile;
 
@@ -505,7 +545,7 @@ int main( int argc, char *argv[] )
 
     for ( int i = 1; i < args.size(); ++i )
     {
-      QString arg = args[i];
+      const QString &arg = args[i];
 
       if ( arg == "--help" || arg == "-?" )
       {
@@ -515,6 +555,10 @@ int main( int argc, char *argv[] )
       else if ( arg == "--nologo" || arg == "-n" )
       {
         myHideSplash = true;
+      }
+      else if ( arg == "--noversioncheck" || arg == "-V" )
+      {
+        mySkipVersionCheck = true;
       }
       else if ( arg == "--noplugins" || arg == "-P" )
       {
@@ -556,6 +600,10 @@ int main( int argc, char *argv[] )
       {
         configpath = QDir::toNativeSeparators( QDir( args[++i] ).absolutePath() );
       }
+      else if ( i + 1 < argc && ( arg == "--authdbdirectory" || arg == "-a" ) )
+      {
+        authdbdirectory = QDir::toNativeSeparators( QDir( args[++i] ).absolutePath() );
+      }
       else if ( i + 1 < argc && ( arg == "--code" || arg == "-f" ) )
       {
         pythonfile = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
@@ -567,6 +615,96 @@ int main( int argc, char *argv[] )
       else if ( arg == "--defaultui" || arg == "-d" )
       {
         myRestoreDefaultWindowState = true;
+      }
+      else if ( arg == "--dxf-export" )
+      {
+        dxfOutputFile = args[++i];
+      }
+      else if ( arg == "--dxf-extent" )
+      {
+        QgsLocaleNumC l;
+        QString ext( args[++i] );
+        QStringList coords( ext.split( ',' ) );
+
+        if ( coords.size() != 4 )
+        {
+          std::cerr << "invalid dxf extent " << ext.toStdString() << std::endl;
+          return 2;
+        }
+
+        for ( int i = 0; i < 4; i++ )
+        {
+          bool ok;
+          double d;
+
+          d = coords[i].toDouble( &ok );
+          if ( !ok )
+          {
+            std::cerr << "invalid dxf coordinate " << coords[i].toStdString() << " in extent " << ext.toStdString() << std::endl;
+            return 2;
+          }
+
+          switch ( i )
+          {
+            case 0:
+              dxfExtent.setXMinimum( d );
+              break;
+            case 1:
+              dxfExtent.setYMinimum( d );
+              break;
+            case 2:
+              dxfExtent.setXMaximum( d );
+              break;
+            case 3:
+              dxfExtent.setYMaximum( d );
+              break;
+          }
+        }
+      }
+      else if ( arg == "--dxf-symbology-mode" )
+      {
+        QString mode( args[++i] );
+        if ( mode == "none" )
+        {
+          dxfSymbologyMode = QgsDxfExport::NoSymbology;
+        }
+        else if ( mode == "symbollayer" )
+        {
+          dxfSymbologyMode = QgsDxfExport::SymbolLayerSymbology;
+        }
+        else if ( mode == "feature" )
+        {
+          dxfSymbologyMode = QgsDxfExport::FeatureSymbology;
+        }
+        else
+        {
+          std::cerr << "invalid dxf symbology mode " << mode.toStdString() << std::endl;
+          return 2;
+        }
+      }
+      else if ( arg == "--dxf-scale-denom" )
+      {
+        bool ok;
+        QString scale( args[++i] );
+        dxfScaleDenom = scale.toDouble( &ok );
+        if ( !ok )
+        {
+          std::cerr << "invalid dxf scale " << scale.toStdString() << std::endl;
+          return 2;
+        }
+      }
+      else if ( arg == "--dxf-encoding" )
+      {
+        dxfEncoding = args[++i];
+      }
+      else if ( arg == "--dxf-preset" )
+      {
+        dxfPreset = args[++i];
+      }
+      else if ( arg == "--" )
+      {
+        for ( i++; i < args.size(); ++i )
+          myFileList.append( QDir::toNativeSeparators( QFileInfo( args[i] ).absoluteFilePath() ) );
       }
       else
       {
@@ -604,8 +742,8 @@ int main( int argc, char *argv[] )
   // Initialise the application and the translation stuff
   /////////////////////////////////////////////////////////////////////
 
-#ifdef Q_OS_UNIX
-  bool myUseGuiFlag = getenv( "DISPLAY" ) != 0;
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC) && !defined(ANDROID)
+  bool myUseGuiFlag = nullptr != getenv( "DISPLAY" );
 #else
   bool myUseGuiFlag = true;
 #endif
@@ -635,10 +773,7 @@ int main( int argc, char *argv[] )
 
   QgsApplication myApp( argc, argv, myUseGuiFlag, configpath );
 
-// (if Windows/Mac, use icon from resource)
-#if !defined(Q_OS_WIN) && !defined(Q_OS_MAC)
-  myApp.setWindowIcon( QIcon( QgsApplication::iconsPath() + "qgis-icon-60x60.png" ) );
-#endif
+  myApp.setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
 
   //
   // Set up the QSettings environment must be done after qapp is created
@@ -680,6 +815,24 @@ int main( int argc, char *argv[] )
   {
     setenv( "GDAL_DRIVER_PATH", gdalPlugins.toUtf8(), 1 );
   }
+
+  // Point GDAL_DATA at any GDAL share directory embedded in the app bundle
+  if ( !getenv( "GDAL_DATA" ) )
+  {
+    QStringList gdalShares;
+    QString appResources( QDir::cleanPath( QgsApplication::pkgDataPath() ) );
+    gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
+    << appResources.append( "/share/gdal" )
+    << appResources.append( "/gdal" );
+    Q_FOREACH ( const QString& gdalShare, gdalShares )
+    {
+      if ( QFile::exists( gdalShare ) )
+      {
+        setenv( "GDAL_DATA", gdalShare.toUtf8().constData(), 1 );
+        break;
+      }
+    }
+  }
 #endif
 
   QSettings mySettings;
@@ -688,9 +841,9 @@ int main( int argc, char *argv[] )
   if ( mySettings.contains( "/Themes" ) )
   {
     QString theme = mySettings.value( "/Themes", "default" ).toString();
-    if ( theme == QString( "gis" )
-         || theme == QString( "classic" )
-         || theme == QString( "nkids" ) )
+    if ( theme == "gis"
+         || theme == "classic"
+         || theme == "nkids" )
     {
       mySettings.setValue( "/Themes", QString( "default" ) );
     }
@@ -705,7 +858,7 @@ int main( int argc, char *argv[] )
     QStringList customVarsList = mySettings.value( "qgis/customEnvVars", "" ).toStringList();
     if ( !customVarsList.isEmpty() )
     {
-      foreach ( const QString &varStr, customVarsList )
+      Q_FOREACH ( const QString &varStr, customVarsList )
       {
         int pos = varStr.indexOf( QLatin1Char( '|' ) );
         if ( pos == -1 )
@@ -759,7 +912,10 @@ int main( int argc, char *argv[] )
   // as it looks really ugly so we use QPlastiqueStyle.
   QString style = mySettings.value( "/qgis/style" ).toString();
   if ( !style.isNull() )
+  {
     QApplication::setStyle( style );
+    mySettings.setValue( "/qgis/style", QApplication::style()->objectName() );
+  }
 #ifdef Q_OS_WIN
 #if QT_VERSION < 0x050000
   else
@@ -776,7 +932,7 @@ int main( int argc, char *argv[] )
   //
   // Priority of translation is:
   //  - command line
-  //  - user secified in options dialog (with group checked on)
+  //  - user specified in options dialog (with group checked on)
   //  - system locale
   //
   //  When specifying from the command line it will change the user
@@ -801,8 +957,8 @@ int main( int argc, char *argv[] )
     }
   }
 
-  QTranslator qgistor( 0 );
-  QTranslator qttor( 0 );
+  QTranslator qgistor( nullptr );
+  QTranslator qttor( nullptr );
   if ( myTranslationCode != "C" )
   {
     if ( qgistor.load( QString( "qgis_" ) + myTranslationCode, i18nPath ) )
@@ -811,7 +967,7 @@ int main( int argc, char *argv[] )
     }
     else
     {
-      qWarning( "loading of qgis translation failed [%s]", QString( "%1/qgis_%2" ).arg( i18nPath ).arg( myTranslationCode ).toLocal8Bit().constData() );
+      qWarning( "loading of qgis translation failed [%s]", QString( "%1/qgis_%2" ).arg( i18nPath, myTranslationCode ).toLocal8Bit().constData() );
     }
 
     /* Translation file for Qt.
@@ -825,7 +981,7 @@ int main( int argc, char *argv[] )
     }
     else
     {
-      qWarning( "loading of qt translation failed [%s]", QString( "%1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ).arg( myTranslationCode ).toLocal8Bit().constData() );
+      qWarning( "loading of qt translation failed [%s]", QString( "%1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ), myTranslationCode ).toLocal8Bit().constData() );
     }
   }
 
@@ -859,9 +1015,15 @@ int main( int argc, char *argv[] )
   QCoreApplication::addLibraryPath( myPath );
 #endif
 
+  // set authentication database directory
+  if ( !authdbdirectory.isEmpty() )
+  {
+    QgsApplication::setAuthDbDirPath( authdbdirectory );
+  }
+
   //set up splash screen
   QString mySplashPath( QgsCustomization::instance()->splashPath() );
-  QPixmap myPixmap( mySplashPath + QString( "splash.png" ) );
+  QPixmap myPixmap( mySplashPath + QLatin1String( "splash.png" ) );
   QSplashScreen *mypSplash = new QSplashScreen( myPixmap );
   if ( mySettings.value( "/qgis/hideSplash" ).toBool() || myHideSplash )
   {
@@ -887,7 +1049,7 @@ int main( int argc, char *argv[] )
   // this should be done in QgsApplication::init() but it doesn't know the settings dir.
   QgsApplication::setMaxThreads( QSettings().value( "/qgis/max_threads", -1 ).toInt() );
 
-  QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins ); // "QgisApp" used to find canonical instance
+  QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins, mySkipVersionCheck ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( "QgisApp" );
 
   myApp.connect(
@@ -925,11 +1087,10 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   if ( ! myInitialExtent.isEmpty() )
   {
+    QgsLocaleNumC l;
     double coords[4];
     int pos, posOld = 0;
     bool ok = true;
-
-    // XXX is it necessary to switch to "C" locale?
 
     // parse values from string
     // extent is defined by string "xmin,ymin,xmax,ymax"
@@ -974,7 +1135,7 @@ int main( int argc, char *argv[] )
   {
 #ifdef Q_OS_WIN
     //replace backslashes with forward slashes
-    pythonfile.replace( "\\", "/" );
+    pythonfile.replace( '\\', '/' );
 #endif
     QgsPythonRunner::run( QString( "execfile('%1')" ).arg( pythonfile ) );
   }
@@ -984,12 +1145,11 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   if ( mySnapshotFileName != "" )
   {
-
     /*You must have at least one paintEvent() delivered for the window to be
       rendered properly.
 
       It looks like you don't run the event loop in non-interactive mode, so the
-      event is never occuring.
+      event is never occurring.
 
       To achieve this without running the event loop: show the window, then call
       qApp->processEvents(), grab the pixmap, save it, hide the window and exit.
@@ -1002,9 +1162,71 @@ int main( int argc, char *argv[] )
     myApp.processEvents();
     qgis->hide();
 
-    QgsPluginRegistry::instance()->unloadAll();
-
     return 1;
+  }
+
+  if ( !dxfOutputFile.isEmpty() )
+  {
+    qgis->hide();
+
+    QgsDxfExport dxfExport;
+    dxfExport.setSymbologyScaleDenominator( dxfScaleDenom );
+    dxfExport.setSymbologyExport( dxfSymbologyMode );
+    dxfExport.setExtent( dxfExtent );
+
+    QStringList layerIds;
+    QList< QPair<QgsVectorLayer *, int > > layers;
+    if ( !dxfPreset.isEmpty() )
+    {
+      Q_FOREACH ( const QString& layer, QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( dxfPreset ) )
+      {
+        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( layer ) );
+        if ( !vl )
+          continue;
+        layers << qMakePair<QgsVectorLayer *, int>( vl, -1 );
+        layerIds << vl->id();
+      }
+    }
+    else
+    {
+      Q_FOREACH ( QgsMapLayer *ml, QgsMapLayerRegistry::instance()->mapLayers() )
+      {
+        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+        if ( !vl )
+          continue;
+        layers << qMakePair<QgsVectorLayer *, int>( vl, -1 );
+        layerIds << vl->id();
+      }
+    }
+
+    if ( !layers.isEmpty() )
+    {
+      dxfExport.addLayers( layers );
+    }
+
+    QFile dxfFile;
+    if ( dxfOutputFile == "-" )
+    {
+      if ( !dxfFile.open( stdout, QIODevice::WriteOnly ) )
+      {
+        std::cerr << "could not open stdout" << std::endl;
+        return 2;
+      }
+    }
+    else
+    {
+      if ( !dxfOutputFile.endsWith( ".dxf", Qt::CaseInsensitive ) )
+        dxfOutputFile += ".dxf";
+      dxfFile.setFileName( dxfOutputFile );
+    }
+
+    int res = dxfExport.writeToFile( &dxfFile, dxfEncoding );
+    if ( res )
+      std::cerr << "dxf output failed with error code " << res << std::endl;
+
+    delete qgis;
+
+    return res;
   }
 
   /////////////////////////////////////////////////////////////////////

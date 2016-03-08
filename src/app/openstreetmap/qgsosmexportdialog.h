@@ -28,7 +28,7 @@ class QgsOSMExportDialog : public QDialog, private Ui::QgsOSMExportDialog
 {
     Q_OBJECT
   public:
-    explicit QgsOSMExportDialog( QWidget *parent = 0 );
+    explicit QgsOSMExportDialog( QWidget *parent = nullptr );
     ~QgsOSMExportDialog();
 
   protected:
@@ -38,6 +38,8 @@ class QgsOSMExportDialog : public QDialog, private Ui::QgsOSMExportDialog
     void onBrowse();
     void updateLayerName();
     void onLoadTags();
+    void onSelectAll();
+    void onUnselectAll();
 
     void onOK();
     void onClose();

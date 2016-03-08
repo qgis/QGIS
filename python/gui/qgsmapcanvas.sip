@@ -1,5 +1,9 @@
-/** \class QgsMapCanvasLayer
-  \brief class that stores additional layer's flags together with pointer to the layer
+%Feature HAVE_TOUCH
+
+/** \ingroup gui
+  * A class that stores visibility and presence in overview flags together
+  * with pointer to the layer.
+  *
 */
 class QgsMapCanvasLayer
 {
@@ -31,9 +35,9 @@ class QgsMapCanvas : QGraphicsView
 
 %ConvertToSubClassCode
   if (dynamic_cast<QgsMapCanvas*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsMapCanvas;
+    sipType = sipType_QgsMapCanvas;
   else
-    sipClass = NULL;
+    sipType = NULL;
 %End
 
   public:
@@ -84,6 +88,10 @@ class QgsMapCanvas : QGraphicsView
     //! @note added in 2.4
     void clearCache();
 
+    //! Reload all layers, clear the cache and refresh the canvas
+    //! @note added in 2.9
+    void refreshAllLayers();
+
     //! Set whether the layers are rendered in parallel or sequentially
     //! @note added in 2.4
     void setParallelRenderingEnabled( bool enabled );
@@ -101,7 +109,7 @@ class QgsMapCanvas : QGraphicsView
     int mapUpdateInterval() const;
 
     //! @deprecated since 2.4 - there could be more than just one "map" items
-    QgsMapCanvasMap* map();
+    QgsMapCanvasMap* map() /Deprecated/;
 
     //! @deprecated since 2.4 - use mapSettings() for anything related to current renderer settings
     //// SIP: removed /Transfer/ because it crashes after few calls to iface.mapCanvas().mapRenderer().hasCrsTransformEnabled()
@@ -161,11 +169,17 @@ class QgsMapCanvas : QGraphicsView
     void clearExtentHistory();
 
     /** Zoom to the extent of the selected features of current (vector) layer.
-      @param layer optionally specify different than current layer */
-    void zoomToSelected( QgsVectorLayer* layer = NULL );
+     * @param layer optionally specify different than current layer
+     */
+    void zoomToSelected( QgsVectorLayer* layer = 0 );
+
+    /** Set canvas extent to the bounding box of a set of features
+        @param layer the vector layer
+        @param ids the feature ids*/
+    void zoomToFeatureIds( QgsVectorLayer* layer, const QgsFeatureIds& ids );
 
     /** Pan to the selected features of current (vector) layer keeping same extent. */
-    void panToSelected( QgsVectorLayer* layer = NULL );
+    void panToSelected( QgsVectorLayer* layer = 0 );
 
     /** \brief Sets the map tool currently being used on the canvas */
     void setMapTool( QgsMapTool* mapTool );
@@ -178,7 +192,7 @@ class QgsMapCanvas : QGraphicsView
      */
     void unsetMapTool( QgsMapTool* mapTool );
 
-    /**Returns the currently active tool*/
+    /** Returns the currently active tool*/
     QgsMapTool* mapTool();
 
     /** Write property of QColor bgColor. */
@@ -206,14 +220,21 @@ class QgsMapCanvas : QGraphicsView
     //! return list of layers within map canvas.
     QList<QgsMapLayer*> layers() const;
 
-    /*! Freeze/thaw the map canvas. This is used to prevent the canvas from
+    /**
+     * Freeze/thaw the map canvas. This is used to prevent the canvas from
      * responding to events while layers are being added/removed etc.
      * @param frz Boolean specifying if the canvas should be frozen (true) or
      * thawed (false). Default is true.
+     *
+     * TODO remove in QGIS 3
      */
     void freeze( bool frz = true );
 
-    /*! Accessor for frozen status of canvas */
+    /**
+     * Accessor for frozen status of canvas
+     *
+     * TODO remove in QGIS 3
+     */
     bool isFrozen();
 
     //! Flag the canvas as dirty and needed a refresh
@@ -226,9 +247,17 @@ class QgsMapCanvas : QGraphicsView
 
     //! Set map units (needed by project properties dialog)
     void setMapUnits( QGis::UnitType mapUnits );
-    //! Get the current canvas map units
 
+    //! Get the current canvas map units
     QGis::UnitType mapUnits() const;
+
+    //! Getter for stored overrides of styles for layers.
+    //! @note added in 2.12
+    QMap<QString, QString> layerStyleOverrides() const;
+
+    //! Setter for stored overrides of styles for layers.
+    //! @note added in 2.12
+    void setLayerStyleOverrides( const QMap<QString, QString>& overrides );
 
     //! Get the current coordinate transform
     const QgsMapToPixel* getCoordinateTransform();
@@ -263,6 +292,9 @@ class QgsMapCanvas : QGraphicsView
 
     //! true if antialising is enabled
     bool antiAliasingEnabled() const;
+
+    //! sets map tile rendering flag
+    void enableMapTileRendering( bool theFlag );
 
     //! Select which Qt class to render with
     //! @deprecated since 2.4 - does nothing because now we always render to QImage
@@ -326,19 +358,47 @@ class QgsMapCanvas : QGraphicsView
      */
     void setSnappingUtils( QgsSnappingUtils* utils );
 
+    /** Sets an expression context scope for the map canvas. This scope is injected into the expression
+     * context used for rendering the map, and can be used to apply specific variable overrides for
+     * expression evaluation for the map canvas render. This method will overwrite the existing expression
+     * context scope for the canvas.
+     * @param scope new expression context scope
+     * @note added in QGIS 2.12
+     * @see expressionContextScope()
+     */
+    void setExpressionContextScope( const QgsExpressionContextScope& scope );
+
+    /** Returns a reference to the expression context scope for the map canvas. This scope is injected
+     * into the expression context used for rendering the map, and can be used to apply specific variable
+     * overrides for expression evaluation for the map canvas render.
+     * @note added in QGIS 2.12
+     * @see setExpressionContextScope()
+     */
+    QgsExpressionContextScope& expressionContextScope();
+
+    /** Returns a const reference to the expression context scope for the map canvas.
+     * @note added in QGIS 2.12
+     * @see setExpressionContextScope()
+     * @note not available in python bindings
+     */
+    // const QgsExpressionContextScope& expressionContextScope() const;
+
   public slots:
 
-    /**Repaints the canvas map*/
+    /** Repaints the canvas map*/
     void refresh();
 
     //! Receives signal about selection change, and pass it on with layer info
     void selectionChangedSlot();
 
     //! Save the convtents of the map canvas to disk as an image
-    void saveAsImage( QString theFileName, QPixmap * QPixmap = 0, QString = "PNG" );
+    void saveAsImage( const QString& theFileName, QPixmap * QPixmap = 0, const QString& = "PNG" );
 
     //! This slot is connected to the visibility change of one or more layers
     void layerStateChange();
+
+    //! This slot is connected to the layer's CRS change
+    void layerCrsChange();
 
     //! Whether to suppress rendering or not
     void setRenderFlag( bool theFlag );
@@ -380,7 +440,7 @@ class QgsMapCanvas : QGraphicsView
     //! @deprecated since 2.4 - already unused in 2.0 anyway
     void setProgress( int, int ) /Deprecated/;
 
-    /** emits current mouse position
+    /** Emits current mouse position
         \note changed in 1.3 */
     void xyCoordinates( const QgsPoint &p );
 
@@ -395,13 +455,12 @@ class QgsMapCanvas : QGraphicsView
     void rotationChanged( double );
 
     /** Emitted when the canvas has rendered.
-
-     Passes a pointer to the painter on which the map was drawn. This is
-     useful for plugins that wish to draw on the map after it has been
-     rendered.  Passing the painter allows plugins to work when the map is
-     being rendered onto a pixmap other than the mapCanvas own pixmap member.
-
-    */
+     * Passes a pointer to the painter on which the map was drawn. This is
+     * useful for plugins that wish to draw on the map after it has been
+     * rendered.  Passing the painter allows plugins to work when the map is
+     * being rendered onto a pixmap other than the mapCanvas own pixmap member.
+     *
+     */
     //! TODO: deprecate when decorations are reimplemented as map canvas items
     //! - anything related to rendering progress is not visible outside of map canvas
     //! - additional drawing shall be done directly within the renderer job or independently as a map canvas item
@@ -450,7 +509,7 @@ class QgsMapCanvas : QGraphicsView
     //! @note added in 2.4
     void destinationCrsChanged();
 
-    //! Emmitted when map units are changed
+    //! Emitted when map units are changed
     //! @note added in 2.4
     void mapUnitsChanged();
 
@@ -458,9 +517,18 @@ class QgsMapCanvas : QGraphicsView
     //! @note added in 2.8
     void currentLayerChanged( QgsMapLayer* layer );
 
+    //! Emitted when the configuration of overridden layer styles changes
+    //! @note added in 2.12
+    void layerStyleOverridesChanged();
+
+    //! emit a message (usually to be displayed in a message bar)
+    void messageEmitted( const QString& title, const QString& message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
+
   protected:
+%If (HAVE_TOUCH)
     //! Overridden standard event to be gestures aware
     bool event( QEvent * e );
+%End
 
     //! Overridden key press event
     void keyPressEvent( QKeyEvent * e );
@@ -495,8 +563,15 @@ class QgsMapCanvas : QGraphicsView
     //! called when panning is in action, reset indicates end of panning
     void moveCanvasContents( bool reset = false );
 
+    //! Zooms to feature extent. Adds a small margin around the extent
+    //! and does a pan if rect is empty (point extent)
+    void zoomToFeatureExtent( QgsRectangle& rect );
+
     //! called on resize or changed extent to notify canvas items to change their rectangle
     void updateCanvasItemPositions();
+
+    //! Make sure the datum transform store is properly populated
+    void updateDatumTransformEntries();
 
 private:
     void connectNotify( const char * signal );

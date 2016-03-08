@@ -26,7 +26,7 @@ class QgsOSMImportDialog : public QDialog, private Ui::QgsOSMImportDialog
 {
     Q_OBJECT
   public:
-    explicit QgsOSMImportDialog( QWidget* parent = 0 );
+    explicit QgsOSMImportDialog( QWidget* parent = nullptr );
     ~QgsOSMImportDialog();
 
   private slots:

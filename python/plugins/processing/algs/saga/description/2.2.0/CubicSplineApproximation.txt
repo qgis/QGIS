@@ -1,0 +1,14 @@
+Cubic Spline Approximation
+grid_spline
+ParameterVector|SHAPES|Points|0|False
+ParameterTableField|FIELD|Attribute|SHAPES|-1|False
+Hardcoded|-TARGET_DEFINITION 0
+ParameterNumber|NPMIN|Minimal Number of Points|0|None|3
+ParameterNumber|NPMAX|Maximal Number of Points|11|59|20
+ParameterNumber|NPPC|Points per Square|1|None|5
+ParameterNumber|K|Tolerance|0|None|140
+Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
+ParameterNumber|TARGET_USER_SIZE|Cellsize|None|None|100.0
+ParameterSelection|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
+ParameterRaster|TARGET_TEMPLATE|Target system|True
+OutputRaster|TARGET_OUT_GRID|Grid

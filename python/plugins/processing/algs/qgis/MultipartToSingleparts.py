@@ -25,12 +25,19 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4.QtGui import QIcon
+
 from qgis.core import QGis, QgsFeature, QgsGeometry
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class MultipartToSingleparts(GeoAlgorithm):
@@ -38,17 +45,15 @@ class MultipartToSingleparts(GeoAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
-    # =========================================================================
-    # def getIcon(self):
-    #    return QIcon(os.path.dirname(__file__) + "/icons/multi_to_single.png")
-    # =========================================================================
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'multi_to_single.png'))
 
     def defineCharacteristics(self):
-        self.name = 'Multipart to singleparts'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Multipart to singleparts')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Single parts')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
@@ -61,10 +66,9 @@ class MultipartToSingleparts(GeoAlgorithm):
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
 
-        current = 0
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
-        for f in features:
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
             inGeom = f.geometry()
             attrs = f.attributes()
 
@@ -75,7 +79,6 @@ class MultipartToSingleparts(GeoAlgorithm):
                 outFeat.setGeometry(g)
                 writer.addFeature(outFeat)
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer
@@ -96,7 +99,7 @@ class MultipartToSingleparts(GeoAlgorithm):
                 return QGis.WKBPolygon
             else:
                 return QGis.WKBUnknown
-        except Exception, err:
+        except Exception as err:
             raise GeoAlgorithmExecutionException(unicode(err))
 
     def extractAsSingle(self, geom):

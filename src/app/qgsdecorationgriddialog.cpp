@@ -25,20 +25,19 @@
 #include "qgssymbolv2.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgisapp.h"
+#include "qgisgui.h"
 
-#include <QFontDialog>
-#include <QColorDialog>
 #include <QSettings>
 
 QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid& deco, QWidget* parent )
-    : QDialog( parent ), mDeco( deco ), mLineSymbol( 0 ), mMarkerSymbol( 0 )
+    : QDialog( parent ), mDeco( deco ), mLineSymbol( nullptr ), mMarkerSymbol( nullptr )
 {
   setupUi( this );
 
   QSettings settings;
   //  restoreGeometry( settings.value( "/Windows/DecorationGrid/geometry" ).toByteArray() );
 
-  chkEnable->setChecked( mDeco.enabled() );
+  grpEnable->setChecked( mDeco.enabled() );
 
   // mXMinLineEdit->setValidator( new QDoubleValidator( mXMinLineEdit ) );
 
@@ -68,18 +67,19 @@ void QgsDecorationGridDialog::updateGuiElements()
 {
   // blockAllSignals( true );
 
-  chkEnable->setChecked( mDeco.enabled() );
+  grpEnable->setChecked( mDeco.enabled() );
 
   mIntervalXEdit->setText( QString::number( mDeco.gridIntervalX() ) );
   mIntervalYEdit->setText( QString::number( mDeco.gridIntervalY() ) );
   mOffsetXEdit->setText( QString::number( mDeco.gridOffsetX() ) );
   mOffsetYEdit->setText( QString::number( mDeco.gridOffsetY() ) );
 
-  mGridTypeComboBox->setCurrentIndex(( int ) mDeco.gridStyle() );
+  mGridTypeComboBox->setCurrentIndex( static_cast< int >( mDeco.gridStyle() ) );
   mDrawAnnotationCheckBox->setChecked( mDeco.showGridAnnotation() );
-  mAnnotationDirectionComboBox->setCurrentIndex(( int ) mDeco.gridAnnotationDirection() );
+  mAnnotationDirectionComboBox->setCurrentIndex( static_cast< int >( mDeco.gridAnnotationDirection() ) );
   mCoordinatePrecisionSpinBox->setValue( mDeco.gridAnnotationPrecision() );
 
+  mDistanceToMapFrameSpinBox->setValue( mDeco.annotationFrameDistance() );
   // QPen gridPen = mDeco.gridPen();
   // mLineWidthSpinBox->setValue( gridPen.widthF() );
   // mLineColorButton->setColor( gridPen.color() );
@@ -88,7 +88,7 @@ void QgsDecorationGridDialog::updateGuiElements()
     delete mLineSymbol;
   if ( mDeco.lineSymbol() )
   {
-    mLineSymbol = dynamic_cast<QgsLineSymbolV2*>( mDeco.lineSymbol()->clone() );
+    mLineSymbol = static_cast<QgsLineSymbolV2*>( mDeco.lineSymbol()->clone() );
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mLineSymbol, mLineSymbolButton->iconSize() );
     mLineSymbolButton->setIcon( icon );
   }
@@ -96,7 +96,7 @@ void QgsDecorationGridDialog::updateGuiElements()
     delete mMarkerSymbol;
   if ( mDeco.markerSymbol() )
   {
-    mMarkerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( mDeco.markerSymbol()->clone() );
+    mMarkerSymbol = static_cast<QgsMarkerSymbolV2*>( mDeco.markerSymbol()->clone() );
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mMarkerSymbol, mMarkerSymbolButton->iconSize() );
     mMarkerSymbolButton->setIcon( icon );
   }
@@ -109,7 +109,7 @@ void QgsDecorationGridDialog::updateGuiElements()
 void QgsDecorationGridDialog::updateDecoFromGui()
 {
   mDeco.setDirty( false );
-  mDeco.setEnabled( chkEnable->isChecked() );
+  mDeco.setEnabled( grpEnable->isChecked() );
 
   mDeco.setGridIntervalX( mIntervalXEdit->text().toDouble() );
   mDeco.setGridIntervalY( mIntervalYEdit->text().toDouble() );
@@ -154,12 +154,12 @@ void QgsDecorationGridDialog::updateDecoFromGui()
   if ( mLineSymbol )
   {
     mDeco.setLineSymbol( mLineSymbol );
-    mLineSymbol = dynamic_cast<QgsLineSymbolV2*>( mDeco.lineSymbol()->clone() );
+    mLineSymbol = mDeco.lineSymbol()->clone();
   }
   if ( mMarkerSymbol )
   {
     mDeco.setMarkerSymbol( mMarkerSymbol );
-    mMarkerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( mDeco.markerSymbol()->clone() );
+    mMarkerSymbol = mDeco.markerSymbol()->clone();
   }
 }
 
@@ -210,8 +210,8 @@ void QgsDecorationGridDialog::on_mLineSymbolButton_clicked()
   if ( ! mLineSymbol )
     return;
 
-  QgsLineSymbolV2* lineSymbol = dynamic_cast<QgsLineSymbolV2*>( mLineSymbol->clone() );
-  QgsSymbolV2SelectorDialog dlg( lineSymbol, QgsStyleV2::defaultStyle(), 0, this );
+  QgsLineSymbolV2* lineSymbol = mLineSymbol->clone();
+  QgsSymbolV2SelectorDialog dlg( lineSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete lineSymbol;
@@ -233,8 +233,8 @@ void QgsDecorationGridDialog::on_mMarkerSymbolButton_clicked()
   if ( ! mMarkerSymbol )
     return;
 
-  QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( mMarkerSymbol->clone() );
-  QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), 0, this );
+  QgsMarkerSymbolV2* markerSymbol = mMarkerSymbol->clone();
+  QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete markerSymbol;
@@ -275,12 +275,7 @@ void QgsDecorationGridDialog::on_mPbtnUpdateFromLayer_clicked()
 void QgsDecorationGridDialog::on_mAnnotationFontButton_clicked()
 {
   bool ok;
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  QFont newFont = QFontDialog::getFont( &ok, mDeco.gridAnnotationFont(), 0, QString(), QFontDialog::DontUseNativeDialog );
-#else
-  QFont newFont = QFontDialog::getFont( &ok, mDeco.gridAnnotationFont() );
-#endif
+  QFont newFont = QgisGui::getFont( ok, mDeco.gridAnnotationFont() );
   if ( ok )
   {
     mDeco.setGridAnnotationFont( newFont );

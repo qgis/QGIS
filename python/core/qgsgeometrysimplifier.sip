@@ -1,5 +1,7 @@
 
-/** Abstract base class for simplify geometries using a specific algorithm */
+/**
+ * Abstract base class for simplify geometries using a specific algorithm
+ */
 class QgsAbstractGeometrySimplifier
 {
 %TypeHeaderCode

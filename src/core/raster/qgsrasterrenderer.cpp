@@ -31,13 +31,14 @@ const QRgb QgsRasterRenderer::NODATA_COLOR = qRgba( 0, 0, 0, 0 );
 
 QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface* input, const QString& type )
     : QgsRasterInterface( input )
-    , mType( type ), mOpacity( 1.0 ), mRasterTransparency( 0 )
+    , mType( type ), mOpacity( 1.0 ), mRasterTransparency( nullptr )
     , mAlphaBand( -1 ) //, mInvertColor( false )
 {
 }
 
 QgsRasterRenderer::~QgsRasterRenderer()
 {
+  delete mRasterTransparency;
 }
 
 int QgsRasterRenderer::bandCount() const
@@ -51,7 +52,7 @@ int QgsRasterRenderer::bandCount() const
 
 QGis::DataType QgsRasterRenderer::dataType( int bandNo ) const
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 4 );
 
   if ( mOn ) return QGis::ARGB32_Premultiplied;
 
@@ -229,13 +230,13 @@ QString QgsRasterRenderer::minMaxOriginLabel( int theOrigin )
 
   label = QCoreApplication::translate( "QgsRasterRenderer", "%1 %2 of %3.",
                                        "min/max origin label in raster properties, where %1 - estimated/exact, %2 - values (min/max, stddev, etc.), %3 - extent" )
-          .arg( est_exact )
-          .arg( values )
-          .arg( extent );
+          .arg( est_exact,
+                values,
+                extent );
   return label;
 }
 
-int QgsRasterRenderer::minMaxOriginFromName( QString theName )
+int QgsRasterRenderer::minMaxOriginFromName( const QString& theName )
 {
   if ( theName.contains( "Unknown" ) )
   {

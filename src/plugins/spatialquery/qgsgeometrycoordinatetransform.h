@@ -30,43 +30,46 @@ class QgsGeometryCoordinateTransform
 {
   public:
     /**
-    * \brief Constructor for a Geometry Coordinate Transform.
-    *
-    */
+     * \brief Constructor for a Geometry Coordinate Transform.
+     *
+     */
     QgsGeometryCoordinateTransform();
 
     /**
-    * \brief Destructor
-    */
+     * \brief Destructor
+     */
     ~QgsGeometryCoordinateTransform();
 
     /**
-    * \brief Sets the coordinate reference system the target and reference layer
-    * \param lyrTarget      target layer.
-    * \param lyrReference   reference layer.
-    */
+     * \brief Sets the coordinate reference system the target and reference layer
+     * \param lyrTarget      target layer.
+     * \param lyrReference   reference layer.
+     */
     void setCoordinateTransform( QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference );
 
     /**
-    * \brief Transform the coordinates reference system of the geometry, if target have the different system of reference
-    * \param geom      Geometry
-    */
+     * \brief Transform the coordinates reference system of the geometry, if target have the different system of reference
+     * \param geom      Geometry
+     */
     void transform( QgsGeometry *geom );
   private:
     /**
-    * \brief Transform the coordinates reference system of the geometry (use by transform)
-    * \param geom      Geometry
-    */
+     * \brief Transform the coordinates reference system of the geometry (use by transform)
+     * \param geom      Geometry
+     */
     void setGeomTransform( QgsGeometry *geom );
     /**
-    * \brief None transform the coordinates reference system of the geometry (use by transform)
-    * \param geom      Geometry
-    */
+     * \brief None transform the coordinates reference system of the geometry (use by transform)
+     * \param geom      Geometry
+     */
     void setNoneGeomTransform( QgsGeometry *geom )
     { Q_UNUSED( geom ); }
 
     QgsCoordinateTransform * mCoordTransform;
     void ( QgsGeometryCoordinateTransform::* mFuncTransform )( QgsGeometry * );
+
+    QgsGeometryCoordinateTransform( const QgsGeometryCoordinateTransform& rh );
+    QgsGeometryCoordinateTransform& operator=( const QgsGeometryCoordinateTransform& rh );
 };
 
 #endif // GEOMETRYCOORDINATETRANSFORM_H

@@ -23,15 +23,15 @@ class QPushButton;
 
 class QgsGeorefMapToolEmitPoint : public QgsMapToolEmitPoint
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
-    QgsGeorefMapToolEmitPoint( QgsMapCanvas *canvas )
+    explicit QgsGeorefMapToolEmitPoint( QgsMapCanvas *canvas )
         : QgsMapToolEmitPoint( canvas )
     {
     }
 
-    void canvasReleaseEvent( QMouseEvent *e ) override
+    void canvasReleaseEvent( QgsMapMouseEvent* e ) override
     {
       QgsMapToolEmitPoint::canvasReleaseEvent( e );
       emit mouseReleased();
@@ -46,7 +46,7 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
     Q_OBJECT
 
   public:
-    QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint &pixelCoords, QWidget *parent = 0 );
+    QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint &pixelCoords, QWidget *parent = nullptr );
     ~QgsMapCoordsDialog();
 
   private slots:
@@ -62,7 +62,7 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
     void pointAdded( const QgsPoint &, const QgsPoint & );
 
   private:
-    double dmsToDD( QString dms );
+    double dmsToDD( const QString& dms );
 
     QPushButton *mPointFromCanvasPushButton;
 

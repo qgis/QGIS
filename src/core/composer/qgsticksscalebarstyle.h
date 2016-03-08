@@ -37,7 +37,7 @@ class CORE_EXPORT QgsTicksScaleBarStyle: public QgsScaleBarStyle
 
     QString name() const override;
 
-    /*! draw method
+    /** Draw method
      @param p painter object
      @param xOffset offset
      */

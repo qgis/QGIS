@@ -31,7 +31,7 @@
 #include <QFileDialog>
 
 
-QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFlags fl )
+QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, const Qt::WindowFlags& fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
@@ -53,6 +53,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   mFileFormatComboBox->addItem( tr( "ESRI Shapefile" ), "ESRI Shapefile" );
 #if 0
   // Disabled until provider properly supports editing the created file formats
+  // When enabling this, adapt the window-title of the dialog and the title of all actions showing this dialog.
   mFileFormatComboBox->addItem( tr( "Comma Separated Value" ), "Comma Separated Value" );
   mFileFormatComboBox->addItem( tr( "GML" ), "GML" );
   mFileFormatComboBox->addItem( tr( "Mapinfo File" ), "Mapinfo File" );
@@ -195,9 +196,9 @@ void QgsNewVectorLayerDialog::attributes( QList< QPair<QString, QString> >& at )
   while ( *it )
   {
     QTreeWidgetItem *item = *it;
-    QString type = QString( "%1;%2;%3" ).arg( item->text( 1 ) ).arg( item->text( 2 ) ).arg( item->text( 3 ) );
+    QString type = QString( "%1;%2;%3" ).arg( item->text( 1 ), item->text( 2 ), item->text( 3 ) );
     at.push_back( qMakePair( item->text( 0 ), type ) );
-    QgsDebugMsg( QString( "appending %1//%2" ).arg( item->text( 0 ) ).arg( type ) );
+    QgsDebugMsg( QString( "appending %1//%2" ).arg( item->text( 0 ), type ) );
     ++it;
   }
 }
@@ -214,14 +215,14 @@ QString QgsNewVectorLayerDialog::selectedFileEncoding() const
   return mFileEncoding->currentText();
 }
 
-void QgsNewVectorLayerDialog::nameChanged( QString name )
+void QgsNewVectorLayerDialog::nameChanged( const QString& name )
 {
-  mAddAttributeButton->setDisabled( name.isEmpty() || mAttributeView->findItems( name, Qt::MatchExactly ).size() > 0 );
+  mAddAttributeButton->setDisabled( name.isEmpty() || !mAttributeView->findItems( name, Qt::MatchExactly ).isEmpty() );
 }
 
 void QgsNewVectorLayerDialog::selectionChanged()
 {
-  mRemoveAttributeButton->setDisabled( mAttributeView->selectedItems().size() == 0 );
+  mRemoveAttributeButton->setDisabled( mAttributeView->selectedItems().isEmpty() );
 }
 
 
@@ -244,9 +245,9 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
   geomDialog.attributes( attributes );
 
   QSettings settings;
-  QString lastUsedDir = settings.value( "/UI/lastVectorFileFilterDir", "." ).toString();
+  QString lastUsedDir = settings.value( "/UI/lastVectorFileFilterDir", QDir::homePath() ).toString();
   QString filterString = QgsVectorFileWriter::filterForDriver( fileformat );
-  QString fileName = QFileDialog::getSaveFileName( 0, tr( "Save layer as..." ), lastUsedDir, filterString );
+  QString fileName = QFileDialog::getSaveFileName( nullptr, tr( "Save layer as..." ), lastUsedDir, filterString );
   if ( fileName.isNull() )
   {
     return "";

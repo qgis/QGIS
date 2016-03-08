@@ -43,8 +43,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-
-    QgsGPXProvider( QString uri = QString() );
+    explicit QgsGPXProvider( const QString& uri = QString() );
     virtual ~QgsGPXProvider();
 
     /* Functions inherited from QgsVectorDataProvider */
@@ -109,14 +108,14 @@ class QgsGPXProvider : public QgsVectorDataProvider
      */
     virtual QgsRectangle extent() override;
 
-    /**Returns true if this is a valid delimited file
+    /** Returns true if this is a valid delimited file
      */
     virtual bool isValid() override;
 
-    /** return a provider name */
+    /** Return a provider name */
     virtual QString name() const override;
 
-    /** return description */
+    /** Return description */
     virtual QString description() const override;
 
     virtual QgsCoordinateReferenceSystem crs() override;
@@ -165,16 +164,6 @@ class QgsGPXProvider : public QgsVectorDataProvider
     static const int attrCount;
 
     bool mValid;
-    long mNumberFeatures;
-
-    struct wkbPoint
-    {
-      char byteOrder;
-      unsigned wkbType;
-      double x;
-      double y;
-    };
-    wkbPoint mWKBpt;
 
     friend class QgsGPXFeatureSource;
 };

@@ -25,7 +25,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4.QtGui import QIcon
+
 from qgis.core import QgsFeature, QgsGeometry
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -33,6 +38,8 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 from processing.tools import vector, dataobjects
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class Dissolve(GeoAlgorithm):
@@ -42,39 +49,51 @@ class Dissolve(GeoAlgorithm):
     FIELD = 'FIELD'
     DISSOLVE_ALL = 'DISSOLVE_ALL'
 
-    #==========================================================================
-    #def getIcon(self):
-    #   return QtGui.QIcon(os.path.dirname(__file__) + "/icons/dissolve.png")
-    #==========================================================================
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'dissolve.png'))
+
+    def defineCharacteristics(self):
+        self.name = 'Dissolve'
+        self.group = 'Vector geometry tools'
+        self.addParameter(ParameterVector(Dissolve.INPUT,
+                                          self.tr('Input layer'),
+                                          [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
+        self.addParameter(ParameterBoolean(Dissolve.DISSOLVE_ALL,
+                                           self.tr('Dissolve all (do not use field)'), True))
+        self.addParameter(ParameterTableField(Dissolve.FIELD,
+                                              self.tr('Unique ID field'), Dissolve.INPUT, optional=True))
+        self.addOutput(OutputVector(Dissolve.OUTPUT, self.tr('Dissolved')))
 
     def processAlgorithm(self, progress):
         useField = not self.getParameterValue(Dissolve.DISSOLVE_ALL)
         fieldname = self.getParameterValue(Dissolve.FIELD)
         vlayerA = dataobjects.getObjectFromUri(
             self.getParameterValue(Dissolve.INPUT))
-        field = vlayerA.fieldNameIndex(fieldname)
         vproviderA = vlayerA.dataProvider()
-        fields = vproviderA.fields()
+        fields = vlayerA.fields()
         writer = self.getOutputFromName(
             Dissolve.OUTPUT).getVectorWriter(fields,
                                              vproviderA.geometryType(),
                                              vproviderA.crs())
         outFeat = QgsFeature()
-        nElement = 0
-        nFeat = vproviderA.featureCount()
+        features = vector.features(vlayerA)
+        total = 100.0 / len(features)
+
         if not useField:
             first = True
-            features = vector.features(vlayerA)
-            for inFeat in features:
-                nElement += 1
-                progress.setPercentage(int(nElement / nFeat * 100))
+            for current, inFeat in enumerate(features):
+                progress.setPercentage(int(current * total))
                 if first:
                     attrs = inFeat.attributes()
                     tmpInGeom = QgsGeometry(inFeat.geometry())
+                    if tmpInGeom.isGeosEmpty() or not tmpInGeom.isGeosValid():
+                        continue
                     outFeat.setGeometry(tmpInGeom)
                     first = False
                 else:
                     tmpInGeom = QgsGeometry(inFeat.geometry())
+                    if tmpInGeom.isGeosEmpty() or not tmpInGeom.isGeosValid():
+                        continue
                     tmpOutGeom = QgsGeometry(outFeat.geometry())
                     try:
                         tmpOutGeom = QgsGeometry(tmpOutGeom.combine(tmpInGeom))
@@ -85,47 +104,49 @@ class Dissolve(GeoAlgorithm):
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
         else:
-            unique = vector.getUniqueValues(vlayerA, int(field))
-            nFeat = nFeat * len(unique)
+            fieldIdx = vlayerA.fieldNameIndex(fieldname)
+            unique = vector.getUniqueValues(vlayerA, int(fieldIdx))
+            nFeat = len(unique)
+            myDict = {}
+            attrDict = {}
             for item in unique:
-                first = True
-                add = True
-                features = vector.features(vlayerA)
-                for inFeat in features:
-                    nElement += 1
-                    progress.setPercentage(int(nElement / nFeat * 100))
-                    atMap = inFeat.attributes()
-                    tempItem = atMap[field]
-                    if unicode(tempItem).strip() == unicode(item).strip():
-                        if first:
-                            QgsGeometry(inFeat.geometry())
-                            tmpInGeom = QgsGeometry(inFeat.geometry())
-                            outFeat.setGeometry(tmpInGeom)
-                            first = False
-                            attrs = inFeat.attributes()
-                        else:
-                            tmpInGeom = QgsGeometry(inFeat.geometry())
-                            tmpOutGeom = QgsGeometry(outFeat.geometry())
-                            try:
-                                tmpOutGeom = QgsGeometry(
-                                    tmpOutGeom.combine(tmpInGeom))
-                                outFeat.setGeometry(tmpOutGeom)
-                            except:
-                                raise GeoAlgorithmExecutionException(
-                                    self.tr('Geometry exception while dissolving'))
-                if add:
-                    outFeat.setAttributes(attrs)
-                    writer.addFeature(outFeat)
-        del writer
+                myDict[unicode(item).strip()] = []
+                attrDict[unicode(item).strip()] = None
 
-    def defineCharacteristics(self):
-        self.name = 'Dissolve'
-        self.group = 'Vector geometry tools'
-        self.addParameter(ParameterVector(Dissolve.INPUT,
-            self.tr('Input layer'),
-            [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
-        self.addParameter(ParameterBoolean(Dissolve.DISSOLVE_ALL,
-            self.tr('Dissolve all (do not use field)'), True))
-        self.addParameter(ParameterTableField(Dissolve.FIELD,
-            self.tr('Unique ID field'), Dissolve.INPUT, optional=True))
-        self.addOutput(OutputVector(Dissolve.OUTPUT, self.tr('Dissolved')))
+            unique = None
+
+            for inFeat in features:
+                attrs = inFeat.attributes()
+                tempItem = attrs[fieldIdx]
+                tmpInGeom = QgsGeometry(inFeat.geometry())
+                if tmpInGeom.isGeosEmpty() or not tmpInGeom.isGeosValid():
+                    continue
+
+                if attrDict[unicode(tempItem).strip()] == None:
+                    # keep attributes of first feature
+                    attrDict[unicode(tempItem).strip()] = attrs
+
+                myDict[unicode(tempItem).strip()].append(tmpInGeom)
+
+            features = None
+
+            for key, value in myDict.items():
+                nElement += 1
+                progress.setPercentage(int(nElement * 100 / nFeat))
+                for i in range(len(value)):
+                    tmpInGeom = value[i]
+
+                    if i == 0:
+                        tmpOutGeom = tmpInGeom
+                    else:
+                        try:
+                            tmpOutGeom = QgsGeometry(
+                                tmpOutGeom.combine(tmpInGeom))
+                        except:
+                            raise GeoAlgorithmExecutionException(
+                                self.tr('Geometry exception while dissolving'))
+                outFeat.setGeometry(tmpOutGeom)
+                outFeat.setAttributes(attrDict[key])
+                writer.addFeature(outFeat)
+
+        del writer

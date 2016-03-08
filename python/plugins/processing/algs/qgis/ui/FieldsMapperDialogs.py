@@ -66,12 +66,12 @@ class FieldsMapperParametersPanel(ParametersPanel):
                 item.setLayer(layers[0])
             return item
         return ParametersPanel.getWidgetFromParameter(self, param)
-    
+
     def updateDependentFields(self):
         sender = self.sender()
         if not isinstance(sender, QComboBox):
             return
-        if not sender.name in self.dependentItems:
+        if sender.name not in self.dependentItems:
             return
         layer = sender.itemData(sender.currentIndex())
         children = self.dependentItems[sender.name]
@@ -79,7 +79,7 @@ class FieldsMapperParametersPanel(ParametersPanel):
             widget = self.valueItems[child]
             if isinstance(widget, FieldsMappingPanel):
                 widget.setLayer(layer)
-                
+
     def somethingDependsOnThisParameter(self, parent):
         for param in self.alg.parameters:
             if isinstance(param, ParameterFieldsMapping):
@@ -89,6 +89,7 @@ class FieldsMapperParametersPanel(ParametersPanel):
 
 
 class FieldsMapperParametersDialog(AlgorithmDialog):
+
     def __init__(self, alg):
         AlgorithmDialogBase.__init__(self, alg)
 
@@ -96,13 +97,13 @@ class FieldsMapperParametersDialog(AlgorithmDialog):
 
         self.mainWidget = FieldsMapperParametersPanel(self, alg)
         self.setMainWidget()
-        
+
     def setParamValue(self, param, widget, alg=None):
         if isinstance(param, ParameterFieldsMapping):
             return param.setValue(widget.value())
         return AlgorithmDialog.setParamValue(self, param, widget, alg)
 
-    
+
 class FieldsMapperModelerParametersDialog(ModelerParametersDialog):
 
     def __init__(self, alg, model, algName=None):
@@ -118,7 +119,7 @@ class FieldsMapperModelerParametersDialog(ModelerParametersDialog):
         if isinstance(param, ParameterFieldsMapping):
             return FieldsMappingPanel()
         return ModelerParametersDialog.getWidgetFromParameter(self, param)
-    
+
     def setPreviousValues(self):
         ModelerParametersDialog.setPreviousValues(self)
         if self._algName is not None:

@@ -1,0 +1,10 @@
+v.net.components
+Computes strongly and weakly connected components in the network.
+Vector (v.*)
+ParameterVector|input|Input vector line layer (network)|1|False
+ParameterSelection|method|Type of components|weak;strong|0|False
+*ParameterTableField|arc_column|Arc forward/both direction(s) cost column (number)|input|0|True
+*ParameterTableField|arc_backward_column|Arc backward direction cost column (number)|input|0|True
+*ParameterBoolean|-a|Add points on nodes|True|True
+OutputVector|output|Network_Components_Line
+OutputVector|output_point|Network_Components_Point

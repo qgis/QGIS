@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 13.5.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,7 +23,10 @@
 class CORE_EXPORT QgsLegacyHelpers
 {
   public:
+    //! @deprecated will be removed in QGIS 3.0
     Q_DECL_DEPRECATED static const QString convertEditType( QgsVectorLayer::EditType editType, QgsEditorWidgetConfig& cfg, QgsVectorLayer* vl, const QString& name, const QDomElement &editTypeElement = QDomElement() );
+
+    //! @deprecated will be removed in QGIS 3.0
     Q_DECL_DEPRECATED static QgsVectorLayer::EditType convertEditType( const QString& editType, const QgsEditorWidgetConfig& cfg, QgsVectorLayer* vl, const QString& name );
 
   private:

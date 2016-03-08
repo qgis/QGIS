@@ -25,6 +25,10 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4.QtGui import QIcon
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
 from processing.core.parameters import ParameterRaster
@@ -35,6 +39,8 @@ from processing.core.outputs import OutputVector
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class contour(GdalAlgorithm):
 
@@ -44,27 +50,30 @@ class contour(GdalAlgorithm):
     FIELD_NAME = 'FIELD_NAME'
     EXTRA = 'EXTRA'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'contour.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Contour'
-        self.group = '[GDAL] Extraction'
+        self.name, self.i18n_name = self.trAlgorithm('Contour')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Extraction')
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
-            self.tr('Input layer'), False))
+                                          self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.INTERVAL,
-            self.tr('Interval between contour lines'), 0.0,
-            99999999.999999, 10.0))
+                                          self.tr('Interval between contour lines'), 0.0,
+                                          99999999.999999, 10.0))
         self.addParameter(ParameterString(self.FIELD_NAME,
-            self.tr('Attribute name (if not set, no elevation attribute is attached)'),
-            'ELEV', optional=True))
+                                          self.tr('Attribute name (if not set, no elevation attribute is attached)'),
+                                          'ELEV', optional=True))
         self.addParameter(ParameterString(self.EXTRA,
-            self.tr('Additional creation parameters'), '', optional=True))
+                                          self.tr('Additional creation parameters'), '', optional=True))
 
         self.addOutput(OutputVector(self.OUTPUT_VECTOR,
-            self.tr('Output file for contour lines (vector)')))
+                                    self.tr('Contours')))
 
-    def processAlgorithm(self, progress):
-        interval = str(self.getParameterValue(self.INTERVAL))
-        fieldName = str(self.getParameterValue(self.FIELD_NAME))
-        extra = str(self.getParameterValue(self.EXTRA))
+    def getConsoleCommands(self):
+        interval = unicode(self.getParameterValue(self.INTERVAL))
+        fieldName = unicode(self.getParameterValue(self.FIELD_NAME))
+        extra = unicode(self.getParameterValue(self.EXTRA))
 
         arguments = []
         if len(fieldName) > 0:
@@ -79,5 +88,4 @@ class contour(GdalAlgorithm):
         arguments.append(self.getParameterValue(self.INPUT_RASTER))
         arguments.append(self.getOutputValue(self.OUTPUT_VECTOR))
 
-        GdalUtils.runGdal(['gdal_contour',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdal_contour', GdalUtils.escapeAndJoin(arguments)]

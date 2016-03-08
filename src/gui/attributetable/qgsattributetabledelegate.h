@@ -40,8 +40,8 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
     /** Constructor
      * @param parent parent object
      */
-    QgsAttributeTableDelegate( QObject* parent = 0 ) :
-        QItemDelegate( parent ), mFeatureSelectionModel( NULL ) {}
+    QgsAttributeTableDelegate( QObject* parent = nullptr ) :
+        QItemDelegate( parent ), mFeatureSelectionModel( nullptr ) {}
 
     /** Used to create an editor for when the user tries to
      * change the contents of a cell */

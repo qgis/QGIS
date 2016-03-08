@@ -37,90 +37,78 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem* parent,
 {
   mToolTip = uri;
   setState( Populated ); // children are not expected
+
+  OGRRegisterAll();
+  OGRSFDriverH hDriver;
+  OGRDataSourceH hDataSource = OGROpen( TO8F( mPath ), true, &hDriver );
+
+  if ( hDataSource )
+  {
+    QString driverName = OGR_Dr_GetName( hDriver );
+    OGR_DS_Destroy( hDataSource );
+
+    if ( driverName == "ESRI Shapefile" )
+      mCapabilities |= SetCrs;
+
+    // It it is impossible to assign a crs to an existing layer
+    // No OGR_L_SetSpatialRef : http://trac.osgeo.org/gdal/ticket/4032
+  }
 }
 
 QgsOgrLayerItem::~QgsOgrLayerItem()
 {
 }
 
+Q_NOWARN_DEPRECATED_PUSH
 QgsLayerItem::Capability QgsOgrLayerItem::capabilities()
 {
-  QgsDebugMsg( "mPath = " + mPath );
-  OGRRegisterAll();
-  OGRSFDriverH hDriver;
-  OGRDataSourceH hDataSource = OGROpen( TO8F( mPath ), true, &hDriver );
-
-  if ( !hDataSource )
-    return NoCapabilities;
-
-  QString  driverName = OGR_Dr_GetName( hDriver );
-  OGR_DS_Destroy( hDataSource );
-
-  if ( driverName == "ESRI Shapefile" )
-    return SetCrs;
-
-  return NoCapabilities;
+  return mCapabilities & SetCrs ? SetCrs : NoCapabilities;
 }
+Q_NOWARN_DEPRECATED_POP
 
 bool QgsOgrLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
 {
-  QgsDebugMsg( "mPath = " + mPath );
-  OGRRegisterAll();
-  OGRSFDriverH hDriver;
-  OGRDataSourceH hDataSource = OGROpen( TO8F( mPath ), true, &hDriver );
-
-  if ( !hDataSource )
+  if ( !( mCapabilities & SetCrs ) )
     return false;
 
-  QString  driverName = OGR_Dr_GetName( hDriver );
-  OGR_DS_Destroy( hDataSource );
+  QString layerName = mPath.left( mPath.indexOf( ".shp", Qt::CaseInsensitive ) );
+  QString wkt = crs.toWkt();
 
-  // we are able to assign CRS only to shapefiles :-(
-  if ( driverName == "ESRI Shapefile" )
+  // save ordinary .prj file
+  OGRSpatialReferenceH hSRS = OSRNewSpatialReference( wkt.toLocal8Bit().data() );
+  OSRMorphToESRI( hSRS ); // this is the important stuff for shapefile .prj
+  char* pszOutWkt = nullptr;
+  OSRExportToWkt( hSRS, &pszOutWkt );
+  QFile prjFile( layerName + ".prj" );
+  if ( prjFile.open( QIODevice::WriteOnly ) )
   {
-    QString layerName = mPath.left( mPath.indexOf( ".shp", Qt::CaseInsensitive ) );
-    QString wkt = crs.toWkt();
+    QTextStream prjStream( &prjFile );
+    prjStream << pszOutWkt << endl;
+    prjFile.close();
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "Couldn't open file %1.prj" ).arg( layerName ), tr( "OGR" ) );
+    return false;
+  }
+  OSRDestroySpatialReference( hSRS );
+  CPLFree( pszOutWkt );
 
-    // save ordinary .prj file
-    OGRSpatialReferenceH hSRS = OSRNewSpatialReference( wkt.toLocal8Bit().data() );
-    OSRMorphToESRI( hSRS ); // this is the important stuff for shapefile .prj
-    char* pszOutWkt = NULL;
-    OSRExportToWkt( hSRS, &pszOutWkt );
-    QFile prjFile( layerName + ".prj" );
-    if ( prjFile.open( QIODevice::WriteOnly ) )
-    {
-      QTextStream prjStream( &prjFile );
-      prjStream << pszOutWkt << endl;
-      prjFile.close();
-    }
-    else
-    {
-      QgsMessageLog::logMessage( tr( "Couldn't open file %1.prj" ).arg( layerName ), tr( "OGR" ) );
-      return false;
-    }
-    OSRDestroySpatialReference( hSRS );
-    CPLFree( pszOutWkt );
-
-    // save qgis-specific .qpj file (maybe because of better wkt compatibility?)
-    QFile qpjFile( layerName + ".qpj" );
-    if ( qpjFile.open( QIODevice::WriteOnly ) )
-    {
-      QTextStream qpjStream( &qpjFile );
-      qpjStream << wkt.toLocal8Bit().data() << endl;
-      qpjFile.close();
-    }
-    else
-    {
-      QgsMessageLog::logMessage( tr( "Couldn't open file %1.qpj" ).arg( layerName ), tr( "OGR" ) );
-      return false;
-    }
-
-    return true;
+  // save qgis-specific .qpj file (maybe because of better wkt compatibility?)
+  QFile qpjFile( layerName + ".qpj" );
+  if ( qpjFile.open( QIODevice::WriteOnly ) )
+  {
+    QTextStream qpjStream( &qpjFile );
+    qpjStream << wkt.toLocal8Bit().data() << endl;
+    qpjFile.close();
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "Couldn't open file %1.qpj" ).arg( layerName ), tr( "OGR" ) );
+    return false;
   }
 
-  // It it is impossible to assign a crs to an existing layer
-  // No OGR_L_SetSpatialRef : http://trac.osgeo.org/gdal/ticket/4032
-  return false;
+  return true;
 }
 
 QString QgsOgrLayerItem::layerName() const
@@ -183,7 +171,7 @@ static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name,
 
     layerUri += "|layerid=" + QString::number( layerId );
 
-    path += "/" + name;
+    path += '/' + name;
   }
 
   QgsDebugMsgLevel( "OGR layer uri : " + layerUri, 2 );
@@ -212,7 +200,8 @@ QVector<QgsDataItem*> QgsOgrDataCollectionItem::createChildren()
     return children;
   int numLayers = OGR_DS_GetLayerCount( hDataSource );
 
-  for ( int i = 0; i < numLayers; i++ )
+  children.reserve( numLayers );
+  for ( int i = 0; i < numLayers; ++i )
   {
     QgsOgrLayerItem* item = dataItemForLayer( this, QString(), mPath, hDataSource, i );
     children.append( item );
@@ -233,7 +222,7 @@ QGISEXTERN int dataCapabilities()
 QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {
   if ( thePath.isEmpty() )
-    return 0;
+    return nullptr;
 
   QgsDebugMsgLevel( "thePath: " + thePath, 2 );
 
@@ -252,8 +241,8 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   bool scanExtSetting = false;
   if (( settings.value( "/qgis/scanItemsInBrowser2",
                         "extension" ).toString() == "extension" ) ||
-      ( settings.value( "/qgis/scanItemsFastScanUris",
-                        QStringList() ).toStringList().contains( parentItem->path() ) ) ||
+      ( parentItem && settings.value( "/qgis/scanItemsFastScanUris",
+                                      QStringList() ).toStringList().contains( parentItem->path() ) ) ||
       (( is_vsizip || is_vsitar ) && parentItem && parentItem->parent() &&
        settings.value( "/qgis/scanItemsFastScanUris",
                        QStringList() ).toStringList().contains( parentItem->parent()->path() ) ) )
@@ -276,7 +265,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   // allow only normal files or VSIFILE items to continue
   if ( !info.isFile() && vsiPrefix == "" )
-    return 0;
+    return nullptr;
 
   QStringList myExtensions = fileExtensions();
 
@@ -285,20 +274,20 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   // unless that extension is in the list (*.xml might be though)
   if ( thePath.endsWith( ".aux.xml", Qt::CaseInsensitive ) &&
        !myExtensions.contains( "aux.xml" ) )
-    return 0;
+    return nullptr;
   if ( thePath.endsWith( ".shp.xml", Qt::CaseInsensitive ) &&
        !myExtensions.contains( "shp.xml" ) )
-    return 0;
+    return nullptr;
   if ( thePath.endsWith( ".tif.xml", Qt::CaseInsensitive ) &&
        !myExtensions.contains( "tif.xml" ) )
-    return 0;
+    return nullptr;
 
   // We have to filter by extensions, otherwise e.g. all Shapefile files are displayed
   // because OGR drive can open also .dbf, .shx.
   if ( myExtensions.indexOf( suffix ) < 0 )
   {
     bool matches = false;
-    foreach ( QString wildcard, wildcards() )
+    Q_FOREACH ( const QString& wildcard, wildcards() )
     {
       QRegExp rx( wildcard, Qt::CaseInsensitive, QRegExp::Wildcard );
       if ( rx.exactMatch( info.fileName() ) )
@@ -308,7 +297,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       }
     }
     if ( !matches )
-      return 0;
+      return nullptr;
   }
 
   // .dbf should probably appear if .shp is not present
@@ -316,7 +305,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   {
     QString pathShp = thePath.left( thePath.count() - 4 ) + ".shp";
     if ( QFileInfo( pathShp ).exists() )
-      return 0;
+      return nullptr;
   }
 
   // fix vsifile path and name
@@ -327,13 +316,13 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       thePath = vsiPrefix + thePath;
     // if this is a /vsigzip/path_to_zip.zip/file_inside_zip remove the full path from the name
     // no need to change the name I believe
-    /*
+#if 0
     if (( is_vsizip || is_vsitar ) && ( thePath != vsiPrefix + parentItem->path() ) )
     {
       name = thePath;
-      name = name.replace( vsiPrefix + parentItem->path() + "/", "" );
+      name = name.replace( vsiPrefix + parentItem->path() + '/', "" );
     }
-    */
+#endif
   }
 
   // return item without testing if:
@@ -356,7 +345,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
         if ( ! hDataSource )
         {
           QgsDebugMsgLevel( "Skipping VRT file because root is not a OGR VRT", 2 );
-          return 0;
+          return nullptr;
         }
         OGR_DS_Destroy( hDataSource );
       }
@@ -380,7 +369,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   if ( ! hDataSource )
   {
     QgsDebugMsg( QString( "OGROpen error # %1 : %2 " ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
-    return 0;
+    return nullptr;
   }
 
   QString  driverName = OGR_Dr_GetName( hDriver );
@@ -388,7 +377,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   int numLayers = OGR_DS_GetLayerCount( hDataSource );
 
-  QgsDataItem* item = 0;
+  QgsDataItem* item = nullptr;
 
   if ( numLayers == 1 )
   {

@@ -5,7 +5,7 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
 %End
 
   public:
-    QgsSimpleLineSymbolLayerV2( QColor color = DEFAULT_SIMPLELINE_COLOR,
+    QgsSimpleLineSymbolLayerV2( const QColor& color = DEFAULT_SIMPLELINE_COLOR,
                                 double width = DEFAULT_SIMPLELINE_WIDTH,
                                 Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE );
 
@@ -24,14 +24,14 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context );
 
-    //overriden so that clip path can be set when using draw inside polygon option
+    //overridden so that clip path can be set when using draw inside polygon option
     void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
 
     QgsStringMap properties() const;
 
-    QgsSymbolLayerV2* clone() const /Factory/;
+    virtual QgsSimpleLineSymbolLayerV2* clone() const /Factory/;
 
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
@@ -74,9 +74,9 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
     QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const;
     Qt::PenStyle dxfPenStyle() const;
 
-    double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
-    double dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
-    QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
+    double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext &context ) const;
+    double dxfOffset( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
+    QColor dxfColor( QgsSymbolV2RenderContext& context ) const;
 };
 
 /////////
@@ -93,18 +93,37 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     ~QgsMarkerLineSymbolLayerV2();
 
+    /**
+     * Defines how/where the marker should be placed on the line
+     */
     enum Placement
     {
       Interval,
       Vertex,
       LastVertex,
       FirstVertex,
-      CentralPoint
+      CentralPoint,
+      CurvePoint
     };
 
     // static stuff
 
+    /**
+     * Create a new MarkerLineSymbolLayerV2
+     *
+     * @param properties A property map to deserialize saved information from properties()
+     *
+     * @return A new MarkerLineSymbolLayerV2
+     */
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+
+    /**
+     * Create a new MarkerLineSymbolLayerV2 from SLD
+     *
+     * @param element An SLD XML DOM element
+     *
+     * @return A new MarkerLineSymbolLayerV2
+     */
     static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
 
     // implemented from base classes
@@ -121,14 +140,14 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     QgsStringMap properties() const;
 
-    QgsSymbolLayerV2* clone() const;
+    virtual QgsMarkerLineSymbolLayerV2* clone() const;
 
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     void setColor( const QColor& color );
 
     QgsSymbolV2* subSymbol();
-    bool setSubSymbol( QgsSymbolV2* symbol );
+    bool setSubSymbol( QgsSymbolV2* symbol /Transfer/);
 
     virtual void setWidth( double width );
     virtual double width() const;
@@ -137,16 +156,39 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     // new stuff
 
+    /**
+     * Shall the marker be rotated.
+     *
+     * @return True if the marker should be rotated.
+     */
     bool rotateMarker() const;
+
+    /**
+     * Shall the marker be rotated.
+     */
     void setRotateMarker( bool rotate );
 
+    /**
+     * The interval between individual markers.
+     */
     double interval() const;
+
+    /**
+     * The interval between individual markers.
+     */
     void setInterval( double interval );
 
+    /**
+     * The placement of the markers.
+     */
     Placement placement() const;
+
+    /**
+     * The placement of the markers.
+     */
     void setPlacement( Placement p );
 
-    /**Returns the offset along the line for the marker placement. For Interval placements, this is the distance
+    /** Returns the offset along the line for the marker placement. For Interval placements, this is the distance
      * between the start of the line and the first marker. For FirstVertex and LastVertex placements, this is the
      * distance between the marker and the start of the line or the end of the line respectively.
      * This setting has no effect for Vertex or CentralPoint placements.
@@ -155,10 +197,10 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
      * @see setOffsetAlongLine
      * @see offsetAlongLineUnit
      * @see placement
-    */
+     */
     double offsetAlongLine() const;
 
-    /**Sets the the offset along the line for the marker placement. For Interval placements, this is the distance
+    /** Sets the the offset along the line for the marker placement. For Interval placements, this is the distance
      * between the start of the line and the first marker. For FirstVertex and LastVertex placements, this is the
      * distance between the marker and the start of the line or the end of the line respectively.
      * This setting has no effect for Vertex or CentralPoint placements.
@@ -168,29 +210,29 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
      * @see offsetAlongLine
      * @see setOffsetAlongLineUnit
      * @see setPlacement
-    */
+     */
     void setOffsetAlongLine( double offsetAlongLine );
 
-    /**Returns the unit used for calculating the offset along line for markers.
+    /** Returns the unit used for calculating the offset along line for markers.
      * @returns Offset along line unit type.
      * @see setOffsetAlongLineUnit
      * @see offsetAlongLine
-    */
+     */
     QgsSymbolV2::OutputUnit offsetAlongLineUnit() const;
 
-    /**Sets the unit used for calculating the offset along line for markers.
+    /** Sets the unit used for calculating the offset along line for markers.
      * @param unit Offset along line unit type.
      * @see offsetAlongLineUnit
      * @see setOffsetAlongLine
-    */
+     */
     void setOffsetAlongLineUnit( QgsSymbolV2::OutputUnit unit );
 
-    /**Returns the map unit scale used for calculating the offset in map units along line for markers.
+    /** Returns the map unit scale used for calculating the offset in map units along line for markers.
      * @returns Offset along line map unit scale.
      */
     const QgsMapUnitScale& offsetAlongLineMapUnitScale() const;
 
-    /**Sets the map unit scale used for calculating the offset in map units along line for markers.
+    /** Sets the map unit scale used for calculating the offset in map units along line for markers.
      * @param scale Offset along line map unit scale.
      */
     void setOffsetAlongLineMapUnitScale( const QgsMapUnitScale& scale );
@@ -206,6 +248,10 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
+
+    QSet<QString> usedAttributes() const;
+
+    void setDataDefinedProperty( const QString& property, QgsDataDefined* dataDefined /Transfer/ );
 
   protected:
 

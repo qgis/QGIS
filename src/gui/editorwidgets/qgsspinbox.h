@@ -37,20 +37,20 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
       CustomValue
     };
 
-    explicit QgsSpinBox( QWidget *parent = 0 );
+    explicit QgsSpinBox( QWidget *parent = nullptr );
 
     //! determines if the widget will show a clear button
     //! @note the clear button will set the widget to its minimum value
     void setShowClearButton( const bool showClearButton );
     bool showClearButton() const {return mShowClearButton;}
 
-    /**Sets if the widget will allow entry of simple expressions, which are
+    /** Sets if the widget will allow entry of simple expressions, which are
      * evaluated and then discarded.
      * @param enabled set to true to allow expression entry
      * @note added in QGIS 2.7
      */
     void setExpressionsEnabled( const bool enabled );
-    /**Returns whether the widget will allow entry of simple expressions, which are
+    /** Returns whether the widget will allow entry of simple expressions, which are
      * evaluated and then discarded.
      * @returns true if spin box allows expression entry
      * @note added in QGIS 2.7
@@ -65,13 +65,13 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
      * @param customValue defines the numerical value used as the clear value
      * @param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
      */
-    void setClearValue( int customValue, QString clearValueText = QString() );
+    void setClearValue( int customValue, const QString& clearValueText = QString() );
     /**
      * @brief setClearValueMode defines if the clear value should be the minimum or maximum values of the widget or a custom value
      * @param mode mode to user for clear value
      * @param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
      */
-    void setClearValueMode( ClearValueMode mode, QString clearValueText = QString() );
+    void setClearValueMode( ClearValueMode mode, const QString& clearValueText = QString() );
 
     //! returns the value used when clear() is called.
     int clearValue() const;
@@ -85,7 +85,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     virtual void paintEvent( QPaintEvent* event ) override;
 
   private slots:
-    void changed( const int& value );
+    void changed( int value );
 
   private:
     int frameWidth() const;

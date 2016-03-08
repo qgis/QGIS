@@ -31,18 +31,18 @@
 static QColor _interpolate( const QColor& c1, const QColor& c2, const double value )
 {
   if ( qIsNaN( value ) ) return c2;
-  int r = ( int )( c1.red() + value * ( c2.red() - c1.red() ) );
-  int g = ( int )( c1.green() + value * ( c2.green() - c1.green() ) );
-  int b = ( int )( c1.blue() + value * ( c2.blue() - c1.blue() ) );
-  int a = ( int )( c1.alpha() + value * ( c2.alpha() - c1.alpha() ) );
+  int r = static_cast< int >( c1.red() + value * ( c2.red() - c1.red() ) );
+  int g = static_cast< int >( c1.green() + value * ( c2.green() - c1.green() ) );
+  int b = static_cast< int >( c1.blue() + value * ( c2.blue() - c1.blue() ) );
+  int a = static_cast< int >( c1.alpha() + value * ( c2.alpha() - c1.alpha() ) );
 
   return QColor::fromRgb( r, g, b, a );
 }
 
 //////////////
 
-QgsVectorGradientColorRampV2::QgsVectorGradientColorRampV2( QColor color1, QColor color2,
-    bool discrete, QgsGradientStopsList stops )
+QgsVectorGradientColorRampV2::QgsVectorGradientColorRampV2( const QColor& color1, const QColor& color2,
+    bool discrete, const QgsGradientStopsList& stops )
     : mColor1( color1 ), mColor2( color2 ), mDiscrete( discrete ), mStops( stops )
 {
 }
@@ -61,7 +61,7 @@ QgsVectorColorRampV2* QgsVectorGradientColorRampV2::create( const QgsStringMap& 
   QgsGradientStopsList stops;
   if ( props.contains( "stops" ) )
   {
-    foreach ( QString stop, props["stops"].split( ':' ) )
+    Q_FOREACH ( const QString& stop, props["stops"].split( ':' ) )
     {
       int i = stop.indexOf( ';' );
       if ( i == -1 )
@@ -141,7 +141,7 @@ QColor QgsVectorGradientColorRampV2::color( double value ) const
         upper = it->offset;
         c2 = it->color;
 
-        return upper == lower ? c1 : _interpolate( c1, c2, ( value - lower ) / ( upper - lower ) );
+        return qgsDoubleNear( upper, lower ) ? c1 : _interpolate( c1, c2, ( value - lower ) / ( upper - lower ) );
       }
       lower = it->offset;
       c1 = it->color;
@@ -152,11 +152,11 @@ QColor QgsVectorGradientColorRampV2::color( double value ) const
 
     upper = 1;
     c2 = mColor2;
-    return upper == lower ? c1 : _interpolate( c1, c2, ( value - lower ) / ( upper - lower ) );
+    return qgsDoubleNear( upper, lower ) ? c1 : _interpolate( c1, c2, ( value - lower ) / ( upper - lower ) );
   }
 }
 
-QgsVectorColorRampV2* QgsVectorGradientColorRampV2::clone() const
+QgsVectorGradientColorRampV2* QgsVectorGradientColorRampV2::clone() const
 {
   QgsVectorGradientColorRampV2* r = new QgsVectorGradientColorRampV2( mColor1, mColor2,
       mDiscrete, mStops );
@@ -202,26 +202,26 @@ void QgsVectorGradientColorRampV2::convertToDiscrete( bool discrete )
     // re-arrange stops offset
     int numStops = mStops.count() + 2;
     int i = 1;
-    for ( QgsGradientStopsList::const_iterator it = mStops.begin();
-          it != mStops.end(); ++it )
+    for ( QgsGradientStopsList::const_iterator it = mStops.constBegin();
+          it != mStops.constEnd(); ++it )
     {
-      newStops.append( QgsGradientStop(( double ) i / numStops, it->color ) );
+      newStops.append( QgsGradientStop( static_cast< double >( i ) / numStops, it->color ) );
       if ( i == numStops - 1 )
         break;
       i++;
     }
     // replicate last color
-    newStops.append( QgsGradientStop(( double ) i / numStops, mColor2 ) );
+    newStops.append( QgsGradientStop( static_cast< double >( i ) / numStops, mColor2 ) );
   }
   else
   {
     // re-arrange stops offset, remove duplicate last color
     int numStops = mStops.count() + 2;
     int i = 1;
-    for ( QgsGradientStopsList::const_iterator it = mStops.begin();
-          it != mStops.end(); ++it )
+    for ( QgsGradientStopsList::const_iterator it = mStops.constBegin();
+          it != mStops.constEnd(); ++it )
     {
-      newStops.append( QgsGradientStop(( double ) i / ( numStops - 2 ), it->color ) );
+      newStops.append( QgsGradientStop( static_cast< double >( i ) / ( numStops - 2 ), it->color ) );
       if ( i == numStops - 3 )
         break;
       i++;
@@ -244,8 +244,8 @@ void QgsVectorGradientColorRampV2::addStopsToGradient( QGradient* gradient, doub
   gradient->setColorAt( 0, color1 );
   gradient->setColorAt( 1, color2 );
 
-  for ( QgsGradientStopsList::const_iterator it = mStops.begin();
-        it != mStops.end(); ++it )
+  for ( QgsGradientStopsList::const_iterator it = mStops.constBegin();
+        it != mStops.constEnd(); ++it )
   {
     QColor rampColor = it->color;
     if ( alpha < 1 )
@@ -262,8 +262,10 @@ void QgsVectorGradientColorRampV2::addStopsToGradient( QGradient* gradient, doub
 
 QgsVectorRandomColorRampV2::QgsVectorRandomColorRampV2( int count, int hueMin, int hueMax,
     int satMin, int satMax, int valMin, int valMax )
-    : mCount( count ), mHueMin( hueMin ), mHueMax( hueMax ),
-    mSatMin( satMin ), mSatMax( satMax ), mValMin( valMin ), mValMax( valMax )
+    : mCount( count )
+    , mHueMin( hueMin ), mHueMax( hueMax )
+    , mSatMin( satMin ), mSatMax( satMax )
+    , mValMin( valMin ), mValMax( valMax )
 {
   updateColors();
 }
@@ -289,13 +291,13 @@ QgsVectorColorRampV2* QgsVectorRandomColorRampV2::create( const QgsStringMap& pr
 double QgsVectorRandomColorRampV2::value( int index ) const
 {
   if ( mColors.size() < 1 ) return 0;
-  return index / mColors.size() - 1;
+  return static_cast< double >( index ) / ( mColors.size() - 1 );
 }
 
 QColor QgsVectorRandomColorRampV2::color( double value ) const
 {
   int colorCnt = mColors.count();
-  int colorIdx = ( int )( value * colorCnt );
+  int colorIdx = static_cast< int >( value * ( colorCnt - 1 ) );
 
   if ( colorIdx >= 0 && colorIdx < colorCnt )
     return mColors.at( colorIdx );
@@ -303,7 +305,7 @@ QColor QgsVectorRandomColorRampV2::color( double value ) const
   return QColor();
 }
 
-QgsVectorColorRampV2* QgsVectorRandomColorRampV2::clone() const
+QgsVectorRandomColorRampV2* QgsVectorRandomColorRampV2::clone() const
 {
   return new QgsVectorRandomColorRampV2( mCount, mHueMin, mHueMax, mSatMin, mSatMax, mValMin, mValMax );
 }
@@ -336,9 +338,10 @@ QList<QColor> QgsVectorRandomColorRampV2::randomColors( int count,
   int safeValMin = qMin( valMin, valMax );
 
   //start hue at random angle
-  double currentHueAngle = 360.0 * ( double )rand() / RAND_MAX;
+  double currentHueAngle = 360.0 * static_cast< double >( qrand() ) / RAND_MAX;
 
-  for ( int i = 0; i < count; i++ )
+  colors.reserve( count );
+  for ( int i = 0; i < count; ++i )
   {
     //increment hue by golden ratio (approx 137.507 degrees)
     //as this minimises hue nearness as count increases
@@ -346,8 +349,8 @@ QList<QColor> QgsVectorRandomColorRampV2::randomColors( int count,
     currentHueAngle += 137.50776;
     //scale hue to between hueMax and hueMin
     h = qBound( 0, qRound(( fmod( currentHueAngle, 360.0 ) / 360.0 ) * ( safeHueMax - safeHueMin ) + safeHueMin ), 359 );
-    s = qBound( 0, ( rand() % ( safeSatMax - safeSatMin + 1 ) ) + safeValMax, 255 );
-    v = qBound( 0, ( rand() % ( safeValMax - safeValMin + 1 ) ) + safeValMin, 255 );
+    s = qBound( 0, ( qrand() % ( safeSatMax - safeSatMin + 1 ) ) + safeSatMin, 255 );
+    v = qBound( 0, ( qrand() % ( safeValMax - safeValMin + 1 ) ) + safeValMin, 255 );
     colors.append( QColor::fromHsv( h, s, v ) );
   }
   return colors;
@@ -363,7 +366,6 @@ void QgsVectorRandomColorRampV2::updateColors()
 QgsRandomColorsV2::QgsRandomColorsV2()
     : mTotalColorCount( 0 )
 {
-  srand( QTime::currentTime().msec() );
 }
 
 QgsRandomColorsV2::~QgsRandomColorsV2()
@@ -373,7 +375,7 @@ QgsRandomColorsV2::~QgsRandomColorsV2()
 
 int QgsRandomColorsV2::count() const
 {
-  return INT_MAX;
+  return -1;
 }
 
 double QgsRandomColorsV2::value( int index ) const
@@ -396,9 +398,9 @@ QColor QgsRandomColorsV2::color( double value ) const
   }
 
   //can't use precalculated hues, use a totally random hue
-  int h = 1 + ( int )( 360.0 * rand() / ( RAND_MAX + 1.0 ) );
-  int s = ( rand() % ( DEFAULT_RANDOM_SAT_MAX - DEFAULT_RANDOM_SAT_MIN + 1 ) ) + DEFAULT_RANDOM_SAT_MIN;
-  int v = ( rand() % ( maxVal - minVal + 1 ) ) + minVal;
+  int h = static_cast< int >( 360.0 * qrand() / ( RAND_MAX + 1.0 ) );
+  int s = ( qrand() % ( DEFAULT_RANDOM_SAT_MAX - DEFAULT_RANDOM_SAT_MIN + 1 ) ) + DEFAULT_RANDOM_SAT_MIN;
+  int v = ( qrand() % ( maxVal - minVal + 1 ) ) + minVal;
   return QColor::fromHsv( h, s, v );
 }
 
@@ -412,7 +414,7 @@ void QgsRandomColorsV2::setTotalColorCount( const int colorCount )
   //similar colors being picked. TODO - investigate alternative "n-visually distinct color" routines
 
   //random offsets
-  double hueOffset = ( 360.0 * rand() / ( RAND_MAX + 1.0 ) );
+  double hueOffset = ( 360.0 * qrand() / ( RAND_MAX + 1.0 ) );
 
   //try to maximise difference between hues. this is not an ideal implementation, as constant steps
   //through the hue wheel are not visually perceived as constant changes in hue
@@ -424,8 +426,8 @@ void QgsRandomColorsV2::setTotalColorCount( const int colorCount )
   for ( int idx = 0; idx < colorCount; ++ idx )
   {
     int h = qRound( currentHue ) % 360;
-    int s = ( rand() % ( DEFAULT_RANDOM_SAT_MAX - DEFAULT_RANDOM_SAT_MIN + 1 ) ) + DEFAULT_RANDOM_SAT_MIN;
-    int v = ( rand() % ( DEFAULT_RANDOM_VAL_MAX - DEFAULT_RANDOM_VAL_MIN + 1 ) ) + DEFAULT_RANDOM_VAL_MIN;
+    int s = ( qrand() % ( DEFAULT_RANDOM_SAT_MAX - DEFAULT_RANDOM_SAT_MIN + 1 ) ) + DEFAULT_RANDOM_SAT_MIN;
+    int v = ( qrand() % ( DEFAULT_RANDOM_VAL_MAX - DEFAULT_RANDOM_VAL_MIN + 1 ) ) + DEFAULT_RANDOM_VAL_MIN;
     mPrecalculatedColors << QColor::fromHsv( h, s, v );
     currentHue += hueStep;
   }
@@ -439,7 +441,7 @@ QString QgsRandomColorsV2::type() const
   return "randomcolors";
 }
 
-QgsVectorColorRampV2* QgsRandomColorsV2::clone() const
+QgsRandomColorsV2* QgsRandomColorsV2::clone() const
 {
   return new QgsRandomColorsV2();
 }
@@ -451,7 +453,7 @@ QgsStringMap QgsRandomColorsV2::properties() const
 
 ////////////
 
-QgsVectorColorBrewerColorRampV2::QgsVectorColorBrewerColorRampV2( QString schemeName, int colors )
+QgsVectorColorBrewerColorRampV2::QgsVectorColorBrewerColorRampV2( const QString& schemeName, int colors )
     : mSchemeName( schemeName ), mColors( colors )
 {
   loadPalette();
@@ -480,7 +482,7 @@ QStringList QgsVectorColorBrewerColorRampV2::listSchemeNames()
   return QgsColorBrewerPalette::listSchemes();
 }
 
-QList<int> QgsVectorColorBrewerColorRampV2::listSchemeVariants( QString schemeName )
+QList<int> QgsVectorColorBrewerColorRampV2::listSchemeVariants( const QString& schemeName )
 {
   return QgsColorBrewerPalette::listSchemeVariants( schemeName );
 }
@@ -488,21 +490,21 @@ QList<int> QgsVectorColorBrewerColorRampV2::listSchemeVariants( QString schemeNa
 double QgsVectorColorBrewerColorRampV2::value( int index ) const
 {
   if ( mPalette.size() < 1 ) return 0;
-  return index / mPalette.size() - 1;
+  return static_cast< double >( index ) / ( mPalette.size() - 1 );
 }
 
 QColor QgsVectorColorBrewerColorRampV2::color( double value ) const
 {
   if ( mPalette.isEmpty() || value < 0 || value > 1 )
-    return QColor( 255, 0, 0 ); // red color as a warning :)
+    return QColor();
 
-  int paletteEntry = ( int )( value * mPalette.count() );
+  int paletteEntry = static_cast< int >( value * mPalette.count() );
   if ( paletteEntry >= mPalette.count() )
     paletteEntry = mPalette.count() - 1;
   return mPalette.at( paletteEntry );
 }
 
-QgsVectorColorRampV2* QgsVectorColorBrewerColorRampV2::clone() const
+QgsVectorColorBrewerColorRampV2* QgsVectorColorBrewerColorRampV2::clone() const
 {
   return new QgsVectorColorBrewerColorRampV2( mSchemeName, mColors );
 }
@@ -519,11 +521,11 @@ QgsStringMap QgsVectorColorBrewerColorRampV2::properties() const
 ////////////
 
 
-QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName, QString variantName,
+QgsCptCityColorRampV2::QgsCptCityColorRampV2( const QString& schemeName, const QString& variantName,
     bool doLoadFile )
-    : QgsVectorGradientColorRampV2(),
-    mSchemeName( schemeName ), mVariantName( variantName ),
-    mVariantList( QStringList() ), mFileLoaded( false ), mMultiStops( false )
+    : QgsVectorGradientColorRampV2()
+    , mSchemeName( schemeName ), mVariantName( variantName )
+    , mVariantList( QStringList() ), mFileLoaded( false ), mMultiStops( false )
 {
   // TODO replace this with hard-coded data in the default case
   // don't load file if variant is missing
@@ -531,11 +533,11 @@ QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName, QString varian
     loadFile();
 }
 
-QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName,  QStringList variantList,
-    QString variantName, bool doLoadFile )
-    : QgsVectorGradientColorRampV2(),
-    mSchemeName( schemeName ), mVariantName( variantName ),
-    mVariantList( variantList ), mFileLoaded( false ), mMultiStops( false )
+QgsCptCityColorRampV2::QgsCptCityColorRampV2( const QString& schemeName, const QStringList& variantList,
+    const QString& variantName, bool doLoadFile )
+    : QgsVectorGradientColorRampV2()
+    , mSchemeName( schemeName ), mVariantName( variantName )
+    , mVariantList( variantList ), mFileLoaded( false ), mMultiStops( false )
 {
   mVariantList = variantList;
 
@@ -558,7 +560,7 @@ QgsVectorColorRampV2* QgsCptCityColorRampV2::create( const QgsStringMap& props )
   return new QgsCptCityColorRampV2( schemeName, variantName );
 }
 
-QgsVectorColorRampV2* QgsCptCityColorRampV2::clone() const
+QgsCptCityColorRampV2* QgsCptCityColorRampV2::clone() const
 {
   QgsCptCityColorRampV2* ramp = new QgsCptCityColorRampV2( "", "", false );
   ramp->copy( this );
@@ -707,7 +709,7 @@ bool QgsCptCityColorRampV2::loadFile()
   }
 
   // remove first and last items (mColor1 and mColor2)
-  if ( ! mStops.isEmpty() && mStops.first().offset == 0.0 )
+  if ( ! mStops.isEmpty() && mStops.at( 0 ).offset == 0.0 )
     mColor1 = mStops.takeFirst().color;
   if ( ! mStops.isEmpty() && mStops.last().offset == 1.0 )
     mColor2 = mStops.takeLast().color;

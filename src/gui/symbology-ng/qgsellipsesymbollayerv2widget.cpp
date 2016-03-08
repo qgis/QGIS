@@ -21,14 +21,14 @@
 
 QgsEllipseSymbolLayerV2Widget::QgsEllipseSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
     : QgsSymbolLayerV2Widget( parent, vl )
-    , mLayer( NULL )
+    , mLayer( nullptr )
 {
   setupUi( this );
 
-  mSymbolWidthUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
-  mSymbolHeightUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
-  mOutlineWidthUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
-  mOffsetUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
+  mSymbolWidthUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
+  mSymbolHeightUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
+  mOutlineWidthUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
+  mOffsetUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
 
   btnChangeColorFill->setAllowAlpha( true );
   btnChangeColorFill->setColorDialogTitle( tr( "Select fill color" ) );
@@ -71,7 +71,7 @@ QgsEllipseSymbolLayerV2Widget::QgsEllipseSymbolLayerV2Widget( const QgsVectorLay
 
 void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
 {
-  if ( layer->layerType() != "EllipseMarker" )
+  if ( !layer || layer->layerType() != "EllipseMarker" )
   {
     return;
   }
@@ -86,25 +86,21 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   btnChangeColorFill->setColor( mLayer->fillColor() );
 
   QList<QListWidgetItem *> symbolItemList = mShapeListWidget->findItems( mLayer->symbolName(), Qt::MatchExactly );
-  if ( symbolItemList.size() > 0 )
+  if ( !symbolItemList.isEmpty() )
   {
     mShapeListWidget->setCurrentItem( symbolItemList.at( 0 ) );
   }
 
   //set combo entries to current values
   blockComboSignals( true );
-  if ( mLayer )
-  {
-    mSymbolWidthUnitWidget->setUnit( mLayer->symbolWidthUnit() );
-    mSymbolWidthUnitWidget->setMapUnitScale( mLayer->symbolWidthMapUnitScale() );
-    mOutlineWidthUnitWidget->setUnit( mLayer->outlineWidthUnit() );
-    mOutlineWidthUnitWidget->setMapUnitScale( mLayer->outlineWidthMapUnitScale() );
-    mSymbolHeightUnitWidget->setUnit( mLayer->symbolHeightUnit() );
-    mSymbolHeightUnitWidget->setMapUnitScale( mLayer->symbolHeightMapUnitScale() );
-    mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
-    mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
-  }
-
+  mSymbolWidthUnitWidget->setUnit( mLayer->symbolWidthUnit() );
+  mSymbolWidthUnitWidget->setMapUnitScale( mLayer->symbolWidthMapUnitScale() );
+  mOutlineWidthUnitWidget->setUnit( mLayer->outlineWidthUnit() );
+  mOutlineWidthUnitWidget->setMapUnitScale( mLayer->outlineWidthMapUnitScale() );
+  mSymbolHeightUnitWidget->setUnit( mLayer->symbolHeightUnit() );
+  mSymbolHeightUnitWidget->setMapUnitScale( mLayer->symbolHeightMapUnitScale() );
+  mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
+  mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
   QPointF offsetPt = mLayer->offset();
   spinOffsetX->setValue( offsetPt.x() );
   spinOffsetY->setValue( offsetPt.y() );
@@ -217,8 +213,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mSymbolWidthUnitWidget_changed()
 {
   if ( mLayer )
   {
-    QgsSymbolV2::OutputUnit unit = static_cast<QgsSymbolV2::OutputUnit>( mSymbolWidthUnitWidget->getUnit() );
-    mLayer->setSymbolWidthUnit( unit );
+    mLayer->setSymbolWidthUnit( mSymbolWidthUnitWidget->unit() );
     mLayer->setSymbolWidthMapUnitScale( mSymbolWidthUnitWidget->getMapUnitScale() );
     emit changed();
   }
@@ -228,8 +223,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mOutlineWidthUnitWidget_changed()
 {
   if ( mLayer )
   {
-    QgsSymbolV2::OutputUnit unit = static_cast<QgsSymbolV2::OutputUnit>( mOutlineWidthUnitWidget->getUnit() );
-    mLayer->setOutlineWidthUnit( unit );
+    mLayer->setOutlineWidthUnit( mOutlineWidthUnitWidget->unit() );
     mLayer->setOutlineWidthMapUnitScale( mOutlineWidthUnitWidget->getMapUnitScale() );
     emit changed();
   }
@@ -239,8 +233,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mSymbolHeightUnitWidget_changed()
 {
   if ( mLayer )
   {
-    QgsSymbolV2::OutputUnit unit = static_cast<QgsSymbolV2::OutputUnit>( mSymbolHeightUnitWidget->getUnit() );
-    mLayer->setSymbolHeightUnit( unit );
+    mLayer->setSymbolHeightUnit( mSymbolHeightUnitWidget->unit() );
     mLayer->setSymbolHeightMapUnitScale( mSymbolHeightUnitWidget->getMapUnitScale() );
     emit changed();
   }
@@ -250,8 +243,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mOffsetUnitWidget_changed()
 {
   if ( mLayer )
   {
-    QgsSymbolV2::OutputUnit unit = static_cast<QgsSymbolV2::OutputUnit>( mOffsetUnitWidget->getUnit() );
-    mLayer->setOffsetUnit( unit );
+    mLayer->setOffsetUnit( mOffsetUnitWidget->unit() );
     mLayer->setOffsetMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
     emit changed();
   }

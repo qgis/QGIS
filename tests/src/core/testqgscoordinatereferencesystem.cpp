@@ -13,8 +13,6 @@ Email                : sherman at mrcc dot com
  *                                                                         *
  ***************************************************************************/
 #include <QtTest/QtTest>
-#include <iostream>
-
 #include <QPixmap>
 
 #include <qgsapplication.h>
@@ -150,7 +148,7 @@ void TestQgsCoordinateReferenceSystem::createFromOgcWmsCrs()
   QgsCoordinateReferenceSystem myCrs;
   //@todo implement this - for now we just check that if fails
   //if passed an empty string
-  QVERIFY( !myCrs.createFromOgcWmsCrs( QString( "" ) ) );
+  QVERIFY( !myCrs.createFromOgcWmsCrs( QString() ) );
 }
 void TestQgsCoordinateReferenceSystem::createFromSrid()
 {
@@ -180,10 +178,10 @@ QString TestQgsCoordinateReferenceSystem::testESRIWkt( int i, QgsCoordinateRefer
 #endif
   if ( myCrs.toProj4().indexOf( myTOWGS84Strings[i] ) == -1 )
     return QString( "test %1 [%2] not found, PROJ.4 = [%3] expecting [%4]"
-                  ).arg( i ).arg( myTOWGS84Strings[i] ).arg( myCrs.toProj4() ).arg( myProj4Strings[i] );
+                  ).arg( i ).arg( myTOWGS84Strings[i], myCrs.toProj4(), myProj4Strings[i] );
   if ( myCrs.authid() !=  myAuthIdStrings[i] )
     return QString( "test %1 AUTHID = [%2] expecting [%3]"
-                  ).arg( i ).arg( myCrs.authid() ).arg( myAuthIdStrings[i] );
+                  ).arg( i ).arg( myCrs.authid(), myAuthIdStrings[i] );
 
   return "";
 }
@@ -227,7 +225,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
     CPLSetConfigOption( "GDAL_FIX_ESRI_WKT", configOld );
     myCrs.createFromUserInput( "ESRI::" + myWktStrings[i] );
     msg = testESRIWkt( i, myCrs );
-    if ( GDAL_VERSION_NUM < myGdalVersionOK[i] )
+    if ( GDAL_VERSION_NUM < myGdalVersionOK.at( i ) )
     {
       QEXPECT_FAIL( "", QString( "expected failure with GDAL %1 : %2"
                                ).arg( GDAL_VERSION_NUM ).arg( msg ).toLocal8Bit().constData(),
@@ -243,7 +241,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
     {
       // use ogr to open file, make sure CRS is ok
       // this probably could be in another test, but leaving it here since it deals with CRS
-      QString fileStr = QString( TEST_DATA_DIR ) + QDir::separator() + myFiles[i];
+      QString fileStr = QString( TEST_DATA_DIR ) + '/' + myFiles[i];
       QgsDebugMsg( QString( "i=%1 file=%2" ).arg( i ).arg( fileStr ) );
 
       QgsVectorLayer *myLayer = new QgsVectorLayer( fileStr, "", "ogr" );
@@ -256,10 +254,10 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
       {
         myCrs = myLayer->crs();
         msg = testESRIWkt( i, myCrs );
-        if ( GDAL_VERSION_NUM < myGdalVersionOK[i] )
+        if ( GDAL_VERSION_NUM < myGdalVersionOK.at( i ) )
         {
           QEXPECT_FAIL( "", QString( "expected failure with GDAL %1 : %2 using layer %3"
-                                   ).arg( GDAL_VERSION_NUM ).arg( msg ).arg( fileStr ).toLocal8Bit().constData(),
+                                   ).arg( GDAL_VERSION_NUM ).arg( msg, fileStr ).toLocal8Bit().constData(),
                         Continue );
         }
         if ( !msg.isEmpty() )
@@ -420,7 +418,7 @@ void TestQgsCoordinateReferenceSystem::setValidationHint()
 {
   QgsCoordinateReferenceSystem myCrs;
   myCrs.setValidationHint( "<head>" );
-  QVERIFY( myCrs.validationHint() == QString( "<head>" ) );
+  QVERIFY( myCrs.validationHint() == "<head>" );
   debugPrint( myCrs );
 }
 

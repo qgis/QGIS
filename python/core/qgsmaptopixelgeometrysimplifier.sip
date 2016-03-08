@@ -15,6 +15,11 @@ class QgsMapToPixelSimplifier : QgsAbstractGeometrySimplifier
       SimplifyEnvelope = 2, //!< The geometries can be fully simplified by its BoundingBox
     };
 
+  protected:
+
+    //! Returns the squared 2D-distance of the vector defined by the two points specified
+    static float calculateLengthSquared2D( double x1, double y1, double x2, double y2 );
+
   public:
     int simplifyFlags() const;
     void setSimplifyFlags( int simplifyFlags );

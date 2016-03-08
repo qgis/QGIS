@@ -25,11 +25,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4.QtGui import QIcon
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputHTML
 from processing.algs.gdal.GdalUtils import GdalUtils
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class information(GdalAlgorithm):
@@ -39,30 +45,35 @@ class information(GdalAlgorithm):
     NOGCP = 'NOGCP'
     NOMETADATA = 'NOMETADATA'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-info.png'))
+
     def commandLineName(self):
         return "gdalorg:rasterinfo"
 
     def defineCharacteristics(self):
-        self.name = 'Information'
-        self.group = '[GDAL] Miscellaneous'
+        self.name, self.i18n_name = self.trAlgorithm('Information')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Miscellaneous')
         self.addParameter(ParameterRaster(information.INPUT,
-            self.tr('Input layer'), False))
+                                          self.tr('Input layer'), False))
         self.addParameter(ParameterBoolean(information.NOGCP,
-            self.tr('Suppress GCP info'), False))
+                                           self.tr('Suppress GCP info'), False))
         self.addParameter(ParameterBoolean(information.NOMETADATA,
-            self.tr('Suppress metadata info'), False))
+                                           self.tr('Suppress metadata info'), False))
         self.addOutput(OutputHTML(information.OUTPUT,
-            self.tr('Layer information')))
+                                  self.tr('Layer information')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = []
         if self.getParameterValue(information.NOGCP):
             arguments.append('-nogcp')
         if self.getParameterValue(information.NOMETADATA):
             arguments.append('-nomd')
         arguments.append(self.getParameterValue(information.INPUT))
-        GdalUtils.runGdal(['gdalinfo', GdalUtils.escapeAndJoin(arguments)],
-                          progress)
+        return ['gdalinfo', GdalUtils.escapeAndJoin(arguments)]
+
+    def processAlgorithm(self, progress):
+        GdalUtils.runGdal(self.getConsoleCommands(), progress)
         output = self.getOutputValue(information.OUTPUT)
         f = open(output, 'w')
         f.write('<pre>')

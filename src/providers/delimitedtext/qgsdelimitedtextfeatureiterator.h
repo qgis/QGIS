@@ -18,13 +18,14 @@
 #include <QList>
 #include "qgsfeatureiterator.h"
 #include "qgsfeature.h"
+#include "qgsexpressioncontext.h"
 
 #include "qgsdelimitedtextprovider.h"
 
 class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider* p );
+    explicit QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider* p );
     ~QgsDelimitedTextFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
@@ -32,6 +33,7 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
   protected:
     QgsDelimitedTextProvider::GeomRepresentationType mGeomRep;
     QgsExpression *mSubsetExpression;
+    QgsExpressionContext mExpressionContext;
     QgsRectangle mExtent;
     bool mUseSpatialIndex;
     QgsSpatialIndex *mSpatialIndex;
@@ -43,7 +45,6 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
     int mXFieldIndex;
     int mYFieldIndex;
     int mWktFieldIndex;
-    bool mWktHasZM;
     bool mWktHasPrefix;
     QGis::GeometryType mGeometryType;
     QString mDecimalPoint;
@@ -84,8 +85,8 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
     bool setNextFeatureId( qint64 fid );
 
     bool nextFeatureInternal( QgsFeature& feature );
-    QgsGeometry* loadGeometryWkt( const QStringList& tokens );
-    QgsGeometry* loadGeometryXY( const QStringList& tokens );
+    QgsGeometry* loadGeometryWkt( const QStringList& tokens, bool &isNull );
+    QgsGeometry* loadGeometryXY( const QStringList& tokens, bool &isNull );
     void fetchAttribute( QgsFeature& feature, int fieldIdx, const QStringList& tokens );
 
     QList<QgsFeatureId> mFeatureIds;

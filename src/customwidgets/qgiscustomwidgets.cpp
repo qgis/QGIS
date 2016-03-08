@@ -23,6 +23,8 @@
 #include "qgsdatadefinedbuttonplugin.h"
 #include "qgsdatetimeeditplugin.h"
 #include "qgsdoublespinboxplugin.h"
+#include "qgsexpressionbuilderwidgetplugin.h"
+#include "qgsextentgroupboxplugin.h"
 #include "qgsfieldcomboboxplugin.h"
 #include "qgsfieldexpressionwidgetplugin.h"
 #include "qgsfilterlineeditplugin.h"
@@ -44,6 +46,8 @@ QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
   mWidgets.append( new QgsDataDefinedButtonPlugin( this ) );
   mWidgets.append( new QgsDateTimeEditPlugin( this ) );
   mWidgets.append( new QgsDoubleSpinBoxPlugin( this ) );
+  mWidgets.append( new QgsExpressionBuilderWidgetPlugin( this ) );
+  mWidgets.append( new QgsExtentGroupBoxPlugin( this ) );
   mWidgets.append( new QgsFieldComboBoxPlugin( this ) );
   mWidgets.append( new QgsFieldExpressionWidgetPlugin( this ) );
   mWidgets.append( new QgsFilterLineEditPlugin( this ) );

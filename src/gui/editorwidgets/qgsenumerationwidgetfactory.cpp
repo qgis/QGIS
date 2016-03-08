@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -40,7 +40,7 @@ bool QgsEnumerationWidgetFactory::isFieldSupported( QgsVectorLayer* vl, int fiel
 {
   QStringList list;
   vl->dataProvider()->enumValues( fieldIdx, list );
-  if ( list.size() > 0 )
+  if ( !list.isEmpty() )
     return true;
   else
     return false;

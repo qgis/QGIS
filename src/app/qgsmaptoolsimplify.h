@@ -33,7 +33,7 @@ class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDia
 
   public:
 
-    QgsSimplifyDialog( QgsMapToolSimplify* tool, QWidget* parent = NULL );
+    QgsSimplifyDialog( QgsMapToolSimplify* tool, QWidget* parent = nullptr );
 
     void updateStatusText();
     void enableOkButton( bool enabled );
@@ -52,9 +52,9 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     QgsMapToolSimplify( QgsMapCanvas* canvas );
     virtual ~QgsMapToolSimplify();
 
-    void canvasPressEvent( QMouseEvent * e ) override;
-    void canvasMoveEvent( QMouseEvent * e ) override;
-    void canvasReleaseEvent( QMouseEvent * e ) override;
+    void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
     //! called when map tool is being deactivated
     void deactivate() override;
@@ -66,24 +66,24 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     QString statusText() const;
 
   public slots:
-    /** slot to change display when slidebar is moved */
+    /** Slot to change display when slidebar is moved */
     void setTolerance( double tolerance );
 
     void setToleranceUnits( int units );
 
-    /** slot to store feture after simplification */
+    /** Slot to store feture after simplification */
     void storeSimplified();
 
     void clearSelection();
 
   private:
 
-    void selectOneFeature( const QPoint& canvasPoint );
+    void selectOneFeature( QPoint canvasPoint );
     void selectFeaturesInRect();
 
     void updateSimplificationPreview();
 
-    int vertexCount( QgsGeometry* g ) const;
+    int vertexCount( const QgsGeometry *g ) const;
 
     // data
     /** Dialog with slider to set correct tolerance value */
@@ -94,7 +94,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     /** Features with which we are working */
     QList<QgsFeature> mSelectedFeatures;
 
-    /** real value of tolerance */
+    /** Real value of tolerance */
     double mTolerance;
 
     QgsTolerance::UnitType mToleranceUnits;

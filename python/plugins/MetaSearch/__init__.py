@@ -23,6 +23,7 @@
 #
 ###############################################################################
 
+
 def classFactory(iface):
     """invoke plugin"""
     from MetaSearch.plugin import MetaSearchPlugin

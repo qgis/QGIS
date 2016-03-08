@@ -41,17 +41,15 @@ class CORE_EXPORT QgsRasterRange
      */
     QgsRasterRange( double theMin, double theMax );
 
-    ~QgsRasterRange();
-
     double min() const { return mMin; }
     double max() const { return mMax; }
 
     double setMin( double theMin ) { return mMin = theMin; }
     double setMax( double theMax ) { return mMax = theMax; }
 
-    inline bool operator==( const QgsRasterRange &o ) const
+    inline bool operator==( QgsRasterRange o ) const
     {
-      return mMin == o.mMin && mMax == o.mMax;
+      return qgsDoubleNear( mMin, o.mMin ) && qgsDoubleNear( mMax, o.mMax );
     }
 
     /** \brief Test if value is within the list of ranges

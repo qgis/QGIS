@@ -25,12 +25,19 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4.QtGui import QIcon
+
 from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class LinesIntersection(GeoAlgorithm):
@@ -42,20 +49,29 @@ class LinesIntersection(GeoAlgorithm):
 
     OUTPUT = 'OUTPUT'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'lines_intersection.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Line intersections'
-        self.group = 'Vector overlay tools'
+        self.name, self.i18n_name = self.trAlgorithm('Line intersections')
+        self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
 
         self.addParameter(ParameterVector(self.INPUT_A,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterVector(self.INPUT_B,
-            self.tr('Intersect layer'), [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addParameter(ParameterTableField(self.FIELD_A,
-            self.tr('Input unique ID field'), self.INPUT_A))
-        self.addParameter(ParameterTableField(self.FIELD_B,
-            self.tr('Intersect unique ID field'), self.INPUT_B))
+                                          self.tr('Intersect layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+        self.addParameter(ParameterTableField(
+            self.FIELD_A,
+            self.tr('Input unique ID field'),
+            self.INPUT_A,
+            optional=True))
+        self.addParameter(ParameterTableField(
+            self.FIELD_B,
+            self.tr('Intersect unique ID field'),
+            self.INPUT_B,
+            optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersections')))
 
     def processAlgorithm(self, progress):
         layerA = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_A))
@@ -70,23 +86,16 @@ class LinesIntersection(GeoAlgorithm):
                      layerB.pendingFields()[idxB]]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
-                QGis.WKBPoint, layerA.dataProvider().crs())
+                                                                     QGis.WKBPoint, layerA.dataProvider().crs())
 
         spatialIndex = vector.spatialindex(layerB)
 
-        inFeatA = QgsFeature()
-        inFeatB = QgsFeature()
         outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        tmpGeom = QgsGeometry()
-
         features = vector.features(layerA)
-
-        current = 0
-        total = 100.0 / float(len(features))
+        total = 100.0 / len(features)
         hasIntersections = False
 
-        for inFeatA in features:
+        for current, inFeatA in enumerate(features):
             inGeom = inFeatA.geometry()
             hasIntersections = False
             lines = spatialIndex.intersects(inGeom.boundingBox())
@@ -115,10 +124,9 @@ class LinesIntersection(GeoAlgorithm):
                             for j in points:
                                 outFeat.setGeometry(tempGeom.fromPoint(j))
                                 outFeat.setAttributes([attrsA[idxA],
-                                        attrsB[idxB]])
+                                                       attrsB[idxB]])
                                 writer.addFeature(outFeat)
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

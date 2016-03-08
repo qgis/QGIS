@@ -22,19 +22,21 @@ class QDomElement;
 
 class QgsLayerTreeGroup;
 
-/**A dialog to select layers and groups from a qgs project*/
+/** A dialog to select layers and groups from a qgs project*/
 class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProjectLayerGroupDialogBase
 {
     Q_OBJECT
   public:
-    /**Constructor. If a project file is given, the groups/layers are displayed directly and the file selection hidden*/
-    QgsProjectLayerGroupDialog( QWidget * parent = 0, const QString& projectFile = QString(), Qt::WindowFlags f = 0 );
+    /** Constructor. If a project file is given, the groups/layers are displayed directly and the file selection hidden*/
+    QgsProjectLayerGroupDialog( QWidget * parent = nullptr, const QString& projectFile = QString(), Qt::WindowFlags f = nullptr );
     ~QgsProjectLayerGroupDialog();
 
     QStringList selectedGroups() const;
     QStringList selectedLayerIds() const;
     QStringList selectedLayerNames() const;
     QString selectedProjectFile() const;
+
+    bool isValid() const;
 
   private slots:
     void on_mBrowseFileToolButton_clicked();

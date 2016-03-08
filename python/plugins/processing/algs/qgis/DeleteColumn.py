@@ -34,19 +34,20 @@ from processing.tools import dataobjects, vector
 
 
 class DeleteColumn(GeoAlgorithm):
+
     INPUT = 'INPUT'
     COLUMN = 'COLUMN'
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Delete column'
-        self.group = 'Vector table tools'
+        self.name, self.i18n_name = self.trAlgorithm('Delete column')
+        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.COLUMN,
-            self.tr('Field to delete'), self.INPUT))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
+                                              self.tr('Field to delete'), self.INPUT))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Deleted column')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -57,20 +58,19 @@ class DeleteColumn(GeoAlgorithm):
         fields.remove(idx)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-            layer.wkbType(), layer.crs())
+                                                                     layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
-        count = len(features)
-        total = 100.0 / float(count)
+        total = 100.0 / len(features)
 
         feat = QgsFeature()
-        for count, f in enumerate(features):
+        for current, f in enumerate(features):
             feat.setGeometry(f.geometry())
             attributes = f.attributes()
             del attributes[idx]
             feat.setAttributes(attributes)
             writer.addFeature(feat)
 
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))
 
         del writer

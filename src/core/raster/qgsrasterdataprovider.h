@@ -62,7 +62,7 @@ class CORE_EXPORT QgsImageFetcher : public QObject
   public:
 
     QgsImageFetcher() {}
-    virtual ~QgsImageFetcher( ) {}
+    virtual ~QgsImageFetcher() {}
 
     // Make sure to connect to "finish" and "error" before starting
     virtual void start() = 0;
@@ -95,23 +95,25 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     bool setInput( QgsRasterInterface* input ) override { Q_UNUSED( input ); return false; }
 
     /** \brief   Renders the layer as an image
-    \note When render caching (/qgis/enable_render_caching) is on the wms
-       provider doesn't wait for the reply of the getmap request or all
-       tiles replies and can return incomplete images.
-       Temporarily disable render caching if you require the complete
-       wms image in the first call.
-      */
+     * \note When render caching (/qgis/enable_render_caching) is on the wms
+     * provider doesn't wait for the reply of the getmap request or all
+     * tiles replies and can return incomplete images.
+     * Temporarily disable render caching if you require the complete
+     * wms image in the first call.
+     */
     virtual QImage* draw( const QgsRectangle & viewExtent, int pixelWidth, int pixelHeight ) = 0;
 
     /** Get the extent of the data source.
-     * @return QgsRectangle containing the extent of the layer */
+     * @return QgsRectangle containing the extent of the layer
+     */
     virtual QgsRectangle extent() override = 0;
 
     /** Returns data type for the band specified by number */
     virtual QGis::DataType dataType( int bandNo ) const override = 0;
 
     /** Returns source data type for the band specified by number,
-     *  source data type may be shorter than dataType */
+     *  source data type may be shorter than dataType
+     */
     virtual QGis::DataType srcDataType( int bandNo ) const override = 0;
 
     /** Returns data type for the band specified by number */
@@ -190,10 +192,12 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     }
 
     /** Read band scale for raster value
-     * @@note added in 2.3 */
+     * @note added in 2.3
+     */
     virtual double bandScale( int bandNo ) const { Q_UNUSED( bandNo ); return 1.0; }
     /** Read band offset for raster value
-     * @@note added in 2.3 */
+     * @note added in 2.3
+     */
     virtual double bandOffset( int bandNo ) const { Q_UNUSED( bandNo ); return 0.0; }
 
     // TODO: remove or make protected all readBlock working with void*
@@ -201,7 +205,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Read block of data using given extent and size. */
     virtual QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight ) override;
 
-    /* Return true if source band has no data value */
+    /** Return true if source band has no data value */
     virtual bool srcHasNoDataValue( int bandNo ) const { return mSrcHasNoDataValue.value( bandNo -1 ); }
 
     /** \brief Get source nodata value usage */
@@ -213,7 +217,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Value representing no data value. */
     virtual double srcNoDataValue( int bandNo ) const { return mSrcNoDataValue.value( bandNo -1 ); }
 
-    virtual void setUserNoDataValue( int bandNo, QgsRasterRangeList noData );
+    virtual void setUserNoDataValue( int bandNo, const QgsRasterRangeList& noData );
 
     /** Get list of user no data value ranges */
     virtual QgsRasterRangeList userNoDataValues( int bandNo ) const { return mUserNoDataValue.value( bandNo -1 ); }
@@ -226,7 +230,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual QStringList subLayers() const override
     {
       return QStringList();
-  }
+    }
 
     /** \brief Returns the legend rendered as pixmap
      *
@@ -236,7 +240,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \param visibleExtent Visible extent for providers supporting contextual legends, in layer CRS
      * \note visibleExtent parameter added in 2.8 (no available in python bindings)
      */
-    virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle * visibleExtent = 0 )
+    virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle * visibleExtent = nullptr )
     {
       Q_UNUSED( scale );
       Q_UNUSED( forceRefresh );
@@ -260,7 +264,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual QgsImageFetcher* getLegendGraphicFetcher( const QgsMapSettings* mapSettings )
     {
       Q_UNUSED( mapSettings );
-      return 0;
+      return nullptr;
     }
 
     /** \brief Create pyramid overviews */
@@ -269,8 +273,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
                                    QgsRaster::RasterPyramidsFormat theFormat = QgsRaster::PyramidsGTiff,
                                    const QStringList & theConfigOptions = QStringList() )
     {
-      Q_UNUSED( thePyramidList ); Q_UNUSED( theResamplingMethod );
-      Q_UNUSED( theFormat ); Q_UNUSED( theConfigOptions );
+      Q_UNUSED( thePyramidList );
+      Q_UNUSED( theResamplingMethod );
+      Q_UNUSED( theFormat );
+      Q_UNUSED( theConfigOptions );
       return "FAILED_NOT_SUPPORTED";
     }
 
@@ -343,10 +349,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Returns the format of the error text for the last error in this provider */
     virtual QString lastErrorFormat();
 
-    /**Returns the dpi of the output device. */
+    /** Returns the dpi of the output device. */
     int dpi() const { return mDpi; }
 
-    /**Sets the output device resolution. */
+    /** Sets the output device resolution. */
     void setDpi( int dpi ) { mDpi = dpi; }
 
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
@@ -355,7 +361,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Current time stamp of data source */
     virtual QDateTime dataTimestamp() const override { return QDateTime(); }
 
-    /**Writes into the provider datasource*/
+    /** Writes into the provider datasource*/
     // TODO: add data type (may be defferent from band type)
     virtual bool write( void* data, int band, int width, int height, int xOffset, int yOffset )
     {
@@ -375,7 +381,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
                                           QGis::DataType type,
                                           int width, int height, double* geoTransform,
                                           const QgsCoordinateReferenceSystem& crs,
-                                          QStringList createOptions = QStringList() );
+                                          const QStringList& createOptions = QStringList() );
 
     /** Set no data value on created dataset
      *  @param bandNo band number
@@ -387,40 +393,50 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual bool remove() { return false; }
 
     /** Returns a list of pyramid resampling method name and label pairs
-     * for given provider */
-    static QList<QPair<QString, QString> > pyramidResamplingMethods( QString providerKey );
+     * for given provider
+     */
+    static QList<QPair<QString, QString> > pyramidResamplingMethods( const QString& providerKey );
 
     /** Validates creation options for a specific dataset and destination format.
      * @note used by GDAL provider only
-     * @note see also validateCreationOptionsFormat() in gdal provider for validating options based on format only */
-    virtual QString validateCreationOptions( const QStringList& createOptions, QString format )
+     * @note see also validateCreationOptionsFormat() in gdal provider for validating options based on format only
+     */
+    virtual QString validateCreationOptions( const QStringList& createOptions, const QString& format )
     { Q_UNUSED( createOptions ); Q_UNUSED( format ); return QString(); }
 
     /** Validates pyramid creation options for a specific dataset and destination format
-     * @note used by GDAL provider only */
+     * @note used by GDAL provider only
+     */
     virtual QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
         const QStringList & theConfigOptions, const QString & fileFormat )
     { Q_UNUSED( pyramidsFormat ); Q_UNUSED( theConfigOptions ); Q_UNUSED( fileFormat ); return QString(); }
 
     static QString identifyFormatName( QgsRaster::IdentifyFormat format );
-    static QgsRaster::IdentifyFormat identifyFormatFromName( QString formatName );
+    static QgsRaster::IdentifyFormat identifyFormatFromName( const QString& formatName );
     static QString identifyFormatLabel( QgsRaster::IdentifyFormat format );
     static Capability identifyFormatToCapability( QgsRaster::IdentifyFormat format );
 
   signals:
     /** Emit a signal to notify of the progress event.
       * Emitted theProgress is in percents (0.0-100.0) */
-    void progress( int theType, double theProgress, QString theMessage );
+    void progress( int theType, double theProgress, const QString& theMessage );
     void progressUpdate( int theProgress );
+
+    /** Emit a message to be displayed on status bar, usually used by network providers (WMS,WCS)
+     * @note added in 2.14
+     */
+    void statusChanged( const QString& );
 
   protected:
     /** Read block of data
-     * @note not available in python bindings */
+     * @note not available in python bindings
+     */
     virtual void readBlock( int bandNo, int xBlock, int yBlock, void *data )
     { Q_UNUSED( bandNo ); Q_UNUSED( xBlock ); Q_UNUSED( yBlock ); Q_UNUSED( data ); }
 
     /** Read block of data using give extent and size
-     *  @note not available in python bindings */
+     * @note not available in python bindings
+     */
     virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data )
     { Q_UNUSED( bandNo ); Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); }
 
@@ -430,6 +446,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Copy member variables from other raster data provider. Useful for implementation of clone() method in subclasses */
     void copyBaseSettings( const QgsRasterDataProvider& other );
 
+    //! @note not available in Python bindings
     static QStringList cStringList2Q_( char ** stringList );
 
     static QString makeTableCell( const QString & value );
@@ -460,7 +477,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     QgsRectangle mExtent;
 
-    static void initPyramidResamplingDefs();
     static QStringList mPyramidResamplingListGdal;
     static QgsStringMap mPyramidResamplingMapGdal;
 

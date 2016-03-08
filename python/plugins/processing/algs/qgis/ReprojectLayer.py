@@ -40,15 +40,15 @@ class ReprojectLayer(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Reproject layer'
-        self.group = 'Vector general tools'
+        self.name, self.i18n_name = self.trAlgorithm('Reproject layer')
+        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterCrs(self.TARGET_CRS,
-            self.tr('Target CRS'), 'EPSG:4326'))
+                                       self.tr('Target CRS'), 'EPSG:4326'))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Reprojected layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Reprojected')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
@@ -63,17 +63,15 @@ class ReprojectLayer(GeoAlgorithm):
         crsTransform = QgsCoordinateTransform(layerCrs, targetCrs)
 
         outFeat = QgsFeature()
-        current = 0
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
-        for f in features:
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
             geom = f.geometry()
             geom.transform(crsTransform)
             outFeat.setGeometry(geom)
             outFeat.setAttributes(f.attributes())
             writer.addFeature(outFeat)
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

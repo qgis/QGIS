@@ -26,10 +26,6 @@ class CORE_EXPORT QgsVectorSimplifyMethod
   public:
     //! construct a default object
     QgsVectorSimplifyMethod();
-    //! copy constructor
-    QgsVectorSimplifyMethod( const QgsVectorSimplifyMethod& rh );
-    //! assignment operator
-    QgsVectorSimplifyMethod& operator=( const QgsVectorSimplifyMethod& rh );
 
     /** Simplification flags for fast rendering of features */
     enum SimplifyHint
@@ -42,7 +38,7 @@ class CORE_EXPORT QgsVectorSimplifyMethod
     Q_DECLARE_FLAGS( SimplifyHints, SimplifyHint )
 
     /** Sets the simplification hints of the vector layer managed */
-    void setSimplifyHints( SimplifyHints simplifyHints ) { mSimplifyHints = simplifyHints; }
+    void setSimplifyHints( const SimplifyHints& simplifyHints ) { mSimplifyHints = simplifyHints; }
     /** Gets the simplification hints of the vector layer managed */
     inline SimplifyHints simplifyHints() const { return mSimplifyHints; }
 

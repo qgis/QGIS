@@ -25,7 +25,7 @@ QgsDoubleBoxScaleBarStyle::QgsDoubleBoxScaleBarStyle( const QgsComposerScaleBar*
 
 }
 
-QgsDoubleBoxScaleBarStyle::QgsDoubleBoxScaleBarStyle(): QgsScaleBarStyle( 0 )
+QgsDoubleBoxScaleBarStyle::QgsDoubleBoxScaleBarStyle(): QgsScaleBarStyle( nullptr )
 {
 
 }

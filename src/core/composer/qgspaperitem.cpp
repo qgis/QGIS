@@ -48,8 +48,8 @@ void QgsPaperGrid::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
     if ( mComposition->gridVisible() && mComposition->plotStyle() ==  QgsComposition::Preview
          && mComposition->snapGridResolution() > 0 )
     {
-      int gridMultiplyX = ( int )( mComposition->snapGridOffsetX() / mComposition->snapGridResolution() );
-      int gridMultiplyY = ( int )( mComposition->snapGridOffsetY() / mComposition->snapGridResolution() );
+      int gridMultiplyX = static_cast< int >( mComposition->snapGridOffsetX() / mComposition->snapGridResolution() );
+      int gridMultiplyY = static_cast< int >( mComposition->snapGridOffsetY() / mComposition->snapGridResolution() );
       double currentXCoord = mComposition->snapGridOffsetX() - gridMultiplyX * mComposition->snapGridResolution();
       double currentYCoord;
       double minYCoord = mComposition->snapGridOffsetY() - gridMultiplyY * mComposition->snapGridResolution();
@@ -88,7 +88,7 @@ void QgsPaperGrid::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
           if ( scene() )
           {
             QList<QGraphicsView*> viewList = scene()->views();
-            if ( viewList.size() > 0 )
+            if ( !viewList.isEmpty() )
             {
               QGraphicsView* currentView = viewList.at( 0 );
               if ( currentView->isVisible() )
@@ -123,19 +123,19 @@ void QgsPaperGrid::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
 //QgsPaperItem
 
 QgsPaperItem::QgsPaperItem( QgsComposition* c ): QgsComposerItem( c, false ),
-    mPageGrid( 0 )
+    mPageGrid( nullptr )
 {
   initialize();
 }
 
 QgsPaperItem::QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ): QgsComposerItem( x, y, width, height, composition, false ),
-    mPageGrid( 0 ), mPageMargin( 0 )
+    mPageGrid( nullptr ), mPageMargin( 0 )
 {
   initialize();
 }
 
-QgsPaperItem::QgsPaperItem(): QgsComposerItem( 0, false ),
-    mPageGrid( 0 ), mPageMargin( 0 )
+QgsPaperItem::QgsPaperItem(): QgsComposerItem( nullptr, false ),
+    mPageGrid( nullptr ), mPageMargin( 0 )
 {
   initialize();
 }
@@ -149,7 +149,7 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
-  if ( !painter )
+  if ( !painter || !mComposition || !mComposition->pagesVisible() )
   {
     return;
   }
@@ -164,6 +164,9 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   context.setPainter( painter );
   context.setForceVectorOutput( true );
+  QgsExpressionContext* expressionContext = createExpressionContext();
+  context.setExpressionContext( *expressionContext );
+  delete expressionContext;
 
   painter->save();
 
@@ -194,18 +197,7 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
                                      ( rect().width() - 2 * mPageMargin ) * dotsPerMM, ( rect().height() - 2 * mPageMargin ) * dotsPerMM ) );
   QList<QPolygonF> rings; //empty list
 
-  //need to render using atlas feature properties?
-  if ( mComposition->atlasComposition().enabled() && mComposition->atlasMode() != QgsComposition::AtlasOff )
-  {
-    //using an atlas, so render using current atlas feature
-    //since there may be data defined symbols using atlas feature properties
-    mComposition->pageStyleSymbol()->renderPolygon( pagePolygon, &rings, mComposition->atlasComposition().currentFeature(), context );
-  }
-  else
-  {
-    mComposition->pageStyleSymbol()->renderPolygon( pagePolygon, &rings, 0, context );
-  }
-
+  mComposition->pageStyleSymbol()->renderPolygon( pagePolygon, &rings, nullptr, context );
   mComposition->pageStyleSymbol()->stopRender( context );
   painter->restore();
 }

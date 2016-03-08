@@ -33,13 +33,21 @@ try:
 except:
     hasMatplotlib = False
 
+try:
+    import shapely
+    hasShapely = True
+except:
+    hasShapely = False
+
 from PyQt4.QtGui import QIcon
+
+from qgis.core import QGis
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.script.ScriptUtils import ScriptUtils
 
 from RegularPoints import RegularPoints
-from SymetricalDifference import SymetricalDifference
+from SymmetricalDifference import SymmetricalDifference
 from VectorSplit import VectorSplit
 from VectorGrid import VectorGrid
 from RandomExtract import RandomExtract
@@ -84,6 +92,7 @@ from DensifyGeometriesInterval import DensifyGeometriesInterval
 from Eliminate import Eliminate
 from SpatialJoin import SpatialJoin
 from DeleteColumn import DeleteColumn
+from DeleteHoles import DeleteHoles
 from DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from TextToFloat import TextToFloat
 from ExtractByAttribute import ExtractByAttribute
@@ -95,7 +104,6 @@ from HubLines import HubLines
 from Merge import Merge
 from GeometryConvert import GeometryConvert
 from ConcaveHull import ConcaveHull
-from Polygonize import Polygonize
 from RasterLayerStatistics import RasterLayerStatistics
 from StatisticsByCategories import StatisticsByCategories
 from EquivalentNumField import EquivalentNumField
@@ -123,19 +131,28 @@ from ImportIntoPostGIS import ImportIntoPostGIS
 from SetVectorStyle import SetVectorStyle
 from SetRasterStyle import SetRasterStyle
 from SelectByExpression import SelectByExpression
+from SelectByAttributeSum import SelectByAttributeSum
 from HypsometricCurves import HypsometricCurves
 from SplitLinesWithLines import SplitLinesWithLines
-from processing.algs.qgis.FieldsMapper import FieldsMapper
+from FieldsMapper import FieldsMapper
+from Datasources2Vrt import Datasources2Vrt
+from CheckValidity import CheckValidity
+from OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
+from Smooth import Smooth
+from ReverseLineDirection import ReverseLineDirection
+from SpatialIndex import SpatialIndex
+from DefineProjection import DefineProjection
 
-import processing.resources_rc
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
 class QGISAlgorithmProvider(AlgorithmProvider):
 
-    _icon = QIcon(':/processing/images/qgis.png')
-
     def __init__(self):
         AlgorithmProvider.__init__(self)
+        self._icon = QIcon(os.path.join(pluginPath, 'images', 'qgis.png'))
+
         self.alglist = [SumLines(), PointsInPolygon(),
                         PointsInPolygonWeighted(), PointsInPolygonUnique(),
                         BasicStatisticsStrings(), BasicStatisticsNumbers(),
@@ -150,9 +167,9 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         VariableDistanceBuffer(), Dissolve(), Difference(),
                         Intersection(), Union(), Clip(), ExtentFromLayer(),
                         RandomSelection(), RandomSelectionWithinSubsets(),
-                        SelectByLocation(), RandomExtract(),
+                        SelectByLocation(), RandomExtract(), DeleteHoles(),
                         RandomExtractWithinSubsets(), ExtractByLocation(),
-                        SpatialJoin(), RegularPoints(), SymetricalDifference(),
+                        SpatialJoin(), RegularPoints(), SymmetricalDifference(),
                         VectorSplit(), VectorGrid(), DeleteColumn(),
                         DeleteDuplicateGeometries(), TextToFloat(),
                         ExtractByAttribute(), SelectByAttribute(), Grid(),
@@ -161,7 +178,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SaveSelectedFeatures(), JoinAttributes(),
                         AutoincrementalField(), Explode(), FieldsPyculator(),
                         EquivalentNumField(), PointsLayerFromTable(),
-                        StatisticsByCategories(), ConcaveHull(), Polygonize(),
+                        StatisticsByCategories(), ConcaveHull(),
                         RasterLayerStatistics(), PointsDisplacement(),
                         ZonalStatistics(), PointsFromPolygons(),
                         PointsFromLines(), RandomPointsExtent(),
@@ -172,7 +189,9 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SetVectorStyle(), SetRasterStyle(),
                         SelectByExpression(), HypsometricCurves(),
                         SplitLinesWithLines(), CreateConstantRaster(),
-                        FieldsMapper(),
+                        FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
+                        CheckValidity(), OrientedMinimumBoundingBox(), Smooth(),
+                        ReverseLineDirection(), SpatialIndex(), DefineProjection()
                         ]
 
         if hasMatplotlib:
@@ -188,6 +207,14 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                 VectorLayerScatterplot(), MeanAndStdDevPlot(), BarPlot(),
                 PolarPlot(),
             ])
+
+        if hasShapely:
+            from Polygonize import Polygonize
+            self.alglist.extend([Polygonize()])
+
+        if QGis.QGIS_VERSION_INT >= 21300:
+            from ExecuteSQL import ExecuteSQL
+            self.alglist.extend([ExecuteSQL()])
 
         folder = os.path.join(os.path.dirname(__file__), 'scripts')
         scripts = ScriptUtils.loadFromFolder(folder)
@@ -207,7 +234,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
         return 'qgis'
 
     def getDescription(self):
-        return 'QGIS geoalgorithms'
+        return self.tr('QGIS geoalgorithms')
 
     def getIcon(self):
         return self._icon

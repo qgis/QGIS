@@ -2,13 +2,13 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Simple map algebra" module="r.mapcalculator">
-	<flag key="o" />
-	<option key="amap" />
-	<option key="bmap" />
-	<option key="cmap" />
-	<option key="dmap" />
-	<option key="emap" />
-	<option key="fmap" />
-	<option key="formula" />
-	<option key="outfile" />
+    <flag key="o" />
+    <option key="amap" />
+    <option key="bmap" />
+    <option key="cmap" />
+    <option key="dmap" />
+    <option key="emap" />
+    <option key="fmap" />
+    <option key="formula" />
+    <option key="outfile" />
 </qgisgrassmodule>

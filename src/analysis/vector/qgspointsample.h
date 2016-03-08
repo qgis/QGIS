@@ -11,14 +11,13 @@ class QgsVectorFileWriter;
 class QgsVectorLayer;
 class QProgressDialog;
 
-/**Creates random points in polygons / multipolygons*/
+/** Creates random points in polygons / multipolygons*/
 class ANALYSIS_EXPORT QgsPointSample
 {
   public:
-    QgsPointSample( QgsVectorLayer* inputLayer, const QString& outputLayer, QString nPointsAttribute, QString minDistAttribute = QString() );
-    ~QgsPointSample();
+    QgsPointSample( QgsVectorLayer* inputLayer, const QString& outputLayer, const QString& nPointsAttribute, const QString& minDistAttribute = QString() );
 
-    /**Starts calculation of random points
+    /** Starts calculation of random points
         @return 0 in case of success*/
     int createRandomPoints( QProgressDialog* pd );
 
@@ -28,13 +27,13 @@ class ANALYSIS_EXPORT QgsPointSample
     void addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWriter& writer, int nPoints, double minDistance );
     bool checkMinDistance( QgsPoint& pt, QgsSpatialIndex& index, double minDistance, QMap< QgsFeatureId, QgsPoint >& pointMap );
 
-    /**Layer id of input polygon/multipolygon layer*/
+    /** Layer id of input polygon/multipolygon layer*/
     QgsVectorLayer* mInputLayer;
-    /**Output path of result layer*/
+    /** Output path of result layer*/
     QString mOutputLayer;
-    /**Attribute containing number of points per feature*/
+    /** Attribute containing number of points per feature*/
     QString mNumberOfPointsAttribute;
-    /**Attribute containing minimum distance between sample points (or -1 if no min. distance constraint)*/
+    /** Attribute containing minimum distance between sample points (or -1 if no min. distance constraint)*/
     QString mMinDistanceAttribute;
     QgsFeatureId mNCreatedPoints; //helper to find free ids
 };

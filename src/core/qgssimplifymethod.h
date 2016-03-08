@@ -34,20 +34,21 @@ class CORE_EXPORT QgsSimplifyMethod
 
     //! construct a default method
     QgsSimplifyMethod();
-    //! copy constructor
-    QgsSimplifyMethod( const QgsSimplifyMethod& rh );
-    //! assignment operator
-    QgsSimplifyMethod& operator=( const QgsSimplifyMethod& rh );
 
     //! Sets the simplification type
     void setMethodType( MethodType methodType );
     //! Gets the simplification type
     inline MethodType methodType() const { return mMethodType; }
 
-    //! Sets the tolerance of simplification. Represents the maximum distance between two coordinates which can be considered equal
+    //! Sets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal.
     void setTolerance( double tolerance );
-    //! Gets the tolerance of simplification
+    //! Gets the tolerance of simplification in map units . Represents the maximum distance in map units between two coordinates which can be considered equal.
     inline double tolerance() const { return mTolerance; }
+
+    //! Sets the simplification threshold in pixels. Represents the maximum distance in pixels between two coordinates which can be considered equal.
+    void setThreshold( float threshold ) { mThreshold = threshold; }
+    //! Gets the simplification threshold in pixels. Represents the maximum distance in pixels between two coordinates which can be considered equal.
+    inline float threshold() const { return mThreshold; }
 
     //! Sets whether the simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries
     void setForceLocalOptimization( bool localOptimization );
@@ -62,6 +63,8 @@ class CORE_EXPORT QgsSimplifyMethod
     MethodType mMethodType;
     //! Tolerance of simplification, it represents the maximum distance between two coordinates which can be considered equal
     double mTolerance;
+    /** Simplification threshold */
+    float mThreshold;
     //! Simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries
     bool mForceLocalOptimization;
 };

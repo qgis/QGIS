@@ -4,7 +4,7 @@ class CharacterWidget : QWidget
 #include <characterwidget.h>
 %End
   public:
-    CharacterWidget( QWidget *parent = 0 );
+    CharacterWidget( QWidget *parent /TransferThis/ = 0 );
     QSize sizeHint() const;
 
     int getColumns() const;
@@ -16,9 +16,10 @@ class CharacterWidget : QWidget
     void updateStyle( const QString &fontStyle );
     void updateFontMerging( bool enable );
     void updateColumns( int cols );
+    void setCharacter( QChar character );
 
   signals:
-    void characterSelected( const QChar &character );
+    void characterSelected( QChar character );
 
   protected:
     void mouseMoveEvent( QMouseEvent *event );

@@ -36,6 +36,9 @@ from GrassAlgorithm import GrassAlgorithm
 from nviz import nviz
 from processing.tools.system import isMac, isWindows
 
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
+
 
 class GrassAlgorithmProvider(AlgorithmProvider):
 
@@ -47,17 +50,17 @@ class GrassAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.initializeSettings(self)
         if isWindows() or isMac():
             ProcessingConfig.addSetting(Setting(self.getDescription(),
-                GrassUtils.GRASS_FOLDER, self.tr('GRASS folder'),
-                GrassUtils.grassPath()))
+                                                GrassUtils.GRASS_FOLDER, self.tr('GRASS folder'),
+                                                GrassUtils.grassPath(), valuetype=Setting.FOLDER))
             ProcessingConfig.addSetting(Setting(self.getDescription(),
-                GrassUtils.GRASS_WIN_SHELL, self.tr('Msys folder'),
-                GrassUtils.grassWinShell()))
+                                                GrassUtils.GRASS_WIN_SHELL, self.tr('Msys folder'),
+                                                GrassUtils.grassWinShell(), valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-            GrassUtils.GRASS_LOG_COMMANDS,
-            self.tr('Log execution commands'), False))
+                                            GrassUtils.GRASS_LOG_COMMANDS,
+                                            self.tr('Log execution commands'), False))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-            GrassUtils.GRASS_LOG_CONSOLE,
-            self.tr('Log console output'), False))
+                                            GrassUtils.GRASS_LOG_CONSOLE,
+                                            self.tr('Log console output'), False))
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -78,26 +81,29 @@ class GrassAlgorithmProvider(AlgorithmProvider):
                         self.preloadedAlgs.append(alg)
                     else:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                            self.tr('Could not open GRASS algorithm: %s' % descriptionFile))
-                except Exception, e:
+                                               self.tr('Could not open GRASS algorithm: %s' % descriptionFile))
+                except Exception as e:
                     ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                        self.tr('Could not open GRASS algorithm: %s' % descriptionFile))
+                                           self.tr('Could not open GRASS algorithm: %s' % descriptionFile))
         self.preloadedAlgs.append(nviz())
 
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs
 
     def getDescription(self):
-        return 'GRASS commands'
+        return self.tr('GRASS commands')
 
     def getName(self):
         return 'grass'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/grass.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'grass.png'))
 
     def getSupportedOutputVectorLayerExtensions(self):
         return ['shp']
 
     def getSupportedOutputRasterLayerExtensions(self):
         return ['tif']
+
+    def canBeActivated(self):
+        return not bool(GrassUtils.checkGrassIsInstalled())

@@ -5,7 +5,7 @@ class QgsVectorGradientColorRampV2Dialog : QDialog
 %End
 
   public:
-    QgsVectorGradientColorRampV2Dialog( QgsVectorGradientColorRampV2* ramp, QWidget* parent = NULL );
+    QgsVectorGradientColorRampV2Dialog( QgsVectorGradientColorRampV2* ramp, QWidget* parent /TransferThis/ = NULL );
 
   public slots:
     void setColor1( const QColor& color );
@@ -26,5 +26,5 @@ class QgsVectorGradientColorRampV2Dialog : QDialog
 
     void updateStops();
     void updatePreview();
-    void setStopColor( QTreeWidgetItem* item, QColor color );
+    void setStopColor( QTreeWidgetItem* item, const QColor& color );
 };

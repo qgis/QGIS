@@ -30,50 +30,13 @@
 #include "qgslogger.h"
 #include <limits.h>
 
-//! widget that serves as rectangle showing current extent in overview
-class QgsPanningWidget : public QWidget
-{
-    QPolygon mPoly;
-
-  public:
-    QgsPanningWidget( QWidget* parent )
-        : QWidget( parent )
-    {
-      setObjectName( "panningWidget" );
-      setMinimumSize( 5, 5 );
-      setAttribute( Qt::WA_NoSystemBackground );
-    }
-
-    void setPolygon( const QPolygon& p )
-    {
-      if ( p == mPoly ) return;
-      mPoly = p;
-      setGeometry( p.boundingRect() );
-      update();
-    }
-
-
-    void paintEvent( QPaintEvent* pe ) override
-    {
-      Q_UNUSED( pe );
-
-      QPainter p;
-      p.begin( this );
-      p.setPen( Qt::red );
-      QPolygonF t = mPoly.translated( -mPoly.boundingRect().left(), -mPoly.boundingRect().top() );
-      p.drawConvexPolygon( t );
-      p.end();
-    }
-
-};
-
-
 
 QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget * parent, QgsMapCanvas* mapCanvas )
     : QWidget( parent )
     , mMapCanvas( mapCanvas )
-    , mJob( 0 )
+    , mJob( nullptr )
 {
+  setAutoFillBackground( true );
   setObjectName( "theOverviewCanvas" );
   mPanningWidget = new QgsPanningWidget( this );
 
@@ -97,6 +60,12 @@ void QgsMapOverviewCanvas::resizeEvent( QResizeEvent* e )
   refresh();
 
   QWidget::resizeEvent( e );
+}
+
+void QgsMapOverviewCanvas::showEvent( QShowEvent* e )
+{
+  refresh();
+  QWidget::showEvent( e );
 }
 
 void QgsMapOverviewCanvas::paintEvent( QPaintEvent* pe )
@@ -125,11 +94,11 @@ void QgsMapOverviewCanvas::drawExtentRect()
   const QPolygonF& vPoly = mMapCanvas->mapSettings().visiblePolygon();
   const QgsMapToPixel& cXf = mSettings.mapToPixel();
   QVector< QPoint > pts;
-  pts.push_back( cXf.transform( QgsPoint(vPoly[0]) ).toQPointF().toPoint() );
-  pts.push_back( cXf.transform( QgsPoint(vPoly[1]) ).toQPointF().toPoint() );
-  pts.push_back( cXf.transform( QgsPoint(vPoly[2]) ).toQPointF().toPoint() );
-  pts.push_back( cXf.transform( QgsPoint(vPoly[3]) ).toQPointF().toPoint() );
-  mPanningWidget->setPolygon( QPolygon(pts) );
+  pts.push_back( cXf.transform( QgsPoint( vPoly[0] ) ).toQPointF().toPoint() );
+  pts.push_back( cXf.transform( QgsPoint( vPoly[1] ) ).toQPointF().toPoint() );
+  pts.push_back( cXf.transform( QgsPoint( vPoly[2] ) ).toQPointF().toPoint() );
+  pts.push_back( cXf.transform( QgsPoint( vPoly[3] ) ).toQPointF().toPoint() );
+  mPanningWidget->setPolygon( QPolygon( pts ) );
   mPanningWidget->show(); // show if hidden
 }
 
@@ -183,7 +152,7 @@ void QgsMapOverviewCanvas::mouseMoveEvent( QMouseEvent * e )
 }
 
 
-void QgsMapOverviewCanvas::updatePanningWidget( const QPoint& pos )
+void QgsMapOverviewCanvas::updatePanningWidget( QPoint pos )
 {
 //  if (mPanningWidget->isHidden())
 //    return;
@@ -192,6 +161,9 @@ void QgsMapOverviewCanvas::updatePanningWidget( const QPoint& pos )
 
 void QgsMapOverviewCanvas::refresh()
 {
+  if ( !isVisible() )
+    return;
+
   updateFullExtent();
 
   if ( !mSettings.hasValidSettings() )
@@ -231,7 +203,7 @@ void QgsMapOverviewCanvas::mapRenderingFinished()
   mPixmap = QPixmap::fromImage( mJob->renderedImage() );
 
   delete mJob;
-  mJob = 0;
+  mJob = nullptr;
 
   // schedule repaint
   update();
@@ -257,7 +229,7 @@ void QgsMapOverviewCanvas::setLayerSet( const QStringList& layerSet )
 {
   QgsDebugMsg( "layerSet: " + layerSet.join( ", " ) );
 
-  foreach ( const QString& layerID, mSettings.layers() )
+  Q_FOREACH ( const QString& layerID, mSettings.layers() )
   {
     if ( QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
       disconnect( ml, SIGNAL( repaintRequested() ), this, SLOT( layerRepaintRequested() ) );
@@ -265,7 +237,7 @@ void QgsMapOverviewCanvas::setLayerSet( const QStringList& layerSet )
 
   mSettings.setLayers( layerSet );
 
-  foreach ( const QString& layerID, mSettings.layers() )
+  Q_FOREACH ( const QString& layerID, mSettings.layers() )
   {
     if ( QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
       connect( ml, SIGNAL( repaintRequested() ), this, SLOT( layerRepaintRequested() ) );
@@ -303,3 +275,38 @@ QStringList QgsMapOverviewCanvas::layerSet() const
 {
   return mSettings.layers();
 }
+
+
+/// @cond PRIVATE
+
+QgsPanningWidget::QgsPanningWidget( QWidget* parent )
+    : QWidget( parent )
+{
+  setObjectName( "panningWidget" );
+  setMinimumSize( 5, 5 );
+  setAttribute( Qt::WA_NoSystemBackground );
+}
+
+void QgsPanningWidget::setPolygon( const QPolygon& p )
+{
+  if ( p == mPoly ) return;
+  mPoly = p;
+  setGeometry( p.boundingRect() );
+  update();
+}
+
+void QgsPanningWidget::paintEvent( QPaintEvent* pe )
+{
+  Q_UNUSED( pe );
+
+  QPainter p;
+  p.begin( this );
+  p.setPen( Qt::red );
+  QPolygonF t = mPoly.translated( -mPoly.boundingRect().left(), -mPoly.boundingRect().top() );
+  p.drawConvexPolygon( t );
+  p.end();
+}
+
+
+
+///@endcond

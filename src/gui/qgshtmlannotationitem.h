@@ -20,28 +20,29 @@
 
 #include "qgsannotationitem.h"
 #include "qgsfeature.h"
+#include "qgswebview.h"
+#include "qgswebframe.h"
+
 #include <QObject>
-#include <QWebView>
-#include <QWebFrame>
 
 class QGraphicsProxyWidget;
 
-/**An annotation item that embedds a designer form showing the feature attribute*/
+/** An annotation item that embedds a designer form showing the feature attribute*/
 class GUI_EXPORT QgsHtmlAnnotationItem: public QObject, public QgsAnnotationItem
 {
     Q_OBJECT
   public:
-    QgsHtmlAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer = 0, bool hasFeature = false, int feature = 0 );
+    QgsHtmlAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer = nullptr, bool hasFeature = false, int feature = 0 );
     ~QgsHtmlAnnotationItem();
 
     void paint( QPainter * painter ) override;
 
     //! paint function called by map canvas
-    void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 ) override;
+    void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr ) override;
 
     QSizeF minimumFrameSize() const override;
 
-    /**Reimplemented from QgsAnnotationItem*/
+    /** Reimplemented from QgsAnnotationItem*/
     void setMapPosition( const QgsPoint& pos ) override;
 
     void setHTMLPage( const QString& htmlFile );
@@ -53,21 +54,21 @@ class GUI_EXPORT QgsHtmlAnnotationItem: public QObject, public QgsAnnotationItem
     QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
 
   private slots:
-    /**Sets a feature for the current map position and updates the dialog*/
+    /** Sets a feature for the current map position and updates the dialog*/
     void setFeatureForMapPosition();
-    /**Sets visibility status based on mVectorLayer visibility*/
+    /** Sets visibility status based on mVectorLayer visibility*/
     void updateVisibility();
 
     void javascript();
 
   private:
     QGraphicsProxyWidget* mWidgetContainer;
-    QWebView* mWebView;
-    /**Associated vectorlayer (or 0 if attributes are not supposed to be replaced)*/
+    QgsWebView* mWebView;
+    /** Associated vectorlayer (or 0 if attributes are not supposed to be replaced)*/
     QgsVectorLayer* mVectorLayer;
-    /**True if the item is related to a vector feature*/
+    /** True if the item is related to a vector feature*/
     bool mHasAssociatedFeature;
-    /**Associated feature*/
+    /** Associated feature*/
     QgsFeatureId mFeatureId;
     QgsFeature mFeature;
     QString mHtmlFile;

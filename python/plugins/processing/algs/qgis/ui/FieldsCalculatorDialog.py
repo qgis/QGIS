@@ -28,8 +28,10 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
+from PyQt4 import uic
 from PyQt4.QtCore import Qt, QSettings
 from PyQt4.QtGui import QDialog, QFileDialog, QApplication, QCursor, QMessageBox
+from qgis.core import QgsExpressionContext, QgsExpressionContextUtils
 from qgis.gui import QgsEncodingFileDialog
 
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -38,12 +40,15 @@ from processing.gui.AlgorithmExecutor import runalg
 from processing.tools import dataobjects
 from processing.gui.Postprocessing import handleAlgorithmResults
 
-from ui_DlgFieldsCalculator import Ui_FieldsCalculator
+pluginPath = os.path.dirname(__file__)
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'DlgFieldsCalculator.ui'))
 
 
-class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
+class FieldsCalculatorDialog(BASE, WIDGET):
+
     def __init__(self, alg):
-        QDialog.__init__(self)
+        super(FieldsCalculatorDialog, self).__init__(None)
         self.setupUi(self)
 
         self.executed = False
@@ -71,7 +76,7 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
                 self.tr('[Save to temporary file]'))
 
         self.mOutputFieldTypeComboBox.blockSignals(True)
-        for t in self.alg.TYPE_NAMES:
+        for t in self.alg.type_names:
             self.mOutputFieldTypeComboBox.addItem(t)
         self.mOutputFieldTypeComboBox.blockSignals(False)
 
@@ -81,6 +86,8 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
             self.cmbInputLayer.addItem(layer.name())
         self.cmbInputLayer.blockSignals(False)
 
+        self.builder.loadRecent('fieldcalc')
+
         self.updateLayer()
 
     def updateLayer(self):
@@ -89,8 +96,15 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
         self.builder.setLayer(self.layer)
         self.builder.loadFieldNames()
 
+        exp_context = QgsExpressionContext()
+        exp_context.appendScope(QgsExpressionContextUtils.globalScope())
+        exp_context.appendScope(QgsExpressionContextUtils.projectScope())
+        exp_context.appendScope(QgsExpressionContextUtils.layerScope(self.layer))
+        exp_context.lastScope().setVariable("row_number", 1)
+        exp_context.setHighlightedVariables(["row_number"])
+        self.builder.setExpressionContext(exp_context)
+
         self.populateFields()
-        #populateOutputFieldTypes()
 
     def setupSpinboxes(self, index):
         if index != 0:
@@ -138,8 +152,8 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
             filename = unicode(files[0])
             selectedFileFilter = unicode(fileDialog.selectedNameFilter())
             if not filename.lower().endswith(
-                    tuple(re.findall("\*(\.[a-z]{1,5})", fileFilter))):
-                ext = re.search("\*(\.[a-z]{1,5})", selectedFileFilter)
+                    tuple(re.findall("\*(\.[a-z]{1,10})", fileFilter))):
+                ext = re.search("\*(\.[a-z]{1,10})", selectedFileFilter)
                 if ext:
                     filename = filename + ext.group(1)
             self.leOutputFile.setText(filename)
@@ -172,16 +186,21 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
         self.alg.setParameterValue('INPUT_LAYER', layer)
         self.alg.setParameterValue('FIELD_NAME', fieldName)
         self.alg.setParameterValue('FIELD_TYPE',
-                self.mOutputFieldTypeComboBox.currentIndex())
+                                   self.mOutputFieldTypeComboBox.currentIndex())
         self.alg.setParameterValue('FIELD_LENGTH',
-                self.mOutputFieldWidthSpinBox.value())
+                                   self.mOutputFieldWidthSpinBox.value())
         self.alg.setParameterValue('FIELD_PRECISION',
-                self.mOutputFieldPrecisionSpinBox.value())
+                                   self.mOutputFieldPrecisionSpinBox.value())
         self.alg.setParameterValue('NEW_FIELD',
-                self.mNewFieldGroupBox.isChecked())
+                                   self.mNewFieldGroupBox.isChecked())
         self.alg.setParameterValue('FORMULA', self.builder.expressionText())
-        self.alg.setOutputValue('OUTPUT_LAYER',
-                self.leOutputFile.text())
+        self.alg.setOutputValue('OUTPUT_LAYER', self.leOutputFile.text().strip() or None)
+
+        msg = self.alg.checkParameterValuesBeforeExecuting()
+        if msg:
+            QMessageBox.warning(
+                self, self.tr('Unable to execute algorithm'), msg)
+            return False
         return True
 
     def accept(self):
@@ -190,20 +209,15 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
             if self.setParamValues():
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                 ProcessingLog.addToLog(ProcessingLog.LOG_ALGORITHM,
-                                     self.alg.getAsCommand())
+                                       self.alg.getAsCommand())
 
-                self.executed =  runalg(self.alg, self)
+                self.executed = runalg(self.alg, self)
                 if self.executed:
                     handleAlgorithmResults(self.alg,
                                            self,
                                            not keepOpen)
                 if not keepOpen:
                     QDialog.reject(self)
-            else:
-                QMessageBox.critical(self,
-                                     self.tr('Unable to execute algorithm'),
-                                     self.tr('Wrong or missing parameter '
-                                             'values'))
         finally:
             QApplication.restoreOverrideCursor()
 

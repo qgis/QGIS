@@ -28,98 +28,105 @@ from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
 
 from .db_plugins.plugin import Table
 
+
 class LayerPreview(QgsMapCanvas):
-  def __init__(self, parent=None):
-    QgsMapCanvas.__init__(self, parent)
-    self.parent = parent
-    self.setCanvasColor(QColor(255,255,255))
 
-    self.item = None
-    self.dirty = False
+    def __init__(self, parent=None):
+        QgsMapCanvas.__init__(self, parent)
+        self.parent = parent
+        self.setCanvasColor(QColor(255, 255, 255))
 
-    # reuse settings from QGIS
-    settings = QSettings()
-    self.enableAntiAliasing( settings.value( "/qgis/enable_anti_aliasing", False, type=bool ) )
-    action = settings.value( "/qgis/wheel_action", 0, type=float )
-    zoomFactor = settings.value( "/qgis/zoom_factor", 2, type=float )
-    self.setWheelAction( QgsMapCanvas.WheelAction(action), zoomFactor )
+        self.item = None
+        self.dirty = False
+        self.currentLayer = None
 
-    self._clear()
+        # reuse settings from QGIS
+        settings = QSettings()
+        self.enableAntiAliasing(settings.value("/qgis/enable_anti_aliasing", False, type=bool))
+        action = settings.value("/qgis/wheel_action", 0, type=float)
+        zoomFactor = settings.value("/qgis/zoom_factor", 2, type=float)
+        self.setWheelAction(QgsMapCanvas.WheelAction(action), zoomFactor)
 
+    def refresh(self):
+        self.setDirty(True)
+        self.loadPreview(self.item)
 
-  def refresh(self):
-    self.setDirty(True)
-    self.loadPreview( self.item )
+    def loadPreview(self, item):
+        if item == self.item and not self.dirty:
+            return
 
-  def loadPreview(self, item, force=False):
-    if item == self.item and not self.dirty:
-      return
-    self._clear()
-    if item is None:
-      return
+        if item is None:
+            return
 
-    if isinstance(item, Table) and item.type in [Table.VectorType, Table.RasterType]:
-      # update the preview, but first let the manager chance to show the canvas
-      runPrev = lambda: self._loadTablePreview( item )
-      QTimer.singleShot(50, runPrev)
-    else:
-      return
+        self._clear()
 
-    self.item = item
-    self.connect(self.item, SIGNAL('aboutToChange'), self.setDirty)
+        if isinstance(item, Table) and item.type in [Table.VectorType, Table.RasterType]:
+            # update the preview, but first let the manager chance to show the canvas
+            runPrev = lambda: self._loadTablePreview(item)
+            QTimer.singleShot(50, runPrev)
+        else:
+            return
 
-  def setDirty(self, val=True):
-    self.dirty = val
+        self.item = item
+        self.connect(self.item, SIGNAL('aboutToChange'), self.setDirty)
 
-  def _clear(self):
-    """ remove any layers from preview canvas """
-    if self.item is not None:
-      ## skip exception on RuntimeError fixes #6892
-      try:
-        self.disconnect(self.item, SIGNAL('aboutToChange'), self.setDirty)
-      except RuntimeError:
-        pass
-    self.item = None
-    self.dirty = False
+    def setDirty(self, val=True):
+        self.dirty = val
 
-    self.currentLayerId = None
-    self.setLayerSet( [] )
+    def _clear(self):
+        """ remove any layers from preview canvas """
+        if self.item is not None:
+            ## skip exception on RuntimeError fixes #6892
+            try:
+                self.disconnect(self.item, SIGNAL('aboutToChange'), self.setDirty)
+            except RuntimeError:
+                pass
 
-  def _loadTablePreview(self, table, limit=False):
-    """ if has geometry column load to map canvas """
-    QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-    self.setRenderFlag(False)
-    newLayerId = None
+        self.item = None
+        self.dirty = False
+        self._loadTablePreview(None)
 
-    if table.geomType:
-      # limit the query result if required
-      if limit and table.rowCount > 1000:
-        uniqueField = table.getValidQGisUniqueFields(True)
-        if uniqueField is None:
-          self.parent.tabs.setCurrentWidget(self.parent.info)
-          self.parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Unable to find a valid unique field"),
-                                          QgsMessageBar.WARNING, self.parent.iface.messageTimeout())
-          return
+    def _loadTablePreview(self, table, limit=False):
+        """ if has geometry column load to map canvas """
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        self.setRenderFlag(False)
+        vl = None
 
-        uri = table.database().uri()
-        uri.setDataSource("", u"(SELECT * FROM %s LIMIT 1000)" % table.quotedName(), table.geomColumn, "", uniqueField.name)
-        provider = table.database().dbplugin().providerName()
-        vl = QgsVectorLayer(uri.uri(), table.name, provider)
-      else:
-        vl = table.toMapLayer()
+        if table and table.geomType:
+            # limit the query result if required
+            if limit and table.rowCount > 1000:
+                uniqueField = table.getValidQGisUniqueFields(True)
+                if uniqueField is None:
+                    self.parent.tabs.setCurrentWidget(self.parent.info)
+                    self.parent.infoBar.pushMessage(
+                        QApplication.translate("DBManagerPlugin", "Unable to find a valid unique field"),
+                        QgsMessageBar.WARNING, self.parent.iface.messageTimeout())
+                    return
 
-      if not vl.isValid():
-        self.setLayerSet( [] )
-      else:
-        newLayerId = vl.id() if hasattr(vl, 'id') else vl.id()
-        self.setLayerSet( [ QgsMapCanvasLayer(vl) ] )
-        QgsMapLayerRegistry.instance().addMapLayers([vl], False)
-        self.zoomToFullExtent()
+                uri = table.database().uri()
+                uri.setDataSource("", u"(SELECT * FROM %s LIMIT 1000)" % table.quotedName(), table.geomColumn, "",
+                                  uniqueField.name)
+                provider = table.database().dbplugin().providerName()
+                vl = QgsVectorLayer(uri.uri(False), table.name, provider)
+            else:
+                vl = table.toMapLayer()
 
-    # remove old layer (if any) and set new
-    if self.currentLayerId:
-      QgsMapLayerRegistry.instance().removeMapLayers([self.currentLayerId], False)
-    self.currentLayerId = newLayerId
+            if not vl.isValid():
+                vl.deleteLater()
+                vl = None
 
-    self.setRenderFlag(True)
-    QApplication.restoreOverrideCursor()
+        # remove old layer (if any) and set new
+        if self.currentLayer:
+            QgsMapLayerRegistry.instance().removeMapLayers([self.currentLayer.id()])
+
+        if vl:
+            self.setLayerSet([QgsMapCanvasLayer(vl)])
+            QgsMapLayerRegistry.instance().addMapLayers([vl], False)
+            self.zoomToFullExtent()
+        else:
+            self.setLayerSet([])
+
+        self.currentLayer = vl
+
+        self.setRenderFlag(True)
+        QApplication.restoreOverrideCursor()

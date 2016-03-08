@@ -4,7 +4,7 @@ class QgsEllipseSymbolLayerV2Widget: QgsSymbolLayerV2Widget
 #include <qgsellipsesymbollayerv2widget.h>
 %End
   public:
-    QgsEllipseSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = 0 );
+    QgsEllipseSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = 0 );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 

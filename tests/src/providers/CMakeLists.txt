@@ -6,12 +6,17 @@
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} 
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/raster
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
-  )
+  ${QCA_INCLUDE_DIR}
+)
 
 #############################################################
 # Compiler defines
@@ -22,11 +27,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
 ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
 
 ADD_DEFINITIONS(-DINSTALL_PREFIX="\\"${CMAKE_INSTALL_PREFIX}\\"")
-
-# Temporarily set to old version until server is reconfigured 
-#SET(TEST_SERVER_URL "http://wcs.qgis.org/${COMPLETE_VERSION}")
-SET(TEST_SERVER_URL "http://wcs.qgis.org/1.9.0")
-ADD_DEFINITIONS(-DTEST_SERVER_URL="\\"${TEST_SERVER_URL}\\"")
 
 #############################################################
 # libraries
@@ -67,13 +67,22 @@ MACRO (ADD_QGIS_TEST testname testsrc)
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}
     qgis_core)
-  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})
+  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
 ENDMACRO (ADD_QGIS_TEST)
 
 #############################################################
 # Tests:
 
 ADD_QGIS_TEST(wcsprovidertest testqgswcsprovider.cpp)
+# Temporarily set to old version until server is reconfigured
+#SET(TEST_SERVER_URL "http://wcs.qgis.org/${COMPLETE_VERSION}")
+SET(TEST_SERVER_URL "http://wcs.qgis.org/1.9.0")
+#ADD_DEFINITIONS(-DTEST_SERVER_URL="\\"${TEST_SERVER_URL}\\"")
+SET_TARGET_PROPERTIES(qgis_wcsprovidertest PROPERTIES
+  COMPILE_FLAGS "-DTEST_SERVER_URL=\\\"${TEST_SERVER_URL}\\\""
+)
+
+ADD_QGIS_TEST(gdalprovidertest testqgsgdalprovider.cpp)
 
 #############################################################
 # WCS public servers test:
@@ -96,6 +105,8 @@ IF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/raster
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/providers/wcs
+  )
+  INCLUDE_DIRECTORIES(SYSTEM
     ${QT_QTSCRIPT_INCLUDE_DIR}
   )
 
@@ -117,3 +128,5 @@ IF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
   INSTALL(FILES wcs-servers.json DESTINATION ${QGIS_DATA_DIR}/resources)
 
 ENDIF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
+
+ADD_SUBDIRECTORY(grass)

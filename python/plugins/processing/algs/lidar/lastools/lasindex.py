@@ -29,20 +29,21 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterBoolean
 
+
 class lasindex(LAStoolsAlgorithm):
 
     MOBILE_OR_TERRESTRIAL = "MOBILE_OR_TERRESTRIAL"
     APPEND_LAX = "APPEND_LAX"
 
     def defineCharacteristics(self):
-        self.name = "lasindex"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasindex')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterBoolean(lasindex.APPEND_LAX,
-            self.tr("append *.lax file to *.laz file"), False))
+                                           self.tr("append *.lax file to *.laz file"), False))
         self.addParameter(ParameterBoolean(lasindex.MOBILE_OR_TERRESTRIAL,
-            self.tr("is mobile or terrestrial LiDAR (not airborne)"), False))
+                                           self.tr("is mobile or terrestrial LiDAR (not airborne)"), False))
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):

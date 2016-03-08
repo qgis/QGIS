@@ -25,57 +25,16 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import re
-import os
-
-from qgis.core import QgsDataSourceURI, QgsCredentials
+import warnings
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.tools import dataobjects
+from processing.tools import vector
 
 
 class OgrAlgorithm(GdalAlgorithm):
 
     def ogrConnectionString(self, uri):
-        ogrstr = None
-
-        layer = dataobjects.getObjectFromUri(uri, False)
-        if layer is None:
-            return uri
-        provider = layer.dataProvider().name()
-        if provider == 'spatialite':
-            # dbname='/geodata/osm_ch.sqlite' table="places" (Geometry) sql=
-            regex = re.compile("dbname='(.+)'")
-            r = regex.search(unicode(layer.source()))
-            ogrstr = r.groups()[0]
-        elif provider == 'postgres':
-            # dbname='ktryjh_iuuqef' host=spacialdb.com port=9999
-            # user='ktryjh_iuuqef' password='xyqwer' sslmode=disable
-            # key='gid' estimatedmetadata=true srid=4326 type=MULTIPOLYGON
-            # table="t4" (geom) sql=
-            dsUri = QgsDataSourceURI(layer.dataProvider().dataSourceUri())
-            connInfo = dsUri.connectionInfo()
-            (success, user, passwd ) = QgsCredentials.instance().get(connInfo, None, None)
-            if success:
-                QgsCredentials.instance().put(connInfo, user, passwd)
-            ogrstr = ("PG:dbname='%s' host='%s' port='%s' user='%s' password='%s'"
-                      % (dsUri.database(), dsUri.host(), dsUri.port(), user, passwd))
-        else:
-            ogrstr = unicode(layer.source()).split("|")[0]
-        return '"' + ogrstr + '"'
+        return vector.ogrConnectionString(uri)
 
     def ogrLayerName(self, uri):
-        if 'host' in uri:
-            regex = re.compile('(table=")(.+?)(\.)(.+?)"')
-            r = regex.search(uri)
-            return '"' + r.groups()[1] + '.' + r.groups()[3] +'"'
-        elif 'dbname' in uri:
-            regex = re.compile('(table=")(.+?)"')
-            r = regex.search(uri)
-            return r.groups()[1]
-        elif 'layername' in uri:
-            regex = re.compile('(layername=)(.*)')
-            r = regex.search(uri)
-            return r.groups()[1]
-        else:
-            return os.path.basename(os.path.splitext(uri)[0])
+        return vector.ogrLayerName(uri)

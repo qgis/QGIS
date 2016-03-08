@@ -27,7 +27,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
-QgsVectorDataProvider::QgsVectorDataProvider( QString uri )
+QgsVectorDataProvider::QgsVectorDataProvider( const QString& uri )
     : QgsDataProvider( uri )
     , mCacheMinMaxDirty( true )
     , mAttrPalIndexName( QgsAttrPalIndexNameHash() )
@@ -87,8 +87,16 @@ QVariant QgsVectorDataProvider::defaultValue( int fieldId )
   return QVariant();
 }
 
-bool QgsVectorDataProvider::changeGeometryValues( QgsGeometryMap &geometry_map )
+bool QgsVectorDataProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
+  Q_UNUSED( geometry_map );
+  return false;
+}
+
+bool QgsVectorDataProvider::changeFeatures( const QgsChangedAttributesMap &attr_map,
+    const QgsGeometryMap &geometry_map )
+{
+  Q_UNUSED( attr_map );
   Q_UNUSED( geometry_map );
   return false;
 }
@@ -196,18 +204,23 @@ QString QgsVectorDataProvider::capabilitiesString() const
 
   if ( abilities & QgsVectorDataProvider::SimplifyGeometries )
   {
-    abilitiesList += tr( "Simplify Geometries" );
-    QgsDebugMsg( "Capability: Simplify Geometries before fetch the feature" );
+    abilitiesList += tr( "Presimplify Geometries" );
+    QgsDebugMsg( "Capability: Simplify Geometries before fetching the feature" );
   }
 
   if ( abilities & QgsVectorDataProvider::SimplifyGeometriesWithTopologicalValidation )
   {
-    abilitiesList += tr( "Simplify Geometries with topological validation" );
+    abilitiesList += tr( "Presimplify Geometries with Validity Check" );
     QgsDebugMsg( "Capability: Simplify Geometries before fetch the feature ensuring that the result is a valid geometry" );
   }
 
-  return abilitiesList.join( ", " );
+  if ( abilities & QgsVectorDataProvider::ChangeFeatures )
+  {
+    abilitiesList += tr( "Simultaneous Geometry and Attribute Updates" );
+    QgsDebugMsg( "Capability: change both feature attributes and geometry at once" );
+  }
 
+  return abilitiesList.join( ", " );
 }
 
 
@@ -252,8 +265,8 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
 {
   int i;
   QgsDebugMsgLevel( QString( "field name = %1 type = %2 length = %3 precision = %4" )
-                    .arg( field.name() )
-                    .arg( QVariant::typeToName( field.type() ) )
+                    .arg( field.name(),
+                          QVariant::typeToName( field.type() ) )
                     .arg( field.length() )
                     .arg( field.precision() ), 2 );
   for ( i = 0; i < mNativeTypes.size(); i++ )
@@ -407,10 +420,10 @@ void QgsVectorDataProvider::fillMinMaxCache()
 
   while ( fi.nextFeature( f ) )
   {
-    const QgsAttributes& attrs = f.attributes();
+    QgsAttributes attrs = f.attributes();
     for ( QgsAttributeList::const_iterator it = keys.begin(); it != keys.end(); ++it )
     {
-      const QVariant& varValue = attrs[*it];
+      const QVariant& varValue = attrs.at( *it );
 
       if ( varValue.isNull() )
         continue;
@@ -449,7 +462,7 @@ void QgsVectorDataProvider::fillMinMaxCache()
   mCacheMinMaxDirty = false;
 }
 
-QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, QString value )
+QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, const QString& value )
 {
   QVariant v( value );
 
@@ -468,7 +481,7 @@ const QStringList &QgsVectorDataProvider::availableEncodings()
 {
   if ( smEncodings.isEmpty() )
   {
-    foreach ( QString codec, QTextCodec::availableCodecs() )
+    Q_FOREACH ( const QString& codec, QTextCodec::availableCodecs() )
     {
       smEncodings << codec;
     }
@@ -542,9 +555,16 @@ QStringList QgsVectorDataProvider::errors()
   return mErrors;
 }
 
-void QgsVectorDataProvider::pushError( QString msg )
+void QgsVectorDataProvider::pushError( const QString& msg )
 {
+  QgsDebugMsg( msg );
   mErrors << msg;
+  emit raiseError( msg );
+}
+
+QSet<QString> QgsVectorDataProvider::layerDependencies() const
+{
+  return QSet<QString>();
 }
 
 QStringList QgsVectorDataProvider::smEncodings;

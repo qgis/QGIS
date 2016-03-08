@@ -96,11 +96,11 @@ class CORE_EXPORT QgsLabel
      *  \param selected feature is selected
      *  \param classAttributes attributes to create the label from
      */
-    void renderLabel( QgsRenderContext &renderContext, QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = 0 );
+    void renderLabel( QgsRenderContext &renderContext, QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = nullptr );
 
     /** Reads the renderer configuration from an XML file
-     @param node the Dom node to read
-    */
+     * @param node the Dom node to read
+     */
     void readXML( const QDomNode& node );
 
     /** Writes the contents of the renderer to a configuration file */
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsLabel
      *                       2) field exists
      *                       3) value is defined
      *  otherwise returns empty string
-    */
+     */
     QString fieldValue( int attr, QgsFeature& feature );
 
     /** Accessor and mutator for the minimum scale member */
@@ -149,13 +149,13 @@ class CORE_EXPORT QgsLabel
   private:
     /** Does the actual rendering of a label at the given point */
     void renderLabel( QgsRenderContext &renderContext, QgsPoint point,
-                      QString text, QFont font, QPen pen,
+                      const QString& text, const QFont& font, const QPen& pen,
                       int dx, int dy,
                       double xoffset, double yoffset,
                       double ang,
                       int width, int height, int alignment );
 
-    bool readLabelField( QDomElement &el, int attr, QString prefix );
+    bool readLabelField( QDomElement &el, int attr, const QString& prefix );
 
     /** Get label point for simple feature in map units */
     void labelPoint( std::vector<labelpoint>&, QgsFeature &feature );
@@ -184,6 +184,9 @@ class CORE_EXPORT QgsLabel
     float mMaxScale;
     /** A flag that tells us whether to use the above vars to restrict the label's visibility */
     bool mScaleBasedVisibility;
+
+    QgsLabel( const QgsLabel& rh );
+    QgsLabel& operator=( const QgsLabel& rh );
 };
 
 #endif

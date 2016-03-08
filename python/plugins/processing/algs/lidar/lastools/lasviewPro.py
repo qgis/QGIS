@@ -30,6 +30,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
 
+
 class lasviewPro(LAStoolsAlgorithm):
 
     POINTS = "POINTS"
@@ -41,16 +42,16 @@ class lasviewPro(LAStoolsAlgorithm):
     COLORINGS = ["default", "classification", "elevation1", "elevation2", "intensity", "return", "flightline", "rgb"]
 
     def defineCharacteristics(self):
-        self.name = "lasviewPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasviewPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersFilesAreFlightlinesGUI()
         self.addParameter(ParameterNumber(lasviewPro.POINTS,
-            self.tr("max number of points sampled"), 100000, 20000000, 5000000))
+                                          self.tr("max number of points sampled"), 100000, 20000000, 5000000))
         self.addParameter(ParameterSelection(lasviewPro.COLORING,
-            self.tr("color by"), lasviewPro.COLORINGS, 0))
+                                             self.tr("color by"), lasviewPro.COLORINGS, 0))
         self.addParameter(ParameterSelection(lasviewPro.SIZE,
-            self.tr("window size (x y) in pixels"), lasviewPro.SIZES, 0))
+                                             self.tr("window size (x y) in pixels"), lasviewPro.SIZES, 0))
         self.addParametersAdditionalGUI()
         self.addParametersVerboseGUI()
 
@@ -60,7 +61,7 @@ class lasviewPro(LAStoolsAlgorithm):
         self.addParametersPointInputFolderCommands(commands)
         self.addParametersFilesAreFlightlinesCommands(commands)
         points = self.getParameterValue(lasviewPro.POINTS)
-        commands.append("-points " + str(points))
+        commands.append("-points " + unicode(points))
         self.addParametersAdditionalCommands(commands)
         coloring = self.getParameterValue(lasviewPro.COLORING)
         if coloring != 0:

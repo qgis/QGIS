@@ -44,7 +44,7 @@ QgsLegendModel::QgsLegendModel(): QStandardItemModel(), mAutoUpdate( true )
   }
 
   QWidgetList topLevelWidgets = QApplication::topLevelWidgets();
-  mHasTopLevelWindow = ( topLevelWidgets.size() > 0 );
+  mHasTopLevelWindow = ( !topLevelWidgets.isEmpty() );
 }
 
 QgsLegendModel::~QgsLegendModel()
@@ -59,7 +59,7 @@ void QgsLegendModel::setLayerSetAndGroups( QgsLayerTreeGroup* rootGroup )
 
 void QgsLegendModel::addGroupFromLayerTree( QgsLayerTreeGroup* parentGroup, QStandardItem* parentItem )
 {
-  foreach ( QgsLayerTreeNode* node, parentGroup->children() )
+  Q_FOREACH ( QgsLayerTreeNode* node, parentGroup->children() )
   {
     if ( QgsLayerTree::isGroup( node ) )
     {
@@ -80,8 +80,8 @@ void QgsLegendModel::setLayerSetAndGroups( const QStringList& layerIds, const QL
 {
   setLayerSet( layerIds );
 
-  QStandardItem* currentItem = 0;
-  QStandardItem* currentGroupItem = 0;
+  QStandardItem* currentItem = nullptr;
+  QStandardItem* currentGroupItem = nullptr;
   int i = 0;
 
   QList< GroupLayerInfo >::const_iterator infoIt = groupInfo.constBegin();
@@ -124,7 +124,7 @@ void QgsLegendModel::setLayerSetAndGroups( const QStringList& layerIds, const QL
   }
 }
 
-void QgsLegendModel::setLayerSet( const QStringList& layerIds, double scaleDenominator, QString rule )
+void QgsLegendModel::setLayerSet( const QStringList& layerIds, double scaleDenominator, const QString& rule )
 {
   mLayerIds = layerIds;
 
@@ -132,7 +132,7 @@ void QgsLegendModel::setLayerSet( const QStringList& layerIds, double scaleDenom
   clear();
 
   QStringList::const_iterator idIter = mLayerIds.constBegin();
-  QgsMapLayer* currentLayer = 0;
+  QgsMapLayer* currentLayer = nullptr;
 
   for ( ; idIter != mLayerIds.constEnd(); ++idIter )
   {
@@ -164,7 +164,7 @@ QStandardItem* QgsLegendModel::addGroup( QString text, int position, QStandardIt
   return groupItem;
 }
 
-int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer, double scaleDenominator, QString rule )
+int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer, double scaleDenominator, const QString& rule )
 {
   QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( layerItem );
 
@@ -192,7 +192,7 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
   int row = 0;
   for ( ; symbolIt != lst.constEnd(); ++symbolIt )
   {
-    if ( scaleDenominator == -1 && rule.isEmpty() )
+    if ( qgsDoubleNear( scaleDenominator, -1 ) && rule.isEmpty() )
     {
       QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( "" );
 
@@ -233,7 +233,7 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
   }
 
   // Don't remove row on getLegendGraphic (read only with filter)
-  if ( scaleDenominator == -1 && rule.isEmpty() )
+  if ( qgsDoubleNear( scaleDenominator, -1 ) && rule.isEmpty() )
   {
     // Delete following old items (if current number of items decreased)
     for ( int i = layerItem->rowCount() - 1; i >= row; --i )
@@ -553,7 +553,7 @@ void QgsLegendModel::removeLayer( const QString& layerId )
   }
 }
 
-void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator, QString rule, QStandardItem* parentItem )
+void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator, const QString& rule, QStandardItem* parentItem )
 {
   if ( !theMapLayer )
   {
@@ -629,8 +629,8 @@ bool QgsLegendModel::writeXML( QDomElement& composerLegendElem, QDomDocument& do
   QDomElement legendModelElem = doc.createElement( "Model" );
   legendModelElem.setAttribute( "autoUpdate", mAutoUpdate );
   int nTopLevelItems = invisibleRootItem()->rowCount();
-  QStandardItem* currentItem = 0;
-  QgsComposerLegendItem* currentLegendItem = 0;
+  QStandardItem* currentItem = nullptr;
+  QgsComposerLegendItem* currentLegendItem = nullptr;
 
   for ( int i = 0; i < nTopLevelItems; ++i )
   {
@@ -673,7 +673,7 @@ bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocu
     }
 
     //toplevel items can be groups or layers
-    QgsComposerLegendItem* currentItem = 0;
+    QgsComposerLegendItem* currentItem = nullptr;
     if ( currentElem.tagName() == "LayerItem" )
     {
       currentItem = new QgsComposerLayerItem();
@@ -730,7 +730,7 @@ Qt::ItemFlags QgsLegendModel::flags( const QModelIndex &index ) const
   if ( index.column() == 1 && item )
   {
     // Style
-    QStandardItem* firstColumnItem = 0;
+    QStandardItem* firstColumnItem = nullptr;
     if ( item->parent() )
     {
       firstColumnItem = item->parent()->child( index.row(), 0 );
@@ -823,7 +823,7 @@ bool QgsLegendModel::dropMimeData( const QMimeData *data, Qt::DropAction action,
     return false;
   }
 
-  QStandardItem* dropIntoItem = 0;
+  QStandardItem* dropIntoItem = nullptr;
   if ( parent.isValid() )
   {
     dropIntoItem = itemFromIndex( parent );
@@ -848,7 +848,7 @@ bool QgsLegendModel::dropMimeData( const QMimeData *data, Qt::DropAction action,
   int nChildNodes = nodeList.size();
   QDomElement currentElem;
   QString currentTagName;
-  QgsComposerLegendItem* currentItem = 0;
+  QgsComposerLegendItem* currentItem = nullptr;
 
   for ( int i = 0; i < nChildNodes; ++i )
   {

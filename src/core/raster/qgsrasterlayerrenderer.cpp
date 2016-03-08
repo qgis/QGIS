@@ -23,8 +23,8 @@
 
 QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRenderContext& rendererContext )
     : QgsMapLayerRenderer( layer->id() )
-    , mRasterViewPort( 0 )
-    , mPipe( 0 )
+    , mRasterViewPort( nullptr )
+    , mPipe( nullptr )
 {
 
   mPainter = rendererContext.painter();
@@ -50,7 +50,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
 
   if ( rendererContext.coordinateTransform() )
   {
-    QgsDebugMsg( "coordinateTransform set -> project extents." );
+    QgsDebugMsgLevel( "coordinateTransform set -> project extents.", 4 );
     try
     {
       myProjectedViewExtent = rendererContext.coordinateTransform()->transformBoundingBox( rendererContext.extent() );
@@ -73,7 +73,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   }
   else
   {
-    QgsDebugMsg( "coordinateTransform not set" );
+    QgsDebugMsgLevel( "coordinateTransform not set", 4 );
     myProjectedViewExtent = rendererContext.extent();
     myProjectedLayerExtent = layer->extent();
   }
@@ -87,10 +87,10 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
     return;
   }
 
-  QgsDebugMsg( "theViewExtent is " + rendererContext.extent().toString() );
-  QgsDebugMsg( "myProjectedViewExtent is " + myProjectedViewExtent.toString() );
-  QgsDebugMsg( "myProjectedLayerExtent is " + myProjectedLayerExtent.toString() );
-  QgsDebugMsg( "myRasterExtent is " + myRasterExtent.toString() );
+  QgsDebugMsgLevel( "theViewExtent is " + rendererContext.extent().toString(), 4 );
+  QgsDebugMsgLevel( "myProjectedViewExtent is " + myProjectedViewExtent.toString(), 4 );
+  QgsDebugMsgLevel( "myProjectedLayerExtent is " + myProjectedLayerExtent.toString(), 4 );
+  QgsDebugMsgLevel( "myRasterExtent is " + myRasterExtent.toString(), 4 );
 
   //
   // The first thing we do is set up the QgsRasterViewPort. This struct stores all the settings
@@ -211,7 +211,7 @@ bool QgsRasterLayerRenderer::render()
   QgsRasterDrawer drawer( &iterator );
   drawer.draw( mPainter, mRasterViewPort, mMapToPixel );
 
-  QgsDebugMsg( QString( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ) );
+  QgsDebugMsgLevel( QString( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ), 4 );
 
   return true;
 }

@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 24.4.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -52,7 +52,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * @note Added in QGIS 2.8
      * @note Not required for plugins, the QGIS application does that already
      */
-    static void initEditors( QgsMapCanvas* mapCanvas = 0, QgsMessageBar* messageBar = 0 );
+    static void initEditors( QgsMapCanvas* mapCanvas = nullptr, QgsMessageBar* messageBar = nullptr );
 
     /**
      * Destructor
@@ -81,7 +81,14 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
                                     const QgsEditorWidgetConfig& config,
                                     QWidget* editor,
                                     QWidget* parent,
-                                    const QgsAttributeEditorContext context = QgsAttributeEditorContext() );
+                                    const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
+
+    QgsSearchWidgetWrapper* createSearchWidget( const QString& widgetId,
+        QgsVectorLayer* vl,
+        int fieldIdx,
+        const QgsEditorWidgetConfig& config,
+        QWidget* parent,
+        const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
 
     /**
      * Creates a configuration widget
@@ -186,7 +193,10 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     void writeSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage );
 
   private:
+    QString findSuitableWrapper( QWidget* editor , const QString& defaultWidget );
+
     QMap<QString, QgsEditorWidgetFactory*> mWidgetFactories;
+    QMap<const char*, QPair<int, QString> > mFactoriesByType;
 };
 
 #endif // QGSEDITORWIDGETREGISTRY_H

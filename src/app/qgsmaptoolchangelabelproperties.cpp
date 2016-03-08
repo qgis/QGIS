@@ -29,11 +29,11 @@ QgsMapToolChangeLabelProperties::~QgsMapToolChangeLabelProperties()
 {
 }
 
-void QgsMapToolChangeLabelProperties::canvasPressEvent( QMouseEvent *e )
+void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent* e )
 {
   deleteRubberBands();
 
-  if ( !labelAtPosition( e, mCurrentLabelPos ) )
+  if ( !labelAtPosition( e, mCurrentLabelPos ) || mCurrentLabelPos.isDiagram )
   {
     return;
   }
@@ -47,7 +47,7 @@ void QgsMapToolChangeLabelProperties::canvasPressEvent( QMouseEvent *e )
   createRubberBands();
 }
 
-void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
   QgsVectorLayer* vlayer = currentLayer();
@@ -61,25 +61,45 @@ void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QMouseEvent *e )
       labeltext = mCurrentLabelPos.labelText;
     }
 
-    QgsLabelPropertyDialog d( mCurrentLabelPos.layerID, mCurrentLabelPos.featureId, mCurrentLabelPos.labelFont, labeltext, 0 );
+    QgsLabelPropertyDialog d( mCurrentLabelPos.layerID, mCurrentLabelPos.featureId, mCurrentLabelPos.labelFont, labeltext, nullptr );
+
+    connect( &d, SIGNAL( applied() ), this, SLOT( dialogPropertiesApplied() ) );
     if ( d.exec() == QDialog::Accepted )
     {
-      const QgsAttributeMap& changes = d.changedProperties();
-      if ( changes.size() > 0 )
-      {
-        vlayer->beginEditCommand( tr( "Changed properties for label" ) + QString( " '%1'" ).arg( currentLabelText( 24 ) ) );
-
-        QgsAttributeMap::const_iterator changeIt = changes.constBegin();
-        for ( ; changeIt != changes.constEnd(); ++changeIt )
-        {
-          vlayer->changeAttributeValue( mCurrentLabelPos.featureId, changeIt.key(), changeIt.value() );
-        }
-
-        vlayer->endEditCommand();
-        mCanvas->refresh();
-      }
+      applyChanges( d.changedProperties() );
     }
+
     deleteRubberBands();
   }
+}
+
+void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap& changes )
+{
+  QgsVectorLayer* vlayer = currentLayer();
+  if ( !vlayer )
+    return;
+
+  if ( !changes.isEmpty() )
+  {
+    vlayer->beginEditCommand( tr( "Changed properties for label" ) + QString( " '%1'" ).arg( currentLabelText( 24 ) ) );
+
+    QgsAttributeMap::const_iterator changeIt = changes.constBegin();
+    for ( ; changeIt != changes.constEnd(); ++changeIt )
+    {
+      vlayer->changeAttributeValue( mCurrentLabelPos.featureId, changeIt.key(), changeIt.value() );
+    }
+
+    vlayer->endEditCommand();
+    mCanvas->refresh();
+  }
+}
+
+void QgsMapToolChangeLabelProperties::dialogPropertiesApplied()
+{
+  QgsLabelPropertyDialog* dlg = qobject_cast<QgsLabelPropertyDialog*>( sender() );
+  if ( !dlg )
+    return;
+
+  applyChanges( dlg->changedProperties() );
 }
 

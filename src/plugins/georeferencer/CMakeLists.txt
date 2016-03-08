@@ -51,8 +51,11 @@ SET (GEOREF_MOC_HDRS
      qgsgeoreftooladdpoint.h
      qgsgeoreftooldeletepoint.h
      qgsgeoreftoolmovepoint.h
+     qgsgeorefvalidators.h
      qgsmapcoordsdialog.h
+     qgsresidualplotitem.h
      qgstransformsettingsdialog.h
+     qgsvalidateddoublespinbox.h
      
      qgsgcplistmodel.h
      qgsgcplistwidget.h
@@ -74,9 +77,11 @@ ADD_LIBRARY (georefplugin MODULE ${GEOREF_SRCS} ${GEOREF_MOC_SRCS} ${GEOREF_RCC_
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}
      ${CMAKE_CURRENT_BINARY_DIR}
-     ../../core ../../core/raster ../../core/composer
-     ../../gui
+     ../../core ../../core/geometry ../../core/raster ../../core/composer
+     ../../gui  ../../gui/editorwidgets
      ..
+)
+INCLUDE_DIRECTORIES(SYSTEM
      ${GSL_INCLUDE_DIR}
      ${QGIS_INCLUDE_DIR}
      ${GDAL_INCLUDE_DIR}

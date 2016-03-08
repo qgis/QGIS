@@ -42,14 +42,14 @@
 */
 eVisEventIdTool::eVisEventIdTool( QgsMapCanvas* theCanvas )
     : QgsMapTool( theCanvas )
-    , mBrowser( NULL )
+    , mBrowser( nullptr )
 {
   //set cursor
   QPixmap myIdentifyQPixmap = QPixmap(( const char ** ) identify_cursor );
   mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
 
   //set the current tool to this object
-  if ( 0 != mCanvas )
+  if ( mCanvas )
   {
     mCanvas->setMapTool( this );
   }
@@ -59,12 +59,12 @@ eVisEventIdTool::eVisEventIdTool( QgsMapCanvas* theCanvas )
 * Mouse release, i.e., select, event
 * @param theMouseEvent - Pointer to a QMouseEvent
 */
-void eVisEventIdTool::canvasReleaseEvent( QMouseEvent* theMouseEvent )
+void eVisEventIdTool::canvasReleaseEvent( QgsMapMouseEvent* theMouseEvent )
 {
-  if ( 0 == mCanvas || 0 == theMouseEvent )
+  if ( !mCanvas || !theMouseEvent )
     return;
 
-  //Check to see if there is a layer selected
+//Check to see if there is a layer selected
   if ( mCanvas->currentLayer() )
   {
     //Check to see if the current layer is a vector layer
@@ -87,10 +87,10 @@ void eVisEventIdTool::canvasReleaseEvent( QMouseEvent* theMouseEvent )
 * Selection routine called by the mouse release event
 * @param thePoint = QgsPoint representing the x, y coordinates of the mouse release event
 */
-void eVisEventIdTool::select( QgsPoint thePoint )
+void eVisEventIdTool::select( const QgsPoint& thePoint )
 {
 
-  if ( 0 == mCanvas )
+  if ( !mCanvas )
     return;
 
   QgsVectorLayer* myLayer = ( QgsVectorLayer* )mCanvas->currentLayer();
@@ -120,6 +120,6 @@ void eVisEventIdTool::select( QgsPoint thePoint )
   myLayer->setSelectedFeatures( newSelectedFeatures );
 
   //Launch a new event browser to view selected features
-  mBrowser = new eVisGenericEventBrowserGui( mCanvas, mCanvas, NULL );
+  mBrowser = new eVisGenericEventBrowserGui( mCanvas, mCanvas, nullptr );
   mBrowser->setAttribute( Qt::WA_DeleteOnClose );
 }

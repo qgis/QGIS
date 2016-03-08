@@ -14,24 +14,23 @@ email                : a.furieri@lqt.it
  *                                                                         *
  ***************************************************************************/
 
-#include <qgis.h>
-#include <qgsapplication.h>
-#include <qgsfeature.h>
-#include <qgsfield.h>
-#include <qgsgeometry.h>
-#include <qgsmessageoutput.h>
-#include <qgsrectangle.h>
-#include <qgscoordinatereferencesystem.h>
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgsfeature.h"
+#include "qgsfield.h"
+#include "qgsgeometry.h"
+#include "qgsmessageoutput.h"
+#include "qgsrectangle.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsvectorlayerimport.h"
-
-#include <QMessageBox>
-
+#include "qgsslconnect.h"
 #include "qgsspatialiteprovider.h"
 #include "qgsspatialiteconnpool.h"
 #include "qgsspatialitefeatureiterator.h"
 
+#include <QMessageBox>
 #include <QFileInfo>
 #include <QDir>
 
@@ -41,8 +40,6 @@ email                : a.furieri@lqt.it
 
 const QString SPATIALITE_KEY = "spatialite";
 const QString SPATIALITE_DESCRIPTION = "SpatiaLite data provider";
-
-
 
 
 bool QgsSpatiaLiteProvider::convertField( QgsField &field )
@@ -96,6 +93,7 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
   return true;
 }
 
+
 QgsVectorLayerImport::ImportError
 QgsSpatiaLiteProvider::createEmptyLayer(
   const QString& uri,
@@ -127,15 +125,14 @@ QgsSpatiaLiteProvider::createEmptyLayer(
   // create the table
   {
     QgsSqliteHandle *handle;
-    sqlite3 *sqliteHandle = NULL;
-    char *errMsg = NULL;
+    sqlite3 *sqliteHandle = nullptr;
+    char *errMsg = nullptr;
     int toCommit = false;
     QString sql;
 
     // trying to open the SQLite DB
-    spatialite_init( 0 );
     handle = QgsSqliteHandle::openDb( sqlitePath );
-    if ( handle == NULL )
+    if ( !handle )
     {
       QgsDebugMsg( "Connection to database failed. Import of layer aborted." );
       if ( errorMessage )
@@ -153,11 +150,11 @@ QgsSpatiaLiteProvider::createEmptyLayer(
       QString pk = primaryKey = "pk";
       for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
       {
-        if ( fields[fldIdx].name() == pk )
+        if ( fields[fldIdx].name() == primaryKey )
         {
           // it already exists, try again with a new name
           primaryKey = QString( "%1_%2" ).arg( pk ).arg( index++ );
-          fldIdx = 0;
+          fldIdx = -1; // it is incremented in the for loop, i.e. restarts at 0
         }
       }
     }
@@ -178,21 +175,25 @@ QgsSpatiaLiteProvider::createEmptyLayer(
       }
     }
 
-    // if the field doesn't not exist yet, create it as a int field
+    // if the pk field doesn't exist yet, create an integer pk field
+    // as it's autoincremental
     if ( primaryKeyType.isEmpty() )
     {
       primaryKeyType = "INTEGER";
-      /* TODO
-      // check the feature count to choose if create a bigint pk field
-      if ( layer->featureCount() > 0xFFFFFF )
+    }
+    else
+    {
+      // if the pk field's type is bigint, use the autoincremental
+      // integer type instead
+      if ( primaryKeyType == "BIGINT" )
       {
-        primaryKeyType = "BIGINT";
-      }*/
+        primaryKeyType = "INTEGER";
+      }
     }
 
     try
     {
-      int ret = sqlite3_exec( sqliteHandle, "BEGIN", NULL, NULL, &errMsg );
+      int ret = sqlite3_exec( sqliteHandle, "BEGIN", nullptr, nullptr, &errMsg );
       if ( ret != SQLITE_OK )
         throw SLException( errMsg );
 
@@ -204,24 +205,24 @@ QgsSpatiaLiteProvider::createEmptyLayer(
         sql = QString( "DROP TABLE IF EXISTS %1" )
               .arg( quotedIdentifier( tableName ) );
 
-        ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
+        ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
         if ( ret != SQLITE_OK )
           throw SLException( errMsg );
 
         sql = QString( "DELETE FROM geometry_columns WHERE upper(f_table_name) = upper(%1)" )
               .arg( quotedValue( tableName ) );
 
-        ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
+        ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
         if ( ret != SQLITE_OK )
           throw SLException( errMsg );
       }
 
       sql = QString( "CREATE TABLE %1 (%2 %3 PRIMARY KEY)" )
-            .arg( quotedIdentifier( tableName ) )
-            .arg( quotedIdentifier( primaryKey ) )
-            .arg( primaryKeyType );
+            .arg( quotedIdentifier( tableName ),
+                  quotedIdentifier( primaryKey ),
+                  primaryKeyType );
 
-      ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
+      ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
       if ( ret != SQLITE_OK )
         throw SLException( errMsg );
 
@@ -233,36 +234,42 @@ QgsSpatiaLiteProvider::createEmptyLayer(
       {
         case QGis::WKBPoint25D:
           dim = 3;
+          FALLTHROUGH;
         case QGis::WKBPoint:
           geometryType = "POINT";
           break;
 
         case QGis::WKBLineString25D:
           dim = 3;
+          FALLTHROUGH;
         case QGis::WKBLineString:
           geometryType = "LINESTRING";
           break;
 
         case QGis::WKBPolygon25D:
           dim = 3;
+          FALLTHROUGH;
         case QGis::WKBPolygon:
           geometryType = "POLYGON";
           break;
 
         case QGis::WKBMultiPoint25D:
           dim = 3;
+          FALLTHROUGH;
         case QGis::WKBMultiPoint:
           geometryType = "MULTIPOINT";
           break;
 
         case QGis::WKBMultiLineString25D:
           dim = 3;
+          FALLTHROUGH;
         case QGis::WKBMultiLineString:
           geometryType = "MULTILINESTRING";
           break;
 
         case QGis::WKBMultiPolygon25D:
           dim = 3;
+          FALLTHROUGH;
         case QGis::WKBMultiPolygon:
           geometryType = "MULTIPOLYGON";
           break;
@@ -281,13 +288,13 @@ QgsSpatiaLiteProvider::createEmptyLayer(
       if ( !geometryType.isEmpty() )
       {
         sql = QString( "SELECT AddGeometryColumn(%1, %2, %3, %4, %5)" )
-              .arg( QgsSpatiaLiteProvider::quotedValue( tableName ) )
-              .arg( QgsSpatiaLiteProvider::quotedValue( geometryColumn ) )
+              .arg( QgsSpatiaLiteProvider::quotedValue( tableName ),
+                    QgsSpatiaLiteProvider::quotedValue( geometryColumn ) )
               .arg( srid )
               .arg( QgsSpatiaLiteProvider::quotedValue( geometryType ) )
               .arg( dim );
 
-        ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
+        ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
         if ( ret != SQLITE_OK )
           throw SLException( errMsg );
       }
@@ -296,7 +303,7 @@ QgsSpatiaLiteProvider::createEmptyLayer(
         geometryColumn = QString();
       }
 
-      ret = sqlite3_exec( sqliteHandle, "COMMIT", NULL, NULL, &errMsg );
+      ret = sqlite3_exec( sqliteHandle, "COMMIT", nullptr, nullptr, &errMsg );
       if ( ret != SQLITE_OK )
         throw SLException( errMsg );
 
@@ -304,20 +311,20 @@ QgsSpatiaLiteProvider::createEmptyLayer(
     catch ( SLException &e )
     {
       QgsDebugMsg( QString( "creation of data source %1 failed. %2" )
-                   .arg( tableName )
-                   .arg( e.errorMessage() )
+                   .arg( tableName,
+                         e.errorMessage() )
                  );
 
       if ( errorMessage )
         *errorMessage = QObject::tr( "creation of data source %1 failed. %2" )
-                        .arg( tableName )
-                        .arg( e.errorMessage() );
+                        .arg( tableName,
+                              e.errorMessage() );
 
 
       if ( toCommit )
       {
         // ROLLBACK after some previous error
-        sqlite3_exec( sqliteHandle, "ROLLBACK", NULL, NULL, NULL );
+        sqlite3_exec( sqliteHandle, "ROLLBACK", nullptr, nullptr, nullptr );
       }
 
       QgsSqliteHandle::closeDb( handle );
@@ -408,14 +415,21 @@ QgsSpatiaLiteProvider::createEmptyLayer(
 }
 
 
-
 QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     : QgsVectorDataProvider( uri )
+    , valid( false )
+    , isQuery( false )
+    , mTableBased( false )
+    , mViewBased( false )
+    , mVShapeBased( false )
+    , mReadOnly( false )
     , geomType( QGis::WKBUnknown )
-    , sqliteHandle( NULL )
+    , sqliteHandle( nullptr )
     , mSrid( -1 )
+    , numberFeatures( 0 )
     , spatialIndexRTree( false )
     , spatialIndexMbrCache( false )
+    , enabledCapabilities( 0 )
     , mGotSpatialiteVersion( false )
     , mSpatialiteVersionMajor( 0 )
     , mSpatialiteVersionMinor( 0 )
@@ -425,19 +439,16 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
 
   // parsing members from the uri structure
   mTableName = anUri.table();
-  mGeometryColumn = anUri.geometryColumn();
+  mGeometryColumn = anUri.geometryColumn().toLower();
   mSqlitePath = anUri.database();
   mSubsetString = anUri.sql();
   mPrimaryKey = anUri.keyColumn();
   mQuery = mTableName;
 
   // trying to open the SQLite DB
-  spatialite_init( 0 );
-  valid = true;
   handle = QgsSqliteHandle::openDb( mSqlitePath );
-  if ( handle == NULL )
+  if ( !handle )
   {
-    valid = false;
     return;
   }
   sqliteHandle = handle->handle();
@@ -447,12 +458,12 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
 
 #ifdef SPATIALITE_VERSION_GE_4_0_0
   // only if libspatialite version is >= 4.0.0
-  gaiaVectorLayersListPtr list = NULL;
-  gaiaVectorLayerPtr lyr = NULL;
+  gaiaVectorLayersListPtr list = nullptr;
+  gaiaVectorLayerPtr lyr = nullptr;
   bool specialCase = false;
   if ( mGeometryColumn.isEmpty() )
     specialCase = true; // non-spatial table
-  if ( mQuery.startsWith( "(" ) && mQuery.endsWith( ")" ) )
+  if ( mQuery.startsWith( '(' ) && mQuery.endsWith( ')' ) )
     specialCase = true;
 
   if ( !specialCase )
@@ -463,14 +474,11 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
                                     mTableName.toUtf8().constData(),
                                     mGeometryColumn.toUtf8().constData(),
                                     GAIA_VECTORS_LIST_OPTIMISTIC );
-    if ( list != NULL )
+    if ( list )
       lyr = list->First;
-    if ( lyr == NULL )
-      ret = false;
-    else
-    {
-      ret = checkLayerTypeAbstractInterface( lyr );
-    }
+
+    ret = lyr && checkLayerTypeAbstractInterface( lyr );
+
     alreadyDone = true;
   }
 #endif
@@ -486,13 +494,12 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   {
     // invalid metadata
     numberFeatures = 0;
-    valid = false;
 
     QgsDebugMsg( "Invalid SpatiaLite layer" );
     closeDb();
     return;
   }
-  enabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
+  enabledCapabilities = mPrimaryKey.isEmpty() ? 0 : ( QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId );
   if (( mTableBased || mViewBased ) &&  !mReadOnly )
   {
     // enabling editing only for Tables [excluding Views and VirtualShapes]
@@ -507,14 +514,13 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   alreadyDone = false;
 
 #ifdef SPATIALITE_VERSION_GE_4_0_0
-  if ( lyr != NULL )
+  if ( lyr )
   {
     // using the v.4.0 AbstractInterface
     if ( !getGeometryDetailsAbstractInterface( lyr ) )  // gets srid and geometry type
     {
       // the table is not a geometry table
       numberFeatures = 0;
-      valid = false;
       QgsDebugMsg( "Invalid SpatiaLite layer" );
       closeDb();
       gaiaFreeVectorLayersList( list );
@@ -523,7 +529,6 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     if ( !getTableSummaryAbstractInterface( lyr ) )     // gets the extent and feature count
     {
       numberFeatures = 0;
-      valid = false;
       QgsDebugMsg( "Invalid SpatiaLite layer" );
       closeDb();
       gaiaFreeVectorLayersList( list );
@@ -543,7 +548,6 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     {
       // the table is not a geometry table
       numberFeatures = 0;
-      valid = false;
       QgsDebugMsg( "Invalid SpatiaLite layer" );
       closeDb();
       return;
@@ -551,7 +555,6 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     if ( !getTableSummary() )     // gets the extent and feature count
     {
       numberFeatures = 0;
-      valid = false;
       QgsDebugMsg( "Invalid SpatiaLite layer" );
       closeDb();
       return;
@@ -559,9 +562,8 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     // load the columns list
     loadFields();
   }
-  if ( sqliteHandle == NULL )
+  if ( !sqliteHandle )
   {
-    valid = false;
     QgsDebugMsg( "Invalid SpatiaLite layer" );
     return;
   }
@@ -576,6 +578,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "FLOAT", QVariant::Double )
   << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "INTEGER", QVariant::LongLong )
   ;
+  valid = true;
 }
 
 QgsSpatiaLiteProvider::~QgsSpatiaLiteProvider()
@@ -588,21 +591,34 @@ QgsAbstractFeatureSource* QgsSpatiaLiteProvider::featureSource() const
   return new QgsSpatiaLiteFeatureSource( this );
 }
 
+void QgsSpatiaLiteProvider::updatePrimaryKeyCapabilities()
+{
+  if ( mPrimaryKey.isEmpty() )
+  {
+    enabledCapabilities &= ~QgsVectorDataProvider::SelectAtId;
+    enabledCapabilities &= ~QgsVectorDataProvider::SelectGeometryAtId;
+  }
+  else
+  {
+    enabledCapabilities |= QgsVectorDataProvider::SelectAtId;
+    enabledCapabilities |= QgsVectorDataProvider::SelectGeometryAtId;
+  }
+}
+
 #ifdef SPATIALITE_VERSION_GE_4_0_0
 // only if libspatialite version is >= 4.0.0
+
 void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr )
 {
-  if ( lyr == NULL )
-  {
+  if ( !lyr )
     return;
-  }
 
   attributeFields.clear();
   mPrimaryKey.clear(); // cazzo cazzo cazzo
   mPrimaryKeyAttrs.clear();
 
   gaiaLayerAttributeFieldPtr fld = lyr->First;
-  if ( fld == NULL )
+  if ( !fld )
   {
     // defaulting to traditional loadFields()
     loadFields();
@@ -612,7 +628,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
   while ( fld )
   {
     QString name = QString::fromUtf8( fld->AttributeFieldName );
-    if ( name != mGeometryColumn )
+    if ( name.toLower() != mGeometryColumn )
     {
       const char *type = "TEXT";
       QVariant::Type fieldType = QVariant::String; // default: SQLITE_TEXT
@@ -641,7 +657,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
   char **results;
   int rows;
   int columns;
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
   int ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( ret == SQLITE_OK )
   {
@@ -657,6 +673,15 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
       mPrimaryKeyAttrs << i - 1;
     }
   }
+
+  // for views try to get the primary key from the meta table
+  if ( mViewBased && mPrimaryKey.isEmpty() )
+  {
+    determineViewPrimaryKey();
+  }
+
+  updatePrimaryKeyCapabilities();
+
   sqlite3_free_table( results );
 }
 #endif
@@ -670,7 +695,7 @@ QString QgsSpatiaLiteProvider::spatialiteVersion()
   char **results;
   int rows;
   int columns;
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
   QString sql;
 
   sql = "SELECT spatialite_version()";
@@ -686,10 +711,10 @@ QString QgsSpatiaLiteProvider::spatialiteVersion()
 
   QgsDebugMsg( "SpatiaLite version info: " + mSpatialiteVersionInfo );
 
-  QStringList spatialiteParts = mSpatialiteVersionInfo.split( " ", QString::SkipEmptyParts );
+  QStringList spatialiteParts = mSpatialiteVersionInfo.split( ' ', QString::SkipEmptyParts );
 
   // Get major and minor version
-  QStringList spatialiteVersionParts = spatialiteParts[0].split( ".", QString::SkipEmptyParts );
+  QStringList spatialiteVersionParts = spatialiteParts[0].split( '.', QString::SkipEmptyParts );
   if ( spatialiteVersionParts.size() < 2 )
   {
     QgsMessageLog::logMessage( tr( "Could not parse spatialite version string '%1'" ).arg( mSpatialiteVersionInfo ), tr( "SpatiaLite" ) );
@@ -707,11 +732,11 @@ void QgsSpatiaLiteProvider::loadFields()
 {
   int ret;
   int i;
-  sqlite3_stmt *stmt = NULL;
+  sqlite3_stmt *stmt = nullptr;
   char **results;
   int rows;
   int columns;
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
   QString pkName;
   int pkCount = 0;
   QString sql;
@@ -746,7 +771,7 @@ void QgsSpatiaLiteProvider::loadFields()
           QgsDebugMsg( "found primaryKey " + name );
         }
 
-        if ( name != mGeometryColumn )
+        if ( name.toLower() != mGeometryColumn )
         {
           // for sure any SQLite value can be represented as SQLITE_TEXT
           QVariant::Type fieldType = QVariant::String;
@@ -774,15 +799,23 @@ void QgsSpatiaLiteProvider::loadFields()
       }
     }
     sqlite3_free_table( results );
+
+
+    // for views try to get the primary key from the meta table
+    if ( mViewBased && mPrimaryKey.isEmpty() )
+    {
+      determineViewPrimaryKey();
+    }
+
   }
   else
   {
     sql = QString( "select * from %1 limit 1" ).arg( mQuery );
 
-    if ( sqlite3_prepare_v2( sqliteHandle, sql.toUtf8().constData(), -1, &stmt, NULL ) != SQLITE_OK )
+    if ( sqlite3_prepare_v2( sqliteHandle, sql.toUtf8().constData(), -1, &stmt, nullptr ) != SQLITE_OK )
     {
       // some error occurred
-      QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( sqlite3_errmsg( sqliteHandle ) ), tr( "SpatiaLite" ) );
+      QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( sqliteHandle ) ), tr( "SpatiaLite" ) );
       return;
     }
 
@@ -802,7 +835,7 @@ void QgsSpatiaLiteProvider::loadFields()
       {
         QString name = QString::fromUtf8( sqlite3_column_name( stmt, i ) );
         const char *type = sqlite3_column_decltype( stmt, i );
-        if ( type == NULL )
+        if ( !type )
           type = "TEXT";
 
         if ( name == mPrimaryKey )
@@ -813,7 +846,7 @@ void QgsSpatiaLiteProvider::loadFields()
           QgsDebugMsg( "found primaryKey " + name );
         }
 
-        if ( name != mGeometryColumn )
+        if ( name.toLower() != mGeometryColumn )
         {
           // for sure any SQLite value can be represented as SQLITE_TEXT
           QVariant::Type fieldType = QVariant::String;
@@ -849,16 +882,45 @@ void QgsSpatiaLiteProvider::loadFields()
     mPrimaryKey = pkName;
   }
 
+  updatePrimaryKeyCapabilities();
+
   return;
 
 error:
-  QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ? errMsg : tr( "unknown cause" ) ), tr( "SpatiaLite" ) );
+  QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ? errMsg : tr( "unknown cause" ) ), tr( "SpatiaLite" ) );
   // unexpected error
-  if ( errMsg != NULL )
+  if ( errMsg )
   {
     sqlite3_free( errMsg );
   }
 }
+
+
+void QgsSpatiaLiteProvider::determineViewPrimaryKey()
+{
+  QString sql = QString( "SELECT view_rowid"
+                         " FROM views_geometry_columns"
+                         " WHERE upper(view_name) = upper(%1) and upper(view_geometry) = upper(%2)" ).arg( quotedValue( mTableName ),
+                             quotedValue( mGeometryColumn ) );
+
+  char **results;
+  int rows;
+  int columns;
+  char *errMsg = nullptr;
+  int ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  if ( ret == SQLITE_OK )
+  {
+    if ( rows > 0 )
+    {
+      mPrimaryKey = results[1 * columns];
+      int idx = attributeFields.fieldNameIndex( mPrimaryKey );
+      if ( idx != -1 )
+        mPrimaryKeyAttrs << idx;
+    }
+    sqlite3_free_table( results );
+  }
+}
+
 
 bool QgsSpatiaLiteProvider::hasTriggers()
 {
@@ -866,7 +928,7 @@ bool QgsSpatiaLiteProvider::hasTriggers()
   char **results;
   int rows;
   int columns;
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
   QString sql;
 
   sql = QString( "SELECT * FROM sqlite_master WHERE type='trigger' AND tbl_name=%1" )
@@ -895,7 +957,7 @@ QgsFeatureIterator QgsSpatiaLiteProvider::getFeatures( const QgsFeatureRequest& 
 
 
 int QgsSpatiaLiteProvider::computeSizeFromGeosWKB2D( const unsigned char *blob,
-    size_t size, int type, int nDims,
+    int size, int type, int nDims,
     int little_endian, int endian_arch )
 {
   Q_UNUSED( size );
@@ -1067,7 +1129,7 @@ int QgsSpatiaLiteProvider::computeSizeFromMultiWKB2D( const unsigned char *p_in,
 }
 
 int QgsSpatiaLiteProvider::computeSizeFromGeosWKB3D( const unsigned char *blob,
-    size_t size, int type, int nDims,
+    int size, int type, int nDims,
     int little_endian, int endian_arch )
 {
   Q_UNUSED( size );
@@ -1239,9 +1301,9 @@ int QgsSpatiaLiteProvider::computeSizeFromMultiWKB3D( const unsigned char *p_in,
 }
 
 void QgsSpatiaLiteProvider::convertFromGeosWKB( const unsigned char *blob,
-    size_t blob_size,
+    int blob_size,
     unsigned char **wkb,
-    size_t *geom_size,
+    int *geom_size,
     int nDims )
 {
 // attempting to convert from 2D/3D GEOS own WKB
@@ -1251,7 +1313,7 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB( const unsigned char *blob,
   int little_endian;
   int endian_arch = gaiaEndianArch();
 
-  *wkb = NULL;
+  *wkb = nullptr;
   *geom_size = 0;
   if ( blob_size < 5 )
     return;
@@ -1307,9 +1369,9 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB( const unsigned char *blob,
 }
 
 void QgsSpatiaLiteProvider::convertFromGeosWKB2D( const unsigned char *blob,
-    size_t blob_size,
+    int blob_size,
     unsigned char *wkb,
-    size_t geom_size,
+    int geom_size,
     int nDims,
     int little_endian,
     int endian_arch )
@@ -1852,9 +1914,9 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB2D( const unsigned char *blob,
 }
 
 void QgsSpatiaLiteProvider::convertFromGeosWKB3D( const unsigned char *blob,
-    size_t blob_size,
+    int blob_size,
     unsigned char *wkb,
-    size_t geom_size,
+    int geom_size,
     int nDims,
     int little_endian,
     int endian_arch )
@@ -2415,9 +2477,9 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB3D( const unsigned char *blob,
 }
 
 void QgsSpatiaLiteProvider::convertToGeosWKB( const unsigned char *blob,
-    size_t blob_size,
+    int blob_size,
     unsigned char **wkb,
-    size_t *geom_size )
+    int *geom_size )
 {
 // attempting to convert to 2D/3D GEOS own WKB
   int type;
@@ -2430,12 +2492,12 @@ void QgsSpatiaLiteProvider::convertToGeosWKB( const unsigned char *blob,
   int ie;
   int ib;
   int iv;
-  size_t gsize = 6;
+  int gsize = 6;
   const unsigned char *p_in;
   unsigned char *p_out;
   double coord;
 
-  *wkb = NULL;
+  *wkb = nullptr;
   *geom_size = 0;
   if ( blob_size < 5 )
     return;
@@ -3166,7 +3228,7 @@ QString QgsSpatiaLiteProvider::subsetString()
   return mSubsetString;
 }
 
-bool QgsSpatiaLiteProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
+bool QgsSpatiaLiteProvider::setSubsetString( const QString& theSQL, bool updateFeatureCount )
 {
   QString prevSubsetString = mSubsetString;
   mSubsetString = theSQL;
@@ -3190,6 +3252,8 @@ bool QgsSpatiaLiteProvider::setSubsetString( QString theSQL, bool updateFeatureC
   setDataSourceUri( uri.uri() );
 
   getTableSummary();
+
+  emit dataChanged();
 
   return false;
 }
@@ -3242,8 +3306,8 @@ QgsCoordinateReferenceSystem QgsSpatiaLiteProvider::crs()
     if ( srs.srsid() == 0 )
     {
       QString myName = QString( " * %1 (%2)" )
-                       .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ) )
-                       .arg( srs.toProj4() );
+                       .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
+                             srs.toProj4() );
       srs.saveAsUserCRS( myName );
     }
 
@@ -3282,7 +3346,7 @@ QVariant QgsSpatiaLiteProvider::minimumValue( int index )
   char **results;
   int rows;
   int columns;
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
   QString minValue;
   QString sql;
 
@@ -3291,19 +3355,19 @@ QVariant QgsSpatiaLiteProvider::minimumValue( int index )
     // get the field name
     const QgsField& fld = field( index );
 
-    sql = QString( "SELECT Min(%1) FROM %2" ).arg( quotedIdentifier( fld.name() ) ).arg( mQuery );
+    sql = QString( "SELECT Min(%1) FROM %2" ).arg( quotedIdentifier( fld.name() ), mQuery );
 
     if ( !mSubsetString.isEmpty() )
     {
-      sql += " WHERE ( " + mSubsetString + ")";
+      sql += " WHERE ( " + mSubsetString + ')';
     }
 
     ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
     if ( ret != SQLITE_OK )
     {
-      QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ? errMsg : tr( "unknown cause" ) ), tr( "SpatiaLite" ) );
+      QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ? errMsg : tr( "unknown cause" ) ), tr( "SpatiaLite" ) );
       // unexpected error
-      if ( errMsg != NULL )
+      if ( errMsg )
       {
         sqlite3_free( errMsg );
       }
@@ -3335,9 +3399,6 @@ QVariant QgsSpatiaLiteProvider::minimumValue( int index )
   {
     return QVariant( QVariant::Int );
   }
-
-  // dummy return, so compiler is quiet
-  return QVariant();
 }
 
 // Returns the maximum value of an attribute
@@ -3348,7 +3409,7 @@ QVariant QgsSpatiaLiteProvider::maximumValue( int index )
   char **results;
   int rows;
   int columns;
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
   QString maxValue;
   QString sql;
 
@@ -3357,19 +3418,19 @@ QVariant QgsSpatiaLiteProvider::maximumValue( int index )
     // get the field name
     const QgsField & fld = field( index );
 
-    sql = QString( "SELECT Max(%1) FROM %2" ).arg( quotedIdentifier( fld.name() ) ).arg( mQuery );
+    sql = QString( "SELECT Max(%1) FROM %2" ).arg( quotedIdentifier( fld.name() ), mQuery );
 
     if ( !mSubsetString.isEmpty() )
     {
-      sql += " WHERE ( " + mSubsetString + ")";
+      sql += " WHERE ( " + mSubsetString + ')';
     }
 
     ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
     if ( ret != SQLITE_OK )
     {
-      QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ? errMsg : tr( "unknown cause" ) ), tr( "SpatiaLite" ) );
+      QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ? errMsg : tr( "unknown cause" ) ), tr( "SpatiaLite" ) );
       // unexpected error
-      if ( errMsg != NULL )
+      if ( errMsg )
       {
         sqlite3_free( errMsg );
       }
@@ -3402,15 +3463,12 @@ QVariant QgsSpatiaLiteProvider::maximumValue( int index )
   {
     return QVariant( QVariant::Int );
   }
-
-  // dummy return, so compiler is quiet
-  return QVariant();
 }
 
 // Returns the list of unique values of an attribute
 void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueValues, int limit )
 {
-  sqlite3_stmt *stmt = NULL;
+  sqlite3_stmt *stmt = nullptr;
   QString sql;
   QString txt;
 
@@ -3421,13 +3479,13 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
   {
     return; //invalid field
   }
-  const QgsField& fld = attributeFields[index];
+  const QgsField& fld = attributeFields.at( index );
 
-  sql = QString( "SELECT DISTINCT %1 FROM %2" ).arg( quotedIdentifier( fld.name() ) ).arg( mQuery );
+  sql = QString( "SELECT DISTINCT %1 FROM %2" ).arg( quotedIdentifier( fld.name() ), mQuery );
 
   if ( !mSubsetString.isEmpty() )
   {
-    sql += " WHERE ( " + mSubsetString + ")";
+    sql += " WHERE ( " + mSubsetString + ')';
   }
 
   sql += QString( " ORDER BY %1" ).arg( quotedIdentifier( fld.name() ) );
@@ -3438,10 +3496,10 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
   }
 
   // SQLite prepared statement
-  if ( sqlite3_prepare_v2( sqliteHandle, sql.toUtf8().constData(), -1, &stmt, NULL ) != SQLITE_OK )
+  if ( sqlite3_prepare_v2( sqliteHandle, sql.toUtf8().constData(), -1, &stmt, nullptr ) != SQLITE_OK )
   {
     // some error occurred
-    QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( sqlite3_errmsg( sqliteHandle ) ), tr( "SpatiaLite" ) );
+    QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( sqliteHandle ) ), tr( "SpatiaLite" ) );
     return;
   }
 
@@ -3471,13 +3529,13 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
           uniqueValues.append( QVariant( QString::fromUtf8(( const char * ) sqlite3_column_text( stmt, 0 ) ) ) );
           break;
         default:
-          uniqueValues.append( QVariant( attributeFields[index].type() ) );
+          uniqueValues.append( QVariant( attributeFields.at( index ).type() ) );
           break;
       }
     }
     else
     {
-      QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( sqlite3_errmsg( sqliteHandle ) ), tr( "SpatiaLite" ) );
+      QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( sqliteHandle ) ), tr( "SpatiaLite" ) );
       sqlite3_finalize( stmt );
       return;
     }
@@ -3530,7 +3588,7 @@ QString QgsSpatiaLiteProvider::geomParam() const
 
   if ( forceMulti && hasMultiFunction )
   {
-    geometry += ")";
+    geometry += ')';
   }
 
   return geometry;
@@ -3538,19 +3596,19 @@ QString QgsSpatiaLiteProvider::geomParam() const
 
 bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
 {
-  sqlite3_stmt *stmt = NULL;
-  char *errMsg = NULL;
+  sqlite3_stmt *stmt = nullptr;
+  char *errMsg = nullptr;
   bool toCommit = false;
   QString sql;
   QString values;
   QString separator;
   int ia, ret;
 
-  if ( flist.size() == 0 )
+  if ( flist.isEmpty() )
     return true;
-  const QgsAttributes & attributevec = flist[0].attributes();
+  QgsAttributes attributevec = flist[0].attributes();
 
-  ret = sqlite3_exec( sqliteHandle, "BEGIN", NULL, NULL, &errMsg );
+  ret = sqlite3_exec( sqliteHandle, "BEGIN", nullptr, nullptr, &errMsg );
   if ( ret == SQLITE_OK )
   {
     toCommit = true;
@@ -3563,37 +3621,37 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
     {
       sql += separator + quotedIdentifier( mGeometryColumn );
       values += separator + geomParam();
-      separator = ",";
+      separator = ',';
     }
 
     for ( int i = 0; i < attributevec.count(); ++i )
     {
-      if ( !attributevec[i].isValid() )
+      if ( !attributevec.at( i ).isValid() )
         continue;
 
       if ( i >= attributeFields.count() )
         continue;
 
-      QString fieldname = attributeFields[i].name();
+      QString fieldname = attributeFields.at( i ).name();
       if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
         continue;
 
       sql += separator + quotedIdentifier( fieldname );
-      values += separator + "?";
-      separator = ",";
+      values += separator + '?';
+      separator = ',';
     }
 
     sql += values;
-    sql += ")";
+    sql += ')';
 
     // SQLite prepared statement
-    ret = sqlite3_prepare_v2( sqliteHandle, sql.toUtf8().constData(), -1, &stmt, NULL );
+    ret = sqlite3_prepare_v2( sqliteHandle, sql.toUtf8().constData(), -1, &stmt, nullptr );
     if ( ret == SQLITE_OK )
     {
       for ( QgsFeatureList::iterator feature = flist.begin(); feature != flist.end(); ++feature )
       {
         // looping on each feature to insert
-        const QgsAttributes& attributevec = feature->attributes();
+        QgsAttributes attributevec = feature->attributes();
 
         // resetting Prepared Statement and bindings
         sqlite3_reset( stmt );
@@ -3605,16 +3663,16 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         if ( !mGeometryColumn.isEmpty() )
         {
           // binding GEOMETRY to Prepared Statement
-          if ( !feature->geometry() )
+          if ( !feature->constGeometry() )
           {
             sqlite3_bind_null( stmt, ++ia );
           }
           else
           {
-            unsigned char *wkb = NULL;
-            size_t wkb_size;
-            convertFromGeosWKB( feature->geometry()->asWkb(),
-                                feature->geometry()->wkbSize(),
+            unsigned char *wkb = nullptr;
+            int wkb_size;
+            convertFromGeosWKB( feature->constGeometry()->asWkb(),
+                                feature->constGeometry()->wkbSize(),
                                 &wkb, &wkb_size, nDims );
             if ( !wkb )
               sqlite3_bind_null( stmt, ++ia );
@@ -3625,7 +3683,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
 
         for ( int i = 0; i < attributevec.count(); ++i )
         {
-          QVariant v = attributevec[i];
+          QVariant v = attributevec.at( i );
           if ( !v.isValid() )
             continue;
 
@@ -3633,11 +3691,11 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
           if ( i >= attributeFields.count() )
             break;
 
-          QString fieldname = attributeFields[i].name();
+          QString fieldname = attributeFields.at( i ).name();
           if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
             continue;
 
-          QVariant::Type type = attributeFields[i].type();
+          QVariant::Type type = attributeFields.at( i ).type();
 
           if ( v.isNull() )
           {
@@ -3685,22 +3743,21 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         {
           // some unexpected error occurred
           const char *err = sqlite3_errmsg( sqliteHandle );
-          int len = strlen( err );
-          errMsg = ( char * ) sqlite3_malloc( len + 1 );
+          errMsg = ( char * ) sqlite3_malloc(( int ) strlen( err ) + 1 );
           strcpy( errMsg, err );
           break;
         }
       }
       if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
       {
-        ret = sqlite3_exec( sqliteHandle, "COMMIT", NULL, NULL, &errMsg );
+        ret = sqlite3_exec( sqliteHandle, "COMMIT", nullptr, nullptr, &errMsg );
       }
     } // prepared statement
   } // BEGIN statement
 
   if ( ret != SQLITE_OK )
   {
-    pushError( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ? errMsg : tr( "unknown cause" ) ) );
+    pushError( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ? errMsg : tr( "unknown cause" ) ) );
     if ( errMsg )
     {
       sqlite3_free( errMsg );
@@ -3709,7 +3766,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
     if ( toCommit )
     {
       // ROLLBACK after some previous error
-      sqlite3_exec( sqliteHandle, "ROLLBACK", NULL, NULL, NULL );
+      ( void )sqlite3_exec( sqliteHandle, "ROLLBACK", nullptr, nullptr, nullptr );
     }
   }
 
@@ -3718,12 +3775,12 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
 
 bool QgsSpatiaLiteProvider::deleteFeatures( const QgsFeatureIds &id )
 {
-  sqlite3_stmt *stmt = NULL;
-  char *errMsg = NULL;
+  sqlite3_stmt *stmt = nullptr;
+  char *errMsg = nullptr;
   bool toCommit = false;
   QString sql;
 
-  int ret = sqlite3_exec( sqliteHandle, "BEGIN", NULL, NULL, &errMsg );
+  int ret = sqlite3_exec( sqliteHandle, "BEGIN", nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
   {
     // some error occurred
@@ -3734,10 +3791,10 @@ bool QgsSpatiaLiteProvider::deleteFeatures( const QgsFeatureIds &id )
   sql = QString( "DELETE FROM %1 WHERE ROWID=?" ).arg( quotedIdentifier( mTableName ) );
 
   // SQLite prepared statement
-  if ( sqlite3_prepare_v2( sqliteHandle, sql.toUtf8().constData(), -1, &stmt, NULL ) != SQLITE_OK )
+  if ( sqlite3_prepare_v2( sqliteHandle, sql.toUtf8().constData(), -1, &stmt, nullptr ) != SQLITE_OK )
   {
     // some error occurred
-    pushError( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( sqlite3_errmsg( sqliteHandle ) ) );
+    pushError( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( sqliteHandle ) ) );
     return false;
   }
 
@@ -3761,15 +3818,14 @@ bool QgsSpatiaLiteProvider::deleteFeatures( const QgsFeatureIds &id )
     {
       // some unexpected error occurred
       const char *err = sqlite3_errmsg( sqliteHandle );
-      int len = strlen( err );
-      errMsg = ( char * ) sqlite3_malloc( len + 1 );
+      errMsg = ( char * ) sqlite3_malloc(( int ) strlen( err ) + 1 );
       strcpy( errMsg, err );
       goto abort;
     }
   }
   sqlite3_finalize( stmt );
 
-  ret = sqlite3_exec( sqliteHandle, "COMMIT", NULL, NULL, &errMsg );
+  ret = sqlite3_exec( sqliteHandle, "COMMIT", nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
   {
     // some error occurred
@@ -3779,7 +3835,7 @@ bool QgsSpatiaLiteProvider::deleteFeatures( const QgsFeatureIds &id )
   return true;
 
 abort:
-  pushError( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ? errMsg : tr( "unknown cause" ) ) );
+  pushError( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ? errMsg : tr( "unknown cause" ) ) );
   if ( errMsg )
   {
     sqlite3_free( errMsg );
@@ -3788,7 +3844,7 @@ abort:
   if ( toCommit )
   {
     // ROLLBACK after some previous error
-    sqlite3_exec( sqliteHandle, "ROLLBACK", NULL, NULL, NULL );
+    ( void )sqlite3_exec( sqliteHandle, "ROLLBACK", nullptr, nullptr, nullptr );
   }
 
   return false;
@@ -3796,11 +3852,14 @@ abort:
 
 bool QgsSpatiaLiteProvider::addAttributes( const QList<QgsField> &attributes )
 {
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
   bool toCommit = false;
   QString sql;
 
-  int ret = sqlite3_exec( sqliteHandle, "BEGIN", NULL, NULL, &errMsg );
+  if ( attributes.isEmpty() )
+    return true;
+
+  int ret = sqlite3_exec( sqliteHandle, "BEGIN", nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
   {
     // some error occurred
@@ -3811,10 +3870,10 @@ bool QgsSpatiaLiteProvider::addAttributes( const QList<QgsField> &attributes )
   for ( QList<QgsField>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
   {
     sql = QString( "ALTER TABLE \"%1\" ADD COLUMN \"%2\" %3" )
-          .arg( mTableName )
-          .arg( iter->name() )
-          .arg( iter->typeName() );
-    ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
+          .arg( mTableName,
+                iter->name(),
+                iter->typeName() );
+    ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
     if ( ret != SQLITE_OK )
     {
       // some error occurred
@@ -3822,7 +3881,7 @@ bool QgsSpatiaLiteProvider::addAttributes( const QList<QgsField> &attributes )
     }
   }
 
-  ret = sqlite3_exec( sqliteHandle, "COMMIT", NULL, NULL, &errMsg );
+  ret = sqlite3_exec( sqliteHandle, "COMMIT", nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
   {
     // some error occurred
@@ -3830,9 +3889,9 @@ bool QgsSpatiaLiteProvider::addAttributes( const QList<QgsField> &attributes )
   }
 #ifdef SPATIALITE_VERSION_GE_4_0_0
   sql = QString( "UPDATE geometry_columns_statistics set last_verified = 0 WHERE f_table_name=\"%1\" AND f_geometry_column=\"%2\";" )
-        .arg( mTableName )
-        .arg( mGeometryColumn );
-  ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
+        .arg( mTableName,
+              mGeometryColumn );
+  ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
   update_layer_statistics( sqliteHandle, mTableName.toUtf8().constData(), mGeometryColumn.toUtf8().constData() );
 #elif SPATIALITE_VERSION_G_4_1_1
   gaiaStatisticsInvalidate( sqliteHandle, tableName.toUtf8().constData(), mGeometryColumn.toUtf8().constData() );
@@ -3845,7 +3904,7 @@ bool QgsSpatiaLiteProvider::addAttributes( const QList<QgsField> &attributes )
   return true;
 
 abort:
-  pushError( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ? errMsg : tr( "unknown cause" ) ) );
+  pushError( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ? errMsg : tr( "unknown cause" ) ) );
   if ( errMsg )
   {
     sqlite3_free( errMsg );
@@ -3854,7 +3913,7 @@ abort:
   if ( toCommit )
   {
     // ROLLBACK after some previous error
-    sqlite3_exec( sqliteHandle, "ROLLBACK", NULL, NULL, NULL );
+    ( void )sqlite3_exec( sqliteHandle, "ROLLBACK", nullptr, nullptr, nullptr );
   }
 
   return false;
@@ -3862,14 +3921,14 @@ abort:
 
 bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
   bool toCommit = false;
   QString sql;
 
   if ( attr_map.isEmpty() )
     return true;
 
-  int ret = sqlite3_exec( sqliteHandle, "BEGIN", NULL, NULL, &errMsg );
+  int ret = sqlite3_exec( sqliteHandle, "BEGIN", nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
   {
     // some error occurred
@@ -3904,7 +3963,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
         const QVariant& val = siter.value();
 
         if ( !first )
-          sql += ",";
+          sql += ',';
         else
           first = false;
 
@@ -3918,12 +3977,12 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
         else if ( type == QVariant::Int || type == QVariant::LongLong || type == QVariant::Double )
         {
           // binding a NUMERIC value
-          sql += QString( "%1=%2" ).arg( quotedIdentifier( fld.name() ) ).arg( val.toString() );
+          sql += QString( "%1=%2" ).arg( quotedIdentifier( fld.name() ) , val.toString() );
         }
         else
         {
           // binding a TEXT value
-          sql += QString( "%1=%2" ).arg( quotedIdentifier( fld.name() ) ).arg( quotedValue( val.toString() ) );
+          sql += QString( "%1=%2" ).arg( quotedIdentifier( fld.name() ), quotedValue( val.toString() ) );
         }
       }
       catch ( SLFieldNotFound )
@@ -3933,7 +3992,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
     }
     sql += QString( " WHERE ROWID=%1" ).arg( fid );
 
-    ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
+    ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
     if ( ret != SQLITE_OK )
     {
       // some error occurred
@@ -3941,7 +4000,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
     }
   }
 
-  ret = sqlite3_exec( sqliteHandle, "COMMIT", NULL, NULL, &errMsg );
+  ret = sqlite3_exec( sqliteHandle, "COMMIT", nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
   {
     // some error occurred
@@ -3951,7 +4010,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
   return true;
 
 abort:
-  pushError( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ? errMsg : tr( "unknown cause" ) ) );
+  pushError( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ? errMsg : tr( "unknown cause" ) ) );
   if ( errMsg )
   {
     sqlite3_free( errMsg );
@@ -3960,20 +4019,20 @@ abort:
   if ( toCommit )
   {
     // ROLLBACK after some previous error
-    sqlite3_exec( sqliteHandle, "ROLLBACK", NULL, NULL, NULL );
+    ( void )sqlite3_exec( sqliteHandle, "ROLLBACK", nullptr, nullptr, nullptr );
   }
 
   return false;
 }
 
-bool QgsSpatiaLiteProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
+bool QgsSpatiaLiteProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
-  sqlite3_stmt *stmt = NULL;
-  char *errMsg = NULL;
+  sqlite3_stmt *stmt = nullptr;
+  char *errMsg = nullptr;
   bool toCommit = false;
   QString sql;
 
-  int ret = sqlite3_exec( sqliteHandle, "BEGIN", NULL, NULL, &errMsg );
+  int ret = sqlite3_exec( sqliteHandle, "BEGIN", nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
   {
     // some error occurred
@@ -3982,30 +4041,29 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( QgsGeometryMap & geometry_map 
   toCommit = true;
 
   sql =
-    QString( "UPDATE %1 SET %2=GeomFromWKB(?, %3) WHERE ROWID = ?" )
-    .arg( quotedIdentifier( mTableName ) )
-    .arg( quotedIdentifier( mGeometryColumn ) )
+    QString( "UPDATE %1 SET %2=GeomFromWKB(?, %3) WHERE ROWID=?" )
+    .arg( quotedIdentifier( mTableName ),
+          quotedIdentifier( mGeometryColumn ) )
     .arg( mSrid );
 
   // SQLite prepared statement
-  if ( sqlite3_prepare_v2( sqliteHandle, sql.toUtf8().constData(), -1, &stmt, NULL ) != SQLITE_OK )
+  if ( sqlite3_prepare_v2( sqliteHandle, sql.toUtf8().constData(), -1, &stmt, nullptr ) != SQLITE_OK )
   {
     // some error occurred
-    QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( sqlite3_errmsg( sqliteHandle ) ), tr( "SpatiaLite" ) );
+    QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( sqliteHandle ) ), tr( "SpatiaLite" ) );
     return false;
   }
 
-  for ( QgsGeometryMap::iterator iter = geometry_map.begin(); iter != geometry_map.end(); ++iter )
+  for ( QgsGeometryMap::const_iterator iter = geometry_map.constBegin(); iter != geometry_map.constEnd(); ++iter )
   {
     // resetting Prepared Statement and bindings
     sqlite3_reset( stmt );
     sqlite3_clear_bindings( stmt );
 
     // binding GEOMETRY to Prepared Statement
-    unsigned char *wkb = NULL;
-    size_t wkb_size;
-    convertFromGeosWKB( iter->asWkb(), iter->wkbSize(), &wkb, &wkb_size,
-                        nDims );
+    unsigned char *wkb = nullptr;
+    int wkb_size;
+    convertFromGeosWKB( iter->asWkb(), iter->wkbSize(), &wkb, &wkb_size, nDims );
     if ( !wkb )
       sqlite3_bind_null( stmt, 1 );
     else
@@ -4020,15 +4078,14 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( QgsGeometryMap & geometry_map 
     {
       // some unexpected error occurred
       const char *err = sqlite3_errmsg( sqliteHandle );
-      int len = strlen( err );
-      errMsg = ( char * ) sqlite3_malloc( len + 1 );
+      errMsg = ( char * ) sqlite3_malloc(( int ) strlen( err ) + 1 );
       strcpy( errMsg, err );
       goto abort;
     }
   }
   sqlite3_finalize( stmt );
 
-  ret = sqlite3_exec( sqliteHandle, "COMMIT", NULL, NULL, &errMsg );
+  ret = sqlite3_exec( sqliteHandle, "COMMIT", nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
   {
     // some error occurred
@@ -4037,7 +4094,7 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( QgsGeometryMap & geometry_map 
   return true;
 
 abort:
-  pushError( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ? errMsg : tr( "unknown cause" ) ) );
+  pushError( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ? errMsg : tr( "unknown cause" ) ) );
   if ( errMsg )
   {
     sqlite3_free( errMsg );
@@ -4046,7 +4103,7 @@ abort:
   if ( toCommit )
   {
     // ROLLBACK after some previous error
-    sqlite3_exec( sqliteHandle, "ROLLBACK", NULL, NULL, NULL );
+    ( void )sqlite3_exec( sqliteHandle, "ROLLBACK", nullptr, nullptr, nullptr );
   }
 
   return false;
@@ -4063,13 +4120,14 @@ void QgsSpatiaLiteProvider::closeDb()
   if ( handle )
   {
     QgsSqliteHandle::closeDb( handle );
+    handle = nullptr;
   }
 }
 
 QString QgsSpatiaLiteProvider::quotedIdentifier( QString id )
 {
-  id.replace( "\"", "\"\"" );
-  return id.prepend( "\"" ).append( "\"" );
+  id.replace( '\"', "\"\"" );
+  return id.prepend( '\"' ).append( '\"' );
 }
 
 QString QgsSpatiaLiteProvider::quotedValue( QString value )
@@ -4077,18 +4135,16 @@ QString QgsSpatiaLiteProvider::quotedValue( QString value )
   if ( value.isNull() )
     return "NULL";
 
-  value.replace( "'", "''" );
-  return value.prepend( "'" ).append( "'" );
+  value.replace( '\'', "''" );
+  return value.prepend( '\'' ).append( '\'' );
 }
 
 #ifdef SPATIALITE_VERSION_GE_4_0_0
 // only if libspatialite version is >= 4.0.0
 bool QgsSpatiaLiteProvider::checkLayerTypeAbstractInterface( gaiaVectorLayerPtr lyr )
 {
-  if ( lyr == NULL )
-  {
+  if ( !lyr )
     return false;
-  }
 
   mTableBased = false;
   mViewBased = false;
@@ -4135,7 +4191,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
   char **results;
   int rows;
   int columns;
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
   int count = 0;
 
   mTableBased = false;
@@ -4145,7 +4201,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
 
   QString sql;
 
-  if ( mGeometryColumn.isEmpty() )
+  if ( mGeometryColumn.isEmpty() && !( mQuery.startsWith( '(' ) && mQuery.endsWith( ')' ) ) )
   {
     // checking if is a non-spatial table
     sql = QString( "SELECT type FROM sqlite_master "
@@ -4170,13 +4226,13 @@ bool QgsSpatiaLiteProvider::checkLayerType()
     }
     if ( errMsg )
     {
-      QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ), tr( "SpatiaLite" ) );
+      QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ), tr( "SpatiaLite" ) );
       sqlite3_free( errMsg );
-      errMsg = 0;
+      errMsg = nullptr;
     }
     sqlite3_free_table( results );
   }
-  else if ( mQuery.startsWith( "(" ) && mQuery.endsWith( ")" ) )
+  else if ( mQuery.startsWith( '(' ) && mQuery.endsWith( ')' ) )
   {
     // checking if this one is a select query
 
@@ -4195,8 +4251,8 @@ bool QgsSpatiaLiteProvider::checkLayerType()
 
     // convert the custom query into a subquery
     mQuery = QString( "%1 as %2" )
-             .arg( mQuery )
-             .arg( quotedIdentifier( alias ) );
+             .arg( mQuery,
+                   quotedIdentifier( alias ) );
 
     sql = QString( "SELECT 0 FROM %1 LIMIT 1" ).arg( mQuery );
     ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
@@ -4208,9 +4264,9 @@ bool QgsSpatiaLiteProvider::checkLayerType()
     }
     if ( errMsg )
     {
-      QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ), tr( "SpatiaLite" ) );
+      QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ), tr( "SpatiaLite" ) );
       sqlite3_free( errMsg );
-      errMsg = 0;
+      errMsg = nullptr;
     }
     sqlite3_free_table( results );
   }
@@ -4221,8 +4277,8 @@ bool QgsSpatiaLiteProvider::checkLayerType()
                    "LEFT JOIN geometry_columns_auth "
                    "USING (f_table_name, f_geometry_column) "
                    "WHERE upper(f_table_name) = upper(%1) and upper(f_geometry_column) = upper(%2)" )
-          .arg( quotedValue( mTableName ) )
-          .arg( quotedValue( mGeometryColumn ) );
+          .arg( quotedValue( mTableName ),
+                quotedValue( mGeometryColumn ) );
 
     ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
     if ( ret != SQLITE_OK )
@@ -4231,8 +4287,8 @@ bool QgsSpatiaLiteProvider::checkLayerType()
       {
         sqlite3_free( errMsg );
         sql = QString( "SELECT 0 FROM geometry_columns WHERE upper(f_table_name) = upper(%1) and upper(f_geometry_column) = upper(%2)" )
-              .arg( quotedValue( mTableName ) )
-              .arg( quotedValue( mGeometryColumn ) );
+              .arg( quotedValue( mTableName ),
+                    quotedValue( mGeometryColumn ) );
         ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
       }
     }
@@ -4242,7 +4298,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
       mReadOnly = false;
       for ( i = 1; i <= rows; i++ )
       {
-        if ( results[( i * columns ) + 0] != NULL )
+        if ( results[( i * columns ) + 0] )
         {
           if ( atoi( results[( i * columns ) + 0] ) != 0 )
             mReadOnly = true;
@@ -4252,16 +4308,16 @@ bool QgsSpatiaLiteProvider::checkLayerType()
     }
     if ( errMsg )
     {
-      QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ), tr( "SpatiaLite" ) );
+      QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ), tr( "SpatiaLite" ) );
       sqlite3_free( errMsg );
-      errMsg = 0;
+      errMsg = nullptr;
     }
     sqlite3_free_table( results );
 
     // checking if this one is a View-based layer
     sql = QString( "SELECT view_name, view_geometry FROM views_geometry_columns"
-                   " WHERE view_name=%1 and view_geometry=%2" ).arg( quotedValue( mTableName ) ).
-          arg( quotedValue( mGeometryColumn ) );
+                   " WHERE view_name=%1 and view_geometry=%2" ).arg( quotedValue( mTableName ),
+                       quotedValue( mGeometryColumn ) );
 
     ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
     if ( ret == SQLITE_OK && rows == 1 )
@@ -4272,16 +4328,16 @@ bool QgsSpatiaLiteProvider::checkLayerType()
     }
     if ( errMsg )
     {
-      QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ), tr( "SpatiaLite" ) );
+      QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ), tr( "SpatiaLite" ) );
       sqlite3_free( errMsg );
-      errMsg = 0;
+      errMsg = nullptr;
     }
     sqlite3_free_table( results );
 
     // checking if this one is a VirtualShapefile-based layer
     sql = QString( "SELECT virt_name, virt_geometry FROM virts_geometry_columns"
-                   " WHERE virt_name=%1 and virt_geometry=%2" ).arg( quotedValue( mTableName ) ).
-          arg( quotedValue( mGeometryColumn ) );
+                   " WHERE virt_name=%1 and virt_geometry=%2" ).arg( quotedValue( mTableName ),
+                       quotedValue( mGeometryColumn ) );
 
     ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
     if ( ret == SQLITE_OK && rows == 1 )
@@ -4292,9 +4348,9 @@ bool QgsSpatiaLiteProvider::checkLayerType()
     }
     if ( errMsg )
     {
-      QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ), tr( "SpatiaLite" ) );
+      QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ), tr( "SpatiaLite" ) );
       sqlite3_free( errMsg );
-      errMsg = 0;
+      errMsg = nullptr;
     }
     sqlite3_free_table( results );
   }
@@ -4312,7 +4368,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
 // only if libspatialite version is >= 4.0.0
 bool QgsSpatiaLiteProvider::getGeometryDetailsAbstractInterface( gaiaVectorLayerPtr lyr )
 {
-  if ( lyr == NULL )
+  if ( !lyr )
   {
     return false;
   }
@@ -4383,15 +4439,15 @@ void QgsSpatiaLiteProvider::getViewSpatialIndexName()
   char **results;
   int rows;
   int columns;
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
 
   // retrieving the Spatial Index name supporting this View (if any)
   spatialIndexRTree = false;
 
   QString sql = QString( "SELECT f_table_name, f_geometry_column "
                          "FROM views_geometry_columns "
-                         "WHERE upper(view_name) = upper(%1) and upper(view_geometry) = upper(%2)" ).arg( quotedValue( mTableName ) ).
-                arg( quotedValue( mGeometryColumn ) );
+                         "WHERE upper(view_name) = upper(%1) and upper(view_geometry) = upper(%2)" ).arg( quotedValue( mTableName ),
+                             quotedValue( mGeometryColumn ) );
   ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
     goto error;
@@ -4411,9 +4467,9 @@ void QgsSpatiaLiteProvider::getViewSpatialIndexName()
 
 error:
   // unexpected error
-  if ( errMsg != NULL )
+  if ( errMsg )
   {
-    QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ), tr( "SpatiaLite" ) );
+    QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ), tr( "SpatiaLite" ) );
     sqlite3_free( errMsg );
   }
 }
@@ -4446,14 +4502,14 @@ bool QgsSpatiaLiteProvider::getTableGeometryDetails()
   char **results;
   int rows;
   int columns;
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
 
   mIndexTable = mTableName;
   mIndexGeometry = mGeometryColumn;
 
   QString sql = QString( "SELECT type, srid, spatial_index_enabled, coord_dimension FROM geometry_columns"
-                         " WHERE upper(f_table_name) = upper(%1) and upper(f_geometry_column) = upper(%2)" ).arg( quotedValue( mTableName ) ).
-                arg( quotedValue( mGeometryColumn ) );
+                         " WHERE upper(f_table_name) = upper(%1) and upper(f_geometry_column) = upper(%2)" ).arg( quotedValue( mTableName ),
+                             quotedValue( mGeometryColumn ) );
 
   ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
@@ -4529,9 +4585,9 @@ bool QgsSpatiaLiteProvider::getTableGeometryDetails()
   return getSridDetails();
 
 error:
-  QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ? errMsg : tr( "unknown cause" ) ), tr( "SpatiaLite" ) );
+  QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ? errMsg : tr( "unknown cause" ) ), tr( "SpatiaLite" ) );
   // unexpected error
-  if ( errMsg != NULL )
+  if ( errMsg )
   {
     sqlite3_free( errMsg );
   }
@@ -4545,13 +4601,13 @@ bool QgsSpatiaLiteProvider::getViewGeometryDetails()
   char **results;
   int rows;
   int columns;
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
 
   QString sql = QString( "SELECT type, srid, spatial_index_enabled, f_table_name, f_geometry_column "
                          " FROM views_geometry_columns"
                          " JOIN geometry_columns USING (f_table_name, f_geometry_column)"
-                         " WHERE upper(view_name) = upper(%1) and upper(view_geometry) = upper(%2)" ).arg( quotedValue( mTableName ) ).
-                arg( quotedValue( mGeometryColumn ) );
+                         " WHERE upper(view_name) = upper(%1) and upper(view_geometry) = upper(%2)" ).arg( quotedValue( mTableName ),
+                             quotedValue( mGeometryColumn ) );
 
   ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
@@ -4613,9 +4669,9 @@ bool QgsSpatiaLiteProvider::getViewGeometryDetails()
 
 error:
   // unexpected error
-  if ( errMsg != NULL )
+  if ( errMsg )
   {
-    QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ), tr( "SpatiaLite" ) );
+    QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ), tr( "SpatiaLite" ) );
     sqlite3_free( errMsg );
   }
   return false;
@@ -4628,11 +4684,11 @@ bool QgsSpatiaLiteProvider::getVShapeGeometryDetails()
   char **results;
   int rows;
   int columns;
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
 
   QString sql = QString( "SELECT type, srid FROM virts_geometry_columns"
-                         " WHERE virt_name=%1 and virt_geometry=%2" ).arg( quotedValue( mTableName ) ).
-                arg( quotedValue( mGeometryColumn ) );
+                         " WHERE virt_name=%1 and virt_geometry=%2" ).arg( quotedValue( mTableName ),
+                             quotedValue( mGeometryColumn ) );
 
   ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
@@ -4683,9 +4739,9 @@ bool QgsSpatiaLiteProvider::getVShapeGeometryDetails()
 
 error:
   // unexpected error
-  if ( errMsg != NULL )
+  if ( errMsg )
   {
-    QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ), tr( "SpatiaLite" ) );
+    QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ), tr( "SpatiaLite" ) );
     sqlite3_free( errMsg );
   }
   return false;
@@ -4698,7 +4754,7 @@ bool QgsSpatiaLiteProvider::getQueryGeometryDetails()
   char **results;
   int rows;
   int columns;
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
 
   QString fType( "" );
   QString xSrid( "" );
@@ -4706,8 +4762,8 @@ bool QgsSpatiaLiteProvider::getQueryGeometryDetails()
   // get stuff from the relevant column instead. This may (will?)
   // fail if there is no data in the relevant table.
   QString sql = QString( "select srid(%1), geometrytype(%1) from %2" )
-                .arg( quotedIdentifier( mGeometryColumn ) )
-                .arg( mQuery );
+                .arg( quotedIdentifier( mGeometryColumn ),
+                      mQuery );
 
   //it is possible that the where clause restricts the feature type
   if ( !mSubsetString.isEmpty() )
@@ -4744,8 +4800,8 @@ bool QgsSpatiaLiteProvider::getQueryGeometryDetails()
                      " when geometrytype(%1) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
                      " end "
                      "from %2" )
-            .arg( quotedIdentifier( mGeometryColumn ) )
-            .arg( mQuery );
+            .arg( quotedIdentifier( mGeometryColumn ),
+                  mQuery );
 
       if ( !mSubsetString.isEmpty() )
         sql += " where " + mSubsetString;
@@ -4799,9 +4855,9 @@ bool QgsSpatiaLiteProvider::getQueryGeometryDetails()
 
 error:
   // unexpected error
-  if ( errMsg != NULL )
+  if ( errMsg )
   {
-    QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ), tr( "SpatiaLite" ) );
+    QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ), tr( "SpatiaLite" ) );
     sqlite3_free( errMsg );
   }
   return false;
@@ -4814,7 +4870,7 @@ bool QgsSpatiaLiteProvider::getSridDetails()
   char **results;
   int rows;
   int columns;
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
 
   QString sql = QString( "SELECT auth_name||':'||auth_srid,proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( mSrid );
 
@@ -4837,9 +4893,9 @@ bool QgsSpatiaLiteProvider::getSridDetails()
 
 error:
   // unexpected error
-  if ( errMsg != NULL )
+  if ( errMsg )
   {
-    QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ), tr( "SpatiaLite" ) );
+    QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ), tr( "SpatiaLite" ) );
     sqlite3_free( errMsg );
   }
   return false;
@@ -4849,10 +4905,8 @@ error:
 // only if libspatialite version is >= 4.0.0
 bool QgsSpatiaLiteProvider::getTableSummaryAbstractInterface( gaiaVectorLayerPtr lyr )
 {
-  if ( lyr == NULL )
-  {
+  if ( !lyr )
     return false;
-  }
 
   if ( lyr->ExtentInfos )
   {
@@ -4877,15 +4931,15 @@ bool QgsSpatiaLiteProvider::getTableSummary()
   char **results;
   int rows;
   int columns;
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
 
   QString sql = QString( "SELECT Count(*)%1 FROM %2" )
-                .arg( mGeometryColumn.isEmpty() ? "" : QString( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedIdentifier( mGeometryColumn ) ) )
-                .arg( mQuery );
+                .arg( mGeometryColumn.isEmpty() ? "" : QString( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedIdentifier( mGeometryColumn ) ),
+                      mQuery );
 
   if ( !mSubsetString.isEmpty() )
   {
-    sql += " WHERE ( " + mSubsetString + ")";
+    sql += " WHERE ( " + mSubsetString + ')';
   }
 
   ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
@@ -4920,9 +4974,9 @@ bool QgsSpatiaLiteProvider::getTableSummary()
 
 error:
   // unexpected error
-  if ( errMsg != NULL )
+  if ( errMsg )
   {
-    QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( errMsg ), tr( "SpatiaLite" ) );
+    QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ), tr( "SpatiaLite" ) );
     sqlite3_free( errMsg );
   }
   return false;
@@ -5001,7 +5055,7 @@ static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString& errCause
   // checking if this DB is really empty
   char **results;
   int rows, columns;
-  int ret = sqlite3_get_table( sqlite_handle, "select count(*) from sqlite_master", &results, &rows, &columns, NULL );
+  int ret = sqlite3_get_table( sqlite_handle, "select count(*) from sqlite_master", &results, &rows, &columns, nullptr );
   if ( ret != SQLITE_OK )
     return false;
 
@@ -5018,14 +5072,14 @@ static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString& errCause
     return false;
 
   bool above41 = false;
-  ret = sqlite3_get_table( sqlite_handle, "select spatialite_version()", &results, &rows, &columns, NULL );
+  ret = sqlite3_get_table( sqlite_handle, "select spatialite_version()", &results, &rows, &columns, nullptr );
   if ( ret == SQLITE_OK && rows == 1 && columns == 1 )
   {
     QString version = QString::fromUtf8( results[1] );
-    QStringList parts = version.split( " ", QString::SkipEmptyParts );
+    QStringList parts = version.split( ' ', QString::SkipEmptyParts );
     if ( parts.size() >= 1 )
     {
-      QStringList verparts = parts[0].split( ".", QString::SkipEmptyParts );
+      QStringList verparts = parts[0].split( '.', QString::SkipEmptyParts );
       above41 = verparts.size() >= 2 && ( verparts[0].toInt() > 4 || ( verparts[0].toInt() == 4 && verparts[1].toInt() >= 1 ) );
     }
   }
@@ -5033,8 +5087,8 @@ static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString& errCause
   sqlite3_free_table( results );
 
   // all right, it's empty: proceding to initialize
-  char *errMsg = 0;
-  ret = sqlite3_exec( sqlite_handle, above41 ? "SELECT InitSpatialMetadata(1)" : "SELECT InitSpatialMetadata()", NULL, NULL, &errMsg );
+  char *errMsg = nullptr;
+  ret = sqlite3_exec( sqlite_handle, above41 ? "SELECT InitSpatialMetadata(1)" : "SELECT InitSpatialMetadata()", nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
   {
     errCause = QObject::tr( "Unable to initialize SpatialMetadata:\n" );
@@ -5058,31 +5112,30 @@ QGISEXTERN bool createDb( const QString& dbPath, QString& errCause )
   QDir().mkpath( path.absolutePath() );
 
   // creating/opening the new database
-  spatialite_init( 0 );
   sqlite3 *sqlite_handle;
-  int ret = sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL );
+  int ret = QgsSLConnect::sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
   if ( ret )
   {
     // an error occurred
     errCause = QObject::tr( "Could not create a new database\n" );
     errCause += QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) );
-    sqlite3_close( sqlite_handle );
+    QgsSLConnect::sqlite3_close( sqlite_handle );
     return false;
   }
   // activating Foreign Key constraints
-  char *errMsg = NULL;
-  ret = sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", NULL, 0, &errMsg );
+  char *errMsg = nullptr;
+  ret = sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
   {
     errCause = QObject::tr( "Unable to activate FOREIGN_KEY constraints [%1]" ).arg( errMsg );
     sqlite3_free( errMsg );
-    sqlite3_close( sqlite_handle );
+    QgsSLConnect::sqlite3_close( sqlite_handle );
     return false;
   }
   bool init_res = ::initializeSpatialMetadata( sqlite_handle, errCause );
 
   // all done: closing the DB connection
-  sqlite3_close( sqlite_handle );
+  QgsSLConnect::sqlite3_close( sqlite_handle );
 
   return init_res;
 }
@@ -5093,7 +5146,6 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
 {
   QgsDebugMsg( "deleting layer " + tableName );
 
-  spatialite_init( 0 );
   QgsSqliteHandle* hndl = QgsSqliteHandle::openDb( dbPath );
   if ( !hndl )
   {
@@ -5117,8 +5169,8 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
   // drop the table
   QString sql = QString( "DROP TABLE " ) + QgsSpatiaLiteProvider::quotedIdentifier( tableName );
   QgsDebugMsg( sql );
-  char *errMsg = NULL;
-  ret = sqlite3_exec( sqlite_handle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
+  char *errMsg = nullptr;
+  ret = sqlite3_exec( sqlite_handle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
   {
     errCause = QObject::tr( "Unable to delete table %1:\n" ).arg( tableName );
@@ -5131,7 +5183,7 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
   // remove table from geometry columns
   sql = QString( "DELETE FROM geometry_columns WHERE upper(f_table_name) = upper(%1)" )
         .arg( QgsSpatiaLiteProvider::quotedValue( tableName ) );
-  ret = sqlite3_exec( sqlite_handle, sql.toUtf8().constData(), NULL, NULL, NULL );
+  ret = sqlite3_exec( sqlite_handle, sql.toUtf8().constData(), nullptr, nullptr, nullptr );
   if ( ret != SQLITE_OK )
   {
     QgsDebugMsg( "sqlite error: " + QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) ) );
@@ -5140,7 +5192,7 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
 
   // TODO: remove spatial indexes?
   // run VACUUM to free unused space and compact the database
-  ret = sqlite3_exec( sqlite_handle, "VACUUM", NULL, NULL, NULL );
+  ret = sqlite3_exec( sqlite_handle, "VACUUM", nullptr, nullptr, nullptr );
   if ( ret != SQLITE_OK )
   {
     QgsDebugMsg( "Failed to run VACUUM after deleting table on database " + dbPath );
@@ -5163,20 +5215,19 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                            const QString& uiFileContent, bool useAsDefault, QString& errCause )
 {
   QgsSqliteHandle *handle;
-  sqlite3 *sqliteHandle = NULL;
+  sqlite3 *sqliteHandle = nullptr;
   char **results;
   int rows;
   int columns;
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
 
   QgsDataSourceURI dsUri( uri );
   QString sqlitePath = dsUri.database();
   QgsDebugMsg( "Database is: " + sqlitePath );
 
   // trying to open the SQLite DB
-  spatialite_init( 0 );
   handle = QgsSqliteHandle::openDb( sqlitePath );
-  if ( NULL == handle )
+  if ( !handle )
   {
     QgsDebugMsg( "Connection to database failed. Save style aborted." );
     errCause = QObject::tr( "Connection to database failed" );
@@ -5224,7 +5275,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                                    ",ui text"
                                    ",update_time timestamp DEFAULT CURRENT_TIMESTAMP"
                                    ")" );
-    ret = sqlite3_exec( sqliteHandle, createQuery.toUtf8().constData(), NULL, NULL, &errMsg );
+    ret = sqlite3_exec( sqliteHandle, createQuery.toUtf8().constData(), nullptr, nullptr, &errMsg );
     if ( SQLITE_OK != ret )
     {
       QgsSqliteHandle::closeDb( handle );
@@ -5284,7 +5335,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
   if ( 0 != rows )
   {
     sqlite3_free_table( results );
-    if ( QMessageBox::question( 0, QObject::tr( "Save style in database" ),
+    if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
                                 QObject::tr( "A style named \"%1\" already exists in the database for this layer. Do you want to overwrite it?" )
                                 .arg( styleName.isEmpty() ? dsUri.table() : styleName ),
                                 QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
@@ -5329,10 +5380,10 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                                .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.schema() ) )
                                .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.table() ) )
                                .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.geometryColumn() ) );
-    sql = QString( "BEGIN; %1; %2; COMMIT;" ).arg( removeDefaultSql ).arg( sql );
+    sql = QString( "BEGIN; %1; %2; COMMIT;" ).arg( removeDefaultSql, sql );
   }
 
-  ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
+  ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
   if ( SQLITE_OK != ret )
   {
     QgsSqliteHandle::closeDb( handle );
@@ -5341,7 +5392,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
     return false;
   }
 
-  if ( NULL != errMsg )
+  if ( errMsg )
     sqlite3_free( errMsg );
 
   QgsSqliteHandle::closeDb( handle );
@@ -5352,11 +5403,11 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
 QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
 {
   QgsSqliteHandle *handle;
-  sqlite3 *sqliteHandle = NULL;
+  sqlite3 *sqliteHandle = nullptr;
   char **results;
   int rows;
   int columns;
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
   QString sql;
 
   QgsDataSourceURI dsUri( uri );
@@ -5364,9 +5415,8 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
   QgsDebugMsg( "Database is: " + sqlitePath );
 
   // trying to open the SQLite DB
-  spatialite_init( 0 );
   handle = QgsSqliteHandle::openDb( sqlitePath );
-  if ( NULL == handle )
+  if ( !handle )
   {
     QgsDebugMsg( "Connection to database failed. Save style aborted." );
     errCause = QObject::tr( "Connection to database failed" );
@@ -5408,11 +5458,11 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
                            QStringList &descriptions, QString& errCause )
 {
   QgsSqliteHandle *handle;
-  sqlite3 *sqliteHandle = NULL;
+  sqlite3 *sqliteHandle = nullptr;
   char **results;
   int rows;
   int columns;
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
   QString sql;
 
   QgsDataSourceURI dsUri( uri );
@@ -5420,9 +5470,8 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   QgsDebugMsg( "Database is: " + sqlitePath );
 
   // trying to open the SQLite DB
-  spatialite_init( 0 );
   handle = QgsSqliteHandle::openDb( sqlitePath );
-  if ( NULL == handle )
+  if ( !handle )
   {
     QgsDebugMsg( "Connection to database failed. Save style aborted." );
     errCause = QObject::tr( "Connection to database failed" );
@@ -5521,11 +5570,11 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
 QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& errCause )
 {
   QgsSqliteHandle *handle;
-  sqlite3 *sqliteHandle = NULL;
+  sqlite3 *sqliteHandle = nullptr;
   char **results;
   int rows;
   int columns;
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
   QString sql;
 
   QgsDataSourceURI dsUri( uri );
@@ -5533,9 +5582,8 @@ QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& e
   QgsDebugMsg( "Database is: " + sqlitePath );
 
   // trying to open the SQLite DB
-  spatialite_init( 0 );
   handle = QgsSqliteHandle::openDb( sqlitePath );
-  if ( NULL == handle )
+  if ( !handle )
   {
     QgsDebugMsg( "Connection to database failed. Save style aborted." );
     errCause = QObject::tr( "Connection to database failed" );

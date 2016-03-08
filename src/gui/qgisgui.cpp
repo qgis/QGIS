@@ -15,11 +15,11 @@
 #include "qgisgui.h"
 
 #include <QSettings>
-#include <QObject> //for tr
 #include <QImageWriter>
 #include "qgsencodingfiledialog.h"
 #include "qgslogger.h"
-#include <memory> //for auto_ptr
+
+#include <QFontDialog>
 
 
 namespace QgisGui
@@ -33,16 +33,16 @@ namespace QgisGui
 
     QSettings settings;
     QString lastUsedFilter = settings.value( "/UI/" + filterName, "" ).toString();
-    QString lastUsedDir = settings.value( "/UI/" + filterName + "Dir", "." ).toString();
+    QString lastUsedDir = settings.value( "/UI/" + filterName + "Dir", QDir::homePath() ).toString();
 
     QgsDebugMsg( "Opening file dialog with filters: " + filters );
     if ( !cancelAll )
     {
-      selectedFiles = QFileDialog::getOpenFileNames( 0, title, lastUsedDir, filters, &lastUsedFilter );
+      selectedFiles = QFileDialog::getOpenFileNames( nullptr, title, lastUsedDir, filters, &lastUsedFilter );
     }
     else //we have to use non-native dialog to add cancel all button
     {
-      QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( 0, title, lastUsedDir, filters, QString( "" ) );
+      QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( nullptr, title, lastUsedDir, filters, QString() );
 
       // allow for selection of more than one file
       openFileDialog->setFileMode( QFileDialog::ExistingFiles );
@@ -83,11 +83,11 @@ namespace QgisGui
     return false;
   }
 
-  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget *theParent, QString theMessage, QString defaultFilename )
+  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget *theParent, const QString& theMessage, const QString& defaultFilename )
   {
     // get a list of supported output image types
     QMap<QString, QString> filterMap;
-    foreach ( QByteArray format, QImageWriter::supportedImageFormats() )
+    Q_FOREACH ( const QByteArray& format, QImageWriter::supportedImageFormats() )
     {
       //svg doesnt work so skip it
       if ( format ==  "svg" )
@@ -105,7 +105,7 @@ namespace QgisGui
 #endif
 
     QSettings settings;  // where we keep last used filter in persistent state
-    QString lastUsedDir = settings.value( "/UI/lastSaveAsImageDir", "." ).toString();
+    QString lastUsedDir = settings.value( "/UI/lastSaveAsImageDir", QDir::homePath() ).toString();
 
     // Prefer "png" format unless the user previously chose a different format
     QString pngExtension = "png";
@@ -137,6 +137,7 @@ namespace QgisGui
       settings.setValue( "/UI/lastSaveAsImageDir", QFileInfo( outputFileName ).absolutePath() );
     }
 #else
+
     //create a file dialog using the filter list generated above
     QScopedPointer<QFileDialog> fileDialog( new QFileDialog( theParent, theMessage, initialPath, QStringList( filterMap.keys() ).join( ";;" ) ) );
 
@@ -145,9 +146,9 @@ namespace QgisGui
     fileDialog->setAcceptMode( QFileDialog::AcceptSave );
     fileDialog->setConfirmOverwrite( true );
 
-    if ( !lastUsedFilter.isEmpty() )     // set the filter to the last one used
+    if ( !selectedFilter.isEmpty() )     // set the filter to the last one used
     {
-      fileDialog->selectNameFilter( lastUsedFilter );
+      fileDialog->selectNameFilter( selectedFilter );
     }
 
     //prompt the user for a fileName
@@ -167,9 +168,9 @@ namespace QgisGui
 #endif
 
     // Add the file type suffix to the fileName if required
-    if ( !ext.isNull() && !outputFileName.toLower().endsWith( "." + ext.toLower() ) )
+    if ( !ext.isNull() && !outputFileName.endsWith( '.' + ext.toLower(), Qt::CaseInsensitive ) )
     {
-      outputFileName += "." + ext;
+      outputFileName += '.' + ext;
     }
 
     return qMakePair<QString, QString>( outputFileName, ext );
@@ -177,7 +178,7 @@ namespace QgisGui
 
   QString createFileFilter_( QString const &longName, QString const &glob )
   {
-    return QString( "%1 (%2 %3)" ).arg( longName ).arg( glob.toLower() ).arg( glob.toUpper() );
+    return QString( "%1 (%2 %3)" ).arg( longName, glob.toLower(), glob.toUpper() );
   }
 
   QString createFileFilter_( QString const &format )
@@ -185,6 +186,19 @@ namespace QgisGui
     QString longName = format.toUpper() + " format";
     QString glob = "*." + format;
     return createFileFilter_( longName, glob );
+  }
+
+  QFont getFont( bool &ok, const QFont &initial, const QString &title )
+  {
+    // parent is intentionally not set to 'this' as
+    // that would make it follow the style sheet font
+    // see also #12233 and #4937
+#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
+    // Native Mac dialog works only for Qt Carbon
+    return QFontDialog::getFont( &ok, initial, 0, title, QFontDialog::DontUseNativeDialog );
+#else
+    return QFontDialog::getFont( &ok, initial, nullptr, title );
+#endif
   }
 
 } // end of QgisGui namespace

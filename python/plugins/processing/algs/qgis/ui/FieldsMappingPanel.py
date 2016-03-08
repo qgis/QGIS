@@ -25,9 +25,11 @@ __copyright__ = '(C) 2014, Arnaud Morvan'
 
 __revision__ = '$Format:%H$'
 
+import os
 
 from collections import OrderedDict
 
+from PyQt4 import uic
 from PyQt4 import QtCore, QtGui
 
 from qgis.core import QgsExpression
@@ -35,7 +37,9 @@ from qgis.gui import QgsFieldExpressionWidget
 
 from processing.tools import dataobjects
 
-from .ui_widgetFieldsMapping import Ui_Form
+pluginPath = os.path.dirname(__file__)
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'widgetFieldsMapping.ui'))
 
 
 class FieldsMappingModel(QtCore.QAbstractTableModel):
@@ -44,6 +48,8 @@ class FieldsMappingModel(QtCore.QAbstractTableModel):
         (QtCore.QVariant.Int, "Integer"),
         (QtCore.QVariant.Double, "Double"),
         (QtCore.QVariant.String, "String"),
+        (QtCore.QVariant.DateTime, "Date"),
+        (QtCore.QVariant.LongLong, "Double"),
         (QtCore.QVariant.Date, "Date")])
 
     columns = [
@@ -132,7 +138,7 @@ class FieldsMappingModel(QtCore.QAbstractTableModel):
 
             fieldType = column_def['type']
             if fieldType == QtCore.QVariant.Type:
-                if value == 0:
+                if value == QtCore.QVariant.Invalid:
                     return ''
                 return self.fieldTypes[value]
             return value
@@ -243,7 +249,7 @@ class FieldDelegate(QtGui.QStyledItemDelegate):
         elif fieldType == QgsExpression:
             editor = QgsFieldExpressionWidget(parent)
             editor.setLayer(index.model().layer())
-            # editor.fieldChanged.connect(self.on_expression_fieldChange)
+            editor.fieldChanged.connect(self.on_expression_fieldChange)
 
         else:
             editor = QtGui.QStyledItemDelegate.createEditor(self, parent, option, index)
@@ -277,6 +283,8 @@ class FieldDelegate(QtGui.QStyledItemDelegate):
         fieldType = FieldsMappingModel.columns[column]['type']
         if fieldType == QtCore.QVariant.Type:
             value = editor.itemData(editor.currentIndex())
+            if value is None:
+                value = QtCore.QVariant.Invalid
             model.setData(index, value)
 
         elif fieldType == QgsExpression:
@@ -289,15 +297,14 @@ class FieldDelegate(QtGui.QStyledItemDelegate):
     def updateEditorGeometry(self, editor, option, index):
         editor.setGeometry(option.rect)
 
-    def on_expression_fieldChange(self, fieldName, isValid):
-        # self.commitData.emit(self.sender())
-        pass
+    def on_expression_fieldChange(self, fieldName):
+        self.commitData.emit(self.sender())
 
 
-class FieldsMappingPanel(QtGui.QWidget, Ui_Form):
+class FieldsMappingPanel(BASE, WIDGET):
 
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        super(FieldsMappingPanel, self).__init__(parent)
         self.setupUi(self)
 
         self.addButton.setIcon(
@@ -345,10 +352,10 @@ class FieldsMappingPanel(QtGui.QWidget, Ui_Form):
         self.model.insertRows(rowCount, 1)
         index = self.model.index(rowCount, 0)
         self.fieldsView.selectionModel().select(index,
-            QtGui.QItemSelectionModel.SelectionFlags(QtGui.QItemSelectionModel.Clear
-                                                     + QtGui.QItemSelectionModel.Select
-                                                     + QtGui.QItemSelectionModel.Current
-                                                     + QtGui.QItemSelectionModel.Rows))
+                                                QtGui.QItemSelectionModel.SelectionFlags(QtGui.QItemSelectionModel.Clear
+                                                                                         + QtGui.QItemSelectionModel.Select
+                                                                                         + QtGui.QItemSelectionModel.Current
+                                                                                         + QtGui.QItemSelectionModel.Rows))
         self.fieldsView.scrollTo(index)
         self.fieldsView.scrollTo(index)
 
@@ -454,7 +461,7 @@ class FieldsMappingPanel(QtGui.QWidget, Ui_Form):
 
     def updateLayerCombo(self):
         layers = dataobjects.getVectorLayers()
-        layers.sort(key = lambda lay: lay.name())
+        layers.sort(key=lambda lay: lay.name())
         for layer in layers:
             self.layerCombo.addItem(layer.name(), layer)
 

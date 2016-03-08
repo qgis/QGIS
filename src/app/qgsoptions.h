@@ -23,11 +23,14 @@
 #include "qgisgui.h"
 #include "qgisapp.h"
 #include "qgisappstylesheet.h"
+#include "qgsautheditorwidgets.h"
 #include "qgscontexthelp.h"
 
 #include <qgscoordinatereferencesystem.h>
 
 #include <QList>
+
+class QgsExpressionContext;
 
 /**
  * \class QgsOptions
@@ -43,19 +46,14 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      * @param name name for the widget
      * @param modal true for modal dialog
      */
-    QgsOptions( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsOptions( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
     ~QgsOptions();
-    /**
-     * Return the currently selected theme
-     * @return theme name (a directory name in the themes directory)
-     */
-    QString theme();
 
     /** Sets the page with the specified widget name as the current page
      * @note added in QGIS 2.1
      */
-    void setCurrentPage( QString pageWidgetName );
+    void setCurrentPage( const QString& pageWidgetName );
 
   public slots:
     void on_cbxProjectDefaultNew_toggled( bool checked );
@@ -64,9 +62,9 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void on_pbnTemplateFolderBrowse_pressed();
     void on_pbnTemplateFolderReset_pressed();
     //! Slot called when user chooses to change the project wide projection.
-    void on_leProjectGlobalCrs_crsChanged( QgsCoordinateReferenceSystem crs );
+    void on_leProjectGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem& crs );
     //! Slot called when user chooses to change the default 'on the fly' projection.
-    void on_leLayerGlobalCrs_crsChanged( QgsCoordinateReferenceSystem crs );
+    void on_leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem& crs );
     void on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem * item, int column );
     void on_pbnEditCreateOptions_pressed();
     void on_pbnEditPyramidsOptions_pressed();
@@ -76,10 +74,10 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     * Slot to reset any temporarily applied options on dialog close/cancel */
     void rejectOptions();
     //! Slot to change the theme this is handled when the user
-    // activates or highlights a theme name in the drop-down list
-    void themeChanged( const QString & );
 
     void iconSizeChanged( const QString &iconSize );
+
+    void uiThemeChanged( const QString &theme );
 
     /** Slot to handle when type of project to open after launch is changed
      */
@@ -110,23 +108,15 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     /** Slot to set whether to use custom group boxes */
     void on_mCustomGroupBoxChkBx_clicked( bool chkd );
 
-    /** Slot to set whether to use custom side bar style
-      * @note added in QGIS 2.2
-      */
-    void on_mCustomSideBarSide_clicked( bool chkd );
-
-    /** Slot to set whether to bold group box title. */
-    void on_mBoldGroupBoxTitleChkBx_clicked( bool chkd );
-
     void on_mProxyTypeComboBox_currentIndexChanged( int idx );
 
-    /**Add a new URL to exclude from Proxy*/
+    /** Add a new URL to exclude from Proxy*/
     void on_mAddUrlPushButton_clicked();
 
-    /**Remove an URL to exclude from Proxy*/
+    /** Remove an URL to exclude from Proxy*/
     void on_mRemoveUrlPushButton_clicked();
 
-    /**Slot to flag restoring/delete window state settings upon restart*/
+    /** Slot to flag restoring/delete window state settings upon restart*/
     void on_mRestoreDefaultWindowStateBtn_clicked();
 
     /** Slot to enable custom environment variables table and buttons */
@@ -150,12 +140,25 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void on_mBtnRemovePluginPath_clicked();
 
     /* Let the user add a path to the list of search paths
+     * used for finding composer template files. */
+    void on_mBtnAddTemplatePath_clicked();
+
+    /* Let the user remove a path from the list of search paths
+     * used for finding composer template files. */
+    void on_mBtnRemoveTemplatePath_clicked();
+
+    /* Let the user add a path to the list of search paths
      * used for finding SVG files. */
     void on_mBtnAddSVGPath_clicked();
 
     /* Let the user remove a path from the list of search paths
      * used for finding SVG files. */
     void on_mBtnRemoveSVGPath_clicked();
+
+    /* Let the user remove a path from the hidden path list
+     * for the browser */
+    void on_mBtnRemoveHiddenPath_clicked();
+
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
@@ -185,6 +188,9 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     /** Auto slot executed when the active page in the option section widget is changed */
     void on_mOptionsStackedWidget_currentChanged( int theIndx );
 
+    /** A scale in the list of predefined scales changed */
+    void scaleItemChanged( QListWidgetItem* changedScaleItem );
+
     /* Load the list of drivers available in GDAL */
     void loadGdalDriverList();
 
@@ -199,17 +205,21 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void on_mButtonExportColors_clicked();
 
   private:
+    QSettings *mSettings;
     QStringList i18nList();
-    void initContrastEnhancement( QComboBox *cbox, QString name, QString defaultVal );
-    void saveContrastEnhancement( QComboBox *cbox, QString name );
+    void initContrastEnhancement( QComboBox *cbox, const QString& name, const QString& defaultVal );
+    void saveContrastEnhancement( QComboBox *cbox, const QString& name );
     QgsCoordinateReferenceSystem mDefaultCrs;
     QgsCoordinateReferenceSystem mLayerDefaultCrs;
     bool mLoadedGdalDriverList;
 
     /** Generate table row for custom environment variables */
-    void addCustomEnvVarRow( QString varName, QString varVal, QString varApply = QString() );
+    void addCustomEnvVarRow( const QString& varName, const QString& varVal, const QString& varApply = QString() );
 
     void saveDefaultDatumTransformations();
+
+    QListWidgetItem* addScaleToScaleList( const QString &newScale );
+    void addScaleToScaleList( QListWidgetItem* newItem );
 
   protected:
     QgisAppStyleSheet* mStyleSheetBuilder;

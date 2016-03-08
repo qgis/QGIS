@@ -27,11 +27,15 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from PyQt4.QtGui import QIcon
+
 from osgeo import gdal, osr
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterBoolean
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class ExtractProjection(GdalAlgorithm):
@@ -39,12 +43,18 @@ class ExtractProjection(GdalAlgorithm):
     INPUT = 'INPUT'
     PRJ_FILE = 'PRJ_FILE'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'projection-export.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Extract projection'
-        self.group = '[GDAL] Projections'
+        self.name, self.i18n_name = self.trAlgorithm('Extract projection')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Projections')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input file')))
         self.addParameter(ParameterBoolean(self.PRJ_FILE,
-            self.tr('Create also .prj file'), False))
+                                           self.tr('Create also .prj file'), False))
+
+    def getConsoleCommands(self):
+        return ["extractprojection"]
 
     def processAlgorithm(self, progress):
         rasterPath = self.getParameterValue(self.INPUT)
@@ -74,7 +84,7 @@ class ExtractProjection(GdalAlgorithm):
         wld.write('%0.8f\n' % geotransform[2])
         wld.write('%0.8f\n' % geotransform[5])
         wld.write('%0.8f\n' % (geotransform[0] + 0.5 * geotransform[1] + 0.5
-                  * geotransform[2]))
+                               * geotransform[2]))
         wld.write('%0.8f\n' % (geotransform[3] + 0.5 * geotransform[4] + 0.5
-                  * geotransform[5]))
+                               * geotransform[5]))
         wld.close()

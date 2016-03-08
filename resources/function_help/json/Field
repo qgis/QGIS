@@ -1,0 +1,6 @@
+{
+  "name": "Field",
+  "type": "group",
+  "description": "Double click to add field name to expression string.<br>Right-Click on field name to open context menu sample value loading options.",
+  "notes": "Loading field values from WFS layers isn't supported, before the layer is actually inserted, ie. when building queries."
+}

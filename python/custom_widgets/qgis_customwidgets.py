@@ -45,9 +45,11 @@ It is copied on installation in /pythonX/dist-packages/PyQt4/uic/widget-plugins/
 
 
 pluginType = MODULE
+
+
 def moduleInformation():
-        try:
-                import qgis.gui
-                return "qgis.gui", dir(qgis.gui)
-        except ImportError:
-                return "", []
+    try:
+        import qgis.gui
+        return "qgis.gui", dir(qgis.gui)
+    except ImportError:
+        return "", []

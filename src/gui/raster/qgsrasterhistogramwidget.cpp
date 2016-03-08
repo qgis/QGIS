@@ -46,28 +46,33 @@
 #include "qwt5_histogram_item.h"
 #endif
 
+#ifdef Q_OS_WIN
+#include <time.h>
+#endif
+
 // this has been removed, now we let the provider/raster interface decide
 // how many bins are suitable depending on data type and range
 //#define RASTER_HISTOGRAM_BINS 256
 
 QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget *parent )
-    : QWidget( parent ),
-    mRasterLayer( lyr ), mRendererWidget( 0 )
+    : QWidget( parent )
+    , mRasterLayer( lyr )
+    , mRendererWidget( nullptr )
 {
   setupUi( this );
 
   mSaveAsImageButton->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.svg" ) );
 
-  mRendererWidget = 0;
+  mRendererWidget = nullptr;
   mRendererName = "singlebandgray";
 
   mHistoMin = 0;
   mHistoMax = 0;
 
-  mHistoPicker = NULL;
-  mHistoZoomer = NULL;
-  mHistoMarkerMin = NULL;
-  mHistoMarkerMax = NULL;
+  mHistoPicker = nullptr;
+  mHistoZoomer = nullptr;
+  mHistoMarkerMin = nullptr;
+  mHistoMarkerMax = nullptr;
 
   QSettings settings;
   mHistoShowMarkers = settings.value( "/Raster/histogram/showMarkers", false ).toBool();
@@ -366,14 +371,16 @@ void QgsRasterHistogramWidget::refreshHistogram()
   mHistoColors << Qt::black; // first element, not used
   QVector<QColor> myColors;
   myColors << Qt::red << Qt::green << Qt::blue << Qt::magenta << Qt::darkYellow << Qt::cyan;
-  srand( myBandCountInt * 100 ); // make sure colors are always the same for a given band count
+  qsrand( myBandCountInt * 100 ); // make sure colors are always the same for a given band count
   while ( myColors.size() <= myBandCountInt )
   {
     myColors <<
-    QColor( 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) ),
-            1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) ),
-            1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) ) );
+    QColor( 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) ),
+            1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) ),
+            1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) ) );
   }
+  //randomise seed again
+  qsrand( time( nullptr ) );
 
   // assign colors to each band, depending on the current RGB/gray band selection
   // grayscale
@@ -490,7 +497,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
       myDrawLines = false;
     }
 
-    QwtPlotCurve * mypCurve = 0;
+    QwtPlotCurve * mypCurve = nullptr;
     if ( myDrawLines )
     {
       mypCurve = new QwtPlotCurve( tr( "Band %1" ).arg( myIteratorInt ) );
@@ -511,7 +518,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
       mypHisto->setBrush( QBrush( mHistoColors.at( myIteratorInt ) ) );
     }
 #else
-    HistogramItem *mypHistoItem = 0;
+    HistogramItem *mypHistoItem = nullptr;
     if ( ! myDrawLines )
     {
       mypHistoItem = new HistogramItem( tr( "Band %1" ).arg( myIteratorInt ) );
@@ -676,10 +683,8 @@ void QgsRasterHistogramWidget::refreshHistogram()
 
 void QgsRasterHistogramWidget::on_mSaveAsImageButton_clicked()
 {
-  if ( mpPlot == 0 )
-  {
+  if ( !mpPlot )
     return;
-  }
 
   QPair< QString, QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
   QFileInfo myInfo( myFileNameAndFilter.first );
@@ -697,7 +702,7 @@ bool QgsRasterHistogramWidget::histoSaveAsImage( const QString& theFilename,
   QDir myDir( myInfo.dir() );
   if ( ! myDir.exists() )
   {
-    QgsDebugMsg( QString( "Error, directory %1 non-existent (theFilename = %2)" ).arg( myDir.absolutePath() ).arg( theFilename ) );
+    QgsDebugMsg( QString( "Error, directory %1 non-existent (theFilename = %2)" ).arg( myDir.absolutePath(), theFilename ) );
     return false;
   }
 
@@ -735,7 +740,7 @@ bool QgsRasterHistogramWidget::histoSaveAsImage( const QString& theFilename,
 #endif
 
   // save pixmap to file
-  myPixmap.save( theFilename, 0, quality );
+  myPixmap.save( theFilename, nullptr, quality );
 
   // should do more error checking
   return true;
@@ -753,12 +758,12 @@ void QgsRasterHistogramWidget::on_cboHistoBand_currentIndexChanged( int index )
 
   // get the current index value, index can be -1
   index = cboHistoBand->currentIndex();
-  if ( mHistoPicker != NULL )
+  if ( mHistoPicker )
   {
     mHistoPicker->setEnabled( false );
     mHistoPicker->setRubberBandPen( QPen( mHistoColors.at( index + 1 ) ) );
   }
-  if ( mHistoZoomer != NULL )
+  if ( mHistoZoomer )
     mHistoZoomer->setEnabled( true );
   btnHistoMin->setEnabled( true );
   btnHistoMax->setEnabled( true );
@@ -872,20 +877,20 @@ void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool acti
     myBands << cboHistoBand->currentIndex() + 1;
 
     // get stddev value once if needed
-    /*
+#if 0
     double myStdDev = 1.0;
     if ( actionName == "Load stddev" )
     {
       myStdDev = mRendererWidget->stdDev().toDouble();
     }
-    */
+#endif
 
     // don't update markers every time
     leHistoMin->blockSignals( true );
     leHistoMax->blockSignals( true );
 
     // process each band
-    foreach ( int theBandNo, myBands )
+    Q_FOREACH ( int theBandNo, myBands )
     {
       ok = false;
 #if 0
@@ -1009,7 +1014,7 @@ void QgsRasterHistogramWidget::applyHistoMax()
 
 void QgsRasterHistogramWidget::on_btnHistoMin_toggled()
 {
-  if ( mpPlot != NULL && mHistoPicker != NULL )
+  if ( mpPlot && mHistoPicker )
   {
     if ( QApplication::overrideCursor() )
       QApplication::restoreOverrideCursor();
@@ -1018,8 +1023,8 @@ void QgsRasterHistogramWidget::on_btnHistoMin_toggled()
       btnHistoMax->setChecked( false );
       QApplication::setOverrideCursor( Qt::PointingHandCursor );
     }
-    if ( mHistoZoomer != NULL )
-      mHistoZoomer->setEnabled( ! btnHistoMax->isChecked() );
+    if ( mHistoZoomer )
+      mHistoZoomer->setEnabled( ! btnHistoMin->isChecked() );
     mHistoPicker->setEnabled( btnHistoMin->isChecked() );
   }
   updateHistoMarkers();
@@ -1027,7 +1032,7 @@ void QgsRasterHistogramWidget::on_btnHistoMin_toggled()
 
 void QgsRasterHistogramWidget::on_btnHistoMax_toggled()
 {
-  if ( mpPlot != NULL && mHistoPicker != NULL )
+  if ( mpPlot && mHistoPicker )
   {
     if ( QApplication::overrideCursor() )
       QApplication::restoreOverrideCursor();
@@ -1036,7 +1041,7 @@ void QgsRasterHistogramWidget::on_btnHistoMax_toggled()
       btnHistoMin->setChecked( false );
       QApplication::setOverrideCursor( Qt::PointingHandCursor );
     }
-    if ( mHistoZoomer != NULL )
+    if ( mHistoZoomer )
       mHistoZoomer->setEnabled( ! btnHistoMax->isChecked() );
     mHistoPicker->setEnabled( btnHistoMax->isChecked() );
   }
@@ -1077,7 +1082,7 @@ QString findClosestTickVal( double target, const QwtScaleDiv * scale, int div = 
   return QString::number( closest );
 }
 
-void QgsRasterHistogramWidget::histoPickerSelected( const QPointF & pos )
+void QgsRasterHistogramWidget::histoPickerSelected( QPointF pos )
 {
   if ( btnHistoMin->isChecked() || btnHistoMax->isChecked() )
   {
@@ -1104,7 +1109,7 @@ void QgsRasterHistogramWidget::histoPickerSelected( const QPointF & pos )
     QApplication::restoreOverrideCursor();
 }
 
-void QgsRasterHistogramWidget::histoPickerSelectedQwt5( const QwtDoublePoint & pos )
+void QgsRasterHistogramWidget::histoPickerSelectedQwt5( QwtDoublePoint pos )
 {
   histoPickerSelected( QPointF( pos.x(), pos.y() ) );
 }
@@ -1115,7 +1120,7 @@ void QgsRasterHistogramWidget::updateHistoMarkers()
   if ( leHistoMin->signalsBlocked() )
     return;
   // todo error checking
-  if ( mpPlot == NULL || mHistoMarkerMin == NULL || mHistoMarkerMax == NULL )
+  if ( !mpPlot || !mHistoMarkerMin || !mHistoMarkerMax )
     return;
 
   int theBandNo = cboHistoBand->currentIndex() + 1;
@@ -1241,7 +1246,7 @@ QPair< QString, QString > QgsRasterHistogramWidget::rendererMinMax( int theBandN
   if ( myMinMax.second.isEmpty() )
     myMinMax.second = QString::number( mHistoMax );
 
-  QgsDebugMsg( QString( "bandNo %1 got min/max [%2] [%3]" ).arg( theBandNo ).arg( myMinMax.first ).arg( myMinMax.second ) );
+  QgsDebugMsg( QString( "bandNo %1 got min/max [%2] [%3]" ).arg( theBandNo ).arg( myMinMax.first, myMinMax.second ) );
 
   return myMinMax;
 }

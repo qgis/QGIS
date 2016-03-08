@@ -23,6 +23,8 @@
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerv2.h"
 #include "qgsogcutils.h"
+#include "qgspainteffect.h"
+#include "qgspainteffectregistry.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -53,7 +55,7 @@ void QgsInvertedPolygonRenderer::setEmbeddedRenderer( const QgsFeatureRendererV2
   }
   else
   {
-    mSubRenderer.reset( 0 );
+    mSubRenderer.reset( nullptr );
   }
 }
 
@@ -109,7 +111,7 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const Q
   if ( context.coordinateTransform() )
   {
     // disable projection
-    mContext.setCoordinateTransform( 0 );
+    mContext.setCoordinateTransform( nullptr );
     // recompute extent so that polygon clipping is correct
     QRect v( context.painter()->viewport() );
     mContext.setExtent( QgsRectangle( mtp.toMapCoordinates( v.topLeft() ), mtp.toMapCoordinates( v.bottomRight() ) ) );
@@ -118,6 +120,8 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const Q
 
   mExtentPolygon.clear();
   mExtentPolygon.append( exteriorRing );
+
+  return;
 }
 
 bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
@@ -150,8 +154,8 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
   QByteArray catId;
   if ( capabilities() & MoreSymbolsPerFeature )
   {
-    QgsSymbolV2List syms( mSubRenderer->symbolsForFeature( feature ) );
-    foreach ( QgsSymbolV2* sym, syms )
+    QgsSymbolV2List syms( mSubRenderer->symbolsForFeature( feature, context ) );
+    Q_FOREACH ( QgsSymbolV2* sym, syms )
     {
       // append the memory address
       catId.append( reinterpret_cast<const char*>( &sym ), sizeof( sym ) );
@@ -159,7 +163,7 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
   }
   else
   {
-    QgsSymbolV2* sym = mSubRenderer->symbolForFeature( feature );
+    QgsSymbolV2* sym = mSubRenderer->symbolForFeature( feature, context );
     if ( sym )
     {
       catId.append( reinterpret_cast<const char*>( &sym ), sizeof( sym ) );
@@ -182,11 +186,11 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
 
   // update the geometry
   CombinedFeature& cFeat = mFeaturesCategories[ mSymbolCategories[catId] ];
-  if ( !feature.geometry() )
+  if ( !feature.constGeometry() )
   {
     return false;
   }
-  QScopedPointer<QgsGeometry> geom( new QgsGeometry( *feature.geometry() ) );
+  QScopedPointer<QgsGeometry> geom( new QgsGeometry( *feature.constGeometry() ) );
 
   const QgsCoordinateTransform* xform = context.coordinateTransform();
   if ( xform )
@@ -223,13 +227,13 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
     return;
   }
 
-  for ( FeatureCategoryVector::iterator cit = mFeaturesCategories.begin(); cit != mFeaturesCategories.end(); ++cit )
+  Q_FOREACH ( const CombinedFeature& cit, mFeaturesCategories )
   {
-    QgsFeature feat = cit->feature; // just a copy, so that we do not accumulate geometries again
+    QgsFeature feat = cit.feature; // just a copy, so that we do not accumulate geometries again
     if ( mPreprocessingEnabled )
     {
       // compute the unary union on the polygons
-      QScopedPointer<QgsGeometry> unioned( QgsGeometry::unaryUnion( cit->geometries ) );
+      QScopedPointer<QgsGeometry> unioned( QgsGeometry::unaryUnion( cit.geometries ) );
       // compute the difference with the extent
       QScopedPointer<QgsGeometry> rect( QgsGeometry::fromPolygon( mExtentPolygon ) );
       QgsGeometry *final = rect->difference( const_cast<QgsGeometry*>( unioned.data() ) );
@@ -249,7 +253,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       // operations do not need geometries to be valid
       QgsMultiPolygon finalMulti;
       finalMulti.append( mExtentPolygon );
-      foreach ( QgsGeometry* geom, cit->geometries )
+      Q_FOREACH ( QgsGeometry* geom, cit.geometries )
       {
         QgsMultiPolygon multi;
         if (( geom->wkbType() == QGis::WKBPolygon ) ||
@@ -284,12 +288,15 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       }
       feat.setGeometry( QgsGeometry::fromMultiPolygon( finalMulti ) );
     }
-    if ( feat.geometry() )
+    if ( feat.constGeometry() )
+    {
+      mContext.expressionContext().setFeature( feat );
       mSubRenderer->renderFeature( feat, mContext );
+    }
   }
-  for ( FeatureCategoryVector::iterator cit = mFeaturesCategories.begin(); cit != mFeaturesCategories.end(); ++cit )
+  Q_FOREACH ( const CombinedFeature& cit, mFeaturesCategories )
   {
-    foreach ( QgsGeometry* g, cit->geometries )
+    Q_FOREACH ( QgsGeometry* g, cit.geometries )
     {
       delete g;
     }
@@ -308,7 +315,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
   }
 
   // draw feature decorations
-  foreach ( FeatureDecoration deco, mFeatureDecorations )
+  Q_FOREACH ( FeatureDecoration deco, mFeatureDecorations )
   {
     mSubRenderer->renderFeature( deco.feature, mContext, deco.layer, deco.selected, deco.drawMarkers );
   }
@@ -322,21 +329,22 @@ QString QgsInvertedPolygonRenderer::dump() const
   {
     return "INVERTED: NULL";
   }
-  return "INVERTED [" + mSubRenderer->dump() + "]";
+  return "INVERTED [" + mSubRenderer->dump() + ']';
 }
 
-QgsFeatureRendererV2* QgsInvertedPolygonRenderer::clone() const
+QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::clone() const
 {
   QgsInvertedPolygonRenderer* newRenderer;
   if ( mSubRenderer.isNull() )
   {
-    newRenderer = new QgsInvertedPolygonRenderer( 0 );
+    newRenderer = new QgsInvertedPolygonRenderer( nullptr );
   }
   else
   {
-    newRenderer = new QgsInvertedPolygonRenderer( mSubRenderer->clone() );
+    newRenderer = new QgsInvertedPolygonRenderer( mSubRenderer.data() );
   }
   newRenderer->setPreprocessingEnabled( preprocessingEnabled() );
+  copyRendererData( newRenderer );
   return newRenderer;
 }
 
@@ -347,7 +355,9 @@ QgsFeatureRendererV2* QgsInvertedPolygonRenderer::create( QDomElement& element )
   QDomElement embeddedRendererElem = element.firstChildElement( "renderer-v2" );
   if ( !embeddedRendererElem.isNull() )
   {
-    r->setEmbeddedRenderer( QgsFeatureRendererV2::load( embeddedRendererElem ) );
+    QgsFeatureRendererV2* renderer = QgsFeatureRendererV2::load( embeddedRendererElem );
+    r->setEmbeddedRenderer( renderer );
+    delete renderer;
   }
   r->setPreprocessingEnabled( element.attribute( "preprocessing", "0" ).toInt() == 1 );
   return r;
@@ -358,6 +368,7 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument& doc )
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( "type", "invertedPolygonRenderer" );
   rendererElem.setAttribute( "preprocessing", preprocessingEnabled() ? "1" : "0" );
+  rendererElem.setAttribute( "forceraster", ( mForceRaster ? "1" : "0" ) );
 
   if ( mSubRenderer )
   {
@@ -365,48 +376,59 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument& doc )
     rendererElem.appendChild( embeddedRendererElem );
   }
 
+  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
+    mPaintEffect->saveProperties( doc, rendererElem );
+
+  if ( !mOrderBy.isEmpty() )
+  {
+    QDomElement orderBy = doc.createElement( "orderby" );
+    mOrderBy.save( orderBy );
+    rendererElem.appendChild( orderBy );
+  }
+  rendererElem.setAttribute( "enableorderby", ( mOrderByEnabled ? "1" : "0" ) );
+
   return rendererElem;
 }
 
-QgsSymbolV2* QgsInvertedPolygonRenderer::symbolForFeature( QgsFeature& feature )
+QgsSymbolV2* QgsInvertedPolygonRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& context )
 {
   if ( !mSubRenderer )
   {
-    return 0;
+    return nullptr;
   }
-  return mSubRenderer->symbolForFeature( feature );
+  return mSubRenderer->symbolForFeature( feature, context );
 }
 
-QgsSymbolV2* QgsInvertedPolygonRenderer::originalSymbolForFeature( QgsFeature& feat )
+QgsSymbolV2* QgsInvertedPolygonRenderer::originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   if ( !mSubRenderer )
-    return 0;
-  return mSubRenderer->originalSymbolForFeature( feat );
+    return nullptr;
+  return mSubRenderer->originalSymbolForFeature( feat, context );
 }
 
-QgsSymbolV2List QgsInvertedPolygonRenderer::symbolsForFeature( QgsFeature& feature )
-{
-  if ( !mSubRenderer )
-  {
-    return QgsSymbolV2List();
-  }
-  return mSubRenderer->symbolsForFeature( feature );
-}
-
-QgsSymbolV2List QgsInvertedPolygonRenderer::originalSymbolsForFeature( QgsFeature& feat )
-{
-  if ( !mSubRenderer )
-    return QgsSymbolV2List();
-  return mSubRenderer->originalSymbolsForFeature( feat );
-}
-
-QgsSymbolV2List QgsInvertedPolygonRenderer::symbols()
+QgsSymbolV2List QgsInvertedPolygonRenderer::symbolsForFeature( QgsFeature& feature, QgsRenderContext& context )
 {
   if ( !mSubRenderer )
   {
     return QgsSymbolV2List();
   }
-  return mSubRenderer->symbols();
+  return mSubRenderer->symbolsForFeature( feature, context );
+}
+
+QgsSymbolV2List QgsInvertedPolygonRenderer::originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context )
+{
+  if ( !mSubRenderer )
+    return QgsSymbolV2List();
+  return mSubRenderer->originalSymbolsForFeature( feat, context );
+}
+
+QgsSymbolV2List QgsInvertedPolygonRenderer::symbols( QgsRenderContext& context )
+{
+  if ( !mSubRenderer )
+  {
+    return QgsSymbolV2List();
+  }
+  return mSubRenderer->symbols( context );
 }
 
 int QgsInvertedPolygonRenderer::capabilities()
@@ -436,7 +458,7 @@ QgsLegendSymbologyList QgsInvertedPolygonRenderer::legendSymbologyItems( QSize i
   return mSubRenderer->legendSymbologyItems( iconSize );
 }
 
-QgsLegendSymbolList QgsInvertedPolygonRenderer::legendSymbolItems( double scaleDenominator, QString rule )
+QgsLegendSymbolList QgsInvertedPolygonRenderer::legendSymbolItems( double scaleDenominator, const QString& rule )
 {
   if ( !mSubRenderer )
   {
@@ -445,13 +467,13 @@ QgsLegendSymbolList QgsInvertedPolygonRenderer::legendSymbolItems( double scaleD
   return mSubRenderer->legendSymbolItems( scaleDenominator, rule );
 }
 
-bool QgsInvertedPolygonRenderer::willRenderFeature( QgsFeature& feat )
+bool QgsInvertedPolygonRenderer::willRenderFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   if ( !mSubRenderer )
   {
     return false;
   }
-  return mSubRenderer->willRenderFeature( feat );
+  return mSubRenderer->willRenderFeature( feat, context );
 }
 
 QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::convertFromRenderer( const QgsFeatureRendererV2 *renderer )
@@ -468,6 +490,6 @@ QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::convertFromRenderer( con
   {
     return new QgsInvertedPolygonRenderer( renderer->clone() );
   }
-  return 0;
+  return nullptr;
 }
 

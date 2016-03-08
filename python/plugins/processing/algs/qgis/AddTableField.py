@@ -45,25 +45,28 @@ class AddTableField(GeoAlgorithm):
     FIELD_LENGTH = 'FIELD_LENGTH'
     FIELD_PRECISION = 'FIELD_PRECISION'
 
-    TYPE_NAMES = ['Integer', 'Float', 'String']
     TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
 
     def defineCharacteristics(self):
-        self.name = 'Add field to attributes table'
-        self.group = 'Vector table tools'
+        self.name, self.i18n_name = self.trAlgorithm('Add field to attributes table')
+        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
+
+        self.type_names = [self.tr('Integer'),
+                           self.tr('Float'),
+                           self.tr('String')]
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterString(self.FIELD_NAME,
-            self.tr('Field name')))
+                                          self.tr('Field name')))
         self.addParameter(ParameterSelection(self.FIELD_TYPE,
-            self.tr('Field type'), self.TYPE_NAMES))
+                                             self.tr('Field type'), self.type_names))
         self.addParameter(ParameterNumber(self.FIELD_LENGTH,
-            self.tr('Field length'), 1, 255, 10))
+                                          self.tr('Field length'), 1, 255, 10))
         self.addParameter(ParameterNumber(self.FIELD_PRECISION,
-            self.tr('Field precision'), 0, 10, 0))
+                                          self.tr('Field precision'), 0, 10, 0))
         self.addOutput(OutputVector(
-            self.OUTPUT_LAYER, self.tr('Output layer')))
+            self.OUTPUT_LAYER, self.tr('Added')))
 
     def processAlgorithm(self, progress):
         fieldType = self.getParameterValue(self.FIELD_TYPE)
@@ -78,20 +81,17 @@ class AddTableField(GeoAlgorithm):
         provider = layer.dataProvider()
         fields = provider.fields()
         fields.append(QgsField(fieldName, self.TYPES[fieldType], '',
-                      fieldLength, fieldPrecision))
+                               fieldLength, fieldPrecision))
         writer = output.getVectorWriter(fields, provider.geometryType(),
-                layer.crs())
+                                        layer.crs())
         outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        nElement = 0
         features = vector.features(layer)
-        nFeat = len(features)
-        for inFeat in features:
-            progress.setPercentage(int(100 * nElement / nFeat))
-            nElement += 1
-            inGeom = inFeat.geometry()
-            outFeat.setGeometry(inGeom)
-            atMap = inFeat.attributes()
+        total = 100.0 / len(features)
+        for current, feat in enumerate(features):
+            progress.setPercentage(int(current * total))
+            geom = feat.geometry()
+            outFeat.setGeometry(geom)
+            atMap = feat.attributes()
             atMap.append(None)
             outFeat.setAttributes(atMap)
             writer.addFeature(outFeat)

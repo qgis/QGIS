@@ -111,7 +111,6 @@ void QgsDetailedItemDelegate::paintManually( QPainter *thepPainter,
 
   QFontMetrics myTitleMetrics( titleFont( theOption ) );
   QFontMetrics myDetailMetrics( detailFont( theOption ) );
-  QFontMetrics myCategoryMetrics( categoryFont( theOption ) );
   int myTextStartX = theOption.rect.x() + horizontalSpacing();
   int myTextStartY = theOption.rect.y() + verticalSpacing();
   int myHeight = myTitleMetrics.height() + verticalSpacing();
@@ -147,6 +146,7 @@ void QgsDetailedItemDelegate::paintManually( QPainter *thepPainter,
   QPixmap myDecoPixmap = theData.icon();
   if ( !myDecoPixmap.isNull() )
   {
+    myIconFlag = true;
     int iconWidth = 32, iconHeight = 32;
 
     if ( myDecoPixmap.width() <= iconWidth && myDecoPixmap.height() <= iconHeight )
@@ -291,11 +291,13 @@ int QgsDetailedItemDelegate::height( const QStyleOptionViewItem &theOption,
   myHeight += ( myList.count() + 1 ) * ( myDetailMetrics.height() - verticalSpacing() );
   //we don't word wrap the category so its easy to measure
   myHeight += myCategoryMetrics.height() + verticalSpacing();
+#if 0
   // if category should be wrapped use this code
-  //~ myList = wordWrap( theData.category(),
-  //~ myCategoryMetrics,
-  //~ theOption.rect.width() - ( mpCheckBox->width() + horizontalSpacing() ) );
-  //~ myHeight += ( myList.count() + 1 ) * ( myCategoryMetrics.height() - verticalSpacing() );
+  myList = wordWrap( theData.category(),
+                     myCategoryMetrics,
+                     theOption.rect.width() - ( mpCheckBox->width() + horizontalSpacing() ) );
+  myHeight += ( myList.count() + 1 ) * ( myCategoryMetrics.height() - verticalSpacing() );
+#endif
   return myHeight;
 }
 
@@ -322,8 +324,8 @@ QFont QgsDetailedItemDelegate::titleFont( const QStyleOptionViewItem &theOption 
 }
 
 
-QStringList QgsDetailedItemDelegate::wordWrap( QString theString,
-    QFontMetrics theMetrics,
+QStringList QgsDetailedItemDelegate::wordWrap( const QString& theString,
+    const QFontMetrics& theMetrics,
     int theWidth ) const
 {
   if ( theString.isEmpty() )

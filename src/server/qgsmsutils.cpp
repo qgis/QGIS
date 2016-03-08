@@ -27,7 +27,7 @@ QString QgsMSUtils::createTempFilePath()
   //save the content of the file into a temporary location
   //generate a name considering the current time
   //struct timeval currentTime;
-  //gettimeofday(&currentTime, NULL);
+  //gettimeofday(&currentTime, nullptr);
 
   time_t seconds;
   time( &seconds );
@@ -38,7 +38,7 @@ QString QgsMSUtils::createTempFilePath()
   QString tempFilePath;
   //on windows, store the temporary file in current_path/tmp directory,
   //on unix, store it in /tmp/qgis_wms_serv
-#ifndef WIN32
+#ifndef Q_OS_WIN
   QDir tempFileDir( "/tmp/qgis_map_serv" );
   if ( !tempFileDir.exists() ) //make sure the directory exists
   {
@@ -54,7 +54,7 @@ QString QgsMSUtils::createTempFilePath()
     currentDir.mkdir( "tmp" );
   }
   tempFilePath = QDir::currentPath() + "/tmp" + "/" + tempFileName;
-#endif //WIN32
+#endif // Q_OS_WIN
 
   QFileInfo testFile( tempFilePath );
   while ( testFile.exists() )
@@ -67,7 +67,7 @@ QString QgsMSUtils::createTempFilePath()
   return tempFilePath;
 }
 
-int QgsMSUtils::createTextFile( QString filePath, const QString& text )
+int QgsMSUtils::createTextFile( const QString& filePath, const QString& text )
 {
   QFile file( filePath );
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )

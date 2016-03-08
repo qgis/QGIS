@@ -1,0 +1,12 @@
+v.generalize
+v.generalize.displacement - Vector based displacement generalization.
+Vector (v.*)
+ParameterVector|input|Input layer|-1|False
+Hardcoded|method=displacement
+ParameterNumber|threshold|Maximal tolerance value|None|None|1.0
+ParameterNumber|alpha|Snakes alpha parameter|None|None|1.0
+ParameterNumber|beta|Snakes beta parameter|None|None|1.0
+ParameterNumber|iterations|Number of iterations|None|None|1
+ParameterBoolean|-t|Do not copy attributes|False
+ParameterBoolean|-l|Disable loop support|True
+OutputVector|output|Displaced

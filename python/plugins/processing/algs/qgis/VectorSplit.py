@@ -27,6 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from PyQt4.QtGui import QIcon
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -34,19 +36,25 @@ from processing.core.outputs import OutputDirectory
 from processing.tools import dataobjects, vector
 from processing.tools.system import mkdir
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
+
 class VectorSplit(GeoAlgorithm):
 
     INPUT = 'INPUT'
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'split_layer.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Split vector layer'
-        self.group = 'Vector general tools'
+        self.name, self.i18n_name = self.trAlgorithm('Split vector layer')
+        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Unique ID field'), self.INPUT))
+                                              self.tr('Unique ID field'), self.INPUT))
 
         self.addOutput(OutputDirectory(self.OUTPUT, self.tr('Output directory')))
 
@@ -67,15 +75,14 @@ class VectorSplit(GeoAlgorithm):
         geomType = layer.wkbType()
 
         total = 100.0 / len(uniqueValues)
-        features = vector.features(layer)
 
-        for count, i in enumerate(uniqueValues):
+        for current, i in enumerate(uniqueValues):
             fName = u'{0}_{1}.shp'.format(baseName, unicode(i).strip())
 
             writer = vector.VectorWriter(fName, None, fields, geomType, crs)
-            for f in features:
+            for f in vector.features(layer):
                 if f[fieldName] == i:
                     writer.addFeature(f)
             del writer
 
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))

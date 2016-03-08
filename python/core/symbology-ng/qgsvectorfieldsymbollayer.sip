@@ -34,14 +34,14 @@ class QgsVectorFieldSymbolLayer : QgsMarkerSymbolLayerV2
     bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
     QgsSymbolV2* subSymbol();
 
-    void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context );
+    void renderPoint( QPointF point, QgsSymbolV2RenderContext& context );
     void startRender( QgsSymbolV2RenderContext& context );
     void stopRender( QgsSymbolV2RenderContext& context );
 
-    QgsSymbolLayerV2* clone() const /Factory/;
+    virtual QgsVectorFieldSymbolLayer* clone() const /Factory/;
     QgsStringMap properties() const;
 
-    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
+    void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const;
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
 

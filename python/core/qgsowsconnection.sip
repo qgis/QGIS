@@ -26,5 +26,6 @@ class QgsOWSConnection : QObject
     QgsDataSourceURI uri();
     QString mConnectionInfo;
 
+    //! @deprecated use mConnectionInfo instead
     QString connectionInfo() /Deprecated/;
 };

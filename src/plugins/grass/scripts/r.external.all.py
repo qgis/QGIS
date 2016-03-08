@@ -82,18 +82,19 @@ try:
 except ImportError:
     import grass
 except:
-    raise Exception ("Cannot find 'grass' Python module. Python is supported by GRASS from version >= 6.4" )
+    raise Exception("Cannot find 'grass' Python module. Python is supported by GRASS from version >= 6.4")
 
 
 def import_directory_of_rasters(directory, recursive):
     for dir, dirnames, filenames in os.walk(directory):
         for filename in filenames:
-                if grass.run_command('r.external', flags=flags_string, input=os.path.join(dir, filename), band=options['band'], output=filename[:-4], title=filename[:-4]) != 0:
-                        grass.warning('Cannot import file' + filename)
+            if grass.run_command('r.external', flags=flags_string, input=os.path.join(dir, filename), band=options['band'], output=filename[:-4], title=filename[:-4]) != 0:
+                grass.warning('Cannot import file' + filename)
         if not recursive:
-                break
+            break
         for dirname in dirnames:
-                import_directory_of_rasters(dirname, recursive)
+            import_directory_of_rasters(dirname, recursive)
+
 
 def main():
     input = options['input']

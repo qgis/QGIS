@@ -33,6 +33,8 @@ from processing.modeler.ModelerAlgorithm import ModelerParameter, Algorithm, Mod
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+
 
 class ModelerGraphicItem(QGraphicsItem):
 
@@ -44,12 +46,12 @@ class ModelerGraphicItem(QGraphicsItem):
         self.model = model
         self.element = element
         if isinstance(element, ModelerParameter):
-            icon = QIcon(os.path.dirname(__file__) + '/../images/input.png')
+            icon = QIcon(os.path.join(pluginPath, 'images', 'input.png'))
             self.pixmap = icon.pixmap(20, 20, state=QIcon.On)
             self.text = element.param.description
         elif isinstance(element, ModelerOutput):
             # Output name
-            icon = QIcon(os.path.dirname(__file__) + '/../images/output.png')
+            icon = QIcon(os.path.join(pluginPath, 'images', 'output.png'))
             self.pixmap = icon.pixmap(20, 20, state=QIcon.On)
             self.text = element.description
         else:
@@ -62,20 +64,20 @@ class ModelerGraphicItem(QGraphicsItem):
         self.setZValue(1000)
 
         if not isinstance(element, ModelerOutput):
-            icon = QIcon(os.path.dirname(__file__) + '/../images/edit.png')
+            icon = QIcon(os.path.join(pluginPath, 'images', 'edit.png'))
             pt = QPointF(ModelerGraphicItem.BOX_WIDTH / 2
                          - FlatButtonGraphicItem.WIDTH / 2,
                          ModelerGraphicItem.BOX_HEIGHT / 2
                          - FlatButtonGraphicItem.HEIGHT / 2 + 1)
             self.editButton = FlatButtonGraphicItem(icon, pt, self.editElement)
             self.editButton.setParentItem(self)
-            icon = QIcon(os.path.dirname(__file__) + '/../images/delete.png')
+            icon = QIcon(os.path.join(pluginPath, 'images', 'delete.png'))
             pt = QPointF(ModelerGraphicItem.BOX_WIDTH / 2
                          - FlatButtonGraphicItem.WIDTH / 2,
                          - ModelerGraphicItem.BOX_HEIGHT / 2
                          + FlatButtonGraphicItem.HEIGHT / 2 + 1)
             self.deleteButton = FlatButtonGraphicItem(icon, pt,
-                    self.removeElement)
+                                                      self.removeElement)
             self.deleteButton.setParentItem(self)
 
         if isinstance(element, Algorithm):
@@ -98,11 +100,15 @@ class ModelerGraphicItem(QGraphicsItem):
             pt = self.getLinkPointForOutput(-1)
             pt = QPointF(0, pt.y())
             self.outButton.position = pt
+        for arrow in self.arrows:
+            arrow.updatePath()
         self.update()
 
     def foldOutput(self, folded):
         self.element.outputsFolded = folded
         self.prepareGeometryChange()
+        for arrow in self.arrows:
+            arrow.updatePath()
         self.update()
 
     def addArrow(self, arrow):
@@ -160,7 +166,7 @@ class ModelerGraphicItem(QGraphicsItem):
     def editElement(self):
         if isinstance(self.element, ModelerParameter):
             dlg = ModelerParameterDefinitionDialog(self.model,
-                    param=self.element.param)
+                                                   param=self.element.param)
             dlg.exec_()
             if dlg.param is not None:
                 self.model.updateParameter(dlg.param)
@@ -181,15 +187,15 @@ class ModelerGraphicItem(QGraphicsItem):
         if isinstance(self.element, ModelerParameter):
             if not self.model.removeParameter(self.element.param.name):
                 QMessageBox.warning(None, 'Could not remove element',
-                        'Other elements depend on the selected one.\n'
-                        'Remove them before trying to remove it.')
+                                    'Other elements depend on the selected one.\n'
+                                    'Remove them before trying to remove it.')
             else:
                 self.model.updateModelerView()
         elif isinstance(self.element, Algorithm):
             if not self.model.removeAlgorithm(self.element.name):
                 QMessageBox.warning(None, 'Could not remove element',
-                        'Other elements depend on the selected one.\n'
-                        'Remove them before trying to remove it.')
+                                    'Other elements depend on the selected one.\n'
+                                    'Remove them before trying to remove it.')
             else:
                 self.model.updateModelerView()
 
@@ -248,7 +254,7 @@ class ModelerGraphicItem(QGraphicsItem):
                         h = -(fm.height() * 1.2) * (i + 1)
                         h = h - ModelerGraphicItem.BOX_HEIGHT / 2.0 + 5
                         pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2
-                                + 33, h)
+                                     + 33, h)
                         painter.drawText(pt, text)
                         i += 1
             h = fm.height() * 1.2
@@ -257,12 +263,12 @@ class ModelerGraphicItem(QGraphicsItem):
             painter.drawText(pt, 'Out')
             if not self.element.outputsFolded:
                 for i, out in enumerate(self.element.algorithm.outputs):
-                        text = self.getAdjustedText(out.description)
-                        h = fm.height() * 1.2 * (i + 2)
-                        h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
-                        pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2
-                                + 33, h)
-                        painter.drawText(pt, text)
+                    text = self.getAdjustedText(out.description)
+                    h = fm.height() * 1.2 * (i + 2)
+                    h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
+                    pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2
+                                 + 33, h)
+                    painter.drawText(pt, text)
         if self.pixmap:
             painter.drawPixmap(-(ModelerGraphicItem.BOX_WIDTH / 2.0) + 3, -8,
                                self.pixmap)
@@ -281,9 +287,8 @@ class ModelerGraphicItem(QGraphicsItem):
             h = 0
         return QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + offsetX, h)
 
-
     def getLinkPointForOutput(self, outputIndex):
-        if isinstance(self.element, Algorithm):
+        if isinstance(self.element, Algorithm) and self.element.algorithm.outputs:
             outputIndex = (outputIndex if not self.element.outputsFolded else -1)
             text = self.getAdjustedText(self.element.algorithm.outputs[outputIndex].description)
             font = QFont('Verdana', 8)
@@ -300,7 +305,7 @@ class ModelerGraphicItem(QGraphicsItem):
     def itemChange(self, change, value):
         if change == QGraphicsItem.ItemPositionHasChanged:
             for arrow in self.arrows:
-                arrow.updatePosition()
+                arrow.updatePath()
             self.element.pos = self.pos()
 
         return value
@@ -349,11 +354,11 @@ class FlatButtonGraphicItem(QGraphicsItem):
         if self.isIn:
             painter.setPen(QPen(Qt.transparent, 1))
             painter.setBrush(QBrush(Qt.lightGray,
-                             Qt.SolidPattern))
+                                    Qt.SolidPattern))
         else:
             painter.setPen(QPen(Qt.transparent, 1))
             painter.setBrush(QBrush(Qt.transparent,
-                             Qt.SolidPattern))
+                                    Qt.SolidPattern))
         painter.drawRect(rect)
         painter.drawPixmap(pt.x(), pt.y(), self.pixmap)
 
@@ -378,12 +383,10 @@ class FoldButtonGraphicItem(FlatButtonGraphicItem):
     WIDTH = 11
     HEIGHT = 11
 
-    icons = {True: QIcon(os.path.dirname(__file__)
-             + '/../images/plus.png'),
-             False: QIcon(os.path.dirname(__file__)
-             + '/../images/minus.png')}
-
     def __init__(self, position, action, folded):
+        self.icons = {True: QIcon(os.path.join(pluginPath, 'images', 'plus.png')),
+                      False: QIcon(os.path.join(pluginPath, 'images', 'minus.png'))}
+
         self.folded = folded
         icon = self.icons[self.folded]
         super(FoldButtonGraphicItem, self).__init__(icon, position, action)

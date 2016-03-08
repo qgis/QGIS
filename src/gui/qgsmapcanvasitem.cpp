@@ -55,7 +55,7 @@ void QgsMapCanvasItem::paint( QPainter * painter,
   paint( painter ); // call the derived item's drawing routines
 }
 
-QgsPoint QgsMapCanvasItem::toMapCoordinates( const QPoint& point ) const
+QgsPoint QgsMapCanvasItem::toMapCoordinates( QPoint point ) const
 {
   return mMapCanvas->getCoordinateTransform()->toMapCoordinates( point - mPanningOffset );
 }
@@ -63,7 +63,7 @@ QgsPoint QgsMapCanvasItem::toMapCoordinates( const QPoint& point ) const
 
 QPointF QgsMapCanvasItem::toCanvasCoordinates( const QgsPoint& point ) const
 {
-  double x = point.x(), y = point.y();
+  qreal x = point.x(), y = point.y();
   mMapCanvas->getCoordinateTransform()->transformInPlace( x, y );
   return QPointF( x, y ) + mPanningOffset;
 }
@@ -144,7 +144,7 @@ void QgsMapCanvasItem::updatePosition()
 }
 
 
-void QgsMapCanvasItem::setPanningOffset( const QPoint& point )
+void QgsMapCanvasItem::setPanningOffset( QPoint point )
 {
   mPanningOffset = point;
 }

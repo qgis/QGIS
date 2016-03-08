@@ -25,6 +25,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4.QtGui import QIcon
+
 from qgis.core import QGis, QgsFeature, QgsGeometry
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -34,6 +38,8 @@ from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class SimplifyGeometries(GeoAlgorithm):
 
@@ -41,17 +47,20 @@ class SimplifyGeometries(GeoAlgorithm):
     TOLERANCE = 'TOLERANCE'
     OUTPUT = 'OUTPUT'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'simplify.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Simplify geometries'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Simplify geometries')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'),
-            [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Input layer'),
+                                          [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterNumber(self.TOLERANCE,
-            self.tr('Tolerance'), 0.0, 10000000.0, 1.0))
+                                          self.tr('Tolerance'), 0.0, 10000000.0, 1.0))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Simplified layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Simplified')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
@@ -63,10 +72,9 @@ class SimplifyGeometries(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layer.pendingFields().toList(), layer.wkbType(), layer.crs())
 
-        current = 0
-        selection = vector.features(layer)
-        total = 100.0 / float(len(selection))
-        for f in selection:
+        features = vector.features(layer)
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
             featGeometry = QgsGeometry(f.geometry())
             attrs = f.attributes()
             pointsBefore += self.geomVertexCount(featGeometry)
@@ -76,13 +84,12 @@ class SimplifyGeometries(GeoAlgorithm):
             feature.setGeometry(newGeometry)
             feature.setAttributes(attrs)
             writer.addFeature(feature)
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer
 
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-            self.tr('Simplify: Input geometries have been simplified from %s to %s points' % (pointsBefore, pointsAfter)))
+                               self.tr('Simplify: Input geometries have been simplified from %s to %s points' % (pointsBefore, pointsAfter)))
 
     def geomVertexCount(self, geometry):
         geomType = geometry.type()

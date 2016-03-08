@@ -42,7 +42,7 @@ QString QgsScaleRangeWidgetPlugin::includeFile() const
 
 QIcon QgsScaleRangeWidgetPlugin::icon() const
 {
-  return QIcon();
+  return QIcon( ":/images/icons/qgis-icon-60x60.png" );
 }
 
 bool QgsScaleRangeWidgetPlugin::isContainer() const

@@ -36,7 +36,9 @@ BASE_CLASS = get_ui_class('newconnectiondialog.ui')
 
 
 class NewConnectionDialog(QDialog, BASE_CLASS):
+
     """Dialogue to add a new CSW entry"""
+
     def __init__(self, conn_name=None):
         """init"""
 
@@ -55,6 +57,11 @@ class NewConnectionDialog(QDialog, BASE_CLASS):
         if any([conn_name == '', conn_url == '']):
             QMessageBox.warning(self, self.tr('Save connection'),
                                 self.tr('Both Name and URL must be provided'))
+            return
+
+        if '/' in conn_name:
+            QMessageBox.warning(self, self.tr('Save connection'),
+                                self.tr('Name cannot contain \'/\''))
             return
 
         if conn_name is not None:

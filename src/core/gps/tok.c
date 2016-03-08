@@ -24,7 +24,7 @@
  *
  */
 
-/*! \file tok.h */
+/** \file tok.h */
 
 #include "tok.h"
 
@@ -165,6 +165,7 @@ int nmea_scanf( const char *buff, int buff_sz, const char *format, ... )
         width = 0;
         beg_fmt = format;
         tok_type = NMEA_TOKS_WIDTH;
+        //intentional fall-through
       case NMEA_TOKS_WIDTH:
         if ( isdigit( *format ) )
           break;
@@ -198,7 +199,8 @@ int nmea_scanf( const char *buff, int buff_sz, const char *format, ... )
         tok_type = NMEA_TOKS_COMPARE;
         tok_count++;
 
-        parg_target = 0; width = ( int )( buff - beg_tok );
+        parg_target = 0;
+        width = ( int )( buff - beg_tok );
 
         switch ( *format )
         {

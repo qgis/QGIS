@@ -23,10 +23,6 @@ class QgsVectorLayer;
 #include "qgspoint.h"
 #include "qgsrectangle.h"
 
-
-#include <spatialindex/SpatialIndex.h>
-
-
 class QgsCoordinateTransform;
 class QgsCoordinateReferenceSystem;
 
@@ -34,6 +30,12 @@ class QgsPointLocator_VisitorNearestVertex;
 class QgsPointLocator_VisitorNearestEdge;
 class QgsPointLocator_VisitorArea;
 class QgsPointLocator_VisitorEdgesInRect;
+
+namespace SpatialIndex
+{
+  class IStorageManager;
+  class ISpatialIndex;
+}
 
 /**
  * @brief The class defines interface for querying point location:
@@ -53,11 +55,33 @@ class CORE_EXPORT QgsPointLocator : public QObject
      *  @arg destCRS if not null, will do the searches on data reprojected to the given CRS
      *  @arg extent  if not null, will index only a subset of the layer
      */
-    explicit QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem* destCRS = 0, const QgsRectangle* extent = 0 );
+    explicit QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem* destCRS = nullptr, const QgsRectangle* extent = nullptr );
 
     ~QgsPointLocator();
 
-    enum Type { Invalid = 0, Vertex = 1, Edge = 2, Area = 4, All = Vertex | Edge | Area };
+    //! Get associated layer
+    //! @note added in QGIS 2.14
+    QgsVectorLayer* layer() const { return mLayer; }
+    //! Get destination CRS - may be null if not doing OTF reprojection
+    //! @note added in QGIS 2.14
+    const QgsCoordinateReferenceSystem* destCRS() const;
+    //! Get extent of the area point locator covers - if null then it caches the whole layer
+    //! @note added in QGIS 2.14
+    const QgsRectangle* extent() const { return mExtent; }
+    //! Configure extent - if not null, it will index only that area
+    //! @note added in QGIS 2.14
+    void setExtent( const QgsRectangle* extent );
+
+    enum Type
+    {
+      Invalid = 0,
+      Vertex = 1,
+      Edge = 2,
+      Area = 4,
+      All = Vertex | Edge | Area
+    };
+
+    Q_DECLARE_FLAGS( Types, Type )
 
     /** Prepare the index for queries. Does nothing if the index already exists.
      * If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
@@ -71,9 +95,9 @@ class CORE_EXPORT QgsPointLocator : public QObject
     struct Match
     {
       //! consruct invalid match
-      Match() : mType( Invalid ), mDist( 0 ), mPoint(), mLayer( 0 ), mFid( 0 ), mVertexIndex( 0 ) {}
+      Match() : mType( Invalid ), mDist( 0 ), mPoint(), mLayer( nullptr ), mFid( 0 ), mVertexIndex( 0 ) {}
 
-      Match( Type t, QgsVectorLayer* vl, QgsFeatureId fid, double dist, const QgsPoint& pt, int vertexIndex = 0, QgsPoint* edgePoints = 0 )
+      Match( Type t, QgsVectorLayer* vl, QgsFeatureId fid, double dist, const QgsPoint& pt, int vertexIndex = 0, QgsPoint* edgePoints = nullptr )
           : mType( t ), mDist( dist ), mPoint( pt ), mLayer( vl ), mFid( fid ), mVertexIndex( vertexIndex )
       {
         if ( edgePoints )
@@ -130,6 +154,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! Implement the interface and pass its instance to QgsPointLocator or QgsSnappingUtils methods.
     struct MatchFilter
     {
+      virtual ~MatchFilter() {}
       virtual bool acceptMatch( const Match& match ) = 0;
     };
 
@@ -137,15 +162,15 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     //! Find nearest vertex to the specified point - up to distance specified by tolerance
     //! Optional filter may discard unwanted matches.
-    Match nearestVertex( const QgsPoint& point, double tolerance, MatchFilter* filter = 0 );
+    Match nearestVertex( const QgsPoint& point, double tolerance, MatchFilter* filter = nullptr );
     //! Find nearest edges to the specified point - up to distance specified by tolerance
     //! Optional filter may discard unwanted matches.
-    Match nearestEdge( const QgsPoint& point, double tolerance, MatchFilter* filter = 0 );
+    Match nearestEdge( const QgsPoint& point, double tolerance, MatchFilter* filter = nullptr );
     //! Find edges within a specified recangle
     //! Optional filter may discard unwanted matches.
-    MatchList edgesInRect( const QgsRectangle& rect, MatchFilter* filter = 0 );
+    MatchList edgesInRect( const QgsRectangle& rect, MatchFilter* filter = nullptr );
     //! Override of edgesInRect that construct rectangle from a center point and tolerance
-    MatchList edgesInRect( const QgsPoint& point, double tolerance, MatchFilter* filter = 0 );
+    MatchList edgesInRect( const QgsPoint& point, double tolerance, MatchFilter* filter = nullptr );
 
     // point-in-polygon query
 
@@ -153,6 +178,11 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! find out if the point is in any polygons
     MatchList pointInPolygon( const QgsPoint& point );
 
+    //
+
+    //! Return how many geometries are cached in the index
+    //! @note added in QGIS 2.14
+    int cachedGeometryCount() const { return mGeoms.count(); }
 
   protected:
     bool rebuildIndex( int maxFeaturesToIndex = -1 );
@@ -164,7 +194,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     void onGeometryChanged( QgsFeatureId fid, QgsGeometry& geom );
 
   private:
-    /** storage manager */
+    /** Storage manager */
     SpatialIndex::IStorageManager* mStorage;
 
     QHash<QgsFeatureId, QgsGeometry*> mGeoms;

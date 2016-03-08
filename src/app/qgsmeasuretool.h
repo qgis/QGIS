@@ -46,7 +46,7 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     void restart();
 
     //! Add new point
-    void addPoint( QgsPoint &point );
+    void addPoint( const QgsPoint &point );
 
     //! Returns reference to array of the points
     const QList<QgsPoint>& points();
@@ -54,13 +54,13 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     // Inherited from QgsMapTool
 
     //! Mouse move event for overriding
-    virtual void canvasMoveEvent( QMouseEvent * e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
     //! Mouse press event for overriding
-    virtual void canvasPressEvent( QMouseEvent * e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
     //! Mouse release event for overriding
-    virtual void canvasReleaseEvent( QMouseEvent * e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
     //! called when set as currently active map tool
     virtual void activate() override;
@@ -100,7 +100,7 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     //@param p (pixel) coordinate
     QgsPoint snapPoint( const QPoint& p );
 
-    /**Removes the last vertex from mRubberBand*/
+    /** Removes the last vertex from mRubberBand*/
     void undo();
 };
 

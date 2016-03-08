@@ -55,11 +55,11 @@ bool QgsFeatureSelectionModel::isSelected( const QModelIndex &index )
   return isSelected( index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong() );
 }
 
-void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, QItemSelectionModel::SelectionFlags command )
+void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, const QItemSelectionModel::SelectionFlags& command )
 {
   QgsFeatureIds ids;
 
-  foreach ( const QModelIndex index, selection.indexes() )
+  Q_FOREACH ( const QModelIndex& index, selection.indexes() )
   {
     QgsFeatureId id = index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
 
@@ -73,7 +73,7 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
     if ( !mSyncEnabled )
     {
       mClearAndSelectBuffer = true;
-      foreach ( QgsFeatureId id, ids )
+      Q_FOREACH ( QgsFeatureId id, ids )
       {
         if ( !mDeselectedBuffer.remove( id ) )
         {
@@ -90,7 +90,7 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
   {
     if ( !mSyncEnabled )
     {
-      foreach ( QgsFeatureId id, ids )
+      Q_FOREACH ( QgsFeatureId id, ids )
       {
         if ( !mDeselectedBuffer.remove( id ) )
         {
@@ -107,7 +107,7 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
   {
     if ( !mSyncEnabled )
     {
-      foreach ( QgsFeatureId id, ids )
+      Q_FOREACH ( QgsFeatureId id, ids )
       {
         if ( !mSelectedBuffer.remove( id ) )
         {
@@ -124,7 +124,7 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
   connect( mFeatureSelectionManager, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SLOT( layerSelectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ) );
 
   QModelIndexList updatedIndexes;
-  foreach ( QModelIndex idx, selection.indexes() )
+  Q_FOREACH ( const QModelIndex& idx, selection.indexes() )
   {
     updatedIndexes.append( expandIndexToRow( idx ) );
   }
@@ -139,7 +139,7 @@ void QgsFeatureSelectionModel::setFeatureSelectionManager( QgsIFeatureSelectionM
   connect( mFeatureSelectionManager, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SLOT( layerSelectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ) );
 }
 
-void QgsFeatureSelectionModel::layerSelectionChanged( QgsFeatureIds selected, QgsFeatureIds deselected, bool clearAndSelect )
+void QgsFeatureSelectionModel::layerSelectionChanged( const QgsFeatureIds& selected, const QgsFeatureIds& deselected, bool clearAndSelect )
 {
   if ( clearAndSelect )
   {
@@ -148,12 +148,12 @@ void QgsFeatureSelectionModel::layerSelectionChanged( QgsFeatureIds selected, Qg
   else
   {
     QModelIndexList updatedIndexes;
-    foreach ( QgsFeatureId fid, selected )
+    Q_FOREACH ( QgsFeatureId fid, selected )
     {
       updatedIndexes.append( expandIndexToRow( mFeatureModel->fidToIndex( fid ) ) );
     }
 
-    foreach ( QgsFeatureId fid, deselected )
+    Q_FOREACH ( QgsFeatureId fid, deselected )
     {
       updatedIndexes.append( expandIndexToRow( mFeatureModel->fidToIndex( fid ) ) );
     }
@@ -171,7 +171,9 @@ QModelIndexList QgsFeatureSelectionModel::expandIndexToRow( const QModelIndex& i
   if ( !model )
     return indexes;
 
-  for ( int column = 0; column < model->columnCount(); ++column )
+  int columns = model->columnCount();
+  indexes.reserve( columns );
+  for ( int column = 0; column < columns; ++column )
   {
     indexes.append( model->index( row, column ) );
   }

@@ -54,6 +54,7 @@ from processing.tools.system import getTempFilename
 
 import codecs
 
+
 class BatchAlgorithmDialog(AlgorithmDialogBase):
 
     def __init__(self, alg):
@@ -66,29 +67,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
         self.mainWidget = BatchPanel(self, self.alg)
         self.setMainWidget()
 
-    def setParamValue(self, param, widget, alg=None):
-        if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable,
-                              ParameterMultipleInput)):
-            value = widget.getText()
-            if unicode(value).strip() == '':
-                value = None
-            return param.setValue(value)
-        elif isinstance(param, ParameterBoolean):
-            return param.setValue(widget.currentIndex() == 0)
-        elif isinstance(param, ParameterSelection):
-            return param.setValue(widget.currentIndex())
-        elif isinstance(param, ParameterFixedTable):
-            return param.setValue(widget.table)
-        elif isinstance(param, ParameterExtent):
-            if alg is not None:
-                widget.useNewAlg(alg)
-            return param.setValue(widget.getValue())
-        elif isinstance(param, (ParameterCrs, ParameterFile)):
-            return param.setValue(widget.getValue())
-        elif isinstance(param, ParameterGeometryPredicate):
-            return param.setValue(widget.value())
-        else:
-            return param.setValue(widget.text())
+        self.textShortHelp.setVisible(False)
 
     def accept(self):
         self.algs = []
@@ -101,15 +80,28 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
             for param in alg.parameters:
                 if param.hidden:
                     continue
-
+                if isinstance(param, ParameterExtent):
+                    col += 1
+                    continue
                 widget = self.mainWidget.tblParameters.cellWidget(row, col)
-                if not self.setParamValue(param, widget, alg):
+                if not self.mainWidget.setParamValue(param, widget, alg):
                     self.lblProgress.setText(
                         self.tr('<b>Missing parameter value: %s (row %d)</b>') % (param.description, row + 1))
                     self.algs = None
                     return
                 col += 1
-
+            col = 0
+            for param in alg.parameters:
+                if param.hidden:
+                    continue
+                if isinstance(param, ParameterExtent):
+                    widget = self.mainWidget.tblParameters.cellWidget(row, col)
+                    if not self.mainWidget.setParamValue(param, widget, alg):
+                        self.lblProgress.setText(
+                            self.tr('<b>Missing parameter value: %s (row %d)</b>') % (param.description, row + 1))
+                        self.algs = None
+                        return
+                col += 1
             for out in alg.outputs:
                 if out.hidden:
                     continue
@@ -144,7 +136,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
             pass
 
         for count, alg in enumerate(self.algs):
-            self.setText(self.tr('Processing algorithm %d/%d...') % (count + 1, len(self.algs)))
+            self.setText(self.tr('\nProcessing algorithm %d/%d...') % (count + 1, len(self.algs)))
             self.setInfo(self.tr('<b>Algorithm %s starting...</b>' % alg.name))
             if runalg(alg, self) and not self.canceled:
                 if self.load[count]:
@@ -165,7 +157,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
 
         self.mainWidget.setEnabled(True)
         QMessageBox.information(self, self.tr('Batch processing'),
-            self.tr('Batch processing successfully completed!'))
+                                self.tr('Batch processing completed'))
 
     def loadHTMLResults(self, alg, num):
         for out in alg.outputs:

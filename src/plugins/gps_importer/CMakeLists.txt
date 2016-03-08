@@ -39,9 +39,12 @@ INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
      ${QEXTSERIALPORT_INCLUDE_DIR}
      ../../core
+     ../../core/geometry
      ../../core/gps
      ../../gui
      ..
+)
+INCLUDE_DIRECTORIES(SYSTEM
      ${EXPAT_INCLUDE_DIR}
 )
 

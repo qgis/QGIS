@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>592</width>
+    <width>773</width>
     <height>476</height>
    </rect>
   </property>
@@ -237,7 +237,11 @@
   <tabstop>btnNew</tabstop>
   <tabstop>btnEdit</tabstop>
   <tabstop>btnDelete</tabstop>
+  <tabstop>btnLoad</tabstop>
+  <tabstop>btnSave</tabstop>
   <tabstop>mTablesTreeView</tabstop>
+  <tabstop>cbxAllowGeometrylessTables</tabstop>
+  <tabstop>mHoldDialogOpen</tabstop>
   <tabstop>mSearchGroupBox</tabstop>
   <tabstop>mSearchTableEdit</tabstop>
   <tabstop>mSearchColumnComboBox</tabstop>

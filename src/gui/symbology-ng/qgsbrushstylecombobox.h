@@ -23,7 +23,7 @@ class GUI_EXPORT QgsBrushStyleComboBox : public QComboBox
     Q_OBJECT
 
   public:
-    QgsBrushStyleComboBox( QWidget* parent = NULL );
+    QgsBrushStyleComboBox( QWidget* parent = nullptr );
 
     Qt::BrushStyle brushStyle() const;
 

@@ -25,13 +25,19 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtCore
+import os
+
+from PyQt4.QtGui import QIcon
+from PyQt4.QtCore import QFileInfo
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputVector
 from processing.tools.system import isWindows
 from processing.algs.gdal.GdalUtils import GdalUtils
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class polygonize(GdalAlgorithm):
@@ -40,26 +46,29 @@ class polygonize(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'polygonize.png'))
+
     def commandLineName(self):
         return "gdalogr:polygonize"
 
     def defineCharacteristics(self):
-        self.name = 'Polygonize (raster to vector)'
-        self.group = '[GDAL] Conversion'
+        self.name, self.i18n_name = self.trAlgorithm('Polygonize (raster to vector)')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
         self.addParameter(ParameterRaster(polygonize.INPUT,
-            self.tr('Input layer'), False))
+                                          self.tr('Input layer'), False))
         self.addParameter(ParameterString(polygonize.FIELD,
-            self.tr('Output field name'), 'DN'))
-        self.addOutput(OutputVector(polygonize.OUTPUT, self.tr('Output layer')))
+                                          self.tr('Output field name'), 'DN'))
+        self.addOutput(OutputVector(polygonize.OUTPUT, self.tr('Vectorized')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = []
         arguments.append(self.getParameterValue(polygonize.INPUT))
         arguments.append('-f')
         arguments.append('ESRI Shapefile')
         output = self.getOutputValue(polygonize.OUTPUT)
         arguments.append(output)
-        arguments.append(QtCore.QFileInfo(output).baseName())
+        arguments.append(QFileInfo(output).baseName())
         arguments.append(self.getParameterValue(polygonize.FIELD))
 
         commands = []
@@ -70,4 +79,4 @@ class polygonize(GdalAlgorithm):
             commands = ['gdal_polygonize.py',
                         GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

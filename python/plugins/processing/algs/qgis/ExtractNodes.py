@@ -25,11 +25,18 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4.QtGui import QIcon
+
 from qgis.core import QGis, QgsFeature, QgsGeometry
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class ExtractNodes(GeoAlgorithm):
@@ -37,15 +44,18 @@ class ExtractNodes(GeoAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'extract_nodes.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Extract nodes'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Extract nodes')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'),
-            [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Input layer'),
+                                          [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Nodes')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -58,10 +68,9 @@ class ExtractNodes(GeoAlgorithm):
         inGeom = QgsGeometry()
         outGeom = QgsGeometry()
 
-        current = 0
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
-        for f in features:
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
             inGeom = f.geometry()
             attrs = f.attributes()
 
@@ -72,7 +81,6 @@ class ExtractNodes(GeoAlgorithm):
                 outFeat.setGeometry(outGeom.fromPoint(i))
                 writer.addFeature(outFeat)
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

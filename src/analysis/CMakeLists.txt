@@ -23,6 +23,8 @@ SET(QGIS_ANALYSIS_SRCS
   interpolation/Triangulation.cc
   interpolation/TriDecorator.cc
   interpolation/Vector3D.cc
+
+  raster/qgsalignraster.cpp
   raster/qgsninecellfilter.cpp
   raster/qgsruggednessfilter.cpp
   raster/qgsderivativefilter.cpp
@@ -52,39 +54,45 @@ SET(QGIS_ANALYSIS_MOC_HDRS
   openstreetmap/qgsosmimport.h
 )
 
-INCLUDE_DIRECTORIES(${SPATIALITE_INCLUDE_DIR})
-INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(SYSTEM ${SPATIALITE_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(SYSTEM ${SQLITE3_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(BEFORE raster)
 
 ADD_FLEX_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalclexer.ll)
 
 ADD_BISON_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalcparser.yy)
 
-IF (PEDANTIC AND MSVC)
-  # disable warnings
-  # 4065 switch with default and no case
-  # 4127 conditional expression is constant
-  # 4702 unreachable code
+IF(NOT MSVC)
   SET_SOURCE_FILES_PROPERTIES(
     ${CMAKE_BINARY_DIR}/src/analysis/qgsrastercalcparser.cpp
-    PROPERTIES COMPILE_FLAGS "-wd4065 -wd4127 -wd4702"
+    PROPERTIES COMPILE_FLAGS "-w"
   )
-ENDIF (PEDANTIC AND MSVC)
+ELSE(NOT MSVC)
+  IF(PEDANTIC)
+    # 4127 expression is constant
+    # 4702 unreachable code
+    SET_SOURCE_FILES_PROPERTIES(
+      ${CMAKE_BINARY_DIR}/src/analysis/qgsrastercalcparser.cpp
+      PROPERTIES COMPILE_FLAGS "-wd4127 -wd4702"
+    )
+  ENDIF(PEDANTIC)
+ENDIF(NOT MSVC)
 
-IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   SET_SOURCE_FILES_PROPERTIES(
     interpolation/qgstininterpolator.cpp
     interpolation/NormVecDecorator.cc
     interpolation/CloughTocherInterpolator.cc
     PROPERTIES COMPILE_FLAGS "-Wno-overloaded-virtual"
   )
-ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
 QT4_WRAP_CPP(QGIS_ANALYSIS_MOC_SRCS ${QGIS_ANALYSIS_MOC_HDRS})
 
 # install headers
 
 SET(QGIS_ANALYSIS_HDRS
+  raster/qgsalignraster.h
   raster/qgsaspectfilter.h
   raster/qgsderivativefilter.h
   raster/qgshillshadefilter.h
@@ -129,22 +137,24 @@ SET(QGIS_ANALYSIS_HDRS
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/
+  ${CMAKE_CURRENT_SOURCE_DIR}/../core/geometry
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/raster
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/symbology-ng
   interpolation
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
 )
 
-IF (WIN32)
-  IF (MSVC)
-    ADD_DEFINITIONS("-DANALYSIS_EXPORT=${DLLEXPORT}")
-  ELSE (MSVC)
-    ADD_DEFINITIONS("-UANALYSIS_EXPORT \"-DANALYSIS_EXPORT=${DLLEXPORT}\"")
-  ENDIF (MSVC)
-ENDIF (WIN32)
-
+IF (NOT MSVC)
+  ADD_DEFINITIONS("-UANALYSIS_EXPORT")
+  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
+  ENDIF()
+ENDIF (NOT MSVC)
+ADD_DEFINITIONS("\"-DANALYSIS_EXPORT=${DLLEXPORT}\"")
 
 #############################################################
 # qgis_analysis library

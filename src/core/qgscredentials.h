@@ -40,8 +40,10 @@ class CORE_EXPORT QgsCredentials
     //! virtual destructor
     virtual ~QgsCredentials();
 
-    bool get( QString realm, QString &username, QString &password, QString message = QString::null );
-    void put( QString realm, QString username, QString password );
+    bool get( const QString& realm, QString &username, QString &password, const QString& message = QString::null );
+    void put( const QString& realm, const QString& username, const QString& password );
+
+    bool getMasterPassword( QString &password, bool stored = false );
 
     //! retrieves instance
     static QgsCredentials *instance();
@@ -70,7 +72,10 @@ class CORE_EXPORT QgsCredentials
     QgsCredentials();
 
     //! request a password
-    virtual bool request( QString realm, QString &username, QString &password, QString message = QString::null ) = 0;
+    virtual bool request( const QString& realm, QString &username, QString &password, const QString& message = QString::null ) = 0;
+
+    //! request a master password
+    virtual bool requestMasterPassword( QString &password, bool stored = false ) = 0;
 
     //! register instance
     void setInstance( QgsCredentials *theInstance );
@@ -91,6 +96,28 @@ class CORE_EXPORT QgsCredentials
 /**
 \brief Default implementation of credentials interface
 
+This class doesn't prompt or return credentials
+*/
+class CORE_EXPORT QgsCredentialsNone : public QObject, public QgsCredentials
+{
+    Q_OBJECT
+
+  public:
+    QgsCredentialsNone();
+
+  signals:
+    //! signals that object will be destroyed and shouldn't be used anymore
+    void destroyed();
+
+  protected:
+    virtual bool request( const QString& realm, QString &username, QString &password, const QString& message = QString::null ) override;
+    virtual bool requestMasterPassword( QString &password, bool stored = false ) override;
+};
+
+
+/**
+\brief Implementation of credentials interface for the console
+
 This class outputs message to the standard output and retrieves input from
 standard input. Therefore it won't be the right choice for apps without
 GUI.
@@ -107,7 +134,8 @@ class CORE_EXPORT QgsCredentialsConsole : public QObject, public QgsCredentials
     void destroyed();
 
   protected:
-    virtual bool request( QString realm, QString &username, QString &password, QString message = QString::null ) override;
+    virtual bool request( const QString& realm, QString &username, QString &password, const QString& message = QString::null ) override;
+    virtual bool requestMasterPassword( QString &password, bool stored = false ) override;
 };
 
 #endif

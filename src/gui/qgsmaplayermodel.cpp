@@ -24,7 +24,7 @@
 
 const int QgsMapLayerModel::LayerIdRole = Qt::UserRole + 1;
 
-QgsMapLayerModel::QgsMapLayerModel( QList<QgsMapLayer *> layers, QObject *parent )
+QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *>& layers, QObject *parent )
     : QAbstractItemModel( parent )
     , mLayersChecked( QMap<QString, Qt::CheckState>() )
     , mItemCheckable( false )
@@ -50,7 +50,7 @@ void QgsMapLayerModel::setItemsCheckable( bool checkable )
 
 void QgsMapLayerModel::checkAll( Qt::CheckState checkState )
 {
-  foreach ( const QString key, mLayersChecked.keys() )
+  Q_FOREACH ( const QString& key, mLayersChecked.keys() )
   {
     mLayersChecked[key] = checkState;
   }
@@ -60,7 +60,7 @@ void QgsMapLayerModel::checkAll( Qt::CheckState checkState )
 QList<QgsMapLayer *> QgsMapLayerModel::layersChecked( Qt::CheckState checkState )
 {
   QList<QgsMapLayer *> layers;
-  foreach ( QgsMapLayer* layer, mLayers )
+  Q_FOREACH ( QgsMapLayer* layer, mLayers )
   {
     if ( mLayersChecked[layer->id()] == checkState )
     {
@@ -76,13 +76,13 @@ QModelIndex QgsMapLayerModel::indexFromLayer( QgsMapLayer *layer ) const
   return index( r, 0 );
 }
 
-void QgsMapLayerModel::removeLayers( const QStringList layerIds )
+void QgsMapLayerModel::removeLayers( const QStringList& layerIds )
 {
-  foreach ( const QString layerId, layerIds )
+  Q_FOREACH ( const QString& layerId, layerIds )
   {
     QModelIndex startIndex = index( 0, 0 );
     QModelIndexList list = match( startIndex, LayerIdRole, layerId, 1 );
-    if ( list.count() )
+    if ( !list.isEmpty() )
     {
       QModelIndex index = list[0];
       beginRemoveRows( QModelIndex(), index.row(), index.row() );
@@ -93,10 +93,10 @@ void QgsMapLayerModel::removeLayers( const QStringList layerIds )
   }
 }
 
-void QgsMapLayerModel::addLayers( QList<QgsMapLayer *> layers )
+void QgsMapLayerModel::addLayers( const QList<QgsMapLayer *>& layers )
 {
   beginInsertRows( QModelIndex(), mLayers.count(), mLayers.count() + layers.count() - 1 );
-  foreach ( QgsMapLayer* layer, layers )
+  Q_FOREACH ( QgsMapLayer* layer, layers )
   {
     mLayers.append( layer );
     mLayersChecked.insert( layer->id(), Qt::Unchecked );
@@ -218,7 +218,7 @@ Qt::ItemFlags QgsMapLayerModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
   {
-    return 0;
+    return nullptr;
   }
 
   Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;

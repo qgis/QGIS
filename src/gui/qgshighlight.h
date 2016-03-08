@@ -36,8 +36,8 @@ class QgsSymbolV2;
 class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
 {
   public:
-    QgsHighlight( QgsMapCanvas *mapCanvas, QgsGeometry *geom, QgsMapLayer *layer );
-    QgsHighlight( QgsMapCanvas *mapCanvas, QgsGeometry *geom, QgsVectorLayer *layer );
+    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry *geom, QgsMapLayer *layer );
+    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry *geom, QgsVectorLayer *layer );
     /** Constructor for highlighting true feature shape using feature attributes
      * and renderer.
      * @param mapCanvas map canvas
@@ -81,8 +81,8 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     void setSymbol( QgsSymbolV2* symbol, const QgsRenderContext & context, const QColor & color, const QColor & fillColor );
     double getSymbolWidth( const QgsRenderContext & context, double width, QgsSymbolV2::OutputUnit unit );
     /** Get renderer for current color mode and colors. The renderer should be freed by caller. */
-    QgsFeatureRendererV2 * getRenderer( const QgsRenderContext & context, const QColor & color, const QColor & fillColor );
-    void paintPoint( QPainter *p, QgsPoint point );
+    QgsFeatureRendererV2 * getRenderer( QgsRenderContext &context, const QColor & color, const QColor & fillColor );
+    void paintPoint( QPainter *p, const QgsPoint& point );
     void paintLine( QPainter *p, QgsPolyline line );
     void paintPolygon( QPainter *p, QgsPolygon polygon );
 

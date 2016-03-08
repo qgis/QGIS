@@ -27,6 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from PyQt4.QtGui import QIcon
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -34,6 +36,8 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class GridAverage(GdalAlgorithm):
@@ -50,33 +54,36 @@ class GridAverage(GdalAlgorithm):
 
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'grid.png'))
+
     def commandLineName(self):
         return "gdalogr:gridaverage"
 
     def defineCharacteristics(self):
-        self.name = 'Grid (Moving average)'
-        self.group = '[GDAL] Analysis'
+        self.name, self.i18n_name = self.trAlgorithm('Grid (Moving average)')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
         self.addParameter(ParameterTableField(self.Z_FIELD,
-            self.tr('Z field'), self.INPUT,
-            ParameterTableField.DATA_TYPE_NUMBER, True))
+                                              self.tr('Z field'), self.INPUT,
+                                              ParameterTableField.DATA_TYPE_NUMBER, True))
         self.addParameter(ParameterNumber(self.RADIUS_1,
-            self.tr('Radius 1'), 0.0, 99999999.999999, 0.0))
+                                          self.tr('Radius 1'), 0.0, 99999999.999999, 0.0))
         self.addParameter(ParameterNumber(self.RADIUS_2,
-            self.tr('Radius 2'), 0.0, 99999999.999999, 0.0))
+                                          self.tr('Radius 2'), 0.0, 99999999.999999, 0.0))
         self.addParameter(ParameterNumber(self.MIN_POINTS,
-            self.tr('Min points'), 0.0, 99999999.999999, 0.0))
+                                          self.tr('Min points'), 0.0, 99999999.999999, 0.0))
         self.addParameter(ParameterNumber(self.ANGLE,
-            self.tr('Angle'), 0.0, 359.0, 0.0))
+                                          self.tr('Angle'), 0.0, 359.0, 0.0))
         self.addParameter(ParameterNumber(self.NODATA,
-            self.tr('Nodata'), 0.0, 99999999.999999, 0.0))
+                                          self.tr('Nodata'), 0.0, 99999999.999999, 0.0))
         self.addParameter(ParameterSelection(self.RTYPE,
-            self.tr('Output raster type'), self.TYPE, 5))
+                                             self.tr('Output raster type'), self.TYPE, 5))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output file')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Interpolated moving average')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = ['-l']
         arguments.append(
             os.path.basename(os.path.splitext(
@@ -101,5 +108,4 @@ class GridAverage(GdalAlgorithm):
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
 
-        GdalUtils.runGdal(['gdal_grid',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdal_grid', GdalUtils.escapeAndJoin(arguments)]

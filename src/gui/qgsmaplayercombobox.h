@@ -38,16 +38,31 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      * @brief QgsMapLayerComboBox creates a combo box to dislpay the list of layers (currently in the registry).
      * The layers can be filtered and/or ordered.
      */
-    explicit QgsMapLayerComboBox( QWidget *parent = 0 );
+    explicit QgsMapLayerComboBox( QWidget *parent = nullptr );
 
     //! setFilters allows fitering according to layer type and/or geometry type.
-    void setFilters( QgsMapLayerProxyModel::Filters filters );
+    void setFilters( const QgsMapLayerProxyModel::Filters& filters ) { mProxyModel->setFilters( filters ); }
 
     //! currently used filter on list layers
     QgsMapLayerProxyModel::Filters filters() const { return mProxyModel->filters(); }
 
-    //! currentLayer returns the current layer selected in the combo box
+    //! except a list of layers not to be listed
+    void setExceptedLayerList( const QList<QgsMapLayer*>& layerList ) { mProxyModel->setExceptedLayerList( layerList );}
+
+    //! returns the list of excepted layers
+    QList<QgsMapLayer*> exceptedLayerList() const {return mProxyModel->exceptedLayerList();}
+
+    /** Returns the current layer selected in the combo box.
+     * @see layer
+     */
     QgsMapLayer* currentLayer() const;
+
+    /** Return the layer currently shown at the specified index within the combo box.
+     * @param layerIndex position of layer to return
+     * @note added in QGIS 2.10
+     * @see currentLayer
+     */
+    QgsMapLayer* layer( int layerIndex ) const;
 
   public slots:
     //! setLayer set the current layer selected in the combo
@@ -59,6 +74,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
 
   protected slots:
     void indexChanged( int i );
+    void rowsChanged();
 
   private:
     QgsMapLayerProxyModel* mProxyModel;

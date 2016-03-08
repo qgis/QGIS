@@ -52,6 +52,32 @@ class ImportIntoPostGIS(GeoAlgorithm):
     DROP_STRING_LENGTH = 'DROP_STRING_LENGTH'
     PRIMARY_KEY = 'PRIMARY_KEY'
 
+    def defineCharacteristics(self):
+        self.name, self.i18n_name = self.trAlgorithm('Import into PostGIS')
+        self.group, self.i18n_group = self.trAlgorithm('Database')
+        self.addParameter(ParameterVector(self.INPUT,
+                                          self.tr('Layer to import')))
+
+        self.DB_CONNECTIONS = self.dbConnectionNames()
+        self.addParameter(ParameterSelection(self.DATABASE,
+                                             self.tr('Database (connection name)'), self.DB_CONNECTIONS))
+        self.addParameter(ParameterString(self.SCHEMA,
+                                          self.tr('Schema (schema name)'), 'public'))
+        self.addParameter(ParameterString(self.TABLENAME,
+                                          self.tr('Table to import to (leave blank to use layer name)')))
+        self.addParameter(ParameterTableField(self.PRIMARY_KEY,
+                                              self.tr('Primary key field'), self.INPUT, optional=True))
+        self.addParameter(ParameterString(self.GEOMETRY_COLUMN,
+                                          self.tr('Geometry column'), 'geom'))
+        self.addParameter(ParameterBoolean(self.OVERWRITE,
+                                           self.tr('Overwrite'), True))
+        self.addParameter(ParameterBoolean(self.CREATEINDEX,
+                                           self.tr('Create spatial index'), True))
+        self.addParameter(ParameterBoolean(self.LOWERCASE_NAMES,
+                                           self.tr('Convert field names to lowercase'), True))
+        self.addParameter(ParameterBoolean(self.DROP_STRING_LENGTH,
+                                           self.tr('Drop length constraints on character fields'), False))
+
     def processAlgorithm(self, progress):
         connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
         schema = self.getParameterValue(self.SCHEMA)
@@ -68,7 +94,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
             host = settings.value(mySettings + '/host')
             port = settings.value(mySettings + '/port', type=int)
             password = settings.value(mySettings + '/password')
-        except Exception, e:
+        except Exception as e:
             raise GeoAlgorithmExecutionException(
                 self.tr('Wrong database connection name: %s' % connection))
 
@@ -77,14 +103,14 @@ class ImportIntoPostGIS(GeoAlgorithm):
 
         table = self.getParameterValue(self.TABLENAME).strip()
         if table == '':
-            table = layer.name().lower()
-        table.replace(' ', '')
+            table = layer.name()
+        table = table.replace(' ', '').lower()
         providerName = 'postgres'
 
         try:
             db = postgis_utils.GeoDB(host=host, port=port, dbname=database,
                                      user=username, passwd=password)
-        except postgis_utils.DbError, e:
+        except postgis_utils.DbError as e:
             raise GeoAlgorithmExecutionException(
                 self.tr("Couldn't connect to database:\n%s" % e.message))
 
@@ -101,12 +127,12 @@ class ImportIntoPostGIS(GeoAlgorithm):
         if dropStringLength:
             options['dropStringConstraints'] = True
 
-        #clear geometry column for non-geometry tables
+        # Clear geometry column for non-geometry tables
         if not layer.hasGeometryType():
             geomColumn = None
 
         uri = QgsDataSourceURI()
-        uri.setConnection(host, str(port), database, username, password)
+        uri.setConnection(host, unicode(port), database, username, password)
         if primaryKeyField:
             uri.setDataSource(schema, table, geomColumn, '', primaryKeyField)
         else:
@@ -134,29 +160,3 @@ class ImportIntoPostGIS(GeoAlgorithm):
         settings = QSettings()
         settings.beginGroup('/PostgreSQL/connections/')
         return settings.childGroups()
-
-    def defineCharacteristics(self):
-        self.name = 'Import into PostGIS'
-        self.group = 'Database'
-        self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Layer to import')))
-
-        self.DB_CONNECTIONS = self.dbConnectionNames()
-        self.addParameter(ParameterSelection(self.DATABASE,
-            self.tr('Database (connection name)'), self.DB_CONNECTIONS))
-        self.addParameter(ParameterString(self.SCHEMA,
-            self.tr('Schema (schema name)'), 'public'))
-        self.addParameter(ParameterString(self.TABLENAME,
-            self.tr('Table to import to (leave blank to use layer name)')))
-        self.addParameter(ParameterTableField(self.PRIMARY_KEY,
-            self.tr('Primary key field'), self.INPUT, optional=True))
-        self.addParameter(ParameterString(self.GEOMETRY_COLUMN,
-            self.tr('Geometry column'), 'geom'))
-        self.addParameter(ParameterBoolean(self.OVERWRITE,
-            self.tr('Overwrite'), True))
-        self.addParameter(ParameterBoolean(self.CREATEINDEX,
-            self.tr('Create spatial index'), True))
-        self.addParameter(ParameterBoolean(self.LOWERCASE_NAMES,
-            self.tr('Convert field names to lowercase'), True))
-        self.addParameter(ParameterBoolean(self.DROP_STRING_LENGTH,
-            self.tr('Drop length constraints on character fields'), False))

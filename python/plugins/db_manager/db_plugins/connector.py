@@ -24,198 +24,201 @@ from qgis.core import QgsDataSourceURI
 
 from .plugin import DbError, ConnectionError
 
+
 class DBConnector:
-        def __init__(self, uri):
-                self.connection = None
-                self._uri = uri
 
-        def __del__(self):
-                pass   # print "DBConnector.__del__", self._uri.connectionInfo()
-                if self.connection is not None:
-                        self.connection.close()
-                self.connection = None
+    def __init__(self, uri):
+        self.connection = None
+        self._uri = uri
 
+    def __del__(self):
+        pass  # print "DBConnector.__del__", self._uri.connectionInfo()
+        if self.connection is not None:
+            self.connection.close()
+        self.connection = None
 
-        def uri(self):
-                return QgsDataSourceURI( self._uri.uri() )
+    def uri(self):
+        return QgsDataSourceURI(self._uri.uri(False))
 
-        def publicUri(self):
-                publicUri = QgsDataSourceURI.removePassword( self._uri.uri() )
-                return QgsDataSourceURI( publicUri )
+    def publicUri(self):
+        publicUri = QgsDataSourceURI.removePassword(self._uri.uri(False))
+        return QgsDataSourceURI(publicUri)
 
+    def hasSpatialSupport(self):
+        return False
 
-        def hasSpatialSupport(self):
-                return False
+    def hasRasterSupport(self):
+        return False
 
-        def hasRasterSupport(self):
-                return False
+    def hasCustomQuerySupport(self):
+        return False
 
-        def hasCustomQuerySupport(self):
-                return False
+    def hasTableColumnEditingSupport(self):
+        return False
 
-        def hasTableColumnEditingSupport(self):
-                return False
+    def hasCreateSpatialViewSupport(self):
+        return False
 
+    def execution_error_types(self):
+        raise Exception("DBConnector.execution_error_types() is an abstract method")
 
-        def execution_error_types(self):
-                raise Exception("DBConnector.execution_error_types() is an abstract method")
+    def connection_error_types(self):
+        raise Exception("DBConnector.connection_error_types() is an abstract method")
 
-        def connection_error_types(self):
-                raise Exception("DBConnector.connection_error_types() is an abstract method")
+    def error_types(self):
+        return self.connection_error_types() + self.execution_error_types()
 
-        def error_types(self):
-                return self.connection_error_types() + self.execution_error_types()
+    def _execute(self, cursor, sql):
+        if cursor is None:
+            cursor = self._get_cursor()
+        try:
+            cursor.execute(unicode(sql))
 
-        def _execute(self, cursor, sql):
-                if cursor is None:
-                        cursor = self._get_cursor()
-                try:
-                        cursor.execute(unicode(sql))
+        except self.connection_error_types() as e:
+            raise ConnectionError(e)
 
-                except self.connection_error_types() as e:
-                        raise ConnectionError(e)
+        except self.execution_error_types() as e:
+            # do the rollback to avoid a "current transaction aborted, commands ignored" errors
+            self._rollback()
+            raise DbError(e, sql)
 
-                except self.execution_error_types() as e:
-                        # do the rollback to avoid a "current transaction aborted, commands ignored" errors
-                        self._rollback()
-                        raise DbError(e, sql)
+        return cursor
 
-                return cursor
+    def _execute_and_commit(self, sql):
+        """ tries to execute and commit some action, on error it rolls back the change """
+        self._execute(None, sql)
+        self._commit()
 
-        def _execute_and_commit(self, sql):
-                """ tries to execute and commit some action, on error it rolls back the change """
-                self._execute(None, sql)
-                self._commit()
+    def _get_cursor(self, name=None):
+        try:
+            if name is not None:
+                name = unicode(name).encode('ascii', 'replace').replace('?', "_")
+                self._last_cursor_named_id = 0 if not hasattr(self,
+                                                              '_last_cursor_named_id') else self._last_cursor_named_id + 1
+                return self.connection.cursor("%s_%d" % (name, self._last_cursor_named_id))
 
-        def _get_cursor(self, name=None):
-                try:
-                        if name is not None:
-                                name = unicode(name).encode('ascii', 'replace').replace( '?', "_" )
-                                self._last_cursor_named_id = 0 if not hasattr(self, '_last_cursor_named_id') else self._last_cursor_named_id + 1
-                                return self.connection.cursor( "%s_%d" % (name, self._last_cursor_named_id) )
+            return self.connection.cursor()
 
-                        return self.connection.cursor()
+        except self.connection_error_types() as e:
+            raise ConnectionError(e)
 
-                except self.connection_error_types(), e:
-                        raise ConnectionError(e)
+        except self.execution_error_types() as e:
+            # do the rollback to avoid a "current transaction aborted, commands ignored" errors
+            self._rollback()
+            raise DbError(e)
 
-                except self.execution_error_types(), e:
-                        # do the rollback to avoid a "current transaction aborted, commands ignored" errors
-                        self._rollback()
-                        raise DbError(e)
+    def _close_cursor(self, c):
+        try:
+            if c and not c.closed:
+                c.close()
 
-        def _close_cursor(self, c):
-                try:
-                        if c and not c.closed:
-                                c.close()
+        except self.error_types() as e:
+            pass
 
-                except self.error_types(), e:
-                        pass
+        return
 
-                return
+    def _fetchall(self, c):
+        try:
+            return c.fetchall()
 
+        except self.connection_error_types() as e:
+            raise ConnectionError(e)
 
-        def _fetchall(self, c):
-                try:
-                        return c.fetchall()
+        except self.execution_error_types() as e:
+            # do the rollback to avoid a "current transaction aborted, commands ignored" errors
+            self._rollback()
+            raise DbError(e)
 
-                except self.connection_error_types(), e:
-                        raise ConnectionError(e)
+    def _fetchone(self, c):
+        try:
+            return c.fetchone()
 
-                except self.execution_error_types(), e:
-                        # do the rollback to avoid a "current transaction aborted, commands ignored" errors
-                        self._rollback()
-                        raise DbError(e)
+        except self.connection_error_types() as e:
+            raise ConnectionError(e)
 
-        def _fetchone(self, c):
-                try:
-                        return c.fetchone()
+        except self.execution_error_types() as e:
+            # do the rollback to avoid a "current transaction aborted, commands ignored" errors
+            self._rollback()
+            raise DbError(e)
 
-                except self.connection_error_types(), e:
-                        raise ConnectionError(e)
+    def _commit(self):
+        try:
+            self.connection.commit()
 
-                except self.execution_error_types(), e:
-                        # do the rollback to avoid a "current transaction aborted, commands ignored" errors
-                        self._rollback()
-                        raise DbError(e)
+        except self.connection_error_types() as e:
+            raise ConnectionError(e)
 
+        except self.execution_error_types() as e:
+            # do the rollback to avoid a "current transaction aborted, commands ignored" errors
+            self._rollback()
+            raise DbError(e)
 
-        def _commit(self):
-                try:
-                        self.connection.commit()
+    def _rollback(self):
+        try:
+            self.connection.rollback()
 
-                except self.connection_error_types(), e:
-                        raise ConnectionError(e)
+        except self.connection_error_types() as e:
+            raise ConnectionError(e)
 
-                except self.execution_error_types(), e:
-                        # do the rollback to avoid a "current transaction aborted, commands ignored" errors
-                        self._rollback()
-                        raise DbError(e)
+        except self.execution_error_types() as e:
+            # do the rollback to avoid a "current transaction aborted, commands ignored" errors
+            self._rollback()
+            raise DbError(e)
 
+    def _get_cursor_columns(self, c):
+        try:
+            if c.description:
+                return map(lambda x: x[0], c.description)
 
-        def _rollback(self):
-                try:
-                        self.connection.rollback()
+        except self.connection_error_types() + self.execution_error_types() as e:
+            return []
 
-                except self.connection_error_types(), e:
-                        raise ConnectionError(e)
+    @classmethod
+    def quoteId(self, identifier):
+        if hasattr(identifier, '__iter__'):
+            ids = list()
+            for i in identifier:
+                if i is None or i == "":
+                    continue
+                ids.append(self.quoteId(i))
+            return u'.'.join(ids)
 
-                except self.execution_error_types(), e:
-                        # do the rollback to avoid a "current transaction aborted, commands ignored" errors
-                        self._rollback()
-                        raise DbError(e)
+        identifier = unicode(
+            identifier) if identifier is not None else unicode()  # make sure it's python unicode string
+        return u'"%s"' % identifier.replace('"', '""')
 
+    @classmethod
+    def quoteString(self, txt):
+        """ make the string safe - replace ' with '' """
+        if hasattr(txt, '__iter__'):
+            txts = list()
+            for i in txt:
+                if i is None:
+                    continue
+                txts.append(self.quoteString(i))
+            return u'.'.join(txts)
 
-        def _get_cursor_columns(self, c):
-                try:
-                        if c.description:
-                                return map(lambda x: x[0], c.description)
+        txt = unicode(txt) if txt is not None else unicode()  # make sure it's python unicode string
+        return u"'%s'" % txt.replace("'", "''")
 
-                except self.connection_error_types() + self.execution_error_types(), e:
-                        return []
+    @classmethod
+    def getSchemaTableName(self, table):
+        if not hasattr(table, '__iter__'):
+            return (None, table)
+        elif len(table) < 2:
+            return (None, table[0])
+        else:
+            return (table[0], table[1])
 
+    @classmethod
+    def getSqlDictionary(self):
+        """ return a generic SQL dictionary """
+        try:
+            from ..sql_dictionary import getSqlDictionary
 
-        @classmethod
-        def quoteId(self, identifier):
-                if hasattr(identifier, '__iter__'):
-                        ids = list()
-                        for i in identifier:
-                                if i is None or i == "":
-                                    continue
-                                ids.append( self.quoteId(i) )
-                        return u'.'.join( ids )
+            return getSqlDictionary()
+        except ImportError:
+            return []
 
-                identifier = unicode(identifier) if identifier is not None else unicode() # make sure it's python unicode string
-                return u'"%s"' % identifier.replace('"', '""')
-
-        @classmethod
-        def quoteString(self, txt):
-                """ make the string safe - replace ' with '' """
-                if hasattr(txt, '__iter__'):
-                        txts = list()
-                        for i in txt:
-                                if i is None:
-                                        continue
-                                txts.append( self.quoteString(i) )
-                        return u'.'.join( txts )
-
-                txt = unicode(txt) if txt is not None else unicode() # make sure it's python unicode string
-                return u"'%s'" % txt.replace("'", "''")
-
-        @classmethod
-        def getSchemaTableName(self, table):
-                if not hasattr(table, '__iter__'):
-                        return (None, table)
-                elif len(table) < 2:
-                        return (None, table[0])
-                else:
-                        return (table[0], table[1])
-
-        @classmethod
-        def getSqlDictionary(self):
-                """ return a generic SQL dictionary """
-                try:
-                        from ..sql_dictionary import getSqlDictionary
-                        return getSqlDictionary()
-                except ImportError:
-                        return []
+    def getQueryBuilderDictionary(self):
+        return {}

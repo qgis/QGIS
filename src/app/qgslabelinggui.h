@@ -33,18 +33,26 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     Q_OBJECT
 
   public:
-    QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent );
+    QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsPalLayerSettings* settings, QWidget* parent );
     ~QgsLabelingGui();
 
     QgsPalLayerSettings layerSettings();
     void writeSettingsToLayer();
+
+    enum LabelMode
+    {
+      NoLabels,
+      Labels,
+      ObstaclesOnly,
+    };
+
+    void setLabelMode( LabelMode mode );
 
   public slots:
     void init();
     void collapseSample( bool collapse );
     void apply();
     void changeTextColor( const QColor &color );
-    void showEngineConfigDialog();
     void changeBufferColor( const QColor &color );
 
     void updateUi();
@@ -79,24 +87,27 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void on_mPreviewBackgroundBtn_colorChanged( const QColor &color );
     void on_mDirectSymbLeftToolBtn_clicked();
     void on_mDirectSymbRightToolBtn_clicked();
+    void on_mChkNoObstacle_toggled( bool active );
 
   protected:
     void blockInitSignals( bool block );
     void blockFontChangeSignals( bool blk );
-    void setPreviewBackground( QColor color );
+    void setPreviewBackground( const QColor& color );
     void syncDefinedCheckboxFrame( QgsDataDefinedButton* ddBtn, QCheckBox* chkBx, QFrame* f );
     void populateFontCapitalsComboBox();
     void populateFontStyleComboBox();
     void populatePlacementMethods();
     void populateFieldNames();
     void populateDataDefinedButtons( QgsPalLayerSettings& s );
-    /**Sets data defined property attribute to map */
+    /** Sets data defined property attribute to map */
     void setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, QgsPalLayerSettings::DataDefinedProperties p, QgsPalLayerSettings& lyr );
-    void updateFont( QFont font );
+    void updateFont( const QFont& font );
 
   private:
     QgsVectorLayer* mLayer;
     QgsMapCanvas* mMapCanvas;
+    const QgsPalLayerSettings* mSettings;
+    LabelMode mMode;
     QFontDatabase mFontDB;
     QgsCharacterSelectorDialog* mCharDlg;
 
@@ -123,6 +134,7 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void showBackgroundRadius( bool show );
     void showBackgroundPenStyle( bool show );
     void on_mShapeSVGPathLineEdit_textChanged( const QString& text );
+    void updateLinePlacementOptions();
 };
 
 #endif

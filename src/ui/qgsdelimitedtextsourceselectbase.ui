@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>666</width>
-    <height>478</height>
+    <width>784</width>
+    <height>479</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1111,14 +1111,6 @@
   <tabstop>delimiterCSV</tabstop>
   <tabstop>delimiterChars</tabstop>
   <tabstop>delimiterRegexp</tabstop>
-  <tabstop>cbxDelimComma</tabstop>
-  <tabstop>cbxDelimTab</tabstop>
-  <tabstop>cbxDelimSpace</tabstop>
-  <tabstop>cbxDelimColon</tabstop>
-  <tabstop>cbxDelimSemicolon</tabstop>
-  <tabstop>txtDelimiterOther</tabstop>
-  <tabstop>txtQuoteChars</tabstop>
-  <tabstop>txtEscapeChars</tabstop>
   <tabstop>txtDelimiterRegexp</tabstop>
   <tabstop>rowCounter</tabstop>
   <tabstop>cbxUseHeader</tabstop>
@@ -1131,13 +1123,21 @@
   <tabstop>cmbXField</tabstop>
   <tabstop>cmbYField</tabstop>
   <tabstop>cbxXyDms</tabstop>
-  <tabstop>cmbWktField</tabstop>
-  <tabstop>cmbGeometryType</tabstop>
   <tabstop>cbxSpatialIndex</tabstop>
   <tabstop>cbxSubsetIndex</tabstop>
   <tabstop>cbxWatchFile</tabstop>
   <tabstop>tblSample</tabstop>
   <tabstop>buttonBox</tabstop>
+  <tabstop>cbxDelimTab</tabstop>
+  <tabstop>cbxDelimSpace</tabstop>
+  <tabstop>cbxDelimColon</tabstop>
+  <tabstop>cmbWktField</tabstop>
+  <tabstop>cmbGeometryType</tabstop>
+  <tabstop>cbxDelimSemicolon</tabstop>
+  <tabstop>txtDelimiterOther</tabstop>
+  <tabstop>txtQuoteChars</tabstop>
+  <tabstop>txtEscapeChars</tabstop>
+  <tabstop>cbxDelimComma</tabstop>
  </tabstops>
  <resources/>
  <connections>

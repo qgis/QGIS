@@ -19,24 +19,23 @@
 
 #include "Triangulation.h"
 
-/**Decorator class for Triangulations (s. Decorator pattern in Gamma et al.)*/
-class TriDecorator : public Triangulation
+/** Decorator class for Triangulations (s. Decorator pattern in Gamma et al.)*/
+class ANALYSIS_EXPORT TriDecorator : public Triangulation
 {
   public:
     TriDecorator();
-    TriDecorator( Triangulation* t );
+    explicit TriDecorator( Triangulation* t );
     virtual ~TriDecorator();
     virtual void addLine( Line3D* line, bool breakline ) override;
     virtual int addPoint( Point3D* p ) override;
-    /**Adds an association to a triangulation*/
+    /** Adds an association to a triangulation*/
     virtual void addTriangulation( Triangulation* t );
-    /**Performs a consistency check, remove this later*/
+    /** Performs a consistency check, remove this later*/
     virtual void performConsistencyTest() override;
     virtual bool calcNormal( double x, double y, Vector3D* result ) override;
     virtual bool calcPoint( double x, double y, Point3D* result ) override;
     virtual Point3D* getPoint( unsigned int i ) const override;
     virtual int getNumberOfPoints() const override;
-    //! @note not available in python bindings
     bool getTriangle( double x, double y, Point3D* p1, int* n1, Point3D* p2, int* n2, Point3D* p3, int* n3 ) override;
     bool getTriangle( double x, double y, Point3D* p1, Point3D* p2, Point3D* p3 ) override;
     virtual int getOppositePoint( int p1, int p2 ) override;
@@ -56,11 +55,11 @@ class TriDecorator : public Triangulation
     virtual bool swapEdge( double x, double y ) override;
     virtual QList<int>* getPointsAroundEdge( double x, double y ) override;
   protected:
-    /**Association with a Triangulation object*/
+    /** Association with a Triangulation object*/
     Triangulation* mTIN;
 };
 
-inline TriDecorator::TriDecorator(): mTIN( 0 )
+inline TriDecorator::TriDecorator(): mTIN( nullptr )
 {
 
 }

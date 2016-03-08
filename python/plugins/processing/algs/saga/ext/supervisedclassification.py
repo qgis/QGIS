@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 
 from processing.tests.TestData import table
 
+
 def editCommands(commands):
     commands[-3] = commands[-3] + ' -STATS ' + table()
     return commands

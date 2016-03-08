@@ -41,12 +41,12 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     void updateFieldLists();
     void getOpenFileName();
     QString selectedChars();
-    void setSelectedChars( QString delimiters );
-    void loadSettings( QString subkey = QString(), bool loadGeomSettings = true );
-    void saveSettings( QString subkey = QString(), bool saveGeomSettings = true );
-    void loadSettingsForFile( QString filename );
-    void saveSettingsForFile( QString filename );
-    bool trySetXYField( QStringList &fields, QList<bool> &isValidNumber, QString xname, QString yname );
+    void setSelectedChars( const QString& delimiters );
+    void loadSettings( const QString& subkey = QString(), bool loadGeomSettings = true );
+    void saveSettings( const QString& subkey = QString(), bool saveGeomSettings = true );
+    void loadSettingsForFile( const QString& filename );
+    void saveSettingsForFile( const QString& filename );
+    bool trySetXYField( QStringList &fields, QList<bool> &isValidNumber, const QString& xname, const QString& yname );
 
   private:
     QgsDelimitedTextFile *mFile;
@@ -73,7 +73,7 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     bool validate();
 
   signals:
-    void addVectorLayer( QString, QString, QString );
+    void addVectorLayer( const QString&, const QString&, const QString& );
 };
 
 #endif // QGSDELIMITEDTEXTSOURCESELECT_H

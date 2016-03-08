@@ -30,7 +30,7 @@ QgsScaleComboBox::QgsScaleComboBox( QWidget* parent ) : QComboBox( parent ), mSc
 
   setEditable( true );
   setInsertPolicy( QComboBox::NoInsert );
-  setCompleter( 0 );
+  setCompleter( nullptr );
   connect( this, SIGNAL( activated( const QString & ) ), this, SLOT( fixupScale() ) );
   connect( lineEdit(), SIGNAL( editingFinished() ), this, SLOT( fixupScale() ) );
   fixupScale();
@@ -51,7 +51,7 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
     QString myScales = settings.value( "Map/scales", PROJECT_SCALES ).toString();
     if ( !myScales.isEmpty() )
     {
-      myScalesList = myScales.split( "," );
+      myScalesList = myScales.split( ',' );
     }
   }
   else
@@ -112,6 +112,7 @@ void QgsScaleComboBox::showPopup()
   blockSignals( true );
   view()->setCurrentIndex( model()->index( idx, 0 ) );
   blockSignals( false );
+  view()->setMinimumWidth( view()->sizeHintForColumn( 0 ) );
 }
 
 //! Function to read the selected scale as text
@@ -121,7 +122,7 @@ QString QgsScaleComboBox::scaleString()
 }
 
 //! Function to set the selected scale from text
-bool QgsScaleComboBox::setScaleString( QString scaleTxt )
+bool QgsScaleComboBox::setScaleString( const QString& scaleTxt )
 {
   bool ok;
   double newScale = toDouble( scaleTxt, &ok );
@@ -201,32 +202,34 @@ QString QgsScaleComboBox::toString( double scale )
   }
 }
 
-double QgsScaleComboBox::toDouble( QString scaleString, bool * returnOk )
+double QgsScaleComboBox::toDouble( const QString& scaleString, bool * returnOk )
 {
   bool ok = false;
   QString scaleTxt( scaleString );
 
-  double scale = QLocale::system().toDouble( scaleTxt, &ok );
+  double scale = QGis::permissiveToDouble( scaleTxt, ok );
   if ( ok )
   {
     // Create a text version and set that text and rescan
     // Idea is to get the same rounding.
     scaleTxt = toString( scale );
   }
-  // It is now either X:Y or not valid
-  ok = false;
-  QStringList txtList = scaleTxt.split( ':' );
-  if ( 2 == txtList.size() )
+  else
   {
-    bool okX = false;
-    bool okY = false;
-    int x = QLocale::system().toInt( txtList[ 0 ], &okX );
-    int y = QLocale::system().toInt( txtList[ 1 ], &okY );
-    if ( okX && okY )
+    // It is now either X:Y or not valid
+    QStringList txtList = scaleTxt.split( ':' );
+    if ( 2 == txtList.size() )
     {
-      // Scale is fraction of x and y
-      scale = ( double )x / ( double )y;
-      ok = true;
+      bool okX = false;
+      bool okY = false;
+      int x = QGis::permissiveToInt( txtList[ 0 ], okX );
+      int y = QGis::permissiveToInt( txtList[ 1 ], okY );
+      if ( okX && okY )
+      {
+        // Scale is fraction of x and y
+        scale = ( double )x / ( double )y;
+        ok = true;
+      }
     }
   }
 

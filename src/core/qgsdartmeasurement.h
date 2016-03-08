@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 8.11.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,7 +18,7 @@
 
 #include <QString>
 
-class QgsDartMeasurement
+class CORE_EXPORT QgsDartMeasurement
 {
   public:
     enum Type

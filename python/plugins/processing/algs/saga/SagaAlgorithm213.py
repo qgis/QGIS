@@ -35,9 +35,10 @@ from processing.core.parameters import ParameterRaster, ParameterVector, Paramet
 from processing.core.outputs import OutputRaster, OutputVector, OutputTable
 import SagaUtils
 from processing.tools import dataobjects
-from processing.tools.system import getTempFilenameInTempFolder, getTempFilename, isWindows
+from processing.tools.system import getTempFilename
 
 sessionExportedLayers = {}
+
 
 class SagaAlgorithm213(SagaAlgorithm212):
 
@@ -47,7 +48,6 @@ class SagaAlgorithm213(SagaAlgorithm212):
         newone = SagaAlgorithm213(self.descriptionFile)
         newone.provider = self.provider
         return newone
-
 
     def processAlgorithm(self, progress):
         commands = list()
@@ -61,9 +61,10 @@ class SagaAlgorithm213(SagaAlgorithm212):
             if isinstance(param, ParameterRaster):
                 if param.value is None:
                     continue
-                value = param.value
-                if not value.endswith('sgrd'):
-                    exportCommand = self.exportRasterLayer(value)
+                if param.value.endswith('sdat'):
+                    param.value = param.value[:-4] + "sgrd"
+                elif not param.value.endswith('sgrd'):
+                    exportCommand = self.exportRasterLayer(param.value)
                     if exportCommand is not None:
                         commands.append(exportCommand)
             if isinstance(param, ParameterVector):
@@ -93,12 +94,19 @@ class SagaAlgorithm213(SagaAlgorithm212):
                 if layers is None or len(layers) == 0:
                     continue
                 if param.datatype == ParameterMultipleInput.TYPE_RASTER:
-                    for layerfile in layers:
-                        if not layerfile.endswith('sgrd'):
+                    for i, layerfile in enumerate(layers):
+                        if layerfile.endswith('sdat'):
+                            layerfile = param.value[:-4] + "sgrd"
+                            layers[i] = layerfile
+                        elif not layerfile.endswith('sgrd'):
                             exportCommand = self.exportRasterLayer(layerfile)
                             if exportCommand is not None:
                                 commands.append(exportCommand)
-                elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+                        param.value = ";".join(layers)
+                elif param.datatype in [ParameterMultipleInput.TYPE_VECTOR_ANY,
+                                        ParameterMultipleInput.TYPE_VECTOR_LINE,
+                                        ParameterMultipleInput.TYPE_VECTOR_POLYGON,
+                                        ParameterMultipleInput.TYPE_VECTOR_POINT]:
                     for layerfile in layers:
                         layer = dataobjects.getObjectFromUri(layerfile, False)
                         if layer:
@@ -110,15 +118,13 @@ class SagaAlgorithm213(SagaAlgorithm212):
 
         # 2: Set parameters and outputs
         command = self.undecoratedGroup + ' "' + self.cmdname + '"'
-        if self.hardcodedStrings:
-            for s in self.hardcodedStrings:
-                command += ' ' + s
+        command += ' ' + ' '.join(self.hardcodedStrings)
 
         for param in self.parameters:
             if param.value is None:
                 continue
             if isinstance(param, (ParameterRaster, ParameterVector,
-                          ParameterTable)):
+                                  ParameterTable)):
                 value = param.value
                 if value in self.exportedLayers.keys():
                     command += ' -' + param.name + ' "' \
@@ -142,7 +148,7 @@ class SagaAlgorithm213(SagaAlgorithm212):
                 values = param.value.split(',')
                 for i in range(0, len(values), 3):
                     s = values[i] + '\t' + values[i + 1] + '\t' + values[i
-                            + 2] + '\n'
+                                                                         + 2] + '\n'
                     f.write(s)
                 f.close()
                 command += ' -' + param.name + ' "' + tempTableFile + '"'
@@ -154,57 +160,29 @@ class SagaAlgorithm213(SagaAlgorithm212):
                 values = param.value.split(',')
                 for i in range(4):
                     command += ' -' + self.extentParamNames[i] + ' ' \
-                        + str(float(values[i]) + offset[i])
+                        + unicode(float(values[i]) + offset[i])
             elif isinstance(param, (ParameterNumber, ParameterSelection)):
-                command += ' -' + param.name + ' ' + str(param.value)
+                command += ' -' + param.name + ' ' + unicode(param.value)
             else:
-                command += ' -' + param.name + ' "' + str(param.value) + '"'
+                command += ' -' + param.name + ' "' + unicode(param.value) + '"'
 
         for out in self.outputs:
-            if isinstance(out, OutputRaster):
-                filename = out.getCompatibleFileName(self)
-                filename += '.sgrd'
-                command += ' -' + out.name + ' "' + filename + '"'
-            if isinstance(out, OutputVector):
-                filename = out.getCompatibleFileName(self)
-                command += ' -' + out.name + ' "' + filename + '"'
-            if isinstance(out, OutputTable):
-                filename = out.getCompatibleFileName(self)
-                command += ' -' + out.name + ' "' + filename + '"'
+            command += ' -' + out.name + ' "' + out.getCompatibleFileName(self) + '"'
 
         commands.append(command)
 
-        # 3: Export resulting raster layers
-        # optim = ProcessingConfig.getSetting( SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION)
+        # special treatment for RGB algorithm
+        #TODO: improve this and put this code somewhere else
         for out in self.outputs:
             if isinstance(out, OutputRaster):
                 filename = out.getCompatibleFileName(self)
                 filename2 = filename + '.sgrd'
-                formatIndex = (4 if isWindows() else 1)
-                sessionExportedLayers[filename] = filename2
-                # Do not export is the output is not a final output
-                # of the model
-                # dontExport = True
-                #if self.model is not None and optim:
-                #    for subalg in self.model.algOutputs:
-                #        if out.name in subalg:
-                #            if subalg[out.name] is not None:
-                #                dontExport = False
-                #                break
-                #    if dontExport:
-                #        continue
-
                 if self.cmdname == 'RGB Composite':
                     commands.append('io_grid_image 0 -IS_RGB -GRID:"' + filename2
                                     + '" -FILE:"' + filename
                                     + '"')
-                else:
-                    commands.append('io_gdal 1 -GRIDS "' + filename2
-                                    + '" -FORMAT ' + str(formatIndex)
-                                    + ' -TYPE 0 -FILE "' + filename + '"')
 
-
-        # 4: Run SAGA
+        # 3: Run SAGA
         commands = self.editCommands(commands)
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
         loglines = []
@@ -216,25 +194,9 @@ class SagaAlgorithm213(SagaAlgorithm212):
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
         SagaUtils.executeSaga(progress)
 
-    def exportRasterLayer(self, source):
-        global sessionExportedLayers
-        if source in sessionExportedLayers:
-            exportedLayer = sessionExportedLayers[source]
-            if os.path.exists(exportedLayer):
-                self.exportedLayers[source] = exportedLayer
-                return None
-            else:
-                del sessionExportedLayers[source]
-        layer = dataobjects.getObjectFromUri(source, False)
-        if layer:
-            filename = layer.name()
-        else:
-            filename = os.path.basename(source)
-        validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
-        filename = ''.join(c for c in filename if c in validChars)
-        if len(filename) == 0:
-            filename = 'layer'
-        destFilename = getTempFilenameInTempFolder(filename + '.sgrd')
-        self.exportedLayers[source] = destFilename
-        sessionExportedLayers[source] = destFilename
-        return 'io_gdal 0 -TRANSFORM -INTERPOL 0 -GRIDS "' + destFilename + '" -FILES "' + source +  '"'
+        if self.crs is not None:
+            for out in self.outputs:
+                if isinstance(out, (OutputVector, OutputRaster)):
+                    prjFile = os.path.splitext(out.getCompatibleFileName(self))[0] + ".prj"
+                    with open(prjFile, "w") as f:
+                        f.write(self.crs.toWkt())

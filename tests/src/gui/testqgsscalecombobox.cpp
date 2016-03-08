@@ -51,17 +51,17 @@ void TestQgsScaleComboBox::initTestCase()
   // Create a combobox, and init with predefined scales.
   s = new QgsScaleComboBox();
   QgsDebugMsg( QString( "Initial scale is %1" ).arg( s->scaleString() ) );
-};
+}
 
 void TestQgsScaleComboBox::cleanupTestCase()
 {
   delete s;
   QgsApplication::exitQgis();
-};
+}
 
 void TestQgsScaleComboBox::init()
 {
-};
+}
 
 void TestQgsScaleComboBox::basic()
 {
@@ -72,21 +72,39 @@ void TestQgsScaleComboBox::basic()
   QTest::keyClicks( l, "1:2345" );
   QTest::keyClick( l, Qt::Key_Return );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 2345 ) ) );
-  QCOMPARE( s->scale(), (( double ) 1.0 / ( double ) 2345.0 ) );
+  QCOMPARE( s->scale(), 1.0 / 2345.0 );
 
   // Testing conversion from number to "1:x"
   l->setText( "" );
   QTest::keyClicks( l, QLocale::system().toString( 0.02 ) );
   QTest::keyClick( l, Qt::Key_Return );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 50 ) ) );
-  QCOMPARE( s->scale(), ( double ) 0.02 );
+  QCOMPARE( s->scale(), 0.02 );
 
   // Testing conversion from number to "1:x"
   l->setText( "" );
   QTest::keyClicks( l, QLocale::system().toString( 42 ) );
   QTest::keyClick( l, Qt::Key_Return );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 42 ) ) );
-  QCOMPARE( s->scale(), ( double ) 1.0 / ( double ) 42.0 );
+  QCOMPARE( s->scale(), 1.0 / 42.0 );
+
+  // Testing conversion from number to "1:x,000"
+  l->setText( "" );
+  QString str = QString( "1%01000%01000" ).arg( QLocale::system().groupSeparator() );
+  QTest::keyClicks( l, str );
+  QTest::keyClick( l, Qt::Key_Return );
+  QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( str ) );
+  QCOMPARE( s->scale(), 1.0 / 1000000.0 );
+
+  // Testing conversion from number to "1:x,000" with wonky separators
+  //(eg four digits between thousands, which should be fixed automatically)
+  l->setText( "" );
+  str = QString( "1%010000%01000" ).arg( QLocale::system().groupSeparator() );
+  QString fixedStr = QString( "10%01000%01000" ).arg( QLocale::system().groupSeparator() );
+  QTest::keyClicks( l, str );
+  QTest::keyClick( l, Qt::Key_Return );
+  QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( fixedStr ) );
+  QCOMPARE( s->scale(), 1.0 / 10000000.0 );
 
   // Testing rounding and conversion from illegal
 
@@ -98,24 +116,24 @@ void TestQgsScaleComboBox::basic()
   QTest::keyClicks( l, "1:x:2" );
   QTest::keyClick( l, Qt::Key_Return );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 4 ) ) );
-  QCOMPARE( s->scale(), ( double ) 0.25 );
+  QCOMPARE( s->scale(), 0.25 );
 
   // Test setting programatically
-  s->setScale(( double ) 0.19 );
+  s->setScale( 0.19 );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 5 ) ) );
-  QCOMPARE( s->scale(), ( double ) 0.2 );
+  QCOMPARE( s->scale(), 0.2 );
 
   // Test setting programatically
   s->setScaleString( QString( "1:240" ) );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 240 ) ) );
-  QCOMPARE( s->scale(), ( double ) 1.0 / ( double ) 240.0 );
+  QCOMPARE( s->scale(), 1.0 / 240.0 );
 
   // Test setting programatically illegal string
-  s->setScaleString( QString( "1:2.4" ) );
+  s->setScaleString( QString( "1:2" ) + QLocale::system().decimalPoint() + "4" );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 240 ) ) );
-  QCOMPARE( s->scale(), ( double ) 1.0 / ( double ) 240.0 );
+  QCOMPARE( s->scale(), 1.0 / 240.0 );
 
-};
+}
 
 void TestQgsScaleComboBox::slot_test()
 {
@@ -133,7 +151,7 @@ void TestQgsScaleComboBox::slot_test()
 
 void TestQgsScaleComboBox::cleanup()
 {
-};
+}
 
 QTEST_MAIN( TestQgsScaleComboBox )
 #include "testqgsscalecombobox.moc"

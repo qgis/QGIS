@@ -23,6 +23,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrendererv2.h"
 #include "qgsvectorlayer.h"
+#include "qgsdiagramrendererv2.h"
 
 
 QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent ) :
@@ -51,7 +52,7 @@ QgsMapLayerLegend* QgsMapLayerLegend::defaultPluginLegend( QgsPluginLayer* pl )
 void QgsMapLayerLegendUtils::setLegendNodeOrder( QgsLayerTreeLayer* nodeLayer, const QList<int>& order )
 {
   QStringList orderStr;
-  foreach ( int id, order )
+  Q_FOREACH ( int id, order )
     orderStr << QString::number( id );
   QString str = orderStr.isEmpty() ? "empty" : orderStr.join( "," );
 
@@ -78,6 +79,7 @@ static QList<int> _makeNodeOrder( QgsLayerTreeLayer* nodeLayer )
   int numNodes = _originalLegendNodeCount( nodeLayer );
 
   QList<int> order;
+  order.reserve( numNodes );
   for ( int i = 0; i < numNodes; ++i )
     order << i;
   return order;
@@ -96,7 +98,7 @@ QList<int> QgsMapLayerLegendUtils::legendNodeOrder( QgsLayerTreeLayer* nodeLayer
   int numNodes = _originalLegendNodeCount( nodeLayer );
 
   QList<int> lst;
-  foreach ( QString item, orderStr.split( "," ) )
+  Q_FOREACH ( const QString& item, orderStr.split( ',' ) )
   {
     bool ok;
     int id = item.toInt( &ok );
@@ -134,7 +136,7 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer* nodeLa
 {
   // handle user labels
   int i = 0;
-  foreach ( QgsLayerTreeModelLegendNode* legendNode, nodes )
+  Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, nodes )
   {
     QString userLabel = QgsMapLayerLegendUtils::legendNodeUserLabel( nodeLayer, i++ );
     if ( !userLabel.isNull() )
@@ -148,7 +150,7 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer* nodeLa
 
     QList<QgsLayerTreeModelLegendNode*> newOrder;
     QSet<int> usedIndices;
-    foreach ( int idx, order )
+    Q_FOREACH ( int idx, order )
     {
       if ( usedIndices.contains( idx ) )
       {
@@ -198,13 +200,24 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
     nodes.append( new QgsSimpleLegendNode( nodeLayer, r->legendClassificationAttribute() ) );
   }
 
-  foreach ( const QgsLegendSymbolItemV2& i, r->legendSymbolItemsV2() )
+  Q_FOREACH ( const QgsLegendSymbolItemV2& i, r->legendSymbolItemsV2() )
   {
-    nodes.append( new QgsSymbolV2LegendNode( nodeLayer, i ) );
+    QgsSymbolV2LegendNode * n = new QgsSymbolV2LegendNode( nodeLayer, i );
+    nodes.append( n );
   }
 
   if ( nodes.count() == 1 && nodes[0]->data( Qt::EditRole ).toString().isEmpty() )
     nodes[0]->setEmbeddedInParent( true );
+
+
+  if ( mLayer->diagramsEnabled() )
+  {
+    Q_FOREACH ( QgsLayerTreeModelLegendNode * i, mLayer->diagramRenderer()->legendItems( nodeLayer ) )
+    {
+      nodes.append( i );
+    }
+  }
+
 
   return nodes;
 }
@@ -231,7 +244,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultRasterLayerLegend::createLayerTree
   }
 
   QgsLegendColorList rasterItemList = mLayer->legendSymbologyItems();
-  if ( rasterItemList.count() == 0 )
+  if ( rasterItemList.isEmpty() )
     return nodes;
 
   // Paletted raster may have many colors, for example UInt16 may have 65536 colors
@@ -271,11 +284,11 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultPluginLayerLegend::createLayerTree
   QSize iconSize( 16, 16 );
   QgsLegendSymbologyList symbologyList = mLayer->legendSymbologyItems( iconSize );
 
-  if ( symbologyList.count() == 0 )
+  if ( symbologyList.isEmpty() )
     return nodes;
 
   typedef QPair<QString, QPixmap> XY;
-  foreach ( XY item, symbologyList )
+  Q_FOREACH ( const XY& item, symbologyList )
   {
     nodes << new QgsSimpleLegendNode( nodeLayer, item.first, QIcon( item.second ) );
   }

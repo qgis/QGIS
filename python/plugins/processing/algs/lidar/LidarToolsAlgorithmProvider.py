@@ -113,12 +113,16 @@ from lastools.hugeFileGroundClassify import hugeFileGroundClassify
 from lastools.hugeFileNormalize import hugeFileNormalize
 
 from fusion.OpenViewerAction import OpenViewerAction
+from fusion.ASCII2DTM import ASCII2DTM
 from fusion.CanopyMaxima import CanopyMaxima
 from fusion.CanopyModel import CanopyModel
 from fusion.Catalog import Catalog
 from fusion.ClipData import ClipData
 from fusion.CloudMetrics import CloudMetrics
 from fusion.Cover import Cover
+from fusion.DTM2TIF import DTM2TIF
+from fusion.DTM2ASCII import DTM2ASCII
+from fusion.FirstLastReturn import FirstLastReturn
 from fusion.GridMetrics import GridMetrics
 from fusion.GridSurfaceCreate import GridSurfaceCreate
 from fusion.TinSurfaceCreate import TinSurfaceCreate
@@ -126,14 +130,20 @@ from fusion.Csv2Grid import Csv2Grid
 from fusion.GroundFilter import GroundFilter
 from fusion.MergeData import MergeData
 from fusion.FilterData import FilterData
+from fusion.PolyClipData import PolyClipData
+from fusion.ImageCreate import ImageCreate
+from fusion.IntensityImage import IntensityImage
 from fusion.FusionUtils import FusionUtils
+
 
 class LidarToolsAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.activate = False
-        self.algsList = []
+
+    def _loadAlgorithms(self):
+        self.algs = []
 
         # LAStools for processing single files
 
@@ -154,9 +164,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
                 laszip(), lasindex(), lasmerge(), las2las_filter(), las2las_project(),
                 las2las_transform(), lasquery()
             ]
-        for alg in lastools:
-            alg.group = 'LAStools'
-        self.algsList.extend(lastools)
+        self.algs.extend(lastools)
 
         # LAStools Production for processing folders of files
 
@@ -174,9 +182,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
                 laszipPro(), lasindexPro(), lasinfoPro(), las2lasPro_filter(), las2lasPro_project(),
                 las2lasPro_transform(), txt2lasPro(), las2txtPro(), lasvalidatePro(), lasmergePro()
             ]
-        for alg in lastoolsPro:
-            alg.group = 'LAStools Production'
-        self.algsList.extend(lastoolsPro)
+        self.algs.extend(lastoolsPro)
 
         # some examples for LAStools Pipelines
 
@@ -186,10 +192,8 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
                 hugeFileGroundClassify(), hugeFileNormalize()
             ]
         else:
-            lastoolsPipe = [ ]
-        for alg in lastoolsPipe:
-            alg.group = 'LAStools Pipelines'
-        self.algsList.extend(lastoolsPipe)
+            lastoolsPipe = []
+        self.algs.extend(lastoolsPipe)
 
         # FUSION
 
@@ -198,38 +202,40 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
             fusiontools = [
                 Catalog(), CloudMetrics(), CanopyMaxima(), CanopyModel(), ClipData(),
                 Csv2Grid(), Cover(), FilterData(), GridMetrics(), GroundFilter(),
-                GridSurfaceCreate(), MergeData(), TinSurfaceCreate()
+                GridSurfaceCreate(), MergeData(), TinSurfaceCreate(), PolyClipData(),
+                DTM2TIF(), DTM2ASCII(), FirstLastReturn(), ASCII2DTM(), ImageCreate(),
+                IntensityImage()
             ]
             for alg in fusiontools:
-                alg.group = 'Fusion'
-            self.algsList.extend(fusiontools)
+                alg.group, alg.i18n_group = alg.trAlgorithm('Fusion')
+            self.algs.extend(fusiontools)
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         ProcessingConfig.addSetting(Setting(
             self.getDescription(),
             LAStoolsUtils.LASTOOLS_FOLDER,
-            self.tr('LAStools folder'), LAStoolsUtils.LAStoolsPath()))
+            self.tr('LAStools folder'), LAStoolsUtils.LAStoolsPath(),
+            valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(
             self.getDescription(),
             FusionUtils.FUSION_FOLDER,
-            self.tr('Fusion folder'), FusionUtils.FusionPath()))
-        ProcessingConfig.addSetting(Setting(
-            self.getDescription(),
-            LAStoolsUtils.WINE_FOLDER,
-            self.tr('Wine folder'), ''))
+            self.tr('Fusion folder'), FusionUtils.FusionPath(),
+            valuetype=Setting.FOLDER))
+        if not isWindows():
+            ProcessingConfig.addSetting(Setting(
+                self.getDescription(),
+                LAStoolsUtils.WINE_FOLDER,
+                self.tr('Wine folder'), '', valuetype=Setting.FOLDER))
 
     def getName(self):
         return 'lidartools'
 
     def getDescription(self):
-        return 'Tools for LiDAR data'
+        return self.tr('Tools for LiDAR data')
 
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + '/../../images/tool.png')
-
-    def _loadAlgorithms(self):
-        self.algs = self.algsList
 
     def getSupportedOutputTableExtensions(self):
         return ['csv']

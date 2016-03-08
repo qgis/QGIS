@@ -31,7 +31,7 @@
 #include <QLabel>
 
 QgsMessageBar::QgsMessageBar( QWidget *parent )
-    : QFrame( parent ), mCurrentItem( NULL )
+    : QFrame( parent ), mCurrentItem( nullptr )
 {
   QPalette pal = palette();
   pal.setBrush( backgroundRole(), pal.window() );
@@ -130,17 +130,17 @@ void QgsMessageBar::popItem( QgsMessageBarItem *item )
   {
     if ( mCurrentItem )
     {
-      QWidget *widget = dynamic_cast<QWidget*>( mCurrentItem );
+      QWidget *widget = mCurrentItem;
       mLayout->removeWidget( widget );
       mCurrentItem->hide();
       disconnect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );
       delete mCurrentItem;
-      mCurrentItem = 0;
+      mCurrentItem = nullptr;
     }
 
     if ( !mItems.isEmpty() )
     {
-      showItem( mItems.first() );
+      showItem( mItems.at( 0 ) );
     }
     else
     {
@@ -166,7 +166,7 @@ bool QgsMessageBar::popWidget( QgsMessageBarItem *item )
     return true;
   }
 
-  foreach ( QgsMessageBarItem *existingItem, mItems )
+  Q_FOREACH ( QgsMessageBarItem *existingItem, mItems )
   {
     if ( existingItem == item )
     {
@@ -197,7 +197,7 @@ bool QgsMessageBar::clearWidgets()
   if ( !mCurrentItem && mItems.empty() )
     return true;
 
-  while ( mItems.count() > 0 )
+  while ( !mItems.isEmpty() )
   {
     popWidget();
   }
@@ -230,7 +230,7 @@ void QgsMessageBar::showItem( QgsMessageBarItem *item )
 {
   Q_ASSERT( item );
 
-  if ( mCurrentItem != 0 )
+  if ( mCurrentItem )
     disconnect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );
 
   if ( item == mCurrentItem )
@@ -339,9 +339,9 @@ void QgsMessageBar::resetCountdown()
 
 void QgsMessageBar::updateItemCount()
 {
-  mItemCount->setText( mItems.count() > 0 ? tr( "%n more", "unread messages", mItems.count() ) : QString( "" ) );
+  mItemCount->setText( !mItems.isEmpty() ? tr( "%n more", "unread messages", mItems.count() ) : QString() );
 
   // do not show the down arrow for opening menu with "close all" if there is just one message
-  mCloseBtn->setMenu( mItems.count() > 0 ? mCloseMenu : 0 );
-  mCloseBtn->setPopupMode( mItems.count() > 0 ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup );
+  mCloseBtn->setMenu( !mItems.isEmpty() ? mCloseMenu : nullptr );
+  mCloseBtn->setPopupMode( !mItems.isEmpty() ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup );
 }

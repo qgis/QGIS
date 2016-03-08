@@ -16,18 +16,20 @@ import qgis
 import os
 
 from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature
+from qgis.testing import (start_app,
+                          unittest
+                          )
 from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
+                       compareWkt
                        )
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
-class TestQgsFeatureIterator(TestCase):
+
+class TestQgsFeatureIterator(unittest.TestCase):
 
     def __init__(self, methodName):
-        """Run once on class initialisation."""
+        """Run once on class initialization."""
         unittest.TestCase.__init__(self, methodName)
 
     def test_FilterExpression(self):
@@ -35,24 +37,40 @@ class TestQgsFeatureIterator(TestCase):
         myShpFile = os.path.join(TEST_DATA_DIR, 'points.shp')
         pointLayer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
 
-        ids = [ feat.id() for feat in pointLayer.getFeatures( QgsFeatureRequest().setFilterExpression( 'Staff > 3' ) ) ]
-        expectedIds = [1L, 5L, 6L, 7L, 8L]
-        myMessage = '\nExpected: {0} features\nGot: {1} features'.format( repr( expectedIds ), repr( ids ) )
+        ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterExpression('Staff > 3'))]
+        expectedIds = [1, 5, 6, 7, 8]
+        myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
         assert ids == expectedIds, myMessage
 
         pointLayer.startEditing()
-        self.addFeatures( pointLayer )
+        self.addFeatures(pointLayer)
 
-        ids = [ feat.id() for feat in pointLayer.getFeatures( QgsFeatureRequest().setFilterExpression( 'Staff > 3' ) ) ]
-        expectedIds = [-2L, 1L, 5L, 6L, 7L, 8L]
-        myMessage = '\nExpected: {0} features\nGot: {1} features'.format( repr( expectedIds ), repr( ids ) )
+        ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterExpression('Staff > 3'))]
+        expectedIds = [-2, 1, 5, 6, 7, 8]
+        myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
         assert ids == expectedIds, myMessage
 
         pointLayer.rollBack()
 
-        ids = [ feat.id() for feat in pointLayer.getFeatures( QgsFeatureRequest().setFilterExpression( 'Staff > 3' ) ) ]
-        expectedIds = [1L, 5L, 6L, 7L, 8L]
-        myMessage = '\nExpected: {0} features\nGot: {1} features'.format( repr( expectedIds ), repr( ids ) )
+        ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterExpression('Staff > 3'))]
+        expectedIds = [1, 5, 6, 7, 8]
+        myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
+        assert ids == expectedIds, myMessage
+
+    def test_FilterExpressionWithAccents(self):
+        myShpFile = os.path.join(TEST_DATA_DIR, 'france_parts.shp')
+        layer = QgsVectorLayer(myShpFile, 'poly', 'ogr')
+
+        layer.setProviderEncoding("ISO-8859-1")
+        ids = [feat.id() for feat in layer.getFeatures(QgsFeatureRequest().setFilterExpression(u"TYPE_1 = 'Région'"))]
+        expectedIds = [0, 1, 2, 3]
+        myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
+        assert ids == expectedIds, myMessage
+
+        layer.setProviderEncoding("UTF-8")
+        ids = [feat.id() for feat in layer.getFeatures(QgsFeatureRequest().setFilterExpression(u"TYPE_1 = 'Région'"))]
+        expectedIds = []
+        myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
         assert ids == expectedIds, myMessage
 
     def test_FilterFids(self):
@@ -60,38 +78,38 @@ class TestQgsFeatureIterator(TestCase):
         myShpFile = os.path.join(TEST_DATA_DIR, 'points.shp')
         pointLayer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
 
-        ids = [ feat.id() for feat in pointLayer.getFeatures( QgsFeatureRequest().setFilterFids( [7,8,12,30] ) ) ]
-        expectedIds = [7L, 8L, 12L]
-        myMessage = '\nExpected: {0} features\nGot: {1} features'.format( repr( expectedIds ), repr( ids ) )
+        ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterFids([7, 8, 12, 30]))]
+        expectedIds = [7, 8, 12]
+        myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
         assert ids == expectedIds, myMessage
 
         pointLayer.startEditing()
-        self.addFeatures( pointLayer )
+        self.addFeatures(pointLayer)
 
-        ids = [ feat.id() for feat in pointLayer.getFeatures( QgsFeatureRequest().setFilterFids( [-4,7,8,12,30] ) ) ]
-        expectedIds = [-4L, 7L, 8L, 12L]
-        myMessage = '\nExpected: {0} features\nGot: {1} features'.format( repr( expectedIds ), repr( ids ) )
+        ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterFids([-4, 7, 8, 12, 30]))]
+        expectedIds = [-4, 7, 8, 12]
+        myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
         assert ids == expectedIds, myMessage
 
         pointLayer.rollBack()
 
-        ids = [ feat.id() for feat in pointLayer.getFeatures( QgsFeatureRequest().setFilterFids( [-2,7,8,12,30] ) ) ]
-        expectedIds = [7L, 8L, 12L]
-        myMessage = '\nExpected: {0} features\nGot: {1} features'.format( repr( expectedIds ), repr( ids ) )
+        ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterFids([-2, 7, 8, 12, 30]))]
+        expectedIds = [7, 8, 12]
+        myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
         assert ids == expectedIds, myMessage
 
-    def addFeatures(self,vl):
+    def addFeatures(self, vl):
         feat = QgsFeature()
         fields = vl.pendingFields()
         feat.setFields(fields)
         feat['Staff'] = 4
-        vl.addFeature( feat )
+        vl.addFeature(feat)
 
         feat = QgsFeature()
         fields = vl.pendingFields()
         feat.setFields(fields)
         feat['Staff'] = 2
-        vl.addFeature( feat )
+        vl.addFeature(feat)
 
 if __name__ == '__main__':
     unittest.main()

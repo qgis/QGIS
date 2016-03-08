@@ -31,24 +31,27 @@ QgsTextDiagram::~QgsTextDiagram()
 {
 }
 
-QgsDiagram* QgsTextDiagram::clone() const
+QgsTextDiagram* QgsTextDiagram::clone() const
 {
   return new QgsTextDiagram( *this );
 }
 
 QSizeF QgsTextDiagram::diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
 {
-  Q_UNUSED( c );
+  QgsExpressionContext expressionContext = c.expressionContext();
+  expressionContext.setFeature( feature );
+  if ( feature.fields() )
+    expressionContext.setFields( *feature.fields() );
 
   QVariant attrVal;
   if ( is.classificationAttributeIsExpression )
   {
-    QgsExpression* expression = getExpression( is.classificationAttributeExpression, feature.fields() );
-    attrVal = expression->evaluate( feature );
+    QgsExpression* expression = getExpression( is.classificationAttributeExpression, expressionContext );
+    attrVal = expression->evaluate( &expressionContext );
   }
   else
   {
-    attrVal = feature.attributes()[is.classificationAttribute];
+    attrVal = feature.attributes().at( is.classificationAttribute );
   }
 
   if ( !attrVal.isValid() )
@@ -99,19 +102,10 @@ QSizeF QgsTextDiagram::diagramSize( const QgsAttributes& attributes, const QgsRe
   return s.size;
 }
 
-void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
+void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position )
 {
-  Q_UNUSED( feature );
-
   QPainter* p = c.painter();
   if ( !p )
-  {
-    return;
-  }
-
-  double scaleDenominator = c.rendererScale();
-  if (( s.minScaleDenominator != -1 && scaleDenominator < s.minScaleDenominator )
-      || ( s.maxScaleDenominator != -1 && scaleDenominator > s.maxScaleDenominator ) )
   {
     return;
   }
@@ -124,7 +118,7 @@ void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext&
   double baseX = position.x();
   double baseY = position.y() - h;
 
-  QList<QPointF> textPositions; //midpoints for text placement
+  QVector<QPointF> textPositions; //midpoints for text placement
   int nCategories = s.categoryAttributes.size();
   for ( int i = 0; i < nCategories; ++i )
   {
@@ -152,7 +146,8 @@ void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext&
     //draw separator lines
     QList<QPointF> intersect; //intersections between shape and separation lines
     QPointF center( baseX + w / 2.0, baseY + h / 2.0 );
-    double r1 = w / 2.0; double r2 = h / 2.0;
+    double r1 = w / 2.0;
+    double r2 = h / 2.0;
 
     for ( int i = 1; i < nCategories; ++i )
     {
@@ -225,10 +220,15 @@ void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext&
   QFontMetricsF fontMetrics( sFont );
   p->setFont( sFont );
 
+  QgsExpressionContext expressionContext = c.expressionContext();
+  expressionContext.setFeature( feature );
+  if ( feature.fields() )
+    expressionContext.setFields( *feature.fields() );
+
   for ( int i = 0; i < textPositions.size(); ++i )
   {
-    QgsExpression* expression = getExpression( s.categoryAttributes.at( i ), feature.fields() );
-    QString val = expression->evaluate( feature ).toString();
+    QgsExpression* expression = getExpression( s.categoryAttributes.at( i ), expressionContext );
+    QString val = expression->evaluate( &expressionContext ).toString();
 
     //find out dimesions
     double textWidth = fontMetrics.width( val );
@@ -255,7 +255,7 @@ void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext&
   }
 }
 
-void QgsTextDiagram::lineEllipseIntersection( const QPointF& lineStart, const QPointF& lineEnd, const QPointF& ellipseMid, double r1, double r2, QList<QPointF>& result ) const
+void QgsTextDiagram::lineEllipseIntersection( QPointF lineStart, QPointF lineEnd, QPointF ellipseMid, double r1, double r2, QList<QPointF>& result ) const
 {
   result.clear();
 

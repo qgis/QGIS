@@ -35,8 +35,8 @@ from FusionUtils import FusionUtils
 class OpenViewerAction(ToolboxAction):
 
     def __init__(self):
-        self.name = 'Open Fusion LAS viewer'
-        self.group = 'Visualization'
+        self.name = self.tr('Open Fusion LAS viewer')
+        self.group = self.tr('Visualization')
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + '/../../../images/tool.png')
@@ -47,7 +47,7 @@ class OpenViewerAction(ToolboxAction):
             subprocess.Popen(f)
         else:
             QtGui.QMessageBox.critical(None,
-                self.tr('Unable to open viewer'),
-                self.tr('The current Fusion folder does not contain the '
-                        'viewer executable.\nPlease check the configuration '
-                        'in the Processing settings dialog.'))
+                                       self.tr('Unable to open viewer'),
+                                       self.tr('The current Fusion folder does not contain the '
+                                               'viewer executable.\nPlease check the configuration '
+                                               'in the Processing settings dialog.'))

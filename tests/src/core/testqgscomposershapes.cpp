@@ -17,7 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgscomposition.h"
-#include "qgscompositionchecker.h"
+#include "qgsmultirenderchecker.h"
 #include "qgscomposershape.h"
 #include "qgsmapsettings.h"
 #include "qgssymbolv2.h"
@@ -36,8 +36,7 @@ class TestQgsComposerShapes : public QObject
     TestQgsComposerShapes()
         : mComposition( 0 )
         , mComposerShape( 0 )
-        , mSimpleFill( 0 )
-        , mFillSymbol( 0 )
+        , mMapSettings( 0 )
     {}
 
   private slots:
@@ -54,9 +53,7 @@ class TestQgsComposerShapes : public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerShape* mComposerShape;
-    QgsMapSettings mMapSettings;
-    QgsSimpleFillSymbolLayerV2* mSimpleFill;
-    QgsFillSymbolV2* mFillSymbol;
+    QgsMapSettings *mMapSettings;
     QString mReport;
 };
 
@@ -65,17 +62,14 @@ void TestQgsComposerShapes::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  mMapSettings = new QgsMapSettings();
+
   //create composition with two rectangles
-  mComposition = new QgsComposition( mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerShape = new QgsComposerShape( 20, 20, 150, 100, mComposition );
   mComposerShape->setBackgroundColor( QColor::fromRgb( 255, 150, 0 ) );
   mComposition->addComposerShape( mComposerShape );
-
-  //setup simple fill
-  mSimpleFill = new QgsSimpleFillSymbolLayerV2();
-  mFillSymbol = new QgsFillSymbolV2();
-  mFillSymbol->changeSymbolLayer( 0, mSimpleFill );
 
   mReport = "<h1>Composer Shape Tests</h1>\n";
 }
@@ -83,8 +77,9 @@ void TestQgsComposerShapes::initTestCase()
 void TestQgsComposerShapes::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -110,6 +105,7 @@ void TestQgsComposerShapes::rectangle()
   mComposerShape->setShapeType( QgsComposerShape::Rectangle );
 
   QgsCompositionChecker checker( "composershapes_rectangle", mComposition );
+  checker.setControlPathPrefix( "composer_shapes" );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
@@ -118,6 +114,7 @@ void TestQgsComposerShapes::triangle()
   mComposerShape->setShapeType( QgsComposerShape::Triangle );
 
   QgsCompositionChecker checker( "composershapes_triangle", mComposition );
+  checker.setControlPathPrefix( "composer_shapes" );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
@@ -126,6 +123,7 @@ void TestQgsComposerShapes::ellipse()
   mComposerShape->setShapeType( QgsComposerShape::Ellipse );
 
   QgsCompositionChecker checker( "composershapes_ellipse", mComposition );
+  checker.setControlPathPrefix( "composer_shapes" );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
@@ -135,6 +133,7 @@ void TestQgsComposerShapes::roundedRectangle()
   mComposerShape->setCornerRadius( 30 );
 
   QgsCompositionChecker checker( "composershapes_roundedrect", mComposition );
+  checker.setControlPathPrefix( "composer_shapes" );
   QVERIFY( checker.testComposition( mReport ) );
   mComposerShape->setCornerRadius( 0 );
 }
@@ -143,14 +142,20 @@ void TestQgsComposerShapes::symbolV2()
 {
   mComposerShape->setShapeType( QgsComposerShape::Rectangle );
 
-  mSimpleFill->setColor( Qt::green );
-  mSimpleFill->setBorderColor( Qt::yellow );
-  mSimpleFill->setBorderWidth( 6 );
+  //setup simple fill
+  QgsSimpleFillSymbolLayerV2* simpleFill = new QgsSimpleFillSymbolLayerV2();
+  QgsFillSymbolV2* fillSymbol = new QgsFillSymbolV2();
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( Qt::green );
+  simpleFill->setBorderColor( Qt::yellow );
+  simpleFill->setBorderWidth( 6 );
 
-  mComposerShape->setShapeStyleSymbol( mFillSymbol );
+  mComposerShape->setShapeStyleSymbol( fillSymbol );
   mComposerShape->setUseSymbolV2( true );
+  delete fillSymbol;
 
   QgsCompositionChecker checker( "composershapes_symbolv2", mComposition );
+  checker.setControlPathPrefix( "composer_shapes" );
   QVERIFY( checker.testComposition( mReport ) );
 }
 

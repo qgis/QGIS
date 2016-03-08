@@ -1,0 +1,7 @@
+{
+  "name": "end_point",
+  "type": "function",
+  "description": "Returns the last node from a geometry.",
+  "arguments": [ {"arg":"geometry","description":"geometry object"} ],
+  "examples": [ { "expression":"geom_to_wkt(end_point(geom_from_wkt('LINESTRING(4 0, 4 2, 0 2)')))", "returns":"'Point (0 2)'"}]
+}

@@ -19,7 +19,7 @@
 
 #include <QSettings>
 
-QgsDateTimeEditFactory::QgsDateTimeEditFactory( QString name ) :
+QgsDateTimeEditFactory::QgsDateTimeEditFactory( const QString& name ) :
     QgsEditorWidgetFactory( name )
 {
 }
@@ -89,4 +89,12 @@ QString QgsDateTimeEditFactory::representValue( QgsVectorLayer* vl, int fieldIdx
   }
 
   return result;
+}
+
+QMap<const char*, int> QgsDateTimeEditFactory::supportedWidgetTypes()
+{
+  QMap<const char*, int> map = QMap<const char*, int>();
+  map.insert( QDateTimeEdit::staticMetaObject.className(), 10 );
+  map.insert( QgsDateTimeEdit::staticMetaObject.className(), 10 );
+  return map;
 }

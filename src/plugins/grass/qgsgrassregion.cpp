@@ -33,16 +33,16 @@
 #include <QSettings>
 
 
-/** map tool which uses rubber band for changing grass region */
+/** Map tool which uses rubber band for changing grass region */
 QgsGrassRegionEdit::QgsGrassRegionEdit( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
 {
+  QgsDebugMsg( "entered" );
   mDraw = false;
   mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
   mSrcRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
-  QString gisdbase = QgsGrass::getDefaultGisdbase();
-  QString location = QgsGrass::getDefaultLocation();
-  mCrs = QgsGrass::crs( gisdbase, location );
+  QString error;
+  mCrs = QgsGrass::crs( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), error );
   QgsDebugMsg( "mCrs: " + mCrs.toWkt() );
   setTransform();
   connect( canvas, SIGNAL( destinationCrsChanged() ), this, SLOT( setTransform() ) );
@@ -55,12 +55,12 @@ QgsGrassRegionEdit::~QgsGrassRegionEdit()
 }
 
 //! mouse pressed in map canvas
-void QgsGrassRegionEdit::canvasPressEvent( QMouseEvent * event )
+void QgsGrassRegionEdit::canvasPressEvent( QgsMapMouseEvent * event )
 {
   QgsDebugMsg( "entered." );
   mDraw = true;
-  mRubberBand->reset( true );
-  mSrcRubberBand->reset( true );
+  mRubberBand->reset( QGis::Polygon );
+  mSrcRubberBand->reset( QGis::Polygon );
   emit captureStarted();
 
   mStartPoint = toMapCoordinates( event->pos() );
@@ -69,7 +69,7 @@ void QgsGrassRegionEdit::canvasPressEvent( QMouseEvent * event )
 }
 
 //! mouse movement in map canvas
-void QgsGrassRegionEdit::canvasMoveEvent( QMouseEvent * event )
+void QgsGrassRegionEdit::canvasMoveEvent( QgsMapMouseEvent * event )
 {
   if ( !mDraw )
     return;
@@ -79,7 +79,7 @@ void QgsGrassRegionEdit::canvasMoveEvent( QMouseEvent * event )
 }
 
 //! mouse button released
-void QgsGrassRegionEdit::canvasReleaseEvent( QMouseEvent * event )
+void QgsGrassRegionEdit::canvasReleaseEvent( QgsMapMouseEvent * event )
 {
   if ( !mDraw )
     return;
@@ -93,8 +93,8 @@ void QgsGrassRegionEdit::canvasReleaseEvent( QMouseEvent * event )
 //! called when map tool is about to get inactive
 void QgsGrassRegionEdit::deactivate()
 {
-  mRubberBand->reset( true );
-  mSrcRubberBand->reset( true );
+  mRubberBand->reset( QGis::Polygon );
+  mSrcRubberBand->reset( QGis::Polygon );
   QgsMapTool::deactivate();
 }
 
@@ -131,8 +131,6 @@ void QgsGrassRegionEdit::setTransform()
 
 void QgsGrassRegionEdit::transform( QgsMapCanvas *canvas, QVector<QgsPoint> &points, QgsCoordinateTransform *coordinateTransform, QgsCoordinateTransform::TransformDirection direction )
 {
-  QgsDebugMsg( "Entered" );
-
   /** Coordinate transform */
   if ( canvas->hasCrsTransformEnabled() )
   {
@@ -169,7 +167,7 @@ void QgsGrassRegionEdit::drawRegion( QgsMapCanvas *canvas, QgsRubberBand* rubber
   {
     transform( canvas, points, coordinateTransform );
   }
-  rubberBand->reset( isPolygon );
+  rubberBand->reset( isPolygon ? QGis::Polygon : QGis::Line );
   for ( int i = 0; i < points.size(); i++ )
   {
     bool update = false; // true to update canvas
@@ -191,22 +189,28 @@ void QgsGrassRegionEdit::setSrcRegion( const QgsRectangle &rect )
   mSrcRectangle = rect;
 }
 
-QgsGrassRegion::QgsGrassRegion( QgsGrassPlugin *plugin,  QgisInterface *iface,
+QgsGrassRegion::QgsGrassRegion( QgisInterface *iface,
                                 QWidget * parent, Qt::WindowFlags f )
-    : QDialog( parent, f ), QgsGrassRegionBase()
+    : QWidget( parent, f )
+    , QgsGrassRegionBase()
+    , mInterface( 0 )
+    , mCanvas( 0 )
+    , mRadioGroup( 0 )
+    , mX( 0 )
+    , mY( 0 )
+    , mUpdatingGui( false )
+    , mRegionEdit( 0 )
 {
   QgsDebugMsg( "QgsGrassRegion()" );
 
   setupUi( this );
   setAttribute( Qt::WA_DeleteOnClose );
 
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  connect( mButtonBox, SIGNAL( clicked( QAbstractButton * ) ), SLOT( buttonClicked( QAbstractButton * ) ) );
 
-  mPlugin = plugin;
+  //mPlugin = plugin;
   mInterface = iface;
   mCanvas = mInterface->mapCanvas();
-  restorePosition();
   mUpdatingGui = false;
 
   // Set input validators
@@ -224,39 +228,12 @@ QgsGrassRegion::QgsGrassRegion( QgsGrassPlugin *plugin,  QgisInterface *iface,
 
   // Group radio buttons
   mRadioGroup = new QButtonGroup();
-  mRadioGroup->addButton( mCellResRadio );
+  mRadioGroup->addButton( mResRadio );
   mRadioGroup->addButton( mRowsColsRadio );
-  mCellResRadio->setChecked( true );
+  mResRadio->setChecked( true );
   radioChanged();
 
   connect( mRadioGroup, SIGNAL( buttonClicked( int ) ), this, SLOT( radioChanged() ) );
-
-  // Set values to current region
-  QString gisdbase = QgsGrass::getDefaultGisdbase();
-  QString location = QgsGrass::getDefaultLocation();
-  QString mapset   = QgsGrass::getDefaultMapset();
-
-  if ( gisdbase.isEmpty() || location.isEmpty() || mapset.isEmpty() )
-  {
-    QMessageBox::warning( 0, tr( "Warning" ),
-                          tr( "GISDBASE, LOCATION_NAME or MAPSET is not set, cannot display current region." ) );
-  }
-
-  QgsGrass::setLocation( gisdbase, location );
-  char *err = G__get_window( &mWindow, ( char * ) "", ( char * ) "WIND", mapset.toLatin1().data() );
-
-  if ( err )
-  {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot read current region: %1" ).arg( QString::fromUtf8( err ) ) );
-    return;
-  }
-
-  mRegionEdit = new QgsGrassRegionEdit( mCanvas );
-  connect( mRegionEdit, SIGNAL( captureStarted() ), this, SLOT( hide() ) );
-  connect( mRegionEdit, SIGNAL( captureEnded() ), this, SLOT( onCaptureFinished() ) );
-  mCanvas->setMapTool( mRegionEdit );
-
-  refreshGui();
 
   // Connect entries
   connect( mNorth, SIGNAL( editingFinished() ), this, SLOT( northChanged() ) );
@@ -268,67 +245,84 @@ QgsGrassRegion::QgsGrassRegion( QgsGrassPlugin *plugin,  QgisInterface *iface,
   connect( mRows, SIGNAL( editingFinished() ), this, SLOT( rowsChanged() ) );
   connect( mCols, SIGNAL( editingFinished() ), this, SLOT( colsChanged() ) );
 
-  // Symbology
-  QPen pen = mPlugin->regionPen();
-  mColorButton->setContext( "gui" );
-  mColorButton->setColorDialogTitle( tr( "Select color" ) );
-  mColorButton->setColor( pen.color() );
-  connect( mColorButton, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( changeColor( const QColor& ) ) );
-
-  mWidthSpinBox->setValue( pen.width() );
-  connect( mWidthSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( changeWidth() ) );
-}
-
-void QgsGrassRegion::changeColor( const QColor& color )
-{
-  QPen pen = mPlugin->regionPen();
-  pen.setColor( color );
-  mPlugin->setRegionPen( pen );
-}
-
-void QgsGrassRegion::changeWidth( void )
-{
-  QPen pen = mPlugin->regionPen();
-
-  pen.setWidth( mWidthSpinBox->value() );
-  mPlugin->setRegionPen( pen );
-}
-
-QString QgsGrassRegion::formatEdge( double v )
-{
-  // Not sure about formating
-  if ( v > 999999 )
-  {
-    return  QString( "%1" ).arg( v, 0, 'f', 0 ); // to avoid e format for large numbers
-  }
-  return QString( "%1" ).arg( v, 0, 'g' );
-}
-
-void QgsGrassRegion::refreshGui()
-{
-  if ( mUpdatingGui )
-    return;
-
-  mUpdatingGui = true;
-
-  QgsDebugMsg( "entered." );
-
-  mNorth->setText( QString( "%1" ).arg( mWindow.north, 0, 'g', 15 ) );
-  mSouth->setText( QString( "%1" ).arg( mWindow.south, 0, 'g', 15 ) );
-  mEast->setText( QString( "%1" ).arg( mWindow.east, 0, 'g', 15 ) );
-  mWest->setText( QString( "%1" ).arg( mWindow.west, 0, 'g', 15 ) );
-  mNSRes->setText( QString( "%1" ).arg( mWindow.ns_res, 0, 'g' ) );
-  mEWRes->setText( QString( "%1" ).arg( mWindow.ew_res, 0, 'g' ) );
-  mRows->setText( QString( "%1" ).arg( mWindow.rows ) );
-  mCols->setText( QString( "%1" ).arg( mWindow.cols ) );
-
-  displayRegion();
-  mUpdatingGui = false;
+  connect( QgsGrass::instance(), SIGNAL( regionChanged() ), SLOT( reloadRegion() ) );
+  connect( mCanvas, SIGNAL( mapToolSet( QgsMapTool * ) ), SLOT( canvasMapToolSet( QgsMapTool * ) ) );
 }
 
 QgsGrassRegion::~QgsGrassRegion()
 {
   delete mRegionEdit;
+}
+
+QString QgsGrassRegion::formatExtent( double v )
+{
+  // format with precision approximately to meters
+  // max length of degree of latitude on pole is 111694 m
+  return qgsDoubleToString( v, mCrs.mapUnits() == QGis::Degrees ? 6 : 1 );
+}
+
+QString QgsGrassRegion::formatResolution( double v )
+{
+  return qgsDoubleToString( v, mCrs.mapUnits() == QGis::Degrees ? 10 : 4 );
+}
+
+void QgsGrassRegion::readRegion()
+{
+  // Read current region
+  try
+  {
+    QgsGrass::region( &mWindow );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    QgsGrass::warning( e );
+    return;
+  }
+}
+
+void QgsGrassRegion::refreshGui()
+{
+  if ( mUpdatingGui )
+  {
+    return;
+  }
+
+  mUpdatingGui = true;
+
+  QgsDebugMsg( "entered." );
+
+  mNorth->setText( formatExtent( mWindow.north ) );
+  mSouth->setText( formatExtent( mWindow.south ) );
+  mEast->setText( formatExtent( mWindow.east ) );
+  mWest->setText( formatExtent( mWindow.west ) );
+  mNSRes->setText( formatResolution( mWindow.ns_res ) );
+  mEWRes->setText( formatResolution( mWindow.ew_res ) );
+  mRows->setText( QString::number( mWindow.rows ) );
+  mCols->setText( QString::number( mWindow.cols ) );
+
+  displayRegion();
+  mUpdatingGui = false;
+}
+
+void QgsGrassRegion::reloadRegion()
+{
+  readRegion();
+  refreshGui();
+}
+
+void QgsGrassRegion::mapsetChanged()
+{
+  delete mRegionEdit;
+  mRegionEdit = 0;
+  if ( QgsGrass::activeMode() )
+  {
+    mRegionEdit = new QgsGrassRegionEdit( mCanvas );
+    connect( mRegionEdit, SIGNAL( captureEnded() ), this, SLOT( onCaptureFinished() ) );
+
+    QString error;
+    mCrs = QgsGrass::crs( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), error );
+    reloadRegion();
+  }
 }
 
 void QgsGrassRegion::northChanged()
@@ -437,37 +431,48 @@ void QgsGrassRegion::colsChanged()
 
 void QgsGrassRegion::adjust()
 {
+  QgsDebugMsg( "entered" );
+  mButtonBox->button( QDialogButtonBox::Apply )->setDisabled( false );
   int rc = 0;
   if ( mRowsColsRadio->isChecked() )
   {
     rc = 1;
   }
-  G_adjust_Cell_head( &mWindow, rc, rc );
+  G_TRY
+  {
+    G_adjust_Cell_head( &mWindow, rc, rc );
+  }
+  G_CATCH( QgsGrass::Exception &e )
+  {
+    QgsGrass::warning( e );
+    mButtonBox->button( QDialogButtonBox::Apply )->setDisabled( true );
+  }
 }
 
 void QgsGrassRegion::radioChanged()
 {
   QgsDebugMsg( "entered." );
 
-  if ( mRowsColsRadio->isChecked() )
-  {
-    mNSRes->setEnabled( false );
-    mEWRes->setEnabled( false );
-    mRows->setEnabled( true );
-    mCols->setEnabled( true );
-  }
-  else
-  {
-    mNSRes->setEnabled( true );
-    mEWRes->setEnabled( true );
-    mRows->setEnabled( false );
-    mCols->setEnabled( false );
-  }
+  bool res = !mRowsColsRadio->isChecked();
+
+  mEWResLabel->setEnabled( res );
+  mEWRes->setEnabled( res );
+  mNSResLabel->setEnabled( res );
+  mNSRes->setEnabled( res );
+
+  mColsLabel->setEnabled( !res );
+  mCols->setEnabled( !res );
+  mRowsLabel->setEnabled( !res );
+  mRows->setEnabled( !res );
 }
 
 void QgsGrassRegion::onCaptureFinished()
 {
   QgsDebugMsg( "entered." );
+  if ( !mRegionEdit )
+  {
+    return;
+  }
   QgsRectangle rect = mRegionEdit->getRegion();
 
   mWindow.west = rect.xMinimum();
@@ -477,64 +482,52 @@ void QgsGrassRegion::onCaptureFinished()
   adjust();
 
   refreshGui();
-  show();
+}
+
+void QgsGrassRegion::canvasMapToolSet( QgsMapTool *tool )
+{
+  QgsDebugMsg( "entered" );
+  mDrawButton->setChecked( tool == mRegionEdit );
 }
 
 void QgsGrassRegion::displayRegion()
 {
+  if ( !mRegionEdit )
+  {
+    return;
+  }
   QgsPoint ul( mWindow.west, mWindow.north );
   QgsPoint lr( mWindow.east, mWindow.south );
 
-  //mRegionEdit->setRegion( ul, lr );
   mRegionEdit->setSrcRegion( QgsRectangle( ul, lr ) );
 }
 
-void QgsGrassRegion::accept()
+void QgsGrassRegion::on_mDrawButton_clicked()
 {
-  // TODO: better repaint region
-  QSettings settings;
+  QgsDebugMsg( "entered" );
+  mCanvas->setMapTool( mRegionEdit );
+}
 
-  bool on = settings.value( "/GRASS/region/on", true ).toBool();
-
-  if ( on )
+void QgsGrassRegion::buttonClicked( QAbstractButton *button )
+{
+  if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
   {
-    mPlugin->switchRegion( false ); // delete
+    try
+    {
+      QgsGrass::instance()->writeRegion( &mWindow );
+    }
+    catch ( QgsGrass::Exception &e )
+    {
+      QgsGrass::warning( e );
+      return;
+    }
   }
-
-  QgsGrass::setLocation( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation() );
-  G__setenv(( char * ) "MAPSET", QgsGrass::getDefaultMapset().toLatin1().data() );
-
-  if ( G_put_window( &mWindow ) == -1 )
+  else if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ResetRole )
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot write region" ) );
-    return;
+    reloadRegion();
   }
-
-  if ( on )
-  {
-    mPlugin->switchRegion( on );  // draw new
-  }
-
-  saveWindowLocation();
-  mCanvas->setMapTool( NULL );
-  QDialog::accept();
+  // Better to keep the tool selected until another tool is chosen?
+  mCanvas->unsetMapTool( mRegionEdit );
 }
 
-void QgsGrassRegion::reject()
-{
-  saveWindowLocation();
-  mCanvas->setMapTool( NULL );
-  QDialog::reject();
-}
 
-void QgsGrassRegion::restorePosition()
-{
-  QSettings settings;
-  restoreGeometry( settings.value( "/GRASS/windows/region/geometry" ).toByteArray() );
-}
-
-void QgsGrassRegion::saveWindowLocation()
-{
-  QSettings settings;
-  settings.setValue( "/GRASS/windows/region/geometry", saveGeometry() );
-}

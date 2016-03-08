@@ -70,7 +70,7 @@ void QgsDateTimeEditConfig::updateFieldFormat( int idx )
 }
 
 
-void QgsDateTimeEditConfig::updateDisplayFormat( QString fieldFormat )
+void QgsDateTimeEditConfig::updateDisplayFormat( const QString& fieldFormat )
 {
   if ( mDisplayFormatComboBox->currentIndex() == 0 )
   {

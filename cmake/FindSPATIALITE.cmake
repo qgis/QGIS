@@ -70,6 +70,7 @@ IF (SPATIALITE_FOUND)
    ENDIF(APPLE)
    check_library_exists("${SPATIALITE_LIBRARY}" gaiaDropTable "" SPATIALITE_VERSION_GE_4_0_0)
    check_library_exists("${SPATIALITE_LIBRARY}" gaiaStatisticsInvalidate "" SPATIALITE_VERSION_G_4_1_1)
+   check_library_exists("${SPATIALITE_LIBRARY}" spatialite_init_ex "" SPATIALITE_HAS_INIT_EX)
 
 ELSE (SPATIALITE_FOUND)
 

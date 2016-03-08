@@ -40,6 +40,10 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mRendererComboBox</tabstop>
+  <tabstop>mMergePolygonsCheckBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

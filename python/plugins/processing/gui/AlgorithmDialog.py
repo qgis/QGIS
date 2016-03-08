@@ -26,11 +26,21 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QMessageBox, QApplication, QCursor, QColor, QPalette
+from PyQt4.QtGui import (QMessageBox,
+                         QApplication,
+                         QCursor,
+                         QColor,
+                         QPalette,
+                         QPushButton,
+                         QWidget,
+                         QVBoxLayout)
+
+from qgis.core import *
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 
+from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.AlgorithmExecutor import runalg, runalgIterating
@@ -50,6 +60,7 @@ from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterCrs
+from processing.core.parameters import ParameterPoint
 from processing.core.parameters import ParameterGeometryPredicate
 
 from processing.core.outputs import OutputRaster
@@ -69,6 +80,23 @@ class AlgorithmDialog(AlgorithmDialogBase):
         self.mainWidget = ParametersPanel(self, alg)
         self.setMainWidget()
 
+        cornerWidget = QWidget()
+        layout = QVBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 5)
+        self.tabWidget.setStyleSheet("QTabBar::tab { height: 30px; }")
+        runAsBatchButton = QPushButton(self.tr("Run as batch process..."))
+        runAsBatchButton.clicked.connect(self.runAsBatch)
+        layout.addWidget(runAsBatchButton)
+        cornerWidget.setLayout(layout)
+        self.tabWidget.setCornerWidget(cornerWidget)
+
+        QgsMapLayerRegistry.instance().layerWasAdded.connect(self.mainWidget.layerAdded)
+        QgsMapLayerRegistry.instance().layersWillBeRemoved.connect(self.mainWidget.layersWillBeRemoved)
+
+    def runAsBatch(self):
+        dlg = BatchAlgorithmDialog(self.alg)
+        dlg.exec_()
+
     def setParamValues(self):
         params = self.alg.parameters
         outputs = self.alg.outputs
@@ -81,7 +109,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
             if not self.setParamValue(
                     param, self.mainWidget.valueItems[param.name]):
                 raise AlgorithmDialogBase.InvalidParameterValue(param,
-                        self.mainWidget.valueItems[param.name])
+                                                                self.mainWidget.valueItems[param.name])
 
         for param in params:
             if isinstance(param, ParameterExtent):
@@ -123,13 +151,15 @@ class AlgorithmDialog(AlgorithmDialogBase):
             if param.datatype == ParameterMultipleInput.TYPE_FILE:
                 return param.setValue(widget.selectedoptions)
             else:
-                if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+                if param.datatype == ParameterMultipleInput.TYPE_RASTER:
+                    options = dataobjects.getRasterLayers(sorting=False)
+                elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                     options = dataobjects.getVectorLayers(sorting=False)
                 else:
-                    options = dataobjects.getRasterLayers(sorting=False)
+                    options = dataobjects.getVectorLayers([param.datatype], sorting=False)
                 return param.setValue([options[i] for i in widget.selectedoptions])
         elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs,
-                        ParameterExtent)):
+                                ParameterExtent, ParameterPoint)):
             return param.setValue(widget.getValue())
         elif isinstance(param, ParameterString):
             if param.multiline:
@@ -142,19 +172,21 @@ class AlgorithmDialog(AlgorithmDialogBase):
             return param.setValue(unicode(widget.text()))
 
     def accept(self):
+        self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
+
         checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
         try:
             self.setParamValues()
             if checkCRS and not self.alg.checkInputCRS():
                 reply = QMessageBox.question(self, self.tr("Unmatching CRS's"),
-                    self.tr('Layers do not all use the same CRS. This can '
-                            'cause unexpected results.\nDo you want to '
-                            'continue?'),
-                    QMessageBox.Yes | QMessageBox.No,
-                    QMessageBox.No)
+                                             self.tr('Layers do not all use the same CRS. This can '
+                                                     'cause unexpected results.\nDo you want to '
+                                                     'continue?'),
+                                             QMessageBox.Yes | QMessageBox.No,
+                                             QMessageBox.No)
                 if reply == QMessageBox.No:
                     return
-            msg = self.alg.checkParameterValuesBeforeExecuting()
+            msg = self.alg._checkParameterValuesBeforeExecuting()
             if msg:
                 QMessageBox.warning(
                     self, self.tr('Unable to execute algorithm'), msg)
@@ -200,10 +232,10 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 else:
                     QApplication.restoreOverrideCursor()
                     self.resetGUI()
-        except AlgorithmDialogBase.InvalidParameterValue, e:
+        except AlgorithmDialogBase.InvalidParameterValue as e:
             try:
-                self.buttonBox.accepted.connect(lambda :
-                        e.widget.setPalette(QPalette()))
+                self.buttonBox.accepted.connect(lambda:
+                                                e.widget.setPalette(QPalette()))
                 palette = e.widget.palette()
                 palette.setColor(QPalette.Base, QColor(255, 255, 0))
                 e.widget.setPalette(palette)
@@ -212,14 +244,16 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 return
             except:
                 QMessageBox.critical(self,
-                    self.tr('Unable to execute algorithm'),
-                    self.tr('Wrong or missing parameter values'))
+                                     self.tr('Unable to execute algorithm'),
+                                     self.tr('Wrong or missing parameter values'))
 
     def finish(self):
         keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
 
         if self.iterateParam is None:
-            handleAlgorithmResults(self.alg, self, not keepOpen)
+            if not handleAlgorithmResults(self.alg, self, not keepOpen):
+                self.resetGUI()
+                return
 
         self.executed = True
         self.setInfo('Algorithm %s finished' % self.alg.name)
@@ -233,3 +267,8 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 self.setInfo(
                     self.tr('HTML output has been generated by this algorithm.'
                             '\nOpen the results dialog to check it.'))
+
+    def closeEvent(self, evt):
+        QgsMapLayerRegistry.instance().layerWasAdded.disconnect(self.mainWidget.layerAdded)
+        QgsMapLayerRegistry.instance().layersWillBeRemoved.disconnect(self.mainWidget.layersWillBeRemoved)
+        super(AlgorithmDialog, self).closeEvent(evt)

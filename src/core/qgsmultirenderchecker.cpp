@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 6.11.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmultirenderchecker.h"
-
+#include "qgscomposition.h"
 #include <QDebug>
 
 QgsMultiRenderChecker::QgsMultiRenderChecker()
@@ -45,7 +45,7 @@ bool QgsMultiRenderChecker::runTest( const QString& theTestName, unsigned int th
 
   QStringList subDirs = QDir( baseDir ).entryList( QDir::Dirs | QDir::NoDotAndDotDot );
 
-  if ( subDirs.count() == 0 )
+  if ( subDirs.isEmpty() )
   {
     subDirs << "";
   }
@@ -95,10 +95,91 @@ bool QgsMultiRenderChecker::runTest( const QString& theTestName, unsigned int th
   return successful;
 }
 
-const QString QgsMultiRenderChecker::controlImagePath() const
+QString QgsMultiRenderChecker::controlImagePath() const
 {
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myControlImageDir = myDataDir + QDir::separator() + "control_images" +
                               QDir::separator() + mControlPathPrefix + QDir::separator() + mControlName + QDir::separator();
   return myControlImageDir;
 }
+
+#ifdef ENABLE_TESTS
+
+//
+// QgsCompositionChecker
+//
+
+///@cond PRIVATE
+
+QgsCompositionChecker::QgsCompositionChecker( const QString& testName, QgsComposition* composition )
+    : QgsMultiRenderChecker()
+    , mTestName( testName )
+    , mComposition( composition )
+    , mSize( 1122, 794 )
+    , mDotsPerMeter( 96 / 25.4 * 1000 )
+{
+  // The composer has some slight render inconsistencies on the whole image sometimes
+  setColorTolerance( 5 );
+}
+
+QgsCompositionChecker::QgsCompositionChecker()
+    : mComposition( nullptr )
+    , mDotsPerMeter( 96 / 25.4 * 1000 )
+{
+}
+
+QgsCompositionChecker::~QgsCompositionChecker()
+{
+}
+
+bool QgsCompositionChecker::testComposition( QString &theReport, int page, int pixelDiff )
+{
+  if ( !mComposition )
+  {
+    return false;
+  }
+
+  setControlName( "expected_" + mTestName );
+
+#if 0
+  //fake mode to generate expected image
+  //assume 96 dpi and size of the control image 1122 * 794
+  QImage newImage( QSize( 1122, 794 ), QImage::Format_RGB32 );
+  mComposition->setPlotStyle( QgsComposition::Print );
+  newImage.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  newImage.setDotsPerMeterY( 96 / 25.4 * 1000 );
+  drawBackground( &newImage );
+  QPainter expectedPainter( &newImage );
+  //QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
+  //QRectF targetArea( 0, 0, 3507, 2480 );
+  mComposition->renderPage( &expectedPainter, page );
+  expectedPainter.end();
+  newImage.save( mExpectedImageFile, "PNG" );
+  return true;
+#endif //0
+
+  QImage outputImage( mSize, QImage::Format_RGB32 );
+
+  mComposition->setPlotStyle( QgsComposition::Print );
+  outputImage.setDotsPerMeterX( mDotsPerMeter );
+  outputImage.setDotsPerMeterY( mDotsPerMeter );
+  drawBackground( &outputImage );
+  QPainter p( &outputImage );
+  mComposition->renderPage( &p, page );
+  p.end();
+
+  QString renderedFilePath = QDir::tempPath() + '/' + QFileInfo( mTestName ).baseName() + "_rendered.png";
+  outputImage.save( renderedFilePath, "PNG" );
+
+  setRenderedImage( renderedFilePath );
+
+  bool testResult = runTest( mTestName, pixelDiff );
+
+  theReport += report();
+
+  return testResult;
+}
+
+///@endcond
+
+#endif

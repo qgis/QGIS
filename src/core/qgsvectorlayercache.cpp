@@ -4,7 +4,7 @@
   -------------------
          begin                : January 2013
          copyright            : (C) Matthias Kuhn
-         email                : matthias dot kuhn at gmx dot ch
+         email                : matthias at opengis dot ch
 
  ***************************************************************************
  *                                                                         *
@@ -31,11 +31,12 @@ QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, 
   connect( mLayer, SIGNAL( layerDeleted() ), SLOT( layerDeleted() ) );
 
   setCacheGeometry( true );
-  setCacheSubsetOfAttributes( mLayer->pendingAllAttributesList() );
+  setCacheSubsetOfAttributes( mLayer->attributeList() );
   setCacheAddedAttributes( true );
 
   connect( mLayer, SIGNAL( attributeDeleted( int ) ), SLOT( attributeDeleted( int ) ) );
-  connect( mLayer, SIGNAL( updatedFields() ), SLOT( updatedFields() ) );
+  connect( mLayer, SIGNAL( updatedFields() ), SLOT( invalidate() ) );
+  connect( mLayer, SIGNAL( dataChanged() ), SLOT( invalidate() ) );
   connect( mLayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ), SLOT( onAttributeValueChanged( QgsFeatureId, int, const QVariant& ) ) );
 }
 
@@ -85,7 +86,7 @@ void QgsVectorLayerCache::setFullCache( bool fullCache )
     // Initialize the cache...
     QgsFeatureIterator it( new QgsCachedFeatureWriterIterator( this, QgsFeatureRequest()
                            .setSubsetOfAttributes( mCachedAttributes )
-                           .setFlags( !mCacheGeometry ? QgsFeatureRequest::NoGeometry : QgsFeatureRequest::Flags( 0 ) ) ) );
+                           .setFlags( mCacheGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) ) );
 
     int i = 0;
 
@@ -135,14 +136,14 @@ bool QgsVectorLayerCache::featureAtId( QgsFeatureId featureId, QgsFeature& featu
 {
   bool featureFound = false;
 
-  QgsCachedFeature* cachedFeature = NULL;
+  QgsCachedFeature* cachedFeature = nullptr;
 
   if ( !skipCache )
   {
     cachedFeature = mCache[ featureId ];
   }
 
-  if ( cachedFeature != NULL )
+  if ( cachedFeature )
   {
     feature = QgsFeature( *cachedFeature->feature() );
     featureFound = true;
@@ -150,7 +151,7 @@ bool QgsVectorLayerCache::featureAtId( QgsFeatureId featureId, QgsFeature& featu
   else if ( mLayer->getFeatures( QgsFeatureRequest()
                                  .setFilterFid( featureId )
                                  .setSubsetOfAttributes( mCachedAttributes )
-                                 .setFlags( !mCacheGeometry ? QgsFeatureRequest::NoGeometry : QgsFeatureRequest::Flags( 0 ) ) )
+                                 .setFlags( !mCacheGeometry ? QgsFeatureRequest::NoGeometry : QgsFeatureRequest::Flags( nullptr ) ) )
             .nextFeature( feature ) )
   {
     cacheFeature( feature );
@@ -170,12 +171,12 @@ QgsVectorLayer* QgsVectorLayerCache::layer()
   return mLayer;
 }
 
-void QgsVectorLayerCache::requestCompleted( QgsFeatureRequest featureRequest, QgsFeatureIds fids )
+void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids )
 {
   // If a request is too large for the cache don't notify to prevent from indexing incomplete requests
   if ( fids.count() < mCache.size() )
   {
-    foreach ( QgsAbstractCacheIndex* idx, mCacheIndices )
+    Q_FOREACH ( QgsAbstractCacheIndex* idx, mCacheIndices )
     {
       idx->requestCompleted( featureRequest, fids );
     }
@@ -194,7 +195,7 @@ void QgsVectorLayerCache::onAttributeValueChanged( QgsFeatureId fid, int field, 
 {
   QgsCachedFeature* cachedFeat = mCache[ fid ];
 
-  if ( NULL != cachedFeat )
+  if ( cachedFeat )
   {
     cachedFeat->mFeature->setAttribute( field, value );
   }
@@ -219,7 +220,7 @@ void QgsVectorLayerCache::onFeatureAdded( QgsFeatureId fid )
     QgsFeature feat;
     featureAtId( fid, feat );
   }
-  emit( featureAdded( fid ) );
+  emit featureAdded( fid );
 }
 
 void QgsVectorLayerCache::attributeAdded( int field )
@@ -231,9 +232,15 @@ void QgsVectorLayerCache::attributeAdded( int field )
 
 void QgsVectorLayerCache::attributeDeleted( int field )
 {
-  foreach ( QgsFeatureId fid, mCache.keys() )
+  QgsAttributeList attrs = mCachedAttributes;
+  mCachedAttributes.clear();
+
+  Q_FOREACH ( int attr, attrs )
   {
-    mCache[ fid ]->mFeature->deleteAttribute( field );
+    if ( attr < field )
+      mCachedAttributes << attr;
+    else if ( attr > field )
+      mCachedAttributes << attr - 1;
   }
 }
 
@@ -241,7 +248,7 @@ void QgsVectorLayerCache::geometryChanged( QgsFeatureId fid, QgsGeometry& geom )
 {
   QgsCachedFeature* cachedFeat = mCache[ fid ];
 
-  if ( cachedFeat != NULL )
+  if ( cachedFeat )
   {
     cachedFeat->mFeature->setGeometry( geom );
   }
@@ -250,12 +257,13 @@ void QgsVectorLayerCache::geometryChanged( QgsFeatureId fid, QgsGeometry& geom )
 void QgsVectorLayerCache::layerDeleted()
 {
   emit cachedLayerDeleted();
-  mLayer = NULL;
+  mLayer = nullptr;
 }
 
-void QgsVectorLayerCache::updatedFields()
+void QgsVectorLayerCache::invalidate()
 {
   mCache.clear();
+  emit invalidated();
 }
 
 QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &featureRequest )
@@ -274,7 +282,7 @@ QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &fe
     else
     {
       // Check if an index is able to deliver the requested features
-      foreach ( QgsAbstractCacheIndex *idx, mCacheIndices )
+      Q_FOREACH ( QgsAbstractCacheIndex *idx, mCacheIndices )
       {
         if ( idx->getCacheIterator( it, featureRequest ) )
         {
@@ -322,7 +330,7 @@ bool QgsVectorLayerCache::checkInformationCovered( const QgsFeatureRequest& feat
 
   if ( !featureRequest.flags().testFlag( QgsFeatureRequest::SubsetOfAttributes ) )
   {
-    requestedAttributes = mLayer->pendingAllAttributesList();
+    requestedAttributes = mLayer->attributeList();
   }
   else
   {
@@ -330,7 +338,7 @@ bool QgsVectorLayerCache::checkInformationCovered( const QgsFeatureRequest& feat
   }
 
   // Check if we even cache the information requested
-  foreach ( int attr, requestedAttributes )
+  Q_FOREACH ( int attr, requestedAttributes )
   {
     if ( !mCachedAttributes.contains( attr ) )
     {

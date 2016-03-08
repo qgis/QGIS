@@ -17,6 +17,17 @@
 
 #include "qgscrscache.h"
 #include "qgscoordinatetransform.h"
+#include <QVector>
+
+QgsCoordinateTransformCache* QgsCoordinateTransformCache::instance()
+{
+  static QgsCoordinateTransformCache mInstance;
+  return &mInstance;
+}
+
+QgsCoordinateTransformCache::QgsCoordinateTransformCache()
+{
+}
 
 QgsCoordinateTransformCache::~QgsCoordinateTransformCache()
 {
@@ -25,8 +36,6 @@ QgsCoordinateTransformCache::~QgsCoordinateTransformCache()
   {
     delete tIt.value();
   }
-
-  mTransforms.clear();
 }
 
 const QgsCoordinateTransform* QgsCoordinateTransformCache::transform( const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform, int destDatumTransform )
@@ -37,7 +46,9 @@ const QgsCoordinateTransform* QgsCoordinateTransformCache::transform( const QStr
   QList< QgsCoordinateTransform* >::const_iterator valIt = values.constBegin();
   for ( ; valIt != values.constEnd(); ++valIt )
   {
-    if ( *valIt && ( *valIt )->sourceDatumTransform() == srcDatumTransform && ( *valIt )->destinationDatumTransform() == destDatumTransform )
+    if ( *valIt &&
+         ( *valIt )->sourceDatumTransform() == srcDatumTransform &&
+         ( *valIt )->destinationDatumTransform() == destDatumTransform )
     {
       return *valIt;
     }
@@ -58,7 +69,7 @@ void QgsCoordinateTransformCache::invalidateCrs( const QString& crsAuthId )
 {
   //get keys to remove first
   QHash< QPair< QString, QString >, QgsCoordinateTransform* >::const_iterator it = mTransforms.constBegin();
-  QList< QPair< QString, QString > > updateList;
+  QVector< QPair< QString, QString > > updateList;
 
   for ( ; it != mTransforms.constEnd(); ++it )
   {
@@ -69,7 +80,7 @@ void QgsCoordinateTransformCache::invalidateCrs( const QString& crsAuthId )
   }
 
   //and remove after
-  QList< QPair< QString, QString > >::const_iterator updateIt = updateList.constBegin();
+  QVector< QPair< QString, QString > >::const_iterator updateIt = updateList.constBegin();
   for ( ; updateIt != updateList.constEnd(); ++updateIt )
   {
     mTransforms.remove( *updateIt );
@@ -84,10 +95,6 @@ QgsCRSCache* QgsCRSCache::instance()
 }
 
 QgsCRSCache::QgsCRSCache()
-{
-}
-
-QgsCRSCache::~QgsCRSCache()
 {
 }
 
@@ -108,7 +115,7 @@ void QgsCRSCache::updateCRSCache( const QString& authid )
 
 const QgsCoordinateReferenceSystem& QgsCRSCache::crsByAuthId( const QString& authid )
 {
-  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRS.find( authid );
+  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRS.constFind( authid );
   if ( crsIt == mCRS.constEnd() )
   {
     QgsCoordinateReferenceSystem s;

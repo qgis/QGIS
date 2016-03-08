@@ -25,13 +25,21 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4.QtGui import QIcon
+
 from qgis.core import QGis, QgsGeometry, QgsFeatureRequest
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterGeometryPredicate
+from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class SelectByLocation(GeoAlgorithm):
@@ -39,37 +47,46 @@ class SelectByLocation(GeoAlgorithm):
     INPUT = 'INPUT'
     INTERSECT = 'INTERSECT'
     PREDICATE = 'PREDICATE'
+    PRECISION = 'PRECISION'
     METHOD = 'METHOD'
     OUTPUT = 'OUTPUT'
 
-    METHODS = ['creating new selection',
-               'adding to current selection',
-               'removing from current selection']
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'select_location.png'))
 
     def defineCharacteristics(self):
-        self.name = 'Select by location'
-        self.group = 'Vector selection tools'
+        self.name, self.i18n_name = self.trAlgorithm('Select by location')
+        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
+
+        self.methods = [self.tr('creating new selection'),
+                        self.tr('adding to current selection'),
+                        self.tr('removing from current selection')]
+
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Layer to select from'),
-            [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Layer to select from'),
+                                          [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(self.INTERSECT,
-            self.tr('Additional layer (intersection layer)'),
-            [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Additional layer (intersection layer)'),
+                                          [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterGeometryPredicate(self.PREDICATE,
-            self.tr('Geometric predicate'),
-            left=self.INPUT, right=self.INTERSECT))
+                                                     self.tr('Geometric predicate'),
+                                                     left=self.INPUT, right=self.INTERSECT))
+        self.addParameter(ParameterNumber(self.PRECISION,
+                                          self.tr('Precision'),
+                                          0.0, None, 0.0))
         self.addParameter(ParameterSelection(self.METHOD,
-            self.tr('Modify current selection by'),
-            self.METHODS, 0))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection'), True))
+                                             self.tr('Modify current selection by'),
+                                             self.methods, 0))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (location)'), True))
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)
         inputLayer = dataobjects.getObjectFromUri(filename)
         method = self.getParameterValue(self.METHOD)
-        filename = self.getParameterValue(self.INTERSECT)
-        selectLayer = dataobjects.getObjectFromUri(filename)
+        filename2 = self.getParameterValue(self.INTERSECT)
+        selectLayer = dataobjects.getObjectFromUri(filename2)
         predicates = self.getParameterValue(self.PREDICATE)
+        precision = self.getParameterValue(self.PRECISION)
 
         oldSelection = set(inputLayer.selectedFeaturesIds())
         inputLayer.removeSelection()
@@ -82,17 +99,18 @@ class SelectByLocation(GeoAlgorithm):
 
         geom = QgsGeometry()
         selectedSet = []
-        current = 0
         features = vector.features(selectLayer)
-        total = 100.0 / float(len(features))
-        for f in features:
-            geom = QgsGeometry(f.geometry())
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
+            geom = vector.snapToPrecision(f.geometry(), precision)
+            bbox = vector.bufferedBoundingBox(geom.boundingBox(), 0.51 * precision)
+            intersects = index.intersects(bbox)
 
-            intersects = index.intersects(geom.boundingBox())
             for i in intersects:
                 request = QgsFeatureRequest().setFilterFid(i)
                 feat = inputLayer.getFeatures(request).next()
-                tmpGeom = QgsGeometry(feat.geometry())
+                tmpGeom = vector.snapToPrecision(feat.geometry(), precision)
+
                 res = False
                 for predicate in predicates:
                     if predicate == 'disjoint':
@@ -120,7 +138,6 @@ class SelectByLocation(GeoAlgorithm):
                             selectedSet.append(feat.id())
                             break
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         if 'disjoint' in predicates:

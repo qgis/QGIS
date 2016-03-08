@@ -32,10 +32,12 @@ from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
-from processing.tools.system import isWindows
-
-from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
+
+from processing.tools.system import isWindows
+from processing.tools.vector import ogrConnectionString, ogrLayerName
+
 
 FORMATS = [
     'ESRI Shapefile',
@@ -88,7 +90,7 @@ EXTS = [
 ]
 
 
-class Ogr2Ogr(OgrAlgorithm):
+class Ogr2Ogr(GdalAlgorithm):
 
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
@@ -96,21 +98,21 @@ class Ogr2Ogr(OgrAlgorithm):
     OPTIONS = 'OPTIONS'
 
     def defineCharacteristics(self):
-        self.name = 'Convert format'
-        self.group = '[OGR] Conversion'
+        self.name, self.i18n_name = self.trAlgorithm('Convert format')
+        self.group, self.i18n_group = self.trAlgorithm('[OGR] Conversion')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterSelection(self.FORMAT,
-            self.tr('Destination Format'), FORMATS))
+                                             self.tr('Destination Format'), FORMATS))
         self.addParameter(ParameterString(self.OPTIONS,
-            self.tr('Creation options'), '', optional=True))
+                                          self.tr('Creation options'), '', optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Converted')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
+        ogrLayer = ogrConnectionString(inLayer)[1:-1]
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
@@ -122,7 +124,7 @@ class Ogr2Ogr(OgrAlgorithm):
             outFile += ext
             output.value = outFile
 
-        output = self.ogrConnectionString(outFile)
+        output = ogrConnectionString(outFile)
         options = unicode(self.getParameterValue(self.OPTIONS))
 
         if outFormat == 'SQLite' and os.path.isfile(output):
@@ -136,7 +138,7 @@ class Ogr2Ogr(OgrAlgorithm):
 
         arguments.append(output)
         arguments.append(ogrLayer)
-        arguments.append(self.ogrLayerName(inLayer))
+        arguments.append(ogrLayerName(inLayer))
 
         commands = []
         if isWindows():
@@ -145,4 +147,7 @@ class Ogr2Ogr(OgrAlgorithm):
         else:
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands
+
+    def commandName(self):
+        return "ogr2ogr"

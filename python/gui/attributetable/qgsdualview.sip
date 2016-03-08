@@ -29,7 +29,7 @@ class QgsDualView : QStackedWidget
      * @brief Constructor
      * @param parent  The parent widget
      */
-    explicit QgsDualView( QWidget* parent = 0 );
+    explicit QgsDualView( QWidget* parent /TransferThis/ = 0 );
     virtual ~QgsDualView();
 
     /**
@@ -41,7 +41,7 @@ class QgsDualView : QStackedWidget
      * @param request    Use a modified request to limit the shown features
      * @param context    The context in which this view is shown
      */
-    void init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request = QgsFeatureRequest(), QgsAttributeEditorContext context = QgsAttributeEditorContext() );
+    void init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request = QgsFeatureRequest(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
 
     /**
      * Change the current view mode.
@@ -88,7 +88,7 @@ class QgsDualView : QStackedWidget
      * @param filteredFeatures  A list of feature ids
      *
      */
-    void setFilteredFeatures( QgsFeatureIds filteredFeatures );
+    void setFilteredFeatures( const QgsFeatureIds& filteredFeatures );
 
     QgsFeatureIds filteredFeatures();
 
@@ -128,12 +128,14 @@ class QgsDualView : QStackedWidget
      */
     bool saveEditChanges();
 
+    void openConditionalStyles();
+
   signals:
     /**
      * Is emitted, whenever the display expression is successfully changed
      * @param expression The expression that was applied
      */
-    void displayExpressionChanged( const QString expression );
+    void displayExpressionChanged( const QString& expression );
 
     /**
      * Is emitted, whenever the filter changes

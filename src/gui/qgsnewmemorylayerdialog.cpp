@@ -26,6 +26,7 @@
 #include <QComboBox>
 #include <QLibrary>
 #include <QSettings>
+#include <QUuid>
 #include <QFileDialog>
 
 QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent )
@@ -33,11 +34,10 @@ QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent )
   QgsNewMemoryLayerDialog dialog( parent );
   if ( dialog.exec() == QDialog::Rejected )
   {
-    return 0;
+    return nullptr;
   }
 
   QGis::WkbType geometrytype = dialog.selectedType();
-  QString crsId = dialog.crs().authid();
 
   QString geomType;
   switch ( geometrytype )
@@ -60,17 +60,24 @@ QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent )
     case QGis::WKBMultiPolygon:
       geomType = "multipolygon";
       break;
+    case QGis::WKBNoGeometry:
+      geomType = "none";
+      break;
     default:
       geomType = "point";
   }
 
-  QString layerProperties = geomType + QString( "?crs=%1" ).arg( crsId );
+  QString layerProperties = QString( "%1?" ).arg( geomType );
+  if ( QGis::WKBNoGeometry != geometrytype )
+    layerProperties.append( QString( "crs=%1&" ).arg( dialog.crs().authid() ) );
+  layerProperties.append( QString( "memoryid=%1" ).arg( QUuid::createUuid().toString() ) );
+
   QString name = dialog.layerName().isEmpty() ? tr( "New scratch layer" ) : dialog.layerName();
   QgsVectorLayer* newLayer = new QgsVectorLayer( layerProperties, name, QString( "memory" ) );
   return newLayer;
 }
 
-QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFlags fl )
+QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, const Qt::WindowFlags& fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
@@ -96,7 +103,11 @@ QgsNewMemoryLayerDialog::~QgsNewMemoryLayerDialog()
 
 QGis::WkbType QgsNewMemoryLayerDialog::selectedType() const
 {
-  if ( mPointRadioButton->isChecked() )
+  if ( !buttonGroupGeometry->isChecked() )
+  {
+    return QGis::WKBNoGeometry;
+  }
+  else if ( mPointRadioButton->isChecked() )
   {
     return QGis::WKBPoint;
   }

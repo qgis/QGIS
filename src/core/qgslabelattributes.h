@@ -73,15 +73,13 @@ class QColor;
  *   Each attribute is either set or unset.
  */
 
-class  CORE_EXPORT QgsLabelAttributes
+class CORE_EXPORT QgsLabelAttributes
 {
   public:
     /** Constructor.
      *  @param def if true, defaults are set, if false all all attributes are unset
      */
     QgsLabelAttributes( bool def = true );
-
-    ~QgsLabelAttributes();
 
     /* Units type */
     enum Units

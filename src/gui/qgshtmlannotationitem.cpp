@@ -37,10 +37,14 @@
 
 
 QgsHtmlAnnotationItem::QgsHtmlAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer, bool hasFeature, int feature )
-    : QgsAnnotationItem( canvas ), mWidgetContainer( 0 ), mWebView( 0 ), mVectorLayer( vlayer ),
-    mHasAssociatedFeature( hasFeature ), mFeatureId( feature )
+    : QgsAnnotationItem( canvas )
+    , mWidgetContainer( nullptr )
+    , mWebView( nullptr )
+    , mVectorLayer( vlayer )
+    , mHasAssociatedFeature( hasFeature )
+    , mFeatureId( feature )
 {
-  mWebView = new QWebView();
+  mWebView = new QgsWebView();
   mWebView->page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
 
   mWidgetContainer = new QGraphicsProxyWidget( this );
@@ -158,7 +162,7 @@ void QgsHtmlAnnotationItem::writeXML( QDomDocument& doc ) const
 
 void QgsHtmlAnnotationItem::readXML( const QDomDocument& doc, const QDomElement& itemElem )
 {
-  mVectorLayer = 0;
+  mVectorLayer = nullptr;
   if ( itemElem.hasAttribute( "vectorLayer" ) )
   {
     mVectorLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( itemElem.attribute( "vectorLayer", "" ) ) );
@@ -214,7 +218,14 @@ void QgsHtmlAnnotationItem::setFeatureForMapPosition()
   mFeatureId = currentFeatureId;
   mFeature = currentFeature;
 
-  QString newtext = QgsExpression::replaceExpressionText( mHtmlSource, &mFeature, vectorLayer() );
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mVectorLayer );
+  if ( mMapCanvas )
+    context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() ) );
+  context.setFeature( mFeature );
+  QString newtext = QgsExpression::replaceExpressionText( mHtmlSource, &context );
   mWebView->setHtml( newtext );
 }
 

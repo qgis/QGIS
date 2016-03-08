@@ -25,13 +25,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4.QtGui import QIcon
+
 from qgis.core import QGis, QgsFeature, QgsGeometry
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class SinglePartsToMultiparts(GeoAlgorithm):
@@ -40,15 +47,18 @@ class SinglePartsToMultiparts(GeoAlgorithm):
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'single_to_multi.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Singleparts to multipart'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Singleparts to multipart')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Unique ID field'), self.INPUT))
+                                              self.tr('Unique ID field'), self.INPUT))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Multipart')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
@@ -69,8 +79,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
 
         current = 0
         features = vector.features(layer)
-        total = 100.0 / float(len(features) * len(unique))
-
+        total = 100.0 / (len(features) * len(unique))
         if not len(unique) == layer.featureCount():
             for i in unique:
                 multi_feature = []
@@ -93,7 +102,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
 
                 outFeat.setAttributes(attrs)
                 outGeom = QgsGeometry(self.convertGeometry(multi_feature,
-                                      vType))
+                                                           vType))
                 outFeat.setGeometry(outGeom)
                 writer.addFeature(outFeat)
 
@@ -117,7 +126,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
                 return QGis.WKBMultiPolygon
             else:
                 return QGis.WKBUnknown
-        except Exception, err:
+        except Exception as err:
             pass
 
     def extractAsMulti(self, geom):

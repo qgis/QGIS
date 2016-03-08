@@ -22,7 +22,7 @@ class QgsMapSettings
     //! Return the size of the resulting map image
     QSize outputSize() const;
     //! Set the size of the resulting map image
-    void setOutputSize( const QSize& size );
+    void setOutputSize( QSize size );
 
     //! Return the rotation of the resulting map image
     //! Units are clockwise degrees
@@ -86,14 +86,15 @@ class QgsMapSettings
       ForceVectorOutput,          //!< Vector graphics should not be cached and drawn as raster images
       UseAdvancedEffects,         //!< Enable layer transparency and blending effects
       DrawLabeling,               //!< Enable drawing of labels on top of the map
-      UseRenderingOptimization,        //!< Enable vector simplification and other rendering optimizations
+      UseRenderingOptimization,   //!< Enable vector simplification and other rendering optimizations
       DrawSelection,              //!< Whether vector selections should be shown in the rendered map
-      // TODO: ignore scale-based visibility (overview)
+      DrawSymbolBounds,           //!< Draw bounds of symbols (for debugging/testing)
+      RenderMapTile               //!< Draw map such that there are no problems between adjacent tiles
     };
     typedef QFlags<QgsMapSettings::Flag> Flags;
 
     //! Set combination of flags that will be used for rendering
-    void setFlags( Flags flags );
+    void setFlags( const Flags& flags );
     //! Enable or disable a particular flag (other flags are not affected)
     void setFlag( Flag flag, bool on = true );
     //! Return combination of flags used for rendering
@@ -118,13 +119,34 @@ class QgsMapSettings
     //! Return the calculated scale of the map
     double scale() const;
 
+    /** Sets the expression context. This context is used for all expression evaluation
+     * associated with this map settings.
+     * @see expressionContext()
+     * @note added in QGIS 2.12
+     */
+    void setExpressionContext( const QgsExpressionContext& context );
+
+    /** Gets the expression context. This context should be used for all expression evaluation
+     * associated with this map settings.
+     * @see setExpressionContext()
+     * @note added in QGIS 2.12
+     */
+    const QgsExpressionContext& expressionContext() const;
 
     // -- utility functions --
 
+    //! @note not available in python bindings
     //const QgsDatumTransformStore& datumTransformStore() const;
     QgsDatumTransformStore& datumTransformStore();
 
     const QgsMapToPixel& mapToPixel() const;
+
+    /** Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
+     * @param theLayer The layer
+     * @param referenceExtent A reference extent based on which to perform the computation. If not specified, the layer extent is used
+     * @note added in QGIS 2.12
+     */
+    double layerToMapUnits( QgsMapLayer* theLayer, const QgsRectangle& referenceExtent = QgsRectangle() ) const;
 
     /**
      * @brief transform bounding box from layer's CRS to output CRS
@@ -182,6 +204,9 @@ class QgsMapSettings
 
     void writeXML( QDomNode& theNode, QDomDocument& theDoc );
 
+  protected:
+
+    void updateDerived();
 };
 
 QFlags<QgsMapSettings::Flag> operator|(QgsMapSettings::Flag f1, QFlags<QgsMapSettings::Flag> f2);

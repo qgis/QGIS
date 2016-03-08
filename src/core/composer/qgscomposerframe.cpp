@@ -37,8 +37,8 @@ QgsComposerFrame::QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf
 }
 
 QgsComposerFrame::QgsComposerFrame()
-    : QgsComposerItem( 0, 0, 0, 0, 0 )
-    , mMultiFrame( 0 )
+    : QgsComposerItem( 0, 0, 0, 0, nullptr )
+    , mMultiFrame( nullptr )
     , mHidePageIfEmpty( false )
     , mHideBackgroundIfEmpty( false )
 {
@@ -113,6 +113,19 @@ bool QgsComposerFrame::isEmpty() const
 
   return false;
 
+}
+
+QgsExpressionContext *QgsComposerFrame::createExpressionContext() const
+{
+  if ( !mMultiFrame )
+    return QgsComposerItem::createExpressionContext();
+
+  //start with multiframe's context
+  QgsExpressionContext* context = mMultiFrame->createExpressionContext();
+  //add frame's individual context
+  context->appendScope( QgsExpressionContextUtils::composerItemScope( this ) );
+
+  return context;
 }
 
 QString QgsComposerFrame::displayName() const

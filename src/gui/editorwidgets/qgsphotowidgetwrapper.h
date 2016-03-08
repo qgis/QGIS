@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,11 +17,15 @@
 #define QGSPHOTOWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
+#include "qgspixmaplabel.h"
 
 #include <QLabel>
 #include <QPushButton>
 #include <QLineEdit>
+
+#ifdef WITH_QTWEBKIT
 #include <QWebView>
+#endif
 
 
 /**
@@ -33,22 +37,23 @@
  * <li><b>Width</b> <i>The width of the picture widget. If 0 and "Height" &gt; 0 will be determined automatically.</i></li>
  * <li><b>Height</b> <i>The height of the picture widget. If 0 and "Width" &gt; 0 will be determined automatically.</i></li>
  * </ul>
- *
+ * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsPhotoWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsPhotoWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
+    explicit QgsPhotoWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
 
     // QgsEditorWidgetWrapper interface
   public:
-    QVariant value() override;
+    QVariant value() const override;
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
+    bool valid() const override;
 
   public slots:
     void setValue( const QVariant& value ) override;
@@ -61,8 +66,13 @@ class GUI_EXPORT QgsPhotoWidgetWrapper : public QgsEditorWidgetWrapper
   private:
     //! This label is used as a container to display the picture
     QLabel* mPhotoLabel;
+    //! This label is used as a container to display a picture that scales with the dialog layout.
+    //! It will always point to the same label as mPhotoLabel, but may be NULL if the widget is of type QLabel.
+    QgsPixmapLabel* mPhotoPixmapLabel;
+#ifdef WITH_QTWEBKIT
     //! This webview is used as a container to display the picture
     QWebView* mWebView;
+#endif
     //! The line edit containing the path to the picture
     QLineEdit* mLineEdit;
     //! The button to open the file chooser dialog

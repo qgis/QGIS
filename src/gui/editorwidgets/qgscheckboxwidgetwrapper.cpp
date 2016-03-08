@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,13 +17,13 @@
 
 QgsCheckboxWidgetWrapper::QgsCheckboxWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mCheckBox( NULL )
-    , mGroupBox( NULL )
+    , mCheckBox( nullptr )
+    , mGroupBox( nullptr )
 {
 }
 
 
-QVariant QgsCheckboxWidgetWrapper::value()
+QVariant QgsCheckboxWidgetWrapper::value() const
 {
   QVariant v;
 
@@ -51,6 +51,11 @@ void QgsCheckboxWidgetWrapper::initWidget( QWidget* editor )
     connect( mCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( valueChanged( bool ) ) );
   if ( mGroupBox )
     connect( mGroupBox, SIGNAL( toggled( bool ) ), this, SLOT( valueChanged( bool ) ) );
+}
+
+bool QgsCheckboxWidgetWrapper::valid() const
+{
+  return mCheckBox || mGroupBox;
 }
 
 void QgsCheckboxWidgetWrapper::setValue( const QVariant& value )

@@ -17,7 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgscomposition.h"
-#include "qgscompositionchecker.h"
+#include "qgsmultirenderchecker.h"
 #include "qgscomposermap.h"
 #include "qgscomposermapoverview.h"
 #include "qgsmaplayerregistry.h"
@@ -36,6 +36,7 @@ class TestQgsComposerMapOverview : public QObject
     TestQgsComposerMapOverview()
         : mComposition( 0 )
         , mComposerMap( 0 )
+        , mMapSettings( 0 )
         , mRasterLayer( 0 )
     {}
 
@@ -54,7 +55,7 @@ class TestQgsComposerMapOverview : public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerMap* mComposerMap;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QgsRasterLayer* mRasterLayer;
     QString mReport;
 };
@@ -64,8 +65,10 @@ void TestQgsComposerMapOverview::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  mMapSettings = new QgsMapSettings();
+
   //create maplayers from testdata and add to layer registry
-  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "rgb256x256.png" );
+  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + "/rgb256x256.png" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
@@ -74,9 +77,9 @@ void TestQgsComposerMapOverview::initTestCase()
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
   //create composition with composer map
-  mMapSettings.setLayers( QStringList() << mRasterLayer->id() );
-  mMapSettings.setCrsTransformEnabled( false );
-  mComposition = new QgsComposition( mMapSettings );
+  mMapSettings->setLayers( QStringList() << mRasterLayer->id() );
+  mMapSettings->setCrsTransformEnabled( false );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );
@@ -88,8 +91,9 @@ void TestQgsComposerMapOverview::initTestCase()
 void TestQgsComposerMapOverview::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -118,6 +122,7 @@ void TestQgsComposerMapOverview::overviewMap()
   overviewMap->setNewExtent( QgsRectangle( 0, -256, 256, 0 ) );
   overviewMap->overview()->setFrameMap( mComposerMap->id() );
   QgsCompositionChecker checker( "composermap_overview", mComposition );
+  checker.setControlPathPrefix( "composer_mapoverview" );
 
   bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposition->removeComposerItem( overviewMap );
@@ -134,6 +139,7 @@ void TestQgsComposerMapOverview::overviewMapRotated()
   overviewMap->setNewExtent( QgsRectangle( 0, -256, 256, 0 ) );
   overviewMap->overview()->setFrameMap( mComposerMap->id() );
   QgsCompositionChecker checker( "composermap_overview_rotated", mComposition );
+  checker.setControlPathPrefix( "composer_mapoverview" );
 
   bool testResult = checker.testComposition( mReport, 0, 600 );
   mComposition->removeComposerItem( overviewMap );
@@ -151,6 +157,7 @@ void TestQgsComposerMapOverview::overviewMapRotated2()
   overviewMap->setNewExtent( QgsRectangle( 0, -256, 256, 0 ) );
   overviewMap->overview()->setFrameMap( mComposerMap->id() );
   QgsCompositionChecker checker( "composermap_overview_rotated2", mComposition );
+  checker.setControlPathPrefix( "composer_mapoverview" );
 
   bool testResult = checker.testComposition( mReport, 0, 600 );
   mComposition->removeComposerItem( overviewMap );
@@ -168,6 +175,7 @@ void TestQgsComposerMapOverview::overviewMapBlending()
   overviewMapBlend->overview()->setBlendMode( QPainter::CompositionMode_Multiply );
 
   QgsCompositionChecker checker( "composermap_overview_blending", mComposition );
+  checker.setControlPathPrefix( "composer_mapoverview" );
 
   bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposition->removeComposerItem( overviewMapBlend );
@@ -185,6 +193,7 @@ void TestQgsComposerMapOverview::overviewMapInvert()
   overviewMapInvert->overview()->setInverted( true );
 
   QgsCompositionChecker checker( "composermap_overview_invert", mComposition );
+  checker.setControlPathPrefix( "composer_mapoverview" );
 
   bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposition->removeComposerItem( overviewMapInvert );
@@ -202,6 +211,7 @@ void TestQgsComposerMapOverview::overviewMapCenter()
   overviewMapCenter->overview()->setCentered( true );
 
   QgsCompositionChecker checker( "composermap_overview_center", mComposition );
+  checker.setControlPathPrefix( "composer_mapoverview" );
 
   bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposition->removeComposerItem( overviewMapCenter );

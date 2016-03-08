@@ -35,7 +35,14 @@
       <string>Marker placement</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="5" column="1">
+      <item row="1" column="1">
+       <widget class="QRadioButton" name="radVertex">
+        <property name="text">
+         <string>on every vertex</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLabel" name="label">
@@ -84,27 +91,6 @@
          </widget>
         </item>
        </layout>
-      </item>
-      <item row="4" column="1">
-       <widget class="QRadioButton" name="radCentralPoint">
-        <property name="text">
-         <string>on central point</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QRadioButton" name="radVertex">
-        <property name="text">
-         <string>on every vertex</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QRadioButton" name="radVertexLast">
-        <property name="text">
-         <string>on last vertex only</string>
-        </property>
-       </widget>
       </item>
       <item row="0" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -176,6 +162,27 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="1">
+       <widget class="QRadioButton" name="radVertexLast">
+        <property name="text">
+         <string>on last vertex only</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QRadioButton" name="radCentralPoint">
+        <property name="text">
+         <string>on central point</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QRadioButton" name="radCurvePoint">
+        <property name="text">
+         <string>on every curve point</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -207,10 +214,10 @@
         <number>6</number>
        </property>
        <property name="minimum">
-        <double>-100000.000000000000000</double>
+        <double>-999999999.000000000000000</double>
        </property>
        <property name="maximum">
-        <double>100000.000000000000000</double>
+        <double>999999999.000000000000000</double>
        </property>
        <property name="singleStep">
         <double>0.200000000000000</double>
@@ -258,15 +265,15 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDataDefinedButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -278,6 +285,7 @@
   <tabstop>radVertexLast</tabstop>
   <tabstop>radVertexFirst</tabstop>
   <tabstop>radCentralPoint</tabstop>
+  <tabstop>radCurvePoint</tabstop>
   <tabstop>mSpinOffsetAlongLine</tabstop>
   <tabstop>mOffsetAlongLineDDBtn</tabstop>
   <tabstop>chkRotateMarker</tabstop>

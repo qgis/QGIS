@@ -910,7 +910,7 @@ RoundedFrame::RoundedFrame()
 void
 RoundedFrame::draw( const ControlContext& cx, DrawableList& out )
 {
-    /*
+#if 0
     if ( Geometry::hasBufferOperation() )
     {
         if ( !getImage() || getImage()->s() != _renderSize.x() || getImage()->t() != _renderSize.y() )
@@ -943,7 +943,7 @@ RoundedFrame::draw( const ControlContext& cx, DrawableList& out )
         // fallback: draw a non-rounded frame.
         Frame::draw( cx, out );
     }
-    */
+#endif
         Frame::draw( cx, out );
 }
 
@@ -1577,7 +1577,7 @@ namespace osgEarth { namespace Util { namespace Controls21
     // We need this info since controls position from the upper-left corner.
     struct ViewportHandler : public osgGA::GUIEventHandler
     {
-        ViewportHandler( ControlCanvas* cs ) : _cs(cs), _width(0), _height(0), _first(true) { }
+        explicit ViewportHandler( ControlCanvas* cs ) : _cs(cs), _width(0), _height(0), _first(true) { }
 
         bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
         {
@@ -1615,7 +1615,7 @@ namespace osgEarth { namespace Util { namespace Controls21
 
     struct ControlCanvasEventHandler : public osgGA::GUIEventHandler
     {
-        ControlCanvasEventHandler( ControlCanvas* cs ) : _cs(cs) { }
+        explicit ControlCanvasEventHandler( ControlCanvas* cs ) : _cs(cs) { }
 
         bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
         {

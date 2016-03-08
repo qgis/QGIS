@@ -23,7 +23,6 @@
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
 #include <qgsmaplayer.h>
-#include <qgsmaplayer.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsgeometry.h>
 #include <qgsvertexmarker.h>
@@ -63,10 +62,6 @@ checkDock::checkDock( QgisInterface* qIface, QWidget* parent )
   mConfigureDialog = new rulesDialog( mTest->testMap(), qIface, parent );
   mTestTable = mConfigureDialog->rulesTable();
 
-  mValidateExtentButton->setIcon( QIcon( ":/topology/validateExtent.png" ) );
-  mValidateAllButton->setIcon( QIcon( ":/topology/validateAll.png" ) );
-  mConfigureButton->setIcon( QIcon( ":/topology/configureRules.png" ) );
-
   QgsMapCanvas* canvas = qIface->mapCanvas();// mQgisApp->mapCanvas();
   mRBFeature1 = new QgsRubberBand( canvas );
   mRBFeature2 = new QgsRubberBand( canvas );
@@ -80,14 +75,14 @@ checkDock::checkDock( QgisInterface* qIface, QWidget* parent )
   mRBFeature2->setWidth( 5 );
   mRBConflict->setWidth( 5 );
 
-  mVMConflict = 0;
-  mVMFeature1 = 0;
-  mVMFeature2 = 0;
+  mVMConflict = nullptr;
+  mVMFeature1 = nullptr;
+  mVMFeature2 = nullptr;
 
-  connect( mConfigureButton, SIGNAL( clicked() ), this, SLOT( configure() ) );
-  connect( mValidateAllButton, SIGNAL( clicked() ), this, SLOT( validateAll() ) );
+  connect( actionConfigure, SIGNAL( triggered() ), this, SLOT( configure() ) );
+  connect( actionValidateAll, SIGNAL( triggered() ), this, SLOT( validateAll() ) );
   //connect( mValidateSelectedButton, SIGNAL( clicked() ), this, SLOT( validateSelected() ) );
-  connect( mValidateExtentButton, SIGNAL( clicked() ), this, SLOT( validateExtent() ) );
+  connect( actionValidateExtent, SIGNAL( triggered() ), this, SLOT( validateExtent() ) );
   connect( mToggleRubberband, SIGNAL( clicked() ), this, SLOT( toggleErrorMarker() ) );
 
   connect( mFixButton, SIGNAL( clicked() ), this, SLOT( fix() ) );
@@ -116,17 +111,17 @@ void checkDock::clearVertexMarkers()
   if ( mVMConflict )
   {
     delete mVMConflict;
-    mVMConflict = 0;
+    mVMConflict = nullptr;
   }
   if ( mVMFeature1 )
   {
     delete mVMFeature1;
-    mVMFeature1 = 0;
+    mVMFeature1 = nullptr;
   }
   if ( mVMFeature2 )
   {
     delete mVMFeature2;
-    mVMFeature2 = 0;
+    mVMFeature2 = nullptr;
   }
 }
 
@@ -144,9 +139,7 @@ void checkDock::updateRubberBands( bool visible )
 
 void checkDock::deleteErrors()
 {
-  QList<TopolError*>::Iterator it = mErrorList.begin();
-  for ( ; it != mErrorList.end(); ++it )
-    delete *it;
+  qDeleteAll( mErrorList );
 
   mErrorList.clear();
   mErrorListModel->resetModel();
@@ -155,7 +148,7 @@ void checkDock::deleteErrors()
   mRbErrorMarkers.clear();
 }
 
-void checkDock::parseErrorListByLayer( QString layerId )
+void checkDock::parseErrorListByLayer( const QString& layerId )
 {
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mLayerRegistry->mapLayers()[layerId] );
   QList<TopolError*>::Iterator it = mErrorList.begin();
@@ -205,19 +198,19 @@ void checkDock::configure()
 void checkDock::errorListClicked( const QModelIndex& index )
 {
   int row = index.row();
-  QgsRectangle r = mErrorList[row]->boundingBox();
+  QgsRectangle r = mErrorList.at( row )->boundingBox();
   r.scale( 1.5 );
   QgsMapCanvas* canvas = qgsInterface->mapCanvas();
   canvas->setExtent( r );
   canvas->refresh();
 
   mFixBox->clear();
-  mFixBox->addItems( mErrorList[row]->fixNames() );
+  mFixBox->addItems( mErrorList.at( row )->fixNames() );
   mFixBox->setCurrentIndex( mFixBox->findText( tr( "Select automatic fix" ) ) );
 
   QgsFeature f;
-  QgsGeometry* g;
-  FeatureLayer fl = mErrorList[row]->featurePairs().first();
+  const QgsGeometry* g;
+  FeatureLayer fl = mErrorList.at( row )->featurePairs().first();
   if ( !fl.layer )
   {
     QgsMessageLog::logMessage( tr( "Invalid first layer" ), tr( "Topology plugin" ) );
@@ -227,7 +220,7 @@ void checkDock::errorListClicked( const QModelIndex& index )
   //fl1.layer->getFeatures( QgsFeatureRequest().setFilterFid( fl1.feature.id() ) ).nextFeature( f1 );
 
   fl.layer->getFeatures( QgsFeatureRequest().setFilterFid( fl.feature.id() ) ).nextFeature( f );
-  g = f.geometry();
+  g = f.constGeometry();
   if ( !g )
   {
     QgsMessageLog::logMessage( tr( "Invalid first geometry" ), tr( "Topology plugin" ) );
@@ -260,7 +253,7 @@ void checkDock::errorListClicked( const QModelIndex& index )
 
 
   fl.layer->getFeatures( QgsFeatureRequest().setFilterFid( fl.feature.id() ) ).nextFeature( f );
-  g = f.geometry();
+  g = f.constGeometry();
   if ( !g )
   {
     QgsMessageLog::logMessage( tr( "Invalid second geometry" ), tr( "Topology plugin" ) );
@@ -286,17 +279,17 @@ void checkDock::errorListClicked( const QModelIndex& index )
     return;
   }
 
-  if ( mErrorList[row]->conflict()->type() == QGis::Point )
+  if ( mErrorList.at( row )->conflict()->type() == QGis::Point )
   {
     mVMConflict = new QgsVertexMarker( canvas );
     mVMConflict->setIconType( QgsVertexMarker::ICON_BOX );
     mVMConflict->setPenWidth( 5 );
     mVMConflict->setIconSize( 5 );
     mVMConflict->setColor( "red" );
-    mVMConflict->setCenter( mErrorList[row]->conflict()->asPoint() );
+    mVMConflict->setCenter( mErrorList.at( row )->conflict()->asPoint() );
   }
   else
-    mRBConflict->setToGeometry( mErrorList[row]->conflict(), fl.layer );
+    mRBConflict->setToGeometry( mErrorList.at( row )->conflict(), fl.layer );
 }
 
 void checkDock::fix()
@@ -313,7 +306,7 @@ void checkDock::fix()
 
   clearVertexMarkers();
 
-  if ( mErrorList[row]->fix( fixName ) )
+  if ( mErrorList.at( row )->fix( fixName ) )
   {
     mErrorList.removeAt( row );
     mErrorListModel->resetModel();
@@ -342,7 +335,7 @@ void checkDock::runTests( ValidateType type )
     }
 
     QgsVectorLayer* layer1 = ( QgsVectorLayer* )mLayerRegistry->mapLayers()[layer1Str];
-    QgsVectorLayer* layer2 = 0;
+    QgsVectorLayer* layer2 = nullptr;
 
     if (( QgsVectorLayer* )mLayerRegistry->mapLayers().contains( layer2Str ) )
       layer2 = ( QgsVectorLayer* )mLayerRegistry->mapLayers()[layer2Str];
@@ -358,7 +351,7 @@ void checkDock::runTests( ValidateType type )
 
     QList<TopolError*>::Iterator it;
 
-    QgsRubberBand* rb = 0;
+    QgsRubberBand* rb = nullptr;
     for ( it = errors.begin(); it != errors.end(); ++it )
     {
       TopolError* te = *it;
@@ -367,7 +360,7 @@ void checkDock::runTests( ValidateType type )
       QSettings settings;
       if ( te->conflict()->type() == QGis::Polygon )
       {
-        rb = new QgsRubberBand( qgsInterface->mapCanvas(), true );
+        rb = new QgsRubberBand( qgsInterface->mapCanvas(), QGis::Polygon );
       }
       else
       {

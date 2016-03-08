@@ -23,7 +23,6 @@
 #include <QDataStream>
 #include <QTextStream>
 #include <QStringList>
-#include <QMessageBox>
 #include <QSettings>
 #include <QRegExp>
 #include <QUrl>
@@ -54,25 +53,22 @@ static const QString TEXT_PROVIDER_DESCRIPTION = "Delimited text data provider";
 static const int SUBSET_ID_THRESHOLD_FACTOR = 10;
 
 QRegExp QgsDelimitedTextProvider::WktPrefixRegexp( "^\\s*(?:\\d+\\s+|SRID\\=\\d+\\;)", Qt::CaseInsensitive );
-QRegExp QgsDelimitedTextProvider::WktZMRegexp( "\\s*(?:z|m|zm)(?=\\s*\\()", Qt::CaseInsensitive );
-QRegExp QgsDelimitedTextProvider::WktCrdRegexp( "(\\-?\\d+(?:\\.\\d*)?\\s+\\-?\\d+(?:\\.\\d*)?)\\s[\\s\\d\\.\\-]+" );
 QRegExp QgsDelimitedTextProvider::CrdDmsRegexp( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.]*([-+nsew])?\\s*$", Qt::CaseInsensitive );
 
-QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
+QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
     : QgsVectorDataProvider( uri )
     , mLayerValid( false )
     , mValid( false )
-    , mFile( 0 )
+    , mFile( nullptr )
     , mGeomRep( GeomNone )
     , mFieldCount( 0 )
     , mXFieldIndex( -1 )
     , mYFieldIndex( -1 )
     , mWktFieldIndex( -1 )
-    , mWktHasZM( false )
     , mWktHasPrefix( false )
     , mXyDms( false )
     , mSubsetString( "" )
-    , mSubsetExpression( 0 )
+    , mSubsetExpression( nullptr )
     , mBuildSubsetIndex( true )
     , mUseSubsetIndex( false )
     , mMaxInvalidLines( 50 )
@@ -82,8 +78,17 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     , mWkbType( QGis::WKBNoGeometry )
     , mGeometryType( QGis::UnknownGeometry )
     , mBuildSpatialIndex( false )
-    , mSpatialIndex( 0 )
+    , mSpatialIndex( nullptr )
 {
+
+  // Add supported types to enable creating expression fields in field calculator
+  mNativeTypes
+  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, 0, 10 )
+  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 64 bit)" ), "int8", QVariant::LongLong )
+  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "double precision", QVariant::Double, -1, -1, -1, -1 )
+  << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), "text", QVariant::String, -1, -1, -1, -1 )
+  ;
+
   QgsDebugMsg( "Delimited text file uri is " + uri );
 
   QUrl url = QUrl::fromEncoded( uri.toAscii() );
@@ -120,7 +125,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
 
       if ( url.hasQueryItem( "xyDms" ) )
       {
-        mXyDms = ! url.queryItemValue( "xyDms" ).toLower().startsWith( "n" );
+        mXyDms = ! url.queryItemValue( "xyDms" ).toLower().startsWith( 'n' );
       }
     }
     else
@@ -137,12 +142,12 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
 
   if ( url.hasQueryItem( "subsetIndex" ) )
   {
-    mBuildSubsetIndex = ! url.queryItemValue( "subsetIndex" ).toLower().startsWith( "n" );
+    mBuildSubsetIndex = ! url.queryItemValue( "subsetIndex" ).toLower().startsWith( 'n' );
   }
 
   if ( url.hasQueryItem( "spatialIndex" ) )
   {
-    mBuildSpatialIndex = ! url.queryItemValue( "spatialIndex" ).toLower().startsWith( "n" );
+    mBuildSpatialIndex = ! url.queryItemValue( "spatialIndex" ).toLower().startsWith( 'n' );
   }
 
   if ( url.hasQueryItem( "subset" ) )
@@ -171,18 +176,18 @@ QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
   if ( mFile )
   {
     delete mFile;
-    mFile = 0;
+    mFile = nullptr;
   }
 
   if ( mSubsetExpression )
   {
     delete mSubsetExpression;
-    mSubsetExpression = 0;
+    mSubsetExpression = nullptr;
   }
   if ( mSpatialIndex )
   {
     delete mSpatialIndex;
-    mSpatialIndex = 0;
+    mSpatialIndex = nullptr;
   }
 }
 
@@ -196,7 +201,7 @@ QgsAbstractFeatureSource *QgsDelimitedTextProvider::featureSource() const
   return new QgsDelimitedTextFeatureSource( this );
 }
 
-QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( QString filename, QString *message )
+QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString& filename, QString *message )
 {
   // Look for a file with the same name as the data file, but an extra 't' or 'T' at the end
   QStringList types;
@@ -237,7 +242,7 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( QString filename, QStr
   // not allowed in OGR CSVT files.  Also doesn't care if int and string fields have
 
   strTypeList = strTypeList.toLower();
-  QRegExp reTypeList( "^(?:\\s*(\\\"?)(?:integer|real|string|date|datetime|time)(?:\\(\\d+(?:\\.\\d+)?\\))?\\1\\s*(?:,|$))+" );
+  QRegExp reTypeList( "^(?:\\s*(\\\"?)(?:integer|real|double|long|longlong|int8|string|date|datetime|time)(?:\\(\\d+(?:\\.\\d+)?\\))?\\1\\s*(?:,|$))+" );
   if ( ! reTypeList.exactMatch( strTypeList ) )
   {
     // Looks like this was supposed to be a CSVT file, so report bad formatted string
@@ -287,7 +292,7 @@ void QgsDelimitedTextProvider::resetIndexes()
 
   mSubsetIndex.clear();
   if ( mSpatialIndex ) delete mSpatialIndex;
-  mSpatialIndex = 0;
+  mSpatialIndex = nullptr;
   if ( mBuildSpatialIndex && mGeomRep != GeomNone ) mSpatialIndex = new QgsSpatialIndex();
 }
 
@@ -330,7 +335,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
   // Initiallize indexes
 
   resetIndexes();
-  bool buildSpatialIndex = buildIndexes && mSpatialIndex != 0;
+  bool buildSpatialIndex = buildIndexes && nullptr != mSpatialIndex;
 
   // No point building a subset index if there is no geometry, as all
   // records will be included.
@@ -356,7 +361,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     mWktFieldIndex = mFile->fieldIndex( mWktFieldName );
     if ( mWktFieldIndex < 0 )
     {
-      messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( "Wkt" ).arg( mWktFieldName ) );
+      messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( "Wkt", mWktFieldName ) );
     }
   }
   else if ( mGeomRep == GeomAsXy )
@@ -365,14 +370,14 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     mYFieldIndex = mFile->fieldIndex( mYFieldName );
     if ( mXFieldIndex < 0 )
     {
-      messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( "X" ).arg( mWktFieldName ) );
+      messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( "X", mWktFieldName ) );
     }
     if ( mYFieldIndex < 0 )
     {
-      messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( "Y" ).arg( mWktFieldName ) );
+      messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( "Y", mWktFieldName ) );
     }
   }
-  if ( messages.size() > 0 )
+  if ( !messages.isEmpty() )
   {
     reportErrors( messages );
     QgsDebugMsg( "Delimited text source invalid - missing geometry fields" );
@@ -399,7 +404,9 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
   QList<bool> isEmpty;
   QList<bool> couldBeInt;
+  QList<bool> couldBeLongLong;
   QList<bool> couldBeDouble;
+  bool foundFirstGeometry = false;
 
   while ( true )
   {
@@ -426,7 +433,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       if ( mWktFieldIndex >= parts.size() || parts[mWktFieldIndex].isEmpty() )
       {
         nEmptyGeometry++;
-        geomValid = false;
+        mNumberFeatures++;
       }
       else
       {
@@ -434,12 +441,10 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
         // if compatible with the rest of file, add to the extents
 
         QString sWkt = parts[mWktFieldIndex];
-        QgsGeometry *geom = 0;
+        QgsGeometry *geom = nullptr;
         if ( !mWktHasPrefix && sWkt.indexOf( WktPrefixRegexp ) >= 0 )
           mWktHasPrefix = true;
-        if ( !mWktHasZM && sWkt.indexOf( WktZMRegexp ) >= 0 )
-          mWktHasZM = true;
-        geom = geomFromWkt( sWkt, mWktHasPrefix, mWktHasZM );
+        geom = geomFromWkt( sWkt, mWktHasPrefix );
 
         if ( geom )
         {
@@ -449,11 +454,12 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
             if ( mGeometryType == QGis::UnknownGeometry || geom->type() == mGeometryType )
             {
               mGeometryType = geom->type();
-              if ( mNumberFeatures == 0 )
+              if ( !foundFirstGeometry )
               {
                 mNumberFeatures++;
                 mWkbType = type;
                 mExtent = geom->boundingBox();
+                foundFirstGeometry = true;
               }
               else
               {
@@ -470,7 +476,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
                 mSpatialIndex->insertFeature( f );
                 // Feature now has ownership of geometry, so set to null
                 // here to avoid deleting twice.
-                geom = 0;
+                geom = nullptr;
               }
             }
             else
@@ -494,12 +500,12 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       // Get the x and y values, first checking to make sure they
       // aren't null.
 
-      QString sX = mXFieldIndex < parts.size() ? parts[mXFieldIndex] : "";
-      QString sY = mYFieldIndex < parts.size() ? parts[mYFieldIndex] : "";
+      QString sX = mXFieldIndex < parts.size() ? parts[mXFieldIndex] : QString();
+      QString sY = mYFieldIndex < parts.size() ? parts[mYFieldIndex] : QString();
       if ( sX.isEmpty() && sY.isEmpty() )
       {
-        geomValid = false;
         nEmptyGeometry++;
+        mNumberFeatures++;
       }
       else
       {
@@ -508,7 +514,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
         if ( ok )
         {
-          if ( mNumberFeatures > 0 )
+          if ( foundFirstGeometry )
           {
             mExtent.combineExtentWith( pt.x(), pt.y() );
           }
@@ -518,6 +524,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
             mExtent.set( pt.x(), pt.y(), pt.x(), pt.y() );
             mWkbType = QGis::WKBPoint;
             mGeometryType = QGis::Point;
+            foundFirstGeometry = true;
           }
           mNumberFeatures++;
           if ( buildSpatialIndex && qIsFinite( pt.x() ) && qIsFinite( pt.y() ) )
@@ -553,28 +560,46 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     {
 
       QString &value = parts[i];
+      // Ignore empty fields - spreadsheet generated CSV files often
+      // have random empty fields at the end of a row
       if ( value.isEmpty() )
         continue;
 
-      // try to convert attribute values to integer and double
+      // Expand the columns to include this non empty field if necessary
 
       while ( couldBeInt.size() <= i )
       {
         isEmpty.append( true );
         couldBeInt.append( false );
+        couldBeLongLong.append( false );
         couldBeDouble.append( false );
       }
+
+      // If this column has been empty so far then initiallize it
+      // for possible types
+
       if ( isEmpty[i] )
       {
         isEmpty[i] = false;
         couldBeInt[i] = true;
+        couldBeLongLong[i] = true;
         couldBeDouble[i] = true;
       }
+
+      // Now test for still valid possible types for the field
+      // Types are possible until first record which cannot be parsed
+
       if ( couldBeInt[i] )
       {
         value.toInt( &couldBeInt[i] );
       }
-      if ( couldBeDouble[i] )
+
+      if ( couldBeLongLong[i] && ! couldBeInt[i] )
+      {
+        value.toLongLong( &couldBeLongLong[i] );
+      }
+
+      if ( couldBeDouble[i] && ! couldBeLongLong[i] )
       {
         if ( ! mDecimalPoint.isEmpty() )
         {
@@ -612,7 +637,12 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
         fieldType = QVariant::Int;
         typeName = "integer";
       }
-      else if ( csvtTypes[i] == "real" )
+      else if ( csvtTypes[i] == "long" || csvtTypes[i] == "longlong" || csvtTypes[i] == "int8" )
+      {
+        fieldType = QVariant::LongLong; //QVariant doesn't support long
+        typeName = "longlong";
+      }
+      else if ( csvtTypes[i] == "real" || csvtTypes[i] == "double" )
       {
         fieldType = QVariant::Double;
         typeName = "double";
@@ -624,6 +654,11 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       {
         fieldType = QVariant::Int;
         typeName = "integer";
+      }
+      else if ( couldBeLongLong[i] )
+      {
+        fieldType = QVariant::LongLong;
+        typeName = "longlong";
       }
       else if ( couldBeDouble[i] )
       {
@@ -644,7 +679,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
   if ( nBadFormatRecords > 0 )
     warnings.append( tr( "%1 records discarded due to invalid format" ).arg( nBadFormatRecords ) );
   if ( nEmptyGeometry > 0 )
-    warnings.append( tr( "%1 records discarded due to missing geometry definitions" ).arg( nEmptyGeometry ) );
+    warnings.append( tr( "%1 records have missing geometry definitions" ).arg( nEmptyGeometry ) );
   if ( nInvalidGeometry > 0 )
     warnings.append( tr( "%1 records discarded due to invalid geometry definitions" ).arg( nInvalidGeometry ) );
   if ( nIncompatibleGeometry > 0 )
@@ -683,7 +718,7 @@ void QgsDelimitedTextProvider::rescanFile()
   mRescanRequired = false;
   resetIndexes();
 
-  bool buildSpatialIndex = mSpatialIndex != 0;
+  bool buildSpatialIndex = nullptr != mSpatialIndex;
   bool buildSubsetIndex = mBuildSubsetIndex && ( mSubsetExpression || mGeomRep != GeomNone );
 
   // In case file has been rewritten check that it is still valid
@@ -702,7 +737,7 @@ void QgsDelimitedTextProvider::rescanFile()
     mWktFieldIndex = mFile->fieldIndex( mWktFieldName );
     if ( mWktFieldIndex < 0 )
     {
-      messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( "Wkt" ).arg( mWktFieldName ) );
+      messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( "Wkt", mWktFieldName ) );
     }
   }
   else if ( mGeomRep == GeomAsXy )
@@ -711,16 +746,16 @@ void QgsDelimitedTextProvider::rescanFile()
     mYFieldIndex = mFile->fieldIndex( mYFieldName );
     if ( mXFieldIndex < 0 )
     {
-      messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( "X" ).arg( mWktFieldName ) );
+      messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( "X", mWktFieldName ) );
     }
     if ( mYFieldIndex < 0 )
     {
-      messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( "Y" ).arg( mWktFieldName ) );
+      messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( "Y", mWktFieldName ) );
     }
   }
-  if ( messages.size() > 0 )
+  if ( !messages.isEmpty() )
   {
-    reportErrors( messages, false );
+    reportErrors( messages );
     QgsDebugMsg( "Delimited text source invalid on rescan - missing geometry fields" );
     mValid = false;
     return;
@@ -730,7 +765,7 @@ void QgsDelimitedTextProvider::rescanFile()
 
   for ( int i = 0; i < attributeFields.size(); i++ )
   {
-    attributeColumns[i] = mFile->fieldIndex( attributeFields[i].name() );
+    attributeColumns[i] = mFile->fieldIndex( attributeFields.at( i ).name() );
   }
 
   // Scan through the features in the file
@@ -741,17 +776,19 @@ void QgsDelimitedTextProvider::rescanFile()
   mNumberFeatures = 0;
   mExtent = QgsRectangle();
   QgsFeature f;
+  bool foundFirstGeometry = false;
   while ( fi.nextFeature( f ) )
   {
     if ( mGeometryType != QGis::NoGeometry )
     {
-      if ( mNumberFeatures == 0 )
+      if ( !foundFirstGeometry )
       {
-        mExtent = f.geometry()->boundingBox();
+        mExtent = f.constGeometry()->boundingBox();
+        foundFirstGeometry = true;
       }
       else
       {
-        QgsRectangle bbox( f.geometry()->boundingBox() );
+        QgsRectangle bbox( f.constGeometry()->boundingBox() );
         mExtent.combineExtentWith( &bbox );
       }
       if ( buildSpatialIndex ) mSpatialIndex->insertFeature( f );
@@ -770,9 +807,9 @@ void QgsDelimitedTextProvider::rescanFile()
   mUseSpatialIndex = buildSpatialIndex;
 }
 
-QgsGeometry *QgsDelimitedTextProvider::geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp, bool wktHasZM )
+QgsGeometry *QgsDelimitedTextProvider::geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp )
 {
-  QgsGeometry *geom = 0;
+  QgsGeometry *geom = nullptr;
   try
   {
     if ( wktHasPrefixRegexp )
@@ -780,15 +817,11 @@ QgsGeometry *QgsDelimitedTextProvider::geomFromWkt( QString &sWkt, bool wktHasPr
       sWkt.remove( WktPrefixRegexp );
     }
 
-    if ( wktHasZM )
-    {
-      sWkt.remove( WktZMRegexp ).replace( WktCrdRegexp, "\\1" );
-    }
     geom = QgsGeometry::fromWkt( sWkt );
   }
   catch ( ... )
   {
-    geom = 0;
+    geom = nullptr;
   }
   return geom;
 }
@@ -801,9 +834,9 @@ double QgsDelimitedTextProvider::dmsStringToDouble( const QString &sX, bool *xOk
 
   *xOk = re.indexIn( sX ) == 0;
   if ( ! *xOk ) return 0.0;
-  QString dms1 = re.capturedTexts()[2];
-  QString dms2 = re.capturedTexts()[3];
-  QString dms3 = re.capturedTexts()[4];
+  QString dms1 = re.capturedTexts().at( 2 );
+  QString dms2 = re.capturedTexts().at( 3 );
+  QString dms3 = re.capturedTexts().at( 4 );
   x = dms3.toDouble( xOk );
   // Allow for Degrees/minutes format as well as DMS
   if ( ! dms2.isEmpty() )
@@ -811,8 +844,8 @@ double QgsDelimitedTextProvider::dmsStringToDouble( const QString &sX, bool *xOk
     x = dms2.toInt( xOk ) + x / 60.0;
   }
   x = dms1.toInt( xOk ) + x / 60.0;
-  QString sign1 = re.capturedTexts()[1];
-  QString sign2 = re.capturedTexts()[5];
+  QString sign1 = re.capturedTexts().at( 1 );
+  QString sign2 = re.capturedTexts().at( 5 );
 
   if ( sign1.isEmpty() )
   {
@@ -882,14 +915,14 @@ void QgsDelimitedTextProvider::clearInvalidLines()
 
 bool QgsDelimitedTextProvider::recordIsEmpty( QStringList &record )
 {
-  foreach ( QString s, record )
+  Q_FOREACH ( const QString& s, record )
   {
     if ( ! s.isEmpty() ) return false;
   }
   return true;
 }
 
-void QgsDelimitedTextProvider::recordInvalidLine( QString message )
+void QgsDelimitedTextProvider::recordInvalidLine( const QString& message )
 {
   if ( mInvalidLines.size() < mMaxInvalidLines )
   {
@@ -901,13 +934,13 @@ void QgsDelimitedTextProvider::recordInvalidLine( QString message )
   }
 }
 
-void QgsDelimitedTextProvider::reportErrors( QStringList messages, bool showDialog )
+void QgsDelimitedTextProvider::reportErrors( const QStringList& messages, bool showDialog )
 {
   if ( !mInvalidLines.isEmpty() || ! messages.isEmpty() )
   {
     QString tag( "DelimitedText" );
     QgsMessageLog::logMessage( tr( "Errors in file %1" ).arg( mFile->fileName() ), tag );
-    foreach ( QString message, messages )
+    Q_FOREACH ( const QString& message, messages )
     {
       QgsMessageLog::logMessage( message, tag );
     }
@@ -926,7 +959,7 @@ void QgsDelimitedTextProvider::reportErrors( QStringList messages, bool showDial
       QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();
       output->setTitle( tr( "Delimited text file errors" ) );
       output->setMessage( tr( "Errors in file %1" ).arg( mFile->fileName() ), QgsMessageOutput::MessageText );
-      foreach ( QString message, messages )
+      Q_FOREACH ( const QString& message, messages )
       {
         output->appendMessage( message );
       }
@@ -946,22 +979,23 @@ void QgsDelimitedTextProvider::reportErrors( QStringList messages, bool showDial
   }
 }
 
-bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatureCount )
+bool QgsDelimitedTextProvider::setSubsetString( const QString& subset, bool updateFeatureCount )
 {
-  // If not changing string, then oll ok, nothing to do
+  QString nonNullSubset = subset.isNull() ? QString( "" ) : subset;
 
-  if ( subset.isNull() ) subset = "";
-  if ( subset == mSubsetString ) return true;
+  // If not changing string, then oll ok, nothing to do
+  if ( nonNullSubset == mSubsetString )
+    return true;
 
   bool valid = true;
 
   // If there is a new subset string then encode it..
 
-  QgsExpression *expression = 0;
-  if ( ! subset.isEmpty() )
+  QgsExpression *expression = nullptr;
+  if ( ! nonNullSubset.isEmpty() )
   {
 
-    expression = new QgsExpression( subset );
+    expression = new QgsExpression( nonNullSubset );
     QString error;
     if ( expression->hasParserError() )
     {
@@ -969,7 +1003,8 @@ bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatu
     }
     else
     {
-      expression->prepare( fields() );
+      QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( QgsFeature(), fields() );
+      expression->prepare( &context );
       if ( expression->hasEvalError() )
       {
         error = expression->evalErrorString();
@@ -979,9 +1014,9 @@ bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatu
     {
       valid = false;
       delete expression;
-      expression = 0;
+      expression = nullptr;
       QString tag( "DelimitedText" );
-      QgsMessageLog::logMessage( tr( "Invalid subset string %1 for %2" ).arg( subset ).arg( mFile->fileName() ), tag );
+      QgsMessageLog::logMessage( tr( "Invalid subset string %1 for %2" ).arg( nonNullSubset, mFile->fileName() ), tag );
     }
   }
 
@@ -989,12 +1024,14 @@ bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatu
 
   if ( valid )
   {
-
-    if ( mSubsetExpression ) delete mSubsetExpression;
+    QgsExpression * tmpSubsetExpression = mSubsetExpression;
+    // using a tmp pointer to avoid the pointer being dereferenced by
+    // a friend class after it has been freed but before it has been
+    // reassigned
     QString previousSubset = mSubsetString;
-    mSubsetString = subset;
+    mSubsetString = nonNullSubset;
     mSubsetExpression = expression;
-
+    if ( tmpSubsetExpression ) delete tmpSubsetExpression;
     // Update the feature count and extents if requested
 
     // Usage of updateFeatureCount is a bit painful, basically expect that it
@@ -1022,7 +1059,7 @@ bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatu
         // Reset the subset index
         rescanFile();
         // Encode the subset string into the data source URI.
-        setUriParameter( "subset", subset );
+        setUriParameter( "subset", nonNullSubset );
       }
     }
     else
@@ -1041,10 +1078,11 @@ bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatu
     }
   }
 
+  emit dataChanged();
   return valid;
 }
 
-void QgsDelimitedTextProvider::setUriParameter( QString parameter, QString value )
+void QgsDelimitedTextProvider::setUriParameter( const QString& parameter, const QString& value )
 {
   QUrl url = QUrl::fromEncoded( dataSourceUri().toAscii() );
   if ( url.hasQueryItem( parameter ) ) url.removeAllQueryItems( parameter );
@@ -1058,7 +1096,7 @@ void QgsDelimitedTextProvider::onFileUpdated()
   {
     QStringList messages;
     messages.append( tr( "The file has been updated by another application - reloading" ) );
-    reportErrors( messages, false );
+    reportErrors( messages );
     mRescanRequired = true;
   }
 }
@@ -1101,7 +1139,7 @@ bool QgsDelimitedTextProvider::isValid()
 
 int QgsDelimitedTextProvider::capabilities() const
 {
-  return SelectAtId | CreateSpatialIndex;
+  return SelectAtId | CreateSpatialIndex | CircularGeometries;
 }
 
 

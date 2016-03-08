@@ -1,7 +1,7 @@
 class QgsGroupBoxCollapseButton : QToolButton
 {
   public:
-    QgsGroupBoxCollapseButton( QWidget *parent = 0 );
+    QgsGroupBoxCollapseButton( QWidget *parent /TransferThis/ = 0 );
 
     ~QgsGroupBoxCollapseButton();
 
@@ -22,7 +22,7 @@ class QgsGroupBoxCollapseButton : QToolButton
  * Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
  * Holding Shift modifier key when attempting to toggle collapsed state will expand current group box, then collapse any others with the same syncGroup QString value
  * @note To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the propreties palette:
- * bool collapsed, QString syncGroup
+ * bool collapsed, QString syncGroup, bool scrollOnExpand
  */
 
 class QgsCollapsibleGroupBoxBasic : QGroupBox
@@ -31,20 +31,35 @@ class QgsCollapsibleGroupBoxBasic : QGroupBox
 #include <qgscollapsiblegroupbox.h>
 %End
   public:
-    QgsCollapsibleGroupBoxBasic( QWidget *parent = 0 );
-    QgsCollapsibleGroupBoxBasic( const QString &title, QWidget *parent = 0 );
+    QgsCollapsibleGroupBoxBasic( QWidget *parent /TransferThis/ = 0 );
+    QgsCollapsibleGroupBoxBasic( const QString &title, QWidget *parent /TransferThis/ = 0 );
     ~QgsCollapsibleGroupBoxBasic();
 
+    /**
+     * Returns the current collapsed state of this group box
+     */
     bool isCollapsed() const;
+    /**
+     * Collapse or uncollapse this groupbox
+     *
+     * @param collapse Will collapse on true and uncollapse on false
+     */
     void setCollapsed( bool collapse );
 
-    /** Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key */
+    /**
+     * Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key
+     */
     QString syncGroup() const;
-    void setSyncGroup( QString grp );
 
-    //! set this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
+    /**
+     * Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key
+     */
+    void setSyncGroup( const QString& grp );
+
+    //! Set this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
     void setScrollOnExpand( bool scroll );
 
+    //! If this is set to false the parent QScrollArea will not be automatically scrolled to this widget's contents when expanded
     bool scrollOnExpand();
 
   signals:
@@ -89,8 +104,8 @@ class QgsCollapsibleGroupBox : QgsCollapsibleGroupBoxBasic
 #include <qgscollapsiblegroupbox.h>
 %End
   public:
-    QgsCollapsibleGroupBox( QWidget *parent = 0, QSettings* settings = 0 );
-    QgsCollapsibleGroupBox( const QString &title, QWidget *parent = 0, QSettings* settings = 0 );
+    QgsCollapsibleGroupBox( QWidget *parent /TransferThis/ = 0, QSettings* settings = 0 );
+    QgsCollapsibleGroupBox( const QString &title, QWidget *parent /TransferThis/ = 0, QSettings* settings = 0 );
     ~QgsCollapsibleGroupBox();
 
     // set custom QSettings pointer if group box was already created from QtDesigner promotion
@@ -98,19 +113,34 @@ class QgsCollapsibleGroupBox : QgsCollapsibleGroupBoxBasic
 
     //! set this to false to not save/restore collapsed state
     void setSaveCollapsedState( bool save );
-    /** set this to true to save/restore checked state
+    /** Set this to true to save/restore checked state
      * @note only turn on mSaveCheckedState for groupboxes NOT used
      * in multiple places or used as options for different parent objects */
     void setSaveCheckedState( bool save );
     bool saveCollapsedState();
     bool saveCheckedState();
 
-    //! set this to a defined string to share save/restore states across different parent dialogs
+    //! Set this to a defined string to share save/restore states across different parent dialogs
     void setSettingGroup( const QString &group );
+    //! Returns the name of the setting group in which the collapsed state will be saved
     QString settingGroup() const;
 
   protected slots:
+    /**
+     * Will load the collapsed and checked state
+     *
+     * The configuration path from which it is loaded is defined by
+     *  * The object name
+     *  * The settingGroup
+     */
     void loadState();
+    /**
+     * Will save the collapsed and checked state
+     *
+     * The configuration path to which it is saved is defined by
+     *  * The object name
+     *  * The settingGroup
+     */
     void saveState();
 
   protected:

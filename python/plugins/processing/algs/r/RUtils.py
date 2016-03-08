@@ -41,12 +41,42 @@ class RUtils:
     RSCRIPTS_FOLDER = 'R_SCRIPTS_FOLDER'
     R_FOLDER = 'R_FOLDER'
     R_USE64 = 'R_USE64'
+    R_LIBS_USER = 'R_LIBS_USER'
 
     @staticmethod
     def RFolder():
         folder = ProcessingConfig.getSetting(RUtils.R_FOLDER)
         if folder is None:
-            folder = ''
+            if isWindows():
+                if 'ProgramW6432' in os.environ.keys() and os.path.isdir(os.path.join(os.environ['ProgramW6432'], 'R')):
+                    testfolder = os.path.join(os.environ['ProgramW6432'], 'R')
+                elif 'PROGRAMFILES(x86)' in os.environ.keys() and os.path.isdir(os.path.join(os.environ['PROGRAMFILES(x86)'], 'R')):
+                    testfolder = os.path.join(os.environ['PROGRAMFILES(x86)'], 'R')
+                elif 'PROGRAMFILES' in os.environ.keys() and os.path.isdir(os.path.join(os.environ['PROGRAMFILES'], 'R')):
+                    testfolder = os.path.join(os.environ['PROGRAMFILES'], 'R')
+                else:
+                    testfolder = 'C:\\R'
+
+                if os.path.isdir(testfolder):
+                    subfolders = os.listdir(testfolder)
+                    subfolders.sort(reverse=True)
+                    for subfolder in subfolders:
+                        if subfolder.startswith('R-'):
+                            folder = os.path.join(testfolder, subfolder)
+                            break
+                else:
+                    folder = ''
+            else:
+                folder = ''
+
+        return os.path.abspath(unicode(folder))
+
+    @staticmethod
+    def RLibs():
+        folder = ProcessingConfig.getSetting(RUtils.R_LIBS_USER)
+        if folder is None:
+            folder = unicode(os.path.join(userFolder(), 'rlibs'))
+        mkdir(folder)
 
         return os.path.abspath(unicode(folder))
 
@@ -90,8 +120,9 @@ class RUtils:
                 'BATCH',
                 '--vanilla',
                 RUtils.getRScriptFilename(),
-                RUtils.getConsoleOutputFilename(),
+                RUtils.getConsoleOutputFilename()
             ]
+
         else:
             os.chmod(RUtils.getRScriptFilename(), stat.S_IEXEC | stat.S_IREAD
                      | stat.S_IWRITE)
@@ -190,7 +221,7 @@ class RUtils:
 
     @staticmethod
     def getRequiredPackages(code):
-        regex = re.compile('library\("?(.*?)"?\)')
+        regex = re.compile('[^#]library\("?(.*?)"?\)')
         return regex.findall(code)
 
     @staticmethod

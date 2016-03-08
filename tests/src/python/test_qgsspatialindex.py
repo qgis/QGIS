@@ -13,7 +13,6 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis
-import unittest
 
 from qgis.core import (QgsSpatialIndex,
                        QgsFeature,
@@ -21,11 +20,15 @@ from qgis.core import (QgsSpatialIndex,
                        QgsRectangle,
                        QgsPoint)
 
-from utilities import getQgisTestApp
+from qgis.testing import (start_app,
+                          unittest
+                          )
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
+
 
 class TestQgsSpatialIndex(unittest.TestCase):
+
     def testIndex(self):
         idx = QgsSpatialIndex()
         fid = 0

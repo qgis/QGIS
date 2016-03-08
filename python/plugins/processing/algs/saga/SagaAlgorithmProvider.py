@@ -37,36 +37,47 @@ from SplitRGBBands import SplitRGBBands
 import SagaUtils
 from processing.tools.system import isWindows, isMac
 
+
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
+
+
 class SagaAlgorithmProvider(AlgorithmProvider):
 
     supportedVersions = {"2.1.2": ("2.1.2", SagaAlgorithm212),
                          "2.1.3": ("2.1.3", SagaAlgorithm213),
-                         "2.1.4": ("2.1.3", SagaAlgorithm214),
-                         # to allow testing upcoming release
-                         "2.2.0": ("2.1.3", SagaAlgorithm214)}
+                         "2.1.4": ("2.1.4", SagaAlgorithm214),
+                         "2.2.0": ("2.2.0", SagaAlgorithm214),
+                         "2.2.1": ("2.2.0", SagaAlgorithm214),
+                         "2.2.2": ("2.2.2", SagaAlgorithm214),
+                         "2.2.3": ("2.2.3", SagaAlgorithm214)}
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.activate = True
 
     def initializeSettings(self):
-        AlgorithmProvider.initializeSettings(self)
-        if isWindows() or isMac():
+        if (isWindows() or isMac()) and SagaUtils.findSagaFolder() is None:
             ProcessingConfig.addSetting(Setting("SAGA",
-                SagaUtils.SAGA_FOLDER, self.tr('SAGA folder'), ''))
+                                                SagaUtils.SAGA_FOLDER, self.tr('SAGA folder'),
+                                                '',
+                                                valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting("SAGA",
-            SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION,
-            self.tr('Enable SAGA Import/Export optimizations'), False))
+                                            SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION,
+                                            self.tr('Enable SAGA Import/Export optimizations'), False))
         ProcessingConfig.addSetting(Setting("SAGA",
-            SagaUtils.SAGA_LOG_COMMANDS,
-            self.tr('Log execution commands'), True))
+                                            SagaUtils.SAGA_LOG_COMMANDS,
+                                            self.tr('Log execution commands'), True))
         ProcessingConfig.addSetting(Setting("SAGA",
-            SagaUtils.SAGA_LOG_CONSOLE,
-            self.tr('Log console output'), True))
+                                            SagaUtils.SAGA_LOG_CONSOLE,
+                                            self.tr('Log console output'), True))
+        ProcessingConfig.settingIcons["SAGA"] = self.getIcon()
+        ProcessingConfig.addSetting(Setting("SAGA", "ACTIVATE_SAGA",
+                                            self.tr('Activate'), self.activate))
 
     def unload(self):
         AlgorithmProvider.unload(self)
-        if isWindows() or isMac():
+        if (isWindows() or isMac()) and SagaUtils.findSagaFolder() is None:
             ProcessingConfig.removeSetting(SagaUtils.SAGA_FOLDER)
 
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_CONSOLE)
@@ -77,36 +88,40 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         version = SagaUtils.getSagaInstalledVersion(True)
         if version is None:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                self.tr('Problem with SAGA installation: SAGA was not found or is not correctly installed'))
+                                   self.tr('Problem with SAGA installation: SAGA was not found or is not correctly installed'))
             return
         if version not in self.supportedVersions:
-            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                self.tr('Problem with SAGA installation: installed SAGA version (%s) is not supported' % version))
-            return
+            lastVersion = sorted(self.supportedVersions.keys())[-1]
+            if version > lastVersion:
+                version = lastVersion
+            else:
+                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                       self.tr('Problem with SAGA installation: installed SAGA version (%s) is not supported' % version))
+                return
 
         folder = SagaUtils.sagaDescriptionPath()
-        folder = os.path.join(folder, self.supportedVersions[SagaUtils.getSagaInstalledVersion()][0])
+        folder = os.path.join(folder, self.supportedVersions[version][0])
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith('txt'):
                 f = os.path.join(folder, descriptionFile)
-                self._loadAlgorithm(f)
+                self._loadAlgorithm(f, version)
         self.algs.append(SplitRGBBands())
 
-    def _loadAlgorithm(self, descriptionFile):
+    def _loadAlgorithm(self, descriptionFile, version):
         try:
-            alg = self.supportedVersions[SagaUtils.getSagaInstalledVersion()][1](descriptionFile)
+            alg = self.supportedVersions[version][1](descriptionFile)
             if alg.name.strip() != '':
                 self.algs.append(alg)
             else:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                    self.tr('Could not open SAGA algorithm: %s' % descriptionFile))
-        except Exception, e:
+                                       self.tr('Could not open SAGA algorithm: %s' % descriptionFile))
+        except Exception as e:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                self.tr('Could not open SAGA algorithm: %s\n%s' % (descriptionFile, str(e))))
+                                   self.tr('Could not open SAGA algorithm: %s\n%s' % (descriptionFile, unicode(e))))
 
     def getDescription(self):
         version = SagaUtils.getSagaInstalledVersion()
-        return 'SAGA (%s)' %  version if version is not None else 'SAGA'
+        return 'SAGA (%s)' % version if version is not None else 'SAGA'
 
     def getName(self):
         return 'saga'
@@ -115,10 +130,10 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         return ['shp']
 
     def getSupportedOutputRasterLayerExtensions(self):
-        return ['tif']
+        return ['sdat']
 
     def getSupportedOutputTableLayerExtensions(self):
         return ['dbf']
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/saga.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'saga.png'))

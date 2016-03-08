@@ -17,5 +17,5 @@
 	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
 	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
 </g>
-<rect x="104.035" y="104.032" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -120.1211 290.0025)" fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" width="371.936" height="371.936"/>
+<rect x="104.035" y="104.032" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -120.1211 290.0025)" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" width="371.936" height="371.936"/>
 </svg>

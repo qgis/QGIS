@@ -20,7 +20,7 @@
 //qgis includes...
 #include <qgsgeometry.h>
 #include <qgsogcutils.h>
-
+#include "qgsapplication.h"
 
 /** \ingroup UnitTests
  * This is a unit test for OGC utilities
@@ -29,6 +29,21 @@ class TestQgsOgcUtils : public QObject
 {
     Q_OBJECT
   private slots:
+
+    void initTestCase()
+    {
+      //
+      // Runs once before any tests are run
+      //
+      // init QGIS's paths - true means that all path will be inited from prefix
+      QgsApplication::init();
+      QgsApplication::initQgis();
+    }
+
+    void cleanupTestCase()
+    {
+      QgsApplication::exitQgis();
+    }
 
     void testGeometryFromGML();
     void testGeometryToGML();
@@ -174,7 +189,7 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
     "<BBOX><PropertyName>Name>NAME</PropertyName><gml:Box srsName='foo'>"
     "<gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box></BBOX>"
     "</Filter>" )
-  << QString( "bbox($geometry, geomFromGML('<Box srsName=\"foo\"><coordinates>135.2239,34.4879 135.8578,34.8471</coordinates></Box>'))" );
+  << QString( "intersects_bbox($geometry, geom_from_gml('<Box srsName=\"foo\"><coordinates>135.2239,34.4879 135.8578,34.8471</coordinates></Box>'))" );
 
   QTest::newRow( "Intersects" ) << QString(
     "<Filter>"
@@ -185,7 +200,7 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
     "</gml:Point>"
     "</Intersects>"
     "</Filter>" )
-  << QString( "intersects($geometry, geomFromGML('<Point><coordinates>123,456</coordinates></Point>'))" );
+  << QString( "intersects($geometry, geom_from_gml('<Point><coordinates>123,456</coordinates></Point>'))" );
 }
 
 void TestQgsOgcUtils::testExpressionFromOgcFilter()
@@ -274,18 +289,18 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
     "</ogc:And>"
     "</ogc:Filter>" );
 
-  QTest::newRow( "is null" ) << QString( "X IS NULL" ) << QString(
+  QTest::newRow( "is null" ) << QString( "A IS NULL" ) << QString(
     "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
     "<ogc:PropertyIsNull>"
-    "<ogc:PropertyName>X</ogc:PropertyName>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
     "</ogc:PropertyIsNull>"
     "</ogc:Filter>" );
 
-  QTest::newRow( "is not null" ) << QString( "X IS NOT NULL" ) << QString(
+  QTest::newRow( "is not null" ) << QString( "A IS NOT NULL" ) << QString(
     "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
     "<ogc:Not>"
     "<ogc:PropertyIsNull>"
-    "<ogc:PropertyName>X</ogc:PropertyName>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
     "</ogc:PropertyIsNull>"
     "</ogc:Not>"
     "</ogc:Filter>" );
@@ -326,7 +341,7 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
 
   /*
   QTest::newRow( "bbox with GML3 Envelope" )
-  << QString( "bbox($geometry, geomFromGML('<gml:Envelope><gml:lowerCorner>13.0983 31.5899</gml:lowerCorner><gml:upperCorner>35.5472 42.8143</gml:upperCorner></gml:Envelope>'))" )
+  << QString( "intersects_bbox($geometry, geomFromGML('<gml:Envelope><gml:lowerCorner>13.0983 31.5899</gml:lowerCorner><gml:upperCorner>35.5472 42.8143</gml:upperCorner></gml:Envelope>'))" )
   << QString(
   "<ogc:Filter>"
     "<ogc:BBOX>"

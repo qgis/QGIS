@@ -59,13 +59,13 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
   public:
     /**
-    * Constructor for the provider.
-    *
-    * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
-    *                otherwise we contact the host directly.
-    *
-    */
-    QgsGdalProvider( QString const & uri = 0, bool update = false );
+     * Constructor for the provider.
+     *
+     * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
+     *                otherwise we contact the host directly.
+     *
+     */
+    QgsGdalProvider( QString const & uri = nullptr, bool update = false );
 
     /** Create invalid provider with error */
     QgsGdalProvider( QString const & uri, QgsError error );
@@ -73,43 +73,43 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Destructor
     ~QgsGdalProvider();
 
-    QgsRasterInterface * clone() const override;
+    QgsGdalProvider * clone() const override;
 
     /** \brief   Renders the layer as an image
      */
     QImage* draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight ) override;
 
-    /** return a provider name
-
-    Essentially just returns the provider key.  Should be used to build file
-    dialogs so that providers can be shown with their supported types. Thus
-    if more than one provider supports a given format, the user is able to
-    select a specific provider to open that file.
-
-    @note
-
-    Instead of being pure virtual, might be better to generalize this
-    behavior and presume that none of the sub-classes are going to do
-    anything strange with regards to their name or description?
-
-    */
+    /** Return a provider name
+     *
+     * Essentially just returns the provider key.  Should be used to build file
+     * dialogs so that providers can be shown with their supported types. Thus
+     * if more than one provider supports a given format, the user is able to
+     * select a specific provider to open that file.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
+     */
     QString name() const override;
 
 
-    /** return description
-
-    Return a terse string describing what the provider is.
-
-    @note
-
-    Instead of being pure virtual, might be better to generalize this
-    behavior and presume that none of the sub-classes are going to do
-    anything strange with regards to their name or description?
-
-    */
+    /** Return description
+     *
+     * Return a terse string describing what the provider is.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
+     */
     QString description() const override;
 
-    /*! Get the QgsCoordinateReferenceSystem for this layer
+    /** Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider.
      * If the provider isn't capable of returning
      * its projection an empty srs will be return, ti will return 0
@@ -117,11 +117,11 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     virtual QgsCoordinateReferenceSystem crs() override;
 
     /** Return the extent for this data layer
-    */
+     */
     virtual QgsRectangle extent() override;
 
-    /**Returns true if layer is valid
-    */
+    /** Returns true if layer is valid
+     */
     bool isValid() override;
 
     QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 ) override;
@@ -169,7 +169,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     QString generateBandName( int theBandNumber ) const override;
 
-    /**Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)*/
+    /** Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)*/
     QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight ) override;
 
     void readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
@@ -235,20 +235,17 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     static QMap<QString, QString> supportedMimes();
 
-    /**Writes into the provider datasource*/
+    /** Writes into the provider datasource*/
     bool write( void* data, int band, int width, int height, int xOffset, int yOffset ) override;
 
     bool setNoDataValue( int bandNo, double noDataValue ) override;
 
-    /**Remove dataset*/
+    /** Remove dataset*/
     bool remove() override;
 
-    QString validateCreationOptions( const QStringList& createOptions, QString format ) override;
+    QString validateCreationOptions( const QStringList& createOptions, const QString& format ) override;
     QString validatePyramidsCreationOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
         const QStringList & theConfigOptions, const QString & fileFormat );
-
-  signals:
-    void statusChanged( QString );
 
   private:
     // update mode
@@ -257,22 +254,22 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     // initialize CRS from wkt
     bool crsFromWkt( const char *wkt );
 
-    /**Do some initialisation on the dataset (e.g. handling of south-up datasets)*/
+    /** Do some initialization on the dataset (e.g. handling of south-up datasets)*/
     void initBaseDataset();
 
     /**
-    * Flag indicating if the layer data source is a valid layer
-    */
+     * Flag indicating if the layer data source is a valid layer
+     */
     bool mValid;
 
     /** \brief Whether this raster has overviews / pyramids or not */
     bool mHasPyramids;
 
     /** \brief Gdal data types used to represent data in in QGIS,
-               may be longer than source data type to keep nulls
-               indexed from 0
+     * may be longer than source data type to keep nulls
+     * indexed from 0
      */
-    QList<int>mGdalDataType;
+    QList<GDALDataType> mGdalDataType;
 
     QgsRectangle mExtent;
     int mWidth;

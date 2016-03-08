@@ -30,12 +30,12 @@ import shutil
 import codecs
 import subprocess
 import os
-
+import locale
 from qgis.core import QgsApplication
 from PyQt4.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import userFolder, isMac, isWindows, mkdir, tempFolder
+from processing.tools.system import userFolder, isWindows, isMac, tempFolder, mkdir
 from processing.tests.TestData import points
 
 
@@ -107,7 +107,7 @@ class GrassUtils:
     def grassWinShell():
         folder = ProcessingConfig.getSetting(GrassUtils.GRASS_WIN_SHELL)
         if folder is None:
-            folder = os.path.dirname(str(QgsApplication.prefixPath()))
+            folder = os.path.dirname(unicode(QgsApplication.prefixPath()))
             folder = os.path.join(folder, 'msys')
         return folder
 
@@ -123,8 +123,9 @@ class GrassUtils:
         script = GrassUtils.grassScriptFilename()
         gisrc = userFolder() + os.sep + 'processing.gisrc'
 
+        encoding = locale.getpreferredencoding()
         # Temporary gisrc file
-        output = codecs.open(gisrc, 'w', encoding='utf-8')
+        output = codecs.open(gisrc, 'w', encoding=encoding)
         location = 'temp_location'
         gisdbase = GrassUtils.grassDataFolder()
 
@@ -134,7 +135,7 @@ class GrassUtils:
         output.write('GRASS_GUI: text\n')
         output.close()
 
-        output = codecs.open(script, 'w', encoding='utf-8')
+        output = codecs.open(script, 'w', encoding=encoding)
         output.write('set HOME=' + os.path.expanduser('~') + '\n')
         output.write('set GISRC=' + gisrc + '\n')
         output.write('set GRASS_SH=' + shell + '\\bin\\sh.exe\n')
@@ -150,8 +151,7 @@ class GrassUtils:
         output.write('if "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%PATH%\n')
         output.write('if not "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%GRASS_ADDON_PATH%;%PATH%\n')
         output.write('\n')
-        output.write('set GRASS_VERSION=' + GrassUtils.getGrassVersion()
-                + '\n')
+        output.write('set GRASS_VERSION=' + GrassUtils.getGrassVersion() + '\n')
         output.write('if not "%LANG%"=="" goto langset\n')
         output.write('FOR /F "usebackq delims==" %%i IN (`"%WINGISBASE%\\etc\\winlocale"`) DO @set LANG=%%i\n')
         output.write(':langset\n')
@@ -165,7 +165,7 @@ class GrassUtils:
         output.write('g.gisenv.exe set="GISDBASE=' + gisdbase + '"\n')
         output.write('g.gisenv.exe set="GRASS_GUI=text"\n')
         for command in commands:
-            output.write(command + '\n')
+            output.write(command + u'\n')
         output.write('\n')
         output.write('exit\n')
         output.close()
@@ -174,7 +174,7 @@ class GrassUtils:
     def createGrassBatchJobFileFromGrassCommands(commands):
         fout = codecs.open(GrassUtils.grassBatchJobFilename(), 'w', encoding='utf-8')
         for command in commands:
-            fout.write(command + '\n')
+            fout.write(command + u'\n')
         fout.write('exit')
         fout.close()
 
@@ -203,12 +203,12 @@ class GrassUtils:
         folder = GrassUtils.grassMapsetFolder()
         mkdir(os.path.join(folder, 'PERMANENT'))
         mkdir(os.path.join(folder, 'PERMANENT', '.tmp'))
-        GrassUtils.writeGrassWindow(os.path.join(folder, 'PERMANENT',
-                                    'DEFAULT_WIND'))
+        GrassUtils.writeGrassWindow(os.path.join(folder, 'PERMANENT', 'DEFAULT_WIND'))
         outfile = codecs.open(os.path.join(folder, 'PERMANENT', 'MYNAME'), 'w', encoding='utf-8')
         outfile.write(
             'QGIS GRASS interface: temporary data processing location.\n')
         outfile.close()
+
         GrassUtils.writeGrassWindow(os.path.join(folder, 'PERMANENT', 'WIND'))
         mkdir(os.path.join(folder, 'PERMANENT', 'dbf'))
         outfile = codecs.open(os.path.join(folder, 'PERMANENT', 'VAR'), 'w', encoding='utf-8')
@@ -218,38 +218,40 @@ class GrassUtils:
 
     @staticmethod
     def writeGrassWindow(filename):
-        out = codecs.open(filename, 'w', encoding='utf-8')
-        out.write('proj:       0\n')
-        out.write('zone:       0\n')
-        out.write('north:      1\n')
-        out.write('south:      0\n')
-        out.write('east:       1\n')
-        out.write('west:       0\n')
-        out.write('cols:       1\n')
-        out.write('rows:       1\n')
-        out.write('e-w resol:  1\n')
-        out.write('n-s resol:  1\n')
-        out.write('top:        1\n')
-        out.write('bottom:     0\n')
-        out.write('cols3:      1\n')
-        out.write('rows3:      1\n')
-        out.write('depths:     1\n')
-        out.write('e-w resol3: 1\n')
-        out.write('n-s resol3: 1\n')
-        out.write('t-b resol:  1\n')
-
-        out.close()
+        with open(filename, 'w') as out:
+            out.write('proj:       0\n')
+            out.write('zone:       0\n')
+            out.write('north:      1\n')
+            out.write('south:      0\n')
+            out.write('east:       1\n')
+            out.write('west:       0\n')
+            out.write('cols:       1\n')
+            out.write('rows:       1\n')
+            out.write('e-w resol:  1\n')
+            out.write('n-s resol:  1\n')
+            out.write('top:        1\n')
+            out.write('bottom:     0\n')
+            out.write('cols3:      1\n')
+            out.write('rows3:      1\n')
+            out.write('depths:     1\n')
+            out.write('e-w resol3: 1\n')
+            out.write('n-s resol3: 1\n')
+            out.write('t-b resol:  1\n')
 
     @staticmethod
     def prepareGrassExecution(commands):
+        env = os.environ.copy()
+
         if isWindows():
             GrassUtils.createGrassScript(commands)
             command = ['cmd.exe', '/C ', GrassUtils.grassScriptFilename()]
         else:
             gisrc = userFolder() + os.sep + 'processing.gisrc'
-            os.putenv('GISRC', gisrc)
-            os.putenv('GRASS_MESSAGE_FORMAT', 'gui')
-            os.putenv('GRASS_BATCH_JOB', GrassUtils.grassBatchJobFilename())
+            env['GISRC'] = gisrc
+            env['GRASS_MESSAGE_FORMAT'] = 'gui'
+            env['GRASS_BATCH_JOB'] = GrassUtils.grassBatchJobFilename()
+            if 'GISBASE' in env:
+                del env['GISBASE']
             GrassUtils.createGrassBatchJobFileFromGrassCommands(commands)
             os.chmod(GrassUtils.grassBatchJobFilename(), stat.S_IEXEC
                      | stat.S_IREAD | stat.S_IWRITE)
@@ -260,14 +262,14 @@ class GrassUtils:
                 command = 'grass64 ' + GrassUtils.grassMapsetFolder() \
                     + '/PERMANENT'
 
-        return command
+        return command, env
 
     @staticmethod
     def executeGrass(commands, progress, outputCommands=None):
         loglines = []
         loglines.append('GRASS execution console output')
         grassOutDone = False
-        command = GrassUtils.prepareGrassExecution(commands)
+        command, grassenv = GrassUtils.prepareGrassExecution(commands)
         proc = subprocess.Popen(
             command,
             shell=True,
@@ -275,13 +277,13 @@ class GrassUtils:
             stdin=open(os.devnull),
             stderr=subprocess.STDOUT,
             universal_newlines=True,
+            env=grassenv
         ).stdout
         progress.setInfo('GRASS commands output:')
         for line in iter(proc.readline, ''):
             if 'GRASS_INFO_PERCENT' in line:
                 try:
-                    progress.setPercentage(int(line[len('GRASS_INFO_PERCENT')
-                            + 2:]))
+                    progress.setPercentage(int(line[len('GRASS_INFO_PERCENT') + 2:]))
                 except:
                     pass
             else:
@@ -297,7 +299,7 @@ class GrassUtils:
         # commands again.
 
         if not grassOutDone and outputCommands:
-            command = GrassUtils.prepareGrassExecution(outputCommands)
+            command, grassenv = GrassUtils.prepareGrassExecution(outputCommands)
             proc = subprocess.Popen(
                 command,
                 shell=True,
@@ -305,6 +307,7 @@ class GrassUtils:
                 stdin=open(os.devnull),
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
+                env=grassenv
             ).stdout
             for line in iter(proc.readline, ''):
                 if 'GRASS_INFO_PERCENT' in line:
@@ -319,7 +322,6 @@ class GrassUtils:
 
         if ProcessingConfig.getSetting(GrassUtils.GRASS_LOG_CONSOLE):
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
-        return loglines
 
     # GRASS session is used to hold the layers already exported or
     # produced in GRASS between multiple calls to GRASS algorithms.
@@ -348,8 +350,9 @@ class GrassUtils:
 
     @staticmethod
     def addSessionLayers(exportedLayers):
-        GrassUtils.sessionLayers = dict(GrassUtils.sessionLayers.items()
-                + exportedLayers.items())
+        GrassUtils.sessionLayers = dict(
+            GrassUtils.sessionLayers.items()
+            + exportedLayers.items())
 
     @staticmethod
     def checkGrassIsInstalled(ignorePreviousState=False):
@@ -362,10 +365,10 @@ class GrassUtils:
             cmdpath = os.path.join(path, 'bin', 'r.out.gdal.exe')
             if not os.path.exists(cmdpath):
                 return GrassUtils.tr(
-                    'The specified GRASS folder does not contain a valid '
+                    'The specified GRASS folder "{}" does not contain a valid '
                     'set of GRASS modules. Please, go to the Processing '
                     'settings dialog, and check that the GRASS folder is '
-                    'correctly configured')
+                    'correctly configured'.format(os.path.join(path, 'bin')))
 
         if not ignorePreviousState:
             if GrassUtils.isGrassInstalled:

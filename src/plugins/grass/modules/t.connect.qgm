@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Prints/sets general temporal GIS database connection for current mapset" module="t.connect">
+	<option key="driver"/>
+	<option key="database"/>
+	<flag key="p" hidden="no" advanced="yes"/>
+	<flag key="c" hidden="no" advanced="yes"/>
+	<flag key="d" hidden="no" advanced="yes"/>
+	<flag key="g" hidden="no" advanced="yes"/>
+</qgisgrassmodule>

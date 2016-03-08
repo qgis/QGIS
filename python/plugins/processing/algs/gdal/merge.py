@@ -25,6 +25,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4.QtGui import QIcon
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.outputs import OutputRaster
@@ -33,6 +36,8 @@ from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterSelection
 from processing.tools.system import isWindows
 from processing.algs.gdal.GdalUtils import GdalUtils
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class merge(GdalAlgorithm):
@@ -45,21 +50,24 @@ class merge(GdalAlgorithm):
 
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'merge.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Merge'
-        self.group = '[GDAL] Miscellaneous'
+        self.name, self.i18n_name = self.trAlgorithm('Merge')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Miscellaneous')
         self.addParameter(ParameterMultipleInput(merge.INPUT,
-            self.tr('Input layers'), ParameterMultipleInput.TYPE_RASTER))
+                                                 self.tr('Input layers'), ParameterMultipleInput.TYPE_RASTER))
         self.addParameter(ParameterBoolean(merge.PCT,
-            self.tr('Grab pseudocolor table from first layer'), False))
+                                           self.tr('Grab pseudocolor table from first layer'), False))
         self.addParameter(ParameterBoolean(merge.SEPARATE,
-            self.tr('Layer stack'), False))
+                                           self.tr('Layer stack'), False))
         self.addParameter(ParameterSelection(self.RTYPE,
-            self.tr('Output raster type'), self.TYPE, 5))
+                                             self.tr('Output raster type'), self.TYPE, 5))
 
-        self.addOutput(OutputRaster(merge.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputRaster(merge.OUTPUT, self.tr('Merged')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = []
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
@@ -81,4 +89,4 @@ class merge(GdalAlgorithm):
         else:
             commands = ['gdal_merge.py', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

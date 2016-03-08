@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 21.4.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -45,6 +45,8 @@ class QgsEditorWidgetFactory
      * @return         A new widget wrapper
      */
     virtual QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const = 0 /Factory/;
+
+    virtual QgsSearchWidgetWrapper* createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const /Factory/;
 
     /**
      * Return The human readable identifier name of this widget type
@@ -99,6 +101,16 @@ class QgsEditorWidgetFactory
     bool supportsField( QgsVectorLayer* vl, int fieldIdx );
 
     /**
+     * Returns a list of widget types which this editor widget supports.
+     * Each widget type can have a priority value attached, the factory with the highest one
+     * will be used.
+     *
+     * @return A map of widget type names and weight values
+     * @note not available in Python bindings
+     */
+    //virtual QMap<const char*, int> supportedWidgetTypes() { return QMap<const char*, int>(); }
+
+    /**
      * Create a pretty String representation of the value.
      *
      * @param vl        The vector layer.
@@ -122,7 +134,6 @@ class QgsEditorWidgetFactory
      */
     virtual QVariant createCache( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config );
 
-  private:
     /**
      * Read the config from an XML file and map it to a proper {@link QgsEditorWidgetConfig}.
      *
@@ -134,6 +145,7 @@ class QgsEditorWidgetFactory
      */
     virtual QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx );
 
+  private:
     /**
      * This method allows disabling this editor widget type for a certain field.
      * By default, it returns true for all fields.

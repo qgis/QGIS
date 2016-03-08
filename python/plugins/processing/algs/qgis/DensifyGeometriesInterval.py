@@ -44,16 +44,16 @@ class DensifyGeometriesInterval(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Densify geometries given an interval'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Densify geometries given an interval')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'),
-            [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Input layer'),
+                                          [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterNumber(self.INTERVAL,
-            self.tr('Interval between vertices to add'), 0.0, 10000000.0, 1.0))
+                                          self.tr('Interval between vertices to add'), 0.0, 10000000.0, 1.0))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Densified layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Densified')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
@@ -66,19 +66,17 @@ class DensifyGeometriesInterval(GeoAlgorithm):
                                          layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
-        current = 0
-        for f in features:
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
             featGeometry = QgsGeometry(f.geometry())
             attrs = f.attributes()
             newGeometry = self.densifyGeometry(featGeometry, interval,
-                    isPolygon)
+                                               isPolygon)
             feature = QgsFeature()
             feature.setGeometry(newGeometry)
             feature.setAttributes(attrs)
             writer.addFeature(feature)
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

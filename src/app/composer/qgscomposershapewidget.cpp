@@ -24,7 +24,7 @@
 #include "qgssymbollayerv2utils.h"
 #include <QColorDialog>
 
-QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape ): QgsComposerItemBaseWidget( 0, composerShape ), mComposerShape( composerShape )
+QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape ): QgsComposerItemBaseWidget( nullptr, composerShape ), mComposerShape( composerShape )
 {
   setupUi( this );
 
@@ -107,8 +107,9 @@ void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
   // use the atlas coverage layer, if any
   QgsVectorLayer* coverageLayer = atlasCoverageLayer();
 
-  QgsFillSymbolV2* newSymbol = dynamic_cast<QgsFillSymbolV2*>( mComposerShape->shapeStyleSymbol()->clone() );
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer );
+  QgsFillSymbolV2* newSymbol = mComposerShape->shapeStyleSymbol()->clone();
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer, this );
+  d.setExpressionContext( mComposerShape->createExpressionContext() );
 
   if ( d.exec() == QDialog::Accepted )
   {
@@ -117,10 +118,7 @@ void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
     updateShapeStyle();
     mComposerShape->endCommand();
   }
-  else
-  {
-    delete newSymbol;
-  }
+  delete newSymbol;
 }
 
 void QgsComposerShapeWidget::updateShapeStyle()

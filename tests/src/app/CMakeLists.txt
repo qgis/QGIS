@@ -3,20 +3,31 @@
 # the UI file won't be wrapped!
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} 
   ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/composer
-  ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
-  ${CMAKE_BINARY_DIR}/src/ui
-  ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/python
-  ${CMAKE_SOURCE_DIR}/src/app
-  ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/auth
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/composer
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/geometry
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/raster
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/symbology-ng
+  ${CMAKE_CURRENT_BINARY_DIR}/../../../src/ui
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/editorwidgets
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/editorwidgets/core
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/attributetable
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/symbology-ng
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/raster
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/python
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/app
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/app/pluginmanager
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/ui
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
-  )
+  ${QCA_INCLUDE_DIR}
+)
 
 #############################################################
 # Compiler defines
@@ -81,7 +92,7 @@ MACRO (ADD_QGIS_TEST testname testsrc)
   IF (APPLE)
     TARGET_LINK_LIBRARIES(qgis_${testname} ${APP_SERVICES_LIBRARY} )
   ENDIF(APPLE)
-  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})
+  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
   #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
   #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
   #  INSTALL_RPATH_USE_LINK_PATH true )
@@ -91,3 +102,7 @@ ENDMACRO (ADD_QGIS_TEST)
 # Tests:
 
 ADD_QGIS_TEST(qgisappclipboard testqgisappclipboard.cpp)
+ADD_QGIS_TEST(attributetabletest testqgsattributetable.cpp)
+ADD_QGIS_TEST(fieldcalculatortest testqgsfieldcalculator.cpp)
+ADD_QGIS_TEST(maptoolidentifyaction testqgsmaptoolidentifyaction.cpp)
+ADD_QGIS_TEST(measuretool testqgsmeasuretool.cpp)

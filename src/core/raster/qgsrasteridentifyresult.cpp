@@ -28,14 +28,14 @@ QgsRasterIdentifyResult::QgsRasterIdentifyResult()
 {
 }
 
-QgsRasterIdentifyResult::QgsRasterIdentifyResult( QgsRaster::IdentifyFormat theFormat, QMap<int, QVariant> theResults )
+QgsRasterIdentifyResult::QgsRasterIdentifyResult( QgsRaster::IdentifyFormat theFormat, const QMap<int, QVariant>& theResults )
     : mValid( true )
     , mFormat( theFormat )
     , mResults( theResults )
 {
 }
 
-QgsRasterIdentifyResult::QgsRasterIdentifyResult( QgsError theError )
+QgsRasterIdentifyResult::QgsRasterIdentifyResult( const QgsError& theError )
     : mValid( false )
     , mFormat( QgsRaster::IdentifyFormatUndefined )
     , mError( theError )

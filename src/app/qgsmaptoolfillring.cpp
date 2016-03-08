@@ -19,14 +19,14 @@
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 #include "qgsattributedialog.h"
-#include <qgsapplication.h>
+#include "qgisapp.h"
 
 #include <QMouseEvent>
 
 #include <limits>
 
 QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas, QgsMapToolCapture::CapturePolygon )
+    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePolygon )
 {
 }
 
@@ -34,7 +34,7 @@ QgsMapToolFillRing::~QgsMapToolFillRing()
 {
 }
 
-void QgsMapToolFillRing::canvasMapReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
 {
   //check if we operate on a vector layer
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
@@ -79,14 +79,17 @@ void QgsMapToolFillRing::canvasMapReleaseEvent( QgsMapMouseEvent * e )
     closePolygon();
 
     vlayer->beginEditCommand( tr( "Ring added and filled" ) );
-    int addRingReturnCode = vlayer->addRing( points() );
+    QList< QgsPoint > pointList = points();
+
+    QgsFeatureId modifiedFid;
+    int addRingReturnCode = vlayer->addRing( pointList, &modifiedFid );
     if ( addRingReturnCode != 0 )
     {
       QString errorMessage;
       //todo: open message box to communicate errors
       if ( addRingReturnCode == 1 )
       {
-        errorMessage = tr( "a problem with geometry type occured" );
+        errorMessage = tr( "a problem with geometry type occurred" );
       }
       else if ( addRingReturnCode == 2 )
       {
@@ -106,7 +109,7 @@ void QgsMapToolFillRing::canvasMapReleaseEvent( QgsMapMouseEvent * e )
       }
       else
       {
-        errorMessage = tr( "an unknown error occured" );
+        errorMessage = tr( "an unknown error occurred" );
       }
       emit messageEmitted( tr( "could not add ring since %1." ).arg( errorMessage ), QgsMessageBar::CRITICAL );
       vlayer->destroyEditCommand();
@@ -122,51 +125,38 @@ void QgsMapToolFillRing::canvasMapReleaseEvent( QgsMapMouseEvent * e )
       yMin = std::numeric_limits<double>::max();
       yMax = -std::numeric_limits<double>::max();
 
-      for ( QList<QgsPoint>::const_iterator it = points().constBegin(); it != points().constEnd(); ++it )
+      Q_FOREACH ( const QgsPoint& point, pointList )
       {
-        if ( it->x() < xMin )
-        {
-          xMin = it->x();
-        }
-        if ( it->x() > xMax )
-        {
-          xMax = it->x();
-        }
-        if ( it->y() < yMin )
-        {
-          yMin = it->y();
-        }
-        if ( it->y() > yMax )
-        {
-          yMax = it->y();
-        }
+        xMin = qMin( xMin, point.x() );
+        xMax = qMax( xMax, point.x() );
+        yMin = qMin( yMin, point.y() );
+        yMax = qMax( yMax, point.y() );
       }
+
       bBox.setXMinimum( xMin );
       bBox.setYMinimum( yMin );
       bBox.setXMaximum( xMax );
       bBox.setYMaximum( yMax );
 
-      QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+      QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterFid( modifiedFid ) );
 
       QgsFeature f;
       bool res = false;
-      while ( fit.nextFeature( f ) )
+      if ( fit.nextFeature( f ) )
       {
         //create QgsFeature with wkb representation
-        QgsFeature* ft = new QgsFeature( vlayer->pendingFields(), 0 );
+        QgsFeature* ft = new QgsFeature( vlayer->fields(), 0 );
 
-        QgsGeometry *g;
-        g = QgsGeometry::fromPolygon( QgsPolygon() << points().toVector() );
-        ft->setGeometry( g );
+        ft->setGeometry( QgsGeometry::fromPolygon( QgsPolygon() << pointList.toVector() ) );
         ft->setAttributes( f.attributes() );
 
-        if ( QgsApplication::keyboardModifiers() == Qt::ControlModifier )
+        if ( QApplication::keyboardModifiers() == Qt::ControlModifier )
         {
           res = vlayer->addFeature( *ft );
         }
         else
         {
-          QgsAttributeDialog *dialog = new QgsAttributeDialog( vlayer, ft, false, NULL, true );
+          QgsAttributeDialog *dialog = new QgsAttributeDialog( vlayer, ft, false, nullptr, true );
           dialog->setIsAddDialog( true );
           res = dialog->exec(); // will also add the feature
         }

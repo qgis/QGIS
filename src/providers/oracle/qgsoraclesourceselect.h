@@ -22,6 +22,7 @@
 #include "qgsdbfilterproxymodel.h"
 #include "qgsoracletablemodel.h"
 #include "qgscontexthelp.h"
+#include "qgsoracleconnpool.h"
 
 #include <QMap>
 #include <QPair>
@@ -36,17 +37,17 @@ class QgsOracleSourceSelect;
 
 class QgsOracleSourceSelectDelegate : public QItemDelegate
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
-    QgsOracleSourceSelectDelegate( QObject *parent = NULL )
+    explicit QgsOracleSourceSelectDelegate( QObject *parent = nullptr )
         : QItemDelegate( parent )
-        , mConn( 0 )
+        , mConn( nullptr )
     {}
 
     ~QgsOracleSourceSelectDelegate()
     {
-      setConn( 0 );
+      setConn( nullptr );
     }
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
@@ -56,7 +57,7 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
     void setConnectionInfo( const QgsDataSourceURI& connInfo ) { mConnInfo = connInfo; }
 
   protected:
-    void setConn( QgsOracleConn *conn ) const { if ( mConn ) mConn->disconnect();  mConn = conn; }
+    void setConn( QgsOracleConn *conn ) const { if ( mConn ) QgsOracleConnPool::instance()->releaseConnection( mConn ); mConn = conn; }
 
     QgsOracleConn* conn() const
     {
@@ -72,7 +73,7 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
 };
 
 
-/*! \class QgsOracleSourceSelect
+/** \class QgsOracleSourceSelect
  * \brief Dialog to create connections and add tables from Oracle.
  *
  * This dialog allows the user to define and save connection information
@@ -104,9 +105,9 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void addTables();
     void buildQuery();
 
-    /*! Connects to the database using the stored connection parameters.
-    * Once connected, available layers are displayed.
-    */
+    /** Connects to the database using the stored connection parameters.
+     * Once connected, available layers are displayed.
+     */
     void on_btnConnect_clicked();
     void on_cbxAllowGeometrylessTables_stateChanged( int );
     //! Opens the create connection dialog to build a new connection

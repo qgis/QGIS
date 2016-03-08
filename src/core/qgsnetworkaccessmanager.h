@@ -24,8 +24,6 @@
 #include <QNetworkProxy>
 #include <QNetworkRequest>
 
-#include "qgssingleton.h"
-
 /*
  * \class QgsNetworkAccessManager
  * \brief network access manager for QGIS
@@ -43,12 +41,16 @@
  * that the fallback proxy should not be used for, then no proxy will be used.
  *
  */
-class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager, public QgsSingleton<QgsNetworkAccessManager>
+class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 {
     Q_OBJECT
 
   public:
-    QgsNetworkAccessManager( QObject *parent = 0 );
+    //! returns a pointer to the single instance
+    // and creates that instance on the first call.
+    static QgsNetworkAccessManager* instance();
+
+    QgsNetworkAccessManager( QObject *parent = nullptr );
 
     //! destructor
     ~QgsNetworkAccessManager();
@@ -80,6 +82,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager, public
     //! Setup the NAM according to the user's settings
     void setupDefaultProxyAndCache();
 
+    //! return whether the system proxy should be used
     bool useSystemProxy() { return mUseSystemProxy; }
 
   signals:
@@ -91,13 +94,15 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager, public
     void abortRequest();
 
   protected:
-    virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0 ) override;
+    virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = nullptr ) override;
 
   private:
     QList<QNetworkProxyFactory*> mProxyFactories;
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;
     bool mUseSystemProxy;
+    bool mInitialized;
+    static QgsNetworkAccessManager *smMainNAM;
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H

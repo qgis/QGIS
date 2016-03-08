@@ -22,6 +22,8 @@
 
 class APP_EXPORT QgsMapToolSvgAnnotation: public QgsMapToolAnnotation
 {
+    Q_OBJECT
+
   public:
     QgsMapToolSvgAnnotation( QgsMapCanvas* canvas );
     ~QgsMapToolSvgAnnotation();

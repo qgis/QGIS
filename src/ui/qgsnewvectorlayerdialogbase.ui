@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>New Vector Layer</string>
+   <string>New Shapefile Layer</string>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -107,7 +107,7 @@
    <item row="10" column="0" colspan="3">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>New attribute</string>
+      <string>New field</string>
      </property>
      <layout class="QGridLayout">
       <item row="0" column="0">
@@ -139,7 +139,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Width</string>
+         <string>Length</string>
         </property>
         <property name="buddy">
          <cstring>mWidth</cstring>
@@ -171,13 +171,13 @@
          </sizepolicy>
         </property>
         <property name="toolTip">
-         <string>Add attribute to list</string>
+         <string>Add field to list</string>
         </property>
         <property name="layoutDirection">
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="text">
-         <string>Add to attributes list</string>
+         <string>Add to fields list</string>
         </property>
         <property name="icon">
          <iconset>
@@ -194,7 +194,7 @@
    <item row="12" column="0" colspan="3">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>Attributes list</string>
+      <string>Fields list</string>
      </property>
      <layout class="QGridLayout">
       <item row="2" column="0" colspan="2">
@@ -226,7 +226,7 @@
         </column>
         <column>
          <property name="text">
-          <string>Width</string>
+          <string>Length</string>
          </property>
         </column>
         <column>
@@ -258,10 +258,10 @@
          </sizepolicy>
         </property>
         <property name="toolTip">
-         <string>Delete selected attribute</string>
+         <string>Delete selected field</string>
         </property>
         <property name="text">
-         <string>Remove attribute</string>
+         <string>Remove field</string>
         </property>
         <property name="icon">
          <iconset>

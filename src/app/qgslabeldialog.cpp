@@ -21,9 +21,9 @@
 #include "qgslabel.h"
 #include "qgslabelattributes.h"
 #include "qgslogger.h"
+#include "qgisgui.h"
 
 #include <QColorDialog>
-#include <QFontDialog>
 #include <QTabWidget>
 #include <QDoubleValidator>
 
@@ -61,6 +61,7 @@ void QgsLabelDialog::init()
   const QgsFields& myFields = mLabel->fields();
   QStringList myFieldStringList;
   myFieldStringList.append( "" );
+  myFieldStringList.reserve( 1 + myFields.count() );
   for ( int i = 0; i < myFields.count(); ++i )
   {
     myFieldStringList.append( myFields[i].name() );
@@ -277,12 +278,7 @@ void QgsLabelDialog::changeFont( void )
 
   qreal fontSize = mFont.pointSizeF();
   bool resultFlag;
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  mFont = QFontDialog::getFont( &resultFlag, mFont, 0, QString(), QFontDialog::DontUseNativeDialog );
-#else
-  mFont = QFontDialog::getFont( &resultFlag, mFont );
-#endif
+  QFont newFont = QgisGui::getFont( resultFlag, mFont );
   if ( !resultFlag )
     return;
 
@@ -323,7 +319,7 @@ void QgsLabelDialog::changeBufferColor( void )
 }
 
 
-int QgsLabelDialog::itemNoForField( QString theFieldName, QStringList theFieldList )
+int QgsLabelDialog::itemNoForField( const QString& theFieldName, const QStringList& theFieldList )
 {
   //if no matches assume first item in list is blank and return that
   return qMax( 0, theFieldList.indexOf( theFieldName ) );
@@ -401,7 +397,7 @@ void QgsLabelDialog::apply()
   mLabel->setMaxScale( leMaximumScale->text().toFloat() );
 }
 
-int QgsLabelDialog::fieldIndexFromName( QString name )
+int QgsLabelDialog::fieldIndexFromName( const QString& name )
 {
   const QgsFields& fields = mLabel->fields();
   for ( int i = 0; i < fields.count(); ++i )

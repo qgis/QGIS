@@ -34,6 +34,7 @@ from processing.core.outputs import OutputVector
 
 from processing.tools import dataobjects, vector
 
+
 class HubLines(GeoAlgorithm):
     HUBS = 'HUBS'
     HUB_FIELD = 'HUB_FIELD'
@@ -42,19 +43,19 @@ class HubLines(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Hub lines'
-        self.group = 'Vector analysis tools'
+        self.name, self.i18n_name = self.trAlgorithm('Hub lines')
+        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.HUBS,
-            self.tr('Hub point layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Hub point layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.HUB_FIELD,
-            self.tr('Hub ID field'), self.HUBS))
+                                              self.tr('Hub ID field'), self.HUBS))
         self.addParameter(ParameterVector(self.SPOKES,
-            self.tr('Spoke point layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Spoke point layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.SPOKE_FIELD,
-            self.tr('Spoke ID field'), self.SPOKES))
+                                              self.tr('Spoke ID field'), self.SPOKES))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub lines')))
 
     def processAlgorithm(self, progress):
         layerHub = dataobjects.getObjectFromUri(
@@ -74,11 +75,9 @@ class HubLines(GeoAlgorithm):
 
         spokes = vector.features(layerSpoke)
         hubs = vector.features(layerHub)
+        total = 100.0 / len(spokes)
 
-        count = len(spokes)
-        total = 100.0 / float(count)
-
-        for count, spokepoint in enumerate(spokes):
+        for current, spokepoint in enumerate(spokes):
             p = spokepoint.geometry().boundingBox().center()
             spokeX = p.x()
             spokeY = p.y()
@@ -99,6 +98,6 @@ class HubLines(GeoAlgorithm):
 
                     break
 
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))
 
         del writer

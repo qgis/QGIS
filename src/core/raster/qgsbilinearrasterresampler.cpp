@@ -27,7 +27,7 @@ QgsBilinearRasterResampler::~QgsBilinearRasterResampler()
 {
 }
 
-QgsRasterResampler * QgsBilinearRasterResampler::clone() const
+QgsBilinearRasterResampler* QgsBilinearRasterResampler::clone() const
 {
   return new QgsBilinearRasterResampler();
 }

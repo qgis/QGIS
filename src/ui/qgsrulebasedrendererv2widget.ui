@@ -57,14 +57,14 @@
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionSignPlus.png</normaloff>:/images/themes/default/mActionSignPlus.png</iconset>
+         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="btnEditRule">
        <property name="toolTip">
-        <string>Edit rule</string>
+        <string>Edit current rule</string>
        </property>
        <property name="text">
         <string/>
@@ -78,14 +78,14 @@
      <item>
       <widget class="QPushButton" name="btnRemoveRule">
        <property name="toolTip">
-        <string>Remove rule</string>
+        <string>Remove selected rules</string>
        </property>
        <property name="text">
         <string/>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionSignMinus.png</normaloff>:/images/themes/default/mActionSignMinus.png</iconset>
+         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
        </property>
       </widget>
      </item>
@@ -95,7 +95,7 @@
         <bool>true</bool>
        </property>
        <property name="text">
-        <string>Refine current rules</string>
+        <string>Refine selected rules</string>
        </property>
        <property name="checkable">
         <bool>false</bool>

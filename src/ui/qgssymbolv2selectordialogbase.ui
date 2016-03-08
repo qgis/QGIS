@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>436</width>
+    <width>670</width>
     <height>359</height>
    </rect>
   </property>
@@ -105,6 +105,22 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="btnDuplicate">
+         <property name="maximumSize">
+          <size>
+           <width>50</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Duplicates the current layer</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="btnUp">
          <property name="maximumSize">
           <size>
@@ -142,22 +158,6 @@
           </size>
          </property>
         </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="btnSaveSymbol">
-         <property name="maximumSize">
-          <size>
-           <width>70</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Save symbol</string>
-         </property>
-         <property name="text">
-          <string>Save</string>
-         </property>
-        </widget>
        </item>
       </layout>
      </item>

@@ -50,7 +50,7 @@ QgsComposerLegendItem::~QgsComposerLegendItem()
 void QgsComposerLegendItem::writeXMLChildren( QDomElement& elem, QDomDocument& doc ) const
 {
   int numRows = rowCount();
-  QgsComposerLegendItem* currentItem = 0;
+  QgsComposerLegendItem* currentItem = nullptr;
   for ( int i = 0; i < numRows; ++i )
   {
     currentItem = dynamic_cast<QgsComposerLegendItem*>( child( i, 0 ) );
@@ -64,17 +64,16 @@ void QgsComposerLegendItem::writeXMLChildren( QDomElement& elem, QDomDocument& d
 
 ////////////////QgsComposerSymbolV2Item
 
-#include "qgssymbolv2.h"
 
-QgsComposerSymbolV2Item::QgsComposerSymbolV2Item(): QgsComposerLegendItem( QgsComposerLegendStyle::Symbol ), mSymbolV2( 0 )
+QgsComposerSymbolV2Item::QgsComposerSymbolV2Item(): QgsComposerLegendItem( QgsComposerLegendStyle::Symbol ), mSymbolV2( nullptr )
 {
 }
 
-QgsComposerSymbolV2Item::QgsComposerSymbolV2Item( const QString& text ): QgsComposerLegendItem( text, QgsComposerLegendStyle::Symbol ), mSymbolV2( 0 )
+QgsComposerSymbolV2Item::QgsComposerSymbolV2Item( const QString& text ): QgsComposerLegendItem( text, QgsComposerLegendStyle::Symbol ), mSymbolV2( nullptr )
 {
 }
 
-QgsComposerSymbolV2Item::QgsComposerSymbolV2Item( const QIcon& icon, const QString& text ): QgsComposerLegendItem( icon, text, QgsComposerLegendStyle::Symbol ), mSymbolV2( 0 )
+QgsComposerSymbolV2Item::QgsComposerSymbolV2Item( const QIcon& icon, const QString& text ): QgsComposerLegendItem( icon, text, QgsComposerLegendStyle::Symbol ), mSymbolV2( nullptr )
 {
 }
 
@@ -252,7 +251,7 @@ void QgsComposerLayerItem::readXML( const QDomElement& itemElem, bool xServerAva
   QDomNodeList childList = itemElem.childNodes();
   QDomNode currentNode;
   QDomElement currentElem;
-  QgsComposerLegendItem* currentChildItem = 0;
+  QgsComposerLegendItem* currentChildItem = nullptr;
 
   int nChildItems = childList.count();
   for ( int i = 0; i < nChildItems; ++i )
@@ -286,7 +285,7 @@ void QgsComposerLayerItem::readXML( const QDomElement& itemElem, bool xServerAva
   }
 }
 
-void QgsComposerLayerItem::setDefaultStyle( double scaleDenominator, QString rule )
+void QgsComposerLayerItem::setDefaultStyle( double scaleDenominator, const QString& rule )
 {
   // set default style according to number of symbols
   QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID() ) );
@@ -362,7 +361,7 @@ void QgsComposerGroupItem::readXML( const QDomElement& itemElem, bool xServerAva
   QDomNodeList childList = itemElem.childNodes();
   QDomNode currentNode;
   QDomElement currentElem;
-  QgsComposerLegendItem* currentChildItem = 0;
+  QgsComposerLegendItem* currentChildItem = nullptr;
 
   int nChildItems = childList.count();
   for ( int i = 0; i < nChildItems; ++i )

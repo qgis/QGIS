@@ -18,15 +18,12 @@ from qgis.core import (QgsRectangle,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform
                        )
-from utilities import (getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
-# Convenience instances in case you may need them
-# not used in this test
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+from qgis.testing import start_app, unittest
 
-class TestQgsCoordinateTransform(TestCase):
+start_app()
+
+
+class TestQgsCoordinateTransform(unittest.TestCase):
 
     def testTransformBoundingBox(self):
         """Test that we can transform a rectangular bbox from utm56s to LonLat"""
@@ -39,11 +36,11 @@ class TestQgsCoordinateTransform(TestCase):
         myProjectedExtent = myXForm.transformBoundingBox(myExtent)
         myExpectedExtent = ('150.1509239873580270,-35.7176936443908772 : '
                             '150.1964384662953194,-35.6971885216629090')
-        myExpectedValues = [150.1509239873580270,-35.7176936443908772,
-                            150.1964384662953194,-35.6971885216629090]
+        myExpectedValues = [150.1509239873580270, -35.7176936443908772,
+                            150.1964384662953194, -35.6971885216629090]
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
-                     ( myExpectedExtent,
-                       myProjectedExtent.toString()))
+                     (myExpectedExtent,
+                      myProjectedExtent.toString()))
 
         self.assertAlmostEqual(myExpectedValues[0], myProjectedExtent.xMinimum(), msg=myMessage)
         self.assertAlmostEqual(myExpectedValues[1], myProjectedExtent.yMinimum(), msg=myMessage)

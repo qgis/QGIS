@@ -1,0 +1,10 @@
+Multi Direction Lee Filter
+grid_filter
+ParameterRaster|INPUT|Grid|False
+ParameterNumber|NOISE_ABS|Estimated Noise (absolute)|None|None|1.0
+ParameterNumber|NOISE_REL|Estimated Noise (relative)|None|None|1.0
+ParameterBoolean|WEIGHTED       |Weighted|True
+ParameterSelection|METHOD|Method|[0] noise variance given as absolute value;[1] noise variance given relative to mean standard deviation;[2] original calculation (Ringeler)
+OutputRaster|RESULT|Filtered Grid
+OutputRaster|STDDEV|Minimum Standard Deviation
+OutputRaster|DIR|Direction of Minimum Standard Deviation

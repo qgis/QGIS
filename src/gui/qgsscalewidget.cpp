@@ -21,7 +21,7 @@
 
 QgsScaleWidget::QgsScaleWidget( QWidget *parent )
     : QWidget( parent )
-    , mCanvas( NULL )
+    , mCanvas( nullptr )
     , mShowCurrentScaleButton( false )
 {
   QHBoxLayout* layout = new QHBoxLayout( this );
@@ -32,6 +32,7 @@ QgsScaleWidget::QgsScaleWidget( QWidget *parent )
   layout->addWidget( mScaleComboBox );
 
   mCurrentScaleButton = new QToolButton( this );
+  mCurrentScaleButton->setToolTip( tr( "Set to current canvas scale" ) );
   mCurrentScaleButton->setIcon( QgsApplication::getThemeIcon( "/mActionMapIdentification.svg" ) );
   layout->addWidget( mCurrentScaleButton );
   mCurrentScaleButton->hide();

@@ -30,7 +30,6 @@
 #include <QPushButton>
 #include <QNetworkRequest>
 
-class QgisApp;
 class QgsDataProvider;
 class QButtonGroup;
 class QgsNumericSortTreeWidgetItem;
@@ -60,7 +59,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     };
 
     //! Constructor
-    QgsOWSSourceSelect( QString service, QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsOWSSourceSelect( const QString& service, QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsOWSSourceSelect();
 
@@ -77,9 +76,9 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     //! Loads connections from the file
     void on_mLoadButton_clicked();
 
-    /*! Connects to the database using the stored connection parameters.
-    * Once connected, available layers are displayed.
-    */
+    /** Connects to the database using the stored connection parameters.
+     * Once connected, available layers are displayed.
+     */
     void on_mConnectButton_clicked();
 
     //! Determines the layers the user selected
@@ -191,7 +190,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
         const QMap<int, QStringList> &layerParentNames );
 
     //! Returns a textual description for the authority id
-    QString descriptionForAuthId( QString authId );
+    QString descriptionForAuthId( const QString& authId );
 
     //! layer name derived from latest layer selection (updated as long it's not edited manually)
     QString mLastLayerName;

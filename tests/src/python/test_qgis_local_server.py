@@ -24,6 +24,10 @@ import datetime
 import StringIO
 import tempfile
 
+if os.name == 'nt':
+    print "TestQgisLocalServer currently doesn't support windows"
+    sys.exit(0)
+
 from qgis.core import (
     QgsRectangle,
     QgsCoordinateReferenceSystem,
@@ -32,21 +36,21 @@ from qgis.core import (
 
 from qgis_local_server import getLocalServer
 
-from utilities import (
-    TestCase,
-    getQgisTestApp,
-    unittest,
-    openInBrowserTab
+from qgis.testing import (
+    start_app,
+    unittest
 )
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+from utilities import openInBrowserTab
+
+start_app()
 MAPSERV = getLocalServer()
 
 QGIS_TEST_REPORT = 'QGIS_TEST_REPORT' in os.environ
 TESTREPORTS = {}
 
 
-class TestQgisLocalServer(TestCase):
+class TestQgisLocalServer(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -117,7 +121,7 @@ class TestQgisLocalServer(TestCase):
         # chk.setMapRenderer(None)
         res = chk.compareImages(test_name, 0, str(img_path))
         if QGIS_TEST_REPORT and not res:  # don't report ok checks
-            TESTREPORTS[test_name] = str(chk.report().toLocal8Bit())
+            TESTREPORTS[test_name] = chk.report()
         msg = '\nRender check failed for "{0}"'.format(test_name)
         assert res, msg
 

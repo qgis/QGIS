@@ -24,15 +24,14 @@
 
 class QgsInterpolator;
 
-/**A class that does interpolation to a grid and writes the results to an ascii grid*/
+/** A class that does interpolation to a grid and writes the results to an ascii grid*/
 //todo: extend such that writing to other file types is possible
 class ANALYSIS_EXPORT QgsGridFileWriter
 {
   public:
-    QgsGridFileWriter( QgsInterpolator* i, QString outputPath, QgsRectangle extent, int nCols, int nRows, double cellSizeX, double cellSizeY );
-    ~QgsGridFileWriter();
+    QgsGridFileWriter( QgsInterpolator* i, const QString& outputPath, const QgsRectangle& extent, int nCols, int nRows, double cellSizeX, double cellSizeY );
 
-    /**Writes the grid file.
+    /** Writes the grid file.
      @param showProgressDialog shows a dialog with the possibility to cancel
     @return 0 in case of success*/
 

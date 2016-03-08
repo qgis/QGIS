@@ -24,10 +24,9 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressionbuilderdialog.h"
-#include <QColorDialog>
-#include <QFontDialog>
+#include "qgisgui.h"
 
-QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table ): QgsComposerItemBaseWidget( 0, table ), mComposerTable( table )
+QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table ): QgsComposerItemBaseWidget( nullptr, table ), mComposerTable( table )
 {
   setupUi( this );
   //add widget for general composer item properties
@@ -132,7 +131,7 @@ void QgsComposerTableWidget::on_mAttributesPushButton_clicked()
 
   mComposerTable->beginCommand( tr( "Table attribute settings" ) );
 
-  QgsAttributeSelectionDialog d( mComposerTable, mComposerTable->vectorLayer(), 0 );
+  QgsAttributeSelectionDialog d( mComposerTable, mComposerTable->vectorLayer(), this );
   if ( d.exec() == QDialog::Accepted )
   {
     mComposerTable->refreshAttributes();
@@ -215,12 +214,7 @@ void QgsComposerTableWidget::on_mHeaderFontPushButton_clicked()
   }
 
   bool ok;
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->headerFont(), 0, tr( "Select Font" ), QFontDialog::DontUseNativeDialog );
-#else
-  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->headerFont(), 0, tr( "Select Font" ) );
-#endif
+  QFont newFont = QgisGui::getFont( ok, mComposerTable->headerFont(), tr( "Select Font" ) );
   if ( ok )
   {
     mComposerTable->beginCommand( tr( "Table header font" ) );
@@ -250,12 +244,7 @@ void QgsComposerTableWidget::on_mContentFontPushButton_clicked()
   }
 
   bool ok;
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->contentFont(), 0, tr( "Select Font" ), QFontDialog::DontUseNativeDialog );
-#else
-  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->contentFont(), 0, tr( "Select Font" ) );
-#endif
+  QFont newFont = QgisGui::getFont( ok, mComposerTable->contentFont(), tr( "Select Font" ) );
   if ( ok )
   {
     mComposerTable->beginCommand( tr( "Table content font" ) );
@@ -283,7 +272,7 @@ void QgsComposerTableWidget::on_mGridStrokeWidthSpinBox_valueChanged( double d )
   {
     return;
   }
-  mComposerTable->beginCommand( tr( "Table grid stroke" ), QgsComposerMergeCommand::TableGridStrokeWidth );
+  mComposerTable->beginCommand( tr( "Table grid line" ), QgsComposerMergeCommand::TableGridStrokeWidth );
   mComposerTable->setGridStrokeWidth( d );
   mComposerTable->update();
   mComposerTable->endCommand();
@@ -475,7 +464,9 @@ void QgsComposerTableWidget::on_mFeatureFilterButton_clicked()
     return;
   }
 
-  QgsExpressionBuilderDialog exprDlg( mComposerTable->vectorLayer(), mFeatureFilterEdit->text(), this );
+  QScopedPointer<QgsExpressionContext> context( mComposerTable->createExpressionContext() );
+  QgsExpressionBuilderDialog exprDlg( mComposerTable->vectorLayer(), mFeatureFilterEdit->text(), this, "generic", *context );
+
   exprDlg.setWindowTitle( tr( "Expression based filter" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {

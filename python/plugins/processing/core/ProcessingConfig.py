@@ -29,12 +29,13 @@ import os
 
 from PyQt4.QtCore import QPyNullVariant, QCoreApplication, QSettings
 from PyQt4.QtGui import QIcon
-from processing.tools.system import tempFolder
+from processing.tools.system import defaultOutputFolder
+import processing.tools.dataobjects
 
 
 class ProcessingConfig:
 
-    OUTPUT_FOLDER = 'OUTPUT_FOLDER'
+    OUTPUT_FOLDER = 'OUTPUTS_FOLDER'
     RASTER_STYLE = 'RASTER_STYLE'
     VECTOR_POINT_STYLE = 'VECTOR_POINT_STYLE'
     VECTOR_LINE_STYLE = 'VECTOR_LINE_STYLE'
@@ -49,6 +50,9 @@ class ProcessingConfig:
     POST_EXECUTION_SCRIPT = 'POST_EXECUTION_SCRIPT'
     SHOW_CRS_DEF = 'SHOW_CRS_DEF'
     WARN_UNMATCHING_CRS = 'WARN_UNMATCHING_CRS'
+    DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'DEFAULT_OUTPUT_RASTER_LAYER_EXT'
+    DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DEFAULT_OUTPUT_VECTOR_LAYER_EXT'
+    SHOW_PROVIDERS_TOOLTIP = "SHOW_PROVIDERS_TOOLTIP"
 
     settings = {}
     settingIcons = {}
@@ -57,7 +61,7 @@ class ProcessingConfig:
     def initialize():
         icon = QIcon(os.path.dirname(__file__) + '/../images/alg.png')
         ProcessingConfig.settingIcons['General'] = icon
-        ProcessingConfig.addSetting( Setting(
+        ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.SHOW_DEBUG_IN_DIALOG,
             ProcessingConfig.tr('Show extra info in Log panel'), True))
@@ -79,8 +83,13 @@ class ProcessingConfig:
             ProcessingConfig.tr('Show recently executed algorithms'), True))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
+            ProcessingConfig.SHOW_PROVIDERS_TOOLTIP,
+            ProcessingConfig.tr('Show tooltip when there are disabled providers'), True))
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
             ProcessingConfig.OUTPUT_FOLDER,
-            ProcessingConfig.tr('Output folder'), tempFolder()))
+            ProcessingConfig.tr('Output folder'), defaultOutputFolder(),
+            valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.SHOW_CRS_DEF,
@@ -92,35 +101,49 @@ class ProcessingConfig:
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.RASTER_STYLE,
-            ProcessingConfig.tr('Style for raster layers'), ''))
+            ProcessingConfig.tr('Style for raster layers'), '',
+            valuetype=Setting.FILE))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.VECTOR_POINT_STYLE,
-            ProcessingConfig.tr('Style for point layers'), ''))
+            ProcessingConfig.tr('Style for point layers'), '',
+            valuetype=Setting.FILE))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.VECTOR_LINE_STYLE,
-            ProcessingConfig.tr('Style for line layers'), ''))
+            ProcessingConfig.tr('Style for line layers'), '',
+            valuetype=Setting.FILE))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.VECTOR_POLYGON_STYLE,
-            ProcessingConfig.tr('Style for polygon layers'), ''))
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.VECTOR_POLYGON_STYLE,
-            ProcessingConfig.tr('Style for polygon layers'), ''))
+            ProcessingConfig.tr('Style for polygon layers'), '',
+            valuetype=Setting.FILE))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.PRE_EXECUTION_SCRIPT,
-            ProcessingConfig.tr('Pre-execution script'), ''))
+            ProcessingConfig.tr('Pre-execution script'), '',
+            valuetype=Setting.FILE))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.POST_EXECUTION_SCRIPT,
-            ProcessingConfig.tr('Post-execution script'), ''))
+            ProcessingConfig.tr('Post-execution script'), '',
+            valuetype=Setting.FILE))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.RECENT_ALGORITHMS,
             ProcessingConfig.tr('Recent algs'), '', hidden=True))
+        extensions = processing.tools.dataobjects.getSupportedOutputVectorLayerExtensions()
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT,
+            ProcessingConfig.tr('Default output vector layer extension'), extensions[0],
+            valuetype=Setting.SELECTION, options=extensions))
+        extensions = processing.tools.dataobjects.getSupportedOutputRasterLayerExtensions()
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT,
+            ProcessingConfig.tr('Default output raster layer extension'), extensions[0],
+            valuetype=Setting.SELECTION, options=extensions))
 
     @staticmethod
     def setGroupIcon(group, icon):
@@ -133,7 +156,7 @@ class ProcessingConfig:
         if group in ProcessingConfig.settingIcons:
             return ProcessingConfig.settingIcons[group]
         else:
-            return QIcon( os.path.dirname(__file__) + '/../images/alg.png')
+            return QIcon(os.path.dirname(__file__) + '/../images/alg.png')
 
     @staticmethod
     def addSetting(setting):
@@ -156,12 +179,10 @@ class ProcessingConfig:
             group.append(setting)
         return settings
 
-
     @staticmethod
     def readSettings():
         for setting in ProcessingConfig.settings.values():
             setting.read()
-
 
     @staticmethod
     def getSetting(name):
@@ -176,7 +197,7 @@ class ProcessingConfig:
     @staticmethod
     def setSettingValue(name, value):
         if name in ProcessingConfig.settings.keys():
-            ProcessingConfig.settings[name].value = value
+            ProcessingConfig.settings[name].setValue(value)
             ProcessingConfig.settings[name].save()
 
     @staticmethod
@@ -187,32 +208,75 @@ class ProcessingConfig:
 
 
 class Setting:
+
     """A simple config parameter that will appear on the config dialog.
     """
     STRING = 0
     FILE = 1
     FOLDER = 2
+    SELECTION = 3
+    FLOAT = 4
+    INT = 5
 
-    def __init__(self, group, name, description, default, hidden=False, valuetype=None):
+    def __init__(self, group, name, description, default, hidden=False, valuetype=None,
+                 validator=None, options=None):
         self.group = group
         self.name = name
         self.qname = "Processing/Configuration/" + self.name
         self.description = description
         self.default = default
-        self.value = default
         self.hidden = hidden
+        if valuetype is None:
+            if isinstance(default, (int, long)):
+                valuetype = self.INT
+            elif isinstance(default, float):
+                valuetype = self.FLOAT
         self.valuetype = valuetype
+        self.options = options
+        if validator is None:
+            if valuetype == self.FLOAT:
+                def checkFloat(v):
+                    try:
+                        float(v)
+                    except ValueError:
+                        raise ValueError(self.tr('Wrong parameter value:\n%s') % unicode(v))
+                validator = checkFloat
+            elif valuetype == self.INT:
+                def checkInt(v):
+                    try:
+                        int(v)
+                    except ValueError:
+                        raise ValueError(self.tr('Wrong parameter value:\n%s') % unicode(v))
+                validator = checkInt
+            elif valuetype in [self.FILE, self.FOLDER]:
+                def checkFileOrFolder(v):
+                    if v and not os.path.exists(v):
+                        raise ValueError(self.tr('Specified path does not exist:\n%s') % unicode(v))
+                validator = checkFileOrFolder
+            else:
+                validator = lambda x: True
+        self.validator = validator
+        self.value = default
+
+    def setValue(self, value):
+        self.validator(value)
+        self.value = value
 
     def read(self):
         qsettings = QSettings()
         value = qsettings.value(self.qname, None)
         if value is not None:
             if isinstance(self.value, bool):
-                value = str(value).lower() == str(True).lower()
+                value = unicode(value).lower() == unicode(True).lower()
             self.value = value
 
     def save(self):
         QSettings().setValue(self.qname, self.value)
 
     def __str__(self):
-        return self.name + '=' + str(self.value)
+        return self.name + '=' + unicode(self.value)
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = 'ProcessingConfig'
+        return QCoreApplication.translate(context, string)

@@ -23,22 +23,22 @@
 QgsProviderMetadata::QgsProviderMetadata( QString const & _key,
     QString const & _description,
     QString const & _library )
-    : key_( _key ),
-    description_( _description ),
-    library_( _library )
+    : key_( _key )
+    , description_( _description )
+    , library_( _library )
 {}
 
-QString const & QgsProviderMetadata::key() const
+QString QgsProviderMetadata::key() const
 {
   return key_;
 }
 
-QString const & QgsProviderMetadata::description() const
+QString QgsProviderMetadata::description() const
 {
   return description_;
 }
 
-QString const & QgsProviderMetadata::library() const
+QString QgsProviderMetadata::library() const
 {
   return library_;
 }
