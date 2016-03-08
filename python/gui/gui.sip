@@ -30,6 +30,7 @@
 %Include qgsattributeeditor.sip
 %Include qgsattributeeditorcontext.sip
 %Include qgsattributeform.sip
+%Include qgsattributeformeditorwidget.sip
 %Include qgsattributeforminterface.sip
 %Include qgsattributetypeloaddialog.sip
 %Include qgsbrowsertreeview.sip
@@ -244,6 +245,7 @@
 %Include editorwidgets/core/qgswidgetwrapper.sip
 %Include editorwidgets/qgsdatetimeedit.sip
 %Include editorwidgets/qgsdoublespinbox.sip
+%Include editorwidgets/qgsmultiedittoolbutton.sip
 %Include editorwidgets/qgsrelationreferencewidget.sip
 %Include editorwidgets/qgsrelationreferencewidgetwrapper.sip
 %Include editorwidgets/qgsrelationwidgetwrapper.sip

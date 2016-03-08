@@ -111,7 +111,7 @@ bool QgsFeatureAction::editFeature( bool showModal )
   QgsAttributeDialog *dialog = newDialog( false );
 
   if ( !mFeature->isValid() )
-    dialog->setIsAddDialog( true );
+    dialog->setMode( QgsAttributeForm::AddFeatureMode );
 
   if ( showModal )
   {
@@ -193,7 +193,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
   else
   {
     QgsAttributeDialog *dialog = newDialog( false );
-    dialog->setIsAddDialog( true );
+    dialog->setMode( QgsAttributeForm::AddFeatureMode );
     dialog->setEditCommandMessage( text() );
 
     connect( dialog->attributeForm(), SIGNAL( featureSaved( const QgsFeature & ) ), this, SLOT( onFeatureSaved( const QgsFeature & ) ) );
