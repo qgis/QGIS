@@ -38,6 +38,7 @@ from osgeo.gdalconst import GA_ReadOnly
 
 import processing
 
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.gui import AlgorithmExecutor
 
 from qgis.core import (
@@ -95,8 +96,8 @@ class AlgorithmsTest():
             expectFailure = eval(defs['expectedFailure'][-1])
 
         def doCheck():
-            print(alg.getAsCommand())
-            self.assertTrue(AlgorithmExecutor.runalg(alg))
+            alg.execute()
+
             self.check_results(alg.getOutputValuesAsDictionary(), defs['results'])
 
         if expectFailure:
