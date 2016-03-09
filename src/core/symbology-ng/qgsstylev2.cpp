@@ -104,9 +104,7 @@ bool QgsStyleV2::addSymbol( const QString& name, QgsSymbolV2* symbol, bool updat
 
 bool QgsStyleV2::saveSymbol( const QString& name, QgsSymbolV2* symbol, int groupid, const QStringList& tags )
 {
-  // TODO add support for tags and groups
-  Q_UNUSED( tags );
-
+  // TODO add support for groups
   QDomDocument doc( "dummy" );
   QDomElement symEl = QgsSymbolLayerV2Utils::saveSymbol( name, symbol, doc );
   if ( symEl.isNull() )
@@ -127,6 +125,8 @@ bool QgsStyleV2::saveSymbol( const QString& name, QgsSymbolV2* symbol, int group
     QgsDebugMsg( "Couldn't insert symbol into the database!" );
     return false;
   }
+
+  tagSymbol( SymbolEntity, name, tags );
 
   emit symbolSaved( name, symbol );
 
@@ -209,9 +209,6 @@ bool QgsStyleV2::addColorRamp( const QString& name, QgsVectorColorRampV2* colorR
 
 bool QgsStyleV2::saveColorRamp( const QString& name, QgsVectorColorRampV2* ramp, int groupid, const QStringList& tags )
 {
-  // TODO add support for groups and tags
-  Q_UNUSED( tags );
-
   // insert it into the database
   QDomDocument doc( "dummy" );
   QDomElement rampEl = QgsSymbolLayerV2Utils::saveColorRamp( name, ramp, doc );
@@ -233,6 +230,8 @@ bool QgsStyleV2::saveColorRamp( const QString& name, QgsVectorColorRampV2* ramp,
     QgsDebugMsg( "Couldn't insert colorramp into the database!" );
     return false;
   }
+
+  tagSymbol( ColorrampEntity, name, tags );
 
   return true;
 }
@@ -654,6 +653,27 @@ int QgsStyleV2::addTag( const QString& tagname )
   return static_cast< int >( sqlite3_last_insert_rowid( mCurrentDB ) );
 }
 
+QStringList QgsStyleV2::tags() const
+{
+  if ( !mCurrentDB )
+    return QStringList();
+
+  sqlite3_stmt *ppStmt;
+
+  char *query = sqlite3_mprintf( "SELECT name FROM tag" );
+  int nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+
+  QStringList tagList;
+  while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    tagList << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
+  }
+
+  sqlite3_finalize( ppStmt );
+
+  return tagList;
+}
+
 void QgsStyleV2::rename( StyleEntity type, int id, const QString& newName )
 {
   char *query;
@@ -781,6 +801,7 @@ QStringList QgsStyleV2::findSymbols( StyleEntity type, const QString& qword )
     return QStringList();
   }
 
+  // first find symbols with matching name
   QString item = ( type == SymbolEntity ) ? "symbol" : "colorramp";
   char *query = sqlite3_mprintf( "SELECT name FROM %q WHERE name LIKE '%%%q%%'",
                                  item.toUtf8().constData(), qword.toUtf8().constData() );
@@ -788,7 +809,7 @@ QStringList QgsStyleV2::findSymbols( StyleEntity type, const QString& qword )
   sqlite3_stmt *ppStmt;
   int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
 
-  QStringList symbols;
+  QSet< QString > symbols;
   while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
     symbols << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
@@ -796,7 +817,54 @@ QStringList QgsStyleV2::findSymbols( StyleEntity type, const QString& qword )
 
   sqlite3_finalize( ppStmt );
 
-  return symbols;
+  // next add symbols with matching tags
+  query = sqlite3_mprintf( "SELECT id FROM tag WHERE name LIKE '%%%q%%'", qword.toUtf8().constData() );
+  nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
+
+  QStringList tagids;
+  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    tagids << QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, 0 ) );
+  }
+
+  sqlite3_finalize( ppStmt );
+
+
+  QString dummy = tagids.join( ", " );
+
+  if ( type == SymbolEntity )
+  {
+    query = sqlite3_mprintf( "SELECT symbol_id FROM tagmap WHERE tag_id IN (%q)",
+                             dummy.toUtf8().constData() );
+  }
+  else
+  {
+    query = sqlite3_mprintf( "SELECT colorramp_id FROM ctagmap WHERE tag_id IN (%q)",
+                             dummy.toUtf8().constData() );
+  }
+  nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
+
+  QStringList symbolids;
+  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    symbolids << QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, 0 ) );
+  }
+
+  sqlite3_finalize( ppStmt );
+
+
+  dummy = symbolids.join( ", " );
+  query = sqlite3_mprintf( "SELECT name FROM %q  WHERE id IN (%q)",
+                           item.toUtf8().constData(), dummy.toUtf8().constData() );
+  nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
+  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    symbols << QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, 0 ) );
+  }
+
+  sqlite3_finalize( ppStmt );
+
+  return symbols.toList();
 }
 
 bool QgsStyleV2::tagSymbol( StyleEntity type, const QString& symbol, const QStringList& tags )
@@ -869,6 +937,11 @@ bool QgsStyleV2::detagSymbol( StyleEntity type, const QString& symbol, const QSt
   if ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
     symbolid = sqlite3_column_int( ppStmt, 0 );
+  }
+  else
+  {
+    sqlite3_finalize( ppStmt );
+    return false;
   }
 
   sqlite3_finalize( ppStmt );
