@@ -512,6 +512,19 @@ void TestQgsFields::iterator()
   QCOMPARE( it[1].name(), QString( "Test" ) );
   it += 2;
   QCOMPARE( it, fields.end() );
+  it -= 2;
+  QCOMPARE( it->name(), QString( "1" ) );
+  QgsFields::iterator it2( it );
+  QVERIFY( it <= it2 );
+  QVERIFY( it2 >= it );
+  it2++;
+  QVERIFY( it < it2 );
+  QVERIFY( it <= it2 );
+  QVERIFY( it2 > it );
+  QVERIFY( it2 >= it );
+  QCOMPARE( it2, it + 1 );
+  QCOMPARE( it, it2 - 1 );
+  QCOMPARE( it2 - it, 1 );
 }
 
 
@@ -550,6 +563,18 @@ void TestQgsFields::constIterator()
   QCOMPARE( it2[1].name(), QString( "2" ) );
   it2 += 2;
   QCOMPARE( it2, fields.constEnd() );
+
+  QgsFields::const_iterator it3( it );
+  QVERIFY( it <= it3 );
+  QVERIFY( it3 >= it );
+  it3++;
+  QVERIFY( it < it3 );
+  QVERIFY( it <= it3 );
+  QVERIFY( it3 > it );
+  QVERIFY( it3 >= it );
+  QCOMPARE( it3, it + 1 );
+  QCOMPARE( it, it3 - 1 );
+  QCOMPARE( it3 - it, 1 );
 }
 
 QTEST_MAIN( TestQgsFields )
