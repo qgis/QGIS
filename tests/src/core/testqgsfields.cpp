@@ -494,6 +494,10 @@ void TestQgsFields::qforeach()
 void TestQgsFields::iterator()
 {
   QgsFields fields;
+
+  //test with empty fields
+  QCOMPARE( fields.begin(), fields.end() );
+
   QgsField field( QString( "1" ) );
   fields.append( field );
   QgsField field2( QString( "2" ) );
@@ -531,6 +535,17 @@ void TestQgsFields::iterator()
 void TestQgsFields::constIterator()
 {
   QgsFields fields;
+
+  //test with empty fields
+  QCOMPARE( fields.constBegin(), fields.constEnd() );
+  QCOMPARE( const_cast< const QgsFields* >( &fields )->begin(), const_cast< const QgsFields* >( &fields )->end() );
+  Q_FOREACH ( const QgsField& f, fields )
+  {
+    Q_UNUSED( f );
+    //should not be called!
+    QVERIFY( false );
+  }
+
   QgsField field( QString( QString( "1" ) ) );
   fields.append( field );
   QgsField field2( QString( QString( "2" ) ) );
