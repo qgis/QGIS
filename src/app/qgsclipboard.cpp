@@ -91,9 +91,9 @@ void QgsClipboard::setSystemClipboard()
     textFields += "wkt_geom";
   }
 
-  for ( int idx = 0; idx < mFeatureFields.count(); ++idx )
+  Q_FOREACH ( const QgsField& field, mFeatureFields )
   {
-    textFields += mFeatureFields.at( idx ).name();
+    textFields += field.name();
   }
   textLines += textFields.join( "\t" );
   textFields.clear();
