@@ -113,7 +113,9 @@ class ProcessingToolbox(BASE, WIDGET):
                         if text in alg.name:
                             self.disabledWithMatchingAlgs.append(providerName)
                             break
-            self.txtDisabled.setVisible(bool(self.disabledWithMatchingAlgs))
+            showTip = ProcessingConfig.getSetting(ProcessingConfig.SHOW_PROVIDERS_TOOLTIP)
+            if showTip:
+                self.txtDisabled.setVisible(bool(self.disabledWithMatchingAlgs))
         else:
             self.algorithmTree.collapseAll()
             self.algorithmTree.invisibleRootItem().child(0).setExpanded(True)
