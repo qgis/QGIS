@@ -529,7 +529,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @see hasScaleBasedVisibility()
      * @see isInScaleRange()
      */
-    float minimumScale() const;
+    double minimumScale() const;
 
     /** Returns the maximum scale denominator at which the layer is visible.
      * Scale based visibility is only used if hasScaleBasedVisibility is true.
@@ -539,7 +539,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @see hasScaleBasedVisibility()
      * @see isInScaleRange()
      */
-    float maximumScale() const;
+    double maximumScale() const;
 
     /** Returns whether scale based visibility is enabled for the layer.
      * @returns true if scale based visibility is enabled
@@ -562,7 +562,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @see setMaximumScale
      * @see setScaleBasedVisibility
      */
-    void setMinimumScale( const float theMinScale );
+    void setMinimumScale( double theMinScale );
 
     /** Sets the maximum scale denominator at which the layer will be visible.
      * Scale based visibility is only used if setScaleBasedVisibility is set to true.
@@ -571,7 +571,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @see setMinimumScale
      * @see setScaleBasedVisibility
      */
-    void setMaximumScale( const float theMaxScale );
+    void setMaximumScale( double theMaxScale );
 
     /** Sets whether scale based visibility is enabled for the layer.
      * @param enabled set to true to enable scale based visibility
@@ -753,9 +753,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString mTag;
 
     /** Minimum scale denominator at which this layer should be displayed */
-    float mMinScale;
+    double mMinScale;
     /** Maximum scale denominator at which this layer should be displayed */
-    float mMaxScale;
+    double mMaxScale;
     /** A flag that tells us whether to use the above vars to restrict layer visibility */
     bool mScaleBasedVisibility;
 

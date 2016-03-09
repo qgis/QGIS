@@ -422,8 +422,8 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
 
   // use scale dependent visibility flag
   setScaleBasedVisibility( layerElement.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
-  setMinimumScale( layerElement.attribute( "minimumScale" ).toFloat() );
-  setMaximumScale( layerElement.attribute( "maximumScale" ).toFloat() );
+  setMinimumScale( layerElement.attribute( "minimumScale" ).toDouble() );
+  setMaximumScale( layerElement.attribute( "maximumScale" ).toDouble() );
 
   // set name
   mnl = layerElement.namedItem( "layername" );
@@ -940,18 +940,18 @@ bool QgsMapLayer::hasScaleBasedVisibility() const
   return mScaleBasedVisibility;
 }
 
-void QgsMapLayer::setMinimumScale( const float theMinScale )
+void QgsMapLayer::setMinimumScale( double theMinScale )
 {
   mMinScale = theMinScale;
 }
 
-float QgsMapLayer::minimumScale() const
+double QgsMapLayer::minimumScale() const
 {
   return mMinScale;
 }
 
 
-void QgsMapLayer::setMaximumScale( const float theMaxScale )
+void QgsMapLayer::setMaximumScale( double theMaxScale )
 {
   mMaxScale = theMaxScale;
 }
@@ -961,7 +961,7 @@ void QgsMapLayer::setScaleBasedVisibility( const bool enabled )
   mScaleBasedVisibility = enabled;
 }
 
-float QgsMapLayer::maximumScale() const
+double QgsMapLayer::maximumScale() const
 {
   return mMaxScale;
 }
@@ -1209,8 +1209,8 @@ bool QgsMapLayer::importNamedStyle( QDomDocument& myDocument, QString& myErrorMe
 
   // use scale dependent visibility flag
   setScaleBasedVisibility( myRoot.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
-  setMinimumScale( myRoot.attribute( "minimumScale" ).toFloat() );
-  setMaximumScale( myRoot.attribute( "maximumScale" ).toFloat() );
+  setMinimumScale( myRoot.attribute( "minimumScale" ).toDouble() );
+  setMaximumScale( myRoot.attribute( "maximumScale" ).toDouble() );
 
 #if 0
   //read transparency level
