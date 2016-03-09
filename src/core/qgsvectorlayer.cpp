@@ -320,9 +320,7 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
   QgsDebugMsg( "Starting draw of labels: " + id() );
 
   if ( mRendererV2 && mLabelOn && mLabel &&
-       ( !mLabel->scaleBasedVisibility() ||
-         ( mLabel->minScale() <= rendererContext.rendererScale() &&
-           rendererContext.rendererScale() <= mLabel->maxScale() ) ) )
+       mLabel->isInScaleRange( rendererContext.rendererScale() ) )
   {
     QgsAttributeList attributes;
     Q_FOREACH ( const QString& attrName, mRendererV2->usedAttributes() )

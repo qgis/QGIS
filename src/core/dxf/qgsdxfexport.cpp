@@ -4109,11 +4109,10 @@ bool QgsDxfExport::layerIsScaleBasedVisible( const QgsMapLayer* layer ) const
   if ( !layer )
     return false;
 
-  if ( mSymbologyExport == QgsDxfExport::NoSymbology || !layer->hasScaleBasedVisibility() )
+  if ( mSymbologyExport == QgsDxfExport::NoSymbology )
     return true;
 
-  return layer->minimumScale() < mSymbologyScaleDenominator &&
-         layer->maximumScale() > mSymbologyScaleDenominator;
+  return layer->isInScaleRange( mSymbologyScaleDenominator );
 }
 
 QString QgsDxfExport::layerName( const QString &id, const QgsFeature &f ) const

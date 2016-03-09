@@ -55,12 +55,15 @@ class TestQgsMapLayer : public QObject
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void init(); // will be called before each testfunction is executed.
+    void cleanup(); // will be called after every testfunction.
 
     void isValid();
 
     void setBlendMode();
+
+    void isInScaleRange();
+
   private:
     QgsMapLayer * mpLayer;
 };
@@ -75,6 +78,10 @@ void TestQgsMapLayer::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
+}
+
+void TestQgsMapLayer::init()
+{
   //create some objects that will be used in all tests...
   //create a map layer that will be used in all tests...
   QString myFileName( TEST_DATA_DIR ); //defined in CmakeLists.txt
@@ -82,6 +89,11 @@ void TestQgsMapLayer::initTestCase()
   QFileInfo myMapFileInfo( myFileName );
   mpLayer = new QgsVectorLayer( myMapFileInfo.filePath(),
                                 myMapFileInfo.completeBaseName(), "ogr" );
+}
+
+void TestQgsMapLayer::cleanup()
+{
+  delete mpLayer;
 }
 
 void TestQgsMapLayer::cleanupTestCase()
@@ -105,6 +117,19 @@ void TestQgsMapLayer::setBlendMode()
   QCOMPARE( receiver.blendMode, QPainter::CompositionMode_Screen );
   // check accessor
   QCOMPARE( mpLayer->blendMode(), QPainter::CompositionMode_Screen );
+}
+
+void TestQgsMapLayer::isInScaleRange()
+{
+  mpLayer->setMinimumScale( 2500.0f );
+  mpLayer->setMaximumScale( 5000.0f );
+  mpLayer->setScaleBasedVisibility( true );
+  QCOMPARE( mpLayer->isInScaleRange( 3000.0f ), true ); // In the middle
+  QCOMPARE( mpLayer->isInScaleRange( 1000.0f ), false ); // Too low
+  QCOMPARE( mpLayer->isInScaleRange( 6000.0f ), false ); // Too high
+  QCOMPARE( mpLayer->isInScaleRange( 5000.0f ), false ); // Max is not inclusive
+  QCOMPARE( mpLayer->isInScaleRange( 2500.0f ), true ); // Min is inclusive
+  QCOMPARE( mpLayer->isInScaleRange( 1.0f / (( float )1.0 / 2500.0 ) ), true ); // Min is inclusive even with conversion errors
 }
 
 QTEST_MAIN( TestQgsMapLayer )

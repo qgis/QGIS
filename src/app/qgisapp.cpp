@@ -7938,6 +7938,31 @@ void QgisApp::setLayerScaleVisibility()
   delete dlg;
 }
 
+void QgisApp::zoomToLayerScale()
+{
+  if ( !mLayerTreeView )
+    return;
+
+  QList<QgsMapLayer*> layers = mLayerTreeView->selectedLayers();
+
+  if ( layers.length() < 1 )
+    return;
+
+  QgsMapLayer* layer = mLayerTreeView->currentLayer();
+  if ( layer && layer->hasScaleBasedVisibility() )
+  {
+    const double scale = mMapCanvas->scale();
+    if ( scale > layer->maximumScale() )
+    {
+      mMapCanvas->zoomScale( layer->maximumScale() * QGis::SCALE_PRECISION );
+    }
+    else if ( scale <= layer->minimumScale() )
+    {
+      mMapCanvas->zoomScale( layer->minimumScale() );
+    }
+  }
+}
+
 void QgisApp::setLayerCRS()
 {
   if ( !( mLayerTreeView && mLayerTreeView->currentLayer() ) )

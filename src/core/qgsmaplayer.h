@@ -511,6 +511,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QgsMapLayerStyleManager* styleManager() const;
 
+    /**
+     * @returns true if the layer is visible at the given scale.
+     */
+    bool isInScaleRange( double scale ) const;
+
     /** Returns the minimum scale denominator at which the layer is visible.
      * Scale based visibility is only used if hasScaleBasedVisibility is true.
      * @returns minimum scale denominator at which the layer will render

@@ -230,6 +230,7 @@ class QgsLayerTreeModel : QAbstractItemModel
 
     //! emit dataChanged() for layer tree node items
     void recursivelyEmitDataChanged( const QModelIndex& index = QModelIndex() );
+    void refreshScaleBasedLayers( const QModelIndex& index = QModelIndex() );
 
     static const QIcon& iconGroup();
 

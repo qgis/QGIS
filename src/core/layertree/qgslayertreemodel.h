@@ -254,6 +254,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     //! emit dataChanged() for layer tree node items
     void recursivelyEmitDataChanged( const QModelIndex& index = QModelIndex() );
+    //! emit dataChanged() for scale dependent layers
+    void refreshScaleBasedLayers( const QModelIndex& index = QModelIndex() );
 
     static const QIcon& iconGroup();
 

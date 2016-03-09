@@ -200,9 +200,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
   if ( !layer || !layer->hasGeometryType() )
     return false;
 
-  if ( layer->hasScaleBasedVisibility() &&
-       ( layer->minimumScale() > mCanvas->mapSettings().scale() ||
-         layer->maximumScale() <= mCanvas->mapSettings().scale() ) )
+  if ( !layer->isInScaleRange( mCanvas->mapSettings().scale() ) )
   {
     QgsDebugMsg( "Out of scale limits" );
     return false;
