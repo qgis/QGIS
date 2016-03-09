@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 
 class GeoAlgorithmExecutionException(Exception):
 
-    def __init__(self, msg):
+    def __init__(self, msg, stack=None):
         Exception.__init__(self)
         self.msg = msg
+        self.stack = stack
