@@ -13,7 +13,11 @@ class QgsMapLayerModel : QAbstractItemModel
 %End
 
   public:
-    static const int LayerIdRole;
+    enum
+    {
+      LayerIdRole,
+      LayerRole
+    };
 
     /**
      * @brief QgsMapLayerModel creates a model to display layers in widgets.
@@ -56,6 +60,14 @@ class QgsMapLayerModel : QAbstractItemModel
     int rowCount( const QModelIndex &parent ) const;
     int columnCount( const QModelIndex &parent ) const;
     QVariant data( const QModelIndex &index, int role ) const;
+%If (QT5_SUPPORT)
+    /**
+     * Returns strings for all roles supported by this model.
+     *
+     * @note Available only with Qt5 (python and c++)
+     */
+    QHash<int, QByteArray> roleNames() const;
+%End
     bool setData( const QModelIndex &index, const QVariant &value, int role );
     Qt::ItemFlags flags( const QModelIndex &index ) const;
 };
