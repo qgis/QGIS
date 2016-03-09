@@ -964,10 +964,17 @@ void GlobePlugin::setSkyParameters( bool enabled, const QDateTime& dateTime, boo
 #else
       Q_UNUSED( autoAmbience );
 #endif
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 7, 0 )
       mSkyNode->setDateTime( DateTime( dateTime.date().year()
                                        , dateTime.date().month()
                                        , dateTime.date().day()
                                        , dateTime.time().hour() + dateTime.time().minute() / 60.0 ) );
+#else
+      mSkyNode->setDateTime( dateTime.date().year()
+                             , dateTime.date().month()
+                             , dateTime.date().day()
+                             , dateTime.time().hour() + dateTime.time().minute() / 60.0 );
+#endif
       //sky->setSunPosition( osg::Vec3(0,-1,0) );
       mSkyNode->attach( mOsgViewer );
       mRootNode->addChild( mSkyNode );
