@@ -62,7 +62,9 @@ class TestQgsMapLayer : public QObject
 
     void setBlendMode();
 
+    void isInScaleRange_data();
     void isInScaleRange();
+
 
   private:
     QgsMapLayer * mpLayer;
@@ -119,17 +121,32 @@ void TestQgsMapLayer::setBlendMode()
   QCOMPARE( mpLayer->blendMode(), QPainter::CompositionMode_Screen );
 }
 
+void TestQgsMapLayer::isInScaleRange_data()
+{
+  QTest::addColumn<float>( "scale" );
+  QTest::addColumn<bool>( "isInScale" );
+
+  QTest::newRow( "in the middle" ) << 3000.0f << true;
+  QTest::newRow( "too low" ) << 1000.0f << false;
+  QTest::newRow( "too high" ) << 6000.0f << false;
+  QTest::newRow( "max is not inclusive" ) << 5000.0f << false;
+  QTest::newRow( "min is inclusive" ) << 2500.0f << true;
+  QTest::newRow( "min is inclusive even with conversion errors" ) << static_cast< float >( 1.0f / (( float )1.0 / 2500.0 ) ) << true;
+}
+
 void TestQgsMapLayer::isInScaleRange()
 {
+  QFETCH( float, scale );
+  QFETCH( bool, isInScale );
+
   mpLayer->setMinimumScale( 2500.0f );
   mpLayer->setMaximumScale( 5000.0f );
   mpLayer->setScaleBasedVisibility( true );
-  QCOMPARE( mpLayer->isInScaleRange( 3000.0f ), true ); // In the middle
-  QCOMPARE( mpLayer->isInScaleRange( 1000.0f ), false ); // Too low
-  QCOMPARE( mpLayer->isInScaleRange( 6000.0f ), false ); // Too high
-  QCOMPARE( mpLayer->isInScaleRange( 5000.0f ), false ); // Max is not inclusive
-  QCOMPARE( mpLayer->isInScaleRange( 2500.0f ), true ); // Min is inclusive
-  QCOMPARE( mpLayer->isInScaleRange( 1.0f / (( float )1.0 / 2500.0 ) ), true ); // Min is inclusive even with conversion errors
+  QCOMPARE( mpLayer->isInScaleRange( scale ), isInScale );
+  //always in scale range if scale based visibility is false
+  mpLayer->setScaleBasedVisibility( false );
+  QCOMPARE( mpLayer->isInScaleRange( scale ), true );
+
 }
 
 QTEST_MAIN( TestQgsMapLayer )
