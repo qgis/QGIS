@@ -226,14 +226,7 @@ QString QgsVectorDataProvider::capabilitiesString() const
 
 int QgsVectorDataProvider::fieldNameIndex( const QString& fieldName ) const
 {
-  Q_FOREACH ( const QgsField& field, fields() )
-  {
-    if ( QString::compare( field.name(), fieldName, Qt::CaseInsensitive ) == 0 )
-    {
-      return i;
-    }
-  }
-  return -1;
+  return fields().fieldNameIndex( fieldName );
 }
 
 QMap<QString, int> QgsVectorDataProvider::fieldNameMap() const
