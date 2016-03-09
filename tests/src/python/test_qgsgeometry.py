@@ -1658,6 +1658,21 @@ class TestQgsGeometry(unittest.TestCase):
         wkt = c.exportToWkt()
         assert compareWkt(expWkt, wkt), "testRegression13274 failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
+    def testReshape(self):
+        """ Test geometry reshaping """
+        g = QgsGeometry.fromWkt('Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
+        g.reshapeGeometry([QgsPoint(0, 1.5), QgsPoint(1.5, 0)])
+        expWkt = 'Polygon ((0.5 1, 0 1, 0 0, 1 0, 1 0.5, 0.5 1))'
+        wkt = g.exportToWkt()
+        assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+        # Test reshape a geometry involving the first/last vertex (http://hub.qgis.org/issues/14443)
+        g.reshapeGeometry([QgsPoint(0.5, 1), QgsPoint(0, 0.5)])
+
+        expWkt = 'Polygon ((0 0.5, 0 0, 1 0, 1 0.5, 0.5 1, 0 0.5))'
+        wkt = g.exportToWkt()
+        assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
     def testConvertToMultiType(self):
         """ Test converting geometries to multi type """
         point = QgsGeometry.fromWkt('Point (1 2)')
