@@ -147,10 +147,10 @@ void QgsAtlasComposition::setSortKeyAttributeIndex( int idx )
 {
   if ( mCoverageLayer )
   {
-    const QgsFields fields = mCoverageLayer->fields();
+    QgsFields fields = mCoverageLayer->fields();
     if ( idx >= 0 && idx < fields.count() )
     {
-      mSortKeyAttributeName = fields[idx].name();
+      mSortKeyAttributeName = fields.at( idx ).name();
       return;
     }
   }
@@ -714,10 +714,10 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
     int idx = mSortKeyAttributeName.toInt( &isIndex );
     if ( isIndex && mCoverageLayer )
     {
-      const QgsFields fields = mCoverageLayer->fields();
+      QgsFields fields = mCoverageLayer->fields();
       if ( idx >= 0 && idx < fields.count() )
       {
-        mSortKeyAttributeName = fields[idx].name();
+        mSortKeyAttributeName = fields.at( idx ).name();
       }
     }
     mSortAscending = atlasElem.attribute( "sortAscending", "true" ) == "true" ? true : false;

@@ -254,9 +254,9 @@ void QgsVectorLayer::setDisplayField( const QString& fldName )
   {
     int fieldsSize = mUpdatedFields.size();
 
-    for ( int idx = 0; idx < mUpdatedFields.count(); ++idx )
+    Q_FOREACH ( const QgsField& field, mUpdatedFields )
     {
-      QString fldName = mUpdatedFields.at( idx ).name();
+      QString fldName = field.name();
       QgsDebugMsg( "Checking field " + fldName + " of " + QString::number( fieldsSize ) + " total" );
 
       // Check the fields and keep the first one that matches.
@@ -2158,7 +2158,7 @@ QString QgsVectorLayer::attributeDisplayName( int attributeIndex ) const
   {
     if ( attributeIndex >= 0 && attributeIndex < mUpdatedFields.count() )
     {
-      displayName = mUpdatedFields[attributeIndex].name();
+      displayName = mUpdatedFields.at( attributeIndex ).name();
     }
   }
   return displayName;

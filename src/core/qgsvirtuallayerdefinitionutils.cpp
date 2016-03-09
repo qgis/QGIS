@@ -64,10 +64,8 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
     }
     else
     {
-      const QgsFields& joinedFields = layer->dataProvider()->fields();
-      for ( int i = 0; i < joinedFields.count(); i++ )
+      Q_FOREACH ( const QgsField& f, layer->dataProvider()->fields() )
       {
-        const QgsField& f = joinedFields.field( i );
         columns << joinName + "." + f.name() + " AS " + prefix + f.name();
       }
     }

@@ -196,10 +196,10 @@ private:
     // add a hidden field for rtree filtering
     sqlFields << "_search_frame_ HIDDEN BLOB";
 
-    for ( int i = 0; i < mFields.count(); i++ )
+    Q_FOREACH ( const QgsField& field, mFields )
     {
       QString typeName = "text";
-      switch ( mFields.at( i ).type() )
+      switch ( field.type() )
       {
         case QVariant::Int:
         case QVariant::UInt:
@@ -215,7 +215,7 @@ private:
           typeName = "text";
           break;
       }
-      sqlFields << mFields.at( i ).name() + " " + typeName;
+      sqlFields << field.name() + " " + typeName;
     }
 
     QgsVectorDataProvider* provider = mLayer ? mLayer->dataProvider() : mProvider;

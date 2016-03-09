@@ -2480,9 +2480,8 @@ void QgsGrass::createTable( dbDriver *driver, const QString tableName, const Qgs
   }
 
   QStringList fieldsStringList;
-  for ( int i = 0; i < fields.size(); i++ )
+  Q_FOREACH ( const QgsField& field, fields )
   {
-    QgsField field = fields.field( i );
     QString name = field.name().toLower().replace( " ", "_" );
     if ( name.at( 0 ).isDigit() )
     {

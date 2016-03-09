@@ -3278,7 +3278,7 @@ QDomElement QgsWMSServer::createFeatureGML(
     }
 
     QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( QString( " " ), QString( "_" ) ) );
-    QString fieldTextString = featureAttributes[i].toString();
+    QString fieldTextString = featureAttributes.at( i ).toString();
     if ( layer )
     {
       fieldTextString = replaceValueMapAndRelation( layer, i, QgsExpression::replaceExpressionText( fieldTextString, &expressionContext ) );

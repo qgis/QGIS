@@ -504,7 +504,7 @@ QString QgsLabel::labelField( int attr ) const
   int fieldIndex = mLabelFieldIdx[attr];
   if ( fieldIndex < 0 || fieldIndex >= mFields.count() )
     return QString();
-  return mFields[fieldIndex].name();
+  return mFields.at( fieldIndex ).name();
 }
 
 QgsLabelAttributes *QgsLabel::labelAttributes( void )

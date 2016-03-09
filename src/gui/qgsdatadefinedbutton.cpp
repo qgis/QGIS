@@ -166,10 +166,8 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
   if ( mVectorLayer )
   {
     // store just a list of fields of unknown type or those that match the expected type
-    const QgsFields& fields = mVectorLayer->fields();
-    for ( int i = 0; i < fields.count(); ++i )
+    Q_FOREACH ( const QgsField& f, mVectorLayer->fields() )
     {
-      const QgsField& f = fields.at( i );
       bool fieldMatch = false;
       // NOTE: these are the only QVariant enums supported at this time (see QgsField)
       QString fieldType;

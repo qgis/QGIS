@@ -209,10 +209,8 @@ void RgLineVectorLayerSettingsWidget::on_mcbLayers_selectItem()
   if ( !provider )
     return;
 
-  const QgsFields& fields = provider->fields();
-  for ( int idx = 0; idx < fields.count(); ++idx )
+  Q_FOREACH ( const QgsField& currentField, provider->fields() )
   {
-    const QgsField& currentField = fields[idx];
     QVariant currentType = currentField.type();
     if ( currentType == QVariant::Int || currentType == QVariant::String )
     {

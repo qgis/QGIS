@@ -783,7 +783,7 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QD
     const QgsFields& layerFields = vLayer->pendingFields();
     for ( int idx = 0; idx < layerFields.count(); ++idx )
     {
-      const QgsField& field = layerFields[idx];
+      const QgsField& field = layerFields.at( idx );
       if ( excludedAttributes.contains( field.name() ) )
       {
         continue;
