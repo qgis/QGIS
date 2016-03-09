@@ -33,8 +33,10 @@
 #include <QStringList>
 #include <QDir>
 
-#ifdef PYTHON2
+#if (PY_VERSION_HEX < 0x03000000)
 #define PYOBJ2QSTRING(obj) PyString_AsString( obj )
+#elif (PY_VERSION_HEX < 0x03030000)
+#define PYOBJ2QSTRING(obj) QString::fromUtf8( PyBytes_AsString(PyUnicode_AsUTF8String( obj ) ) )
 #else
 #define PYOBJ2QSTRING(obj) QString::fromUtf8( PyUnicode_AsUTF8( obj ) )
 #endif
