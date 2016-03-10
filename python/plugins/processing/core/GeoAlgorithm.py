@@ -38,6 +38,7 @@ from qgis.core import QGis, QgsRasterFileWriter
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from processing.core.SilentProgress import SilentProgress
 from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter
 from processing.core.outputs import OutputVector, OutputRaster, OutputTable, OutputHTML, Output
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -183,7 +184,7 @@ class GeoAlgorithm:
 
     # =========================================================
 
-    def execute(self, progress=None, model=None):
+    def execute(self, progress=SilentProgress(), model=None):
         """The method to use to call a processing algorithm.
 
         Although the body of the algorithm is in processAlgorithm(),
@@ -213,8 +214,7 @@ class GeoAlgorithm:
             lines = [self.tr('Uncaught error while executing algorithm')]
             lines.append(traceback.format_exc())
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, lines)
-            raise GeoAlgorithmExecutionException(
-                unicode(e) + self.tr('\nSee log for more details'))
+            raise GeoAlgorithmExecutionException(unicode(e) + self.tr('\nSee log for more details'), lines, e)
 
     def _checkParameterValuesBeforeExecuting(self):
         for param in self.parameters:
