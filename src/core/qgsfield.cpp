@@ -439,6 +439,56 @@ bool QgsFields::operator==( const QgsFields &other ) const
   return d->fields == other.d->fields;
 }
 
+QgsFields::const_iterator QgsFields::constBegin() const noexcept
+{
+  if ( d->fields.isEmpty() )
+    return const_iterator();
+
+  return const_iterator( &d->fields.first() );
+}
+
+QgsFields::const_iterator QgsFields::constEnd() const noexcept
+{
+  if ( d->fields.isEmpty() )
+    return const_iterator();
+
+  return const_iterator( &d->fields.last() + 1 );
+}
+
+QgsFields::const_iterator QgsFields::begin() const noexcept
+{
+  if ( d->fields.isEmpty() )
+    return const_iterator();
+
+  return const_iterator( &d->fields.first() );
+}
+
+QgsFields::const_iterator QgsFields::end() const noexcept
+{
+  if ( d->fields.isEmpty() )
+    return const_iterator();
+
+  return const_iterator( &d->fields.last() + 1 );
+}
+
+QgsFields::iterator QgsFields::begin()
+{
+  if ( d->fields.isEmpty() )
+    return iterator();
+
+  d.detach();
+  return iterator( &d->fields.first() );
+}
+
+QgsFields::iterator QgsFields::end()
+{
+  if ( d->fields.isEmpty() )
+    return iterator();
+
+  d.detach();
+  return iterator( &d->fields.last() + 1 );
+}
+
 QIcon QgsFields::iconForField( int fieldIdx ) const
 {
   static QIcon intIcon;

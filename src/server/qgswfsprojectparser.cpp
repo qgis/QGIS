@@ -455,7 +455,7 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
         for ( int idx = 0; idx < fields.count(); ++idx )
         {
 
-          QString attributeName = fields[idx].name();
+          QString attributeName = fields.at( idx ).name();
           //skip attribute if excluded from WFS publication
           if ( layerExcludedAttributes.contains( attributeName ) )
           {

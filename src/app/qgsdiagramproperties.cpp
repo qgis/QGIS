@@ -826,7 +826,7 @@ void QgsDiagramProperties::showAddAttributeExpressionDialog()
       newItem->setText( 0, expression );
       newItem->setText( 2, expression );
       newItem->setData( 0, Qt::UserRole, expression );
-      newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
+      newItem->setFlags(( newItem->flags() | Qt::ItemIsEditable ) & ~Qt::ItemIsDropEnabled );
 
       //set initial color for diagram category
       int red = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );

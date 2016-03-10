@@ -146,6 +146,9 @@ class CORE_EXPORT QgsLabel
     void setScaleBasedVisibility( bool theVisibilityFlag );
     bool scaleBasedVisibility() const;
 
+    /** Return true if the label is visible at the given scale */
+    bool isInScaleRange( double scale ) const;
+
   private:
     /** Does the actual rendering of a label at the given point */
     void renderLabel( QgsRenderContext &renderContext, QgsPoint point,

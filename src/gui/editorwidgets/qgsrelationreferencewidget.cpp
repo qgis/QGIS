@@ -234,7 +234,11 @@ void QgsRelationReferenceWidget::setRelationEditable( bool editable )
 
 void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
 {
-  if ( !value.isValid() || value.isNull() )
+  if ( !value.isValid() )
+  {
+    return;
+  }
+  if ( value.isNull() )
   {
     deleteForeignKey();
     return;
@@ -254,7 +258,6 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
 
   if ( !mFeature.isValid() )
   {
-    deleteForeignKey();
     return;
   }
 
@@ -535,7 +538,8 @@ void QgsRelationReferenceWidget::init()
       }
     }
 
-    mComboBox->setCurrentIndex( mComboBox->findData( mFeature.id(), QgsAttributeTableModel::FeatureIdRole ) );
+    QVariant featId = mFeature.isValid() ? mFeature.id() : QVariant( QVariant::Int );
+    mComboBox->setCurrentIndex( mComboBox->findData( featId, QgsAttributeTableModel::FeatureIdRole ) );
 
     // Only connect after iterating, to have only one iterator on the referenced table at once
     connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( comboReferenceChanged( int ) ) );

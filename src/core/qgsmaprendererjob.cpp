@@ -207,7 +207,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
                  .arg( ml->blendMode() )
                );
 
-    if ( ml->hasScaleBasedVisibility() && ( mSettings.scale() < ml->minimumScale() || mSettings.scale() > ml->maximumScale() ) ) //|| mOverview )
+    if ( !ml->isInScaleRange( mSettings.scale() ) ) //|| mOverview )
     {
       QgsDebugMsg( "Layer not rendered because it is not within the defined visibility scale range" );
       continue;

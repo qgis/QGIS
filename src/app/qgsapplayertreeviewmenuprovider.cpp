@@ -11,6 +11,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgslayertreeviewdefaultactions.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
@@ -105,8 +106,11 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         // set layer scale visibility
         menu->addAction( tr( "&Set Layer Scale Visibility" ), QgisApp::instance(), SLOT( setLayerScaleVisibility() ) );
 
+        if ( !vlayer->isInScaleRange( mCanvas->scale() ) )
+          menu->addAction( tr( "Zoom to Layer Scale" ), QgisApp::instance(), SLOT( zoomToLayerScale() ) );
+
         // set layer crs
-        menu->addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
+        menu->addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
 
         // assign layer crs to project
         menu->addAction( QgsApplication::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );

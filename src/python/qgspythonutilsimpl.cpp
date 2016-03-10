@@ -33,8 +33,10 @@
 #include <QStringList>
 #include <QDir>
 
-#ifdef PYTHON2
+#if (PY_VERSION_HEX < 0x03000000)
 #define PYOBJ2QSTRING(obj) PyString_AsString( obj )
+#elif (PY_VERSION_HEX < 0x03030000)
+#define PYOBJ2QSTRING(obj) QString::fromUtf8( PyBytes_AsString(PyUnicode_AsUTF8String( obj ) ) )
 #else
 #define PYOBJ2QSTRING(obj) QString::fromUtf8( PyUnicode_AsUTF8( obj ) )
 #endif
@@ -125,7 +127,7 @@ bool QgsPythonUtilsImpl::checkSystemImports()
       return false;
     }
   }
-#ifdef PYTHON2
+#if (PY_VERSION_HEX < 0x03000000)
   // import Qt bindings
   if ( !runString( "from PyQt4 import QtCore, QtGui",
                    QObject::tr( "Couldn't load PyQt." ) + '\n' + QObject::tr( "Python support will be disabled." ) ) )
@@ -363,7 +365,7 @@ QString QgsPythonUtilsImpl::getTraceback()
   PyErr_Fetch( &type, &value, &traceback );
   PyErr_NormalizeException( &type, &value, &traceback );
 
-#ifdef PYTHON2
+#if (PY_VERSION_HEX < 0x03000000)
   const char* iomod = "cStringIO";
 #else
   const char* iomod = "io";
@@ -401,7 +403,7 @@ QString QgsPythonUtilsImpl::getTraceback()
 
   /* And it should be a string all ready to go - duplicate it. */
   if ( !
-#ifdef PYTHON2
+#if (PY_VERSION_HEX < 0x03000000)
        PyString_Check( obResult )
 #else
        PyUnicode_Check( obResult )
@@ -438,7 +440,7 @@ QString QgsPythonUtilsImpl::getTypeAsString( PyObject* obj )
   if ( !obj )
     return nullptr;
 
-#ifdef PYTHON2
+#if (PY_VERSION_HEX < 0x03000000)
   if ( PyClass_Check( obj ) )
   {
     QgsDebugMsg( "got class" );
@@ -513,20 +515,11 @@ QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
   // check whether the object is already a unicode string
   if ( PyUnicode_Check( obj ) )
   {
-#ifdef PYTHON2
-    PyObject* utf8 = PyUnicode_AsUTF8String( obj );
-    if ( utf8 )
-      result = QString::fromUtf8( PyString_AS_STRING( utf8 ) );
-    else
-      result = "(qgis error)";
-    Py_XDECREF( utf8 );
-#else
     result = PYOBJ2QSTRING( obj );
-#endif
     return result;
   }
 
-#if PYTHON2
+#if (PY_VERSION_HEX < 0x03000000)
   // check whether the object is a classical (8-bit) string
   if ( PyString_Check( obj ) )
   {

@@ -108,13 +108,13 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
 
     def testGetFeaturesSubsetAttributes2(self):
         """ Override and skip this test for memory provider, as it's actually more efficient for the memory provider to return
-        its features as direct copies (due to implicit sharing of QgsFeature) 
+        its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 
     def testGetFeaturesNoGeometry(self):
         """ Override and skip this test for memory provider, as it's actually more efficient for the memory provider to return
-        its features as direct copies (due to implicit sharing of QgsFeature) 
+        its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 
@@ -331,13 +331,13 @@ class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
 
     def testGetFeaturesSubsetAttributes2(self):
         """ Override and skip this test for memory provider, as it's actually more efficient for the memory provider to return
-        its features as direct copies (due to implicit sharing of QgsFeature) 
+        its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 
     def testGetFeaturesNoGeometry(self):
         """ Override and skip this test for memory provider, as it's actually more efficient for the memory provider to return
-        its features as direct copies (due to implicit sharing of QgsFeature) 
+        its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 

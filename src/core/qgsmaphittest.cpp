@@ -59,7 +59,7 @@ void QgsMapHitTest::run()
 
     if ( !mOnlyExpressions )
     {
-      if ( vl->hasScaleBasedVisibility() && ( mSettings.scale() < vl->minimumScale() || mSettings.scale() > vl->maximumScale() ) )
+      if ( !vl->isInScaleRange( mSettings.scale() ) )
       {
         mHitTest[vl] = SymbolV2Set(); // no symbols -> will not be shown
         mHitTestRuleKey[vl] = SymbolV2Set();

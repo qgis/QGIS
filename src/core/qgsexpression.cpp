@@ -2716,9 +2716,9 @@ static QVariant fcnGetLayerProperty( const QVariantList& values, const QgsExpres
   else if ( QString::compare( layerProperty, QString( "source" ), Qt::CaseInsensitive ) == 0 )
     return layer->publicSource();
   else if ( QString::compare( layerProperty, QString( "min_scale" ), Qt::CaseInsensitive ) == 0 )
-    return static_cast< double >( layer->minimumScale() );
+    return layer->minimumScale();
   else if ( QString::compare( layerProperty, QString( "max_scale" ), Qt::CaseInsensitive ) == 0 )
-    return static_cast< double >( layer->maximumScale() );
+    return layer->maximumScale();
   else if ( QString::compare( layerProperty, QString( "crs" ), Qt::CaseInsensitive ) == 0 )
     return layer->crs().authid();
   else if ( QString::compare( layerProperty, QString( "crs_definition" ), Qt::CaseInsensitive ) == 0 )

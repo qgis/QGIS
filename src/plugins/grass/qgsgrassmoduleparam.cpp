@@ -1192,16 +1192,15 @@ void QgsGrassModuleVectorField::updateFields()
     {
       continue;
     }
-    QgsFields fields = mLayerInput->currentFields();
 
     int index = 0;
-    for ( int i = 0; i < fields.size(); i++ )
+    Q_FOREACH ( const QgsField& field, mLayerInput->currentFields() )
     {
-      if ( mType.contains( fields.at( i ).typeName() ) )
+      if ( mType.contains( field.typeName() ) )
       {
-        comboBox->addItem( fields.at( i ).name() );
-        QgsDebugMsg( "current = " +  current + " field = " + fields.at( i ).name() );
-        if ( fields.at( i ).name() == current )
+        comboBox->addItem( field.name() );
+        QgsDebugMsg( "current = " +  current + " field = " + field.name() );
+        if ( field.name() == current )
         {
           comboBox->setCurrentIndex( index );
         }

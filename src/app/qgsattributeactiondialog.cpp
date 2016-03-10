@@ -68,8 +68,8 @@ QgsAttributeActionDialog::QgsAttributeActionDialog( QgsAttributeAction* actions,
   // Populate the combo box with the field names. Will the field names
   // change? If so, they need to be passed into the init() call, or
   // some access to them retained in this class.
-  for ( int idx = 0; idx < fields.count(); ++idx )
-    fieldComboBox->addItem( fields[idx].name() );
+  Q_FOREACH ( const QgsField& field, fields )
+    fieldComboBox->addItem( field.name() );
 }
 
 void QgsAttributeActionDialog::init()

@@ -113,7 +113,7 @@ class ASResource
 		static const string AS_DO, AS_WHILE;
 		static const string AS_FOR;
 		static const string AS_SWITCH, AS_CASE, AS_DEFAULT;
-		static const string AS_TRY, AS_CATCH, AS_THROWS, AS_FINALLY;
+		static const string AS_TRY, AS_CATCH, AS_THROWS, AS_NOEXCEPT, AS_FINALLY;
 		static const string AS_PUBLIC, AS_PROTECTED, AS_PRIVATE;
 		static const string AS_CLASS, AS_STRUCT, AS_UNION, AS_INTERFACE, AS_NAMESPACE, AS_EXTERN;
 		static const string AS_STATIC;

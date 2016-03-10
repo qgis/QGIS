@@ -231,6 +231,8 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
 
   if ( layer )
   {
+    if ( !QgsMapLayerRegistry::instance()->mapLayer( id ) )
+      QgsMapLayerRegistry::instance()->addMapLayer( layer, false, false );
     if ( layer->type() == QgsMapLayer::VectorLayer )
       addValueRelationLayersForLayer( dynamic_cast<QgsVectorLayer *>( layer ) );
 
@@ -270,11 +272,9 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
     layer->readLayerXML( const_cast<QDomElement&>( elem ) ); //should be changed to const in QgsMapLayer
     //layer->setLayerName( layerName( elem ) );
 
-    if ( layer->type() == QgsMapLayer::VectorLayer )
-    {
-      addValueRelationLayersForLayer( dynamic_cast<QgsVectorLayer *>( layer ) );
-    }
-
+    // Insert layer in registry and cache before addValueRelationLayersForLayer
+    if ( !QgsMapLayerRegistry::instance()->mapLayer( id ) )
+      QgsMapLayerRegistry::instance()->addMapLayer( layer, false, false );
     if ( useCache )
     {
       QgsMSLayerCache::instance()->insertLayer( absoluteUri, id, layer, mProjectPath );
@@ -283,6 +283,11 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
     {
       //todo: fixme
       //mLayersToRemove.push_back( layer );
+    }
+
+    if ( layer->type() == QgsMapLayer::VectorLayer )
+    {
+      addValueRelationLayersForLayer( dynamic_cast<QgsVectorLayer *>( layer ) );
     }
   }
   return layer;
@@ -778,7 +783,7 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QD
     const QgsFields& layerFields = vLayer->pendingFields();
     for ( int idx = 0; idx < layerFields.count(); ++idx )
     {
-      const QgsField& field = layerFields[idx];
+      const QgsField& field = layerFields.at( idx );
       if ( excludedAttributes.contains( field.name() ) )
       {
         continue;

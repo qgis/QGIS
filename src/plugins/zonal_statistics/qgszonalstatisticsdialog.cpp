@@ -218,12 +218,11 @@ bool QgsZonalStatisticsDialog::prefixIsValid( const QString& prefix ) const
     return false;
   }
 
-  const QgsFields& providerFields = dp->fields();
   QString currentFieldName;
 
-  for ( int idx = 0; idx < providerFields.count(); ++idx )
+  Q_FOREACH ( const QgsField& field, dp->fields() )
   {
-    currentFieldName = providerFields[idx].name();
+    currentFieldName = field.name();
     if ( currentFieldName == ( prefix + "mean" ) || currentFieldName == ( prefix + "sum" ) || currentFieldName == ( prefix + "count" ) )
     {
       return false;

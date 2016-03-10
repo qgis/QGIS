@@ -771,8 +771,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "layer_property attribution" ) << QString( "layer_property('%1','attribution')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->attribution() );
       QTest::newRow( "layer_property attribution_url" ) << QString( "layer_property('%1','attribution_url')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->attributionUrl() );
       QTest::newRow( "layer_property source" ) << QString( "layer_property('%1','source')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->publicSource() );
-      QTest::newRow( "layer_property min_scale" ) << QString( "layer_property('%1','min_scale')" ).arg( mPointsLayer->name() ) << false << QVariant(( double )mPointsLayer->minimumScale() );
-      QTest::newRow( "layer_property max_scale" ) << QString( "layer_property('%1','max_scale')" ).arg( mPointsLayer->name() ) << false << QVariant(( double )mPointsLayer->maximumScale() );
+      QTest::newRow( "layer_property min_scale" ) << QString( "layer_property('%1','min_scale')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->minimumScale() );
+      QTest::newRow( "layer_property max_scale" ) << QString( "layer_property('%1','max_scale')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->maximumScale() );
       QTest::newRow( "layer_property crs" ) << QString( "layer_property('%1','crs')" ).arg( mPointsLayer->name() ) << false << QVariant( "EPSG:4326" );
       QTest::newRow( "layer_property extent" ) << QString( "geom_to_wkt(layer_property('%1','extent'))" ).arg( mPointsLayer->name() ) << false << QVariant( "Polygon ((-118.88888889 22.80020704, -83.33333333 22.80020704, -83.33333333 46.87198068, -118.88888889 46.87198068, -118.88888889 22.80020704))" );
       QTest::newRow( "layer_property type" ) << QString( "layer_property('%1','type')" ).arg( mPointsLayer->name() ) << false << QVariant( "Vector" );

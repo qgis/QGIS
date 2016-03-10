@@ -29,7 +29,7 @@ QString QgsEditFormConfig::widgetType( int fieldIdx ) const
   if ( fieldIdx < 0 || fieldIdx >= mFields.count() )
     return "TextEdit";
 
-  return mEditorWidgetV2Types.value( mFields[fieldIdx].name(), "TextEdit" );
+  return mEditorWidgetV2Types.value( mFields.at( fieldIdx ).name(), "TextEdit" );
 }
 
 QString QgsEditFormConfig::widgetType( const QString& fieldName ) const
@@ -42,7 +42,7 @@ QgsEditorWidgetConfig QgsEditFormConfig::widgetConfig( int fieldIdx ) const
   if ( fieldIdx < 0 || fieldIdx >= mFields.count() )
     return QgsEditorWidgetConfig();
 
-  return mWidgetConfigs.value( mFields[fieldIdx].name() );
+  return mWidgetConfigs.value( mFields.at( fieldIdx ).name() );
 }
 
 QgsEditorWidgetConfig QgsEditFormConfig::widgetConfig( const QString& widgetName ) const
@@ -82,7 +82,7 @@ bool QgsEditFormConfig::removeWidgetConfig( int fieldIdx )
   if ( fieldIdx < 0 || fieldIdx >= mFields.count() )
     return false;
 
-  return mWidgetConfigs.remove( mFields[fieldIdx].name() );
+  return mWidgetConfigs.remove( mFields.at( fieldIdx ).name() );
 }
 
 void QgsEditFormConfig::setUiForm( const QString& ui )

@@ -29,11 +29,18 @@ class QgsMapLayer;
  * @see QgsFieldModel to combine in with a field selector.
  * @note added in 2.3
  */
+// TODO QGIS3: move to core
 class GUI_EXPORT QgsMapLayerModel : public QAbstractItemModel
 {
     Q_OBJECT
   public:
-    static const int LayerIdRole;
+
+    //! Item data roles
+    enum ItemDataRole
+    {
+      LayerIdRole = Qt::UserRole + 1, /*!< Stores the map layer ID */
+      LayerRole, /*!< Stores pointer to the map layer itself */
+    };
 
     /**
      * @brief QgsMapLayerModel creates a model to display layers in widgets.
@@ -81,6 +88,16 @@ class GUI_EXPORT QgsMapLayerModel : public QAbstractItemModel
     int rowCount( const QModelIndex &parent ) const override;
     int columnCount( const QModelIndex &parent ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
+
+#if QT_VERSION >= 0x050000
+    /**
+     * Returns strings for all roles supported by this model.
+     *
+     * @note Available only with Qt5 (python and c++)
+     */
+    QHash<int, QByteArray> roleNames() const override;
+#endif
+
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 };

@@ -28,6 +28,18 @@ __revision__ = '$Format:%H$'
 
 class GeoAlgorithmExecutionException(Exception):
 
-    def __init__(self, msg):
+    def __init__(self, msg, stack=None, cause=None):
         Exception.__init__(self)
         self.msg = msg
+        self.stack = stack
+        self.cause = cause
+
+    def __str__(self):
+        msg = self.msg.split('\n')
+        msg = '  | ' + '\n  | '.join(msg)
+
+        stack = '\n'.join(self.stack)
+        stack = stack.split('\n')
+        stack = '    ' + '\n    '.join(stack)
+
+        return '\n\n Message:\n{}\n\n Stack:\n\n{}'.format(msg, stack)
