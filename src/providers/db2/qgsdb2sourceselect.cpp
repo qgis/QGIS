@@ -7,6 +7,7 @@
                           Shirley Xiao, David Nguyen
   Email     : dadler at adtechgeospatial.com
               xshirley2012 at yahoo.com, davidng0123 at gmail.com
+  Adapted from MSSQL provider by Tamas Szekeres
 ****************************************************************************
  *
  * This program is free software; you can redistribute it and/or modify
@@ -479,13 +480,13 @@ void QgsDb2SourceSelect::on_btnConnect_clicked()
   // populate the table list
 
   QString errorMsg;
-  bool success = QgsDb2ConnectionItem::ConnInfoFromSettings(cmbConnections->currentText(), mConnInfo, errorMsg);
-  if ( !success ) 
+  bool success = QgsDb2ConnectionItem::ConnInfoFromSettings( cmbConnections->currentText(), mConnInfo, errorMsg );
+  if ( !success )
   {
-    QgsDebugMsg("settings error: " + errorMsg);
+    QgsDebugMsg( "settings error: " + errorMsg );
     QMessageBox::warning( this,
                           tr( "DB2 Provider" ), errorMsg );
-    return;    
+    return;
   }
 
   QSqlDatabase db = QgsDb2Provider::GetDatabase( mConnInfo, errorMsg );

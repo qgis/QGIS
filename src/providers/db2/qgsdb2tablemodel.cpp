@@ -6,6 +6,7 @@
                           Shirley Xiao, David Nguyen
   Email     : dadler at adtechgeospatial.com
               xshirley2012 at yahoo.com, davidng0123 at gmail.com
+  Adapted from MSSQL provider by Tamas Szekeres
 ****************************************************************************
  *
  * This program is free software; you can redistribute it and/or modify
@@ -395,8 +396,8 @@ QString QgsDb2TableModel::layerURI( const QModelIndex &index, const QString &con
   uri.setWkbType( QGis::fromOldWkbType( wkbType ) );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
-  QgsDebugMsg( "Layer URI: " + uri.uri(false) );
-  return uri.uri(false);
+  QgsDebugMsg( "Layer URI: " + uri.uri( false ) );
+  return uri.uri( false );
 }
 
 QGis::WkbType QgsDb2TableModel::wkbTypeFromDb2( QString type, int dim )

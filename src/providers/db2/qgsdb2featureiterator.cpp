@@ -6,6 +6,7 @@
                           Shirley Xiao, David Nguyen
   Email     : dadler at adtechgeospatial.com
               xshirley2012 at yahoo.com, davidng0123 at gmail.com
+  Adapted from MSSQL provider by Tamas Szekeres
 ****************************************************************************
  *
  * This program is free software; you can redistribute it and/or modify
@@ -311,6 +312,12 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
         if ( v.type() == QVariant::String )
         {
           v = QVariant( v.toString() );
+        }
+        const QgsField &fld = mSource->mFields.at( mAttributesToFetch.at( i ) );
+        QgsDebugMsg( QString( "v.type: %1; fld.type: %2" ).arg( v.type(), fld.type() ) );
+        if ( v.type() != fld.type() )
+        {
+          v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
         }
         feature.setAttribute( mAttributesToFetch[i], v );
       }

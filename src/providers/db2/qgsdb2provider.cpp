@@ -6,6 +6,7 @@
                           Shirley Xiao, David Nguyen
   Email     : dadler at adtechgeospatial.com
               xshirley2012 at yahoo.com, davidng0123 at gmail.com
+  Adapted from MSSQL provider by Tamas Szekeres
 ****************************************************************************
  *
  * This program is free software; you can redistribute it and/or modify
@@ -455,16 +456,16 @@ long QgsDb2Provider::featureCount() const
 
   QString sql = "SELECT COUNT(*) FROM %1.%2";
   QString statement = QString( sql ).arg( mSchemaName, mTableName );
-  QgsDebugMsg(statement);
+  QgsDebugMsg( statement );
   if ( query.exec( statement ) && query.next() )
   {
-    QgsDebugMsg(QString("count: %1").arg(query.value( 0 ).toInt()));
+    QgsDebugMsg( QString( "count: %1" ).arg( query.value( 0 ).toInt() ) );
     return query.value( 0 ).toInt();
   }
   else
   {
-  QgsDebugMsg("Failed");
-      QgsDebugMsg(query.lastError().text());
+    QgsDebugMsg( "Failed" );
+    QgsDebugMsg( query.lastError().text() );
     return -1;
   }
 }
@@ -561,7 +562,7 @@ QString QgsDb2Provider::subsetString()
 bool QgsDb2Provider::setSubsetString( const QString& theSQL, bool )
 {
   QString prevWhere = mSqlWhereClause;
-    QgsDebugMsg(theSQL);
+  QgsDebugMsg( theSQL );
   mSqlWhereClause = theSQL.trimmed();
 
   QString sql = QString( "SELECT COUNT(*) FROM " );
@@ -580,26 +581,27 @@ bool QgsDb2Provider::setSubsetString( const QString& theSQL, bool )
 
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
-    QgsDebugMsg(sql);
+  QgsDebugMsg( sql );
   if ( !query.exec( sql ) )
   {
     pushError( query.lastError().text() );
     mSqlWhereClause = prevWhere;
-          QgsDebugMsg(query.lastError().text()); 
+    QgsDebugMsg( query.lastError().text() );
     return false;
   }
 
   if ( query.isActive() && query.next() )
   {
     mNumberFeatures = query.value( 0 ).toInt();
-    QgsDebugMsg(QString("count: %1").arg(mNumberFeatures));
-   } 
-   else {
-       pushError( query.lastError().text() );
+    QgsDebugMsg( QString( "count: %1" ).arg( mNumberFeatures ) );
+  }
+  else
+  {
+    pushError( query.lastError().text() );
     mSqlWhereClause = prevWhere;
-      QgsDebugMsg(query.lastError().text());       
-   return false;
-   }
+    QgsDebugMsg( query.lastError().text() );
+    return false;
+  }
 
   QgsDataSourceURI anUri = QgsDataSourceURI( dataSourceUri() );
   anUri.setSql( mSqlWhereClause );
@@ -712,7 +714,7 @@ bool QgsDb2Provider::deleteFeatures( const QgsFeatureIds & id )
 
 bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
-QgsDebugMsg("Entering");
+  QgsDebugMsg( "Entering" );
   if ( attr_map.isEmpty() )
     return true;
 
