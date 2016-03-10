@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsninecellfilter.h"
+#include "qgslogger.h"
 #include "cpl_string.h"
 #include <QProgressDialog>
 #include <QFile>
@@ -138,7 +139,8 @@ int QgsNineCellFilter::processRaster( QProgressDialog* p )
       {
         scanLine1[a] = mInputNodataValue;
       }
-      GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, scanLine2, xSize, 1, GDT_Float32, 0, 0 );
+      if ( GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, scanLine2, xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+        QgsDebugMsg( "Raster IO Error" );
     }
     else
     {
@@ -158,7 +160,8 @@ int QgsNineCellFilter::processRaster( QProgressDialog* p )
     }
     else
     {
-      GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, scanLine3, xSize, 1, GDT_Float32, 0, 0 );
+      if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, scanLine3, xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+        QgsDebugMsg( "Raster IO Error" );
     }
 
     for ( int j = 0; j < xSize; ++j )
@@ -180,7 +183,8 @@ int QgsNineCellFilter::processRaster( QProgressDialog* p )
       }
     }
 
-    GDALRasterIO( outputRasterBand, GF_Write, 0, i, xSize, 1, resultLine, xSize, 1, GDT_Float32, 0, 0 );
+    if ( GDALRasterIO( outputRasterBand, GF_Write, 0, i, xSize, 1, resultLine, xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+      QgsDebugMsg( "Raster IO Error" );
   }
 
   if ( p )
