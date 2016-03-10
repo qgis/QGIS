@@ -943,7 +943,7 @@ void QgsLayerTreeModel::refreshScaleBasedLayers( const QModelIndex& idx )
   if ( node->nodeType() == QgsLayerTreeNode::NodeLayer )
   {
     const QgsMapLayer* layer = QgsLayerTree::toLayer( node )->layer();
-    if ( layer->hasScaleBasedVisibility() )
+    if ( layer && layer->hasScaleBasedVisibility() )
     {
       emit dataChanged( idx, idx );
     }
