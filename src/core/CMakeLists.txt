@@ -192,6 +192,7 @@ SET(QGIS_CORE_SRCS
   qgssnappingconfig.cpp
   qgsprojectproperty.cpp
   qgsprojectversion.cpp
+  qgsproperty.cpp
   qgsprovidermetadata.cpp
   qgsproviderregistry.cpp
   qgspythonrunner.cpp
@@ -716,6 +717,7 @@ SET(QGIS_CORE_HDRS
   qgsprojectfiletransform.h
   qgsprojectproperty.h
   qgsprojectversion.h
+  qgsproperty.h
   qgsprovidermetadata.h
   qgsproviderregistry.h
   qgspythonrunner.h
