@@ -3748,6 +3748,9 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
           break;
         }
       }
+
+      sqlite3_finalize( stmt );
+
       if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
       {
         ret = sqlite3_exec( sqliteHandle, "COMMIT", nullptr, nullptr, &errMsg );
