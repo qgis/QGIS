@@ -20,8 +20,9 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import Qt, QObject, QSettings, SIGNAL
-from PyQt4.QtGui import QApplication, QAction, QKeySequence, QIcon, QMenu, QInputDialog, QMessageBox
+from PyQt.QtCore import Qt, QObject, QSettings
+from PyQt.QtWidgets import QApplication, QAction, QMenu, QInputDialog, QMessageBox
+from PyQt.QtGui import QKeySequence, QIcon
 
 from qgis.gui import QgsMessageBar
 from ..db_plugins import createDbPlugin
@@ -116,7 +117,7 @@ class DBPlugin(QObject):
         settings = QSettings()
         settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), self.connectionName()))
         settings.remove("")
-        self.emit(SIGNAL('deleted'))
+        self.deleted.emit()
         return True
 
     @classmethod
@@ -189,10 +190,10 @@ class DbItemObject(QObject):
         return None
 
     def refresh(self):
-        self.emit(SIGNAL('changed'))  # refresh the item data reading them from the db
+        self.changed.emit()  # refresh the item data reading them from the db
 
     def aboutToChange(self):
-        self.emit(SIGNAL('aboutToChange'))
+        self.aboutToChange.emit()
 
     def info(self):
         pass
@@ -236,7 +237,7 @@ class Database(DbItemObject):
         self.aboutToChange()
         ret = self.connection().remove()
         if ret is not False:
-            self.emit(SIGNAL('deleted'))
+            self.deleted.emit()
         return ret
 
     def info(self):
@@ -331,7 +332,7 @@ class Database(DbItemObject):
             action = QAction(QApplication.translate("DBManagerPlugin", "&Move to schema"), self)
             action.setMenu(QMenu(mainWindow))
             invoke_callback = lambda: mainWindow.invokeCallback(self.prepareMenuMoveTableToSchemaActionSlot)
-            QObject.connect(action.menu(), SIGNAL("aboutToShow()"), invoke_callback)
+            action.menu().aboutToShow.connect(invoke_callback)
             mainWindow.registerAction(action, QApplication.translate("DBManagerPlugin", "&Table"))
 
     def reconnectActionSlot(self, item, action, parent):
@@ -567,7 +568,7 @@ class Schema(DbItemObject):
         self.aboutToChange()
         ret = self.database().connector.deleteSchema(self.name)
         if ret is not False:
-            self.emit(SIGNAL('deleted'))
+            self.deleted.emit()
         return ret
 
     def rename(self, new_name):
@@ -625,7 +626,7 @@ class Table(DbItemObject):
         else:
             ret = self.database().connector.deleteTable((self.schemaName(), self.name))
         if ret is not False:
-            self.emit(SIGNAL('deleted'))
+            self.deleted.emit()
         return ret
 
     def rename(self, new_name):

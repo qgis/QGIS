@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtGui import QIcon
+from PyQt.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import \

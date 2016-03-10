@@ -23,7 +23,7 @@ import os
 import glob
 import shutil
 
-from PyQt4.QtCore import QSettings, qDebug
+from PyQt.QtCore import QSettings, qDebug
 
 from qgis.core import QgsProject, QgsApplication, QgsPalLabeling
 

@@ -29,7 +29,7 @@
 
 import xml.etree.ElementTree as etree
 
-from PyQt4.QtCore import QSettings
+from PyQt.QtCore import QSettings
 from PyQt4.QtGui import (QDialog, QDialogButtonBox, QFileDialog,
                          QListWidgetItem, QMessageBox)
 

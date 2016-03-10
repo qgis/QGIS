@@ -25,8 +25,9 @@
 
 import logging
 
-from PyQt4.QtCore import QCoreApplication
-from PyQt4.QtGui import QAction, QIcon
+from PyQt.QtCore import QCoreApplication
+from PyQt.QtWidgets import QAction
+from PyQt.QtGui import QIcon
 
 from MetaSearch.dialogs.maindialog import MetaSearchDialog
 from MetaSearch.util import get_help_url, open_url, StaticContext

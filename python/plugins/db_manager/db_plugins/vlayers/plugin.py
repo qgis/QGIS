@@ -22,8 +22,9 @@ email                : hugo dot mercier at oslandia dot com
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import VLayerConnector
 
-from PyQt4.QtCore import Qt, QSettings, QUrl
-from PyQt4.QtGui import QIcon, QApplication, QAction
+from PyQt.QtCore import Qt, QSettings, QUrl
+from PyQt.QtGui import QIcon
+from PyQt.QtWidgets import QApplication, QAction
 from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
 from qgis.gui import QgsMessageBar
 

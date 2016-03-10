@@ -28,8 +28,9 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt4 import uic
-from PyQt4.QtCore import QSettings
-from PyQt4.QtGui import QIcon, QFileDialog
+from PyQt.QtCore import QSettings
+from PyQt.QtGui import QIcon
+from PyQt.QtWidgets import QFileDialog
 from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]

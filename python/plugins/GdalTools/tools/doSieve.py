@@ -24,7 +24,7 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import SIGNAL
-from PyQt4.QtGui import QWidget
+from PyQt.QtWidgets import QWidget
 
 from ui_widgetSieve import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
@@ -50,8 +50,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             (self.connectionsCombo, SIGNAL("currentIndexChanged(int)"), self.connectionsCheck)
         ])
 
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
-        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
+        self.inSelector.selectClicked.connect(self.fillInputFileEdit)
+        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
 
     def onLayersChanged(self):
         self.inSelector.setLayers(Utils.LayerRegistry.instance().getRasterLayers())

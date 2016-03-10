@@ -4,4 +4,7 @@ try:
 except:
     pass
 
-import PyQt4.uic.pyuic
+try:
+    import PyQt4.uic.pyuic
+except ImportError:
+    import PyQt5.uic.pyuic

@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt4 import uic
-from PyQt4.QtCore import Qt, QEvent, QPyNullVariant
+from PyQt.QtCore import Qt, QEvent, QPyNullVariant
 from PyQt4.QtGui import (QFileDialog, QDialog, QIcon, QStyle,
                          QStandardItemModel, QStandardItem, QMessageBox, QStyledItemDelegate,
                          QLineEdit, QWidget, QToolButton, QHBoxLayout,

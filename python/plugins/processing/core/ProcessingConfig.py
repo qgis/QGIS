@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtCore import QPyNullVariant, QCoreApplication, QSettings
-from PyQt4.QtGui import QIcon
+from PyQt.QtCore import QPyNullVariant, QCoreApplication, QSettings
+from PyQt.QtGui import QIcon
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
 

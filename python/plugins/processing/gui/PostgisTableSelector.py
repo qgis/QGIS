@@ -30,7 +30,7 @@ import os
 from PyQt4 import uic, QtCore, QtGui
 from processing.algs.qgis.postgis_utils import GeoDB
 from qgis.core import *
-from PyQt4.QtGui import QMessageBox
+from PyQt.QtWidgets import QMessageBox
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(

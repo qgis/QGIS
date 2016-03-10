@@ -29,8 +29,8 @@ __revision__ = '$Format:%H$'
 import os
 import importlib
 import subprocess
-from PyQt4.QtCore import QCoreApplication
-from PyQt4.QtGui import QIcon
+from PyQt.QtCore import QCoreApplication
+from PyQt.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog

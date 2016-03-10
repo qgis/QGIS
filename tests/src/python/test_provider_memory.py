@@ -41,7 +41,7 @@ from utilities import (
 )
 
 from providertestbase import ProviderTestCase
-from PyQt4.QtCore import QVariant
+from PyQt.QtCore import QVariant
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

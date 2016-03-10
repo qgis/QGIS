@@ -24,7 +24,7 @@ __copyright__ = '(C) 2011, Giuseppe Sucameli'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import SIGNAL
-from PyQt4.QtGui import QWidget
+from PyQt.QtWidgets import QWidget
 
 from ui_widgetDEM import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
@@ -79,10 +79,10 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             (self.colorAlphaCheck, SIGNAL("stateChanged(int)"))
         ])
 
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
-        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
-        self.connect(self.configSelector, SIGNAL("selectClicked()"), self.fillColorConfigFileEdit)
-        self.connect(self.modeCombo, SIGNAL("currentIndexChanged(int)"), self.showModeParams)
+        self.inSelector.selectClicked.connect(self.fillInputFileEdit)
+        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
+        self.configSelector.selectClicked.connect(self.fillColorConfigFileEdit)
+        self.modeCombo.currentIndexChanged.connect(self.showModeParams)
 
     def showModeParams(self, index):
         self.stackedWidget.setVisible(index < 4)

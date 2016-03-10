@@ -18,8 +18,8 @@ import sys
 import SocketServer
 import threading
 import SimpleHTTPServer
-from PyQt4.QtGui import QPainter, QColor
-from PyQt4.QtCore import QRectF, QCoreApplication
+from PyQt.QtGui import QPainter, QColor
+from PyQt.QtCore import QRectF, QCoreApplication
 
 from qgis.core import (QgsComposerPicture,
                        QgsComposition,

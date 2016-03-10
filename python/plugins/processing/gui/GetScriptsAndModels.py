@@ -31,9 +31,10 @@ import json
 from functools import partial
 
 from PyQt4 import uic
-from PyQt4.QtCore import Qt, QCoreApplication, QUrl
-from PyQt4.QtGui import QIcon, QCursor, QApplication, QTreeWidgetItem, QPushButton
-from PyQt4.QtNetwork import QNetworkReply, QNetworkRequest
+from PyQt.QtCore import Qt, QCoreApplication, QUrl
+from PyQt.QtGui import QIcon, QCursor
+from PyQt.QtWidgets import QApplication, QTreeWidgetItem, QPushButton
+from PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 
 from qgis.utils import iface, show_message_log
 from qgis.core import QgsNetworkAccessManager, QgsMessageLog

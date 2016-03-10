@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis
 import os
 
-from PyQt4.QtCore import QFileInfo, QObject, SIGNAL
+from PyQt.QtCore import QFileInfo, QObject
 from PyQt4 import QtGui
 
 from qgis.core import (QgsRaster,
@@ -223,8 +223,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         layer = QgsRasterLayer(myPath, myBaseName)
 
         self.rendererChanged = False
-        QObject.connect(layer, SIGNAL("rendererChanged()"),
-                        self.onRendererChanged)
+        layer.rendererChanged.connect(self.onRendererChanged)
 
         rShader = QgsRasterShader()
         r = QgsSingleBandPseudoColorRenderer(layer.dataProvider(), 1, rShader)

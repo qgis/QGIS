@@ -25,7 +25,7 @@ from qgis.core import (QgsGeometry,
 from qgis.testing import (start_app,
                           unittest)
 
-from PyQt4.QtCore import QLocale
+from PyQt.QtCore import QLocale
 
 # Convenience instances in case you may need them
 # not used in this test

@@ -23,8 +23,8 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import SIGNAL, QFileInfo, QTextCodec
-from PyQt4.QtGui import QWidget, QErrorMessage
+from PyQt.QtCore import QFileInfo, QTextCodec
+from PyQt.QtWidgets import QWidget, QErrorMessage
 
 from ui_widgetGrid import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
@@ -73,10 +73,10 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             ([self.widthSpin, self.heightSpin], SIGNAL("valueChanged(int)"), self.resizeGroupBox)
         ])
 
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
-        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
-        self.connect(self.inSelector, SIGNAL("layerChanged()"), self.fillFieldsCombo)
-        self.connect(self.extentGroup, SIGNAL("toggled(bool)"), self.onExtentCheckedChanged)
+        self.inSelector.selectClicked.connect(self.fillInputFileEdit)
+        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
+        self.inSelector.layerChanged.connect(self.fillFieldsCombo)
+        self.extentGroup.toggled.connect(self.onExtentCheckedChanged)
 
     def onClosing(self):
         self.extentSelector.stop()

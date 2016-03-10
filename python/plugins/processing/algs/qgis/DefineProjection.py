@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
-from PyQt4.QtGui import QIcon
+from PyQt.QtGui import QIcon
 
 from qgis.core import QgsCoordinateReferenceSystem
 from qgis.utils import iface

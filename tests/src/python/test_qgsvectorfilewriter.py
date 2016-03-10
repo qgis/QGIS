@@ -23,7 +23,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsFeatureRequest,
                        QgsWKBTypes
                        )
-from PyQt4.QtCore import QDate, QTime, QDateTime, QVariant, QDir
+from PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 import os
 import platform
 from qgis.testing import (

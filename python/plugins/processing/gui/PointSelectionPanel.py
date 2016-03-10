@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt4 import uic
-from PyQt4.QtGui import QCursor
+from PyQt.QtGui import QCursor
 
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface

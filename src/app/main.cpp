@@ -397,6 +397,14 @@ void myMessageOutput( QtMsgType type, const char *msg )
       abort();                    // deliberately dump core
 #endif
     }
+
+
+#if QT_VERSION >= 0x050000
+    case QtInfoMsg:
+      myPrint( "Info: %s\n", msg );
+      break;
+#endif
+
   }
 }
 

@@ -19,8 +19,9 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from PyQt4.QtCore import Qt, QObject, QEvent, QSettings, QCoreApplication, QFileInfo, QSize, QDir, SIGNAL
-from PyQt4.QtGui import QFont, QFontMetrics, QColor, QShortcut, QKeySequence, QMenu, QApplication, QCursor, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
+from PyQt.QtCore import Qt, QObject, QEvent, QSettings, QCoreApplication, QFileInfo, QSize, QDir
+from PyQt.QtGui import QFont, QFontMetrics, QColor, QKeySequence, QCursor
+from PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
 from PyQt4.Qsci import (QsciScintilla,
                         QsciLexerPython,
                         QsciAPIs,
@@ -895,8 +896,8 @@ class EditorTabWidget(QTabWidget):
         self.layoutTopFrame2.addWidget(self.clButton, 0, 2, 1, 1)
 
         self.topFrame.hide()
-        self.connect(self.restoreTabsButton, SIGNAL('clicked()'), self.restoreTabs)
-        self.connect(self.clButton, SIGNAL('clicked()'), self.closeRestore)
+        self.restoreTabsButton.clicked.connect(self.restoreTabs)
+        self.clButton.clicked.connect(self.closeRestore)
 
         ## Fixes #7653
         if sys.platform != 'darwin':
@@ -908,10 +909,8 @@ class EditorTabWidget(QTabWidget):
 
         # Menu button list tabs
         self.fileTabMenu = QMenu()
-        self.connect(self.fileTabMenu, SIGNAL("aboutToShow()"),
-                     self.showFileTabMenu)
-        self.connect(self.fileTabMenu, SIGNAL("triggered(QAction*)"),
-                     self.showFileTabMenuTriggered)
+        self.fileTabMenu.aboutToShow.connect(self.showFileTabMenu)
+        self.fileTabMenu.triggered.connect(self.showFileTabMenuTriggered)
         self.fileTabButton = QToolButton()
         txtToolTipMenuFile = QCoreApplication.translate("PythonConsole",
                                                         "List all tabs")
@@ -922,8 +921,8 @@ class EditorTabWidget(QTabWidget):
         self.fileTabButton.setPopupMode(QToolButton.InstantPopup)
         self.fileTabButton.setMenu(self.fileTabMenu)
         self.setCornerWidget(self.fileTabButton, Qt.TopRightCorner)
-        self.connect(self, SIGNAL("tabCloseRequested(int)"), self._removeTab)
-        self.connect(self, SIGNAL('currentChanged(int)'), self._currentWidgetChanged)
+        self.tabCloseRequested.connect(self._removeTab)
+        self.currentChanged.connect(self._currentWidgetChanged)
 
         # New Editor button
         self.newTabButton = QToolButton()
@@ -934,7 +933,7 @@ class EditorTabWidget(QTabWidget):
         self.newTabButton.setIcon(QgsApplication.getThemeIcon("console/iconNewTabEditorConsole.png"))
         self.newTabButton.setIconSize(QSize(24, 24))
         self.setCornerWidget(self.newTabButton, Qt.TopLeftCorner)
-        self.connect(self.newTabButton, SIGNAL('clicked()'), self.newTabEditor)
+        self.newTabButton.clicked.connect(self.newTabEditor)
 
     def _currentWidgetChanged(self, tab):
         if self.settings.value("pythonConsole/enableObjectInsp",

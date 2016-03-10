@@ -24,7 +24,7 @@
  ***************************************************************************/
 """
 
-from PyQt4.QtGui import QDialog, QTreeWidgetItem
+from PyQt.QtWidgets import QDialog, QTreeWidgetItem
 
 from ui_qgsplugininstallerfetchingbase import Ui_QgsPluginInstallerFetchingDialogBase
 from installer_data import repositories

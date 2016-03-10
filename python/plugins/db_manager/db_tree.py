@@ -20,8 +20,8 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import SIGNAL, SLOT, QSettings, Qt
-from PyQt4.QtGui import QWidget, QTreeView, QMenu, QLabel
+from PyQt.QtCore import QSettings, Qt
+from PyQt.QtWidgets import QWidget, QTreeView, QMenu, QLabel
 
 from qgis.core import QgsMapLayerRegistry, QgsMessageLog
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
@@ -44,13 +44,12 @@ class DBTree(QTreeView):
         self.setAcceptDrops(True)
         self.setDropIndicatorShown(True)
 
-        self.connect(self, SIGNAL("doubleClicked(const QModelIndex &)"), self.addLayer)
-        self.connect(self.selectionModel(), SIGNAL("currentChanged(const QModelIndex&, const QModelIndex&)"),
-                     self.currentItemChanged)
-        self.connect(self, SIGNAL("expanded(const QModelIndex&)"), self.itemChanged)
-        self.connect(self, SIGNAL("collapsed(const QModelIndex&)"), self.itemChanged)
-        self.connect(self.model(), SIGNAL("dataChanged(const QModelIndex&, const QModelIndex&)"), self.modelDataChanged)
-        self.connect(self.model(), SIGNAL("notPopulated"), self.collapse)
+        self.doubleClicked.connect(self.addLayer)
+        self.selectionModel().currentChanged.connect(self.currentItemChanged)
+        self.expanded.connect(self.itemChanged)
+        self.collapsed.connect(self.itemChanged)
+        self.model().dataChanged.connect(self.modelDataChanged)
+        self.model().notPopulated.connect(self.collapse)
 
     def refreshItem(self, item=None):
         if item is None:
@@ -104,7 +103,7 @@ class DBTree(QTreeView):
 
     def itemChanged(self, index):
         self.setCurrentIndex(index)
-        self.emit(SIGNAL('selectedItemChanged'), self.currentItem())
+        self.selectedItemChanged.emit(self.currentItem())
 
     def modelDataChanged(self, indexFrom, indexTo):
         self.itemChanged(indexTo)

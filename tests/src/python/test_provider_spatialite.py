@@ -23,7 +23,7 @@ from qgis.testing import (start_app,
                           )
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
-from PyQt4.QtCore import QSettings
+from PyQt.QtCore import QSettings
 
 try:
     from pyspatialite import dbapi2 as sqlite3

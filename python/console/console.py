@@ -20,11 +20,10 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 """
 import os
 
-from PyQt4.QtCore import Qt, QTimer, QSettings, QCoreApplication, QSize, QByteArray, QFileInfo, SIGNAL, QUrl, QDir
-from PyQt4.QtGui import QDockWidget, QToolBar, QToolButton, QWidget,\
-    QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication, \
-    QDesktopServices
-from PyQt4.QtGui import QVBoxLayout
+from PyQt.QtCore import Qt, QTimer, QSettings, QCoreApplication, QSize, QByteArray, QFileInfo, QUrl, QDir
+from PyQt.QtWidgets import QDockWidget, QToolBar, QToolButton, QWidget, QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication
+from PyQt.QtGui import QDesktopServices
+from PyQt.QtWidgets import QVBoxLayout
 from qgis.utils import iface
 from console_sci import ShellScintilla
 from console_output import ShellOutputScintilla
@@ -539,8 +538,7 @@ class PythonConsoleWidget(QWidget):
         self.saveFileButton.triggered.connect(self.saveScriptFile)
         self.saveAsFileButton.triggered.connect(self.saveAsScriptFile)
         self.helpButton.triggered.connect(self.openHelp)
-        self.connect(self.listClassMethod, SIGNAL('itemClicked(QTreeWidgetItem*, int)'),
-                     self.onClickGoToLine)
+        self.listClassMethod.itemClicked.connect(self.onClickGoToLine)
         self.lineEditFind.returnPressed.connect(self._findText)
         self.findNextButton.clicked.connect(self._findNext)
         self.findPrevButton.clicked.connect(self._findPrev)

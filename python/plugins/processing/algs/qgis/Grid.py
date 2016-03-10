@@ -28,8 +28,8 @@ __revision__ = '$Format:%H$'
 import os
 import math
 
-from PyQt4.QtGui import QIcon
-from PyQt4.QtCore import QVariant
+from PyQt.QtGui import QIcon
+from PyQt.QtCore import QVariant
 from qgis.core import QgsRectangle, QgsCoordinateReferenceSystem, QGis, QgsField, QgsFeature, QgsGeometry, QgsPoint
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
