@@ -3,8 +3,9 @@
 PYUIC4=$1
 LD_LIBRARY_PATH=$2:$LD_LIBRARY_PATH
 PYTHONPATH=$3:$PYTHONPATH
-shift 3
+PYTHON=$4
+shift 4
 
 export LD_LIBRARY_PATH PYTHONPATH
 
-exec python $(dirname $0)/pyuic4-wrapper.py $@
+exec $PYTHON $(dirname $0)/pyuic4-wrapper.py $@
