@@ -24,7 +24,7 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import SIGNAL
-from PyQt4.QtGui import QWidget, QTableWidgetItem
+from PyQt.QtWidgets import QWidget, QTableWidgetItem
 
 from ui_optionsTable import Ui_GdalToolsOptionsTable as Ui_OptionsTable
 
@@ -36,11 +36,11 @@ class GdalToolsOptionsTable(QWidget, Ui_OptionsTable):
 
         self.setupUi(self)
 
-        self.connect(self.table, SIGNAL("cellChanged(int, int)"), SIGNAL("cellValueChanged(int, int)"))
+        self.table.cellChanged.connect(SIGNAL("cellValueChanged(int, int)"))
 
-        self.connect(self.table, SIGNAL("itemSelectionChanged()"), self.enableDeleteButton)
-        self.connect(self.btnAdd, SIGNAL("clicked()"), self.addNewRow)
-        self.connect(self.btnDel, SIGNAL("clicked()"), self.deleteRow)
+        self.table.itemSelectionChanged.connect(self.enableDeleteButton)
+        self.btnAdd.clicked.connect(self.addNewRow)
+        self.btnDel.clicked.connect(self.deleteRow)
 
         self.btnDel.setEnabled(False)
 
@@ -54,7 +54,7 @@ class GdalToolsOptionsTable(QWidget, Ui_OptionsTable):
         item = QTableWidgetItem()
         self.table.setItem(newRow, 0, item)
         self.table.setCurrentItem(item)
-        self.emit(SIGNAL("rowAdded(int)"), newRow)
+        self.rowAdded.emit(newRow)
 
     def deleteRow(self):
         if self.table.currentRow() >= 0:
@@ -62,7 +62,7 @@ class GdalToolsOptionsTable(QWidget, Ui_OptionsTable):
             # select the previous row or the next one if there is no previous row
             item = self.table.item(self.table.currentRow(), 0)
             self.table.setCurrentItem(item)
-            self.emit(SIGNAL("rowRemoved()"))
+            self.rowRemoved.emit()
 
     def options(self):
         options = []

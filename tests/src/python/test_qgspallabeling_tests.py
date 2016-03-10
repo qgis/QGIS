@@ -19,8 +19,8 @@ __revision__ = '$Format:%H$'
 import qgis
 import os
 
-from PyQt4.QtCore import Qt, QPointF
-from PyQt4.QtGui import QFont
+from PyQt.QtCore import Qt, QPointF
+from PyQt.QtGui import QFont
 
 from qgis.core import QgsPalLayerSettings
 

@@ -24,7 +24,8 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import SIGNAL
-from PyQt4.QtGui import QWidget, QColor
+from PyQt.QtWidgets import QWidget
+from PyQt.QtGui import QColor
 from qgis.core import QgsPoint, QgsRectangle, QGis
 from qgis.gui import QgsMapTool, QgsMapToolEmitPoint, QgsRubberBand
 
@@ -42,18 +43,18 @@ class GdalToolsExtentSelector(QWidget, Ui_ExtentSelector):
 
         self.setupUi(self)
 
-        self.connect(self.x1CoordEdit, SIGNAL("textChanged(const QString &)"), self.coordsChanged)
-        self.connect(self.x2CoordEdit, SIGNAL("textChanged(const QString &)"), self.coordsChanged)
-        self.connect(self.y1CoordEdit, SIGNAL("textChanged(const QString &)"), self.coordsChanged)
-        self.connect(self.y2CoordEdit, SIGNAL("textChanged(const QString &)"), self.coordsChanged)
-        self.connect(self.btnEnable, SIGNAL("clicked()"), self.start)
+        self.x1CoordEdit.textChanged.connect(self.coordsChanged)
+        self.x2CoordEdit.textChanged.connect(self.coordsChanged)
+        self.y1CoordEdit.textChanged.connect(self.coordsChanged)
+        self.y2CoordEdit.textChanged.connect(self.coordsChanged)
+        self.btnEnable.clicked.connect(self.start)
 
     def setCanvas(self, canvas):
         self.canvas = canvas
         self.tool = RectangleMapTool(self.canvas)
         self.previousMapTool = self.canvas.mapTool()
-        self.connect(self.tool, SIGNAL("rectangleCreated()"), self.fillCoords)
-        self.connect(self.tool, SIGNAL("deactivated()"), self.pause)
+        self.tool.rectangleCreated.connect(self.fillCoords)
+        self.tool.deactivated.connect(self.pause)
 
     def stop(self):
         if not self.isStarted:
@@ -65,7 +66,7 @@ class GdalToolsExtentSelector(QWidget, Ui_ExtentSelector):
         if self.previousMapTool != self.tool:
             self.canvas.setMapTool(self.previousMapTool)
         #self.coordsChanged()
-        self.emit(SIGNAL("selectionStopped()"))
+        self.selectionStopped.emit()
 
     def start(self):
         prevMapTool = self.canvas.mapTool()
@@ -75,18 +76,18 @@ class GdalToolsExtentSelector(QWidget, Ui_ExtentSelector):
         self.isStarted = True
         self.btnEnable.setVisible(False)
         self.coordsChanged()
-        self.emit(SIGNAL("selectionStarted()"))
+        self.selectionStarted.emit()
 
     def pause(self):
         if not self.isStarted:
             return
 
         self.btnEnable.setVisible(True)
-        self.emit(SIGNAL("selectionPaused()"))
+        self.selectionPaused.emit()
 
     def setExtent(self, rect):
         if self.tool.setRectangle(rect):
-            self.emit(SIGNAL("newExtentDefined()"))
+            self.newExtentDefined.emit()
 
     def getExtent(self):
         return self.tool.rectangle()
@@ -123,7 +124,7 @@ class GdalToolsExtentSelector(QWidget, Ui_ExtentSelector):
             self.y1CoordEdit.clear()
             self.y2CoordEdit.clear()
         self.blockSignals(False)
-        self.emit(SIGNAL("newExtentDefined()"))
+        self.newExtentDefined.emit()
 
 
 class RectangleMapTool(QgsMapToolEmitPoint):
@@ -154,7 +155,7 @@ class RectangleMapTool(QgsMapToolEmitPoint):
         self.isEmittingPoint = False
         #if self.rectangle() != None:
         #  self.emit( SIGNAL("rectangleCreated()") )
-        self.emit(SIGNAL("rectangleCreated()"))
+        self.rectangleCreated.emit()
 
     def canvasMoveEvent(self, e):
         if not self.isEmittingPoint:
@@ -201,4 +202,4 @@ class RectangleMapTool(QgsMapToolEmitPoint):
 
     def deactivate(self):
         QgsMapTool.deactivate(self)
-        self.emit(SIGNAL("deactivated()"))
+        self.deactivated.emit()

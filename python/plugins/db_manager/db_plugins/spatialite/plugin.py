@@ -23,8 +23,9 @@ email                : brush.tyler@gmail.com
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import SpatiaLiteDBConnector
 
-from PyQt4.QtCore import Qt, SIGNAL, QSettings, QFileInfo
-from PyQt4.QtGui import QIcon, QApplication, QAction, QFileDialog
+from PyQt.QtCore import Qt, QSettings, QFileInfo
+from PyQt.QtGui import QIcon
+from PyQt.QtWidgets import QApplication, QAction, QFileDialog
 from qgis.core import QgsDataSourceURI
 from qgis.gui import QgsMessageBar
 

@@ -20,7 +20,7 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtGui import QApplication
+from PyQt.QtWidgets import QApplication
 
 from .html_elems import HtmlContent, HtmlSection, HtmlParagraph, HtmlList, HtmlTable, HtmlTableHeader, HtmlTableCol
 

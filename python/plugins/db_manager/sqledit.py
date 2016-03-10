@@ -25,8 +25,9 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import Qt, QSettings
-from PyQt4.QtGui import QColor, QFont, QShortcut, QKeySequence
+from PyQt.QtCore import Qt, QSettings
+from PyQt.QtGui import QColor, QFont, QKeySequence
+from PyQt.QtWidgets import QShortcut
 from PyQt4.Qsci import QsciScintilla, QsciLexerSQL
 
 

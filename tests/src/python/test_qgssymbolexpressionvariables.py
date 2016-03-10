@@ -26,7 +26,7 @@ __revision__ = '$Format:%H$'
 import qgis
 import os
 
-from PyQt4.QtCore import QSize
+from PyQt.QtCore import QSize
 
 from qgis.core import (
     QgsVectorLayer,

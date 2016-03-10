@@ -23,8 +23,8 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import SIGNAL, QDir
-from PyQt4.QtGui import QWidget, QApplication
+from PyQt.QtCore import QDir
+from PyQt.QtWidgets import QWidget, QApplication
 
 from ui_widgetContour import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
@@ -57,8 +57,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             (self.attributeEdit, SIGNAL("textChanged(const QString &)"), self.attributeCheck)
         ])
 
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
-        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
+        self.inSelector.selectClicked.connect(self.fillInputFileEdit)
+        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
 
     def onLayersChanged(self):
         self.inSelector.setLayers(Utils.LayerRegistry.instance().getRasterLayers())

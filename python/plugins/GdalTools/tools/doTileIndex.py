@@ -24,7 +24,7 @@ __copyright__ = '(C) 2011, Giuseppe Sucameli'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import SIGNAL
-from PyQt4.QtGui import QWidget
+from PyQt.QtWidgets import QWidget
 
 from ui_widgetTileIndex import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
@@ -51,8 +51,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             (self.skipDifferentProjCheck, SIGNAL("stateChanged( int )"), None, 1500)
         ])
 
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDirEdit)
-        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
+        self.inSelector.selectClicked.connect(self.fillInputDirEdit)
+        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
 
     def fillInputDirEdit(self):
         inputDir = Utils.FileDialog.getExistingDirectory(self, self.tr("Select the input directory with raster files"))

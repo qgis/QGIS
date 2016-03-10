@@ -31,7 +31,7 @@ import json
 import os.path
 from urllib2 import build_opener, install_opener, ProxyHandler
 
-from PyQt4.QtCore import QSettings, Qt, SIGNAL, SLOT
+from PyQt.QtCore import QSettings, Qt
 from PyQt4.QtGui import (QApplication, QColor, QCursor, QDialog,
                          QDialogButtonBox, QMessageBox, QTreeWidgetItem,
                          QWidget)

@@ -35,7 +35,7 @@ import locale
 from qgis.core import *
 
 from PyQt4 import uic
-from PyQt4.QtCore import QCoreApplication, QVariant
+from PyQt.QtCore import QCoreApplication, QVariant
 from PyQt4.QtGui import (QWidget,
                          QLayout,
                          QVBoxLayout,

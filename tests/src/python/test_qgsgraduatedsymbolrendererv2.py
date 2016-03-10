@@ -30,9 +30,9 @@ from qgis.core import (QgsGraduatedSymbolRendererV2,
                        QgsSymbolLayerV2Utils,
                        QgsRenderContext
                        )
-from PyQt4.QtCore import Qt
-from PyQt4.QtXml import QDomDocument
-from PyQt4.QtGui import QColor
+from PyQt.QtCore import Qt
+from PyQt.QtXml import QDomDocument
+from PyQt.QtGui import QColor
 
 start_app()
 

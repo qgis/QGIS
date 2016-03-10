@@ -32,7 +32,7 @@ except:
 import inspect
 import string
 from qgis._core import *
-from PyQt4.QtCore import QCoreApplication
+from PyQt.QtCore import QCoreApplication
 
 
 def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
@@ -144,7 +144,7 @@ try:
     #   >>> if value:
     #   >>>	  print "Not a null value"
     from types import MethodType
-    from PyQt4.QtCore import QPyNullVariant
+    from PyQt.QtCore import QPyNullVariant
 
     def __nonzero__(self):
         return False

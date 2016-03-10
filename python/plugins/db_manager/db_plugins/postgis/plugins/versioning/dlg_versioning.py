@@ -21,8 +21,8 @@ Based on PG_Manager by Martin Dobias <wonder.sk@gmail.com> (GPLv2 license)
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import Qt, SIGNAL
-from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox, QApplication
+from PyQt.QtCore import Qt
+from PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox, QApplication
 
 from ui_DlgVersioning import Ui_DlgVersioning
 
@@ -41,8 +41,8 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         self.schemas = self.db.schemas()
         self.hasSchemas = self.schemas is not None
 
-        self.connect(self.buttonBox, SIGNAL("accepted()"), self.onOK)
-        self.connect(self.buttonBox, SIGNAL("helpRequested()"), self.showHelp)
+        self.buttonBox.accepted.connect(self.onOK)
+        self.buttonBox.helpRequested.connect(self.showHelp)
 
         self.populateSchemas()
         self.populateTables()
@@ -52,15 +52,15 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
             if index >= 0:
                 self.cboTable.setCurrentIndex(index)
 
-        self.connect(self.cboSchema, SIGNAL("currentIndexChanged(int)"), self.populateTables)
+        self.cboSchema.currentIndexChanged.connect(self.populateTables)
 
         # updates of SQL window
-        self.connect(self.cboSchema, SIGNAL("currentIndexChanged(int)"), self.updateSql)
-        self.connect(self.cboTable, SIGNAL("currentIndexChanged(int)"), self.updateSql)
-        self.connect(self.chkCreateCurrent, SIGNAL("stateChanged(int)"), self.updateSql)
-        self.connect(self.editPkey, SIGNAL("textChanged(const QString &)"), self.updateSql)
-        self.connect(self.editStart, SIGNAL("textChanged(const QString &)"), self.updateSql)
-        self.connect(self.editEnd, SIGNAL("textChanged(const QString &)"), self.updateSql)
+        self.cboSchema.currentIndexChanged.connect(self.updateSql)
+        self.cboTable.currentIndexChanged.connect(self.updateSql)
+        self.chkCreateCurrent.stateChanged.connect(self.updateSql)
+        self.editPkey.textChanged.connect(self.updateSql)
+        self.editStart.textChanged.connect(self.updateSql)
+        self.editEnd.textChanged.connect(self.updateSql)
 
         self.updateSql()
 

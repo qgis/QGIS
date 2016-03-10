@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 
 import math
 
-from PyQt4.QtCore import Qt
+from PyQt.QtCore import Qt
 from PyQt4.QtGui import (QDialog,
                          QVBoxLayout,
                          QHBoxLayout,

@@ -20,8 +20,8 @@ import qgis
 import os
 import sys
 
-from PyQt4.QtCore import Qt, QPointF, QThreadPool
-from PyQt4.QtGui import QFont
+from PyQt.QtCore import Qt, QPointF, QThreadPool
+from PyQt.QtGui import QFont
 
 from qgis.core import QgsPalLayerSettings, QgsSingleSymbolRendererV2, QgsMarkerSymbolV2
 

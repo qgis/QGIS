@@ -18,7 +18,7 @@ import shutil
 import glob
 
 from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsProviderRegistry
-from PyQt4.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
+from PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
 from qgis.testing import (
     start_app,
     unittest

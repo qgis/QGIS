@@ -19,8 +19,9 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from PyQt4.QtCore import Qt, QSettings, QByteArray, QCoreApplication, QFile, QSize
-from PyQt4.QtGui import QDialog, QMenu, QColor, QShortcut, QKeySequence, QFont, QFontMetrics, QStandardItemModel, QStandardItem, QApplication, QClipboard
+from PyQt.QtCore import Qt, QSettings, QByteArray, QCoreApplication, QFile, QSize
+from PyQt.QtWidgets import QDialog, QMenu, QShortcut, QApplication
+from PyQt.QtGui import QColor, QKeySequence, QFont, QFontMetrics, QStandardItemModel, QStandardItem, QClipboard
 from PyQt4.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
 
 import sys

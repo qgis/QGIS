@@ -694,7 +694,7 @@ if __name__ == "__main__":
     import sys
     import os
     from qgis.core import QgsApplication
-    from PyQt4.QtGui import QApplication
+    from PyQt.QtWidgets import QApplication
     app = QApplication([])
     QgsApplication.setPrefixPath("/usr", True)
     QgsApplication.initQgis()

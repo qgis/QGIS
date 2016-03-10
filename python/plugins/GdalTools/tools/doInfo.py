@@ -23,8 +23,8 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import Qt, QObject, SIGNAL
-from PyQt4.QtGui import QWidget, QAction, QApplication, QMenu
+from PyQt.QtCore import Qt, QObject
+from PyQt.QtWidgets import QWidget, QAction, QApplication, QMenu
 
 from ui_widgetInfo import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
@@ -53,13 +53,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             (self.suppressMDCheck, SIGNAL("stateChanged( int )"))
         ])
 
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
+        self.inSelector.selectClicked.connect(self.fillInputFileEdit)
 
         # helper actions for copying info output
         self.copyLine = QAction(self.tr("Copy"), self)
-        QObject.connect(self.copyLine, SIGNAL("triggered()"), self.doCopyLine)
+        self.copyLine.triggered.connect(self.doCopyLine)
         self.copyAll = QAction(self.tr("Copy all"), self)
-        QObject.connect(self.copyAll, SIGNAL("triggered()"), self.doCopyAll)
+        self.copyAll.triggered.connect(self.doCopyAll)
 
     def doCopyLine(self):
         output = ''

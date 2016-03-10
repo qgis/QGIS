@@ -23,8 +23,8 @@ import sys
 import os
 
 from PyQt4.Qsci import QsciLexerPython, QsciAPIs
-from PyQt4.QtGui import QApplication
-from PyQt4.QtCore import QObject
+from PyQt.QtWidgets import QApplication
+from PyQt.QtCore import QObject
 
 
 class PrepareAPIs(QObject):

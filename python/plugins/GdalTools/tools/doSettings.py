@@ -23,8 +23,9 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import Qt, SIGNAL, QObject
-from PyQt4.QtGui import QDialog, QPixmap
+from PyQt.QtCore import Qt, QObject
+from PyQt.QtWidgets import QDialog
+from PyQt.QtGui import QPixmap
 
 from ui_dialogSettings import Ui_GdalToolsSettingsDialog as Ui_Dialog
 import GdalTools_utils as Utils
@@ -40,7 +41,7 @@ class GdalToolsSettingsDialog(QDialog, Ui_Dialog):
 
         # binaries
         self.leGdalBinPath.setText(Utils.getGdalBinPath())
-        QObject.connect(self.btnSetBinPath, SIGNAL("clicked()"), self.setBinPath)
+        self.btnSetBinPath.clicked.connect(self.setBinPath)
         self.bin_tooltip_label.setPixmap(QPixmap(':/icons/tooltip.png'))
         self.bin_tooltip_label.setToolTip( self.tr( u"""\
 A list of colon-separated (Linux and MacOS) or
@@ -52,7 +53,7 @@ MacOS users usually need to set it to something like
 
         # python modules
         self.leGdalPymodPath.setText(Utils.getGdalPymodPath())
-        QObject.connect(self.btnSetPymodPath, SIGNAL("clicked()"), self.setPymodPath)
+        self.btnSetPymodPath.clicked.connect(self.setPymodPath)
         self.pymod_tooltip_label.setPixmap(QPixmap(':/icons/tooltip.png'))
         self.pymod_tooltip_label.setToolTip( self.tr( u"""\
 A list of colon-separated (Linux and MacOS) or
@@ -60,7 +61,7 @@ semicolon-separated (Windows) paths to python modules.""") )
 
         # help
         self.leGdalHelpPath.setText(Utils.getHelpPath())
-        QObject.connect(self.btnSetHelpPath, SIGNAL("clicked()"), self.setHelpPath)
+        self.btnSetHelpPath.clicked.connect(self.setHelpPath)
         self.help_tooltip_label.setPixmap(QPixmap(':/icons/tooltip.png'))
         self.help_tooltip_label.setToolTip( self.tr( u"""\
 Useful to open local GDAL documentation instead of online help
