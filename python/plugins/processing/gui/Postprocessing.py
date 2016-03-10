@@ -35,11 +35,11 @@ from qgis.core import QgsMapLayerRegistry
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingResults import ProcessingResults
 from processing.core.ProcessingLog import ProcessingLog
+from processing.core.SilentProgress import SilentProgress
 
 from processing.gui.ResultsDialog import ResultsDialog
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.MessageDialog import MessageDialog
-from processing.gui.SilentProgress import SilentProgress
 
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputVector
