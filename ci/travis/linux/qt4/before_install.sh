@@ -71,3 +71,5 @@ sudo -H pip install nose2 pyyaml mock
 #update clang
 sudo apt-get install --force-yes llvm-3.8 llvm-3.8-dev clang-3.8 libstdc++-4.9-dev
 
+sudo ln -s /usr/bin/ccache /usr/lib/ccache/clang-3.8
+sudo ln -s /usr/bin/ccache /usr/lib/ccache/clang++-3.8
