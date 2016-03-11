@@ -228,7 +228,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
   QgsMapLayer* currentLayer = nullptr;
 
-  QStringList noIdentifyLayerIdList = QgsProject::instance()->readListEntry( "Identify", "/disabledLayers" );
+  QStringList noIdentifyLayerIdList = QgsProject::instance()->nonIdentifiableLayers();
 
   const QMap<QString, QgsMapLayer*> &mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
 
@@ -888,7 +888,7 @@ void QgsProjectProperties::apply()
     }
   }
 
-  QgsProject::instance()->writeEntry( "Identify", "/disabledLayers", noIdentifyLayerList );
+  QgsProject::instance()->setNonIdentifiableLayers( noIdentifyLayerList );
 
   QgsProject::instance()->writeEntry( "WMSServiceCapabilities", "/", grpOWSServiceCapabilities->isChecked() );
   QgsProject::instance()->writeEntry( "WMSServiceTitle", "/", mWMSTitle->text() );

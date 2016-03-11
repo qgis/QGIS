@@ -70,6 +70,7 @@ class QgsVisibilityPresetCollection;
 class CORE_EXPORT QgsProject : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY( QStringList nonIdentifiableLayers READ nonIdentifiableLayers WRITE setNonIdentifiableLayers NOTIFY nonIdentifiableLayersChanged )
 
   public:
 
@@ -327,8 +328,22 @@ class CORE_EXPORT QgsProject : public QObject
      */
     QgsVisibilityPresetCollection* visibilityPresetCollection();
 
-  protected:
+    /**
+     * Set a list of layers which should not be taken into account on map identification
+     */
+    void setNonIdentifiableLayers( QList<QgsMapLayer*> layers );
 
+    /**
+     * Set a list of layers which should not be taken into account on map identification
+     */
+    void setNonIdentifiableLayers( const QStringList& layerIds );
+
+    /**
+     * Get the list of layers which currently should not be taken into account on map identification
+     */
+    QStringList nonIdentifiableLayers() const;
+
+  protected:
     /** Set error message from read/write operation
      * @note not available in Python bindings
      */
@@ -391,6 +406,9 @@ class CORE_EXPORT QgsProject : public QObject
 
     void snapSettingsChanged();
 
+    //! Emitted when the list of layer which are excluded from map identification changes
+    void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
+
   private:
 
     QgsProject(); // private 'cause it's a singleton
@@ -426,7 +444,6 @@ class CORE_EXPORT QgsProject : public QObject
     QgsLayerTreeRegistryBridge* mLayerTreeRegistryBridge;
 
     QScopedPointer<QgsVisibilityPresetCollection> mVisibilityPresetCollection;
-
 }; // QgsProject
 
 
