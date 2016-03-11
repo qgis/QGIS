@@ -73,6 +73,8 @@ notifications:
     on_start: never # default: never
 
 before_install:
+  - echo $PATH
+  - which ccache
   - ./ci/travis/${TRAVIS_OS_NAME}/before_install.sh
 
 install:
