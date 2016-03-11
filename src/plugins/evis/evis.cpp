@@ -116,9 +116,9 @@ void eVis::initGui()
   mEventBrowserActionPointer->setWhatsThis( tr( "Open an Event Browser to explore the current layer's features" ) );
 
   // Connect the action to the runmQGisIface->mapCanvas()
-  connect( mDatabaseConnectionActionPointer, SIGNAL( activated() ), this, SLOT( launchDatabaseConnection() ) );
+  connect( mDatabaseConnectionActionPointer, SIGNAL( triggered() ), this, SLOT( launchDatabaseConnection() ) );
   connect( mEventIdToolActionPointer, SIGNAL( triggered() ), this, SLOT( launchEventIdTool() ) );
-  connect( mEventBrowserActionPointer, SIGNAL( activated() ), this, SLOT( launchEventBrowser() ) );
+  connect( mEventBrowserActionPointer, SIGNAL( triggered() ), this, SLOT( launchEventBrowser() ) );
 
 
   // Add the icon to the toolbar
