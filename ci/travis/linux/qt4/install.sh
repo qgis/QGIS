@@ -1,6 +1,7 @@
 mkdir build
 cd build
 
+export PATH=/usr/lib/ccache:$PATH
 export CXX="clang++-3.8"
 export CC="clang-3.8"
 
