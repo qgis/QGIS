@@ -5,7 +5,6 @@ brew install qca
 brew install spawn-fcgi
 brew install lighttpd
 brew install poppler
-brew install ccache
 
 brew ln bison --force
 brew ln sqlite --force
