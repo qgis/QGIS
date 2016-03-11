@@ -16,6 +16,7 @@
 #include "qgsmaplayerproxymodel.h"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 
 QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
@@ -40,8 +41,34 @@ QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( const Filters& filters
 
 void QgsMapLayerProxyModel::setExceptedLayerList( const QList<QgsMapLayer*>& exceptList )
 {
+  if ( mExceptList == exceptList )
+    return;
+
   mExceptList = exceptList;
   invalidateFilter();
+}
+
+void QgsMapLayerProxyModel::setExceptedLayerIds( const QStringList& ids )
+{
+  mExceptList.clear();
+
+  Q_FOREACH ( const QString& id, ids )
+  {
+    QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( id );
+    if ( l )
+      mExceptList << l;
+  }
+  invalidateFilter();
+}
+
+QStringList QgsMapLayerProxyModel::exceptedLayerIds() const
+{
+  QStringList lst;
+
+  Q_FOREACH ( QgsMapLayer* l, mExceptList )
+    lst << l->id();
+
+  return lst;
 }
 
 bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
