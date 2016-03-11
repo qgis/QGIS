@@ -42,6 +42,7 @@ class TestQgsMapCanvas : public QObject
     void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testMapRendererInteraction();
+    void testPanByKeyboard();
 
   private:
     QgsMapCanvas* mCanvas;
@@ -122,6 +123,33 @@ void TestQgsMapCanvas::testMapRendererInteraction()
   QCOMPARE( spy5.count(), 1 );
 
   // TODO: set map units
+}
+
+void TestQgsMapCanvas::testPanByKeyboard()
+{
+  // The keys to simulate
+  QList<Qt::Key> keys = QList<Qt::Key>() << Qt::Key_Left << Qt::Key_Down << Qt::Key_Right << Qt::Key_Up;
+
+  // The canvas rotations to test
+  QList<double> rotations = QList<double>() << 0.0 << 30.0;
+
+  QgsRectangle initialExtent( 100, 100, 110, 110 );
+
+  Q_FOREACH ( double rotation, rotations )
+  {
+    // Set rotation and initial extent
+    mCanvas->setRotation( rotation );
+    mCanvas->setExtent( initialExtent );
+
+    // Save actual extent, simulate panning by keyboard and verify the extent is unchanged
+    QgsRectangle originalExtent = mCanvas->extent();
+    Q_FOREACH ( Qt::Key key, keys )
+    {
+      QKeyEvent keyEvent( QEvent::KeyPress, key, Qt::NoModifier );
+      QApplication::sendEvent( mCanvas, &keyEvent );
+    }
+    QVERIFY( mCanvas->extent() == originalExtent );
+  }
 }
 
 
