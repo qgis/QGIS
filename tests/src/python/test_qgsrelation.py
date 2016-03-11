@@ -66,7 +66,7 @@ def createReferencedLayer():
 
 
 def formatAttributes(attrs):
-    return repr([unicode(a) for a in attrs])
+    return repr([str(a) for a in attrs])
 
 
 class TestQgsRelation(unittest.TestCase):
@@ -107,11 +107,11 @@ class TestQgsRelation(unittest.TestCase):
         rel.setReferencedLayer(self.referencedLayer.id())
         rel.addFieldPair('foreignkey', 'y')
 
-        feat = self.referencedLayer.getFeatures().next()
+        feat = next(self.referencedLayer.getFeatures())
 
         it = rel.getRelatedFeatures(feat)
 
-        assert [a.attributes() for a in it] == [[u'test1', 123], [u'test2', 123]]
+        assert [a.attributes() for a in it] == [['test1', 123], ['test2', 123]]
 
     def test_getReferencedFeature(self):
         rel = QgsRelation()
@@ -121,7 +121,7 @@ class TestQgsRelation(unittest.TestCase):
         rel.setReferencedLayer(self.referencedLayer.id())
         rel.addFieldPair('foreignkey', 'y')
 
-        feat = self.referencingLayer.getFeatures().next()
+        feat = next(self.referencingLayer.getFeatures())
 
         f = rel.getReferencedFeature(feat)
 

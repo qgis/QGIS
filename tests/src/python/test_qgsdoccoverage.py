@@ -30,7 +30,7 @@ ACCEPTABLE_MISSING_DOCS = 3703
 class TestQgsDocCoverage(unittest.TestCase):
 
     def testCoverage(self):
-        print 'CTEST_FULL_OUTPUT'
+        print('CTEST_FULL_OUTPUT')
         prefixPath = os.environ['QGIS_PREFIX_PATH']
         docPath = os.path.join(prefixPath, '..', 'doc', 'api', 'xml')
         parser = DoxygenParser(docPath)
@@ -38,14 +38,14 @@ class TestQgsDocCoverage(unittest.TestCase):
         coverage = 100.0 * parser.documented_members / parser.documentable_members
         missing = parser.documentable_members - parser.documented_members
 
-        print "---------------------------------"
+        print("---------------------------------")
         printImportant("{} total documentable members".format(parser.documentable_members))
         printImportant("{} total contain valid documentation".format(parser.documented_members))
         printImportant("Total documentation coverage {}%".format(coverage))
         printImportant("---------------------------------")
         printImportant("{} members missing documentation, out of {} allowed".format(missing, ACCEPTABLE_MISSING_DOCS))
-        print "---------------------------------"
-        print parser.undocumented_string
+        print("---------------------------------")
+        print(parser.undocumented_string)
 
         assert missing <= ACCEPTABLE_MISSING_DOCS, 'FAIL: new undocumented members have been introduced, please add documentation for these members'
 

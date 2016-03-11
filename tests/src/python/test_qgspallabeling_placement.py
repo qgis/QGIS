@@ -20,8 +20,8 @@ import qgis
 import os
 import sys
 
-from PyQt4.QtCore import Qt, QPointF, QThreadPool
-from PyQt4.QtGui import QFont
+from PyQt.QtCore import Qt, QPointF, QThreadPool
+from PyQt.QtGui import QFont
 
 from qgis.core import QgsPalLayerSettings, QgsSingleSymbolRendererV2, QgsMarkerSymbolV2
 
@@ -261,12 +261,12 @@ class TestPointPlacement(TestPlacementBase):
         # Test ordered placements for point using symbol bounds offset
         self.layer = TestQgsPalLabeling.loadFeatureLayer('point_ordered_placement')
         # Make a big symbol
-        symbol = QgsMarkerSymbolV2.createSimple({u'color': u'31,120,180,255',
-                                                 u'outline_color': u'0,0,0,0',
-                                                 u'outline_style': u'solid',
-                                                 u'size': u'10',
-                                                 u'name': u'rectangle',
-                                                 u'size_unit': u'MM'})
+        symbol = QgsMarkerSymbolV2.createSimple({'color': '31,120,180,255',
+                                                 'outline_color': '0,0,0,0',
+                                                 'outline_style': 'solid',
+                                                 'size': '10',
+                                                 'name': 'rectangle',
+                                                 'size_unit': 'MM'})
         renderer = QgsSingleSymbolRendererV2(symbol)
         self.layer.setRendererV2(renderer)
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)

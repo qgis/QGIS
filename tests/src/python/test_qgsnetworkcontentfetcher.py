@@ -18,11 +18,11 @@ from qgis.testing import unittest
 from qgis.utils import qgsfunction
 from qgis.core import QgsNetworkContentFetcher
 from utilities import unitTestDataPath
-from PyQt4.QtCore import QUrl, QCoreApplication
-from PyQt4.QtNetwork import QNetworkReply
-import SocketServer
+from PyQt.QtCore import QUrl, QCoreApplication
+from PyQt.QtNetwork import QNetworkReply
+import socketserver
 import threading
-import SimpleHTTPServer
+import http.server
 
 
 class TestQgsNetworkContentFetcher(unittest.TestCase):
@@ -31,9 +31,9 @@ class TestQgsNetworkContentFetcher(unittest.TestCase):
     def setUpClass(cls):
         # Bring up a simple HTTP server
         os.chdir(unitTestDataPath() + '')
-        handler = SimpleHTTPServer.SimpleHTTPRequestHandler
+        handler = http.server.SimpleHTTPRequestHandler
 
-        cls.httpd = SocketServer.TCPServer(('localhost', 0), handler)
+        cls.httpd = socketserver.TCPServer(('localhost', 0), handler)
         cls.port = cls.httpd.server_address[1]
 
         cls.httpd_thread = threading.Thread(target=cls.httpd.serve_forever)
@@ -115,7 +115,7 @@ class TestQgsNetworkContentFetcher(unittest.TestCase):
         assert r.error() == QNetworkReply.NoError, r.error()
 
         html = fetcher.contentAsString()
-        assert unichr(6040) in html
+        assert chr(6040) in html
 
 if __name__ == "__main__":
     unittest.main()

@@ -383,7 +383,7 @@ class TestQgsAuthManager(unittest.TestCase):
         self.assertIsNotNone(self.authm.uniqueConfigId(), msg)
 
         uids = []
-        for _ in xrange(50):
+        for _ in range(50):
             # time.sleep(0.01)  # or else the salt is not random enough
             uids.append(self.authm.uniqueConfigId())
         msg = 'Generated 50 config ids are not unique:\n{0}\n{1}'.format(

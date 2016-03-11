@@ -15,11 +15,11 @@ __revision__ = '$Format:%H$'
 import qgis
 import os
 import sys
-import SocketServer
+import socketserver
 import threading
-import SimpleHTTPServer
-from PyQt4.QtGui import QPainter, QColor
-from PyQt4.QtCore import QRectF, QCoreApplication
+import http.server
+from PyQt.QtGui import QPainter, QColor
+from PyQt.QtCore import QRectF, QCoreApplication
 
 from qgis.core import (QgsComposerPicture,
                        QgsComposition,
@@ -41,9 +41,9 @@ class TestQgsComposerPicture(unittest.TestCase):
     def setUpClass(cls):
         # Bring up a simple HTTP server, for remote picture tests
         os.chdir(unitTestDataPath() + '')
-        handler = SimpleHTTPServer.SimpleHTTPRequestHandler
+        handler = http.server.SimpleHTTPRequestHandler
 
-        cls.httpd = SocketServer.TCPServer(('localhost', 0), handler)
+        cls.httpd = socketserver.TCPServer(('localhost', 0), handler)
         cls.port = cls.httpd.server_address[1]
 
         cls.httpd_thread = threading.Thread(target=cls.httpd.serve_forever)

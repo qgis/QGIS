@@ -23,12 +23,12 @@ from qgis.testing import (start_app,
                           )
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
-from PyQt4.QtCore import QSettings
+from PyQt.QtCore import QSettings
 
 try:
     from pyspatialite import dbapi2 as sqlite3
 except ImportError:
-    print "You should install pyspatialite to run the tests"
+    print("You should install pyspatialite to run the tests")
     raise ImportError
 
 # Convenience instances in case you may need them
@@ -126,10 +126,10 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         pass
 
     def enableCompiler(self):
-        QSettings().setValue(u'/qgis/compileExpressions', True)
+        QSettings().setValue('/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue(u'/qgis/compileExpressions', False)
+        QSettings().setValue('/qgis/compileExpressions', False)
 
     def test_SplitFeature(self):
         """Create spatialite database"""

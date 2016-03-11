@@ -23,7 +23,7 @@ from qgis.core import (QGis,
 
 from qgis.testing import (TestCase, unittest)
 
-from PyQt4.QtCore import QVariant, QUrl
+from PyQt.QtCore import QVariant, QUrl
 
 
 class TestQgsVirtualLayerDefinition(unittest.TestCase):
@@ -42,17 +42,17 @@ class TestQgsVirtualLayerDefinition(unittest.TestCase):
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).query(), "SELECT * FROM mytable")
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(QUrl.fromEncoded(d.toString())).query(), "SELECT * FROM mytable")
 
-        q = u"SELECT * FROM tableéé /*:int*/"
+        q = "SELECT * FROM tableéé /*:int*/"
         d.setQuery(q)
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).query(), q)
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(QUrl.fromEncoded(d.toString())).query(), q)
 
-        s1 = u"file://foo&bar=okié"
+        s1 = "file://foo&bar=okié"
         d.addSource("name", s1, "provider", "utf8")
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).sourceLayers()[0].source(), s1)
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(QUrl.fromEncoded(d.toString())).sourceLayers()[0].source(), s1)
 
-        n1 = u"éé ok"
+        n1 = "éé ok"
         d.addSource(n1, s1, "provider")
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).sourceLayers()[1].name(), n1)
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(QUrl.fromEncoded(d.toString())).sourceLayers()[1].name(), n1)

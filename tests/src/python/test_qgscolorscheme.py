@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis
 from qgis.testing import unittest
 from qgis.core import QgsColorScheme
-from PyQt4.QtGui import QColor
+from PyQt.QtGui import QColor
 
 # Make a dummy color scheme for testing
 

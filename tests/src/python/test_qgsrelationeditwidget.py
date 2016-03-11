@@ -69,7 +69,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         :return:
         """
         QgsEditorWidgetRegistry.initEditors()
-        cls.dbconn = u'dbname=\'qgis_test\' host=localhost port=5432 user=\'postgres\' password=\'postgres\''
+        cls.dbconn = 'dbname=\'qgis_test\' host=localhost port=5432 user=\'postgres\' password=\'postgres\''
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         # Create test layer
@@ -118,9 +118,9 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         """
         self.createWrapper(self.vl_a, '"name"=\'Erich Gamma\'')
 
-        self.assertEquals(self.table_view.model().rowCount(), 1)
+        self.assertEqual(self.table_view.model().rowCount(), 1)
 
-        self.assertEquals(1, len([f for f in self.vl_b.getFeatures()]))
+        self.assertEqual(1, len([f for f in self.vl_b.getFeatures()]))
 
         fid = self.vl_b.getFeatures(QgsFeatureRequest().setFilterExpression('"name"=\'Design Patterns. Elements of Reusable Object-Oriented Software\'')).next().id()
 
@@ -130,12 +130,12 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         btn.click()
 
         # This is the important check that the feature is deleted
-        self.assertEquals(0, len([f for f in self.vl_b.getFeatures()]))
+        self.assertEqual(0, len([f for f in self.vl_b.getFeatures()]))
 
         # This is actually more checking that the database on delete action is properly set on the relation
-        self.assertEquals(0, len([f for f in self.vl_link.getFeatures()]))
+        self.assertEqual(0, len([f for f in self.vl_link.getFeatures()]))
 
-        self.assertEquals(self.table_view.model().rowCount(), 0)
+        self.assertEqual(self.table_view.model().rowCount(), 0)
 
     def test_list(self):
         """
@@ -143,7 +143,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         """
         wrapper = self.createWrapper(self.vl_b)
 
-        self.assertEquals(self.table_view.model().rowCount(), 4)
+        self.assertEqual(self.table_view.model().rowCount(), 4)
 
     @unittest.expectedFailure
     def test_add_feature(self):
@@ -152,19 +152,19 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         """
         self.createWrapper(self.vl_a, '"name"=\'Douglas Adams\'')
 
-        self.assertEquals(self.table_view.model().rowCount(), 0)
+        self.assertEqual(self.table_view.model().rowCount(), 0)
 
         self.vltools.setValues([None, 'The Hitchhiker\'s Guide to the Galaxy'])
         btn = self.widget.findChild(QToolButton, 'mAddFeatureButton')
         btn.click()
 
         # Book entry has been created
-        self.assertEquals(2, len([f for f in self.vl_b.getFeatures()]))
+        self.assertEqual(2, len([f for f in self.vl_b.getFeatures()]))
 
         # Link entry has been created
-        self.assertEquals(5, len([f for f in self.vl_link.getFeatures()]))
+        self.assertEqual(5, len([f for f in self.vl_link.getFeatures()]))
 
-        self.assertEquals(self.table_view.model().rowCount(), 1)
+        self.assertEqual(self.table_view.model().rowCount(), 1)
 
     def test_link_feature(self):
         """
@@ -192,10 +192,10 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         btn.click()
         # magically the above code selects the feature here...
 
-        link_feature = self.vl_link.getFeatures(QgsFeatureRequest().setFilterExpression('"fk_book"={}'.format(f[0]))).next()
+        link_feature = next(self.vl_link.getFeatures(QgsFeatureRequest().setFilterExpression('"fk_book"={}'.format(f[0]))))
         self.assertIsNotNone(link_feature[0])
 
-        self.assertEquals(self.table_view.model().rowCount(), 1)
+        self.assertEqual(self.table_view.model().rowCount(), 1)
 
     @unittest.expectedFailure
     def test_unlink_feature(self):
@@ -206,7 +206,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         wdg = wrapper.widget()
 
         # All authors are listed
-        self.assertEquals(self.table_view.model().rowCount(), 4)
+        self.assertEqual(self.table_view.model().rowCount(), 4)
 
         it = self.vl_a.getFeatures(
             QgsFeatureRequest().setFilterExpression('"name" IN (\'Richard Helm\', \'Ralph Johnson\')'))
@@ -217,9 +217,9 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         btn.click()
 
         # This is actually more checking that the database on delete action is properly set on the relation
-        self.assertEquals(2, len([f for f in self.vl_link.getFeatures()]))
+        self.assertEqual(2, len([f for f in self.vl_link.getFeatures()]))
 
-        self.assertEquals(2, self.table_view.model().rowCount())
+        self.assertEqual(2, self.table_view.model().rowCount())
 
     def startTransaction(self):
         """
@@ -279,7 +279,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         request = QgsFeatureRequest()
         if filter:
             request.setFilterExpression(filter)
-        book = layer.getFeatures(request).next()
+        book = next(layer.getFeatures(request))
         self.wrapper.setFeature(book)
 
         self.table_view = self.widget.findChild(QTableView)

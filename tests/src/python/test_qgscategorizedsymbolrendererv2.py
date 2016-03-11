@@ -31,9 +31,9 @@ from qgis.core import (QgsCategorizedSymbolRendererV2,
                        QgsField,
                        QgsFields
                        )
-from PyQt4.QtCore import Qt, QVariant
-from PyQt4.QtXml import QDomDocument
-from PyQt4.QtGui import QColor
+from PyQt.QtCore import Qt, QVariant
+from PyQt.QtXml import QDomDocument
+from PyQt.QtGui import QColor
 
 start_app()
 

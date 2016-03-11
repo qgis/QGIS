@@ -14,9 +14,11 @@ __revision__ = '$Format:%H$'
 
 import os
 import re
-import urllib
+import urllib.request
+import urllib.parse
+import urllib.error
 from mimetools import Message
-from StringIO import StringIO
+from io import StringIO
 from qgis.server import QgsServer
 from qgis.core import QgsMessageLog
 from qgis.testing import unittest
@@ -70,7 +72,7 @@ class TestQgsServer(unittest.TestCase):
         try:
             from qgis.server import QgsServerFilter
         except ImportError:
-            print "QGIS Server plugins are not compiled. Skipping test"
+            print("QGIS Server plugins are not compiled. Skipping test")
             return
 
         class SimpleHelloFilter(QgsServerFilter):
@@ -144,7 +146,7 @@ class TestQgsServer(unittest.TestCase):
         project = self.testdata_path + "test+project.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (urllib.quote(project), request)
+        query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (urllib.parse.quote(project), request)
         if extra is not None:
             query_string += extra
         header, body = [str(_v) for _v in self.server.handleRequest(query_string)]
@@ -193,7 +195,7 @@ class TestQgsServer(unittest.TestCase):
         project = self.testdata_path + "test+project_inspire.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3.0&REQUEST=%s' % (urllib.quote(project), request)
+        query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3.0&REQUEST=%s' % (urllib.parse.quote(project), request)
         header, body = [str(_v) for _v in self.server.handleRequest(query_string)]
         response = header + body
         f = open(self.testdata_path + request.lower() + '_inspire.txt')
@@ -222,7 +224,7 @@ class TestQgsServer(unittest.TestCase):
         project = self.testdata_path + "test+project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.quote(project), request)
+        query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), request)
         header, body = [str(_v) for _v in self.server.handleRequest(query_string)]
         self.assert_headers(header, body)
         response = header + body
@@ -251,7 +253,7 @@ class TestQgsServer(unittest.TestCase):
         project = self.testdata_path + "test+project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.quote(project), request)
+        query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), request)
         header, body = [str(_v) for _v in self.server.handleRequest(query_string)]
         self.assert_headers(header, body)
         response = header + body
@@ -269,16 +271,16 @@ class TestQgsServer(unittest.TestCase):
         """
         response = re.sub(RE_STRIP_PATH, '', response)
         expected = re.sub(RE_STRIP_PATH, '', expected)
-        self.assertEqual(response, expected, msg=u"request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s"
+        self.assertEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s"
                                                  % (query_string,
                                                     request,
-                                                    unicode(expected, errors='replace'),
-                                                    unicode(response, errors='replace')))
+                                                    str(expected, errors='replace'),
+                                                    str(response, errors='replace')))
 
     def test_getfeature(self):
         tests = []
-        tests.append(('nobbox', u'GetFeature&TYPENAME=testlayer'))
-        tests.append(('startindex2', u'GetFeature&TYPENAME=testlayer&STARTINDEX=2'))
+        tests.append(('nobbox', 'GetFeature&TYPENAME=testlayer'))
+        tests.append(('startindex2', 'GetFeature&TYPENAME=testlayer&STARTINDEX=2'))
 
         for id, req in tests:
             self.wfs_getfeature_compare(id, req)

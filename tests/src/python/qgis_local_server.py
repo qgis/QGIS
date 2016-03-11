@@ -19,8 +19,12 @@ import shutil
 import platform
 import subprocess
 import time
-import urllib
-import urllib2
+import urllib.request
+import urllib.parse
+import urllib.error
+import urllib.request
+import urllib.error
+import urllib.parse
 import tempfile
 
 from utilities import (
@@ -419,7 +423,7 @@ class QgisLocalServer(object):
 
         url = self._fcgi_url + '?' + self.process_params(params)
 
-        res = urllib.urlopen(url)
+        res = urllib.request.urlopen(url)
         xml = res.read()
         if browser:
             tmp = tempfile.NamedTemporaryFile(suffix=".html", delete=False)
@@ -482,8 +486,8 @@ class QgisLocalServer(object):
         while time.time() - start_time < 20:
             resp = None
             try:
-                tmp_png = urllib2.urlopen(url)
-            except urllib2.HTTPError as resp:
+                tmp_png = urllib.request.urlopen(url)
+            except urllib.error.HTTPError as resp:
                 if resp.code == 503 or resp.code == 500:
                     time.sleep(1)
                 else:
@@ -492,7 +496,7 @@ class QgisLocalServer(object):
                         'Cound not connect to process: ' + str(resp.code),
                         resp.message
                     )
-            except urllib2.URLError as resp:
+            except urllib.error.URLError as resp:
                 raise ServerProcessError(
                     'Web/FCGI Process Request URLError',
                     'Cound not connect to process: ' + str(resp.code),
@@ -500,7 +504,7 @@ class QgisLocalServer(object):
                 )
             else:
                 delta = time.time() - start_time
-                print 'Seconds elapsed for server GetMap: ' + str(delta)
+                print('Seconds elapsed for server GetMap: ' + str(delta))
                 break
 
         if resp is not None:
@@ -532,11 +536,11 @@ class QgisLocalServer(object):
         # convert all convenience objects to compatible strings
         self._convert_instances(params)
         # encode params
-        return urllib.urlencode(params, True)
+        return urllib.parse.urlencode(params, True)
 
     @staticmethod
     def _params_to_upper(params):
-        return dict((k.upper(), v) for k, v in params.items())
+        return dict((k.upper(), v) for k, v in list(params.items()))
 
     @staticmethod
     def _convert_instances(params):
@@ -719,10 +723,10 @@ def getLocalServer():
             while time.time() - start_time < 30:
                 time.sleep(1)
                 try:
-                    res = urllib2.urlopen(srv.web_url())
+                    res = urllib.request.urlopen(srv.web_url())
                     if res.getcode() == 200:
                         break
-                except urllib2.URLError:
+                except urllib.error.URLError:
                     pass
             msg = 'Web server basic access to root index.html failed'
             # print repr(res)
@@ -776,7 +780,7 @@ if __name__ == '__main__':
 
     fcgi = os.path.realpath(args.fcgi)
     if not os.path.isabs(fcgi) or not os.path.exists(fcgi):
-        print 'qgis_mapserv.fcgi not resolved to existing absolute path.'
+        print('qgis_mapserv.fcgi not resolved to existing absolute path.')
         sys.exit(1)
 
     local_srv = QgisLocalServer(fcgi)
