@@ -55,10 +55,8 @@ matrix:
         directories:
           - ${HOME}/.ccache-osx
 
-
 git:
   depth: 30
-
 
 notifications:
   irc: "chat.freenode.net#qgis-test"
