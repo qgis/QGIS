@@ -49,6 +49,11 @@ matrix:
             - clang-3.6
     # OSX based build with QT4 and Python 2
     - os: osx
+      cache:
+        ccache: true
+      cache:
+        directories:
+          - ${HOME}/.ccache-osx
 
 
 git:
