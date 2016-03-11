@@ -17,6 +17,7 @@
 #define QGSMAPLAYERPROXYMODEL_H
 
 #include <QSortFilterProxyModel>
+#include <QStringList>
 
 class QgsMapLayerModel;
 class QgsMapLayer;
@@ -31,6 +32,8 @@ class GUI_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
     Q_FLAGS( Filters )
 
     Q_PROPERTY( QgsMapLayerProxyModel::Filters filters READ filters WRITE setFilters )
+    Q_PROPERTY( QList<QgsMapLayer*> exceptedLayerList READ exceptedLayerList WRITE setExceptedLayerList )
+    Q_PROPERTY( QStringList exceptedLayerIds READ exceptedLayerIds WRITE setExceptedLayerIds )
 
   public:
     enum Filter
@@ -68,7 +71,13 @@ class GUI_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
 
     //! offer the possibility to except some layers to be listed
     void setExceptedLayerList( const QList<QgsMapLayer*>& exceptList );
+    //! Get the list of maplayers which are excluded from the list
     QList<QgsMapLayer*> exceptedLayerList() {return mExceptList;}
+
+    //! Set the list of maplayer ids which are excluded from the list
+    void setExceptedLayerIds( const QStringList& ids );
+    //! Get the list of maplayer ids which are excluded from the list
+    QStringList exceptedLayerIds() const;
 
   private:
     Filters mFilters;
