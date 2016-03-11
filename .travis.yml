@@ -14,7 +14,7 @@ matrix:
         - clang
       cache:
         directories:
-          - ${HOME}/.ccacheqt4
+          - ${HOME}/ccacheqt4
     # QT5 based build with Python 3 // using container based builds and prebuild binary dependencies in osgeo4travis
     - os: linux
       env: QT_VERSION=5
