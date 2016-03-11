@@ -68,8 +68,7 @@ sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
 sudo -H pip install autopep8 # TODO when switching to trusty or above: replace python-pip with python-autopep8
 sudo -H pip install nose2 pyyaml mock
 
-#update clang
+# update clang and symlink for ccache
 sudo apt-get install --force-yes llvm-3.8 llvm-3.8-dev clang-3.8 libstdc++-4.9-dev
-
 sudo ln -s /usr/bin/ccache /usr/lib/ccache/clang-3.8
 sudo ln -s /usr/bin/ccache /usr/lib/ccache/clang++-3.8
