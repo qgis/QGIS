@@ -465,7 +465,7 @@ class GrassAlgorithm(GeoAlgorithm):
         snap = self.getParameterValue(self.GRASS_SNAP_TOLERANCE_PARAMETER)
         command += ' snap=' + unicode(snap)
         command += ' dsn="%s"' % os.path.dirname(filename)
-        command += ' layer="%s"' % os.path.splitext(os.path.basename(filename)[:-4])[0]
+        command += ' layer="%s"' % os.path.basename(filename)[:-4]
         command += ' output=' + destFilename
         command += ' --overwrite -o'
         return command
