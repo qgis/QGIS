@@ -45,7 +45,7 @@ MACRO(PYQT_WRAP_UI outfiles )
     GET_FILENAME_COMPONENT(infile ${it} ABSOLUTE)
     SET(outfile ${CMAKE_CURRENT_BINARY_DIR}/ui_${outfile}.py)
     ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
-      COMMAND ${PYUIC_WRAPPER} "${PYUIC_PROGRAM}" "${PYUIC_WRAPPER_PATH}" "${QGIS_OUTPUT_DIRECTORY}/python" ${infile} -o ${outfile}
+      COMMAND ${PYUIC_WRAPPER} "${PYUIC_PROGRAM}" "${PYUIC_WRAPPER_PATH}" "${QGIS_OUTPUT_DIRECTORY}/python" "${PYTHON_EXECUTABLE}" ${infile} -o ${outfile}
       MAIN_DEPENDENCY ${infile}
       DEPENDS pygui pycore
     )
