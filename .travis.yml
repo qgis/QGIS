@@ -10,8 +10,7 @@ matrix:
       group: legacy
       addons:
         postgresql: "9.1"
-      compiler:
-        - clang
+      compiler: clang
       cache:
         directories:
           - ${HOME}/.ccache-qt4
@@ -22,8 +21,7 @@ matrix:
       cache:
         apt: true
         ccache: true
-      compiler:
-        - clang
+      compiler: clang
       addons:
         postgresql: "9.4"
         apt:
