@@ -54,19 +54,19 @@ class QgsDb2Provider : public QgsVectorDataProvider
      * Get feature iterator.
      * @return QgsFeatureIterator to iterate features.
      */
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) override;
 
     /**
      * Get feature type.
      * @return int representing the feature type
      */
-    virtual QGis::WkbType geometryType() const;
+    virtual QGis::WkbType geometryType() const override;
 
     /**
      * Number of features in the layer
      * @return long containing number of features
      */
-    virtual long featureCount() const;
+    virtual long featureCount() const override;
 
     /**
      * Update the extent for this layer.
@@ -77,19 +77,19 @@ class QgsDb2Provider : public QgsVectorDataProvider
      * Return a map of indexes with field names for this layer.
      * @return map of fields
      */
-    virtual const QgsFields &fields() const;
+    virtual const QgsFields &fields() const override;
 
-    virtual QgsCoordinateReferenceSystem crs();
+    virtual QgsCoordinateReferenceSystem crs() override;
 
     /**
      * Return the extent for this data layer.
      */
-    virtual QgsRectangle extent();
+    virtual QgsRectangle extent() override;
 
     /**
      * Returns true if this is a valid data source.
      */
-    virtual bool isValid();
+    virtual bool isValid() override;
 
     /**
      * Accessor for SQL WHERE clause used to limit dataset.
@@ -110,13 +110,13 @@ class QgsDb2Provider : public QgsVectorDataProvider
         if more than one provider supports a given format, the user is able to
         select a specific provider to open that file.
      */
-    virtual QString name() const;
+    virtual QString name() const override;
 
     /** Return description
 
         Return a terse string describing what the provider is.
      */
-    virtual QString description() const;
+    virtual QString description() const override;
 
     /** Returns a bitmask containing the supported capabilities
         Note, some capabilities may change depending on whether
