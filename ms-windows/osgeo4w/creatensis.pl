@@ -271,55 +271,69 @@ unless(-d $unpacked ) {
 
 open F, ">../Installer-Files/postinstall.bat";
 
+my $r = ">>postinstall.log 2>&1\r\n";
+
 print F "\@echo off\r\n";
-print F "del postinstall.log>>postinstall.log\r\n";
-print F "echo OSGEO4W_ROOT=%OSGEO4W_ROOT%>>postinstall.log 2>&1\r\n";
-print F "echo OSGEO4W_STARTMENU=%OSGEO4W_STARTMENU%>>postinstall.log 2>&1\r\n";
-print F "set OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT:\\=/%\r\n";
-print F "if \"%OSGEO4W_ROOT_MSYS:~1,1%\"==\":\" set OSGEO4W_ROOT_MSYS=/%OSGEO4W_ROOT_MSYS:~0,1%/%OSGEO4W_ROOT_MSYS:~3%\r\n";
-print F "echo OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT_MSYS%>>postinstall.log 2>&1\r\n";
-print F "PATH %OSGEO4W_ROOT%\\bin;%PATH%>>postinstall.log 2>&1\r\n";
-print F "cd %OSGEO4W_ROOT%>>postinstall.log 2>&1\r\n";
+print F "del postinstall.log\r\n";
+print F "set OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT:\\=/%$r";
+print F "if \"%OSGEO4W_ROOT_MSYS:~1,1%\"==\":\" set OSGEO4W_ROOT_MSYS=/%OSGEO4W_ROOT_MSYS:~0,1%/%OSGEO4W_ROOT_MSYS:~3%$r";
+
+print F "del preremove-conf.bat$r";
+my $c = ">>preremove-conf.bat\r\n";
+print F "echo set OSGEO4W_ROOT=%OSGEO4W_ROOT%$c";
+print F "echo set OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT_MSYS%$c";
+print F "echo set OSGEO4W_STARTMENU=%OSGEO4W_STARTMENU%$c";
+print F "echo set OSGEO4W_DESKTOP=%OSGEO4W_DESKTOP%$c";
+
+print F "echo OSGEO4W_ROOT=%OSGEO4W_ROOT%$r";
+print F "echo OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT_MSYS%$r";
+print F "echo OSGEO4W_STARTMENU=%OSGEO4W_STARTMENU%$r";
+print F "echo OSGEO4W_DESKTOP=%OSGEO4W_DESKTOP%$r";
+print F "PATH %OSGEO4W_ROOT%\\bin;%PATH%$r";
+print F "cd %OSGEO4W_ROOT%$r";
 
 chdir $unpacked;
 for my $p (<etc/postinstall/*.bat>) {
 	$p =~ s/\//\\/g;
 	my($dir,$file) = $p =~ /^(.+)\\([^\\]+)$/;
 
-	print F "echo Running postinstall $file...\r\n";
-	print F "%COMSPEC% /c $p>>postinstall.log 2>&1\r\n";
-	print F "ren $p $file.done>>postinstall.log 2>&1\r\n";
+	print F "echo Running postinstall $file...$r";
+	print F "%COMSPEC% /c $p$r";
+	print F "ren $p $file.done$r";
 }
 chdir "..";
 
-print F "ren postinstall.bat postinstall.bat.done\r\n";
+print F "ren postinstall.bat postinstall.bat.done$r";
 
 close F;
 
 open F, ">../Installer-Files/preremove.bat";
 
+$r = ">>%TEMP%\\$packagename-OSGeo4W-$version-$binary-preremove.log 2>&1\r\n";
+
 print F "\@echo off\r\n";
-print F "del preremove.log>>preremove.log\r\n";
-print F "echo OSGEO4W_ROOT=%OSGEO4W_ROOT%>>preremove.log 2>&1\r\n";
-print F "echo OSGEO4W_STARTMENU=%OSGEO4W_STARTMENU%>>preremove.log 2>&1\r\n";
-print F "set OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT:\\=/%\r\n";
-print F "if \"%OSGEO4W_ROOT_MSYS:~1,1%\"==\":\" set OSGEO4W_ROOT_MSYS=/%OSGEO4W_ROOT_MSYS:~0,1%/%OSGEO4W_ROOT_MSYS:~3%\r\n";
-print F "echo OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT_MSYS%>>preremove.log 2>&1\r\n";
-print F "PATH %OSGEO4W_ROOT%\\bin;%PATH%>>preremove.log 2>&1\r\n";
-print F "cd %OSGEO4W_ROOT%>>preremove.log 2>&1\r\n";
+print F "call \"%~dp0\\preremove-conf.bat\"$r";
+print F "echo OSGEO4W_ROOT=%OSGEO4W_ROOT%$r";
+print F "echo OSGEO4W_STARTMENU=%OSGEO4W_STARTMENU%$r";
+print F "echo OSGEO4W_DESKTOP=%OSGEO4W_DESKTOP%$r";
+print F "set OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT:\\=/%$r";
+print F "if \"%OSGEO4W_ROOT_MSYS:~1,1%\"==\":\" set OSGEO4W_ROOT_MSYS=/%OSGEO4W_ROOT_MSYS:~0,1%/%OSGEO4W_ROOT_MSYS:~3%$r";
+print F "echo OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT_MSYS%$r";
+print F "PATH %OSGEO4W_ROOT%\\bin;%PATH%$r";
+print F "cd %OSGEO4W_ROOT%$r";
 
 chdir $unpacked;
 for my $p (<etc/preremove/*.bat>) {
 	$p =~ s/\//\\/g;
 	my($dir,$file) = $p =~ /^(.+)\\([^\\]+)$/;
 
-	print F "echo Running preremove $file...\r\n";
-	print F "%COMSPEC% /c $p>>preremove.log 2>&1\r\n";
-	print F "ren $p $file.done>>preremove.log 2>&1\r\n";
+	print F "echo Running preremove $file...$r";
+	print F "%COMSPEC% /c $p$r";
+	print F "ren $p $file.done$r";
 }
 chdir "..";
 
-print F "ren preremove.bat preremove.bat.done\r\n";
+print F "ren preremove.bat preremove.bat.done$r";
 
 close F;
 
