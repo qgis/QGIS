@@ -106,7 +106,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         // set layer scale visibility
         menu->addAction( tr( "&Set Layer Scale Visibility" ), QgisApp::instance(), SLOT( setLayerScaleVisibility() ) );
 
-        if ( !vlayer->isInScaleRange( mCanvas->scale() ) )
+        if ( !layer->isInScaleRange( mCanvas->scale() ) )
           menu->addAction( tr( "Zoom to Layer Scale" ), QgisApp::instance(), SLOT( zoomToLayerScale() ) );
 
         // set layer crs
