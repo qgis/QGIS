@@ -10,10 +10,9 @@ matrix:
       group: legacy
       addons:
         postgresql: "9.1"
-      compiler: clang
+      compiler: gcc # needs to be different for ccache, we won't use the stock compiler anyway
       cache:
-        directories:
-          - ${HOME}/.ccache-qt4
+        ccache: true
     # QT5 based build with Python 3 // using container based builds and prebuild binary dependencies in osgeo4travis
     - os: linux
       env: QT_VERSION=5
