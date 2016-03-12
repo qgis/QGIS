@@ -2,8 +2,8 @@
 
 """
 ***************************************************************************
-    v_lrs_create.py
-    ---------------
+    v_lrs_where.py
+    --------------
     Date                 : March 2016
     Copyright            : (C) 2016 by Médéric Ribreux
     Email                : medspx at medspx dot fr
@@ -25,22 +25,27 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-import os
 
-
-def processOutputs(alg):
-    # add some export commands
-    command = 'v.build.all'
-    alg.commands.append(command)
-
-    # export the SQLite table to CSV
-    rstable = alg.getOutputValue('rstable')
-    # I don't use db.out.ogr because it doesn't work
-    command = 'db.select table={} separator=comma output=\"{}\" --overwrite'.format(
-        alg.exportedLayers[rstable],
-        rstable
+def processInputs(alg):
+    # We need to import the rstable
+    rstable = alg.getParameterValue('rstable')
+    if rstable in alg.exportedLayers.keys():
+        return
+    alg.exportedLayers[rstable] = alg.getTempFilename()
+    command = 'db.in.ogr input=\"{}\" output={} --overwrite'.format(
+        rstable,
+        alg.exportedLayers[rstable]
     )
     alg.commands.append(command)
-    command = 'echo \"Integer\",\"Integer\",\"Integer\",\"Real\",\"Real\",\"Real\",\"Real\",\"Real\",\"Real\",\"Real\" > \"{}t\"'.format(rstable)
+    alg.processInputs()
+
+
+def processCommand(alg):
+    command = 'v.lrs.where lines={} points={} rstable={} thresh={} > {} --overwrite'.format(
+        alg.exportedLayers[alg.getParameterValue('lines')],
+        alg.exportedLayers[alg.getParameterValue('points')],
+        alg.exportedLayers[alg.getParameterValue('rstable')],
+        alg.getParameterValue('thresh'),
+        alg.getOutputValue('output')
+    )
     alg.commands.append(command)
-    alg.processOutputs()
