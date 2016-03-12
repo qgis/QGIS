@@ -545,6 +545,7 @@ bool QSpatiaLiteDriver::hasFeature(DriverFeature f) const
     case BatchOperations:
     case EventNotifications:
     case MultipleResultSets:
+    case CancelQuery:
         return false;
     }
     return false;
