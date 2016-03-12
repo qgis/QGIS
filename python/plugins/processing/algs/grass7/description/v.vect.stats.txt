@@ -1,0 +1,10 @@
+v.vect.stats
+Count points in areas and calculate statistics.
+Vector (v.*)
+ParameterVector|points|Name of existing vector map with points|0|False
+ParameterVector|areas|Name of existing vector map with areas|2|False
+ParameterSelection|method|Method for aggregate statistics|sum;average;median;mode;minimum;min_cat;maximum;max_cat;range;stddev;variance;diversity|0
+ParameterTableField|points_column|Column name of points map to use for statistics|points|0|False
+ParameterString|count_column|Column name to upload points count (integer, created if doesn't exists)|None|False|False
+ParameterString|stats_column|Column name to upload statistics (double, created if doesn't exists)|None|False|False
+OutputVector|output|Updated
