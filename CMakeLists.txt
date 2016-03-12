@@ -678,11 +678,12 @@ ENDIF (UNIX AND NOT APPLE)
 #############################################################
 # Python build dependency
 
-IF(ENABLE_QT5)
+SET (ENABLE_PYTHON3 FALSE CACHE BOOL "If enabled will try to find Python 3 before looking for Python 2")
+IF(ENABLE_PYTHON3)
   SET(PYTHON_VER 3 CACHE STRING "Python version")
-ELSE(ENABLE_QT5)
+ELSE(ENABLE_PYTHON3)
   SET(PYTHON_VER 2.7 CACHE STRING "Python version")
-ENDIF(ENABLE_QT5)
+ENDIF(ENABLE_PYTHON3)
 
 FIND_PACKAGE(PythonInterp ${PYTHON_VER} REQUIRED)
 
