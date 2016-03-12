@@ -1243,10 +1243,65 @@ class TestQgsExpression: public QObject
       vPerimeter = exp3.evaluate( &context );
       QCOMPARE( vPerimeter.toDouble(), 26. );
 
+      QgsExpression deprecatedExpXAt( "$x_at(1)" );
+      context.setFeature( fPolygon );
+      QVariant xAt = deprecatedExpXAt.evaluate( &context );
+      QCOMPARE( xAt.toDouble(), 10.0 );
+      context.setFeature( fPolyline );
+      xAt = deprecatedExpXAt.evaluate( &context );
+      QCOMPARE( xAt.toDouble(), 10.0 );
+
+      QgsExpression deprecatedExpXAtNeg( "$x_at(-2)" );
+      context.setFeature( fPolygon );
+      xAt = deprecatedExpXAtNeg.evaluate( &context );
+      QCOMPARE( xAt.toDouble(), 2.0 );
+
+      QgsExpression deprecatedExpYAt( "$y_at(2)" );
+      context.setFeature( fPolygon );
+      QVariant yAt = deprecatedExpYAt.evaluate( &context );
+      QCOMPARE( yAt.toDouble(), 6.0 );
+      QgsExpression deprecatedExpYAt2( "$y_at(1)" );
+      context.setFeature( fPolyline );
+      yAt = deprecatedExpYAt2.evaluate( &context );
+      QCOMPARE( yAt.toDouble(), 0.0 );
+
+      QgsExpression deprecatedExpYAtNeg( "$y_at(-2)" );
+      context.setFeature( fPolygon );
+      yAt = deprecatedExpYAtNeg.evaluate( &context );
+      QCOMPARE( yAt.toDouble(), 6.0 );
+
+      QgsExpression expXAt( "x_at(1)" );
+      context.setFeature( fPolygon );
+      xAt = expXAt.evaluate( &context );
+      QCOMPARE( xAt.toDouble(), 10.0 );
+      context.setFeature( fPolyline );
+      xAt = expXAt.evaluate( &context );
+      QCOMPARE( xAt.toDouble(), 10.0 );
+
+      QgsExpression expXAtNeg( "x_at(-2)" );
+      context.setFeature( fPolygon );
+      xAt = expXAtNeg.evaluate( &context );
+      QCOMPARE( xAt.toDouble(), 2.0 );
+
+      QgsExpression expYAt( "y_at(2)" );
+      context.setFeature( fPolygon );
+      yAt = expYAt.evaluate( &context );
+      QCOMPARE( yAt.toDouble(), 6.0 );
+      QgsExpression expYAt2( "$y_at(1)" );
+      context.setFeature( fPolyline );
+      yAt = expYAt2.evaluate( &context );
+      QCOMPARE( yAt.toDouble(), 0.0 );
+
+      QgsExpression expYAtNeg( "y_at(-2)" );
+      context.setFeature( fPolygon );
+      yAt = expYAtNeg.evaluate( &context );
+      QCOMPARE( yAt.toDouble(), 6.0 );
+
       QgsExpression exp4( "bounds_width($geometry)" );
       QVariant vBoundsWidth = exp4.evaluate( &fPolygon );
       QCOMPARE( vBoundsWidth.toDouble(), 8.0 );
 
+      context.setFeature( fPolygon );
       vBoundsWidth = exp4.evaluate( &context );
       QCOMPARE( vBoundsWidth.toDouble(), 8.0 );
 

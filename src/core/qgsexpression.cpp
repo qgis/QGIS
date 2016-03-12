@@ -1597,17 +1597,22 @@ static QVariant pointAt( const QVariantList& values, const QgsExpressionContext*
 {
   FEAT_FROM_CONTEXT( context, f );
   int idx = getIntValue( values.at( 0 ), parent );
-  ENSURE_GEOM_TYPE( f, g, QGis::Line );
-  QgsPolyline polyline = g->asPolyline();
-  if ( idx < 0 )
-    idx += polyline.count();
+  const QgsGeometry* g = f.constGeometry();
+  if ( !g || g->isEmpty() )
+    return QVariant();
 
-  if ( idx < 0 || idx >= polyline.count() )
+  if ( idx < 0 )
+  {
+    idx += g->geometry()->nCoordinates();
+  }
+  if ( idx < 0 || idx >= g->geometry()->nCoordinates() )
   {
     parent->setEvalErrorString( QObject::tr( "Index is out of range" ) );
     return QVariant();
   }
-  return QVariant( QPointF( polyline[idx].x(), polyline[idx].y() ) );
+
+  QgsPoint p = g->vertexAt( idx );
+  return QVariant( QPointF( p.x(), p.y() ) );
 }
 
 static QVariant fcnXat( const QVariantList& values, const QgsExpressionContext* f, QgsExpression* parent )
