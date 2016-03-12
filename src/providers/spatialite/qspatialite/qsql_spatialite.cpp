@@ -545,7 +545,9 @@ bool QSpatiaLiteDriver::hasFeature(DriverFeature f) const
     case BatchOperations:
     case EventNotifications:
     case MultipleResultSets:
+#if QT_VERSION >= 0x050000
     case CancelQuery:
+#endif
         return false;
     }
     return false;
