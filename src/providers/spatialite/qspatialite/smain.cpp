@@ -47,6 +47,9 @@ QT_BEGIN_NAMESPACE
 
 class QSpatiaLiteDriverPlugin : public QSqlDriverPlugin
 {
+#if QT_VERSION >= 0x050000
+    Q_PLUGIN_METADATA(IID "org.qgis.QSpatiaLiteDriverPlugin")
+#endif
 public:
     QSpatiaLiteDriverPlugin();
 
@@ -75,7 +78,9 @@ QStringList QSpatiaLiteDriverPlugin::keys() const
     return l;
 }
 
+#if QT_VERSION < 0x050000
 Q_EXPORT_STATIC_PLUGIN(QSpatiaLiteDriverPlugin)
 Q_EXPORT_PLUGIN2(qspatialite, QSpatiaLiteDriverPlugin)
+#endif
 
 QT_END_NAMESPACE
