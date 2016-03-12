@@ -36,6 +36,7 @@ cmake \
       -DWITH_ASTYLE=ON \
       -DWITH_SERVER=ON \
       -DENABLE_QT5=ON \
+      -DENABLE_PYTHON3=ON \
       -DCXX_EXTRA_FLAGS="$CLANG_WARNINGS" \
       -DPYTHON_LIBRARY=/usr/lib/libpython3.2mu.so \
       ..
