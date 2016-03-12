@@ -1,0 +1,7 @@
+v.in.lines
+Import ASCII x,y[,z] coordinates as a series of lines.
+Vector (v.*)
+ParameterFile|input|ASCII file to be imported|False|False
+ParameterString|separator|Field separator|pipe|False|True
+*ParameterBoolean|-z|Create 3D vector map|False
+OutputVector|output|Lines
