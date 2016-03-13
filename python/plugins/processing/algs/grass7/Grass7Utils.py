@@ -30,11 +30,12 @@ import shutil
 import subprocess
 import os
 import sys
+import io
 from qgis.core import QgsApplication
 from PyQt4.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import userFolder, isWindows, isMac, tempFolder, mkdir, getTempFilenameInTempFolder
+from processing.tools.system import userFolder, isWindows, isMac, tempFolder, mkdir, getTempFilenameInTempFolder, findWindowsCmdEncoding
 from processing.tests.TestData import points
 
 
@@ -117,7 +118,7 @@ class Grass7Utils:
     @staticmethod
     def createGrass7Script(commands):
         # Detect cmd encoding
-        encoding = Grass7Utils.findWindowsCmdEncoding()
+        encoding = findWindowsCmdEncoding()
         folder = Grass7Utils.grassPath()
         shell = Grass7Utils.grassWinShell()
 
@@ -127,15 +128,15 @@ class Grass7Utils:
         gisdbase = Grass7Utils.grassDataFolder()
 
         # Temporary gisrc file
-        with open(gisrc, 'w') as output:
+        with io.open(gisrc, 'w', encoding=encoding) as output:
             command = (u'GISDBASE: {}\n'
                        u'LOCATION_NAME: {}\n'
                        u'MAPSET: PERMANENT \n'
                        u'GRASS_GUI: text\n'
                        ).format(gisdbase, location)
-            output.write(command.encode(encoding))
+            output.write(command)
 
-        with open(script, 'w') as output:
+        with io.open(script, 'w', encoding=encoding) as output:
             command = (u'set HOME={}\n'
                        u'set GISRC={}\n'
                        u'set GRASS_SH={}\\bin\\sh.exe\n'
@@ -166,16 +167,16 @@ class Grass7Utils:
                                 os.path.join(folder, 'share', 'proj'),
                                 Grass7Utils.getGrassVersion(), location,
                                 location, gisdbase)
-            output.write(command.encode(encoding))
+            output.write(command)
             for command in commands:
-                output.write(command.encode(encoding) + '\n')
-            output.write(u'\nexit\n'.encode(encoding))
+                output.write(command + '\n')
+            output.write(u'\nexit\n')
 
     @staticmethod
     def createGrass7BatchJobFileFromGrass7Commands(commands):
-        with open(Grass7Utils.grassBatchJobFilename(), 'w') as fout:
+        with io.open(Grass7Utils.grassBatchJobFilename(), 'w', encoding='utf-8') as fout:
             for command in commands:
-                fout.write(command.encode('utf8') + '\n')
+                fout.write(command + '\n')
             fout.write('exit')
 
     @staticmethod
@@ -204,18 +205,18 @@ class Grass7Utils:
         mkdir(os.path.join(folder, 'PERMANENT'))
         mkdir(os.path.join(folder, 'PERMANENT', '.tmp'))
         Grass7Utils.writeGrass7Window(os.path.join(folder, 'PERMANENT', 'DEFAULT_WIND'))
-        with open(os.path.join(folder, 'PERMANENT', 'MYNAME'), 'w') as outfile:
+        with io.open(os.path.join(folder, 'PERMANENT', 'MYNAME'), 'w', encoding='utf-8') as outfile:
             outfile.write(u'QGIS GRASS GIS 7 interface: temporary data processing location.\n')
 
         Grass7Utils.writeGrass7Window(os.path.join(folder, 'PERMANENT', 'WIND'))
         mkdir(os.path.join(folder, 'PERMANENT', 'sqlite'))
-        with open(os.path.join(folder, 'PERMANENT', 'VAR'), 'w') as outfile:
-            outfile.write('DB_DRIVER: sqlite\n')
-            outfile.write('DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\n')
+        with io.open(os.path.join(folder, 'PERMANENT', 'VAR'), 'w', encoding='utf-8') as outfile:
+            outfile.write(u'DB_DRIVER: sqlite\n')
+            outfile.write(u'DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\n')
 
     @staticmethod
     def writeGrass7Window(filename):
-        with open(filename, 'w') as out:
+        with io.open(filename, 'w', encoding='utf-8') as out:
             command = (u'proj:       0\n'
                        u'zone:       0\n'
                        u'north:      1\n'
@@ -234,7 +235,7 @@ class Grass7Utils:
                        u'e-w resol3: 1\n'
                        u'n-s resol3: 1\n'
                        u't-b resol:  1\n')
-            out.write(command.encode('utf-8'))
+            out.write(command)
 
     @staticmethod
     def prepareGrass7Execution(commands):
@@ -259,38 +260,6 @@ class Grass7Utils:
                 command = 'grass70 ' + os.path.join(Grass7Utils.grassMapsetFolder(), 'PERMANENT')
 
         return command, env
-
-    @staticmethod
-    def findWindowsCmdEncoding():
-        """ Find MS-Windows encoding in the shell (cmd.exe)"""
-        # Creates a temp python file
-        tempPython = getTempFilenameInTempFolder('cmdEncoding.py')
-        with open(tempPython, 'w') as f:
-            command = (u'# -*- coding: utf-8 -*-\n\n'
-                       u'import sys\n'
-                       u'print(sys.stdin.encoding)')
-            f.write(command.encode('utf-8'))
-
-        env = os.environ.copy()
-        command = ['cmd.exe', '/C', 'python.exe', tempPython]
-
-        # execute temp python file
-        p = subprocess.Popen(
-            command,
-            shell=True,
-            stdout=subprocess.PIPE,
-            stdin=open(os.devnull),
-            stderr=subprocess.STDOUT,
-            universal_newlines=True,
-            env=env)
-        data = p.communicate()[0]
-
-        # Return codepage
-        if p.returncode == 0:
-            return data
-
-        import locale
-        return locale.getpreferredencoding()
 
     @staticmethod
     def executeGrass7(commands, progress, outputCommands=None):
