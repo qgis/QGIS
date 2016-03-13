@@ -10,8 +10,9 @@ matrix:
       group: legacy
       addons:
         postgresql: "9.1"
-      compiler:
-      - clang
+      compiler: gcc # needs to be different for ccache, we won't use the stock compiler anyway
+      cache:
+        ccache: true
     # QT5 based build with Python 3 // using container based builds and prebuild binary dependencies in osgeo4travis
     - os: linux
       env: QT_VERSION=5
@@ -19,8 +20,7 @@ matrix:
       cache:
         apt: true
         ccache: true
-      compiler:
-        - clang
+      compiler: clang
       addons:
         postgresql: "9.4"
         apt:
@@ -46,11 +46,14 @@ matrix:
             - clang-3.6
     # OSX based build with QT4 and Python 2
     - os: osx
-
+      cache:
+        ccache: true
+      cache:
+        directories:
+          - ${HOME}/.ccache-osx
 
 git:
   depth: 30
-
 
 notifications:
   irc: "chat.freenode.net#qgis-test"
