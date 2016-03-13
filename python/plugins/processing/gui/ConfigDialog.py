@@ -153,7 +153,10 @@ class ConfigDialog(BASE, WIDGET):
                 labelItem = QStandardItem(alg.name)
                 labelItem.setIcon(icon)
                 labelItem.setEditable(False)
-                setting = ProcessingConfig.settings["MENU_" + alg.commandLineName()]
+                try:
+                    setting = ProcessingConfig.settings["MENU_" + alg.commandLineName()]
+                except:
+                    continue
                 self.items[setting] = SettingItem(setting)
                 groupItem.insertRow(0, [labelItem, self.items[setting]])
             emptyItem = QStandardItem()
