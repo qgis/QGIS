@@ -136,6 +136,9 @@ class PGDatabase(Database):
         action = QAction(self.tr("Run &Vacuum Analyze"), self)
         mainWindow.registerAction(action, self.tr("&Table"), self.runVacuumAnalyzeActionSlot)
 
+        action = QAction(self.tr("Run &Refresh Materialized View"), self)
+        mainWindow.registerAction(action, self.tr("&Table"), self.runRefreshMaterializedViewSlot)
+
     def runVacuumAnalyzeActionSlot(self, item, action, parent):
         QApplication.restoreOverrideCursor()
         try:
@@ -147,6 +150,18 @@ class PGDatabase(Database):
             QApplication.setOverrideCursor(Qt.WaitCursor)
 
         item.runVacuumAnalyze()
+
+    def runRefreshMaterializedViewSlot(self, item, action, parent):
+        QApplication.restoreOverrideCursor()
+        try:
+            if not isinstance(item, PGTable) or item._relationType != 'm':
+                parent.infoBar.pushMessage(self.tr("Select a materialized view for refresh."), QgsMessageBar.INFO,
+                                           parent.iface.messageTimeout())
+                return
+        finally:
+            QApplication.setOverrideCursor(Qt.WaitCursor)
+
+        item.runRefreshMaterializedView()
 
 
 class PGSchema(Schema):
@@ -167,6 +182,12 @@ class PGTable(Table):
     def runVacuumAnalyze(self):
         self.aboutToChange()
         self.database().connector.runVacuumAnalyze((self.schemaName(), self.name))
+        # TODO: change only this item, not re-create all the tables in the schema/database
+        self.schema().refresh() if self.schema() else self.database().refresh()
+
+    def runRefreshMaterializedView(self):
+        self.aboutToChange()
+        self.database().connector.runRefreshMaterializedView((self.schemaName(), self.name))
         # TODO: change only this item, not re-create all the tables in the schema/database
         self.schema().refresh() if self.schema() else self.database().refresh()
 
@@ -198,6 +219,11 @@ class PGTable(Table):
                 self.aboutToChange()
                 self.database().connector.deleteTableRule(rule_name, (self.schemaName(), self.name))
                 self.refreshRules()
+                return True
+
+        elif action.startswith("refreshmaterializedview/"):
+            if action == "refreshmaterializedview/run":
+                self.runRefreshMaterializedView()
                 return True
 
         return Table.runAction(self, action)
