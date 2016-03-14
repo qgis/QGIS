@@ -49,19 +49,19 @@ matrix:
 git:
   depth: 30
 
-  # notifications:
-  #   irc: "chat.freenode.net#qgis-test"
-  #   on_failure: change
-  #   on_success: change
-  #   skip_join: true
-  # 
-  # notifications:
-  #   webhooks:
-  #     urls:
-  #       - https://webhooks.gitter.im/e/467e3aff72e344d1dae3
-  #     on_success: change  # options: [always|never|change] default: always
-  #     on_failure: always # options: [always|never|change] default: always
-  #     on_start: never # default: never
+notifications:
+  irc: "chat.freenode.net#qgis-test"
+  on_failure: change
+  on_success: change
+  skip_join: true
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/467e3aff72e344d1dae3
+    on_success: change  # options: [always|never|change] default: always
+    on_failure: always # options: [always|never|change] default: always
+    on_start: never # default: never
 
 before_install:
   - ./ci/travis/${TRAVIS_OS_NAME}/before_install.sh

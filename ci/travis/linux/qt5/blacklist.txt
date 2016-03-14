@@ -24,7 +24,6 @@ PyQgsDelimitedTextProvider
 PyQgsDistanceArea
 PyQgsDocCoverage
 PyQgsEditWidgets
-PyQgsExpression
 PyQgsFeature
 PyQgsFeatureIterator
 PyQgsField
