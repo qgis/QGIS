@@ -1433,7 +1433,11 @@ template<int, TYPE2*>
 
       const int t1 = i.key();
       TYPE2 * t2 = i.value();
+#if (PY_VERSION_HEX < 0x03000000)
       PyObject *t1obj = PyInt_FromSize_t(t1);
+#else
+      PyObject *t1obj = PyLong_FromSize_t(t1);
+#endif
       PyObject *t2obj = sipConvertFromType(t2, sipType_TYPE2, sipTransferObj);
       if (PyDict_GetItem(d, t1obj) == NULL)
       {
