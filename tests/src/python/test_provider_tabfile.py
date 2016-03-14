@@ -18,7 +18,7 @@ import shutil
 import glob
 
 from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsProviderRegistry
-from PyQt4.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
+from PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
 from qgis.testing import (
     start_app,
     unittest
@@ -36,14 +36,14 @@ class TestPyQgsTabfileProvider(unittest.TestCase):
     def testDateTimeFormats(self):
         # check that date and time formats are correctly interpreted
         basetestfile = os.path.join(TEST_DATA_DIR, 'tab_file.tab')
-        vl = QgsVectorLayer(u'{}|layerid=0'.format(basetestfile), u'test', u'ogr')
+        vl = QgsVectorLayer('{}|layerid=0'.format(basetestfile), 'test', 'ogr')
 
         fields = vl.dataProvider().fields()
         self.assertEqual(fields.at(fields.indexFromName('date')).type(), QVariant.Date)
         self.assertEqual(fields.at(fields.indexFromName('time')).type(), QVariant.Time)
         self.assertEqual(fields.at(fields.indexFromName('date_time')).type(), QVariant.DateTime)
 
-        f = vl.getFeatures(QgsFeatureRequest()).next()
+        f = next(vl.getFeatures(QgsFeatureRequest()))
 
         date_idx = vl.fieldNameIndex('date')
         assert isinstance(f.attributes()[date_idx], QDate)

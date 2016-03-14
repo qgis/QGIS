@@ -17,7 +17,7 @@ import os
 from qgis.core import NULL
 
 from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsProviderRegistry
-from PyQt4.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
+from PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
 from qgis.testing import (start_app,
                           unittest
                           )
@@ -33,7 +33,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.dbconn = u'dbname=\'qgis_test\''
+        cls.dbconn = 'dbname=\'qgis_test\''
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         # Create test layers
@@ -49,14 +49,14 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         """Run after all tests"""
 
     def enableCompiler(self):
-        QSettings().setValue(u'/qgis/compileExpressions', True)
+        QSettings().setValue('/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue(u'/qgis/compileExpressions', False)
+        QSettings().setValue('/qgis/compileExpressions', False)
 
     # HERE GO THE PROVIDER SPECIFIC TESTS
     def testDefaultValue(self):
-        assert self.provider.defaultValue(0) == u'nextval(\'qgis_test."someData_pk_seq"\'::regclass)'
+        assert self.provider.defaultValue(0) == 'nextval(\'qgis_test."someData_pk_seq"\'::regclass)'
         assert self.provider.defaultValue(1) == NULL
         assert self.provider.defaultValue(2) == '\'qgis\'::text'
 
@@ -69,7 +69,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(fields.at(fields.indexFromName('time_field')).type(), QVariant.Time)
         self.assertEqual(fields.at(fields.indexFromName('datetime_field')).type(), QVariant.DateTime)
 
-        f = vl.getFeatures(QgsFeatureRequest()).next()
+        f = next(vl.getFeatures(QgsFeatureRequest()))
 
         date_idx = vl.fieldNameIndex('date_field')
         assert isinstance(f.attributes()[date_idx], QDate)
@@ -84,7 +84,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     def testQueryLayers(self):
         def test_query(dbconn, query, key):
             ql = QgsVectorLayer('%s srid=4326 table="%s" (geom) key=\'%s\' sql=' % (dbconn, query.replace('"', '\\"'), key), "testgeom", "postgres")
-            print query, key
+            print(query, key)
             assert(ql.isValid())
 
         test_query(self.dbconn, '(SELECT NULL::integer "Id1", NULL::integer "Id2", NULL::geometry(Point, 4326) geom LIMIT 0)', '"Id1","Id2"')
@@ -94,7 +94,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             vl = QgsVectorLayer('%s srid=4326 table="qgis_test".%s (geom) sql=' % (dbconn, table_name), "testgeom", "postgres")
             assert(vl.isValid())
             for f in vl.getFeatures():
-                print f.geometry().exportToWkt(), wkt
+                print(f.geometry().exportToWkt(), wkt)
                 assert f.geometry().exportToWkt() == wkt
 
         test_table(self.dbconn, 'p2d', 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
@@ -151,7 +151,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     def testSignedIdentifiers(self):
         def test_query_attribute(dbconn, query, att, val, fidval):
             ql = QgsVectorLayer('%s table="%s" (g) key=\'%s\' sql=' % (dbconn, query.replace('"', '\\"'), att), "testgeom", "postgres")
-            print query, att
+            print(query, att)
             assert(ql.isValid())
             features = ql.getFeatures()
             att_idx = ql.fieldNameIndex(att)

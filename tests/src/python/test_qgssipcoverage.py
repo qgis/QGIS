@@ -41,7 +41,7 @@ ACCEPTABLE_MISSING_MEMBERS = 0
 class TestQgsSipCoverage(unittest.TestCase):
 
     def testCoverage(self):
-        print 'CTEST_FULL_OUTPUT'
+        print('CTEST_FULL_OUTPUT')
         prefixPath = os.environ['QGIS_PREFIX_PATH']
         docPath = os.path.join(prefixPath, '..', 'doc', 'api', 'xml')
         parser = DoxygenParser(docPath)
@@ -88,29 +88,29 @@ class TestQgsSipCoverage(unittest.TestCase):
 
         missing_members.sort()
 
-        print "---------------------------------"
-        print 'Missing classes:\n {}'.format('\n '.join(missing_objects))
-        print "---------------------------------"
-        print 'Missing members:\n {}'.format('\n '.join(missing_members))
+        print("---------------------------------")
+        print('Missing classes:\n {}'.format('\n '.join(missing_objects)))
+        print("---------------------------------")
+        print('Missing members:\n {}'.format('\n '.join(missing_members)))
 
         # print summaries
         missing_class_count = len(missing_objects)
         present_count = len(objects) - missing_class_count
         coverage = 100.0 * present_count / len(objects)
 
-        print "---------------------------------"
+        print("---------------------------------")
         printImportant("{} total bindable classes".format(len(objects)))
         printImportant("{} total have bindings".format(present_count))
         printImportant("Binding coverage by classes {}%".format(coverage))
         printImportant("---------------------------------")
         printImportant("{} classes missing bindings, out of {} allowed".format(missing_class_count, ACCEPTABLE_MISSING_CLASSES))
-        print "---------------------------------"
+        print("---------------------------------")
 
         missing_member_count = len(missing_members)
         present_count = len(parser.bindable_members) - missing_member_count
         coverage = 100.0 * present_count / len(parser.bindable_members)
 
-        print "---------------------------------"
+        print("---------------------------------")
         printImportant("{} total bindable members".format(len(parser.bindable_members)))
         printImportant("{} total have bindings".format(present_count))
         printImportant("Binding coverage by members {}%".format(coverage))

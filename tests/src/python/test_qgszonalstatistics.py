@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis
 import os
 
-from PyQt4.QtCore import QDir, QFile
+from PyQt.QtCore import QDir, QFile
 from qgis.core import QgsVectorLayer, QgsFeature, QgsFeatureRequest
 from qgis.analysis import QgsZonalStatistics
 
@@ -50,7 +50,7 @@ class TestQgsZonalStatistics(unittest.TestCase):
         feat = QgsFeature()
         # validate statistics for each feature
         request = QgsFeatureRequest().setFilterFid(0)
-        feat = myVector.getFeatures(request).next()
+        feat = next(myVector.getFeatures(request))
         myMessage = ('Expected: %f\nGot: %f\n' % (12.0, feat[1]))
         assert feat[1] == 12.0, myMessage
         myMessage = ('Expected: %f\nGot: %f\n' % (8.0, feat[2]))
@@ -59,7 +59,7 @@ class TestQgsZonalStatistics(unittest.TestCase):
         assert abs(feat[3] - 0.666666666666667) < 0.00001, myMessage
 
         request.setFilterFid(1)
-        feat = myVector.getFeatures(request).next()
+        feat = next(myVector.getFeatures(request))
         myMessage = ('Expected: %f\nGot: %f\n' % (9.0, feat[1]))
         assert feat[1] == 9.0, myMessage
         myMessage = ('Expected: %f\nGot: %f\n' % (5.0, feat[2]))
@@ -68,7 +68,7 @@ class TestQgsZonalStatistics(unittest.TestCase):
         assert abs(feat[3] - 0.555555555555556) < 0.00001, myMessage
 
         request.setFilterFid(2)
-        feat = myVector.getFeatures(request).next()
+        feat = next(myVector.getFeatures(request))
         myMessage = ('Expected: %f\nGot: %f\n' % (6.0, feat[1]))
         assert feat[1] == 6.0, myMessage
         myMessage = ('Expected: %f\nGot: %f\n' % (5.0, feat[2]))

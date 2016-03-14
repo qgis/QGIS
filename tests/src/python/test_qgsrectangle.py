@@ -156,7 +156,7 @@ class TestQgsRectangle(unittest.TestCase):
                      (True, rect1.contains(rect2)))
         assert rect1.contains(rect2), myMessage
 
-        print rect1.toString()
+        print(rect1.toString())
         assert rect1 == QgsRectangle(0.0, 0.0, 7.0, 7.0), 'Wrong combine with rectangle result'
 
         rect1 = QgsRectangle(0.0, 0.0, 5.0, 5.0)
@@ -169,7 +169,7 @@ class TestQgsRectangle(unittest.TestCase):
         myResult = rect1.toString()
         myMessage = ('Expected: %s\nGot: %s\n' %
                      (myExpectedResult, myResult))
-        self.assertEquals(myResult, myExpectedResult, myMessage)
+        self.assertEqual(myResult, myExpectedResult, myMessage)
 
         rect1 = QgsRectangle(0.0, 0.0, 5.0, 5.0)
         rect1.unionRect(rect2)

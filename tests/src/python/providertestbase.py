@@ -118,11 +118,11 @@ class ProviderTestCase(object):
             self.enableCompiler()
             self.runGetFeatureTests(self.provider)
         except AttributeError:
-            print 'Provider does not support compiling'
+            print('Provider does not support compiling')
 
     def testSubsetString(self):
         if not self.provider.supportsSubsetString():
-            print 'Provider does not support subset strings'
+            print('Provider does not support subset strings')
             return
 
         subset = self.getSubsetString()
@@ -173,82 +173,82 @@ class ProviderTestCase(object):
             self.enableCompiler()
             self.runOrderByTests()
         except AttributeError:
-            print 'Provider does not support compiling'
+            print('Provider does not support compiling')
 
     def runOrderByTests(self):
         request = QgsFeatureRequest().addOrderBy('cnt')
         values = [f['cnt'] for f in self.provider.getFeatures(request)]
-        self.assertEquals(values, [-200, 100, 200, 300, 400])
+        self.assertEqual(values, [-200, 100, 200, 300, 400])
 
         request = QgsFeatureRequest().addOrderBy('cnt', False)
         values = [f['cnt'] for f in self.provider.getFeatures(request)]
-        self.assertEquals(values, [400, 300, 200, 100, -200])
+        self.assertEqual(values, [400, 300, 200, 100, -200])
 
         request = QgsFeatureRequest().addOrderBy('name')
         values = [f['name'] for f in self.provider.getFeatures(request)]
-        self.assertEquals(values, ['Apple', 'Honey', 'Orange', 'Pear', NULL])
+        self.assertEqual(values, ['Apple', 'Honey', 'Orange', 'Pear', NULL])
 
         request = QgsFeatureRequest().addOrderBy('name', True, True)
         values = [f['name'] for f in self.provider.getFeatures(request)]
-        self.assertEquals(values, [NULL, 'Apple', 'Honey', 'Orange', 'Pear'])
+        self.assertEqual(values, [NULL, 'Apple', 'Honey', 'Orange', 'Pear'])
 
         request = QgsFeatureRequest().addOrderBy('name', False)
         values = [f['name'] for f in self.provider.getFeatures(request)]
-        self.assertEquals(values, [NULL, 'Pear', 'Orange', 'Honey', 'Apple'])
+        self.assertEqual(values, [NULL, 'Pear', 'Orange', 'Honey', 'Apple'])
 
         request = QgsFeatureRequest().addOrderBy('name', False, False)
         values = [f['name'] for f in self.provider.getFeatures(request)]
-        self.assertEquals(values, ['Pear', 'Orange', 'Honey', 'Apple', NULL])
+        self.assertEqual(values, ['Pear', 'Orange', 'Honey', 'Apple', NULL])
 
         # Case sensitivity
         request = QgsFeatureRequest().addOrderBy('name2')
         values = [f['name2'] for f in self.provider.getFeatures(request)]
-        self.assertEquals(values, ['Apple', 'Honey', 'NuLl', 'oranGe', 'PEaR'])
+        self.assertEqual(values, ['Apple', 'Honey', 'NuLl', 'oranGe', 'PEaR'])
 
         # Combination with LIMIT
         request = QgsFeatureRequest().addOrderBy('pk', False).setLimit(2)
         values = [f['pk'] for f in self.provider.getFeatures(request)]
-        self.assertEquals(values, [5, 4])
+        self.assertEqual(values, [5, 4])
 
         # A slightly more complex expression
         request = QgsFeatureRequest().addOrderBy('pk*2', False)
         values = [f['pk'] for f in self.provider.getFeatures(request)]
-        self.assertEquals(values, [5, 4, 3, 2, 1])
+        self.assertEqual(values, [5, 4, 3, 2, 1])
 
         # Order reversing expression
         request = QgsFeatureRequest().addOrderBy('pk*-1', False)
         values = [f['pk'] for f in self.provider.getFeatures(request)]
-        self.assertEquals(values, [1, 2, 3, 4, 5])
+        self.assertEqual(values, [1, 2, 3, 4, 5])
 
         # Type dependent expression
         request = QgsFeatureRequest().addOrderBy('num_char*2', False)
         values = [f['pk'] for f in self.provider.getFeatures(request)]
-        self.assertEquals(values, [5, 4, 3, 2, 1])
+        self.assertEqual(values, [5, 4, 3, 2, 1])
 
         # Order by guaranteed to fail
         request = QgsFeatureRequest().addOrderBy('not a valid expression*', False)
         values = [f['pk'] for f in self.provider.getFeatures(request)]
-        self.assertEquals(set(values), set([5, 4, 3, 2, 1]))
+        self.assertEqual(set(values), set([5, 4, 3, 2, 1]))
 
         # Multiple order bys and boolean
         request = QgsFeatureRequest().addOrderBy('pk > 2').addOrderBy('pk', False)
         values = [f['pk'] for f in self.provider.getFeatures(request)]
-        self.assertEquals(values, [2, 1, 5, 4, 3])
+        self.assertEqual(values, [2, 1, 5, 4, 3])
 
         # Multiple order bys, one bad, and a limit
         request = QgsFeatureRequest().addOrderBy('pk', False).addOrderBy('not a valid expression*', False).setLimit(2)
         values = [f['pk'] for f in self.provider.getFeatures(request)]
-        self.assertEquals(values, [5, 4])
+        self.assertEqual(values, [5, 4])
 
         # Bad expression first
         request = QgsFeatureRequest().addOrderBy('not a valid expression*', False).addOrderBy('pk', False).setLimit(2)
         values = [f['pk'] for f in self.provider.getFeatures(request)]
-        self.assertEquals(values, [5, 4])
+        self.assertEqual(values, [5, 4])
 
         # Combination with subset of attributes
         request = QgsFeatureRequest().addOrderBy('num_char', False).setSubsetOfAttributes(['pk'], self.vl.fields())
         values = [f['pk'] for f in self.vl.getFeatures(request)]
-        self.assertEquals(values, [5, 4, 3, 2, 1])
+        self.assertEqual(values, [5, 4, 3, 2, 1])
 
     def testGetFeaturesFidTests(self):
         fids = [f.id() for f in self.provider.getFeatures()]
@@ -358,7 +358,7 @@ class ProviderTestCase(object):
 
     def testUnique(self):
         self.assertEqual(set(self.provider.uniqueValues(1)), set([-200, 100, 200, 300, 400]))
-        assert set([u'Apple', u'Honey', u'Orange', u'Pear', NULL]) == set(self.provider.uniqueValues(2)), 'Got {}'.format(set(self.provider.uniqueValues(2)))
+        assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(self.provider.uniqueValues(2)), 'Got {}'.format(set(self.provider.uniqueValues(2)))
 
     def testFeatureCount(self):
         assert self.provider.featureCount() == 5, 'Got {}'.format(self.provider.featureCount())
@@ -392,7 +392,7 @@ class ProviderTestCase(object):
                  'cnt': set([-200, 300, 100, 200, 400]),
                  'name': set(['Pear', 'Orange', 'Apple', 'Honey', NULL]),
                  'name2': set(['NuLl', 'PEaR', 'oranGe', 'Apple', 'Honey'])}
-        for field, expected in tests.iteritems():
+        for field, expected in tests.items():
             result = set([f[field] for f in self.provider.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([field], self.provider.fields()))])
             self.assertEqual(result, expected, 'Expected {}, got {}'.format(expected, result))
 

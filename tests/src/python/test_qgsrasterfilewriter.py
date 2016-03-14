@@ -40,7 +40,7 @@ class TestQgsRasterFileWriter(unittest.TestCase):
         self.report = "<h1>Python Raster File Writer Tests</h1>\n"
 
     def write(self, theRasterName):
-        print theRasterName
+        print(theRasterName)
 
         path = "%s/%s" % (self.testDataDir, theRasterName)
         rasterLayer = QgsRasterLayer(path, "test")
@@ -59,13 +59,13 @@ class TestQgsRasterFileWriter(unittest.TestCase):
         fileWriter = QgsRasterFileWriter(tmpName)
         pipe = QgsRasterPipe()
         if not pipe.set(provider.clone()):
-            print "Cannot set pipe provider"
+            print("Cannot set pipe provider")
             return False
 
         projector = QgsRasterProjector()
         projector.setCRS(provider.crs(), provider.crs())
         if not pipe.insert(2, projector):
-            print "Cannot set pipe projector"
+            print("Cannot set pipe projector")
             return False
 
         fileWriter.writeRaster(

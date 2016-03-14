@@ -48,7 +48,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.dbconn = u"dbname='gis' host=localhost\sqlexpress"
+        cls.dbconn = "dbname='gis' host=localhost\sqlexpress"
         if 'QGIS_MSSQLTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_MSSQLTEST_DB']
         # Create test layers
@@ -66,10 +66,10 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         """Run after all tests"""
 
     def enableCompiler(self):
-        QSettings().setValue(u'/qgis/compileExpressions', True)
+        QSettings().setValue('/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue(u'/qgis/compileExpressions', False)
+        QSettings().setValue('/qgis/compileExpressions', False)
 
     # HERE GO THE PROVIDER SPECIFIC TESTS
     def testDateTimeTypes(self):
@@ -85,7 +85,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(fields.at(fields.indexFromName(
             'datetime_field')).type(), QVariant.DateTime)
 
-        f = vl.getFeatures(QgsFeatureRequest()).next()
+        f = next(vl.getFeatures(QgsFeatureRequest()))
 
         date_idx = vl.fieldNameIndex('date_field')
         assert isinstance(f.attributes()[date_idx], QDate)

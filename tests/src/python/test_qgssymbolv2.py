@@ -28,8 +28,8 @@ import csv
 
 from utilities import unitTestDataPath
 
-from PyQt4.QtCore import QSize, QDir
-from PyQt4.QtGui import QImage, QColor, QPainter
+from PyQt.QtCore import QSize, QDir
+from PyQt.QtGui import QImage, QColor, QPainter
 
 from qgis.core import (QgsGeometry,
                        QgsMarkerSymbolV2,
@@ -184,7 +184,7 @@ class TestQgsSymbolV2(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 20)
         self.report += checker.report()
-        print self.report
+        print(self.report)
         return result
 
 

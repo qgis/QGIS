@@ -23,7 +23,7 @@ import os
 import glob
 import shutil
 
-from PyQt4.QtCore import QSettings, qDebug
+from PyQt.QtCore import QSettings, qDebug
 
 from qgis.core import QgsProject, QgsApplication, QgsPalLabeling
 
@@ -71,9 +71,9 @@ class TestServerBase(TestQgsPalLabeling):
         # noinspection PyArgumentList
         cls._CacheDir = settings.value(
             "cache/directory",
-            os.path.join(unicode(QgsApplication.qgisSettingsDirPath()),
+            os.path.join(str(QgsApplication.qgisSettingsDirPath()),
                          "cache"),
-            type=unicode)
+            type=str)
 
     @classmethod
     def tearDownClass(cls):

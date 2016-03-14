@@ -15,9 +15,9 @@ __revision__ = '$Format:%H$'
 import qgis
 import os
 
-from PyQt4.QtCore import QFileInfo
-from PyQt4.QtXml import QDomDocument
-from PyQt4.QtGui import QPainter
+from PyQt.QtCore import QFileInfo
+from PyQt.QtXml import QDomDocument
+from PyQt.QtGui import QPainter
 
 from qgis.core import (QgsComposerMap,
                        QgsRectangle,

@@ -17,8 +17,8 @@ qgscompositionchecker.py - check rendering of Qgscomposition against an expected
 
 import qgis
 
-from PyQt4.QtCore import QSize, QDir, QFileInfo
-from PyQt4.QtGui import QImage, QPainter
+from PyQt.QtCore import QSize, QDir, QFileInfo
+from PyQt.QtGui import QImage, QPainter
 from qgis.core import QgsMultiRenderChecker, QgsComposition
 
 

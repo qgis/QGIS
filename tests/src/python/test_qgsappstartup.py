@@ -29,7 +29,7 @@ import errno
 from qgis.testing import unittest
 from utilities import unitTestDataPath
 
-print 'CTEST_FULL_OUTPUT'
+print('CTEST_FULL_OUTPUT')
 
 TEST_DATA_DIR = unitTestDataPath()
 
@@ -87,13 +87,13 @@ class TestPyQgsAppStartup(unittest.TestCase):
         while not os.path.exists(myTestFile):
             p.poll()
             if p.returncode is not None:
-                print 'Application has returned: {}'.format(p.returncode)
+                print('Application has returned: {}'.format(p.returncode))
                 ok = False
                 break
             time.sleep(1)
             s += 1
             if s > timeOut:
-                print 'Timed out waiting for application start'
+                print('Timed out waiting for application start')
                 ok = False
                 break
 
@@ -110,21 +110,21 @@ class TestPyQgsAppStartup(unittest.TestCase):
         if sys.platform[:3] == 'dar':  # Mac
             subdir = 'qgis.org'
         ini = os.path.join(subdir, 'QGIS2.ini')
-        for p in ['test_opts', 'test opts', u'test_optsé€']:
+        for p in ['test_opts', 'test opts', 'test_optsé€']:
             assert self.doTestStartup(option="--optionspath",
                                       testDir=os.path.join(self.TMP_DIR, p),
                                       testFile=ini,
                                       timeOut=270), "options path %s" % p
 
     def testConfigPath(self):
-        for p in ['test_config', 'test config', u'test_configé€']:
+        for p in ['test_config', 'test config', 'test_configé€']:
             assert self.doTestStartup(option="--configpath",
                                       testDir=os.path.join(self.TMP_DIR, p),
                                       testFile="qgis.db",
                                       timeOut=270), "config path %s" % p
 
     def testPluginPath(self):
-        for t in ['test_plugins', 'test plugins', u'test_pluginsé€']:
+        for t in ['test_plugins', 'test plugins', 'test_pluginsé€']:
 
             # get a unicode test dir
             testDir = os.path.join(self.TMP_DIR, t)
@@ -209,6 +209,6 @@ if __name__ == '__main__':
             if found:
                 break
 
-    print '\nQGIS_BIN: ', QGIS_BIN
+    print('\nQGIS_BIN: ', QGIS_BIN)
     assert QGIS_BIN, 'QGIS binary not found, skipping test suite'
     unittest.main()

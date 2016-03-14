@@ -21,11 +21,11 @@ __revision__ = '$Format:%H$'
 import os
 import sys
 import datetime
-import StringIO
+import io
 import tempfile
 
 if os.name == 'nt':
-    print "TestQgisLocalServer currently doesn't support windows"
+    print("TestQgisLocalServer currently doesn't support windows")
     sys.exit(0)
 
 from qgis.core import (
@@ -158,11 +158,11 @@ def run_suite(module, tests):
         suite = loader.loadTestsFromModule(module)
     verb = 2 if 'QGIS_TEST_VERBOSE' in os.environ else 0
 
-    out = StringIO.StringIO()
+    out = io.StringIO()
     res = unittest.TextTestRunner(stream=out, verbosity=verb).run(suite)
     if verb:
-        print '\nIndividual test summary:'
-    print '\n' + out.getvalue()
+        print('\nIndividual test summary:')
+    print('\n' + out.getvalue())
     out.close()
 
     if QGIS_TEST_REPORT and len(TESTREPORTS) > 0:
@@ -170,7 +170,7 @@ def run_suite(module, tests):
                     datetime.datetime.now().strftime('%Y-%m-%d %X')
         report = '<html><head><title>{0}</title></head><body>'.format(teststamp)
         report += '\n<h2>Failed Image Tests: {0}</h2>'.format(len(TESTREPORTS))
-        for k, v in TESTREPORTS.iteritems():
+        for k, v in TESTREPORTS.items():
             report += '\n<h3>{0}</h3>\n{1}'.format(k, v)
         report += '</body></html>'
 

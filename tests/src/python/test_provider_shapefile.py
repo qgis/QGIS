@@ -19,7 +19,7 @@ import shutil
 import glob
 
 from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsProviderRegistry
-from PyQt4.QtCore import QSettings
+from PyQt.QtCore import QSettings
 from qgis.testing import (start_app,
                           unittest
                           )
@@ -48,10 +48,10 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         cls.basetestfile = os.path.join(cls.basetestpath, 'shapefile.shp')
         cls.repackfile = os.path.join(cls.repackfilepath, 'shapefile.shp')
         cls.basetestpolyfile = os.path.join(cls.basetestpath, 'shapefile_poly.shp')
-        cls.vl = QgsVectorLayer(u'{}|layerid=0'.format(cls.basetestfile), u'test', u'ogr')
+        cls.vl = QgsVectorLayer('{}|layerid=0'.format(cls.basetestfile), 'test', 'ogr')
         assert(cls.vl.isValid())
         cls.provider = cls.vl.dataProvider()
-        cls.vl_poly = QgsVectorLayer(u'{}|layerid=0'.format(cls.basetestpolyfile), u'test', u'ogr')
+        cls.vl_poly = QgsVectorLayer('{}|layerid=0'.format(cls.basetestpolyfile), 'test', 'ogr')
         assert (cls.vl_poly.isValid())
         cls.poly_provider = cls.vl_poly.dataProvider()
 
@@ -62,18 +62,18 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         shutil.rmtree(cls.repackfilepath, True)
 
     def enableCompiler(self):
-        QSettings().setValue(u'/qgis/compileExpressions', True)
+        QSettings().setValue('/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue(u'/qgis/compileExpressions', False)
+        QSettings().setValue('/qgis/compileExpressions', False)
 
     def testRepack(self):
-        vl = QgsVectorLayer(u'{}|layerid=0'.format(self.repackfile), u'test', u'ogr')
+        vl = QgsVectorLayer('{}|layerid=0'.format(self.repackfile), 'test', 'ogr')
 
         ids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk=1'))]
         vl.setSelectedFeatures(ids)
-        self.assertEquals(vl.selectedFeaturesIds(), ids)
-        self.assertEquals(vl.pendingFeatureCount(), 5)
+        self.assertEqual(vl.selectedFeaturesIds(), ids)
+        self.assertEqual(vl.pendingFeatureCount(), 5)
         self.assertTrue(vl.startEditing())
         self.assertTrue(vl.deleteFeature(3))
         self.assertTrue(vl.commitChanges())
