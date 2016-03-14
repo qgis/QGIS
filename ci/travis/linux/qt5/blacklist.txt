@@ -40,7 +40,6 @@ PyQgsCoordinateTransform
 PyQgsDelimitedTextProvider
 PyQgsDistanceArea
 PyQgsEditWidgets
-PyQgsExpression
 PyQgsFeature
 PyQgsProject
 PyQgsFeatureIterator
