@@ -1,6 +1,7 @@
 *.*~
 *.autosave
 *.aux
+*.bak
 *.diff
 *.log*
 *.orig

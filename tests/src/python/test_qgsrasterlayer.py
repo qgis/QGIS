@@ -223,8 +223,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         layer = QgsRasterLayer(myPath, myBaseName)
 
         self.rendererChanged = False
-        QObject.connect(layer, SIGNAL("rendererChanged()"),
-                        self.onRendererChanged)
+        layer.rendererChanged.connect(self.onRendererChanged)
 
         rShader = QgsRasterShader()
         r = QgsSingleBandPseudoColorRenderer(layer.dataProvider(), 1, rShader)
