@@ -24,6 +24,7 @@ QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx
     : QgsWidgetWrapper( vl, editor, parent )
     , mFieldIdx( fieldIdx )
 {
+  connect( this, SIGNAL( valueChanged( QVariant ) ), this, SLOT( onValueChanged( QVariant ) ) );
 }
 
 int QgsEditorWidgetWrapper::fieldIdx() const
@@ -61,6 +62,7 @@ void QgsEditorWidgetWrapper::setEnabled( bool enabled )
 void QgsEditorWidgetWrapper::setFeature( const QgsFeature& feature )
 {
   setValue( feature.attribute( mFieldIdx ) );
+  onValueChanged( value() );
 }
 
 void QgsEditorWidgetWrapper::valueChanged( const QString& value )
@@ -91,4 +93,29 @@ void QgsEditorWidgetWrapper::valueChanged( qlonglong value )
 void QgsEditorWidgetWrapper::valueChanged()
 {
   emit valueChanged( value() );
+}
+
+void QgsEditorWidgetWrapper::updateConstraintsOk( bool constraintStatus )
+{
+  if ( constraintStatus )
+  {
+    widget()->setStyleSheet( "" );
+  }
+  else
+  {
+    widget()->setStyleSheet( "QWidget{ background-color: '#dd7777': }" );
+  }
+}
+
+void QgsEditorWidgetWrapper::onValueChanged( const QVariant& value )
+{
+  if ( layer()->editFormConfig()->notNull( mFieldIdx ) )
+  {
+    if ( value.isNull() != mIsNull )
+    {
+      updateConstraintsOk( value.isNull() );
+      emit constraintStatusChanged( "NotNull", !value.isNull() );
+      mIsNull = value.isNull();
+    }
+  }
 }

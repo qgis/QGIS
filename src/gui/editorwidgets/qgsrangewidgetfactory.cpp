@@ -38,7 +38,7 @@ QgsEditorWidgetConfig QgsRangeWidgetFactory::readConfig( const QDomElement& conf
 {
   Q_UNUSED( layer );
   Q_UNUSED( fieldIdx );
-  QMap<QString, QVariant> cfg;
+  QgsEditorWidgetConfig cfg;
 
   cfg.insert( "Style", configElement.attribute( "Style" ) );
   cfg.insert( "Min", configElement.attribute( "Min" ) );

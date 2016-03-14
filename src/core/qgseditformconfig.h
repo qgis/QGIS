@@ -513,6 +513,15 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     void setReadOnly( int idx, bool readOnly = true );
 
     /**
+     * Returns if the field at fieldidx should be treated as NOT NULL value
+     */
+    bool notNull( int fieldidx ) const;
+    /**
+     * Set if the field at fieldidx should be treated as NOT NULL value
+     */
+    void setNotNull( int idx, bool notnull = true );
+
+    /**
      * If this returns true, the widget at the given index will receive its label on the previous line
      * while if it returns false, the widget will receive its label on the left hand side.
      * Labeling on top leaves more horizontal space for the widget itself.
@@ -633,6 +642,7 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
 
     QMap< QString, bool> mFieldEditables;
     QMap< QString, bool> mLabelOnTop;
+    QMap< QString, bool> mNotNull;
 
     QMap<QString, QString> mEditorWidgetV2Types;
     QMap<QString, QgsEditorWidgetConfig > mWidgetConfigs;

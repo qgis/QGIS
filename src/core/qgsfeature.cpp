@@ -288,6 +288,12 @@ int QgsFeature::fieldNameIndex( const QString& fieldName ) const
   return d->fields.fieldNameIndex( fieldName );
 }
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfeature.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
 QDataStream& operator<<( QDataStream& out, const QgsFeature& feature )
 {
   out << feature.id();

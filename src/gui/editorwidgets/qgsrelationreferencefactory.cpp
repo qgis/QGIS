@@ -46,7 +46,7 @@ QgsEditorWidgetConfig QgsRelationReferenceFactory::readConfig( const QDomElement
 {
   Q_UNUSED( layer );
   Q_UNUSED( fieldIdx );
-  QMap<QString, QVariant> cfg;
+  QgsEditorWidgetConfig cfg;
 
   cfg.insert( "AllowNULL", configElement.attribute( "AllowNULL" ) == "1" );
   cfg.insert( "OrderByValue", configElement.attribute( "OrderByValue" ) == "1" );

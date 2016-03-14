@@ -474,7 +474,16 @@ class QgsEditFormConfig : QObject
     /**
      * If set to false, the widget at the given index will be read-only.
      */
-    void setReadOnly(int idx, bool readOnly );
+    void setReadOnly( int idx, bool readOnly = true );
+
+    /**
+     * Returns if the field at fieldidx should be treated as NOT NULL value
+     */
+    bool notNull( int fieldidx) const;
+    /**
+     * Set if the field at fieldidx should be treated as NOT NULL value
+     */
+    void setNotNull( int idx, bool notnull = true );
 
     /**
      * If this returns true, the widget at the given index will receive its label on the previous line

@@ -118,6 +118,13 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     void valueChanged( const QVariant& value );
 
+    /**
+     * @brief constraintStatusChanged
+     * @param constraint
+     * @param status
+     */
+    void constraintStatusChanged( const QString& constraint, bool status );
+
   public slots:
     /**
      * Will be called when the feature changes
@@ -186,7 +193,27 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     void valueChanged();
 
   private:
+    /**
+     * This should update the widget with a visual cue if a constraint status
+     * changed.
+     *
+     * By default a stylesheet will be applied on the widget that changes the
+     * background color to red.
+     *
+     * This can be overwritten in subclasses to allow individual widgets to
+     * change the visual cue.
+     */
+    virtual void updateConstraintsOk( bool constraintStatus );
+
+  private slots:
+    /**
+     * @brief mFieldIdx
+     */
+    void onValueChanged( const QVariant& value );
+
+  private:
     int mFieldIdx;
+    bool mIsNull;
 };
 
 // We'll use this class inside a QVariant in the widgets properties

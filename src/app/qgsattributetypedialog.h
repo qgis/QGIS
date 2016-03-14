@@ -70,6 +70,11 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     void setLabelOnTop( bool onTop );
 
     /**
+     * Getter for checkbox for label on top of field
+     */
+    bool labelOnTop() const;
+
+    /**
      * Setter for checkbox for editable state of field
      */
     void setFieldEditable( bool editable );
@@ -77,12 +82,17 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     /**
      * Getter for checkbox for editable state of field
      */
-    bool fieldEditable();
+    bool fieldEditable() const;
 
     /**
-     * Getter for checkbox for label on top of field
+     * Getter for checkbox for not null
      */
-    bool labelOnTop();
+    void setNotNull( bool notnull );
+
+    /**
+     * Getter for checkbox for not null
+     */
+    bool notNull() const;
 
   private slots:
     /**

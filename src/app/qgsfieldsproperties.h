@@ -92,6 +92,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         bool mEditable;
         bool mEditableEnabled;
         bool mLabelOnTop;
+        bool mNotNull;
         QPushButton* mButton;
         QString mEditorWidgetV2Type;
         QMap<QString, QVariant> mEditorWidgetV2Config;

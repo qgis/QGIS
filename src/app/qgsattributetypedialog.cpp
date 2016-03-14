@@ -163,14 +163,24 @@ void QgsAttributeTypeDialog::setWidgetV2Config( const QgsEditorWidgetConfig& con
   mWidgetV2Config = config;
 }
 
-bool QgsAttributeTypeDialog::fieldEditable()
+bool QgsAttributeTypeDialog::fieldEditable() const
 {
   return isFieldEditableCheckBox->isChecked();
 }
 
-bool QgsAttributeTypeDialog::labelOnTop()
+void QgsAttributeTypeDialog::setNotNull( bool notnull )
+{
+  notNullCheckBox->setChecked( notnull );
+}
+
+bool QgsAttributeTypeDialog::labelOnTop() const
 {
   return labelOnTopCheckBox->isChecked();
+}
+
+bool QgsAttributeTypeDialog::notNull() const
+{
+  return notNullCheckBox->isChecked();
 }
 
 void QgsAttributeTypeDialog::setFieldEditable( bool editable )

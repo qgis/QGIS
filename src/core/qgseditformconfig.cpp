@@ -119,6 +119,14 @@ bool QgsEditFormConfig::labelOnTop( int idx ) const
     return false;
 }
 
+bool QgsEditFormConfig::notNull( int idx ) const
+{
+  if ( idx >= 0 && idx < mFields.count() )
+    return mNotNull.value( mFields.at( idx ).name(), false );
+  else
+    return false;
+}
+
 void QgsEditFormConfig::setReadOnly( int idx, bool readOnly )
 {
   if ( idx >= 0 && idx < mFields.count() )
@@ -129,6 +137,12 @@ void QgsEditFormConfig::setLabelOnTop( int idx, bool onTop )
 {
   if ( idx >= 0 && idx < mFields.count() )
     mLabelOnTop[ mFields.at( idx ).name()] = onTop;
+}
+
+void QgsEditFormConfig::setNotNull( int idx, bool notnull )
+{
+  if ( idx >= 0 && idx < mFields.count() )
+    mNotNull[ mFields.at( idx ).name()] = notnull;
 }
 
 void QgsEditFormConfig::readXml( const QDomNode& node )
@@ -280,7 +294,6 @@ void QgsEditFormConfig::writeXml( QDomNode& node ) const
   efifpField.appendChild( doc.createTextNode( QgsProject::instance()->writePath( initFilePath() ) ) );
   node.appendChild( efifpField );
 
-
   QDomElement eficField  = doc.createElement( "editforminitcode" );
   eficField.appendChild( doc.createCDATASection( initCode() ) );
   node.appendChild( eficField );
@@ -337,6 +350,7 @@ void QgsEditFormConfig::writeXml( QDomNode& node ) const
     {
       QDomElement widgetElem = doc.createElement( "widget" );
       widgetElem.setAttribute( "name", configIt.key() );
+      // widgetElem.setAttribute( "notNull",  );
 
       QDomElement configElem = doc.createElement( "config" );
       widgetElem.appendChild( configElem );
