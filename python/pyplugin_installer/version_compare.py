@@ -47,6 +47,7 @@ ALPHA, BETA, RC, PREVIEW and TRUNK which make the version number lower.
 """
 
 import re
+import sys
 
 # ------------------------------------------------------------------------ #
 
@@ -170,7 +171,7 @@ def splitVersion(s):
     return l
 
 
-def isCompatible(curVer, minVer, maxVer):
+def isCompatible(curVer, minVer, maxVer, supportPython3=False):
     """ Compare current QGIS version with qgisMinVersion and qgisMaxVersion """
 
     if not minVer or not curVer or not maxVer:
@@ -196,4 +197,4 @@ def isCompatible(curVer, minVer, maxVer):
     maxVer = "%04d%04d%04d" % (int(maxVer[0]), int(maxVer[1]), int(maxVer[2]))
     curVer = "%04d%04d%04d" % (int(curVer[0]), int(curVer[1]), int(curVer[2]))
 
-    return (minVer <= curVer and maxVer >= curVer)
+    return (minVer <= curVer and maxVer >= curVer and (supportPython3 or sys.version_info[0] < 3))
