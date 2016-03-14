@@ -18,7 +18,7 @@ matrix:
       sudo: false
       cache:
         apt: true
-        ccache: true
+#        ccache: true # Temporarily disabled https://github.com/qgis/QGIS/pull/2908
       compiler:
         - clang
       addons:
