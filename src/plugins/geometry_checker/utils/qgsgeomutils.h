@@ -39,13 +39,22 @@ namespace QgsGeomUtils
    */
   inline int polyLineSize( const QgsAbstractGeometryV2* geom, int iPart, int iRing, bool* isClosed = nullptr )
   {
-    int nVerts = geom->vertexCount( iPart, iRing );
-    QgsPointV2 front = geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) );
-    QgsPointV2 back = geom->vertexAt( QgsVertexId( iPart, iRing, nVerts - 1 ) );
-    bool closed = back == front;
-    if ( isClosed )
-      *isClosed = closed;
-    return closed ? nVerts - 1 : nVerts;
+    if ( !geom->isEmpty() )
+    {
+      int nVerts = geom->vertexCount( iPart, iRing );
+      QgsPointV2 front = geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) );
+      QgsPointV2 back = geom->vertexAt( QgsVertexId( iPart, iRing, nVerts - 1 ) );
+      bool closed = back == front;
+      if ( isClosed )
+        *isClosed = closed;
+      return closed ? nVerts - 1 : nVerts;
+    }
+    else
+    {
+      if ( isClosed )
+        *isClosed = true;
+      return 0;
+    }
   }
 
   double sharedEdgeLength( const QgsAbstractGeometryV2* geom1, const QgsAbstractGeometryV2* geom2, double tol );
