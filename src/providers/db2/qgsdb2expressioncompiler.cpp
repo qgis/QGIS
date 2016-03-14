@@ -117,9 +117,6 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
         result = "NOT " + result;
         QgsDebugMsg( QString( "NOT; result: %1; right: %2" ).arg( resultType( rr ) ).arg( result ) );
         return rr;
-
-      case QgsExpression::uoMinus:
-        break;
     }
   }
 

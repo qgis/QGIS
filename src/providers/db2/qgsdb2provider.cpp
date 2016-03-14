@@ -181,16 +181,18 @@ QSqlDatabase QgsDb2Provider::GetDatabase( const QString &connInfo, QString &errM
   bool connected = false;
   int i = 0;
   QgsCredentials::instance()->lock();
-  while ( !connected && i < 1 )
+  while ( !connected && i < 3 )
   {
     i++;
-    if ( userName.isEmpty() || password.isEmpty() )
+    if ( userName.isEmpty() || password.isEmpty() || !connected )
     {
-      bool ok = QgsCredentials::instance()->get( databaseName, userName, password, QString( "" ) );
-      if ( !ok ) // TODO - what if cancel?
+      bool ok = QgsCredentials::instance()->get( databaseName, userName,
+                password, errMsg );
+      if ( !ok )
       {
         errMsg = "Cancel clicked";
         QgsDebugMsg( errMsg );
+        QgsCredentials::instance()->unlock();
         break;
       }
     }
@@ -220,6 +222,7 @@ QSqlDatabase QgsDb2Provider::GetDatabase( const QString &connInfo, QString &errM
     if ( db.open() )
     {
       connected = true;
+      errMsg = "";
     }
     else
     {
