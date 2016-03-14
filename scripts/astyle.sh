@@ -27,6 +27,12 @@ if [ -z "$ASTYLE" ]; then
 	exit 1	
 fi
 
+if type -p tput >/dev/null; then
+	elcr="$(tput el)$(tput cr)"
+else
+	elcr="                   \r"
+fi
+
 if ! type -p flip >/dev/null; then
 	if type -p dos2unix >/dev/null; then
 		flip() {

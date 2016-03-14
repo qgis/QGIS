@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 
-from PyQt4 import QtCore
+from PyQt4.QtCore import QCoreApplication
 
 
 class ContextAction:
@@ -46,4 +46,4 @@ class ContextAction:
     def tr(self, string, context=''):
         if context == '':
             context = 'ContextAction'
-        return QtCore.QCoreApplication.translate(context, string)
+        return QCoreApplication.translate(context, string)

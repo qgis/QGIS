@@ -21,8 +21,8 @@ email                : hugo dot mercier at oslandia dot com
 Query builder dialog, based on the QSpatialite plugin (GPLv2+) by Romain Riviere
 """
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt.QtCore import QObject, QEvent
+from PyQt.QtWidgets import QDialog, QMessageBox
 
 from .ui.ui_DlgQueryBuilder import Ui_DbManagerQueryBuilderDlg as Ui_Dialog
 from .db_plugins.plugin import VectorTable

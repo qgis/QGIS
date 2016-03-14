@@ -34,15 +34,25 @@ __author__ = 'Larry Shaffer (larry@dakotacarto.com)'
 __date__ = '22/10/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
+import sys
 
-try:
-    from PyQt4.Qsci import QSCINTILLA_VERSION_STR
-    VER = QSCINTILLA_VERSION_STR
-except ImportError:
-    try:
+VER = ""
+if len(sys.argv) > 0:
+    if sys.argv[1] == "4":
+        from PyQt4.Qsci import QSCINTILLA_VERSION_STR
+        VER = QSCINTILLA_VERSION_STR
+    else:
         from PyQt5.Qsci import QSCINTILLA_VERSION_STR
         VER = QSCINTILLA_VERSION_STR
+else:
+    try:
+        from PyQt4.Qsci import QSCINTILLA_VERSION_STR
+        VER = QSCINTILLA_VERSION_STR
     except ImportError:
-        VER = ""
+        try:
+            from PyQt5.Qsci import QSCINTILLA_VERSION_STR
+            VER = QSCINTILLA_VERSION_STR
+        except ImportError:
+            pass
 
 print("qsci_version_str:%s" % VER)

@@ -4,4 +4,4 @@ try:
 except:
     pass
 
-import PyQt4.uic.pyuic
+import PyQt.uic.pyuic

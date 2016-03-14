@@ -53,6 +53,10 @@ int QgsDxfPaintDevice::metric( PaintDeviceMetric metric ) const
     case QPaintDevice::PdmPhysicalDpiX:
     case QPaintDevice::PdmPhysicalDpiY:
       return 96;
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    case QPaintDevice::PdmDevicePixelRatio:
+      return 1;
+#endif
   }
   return 0;
 }

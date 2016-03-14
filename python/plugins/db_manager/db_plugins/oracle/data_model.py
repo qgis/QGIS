@@ -23,8 +23,7 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QTime
 
 from ..data_model import TableDataModel, SqlResultModel, \
     BaseTableModel, TableFieldsModel, SimpleTableModel

@@ -55,6 +55,7 @@ QT4_ADD_RESOURCES(globe_plugin_RCC_SRCS ${globe_plugin_RCCS})
 ADD_LIBRARY (globeplugin MODULE ${globe_plugin_SRCS} ${globe_plugin_MOC_SRCS} ${globe_plugin_RCC_SRCS} ${globe_plugin_UIS_H})
 
 INCLUDE_DIRECTORIES(SYSTEM
+     ${Qt5OpenGL_INCLUDE_DIRS}
      ${OSGEARTH_INCLUDE_DIR}
      ${OSG_INCLUDE_DIR}
      ${GEOS_INCLUDE_DIR}
@@ -82,6 +83,7 @@ TARGET_LINK_LIBRARIES(globeplugin
   qgis_core
   qgis_gui
   ${QT_QTOPENGL_LIBRARY}
+  ${Qt5OpenGL_LIBRARIES}
   ${OSGDB_LIBRARY}
   ${OSGGA_LIBRARY}
   ${OSGUTIL_LIBRARY}

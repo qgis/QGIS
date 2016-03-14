@@ -188,8 +188,11 @@ class ProcessingConfig:
     def getSetting(name):
         if name in ProcessingConfig.settings.keys():
             v = ProcessingConfig.settings[name].value
-            if isinstance(v, QPyNullVariant):
-                v = None
+            try:
+                if isinstance(v, QPyNullVariant):
+                    v = None
+            except:
+                pass
             return v
         else:
             return None

@@ -136,7 +136,7 @@ class Eliminate(GeoAlgorithm):
                 dateAndFormat = comparisonvalue.split(' ')
 
                 if len(dateAndFormat) == 1:
-                    # QtCore.QDate object
+                    # QDate object
                     y = QLocale.system().toDate(dateAndFormat[0])
 
                     if y.isNull():

@@ -35,11 +35,14 @@ class GeoAlgorithmExecutionException(Exception):
         self.cause = cause
 
     def __str__(self):
-        msg = self.msg.split('\n')
-        msg = '  | ' + '\n  | '.join(msg)
+        msg = self.msg.split(u'\n')
+        msg = u'  | ' + u'\n  | '.join(msg)
 
-        stack = '\n'.join(self.stack)
-        stack = stack.split('\n')
-        stack = '    ' + '\n    '.join(stack)
+        try:
+            stack = u'\n'.join(self.stack)
+        except TypeError:
+            stack = repr(self.stack)
+        stack = stack.split(u'\n')
+        stack = u'    ' + u'\n    '.join(stack)
 
-        return '\n\n Message:\n{}\n\n Stack:\n\n{}'.format(msg, stack)
+        return u'\n\n Message:\n{}\n\n Stack:\n\n{}'.format(msg, stack)

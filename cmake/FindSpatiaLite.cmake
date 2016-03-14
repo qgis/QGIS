@@ -20,7 +20,7 @@ include(CheckLibraryExists)
 # FIND_* is invoked first with specified paths and NO_DEFAULT_PATH
 # and then again with no specified paths to search the default
 # locations. When an earlier FIND_* succeeds, subsequent FIND_*s
-# searching for the same item do nothing. 
+# searching for the same item do nothing.
 
 # try to use sqlite framework on mac
 # want clean framework path, not unix compatibility path
@@ -42,12 +42,14 @@ IF (APPLE)
 ENDIF (APPLE)
 
 FIND_PATH(SPATIALITE_INCLUDE_DIR spatialite.h
+  /usr/include
   "$ENV{INCLUDE}"
   "$ENV{LIB_DIR}/include"
   "$ENV{LIB_DIR}/include/spatialite"
   )
 
 FIND_LIBRARY(SPATIALITE_LIBRARY NAMES spatialite spatialite_i PATHS
+  /usr/lib
   $ENV{LIB}
   $ENV{LIB_DIR}/lib
   )
@@ -65,8 +67,8 @@ IF (SPATIALITE_FOUND)
 
    # Check for symbol gaiaDropTable
    IF(APPLE)
-       # no extra LDFLAGS used in link test, may fail in OS X SDK
-       SET(CMAKE_REQUIRED_LIBRARIES "-F/Library/Frameworks" ${CMAKE_REQUIRED_LIBRARIES})
+     # no extra LDFLAGS used in link test, may fail in OS X SDK
+     SET(CMAKE_REQUIRED_LIBRARIES "-F/Library/Frameworks" ${CMAKE_REQUIRED_LIBRARIES})
    ENDIF(APPLE)
    check_library_exists("${SPATIALITE_LIBRARY}" gaiaDropTable "" SPATIALITE_VERSION_GE_4_0_0)
    check_library_exists("${SPATIALITE_LIBRARY}" gaiaStatisticsInvalidate "" SPATIALITE_VERSION_G_4_1_1)
@@ -75,7 +77,7 @@ IF (SPATIALITE_FOUND)
 ELSE (SPATIALITE_FOUND)
 
    IF (SPATIALITE_FIND_REQUIRED)
-      MESSAGE(FATAL_ERROR "Could not find SpatiaLite")
+     MESSAGE(FATAL_ERROR "Could not find SpatiaLite. Include: ${SPATIALITE_INCLUDE_DIR} Library: ${SPATIALITE_LIBRARY}")
    ENDIF (SPATIALITE_FIND_REQUIRED)
 
 ENDIF (SPATIALITE_FOUND)

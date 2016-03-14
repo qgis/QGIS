@@ -59,11 +59,14 @@ void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
 
   w->setEditorContext( myContext );
 
+  QgsRelation nmrel = QgsProject::instance()->relationManager()->relation( config( "nm-rel" ).toString() );
+
   // If this widget is already embedded by the same relation, reduce functionality
   const QgsAttributeEditorContext* ctx = &context();
   do
   {
-    if ( ctx->relation().name() == mRelation.name() && ctx->formMode() == QgsAttributeEditorContext::Embed )
+    if (( ctx->relation().name() == mRelation.name() && ctx->formMode() == QgsAttributeEditorContext::Embed )
+        || ctx->relation().name() == nmrel.name() )
     {
       w->setVisible( false );
       break;
@@ -72,7 +75,6 @@ void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
   }
   while ( ctx );
 
-  QgsRelation nmrel = QgsProject::instance()->relationManager()->relation( config( "nm-rel" ).toString() );
 
   w->setRelations( mRelation, nmrel );
 
