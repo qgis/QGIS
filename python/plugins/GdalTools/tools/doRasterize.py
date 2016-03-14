@@ -58,11 +58,11 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             ([self.horizresSpin, self.vertresSpin], SIGNAL("valueChanged(double)"))
         ])
 
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
-        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
-        self.connect(self.inSelector, SIGNAL("layerChanged()"), self.fillFieldsCombo)
-        self.connect(self.radioSetSize, SIGNAL("toggled(bool)"), self.someValueChanged)
-        self.connect(self.radioSetResolution, SIGNAL("toggled(bool)"), self.someValueChanged)
+        self.inSelector.selectClicked.connect(self.fillInputFileEdit)
+        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
+        self.inSelector.layerChanged.connect(self.fillFieldsCombo)
+        self.radioSetSize.toggled.connect(self.someValueChanged)
+        self.radioSetResolution.toggled.connect(self.someValueChanged)
 
     def onLayersChanged(self):
         self.inSelector.setLayers(Utils.LayerRegistry.instance().getVectorLayers())

@@ -57,10 +57,10 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
             (self.desiredSRSEdit, SIGNAL("textChanged( const QString & )"))
         ])
 
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
-        self.connect(self.selectDesiredSRSButton, SIGNAL("clicked()"), self.fillDesiredSRSEdit)
-        self.connect(self.batchCheck, SIGNAL("stateChanged( int )"), self.switchToolMode)
-        self.connect(self.recurseCheck, SIGNAL("stateChanged( int )"), self.enableRecurse)
+        self.inSelector.selectClicked.connect(self.fillInputFileEdit)
+        self.selectDesiredSRSButton.clicked.connect(self.fillDesiredSRSEdit)
+        self.batchCheck.stateChanged.connect(self.switchToolMode)
+        self.recurseCheck.stateChanged.connect(self.enableRecurse)
 
     def switchToolMode(self):
         self.setCommandViewerEnabled(not self.batchCheck.isChecked())
@@ -73,13 +73,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
             self.inFileLabel = self.label.text()
             self.label.setText(QCoreApplication.translate("GdalTools", "&Input directory"))
 
-            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
-            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
+            self.inSelector.selectClicked.disconnect(self.fillInputFileEdit)
+            self.inSelector.selectClicked.connect(self.fillInputDir)
         else:
             self.label.setText(self.inFileLabel)
 
-            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
-            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
+            self.inSelector.selectClicked.connect(self.fillInputFileEdit)
+            self.inSelector.selectClicked.disconnect(self.fillInputDir)
 
     def enableRecurse(self):
         if self.recurseCheck.isChecked():

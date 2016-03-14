@@ -112,8 +112,8 @@ class CalculatorModelerParametersDialog(ModelerParametersDialog):
         self.verticalLayout.addWidget(self.formulaText)
         self.verticalLayout.addWidget(self.buttonBox)
         self.setLayout(self.verticalLayout)
-        QObject.connect(self.buttonBox, SIGNAL('accepted()'), self.okPressed)
-        QObject.connect(self.buttonBox, SIGNAL('rejected()'), self.cancelPressed)
+        self.buttonBox.accepted.connect(self.okPressed)
+        self.buttonBox.rejected.connect(self.cancelPressed)
         QMetaObject.connectSlotsByName(self)
 
     def createAlgorithm(self):

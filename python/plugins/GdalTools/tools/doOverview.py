@@ -56,8 +56,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
             (self.mPyramidOptionsWidget, SIGNAL("someValueChanged()"))
         ])
 
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
-        self.connect(self.batchCheck, SIGNAL("stateChanged( int )"), self.switchToolMode)
+        self.inSelector.selectClicked.connect(self.fillInputFile)
+        self.batchCheck.stateChanged.connect(self.switchToolMode)
 
         self.init = False  # workaround bug that pyramid options widgets are not initialized at first
 
@@ -77,13 +77,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
             self.inFileLabel = self.label.text()
             self.label.setText(QCoreApplication.translate("GdalTools", "&Input directory"))
 
-            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
-            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
+            self.inSelector.selectClicked.disconnect(self.fillInputFile)
+            self.inSelector.selectClicked.connect(self.fillInputDir)
         else:
             self.label.setText(self.inFileLabel)
 
-            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
-            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
+            self.inSelector.selectClicked.disconnect(self.fillInputDir)
+            self.inSelector.selectClicked.connect(self.fillInputFile)
 
     def onLayersChanged(self):
         self.inSelector.setLayers(Utils.LayerRegistry.instance().getRasterLayers())

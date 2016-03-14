@@ -234,7 +234,7 @@ class PGTable(Table):
         else:
             ret = self.database().connector.deleteTable((self.schemaName(), self.name))
         if ret is not False:
-            self.emit(SIGNAL('deleted'))
+            self.deleted.emit()
         return ret
 
 

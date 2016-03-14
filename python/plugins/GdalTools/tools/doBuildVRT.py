@@ -62,22 +62,22 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             ]
         )
 
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFilesEdit)
-        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
-        self.connect(self.inputDirCheck, SIGNAL("stateChanged( int )"), self.switchToolMode)
-        self.connect(self.inputSelLayersCheck, SIGNAL("stateChanged( int )"), self.switchLayerMode)
-        self.connect(self.iface.mapCanvas(), SIGNAL("stateChanged( int )"), self.switchLayerMode)
-        self.connect(self.selectTargetSRSButton, SIGNAL("clicked()"), self.fillTargetSRSEdit)
+        self.inSelector.selectClicked.connect(self.fillInputFilesEdit)
+        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
+        self.inputDirCheck.stateChanged.connect(self.switchToolMode)
+        self.inputSelLayersCheck.stateChanged.connect(self.switchLayerMode)
+        self.iface.mapCanvas().stateChanged.connect(self.switchLayerMode)
+        self.selectTargetSRSButton.clicked.connect(self.fillTargetSRSEdit)
 
     def initialize(self):
         # connect to mapCanvas.layerChanged() signal
-        self.connect(self.iface.mapCanvas(), SIGNAL("layersChanged()"), self.onVisibleLayersChanged)
+        self.iface.mapCanvas().layersChanged.connect(self.onVisibleLayersChanged)
         self.onVisibleLayersChanged()
         BasePluginWidget.initialize(self)
 
     def onClosing(self):
         # disconnect from mapCanvas.layerChanged() signal
-        self.disconnect(self.iface.mapCanvas(), SIGNAL("layersChanged()"), self.onVisibleLayersChanged)
+        self.iface.mapCanvas().layersChanged.disconnect(self.onVisibleLayersChanged)
         BasePluginWidget.onClosing(self)
 
     def onVisibleLayersChanged(self):
@@ -98,13 +98,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             self.inFileLabel = self.label.text()
             self.label.setText(QCoreApplication.translate("GdalTools", "&Input directory"))
 
-            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFilesEdit)
-            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
+            self.inSelector.selectClicked.disconnect(self.fillInputFilesEdit)
+            self.inSelector.selectClicked.connect(self.fillInputDir)
         else:
             self.label.setText(self.inFileLabel)
 
-            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFilesEdit)
-            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
+            self.inSelector.selectClicked.connect(self.fillInputFilesEdit)
+            self.inSelector.selectClicked.disconnect(self.fillInputDir)
 
     def switchLayerMode(self):
         enableInputFiles = not self.inputSelLayersCheck.isChecked()

@@ -41,8 +41,7 @@ class ORTableDataModel(TableDataModel):
         if not self.table.rowCount:
             self.table.refreshRowCount()
 
-        self.connect(self.table, SIGNAL("aboutToChange"),
-                     self._deleteCursor)
+        self.table.aboutToChange.connect(self._deleteCursor)
         self._createCursor()
 
     def _createCursor(self):
@@ -86,8 +85,7 @@ class ORTableDataModel(TableDataModel):
         self.cursor = None
 
     def __del__(self):
-        self.disconnect(
-            self.table, SIGNAL("aboutToChange"), self._deleteCursor)
+        self.table.aboutToChange.disconnect(self._deleteCursor)
         self._deleteCursor()
 
     def getData(self, row, col):

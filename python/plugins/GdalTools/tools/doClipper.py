@@ -62,14 +62,14 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             (self.modeStackedWidget, SIGNAL("currentIndexChanged(int)"))
         ])
 
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
-        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
-        self.connect(self.maskSelector, SIGNAL("selectClicked()"), self.fillMaskFileEdit)
-        self.connect(self.extentSelector, SIGNAL("newExtentDefined()"), self.extentChanged)
-        self.connect(self.extentSelector, SIGNAL("selectionStarted()"), self.checkRun)
+        self.inSelector.selectClicked.connect(self.fillInputFileEdit)
+        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
+        self.maskSelector.selectClicked.connect(self.fillMaskFileEdit)
+        self.extentSelector.newExtentDefined.connect(self.extentChanged)
+        self.extentSelector.selectionStarted.connect(self.checkRun)
 
-        self.connect(self.extentModeRadio, SIGNAL("toggled(bool)"), self.switchClippingMode)
-        self.connect(self.keepResolutionRadio, SIGNAL("toggled(bool)"), self.switchResolutionMode)
+        self.extentModeRadio.toggled.connect(self.switchClippingMode)
+        self.keepResolutionRadio.toggled.connect(self.switchResolutionMode)
 
     def show_(self):
         self.switchClippingMode()

@@ -54,7 +54,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
         self.editSourceSrid.setText("%s" % srid)
         self.editTargetSrid.setText("%s" % srid)
 
-        QObject.connect(self.btnChooseOutputFile, SIGNAL("clicked()"), self.chooseOutputFile)
+        self.btnChooseOutputFile.clicked.connect(self.chooseOutputFile)
         self.checkSupports()
 
     def checkSupports(self):

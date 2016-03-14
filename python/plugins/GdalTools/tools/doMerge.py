@@ -62,11 +62,11 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             (self.creationOptionsGroupBox, SIGNAL("toggled(bool)"))
         ])
 
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFilesEdit)
-        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
-        self.connect(self.intersectCheck, SIGNAL("toggled(bool)"), self.refreshExtent)
-        self.connect(self.inputDirCheck, SIGNAL("stateChanged( int )"), self.switchToolMode)
-        self.connect(self.inSelector, SIGNAL("filenameChanged()"), self.refreshExtent)
+        self.inSelector.selectClicked.connect(self.fillInputFilesEdit)
+        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
+        self.intersectCheck.toggled.connect(self.refreshExtent)
+        self.inputDirCheck.stateChanged.connect(self.switchToolMode)
+        self.inSelector.filenameChanged.connect(self.refreshExtent)
 
     def switchToolMode(self):
         self.recurseCheck.setVisible(self.inputDirCheck.isChecked())
@@ -76,13 +76,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             self.inFileLabel = self.label.text()
             self.label.setText(QCoreApplication.translate("GdalTools", "&Input directory"))
 
-            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFilesEdit)
-            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
+            self.inSelector.selectClicked.disconnect(self.fillInputFilesEdit)
+            self.inSelector.selectClicked.connect(self.fillInputDir)
         else:
             self.label.setText(self.inFileLabel)
 
-            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFilesEdit)
-            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
+            self.inSelector.selectClicked.connect(self.fillInputFilesEdit)
+            self.inSelector.selectClicked.disconnect(self.fillInputDir)
 
     def fillInputFilesEdit(self):
         lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()

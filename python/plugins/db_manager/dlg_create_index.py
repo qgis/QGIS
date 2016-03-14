@@ -40,9 +40,9 @@ class DlgCreateIndex(QDialog, Ui_Dialog):
         self.db = self.table.database() if self.table and self.table.database() else db
         self.setupUi(self)
 
-        self.connect(self.buttonBox, SIGNAL("accepted()"), self.createIndex)
+        self.buttonBox.accepted.connect(self.createIndex)
 
-        self.connect(self.cboColumn, SIGNAL("currentIndexChanged(int)"), self.columnChanged)
+        self.cboColumn.currentIndexChanged.connect(self.columnChanged)
         self.populateColumns()
 
     def populateColumns(self):

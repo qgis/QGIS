@@ -69,13 +69,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
             (self.maskSelector, SIGNAL("filenameChanged()"), self.maskCheck, 1600),
         ])
 
-        self.connect(self.inSelector, SIGNAL("layerChanged()"), self.fillSourceSRSEditDefault)
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
-        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
-        self.connect(self.selectSourceSRSButton, SIGNAL("clicked()"), self.fillSourceSRSEdit)
-        self.connect(self.selectTargetSRSButton, SIGNAL("clicked()"), self.fillTargetSRSEdit)
-        self.connect(self.maskSelector, SIGNAL("selectClicked()"), self.fillMaskFile)
-        self.connect(self.batchCheck, SIGNAL("stateChanged( int )"), self.switchToolMode)
+        self.inSelector.layerChanged.connect(self.fillSourceSRSEditDefault)
+        self.inSelector.selectClicked.connect(self.fillInputFile)
+        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
+        self.selectSourceSRSButton.clicked.connect(self.fillSourceSRSEdit)
+        self.selectTargetSRSButton.clicked.connect(self.fillTargetSRSEdit)
+        self.maskSelector.selectClicked.connect(self.fillMaskFile)
+        self.batchCheck.stateChanged.connect(self.switchToolMode)
 
     # switch to batch or normal mode
     def switchToolMode(self):
@@ -91,20 +91,20 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
             self.label.setText(QCoreApplication.translate("GdalTools", "&Input directory"))
             self.label_2.setText(QCoreApplication.translate("GdalTools", "&Output directory"))
 
-            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
-            QObject.disconnect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
+            self.inSelector.selectClicked.disconnect(self.fillInputFile)
+            self.outSelector.selectClicked.disconnect(self.fillOutputFileEdit)
 
-            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
-            QObject.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputDir)
+            self.inSelector.selectClicked.connect(self.fillInputDir)
+            self.outSelector.selectClicked.connect(self.fillOutputDir)
         else:
             self.label.setText(self.inFileLabel)
             self.label_2.setText(self.outFileLabel)
 
-            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
-            QObject.disconnect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputDir)
+            self.inSelector.selectClicked.disconnect(self.fillInputDir)
+            self.outSelector.selectClicked.disconnect(self.fillOutputDir)
 
-            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
-            QObject.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
+            self.inSelector.selectClicked.connect(self.fillInputFile)
+            self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
 
     def onLayersChanged(self):
         self.inSelector.setLayers(Utils.LayerRegistry.instance().getRasterLayers())

@@ -41,7 +41,7 @@ class TableViewer(QTableView):
         copyAction = QAction(QApplication.translate("DBManagerPlugin", "Copy"), self)
         self.addAction(copyAction)
         copyAction.setShortcuts(QKeySequence.Copy)
-        QObject.connect(copyAction, SIGNAL("triggered()"), self.copySelectedResults)
+        copyAction.triggered.connect(self.copySelectedResults)
 
         self._clear()
 
@@ -62,7 +62,7 @@ class TableViewer(QTableView):
             return
 
         self.item = item
-        self.connect(self.item, SIGNAL('aboutToChange'), self.setDirty)
+        self.item.aboutToChange.connect(self.setDirty)
 
     def setDirty(self, val=True):
         self.dirty = val
@@ -70,7 +70,7 @@ class TableViewer(QTableView):
     def _clear(self):
         if self.item is not None:
             try:
-                self.disconnect(self.item, SIGNAL('aboutToChange'), self.setDirty)
+                self.item.aboutToChange.disconnect(self.setDirty)
             except:
                 # do not raise any error if self.item was deleted
                 pass

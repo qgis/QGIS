@@ -44,7 +44,7 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
             self.cboType.addItem(item)
         self.setField(self.fld)
 
-        self.connect(self.buttonBox, SIGNAL("accepted()"), self.onOK)
+        self.buttonBox.accepted.connect(self.onOK)
 
     def setField(self, fld):
         if fld is None:
