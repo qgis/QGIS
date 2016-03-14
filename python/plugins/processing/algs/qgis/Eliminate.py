@@ -240,7 +240,7 @@ class Eliminate(GeoAlgorithm):
             # Iterate over the polygons to eliminate
             for i in range(len(featToEliminate)):
                 feat = featToEliminate.pop()
-                geom2Eliminate = feat.geometry()
+                geom2Eliminate = QgsGeometry(feat.geometry())
                 bbox = geom2Eliminate.boundingBox()
                 fit = inLayer.getFeatures(
                     QgsFeatureRequest().setFilterRect(bbox))
@@ -251,7 +251,7 @@ class Eliminate(GeoAlgorithm):
                 selFeat = QgsFeature()
 
                 while fit.nextFeature(selFeat):
-                    selGeom = selFeat.geometry()
+                    selGeom = QgsGeometry(selFeat.geometry())
 
                     if geom2Eliminate.intersects(selGeom):
                         # We have a candidate
