@@ -159,8 +159,8 @@ class TestQgsDiagram : public QObject
       mPointsLayer->setDiagramRenderer( dr );
 
       QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
-      dls.placement = QgsDiagramLayerSettings::OverPoint;
-      dls.showAll = true;
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
       mPointsLayer->setDiagramLayerSettings( dls );
 
       QVERIFY( imageCheck( "piediagram" ) );
@@ -196,8 +196,8 @@ class TestQgsDiagram : public QObject
       dr->setDiagramSettings( ds );
 
       QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
-      dls.placement = QgsDiagramLayerSettings::OverPoint;
-      dls.showAll = true;
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
       // dls.setRenderer( dr );
 
       mPointsLayer->setDiagramRenderer( dr );
