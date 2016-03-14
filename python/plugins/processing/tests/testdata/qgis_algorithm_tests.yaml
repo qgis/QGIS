@@ -122,3 +122,57 @@ tests:
         compare:
           geometry:
             precision: 7
+
+  # Eliminate sliver polygons
+  # case 1: merge with largest area
+  - algorithm: qgis:eliminatesliverpolygons
+    name: Eliminate sliver polygons largest area
+    params:
+      ATTRIBUTE: '"fid"'
+      COMPARISON: '0'
+      COMPARISONVALUE: '"polys.5"'
+      INPUT:
+        name: polys.shp
+        type: vector
+      KEEPSELECTION: 'False'
+      MODE: '0'
+    results:
+      OUTPUT:
+        name: expected/eliminate_largest_area.gml
+        type: vector
+
+  # case 2: merge with smallest area
+  - algorithm: qgis:eliminatesliverpolygons
+    name: Eliminate sliver polygons smallest area
+    params:
+      ATTRIBUTE: '"fid"'
+      COMPARISON: '0'
+      COMPARISONVALUE: '"polys.5"'
+      INPUT:
+        name: polys.shp
+        type: vector
+      KEEPSELECTION: 'False'
+      MODE: '1'
+    results:
+      OUTPUT:
+        name: expected/eliminate_smallest_area.gml
+        type: vector
+
+  # case 3: merge with longest common boundary
+  - algorithm: qgis:eliminatesliverpolygons
+    name: Eliminate sliver polygons largest area
+    params:
+      ATTRIBUTE: '"fid"'
+      COMPARISON: '0'
+      COMPARISONVALUE: '"polys.5"'
+      INPUT:
+        name: polys.shp
+        type: vector
+      KEEPSELECTION: 'False'
+      MODE: '2'
+    results:
+      OUTPUT:
+        name: expected/eliminate_largest_area.gml
+        type: vector
+
+
