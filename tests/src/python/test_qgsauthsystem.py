@@ -21,10 +21,9 @@ import time
 from qgis.core import *
 from qgis.gui import *
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.QtNetwork import *
-from PyQt4.QtTest import *
+from PyQt4.QtCore import QFileInfo, qDebug
+from PyQt4.QtGui import QDialog, QVBoxLayout, QDialogButtonBox
+from PyQt4.QtTest import QTest
 
 from qgis.testing import (
     start_app,

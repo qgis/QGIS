@@ -26,7 +26,7 @@ __copyright__ = '(C) 2015, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.core import *
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QWidget, QVBoxLayout, QPushButton, QLabel, QPlainTextEdit, QLineEdit, QComboBox, QCheckBox
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.ParametersPanel import ParametersPanel

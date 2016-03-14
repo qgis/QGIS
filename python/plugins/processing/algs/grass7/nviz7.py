@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import time
 
-from PyQt4 import QtGui
+from PyQt4.QtGui import QIcon
 from qgis.core import QgsRasterLayer
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -57,7 +57,7 @@ class nviz7(GeoAlgorithm):
         self.showInModeler = False
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.join(pluginPath, 'images', 'grass.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'grass.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('nviz7')

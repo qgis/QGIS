@@ -1,6 +1,6 @@
 from processing.core.Processing import Processing
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from PyQt4.Qt import QAction, QMenu
+from PyQt4.QtGui import QAction, QMenu
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from qgis.utils import iface
