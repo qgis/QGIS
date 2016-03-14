@@ -31,7 +31,6 @@ SET ( qgis_mapserv_SRCS
   qgswcsserver.cpp
   qgsmapserviceexception.cpp
   qgsmslayercache.cpp
-  qgsftptransaction.cpp
   qgsmslayerbuilder.cpp
   qgshostedvdsbuilder.cpp
   qgsinterpolationlayerbuilder.cpp
@@ -50,20 +49,31 @@ SET ( qgis_mapserv_SRCS
   qgssldconfigparser.cpp
   qgsconfigparserutils.cpp
   qgsserver.cpp
+)
+IF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
+  SET (qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
+    qgsftptransaction.cpp
   )
+ENDIF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
+
 
 # SET (qgis_mapserv_UIS
 # none used
 # )
 
 SET (qgis_mapserv_MOC_HDRS
-  qgsftptransaction.h
   qgscapabilitiescache.h
   qgsconfigcache.h
   qgsmslayercache.h
   qgsserverlogger.h
   qgsserverstreamingdevice.h
 )
+
+IF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
+  SET (qgis_mapserv_MOC_HDRS ${qgis_mapserv_MOC_HDRS}
+    qgsftptransaction.h
+  )
+ENDIF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
 
 SET (qgis_mapserv_RCCS
   # not used

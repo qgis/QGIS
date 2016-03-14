@@ -34,6 +34,7 @@ cmake \
       -DWITH_QTWEBKIT=OFF \
       -DWITH_APIDOC=ON \
       -DWITH_ASTYLE=ON \
+      -DWITH_SERVER=ON \
       -DENABLE_QT5=ON \
       -DCXX_EXTRA_FLAGS="$CLANG_WARNINGS" \
       -DPYTHON_LIBRARY=/usr/lib/libpython3.2mu.so \
