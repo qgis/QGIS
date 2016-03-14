@@ -16,6 +16,10 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Dobias'
 __date__ = 'November 2009'
@@ -28,8 +32,8 @@ QGIS utilities module
 
 """
 
-from PyQt4.QtCore import QCoreApplication, QLocale
-from PyQt4.QtGui import QPushButton, QApplication
+from PyQt.QtCore import QCoreApplication, QLocale
+from PyQt.QtWidgets import QPushButton, QApplication
 from qgis.core import QGis, QgsExpression, QgsMessageLog, qgsfunction, QgsMessageOutput
 from qgis.gui import QgsMessageBar
 
@@ -37,7 +41,10 @@ import sys
 import traceback
 import glob
 import os.path
-import ConfigParser
+try:
+    import ConfigParser
+except ImportError:
+    import configparser
 import warnings
 import codecs
 import time
@@ -237,7 +244,7 @@ def findPlugins(path):
         if not os.path.exists(metadataFile):
             continue
 
-        cp = ConfigParser.ConfigParser()
+        cp = configparser.ConfigParser()
 
         try:
             f = codecs.open(metadataFile, "r", "utf8")
@@ -476,7 +483,7 @@ def reloadProjectMacros():
     mod = imp.new_module("proj_macros_mod")
 
     # set the module code and store it sys.modules
-    exec(unicode(code), mod.__dict__)
+    exec(str(code), mod.__dict__)
     sys.modules["proj_macros_mod"] = mod
 
     # load new macros
@@ -574,9 +581,15 @@ def startServerPlugin(packageName):
 #######################
 # IMPORT wrapper
 
-import __builtin__
+try:
+    import builtins
 
-_builtin_import = __builtin__.__import__
+    _builtin_import = builtins.__import__
+except AttributeError:
+    import __builtin__
+
+    _builtin_import = __builtin__.__import__
+
 _plugin_modules = {}
 
 
@@ -603,5 +616,7 @@ def _import(name, globals={}, locals={}, fromlist=[], level=None):
 
     return mod
 
-
-__builtin__.__import__ = _import
+try:
+    builtins.__import__ = _import
+except AttributeError:
+    __builtin__.__import__ = _import
