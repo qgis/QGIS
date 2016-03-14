@@ -14,6 +14,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
+import qgis
+
 from PyQt4.QtCore import QFileInfo, QDir
 from PyQt4.QtXml import QDomDocument
 

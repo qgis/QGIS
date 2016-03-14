@@ -24,6 +24,7 @@ __copyright__ = '(C) 2015, Matthias Kuhn'
 __revision__ = '$Format:%H$'
 
 import os
+import qgis
 
 from PyQt.QtCore import QSize
 

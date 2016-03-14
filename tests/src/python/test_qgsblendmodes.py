@@ -24,6 +24,7 @@ __copyright__ = '(C) 2013, Nyall Dawson, Massimo Endrighi'
 __revision__ = '$Format:%H$'
 
 import os
+import qgis
 
 from PyQt4.QtCore import QSize
 from PyQt4.QtGui import QPainter, QColor
