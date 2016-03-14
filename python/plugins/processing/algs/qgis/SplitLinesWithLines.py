@@ -130,8 +130,8 @@ class SplitLinesWithLines(GeoAlgorithm):
 
             for aLine in inLines:
                 if len(aLine.asPolyline()) > 2 or \
-                        (len(aLine.asPolyline()) == 2 and \
-                        aLine.asPolyline()[0] != aLine.asPolyline()[1]):
+                        (len(aLine.asPolyline()) == 2 and
+                         aLine.asPolyline()[0] != aLine.asPolyline()[1]):
                     # sometimes splitting results in lines of zero length
                     outFeat.setGeometry(aLine)
                     writer.addFeature(outFeat)
