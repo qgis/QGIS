@@ -1403,7 +1403,7 @@ QList<QDomElement> QgsServerProjectParser::publishedComposerElements() const
   QDomElement wmsRestrictedComposersElem = propertiesElem.firstChildElement( "WMSRestrictedComposers" );
   if ( wmsRestrictedComposersElem.isNull() )
   {
-    for ( unsigned int i = 0; i < composerNodeList.length(); ++i )
+    for ( int i = 0; i < composerNodeList.count(); ++i )
     {
       composerElemList.push_back( composerNodeList.at( i ).toElement() );
     }
