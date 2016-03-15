@@ -153,7 +153,17 @@ def createTest(text):
 
             params[param.name] = p
         else:
-            params[param.name] = token
+            try:
+                params[param.name] = int(token)
+            except ValueError:
+                try:
+                    params[param.name] = float(token)
+                except ValueError:
+                    if token[0] == '"':
+                        token = token[1:]
+                    if token[-1] == '"':
+                        token = token[:-1]
+                    params[param.name] = token
 
     definition['params'] = params
 
