@@ -119,7 +119,9 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
   mTilesGroupBox->hide();
 
   mCrsSelector->setLayerCrs( mLayerCrs );
-  mCrsSelector->setCrs( mCurrentCrs );
+  //default to layer CRS - see http://hub.qgis.org/issues/14209 for discussion
+  mCrsSelector->setCrs( mLayerCrs );
+
   connect( mCrsSelector, SIGNAL( crsChanged( QgsCoordinateReferenceSystem ) ),
            this, SLOT( crsChanged() ) );
 
