@@ -26,9 +26,7 @@ from .plugin import LVectorTable
 from ..plugin import DbError
 
 from PyQt4.QtCore import QUrl, QTime, QTemporaryFile
-from qgis.core import QgsProviderRegistry, QgsErrorMessage, QGis, QgsVectorLayer
-
-import os
+from qgis.core import QGis, QgsVectorLayer, QgsWKBTypes
 
 
 class LTableDataModel(TableDataModel):
@@ -48,7 +46,13 @@ class LTableDataModel(TableDataModel):
         # populate self.resdata
         self.resdata = []
         for f in self.layer.getFeatures():
-            self.resdata.append(f.attributes())
+            a = f.attributes()
+            # add the geometry type
+            if f.geometry():
+                a.append(QgsWKBTypes.displayString(QGis.fromOldWkbType(f.geometry().wkbType())))
+            else:
+                a.append('None')
+            self.resdata.append(a)
 
         self.fetchedFrom = 0
         self.fetchedCount = len(self.resdata)
