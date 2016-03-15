@@ -47,7 +47,7 @@ except ImportError:
         'pyqt_version': PyQt5.QtCore.PYQT_VERSION,
         'pyqt_version_str': PyQt5.QtCore.PYQT_VERSION_STR,
         'pyqt_sip_flags': PyQt5.QtCore.PYQT_CONFIGURATION['sip_flags'],
-        'pyqt_mod_dir': cfg.default_mod_dir,
+        'pyqt_mod_dir': os.path.join(cfg.default_mod_dir, "PyQt5"),
         'pyqt_sip_dir': sip_dir,
         'pyqt_bin_dir': cfg.default_bin_dir,
     }
