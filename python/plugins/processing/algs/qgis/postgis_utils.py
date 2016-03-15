@@ -724,7 +724,7 @@ class GeoDB:
             if x is not None:
                 srtext = x.group()
             return srtext
-        except DbError as e:
+        except DbError:
             return 'Unknown'
 
     def insert_table_row(self, table, values, schema=None, cursor=None):
@@ -762,7 +762,7 @@ class GeoDB:
             c = self.con.cursor()
             self._exec_sql(c, sql)
             self.con.commit()
-        except DbError as e:
+        except DbError:
             self.con.rollback()
             raise
 

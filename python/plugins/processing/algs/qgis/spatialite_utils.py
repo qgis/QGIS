@@ -95,7 +95,7 @@ class GeoDB:
             v = c.fetchone()[0]
             self.has_geometry_columns = v == 1 or v == 3
             self.has_spatialite4 = v == 3
-        except Exception as e:
+        except Exception:
             self.has_geometry_columns = False
             self.has_spatialite4 = False
 
@@ -117,6 +117,6 @@ class GeoDB:
             c = self.con.cursor()
             self._exec_sql(c, sql)
             self.con.commit()
-        except DbError as e:
+        except DbError:
             self.con.rollback()
             raise

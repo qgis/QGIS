@@ -36,8 +36,6 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.outputs import OutputVector
 
-from processing.tools import dataobjects, vector
-
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 

@@ -26,7 +26,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-import math
 import codecs
 
 from PyQt4.QtGui import QIcon
@@ -121,7 +120,6 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         nullValues = 0
         iqr = 0
 
-        isFirst = True
         values = []
 
         features = vector.features(layer)
