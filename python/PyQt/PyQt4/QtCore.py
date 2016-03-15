@@ -23,6 +23,16 @@ __copyright__ = '(C) 2015, Matthias Kuhn'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import sip
+
+try:
+    apis = ["QDate", "QDateTime", "QString", "QTextStream", "QTime", "QUrl", "QVariant"]
+    for api in apis:
+        sip.setapi(api, 2)
+except ValueError:
+    # API has already been set so we can't set it again.
+    pass
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import QItemSelectionModel, QSortFilterProxyModel
 
