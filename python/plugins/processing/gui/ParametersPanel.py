@@ -439,6 +439,8 @@ class ParametersPanel(BASE, WIDGET):
         if sender.name not in self.dependentItems:
             return
         layer = sender.itemData(sender.currentIndex())
+        if not layer:
+            return
         children = self.dependentItems[sender.name]
         for child in children:
             widget = self.valueItems[child]
