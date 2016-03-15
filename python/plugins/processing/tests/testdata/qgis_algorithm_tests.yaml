@@ -122,3 +122,14 @@ tests:
         compare:
           geometry:
             precision: 7
+  - algorithm: qgis:addautoincrementalfield
+    name: Add autoincremental field
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/autoincrement_field.gml
+        type: vector
+
