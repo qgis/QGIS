@@ -139,9 +139,9 @@ tests:
   - algorithm: qgis:eliminatesliverpolygons
     name: Eliminate sliver polygons largest area
     params:
-      ATTRIBUTE: '"fid"'
+      ATTRIBUTE: 'fid'
       COMPARISON: '0'
-      COMPARISONVALUE: '"polys.5"'
+      COMPARISONVALUE: 'polys.5'
       INPUT:
         name: polys.shp
         type: vector
@@ -156,9 +156,9 @@ tests:
   - algorithm: qgis:eliminatesliverpolygons
     name: Eliminate sliver polygons smallest area
     params:
-      ATTRIBUTE: '"fid"'
+      ATTRIBUTE: 'fid'
       COMPARISON: '0'
-      COMPARISONVALUE: '"polys.5"'
+      COMPARISONVALUE: 'polys.5'
       INPUT:
         name: polys.shp
         type: vector
@@ -173,9 +173,9 @@ tests:
   - algorithm: qgis:eliminatesliverpolygons
     name: Eliminate sliver polygons largest area
     params:
-      ATTRIBUTE: '"fid"'
+      ATTRIBUTE: 'fid'
       COMPARISON: '0'
-      COMPARISONVALUE: '"polys.5"'
+      COMPARISONVALUE: 'polys.5'
       INPUT:
         name: polys.shp
         type: vector
