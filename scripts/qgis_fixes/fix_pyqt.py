@@ -298,6 +298,7 @@ MAPPING = {
             "QPoint",
             "QPointF",
             "QDirIterator",
+            "NULL",
         ]),
         (None, [
             "SIGNAL",
@@ -517,6 +518,8 @@ class FixPyqt(FixImports):
                 node.replace(nodes)
             elif missing:
                 self.cannot_convert(node, "All module elements are invalid")
+            else:
+                node.remove()
 
     def transform_dot(self, node, results):
         """Transform for calls to module members in code."""
