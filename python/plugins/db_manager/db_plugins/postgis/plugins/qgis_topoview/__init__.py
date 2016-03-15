@@ -21,7 +21,8 @@ Based on qgis_pgis_topoview by Sandro Santilli <strk@keybit.net>
  ***************************************************************************/
 """
 
-from PyQt4.QtGui import QAction, QIcon
+from PyQt.QtWidgets import QAction
+from PyQt.QtGui import QIcon
 from qgis.core import QgsMapLayerRegistry, QgsVectorLayer, QGis
 from qgis.gui import QgsMessageBar
 

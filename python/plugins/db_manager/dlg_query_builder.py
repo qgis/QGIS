@@ -21,8 +21,8 @@ email                : hugo dot mercier at oslandia dot com
 Query builder dialog, based on the QSpatialite plugin (GPLv2+) by Romain Riviere
 """
 
-from PyQt4.QtCore import QObject, QEvent, SIGNAL
-from PyQt4.QtGui import QDialog, QMessageBox, QTextEdit
+from PyQt.QtCore import QObject, QEvent
+from PyQt.QtWidgets import QDialog, QMessageBox, QTextEdit
 
 from .ui.ui_DlgQueryBuilder import Ui_DbManagerQueryBuilderDlg as Ui_Dialog
 from .db_plugins.plugin import VectorTable
@@ -100,20 +100,20 @@ class QueryBuilderDlg(QDialog):
         self.show_tables()
 
         #Signal/slot
-        QObject.connect(self.ui.aggregates, SIGNAL("currentIndexChanged(const QString&)"), self.add_aggregate)
-        QObject.connect(self.ui.stringfct, SIGNAL("currentIndexChanged(const QString&)"), self.add_stringfct)
-        QObject.connect(self.ui.operators, SIGNAL("currentIndexChanged(const QString&)"), self.add_operators)
-        QObject.connect(self.ui.functions, SIGNAL("currentIndexChanged(const QString&)"), self.add_functions)
-        QObject.connect(self.ui.math, SIGNAL("currentIndexChanged(const QString&)"), self.add_math)
-        QObject.connect(self.ui.tables, SIGNAL("currentIndexChanged(const QString&)"), self.add_tables)
-        QObject.connect(self.ui.tables, SIGNAL("currentIndexChanged(const QString&)"), self.list_cols)
-        QObject.connect(self.ui.columns, SIGNAL("currentIndexChanged(const QString&)"), self.add_columns)
-        QObject.connect(self.ui.columns_2, SIGNAL("currentIndexChanged(const QString&)"), self.list_values)
-        QObject.connect(self.ui.reset, SIGNAL("clicked(bool)"), self.reset)
-        QObject.connect(self.ui.extract, SIGNAL("stateChanged(int)"), self.list_values)
-        QObject.connect(self.ui.values, SIGNAL("doubleClicked(const QModelIndex &)"), self.query_item)
-        QObject.connect(self.ui.buttonBox, SIGNAL("accepted()"), self.validate)
-        QObject.connect(self.ui.checkBox, SIGNAL("stateChanged(int)"), self.show_tables)
+        self.ui.aggregates.currentIndexChanged.connect(self.add_aggregate)
+        self.ui.stringfct.currentIndexChanged.connect(self.add_stringfct)
+        self.ui.operators.currentIndexChanged.connect(self.add_operators)
+        self.ui.functions.currentIndexChanged.connect(self.add_functions)
+        self.ui.math.currentIndexChanged.connect(self.add_math)
+        self.ui.tables.currentIndexChanged.connect(self.add_tables)
+        self.ui.tables.currentIndexChanged.connect(self.list_cols)
+        self.ui.columns.currentIndexChanged.connect(self.add_columns)
+        self.ui.columns_2.currentIndexChanged.connect(self.list_values)
+        self.ui.reset.clicked.connect(self.reset)
+        self.ui.extract.stateChanged.connect(self.list_values)
+        self.ui.values.doubleClicked.connect(self.query_item)
+        self.ui.buttonBox.accepted.connect(self.validate)
+        self.ui.checkBox.stateChanged.connect(self.show_tables)
 
         if self.db.explicitSpatialIndex():
             self.tablesGeo = [table for table in self.tables if isinstance(table, VectorTable)]
@@ -123,7 +123,7 @@ class QueryBuilderDlg(QDialog):
             idxTables = ['"%s"."%s"' % (table.name, table.geomColumn) for table in self.idxTables]
             self.ui.table_idx.insertItems(1, idxTables)
 
-            QObject.connect(self.ui.usertree, SIGNAL("clicked(bool)"), self.use_rtree)
+            self.ui.usertree.clicked.connect(self.use_rtree)
         else:
             self.ui.toolBox.setItemEnabled(2, False)
 

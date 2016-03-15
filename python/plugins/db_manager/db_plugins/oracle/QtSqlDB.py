@@ -20,7 +20,7 @@ email                : jef at norbit dot de
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import QVariant, QDate, QTime, QDateTime, QByteArray
+from PyQt.QtCore import QVariant, QDate, QTime, QDateTime, QByteArray
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery, QSqlField
 
 paramstyle = "qmark"

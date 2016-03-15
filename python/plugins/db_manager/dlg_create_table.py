@@ -22,9 +22,9 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import Qt, SIGNAL, QModelIndex
-from PyQt4.QtGui import QItemDelegate, QComboBox, QDialog, QPushButton, QDialogButtonBox, QItemSelectionModel, \
-    QMessageBox, QApplication
+from PyQt.QtCore import Qt, QModelIndex
+from PyQt.QtWidgets import QItemDelegate, QComboBox, QDialog, QPushButton, QDialogButtonBox, QMessageBox, QApplication
+from PyQt.QtCore import QItemSelectionModel
 
 from .db_plugins.data_model import TableFieldsModel
 from .db_plugins.plugin import DbError, ConnectionError
@@ -71,7 +71,7 @@ class TableFieldsDelegate(QItemDelegate):
             # use default
             QItemDelegate.setModelData(self, editor, model, index)
             if index.column() == 0:
-                self.emit(SIGNAL("columnNameChanged()"))
+                self.columnNameChanged.emit()
 
 
 class DlgCreateTable(QDialog, Ui_Dialog):
@@ -102,17 +102,16 @@ class DlgCreateTable(QDialog, Ui_Dialog):
         b = QPushButton(self.tr("&Create"))
         self.buttonBox.addButton(b, QDialogButtonBox.ActionRole)
 
-        self.connect(self.btnAddField, SIGNAL("clicked()"), self.addField)
-        self.connect(self.btnDeleteField, SIGNAL("clicked()"), self.deleteField)
-        self.connect(self.btnFieldUp, SIGNAL("clicked()"), self.fieldUp)
-        self.connect(self.btnFieldDown, SIGNAL("clicked()"), self.fieldDown)
-        self.connect(b, SIGNAL("clicked()"), self.createTable)
+        self.btnAddField.clicked.connect(self.addField)
+        self.btnDeleteField.clicked.connect(self.deleteField)
+        self.btnFieldUp.clicked.connect(self.fieldUp)
+        self.btnFieldDown.clicked.connect(self.fieldDown)
+        b.clicked.connect(self.createTable)
 
-        self.connect(self.chkGeomColumn, SIGNAL("clicked()"), self.updateUi)
+        self.chkGeomColumn.clicked.connect(self.updateUi)
 
-        self.connect(self.fields.selectionModel(),
-                     SIGNAL("selectionChanged(const QItemSelection &, const QItemSelection &)"), self.updateUiFields)
-        self.connect(d, SIGNAL("columnNameChanged()"), self.updatePkeyCombo)
+        self.fields.selectionModel().selectionChanged.connect(self.updateUiFields)
+        d.columnNameChanged.connect(self.updatePkeyCombo)
 
         self.populateSchemas()
         self.updateUi()

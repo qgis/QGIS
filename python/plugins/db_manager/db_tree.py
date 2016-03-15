@@ -20,17 +20,18 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import SIGNAL, SLOT
-from PyQt4.QtGui import QWidget, QTreeView, QMenu, QLabel
+from PyQt.QtCore import pyqtSignal, QObject
+from PyQt.QtWidgets import QWidget, QTreeView, QMenu, QLabel
 
-from qgis.core import QgsMapLayerRegistry, QgsMessageLog
+from qgis.core import QgsMapLayerRegistry
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
 
-from .db_model import DBModel, PluginItem
+from .db_model import DBModel, PluginItem, TreeItem
 from .db_plugins.plugin import DBPlugin, Schema, Table
 
 
 class DBTree(QTreeView):
+    selectedItemChanged = pyqtSignal(object)
 
     def __init__(self, mainWindow):
         QTreeView.__init__(self, mainWindow)
@@ -44,13 +45,12 @@ class DBTree(QTreeView):
         self.setAcceptDrops(True)
         self.setDropIndicatorShown(True)
 
-        self.connect(self, SIGNAL("doubleClicked(const QModelIndex &)"), self.addLayer)
-        self.connect(self.selectionModel(), SIGNAL("currentChanged(const QModelIndex&, const QModelIndex&)"),
-                     self.currentItemChanged)
-        self.connect(self, SIGNAL("expanded(const QModelIndex&)"), self.itemChanged)
-        self.connect(self, SIGNAL("collapsed(const QModelIndex&)"), self.itemChanged)
-        self.connect(self.model(), SIGNAL("dataChanged(const QModelIndex&, const QModelIndex&)"), self.modelDataChanged)
-        self.connect(self.model(), SIGNAL("notPopulated"), self.collapse)
+        self.doubleClicked.connect(self.addLayer)
+        self.selectionModel().currentChanged.connect(self.currentItemChanged)
+        self.expanded.connect(self.itemChanged)
+        self.collapsed.connect(self.itemChanged)
+        self.model().dataChanged.connect(self.modelDataChanged)
+        self.model().notPopulated.connect(self.collapse)
 
     def refreshItem(self, item=None):
         if item is None:
@@ -104,7 +104,7 @@ class DBTree(QTreeView):
 
     def itemChanged(self, index):
         self.setCurrentIndex(index)
-        self.emit(SIGNAL('selectedItemChanged'), self.currentItem())
+        self.selectedItemChanged.emit(self.currentItem())
 
     def modelDataChanged(self, indexFrom, indexTo):
         self.itemChanged(indexTo)
@@ -163,7 +163,7 @@ class DBTree(QTreeView):
             layer = table.toMapLayer()
             layers = QgsMapLayerRegistry.instance().addMapLayers([layer])
             if len(layers) != 1:
-                QgsMessageLog.instance().logMessage(
+                QgsMessageLog.logMessage(
                     self.tr("%1 is an invalid layer - not loaded").replace("%1", layer.publicSource()))
                 msgLabel = QLabel(self.tr(
                     "%1 is an invalid layer and cannot be loaded. Please check the <a href=\"#messageLog\">message log</a> for further info.").replace(

@@ -20,8 +20,8 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import Qt, SIGNAL
-from PyQt4.QtGui import QTextBrowser, QApplication
+from PyQt.QtCore import Qt
+from PyQt.QtWidgets import QTextBrowser, QApplication
 
 from .db_plugins.plugin import BaseError, DbError, DBPlugin, Schema, Table
 from .dlg_db_error import DlgDbError
@@ -39,7 +39,7 @@ class InfoViewer(QTextBrowser):
         self._clear()
         self._showPluginInfo()
 
-        self.connect(self, SIGNAL("anchorClicked(const QUrl&)"), self._linkClicked)
+        self.anchorClicked.connect(self._linkClicked)
 
     def _linkClicked(self, url):
         if self.item is None:
@@ -77,7 +77,7 @@ class InfoViewer(QTextBrowser):
             return
 
         self.item = item
-        self.connect(self.item, SIGNAL('aboutToChange'), self.setDirty)
+        item.aboutToChange.connect(self.setDirty)
 
     def setDirty(self, val=True):
         self.dirty = val
@@ -86,7 +86,7 @@ class InfoViewer(QTextBrowser):
         if self.item is not None:
             ## skip exception on RuntimeError fixes #6892
             try:
-                self.disconnect(self.item, SIGNAL('aboutToChange'), self.setDirty)
+                self.item.aboutToChange.disconnect(self.setDirty)
             except RuntimeError:
                 pass
         self.item = None

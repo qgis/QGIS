@@ -26,8 +26,9 @@ The content of this file is based on
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import OracleDBConnector
 
-from PyQt4.QtCore import Qt, QSettings, QPyNullVariant
-from PyQt4.QtGui import QIcon, QAction, QApplication, QMessageBox, QKeySequence
+from PyQt.QtCore import Qt, QSettings, QPyNullVariant
+from PyQt.QtGui import QIcon, QKeySequence
+from PyQt.QtWidgets import QAction, QApplication, QMessageBox
 
 from qgis.core import QgsVectorLayer
 
@@ -35,8 +36,9 @@ from ..plugin import ConnectionError, InvalidDataException, DBPlugin, \
     Database, Schema, Table, VectorTable, TableField, TableConstraint, \
     TableIndex, TableTrigger
 
-
 from qgis.core import QgsCredentials
+
+from . import resources_rc
 
 
 def classFactory():
@@ -346,14 +348,14 @@ class ORTable(Table):
                 QApplication.setOverrideCursor(Qt.WaitCursor)
 
             if index_action == "rebuild":
-                self.aboutToChange()
+                self.emitAboutToChange()
                 self.database().connector.rebuildTableIndex(
                     (self.schemaName(), self.name), index_name)
                 self.refreshIndexes()
                 return True
         elif action.startswith(u"mview/"):
             if action == "mview/refresh":
-                self.aboutToChange()
+                self.emitAboutToChange()
                 self.database().connector.refreshMView(
                     (self.schemaName(), self.name))
                 return True
@@ -450,7 +452,7 @@ class ORVectorTable(ORTable, VectorTable):
     def runAction(self, action):
         if action.startswith("extent/"):
             if action == "extent/update":
-                self.aboutToChange()
+                self.emitAboutToChange()
                 self.updateExtent()
                 return True
 
