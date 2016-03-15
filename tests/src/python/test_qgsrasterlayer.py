@@ -12,11 +12,12 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis # switch sip api
+
 import os
 
-from PyQt4.QtCore import QFileInfo, QObject, SIGNAL
-from PyQt4 import QtGui
+from PyQt4.QtCore import QFileInfo
+from PyQt4.QtGui import QColor
 
 from qgis.core import (QgsRaster,
                        QgsRasterLayer,
@@ -175,13 +176,13 @@ class TestQgsRasterLayer(unittest.TestCase):
         myColorRampShader.setColorRampType(QgsColorRampShader.INTERPOLATED)
         myItems = []
         myItem = QgsColorRampShader.ColorRampItem(
-            10, QtGui.QColor('#ffff00'), 'foo')
+            10, QColor('#ffff00'), 'foo')
         myItems.append(myItem)
         myItem = QgsColorRampShader.ColorRampItem(
-            100, QtGui.QColor('#ff00ff'), 'bar')
+            100, QColor('#ff00ff'), 'bar')
         myItems.append(myItem)
         myItem = QgsColorRampShader.ColorRampItem(
-            1000, QtGui.QColor('#00ff00'), 'kazam')
+            1000, QColor('#00ff00'), 'kazam')
         myItems.append(myItem)
         myColorRampShader.setColorRampItemList(myItems)
         myRasterShader.setRasterShaderFunction(myColorRampShader)
@@ -197,13 +198,13 @@ class TestQgsRasterLayer(unittest.TestCase):
         myColorRampShader.setColorRampType(QgsColorRampShader.INTERPOLATED)
         myItems = []
         myItem = QgsColorRampShader.ColorRampItem(10,
-                                                  QtGui.QColor('#ffff00'), 'foo')
+                                                  QColor('#ffff00'), 'foo')
         myItems.append(myItem)
         myItem = QgsColorRampShader.ColorRampItem(100,
-                                                  QtGui.QColor('#ff00ff'), 'bar')
+                                                  QColor('#ff00ff'), 'bar')
         myItems.append(myItem)
         myItem = QgsColorRampShader.ColorRampItem(1000,
-                                                  QtGui.QColor('#00ff00'), 'kazam')
+                                                  QColor('#00ff00'), 'kazam')
         myItems.append(myItem)
         myColorRampShader.setColorRampItemList(myItems)
         myRasterShader.setRasterShaderFunction(myColorRampShader)
@@ -223,8 +224,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         layer = QgsRasterLayer(myPath, myBaseName)
 
         self.rendererChanged = False
-        QObject.connect(layer, SIGNAL("rendererChanged()"),
-                        self.onRendererChanged)
+        layer.rendererChanged.connect(self.onRendererChanged)
 
         rShader = QgsRasterShader()
         r = QgsSingleBandPseudoColorRenderer(layer.dataProvider(), 1, rShader)

@@ -28,7 +28,6 @@ __revision__ = '$Format:%H$'
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputVector
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm

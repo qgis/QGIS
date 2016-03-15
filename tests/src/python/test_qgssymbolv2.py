@@ -23,12 +23,11 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
-import csv
+import qgis # switch sip api
 
 from utilities import unitTestDataPath
 
-from PyQt4.QtCore import QSize, QDir
+from PyQt4.QtCore import QDir
 from PyQt4.QtGui import QImage, QColor, QPainter
 
 from qgis.core import (QgsGeometry,
@@ -39,7 +38,6 @@ from qgis.core import (QgsGeometry,
                        QgsFeature,
                        QGis,
                        QgsMapSettings,
-                       QgsRectangle,
                        QgsRenderChecker
                        )
 

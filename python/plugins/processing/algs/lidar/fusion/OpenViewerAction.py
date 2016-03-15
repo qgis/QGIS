@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import subprocess
-from PyQt4 import QtGui
+from PyQt4.QtGui import QIcon, QMessageBox
 from processing.gui.ToolboxAction import ToolboxAction
 from FusionUtils import FusionUtils
 
@@ -39,15 +39,15 @@ class OpenViewerAction(ToolboxAction):
         self.group = self.tr('Visualization')
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + '/../../../images/tool.png')
+        return QIcon(os.path.dirname(__file__) + '/../../../images/tool.png')
 
     def execute(self):
         f = os.path.join(FusionUtils.FusionPath(), 'pdq.exe')
         if os.path.exists(f):
             subprocess.Popen(f)
         else:
-            QtGui.QMessageBox.critical(None,
-                                       self.tr('Unable to open viewer'),
-                                       self.tr('The current Fusion folder does not contain the '
-                                               'viewer executable.\nPlease check the configuration '
-                                               'in the Processing settings dialog.'))
+            QMessageBox.critical(None,
+                                 self.tr('Unable to open viewer'),
+                                 self.tr('The current Fusion folder does not contain the '
+                                         'viewer executable.\nPlease check the configuration '
+                                         'in the Processing settings dialog.'))

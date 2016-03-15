@@ -25,7 +25,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import yaml
-from qgis.core import *
+from qgis.core import QGis
 from PyQt4.QtCore import QSettings, QLocale
 
 

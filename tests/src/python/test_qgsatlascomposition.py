@@ -14,7 +14,7 @@ test_qgsatlascomposition.py
  *                                                                         *
  ***************************************************************************/
 '''
-import qgis
+import qgis # switch sip api
 import os
 import glob
 import shutil

@@ -29,8 +29,6 @@ __revision__ = '$Format:%H$'
 from PyQt4.QtCore import Qt, QCoreApplication
 from PyQt4.QtGui import QProgressBar
 from qgis.utils import iface
-from qgis.gui import QgsMessageBar
-from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.MessageDialog import MessageDialog
 
 

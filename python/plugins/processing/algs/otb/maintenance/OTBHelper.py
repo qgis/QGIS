@@ -660,7 +660,7 @@ def create_xml_descriptors():
                 ET.ElementTree(the_root).write(fh)
                 fh.close()
                 try:
-                    ut_command = get_automatic_ut_from_xml_description(the_root)
+                    get_automatic_ut_from_xml_description(the_root)
                 except:
                     logger.error("Unit test for command %s must be fixed: %s" % (available_app, traceback.format_exc()))
 
@@ -691,8 +691,6 @@ def create_html_description():
 
 if __name__ == "__main__":
     # Prepare the environment
-    import sys
-    import os
     from qgis.core import QgsApplication
     from PyQt4.QtGui import QApplication
     app = QApplication([])
@@ -702,7 +700,7 @@ if __name__ == "__main__":
     from processing.core.Processing import Processing
     Processing.initialize()
 
-    import OTBSpecific_XMLcreation
+#    import OTBSpecific_XMLcreation
 #     try:
 #         import processing
 #     except ImportError, e:

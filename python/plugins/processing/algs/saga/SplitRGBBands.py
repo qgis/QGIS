@@ -26,11 +26,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui
+from PyQt4.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.outputs import OutputRaster
-from processing.tools.system import getTempFilename, isWindows
+from processing.tools.system import getTempFilename
 import SagaUtils
 
 pluginPath = os.path.normpath(os.path.join(
@@ -45,7 +45,7 @@ class SplitRGBBands(GeoAlgorithm):
     B = 'B'
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Split RGB bands')

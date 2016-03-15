@@ -130,6 +130,7 @@ class Dissolve(GeoAlgorithm):
 
             features = None
 
+            nElement = 0
             for key, value in myDict.items():
                 nElement += 1
                 progress.setPercentage(int(nElement * 100 / nFeat))

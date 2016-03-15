@@ -52,8 +52,7 @@ from processing.core.parameters import (getParameterFromString,
                                         ParameterNumber,
                                         ParameterExtent,
                                         ParameterDataObject,
-                                        ParameterMultipleInput,
-                                        ParameterPoint)
+                                        ParameterMultipleInput)
 from processing.tools import dataobjects
 from processing.gui.Help2Html import getHtmlFromDescriptionsDict
 
@@ -387,7 +386,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                     value = self.resolveValue(alg.params[param.name])
                 else:
                     iface.messageBar().pushMessage(self.tr("Warning"),
-                                                   self.tr("Parameter %s in algorithm %s in the model is run with default value! Edit the model to make sure that this is correct." % (param.name, alg.name)),
+                                                   self.tr("Parameter %s in algorithm %s in the model is run with default value! Edit the model to make sure that this is correct.") % (param.name, alg.name),
                                                    QgsMessageBar.WARNING, 4)
                     value = None
                 if value is None and isinstance(param, ParameterExtent):

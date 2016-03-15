@@ -126,3 +126,7 @@ qgis_attributetabletest
 qgis_fieldcalculatortest
 qgis_maptoolidentifyaction
 qgis_measuretool
+PyQgsServer
+PyQgsPalLabelingServer
+PyQgsLocalServer
+PyQgsServerAccessControl

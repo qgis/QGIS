@@ -29,12 +29,14 @@ import os
 
 try:
     import matplotlib.pyplot
+    assert matplotlib # silence pyflakes
     hasMatplotlib = True
 except:
     hasMatplotlib = False
 
 try:
     import shapely
+    assert shapely  # silence pyflakes
     hasShapely = True
 except:
     hasShapely = False

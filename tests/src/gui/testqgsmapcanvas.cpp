@@ -145,8 +145,10 @@ void TestQgsMapCanvas::testPanByKeyboard()
     QgsRectangle originalExtent = mCanvas->extent();
     Q_FOREACH ( Qt::Key key, keys )
     {
+      QgsRectangle tempExtent = mCanvas->extent();
       QKeyEvent keyEvent( QEvent::KeyPress, key, Qt::NoModifier );
       QApplication::sendEvent( mCanvas, &keyEvent );
+      QVERIFY( mCanvas->extent() != tempExtent );
     }
     QVERIFY( mCanvas->extent() == originalExtent );
   }

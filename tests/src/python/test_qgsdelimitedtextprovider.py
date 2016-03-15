@@ -23,7 +23,7 @@ __revision__ = '$Format:%H$'
 #
 # To recreate all tests, set rebuildTests to true
 
-import qgis
+import qgis # switch sip api
 
 import os
 import re
@@ -33,8 +33,6 @@ import time
 import test_qgsdelimitedtextprovider_wanted as want
 
 rebuildTests = 'REBUILD_DELIMITED_TEXT_TESTS' in os.environ
-
-import qgis
 
 from PyQt4.QtCore import (
     QCoreApplication,
@@ -47,8 +45,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsFeatureRequest,
     QgsRectangle,
-    QgsMessageLog,
-    QGis
+    QgsMessageLog
 )
 
 from qgis.testing import (

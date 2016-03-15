@@ -23,8 +23,7 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QPyNullVariant
 from PyQt4.QtSql import QSqlDatabase
 
 from ..connector import DBConnector
@@ -240,8 +239,6 @@ class OracleDBConnector(DBConnector):
         user.
         """
         result = [False, False, False, False]
-        if owner != self.user:
-            prefix = u"USER"
         # Inspect in all tab privs
         sql = u"""
         SELECT DISTINCT PRIVILEGE
@@ -340,7 +337,6 @@ class OracleDBConnector(DBConnector):
             # get all non geographic tables and views
             prefix = u"ALL"
             owner = u"o.owner"
-            metatable = u"tab_columns"
             where = u""
             if self.userTablesOnly:
                 prefix = u"USER"
@@ -1754,5 +1750,4 @@ class OracleDBConnector(DBConnector):
 
     def getQueryBuilderDictionary(self):
         from .sql_dictionary import getQueryBuilderDictionary
-
         return getQueryBuilderDictionary()

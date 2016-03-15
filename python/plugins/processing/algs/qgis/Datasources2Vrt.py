@@ -33,11 +33,7 @@ from processing.core.parameters import ParameterMultipleInput, ParameterBoolean
 from processing.core.outputs import OutputFile, OutputString
 
 # algorithm specific imports
-from osgeo import ogr, gdal
-from string import Template
-import tempfile
-import logging
-import os
+from osgeo import ogr
 import xml.sax.saxutils
 
 

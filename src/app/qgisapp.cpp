@@ -4938,13 +4938,13 @@ void QgisApp::toggleFilterLegendByExpression( bool checked )
 
 void QgisApp::updateFilterLegend()
 {
-  if ( mActionFilterLegend->isChecked() )
+  bool hasExpressions = mLegendExpressionFilterButton->isChecked() && QgsLayerTreeUtils::hasLegendFilterExpression( *mLayerTreeView->layerTreeModel()->rootGroup() );
+  if ( mActionFilterLegend->isChecked() || hasExpressions )
   {
-    layerTreeView()->layerTreeModel()->setLegendFilterByMap( &mMapCanvas->mapSettings() );
-  }
-  else if ( QgsLayerTreeUtils::hasLegendFilterExpression( *mLayerTreeView->layerTreeModel()->rootGroup() ) )
-  {
-    layerTreeView()->layerTreeModel()->setLegendFilter( &mMapCanvas->mapSettings(), /* useExtent */ false );
+    layerTreeView()->layerTreeModel()->setLegendFilter( &mMapCanvas->mapSettings(),
+        /* useExtent */ mActionFilterLegend->isChecked(),
+        /* polygon */ QgsGeometry(),
+        hasExpressions );
   }
   else
   {

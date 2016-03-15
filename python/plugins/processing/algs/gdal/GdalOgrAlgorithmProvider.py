@@ -29,7 +29,6 @@ import os
 from PyQt4.QtGui import QIcon
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
-from processing.core.ProcessingLog import ProcessingLog
 from GdalUtils import GdalUtils
 
 from nearblack import nearblack
@@ -79,9 +78,6 @@ from ogr2ogrbuffer import Ogr2OgrBuffer
 from ogr2ogrdissolve import Ogr2OgrDissolve
 from ogr2ogronesidebuffer import Ogr2OgrOneSideBuffer
 from ogr2ogrtabletopostgislist import Ogr2OgrTableToPostGisList
-from ogr2ogrbuffer import Ogr2OgrBuffer
-from ogr2ogrdissolve import Ogr2OgrDissolve
-from ogr2ogronesidebuffer import Ogr2OgrOneSideBuffer
 from ogrinfo import OgrInfo
 from ogrsql import OgrSql
 

@@ -21,7 +21,7 @@ email                : brush.tyler@gmail.com
 """
 
 from PyQt4.QtCore import Qt, QObject, SIGNAL, qDebug, QByteArray, QMimeData, QDataStream, QIODevice, QFileInfo, \
-    QAbstractItemModel, QModelIndex, QSettings
+    QAbstractItemModel, QModelIndex
 from PyQt4.QtGui import QApplication, QIcon, QMessageBox
 
 from .db_plugins import supportedDbTypes, createDbPlugin
@@ -29,11 +29,6 @@ from .db_plugins.plugin import BaseError, Table
 from .dlg_db_error import DlgDbError
 
 import qgis.core
-
-try:
-    from . import resources_rc
-except ImportError:
-    pass
 
 
 class TreeItem(QObject):

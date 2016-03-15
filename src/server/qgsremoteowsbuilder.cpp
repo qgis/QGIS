@@ -17,7 +17,9 @@
 
 #include "qgsdatasourceuri.h"
 #include "qgsremoteowsbuilder.h"
+#if QT_VERSION < 0x050000
 #include "qgshttptransaction.h"
+#endif
 #include "qgslogger.h"
 #include "qgsmslayercache.h"
 #include "qgsrasterlayer.h"
@@ -239,6 +241,8 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString &url,
 {
   Q_UNUSED( layerName );
   Q_UNUSED( allowCaching );
+
+#if QT_VERSION < 0x050000
   QgsDebugMsg( "Entering" );
 
   //write server url and coverage name to a temporary file
@@ -339,7 +343,6 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString &url,
   wcsRequest += "&BBOX=" + bbox;
 
   QgsDebugMsg( "WCS request is: " + wcsRequest );
-
   //make request and store byte array into temporary file
   QgsHttpTransaction httpTransaction( wcsRequest );
   QByteArray result;
@@ -355,6 +358,14 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString &url,
   QgsRasterLayer* rl = new QgsRasterLayer( fileName, layerNameFromUri( fileName ) );
   layersToRemove.push_back( rl ); //make sure the layer gets deleted after each request
   return rl;
+#else
+  Q_UNUSED( url )
+  Q_UNUSED( filesToRemove )
+  Q_UNUSED( layersToRemove )
+  QgsDebugMsg( "remote http not supported with Qt5" );
+  return nullptr;
+#endif
+
 }
 
 QgsVectorLayer* QgsRemoteOWSBuilder::sosLayer( const QDomElement& remoteOWSElem, const QString& url, const QString& layerName, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const

@@ -337,6 +337,9 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     QScopedPointer<QgsMapSettings> mLegendFilterMapSettings;
     QScopedPointer<QgsMapHitTest> mLegendFilterHitTest;
 
+    //! whether to use map filtering
+    bool mLegendFilterUsesExtent;
+
     double mLegendMapViewMupp;
     int mLegendMapViewDpi;
     double mLegendMapViewScale;

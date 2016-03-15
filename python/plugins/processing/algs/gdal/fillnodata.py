@@ -27,8 +27,6 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
-
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
 from processing.core.parameters import ParameterRaster
@@ -52,9 +50,6 @@ class fillnodata(GdalAlgorithm):
     MASK = 'MASK'
     NO_DEFAULT_MASK = 'NO_DEFAULT_MASK'
     OUTPUT = 'OUTPUT'
-
-    #def getIcon(self):
-    #    return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'fillnodata.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Fill nodata')

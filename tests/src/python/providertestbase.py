@@ -411,7 +411,7 @@ class ProviderTestCase(object):
         for f in self.provider.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)):
             self.assertFalse(f.constGeometry(), 'Expected no geometry, got one')
 
-    def testGetFeaturesNoGeometry(self):
+    def testGetFeaturesWithGeometry(self):
         """ Test that geometry is present when fetching features without setting NoGeometry flag"""
         for f in self.provider.getFeatures(QgsFeatureRequest()):
             if f['pk'] == 3:

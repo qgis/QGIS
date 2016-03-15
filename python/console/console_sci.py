@@ -170,10 +170,11 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             self.append('import processing')
         elif command == "qtCore":
             # import QtCore class
-            self.append('from PyQt4.QtCore import *')
+            self.append('from PyQt.QtCore import *')
         elif command == "qtGui":
             # import QtGui class
-            self.append('from PyQt4.QtGui import *')
+            self.append('from PyQt.QtGui import *')
+            self.append('from PyQt.QtWidgets import *')
         self.entered()
         self.move_cursor_to_end()
         self.setFocus()
@@ -543,7 +544,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             e.setDropAction(Qt.CopyAction)
             e.accept()
         else:
-            QsciScintillaCompat.dropEvent(self, e)
+            QsciScintillaCompat.dropEvent(self, e)  # FIXME
 
     def insertFromDropPaste(self, textDP):
         pasteList = unicode(textDP).splitlines()

@@ -23,14 +23,12 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QApplication
 from qgis.core import QGis
 
-from ..info_model import TableInfo, VectorTableInfo, DatabaseInfo, \
-    SchemaInfo
+from ..info_model import TableInfo, VectorTableInfo, DatabaseInfo
 from ..html_elems import HtmlContent, HtmlSection, HtmlParagraph, \
-    HtmlList, HtmlTable, HtmlTableHeader, HtmlTableCol
+    HtmlTable, HtmlTableHeader, HtmlTableCol
 
 # Syntax Highlight for VIEWS/MVIEWS
 from pygments import highlight

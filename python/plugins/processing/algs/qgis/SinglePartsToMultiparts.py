@@ -126,7 +126,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
                 return QGis.WKBMultiPolygon
             else:
                 return QGis.WKBUnknown
-        except Exception as err:
+        except Exception:
             pass
 
     def extractAsMulti(self, geom):

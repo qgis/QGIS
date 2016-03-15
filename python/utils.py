@@ -43,6 +43,13 @@ import codecs
 import time
 import functools
 
+if sys.version_info[0] >= 3:
+    import builtins
+    builtins.__dict__['unicode'] = str
+    builtins.__dict__['basestring'] = str
+    builtins.__dict__['long'] = int
+    builtins.__dict__['Set'] = set
+
 # ######################
 # ERROR HANDLING
 
@@ -53,7 +60,7 @@ warnings.filterwarnings("ignore", "the sets module is deprecated")
 def showWarning(message, category, filename, lineno, file=None, line=None):
     stk = ""
     for s in traceback.format_stack()[:-2]:
-        stk += s.decode('utf-8', 'replace')
+        stk += s.decode('utf-8', 'replace') if hasattr(s, 'decode') else s
     QgsMessageLog.logMessage(
         "warning:%s\ntraceback:%s" % (warnings.formatwarning(message, category, filename, lineno), stk),
         QCoreApplication.translate("Python", "Python warning")
@@ -69,13 +76,17 @@ def showException(type, value, tb, msg, messagebar=False):
 
     logmessage = ''
     for s in traceback.format_exception(type, value, tb):
-        logmessage += s.decode('utf-8', 'replace')
+        logmessage += s.decode('utf-8', 'replace') if hasattr(s, 'decode') else s
 
     title = QCoreApplication.translate('Python', 'Python error')
     QgsMessageLog.logMessage(logmessage, title)
 
-    blockingdialog = QApplication.instance().activeModalWidget()
-    window = QApplication.instance().activeWindow()
+    try:
+        blockingdialog = QApplication.instance().activeModalWidget()
+        window = QApplication.instance().activeWindow()
+    except:
+        blockingdialog = QApplication.activeModalWidget()
+        window = QApplication.activeWindow()
 
     # Still show the normal blocking dialog in this case for now.
     if blockingdialog or not window or not messagebar or not iface:
@@ -139,10 +150,10 @@ def open_stack_dialog(type, value, tb, msg, pop_error=True):
     error = ''
     lst = traceback.format_exception(type, value, tb)
     for s in lst:
-        error += s.decode('utf-8', 'replace')
+        error += s.decode('utf-8', 'replace') if hasattr(s, 'decode') else s
     error = error.replace('\n', '<br>')
 
-    main_error = lst[-1].decode('utf-8', 'replace')
+    main_error = lst[-1].decode('utf-8', 'replace') if hasattr(lst[-1], 'decode') else lst[-1]
 
     version_label = QCoreApplication.translate('Python', 'Python version:')
     qgis_label = QCoreApplication.translate('Python', 'QGIS version:')
@@ -229,7 +240,9 @@ def findPlugins(path):
         cp = ConfigParser.ConfigParser()
 
         try:
-            cp.readfp(codecs.open(metadataFile, "r", "utf8"))
+            f = codecs.open(metadataFile, "r", "utf8")
+            cp.readfp(f)
+            f.close()
         except:
             cp = None
 
@@ -567,8 +580,10 @@ _builtin_import = __builtin__.__import__
 _plugin_modules = {}
 
 
-def _import(name, globals={}, locals={}, fromlist=[], level=-1):
+def _import(name, globals={}, locals={}, fromlist=[], level=None):
     """ wrapper around builtin import that keeps track of loaded plugin modules """
+    if level is None:
+        level = -1 if sys.version_info[0] < 3 else 0
     mod = _builtin_import(name, globals, locals, fromlist, level)
 
     if mod and '__file__' in mod.__dict__:

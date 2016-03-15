@@ -652,7 +652,6 @@ def getRasterization(available_app, original_dom_document):
     Delete GEOID and DEM parameter as they are not updated at the creation of the otb algorithms when you launch QGIS.
     The values are picked from the settings.
     """
-    the_list = []
     rasterization_image = original_dom_document
 
     import copy
@@ -696,8 +695,7 @@ def getVectorDataReprojection(available_app, original_dom_document):
     """
     the_root = original_dom_document
     deleteGeoidSrtm(the_root)
-    the_list = defaultSplit(available_app, the_root, 'out.proj')
-    return the_list
+    return defaultSplit(available_app, the_root, 'out.proj')
 
 
 def getComputePolylineFeatureFromImage(available_app, original_dom_document):

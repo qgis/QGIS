@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 from shapely.ops import polygonize
 from shapely.ops import unary_union
-from shapely.geometry import Point, MultiLineString
+from shapely.geometry import MultiLineString
 
 from PyQt4.QtCore import QVariant
 from qgis.core import QGis, QgsFields, QgsField, QgsFeature, QgsGeometry

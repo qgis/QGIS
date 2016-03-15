@@ -28,12 +28,10 @@ __revision__ = '$Format:%H$'
 
 import sys
 import os
-import re
 
 from processing.tools.vector import resolveFieldIndex, features
 from PyQt4.QtCore import QCoreApplication
 from qgis.core import QgsRasterLayer, QgsVectorLayer
-from processing.tools.system import isWindows
 from processing.tools import dataobjects
 
 

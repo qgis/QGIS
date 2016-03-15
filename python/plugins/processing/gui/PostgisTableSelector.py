@@ -27,10 +27,11 @@ __revision__ = '$Format:%H$'
 
 
 import os
-from PyQt4 import uic, QtCore, QtGui
+from PyQt4.QtCore import QSettings
+from PyQt4.QtGui import QIcon, QTreeWidgetItem, QMessageBox
+from PyQt4 import uic
 from processing.algs.qgis.postgis_utils import GeoDB
-from qgis.core import *
-from PyQt4.QtGui import QMessageBox
+from qgis.core import QgsDataSourceURI, QgsCredentials
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -45,7 +46,7 @@ class PostgisTableSelector(BASE, WIDGET):
         self.table = None
         self.schema = None
         self.setupUi(self)
-        settings = QtCore.QSettings()
+        settings = QSettings()
         settings.beginGroup('/PostgreSQL/connections/')
         names = settings.childGroups()
         settings.endGroup()
@@ -83,14 +84,14 @@ class PostgisTableSelector(BASE, WIDGET):
         self.close()
 
 
-class ConnectionItem(QtGui.QTreeWidgetItem):
+class ConnectionItem(QTreeWidgetItem):
 
     def __init__(self, connection):
-        self.connIcon = QtGui.QIcon(os.path.dirname(__file__) + '/../images/postgis.png')
-        self.schemaIcon = QtGui.QIcon(os.path.dirname(__file__) + '/../images/namespace.png')
+        self.connIcon = QIcon(os.path.dirname(__file__) + '/../images/postgis.png')
+        self.schemaIcon = QIcon(os.path.dirname(__file__) + '/../images/namespace.png')
 
-        QtGui.QTreeWidgetItem.__init__(self)
-        self.setChildIndicatorPolicy(QtGui.QTreeWidgetItem.ShowIndicator)
+        QTreeWidgetItem.__init__(self)
+        self.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
         self.connection = connection
         self.setText(0, connection)
         self.setIcon(0, self.connIcon)
@@ -98,7 +99,7 @@ class ConnectionItem(QtGui.QTreeWidgetItem):
     def populateSchemas(self):
         if self.childCount() != 0:
             return
-        settings = QtCore.QSettings()
+        settings = QSettings()
         connSettings = '/PostgreSQL/connections/' + self.connection
         database = settings.value(connSettings + '/database')
         user = settings.value(connSettings + '/username')
@@ -114,7 +115,7 @@ class ConnectionItem(QtGui.QTreeWidgetItem):
             geodb = GeoDB(host, int(port), database, user, passwd)
             schemas = geodb.list_schemas()
             for oid, name, owner, perms in schemas:
-                item = QtGui.QTreeWidgetItem()
+                item = QTreeWidgetItem()
                 item.setText(0, name)
                 item.setIcon(0, self.schemaIcon)
                 self.addChild(item)

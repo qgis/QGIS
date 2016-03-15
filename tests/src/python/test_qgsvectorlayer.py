@@ -12,10 +12,11 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis # switch sip api
+
 import os
 
-from PyQt4.QtCore import QVariant, QObject, SIGNAL
+from PyQt4.QtCore import QVariant
 from PyQt4.QtGui import QPainter
 
 from qgis.core import (QGis,
@@ -942,8 +943,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer = createLayerWithOnePoint()
 
         self.blendModeTest = 0
-        QObject.connect(layer, SIGNAL("blendModeChanged( const QPainter::CompositionMode )"),
-                        self.onBlendModeChanged)
+        layer.blendModeChanged.connect(self.onBlendModeChanged)
         layer.setBlendMode(QPainter.CompositionMode_Screen)
 
         assert self.blendModeTest == QPainter.CompositionMode_Screen
@@ -953,8 +953,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer = createLayerWithOnePoint()
 
         self.blendModeTest = 0
-        QObject.connect(layer, SIGNAL("featureBlendModeChanged( const QPainter::CompositionMode )"),
-                        self.onBlendModeChanged)
+        layer.featureBlendModeChanged.connect(self.onBlendModeChanged)
         layer.setFeatureBlendMode(QPainter.CompositionMode_Screen)
 
         assert self.blendModeTest == QPainter.CompositionMode_Screen
@@ -1058,8 +1057,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer = createLayerWithOnePoint()
 
         self.transparencyTest = 0
-        QObject.connect(layer, SIGNAL("layerTransparencyChanged( int )"),
-                        self.onLayerTransparencyChanged)
+        layer.layerTransparencyChanged.connect(self.onLayerTransparencyChanged)
         layer.setLayerTransparency(50)
         assert self.transparencyTest == 50
         assert layer.layerTransparency() == 50
@@ -1071,8 +1069,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer = createLayerWithOnePoint()
 
         self.rendererChanged = False
-        QObject.connect(layer, SIGNAL("rendererChanged()"),
-                        self.onRendererChanged)
+        layer.rendererChanged.connect(self.onRendererChanged)
 
         r = QgsSingleSymbolRendererV2(QgsSymbolV2.defaultSymbol(QGis.Point))
         layer.setRendererV2(r)

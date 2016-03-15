@@ -112,7 +112,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
                                      user=username, passwd=password)
         except postgis_utils.DbError as e:
             raise GeoAlgorithmExecutionException(
-                self.tr("Couldn't connect to database:\n%s" % e.message))
+                self.tr("Couldn't connect to database:\n%s") % unicode(e))
 
         geomColumn = self.getParameterValue(self.GEOMETRY_COLUMN)
         if not geomColumn:

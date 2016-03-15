@@ -29,11 +29,11 @@ import os
 import webbrowser
 
 from PyQt4 import uic
-from PyQt4.QtCore import QCoreApplication, QSettings, QByteArray, SIGNAL, QUrl
+from PyQt4.QtCore import QCoreApplication, QSettings, QByteArray, QUrl
 from PyQt4.QtGui import QApplication, QDialogButtonBox, QDesktopWidget
 
 from qgis.utils import iface
-from qgis.core import *
+from qgis.core import QgsNetworkAccessManager
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui import AlgorithmClassification

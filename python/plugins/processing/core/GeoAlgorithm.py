@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    GeoAlgorithmExecutionException.py
+    GeoAlgorithm.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -33,7 +33,6 @@ import copy
 
 from PyQt4.QtGui import QIcon
 from PyQt4.QtCore import QCoreApplication, QSettings
-from qgis.core import QGis, QgsRasterFileWriter
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -206,8 +205,10 @@ class GeoAlgorithm:
             self.convertUnsupportedFormats(progress)
             self.runPostExecutionScript(progress)
         except GeoAlgorithmExecutionException as gaee:
+            lines = [self.tr('Uncaught error while executing algorithm')]
+            lines.append(traceback.format_exc())
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, gaee.msg)
-            raise gaee
+            raise GeoAlgorithmExecutionException(gaee.msg, lines, gaee)
         except Exception as e:
             # If something goes wrong and is not caught in the
             # algorithm, we catch it here and wrap it

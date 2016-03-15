@@ -28,8 +28,6 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
-from PyQt4.QtGui import QIcon
-
 from qgis.core import QgsCoordinateReferenceSystem
 from qgis.utils import iface
 
@@ -38,7 +36,7 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterCrs
 from processing.core.outputs import OutputVector
 
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 

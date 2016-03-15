@@ -174,7 +174,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
     }
 
     //save clipped baseline to file
-    QgsFeature blFeature;
+    QgsFeature blFeature( usedBaselineFields );
     blFeature.setGeometry( *clippedBaseline );
     blFeature.setAttribute( "stratum_id", strataId );
     blFeature.setAttribute( "ok", "f" );
@@ -201,7 +201,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       QgsPoint sampleQgsPoint = samplePoint->asPoint();
       QgsPoint latLongSamplePoint = toLatLongTransform.transform( sampleQgsPoint );
 
-      QgsFeature samplePointFeature;
+      QgsFeature samplePointFeature( outputPointFields );
       samplePointFeature.setGeometry( samplePoint );
       samplePointFeature.setAttribute( "id", nTotalTransects + 1 );
       samplePointFeature.setAttribute( "station_id", nCreatedTransects + 1 );
@@ -274,7 +274,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       }
 
       QgsFeatureId fid( nCreatedTransects );
-      QgsFeature sampleLineFeature( fid );
+      QgsFeature sampleLineFeature( outputPointFields, fid );
       sampleLineFeature.setGeometry( lineClipStratum );
       sampleLineFeature.setAttribute( "id", nTotalTransects + 1 );
       sampleLineFeature.setAttribute( "station_id", nCreatedTransects + 1 );

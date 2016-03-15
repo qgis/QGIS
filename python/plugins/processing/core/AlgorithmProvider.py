@@ -26,7 +26,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui, QtCore
+from PyQt4.QtGui import QIcon
+from PyQt4.QtCore import QCoreApplication
 from qgis.core import QgsVectorFileWriter
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
 
@@ -98,7 +99,7 @@ class AlgorithmProvider(object):
         return self.tr('Generic algorithm provider')
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+        return QIcon(os.path.dirname(__file__) + '/../images/alg.png')
 
     def getSupportedOutputRasterLayerExtensions(self):
         return ['tif']
@@ -126,4 +127,4 @@ class AlgorithmProvider(object):
     def tr(self, string, context=''):
         if context == '':
             context = self.__class__.__name__
-        return QtCore.QCoreApplication.translate(context, string)
+        return QCoreApplication.translate(context, string)

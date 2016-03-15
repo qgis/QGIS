@@ -12,16 +12,13 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis # switch sip api
+
 import os
-import sys
-from qgis.core import NULL
 
 from qgis.core import (
     QgsVectorLayer,
     QgsFeatureRequest,
-    QgsFeature,
-    QgsProviderRegistry
 )
 
 from PyQt4.QtCore import (

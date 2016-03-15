@@ -32,7 +32,7 @@ __revision__ = '$Format:%H$'
 import os
 import locale
 
-from qgis.core import *
+from qgis.core import QgsMapLayerRegistry, QgsMapLayer
 
 from PyQt4 import uic
 from PyQt4.QtCore import QCoreApplication, QVariant
@@ -439,6 +439,8 @@ class ParametersPanel(BASE, WIDGET):
         if sender.name not in self.dependentItems:
             return
         layer = sender.itemData(sender.currentIndex())
+        if not layer:
+            return
         children = self.dependentItems[sender.name]
         for child in children:
             widget = self.valueItems[child]

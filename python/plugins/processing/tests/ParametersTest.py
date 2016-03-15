@@ -381,16 +381,5 @@ class ParameterNumberTest(unittest.TestCase):
         self.assertEqual(requiredParameter.value, 5)
 
 
-def suite():
-    suite = unittest.makeSuite(ParametersTest, 'test')
-    return suite
-
-
-def runtests():
-    result = unittest.TestResult()
-    testsuite = suite()
-    testsuite.run(result)
-    return result
-
 if __name__ == '__main__':
     unittest.main()

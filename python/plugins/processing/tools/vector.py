@@ -36,7 +36,6 @@ import cStringIO
 
 import psycopg2
 
-from PyQt4 import QtSql
 from PyQt4.QtCore import QVariant, QSettings
 from qgis.core import (QGis, QgsFields, QgsField, QgsGeometry, QgsRectangle,
                        QgsSpatialIndex, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer,
@@ -614,7 +613,7 @@ class VectorWriter:
                     db._exec_sql_and_commit(unicode(sql))
                 except spatialite_utils.DbError as e:
                     raise GeoAlgorithmExecutionException(
-                        'Error creating output Spatialite table:\n%s' % e.message)
+                        'Error creating output Spatialite table:\n%s' % unicode(e))
 
             fields = [_toQgsField(f) for f in fields]
             fieldsdesc = ",".join('%s %s' % (f.name(),

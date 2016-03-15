@@ -30,7 +30,7 @@ import math
 
 from PyQt4.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsDistanceArea
+from qgis.core import QgsFeatureRequest, QgsDistanceArea
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterNumber

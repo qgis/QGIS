@@ -14,8 +14,8 @@ test_analysis.py
  *                                                                         *
  ***************************************************************************/
 '''
-import sys
-import qgis
+
+import qgis # switch sip api
 
 from qgis.testing import (start_app,
                           unittest

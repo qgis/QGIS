@@ -13,12 +13,9 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
-import tempfile
-import shutil
-import glob
 
-from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsProviderRegistry
-from PyQt4.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
+from qgis.core import QgsVectorLayer, QgsFeatureRequest
+from PyQt4.QtCore import QDate, QTime, QDateTime, QVariant
 from qgis.testing import (
     start_app,
     unittest

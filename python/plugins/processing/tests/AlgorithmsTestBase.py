@@ -25,21 +25,18 @@ __copyright__ = '(C) 2016, Matthias Kuhn'
 
 __revision__ = ':%H$'
 
-import qgis
+import qgis # switch sip api
 import os
 import yaml
 import nose2
 import gdal
 import hashlib
 import tempfile
-import re
 
 from osgeo.gdalconst import GA_ReadOnly
 
 import processing
 
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.gui import AlgorithmExecutor
 
 from qgis.core import (
     QgsVectorLayer,
@@ -192,7 +189,7 @@ class AlgorithmsTest():
                 try:
                     results[id]
                 except KeyError as e:
-                    raise KeyError('Expected result {} does not exist in {}'.format(e.message, results.keys()))
+                    raise KeyError('Expected result {} does not exist in {}'.format(unicode(e), results.keys()))
 
                 result_lyr = QgsVectorLayer(results[id], id, 'ogr')
 

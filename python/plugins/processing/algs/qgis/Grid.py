@@ -28,7 +28,6 @@ __revision__ = '$Format:%H$'
 import os
 import math
 
-from PyQt4.QtGui import QIcon
 from PyQt4.QtCore import QVariant
 from qgis.core import QgsRectangle, QgsCoordinateReferenceSystem, QGis, QgsField, QgsFeature, QgsGeometry, QgsPoint
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -86,10 +85,6 @@ class Grid(GeoAlgorithm):
 
         width = bbox.width()
         height = bbox.height()
-        centerX = bbox.center().x()
-        centerY = bbox.center().y()
-        #~ originX = centerX - width / 2.0
-        #~ originY = centerY - height / 2.0
         originX = bbox.xMinimum()
         originY = bbox.yMaximum()
 
