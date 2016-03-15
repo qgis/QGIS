@@ -47,7 +47,7 @@ MACRO(PYQT_WRAP_UI outfiles )
     ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
       COMMAND ${PYUIC_WRAPPER} "${PYUIC_PROGRAM}" "${PYUIC_WRAPPER_PATH}" "${QGIS_OUTPUT_DIRECTORY}/python" "${PYTHON_EXECUTABLE}" ${infile} -o ${outfile}
       MAIN_DEPENDENCY ${infile}
-      DEPENDS pygui pycore
+      DEPENDS pygui pycore pyqtcompat
     )
     SET(${outfiles} ${${outfiles}} ${outfile})
   ENDFOREACH(it)
