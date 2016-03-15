@@ -173,10 +173,10 @@ def _executeAlgorithm(alg):
     message = alg.checkBeforeOpeningParametersDialog()
     if message:
         dlg = MessageDialog()
-        dlg.setTitle(tr('Missing dependency'))
+        dlg.setTitle(Processing.tr('Missing dependency'))
         dlg.setMessage(
-            tr('<h3>Missing dependency. This algorithm cannot '
-               'be run :-( </h3>\n%s') % message)
+            Processing.tr('<h3>Missing dependency. This algorithm cannot '
+                          'be run :-( </h3>\n%s') % message)
         dlg.exec_()
         return
     alg = alg.getCopy()
