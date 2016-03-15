@@ -26,19 +26,15 @@ The content of this file is based on
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import OracleDBConnector
 
-from PyQt4.QtCore import QSettings
-from PyQt4.QtGui import QIcon, QAction, QApplication, QMessageBox
+from PyQt4.QtCore import Qt, QSettings, QPyNullVariant
+from PyQt4.QtGui import QIcon, QAction, QApplication, QMessageBox, QKeySequence
+
+from qgis.core import QgsVectorLayer
 
 from ..plugin import ConnectionError, InvalidDataException, DBPlugin, \
     Database, Schema, Table, VectorTable, TableField, TableConstraint, \
-    TableIndex, TableTrigger, TableRule
+    TableIndex, TableTrigger
 
-try:
-    from . import resources_rc
-except ImportError:
-    pass
-
-from ..html_elems import HtmlParagraph, HtmlList, HtmlTable
 
 from qgis.core import QgsCredentials
 
@@ -198,7 +194,6 @@ class ORDatabase(Database):
     def toSqlLayer(self, sql, geomCol, uniqueCol,
                    layerName=u"QueryLayer", layerType=None,
                    avoidSelectById=False, filter=""):
-        from qgis.core import QgsMapLayer, QgsVectorLayer
 
         uri = self.uri()
         con = self.database().connector

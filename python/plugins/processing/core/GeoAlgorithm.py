@@ -33,7 +33,6 @@ import copy
 
 from PyQt4.QtGui import QIcon
 from PyQt4.QtCore import QCoreApplication, QSettings
-from qgis.core import QGis, QgsRasterFileWriter
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig

@@ -544,7 +544,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             e.setDropAction(Qt.CopyAction)
             e.accept()
         else:
-            QsciScintillaCompat.dropEvent(self, e)
+            QsciScintillaCompat.dropEvent(self, e)  # FIXME
 
     def insertFromDropPaste(self, textDP):
         pasteList = unicode(textDP).splitlines()

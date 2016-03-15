@@ -31,7 +31,7 @@ import os
 import json
 
 from PyQt4 import uic
-from PyQt4.QtGui import QDialog, QMessageBox, QTreeWidgetItem
+from PyQt4.QtGui import QDialog, QTreeWidgetItem
 
 from processing.core.ProcessingLog import ProcessingLog
 

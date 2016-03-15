@@ -22,9 +22,9 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import Qt, QObject, QSettings, QByteArray, SIGNAL, pyqtSignal
+from PyQt4.QtCore import Qt, pyqtSignal
 from PyQt4.QtGui import QDialog, QWidget, QAction, QKeySequence, \
-    QDialogButtonBox, QApplication, QCursor, QMessageBox, QClipboard, QInputDialog, QIcon, QStyledItemDelegate, QStandardItemModel, QStandardItem
+    QApplication, QCursor, QClipboard, QInputDialog, QIcon, QStyledItemDelegate, QStandardItemModel, QStandardItem
 from PyQt4.Qsci import QsciAPIs
 
 from qgis.core import QgsProject

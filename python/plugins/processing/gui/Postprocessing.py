@@ -39,7 +39,6 @@ from processing.core.SilentProgress import SilentProgress
 
 from processing.gui.ResultsDialog import ResultsDialog
 from processing.gui.RenderingStyles import RenderingStyles
-from processing.gui.MessageDialog import MessageDialog
 
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputVector

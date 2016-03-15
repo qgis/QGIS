@@ -30,11 +30,6 @@ from qgis.gui import QgsMessageBar
 from ..plugin import ConnectionError, InvalidDataException, DBPlugin, Database, Schema, Table, VectorTable, RasterTable, \
     TableField, TableConstraint, TableIndex, TableTrigger, TableRule
 
-try:
-    from . import resources_rc
-except ImportError:
-    pass
-
 import re
 
 

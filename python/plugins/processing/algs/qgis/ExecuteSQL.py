@@ -25,13 +25,9 @@ __copyright__ = '(C) 2016, Hugo Mercier'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (
-    QgsFeature,
-    QgsVirtualLayerDefinition,
-    QgsVectorLayer,
-    QgsCoordinateReferenceSystem,
-    QgsWKBTypes
-)
+from qgis.core import (QgsFeature,
+                       QgsVirtualLayerDefinition, QgsVectorLayer,
+                       QgsCoordinateReferenceSystem, QgsWKBTypes)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException

@@ -33,7 +33,6 @@ __revision__ = '$Format:%H$'
 import installer
 from installer import initPluginInstaller
 
-
 def instance():
     if not installer.pluginInstaller:
         installer.initPluginInstaller()

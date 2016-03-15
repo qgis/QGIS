@@ -13,6 +13,7 @@ SET(PYQT_COMPAT_FILES
   QtXml.py
   QtSql.py
   QtTest.py
+  QtSvg.py
   Qsci.py
   uic/__init__.py
   uic/pyuic.py

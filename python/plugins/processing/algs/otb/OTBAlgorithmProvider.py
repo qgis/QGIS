@@ -67,7 +67,7 @@ class OTBAlgorithmProvider(AlgorithmProvider):
         folder = OTBUtils.compatibleDescriptionPath(version)
         if folder is None:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                   self.tr('Problem with OTB installation: installed OTB version (%s) is not supported' % version))
+                                   self.tr('Problem with OTB installation: installed OTB version (%s) is not supported') % version)
             return
 
         for descriptionFile in os.listdir(folder):
@@ -79,10 +79,10 @@ class OTBAlgorithmProvider(AlgorithmProvider):
                         self.algs.append(alg)
                     else:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr("Could not open OTB algorithm: %s" % descriptionFile))
+                                               self.tr("Could not open OTB algorithm: %s") % descriptionFile)
                 except Exception as e:
                     ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                           self.tr("Could not open OTB algorithm: %s" % descriptionFile))
+                                           self.tr("Could not open OTB algorithm: %s\n%s") % (descriptionFile, unicode(e)))
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)

@@ -31,7 +31,7 @@ from PyQt4.QtCore import QSettings
 from PyQt4.QtGui import QIcon, QTreeWidgetItem, QMessageBox
 from PyQt4 import uic
 from processing.algs.qgis.postgis_utils import GeoDB
-from qgis.core import *
+from qgis.core import QgsDataSourceURI, QgsCredentials
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(

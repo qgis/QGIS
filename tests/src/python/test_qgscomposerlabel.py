@@ -14,7 +14,8 @@ test_qgscomposerlabel.py
  *                                                                         *
  ***************************************************************************/
 '''
-import qgis
+import qgis # switch sip api
+
 from qgis.testing import start_app, unittest
 from PyQt4.QtCore import QFileInfo, QDate, QDateTime
 from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsMapRenderer, QgsComposition, QgsComposerLabel, QgsFeatureRequest, QgsFeature, QgsExpression

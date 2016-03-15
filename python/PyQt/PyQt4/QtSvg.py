@@ -2,11 +2,11 @@
 
 """
 ***************************************************************************
-    OgrAlgorithm.py
+    QtSvg.py
     ---------------------
-    Date                 : November 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    Date                 : March 2016
+    Copyright            : (C) 2016 by Jürgen E. Fischer
+    Email                : jef at norbit dot de
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -17,22 +17,10 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'November 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
-
+__author__ = 'Jürgen E. Fischer'
+__date__ = 'March 2016'
+__copyright__ = '(C) 2016, Jürgen E. Fischer'
 # This will get replaced with a git SHA1 when you do a git archive
-
 __revision__ = '$Format:%H$'
 
-from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.tools import vector
-
-
-class OgrAlgorithm(GdalAlgorithm):
-
-    def ogrConnectionString(self, uri):
-        return vector.ogrConnectionString(uri)
-
-    def ogrLayerName(self, uri):
-        return vector.ogrLayerName(uri)
+from PyQt4.QtSvg import *

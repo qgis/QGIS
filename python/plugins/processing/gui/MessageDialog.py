@@ -28,7 +28,6 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt4 import uic
-from PyQt4.QtCore import QUrl
 from PyQt4.QtGui import QDesktopServices, QDockWidget
 
 from qgis.utils import iface

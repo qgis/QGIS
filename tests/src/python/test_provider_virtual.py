@@ -12,20 +12,15 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis # switch sip api
 import os
 
-from qgis.core import (QGis,
-                       QgsVectorLayer,
+from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsFeatureRequest,
-                       QgsField,
                        QgsGeometry,
-                       QgsPoint,
                        QgsMapLayerRegistry,
                        QgsRectangle,
-                       QgsErrorMessage,
-                       QgsProviderRegistry,
                        QgsVirtualLayerDefinition,
                        QgsWKBTypes,
                        QgsProject

@@ -28,14 +28,13 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt4 import uic
-from PyQt4.QtCore import Qt, QSettings, QCoreApplication, SIGNAL
+from PyQt4.QtCore import Qt, QCoreApplication
 from PyQt4.QtGui import QMenu, QAction, QTreeWidgetItem, QLabel, QMessageBox
 from qgis.utils import iface
 
 from processing.core.Processing import Processing
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui import AlgorithmClassification
 from processing.gui.AlgorithmDialog import AlgorithmDialog

@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis # switch sip api
 
 from qgis.core import (QgsVectorGradientColorRampV2,
                        QgsGradientStop,
@@ -20,7 +20,7 @@ from qgis.core import (QgsVectorGradientColorRampV2,
                        QgsRandomColorsV2,
                        QgsVectorColorBrewerColorRampV2)
 from PyQt4.QtGui import QColor, QGradient
-from qgis.testing import (TestCase, unittest)
+from qgis.testing import unittest
 
 
 class PyQgsVectorColorRamp(unittest.TestCase):
@@ -130,7 +130,7 @@ class PyQgsVectorColorRamp(unittest.TestCase):
         self.assertEqual(g.stops()[2], (0.9, QColor(40, 60, 100, 127)))
         self.assertEqual(g.stops()[3], (1.0, QColor(0, 200, 0, 127)))
 
-    def testQgsVectorRandomColorRampV2(self):
+    def testQgsVectorRandomColorRampV2_2(self):
         # test random color ramp
         r = QgsVectorRandomColorRampV2(5)
         self.assertEqual(r.type(), 'random')

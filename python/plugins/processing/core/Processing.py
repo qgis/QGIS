@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import sys
 
 from PyQt4.QtCore import Qt, QCoreApplication
-from PyQt4.QtGui import QApplication, QCursor, QAction, QMenu
+from PyQt4.QtGui import QApplication, QCursor
 
 from qgis.utils import iface
 from qgis.core import QgsMessageLog
@@ -40,8 +40,6 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.MessageBarProgress import MessageBarProgress
-from processing.gui.MessageDialog import MessageDialog
-from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.AlgorithmExecutor import runalg

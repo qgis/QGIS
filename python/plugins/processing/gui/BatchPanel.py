@@ -29,7 +29,7 @@ import os
 import json
 
 from PyQt4 import uic
-from PyQt4.QtGui import (QWidget, QIcon, QTableWidgetItem, QComboBox, QLineEdit,
+from PyQt4.QtGui import (QIcon, QTableWidgetItem, QComboBox, QLineEdit,
                          QHeaderView, QFileDialog, QMessageBox)
 
 from qgis.core import QgsApplication

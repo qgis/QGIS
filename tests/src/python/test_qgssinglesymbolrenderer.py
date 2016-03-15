@@ -23,7 +23,8 @@ __copyright__ = '(C) 2015, Matthiasd Kuhn'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis # switch sip api
+
 import os
 
 from PyQt4.QtCore import QSize
@@ -34,11 +35,6 @@ from qgis.core import (QgsVectorLayer,
                        QgsMultiRenderChecker,
                        QgsSingleSymbolRendererV2,
                        QgsFillSymbolV2,
-                       QgsMarkerSymbolV2,
-                       QgsRendererCategoryV2,
-                       QgsCategorizedSymbolRendererV2,
-                       QgsGraduatedSymbolRendererV2,
-                       QgsRendererRangeV2,
                        QgsFeatureRequest
                        )
 from qgis.testing import (start_app,

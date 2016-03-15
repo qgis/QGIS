@@ -35,7 +35,6 @@ from PyQt4.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings, QByt
 from PyQt4.QtGui import QGraphicsView, QTreeWidget, QIcon, QMessageBox, QFileDialog, QImage, QPainter, QTreeWidgetItem
 from qgis.core import QgsApplication
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog

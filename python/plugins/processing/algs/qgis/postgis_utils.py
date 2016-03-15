@@ -153,7 +153,7 @@ class GeoDB:
         try:
             self.con = psycopg2.connect(self.con_info())
         except psycopg2.OperationalError as e:
-            raise DbError(e.message)
+            raise DbError(unicode(e))
 
         self.has_postgis = self.check_postgis()
 
@@ -751,7 +751,7 @@ class GeoDB:
         try:
             cursor.execute(sql)
         except psycopg2.Error as e:
-            raise DbError(e.message, e.cursor.query)
+            raise DbError(unicode(e), e.cursor.query)
 
     def _exec_sql_and_commit(self, sql):
         """Tries to execute and commit some action, on error it rolls
@@ -820,4 +820,4 @@ if __name__ == '__main__':
     # try:
     # ....db.create_table('trrrr', [('id','serial'), ('test','text')])
     # except DbError, e:
-    # ....print e.message, e.query
+    # ....print unicode(e), e.query

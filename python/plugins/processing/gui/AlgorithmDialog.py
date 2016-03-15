@@ -35,7 +35,7 @@ from PyQt4.QtGui import (QMessageBox,
                          QWidget,
                          QVBoxLayout)
 
-from qgis.core import *
+from qgis.core import QgsMapLayerRegistry
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig

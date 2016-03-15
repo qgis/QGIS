@@ -337,6 +337,12 @@ MAPPING = {
             "QTest",
         ]),
     ],
+    "PyQt4.QtSvg": [
+        ("PyQt.QtSvg", [
+            "QSvgRenderer",
+            "QSvgGenerator"
+        ]),
+    ],
     "PyQt4": [
         ("PyQt", [
             "QtCore",
@@ -345,6 +351,7 @@ MAPPING = {
             "QtXml",
             "QtWebkit",
             "QtSql",
+            "QtSvg",
             "Qsci",
             "uic",
         ])

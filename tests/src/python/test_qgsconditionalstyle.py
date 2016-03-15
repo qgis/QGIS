@@ -22,9 +22,7 @@ from qgis.core import (QgsConditionalStyle,
 from qgis.testing import (start_app,
                           unittest,
                           )
-from utilities import (unitTestDataPath,
-                       compareWkt
-                       )
+from utilities import unitTestDataPath
 from PyQt4.QtCore import QVariant
 #
 start_app()

@@ -23,12 +23,10 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import QTime
+from PyQt4.QtCore import QTime, SIGNAL
 
-from ..data_model import TableDataModel, SqlResultModel, \
-    BaseTableModel, TableFieldsModel, SimpleTableModel
+from ..data_model import TableDataModel, SqlResultModel, BaseTableModel
 from ..plugin import DbError
-from qgis.core import *
 
 
 class ORTableDataModel(TableDataModel):

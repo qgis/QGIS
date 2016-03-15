@@ -49,7 +49,7 @@ class GeoDB:
             self.con = sqlite.connect(self.con_info())
 
         except (sqlite.InterfaceError, sqlite.OperationalError) as e:
-            raise DbError(e.message)
+            raise DbError(unicode(e))
 
         self.has_spatialite = self.check_spatialite()
         if not self.has_spatialite:
@@ -84,7 +84,7 @@ class GeoDB:
             self.con = sqlite.connect(self.con_info())
 
         except (sqlite.InterfaceError, sqlite.OperationalError) as e:
-            raise DbError(e.message)
+            raise DbError(unicode(e))
 
         return self.check_spatialite()
 
@@ -106,7 +106,7 @@ class GeoDB:
         try:
             cursor.execute(sql)
         except (sqlite.Error, sqlite.ProgrammingError, sqlite.Warning, sqlite.InterfaceError, sqlite.OperationalError) as e:
-            raise DbError(e.message, sql)
+            raise DbError(unicode(e), sql)
 
     def _exec_sql_and_commit(self, sql):
         """Tries to execute and commit some action, on error it rolls

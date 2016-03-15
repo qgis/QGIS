@@ -31,11 +31,6 @@ from qgis.gui import QgsMessageBar
 from ..plugin import DBPlugin, Database, Table, VectorTable, RasterTable, TableField, TableIndex, TableTrigger, \
     InvalidDataException
 
-try:
-    from . import resources_rc
-except ImportError:
-    pass
-
 
 def classFactory():
     return SpatiaLiteDBPlugin

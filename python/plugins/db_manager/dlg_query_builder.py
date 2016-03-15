@@ -21,8 +21,8 @@ email                : hugo dot mercier at oslandia dot com
 Query builder dialog, based on the QSpatialite plugin (GPLv2+) by Romain Riviere
 """
 
-from PyQt.QtCore import QObject, QEvent
-from PyQt.QtWidgets import QDialog, QMessageBox
+from PyQt4.QtCore import QObject, QEvent, SIGNAL
+from PyQt4.QtGui import QDialog, QMessageBox, QTextEdit
 
 from .ui.ui_DlgQueryBuilder import Ui_DbManagerQueryBuilderDlg as Ui_Dialog
 from .db_plugins.plugin import VectorTable
@@ -301,7 +301,7 @@ class QueryBuilderDlg(QDialog):
             tab_idx = idx.split(".")[0][1:-1]  # remove "
             col_idx = idx.split(".")[1][1:-1]  # remove '
         except:
-            pop_up_error("All fields are necessary", self)
+            pop_up_error("All fields are necessary", self)  # FIXME
         tgt = self.ui.table_target.currentText()
         if tgt in (None, "", " ", "Table (Target)"):
             return

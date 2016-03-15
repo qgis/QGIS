@@ -32,7 +32,7 @@ from PyQt4 import uic
 from PyQt4.QtCore import QCoreApplication, QSettings
 from PyQt4.QtGui import QDialog, QMenu, QAction, QCursor, QFileDialog
 from qgis.gui import QgsEncodingFileDialog
-from qgis.core import *
+from qgis.core import QgsDataSourceURI, QgsCredentials
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.outputs import OutputVector

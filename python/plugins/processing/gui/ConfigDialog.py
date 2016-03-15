@@ -37,7 +37,7 @@ from qgis.gui import QgsDoubleSpinBox, QgsSpinBox
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.Processing import Processing
-from processing.gui.menus import updateMenus, defaultMenuEntries
+from processing.gui.menus import updateMenus
 
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]

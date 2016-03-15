@@ -31,7 +31,7 @@ import time
 import sys
 import uuid
 
-from PyQt4.QtCore import QFileInfo, QDir
+from PyQt4.QtCore import QDir
 from qgis.core import QgsApplication
 
 numExported = 1

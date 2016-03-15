@@ -24,14 +24,8 @@ __copyright__ = '(C) 2015, Matthias Kuhn'
 __revision__ = '$Format:%H$'
 
 import sip
-
-try:
-    apis = ["QDate", "QDateTime", "QString", "QTextStream", "QTime", "QUrl", "QVariant"]
-    for api in apis:
-        sip.setapi(api, 2)
-except ValueError:
-    # API has already been set so we can't set it again.
-    pass
+for api in ["QDate", "QDateTime", "QString", "QTextStream", "QTime", "QUrl", "QVariant"]:
+    sip.setapi(api, 2)
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import QItemSelectionModel, QSortFilterProxyModel

@@ -19,7 +19,7 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from PyQt4.QtCore import Qt, QObject, QEvent, QSettings, QCoreApplication, QFileInfo, QSize, QDir, SIGNAL
+from PyQt4.QtCore import Qt, QObject, QEvent, QSettings, QCoreApplication, QFileInfo, QSize, SIGNAL
 from PyQt4.QtGui import QFont, QFontMetrics, QColor, QShortcut, QKeySequence, QMenu, QApplication, QCursor, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
 from PyQt4.Qsci import (QsciScintilla,
                         QsciLexerPython,

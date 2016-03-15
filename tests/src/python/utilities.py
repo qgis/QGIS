@@ -11,18 +11,17 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis # switch sip api
+
 import os
 import sys
 import glob
 import platform
 import tempfile
 
-from PyQt.QtCore import QSize, QDir
-from PyQt.QtWidgets import QWidget
+from PyQt4.QtCore import QDir
 
 from qgis.core import (
-    QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsVectorFileWriter,
     QgsMapLayerRegistry,
@@ -31,7 +30,6 @@ from qgis.core import (
     QgsMapRendererSequentialJob,
     QgsFontUtils
 )
-from qgis.gui import QgsMapCanvas
 from qgis.testing import start_app
 import hashlib
 import re

@@ -29,6 +29,7 @@ import struct
 import numpy
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 
 def scanraster(layer, progress):

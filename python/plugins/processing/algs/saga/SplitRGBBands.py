@@ -30,7 +30,7 @@ from PyQt4.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.outputs import OutputRaster
-from processing.tools.system import getTempFilename, isWindows
+from processing.tools.system import getTempFilename
 import SagaUtils
 
 pluginPath = os.path.normpath(os.path.join(

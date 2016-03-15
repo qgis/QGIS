@@ -23,10 +23,11 @@ __copyright__ = '(C) 2015, Matthias Kuhn'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
-import qgis
+import qgis # switch sip api
 
-from PyQt.QtCore import QSize
+import os
+
+from PyQt4.QtCore import QSize
 
 from qgis.core import (
     QgsVectorLayer,

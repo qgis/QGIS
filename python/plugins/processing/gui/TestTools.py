@@ -33,7 +33,7 @@ from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
 
 from PyQt4.QtCore import QCoreApplication, QMetaObject
-from PyQt4.QtGui import QMessageBox, QDialog, QVBoxLayout, QTextEdit
+from PyQt4.QtGui import QDialog, QVBoxLayout, QTextEdit
 
 from processing.core.Processing import Processing
 from processing.core.outputs import (

@@ -15,7 +15,7 @@ qgscompositionchecker.py - check rendering of Qgscomposition against an expected
  ***************************************************************************/
 '''
 
-import qgis
+import qgis # switch sip api
 
 from PyQt4.QtCore import QSize, QDir, QFileInfo
 from PyQt4.QtGui import QImage, QPainter

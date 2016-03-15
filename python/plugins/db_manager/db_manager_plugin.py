@@ -23,11 +23,6 @@ email                : brush.tyler@gmail.com
 from PyQt4.QtCore import Qt, QObject, SIGNAL
 from PyQt4.QtGui import QAction, QIcon, QApplication
 
-try:
-    from . import resources_rc
-except ImportError:
-    pass
-
 
 class DBManagerPlugin:
 
