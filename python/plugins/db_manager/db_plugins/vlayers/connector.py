@@ -19,13 +19,31 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import QFile, QUrl, QTemporaryFile
-from PyQt4.QtGui import QApplication
+from PyQt4.QtCore import (
+    QFile,
+    QUrl,
+    QTemporaryFile
+)
+from PyQt4.QtGui import (
+    QApplication
+)
 
-from ..connector import DBConnector
-from ..plugin import ConnectionError, DbError, Table
+from ..connector import (
+    DBConnector
+)
+from ..plugin import (
+    ConnectionError,
+    DbError,
+    Table
+)
 
-from qgis.core import *
+from qgis.core import (
+    QGis,
+    QgsMapLayerRegistry,
+    QgsMapLayer,
+    QgsCoordinateReferenceSystem,
+    QgsDataSourceURI
+)
 
 import sqlite3
 
