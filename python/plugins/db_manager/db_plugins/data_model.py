@@ -20,8 +20,9 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import Qt, QTime, QRegExp, QAbstractTableModel
-from PyQt4.QtGui import QFont, QStandardItemModel, QStandardItem, QApplication
+from PyQt.QtCore import Qt, QTime, QRegExp, QAbstractTableModel
+from PyQt.QtGui import QFont, QStandardItemModel, QStandardItem
+from PyQt.QtWidgets import QApplication
 
 from .plugin import DbError
 
@@ -266,7 +267,7 @@ class TableConstraintsModel(SimpleTableModel):
                                          QApplication.translate("DBManagerPlugin", 'Column(s)')], editable, parent)
 
     def append(self, constr):
-        field_names = map(lambda k_v: unicode(k_v[1].name), constr.fields().iteritems())
+        field_names = map(lambda k_v: unicode(k_v[1].name), iter(constr.fields().items()))
         data = [constr.name, constr.type2String(), u", ".join(field_names)]
         self.appendRow(self.rowFromData(data))
         row = self.rowCount() - 1
@@ -302,7 +303,7 @@ class TableIndexesModel(SimpleTableModel):
                                          QApplication.translate("DBManagerPlugin", 'Column(s)')], editable, parent)
 
     def append(self, idx):
-        field_names = map(lambda k_v1: unicode(k_v1[1].name), idx.fields().iteritems())
+        field_names = map(lambda k_v1: unicode(k_v1[1].name), iter(idx.fields().items()))
         data = [idx.name, u", ".join(field_names)]
         self.appendRow(self.rowFromData(data))
         row = self.rowCount() - 1

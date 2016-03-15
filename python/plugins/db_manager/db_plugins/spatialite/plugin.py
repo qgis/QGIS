@@ -23,13 +23,16 @@ email                : brush.tyler@gmail.com
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import SpatiaLiteDBConnector
 
-from PyQt4.QtCore import Qt, SIGNAL, QSettings, QFileInfo
-from PyQt4.QtGui import QIcon, QApplication, QAction, QFileDialog
+from PyQt.QtCore import Qt, QSettings, QFileInfo
+from PyQt.QtGui import QIcon
+from PyQt.QtWidgets import QApplication, QAction, QFileDialog
 from qgis.core import QgsDataSourceURI
 from qgis.gui import QgsMessageBar
 
 from ..plugin import DBPlugin, Database, Table, VectorTable, RasterTable, TableField, TableIndex, TableTrigger, \
     InvalidDataException
+
+from . import resources_rc
 
 
 def classFactory():
@@ -96,7 +99,7 @@ class SpatiaLiteDBPlugin(DBPlugin):
         uri = QgsDataSourceURI()
         uri.setDatabase(filename)
         self.addConnection(conn_name, uri)
-        index.internalPointer().emit(SIGNAL('itemChanged'), index.internalPointer())
+        index.internalPointer().itemChanged.emit(index.internalPointer())
 
 
 class SLDatabase(Database):
@@ -233,14 +236,14 @@ class SLVectorTable(SLTable, VectorTable):
         return self.database().connector.hasSpatialIndex((self.schemaName(), self.name), geom_column)
 
     def createSpatialIndex(self, geom_column=None):
-        self.aboutToChange()
+        self.emitAboutToChange()
         ret = VectorTable.createSpatialIndex(self, geom_column)
         if ret is not False:
             self.database().refresh()
         return ret
 
     def deleteSpatialIndex(self, geom_column=None):
-        self.aboutToChange()
+        self.emitAboutToChange()
         ret = VectorTable.deleteSpatialIndex(self, geom_column)
         if ret is not False:
             self.database().refresh()

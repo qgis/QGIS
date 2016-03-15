@@ -22,10 +22,10 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import Qt, pyqtSignal
-from PyQt4.QtGui import QDialog, QWidget, QAction, QKeySequence, \
-    QApplication, QCursor, QClipboard, QInputDialog, QIcon, QStyledItemDelegate, QStandardItemModel, QStandardItem
-from PyQt4.Qsci import QsciAPIs
+from PyQt.QtCore import Qt, pyqtSignal
+from PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputDialog, QStyledItemDelegate
+from PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardItemModel, QStandardItem
+from PyQt.Qsci import QsciAPIs
 
 from qgis.core import QgsProject
 
@@ -245,7 +245,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
         # get a new layer name
         names = []
-        for layer in QgsMapLayerRegistry.instance().mapLayers().values():
+        for layer in list(QgsMapLayerRegistry.instance().mapLayers().values()):
             names.append(layer.name())
 
         layerName = self.layerNameEdit.text()
@@ -415,7 +415,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             dictionary = getSqlDictionary()
 
         wordlist = []
-        for name, value in dictionary.iteritems():
+        for name, value in dictionary.items():
             wordlist += value  # concat lists
         wordlist = list(set(wordlist))  # remove duplicates
 

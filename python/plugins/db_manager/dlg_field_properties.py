@@ -24,7 +24,7 @@ __copyright__ = '(C) 2012, Giuseppe Sucameli'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import SIGNAL
-from PyQt4.QtGui import QDialog, QMessageBox
+from PyQt.QtWidgets import QDialog, QMessageBox
 
 from .db_plugins.plugin import TableField
 
@@ -44,7 +44,7 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
             self.cboType.addItem(item)
         self.setField(self.fld)
 
-        self.connect(self.buttonBox, SIGNAL("accepted()"), self.onOK)
+        self.buttonBox.accepted.connect(self.onOK)
 
     def setField(self, fld):
         if fld is None:

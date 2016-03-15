@@ -19,7 +19,7 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import QUrl, QTemporaryFile
+from PyQt.QtCore import QUrl, QTemporaryFile
 
 from ..connector import DBConnector
 from ..plugin import Table
@@ -90,7 +90,7 @@ class VLayerRegistry:
         self.set(k, l)
 
     def items(self):
-        return self.layers.items()
+        return list(self.layers.items())
 
     def getLayer(self, l):
         lid = self.layers.get(l)
@@ -116,7 +116,7 @@ class VLayerConnector(DBConnector):
         return DummyCursor(sql)
 
     def _get_cursor(self, name=None):
-        print "_get_cursor_", name
+        print("_get_cursor_", name)
 
     def _get_cursor_columns(self, c):
         tf = QTemporaryFile()
@@ -187,7 +187,7 @@ class VLayerConnector(DBConnector):
         reg = VLayerRegistry.instance()
         VLayerRegistry.instance().reset()
         lst = []
-        for _, l in QgsMapLayerRegistry.instance().mapLayers().items():
+        for _, l in list(QgsMapLayerRegistry.instance().mapLayers().items()):
             if l.type() == QgsMapLayer.VectorLayer:
 
                 lname = l.name()
@@ -282,7 +282,7 @@ class VLayerConnector(DBConnector):
         return r
 
     def getViewDefinition(self, view):
-        print "**unimplemented** getViewDefinition"
+        print("**unimplemented** getViewDefinition")
 
     def getSpatialRefInfo(self, srid):
         crs = QgsCoordinateReferenceSystem(srid)
@@ -295,117 +295,117 @@ class VLayerConnector(DBConnector):
         return False
 
     def createTable(self, table, field_defs, pkey):
-        print "**unimplemented** createTable"
+        print("**unimplemented** createTable")
         return False
 
     def deleteTable(self, table):
-        print "**unimplemented** deleteTable"
+        print("**unimplemented** deleteTable")
         return False
 
     def emptyTable(self, table):
-        print "**unimplemented** emptyTable"
+        print("**unimplemented** emptyTable")
         return False
 
     def renameTable(self, table, new_table):
-        print "**unimplemented** renameTable"
+        print("**unimplemented** renameTable")
         return False
 
     def moveTable(self, table, new_table, new_schema=None):
-        print "**unimplemented** moveTable"
+        print("**unimplemented** moveTable")
         return False
 
     def createView(self, view, query):
-        print "**unimplemented** createView"
+        print("**unimplemented** createView")
         return False
 
     def deleteView(self, view):
-        print "**unimplemented** deleteView"
+        print("**unimplemented** deleteView")
         return False
 
     def renameView(self, view, new_name):
-        print "**unimplemented** renameView"
+        print("**unimplemented** renameView")
         return False
 
     def runVacuum(self):
-        print "**unimplemented** runVacuum"
+        print("**unimplemented** runVacuum")
         return False
 
     def addTableColumn(self, table, field_def):
-        print "**unimplemented** addTableColumn"
+        print("**unimplemented** addTableColumn")
         return False
 
     def deleteTableColumn(self, table, column):
-        print "**unimplemented** deleteTableColumn"
+        print("**unimplemented** deleteTableColumn")
 
     def updateTableColumn(self, table, column, new_name, new_data_type=None, new_not_null=None, new_default=None):
-        print "**unimplemented** updateTableColumn"
+        print("**unimplemented** updateTableColumn")
 
     def renameTableColumn(self, table, column, new_name):
-        print "**unimplemented** renameTableColumn"
+        print("**unimplemented** renameTableColumn")
         return False
 
     def setColumnType(self, table, column, data_type):
-        print "**unimplemented** setColumnType"
+        print("**unimplemented** setColumnType")
         return False
 
     def setColumnDefault(self, table, column, default):
-        print "**unimplemented** setColumnDefault"
+        print("**unimplemented** setColumnDefault")
         return False
 
     def setColumnNull(self, table, column, is_null):
-        print "**unimplemented** setColumnNull"
+        print("**unimplemented** setColumnNull")
         return False
 
     def isGeometryColumn(self, table, column):
-        print "**unimplemented** isGeometryColumn"
+        print("**unimplemented** isGeometryColumn")
         return False
 
     def addGeometryColumn(self, table, geom_column='geometry', geom_type='POINT', srid=-1, dim=2):
-        print "**unimplemented** addGeometryColumn"
+        print("**unimplemented** addGeometryColumn")
         return False
 
     def deleteGeometryColumn(self, table, geom_column):
-        print "**unimplemented** deleteGeometryColumn"
+        print("**unimplemented** deleteGeometryColumn")
         return False
 
     def addTableUniqueConstraint(self, table, column):
-        print "**unimplemented** addTableUniqueConstraint"
+        print("**unimplemented** addTableUniqueConstraint")
         return False
 
     def deleteTableConstraint(self, table, constraint):
-        print "**unimplemented** deleteTableConstraint"
+        print("**unimplemented** deleteTableConstraint")
         return False
 
     def addTablePrimaryKey(self, table, column):
-        print "**unimplemented** addTablePrimaryKey"
+        print("**unimplemented** addTablePrimaryKey")
         return False
 
     def createTableIndex(self, table, name, column, unique=False):
-        print "**unimplemented** createTableIndex"
+        print("**unimplemented** createTableIndex")
         return False
 
     def deleteTableIndex(self, table, name):
-        print "**unimplemented** deleteTableIndex"
+        print("**unimplemented** deleteTableIndex")
         return False
 
     def createSpatialIndex(self, table, geom_column='geometry'):
-        print "**unimplemented** createSpatialIndex"
+        print("**unimplemented** createSpatialIndex")
         return False
 
     def deleteSpatialIndex(self, table, geom_column='geometry'):
-        print "**unimplemented** deleteSpatialIndex"
+        print("**unimplemented** deleteSpatialIndex")
         return False
 
     def hasSpatialIndex(self, table, geom_column='geometry'):
-        print "**unimplemented** hasSpatialIndex"
+        print("**unimplemented** hasSpatialIndex")
         return False
 
     def execution_error_types(self):
-        print "**unimplemented** execution_error_types"
+        print("**unimplemented** execution_error_types")
         return False
 
     def connection_error_types(self):
-        print "**unimplemented** connection_error_types"
+        print("**unimplemented** connection_error_types")
         return False
 
     def getSqlDictionary(self):

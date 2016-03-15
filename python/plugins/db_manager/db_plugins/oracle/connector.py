@@ -23,7 +23,7 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import QPyNullVariant
+from PyQt.QtCore import QPyNullVariant
 from PyQt4.QtSql import QSqlDatabase
 
 from ..connector import DBConnector
@@ -31,7 +31,7 @@ from ..plugin import ConnectionError, DbError, Table
 
 import os
 from qgis.core import QGis, QgsApplication
-import QtSqlDB
+from . import QtSqlDB
 import sqlite3
 
 
@@ -784,7 +784,7 @@ class OracleDBConnector(DBConnector):
                 srids.append(-1)
             else:
                 srids.append(int(row[1]))
-            if int(row[0]) in OracleDBConnector.ORGeomTypes.keys():
+            if int(row[0]) in list(OracleDBConnector.ORGeomTypes.keys()):
                 geomtypes.append(OracleDBConnector.ORGeomTypes[int(row[0])])
             else:
                 geomtypes.append(QGis.WKBUnknown)

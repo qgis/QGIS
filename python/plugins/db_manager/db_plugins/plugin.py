@@ -20,8 +20,9 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import Qt, QObject, QSettings, SIGNAL
-from PyQt4.QtGui import QApplication, QAction, QKeySequence, QIcon, QMenu, QInputDialog, QMessageBox
+from PyQt.QtCore import Qt, QObject, QSettings, pyqtSignal
+from PyQt.QtWidgets import QApplication, QAction, QMenu, QInputDialog, QMessageBox
+from PyQt.QtGui import QKeySequence, QIcon
 
 from qgis.gui import QgsMessageBar
 from ..db_plugins import createDbPlugin
@@ -75,6 +76,9 @@ class DbError(BaseError):
 
 
 class DBPlugin(QObject):
+    deleted = pyqtSignal()
+    changed = pyqtSignal()
+    aboutToChange = pyqtSignal()
 
     def __init__(self, conn_name, parent=None):
         QObject.__init__(self, parent)
@@ -116,7 +120,7 @@ class DBPlugin(QObject):
         settings = QSettings()
         settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), self.connectionName()))
         settings.remove("")
-        self.emit(SIGNAL('deleted'))
+        self.deleted.emit()
         return True
 
     @classmethod
@@ -181,6 +185,9 @@ class DBPlugin(QObject):
 
 
 class DbItemObject(QObject):
+    changed = pyqtSignal()
+    aboutToChange = pyqtSignal()
+    deleted = pyqtSignal()
 
     def __init__(self, parent=None):
         QObject.__init__(self, parent)
@@ -189,10 +196,10 @@ class DbItemObject(QObject):
         return None
 
     def refresh(self):
-        self.emit(SIGNAL('changed'))  # refresh the item data reading them from the db
+        self.changed.emit()  # refresh the item data reading them from the db
 
-    def aboutToChange(self):
-        self.emit(SIGNAL('aboutToChange'))
+    def emitAboutToChange(self):
+        self.aboutToChange.emit()
 
     def info(self):
         pass
@@ -233,10 +240,10 @@ class Database(DbItemObject):
         return self.connector.publicUri()
 
     def delete(self):
-        self.aboutToChange()
+        self.emitAboutToChange()
         ret = self.connection().remove()
         if ret is not False:
-            self.emit(SIGNAL('deleted'))
+            self.deleted.emit()
         return ret
 
     def info(self):
@@ -331,7 +338,7 @@ class Database(DbItemObject):
             action = QAction(QApplication.translate("DBManagerPlugin", "&Move to schema"), self)
             action.setMenu(QMenu(mainWindow))
             invoke_callback = lambda: mainWindow.invokeCallback(self.prepareMenuMoveTableToSchemaActionSlot)
-            QObject.connect(action.menu(), SIGNAL("aboutToShow()"), invoke_callback)
+            action.menu().aboutToShow.connect(invoke_callback)
             mainWindow.registerAction(action, QApplication.translate("DBManagerPlugin", "&Table"))
 
     def reconnectActionSlot(self, item, action, parent):
@@ -564,14 +571,14 @@ class Schema(DbItemObject):
         return self.database().tables(self)
 
     def delete(self):
-        self.aboutToChange()
+        self.emitAboutToChange()
         ret = self.database().connector.deleteSchema(self.name)
         if ret is not False:
-            self.emit(SIGNAL('deleted'))
+            self.deleted.emit()
         return ret
 
     def rename(self, new_name):
-        self.aboutToChange()
+        self.emitAboutToChange()
         ret = self.database().connector.renameSchema(self.name, new_name)
         if ret is not False:
             self.name = new_name
@@ -619,17 +626,17 @@ class Table(DbItemObject):
         return self.database().connector.quoteId((self.schemaName(), self.name))
 
     def delete(self):
-        self.aboutToChange()
+        self.emitAboutToChange()
         if self.isView:
             ret = self.database().connector.deleteView((self.schemaName(), self.name))
         else:
             ret = self.database().connector.deleteTable((self.schemaName(), self.name))
         if ret is not False:
-            self.emit(SIGNAL('deleted'))
+            self.deleted.emit()
         return ret
 
     def rename(self, new_name):
-        self.aboutToChange()
+        self.emitAboutToChange()
         ret = self.database().connector.renameTable((self.schemaName(), self.name), new_name)
         if ret is not False:
             self.name = new_name
@@ -637,14 +644,14 @@ class Table(DbItemObject):
         return ret
 
     def empty(self):
-        self.aboutToChange()
+        self.emitAboutToChange()
         ret = self.database().connector.emptyTable((self.schemaName(), self.name))
         if ret is not False:
             self.refreshRowCount()
         return ret
 
     def moveToSchema(self, schema):
-        self.aboutToChange()
+        self.emitAboutToChange()
         if self.schema() == schema:
             return True
         ret = self.database().connector.moveTableToSchema((self.schemaName(), self.name), schema.name)
@@ -727,14 +734,14 @@ class Table(DbItemObject):
         self.refresh()
 
     def addField(self, fld):
-        self.aboutToChange()
+        self.emitAboutToChange()
         ret = self.database().connector.addTableColumn((self.schemaName(), self.name), fld.definition())
         if ret is not False:
             self.refreshFields()
         return ret
 
     def deleteField(self, fld):
-        self.aboutToChange()
+        self.emitAboutToChange()
         ret = self.database().connector.deleteTableColumn((self.schemaName(), self.name), fld.name)
         if ret is not False:
             self.refreshFields()
@@ -743,7 +750,7 @@ class Table(DbItemObject):
         return ret
 
     def addGeometryColumn(self, geomCol, geomType, srid, dim, createSpatialIndex=False):
-        self.aboutToChange()
+        self.emitAboutToChange()
         ret = self.database().connector.addGeometryColumn((self.schemaName(), self.name), geomCol, geomType, srid, dim)
         if not ret:
             return False
@@ -773,7 +780,7 @@ class Table(DbItemObject):
         self.refresh()
 
     def addConstraint(self, constr):
-        self.aboutToChange()
+        self.emitAboutToChange()
         if constr.type == TableConstraint.TypePrimaryKey:
             ret = self.database().connector.addTablePrimaryKey((self.schemaName(), self.name),
                                                                constr.fields()[constr.columns[0]].name)
@@ -787,7 +794,7 @@ class Table(DbItemObject):
         return ret
 
     def deleteConstraint(self, constr):
-        self.aboutToChange()
+        self.emitAboutToChange()
         ret = self.database().connector.deleteTableConstraint((self.schemaName(), self.name), constr.name)
         if ret is not False:
             self.refreshConstraints()
@@ -808,7 +815,7 @@ class Table(DbItemObject):
         self.refresh()
 
     def addIndex(self, idx):
-        self.aboutToChange()
+        self.emitAboutToChange()
         ret = self.database().connector.createTableIndex((self.schemaName(), self.name), idx.name,
                                                          idx.fields()[idx.columns[0]].name)
         if ret is not False:
@@ -816,7 +823,7 @@ class Table(DbItemObject):
         return ret
 
     def deleteIndex(self, idx):
-        self.aboutToChange()
+        self.emitAboutToChange()
         ret = self.database().connector.deleteTableIndex((self.schemaName(), self.name), idx.name)
         if ret is not False:
             self.refreshIndexes()
@@ -851,7 +858,7 @@ class Table(DbItemObject):
         self.refresh()
 
     def refreshRowCount(self):
-        self.aboutToChange()
+        self.emitAboutToChange()
         prevRowCount = self.rowCount
         try:
             self.rowCount = self.database().connector.getTableRowCount((self.schemaName(), self.name))
@@ -884,7 +891,7 @@ class Table(DbItemObject):
 
             if trigger_action == "enable" or trigger_action == "disable":
                 enable = trigger_action == "enable"
-                self.aboutToChange()
+                self.emitAboutToChange()
                 self.database().connector.enableAllTableTriggers(enable, (self.schemaName(), self.name))
                 self.refreshTriggers()
                 return True
@@ -905,14 +912,14 @@ class Table(DbItemObject):
                 QApplication.setOverrideCursor(Qt.WaitCursor)
 
             if trigger_action == "delete":
-                self.aboutToChange()
+                self.emitAboutToChange()
                 self.database().connector.deleteTableTrigger(trigger_name, (self.schemaName(), self.name))
                 self.refreshTriggers()
                 return True
 
             elif trigger_action == "enable" or trigger_action == "disable":
                 enable = trigger_action == "enable"
-                self.aboutToChange()
+                self.emitAboutToChange()
                 self.database().connector.enableTableTrigger(trigger_name, enable, (self.schemaName(), self.name))
                 self.refreshTriggers()
                 return True
@@ -949,7 +956,7 @@ class VectorTable(Table):
         return False
 
     def createSpatialIndex(self, geom_column=None):
-        self.aboutToChange()
+        self.emitAboutToChange()
         geom_column = geom_column if geom_column is not None else self.geomColumn
         ret = self.database().connector.createSpatialIndex((self.schemaName(), self.name), geom_column)
         if ret is not False:
@@ -957,7 +964,7 @@ class VectorTable(Table):
         return ret
 
     def deleteSpatialIndex(self, geom_column=None):
-        self.aboutToChange()
+        self.emitAboutToChange()
         geom_column = geom_column if geom_column is not None else self.geomColumn
         ret = self.database().connector.deleteSpatialIndex((self.schemaName(), self.name), geom_column)
         if ret is not False:

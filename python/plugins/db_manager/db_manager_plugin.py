@@ -20,8 +20,11 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import Qt, QObject, SIGNAL
-from PyQt4.QtGui import QAction, QIcon, QApplication
+from PyQt.QtCore import Qt, QObject
+from PyQt.QtWidgets import QAction, QApplication
+from PyQt.QtGui import QIcon
+
+from . import resources_rc
 
 
 class DBManagerPlugin:
@@ -34,7 +37,7 @@ class DBManagerPlugin:
         self.action = QAction(QIcon(":/db_manager/icon"), QApplication.translate("DBManagerPlugin", "DB Manager"),
                               self.iface.mainWindow())
         self.action.setObjectName("dbManager")
-        QObject.connect(self.action, SIGNAL("triggered()"), self.run)
+        self.action.triggered.connect(self.run)
         # Add toolbar button and menu item
         if hasattr(self.iface, 'addDatabaseToolBarIcon'):
             self.iface.addDatabaseToolBarIcon(self.action)
@@ -62,10 +65,10 @@ class DBManagerPlugin:
     def run(self):
         # keep opened only one instance
         if self.dlg is None:
-            from db_manager import DBManager
+            from .db_manager import DBManager
 
             self.dlg = DBManager(self.iface)
-            QObject.connect(self.dlg, SIGNAL("destroyed(QObject *)"), self.onDestroyed)
+            self.dlg.destroyed.connect(self.onDestroyed)
         self.dlg.show()
         self.dlg.raise_()
         self.dlg.setWindowState(self.dlg.windowState() & ~Qt.WindowMinimized)
