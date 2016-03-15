@@ -73,10 +73,10 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             ([self.widthSpin, self.heightSpin], SIGNAL("valueChanged(int)"), self.resizeGroupBox)
         ])
 
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
-        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
-        self.connect(self.inSelector, SIGNAL("layerChanged()"), self.fillFieldsCombo)
-        self.connect(self.extentGroup, SIGNAL("toggled(bool)"), self.onExtentCheckedChanged)
+        self.inSelector.selectClicked.connect(self.fillInputFileEdit)
+        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
+        self.inSelector.layerChanged.connect(self.fillFieldsCombo)
+        self.extentGroup.toggled.connect(self.onExtentCheckedChanged)
 
     def onClosing(self):
         self.extentSelector.stop()

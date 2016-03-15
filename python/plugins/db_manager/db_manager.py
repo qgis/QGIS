@@ -52,8 +52,8 @@ class DBManager(QMainWindow):
         self.restoreGeometry(settings.value("/DB_Manager/mainWindow/geometry", QByteArray(), type=QByteArray))
         self.restoreState(settings.value("/DB_Manager/mainWindow/windowState", QByteArray(), type=QByteArray))
 
-        self.connect(self.tabs, SIGNAL("currentChanged(int)"), self.tabChanged)
-        self.connect(self.tree, SIGNAL("selectedItemChanged"), self.itemChanged)
+        self.tabs.currentChanged.connect(self.tabChanged)
+        self.tree.selectedItemChanged.connect(self.itemChanged)
         self.itemChanged(None)
 
     def closeEvent(self, e):
@@ -224,7 +224,7 @@ class DBManager(QMainWindow):
             self._registeredDbActions[menuName].append(action)
 
             if callback is not None:
-                QObject.connect(action, SIGNAL("triggered(bool)"), invoke_callback)
+                action.triggered.connect(invoke_callback)
             return True
 
         # search for the menu
@@ -270,7 +270,7 @@ class DBManager(QMainWindow):
         self._registeredDbActions[menuName].append(action)
 
         if callback is not None:
-            QObject.connect(action, SIGNAL("triggered(bool)"), invoke_callback)
+            action.triggered.connect(invoke_callback)
 
         return True
 

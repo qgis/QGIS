@@ -68,7 +68,7 @@ class LayerPreview(QgsMapCanvas):
             return
 
         self.item = item
-        self.connect(self.item, SIGNAL('aboutToChange'), self.setDirty)
+        self.item.aboutToChange.connect(self.setDirty)
 
     def setDirty(self, val=True):
         self.dirty = val
@@ -78,7 +78,7 @@ class LayerPreview(QgsMapCanvas):
         if self.item is not None:
             ## skip exception on RuntimeError fixes #6892
             try:
-                self.disconnect(self.item, SIGNAL('aboutToChange'), self.setDirty)
+                self.item.aboutToChange.disconnect(self.setDirty)
             except RuntimeError:
                 pass
 

@@ -63,10 +63,10 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
             (self.nomaskCheck, SIGNAL("stateChanged( int )"))
         ])
 
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
-        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFile)
-        self.connect(self.maskSelector, SIGNAL("selectClicked()"), self.fillMaskFile)
-        self.connect(self.batchCheck, SIGNAL("stateChanged( int )"), self.switchToolMode)
+        self.inSelector.selectClicked.connect(self.fillInputFile)
+        self.outSelector.selectClicked.connect(self.fillOutputFile)
+        self.maskSelector.selectClicked.connect(self.fillMaskFile)
+        self.batchCheck.stateChanged.connect(self.switchToolMode)
 
         # add raster filters to combo
         self.formatCombo.addItems(Utils.FileFilter.allRastersFilter().split(";;"))
@@ -86,20 +86,20 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
             self.label.setText(QCoreApplication.translate("GdalTools", "&Input directory"))
             self.label_1.setText(QCoreApplication.translate("GdalTools", "&Output directory"))
 
-            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
-            QObject.disconnect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFile)
+            self.inSelector.selectClicked.disconnect(self.fillInputFile)
+            self.outSelector.selectClicked.disconnect(self.fillOutputFile)
 
-            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self. fillInputDir)
-            QObject.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputDir)
+            self.inSelector.selectClicked.connect(self. fillInputDir)
+            self.outSelector.selectClicked.connect(self.fillOutputDir)
         else:
             self.label.setText(self.inFileLabel)
             self.label_1.setText(self.outFileLabel)
 
-            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
-            QObject.disconnect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputDir)
+            self.inSelector.selectClicked.disconnect(self.fillInputDir)
+            self.outSelector.selectClicked.disconnect(self.fillOutputDir)
 
-            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
-            QObject.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFile)
+            self.inSelector.selectClicked.connect(self.fillInputFile)
+            self.outSelector.selectClicked.connect(self.fillOutputFile)
 
     def fillInputFile(self):
         lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()

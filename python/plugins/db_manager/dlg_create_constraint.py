@@ -40,7 +40,7 @@ class DlgCreateConstraint(QDialog, Ui_Dialog):
         self.db = self.table.database() if self.table and self.table.database() else db
         self.setupUi(self)
 
-        self.connect(self.buttonBox, SIGNAL("accepted()"), self.createConstraint)
+        self.buttonBox.accepted.connect(self.createConstraint)
         self.populateColumns()
 
     def populateColumns(self):

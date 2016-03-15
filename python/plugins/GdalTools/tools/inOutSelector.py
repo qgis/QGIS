@@ -57,10 +57,10 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
         else:
             self.setType(type)
 
-        self.connect(self.selectBtn, SIGNAL("clicked()"), self.selectButtonClicked)
-        self.connect(self.fileEdit, SIGNAL("textChanged(const QString &)"), self.textChanged)
-        self.connect(self.combo, SIGNAL("editTextChanged(const QString &)"), self.textChanged)
-        self.connect(self.combo, SIGNAL("currentIndexChanged(int)"), self.indexChanged)
+        self.selectBtn.clicked.connect(self.selectButtonClicked)
+        self.fileEdit.textChanged.connect(self.textChanged)
+        self.combo.editTextChanged.connect(self.textChanged)
+        self.combo.currentIndexChanged.connect(self.indexChanged)
 
     def clear(self):
         self.filenames = []
@@ -84,13 +84,13 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
         self.filenameChanged()
 
     def selectButtonClicked(self):
-        self.emit(SIGNAL("selectClicked()"))
+        self.selectClicked.emit()
 
     def filenameChanged(self):
-        self.emit(SIGNAL("filenameChanged()"))
+        self.filenameChanged.emit()
 
     def layerChanged(self):
-        self.emit(SIGNAL("layerChanged()"))
+        self.layerChanged.emit()
 
     def setType(self, type):
         if type == self.typ:

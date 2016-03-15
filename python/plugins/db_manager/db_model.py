@@ -50,10 +50,10 @@ class TreeItem(QObject):
         self.itemChanged()
 
     def itemChanged(self):
-        self.emit(SIGNAL("itemChanged"), self)
+        self.itemChanged.emit(self)
 
     def itemRemoved(self):
-        self.emit(SIGNAL("itemRemoved"), self)
+        self.itemRemoved.emit(self)
 
     def populate(self):
         self.populated = True
@@ -64,7 +64,7 @@ class TreeItem(QObject):
 
     def appendChild(self, child):
         self.childItems.append(child)
-        self.connect(child, SIGNAL("itemRemoved"), self.childRemoved)
+        child.itemRemoved.connect(self.childRemoved)
 
     def child(self, row):
         return self.childItems[row]
@@ -72,7 +72,7 @@ class TreeItem(QObject):
     def removeChild(self, row):
         if row >= 0 and row < len(self.childItems):
             self.childItems[row].itemData.deleteLater()
-            self.disconnect(self.childItems[row], SIGNAL("itemRemoved"), self.childRemoved)
+            self.childItems[row].itemRemoved.disconnect(self.childRemoved)
             del self.childItems[row]
 
     def childCount(self):
@@ -134,8 +134,8 @@ class ConnectionItem(TreeItem):
 
     def __init__(self, connection, parent=None):
         TreeItem.__init__(self, connection, parent)
-        self.connect(connection, SIGNAL("changed"), self.itemChanged)
-        self.connect(connection, SIGNAL("deleted"), self.itemRemoved)
+        connection.changed.connect(self.itemChanged)
+        connection.deleted.connect(self.itemRemoved)
 
         # load (shared) icon with first instance of table item
         if not hasattr(ConnectionItem, 'connectedIcon'):
@@ -163,8 +163,8 @@ class ConnectionItem(TreeItem):
                 return False
 
         database = connection.database()
-        self.connect(database, SIGNAL("changed"), self.itemChanged)
-        self.connect(database, SIGNAL("deleted"), self.itemRemoved)
+        database.changed.connect(self.itemChanged)
+        database.deleted.connect(self.itemRemoved)
 
         schemas = database.schemas()
         if schemas is not None:
@@ -189,8 +189,8 @@ class SchemaItem(TreeItem):
 
     def __init__(self, schema, parent):
         TreeItem.__init__(self, schema, parent)
-        self.connect(schema, SIGNAL("changed"), self.itemChanged)
-        self.connect(schema, SIGNAL("deleted"), self.itemRemoved)
+        schema.changed.connect(self.itemChanged)
+        schema.deleted.connect(self.itemRemoved)
 
         # load (shared) icon with first instance of schema item
         if not hasattr(SchemaItem, 'schemaIcon'):
@@ -219,8 +219,8 @@ class TableItem(TreeItem):
 
     def __init__(self, table, parent):
         TreeItem.__init__(self, table, parent)
-        self.connect(table, SIGNAL("changed"), self.itemChanged)
-        self.connect(table, SIGNAL("deleted"), self.itemRemoved)
+        table.changed.connect(self.itemChanged)
+        table.deleted.connect(self.itemRemoved)
         self.populate()
 
         # load (shared) icon with first instance of table item
@@ -286,7 +286,7 @@ class DBModel(QAbstractItemModel):
 
         self.isImportVectorAvail = hasattr(qgis.core, 'QgsVectorLayerImport')
         if self.isImportVectorAvail:
-            self.connect(self, SIGNAL("importVector"), self.importVector)
+            self.importVector.connect(self.importVector)
 
         self.hasSpatialiteSupport = "spatialite" in supportedDbTypes()
 
@@ -294,7 +294,7 @@ class DBModel(QAbstractItemModel):
         for dbtype in supportedDbTypes():
             dbpluginclass = createDbPlugin(dbtype)
             item = PluginItem(dbpluginclass, self.rootItem)
-            self.connect(item, SIGNAL("itemChanged"), self.refreshItem)
+            item.itemChanged.connect(self.refreshItem)
 
     def refreshItem(self, item):
         if isinstance(item, TreeItem):
@@ -476,10 +476,10 @@ class DBModel(QAbstractItemModel):
             if prevPopulated or force:
                 if item.populate():
                     for child in item.childItems:
-                        self.connect(child, SIGNAL("itemChanged"), self.refreshItem)
+                        child.itemChanged.connect(self.refreshItem)
                     self._onDataChanged(index)
                 else:
-                    self.emit(SIGNAL("notPopulated"), index)
+                    self.notPopulated.emit(index)
 
         except BaseError as e:
             item.populated = False
@@ -491,7 +491,7 @@ class DBModel(QAbstractItemModel):
     def _onDataChanged(self, indexFrom, indexTo=None):
         if indexTo is None:
             indexTo = indexFrom
-        self.emit(SIGNAL('dataChanged(const QModelIndex &, const QModelIndex &)'), indexFrom, indexTo)
+        self.dataChanged.emit(indexFrom, indexTo)
 
     QGIS_URI_MIME = "application/x-vnd.qgis.qgis.uri"
 
@@ -546,7 +546,7 @@ class DBModel(QAbstractItemModel):
                         uri = qgis.core.QgsDataSourceURI()
                         uri.setDatabase(filename)
                         item.getItemData().addConnection(conn_name, uri)
-                        item.emit(SIGNAL('itemChanged'), item)
+                        item.itemChanged.emit(item)
                         added += 1
                         continue
 
@@ -614,7 +614,7 @@ class DBModel(QAbstractItemModel):
             outUri = outDb.uri()
             outUri.setDataSource(schema, layerName, geomCol, "", pkCol)
 
-            self.emit(SIGNAL("importVector"), inLayer, outDb, outUri, toIndex)
+            self.importVector.emit(inLayer, outDb, outUri, toIndex)
             return True
 
         return False

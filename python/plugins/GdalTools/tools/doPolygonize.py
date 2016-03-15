@@ -51,9 +51,9 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             (self.fieldEdit, SIGNAL("textChanged(const QString &)"), self.fieldCheck)
         ])
 
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
-        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
-        self.connect(self.maskSelector, SIGNAL("selectClicked()"), self.fillMaskFileEdit)
+        self.inSelector.selectClicked.connect(self.fillInputFileEdit)
+        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
+        self.maskSelector.selectClicked.connect(self.fillMaskFileEdit)
 
     def onLayersChanged(self):
         self.inSelector.setLayers(Utils.LayerRegistry.instance().getRasterLayers())
