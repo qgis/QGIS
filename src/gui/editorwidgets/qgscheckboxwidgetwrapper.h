@@ -43,6 +43,8 @@ class GUI_EXPORT QgsCheckboxWidgetWrapper : public QgsEditorWidgetWrapper
   public:
     QVariant value() const override;
 
+    void showIndeterminateState() override;
+
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;

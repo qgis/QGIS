@@ -286,3 +286,24 @@ QgsValueRelationWidgetWrapper::ValueRelationCache QgsValueRelationWidgetWrapper:
 
   return cache;
 }
+
+void QgsValueRelationWidgetWrapper::showIndeterminateState()
+{
+  if ( mListWidget )
+  {
+    mListWidget->blockSignals( true );
+    for ( int i = 0; i < mListWidget->count(); ++i )
+    {
+      mListWidget->item( i )->setCheckState( Qt::PartiallyChecked );
+    }
+    mListWidget->blockSignals( false );
+  }
+  else if ( mComboBox )
+  {
+    whileBlocking( mComboBox )->setCurrentIndex( -1 );
+  }
+  else if ( mLineEdit )
+  {
+    whileBlocking( mLineEdit )->clear();
+  }
+}

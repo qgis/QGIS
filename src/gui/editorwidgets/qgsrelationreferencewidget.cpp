@@ -346,6 +346,20 @@ QgsFeature QgsRelationReferenceWidget::referencedFeature()
   return f;
 }
 
+void QgsRelationReferenceWidget::showIndeterminateState()
+{
+  if ( mReadOnlySelector )
+  {
+    whileBlocking( mLineEdit )->setText( QString() );
+  }
+  else
+  {
+    whileBlocking( mComboBox )->setCurrentIndex( -1 );
+  }
+  mRemoveFKButton->setEnabled( false );
+  updateAttributeEditorFrame( QgsFeature() );
+}
+
 QVariant QgsRelationReferenceWidget::foreignKey()
 {
   if ( mReadOnlySelector )

@@ -35,6 +35,14 @@ QVariant QgsEnumerationWidgetWrapper::value() const
   return value;
 }
 
+void QgsEnumerationWidgetWrapper::showIndeterminateState()
+{
+  if ( mComboBox )
+  {
+    whileBlocking( mComboBox )->setCurrentIndex( -1 );
+  }
+}
+
 QWidget* QgsEnumerationWidgetWrapper::createWidget( QWidget* parent )
 {
   return new QComboBox( parent );

@@ -32,6 +32,14 @@ QVariant QgsColorWidgetWrapper::value() const
   return v;
 }
 
+void QgsColorWidgetWrapper::showIndeterminateState()
+{
+  if ( mColorButton )
+  {
+    whileBlocking( mColorButton )->setColor( QColor() );
+  }
+}
+
 QWidget* QgsColorWidgetWrapper::createWidget( QWidget* parent )
 {
   QgsColorButtonV2* button = new QgsColorButtonV2( parent );

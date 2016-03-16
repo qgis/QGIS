@@ -83,6 +83,11 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
      */
     void setEnabled( bool enabled );
 
+    /** Sets the widget to display in an indeterminate "mixed value" state.
+     * @note added in QGIS 2.16
+     */
+    virtual void showIndeterminateState();
+
   signals:
     /**
      * Emit this signal, whenever the value changed.

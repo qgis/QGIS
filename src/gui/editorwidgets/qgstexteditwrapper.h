@@ -42,6 +42,7 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
     // QgsEditorWidgetWrapper interface
   public:
     QVariant value() const override;
+    void showIndeterminateState() override;
 
   protected:
     QWidget*createWidget( QWidget* parent ) override;
@@ -58,6 +59,8 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
     QLineEdit* mLineEdit;
     QPalette mReadOnlyPalette;
     QPalette mWritablePalette;
+
+    void setWidgetValue( const QVariant& value );
 };
 
 #endif // QGSTEXTEDITWRAPPER_H

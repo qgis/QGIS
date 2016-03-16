@@ -50,6 +50,7 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     virtual void initWidget( QWidget* editor ) override;
     virtual QVariant value() const override;
     bool valid() const override;
+    void showIndeterminateState() override;
 
   public slots:
     virtual void setValue( const QVariant& value ) override;
@@ -62,6 +63,7 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     QgsRelationReferenceWidget* mWidget;
     QgsMapCanvas* mCanvas;
     QgsMessageBar* mMessageBar;
+    bool mIndeterminateState;
 };
 
 #endif // QGSRELATIONREFERENCEWIDGETWRAPPER_H

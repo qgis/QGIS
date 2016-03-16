@@ -37,6 +37,14 @@ QVariant QgsCheckboxWidgetWrapper::value() const
   return v;
 }
 
+void QgsCheckboxWidgetWrapper::showIndeterminateState()
+{
+  if ( mCheckBox )
+  {
+    whileBlocking( mCheckBox )->setCheckState( Qt::PartiallyChecked );
+  }
+}
+
 QWidget* QgsCheckboxWidgetWrapper::createWidget( QWidget* parent )
 {
   return new QCheckBox( parent );
@@ -60,13 +68,14 @@ bool QgsCheckboxWidgetWrapper::valid() const
 
 void QgsCheckboxWidgetWrapper::setValue( const QVariant& value )
 {
+  bool state = ( value == config( "CheckedState" ) );
   if ( mGroupBox )
   {
-    mGroupBox->setChecked( value == config( "CheckedState" ) );
+    mGroupBox->setChecked( state );
   }
 
   if ( mCheckBox )
   {
-    mCheckBox->setChecked( value == config( "CheckedState" ) );
+    mCheckBox->setChecked( state );
   }
 }

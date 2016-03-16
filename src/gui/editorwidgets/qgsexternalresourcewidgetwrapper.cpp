@@ -54,6 +54,24 @@ QVariant QgsExternalResourceWidgetWrapper::value() const
   return QVariant( field().type() );
 }
 
+void QgsExternalResourceWidgetWrapper::showIndeterminateState()
+{
+  if ( mLineEdit )
+  {
+    whileBlocking( mLineEdit )->clear();
+  }
+
+  if ( mLabel )
+  {
+    mLabel->clear();
+  }
+
+  if ( mQgsWidget )
+  {
+    whileBlocking( mQgsWidget )->setDocumentPath( QString() );
+  }
+}
+
 bool QgsExternalResourceWidgetWrapper::valid() const
 {
   return mLineEdit || mLabel || mQgsWidget;

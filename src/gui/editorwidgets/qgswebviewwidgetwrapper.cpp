@@ -57,6 +57,17 @@ QVariant QgsWebViewWidgetWrapper::value() const
   return v;
 }
 
+void QgsWebViewWidgetWrapper::showIndeterminateState()
+{
+  if ( mLineEdit )
+  {
+    whileBlocking( mLineEdit )->clear();
+  }
+
+  if ( mWebView )
+    mWebView->load( QString() );
+}
+
 QWidget* QgsWebViewWidgetWrapper::createWidget( QWidget* parent )
 {
   QWidget* container = new QWidget( parent );

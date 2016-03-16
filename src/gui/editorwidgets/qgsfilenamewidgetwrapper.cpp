@@ -53,6 +53,17 @@ bool QgsFileNameWidgetWrapper::valid() const
   return mLineEdit || mLabel;
 }
 
+void QgsFileNameWidgetWrapper::showIndeterminateState()
+{
+  if ( mLineEdit )
+  {
+    whileBlocking( mLineEdit )->clear();
+  }
+
+  if ( mLabel )
+    mLabel->clear();
+}
+
 QWidget* QgsFileNameWidgetWrapper::createWidget( QWidget* parent )
 {
   QWidget* container = new QWidget( parent );

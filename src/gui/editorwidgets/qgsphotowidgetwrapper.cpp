@@ -115,6 +115,18 @@ QVariant QgsPhotoWidgetWrapper::value() const
   return v;
 }
 
+void QgsPhotoWidgetWrapper::showIndeterminateState()
+{
+  if ( mLineEdit )
+  {
+    whileBlocking( mLineEdit )->clear();
+  }
+  if ( mPhotoLabel )
+    mPhotoLabel->clear();
+  if ( mPhotoPixmapLabel )
+    mPhotoPixmapLabel->clear();
+}
+
 QWidget* QgsPhotoWidgetWrapper::createWidget( QWidget* parent )
 {
   QWidget* container = new QWidget( parent );

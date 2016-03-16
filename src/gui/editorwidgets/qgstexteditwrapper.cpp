@@ -135,7 +135,50 @@ bool QgsTextEditWrapper::valid() const
   return mLineEdit || mTextEdit || mPlainTextEdit;
 }
 
+void QgsTextEditWrapper::showIndeterminateState()
+{
+  //note - this is deliberately a zero length string, not a null string!
+  if ( mTextEdit )
+    mTextEdit->blockSignals( true );
+  if ( mPlainTextEdit )
+    mPlainTextEdit->blockSignals( true );
+  if ( mLineEdit )
+    mLineEdit->blockSignals( true );
+
+  setWidgetValue( QString( "" ) );
+
+  if ( mTextEdit )
+    mTextEdit->blockSignals( false );
+  if ( mPlainTextEdit )
+    mPlainTextEdit->blockSignals( false );
+  if ( mLineEdit )
+    mLineEdit->blockSignals( false );
+}
+
 void QgsTextEditWrapper::setValue( const QVariant& val )
+{
+  setWidgetValue( val );
+}
+
+void QgsTextEditWrapper::setEnabled( bool enabled )
+{
+  if ( mTextEdit )
+    mTextEdit->setReadOnly( !enabled );
+
+  if ( mPlainTextEdit )
+    mPlainTextEdit->setReadOnly( !enabled );
+
+  if ( mLineEdit )
+  {
+    mLineEdit->setReadOnly( !enabled );
+    if ( enabled )
+      mLineEdit->setPalette( mWritablePalette );
+    else
+      mLineEdit->setPalette( mReadOnlyPalette );
+  }
+}
+
+void QgsTextEditWrapper::setWidgetValue( const QVariant& val )
 {
   QString v;
   if ( val.isNull() )
@@ -165,22 +208,4 @@ void QgsTextEditWrapper::setValue( const QVariant& val )
 
   if ( mLineEdit )
     mLineEdit->setText( v );
-}
-
-void QgsTextEditWrapper::setEnabled( bool enabled )
-{
-  if ( mTextEdit )
-    mTextEdit->setReadOnly( !enabled );
-
-  if ( mPlainTextEdit )
-    mPlainTextEdit->setReadOnly( !enabled );
-
-  if ( mLineEdit )
-  {
-    mLineEdit->setReadOnly( !enabled );
-    if ( enabled )
-      mLineEdit->setPalette( mWritablePalette );
-    else
-      mLineEdit->setPalette( mReadOnlyPalette );
-  }
 }

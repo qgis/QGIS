@@ -66,6 +66,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     QVariant value() const override;
     // TODO or have friend class :)
     static ValueRelationCache createCache( const QgsEditorWidgetConfig& config );
+    void showIndeterminateState() override;
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;

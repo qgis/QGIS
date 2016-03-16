@@ -108,6 +108,11 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     //! if no feature is related, it returns an invalid feature
     QgsFeature referencedFeature();
 
+    /** Sets the widget to display in an indeterminate "mixed value" state.
+     * @note added in QGIS 2.16
+     */
+    void showIndeterminateState();
+
   public slots:
     //! open the form of the related feature in a new dialog
     void openForm();

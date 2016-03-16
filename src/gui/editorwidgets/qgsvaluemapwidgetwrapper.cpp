@@ -32,6 +32,14 @@ QVariant QgsValueMapWidgetWrapper::value() const
   return v;
 }
 
+void QgsValueMapWidgetWrapper::showIndeterminateState()
+{
+  if ( mComboBox )
+  {
+    whileBlocking( mComboBox )->setCurrentIndex( -1 );
+  }
+}
+
 QWidget* QgsValueMapWidgetWrapper::createWidget( QWidget* parent )
 {
   return new QComboBox( parent );

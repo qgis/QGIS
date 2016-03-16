@@ -105,6 +105,18 @@ bool QgsUniqueValuesWidgetWrapper::valid() const
   return mComboBox || mLineEdit;
 }
 
+void QgsUniqueValuesWidgetWrapper::showIndeterminateState()
+{
+  if ( mComboBox )
+  {
+    whileBlocking( mComboBox )->setCurrentIndex( -1 );
+  }
+  if ( mLineEdit )
+  {
+    whileBlocking( mLineEdit )->setText( QString() );
+  }
+}
+
 void QgsUniqueValuesWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mComboBox )

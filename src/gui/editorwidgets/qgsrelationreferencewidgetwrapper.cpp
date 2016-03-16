@@ -24,6 +24,7 @@ QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorL
     , mWidget( nullptr )
     , mCanvas( canvas )
     , mMessageBar( messageBar )
+    , mIndeterminateState( false )
 {
 }
 
@@ -103,11 +104,21 @@ bool QgsRelationReferenceWidgetWrapper::valid() const
   return mWidget;
 }
 
+void QgsRelationReferenceWidgetWrapper::showIndeterminateState()
+{
+  if ( mWidget )
+  {
+    mWidget->showIndeterminateState();
+  }
+  mIndeterminateState = true;
+}
+
 void QgsRelationReferenceWidgetWrapper::setValue( const QVariant& val )
 {
-  if ( !mWidget || val == value() )
+  if ( !mWidget || ( !mIndeterminateState && val == value() ) )
     return;
 
+  mIndeterminateState = false;
   mWidget->setForeignKey( val );
 }
 

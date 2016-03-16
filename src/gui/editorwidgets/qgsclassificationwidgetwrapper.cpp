@@ -29,6 +29,11 @@ QVariant QgsClassificationWidgetWrapper::value() const
   return mComboBox->itemData( mComboBox->currentIndex() );
 }
 
+void QgsClassificationWidgetWrapper::showIndeterminateState()
+{
+  whileBlocking( mComboBox )->setCurrentIndex( -1 );
+}
+
 QWidget*QgsClassificationWidgetWrapper::createWidget( QWidget* parent )
 {
   return new QComboBox( parent );
