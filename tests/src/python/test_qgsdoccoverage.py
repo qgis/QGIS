@@ -24,7 +24,7 @@ from utilities import printImportant, DoxygenParser
 # DON'T RAISE THIS THRESHOLD!!!
 # (changes which lower this threshold are welcomed though!)
 
-ACCEPTABLE_MISSING_DOCS = 3703
+ACCEPTABLE_MISSING_DOCS = 3684
 
 
 class TestQgsDocCoverage(unittest.TestCase):
