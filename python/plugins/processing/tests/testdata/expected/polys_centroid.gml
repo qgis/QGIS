@@ -10,10 +10,10 @@
       <gml:coord><gml:X>8</gml:X><gml:Y>5.5</gml:Y></gml:coord>
     </gml:Box>
   </gml:boundedBy>
-
+                                                                                                                                            
   <gml:featureMember>
     <ogr:polys_centroid fid="polys.0">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>0.653846153846154,1.11538461538462</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>0.653846153846154,1.115384615384615</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:name>aaaaa</ogr:name>
       <ogr:intval>33</ogr:intval>
       <ogr:floatval>44.123456</ogr:floatval>
@@ -21,7 +21,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:polys_centroid fid="polys.1">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>5.0,4.33333333333333</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>5.0,4.333333333333333</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:name>Aaaaa</ogr:name>
       <ogr:intval>-33</ogr:intval>
       <ogr:floatval>0</ogr:floatval>
@@ -45,6 +45,14 @@
     <ogr:polys_centroid fid="polys.4">
       <ogr:intval>120</ogr:intval>
       <ogr:floatval>-100291.43213</ogr:floatval>
+    </ogr:polys_centroid>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ogr:polys_centroid fid="polys.5">
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4.080459770114943,-0.218390804597701</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:name>elim</ogr:name>
+      <ogr:intval>2</ogr:intval>
+      <ogr:floatval>3.33</ogr:floatval>
     </ogr:polys_centroid>
   </gml:featureMember>
 </ogr:FeatureCollection>
