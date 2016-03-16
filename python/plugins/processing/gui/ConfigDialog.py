@@ -37,7 +37,7 @@ from qgis.gui import QgsDoubleSpinBox, QgsSpinBox
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.Processing import Processing
-from processing.gui.menus import updateMenus
+from processing.gui.menus import updateMenus, defaultMenuEntries, menusSettingsGroup
 
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -114,7 +114,7 @@ class ConfigDialog(BASE, WIDGET):
         emptyItem.setEditable(False)
         rootItem.insertRow(0, [providersItem, emptyItem])
         for group in settings.keys():
-            if group in priorityKeys:
+            if group in priorityKeys or group == menusSettingsGroup:
                 continue
 
             groupItem = QStandardItem(group)

@@ -6,6 +6,7 @@ from processing.gui.AlgorithmDialog import AlgorithmDialog
 from qgis.utils import iface
 
 algorithmsToolbar = None
+menusSettingsGroup = 'Menus'
 
 defaultMenuEntries = {}
 vectorMenu = Processing.tr('Vect&or')
@@ -105,7 +106,7 @@ def initializeMenus():
     for provider in Processing.providers:
         for alg in provider.algs:
             d = defaultMenuEntries.get(alg.commandLineName(), "")
-            setting = Setting("Menus", "MENU_" + alg.commandLineName(), alg.name, d)
+            setting = Setting(menusSettingsGroup, "MENU_" + alg.commandLineName(), alg.name, d)
             ProcessingConfig.addSetting(setting)
 
     ProcessingConfig.readSettings()
