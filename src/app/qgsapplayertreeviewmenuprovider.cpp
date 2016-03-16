@@ -101,7 +101,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       // duplicate layer
       QAction* duplicateLayersAction = menu->addAction( QgsApplication::getThemeIcon( "/mActionDuplicateLayer.svg" ), tr( "&Duplicate" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
 
-      if ( !vlayer || vlayer->geometryType() != QGis::NoGeometry )
+      if ( layer->isSpatial() )
       {
         // set layer scale visibility
         menu->addAction( tr( "&Set Layer Scale Visibility" ), QgisApp::instance(), SLOT( setLayerScaleVisibility() ) );

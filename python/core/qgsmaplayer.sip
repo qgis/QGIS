@@ -273,6 +273,11 @@ class QgsMapLayer : QObject
     /** True if the layer can be edited */
     virtual bool isEditable() const;
 
+    /** Returns true if the layer is considered a spatial layer, ie it has some form of geometry associated with it.
+     * @note added in QGIS 2.16
+     */
+    virtual bool isSpatial() const;
+
     /** Sets state from Dom document
        @param layerElement The Dom element corresponding to ``maplayer'' tag
        @note

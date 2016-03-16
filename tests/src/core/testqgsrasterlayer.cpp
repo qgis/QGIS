@@ -69,6 +69,7 @@ class TestQgsRasterLayer : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void isValid();
+    void isSpatial();
     void pseudoColor();
     void colorRamp1();
     void colorRamp2();
@@ -203,6 +204,11 @@ void TestQgsRasterLayer::isValid()
   mpRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRaster::ContrastEnhancementMinMax );
   mMapSettings->setExtent( mpRasterLayer->extent() );
   QVERIFY( render( "raster" ) );
+}
+
+void TestQgsRasterLayer::isSpatial()
+{
+  QVERIFY( mpRasterLayer->isSpatial() );
 }
 
 void TestQgsRasterLayer::pseudoColor()

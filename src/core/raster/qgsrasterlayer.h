@@ -280,6 +280,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** Returns a list with classification items (Text and color) */
     QgsLegendColorList legendSymbologyItems() const;
 
+    virtual bool isSpatial() const override { return true; }
+
     /** \brief Obtain GDAL Metadata for this layer */
     QString metadata() override;
 

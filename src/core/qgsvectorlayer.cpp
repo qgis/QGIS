@@ -2618,6 +2618,11 @@ bool QgsVectorLayer::isEditable() const
   return ( mEditBuffer && mDataProvider );
 }
 
+bool QgsVectorLayer::isSpatial() const
+{
+  return geometryType() != QGis::NoGeometry;
+}
+
 bool QgsVectorLayer::isReadOnly() const
 {
   return mReadOnly;

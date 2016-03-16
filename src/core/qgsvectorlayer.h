@@ -1088,6 +1088,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Returns true if the provider is in editing mode */
     virtual bool isEditable() const override;
 
+    virtual bool isSpatial() const override;
+
     /** Returns true if the provider is in read-only mode */
     virtual bool isReadOnly() const;
 

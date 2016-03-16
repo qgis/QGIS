@@ -975,6 +975,8 @@ class QgsVectorLayer : QgsMapLayer
     /** Returns true if the provider is in editing mode */
     virtual bool isEditable() const;
 
+    virtual bool isSpatial() const;
+
     /** Returns true if the provider is in read-only mode */
     virtual bool isReadOnly() const;
 
