@@ -95,7 +95,7 @@ tests:
         name: lines.gml
         type: vector
       INPUT_B:
-        name: lines2.gml
+        name: custom/lines2.gml
         type: vector
     results:
       OUTPUT:
@@ -110,10 +110,10 @@ tests:
     name: Split lines with same lines
     params:
       INPUT_A:
-        name: lines2.gml
+        name: custom/lines2.gml
         type: vector
       INPUT_B:
-        name: lines2.gml
+        name: custom/lines2.gml
         type: vector
     results:
       OUTPUT:
@@ -143,7 +143,7 @@ tests:
       COMPARISON: '0'
       COMPARISONVALUE: 'polys.5'
       INPUT:
-        name: polys.shp
+        name: custom/polys.shp
         type: vector
       KEEPSELECTION: 'False'
       MODE: '0'
@@ -160,7 +160,7 @@ tests:
       COMPARISON: '0'
       COMPARISONVALUE: 'polys.5'
       INPUT:
-        name: polys.shp
+        name: custom/polys.shp
         type: vector
       KEEPSELECTION: 'False'
       MODE: '1'
@@ -177,7 +177,7 @@ tests:
       COMPARISON: '0'
       COMPARISONVALUE: 'polys.5'
       INPUT:
-        name: polys.shp
+        name: custom/polys.shp
         type: vector
       KEEPSELECTION: 'False'
       MODE: '2'
