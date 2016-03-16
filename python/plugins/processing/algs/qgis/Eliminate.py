@@ -110,7 +110,7 @@ class Eliminate(GeoAlgorithm):
             comparisonvalue = self.getParameterValue(self.COMPARISONVALUE)
 
             selectindex = vector.resolveFieldIndex(processLayer, attribute)
-            selectType = processLayer.dataProvider().fields()[selectindex].type()
+            selectType = processLayer.fields()[selectindex].type()
             selectionError = False
 
             if selectType == 2:
