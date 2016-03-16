@@ -143,7 +143,7 @@ tests:
       COMPARISON: '0'
       COMPARISONVALUE: 'polys.5'
       INPUT:
-        name: custom/polys.gml
+        name: polys.gml
         type: vector
       KEEPSELECTION: 'False'
       MODE: '0'
@@ -160,7 +160,7 @@ tests:
       COMPARISON: '0'
       COMPARISONVALUE: 'polys.5'
       INPUT:
-        name: custom/polys.gml
+        name: polys.gml
         type: vector
       KEEPSELECTION: 'False'
       MODE: '1'
@@ -177,7 +177,7 @@ tests:
       COMPARISON: '0'
       COMPARISONVALUE: 'polys.5'
       INPUT:
-        name: custom/polys.gml
+        name: polys.gml
         type: vector
       KEEPSELECTION: 'False'
       MODE: '2'
