@@ -135,13 +135,10 @@ bool QgsComposerPointsBasedShape::addPoint( const QPointF &pt,
   return rc;
 }
 
-QPointF QgsComposerPointsBasedShape::convertToItemCoordinate( const QPointF &point )
+QPointF QgsComposerPointsBasedShape::convertToItemCoordinate( QPointF point )
 {
-  QPointF pt;
-  pt.setX( point.x() - scenePos().x() );
-  pt.setY( point.y() - scenePos().y() );
-
-  return pt;
+  point -= scenePos();
+  return point;
 }
 
 void QgsComposerPointsBasedShape::drawPoints( QPainter *painter ) const

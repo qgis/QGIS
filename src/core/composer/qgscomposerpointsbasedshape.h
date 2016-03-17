@@ -131,7 +131,7 @@ class CORE_EXPORT QgsComposerPointsBasedShape: public QgsComposerItem
     double computeDistance( const QPointF &pt1, const QPointF &pt2 ) const;
 
     /** Convert scene coordinate to item coordinates */
-    QPointF convertToItemCoordinate( const QPointF &point );
+    QPointF convertToItemCoordinate( QPointF point );
 
     /** Update the current scene rectangle for this item. */
     void updateSceneRect();
