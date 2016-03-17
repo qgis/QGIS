@@ -41,7 +41,7 @@ from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
+from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -101,6 +101,7 @@ class Eliminate(GeoAlgorithm):
         boundary = self.getParameterValue(self.MODE) == self.MODE_BOUNDARY
         smallestArea = self.getParameterValue(self.MODE) == self.MODE_SMALLEST_AREA
         keepSelection = self.getParameterValue(self.KEEPSELECTION)
+        processLayer = vector.duplicateInMemory(inLayer)
 
         if not keepSelection:
             # Make a selection with the values provided
@@ -108,8 +109,8 @@ class Eliminate(GeoAlgorithm):
             comparison = self.comparisons[self.getParameterValue(self.COMPARISON)]
             comparisonvalue = self.getParameterValue(self.COMPARISONVALUE)
 
-            selectindex = inLayer.dataProvider().fieldNameIndex(attribute)
-            selectType = inLayer.dataProvider().fields()[selectindex].type()
+            selectindex = vector.resolveFieldIndex(processLayer, attribute)
+            selectType = processLayer.fields()[selectindex].type()
             selectionError = False
 
             if selectType == 2:
@@ -166,7 +167,7 @@ class Eliminate(GeoAlgorithm):
                 raise GeoAlgorithmExecutionException(
                     self.tr('Error in selection input: %s' % msg))
             else:
-                for feature in inLayer.getFeatures():
+                for feature in processLayer.getFeatures():
                     aValue = feature.attributes()[selectindex]
 
                     if aValue is None:
@@ -205,20 +206,20 @@ class Eliminate(GeoAlgorithm):
                     if match:
                         selected.append(feature.id())
 
-            inLayer.setSelectedFeatures(selected)
+            processLayer.setSelectedFeatures(selected)
 
-        if inLayer.selectedFeatureCount() == 0:
+        if processLayer.selectedFeatureCount() == 0:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
                                    self.tr('%s: (No selection in input layer "%s")' % (self.commandLineName(), self.getParameterValue(self.INPUT))))
 
         # Keep references to the features to eliminate
         featToEliminate = []
-        for aFeat in inLayer.selectedFeatures():
+        for aFeat in processLayer.selectedFeatures():
             featToEliminate.append(aFeat)
 
-        # Delete all features to eliminate in inLayer (we won't save this)
-        inLayer.startEditing()
-        inLayer.deleteSelectedFeatures()
+        # Delete all features to eliminate in processLayer (we won't save this)
+        processLayer.startEditing()
+        processLayer.deleteSelectedFeatures()
 
         # ANALYZE
         if len(featToEliminate) > 0:  # Prevent zero division
@@ -242,7 +243,7 @@ class Eliminate(GeoAlgorithm):
                 feat = featToEliminate.pop()
                 geom2Eliminate = QgsGeometry(feat.geometry())
                 bbox = geom2Eliminate.boundingBox()
-                fit = inLayer.getFeatures(
+                fit = processLayer.getFeatures(
                     QgsFeatureRequest().setFilterRect(bbox))
                 mergeWithFid = None
                 mergeWithGeom = None
@@ -296,7 +297,7 @@ class Eliminate(GeoAlgorithm):
                     # A successful candidate
                     newGeom = mergeWithGeom.combine(geom2Eliminate)
 
-                    if inLayer.changeGeometry(mergeWithFid, newGeom):
+                    if processLayer.changeGeometry(mergeWithFid, newGeom):
                         madeProgress = True
                     else:
                         raise GeoAlgorithmExecutionException(
@@ -314,18 +315,18 @@ class Eliminate(GeoAlgorithm):
         # End while
 
         # Create output
-        provider = inLayer.dataProvider()
+        provider = processLayer.dataProvider()
         output = self.getOutputFromName(self.OUTPUT)
         writer = output.getVectorWriter(provider.fields(),
-                                        provider.geometryType(), inLayer.crs())
+                                        provider.geometryType(), processLayer.crs())
 
         # Write all features that are left over to output layer
-        iterator = inLayer.getFeatures()
+        iterator = processLayer.getFeatures()
         for feature in iterator:
             writer.addFeature(feature)
 
-        # Leave inLayer untouched
-        inLayer.rollBack()
+        # Leave processLayer untouched
+        processLayer.rollBack()
 
         for feature in featNotEliminated:
             writer.addFeature(feature)

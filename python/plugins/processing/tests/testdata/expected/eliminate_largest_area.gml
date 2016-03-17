@@ -16,7 +16,7 @@
       <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-1,-1 -1,3 3,3 3,2 6,1 6,-3 2,-1 -1,-1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
       <ogr:name>aaaaa</ogr:name>
       <ogr:intval>33</ogr:intval>
-      <ogr:floatval>44.123455999999997</ogr:floatval>
+      <ogr:floatval>44.123456</ogr:floatval>
     </ogr:eliminate_largest_area>
   </gml:featureMember>
   <gml:featureMember>
@@ -24,14 +24,14 @@
       <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>5,5 6,4 4,4 5,5</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
       <ogr:name>Aaaaa</ogr:name>
       <ogr:intval>-33</ogr:intval>
-      <ogr:floatval>0.000000000000000</ogr:floatval>
+      <ogr:floatval>0</ogr:floatval>
     </ogr:eliminate_largest_area>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:eliminate_largest_area fid="polys.2">
       <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2,5 2,6 3,6 3,5 2,5</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
       <ogr:name>bbaaa</ogr:name>
-      <ogr:floatval>0.123000000000000</ogr:floatval>
+      <ogr:floatval>0.123</ogr:floatval>
     </ogr:eliminate_largest_area>
   </gml:featureMember>
   <gml:featureMember>
@@ -44,7 +44,7 @@
   <gml:featureMember>
     <ogr:eliminate_largest_area fid="polys.4">
       <ogr:intval>120</ogr:intval>
-      <ogr:floatval>-100291.432130000001052</ogr:floatval>
+      <ogr:floatval>-100291.43213</ogr:floatval>
     </ogr:eliminate_largest_area>
   </gml:featureMember>
 </ogr:FeatureCollection>
