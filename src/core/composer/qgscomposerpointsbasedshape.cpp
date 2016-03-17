@@ -41,17 +41,8 @@ QgsComposerPointsBasedShape::QgsComposerPointsBasedShape( QString tagName,
   const QRectF boundingRect = polygon.boundingRect();
   setSceneRect( boundingRect );
 
-  // change polygon coordinate in bounding area reference system
   const QPointF topLeft = boundingRect.topLeft();
-
-  QVector<QPointF>::iterator it = polygon.begin();
-  for ( ; it != polygon.end(); ++it )
-  {
-    QPointF nextPt = *it;
-    nextPt.setX( nextPt.x() - topLeft.x() );
-    nextPt.setY( nextPt.y() - topLeft.y() );
-    mPolygon.append( nextPt );
-  }
+  mPolygon = polygon.translated( -topLeft );
 }
 
 QgsComposerPointsBasedShape::~QgsComposerPointsBasedShape()
