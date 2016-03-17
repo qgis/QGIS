@@ -9,7 +9,7 @@ Content-Type: text/xml; charset=utf-8
    <extension base="gml:AbstractFeatureType">
     <sequence>
      <element minOccurs="0" maxOccurs="1" type="gml:GeometryPropertyType" name="geometry"/>
-     <element type="integer" name="id"/>
+     <element type="long" name="id"/>
      <element type="string" name="name"/>
      <element type="string" name="utf8nameè"/>
     </sequence>
