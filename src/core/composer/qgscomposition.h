@@ -611,26 +611,26 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void addMultiFrame( QgsComposerMultiFrame* multiFrame );
     /** Removes multi frame (but does not delete it)*/
     void removeMultiFrame( QgsComposerMultiFrame* multiFrame );
-    /** Adds an arrow item to the graphics scene and advices composer to create a widget for it (through signal)
+    /** Adds an arrow item to the graphics scene and advises composer to create a widget for it (through signal)
       @note not available in python bindings*/
     void addComposerArrow( QgsComposerArrow* arrow );
-    /** Adds label to the graphics scene and advices composer to create a widget for it (through signal)*/
+    /** Adds label to the graphics scene and advises composer to create a widget for it (through signal)*/
     void addComposerLabel( QgsComposerLabel* label );
-    /** Adds map to the graphics scene and advices composer to create a widget for it (through signal)*/
+    /** Adds map to the graphics scene and advises composer to create a widget for it (through signal)*/
     void addComposerMap( QgsComposerMap* map, const bool setDefaultPreviewStyle = true );
-    /** Adds scale bar to the graphics scene and advices composer to create a widget for it (through signal)*/
+    /** Adds scale bar to the graphics scene and advises composer to create a widget for it (through signal)*/
     void addComposerScaleBar( QgsComposerScaleBar* scaleBar );
-    /** Adds legend to the graphics scene and advices composer to create a widget for it (through signal)*/
+    /** Adds legend to the graphics scene and advises composer to create a widget for it (through signal)*/
     void addComposerLegend( QgsComposerLegend* legend );
-    /** Adds picture to the graphics scene and advices composer to create a widget for it (through signal)*/
+    /** Adds picture to the graphics scene and advises composer to create a widget for it (through signal)*/
     void addComposerPicture( QgsComposerPicture* picture );
-    /** Adds a composer shape to the graphics scene and advices composer to create a widget for it (through signal)*/
+    /** Adds a composer shape to the graphics scene and advises composer to create a widget for it (through signal)*/
     void addComposerShape( QgsComposerShape* shape );
-    /** Adds a composer polygon and advices composer to create a widget for it (through signal)*/
+    /** Adds a composer polygon and advises composer to create a widget for it (through signal)*/
     void addComposerPolygon( QgsComposerPolygon* polygon );
-    /** Adds a composer polyline and advices composer to create a widget for it (through signal)*/
+    /** Adds a composer polyline and advises composer to create a widget for it (through signal)*/
     void addComposerPolyline( QgsComposerPolyline* polyline );
-    /** Adds a composer table to the graphics scene and advices composer to create a widget for it (through signal)*/
+    /** Adds a composer table to the graphics scene and advises composer to create a widget for it (through signal)*/
     void addComposerTable( QgsComposerAttributeTable* table );
     /** Adds composer html frame and advises composer to create a widget for it (through signal)*/
     void addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame );
