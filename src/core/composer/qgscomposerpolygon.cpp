@@ -22,15 +22,15 @@
 #include <limits>
 
 QgsComposerPolygon::QgsComposerPolygon( QgsComposition* c )
-    : QgsComposerPointsBasedShape( "ComposerPolygon", c ),
-    mPolygonStyleSymbol( nullptr )
+    : QgsComposerPointsBasedShape( "ComposerPolygon", c )
+    , mPolygonStyleSymbol( nullptr )
 {
   createDefaultPolygonStyleSymbol();
 }
 
 QgsComposerPolygon::QgsComposerPolygon( QPolygonF polygon, QgsComposition* c )
-    : QgsComposerPointsBasedShape( "ComposerPolygon", polygon, c ),
-    mPolygonStyleSymbol( nullptr )
+    : QgsComposerPointsBasedShape( "ComposerPolygon", polygon, c )
+    , mPolygonStyleSymbol( nullptr )
 {
   createDefaultPolygonStyleSymbol();
 }

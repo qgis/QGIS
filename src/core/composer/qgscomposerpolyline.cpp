@@ -22,15 +22,15 @@
 #include <limits>
 
 QgsComposerPolyline::QgsComposerPolyline( QgsComposition* c )
-    : QgsComposerPointsBasedShape( "ComposerPolyline", c ),
-    mPolylineStyleSymbol( nullptr )
+    : QgsComposerPointsBasedShape( "ComposerPolyline", c )
+    , mPolylineStyleSymbol( nullptr )
 {
   createDefaultPolylineStyleSymbol();
 }
 
 QgsComposerPolyline::QgsComposerPolyline( QPolygonF polyline, QgsComposition* c )
-    : QgsComposerPointsBasedShape( "ComposerPolyline", polyline, c ),
-    mPolylineStyleSymbol( nullptr )
+    : QgsComposerPointsBasedShape( "ComposerPolyline", polyline, c )
+    , mPolylineStyleSymbol( nullptr )
 {
   createDefaultPolylineStyleSymbol();
 }

@@ -23,10 +23,10 @@
 
 QgsComposerPointsBasedShape::QgsComposerPointsBasedShape( QString tagName,
     QgsComposition* c )
-    : QgsComposerItem( c ),
-    mTagName( tagName ),
-    mSelectedPoint( -1 ),
-    mDrawPoints( false )
+    : QgsComposerItem( c )
+    , mTagName( tagName )
+    , mSelectedPoint( -1 )
+    , mDrawPoints( false )
 {
 }
 
