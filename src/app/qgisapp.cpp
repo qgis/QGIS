@@ -1425,6 +1425,7 @@ void QgisApp::createActions()
   connect( mActionAddPgLayer, SIGNAL( triggered() ), this, SLOT( addDatabaseLayer() ) );
   connect( mActionAddSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( addSpatiaLiteLayer() ) );
   connect( mActionAddMssqlLayer, SIGNAL( triggered() ), this, SLOT( addMssqlLayer() ) );
+  connect( mActionAddDb2Layer, SIGNAL( triggered() ), this, SLOT( addDb2Layer() ) );
   connect( mActionAddOracleLayer, SIGNAL( triggered() ), this, SLOT( addOracleLayer() ) );
   connect( mActionAddWmsLayer, SIGNAL( triggered() ), this, SLOT( addWmsLayer() ) );
   connect( mActionAddWcsLayer, SIGNAL( triggered() ), this, SLOT( addWcsLayer() ) );
@@ -1553,6 +1554,11 @@ void QgisApp::createActions()
 #ifndef HAVE_MSSQL
   delete mActionAddMssqlLayer;
   mActionAddMssqlLayer = 0;
+#endif
+
+#ifndef HAVE_DB2
+  delete mActionAddDb2Layer;
+  mActionAddDb2Layer = 0;
 #endif
 
 #ifndef HAVE_ORACLE
@@ -2220,6 +2226,9 @@ void QgisApp::setTheme( const QString& theThemeName )
   mActionAddSpatiaLiteLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddSpatiaLiteLayer.svg" ) );
 #ifdef HAVE_MSSQL
   mActionAddMssqlLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddMssqlLayer.svg" ) );
+#endif
+#ifdef HAVE_DB2
+  mActionAddDb2Layer->setIcon( QgsApplication::getThemeIcon( "/mActionAddDb2Layer.svg" ) );
 #endif
 #ifdef HAVE_ORACLE
   mActionAddOracleLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddOracleLayer.svg" ) );
@@ -3861,6 +3870,24 @@ void QgisApp::addMssqlLayer()
   delete dbs;
 #endif
 } // QgisApp::addMssqlLayer()
+
+void QgisApp::addDb2Layer()
+{
+#ifdef HAVE_DB2
+  // show the DB2 dialog
+  QgsDebugMsg( "Show dialog for DB2 " );
+  QDialog *dbs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( "DB2", this ) );
+  if ( !dbs )
+  {
+    QMessageBox::warning( this, tr( "DB2" ), tr( "Cannot get DB2 select dialog from provider." ) );
+    return;
+  }
+  connect( dbs, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
+           this, SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
+  dbs->exec();
+  delete dbs;
+#endif
+} // QgisApp::addDb2Layer()
 
 void QgisApp::addOracleLayer()
 {

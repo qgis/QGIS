@@ -239,6 +239,10 @@ SET (HAVE_SPATIALITE TRUE)
 # following variable is used in qgsconfig.h
 SET (HAVE_MSSQL TRUE)
 
+
+# following variable is used in qgsconfig.h
+SET (HAVE_DB2 TRUE)
+
 SET (WITH_QTWEBKIT TRUE CACHE INTERNAL "Enable QtWebkit support")
 IF (WITH_QTWEBKIT)
   ADD_DEFINITIONS(-DWITH_QTWEBKIT)

@@ -168,6 +168,8 @@ class CORE_EXPORT QgsDataSourceURI
     QString database() const;
     //! Returns the port
     QString port() const;
+    //! Returns the driver
+    QString driver() const;
     //! Returns the password
     QString password() const;
     //! Returns the SSL mode
@@ -211,6 +213,8 @@ class CORE_EXPORT QgsDataSourceURI
     QString mHost;
     //! port the database server listens on
     QString mPort;
+    //! device driver for ODBC
+    QString mDriver;
     //! service name
     QString mService;
     //! database name

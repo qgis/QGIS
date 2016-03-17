@@ -181,6 +181,10 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
       {
         mPort = pval;
       }
+      else if ( pname == "driver" )
+      {
+        mDriver = pval;
+      }
       else if ( pname == "tty" )
       {
         QgsDebugMsg( "backend debug tty ignored" );
@@ -305,6 +309,11 @@ void QgsDataSourceURI::setPassword( const QString& password )
 QString QgsDataSourceURI::port() const
 {
   return mPort;
+}
+
+QString QgsDataSourceURI::driver() const
+{
+  return mDriver;
 }
 
 QgsDataSourceURI::SSLmode QgsDataSourceURI::sslMode() const
@@ -484,6 +493,11 @@ QString QgsDataSourceURI::connectionInfo( bool expandAuthConfig ) const
   {
     if ( mPort != "" )
       connectionItems << "port=" + mPort;
+  }
+
+  if ( mDriver != "" )
+  {
+    connectionItems << "driver='" + escape( mDriver ) + '\'';
   }
 
   if ( mUsername != "" )
@@ -670,6 +684,7 @@ void QgsDataSourceURI::setDataSource( const QString &schema,
 
 void QgsDataSourceURI::setAuthConfigId( const QString &authcfg )
 {
+  QgsDebugMsg( "authcfg: " + authcfg );
   mAuthConfigId = authcfg;
 }
 
