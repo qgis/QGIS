@@ -69,8 +69,8 @@ bool QgsComposerPointsBasedShape::addPoint( const QPointF &pt,
     const double radius )
 {
   const QPointF start = convertToItemCoordinate( pt );
-  double min_distance = std::numeric_limits<double>::max();
-  double max_distance = ( checkArea ) ? radius : min_distance;
+  double minDistance = std::numeric_limits<double>::max();
+  double maxDistance = ( checkArea ) ? radius : minDistance;
   bool rc = false;
   int idx = -1;
 
@@ -119,16 +119,16 @@ bool QgsComposerPointsBasedShape::addPoint( const QPointF &pt,
         distance = computeDistance( inter, start );
     }
 
-    if ( distance < min_distance && distance < max_distance )
+    if ( distance < minDistance && distance < maxDistance )
     {
-      min_distance = distance;
+      minDistance = distance;
       idx = i;
     }
   }
 
   if ( idx >= 0 )
   {
-    rc = _addPoint( idx, start, max_distance );
+    rc = _addPoint( idx, start, maxDistance );
     updateSceneRect();
   }
 
@@ -242,8 +242,8 @@ int QgsComposerPointsBasedShape::pointAtPosition( const QPointF &point,
     const double radius )
 {
   const QPointF pt = convertToItemCoordinate( point );
-  double nearest_distance = std::numeric_limits<double>::max();
-  double max_distance = ( searchInRadius ) ? radius : nearest_distance;
+  double nearestDistance = std::numeric_limits<double>::max();
+  double maxDistance = ( searchInRadius ) ? radius : nearestDistance;
   double distance = 0;
   int idx = -1;
 
@@ -251,9 +251,9 @@ int QgsComposerPointsBasedShape::pointAtPosition( const QPointF &point,
   for ( ; it != mPolygon.end(); ++it )
   {
     distance = computeDistance( pt, *it );
-    if ( distance < nearest_distance && distance < max_distance )
+    if ( distance < nearestDistance && distance < maxDistance )
     {
-      nearest_distance = distance;
+      nearestDistance = distance;
       idx = it - mPolygon.begin();
     }
   }
@@ -339,12 +339,12 @@ void QgsComposerPointsBasedShape::rescaleToFitBoundingBox()
   const QRectF boundingRect = mPolygon.boundingRect();
 
   // compute x/y ratio
-  const float ratio_x =  rect().width() / boundingRect.width();
-  const float ratio_y =  rect().height() / boundingRect.height();
+  const float ratioX =  rect().width() / boundingRect.width();
+  const float ratioY =  rect().height() / boundingRect.height();
 
   // scaling
   QTransform trans;
-  trans = trans.scale( ratio_x, ratio_y );
+  trans = trans.scale( ratioX, ratioY );
   mPolygon = trans.map( mPolygon );
 }
 
