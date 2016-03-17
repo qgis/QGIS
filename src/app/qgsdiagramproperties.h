@@ -19,6 +19,7 @@
 #define QGSDIAGRAMPROPERTIES_H
 
 #include <QDialog>
+#include "qgsdiagramrenderer.h"
 #include <ui_qgsdiagrampropertiesbase.h>
 #include <QStyledItemDelegate>
 #include "qgis_app.h"
@@ -75,6 +76,8 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
 
     QString showExpressionBuilder( const QString& initialExpression );
 
+    QgsPropertyCollection mProperties;
+
     // Keeps track of the diagram type to properly save / restore settings when the diagram type combo box is set to no diagram.
     QString mDiagramType;
     QScopedPointer< QgsMarkerSymbol > mSizeLegendSymbol;
@@ -83,6 +86,12 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     QgsMapCanvas *mMapCanvas;
 
     QgsExpressionContext createExpressionContext() const override;
+
+    void registerDataDefinedButton( QgsDataDefinedButtonV2 *button, QgsDiagramLayerSettings::Property key, QgsDataDefinedButtonV2::DataType type, const QString &description );
+
+  private slots:
+
+    void updateProperty();
 };
 
 class EditBlockerDelegate: public QStyledItemDelegate

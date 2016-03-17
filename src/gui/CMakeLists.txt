@@ -196,6 +196,7 @@ SET(QGIS_GUI_SRCS
   qgscursors.cpp
   qgscustomdrophandler.cpp
   qgsdatadefinedbutton.cpp
+  qgsdatadefinedbuttonv2.cpp
   qgsdatumtransformdialog.cpp
   qgsdetaileditemdata.cpp
   qgsdetaileditemdelegate.cpp
@@ -366,6 +367,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsconfigureshortcutsdialog.h
   qgscredentialdialog.h
   qgsdatadefinedbutton.h
+  qgsdatadefinedbuttonv2.h
   qgsdatumtransformdialog.h
   qgsdetaileditemdelegate.h
   qgsdetaileditemwidget.h

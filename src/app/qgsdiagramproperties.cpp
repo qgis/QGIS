@@ -100,8 +100,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   mDiagramAttributesTreeWidget->setItemDelegateForColumn( ColumnAttributeExpression, new EditBlockerDelegate( this ) );
   mDiagramAttributesTreeWidget->setItemDelegateForColumn( ColumnColor, new EditBlockerDelegate( this ) );
 
-  connect( mFixedSizeRadio, SIGNAL( toggled( bool ) ), this, SLOT( scalingTypeChanged() ) );
-  connect( mAttributeBasedScalingRadio, SIGNAL( toggled( bool ) ), this, SLOT( scalingTypeChanged() ) );
+  connect( mFixedSizeRadio, &QRadioButton::toggled, this, &QgsDiagramProperties::scalingTypeChanged );
+  connect( mAttributeBasedScalingRadio, &QRadioButton::toggled, this, &QgsDiagramProperties::scalingTypeChanged );
 
   mDiagramUnitComboBox->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                   << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
@@ -382,6 +382,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
         chkLineOrientationDependent->setChecked( true );
 
       mShowAllCheckBox->setChecked( dls->showAllDiagrams() );
+
+      mProperties = dls->properties();
     }
 
     if ( dr->diagram() )
@@ -400,11 +402,32 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
         mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findData( DIAGRAM_NAME_PIE ) );
       }
     }
-  } // if ( !dr )
+  }
 
-  connect( mAddAttributeExpression, SIGNAL( clicked() ), this, SLOT( showAddAttributeExpressionDialog() ) );
-  connect( mTransparencySlider, SIGNAL( valueChanged( int ) ), mTransparencySpinBox, SLOT( setValue( int ) ) );
-  connect( mTransparencySpinBox, SIGNAL( valueChanged( int ) ), mTransparencySlider, SLOT( setValue( int ) ) );
+  connect( mAddAttributeExpression, &QPushButton::clicked, this, &QgsDiagramProperties::showAddAttributeExpressionDialog );
+  connect( mTransparencySlider, &QSlider::valueChanged, mTransparencySpinBox, &QgsSpinBox::setValue  );
+  connect( mTransparencySpinBox, static_cast<void (QgsSpinBox::*)(int)>(&QSpinBox::valueChanged), mTransparencySlider, &QSlider::setValue );
+
+  registerDataDefinedButton( mBackgroundColorDDBtn, QgsDiagramLayerSettings::BackgroundColor,
+                             QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::colorAlphaDesc() );
+  registerDataDefinedButton( mLineColorDDBtn, QgsDiagramLayerSettings::OutlineColor,
+                             QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::colorAlphaDesc() );
+  registerDataDefinedButton( mLineWidthDDBtn, QgsDiagramLayerSettings::OutlineWidth,
+                             QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::doublePosDesc() );
+  registerDataDefinedButton( mCoordXDDBtn, QgsDiagramLayerSettings::PositionX,
+                             QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::doubleDesc() );
+  registerDataDefinedButton( mCoordYDDBtn, QgsDiagramLayerSettings::PositionY,
+                             QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::doubleDesc() );
+  registerDataDefinedButton( mPriorityDDBtn, QgsDiagramLayerSettings::Priority,
+                             QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::doubleDesc() );
+  registerDataDefinedButton( mZOrderDDBtn, QgsDiagramLayerSettings::ZIndex,
+                             QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::doubleDesc() );
+  registerDataDefinedButton( mShowDiagramDDBtn, QgsDiagramLayerSettings::Show,
+                             QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::doubleDesc() );
+  registerDataDefinedButton( mAlwaysShowDDBtn, QgsDiagramLayerSettings::AlwaysShow,
+                             QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::doubleDesc() );
+  registerDataDefinedButton( mStartAngleDDBtn, QgsDiagramLayerSettings::StartAngle,
+                             QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::doubleDesc() );
 }
 
 QgsDiagramProperties::~QgsDiagramProperties()
@@ -412,6 +435,21 @@ QgsDiagramProperties::~QgsDiagramProperties()
   QSettings settings;
   settings.setValue( QStringLiteral( "/Windows/Diagrams/OptionsSplitState" ), mDiagramOptionsSplitter->saveState() );
   settings.setValue( QStringLiteral( "/Windows/Diagrams/Tab" ), mDiagramOptionsListWidget->currentRow() );
+}
+
+void QgsDiagramProperties::registerDataDefinedButton( QgsDataDefinedButtonV2 * button, QgsDiagramLayerSettings::Property key, QgsDataDefinedButtonV2::DataType type, const QString & description )
+{
+  button->init( mLayer, mProperties.property( key ), type, description );
+  button->setProperty( "propertyKey", key );
+  connect( button, &QgsDataDefinedButtonV2::changed, this, &QgsDiagramProperties::updateProperty );
+  button->registerExpressionContextGenerator( this );
+}
+
+void QgsDiagramProperties::updateProperty()
+{
+  QgsDataDefinedButtonV2* button = qobject_cast<QgsDataDefinedButtonV2*>( sender() );
+  QgsDiagramLayerSettings::Property key = static_cast<  QgsDiagramLayerSettings::Property >( button->property( "propertyKey" ).toInt() );
+  mProperties.setProperty( key, button->toProperty() );
 }
 
 void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int index )
@@ -794,6 +832,7 @@ void QgsDiagramProperties::apply()
   mLayer->setDiagramRenderer( renderer );
 
   QgsDiagramLayerSettings dls;
+  dls.setProperties( mProperties );
   dls.setDistance( mDiagramDistanceSpinBox->value() );
   dls.setPriority( mPrioritySlider->value() );
   dls.setZIndex( mZIndexSpinBox->value() );
