@@ -68,10 +68,10 @@ bool QgsComposerPointsBasedShape::addPoint( const QPointF &pt,
   for ( int i = 0; i != mPolygon.size(); i++ )
   {
     // get points of polyline
-    const QPointF pt1 = mPolygon[i];
-    QPointF pt2 = mPolygon[0];
+    const QPointF pt1 = mPolygon.at( i );
+    QPointF pt2 = mPolygon.first();
     if (( i + 1 ) != mPolygon.size() )
-      pt2 = mPolygon[i+1];
+      pt2 = mPolygon.at( i + 1 );
 
     // compute line eq
     const double coef = ( pt2.y() - pt1.y() ) / ( pt2.x() - pt1.x() );
@@ -197,7 +197,7 @@ void QgsComposerPointsBasedShape::drawSelectedPoint( QPainter *painter ) const
   context.setExpressionContext( *expressionContext.data() );
 
   symbol.data()->startRender( context );
-  symbol.data()->renderPoint( mPolygon[mSelectedPoint], nullptr, context );
+  symbol.data()->renderPoint( mPolygon.at( mSelectedPoint ), nullptr, context );
   symbol.data()->stopRender( context );
 }
 
