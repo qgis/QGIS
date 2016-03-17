@@ -39,6 +39,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
       PostGIS,
       WFS,
       MSSQL,
+      DB2,
       WCS,
       Oracle,
     };
@@ -62,12 +63,14 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
     QDomDocument savePgConnections( const QStringList & connections );
     QDomDocument saveMssqlConnections( const QStringList & connections );
     QDomDocument saveOracleConnections( const QStringList & connections );
+    QDomDocument saveDb2Connections( const QStringList & connections );
 
     void loadOWSConnections( const QDomDocument &doc, const QStringList &items, const QString &service );
     void loadWFSConnections( const QDomDocument &doc, const QStringList &items );
     void loadPgConnections( const QDomDocument &doc, const QStringList &items );
     void loadMssqlConnections( const QDomDocument &doc, const QStringList &items );
     void loadOracleConnections( const QDomDocument &doc, const QStringList &items );
+    void loadDb2Connections( const QDomDocument &doc, const QStringList &items );
 
     QString mFileName;
     Mode mDialogMode;

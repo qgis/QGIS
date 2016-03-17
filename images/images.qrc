@@ -128,6 +128,7 @@
         <file>themes/default/mActionAddMap.png</file>
         <file>themes/default/mActionAddMap.svg</file>
         <file>themes/default/mActionAddMssqlLayer.svg</file>
+        <file>themes/default/mActionAddDb2Layer.svg</file>		
         <file>themes/default/mActionAddNonDbLayer.png</file>
         <file>themes/default/mActionAddOgrLayer.svg</file>
         <file>themes/default/mActionAddOracleLayer.svg</file>
@@ -357,6 +358,7 @@
         <file>themes/default/mIconDataDefineExpression.svg</file>
         <file>themes/default/mIconDataDefineExpressionError.svg</file>
         <file>themes/default/mIconDataDefineExpressionOn.svg</file>
+		<file>themes/default/mIconDb2.svg</file>
         <file>themes/default/mIconDbSchema.png</file>
         <file>themes/default/mIconDelete.png</file>
         <file>themes/default/mIconDeselected.svg</file>

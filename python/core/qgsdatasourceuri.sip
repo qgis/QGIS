@@ -144,6 +144,8 @@ class QgsDataSourceURI
     QString database() const;
     //! Returns the port
     QString port() const;
+    //! Returns the port
+    QString driver() const;
     //! Returns the password
     QString password() const;
     //! Returns the SSL mode

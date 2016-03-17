@@ -46,6 +46,8 @@
 
 #cmakedefine HAVE_MSSQL
 
+#cmakedefine HAVE_DB2
+
 #cmakedefine HAVE_ORACLE
 
 #cmakedefine HAVE_PYTHON
