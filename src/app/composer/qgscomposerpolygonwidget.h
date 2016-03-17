@@ -20,9 +20,12 @@
 #include "ui_qgscomposerpolygonwidgetbase.h"
 #include "qgscomposeritemwidget.h"
 
-/** Input widget for QgsComposerPolygon*/
 class QgsComposerPolygon;
 
+/**
+ * Input widget for QgsComposerPolygon
+ * @note added in QGIS 2.16
+ */
 class QgsComposerPolygonWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerPolygonWidgetBase
 {
     Q_OBJECT

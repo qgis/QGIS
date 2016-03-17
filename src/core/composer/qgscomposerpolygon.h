@@ -23,6 +23,11 @@
 
 class QgsFillSymbolV2;
 
+/**
+ * Composer item for polygons.
+ * @note added in QGIS 2.16
+ */
+
 class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesBasedShape
 {
     Q_OBJECT

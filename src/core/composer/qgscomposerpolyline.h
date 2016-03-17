@@ -23,6 +23,10 @@
 
 class QgsLineSymbolV2;
 
+/**
+ * Composer item for polylines.
+ * @note added in QGIS 2.16
+ */
 class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesBasedShape
 {
     Q_OBJECT

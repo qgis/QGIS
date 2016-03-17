@@ -22,7 +22,9 @@
 #include <QPen>
 
 /** An abstract composer item that provides generic methods for nodes based
- * shapes such as polygon or polylines. */
+ * shapes such as polygon or polylines.
+ * @node added in QGIS 2.16
+ */
 class CORE_EXPORT QgsComposerNodesBasedShape: public QgsComposerItem
 {
     Q_OBJECT
