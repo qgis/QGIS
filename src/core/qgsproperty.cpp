@@ -724,7 +724,9 @@ void QgsPropertyCollection::setProperty( int key, QgsAbstractProperty* property 
   if ( hasProperty( key ) )
     delete mProperties.take( key );
 
-  mProperties.insert( key, property );
+  if ( property )
+    mProperties.insert( key, property );
+
   mDirty = true;
 }
 

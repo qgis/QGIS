@@ -797,6 +797,12 @@ void TestQgsProperty::propertyCollection()
   QCOMPARE( collection.count(), 2 );
   QCOMPARE( collection.propertyKeys().toSet(), QSet<int>() << Property1 << Property3 );
 
+  //test removing a property
+  collection.setProperty( Property1, nullptr );
+  QVERIFY( !collection.property( Property1 ) );
+  QVERIFY( !collection.hasProperty( Property1 ) );
+  QCOMPARE( collection.propertyKeys(), QList<int>() << Property3 );
+
   //clear
   collection.clear();
   QCOMPARE( collection.count(), 0 );

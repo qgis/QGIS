@@ -630,7 +630,8 @@ class QgsPropertyCollection
      * @param key integer key for property. Any existing property with the same key will be deleted
      * and replaced by this property. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
-     * @param property property to add. Ownership is transferred to the collection.
+     * @param property property to add. Ownership is transferred to the collection. Setting a property
+     * to null will remove the property from the collection.
      */
     void setProperty( int key, QgsAbstractProperty* property /Transfer/ );
 
