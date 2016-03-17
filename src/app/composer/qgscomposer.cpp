@@ -164,17 +164,17 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mItemToolbar->insertWidget( mActionAddArrow, shapeToolButton );
 
   QToolButton* pointsBasedShapeButton = new QToolButton( mItemToolbar );
-  pointsBasedShapeButton->setIcon( QgsApplication::getThemeIcon( "/mActionAddPointsBasedShape.svg" ) );
+  pointsBasedShapeButton->setIcon( QgsApplication::getThemeIcon( "/mActionAddNodesBasedShape.svg" ) );
   pointsBasedShapeButton->setCheckable( true );
   pointsBasedShapeButton->setPopupMode( QToolButton::InstantPopup );
   pointsBasedShapeButton->setAutoRaise( true );
   pointsBasedShapeButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
   pointsBasedShapeButton->addAction( mActionAddPolygon );
   pointsBasedShapeButton->addAction( mActionAddPolyline );
-  pointsBasedShapeButton->addAction( mActionMoveItemPoint );
-  pointsBasedShapeButton->addAction( mActionAddItemPoint );
-  pointsBasedShapeButton->addAction( mActionRemoveItemPoint );
-  pointsBasedShapeButton->setToolTip( tr( "Points Based Shape" ) );
+  pointsBasedShapeButton->addAction( mActionMoveItemNode );
+  pointsBasedShapeButton->addAction( mActionAddItemNode );
+  pointsBasedShapeButton->addAction( mActionRemoveItemNode );
+  pointsBasedShapeButton->setToolTip( tr( "Nodes Based Shape" ) );
   mItemToolbar->insertWidget( mActionAddArrow, pointsBasedShapeButton );
 
   QActionGroup* toggleActionGroup = new QActionGroup( this );
@@ -192,9 +192,9 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   toggleActionGroup->addAction( mActionAddEllipse );
   toggleActionGroup->addAction( mActionAddPolygon );
   toggleActionGroup->addAction( mActionAddPolyline );
-  toggleActionGroup->addAction( mActionAddItemPoint );
-  toggleActionGroup->addAction( mActionMoveItemPoint );
-  toggleActionGroup->addAction( mActionRemoveItemPoint );
+  toggleActionGroup->addAction( mActionAddItemNode );
+  toggleActionGroup->addAction( mActionMoveItemNode );
+  toggleActionGroup->addAction( mActionRemoveItemNode );
   toggleActionGroup->addAction( mActionAddArrow );
   //toggleActionGroup->addAction( mActionAddTable );
   toggleActionGroup->addAction( mActionAddAttributeTable );
@@ -394,13 +394,13 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   shapeMenu->addAction( mActionAddTriangle );
   shapeMenu->addAction( mActionAddEllipse );
 
-  QMenu *pointsBasedShapeMenu = layoutMenu->addMenu( "Points Based Shape" );
-  pointsBasedShapeMenu->setIcon( QgsApplication::getThemeIcon( "/mActionAddPointsBasedShape.svg" ) );
+  QMenu *pointsBasedShapeMenu = layoutMenu->addMenu( "Nodes Based Shape" );
+  pointsBasedShapeMenu->setIcon( QgsApplication::getThemeIcon( "/mActionAddNodesBasedShape.svg" ) );
   pointsBasedShapeMenu->addAction( mActionAddPolygon );
   pointsBasedShapeMenu->addAction( mActionAddPolyline );
-  pointsBasedShapeMenu->addAction( mActionMoveItemPoint );
-  pointsBasedShapeMenu->addAction( mActionAddItemPoint );
-  pointsBasedShapeMenu->addAction( mActionRemoveItemPoint );
+  pointsBasedShapeMenu->addAction( mActionMoveItemNode );
+  pointsBasedShapeMenu->addAction( mActionAddItemNode );
+  pointsBasedShapeMenu->addAction( mActionRemoveItemNode );
 
   layoutMenu->addAction( mActionAddArrow );
   //layoutMenu->addAction( mActionAddTable );
@@ -743,9 +743,9 @@ void QgsComposer::setupTheme()
   mActionAddHtml->setIcon( QgsApplication::getThemeIcon( "/mActionAddHtml.svg" ) );
   mActionSelectMoveItem->setIcon( QgsApplication::getThemeIcon( "/mActionSelect.svg" ) );
   mActionMoveItemContent->setIcon( QgsApplication::getThemeIcon( "/mActionMoveItemContent.svg" ) );
-  mActionAddItemPoint->setIcon( QgsApplication::getThemeIcon( "/mActionAddItemPoint.svg" ) );
-  mActionMoveItemPoint->setIcon( QgsApplication::getThemeIcon( "/mActionMoveItemPoint.svg" ) );
-  mActionRemoveItemPoint->setIcon( QgsApplication::getThemeIcon( "/mActionRemoveItemPoint.svg" ) );
+  mActionAddItemNode->setIcon( QgsApplication::getThemeIcon( "/mActionAddItemNode.svg" ) );
+  mActionMoveItemNode->setIcon( QgsApplication::getThemeIcon( "/mActionMoveItemNode.svg" ) );
+  mActionRemoveItemNode->setIcon( QgsApplication::getThemeIcon( "/mActionRemoveItemNode.svg" ) );
   mActionGroupItems->setIcon( QgsApplication::getThemeIcon( "/mActionGroupItems.png" ) );
   mActionUngroupItems->setIcon( QgsApplication::getThemeIcon( "/mActionUngroupItems.png" ) );
   mActionRaiseItems->setIcon( QgsApplication::getThemeIcon( "/mActionRaiseItems.png" ) );
@@ -3172,27 +3172,27 @@ void QgsComposer::on_mActionMoveItemContent_triggered()
   }
 }
 
-void QgsComposer::on_mActionAddItemPoint_triggered()
+void QgsComposer::on_mActionAddItemNode_triggered()
 {
   if ( mView )
   {
-    mView->setCurrentTool( QgsComposerView::AddItemPoint );
+    mView->setCurrentTool( QgsComposerView::AddItemNode );
   }
 }
 
-void QgsComposer::on_mActionMoveItemPoint_triggered()
+void QgsComposer::on_mActionMoveItemNode_triggered()
 {
   if ( mView )
   {
-    mView->setCurrentTool( QgsComposerView::MoveItemPoint );
+    mView->setCurrentTool( QgsComposerView::MoveItemNode );
   }
 }
 
-void QgsComposer::on_mActionRemoveItemPoint_triggered()
+void QgsComposer::on_mActionRemoveItemNode_triggered()
 {
   if ( mView )
   {
-    mView->setCurrentTool( QgsComposerView::RemoveItemPoint );
+    mView->setCurrentTool( QgsComposerView::RemoveItemNode );
   }
 }
 

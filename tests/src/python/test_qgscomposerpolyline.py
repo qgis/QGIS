@@ -70,54 +70,54 @@ class TestQgsComposerPolyline(unittest.TestCase):
     def testDefaultStyle(self):
         """Test polygon rendering with default style."""
 
-        self.mComposerPolyline.setDisplayPoints(False)
+        self.mComposerPolyline.setDisplayNodes(False)
         checker = QgsCompositionChecker(
             'composerpolyline_defaultstyle', self.mComposition)
         checker.setControlPathPrefix("composer_polyline")
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-    def testDisplayPoints(self):
-        """Test displayPoints method"""
+    def testDisplayNodes(self):
+        """Test displayNodes method"""
 
-        self.mComposerPolyline.setDisplayPoints(True)
+        self.mComposerPolyline.setDisplayNodes(True)
         checker = QgsCompositionChecker(
             'composerpolyline_displaypoints', self.mComposition)
         checker.setControlPathPrefix("composer_polyline")
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-        self.mComposerPolyline.setDisplayPoints(False)
+        self.mComposerPolyline.setDisplayNodes(False)
         checker = QgsCompositionChecker(
             'composerpolyline_defaultstyle', self.mComposition)
         checker.setControlPathPrefix("composer_polyline")
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-    def testSelectedPoint(self):
-        """Test selectedPoint and unselectPoint methods"""
+    def testSelectedNode(self):
+        """Test selectedNode and unselectNode methods"""
 
-        self.mComposerPolyline.setDisplayPoints(True)
+        self.mComposerPolyline.setDisplayNodes(True)
 
-        self.mComposerPolyline.setSelectedPoint(3)
+        self.mComposerPolyline.setSelectedNode(3)
         checker = QgsCompositionChecker(
             'composerpolyline_selectedpoint', self.mComposition)
         checker.setControlPathPrefix("composer_polyline")
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-        self.mComposerPolyline.unselectPoint()
-        self.mComposerPolyline.setDisplayPoints(False)
+        self.mComposerPolyline.unselectNode()
+        self.mComposerPolyline.setDisplayNodes(False)
         checker = QgsCompositionChecker(
             'composerpolyline_defaultstyle', self.mComposition)
         checker.setControlPathPrefix("composer_polyline")
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-    def testRemovePoint(self):
-        """Test removePoint method"""
+    def testRemoveNode(self):
+        """Test removeNode method"""
 
-        rc = self.mComposerPolyline.removePoint(100)
+        rc = self.mComposerPolyline.removeNode(100)
         self.assertEqual(rc, False)
 
         checker = QgsCompositionChecker(
@@ -126,10 +126,10 @@ class TestQgsComposerPolyline(unittest.TestCase):
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-        self.assertEqual(self.mComposerPolyline.pointsSize(), 4)
-        rc = self.mComposerPolyline.removePoint(3)
+        self.assertEqual(self.mComposerPolyline.nodesSize(), 4)
+        rc = self.mComposerPolyline.removeNode(3)
         self.assertEqual(rc, True)
-        self.assertEqual(self.mComposerPolyline.pointsSize(), 3)
+        self.assertEqual(self.mComposerPolyline.nodesSize(), 3)
 
         checker = QgsCompositionChecker(
             'composerpolyline_removedpoint', self.mComposition)
@@ -137,48 +137,48 @@ class TestQgsComposerPolyline(unittest.TestCase):
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-    def testAddPoint(self):
-        """Test addPoint method"""
+    def testAddNode(self):
+        """Test addNode method"""
 
         # default searching radius is 10
-        self.assertEqual(self.mComposerPolyline.pointsSize(), 4)
-        rc = self.mComposerPolyline.addPoint(QPointF(50.0, 10.0))
+        self.assertEqual(self.mComposerPolyline.nodesSize(), 4)
+        rc = self.mComposerPolyline.addNode(QPointF(50.0, 10.0))
         self.assertEqual(rc, False)
 
         # default searching radius is 10
-        self.assertEqual(self.mComposerPolyline.pointsSize(), 4)
-        rc = self.mComposerPolyline.addPoint(QPointF(50.0, 9.99))
+        self.assertEqual(self.mComposerPolyline.nodesSize(), 4)
+        rc = self.mComposerPolyline.addNode(QPointF(50.0, 9.99))
         self.assertEqual(rc, True)
-        self.assertEqual(self.mComposerPolyline.pointsSize(), 5)
+        self.assertEqual(self.mComposerPolyline.nodesSize(), 5)
 
-    def testAddPointCustomRadius(self):
-        """Test addPoint with custom radius"""
+    def testAddNodeCustomRadius(self):
+        """Test addNode with custom radius"""
 
         # default searching radius is 10
-        self.assertEqual(self.mComposerPolyline.pointsSize(), 4)
-        rc = self.mComposerPolyline.addPoint(QPointF(50.0, 8.1), True, 8.0)
+        self.assertEqual(self.mComposerPolyline.nodesSize(), 4)
+        rc = self.mComposerPolyline.addNode(QPointF(50.0, 8.1), True, 8.0)
         self.assertEqual(rc, False)
-        self.assertEqual(self.mComposerPolyline.pointsSize(), 4)
+        self.assertEqual(self.mComposerPolyline.nodesSize(), 4)
 
         # default searching radius is 10
-        rc = self.mComposerPolyline.addPoint(QPointF(50.0, 7.9), True, 8.0)
+        rc = self.mComposerPolyline.addNode(QPointF(50.0, 7.9), True, 8.0)
         self.assertEqual(rc, True)
-        self.assertEqual(self.mComposerPolyline.pointsSize(), 5)
+        self.assertEqual(self.mComposerPolyline.nodesSize(), 5)
 
-    def testAddPointWithoutCheckingArea(self):
-        """Test addPoint without checking the maximum distance allowed"""
+    def testAddNodeWithoutCheckingArea(self):
+        """Test addNode without checking the maximum distance allowed"""
 
         # default searching radius is 10
-        self.assertEqual(self.mComposerPolyline.pointsSize(), 4)
-        rc = self.mComposerPolyline.addPoint(QPointF(50.0, 20.0))
+        self.assertEqual(self.mComposerPolyline.nodesSize(), 4)
+        rc = self.mComposerPolyline.addNode(QPointF(50.0, 20.0))
         self.assertEqual(rc, False)
-        self.assertEqual(self.mComposerPolyline.pointsSize(), 4)
+        self.assertEqual(self.mComposerPolyline.nodesSize(), 4)
 
         # default searching radius is 10
-        self.assertEqual(self.mComposerPolyline.pointsSize(), 4)
-        rc = self.mComposerPolyline.addPoint(QPointF(50.0, 20.0), False)
+        self.assertEqual(self.mComposerPolyline.nodesSize(), 4)
+        rc = self.mComposerPolyline.addNode(QPointF(50.0, 20.0), False)
         self.assertEqual(rc, True)
-        self.assertEqual(self.mComposerPolyline.pointsSize(), 5)
+        self.assertEqual(self.mComposerPolyline.nodesSize(), 5)
 
         checker = QgsCompositionChecker(
             'composerpolyline_addpoint', self.mComposition)
@@ -186,13 +186,13 @@ class TestQgsComposerPolyline(unittest.TestCase):
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-    def testMovePoint(self):
-        """Test movePoint method"""
+    def testMoveNode(self):
+        """Test moveNode method"""
 
-        rc = self.mComposerPolyline.movePoint(30, QPointF(100.0, 300.0))
+        rc = self.mComposerPolyline.moveNode(30, QPointF(100.0, 300.0))
         self.assertEqual(rc, False)
 
-        rc = self.mComposerPolyline.movePoint(3, QPointF(100.0, 150.0))
+        rc = self.mComposerPolyline.moveNode(3, QPointF(100.0, 150.0))
         self.assertEqual(rc, True)
 
         checker = QgsCompositionChecker(
@@ -201,20 +201,20 @@ class TestQgsComposerPolyline(unittest.TestCase):
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-    def testPointAtPosition(self):
-        """Test pointAtPosition method"""
+    def testNodeAtPosition(self):
+        """Test nodeAtPosition method"""
 
         # default searching radius is 10
-        rc = self.mComposerPolyline.pointAtPosition(QPointF(100.0, 210.0))
+        rc = self.mComposerPolyline.nodeAtPosition(QPointF(100.0, 210.0))
         self.assertEqual(rc, -1)
 
         # default searching radius is 10
-        rc = self.mComposerPolyline.pointAtPosition(
+        rc = self.mComposerPolyline.nodeAtPosition(
             QPointF(100.0, 210.0), False)
         self.assertEqual(rc, 3)
 
         # default searching radius is 10
-        rc = self.mComposerPolyline.pointAtPosition(
+        rc = self.mComposerPolyline.nodeAtPosition(
             QPointF(100.0, 210.0), True, 10.1)
         self.assertEqual(rc, 3)
 

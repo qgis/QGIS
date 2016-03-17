@@ -1,45 +1,45 @@
-class QgsComposerPointsBasedShape: QgsComposerItem
+class QgsComposerNodesBasedShape: QgsComposerItem
 {
 %TypeHeaderCode
-#include <qgscomposerpointsbasedshape.h>
+#include <qgscomposernodesbasedshape.h>
 %End
   public:
 
-    QgsComposerPointsBasedShape( QString mTagName, QgsComposition* c );
-    QgsComposerPointsBasedShape( QString mTagName, QPolygonF polygon, QgsComposition* c );
-    ~QgsComposerPointsBasedShape();
+    QgsComposerNodesBasedShape( QString mTagName, QgsComposition* c );
+    QgsComposerNodesBasedShape( QString mTagName, QPolygonF polygon, QgsComposition* c );
+    ~QgsComposerNodesBasedShape();
 
-    /** Add a point in current shape.
-     * @param pt is the location of the new point
+    /** Add a node in current shape.
+     * @param pt is the location of the new node
      * @param checkArea is a flag to indicate if there's a space constraint.
      * @param radius is the space contraint and is used only if checkArea is
-     * true. Typically, if this flag is true, the new point has to be nearest
+     * true. Typically, if this flag is true, the new node has to be nearest
      * than radius to the shape to be added.
      */
-    bool addPoint( const QPointF &pt, const bool checkArea = true, const double radius = 10 );
+    bool addNode( const QPointF &pt, const bool checkArea = true, const double radius = 10 );
 
-    /** Set a tag to indicate if we want to draw or not the shape's points.
+    /** Set a tag to indicate if we want to draw or not the shape's nodes.
      * @param display
      */
-    void setDisplayPoints( const bool display = true );
+    void setDisplayNodes( const bool display = true );
 
-    /** Move a point to a new position.
-     * @param index the index of the point to move
-     * @param point is the new position in scene coordinate
+    /** Move a node to a new position.
+     * @param index the index of the node to move
+     * @param node is the new position in scene coordinate
      */
-    bool movePoint( const int index, const QPointF &point );
+    bool moveNode( const int index, const QPointF &node );
 
     /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 
-    /** Search the nearest point in shape within a maximal area. Returns the
-     * index of the nearest point or -1.
-     * @param point is where a shape's point is searched
+    /** Search the nearest node in shape within a maximal area. Returns the
+     * index of the nearest node or -1.
+     * @param node is where a shape's node is searched
      * @param searchInRadius is a flag to indicate if the area of research is
      * limited in space.
      * @param radius is only used if searchInRadius is true
      */
-    int pointAtPosition( const QPointF &point, const bool searchInRadius = true, const double radius = 10 );
+    int nodeAtPosition( const QPointF &node, const bool searchInRadius = true, const double radius = 10 );
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
@@ -47,22 +47,22 @@ class QgsComposerPointsBasedShape: QgsComposerItem
      */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
-    /** Remove a point from the shape.
-     * @param index of the point to delete
+    /** Remove a node from the shape.
+     * @param index of the node to delete
      */
-    bool removePoint( const int index );
+    bool removeNode( const int index );
 
-    /** Returns the number of points in the shape. */
-    int pointsSize();
+    /** Returns the number of nodes in the shape. */
+    int nodesSize();
 
-    /** Select a point.
-     * @param index the point to select
+    /** Select a node.
+     * @param index the node to select
      */
-    bool setSelectedPoint( const int index );
+    bool setSelectedNode( const int index );
 
-    /** Unselect a point.
+    /** Unselect a node.
      */
-    void unselectPoint();
+    void unselectNode();
 
     /** Stores state in Dom element
      * @param elem is Dom element corresponding to 'Composer' tag
@@ -72,8 +72,8 @@ class QgsComposerPointsBasedShape: QgsComposerItem
 
   protected:
 
-    /** Method called in addPoint. */
-    virtual bool _addPoint( const int pointIndex, const QPointF &newPoint, const double radius ) = 0;
+    /** Method called in addNode. */
+    virtual bool _addNode( const int nodeIndex, const QPointF &newPoint, const double radius ) = 0;
 
     /** Method called in paint. */
     virtual void _draw( QPainter *painter ) = 0;
@@ -88,11 +88,11 @@ class QgsComposerPointsBasedShape: QgsComposerItem
      * the shape is resized thanks to the rubber band. */
     void rescaleToFitBoundingBox();
 
-    /** Compute an euclidian distance between 2 points. */
+    /** Compute an euclidian distance between 2 nodes. */
     double computeDistance(const QPointF &pt1, const QPointF &pt2) const;
 
     /** Convert scene coordinate to item coordinates */
-    QPointF convertToItemCoordinate(const QPointF &point);
+    QPointF convertToItemCoordinate(const QPointF &node);
 
     /** Update the current scene rectangle for this item. */
     void updateSceneRect();

@@ -22,14 +22,14 @@
 #include <limits>
 
 QgsComposerPolyline::QgsComposerPolyline( QgsComposition* c )
-    : QgsComposerPointsBasedShape( "ComposerPolyline", c )
+    : QgsComposerNodesBasedShape( "ComposerPolyline", c )
     , mPolylineStyleSymbol( nullptr )
 {
   createDefaultPolylineStyleSymbol();
 }
 
 QgsComposerPolyline::QgsComposerPolyline( QPolygonF polyline, QgsComposition* c )
-    : QgsComposerPointsBasedShape( "ComposerPolyline", polyline, c )
+    : QgsComposerNodesBasedShape( "ComposerPolyline", polyline, c )
     , mPolylineStyleSymbol( nullptr )
 {
   createDefaultPolylineStyleSymbol();
@@ -39,9 +39,9 @@ QgsComposerPolyline::~QgsComposerPolyline()
 {
 }
 
-bool QgsComposerPolyline::_addPoint( const int indexPoint,
-                                     const QPointF &newPoint,
-                                     const double radius )
+bool QgsComposerPolyline::_addNode( const int indexPoint,
+                                    const QPointF &newPoint,
+                                    const double radius )
 {
   const double distStart = computeDistance( newPoint, mPolygon[0] );
   const double distEnd = computeDistance( newPoint, mPolygon[mPolygon.size()-1] );

@@ -22,14 +22,14 @@
 #include <limits>
 
 QgsComposerPolygon::QgsComposerPolygon( QgsComposition* c )
-    : QgsComposerPointsBasedShape( "ComposerPolygon", c )
+    : QgsComposerNodesBasedShape( "ComposerPolygon", c )
     , mPolygonStyleSymbol( nullptr )
 {
   createDefaultPolygonStyleSymbol();
 }
 
 QgsComposerPolygon::QgsComposerPolygon( QPolygonF polygon, QgsComposition* c )
-    : QgsComposerPointsBasedShape( "ComposerPolygon", polygon, c )
+    : QgsComposerNodesBasedShape( "ComposerPolygon", polygon, c )
     , mPolygonStyleSymbol( nullptr )
 {
   createDefaultPolygonStyleSymbol();
@@ -39,9 +39,9 @@ QgsComposerPolygon::~QgsComposerPolygon()
 {
 }
 
-bool QgsComposerPolygon::_addPoint( const int indexPoint,
-                                    const QPointF &newPoint,
-                                    const double radius )
+bool QgsComposerPolygon::_addNode( const int indexPoint,
+                                   const QPointF &newPoint,
+                                   const double radius )
 {
   Q_UNUSED( radius );
   mPolygon.insert( indexPoint + 1, newPoint );

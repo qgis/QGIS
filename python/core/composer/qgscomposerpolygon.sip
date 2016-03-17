@@ -1,4 +1,4 @@
-class QgsComposerPolygon: QgsComposerPointsBasedShape
+class QgsComposerPolygon: QgsComposerNodesBasedShape
 {
 %TypeHeaderCode
 #include <qgscomposerpolygon.h>
@@ -25,7 +25,7 @@ class QgsComposerPolygon: QgsComposerPointsBasedShape
 
     /** Add the point newPoint at the given position according to some
      * criteres. */
-    bool _addPoint( const int indexPoint, const QPointF &newPoint, const double radius );
+    bool _addNode( const int indexPoint, const QPointF &newPoint, const double radius );
 
     /** Draw points for the current shape. */
     void _draw( QPainter *painter );

@@ -69,54 +69,54 @@ class TestQgsComposerPolygon(unittest.TestCase):
     def testDefaultStyle(self):
         """Test polygon rendering with default style."""
 
-        self.mComposerPolygon.setDisplayPoints(False)
+        self.mComposerPolygon.setDisplayNodes(False)
         checker = QgsCompositionChecker(
             'composerpolygon_defaultstyle', self.mComposition)
         checker.setControlPathPrefix("composer_polygon")
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-    def testDisplayPoints(self):
-        """Test displayPoints method"""
+    def testDisplayNodes(self):
+        """Test displayNodes method"""
 
-        self.mComposerPolygon.setDisplayPoints(True)
+        self.mComposerPolygon.setDisplayNodes(True)
         checker = QgsCompositionChecker(
             'composerpolygon_displaypoints', self.mComposition)
         checker.setControlPathPrefix("composer_polygon")
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-        self.mComposerPolygon.setDisplayPoints(False)
+        self.mComposerPolygon.setDisplayNodes(False)
         checker = QgsCompositionChecker(
             'composerpolygon_defaultstyle', self.mComposition)
         checker.setControlPathPrefix("composer_polygon")
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-    def testSelectedPoint(self):
-        """Test selectedPoint and unselectPoint methods"""
+    def testSelectedNode(self):
+        """Test selectedNode and unselectNode methods"""
 
-        self.mComposerPolygon.setDisplayPoints(True)
+        self.mComposerPolygon.setDisplayNodes(True)
 
-        self.mComposerPolygon.setSelectedPoint(3)
+        self.mComposerPolygon.setSelectedNode(3)
         checker = QgsCompositionChecker(
             'composerpolygon_selectedpoint', self.mComposition)
         checker.setControlPathPrefix("composer_polygon")
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-        self.mComposerPolygon.unselectPoint()
-        self.mComposerPolygon.setDisplayPoints(False)
+        self.mComposerPolygon.unselectNode()
+        self.mComposerPolygon.setDisplayNodes(False)
         checker = QgsCompositionChecker(
             'composerpolygon_defaultstyle', self.mComposition)
         checker.setControlPathPrefix("composer_polygon")
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-    def testRemovePoint(self):
-        """Test removePoint method"""
+    def testRemoveNode(self):
+        """Test removeNode method"""
 
-        rc = self.mComposerPolygon.removePoint(100)
+        rc = self.mComposerPolygon.removeNode(100)
         self.assertEqual(rc, False)
 
         checker = QgsCompositionChecker(
@@ -125,10 +125,10 @@ class TestQgsComposerPolygon(unittest.TestCase):
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-        self.assertEqual(self.mComposerPolygon.pointsSize(), 4)
-        rc = self.mComposerPolygon.removePoint(3)
+        self.assertEqual(self.mComposerPolygon.nodesSize(), 4)
+        rc = self.mComposerPolygon.removeNode(3)
         self.assertEqual(rc, True)
-        self.assertEqual(self.mComposerPolygon.pointsSize(), 3)
+        self.assertEqual(self.mComposerPolygon.nodesSize(), 3)
 
         checker = QgsCompositionChecker(
             'composerpolygon_removedpoint', self.mComposition)
@@ -136,48 +136,48 @@ class TestQgsComposerPolygon(unittest.TestCase):
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-    def testAddPoint(self):
-        """Test addPoint method"""
+    def testAddNode(self):
+        """Test addNode method"""
 
         # default searching radius is 10
-        self.assertEqual(self.mComposerPolygon.pointsSize(), 4)
-        rc = self.mComposerPolygon.addPoint(QPointF(50.0, 10.0))
+        self.assertEqual(self.mComposerPolygon.nodesSize(), 4)
+        rc = self.mComposerPolygon.addNode(QPointF(50.0, 10.0))
         self.assertEqual(rc, False)
 
         # default searching radius is 10
-        self.assertEqual(self.mComposerPolygon.pointsSize(), 4)
-        rc = self.mComposerPolygon.addPoint(QPointF(50.0, 9.99))
+        self.assertEqual(self.mComposerPolygon.nodesSize(), 4)
+        rc = self.mComposerPolygon.addNode(QPointF(50.0, 9.99))
         self.assertEqual(rc, True)
-        self.assertEqual(self.mComposerPolygon.pointsSize(), 5)
+        self.assertEqual(self.mComposerPolygon.nodesSize(), 5)
 
-    def testAddPointCustomRadius(self):
-        """Test addPoint with custom radius"""
+    def testAddNodeCustomRadius(self):
+        """Test addNode with custom radius"""
 
         # default searching radius is 10
-        self.assertEqual(self.mComposerPolygon.pointsSize(), 4)
-        rc = self.mComposerPolygon.addPoint(QPointF(50.0, 8.1), True, 8.0)
+        self.assertEqual(self.mComposerPolygon.nodesSize(), 4)
+        rc = self.mComposerPolygon.addNode(QPointF(50.0, 8.1), True, 8.0)
         self.assertEqual(rc, False)
-        self.assertEqual(self.mComposerPolygon.pointsSize(), 4)
+        self.assertEqual(self.mComposerPolygon.nodesSize(), 4)
 
         # default searching radius is 10
-        rc = self.mComposerPolygon.addPoint(QPointF(50.0, 7.9), True, 8.0)
+        rc = self.mComposerPolygon.addNode(QPointF(50.0, 7.9), True, 8.0)
         self.assertEqual(rc, True)
-        self.assertEqual(self.mComposerPolygon.pointsSize(), 5)
+        self.assertEqual(self.mComposerPolygon.nodesSize(), 5)
 
-    def testAddPointWithoutCheckingArea(self):
-        """Test addPoint without checking the maximum distance allowed"""
+    def testAddNodeWithoutCheckingArea(self):
+        """Test addNode without checking the maximum distance allowed"""
 
         # default searching radius is 10
-        self.assertEqual(self.mComposerPolygon.pointsSize(), 4)
-        rc = self.mComposerPolygon.addPoint(QPointF(50.0, 20.0))
+        self.assertEqual(self.mComposerPolygon.nodesSize(), 4)
+        rc = self.mComposerPolygon.addNode(QPointF(50.0, 20.0))
         self.assertEqual(rc, False)
-        self.assertEqual(self.mComposerPolygon.pointsSize(), 4)
+        self.assertEqual(self.mComposerPolygon.nodesSize(), 4)
 
         # default searching radius is 10
-        self.assertEqual(self.mComposerPolygon.pointsSize(), 4)
-        rc = self.mComposerPolygon.addPoint(QPointF(50.0, 20.0), False)
+        self.assertEqual(self.mComposerPolygon.nodesSize(), 4)
+        rc = self.mComposerPolygon.addNode(QPointF(50.0, 20.0), False)
         self.assertEqual(rc, True)
-        self.assertEqual(self.mComposerPolygon.pointsSize(), 5)
+        self.assertEqual(self.mComposerPolygon.nodesSize(), 5)
 
         checker = QgsCompositionChecker(
             'composerpolygon_addpoint', self.mComposition)
@@ -185,13 +185,13 @@ class TestQgsComposerPolygon(unittest.TestCase):
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-    def testMovePoint(self):
-        """Test movePoint method"""
+    def testMoveNode(self):
+        """Test moveNode method"""
 
-        rc = self.mComposerPolygon.movePoint(30, QPointF(100.0, 300.0))
+        rc = self.mComposerPolygon.moveNode(30, QPointF(100.0, 300.0))
         self.assertEqual(rc, False)
 
-        rc = self.mComposerPolygon.movePoint(3, QPointF(100.0, 150.0))
+        rc = self.mComposerPolygon.moveNode(3, QPointF(100.0, 150.0))
         self.assertEqual(rc, True)
 
         checker = QgsCompositionChecker(
@@ -200,20 +200,20 @@ class TestQgsComposerPolygon(unittest.TestCase):
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-    def testPointAtPosition(self):
-        """Test pointAtPosition method"""
+    def testNodeAtPosition(self):
+        """Test nodeAtPosition method"""
 
         # default searching radius is 10
-        rc = self.mComposerPolygon.pointAtPosition(QPointF(100.0, 210.0))
+        rc = self.mComposerPolygon.nodeAtPosition(QPointF(100.0, 210.0))
         self.assertEqual(rc, -1)
 
         # default searching radius is 10
-        rc = self.mComposerPolygon.pointAtPosition(
+        rc = self.mComposerPolygon.nodeAtPosition(
             QPointF(100.0, 210.0), False)
         self.assertEqual(rc, 3)
 
         # default searching radius is 10
-        rc = self.mComposerPolygon.pointAtPosition(
+        rc = self.mComposerPolygon.nodeAtPosition(
             QPointF(100.0, 210.0), True, 10.1)
         self.assertEqual(rc, 3)
 

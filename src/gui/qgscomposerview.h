@@ -37,7 +37,7 @@ class QgsComposerPicture;
 class QgsComposerRuler;
 class QgsComposerScaleBar;
 class QgsComposerShape;
-class QgsComposerPointsBasedShape;
+class QgsComposerNodesBasedShape;
 class QgsComposerAttributeTableV2;
 
 /** \ingroup MapComposer
@@ -71,9 +71,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
       AddTable,        // add attribute table
       AddAttributeTable,
       MoveItemContent, // move content of item (e.g. content of map)
-      MoveItemPoint,
-      RemoveItemPoint,
-      AddItemPoint,
+      MoveItemNode,
+      RemoveItemNode,
+      AddItemNode,
       Pan,
       Zoom
     };
@@ -216,15 +216,15 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void addShape( Tool currentTool );
 
     /** Point based shape stuff */
-    void addPolygonPoint( const QPointF & scenePoint );
-    void movePolygonPoint( const QPointF & scenePoint );
-    void displayPoints( const bool display = true );
-    void setSelectedPoint( QgsComposerPointsBasedShape *shape, const int index );
-    void unselectPoint();
+    void addPolygonNode( const QPointF & scenePoint );
+    void movePolygonNode( const QPointF & scenePoint );
+    void displayNodes( const bool display = true );
+    void setSelectedNode( QgsComposerNodesBasedShape *shape, const int index );
+    void unselectNode();
 
     float mMoveContentSearchRadius;
-    QgsComposerPointsBasedShape* mPointsBasedShapeItem;
-    int mPointsBasedShapeItemIndex;
+    QgsComposerNodesBasedShape* mNodesBasedShapeItem;
+    int mNodesBasedShapeItemIndex;
     QScopedPointer<QGraphicsPolygonItem> mPolygonItem;
     QScopedPointer<QGraphicsPathItem> mPolylineItem;
 

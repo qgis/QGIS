@@ -17,13 +17,13 @@
 #ifndef QGSCOMPOSERPOLYLINE_H
 #define QGSCOMPOSERPOLYLINE_H
 
-#include "qgscomposerpointsbasedshape.h"
+#include "qgscomposernodesbasedshape.h"
 #include <QBrush>
 #include <QPen>
 
 class QgsLineSymbolV2;
 
-class CORE_EXPORT QgsComposerPolyline: public QgsComposerPointsBasedShape
+class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesBasedShape
 {
     Q_OBJECT
 
@@ -35,7 +35,7 @@ class CORE_EXPORT QgsComposerPolyline: public QgsComposerPointsBasedShape
     QgsComposerPolyline( QgsComposition* c );
 
     /** Constructor
-     * @param polyline points of the shape
+     * @param polyline nodes of the shape
      * @param c parent composition
      */
     QgsComposerPolyline( QPolygonF polyline, QgsComposition* c );
@@ -60,11 +60,11 @@ class CORE_EXPORT QgsComposerPolyline: public QgsComposerPointsBasedShape
     /** QgsSymbolV2 use to draw the shape. */
     QScopedPointer<QgsLineSymbolV2> mPolylineStyleSymbol;
 
-    /** Add the point newPoint at the given position according to some
+    /** Add the node newPoint at the given position according to some
      * criteres. */
-    bool _addPoint( const int indexPoint, const QPointF &newPoint, const double radius ) override;
+    bool _addNode( const int indexPoint, const QPointF &newPoint, const double radius ) override;
 
-    /** Draw points for the current shape. */
+    /** Draw nodes for the current shape. */
     void _draw( QPainter *painter ) override;
 
     /** Read symbol in XML. */

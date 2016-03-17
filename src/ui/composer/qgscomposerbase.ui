@@ -1068,37 +1068,37 @@
     <string>Add polygon</string>
    </property>
   </action>
-  <action name="mActionPointsBasedShape">
+  <action name="mActionNodesBasedShape">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Points Based Shape</string>
+    <string>Nodes Based Shape</string>
    </property>
    <property name="toolTip">
-    <string>Points based shape</string>
+    <string>Nodes based shape</string>
    </property>
   </action>
-  <action name="mActionRemoveItemPoint">
+  <action name="mActionRemoveItemNode">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Remove Item Point</string>
+    <string>Remove Item Node</string>
    </property>
    <property name="toolTip">
-    <string>Remove point</string>
+    <string>Remove node</string>
    </property>
   </action>
-  <action name="mActionAddItemPoint">
+  <action name="mActionAddItemNode">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Add Item Point</string>
+    <string>Add Item Node</string>
    </property>
    <property name="toolTip">
-    <string>Add point</string>
+    <string>Add node</string>
    </property>
   </action>
   <action name="mActionAddPolyline">
@@ -1112,15 +1112,15 @@
     <string>Add polyline</string>
    </property>
   </action>
-  <action name="mActionMoveItemPoint">
+  <action name="mActionMoveItemNode">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Move Item Point</string>
+    <string>Move Item Node</string>
    </property>
    <property name="toolTip">
-    <string>Move item point</string>
+    <string>Move item node</string>
    </property>
   </action>
  </widget>

@@ -62,8 +62,8 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, const Qt::W
     , mHorizontalRuler( nullptr )
     , mVerticalRuler( nullptr )
     , mMoveContentSearchRadius( 25 )
-    , mPointsBasedShapeItem( nullptr )
-    , mPointsBasedShapeItemIndex( -1 )
+    , mNodesBasedShapeItem( nullptr )
+    , mNodesBasedShapeItemIndex( -1 )
     , mToolPanning( false )
     , mMousePanning( false )
     , mKeyPanning( false )
@@ -92,9 +92,9 @@ void QgsComposerView::setCurrentTool( QgsComposerView::Tool t )
     return;
   }
 
-  // do not display points of PointsBasedShape by default
-  displayPoints( false );
-  unselectPoint();
+  // do not display points of NodesBasedShape by default
+  displayNodes( false );
+  unselectNode();
 
   switch ( t )
   {
@@ -135,14 +135,14 @@ void QgsComposerView::setCurrentTool( QgsComposerView::Tool t )
       break;
     }
 
-    case QgsComposerView::RemoveItemPoint:
-    case QgsComposerView::AddItemPoint:
-    case QgsComposerView::MoveItemPoint:
+    case QgsComposerView::RemoveItemNode:
+    case QgsComposerView::AddItemNode:
+    case QgsComposerView::MoveItemNode:
     {
       composition()->setPreventCursorChange( true );
       viewport()->setCursor( defaultCursorForTool( mCurrentTool ) );
 
-      displayPoints();
+      displayNodes();
 
       break;
     }
@@ -349,8 +349,8 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       return;
     }
 
-    case RemoveItemPoint:
-    case MoveItemPoint:
+    case RemoveItemNode:
+    case MoveItemNode:
     {
       QList<QGraphicsItem *> itemsAtCursorPos = items( e->pos().x(), e->pos().y(),
           mMoveContentSearchRadius,
@@ -368,20 +368,20 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
           if (( item->type() == QgsComposerItem::ComposerPolygon
                 || item->type() == QgsComposerItem::ComposerPolyline ) )
           {
-            QgsComposerPointsBasedShape* itemP = dynamic_cast<QgsComposerPointsBasedShape *>( item );
-            int index = itemP->pointAtPosition( scenePoint );
+            QgsComposerNodesBasedShape* itemP = dynamic_cast<QgsComposerNodesBasedShape *>( item );
+            int index = itemP->nodeAtPosition( scenePoint );
             if ( index != -1 )
             {
-              mPointsBasedShapeItemIndex = index;
-              mPointsBasedShapeItem = itemP;
+              mNodesBasedShapeItemIndex = index;
+              mNodesBasedShapeItem = itemP;
             }
           }
         }
 
-        if ( mPointsBasedShapeItemIndex != -1 )
+        if ( mNodesBasedShapeItemIndex != -1 )
         {
-          if ( mCurrentTool == MoveItemPoint )
-            composition()->beginCommand( mPointsBasedShapeItem, tr( "Move item point" ) );
+          if ( mCurrentTool == MoveItemNode )
+            composition()->beginCommand( mNodesBasedShapeItem, tr( "Move item node" ) );
 
           break;
         }
@@ -390,7 +390,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       break;
     }
 
-    case AddItemPoint:
+    case AddItemNode:
     {
       QList<QGraphicsItem *> itemsAtCursorPos = items( e->pos().x(), e->pos().y(),
           mMoveContentSearchRadius,
@@ -408,17 +408,17 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
           if (( item->type() == QgsComposerItem::ComposerPolygon
                 || item->type() == QgsComposerItem::ComposerPolyline ) )
           {
-            QgsComposerPointsBasedShape* itemP = dynamic_cast<QgsComposerPointsBasedShape *>( item );
-            composition()->beginCommand( itemP, tr( "Add item point" ) );
-            rc = itemP->addPoint( scenePoint );
+            QgsComposerNodesBasedShape* itemP = dynamic_cast<QgsComposerNodesBasedShape *>( item );
+            composition()->beginCommand( itemP, tr( "Add item node" ) );
+            rc = itemP->addNode( scenePoint );
             composition()->endCommand();
 
             scene()->update();
 
             if ( rc )
             {
-              mPointsBasedShapeItemIndex = itemP->pointAtPosition( scenePoint );
-              mPointsBasedShapeItem = itemP;
+              mNodesBasedShapeItemIndex = itemP->nodeAtPosition( scenePoint );
+              mNodesBasedShapeItem = itemP;
             }
           }
         }
@@ -542,9 +542,9 @@ QCursor QgsComposerView::defaultCursorForTool( Tool currentTool )
     case MoveItemContent:
       return Qt::ArrowCursor;
 
-    case AddItemPoint:
-    case MoveItemPoint:
-    case RemoveItemPoint:
+    case AddItemNode:
+    case MoveItemNode:
+    case RemoveItemNode:
       return Qt::CrossCursor;
 
     case AddArrow:
@@ -947,45 +947,45 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       break;
     }
 
-    case MoveItemPoint:
+    case MoveItemNode:
     {
-      if ( mPointsBasedShapeItemIndex != -1 )
+      if ( mNodesBasedShapeItemIndex != -1 )
       {
-        mPointsBasedShapeItem->movePoint( mPointsBasedShapeItemIndex, scenePoint );
-        setSelectedPoint( mPointsBasedShapeItem, mPointsBasedShapeItemIndex );
+        mNodesBasedShapeItem->moveNode( mNodesBasedShapeItemIndex, scenePoint );
+        setSelectedNode( mNodesBasedShapeItem, mNodesBasedShapeItemIndex );
         composition()->endCommand();
 
         scene()->update();
 
-        mPointsBasedShapeItemIndex = -1;
-        mPointsBasedShapeItem = nullptr;
+        mNodesBasedShapeItemIndex = -1;
+        mNodesBasedShapeItem = nullptr;
       }
       break;
     }
 
-    case RemoveItemPoint:
+    case RemoveItemNode:
     {
-      if ( mPointsBasedShapeItemIndex != -1 )
+      if ( mNodesBasedShapeItemIndex != -1 )
       {
-        composition()->beginCommand( mPointsBasedShapeItem, tr( "Remove item point" ) );
-        mPointsBasedShapeItem->removePoint( mPointsBasedShapeItemIndex );
+        composition()->beginCommand( mNodesBasedShapeItem, tr( "Remove item node" ) );
+        mNodesBasedShapeItem->removeNode( mNodesBasedShapeItemIndex );
         composition()->endCommand();
 
         scene()->update();
 
-        mPointsBasedShapeItem = nullptr;
-        mPointsBasedShapeItemIndex = -1;
+        mNodesBasedShapeItem = nullptr;
+        mNodesBasedShapeItemIndex = -1;
       }
 
       break;
     }
 
-    case AddItemPoint:
+    case AddItemNode:
     {
-      if ( mPointsBasedShapeItemIndex != -1 )
+      if ( mNodesBasedShapeItemIndex != -1 )
       {
-        mPointsBasedShapeItemIndex = -1;
-        mPointsBasedShapeItem = nullptr;
+        mNodesBasedShapeItemIndex = -1;
+        mNodesBasedShapeItem = nullptr;
       }
 
       break;
@@ -1025,7 +1025,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
     case AddPolygon:
     {
       if ( ! mPolygonItem.isNull() )
-        addPolygonPoint( scenePoint );
+        addPolygonNode( scenePoint );
 
       break;
     }
@@ -1034,7 +1034,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
     {
       if ( ! mPolygonItem.isNull() && ! mPolylineItem.isNull() )
       {
-        addPolygonPoint( scenePoint );
+        addPolygonNode( scenePoint );
 
         // rebuild a new qpainter path
         QPainterPath path;
@@ -1331,7 +1331,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
       case AddPolygon:
       {
         if ( ! mPolygonItem.isNull() )
-          movePolygonPoint( scenePoint );
+          movePolygonNode( scenePoint );
 
         break;
       }
@@ -1340,7 +1340,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
       {
         if ( ! mPolygonItem.isNull() && ! mPolylineItem.isNull() )
         {
-          movePolygonPoint( scenePoint );
+          movePolygonNode( scenePoint );
 
           // rebuild a new qpainter path
           QPainterPath path;
@@ -1363,14 +1363,14 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
         break;
       }
 
-      case AddItemPoint:
-      case MoveItemPoint:
+      case AddItemNode:
+      case MoveItemNode:
       {
-        if ( mPointsBasedShapeItemIndex != -1 )
+        if ( mNodesBasedShapeItemIndex != -1 )
         {
           QPointF scenePoint = mapToScene( e->pos() );
-          mPointsBasedShapeItem->movePoint( mPointsBasedShapeItemIndex, scenePoint );
-          setSelectedPoint( mPointsBasedShapeItem, mPointsBasedShapeItemIndex );
+          mNodesBasedShapeItem->moveNode( mNodesBasedShapeItemIndex, scenePoint );
+          setSelectedNode( mNodesBasedShapeItem, mNodesBasedShapeItemIndex );
           scene()->update();
 
           mMoveContentStartPos = scenePoint;
@@ -2163,7 +2163,7 @@ QMainWindow* QgsComposerView::composerWindow()
   return nullptr;
 }
 
-void QgsComposerView::addPolygonPoint( const QPointF & scenePoint )
+void QgsComposerView::addPolygonNode( const QPointF & scenePoint )
 {
   QPolygonF polygon = mPolygonItem.data()->polygon();
   polygon.append( QPointF( scenePoint.x(), scenePoint.y() ) );
@@ -2174,7 +2174,7 @@ void QgsComposerView::addPolygonPoint( const QPointF & scenePoint )
   mPolygonItem.data()->setPolygon( polygon );
 }
 
-void QgsComposerView::movePolygonPoint( const QPointF & scenePoint )
+void QgsComposerView::movePolygonNode( const QPointF & scenePoint )
 {
   QPolygonF polygon = mPolygonItem.data()->polygon();
 
@@ -2185,44 +2185,44 @@ void QgsComposerView::movePolygonPoint( const QPointF & scenePoint )
   }
 }
 
-void QgsComposerView::displayPoints( const bool display )
+void QgsComposerView::displayNodes( const bool display )
 {
-  QList<QgsComposerPointsBasedShape*> pointsShapes;
-  composition()->composerItems( pointsShapes );
+  QList<QgsComposerNodesBasedShape*> nodesShapes;
+  composition()->composerItems( nodesShapes );
 
-  QList<QgsComposerPointsBasedShape*>::iterator it = pointsShapes.begin();
-  for ( ; it != pointsShapes.end(); ++it )
-    ( *it )->setDisplayPoints( display );
+  QList<QgsComposerNodesBasedShape*>::iterator it = nodesShapes.begin();
+  for ( ; it != nodesShapes.end(); ++it )
+    ( *it )->setDisplayNodes( display );
 
   scene()->update();
 }
 
-void QgsComposerView::setSelectedPoint( QgsComposerPointsBasedShape *shape,
-                                        const int index )
+void QgsComposerView::setSelectedNode( QgsComposerNodesBasedShape *shape,
+                                       const int index )
 {
-  QList<QgsComposerPointsBasedShape*> pointsShapes;
-  composition()->composerItems( pointsShapes );
+  QList<QgsComposerNodesBasedShape*> nodesShapes;
+  composition()->composerItems( nodesShapes );
 
-  QList<QgsComposerPointsBasedShape*>::iterator it = pointsShapes.begin();
-  for ( ; it != pointsShapes.end(); ++it )
+  QList<QgsComposerNodesBasedShape*>::iterator it = nodesShapes.begin();
+  for ( ; it != nodesShapes.end(); ++it )
   {
     if (( *it ) == shape )
-      ( *it )->setSelectedPoint( index );
+      ( *it )->setSelectedNode( index );
     else
-      ( *it )->unselectPoint();
+      ( *it )->unselectNode();
   }
 
   scene()->update();
 }
 
-void QgsComposerView::unselectPoint()
+void QgsComposerView::unselectNode()
 {
-  QList<QgsComposerPointsBasedShape*> pointsShapes;
-  composition()->composerItems( pointsShapes );
+  QList<QgsComposerNodesBasedShape*> nodesShapes;
+  composition()->composerItems( nodesShapes );
 
-  QList<QgsComposerPointsBasedShape*>::iterator it = pointsShapes.begin();
-  for ( ; it != pointsShapes.end(); ++it )
-    ( *it )->unselectPoint();
+  QList<QgsComposerNodesBasedShape*>::iterator it = nodesShapes.begin();
+  for ( ; it != nodesShapes.end(); ++it )
+    ( *it )->unselectNode();
 
   scene()->update();
 }
