@@ -292,6 +292,8 @@ void QgsPluginRegistry::loadPythonPlugin( const QString& packageName )
     // add to settings
     settings.setValue( "/PythonPlugins/" + packageName, true );
     QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (package: %2)" ).arg( pluginName, packageName ), QObject::tr( "Plugins" ), QgsMessageLog::INFO );
+
+    settings.remove( "/PythonPlugins/watchDog/" + packageName );
   }
 }
 
@@ -370,6 +372,8 @@ void QgsPluginRegistry::loadCppPlugin( const QString& theFullPathName )
               QgsDebugMsg( QString( "plugin parent already set" ) );
             }
           }
+
+          settings.remove( "/Plugins/watchDog/" + baseName );
         }
         else
         {
