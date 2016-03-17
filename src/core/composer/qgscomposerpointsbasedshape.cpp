@@ -157,13 +157,9 @@ void QgsComposerPointsBasedShape::drawPoints( QPainter *painter ) const
   context.setExpressionContext( *expressionContext.data() );
 
   symbol.data()->startRender( context );
-  QVector<QPointF>::const_iterator itnode = mPolygon.begin();
-  for ( ; itnode != mPolygon.end(); ++itnode )
-  {
-    double x = ( *itnode ).x();
-    double y = ( *itnode ).y();
-    symbol.data()->renderPoint( QPointF( x, y ), nullptr, context );
-  }
+
+  Q_FOREACH ( QPointF pt, mPolygon )
+    symbol.data()->renderPoint( pt, nullptr, context );
 
   symbol.data()->stopRender( context );
 
@@ -235,14 +231,14 @@ int QgsComposerPointsBasedShape::pointAtPosition( const QPointF &point,
   double distance = 0;
   int idx = -1;
 
-  QVector<const QPointF>::iterator it = mPolygon.begin();
-  for ( ; it != mPolygon.end(); ++it )
+  QVector<QPointF>::const_iterator it = mPolygon.constBegin();
+  for ( ; it != mPolygon.constEnd(); ++it )
   {
     distance = computeDistance( pt, *it );
     if ( distance < nearestDistance && distance < maxDistance )
     {
       nearestDistance = distance;
-      idx = it - mPolygon.begin();
+      idx = it - mPolygon.constBegin();
     }
   }
 
@@ -376,12 +372,11 @@ bool QgsComposerPointsBasedShape::writeXML( QDomElement& elem, QDomDocument & do
 
   // write points
   QDomElement pointsElem = doc.createElement( "points" );
-  QVector<const QPointF>::iterator it = mPolygon.begin();
-  for ( ; it != mPolygon.end(); ++it )
+  Q_FOREACH ( QPointF pt, mPolygon )
   {
     QDomElement pointElem = doc.createElement( "point" );
-    pointElem.setAttribute( "x", QString::number(( *it ).x() ) );
-    pointElem.setAttribute( "y", QString::number(( *it ).y() ) );
+    pointElem.setAttribute( "x", QString::number( pt.x() ) );
+    pointElem.setAttribute( "y", QString::number( pt.y() ) );
     pointsElem.appendChild( pointElem );
   }
   composerPolygonElem.appendChild( pointsElem );
