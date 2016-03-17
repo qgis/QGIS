@@ -21,7 +21,8 @@ from PyQt4.QtCore import QPointF
 from qgis.core import (QgsComposerPolygon,
                        QgsComposerItem,
                        QgsComposition,
-                       QgsMapSettings
+                       QgsMapSettings,
+                       QgsFillSymbolV2
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -55,6 +56,18 @@ class TestQgsComposerPolygon(unittest.TestCase):
         self.mComposerPolygon = QgsComposerPolygon(polygon, self.mComposition)
         self.mComposition.addComposerPolygon(self.mComposerPolygon)
 
+        # style
+        props = {}
+        props["color"] = "green"
+        props["style"] = "solid"
+        props["style_border"] = "solid"
+        props["color_border"] = "black"
+        props["width_border"] = "10.0"
+        props["joinstyle"] = "miter"
+
+        style = QgsFillSymbolV2.createSimple(props)
+        self.mComposerPolygon.setPolygonStyleSymbol(style)
+
     def testDisplayName(self):
         """Test if displayName is valid"""
 
@@ -81,7 +94,7 @@ class TestQgsComposerPolygon(unittest.TestCase):
 
         self.mComposerPolygon.setDisplayNodes(True)
         checker = QgsCompositionChecker(
-            'composerpolygon_displaypoints', self.mComposition)
+            'composerpolygon_displaynodes', self.mComposition)
         checker.setControlPathPrefix("composer_polygon")
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
@@ -100,7 +113,7 @@ class TestQgsComposerPolygon(unittest.TestCase):
 
         self.mComposerPolygon.setSelectedNode(3)
         checker = QgsCompositionChecker(
-            'composerpolygon_selectedpoint', self.mComposition)
+            'composerpolygon_selectednode', self.mComposition)
         checker.setControlPathPrefix("composer_polygon")
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
@@ -131,7 +144,7 @@ class TestQgsComposerPolygon(unittest.TestCase):
         self.assertEqual(self.mComposerPolygon.nodesSize(), 3)
 
         checker = QgsCompositionChecker(
-            'composerpolygon_removedpoint', self.mComposition)
+            'composerpolygon_removednode', self.mComposition)
         checker.setControlPathPrefix("composer_polygon")
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
@@ -180,7 +193,7 @@ class TestQgsComposerPolygon(unittest.TestCase):
         self.assertEqual(self.mComposerPolygon.nodesSize(), 5)
 
         checker = QgsCompositionChecker(
-            'composerpolygon_addpoint', self.mComposition)
+            'composerpolygon_addnode', self.mComposition)
         checker.setControlPathPrefix("composer_polygon")
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
@@ -195,7 +208,7 @@ class TestQgsComposerPolygon(unittest.TestCase):
         self.assertEqual(rc, True)
 
         checker = QgsCompositionChecker(
-            'composerpolygon_movepoint', self.mComposition)
+            'composerpolygon_movenode', self.mComposition)
         checker.setControlPathPrefix("composer_polygon")
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage

@@ -21,7 +21,8 @@ from PyQt4.QtCore import QPointF
 from qgis.core import (QgsComposerPolyline,
                        QgsComposerItem,
                        QgsComposition,
-                       QgsMapSettings
+                       QgsMapSettings,
+                       QgsLineSymbolV2
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -56,6 +57,15 @@ class TestQgsComposerPolyline(unittest.TestCase):
             polygon, self.mComposition)
         self.mComposition.addComposerPolyline(self.mComposerPolyline)
 
+        # style
+        props = {}
+        props["color"] = "0,0,0,255"
+        props["width"] = "10.0"
+        props["capstyle"] = "square"
+
+        style = QgsLineSymbolV2.createSimple(props)
+        self.mComposerPolyline.setPolylineStyleSymbol(style)
+
     def testDisplayName(self):
         """Test if displayName is valid"""
 
@@ -82,7 +92,7 @@ class TestQgsComposerPolyline(unittest.TestCase):
 
         self.mComposerPolyline.setDisplayNodes(True)
         checker = QgsCompositionChecker(
-            'composerpolyline_displaypoints', self.mComposition)
+            'composerpolyline_displaynodes', self.mComposition)
         checker.setControlPathPrefix("composer_polyline")
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
@@ -101,7 +111,7 @@ class TestQgsComposerPolyline(unittest.TestCase):
 
         self.mComposerPolyline.setSelectedNode(3)
         checker = QgsCompositionChecker(
-            'composerpolyline_selectedpoint', self.mComposition)
+            'composerpolyline_selectednode', self.mComposition)
         checker.setControlPathPrefix("composer_polyline")
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
@@ -132,7 +142,7 @@ class TestQgsComposerPolyline(unittest.TestCase):
         self.assertEqual(self.mComposerPolyline.nodesSize(), 3)
 
         checker = QgsCompositionChecker(
-            'composerpolyline_removedpoint', self.mComposition)
+            'composerpolyline_removednode', self.mComposition)
         checker.setControlPathPrefix("composer_polyline")
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
@@ -181,7 +191,7 @@ class TestQgsComposerPolyline(unittest.TestCase):
         self.assertEqual(self.mComposerPolyline.nodesSize(), 5)
 
         checker = QgsCompositionChecker(
-            'composerpolyline_addpoint', self.mComposition)
+            'composerpolyline_addnode', self.mComposition)
         checker.setControlPathPrefix("composer_polyline")
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
@@ -196,7 +206,7 @@ class TestQgsComposerPolyline(unittest.TestCase):
         self.assertEqual(rc, True)
 
         checker = QgsCompositionChecker(
-            'composerpolyline_movepoint', self.mComposition)
+            'composerpolyline_movenode', self.mComposition)
         checker.setControlPathPrefix("composer_polyline")
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
