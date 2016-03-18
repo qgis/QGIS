@@ -16,7 +16,6 @@ qgis_painteffecttest
 qgis_pointpatternfillsymboltest
 qgis_simplemarkertest
 qgis_svgmarkertest
-qgis_symbolv2test
 qgis_fieldexpressionwidget
 qgis_alignrastertest
 PyQgsAnalysis
