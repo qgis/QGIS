@@ -135,7 +135,7 @@ def _print_help(what, name):
 
 def _print_list(what):
     if what == 'lexer':
-        print()
+        print("")
         print("Lexers:")
         print("~~~~~~~")
 
@@ -149,7 +149,7 @@ def _print_list(what):
             print(('* %s\n    %s %s') % i)
 
     elif what == 'formatter':
-        print()
+        print("")
         print("Formatters:")
         print("~~~~~~~~~~~")
 
@@ -164,7 +164,7 @@ def _print_list(what):
             print(('* %s\n    %s %s') % i)
 
     elif what == 'filter':
-        print()
+        print("")
         print("Filters:")
         print("~~~~~~~~")
 
@@ -174,7 +174,7 @@ def _print_list(what):
             print("    %s" % docstring_headline(cls))
 
     elif what == 'style':
-        print()
+        print("")
         print("Styles:")
         print("~~~~~~~")
 

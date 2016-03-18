@@ -99,7 +99,7 @@ def testDescriptionFile(f):
         print("Name in description:" + cmdname)
         print("Parameters in description:" + unicode(params))
         print("-" * 50)
-        print()
+        print("")
 
 
 if __name__ == '__main__':

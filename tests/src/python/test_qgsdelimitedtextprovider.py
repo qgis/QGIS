@@ -186,7 +186,7 @@ def delimitedTextData(testname, filename, requests, verbose, **params):
 
 def printWanted(testname, result):
     # Routine to export the result as a function definition
-    print()
+    print('')
     print("def {0}():".format(testname))
     data = result['data']
     log = result['log']
@@ -212,7 +212,7 @@ def printWanted(testname, result):
         print((prefix + '    ' + repr(msg) + ','))
     print((prefix + '    ]'))
     print('    return wanted')
-    print()
+    print('')
 
 
 def recordDifference(record1, record2):
