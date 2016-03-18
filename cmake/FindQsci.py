@@ -55,4 +55,4 @@ else:
         except ImportError:
             pass
 
-print("qsci_version_str:%s" % VER)
+print(("qsci_version_str:%s" % VER))

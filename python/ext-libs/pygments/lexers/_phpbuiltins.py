@@ -3777,10 +3777,10 @@ if __name__ == '__main__':
         f.close()
 
     def run():
-        print '>> Downloading Function Index'
+        print('>> Downloading Function Index')
         modules = get_php_functions()
         total = sum(len(v) for v in modules.itervalues())
-        print '%d functions found' % total
+        print('%d functions found' % total)
         regenerate(__file__, modules)
         shutil.rmtree(PHP_MANUAL_DIR)
 

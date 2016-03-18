@@ -466,8 +466,8 @@ def runSuite(module, tests):
     out = StringIO.StringIO()
     res = unittest.TextTestRunner(stream=out, verbosity=verb).run(suite)
     if verb:
-        print '\nIndividual test summary:'
-    print '\n' + out.getvalue()
+        print('\nIndividual test summary:')
+    print(('\n' + out.getvalue()))
     out.close()
 
     if PALREPORTS:

@@ -57,7 +57,7 @@ if __name__ == '__main__':
     for filename in os.listdir('.'):
         if filename.endswith('.py') and not filename.startswith('_'):
             module_name = 'pygments.formatters.%s' % filename[:-3]
-            print module_name
+            print(module_name)
             module = __import__(module_name, None, None, [''])
             for formatter_name in module.__all__:
                 imports.append((module_name, formatter_name))

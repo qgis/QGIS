@@ -11,7 +11,7 @@ from osgeo import ogr
 from optparse import OptionParser
 
 def error ( msg ):
-  print msg
+  print(msg)
   sys.exit( 1 )
 
 parser = OptionParser("usage: %prog [options] output")

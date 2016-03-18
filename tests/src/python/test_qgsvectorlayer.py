@@ -74,14 +74,14 @@ def createJoinLayer():
 
 
 def dumpFeature(f):
-    print "--- FEATURE DUMP ---"
-    print "valid: %d   | id: %d" % (f.isValid(), f.id())
+    print("--- FEATURE DUMP ---")
+    print(("valid: %d   | id: %d" % (f.isValid(), f.id())))
     geom = f.geometry()
     if geom:
-        print "geometry wkb: %d" % geom.wkbType()
+        print(("geometry wkb: %d" % geom.wkbType()))
     else:
-        print "no geometry"
-    print "attrs: %s" % str(f.attributes())
+        print("no geometry")
+    print(("attrs: %s" % str(f.attributes())))
 
 
 def formatAttributes(attrs):
@@ -91,16 +91,16 @@ def formatAttributes(attrs):
 def dumpEditBuffer(layer):
     editBuffer = layer.editBuffer()
     if not editBuffer:
-        print "NO EDITING!"
+        print("NO EDITING!")
         return
-    print "ADDED:"
+    print("ADDED:")
     for fid, f in editBuffer.addedFeatures().iteritems():
-        print "%d: %s | %s" % (
+        print(("%d: %s | %s" % (
             f.id(), formatAttributes(f.attributes()),
-            f.geometry().exportToWkt())
-    print "CHANGED GEOM:"
+            f.geometry().exportToWkt())))
+    print("CHANGED GEOM:")
     for fid, geom in editBuffer.changedGeometries().iteritems():
-        print "%d | %s" % (f.id(), f.geometry().exportToWkt())
+        print(("%d | %s" % (f.id(), f.geometry().exportToWkt())))
 
 
 class TestQgsVectorLayer(unittest.TestCase):

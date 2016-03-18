@@ -15,7 +15,7 @@ import glob
 
 
 def error(msg):
-    print msg
+    print(msg)
     sys.exit(1)
 
 
@@ -63,7 +63,7 @@ def getControlImagePath(path):
         error('No matching control images found for {}'.format(path))
 
     found_image = filtered_images[0]
-    print 'Found matching control image: {}'.format(found_image)
+    print('Found matching control image: {}'.format(found_image))
     return found_image
 
 
@@ -76,10 +76,10 @@ def updateMask(control_image_path, rendered_image_path, mask_image_path):
     if not rendered_image:
         error('Could not read rendered image {}'.format(rendered_image_path))
     if not rendered_image.width() == control_image.width() or not rendered_image.height() == control_image.height():
-        print ('Size mismatch - control image is {}x{}, rendered image is {}x{}'.format(control_image.width(),
+        print(('Size mismatch - control image is {}x{}, rendered image is {}x{}'.format(control_image.width(),
                                                                                         control_image.height(),
                                                                                         rendered_image.width(),
-                                                                                        rendered_image.height()))
+                                                                                        rendered_image.height())))
 
     max_width = min(rendered_image.width(), control_image.width())
     max_height = min(rendered_image.height(), control_image.height())
@@ -87,7 +87,7 @@ def updateMask(control_image_path, rendered_image_path, mask_image_path):
     #read current mask, if it exist
     mask_image = imageFromPath(mask_image_path)
     if mask_image.isNull():
-        print 'Mask image does not exist, creating {}'.format(mask_image_path)
+        print('Mask image does not exist, creating {}'.format(mask_image_path))
         mask_image = QImage(control_image.width(), control_image.height(), QImage.Format_ARGB32)
         mask_image.fill(QColor(0, 0, 0))
 
@@ -118,9 +118,9 @@ def updateMask(control_image_path, rendered_image_path, mask_image_path):
     if mismatch_count:
         #update mask
         mask_image.save(mask_image_path, "png")
-        print 'Updated {} pixels in {}'.format(mismatch_count, mask_image_path)
+        print('Updated {} pixels in {}'.format(mismatch_count, mask_image_path))
     else:
-        print 'No mismatches in {}'.format(mask_image_path)
+        print('No mismatches in {}'.format(mask_image_path))
 
 parser = argparse.ArgumentParser() # OptionParser("usage: %prog control_image rendered_image mask_image")
 parser.add_argument('control_image')

@@ -116,7 +116,7 @@ class VLayerConnector(DBConnector):
         return DummyCursor(sql)
 
     def _get_cursor(self, name=None):
-        print("_get_cursor_", name)
+        print(("_get_cursor_", name))
 
     def _get_cursor_columns(self, c):
         tf = QTemporaryFile()

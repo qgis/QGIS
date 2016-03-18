@@ -92,14 +92,14 @@ def testDescriptionFile(f):
             usage = line
 
     if usage and not lines[0].startswith("_"):
-        print "-" * 50
-        print f + " [ERROR]"
-        print lines
-        print usage
-        print "Name in description:" + cmdname
-        print "Parameters in description:" + unicode(params)
-        print "-" * 50
-        print
+        print("-" * 50)
+        print(f + " [ERROR]")
+        print(lines)
+        print(usage)
+        print("Name in description:" + cmdname)
+        print("Parameters in description:" + unicode(params))
+        print("-" * 50)
+        print()
 
 
 if __name__ == '__main__':

@@ -55,7 +55,7 @@ def generate_all_app_descriptors():
 
 
 def generate_app_descriptor(appliname):
-    print appliname
+    print(appliname)
 
     appInstance = otbApplication.Registry.CreateApplication(appliname)
     appInstance.UpdateParameters()  # TODO need this ?

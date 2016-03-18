@@ -118,11 +118,11 @@ class ProviderTestCase(object):
             self.enableCompiler()
             self.runGetFeatureTests(self.provider)
         except AttributeError:
-            print 'Provider does not support compiling'
+            print('Provider does not support compiling')
 
     def testSubsetString(self):
         if not self.provider.supportsSubsetString():
-            print 'Provider does not support subset strings'
+            print('Provider does not support subset strings')
             return
 
         subset = self.getSubsetString()
@@ -173,7 +173,7 @@ class ProviderTestCase(object):
             self.enableCompiler()
             self.runOrderByTests()
         except AttributeError:
-            print 'Provider does not support compiling'
+            print('Provider does not support compiling')
 
     def runOrderByTests(self):
         request = QgsFeatureRequest().addOrderBy('cnt')

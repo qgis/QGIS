@@ -309,7 +309,7 @@ if __name__ == '__main__':
     for filename in os.listdir('.'):
         if filename.endswith('.py') and not filename.startswith('_'):
             module_name = 'pygments.lexers.%s' % filename[:-3]
-            print module_name
+            print(module_name)
             module = __import__(module_name, None, None, [''])
             for lexer_name in module.__all__:
                 lexer = getattr(module, lexer_name)

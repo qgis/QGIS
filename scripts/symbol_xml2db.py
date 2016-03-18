@@ -67,11 +67,11 @@ create_tables = [ _symbol, _colorramp, _tag, _tagmap, _ctagmap, _symgroup, _smar
 # Create the DB with required Schema
 conn = sqlite3.connect( dbfile )
 c = conn.cursor()
-print "Creating tables in the Database\n"
+print("Creating tables in the Database\n")
 for table in create_tables:
     try:
         c.execute( table )
-        print table
+        print(table)
     except sqlite3.OperationalError as e:
         pass
     conn.commit()

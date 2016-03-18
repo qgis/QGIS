@@ -505,8 +505,8 @@ class HtmlFormatter(Formatter):
                     cssfilename = os.path.join(os.path.dirname(filename),
                                                self.cssfile)
                 except AttributeError:
-                    print >>sys.stderr, 'Note: Cannot determine output file name, ' \
-                          'using current directory as base for the CSS file name'
+                    print('Note: Cannot determine output file name, ' \
+                          'using current directory as base for the CSS file name', file=sys.stderr)
                     cssfilename = self.cssfile
             # write CSS file only if noclobber_cssfile isn't given as an option.
             try:

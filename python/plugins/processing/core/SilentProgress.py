@@ -29,7 +29,7 @@ __revision__ = '$Format:%H$'
 class SilentProgress(object):
 
     def error(self, msg):
-        print msg
+        print(msg)
 
     def setText(self, text):
         pass

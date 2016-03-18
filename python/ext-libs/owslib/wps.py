@@ -197,7 +197,7 @@ class WebProcessingService(object):
             self._capabilities = reader.readFromUrl(self.url, username=self.username, password=self.password)
             
         if self.verbose==True:
-            print element_to_string(self._capabilities)
+            print(element_to_string(self._capabilities))
 
         # populate the capabilities metadata obects from the XML tree
         self._parseCapabilitiesMetadata(self._capabilities)
@@ -218,7 +218,7 @@ class WebProcessingService(object):
             rootElement = reader.readFromUrl(self.url, identifier)
             
         if self.verbose==True:
-            print element_to_string(rootElement)
+            print(element_to_string(rootElement))
 
         # build metadata objects
         return self._parseProcessMetadata(rootElement)
@@ -236,7 +236,7 @@ class WebProcessingService(object):
         """
         
         # instantiate a WPSExecution object
-        print 'Executing WPS request...'
+        print('Executing WPS request...')
         execution = WPSExecution(version=self.version, url=self.url, username=self.username, password=self.password, verbose=self.verbose)
 
         # build XML request from parameters 
@@ -244,7 +244,7 @@ class WebProcessingService(object):
            requestElement = execution.buildRequest(identifier, inputs, output)
            request = etree.tostring( requestElement )   
         if self.verbose==True:
-               print request
+               print(request)
         
         # submit the request to the live server
         if response is None:   
@@ -253,7 +253,7 @@ class WebProcessingService(object):
             response = etree.fromstring(response)
             
         if self.verbose==True:
-            print etree.tostring(response)
+            print(etree.tostring(response))
             
         # parse response
         execution.parseResponse(response)
@@ -359,7 +359,7 @@ class WPSReader(object):
             # full HTTP request url
             request_url = build_get_url(url, data)
             if self.verbose==True:
-                print request_url
+                print(request_url)
     
             # split URL into base url and query string to use utility function
             spliturl=request_url.split('?')
@@ -581,7 +581,7 @@ class WPSExecution():
             # override status location
             if url is not None:
                 self.statusLocation = url
-            print '\nChecking execution status... (location=%s)' % self.statusLocation
+            print('\nChecking execution status... (location=%s)' % self.statusLocation)
             response = reader.readFromUrl(self.statusLocation, username=self.username, password=self.password)
         else:
             response = reader.readFromString(response)
@@ -589,13 +589,13 @@ class WPSExecution():
         # store latest response
         self.response = etree.tostring(response)
         if self.verbose==True:
-            print self.response
+            print(self.response)
 
         self.parseResponse(response)
                     
         # sleep given number of seconds
         if self.isComplete()==False:
-            print 'Sleeping %d seconds...' % sleepSecs
+            print('Sleeping %d seconds...' % sleepSecs)
             sleep(sleepSecs)
 
         
@@ -654,7 +654,7 @@ class WPSExecution():
                 out = open(filepath, 'wb')
                 out.write(content)
                 out.close()
-                print 'Output written to file: %s' %filepath
+                print('Output written to file: %s' %filepath)
             
         else:
             raise Exception("Execution not successfully completed: status=%s" % self.status)
@@ -700,12 +700,12 @@ class WPSExecution():
             self._parseExceptionReport(response)
             
         else:
-            print 'Unknown Response'
+            print('Unknown Response')
             
         # print status, errors
-        print 'Execution status=%s' % self.status
-        print 'Percent completed=%s' % self.percentCompleted
-        print 'Status message=%s' % self.statusMessage
+        print('Execution status=%s' % self.status)
+        print('Percent completed=%s' % self.percentCompleted)
+        print('Status message=%s' % self.statusMessage)
         for error in self.errors:
             dump(error)
 
@@ -1051,7 +1051,7 @@ class Output(InputOutput):
         
         # a) 'http://cida.usgs.gov/climate/gdp/process/RetrieveResultServlet?id=1318528582026OUTPUT.601bb3d0-547f-4eab-8642-7c7d2834459e'
         # b) 'http://rsg.pml.ac.uk/wps/wpsoutputs/outputImage-11294Bd6l2a.tif'
-        print 'Output URL=%s' % url
+        print('Output URL=%s' % url)
         if '?' in url:
             spliturl=url.split('?')
             u = openURL(spliturl[0], spliturl[1], method='Get', username = username, password = password)
@@ -1091,7 +1091,7 @@ class Output(InputOutput):
             out = open(self.filePath, 'wb')
             out.write(content)
             out.close()
-            print 'Output written to file: %s' %self.filePath
+            print('Output written to file: %s' %self.filePath)
                 
                     
 class WPSException:
@@ -1336,7 +1336,7 @@ def monitorExecution(execution, sleepSecs=3, download=False, filepath=None):
     
     while execution.isComplete()==False:
         execution.checkStatus(sleepSecs=sleepSecs)
-        print 'Execution status: %s' % execution.status
+        print('Execution status: %s' % execution.status)
         
     if execution.isSucceded():
         if download:
@@ -1344,10 +1344,10 @@ def monitorExecution(execution, sleepSecs=3, download=False, filepath=None):
         else:
             for output in execution.processOutputs:               
                 if output.reference is not None:
-                    print 'Output URL=%s' % output.reference
+                    print('Output URL=%s' % output.reference)
     else:
         for ex in execution.errors:
-            print 'Error: code=%s, locator=%s, text=%s' % (ex.code, ex.locator, ex.text)
+            print('Error: code=%s, locator=%s, text=%s' % (ex.code, ex.locator, ex.text))
 
 def printValue(value):
     '''
@@ -1367,19 +1367,19 @@ def printInputOutput(value, indent=''):
     '''
 
     # InputOutput fields
-    print '%s identifier=%s, title=%s, abstract=%s, data type=%s' % (indent, value.identifier, value.title, value.abstract, value.dataType)
+    print('%s identifier=%s, title=%s, abstract=%s, data type=%s' % (indent, value.identifier, value.title, value.abstract, value.dataType))
     for val in value.allowedValues:
-        print '%s Allowed Value: %s' % (indent, printValue(val))
+        print('%s Allowed Value: %s' % (indent, printValue(val)))
     for val in value.supportedValues:
-        print '%s Supported Value: %s' % (indent, printValue(val))
-    print '%s Default Value: %s ' % (indent, printValue(value.defaultValue))
+        print('%s Supported Value: %s' % (indent, printValue(val)))
+    print('%s Default Value: %s ' % (indent, printValue(value.defaultValue)))
     
     # Input fields
     if isinstance(value, Input):
-        print '%s minOccurs=%d, maxOccurs=%d' % (indent, value.minOccurs, value.maxOccurs)
+        print('%s minOccurs=%d, maxOccurs=%d' % (indent, value.minOccurs, value.maxOccurs))
         
     # Output fields
     if isinstance(value, Output):
-        print '%s reference=%s, mimeType=%s' % (indent, value.reference, value.mimeType)
+        print('%s reference=%s, mimeType=%s' % (indent, value.reference, value.mimeType))
         for datum in value.data:
-            print '%s Data Value: %s' % (indent, printValue(datum))
+            print('%s Data Value: %s' % (indent, printValue(datum)))

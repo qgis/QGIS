@@ -93,7 +93,7 @@ class TestQgsUnitTypes(unittest.TestCase):
 
         # Test that string is cleaned before conversion
         res, ok = QgsUnitTypes.stringToDistanceUnit(' {}  '.format(QgsUnitTypes.toString(QGis.Feet).upper()))
-        print ' {}  '.format(QgsUnitTypes.toString(QGis.Feet).upper())
+        print((' {}  '.format(QgsUnitTypes.toString(QGis.Feet).upper())))
         assert ok
         self.assertEqual(res, QGis.Feet)
 

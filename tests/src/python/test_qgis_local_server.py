@@ -25,7 +25,7 @@ import StringIO
 import tempfile
 
 if os.name == 'nt':
-    print "TestQgisLocalServer currently doesn't support windows"
+    print("TestQgisLocalServer currently doesn't support windows")
     sys.exit(0)
 
 from qgis.core import (
@@ -161,8 +161,8 @@ def run_suite(module, tests):
     out = StringIO.StringIO()
     res = unittest.TextTestRunner(stream=out, verbosity=verb).run(suite)
     if verb:
-        print '\nIndividual test summary:'
-    print '\n' + out.getvalue()
+        print('\nIndividual test summary:')
+    print(('\n' + out.getvalue()))
     out.close()
 
     if QGIS_TEST_REPORT and len(TESTREPORTS) > 0:

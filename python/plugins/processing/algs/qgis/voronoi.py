@@ -57,7 +57,7 @@ __revision__ = '$Format:%H$'
 
 
 def usage():
-    print """
+    print("""
 voronoi - compute Voronoi diagram or Delaunay triangulation
 
 voronoi [-t -p -d]  [filename]
@@ -94,7 +94,7 @@ On unsorted data uniformly distributed in the unit square, voronoi uses about
 AUTHOR
 Steve J. Fortune (1987) A Sweepline Algorithm for Voronoi Diagrams,
 Algorithmica 2, 153-174.
-"""
+""")
 
 #############################################################################
 #
@@ -154,39 +154,39 @@ class Context(object):
 
     def outSite(self, s):
         if self.debug:
-            print "site (%d) at %f %f" % (s.sitenum, s.x, s.y)
+            print("site (%d) at %f %f" % (s.sitenum, s.x, s.y))
         elif(self.triangulate):
             pass
         elif self.plot:
             self.circle(s.x, s.y, None)  # No radius?
         elif(self.doPrint):
-            print "s %f %f" % (s.x, s.y)
+            print("s %f %f" % (s.x, s.y))
 
     def outVertex(self, s):
         self.vertices.append((s.x, s.y))
         if(self.debug):
-            print "vertex(%d) at %f %f" % (s.sitenum, s.x, s.y)
+            print("vertex(%d) at %f %f" % (s.sitenum, s.x, s.y))
         elif(self.triangulate):
             pass
         elif(self.doPrint and not self.plot):
-            print "v %f %f" % (s.x, s.y)
+            print("v %f %f" % (s.x, s.y))
 
     def outTriple(self, s1, s2, s3):
         self.triangles.append((s1.sitenum, s2.sitenum, s3.sitenum))
         if(self.debug):
-            print "circle through left=%d right=%d bottom=%d" % (s1.sitenum, s2.sitenum, s3.sitenum)
+            print("circle through left=%d right=%d bottom=%d" % (s1.sitenum, s2.sitenum, s3.sitenum))
         elif(self.triangulate and self.doPrint and not self.plot):
-            print "%d %d %d" % (s1.sitenum, s2.sitenum, s3.sitenum)
+            print("%d %d %d" % (s1.sitenum, s2.sitenum, s3.sitenum))
 
     def outBisector(self, edge):
         self.lines.append((edge.a, edge.b, edge.c))
         if(self.debug):
-            print "line(%d) %gx+%gy=%g, bisecting %d %d" % (edge.edgenum, edge.a, edge.b, edge.c, edge.reg[0].sitenum, edge.reg[1].sitenum)
+            print("line(%d) %gx+%gy=%g, bisecting %d %d" % (edge.edgenum, edge.a, edge.b, edge.c, edge.reg[0].sitenum, edge.reg[1].sitenum))
         elif(self.triangulate):
             if(self.plot):
                 self.line(edge.reg[0].x, edge.reg[0].y, edge.reg[1].x, edge.reg[1].y)
         elif(self.doPrint and not self.plot):
-            print "l %f %f %f" % (edge.a, edge.b, edge.c)
+            print("l %f %f %f" % (edge.a, edge.b, edge.c))
 
     def outEdge(self, edge):
         sitenumL = -1
@@ -206,7 +206,7 @@ class Context(object):
             if self.plot:
                 self.clip_line(edge)
             elif(self.doPrint):
-                print "e %d %d %d" % (edge.edgenum, sitenumL, sitenumR)
+                print("e %d %d %d" % (edge.edgenum, sitenumL, sitenumR))
 
 #------------------------------------------------------------------
 
@@ -348,8 +348,8 @@ def voronoi(siteList, context):
             he = he.right
         Edge.EDGE_NUM = 0
     except Exception as err:
-        print "######################################################"
-        print unicode(err)
+        print("######################################################")
+        print(unicode(err))
 
 #------------------------------------------------------------------
 
@@ -370,7 +370,7 @@ class Site(object):
         self.sitenum = sitenum
 
     def dump(self):
-        print "Site #%d (%g, %g)" % (self.sitenum, self.x, self.y)
+        print("Site #%d (%g, %g)" % (self.sitenum, self.x, self.y))
 
     def __cmp__(self, other):
         if self.y < other.y:
@@ -407,9 +407,9 @@ class Edge(object):
         self.edgenum = 0
 
     def dump(self):
-        print "(#%d a=%g, b=%g, c=%g)" % (self.edgenum, self.a, self.b, self.c)
-        print "ep", self.ep
-        print "reg", self.reg
+        print("(#%d a=%g, b=%g, c=%g)" % (self.edgenum, self.a, self.b, self.c))
+        print("ep", self.ep)
+        print("reg", self.reg)
 
     def setEndpoint(self, lrFlag, site):
         self.ep[lrFlag] = site
@@ -463,17 +463,17 @@ class Halfedge(object):
         self.ystar = BIG_FLOAT
 
     def dump(self):
-        print "Halfedge--------------------------"
-        print "left: ", self.left
-        print "right: ", self.right
-        print "edge: ", self.edge
-        print "pm: ", self.pm
-        print "vertex:"
+        print("Halfedge--------------------------")
+        print("left: ", self.left)
+        print("right: ", self.right)
+        print("edge: ", self.edge)
+        print("pm: ", self.pm)
+        print("vertex: ")
         if self.vertex:
             self.vertex.dump()
         else:
-            print "None"
-        print "ystar: ", self.ystar
+            print("None")
+        print("ystar: ", self.ystar)
 
     def __cmp__(self, other):
         if self.ystar > other.ystar:

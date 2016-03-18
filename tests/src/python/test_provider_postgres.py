@@ -83,7 +83,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     def testQueryLayers(self):
         def test_query(dbconn, query, key):
             ql = QgsVectorLayer('%s srid=4326 table="%s" (geom) key=\'%s\' sql=' % (dbconn, query.replace('"', '\\"'), key), "testgeom", "postgres")
-            print query, key
+            print((query, key))
             assert(ql.isValid())
 
         test_query(self.dbconn, '(SELECT NULL::integer "Id1", NULL::integer "Id2", NULL::geometry(Point, 4326) geom LIMIT 0)', '"Id1","Id2"')
@@ -93,7 +93,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             vl = QgsVectorLayer('%s srid=4326 table="qgis_test".%s (geom) sql=' % (dbconn, table_name), "testgeom", "postgres")
             assert(vl.isValid())
             for f in vl.getFeatures():
-                print f.geometry().exportToWkt(), wkt
+                print((f.geometry().exportToWkt(), wkt))
                 assert f.geometry().exportToWkt() == wkt
 
         test_table(self.dbconn, 'p2d', 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
@@ -150,7 +150,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     def testSignedIdentifiers(self):
         def test_query_attribute(dbconn, query, att, val, fidval):
             ql = QgsVectorLayer('%s table="%s" (g) key=\'%s\' sql=' % (dbconn, query.replace('"', '\\"'), att), "testgeom", "postgres")
-            print query, att
+            print((query, att))
             assert(ql.isValid())
             features = ql.getFeatures()
             att_idx = ql.fieldNameIndex(att)

@@ -35,7 +35,7 @@ from PyQt.QtCore import QUrl, QVariant
 try:
     from pyspatialite import dbapi2 as sqlite3
 except ImportError:
-    print "You should install pyspatialite to run the tests"
+    print("You should install pyspatialite to run the tests")
     raise ImportError
 
 import tempfile
@@ -75,9 +75,9 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
     def setUp(self):
         """Run before each test."""
         self.testDataDir = unitTestDataPath()
-        print "****************************************************"
-        print "In method", self._testMethodName
-        print "****************************************************"
+        print("****************************************************")
+        print(("In method", self._testMethodName))
+        print("****************************************************")
         pass
 
     def tearDown(self):
@@ -399,7 +399,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         # now delete the layer
         QgsMapLayerRegistry.instance().removeMapLayer(l1.id())
         # check that it does not crash
-        print sum([f.id() for f in l2.getFeatures()])
+        print((sum([f.id() for f in l2.getFeatures()])))
 
     def test_refLayers(self):
         l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir, "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", False)
