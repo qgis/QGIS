@@ -29,11 +29,13 @@ import stat
 import shutil
 import subprocess
 import os
+import sys
+import io
 from qgis.core import QgsApplication
 from PyQt4.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import userFolder, isWindows, isMac, tempFolder, mkdir
+from processing.tools.system import userFolder, isWindows, isMac, tempFolder, mkdir, getTempFilenameInTempFolder, findWindowsCmdEncoding
 from processing.tests.TestData import points
 
 
@@ -61,7 +63,7 @@ class Grass7Utils:
         GRASS_BATCH_JOB and then call GRASS and let it do the work
         '''
         filename = 'grass7_batch_job.sh'
-        batchfile = userFolder() + os.sep + filename
+        batchfile = os.path.join(userFolder(), filename)
         return batchfile
 
     @staticmethod
@@ -70,7 +72,7 @@ class Grass7Utils:
         GRASS and then uses grass commands
         '''
         filename = 'grass7_script.bat'
-        filename = userFolder() + os.sep + filename
+        filename = os.path.join(userFolder(), filename)
         return filename
 
     @staticmethod
@@ -115,65 +117,67 @@ class Grass7Utils:
 
     @staticmethod
     def createGrass7Script(commands):
+        # Detect cmd encoding
+        encoding = findWindowsCmdEncoding()
         folder = Grass7Utils.grassPath()
         shell = Grass7Utils.grassWinShell()
 
         script = Grass7Utils.grassScriptFilename()
-        gisrc = userFolder() + os.sep + 'processing.gisrc7'  # FIXME: use temporary file
-
-        # Temporary gisrc file
-        output = open(gisrc, 'w')
+        gisrc = os.path.join(userFolder(), 'processing.gisrc7')  # FIXME: use temporary file
         location = 'temp_location'
         gisdbase = Grass7Utils.grassDataFolder()
 
-        output.write('GISDBASE: ' + gisdbase + '\n')
-        output.write('LOCATION_NAME: ' + location + '\n')
-        output.write('MAPSET: PERMANENT \n')
-        output.write('GRASS_GUI: text\n')
-        output.close()
+        # Temporary gisrc file
+        with io.open(gisrc, 'w', encoding=encoding) as output:
+            command = (u'GISDBASE: {}\n'
+                       u'LOCATION_NAME: {}\n'
+                       u'MAPSET: PERMANENT \n'
+                       u'GRASS_GUI: text\n'
+                       ).format(gisdbase, location)
+            output.write(command)
 
-        output = open(script, 'w')
-        output.write('set HOME=' + os.path.expanduser('~') + '\n')
-        output.write('set GISRC=' + gisrc + '\n')
-        output.write('set GRASS_SH=' + shell + '\\bin\\sh.exe\n')
-        output.write('set PATH=' + shell + os.sep + 'bin;' + shell + os.sep
-                     + 'lib;' + '%PATH%\n')
-        output.write('set WINGISBASE=' + folder + '\n')
-        output.write('set GISBASE=' + folder + '\n')
-        output.write('set GRASS_PROJSHARE=' + folder + os.sep + 'share'
-                     + os.sep + 'proj' + '\n')
-        output.write('set GRASS_MESSAGE_FORMAT=plain\n')
-
-        # Replacement code for etc/Init.bat
-        output.write('if "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%PATH%\n')
-        output.write('if not "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%GRASS_ADDON_PATH%;%PATH%\n')
-        output.write('\n')
-        output.write('set GRASS_VERSION=' + Grass7Utils.getGrassVersion() + '\n')
-        output.write('if not "%LANG%"=="" goto langset\n')
-        output.write('FOR /F "usebackq delims==" %%i IN (`"%WINGISBASE%\\etc\\winlocale"`) DO @set LANG=%%i\n')
-        output.write(':langset\n')
-        output.write('\n')
-        output.write('set PATHEXT=%PATHEXT%;.PY\n')
-        output.write('set PYTHONPATH=%PYTHONPATH%;%WINGISBASE%\\etc\\python;%WINGISBASE%\\etc\\wxpython\\n')
-        output.write('\n')
-        output.write('g.gisenv.exe set="MAPSET=PERMANENT"\n')
-        output.write('g.gisenv.exe set="LOCATION=' + location + '"\n')
-        output.write('g.gisenv.exe set="LOCATION_NAME=' + location + '"\n')
-        output.write('g.gisenv.exe set="GISDBASE=' + gisdbase + '"\n')
-        output.write('g.gisenv.exe set="GRASS_GUI=text"\n')
-        for command in commands:
-            output.write(command.encode('utf8') + '\n')
-        output.write('\n')
-        output.write('exit\n')
-        output.close()
+        with io.open(script, 'w', encoding=encoding) as output:
+            command = (u'set HOME={}\n'
+                       u'set GISRC={}\n'
+                       u'set GRASS_SH={}\\bin\\sh.exe\n'
+                       u'set PATH={};{};%PATH%\n'
+                       u'set WINGISBASE={}\n'
+                       u'set GISBASE={}\n'
+                       u'set GRASS_PROJSHARE={}\n'
+                       u'set GRASS_MESSAGE_FORMAT=plain\n'
+                       u'if "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%PATH%\n'
+                       u'if not "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%GRASS_ADDON_PATH%;%PATH%\n'
+                       u'\n'
+                       u'set GRASS_VERSION={}\n'
+                       u'if not "%LANG%"=="" goto langset\n'
+                       u'FOR /F "usebackq delims==" %%i IN (`"%WINGISBASE%\\etc\\winlocale"`) DO @set LANG=%%i\n'
+                       u':langset\n'
+                       u'\n'
+                       u'set PATHEXT=%PATHEXT%;.PY\n'
+                       u'set PYTHONPATH=%PYTHONPATH%;%WINGISBASE%\\etc\\python;%WINGISBASE%\\etc\\wxpython\\n'
+                       u'\n'
+                       u'g.gisenv.exe set="MAPSET=PERMANENT"\n'
+                       u'g.gisenv.exe set="LOCATION={}\n'
+                       u'g.gisenv.exe set="LOCATION_NAME={}\n'
+                       u'g.gisenv.exe set="GISDBASE={}\n'
+                       u'g.gisenv.exe set="GRASS_GUI=text"\n'
+                       ).format(os.path.expanduser('~').decode('mbcs'), gisrc,
+                                shell, os.path.join(shell, 'bin'),
+                                os.path.join(shell, 'lib'), folder, folder,
+                                os.path.join(folder, 'share', 'proj'),
+                                Grass7Utils.getGrassVersion(), location,
+                                location, gisdbase)
+            output.write(command)
+            for command in commands:
+                output.write(command + '\n')
+            output.write(u'\nexit\n')
 
     @staticmethod
     def createGrass7BatchJobFileFromGrass7Commands(commands):
-        fout = open(Grass7Utils.grassBatchJobFilename(), 'w')
-        for command in commands:
-            fout.write(command.encode('utf8') + '\n')
-        fout.write('exit')
-        fout.close()
+        with io.open(Grass7Utils.grassBatchJobFilename(), 'w', encoding='utf-8') as fout:
+            for command in commands:
+                fout.write(command + '\n')
+            fout.write('exit')
 
     @staticmethod
     def grassMapsetFolder():
@@ -201,41 +205,37 @@ class Grass7Utils:
         mkdir(os.path.join(folder, 'PERMANENT'))
         mkdir(os.path.join(folder, 'PERMANENT', '.tmp'))
         Grass7Utils.writeGrass7Window(os.path.join(folder, 'PERMANENT', 'DEFAULT_WIND'))
-        outfile = open(os.path.join(folder, 'PERMANENT', 'MYNAME'), 'w')
-        outfile.write(
-            'QGIS GRASS GIS 7 interface: temporary data processing location.\n')
-        outfile.close()
+        with io.open(os.path.join(folder, 'PERMANENT', 'MYNAME'), 'w', encoding='utf-8') as outfile:
+            outfile.write(u'QGIS GRASS GIS 7 interface: temporary data processing location.\n')
 
         Grass7Utils.writeGrass7Window(os.path.join(folder, 'PERMANENT', 'WIND'))
         mkdir(os.path.join(folder, 'PERMANENT', 'sqlite'))
-        outfile = open(os.path.join(folder, 'PERMANENT', 'VAR'), 'w')
-        outfile.write('DB_DRIVER: sqlite\n')
-        outfile.write('DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\n')
-        outfile.close()
+        with io.open(os.path.join(folder, 'PERMANENT', 'VAR'), 'w', encoding='utf-8') as outfile:
+            outfile.write(u'DB_DRIVER: sqlite\n')
+            outfile.write(u'DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\n')
 
     @staticmethod
     def writeGrass7Window(filename):
-        out = open(filename, 'w')
-        out.write('proj:       0\n')
-        out.write('zone:       0\n')
-        out.write('north:      1\n')
-        out.write('south:      0\n')
-        out.write('east:       1\n')
-        out.write('west:       0\n')
-        out.write('cols:       1\n')
-        out.write('rows:       1\n')
-        out.write('e-w resol:  1\n')
-        out.write('n-s resol:  1\n')
-        out.write('top:        1\n')
-        out.write('bottom:     0\n')
-        out.write('cols3:      1\n')
-        out.write('rows3:      1\n')
-        out.write('depths:     1\n')
-        out.write('e-w resol3: 1\n')
-        out.write('n-s resol3: 1\n')
-        out.write('t-b resol:  1\n')
-
-        out.close()
+        with io.open(filename, 'w', encoding='utf-8') as out:
+            command = (u'proj:       0\n'
+                       u'zone:       0\n'
+                       u'north:      1\n'
+                       u'south:      0\n'
+                       u'east:       1\n'
+                       u'west:       0\n'
+                       u'cols:       1\n'
+                       u'rows:       1\n'
+                       u'e-w resol:  1\n'
+                       u'n-s resol:  1\n'
+                       u'top:        1\n'
+                       u'bottom:     0\n'
+                       u'cols3:      1\n'
+                       u'rows3:      1\n'
+                       u'depths:     1\n'
+                       u'e-w resol3: 1\n'
+                       u'n-s resol3: 1\n'
+                       u't-b resol:  1\n')
+            out.write(command)
 
     @staticmethod
     def prepareGrass7Execution(commands):
@@ -243,9 +243,9 @@ class Grass7Utils:
 
         if isWindows():
             Grass7Utils.createGrass7Script(commands)
-            command = ['cmd.exe', '/C ', Grass7Utils.grassScriptFilename()]
+            command = ['cmd.exe', '/C ', Grass7Utils.grassScriptFilename().encode('mbcs')]
         else:
-            gisrc = userFolder() + os.sep + 'processing.gisrc7'
+            gisrc = os.path.join(userFolder(), 'processing.gisrc7')
             env['GISRC'] = gisrc
             env['GRASS_MESSAGE_FORMAT'] = 'plain'
             env['GRASS_BATCH_JOB'] = Grass7Utils.grassBatchJobFilename()
@@ -254,12 +254,10 @@ class Grass7Utils:
             Grass7Utils.createGrass7BatchJobFileFromGrass7Commands(commands)
             os.chmod(Grass7Utils.grassBatchJobFilename(), stat.S_IEXEC
                      | stat.S_IREAD | stat.S_IWRITE)
-            if isMac() and os.path.exists(Grass7Utils.grassPath() + os.sep + 'grass70.sh'):
-                command = Grass7Utils.grassPath() + os.sep + 'grass70.sh ' \
-                    + Grass7Utils.grassMapsetFolder() + '/PERMANENT'
+            if isMac() and os.path.exists(os.path.join(Grass7Utils.grassPath(), 'grass70.sh')):
+                command = os.path.join(Grass7Utils.grassPath(), 'grass70.sh ', Grass7Utils.grassMapsetFolder(), 'PERMANENT')
             else:
-                command = 'grass70 ' + Grass7Utils.grassMapsetFolder() \
-                    + '/PERMANENT'
+                command = 'grass70 ' + os.path.join(Grass7Utils.grassMapsetFolder(), 'PERMANENT')
 
         return command, env
 

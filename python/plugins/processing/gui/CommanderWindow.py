@@ -33,7 +33,7 @@ from qgis.utils import iface
 from processing.core.Processing import Processing
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
-from processing.tools.system import userFolder, mkdir
+from processing.tools.system import userFolder, mkdir, isWindows
 
 ITEMHEIGHT = 30
 OFFSET = 20
@@ -50,6 +50,8 @@ class CommanderWindow(QDialog):
 
     def commandsFolder(self):
         folder = unicode(os.path.join(userFolder(), 'commander'))
+        if isWindows():
+            folder = folder.encode('mbcs')
         mkdir(folder)
         return os.path.abspath(folder)
 

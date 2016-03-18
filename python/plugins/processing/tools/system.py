@@ -2,8 +2,8 @@
 
 """
 ***************************************************************************
-    py
-    ---------------------
+    system.py
+    ---------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
     Email                : volayaf at gmail dot com
@@ -30,6 +30,8 @@ import os
 import time
 import sys
 import uuid
+import io
+import subprocess
 
 from PyQt4.QtCore import QDir
 from qgis.core import QgsApplication
@@ -136,3 +138,36 @@ def mkdir(newdir):
             mkdir(head)
         if tail:
             os.mkdir(newdir)
+
+
+def findWindowsCmdEncoding():
+    """ Find MS-Windows encoding in the shell (cmd.exe)"""
+    # Creates a temp python file
+    tempPython = getTempFilenameInTempFolder('cmdEncoding.py')
+    with io.open(tempPython, 'w', encoding='utf-8') as f:
+        command = (u'# -*- coding: utf-8 -*-\n\n'
+                   u'import sys\n'
+                   u'print(sys.stdin.encoding)')
+        f.write(command)
+
+    env = os.environ.copy()
+    command = ['cmd.exe', '/C', 'python.exe', tempPython]
+
+    # execute temp python file
+    p = subprocess.Popen(
+        command,
+        shell=True,
+        stdout=subprocess.PIPE,
+        stdin=open(os.devnull),
+        stderr=subprocess.STDOUT,
+        universal_newlines=True,
+        env=env)
+    data = p.communicate()[0]
+
+    # Return codepage
+    if p.returncode == 0:
+        return data
+
+    # If our Python script fails, use locale
+    import locale
+    return locale.getpreferredencoding()
