@@ -3,7 +3,6 @@ qgis_wcsprovidertest
 ProcessingParametersTest
 ProcessingQgisAlgorithmsTest
 ProcessingGdalAlgorithmsTest
-qgis_atlascompositiontest
 qgis_composermapgridtest
 qgis_composerpapertest
 qgis_composerrotationtest
