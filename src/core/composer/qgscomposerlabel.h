@@ -23,6 +23,7 @@
 class QgsVectorLayer;
 class QgsFeature;
 class QgsDistanceArea;
+class QWebPage;
 
 /** \ingroup MapComposer
  * A label that can be placed onto a map composition.
@@ -184,6 +185,9 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     /** Helper function to calculate x/y shift for adjustSizeToText() depending on rotation, current size and alignment*/
     void itemShiftAdjustSize( double newWidth, double newHeight, double& xShift, double& yShift ) const;
 
+    /** Called when the content is changed to handle HTML loading */
+    void contentChanged();
+
     // Font
     QFont mFont;
 
@@ -212,6 +216,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     QMap<QString, QVariant> mSubstitutions;
     QgsDistanceArea* mDistanceArea;
 
+    QWebPage* mWebPage;
 };
 
 #endif
