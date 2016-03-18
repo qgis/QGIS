@@ -133,8 +133,6 @@ class ProcessingToolbox(BASE, WIDGET):
             hide = bool(text) and (text not in item.text(0).lower())
             if isinstance(item, TreeAlgorithmItem):
                 hide = hide and (text not in item.alg.commandLineName())
-                if item.alg.shortHelp() is not None:
-                    hide = hide and (text not in item.alg.shortHelp())
             item.setHidden(hide)
             return not hide
         else:
