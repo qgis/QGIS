@@ -27,16 +27,6 @@ try:
 except:
     pass
 
-# BINDING THRESHOLD
-#
-# The minimum number of unbound functions in QGIS api
-#
-# DON'T RAISE THIS THRESHOLD!!!
-# (changes which lower this threshold are welcomed though!)
-
-ACCEPTABLE_MISSING_CLASSES = 0
-ACCEPTABLE_MISSING_MEMBERS = 0
-
 
 class TestQgsSipCoverage(unittest.TestCase):
 
@@ -103,7 +93,7 @@ class TestQgsSipCoverage(unittest.TestCase):
         printImportant("{} total have bindings".format(present_count))
         printImportant("Binding coverage by classes {}%".format(coverage))
         printImportant("---------------------------------")
-        printImportant("{} classes missing bindings, out of {} allowed".format(missing_class_count, ACCEPTABLE_MISSING_CLASSES))
+        printImportant("{} classes missing bindings".format(missing_class_count))
         print "---------------------------------"
 
         missing_member_count = len(missing_members)
@@ -115,13 +105,13 @@ class TestQgsSipCoverage(unittest.TestCase):
         printImportant("{} total have bindings".format(present_count))
         printImportant("Binding coverage by members {}%".format(coverage))
         printImportant("---------------------------------")
-        printImportant("{} members missing bindings, out of {} allowed".format(missing_member_count, ACCEPTABLE_MISSING_MEMBERS))
+        printImportant("{} members missing bindings".format(missing_member_count))
 
-        assert missing_class_count <= ACCEPTABLE_MISSING_CLASSES, """\n\nFAIL: new unbound classes have been introduced, please add SIP bindings for these classes
+        assert missing_class_count <= 0, """\n\nFAIL: new unbound classes have been introduced, please add SIP bindings for these classes
 If these classes are not suitable for the Python bindings, please add the Doxygen tag
 "@note not available in Python bindings" to the CLASS Doxygen comments"""
 
-        assert missing_member_count <= ACCEPTABLE_MISSING_MEMBERS, """\n\nFAIL: new unbound members have been introduced, please add SIP bindings for these members
+        assert missing_member_count <= 0, """\n\nFAIL: new unbound members have been introduced, please add SIP bindings for these members
 If these members are not suitable for the Python bindings, please add the Doxygen tag
 "@note not available in Python bindings" to the MEMBER Doxygen comments"""
 
