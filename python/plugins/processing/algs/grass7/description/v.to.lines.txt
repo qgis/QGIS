@@ -1,0 +1,6 @@
+v.to.lines
+Converts vector polygons or points to lines.
+Vector (v.*)
+ParameterVector|input|Name of input vector map|-1|False
+ParameterSelection|method|Method used for point interpolation|delaunay|0
+OutputVector|output|Lines
