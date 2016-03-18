@@ -500,7 +500,7 @@ class QgisLocalServer(object):
                 )
             else:
                 delta = time.time() - start_time
-                print(('Seconds elapsed for server GetMap: ' + str(delta)))
+                print('Seconds elapsed for server GetMap: ' + str(delta))
                 break
 
         if resp is not None:

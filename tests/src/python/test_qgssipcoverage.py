@@ -79,9 +79,9 @@ class TestQgsSipCoverage(unittest.TestCase):
         missing_members.sort()
 
         print("---------------------------------")
-        print(('Missing classes:\n {}'.format('\n '.join(missing_objects))))
+        print('Missing classes:\n {}'.format('\n '.join(missing_objects)))
         print("---------------------------------")
-        print(('Missing members:\n {}'.format('\n '.join(missing_members))))
+        print('Missing members:\n {}'.format('\n '.join(missing_members)))
 
         # print summaries
         missing_class_count = len(missing_objects)

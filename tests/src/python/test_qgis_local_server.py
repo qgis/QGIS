@@ -162,7 +162,7 @@ def run_suite(module, tests):
     res = unittest.TextTestRunner(stream=out, verbosity=verb).run(suite)
     if verb:
         print('\nIndividual test summary:')
-    print(('\n' + out.getvalue()))
+    print('\n' + out.getvalue())
     out.close()
 
     if QGIS_TEST_REPORT and len(TESTREPORTS) > 0:

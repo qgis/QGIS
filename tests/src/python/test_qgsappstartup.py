@@ -85,7 +85,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
         while not os.path.exists(myTestFile):
             p.poll()
             if p.returncode is not None:
-                print(('Application has returned: {}'.format(p.returncode)))
+                print('Application has returned: {}'.format(p.returncode))
                 ok = False
                 break
             time.sleep(1)
@@ -206,6 +206,6 @@ if __name__ == '__main__':
             if found:
                 break
 
-    print(('\nQGIS_BIN: ', QGIS_BIN))
+    print('\nQGIS_BIN: ', QGIS_BIN)
     assert QGIS_BIN, 'QGIS binary not found, skipping test suite'
     unittest.main()

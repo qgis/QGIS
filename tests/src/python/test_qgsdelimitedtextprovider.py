@@ -160,7 +160,7 @@ def delimitedTextData(testname, filename, requests, verbose, **params):
         if layer.isValid():
             for nr, r in enumerate(requests):
                 if verbose:
-                    print(("Processing request", nr + 1, repr(r)))
+                    print("Processing request", nr + 1, repr(r))
                 if callable(r):
                     r(layer)
                     if verbose:
@@ -175,7 +175,7 @@ def delimitedTextData(testname, filename, requests, verbose, **params):
                 if not rdata:
                     log.append("Request " + str(nr) + " did not return any data")
                 if verbose:
-                    print(("Request returned", len(rdata.keys()), "features"))
+                    print("Request returned", len(rdata.keys()), "features")
         for msg in logger.messages():
             filelogname = 'temp_file' if 'tmp' in filename.lower() else filename
             msg = re.sub(r'file\s+.*' + re.escape(filename), 'file ' + filelogname, msg)
@@ -194,23 +194,23 @@ def printWanted(testname, result):
     prefix = '    '
 
     # Dump the data for a layer - used to construct unit tests
-    print((prefix + "wanted={}"))
-    print((prefix + "wanted['uri']=" + repr(result['uri'])))
-    print((prefix + "wanted['fieldTypes']=" + repr(result['fieldTypes'])))
-    print((prefix + "wanted['geometryType']=" + repr(result['geometryType'])))
-    print((prefix + "wanted['data']={"))
+    print(prefix + "wanted={}")
+    print(prefix + "wanted['uri']=" + repr(result['uri']))
+    print(prefix + "wanted['fieldTypes']=" + repr(result['fieldTypes']))
+    print(prefix + "wanted['geometryType']=" + repr(result['geometryType']))
+    print(prefix + "wanted['data']={")
     for k in sorted(data.keys()):
         row = data[k]
-        print((prefix + "    {0}: {{".format(repr(k))))
+        print(prefix + "    {0}: {{".format(repr(k)))
         for f in fields:
-            print((prefix + "        " + repr(f) + ": " + repr(row[f]) + ","))
-        print((prefix + "        },"))
-    print((prefix + "    }"))
+            print(prefix + "        " + repr(f) + ": " + repr(row[f]) + ",")
+        print(prefix + "        },")
+    print(prefix + "    }")
 
-    print((prefix + "wanted['log']=["))
+    print(prefix + "wanted['log']=[")
     for msg in log:
-        print((prefix + '    ' + repr(msg) + ','))
-    print((prefix + '    ]'))
+        print(prefix + '    ' + repr(msg) + ',')
+    print(prefix + '    ]')
     print('    return wanted')
     print('')
 
@@ -238,7 +238,7 @@ def runTest(file, requests, **params):
     testname = inspect.stack()[1][3]
     verbose = not rebuildTests
     if verbose:
-        print(("Running test:", testname))
+        print("Running test:", testname)
     result = delimitedTextData(testname, file, requests, verbose, **params)
     if rebuildTests:
         printWanted(testname, result)
@@ -255,7 +255,7 @@ def runTest(file, requests, **params):
     if result['uri'] != wanted['uri']:
         msg = "Layer Uri ({0}) doesn't match expected ({1})".format(
             result['uri'], wanted['uri'])
-        print(('    ' + msg))
+        print('    ' + msg)
         failures.append(msg)
     if result['fieldTypes'] != wanted['fieldTypes']:
         msg = "Layer field types ({0}) doesn't match expected ({1})".format(
@@ -276,14 +276,14 @@ def runTest(file, requests, **params):
         print('getting difference')
         difference = recordDifference(wrec, trec)
         if not difference:
-            print(('    {0}: Passed'.format(description)))
+            print('    {0}: Passed'.format(description))
         else:
-            print(('    {0}: {1}'.format(description, difference)))
+            print('    {0}: {1}'.format(description, difference))
             failures.append(description + ': ' + difference)
     for id in sorted(data.keys()):
         if id not in wanted_data:
             msg = "Layer contains unexpected extra data with id: \"{0}\"".format(id)
-            print(('    ' + msg))
+            print('    ' + msg)
             failures.append(msg)
     common = []
     log_wanted = wanted['log']
@@ -293,12 +293,12 @@ def runTest(file, requests, **params):
     for l in log_wanted:
         if l not in common:
             msg = 'Missing log message: ' + l
-            print(('    ' + msg))
+            print('    ' + msg)
             failures.append(msg)
     for l in log:
         if l not in common:
             msg = 'Extra log message: ' + l
-            print(('    ' + msg))
+            print('    ' + msg)
             failures.append(msg)
     if len(log) == len(common) and len(log_wanted) == len(common):
         print('    Message log correct: Passed')

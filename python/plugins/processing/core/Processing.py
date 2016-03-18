@@ -300,7 +300,7 @@ class Processing:
             for param in alg.parameters:
                 if param.name not in setParams:
                     if not param.setDefaultValue():
-                        print(('Error: Missing parameter value for parameter %s.' % param.name))
+                        print('Error: Missing parameter value for parameter %s.' % param.name)
                         QgsMessageLog.logMessage(Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name), Processing.tr("Processing"))
                         ProcessingLog.addToLog(
                             ProcessingLog.LOG_ERROR,
