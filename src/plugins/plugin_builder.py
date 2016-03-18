@@ -34,7 +34,7 @@ def plugin_file(pluginDir, file):
 # will make will wreak havoc....
 
 myDir = os.getcwd()
-print("Checking that we are in the <qgis dir>/src/plugins/ directory....", end=' ')
+print("Checking that we are in the <qgis dir>/src/plugins/ directory....")
 
 pluginsDirectory = os.path.join('src', 'plugins')
 
@@ -50,7 +50,7 @@ else:
 # get the needed information from the user
 print("Enter the directory name under qgis/src/plugins/ where your new plugin will be created.")
 print("We suggest using a lowercase underscore separated name e.g. clever_plugin")
-print("Directory for the new plugin:", end=' ')
+print("Directory for the new plugin:")
 
 pluginDir = raw_input()
 
@@ -66,7 +66,7 @@ print("   CleverToolGui     <- The concrete class for the plugins configuration 
 print("3) CleverTool     <- The class that includes the plugin loader instructions and")
 print("                     and calls to your custom application logic")
 print("4) clevertool.h, clevertool.cpp  etc. <- the filenames used to hold the above derived classes")
-print("Plugin name:", end=' ')
+print("Plugin name:")
 
 pluginName = raw_input()
 pluginLCaseName = pluginName.lower()
@@ -74,26 +74,26 @@ pluginLCaseName = pluginName.lower()
 print("")
 print("Enter a short description (typically one line)")
 print("e.g. The clever plugin does clever stuff in QGIS")
-print("Plugin description:", end=' ')
+print("Plugin description:")
 pluginDescription = raw_input()
 
 print("")
 print("Enter a plugin category. Category will help users")
 print("to understand where to find plugin. E.g. if plugin")
 print("will be available from Vector menu category is Vector")
-print("Plugin category:", end=' ')
+print("Plugin category:")
 pluginCategory = raw_input()
 
 print("")
 print("Enter the name of the application menu that will be created for your plugin")
 print("Clever Tools")
-print("Menu name:", end=' ')
+print("Menu name:")
 menuName = raw_input()
 
 print("")
 print("Enter the name of the menu entry  (under the menu that you have just defined) that")
 print("will be used to invoke your plugin. e.g. Clever Plugin")
-print("Menu item name:", end=' ')
+print("Menu item name:")
 menuItemName = raw_input()
 
 # print a summary of what's about to happen
@@ -109,7 +109,7 @@ print("Menu name:                ", menuName)
 print("Menu item name:           ", menuItemName)
 print("")
 print("Warning - Proceeding will make changes to CMakeLists.txt in this directory.")
-print("Create the plugin? [y/n]:", end=' ')
+print("Create the plugin? [y/n]:")
 
 createIt = raw_input()
 
