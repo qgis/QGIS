@@ -453,6 +453,9 @@ class DoxygenParser():
         bindable_members = []
         # loop through all members
         for m in e.getiterator('memberdef'):
+            signature = self.memberSignature(m)
+            if signature is None:
+                continue
             if self.elemIsBindableMember(m):
                 bindable_member = [e.find('compoundname').text, m.find('name').text]
                 if bindable_member not in bindable_members:
@@ -462,7 +465,7 @@ class DoxygenParser():
                 if self.memberIsDocumented(m):
                     documented_members += 1
                 else:
-                    undocumented_members.add(self.memberSignature(m))
+                    undocumented_members.add(signature)
         return documentable_members, documented_members, undocumented_members, bindable_members
 
     def memberSignature(self, elem):
