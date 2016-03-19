@@ -468,6 +468,8 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
           QVariant::Type attributeType = fields[idx].type();
           if ( attributeType == QVariant::Int )
             attElem.setAttribute( "type", "integer" );
+          else if ( attributeType == QVariant::LongLong )
+            attElem.setAttribute( "type", "long" );
           else if ( attributeType == QVariant::Double )
             attElem.setAttribute( "type", "double" );
           else if ( attributeType == QVariant::Bool )
