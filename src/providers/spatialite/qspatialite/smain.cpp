@@ -39,23 +39,8 @@
 **
 ****************************************************************************/
 
-#include <qsqldriverplugin.h>
-#include <qstringlist.h>
+#include "smain.h"
 #include "qsql_spatialite.h"
-
-QT_BEGIN_NAMESPACE
-
-class QSpatiaLiteDriverPlugin : public QSqlDriverPlugin
-{
-#if QT_VERSION >= 0x050000
-    Q_PLUGIN_METADATA(IID "org.qgis.QSpatiaLiteDriverPlugin")
-#endif
-public:
-    QSpatiaLiteDriverPlugin();
-
-    QSqlDriver* create(const QString &);
-    QStringList keys() const;
-};
 
 QSpatiaLiteDriverPlugin::QSpatiaLiteDriverPlugin()
     : QSqlDriverPlugin()
@@ -79,8 +64,6 @@ QStringList QSpatiaLiteDriverPlugin::keys() const
 }
 
 #if QT_VERSION < 0x050000
-Q_EXPORT_STATIC_PLUGIN(QSpatiaLiteDriverPlugin)
-Q_EXPORT_PLUGIN2(qspatialite, QSpatiaLiteDriverPlugin)
+Q_EXPORT_STATIC_PLUGIN( QSpatiaLiteDriverPlugin )
+Q_EXPORT_PLUGIN2( qspatialite, QSpatiaLiteDriverPlugin )
 #endif
-
-QT_END_NAMESPACE

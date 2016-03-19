@@ -41,36 +41,25 @@
 **
 ****************************************************************************/
 
-#include "main.h"
-#include "qsql_ocispatial.h"
+#ifndef QOCISPATIAL_MAIN_H
+#define QOCISPATIAL_MAIN_H
 
-QT_BEGIN_NAMESPACE
-
-QOCISpatialDriverPlugin::QOCISpatialDriverPlugin()
-    : QSqlDriverPlugin()
-{
-}
-
-QSqlDriver* QOCISpatialDriverPlugin::create( const QString &name )
-{
-  if ( name == QLatin1String( "QOCISPATIAL" ) || name == QLatin1String( "QOCISPATIAL8" ) )
-  {
-    QOCISpatialDriver* driver = new QOCISpatialDriver();
-    return driver;
-  }
-  return 0;
-}
-
-QStringList QOCISpatialDriverPlugin::keys() const
-{
-  QStringList l;
-  l << QLatin1String( "QOCISPATIAL8" ) << QLatin1String( "QOCISPATIAL" );
-  return l;
-}
+#include <QSqlDriverPlugin>
+#include <QStringList>
 
 #if QT_VERSION < 0x050000
-Q_EXPORT_STATIC_PLUGIN( QOCISpatialDriverPlugin )
-Q_EXPORT_PLUGIN2( qsqlocispatial, QOCISpatialDriverPlugin )
+#define Q_PLUGIN_METADATA(x)
 #endif
 
-QT_END_NAMESPACE
+class QOCISpatialDriverPlugin : public QSqlDriverPlugin
+{
+    Q_OBJECT
+    Q_PLUGIN_METADATA( IID "org.qt-project.Qt.QSqlDriverFactoryInterface" FILE "qocispatial.json" )
+  public:
+    QOCISpatialDriverPlugin();
+
+    QSqlDriver* create( const QString & );
+    QStringList keys() const;
+};
+
+#endif
