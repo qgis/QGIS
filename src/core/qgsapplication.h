@@ -38,7 +38,16 @@ class CORE_EXPORT QgsApplication : public QApplication
     static const char* QGIS_ORGANIZATION_NAME;
     static const char* QGIS_ORGANIZATION_DOMAIN;
     static const char* QGIS_APPLICATION_NAME;
-    QgsApplication( int & argc, char ** argv, bool GUIenabled, const QString& customConfigPath = QString(), const QString& platformName = "desktop" );
+
+    /** Constructor
+        @param argc,argv command line arguments
+        @param GUIenabled set to true to construct a GUI application
+        @param customConfigPath passed to init() when @p initLater is set to false
+        @param platformName the name of the platform, will be returned by @p platform()
+        @param initLater set to true to skip the call to init() within the constructor
+        @note if you set @p initLater to true make sure to call init() before calling exec()
+      */
+    QgsApplication( int & argc, char ** argv, bool GUIenabled, const QString& customConfigPath = QString(), const QString& platformName = "desktop", bool initLater = false );
     virtual ~QgsApplication();
 
     /** This method initialises paths etc for QGIS. Called by the ctor or call it manually

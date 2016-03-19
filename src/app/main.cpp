@@ -542,13 +542,28 @@ int main( int argc, char *argv[] )
   QgsDebugMsg( QString( "Android: configpath set to %1" ).arg( configpath ) );
 #endif
 
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC) && !defined(ANDROID)
+  bool myUseGuiFlag = nullptr != getenv( "DISPLAY" );
+#else
+  bool myUseGuiFlag = true;
+#endif
+  if ( !myUseGuiFlag )
+  {
+    std::cerr << QObject::tr(
+                "QGIS starting in non-interactive mode not supported.\n"
+                "You are seeing this message most likely because you "
+                "have no DISPLAY environment variable set.\n"
+              ).toUtf8().constData();
+    exit( 1 ); //exit for now until a version of qgis is capabable of running non interactive
+  }
+
+  QgsApplication myApp( argc, argv, myUseGuiFlag, QString(), "desktop", true );
   QStringList args;
 
   if ( !bundleclicked( argc, argv ) )
   {
     // Build a local QCoreApplication from arguments. This way, arguments are correctly parsed from their native locale
     // It will use QString::fromLocal8Bit( argv ) under Unix and GetCommandLine() under Windows.
-    QCoreApplication coreApp( argc, argv );
     args = QCoreApplication::arguments();
 
     for ( int i = 1; i < args.size(); ++i )
@@ -750,21 +765,6 @@ int main( int argc, char *argv[] )
   // Initialise the application and the translation stuff
   /////////////////////////////////////////////////////////////////////
 
-#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC) && !defined(ANDROID)
-  bool myUseGuiFlag = nullptr != getenv( "DISPLAY" );
-#else
-  bool myUseGuiFlag = true;
-#endif
-  if ( !myUseGuiFlag )
-  {
-    std::cerr << QObject::tr(
-                "QGIS starting in non-interactive mode not supported.\n"
-                "You are seeing this message most likely because you "
-                "have no DISPLAY environment variable set.\n"
-              ).toUtf8().constData();
-    exit( 1 ); //exit for now until a version of qgis is capabable of running non interactive
-  }
-
   if ( !optionpath.isEmpty() || !configpath.isEmpty() )
   {
     // tell QSettings to use INI format and save the file in custom config path
@@ -779,7 +779,7 @@ int main( int argc, char *argv[] )
     QgsCustomization::instance()->setEnabled( false );
   }
 
-  QgsApplication myApp( argc, argv, myUseGuiFlag, configpath );
+  myApp.init( configpath );
 
   myApp.setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
 
