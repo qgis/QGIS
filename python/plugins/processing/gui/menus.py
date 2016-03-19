@@ -1,6 +1,6 @@
 from processing.core.Processing import Processing
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from PyQt4.QtGui import QAction, QMenu
+from PyQt.QtWidgets import QAction, QMenu
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from qgis.utils import iface
@@ -117,8 +117,8 @@ def updateMenus():
 
 
 def createMenus():
-    for provider in Processing.algs.values():
-        for alg in provider.values():
+    for provider in list(Processing.algs.values()):
+        for alg in list(provider.values()):
             menuPath = ProcessingConfig.getSetting("MENU_" + alg.commandLineName())
             if menuPath:
                 paths = menuPath.split("/")
@@ -126,8 +126,8 @@ def createMenus():
 
 
 def removeMenus():
-    for provider in Processing.algs.values():
-        for alg in provider.values():
+    for provider in list(Processing.algs.values()):
+        for alg in list(provider.values()):
             menuPath = ProcessingConfig.getSetting("MENU_" + alg.commandLineName())
             if menuPath:
                 paths = menuPath.split("/")
@@ -196,14 +196,11 @@ def _executeAlgorithm(alg):
 
 
 def getMenu(name, parent):
-    menus = [c for c in parent.children() if isinstance(c, QMenu)]
-    menusDict = {m.title(): m for m in menus}
-    if name in menusDict:
-        return menusDict[name]
+    menus = [c for c in parent.children() if isinstance(c, QMenu) and c.title() == name]
+    if menus:
+        return menus[0]
     else:
-        menu = QMenu(name, parent)
-        parent.addMenu(menu)
-        return menu
+        return parent.addMenu(name)
 
 
 def findAction(actions, alg, actionText=None):
