@@ -41,6 +41,10 @@ void QgsLabelingWidget::adaptToLayer()
 {
   mLabelModeComboBox->setCurrentIndex( -1 );
 
+  // Delete the widget, so that labelModeChanged() recreates it with
+  // settings loaded from the layer
+  deleteWidget();
+
   // pick the right mode of the layer
   if ( mLayer->labeling() && mLayer->labeling()->type() == "rule-based" )
   {
@@ -107,11 +111,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
 
   // in general case we need to recreate the widget
 
-  if ( mWidget )
-    mStackedWidget->removeWidget( mWidget );
-
-  delete mWidget;
-  mWidget = nullptr;
+  deleteWidget();
 
   if ( index == 2 )
   {
@@ -138,4 +138,13 @@ void QgsLabelingWidget::showEngineConfigDialog()
 {
   QgsLabelEngineConfigDialog dlg( this );
   dlg.exec();
+}
+
+void QgsLabelingWidget::deleteWidget()
+{
+  if ( mWidget )
+    mStackedWidget->removeWidget( mWidget );
+
+  delete mWidget;
+  mWidget = nullptr;
 }
