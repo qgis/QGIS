@@ -224,7 +224,8 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
     actionName = child.attribute( "name" );
     actionShortcut = child.attribute( "shortcut" );
     action = QgsShortcutsManager::instance()->actionByName( actionName );
-    QgsShortcutsManager::instance()->setActionShortcut( action, actionShortcut );
+    if ( action )
+      QgsShortcutsManager::instance()->setActionShortcut( action, actionShortcut );
     child = child.nextSiblingElement();
   }
 
