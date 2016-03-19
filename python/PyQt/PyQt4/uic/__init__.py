@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    uic.py
+    __init__.py
     ---------------------
     Date                 : February 2016
     Copyright            : (C) 2016 by Jürgen E. Fischer
@@ -23,4 +23,7 @@ __copyright__ = '(C) 2016, Jürgen E. Fischer'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+from PyQt4.uic.Compiler import indenter, compiler
+from PyQt4.uic.objcreator import widgetPluginPath
+from PyQt4.uic import properties, uiparser, Compiler
 from PyQt4.uic import *
