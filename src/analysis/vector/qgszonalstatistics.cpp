@@ -483,7 +483,9 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const Qg
     for ( int col = 0; col < nCellsX; ++col )
     {
       if ( GDALRasterIO( band, GF_Read, pixelOffsetX + col, pixelOffsetY + row, nCellsX, 1, pixelData, 1, 1, GDT_Float32, 0, 0 ) != CE_None )
+      {
         QgsDebugMsg( "Raster IO Error" );
+      }
 
       if ( !validPixel( *pixelData ) )
         continue;

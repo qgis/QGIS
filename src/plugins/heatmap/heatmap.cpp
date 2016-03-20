@@ -171,7 +171,9 @@ void Heatmap::run()
   for ( int i = 0; i < rows ; i++ )
   {
     if ( poBand->RasterIO( GF_Write, 0, i, columns, 1, line, columns, 1, GDT_Float32, 0, 0 ) != CE_None )
+    {
       QgsDebugMsg( "Raster IO Error" );
+    }
   }
 
   CPLFree( line );
@@ -302,7 +304,9 @@ void Heatmap::run()
       float *dataBuffer = ( float * ) CPLMalloc( sizeof( float ) * blockSize * blockSize );
       if ( poBand->RasterIO( GF_Read, xPosition, yPosition, blockSize, blockSize,
                              dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 ) != CE_None )
+      {
         QgsDebugMsg( "Raster IO Error" );
+      }
 
       for ( int xp = 0; xp <= myBuffer; xp++ )
       {
@@ -345,7 +349,9 @@ void Heatmap::run()
       }
       if ( poBand->RasterIO( GF_Write, xPosition, yPosition, blockSize, blockSize,
                              dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 ) != CE_None )
+      {
         QgsDebugMsg( "Raster IO Error" );
+      }
       CPLFree( dataBuffer );
     }
   }
