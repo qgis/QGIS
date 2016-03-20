@@ -21,7 +21,7 @@ pull|push|update)
 	;;
 
 *)
-	echo "usage: $(basename $0) {push|pull|update}"
+	echo "usage: $(basename $0) {push|pull|update} builddirectory"
 	exit 1
 esac
 
@@ -87,6 +87,17 @@ elif [ $1 = pull ]; then
 	tx pull -a -s --minimum-perc=35
 fi
 
+builddir=$2
+if [ ! -d "$builddir" ]; then
+	echo Build directory not found
+	exit 1
+fi
+
+if [ ! -f "$builddir/src/core/qgsexpression_texts.cpp" -o ! -f "$builddir/src/core/qgscontexthelp_texts.cpp" ]; then
+	echo Generated help files not found
+	exit 1
+fi
+
 echo Updating python translations
 cd python
 pylupdate4 user.py utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts
@@ -108,10 +119,12 @@ echo Updating processing translations
 perl scripts/processing2cpp.pl python/plugins/processing/processing-i18n.cpp
 
 echo Creating qmake project file
-$QMAKE -project -o qgis_ts.pro -nopwd src python i18n
+$QMAKE -project -o qgis_ts.pro -nopwd src python i18n "$builddir/src/core/qgsexpression_texts.cpp" "$builddir/src/core/qgscontexthelp_texts.cpp"
 
 echo Updating translations
 $LUPDATE -locations absolute -verbose qgis_ts.pro
+
+perl -i.bak -ne 'print unless /^\s+<location.*qgs(expression|contexthelp)_texts\.cpp.*$/;' i18n/qgis_*.ts
 
 if [ $1 = push ]; then
 	echo Pushing translation...

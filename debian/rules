@@ -216,10 +216,6 @@ binary binary-arch binary-indep build build-arch build-indep clean install insta
 override_dh_clean: cleantemplates
 	dh_clean qgis.bin.1 qbrowser.bin.1
 
-	# automatically generated files
-	-$(RM) $(CURDIR)/src/core/qgscontexthelp_texts.cpp
-	-$(RM) $(CURDIR)/src/core/qgsexpression_texts.cpp
-
 	-$(RM) -r $(CURDIR)/$(QGIS_BUILDDIR)/
 
 override_dh_auto_configure:

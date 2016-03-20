@@ -89,6 +89,7 @@ for f in "$@"; do
 
 		*.py)
 			#cmd="autopep8 --in-place --ignore=E111,E128,E201,E202,E203,E211,E221,E222,E225,E226,E227,E231,E241,E261,E265,E272,E302,E303,E501,E701"
+			echo -ne "Formatting $f $elcr"
 			cmd="autopep8 --in-place --ignore=E261,E265,E402,E501"
 			;;
 
