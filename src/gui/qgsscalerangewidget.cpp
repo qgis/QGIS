@@ -43,6 +43,7 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
 
   mMinimumScaleWidget = new QgsScaleWidget( this );
   mMaximumScaleWidget = new QgsScaleWidget( this );
+  connect( mMinimumScaleWidget, SIGNAL( scaleChanged( double ) ), mMaximumScaleWidget, SLOT( setMinScale( double ) ) );
   mMinimumScaleWidget->setShowCurrentScaleButton( true );
   mMaximumScaleWidget->setShowCurrentScaleButton( true );
   reloadProjectScales();
