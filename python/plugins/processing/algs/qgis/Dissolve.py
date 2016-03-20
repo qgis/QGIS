@@ -86,13 +86,18 @@ class Dissolve(GeoAlgorithm):
                 if first:
                     attrs = inFeat.attributes()
                     tmpInGeom = QgsGeometry(inFeat.geometry())
-                    if tmpInGeom.isGeosEmpty() or not tmpInGeom.isGeosValid():
+                    if tmpInGeom.isGeosEmpty():
+                        continue
+                    errors = tmpInGeom.validateGeometry()
+                    if len(errors) != 0:
+                        for error in errors:
+                            print error.what()
                         continue
                     outFeat.setGeometry(tmpInGeom)
                     first = False
                 else:
                     tmpInGeom = QgsGeometry(inFeat.geometry())
-                    if tmpInGeom.isGeosEmpty() or not tmpInGeom.isGeosValid():
+                    if tmpInGeom.isGeosEmpty():
                         continue
                     tmpOutGeom = QgsGeometry(outFeat.geometry())
                     try:
@@ -119,7 +124,7 @@ class Dissolve(GeoAlgorithm):
                 attrs = inFeat.attributes()
                 tempItem = attrs[fieldIdx]
                 tmpInGeom = QgsGeometry(inFeat.geometry())
-                if tmpInGeom.isGeosEmpty() or not tmpInGeom.isGeosValid():
+                if tmpInGeom.isGeosEmpty():
                     continue
 
                 if attrDict[unicode(tempItem).strip()] == None:
