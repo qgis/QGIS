@@ -37,6 +37,13 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
 {
   setupUi( this );
 
+  mFillColorButton->setAllowAlpha( true );
+  mFillColorButton->setColorDialogTitle( tr( "Select fill color" ) );
+  mFillColorButton->setContext( "composer" );
+  mOutlineColorButton->setAllowAlpha( true );
+  mOutlineColorButton->setColorDialogTitle( tr( "Select outline color" ) );
+  mOutlineColorButton->setContext( "composer" );
+
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, picture );
   mainLayout->addWidget( itemPropertiesWidget );
@@ -110,6 +117,7 @@ void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
   mPictureLineEdit->blockSignals( true );
   mPictureLineEdit->setText( filePath );
   mPictureLineEdit->blockSignals( false );
+  updateSvgParamGui();
 
   //pass file path to QgsComposerPicture
   if ( mPicture )
@@ -127,13 +135,11 @@ void QgsComposerPictureWidget::on_mPictureLineEdit_editingFinished()
   {
     QString filePath = mPictureLineEdit->text();
 
-    //check if file exists
-    QFileInfo fileInfo( filePath );
-
     mPicture->beginCommand( tr( "Picture changed" ) );
     mPicture->setPicturePath( filePath );
     mPicture->update();
     mPicture->endCommand();
+    updateSvgParamGui();
   }
 }
 
@@ -161,6 +167,7 @@ void QgsComposerPictureWidget::on_mPreviewListWidget_currentItemChanged( QListWi
   mPictureLineEdit->setText( absoluteFilePath );
   mPicture->update();
   mPicture->endCommand();
+  updateSvgParamGui();
 }
 
 void QgsComposerPictureWidget::on_mAddDirectoryButton_clicked()
@@ -383,6 +390,9 @@ void QgsComposerPictureWidget::setGuiElementValues()
     mRotationFromComposerMapCheckBox->blockSignals( true );
     mResizeModeComboBox->blockSignals( true );
     mAnchorPointComboBox->blockSignals( true );
+    mFillColorButton->blockSignals( true );
+    mOutlineColorButton->blockSignals( true );
+    mOutlineWidthSpinBox->blockSignals( true );
 
     mPictureLineEdit->setText( mPicture->picturePath() );
     mPictureRotationSpinBox->setValue( mPicture->pictureRotation() );
@@ -425,12 +435,20 @@ void QgsComposerPictureWidget::setGuiElementValues()
       mAnchorPointComboBox->setEnabled( false );
     }
 
+    updateSvgParamGui( false );
+    mFillColorButton->setColor( mPicture->svgFillColor() );
+    mOutlineColorButton->setColor( mPicture->svgBorderColor() );
+    mOutlineWidthSpinBox->setValue( mPicture->svgBorderWidth() );
+
     mRotationFromComposerMapCheckBox->blockSignals( false );
     mPictureRotationSpinBox->blockSignals( false );
     mPictureLineEdit->blockSignals( false );
     mComposerMapComboBox->blockSignals( false );
     mResizeModeComboBox->blockSignals( false );
     mAnchorPointComboBox->blockSignals( false );
+    mFillColorButton->blockSignals( false );
+    mOutlineColorButton->blockSignals( false );
+    mOutlineWidthSpinBox->blockSignals( false );
 
     populateDataDefinedButtons();
   }
@@ -463,6 +481,64 @@ QIcon QgsComposerPictureWidget::svgToIcon( const QString& filePath ) const
   const QImage& img = QgsSvgCache::instance()->svgAsImage( filePath, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );
 
   return QIcon( QPixmap::fromImage( img ) );
+}
+
+void QgsComposerPictureWidget::updateSvgParamGui( bool resetValues )
+{
+  if ( !mPicture )
+    return;
+
+  QString picturePath = mPicture->picturePath();
+  if ( !picturePath.endsWith( ".svg", Qt::CaseInsensitive ) )
+  {
+    mFillColorButton->setEnabled( false );
+    mOutlineColorButton->setEnabled( false );
+    mOutlineWidthSpinBox->setEnabled( false );
+    return;
+  }
+
+  //activate gui for svg parameters only if supported by the svg file
+  bool hasFillParam, hasFillOpacityParam, hasOutlineParam, hasOutlineWidthParam, hasOutlineOpacityParam;
+  QColor defaultFill, defaultOutline;
+  double defaultOutlineWidth, defaultFillOpacity, defaultOutlineOpacity;
+  bool hasDefaultFillColor, hasDefaultFillOpacity, hasDefaultOutlineColor, hasDefaultOutlineWidth, hasDefaultOutlineOpacity;
+  QgsSvgCache::instance()->containsParams( picturePath, hasFillParam, hasDefaultFillColor, defaultFill,
+      hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
+      hasOutlineParam, hasDefaultOutlineColor, defaultOutline,
+      hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth,
+      hasOutlineOpacityParam, hasDefaultOutlineOpacity, defaultOutlineOpacity );
+
+  if ( resetValues )
+  {
+    QColor fill = mFillColorButton->color();
+    double newOpacity = hasFillOpacityParam ? fill.alphaF() : 1.0;
+    if ( hasDefaultFillColor )
+    {
+      fill = defaultFill;
+    }
+    fill.setAlphaF( hasDefaultFillOpacity ? defaultFillOpacity : newOpacity );
+    mFillColorButton->setColor( fill );
+  }
+  mFillColorButton->setEnabled( hasFillParam );
+  mFillColorButton->setAllowAlpha( hasFillOpacityParam );
+  if ( resetValues )
+  {
+    QColor outline = mOutlineColorButton->color();
+    double newOpacity = hasOutlineOpacityParam ? outline.alphaF() : 1.0;
+    if ( hasDefaultOutlineColor )
+    {
+      outline = defaultOutline;
+    }
+    outline.setAlphaF( hasDefaultOutlineOpacity ? defaultOutlineOpacity : newOpacity );
+    mOutlineColorButton->setColor( outline );
+  }
+  mOutlineColorButton->setEnabled( hasOutlineParam );
+  mOutlineColorButton->setAllowAlpha( hasOutlineOpacityParam );
+  if ( hasDefaultOutlineWidth && resetValues )
+  {
+    mOutlineWidthSpinBox->setValue( defaultOutlineWidth );
+  }
+  mOutlineWidthSpinBox->setEnabled( hasOutlineWidthParam );
 }
 
 int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
@@ -618,6 +694,30 @@ void QgsComposerPictureWidget::loadPicturePreviews( bool collapsed )
     mPreviewsLoadingLabel->hide();
     mPreviewListWidget->show();
   }
+}
+
+void QgsComposerPictureWidget::on_mFillColorButton_colorChanged( const QColor& color )
+{
+  mPicture->beginCommand( tr( "Picture fill color changed" ) );
+  mPicture->setSvgFillColor( color );
+  mPicture->endCommand();
+  mPicture->update();
+}
+
+void QgsComposerPictureWidget::on_mOutlineColorButton_colorChanged( const QColor& color )
+{
+  mPicture->beginCommand( tr( "Picture border color changed" ) );
+  mPicture->setSvgBorderColor( color );
+  mPicture->endCommand();
+  mPicture->update();
+}
+
+void QgsComposerPictureWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
+{
+  mPicture->beginCommand( tr( "Picture border width changed" ) );
+  mPicture->setSvgBorderWidth( d );
+  mPicture->endCommand();
+  mPicture->update();
 }
 
 void QgsComposerPictureWidget::showEvent( QShowEvent * event )
