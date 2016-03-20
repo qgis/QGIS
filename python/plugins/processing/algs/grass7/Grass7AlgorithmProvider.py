@@ -43,7 +43,6 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.activate = False
         self.createAlgsList()
 
     def initializeSettings(self):

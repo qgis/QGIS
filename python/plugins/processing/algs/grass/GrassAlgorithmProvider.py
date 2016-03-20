@@ -44,6 +44,7 @@ class GrassAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
+        self.activate = False
         self.createAlgsList()  # Preloading algorithms to speed up
 
     def initializeSettings(self):
