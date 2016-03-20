@@ -3,7 +3,7 @@
  * Copyright (C) 2004-2010 Gerhard Häring <gh@ghaering.de>
  *
  * This file is part of pysqlite.
- * 
+ *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
  * arising from the use of this software.
@@ -23,12 +23,12 @@
 
 #include "cache.h"
 #include "module.h"
+#include "structmember.h"
 #include "connection.h"
 #include "statement.h"
 #include "cursor.h"
 #include "prepare_protocol.h"
 #include "util.h"
-#include "sqlitecompat.h"
 #include "spatialite.h"
 
 #include "pythread.h"
@@ -41,6 +41,8 @@
 #define HAVE_LOAD_EXTENSION
 #endif
 #endif
+
+_Py_IDENTIFIER(cursor);
 
 static int pysqlite_connection_set_isolation_level(pysqlite_Connection* self, PyObject* isolation_level);
 static void _pysqlite_drop_unused_cursor_references(pysqlite_Connection* self);
@@ -60,28 +62,32 @@ static void _sqlite3_result_error(sqlite3_context* ctx, const char* errmsg, int 
 
 int pysqlite_connection_init(pysqlite_Connection* self, PyObject* args, PyObject* kwargs)
 {
-    static char *kwlist[] = {"database", "timeout", "detect_types", "isolation_level", "check_same_thread", "factory", "cached_statements", NULL, NULL};
+    static char *kwlist[] = {
+        "database", "timeout", "detect_types", "isolation_level",
+        "check_same_thread", "factory", "cached_statements", "uri",
+        NULL
+    };
 
-    PyObject* database;
+    char* database;
     int detect_types = 0;
     PyObject* isolation_level = NULL;
     PyObject* factory = NULL;
     int check_same_thread = 1;
     int cached_statements = 100;
+    int uri = 0;
     double timeout = 5.0;
     int rc;
-    PyObject* class_attr = NULL;
-    PyObject* class_attr_str = NULL;
-    int is_apsw_connection = 0;
-    PyObject* database_utf8;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|diOiOi", kwlist,
-                                     &database, &timeout, &detect_types, &isolation_level, &check_same_thread, &factory, &cached_statements))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|diOiOip", kwlist,
+                                     &database, &timeout, &detect_types,
+                                     &isolation_level, &check_same_thread,
+                                     &factory, &cached_statements, &uri))
     {
         return -1;
     }
 
     self->initialized = 1;
+
     self->begin_statement = NULL;
 
     self->statement_cache = NULL;
@@ -94,65 +100,40 @@ int pysqlite_connection_init(pysqlite_Connection* self, PyObject* args, PyObject
     Py_INCREF(&PyUnicode_Type);
     self->text_factory = (PyObject*)&PyUnicode_Type;
 
-    if (PyString_Check(database) || PyUnicode_Check(database)) {
-        if (PyString_Check(database)) {
-            database_utf8 = database;
-            Py_INCREF(database_utf8);
-        } else {
-            database_utf8 = PyUnicode_AsUTF8String(database);
-            if (!database_utf8) {
-                return -1;
-            }
-        }
-
-        Py_BEGIN_ALLOW_THREADS
+    Py_BEGIN_ALLOW_THREADS
+#ifdef SQLITE_OPEN_URI
 #if defined(SPATIALITE_HAS_INIT_EX)
-        self->slconn = spatialite_alloc_connection();
+    self->slconn = spatialite_alloc_connection();
 #else
-        spatialite_init( 0 );
+    spatialite_init( 0 );
 #endif
-        rc = sqlite3_open(PyString_AsString(database_utf8), &self->db);
+    rc = sqlite3_open_v2(database, &self->db,
+                         SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE |
+                         (uri ? SQLITE_OPEN_URI : 0), NULL);
+#else
+    if (uri) {
+        PyErr_SetString(pysqlite_NotSupportedError, "URIs not supported");
+        return -1;
+    }
 #if defined(SPATIALITE_HAS_INIT_EX)
-        spatialite_init_ex( self->db, self->slconn, 0 );
+    self->slconn = spatialite_alloc_connection();
+#else
+    spatialite_init( 0 );
 #endif
-        Py_END_ALLOW_THREADS
+    rc = sqlite3_open(database, &self->db);
+#if defined(SPATIALITE_HAS_INIT_EX)
+    spatialite_init_ex( self->db, self->slconn, 0 );
+#endif
+#endif
+    Py_END_ALLOW_THREADS
 
-        Py_DECREF(database_utf8);
-
-        if (rc != SQLITE_OK) {
-            _pysqlite_seterror(self->db, NULL);
-            return -1;
-        }
-    } else {
-        /* Create a pysqlite connection from a APSW connection */
-        class_attr = PyObject_GetAttrString(database, "__class__");
-        if (class_attr) {
-            class_attr_str = PyObject_Str(class_attr);
-            if (class_attr_str) {
-                if (strcmp(PyString_AsString(class_attr_str), "<type 'apsw.Connection'>") == 0) {
-                    /* In the APSW Connection object, the first entry after
-                     * PyObject_HEAD is the sqlite3* we want to get hold of.
-                     * Luckily, this is the same layout as we have in our
-                     * pysqlite_Connection */
-                    self->db = ((pysqlite_Connection*)database)->db;
-
-                    Py_INCREF(database);
-                    self->apsw_connection = database;
-                    is_apsw_connection = 1;
-                }
-            }
-        }
-        Py_XDECREF(class_attr_str);
-        Py_XDECREF(class_attr);
-
-        if (!is_apsw_connection) {
-            PyErr_SetString(PyExc_ValueError, "database parameter must be string or APSW Connection object");
-            return -1;
-        }
+    if (rc != SQLITE_OK) {
+        _pysqlite_seterror(self->db, NULL);
+        return -1;
     }
 
     if (!isolation_level) {
-        isolation_level = PyString_FromString("");
+        isolation_level = PyUnicode_FromString("");
         if (!isolation_level) {
             return -1;
         }
@@ -160,7 +141,10 @@ int pysqlite_connection_init(pysqlite_Connection* self, PyObject* args, PyObject
         Py_INCREF(isolation_level);
     }
     self->isolation_level = NULL;
-    pysqlite_connection_set_isolation_level(self, isolation_level);
+    if (pysqlite_connection_set_isolation_level(self, isolation_level) < 0) {
+        Py_DECREF(isolation_level);
+        return -1;
+    }
     Py_DECREF(isolation_level);
 
     self->statement_cache = (pysqlite_Cache*)PyObject_CallFunction((PyObject*)&pysqlite_CacheType, "Oi", self, cached_statements);
@@ -233,8 +217,8 @@ void pysqlite_flush_statement_cache(pysqlite_Connection* self)
         node = node->next;
     }
 
-    Py_DECREF(self->statement_cache);
-    self->statement_cache = (pysqlite_Cache*)PyObject_CallFunction((PyObject*)&pysqlite_CacheType, "O", self);
+    Py_SETREF(self->statement_cache,
+              (pysqlite_Cache *)PyObject_CallFunction((PyObject *)&pysqlite_CacheType, "O", self));
     Py_DECREF(self);
     self->statement_cache->decref_factory = 0;
 }
@@ -251,11 +235,13 @@ void pysqlite_do_all_statements(pysqlite_Connection* self, int action, int reset
         weakref = PyList_GetItem(self->statements, i);
         statement = PyWeakref_GetObject(weakref);
         if (statement != Py_None) {
+            Py_INCREF(statement);
             if (action == ACTION_RESET) {
                 (void)pysqlite_statement_reset((pysqlite_Statement*)statement);
             } else {
                 (void)pysqlite_statement_finalize((pysqlite_Statement*)statement);
             }
+            Py_DECREF(statement);
         }
     }
 
@@ -272,8 +258,6 @@ void pysqlite_do_all_statements(pysqlite_Connection* self, int action, int reset
 
 void pysqlite_connection_dealloc(pysqlite_Connection* self)
 {
-    PyObject* ret = NULL;
-
     Py_XDECREF(self->statement_cache);
 
     /* Clean up if user has not called .close() explicitly. */
@@ -284,10 +268,6 @@ void pysqlite_connection_dealloc(pysqlite_Connection* self)
         spatialite_cleanup_ex( self->slconn );
 #endif
         Py_END_ALLOW_THREADS
-    } else if (self->apsw_connection) {
-        ret = PyObject_CallMethod(self->apsw_connection, "close", "");
-        Py_XDECREF(ret);
-        Py_XDECREF(self->apsw_connection);
     }
 
     if (self->begin_statement) {
@@ -301,7 +281,7 @@ void pysqlite_connection_dealloc(pysqlite_Connection* self)
     Py_XDECREF(self->statements);
     Py_XDECREF(self->cursors);
 
-    self->ob_type->tp_free((PyObject*)self);
+    Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 /*
@@ -354,9 +334,8 @@ PyObject* pysqlite_connection_cursor(pysqlite_Connection* self, PyObject* args, 
     _pysqlite_drop_unused_cursor_references(self);
 
     if (cursor && self->row_factory != Py_None) {
-        Py_XDECREF(((pysqlite_Cursor*)cursor)->row_factory);
         Py_INCREF(self->row_factory);
-        ((pysqlite_Cursor*)cursor)->row_factory = self->row_factory;
+        Py_SETREF(((pysqlite_Cursor *)cursor)->row_factory, self->row_factory);
     }
 
     return cursor;
@@ -364,7 +343,6 @@ PyObject* pysqlite_connection_cursor(pysqlite_Connection* self, PyObject* args, 
 
 PyObject* pysqlite_connection_close(pysqlite_Connection* self, PyObject* args)
 {
-    PyObject* ret;
     int rc;
 
     if (!pysqlite_check_thread(self)) {
@@ -374,26 +352,18 @@ PyObject* pysqlite_connection_close(pysqlite_Connection* self, PyObject* args)
     pysqlite_do_all_statements(self, ACTION_FINALIZE, 1);
 
     if (self->db) {
-        if (self->apsw_connection) {
-            ret = PyObject_CallMethod(self->apsw_connection, "close", "");
-            Py_XDECREF(ret);
-            Py_XDECREF(self->apsw_connection);
-            self->apsw_connection = NULL;
-            self->db = NULL;
-        } else {
-            Py_BEGIN_ALLOW_THREADS
-            rc = sqlite3_close(self->db);
+        Py_BEGIN_ALLOW_THREADS
+        rc = sqlite3_close(self->db);
 #if defined(SPATIALITE_HAS_INIT_EX)
-            spatialite_cleanup_ex( self->slconn );
+        spatialite_cleanup_ex( self->slconn );
 #endif
-            Py_END_ALLOW_THREADS
+        Py_END_ALLOW_THREADS
 
-            if (rc != SQLITE_OK) {
-                _pysqlite_seterror(self->db, NULL);
-                return NULL;
-            } else {
-                self->db = NULL;
-            }
+        if (rc != SQLITE_OK) {
+            _pysqlite_seterror(self->db, NULL);
+            return NULL;
+        } else {
+            self->db = NULL;
         }
     }
 
@@ -552,23 +522,27 @@ error:
     }
 }
 
-void _pysqlite_set_result(sqlite3_context* context, PyObject* py_val)
+static int
+_pysqlite_set_result(sqlite3_context* context, PyObject* py_val)
 {
-    long longval;
-    const char* buffer;
-    Py_ssize_t buflen;
-    PyObject* stringval;
-
-    if ((!py_val) || PyErr_Occurred()) {
+    if ( !py_val || PyErr_Occurred() || py_val == Py_None ) {
         sqlite3_result_null(context);
-    } else if (py_val == Py_None) {
-        sqlite3_result_null(context);
+    } else if (PyLong_Check(py_val)) {
+        sqlite_int64 value = _pysqlite_long_as_int64(py_val);
+        if (value == -1 && PyErr_Occurred())
+            return -1;
+        sqlite3_result_int64(context, value);
+#if PY_MAJOR_VERSION < 3
     } else if (PyInt_Check(py_val)) {
-        longval = PyInt_AsLong(py_val);
+    	long longval = PyInt_AsLong(py_val);
         sqlite3_result_int64(context, (PY_LONG_LONG)longval);
+#endif
     } else if (PyFloat_Check(py_val)) {
         sqlite3_result_double(context, PyFloat_AsDouble(py_val));
+#if PY_MAJOR_VERSION < 3
     } else if (PyBuffer_Check(py_val)) {
+    	const char* buffer;
+        Py_ssize_t buflen;
         if (PyObject_AsCharBuffer(py_val, &buffer, &buflen) != 0) {
             PyErr_SetString(PyExc_ValueError, "could not convert BLOB to buffer");
         } else {
@@ -576,15 +550,39 @@ void _pysqlite_set_result(sqlite3_context* context, PyObject* py_val)
         }
     } else if (PyString_Check(py_val)) {
         sqlite3_result_text(context, PyString_AsString(py_val), -1, SQLITE_TRANSIENT);
+#endif
     } else if (PyUnicode_Check(py_val)) {
-        stringval = PyUnicode_AsUTF8String(py_val);
+#if PY_MAJOR_VERSION < 3
+        PyObject *stringval = PyUnicode_AsUTF8String(py_val);
         if (stringval) {
             sqlite3_result_text(context, PyString_AsString(stringval), -1, SQLITE_TRANSIENT);
             Py_DECREF(stringval);
         }
+#else
+        const char *str = _PyUnicode_AsString(py_val);
+        if (str == NULL)
+            return -1;
+        sqlite3_result_text(context, str, -1, SQLITE_TRANSIENT);
+#endif
+    } else if (PyObject_CheckBuffer(py_val)) {
+        Py_buffer view;
+        if (PyObject_GetBuffer(py_val, &view, PyBUF_SIMPLE) != 0) {
+            PyErr_SetString(PyExc_ValueError,
+                            "could not convert BLOB to buffer");
+            return -1;
+        }
+        if (view.len > INT_MAX) {
+            PyErr_SetString(PyExc_OverflowError,
+                            "BLOB longer than INT_MAX bytes");
+            PyBuffer_Release(&view);
+            return -1;
+        }
+        sqlite3_result_blob(context, view.buf, (int)view.len, SQLITE_TRANSIENT);
+        PyBuffer_Release(&view);
     } else {
-        /* TODO: raise error */
+        return -1;
     }
+    return 0;
 }
 
 PyObject* _pysqlite_build_py_params(sqlite3_context *context, int argc, sqlite3_value** argv)
@@ -594,9 +592,7 @@ PyObject* _pysqlite_build_py_params(sqlite3_context *context, int argc, sqlite3_
     sqlite3_value* cur_value;
     PyObject* cur_py_value;
     const char* val_str;
-    PY_LONG_LONG val_int;
     Py_ssize_t buflen;
-    void* raw_buffer;
 
     args = PyTuple_New(argc);
     if (!args) {
@@ -607,15 +603,14 @@ PyObject* _pysqlite_build_py_params(sqlite3_context *context, int argc, sqlite3_
         cur_value = argv[i];
         switch (sqlite3_value_type(argv[i])) {
             case SQLITE_INTEGER:
-                val_int = sqlite3_value_int64(cur_value);
-                cur_py_value = PyInt_FromLong((long)val_int);
+                cur_py_value = _pysqlite_long_from_int64(sqlite3_value_int64(cur_value));
                 break;
             case SQLITE_FLOAT:
                 cur_py_value = PyFloat_FromDouble(sqlite3_value_double(cur_value));
                 break;
             case SQLITE_TEXT:
                 val_str = (const char*)sqlite3_value_text(cur_value);
-                cur_py_value = PyUnicode_DecodeUTF8(val_str, strlen(val_str), NULL);
+                cur_py_value = PyUnicode_FromString(val_str);
                 /* TODO: have a way to show errors here */
                 if (!cur_py_value) {
                     PyErr_Clear();
@@ -625,16 +620,8 @@ PyObject* _pysqlite_build_py_params(sqlite3_context *context, int argc, sqlite3_
                 break;
             case SQLITE_BLOB:
                 buflen = sqlite3_value_bytes(cur_value);
-                cur_py_value = PyBuffer_New(buflen);
-                if (!cur_py_value) {
-                    break;
-                }
-                if (PyObject_AsWriteBuffer(cur_py_value, &raw_buffer, &buflen)) {
-                    Py_DECREF(cur_py_value);
-                    cur_py_value = NULL;
-                    break;
-                }
-                memcpy(raw_buffer, sqlite3_value_blob(cur_value), buflen);
+                cur_py_value = PyBytes_FromStringAndSize(
+                    sqlite3_value_blob(cur_value), buflen);
                 break;
             case SQLITE_NULL:
             default:
@@ -659,6 +646,7 @@ void _pysqlite_func_callback(sqlite3_context* context, int argc, sqlite3_value**
     PyObject* args;
     PyObject* py_func;
     PyObject* py_retval = NULL;
+    int ok;
 
 #ifdef WITH_THREAD
     PyGILState_STATE threadstate;
@@ -674,10 +662,12 @@ void _pysqlite_func_callback(sqlite3_context* context, int argc, sqlite3_value**
         Py_DECREF(args);
     }
 
+    ok = 0;
     if (py_retval) {
-        _pysqlite_set_result(context, py_retval);
+        ok = _pysqlite_set_result(context, py_retval) == 0;
         Py_DECREF(py_retval);
-    } else {
+    }
+    if (!ok) {
         if (_enable_callback_tracebacks) {
             PyErr_Print();
         } else {
@@ -757,17 +747,20 @@ error:
 
 void _pysqlite_final_callback(sqlite3_context* context)
 {
-    PyObject* function_result = NULL;
+    PyObject* function_result;
     PyObject** aggregate_instance;
-    PyObject* aggregate_class;
+#if PY_MAJOR_VERSION >= 3
+    _Py_IDENTIFIER(finalize);
+#endif
+    int ok;
+    PyObject *exception, *value, *tb;
+    int restore;
 
 #ifdef WITH_THREAD
     PyGILState_STATE threadstate;
 
     threadstate = PyGILState_Ensure();
 #endif
-
-    aggregate_class = (PyObject*)sqlite3_user_data(context);
 
     aggregate_instance = (PyObject**)sqlite3_aggregate_context(context, sizeof(PyObject*));
     if (!*aggregate_instance) {
@@ -777,25 +770,50 @@ void _pysqlite_final_callback(sqlite3_context* context)
         goto error;
     }
 
+    /* Keep the exception (if any) of the last call to step() */
+    PyErr_Fetch(&exception, &value, &tb);
+    restore = 1;
+
+#if PY_MAJOR_VERSION < 3
     function_result = PyObject_CallMethod(*aggregate_instance, "finalize", "");
-    if (!function_result) {
+#else
+    function_result = _PyObject_CallMethodId(*aggregate_instance, &PyId_finalize, "");
+#endif
+
+    Py_DECREF(*aggregate_instance);
+
+    ok = 0;
+    if (function_result) {
+        ok = _pysqlite_set_result(context, function_result) == 0;
+        Py_DECREF(function_result);
+    }
+    if (!ok) {
         if (_enable_callback_tracebacks) {
             PyErr_Print();
         } else {
             PyErr_Clear();
         }
         _sqlite3_result_error(context, "user-defined aggregate's 'finalize' method raised error", -1);
-    } else {
-        _pysqlite_set_result(context, function_result);
+#if SQLITE_VERSION_NUMBER < 3003003
+        /* with old SQLite versions, _sqlite3_result_error() sets a new Python
+           exception, so don't restore the previous exception */
+        restore = 0;
+#endif
+    }
+
+    if (restore) {
+        /* Restore the exception (if any) of the last call to step(),
+           but clear also the current exception if finalize() failed */
+        PyErr_Restore(exception, value, tb);
     }
 
 error:
-    Py_XDECREF(*aggregate_instance);
-    Py_XDECREF(function_result);
-
 #ifdef WITH_THREAD
     PyGILState_Release(threadstate);
 #endif
+    /* explicit return to avoid a compilation error if WITH_THREAD
+       is not defined */
+    return;
 }
 
 static void _pysqlite_drop_unused_statement_references(pysqlite_Connection* self)
@@ -826,8 +844,7 @@ static void _pysqlite_drop_unused_statement_references(pysqlite_Connection* self
         }
     }
 
-    Py_DECREF(self->statements);
-    self->statements = new_list;
+    Py_SETREF(self->statements, new_list);
 }
 
 static void _pysqlite_drop_unused_cursor_references(pysqlite_Connection* self)
@@ -858,8 +875,7 @@ static void _pysqlite_drop_unused_cursor_references(pysqlite_Connection* self)
         }
     }
 
-    Py_DECREF(self->cursors);
-    self->cursors = new_list;
+    Py_SETREF(self->cursors, new_list);
 }
 
 PyObject* pysqlite_connection_create_function(pysqlite_Connection* self, PyObject* args, PyObject* kwargs)
@@ -937,20 +953,29 @@ static int _authorizer_callback(void* user_arg, int action, const char* arg1, co
 
     gilstate = PyGILState_Ensure();
 #endif
+
     ret = PyObject_CallFunction((PyObject*)user_arg, "issss", action, arg1, arg2, dbname, access_attempt_source);
 
-    if (!ret) {
-        if (_enable_callback_tracebacks) {
+    if (ret == NULL) {
+        if (_enable_callback_tracebacks)
             PyErr_Print();
-        } else {
+        else
             PyErr_Clear();
-        }
 
         rc = SQLITE_DENY;
-    } else {
-        if (PyInt_Check(ret)) {
-            rc = (int)PyInt_AsLong(ret);
-        } else {
+    }
+    else {
+        if (PyLong_Check(ret)) {
+            rc = _PyLong_AsInt(ret);
+            if (rc == -1 && PyErr_Occurred()) {
+                if (_enable_callback_tracebacks)
+                    PyErr_Print();
+                else
+                    PyErr_Clear();
+                rc = SQLITE_DENY;
+            }
+        }
+        else {
             rc = SQLITE_DENY;
         }
         Py_DECREF(ret);
@@ -981,7 +1006,7 @@ static int _progress_handler(void* user_arg)
         }
 
         /* abort query if error occurred */
-        rc = 1; 
+        rc = 1;
     } else {
         rc = (int)PyObject_IsTrue(ret);
         Py_DECREF(ret);
@@ -991,6 +1016,38 @@ static int _progress_handler(void* user_arg)
     PyGILState_Release(gilstate);
 #endif
     return rc;
+}
+
+static void _trace_callback(void* user_arg, const char* statement_string)
+{
+    PyObject *py_statement = NULL;
+    PyObject *ret = NULL;
+
+#ifdef WITH_THREAD
+    PyGILState_STATE gilstate;
+
+    gilstate = PyGILState_Ensure();
+#endif
+    py_statement = PyUnicode_DecodeUTF8(statement_string,
+            strlen(statement_string), "replace");
+    if (py_statement) {
+        ret = PyObject_CallFunctionObjArgs((PyObject*)user_arg, py_statement, NULL);
+        Py_DECREF(py_statement);
+    }
+
+    if (ret) {
+        Py_DECREF(ret);
+    } else {
+        if (_enable_callback_tracebacks) {
+            PyErr_Print();
+        } else {
+            PyErr_Clear();
+        }
+    }
+
+#ifdef WITH_THREAD
+    PyGILState_Release(gilstate);
+#endif
 }
 
 static PyObject* pysqlite_connection_set_authorizer(pysqlite_Connection* self, PyObject* args, PyObject* kwargs)
@@ -1046,6 +1103,34 @@ static PyObject* pysqlite_connection_set_progress_handler(pysqlite_Connection* s
         sqlite3_progress_handler(self->db, n, _progress_handler, progress_handler);
         if (PyDict_SetItem(self->function_pinboard, progress_handler, Py_None) == -1)
             return NULL;
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject* pysqlite_connection_set_trace_callback(pysqlite_Connection* self, PyObject* args, PyObject* kwargs)
+{
+    PyObject* trace_callback;
+
+    static char *kwlist[] = { "trace_callback", NULL };
+
+    if (!pysqlite_check_thread(self) || !pysqlite_check_connection(self)) {
+        return NULL;
+    }
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:set_trace_callback",
+                                      kwlist, &trace_callback)) {
+        return NULL;
+    }
+
+    if (trace_callback == Py_None) {
+        /* None clears the trace callback previously set */
+        sqlite3_trace(self->db, 0, (void*)0);
+    } else {
+        if (PyDict_SetItem(self->function_pinboard, trace_callback, Py_None) == -1)
+            return NULL;
+        sqlite3_trace(self->db, _trace_callback, trace_callback);
     }
 
     Py_INCREF(Py_None);
@@ -1138,7 +1223,7 @@ static int pysqlite_connection_set_isolation_level(pysqlite_Connection* self, Py
 {
     PyObject* res;
     PyObject* begin_statement;
-    char* begin_statement_str;
+    const char *begin_statement_str;
 
     Py_XDECREF(self->isolation_level);
 
@@ -1159,24 +1244,32 @@ static int pysqlite_connection_set_isolation_level(pysqlite_Connection* self, Py
 
         self->inTransaction = 0;
     } else {
+	Py_ssize_t size;
+
         Py_INCREF(isolation_level);
         self->isolation_level = isolation_level;
 
-        begin_statement = PyString_FromString("BEGIN ");
+        begin_statement = PyUnicode_FromString("BEGIN ");
         if (!begin_statement) {
             return -1;
         }
-        PyString_Concat(&begin_statement, isolation_level);
+        PyUnicode_Concat(begin_statement, isolation_level);
         if (!begin_statement) {
             return -1;
         }
 
+#if PY_MAJOR_VERSION < 3
         begin_statement_str = PyString_AsString(begin_statement);
-        if (!begin_statement_str) {
+	if(begin_statement_str)
+	    size = strlen(begin_statement_str);
+#else
+        begin_statement_str = _PyUnicode_AsStringAndSize(begin_statement, &size);
+#endif
+	if(!begin_statement_str) {
             Py_DECREF(begin_statement);
             return -1;
         }
-        self->begin_statement = PyMem_Malloc(strlen(begin_statement_str) + 2);
+        self->begin_statement = PyMem_Malloc(size + 2);
         if (!self->begin_statement) {
             Py_DECREF(begin_statement);
             return -1;
@@ -1200,6 +1293,9 @@ PyObject* pysqlite_connection_call(pysqlite_Connection* self, PyObject* args, Py
         return NULL;
     }
 
+    if (!_PyArg_NoKeywords(MODULE_NAME ".Connection()", kwargs))
+        return NULL;
+
     if (!PyArg_ParseTuple(args, "O", &sql)) {
         return NULL;
     }
@@ -1211,45 +1307,53 @@ PyObject* pysqlite_connection_call(pysqlite_Connection* self, PyObject* args, Py
         return NULL;
     }
 
-    rc = pysqlite_statement_create(statement, self, sql);
+    statement->db = NULL;
+    statement->st = NULL;
+    statement->sql = NULL;
+    statement->in_use = 0;
+    statement->in_weakreflist = NULL;
 
+    rc = pysqlite_statement_create(statement, self, sql);
     if (rc != SQLITE_OK) {
         if (rc == PYSQLITE_TOO_MUCH_SQL) {
             PyErr_SetString(pysqlite_Warning, "You can only execute one statement at a time.");
         } else if (rc == PYSQLITE_SQL_WRONG_TYPE) {
-            PyErr_SetString(pysqlite_Warning, "SQL is of wrong type. Must be string or unicode.");
+            if (PyErr_ExceptionMatches(PyExc_TypeError))
+                PyErr_SetString(pysqlite_Warning, "SQL is of wrong type. Must be string.");
         } else {
             (void)pysqlite_statement_reset(statement);
             _pysqlite_seterror(self->db, NULL);
         }
-
-        Py_CLEAR(statement);
-    } else {
-        weakref = PyWeakref_NewRef((PyObject*)statement, NULL);
-        if (!weakref) {
-            Py_CLEAR(statement);
-            goto error;
-        }
-
-        if (PyList_Append(self->statements, weakref) != 0) {
-            Py_CLEAR(weakref);
-            goto error;
-        }
-
-        Py_DECREF(weakref);
+        goto error;
     }
 
-error:
+    weakref = PyWeakref_NewRef((PyObject*)statement, NULL);
+    if (weakref == NULL)
+        goto error;
+    if (PyList_Append(self->statements, weakref) != 0) {
+        Py_DECREF(weakref);
+        goto error;
+    }
+    Py_DECREF(weakref);
+
     return (PyObject*)statement;
+
+error:
+    Py_DECREF(statement);
+    return NULL;
 }
 
-PyObject* pysqlite_connection_execute(pysqlite_Connection* self, PyObject* args, PyObject* kwargs)
+PyObject* pysqlite_connection_execute(pysqlite_Connection* self, PyObject* args)
 {
     PyObject* cursor = 0;
     PyObject* result = 0;
     PyObject* method = 0;
 
+#if PY_MAJOR_VERSION < 3
     cursor = PyObject_CallMethod((PyObject*)self, "cursor", "");
+#else
+    cursor = _PyObject_CallMethodId((PyObject*)self, &PyId_cursor, "");
+#endif
     if (!cursor) {
         goto error;
     }
@@ -1272,13 +1376,17 @@ error:
     return cursor;
 }
 
-PyObject* pysqlite_connection_executemany(pysqlite_Connection* self, PyObject* args, PyObject* kwargs)
+PyObject* pysqlite_connection_executemany(pysqlite_Connection* self, PyObject* args)
 {
     PyObject* cursor = 0;
     PyObject* result = 0;
     PyObject* method = 0;
 
+#if PY_MAJOR_VERSION < 3
     cursor = PyObject_CallMethod((PyObject*)self, "cursor", "");
+#else
+    cursor = _PyObject_CallMethodId((PyObject*)self, &PyId_cursor, "");
+#endif
     if (!cursor) {
         goto error;
     }
@@ -1301,13 +1409,17 @@ error:
     return cursor;
 }
 
-PyObject* pysqlite_connection_executescript(pysqlite_Connection* self, PyObject* args, PyObject* kwargs)
+PyObject* pysqlite_connection_executescript(pysqlite_Connection* self, PyObject* args)
 {
     PyObject* cursor = 0;
     PyObject* result = 0;
     PyObject* method = 0;
 
+#if PY_MAJOR_VERSION < 3
     cursor = PyObject_CallMethod((PyObject*)self, "cursor", "");
+#else
+    cursor = _PyObject_CallMethodId((PyObject*)self, &PyId_cursor, "");
+#endif
     if (!cursor) {
         goto error;
     }
@@ -1345,6 +1457,7 @@ pysqlite_collation_callback(
     PyGILState_STATE gilstate;
 #endif
     PyObject* retval = NULL;
+    long longval;
     int result = 0;
 #ifdef WITH_THREAD
     gilstate = PyGILState_Ensure();
@@ -1354,8 +1467,8 @@ pysqlite_collation_callback(
         goto finally;
     }
 
-    string1 = PyString_FromStringAndSize((const char*)text1_data, text1_length);
-    string2 = PyString_FromStringAndSize((const char*)text2_data, text2_length);
+    string1 = PyUnicode_FromStringAndSize((const char*)text1_data, text1_length);
+    string2 = PyUnicode_FromStringAndSize((const char*)text2_data, text2_length);
 
     if (!string1 || !string2) {
         goto finally; /* failed to allocate strings */
@@ -1368,9 +1481,16 @@ pysqlite_collation_callback(
         goto finally;
     }
 
-    result = PyInt_AsLong(retval);
-    if (PyErr_Occurred()) {
+    longval = PyLong_AsLongAndOverflow(retval, &result);
+    if (longval == -1 && PyErr_Occurred()) {
+        PyErr_Clear();
         result = 0;
+    }
+    else if (!result) {
+        if (longval > 0)
+            result = 1;
+        else if (longval < 0)
+            result = -1;
     }
 
 finally:
@@ -1417,7 +1537,7 @@ pysqlite_connection_iterdump(pysqlite_Connection* self, PyObject* args)
         goto finally;
     }
 
-    module = PyImport_ImportModule("pyspatialite.dump");
+    module = PyImport_ImportModule(MODULE_NAME ".dump");
     if (!module) {
         goto finally;
     }
@@ -1454,22 +1574,35 @@ pysqlite_connection_create_collation(pysqlite_Connection* self, PyObject* args)
     PyObject* uppercase_name = 0;
     PyObject* name;
     PyObject* retval;
+    Py_ssize_t i, len;
+#if PY_MAJOR_VERSION < 3
     char* chk;
+#else
+    _Py_IDENTIFIER(upper);
+#endif
+    char *uppercase_name_str;
     int rc;
+    unsigned int kind;
+    void *data;
 
     if (!pysqlite_check_thread(self) || !pysqlite_check_connection(self)) {
         goto finally;
     }
 
-    if (!PyArg_ParseTuple(args, "O!O:create_collation(name, callback)", &PyString_Type, &name, &callable)) {
+    if (!PyArg_ParseTuple(args, "O!O:create_collation(name, callback)", &PyUnicode_Type, &name, &callable)) {
         goto finally;
     }
 
+#if PY_MAJOR_VERSION < 3
     uppercase_name = PyObject_CallMethod(name, "upper", "");
+#else
+    uppercase_name = _PyObject_CallMethodId(name, &PyId_upper, "");
+#endif
     if (!uppercase_name) {
         goto finally;
     }
 
+#if PY_MAJOR_VERSION < 3
     chk = PyString_AsString(uppercase_name);
     while (*chk) {
         if ((*chk >= '0' && *chk <= '9')
@@ -1482,6 +1615,31 @@ pysqlite_connection_create_collation(pysqlite_Connection* self, PyObject* args)
             goto finally;
         }
     }
+
+    uppercase_name_str = PyString_AsString(uppercase_name);
+#else
+    if (PyUnicode_READY(uppercase_name))
+        goto finally;
+    len = PyUnicode_GET_LENGTH(uppercase_name);
+    kind = PyUnicode_KIND(uppercase_name);
+    data = PyUnicode_DATA(uppercase_name);
+    for (i=0; i<len; i++) {
+        Py_UCS4 ch = PyUnicode_READ(kind, data, i);
+        if ((ch >= '0' && ch <= '9')
+         || (ch >= 'A' && ch <= 'Z')
+         || (ch == '_'))
+        {
+            continue;
+        } else {
+            PyErr_SetString(pysqlite_ProgrammingError, "invalid character in collation name");
+            goto finally;
+        }
+    }
+
+    uppercase_name_str = _PyUnicode_AsString(uppercase_name);
+#endif
+    if (!uppercase_name_str)
+        goto finally;
 
     if (callable != Py_None && !PyCallable_Check(callable)) {
         PyErr_SetString(PyExc_TypeError, "parameter must be callable");
@@ -1497,7 +1655,7 @@ pysqlite_connection_create_collation(pysqlite_Connection* self, PyObject* args)
     }
 
     rc = sqlite3_create_collation(self->db,
-                                  PyString_AsString(uppercase_name),
+                                  uppercase_name_str,
                                   SQLITE_UTF8,
                                   (callable != Py_None) ? callable : NULL,
                                   (callable != Py_None) ? pysqlite_collation_callback : NULL);
@@ -1554,8 +1712,7 @@ pysqlite_connection_exit(pysqlite_Connection* self, PyObject* args)
     }
     Py_DECREF(result);
 
-    Py_INCREF(Py_False);
-    return Py_False;
+    Py_RETURN_FALSE;
 }
 
 static char connection_doc[] =
@@ -1590,6 +1747,8 @@ static PyMethodDef connection_methods[] = {
     #endif
     {"set_progress_handler", (PyCFunction)pysqlite_connection_set_progress_handler, METH_VARARGS|METH_KEYWORDS,
         PyDoc_STR("Sets progress handler callback. Non-standard.")},
+    {"set_trace_callback", (PyCFunction)pysqlite_connection_set_trace_callback, METH_VARARGS|METH_KEYWORDS,
+        PyDoc_STR("Sets a trace callback called for each SQL statement (passed as unicode). Non-standard.")},
     {"execute", (PyCFunction)pysqlite_connection_execute, METH_VARARGS,
         PyDoc_STR("Executes a SQL statement. Non-standard.")},
     {"executemany", (PyCFunction)pysqlite_connection_executemany, METH_VARARGS,
@@ -1611,18 +1770,19 @@ static PyMethodDef connection_methods[] = {
 
 static struct PyMemberDef connection_members[] =
 {
-    {"Warning", T_OBJECT, offsetof(pysqlite_Connection, Warning), RO},
-    {"Error", T_OBJECT, offsetof(pysqlite_Connection, Error), RO},
-    {"InterfaceError", T_OBJECT, offsetof(pysqlite_Connection, InterfaceError), RO},
-    {"DatabaseError", T_OBJECT, offsetof(pysqlite_Connection, DatabaseError), RO},
-    {"DataError", T_OBJECT, offsetof(pysqlite_Connection, DataError), RO},
-    {"OperationalError", T_OBJECT, offsetof(pysqlite_Connection, OperationalError), RO},
-    {"IntegrityError", T_OBJECT, offsetof(pysqlite_Connection, IntegrityError), RO},
-    {"InternalError", T_OBJECT, offsetof(pysqlite_Connection, InternalError), RO},
-    {"ProgrammingError", T_OBJECT, offsetof(pysqlite_Connection, ProgrammingError), RO},
-    {"NotSupportedError", T_OBJECT, offsetof(pysqlite_Connection, NotSupportedError), RO},
+    {"Warning", T_OBJECT, offsetof(pysqlite_Connection, Warning), READONLY},
+    {"Error", T_OBJECT, offsetof(pysqlite_Connection, Error), READONLY},
+    {"InterfaceError", T_OBJECT, offsetof(pysqlite_Connection, InterfaceError), READONLY},
+    {"DatabaseError", T_OBJECT, offsetof(pysqlite_Connection, DatabaseError), READONLY},
+    {"DataError", T_OBJECT, offsetof(pysqlite_Connection, DataError), READONLY},
+    {"OperationalError", T_OBJECT, offsetof(pysqlite_Connection, OperationalError), READONLY},
+    {"IntegrityError", T_OBJECT, offsetof(pysqlite_Connection, IntegrityError), READONLY},
+    {"InternalError", T_OBJECT, offsetof(pysqlite_Connection, InternalError), READONLY},
+    {"ProgrammingError", T_OBJECT, offsetof(pysqlite_Connection, ProgrammingError), READONLY},
+    {"NotSupportedError", T_OBJECT, offsetof(pysqlite_Connection, NotSupportedError), READONLY},
     {"row_factory", T_OBJECT, offsetof(pysqlite_Connection, row_factory)},
     {"text_factory", T_OBJECT, offsetof(pysqlite_Connection, text_factory)},
+    {"in_transaction", T_BOOL, offsetof(pysqlite_Connection, inTransaction), READONLY},
     {NULL}
 };
 
@@ -1635,7 +1795,7 @@ PyTypeObject pysqlite_ConnectionType = {
         0,                                              /* tp_print */
         0,                                              /* tp_getattr */
         0,                                              /* tp_setattr */
-        0,                                              /* tp_compare */
+        0,                                              /* tp_reserved */
         0,                                              /* tp_repr */
         0,                                              /* tp_as_number */
         0,                                              /* tp_as_sequence */

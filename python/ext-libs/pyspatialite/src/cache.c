@@ -21,7 +21,6 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-#include "sqlitecompat.h"
 #include "cache.h"
 #include <limits.h>
 
@@ -217,8 +216,6 @@ PyObject* pysqlite_cache_display(pysqlite_Cache* self, PyObject* args)
     pysqlite_Node* ptr;
     PyObject* prevkey;
     PyObject* nextkey;
-    PyObject* fmt_args;
-    PyObject* template;
     PyObject* display_str;
 
     ptr = self->first;
@@ -229,35 +226,20 @@ PyObject* pysqlite_cache_display(pysqlite_Cache* self, PyObject* args)
         } else {
             prevkey = Py_None;
         }
-        Py_INCREF(prevkey);
 
         if (ptr->next) {
             nextkey = ptr->next->key;
         } else {
             nextkey = Py_None;
         }
-        Py_INCREF(nextkey);
 
-        fmt_args = Py_BuildValue("OOO", prevkey, ptr->key, nextkey);
-        if (!fmt_args) {
-            return NULL;
-        }
-        template = PyString_FromString("%s <- %s ->%s\n");
-        if (!template) {
-            Py_DECREF(fmt_args);
-            return NULL;
-        }
-        display_str = PyString_Format(template, fmt_args);
-        Py_DECREF(template);
-        Py_DECREF(fmt_args);
+        display_str = PyUnicode_FromFormat("%S <- %S -> %S\n",
+                                           prevkey, ptr->key, nextkey);
         if (!display_str) {
             return NULL;
         }
         PyObject_Print(display_str, stdout, Py_PRINT_RAW);
         Py_DECREF(display_str);
-
-        Py_DECREF(prevkey);
-        Py_DECREF(nextkey);
 
         ptr = ptr->next;
     }
@@ -283,7 +265,7 @@ PyTypeObject pysqlite_NodeType = {
         0,                                              /* tp_print */
         0,                                              /* tp_getattr */
         0,                                              /* tp_setattr */
-        0,                                              /* tp_compare */
+        0,                                              /* tp_reserved */
         0,                                              /* tp_repr */
         0,                                              /* tp_as_number */
         0,                                              /* tp_as_sequence */
@@ -325,7 +307,7 @@ PyTypeObject pysqlite_CacheType = {
         0,                                              /* tp_print */
         0,                                              /* tp_getattr */
         0,                                              /* tp_setattr */
-        0,                                              /* tp_compare */
+        0,                                              /* tp_reserved */
         0,                                              /* tp_repr */
         0,                                              /* tp_as_number */
         0,                                              /* tp_as_sequence */
