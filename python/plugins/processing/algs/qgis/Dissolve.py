@@ -138,6 +138,13 @@ class Dissolve(GeoAlgorithm):
                 tmpInGeom = QgsGeometry(inFeat.geometry())
                 if tmpInGeom.isGeosEmpty():
                     continue
+                errors = tmpInGeom.validateGeometry()
+                if len(errors) != 0:
+                    for error in errors:
+                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                        self.tr('ValidateGeometry() error: One or '
+                            'more input features have invalid '
+                            'geometry: ') + error.what())
 
                 if attrDict[unicode(tempItem).strip()] == None:
                     # keep attributes of first feature
