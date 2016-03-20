@@ -31,6 +31,7 @@ from PyQt4.QtGui import QIcon
 
 from qgis.core import QgsFeature, QgsGeometry
 
+from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -91,7 +92,10 @@ class Dissolve(GeoAlgorithm):
                     errors = tmpInGeom.validateGeometry()
                     if len(errors) != 0:
                         for error in errors:
-                            print error.what()
+                            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                self.tr('ValidateGeometry() error: One or '
+                                                       'more input features have invalid '
+                                                       'geometry: ') + error.what())
                         continue
                     outFeat.setGeometry(tmpInGeom)
                     first = False
@@ -100,6 +104,14 @@ class Dissolve(GeoAlgorithm):
                     if tmpInGeom.isGeosEmpty():
                         continue
                     tmpOutGeom = QgsGeometry(outFeat.geometry())
+                    errors = tmpInGeom.validateGeometry()
+                    if len(errors) != 0:
+                        for error in errors:
+                            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                self.tr('ValidateGeometry() error: One or '
+                                                       'more input features have invalid '
+                                                       'geometry: ') + error.what())
+                        continue
                     try:
                         tmpOutGeom = QgsGeometry(tmpOutGeom.combine(tmpInGeom))
                         outFeat.setGeometry(tmpOutGeom)
