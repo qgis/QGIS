@@ -21,11 +21,11 @@ Portions of this file contain code from Eric4 APIsManager module.
 
 import os
 
-from PyQt4.Qsci import QsciAPIs
-from PyQt4.QtGui import QDialog, QDialogButtonBox
-from PyQt4.QtCore import QCoreApplication
+from PyQt.Qsci import QsciAPIs
+from PyQt.QtWidgets import QDialog, QDialogButtonBox
+from PyQt.QtCore import QCoreApplication
 
-from ui_console_compile_apis import Ui_APIsDialogPythonConsole
+from .ui_console_compile_apis import Ui_APIsDialogPythonConsole
 
 
 class PrepareAPIDialog(QDialog):
