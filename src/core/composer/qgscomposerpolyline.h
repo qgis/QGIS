@@ -17,7 +17,7 @@
 #ifndef QGSCOMPOSERPOLYLINE_H
 #define QGSCOMPOSERPOLYLINE_H
 
-#include "qgscomposernodesbasedshape.h"
+#include "qgscomposernodesitem.h"
 #include <QBrush>
 #include <QPen>
 
@@ -27,7 +27,7 @@ class QgsLineSymbolV2;
  * Composer item for polylines.
  * @note added in QGIS 2.16
  */
-class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesBasedShape
+class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
 {
     Q_OBJECT
 

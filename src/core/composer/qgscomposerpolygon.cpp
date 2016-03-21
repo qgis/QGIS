@@ -22,14 +22,14 @@
 #include <limits>
 
 QgsComposerPolygon::QgsComposerPolygon( QgsComposition* c )
-    : QgsComposerNodesBasedShape( "ComposerPolygon", c )
+    : QgsComposerNodesItem( "ComposerPolygon", c )
     , mPolygonStyleSymbol( nullptr )
 {
   createDefaultPolygonStyleSymbol();
 }
 
 QgsComposerPolygon::QgsComposerPolygon( QPolygonF polygon, QgsComposition* c )
-    : QgsComposerNodesBasedShape( "ComposerPolygon", polygon, c )
+    : QgsComposerNodesItem( "ComposerPolygon", polygon, c )
     , mPolygonStyleSymbol( nullptr )
 {
   createDefaultPolygonStyleSymbol();

@@ -1,13 +1,13 @@
-class QgsComposerNodesBasedShape: QgsComposerItem
+class QgsComposerNodesItem: QgsComposerItem
 {
 %TypeHeaderCode
-#include <qgscomposernodesbasedshape.h>
+#include <qgscomposernodesitem.h>
 %End
   public:
 
-    QgsComposerNodesBasedShape( QString mTagName, QgsComposition* c );
-    QgsComposerNodesBasedShape( QString mTagName, QPolygonF polygon, QgsComposition* c );
-    ~QgsComposerNodesBasedShape();
+    QgsComposerNodesItem( QString mTagName, QgsComposition* c );
+    QgsComposerNodesItem( QString mTagName, QPolygonF polygon, QgsComposition* c );
+    ~QgsComposerNodesItem();
 
     /** Add a node in current shape.
      * @param pt is the location of the new node

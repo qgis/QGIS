@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgscomposernodesbasedshape.cpp
+                         qgscomposernodesitem.cpp
     begin                : March 2016
     copyright            : (C) 2016 Paul Blottiere, Oslandia
     email                : paul dot blottiere at oslandia dot com
@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscomposernodesbasedshape.h"
+#include "qgscomposernodesitem.h"
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
 #include "qgssymbollayerv2utils.h"
@@ -22,7 +22,7 @@
 #include <limits>
 #include <math.h>
 
-QgsComposerNodesBasedShape::QgsComposerNodesBasedShape( QString tagName,
+QgsComposerNodesItem::QgsComposerNodesItem( QString tagName,
     QgsComposition* c )
     : QgsComposerItem( c )
     , mTagName( tagName )
@@ -31,7 +31,7 @@ QgsComposerNodesBasedShape::QgsComposerNodesBasedShape( QString tagName,
 {
 }
 
-QgsComposerNodesBasedShape::QgsComposerNodesBasedShape( QString tagName,
+QgsComposerNodesItem::QgsComposerNodesItem( QString tagName,
     QPolygonF polygon,
     QgsComposition* c )
     : QgsComposerItem( c ),
@@ -46,17 +46,17 @@ QgsComposerNodesBasedShape::QgsComposerNodesBasedShape( QString tagName,
   mPolygon = polygon.translated( -topLeft );
 }
 
-QgsComposerNodesBasedShape::~QgsComposerNodesBasedShape()
+QgsComposerNodesItem::~QgsComposerNodesItem()
 {
 }
 
-double QgsComposerNodesBasedShape::computeDistance( const QPointF &pt1,
+double QgsComposerNodesItem::computeDistance( const QPointF &pt1,
     const QPointF &pt2 ) const
 {
   return sqrt( pow( pt1.x() - pt2.x(), 2 ) + pow( pt1.y() - pt2.y(), 2 ) );
 }
 
-bool QgsComposerNodesBasedShape::addNode( const QPointF &pt,
+bool QgsComposerNodesItem::addNode( const QPointF &pt,
     const bool checkArea,
     const double radius )
 {
@@ -127,14 +127,14 @@ bool QgsComposerNodesBasedShape::addNode( const QPointF &pt,
   return rc;
 }
 
-QPointF QgsComposerNodesBasedShape::convertToItemCoordinate( QPointF node )
+QPointF QgsComposerNodesItem::convertToItemCoordinate( QPointF node )
 {
   QTransform transform = QTransform().rotate( -mItemRotation );
   node -= scenePos();
   return transform.map( node );
 }
 
-void QgsComposerNodesBasedShape::drawNodes( QPainter *painter ) const
+void QgsComposerNodesItem::drawNodes( QPainter *painter ) const
 {
   double rectSize = 3.0 / horizontalViewScaleFactor();
 
@@ -169,7 +169,7 @@ void QgsComposerNodesBasedShape::drawNodes( QPainter *painter ) const
     drawSelectedNode( painter );
 }
 
-void QgsComposerNodesBasedShape::drawSelectedNode( QPainter *painter ) const
+void QgsComposerNodesItem::drawSelectedNode( QPainter *painter ) const
 {
   double rectSize = 3.0 / horizontalViewScaleFactor();
 
@@ -199,7 +199,7 @@ void QgsComposerNodesBasedShape::drawSelectedNode( QPainter *painter ) const
   symbol.data()->stopRender( context );
 }
 
-void QgsComposerNodesBasedShape::paint( QPainter* painter,
+void QgsComposerNodesItem::paint( QPainter* painter,
                                         const QStyleOptionGraphicsItem* itemStyle,
                                         QWidget* pWidget )
 {
@@ -223,7 +223,7 @@ void QgsComposerNodesBasedShape::paint( QPainter* painter,
   painter->restore();
 }
 
-int QgsComposerNodesBasedShape::nodeAtPosition( const QPointF &node,
+int QgsComposerNodesItem::nodeAtPosition( const QPointF &node,
     const bool searchInRadius,
     const double radius )
 {
@@ -247,7 +247,7 @@ int QgsComposerNodesBasedShape::nodeAtPosition( const QPointF &node,
   return idx;
 }
 
-bool QgsComposerNodesBasedShape::removeNode( const int index )
+bool QgsComposerNodesItem::removeNode( const int index )
 {
   bool rc( false );
 
@@ -267,7 +267,7 @@ bool QgsComposerNodesBasedShape::removeNode( const int index )
   return rc;
 }
 
-bool QgsComposerNodesBasedShape::moveNode( const int index, const QPointF &pt )
+bool QgsComposerNodesItem::moveNode( const int index, const QPointF &pt )
 {
   bool rc( false );
 
@@ -283,7 +283,7 @@ bool QgsComposerNodesBasedShape::moveNode( const int index, const QPointF &pt )
   return rc;
 }
 
-bool QgsComposerNodesBasedShape::readXML( const QDomElement& itemElem,
+bool QgsComposerNodesItem::readXML( const QDomElement& itemElem,
     const QDomDocument& doc )
 {
   // restore general composer item properties
@@ -319,7 +319,7 @@ bool QgsComposerNodesBasedShape::readXML( const QDomElement& itemElem,
   return true;
 }
 
-void QgsComposerNodesBasedShape::rescaleToFitBoundingBox()
+void QgsComposerNodesItem::rescaleToFitBoundingBox()
 {
   // get the bounding rect for the polygon currently displayed
   const QRectF boundingRect = mPolygon.boundingRect();
@@ -334,7 +334,7 @@ void QgsComposerNodesBasedShape::rescaleToFitBoundingBox()
   mPolygon = trans.map( mPolygon );
 }
 
-bool QgsComposerNodesBasedShape::setSelectedNode( const int index )
+bool QgsComposerNodesItem::setSelectedNode( const int index )
 {
   bool rc = false;
 
@@ -347,7 +347,7 @@ bool QgsComposerNodesBasedShape::setSelectedNode( const int index )
   return rc;
 }
 
-void QgsComposerNodesBasedShape::updateSceneRect()
+void QgsComposerNodesItem::updateSceneRect()
 {
   // set the new scene rectangle
   const QRectF br = mPolygon.boundingRect();
@@ -371,7 +371,7 @@ void QgsComposerNodesBasedShape::updateSceneRect()
   emit itemChanged();
 }
 
-bool QgsComposerNodesBasedShape::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerNodesItem::writeXML( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement composerPolygonElem = doc.createElement( mTagName );
 

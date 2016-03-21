@@ -37,7 +37,7 @@ class QgsComposerPicture;
 class QgsComposerRuler;
 class QgsComposerScaleBar;
 class QgsComposerShape;
-class QgsComposerNodesBasedShape;
+class QgsComposerNodesItem;
 class QgsComposerAttributeTableV2;
 
 /** \ingroup MapComposer
@@ -219,12 +219,12 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void addPolygonNode( const QPointF & scenePoint );
     void movePolygonNode( const QPointF & scenePoint );
     void displayNodes( const bool display = true );
-    void setSelectedNode( QgsComposerNodesBasedShape *shape, const int index );
+    void setSelectedNode( QgsComposerNodesItem *shape, const int index );
     void unselectNode();
 
     float mMoveContentSearchRadius;
-    QgsComposerNodesBasedShape* mNodesBasedShapeItem;
-    int mNodesBasedShapeItemIndex;
+    QgsComposerNodesItem* mNodesItem;
+    int mNodesItemIndex;
     QScopedPointer<QGraphicsPolygonItem> mPolygonItem;
     QScopedPointer<QGraphicsPathItem> mPolylineItem;
 

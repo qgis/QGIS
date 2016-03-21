@@ -17,7 +17,7 @@
 #ifndef QGSCOMPOSERPOLYGON_H
 #define QGSCOMPOSERPOLYGON_H
 
-#include "qgscomposernodesbasedshape.h"
+#include "qgscomposernodesitem.h"
 #include <QBrush>
 #include <QPen>
 
@@ -28,7 +28,7 @@ class QgsFillSymbolV2;
  * @note added in QGIS 2.16
  */
 
-class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesBasedShape
+class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
 {
     Q_OBJECT
 

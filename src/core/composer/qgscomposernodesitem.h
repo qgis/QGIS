@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgscomposernodesbasedshape.h
+                         qgscomposernodesitem.h
     begin                : March 2016
     copyright            : (C) 2016 Paul Blottiere, Oslandia
     email                : paul dot blottiere at oslandia dot com
@@ -14,8 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCOMPOSERNODESBASEDSHAPE_H
-#define QGSCOMPOSERNODESBASEDSHAPE_H
+#ifndef QGSCOMPOSERNODESITEM_H
+#define QGSCOMPOSERNODESITEM_H
 
 #include "qgscomposeritem.h"
 #include <QBrush>
@@ -25,7 +25,7 @@
  * shapes such as polygon or polylines.
  * @node added in QGIS 2.16
  */
-class CORE_EXPORT QgsComposerNodesBasedShape: public QgsComposerItem
+class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
 {
     Q_OBJECT
 
@@ -35,17 +35,17 @@ class CORE_EXPORT QgsComposerNodesBasedShape: public QgsComposerItem
      * @param mTagName tag used in XML file
      * @param c parent composition
      */
-    QgsComposerNodesBasedShape( QString mTagName, QgsComposition* c );
+    QgsComposerNodesItem( QString mTagName, QgsComposition* c );
 
     /** Constructor
      * @param mTagName tag used in XML file
      * @param polygon nodes of the shape
      * @param c parent composition
      */
-    QgsComposerNodesBasedShape( QString mTagName, QPolygonF polygon, QgsComposition* c );
+    QgsComposerNodesItem( QString mTagName, QPolygonF polygon, QgsComposition* c );
 
     /** Destructor */
-    ~QgsComposerNodesBasedShape();
+    ~QgsComposerNodesItem();
 
     /** Add a node in current shape.
      * @param pt is the location of the new node
@@ -154,4 +154,4 @@ class CORE_EXPORT QgsComposerNodesBasedShape: public QgsComposerItem
     void drawSelectedNode( QPainter *painter ) const;
 };
 
-#endif // QGSCOMPOSERNODESBASEDSHAPE_H
+#endif // QGSCOMPOSERNODESITEM_H

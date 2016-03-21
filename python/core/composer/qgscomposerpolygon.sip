@@ -1,4 +1,4 @@
-class QgsComposerPolygon: QgsComposerNodesBasedShape
+class QgsComposerPolygon: QgsComposerNodesItem
 {
 %TypeHeaderCode
 #include <qgscomposerpolygon.h>
