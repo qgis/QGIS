@@ -25,7 +25,7 @@ __copyright__ = '(C) 2016, Matthias Kuhn'
 
 __revision__ = ':%H$'
 
-from . import AlgorithmsTestBase
+import AlgorithmsTestBase
 
 import nose2
 import shutil

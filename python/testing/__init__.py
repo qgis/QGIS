@@ -30,7 +30,7 @@ import sys
 import difflib
 import functools
 
-from PyQt4.QtCore import QVariant
+from PyQt.QtCore import QVariant
 from qgis.core import QgsApplication, QgsFeatureRequest, QgsVectorLayer
 from nose2.compat import unittest
 

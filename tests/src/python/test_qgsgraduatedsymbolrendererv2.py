@@ -12,11 +12,9 @@ __copyright__ = 'Copyright 2014, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis # switch sip api
+import qgis  # NOQA
 
-from qgis.testing import (unittest,
-                          start_app,
-                          )
+from qgis.testing import unittest, start_app
 from qgis.core import (QgsGraduatedSymbolRendererV2,
                        QgsRendererRangeV2,
                        QgsRendererRangeV2LabelFormat,
@@ -30,9 +28,9 @@ from qgis.core import (QgsGraduatedSymbolRendererV2,
                        QgsSymbolLayerV2Utils,
                        QgsRenderContext
                        )
-from PyQt4.QtCore import Qt
-from PyQt4.QtXml import QDomDocument
-from PyQt4.QtGui import QColor
+from PyQt.QtCore import Qt
+from PyQt.QtXml import QDomDocument
+from PyQt.QtGui import QColor
 
 start_app()
 
