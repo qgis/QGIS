@@ -27,9 +27,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt.QtCore import Qt, QPointF, QRectF
-from PyQt.QtGui import QIcon, QFont, QFontMetricsF, QPen, QBrush, QColor, QPolygonF
-from PyQt.QtWidgets import QGraphicsItem, QMessageBox, QMenu
+from PyQt4.QtCore import Qt, QPointF, QRectF
+from PyQt4.QtGui import QIcon, QGraphicsItem, QFont, QFontMetricsF, QMessageBox, QMenu, QPen, QBrush, QColor, QPolygonF
 from processing.modeler.ModelerAlgorithm import ModelerParameter, Algorithm, ModelerOutput
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog

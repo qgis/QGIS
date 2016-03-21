@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import random
 
-from PyQt.QtGui import QIcon
+from PyQt4.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -89,7 +89,7 @@ class RandomSelection(GeoAlgorithm):
                             "different value and try again."))
             value = int(round(value / 100.0, 4) * featureCount)
 
-        selran = random.sample(xrange(featureCount), value)
+        selran = random.sample(xrange(0, featureCount), value)
 
         layer.setSelectedFeatures(selran)
         self.setOutputValue(self.OUTPUT, filename)

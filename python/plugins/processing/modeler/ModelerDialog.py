@@ -30,10 +30,9 @@ import codecs
 import sys
 import os
 
-from PyQt import uic
-from PyQt.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings, QByteArray
-from PyQt.QtWidgets import QGraphicsView, QTreeWidget, QMessageBox, QFileDialog, QTreeWidgetItem
-from PyQt.QtGui import QIcon, QImage, QPainter
+from PyQt4 import uic
+from PyQt4.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings, QByteArray
+from PyQt4.QtGui import QGraphicsView, QTreeWidget, QIcon, QMessageBox, QFileDialog, QImage, QPainter, QTreeWidgetItem
 from qgis.core import QgsApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog

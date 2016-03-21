@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis  # NOQA
+import qgis # switch sip api
 
 import os
 
@@ -33,10 +33,23 @@ from qgis.gui import (
     QgsVectorLayerTools
 )
 
-from PyQt.QtCore import QTimer
-from PyQt.QtWidgets import QToolButton, QTableView
-from PyQt.QtGui import QApplication
-from qgis.testing import start_app, unittest
+from PyQt.QtCore import (
+    QTimer
+)
+
+from PyQt.QtWidgets import (
+    QWidget,
+    QToolButton,
+    QTableView
+)
+
+from PyQt.QtGui import (
+    QApplication
+)
+
+from qgis.testing import (start_app,
+                          unittest
+                          )
 
 start_app()
 
@@ -122,7 +135,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         """
         Simple check if several related items are shown
         """
-        wrapper = self.createWrapper(self.vl_b)  # NOQA
+        wrapper = self.createWrapper(self.vl_b)
 
         self.assertEquals(self.table_view.model().rowCount(), 4)
 
@@ -151,7 +164,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         """
         Check if an existing feature can be linked
         """
-        wrapper = self.createWrapper(self.vl_a, '"name"=\'Douglas Adams\'')  # NOQA
+        wrapper = self.createWrapper(self.vl_a, '"name"=\'Douglas Adams\'')
 
         f = QgsFeature(self.vl_b.fields())
         f.setAttributes([self.vl_b.dataProvider().defaultValue(0), 'The Hitchhiker\'s Guide to the Galaxy'])
@@ -166,7 +179,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
 
         timer = QTimer()
         timer.setSingleShot(True)
-        timer.setInterval(0)  # will run in the event loop as soon as it's processed when the dialog is opened
+        timer.setInterval(0) # will run in the event loop as soon as it's processed when the dialog is opened
         timer.timeout.connect(choose_linked_feature)
         timer.start()
 
@@ -184,7 +197,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         Check if a linked feature can be unlinked
         """
         wrapper = self.createWrapper(self.vl_b)
-        wdg = wrapper.widget()  # NOQA
+        wdg = wrapper.widget()
 
         # All authors are listed
         self.assertEquals(self.table_view.model().rowCount(), 4)
@@ -247,6 +260,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
             relation = self.rel_a
             nmrel = self.rel_b
 
+        parent = QWidget()
         self.wrapper = QgsRelationWidgetWrapper(layer, relation)
         self.wrapper.setConfig({'nm-rel': nmrel.id()})
         context = QgsAttributeEditorContext()

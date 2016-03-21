@@ -23,12 +23,13 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt.QtWidgets import QWidget
+from PyQt4.QtCore import SIGNAL
+from PyQt4.QtGui import QWidget
 from qgis.core import QGis
 
-from .ui_widgetClipper import Ui_GdalToolsWidget as Ui_Widget
-from .widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
-from . import GdalTools_utils as Utils
+from ui_widgetClipper import Ui_GdalToolsWidget as Ui_Widget
+from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
+import GdalTools_utils as Utils
 
 
 class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
@@ -50,25 +51,25 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         self.yRes.setValue(12.5)
 
         self.setParamsStatus([
-            (self.inSelector, "filenameChanged"),
-            (self.outSelector, "filenameChanged"),
-            (self.noDataSpin, "valueChanged", self.noDataCheck, 1700),
-            (self.maskSelector, "filenameChanged", self.maskModeRadio, 1600),
-            (self.alphaBandCheck, "stateChanged"),
-            (self.cropToCutlineCheck, "stateChanged"),
-            ([self.xRes, self.yRes], "valueChanged", self.setResolutionRadio),
-            (self.extentSelector, ["selectionStarted", "newExtentDefined"], self.extentModeRadio),
-            (self.modeStackedWidget, "currentChanged")
+            (self.inSelector, SIGNAL("filenameChanged()")),
+            (self.outSelector, SIGNAL("filenameChanged()")),
+            (self.noDataSpin, SIGNAL("valueChanged(int)"), self.noDataCheck, 1700),
+            (self.maskSelector, SIGNAL("filenameChanged()"), self.maskModeRadio, 1600),
+            (self.alphaBandCheck, SIGNAL("stateChanged(int)")),
+            (self.cropToCutlineCheck, SIGNAL("stateChanged(int)")),
+            ([self.xRes, self.yRes], SIGNAL("valueChanged(double)"), self.setResolutionRadio),
+            (self.extentSelector, [SIGNAL("selectionStarted()"), SIGNAL("newExtentDefined()")], self.extentModeRadio),
+            (self.modeStackedWidget, SIGNAL("currentIndexChanged(int)"))
         ])
 
-        self.inSelector.selectClicked.connect(self.fillInputFileEdit)
-        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
-        self.maskSelector.selectClicked.connect(self.fillMaskFileEdit)
-        self.extentSelector.newExtentDefined.connect(self.extentChanged)
-        self.extentSelector.selectionStarted.connect(self.checkRun)
+        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
+        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
+        self.connect(self.maskSelector, SIGNAL("selectClicked()"), self.fillMaskFileEdit)
+        self.connect(self.extentSelector, SIGNAL("newExtentDefined()"), self.extentChanged)
+        self.connect(self.extentSelector, SIGNAL("selectionStarted()"), self.checkRun)
 
-        self.extentModeRadio.toggled.connect(self.switchClippingMode)
-        self.keepResolutionRadio.toggled.connect(self.switchResolutionMode)
+        self.connect(self.extentModeRadio, SIGNAL("toggled(bool)"), self.switchClippingMode)
+        self.connect(self.keepResolutionRadio, SIGNAL("toggled(bool)"), self.switchResolutionMode)
 
     def show_(self):
         self.switchClippingMode()
@@ -109,7 +110,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
     def onLayersChanged(self):
         self.inSelector.setLayers(Utils.LayerRegistry.instance().getRasterLayers())
-        self.maskSelector.setLayers([x for x in Utils.LayerRegistry.instance().getVectorLayers() if x.geometryType() == QGis.Polygon])
+        self.maskSelector.setLayers(filter(lambda x: x.geometryType() == QGis.Polygon, Utils.LayerRegistry.instance().getVectorLayers()))
         self.checkRun()
 
     def fillInputFileEdit(self):

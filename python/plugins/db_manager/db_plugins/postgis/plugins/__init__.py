@@ -31,7 +31,7 @@ def load(dbplugin, mainwindow):
             continue
         try:
             exec (u"from .%s import load" % name)
-        except ImportError:
+        except ImportError as e:
             continue
 
         load(dbplugin, mainwindow)

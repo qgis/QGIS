@@ -219,7 +219,7 @@ class ORTableInfo(TableInfo):
         # primary key defined?
         if (not self.table.isView
                 and self.table.objectType != u"MATERIALIZED VIEW"):
-            pk = [fld for fld in self.table.fields() if fld.primaryKey]
+            pk = filter(lambda fld: fld.primaryKey, self.table.fields())
             if len(pk) <= 0:
                 ret.append(
                     HtmlParagraph(QApplication.translate(

@@ -23,11 +23,12 @@ __copyright__ = '(C) 2011, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt.QtWidgets import QWidget
+from PyQt4.QtCore import SIGNAL
+from PyQt4.QtGui import QWidget
 
-from .ui_widgetTileIndex import Ui_GdalToolsWidget as Ui_Widget
-from .widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
-from . import GdalTools_utils as Utils
+from ui_widgetTileIndex import Ui_GdalToolsWidget as Ui_Widget
+from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
+import GdalTools_utils as Utils
 
 
 class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
@@ -43,15 +44,15 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         self.outSelector.setType(self.outSelector.FILE)
 
         self.setParamsStatus([
-            (self.inSelector, "filenameChanged"),
-            #( self.recurseCheck, "stateChanged" ),
-            (self.outSelector, "filenameChanged"),
-            (self.indexFieldEdit, "textChanged", self.indexFieldCheck),
-            (self.skipDifferentProjCheck, "stateChanged", None, 1500)
+            (self.inSelector, SIGNAL("filenameChanged()")),
+            #( self.recurseCheck, SIGNAL( "stateChanged( int )" ),
+            (self.outSelector, SIGNAL("filenameChanged()")),
+            (self.indexFieldEdit, SIGNAL("textChanged( const QString & )"), self.indexFieldCheck),
+            (self.skipDifferentProjCheck, SIGNAL("stateChanged( int )"), None, 1500)
         ])
 
-        self.inSelector.selectClicked.connect(self.fillInputDirEdit)
-        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
+        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDirEdit)
+        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
 
     def fillInputDirEdit(self):
         inputDir = Utils.FileDialog.getExistingDirectory(self, self.tr("Select the input directory with raster files"))

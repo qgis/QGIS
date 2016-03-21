@@ -31,9 +31,10 @@ import json
 import os.path
 from urllib2 import build_opener, install_opener, ProxyHandler
 
-from PyQt.QtCore import QSettings, Qt
-from PyQt.QtWidgets import QApplication, QDialog, QDialogButtonBox, QMessageBox, QTreeWidgetItem, QWidget
-from PyQt.QtGui import QColor, QCursor
+from PyQt4.QtCore import QSettings, Qt, SIGNAL, SLOT
+from PyQt4.QtGui import (QApplication, QColor, QCursor, QDialog,
+                         QDialogButtonBox, QMessageBox, QTreeWidgetItem,
+                         QWidget)
 
 from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform, QgsGeometry, QgsPoint,
@@ -729,15 +730,25 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         # connect dialog signals to iface slots
         if service_type == 'OGC:WMS/OGC:WMTS':
-            ows_provider.addRasterLayer.connect(self.iface.addRasterLayer)
+            ows_provider.connect(
+                ows_provider,
+                SIGNAL('addRasterLayer(QString, QString, QString)'),
+                self.iface, SLOT('addRasterLayer(QString, QString, QString)'))
             conn_cmb = ows_provider.findChild(QWidget, 'cmbConnections')
             connect = 'on_btnConnect_clicked'
         elif service_type == 'OGC:WFS':
-            ows_provider.addWfsLayer.connect(self.iface.mainWindow().addWfsLayer)
+            ows_provider.connect(
+                ows_provider,
+                SIGNAL('addWfsLayer(QString, QString)'),
+                self.iface.mainWindow(),
+                SLOT('addWfsLayer(QString, QString)'))
             conn_cmb = ows_provider.findChild(QWidget, 'cmbConnections')
             connect = 'connectToServer'
         elif service_type == 'OGC:WCS':
-            ows_provider.addRasterLayer.connect(self.iface.addRasterLayer)
+            ows_provider.connect(
+                ows_provider,
+                SIGNAL('addRasterLayer(QString, QString, QString)'),
+                self.iface, SLOT('addRasterLayer(QString, QString, QString)'))
             conn_cmb = ows_provider.findChild(QWidget, 'mConnectionsComboBox')
             connect = 'on_mConnectButton_clicked'
         ows_provider.setModal(False)

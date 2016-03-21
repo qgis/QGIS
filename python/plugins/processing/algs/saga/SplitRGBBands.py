@@ -26,12 +26,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt.QtGui import QIcon
+from PyQt4.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.outputs import OutputRaster
 from processing.tools.system import getTempFilename
-from . import SagaUtils
+import SagaUtils
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -73,7 +73,7 @@ class SplitRGBBands(GeoAlgorithm):
         g = self.getOutputValue(SplitRGBBands.G)
         b = self.getOutputValue(SplitRGBBands.B)
         commands = []
-        version = SagaUtils.getSagaInstalledVersion(True)  # NOQA
+        version = SagaUtils.getSagaInstalledVersion(True)
         trailing = ""
         lib = ""
         commands.append('%sio_gdal 0 -GRIDS "%s" -FILES "%s"' % (lib, temp, input)

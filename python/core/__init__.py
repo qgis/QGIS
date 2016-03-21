@@ -23,11 +23,16 @@ __copyright__ = '(C) 2014, Nathan Woodrow'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import QCoreApplication, QPyNullVariant, NULL
+try:
+    import sip
+    sip.setapi("QVariant", 2)
+except:
+    pass
 
 import inspect
 import string
 from qgis._core import *
+from PyQt.QtCore import QCoreApplication, QPyNullVariant, NULL
 
 
 def register_function(function, arg_count, group, usesgeometry=False, **kwargs):

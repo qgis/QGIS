@@ -24,7 +24,7 @@ The content of this file is based on
 """
 
 from PyQt.QtCore import QPyNullVariant
-from PyQt.QtSql import QSqlDatabase
+from PyQt4.QtSql import QSqlDatabase
 
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
@@ -101,7 +101,8 @@ class OracleDBConnector(DBConnector):
         if (os.path.isfile(sqlite_cache_file)):
             try:
                 self.cache_connection = sqlite3.connect(sqlite_cache_file)
-            except sqlite3.Error:
+            except sqlite3.Error as e:
+
                 self.cache_connection = False
 
         # Find if there is cache for our connection:
@@ -116,7 +117,7 @@ class OracleDBConnector(DBConnector):
                 if not has_cached:
                     self.cache_connection = False
 
-            except sqlite3.Error:
+            except sqlite3.Error as e:
                 self.cache_connection = False
 
         self._checkSpatial()
@@ -765,7 +766,7 @@ class OracleDBConnector(DBConnector):
 
         try:
             c = self._execute(None, query)
-        except DbError:  # handle error views or other problems
+        except DbError as e:  # handle error views or other problems
             return [QGis.WKBUnknown], [-1]
 
         rows = self._fetchall(c)
@@ -1070,7 +1071,7 @@ class OracleDBConnector(DBConnector):
 
         try:
             c = self._execute(None, sql)
-        except DbError:  # no spatial index on table, try aggregation
+        except DbError as e:  # no spatial index on table, try aggregation
             return None
 
         res = self._fetchone(c)
@@ -1105,7 +1106,7 @@ class OracleDBConnector(DBConnector):
             sql = request.format(where, dimension)
             try:
                 c = self._execute(None, sql)
-            except DbError:  # no statistics for the current table
+            except DbError as e:  # no statistics for the current table
                 return None
 
             res_d = self._fetchone(c)
@@ -1159,7 +1160,7 @@ class OracleDBConnector(DBConnector):
                 None,
                 (u"SELECT CS_NAME FROM MDSYS.CS_SRS WHERE"
                  u" SRID = {}".format(srid)))
-        except DbError:
+        except DbError as e:
             return
         sr = self._fetchone(c)
         c.close()
@@ -1211,6 +1212,8 @@ class OracleDBConnector(DBConnector):
         """Delete table and its reference in sdo_geom_metadata."""
 
         schema, tablename = self.getSchemaTableName(table)
+        schema_part = u"AND owner = {} ".format(
+            self.quoteString(schema)) if schema else ""
 
         if self.isVectorTable(table):
             self.deleteMetadata(table)
@@ -1280,6 +1283,8 @@ class OracleDBConnector(DBConnector):
     def deleteView(self, view):
         """Delete a view."""
         schema, tablename = self.getSchemaTableName(view)
+        schema_part = u"AND owner = {} ".format(
+            self.quoteString(schema)) if schema else ""
 
         if self.isVectorTable(view):
             self.deleteMetadata(view)
@@ -1640,7 +1645,7 @@ class OracleDBConnector(DBConnector):
             if c:
                 c.close()
 
-        except self.error_types():
+        except self.error_types() as e:
             pass
 
         return
@@ -1676,6 +1681,11 @@ class OracleDBConnector(DBConnector):
     # moved into the parent class: DbConnector._get_cursor_columns()
     # def _get_cursor_columns(self, c):
     #     pass
+
+    def getQueryBuilderDictionary(self):
+        from .sql_dictionary import getQueryBuilderDictionary
+
+        return getQueryBuilderDictionary()
 
     def getSqlDictionary(self):
         """Returns the dictionary for SQL dialog."""

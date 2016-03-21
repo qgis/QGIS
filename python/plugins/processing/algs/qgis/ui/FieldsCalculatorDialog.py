@@ -28,10 +28,9 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
-from PyQt import uic
-from PyQt.QtCore import Qt, QSettings
-from PyQt.QtWidgets import QDialog, QFileDialog, QApplication, QMessageBox
-from PyQt.QtGui import QCursor
+from PyQt4 import uic
+from PyQt4.QtCore import Qt, QSettings
+from PyQt4.QtGui import QDialog, QFileDialog, QApplication, QCursor, QMessageBox
 from qgis.core import QgsExpressionContext, QgsExpressionContextUtils
 from qgis.gui import QgsEncodingFileDialog
 

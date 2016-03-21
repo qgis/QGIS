@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from PyQt4.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -39,7 +39,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputDirectory
 
-from .TauDEMUtils import TauDEMUtils
+from TauDEMUtils import TauDEMUtils
 
 
 class DinfDistDownMulti(GeoAlgorithm):

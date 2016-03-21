@@ -147,10 +147,10 @@ def getSqlDictionary(spatial=True):
 def getQueryBuilderDictionary():
     # concat functions
     def ff(l):
-        return [s for s in l if s[0] != '*']
+        return filter(lambda s: s[0] != '*', l)
 
     def add_paren(l):
-        return [s + "(" for s in l]
+        return map(lambda s: s + "(", l)
     foo = sorted(add_paren(ff(list(set.union(set(functions), set(spatialite_functions))))))
     m = sorted(add_paren(ff(math_functions)))
     agg = sorted(add_paren(ff(aggregate_functions)))

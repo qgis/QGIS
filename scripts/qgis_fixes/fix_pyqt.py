@@ -344,18 +344,6 @@ MAPPING = {
             "QSvgGenerator"
         ]),
     ],
-    "PyQt4.QtSql": [
-        ("PyQt.QtSql", [
-            "QSqlDatabase",
-            "QSqlQuery",
-            "QSqlField"
-        ]),
-    ],
-    "PyQt4.uic": [
-        ("PyQt.uic", [
-            "loadUiType",
-        ]),
-    ],
     "PyQt4": [
         ("PyQt", [
             "QtCore",
@@ -463,8 +451,6 @@ class FixPyqt(FixImports):
                 mod_member.replace(Name(new_name, prefix=pref))
             elif new_name == '':
                 self.cannot_convert(node, "This is an invalid module element")
-            else:
-                node.remove()
 
         # Multiple members being imported
         else:

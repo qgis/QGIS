@@ -29,7 +29,7 @@ from shapely.ops import polygonize
 from shapely.ops import unary_union
 from shapely.geometry import MultiLineString
 
-from PyQt.QtCore import QVariant
+from PyQt4.QtCore import QVariant
 from qgis.core import QGis, QgsFields, QgsField, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException

@@ -26,7 +26,7 @@ __copyright__ = '(C) 2015, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt.QtGui import QIcon
+from PyQt4.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -37,7 +37,7 @@ from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputDirectory
 
-from .TauDEMUtils import TauDEMUtils
+from TauDEMUtils import TauDEMUtils
 
 
 class PeukerDouglasMulti(GeoAlgorithm):

@@ -20,15 +20,16 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 """
 import os
 
-from PyQt.QtCore import Qt, QTimer, QSettings, QCoreApplication, QSize, QByteArray, QFileInfo, QUrl, QDir
-from PyQt.QtWidgets import QDockWidget, QToolBar, QToolButton, QWidget, QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication
-from PyQt.QtGui import QDesktopServices
-from PyQt.QtWidgets import QVBoxLayout
+from PyQt4.QtCore import Qt, QTimer, QSettings, QCoreApplication, QSize, QByteArray, QFileInfo, SIGNAL, QUrl, QDir
+from PyQt4.QtGui import QDockWidget, QToolBar, QToolButton, QWidget,\
+    QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication, \
+    QDesktopServices
+from PyQt4.QtGui import QVBoxLayout
 from qgis.utils import iface
-from .console_sci import ShellScintilla
-from .console_output import ShellOutputScintilla
-from .console_editor import EditorTabWidget
-from .console_settings import optionsDialog
+from console_sci import ShellScintilla
+from console_output import ShellOutputScintilla
+from console_editor import EditorTabWidget
+from console_settings import optionsDialog
 from qgis.core import QgsApplication, QgsContextHelp
 from qgis.gui import QgsFilterLineEdit
 
@@ -43,7 +44,7 @@ def show_console():
     if _console is None:
         parent = iface.mainWindow() if iface else None
         _console = PythonConsole(parent)
-        _console.show()  # force show even if it was restored as hidden
+        _console.show() # force show even if it was restored as hidden
         # set focus to the console so the user can start typing
         # defer the set focus event so it works also whether the console not visible yet
         QTimer.singleShot(0, _console.activate)
@@ -58,6 +59,7 @@ def show_console():
         QgsContextHelp.run("PythonConsole")
         settings.setValue('pythonConsole/contextHelpOnFirstLaunch', False)
 
+_old_stdout = sys.stdout
 _console_output = None
 
 # hook for python console so all output will be redirected
@@ -537,7 +539,8 @@ class PythonConsoleWidget(QWidget):
         self.saveFileButton.triggered.connect(self.saveScriptFile)
         self.saveAsFileButton.triggered.connect(self.saveAsScriptFile)
         self.helpButton.triggered.connect(self.openHelp)
-        self.listClassMethod.itemClicked.connect(self.onClickGoToLine)
+        self.connect(self.listClassMethod, SIGNAL('itemClicked(QTreeWidgetItem*, int)'),
+                     self.onClickGoToLine)
         self.lineEditFind.returnPressed.connect(self._findText)
         self.findNextButton.clicked.connect(self._findNext)
         self.findPrevButton.clicked.connect(self._findPrev)

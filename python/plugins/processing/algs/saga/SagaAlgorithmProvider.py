@@ -26,15 +26,15 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt.QtGui import QIcon
+from PyQt4.QtGui import QIcon
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
-from .SagaAlgorithm212 import SagaAlgorithm212
-from .SagaAlgorithm213 import SagaAlgorithm213
-from .SagaAlgorithm214 import SagaAlgorithm214
-from .SplitRGBBands import SplitRGBBands
-from . import SagaUtils
+from SagaAlgorithm212 import SagaAlgorithm212
+from SagaAlgorithm213 import SagaAlgorithm213
+from SagaAlgorithm214 import SagaAlgorithm214
+from SplitRGBBands import SplitRGBBands
+import SagaUtils
 from processing.tools.system import isWindows, isMac
 
 

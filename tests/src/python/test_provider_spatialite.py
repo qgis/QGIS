@@ -12,17 +12,19 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis  # NOQA
+import qgis # switch sip api
 
 import os
 import tempfile
 
 from qgis.core import QgsVectorLayer, QgsPoint, QgsFeature
 
-from qgis.testing import start_app, unittest
+from qgis.testing import (start_app,
+                          unittest
+                          )
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
-from PyQt.QtCore import QSettings
+from PyQt4.QtCore import QSettings
 
 try:
     from pyspatialite import dbapi2 as sqlite3
@@ -174,8 +176,8 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         sum_id1 = sum(f.id() for f in l.getFeatures())
         # the attribute 'id' works
         sum_id2 = sum(f.attributes()[0] for f in l.getFeatures())
-        assert(sum_id1 == 3)   # 1+2
-        assert(sum_id2 == 32)  # 11 + 21
+        assert(sum_id1 == 3) # 1+2
+        assert(sum_id2 == 32) # 11 + 21
 
         # and now with an id declared
         l = QgsVectorLayer("dbname=%s table='(select * from test_q)' (geometry) key='id'" % self.dbname, "test_pg_query1", "spatialite")

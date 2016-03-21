@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from PyQt4.QtGui import QIcon
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
@@ -39,8 +39,8 @@ from processing.script.WrongScriptException import WrongScriptException
 from processing.gui.GetScriptsAndModels import GetRScriptsAction
 from processing.tools.system import isWindows
 
-from .RUtils import RUtils
-from .RAlgorithm import RAlgorithm
+from RUtils import RUtils
+from RAlgorithm import RAlgorithm
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))

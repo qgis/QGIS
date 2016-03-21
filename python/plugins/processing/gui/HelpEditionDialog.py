@@ -30,8 +30,8 @@ __revision__ = '$Format:%H$'
 import os
 import json
 
-from PyQt import uic
-from PyQt.QtWidgets import QDialog, QTreeWidgetItem
+from PyQt4 import uic
+from PyQt4.QtGui import QDialog, QTreeWidgetItem
 
 from processing.core.ProcessingLog import ProcessingLog
 
@@ -62,7 +62,7 @@ class HelpEditionDialog(BASE, WIDGET):
                     try:
                         with open(helpfile) as f:
                             self.descriptions = json.load(f)
-                    except Exception:
+                    except Exception as e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
                                                self.tr('Cannot open help file: %s') % helpfile)
 

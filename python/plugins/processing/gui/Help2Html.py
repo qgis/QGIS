@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import QCoreApplication
+from PyQt4.QtCore import QCoreApplication
 import os
 import re
 import json

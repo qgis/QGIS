@@ -42,12 +42,12 @@ def initDbPluginList():
             continue
 
         try:
-            exec(u"from .%s import plugin as mod" % name, globals())
+            exec (u"from .%s import plugin as mod" % name, globals())
         except ImportError as e:
             DBPLUGIN_ERRORS.append(u"%s: %s" % (name, unicode(e)))
             continue
 
-        pluginclass = mod.classFactory()  # NOQA
+        pluginclass = mod.classFactory()
         SUPPORTED_DBTYPES[pluginclass.typeName()] = pluginclass
 
     return len(SUPPORTED_DBTYPES) > 0

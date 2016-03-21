@@ -24,7 +24,7 @@ The content of this file is based on
 
 import functools
 
-from PyQt.QtCore import Qt, QSettings, QByteArray, QSize
+from PyQt.QtCore import QObject, Qt, QSettings, QByteArray, QSize
 from PyQt.QtWidgets import QMainWindow, QApplication, QMenu, QTabWidget, QGridLayout, QSpacerItem, QSizePolicy, QDockWidget, QStatusBar, QMenuBar, QToolBar, QTabBar
 from PyQt.QtGui import QIcon, QKeySequence
 
@@ -214,8 +214,7 @@ class DBManager(QMainWindow):
             self._registeredDbActions = {}
 
         if callback is not None:
-            def invoke_callback(x):
-                return self.invokeCallback(callback)
+            invoke_callback = lambda x: self.invokeCallback(callback)
 
         if menuName is None or menuName == "":
             self.addAction(action)

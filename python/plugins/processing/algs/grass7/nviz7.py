@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import time
 
-from PyQt.QtGui import QIcon
+from PyQt4.QtGui import QIcon
 from qgis.core import QgsRasterLayer
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -36,7 +36,7 @@ from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterRaster
-from .Grass7Utils import Grass7Utils
+from Grass7Utils import Grass7Utils
 from processing.tools.system import getNumExportedLayers
 from processing.tools import dataobjects
 

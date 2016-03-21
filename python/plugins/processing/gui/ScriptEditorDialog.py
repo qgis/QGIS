@@ -31,10 +31,9 @@ import sys
 import json
 import os
 
-from PyQt import uic
-from PyQt.QtCore import Qt
-from PyQt.QtGui import QIcon, QCursor
-from PyQt.QtWidgets import QMenu, QAction, QMessageBox, QFileDialog, QApplication
+from PyQt4 import uic
+from PyQt4.QtCore import Qt
+from PyQt4.QtGui import QIcon, QMenu, QAction, QCursor, QMessageBox, QFileDialog, QApplication
 
 from qgis.core import QgsApplication
 from qgis.utils import iface

@@ -25,7 +25,7 @@ __copyright__ = '(C) 2016, Matthias Kuhn'
 
 __revision__ = ':%H$'
 
-import qgis  # NOQA switch sip api
+import qgis # switch sip api
 import os
 import yaml
 import nose2
@@ -37,18 +37,25 @@ from osgeo.gdalconst import GA_ReadOnly
 
 import processing
 
-from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsMapLayerRegistry
+
+from qgis.core import (
+    QgsVectorLayer,
+    QgsRasterLayer,
+    QgsMapLayerRegistry
+)
 
 from qgis.testing import _UnexpectedSuccess
 
-from utilities import unitTestDataPath
+from utilities import (
+    unitTestDataPath
+)
 
 
 def processingTestDataPath():
     return os.path.join(os.path.dirname(__file__), 'testdata')
 
 
-class AlgorithmsTest:
+class AlgorithmsTest():
 
     def test_algorithms(self):
         """

@@ -20,13 +20,13 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt.QtCore import pyqtSignal
+from PyQt.QtCore import pyqtSignal, QObject
 from PyQt.QtWidgets import QWidget, QTreeView, QMenu, QLabel
 
-from qgis.core import QgsMapLayerRegistry, QgsMessageLog
+from qgis.core import QgsMapLayerRegistry
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
 
-from .db_model import DBModel, PluginItem
+from .db_model import DBModel, PluginItem, TreeItem
 from .db_plugins.plugin import DBPlugin, Schema, Table
 
 
@@ -169,8 +169,10 @@ class DBTree(QTreeView):
                     "%1 is an invalid layer and cannot be loaded. Please check the <a href=\"#messageLog\">message log</a> for further info.").replace(
                     "%1", layer.publicSource()), self.mainWindow.infoBar)
                 msgLabel.setWordWrap(True)
-                msgLabel.linkActivated.connect(self.mainWindow.iface.mainWindow().findChild(QWidget, "MessageLog").show)
-                msgLabel.linkActivated.connect(self.mainWindow.iface.mainWindow().raise_)
+                self.connect(msgLabel, SIGNAL("linkActivated( QString )"),
+                             self.mainWindow.iface.mainWindow().findChild(QWidget, "MessageLog"), SLOT("show()"))
+                self.connect(msgLabel, SIGNAL("linkActivated( QString )"),
+                             self.mainWindow.iface.mainWindow(), SLOT("raise()"))
                 self.mainWindow.infoBar.pushItem(QgsMessageBarItem(msgLabel, QgsMessageBar.WARNING))
 
     def reconnect(self):

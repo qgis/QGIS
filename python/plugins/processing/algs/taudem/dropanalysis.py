@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from PyQt4.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -40,7 +40,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputFile
 
-from .TauDEMUtils import TauDEMUtils
+from TauDEMUtils import TauDEMUtils
 
 
 class DropAnalysis(GeoAlgorithm):

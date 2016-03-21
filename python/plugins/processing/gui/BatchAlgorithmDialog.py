@@ -25,9 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt.QtWidgets import QApplication, QMessageBox
-from PyQt.QtGui import QCursor
-from PyQt.QtCore import Qt
+from PyQt4.QtGui import QApplication, QCursor, QMessageBox
+from PyQt4.QtCore import Qt
 
 from processing.gui.BatchPanel import BatchPanel
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase

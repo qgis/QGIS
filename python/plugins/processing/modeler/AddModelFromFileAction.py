@@ -27,9 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 import shutil
-from PyQt.QtGui import QIcon
-from PyQt.QtWidgets import QFileDialog, QMessageBox
-from PyQt.QtCore import QSettings, QFileInfo
+from PyQt4.QtGui import QIcon, QFileDialog, QMessageBox
+from PyQt4.QtCore import QSettings, QFileInfo
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.WrongModelException import WrongModelException

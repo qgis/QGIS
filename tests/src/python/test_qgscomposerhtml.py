@@ -12,12 +12,12 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis  # NOQA
+import qgis # switch sip api
 
 import os
 
-from PyQt.QtCore import QUrl, qDebug
-from PyQt.QtXml import QDomDocument
+from PyQt4.QtCore import QUrl, qDebug
+from PyQt4.QtXml import QDomDocument
 from qgis.core import (QgsComposition,
                        QgsComposerHtml,
                        QgsComposerFrame,
@@ -27,8 +27,13 @@ from qgis.core import (QgsComposition,
 
 from qgscompositionchecker import QgsCompositionChecker
 
-from qgis.testing import start_app, unittest
+from qgis.testing import (
+    start_app,
+    unittest
+)
+
 from qgis.testing.mocked import get_iface
+
 from utilities import unitTestDataPath
 
 start_app()

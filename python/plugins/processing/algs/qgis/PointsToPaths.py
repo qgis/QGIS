@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 from datetime import datetime
 
-from PyQt.QtCore import QVariant
+from PyQt4.QtCore import QVariant
 from qgis.core import QGis, QgsFeature, QgsFields, QgsField, QgsGeometry, QgsDistanceArea
 
 from processing.core.GeoAlgorithm import GeoAlgorithm

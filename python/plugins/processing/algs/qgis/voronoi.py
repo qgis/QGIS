@@ -23,6 +23,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+# -*- coding: utf-8 -*-
+
 #############################################################################
 #
 # Voronoi diagram calculator/ Delaunay triangulator
@@ -206,7 +208,9 @@ class Context(object):
             if self.plot:
                 self.clip_line(edge)
             elif(self.doPrint):
-                print "e %d %d %d" % (edge.edgenum, sitenumL, sitenumR)
+                print "e %d" % edge.edgenum,
+                print " %d " % sitenumL,
+                print "%d" % sitenumR
 
 #------------------------------------------------------------------
 
@@ -420,7 +424,7 @@ class Edge(object):
     @staticmethod
     def bisect(s1, s2):
         newedge = Edge()
-        newedge.reg[0] = s1  # store the sites that this edge is bisecting
+        newedge.reg[0] = s1 # store the sites that this edge is bisecting
         newedge.reg[1] = s2
 
         # to begin with, there are no endpoints on the bisector - it goes to infinity
@@ -468,7 +472,7 @@ class Halfedge(object):
         print "right: ", self.right
         print "edge: ", self.edge
         print "pm: ", self.pm
-        print "vertex:"
+        print "vertex: ",
         if self.vertex:
             self.vertex.dump()
         else:

@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 from osgeo import gdal
 from qgis.core import QGis, QgsFields, QgsField, QgsFeature, QgsPoint, QgsGeometry
-from PyQt.QtCore import QVariant
+from PyQt4.QtCore import QVariant
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector

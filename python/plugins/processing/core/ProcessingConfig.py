@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtCore import QPyNullVariant, QCoreApplication, QSettings
-from PyQt.QtGui import QIcon
+from PyQt4.QtCore import QPyNullVariant, QCoreApplication, QSettings
+from PyQt4.QtGui import QIcon
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
 
@@ -257,8 +257,7 @@ class Setting:
                         raise ValueError(self.tr('Specified path does not exist:\n%s') % unicode(v))
                 validator = checkFileOrFolder
             else:
-                def validator(x):
-                    return True
+                validator = lambda x: True
         self.validator = validator
         self.value = default
 
