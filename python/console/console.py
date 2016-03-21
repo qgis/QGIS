@@ -328,36 +328,6 @@ class PythonConsoleWidget(QWidget):
         self.actionClass.setIconVisibleInMenu(True)
         self.actionClass.setToolTip(actionClassBt)
         self.actionClass.setText(actionClassBt)
-        ## Import Processing class
-        loadProcessingBt = QCoreApplication.translate("PythonConsole", "Import Processing Class")
-        self.loadProcessingButton = QAction(self)
-        self.loadProcessingButton.setCheckable(False)
-        self.loadProcessingButton.setEnabled(True)
-        self.loadProcessingButton.setIcon(QgsApplication.getThemeIcon("console/iconProcessingConsole.png"))
-        self.loadProcessingButton.setMenuRole(QAction.PreferencesRole)
-        self.loadProcessingButton.setIconVisibleInMenu(True)
-        self.loadProcessingButton.setToolTip(loadProcessingBt)
-        self.loadProcessingButton.setText(loadProcessingBt)
-        ## Import QtCore class
-        loadQtCoreBt = QCoreApplication.translate("PythonConsole", "Import PyQt.QtCore Class")
-        self.loadQtCoreButton = QAction(self)
-        self.loadQtCoreButton.setCheckable(False)
-        self.loadQtCoreButton.setEnabled(True)
-        self.loadQtCoreButton.setIcon(QgsApplication.getThemeIcon("console/iconQtCoreConsole.png"))
-        self.loadQtCoreButton.setMenuRole(QAction.PreferencesRole)
-        self.loadQtCoreButton.setIconVisibleInMenu(True)
-        self.loadQtCoreButton.setToolTip(loadQtCoreBt)
-        self.loadQtCoreButton.setText(loadQtCoreBt)
-        ## Import QtGui class
-        loadQtGuiBt = QCoreApplication.translate("PythonConsole", "Import PyQt.QtGui Class")
-        self.loadQtGuiButton = QAction(self)
-        self.loadQtGuiButton.setCheckable(False)
-        self.loadQtGuiButton.setEnabled(True)
-        self.loadQtGuiButton.setIcon(QgsApplication.getThemeIcon("console/iconQtGuiConsole.png"))
-        self.loadQtGuiButton.setMenuRole(QAction.PreferencesRole)
-        self.loadQtGuiButton.setIconVisibleInMenu(True)
-        self.loadQtGuiButton.setToolTip(loadQtGuiBt)
-        self.loadQtGuiButton.setText(loadQtGuiBt)
         ## Action for Run script
         runBt = QCoreApplication.translate("PythonConsole", "Run Command")
         self.runButton = QAction(self)
@@ -424,10 +394,24 @@ class PythonConsoleWidget(QWidget):
         self.toolBarEditor.addAction(self.objectListButton)
 
         ## Menu Import Class
+        default_command = {
+            (QCoreApplication.translate("PythonConsole", "Import Processing Class"),
+             QgsApplication.getThemeIcon("console/iconProcessingConsole.png")):
+            ["import processing"],
+            (QCoreApplication.translate("PythonConsole", "Import PyQt.QtCore Class"),
+             QgsApplication.getThemeIcon("console/iconQtCoreConsole.png")):
+            ["from PyQt.QtCore import *"],
+            (QCoreApplication.translate("PythonConsole", "Import PyQt.QtGui Class"),
+             QgsApplication.getThemeIcon("console/iconQtGuiConsole.png")):
+            ["from PyQt.QtGui import *", "from PyQt.QtWidgets import *"]
+        }
+
         self.classMenu = QMenu()
-        self.classMenu.addAction(self.loadProcessingButton)
-        self.classMenu.addAction(self.loadQtCoreButton)
-        self.classMenu.addAction(self.loadQtGuiButton)
+        for (title, icon), commands in default_command.iteritems():
+            action = self.classMenu.addAction(icon, title)
+            action.triggered[()].connect(
+                lambda commands=commands: self.shell.commandConsole(commands))
+
         cM = self.toolBar.widgetForAction(self.actionClass)
         cM.setMenu(self.classMenu)
         cM.setPopupMode(QToolButton.InstantPopup)
@@ -528,9 +512,6 @@ class PythonConsoleWidget(QWidget):
         self.showEditorButton.toggled.connect(self.toggleEditor)
         self.clearButton.triggered.connect(self.shellOut.clearConsole)
         self.optionsButton.triggered.connect(self.openSettings)
-        self.loadProcessingButton.triggered.connect(self.processing)
-        self.loadQtCoreButton.triggered.connect(self.qtCore)
-        self.loadQtGuiButton.triggered.connect(self.qtGui)
         self.runButton.triggered.connect(self.shell.entered)
         self.openFileButton.triggered.connect(self.openScriptFile)
         self.openInEditorButton.triggered.connect(self.openScriptFileExtEditor)
@@ -576,15 +557,6 @@ class PythonConsoleWidget(QWidget):
         else:
             objName = itemName
         tabEditor.goToLine(objName, linenr)
-
-    def processing(self):
-        self.shell.commandConsole('processing')
-
-    def qtCore(self):
-        self.shell.commandConsole('qtCore')
-
-    def qtGui(self):
-        self.shell.commandConsole('qtGui')
 
     def toggleEditor(self, checked):
         self.splitterObj.show() if checked else self.splitterObj.hide()

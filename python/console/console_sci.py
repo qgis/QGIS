@@ -160,24 +160,16 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             elif radioButtonSource == 'fromDocAPI':
                 self.autoCompleteFromAll()
 
-    def commandConsole(self, command):
+    def commandConsole(self, commands):
         if not self.is_cursor_on_last_line():
             self.move_cursor_to_end()
         line, pos = self.getCursorPosition()
         selCmdLenght = len(self.text(line))
         self.setSelection(line, 4, line, selCmdLenght)
         self.removeSelectedText()
-        if command == "processing":
-            # import Processing class
-            self.append('import processing')
-        elif command == "qtCore":
-            # import QtCore class
-            self.append('from PyQt.QtCore import *')
-        elif command == "qtGui":
-            # import QtGui class
-            self.append('from PyQt.QtGui import *')
-            self.append('from PyQt.QtWidgets import *')
-        self.entered()
+        for cmd in commands:
+            self.append(cmd)
+            self.entered()
         self.move_cursor_to_end()
         self.setFocus()
 
