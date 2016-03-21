@@ -36,7 +36,7 @@ class LDatabaseInfo(DatabaseInfo):
         return HtmlTable(tbl)
 
     def generalInfo(self):
-        info = self.db.connector.getInfo()
+        self.db.connector.getInfo()
         tbl = [
             (QApplication.translate("DBManagerPlugin", "SQLite version:"), "3")
         ]

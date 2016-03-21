@@ -39,7 +39,7 @@ class BaseError(Exception):
             msg = e
 
         if not isinstance(msg, unicode):
-            msg = unicode(msg, 'utf-8', 'replace') # convert from utf8 and replace errors (if any)
+            msg = unicode(msg, 'utf-8', 'replace')  # convert from utf8 and replace errors (if any)
 
         self.msg = msg
         Exception.__init__(self, msg)
@@ -198,9 +198,6 @@ class DbItemObject(QObject):
     def refresh(self):
         self.changed.emit()  # refresh the item data reading them from the db
 
-    def emitAboutToChange(self):
-        self.aboutToChange.emit()
-
     def info(self):
         pass
 
@@ -240,7 +237,7 @@ class Database(DbItemObject):
         return self.connector.publicUri()
 
     def delete(self):
-        self.emitAboutToChange()
+        self.aboutToChange.emit()
         ret = self.connection().remove()
         if ret is not False:
             self.deleted.emit()
@@ -300,7 +297,7 @@ class Database(DbItemObject):
         except ImportError:
             pass
         else:
-            load(self, mainWindow)
+            load(self, mainWindow)  # NOQA
 
     def registerDatabaseActions(self, mainWindow):
         action = QAction(QApplication.translate("DBManagerPlugin", "&Re-connect"), self)
@@ -337,7 +334,10 @@ class Database(DbItemObject):
         if self.schemas() is not None:
             action = QAction(QApplication.translate("DBManagerPlugin", "&Move to schema"), self)
             action.setMenu(QMenu(mainWindow))
-            invoke_callback = lambda: mainWindow.invokeCallback(self.prepareMenuMoveTableToSchemaActionSlot)
+
+            def invoke_callback():
+                return mainWindow.invokeCallback(self.prepareMenuMoveTableToSchemaActionSlot)
+
             action.menu().aboutToShow.connect(invoke_callback)
             mainWindow.registerAction(action, QApplication.translate("DBManagerPlugin", "&Table"))
 
@@ -399,7 +399,7 @@ class Database(DbItemObject):
     def schemas(self):
         schemas = self.connector.getSchemas()
         if schemas is not None:
-            schemas = map(lambda x: self.schemasFactory(x, self), schemas)
+            schemas = [self.schemasFactory(x, self) for x in schemas]
         return schemas
 
     def createSchema(self, name):
@@ -470,7 +470,8 @@ class Database(DbItemObject):
 
     def prepareMenuMoveTableToSchemaActionSlot(self, item, menu, mainWindow):
         """ populate menu with schemas """
-        slot = lambda x: lambda: mainWindow.invokeCallback(self.moveTableToSchemaActionSlot, x)
+        def slot(x):
+            return lambda: mainWindow.invokeCallback(self.moveTableToSchemaActionSlot, x)
 
         menu.clear()
         for schema in self.schemas():
@@ -508,12 +509,12 @@ class Database(DbItemObject):
     def tables(self, schema=None, sys_tables=False):
         tables = self.connector.getTables(schema.name if schema else None, sys_tables)
         if tables is not None:
-            tables = map(lambda x: self.tablesFactory(x, self, schema), tables)
+            tables = [self.tablesFactory(x, self, schema) for x in tables]
         return tables
 
     def createTable(self, table, fields, schema=None):
-        field_defs = map(lambda x: x.definition(), fields)
-        pkeys = filter(lambda x: x.primaryKey, fields)
+        field_defs = [x.definition() for x in fields]
+        pkeys = [x for x in fields if x.primaryKey]
         pk_name = pkeys[0].name if len(pkeys) > 0 else None
 
         ret = self.connector.createTable((schema, table), field_defs, pk_name)
@@ -571,14 +572,14 @@ class Schema(DbItemObject):
         return self.database().tables(self)
 
     def delete(self):
-        self.emitAboutToChange()
+        self.aboutToChange.emit()
         ret = self.database().connector.deleteSchema(self.name)
         if ret is not False:
             self.deleted.emit()
         return ret
 
     def rename(self, new_name):
-        self.emitAboutToChange()
+        self.aboutToChange.emit()
         ret = self.database().connector.renameSchema(self.name, new_name)
         if ret is not False:
             self.name = new_name
@@ -626,7 +627,7 @@ class Table(DbItemObject):
         return self.database().connector.quoteId((self.schemaName(), self.name))
 
     def delete(self):
-        self.emitAboutToChange()
+        self.aboutToChange.emit()
         if self.isView:
             ret = self.database().connector.deleteView((self.schemaName(), self.name))
         else:
@@ -636,7 +637,7 @@ class Table(DbItemObject):
         return ret
 
     def rename(self, new_name):
-        self.emitAboutToChange()
+        self.aboutToChange.emit()
         ret = self.database().connector.renameTable((self.schemaName(), self.name), new_name)
         if ret is not False:
             self.name = new_name
@@ -644,14 +645,14 @@ class Table(DbItemObject):
         return ret
 
     def empty(self):
-        self.emitAboutToChange()
+        self.aboutToChange.emit()
         ret = self.database().connector.emptyTable((self.schemaName(), self.name))
         if ret is not False:
             self.refreshRowCount()
         return ret
 
     def moveToSchema(self, schema):
-        self.emitAboutToChange()
+        self.aboutToChange.emit()
         if self.schema() == schema:
             return True
         ret = self.database().connector.moveTableToSchema((self.schemaName(), self.name), schema.name)
@@ -694,7 +695,7 @@ class Table(DbItemObject):
         ret = []
 
         # add the pk
-        pkcols = filter(lambda x: x.primaryKey, self.fields())
+        pkcols = [x for x in self.fields() if x.primaryKey]
         if len(pkcols) == 1:
             ret.append(pkcols[0])
 
@@ -726,7 +727,7 @@ class Table(DbItemObject):
         if self._fields is None:
             fields = self.database().connector.getTableFields((self.schemaName(), self.name))
             if fields is not None:
-                self._fields = map(lambda x: self.tableFieldsFactory(x, self), fields)
+                self._fields = [self.tableFieldsFactory(x, self) for x in fields]
         return self._fields
 
     def refreshFields(self):
@@ -734,14 +735,14 @@ class Table(DbItemObject):
         self.refresh()
 
     def addField(self, fld):
-        self.emitAboutToChange()
+        self.aboutToChange.emit()
         ret = self.database().connector.addTableColumn((self.schemaName(), self.name), fld.definition())
         if ret is not False:
             self.refreshFields()
         return ret
 
     def deleteField(self, fld):
-        self.emitAboutToChange()
+        self.aboutToChange.emit()
         ret = self.database().connector.deleteTableColumn((self.schemaName(), self.name), fld.name)
         if ret is not False:
             self.refreshFields()
@@ -750,7 +751,7 @@ class Table(DbItemObject):
         return ret
 
     def addGeometryColumn(self, geomCol, geomType, srid, dim, createSpatialIndex=False):
-        self.emitAboutToChange()
+        self.aboutToChange.emit()
         ret = self.database().connector.addGeometryColumn((self.schemaName(), self.name), geomCol, geomType, srid, dim)
         if not ret:
             return False
@@ -772,7 +773,7 @@ class Table(DbItemObject):
         if self._constraints is None:
             constraints = self.database().connector.getTableConstraints((self.schemaName(), self.name))
             if constraints is not None:
-                self._constraints = map(lambda x: self.tableConstraintsFactory(x, self), constraints)
+                self._constraints = [self.tableConstraintsFactory(x, self) for x in constraints]
         return self._constraints
 
     def refreshConstraints(self):
@@ -780,7 +781,7 @@ class Table(DbItemObject):
         self.refresh()
 
     def addConstraint(self, constr):
-        self.emitAboutToChange()
+        self.aboutToChange.emit()
         if constr.type == TableConstraint.TypePrimaryKey:
             ret = self.database().connector.addTablePrimaryKey((self.schemaName(), self.name),
                                                                constr.fields()[constr.columns[0]].name)
@@ -794,7 +795,7 @@ class Table(DbItemObject):
         return ret
 
     def deleteConstraint(self, constr):
-        self.emitAboutToChange()
+        self.aboutToChange.emit()
         ret = self.database().connector.deleteTableConstraint((self.schemaName(), self.name), constr.name)
         if ret is not False:
             self.refreshConstraints()
@@ -807,7 +808,7 @@ class Table(DbItemObject):
         if self._indexes is None:
             indexes = self.database().connector.getTableIndexes((self.schemaName(), self.name))
             if indexes is not None:
-                self._indexes = map(lambda x: self.tableIndexesFactory(x, self), indexes)
+                self._indexes = [self.tableIndexesFactory(x, self) for x in indexes]
         return self._indexes
 
     def refreshIndexes(self):
@@ -815,7 +816,7 @@ class Table(DbItemObject):
         self.refresh()
 
     def addIndex(self, idx):
-        self.emitAboutToChange()
+        self.aboutToChange.emit()
         ret = self.database().connector.createTableIndex((self.schemaName(), self.name), idx.name,
                                                          idx.fields()[idx.columns[0]].name)
         if ret is not False:
@@ -823,7 +824,7 @@ class Table(DbItemObject):
         return ret
 
     def deleteIndex(self, idx):
-        self.emitAboutToChange()
+        self.aboutToChange.emit()
         ret = self.database().connector.deleteTableIndex((self.schemaName(), self.name), idx.name)
         if ret is not False:
             self.refreshIndexes()
@@ -836,7 +837,7 @@ class Table(DbItemObject):
         if self._triggers is None:
             triggers = self.database().connector.getTableTriggers((self.schemaName(), self.name))
             if triggers is not None:
-                self._triggers = map(lambda x: self.tableTriggersFactory(x, self), triggers)
+                self._triggers = [self.tableTriggersFactory(x, self) for x in triggers]
         return self._triggers
 
     def refreshTriggers(self):
@@ -850,7 +851,7 @@ class Table(DbItemObject):
         if self._rules is None:
             rules = self.database().connector.getTableRules((self.schemaName(), self.name))
             if rules is not None:
-                self._rules = map(lambda x: self.tableRulesFactory(x, self), rules)
+                self._rules = [self.tableRulesFactory(x, self) for x in rules]
         return self._rules
 
     def refreshRules(self):
@@ -858,7 +859,7 @@ class Table(DbItemObject):
         self.refresh()
 
     def refreshRowCount(self):
-        self.emitAboutToChange()
+        self.aboutToChange.emit()
         prevRowCount = self.rowCount
         try:
             self.rowCount = self.database().connector.getTableRowCount((self.schemaName(), self.name))
@@ -891,7 +892,7 @@ class Table(DbItemObject):
 
             if trigger_action == "enable" or trigger_action == "disable":
                 enable = trigger_action == "enable"
-                self.emitAboutToChange()
+                self.aboutToChange.emit()
                 self.database().connector.enableAllTableTriggers(enable, (self.schemaName(), self.name))
                 self.refreshTriggers()
                 return True
@@ -912,14 +913,14 @@ class Table(DbItemObject):
                 QApplication.setOverrideCursor(Qt.WaitCursor)
 
             if trigger_action == "delete":
-                self.emitAboutToChange()
+                self.aboutToChange.emit()
                 self.database().connector.deleteTableTrigger(trigger_name, (self.schemaName(), self.name))
                 self.refreshTriggers()
                 return True
 
             elif trigger_action == "enable" or trigger_action == "disable":
                 enable = trigger_action == "enable"
-                self.emitAboutToChange()
+                self.aboutToChange.emit()
                 self.database().connector.enableTableTrigger(trigger_name, enable, (self.schemaName(), self.name))
                 self.refreshTriggers()
                 return True
@@ -956,7 +957,7 @@ class VectorTable(Table):
         return False
 
     def createSpatialIndex(self, geom_column=None):
-        self.emitAboutToChange()
+        self.aboutToChange.emit()
         geom_column = geom_column if geom_column is not None else self.geomColumn
         ret = self.database().connector.createSpatialIndex((self.schemaName(), self.name), geom_column)
         if ret is not False:
@@ -964,7 +965,7 @@ class VectorTable(Table):
         return ret
 
     def deleteSpatialIndex(self, geom_column=None):
-        self.emitAboutToChange()
+        self.aboutToChange.emit()
         geom_column = geom_column if geom_column is not None else self.geomColumn
         ret = self.database().connector.deleteSpatialIndex((self.schemaName(), self.name), geom_column)
         if ret is not False:
