@@ -18,6 +18,15 @@ from qgis.testing import unittest
 from utilities import printImportant, DoxygenParser
 from acceptable_missing_doc import ACCEPTABLE_MISSING_DOCS
 
+# TO regenerate the list:
+# uncomment the lines under the `# GEN LIST`
+# $ export PYTHONPATH=build/output/python
+# $ export QGIS_PREFIX_PATH=build/output
+# $ python tests/src/python/test_qgsdoccoverage.py
+# copy the output to the file:
+# tests/src/python/acceptable_missing_doc.py
+# in `ACCEPTABLE_MISSING_DOCS = { <past> }`.
+
 
 class TestQgsDocCoverage(unittest.TestCase):
 
