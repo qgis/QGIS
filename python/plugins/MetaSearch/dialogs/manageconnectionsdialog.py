@@ -29,8 +29,9 @@
 
 import xml.etree.ElementTree as etree
 
-from PyQt.QtCore import QSettings
-from PyQt.QtWidgets import QDialog, QDialogButtonBox, QFileDialog, QListWidgetItem, QMessageBox
+from PyQt4.QtCore import QSettings
+from PyQt4.QtGui import (QDialog, QDialogButtonBox, QFileDialog,
+                         QListWidgetItem, QMessageBox)
 
 from MetaSearch.util import (get_connections_from_file, get_ui_class,
                              prettify_xml)

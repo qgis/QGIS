@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
-from PyQt.QtCore import QVariant
+from PyQt4.QtGui import QIcon
+from PyQt4.QtCore import QVariant
 from qgis.core import QgsFields, QgsVectorLayer
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -62,7 +62,7 @@ class Merge(GeoAlgorithm):
         layers = []
         fields = QgsFields()
         totalFeatureCount = 0
-        for x in xrange(len(paths)):
+        for x in xrange(0, len(paths)):
             layer = QgsVectorLayer(paths[x], unicode(x), 'ogr')
 
             if (len(layers) > 0):

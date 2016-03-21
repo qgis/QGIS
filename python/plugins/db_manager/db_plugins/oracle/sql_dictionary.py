@@ -289,10 +289,10 @@ def getSqlDictionary(spatial=True):
 def getQueryBuilderDictionary():
     # concat functions
     def ff(l):
-        return [s for s in l if s[0] != '*']
+        return filter(lambda s: s[0] != '*', l)
 
     def add_paren(l):
-        return [s + "(" for s in l]
+        return map(lambda s: s + "(", l)
 
     foo = sorted(
         add_paren(

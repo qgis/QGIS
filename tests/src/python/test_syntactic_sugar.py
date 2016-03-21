@@ -12,9 +12,11 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis  # NOQA
+import qgis # switch sip api
 
-from qgis.testing import unittest, start_app
+from qgis.testing import (unittest,
+                          start_app
+                          )
 from qgis.core import (edit,
                        QgsFeature,
                        QgsVectorLayer,
@@ -57,7 +59,7 @@ class TestSyntacticSugar(unittest.TestCase):
             with edit(ml):
                 f = ml.getFeatures().next()
                 f['value'] = 3.8
-                crashycrash()  # NOQA
+                crashycrash()
 
         assert ml.dataProvider().getFeatures().next()['value'] == 9.9
         assert ml.getFeatures().next()['value'] == 9.9

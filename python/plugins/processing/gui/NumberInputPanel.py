@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt import uic
-from PyQt.QtCore import pyqtSignal
+from PyQt4 import uic
+from PyQt4.QtCore import pyqtSignal
 
 from math import log10, floor
 from processing.gui.NumberInputDialog import NumberInputDialog

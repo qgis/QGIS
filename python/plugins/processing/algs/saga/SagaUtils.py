@@ -29,7 +29,7 @@ import os
 import stat
 import subprocess
 
-from PyQt.QtCore import QCoreApplication
+from PyQt4.QtCore import QCoreApplication
 from qgis.core import QgsApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog

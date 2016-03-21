@@ -35,7 +35,7 @@ from .dlg_db_error import DlgDbError
 from .dlg_query_builder import QueryBuilderDlg
 
 try:
-    from qgis.gui import QgsCodeEditorSQL  # NOQA
+    from qgis.gui import QgsCodeEditorSQL
 except:
     from .sqledit import SqlEdit
     from qgis import gui
@@ -55,8 +55,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.iface = iface
         self.db = db
         self.filter = ""
-        self.allowMultiColumnPk = isinstance(db, PGDatabase)  # at the moment only PostgreSQL allows a primary key to span multiple columns, spatialite doesn't
-        self.aliasSubQuery = isinstance(db, PGDatabase)       # only PostgreSQL requires subqueries to be aliases
+        self.allowMultiColumnPk = isinstance(db, PGDatabase) # at the moment only PostgreSQL allows a primary key to span multiple columns, spatialite doesn't
+        self.aliasSubQuery = isinstance(db, PGDatabase)	# only PostgreSQL requires subqueries to be aliases
         self.setupUi(self)
         self.setWindowTitle(
             u"%s - %s [%s]" % (self.windowTitle(), db.connection().connectionName(), db.connection().typeNameString()))
@@ -99,8 +99,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.uniqueCombo.setModel(self.uniqueModel)
         if self.allowMultiColumnPk:
             self.uniqueCombo.setItemDelegate(QStyledItemDelegate())
-            self.uniqueModel.itemChanged.connect(self.uniqueChanged)                 # react to the (un)checking of an item
-            self.uniqueCombo.lineEdit().textChanged.connect(self.uniqueTextChanged)  # there are other events that change the displayed text and some of them can not be caught directly
+            self.uniqueModel.itemChanged.connect(self.uniqueChanged)                # react to the (un)checking of an item
+            self.uniqueCombo.lineEdit().textChanged.connect(self.uniqueTextChanged) # there are other events that change the displayed text and some of them can not be caught directly
 
         # hide the load query as layer if feature is not supported
         self._loadAsLayerAvailable = self.db.connector.hasCustomQuerySupport()
@@ -269,7 +269,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         try:
             layer = self._getSqlLayer(self.filter)
-            if layer is None:
+            if layer == None:
                 return
 
             from qgis.core import QgsMapLayerRegistry

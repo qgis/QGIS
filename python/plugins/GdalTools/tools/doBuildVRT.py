@@ -23,13 +23,13 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import QCoreApplication
-from PyQt.QtWidgets import QWidget
+from PyQt4.QtCore import SIGNAL, QCoreApplication, QObject
+from PyQt4.QtGui import QWidget
 
-from .ui_widgetBuildVRT import Ui_GdalToolsWidget as Ui_Widget
-from .widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
-from .dialogSRS import GdalToolsSRSDialog as SRSDialog
-from . import GdalTools_utils as Utils
+from ui_widgetBuildVRT import Ui_GdalToolsWidget as Ui_Widget
+from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
+from dialogSRS import GdalToolsSRSDialog as SRSDialog
+import GdalTools_utils as Utils
 
 
 class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
@@ -49,35 +49,35 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
         self.setParamsStatus(
             [
-                (self.inSelector, "filenameChanged"),
-                (self.outSelector, "filenameChanged"),
-                (self.resolutionComboBox, "currentIndexChanged", self.resolutionCheck),
-                (self.noDataEdit, "textChanged", self.srcNoDataCheck, 1700),
-                (self.inputDirCheck, "stateChanged"),
-                (self.separateCheck, "stateChanged", None, 1700),
-                (self.targetSRSEdit, "textChanged", self.targetSRSCheck),
-                (self.allowProjDiffCheck, "stateChanged", None, 1700),
-                (self.recurseCheck, "stateChanged", self.inputDirCheck),
-                (self.inputSelLayersCheck, "stateChanged")
+                (self.inSelector, SIGNAL("filenameChanged()")),
+                (self.outSelector, SIGNAL("filenameChanged()")),
+                (self.resolutionComboBox, SIGNAL("currentIndexChanged(int)"), self.resolutionCheck),
+                (self.noDataEdit, SIGNAL("textChanged( const QString & )"), self.srcNoDataCheck, 1700),
+                (self.inputDirCheck, SIGNAL("stateChanged(int)")),
+                (self.separateCheck, SIGNAL("stateChanged(int)"), None, 1700),
+                (self.targetSRSEdit, SIGNAL("textChanged(const QString &)"), self.targetSRSCheck),
+                (self.allowProjDiffCheck, SIGNAL("stateChanged(int)"), None, 1700),
+                (self.recurseCheck, SIGNAL("stateChanged(int)"), self.inputDirCheck),
+                (self.inputSelLayersCheck, SIGNAL("stateChanged(int)"))
             ]
         )
 
-        self.inSelector.selectClicked.connect(self.fillInputFilesEdit)
-        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
-        self.inputDirCheck.stateChanged.connect(self.switchToolMode)
-        self.inputSelLayersCheck.stateChanged.connect(self.switchLayerMode)
-        self.iface.mapCanvas().layersChanged.connect(self.switchLayerMode)
-        self.selectTargetSRSButton.clicked.connect(self.fillTargetSRSEdit)
+        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFilesEdit)
+        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
+        self.connect(self.inputDirCheck, SIGNAL("stateChanged( int )"), self.switchToolMode)
+        self.connect(self.inputSelLayersCheck, SIGNAL("stateChanged( int )"), self.switchLayerMode)
+        self.connect(self.iface.mapCanvas(), SIGNAL("stateChanged( int )"), self.switchLayerMode)
+        self.connect(self.selectTargetSRSButton, SIGNAL("clicked()"), self.fillTargetSRSEdit)
 
     def initialize(self):
         # connect to mapCanvas.layerChanged() signal
-        self.iface.mapCanvas().layersChanged.connect(self.onVisibleLayersChanged)
+        self.connect(self.iface.mapCanvas(), SIGNAL("layersChanged()"), self.onVisibleLayersChanged)
         self.onVisibleLayersChanged()
         BasePluginWidget.initialize(self)
 
     def onClosing(self):
         # disconnect from mapCanvas.layerChanged() signal
-        self.iface.mapCanvas().layersChanged.disconnect(self.onVisibleLayersChanged)
+        self.disconnect(self.iface.mapCanvas(), SIGNAL("layersChanged()"), self.onVisibleLayersChanged)
         BasePluginWidget.onClosing(self)
 
     def onVisibleLayersChanged(self):
@@ -98,13 +98,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             self.inFileLabel = self.label.text()
             self.label.setText(QCoreApplication.translate("GdalTools", "&Input directory"))
 
-            self.inSelector.selectClicked.disconnect(self.fillInputFilesEdit)
-            self.inSelector.selectClicked.connect(self.fillInputDir)
+            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFilesEdit)
+            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
         else:
             self.label.setText(self.inFileLabel)
 
-            self.inSelector.selectClicked.connect(self.fillInputFilesEdit)
-            self.inSelector.selectClicked.disconnect(self.fillInputDir)
+            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFilesEdit)
+            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
 
     def switchLayerMode(self):
         enableInputFiles = not self.inputSelLayersCheck.isChecked()

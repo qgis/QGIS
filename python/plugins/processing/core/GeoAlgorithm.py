@@ -31,8 +31,8 @@ import traceback
 import subprocess
 import copy
 
-from PyQt.QtGui import QIcon
-from PyQt.QtCore import QCoreApplication, QSettings
+from PyQt4.QtGui import QIcon
+from PyQt4.QtCore import QCoreApplication, QSettings
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig

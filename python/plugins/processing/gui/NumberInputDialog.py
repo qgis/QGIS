@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt import uic
-from PyQt.QtWidgets import QDialog, QTreeWidgetItem, QMessageBox
+from PyQt4 import uic
+from PyQt4.QtGui import QDialog, QTreeWidgetItem, QMessageBox
 from qgis.core import QgsRasterLayer
 
 from qgis.utils import iface

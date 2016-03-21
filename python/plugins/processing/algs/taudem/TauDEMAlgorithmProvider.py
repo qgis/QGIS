@@ -27,35 +27,35 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from PyQt4.QtGui import QIcon
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
 
-from .TauDEMAlgorithm import TauDEMAlgorithm
-from .TauDEMMultifileAlgorithm import TauDEMMultifileAlgorithm
-from .TauDEMUtils import TauDEMUtils
+from TauDEMAlgorithm import TauDEMAlgorithm
+from TauDEMMultifileAlgorithm import TauDEMMultifileAlgorithm
+from TauDEMUtils import TauDEMUtils
 
-from .peukerdouglas import PeukerDouglas
-from .slopearea import SlopeArea
-from .lengtharea import LengthArea
-from .dropanalysis import DropAnalysis
-from .dinfdistdown import DinfDistDown
-from .dinfdistup import DinfDistUp
-from .gridnet import GridNet
-from .dinftranslimaccum import DinfTransLimAccum
-from .dinftranslimaccum2 import DinfTransLimAccum2
+from peukerdouglas import PeukerDouglas
+from slopearea import SlopeArea
+from lengtharea import LengthArea
+from dropanalysis import DropAnalysis
+from dinfdistdown import DinfDistDown
+from dinfdistup import DinfDistUp
+from gridnet import GridNet
+from dinftranslimaccum import DinfTransLimAccum
+from dinftranslimaccum2 import DinfTransLimAccum2
 
-from .peukerdouglas_multi import PeukerDouglasMulti
-from .slopearea_multi import SlopeAreaMulti
-from .lengtharea_multi import LengthAreaMulti
-from .dropanalysis_multi import DropAnalysisMulti
-from .dinfdistdown_multi import DinfDistDownMulti
-from .dinfdistup_multi import DinfDistUpMulti
-from .gridnet_multi import GridNetMulti
-from .dinftranslimaccum_multi import DinfTransLimAccumMulti
-from .dinftranslimaccum2_multi import DinfTransLimAccum2Multi
+from peukerdouglas_multi import PeukerDouglasMulti
+from slopearea_multi import SlopeAreaMulti
+from lengtharea_multi import LengthAreaMulti
+from dropanalysis_multi import DropAnalysisMulti
+from dinfdistdown_multi import DinfDistDownMulti
+from dinfdistup_multi import DinfDistUpMulti
+from gridnet_multi import GridNetMulti
+from dinftranslimaccum_multi import DinfTransLimAccumMulti
+from dinftranslimaccum2_multi import DinfTransLimAccum2Multi
 
 
 class TauDEMAlgorithmProvider(AlgorithmProvider):

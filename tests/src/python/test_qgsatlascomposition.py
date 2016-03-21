@@ -14,14 +14,14 @@ test_qgsatlascomposition.py
  *                                                                         *
  ***************************************************************************/
 '''
-import qgis  # NOQA
+import qgis # switch sip api
 import os
 import glob
 import shutil
 import tempfile
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
-from PyQt.QtCore import QFileInfo, QRectF, qWarning
+from PyQt4.QtCore import QFileInfo, QRectF, qWarning
 from qgis.core import QGis, QgsVectorLayer, QgsMapLayerRegistry, QgsMapSettings, QgsCoordinateReferenceSystem, \
     QgsComposition, QgsFillSymbolV2, QgsSingleSymbolRendererV2, QgsComposerLabel, QgsComposerMap, QgsFontUtils, \
     QgsRectangle, QgsComposerLegend, QgsFeature, QgsGeometry, QgsPoint, QgsRendererCategoryV2, QgsCategorizedSymbolRendererV2, QgsMarkerSymbolV2

@@ -23,12 +23,12 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis  # NOQA
+import qgis # switch sip api
 
 from utilities import unitTestDataPath
 
-from PyQt.QtCore import QDir
-from PyQt.QtGui import QImage, QColor, QPainter
+from PyQt4.QtCore import QDir
+from PyQt4.QtGui import QImage, QColor, QPainter
 
 from qgis.core import (QgsGeometry,
                        QgsMarkerSymbolV2,
@@ -41,7 +41,10 @@ from qgis.core import (QgsGeometry,
                        QgsRenderChecker
                        )
 
-from qgis.testing import unittest, start_app
+from qgis.testing import(
+    unittest,
+    start_app
+)
 
 
 start_app()
@@ -144,7 +147,7 @@ class TestQgsSymbolV2(unittest.TestCase):
         ms.setOutputSize(image.size())
         context = QgsRenderContext.fromMapSettings(ms)
         context.setPainter(painter)
-        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setScaleFactor(96 / 25.4) # 96 DPI
 
         painter.begin(image)
         image.fill(QColor(0, 0, 0))
@@ -184,4 +187,4 @@ class TestQgsSymbolV2(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main()# -*- coding: utf-8 -*-

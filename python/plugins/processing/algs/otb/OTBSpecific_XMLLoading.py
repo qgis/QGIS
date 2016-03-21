@@ -38,13 +38,13 @@ __version__ = "3.8"
 import os
 
 try:
-    import processing  # NOQA
+    import processing
 except ImportError as e:
     raise Exception("Processing must be installed and available in PYTHONPATH")
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
-from . import OTBUtils
+import OTBUtils
 
 
 def adaptBinaryMorphologicalOperation(commands_list):

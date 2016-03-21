@@ -118,7 +118,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
 
                 selran.extend(selFeat)
         else:
-            selran = range(featureCount)
+            selran = range(0, featureCount)
 
         features = vector.features(layer)
         total = 100.0 / len(features)

@@ -86,7 +86,7 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         schemas = self.db.schemas()
         if schemas is not None:
             schema_name = self.cboSchema.currentText()
-            matching_schemas = [x for x in schemas if x.name == schema_name]
+            matching_schemas = filter(lambda x: x.name == schema_name, schemas)
             tables = matching_schemas[0].tables() if len(matching_schemas) > 0 else []
         else:
             tables = self.db.tables()
@@ -115,13 +115,13 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         self.colStart = self.db.connector.quoteId(self.editStart.text())
         self.colEnd = self.db.connector.quoteId(self.editEnd.text())
 
-        self.columns = [self.db.connector.quoteId(x.name) for x in self.table.fields()]
+        self.columns = map(lambda x: self.db.connector.quoteId(x.name), self.table.fields())
 
         self.colOrigPkey = None
         for constr in self.table.constraints():
             if constr.type == constr.TypePrimaryKey:
                 self.origPkeyName = self.db.connector.quoteId(constr.name)
-                self.colOrigPkey = [self.db.connector.quoteId(x_y[1].name) for x_y in iter(list(constr.fields().items()))]
+                self.colOrigPkey = map(lambda x_y: self.db.connector.quoteId(x_y[1].name), iter(constr.fields().items()))
                 break
 
         if self.colOrigPkey is None:
@@ -188,7 +188,7 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
 
     def sql_functions(self):
         cols = ",".join(self.columns)
-        old_cols = ",".join([u"OLD." + x for x in self.columns])
+        old_cols = ",".join(map(lambda x: u"OLD." + x, self.columns))
 
         sql = u"""
 CREATE OR REPLACE FUNCTION %(func_at_time)s(timestamp)
@@ -247,8 +247,8 @@ FOR EACH ROW EXECUTE PROCEDURE %(func_insert)s();""" % \
 
     def sql_updatesView(self):
         cols = ",".join(self.columns)
-        new_cols = ",".join([u"NEW." + x for x in self.columns])
-        assign_cols = ",".join([u"%s = NEW.%s" % (x, x) for x in self.columns])
+        new_cols = ",".join(map(lambda x: u"NEW." + x, self.columns))
+        assign_cols = ",".join(map(lambda x: u"%s = NEW.%s" % (x, x), self.columns))
 
         return u"""
 CREATE OR REPLACE RULE "_DELETE" AS ON DELETE TO %(view)s DO INSTEAD

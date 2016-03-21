@@ -25,7 +25,7 @@ __copyright__ = '(C) 2016, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import Qt
+from PyQt4.QtCore import Qt
 
 from qgis.gui import QgsMapToolEmitPoint
 

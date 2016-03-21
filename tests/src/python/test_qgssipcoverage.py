@@ -18,12 +18,12 @@ from qgis.testing import unittest
 from utilities import printImportant, DoxygenParser
 
 # Import all the things!
-from qgis.analysis import *         # NOQA
-from qgis.core import *             # NOQA
-from qgis.gui import *              # NOQA
-from qgis.networkanalysis import *  # NOQA
+from qgis.analysis import *
+from qgis.core import *
+from qgis.gui import *
+from qgis.networkanalysis import *
 try:
-    from qgis.server import *       # NOQA
+    from qgis.server import *
 except:
     pass
 

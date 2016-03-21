@@ -15,9 +15,11 @@ test_analysis.py
  ***************************************************************************/
 '''
 
-import qgis  # NOQA
+import qgis # switch sip api
 
-from qgis.testing import start_app, unittest
+from qgis.testing import (start_app,
+                          unittest
+                          )
 from utilities import unitTestDataPath
 
 start_app()
@@ -39,7 +41,7 @@ class TestQgsZonalStatistics(unittest.TestCase):
         """Test that we can import zonal statistics was failing as of d5f6543
         """
         try:
-            from qgis.analysis import QgsZonalStatistics  # NOQA
+            from qgis.analysis import QgsZonalStatistics
         except ImportError:
             self.fail('Failed to import zonal statistics python module')
 

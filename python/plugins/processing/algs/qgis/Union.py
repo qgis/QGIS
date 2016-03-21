@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from PyQt4.QtGui import QIcon
 
 from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWKBTypes
 
@@ -126,7 +126,7 @@ class Union(GeoAlgorithm):
                         lstIntersectingB.append(tmpGeom)
 
                         if int_geom is None:
-                            # There was a problem creating the intersection
+                           # There was a problem creating the intersection
                             ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
                                                    self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
                             int_geom = QgsGeometry()

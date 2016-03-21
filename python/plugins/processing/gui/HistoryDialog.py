@@ -27,10 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt import uic
-from PyQt.QtCore import Qt
-from PyQt.QtWidgets import QAction, QPushButton, QDialogButtonBox, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem
-from PyQt.QtGui import QIcon
+from PyQt4 import uic
+from PyQt4.QtCore import Qt
+from PyQt4.QtGui import QAction, QPushButton, QDialogButtonBox, QIcon, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem
 from processing.gui import TestTools
 from processing.core.ProcessingLog import ProcessingLog
 

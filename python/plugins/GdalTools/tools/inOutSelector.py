@@ -23,12 +23,12 @@ __copyright__ = '(C) 2011, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import Qt, pyqtSignal, pyqtProperty
-from PyQt.QtWidgets import QWidget, QComboBox
+from PyQt4.QtCore import SIGNAL, Qt, pyqtProperty
+from PyQt4.QtGui import QWidget, QComboBox
 
 from qgis.core import QgsMapLayerRegistry, QgsMapLayer
 
-from .ui_inOutSelector import Ui_GdalToolsInOutSelector
+from ui_inOutSelector import Ui_GdalToolsInOutSelector
 
 
 class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
@@ -40,9 +40,7 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
     FILES = 0x1 | 0x4    # NOT IMPLEMENTED YET
     FILES_LAYER = 0x3 | 0x4    # NOT IMPLEMENTED YET
 
-    selectClicked = pyqtSignal()
-    filenameChanged = pyqtSignal()
-    layerChanged = pyqtSignal()
+    __pyqtSignals__ = ("selectClicked()", "filenameChanged(), layerChanged()")
 
     def __init__(self, parent=None, type=None):
         QWidget.__init__(self, parent)
@@ -59,10 +57,10 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
         else:
             self.setType(type)
 
-        self.selectBtn.clicked.connect(self.selectClicked)
-        self.fileEdit.textChanged.connect(self.textChanged)
-        self.combo.editTextChanged.connect(self.textChanged)
-        self.combo.currentIndexChanged.connect(self.indexChanged)
+        self.connect(self.selectBtn, SIGNAL("clicked()"), self.selectButtonClicked)
+        self.connect(self.fileEdit, SIGNAL("textChanged(const QString &)"), self.textChanged)
+        self.connect(self.combo, SIGNAL("editTextChanged(const QString &)"), self.textChanged)
+        self.connect(self.combo, SIGNAL("currentIndexChanged(int)"), self.indexChanged)
 
     def clear(self):
         self.filenames = []
@@ -79,11 +77,20 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
                 text = self.combo.currentText()
                 if text != self.combo.itemText(index):
                     return self.setFilename(text)
-        self.filenameChanged.emit()
+        self.filenameChanged()
 
     def indexChanged(self):
-        self.layerChanged.emit()
-        self.filenameChanged.emit()
+        self.layerChanged()
+        self.filenameChanged()
+
+    def selectButtonClicked(self):
+        self.emit(SIGNAL("selectClicked()"))
+
+    def filenameChanged(self):
+        self.emit(SIGNAL("filenameChanged()"))
+
+    def layerChanged(self):
+        self.emit(SIGNAL("layerChanged()"))
 
     def setType(self, type):
         if type == self.typ:
@@ -105,8 +112,8 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
             self.setFocusProxy(self.combo)
 
         # send signals to refresh connected widgets
-        self.filenameChanged.emit()
-        self.layerChanged.emit()
+        self.filenameChanged()
+        self.layerChanged()
 
     def getType(self):
         return self.typ
@@ -147,9 +154,9 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
 
         self.blockSignals(False)
         if self.filename() != prevFn:
-            self.filenameChanged.emit()
+            self.filenameChanged()
         if self.layer() != prevLayer:
-            self.layerChanged.emit()
+            self.layerChanged()
 
     def setLayer(self, layer=None):
         if not (self.getType() & self.LAYER):
@@ -175,9 +182,9 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
 
         self.blockSignals(False)
         if self.filename() != prevFn:
-            self.filenameChanged.emit()
+            self.filenameChanged()
         if self.layer() != prevLayer:
-            self.layerChanged.emit()
+            self.layerChanged()
 
     def setLayers(self, layers=None):
         if layers is None or not hasattr(layers, '__iter__') or len(layers) <= 0:
@@ -195,9 +202,9 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
         self.restoreComboState()
         self.blockSignals(False)
         if self.filename() != prevFn:
-            self.filenameChanged.emit()
+            self.filenameChanged()
         if self.layer() != prevLayer:
-            self.layerChanged.emit()
+            self.layerChanged()
 
     def clearComboState(self):
         self.prevState = None

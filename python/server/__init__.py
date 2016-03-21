@@ -23,6 +23,4 @@ __copyright__ = '(C) 2014, Alessandro Pasotti'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt import QtCore     # NOQA
-
-from qgis._server import *  # NOQA
+from qgis._server import *

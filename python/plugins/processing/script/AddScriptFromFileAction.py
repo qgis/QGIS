@@ -27,9 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtWidgets import QFileDialog, QMessageBox
-from PyQt.QtGui import QIcon
-from PyQt.QtCore import QSettings, QFileInfo
+from PyQt4.QtGui import QFileDialog, QIcon, QMessageBox
+from PyQt4.QtCore import QSettings, QFileInfo
 
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.gui.ToolboxAction import ToolboxAction

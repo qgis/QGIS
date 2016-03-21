@@ -30,8 +30,8 @@ __revision__ = '$Format:%H$'
 
 
 # import functions for easier access
-from . import installer
-from .installer import initPluginInstaller  # NOQA
+import installer
+from installer import initPluginInstaller
 
 
 def instance():

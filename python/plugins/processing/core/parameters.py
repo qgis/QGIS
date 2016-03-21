@@ -30,7 +30,7 @@ import sys
 import os
 
 from processing.tools.vector import resolveFieldIndex, features
-from PyQt.QtCore import QCoreApplication
+from PyQt4.QtCore import QCoreApplication
 from qgis.core import QgsRasterLayer, QgsVectorLayer
 from processing.tools import dataobjects
 
@@ -926,7 +926,7 @@ class ParameterGeometryPredicate(Parameter):
             return False
 
         if isinstance(value, unicode):
-            self.value = value.split(';')  # relates to ModelerAlgorithm.resolveValue
+            self.value = value.split(';') # relates to ModelerAlgorithm.resolveValue
         else:
             self.value = value
         return True

@@ -28,7 +28,7 @@ import subprocess
 import shelve
 
 try:
-    import processing  # NOQA
+    import processing
 except ImportError as e:
     raise Exception("Processing must be installed and available in PYTHONPATH")
 

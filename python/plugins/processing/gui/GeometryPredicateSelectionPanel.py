@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt import uic
-from PyQt.QtWidgets import QCheckBox
+from PyQt4 import uic
+from PyQt4.QtGui import QCheckBox
 from qgis.core import QGis, QgsVectorLayer
 
 from processing.core.parameters import ParameterGeometryPredicate

@@ -27,7 +27,7 @@
 #
 ###############################################################################
 
-from PyQt.QtWidgets import QDialog
+from PyQt4.QtGui import QDialog
 
 from MetaSearch.util import get_ui_class
 

@@ -27,8 +27,8 @@
 #
 ###############################################################################
 
-from PyQt.QtCore import QSettings
-from PyQt.QtWidgets import QDialog, QMessageBox
+from PyQt4.QtCore import QSettings
+from PyQt4.QtGui import QDialog, QMessageBox
 
 from MetaSearch.util import get_ui_class
 

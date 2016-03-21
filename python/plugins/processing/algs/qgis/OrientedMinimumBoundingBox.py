@@ -26,7 +26,7 @@ __copyright__ = '(C) 2015, Loïc BARTOLETTI'
 __revision__ = '$Format:%H$'
 
 from math import degrees, atan2
-from PyQt.QtCore import QVariant
+from PyQt4.QtCore import QVariant
 from qgis.core import QGis, QgsField, QgsPoint, QgsGeometry, QgsFeature
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException

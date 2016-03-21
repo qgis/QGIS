@@ -23,11 +23,12 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt.QtWidgets import QWidget
+from PyQt4.QtCore import SIGNAL
+from PyQt4.QtGui import QWidget
 
-from .ui_widgetSieve import Ui_GdalToolsWidget as Ui_Widget
-from .widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
-from . import GdalTools_utils as Utils
+from ui_widgetSieve import Ui_GdalToolsWidget as Ui_Widget
+from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
+import GdalTools_utils as Utils
 
 
 class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
@@ -43,14 +44,14 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         self.outputFormat = Utils.fillRasterOutputFormat()
 
         self.setParamsStatus([
-            (self.inSelector, "filenameChanged"),
-            (self.outSelector, "filenameChanged"),
-            (self.thresholdSpin, "valueChanged", self.thresholdCheck),
-            (self.connectionsCombo, "currentIndexChanged", self.connectionsCheck)
+            (self.inSelector, SIGNAL("filenameChanged()")),
+            (self.outSelector, SIGNAL("filenameChanged()")),
+            (self.thresholdSpin, SIGNAL("valueChanged(int)"), self.thresholdCheck),
+            (self.connectionsCombo, SIGNAL("currentIndexChanged(int)"), self.connectionsCheck)
         ])
 
-        self.inSelector.selectClicked.connect(self.fillInputFileEdit)
-        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
+        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
+        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
 
     def onLayersChanged(self):
         self.inSelector.setLayers(Utils.LayerRegistry.instance().getRasterLayers())

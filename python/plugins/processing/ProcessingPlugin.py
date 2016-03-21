@@ -30,9 +30,8 @@ import inspect
 import os
 import sys
 
-from PyQt.QtCore import Qt, QCoreApplication, QDir
-from PyQt.QtWidgets import QMenu, QAction
-from PyQt.QtGui import QIcon
+from PyQt4.QtCore import Qt, QCoreApplication, QDir
+from PyQt4.QtGui import QMenu, QAction, QIcon
 
 from processing.core.Processing import Processing
 from processing.gui.ProcessingToolbox import ProcessingToolbox

@@ -106,7 +106,7 @@ class PGTableInfo(TableInfo):
 
         # primary key defined?
         if not self.table.isView:
-            if len([fld for fld in self.table.fields() if fld.primaryKey]) <= 0:
+            if len(filter(lambda fld: fld.primaryKey, self.table.fields())) <= 0:
                 ret.append(HtmlParagraph(
                     QApplication.translate("DBManagerPlugin", "<warning> No primary key defined for this table!")))
 

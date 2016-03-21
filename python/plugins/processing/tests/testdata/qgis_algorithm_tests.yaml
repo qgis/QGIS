@@ -187,3 +187,31 @@ tests:
         type: vector
 
 
+  - algorithm: qgis:fixeddistancebuffer
+    name: Basic polygon buffer
+    params:
+      DISSOLVE: 'False'
+      DISTANCE: 0.5
+      INPUT:
+        name: polys.gml
+        type: vector
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/buffer_polys.gml
+        type: vector
+      
+
+  - algorithm: qgis:fixeddistancebuffer
+    name: Polygon buffer with dissolve
+    params:
+      DISSOLVE: 'True'
+      DISTANCE: 0.5
+      INPUT:
+        name: polys.gml
+        type: vector
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/buffer_polys_dissolve.gml
+        type: vector

@@ -20,6 +20,7 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
+from PyQt4.QtCore import SIGNAL
 
 from ..data_model import TableDataModel, SqlResultModel
 

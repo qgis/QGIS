@@ -28,7 +28,7 @@ from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
 
 from ..plugin import DBPlugin, Database, Table, VectorTable, TableField
 
-from . import resources_rc  # NOQA
+from . import resources_rc
 
 
 def classFactory():

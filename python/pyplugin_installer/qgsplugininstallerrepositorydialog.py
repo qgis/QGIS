@@ -25,10 +25,10 @@
 """
 
 from qgis.gui import QgsAuthConfigSelect
-from PyQt.QtWidgets import QDialog, QDialogButtonBox, QVBoxLayout
-from PyQt.QtCore import Qt
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QVBoxLayout
+from PyQt4.QtCore import Qt
 
-from .ui_qgsplugininstallerrepositorybase import Ui_QgsPluginInstallerRepositoryDetailsDialogBase
+from ui_qgsplugininstallerrepositorybase import Ui_QgsPluginInstallerRepositoryDetailsDialogBase
 
 
 class QgsPluginInstallerRepositoryDialog(QDialog, Ui_QgsPluginInstallerRepositoryDetailsDialogBase):

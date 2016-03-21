@@ -12,13 +12,15 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis  # NOQA
+import qgis # switch sip api
 
 import os
 
 from qgis.core import QgsPoint, QgsVectorLayer
 
-from qgis.testing import start_app, unittest
+from qgis.testing import (start_app,
+                          unittest
+                          )
 
 from pyspatialite import dbapi2 as sqlite3
 
@@ -60,7 +62,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase):
                 sql += str(i) + " " + str(j + 1) + ","
                 sql += str(i) + " " + str(j)
                 sql += ")),"
-        sql = sql[:-1]  # remove last comma
+        sql = sql[:-1] # remove last comma
         sql += ")', 4326))"
         cur.execute(sql)
 

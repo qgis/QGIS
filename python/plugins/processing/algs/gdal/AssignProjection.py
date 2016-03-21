@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from PyQt4.QtGui import QIcon
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
@@ -62,7 +62,7 @@ class AssignProjection(GdalAlgorithm):
     def getConsoleCommands(self):
         fileName = self.getParameterValue(self.INPUT)
         crs = self.getParameterValue(self.CRS)
-        output = self.getOutputValue(self.OUTPUT)  # NOQA
+        output = self.getOutputValue(self.OUTPUT)
 
         arguments = []
         arguments.append('-a_srs')

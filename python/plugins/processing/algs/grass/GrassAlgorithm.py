@@ -31,8 +31,8 @@ import uuid
 import importlib
 import re
 
-from PyQt.QtCore import QCoreApplication
-from PyQt.QtGui import QIcon
+from PyQt4.QtCore import QCoreApplication
+from PyQt4.QtGui import QIcon
 
 from qgis.core import QgsRasterLayer
 from qgis.utils import iface
@@ -59,7 +59,7 @@ from processing.core.outputs import (getOutputFromString,
                                      OutputFile,
                                      OutputHTML)
 
-from .GrassUtils import GrassUtils
+from GrassUtils import GrassUtils
 
 from processing.tools import dataobjects, system
 
