@@ -187,3 +187,44 @@ tests:
         type: vector
 
 
+  - name: dissolve
+  algorithm: qgis:dissolve
+  #input is valid as validateGeometry(), but invalid in isGeosValid()
+  params:
+    - type: vector
+      name: custom/innerRingTouchesOuterRing.gml
+    - True # Dissolve all
+    - None # unique ID field
+  results:
+    OUTPUT:
+      type: vector
+      name: expected/innerRingTouchesOuterRing_output.gml
+      
+  - name: dissolve
+  algorithm: qgis:dissolve
+  #input contains NULL geometries
+  params:
+    - type: vector
+      name: nullGeometryDissolve.gml
+    - True # Dissolve all
+    - None # unique ID field
+  results:
+    OUTPUT:
+      type: vector
+      name: expected/nullGeometryDissolve_output.gml
+      
+  - name: dissolve
+  algorithm: qgis:dissolve
+  #input contains invalid geometries
+  params:
+    - type: vector
+      name: PolygonDissolveTest.gml
+    - True # Dissolve all
+    - None # unique ID field
+  results:
+    OUTPUT:
+      type: vector
+      name: expected/PolygonDissolveTest_output.gml  
+          
+  
+
