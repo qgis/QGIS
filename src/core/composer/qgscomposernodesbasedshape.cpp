@@ -20,6 +20,7 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
 #include <limits>
+#include <math.h>
 
 QgsComposerNodesBasedShape::QgsComposerNodesBasedShape( QString tagName,
     QgsComposition* c )
@@ -128,8 +129,9 @@ bool QgsComposerNodesBasedShape::addNode( const QPointF &pt,
 
 QPointF QgsComposerNodesBasedShape::convertToItemCoordinate( QPointF node )
 {
+  QTransform transform = QTransform().rotate( -mItemRotation );
   node -= scenePos();
-  return node;
+  return transform.map( node );
 }
 
 void QgsComposerNodesBasedShape::drawNodes( QPainter *painter ) const
@@ -198,8 +200,8 @@ void QgsComposerNodesBasedShape::drawSelectedNode( QPainter *painter ) const
 }
 
 void QgsComposerNodesBasedShape::paint( QPainter* painter,
-    const QStyleOptionGraphicsItem* itemStyle,
-    QWidget* pWidget )
+                                        const QStyleOptionGraphicsItem* itemStyle,
+                                        QWidget* pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
@@ -348,14 +350,20 @@ bool QgsComposerNodesBasedShape::setSelectedNode( const int index )
 void QgsComposerNodesBasedShape::updateSceneRect()
 {
   // set the new scene rectangle
-  const QRectF boundingRect = mPolygon.boundingRect();
+  const QRectF br = mPolygon.boundingRect();
 
-  QRectF sceneRect = boundingRect;
-  sceneRect.translate( scenePos() );
+  const QPointF topLeft = br.topLeft();
+
+  const double angle = mItemRotation * M_PI / 180.;
+  const double member = topLeft.x() - tan( angle ) * topLeft.y();
+  const double newTopLeftX =  cos( angle ) * member + scenePos().x();
+  const double newTopLeftY =  topLeft.y() / cos( angle ) + sin( angle ) * member + scenePos().y();
+
+  QRectF sceneRect = QRectF( newTopLeftX, newTopLeftY, br.width(), br.height() );
   setSceneRect( sceneRect );
 
-  // translate the polygon to keep its consistency with the new scene rect
-  mPolygon.translate( -boundingRect.topLeft().x(), -boundingRect.topLeft().y() );
+  // update polygon position
+  mPolygon.translate( -br.topLeft().x(), -br.topLeft().y() );
 
   // update
   prepareGeometryChange();
