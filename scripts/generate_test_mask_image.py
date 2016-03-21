@@ -76,10 +76,11 @@ def updateMask(control_image_path, rendered_image_path, mask_image_path):
     if not rendered_image:
         error('Could not read rendered image {}'.format(rendered_image_path))
     if not rendered_image.width() == control_image.width() or not rendered_image.height() == control_image.height():
-        print('Size mismatch - control image is {}x{}, rendered image is {}x{}'.format(control_image.width(),
-                                                                                        control_image.height(),
-                                                                                        rendered_image.width(),
-                                                                                        rendered_image.height()))
+        print('Size mismatch - control image is {}x{}, rendered image is {}x{}'.format(
+            control_image.width(),
+            control_image.height(),
+            rendered_image.width(),
+            rendered_image.height()))
 
     max_width = min(rendered_image.width(), control_image.width())
     max_height = min(rendered_image.height(), control_image.height())

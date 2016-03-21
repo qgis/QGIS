@@ -338,8 +338,9 @@ class Processing:
             return
 
         if not alg.checkInputCRS():
-            print('Warning: Not all input layers use the same CRS.\n'
-                  + 'This can cause unexpected results.')
+            print(
+                'Warning: Not all input layers use the same CRS.\n'
+                + 'This can cause unexpected results.')
             QgsMessageLog.logMessage(Processing.tr('Warning: Not all input layers use the same CRS.\nThis can cause unexpected results.'), Processing.tr("Processing"))
 
         # Don't set the wait cursor twice, because then when you

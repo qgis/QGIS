@@ -40,7 +40,7 @@ if len(sys.argv) > 1:
     hash.update(sys.argv[1])
     # generate the context id by converting the first 12 characters of the hash
     # to decimal
-    context_id = int(hash.hexdigest()[:12],16)
+    context_id = int(hash.hexdigest()[:12], 16)
     # print the result
     print(context_id)
 else:
