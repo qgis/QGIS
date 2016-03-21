@@ -386,6 +386,11 @@ class DoxygenParser():
                         documented_members += documented
                         class_name = elem.find('compoundname').text
                         acceptable_missing = self.acceptable_missing.get(class_name, [])
+
+                        # GEN LIST
+                        # if len(undocumented) > 0:
+                        #     print('"%s": [%s],' % (class_name, ", ".join(['"%s"' % e.replace('"', '\\"') for e in undocumented])))
+
                         unacceptable_undocumented = undocumented - set(acceptable_missing)
 
                         if len(unacceptable_undocumented) > 0:
