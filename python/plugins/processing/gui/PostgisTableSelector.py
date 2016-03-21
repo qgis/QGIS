@@ -27,9 +27,10 @@ __revision__ = '$Format:%H$'
 
 
 import os
-from PyQt4.QtCore import QSettings
-from PyQt4.QtGui import QIcon, QTreeWidgetItem, QMessageBox
-from PyQt4 import uic
+from PyQt.QtCore import QSettings
+from PyQt.QtGui import QIcon
+from PyQt.QtWidgets import QTreeWidgetItem, QMessageBox
+from PyQt import uic
 from processing.algs.qgis.postgis_utils import GeoDB
 from qgis.core import QgsDataSourceURI, QgsCredentials
 

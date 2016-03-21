@@ -23,11 +23,7 @@ __copyright__ = '(C) 2007, Martin Dobias'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import sip
-
-for api in ["QDate", "QDateTime", "QString", "QTextStream", "QTime", "QUrl", "QVariant"]:
-    sip.setapi(api, 2)
-
+from PyQt import QtCore
 from qgis.core import QgsFeature, QgsGeometry
 
 

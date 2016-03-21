@@ -11,7 +11,7 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis # switch sip api
+import qgis  # NOQA
 
 import os
 import sys
@@ -111,14 +111,14 @@ def setCanvasCrs(theEpsgId, theOtfpFlag=False):
                         on the CANVAS. Default to False.
     """
     # Enable on-the-fly reprojection
-    CANVAS.mapRenderer().setProjectionsEnabled(theOtfpFlag)
+    CANVAS.mapRenderer().setProjectionsEnabled(theOtfpFlag)  # FIXME
 
     # Create CRS Instance
     myCrs = QgsCoordinateReferenceSystem()
     myCrs.createFromId(theEpsgId, QgsCoordinateReferenceSystem.E)
 
     # Reproject all layers to WGS84 geographic CRS
-    CANVAS.mapRenderer().setDestinationCrs(myCrs)
+    CANVAS.mapRenderer().setDestinationCrs(myCrs)  # FIXME
 
 
 def writeShape(theMemoryLayer, theFileName):
@@ -451,7 +451,7 @@ class DoxygenParser():
         for m in e.getiterator('memberdef'):
             if self.elemIsBindableMember(m):
                 bindable_member = [e.find('compoundname').text, m.find('name').text]
-                if not bindable_member in bindable_members:
+                if bindable_member not in bindable_members:
                     bindable_members.append(bindable_member)
             if self.elemIsDocumentableMember(m):
                 documentable_members += 1

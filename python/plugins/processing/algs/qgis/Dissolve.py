@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
+from PyQt.QtGui import QIcon
 
 from qgis.core import QgsFeature, QgsGeometry
 
@@ -122,7 +122,7 @@ class Dissolve(GeoAlgorithm):
                 if tmpInGeom.isGeosEmpty() or not tmpInGeom.isGeosValid():
                     continue
 
-                if attrDict[unicode(tempItem).strip()] == None:
+                if attrDict[unicode(tempItem).strip()] is None:
                     # keep attributes of first feature
                     attrDict[unicode(tempItem).strip()] = attrs
 

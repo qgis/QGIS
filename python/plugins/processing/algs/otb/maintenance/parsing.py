@@ -168,7 +168,7 @@ scanner = re.Scanner([
     (r"\)", lambda scanner, token: ("right paren", token)),
     (r'[^ \t\r\n()#"]+', lambda scanner, token: ("word", token)),
     (r'\n', lambda scanner, token: ("newline", token)),
-    (r"\s+", None), # skip other whitespace
+    (r"\s+", None),  # skip other whitespace
 ])
 
 

@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
-from PyQt4.QtCore import QLocale, QDate
+from PyQt.QtGui import QIcon
+from PyQt.QtCore import QLocale, QDate
 
 from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry
 
@@ -126,7 +126,7 @@ class Eliminate(GeoAlgorithm):
                     selectionError = True
                     msg = self.tr('Cannot convert "%s" to float' % unicode(comparisonvalue))
             elif selectType == 10:
-               # 10: string, boolean
+                # 10: string, boolean
                 try:
                     y = unicode(comparisonvalue)
                 except ValueError:

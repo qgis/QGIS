@@ -25,7 +25,10 @@ __copyright__ = '(C) 2015, René-Luc Dhont'
 
 __revision__ = '$Format:%H$'
 
-from pyspatialite import dbapi2 as sqlite
+try:
+    from pyspatialite import dbapi2 as sqlite
+except:
+    pass
 
 
 class DbError(Exception):

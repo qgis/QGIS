@@ -26,7 +26,7 @@ __copyright__ = '(C) 2014, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from SagaAlgorithm213 import SagaAlgorithm213
+from .SagaAlgorithm213 import SagaAlgorithm213
 from processing.tools import dataobjects
 from processing.tools.system import getTempFilenameInTempFolder
 

@@ -12,12 +12,12 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis # switch sip api
+import qgis  # NOQA
 
 import os
 
-from PyQt4.QtCore import QFileInfo, QDir
-from PyQt4.QtXml import QDomDocument
+from PyQt.QtCore import QFileInfo, QDir
+from PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsComposition,
                        QgsPoint,
@@ -27,12 +27,8 @@ from qgis.core import (QgsComposition,
                        QgsMapRenderer
                        )
 
-from qgis.testing import (start_app,
-                          unittest
-                          )
-
+from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
-
 from utilities import unitTestDataPath
 
 start_app()

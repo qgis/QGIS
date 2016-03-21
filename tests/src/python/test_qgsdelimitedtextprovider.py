@@ -23,22 +23,18 @@ __revision__ = '$Format:%H$'
 #
 # To recreate all tests, set rebuildTests to true
 
-import qgis # switch sip api
+import qgis  # NOQA
 
 import os
 import re
 import tempfile
 import inspect
 import time
-import test_qgsdelimitedtextprovider_wanted as want
+import test_qgsdelimitedtextprovider_wanted as want  # NOQA
 
 rebuildTests = 'REBUILD_DELIMITED_TEXT_TESTS' in os.environ
 
-from PyQt4.QtCore import (
-    QCoreApplication,
-    QUrl,
-    QObject
-)
+from PyQt.QtCore import QCoreApplication, QUrl, QObject
 
 from qgis.core import (
     QgsProviderRegistry,
@@ -48,15 +44,8 @@ from qgis.core import (
     QgsMessageLog
 )
 
-from qgis.testing import (
-    start_app,
-    unittest
-)
-
-from utilities import (
-    unitTestDataPath,
-    compareWkt
-)
+from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath, compareWkt
 
 from providertestbase import ProviderTestCase
 

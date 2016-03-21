@@ -27,13 +27,13 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from SagaAlgorithm212 import SagaAlgorithm212
+from .SagaAlgorithm212 import SagaAlgorithm212
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterRaster, ParameterVector, ParameterTable, ParameterMultipleInput, ParameterBoolean, ParameterFixedTable, ParameterExtent, ParameterNumber, ParameterSelection
 from processing.core.outputs import OutputRaster, OutputVector
-import SagaUtils
+from . import SagaUtils
 from processing.tools import dataobjects
 from processing.tools.system import getTempFilename
 

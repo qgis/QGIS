@@ -22,7 +22,7 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt.QtCore import Qt, QObject, QSettings, QFileInfo
+from PyQt.QtCore import Qt, QSettings, QFileInfo
 from PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
 from PyQt.QtGui import QCursor
 
@@ -68,9 +68,9 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
         if mode == self.ASK_FOR_INPUT_MODE:
             self.btnChooseInputFile.clicked.connect(self.chooseInputFile)
-            # QObject.connect( self.cboInputLayer.lineEdit(), SIGNAL("editingFinished()"), self.updateInputLayer )
+            # self.cboInputLayer.lineEdit().editingFinished.connect(self.updateInputLayer)
             self.cboInputLayer.editTextChanged.connect(self.inputPathChanged)
-            # QObject.connect( self.cboInputLayer, SIGNAL("currentIndexChanged(int)"), self.updateInputLayer )
+            # self.cboInputLayer.currentIndexChanged.connect(self.updateInputLayer)
             self.btnUpdateInputLayer.clicked.connect(self.updateInputLayer)
 
             self.editPrimaryKey.setText(self.default_pk)
@@ -226,7 +226,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
         schemas = self.db.schemas()
         if schemas is not None:
             schema_name = self.cboSchema.currentText()
-            matching_schemas = filter(lambda x: x.name == schema_name, schemas)
+            matching_schemas = [x for x in schemas if x.name == schema_name]
             tables = matching_schemas[0].tables() if len(matching_schemas) > 0 else []
         else:
             tables = self.db.tables()

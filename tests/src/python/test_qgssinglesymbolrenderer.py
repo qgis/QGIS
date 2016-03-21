@@ -23,11 +23,11 @@ __copyright__ = '(C) 2015, Matthiasd Kuhn'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis # switch sip api
+import qgis  # NOQA
 
 import os
 
-from PyQt4.QtCore import QSize
+from PyQt.QtCore import QSize
 
 from qgis.core import (QgsVectorLayer,
                        QgsMapLayerRegistry,
@@ -37,12 +37,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsFillSymbolV2,
                        QgsFeatureRequest
                        )
-from qgis.testing import (start_app,
-                          unittest
-                          )
-
+from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
-
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them

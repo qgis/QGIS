@@ -612,7 +612,7 @@ class PostGisDBConnector(DBConnector):
 
         try:
             c = self._execute(None, sql)
-        except DbError as e:  # no statistics for the current table
+        except DbError:  # No statistics for the current table
             return
         res = self._fetchone(c)
         self._close_cursor(c)
@@ -640,7 +640,7 @@ class PostGisDBConnector(DBConnector):
 
         try:
             c = self._execute(None, "SELECT srtext FROM spatial_ref_sys WHERE srid = '%d'" % srid)
-        except DbError as e:
+        except DbError:
             return
         sr = self._fetchone(c)
         self._close_cursor(c)

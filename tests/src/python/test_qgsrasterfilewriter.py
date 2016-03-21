@@ -12,22 +12,19 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis # switch sip api
+import qgis  # NOQA
 
 import os
 import glob
 
-from PyQt4.QtCore import (QTemporaryFile,
-                          QDir)
+from PyQt.QtCore import QTemporaryFile, QDir
 from qgis.core import (QgsRasterLayer,
                        QgsRasterChecker,
                        QgsRasterPipe,
                        QgsRasterFileWriter,
                        QgsRasterProjector)
 
-from qgis.testing import (start_app,
-                          unittest)
-
+from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
 start_app()
@@ -50,7 +47,7 @@ class TestQgsRasterFileWriter(unittest.TestCase):
         provider = rasterLayer.dataProvider()
 
         tmpFile = QTemporaryFile()
-        tmpFile.open() # fileName is no avialable until open
+        tmpFile.open()  # fileName is no avialable until open
         tmpName = tmpFile.fileName()
         tmpFile.close()
         # do not remove when class is destroyed so that we can read

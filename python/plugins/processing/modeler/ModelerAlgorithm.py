@@ -33,8 +33,8 @@ import time
 import json
 import codecs
 import traceback
-from PyQt4.QtCore import QCoreApplication, QPointF
-from PyQt4.QtGui import QIcon
+from PyQt.QtCore import QCoreApplication, QPointF
+from PyQt.QtGui import QIcon
 from qgis.core import QgsRasterLayer, QgsVectorLayer
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
@@ -553,7 +553,7 @@ class ModelerAlgorithm(GeoAlgorithm):
             try:
                 d = o.todict()
                 return {"class": o.__class__.__module__ + "." + o.__class__.__name__, "values": d}
-            except Exception as e:
+            except Exception:
                 pass
         return json.dumps(self, default=todict, indent=4)
 
@@ -608,7 +608,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         try:
             alg = ModelerAlgorithm.fromJsonFile(filename)
             return alg
-        except WrongModelException as e:
+        except WrongModelException:
             alg = ModelerAlgorithm.fromOldFormatFile(filename)
             return alg
 

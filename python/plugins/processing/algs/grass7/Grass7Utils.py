@@ -30,7 +30,7 @@ import shutil
 import subprocess
 import os
 from qgis.core import QgsApplication
-from PyQt4.QtCore import QCoreApplication
+from PyQt.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import userFolder, isWindows, isMac, tempFolder, mkdir

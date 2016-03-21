@@ -25,7 +25,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import QComboBox, QPlainTextEdit, QSizePolicy, QVBoxLayout, QWidget
+from PyQt.QtWidgets import QComboBox, QPlainTextEdit, QSizePolicy, QVBoxLayout, QWidget
 
 
 class MultilineTextPanel(QWidget):

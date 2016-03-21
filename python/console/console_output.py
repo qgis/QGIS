@@ -19,9 +19,10 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from PyQt4.QtCore import Qt, QCoreApplication, QSettings, SIGNAL
-from PyQt4.QtGui import QColor, QGridLayout, QSpacerItem, QSizePolicy, QFont, QShortcut, QKeySequence, QMenu, QApplication
-from PyQt4.Qsci import QsciScintilla, QsciLexerPython
+from PyQt.QtCore import Qt, QCoreApplication, QSettings
+from PyQt.QtGui import QColor, QFont, QKeySequence
+from PyQt.QtWidgets import QGridLayout, QSpacerItem, QSizePolicy, QShortcut, QMenu, QApplication
+from PyQt.Qsci import QsciScintilla, QsciLexerPython
 from qgis.core import QgsApplication
 from qgis.gui import QgsMessageBar
 import sys
@@ -265,10 +266,10 @@ class ShellOutputScintilla(QsciScintilla):
         """Copy text to clipboard... or keyboard interrupt"""
         if self.hasSelectedText():
             text = unicode(self.selectedText())
-            text = text.replace('>>> ', '').replace('... ', '').strip() # removing prompts
+            text = text.replace('>>> ', '').replace('... ', '').strip()  # removing prompts
             QApplication.clipboard().setText(text)
         else:
-            self.emit(SIGNAL("keyboard_interrupt()"))
+            raise KeyboardInterrupt
 
     def enteredSelected(self):
         cmd = self.selectedText()

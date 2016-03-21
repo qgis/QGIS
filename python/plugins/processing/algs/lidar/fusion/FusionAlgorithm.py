@@ -26,10 +26,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtGui import QIcon
+from PyQt.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterString
-from FusionUtils import FusionUtils
+from .FusionUtils import FusionUtils
 
 
 class FusionAlgorithm(GeoAlgorithm):

@@ -33,7 +33,7 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import mkdir, userFolder
 
 
-class ScriptUtils:
+class ScriptUtils(object):
 
     SCRIPTS_FOLDER = 'SCRIPTS_FOLDER'
     ACTIVATE_SCRIPTS = 'ACTIVATE_SCRIPTS'

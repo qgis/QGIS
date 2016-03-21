@@ -32,7 +32,7 @@ from qgis.gui import QgsMessageBar
 from ..plugin import DBPlugin, Database, Table, VectorTable, RasterTable, TableField, TableIndex, TableTrigger, \
     InvalidDataException
 
-from . import resources_rc
+from . import resources_rc  # NOQA
 
 
 def classFactory():
@@ -236,14 +236,14 @@ class SLVectorTable(SLTable, VectorTable):
         return self.database().connector.hasSpatialIndex((self.schemaName(), self.name), geom_column)
 
     def createSpatialIndex(self, geom_column=None):
-        self.emitAboutToChange()
+        self.aboutToChange.emit()
         ret = VectorTable.createSpatialIndex(self, geom_column)
         if ret is not False:
             self.database().refresh()
         return ret
 
     def deleteSpatialIndex(self, geom_column=None):
-        self.emitAboutToChange()
+        self.aboutToChange.emit()
         ret = VectorTable.deleteSpatialIndex(self, geom_column)
         if ret is not False:
             self.database().refresh()

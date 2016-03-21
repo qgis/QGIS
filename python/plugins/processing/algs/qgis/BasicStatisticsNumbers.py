@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import codecs
 
-from PyQt4.QtGui import QIcon
+from PyQt.QtGui import QIcon
 
 from qgis.core import QgsStatisticalSummary
 
