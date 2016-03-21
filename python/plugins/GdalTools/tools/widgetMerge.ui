@@ -138,7 +138,7 @@
   <customwidget>
    <class>GdalToolsInOutSelector</class>
    <extends>QWidget</extends>
-   <header>inOutSelector</header>
+   <header>.inOutSelector</header>
    <container>1</container>
   </customwidget>
   <customwidget>
