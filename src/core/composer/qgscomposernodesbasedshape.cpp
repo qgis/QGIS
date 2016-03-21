@@ -217,7 +217,7 @@ void QgsComposerNodesBasedShape::paint( QPainter* painter,
   rescaleToFitBoundingBox();
   _draw( painter );
 
-  if ( mDrawNodes )
+  if ( mDrawNodes && composition()->plotStyle() == QgsComposition::Preview )
     drawNodes( painter );
 
   painter->restore();
