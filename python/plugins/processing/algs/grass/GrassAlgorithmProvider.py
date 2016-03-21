@@ -27,13 +27,13 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
+from PyQt.QtGui import QIcon
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingLog import ProcessingLog
-from GrassUtils import GrassUtils
-from GrassAlgorithm import GrassAlgorithm
-from nviz import nviz
+from .GrassUtils import GrassUtils
+from .GrassAlgorithm import GrassAlgorithm
+from .nviz import nviz
 from processing.tools.system import isMac, isWindows
 
 pluginPath = os.path.normpath(os.path.join(
@@ -83,7 +83,7 @@ class GrassAlgorithmProvider(AlgorithmProvider):
                     else:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                                self.tr('Could not open GRASS algorithm: %s' % descriptionFile))
-                except Exception as e:
+                except Exception:
                     ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                            self.tr('Could not open GRASS algorithm: %s' % descriptionFile))
         self.preloadedAlgs.append(nviz())

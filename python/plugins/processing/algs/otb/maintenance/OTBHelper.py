@@ -142,7 +142,7 @@ def get_inverted_parameters():
     inverted_parameters_clone['ParameterType_RAM'] = 'ParameterNumber'
     inverted_parameters_clone['ParameterType_InputProcessXML'] = 'ParameterFile'
     inverted_parameters_clone['ParameterType_OutputProcessXML'] = 'ParameterFile'
-    inverted_parameters_clone['ParameterType_InputFilenameList'] = 'ParameterMultipleInput' # 'ParameterString'
+    inverted_parameters_clone['ParameterType_InputFilenameList'] = 'ParameterMultipleInput'  # 'ParameterString'
 
     return inverted_parameters_clone
 
@@ -161,7 +161,7 @@ def retrieve_module_name(param):
             if 'Output' in param:
                 exec("from processing.core.outputs import %s" % param)
                 return os.path.join(dir_p, "outputs.py")
-        except ImportError as e:
+        except ImportError:
             print "Error parsing ", param
     return None
 
@@ -220,7 +220,8 @@ def get_xml_description_from_application_name(our_app, criteria=None):
     desc.text = app_instance.GetDescription()
 
     if not criteria:
-        real_criteria = lambda x: True
+        def real_criteria(x):
+            return True
     else:
         if not callable(criteria):
             raise Exception("criteria parameter must be a valid python callable")
@@ -273,7 +274,7 @@ def get_param_descriptor(appkey, app_instance, our_descriptor, root):
         if "default" in the_params:
             try:
                 app_instance.GetParameterAsString(our_descriptor)
-            except RuntimeError as e:
+            except RuntimeError:
                 return
 
     param = ET.SubElement(root, 'parameter')
@@ -592,7 +593,7 @@ def get_automatic_ut_from_xml_description(the_root):
         the_result = map(adapt_list_to_string, rebu)
         ut_command = cliName + " " + " ".join(the_result)
         return ut_command
-    except Exception as e:
+    except Exception:
         ET.dump(dom_model)
         raise
 
@@ -645,7 +646,7 @@ def create_xml_descriptors():
                 if the_list:
                     for each_dom in the_list:
                         try:
-                            ut_command = get_automatic_ut_from_xml_description(each_dom)
+                            ut_command = get_automatic_ut_from_xml_description(each_dom)  # NOQA
                         except:
                             logger.error("Unit test for command %s must be fixed: %s" % (available_app, traceback.format_exc()))
             else:
@@ -682,7 +683,7 @@ def create_html_description():
             ct = describe_app(app_instance)
             fh.write(ct)
             fh.close()
-        except Exception as e:
+        except Exception:
             logger.error(traceback.format_exc())
 
     sub_algo = [each for each in os.listdir("description") if "-" in each and ".xml" in each]
@@ -692,7 +693,7 @@ def create_html_description():
 if __name__ == "__main__":
     # Prepare the environment
     from qgis.core import QgsApplication
-    from PyQt4.QtGui import QApplication
+    from PyQt.QtWidgets import QApplication
     app = QApplication([])
     QgsApplication.setPrefixPath("/usr", True)
     QgsApplication.initQgis()

@@ -4,7 +4,7 @@
 ##value_field=field input
 ##N_unique_values=output vector
 
-from PyQt4.QtCore import QVariant
+from PyQt.QtCore import QVariant
 from qgis.core import QgsFeature, QgsField
 from processing.tools.vector import VectorWriter
 

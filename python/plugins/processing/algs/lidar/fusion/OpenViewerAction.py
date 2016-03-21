@@ -27,9 +27,10 @@ __revision__ = '$Format:%H$'
 
 import os
 import subprocess
-from PyQt4.QtGui import QIcon, QMessageBox
+from PyQt.QtGui import QIcon
+from PyQt.QtWidgets import QMessageBox
 from processing.gui.ToolboxAction import ToolboxAction
-from FusionUtils import FusionUtils
+from .FusionUtils import FusionUtils
 
 
 class OpenViewerAction(ToolboxAction):

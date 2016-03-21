@@ -26,8 +26,8 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import Qt, QCoreApplication
-from PyQt4.QtGui import QProgressBar
+from PyQt.QtCore import Qt, QCoreApplication
+from PyQt.QtWidgets import QProgressBar
 from qgis.utils import iface
 from processing.gui.MessageDialog import MessageDialog
 
