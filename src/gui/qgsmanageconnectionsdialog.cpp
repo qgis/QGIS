@@ -496,6 +496,7 @@ QDomDocument QgsManageConnectionsDialog::saveOracleConnections( const QStringLis
     el.setAttribute( "port", settings.value( path + "/port", "" ).toString() );
     el.setAttribute( "database", settings.value( path + "/database", "" ).toString() );
     el.setAttribute( "dboptions", settings.value( path + "/dboptions", "" ).toString() );
+    el.setAttribute( "dbworkspace", settings.value( path + "/dbworkspace", "" ).toString() );
     el.setAttribute( "estimatedMetadata", settings.value( path + "/estimatedMetadata", "0" ).toString() );
     el.setAttribute( "userTablesOnly", settings.value( path + "/userTablesOnly", "0" ).toString() );
     el.setAttribute( "geometryColumnsOnly", settings.value( path + "/geometryColumnsOnly", "0" ).toString() );
@@ -940,6 +941,7 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
     settings.setValue( "/port", child.attribute( "port" ) );
     settings.setValue( "/database", child.attribute( "database" ) );
     settings.setValue( "/dboptions", child.attribute( "dboptions" ) );
+    settings.setValue( "/dbworkspace", child.attribute( "dbworkspace" ) );
     settings.setValue( "/estimatedMetadata", child.attribute( "estimatedMetadata" ) );
     settings.setValue( "/userTablesOnly", child.attribute( "userTablesOnly" ) );
     settings.setValue( "/geometryColumnsOnly", child.attribute( "geometryColumnsOnly" ) );
