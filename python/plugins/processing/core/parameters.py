@@ -30,9 +30,13 @@ import sys
 import os
 import re
 
-from processing.tools.vector import resolveFieldIndex, features
+from processing.tools.vector import resolveFieldIndex
+from processing.tools.vector import features
+from enum import Enum
+from enum import unique
 from PyQt4.QtCore import QCoreApplication
-from qgis.core import QgsRasterLayer, QgsVectorLayer
+from qgis.core import QgsRasterLayer
+from qgis.core import QgsVectorLayer
 from processing.tools.system import isWindows
 from processing.tools import dataobjects
 
@@ -340,6 +344,35 @@ class ParameterMultipleInput(ParameterDataObject):
         ParameterDataObject.__init__(self, name, description, None, optional)
         self.datatype = int(float(datatype))
         self.exported = None
+        self.minNumInputs = 1
+
+    """ Set minimum required number of inputs for parameter
+
+    By default minimal number of inputs is set to 1
+
+    @type _minNumInputs: numeric type or list
+    @param _minNumInputs: required minimum number of inputs for parameter. \
+                          If user will pass None as parameter, we will use default minimal number of inputs (1)
+    @return: result, if the minimum number of inputs were set.
+    """
+    def setMinNumInputs(self, _minNumInputs):
+        if _minNumInputs is None:
+            self.minNumInputs = 1
+            return
+
+        if _minNumInputs < 1 and not self.optional:
+            # dont allow to set negative or null number of inputs if parameter isn't optional
+            return False
+
+        self.minNumInputs = int(minNumInputs)
+
+    """ Get minimum required number of inputs for parameter
+
+    @return: minimum number of inputs required for this parameter
+    @see: setMinNumInputs()
+    """
+    def getMinNumInputs(self):
+        return self.minNumInputs
 
     def setValue(self, obj):
         self.exported = None
@@ -355,6 +388,10 @@ class ParameterMultipleInput(ParameterDataObject):
                     return True
                 else:
                     return False
+            # prevent setting value if we didn't provide required minimal number of inputs
+            elif len(obj) < minNumInputs:
+                return False
+
             self.value = ";".join([self.getAsString(lay) for lay in obj])
             return True
         else:
@@ -362,7 +399,8 @@ class ParameterMultipleInput(ParameterDataObject):
             return True
 
     def getSafeExportedLayers(self):
-        """Returns not the value entered by the user, but a string with
+        """
+        Returns not the value entered by the user, but a string with
         semicolon-separated filenames which contains the data of the
         selected layers, but saved in a standard format (currently
         shapefiles for vector layers and GeoTiff for raster) so that
@@ -422,6 +460,7 @@ class ParameterMultipleInput(ParameterDataObject):
                     if layer.name() == s:
                         return unicode(layer.dataProvider().dataSourceUri())
                 return s
+
         if self.datatype == ParameterMultipleInput.TYPE_FILE:
             return unicode(value)
         else:
