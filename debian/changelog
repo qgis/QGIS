@@ -1,3 +1,9 @@
+qgis (2.15.0) unstable; urgency=medium
+
+  * Add dependency to python-future
+
+ -- Matthias Kuhn <matthias@opengis.ch>  Tue, 22 Mar 2016 11:17:23 +0100
+
 qgis (2.15.0) UNRELEASED; urgency=medium
 
   [ Jürgen E. Fischer ]

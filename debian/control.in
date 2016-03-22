@@ -40,7 +40,7 @@ Build-Depends:
  python-qt4 (>= 4.1.0),
  python-qt4-dev,
  python-qt4-sql,
- python-yaml, python-mock,
+ python-yaml, python-mock, python-future,
 #precise wheezy# python,
 #precise# python-central (>= 0.5),
 #wheezy# python-dev,
