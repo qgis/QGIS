@@ -186,45 +186,45 @@ tests:
         name: expected/eliminate_largest_area.gml
         type: vector
 
-
+        
   - name: dissolve
-  algorithm: qgis:dissolve
-  #input is valid as validateGeometry(), but invalid in isGeosValid()
-  params:
-    - type: vector
-      name: custom/innerRingTouchesOuterRing.gml
-    - True # Dissolve all
-    - None # unique ID field
-  results:
-    OUTPUT:
-      type: vector
-      name: expected/innerRingTouchesOuterRing_output.gml
-      
-  - name: dissolve
-  algorithm: qgis:dissolve
-  #input contains NULL geometries
-  params:
-    - type: vector
-      name: nullGeometryDissolve.gml
-    - True # Dissolve all
-    - None # unique ID field
-  results:
-    OUTPUT:
-      type: vector
-      name: expected/nullGeometryDissolve_output.gml
-      
-  - name: dissolve
-  algorithm: qgis:dissolve
-  #input contains invalid geometries
-  params:
-    - type: vector
-      name: PolygonDissolveTest.gml
-    - True # Dissolve all
-    - None # unique ID field
-  results:
-    OUTPUT:
-      type: vector
-      name: expected/PolygonDissolveTest_output.gml  
-          
+    algorithm: qgis:dissolve
+    #input is valid as validateGeometry(), but invalid in isGeosValid()
+    params:
+      DISSOLVE_ALL: 'True'
+      FIELD: None
+      INPUT:
+        name: custom/innerRingTouchesOuterRing.gml
+        type: vector
+    results:
+      OUTPUT:
+        type: vector
+        name: expected/innerRingTouchesOuterRing_output.gml
   
+  - name: dissolve
+    algorithm: qgis:dissolve
+    #input contains NULL geometries
+    params:
+      DISSOLVE_ALL: 'True'
+      FIELD: None
+      INPUT:
+        name: custom/nullGeometryDissolve.gml
+        type: vector
+    results:
+      OUTPUT:
+        type: vector
+        name: expected/nullGeometryDissolve_output.gml
 
+  - name: dissolve
+    algorithm: qgis:dissolve
+    #input contains invalid geometries
+    params:
+      DISSOLVE_ALL: 'True'
+      FIELD: None
+      INPUT:
+        name: custom/PolygonDissolveTest.gml
+        type: vector
+    results:
+      OUTPUT:
+        type: vector
+        name: expected/PolygonDissolveTest_output.gml
