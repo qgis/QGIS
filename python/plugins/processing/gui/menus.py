@@ -1,11 +1,12 @@
 from processing.core.Processing import Processing
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from PyQt4.Qt import QAction, QMenu
+from PyQt.QtWidgets import QAction, QMenu
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from qgis.utils import iface
 
 algorithmsToolbar = None
+menusSettingsGroup = 'Menus'
 
 defaultMenuEntries = {}
 vectorMenu = Processing.tr('Vect&or')
@@ -105,7 +106,7 @@ def initializeMenus():
     for provider in Processing.providers:
         for alg in provider.algs:
             d = defaultMenuEntries.get(alg.commandLineName(), "")
-            setting = Setting("Menus", "MENU_" + alg.commandLineName(), alg.name, d)
+            setting = Setting(menusSettingsGroup, "MENU_" + alg.commandLineName(), alg.name, d)
             ProcessingConfig.addSetting(setting)
 
     ProcessingConfig.readSettings()
@@ -117,8 +118,8 @@ def updateMenus():
 
 
 def createMenus():
-    for provider in Processing.algs.values():
-        for alg in provider.values():
+    for provider in list(Processing.algs.values()):
+        for alg in list(provider.values()):
             menuPath = ProcessingConfig.getSetting("MENU_" + alg.commandLineName())
             if menuPath:
                 paths = menuPath.split("/")
@@ -126,8 +127,8 @@ def createMenus():
 
 
 def removeMenus():
-    for provider in Processing.algs.values():
-        for alg in provider.values():
+    for provider in list(Processing.algs.values()):
+        for alg in list(provider.values()):
             menuPath = ProcessingConfig.getSetting("MENU_" + alg.commandLineName())
             if menuPath:
                 paths = menuPath.split("/")
@@ -173,10 +174,10 @@ def _executeAlgorithm(alg):
     message = alg.checkBeforeOpeningParametersDialog()
     if message:
         dlg = MessageDialog()
-        dlg.setTitle(tr('Missing dependency'))
+        dlg.setTitle(Processing.tr('Missing dependency'))
         dlg.setMessage(
-            tr('<h3>Missing dependency. This algorithm cannot '
-               'be run :-( </h3>\n%s') % message)
+            Processing.tr('<h3>Missing dependency. This algorithm cannot '
+                          'be run :-( </h3>\n%s') % message)
         dlg.exec_()
         return
     alg = alg.getCopy()
@@ -196,14 +197,11 @@ def _executeAlgorithm(alg):
 
 
 def getMenu(name, parent):
-    menus = [c for c in parent.children() if isinstance(c, QMenu)]
-    menusDict = {m.title(): m for m in menus}
-    if name in menusDict:
-        return menusDict[name]
+    menus = [c for c in parent.children() if isinstance(c, QMenu) and c.title() == name]
+    if menus:
+        return menus[0]
     else:
-        menu = QMenu(name, parent)
-        parent.addMenu(menu)
-        return menu
+        return parent.addMenu(name)
 
 
 def findAction(actions, alg, actionText=None):

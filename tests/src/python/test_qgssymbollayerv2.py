@@ -23,12 +23,13 @@ __copyright__ = '(C) 2012, Massimo Endrighi'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
+
 import os
 
-from PyQt4.QtCore import pyqtWrapperType, Qt, QDir, QFile, QIODevice, QPointF
-from PyQt4.QtXml import QDomDocument
-from PyQt4.QtGui import QColor
+from PyQt.QtCore import pyqtWrapperType, Qt, QDir, QFile, QIODevice, QPointF
+from PyQt.QtXml import QDomDocument
+from PyQt.QtGui import QColor
 
 from qgis.core import (QgsCentroidFillSymbolLayerV2,
                        QgsEllipseSymbolLayerV2,
@@ -50,10 +51,9 @@ from qgis.core import (QgsCentroidFillSymbolLayerV2,
                        QgsVectorFieldSymbolLayer,
                        QgsSymbolV2,
                        )
-from qgis.testing import (start_app,
-                          unittest
-                          )
+from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
+
 # Convenience instances in case you may need them
 # not used in this test
 start_app()

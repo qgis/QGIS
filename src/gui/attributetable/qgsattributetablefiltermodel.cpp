@@ -245,9 +245,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   }
 
   const QgsMapSettings& ms = mCanvas->mapSettings();
-  if ( layer()->hasScaleBasedVisibility() &&
-       ( layer()->minimumScale() > ms.scale() ||
-         layer()->maximumScale() <= ms.scale() ) )
+  if ( !layer()->isInScaleRange( ms.scale() ) )
   {
     QgsDebugMsg( "Out of scale limits" );
   }

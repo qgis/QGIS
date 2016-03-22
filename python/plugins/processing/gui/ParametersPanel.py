@@ -32,21 +32,12 @@ __revision__ = '$Format:%H$'
 import os
 import locale
 
-from qgis.core import *
+from qgis.core import QgsMapLayerRegistry, QgsMapLayer
 
-from PyQt4 import uic
-from PyQt4.QtCore import QCoreApplication, QVariant
-from PyQt4.QtGui import (QWidget,
-                         QLayout,
-                         QVBoxLayout,
-                         QHBoxLayout,
-                         QToolButton,
-                         QIcon,
-                         QLabel,
-                         QCheckBox,
-                         QComboBox,
-                         QLineEdit,
-                         QPlainTextEdit)
+from PyQt import uic
+from PyQt.QtCore import QCoreApplication, QVariant
+from PyQt.QtWidgets import QWidget, QLayout, QVBoxLayout, QHBoxLayout, QToolButton, QLabel, QCheckBox, QComboBox, QLineEdit, QPlainTextEdit
+from PyQt.QtGui import QIcon
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
@@ -439,6 +430,8 @@ class ParametersPanel(BASE, WIDGET):
         if sender.name not in self.dependentItems:
             return
         layer = sender.itemData(sender.currentIndex())
+        if not layer:
+            return
         children = self.dependentItems[sender.name]
         for child in children:
             widget = self.valueItems[child]

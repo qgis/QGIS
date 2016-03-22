@@ -144,6 +144,8 @@ class QgsRasterLayer : QgsMapLayer
     /** Returns a list with classification items (Text and color) */
     QList< QPair< QString, QColor > > legendSymbologyItems() const;
 
+    virtual bool isSpatial() const;
+
     /** \brief Obtain GDAL Metadata for this layer */
     QString metadata();
 

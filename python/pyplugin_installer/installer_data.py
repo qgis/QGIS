@@ -23,9 +23,9 @@
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import pyqtSignal, QObject, QCoreApplication, QFile, QDir, QDirIterator, QSettings, QDate, QUrl, QFileInfo, QLocale
-from PyQt4.QtXml import QDomDocument
-from PyQt4.QtNetwork import QNetworkRequest, QNetworkReply
+from PyQt.QtCore import pyqtSignal, QObject, QCoreApplication, QFile, QDir, QDirIterator, QSettings, QDate, QUrl, QFileInfo, QLocale, QByteArray
+from PyQt.QtXml import QDomDocument
+from PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 import sys
 import os
 import codecs
@@ -34,7 +34,8 @@ import qgis.utils
 from qgis.core import QGis, QgsNetworkAccessManager, QgsAuthManager
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface, plugin_paths
-from version_compare import compareVersions, normalizeVersion, isCompatible
+from .version_compare import compareVersions, normalizeVersion, isCompatible
+
 
 """
 Data structure:
@@ -117,7 +118,7 @@ def removeDir(path):
     result = ""
     if not QFile(path).exists():
         result = QCoreApplication.translate("QgsPluginInstaller", "Nothing to remove! Plugin directory doesn't exist:") + "\n" + path
-    elif QFile(path).remove(): # if it is only link, just remove it without resolving.
+    elif QFile(path).remove():  # if it is only link, just remove it without resolving.
         pass
     else:
         fltr = QDir.Dirs | QDir.Files | QDir.Hidden
@@ -313,7 +314,7 @@ class Repositories(QObject):
             if url == officialRepo[1]:
                 officialRepoPresent = True
             if url == officialRepo[2]:
-                settings.setValue(key + "/url", officialRepo[1]) # correct a depreciated url
+                settings.setValue(key + "/url", officialRepo[1])  # correct a depreciated url
                 officialRepoPresent = True
         if not officialRepoPresent:
             settings.setValue(officialRepo[0] + "/url", officialRepo[1])
@@ -385,7 +386,12 @@ class Repositories(QObject):
             reposXML = QDomDocument()
             content = reply.readAll()
             # Fix lonely ampersands in metadata
-            reposXML.setContent(content.replace("& ", "&amp; "))
+            a = QByteArray()
+            a.append("& ")
+            b = QByteArray()
+            b.append("&amp; ")
+            content = content.replace(a, b)
+            reposXML.setContent(content)
             pluginNodes = reposXML.elementsByTagName("pyqgis_plugin")
             if pluginNodes.size():
                 for i in range(pluginNodes.size()):
@@ -493,10 +499,10 @@ class Plugins(QObject):
 
     def __init__(self):
         QObject.__init__(self)
-        self.mPlugins = {}   # the dict of plugins (dicts)
-        self.repoCache = {}  # the dict of lists of plugins (dicts)
-        self.localCache = {} # the dict of plugins (dicts)
-        self.obsoletePlugins = [] # the list of outdated 'user' plugins masking newer 'system' ones
+        self.mPlugins = {}         # the dict of plugins (dicts)
+        self.repoCache = {}        # the dict of lists of plugins (dicts)
+        self.localCache = {}       # the dict of plugins (dicts)
+        self.obsoletePlugins = []  # the list of outdated 'user' plugins masking newer 'system' ones
 
     # ----------------------------------------- #
     def all(self):
@@ -560,7 +566,7 @@ class Plugins(QObject):
                 return cp.get('general', fct)
             except Exception as e:
                 if not errorDetails:
-                    errorDetails = e.args[0] # set to the first problem
+                    errorDetails = e.args[0]  # set to the first problem
                 return ""
 
         def pluginMetadata(fct):
@@ -579,7 +585,7 @@ class Plugins(QObject):
         if not QDir(path).exists():
             return
 
-        global errorDetails # to communicate with the metadataParser fn
+        global errorDetails  # to communicate with the metadataParser fn
         plugin = dict()
         error = ""
         errorDetails = ""
@@ -722,7 +728,7 @@ class Plugins(QObject):
         allowDeprecated = settings.value(settingsGroup + "/allowDeprecated", False, type=bool)
         for i in self.repoCache.values():
             for j in i:
-                plugin = j.copy() # do not update repoCache elements!
+                plugin = j.copy()  # do not update repoCache elements!
                 key = plugin["id"]
                 # check if the plugin is allowed and if there isn't any better one added already.
                 if (allowExperimental or not plugin["experimental"]) \

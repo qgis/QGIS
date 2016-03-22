@@ -19,18 +19,20 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from PyQt4.QtCore import Qt, QSettings, QByteArray, QCoreApplication, QFile, QSize
-from PyQt4.QtGui import QDialog, QMenu, QColor, QShortcut, QKeySequence, QFont, QFontMetrics, QStandardItemModel, QStandardItem, QApplication, QClipboard
-from PyQt4.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
+from PyQt.QtCore import Qt, QSettings, QByteArray, QCoreApplication, QFile, QSize
+from PyQt.QtWidgets import QDialog, QMenu, QShortcut, QApplication
+from PyQt.QtGui import QColor, QKeySequence, QFont, QFontMetrics, QStandardItemModel, QStandardItem, QClipboard
+from PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
 
 import sys
 import os
 import code
 import codecs
 import re
+import traceback
 
 from qgis.core import QgsApplication
-from ui_console_history_dlg import Ui_HistoryDialogPythonConsole
+from .ui_console_history_dlg import Ui_HistoryDialogPythonConsole
 
 _init_commands = ["from qgis.core import *", "import qgis.utils",
                   "from qgis.utils import iface"]
@@ -170,10 +172,11 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             self.append('import processing')
         elif command == "qtCore":
             # import QtCore class
-            self.append('from PyQt4.QtCore import *')
+            self.append('from PyQt.QtCore import *')
         elif command == "qtGui":
             # import QtGui class
-            self.append('from PyQt4.QtGui import *')
+            self.append('from PyQt.QtGui import *')
+            self.append('from PyQt.QtWidgets import *')
         self.entered()
         self.move_cursor_to_end()
         self.setFocus()
@@ -543,7 +546,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             e.setDropAction(Qt.CopyAction)
             e.accept()
         else:
-            QsciScintillaCompat.dropEvent(self, e)
+            QsciScintilla.dropEvent(self, e)
 
     def insertFromDropPaste(self, textDP):
         pasteList = unicode(textDP).splitlines()
@@ -595,7 +598,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         else:
             self.buffer.append(cmd)
             src = u"\n".join(self.buffer)
-            more = self.runsource(src, "<input>")
+            more = self.runsource(src)
             if not more:
                 self.buffer = []
         ## prevents to commands with more lines to break the console
@@ -612,6 +615,18 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             getCmdString = self.text()
             prompt = getCmdString[0:4]
             sys.stdout.write(prompt + txt + '\n')
+
+    def runsource(self, source, filename='<input>', symbol='single'):
+        hook = sys.excepthook
+        try:
+            def excepthook(etype, value, tb):
+                self.write(u"".join(traceback.format_exception(etype, value, tb)))
+
+            sys.excepthook = excepthook
+
+            super(ShellScintilla, self).runsource(source, filename, symbol)
+        finally:
+            sys.excepthook = hook
 
 
 class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):

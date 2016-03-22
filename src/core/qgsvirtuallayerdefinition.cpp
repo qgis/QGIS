@@ -201,9 +201,8 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
       url.addQueryItem( "geometry", geometryField() );
   }
 
-  for ( int i = 0; i < fields().count(); i++ )
+  Q_FOREACH ( const QgsField& f, fields() )
   {
-    const QgsField& f = fields()[i];
     if ( f.type() == QVariant::Int )
       url.addQueryItem( "field", f.name() + ":int" );
     else if ( f.type() == QVariant::Double )

@@ -12,10 +12,11 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
+
 import os
 
-from PyQt4.QtCore import QVariant, QObject, SIGNAL
+from PyQt4.QtCore import QVariant
 from PyQt4.QtGui import QPainter
 
 from qgis.core import (QGis,
@@ -33,9 +34,7 @@ from qgis.core import (QGis,
                        QgsCoordinateReferenceSystem,
                        QgsProject,
                        QgsUnitTypes)
-from qgis.testing import (start_app,
-                          unittest
-                          )
+from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 start_app()
 
@@ -233,7 +232,7 @@ class TestQgsVectorLayer(unittest.TestCase):
             assert layer.pendingFeatureCount() == 1
 
         def checkAfter2():
-            checkBefore() # should be the same state: no features
+            checkBefore()  # should be the same state: no features
 
         checkBefore()
 
@@ -303,7 +302,7 @@ class TestQgsVectorLayer(unittest.TestCase):
 
     def test_ChangeAttributeAfterAddFeature(self):
         layer = createLayerWithOnePoint()
-        layer.dataProvider().deleteFeatures([1]) # no need for this feature
+        layer.dataProvider().deleteFeatures([1])  # no need for this feature
 
         newF = QgsFeature()
         newF.setGeometry(QgsGeometry.fromPoint(QgsPoint(1, 1)))
@@ -435,7 +434,7 @@ class TestQgsVectorLayer(unittest.TestCase):
 
     def test_ChangeGeometryAfterAddFeature(self):
         layer = createLayerWithOnePoint()
-        layer.dataProvider().deleteFeatures([1]) # no need for this feature
+        layer.dataProvider().deleteFeatures([1])  # no need for this feature
 
         newF = QgsFeature()
         newF.setGeometry(QgsGeometry.fromPoint(QgsPoint(1, 1)))
@@ -545,7 +544,7 @@ class TestQgsVectorLayer(unittest.TestCase):
 
     def test_AddAttributeAfterAddFeature(self):
         layer = createLayerWithOnePoint()
-        layer.dataProvider().deleteFeatures([1]) # no need for this feature
+        layer.dataProvider().deleteFeatures([1])  # no need for this feature
 
         newF = QgsFeature()
         newF.setGeometry(QgsGeometry.fromPoint(QgsPoint(1, 1)))
@@ -600,7 +599,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         pass  # not interesting to test...?
 
     def test_AddAttributeAfterDeleteAttribute(self):
-        pass # maybe it would be good to test
+        pass  # maybe it would be good to test
 
     # DELETE ATTRIBUTE
 
@@ -726,7 +725,7 @@ class TestQgsVectorLayer(unittest.TestCase):
 
     def test_DeleteAttributeAfterAddFeature(self):
         layer = createLayerWithOnePoint()
-        layer.dataProvider().deleteFeatures([1]) # no need for this feature
+        layer.dataProvider().deleteFeatures([1])  # no need for this feature
 
         newF = QgsFeature()
         newF.setGeometry(QgsGeometry.fromPoint(QgsPoint(1, 1)))
@@ -942,8 +941,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer = createLayerWithOnePoint()
 
         self.blendModeTest = 0
-        QObject.connect(layer, SIGNAL("blendModeChanged( const QPainter::CompositionMode )"),
-                        self.onBlendModeChanged)
+        layer.blendModeChanged.connect(self.onBlendModeChanged)
         layer.setBlendMode(QPainter.CompositionMode_Screen)
 
         assert self.blendModeTest == QPainter.CompositionMode_Screen
@@ -953,8 +951,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer = createLayerWithOnePoint()
 
         self.blendModeTest = 0
-        QObject.connect(layer, SIGNAL("featureBlendModeChanged( const QPainter::CompositionMode )"),
-                        self.onBlendModeChanged)
+        layer.featureBlendModeChanged.connect(self.onBlendModeChanged)
         layer.setFeatureBlendMode(QPainter.CompositionMode_Screen)
 
         assert self.blendModeTest == QPainter.CompositionMode_Screen
@@ -995,7 +992,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         QgsProject.instance().writeEntry("Measure", "/Ellipsoid", "WGS84")
         QgsProject.instance().writeEntry("Measurement", "/DistanceUnits", QgsUnitTypes.encodeUnit(QGis.Meters))
 
-        idx = temp_layer.addExpressionField('$length', QgsField('length', QVariant.Double))
+        idx = temp_layer.addExpressionField('$length', QgsField('length', QVariant.Double))  # NOQA
 
         # check value
         f = temp_layer.getFeatures().next()
@@ -1025,7 +1022,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         QgsProject.instance().writeEntry("Measure", "/Ellipsoid", "WGS84")
         QgsProject.instance().writeEntry("Measurement", "/AreaUnits", QgsUnitTypes.encodeUnit(QgsUnitTypes.SquareMeters))
 
-        idx = temp_layer.addExpressionField('$area', QgsField('area', QVariant.Double))
+        idx = temp_layer.addExpressionField('$area', QgsField('area', QVariant.Double))  # NOQA
 
         # check value
         f = temp_layer.getFeatures().next()
@@ -1041,7 +1038,7 @@ class TestQgsVectorLayer(unittest.TestCase):
     def test_ExpressionFilter(self):
         layer = createLayerWithOnePoint()
 
-        idx = layer.addExpressionField('5', QgsField('test', QVariant.LongLong))
+        idx = layer.addExpressionField('5', QgsField('test', QVariant.LongLong))  # NOQA
 
         features = layer.getFeatures(QgsFeatureRequest().setFilterExpression('"test" = 6'))
 
@@ -1058,8 +1055,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer = createLayerWithOnePoint()
 
         self.transparencyTest = 0
-        QObject.connect(layer, SIGNAL("layerTransparencyChanged( int )"),
-                        self.onLayerTransparencyChanged)
+        layer.layerTransparencyChanged.connect(self.onLayerTransparencyChanged)
         layer.setLayerTransparency(50)
         assert self.transparencyTest == 50
         assert layer.layerTransparency() == 50
@@ -1071,8 +1067,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer = createLayerWithOnePoint()
 
         self.rendererChanged = False
-        QObject.connect(layer, SIGNAL("rendererChanged()"),
-                        self.onRendererChanged)
+        layer.rendererChanged.connect(self.onRendererChanged)
 
         r = QgsSingleSymbolRendererV2(QgsSymbolV2.defaultSymbol(QGis.Point))
         layer.setRendererV2(r)

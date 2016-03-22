@@ -340,10 +340,8 @@ void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, const QString& fi
   menu->addSeparator();
 
   bool hasField = false;
-  const QgsFields & flds = mLayer->fields();
-  for ( int idx = 0; idx < flds.count(); ++idx )
+  Q_FOREACH ( const QgsField& fld, mLayer->fields() )
   {
-    const QgsField& fld = flds[idx];
     if ( fld.type() == QVariant::Int || fld.type() == QVariant::Double )
     {
       QAction* a = new QAction( fld.name(), actionGroup );

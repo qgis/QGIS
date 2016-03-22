@@ -12,11 +12,11 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
 
 from qgis.core import (QgsMapUnitScale, QgsRenderContext, QgsSymbolLayerV2Utils, QgsSymbolV2, QgsMapSettings, QgsRectangle)
-from PyQt4.QtCore import QSize
-from qgis.testing import (TestCase, unittest)
+from PyQt.QtCore import QSize
+from qgis.testing import unittest
 
 
 class PyQgsMapUnitScale(unittest.TestCase):

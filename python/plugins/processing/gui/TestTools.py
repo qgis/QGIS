@@ -32,8 +32,8 @@ import hashlib
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
 
-from PyQt4.QtCore import QCoreApplication, QMetaObject
-from PyQt4.QtGui import QMessageBox, QDialog, QVBoxLayout, QTextEdit
+from PyQt.QtCore import QCoreApplication, QMetaObject
+from PyQt.QtWidgets import QDialog, QVBoxLayout, QTextEdit
 
 from processing.core.Processing import Processing
 from processing.core.outputs import (
@@ -153,7 +153,17 @@ def createTest(text):
 
             params[param.name] = p
         else:
-            params[param.name] = token
+            try:
+                params[param.name] = int(token)
+            except ValueError:
+                try:
+                    params[param.name] = float(token)
+                except ValueError:
+                    if token[0] == '"':
+                        token = token[1:]
+                    if token[-1] == '"':
+                        token = token[:-1]
+                    params[param.name] = token
 
     definition['params'] = params
 

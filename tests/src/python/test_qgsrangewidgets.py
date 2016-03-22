@@ -12,19 +12,12 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
-import os
+import qgis  # NOQA
 
 from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsVectorLayer, NULL
-
 from qgis.gui import QgsEditorWidgetRegistry
+from qgis.testing import start_app, unittest
 
-from PyQt4 import QtCore, QtGui
-
-from qgis.testing import (start_app,
-                          unittest
-                          )
-from utilities import unitTestDataPath
 start_app()
 
 
@@ -40,7 +33,7 @@ class TestQgsRangeWidget(unittest.TestCase):
         """
         self.layer = QgsVectorLayer("Point?crs=EPSG:21781&field=fldtxt:string&field=fldint:integer",
                                     "addfeat", "memory")
-        pr = self.layer.dataProvider()
+        pr = self.layer.dataProvider()  # NOQA
         f = QgsFeature()
         f.setAttributes(["Hello World", 123])
         f.setGeometry(QgsGeometry.fromPoint(QgsPoint(600000, 200000)))
@@ -54,7 +47,7 @@ class TestQgsRangeWidget(unittest.TestCase):
         config = configWdg.config()
 
         # if null shall be allowed
-        if allownull == True:
+        if allownull:
             config["AllowNull"] = allownull
 
         rangewidget = reg.create('Range', self.layer, 1, config, None, None)

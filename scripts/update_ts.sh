@@ -21,7 +21,7 @@ pull|push|update)
 	;;
 
 *)
-	echo "usage: $(basename $0) {push|pull|update}"
+	echo "usage: $(basename $0) {push|pull|update} builddirectory"
 	exit 1
 esac
 
@@ -70,6 +70,22 @@ if ! type tx >/dev/null 2>&1; then
 	exit 1
 fi
 
+builddir=$2
+if [ -d "$builddir" ]; then
+	textcpp=
+	for i in $builddir/src/core/qgsexpression_texts.cpp $builddir/src/core/qgscontexthelp_texts.cpp; do
+		if [ -f $i ]; then
+			textcpp="$textcpp $i"
+		elif [ "$1" != "pull" ]; then
+			echo Generated help file $i not found
+			exit 1
+		fi
+	done
+elif [ "$1" != "pull" ]; then
+	echo Build directory not found
+	exit 1
+fi
+
 trap cleanup EXIT
 
 echo Saving translations
@@ -108,10 +124,12 @@ echo Updating processing translations
 perl scripts/processing2cpp.pl python/plugins/processing/processing-i18n.cpp
 
 echo Creating qmake project file
-$QMAKE -project -o qgis_ts.pro -nopwd src python i18n
+$QMAKE -project -o qgis_ts.pro -nopwd src python i18n $textcpp
 
 echo Updating translations
 $LUPDATE -locations absolute -verbose qgis_ts.pro
+
+perl -i.bak -ne 'print unless /^\s+<location.*qgs(expression|contexthelp)_texts\.cpp.*$/;' i18n/qgis_*.ts
 
 if [ $1 = push ]; then
 	echo Pushing translation...

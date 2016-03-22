@@ -159,7 +159,11 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex& index, int role ) co
       }
     case Qt::DecorationRole:
     {
-      QImage thumbnail( mRecentProjects.at( index.row() ).previewImagePath );
+      QString filename( mRecentProjects.at( index.row() ).previewImagePath );
+      if ( filename.isEmpty() )
+        return QVariant();
+
+      QImage thumbnail( filename );
       if ( thumbnail.isNull() )
         return QVariant();
 

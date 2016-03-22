@@ -24,6 +24,7 @@
 #include <QDomElement>
 #include <QPainter>
 
+Q_NOWARN_DEPRECATED_PUSH // because of deprecated xform member
 QgsDiagramLayerSettings::QgsDiagramLayerSettings()
     : placement( AroundPoint )
     , placementFlags( OnLine )
@@ -39,7 +40,9 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings()
     , showAll( true )
 {
 }
+Q_NOWARN_DEPRECATED_POP
 
+Q_NOWARN_DEPRECATED_PUSH // because of deprecated xform member
 QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings& rh )
     : placement( rh.placement )
     , placementFlags( rh.placementFlags )
@@ -48,7 +51,7 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings&
     , obstacle( rh.obstacle )
     , dist( rh.dist )
     , renderer( rh.renderer ? rh.renderer->clone() : nullptr )
-    , ct( rh.ct )
+    , ct( rh.ct ? rh.ct->clone() : nullptr )
     , xform( rh.xform )
     , fields( rh.fields )
     , xPosColumn( rh.xPosColumn )
@@ -56,7 +59,9 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings&
     , showAll( rh.showAll )
 {
 }
+Q_NOWARN_DEPRECATED_POP
 
+Q_NOWARN_DEPRECATED_PUSH // because of deprecated xform member
 QgsDiagramLayerSettings&QgsDiagramLayerSettings::operator=( const QgsDiagramLayerSettings & rh )
 {
   placement = rh.placement;
@@ -66,7 +71,7 @@ QgsDiagramLayerSettings&QgsDiagramLayerSettings::operator=( const QgsDiagramLaye
   obstacle = rh.obstacle;
   dist = rh.dist;
   renderer = rh.renderer ? rh.renderer->clone() : nullptr;
-  ct = rh.ct;
+  ct = rh.ct ? rh.ct->clone() : nullptr;
   xform = rh.xform;
   fields = rh.fields;
   xPosColumn = rh.xPosColumn;
@@ -74,10 +79,29 @@ QgsDiagramLayerSettings&QgsDiagramLayerSettings::operator=( const QgsDiagramLaye
   showAll = rh.showAll;
   return *this;
 }
+Q_NOWARN_DEPRECATED_POP
 
+Q_NOWARN_DEPRECATED_PUSH // because of deprecated fields member
 QgsDiagramLayerSettings::~QgsDiagramLayerSettings()
 {
   delete renderer;
+  delete ct;
+}
+Q_NOWARN_DEPRECATED_POP
+
+void QgsDiagramLayerSettings::setRenderer( QgsDiagramRendererV2 *diagramRenderer )
+{
+  if ( diagramRenderer == renderer )
+    return;
+
+  delete renderer;
+  renderer = diagramRenderer;
+}
+
+void QgsDiagramLayerSettings::setCoordinateTransform( QgsCoordinateTransform *transform )
+{
+  delete ct;
+  ct = transform;
 }
 
 void QgsDiagramLayerSettings::readXML( const QDomElement& elem, const QgsVectorLayer* layer )
@@ -110,6 +134,21 @@ void QgsDiagramLayerSettings::writeXML( QDomElement& layerElem, QDomDocument& do
   diagramLayerElem.setAttribute( "yPosColumn", yPosColumn );
   diagramLayerElem.setAttribute( "showAll", showAll );
   layerElem.appendChild( diagramLayerElem );
+}
+
+QSet<QString> QgsDiagramLayerSettings::referencedFields( const QgsExpressionContext &context, const QgsFields& fieldsParameter ) const
+{
+  QSet< QString > referenced;
+  if ( renderer )
+    referenced = renderer->referencedFields( context, fieldsParameter );
+
+  //and the ones needed for data defined diagram positions
+  if ( xPosColumn >= 0 && xPosColumn < fieldsParameter.count() )
+    referenced << fieldsParameter.at( xPosColumn ).name();
+  if ( yPosColumn >= 0 && yPosColumn < fieldsParameter.count() )
+    referenced << fieldsParameter.at( yPosColumn ).name();
+
+  return referenced;
 }
 
 void QgsDiagramSettings::readXML( const QDomElement& elem, const QgsVectorLayer* layer )
@@ -353,7 +392,7 @@ QgsDiagramRendererV2::QgsDiagramRendererV2( const QgsDiagramRendererV2& other )
 {
 }
 
-void QgsDiagramRendererV2::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos )
+void QgsDiagramRendererV2::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos ) const
 {
   if ( !mDiagram )
   {
@@ -369,7 +408,7 @@ void QgsDiagramRendererV2::renderDiagram( const QgsFeature& feature, QgsRenderCo
   mDiagram->renderDiagram( feature, c, s, pos );
 }
 
-QSizeF QgsDiagramRendererV2::sizeMapUnits( const QgsFeature& feature, const QgsRenderContext& c )
+QSizeF QgsDiagramRendererV2::sizeMapUnits( const QgsFeature& feature, const QgsRenderContext& c ) const
 {
   QgsDiagramSettings s;
   if ( !diagramSettings( feature, c, s ) )
@@ -383,6 +422,26 @@ QSizeF QgsDiagramRendererV2::sizeMapUnits( const QgsFeature& feature, const QgsR
     convertSizeToMapUnits( size, c );
   }
   return size;
+}
+
+QSet<QString> QgsDiagramRendererV2::referencedFields( const QgsExpressionContext &context, const QgsFields &fields ) const
+{
+  Q_UNUSED( fields );
+
+  QSet< QString > referenced;
+
+  if ( !mDiagram )
+    return referenced;
+
+  Q_FOREACH ( const QString& att, diagramAttributes() )
+  {
+    QgsExpression* expression = mDiagram->getExpression( att, context );
+    Q_FOREACH ( const QString& field, expression->referencedColumns() )
+    {
+      referenced << field;
+    }
+  }
+  return referenced;
 }
 
 void QgsDiagramRendererV2::convertSizeToMapUnits( QSizeF& size, const QgsRenderContext& context ) const
@@ -458,14 +517,14 @@ QgsSingleCategoryDiagramRenderer* QgsSingleCategoryDiagramRenderer::clone() cons
   return new QgsSingleCategoryDiagramRenderer( *this );
 }
 
-bool QgsSingleCategoryDiagramRenderer::diagramSettings( const QgsFeature&, const QgsRenderContext& c, QgsDiagramSettings& s )
+bool QgsSingleCategoryDiagramRenderer::diagramSettings( const QgsFeature&, const QgsRenderContext& c, QgsDiagramSettings& s ) const
 {
   Q_UNUSED( c );
   s = mSettings;
   return true;
 }
 
-QSizeF QgsSingleCategoryDiagramRenderer::diagramSize( const QgsFeature &feature, const QgsRenderContext &c )
+QSizeF QgsSingleCategoryDiagramRenderer::diagramSize( const QgsFeature &feature, const QgsRenderContext &c ) const
 {
   return mDiagram->diagramSize( feature.attributes(), c, mSettings );
 }
@@ -519,7 +578,7 @@ QList<QgsDiagramSettings> QgsLinearlyInterpolatedDiagramRenderer::diagramSetting
   return settingsList;
 }
 
-bool QgsLinearlyInterpolatedDiagramRenderer::diagramSettings( const QgsFeature& feature, const QgsRenderContext& c, QgsDiagramSettings& s )
+bool QgsLinearlyInterpolatedDiagramRenderer::diagramSettings( const QgsFeature& feature, const QgsRenderContext& c, QgsDiagramSettings& s ) const
 {
   s = mSettings;
   s.size = diagramSize( feature, c );
@@ -531,7 +590,25 @@ QList<QString> QgsLinearlyInterpolatedDiagramRenderer::diagramAttributes() const
   return mSettings.categoryAttributes;
 }
 
-QSizeF QgsLinearlyInterpolatedDiagramRenderer::diagramSize( const QgsFeature& feature, const QgsRenderContext& c )
+QSet<QString> QgsLinearlyInterpolatedDiagramRenderer::referencedFields( const QgsExpressionContext &context, const QgsFields& fields ) const
+{
+  QSet< QString > referenced = QgsDiagramRendererV2::referencedFields( context, fields );
+  if ( mInterpolationSettings.classificationAttributeIsExpression )
+  {
+    QgsExpression* expression = mDiagram->getExpression( mInterpolationSettings.classificationAttributeExpression, context );
+    Q_FOREACH ( const QString& field, expression->referencedColumns() )
+    {
+      referenced << field;
+    }
+  }
+  else
+  {
+    referenced << fields.at( mInterpolationSettings.classificationAttribute ).name();
+  }
+  return referenced;
+}
+
+QSizeF QgsLinearlyInterpolatedDiagramRenderer::diagramSize( const QgsFeature& feature, const QgsRenderContext& c ) const
 {
   return mDiagram->diagramSize( feature, c, mSettings, mInterpolationSettings );
 }

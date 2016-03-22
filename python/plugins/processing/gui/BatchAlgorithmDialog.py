@@ -25,8 +25,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import QApplication, QCursor, QMessageBox
-from PyQt4.QtCore import Qt
+from PyQt.QtWidgets import QApplication, QMessageBox
+from PyQt.QtGui import QCursor
+from PyQt.QtCore import Qt
 
 from processing.gui.BatchPanel import BatchPanel
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
@@ -35,17 +36,7 @@ from processing.gui.Postprocessing import handleAlgorithmResults
 
 from processing.core.ProcessingResults import ProcessingResults
 
-from processing.core.parameters import ParameterFile
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterExtent
-from processing.core.parameters import ParameterCrs
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterFixedTable
-from processing.core.parameters import ParameterMultipleInput
-from processing.core.parameters import ParameterGeometryPredicate
 from processing.core.outputs import OutputNumber
 from processing.core.outputs import OutputString
 from processing.core.outputs import OutputHTML

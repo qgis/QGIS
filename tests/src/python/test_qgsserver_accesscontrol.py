@@ -14,17 +14,18 @@ __revision__ = '$Format:%H$'
 
 print 'CTEST_FULL_OUTPUT'
 
+import qgis  # NOQA
+
 import os
 from shutil import copyfile
 from math import sqrt
-from subprocess import check_output
 from qgis.testing import unittest
 from utilities import unitTestDataPath
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
 from qgis.server import QgsServer, QgsAccessControlFilter
 from qgis.core import QgsRenderChecker
-from PyQt4.QtCore import QSize
+from PyQt.QtCore import QSize
 import tempfile
 import urllib
 import base64
@@ -1047,7 +1048,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             str(response).find("<qgs:pk>") != -1,
             "Project set layer subsetString not honored in WMS GetFeatureInfo when access control applied/1\n%s" % response)
 
-    def test_wms_getfeatureinfo_projectsubsetstring2(self):
+    def test_wms_getfeatureinfo_projectsubsetstring5(self):
         """test that layer subsetStrings set in projects are honored. This test checks for a feature which should pass
         both project set layer subsetString and access control filters
         """
@@ -1156,7 +1157,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             str(response).find("<qgs:pk>") != -1,
             "Request filter not honored in WMS GetFeatureInfo when access control applied/1\n%s" % response)
 
-    def test_wms_getfeatureinfo_projectsubsetstring2(self):
+    def test_wms_getfeatureinfo_projectsubsetstring4(self):
         """test that request filters are honored. This test checks for a feature which should pass
         both request filter and access control filters
         """
@@ -1196,7 +1197,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             str(response).find("<qgs:pk>7</qgs:pk>") != -1,
             "No good result result in GetFeatureInfo Hello/2\n%s" % response)
 
-    def test_wms_getfeatureinfo_projectsubsetstring3(self):
+    def test_wms_getfeatureinfo_projectsubsetstring2(self):
         """test that request filters are honored. This test checks for a feature which should pass
         the request filter but fail the access control checks
         """

@@ -742,8 +742,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void removeLayer();
     //! Duplicate map layer(s) in legend
     void duplicateLayers( const QList<QgsMapLayer *>& lyrList = QList<QgsMapLayer *>() );
-    //! Set Scale visibility of selected layers
+    //! Set scale visibility of selected layers
     void setLayerScaleVisibility();
+    //! Zoom to nearest scale such that current layer is visible
+    void zoomToLayerScale();
     //! Set CRS of a layer
     void setLayerCRS();
     //! Assign layer CRS to project

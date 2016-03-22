@@ -1,0 +1,1 @@
+from libfuturize.fixes.fix_absolute_import import FixAbsoluteImport

@@ -12,17 +12,16 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
+
 import os
 import tempfile
 import shutil
 import glob
 
-from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsProviderRegistry
-from PyQt4.QtCore import QSettings
-from qgis.testing import (start_app,
-                          unittest
-                          )
+from qgis.core import QgsVectorLayer, QgsFeatureRequest
+from PyQt.QtCore import QSettings
+from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
 
@@ -49,7 +48,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         cls.repackfile = os.path.join(cls.repackfilepath, 'shapefile.shp')
         cls.basetestpolyfile = os.path.join(cls.basetestpath, 'shapefile_poly.shp')
         cls.vl = QgsVectorLayer(u'{}|layerid=0'.format(cls.basetestfile), u'test', u'ogr')
-        assert (cls.vl.isValid())
+        assert(cls.vl.isValid())
         cls.provider = cls.vl.dataProvider()
         cls.vl_poly = QgsVectorLayer(u'{}|layerid=0'.format(cls.basetestpolyfile), u'test', u'ogr')
         assert (cls.vl_poly.isValid())
@@ -72,12 +71,12 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
         ids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk=1'))]
         vl.setSelectedFeatures(ids)
-        assert vl.selectedFeaturesIds() == ids, vl.selectedFeaturesIds()
-        assert vl.pendingFeatureCount() == 5, vl.pendingFeatureCount()
-        assert vl.startEditing()
-        assert vl.deleteFeature(3)
-        assert vl.commitChanges()
-        assert vl.selectedFeatureCount() == 0 or vl.selectedFeatures()[0]['pk'] == 1
+        self.assertEquals(vl.selectedFeaturesIds(), ids)
+        self.assertEquals(vl.pendingFeatureCount(), 5)
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.deleteFeature(3))
+        self.assertTrue(vl.commitChanges())
+        self.assertTrue(vl.selectedFeatureCount() == 0 or vl.selectedFeatures()[0]['pk'] == 1)
 
 
 if __name__ == '__main__':

@@ -14,12 +14,10 @@ test_analysis.py
  *                                                                         *
  ***************************************************************************/
 '''
-import sys
-import qgis
 
-from qgis.testing import (start_app,
-                          unittest
-                          )
+import qgis  # NOQA
+
+from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
 start_app()
@@ -41,7 +39,7 @@ class TestQgsZonalStatistics(unittest.TestCase):
         """Test that we can import zonal statistics was failing as of d5f6543
         """
         try:
-            from qgis.analysis import QgsZonalStatistics
+            from qgis.analysis import QgsZonalStatistics  # NOQA
         except ImportError:
             self.fail('Failed to import zonal statistics python module')
 

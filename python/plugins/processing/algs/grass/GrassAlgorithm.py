@@ -31,8 +31,8 @@ import uuid
 import importlib
 import re
 
-from PyQt4.QtCore import QCoreApplication
-from PyQt4.QtGui import QIcon
+from PyQt.QtCore import QCoreApplication
+from PyQt.QtGui import QIcon
 
 from qgis.core import QgsRasterLayer
 from qgis.utils import iface
@@ -59,7 +59,7 @@ from processing.core.outputs import (getOutputFromString,
                                      OutputFile,
                                      OutputHTML)
 
-from GrassUtils import GrassUtils
+from .GrassUtils import GrassUtils
 
 from processing.tools import dataobjects, system
 
@@ -465,7 +465,7 @@ class GrassAlgorithm(GeoAlgorithm):
         snap = self.getParameterValue(self.GRASS_SNAP_TOLERANCE_PARAMETER)
         command += ' snap=' + unicode(snap)
         command += ' dsn="%s"' % os.path.dirname(filename)
-        command += ' layer="%s"' % os.path.splitext(os.path.basename(filename)[:-4])[0]
+        command += ' layer="%s"' % os.path.basename(filename)[:-4]
         command += ' output=' + destFilename
         command += ' --overwrite -o'
         return command

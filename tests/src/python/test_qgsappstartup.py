@@ -14,13 +14,11 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtCore
 import sys
 import os
 import glob
 import re
 import time
-# import locale
 import shutil
 import subprocess
 import tempfile
@@ -59,7 +57,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
 
         # from unicode to local
         if testDir:
-            testDir = str(QtCore.QString(testDir).toLocal8Bit())
+            testDir = testDir.encode('ascii', 'ignore')
             if not os.path.exists(testDir):
                 os.mkdir(testDir)
             myTestFile = os.path.join(testDir, testFile)
@@ -146,8 +144,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
                 testFile="plugin_started.txt",
                 timeOut=270,
                 loadPlugins=True,
-                env={'QGIS_PLUGINPATH':
-                         str(QtCore.QString(testDir).toLocal8Bit())})
+                env={'QGIS_PLUGINPATH': testDir.encode('ascii', 'ignore')})
 
     def testPyQgisStartupEnvVar(self):
         # verify PYQGIS_STARTUP env variable file is run by embedded interpreter

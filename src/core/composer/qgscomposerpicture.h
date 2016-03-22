@@ -179,6 +179,57 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      */
     ItemPositionMode pictureAnchor() const { return mPictureAnchor; }
 
+    /** Returns the fill color used for parameterized SVG files.
+     * @see setSvgFillColor()
+     * @see svgBorderColor()
+     * @note added in QGIS 2.14.1
+     */
+    QColor svgFillColor() const { return mSvgFillColor; }
+
+    /** Sets the fill color used for parameterized SVG files.
+     * @param color fill color.
+     * @note this setting only has an effect on parameterized SVG files, and is ignored for
+     * non-parameterized SVG files.
+     * @see svgFillColor()
+     * @see setSvgBorderColor()
+     * @note added in QGIS 2.14.1
+     */
+    void setSvgFillColor( const QColor& color );
+
+    /** Returns the border color used for parameterized SVG files.
+     * @see setSvgBorderColor()
+     * @see svgFillColor()
+     * @note added in QGIS 2.14.1
+     */
+    QColor svgBorderColor() const { return mSvgBorderColor; }
+
+    /** Sets the border color used for parameterized SVG files.
+     * @param color border color.
+     * @note this setting only has an effect on parameterized SVG files, and is ignored for
+     * non-parameterized SVG files.
+     * @see svgBorderlColor()
+     * @see setSvgFillColor()
+     * @note added in QGIS 2.14.1
+     */
+    void setSvgBorderColor( const QColor& color );
+
+    /** Returns the border width (in mm) used for parameterized SVG files.
+     * @see setSvgBorderWidth()
+     * @see svgBorderColor()
+     * @note added in QGIS 2.14.1
+     */
+    double svgBorderWidth() const { return mSvgBorderWidth; }
+
+    /** Sets the border width used for parameterized SVG files.
+     * @param width border width in mm
+     * @note this setting only has an effect on parameterized SVG files, and is ignored for
+     * non-parameterized SVG files.
+     * @see svgBorderWidth()
+     * @see setSvgBorderColor()
+     * @note added in QGIS 2.14.1
+     */
+    void setSvgBorderWidth( double width );
+
     /** Returns whether the picture item is using an expression for the image source.
      * @returns true if the picture is using an expression for the source, false if
      * it is using a single static file path for the source.
@@ -323,8 +374,13 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     ResizeMode mResizeMode;
     QgsComposerItem::ItemPositionMode mPictureAnchor;
 
+    QColor mSvgFillColor;
+    QColor mSvgBorderColor;
+    double mSvgBorderWidth;
+
     bool mHasExpressionError;
     bool mLoaded;
+    bool mLoadingSvg;
 
     /** Loads an image file into the picture item and redraws the item*/
     void loadPicture( const QString &path );

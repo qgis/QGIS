@@ -25,7 +25,10 @@ __copyright__ = '(C) 2015, René-Luc Dhont'
 
 __revision__ = '$Format:%H$'
 
-from pyspatialite import dbapi2 as sqlite
+try:
+    from pyspatialite import dbapi2 as sqlite
+except:
+    pass
 
 
 class DbError(Exception):
@@ -49,7 +52,7 @@ class GeoDB:
             self.con = sqlite.connect(self.con_info())
 
         except (sqlite.InterfaceError, sqlite.OperationalError) as e:
-            raise DbError(e.message)
+            raise DbError(unicode(e))
 
         self.has_spatialite = self.check_spatialite()
         if not self.has_spatialite:
@@ -84,7 +87,7 @@ class GeoDB:
             self.con = sqlite.connect(self.con_info())
 
         except (sqlite.InterfaceError, sqlite.OperationalError) as e:
-            raise DbError(e.message)
+            raise DbError(unicode(e))
 
         return self.check_spatialite()
 
@@ -95,7 +98,7 @@ class GeoDB:
             v = c.fetchone()[0]
             self.has_geometry_columns = v == 1 or v == 3
             self.has_spatialite4 = v == 3
-        except Exception as e:
+        except Exception:
             self.has_geometry_columns = False
             self.has_spatialite4 = False
 
@@ -106,7 +109,7 @@ class GeoDB:
         try:
             cursor.execute(sql)
         except (sqlite.Error, sqlite.ProgrammingError, sqlite.Warning, sqlite.InterfaceError, sqlite.OperationalError) as e:
-            raise DbError(e.message, sql)
+            raise DbError(unicode(e), sql)
 
     def _exec_sql_and_commit(self, sql):
         """Tries to execute and commit some action, on error it rolls
@@ -117,6 +120,6 @@ class GeoDB:
             c = self.con.cursor()
             self._exec_sql(c, sql)
             self.con.commit()
-        except DbError as e:
+        except DbError:
             self.con.rollback()
             raise

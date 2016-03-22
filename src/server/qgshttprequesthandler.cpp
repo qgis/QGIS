@@ -17,9 +17,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgis.h"
 #include "qgshttprequesthandler.h"
+#if QT_VERSION < 0x050000
 #include "qgsftptransaction.h"
 #include "qgshttptransaction.h"
+#endif
 #include "qgsmessagelog.h"
 #include "qgsmapserviceexception.h"
 #include <QBuffer>
@@ -37,7 +40,7 @@ QgsHttpRequestHandler::QgsHttpRequestHandler( const bool captureOutput )
     : QgsRequestHandler()
 {
   mException = nullptr;
-  mHeadersSent = FALSE;
+  mHeadersSent = false;
   mCaptureOutput = captureOutput;
 }
 
@@ -165,7 +168,7 @@ void QgsHttpRequestHandler::sendHeaders()
   }
   addToResponseHeader( "\n" );
   mHeaders.clear();
-  mHeadersSent = TRUE;
+  mHeadersSent = true;
 }
 
 void QgsHttpRequestHandler::sendBody()
@@ -574,6 +577,7 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
     }
     else if ( key.compare( "SLD", Qt::CaseInsensitive ) == 0 )
     {
+#if QT_VERSION < 0x050000
       QByteArray fileContents;
       if ( value.startsWith( "http", Qt::CaseInsensitive ) )
       {
@@ -585,18 +589,24 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
       }
       else if ( value.startsWith( "ftp", Qt::CaseInsensitive ) )
       {
+        Q_NOWARN_DEPRECATED_PUSH;
         QgsFtpTransaction ftp;
         if ( !ftp.get( value, fileContents ) )
         {
           continue;
         }
         value = QUrl::fromPercentEncoding( fileContents );
+        Q_NOWARN_DEPRECATED_POP;
       }
       else
       {
         continue; //only http and ftp supported at the moment
       }
       value = QUrl::fromPercentEncoding( fileContents );
+#else
+      QgsMessageLog::logMessage( "http and ftp methods not supported with Qt5." );
+      continue;
+#endif
 
     }
     parameters.insert( key.toUpper(), value );

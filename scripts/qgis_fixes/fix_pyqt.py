@@ -281,6 +281,7 @@ MAPPING = {
             "pyqtProperty",
             "pyqtWrapperType",
             "pyqtSignal",
+            "pyqtSlot",
             "qDebug",
             "qWarning",
             "QDate",
@@ -297,6 +298,7 @@ MAPPING = {
             "QPoint",
             "QPointF",
             "QDirIterator",
+            "NULL",
         ]),
         (None, [
             "SIGNAL",
@@ -311,17 +313,18 @@ MAPPING = {
             "QDomDocument"
         ]),
     ],
-    "PyQt4.QtSci": [
-        ("PyQt.QtSci", [
+    "PyQt4.Qsci": [
+        ("PyQt.Qsci", [
             "QsciAPIs",
             "QsciLexerCustom",
             "QsciLexerPython",
             "QsciScintilla",
             "QsciLexerSQL",
+            "QsciStyle",
         ]),
     ],
-    "PyQt4.QtWebkit": [
-        ("PyQt.QtWebkitWidgets", [
+    "PyQt4.QtWebKit": [
+        ("PyQt.QtWebKitWidgets", [
             "QGraphicsWebView",
             "QWebFrame",
             "QWebHitTestResult",
@@ -329,6 +332,42 @@ MAPPING = {
             "QWebPage",
             "QWebView",
         ]),
+    ],
+    "PyQt4.QtTest": [
+        ("PyQt.QtTest", [
+            "QTest",
+        ]),
+    ],
+    "PyQt4.QtSvg": [
+        ("PyQt.QtSvg", [
+            "QSvgRenderer",
+            "QSvgGenerator"
+        ]),
+    ],
+    "PyQt4.QtSql": [
+        ("PyQt.QtSql", [
+            "QSqlDatabase",
+            "QSqlQuery",
+            "QSqlField"
+        ]),
+    ],
+    "PyQt4.uic": [
+        ("PyQt.uic", [
+            "loadUiType",
+        ]),
+    ],
+    "PyQt4": [
+        ("PyQt", [
+            "QtCore",
+            "QtGui",
+            "QtNetwork",
+            "QtXml",
+            "QtWebkit",
+            "QtSql",
+            "QtSvg",
+            "Qsci",
+            "uic",
+        ])
     ],
 }
 
@@ -339,35 +378,44 @@ def build_pattern():
         for change in changes:
             new_module, members = change
             members = alternates(members)
-            yield """import_name< 'import' (module=%r
-                                  | dotted_as_names< any* module=%r any* >) >
-                  """ % (old_module, old_module)
+
             if '.' not in old_module:
-                yield """import_from< 'from' mod_member=%r 'import'
-                       ( member=%s | import_as_name< member=%s 'as' any > |
-                         import_as_names< members=any*  >) >
-                  """ % (old_module, members, members)
+                from_name = "%r" % old_module
             else:
                 dotted = old_module.split('.')
                 assert len(dotted) == 2
-                yield """import_from< 'from' mod_member=dotted_name<%r '.' %r> 'import'
+                from_name = "dotted_name<%r '.' %r>" % (dotted[0], dotted[1])
+
+            yield """import_name< 'import' (module=%s
+                                  | dotted_as_names< any* module=%s any* >) >
+                  """ % (from_name, from_name)
+            yield """import_from< 'from' mod_member=%s 'import'
                        ( member=%s | import_as_name< member=%s 'as' any > |
                          import_as_names< members=any*  >) >
-                  """ % ( dotted[0], dotted[1], members, members)
-            yield """import_from< 'from' module_star=%r 'import' star='*' >
-                  """ % old_module
+                  """ % (from_name, members, members)
+            yield """import_from< 'from' mod_member=%s 'import' '('
+                       ( member=%s | import_as_name< member=%s 'as' any > |
+                         import_as_names< members=any*  >) ')' >
+                  """ % (from_name, members, members)
+            yield """import_from< 'from' module_star=%s 'import' star='*' >
+                  """ % from_name
             yield """import_name< 'import'
-                                  dotted_as_name< module_as=%r 'as' any > >
-                  """ % old_module
+                                  dotted_as_name< module_as=%s 'as' any > >
+                  """ % from_name
             # bare_with_attr has a special significance for FixImports.match().
-            yield """power< bare_with_attr=%r trailer< '.' member=%s > any* >
-                  """ % (old_module, members)
+            yield """power< bare_with_attr=%s trailer< '.' member=%s > any* >
+                  """ % (from_name, members)
 
 
 class FixPyqt(FixImports):
 
     def build_pattern(self):
         return "|".join(build_pattern())
+
+#    def match(self, node):
+#        res = super(FixImports, self).match( node )
+#        print repr(node)
+#        return res
 
     def transform_import(self, node, results):
         """Transform for the basic import case. Replaces the old
@@ -415,6 +463,8 @@ class FixPyqt(FixImports):
                 mod_member.replace(Name(new_name, prefix=pref))
             elif new_name == '':
                 self.cannot_convert(node, "This is an invalid module element")
+            else:
+                node.remove()
 
         # Multiple members being imported
         else:
@@ -482,6 +532,8 @@ class FixPyqt(FixImports):
                 node.replace(nodes)
             elif missing:
                 self.cannot_convert(node, "All module elements are invalid")
+            else:
+                node.remove()
 
     def transform_dot(self, node, results):
         """Transform for calls to module members in code."""

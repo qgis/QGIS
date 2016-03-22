@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
 
 from qgis.testing import unittest
 from qgis.core import (
@@ -20,7 +20,7 @@ from qgis.core import (
     QGis,
     QgsSymbolV2
 )
-from PyQt4.QtCore import QLocale
+from PyQt.QtCore import QLocale
 
 # enforce C locale because the tests expect it
 # (decimal separators / thousand separators)

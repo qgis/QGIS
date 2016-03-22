@@ -1436,7 +1436,7 @@ class TestQgsGeometry(unittest.TestCase):
         # test adding a part with Z values
         polygon = QgsGeometry.fromPolygon(points[0])
         polygon.geometry().addZValue(4.0)
-        points2 = [QgsPointV2(QgsWKBTypes.PointZ, p[0], p[1], 3.0) for p in points[1][0]]
+        points2 = [QgsPointV2(QgsWKBTypes.PointZ, pi[0], pi[1], 3.0) for pi in points[1][0]]
         assert polygon.addPart(points2) == 0
         expwkt = "MultiPolygonZ (((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 2 4, 0 2 4, 0 0 4)),((4 0 3, 5 0 3, 5 2 3, 3 2 3, 3 1 3, 4 1 3, 4 0 3)))"
         wkt = polygon.exportToWkt()
@@ -1657,6 +1657,21 @@ class TestQgsGeometry(unittest.TestCase):
         expWkt = 'LineString (0 0, 1 0, 2 0)'
         wkt = c.exportToWkt()
         assert compareWkt(expWkt, wkt), "testRegression13274 failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+    def testReshape(self):
+        """ Test geometry reshaping """
+        g = QgsGeometry.fromWkt('Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
+        g.reshapeGeometry([QgsPoint(0, 1.5), QgsPoint(1.5, 0)])
+        expWkt = 'Polygon ((0.5 1, 0 1, 0 0, 1 0, 1 0.5, 0.5 1))'
+        wkt = g.exportToWkt()
+        assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+        # Test reshape a geometry involving the first/last vertex (http://hub.qgis.org/issues/14443)
+        g.reshapeGeometry([QgsPoint(0.5, 1), QgsPoint(0, 0.5)])
+
+        expWkt = 'Polygon ((0 0.5, 0 0, 1 0, 1 0.5, 0.5 1, 0 0.5))'
+        wkt = g.exportToWkt()
+        assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
     def testConvertToMultiType(self):
         """ Test converting geometries to multi type """

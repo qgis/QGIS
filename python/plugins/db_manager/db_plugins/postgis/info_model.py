@@ -20,7 +20,7 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtGui import QApplication
+from PyQt.QtWidgets import QApplication
 
 from ..info_model import TableInfo, VectorTableInfo, RasterTableInfo
 from ..html_elems import HtmlSection, HtmlParagraph, HtmlTable, HtmlTableHeader, HtmlTableCol
@@ -106,7 +106,7 @@ class PGTableInfo(TableInfo):
 
         # primary key defined?
         if not self.table.isView:
-            if len(filter(lambda fld: fld.primaryKey, self.table.fields())) <= 0:
+            if len([fld for fld in self.table.fields() if fld.primaryKey]) <= 0:
                 ret.append(HtmlParagraph(
                     QApplication.translate("DBManagerPlugin", "<warning> No primary key defined for this table!")))
 

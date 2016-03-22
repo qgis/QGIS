@@ -30,7 +30,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import re
-from PyQt4.QtCore import QCoreApplication
+from PyQt.QtCore import QCoreApplication
 from qgis.core import QgsApplication
 import subprocess
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -39,7 +39,7 @@ from processing.tools.system import isMac, isWindows
 import logging
 import xml.etree.ElementTree as ET
 import traceback
-from processing.gui.SilentProgress import SilentProgress
+from processing.core.SilentProgress import SilentProgress
 
 
 OTB_FOLDER = "OTB_FOLDER"

@@ -397,12 +397,15 @@ class ProviderTestCase(object):
             self.assertEqual(result, expected, 'Expected {}, got {}'.format(expected, result))
 
     def testGetFeaturesSubsetAttributes2(self):
-        """ Test that other fields are NULL wen fetching subsets of attributes """
+        """ Test that other fields are NULL when fetching subsets of attributes """
 
         for field_to_fetch in ['pk', 'cnt', 'name', 'name2']:
             for f in self.provider.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([field_to_fetch], self.provider.fields())):
                 # Check that all other fields are NULL
                 for other_field in [field.name() for field in self.provider.fields() if field.name() != field_to_fetch]:
+                    if other_field == 'pk':
+                        # skip checking the primary key field, as it may be validly fetched by providers to use as feature id
+                        continue
                     self.assertEqual(f[other_field], NULL, 'Value for field "{}" was present when it should not have been fetched by request'.format(other_field))
 
     def testGetFeaturesNoGeometry(self):
@@ -411,7 +414,7 @@ class ProviderTestCase(object):
         for f in self.provider.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)):
             self.assertFalse(f.constGeometry(), 'Expected no geometry, got one')
 
-    def testGetFeaturesNoGeometry(self):
+    def testGetFeaturesWithGeometry(self):
         """ Test that geometry is present when fetching features without setting NoGeometry flag"""
         for f in self.provider.getFeatures(QgsFeatureRequest()):
             if f['pk'] == 3:

@@ -25,8 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import QVariant
-from qgis.core import QgsField, QgsFeature, QgsGeometry
+from PyQt.QtCore import QVariant
+from qgis.core import QgsField, QgsFeature
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -62,7 +62,7 @@ class AutoincrementalField(GeoAlgorithm):
             geom = feat.geometry()
             outFeat.setGeometry(geom)
             attrs = feat.attributes()
-            attrs.append(count)
+            attrs.append(current)
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
         del writer

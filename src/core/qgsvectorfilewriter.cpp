@@ -362,12 +362,19 @@ void QgsVectorFileWriter::init( QString vectorFileName, QString fileEncoding, co
 
     switch ( attrField.type() )
     {
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM < 2000000
       case QVariant::LongLong:
         ogrType = OFTString;
         ogrWidth = ogrWidth > 0 && ogrWidth <= 21 ? ogrWidth : 21;
         ogrPrecision = -1;
         break;
-
+#else
+      case QVariant::LongLong:
+        ogrType = OFTInteger64;
+        ogrWidth = ogrWidth > 0 && ogrWidth <= 20 ? ogrWidth : 20;
+        ogrPrecision = 0;
+        break;
+#endif
       case QVariant::String:
         ogrType = OFTString;
         if ( ogrWidth <= 0 || ogrWidth > 255 )

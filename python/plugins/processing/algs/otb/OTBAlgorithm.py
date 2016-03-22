@@ -31,19 +31,18 @@ __revision__ = '$Format:%H$'
 
 import os
 import re
-from PyQt4.QtCore import QCoreApplication
-from PyQt4.QtGui import QIcon
+from PyQt.QtCore import QCoreApplication
+from PyQt.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import getParameterFromString
 from processing.core.outputs import getOutputFromString
-import OTBUtils
+from . import OTBUtils
 from processing.core.parameters import ParameterExtent
 from processing.tools.system import getTempFilename
 import xml.etree.ElementTree as ET
@@ -337,7 +336,7 @@ class OTBAlgorithm(GeoAlgorithm):
 
         if not found:
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                   self.tr("Adapter for %s not found" % the_key))
+                                   self.tr("Adapter for %s not found") % the_key)
 
         #frames = inspect.getouterframes(inspect.currentframe())[1:]
         #for a_frame in frames:

@@ -23,19 +23,17 @@ email                : brush.tyler@gmail.com
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import PostGisDBConnector
 
-from PyQt4.QtCore import QSettings, Qt, QRegExp, SIGNAL
-from PyQt4.QtGui import QIcon, QAction, QApplication, QMessageBox
+from PyQt.QtCore import QSettings, Qt, QRegExp
+from PyQt.QtGui import QIcon
+from PyQt.QtWidgets import QAction, QApplication, QMessageBox
 from qgis.gui import QgsMessageBar
 
 from ..plugin import ConnectionError, InvalidDataException, DBPlugin, Database, Schema, Table, VectorTable, RasterTable, \
     TableField, TableConstraint, TableIndex, TableTrigger, TableRule
 
-try:
-    from . import resources_rc
-except ImportError:
-    pass
-
 import re
+
+from . import resources_rc  # NOQA
 
 
 def classFactory():
@@ -80,7 +78,7 @@ class PostGisDBPlugin(DBPlugin):
         uri = QgsDataSourceURI()
 
         settingsList = ["service", "host", "port", "database", "username", "password", "authcfg"]
-        service, host, port, database, username, password, authcfg = map(lambda x: settings.value(x, "", type=str), settingsList)
+        service, host, port, database, username, password, authcfg = [settings.value(x, "", type=str) for x in settingsList]
 
         useEstimatedMetadata = settings.value("estimatedMetadata", False, type=bool)
         sslmode = settings.value("sslmode", QgsDataSourceURI.SSLprefer, type=int)
@@ -96,7 +94,7 @@ class PostGisDBPlugin(DBPlugin):
 
         try:
             return self.connectToUri(uri)
-        except ConnectionError as e:
+        except ConnectionError:
             return False
 
 
@@ -165,7 +163,7 @@ class PGTable(Table):
         self.estimatedRowCount = int(self.estimatedRowCount)
 
     def runVacuumAnalyze(self):
-        self.aboutToChange()
+        self.aboutToChange.emit()
         self.database().connector.runVacuumAnalyze((self.schemaName(), self.name))
         # TODO: change only this item, not re-create all the tables in the schema/database
         self.schema().refresh() if self.schema() else self.database().refresh()
@@ -195,7 +193,7 @@ class PGTable(Table):
                 QApplication.setOverrideCursor(Qt.WaitCursor)
 
             if rule_action == "delete":
-                self.aboutToChange()
+                self.aboutToChange.emit()
                 self.database().connector.deleteTableRule(rule_name, (self.schemaName(), self.name))
                 self.refreshRules()
                 return True
@@ -228,13 +226,13 @@ class PGTable(Table):
         return PGTableDataModel(self, parent)
 
     def delete(self):
-        self.aboutToChange()
+        self.aboutToChange.emit()
         if self.isView:
             ret = self.database().connector.deleteView((self.schemaName(), self.name), self._relationType == 'm')
         else:
             ret = self.database().connector.deleteTable((self.schemaName(), self.name))
-        if ret is not False:
-            self.emit(SIGNAL('deleted'))
+        if not ret:
+            self.deleted.emit()
         return ret
 
 

@@ -33,8 +33,8 @@ import time
 import json
 import codecs
 import traceback
-from PyQt4.QtCore import QCoreApplication, QPointF
-from PyQt4.QtGui import QIcon
+from PyQt.QtCore import QCoreApplication, QPointF
+from PyQt.QtGui import QIcon
 from qgis.core import QgsRasterLayer, QgsVectorLayer
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
@@ -52,8 +52,7 @@ from processing.core.parameters import (getParameterFromString,
                                         ParameterNumber,
                                         ParameterExtent,
                                         ParameterDataObject,
-                                        ParameterMultipleInput,
-                                        ParameterPoint)
+                                        ParameterMultipleInput)
 from processing.tools import dataobjects
 from processing.gui.Help2Html import getHtmlFromDescriptionsDict
 
@@ -387,7 +386,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                     value = self.resolveValue(alg.params[param.name])
                 else:
                     iface.messageBar().pushMessage(self.tr("Warning"),
-                                                   self.tr("Parameter %s in algorithm %s in the model is run with default value! Edit the model to make sure that this is correct." % (param.name, alg.name)),
+                                                   self.tr("Parameter %s in algorithm %s in the model is run with default value! Edit the model to make sure that this is correct.") % (param.name, alg.name),
                                                    QgsMessageBar.WARNING, 4)
                     value = None
                 if value is None and isinstance(param, ParameterExtent):
@@ -554,7 +553,7 @@ class ModelerAlgorithm(GeoAlgorithm):
             try:
                 d = o.todict()
                 return {"class": o.__class__.__module__ + "." + o.__class__.__name__, "values": d}
-            except Exception as e:
+            except Exception:
                 pass
         return json.dumps(self, default=todict, indent=4)
 
@@ -609,7 +608,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         try:
             alg = ModelerAlgorithm.fromJsonFile(filename)
             return alg
-        except WrongModelException as e:
+        except WrongModelException:
             alg = ModelerAlgorithm.fromOldFormatFile(filename)
             return alg
 

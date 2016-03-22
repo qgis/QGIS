@@ -504,7 +504,7 @@ QString QgsLabel::labelField( int attr ) const
   int fieldIndex = mLabelFieldIdx[attr];
   if ( fieldIndex < 0 || fieldIndex >= mFields.count() )
     return QString();
-  return mFields[fieldIndex].name();
+  return mFields.at( fieldIndex ).name();
 }
 
 QgsLabelAttributes *QgsLabel::labelAttributes( void )
@@ -1413,4 +1413,10 @@ void QgsLabel::setMaxScale( float theMaxScale )
 float QgsLabel::maxScale() const
 {
   return mMaxScale;
+}
+
+bool QgsLabel::isInScaleRange( double scale ) const
+{
+  return !mScaleBasedVisibility ||
+         ( mMinScale * QGis::SCALE_PRECISION < scale && scale * QGis::SCALE_PRECISION < mMaxScale );
 }

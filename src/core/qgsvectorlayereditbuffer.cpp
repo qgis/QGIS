@@ -225,10 +225,9 @@ bool QgsVectorLayerEditBuffer::addAttribute( const QgsField &field )
   if ( field.name().isEmpty() )
     return false;
 
-  const QgsFields& updatedFields = L->fields();
-  for ( int idx = 0; idx < updatedFields.count(); ++idx )
+  Q_FOREACH ( const QgsField& updatedField, L->fields() )
   {
-    if ( updatedFields[idx].name() == field.name() )
+    if ( updatedField.name() == field.name() )
       return false;
   }
 

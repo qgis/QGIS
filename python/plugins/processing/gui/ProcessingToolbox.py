@@ -27,15 +27,14 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4 import uic
-from PyQt4.QtCore import Qt, QSettings, QCoreApplication, SIGNAL
-from PyQt4.QtGui import QMenu, QAction, QTreeWidgetItem, QLabel, QMessageBox
+from PyQt import uic
+from PyQt.QtCore import Qt, QCoreApplication
+from PyQt.QtWidgets import QMenu, QAction, QTreeWidgetItem, QLabel, QMessageBox
 from qgis.utils import iface
 
 from processing.core.Processing import Processing
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui import AlgorithmClassification
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -113,7 +112,9 @@ class ProcessingToolbox(BASE, WIDGET):
                         if text in alg.name:
                             self.disabledWithMatchingAlgs.append(providerName)
                             break
-            self.txtDisabled.setVisible(bool(self.disabledWithMatchingAlgs))
+            showTip = ProcessingConfig.getSetting(ProcessingConfig.SHOW_PROVIDERS_TOOLTIP)
+            if showTip:
+                self.txtDisabled.setVisible(bool(self.disabledWithMatchingAlgs))
         else:
             self.algorithmTree.collapseAll()
             self.algorithmTree.invisibleRootItem().child(0).setExpanded(True)
@@ -125,15 +126,13 @@ class ProcessingToolbox(BASE, WIDGET):
             for i in xrange(item.childCount()):
                 child = item.child(i)
                 showChild = self._filterItem(child, text)
-                show = (showChild or show) and not item in self.disabledProviderItems.values()
+                show = (showChild or show) and item not in self.disabledProviderItems.values()
             item.setHidden(not show)
             return show
         elif isinstance(item, (TreeAlgorithmItem, TreeActionItem)):
             hide = bool(text) and (text not in item.text(0).lower())
             if isinstance(item, TreeAlgorithmItem):
                 hide = hide and (text not in item.alg.commandLineName())
-                if item.alg.shortHelp() is not None:
-                    hide = hide and (text not in item.alg.shortHelp())
             item.setHidden(hide)
             return not hide
         else:

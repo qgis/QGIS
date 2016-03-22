@@ -31,8 +31,8 @@ from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputFile
-from FusionAlgorithm import FusionAlgorithm
-from FusionUtils import FusionUtils
+from .FusionAlgorithm import FusionAlgorithm
+from .FusionUtils import FusionUtils
 
 
 class ClipData(FusionAlgorithm):

@@ -17,7 +17,8 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
+
 import os
 import sys
 import datetime
@@ -26,8 +27,8 @@ import shutil
 import StringIO
 import tempfile
 
-from PyQt4.QtCore import QSize, qDebug
-from PyQt4.QtGui import QFont, QColor
+from PyQt.QtCore import QSize, qDebug
+from PyQt.QtGui import QFont, QColor
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -41,11 +42,7 @@ from qgis.core import (
     QgsMultiRenderChecker
 )
 
-from qgis.testing import (
-    start_app,
-    unittest
-)
-
+from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
 
 from utilities import (

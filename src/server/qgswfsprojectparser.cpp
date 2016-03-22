@@ -455,7 +455,7 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
         for ( int idx = 0; idx < fields.count(); ++idx )
         {
 
-          QString attributeName = fields[idx].name();
+          QString attributeName = fields.at( idx ).name();
           //skip attribute if excluded from WFS publication
           if ( layerExcludedAttributes.contains( attributeName ) )
           {
@@ -468,6 +468,8 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
           QVariant::Type attributeType = fields[idx].type();
           if ( attributeType == QVariant::Int )
             attElem.setAttribute( "type", "integer" );
+          else if ( attributeType == QVariant::LongLong )
+            attElem.setAttribute( "type", "long" );
           else if ( attributeType == QVariant::Double )
             attElem.setAttribute( "type", "double" );
           else if ( attributeType == QVariant::Bool )

@@ -101,22 +101,26 @@
      style="display:inline"
      transform="translate(-9,0.43510934)">
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       stroke="param(outline)" stroke-opacity="param(outline-opacity)"
+       style="fill:none;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 13.59771,1.3310744 0,14.3749996 0,-12.7812506"
        id="path4241"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       stroke="param(outline)" stroke-opacity="param(outline-opacity)"
+       style="fill:none;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 13.590804,15.665089 9.3155514,3.9189324"
        id="path4243"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       stroke="param(outline)" stroke-opacity="param(outline-opacity)"
+       style="fill:none;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 9.3213424,3.9912304 -0.1875,0.765625"
        id="path4245"
        inkscape:connector-curvature="0" />
     <path
        sodipodi:type="star"
+       fill="param(outline)" fill-opacity="param(outline-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)"
        style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.25;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="path4257"
        sodipodi:sides="5"
@@ -134,6 +138,7 @@
        inkscape:transform-center-y="-0.067238048" />
     <path
        sodipodi:type="arc"
+       stroke="param(outline)" stroke-opacity="param(outline-opacity)"
        style="fill:none;stroke:#000000;stroke-width:0.010087;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:0.020174, 0.010087;stroke-dashoffset:0"
        id="path4282"
        sodipodi:cx="19.234375"

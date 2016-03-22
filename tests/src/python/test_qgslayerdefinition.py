@@ -12,22 +12,17 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
 
-from qgis.core import (QGis,
-                       QgsProject,
+from qgis.core import (QgsProject,
                        QgsMapLayerRegistry,
                        QgsLayerDefinition
                        )
 
-from qgis.testing import (
-    unittest,
-    start_app
-)
+from qgis.testing import unittest, start_app
 from utilities import unitTestDataPath
 
-from PyQt4.QtCore import QVariant
-from PyQt4.QtXml import QDomDocument
+from PyQt.QtXml import QDomDocument
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

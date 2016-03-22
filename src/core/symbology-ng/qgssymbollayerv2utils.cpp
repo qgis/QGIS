@@ -3243,8 +3243,11 @@ QColor QgsSymbolLayerV2Utils::parseColorWithAlpha( const QString& colorStr, bool
 {
   QColor parsedColor;
 
-  //color in hex format "#aabbcc"
-  if ( QColor::isValidColor( colorStr ) )
+  QRegExp hexColorAlphaRx( "^\\s*#?([0-9a-fA-F]{6})([0-9a-fA-F]{2})\\s*$" );
+  int hexColorIndex = hexColorAlphaRx.indexIn( colorStr );
+
+  //color in hex format "#aabbcc", but not #aabbccdd
+  if ( hexColorIndex == -1 && QColor::isValidColor( colorStr ) )
   {
     //string is a valid hex color string
     parsedColor.setNamedColor( colorStr );
@@ -3256,8 +3259,7 @@ QColor QgsSymbolLayerV2Utils::parseColorWithAlpha( const QString& colorStr, bool
   }
 
   //color in hex format, with alpha
-  QRegExp hexColorAlphaRx( "^\\s*#?([0-9a-fA-F]{6})([0-9a-fA-F]{2})\\s*$" );
-  if ( hexColorAlphaRx.indexIn( colorStr ) != -1 )
+  if ( hexColorIndex > -1 )
   {
     QString hexColor = hexColorAlphaRx.cap( 1 );
     parsedColor.setNamedColor( QString( "#" ) + hexColor );

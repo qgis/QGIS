@@ -301,7 +301,7 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields& fields )
   fieldNames.reserve( fields.count() );
   for ( int i = 0; i < fields.count(); ++i )
   {
-    QString fieldName = fields[i].name();
+    QString fieldName = fields.at( i ).name();
     fieldNames << fieldName;
     registerItem( "Fields and Values", fieldName, " \"" + fieldName + "\" ", "", QgsExpressionItem::Field, false, i );
   }

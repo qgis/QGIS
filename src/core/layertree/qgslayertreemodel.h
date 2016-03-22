@@ -255,6 +255,12 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! emit dataChanged() for layer tree node items
     void recursivelyEmitDataChanged( const QModelIndex& index = QModelIndex() );
 
+    /** Updates layer data for scale dependent layers, should be called when map scale changes.
+     * Emits dataChanged() for all scale dependent layers.
+     * @note added in QGIS 2.16
+     */
+    void refreshScaleBasedLayers( const QModelIndex& index = QModelIndex() );
+
     static const QIcon& iconGroup();
 
     //! Filter nodes from QgsMapLayerLegend according to the current filtering rules
@@ -330,6 +336,9 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     QScopedPointer<QgsMapSettings> mLegendFilterMapSettings;
     QScopedPointer<QgsMapHitTest> mLegendFilterHitTest;
+
+    //! whether to use map filtering
+    bool mLegendFilterUsesExtent;
 
     double mLegendMapViewMupp;
     int mLegendMapViewDpi;

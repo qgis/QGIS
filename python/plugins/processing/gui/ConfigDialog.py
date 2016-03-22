@@ -27,17 +27,15 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4 import uic
-from PyQt4.QtCore import Qt, QEvent, QPyNullVariant
-from PyQt4.QtGui import (QFileDialog, QDialog, QIcon, QStyle,
-                         QStandardItemModel, QStandardItem, QMessageBox, QStyledItemDelegate,
-                         QLineEdit, QWidget, QToolButton, QHBoxLayout,
-                         QComboBox)
+from PyQt import uic
+from PyQt.QtCore import Qt, QEvent, QPyNullVariant
+from PyQt.QtWidgets import QFileDialog, QDialog, QStyle, QMessageBox, QStyledItemDelegate, QLineEdit, QWidget, QToolButton, QHBoxLayout, QComboBox
+from PyQt.QtGui import QIcon, QStandardItemModel, QStandardItem
 from qgis.gui import QgsDoubleSpinBox, QgsSpinBox
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.Processing import Processing
-from processing.gui.menus import updateMenus, defaultMenuEntries
+from processing.gui.menus import updateMenus, menusSettingsGroup
 
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -146,7 +144,7 @@ class ConfigDialog(BASE, WIDGET):
 
         rootItem.insertRow(0, [providersItem, emptyItem])
         for group in settings.keys():
-            if group in priorityKeys:
+            if group in priorityKeys or group == menusSettingsGroup:
                 continue
 
             groupItem = QStandardItem(group)

@@ -12,10 +12,6 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
-import tempfile
-import shutil
-import glob
 
 from qgis.core import (
     QGis,
@@ -25,7 +21,6 @@ from qgis.core import (
     QgsVectorLayer,
     QgsFeatureRequest,
     QgsFeature,
-    QgsProviderRegistry,
     QgsGeometry,
     NULL
 )
@@ -41,7 +36,7 @@ from utilities import (
 )
 
 from providertestbase import ProviderTestCase
-from PyQt4.QtCore import QVariant
+from PyQt.QtCore import QVariant
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -108,13 +103,13 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
 
     def testGetFeaturesSubsetAttributes2(self):
         """ Override and skip this test for memory provider, as it's actually more efficient for the memory provider to return
-        its features as direct copies (due to implicit sharing of QgsFeature) 
+        its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 
     def testGetFeaturesNoGeometry(self):
         """ Override and skip this test for memory provider, as it's actually more efficient for the memory provider to return
-        its features as direct copies (due to implicit sharing of QgsFeature) 
+        its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 
@@ -331,13 +326,13 @@ class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
 
     def testGetFeaturesSubsetAttributes2(self):
         """ Override and skip this test for memory provider, as it's actually more efficient for the memory provider to return
-        its features as direct copies (due to implicit sharing of QgsFeature) 
+        its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 
     def testGetFeaturesNoGeometry(self):
         """ Override and skip this test for memory provider, as it's actually more efficient for the memory provider to return
-        its features as direct copies (due to implicit sharing of QgsFeature) 
+        its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 

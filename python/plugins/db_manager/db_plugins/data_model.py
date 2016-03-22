@@ -20,8 +20,9 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import Qt, QTime, QRegExp, QAbstractTableModel
-from PyQt4.QtGui import QFont, QStandardItemModel, QStandardItem, QApplication
+from PyQt.QtCore import Qt, QTime, QRegExp, QAbstractTableModel
+from PyQt.QtGui import QFont, QStandardItemModel, QStandardItem
+from PyQt.QtWidgets import QApplication
 
 from .plugin import DbError
 
@@ -77,9 +78,9 @@ class BaseTableModel(QAbstractTableModel):
             # too much data to display, elide the string
             val = val[:300]
         try:
-            return unicode(val) # convert to unicode
+            return unicode(val)  # convert to unicode
         except UnicodeDecodeError:
-            return unicode(val, 'utf-8', 'replace') # convert from utf8 and replace errors (if any)
+            return unicode(val, 'utf-8', 'replace')  # convert from utf8 and replace errors (if any)
 
     def headerData(self, section, orientation, role):
         if role != Qt.DisplayRole:
@@ -99,7 +100,7 @@ class TableDataModel(BaseTableModel):
         self.db = table.database().connector
         self.table = table
 
-        fieldNames = map(lambda x: x.name, table.fields())
+        fieldNames = [x.name for x in table.fields()]
         BaseTableModel.__init__(self, fieldNames, None, parent)
 
         # get table fields
@@ -266,7 +267,7 @@ class TableConstraintsModel(SimpleTableModel):
                                          QApplication.translate("DBManagerPlugin", 'Column(s)')], editable, parent)
 
     def append(self, constr):
-        field_names = map(lambda k_v: unicode(k_v[1].name), constr.fields().iteritems())
+        field_names = [unicode(k_v[1].name) for k_v in iter(list(constr.fields().items()))]
         data = [constr.name, constr.type2String(), u", ".join(field_names)]
         self.appendRow(self.rowFromData(data))
         row = self.rowCount() - 1
@@ -302,7 +303,7 @@ class TableIndexesModel(SimpleTableModel):
                                          QApplication.translate("DBManagerPlugin", 'Column(s)')], editable, parent)
 
     def append(self, idx):
-        field_names = map(lambda k_v1: unicode(k_v1[1].name), idx.fields().iteritems())
+        field_names = [unicode(k_v1[1].name) for k_v1 in iter(list(idx.fields().items()))]
         data = [idx.name, u", ".join(field_names)]
         self.appendRow(self.rowFromData(data))
         row = self.rowCount() - 1

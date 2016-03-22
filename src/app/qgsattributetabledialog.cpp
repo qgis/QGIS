@@ -238,7 +238,13 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mUpdateExpressionText->setLayer( mLayer );
   mUpdateExpressionText->setLeftHandButtonStyle( true );
 
-  mMainView->setView( QgsDualView::AttributeTable );
+  int initialView = settings.value( "/qgis/attributeTableView", -1 ).toInt();
+  if ( initialView < 0 )
+  {
+    initialView = settings.value( "/qgis/attributeTableLastView", QgsDualView::AttributeTable ).toInt();
+  }
+  mMainView->setView( static_cast< QgsDualView::ViewMode >( initialView ) );
+  mMainViewButtonGroup->button( initialView )->setChecked( true );
 
   editingToggled();
 }
@@ -642,6 +648,9 @@ void QgsAttributeTableDialog::on_mDeleteSelectedButton_clicked()
 void QgsAttributeTableDialog::on_mMainView_currentChanged( int viewMode )
 {
   mMainViewButtonGroup->button( viewMode )->click();
+
+  QSettings s;
+  s.setValue( "/qgis/attributeTableLastView", static_cast< int >( viewMode ) );
 }
 
 void QgsAttributeTableDialog::on_mToggleEditingButton_toggled()

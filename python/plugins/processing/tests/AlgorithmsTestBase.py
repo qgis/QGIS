@@ -25,39 +25,30 @@ __copyright__ = '(C) 2016, Matthias Kuhn'
 
 __revision__ = ':%H$'
 
-import qgis
+import qgis  # NOQA switch sip api
 import os
 import yaml
 import nose2
 import gdal
 import hashlib
 import tempfile
-import re
 
 from osgeo.gdalconst import GA_ReadOnly
 
 import processing
 
-from processing.gui import AlgorithmExecutor
-
-from qgis.core import (
-    QgsVectorLayer,
-    QgsRasterLayer,
-    QgsMapLayerRegistry
-)
+from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsMapLayerRegistry
 
 from qgis.testing import _UnexpectedSuccess
 
-from utilities import (
-    unitTestDataPath
-)
+from utilities import unitTestDataPath
 
 
 def processingTestDataPath():
     return os.path.join(os.path.dirname(__file__), 'testdata')
 
 
-class AlgorithmsTest():
+class AlgorithmsTest:
 
     def test_algorithms(self):
         """
@@ -95,8 +86,8 @@ class AlgorithmsTest():
             expectFailure = eval(defs['expectedFailure'][-1])
 
         def doCheck():
-            print(alg.getAsCommand())
-            self.assertTrue(AlgorithmExecutor.runalg(alg))
+            alg.execute()
+
             self.check_results(alg.getOutputValuesAsDictionary(), defs['results'])
 
         if expectFailure:
@@ -191,7 +182,7 @@ class AlgorithmsTest():
                 try:
                     results[id]
                 except KeyError as e:
-                    raise KeyError('Expected result {} does not exist in {}'.format(e.message, results.keys()))
+                    raise KeyError('Expected result {} does not exist in {}'.format(unicode(e), results.keys()))
 
                 result_lyr = QgsVectorLayer(results[id], id, 'ogr')
 

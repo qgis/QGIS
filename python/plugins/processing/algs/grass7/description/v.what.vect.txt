@@ -1,0 +1,9 @@
+v.what.vect
+Uploads vector values at positions of vector points to the table.
+Vector (v.*)
+ParameterVector|map|Name of vector points map for which to edit attributes|0|False
+ParameterTableField|column|Column to be updated with the query result|map|-1|False
+ParameterVector|query_map|Vector map to be queried|-1|False
+ParameterTableField|query_column|Column to be queried|query_map|-1|False
+ParameterNumber|dmax|Maximum query distance in map units|0.0|None|0.0|True
+OutputVector|output|Updated

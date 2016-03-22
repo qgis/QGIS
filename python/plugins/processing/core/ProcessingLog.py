@@ -25,13 +25,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import re
 import os
 import codecs
 import datetime
 from processing.tools.system import userFolder
 from processing.core.ProcessingConfig import ProcessingConfig
-from qgis.core import *
+from qgis.core import QgsMessageLog
+from PyQt.QtCore import QCoreApplication
 
 
 class ProcessingLog:

@@ -214,7 +214,7 @@ def generate_csw_connections_file():
             try:
                 csw = CatalogueServiceWeb(url)
                 title = unicode(csw.identification.title)
-                conn = etree.SubElement(conns, 'csw', name=title, url=url)
+                etree.SubElement(conns, 'csw', name=title, url=url)
             except Exception as err:
                 error('ERROR on CSW %s: %s', url, err)
 

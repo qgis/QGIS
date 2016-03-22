@@ -19,7 +19,7 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 """
 
-from PyQt4.QtGui import QApplication
+from PyQt.QtWidgets import QApplication
 
 from ..info_model import DatabaseInfo
 from ..html_elems import HtmlTable
@@ -36,7 +36,7 @@ class LDatabaseInfo(DatabaseInfo):
         return HtmlTable(tbl)
 
     def generalInfo(self):
-        info = self.db.connector.getInfo()
+        self.db.connector.getInfo()
         tbl = [
             (QApplication.translate("DBManagerPlugin", "SQLite version:"), "3")
         ]

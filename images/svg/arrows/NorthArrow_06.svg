@@ -85,22 +85,26 @@
      inkscape:label="diff"
      style="display:inline">
     <path
-       style="fill:#666666;stroke:#666666;stroke-width:0.19956166;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+       fill="param(fill)"  fill-opacity="0.5" stroke="none"
+       style="stroke-width:0.19956166;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
        d="m 3.69375,3.69375 2.28125,4 1.34375,-0.375 0.34375,-1.3125 -3.96875,-2.3125 z"
        id="path3303"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:#666666;stroke:#666666;stroke-width:0.19956166;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+       fill="param(fill)"  fill-opacity="0.5" stroke="none"
+       style="stroke-width:0.19956166;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
        d="m 15.775,3.69375 -4,2.28125 0.375,1.34375 1.34375,0.375 2.28125,-4 z"
        id="path3301"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:#666666;stroke:#666666;stroke-width:0.19956166;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+       fill="param(fill)"  fill-opacity="0.5" stroke="none"
+       style="stroke-width:0.19956166;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
        d="M 6.00625,11.80625 3.69375,15.775 7.6625,13.4625 7.31875,12.15 6.00625,11.80625 z"
        id="path3299"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:#666666;stroke:#666666;stroke-width:0.19956166;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+       fill="param(fill)"  fill-opacity="0.5" stroke="none"
+       style="stroke-width:0.19956166;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
        d="M 13.4625,11.80625 12.15,12.15 l -0.375,1.34375 4,2.28125 -2.3125,-3.96875 z"
        id="path3137-4-9"
        inkscape:connector-curvature="0" />
@@ -112,7 +116,7 @@
      style="display:inline">
     <path
        sodipodi:type="star"
-       style="fill:#1a1a1a;stroke:none"
+       fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(fill)" stroke-opacity="param(fill-opacity)"
        id="path3137"
        sodipodi:sides="4"
        sodipodi:cx="30"

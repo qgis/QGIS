@@ -13,14 +13,11 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QFormLayout" name="formLayout">
-   <property name="fieldGrowthPolicy">
-    <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-   </property>
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
    <item row="0" column="0" colspan="2">
     <widget class="QLabel" name="label_8">
      <property name="text">
-      <string>Select layer, key column and value column</string>
+      <string>Select layer, key column and value column:</string>
      </property>
     </widget>
    </item>
@@ -47,6 +44,13 @@
      </property>
     </widget>
    </item>
+   <item row="5" column="0" colspan="2">
+    <widget class="QCheckBox" name="mOrderByValue">
+     <property name="text">
+      <string>Order by value</string>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="1">
     <widget class="QgsFieldComboBox" name="mKeyColumn"/>
    </item>
@@ -65,66 +69,64 @@
    </item>
    <item row="4" column="0" colspan="2">
     <widget class="QCheckBox" name="mAllowNull">
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
      <property name="text">
-      <string>Allow null value</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0" colspan="2">
-    <widget class="QCheckBox" name="mOrderByValue">
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string>Order by value</string>
+      <string>Allow NULL value</string>
      </property>
     </widget>
    </item>
    <item row="6" column="0" colspan="2">
     <widget class="QCheckBox" name="mAllowMulti">
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
      <property name="text">
       <string>Allow multiple selections</string>
      </property>
     </widget>
    </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="label_19">
-     <property name="text">
-      <string>Filter expression</string>
-     </property>
-     <property name="buddy">
-      <cstring>mValueColumn</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="1">
-    <widget class="QToolButton" name="mEditExpression">
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string>...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="0" colspan="2">
-    <widget class="QTextEdit" name="mFilterExpression"/>
-   </item>
    <item row="7" column="0" colspan="2">
     <widget class="QCheckBox" name="mUseCompleter">
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
      <property name="text">
-      <string>Use Completer</string>
+      <string>Use completer</string>
      </property>
     </widget>
+   </item>
+   <item row="10" column="0" colspan="2">
+    <widget class="QTextEdit" name="mFilterExpression"/>
+   </item>
+   <item row="9" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label_19">
+       <property name="text">
+        <string>Filter expression</string>
+       </property>
+       <property name="buddy">
+        <cstring>mValueColumn</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mEditExpression">
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

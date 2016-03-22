@@ -12,7 +12,8 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
+
 from qgis.testing import unittest
 from qgis.utils import qgsfunction
 from qgis.core import QgsExpression
@@ -149,7 +150,7 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
             comment
             **/""": 'test*/'
         }
-        for e, exp_res in expressions.iteritems():
+        for e, exp_res in expressions.items():
             exp = QgsExpression(e)
             result = exp.evaluate()
             self.assertEqual(exp_res, result)
@@ -163,7 +164,7 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
             "'test--'": 'test--',
             "'--test'": '--test',
         }
-        for e, exp_res in expressions.iteritems():
+        for e, exp_res in expressions.items():
             exp = QgsExpression(e)
             result = exp.evaluate()
             self.assertEqual(exp_res, result)

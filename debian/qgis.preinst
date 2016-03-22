@@ -3,19 +3,13 @@
 set -e
 
 if [ "$1" = "install" -o "$1" = "upgrade" ]; then
-	# Fix bad diversions
-        div=$(dpkg-divert --listpackage /usr/bin/qgis)
-        if [ -n "$div" -a "$div" = qgis-plugin-grass ]; then
-               for i in /usr/bin/qgis /usr/bin/qbrowser; do
-                       if [ -e $i ] && ! [ -e $i.undiverted ]; then
-                               mv $i $i.undiverted
-                       fi
-                       dpkg-divert --package qgis-plugin-grass --remove --rename --divert $i.bin $i
-                       if [ -e $i.undiverted ]; then
-                               mv $i.undiverted $i
-                       fi
-               done
-       fi
+	# Remove obsolete diversions
+	for i in /usr/bin/qgis /usr/bin/qbrowser; do
+		pkg=$(dpkg-divert --listpackage $i)
+		if [ -n "$pkg" -a "$pkg" = qgis-plugin-grass -o "$pkg" = qgis-provider-grass ]; then
+			dpkg-divert --package $pkg --rename --remove $i
+		fi
+	done
 fi
 
 #DEBHELPER#

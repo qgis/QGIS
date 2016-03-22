@@ -12,15 +12,15 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
 
 from qgis.core import (QgsVectorGradientColorRampV2,
                        QgsGradientStop,
                        QgsVectorRandomColorRampV2,
                        QgsRandomColorsV2,
                        QgsVectorColorBrewerColorRampV2)
-from PyQt4.QtGui import QColor, QGradient
-from qgis.testing import (TestCase, unittest)
+from PyQt.QtGui import QColor, QGradient
+from qgis.testing import unittest
 
 
 class PyQgsVectorColorRamp(unittest.TestCase):
@@ -68,9 +68,10 @@ class PyQgsVectorColorRamp(unittest.TestCase):
         self.assertEqual(r.color2(), QColor(0, 0, 100))
         self.assertEqual(r.color(1.0), QColor(0, 0, 100))
         r.setStops([QgsGradientStop(0.4, QColor(100, 100, 40))])
-        self.assertEqual(len(r.stops()), 1)
-        self.assertEqual(r.stops()[0].offset, 0.4)
-        self.assertEqual(r.stops()[0].color, QColor(100, 100, 40))
+        s = r.stops()
+        self.assertEqual(len(s), 1)
+        self.assertEqual(s[0].offset, 0.4)
+        self.assertEqual(s[0].color, QColor(100, 100, 40))
 
         # test info
         r.setInfo({'key1': 'val1', 'key2': 'val2'})
@@ -82,9 +83,11 @@ class PyQgsVectorColorRamp(unittest.TestCase):
         fromProps = QgsVectorGradientColorRampV2.create(props)
         self.assertEqual(fromProps.color1(), QColor(0, 0, 200))
         self.assertEqual(fromProps.color2(), QColor(0, 0, 100))
-        self.assertEqual(len(fromProps.stops()), 1)
-        self.assertEqual(fromProps.stops()[0].offset, 0.4)
-        self.assertEqual(fromProps.stops()[0].color, QColor(100, 100, 40))
+        s = fromProps.stops()
+        self.assertEqual(len(s), 1)
+        self.assertEqual(s[0].offset, 0.4)
+        c = QColor(s[0].color)
+        self.assertEqual(c, QColor(100, 100, 40))
         self.assertEqual(fromProps.info()['key1'], 'val1')
         self.assertEqual(fromProps.info()['key2'], 'val2')
         self.assertEqual(fromProps.isDiscrete(), False)
@@ -93,9 +96,11 @@ class PyQgsVectorColorRamp(unittest.TestCase):
         cloned = r.clone()
         self.assertEqual(cloned.color1(), QColor(0, 0, 200))
         self.assertEqual(cloned.color2(), QColor(0, 0, 100))
-        self.assertEqual(len(cloned.stops()), 1)
-        self.assertEqual(cloned.stops()[0].offset, 0.4)
-        self.assertEqual(cloned.stops()[0].color, QColor(100, 100, 40))
+        s = cloned.stops()
+        self.assertEqual(len(s), 1)
+        self.assertEqual(s[0].offset, 0.4)
+        c = QColor(s[0].color)
+        self.assertEqual(c, QColor(100, 100, 40))
         self.assertEqual(cloned.info()['key1'], 'val1')
         self.assertEqual(cloned.info()['key2'], 'val2')
         self.assertEqual(cloned.isDiscrete(), False)
@@ -130,7 +135,7 @@ class PyQgsVectorColorRamp(unittest.TestCase):
         self.assertEqual(g.stops()[2], (0.9, QColor(40, 60, 100, 127)))
         self.assertEqual(g.stops()[3], (1.0, QColor(0, 200, 0, 127)))
 
-    def testQgsVectorRandomColorRampV2(self):
+    def testQgsVectorRandomColorRampV2_2(self):
         # test random color ramp
         r = QgsVectorRandomColorRampV2(5)
         self.assertEqual(r.type(), 'random')
@@ -225,7 +230,7 @@ class PyQgsVectorColorRamp(unittest.TestCase):
 
         # test creating from properties
         # QgsRandomColorsV2 has no properties for now, but test to ensure no crash
-        props = r.properties()
+        props = r.properties()  # NOQA
 
         # test cloning ramp
         cloned = r.clone()

@@ -12,12 +12,13 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
+
 import os
 
-from PyQt4.QtCore import QFileInfo
-from PyQt4.QtXml import QDomDocument
-from PyQt4.QtGui import QPainter
+from PyQt.QtCore import QFileInfo
+from PyQt.QtXml import QDomDocument
+from PyQt.QtGui import QPainter
 
 from qgis.core import (QgsComposerMap,
                        QgsRectangle,
@@ -28,9 +29,7 @@ from qgis.core import (QgsComposerMap,
                        QgsMultiBandColorRenderer,
                        )
 
-from qgis.testing import (start_app,
-                          unittest
-                          )
+from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from qgscompositionchecker import QgsCompositionChecker
 

@@ -12,28 +12,16 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
 
-from qgis.testing import (unittest,
-                          start_app,
-                          )
+from qgis.testing import unittest, start_app
 from qgis.core import (QgsCategorizedSymbolRendererV2,
                        QgsRendererCategoryV2,
                        QgsMarkerSymbolV2,
-                       QgsVectorGradientColorRampV2,
-                       QgsVectorLayer,
-                       QgsFeature,
-                       QgsGeometry,
-                       QgsPoint,
-                       QgsSymbolV2,
-                       QgsSymbolLayerV2Utils,
-                       QgsRenderContext,
                        QgsField,
                        QgsFields
                        )
-from PyQt4.QtCore import Qt, QVariant
-from PyQt4.QtXml import QDomDocument
-from PyQt4.QtGui import QColor
+from PyQt.QtCore import QVariant
 
 start_app()
 

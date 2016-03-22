@@ -85,3 +85,105 @@ tests:
       OUTPUT_HTML_FILE:
         name: expected/basic_statistics_string.html
         type: file
+
+  # Split lines with lines considers two cases
+  # case 1: two different layers
+  - algorithm: qgis:splitlineswithlines
+    name: Split lines with lines
+    params:
+      INPUT_A:
+        name: lines.gml
+        type: vector
+      INPUT_B:
+        name: custom/lines2.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/lines_split_with_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  # case 2 split line layer with iself
+  - algorithm: qgis:splitlineswithlines
+    name: Split lines with same lines
+    params:
+      INPUT_A:
+        name: custom/lines2.gml
+        type: vector
+      INPUT_B:
+        name: custom/lines2.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/lines_split_with_same_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:addautoincrementalfield
+    name: Add autoincremental field
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/autoincrement_field.gml
+        type: vector
+
+  # Eliminate sliver polygons
+  # case 1: merge with largest area
+  - algorithm: qgis:eliminatesliverpolygons
+    name: Eliminate sliver polygons largest area
+    params:
+      ATTRIBUTE: 'fid'
+      COMPARISON: '0'
+      COMPARISONVALUE: 'polys.5'
+      INPUT:
+        name: polys.gml
+        type: vector
+      KEEPSELECTION: 'False'
+      MODE: '0'
+    results:
+      OUTPUT:
+        name: expected/eliminate_largest_area.gml
+        type: vector
+
+  # case 2: merge with smallest area
+  - algorithm: qgis:eliminatesliverpolygons
+    name: Eliminate sliver polygons smallest area
+    params:
+      ATTRIBUTE: 'fid'
+      COMPARISON: '0'
+      COMPARISONVALUE: 'polys.5'
+      INPUT:
+        name: polys.gml
+        type: vector
+      KEEPSELECTION: 'False'
+      MODE: '1'
+    results:
+      OUTPUT:
+        name: expected/eliminate_smallest_area.gml
+        type: vector
+
+  # case 3: merge with longest common boundary
+  - algorithm: qgis:eliminatesliverpolygons
+    name: Eliminate sliver polygons largest area
+    params:
+      ATTRIBUTE: 'fid'
+      COMPARISON: '0'
+      COMPARISONVALUE: 'polys.5'
+      INPUT:
+        name: polys.gml
+        type: vector
+      KEEPSELECTION: 'False'
+      MODE: '2'
+    results:
+      OUTPUT:
+        name: expected/eliminate_largest_area.gml
+        type: vector
+
+

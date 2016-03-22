@@ -27,6 +27,12 @@ if [ -z "$ASTYLE" ]; then
 	exit 1	
 fi
 
+if type -p tput >/dev/null; then
+	elcr="$(tput el)$(tput cr)"
+else
+	elcr="                   \r"
+fi
+
 if ! type -p flip >/dev/null; then
 	if type -p dos2unix >/dev/null; then
 		flip() {
@@ -83,6 +89,7 @@ for f in "$@"; do
 
 		*.py)
 			#cmd="autopep8 --in-place --ignore=E111,E128,E201,E202,E203,E211,E221,E222,E225,E226,E227,E231,E241,E261,E265,E272,E302,E303,E501,E701"
+			echo -ne "Formatting $f $elcr"
 			cmd="autopep8 --in-place --ignore=E261,E265,E402,E501"
 			;;
 

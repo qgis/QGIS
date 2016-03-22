@@ -2057,7 +2057,7 @@ void QgisApp::createStatusBar()
   mScaleEdit->setToolTip( tr( "Current map scale (formatted as x:y)" ) );
 
   statusBar()->addPermanentWidget( mScaleEdit, 0 );
-  connect( mScaleEdit, SIGNAL( scaleChanged() ), this, SLOT( userScale() ) );
+  connect( mScaleEdit, SIGNAL( scaleChanged( double ) ), this, SLOT( userScale() ) );
 
   if ( QgsMapCanvas::rotationEnabled() )
   {
@@ -3080,8 +3080,18 @@ void QgisApp::about()
     QString versionString = "<html><body><div align='center'><table width='100%'>";
 
     versionString += "<tr>";
-    versionString += "<td>" + tr( "QGIS version" )       + "</td><td>" + QGis::QGIS_VERSION + "</td>";
-    versionString += "<td>" + tr( "QGIS code revision" ) + QString( "</td><td><a href=\"https://github.com/qgis/QGIS/commit/%1\">%1</a></td>" ).arg( QGis::QGIS_DEV_VERSION );
+    versionString += "<td>" + tr( "QGIS version" )       + "</td><td>" + QGis::QGIS_VERSION + "</td><td>";
+
+
+    if ( QString( QGis::QGIS_DEV_VERSION ) == "exported" )
+    {
+      versionString += tr( "QGIS code branch" ) + QString( "</td><td><a href=\"https://github.com/qgis/QGIS/tree/release-%1_%2\">Release %1.%2</a></td>" )
+                       .arg( QGis::QGIS_VERSION_INT / 10000 ).arg( QGis::QGIS_VERSION_INT / 100 % 100 );
+    }
+    else
+    {
+      versionString += tr( "QGIS code revision" ) + QString( "</td><td><a href=\"https://github.com/qgis/QGIS/commit/%1\">%1</a></td>" ).arg( QGis::QGIS_DEV_VERSION );
+    }
 
     versionString += "</tr><tr>";
 
@@ -4938,13 +4948,13 @@ void QgisApp::toggleFilterLegendByExpression( bool checked )
 
 void QgisApp::updateFilterLegend()
 {
-  if ( mActionFilterLegend->isChecked() )
+  bool hasExpressions = mLegendExpressionFilterButton->isChecked() && QgsLayerTreeUtils::hasLegendFilterExpression( *mLayerTreeView->layerTreeModel()->rootGroup() );
+  if ( mActionFilterLegend->isChecked() || hasExpressions )
   {
-    layerTreeView()->layerTreeModel()->setLegendFilterByMap( &mMapCanvas->mapSettings() );
-  }
-  else if ( QgsLayerTreeUtils::hasLegendFilterExpression( *mLayerTreeView->layerTreeModel()->rootGroup() ) )
-  {
-    layerTreeView()->layerTreeModel()->setLegendFilter( &mMapCanvas->mapSettings(), /* useExtent */ false );
+    layerTreeView()->layerTreeModel()->setLegendFilter( &mMapCanvas->mapSettings(),
+        /* useExtent */ mActionFilterLegend->isChecked(),
+        /* polygon */ QgsGeometry(),
+        hasExpressions );
   }
   else
   {
@@ -7936,6 +7946,31 @@ void QgisApp::setLayerScaleVisibility()
     mMapCanvas->refresh();
   }
   delete dlg;
+}
+
+void QgisApp::zoomToLayerScale()
+{
+  if ( !mLayerTreeView )
+    return;
+
+  QList<QgsMapLayer*> layers = mLayerTreeView->selectedLayers();
+
+  if ( layers.length() < 1 )
+    return;
+
+  QgsMapLayer* layer = mLayerTreeView->currentLayer();
+  if ( layer && layer->hasScaleBasedVisibility() )
+  {
+    const double scale = mMapCanvas->scale();
+    if ( scale > layer->maximumScale() )
+    {
+      mMapCanvas->zoomScale( layer->maximumScale() * QGis::SCALE_PRECISION );
+    }
+    else if ( scale <= layer->minimumScale() )
+    {
+      mMapCanvas->zoomScale( layer->minimumScale() );
+    }
+  }
 }
 
 void QgisApp::setLayerCRS()

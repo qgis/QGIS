@@ -24,12 +24,11 @@ QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVecto
 
   if ( mVectorLayer )
   {
-    const QgsFields& fm = mVectorLayer->fields();
     mXAttributeComboBox->addItem( "" );
     mYAttributeComboBox->addItem( "" );
-    for ( int idx = 0; idx < fm.count(); ++idx )
+    Q_FOREACH ( const QgsField& f, mVectorLayer->fields() )
     {
-      QString fieldName = fm[idx].name();
+      QString fieldName = f.name();
       mXAttributeComboBox->addItem( fieldName );
       mYAttributeComboBox->addItem( fieldName );
     }

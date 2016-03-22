@@ -26,21 +26,19 @@ The content of this file is based on
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import OracleDBConnector
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt.QtCore import Qt, QSettings, QPyNullVariant
+from PyQt.QtGui import QIcon, QKeySequence
+from PyQt.QtWidgets import QAction, QApplication, QMessageBox
+
+from qgis.core import QgsVectorLayer
 
 from ..plugin import ConnectionError, InvalidDataException, DBPlugin, \
     Database, Schema, Table, VectorTable, TableField, TableConstraint, \
-    TableIndex, TableTrigger, TableRule
-
-try:
-    from . import resources_rc
-except ImportError:
-    pass
-
-from ..html_elems import HtmlParagraph, HtmlList, HtmlTable
+    TableIndex, TableTrigger
 
 from qgis.core import QgsCredentials
+
+from . import resources_rc  # NOQA
 
 
 def classFactory():
@@ -93,12 +91,7 @@ class OracleDBPlugin(DBPlugin):
         uri = QgsDataSourceURI()
 
         settingsList = ["host", "port", "database", "username", "password"]
-        host, port, database, username, password = map(
-            lambda x: settings.value(x, "", type=str), settingsList)
-
-        # qgis1.5 use 'savePassword' instead of 'save' setting
-        savedPassword = settings.value("save", False, type=bool) or \
-            settings.value("savePassword", False, type=bool)
+        host, port, database, username, password = [settings.value(x, "", type=str) for x in settingsList]
 
         # get all of the connexion options
 
@@ -198,7 +191,6 @@ class ORDatabase(Database):
     def toSqlLayer(self, sql, geomCol, uniqueCol,
                    layerName=u"QueryLayer", layerType=None,
                    avoidSelectById=False, filter=""):
-        from qgis.core import QgsMapLayer, QgsVectorLayer
 
         uri = self.uri()
         con = self.database().connector
@@ -351,14 +343,14 @@ class ORTable(Table):
                 QApplication.setOverrideCursor(Qt.WaitCursor)
 
             if index_action == "rebuild":
-                self.aboutToChange()
+                self.aboutToChange.emit()
                 self.database().connector.rebuildTableIndex(
                     (self.schemaName(), self.name), index_name)
                 self.refreshIndexes()
                 return True
         elif action.startswith(u"mview/"):
             if action == "mview/refresh":
-                self.aboutToChange()
+                self.aboutToChange.emit()
                 self.database().connector.refreshMView(
                     (self.schemaName(), self.name))
                 return True
@@ -394,7 +386,7 @@ class ORTable(Table):
         ret = []
 
         # add the pk
-        pkcols = filter(lambda x: x.primaryKey, self.fields())
+        pkcols = [x for x in self.fields() if x.primaryKey]
         if len(pkcols) == 1:
             ret.append(pkcols[0])
 
@@ -455,7 +447,7 @@ class ORVectorTable(ORTable, VectorTable):
     def runAction(self, action):
         if action.startswith("extent/"):
             if action == "extent/update":
-                self.aboutToChange()
+                self.aboutToChange.emit()
                 self.updateExtent()
                 return True
 

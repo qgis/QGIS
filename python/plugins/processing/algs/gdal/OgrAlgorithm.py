@@ -25,8 +25,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import warnings
-
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.tools import vector
 

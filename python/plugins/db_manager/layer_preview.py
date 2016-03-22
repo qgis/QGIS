@@ -20,8 +20,9 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import Qt, QSettings, QTimer, SIGNAL
-from PyQt4.QtGui import QColor, QApplication, QCursor
+from PyQt.QtCore import Qt, QSettings, QTimer
+from PyQt.QtGui import QColor, QCursor
+from PyQt.QtWidgets import QApplication
 
 from qgis.gui import QgsMapCanvas, QgsMapCanvasLayer, QgsMessageBar
 from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
@@ -62,13 +63,14 @@ class LayerPreview(QgsMapCanvas):
 
         if isinstance(item, Table) and item.type in [Table.VectorType, Table.RasterType]:
             # update the preview, but first let the manager chance to show the canvas
-            runPrev = lambda: self._loadTablePreview(item)
+            def runPrev():
+                return self._loadTablePreview(item)
             QTimer.singleShot(50, runPrev)
         else:
             return
 
         self.item = item
-        self.connect(self.item, SIGNAL('aboutToChange'), self.setDirty)
+        self.item.aboutToChange.connect(self.setDirty)
 
     def setDirty(self, val=True):
         self.dirty = val
@@ -78,7 +80,7 @@ class LayerPreview(QgsMapCanvas):
         if self.item is not None:
             ## skip exception on RuntimeError fixes #6892
             try:
-                self.disconnect(self.item, SIGNAL('aboutToChange'), self.setDirty)
+                self.item.aboutToChange.disconnect(self.setDirty)
             except RuntimeError:
                 pass
 

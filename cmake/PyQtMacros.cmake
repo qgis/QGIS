@@ -32,11 +32,11 @@ ENDIF(NOT PYUIC_PROGRAM)
 # Adapted from QT4_WRAP_UI
 MACRO(PYQT_WRAP_UI outfiles )
   IF(WIN32)
-    SET(PYUIC_WRAPPER "${CMAKE_SOURCE_DIR}/scripts/${PYUIC_PROG_NAME}-wrapper.bat")
+    SET(PYUIC_WRAPPER "${CMAKE_SOURCE_DIR}/scripts/pyuic-wrapper.bat")
     SET(PYUIC_WRAPPER_PATH "${QGIS_OUTPUT_DIRECTORY}/bin/${CMAKE_BUILD_TYPE}")
   ELSE(WIN32)
     # TODO osx
-    SET(PYUIC_WRAPPER "${CMAKE_SOURCE_DIR}/scripts/pyuic4-wrapper.sh")
+    SET(PYUIC_WRAPPER "${CMAKE_SOURCE_DIR}/scripts/pyuic-wrapper.sh")
     SET(PYUIC_WRAPPER_PATH "${QGIS_OUTPUT_DIRECTORY}/lib")
   ENDIF(WIN32)
 
@@ -45,9 +45,9 @@ MACRO(PYQT_WRAP_UI outfiles )
     GET_FILENAME_COMPONENT(infile ${it} ABSOLUTE)
     SET(outfile ${CMAKE_CURRENT_BINARY_DIR}/ui_${outfile}.py)
     ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
-      COMMAND ${PYUIC_WRAPPER} "${PYUIC_PROGRAM}" "${PYUIC_WRAPPER_PATH}" "${QGIS_OUTPUT_DIRECTORY}/python" ${infile} -o ${outfile}
+      COMMAND ${PYUIC_WRAPPER} "${PYUIC_PROGRAM}" "${PYUIC_WRAPPER_PATH}" "${QGIS_OUTPUT_DIRECTORY}/python" "${PYTHON_EXECUTABLE}" ${infile} -o ${outfile}
       MAIN_DEPENDENCY ${infile}
-      DEPENDS pygui pycore
+      DEPENDS pygui pycore pyqtcompat
     )
     SET(${outfiles} ${${outfiles}} ${outfile})
   ENDFOREACH(it)

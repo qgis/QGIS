@@ -12,7 +12,8 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
+
 import tempfile
 import os
 
@@ -21,7 +22,7 @@ os.environ['QGIS_DEBUG'] = '2'
 os.environ['QGIS_LOG_FILE'] = myFilename
 
 from qgis.core import QgsLogger
-from qgis.testing import TestCase, unittest
+from qgis.testing import unittest
 
 # Convenience instances in case you may need them
 # not used in this test

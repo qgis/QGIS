@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
 
 from qgis.core import (QgsVectorLayer,
                        QgsFeature,
@@ -23,18 +23,11 @@ from qgis.core import (QgsVectorLayer,
                        QgsFeatureRequest,
                        QgsWKBTypes
                        )
-from PyQt4.QtCore import QDate, QTime, QDateTime, QVariant, QDir
+from PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 import os
 import platform
-from qgis.testing import (
-    start_app,
-    unittest
-)
-
-from utilities import (
-    writeShape,
-    compareWkt
-)
+from qgis.testing import start_app, unittest
+from utilities import writeShape, compareWkt
 
 start_app()
 

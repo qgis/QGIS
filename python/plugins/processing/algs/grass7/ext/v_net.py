@@ -30,7 +30,6 @@ __copyright__ = '(C) 2015, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 import os
-from processing.core.parameters import getParameterFromString, ParameterVector, ParameterNumber, ParameterBoolean, ParameterString
 
 
 def incorporatePoints(alg, pointLayerName=u'points', networkLayerName=u'input'):

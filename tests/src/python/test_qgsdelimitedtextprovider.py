@@ -23,43 +23,29 @@ __revision__ = '$Format:%H$'
 #
 # To recreate all tests, set rebuildTests to true
 
-import qgis
+import qgis  # NOQA
 
 import os
 import re
 import tempfile
 import inspect
 import time
-import test_qgsdelimitedtextprovider_wanted as want
+import test_qgsdelimitedtextprovider_wanted as want  # NOQA
 
 rebuildTests = 'REBUILD_DELIMITED_TEXT_TESTS' in os.environ
 
-import qgis
-
-from PyQt4.QtCore import (
-    QCoreApplication,
-    QUrl,
-    QObject
-)
+from PyQt.QtCore import QCoreApplication, QUrl, QObject
 
 from qgis.core import (
     QgsProviderRegistry,
     QgsVectorLayer,
     QgsFeatureRequest,
     QgsRectangle,
-    QgsMessageLog,
-    QGis
+    QgsMessageLog
 )
 
-from qgis.testing import (
-    start_app,
-    unittest
-)
-
-from utilities import (
-    unitTestDataPath,
-    compareWkt
-)
+from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath, compareWkt
 
 from providertestbase import ProviderTestCase
 

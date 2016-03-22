@@ -245,10 +245,8 @@ void QgsInterpolationDialog::on_mInputLayerComboBox_currentIndexChanged( const Q
   }
 
   //insert numeric attributes of layer into mInterpolationAttributesComboBox
-  const QgsFields& fields = provider->fields();
-  for ( int idx = 0; idx < fields.count(); ++idx )
+  Q_FOREACH ( const QgsField& currentField, provider->fields() )
   {
-    const QgsField& currentField = fields[idx];
     QVariant::Type currentType = currentField.type();
     if ( currentType == QVariant::Int || currentType == QVariant::Double )
     {

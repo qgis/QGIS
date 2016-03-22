@@ -28,13 +28,10 @@ __revision__ = '$Format:%H$'
 
 import sys
 import os
-import re
 
 from processing.tools.vector import resolveFieldIndex
 from processing.tools.vector import features
-from enum import Enum
-from enum import unique
-from PyQt4.QtCore import QCoreApplication
+from PyQt.QtCore import QCoreApplication
 from qgis.core import QgsRasterLayer
 from qgis.core import QgsVectorLayer
 from processing.tools.system import isWindows
@@ -967,7 +964,7 @@ class ParameterGeometryPredicate(Parameter):
             return False
 
         if isinstance(value, unicode):
-            self.value = value.split(';') # relates to ModelerAlgorithm.resolveValue
+            self.value = value.split(';')  # relates to ModelerAlgorithm.resolveValue
         else:
             self.value = value
         return True

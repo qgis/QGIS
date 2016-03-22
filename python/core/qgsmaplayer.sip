@@ -273,6 +273,11 @@ class QgsMapLayer : QObject
     /** True if the layer can be edited */
     virtual bool isEditable() const;
 
+    /** Returns true if the layer is considered a spatial layer, ie it has some form of geometry associated with it.
+     * @note added in QGIS 2.16
+     */
+    virtual bool isSpatial() const;
+
     /** Sets state from Dom document
        @param layerElement The Dom element corresponding to ``maplayer'' tag
        @note
@@ -492,29 +497,42 @@ class QgsMapLayer : QObject
      */
     QgsMapLayerStyleManager* styleManager() const;
 
+    /** Tests whether the layer should be visible at the specified scale.
+     * @param scale scale denominator to test
+     * @returns true if the layer is visible at the given scale.
+     * @note added in QGIS 2.16
+     * @see minimumScale()
+     * @see maximumScale()
+     * @see hasScaleBasedVisibility()
+     */
+    bool isInScaleRange( double scale ) const;
+
     /** Returns the minimum scale denominator at which the layer is visible.
      * Scale based visibility is only used if hasScaleBasedVisibility is true.
      * @returns minimum scale denominator at which the layer will render
-     * @see setMinimumScale
-     * @see maximumScale
-     * @see hasScaleBasedVisibility
+     * @see setMinimumScale()
+     * @see maximumScale()
+     * @see hasScaleBasedVisibility()
+     * @see isInScaleRange()
      */
-    float minimumScale() const;
+    double minimumScale() const;
 
     /** Returns the maximum scale denominator at which the layer is visible.
      * Scale based visibility is only used if hasScaleBasedVisibility is true.
      * @returns minimum scale denominator at which the layer will render
-     * @see setMaximumScale
-     * @see minimumScale
-     * @see hasScaleBasedVisibility
+     * @see setMaximumScale()
+     * @see minimumScale()
+     * @see hasScaleBasedVisibility()
+     * @see isInScaleRange()
      */
-    float maximumScale() const;
+    double maximumScale() const;
 
     /** Returns whether scale based visibility is enabled for the layer.
      * @returns true if scale based visibility is enabled
-     * @see minimumScale
-     * @see maximumScale
-     * @see setScaleBasedVisibility
+     * @see minimumScale()
+     * @see maximumScale()
+     * @see setScaleBasedVisibility()
+     * @see isInScaleRange()
      */
     bool hasScaleBasedVisibility() const;
 
@@ -530,7 +548,7 @@ class QgsMapLayer : QObject
      * @see setMaximumScale
      * @see setScaleBasedVisibility
      */
-    void setMinimumScale( const float theMinScale );
+    void setMinimumScale( double theMinScale );
 
     /** Sets the maximum scale denominator at which the layer will be visible.
      * Scale based visibility is only used if setScaleBasedVisibility is set to true.
@@ -539,7 +557,7 @@ class QgsMapLayer : QObject
      * @see setMinimumScale
      * @see setScaleBasedVisibility
      */
-    void setMaximumScale( const float theMaxScale );
+    void setMaximumScale( double theMaxScale );
 
     /** Sets whether scale based visibility is enabled for the layer.
      * @param enabled set to true to enable scale based visibility

@@ -25,16 +25,14 @@ __copyright__ = '(C) 2016, Hugo Mercier'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QGis, QgsGeometry, QgsFeature,
+from qgis.core import (QgsFeature,
                        QgsVirtualLayerDefinition, QgsVectorLayer,
                        QgsCoordinateReferenceSystem, QgsWKBTypes)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterMultipleInput
-from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
@@ -116,7 +114,7 @@ class ExecuteSQL(GeoAlgorithm):
         if uid_field:
             df.setUid(uid_field)
 
-        if geometry_type == 1: # no geometry
+        if geometry_type == 1:  # no geometry
             df.setGeometryWkbType(QgsWKBTypes.NoGeometry)
         else:
             if geometry_field:

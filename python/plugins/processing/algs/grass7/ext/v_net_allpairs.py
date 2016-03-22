@@ -26,7 +26,7 @@ __copyright__ = '(C) 2015, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-from v_net import incorporatePoints
+from .v_net import incorporatePoints
 
 
 def processCommand(alg):

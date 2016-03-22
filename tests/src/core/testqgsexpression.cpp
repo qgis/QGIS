@@ -771,8 +771,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "layer_property attribution" ) << QString( "layer_property('%1','attribution')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->attribution() );
       QTest::newRow( "layer_property attribution_url" ) << QString( "layer_property('%1','attribution_url')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->attributionUrl() );
       QTest::newRow( "layer_property source" ) << QString( "layer_property('%1','source')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->publicSource() );
-      QTest::newRow( "layer_property min_scale" ) << QString( "layer_property('%1','min_scale')" ).arg( mPointsLayer->name() ) << false << QVariant(( double )mPointsLayer->minimumScale() );
-      QTest::newRow( "layer_property max_scale" ) << QString( "layer_property('%1','max_scale')" ).arg( mPointsLayer->name() ) << false << QVariant(( double )mPointsLayer->maximumScale() );
+      QTest::newRow( "layer_property min_scale" ) << QString( "layer_property('%1','min_scale')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->minimumScale() );
+      QTest::newRow( "layer_property max_scale" ) << QString( "layer_property('%1','max_scale')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->maximumScale() );
       QTest::newRow( "layer_property crs" ) << QString( "layer_property('%1','crs')" ).arg( mPointsLayer->name() ) << false << QVariant( "EPSG:4326" );
       QTest::newRow( "layer_property extent" ) << QString( "geom_to_wkt(layer_property('%1','extent'))" ).arg( mPointsLayer->name() ) << false << QVariant( "Polygon ((-118.88888889 22.80020704, -83.33333333 22.80020704, -83.33333333 46.87198068, -118.88888889 46.87198068, -118.88888889 22.80020704))" );
       QTest::newRow( "layer_property type" ) << QString( "layer_property('%1','type')" ).arg( mPointsLayer->name() ) << false << QVariant( "Vector" );
@@ -1243,10 +1243,65 @@ class TestQgsExpression: public QObject
       vPerimeter = exp3.evaluate( &context );
       QCOMPARE( vPerimeter.toDouble(), 26. );
 
+      QgsExpression deprecatedExpXAt( "$x_at(1)" );
+      context.setFeature( fPolygon );
+      QVariant xAt = deprecatedExpXAt.evaluate( &context );
+      QCOMPARE( xAt.toDouble(), 10.0 );
+      context.setFeature( fPolyline );
+      xAt = deprecatedExpXAt.evaluate( &context );
+      QCOMPARE( xAt.toDouble(), 10.0 );
+
+      QgsExpression deprecatedExpXAtNeg( "$x_at(-2)" );
+      context.setFeature( fPolygon );
+      xAt = deprecatedExpXAtNeg.evaluate( &context );
+      QCOMPARE( xAt.toDouble(), 2.0 );
+
+      QgsExpression deprecatedExpYAt( "$y_at(2)" );
+      context.setFeature( fPolygon );
+      QVariant yAt = deprecatedExpYAt.evaluate( &context );
+      QCOMPARE( yAt.toDouble(), 6.0 );
+      QgsExpression deprecatedExpYAt2( "$y_at(1)" );
+      context.setFeature( fPolyline );
+      yAt = deprecatedExpYAt2.evaluate( &context );
+      QCOMPARE( yAt.toDouble(), 0.0 );
+
+      QgsExpression deprecatedExpYAtNeg( "$y_at(-2)" );
+      context.setFeature( fPolygon );
+      yAt = deprecatedExpYAtNeg.evaluate( &context );
+      QCOMPARE( yAt.toDouble(), 6.0 );
+
+      QgsExpression expXAt( "x_at(1)" );
+      context.setFeature( fPolygon );
+      xAt = expXAt.evaluate( &context );
+      QCOMPARE( xAt.toDouble(), 10.0 );
+      context.setFeature( fPolyline );
+      xAt = expXAt.evaluate( &context );
+      QCOMPARE( xAt.toDouble(), 10.0 );
+
+      QgsExpression expXAtNeg( "x_at(-2)" );
+      context.setFeature( fPolygon );
+      xAt = expXAtNeg.evaluate( &context );
+      QCOMPARE( xAt.toDouble(), 2.0 );
+
+      QgsExpression expYAt( "y_at(2)" );
+      context.setFeature( fPolygon );
+      yAt = expYAt.evaluate( &context );
+      QCOMPARE( yAt.toDouble(), 6.0 );
+      QgsExpression expYAt2( "$y_at(1)" );
+      context.setFeature( fPolyline );
+      yAt = expYAt2.evaluate( &context );
+      QCOMPARE( yAt.toDouble(), 0.0 );
+
+      QgsExpression expYAtNeg( "y_at(-2)" );
+      context.setFeature( fPolygon );
+      yAt = expYAtNeg.evaluate( &context );
+      QCOMPARE( yAt.toDouble(), 6.0 );
+
       QgsExpression exp4( "bounds_width($geometry)" );
       QVariant vBoundsWidth = exp4.evaluate( &fPolygon );
       QCOMPARE( vBoundsWidth.toDouble(), 8.0 );
 
+      context.setFeature( fPolygon );
       vBoundsWidth = exp4.evaluate( &context );
       QCOMPARE( vBoundsWidth.toDouble(), 8.0 );
 

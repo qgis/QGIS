@@ -27,16 +27,14 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
-from PyQt4.QtCore import QVariant
+from PyQt.QtGui import QIcon
+from PyQt.QtCore import QVariant
 from qgis.core import QgsFields, QgsVectorLayer
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.outputs import OutputVector
-
-from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -64,7 +62,7 @@ class Merge(GeoAlgorithm):
         layers = []
         fields = QgsFields()
         totalFeatureCount = 0
-        for x in xrange(0, len(paths)):
+        for x in xrange(len(paths)):
             layer = QgsVectorLayer(paths[x], unicode(x), 'ogr')
 
             if (len(layers) > 0):

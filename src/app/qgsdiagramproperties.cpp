@@ -366,24 +366,24 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     const QgsDiagramLayerSettings *dls = layer->diagramLayerSettings();
     if ( dls )
     {
-      mDiagramDistanceSpinBox->setValue( dls->dist );
-      mPrioritySlider->setValue( dls->priority );
-      mZIndexSpinBox->setValue( dls->zIndex );
+      mDiagramDistanceSpinBox->setValue( dls->distance() );
+      mPrioritySlider->setValue( dls->getPriority() );
+      mZIndexSpinBox->setValue( dls->getZIndex() );
       mDataDefinedXComboBox->setCurrentIndex( mDataDefinedXComboBox->findData( dls->xPosColumn ) );
       mDataDefinedYComboBox->setCurrentIndex( mDataDefinedYComboBox->findData( dls->yPosColumn ) );
       if ( dls->xPosColumn != -1 || dls->yPosColumn != -1 )
       {
         mDataDefinedPositionGroupBox->setChecked( true );
       }
-      mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( dls->placement ) );
+      mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( dls->getPlacement() ) );
 
-      chkLineAbove->setChecked( dls->placementFlags & QgsDiagramLayerSettings::AboveLine );
-      chkLineBelow->setChecked( dls->placementFlags & QgsDiagramLayerSettings::BelowLine );
-      chkLineOn->setChecked( dls->placementFlags & QgsDiagramLayerSettings::OnLine );
-      if ( !( dls->placementFlags & QgsDiagramLayerSettings::MapOrientation ) )
+      chkLineAbove->setChecked( dls->linePlacementFlags() & QgsDiagramLayerSettings::AboveLine );
+      chkLineBelow->setChecked( dls->linePlacementFlags() & QgsDiagramLayerSettings::BelowLine );
+      chkLineOn->setChecked( dls->linePlacementFlags() & QgsDiagramLayerSettings::OnLine );
+      if ( !( dls->linePlacementFlags() & QgsDiagramLayerSettings::MapOrientation ) )
         chkLineOrientationDependent->setChecked( true );
 
-      mShowAllCheckBox->setChecked( dls->showAll );
+      mShowAllCheckBox->setChecked( dls->showAllDiagrams() );
     }
 
     if ( dr->diagram() )
@@ -762,10 +762,10 @@ void QgsDiagramProperties::apply()
   }
 
   QgsDiagramLayerSettings dls;
-  dls.dist = mDiagramDistanceSpinBox->value();
-  dls.priority = mPrioritySlider->value();
-  dls.zIndex = mZIndexSpinBox->value();
-  dls.showAll = mShowAllCheckBox->isChecked();
+  dls.setDistance( mDiagramDistanceSpinBox->value() );
+  dls.setPriority( mPrioritySlider->value() );
+  dls.setZIndex( mZIndexSpinBox->value() );
+  dls.setShowAllDiagrams( mShowAllCheckBox->isChecked() );
   if ( mDataDefinedPositionGroupBox->isChecked() )
   {
     dls.xPosColumn = mDataDefinedXComboBox->itemData( mDataDefinedXComboBox->currentIndex() ).toInt();
@@ -776,16 +776,18 @@ void QgsDiagramProperties::apply()
     dls.xPosColumn = -1;
     dls.yPosColumn = -1;
   }
-  dls.placement = ( QgsDiagramLayerSettings::Placement )mPlacementComboBox->itemData( mPlacementComboBox->currentIndex() ).toInt();
-  dls.placementFlags = ( QgsDiagramLayerSettings::LinePlacementFlags )0;
+  dls.setPlacement(( QgsDiagramLayerSettings::Placement )mPlacementComboBox->itemData( mPlacementComboBox->currentIndex() ).toInt() );
+
+  unsigned int flags = 0;
   if ( chkLineAbove->isChecked() )
-    dls.placementFlags |= QgsDiagramLayerSettings::AboveLine;
+    flags |= QgsDiagramLayerSettings::AboveLine;
   if ( chkLineBelow->isChecked() )
-    dls.placementFlags |= QgsDiagramLayerSettings::BelowLine;
+    flags |= QgsDiagramLayerSettings::BelowLine;
   if ( chkLineOn->isChecked() )
-    dls.placementFlags |= QgsDiagramLayerSettings::OnLine;
+    flags |= QgsDiagramLayerSettings::OnLine;
   if ( ! chkLineOrientationDependent->isChecked() )
-    dls.placementFlags |= QgsDiagramLayerSettings::MapOrientation;
+    flags |= QgsDiagramLayerSettings::MapOrientation;
+  dls.setLinePlacementFlags( flags );
 
   mLayer->setDiagramLayerSettings( dls );
 }
@@ -826,7 +828,7 @@ void QgsDiagramProperties::showAddAttributeExpressionDialog()
       newItem->setText( 0, expression );
       newItem->setText( 2, expression );
       newItem->setData( 0, Qt::UserRole, expression );
-      newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
+      newItem->setFlags(( newItem->flags() | Qt::ItemIsEditable ) & ~Qt::ItemIsDropEnabled );
 
       //set initial color for diagram category
       int red = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );

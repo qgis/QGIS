@@ -394,7 +394,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       mypContextPainter->setCompositionMode( ml->blendMode() );
     }
 
-    if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() <= mScale && mScale < ml->maximumScale() ) || mOverview )
+    if ( ml->isInScaleRange( mScale ) || mOverview )
     {
       connect( ml, SIGNAL( drawingProgress( int, int ) ), this, SLOT( onDrawingProgress( int, int ) ) );
 
@@ -584,7 +584,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       {
         // only make labels if the layer is visible
         // after scale dep viewing settings are checked
-        if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() < mScale && mScale < ml->maximumScale() ) )
+        if ( ml->isInScaleRange( mScale ) )
         {
           bool split = false;
 

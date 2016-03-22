@@ -30,6 +30,7 @@
 #include "qgsscaleutils.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsproject.h"
+#include "qgsdualview.h"
 
 #include "qgsattributetablefiltermodel.h"
 #include "qgsrasterformatsaveoptionswidget.h"
@@ -336,6 +337,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   cmbAttrTableBehaviour->addItem( tr( "Show features visible on map" ), QgsAttributeTableFilterModel::ShowVisible );
   cmbAttrTableBehaviour->setCurrentIndex( cmbAttrTableBehaviour->findData( mSettings->value( "/qgis/attributeTableBehaviour", QgsAttributeTableFilterModel::ShowAll ).toInt() ) );
 
+  mAttrTableViewComboBox->clear();
+  mAttrTableViewComboBox->addItem( tr( "Remember last view" ), -1 );
+  mAttrTableViewComboBox->addItem( tr( "Table view" ), QgsDualView::AttributeTable );
+  mAttrTableViewComboBox->addItem( tr( "Form view" ), QgsDualView::AttributeEditor );
+  mAttrTableViewComboBox->setCurrentIndex( mAttrTableViewComboBox->findData( mSettings->value( "/qgis/attributeTableView", -1 ).toInt() ) );
 
   spinBoxAttrTableRowCache->setValue( mSettings->value( "/qgis/attributeTableRowCache", 10000 ).toInt() );
   spinBoxAttrTableRowCache->setSpecialValueText( tr( "All" ) );
@@ -1135,6 +1141,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( "/qgis/checkVersion", cbxCheckVersion->isChecked() );
   mSettings->setValue( "/qgis/dockAttributeTable", cbxAttributeTableDocked->isChecked() );
   mSettings->setValue( "/qgis/attributeTableBehaviour", cmbAttrTableBehaviour->itemData( cmbAttrTableBehaviour->currentIndex() ) );
+  mSettings->setValue( "/qgis/attributeTableView", mAttrTableViewComboBox->itemData( mAttrTableViewComboBox->currentIndex() ) );
   mSettings->setValue( "/qgis/attributeTableRowCache", spinBoxAttrTableRowCache->value() );
   mSettings->setValue( "/qgis/promptForRasterSublayers", cmbPromptRasterSublayers->currentIndex() );
   mSettings->setValue( "/qgis/scanItemsInBrowser2",

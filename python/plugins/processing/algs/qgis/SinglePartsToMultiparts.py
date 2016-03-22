@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
+from PyQt.QtGui import QIcon
 
 from qgis.core import QGis, QgsFeature, QgsGeometry
 
@@ -126,7 +126,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
                 return QGis.WKBMultiPolygon
             else:
                 return QGis.WKBUnknown
-        except Exception as err:
+        except Exception:
             pass
 
     def extractAsMulti(self, geom):

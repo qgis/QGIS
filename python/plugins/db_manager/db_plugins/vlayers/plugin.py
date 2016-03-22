@@ -22,16 +22,13 @@ email                : hugo dot mercier at oslandia dot com
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import VLayerConnector
 
-from PyQt4.QtCore import Qt, QSettings, QUrl
-from PyQt4.QtGui import QIcon, QApplication, QAction
+from PyQt.QtCore import QUrl
+from PyQt.QtGui import QIcon
 from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
-from qgis.gui import QgsMessageBar
 
-from ..plugin import DBPlugin, Database, Table, VectorTable, RasterTable, TableField, TableIndex, TableTrigger, InvalidDataException
-try:
-    from . import resources_rc
-except ImportError:
-    pass
+from ..plugin import DBPlugin, Database, Table, VectorTable, TableField
+
+from . import resources_rc  # NOQA
 
 
 def classFactory():

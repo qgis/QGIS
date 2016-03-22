@@ -1716,6 +1716,7 @@ void QgsLabelingGui::updateSvgWidgets( const QString& svgPath )
 void QgsLabelingGui::on_mShapeSVGSelectorBtn_clicked()
 {
   QgsSvgSelectorDialog svgDlg( this );
+  svgDlg.setWindowTitle( tr( "Select SVG file" ) );
   svgDlg.svgSelector()->setSvgPath( mShapeSVGPathLineEdit->text().trimmed() );
 
   if ( svgDlg.exec() == QDialog::Accepted )

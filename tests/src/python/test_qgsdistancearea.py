@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2014, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
 
 from qgis.core import (QgsGeometry,
                        QgsPoint,
@@ -22,10 +22,8 @@ from qgis.core import (QgsGeometry,
                        QgsUnitTypes
                        )
 
-from qgis.testing import (start_app,
-                          unittest)
-
-from PyQt4.QtCore import QLocale
+from qgis.testing import start_app, unittest
+from PyQt.QtCore import QLocale
 
 # Convenience instances in case you may need them
 # not used in this test

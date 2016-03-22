@@ -1989,7 +1989,7 @@ GEOSGeometry* QgsGeos::reshapeLine( const GEOSGeometry* line, const GEOSGeometry
       currentGeomOverlapsReshapeLine = true;
 
     //logic to decide if this part belongs to the result
-    if ( nEndpointsSameAsOriginalLine == 1 && nEndpointsOnOriginalLine == 2 && currentGeomOverlapsOriginalGeom )
+    if ( !isRing && nEndpointsSameAsOriginalLine == 1 && nEndpointsOnOriginalLine == 2 && currentGeomOverlapsOriginalGeom )
     {
       resultLineParts.push_back( GEOSGeom_clone_r( geosinit.ctxt, currentGeom ) );
     }

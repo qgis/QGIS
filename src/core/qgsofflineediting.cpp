@@ -461,11 +461,10 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
   // create table
   QString sql = QString( "CREATE TABLE '%1' (" ).arg( tableName );
   QString delim = "";
-  const QgsFields& fields = layer->dataProvider()->fields();
-  for ( int idx = 0; idx < fields.count(); ++idx )
+  Q_FOREACH ( const QgsField& field, layer->dataProvider()->fields() )
   {
     QString dataType = "";
-    QVariant::Type type = fields[idx].type();
+    QVariant::Type type = field.type();
     if ( type == QVariant::Int || type == QVariant::LongLong )
     {
       dataType = "INTEGER";
@@ -480,10 +479,10 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
     }
     else
     {
-      showWarning( tr( "%1: Unknown data type %2. Not using type affinity for the field." ).arg( fields[idx].name(), QVariant::typeToName( type ) ) );
+      showWarning( tr( "%1: Unknown data type %2. Not using type affinity for the field." ).arg( field.name(), QVariant::typeToName( type ) ) );
     }
 
-    sql += delim + QString( "'%1' %2" ).arg( fields[idx].name(), dataType );
+    sql += delim + QString( "'%1' %2" ).arg( field.name(), dataType );
     delim = ',';
   }
   sql += ')';

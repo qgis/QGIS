@@ -332,7 +332,7 @@ void QgsMapRendererJob::drawOldLabeling( const QgsMapSettings& settings, QgsRend
 
     // only make labels if the layer is visible
     // after scale dep viewing settings are checked
-    if ( ml->hasScaleBasedVisibility() && ( settings.scale() < ml->minimumScale() || settings.scale() > ml->maximumScale() ) )
+    if ( !ml->isInScaleRange( settings.scale() ) )
       continue;
 
     const QgsCoordinateTransform* ct = nullptr;

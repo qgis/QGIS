@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    GeoAlgorithmExecutionException.py
+    GeoAlgorithm.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -31,13 +31,13 @@ import traceback
 import subprocess
 import copy
 
-from PyQt4.QtGui import QIcon
-from PyQt4.QtCore import QCoreApplication, QSettings
-from qgis.core import QGis, QgsRasterFileWriter
+from PyQt.QtGui import QIcon
+from PyQt.QtCore import QCoreApplication, QSettings
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from processing.core.SilentProgress import SilentProgress
 from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter
 from processing.core.outputs import OutputVector, OutputRaster, OutputTable, OutputHTML, Output
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -183,7 +183,7 @@ class GeoAlgorithm:
 
     # =========================================================
 
-    def execute(self, progress=None, model=None):
+    def execute(self, progress=SilentProgress(), model=None):
         """The method to use to call a processing algorithm.
 
         Although the body of the algorithm is in processAlgorithm(),
@@ -205,16 +205,17 @@ class GeoAlgorithm:
             self.convertUnsupportedFormats(progress)
             self.runPostExecutionScript(progress)
         except GeoAlgorithmExecutionException as gaee:
+            lines = [self.tr('Uncaught error while executing algorithm')]
+            lines.append(traceback.format_exc())
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, gaee.msg)
-            raise gaee
+            raise GeoAlgorithmExecutionException(gaee.msg, lines, gaee)
         except Exception as e:
             # If something goes wrong and is not caught in the
             # algorithm, we catch it here and wrap it
             lines = [self.tr('Uncaught error while executing algorithm')]
             lines.append(traceback.format_exc())
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, lines)
-            raise GeoAlgorithmExecutionException(
-                unicode(e) + self.tr('\nSee log for more details'))
+            raise GeoAlgorithmExecutionException(unicode(e) + self.tr('\nSee log for more details'), lines, e)
 
     def _checkParameterValuesBeforeExecuting(self):
         for param in self.parameters:

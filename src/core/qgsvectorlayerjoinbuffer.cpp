@@ -240,14 +240,14 @@ void QgsVectorLayerJoinBuffer::updateFields( QgsFields& fields )
     for ( int idx = 0; idx < joinFields.count(); ++idx )
     {
       // if using just a subset of fields, filter some of them out
-      if ( hasSubset && !subset.contains( joinFields[idx].name() ) )
+      if ( hasSubset && !subset.contains( joinFields.at( idx ).name() ) )
         continue;
 
       //skip the join field to avoid double field names (fields often have the same name)
       // when using subset of field, use all the selected fields
-      if ( hasSubset || joinFields[idx].name() != joinFieldName )
+      if ( hasSubset || joinFields.at( idx ).name() != joinFieldName )
       {
-        QgsField f = joinFields[idx];
+        QgsField f = joinFields.at( idx );
         f.setName( prefix + f.name() );
         fields.append( f, QgsFields::OriginJoin, idx + ( joinIdx*1000 ) );
       }

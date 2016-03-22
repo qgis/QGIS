@@ -106,6 +106,7 @@ col_first    [A-Za-z_]|{non_ascii}
 col_next     [A-Za-z0-9_]|{non_ascii}
 column_ref  {col_first}{col_next}*
 
+deprecated_function "$"[xXyY]_?[aA][tT]
 special_col "$"{column_ref}
 variable "@"{column_ref}
 
@@ -192,6 +193,8 @@ string      "'"{str_char}*"'"
 {boolean} { yylval->boolVal = QString( yytext ).compare( "true", Qt::CaseInsensitive ) == 0; return BOOLEAN; }
 
 {string}  { TEXT_FILTER(stripText); return STRING; }
+
+{deprecated_function} { TEXT; return FUNCTION; }
 
 {special_col}        { TEXT; return SPECIAL_COL; }
 

@@ -31,6 +31,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QProgressDialog>
+#include <QSettings>
 
 QgsDualView::QgsDualView( QWidget* parent )
     : QStackedWidget( parent )
@@ -107,17 +108,17 @@ void QgsDualView::columnBoxInit()
   QString displayExpression = mLayerCache->layer()->displayExpression();
 
   // if no display expression is saved: use display field instead
-  if ( displayExpression == "" )
+  if ( displayExpression.isEmpty() )
   {
-    if ( mLayerCache->layer()->displayField() != "" )
+    if ( !mLayerCache->layer()->displayField().isEmpty() )
     {
       defaultField = mLayerCache->layer()->displayField();
       displayExpression = QString( "COALESCE(\"%1\", '<NULL>')" ).arg( defaultField );
     }
   }
 
-  // if neither diaplay expression nor display field is saved...
-  if ( displayExpression == "" )
+  // if neither display expression nor display field is saved...
+  if ( displayExpression.isEmpty() )
   {
     QgsAttributeList pkAttrs = mLayerCache->layer()->pkAttributeList();
 
@@ -168,7 +169,7 @@ void QgsDualView::columnBoxInit()
 
     if ( mLayerCache->layer()->editFormConfig()->widgetType( fieldIndex ) != "Hidden" )
     {
-      QIcon icon = QgsApplication::getThemeIcon( "/mActionNewAttribute.png" );
+      QIcon icon = mLayerCache->layer()->fields().iconForField( fieldIndex );
       QString text = field.name();
 
       // Generate action for the preview popup button of the feature list

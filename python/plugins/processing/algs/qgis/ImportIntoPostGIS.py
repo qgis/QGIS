@@ -25,7 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import QSettings
+from PyQt.QtCore import QSettings
 from qgis.core import QgsDataSourceURI, QgsVectorLayerImport
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -112,7 +112,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
                                      user=username, passwd=password)
         except postgis_utils.DbError as e:
             raise GeoAlgorithmExecutionException(
-                self.tr("Couldn't connect to database:\n%s" % e.message))
+                self.tr("Couldn't connect to database:\n%s") % unicode(e))
 
         geomColumn = self.getParameterValue(self.GEOMETRY_COLUMN)
         if not geomColumn:

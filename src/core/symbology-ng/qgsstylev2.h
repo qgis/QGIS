@@ -122,6 +122,12 @@ class CORE_EXPORT QgsStyleV2 : public QObject
      */
     int addTag( const QString& tagName );
 
+    /** Returns a list of all tags in the style database
+     * @note added in QGIS 2.16
+     * @see addTag()
+     */
+    QStringList tags() const;
+
     //! return a map of groupid and names for the given parent group
     QgsSymbolGroupMap childGroupNames( const QString& parent = "" );
 

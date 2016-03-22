@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtCore import QPyNullVariant, QCoreApplication, QSettings
-from PyQt4.QtGui import QIcon
+from PyQt.QtCore import QPyNullVariant, QCoreApplication, QSettings
+from PyQt.QtGui import QIcon
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
 
@@ -188,8 +188,11 @@ class ProcessingConfig:
     def getSetting(name):
         if name in ProcessingConfig.settings.keys():
             v = ProcessingConfig.settings[name].value
-            if isinstance(v, QPyNullVariant):
-                v = None
+            try:
+                if isinstance(v, QPyNullVariant):
+                    v = None
+            except:
+                pass
             return v
         else:
             return None
@@ -254,7 +257,8 @@ class Setting:
                         raise ValueError(self.tr('Specified path does not exist:\n%s') % unicode(v))
                 validator = checkFileOrFolder
             else:
-                validator = lambda x: True
+                def validator(x):
+                    return True
         self.validator = validator
         self.value = default
 

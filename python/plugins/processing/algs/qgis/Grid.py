@@ -28,8 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import math
 
-from PyQt4.QtGui import QIcon
-from PyQt4.QtCore import QVariant
+from PyQt.QtCore import QVariant
 from qgis.core import QgsRectangle, QgsCoordinateReferenceSystem, QGis, QgsField, QgsFeature, QgsGeometry, QgsPoint
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -86,10 +85,6 @@ class Grid(GeoAlgorithm):
 
         width = bbox.width()
         height = bbox.height()
-        centerX = bbox.center().x()
-        centerY = bbox.center().y()
-        #~ originX = centerX - width / 2.0
-        #~ originY = centerY - height / 2.0
         originX = bbox.xMinimum()
         originY = bbox.yMaximum()
 
@@ -143,10 +138,10 @@ class Grid(GeoAlgorithm):
         rows = int(math.ceil(float(height) / vSpacing))
 
         # Longitude lines
-        for col in xrange(0, columns + 1):
+        for col in xrange(columns + 1):
             polyline = []
             x = originX + (col * hSpacing)
-            for row in xrange(0, rows + 1):
+            for row in xrange(rows + 1):
                 y = originY - (row * vSpacing)
                 polyline.append(QgsPoint(x, y))
 
@@ -155,10 +150,10 @@ class Grid(GeoAlgorithm):
             writer.addFeature(ft)
 
         # Latitude lines
-        for row in xrange(0, rows + 1):
+        for row in xrange(rows + 1):
             polyline = []
             y = originY - (row * vSpacing)
-            for col in xrange(0, columns + 1):
+            for col in xrange(columns + 1):
                 x = originX + (col * hSpacing)
                 polyline.append(QgsPoint(x, y))
 
@@ -173,13 +168,13 @@ class Grid(GeoAlgorithm):
         columns = int(math.ceil(float(width) / hSpacing))
         rows = int(math.ceil(float(height) / vSpacing))
 
-        for col in xrange(0, columns):
+        for col in xrange(columns):
             # (column + 1) and (row + 1) calculation is used to maintain
             # topology between adjacent shapes and avoid overlaps/holes
             # due to rounding errors
             x1 = originX + (col * hSpacing)
             x2 = originX + ((col + 1) * hSpacing)
-            for row in xrange(0, rows):
+            for row in xrange(rows):
                 y1 = originY - (row * vSpacing)
                 y2 = originY - ((row + 1) * vSpacing)
 
@@ -204,12 +199,12 @@ class Grid(GeoAlgorithm):
         columns = int(math.ceil(float(width) / halfHSpacing))
         rows = int(math.ceil(float(height) / vSpacing))
 
-        for col in xrange(0, columns):
+        for col in xrange(columns):
             x1 = originX + ((col + 0) * halfHSpacing)
             x2 = originX + ((col + 1) * halfHSpacing)
             x3 = originX + ((col + 2) * halfHSpacing)
 
-            for row in xrange(0, rows):
+            for row in xrange(rows):
                 if (col % 2) == 0:
                     y1 = originY - (((row * 2) + 0) * halfVSpacing)
                     y2 = originY - (((row * 2) + 1) * halfVSpacing)
@@ -244,7 +239,7 @@ class Grid(GeoAlgorithm):
         columns = int(math.ceil(float(width) / hSpacing))
         rows = int(math.ceil(float(height) / vSpacing))
 
-        for col in xrange(0, columns):
+        for col in xrange(columns):
             # (column + 1) and (row + 1) calculation is used to maintain
             # topology between adjacent shapes and avoid overlaps/holes
             # due to rounding errors
@@ -253,15 +248,15 @@ class Grid(GeoAlgorithm):
             x3 = originX + ((col + 1) * hSpacing)   # right
             x4 = x3 + (xVertexHi - xVertexLo)       # far right
 
-            for row in xrange(0, rows):
+            for row in xrange(rows):
                 if (col % 2) == 0:
-                    y1 = originY - (((row * 2) + 0) * halfVSpacing) # hi
-                    y2 = originY - (((row * 2) + 1) * halfVSpacing) # mid
-                    y3 = originY - (((row * 2) + 2) * halfVSpacing) # lo
+                    y1 = originY - (((row * 2) + 0) * halfVSpacing)  # hi
+                    y2 = originY - (((row * 2) + 1) * halfVSpacing)  # mid
+                    y3 = originY - (((row * 2) + 2) * halfVSpacing)  # lo
                 else:
-                    y1 = originY - (((row * 2) + 1) * halfVSpacing) # hi
-                    y2 = originY - (((row * 2) + 2) * halfVSpacing) # mid
-                    y3 = originY - (((row * 2) + 3) * halfVSpacing) # lo
+                    y1 = originY - (((row * 2) + 1) * halfVSpacing)  # hi
+                    y2 = originY - (((row * 2) + 2) * halfVSpacing)  # mid
+                    y3 = originY - (((row * 2) + 3) * halfVSpacing)  # lo
 
                 polyline = []
                 polyline.append(QgsPoint(x1, y2))

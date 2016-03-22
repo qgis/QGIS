@@ -1,0 +1,1 @@
+import PyQt.uic.pyuic

@@ -29,11 +29,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtGui import QIcon
+from PyQt.QtGui import QIcon
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-import OTBUtils
-from OTBAlgorithm import OTBAlgorithm
+from . import OTBUtils
+from .OTBAlgorithm import OTBAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 
 pluginPath = os.path.normpath(os.path.join(
@@ -67,7 +67,7 @@ class OTBAlgorithmProvider(AlgorithmProvider):
         folder = OTBUtils.compatibleDescriptionPath(version)
         if folder is None:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                   self.tr('Problem with OTB installation: installed OTB version (%s) is not supported' % version))
+                                   self.tr('Problem with OTB installation: installed OTB version (%s) is not supported') % version)
             return
 
         for descriptionFile in os.listdir(folder):
@@ -79,10 +79,10 @@ class OTBAlgorithmProvider(AlgorithmProvider):
                         self.algs.append(alg)
                     else:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr("Could not open OTB algorithm: %s" % descriptionFile))
+                                               self.tr("Could not open OTB algorithm: %s") % descriptionFile)
                 except Exception as e:
                     ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                           self.tr("Could not open OTB algorithm: %s" % descriptionFile))
+                                           self.tr("Could not open OTB algorithm: %s\n%s") % (descriptionFile, unicode(e)))
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
