@@ -94,6 +94,8 @@ class QgsScaleComboBox;
 class QgsDataItem;
 class QgsTileScaleWidget;
 
+class QgsDiagramProperties;
+
 #include <QMainWindow>
 #include <QToolBar>
 #include <QAbstractSocket>
@@ -1161,6 +1163,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! shows label settings dialog (for labeling-ng)
     void labeling();
+
+    //! diagrams properties
+    void diagramProperties();
 
     //! set the CAD dock widget visible
     void setCadDockVisible( bool visible );

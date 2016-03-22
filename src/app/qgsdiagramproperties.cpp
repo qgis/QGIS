@@ -51,8 +51,10 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   return expContext;
 }
 
-QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent )
+QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer,
+    QWidget* parent, QgsMapCanvas *canvas )
     : QWidget( parent )
+    , mMapCanvas( canvas )
 {
   mLayer = layer;
   if ( !layer )
@@ -142,6 +144,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   mAngleOffsetComboBox->addItem( tr( "Bottom" ), 270 * 16 );
   mAngleOffsetComboBox->addItem( tr( "Left" ), 180 * 16 );
 
+  mDataDefinedVisibilityComboBox->addItem( tr( "None" ), -1 );
+
   QSettings settings;
 
   // reset horiz strech of left side of options splitter (set to 1 for previewing in Qt Designer)
@@ -180,6 +184,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
     mDataDefinedXComboBox->addItem( layerFields[idx].name(), idx );
     mDataDefinedYComboBox->addItem( layerFields[idx].name(), idx );
+    mDataDefinedVisibilityComboBox->addItem( layerFields[idx].name(), idx );
   }
 
   const QgsDiagramRendererV2* dr = layer->diagramRenderer();
@@ -201,6 +206,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     mScaleVisibilityGroupBox->setChecked( layer->hasScaleBasedVisibility() );
     mScaleRangeWidget->setScaleRange( 1.0 / layer->maximumScale(), 1.0 / layer->minimumScale() ); // caution: layer uses scale denoms, widget uses true scales
     mShowAllCheckBox->setChecked( true );
+    mDataDefinedVisibilityGroupBox->setChecked( false );
 
     switch ( layerType )
     {
@@ -373,6 +379,11 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
         chkLineOrientationDependent->setChecked( true );
 
       mShowAllCheckBox->setChecked( dls->showAllDiagrams() );
+      mDataDefinedVisibilityComboBox->setCurrentIndex( mDataDefinedVisibilityComboBox->findData( dls->showColumn ) );
+      if ( dls->showColumn != -1 )
+      {
+        mDataDefinedVisibilityGroupBox->setChecked( true );
+      }
     }
 
     if ( dr->diagram() )
@@ -766,6 +777,14 @@ void QgsDiagramProperties::apply()
   dls.setPriority( mPrioritySlider->value() );
   dls.setZIndex( mZIndexSpinBox->value() );
   dls.setShowAllDiagrams( mShowAllCheckBox->isChecked() );
+  if ( mDataDefinedVisibilityGroupBox->isChecked() )
+  {
+    dls.showColumn = mDataDefinedVisibilityComboBox->itemData( mDataDefinedVisibilityComboBox->currentIndex() ).toInt();
+  }
+  else
+  {
+    dls.showColumn = -1;
+  }
   if ( mDataDefinedPositionGroupBox->isChecked() )
   {
     dls.xPosColumn = mDataDefinedXComboBox->itemData( mDataDefinedXComboBox->currentIndex() ).toInt();
@@ -790,6 +809,14 @@ void QgsDiagramProperties::apply()
   dls.setLinePlacementFlags( flags );
 
   mLayer->setDiagramLayerSettings( dls );
+
+  // refresh
+  if ( mMapCanvas )
+  {
+    QgisApp::instance()->markDirty();
+    if ( mMapCanvas )
+      mMapCanvas->refresh();
+  }
 }
 
 void QgsDiagramProperties::showAddAttributeExpressionDialog()

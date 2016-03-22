@@ -245,7 +245,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   QVBoxLayout* diagLayout = new QVBoxLayout( mDiagramFrame );
   diagLayout->setMargin( 0 );
-  diagramPropertiesDialog = new QgsDiagramProperties( mLayer, mDiagramFrame );
+  diagramPropertiesDialog = new QgsDiagramProperties( mLayer, mDiagramFrame, nullptr );
   diagramPropertiesDialog->layout()->setContentsMargins( -1, 0, -1, 0 );
   diagLayout->addWidget( diagramPropertiesDialog );
   mDiagramFrame->setLayout( diagLayout );

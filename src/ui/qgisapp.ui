@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>25</height>
+     <height>19</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -517,6 +517,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="mActionLabeling"/>
+   <addaction name="mActionDiagramProperties"/>
    <addaction name="mActionShowPinnedLabels"/>
    <addaction name="mActionPinLabels"/>
    <addaction name="mActionShowHideLabels"/>
@@ -1653,10 +1654,10 @@
      <normaloff>:/images/themes/default/mActionMoveLabel.png</normaloff>:/images/themes/default/mActionMoveLabel.png</iconset>
    </property>
    <property name="text">
-    <string>Move Label</string>
+    <string>Move Label And Diagram</string>
    </property>
    <property name="toolTip">
-    <string>Move Label</string>
+    <string>Move Label And Diagram</string>
    </property>
   </action>
   <action name="mActionRotateLabel">
@@ -1915,11 +1916,11 @@ Ctl (Cmd) increments by 15 deg.</string>
      <normaloff>:/images/themes/default/mActionPinLabels.svg</normaloff>:/images/themes/default/mActionPinLabels.svg</iconset>
    </property>
    <property name="text">
-    <string>Pin/Unpin Labels</string>
+    <string>Pin/Unpin Labels And Diagrams</string>
    </property>
    <property name="toolTip">
-    <string>Pin/Unpin Labels
-Click or marquee on label to pin
+    <string>Pin/Unpin Labels And Diagrams
+Click or marquee on label/diagram to pin
 Shift unpins, Ctl (Cmd) toggles state
 Acts on all editable layers</string>
    </property>
@@ -1933,10 +1934,10 @@ Acts on all editable layers</string>
      <normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</iconset>
    </property>
    <property name="text">
-    <string>Highlight Pinned Labels</string>
+    <string>Highlight Pinned Labels And DIagrams</string>
    </property>
    <property name="toolTip">
-    <string>Highlight Pinned Labels</string>
+    <string>Highlight Pinned Labels And Diagrams</string>
    </property>
   </action>
   <action name="mActionNewBlankProject">
@@ -1984,12 +1985,12 @@ Acts on all editable layers</string>
      <normaloff>:/images/themes/default/mActionShowHideLabels.svg</normaloff>:/images/themes/default/mActionShowHideLabels.svg</iconset>
    </property>
    <property name="text">
-    <string>Show/Hide Labels</string>
+    <string>Show/Hide Labels And Diagrams</string>
    </property>
    <property name="toolTip">
-    <string>Show/Hide Labels
-Click or marquee on feature to show label
-Shift+click or marquee on label to hide it
+    <string>Show/Hide Labels And Diagrams
+Click or marquee on feature to show label and diagram
+Shift+click or marquee on label or diagram to hide it
 Acts on currently active editable layer</string>
    </property>
   </action>
@@ -2454,6 +2455,18 @@ Acts on currently active editable layer</string>
    </property>
    <property name="shortcut">
     <string>T</string>
+   </property>
+  </action>
+  <action name="mActionDiagramProperties">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDiagramProperties.svg</normaloff>:/images/themes/default/mActionDiagramProperties.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Diagram Options</string>
+   </property>
+   <property name="toolTip">
+    <string>Layer Diagram Options</string>
    </property>
   </action>
  </widget>

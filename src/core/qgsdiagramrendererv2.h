@@ -257,6 +257,9 @@ class CORE_EXPORT QgsDiagramLayerSettings
     //! Attribute index for y coordinate (or -1 if position not data defined)
     int yPosColumn;
 
+    //! Attribute index for visibility (or -1 if visibility not data defined)
+    int showColumn;
+
     /** Returns whether the layer should show all diagrams, including overlapping diagrams
      * @see setShowAllDiagrams()
      * @note added in QGIS 2.16
