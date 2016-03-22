@@ -341,7 +341,7 @@ class ParameterMultipleInput(ParameterDataObject):
         ParameterDataObject.__init__(self, name, description, None, optional)
         self.datatype = int(float(datatype))
         self.exported = None
-        self.minNumInputs = 1
+        self.minNumInputs = 0
 
     """ Set minimum required number of inputs for parameter
 
@@ -354,14 +354,15 @@ class ParameterMultipleInput(ParameterDataObject):
     """
     def setMinNumInputs(self, _minNumInputs):
         if _minNumInputs is None:
-            self.minNumInputs = 1
-            return
+            self.minNumInputs = 0
+            return True
 
         if _minNumInputs < 1 and not self.optional:
             # dont allow to set negative or null number of inputs if parameter isn't optional
             return False
 
         self.minNumInputs = int(minNumInputs)
+        return True
 
     """ Get minimum required number of inputs for parameter
 
@@ -382,6 +383,7 @@ class ParameterMultipleInput(ParameterDataObject):
         if isinstance(obj, list):
             if len(obj) == 0:
                 if self.optional:
+                    self.value = None
                     return True
                 else:
                     return False
