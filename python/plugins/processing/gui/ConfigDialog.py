@@ -67,23 +67,45 @@ class ConfigDialog(BASE, WIDGET):
         self.delegate = SettingDelegate()
         self.tree.setItemDelegateForColumn(1, self.delegate)
 
-        self.searchBox.textChanged.connect(self.fillTree)
+        self.searchBox.textChanged.connect(self.textChanged)
 
         self.fillTree()
 
         self.tree.expanded.connect(self.adjustColumns)
 
+    def textChanged(self):
+        text = unicode(self.searchBox.text().lower())
+        self._filterItem(self.model.invisibleRootItem(), text)
+        if text:
+            self.tree.expandAll()
+        else:
+            self.tree.collapseAll()
+
+    def _filterItem(self, item, text):
+        if item.hasChildren():
+            show = False
+            for i in xrange(item.rowCount()):
+                child = item.child(i)
+                showChild = self._filterItem(child, text)
+                show = (showChild or show)
+            self.tree.setRowHidden (item.row(), item.index().parent(), not show)
+            return show
+
+        elif isinstance(item, QStandardItem):
+            hide = bool(text) and (text not in item.text().lower())
+            self.tree.setRowHidden (item.row(), item.index().parent(), hide)
+            return not hide
+
     def fillTree(self):
+        self.fillTreeUsingProviders()
+
+    def fillTreeUsingProviders(self):
         self.items = {}
         self.model.clear()
         self.model.setHorizontalHeaderLabels([self.tr('Setting'),
                                               self.tr('Value')])
 
-        text = unicode(self.searchBox.text())
         settings = ProcessingConfig.getSettings()
-
-        # Let's check if menu's children have any matches vs search wildcard
-        isAnyMenuChildMatchesWildcard = False
 
         rootItem = self.model.invisibleRootItem()
 
@@ -99,25 +121,18 @@ class ConfigDialog(BASE, WIDGET):
             emptyItem = QStandardItem()
             emptyItem.setEditable(False)
 
-            isAnyMenuChildMatchesWildcard = False
-
+            rootItem.insertRow(0, [groupItem, emptyItem])
             # add menu item only if it has any search matches
             for setting in settings[group]:
                 if setting.hidden or setting.name.startswith("MENU_"):
                     continue
 
-                if text == '' or text.lower() in setting.description.lower():
-                    labelItem = QStandardItem(setting.description)
-                    labelItem.setIcon(icon)
-                    labelItem.setEditable(False)
-                    self.items[setting] = SettingItem(setting)
-                    groupItem.insertRow(0, [labelItem, self.items[setting]])
+                labelItem = QStandardItem(setting.description)
+                labelItem.setIcon(icon)
+                labelItem.setEditable(False)
+                self.items[setting] = SettingItem(setting)
+                groupItem.insertRow(0, [labelItem, self.items[setting]])
 
-                    isAnyMenuChildMatchesWildcard = True
-
-            # If menu have any search matches with children - show it
-            if isAnyMenuChildMatchesWildcard:
-                rootItem.insertRow(0, [groupItem, emptyItem])
 
         """
         Filter 'Providers' items
@@ -129,9 +144,7 @@ class ConfigDialog(BASE, WIDGET):
         emptyItem = QStandardItem()
         emptyItem.setEditable(False)
 
-        # Let's check if menu's children have any matches vs search wildcard
-        isAnyMenuChildMatchesWildcard = False
-
+        rootItem.insertRow(0, [providersItem, emptyItem])
         for group in settings.keys():
             if group in priorityKeys:
                 continue
@@ -141,29 +154,20 @@ class ConfigDialog(BASE, WIDGET):
             groupItem.setIcon(icon)
             groupItem.setEditable(False)
 
-            isAnyChildMatchesWildcard = False
-
             for setting in settings[group]:
                 if setting.hidden:
                     continue
 
-                if text == '' or text.lower() in setting.description.lower():
-                    labelItem = QStandardItem(setting.description)
-                    labelItem.setIcon(icon)
-                    labelItem.setEditable(False)
-                    self.items[setting] = SettingItem(setting)
-                    groupItem.insertRow(0, [labelItem, self.items[setting]])
-                    isAnyChildMatchesWildcard = True
-                    isAnyMenuChildMatchesWildcard = True
+                labelItem = QStandardItem(setting.description)
+                labelItem.setIcon(icon)
+                labelItem.setEditable(False)
+                self.items[setting] = SettingItem(setting)
+                groupItem.insertRow(0, [labelItem, self.items[setting]])
 
             emptyItem = QStandardItem()
             emptyItem.setEditable(False)
+            providersItem.appendRow([groupItem, emptyItem])
 
-            if isAnyChildMatchesWildcard or text.lower() in group.lower():
-                providersItem.appendRow([groupItem, emptyItem])
-
-        if isAnyMenuChildMatchesWildcard:
-            rootItem.insertRow(0, [providersItem, emptyItem])
 
         """
         Filter 'Menus' items
@@ -175,47 +179,33 @@ class ConfigDialog(BASE, WIDGET):
         emptyItem = QStandardItem()
         emptyItem.setEditable(False)
 
-        # Let's check if menu's children have any matches vs search wildcard
-        isAnyMenuChildMatchesWildcard = False
+        rootItem.insertRow(0, [menusItem, emptyItem])
 
         providers = Processing.providers
         for provider in providers:
-            groupItem = QStandardItem(provider.getDescription())
+            providerDescription = provider.getDescription()
+            groupItem = QStandardItem(providerDescription)
             icon = provider.getIcon()
             groupItem.setIcon(icon)
             groupItem.setEditable(False)
-
-            # Let's check if provider's children have any matches vs search wildcard
-            isAnyChildMatchesWildcard = False
 
             for alg in provider.algs:
                 labelItem = QStandardItem(alg.name)
                 labelItem.setIcon(icon)
                 labelItem.setEditable(False)
-                setting = ProcessingConfig.settings["MENU_" + alg.commandLineName()]
+                try:
+                    setting = ProcessingConfig.settings["MENU_" + alg.commandLineName()]
+                except:
+                    continue
                 self.items[setting] = SettingItem(setting)
 
-                if text == '' or text.lower() in provider.getDescription().lower():
-                    groupItem.insertRow(0, [labelItem, self.items[setting]])
-                    # remember that provider have at least one child matching search wildcard
-                    isAnyChildMatchesWildcard = True
-                    isAnyMenuChildMatchesWildcard = True
+                groupItem.insertRow(0, [labelItem, self.items[setting]])
 
             emptyItem = QStandardItem()
             emptyItem.setEditable(False)
 
-            # Add provider to the list only if it have any children-matches
-            if isAnyChildMatchesWildcard:
-                menusItem.appendRow([groupItem, emptyItem])
+            menusItem.appendRow([groupItem, emptyItem])
 
-        # add menu item only if it has any search matches
-        if isAnyMenuChildMatchesWildcard:
-            rootItem.insertRow(0, [menusItem, emptyItem])
-
-        # we need to expand our trees if any searching is performing
-        needExpandTree = bool(text != "")
-        if needExpandTree:
-            self.tree.expandAll()
 
         self.tree.sortByColumn(0, Qt.AscendingOrder)
         self.adjustColumns()
