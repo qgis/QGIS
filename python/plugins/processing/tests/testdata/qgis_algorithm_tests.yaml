@@ -208,7 +208,7 @@ tests:
       DISSOLVE_ALL: 'True'
       FIELD: None
       INPUT:
-        name: nullGeometryDissolve.gml
+        name: custom/nullGeometryDissolve.gml
         type: vector
     results:
       OUTPUT:
@@ -222,9 +222,10 @@ tests:
       DISSOLVE_ALL: 'True'
       FIELD: None
       INPUT:
-        name: PolygonDissolveTest.gml
+        name: custom/PolygonDissolveTest.gml
         type: vector
     results:
       OUTPUT:
         type: vector
         name: expected/PolygonDissolveTest_output.gml
+

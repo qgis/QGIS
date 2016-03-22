@@ -93,9 +93,11 @@ class Dissolve(GeoAlgorithm):
                     if len(errors) != 0:
                         for error in errors:
                             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                self.tr('ValidateGeometry() error: One or '
-                                                       'more input features have invalid '
-                                                       'geometry: ') + error.what())
+                                                   self.tr('ValidateGeometry()'
+                                                           'error: One or more '
+                                                           'input features have '
+                                                           'invalid geometry: ')
+                                                   + error.what())
                         continue
                     outFeat.setGeometry(tmpInGeom)
                     first = False
@@ -108,9 +110,11 @@ class Dissolve(GeoAlgorithm):
                     if len(errors) != 0:
                         for error in errors:
                             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                self.tr('ValidateGeometry() error: One or '
-                                                       'more input features have invalid '
-                                                       'geometry: ') + error.what())
+                                                   self.tr('ValidateGeometry()'
+                                                           'error:One or more input'
+                                                           'features have invalid '
+                                                           'geometry: ')
+                                                   + error.what())
                         continue
                     try:
                         tmpOutGeom = QgsGeometry(tmpOutGeom.combine(tmpInGeom))
@@ -142,9 +146,11 @@ class Dissolve(GeoAlgorithm):
                 if len(errors) != 0:
                     for error in errors:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                        self.tr('ValidateGeometry() error: One or '
-                            'more input features have invalid '
-                            'geometry: ') + error.what())
+                                               self.tr('ValidateGeometry() '
+                                                       'error: One or more input'
+                                                       'features have invalid '
+                                                       'geometry: ')
+                                               + error.what())
 
                 if attrDict[unicode(tempItem).strip()] is None:
                     # keep attributes of first feature
