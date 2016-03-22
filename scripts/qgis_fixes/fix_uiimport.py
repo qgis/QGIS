@@ -32,7 +32,7 @@ class FixUiimport(fixer_base.BaseFix):
         else:
             first = imp
             if isinstance(imp, Node):
-                first = imp.leaves().next()
+                first = next(imp.leaves())
 
             if not isinstance(first, Leaf):
                 return

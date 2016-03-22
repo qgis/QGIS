@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-for my $fix (qw/
+my @fixes = qw/
 lib2to3.fixes.fix_apply
 lib2to3.fixes.fix_basestring
 lib2to3.fixes.fix_dict
@@ -40,7 +40,6 @@ lib2to3.fixes.fix_ws_comma
 lib2to3.fixes.fix_xreadlines
 lib2to3.fixes.fix_zip
 
-libfuturize.fixes.fix_absolute_import
 libfuturize.fixes.fix_cmp
 libfuturize.fixes.fix_execfile
 libfuturize.fixes.fix_future_builtins
@@ -52,12 +51,16 @@ libfuturize.fixes.fix_object
 libfuturize.fixes.fix_print_with_import
 libfuturize.fixes.fix_raise
 libfuturize.fixes.fix_xrange_with_import
-
-libpasteurize.fixes.fix_division
 libpasteurize.fixes.fix_newstyle
-/) {
+/;
+
+my %files;
+for my $filename (glob "scripts/qgis_fixes/fix_*.py") {
+	$files{$filename}=1;
+}
+
+for my $fix (@fixes) {
 	my($f) = $fix =~ /\.(fix_.*)$/;
-	next if -f "scripts/qgis_fixes/$f.py";
 
 	my $p = $fix;
 	$p =~ s#\.#/#g;
@@ -69,8 +72,25 @@ libpasteurize.fixes.fix_newstyle
 	}
 	close F;
 
-	print "$p.py => scripts/qgis_fixes/$f.py\n";
-	open F, ">scripts/qgis_fixes/$f.py";
-	print F "from $fix import $c\n";
-	close F;
+	my $filename = "scripts/qgis_fixes/$f.py";
+	my $content = "from $fix import $c\n";
+	delete $files{$filename};
+
+	#print "CHECK $filename: $content";
+
+	if(-f $filename) {
+		open F, $filename;
+		my $f = <F>;
+		close F;
+
+		print "WRONG $filename:\n  FOUND:$f  EXPECTED:$f" if $f ne $content;
+	} else {
+		print "WRITE $filename: $content";
+
+		open F, ">$filename";
+		print F $content;
+		close F;
+	}
 }
+
+print "LOCAL FIXES:\n  ", join( "\n  ", keys %files), "\n";
