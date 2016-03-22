@@ -28,14 +28,31 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt import uic
-from PyQt.QtCore import Qt, QEvent, QPyNullVariant
-from PyQt.QtWidgets import QFileDialog, QDialog, QStyle, QMessageBox, QStyledItemDelegate, QLineEdit, QWidget, QToolButton, QHBoxLayout, QComboBox
-from PyQt.QtGui import QIcon, QStandardItemModel, QStandardItem
-from qgis.gui import QgsDoubleSpinBox, QgsSpinBox
+from PyQt.QtCore import (Qt,
+                         QEvent,
+                         QPyNullVariant)
+from PyQt.QtWidgets import (QFileDialog,
+                            QDialog,
+                            QStyle,
+                            QMessageBox,
+                            QStyledItemDelegate,
+                            QLineEdit,
+                            QWidget,
+                            QToolButton,
+                            QHBoxLayout,
+                            QComboBox)
+from PyQt.QtGui import (QIcon,
+                        QStandardItemModel,
+                        QStandardItem)
 
-from processing.core.ProcessingConfig import ProcessingConfig, Setting
+from qgis.gui import QgsDoubleSpinBox
+from qgis.gui import QgsSpinBox
+
+from processing.core.ProcessingConfig import ProcessingConfig
+from processing.core.ProcessingConfig import Setting
 from processing.core.Processing import Processing
-from processing.gui.menus import updateMenus, menusSettingsGroup
+from processing.gui.menus import updateMenus
+from processing.gui.menus import menusSettingsGroup
 
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
