@@ -32,6 +32,7 @@
 #include <QMessageBox>
 #include <QStringList>
 #include <QDir>
+#include <QDebug>
 
 #if (PY_VERSION_HEX < 0x03000000)
 #define PYOBJ2QSTRING(obj) PyString_AsString( obj )
@@ -335,6 +336,7 @@ bool QgsPythonUtilsImpl::runString( const QString& command, QString msgOnError, 
                 + QObject::tr( "Python path:" ) + "<br>" + path;
   str.replace( '\n', "<br>" ).replace( "  ", "&nbsp; " );
 
+  qDebug() << str;
   QgsMessageOutput* msg = QgsMessageOutput::createMessageOutput();
   msg->setTitle( QObject::tr( "Python error" ) );
   msg->setMessage( str, QgsMessageOutput::MessageHtml );

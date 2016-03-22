@@ -1,15 +1,15 @@
 mkdir build
 cd build
 
-ln -s /usr/bin/ccache ${HOME}/osgeo4travis/bin/clang++-3.6
-ln -s /usr/bin/ccache ${HOME}/osgeo4travis/bin/clang-3.6
+ln -s ${HOME}/osgeo4travis/bin/ccache ${HOME}/osgeo4travis/bin/clang++-3.6
+ln -s ${HOME}/osgeo4travis/bin/ccache ${HOME}/osgeo4travis/bin/clang-3.6
 
 ccache -s
 
 export CXX="clang++-3.6"
 export CC="clang-3.6"
 export PATH=${HOME}/osgeo4travis/bin:${PATH}
-export PYTHONPATH=${HOME}/osgeo4travis/lib/python3/dist-packages/
+export PYTHONPATH=${HOME}/osgeo4travis/lib/python3.3/site-packages/
 
 cmake --version
 ${CC} --version
@@ -38,5 +38,4 @@ cmake \
       -DENABLE_QT5=ON \
       -DENABLE_PYTHON3=ON \
       -DCXX_EXTRA_FLAGS="$CLANG_WARNINGS" \
-      -DPYTHON_LIBRARY=/usr/lib/libpython3.2mu.so \
       ..
