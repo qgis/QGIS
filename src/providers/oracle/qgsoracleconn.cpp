@@ -129,7 +129,7 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceURI uri )
     if ( !qry.exec( QString( "BEGIN\nDBMS_WM.GotoWorkspace(%1);\nEND;" ).arg( quotedValue( workspace ) ) ) )
     {
       mDatabase.close();
-      QgsMessageLog::logMessage( tr( "Could not with to workspace %1 [%2]" ).arg( workspace, qry.lastError().databaseText() ), tr( "Oracle" ) );
+      QgsMessageLog::logMessage( tr( "Could not switch to workspace %1 [%2]" ).arg( workspace, qry.lastError().databaseText() ), tr( "Oracle" ) );
       mRef = 0;
       return;
     }

@@ -15,4 +15,4 @@
 ###########################################################################
 
 # Pull the translations from transifex and update TRANSLATORS
-scripts/update_ts.sh pull
+scripts/update_ts.sh pull $1

@@ -70,6 +70,22 @@ if ! type tx >/dev/null 2>&1; then
 	exit 1
 fi
 
+builddir=$2
+if [ -d "$builddir" ]; then
+	textcpp=
+	for i in $builddir/src/core/qgsexpression_texts.cpp $builddir/src/core/qgscontexthelp_texts.cpp; do
+		if [ -f $i ]; then
+			textcpp="$textcpp $i"
+		elif [ "$1" != "pull" ]; then
+			echo Generated help file $i not found
+			exit 1
+		fi
+	done
+elif [ "$1" != "pull" ]; then
+	echo Build directory not found
+	exit 1
+fi
+
 trap cleanup EXIT
 
 echo Saving translations
@@ -85,17 +101,6 @@ elif [ $1 = pull ]; then
 
 	echo Pulling new translations...
 	tx pull -a -s --minimum-perc=35
-fi
-
-builddir=$2
-if [ ! -d "$builddir" ]; then
-	echo Build directory not found
-	exit 1
-fi
-
-if [ ! -f "$builddir/src/core/qgsexpression_texts.cpp" -o ! -f "$builddir/src/core/qgscontexthelp_texts.cpp" ]; then
-	echo Generated help files not found
-	exit 1
 fi
 
 echo Updating python translations
@@ -119,7 +124,7 @@ echo Updating processing translations
 perl scripts/processing2cpp.pl python/plugins/processing/processing-i18n.cpp
 
 echo Creating qmake project file
-$QMAKE -project -o qgis_ts.pro -nopwd src python i18n "$builddir/src/core/qgsexpression_texts.cpp" "$builddir/src/core/qgscontexthelp_texts.cpp"
+$QMAKE -project -o qgis_ts.pro -nopwd src python i18n $textcpp
 
 echo Updating translations
 $LUPDATE -locations absolute -verbose qgis_ts.pro
