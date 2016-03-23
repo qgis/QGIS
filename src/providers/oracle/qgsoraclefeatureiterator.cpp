@@ -30,7 +30,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
     , mRewind( false )
     , mExpressionCompiled( false )
 {
-  mConnection = QgsOracleConnPool::instance()->acquireConnection( mSource->mUri.connectionInfo() );
+  mConnection = QgsOracleConnPool::instance()->acquireConnection( QgsOracleConn::toPoolName( mSource->mUri ) );
   if ( !mConnection )
   {
     close();

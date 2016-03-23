@@ -518,7 +518,7 @@ void QgsOracleSourceSelect::on_btnConnect_clicked()
   QgsDataSourceURI uri = QgsOracleConn::connUri( cmbConnections->currentText() );
 
   mIsConnected = true;
-  mTablesTreeDelegate->setConnectionInfo( uri.connectionInfo() );
+  mTablesTreeDelegate->setConnectionInfo( uri );
 
   mColumnTypeThread = new QgsOracleColumnTypeThread( cmbConnections->currentText(),
       uri.useEstimatedMetadata(),
@@ -674,7 +674,7 @@ void QgsOracleSourceSelect::loadTableFromCache()
 
 
   mIsConnected = true;
-  mTablesTreeDelegate->setConnectionInfo( uri.connectionInfo() );
+  mTablesTreeDelegate->setConnectionInfo( uri );
 
   finishList();
 }

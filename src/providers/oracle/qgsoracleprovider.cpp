@@ -70,7 +70,7 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
   mRequestedGeomType = mUri.wkbType();
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
 
-  mConnection = QgsOracleConn::connectDb( mUri.connectionInfo() );
+  mConnection = QgsOracleConn::connectDb( mUri );
   if ( !mConnection )
   {
     return;

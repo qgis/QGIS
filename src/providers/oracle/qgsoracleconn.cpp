@@ -33,10 +33,7 @@ const int QgsOracleConn::sGeomTypeSelectLimit = 100;
 
 QgsOracleConn *QgsOracleConn::connectDb( QgsDataSourceURI uri )
 {
-  QString conninfo = uri.connectionInfo();
-  if ( uri.hasParam( "dbworkspace" ) )
-    conninfo += " dbworkspace=" + uri.param( "dbworkspace" );
-
+  QString conninfo = toPoolName( uri );
   if ( sConnections.contains( conninfo ) )
   {
     QgsDebugMsg( QString( "Using cached connection for %1" ).arg( conninfo ) );
@@ -141,6 +138,14 @@ QgsOracleConn::~QgsOracleConn()
   Q_ASSERT( mRef == 0 );
   if ( mDatabase.isOpen() )
     mDatabase.close();
+}
+
+QString QgsOracleConn::toPoolName( QgsDataSourceURI uri )
+{
+  QString conninfo = uri.connectionInfo();
+  if ( uri.hasParam( "dbworkspace" ) )
+    conninfo += " dbworkspace=" + uri.param( "dbworkspace" );
+  return conninfo;
 }
 
 QString QgsOracleConn::connInfo()

@@ -62,7 +62,7 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
     QgsOracleConn* conn() const
     {
       if ( !mConn )
-        setConn( QgsOracleConn::connectDb( mConnInfo ) );
+        setConn( QgsOracleConnPool::instance()->acquireConnection( QgsOracleConn::toPoolName( mConnInfo ) ) );
       return mConn;
     }
 

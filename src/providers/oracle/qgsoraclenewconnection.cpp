@@ -143,7 +143,7 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
   if ( !txtWorkspace->text().isEmpty() )
     uri.setParam( "dbworkspace", txtWorkspace->text() );
 
-  QgsOracleConn *conn = QgsOracleConnPool::instance()->acquireConnection( uri.connectionInfo() );
+  QgsOracleConn *conn = QgsOracleConnPool::instance()->acquireConnection( QgsOracleConn::toPoolName( uri ) );
 
   if ( conn )
   {

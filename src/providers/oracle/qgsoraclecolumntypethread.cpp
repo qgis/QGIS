@@ -40,11 +40,7 @@ void QgsOracleColumnTypeThread::run()
 {
   mStopped = false;
 
-  QgsDataSourceURI uri = QgsOracleConn::connUri( mName );
-  QString conninfo = uri.connectionInfo();
-  if ( uri.hasParam( "dbworkspace" ) )
-    conninfo += " dbworkspace=" + uri.param( "dbworkspace" );
-
+  QString conninfo = QgsOracleConn::toPoolName( QgsOracleConn::connUri( mName ) );
   QgsOracleConn *conn = QgsOracleConnPool::instance()->acquireConnection( conninfo );
   if ( !conn )
   {
