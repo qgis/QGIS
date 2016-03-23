@@ -1096,7 +1096,7 @@
     <string>Edit Nodes Item</string>
    </property>
    <property name="toolTip">
-    <string>Edit nodes item</string>
+    <string>Edit Nodes Item</string>
    </property>
   </action>
  </widget>
