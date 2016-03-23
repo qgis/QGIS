@@ -18,7 +18,6 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
-
 from PyQt.QtCore import Qt, QObject, QEvent, QSettings, QCoreApplication, QFileInfo, QSize
 from PyQt.QtGui import QFont, QFontMetrics, QColor, QKeySequence, QCursor
 from PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
@@ -48,7 +47,7 @@ class KeyFilter(QObject):
         self.window = window
         self.tab = tab
         self._handlers = {}
-        for shortcut, handler in KeyFilter.SHORTCUTS.iteritems():
+        for shortcut, handler in KeyFilter.SHORTCUTS.items():
             modifiers = shortcut[0]
             if not isinstance(modifiers, list):
                 modifiers = [modifiers]
@@ -266,7 +265,7 @@ class Editor(QsciScintilla):
         else:
             apiPath = self.settings.value("pythonConsole/userAPI", [])
             for i in range(0, len(apiPath)):
-                self.api.load(unicode(apiPath[i]))
+                self.api.load(apiPath[i])
             self.api.prepare()
             self.lexer.setAPIs(self.api)
 
@@ -418,19 +417,20 @@ class Editor(QsciScintilla):
             self.parent.pc.objectListButton.setChecked(True)
 
     def codepad(self):
-        import urllib2
-        import urllib
+        import urllib.request
+        import urllib.parse
+        import urllib.error
         listText = self.selectedText().split('\n')
         getCmd = []
         for strLine in listText:
-            getCmd.append(unicode(strLine))
+            getCmd.append(strLine)
         pasteText = u"\n".join(getCmd)
         url = 'http://codepad.org'
         values = {'lang': 'Python',
                   'code': pasteText,
                   'submit': 'Submit'}
         try:
-            response = urllib2.urlopen(url, urllib.urlencode(values))
+            response = urllib.request.urlopen(url, urllib.parse.urlencode(values))
             url = response.read()
             for href in url.split("</a>"):
                 if "Link:" in href:
@@ -443,9 +443,9 @@ class Editor(QsciScintilla):
                 QApplication.clipboard().setText(link)
                 msgText = QCoreApplication.translate('PythonConsole', 'URL copied to clipboard.')
                 self.parent.pc.callWidgetMessageBarEditor(msgText, 0, True)
-        except urllib2.URLError as e:
+        except urllib.error.URLError as e:
             msgText = QCoreApplication.translate('PythonConsole', 'Connection error: ')
-            self.parent.pc.callWidgetMessageBarEditor(msgText + str(e.args), 0, True)
+            self.parent.pc.callWidgetMessageBarEditor(msgText + e.args, 0, True)
 
     def hideEditor(self):
         self.parent.pc.splitterObj.hide()
@@ -506,10 +506,10 @@ class Editor(QsciScintilla):
         try:
             ## set creationflags for running command without shell window
             if sys.platform.startswith('win'):
-                p = subprocess.Popen(['python', unicode(filename)], shell=False, stdin=subprocess.PIPE,
+                p = subprocess.Popen(['python', filename], shell=False, stdin=subprocess.PIPE,
                                      stderr=subprocess.PIPE, stdout=subprocess.PIPE, creationflags=0x08000000)
             else:
-                p = subprocess.Popen(['python', unicode(filename)], shell=False, stdin=subprocess.PIPE,
+                p = subprocess.Popen(['python', filename], shell=False, stdin=subprocess.PIPE,
                                      stderr=subprocess.PIPE, stdout=subprocess.PIPE)
             out, _traceback = p.communicate()
 
@@ -529,15 +529,15 @@ class Editor(QsciScintilla):
                 file = file + tmpFileTr
             if _traceback:
                 msgTraceTr = QCoreApplication.translate('PythonConsole', '## Script error: {0}').format(file)
-                print "## %s" % datetime.datetime.now()
-                print unicode(msgTraceTr)
+                print("## {}".format(datetime.datetime.now()))
+                print(msgTraceTr)
                 sys.stderr.write(_traceback)
                 p.stderr.close()
             else:
                 msgSuccessTr = QCoreApplication.translate('PythonConsole',
                                                           '## Script executed successfully: {0}').format(file)
-                print "## %s" % datetime.datetime.now()
-                print unicode(msgSuccessTr)
+                print("## {}".format(datetime.datetime.now()))
+                print(msgSuccessTr)
                 sys.stdout.write(out)
                 p.stdout.close()
             del p
@@ -547,10 +547,10 @@ class Editor(QsciScintilla):
             IOErrorTr = QCoreApplication.translate('PythonConsole',
                                                    'Cannot execute file {0}. Error: {1}\n').format(filename,
                                                                                                    error.strerror)
-            print '## Error: ' + IOErrorTr
+            print('## Error: ' + IOErrorTr)
         except:
             s = traceback.format_exc()
-            print '## Error: '
+            print('## Error: ')
             sys.stderr.write(s)
 
     def runScriptCode(self):
@@ -602,7 +602,7 @@ class Editor(QsciScintilla):
         eline = None
         ecolumn = 0
         edescr = ''
-        source = unicode(self.text())
+        source = self.text()
         try:
             if not filename:
                 filename = self.parent.tw.currentWidget().path
@@ -611,7 +611,7 @@ class Editor(QsciScintilla):
                 source = source.encode('utf-8')
             if isinstance(filename, type(u"")):
                 filename = filename.encode('utf-8')
-            compile(source, str(filename), 'exec')
+            compile(source, filename, 'exec')
         except SyntaxError as detail:
             eline = detail.lineno and detail.lineno or 1
             ecolumn = detail.offset and detail.offset or 1
@@ -644,7 +644,7 @@ class Editor(QsciScintilla):
             return True
 
     def keyPressEvent(self, e):
-        t = unicode(e.text())
+        t = e.text()
         startLine, _, endLine, endPos = self.getSelection()
         line, pos = self.getCursorPosition()
         self.autoCloseBracket = self.settings.value("pythonConsole/autoCloseBracketEditor", False, type=bool)
@@ -761,7 +761,7 @@ class EditorTab(QWidget):
 
     def loadFile(self, filename, modified):
         self.newEditor.lastModified = QFileInfo(filename).lastModified()
-        fn = codecs.open(unicode(filename), "rb", encoding='utf-8')
+        fn = codecs.open(filename, "rb", encoding='utf-8')
         txt = fn.read()
         fn.close()
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -779,10 +779,10 @@ class EditorTab(QWidget):
         if self.path is None:
             saveTr = QCoreApplication.translate('PythonConsole',
                                                 'Python Console: Save file')
-            self.path = str(QFileDialog().getSaveFileName(self,
-                                                          saveTr,
-                                                          self.tw.tabText(index) + '.py',
-                                                          "Script file (*.py)"))
+            self.path = QFileDialog().getSaveFileName(self,
+                                                      saveTr,
+                                                      self.tw.tabText(index) + '.py',
+                                                      "Script file (*.py)")
             # If the user didn't select a file, abort the save operation
             if len(self.path) == 0:
                 self.path = None
@@ -792,7 +792,7 @@ class EditorTab(QWidget):
                                                  'Script was correctly saved.')
             self.pc.callWidgetMessageBarEditor(msgText, 0, True)
         # Rename the original file, if it exists
-        path = unicode(self.path)
+        path = self.path
         overwrite = QFileInfo(path).exists()
         if overwrite:
             try:
@@ -979,7 +979,7 @@ class EditorTabWidget(QTabWidget):
     def closeOthers(self):
         idx = self.idx
         countTab = self.count()
-        for i in range(countTab - 1, idx, -1) + range(idx - 1, -1, -1):
+        for i in list(range(countTab - 1, idx, -1)) + list(range(idx - 1, -1, -1)):
             self._removeTab(i)
 
     def closeAll(self):
@@ -1009,14 +1009,14 @@ class EditorTabWidget(QTabWidget):
         if filename:
             readOnly = not QFileInfo(filename).isWritable()
             try:
-                fn = codecs.open(unicode(filename), "rb", encoding='utf-8')
+                fn = codecs.open(filename, "rb", encoding='utf-8')
                 fn.read()
                 fn.close()
             except IOError as error:
                 IOErrorTr = QCoreApplication.translate('PythonConsole',
                                                        'The file {0} could not be opened. Error: {1}\n').format(filename,
                                                                                                                 error.strerror)
-                print '## Error: '
+                print('## Error: ')
                 sys.stderr.write(IOErrorTr)
                 return
 
@@ -1028,7 +1028,7 @@ class EditorTabWidget(QTabWidget):
         self.addTab(self.tab, self.iconTab, tabName + ' (ro)' if readOnly else tabName)
         self.setCurrentWidget(self.tab)
         if filename:
-            self.setTabToolTip(self.currentIndex(), unicode(filename))
+            self.setTabToolTip(self.currentIndex(), filename)
         else:
             self.setTabToolTip(self.currentIndex(), tabName)
 
@@ -1108,14 +1108,14 @@ class EditorTabWidget(QTabWidget):
 
     def restoreTabs(self):
         for script in self.restoreTabList:
-            pathFile = unicode(script)
+            pathFile = script
             if QFileInfo(pathFile).exists():
                 tabName = pathFile.split('/')[-1]
                 self.newTabEditor(tabName, pathFile)
             else:
                 errOnRestore = QCoreApplication.translate("PythonConsole",
                                                           "Unable to restore the file: \n{0}\n").format(pathFile)
-                print '## Error: '
+                print('## Error: ')
                 s = errOnRestore
                 sys.stderr.write(s)
                 self.parent.updateTabListScript(pathFile, action='remove')
@@ -1150,7 +1150,7 @@ class EditorTabWidget(QTabWidget):
             tabWidget = self.widget(tab)
         if tabWidget:
             if tabWidget.path:
-                pathFile, file = os.path.split(unicode(tabWidget.path))
+                pathFile, file = os.path.split(tabWidget.path)
                 module, ext = os.path.splitext(file)
                 found = False
                 if pathFile not in sys.path:
@@ -1161,8 +1161,8 @@ class EditorTabWidget(QTabWidget):
                     dictObject = {}
                     readModule = pyclbr.readmodule(module)
                     readModuleFunction = pyclbr.readmodule_ex(module)
-                    for name, class_data in sorted(readModule.items(), key=lambda x: x[1].lineno):
-                        if os.path.normpath(str(class_data.file)) == os.path.normpath(str(tabWidget.path)):
+                    for name, class_data in sorted(list(readModule.items()), key=lambda x: x[1].lineno):
+                        if os.path.normpath(class_data.file) == os.path.normpath(tabWidget.path):
                             superClassName = []
                             for superClass in class_data.super:
                                 if superClass == 'object':
@@ -1181,11 +1181,11 @@ class EditorTabWidget(QTabWidget):
                                 classItem.setToolTip(0, name)
                             if sys.platform.startswith('win'):
                                 classItem.setSizeHint(0, QSize(18, 18))
-                            classItem.setText(1, str(class_data.lineno))
+                            classItem.setText(1, class_data.lineno)
                             iconClass = QgsApplication.getThemeIcon("console/iconClassTreeWidgetConsole.png")
                             classItem.setIcon(0, iconClass)
                             dictObject[name] = class_data.lineno
-                            for meth, lineno in sorted(class_data.methods.items(), key=itemgetter(1)):
+                            for meth, lineno in sorted(list(class_data.methods.items()), key=itemgetter(1)):
                                 methodItem = QTreeWidgetItem()
                                 methodItem.setText(0, meth + ' ')
                                 methodItem.setText(1, str(lineno))
@@ -1197,9 +1197,9 @@ class EditorTabWidget(QTabWidget):
                                 classItem.addChild(methodItem)
                                 dictObject[meth] = lineno
                             self.parent.listClassMethod.addTopLevelItem(classItem)
-                    for func_name, data in sorted(readModuleFunction.items(), key=lambda x: x[1].lineno):
+                    for func_name, data in sorted(list(readModuleFunction.items()), key=lambda x: x[1].lineno):
                         if isinstance(data, pyclbr.Function) and \
-                           os.path.normpath(str(data.file)) == os.path.normpath(str(tabWidget.path)):
+                           os.path.normpath(data.file) == os.path.normpath(tabWidget.path):
                             funcItem = QTreeWidgetItem()
                             funcItem.setText(0, func_name + ' ')
                             funcItem.setText(1, str(data.lineno))

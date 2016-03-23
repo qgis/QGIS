@@ -69,7 +69,7 @@ bool QgsPythonUtilsImpl::checkSystemImports()
   // it is very useful for cleaning sys.path, which may have undesireable paths, or for
   // isolating/loading the initial environ without requiring a virt env, e.g. homebrew or MacPorts installs on Mac
   runString( "pyqgstart = os.getenv('PYQGIS_STARTUP')\n" );
-  runString( "if pyqgstart is not None and os.path.exists(pyqgstart): execfile(pyqgstart)\n" );
+  runString( "if pyqgstart is not None and os.path.exists(pyqgstart):\n    with open(pyqgstart) as f:\n        exec(f.read())\n" );
 
 #ifdef Q_OS_WIN
   runString( "oldhome=None" );

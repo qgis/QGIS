@@ -29,7 +29,10 @@ from PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 import sys
 import os
 import codecs
-import ConfigParser
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 import qgis.utils
 from qgis.core import QGis, QgsNetworkAccessManager, QgsAuthManager
 from qgis.gui import QgsMessageBar
@@ -560,7 +563,7 @@ class Plugins(QObject):
                 for better control on wchich module is examined
                 in case there is an installed plugin masking a core one """
             global errorDetails
-            cp = ConfigParser.ConfigParser()
+            cp = configparser.ConfigParser()
             try:
                 cp.readfp(codecs.open(metadataFile, "r", "utf8"))
                 return cp.get('general', fct)

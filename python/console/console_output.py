@@ -28,7 +28,7 @@ from qgis.gui import QgsMessageBar
 import sys
 
 
-class writeOut:
+class writeOut(object):
 
     def __init__(self, shellOut, out=None, style=None):
         """
@@ -265,7 +265,7 @@ class ShellOutputScintilla(QsciScintilla):
     def copy(self):
         """Copy text to clipboard... or keyboard interrupt"""
         if self.hasSelectedText():
-            text = unicode(self.selectedText())
+            text = self.selectedText()
             text = text.replace('>>> ', '').replace('... ', '').strip()  # removing prompts
             QApplication.clipboard().setText(text)
         else:
