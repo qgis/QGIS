@@ -28,14 +28,31 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt import uic
-from PyQt.QtCore import Qt, QEvent, QPyNullVariant
-from PyQt.QtWidgets import QFileDialog, QDialog, QStyle, QMessageBox, QStyledItemDelegate, QLineEdit, QWidget, QToolButton, QHBoxLayout, QComboBox
-from PyQt.QtGui import QIcon, QStandardItemModel, QStandardItem
-from qgis.gui import QgsDoubleSpinBox, QgsSpinBox
+from PyQt.QtCore import (Qt,
+                         QEvent,
+                         QPyNullVariant)
+from PyQt.QtWidgets import (QFileDialog,
+                            QDialog,
+                            QStyle,
+                            QMessageBox,
+                            QStyledItemDelegate,
+                            QLineEdit,
+                            QWidget,
+                            QToolButton,
+                            QHBoxLayout,
+                            QComboBox)
+from PyQt.QtGui import (QIcon,
+                        QStandardItemModel,
+                        QStandardItem)
 
-from processing.core.ProcessingConfig import ProcessingConfig, Setting
+from qgis.gui import QgsDoubleSpinBox
+from qgis.gui import QgsSpinBox
+
+from processing.core.ProcessingConfig import ProcessingConfig
+from processing.core.ProcessingConfig import Setting
 from processing.core.Processing import Processing
-from processing.gui.menus import updateMenus, menusSettingsGroup
+from processing.gui.menus import updateMenus
+from processing.gui.menus import menusSettingsGroup
 
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -65,22 +82,51 @@ class ConfigDialog(BASE, WIDGET):
         self.delegate = SettingDelegate()
         self.tree.setItemDelegateForColumn(1, self.delegate)
 
-        self.searchBox.textChanged.connect(self.fillTree)
+        self.searchBox.textChanged.connect(self.textChanged)
 
         self.fillTree()
 
         self.tree.expanded.connect(self.adjustColumns)
 
+    def textChanged(self):
+        text = unicode(self.searchBox.text().lower())
+        self._filterItem(self.model.invisibleRootItem(), text)
+        if text:
+            self.tree.expandAll()
+        else:
+            self.tree.collapseAll()
+
+    def _filterItem(self, item, text):
+        if item.hasChildren():
+            show = False
+            for i in xrange(item.rowCount()):
+                child = item.child(i)
+                showChild = self._filterItem(child, text)
+                show = (showChild or show)
+            self.tree.setRowHidden(item.row(), item.index().parent(), not show)
+            return show
+
+        elif isinstance(item, QStandardItem):
+            hide = bool(text) and (text not in item.text().lower())
+            self.tree.setRowHidden(item.row(), item.index().parent(), hide)
+            return not hide
+
     def fillTree(self):
+        self.fillTreeUsingProviders()
+
+    def fillTreeUsingProviders(self):
         self.items = {}
         self.model.clear()
         self.model.setHorizontalHeaderLabels([self.tr('Setting'),
                                               self.tr('Value')])
 
-        text = unicode(self.searchBox.text())
         settings = ProcessingConfig.getSettings()
 
         rootItem = self.model.invisibleRootItem()
+
+        """
+        Filter 'General', 'Models' and 'Scripts' items
+        """
         priorityKeys = [self.tr('General'), self.tr('Models'), self.tr('Scripts')]
         for group in priorityKeys:
             groupItem = QStandardItem(group)
@@ -89,27 +135,29 @@ class ConfigDialog(BASE, WIDGET):
             groupItem.setEditable(False)
             emptyItem = QStandardItem()
             emptyItem.setEditable(False)
+
             rootItem.insertRow(0, [groupItem, emptyItem])
+            # add menu item only if it has any search matches
             for setting in settings[group]:
                 if setting.hidden or setting.name.startswith("MENU_"):
                     continue
 
-                if text == '' or text.lower() in setting.description.lower():
-                    labelItem = QStandardItem(setting.description)
-                    labelItem.setIcon(icon)
-                    labelItem.setEditable(False)
-                    self.items[setting] = SettingItem(setting)
-                    groupItem.insertRow(0, [labelItem, self.items[setting]])
+                labelItem = QStandardItem(setting.description)
+                labelItem.setIcon(icon)
+                labelItem.setEditable(False)
+                self.items[setting] = SettingItem(setting)
+                groupItem.insertRow(0, [labelItem, self.items[setting]])
 
-            if text != '':
-                self.tree.expand(groupItem.index())
-
+        """
+        Filter 'Providers' items
+        """
         providersItem = QStandardItem(self.tr('Providers'))
         icon = QIcon(os.path.join(pluginPath, 'images', 'alg.png'))
         providersItem.setIcon(icon)
         providersItem.setEditable(False)
         emptyItem = QStandardItem()
         emptyItem.setEditable(False)
+
         rootItem.insertRow(0, [providersItem, emptyItem])
         for group in settings.keys():
             if group in priorityKeys or group == menusSettingsGroup:
@@ -119,34 +167,41 @@ class ConfigDialog(BASE, WIDGET):
             icon = ProcessingConfig.getGroupIcon(group)
             groupItem.setIcon(icon)
             groupItem.setEditable(False)
+
             for setting in settings[group]:
                 if setting.hidden:
                     continue
 
-                if text == '' or text.lower() in setting.description.lower():
-                    labelItem = QStandardItem(setting.description)
-                    labelItem.setIcon(icon)
-                    labelItem.setEditable(False)
-                    self.items[setting] = SettingItem(setting)
-                    groupItem.insertRow(0, [labelItem, self.items[setting]])
+                labelItem = QStandardItem(setting.description)
+                labelItem.setIcon(icon)
+                labelItem.setEditable(False)
+                self.items[setting] = SettingItem(setting)
+                groupItem.insertRow(0, [labelItem, self.items[setting]])
 
             emptyItem = QStandardItem()
             emptyItem.setEditable(False)
             providersItem.appendRow([groupItem, emptyItem])
 
+        """
+        Filter 'Menus' items
+        """
         menusItem = QStandardItem(self.tr('Menus (requires restart)'))
         icon = QIcon(os.path.join(pluginPath, 'images', 'menu.png'))
         menusItem.setIcon(icon)
         menusItem.setEditable(False)
         emptyItem = QStandardItem()
         emptyItem.setEditable(False)
+
         rootItem.insertRow(0, [menusItem, emptyItem])
+
         providers = Processing.providers
         for provider in providers:
-            groupItem = QStandardItem(provider.getDescription())
+            providerDescription = provider.getDescription()
+            groupItem = QStandardItem(providerDescription)
             icon = provider.getIcon()
             groupItem.setIcon(icon)
             groupItem.setEditable(False)
+
             for alg in provider.algs:
                 labelItem = QStandardItem(alg.name)
                 labelItem.setIcon(icon)
@@ -156,9 +211,12 @@ class ConfigDialog(BASE, WIDGET):
                 except:
                     continue
                 self.items[setting] = SettingItem(setting)
+
                 groupItem.insertRow(0, [labelItem, self.items[setting]])
+
             emptyItem = QStandardItem()
             emptyItem.setEditable(False)
+
             menusItem.appendRow([groupItem, emptyItem])
 
         self.tree.sortByColumn(0, Qt.AscendingOrder)

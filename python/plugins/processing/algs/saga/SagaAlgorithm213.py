@@ -31,8 +31,17 @@ from .SagaAlgorithm212 import SagaAlgorithm212
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterRaster, ParameterVector, ParameterTable, ParameterMultipleInput, ParameterBoolean, ParameterFixedTable, ParameterExtent, ParameterNumber, ParameterSelection
-from processing.core.outputs import OutputRaster, OutputVector
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTable
+from processing.core.parameters import ParameterMultipleInput
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterFixedTable
+from processing.core.parameters import ParameterExtent
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterSelection
+from processing.core.outputs import OutputRaster
+from processing.core.outputs import OutputVector
 from . import SagaUtils
 from processing.tools import dataobjects
 from processing.tools.system import getTempFilename
