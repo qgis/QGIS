@@ -215,6 +215,9 @@ class QgsMapLayer : QObject
     /** Returns the current blending mode for a layer */
     QPainter::CompositionMode blendMode() const;
 
+    /** Returns if this layer is read only. */
+    bool readOnly() const;
+
     /** Synchronises with changes in the datasource
         */
     virtual void reload();
