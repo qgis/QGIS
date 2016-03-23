@@ -33,10 +33,11 @@ const QgsConstWkbPtr &QgsConstWkbSimplifierPtr::operator>>( QPolygonF &points ) 
   if ( mSimplifyMethod.simplifyHints() != QgsVectorSimplifyMethod::NoSimplification && mSimplifyMethod.forceLocalOptimization() )
   {
     int simplifyHints = mSimplifyMethod.simplifyHints() | QgsMapToPixelSimplifier::SimplifyEnvelope;
+    QgsMapToPixelSimplifier::SimplifyAlgorithm simplifyAlgorithm = static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( mSimplifyMethod.simplifyAlgorithm() );
 
     QgsConstWkbPtr wkbPtr = *this;
 
-    if ( QgsMapToPixelSimplifier::simplifyPoints( mWkbType, wkbPtr, points, simplifyHints, mSimplifyMethod.tolerance() ) )
+    if ( QgsMapToPixelSimplifier::simplifyPoints( mWkbType, wkbPtr, points, simplifyHints, mSimplifyMethod.tolerance(), simplifyAlgorithm ) )
     {
       mP = const_cast< unsigned char * >(( const unsigned char * ) wkbPtr );
       return *this;

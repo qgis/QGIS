@@ -613,6 +613,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   doubleSpinBoxMagnifierDefault->setSuffix( "%" );
   doubleSpinBoxMagnifierDefault->setValue( mSettings->value( "/qgis/magnifier_level", 100 ).toInt() );
 
+  // Default local simplification algorithm
+  mSimplifyAlgorithmComboBox->addItem( tr( "Distance" ), ( int )QgsVectorSimplifyMethod::Distance );
+  mSimplifyAlgorithmComboBox->addItem( tr( "SnapToGrid" ), ( int )QgsVectorSimplifyMethod::SnapToGrid );
+  mSimplifyAlgorithmComboBox->setCurrentIndex( mSimplifyAlgorithmComboBox->findData( mSettings->value( "/qgis/simplifyAlgorithm", 0 ).toInt() ) );
+
   // Slightly awkard here at the settings value is true to use QImage,
   // but the checkbox is true to use QPixmap
   chkAddedVisibility->setChecked( mSettings->value( "/qgis/new_layers_visible", true ).toBool() );
@@ -1212,6 +1217,7 @@ void QgsOptions::saveOptions()
     if ( mSimplifyDrawingSpinBox->value() > 1 ) simplifyHints |= QgsVectorSimplifyMethod::AntialiasingSimplification;
   }
   mSettings->setValue( "/qgis/simplifyDrawingHints", ( int ) simplifyHints );
+  mSettings->setValue( "/qgis/simplifyAlgorithm", mSimplifyAlgorithmComboBox->itemData( mSimplifyAlgorithmComboBox->currentIndex() ).toInt() );
   mSettings->setValue( "/qgis/simplifyDrawingTol", mSimplifyDrawingSpinBox->value() );
   mSettings->setValue( "/qgis/simplifyLocal", !mSimplifyDrawingAtProvider->isChecked() );
   mSettings->setValue( "/qgis/simplifyMaxScale", 1.0 / mSimplifyMaximumScaleComboBox->scale() );

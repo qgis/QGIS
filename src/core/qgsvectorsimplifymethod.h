@@ -42,6 +42,18 @@ class CORE_EXPORT QgsVectorSimplifyMethod
     /** Gets the simplification hints of the vector layer managed */
     inline SimplifyHints simplifyHints() const { return mSimplifyHints; }
 
+    /** Types of local simplification algorithms that can be used */
+    enum SimplifyAlgorithm
+    {
+      Distance    = 0, //!< The simplification uses the distance between points to remove duplicate points
+      SnapToGrid  = 1, //!< The simplification uses a grid (similar to ST_SnapToGrid) to remove duplicate points
+    };
+
+    /** Sets the local simplification algorithm of the vector layer managed */
+    void setSimplifyAlgorithm( const SimplifyAlgorithm& simplifyAlgorithm ) { mSimplifyAlgorithm = simplifyAlgorithm; }
+    /** Gets the local simplification algorithm of the vector layer managed */
+    inline SimplifyAlgorithm simplifyAlgorithm() const { return mSimplifyAlgorithm; }
+
     /** Sets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal */
     void setTolerance( double tolerance ) { mTolerance = tolerance; }
     /** Gets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal */
@@ -65,6 +77,8 @@ class CORE_EXPORT QgsVectorSimplifyMethod
   private:
     /** Simplification hints for fast rendering of features of the vector layer managed */
     SimplifyHints mSimplifyHints;
+    /** Simplification algorithm */
+    SimplifyAlgorithm mSimplifyAlgorithm;
     /** Simplification tolerance, it represents the maximum distance between two coordinates which can be considered equal */
     double mTolerance;
     /** Simplification threshold */
