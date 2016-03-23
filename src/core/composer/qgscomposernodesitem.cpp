@@ -57,8 +57,8 @@ double QgsComposerNodesItem::computeDistance( const QPointF &pt1,
 }
 
 bool QgsComposerNodesItem::addNode( const QPointF &pt,
-    const bool checkArea,
-    const double radius )
+                                    const bool checkArea,
+                                    const double radius )
 {
   const QPointF start = convertToItemCoordinate( pt );
   double minDistance = std::numeric_limits<double>::max();
@@ -200,8 +200,8 @@ void QgsComposerNodesItem::drawSelectedNode( QPainter *painter ) const
 }
 
 void QgsComposerNodesItem::paint( QPainter* painter,
-                                        const QStyleOptionGraphicsItem* itemStyle,
-                                        QWidget* pWidget )
+                                  const QStyleOptionGraphicsItem* itemStyle,
+                                  QWidget* pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
@@ -284,7 +284,7 @@ bool QgsComposerNodesItem::moveNode( const int index, const QPointF &pt )
 }
 
 bool QgsComposerNodesItem::readXML( const QDomElement& itemElem,
-    const QDomDocument& doc )
+                                    const QDomDocument& doc )
 {
   // restore general composer item properties
   const QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
