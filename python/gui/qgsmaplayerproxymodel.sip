@@ -20,6 +20,7 @@ class QgsMapLayerProxyModel : QSortFilterProxyModel
       HasGeometry,
       VectorLayer,
       PluginLayer,
+      WritableLayer,
       All
     };
     typedef QFlags<QgsMapLayerProxyModel::Filter> Filters;

@@ -84,6 +84,11 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
   if ( mExceptList.contains( layer ) )
     return false;
 
+  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
+
+  if ( mFilters.testFlag( WritableLayer ) && layer->readOnly() )
+    return false;
+
   // layer type
   if (( mFilters.testFlag( RasterLayer ) && layer->type() == QgsMapLayer::RasterLayer ) ||
       ( mFilters.testFlag( VectorLayer ) && layer->type() == QgsMapLayer::VectorLayer ) ||
@@ -98,7 +103,6 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
                         mFilters.testFlag( HasGeometry );
   if ( detectGeometry && layer->type() == QgsMapLayer::VectorLayer )
   {
-    QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
     if ( vl )
     {
       if ( mFilters.testFlag( HasGeometry ) && vl->hasGeometryType() )
