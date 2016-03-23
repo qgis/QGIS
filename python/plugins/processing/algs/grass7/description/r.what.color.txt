@@ -1,0 +1,8 @@
+r.what.color
+Queries colors for a raster map layer. 
+Raster (r.*)
+ParameterRaster|input|Raster map to query colors|False
+ParameterString|value|Values to query colors for (comma separated list)|None|False|False
+ParameterString|format|Output format (printf-style)|None|False|True
+OutputFile|output|Colors file
+
