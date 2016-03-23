@@ -15,6 +15,8 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
 #include <qgscomposerpicture.h>
 #include <qgscomposerscalebar.h>
 #include <qgscomposershape.h>
+#include <qgscomposerpolygon.h>
+#include <qgscomposerpolyline.h>
 #include <qgscomposertable.h>
 #include <qgscomposertexttable.h>
 #include <qgscomposerattributetable.h>
@@ -65,6 +67,14 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     sipType = sipType_QgsComposerShape;
     *sipCppRet = static_cast<QgsComposerShape*>(sipCpp);
     break;
+  case QgsComposerItem::ComposerPolygon:
+    sipType = sipType_QgsComposerPolygon;
+    *sipCppRet = static_cast<QgsComposerPolygon*>(sipCpp);
+    break;
+  case QgsComposerItem::ComposerPolyline:
+    sipType = sipType_QgsComposerPolyline;
+    *sipCppRet = static_cast<QgsComposerPolyline*>(sipCpp);
+    break;
   case QgsComposerItem::ComposerTable:
     sipType = sipType_QgsComposerTable;
     *sipCppRet = static_cast<QgsComposerTable*>(sipCpp);
@@ -103,6 +113,8 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
       ComposerPicture,
       ComposerScaleBar,
       ComposerShape,
+      ComposerPolygon,
+      ComposerPolyline,
       ComposerTable,
       ComposerAttributeTable,
       ComposerTextTable,

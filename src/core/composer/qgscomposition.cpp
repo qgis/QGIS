@@ -17,6 +17,8 @@
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
 #include "qgscomposerarrow.h"
+#include "qgscomposerpolygon.h"
+#include "qgscomposerpolyline.h"
 #include "qgscomposerframe.h"
 #include "qgscomposerhtml.h"
 #include "qgscomposerlabel.h"
@@ -1384,6 +1386,69 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       pushAddRemoveCommand( newShape, tr( "Shape added" ) );
     }
   }
+
+  // polygon
+  QDomNodeList composerPolygonList = elem.elementsByTagName( "ComposerPolygon" );
+  for ( int i = 0; i < composerPolygonList.size(); ++i )
+  {
+    QDomElement currentComposerPolygonElem = composerPolygonList.at( i ).toElement();
+    QgsComposerPolygon* newPolygon = new QgsComposerPolygon( this );
+    newPolygon->readXML( currentComposerPolygonElem, doc );
+
+    if ( pos )
+    {
+      if ( pasteInPlace )
+      {
+        newPolygon->setItemPosition( newPolygon->pos().x(), fmod( newPolygon->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newPolygon->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
+      }
+      else
+      {
+        newPolygon->move( pasteShiftPos.x(), pasteShiftPos.y() );
+      }
+      newPolygon->setSelected( true );
+      lastPastedItem = newPolygon;
+    }
+
+    addComposerPolygon( newPolygon );
+    newPolygon->setZValue( newPolygon->zValue() + zOrderOffset );
+    if ( addUndoCommands )
+    {
+      pushAddRemoveCommand( newPolygon, tr( "Polygon added" ) );
+    }
+  }
+
+  // polyline
+  QDomNodeList addComposerPolylineList = elem.elementsByTagName( "ComposerPolyline" );
+  for ( int i = 0; i < addComposerPolylineList.size(); ++i )
+  {
+    QDomElement currentComposerPolylineElem = addComposerPolylineList.at( i ).toElement();
+    QgsComposerPolyline* newPolyline = new QgsComposerPolyline( this );
+    newPolyline->readXML( currentComposerPolylineElem, doc );
+
+    if ( pos )
+    {
+      if ( pasteInPlace )
+      {
+        newPolyline->setItemPosition( newPolyline->pos().x(), fmod( newPolyline->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newPolyline->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
+      }
+      else
+      {
+        newPolyline->move( pasteShiftPos.x(), pasteShiftPos.y() );
+      }
+      newPolyline->setSelected( true );
+      lastPastedItem = newPolyline;
+    }
+
+    addComposerPolyline( newPolyline );
+    newPolyline->setZValue( newPolyline->zValue() + zOrderOffset );
+    if ( addUndoCommands )
+    {
+      pushAddRemoveCommand( newPolyline, tr( "Polyline added" ) );
+    }
+  }
+
   // picture
   QDomNodeList composerPictureList = elem.elementsByTagName( "ComposerPicture" );
   for ( int i = 0; i < composerPictureList.size(); ++i )
@@ -2442,6 +2507,26 @@ void QgsComposition::addComposerArrow( QgsComposerArrow* arrow )
   emit composerArrowAdded( arrow );
 }
 
+void QgsComposition::addComposerPolygon( QgsComposerPolygon *polygon )
+{
+  addItem( polygon );
+
+  updateBounds();
+  connect( polygon, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
+  emit composerPolygonAdded( polygon );
+}
+
+void QgsComposition::addComposerPolyline( QgsComposerPolyline *polyline )
+{
+  addItem( polyline );
+
+  updateBounds();
+  connect( polyline, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+
+  emit composerPolylineAdded( polyline );
+}
+
 void QgsComposition::addComposerLabel( QgsComposerLabel* label )
 {
   addItem( label );
@@ -2688,6 +2773,20 @@ void QgsComposition::sendItemAddedSignal( QgsComposerItem* item )
   {
     emit composerShapeAdded( shape );
     emit selectedItemChanged( shape );
+    return;
+  }
+  QgsComposerPolygon* polygon = dynamic_cast<QgsComposerPolygon*>( item );
+  if ( polygon )
+  {
+    emit composerPolygonAdded( polygon );
+    emit selectedItemChanged( polygon );
+    return;
+  }
+  QgsComposerPolyline* polyline = dynamic_cast<QgsComposerPolyline*>( item );
+  if ( polyline )
+  {
+    emit composerPolylineAdded( polyline );
+    emit selectedItemChanged( polyline );
     return;
   }
   QgsComposerAttributeTable* table = dynamic_cast<QgsComposerAttributeTable*>( item );
