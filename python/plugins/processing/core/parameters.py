@@ -352,6 +352,7 @@ class ParameterMultipleInput(ParameterDataObject):
                           If user will pass None as parameter, we will use default minimal number of inputs (1)
     @return: result, if the minimum number of inputs were set.
     """
+
     def setMinNumInputs(self, _minNumInputs):
         if _minNumInputs is None:
             self.minNumInputs = 0
@@ -369,6 +370,7 @@ class ParameterMultipleInput(ParameterDataObject):
     @return: minimum number of inputs required for this parameter
     @see: setMinNumInputs()
     """
+
     def getMinNumInputs(self):
         return self.minNumInputs
 

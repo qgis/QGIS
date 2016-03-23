@@ -103,12 +103,12 @@ class ConfigDialog(BASE, WIDGET):
                 child = item.child(i)
                 showChild = self._filterItem(child, text)
                 show = (showChild or show)
-            self.tree.setRowHidden (item.row(), item.index().parent(), not show)
+            self.tree.setRowHidden(item.row(), item.index().parent(), not show)
             return show
 
         elif isinstance(item, QStandardItem):
             hide = bool(text) and (text not in item.text().lower())
-            self.tree.setRowHidden (item.row(), item.index().parent(), hide)
+            self.tree.setRowHidden(item.row(), item.index().parent(), hide)
             return not hide
 
     def fillTree(self):
@@ -148,7 +148,6 @@ class ConfigDialog(BASE, WIDGET):
                 self.items[setting] = SettingItem(setting)
                 groupItem.insertRow(0, [labelItem, self.items[setting]])
 
-
         """
         Filter 'Providers' items
         """
@@ -182,7 +181,6 @@ class ConfigDialog(BASE, WIDGET):
             emptyItem = QStandardItem()
             emptyItem.setEditable(False)
             providersItem.appendRow([groupItem, emptyItem])
-
 
         """
         Filter 'Menus' items
@@ -220,7 +218,6 @@ class ConfigDialog(BASE, WIDGET):
             emptyItem.setEditable(False)
 
             menusItem.appendRow([groupItem, emptyItem])
-
 
         self.tree.sortByColumn(0, Qt.AscendingOrder)
         self.adjustColumns()

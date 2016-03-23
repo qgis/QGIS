@@ -300,16 +300,16 @@ class ParameterMultipleInputTest(unittest.TestCase):
 
     def testMultipleInput(self):
         parameter = ParameterMultipleInput('myName', 'myDesc', optional=True)
-        parameter.assertTrue(parameter.setMinNumInputs(1))
+        self.assertTrue(parameter.setMinNumInputs(1))
 
-        parameter = ParameterMultipleInput ('myName', 'myDesc', optional=False)
-        parameter.assertFalse(parameter.setMinNumInputs(0))
+        parameter = ParameterMultipleInput('myName', 'myDesc', optional=False)
+        self.assertFalse(parameter.setMinNumInputs(0))
 
         parameter.setMinNumInputs(2)
-        parameter.assertTrue(parameter.setValue(['myLayerFile.shp', 'myLayerFile2.shp']))
+        self.assertTrue(parameter.setValue(['myLayerFile.shp', 'myLayerFile2.shp']))
 
         parameter.setMinNumInputs(3)
-        parameter.assertFalse(parameter.setValue(['myLayerFile.shp', 'myLayerFile2.shp']))
+        self.assertFalse(parameter.setValue(['myLayerFile.shp', 'myLayerFile2.shp']))
 
     def testGetAsStringWhenRaster(self):
         parameter = ParameterMultipleInput('myName', 'myDesc', datatype=ParameterMultipleInput.TYPE_RASTER)
