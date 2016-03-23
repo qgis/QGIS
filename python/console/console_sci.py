@@ -321,11 +321,11 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def readHistoryFile(self):
         fileExist = QFile.exists(_historyFile)
         if fileExist:
-            rH = codecs.open(_historyFile, 'r', encoding='utf-8')
-            for line in rH:
-                if line != "\n":
-                    l = line.rstrip('\n')
-                    self.updateHistory(l)
+            with codecs.open(_historyFile, 'r', encoding='utf-8') as rH:
+                for line in rH:
+                    if line != "\n":
+                        l = line.rstrip('\n')
+                        self.updateHistory(l)
         else:
             return
 
