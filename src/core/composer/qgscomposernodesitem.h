@@ -23,7 +23,7 @@
 
 /** An abstract composer item that provides generic methods for nodes based
  * shapes such as polygon or polylines.
- * @node added in QGIS 2.16
+ * @note added in QGIS 2.16
  */
 class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
 {
