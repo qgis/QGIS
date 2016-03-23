@@ -347,7 +347,7 @@ class ParameterMultipleInput(ParameterDataObject):
 
     By default minimal number of inputs is set to 1
 
-    @type _minNumInputs: numeric type or list
+    @type _minNumInputs: numeric type or None
     @param _minNumInputs: required minimum number of inputs for parameter. \
                           If user will pass None as parameter, we will use default minimal number of inputs (1)
     @return: result, if the minimum number of inputs were set.
@@ -362,7 +362,7 @@ class ParameterMultipleInput(ParameterDataObject):
             # dont allow to set negative or null number of inputs if parameter isn't optional
             return False
 
-        self.minNumInputs = int(minNumInputs)
+        self.minNumInputs = int(_minNumInputs)
         return True
 
     """ Get minimum required number of inputs for parameter
@@ -390,7 +390,7 @@ class ParameterMultipleInput(ParameterDataObject):
                 else:
                     return False
             # prevent setting value if we didn't provide required minimal number of inputs
-            elif len(obj) < minNumInputs:
+            elif len(obj) < self.minNumInputs:
                 return False
 
             self.value = ";".join([self.getAsString(lay) for lay in obj])
