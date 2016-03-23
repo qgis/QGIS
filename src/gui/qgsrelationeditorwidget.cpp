@@ -146,7 +146,7 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation& relation, c
   QgsVectorLayer* lyr = relation.referencingLayer();
 
   bool canChangeAttributes = lyr->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
-  if ( canChangeAttributes && !lyr->isReadOnly() )
+  if ( canChangeAttributes && !lyr->readOnly() )
   {
     mToggleEditingButton->setEnabled( true );
     updateButtons();
@@ -205,7 +205,7 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation& relation, const Q
   QgsVectorLayer* lyr = relation.referencingLayer();
 
   bool canChangeAttributes = lyr->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
-  if ( canChangeAttributes && !lyr->isReadOnly() )
+  if ( canChangeAttributes && !lyr->readOnly() )
   {
     mToggleEditingButton->setEnabled( true );
     updateButtons();

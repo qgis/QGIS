@@ -231,6 +231,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Returns the current blending mode for a layer */
     QPainter::CompositionMode blendMode() const;
 
+    /** Returns if this layer is read only. */
+    bool readOnly() const { return isReadOnly(); }
+
     /** Synchronises with changes in the datasource
         */
     virtual void reload() {}
@@ -735,6 +738,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsError mError;
 
   private:
+    /**
+     * This method returns true by default but can be overwritten to specify
+     * that a certain layer is writable.
+     */
+    virtual bool isReadOnly() const { return true; }
+
     /** Layer's spatial reference system.
         private to make sure setCrs must be used and layerCrsChanged() is emitted */
     QgsCoordinateReferenceSystem* mCRS;
