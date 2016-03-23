@@ -66,6 +66,9 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     //! Simplifies the specified geometry
     virtual bool simplifyGeometry( QgsGeometry* geometry ) const override;
 
+    //! Simplifies the specified WKB-point array
+    virtual bool simplifyPoints( QgsWKBTypes::Type wkbType, QgsConstWkbPtr& sourceWkbPtr, QPolygonF& targetPoints ) const;
+
     // MapToPixel simplification helper methods
   public:
 
@@ -81,6 +84,8 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     //! Simplifies the geometry when is applied the specified map2pixel context
     static bool simplifyGeometry( QgsGeometry* geometry, int simplifyFlags, double tolerance );
 
+    //! Simplifies the WKB-point array when is applied the specified map2pixel context
+    static bool simplifyPoints( QgsWKBTypes::Type wkbType, QgsConstWkbPtr& sourceWkbPtr, QPolygonF& targetPoints, int simplifyFlags, double tolerance );
 };
 
 #endif // QGSMAPTOPIXELGEOMETRYSIMPLIFIER_H

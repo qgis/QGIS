@@ -188,6 +188,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
 
     bool isLongSegment;
     bool hasLongSegments = false; //-> To avoid replace the simplified geometry by its BBOX when there are 'long' segments.
+    bool badLuck = false;
 
     // Check whether the LinearRing is really closed.
     if ( isaLinearRing )
@@ -254,11 +255,10 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
       else
       {
         // Bad luck! The simplified geometry is invalid and approximation by bounding box
-        // would create artifacts due to long segments. Worst of all, we may have overwritten
-        // the original coordinates by the simplified ones (source and target WKB ptr can be the same)
-        // so we cannot even undo the changes here. We will return invalid geometry and hope that
-        // other pieces of QGIS will survive that :-/
+        // would create artifacts due to long segments.
+        // We will return invalid geometry and hope that other pieces of QGIS will survive that :-/
       }
+      badLuck = true;
     }
 
     if ( isaLinearRing )
@@ -275,7 +275,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
     numPtr << numTargetPoints;
     targetWkbSize += numTargetPoints * sizeof( double ) * 2;
 
-    result = numPoints != numTargetPoints;
+    result = !badLuck && numTargetPoints > 0;
   }
   else if ( flatType == QGis::WKBPolygon )
   {
@@ -424,4 +424,62 @@ bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry *geometry, int simpl
 bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry* geometry ) const
 {
   return simplifyGeometry( geometry, mSimplifyFlags, mTolerance );
+}
+
+//! Simplifies the WKB-point array (Removing duplicated points) when is applied the specified map2pixel context
+bool QgsMapToPixelSimplifier::simplifyPoints( QgsWKBTypes::Type wkbType, QgsConstWkbPtr& sourceWkbPtr, QPolygonF& targetPoints, int simplifyFlags, double tolerance )
+{
+  QgsWKBTypes::Type singleType = QgsWKBTypes::singleType( wkbType );
+  QgsWKBTypes::Type flatType = QgsWKBTypes::flatType( singleType );
+
+  // Check whether the geometry can be simplified using the map2pixel context
+  if ( flatType == QgsWKBTypes::Point )
+    return false;
+
+  bool isaLinearRing = flatType == QgsWKBTypes::Polygon;
+  int numPoints;
+  sourceWkbPtr >> numPoints;
+
+  // No simplify simple geometries
+  if ( numPoints <= ( isaLinearRing ? 6 : 3 ) )
+    return false;
+
+  QgsRectangle envelope = calculateBoundingBox( QGis::fromNewWkbType( singleType ), QgsConstWkbPtr( sourceWkbPtr ), numPoints );
+  sourceWkbPtr -= sizeof( int );
+
+  int targetWkbSize = 5 + sizeof( int ) + numPoints * ( 2 * sizeof( double ) );
+  unsigned char* targetWkb = new unsigned char[ targetWkbSize ];
+
+  //! Simplify the WKB-geometry using the specified tolerance
+  try
+  {
+    QgsWkbPtr targetWkbPtr( targetWkb, targetWkbSize );
+    targetWkbPtr << ( char ) QgsApplication::endian() << flatType;
+    targetWkbSize = 5;
+
+    if ( simplifyWkbGeometry( simplifyFlags, QGis::fromNewWkbType( singleType ), sourceWkbPtr, targetWkbPtr, targetWkbSize, envelope, tolerance, false, isaLinearRing ) )
+    {
+      QgsConstWkbPtr finalWkbPtr( targetWkb, targetWkbSize );
+      finalWkbPtr.readHeader();
+      finalWkbPtr >> targetPoints;
+
+      int skipZM = ( QGis::wkbDimensions( QGis::fromNewWkbType( wkbType ) ) - 2 ) * sizeof( double );
+      sourceWkbPtr += sizeof( int ) + numPoints * ( 2 * sizeof( double ) + skipZM );
+
+      delete [] targetWkb;
+      return true;
+    }
+  }
+  catch ( const QgsWkbException &e )
+  {
+    QgsDebugMsg( QString( "Exception thrown by simplifier: %1" ) .arg( e.what() ) );
+  }
+  delete [] targetWkb;
+  return false;
+}
+
+//! Simplifies the specified WKB-point array
+bool QgsMapToPixelSimplifier::simplifyPoints( QgsWKBTypes::Type wkbType, QgsConstWkbPtr& sourceWkbPtr, QPolygonF& targetPoints ) const
+{
+  return simplifyPoints( wkbType, sourceWkbPtr, targetPoints, mSimplifyFlags, mTolerance );
 }

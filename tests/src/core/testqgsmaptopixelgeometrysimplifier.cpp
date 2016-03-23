@@ -133,7 +133,9 @@ void TestQgsMapToPixelGeometrySimplifier::testLine1()
 
   fl = QgsMapToPixelSimplifier::SimplifyEnvelope;
   ret = QgsMapToPixelSimplifier::simplifyGeometry( g.data(), fl, 20.0 );
-  QVERIFY( ! ret );
+  QVERIFY( ret );
+  wkt = g->exportToWkt();
+  QCOMPARE( wkt, QString( "LineString (0 0, 1 1, 20 1, 10 0, 5 0)" ) );
 
   ret = QgsMapToPixelSimplifier::simplifyGeometry( g.data(), fl, 30.0 );
   QVERIFY( ret );
