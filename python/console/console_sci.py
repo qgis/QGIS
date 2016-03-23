@@ -36,7 +36,7 @@ from .ui_console_history_dlg import Ui_HistoryDialogPythonConsole
 
 _init_commands = ["from qgis.core import *", "import qgis.utils",
                   "from qgis.utils import iface"]
-_historyFile = unicode(QgsApplication.qgisSettingsDirPath() + "console_history.txt")
+_historyFile = os.path.join(QgsApplication.qgisSettingsDirPath(), "console_history.txt")
 
 
 class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
@@ -226,7 +226,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         else:
             apiPath = self.settings.value("pythonConsole/userAPI", [])
             for i in range(0, len(apiPath)):
-                self.api.load(unicode(apiPath[i]))
+                self.api.load(apiPath[i])
             self.api.prepare()
             self.lexer.setAPIs(self.api)
 
@@ -321,11 +321,11 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def readHistoryFile(self):
         fileExist = QFile.exists(_historyFile)
         if fileExist:
-            rH = codecs.open(_historyFile, 'r', encoding='utf-8')
-            for line in rH:
-                if line != "\n":
-                    l = line.rstrip('\n')
-                    self.updateHistory(l)
+            with codecs.open(_historyFile, 'r', encoding='utf-8') as rH:
+                for line in rH:
+                    if line != "\n":
+                        l = line.rstrip('\n')
+                        self.updateHistory(l)
         else:
             return
 
@@ -437,7 +437,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             self.showNext()
         ## TODO: press event for auto-completion file directory
         else:
-            t = unicode(e.text())
+            t = e.text()
             self.autoCloseBracket = self.settings.value("pythonConsole/autoCloseBracket", False, type=bool)
             self.autoImport = self.settings.value("pythonConsole/autoInsertionImport", True, type=bool)
             txt = cmd[:index].replace('>>> ', '').replace('... ', '')
@@ -514,7 +514,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         """
         self.setFocus()
         if e.button() == Qt.MidButton:
-            stringSel = unicode(QApplication.clipboard().text(QClipboard.Selection))
+            stringSel = QApplication.clipboard().text(QClipboard.Selection)
             if not self.is_cursor_on_last_line():
                 self.move_cursor_to_end()
             self.insertFromDropPaste(stringSel)
@@ -529,7 +529,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         XXX: It should reimplement the virtual QScintilla.paste method,
         but it seems not used by QScintilla code.
         """
-        stringPaste = unicode(QApplication.clipboard().text())
+        stringPaste = QApplication.clipboard().text()
         if self.is_cursor_on_last_line():
             if self.hasSelectedText():
                 self.removeSelectedText()
@@ -549,17 +549,17 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             QsciScintilla.dropEvent(self, e)
 
     def insertFromDropPaste(self, textDP):
-        pasteList = unicode(textDP).splitlines()
+        pasteList = textDP.splitlines()
         if pasteList:
             for line in pasteList[:-1]:
                 cleanLine = line.replace(">>> ", "").replace("... ", "")
-                self.insert(unicode(cleanLine))
+                self.insert(cleanLine)
                 self.move_cursor_to_end()
-                self.runCommand(unicode(self.currentCommand()))
+                self.runCommand(self.currentCommand())
             if pasteList[-1] != "":
                 line = pasteList[-1]
                 cleanLine = line.replace(">>> ", "").replace("... ", "")
-                self.insert(unicode(cleanLine))
+                self.insert(cleanLine)
                 self.move_cursor_to_end()
 
     def insertTextFromFile(self, listOpenFile):
@@ -567,14 +567,14 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             self.append(line)
             self.move_cursor_to_end()
             self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
-            self.runCommand(unicode(self.currentCommand()))
-        self.append(unicode(listOpenFile[-1]))
+            self.runCommand(self.currentCommand())
+        self.append(listOpenFile[-1])
         self.move_cursor_to_end()
         self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
 
     def entered(self):
         self.move_cursor_to_end()
-        self.runCommand(unicode(self.currentCommand()))
+        self.runCommand(self.currentCommand())
         self.setFocus()
         self.move_cursor_to_end()
 
@@ -582,7 +582,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         linenr, index = self.getCursorPosition()
         string = self.text()
         cmdLine = string[4:]
-        cmd = unicode(cmdLine)
+        cmd = cmdLine
         return cmd
 
     def runCommand(self, cmd):
@@ -651,7 +651,7 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
 
     def _runHistory(self, item):
         cmd = item.data(Qt.DisplayRole)
-        self.parent.runCommand(unicode(cmd))
+        self.parent.runCommand(cmd)
 
     def _saveHistory(self):
         self.parent.writeHistoryFile(True)

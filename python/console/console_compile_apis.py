@@ -60,7 +60,7 @@ class PrepareAPIDialog(QDialog):
         if os.path.exists(self._pap_file):
             os.remove(self._pap_file)
         self.ui.label.setText(QCoreApplication.translate("PythonConsole", "Saving prepared file..."))
-        prepd = self._api.savePrepared(unicode(self._pap_file))
+        prepd = self._api.savePrepared(self._pap_file)
         rslt = self.trUtf8("Error")
         if prepd:
             rslt = QCoreApplication.translate("PythonConsole", "Saved")
@@ -78,7 +78,7 @@ class PrepareAPIDialog(QDialog):
         self._api = QsciAPIs(self.qlexer)
         self._api.apiPreparationFinished.connect(self._preparationFinished)
         for api_file in self._api_files:
-            self._api.load(unicode(api_file))
+            self._api.load(api_file)
         try:
             self._api.prepare()
         except Exception as err:
