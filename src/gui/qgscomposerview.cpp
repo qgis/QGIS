@@ -93,6 +93,8 @@ void QgsComposerView::setCurrentTool( QgsComposerView::Tool t )
   }
 
   // do not display points of NodesItem by default
+  mNodesItemIndex = -1;
+  mNodesItem = nullptr;
   displayNodes( false );
   unselectNode();
 
@@ -135,9 +137,7 @@ void QgsComposerView::setCurrentTool( QgsComposerView::Tool t )
       break;
     }
 
-    case QgsComposerView::RemoveItemNode:
-    case QgsComposerView::AddItemNode:
-    case QgsComposerView::MoveItemNode:
+    case QgsComposerView::EditNodesItem:
     {
       composition()->setPreventCursorChange( true );
       viewport()->setCursor( defaultCursorForTool( mCurrentTool ) );
@@ -349,14 +349,16 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       return;
     }
 
-    case RemoveItemNode:
-    case MoveItemNode:
+    case EditNodesItem:
     {
       QList<QGraphicsItem *> itemsAtCursorPos = items( e->pos().x(), e->pos().y(),
           mMoveContentSearchRadius,
           mMoveContentSearchRadius );
       if ( itemsAtCursorPos.isEmpty() )
         return;
+
+      mNodesItemIndex = -1;
+      mNodesItem = nullptr;
 
       QList<QGraphicsItem*>::iterator itemIter = itemsAtCursorPos.begin();
       for ( ; itemIter != itemsAtCursorPos.end(); ++itemIter )
@@ -374,58 +376,19 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
             {
               mNodesItemIndex = index;
               mNodesItem = itemP;
+              mMoveContentStartPos = scenePoint;
             }
           }
         }
 
         if ( mNodesItemIndex != -1 )
         {
-          if ( mCurrentTool == MoveItemNode )
-            composition()->beginCommand( mNodesItem, tr( "Move item node" ) );
-
+          composition()->beginCommand( mNodesItem, tr( "Move item node" ) );
+          setSelectedNode( mNodesItem, mNodesItemIndex );
           break;
         }
       }
 
-      break;
-    }
-
-    case AddItemNode:
-    {
-      QList<QGraphicsItem *> itemsAtCursorPos = items( e->pos().x(), e->pos().y(),
-          mMoveContentSearchRadius,
-          mMoveContentSearchRadius );
-      if ( itemsAtCursorPos.isEmpty() )
-        return;
-
-      QList<QGraphicsItem*>::iterator itemIter = itemsAtCursorPos.begin();
-      bool rc = false;
-      for ( ; itemIter != itemsAtCursorPos.end(); ++itemIter )
-      {
-        QgsComposerItem* item = dynamic_cast<QgsComposerItem *>(( *itemIter ) );
-        if ( item && !item->positionLock() )
-        {
-          if (( item->type() == QgsComposerItem::ComposerPolygon
-                || item->type() == QgsComposerItem::ComposerPolyline ) )
-          {
-            QgsComposerNodesItem* itemP = dynamic_cast<QgsComposerNodesItem *>( item );
-            composition()->beginCommand( itemP, tr( "Add item node" ) );
-            rc = itemP->addNode( scenePoint );
-            composition()->endCommand();
-
-            scene()->update();
-
-            if ( rc )
-            {
-              mNodesItemIndex = itemP->nodeAtPosition( scenePoint );
-              mNodesItem = itemP;
-            }
-          }
-        }
-
-        if ( rc )
-          break;
-      }
       break;
     }
 
@@ -542,9 +505,7 @@ QCursor QgsComposerView::defaultCursorForTool( Tool currentTool )
     case MoveItemContent:
       return Qt::ArrowCursor;
 
-    case AddItemNode:
-    case MoveItemNode:
-    case RemoveItemNode:
+    case EditNodesItem:
       return Qt::CrossCursor;
 
     case AddArrow:
@@ -947,45 +908,14 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       break;
     }
 
-    case MoveItemNode:
+    case EditNodesItem:
     {
       if ( mNodesItemIndex != -1 )
       {
-        mNodesItem->moveNode( mNodesItemIndex, scenePoint );
-        setSelectedNode( mNodesItem, mNodesItemIndex );
-        composition()->endCommand();
-
-        scene()->update();
-
-        mNodesItemIndex = -1;
-        mNodesItem = nullptr;
-      }
-      break;
-    }
-
-    case RemoveItemNode:
-    {
-      if ( mNodesItemIndex != -1 )
-      {
-        composition()->beginCommand( mNodesItem, tr( "Remove item node" ) );
-        mNodesItem->removeNode( mNodesItemIndex );
-        composition()->endCommand();
-
-        scene()->update();
-
-        mNodesItem = nullptr;
-        mNodesItemIndex = -1;
-      }
-
-      break;
-    }
-
-    case AddItemNode:
-    {
-      if ( mNodesItemIndex != -1 )
-      {
-        mNodesItemIndex = -1;
-        mNodesItem = nullptr;
+        if ( scenePoint != mMoveContentStartPos )
+          composition()->endCommand();
+        else
+          composition()->cancelCommand();
       }
 
       break;
@@ -1363,17 +1293,13 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
         break;
       }
 
-      case AddItemNode:
-      case MoveItemNode:
+      case EditNodesItem:
       {
         if ( mNodesItemIndex != -1 )
         {
           QPointF scenePoint = mapToScene( e->pos() );
           mNodesItem->moveNode( mNodesItemIndex, scenePoint );
-          setSelectedNode( mNodesItem, mNodesItemIndex );
           scene()->update();
-
-          mMoveContentStartPos = scenePoint;
         }
 
         break;
@@ -1480,7 +1406,70 @@ void QgsComposerView::updateRubberBandLine( QPointF pos, const bool constrainAng
 
 void QgsComposerView::mouseDoubleClickEvent( QMouseEvent* e )
 {
-  e->ignore();
+  QPointF scenePoint = mapToScene( e->pos() );
+
+  switch ( mCurrentTool )
+  {
+    case EditNodesItem:
+    {
+      // erase status previously set by the mousePressEvent method
+      if ( mNodesItemIndex != -1 )
+      {
+        mNodesItem = nullptr;
+        mNodesItemIndex = -1;
+        unselectNode();
+      }
+
+      // search items in composer
+      QList<QGraphicsItem *> itemsAtCursorPos = items( e->pos().x(), e->pos().y(),
+          mMoveContentSearchRadius,
+          mMoveContentSearchRadius );
+      if ( itemsAtCursorPos.isEmpty() )
+        return;
+
+      bool rc = false;
+      QList<QGraphicsItem*>::iterator itemIter = itemsAtCursorPos.begin();
+      for ( ; itemIter != itemsAtCursorPos.end(); ++itemIter )
+      {
+        QgsComposerItem* item = dynamic_cast<QgsComposerItem *>(( *itemIter ) );
+
+        if ( item && !item->positionLock() )
+        {
+          if (( item->type() == QgsComposerItem::ComposerPolygon
+                || item->type() == QgsComposerItem::ComposerPolyline ) )
+          {
+            QgsComposerNodesItem* itemP = dynamic_cast<QgsComposerNodesItem *>( item );
+
+            composition()->beginCommand( itemP, tr( "Add item node" ) );
+            rc = itemP->addNode( scenePoint );
+
+            if ( rc )
+            {
+              composition()->endCommand();
+              mNodesItem = itemP;
+              mNodesItemIndex = mNodesItem->nodeAtPosition( scenePoint );
+            }
+            else
+              composition()->cancelCommand();
+          }
+        }
+
+        if ( rc )
+          break;
+      }
+
+      if ( rc )
+      {
+        setSelectedNode( mNodesItem, mNodesItemIndex );
+        scene()->update();
+      }
+
+      break;
+    }
+
+    default:
+      break;
+  }
 }
 
 void QgsComposerView::copyItems( ClipboardMode mode )
@@ -1581,15 +1570,32 @@ void QgsComposerView::deleteSelectedItems()
     return;
   }
 
-  QList<QgsComposerItem*> composerItemList = composition()->selectedComposerItems();
-  QList<QgsComposerItem*>::iterator itemIt = composerItemList.begin();
-
-  //delete selected items
-  for ( ; itemIt != composerItemList.end(); ++itemIt )
+  if ( mCurrentTool == QgsComposerView::EditNodesItem )
   {
-    if ( composition() )
+    if ( mNodesItemIndex != -1 )
     {
-      composition()->removeComposerItem( *itemIt );
+      composition()->beginCommand( mNodesItem, tr( "Remove item node" ) );
+      mNodesItem->removeNode( mNodesItemIndex );
+      composition()->endCommand();
+
+      scene()->update();
+
+      mNodesItemIndex = -1;
+      mNodesItem = nullptr;
+    }
+  }
+  else
+  {
+    QList<QgsComposerItem*> composerItemList = composition()->selectedComposerItems();
+    QList<QgsComposerItem*>::iterator itemIt = composerItemList.begin();
+
+    //delete selected items
+    for ( ; itemIt != composerItemList.end(); ++itemIt )
+    {
+      if ( composition() )
+      {
+        composition()->removeComposerItem( *itemIt );
+      }
     }
   }
 }

@@ -191,6 +191,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void on_mActionAddEllipse_triggered();
 
     //! Nodes based shape
+    void on_mActionEditNodesItem_triggered();
     void on_mActionAddPolygon_triggered();
     void on_mActionAddPolyline_triggered();
 
@@ -222,11 +223,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Set tool to move item content
     void on_mActionMoveItemContent_triggered();
-
-    //! Set tool for points based shae
-    void on_mActionMoveItemNode_triggered();
-    void on_mActionRemoveItemNode_triggered();
-    void on_mActionAddItemNode_triggered();
 
     //! Set tool to move item content
     void on_mActionPan_triggered();

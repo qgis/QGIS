@@ -71,9 +71,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
       AddTable,        // add attribute table
       AddAttributeTable,
       MoveItemContent, // move content of item (e.g. content of map)
-      MoveItemNode,
-      RemoveItemNode,
-      AddItemNode,
+      EditNodesItem,
       Pan,
       Zoom
     };
