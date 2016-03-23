@@ -3532,6 +3532,11 @@ QString QgsSpatiaLiteProvider::geomParam() const
   return geometry;
 }
 
+static void deleteWkbBlob( void* wkbBlob )
+{
+  delete[]( char* )wkbBlob;
+}
+
 bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
 {
   sqlite3_stmt *stmt = NULL;
@@ -3615,7 +3620,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
             if ( !wkb )
               sqlite3_bind_null( stmt, ++ia );
             else
-              sqlite3_bind_blob( stmt, ++ia, wkb, wkb_size, free );
+              sqlite3_bind_blob( stmt, ++ia, wkb, wkb_size, deleteWkbBlob );
           }
         }
 
@@ -4005,7 +4010,7 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( QgsGeometryMap & geometry_map 
     if ( !wkb )
       sqlite3_bind_null( stmt, 1 );
     else
-      sqlite3_bind_blob( stmt, 1, wkb, wkb_size, free );
+      sqlite3_bind_blob( stmt, 1, wkb, wkb_size, deleteWkbBlob );
     sqlite3_bind_int64( stmt, 2, FID_TO_NUMBER( iter.key() ) );
 
     // performing actual row update
