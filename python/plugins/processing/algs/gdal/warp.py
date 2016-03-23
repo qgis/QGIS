@@ -129,7 +129,7 @@ class warp(GdalAlgorithm):
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
         tfw = unicode(self.getParameterValue(self.TFW))
         rastext = unicode(self.getParameterValue(self.RAST_EXT))
-        
+
         arguments = []
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
