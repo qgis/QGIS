@@ -41,13 +41,13 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     explicit QgsMapLayerComboBox( QWidget *parent = 0 );
 
     //! setFilters allows fitering according to layer type and/or geometry type.
-    void setFilters( QgsMapLayerProxyModel::Filters filters ) { mProxyModel->setFilters( filters ); }
+    void setFilters( const QgsMapLayerProxyModel::Filters& filters ) { mProxyModel->setFilters( filters ); }
 
     //! currently used filter on list layers
     QgsMapLayerProxyModel::Filters filters() const { return mProxyModel->filters(); }
 
     //! except a list of layers not to be listed
-    void setExceptedLayerList( QList<QgsMapLayer*> layerList ) { mProxyModel->setExceptedLayerList( layerList );}
+    void setExceptedLayerList( const QList<QgsMapLayer*>& layerList ) { mProxyModel->setExceptedLayerList( layerList );}
 
     //! returns the list of excepted layers
     QList<QgsMapLayer*> exceptedLayerList() const {return mProxyModel->exceptedLayerList();}

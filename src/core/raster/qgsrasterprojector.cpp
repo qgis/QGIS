@@ -23,14 +23,14 @@
 #include "qgscoordinatetransform.h"
 
 QgsRasterProjector::QgsRasterProjector(
-  QgsCoordinateReferenceSystem theSrcCRS,
-  QgsCoordinateReferenceSystem theDestCRS,
+  const QgsCoordinateReferenceSystem& theSrcCRS,
+  const QgsCoordinateReferenceSystem& theDestCRS,
   int theSrcDatumTransform,
   int theDestDatumTransform,
-  QgsRectangle theDestExtent,
+  const QgsRectangle& theDestExtent,
   int theDestRows, int theDestCols,
   double theMaxSrcXRes, double theMaxSrcYRes,
-  QgsRectangle theExtent )
+  const QgsRectangle& theExtent )
     : QgsRasterInterface( 0 )
     , mSrcCRS( theSrcCRS )
     , mDestCRS( theDestCRS )
@@ -51,12 +51,12 @@ QgsRasterProjector::QgsRasterProjector(
 }
 
 QgsRasterProjector::QgsRasterProjector(
-  QgsCoordinateReferenceSystem theSrcCRS,
-  QgsCoordinateReferenceSystem theDestCRS,
-  QgsRectangle theDestExtent,
+  const QgsCoordinateReferenceSystem& theSrcCRS,
+  const QgsCoordinateReferenceSystem& theDestCRS,
+  const QgsRectangle& theDestExtent,
   int theDestRows, int theDestCols,
   double theMaxSrcXRes, double theMaxSrcYRes,
-  QgsRectangle theExtent )
+  const QgsRectangle& theExtent )
     : QgsRasterInterface( 0 )
     , mSrcCRS( theSrcCRS )
     , mDestCRS( theDestCRS )
@@ -77,10 +77,10 @@ QgsRasterProjector::QgsRasterProjector(
 }
 
 QgsRasterProjector::QgsRasterProjector(
-  QgsCoordinateReferenceSystem theSrcCRS,
-  QgsCoordinateReferenceSystem theDestCRS,
+  const QgsCoordinateReferenceSystem& theSrcCRS,
+  const QgsCoordinateReferenceSystem& theDestCRS,
   double theMaxSrcXRes, double theMaxSrcYRes,
-  QgsRectangle theExtent )
+  const QgsRectangle& theExtent )
     : QgsRasterInterface( 0 )
     , mSrcCRS( theSrcCRS )
     , mDestCRS( theDestCRS )
@@ -146,7 +146,7 @@ QgsRasterProjector::QgsRasterProjector( const QgsRasterProjector &projector )
     , mCPCols( 0 )
     , mCPRows( 0 )
     , mSqrTolerance( 0 )
-    , mApproximate( true )
+    , mApproximate( false )
 {
   mSrcCRS = projector.mSrcCRS;
   mDestCRS = projector.mDestCRS;
@@ -184,7 +184,7 @@ QgsRasterProjector & QgsRasterProjector::operator=( const QgsRasterProjector & p
   return *this;
 }
 
-QgsRasterInterface * QgsRasterProjector::clone() const
+QgsRasterProjector* QgsRasterProjector::clone() const
 {
   QgsDebugMsg( "Entered" );
   QgsRasterProjector * projector = new QgsRasterProjector( mSrcCRS, mDestCRS, mMaxSrcXRes, mMaxSrcYRes, mExtent );
@@ -267,72 +267,76 @@ void QgsRasterProjector::calc()
 
   if ( mPrecision == Approximate )
   {
-    // Initialize the matrix by corners and middle points
-    mCPCols = mCPRows = 3;
     mApproximate = true;
-    for ( int i = 0; i < mCPRows; i++ )
-    {
-      QList<QgsPoint> myRow;
-      myRow.append( QgsPoint() );
-      myRow.append( QgsPoint() );
-      myRow.append( QgsPoint() );
-      mCPMatrix.insert( i, myRow );
-      // And the legal points
-      QList<bool> myLegalRow;
-      myLegalRow.append( bool( false ) );
-      myLegalRow.append( bool( false ) );
-      myLegalRow.append( bool( false ) );
-      mCPLegalMatrix.insert( i, myLegalRow );
-    }
-    for ( int i = 0; i < mCPRows; i++ )
-    {
-      calcRow( i, inverseCt );
-    }
-
-    while ( true )
-    {
-      bool myColsOK = checkCols( inverseCt );
-      if ( !myColsOK )
-      {
-        insertRows( inverseCt );
-      }
-      bool myRowsOK = checkRows( inverseCt );
-      if ( !myRowsOK )
-      {
-        insertCols( inverseCt );
-      }
-      if ( myColsOK && myRowsOK )
-      {
-        QgsDebugMsg( "CP matrix within tolerance" );
-        break;
-      }
-      // What is the maximum reasonable size of transformatio matrix?
-      // TODO: consider better when to break - ratio
-      if ( mCPRows * mCPCols > 0.25 * mDestRows * mDestCols )
-      {
-        QgsDebugMsg( "Too large CP matrix" );
-        mApproximate = false;
-        break;
-      }
-    }
-    QgsDebugMsg( QString( "CPMatrix size: mCPRows = %1 mCPCols = %2" ).arg( mCPRows ).arg( mCPCols ) );
-    mDestRowsPerMatrixRow = ( float )mDestRows / ( mCPRows - 1 );
-    mDestColsPerMatrixCol = ( float )mDestCols / ( mCPCols - 1 );
-
-    QgsDebugMsgLevel( "CPMatrix:", 5 );
-    QgsDebugMsgLevel( cpToString(), 5 );
-
-    // init helper points
-    pHelperTop = new QgsPoint[mDestCols];
-    pHelperBottom = new QgsPoint[mDestCols];
-    calcHelper( 0, pHelperTop );
-    calcHelper( 1, pHelperBottom );
-    mHelperTopRow = 0;
   }
   else
   {
     mApproximate = false;
   }
+
+  // Always try to calculate mCPMatrix, it is used in calcSrcExtent() for both Approximate and Exact
+  // Initialize the matrix by corners and middle points
+  mCPCols = mCPRows = 3;
+  for ( int i = 0; i < mCPRows; i++ )
+  {
+    QList<QgsPoint> myRow;
+    myRow.append( QgsPoint() );
+    myRow.append( QgsPoint() );
+    myRow.append( QgsPoint() );
+    mCPMatrix.insert( i, myRow );
+    // And the legal points
+    QList<bool> myLegalRow;
+    myLegalRow.append( bool( false ) );
+    myLegalRow.append( bool( false ) );
+    myLegalRow.append( bool( false ) );
+    mCPLegalMatrix.insert( i, myLegalRow );
+  }
+  for ( int i = 0; i < mCPRows; i++ )
+  {
+    calcRow( i, inverseCt );
+  }
+
+  while ( true )
+  {
+    bool myColsOK = checkCols( inverseCt );
+    if ( !myColsOK )
+    {
+      insertRows( inverseCt );
+    }
+    bool myRowsOK = checkRows( inverseCt );
+    if ( !myRowsOK )
+    {
+      insertCols( inverseCt );
+    }
+    if ( myColsOK && myRowsOK )
+    {
+      QgsDebugMsg( "CP matrix within tolerance" );
+      break;
+    }
+    // What is the maximum reasonable size of transformatio matrix?
+    // TODO: consider better when to break - ratio
+    if ( mCPRows * mCPCols > 0.25 * mDestRows * mDestCols )
+      //if ( mCPRows * mCPCols > mDestRows * mDestCols )
+    {
+      QgsDebugMsg( "Too large CP matrix" );
+      mApproximate = false;
+      break;
+    }
+  }
+  QgsDebugMsg( QString( "CPMatrix size: mCPRows = %1 mCPCols = %2" ).arg( mCPRows ).arg( mCPCols ) );
+  mDestRowsPerMatrixRow = ( float )mDestRows / ( mCPRows - 1 );
+  mDestColsPerMatrixCol = ( float )mDestCols / ( mCPCols - 1 );
+
+  QgsDebugMsgLevel( "CPMatrix:", 5 );
+  QgsDebugMsgLevel( cpToString(), 5 );
+
+  // init helper points
+  pHelperTop = new QgsPoint[mDestCols];
+  pHelperBottom = new QgsPoint[mDestCols];
+  calcHelper( 0, pHelperTop );
+  calcHelper( 1, pHelperBottom );
+  mHelperTopRow = 0;
+
   // Calculate source dimensions
   calcSrcExtent();
   calcSrcRowsCols();
@@ -347,29 +351,23 @@ void QgsRasterProjector::calcSrcExtent()
   // for destination EPSG:32661 Polar Stereographic and source EPSG:4326,
   // the maximum y may be in the middle of destination extent
   // TODO: How to find extent exactly and quickly?
-  // For now, we runt through all matrix
-  if ( mApproximate )
+  // For now, we run through all matrix
+  // mCPMatrix is used for both Approximate and Exact because QgsCoordinateTransform::transformBoundingBox()
+  // is not precise enough, see #13665
+  QgsPoint myPoint = mCPMatrix[0][0];
+  mSrcExtent = QgsRectangle( myPoint.x(), myPoint.y(), myPoint.x(), myPoint.y() );
+  for ( int i = 0; i < mCPRows; i++ )
   {
-    QgsPoint myPoint = mCPMatrix[0][0];
-    mSrcExtent = QgsRectangle( myPoint.x(), myPoint.y(), myPoint.x(), myPoint.y() );
-    for ( int i = 0; i < mCPRows; i++ )
+    for ( int j = 0; j < mCPCols ; j++ )
     {
-      for ( int j = 0; j < mCPCols ; j++ )
+      myPoint = mCPMatrix[i][j];
+      if ( mCPLegalMatrix[i][j] )
       {
-        myPoint = mCPMatrix[i][j];
-        if ( mCPLegalMatrix[i][j] )
-        {
-          mSrcExtent.combineExtentWith( myPoint.x(), myPoint.y() );
-        }
+        mSrcExtent.combineExtentWith( myPoint.x(), myPoint.y() );
       }
     }
-    // Expand a bit to avoid possible approx coords falling out because of representation error?
   }
-  else
-  {
-    const QgsCoordinateTransform* inverseCt = QgsCoordinateTransformCache::instance()->transform( mDestCRS.authid(), mSrcCRS.authid(), mDestDatumTransform, mSrcDatumTransform );
-    mSrcExtent = inverseCt->transformBoundingBox( mDestExtent );
-  }
+  // Expand a bit to avoid possible approx coords falling out because of representation error?
 
   // Combine with maximum source  extent
   mSrcExtent = mSrcExtent.intersect( &mExtent );
@@ -416,7 +414,7 @@ QString QgsRasterProjector::cpToString()
   for ( int i = 0; i < mCPRows; i++ )
   {
     if ( i > 0 )
-      myString += "\n";
+      myString += '\n';
     for ( int j = 0; j < mCPCols; j++ )
     {
       if ( j > 0 )
@@ -692,7 +690,9 @@ void QgsRasterProjector::insertRows( const QgsCoordinateTransform* ct )
   {
     QList<QgsPoint> myRow;
     QList<bool> myLegalRow;
-    for ( int c = 0; c < mCPCols; c++ )
+    myRow.reserve( mCPCols );
+    myLegalRow.reserve( mCPCols );
+    for ( int c = 0; c < mCPCols; ++c )
     {
       myRow.append( QgsPoint() );
       myLegalRow.append( false );

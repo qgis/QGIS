@@ -20,6 +20,7 @@
 
 #include <QDomElement>
 #include "qgis.h"
+#include "qgsauthmanager.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
@@ -35,15 +36,24 @@ class QgsSpatialIndex;
 // TODO: merge with QgsWmsAuthorization?
 struct QgsWFSAuthorization
 {
-  QgsWFSAuthorization( const QString& userName = QString(), const QString& password = QString() ) : mUserName( userName ), mPassword( password ) {}
+  QgsWFSAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& authcfg = QString() )
+      : mUserName( userName )
+      , mPassword( password )
+      , mAuthCfg( authcfg )
+  {}
 
   //! set authorization header
-  void setAuthorization( QNetworkRequest &request ) const
+  bool setAuthorization( QNetworkRequest &request ) const
   {
-    if ( !mUserName.isNull() || !mPassword.isNull() )
+    if ( !mAuthCfg.isEmpty() )
     {
-      request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName ).arg( mPassword ).toAscii().toBase64() );
+      return QgsAuthManager::instance()->updateNetworkRequest( request, mAuthCfg );
     }
+    else if ( !mUserName.isNull() || !mPassword.isNull() )
+    {
+      request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName, mPassword ).toAscii().toBase64() );
+    }
+    return true;
   }
 
   //! Username for basic http authentication
@@ -51,6 +61,9 @@ struct QgsWFSAuthorization
 
   //! Password for basic http authentication
   QString mPassword;
+
+  //! Authentication configuration ID
+  QString mAuthCfg;
 };
 
 /** A provider reading features from a WFS server*/
@@ -65,7 +78,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
       FILE  //reads from a file on disk
     };
 
-    QgsWFSProvider( const QString& uri );
+    explicit QgsWFSProvider( const QString& uri );
     ~QgsWFSProvider();
 
     /* Inherited from QgsVectorDataProvider */
@@ -141,7 +154,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     virtual void reloadData() override;
 
   signals:
-    void dataReadProgressMessage( QString message );
+    void dataReadProgressMessage( const QString& message );
 
     void dataChanged();
 
@@ -190,6 +203,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     /** Source CRS*/
     QgsCoordinateReferenceSystem mSourceCRS;
     int mFeatureCount;
+    int mMaxFeatureCount;
     /** Flag if provider is valid*/
     bool mValid;
     bool mCached;
@@ -233,7 +247,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
        @param coords list where the found coordinates are appended
        @param elem the <gml:coordinates> element
        @return 0 in case of success*/
-    int readGML2Coordinates( std::list<QgsPoint>& coords, const QDomElement elem ) const;
+    int readGML2Coordinates( std::list<QgsPoint>& coords, const QDomElement& elem ) const;
     /** Tries to create a QgsCoordinateReferenceSystem object and assign it to mSourceCRS. Returns 0 in case of success*/
     int setCRSFromGML2( const QDomElement& wfsCollectionElement );
 
@@ -272,7 +286,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     bool initGetRenderedOnly( const QgsRectangle &rect );
 #endif
     /** Converts DescribeFeatureType schema geometry property type to WKBType*/
-    QGis::WkbType geomTypeFromPropertyType( QString attName, QString propType );
+    QGis::WkbType geomTypeFromPropertyType( const QString& attName, const QString& propType );
 
     void deleteData();
 };

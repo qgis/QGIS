@@ -21,7 +21,7 @@
 class QgsDMSAndDDValidator : public QValidator
 {
   public:
-    QgsDMSAndDDValidator( QObject *parent );
+    explicit QgsDMSAndDDValidator( QObject *parent );
     State validate( QString &input, int &pos ) const override;
 };
 

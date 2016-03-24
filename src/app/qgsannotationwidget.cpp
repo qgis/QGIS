@@ -57,7 +57,7 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * par
     const QgsMarkerSymbolV2* symbol = mItem->markerSymbol();
     if ( symbol )
     {
-      mMarkerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( symbol->clone() );
+      mMarkerSymbol = symbol->clone();
       updateCenterIcon();
     }
 
@@ -98,7 +98,7 @@ void QgsAnnotationWidget::on_mMapMarkerButton_clicked()
   {
     return;
   }
-  QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( mMarkerSymbol->clone() );
+  QgsMarkerSymbolV2* markerSymbol = mMarkerSymbol->clone();
   QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), 0, this );
   if ( dlg.exec() == QDialog::Rejected )
   {

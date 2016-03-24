@@ -66,7 +66,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     /** \brief slot executed when user presses "Add Values Manually" button on the transparency page */
     void on_pbnAddValuesManually_clicked();
     /** \brief slot executed when user changes the layer's CRS */
-    void on_mCrsSelector_crsChanged( QgsCoordinateReferenceSystem crs );
+    void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem& crs );
     /** \brief slot executed when user wishes to reset noNoDataValue and transparencyTable to default value */
     void on_pbnDefaultValues_clicked();
     /** \brief slot executed when user wishes to export transparency values */
@@ -120,7 +120,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
   signals:
     /** Emitted when changes to layer were saved to update legend */
-    void refreshLegend( QString layerID, bool expandItem );
+    void refreshLegend( const QString& layerID, bool expandItem );
 
   private:
     /** \brief  A constant that signals property not used */

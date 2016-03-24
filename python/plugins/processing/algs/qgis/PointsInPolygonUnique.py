@@ -80,29 +80,28 @@ class PointsInPolygonUnique(GeoAlgorithm):
         geom = QgsGeometry()
 
         current = 0
-        hasIntersections = False
 
         features = vector.features(polyLayer)
         total = 100.0 / float(len(features))
         for ftPoly in features:
             geom = ftPoly.geometry()
+            engine = QgsGeometry.createGeometryEngine(geom.geometry())
+            engine.prepareGeometry()
+
             attrs = ftPoly.attributes()
 
-            classes = []
-            hasIntersections = False
+            classes = set()
             points = spatialIndex.intersects(geom.boundingBox())
             if len(points) > 0:
-                hasIntersections = True
-
-            if hasIntersections:
-                for i in points:
-                    request = QgsFeatureRequest().setFilterFid(i)
-                    ftPoint = pointLayer.getFeatures(request).next()
+                request = QgsFeatureRequest().setFilterFids(points)
+                fit = pointLayer.getFeatures(request)
+                ftPoint = QgsFeature()
+                while fit.nextFeature(ftPoint):
                     tmpGeom = QgsGeometry(ftPoint.geometry())
-                    if geom.contains(tmpGeom):
+                    if engine.contains(tmpGeom.geometry()):
                         clazz = ftPoint.attributes()[classFieldIndex]
                         if clazz not in classes:
-                            classes.append(clazz)
+                            classes.add(clazz)
 
             outFeat.setGeometry(geom)
             if idxCount == len(attrs):

@@ -30,7 +30,7 @@
 #include "rulesDialog.h"
 #include "topolTest.h"
 
-rulesDialog::rulesDialog( QMap<QString, TopologyRule> testMap, QgisInterface *theQgisIface, QWidget *parent )
+rulesDialog::rulesDialog( const QMap<QString, TopologyRule>& testMap, QgisInterface *theQgisIface, QWidget *parent )
     : QDialog( parent ), Ui::rulesDialog()
 {
   setupUi( this );

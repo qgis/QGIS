@@ -57,12 +57,12 @@ QString QgsSmartGroupCondition::parameter()
   return mCondLineEdit->text();
 }
 
-void QgsSmartGroupCondition::setConstraint( QString constraint )
+void QgsSmartGroupCondition::setConstraint( const QString& constraint )
 {
   mCondCombo->setCurrentIndex( mCondCombo->findData( QVariant( constraint ) ) );
 }
 
-void QgsSmartGroupCondition::setParameter( QString param )
+void QgsSmartGroupCondition::setParameter( const QString& param )
 {
   mCondLineEdit->setText( param );
 }
@@ -187,12 +187,12 @@ void QgsSmartGroupEditorDialog::setConditionMap( QgsSmartConditionMap map )
   }
 }
 
-void QgsSmartGroupEditorDialog::setOperator( QString op )
+void QgsSmartGroupEditorDialog::setOperator( const QString& op )
 {
   mAndOrCombo->setCurrentIndex( mAndOrCombo->findData( QVariant( op ) ) );
 }
 
-void QgsSmartGroupEditorDialog::setSmartgroupName( QString name )
+void QgsSmartGroupEditorDialog::setSmartgroupName( const QString& name )
 {
   mNameLineEdit->setText( name );
 }

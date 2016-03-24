@@ -59,7 +59,7 @@ QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer* vl
 }
 
 
-QVariant QgsValueRelationWidgetWrapper::value()
+QVariant QgsValueRelationWidgetWrapper::value() const
 {
   QVariant v;
 
@@ -82,7 +82,7 @@ QVariant QgsValueRelationWidgetWrapper::value()
         selection << item->data( Qt::UserRole ).toString();
     }
 
-    v = selection.join( "," ).prepend( "{" ).append( "}" );
+    v = selection.join( "," ).prepend( '{' ).append( '}' );
   }
 
   if ( mLineEdit )
@@ -164,7 +164,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
-bool QgsValueRelationWidgetWrapper::valid()
+bool QgsValueRelationWidgetWrapper::valid() const
 {
   return mListWidget || mLineEdit || mComboBox;
 }
@@ -173,7 +173,7 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mListWidget )
   {
-    QStringList checkList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( "," );
+    QStringList checkList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
 
     for ( int i = 0; i < mListWidget->count(); ++i )
     {

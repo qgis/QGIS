@@ -265,7 +265,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @see pictureExpression
      * @deprecated use QgsComposerObject::dataDefinedProperty( QgsComposerObject::PictureSource ) instead
      */
-    virtual void setPictureExpression( QString expression );
+    virtual void setPictureExpression( const QString& expression );
 
     /** Recalculates the source image (if using an expression for picture's source)
      * and reloads and redraws the picture.
@@ -279,7 +279,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @note added in 2.3
      * @deprecated no longer required
      */
-    Q_DECL_DEPRECATED void updatePictureExpression() {};
+    Q_DECL_DEPRECATED void updatePictureExpression() {}
 
     /** Forces a recalculation of the picture's frame size
      * @note added in 2.3

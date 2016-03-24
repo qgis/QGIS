@@ -17,6 +17,7 @@
 
 #include "qgspainteffectregistry.h"
 #include "qgspainteffect.h"
+#include "qgseffectstack.h"
 #include <QObject>
 #include <QtTest/QtTest>
 
@@ -50,6 +51,7 @@ class TestQgsPaintEffectRegistry : public QObject
     void addEffect(); // check adding an effect to an empty registry
     void fetchEffects(); //check fetching effects
     void createEffect(); //check creating effect
+    void defaultStack(); //check creating/testing default stack
 
   private:
 
@@ -145,11 +147,29 @@ void TestQgsPaintEffectRegistry::createEffect()
   DummyPaintEffect* dummyEffect = dynamic_cast<DummyPaintEffect*>( effect );
   QVERIFY( dummyEffect );
   delete effect;
-  effect = 0;
 
   //try creating a bad effect
   effect = registry->createEffect( QString( "bad effect" ) );
   QVERIFY( !effect );
+}
+
+void TestQgsPaintEffectRegistry::defaultStack()
+{
+  QgsPaintEffectRegistry* registry = QgsPaintEffectRegistry::instance();
+  QgsEffectStack* effect = static_cast<QgsEffectStack*>( registry->defaultStack() );
+  QVERIFY( registry->isDefaultStack( effect ) );
+  effect->effect( 1 )->setEnabled( true );
+  QVERIFY( !registry->isDefaultStack( effect ) );
+  effect->effect( 1 )->setEnabled( false );
+  effect->effect( 2 )->setEnabled( false ); //third effect should be enabled by default
+  QVERIFY( !registry->isDefaultStack( effect ) );
+  effect->effect( 2 )->setEnabled( true );
+  effect->appendEffect( new QgsEffectStack() );
+  QVERIFY( !registry->isDefaultStack( effect ) );
+  delete effect;
+  QgsPaintEffect* effect2 = new DummyPaintEffect();
+  QVERIFY( !registry->isDefaultStack( effect2 ) );
+  delete effect2;
 }
 
 QTEST_MAIN( TestQgsPaintEffectRegistry )

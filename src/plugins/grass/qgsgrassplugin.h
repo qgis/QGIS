@@ -18,14 +18,16 @@
 #include "../qgisplugin.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgsvectorlayer.h"
 #include <QObject>
 
 class QgsGrassTools;
 class QgsGrassNewMapset;
 class QgsGrassRegion;
-class QgsGrassEdit;
 
 class QgsMapCanvas;
+class QgsMapLayer;
+class QgsMapTool;
 class QgsRubberBand;
 
 class QAction;
@@ -48,7 +50,7 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
      * QGIS when it attempts to instantiate the plugin.
      * @param qI Pointer to the QgisInterface object.
      */
-    QgsGrassPlugin( QgisInterface * qI );
+    explicit QgsGrassPlugin( QgisInterface * qI );
     /**
      * Virtual function to return the name of the plugin. The name will be used when presenting a list
      * of installable plugins to the user
@@ -79,12 +81,12 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
   public slots:
     //! init the gui
     virtual void initGui() override;
-    //! Start vector editing
-    void edit();
     //! unload the plugin
     void unload() override;
     //! show the help document
     void help();
+    //! Gisbase changed by user
+    void onGisbaseChanged();
     //! Display current region
     void displayRegion();
     //! Switch region on/off
@@ -109,17 +111,29 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     void projectRead();
     //! New project
     void newProject();
-    //! Set edit action
-    void setEditAction();
-    //! Close the edit if layer is removed
-    void closeEdit( QString layerId );
-    //! Cleanup the Grass Edit
-    void cleanUp();
     //! update plugin icons when the app tells us its theme is changed
     void setCurrentTheme( QString theThemeName );
     void setTransform();
-    void editClosed();
+    //! Called when a new layer was added to map registry
+    void onLayerWasAdded( QgsMapLayer* theMapLayer );
+    //! Called when editing of a layer started
+    void onEditingStarted();
+    void onEditingStopped();
+    void onCurrentLayerChanged( QgsMapLayer* layer );
+
+    void onFieldsChanged();
+
+    // Start editing tools
+    void addFeature();
+
+    void onSplitFeaturesTriggered( bool checked );
+
+    // Called when new layer was created in browser
+    void onNewLayer( QString uri, QString name );
+
   private:
+    void resetEditActions();
+
     //! Pointer to our toolbar
     QToolBar *mToolBarPointer;
     //! Pointer to the QGIS interface object
@@ -136,7 +150,6 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     QgsGrassTools *mTools;
     //! Pointer to QgsGrassNewMapset
     QgsGrassNewMapset *mNewMapset;
-    QgsGrassEdit *mEdit;
 
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransform mCoordinateTransform;
@@ -146,8 +159,26 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     QAction *mNewMapsetAction;
     QAction *mCloseMapsetAction;
     QAction *mOpenToolsAction;
-    QAction *mEditAction;
-    QAction *mNewVectorAction;
+    QAction *mOptionsAction;
+
+    // Editing    static bool mNonInitializable;
+    QAction *mAddFeatureAction;
+    QAction *mAddPointAction;
+    QAction *mAddLineAction;
+    QAction *mAddBoundaryAction;
+    QAction *mAddCentroidAction;
+    QAction *mAddAreaAction;
+
+    QgsMapTool *mAddPoint;
+    QgsMapTool *mAddLine;
+    QgsMapTool *mAddBoundary;
+    QgsMapTool *mAddCentroid;
+    QgsMapTool *mAddArea;
+
+    // Names of layer styles before editing started
+    QMap<QgsVectorLayer *, QString> mOldStyles;
+    // Original layer form suppress
+    QMap<QgsVectorLayer *, QgsEditFormConfig::FeatureFormSuppress> mFormSuppress;
 };
 
 #endif // QGSGRASSPLUGIN_H

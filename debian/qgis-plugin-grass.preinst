@@ -1,0 +1,28 @@
+#!/bin/sh
+
+set -e
+
+pkg=qgis-plugin-grass
+
+if [ "$1" = "install" -o "$1" = "upgrade" ]; then
+        div=$(dpkg-divert --listpackage /usr/bin/qgis)
+        if [ -n "$div" -a "$div" != $pkg ]; then
+		for i in /usr/bin/qgis /usr/bin/qbrowser; do
+			if [ -e $i ] && ! [ -e $i.undiverted ]; then
+				mv $i $i.undiverted
+			fi
+			dpkg-divert --package $div --remove --rename --divert $i.bin $i
+			if [ -e $i.undiverted ]; then
+				mv $i.undiverted $i
+			fi
+		done
+	fi
+
+	for i in /usr/bin/qgis /usr/bin/qbrowser; do
+		dpkg-divert --package $pkg --add --rename --divert $i.bin $i
+	done
+fi
+
+#DEBHELPER#
+
+exit 0

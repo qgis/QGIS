@@ -65,7 +65,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
      * Constructor of the vector provider
      * @param uri  uniform resource locator (URI) for a dataset
      */
-    QgsOgrProvider( QString const & uri = "" );
+    explicit QgsOgrProvider( QString const & uri = "" );
 
     /**
      * Destructor
@@ -97,7 +97,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     virtual bool supportsSubsetString() override { return true; }
 
     /** Mutator for sql where clause used to limit dataset size */
-    virtual bool setSubsetString( QString theSQL, bool updateFeatureCount = true ) override;
+    virtual bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     /**
      * Get feature type.
@@ -261,14 +261,14 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     QTextCodec* textEncoding() { return mEncoding; }
 
-    QByteArray quotedIdentifier( QByteArray field );
+    QByteArray quotedIdentifier( QByteArray field ) const;
 
     /**
      * A forced reload invalidates the underlying connection.
      * E.g. in case a shapefile is replaced, the old file will be closed
      * and the new file will be opened.
      */
-    void forceReload();
+    void forceReload() override;
 
   protected:
     /** Loads fields from input file to member attributeFields */
@@ -289,7 +289,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );
     QString ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const;
-    OGRwkbGeometryType ogrWkbGeometryTypeFromName( QString typeName ) const;
+    OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString& typeName ) const;
     QgsFields mAttributeFields;
     OGRDataSourceH ogrDataSource;
     void *extent_;
@@ -361,4 +361,8 @@ class QgsOgrUtils
     static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes );
     static OGRLayerH setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTextCodec* encoding, const QString& subsetString );
     static QByteArray quotedIdentifier( QByteArray field, const QString& ogrDriverName );
+
+    /** Quote a value for placement in a SQL string.
+     */
+    static QString quotedValue( const QVariant& value );
 };

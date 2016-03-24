@@ -49,7 +49,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
     //! Function to read the selected scale as text
     QString scaleString() { return mScaleComboBox->scaleString(); }
     //! Function to set the selected scale from text
-    bool setScaleString( QString scaleTxt ) { return mScaleComboBox->setScaleString( scaleTxt ); }
+    bool setScaleString( const QString& scaleTxt ) { return mScaleComboBox->setScaleString( scaleTxt ); }
     //! Function to read the selected scale as double
     double scale() { return mScaleComboBox->scale();}
     //! Function to set the selected scale from double
@@ -60,7 +60,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
     // be expected.
     static QString toString( double scale ) { return QgsScaleComboBox::toString( scale ); }
     //! Helper function to convert a scale string to double
-    static double toDouble( QString scaleString, bool *ok = 0 ) { return QgsScaleComboBox::toDouble( scaleString, ok ); }
+    static double toDouble( const QString& scaleString, bool *ok = 0 ) { return QgsScaleComboBox::toDouble( scaleString, ok ); }
 
   public slots:
     void updateScales( const QStringList &scales = QStringList() ) { return mScaleComboBox->updateScales( scales ); }

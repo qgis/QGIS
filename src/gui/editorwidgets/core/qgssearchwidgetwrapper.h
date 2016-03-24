@@ -69,7 +69,11 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 
   signals:
 
-    void expressionChanged( QString exp );
+    /**
+     * Emitted whenever the expression changes
+     * @param exp The new search expression
+     */
+    void expressionChanged( const QString& exp );
 
   protected slots:
 
@@ -77,6 +81,9 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     void setFeature( const QgsFeature& feature ) override;
 
   protected:
+    //! clears the expression to search for all features
+    void clearExpression();
+
     QString mExpression;
     int mFieldIdx;
 

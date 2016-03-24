@@ -49,6 +49,8 @@ class QgsMessageBar: QFrame
     //! convenience method for pushing a message with title to the bar
     void pushMessage( const QString &title, const QString &text, MessageLevel level = INFO, int duration = 0 );
 
+    QgsMessageBarItem *currentItem();
+
   signals:
     //! emitted when a message widget is added to the bar
     void widgetAdded( QgsMessageBarItem *item );

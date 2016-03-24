@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _POINTSET_H
-#define _POINTSET_H
+#ifndef POINTSET_H
+#define POINTSET_H
 
 #include "qgsgeometry.h"
 #include "rtree.hpp"
@@ -40,7 +40,6 @@ namespace pal
 {
 
   class Pal;
-  class Feature;
   class Projection;
   class LabelPosition;
 
@@ -57,7 +56,10 @@ namespace pal
     double length;
   } CHullBox;
 
-
+  /**
+   * \class pal::PointSet
+   * \note not available in Python bindings
+   */
   class CORE_EXPORT PointSet
   {
       friend class FeaturePart;
@@ -96,7 +98,7 @@ namespace pal
        */
       static void splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
                                  QLinkedList<PointSet *> &shapes_final,
-                                 double xrm, double yrm, const QString &uid );
+                                 double xrm, double yrm, const QgsFeatureId &uid );
 
       /** Returns the squared minimum distance between the point set geometry and the point (px,py)
        * Optionally, the nearest point is stored in (rx,ry).

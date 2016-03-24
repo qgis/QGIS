@@ -43,6 +43,7 @@
 #include "labelposition.h"
 #include "problem.h"
 #include "pointset.h"
+#include "internalexception.h"
 #include "util.h"
 #include <QTime>
 #include <cstdarg>
@@ -90,38 +91,17 @@ namespace pal
 
   }
 
-  QList<Layer*> Pal::getLayers()
-  {
-    // TODO make const ! or whatever else
-    return mLayers.values();
-  }
-
-  Layer *Pal::getLayer( const QString& layerName )
-  {
-    mMutex.lock();
-    if ( !mLayers.contains( layerName ) )
-    {
-      mMutex.unlock();
-      throw new PalException::UnknownLayer();
-    }
-
-    Layer* result = mLayers.value( layerName );
-    mMutex.unlock();
-    return result;
-  }
-
   void Pal::removeLayer( Layer *layer )
   {
     if ( !layer )
       return;
 
     mMutex.lock();
-    QString key = mLayers.key( layer, QString() );
-    if ( !key.isEmpty() )
+    if ( QgsAbstractLabelProvider* key = mLayers.key( layer, 0 ) )
     {
       mLayers.remove( key );
+      delete layer;
     }
-    delete layer;
     mMutex.unlock();
   }
 
@@ -138,21 +118,14 @@ namespace pal
     //finishGEOS();
   }
 
-  Layer* Pal::addLayer( const QString &layerName, Arrangement arrangement, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll )
+  Layer* Pal::addLayer( QgsAbstractLabelProvider* provider, const QString& layerName, Arrangement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll )
   {
     mMutex.lock();
 
-    //check if layer is already known
-    if ( mLayers.contains( layerName ) )
-    {
-      mMutex.unlock();
-      //There is already a layer with this name, so we just return the existing one.
-      //Sometimes the same layer is added twice (e.g. datetime split with otf-reprojection)
-      return mLayers.value( layerName );
-    }
+    Q_ASSERT( !mLayers.contains( provider ) );
 
-    Layer* layer = new Layer( layerName, arrangement, defaultPriority, obstacle, active, toLabel, this, displayAll );
-    mLayers.insert( layerName, layer );
+    Layer* layer = new Layer( provider, layerName, arrangement, defaultPriority, active, toLabel, this, displayAll );
+    mLayers.insert( provider, layer );
     mMutex.unlock();
 
     return layer;
@@ -178,31 +151,7 @@ namespace pal
   bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx )
   {
     double amin[2], amax[2];
-
     FeatCallBackCtx *context = ( FeatCallBackCtx* ) ctx;
-
-#ifdef _DEBUG_FULL_
-    std::cout << "extract feat : " << ft_ptr->getLayer()->getName() << "/" << ft_ptr->getUID() << std::endl;
-#endif
-
-    // all feature which are obstacle will be inserted into obstacles
-    if ( ft_ptr->getFeature()->isObstacle() )
-    {
-      ft_ptr->getBoundingBox( amin, amax );
-      context->obstacles->Insert( amin, amax, ft_ptr );
-    }
-
-    // first do some checks whether to extract candidates or not
-
-    // feature has to be labeled?
-    if ( !context->layer->labelLayer() )
-      return true;
-
-    // is the feature well defined?  TODO Check epsilon
-    if ( ft_ptr->getLabelWidth() < 0.0000001 || ft_ptr->getLabelHeight() < 0.0000001 )
-      return true;
-
-    // OK, everything's fine, let's process the feature part
 
     // Holes of the feature are obstacles
     for ( int i = 0; i < ft_ptr->getNumSelfObstacles(); i++ )
@@ -225,7 +174,7 @@ namespace pal
       ft->feature = ft_ptr;
       ft->shape = NULL;
       ft->lPos = lPos;
-      ft->priority = ft_ptr->getFeature()->calculatePriority();
+      ft->priority = ft_ptr->calculatePriority();
       context->fFeats->append( ft );
     }
     else
@@ -237,8 +186,28 @@ namespace pal
     return true;
   }
 
+  typedef struct _obstaclebackCtx
+  {
+    RTree<FeaturePart*, double, 2, double> *obstacles;
+    int obstacleCount;
+  } ObstacleCallBackCtx;
 
+  /*
+   * Callback function
+   *
+   * Extract obstacles from indexes
+   */
+  bool extractObstaclesCallback( FeaturePart *ft_ptr, void *ctx )
+  {
+    double amin[2], amax[2];
+    ObstacleCallBackCtx *context = ( ObstacleCallBackCtx* ) ctx;
 
+    // insert into obstacles
+    ft_ptr->getBoundingBox( amin, amax );
+    context->obstacles->Insert( amin, amax, ft_ptr );
+    context->obstacleCount++;
+    return true;
+  }
 
   typedef struct _filterContext
   {
@@ -266,7 +235,7 @@ namespace pal
     return true;
   }
 
-  Problem* Pal::extract( const QStringList& layerNames, double lambda_min, double phi_min, double lambda_max, double phi_max )
+  Problem* Pal::extract( double lambda_min, double phi_min, double lambda_max, double phi_max )
   {
     // to store obstacles
     RTree<FeaturePart*, double, 2, double> *obstacles = new RTree<FeaturePart*, double, 2, double>();
@@ -294,28 +263,29 @@ namespace pal
 
     QLinkedList<Feats*> *fFeats = new QLinkedList<Feats*>;
 
-    FeatCallBackCtx *context = new FeatCallBackCtx();
-    context->fFeats = fFeats;
-    context->obstacles = obstacles;
-    context->candidates = prob->candidates;
+    FeatCallBackCtx context;
+    context.fFeats = fFeats;
+    context.obstacles = obstacles;
+    context.candidates = prob->candidates;
+    context.bbox_min[0] = amin[0];
+    context.bbox_min[1] = amin[1];
+    context.bbox_max[0] = amax[0];
+    context.bbox_max[1] = amax[1];
 
-    context->bbox_min[0] = amin[0];
-    context->bbox_min[1] = amin[1];
-
-    context->bbox_max[0] = amax[0];
-    context->bbox_max[1] = amax[1];
+    ObstacleCallBackCtx obstacleContext;
+    obstacleContext.obstacles = obstacles;
+    obstacleContext.obstacleCount = 0;
 
     // first step : extract features from layers
 
     int previousFeatureCount = 0;
-    Layer *layer;
+    int previousObstacleCount = 0;
 
     QStringList layersWithFeaturesInBBox;
 
     mMutex.lock();
-    Q_FOREACH ( const QString& layerName, layerNames )
+    Q_FOREACH ( Layer* layer, mLayers.values() )
     {
-      layer = mLayers.value( layerName, 0 );
       if ( !layer )
       {
         // invalid layer name
@@ -332,19 +302,23 @@ namespace pal
 
       layer->chopFeaturesAtRepeatDistance();
 
-      // find features within bounding box and generate candidates list
-      context->layer = layer;
-      context->layer->mMutex.lock();
-      context->layer->rtree->Search( amin, amax, extractFeatCallback, ( void* ) context );
-      context->layer->mMutex.unlock();
+      layer->mMutex.lock();
 
-      if ( context->fFeats->size() - previousFeatureCount > 0 )
+      // find features within bounding box and generate candidates list
+      context.layer = layer;
+      layer->mFeatureIndex->Search( amin, amax, extractFeatCallback, ( void* ) &context );
+      // find obstacles within bounding box
+      layer->mObstacleIndex->Search( amin, amax, extractObstaclesCallback, ( void* ) &obstacleContext );
+
+      layer->mMutex.unlock();
+
+      if ( context.fFeats->size() - previousFeatureCount > 0 || obstacleContext.obstacleCount > previousObstacleCount )
       {
         layersWithFeaturesInBBox << layer->name();
       }
-      previousFeatureCount = context->fFeats->size();
+      previousFeatureCount = context.fFeats->size();
+      previousObstacleCount = obstacleContext.obstacleCount;
     }
-    delete context;
     mMutex.unlock();
 
     prob->nbLabelledLayers = layersWithFeaturesInBBox.size();
@@ -503,15 +477,10 @@ namespace pal
     return prob;
   }
 
-  std::list<LabelPosition*>* Pal::labeller( double bbox[4], PalStat **stats, bool displayAll )
-  {
-    return labeller( mLayers.keys(), bbox, stats, displayAll );
-  }
-
   /*
    * BIG MACHINE
    */
-  std::list<LabelPosition*>* Pal::labeller( const QStringList& layerNames, double bbox[4], PalStat **stats, bool displayAll )
+  std::list<LabelPosition*>* Pal::labeller( double bbox[4], PalStat **stats, bool displayAll )
   {
 #ifdef _DEBUG_
     std::cout << "LABELLER (selection)" << std::endl;
@@ -536,7 +505,7 @@ namespace pal
     t.start();
 
     // First, extract the problem
-    if (( prob = extract( layerNames, bbox[0], bbox[1], bbox[2], bbox[3] ) ) == NULL )
+    if (( prob = extract( bbox[0], bbox[1], bbox[2], bbox[3] ) ) == NULL )
     {
       // nothing to be done => return an empty result set
       if ( stats )
@@ -611,7 +580,7 @@ namespace pal
 
   Problem* Pal::extractProblem( double bbox[4] )
   {
-    return extract( mLayers.keys(), bbox[0], bbox[1], bbox[2], bbox[3] );
+    return extract( bbox[0], bbox[1], bbox[2], bbox[3] );
   }
 
   std::list<LabelPosition*>* Pal::solveProblem( Problem* prob, bool displayAll )
@@ -621,12 +590,19 @@ namespace pal
 
     prob->reduce();
 
-    if ( searchMethod == FALP )
-      prob->init_sol_falp();
-    else if ( searchMethod == CHAIN )
-      prob->chain_search();
-    else
-      prob->popmusic();
+    try
+    {
+      if ( searchMethod == FALP )
+        prob->init_sol_falp();
+      else if ( searchMethod == CHAIN )
+        prob->chain_search();
+      else
+        prob->popmusic();
+    }
+    catch ( InternalException::Empty )
+    {
+      return new std::list<LabelPosition*>();
+    }
 
     return prob->getSolution( displayAll );
   }

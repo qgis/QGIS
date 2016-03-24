@@ -52,12 +52,12 @@ void QgsDefaultSearchWidgetWrapper::setCaseString( int caseSensitiveCheckState )
 
 void QgsDefaultSearchWidgetWrapper::setExpression( QString exp )
 {
-  QVariant::Type fldType = layer()->fields()[mFieldIdx].type();
+  QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
   bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
 
   QSettings settings;
   QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
-  QString fieldName = layer()->fields()[mFieldIdx].name();
+  QString fieldName = layer()->fields().at( mFieldIdx ).name();
   QString str;
   if ( exp == nullValue )
   {
@@ -66,15 +66,14 @@ void QgsDefaultSearchWidgetWrapper::setExpression( QString exp )
   else
   {
     str = QString( "%1 %2 '%3'" )
-          .arg( QgsExpression::quotedColumnRef( fieldName ) )
-          .arg( numeric ? "=" : mCaseString )
-          .arg( numeric
-                ? exp.replace( "'", "''" )
+          .arg( QgsExpression::quotedColumnRef( fieldName ),
+                numeric ? "=" : mCaseString,
+                numeric ?
+                exp.replace( '\'', "''" )
                 :
-                "%" + exp.replace( "'", "''" ) + "%" ); // escape quotes
+                '%' + exp.replace( '\'', "''" ) + '%' ); // escape quotes
   }
   mExpression = str;
-  emit expressionChanged( mExpression );
 }
 
 QWidget* QgsDefaultSearchWidgetWrapper::createWidget( QWidget* parent )
@@ -96,12 +95,18 @@ void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )
   mContainer->layout()->addWidget( mLineEdit );
   mContainer->layout()->addWidget( mCheckbox );
   connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( setExpression( QString ) ) );
+  connect( mLineEdit, SIGNAL( returnPressed() ), this, SLOT( filterChanged() ) );
   connect( mCheckbox, SIGNAL( stateChanged( int ) ), this, SLOT( setCaseString( int ) ) );
   mCheckbox->setChecked( Qt::Unchecked );
   mCaseString = "ILIKE";
 }
 
-bool QgsDefaultSearchWidgetWrapper::valid()
+bool QgsDefaultSearchWidgetWrapper::valid() const
 {
   return true;
+}
+
+void QgsDefaultSearchWidgetWrapper::filterChanged()
+{
+  emit expressionChanged( mExpression );
 }

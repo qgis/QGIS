@@ -28,6 +28,7 @@
 #include "qgsvectorlayer.h"
 
 #include "qgsgrass.h"
+#include "qgsgrassfeatureiterator.h"
 #include "qgsgrassmodule.h"
 #include "qgsgrassmoduleinput.h"
 #include "qgsgrassmoduleparam.h"
@@ -321,7 +322,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
               if ( mControlType == ComboBox )
               {
                 mComboBox->addItem( desc );
-                if ( mAnswer.length() > 0 && desc == mAnswer )
+                if ( mAnswer.length() > 0 && val == mAnswer )
                 {
                   mComboBox->setCurrentIndex( mComboBox->count() - 1 );
                 }
@@ -887,7 +888,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
     mLayerComboBox->addItem( tr( "Select a layer" ), QVariant() );
   }
 
-  foreach ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
   {
     if ( !layer ) continue;
 
@@ -1070,8 +1071,27 @@ QgsGrassModuleGdalInput::~QgsGrassModuleGdalInput()
 }
 
 /***************** QgsGrassModuleField *********************/
+QgsGrassModuleField::QgsGrassModuleField( QgsGrassModule *module, QString key,
+    QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget * parent )
+    : QgsGrassModuleOption( module, key, qdesc, gdesc, gnode, direct, parent )
+{
+  // Validator is disabled to allow to enter also expressions
+#if 0
+  QRegExp rx( "^[a-zA-Z_][a-zA-Z0-9_]*$" );
+  Q_FOREACH ( QLineEdit *lineEdit, mLineEdits )
+  {
+    lineEdit->setValidator( new QRegExpValidator( rx, this ) );
+  }
+#endif
+}
 
-QgsGrassModuleField::QgsGrassModuleField(
+QgsGrassModuleField::~QgsGrassModuleField()
+{
+}
+
+/***************** QgsGrassModuleVectorField *********************/
+
+QgsGrassModuleVectorField::QgsGrassModuleVectorField(
   QgsGrassModule *module, QgsGrassModuleStandardOptions *options,
   QString key, QDomElement &qdesc,
   QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget * parent )
@@ -1114,7 +1134,7 @@ QgsGrassModuleField::QgsGrassModuleField(
   updateFields();
 }
 
-void QgsGrassModuleField::updateFields()
+void QgsGrassModuleVectorField::updateFields()
 {
   QgsDebugMsg( "entered" );
 
@@ -1130,10 +1150,10 @@ void QgsGrassModuleField::updateFields()
 
   for ( int i = 0; i < fields.size(); i++ )
   {
-    if ( mType.contains( fields[i].typeName() ) )
+    if ( mType.contains( fields.at( i ).typeName() ) )
     {
-      mFieldComboBox->addItem( fields[i].name() );
-      if ( fields[i].name() == current )
+      mFieldComboBox->addItem( fields.at( i ).name() );
+      if ( fields.at( i ).name() == current )
       {
         mFieldComboBox->setItemText( mFieldComboBox->currentIndex(), current );
       }
@@ -1141,7 +1161,7 @@ void QgsGrassModuleField::updateFields()
   }
 }
 
-QStringList QgsGrassModuleField::options()
+QStringList QgsGrassModuleVectorField::options()
 {
   QStringList list;
 
@@ -1154,7 +1174,7 @@ QStringList QgsGrassModuleField::options()
   return list;
 }
 
-QgsGrassModuleField::~QgsGrassModuleField()
+QgsGrassModuleVectorField::~QgsGrassModuleVectorField()
 {
 }
 
@@ -1177,7 +1197,6 @@ QgsGrassModuleSelection::QgsGrassModuleSelection(
 
   QDomNode promptNode = gnode.namedItem( "gisprompt" );
   QDomElement promptElem = promptNode.toElement();
-  QString element = promptElem.attribute( "element" );
 
   mLayerId = qdesc.attribute( "layerid" );
 
@@ -1188,73 +1207,204 @@ QgsGrassModuleSelection::QgsGrassModuleSelection(
   if ( item )
   {
     mLayerInput = dynamic_cast<QgsGrassModuleInput *>( item );
-    connect( mLayerInput, SIGNAL( valueChanged() ), this, SLOT( updateSelection() ) );
+    connect( mLayerInput, SIGNAL( valueChanged() ), SLOT( onLayerChanged() ) );
   }
 
   QHBoxLayout *l = new QHBoxLayout( this );
   mLineEdit = new QLineEdit( this );
   l->addWidget( mLineEdit );
 
+  mModeComboBox = new QComboBox( this );
+  mModeComboBox->setSizeAdjustPolicy( QComboBox::AdjustToContents );
+  mModeComboBox->addItem( tr( "Manual entry" ), Manual );
+  connect( mModeComboBox, SIGNAL( currentIndexChanged( int ) ), SLOT( onModeChanged() ) );
+  l->addWidget( mModeComboBox );
+
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ), SLOT( onLayerChanged() ) );
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersRemoved( QStringList ) ), SLOT( onLayerChanged() ) );
+
   // Fill in layer current fields
-  updateSelection();
+  onLayerChanged();
 }
 
-void QgsGrassModuleSelection::updateSelection()
+void QgsGrassModuleSelection::onLayerChanged()
 {
   QgsDebugMsg( "entered" );
 
-  mLineEdit->setText( "" );
-  //QgsMapCanvas *canvas = mModule->qgisIface()->mapCanvas();
-  if ( mLayerInput == 0 )
-    return;
-
-  // TODO update to new input
-#if 0
-  QgsMapLayer *layer = mLayerInput->currentLayer();
-  if ( !layer )
-    return;
-  QgsVectorLayer *vector = qobject_cast<QgsVectorLayer *>( layer );
-
-  QgsGrassProvider *provider = ( QgsGrassProvider * ) vector->dataProvider();
-  QgsAttributeList allAttributes = provider->attributeIndexes();
-  const QgsFeatureIds& selected = vector->selectedFeaturesIds();
-  int keyField = provider->keyField();
-
-  if ( keyField < 0 )
-    return;
-
-  QString cats;
-  QgsFeatureIterator fi = provider->getFeatures( QgsFeatureRequest() );
-  QgsFeature feature;
-
-  int i = 0;
-  while ( fi.nextFeature( feature ) )
+  if ( !mLayerInput )
   {
-    if ( !selected.contains( feature.id() ) )
+    return;
+  }
+
+  QStringList layerIds;
+  // add new layers matching selected input layer if not yet present
+  Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  {
+    QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+    if ( vectorLayer && vectorLayer->providerType() == "grass" )
+    {
+      QString uri = vectorLayer->dataProvider()->dataSourceUri();
+      QgsDebugMsg( "uri = " + uri );
+      QString layerCode = uri.split( "/" ).last();
+      if ( mLayerInput->currentLayerCodes().contains( layerCode ) )
+      {
+        // Qt::UserRole+1 may be also uri (AddLayer) but hardly matching layer id
+        if ( mModeComboBox->findData( vectorLayer->id(), Qt::UserRole + 1 ) == -1 )
+        {
+          mModeComboBox->addItem( vectorLayer->name() + " " + tr( "layer selection" ), Layer );
+          mModeComboBox->setItemData( mModeComboBox->count() - 1, vectorLayer->id(), Qt::UserRole + 1 );
+        }
+        layerIds << vectorLayer->id();
+      }
+    }
+  }
+  // remove layers no more present
+  for ( int i = mModeComboBox->count() - 1; i >= 0; i-- )
+  {
+    if ( mModeComboBox->itemData( i ).toInt() != Layer )
+    {
       continue;
-
-    QgsAttributes attr = feature.attributes();
-    if ( attr.size() > keyField )
+    }
+    QString id = mModeComboBox->itemData( i, Qt::UserRole + 1 ).toString();
+    if ( !layerIds.contains( id ) )
     {
-      if ( i > 0 )
-        cats.append( "," );
-      cats.append( attr[keyField].toString() );
-      i++;
+      mModeComboBox->removeItem( i );
     }
   }
-  if ( mVectorLayer != vector )
+
+  // clear old AddLayer
+  for ( int i = mModeComboBox->count() - 1; i >= 0; i-- )
   {
-    if ( mVectorLayer )
+    if ( mModeComboBox->itemData( i ).toInt() == AddLayer )
     {
-      disconnect( mVectorLayer, SIGNAL( selectionChanged() ), this, SLOT( updateSelection() ) );
+      mModeComboBox->removeItem( i );
     }
-
-    connect( vector, SIGNAL( selectionChanged() ), this, SLOT( updateSelection() ) );
-    mVectorLayer = vector;
   }
 
-  mLineEdit->setText( cats );
-#endif
+  if ( layerIds.size() == 0 ) // non of selected layer is in canvas
+  {
+    Q_FOREACH ( QString layerCode, mLayerInput->currentLayerCodes() )
+    {
+      if ( mLayerInput->currentLayer() )
+      {
+        mModeComboBox->addItem( tr( "Add to canvas layer" ) + " " +  mLayerInput->currentMap() + " " + layerCode, AddLayer );
+        QgsGrassObject grassObject = mLayerInput->currentLayer()->grassObject();
+        QString uri = grassObject.mapsetPath() + "/" + grassObject.name() + "/" + layerCode;
+        QgsDebugMsg( "uri = " + uri );
+        // Qt::UserRole+1 may be also layer id (Layer) but hardly matching layer uri
+        if ( mModeComboBox->findData( uri, Qt::UserRole + 1 ) == -1 )
+        {
+          mModeComboBox->setItemData( mModeComboBox->count() - 1, uri, Qt::UserRole + 1 );
+          QString name = grassObject.name() + " " + layerCode;
+          mModeComboBox->setItemData( mModeComboBox->count() - 1, name, Qt::UserRole + 2 );
+        }
+      }
+    }
+  }
+}
+
+QString QgsGrassModuleSelection::currentSelectionLayerId()
+{
+  QString id;
+  int index = mModeComboBox->currentIndex();
+  if ( mModeComboBox->itemData( index ).toInt() == Layer )
+  {
+    id = mModeComboBox->itemData( index, Qt::UserRole + 1 ).toString();
+  }
+  return id;
+}
+
+QgsVectorLayer * QgsGrassModuleSelection::currentSelectionLayer()
+{
+  QString id = currentSelectionLayerId();
+  if ( id.isEmpty() )
+  {
+    return 0;
+  }
+  QgsMapLayer *layer = QgsMapLayerRegistry::instance()->mapLayer( id );
+  return qobject_cast<QgsVectorLayer *>( layer );
+}
+
+void QgsGrassModuleSelection::onModeChanged()
+{
+  QgsDebugMsg( "entered" );
+  int index = mModeComboBox->currentIndex();
+  if ( mModeComboBox->itemData( index ).toInt() == AddLayer )
+  {
+    QString uri = mModeComboBox->itemData( index, Qt::UserRole + 1 ).toString();
+    QString name = mModeComboBox->itemData( index, Qt::UserRole + 2 ).toString();
+    QgsDebugMsg( "uri = " + uri );
+
+    QgsVectorLayer *layer = new QgsVectorLayer( uri, name, "grass" );
+    QgsMapLayerRegistry::instance()->addMapLayer( layer );
+    onLayerChanged(); // update with added layer
+  }
+  else if ( mModeComboBox->itemData( index ).toInt() == Layer )
+  {
+    QString id = mModeComboBox->itemData( index, Qt::UserRole + 1 ).toString();
+    QgsMapLayer *layer = QgsMapLayerRegistry::instance()->mapLayer( id );
+    QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+    if ( vectorLayer )
+    {
+      onLayerSelectionChanged();
+      connect( vectorLayer, SIGNAL( selectionChanged( const QgsFeatureIds, const QgsFeatureIds, const bool ) ),
+               SLOT( onLayerSelectionChanged() ) );
+    }
+  }
+}
+
+void QgsGrassModuleSelection::onLayerSelectionChanged()
+{
+  QgsDebugMsg( "entered" );
+  mLineEdit->clear();
+
+  QgsVectorLayer *vectorLayer = currentSelectionLayer();
+  if ( !vectorLayer )
+  {
+    return;
+  }
+
+  QList<int> cats;
+  Q_FOREACH ( QgsFeatureId fid, vectorLayer->selectedFeaturesIds() )
+  {
+    cats << QgsGrassFeatureIterator::catFromFid( fid );
+  }
+  qSort( cats );
+  QString list;
+  // make ranges of cats
+  int last = -1;
+  int range = false;
+  Q_FOREACH ( int cat, cats )
+  {
+    if ( cat == 0 )
+    {
+      continue;
+    }
+    if ( last == cat - 1 ) // begin or continue range
+    {
+      range = true;
+    }
+    else if ( range ) // close range and next  cat
+    {
+      list += QString( "-%1,%2" ).arg( last ).arg( cat );
+      range = false;
+    }
+    else // next cat
+    {
+      if ( !list.isEmpty() )
+      {
+        list += ",";
+      }
+      list += QString::number( cat );
+    }
+    last = cat;
+  }
+  if ( range )
+  {
+    list += QString( "-%1" ).arg( last );
+  }
+
+  mLineEdit->setText( list );
 }
 
 QStringList QgsGrassModuleSelection::options()

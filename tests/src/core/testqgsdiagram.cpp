@@ -60,7 +60,7 @@ class TestQgsDiagram : public QObject
     QString mTestDataDir;
     QString mReport;
 
-    bool imageCheck( QString theTestType );
+    bool imageCheck( const QString& theTestType );
 
   private slots:
     // will be called before the first testfunction is executed.
@@ -79,7 +79,7 @@ class TestQgsDiagram : public QObject
       //create a non spatial layer that will be used in all tests...
       //
       QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-      mTestDataDir = myDataDir + "/";
+      mTestDataDir = myDataDir + '/';
 
       //
       //create a point layer that will be used in all tests...
@@ -210,7 +210,7 @@ class TestQgsDiagram : public QObject
 
 };
 
-bool TestQgsDiagram::imageCheck( QString theTestType )
+bool TestQgsDiagram::imageCheck( const QString& theTestType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image

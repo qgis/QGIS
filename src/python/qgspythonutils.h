@@ -85,26 +85,26 @@ class PYTHON_EXPORT QgsPythonUtils
     virtual QStringList pluginList() = 0;
 
     //! return whether the plugin is loaded (active)
-    virtual bool isPluginLoaded( QString packageName ) = 0;
+    virtual bool isPluginLoaded( const QString& packageName ) = 0;
 
     //! return a list of active plugins
     virtual QStringList listActivePlugins() = 0;
 
     //! load python plugin (import)
-    virtual bool loadPlugin( QString packageName ) = 0;
+    virtual bool loadPlugin( const QString& packageName ) = 0;
 
     //! start plugin: add to active plugins and call initGui()
-    virtual bool startPlugin( QString packageName ) = 0;
+    virtual bool startPlugin( const QString& packageName ) = 0;
 
     //! helper function to get some information about plugin
     //! @param function one of these strings: name, tpye, version, description
-    virtual QString getPluginMetadata( QString pluginName, QString function ) = 0;
+    virtual QString getPluginMetadata( const QString& pluginName, const QString& function ) = 0;
 
     //! confirm that the plugin can be uninstalled
-    virtual bool canUninstallPlugin( QString packageName ) = 0;
+    virtual bool canUninstallPlugin( const QString& packageName ) = 0;
 
     //! unload plugin
-    virtual bool unloadPlugin( QString packageName ) = 0;
+    virtual bool unloadPlugin( const QString& packageName ) = 0;
 };
 
 #endif

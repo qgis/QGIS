@@ -141,10 +141,10 @@ bool QgsOSMXmlImport::createDatabase()
   if ( ret == SQLITE_OK && rows == 1 && columns == 1 )
   {
     QString version = QString::fromUtf8( results[1] );
-    QStringList parts = version.split( " ", QString::SkipEmptyParts );
+    QStringList parts = version.split( ' ', QString::SkipEmptyParts );
     if ( parts.size() >= 1 )
     {
-      QStringList verparts = parts[0].split( ".", QString::SkipEmptyParts );
+      QStringList verparts = parts[0].split( '.', QString::SkipEmptyParts );
       above41 = verparts.size() >= 2 && ( verparts[0].toInt() > 4 || ( verparts[0].toInt() == 4 && verparts[1].toInt() >= 1 ) );
     }
   }
@@ -169,7 +169,7 @@ bool QgsOSMXmlImport::createDatabase()
     if ( sqlite3_exec( mDatabase, sqlInitStatements[i], 0, 0, &errMsg ) != SQLITE_OK )
     {
       mError = QString( "Error executing SQL command:\n%1\nSQL:\n%2" )
-               .arg( QString::fromUtf8( errMsg ) ).arg( QString::fromUtf8( sqlInitStatements[i] ) );
+               .arg( QString::fromUtf8( errMsg ), QString::fromUtf8( sqlInitStatements[i] ) );
       sqlite3_free( errMsg );
       closeDatabase();
       return false;
@@ -201,7 +201,7 @@ bool QgsOSMXmlImport::createDatabase()
     {
       const char* errMsg = sqlite3_errmsg( mDatabase ); // does not require free
       mError = QString( "Error preparing SQL command:\n%1\nSQL:\n%2" )
-               .arg( QString::fromUtf8( errMsg ) ).arg( QString::fromUtf8( sqlInsertStatements[i] ) );
+               .arg( QString::fromUtf8( errMsg ), QString::fromUtf8( sqlInsertStatements[i] ) );
       closeDatabase();
       return false;
     }

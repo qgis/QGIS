@@ -24,7 +24,7 @@
 
 const int QgsMapLayerModel::LayerIdRole = Qt::UserRole + 1;
 
-QgsMapLayerModel::QgsMapLayerModel( QList<QgsMapLayer *> layers, QObject *parent )
+QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *>& layers, QObject *parent )
     : QAbstractItemModel( parent )
     , mLayersChecked( QMap<QString, Qt::CheckState>() )
     , mItemCheckable( false )
@@ -76,7 +76,7 @@ QModelIndex QgsMapLayerModel::indexFromLayer( QgsMapLayer *layer ) const
   return index( r, 0 );
 }
 
-void QgsMapLayerModel::removeLayers( const QStringList layerIds )
+void QgsMapLayerModel::removeLayers( const QStringList& layerIds )
 {
   Q_FOREACH ( const QString& layerId, layerIds )
   {
@@ -93,7 +93,7 @@ void QgsMapLayerModel::removeLayers( const QStringList layerIds )
   }
 }
 
-void QgsMapLayerModel::addLayers( QList<QgsMapLayer *> layers )
+void QgsMapLayerModel::addLayers( const QList<QgsMapLayer *>& layers )
 {
   beginInsertRows( QModelIndex(), mLayers.count(), mLayers.count() + layers.count() - 1 );
   Q_FOREACH ( QgsMapLayer* layer, layers )

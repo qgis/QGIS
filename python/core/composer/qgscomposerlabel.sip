@@ -31,12 +31,12 @@ class QgsComposerLabel : QgsComposerItem
     /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions
      * @deprecated use atlas features and setSubstitutions() instead
      */
-    void setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, QMap<QString, QVariant> substitutions = QMap<QString, QVariant>() ) /Deprecated/;
+    void setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, const QMap<QString, QVariant>& substitutions = QMap<QString, QVariant>() ) /Deprecated/;
 
     /** Sets the list of local variable substitutions for evaluating expressions in label text.
      * @note added in QGIS 2.12
      */
-    void setSubstitutions( QMap<QString, QVariant> substitutions = QMap<QString, QVariant>() );
+    void setSubstitutions( const QMap<QString, QVariant>& substitutions = QMap<QString, QVariant>() );
 
     QFont font() const;
     void setFont( const QFont& f );
@@ -124,7 +124,7 @@ class QgsComposerLabel : QgsComposerItem
        */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
-    //Overriden to contain part of label's text
+    //Overridden to contain part of label's text
     virtual QString displayName() const;
 
     /** In case of negative margins, the bounding rect may be larger than the

@@ -16,8 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _QGSVECTORLAYERIMPORT_H_
-#define _QGSVECTORLAYERIMPORT_H_
+#ifndef QGSVECTORLAYERIMPORT_H
+#define QGSVECTORLAYERIMPORT_H
 
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"

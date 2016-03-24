@@ -185,6 +185,9 @@ void QgsStyleV2ManagerDialog::on_tabItemType_currentChanged( int )
   // when in Color Ramp tab, add menu to add item button
   if ( currentItemType() == 3 )
   {
+    btnShare->menu()->actions().at( 0 )->setVisible( false );
+    btnShare->menu()->actions().at( 1 )->setVisible( false );
+
     QStringList rampTypes;
     rampTypes << tr( "Gradient" ) << tr( "Random" ) << tr( "ColorBrewer" );
     rampTypes << tr( "cpt-city" ); // todo, only for rasters?
@@ -199,6 +202,9 @@ void QgsStyleV2ManagerDialog::on_tabItemType_currentChanged( int )
   }
   else
   {
+    btnShare->menu()->actions().at( 0 )->setVisible( true );
+    btnShare->menu()->actions().at( 1 )->setVisible( true );
+
     if ( btnAddItem->menu() )
     {
       disconnect( btnAddItem->menu(), SIGNAL( triggered( QAction* ) ),
@@ -232,7 +238,7 @@ void QgsStyleV2ManagerDialog::populateList()
   groupChanged( groupTree->selectionModel()->currentIndex() );
 }
 
-void QgsStyleV2ManagerDialog::populateSymbols( QStringList symbolNames, bool check )
+void QgsStyleV2ManagerDialog::populateSymbols( const QStringList& symbolNames, bool check )
 {
   QStandardItemModel* model = qobject_cast<QStandardItemModel*>( listItems->model() );
   model->clear();
@@ -259,7 +265,7 @@ void QgsStyleV2ManagerDialog::populateSymbols( QStringList symbolNames, bool che
 }
 
 
-void QgsStyleV2ManagerDialog::populateColorRamps( QStringList colorRamps, bool check )
+void QgsStyleV2ManagerDialog::populateColorRamps( const QStringList& colorRamps, bool check )
 {
   QStandardItemModel* model = qobject_cast<QStandardItemModel*>( listItems->model() );
   model->clear();
@@ -754,7 +760,7 @@ void QgsStyleV2ManagerDialog::exportItemsSVG()
 }
 
 
-void QgsStyleV2ManagerDialog::exportSelectedItemsImages( QString dir, QString format, QSize size )
+void QgsStyleV2ManagerDialog::exportSelectedItemsImages( const QString& dir, const QString& format, const QSize& size )
 {
   if ( dir.isEmpty() )
     return;
@@ -763,7 +769,7 @@ void QgsStyleV2ManagerDialog::exportSelectedItemsImages( QString dir, QString fo
   Q_FOREACH ( const QModelIndex& index, indexes )
   {
     QString name = index.data().toString();
-    QString path = dir + "/" + name + "." + format;
+    QString path = dir + '/' + name + '.' + format;
     QgsSymbolV2 *sym = mStyle->symbol( name );
     sym->exportImage( path, format, size );
   }
@@ -1148,7 +1154,7 @@ void QgsStyleV2ManagerDialog::regrouped( QStandardItem *item )
   }
 }
 
-void QgsStyleV2ManagerDialog::setSymbolsChecked( QStringList symbols )
+void QgsStyleV2ManagerDialog::setSymbolsChecked( const QStringList& symbols )
 {
   QStandardItemModel *model = qobject_cast<QStandardItemModel*>( listItems->model() );
   Q_FOREACH ( const QString& symbol, symbols )
@@ -1159,7 +1165,7 @@ void QgsStyleV2ManagerDialog::setSymbolsChecked( QStringList symbols )
   }
 }
 
-void QgsStyleV2ManagerDialog::filterSymbols( QString qword )
+void QgsStyleV2ManagerDialog::filterSymbols( const QString& qword )
 {
   QStringList items;
   if ( currentItemType() == 3 )
@@ -1181,7 +1187,7 @@ void QgsStyleV2ManagerDialog::tagsChanged()
   QStringList removetags;
 
   QStringList oldtags = mTagList;
-  QStringList newtags = tagsLineEdit->text().split( ",", QString::SkipEmptyParts );
+  QStringList newtags = tagsLineEdit->text().split( ',', QString::SkipEmptyParts );
 
   QgsStyleV2::StyleEntity type;
   if ( currentItemType() < 3 )

@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _LABELPOSITION_H
-#define _LABELPOSITION_H
+#ifndef LABELPOSITION_H
+#define LABELPOSITION_H
 
 #include "pointset.h"
 #include "rtree.hpp"
@@ -44,6 +44,8 @@ namespace pal
 
   /**
    * \brief LabelPosition is a candidate feature label position
+   * \class pal::LabelPosition
+   * \note not available in Python bindings
    */
   class CORE_EXPORT LabelPosition : public PointSet
   {
@@ -138,6 +140,10 @@ namespace pal
        */
       int polygonIntersectionCost( PointSet* polygon ) const;
 
+      /** Returns true if if any intersection between polygon and position exists.
+      */
+      bool intersectsWithPolygon( PointSet* polygon ) const;
+
       /** Shift the label by specified offset */
       void offsetPosition( double xOffset, double yOffset );
 
@@ -163,9 +169,6 @@ namespace pal
         probFeat = probFid; id = lpId;
         if ( nextPart ) nextPart->setProblemIds( probFid, lpId );
       }
-
-      /** Return pointer to layer's name. used for stats */
-      QString getLayerName() const;
 
       /** Returns the candidate label position's geographical cost.
        * @see setCost
@@ -237,7 +240,7 @@ namespace pal
       } PruneCtx;
 
       /** Check whether the candidate in ctx overlap with obstacle feat */
-      static bool pruneCallback( LabelPosition *lp, void *ctx );
+      static bool pruneCallback( LabelPosition *candidatePosition, void *ctx );
 
       // for sorting
       static bool costShrink( void *l, void *r );

@@ -31,9 +31,9 @@ class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolEdit
     QgsMapToolRotatePointSymbols( QgsMapCanvas* canvas );
     ~QgsMapToolRotatePointSymbols();
 
-    void canvasPressEvent( QMouseEvent * e ) override;
-    void canvasMoveEvent( QMouseEvent * e ) override;
-    void canvasReleaseEvent( QMouseEvent * e ) override;
+    void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
     bool isEditTool() override {return true;}
 

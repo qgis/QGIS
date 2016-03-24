@@ -18,6 +18,10 @@
 
 #include "qgseditorwidgetfactory.h"
 
+/** \class QgsValueMapWidgetFactory
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsValueMapWidgetFactory : public QgsEditorWidgetFactory
 {
   public:

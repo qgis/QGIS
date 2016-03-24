@@ -23,13 +23,14 @@
 
 class QgsSymbolLayerV2;
 class QgsVectorLayer;
+class QgsMapCanvas;
 
 class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
 {
     Q_OBJECT
 
   public:
-    QgsSymbolLayerV2Widget( QWidget* parent, const QgsVectorLayer* vl = 0 ) : QWidget( parent ), mVectorLayer( vl ), mPresetExpressionContext( 0 ) {}
+    QgsSymbolLayerV2Widget( QWidget* parent, const QgsVectorLayer* vl = 0 ) : QWidget( parent ), mVectorLayer( vl ), mPresetExpressionContext( 0 ), mMapCanvas( 0 ) {}
     virtual ~QgsSymbolLayerV2Widget() {}
 
     virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) = 0;
@@ -42,6 +43,20 @@ class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
      * @see setExpressionContext()
      */
     QgsExpressionContext* expressionContext() const { return mPresetExpressionContext; }
+
+    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @see mapCanvas()
+     * @note added in QGIS 2.12
+     */
+    virtual void setMapCanvas( QgsMapCanvas* canvas );
+
+    /** Returns the map canvas associated with the widget.
+     * @see setMapCanvas
+     * @note added in QGIS 2.12
+     */
+    const QgsMapCanvas* mapCanvas() const;
 
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
@@ -65,6 +80,8 @@ class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
 
     //! Optional preset expression context
     QgsExpressionContext* mPresetExpressionContext;
+
+    QgsMapCanvas* mMapCanvas;
 
     void registerDataDefinedButton( QgsDataDefinedButton * button, const QString & propertyName, QgsDataDefinedButton::DataType type, const QString & description );
 
@@ -95,6 +112,8 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
   public:
     QgsSimpleLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
 
+    ~QgsSimpleLineSymbolLayerV2Widget();
+
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsSimpleLineSymbolLayerV2Widget( vl ); }
 
     // from base class
@@ -118,6 +137,14 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
 
     //creates a new icon for the 'change pattern' button
     void updatePatternIcon();
+
+  private slots:
+
+    void updateAssistantSymbol();
+
+  private:
+
+    QgsLineSymbolV2* mAssistantPreviewSymbol;
 
 };
 
@@ -576,11 +603,12 @@ class GUI_EXPORT QgsCentroidFillSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
     virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) override;
     virtual QgsSymbolLayerV2* symbolLayer() override;
 
-  public slots:
-    void on_mDrawInsideCheckBox_stateChanged( int state );
-
   protected:
     QgsCentroidFillSymbolLayerV2* mLayer;
+
+  private slots:
+    void on_mDrawInsideCheckBox_stateChanged( int state );
+
 };
 
 

@@ -118,6 +118,15 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      */
     void setEditCommandMessage( const QString& message ) { mAttributeForm->setEditCommandMessage( message ); }
 
+    /**
+     * Intercept window activate/deactive events to show/hide the highlighted feature.
+     *
+     * @param e The event
+     *
+     * @return The same as the parent QDialog
+     */
+    virtual bool event( QEvent *e ) override;
+
   public slots:
     void accept() override;
 
@@ -126,7 +135,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     void show( bool autoDelete = true );
 
   private:
-    void init( QgsVectorLayer* layer, QgsFeature* feature, const QgsAttributeEditorContext& context, QWidget* parent );
+    void init( QgsVectorLayer* layer, QgsFeature* feature, const QgsAttributeEditorContext& context );
 
     QString mSettingsPath;
     // Used to sync multiple widgets for the same field

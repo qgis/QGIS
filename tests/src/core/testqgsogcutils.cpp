@@ -289,18 +289,18 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
     "</ogc:And>"
     "</ogc:Filter>" );
 
-  QTest::newRow( "is null" ) << QString( "X IS NULL" ) << QString(
+  QTest::newRow( "is null" ) << QString( "A IS NULL" ) << QString(
     "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
     "<ogc:PropertyIsNull>"
-    "<ogc:PropertyName>X</ogc:PropertyName>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
     "</ogc:PropertyIsNull>"
     "</ogc:Filter>" );
 
-  QTest::newRow( "is not null" ) << QString( "X IS NOT NULL" ) << QString(
+  QTest::newRow( "is not null" ) << QString( "A IS NOT NULL" ) << QString(
     "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
     "<ogc:Not>"
     "<ogc:PropertyIsNull>"
-    "<ogc:PropertyName>X</ogc:PropertyName>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
     "</ogc:PropertyIsNull>"
     "</ogc:Not>"
     "</ogc:Filter>" );

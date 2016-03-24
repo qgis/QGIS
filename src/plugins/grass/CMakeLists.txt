@@ -20,10 +20,10 @@ ENDIF (WIN32)
 # Files
 
 SET (GRASS_PLUGIN_SRCS
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassaddfeature.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasseditrenderer.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassplugin.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassselect.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassedit.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassedittools.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasstools.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmapcalc.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmodule.cpp
@@ -31,7 +31,6 @@ SET (GRASS_PLUGIN_SRCS
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmoduleoptions.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmoduleparam.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassnewmapset.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassattributes.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassregion.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassutils.cpp
 )
@@ -40,19 +39,18 @@ SET (GRASS_PLUGIN_SRCS
 SET (GRASS_PLUGIN_UIS
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasstoolsbase.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassselectbase.ui
-   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasseditbase.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmapcalcbase.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmodulebase.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassnewmapsetbase.ui
-   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassattributesbase.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassregionbase.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/../../ui/qgsprojectionselectorbase.ui
 )
 
 SET (GRASS_PLUGIN_MOC_HDRS
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassaddfeature.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasseditrenderer.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassplugin.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassselect.h
-   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassedit.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasstools.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmapcalc.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmodule.h
@@ -60,10 +58,8 @@ SET (GRASS_PLUGIN_MOC_HDRS
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmoduleoptions.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmoduleparam.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassnewmapset.h
-   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassattributes.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassregion.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassutils.h
-   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassedittools.h
 )
 
 IF(NOT WIN32)
@@ -155,10 +151,16 @@ SET (GRASS_BROWSER_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/qgis.g.browser.cpp)
 INCLUDE_DIRECTORIES(
   ..
   ${CMAKE_CURRENT_BINARY_DIR}
+  ../../app
   ../../core
   ../../core/geometry
+  ../../core/layertree
   ../../core/raster
+  ../../core/symbology-ng
   ../../gui
+  ../../gui/editorwidgets
+  ../../gui/symbology-ng
+  ../../gui/layertree
   ../../providers/grass
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
   ${GDAL_INCLUDE_DIR}
@@ -190,6 +192,7 @@ MACRO(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
 
     TARGET_LINK_LIBRARIES(grassplugin${GRASS_BUILD_VERSION}
       qgisgrass${GRASS_BUILD_VERSION}
+      qgis_app
       qgis_gui
       ${OPENPTY_LIBRARY}
     )
@@ -237,7 +240,6 @@ INSTALL (FILES themes/default/grass_arrow.svg themes/default/grass_plus.svg them
 IF(NOT WIN32)
   INSTALL(DIRECTORY qtermwidget/kb-layouts/ DESTINATION "${KB_LAYOUT_DIR}" FILES_MATCHING PATTERN "*.keytab" )
   INSTALL(DIRECTORY qtermwidget/kb-layouts/ DESTINATION "${KB_LAYOUT_DIR}" )
-  message(STATUS "Keyboard layouts will be installed in: ${KB_LAYOUT_DIR}")
   INSTALL(DIRECTORY qtermwidget/color-schemes/ DESTINATION "${COLORSCHEMES_DIR}" FILES_MATCHING PATTERN "*.*schem*")
 ENDIF(NOT WIN32)
 

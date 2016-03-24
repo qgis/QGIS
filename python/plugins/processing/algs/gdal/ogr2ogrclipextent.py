@@ -60,7 +60,6 @@ class Ogr2OgrClipExtent(OgrAlgorithm):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         clipExtent = self.getParameterValue(self.CLIP_EXTENT)
-        ogrclipExtent = self.ogrConnectionString(clipExtent)
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
@@ -69,7 +68,7 @@ class Ogr2OgrClipExtent(OgrAlgorithm):
         options = unicode(self.getParameterValue(self.OPTIONS))
 
         arguments = []
-        regionCoords = ogrclipExtent.split(',')
+        regionCoords = clipExtent.split(',')
         arguments.append('-spat')
         arguments.append(regionCoords[0])
         arguments.append(regionCoords[2])

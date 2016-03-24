@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    SymetricalDifference.py
+    SymmetricalDifference.py
     ---------------------
     Date                 : September 2014
     Copyright            : (C) 2014 by Alexander Bruy
@@ -47,7 +47,7 @@ class SymmetricalDifference(GeoAlgorithm):
         self.addParameter(ParameterVector(self.OVERLAY,
                                           self.tr('Difference layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addOutput(OutputVector(self.OUTPUT,
-                                    self.tr('Symetrical difference')))
+                                    self.tr('Symmetrical difference')))
 
     def processAlgorithm(self, progress):
         layerA = dataobjects.getObjectFromUri(
@@ -140,7 +140,7 @@ class SymmetricalDifference(GeoAlgorithm):
 
         if not GEOS_EXCEPT:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                   self.tr('Geometry exception while computing symetrical difference'))
+                                   self.tr('Geometry exception while computing symmetrical difference'))
         if not FEATURE_EXCEPT:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                   self.tr('Feature exception while computing symetrical difference'))
+                                   self.tr('Feature exception while computing symmetrical difference'))

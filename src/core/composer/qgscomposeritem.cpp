@@ -44,12 +44,6 @@
 
 #include <cmath>
 
-#define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
-
-#ifndef M_DEG2RAD
-#define M_DEG2RAD 0.0174532925
-#endif
-
 QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue )
     : QgsComposerObject( composition )
     , QGraphicsRectItem( 0 )
@@ -1203,7 +1197,7 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
   return true;
 }
 
-QRectF QgsComposerItem::largestRotatedRectWithinBounds( QRectF originalRect, QRectF boundsRect, double rotation ) const
+QRectF QgsComposerItem::largestRotatedRectWithinBounds( const QRectF& originalRect, const QRectF& boundsRect, double rotation ) const
 {
   return QgsComposerUtils::largestRotatedRectWithinBounds( originalRect, boundsRect, rotation );
 }

@@ -133,18 +133,18 @@ class QgsGrassRegionEdit : public QgsMapTool
     Q_OBJECT
 
   public:
-    QgsGrassRegionEdit( QgsMapCanvas* );
+    explicit QgsGrassRegionEdit( QgsMapCanvas* );
 
     ~QgsGrassRegionEdit();
 
     //! mouse pressed in map canvas
-    void canvasPressEvent( QMouseEvent * ) override;
+    void canvasPressEvent( QgsMapMouseEvent * ) override;
 
     //! mouse movement in map canvas
-    void canvasMoveEvent( QMouseEvent * ) override;
+    void canvasMoveEvent( QgsMapMouseEvent * ) override;
 
     //! mouse released
-    void canvasReleaseEvent( QMouseEvent * ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent * ) override;
 
 
     //! called when map tool is about to get inactive

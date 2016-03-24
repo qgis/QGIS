@@ -99,6 +99,32 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="mReloadButton">
+       <property name="toolTip">
+        <string>Reload the table</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionRefresh.png</normaloff>:/images/themes/default/mActionRefresh.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="Line" name="line">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -387,7 +413,7 @@
      <item>
       <widget class="QToolButton" name="mRemoveAttribute">
        <property name="toolTip">
-        <string>Delete column (Ctrl+L)</string>
+        <string>Delete field (Ctrl+L)</string>
        </property>
        <property name="text">
         <string/>
@@ -413,7 +439,7 @@
      <item>
       <widget class="QToolButton" name="mAddAttribute">
        <property name="toolTip">
-        <string>New column (Ctrl+W)</string>
+        <string>New field (Ctrl+W)</string>
        </property>
        <property name="text">
         <string/>
@@ -746,7 +772,7 @@
   </action>
   <action name="mActionFilterColumnsMenu">
    <property name="text">
-    <string>Column Filter</string>
+    <string>Field Filter</string>
    </property>
   </action>
   <action name="mActionEditedFilter">
@@ -827,6 +853,22 @@
     <hint type="destinationlabel">
      <x>393</x>
      <y>266</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mToggleEditingButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mReloadButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>14</x>
+     <y>15</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>74</x>
+     <y>15</y>
     </hint>
    </hints>
   </connection>

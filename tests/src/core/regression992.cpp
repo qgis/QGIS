@@ -77,7 +77,7 @@ void Regression992::initTestCase()
 
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
-  mTestDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CMakeLists.txt
+  mTestDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CMakeLists.txt
   QString myFileName = mTestDataDir + "rgbwcmyk01_YeGeo.jp2";
   QFileInfo myRasterFileInfo( myFileName );
   mpRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),

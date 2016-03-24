@@ -12,8 +12,8 @@
 #include "mersenne-twister.h"
 #include <limits>
 
-QgsTransectSample::QgsTransectSample( QgsVectorLayer* strataLayer, QString strataIdAttribute, QString minDistanceAttribute, QString nPointsAttribute, DistanceUnits minDistUnits,
-                                      QgsVectorLayer* baselineLayer, bool shareBaseline, QString baselineStrataId, const QString& outputPointLayer,
+QgsTransectSample::QgsTransectSample( QgsVectorLayer* strataLayer, const QString& strataIdAttribute, const QString& minDistanceAttribute, const QString& nPointsAttribute, DistanceUnits minDistUnits,
+                                      QgsVectorLayer* baselineLayer, bool shareBaseline, const QString& baselineStrataId, const QString& outputPointLayer,
                                       const QString& outputLineLayer, const QString& usedBaselineLayer, double minTransectLength,
                                       double baselineBufferDistance, double baselineSimplificationTolerance ): mStrataLayer( strataLayer ),
     mStrataIdAttribute( strataIdAttribute ), mMinDistanceAttribute( minDistanceAttribute ), mNPointsAttribute( nPointsAttribute ), mBaselineLayer( baselineLayer ), mShareBaseline( shareBaseline ),
@@ -210,7 +210,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       samplePointFeature.setAttribute( "id", nTotalTransects + 1 );
       samplePointFeature.setAttribute( "station_id", nCreatedTransects + 1 );
       samplePointFeature.setAttribute( "stratum_id", strataId );
-      samplePointFeature.setAttribute( "station_code", strataId.toString() + "_" + QString::number( nCreatedTransects + 1 ) );
+      samplePointFeature.setAttribute( "station_code", strataId.toString() + '_' + QString::number( nCreatedTransects + 1 ) );
       samplePointFeature.setAttribute( "start_lat", latLongSamplePoint.y() );
       samplePointFeature.setAttribute( "start_long", latLongSamplePoint.x() );
 
@@ -259,7 +259,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       }
 
       //cancel if length of lineClipStratum is too small
-      double transectLength = distanceArea.measure( lineClipStratum );
+      double transectLength = distanceArea.measureLength( lineClipStratum );
       if ( transectLength < mMinTransectLength )
       {
         delete lineFarAwayGeom; delete lineClipStratum;
@@ -279,7 +279,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       sampleLineFeature.setAttribute( "id", nTotalTransects + 1 );
       sampleLineFeature.setAttribute( "station_id", nCreatedTransects + 1 );
       sampleLineFeature.setAttribute( "stratum_id", strataId );
-      sampleLineFeature.setAttribute( "station_code", strataId.toString() + "_" + QString::number( nCreatedTransects + 1 ) );
+      sampleLineFeature.setAttribute( "station_code", strataId.toString() + '_' + QString::number( nCreatedTransects + 1 ) );
       sampleLineFeature.setAttribute( "start_lat", latLongSamplePoint.y() );
       sampleLineFeature.setAttribute( "start_long", latLongSamplePoint.x() );
       sampleLineFeature.setAttribute( "bearing", bearing );
@@ -326,7 +326,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
   return 0;
 }
 
-QgsGeometry* QgsTransectSample::findBaselineGeometry( QVariant strataId )
+QgsGeometry* QgsTransectSample::findBaselineGeometry( const QVariant& strataId )
 {
   if ( !mBaselineLayer )
   {
@@ -614,6 +614,7 @@ QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry* stratumGeom, 
       }
 
       int size = bufferPolygon.size();
+      mpl.reserve( size );
       for ( int j = 0; j < size; ++j )
       {
         mpl.append( bufferPolygon[j] );

@@ -35,7 +35,7 @@
 
 #define KMAXINT ((int)(~0U >> 1))
 
-struct KPtyDevicePrivate;
+class KPtyDevicePrivate;
 class QSocketNotifier;
 
 #define Q_DECLARE_PRIVATE_MI(Class, SuperClass) \
@@ -332,8 +332,8 @@ private:
     int totalSize;
 };
 
-struct KPtyDevicePrivate : public KPtyPrivate {
-
+class KPtyDevicePrivate : public KPtyPrivate {
+  public:
     Q_DECLARE_PUBLIC(KPtyDevice)
 
     KPtyDevicePrivate(KPty* parent) :

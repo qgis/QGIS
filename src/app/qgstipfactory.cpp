@@ -75,9 +75,9 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         "<ul>"
                         "<li>QGIS Library - this is the C++ library that contains"
                         " the core logic that is used to build the QGIS user interface and other applications.</li>"
-                        "<li>QGIS Application - this is the desktop application that you know and love so much :-).</li>"
-                        "<li>QGIS Mapserver - this is a server-side application based on the QGIS Library"
-                        " that will serve up your .qgs projects using the WMS protocol.</li>"
+                        "<li>QGIS Desktop - this is the desktop application that you know and love so much :-).</li>"
+                        "<li>QGIS Server - this is a server-side application based on the QGIS Library"
+                        " that will serve up your .qgs projects using OGC standard protocols.</li>"
                         "</ul>"
                       ) );
   addGenericTip( myTip );
@@ -232,13 +232,13 @@ QgsTipFactory::~QgsTipFactory()
 
 }
 //private helper method
-void QgsTipFactory::addGuiTip( QgsTip theTip )
+void QgsTipFactory::addGuiTip( const QgsTip& theTip )
 {
   mGuiTips << theTip;
   mAllTips << theTip;
 }
 //private helper method
-void QgsTipFactory::addGenericTip( QgsTip theTip )
+void QgsTipFactory::addGenericTip( const QgsTip& theTip )
 {
   mGenericTips << theTip;
   mAllTips << theTip;

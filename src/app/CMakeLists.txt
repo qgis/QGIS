@@ -15,8 +15,6 @@ SET(QGIS_APP_SRCS
   qgsattributetabledialog.cpp
   qgsbookmarks.cpp
   qgsbrowserdockwidget.cpp
-  qgsadvanceddigitizingdockwidget.cpp
-  qgsadvanceddigitizingcanvasitem.cpp
   qgsclipboard.cpp
   qgsconfigureshortcutsdialog.cpp
   qgscustomization.cpp
@@ -32,6 +30,7 @@ SET(QGIS_APP_SRCS
   qgsdecorationgriddialog.cpp
   qgsdxfexportdialog.cpp
   qgsformannotationdialog.cpp
+  qgsguivectorlayertools.cpp
   qgshtmlannotationdialog.cpp
   qgsdelattrdialog.cpp
   qgsdiagramproperties.cpp
@@ -44,26 +43,25 @@ SET(QGIS_APP_SRCS
   qgslabelpropertydialog.cpp
   qgslabelengineconfigdialog.cpp
   qgslabelinggui.cpp
+  qgslabelingwidget.cpp
   qgslabelpreview.cpp
   qgsloadstylefromdbdialog.cpp
   qgsmaplayerstyleguiutils.cpp
-  qgsmapmouseevent.cpp
+  qgsrulebasedlabelingwidget.cpp
   qgssavestyletodbdialog.cpp
-  qgsguivectorlayertools.cpp
+  qgsstatusbarcoordinateswidget.cpp
+  qgsversioninfo.cpp
   qgswelcomepageitemsmodel.cpp
   qgswelcomepage.cpp
-  qgsversioninfo.cpp
 
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp
   qgsmaptooladdring.cpp
   qgsmaptoolfillring.cpp
   qgsmaptoolannotation.cpp
-  qgsmaptoolcapture.cpp
   qgsmaptoolchangelabelproperties.cpp
   qgsmaptooldeletering.cpp
   qgsmaptooldeletepart.cpp
-  qgsmaptooledit.cpp
   qgsmaptoolfeatureaction.cpp
   qgsmaptoolformannotation.cpp
   qgsmaptoolhtmlannotation.cpp
@@ -71,7 +69,6 @@ SET(QGIS_APP_SRCS
   qgsmaptoolshowhidelabels.cpp
   qgsmaptoolidentifyaction.cpp
   qgsmaptoollabel.cpp
-  qgsmaptooladvanceddigitizing.cpp
   qgsmaptoolmeasureangle.cpp
   qgsmaptoolmovefeature.cpp
   qgsmaptoolmovelabel.cpp
@@ -128,6 +125,7 @@ SET(QGIS_APP_SRCS
   composer/qgscomposerarrowwidget.cpp
   composer/qgscomposerattributetablewidget.cpp
   composer/qgscomposerhtmlwidget.cpp
+  composer/qgscomposerimageexportoptionsdialog.cpp
   composer/qgscomposeritemwidget.cpp
   composer/qgscomposerlabelwidget.cpp
   composer/qgscomposerpicturewidget.cpp
@@ -164,6 +162,9 @@ SET(QGIS_APP_SRCS
   pluginmanager/qgspluginitemdelegate.cpp
 
   qgsnewspatialitelayerdialog.cpp
+
+  qgssettingstree.cpp
+  qgsvariantdelegate.cpp
 )
 
 SET (QGIS_APP_MOC_HDRS
@@ -176,12 +177,12 @@ SET (QGIS_APP_MOC_HDRS
   qgsjoindialog.h
   qgsaddtaborgroup.h
   qgsannotationwidget.h
+  qgsapplayertreeviewmenuprovider.h
   qgsattributeactiondialog.h
   qgsattributetypedialog.h
   qgsattributetabledialog.h
   qgsbookmarks.h
   qgsbrowserdockwidget.h
-  qgsadvanceddigitizingdockwidget.h
   qgsclipboard.h
   qgsconfigureshortcutsdialog.h
   qgscustomization.h
@@ -203,28 +204,28 @@ SET (QGIS_APP_MOC_HDRS
   qgsfieldcalculator.h
   qgsfieldsproperties.h
   qgsformannotationdialog.h
+  qgsguivectorlayertools.h
   qgshtmlannotationdialog.h
   qgsidentifyresultsdialog.h
   qgslabeldialog.h
   qgslabelengineconfigdialog.h
   qgslabelinggui.h
+  qgslabelingwidget.h
   qgslabelpropertydialog.h
   qgsloadstylefromdbdialog.h
   qgsmaplayerstyleguiutils.h
+  qgsrulebasedlabelingwidget.h
   qgssavestyletodbdialog.h
   qgsshortcutsmanager.h
-  qgsapplayertreeviewmenuprovider.h
-  qgsguivectorlayertools.h
+  qgsstatusbarcoordinateswidget.h
+  qgsversioninfo.h
   qgswelcomepageitemsmodel.h
   qgswelcomepage.h
-  qgsversioninfo.h
 
   qgsmaptooladdfeature.h
-  qgsmaptoolcapture.h
   qgsmaptoolcircularstringradius.h
   qgsmaptooladdpart.h
   qgsmaptooladdring.h
-  qgsmaptooledit.h
   qgsmaptoolfillring.h
   qgsmaptoolchangelabelproperties.h
   qgsmaptooldeletepart.h
@@ -233,7 +234,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolpinlabels.h
   qgsmaptoolshowhidelabels.h
   qgsmaptoolidentifyaction.h
-  qgsmaptooladvanceddigitizing.h
   qgsmaptoolmeasureangle.h
   qgsmaptoolmovefeature.h
   qgsmaptoolmovelabel.h
@@ -281,6 +281,7 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscomposerarrowwidget.h
   composer/qgscomposerattributetablewidget.h
   composer/qgscomposerhtmlwidget.h
+  composer/qgscomposerimageexportoptionsdialog.h
   composer/qgscomposeritemwidget.h
   composer/qgscomposerlabelwidget.h
   composer/qgscomposerlegendwidget.h
@@ -312,6 +313,9 @@ SET (QGIS_APP_MOC_HDRS
   pluginmanager/qgspluginitemdelegate.h
 
   qgsnewspatialitelayerdialog.h
+
+  qgssettingstree.h
+  qgsvariantdelegate.h
   )
 
 SET (WITH_QWTPOLAR TRUE CACHE BOOL "Determines whether QwtPolar should be built")
@@ -416,9 +420,11 @@ QT4_ADD_RESOURCES(TEST_RCC_SRCS ${TEST_RCCS})
 
 QT4_WRAP_CPP(QGIS_APP_MOC_SRCS ${QGIS_APP_MOC_HDRS})
 
+SET (QGIS_APPMAIN_SRCS main.cpp)
+
 IF (WIN32)
   IF (MSVC)
-    SET (QGIS_APP_SRCS ${QGIS_APP_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc)
+    SET (QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc)
   ELSE(MSVC)
 
     # Icon for windows MINGW
@@ -437,7 +443,7 @@ IF (WIN32)
     ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/icon.o
       COMMAND ${WINDRES} -I${CMAKE_CURRENT_SOURCE_DIR} -i${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc
       -o ${CMAKE_CURRENT_BINARY_DIR}/icon.o )
-    SET(QGIS_APP_SRCS ${QGIS_APP_SRCS} ${CMAKE_CURRENT_BINARY_DIR}/icon.o)
+    SET(QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_BINARY_DIR}/icon.o)
   ENDIF (MSVC)
 ENDIF (WIN32)
 
@@ -462,13 +468,18 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR} composer legend pluginmanager
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
   ${QEXTSERIALPORT_INCLUDE_DIR}
+)
+INCLUDE_DIRECTORIES(
   ../analysis/raster
   ../analysis/openstreetmap
   ../core
+  ../core/auth
   ../core/gps
   ../core/composer
   ../core/dxf
@@ -479,6 +490,7 @@ INCLUDE_DIRECTORIES(
   ../gui
   ../gui/symbology-ng
   ../gui/attributetable
+  ../gui/auth
   ../gui/raster
   ../gui/editorwidgets
   ../gui/editorwidgets/core
@@ -487,12 +499,15 @@ INCLUDE_DIRECTORIES(
   ../python
   gps
   openstreetmap
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${SPATIALITE_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${QWTPOLAR_INCLUDE_DIR}
+  ${QCA_INCLUDE_DIR}
   )
 
 IF(ENABLE_MODELTEST)
@@ -509,9 +524,9 @@ ENDIF (POSTGRES_FOUND)
 
 #############
 IF (ANDROID)
-  ADD_LIBRARY(${QGIS_APP_NAME} SHARED main.cpp ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${QGIS_APP_HDRS} ${QGIS_APP_MOC_HDRS} ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
+  ADD_LIBRARY(${QGIS_APP_NAME} SHARED ${QGIS_APPMAIN_SRCS} ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
 ELSE (ANDROID)
-  ADD_EXECUTABLE(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 main.cpp ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
+  ADD_EXECUTABLE(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 ${QGIS_APPMAIN_SRCS} ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
 ENDIF (ANDROID)
 
 IF (NOT MSVC)
@@ -522,8 +537,8 @@ IF (NOT MSVC)
 ENDIF (NOT MSVC)
 ADD_DEFINITIONS("\"-DAPP_EXPORT=${DLLEXPORT}\"")
 
-# shared library used by tests - TODO: use it also for qgis executable?
-ADD_LIBRARY(qgis_app SHARED ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${QGIS_APP_HDRS} ${QGIS_APP_MOC_HDRS} ${IMAGE_RCC_SRCS})
+# Putting IMAGE_RCC_SRCS into qgis_app lib is cousing problems when the lib is loaded (by plugin for example) in test unit (qgis_composerpicturetest).
+ADD_LIBRARY(qgis_app SHARED ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${QGIS_APP_HDRS} ${QGIS_APP_MOC_HDRS})
 
 TARGET_LINK_LIBRARIES(qgis_app
   ${QWT_LIBRARY}
@@ -538,6 +553,13 @@ TARGET_LINK_LIBRARIES(qgis_app
   qgis_gui
   qgis_analysis
 )
+
+IF (NOT ANDROID)
+  SET_TARGET_PROPERTIES(qgis_app PROPERTIES
+    VERSION ${COMPLETE_VERSION}
+    SOVERSION ${COMPLETE_VERSION}
+    )
+ENDIF (NOT ANDROID)
 
 IF (APPLE)
   TARGET_LINK_LIBRARIES(qgis_app ${APP_SERVICES_LIBRARY})
@@ -556,6 +578,7 @@ TARGET_LINK_LIBRARIES(${QGIS_APP_NAME}
   ${QT_QTMAIN_LIBRARY}
   ${QWTPOLAR_LIBRARY}
   ${GDAL_LIBRARY}
+  qgis_app
   qgis_core
   qgis_gui
   qgis_analysis
@@ -592,6 +615,13 @@ ENDIF (POSTGRES_FOUND)
 IF(MSVC)
   INSTALL(FILES qgis.ico DESTINATION ${CMAKE_INSTALL_PREFIX}/icons)
 ENDIF(MSVC)
+
+INSTALL(TARGETS qgis_app
+  RUNTIME DESTINATION ${QGIS_BIN_DIR}
+  LIBRARY DESTINATION ${QGIS_LIB_DIR}
+  ARCHIVE DESTINATION ${QGIS_LIB_DIR}
+  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
+  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
 
 INSTALL(TARGETS ${QGIS_APP_NAME}
   BUNDLE DESTINATION ${QGIS_INSTALL_PREFIX}

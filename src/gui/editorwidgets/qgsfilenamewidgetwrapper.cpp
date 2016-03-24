@@ -30,7 +30,7 @@ QgsFileNameWidgetWrapper::QgsFileNameWidgetWrapper( QgsVectorLayer* vl, int fiel
 {
 }
 
-QVariant QgsFileNameWidgetWrapper::value()
+QVariant QgsFileNameWidgetWrapper::value() const
 {
   QVariant value;
 
@@ -48,7 +48,7 @@ QVariant QgsFileNameWidgetWrapper::value()
   return value;
 }
 
-bool QgsFileNameWidgetWrapper::valid()
+bool QgsFileNameWidgetWrapper::valid() const
 {
   return mLineEdit || mLabel;
 }

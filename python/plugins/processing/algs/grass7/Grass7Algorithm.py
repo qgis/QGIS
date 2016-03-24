@@ -65,6 +65,7 @@ class Grass7Algorithm(GeoAlgorithm):
 
     def __init__(self, descriptionfile):
         GeoAlgorithm.__init__(self)
+        self.hardcodedStrings = []
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
@@ -120,7 +121,9 @@ class Grass7Algorithm(GeoAlgorithm):
         while line != '':
             try:
                 line = line.strip('\n').strip()
-                if line.startswith('Parameter'):
+                if line.startswith('Hardcoded'):
+                    self.hardcodedStrings.append(line[len('Hardcoded|'):])
+                elif line.startswith('Parameter'):
                     parameter = getParameterFromString(line)
                     self.addParameter(parameter)
                     if isinstance(parameter, ParameterVector):
@@ -139,6 +142,9 @@ class Grass7Algorithm(GeoAlgorithm):
                         hasRasterOutput = True
                     elif isinstance(output, OutputVector):
                         vectorOutputs += 1
+                    if isinstance(output, OutputHTML):
+                        self.addOutput(OutputFile("rawoutput", output.description +
+                                                  " (raw output)", "txt"))
                 line = lines.readline().strip('\n').strip()
             except Exception as e:
                 ProcessingLog.addToLog(
@@ -294,6 +300,8 @@ class Grass7Algorithm(GeoAlgorithm):
         # 2: Set parameters and outputs
 
         command = self.grass7Name
+        command += ' ' + ' '.join(self.hardcodedStrings)
+
         for param in self.parameters:
             if param.value is None or param.value == '':
                 continue
@@ -390,24 +398,25 @@ class Grass7Algorithm(GeoAlgorithm):
 
             if isinstance(out, OutputVector):
                 filename = out.value
-                # FIXME: check if needed: -c   Also export features without category (not labeled). Otherwise only features with category are exported.
                 typeidx = self.getParameterValue(self.GRASS_OUTPUT_TYPE_PARAMETER)
                 outtype = ('auto' if typeidx
                            is None else self.OUTPUT_TYPES[typeidx])
                 if self.grass7Name == 'r.flow':
-                    command = 'v.out.ogr type=line layer=0 -c -e input=' + out.name + uniqueSufix
+                    command = 'v.out.ogr type=line layer=0 -s -e input=' + out.name + uniqueSufix
                 elif self.grass7Name == 'v.voronoi':
                     if '-l' in command:
-                        command = 'v.out.ogr type=line layer=0 -c -e input=' + out.name + uniqueSufix
+                        command = 'v.out.ogr type=line layer=0 -s -e input=' + out.name + uniqueSufix
                     else:
                         command = 'v.out.ogr -s -e input=' + out.name + uniqueSufix
                         command += ' type=' + outtype
+                elif self.grass7Name == 'v.sample':
+                    command = 'v.out.ogr type=point -s -e input=' + out.name + uniqueSufix
                 else:
                     command = 'v.out.ogr -s -e input=' + out.name + uniqueSufix
                     command += ' type=' + outtype
                 command += ' output="' + os.path.dirname(out.value) + '"'
                 command += ' format=ESRI_Shapefile'
-                command += ' olayer=' + os.path.basename(out.value)[:-4]
+                command += ' output_layer=' + os.path.basename(out.value)[:-4]
                 commands.append(command)
                 outputCommands.append(command)
 

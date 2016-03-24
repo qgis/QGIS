@@ -86,7 +86,7 @@ void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
 
   if ( openDir.isEmpty() )
   {
-    openDir = s.value( "/UI/lastComposerPictureDir", "" ).toString();
+    openDir = s.value( "/UI/lastComposerPictureDir", QDir::homePath() ).toString();
   }
 
   //show file dialog
@@ -300,7 +300,7 @@ void QgsComposerPictureWidget::on_mComposerMapComboBox_activated( const QString 
   //extract id
   int id;
   bool conversionOk;
-  QStringList textSplit = text.split( " " );
+  QStringList textSplit = text.split( ' ' );
   if ( textSplit.size() < 1 )
   {
     return;

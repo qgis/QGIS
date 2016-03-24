@@ -42,6 +42,7 @@ int QgsGeometryEditUtils::addRing( QgsAbstractGeometryV2* geom, QgsCurveV2* ring
   }
   else if ( multiGeom )
   {
+    polygonList.reserve( multiGeom->numGeometries() );
     for ( int i = 0; i < multiGeom->numGeometries(); ++i )
     {
       polygonList.append( dynamic_cast< QgsCurvePolygonV2* >( multiGeom->geometryN( i ) ) );
@@ -80,6 +81,13 @@ int QgsGeometryEditUtils::addRing( QgsAbstractGeometryV2* geom, QgsCurveV2* ring
           delete ring; return 4;
         }
       }
+
+      //make sure dimensionality of ring matches geometry
+      if ( QgsWKBTypes::hasZ( geom->wkbType() ) )
+        ring->addZValue( 0 );
+      if ( QgsWKBTypes::hasM( geom->wkbType() ) )
+        ring->addMValue( 0 );
+
       ( *polyIter )->addInteriorRing( ring );
       return 0; //success
     }
@@ -134,7 +142,7 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometryV2* geom, QgsAbstractGeome
 
       int i;
       int n = geomCollection->numGeometries();
-      for ( i = 0; i < parts->numGeometries() && geomCollection->addGeometry( parts->geometryN( i ) ); i++ )
+      for ( i = 0; i < parts->numGeometries() && geomCollection->addGeometry( parts->geometryN( i )->clone() ); i++ )
         ;
 
       added = i == parts->numGeometries();
@@ -143,11 +151,6 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometryV2* geom, QgsAbstractGeome
         while ( geomCollection->numGeometries() > n )
           geomCollection->removeGeometry( n );
         delete part; return 2;
-      }
-
-      while ( parts->numGeometries() > 0 )
-      {
-        parts->removeGeometry( 0 );
       }
 
       delete part;

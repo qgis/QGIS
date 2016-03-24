@@ -146,7 +146,7 @@ double QgsComposerUtils::snappedAngle( const double angle )
   }
 }
 
-QRectF QgsComposerUtils::largestRotatedRectWithinBounds( const QRectF originalRect, const QRectF boundsRect, const double rotation )
+QRectF QgsComposerUtils::largestRotatedRectWithinBounds( const QRectF &originalRect, const QRectF &boundsRect, const double rotation )
 {
   double originalWidth = originalRect.width();
   double originalHeight = originalRect.height();
@@ -259,7 +259,7 @@ double QgsComposerUtils::relativePosition( const double position, const double b
   return m * position + c;
 }
 
-QgsComposition::PaperOrientation QgsComposerUtils::decodePaperOrientation( const QString orientationString, bool &ok )
+QgsComposition::PaperOrientation QgsComposerUtils::decodePaperOrientation( const QString& orientationString, bool &ok )
 {
   if ( orientationString.compare( "Portrait", Qt::CaseInsensitive ) == 0 )
   {
@@ -275,7 +275,7 @@ QgsComposition::PaperOrientation QgsComposerUtils::decodePaperOrientation( const
   return QgsComposition::Landscape; // default to landscape
 }
 
-bool QgsComposerUtils::decodePresetPaperSize( const QString presetString, double &width, double &height )
+bool QgsComposerUtils::decodePresetPaperSize( const QString& presetString, double &width, double &height )
 {
   QList< QPair< QString, QSizeF > > presets;
   presets << qMakePair( QString( "A5" ), QSizeF( 148, 210 ) );
@@ -483,7 +483,7 @@ double QgsComposerUtils::textWidthMM( const QFont &font, const QString &text )
 
 double QgsComposerUtils::textHeightMM( const QFont &font, const QString &text, double multiLineHeight )
 {
-  QStringList multiLineSplit =  text.split( "\n" );
+  QStringList multiLineSplit =  text.split( '\n' );
   int lines = multiLineSplit.size();
 
   //upscale using FONT_WORKAROUND_SCALE

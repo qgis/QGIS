@@ -79,7 +79,7 @@ void QgsDoubleSpinBox::clear()
   setValue( clearValue() );
 }
 
-void QgsDoubleSpinBox::setClearValue( double customValue, QString specialValueText )
+void QgsDoubleSpinBox::setClearValue( double customValue, const QString& specialValueText )
 {
   mClearValueMode = CustomValue;
   mCustomClearValue = customValue;
@@ -93,7 +93,7 @@ void QgsDoubleSpinBox::setClearValue( double customValue, QString specialValueTe
   }
 }
 
-void QgsDoubleSpinBox::setClearValueMode( QgsDoubleSpinBox::ClearValueMode mode, QString clearValueText )
+void QgsDoubleSpinBox::setClearValueMode( QgsDoubleSpinBox::ClearValueMode mode, const QString& clearValueText )
 {
   mClearValueMode = mode;
   mCustomClearValue = 0;

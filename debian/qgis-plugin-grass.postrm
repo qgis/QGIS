@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+if [ "$1" = "remove" ]; then
+	for i in /usr/bin/qgis /usr/bin/qbrowser; do
+		dpkg-divert --package qgis-plugin-grass --remove --rename --divert $i.bin $i
+	done
+fi
+
+#DEBHELPER#
+
+exit 0

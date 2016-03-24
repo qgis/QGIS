@@ -30,6 +30,7 @@ import shutil
 import codecs
 import subprocess
 import os
+import locale
 from qgis.core import QgsApplication
 from PyQt4.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -122,8 +123,9 @@ class GrassUtils:
         script = GrassUtils.grassScriptFilename()
         gisrc = userFolder() + os.sep + 'processing.gisrc'
 
+        encoding = locale.getpreferredencoding()
         # Temporary gisrc file
-        output = codecs.open(gisrc, 'w', encoding='utf-8')
+        output = codecs.open(gisrc, 'w', encoding=encoding)
         location = 'temp_location'
         gisdbase = GrassUtils.grassDataFolder()
 
@@ -133,7 +135,7 @@ class GrassUtils:
         output.write('GRASS_GUI: text\n')
         output.close()
 
-        output = codecs.open(script, 'w', encoding='utf-8')
+        output = codecs.open(script, 'w', encoding=encoding)
         output.write('set HOME=' + os.path.expanduser('~') + '\n')
         output.write('set GISRC=' + gisrc + '\n')
         output.write('set GRASS_SH=' + shell + '\\bin\\sh.exe\n')
@@ -163,7 +165,7 @@ class GrassUtils:
         output.write('g.gisenv.exe set="GISDBASE=' + gisdbase + '"\n')
         output.write('g.gisenv.exe set="GRASS_GUI=text"\n')
         for command in commands:
-            output.write(command.encode('utf8') + '\n')
+            output.write(command + u'\n')
         output.write('\n')
         output.write('exit\n')
         output.close()
@@ -172,7 +174,7 @@ class GrassUtils:
     def createGrassBatchJobFileFromGrassCommands(commands):
         fout = codecs.open(GrassUtils.grassBatchJobFilename(), 'w', encoding='utf-8')
         for command in commands:
-            fout.write(command.encode('utf8') + '\n')
+            fout.write(command + u'\n')
         fout.write('exit')
         fout.close()
 
@@ -216,27 +218,25 @@ class GrassUtils:
 
     @staticmethod
     def writeGrassWindow(filename):
-        out = codecs.open(filename, 'w', encoding='utf-8')
-        out.write('proj:       0\n')
-        out.write('zone:       0\n')
-        out.write('north:      1\n')
-        out.write('south:      0\n')
-        out.write('east:       1\n')
-        out.write('west:       0\n')
-        out.write('cols:       1\n')
-        out.write('rows:       1\n')
-        out.write('e-w resol:  1\n')
-        out.write('n-s resol:  1\n')
-        out.write('top:        1\n')
-        out.write('bottom:     0\n')
-        out.write('cols3:      1\n')
-        out.write('rows3:      1\n')
-        out.write('depths:     1\n')
-        out.write('e-w resol3: 1\n')
-        out.write('n-s resol3: 1\n')
-        out.write('t-b resol:  1\n')
-
-        out.close()
+        with open(filename, 'w') as out:
+            out.write('proj:       0\n')
+            out.write('zone:       0\n')
+            out.write('north:      1\n')
+            out.write('south:      0\n')
+            out.write('east:       1\n')
+            out.write('west:       0\n')
+            out.write('cols:       1\n')
+            out.write('rows:       1\n')
+            out.write('e-w resol:  1\n')
+            out.write('n-s resol:  1\n')
+            out.write('top:        1\n')
+            out.write('bottom:     0\n')
+            out.write('cols3:      1\n')
+            out.write('rows3:      1\n')
+            out.write('depths:     1\n')
+            out.write('e-w resol3: 1\n')
+            out.write('n-s resol3: 1\n')
+            out.write('t-b resol:  1\n')
 
     @staticmethod
     def prepareGrassExecution(commands):
@@ -250,7 +250,8 @@ class GrassUtils:
             env['GISRC'] = gisrc
             env['GRASS_MESSAGE_FORMAT'] = 'gui'
             env['GRASS_BATCH_JOB'] = GrassUtils.grassBatchJobFilename()
-            del env['GISBASE']
+            if 'GISBASE' in env:
+                del env['GISBASE']
             GrassUtils.createGrassBatchJobFileFromGrassCommands(commands)
             os.chmod(GrassUtils.grassBatchJobFilename(), stat.S_IEXEC
                      | stat.S_IREAD | stat.S_IWRITE)

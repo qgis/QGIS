@@ -13,9 +13,9 @@ class QgsComposerView : QGraphicsView
 
 %ConvertToSubClassCode
   if (sipCpp->inherits("QgsComposerView"))
-    sipClass = sipClass_QgsComposerView;
+    sipType = sipType_QgsComposerView;
   else
-    sipClass = NULL;
+    sipType = NULL;
 %End
 
   public:
@@ -61,7 +61,7 @@ class QgsComposerView : QGraphicsView
       ActiveUntilMouseRelease
     };
 
-    QgsComposerView( QWidget* parent /TransferThis/ = 0, const char* name = 0, Qt::WindowFlags f = 0 );
+    QgsComposerView( QWidget* parent /TransferThis/ = 0, const char* name = 0, const Qt::WindowFlags& f = 0 );
 
     /** Add an item group containing the selected items*/
     void groupItems();

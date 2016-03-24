@@ -33,3 +33,8 @@ void QgsSearchWidgetWrapper::setFeature( const QgsFeature& feature )
   Q_UNUSED( feature )
 }
 
+void QgsSearchWidgetWrapper::clearExpression()
+{
+  mExpression = QString( "TRUE" );
+}
+

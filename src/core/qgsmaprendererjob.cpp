@@ -63,7 +63,7 @@ const QgsMapSettings& QgsMapRendererJob::mapSettings() const
 }
 
 
-bool QgsMapRendererJob::reprojectToLayerExtent( const QgsCoordinateTransform* ct, bool layerCrsGeographic, QgsRectangle& extent, QgsRectangle& r2 )
+bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform *ct, QgsRectangle &extent, QgsRectangle &r2 )
 {
   bool split = false;
 
@@ -79,28 +79,61 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsCoordinateTransform* ct
     // extent separately.
     static const double splitCoord = 180.0;
 
-    if ( layerCrsGeographic )
+    if ( ml->crs().geographicFlag() )
     {
-      // Note: ll = lower left point
-      //   and ur = upper right point
-      QgsPoint ll = ct->transform( extent.xMinimum(), extent.yMinimum(),
-                                   QgsCoordinateTransform::ReverseTransform );
-
-      QgsPoint ur = ct->transform( extent.xMaximum(), extent.yMaximum(),
-                                   QgsCoordinateTransform::ReverseTransform );
-
-      extent = ct->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
-
-      if ( ll.x() > ur.x() )
+      if ( ml->type() == QgsMapLayer::VectorLayer && !ct->destCRS().geographicFlag() )
       {
-        // the coordinates projected in reverse order than what one would expect.
-        // we are probably looking at an area that includes longitude of 180 degrees.
-        // we need to take into account coordinates from two intervals: (-180,x1) and (x2,180)
-        // so let's use (-180,180). This hopefully does not add too much overhead. It is
-        // more straightforward than rendering with two separate extents and more consistent
-        // for rendering, labeling and caching as everything is rendered just in one go
-        extent.setXMinimum( -splitCoord );
-        extent.setXMaximum( splitCoord );
+        // if we transform from a projected coordinate system check
+        // check if transforming back roughly returns the input
+        // extend - otherwise render the world.
+        QgsRectangle extent1 = ct->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+        QgsRectangle extent2 = ct->transformBoundingBox( extent1, QgsCoordinateTransform::ForwardTransform );
+
+        QgsDebugMsg( QString( "\n0:%1 %2x%3\n1:%4\n2:%5 %6x%7 (w:%8 h:%9)" )
+                     .arg( extent.toString() ).arg( extent.width() ).arg( extent.height() )
+                     .arg( extent1.toString() )
+                     .arg( extent2.toString() ).arg( extent2.width() ).arg( extent2.height() )
+                     .arg( fabs( 1.0 - extent2.width() / extent.width() ) )
+                     .arg( fabs( 1.0 - extent2.height() / extent.height() ) )
+                   );
+
+        if ( fabs( 1.0 - extent2.width() / extent.width() ) < 0.5 &&
+             fabs( 1.0 - extent2.height() / extent.height() ) < 0.5 )
+        {
+          extent = extent1;
+        }
+        else
+        {
+          extent = QgsRectangle( -180.0, -90.0, 180.0, 90.0 );
+        }
+      }
+      else
+      {
+        // Note: ll = lower left point
+        QgsPoint ll = ct->transform( extent.xMinimum(), extent.yMinimum(),
+                                     QgsCoordinateTransform::ReverseTransform );
+
+        //   and ur = upper right point
+        QgsPoint ur = ct->transform( extent.xMaximum(), extent.yMaximum(),
+                                     QgsCoordinateTransform::ReverseTransform );
+
+        QgsDebugMsg( QString( "in:%1 (ll:%2 ur:%3)" ).arg( extent.toString() ).arg( ll.toString() ).arg( ur.toString() ) );
+
+        extent = ct->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+
+        QgsDebugMsg( QString( "out:%1 (w:%2 h:%3)" ).arg( extent.toString() ).arg( extent.width() ).arg( extent.height() ) );
+
+        if ( ll.x() > ur.x() )
+        {
+          // the coordinates projected in reverse order than what one would expect.
+          // we are probably looking at an area that includes longitude of 180 degrees.
+          // we need to take into account coordinates from two intervals: (-180,x1) and (x2,180)
+          // so let's use (-180,180). This hopefully does not add too much overhead. It is
+          // more straightforward than rendering with two separate extents and more consistent
+          // for rendering, labeling and caching as everything is rendered just in one go
+          extent.setXMinimum( -splitCoord );
+          extent.setXMaximum( splitCoord );
+        }
       }
 
       // TODO: the above rule still does not help if using a projection that covers the whole
@@ -135,7 +168,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsCoordinateTransform* ct
 
 
 
-LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabeling* labelingEngine )
+LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabeling* labelingEngine, QgsLabelingEngineV2* labelingEngine2 )
 {
   LayerRenderJobs layerJobs;
 
@@ -188,7 +221,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
       ct = mSettings.layerTransform( ml );
       if ( ct )
       {
-        reprojectToLayerExtent( ct, ml->crs().geographicFlag(), r1, r2 );
+        reprojectToLayerExtent( ml, ct, r1, r2 );
       }
       QgsDebugMsg( "extent: " + r1.toString() );
       if ( !r1.isFinite() || !r2.isFinite() )
@@ -203,7 +236,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
     if ( mCache && ml->type() == QgsMapLayer::VectorLayer )
     {
       QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
-      if ( vl->isEditable() || ( labelingEngine && labelingEngine->willUseLayer( vl ) ) )
+      if ( vl->isEditable() || (( labelingEngine || labelingEngine2 ) && QgsPalLabeling::staticWillUseLayer( vl ) ) )
         mCache->clearCacheImage( ml->id() );
     }
 
@@ -217,6 +250,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
     job.context = QgsRenderContext::fromMapSettings( mSettings );
     job.context.setPainter( painter );
     job.context.setLabelingEngine( labelingEngine );
+    job.context.setLabelingEngineV2( labelingEngine2 );
     job.context.setCoordinateTransform( ct );
     job.context.setExtent( r1 );
 

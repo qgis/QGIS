@@ -22,6 +22,7 @@
 #include "qgsproject.h"
 #include "qgspythonrunner.h"
 #include "qgsrelationwidgetwrapper.h"
+#include "qgsvectordataprovider.h"
 
 #include <QDir>
 #include <QFileInfo>
@@ -45,14 +46,22 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &featur
     , mFormNr( sFormCounter++ )
     , mIsSaving( false )
     , mIsAddDialog( false )
+    , mPreventFeatureRefresh( false )
     , mEditCommandMessage( tr( "Attributes changed" ) )
 {
   init();
   initPython();
   setFeature( feature );
 
+  // Using attributeAdded() attributeDeleted() are not emitted on all fields changes (e.g. layer fields changed,
+  // joined fields changed) -> use updatedFields() instead
+#if 0
   connect( vl, SIGNAL( attributeAdded( int ) ), this, SLOT( onAttributeAdded( int ) ) );
   connect( vl, SIGNAL( attributeDeleted( int ) ), this, SLOT( onAttributeDeleted( int ) ) );
+#endif
+  connect( vl, SIGNAL( updatedFields() ), this, SLOT( onUpdatedFields() ) );
+  connect( vl, SIGNAL( beforeAddingExpressionField( QString ) ), this, SLOT( preventFeatureRefresh() ) );
+  connect( vl, SIGNAL( beforeRemovingExpressionField( int ) ), this, SLOT( preventFeatureRefresh() ) );
 }
 
 QgsAttributeForm::~QgsAttributeForm()
@@ -162,11 +171,11 @@ bool QgsAttributeForm::save()
       QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
       if ( eww )
       {
-        QVariant dstVar = dst[eww->fieldIdx()];
+        QVariant dstVar = dst.at( eww->fieldIdx() );
         QVariant srcVar = eww->value();
         // need to check dstVar.isNull() != srcVar.isNull()
         // otherwise if dstVar=NULL and scrVar=0, then dstVar = srcVar
-        if (( dstVar != srcVar || dstVar.isNull() != srcVar.isNull() ) && srcVar.isValid() && mLayer->fieldEditable( eww->fieldIdx() ) )
+        if (( dstVar != srcVar || dstVar.isNull() != srcVar.isNull() ) && srcVar.isValid() && !mLayer->editFormConfig()->readOnly( eww->fieldIdx() ) )
         {
           dst[eww->fieldIdx()] = srcVar;
 
@@ -209,20 +218,20 @@ bool QgsAttributeForm::save()
         int n = 0;
         for ( int i = 0; i < dst.count(); ++i )
         {
-          if (( dst[i] == src[i] && dst[i].isNull() == src[i].isNull() )  // If field is not changed...
-              || !dst[i].isValid()                                       // or the widget returns invalid (== do not change)
-              || !mLayer->fieldEditable( i ) )                           // or the field cannot be edited ...
+          if (( dst.at( i ) == src.at( i ) && dst.at( i ).isNull() == src.at( i ).isNull() )  // If field is not changed...
+              || !dst.at( i ).isValid()                                     // or the widget returns invalid (== do not change)
+              || mLayer->editFormConfig()->readOnly( i ) )                           // or the field cannot be edited ...
           {
             continue;
           }
 
           QgsDebugMsg( QString( "Updating field %1" ).arg( i ) );
           QgsDebugMsg( QString( "dst:'%1' (type:%2, isNull:%3, isValid:%4)" )
-                       .arg( dst[i].toString() ).arg( dst[i].typeName() ).arg( dst[i].isNull() ).arg( dst[i].isValid() ) );
+                       .arg( dst.at( i ).toString(), dst.at( i ).typeName() ).arg( dst.at( i ).isNull() ).arg( dst.at( i ).isValid() ) );
           QgsDebugMsg( QString( "src:'%1' (type:%2, isNull:%3, isValid:%4)" )
-                       .arg( src[i].toString() ).arg( src[i].typeName() ).arg( src[i].isNull() ).arg( src[i].isValid() ) );
+                       .arg( src.at( i ).toString(), src.at( i ).typeName() ).arg( src.at( i ).isNull() ).arg( src.at( i ).isValid() ) );
 
-          success &= mLayer->changeAttributeValue( mFeature.id(), i, dst[i], src[i] );
+          success &= mLayer->changeAttributeValue( mFeature.id(), i, dst.at( i ), src.at( i ) );
           n++;
         }
 
@@ -274,11 +283,11 @@ void QgsAttributeForm::onAttributeChanged( const QVariant& value )
 
 void QgsAttributeForm::onAttributeAdded( int idx )
 {
-  Q_UNUSED( idx ) // only used for Q_ASSERT
+  mPreventFeatureRefresh = false;
   if ( mFeature.isValid() )
   {
     QgsAttributes attrs = mFeature.attributes();
-    attrs.insert( idx, QVariant( layer()->fields()[idx].type() ) );
+    attrs.insert( idx, QVariant( layer()->fields().at( idx ).type() ) );
     mFeature.setFields( layer()->fields() );
     mFeature.setAttributes( attrs );
   }
@@ -288,6 +297,7 @@ void QgsAttributeForm::onAttributeAdded( int idx )
 
 void QgsAttributeForm::onAttributeDeleted( int idx )
 {
+  mPreventFeatureRefresh = false;
   if ( mFeature.isValid() )
   {
     QgsAttributes attrs = mFeature.attributes();
@@ -299,9 +309,43 @@ void QgsAttributeForm::onAttributeDeleted( int idx )
   setFeature( mFeature );
 }
 
+void QgsAttributeForm::onUpdatedFields()
+{
+  mPreventFeatureRefresh = false;
+  if ( mFeature.isValid() )
+  {
+    QgsAttributes attrs( layer()->fields().size() );
+    for ( int i = 0; i < layer()->fields().size(); i++ )
+    {
+      int idx = mFeature.fields()->indexFromName( layer()->fields().at( i ).name() );
+      if ( idx != -1 )
+      {
+        attrs[i] = mFeature.attributes().at( idx );
+        if ( mFeature.attributes().at( idx ).type() != layer()->fields().at( i ).type() )
+        {
+          attrs[i].convert( layer()->fields().at( i ).type() );
+        }
+      }
+      else
+      {
+        attrs[i] = QVariant( layer()->fields().at( i ).type() );
+      }
+    }
+    mFeature.setFields( layer()->fields() );
+    mFeature.setAttributes( attrs );
+  }
+  init();
+  setFeature( mFeature );
+}
+
+void QgsAttributeForm::preventFeatureRefresh()
+{
+  mPreventFeatureRefresh = true;
+}
+
 void QgsAttributeForm::refreshFeature()
 {
-  if ( mLayer->isEditable() || !mFeature.isValid() )
+  if ( mPreventFeatureRefresh || mLayer->isEditable() || !mFeature.isValid() )
     return;
 
   // reload feature if layer changed although not editable
@@ -323,7 +367,9 @@ void QgsAttributeForm::synchronizeEnabledState()
     QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
     if ( eww )
     {
-      fieldEditable = mLayer->fieldEditable( eww->fieldIdx() );
+      fieldEditable = !mLayer->editFormConfig()->readOnly( eww->fieldIdx() ) &&
+                      (( mLayer->dataProvider() && layer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) ||
+                       FID_IS_NEW( mFeature.id() ) );
     }
     ww->setEnabled( isEditable && fieldEditable );
   }
@@ -362,15 +408,15 @@ void QgsAttributeForm::init()
   setLayout( new QGridLayout( this ) );
 
   // Try to load Ui-File for layout
-  if ( mLayer->editorLayout() == QgsVectorLayer::UiFileLayout && !mLayer->editForm().isEmpty() )
+  if ( mLayer->editFormConfig()->layout() == QgsEditFormConfig::UiFileLayout && !mLayer->editFormConfig()->uiForm().isEmpty() )
   {
-    QFile file( mLayer->editForm() );
+    QFile file( mLayer->editFormConfig()->uiForm() );
 
     if ( file.open( QFile::ReadOnly ) )
     {
       QUiLoader loader;
 
-      QFileInfo fi( mLayer->editForm() );
+      QFileInfo fi( mLayer->editFormConfig()->uiForm() );
       loader.setWorkingDirectory( fi.dir() );
       formWidget = loader.load( &file, this );
       formWidget->setWindowFlags( Qt::Widget );
@@ -385,12 +431,12 @@ void QgsAttributeForm::init()
   }
 
   // Tab layout
-  if ( !formWidget && mLayer->editorLayout() == QgsVectorLayer::TabLayout )
+  if ( !formWidget && mLayer->editFormConfig()->layout() == QgsEditFormConfig::TabLayout )
   {
     QTabWidget* tabWidget = new QTabWidget();
     layout()->addWidget( tabWidget );
 
-    Q_FOREACH ( QgsAttributeEditorElement *widgDef, mLayer->attributeEditorElements() )
+    Q_FOREACH ( QgsAttributeEditorElement* widgDef, mLayer->editFormConfig()->tabs() )
     {
       QWidget* tabPage = new QWidget( tabWidget );
 
@@ -445,13 +491,13 @@ void QgsAttributeForm::init()
       //show attribute alias if available
       QString fieldName = mLayer->attributeDisplayName( idx );
 
-      const QString widgetType = mLayer->editorWidgetV2( idx );
+      const QString widgetType = mLayer->editFormConfig()->widgetType( idx );
 
       if ( widgetType == "Hidden" )
         continue;
 
-      const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( idx );
-      bool labelOnTop = mLayer->labelOnTop( idx );
+      const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig()->widgetConfig( idx );
+      bool labelOnTop = mLayer->editFormConfig()->labelOnTop( idx );
 
       // This will also create the widget
       QWidget *l = new QLabel( fieldName );
@@ -482,6 +528,12 @@ void QgsAttributeForm::init()
       rww->setContext( mContext );
       gridLayout->addWidget( rww->widget(), row++, 0, 1, 2 );
       mWidgets.append( rww );
+    }
+
+    if ( QgsProject::instance()->relationManager()->referencedRelations( mLayer ).size() == 0 )
+    {
+      QSpacerItem *spacerItem = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
+      gridLayout->addItem( spacerItem, row++, 0 );
     }
   }
 
@@ -523,23 +575,32 @@ void QgsAttributeForm::initPython()
   cleanPython();
 
   // Init Python
-  if ( !mLayer->editFormInit().isEmpty() )
+  if ( !mLayer->editFormConfig()->initFunction().isEmpty() )
   {
-    QString module = mLayer->editFormInit();
+    QString module = mLayer->editFormConfig()->initFunction();
 
-    int pos = module.lastIndexOf( "." );
-    if ( pos >= 0 )
+    int pos = module.lastIndexOf( '.' );
+
+    if ( pos >= 0 ) // It's a module
     {
       QgsPythonRunner::run( QString( "import %1" ).arg( module.left( pos ) ) );
+      /* Reload the module if the DEBUGMODE switch has been set in the module.
+      If set to False you have to reload QGIS to reset it to True due to Python
+      module caching */
+      QString reload = QString( "if hasattr(%1,'DEBUGMODE') and %1.DEBUGMODE:"
+                                " reload(%1)" ).arg( module.left( pos ) );
+
+      QgsPythonRunner::run( reload );
+    }
+    else if ( mLayer->editFormConfig()->useInitCode() )  // Must be supplied code
+    {
+      QgsPythonRunner::run( mLayer->editFormConfig()->initCode() );
+    }
+    else
+    {
+      QgsDebugMsg( "No dot in editFormInit and no custom python code provided! There is nothing to run." );
     }
 
-    /* Reload the module if the DEBUGMODE switch has been set in the module.
-    If set to False you have to reload QGIS to reset it to True due to Python
-    module caching */
-    QString reload = QString( "if hasattr(%1,'DEBUGMODE') and %1.DEBUGMODE:"
-                              " reload(%1)" ).arg( module.left( pos ) );
-
-    QgsPythonRunner::run( reload );
 
     QgsPythonRunner::run( "import inspect" );
     QString numArgs;
@@ -590,17 +651,17 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
       int fldIdx = vl->fieldNameIndex( fieldDef->name() );
       if ( fldIdx < vl->fields().count() && fldIdx >= 0 )
       {
-        const QString widgetType = mLayer->editorWidgetV2( fldIdx );
-        const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( fldIdx );
+        const QString widgetType = mLayer->editFormConfig()->widgetType( fldIdx );
+        const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig()->widgetConfig( fldIdx );
 
         QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, fldIdx, widgetConfig, 0, this, mContext );
         newWidget = eww->widget();
         addWidgetWrapper( eww );
 
-        newWidget->setObjectName( mLayer->fields()[ fldIdx ].name() );
+        newWidget->setObjectName( mLayer->fields().at( fldIdx ).name() );
       }
 
-      labelOnTop = mLayer->labelOnTop( fieldDef->idx() );
+      labelOnTop = mLayer->editFormConfig()->labelOnTop( fieldDef->idx() );
       labelText = mLayer->attributeDisplayName( fieldDef->idx() );
 
       break;
@@ -745,8 +806,8 @@ void QgsAttributeForm::createWrappers()
       {
         if ( field.name() == myWidget->objectName() )
         {
-          const QString widgetType = mLayer->editorWidgetV2( field.name() );
-          const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( field.name() );
+          const QString widgetType = mLayer->editFormConfig()->widgetType( field.name() );
+          const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig()->widgetConfig( field.name() );
           int idx = mLayer->fieldNameIndex( field.name() );
 
           QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, idx, widgetConfig, myWidget, this, mContext );

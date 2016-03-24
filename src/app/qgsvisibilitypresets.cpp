@@ -281,7 +281,6 @@ void QgsVisibilityPresets::menuAboutToShow()
     mMenuPresetActions.append( a );
 
     QAction* replaceAction = new QAction( grpName, mReplaceMenu );
-    replaceAction->setEnabled( !a->isChecked() ); //can't replace current preset
     connect( replaceAction, SIGNAL( triggered() ), this, SLOT( replaceTriggered() ) );
     mReplaceMenu->addAction( replaceAction );
   }

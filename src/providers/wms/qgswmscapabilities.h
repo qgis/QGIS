@@ -7,6 +7,7 @@
 #include <QStringList>
 #include <QVector>
 
+#include "qgsauthmanager.h"
 #include "qgsraster.h"
 #include "qgsrectangle.h"
 
@@ -434,20 +435,25 @@ struct QgsWmsParserSettings
 
 struct QgsWmsAuthorization
 {
-  QgsWmsAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& referer = QString() )
-      : mUserName( userName ), mPassword( password ), mReferer( referer ) {}
+  QgsWmsAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& referer = QString(), const QString& authcfg = QString() )
+      : mUserName( userName ), mPassword( password ), mReferer( referer ), mAuthCfg( authcfg ) {}
 
-  void setAuthorization( QNetworkRequest &request ) const
+  bool setAuthorization( QNetworkRequest &request ) const
   {
-    if ( !mUserName.isNull() || !mPassword.isNull() )
+    if ( !mAuthCfg.isEmpty() )
     {
-      request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName ).arg( mPassword ).toAscii().toBase64() );
+      return QgsAuthManager::instance()->updateNetworkRequest( request, mAuthCfg );
+    }
+    else if ( !mUserName.isNull() || !mPassword.isNull() )
+    {
+      request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName, mPassword ).toAscii().toBase64() );
     }
 
     if ( !mReferer.isNull() )
     {
       request.setRawHeader( "Referer", QString( "%1" ).arg( mReferer ).toAscii() );
     }
+    return true;
   }
 
   //! Username for basic http authentication
@@ -459,7 +465,8 @@ struct QgsWmsAuthorization
   //! Referer for http requests
   QString mReferer;
 
-
+  //! Authentication configuration ID
+  QString mAuthCfg;
 };
 
 
@@ -468,7 +475,7 @@ class QgsWmsSettings
 {
   public:
 
-    bool parseUri( QString uriString );
+    bool parseUri( const QString& uriString );
 
     QString baseUrl() const { return mBaseUrl; }
     QgsWmsAuthorization authorization() const { return mAuth; }
@@ -607,7 +614,7 @@ class QgsWmsCapabilities
     void parseKeywords( const QDomNode &e, QStringList &keywords );
     void parseTheme( const QDomElement &e, QgsWmtsTheme &t );
 
-    QString nodeAttribute( const QDomElement &e, QString name, QString defValue = QString::null );
+    QString nodeAttribute( const QDomElement &e, const QString& name, const QString& defValue = QString::null );
 
     /**
      * In case no bounding box is present in WMTS capabilities, try to estimate it from tile matrix sets.
@@ -689,7 +696,7 @@ class QgsWmsCapabilitiesDownload : public QObject
     Q_OBJECT
 
   public:
-    QgsWmsCapabilitiesDownload( QObject* parent = 0 );
+    explicit QgsWmsCapabilitiesDownload( QObject* parent = 0 );
 
     QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, QObject* parent = 0 );
 

@@ -91,26 +91,26 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     QStringList pluginList() override;
 
     //! return whether the plugin is loaded (active)
-    virtual bool isPluginLoaded( QString packageName ) override;
+    virtual bool isPluginLoaded( const QString& packageName ) override;
 
     //! return a list of active plugins
     virtual QStringList listActivePlugins() override;
 
     //! load python plugin (import)
-    bool loadPlugin( QString packageName ) override;
+    bool loadPlugin( const QString& packageName ) override;
 
     //! start plugin: add to active plugins and call initGui()
-    bool startPlugin( QString packageName ) override;
+    bool startPlugin( const QString& packageName ) override;
 
     //! helper function to get some information about plugin
     //! @param function one of these strings: name, tpye, version, description
-    QString getPluginMetadata( QString pluginName, QString function ) override;
+    QString getPluginMetadata( const QString& pluginName, const QString& function ) override;
 
     //! confirm it is safe to uninstall the plugin
-    bool canUninstallPlugin( QString packageName ) override;
+    bool canUninstallPlugin( const QString& packageName ) override;
 
     //! unload plugin
-    bool unloadPlugin( QString packageName ) override;
+    bool unloadPlugin( const QString& packageName ) override;
 
   protected:
 

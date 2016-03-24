@@ -15,7 +15,7 @@ bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsLayerTreeG
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    errorMessage = QString( "Can not open file" );
+    errorMessage = QLatin1String( "Can not open file" );
     return false;
   }
 
@@ -86,7 +86,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
 
 }
 
-bool QgsLayerDefinition::exportLayerDefinition( QString path, QList<QgsLayerTreeNode*> selectedTreeNodes, QString &errorMessage )
+bool QgsLayerDefinition::exportLayerDefinition( QString path, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage )
 {
   if ( !path.endsWith( ".qlr" ) )
     path = path.append( ".qlr" );

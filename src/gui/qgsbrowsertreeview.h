@@ -40,7 +40,7 @@ class GUI_EXPORT QgsBrowserTreeView : public QTreeView
     // returns true if at least one descendat is expanded, used in refresh
     bool hasExpandedDescendant( const QModelIndex& index ) const;
 
-    // Set section where to store settings (because we have 2 browser dick widgets
+    // Set section where to store settings (because we have 2 browser dock widgets)
     void setSettingsSection( const QString & section ) { mSettingsSection = section; }
 
   protected slots:

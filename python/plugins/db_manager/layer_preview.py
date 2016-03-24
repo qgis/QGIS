@@ -51,7 +51,7 @@ class LayerPreview(QgsMapCanvas):
         self.setDirty(True)
         self.loadPreview(self.item)
 
-    def loadPreview(self, item, force=False):
+    def loadPreview(self, item):
         if item == self.item and not self.dirty:
             return
         self._clear()

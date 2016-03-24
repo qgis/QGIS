@@ -36,7 +36,7 @@ class QgsRendererV2Widget;
 class CORE_EXPORT QgsRendererV2AbstractMetadata
 {
   public:
-    QgsRendererV2AbstractMetadata( QString name, QString visibleName, QIcon icon = QIcon() )
+    QgsRendererV2AbstractMetadata( const QString& name, const QString& visibleName, const QIcon& icon = QIcon() )
         : mName( name ), mVisibleName( visibleName ), mIcon( icon ) {}
     virtual ~QgsRendererV2AbstractMetadata() {}
 
@@ -79,10 +79,10 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
 
     /** Construct metadata */
     //! @note not available in python bindings
-    QgsRendererV2Metadata( QString name,
-                           QString visibleName,
+    QgsRendererV2Metadata( const QString& name,
+                           const QString& visibleName,
                            QgsRendererV2CreateFunc pfCreate,
-                           QIcon icon = QIcon(),
+                           const QIcon& icon = QIcon(),
                            QgsRendererV2WidgetFunc pfWidget = NULL )
         : QgsRendererV2AbstractMetadata( name, visibleName, icon )
         , mCreateFunc( pfCreate )
@@ -91,11 +91,11 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
     {}
 
     //! @note not available in python bindings
-    QgsRendererV2Metadata( QString name,
-                           QString visibleName,
+    QgsRendererV2Metadata( const QString& name,
+                           const QString& visibleName,
                            QgsRendererV2CreateFunc pfCreate,
                            QgsRendererV2CreateFromSldFunc pfCreateFromSld,
-                           QIcon icon = QIcon(),
+                           const QIcon& icon = QIcon(),
                            QgsRendererV2WidgetFunc pfWidget = NULL )
         : QgsRendererV2AbstractMetadata( name, visibleName, icon )
         , mCreateFunc( pfCreate )
@@ -145,10 +145,10 @@ class CORE_EXPORT QgsRendererV2Registry
     bool addRenderer( QgsRendererV2AbstractMetadata* metadata );
 
     //! remove renderer from registry
-    bool removeRenderer( QString rendererName );
+    bool removeRenderer( const QString& rendererName );
 
     //! get metadata for particular renderer. Returns NULL if not found in registry.
-    QgsRendererV2AbstractMetadata* rendererMetadata( QString rendererName );
+    QgsRendererV2AbstractMetadata* rendererMetadata( const QString& rendererName );
 
     //! return a list of available renderers
     QStringList renderersList();

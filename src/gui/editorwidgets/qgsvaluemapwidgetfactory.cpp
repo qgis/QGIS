@@ -51,7 +51,7 @@ QgsEditorWidgetConfig QgsValueMapWidgetFactory::readConfig( const QDomElement& c
 
   QDomNodeList nodes = configElement.elementsByTagName( "value" );
 
-  for ( unsigned int i = 0; i < nodes.length(); ++i )
+  for ( int i = 0; i < nodes.size(); ++i )
   {
     QDomElement elem = nodes.at( i ).toElement();
     cfg.insert( elem.attribute( "key" ), elem.attribute( "value" ) );

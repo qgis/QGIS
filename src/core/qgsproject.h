@@ -93,7 +93,7 @@ class CORE_EXPORT QgsProject : public QObject
     void setTitle( const QString& title );
 
     /** Returns title */
-    const QString & title() const;
+    QString title() const;
     //@}
 
     /**
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsProject : public QObject
       keys would be the familiar QSettings-like '/' delimited entries, implying
       a hierarchy of keys and corresponding values
 
-      @note The key string <em>must</em> include '/'s.  E.g., "/foo" not "foo".
+      @note The key string must be valid xml tag names in order to be saved to the file.
     */
     //@{
     //! @note available in python bindings as writeEntryBool
@@ -214,11 +214,9 @@ class CORE_EXPORT QgsProject : public QObject
         keys would be the familiar QSettings-like '/' delimited entries,
         implying a hierarchy of keys and corresponding values
 
-
-        @note The key string <em>must</em> include '/'s.  E.g., "/foo" not "foo".
     */
     //@{
-    QStringList readListEntry( const QString & scope, const QString & key, QStringList def = QStringList(), bool *ok = 0 ) const;
+    QStringList readListEntry( const QString & scope, const QString & key, const QStringList& def = QStringList(), bool *ok = 0 ) const;
 
     QString readEntry( const QString & scope, const QString & key, const QString & def = QString::null, bool * ok = 0 ) const;
     int readNumEntry( const QString & scope, const QString & key, int def = 0, bool * ok = 0 ) const;
@@ -252,7 +250,7 @@ class CORE_EXPORT QgsProject : public QObject
     void dumpProperties() const;
 
     /** Prepare a filename to save it to the project file */
-    QString writePath( QString filename, QString relativeBasePath = QString::null ) const;
+    QString writePath( const QString& filename, const QString& relativeBasePath = QString::null ) const;
 
     /** Turn filename read from the project file to an absolute path */
     QString readPath( QString filename ) const;
@@ -316,7 +314,7 @@ class CORE_EXPORT QgsProject : public QObject
   protected:
 
     /** Set error message from read/write operation */
-    void setError( QString errorMessage );
+    void setError( const QString& errorMessage );
 
     /** Clear error message */
     void clearError();
@@ -362,14 +360,14 @@ class CORE_EXPORT QgsProject : public QObject
     void projectSaved();
 
     //! emitted when an old project file is read.
-    void oldProjectVersionWarning( QString );
+    void oldProjectVersionWarning( const QString& );
 
     //! emitted when a layer from a projects was read
     // @param i current layer
     // @param n number of layers
     void layerLoaded( int i, int n );
 
-    void loadingLayer( QString );
+    void loadingLayer( const QString& );
 
     void snapSettingsChanged();
 
@@ -415,7 +413,7 @@ class CORE_EXPORT QgsProject : public QObject
 class CORE_EXPORT QgsProjectBadLayerHandler
 {
   public:
-    virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom ) = 0;
+    virtual void handleBadLayers( const QList<QDomNode>& layers, const QDomDocument& projectDom ) = 0;
     virtual ~QgsProjectBadLayerHandler() {}
 };
 
@@ -424,7 +422,7 @@ class CORE_EXPORT QgsProjectBadLayerHandler
 class CORE_EXPORT QgsProjectBadLayerDefaultHandler : public QgsProjectBadLayerHandler
 {
   public:
-    virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom ) override;
+    virtual void handleBadLayers( const QList<QDomNode>& layers, const QDomDocument& projectDom ) override;
 
 };
 

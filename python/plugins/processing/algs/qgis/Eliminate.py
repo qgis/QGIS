@@ -49,7 +49,6 @@ class Eliminate(GeoAlgorithm):
     COMPARISONVALUE = 'COMPARISONVALUE'
     COMPARISON = 'COMPARISON'
 
-    MODES = ['Largest area', 'Smallest Area', 'Largest common boundary']
     MODE_LARGEST_AREA = 0
     MODE_SMALLEST_AREA = 1
     MODE_BOUNDARY = 2
@@ -57,6 +56,11 @@ class Eliminate(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Eliminate sliver polygons')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+
+        self.modes = [self.tr('Largest area'),
+                      self.tr('Smallest Area'),
+                      self.tr('Largest common boundary')]
+
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterBoolean(self.KEEPSELECTION,
@@ -79,7 +83,7 @@ class Eliminate(GeoAlgorithm):
                                           self.tr('Value'), default='0'))
         self.addParameter(ParameterSelection(self.MODE,
                                              self.tr('Merge selection with the neighbouring polygon with the'),
-                                             self.MODES))
+                                             self.modes))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))
 
     def processAlgorithm(self, progress):

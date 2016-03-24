@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _POINT_SET_H_
-#define _POINT_SET_H_
+#ifndef POINT_SET_H
+#define POINT_SET_H
 
 #if defined(_VERBOSE_) || (_DEBUG_) || (_DEBUG_FULL_)
 #include <iostream>
@@ -115,10 +115,10 @@ namespace pal
       : mGeos( 0 )
       , mOwnsGeom( false )
       , parent( 0 )
-      , xmin( DBL_MAX )
-      , xmax( -DBL_MAX )
-      , ymin( DBL_MAX )
-      , ymax( -DBL_MAX )
+      , xmin( ps.xmin )
+      , xmax( ps.xmax )
+      , ymin( ps.ymin )
+      , ymax( ps.ymax )
       , mPreparedGeom( 0 )
   {
     int i;
@@ -299,7 +299,7 @@ namespace pal
       GEOSCoordSeq_setX_r( geosctxt, seq, 0, x );
       GEOSCoordSeq_setY_r( geosctxt, seq, 0, y );
       GEOSGeometry* point = GEOSGeom_createPoint_r( geosctxt, seq );
-      bool result = ( GEOSPreparedContains_r( geosctxt, preparedGeom(), point ) == 1 );
+      bool result = ( GEOSPreparedContainsProperly_r( geosctxt, preparedGeom(), point ) == 1 );
       GEOSGeom_destroy_r( geosctxt, point );
 
       return result;
@@ -349,7 +349,7 @@ namespace pal
     try
     {
       GEOSGeometry* bboxGeos = GEOSGeom_createLinearRing_r( geosctxt, coord );
-      bool result = ( GEOSPreparedContains_r( geosctxt, preparedGeom(), bboxGeos ) == 1 );
+      bool result = ( GEOSPreparedContainsProperly_r( geosctxt, preparedGeom(), bboxGeos ) == 1 );
       GEOSGeom_destroy_r( geosctxt, bboxGeos );
       return result;
     }
@@ -362,7 +362,7 @@ namespace pal
 
   void PointSet::splitPolygons( QLinkedList<PointSet*> &shapes_toProcess,
                                 QLinkedList<PointSet*> &shapes_final,
-                                double xrm, double yrm, const QString& uid )
+                                double xrm, double yrm, const QgsFeatureId& uid )
   {
 #ifdef _DEBUG_
     std::cout << "splitPolygons: " << uid << std::endl;
@@ -923,6 +923,7 @@ namespace pal
       double ny;
       ( void )GEOSCoordSeq_getX_r( geosctxt, nearestCoord, 0, &nx );
       ( void )GEOSCoordSeq_getY_r( geosctxt, nearestCoord, 0, &ny );
+      GEOSCoordSeq_destroy_r( geosctxt, nearestCoord );
       GEOSGeom_destroy_r( geosctxt, geosPt );
 
       if ( rx )

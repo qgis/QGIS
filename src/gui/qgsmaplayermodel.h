@@ -42,7 +42,7 @@ class GUI_EXPORT QgsMapLayerModel : public QAbstractItemModel
     /**
      * @brief QgsMapLayerModel creates a model to display a specific list of layers in a widget.
      */
-    explicit QgsMapLayerModel( QList<QgsMapLayer*> layers, QObject *parent = 0 );
+    explicit QgsMapLayerModel( const QList<QgsMapLayer*>& layers, QObject *parent = 0 );
 
     /**
      * @brief setItemsCheckable defines if layers should be selectable in the widget
@@ -66,8 +66,8 @@ class GUI_EXPORT QgsMapLayerModel : public QAbstractItemModel
 
 
   protected slots:
-    void removeLayers( const QStringList layerIds );
-    void addLayers( QList<QgsMapLayer*> layers );
+    void removeLayers( const QStringList& layerIds );
+    void addLayers( const QList<QgsMapLayer*>& layers );
 
   protected:
     QList<QgsMapLayer*> mLayers;

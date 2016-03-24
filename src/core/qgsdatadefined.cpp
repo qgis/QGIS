@@ -59,9 +59,9 @@ QgsDataDefined* QgsDataDefined::fromMap( const QgsStringMap &map, const QString 
     return 0;
   }
 
-  bool active = ( map.value( QString( "%1active" ).arg( prefix ), "1" ) != QString( "0" ) );
+  bool active = ( map.value( QString( "%1active" ).arg( prefix ), "1" ) != QLatin1String( "0" ) );
   QString expression = map.value( QString( "%1expression" ).arg( prefix ) );
-  bool useExpression = ( map.value( QString( "%1useexpr" ).arg( prefix ), "1" ) != QString( "0" ) );
+  bool useExpression = ( map.value( QString( "%1useexpr" ).arg( prefix ), "1" ) != QLatin1String( "0" ) );
   QString field = map.value( QString( "%1field" ).arg( prefix ), QString() );
 
   return new QgsDataDefined( active, useExpression, expression, field );
@@ -147,7 +147,7 @@ QMap<QString, QVariant> QgsDataDefined::expressionParams() const
   return d->expressionParams;
 }
 
-void QgsDataDefined::setExpressionParams( QMap<QString, QVariant> params )
+void QgsDataDefined::setExpressionParams( const QMap<QString, QVariant>& params )
 {
   d.detach();
   d->expressionParams = params;
@@ -286,7 +286,7 @@ void QgsDataDefined::setField( const QString &field )
   d->exprRefColumns.clear();
 }
 
-void QgsDataDefined::insertExpressionParam( QString key, QVariant param )
+void QgsDataDefined::insertExpressionParam( const QString& key, const QVariant& param )
 {
   d.detach();
   d->expressionParams.insert( key, param );

@@ -39,7 +39,7 @@ QgsCubicRasterResampler::~QgsCubicRasterResampler()
 {
 }
 
-QgsRasterResampler *QgsCubicRasterResampler::clone() const
+QgsCubicRasterResampler* QgsCubicRasterResampler::clone() const
 {
   return new QgsCubicRasterResampler();
 }

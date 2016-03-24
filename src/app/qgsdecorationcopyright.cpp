@@ -122,7 +122,7 @@ void QgsDecorationCopyright::render( QPainter * theQPainter )
         break;
       case 1: // Top left
         //Define top left hand corner start point
-        myYOffset = 0;;
+        myYOffset = 0;
         myXOffset = 5;
         break;
       case 2: // Top Right

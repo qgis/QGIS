@@ -132,24 +132,34 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
     if ( !layers.isEmpty() )
     {
       QStringList layerSet;
-      QStringList wmsLayerList = layers.split( "," );
+      QStringList wmsLayerList = layers.split( ",", QString::SkipEmptyParts );
       QStringList wmsStyleList;
 
       if ( !styles.isEmpty() )
       {
-        wmsStyleList = styles.split( "," );
+        wmsStyleList = styles.split( ",", QString::SkipEmptyParts );
       }
 
       for ( int i = 0; i < wmsLayerList.size(); ++i )
       {
+        QString wmsLayer = wmsLayerList.at( i );
         QString styleName;
         if ( wmsStyleList.size() > i )
         {
           styleName = wmsStyleList.at( i );
         }
 
-        Q_FOREACH ( QgsMapLayer *layer, mapLayerFromStyle( wmsLayerList.at( i ), styleName ) )
+        bool allowCaching = true;
+        if ( wmsLayerList.count( wmsLayer ) > 1 )
         {
+          allowCaching = false;
+        }
+
+        QList<QgsMapLayer*> layerList = mapLayerFromStyle( wmsLayer, styleName, allowCaching );
+        int listIndex;
+        for ( listIndex = layerList.size() - 1; listIndex >= 0; listIndex-- )
+        {
+          QgsMapLayer* layer = layerList.at( listIndex );
           if ( layer )
           {
             layerSet.push_back( layer->id() );

@@ -339,7 +339,7 @@ QString QgsRasterLayer::metadata()
   }
   else
   {
-    myMetadata += "*" + tr( "NoDataValue not set" ) + "*";
+    myMetadata += '*' + tr( "NoDataValue not set" ) + '*';
   }
   myMetadata += "</p>\n";
 
@@ -665,7 +665,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   if ( !mDataProvider->isValid() )
   {
     setError( mDataProvider->error() );
-    appendError( ERR( tr( "Provider is not valid (provider: %1, URI: %2" ).arg( mProviderKey ).arg( mDataSource ) ) );
+    appendError( ERR( tr( "Provider is not valid (provider: %1, URI: %2" ).arg( mProviderKey, mDataSource ) ) );
     return;
   }
 
@@ -856,7 +856,7 @@ void QgsRasterLayer::closeDataProvider()
   mDataProvider = 0;
 }
 
-void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, QgsRaster::ContrastEnhancementLimits theLimits, QgsRectangle theExtent, int theSampleSize, bool theGenerateLookupTableFlag )
+void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, QgsRaster::ContrastEnhancementLimits theLimits, const QgsRectangle& theExtent, int theSampleSize, bool theGenerateLookupTableFlag )
 {
   QgsDebugMsg( QString( "theAlgorithm = %1 theLimits = %2 theExtent.isEmpty() = %3" ).arg( theAlgorithm ).arg( theLimits ).arg( theExtent.isEmpty() ) );
   if ( !mPipe.renderer() || !mDataProvider )
@@ -1064,7 +1064,7 @@ void QgsRasterLayer::setLayerOrder( QStringList const & layers )
 
 }
 
-void QgsRasterLayer::setSubLayerVisibility( QString name, bool vis )
+void QgsRasterLayer::setSubLayerVisibility( const QString& name, bool vis )
 {
 
   if ( mDataProvider )
@@ -1103,7 +1103,7 @@ QStringList QgsRasterLayer::subLayers() const
   return mDataProvider->subLayers();
 }
 
-QPixmap QgsRasterLayer::previewAsPixmap( QSize size, QColor bgColor )
+QPixmap QgsRasterLayer::previewAsPixmap( const QSize& size, const QColor& bgColor )
 {
   QPixmap myQPixmap( size );
 
@@ -1154,7 +1154,7 @@ QPixmap QgsRasterLayer::previewAsPixmap( QSize size, QColor bgColor )
 
 // this function should be used when rendering with the MTR engine introduced in 2.3, as QPixmap is not thread safe (see bug #9626)
 // note: previewAsImage and previewAsPixmap should use a common low-level fct QgsRasterLayer::previewOnPaintDevice( QSize size, QColor bgColor, QPaintDevice &device )
-QImage QgsRasterLayer::previewAsImage( QSize size, QColor bgColor, QImage::Format format )
+QImage QgsRasterLayer::previewAsImage( const QSize& size, const QColor& bgColor, QImage::Format format )
 {
   QImage myQImage( size, format );
 
@@ -1210,7 +1210,7 @@ void QgsRasterLayer::updateProgress( int theProgress, int theMax )
   Q_UNUSED( theMax );
 }
 
-void QgsRasterLayer::onProgress( int theType, double theProgress, QString theMessage )
+void QgsRasterLayer::onProgress( int theType, double theProgress, const QString& theMessage )
 {
   Q_UNUSED( theType );
   Q_UNUSED( theMessage );
@@ -1438,6 +1438,7 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
 
       QDomNodeList rangeList = bandElement.elementsByTagName( "noDataRange" );
 
+      myNoDataRangeList.reserve( rangeList.size() );
       for ( int j = 0; j < rangeList.size(); ++j )
       {
         QDomElement rangeElement = rangeList.at( j ).toElement();

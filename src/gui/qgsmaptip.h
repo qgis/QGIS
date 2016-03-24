@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef _QGSMAPTIP_H_
-#define _QGSMAPTIP_H_
+#ifndef QGSMAPTIP_H
+#define QGSMAPTIP_H
 
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -68,4 +68,4 @@ class GUI_EXPORT QgsMapTip
     QPoint mLastPosition;
 
 };
-#endif // _QGSMAPTIP_H_
+#endif // QGSMAPTIP_H

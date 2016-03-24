@@ -75,7 +75,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
                 self.tr('[Save to temporary file]'))
 
         self.mOutputFieldTypeComboBox.blockSignals(True)
-        for t in self.alg.TYPE_NAMES:
+        for t in self.alg.type_names:
             self.mOutputFieldTypeComboBox.addItem(t)
         self.mOutputFieldTypeComboBox.blockSignals(False)
 

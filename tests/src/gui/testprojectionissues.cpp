@@ -51,7 +51,7 @@ void TestProjectionIssues::initTestCase()
   QgsApplication::initQgis();
 
   //create maplayer from testdata and add to layer registry
-  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + "/" +  "checker360by180.asc" );
+  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + '/' +  "checker360by180.asc" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
   // Set to WGS84
@@ -83,31 +83,31 @@ void TestProjectionIssues::initTestCase()
   mMapCanvas->setDestinationCrs( destCRS );
   mMapCanvas->setCrsTransformEnabled( true );
 
-};
+}
 
 void TestProjectionIssues::cleanupTestCase()
 {
   delete mMapCanvas;
 
   QgsApplication::exitQgis();
-};
+}
 
 void TestProjectionIssues::init()
 {
 
-};
+}
 
 void TestProjectionIssues::cleanup()
 {
 
-};
+}
 
 void TestProjectionIssues::issue5895()
 {
   QgsRectangle largeExtent( -610861, 5101721, 2523921, 6795055 );
   mMapCanvas->setExtent( largeExtent );
   mMapCanvas->zoomByFactor( 2.0 ); // Zoom out. This should exceed the transform limits.
-};
+}
 
 QTEST_MAIN( TestProjectionIssues )
 #include "testprojectionissues.moc"

@@ -319,6 +319,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //!Show/hide bounding boxes
     void on_mActionShowBoxes_triggered( bool checked );
 
+    //!Show/hide pages
+    void on_mActionShowPage_triggered( bool checked );
+
     //!Show/hide rulers
     void toggleRulers( bool checked );
 
@@ -434,10 +437,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void statusZoomCombo_zoomEntered();
 
     //! Updates status bar composition message
-    void updateStatusCompositionMsg( QString message );
+    void updateStatusCompositionMsg( const QString& message );
 
     //! Updates status bar atlas message
-    void updateStatusAtlasMsg( QString message );
+    void updateStatusAtlasMsg( const QString& message );
 
   private:
 
@@ -485,7 +488,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void createComposerView();
 
     //! Write a world file
-    void writeWorldFile( QString fileName, double a, double b, double c, double d, double e, double f ) const;
+    void writeWorldFile( const QString& fileName, double a, double b, double c, double d, double e, double f ) const;
 
     //! Updates the grid/guide action status based on compositions grid/guide settings
     void restoreGridSettings();
@@ -504,9 +507,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Updates the "set as atlas feature" map layer action, removing it if atlas is disabled
     void updateAtlasMapLayerAction( bool atlasEnabled );
-
-    //! Set default settings for printer page settings based on composition paper size
-    void setPrinterPageDefaults();
 
     //! Load predefined scales from the project's properties
     void loadAtlasPredefinedScalesFromProject();
@@ -563,6 +563,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Page & Printer Setup
     QPrinter* mPrinter;
+    bool mSetPageOrientation;
 
     QUndoView* mUndoView;
 
@@ -641,7 +642,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void updateAtlasMapLayerAction( QgsVectorLayer* coverageLayer );
 
     //! Sets the printer page orientation when the page orientation changes
-    void setPrinterPageOrientation( QString orientation );
+    void pageOrientationChanged( const QString& orientation );
+
+    void setPrinterPageOrientation();
 
     void disablePreviewMode();
     void activateGrayscalePreview();

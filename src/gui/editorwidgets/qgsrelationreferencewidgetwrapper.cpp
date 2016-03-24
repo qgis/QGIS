@@ -30,7 +30,6 @@ QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorL
 QWidget* QgsRelationReferenceWidgetWrapper::createWidget( QWidget* parent )
 {
   QgsRelationReferenceWidget* w = new QgsRelationReferenceWidget( parent );
-  w->setSizePolicy( w->sizePolicy().horizontalPolicy(), QSizePolicy::Expanding );
   return w;
 }
 
@@ -82,7 +81,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget* editor )
   connect( mWidget, SIGNAL( foreignKeyChanged( QVariant ) ), this,  SLOT( foreignKeyChanged( QVariant ) ) );
 }
 
-QVariant QgsRelationReferenceWidgetWrapper::value()
+QVariant QgsRelationReferenceWidgetWrapper::value() const
 {
   if ( !mWidget )
     return QVariant( field().type() );
@@ -99,7 +98,7 @@ QVariant QgsRelationReferenceWidgetWrapper::value()
   }
 }
 
-bool QgsRelationReferenceWidgetWrapper::valid()
+bool QgsRelationReferenceWidgetWrapper::valid() const
 {
   return mWidget;
 }

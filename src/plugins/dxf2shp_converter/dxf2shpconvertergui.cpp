@@ -158,7 +158,7 @@ void dxf2shpConverterGui::getOutputDir()
   QSettings settings;
   QString s = QFileDialog::getSaveFileName( this,
               tr( "Choose a file name to save to" ),
-              settings.value( "/UI/lastShapefileDir", "./" ).toString(),
+              settings.value( "/UI/lastShapefileDir", QDir::homePath() ).toString(),
               tr( "Shapefile" ) + " (*.shp)" );
 
   if ( !s.isEmpty() )

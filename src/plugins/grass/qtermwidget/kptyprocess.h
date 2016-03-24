@@ -37,7 +37,7 @@
 
 class KPtyDevice;
 
-struct KPtyProcessPrivate;
+class KPtyProcessPrivate;
 
 /**
  * This class extends KProcess by support for PTYs (pseudo TTYs).
@@ -155,7 +155,8 @@ private:
 // private data //
 //////////////////
 
-struct KPtyProcessPrivate : KProcessPrivate {
+class KPtyProcessPrivate : public KProcessPrivate {
+  public:
     KPtyProcessPrivate() :
         ptyChannels(KPtyProcess::NoChannels),
         addUtmp(false)

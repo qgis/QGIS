@@ -51,7 +51,7 @@ class TestQgsComposerObject : public QObject
     void writeRetrieveCustomProperties(); //test writing/retreiving custom properties from xml
 
   private:
-    bool renderCheck( QString testName, QImage &image, int mismatchCount = 0 );
+    bool renderCheck( const QString& testName, QImage &image, int mismatchCount = 0 );
     QgsComposition *mComposition;
     QgsMapSettings *mMapSettings;
     QString mReport;
@@ -298,10 +298,10 @@ void TestQgsComposerObject::writeRetrieveCustomProperties()
   delete readObject;
 }
 
-bool TestQgsComposerObject::renderCheck( QString testName, QImage &image, int mismatchCount )
+bool TestQgsComposerObject::renderCheck( const QString& testName, QImage &image, int mismatchCount )
 {
   mReport += "<h2>" + testName + "</h2>\n";
-  QString myTmpDir = QDir::tempPath() + "/";
+  QString myTmpDir = QDir::tempPath() + '/';
   QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );
   QgsRenderChecker myChecker;

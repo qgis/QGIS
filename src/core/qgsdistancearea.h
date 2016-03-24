@@ -64,7 +64,7 @@ class CORE_EXPORT QgsDistanceArea
     void setSourceCrs( const QgsCoordinateReferenceSystem& srcCRS );
 
     //! sets source spatial reference system by authid
-    void setSourceAuthId( QString authid );
+    void setSourceAuthId( const QString& authid );
 
     //! returns source spatial reference system
     long sourceCrs() const { return mCoordTransform->sourceCrs().srsid(); }
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsDistanceArea
     bool setEllipsoid( double semiMajor, double semiMinor );
 
     //! returns ellipsoid's acronym
-    const QString& ellipsoid() const { return mEllipsoid; }
+    QString ellipsoid() const { return mEllipsoid; }
 
     //! returns ellipsoid's semi major axis
     double ellipsoidSemiMajor() const { return mSemiMajor; }
@@ -88,8 +88,29 @@ class CORE_EXPORT QgsDistanceArea
     //! returns ellipsoid's inverse flattening
     double ellipsoidInverseFlattening() const { return mInvFlattening; }
 
-    //! general measurement (line distance or polygon area)
-    double measure( const QgsGeometry* geometry ) const;
+    /** General measurement (line distance or polygon area)
+     * @deprecated use measureArea() or measureLength() methods instead, as this method
+     * is unpredictable for geometry collections
+     */
+    Q_DECL_DEPRECATED double measure( const QgsGeometry* geometry ) const;
+
+    /** Measures the area of a geometry.
+     * @param geometry geometry to measure
+     * @returns area of geometry. For geometry collections, non surface geometries will be ignored
+     * @note added in QGIS 2.12
+     * @see measureLength()
+     * @see measurePerimeter()
+     */
+    double measureArea( const QgsGeometry* geometry ) const;
+
+    /** Measures the length of a geometry.
+     * @param geometry geometry to measure
+     * @returns length of geometry. For geometry collections, non curve geometries will be ignored
+     * @note added in QGIS 2.12
+     * @see measureArea()
+     * @see measurePerimeter()
+     */
+    double measureLength( const QgsGeometry* geometry ) const;
 
     //! measures perimeter of polygon
     double measurePerimeter( const QgsGeometry *geometry ) const;
@@ -97,8 +118,21 @@ class CORE_EXPORT QgsDistanceArea
     //! measures line
     double measureLine( const QList<QgsPoint>& points ) const;
 
-    //! measures line with one segment
+    /** Measures length of line with one segment
+     * @param p1 start of line
+     * @param p2 end of line
+     * @returns distance in meters, or map units if cartesian calculation was performed
+     */
     double measureLine( const QgsPoint& p1, const QgsPoint& p2 ) const;
+
+    /** Measures length of line with one segment and returns units of distance.
+     * @param p1 start of line
+     * @param p2 end of line
+     * @param units will be set to units of measure
+     * @returns calculated distance between points. Distance units are stored in units parameter.
+     * @note added in QGIS 2.12
+     */
+    double measureLine( const QgsPoint& p1, const QgsPoint& p2, QGis::UnitType& units ) const;
 
     //! measures polygon area
     double measurePolygon( const QList<QgsPoint>& points ) const;
@@ -151,6 +185,14 @@ class CORE_EXPORT QgsDistanceArea
     void computeAreaInit();
 
   private:
+
+    enum MeasureType
+    {
+      Default,
+      Area,
+      Length
+    };
+
     //! Copy helper
     void _copy( const QgsDistanceArea & origDA );
 
@@ -171,7 +213,7 @@ class CORE_EXPORT QgsDistanceArea
     double getQ( double x ) const;
     double getQbar( double x ) const;
 
-    double measure( const QgsAbstractGeometryV2* geomV2 ) const;
+    double measure( const QgsAbstractGeometryV2* geomV2, MeasureType type = Default ) const;
     double measureLine( const QgsCurveV2* curve ) const;
     double measurePolygon( const QgsCurveV2* curve ) const;
 

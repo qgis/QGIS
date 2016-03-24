@@ -71,7 +71,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * @param uri String containing the required parameters to connect to the database
      * and query the table.
      */
-    QgsPostgresProvider( QString const &uri = "" );
+    explicit QgsPostgresProvider( QString const &uri = "" );
 
     //! Destructor
     virtual ~QgsPostgresProvider();
@@ -135,6 +135,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /** Determine the fields making up the primary key
     */
     bool determinePrimaryKey();
+
+    /** Determine the fields making up the primary key from the uri attribute keyColumn
+    */
+    void determinePrimaryKeyFromUriKeyColumn();
 
     /**
      * Get the field information for the layer
@@ -227,7 +231,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString subsetString() override;
 
     /** Mutator for sql where clause used to limit dataset size */
-    bool setSubsetString( QString theSQL, bool updateFeatureCount = true ) override;
+    bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() override { return true; }
 
@@ -432,7 +436,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     struct PGException
     {
-      PGException( QgsPostgresResult &r )
+      explicit PGException( QgsPostgresResult &r )
           : mWhat( r.PQresultErrorMessage() )
       {}
 
@@ -452,16 +456,15 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       QString mWhat;
     };
 
-    // A function that determines if the given schema.table.column
-    // contains unqiue entries
-    bool uniqueData( QString query, QString colName );
+    // A function that determines if the given columns contain unique entries
+    bool uniqueData( const QString& quotedColNames );
 
     int mEnabledCapabilities;
 
     void appendGeomParam( const QgsGeometry *geom, QStringList &param ) const;
     void appendPkParams( QgsFeatureId fid, QStringList &param ) const;
 
-    QString paramValue( QString fieldvalue, const QString &defaultValue ) const;
+    QString paramValue( const QString& fieldvalue, const QString &defaultValue ) const;
 
     QgsPostgresConn *mConnectionRO; //! read-only database connection (initially)
     QgsPostgresConn *mConnectionRW; //! read-write database connection (on update)
@@ -471,8 +474,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     void disconnectDb();
 
-    static QString quotedIdentifier( QString ident ) { return QgsPostgresConn::quotedIdentifier( ident ); }
-    static QString quotedValue( QVariant value ) { return QgsPostgresConn::quotedValue( value ); }
+    static QString quotedIdentifier( const QString& ident ) { return QgsPostgresConn::quotedIdentifier( ident ); }
+    static QString quotedValue( const QVariant& value ) { return QgsPostgresConn::quotedValue( value ); }
 
     friend class QgsPostgresFeatureSource;
 
@@ -495,7 +498,7 @@ class QgsPostgresUtils
                                 const QList<int>& pkAttrs,
                                 QSharedPointer<QgsPostgresSharedData> sharedData );
 
-    static QString whereClause( QgsFeatureIds featureIds,
+    static QString whereClause( const QgsFeatureIds& featureIds,
                                 const QgsFields& fields,
                                 QgsPostgresConn* conn,
                                 QgsPostgresPrimaryKeyType pkType,

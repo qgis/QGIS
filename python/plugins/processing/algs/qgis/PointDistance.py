@@ -46,13 +46,13 @@ class PointDistance(GeoAlgorithm):
     NEAREST_POINTS = 'NEAREST_POINTS'
     DISTANCE_MATRIX = 'DISTANCE_MATRIX'
 
-    MAT_TYPES = ['Linear (N*k x 3) distance matrix',
-                 'Standard (N x T) distance matrix',
-                 'Summary distance matrix (mean, std. dev., min, max)']
-
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Distance matrix')
         self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
+
+        self.mat_types = [self.tr('Linear (N*k x 3) distance matrix'),
+                          self.tr('Standard (N x T) distance matrix'),
+                          self.tr('Summary distance matrix (mean, std. dev., min, max)')]
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input point layer'), [ParameterVector.VECTOR_TYPE_POINT]))
@@ -65,7 +65,7 @@ class PointDistance(GeoAlgorithm):
                                               self.tr('Target unique ID field'), self.TARGET_LAYER,
                                               ParameterTableField.DATA_TYPE_ANY))
         self.addParameter(ParameterSelection(self.MATRIX_TYPE,
-                                             self.tr('Output matrix type'), self.MAT_TYPES, 0))
+                                             self.tr('Output matrix type'), self.mat_types, 0))
         self.addParameter(ParameterNumber(self.NEAREST_POINTS,
                                           self.tr('Use only the nearest (k) target points'), 0, 9999, 0))
 
@@ -93,7 +93,7 @@ class PointDistance(GeoAlgorithm):
             self.linearMatrix(inLayer, inField, targetLayer, targetField,
                               matType, nPoints, progress)
         elif matType == 1:
-           # Standard distance matrix
+            # Standard distance matrix
             self.regularMatrix(inLayer, inField, targetLayer, targetField,
                                nPoints, progress)
         elif matType == 2:

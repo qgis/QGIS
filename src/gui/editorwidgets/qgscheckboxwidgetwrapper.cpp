@@ -23,7 +23,7 @@ QgsCheckboxWidgetWrapper::QgsCheckboxWidgetWrapper( QgsVectorLayer* vl, int fiel
 }
 
 
-QVariant QgsCheckboxWidgetWrapper::value()
+QVariant QgsCheckboxWidgetWrapper::value() const
 {
   QVariant v;
 
@@ -53,7 +53,7 @@ void QgsCheckboxWidgetWrapper::initWidget( QWidget* editor )
     connect( mGroupBox, SIGNAL( toggled( bool ) ), this, SLOT( valueChanged( bool ) ) );
 }
 
-bool QgsCheckboxWidgetWrapper::valid()
+bool QgsCheckboxWidgetWrapper::valid() const
 {
   return mCheckBox || mGroupBox;
 }

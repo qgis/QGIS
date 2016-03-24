@@ -124,18 +124,18 @@ QVector<QgsDataItem*> QgsSLConnectionItem::createChildren()
     }
     QString msgDetails = connection.errorMessage();
     if ( !msgDetails.isEmpty() )
-      msg = QString( "%1 (%2)" ).arg( msg ).arg( msgDetails );
+      msg = QString( "%1 (%2)" ).arg( msg, msgDetails );
     children.append( new QgsErrorItem( this, msg, mPath + "/error" ) );
     return children;
   }
 
-  QString connectionInfo = QString( "dbname='%1'" ).arg( QString( connection.path() ).replace( "'", "\\'" ) );
+  QString connectionInfo = QString( "dbname='%1'" ).arg( QString( connection.path() ).replace( '\'', "\\'" ) );
   QgsDataSourceURI uri( connectionInfo );
 
   Q_FOREACH ( const QgsSpatiaLiteConnection::TableEntry& entry, connection.tables() )
   {
     uri.setDataSource( QString(), entry.tableName, entry.column, QString(), QString() );
-    QgsSLLayerItem * layer = new QgsSLLayerItem( this, entry.tableName, mPath + "/" + entry.tableName, uri.uri(), _layerTypeFromDb( entry.type ) );
+    QgsSLLayerItem * layer = new QgsSLLayerItem( this, entry.tableName, mPath + '/' + entry.tableName, uri.uri(), _layerTypeFromDb( entry.type ) );
     children.append( layer );
   }
   return children;
@@ -220,7 +220,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
         importResults.append( tr( "%1: OK!" ).arg( u.name ) );
       else
       {
-        importResults.append( QString( "%1: %2" ).arg( u.name ).arg( importError ) );
+        importResults.append( QString( "%1: %2" ).arg( u.name, importError ) );
         hasError = true;
       }
     }
@@ -271,7 +271,7 @@ QVector<QgsDataItem*> QgsSLRootItem::createChildren()
   QVector<QgsDataItem*> connections;
   Q_FOREACH ( const QString& connName, QgsSpatiaLiteConnection::connectionList() )
   {
-    QgsDataItem * conn = new QgsSLConnectionItem( this, connName, mPath + "/" + connName );
+    QgsDataItem * conn = new QgsSLConnectionItem( this, connName, mPath + '/' + connName );
     connections.push_back( conn );
   }
   return connections;
@@ -317,7 +317,7 @@ QGISEXTERN bool createDb( const QString& dbPath, QString& errCause );
 void QgsSLRootItem::createDatabase()
 {
   QSettings settings;
-  QString lastUsedDir = settings.value( "/UI/lastSpatiaLiteDir", "." ).toString();
+  QString lastUsedDir = settings.value( "/UI/lastSpatiaLiteDir", QDir::homePath() ).toString();
 
   QString filename = QFileDialog::getSaveFileName( 0, tr( "New SpatiaLite Database File" ),
                      lastUsedDir,

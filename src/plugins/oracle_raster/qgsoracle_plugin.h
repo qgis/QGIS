@@ -37,7 +37,7 @@ class QgsOraclePlugin : public QObject, public QgisPlugin
      * QGIS when it attempts to instantiate the plugin.
      * @param theInterface Pointer to the QgisInterface object.
      */
-    QgsOraclePlugin( QgisInterface * theInterface );
+    explicit QgsOraclePlugin( QgisInterface * theInterface );
     //! Destructor
     virtual ~QgsOraclePlugin();
 

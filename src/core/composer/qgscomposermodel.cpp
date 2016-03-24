@@ -915,7 +915,7 @@ Qt::ItemFlags QgsComposerModel::flags( const QModelIndex & index ) const
 
   if ( ! index.isValid() )
   {
-    return flags | Qt::ItemIsDropEnabled;;
+    return flags | Qt::ItemIsDropEnabled;
   }
 
   switch ( index.column() )

@@ -19,15 +19,15 @@ class QgsMapTool : QObject
 
 %ConvertToSubClassCode
   if (dynamic_cast<QgsMapToolZoom*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsMapToolZoom;
+    sipType = sipType_QgsMapToolZoom;
   else if (dynamic_cast<QgsMapToolPan*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsMapToolPan;
+    sipType = sipType_QgsMapToolPan;
   else if (dynamic_cast<QgsMapToolEmitPoint*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsMapToolEmitPoint;
+    sipType = sipType_QgsMapToolEmitPoint;
   else if (dynamic_cast<QgsMapToolIdentify*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsMapToolIdentify;
+    sipType = sipType_QgsMapToolIdentify;
   else
-    sipClass = NULL;
+    sipType = NULL;
 %End
 
   public:
@@ -36,16 +36,16 @@ class QgsMapTool : QObject
     virtual ~QgsMapTool();
 
     //! Mouse move event for overriding. Default implementation does nothing.
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e );
 
     //! Mouse double click event for overriding. Default implementation does nothing.
-    virtual void canvasDoubleClickEvent( QMouseEvent * e );
+    virtual void canvasDoubleClickEvent( QgsMapMouseEvent* e );
 
     //! Mouse press event for overriding. Default implementation does nothing.
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QgsMapMouseEvent* e );
 
     //! Mouse release event for overriding. Default implementation does nothing.
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e );
 
     //! Mouse wheel event for overriding. Default implementation does nothing.
     virtual void wheelEvent( QWheelEvent* e );
@@ -83,7 +83,7 @@ class QgsMapTool : QObject
     QAbstractButton* button();
 
     /** Set a user defined cursor */
-    virtual void setCursor( QCursor cursor );
+    virtual void setCursor( const QCursor& cursor );
 
     /** Check whether this MapTool performs a zoom or pan operation.
      * If it does, we will be able to perform the zoom  and then
@@ -126,7 +126,7 @@ class QgsMapTool : QObject
 
   signals:
     //! emit a message
-    void messageEmitted( QString message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
+    void messageEmitted( const QString& message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
 
     //! emit signal to clear previous message
     void messageDiscarded();

@@ -79,6 +79,7 @@ static QList<int> _makeNodeOrder( QgsLayerTreeLayer* nodeLayer )
   int numNodes = _originalLegendNodeCount( nodeLayer );
 
   QList<int> order;
+  order.reserve( numNodes );
   for ( int i = 0; i < numNodes; ++i )
     order << i;
   return order;
@@ -97,7 +98,7 @@ QList<int> QgsMapLayerLegendUtils::legendNodeOrder( QgsLayerTreeLayer* nodeLayer
   int numNodes = _originalLegendNodeCount( nodeLayer );
 
   QList<int> lst;
-  Q_FOREACH ( const QString& item, orderStr.split( "," ) )
+  Q_FOREACH ( const QString& item, orderStr.split( ',' ) )
   {
     bool ok;
     int id = item.toInt( &ok );
@@ -287,7 +288,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultPluginLayerLegend::createLayerTree
     return nodes;
 
   typedef QPair<QString, QPixmap> XY;
-  Q_FOREACH ( XY item, symbologyList )
+  Q_FOREACH ( const XY& item, symbologyList )
   {
     nodes << new QgsSimpleLegendNode( nodeLayer, item.first, QIcon( item.second ) );
   }

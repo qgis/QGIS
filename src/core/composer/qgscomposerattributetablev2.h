@@ -124,7 +124,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @see setSource
      * @note only used if table source is set to RelationChildren
      */
-    void setRelationId( const QString relationId );
+    void setRelationId( const QString& relationId );
 
     /** Returns the relation id which the table displays child features from
      * @returns relation id
@@ -346,7 +346,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
 
   private slots:
     /** Checks if this vector layer will be removed (and sets mVectorLayer to 0 if yes) */
-    void removeLayer( QString layerId );
+    void removeLayer( const QString& layerId );
 
     void atlasLayerChanged( QgsVectorLayer* layer );
 

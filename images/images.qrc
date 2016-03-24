@@ -35,8 +35,6 @@
         <file>flags/uk.png</file>
         <file>flags/vi.png</file>
         <file>flags/xh.png</file>
-        <file>flags/zh_CN.png</file>
-        <file>flags/zh_TW.png</file>
         <file>icons/qgis-icon-16x16.png</file>
         <file>icons/qgis-icon-60x60.png</file>
         <file>icons/qbrowser-icon-60x60.png</file>
@@ -149,8 +147,11 @@
         <file>themes/default/mActionCancelAllEdits.svg</file>
         <file>themes/default/mActionCancelEdits.svg</file>
         <file>themes/default/mActionCaptureLine.png</file>
+        <file>themes/default/mActionCaptureLine.svg</file>
         <file>themes/default/mActionCapturePoint.png</file>
+        <file>themes/default/mActionCapturePoint.svg</file>
         <file>themes/default/mActionCapturePolygon.png</file>
+        <file>themes/default/mActionCapturePolygon.svg</file>
         <file>themes/default/mActionNewTableRow.png</file>
         <file>themes/default/mActionChangeLabelProperties.png</file>
         <file>themes/default/mActionCheckQgisVersion.png</file>
@@ -311,6 +312,10 @@
         <file>themes/default/mActionZoomToSelected.svg</file>
         <file>themes/default/mIconAtlas.svg</file>
         <file>themes/default/mIconAutoPlacementSettings.svg</file>
+        <file>themes/default/mIconCertificate.svg</file>
+        <file>themes/default/mIconCertificateMissing.svg</file>
+        <file>themes/default/mIconCertificateTrusted.svg</file>
+        <file>themes/default/mIconCertificateUntrusted.svg</file>
         <file>themes/default/mIconClear.svg</file>
         <file>themes/default/mIconClose.png</file>
         <file>themes/default/mIconCollapse.png</file>
@@ -341,6 +346,12 @@
         <file>themes/default/mIconExpressionPreview.svg</file>
         <file>themes/default/mIconExpressionSelect.svg</file>
         <file>themes/default/mIconFavourites.png</file>
+        <file>themes/default/mIconFieldDate.svg</file>
+        <file>themes/default/mIconFieldDateTime.svg</file>
+        <file>themes/default/mIconFieldFloat.svg</file>
+        <file>themes/default/mIconFieldInteger.svg</file>
+        <file>themes/default/mIconFieldText.svg</file>
+        <file>themes/default/mIconFieldTime.svg</file>
         <file>themes/default/mIconFirst.png</file>
         <file>themes/default/mIconGeometryLayer.png</file>
         <file>themes/default/mIconInfo.png</file>
@@ -394,6 +405,8 @@
         <file>themes/default/mIconZip.png</file>
         <file>themes/default/mIconZoom.svg</file>
         <file>themes/default/mMapserverExport.png</file>
+        <file>themes/default/mMessageLog.svg</file>
+        <file>themes/default/mMessageLogRead.svg</file>
         <file>themes/default/north_arrow.png</file>
         <file>themes/default/pie-chart.png</file>
         <file>themes/default/plugin.png</file>
@@ -504,12 +517,14 @@
         <file>themes/default/cadtools/parallel.png</file>
         <file>themes/default/cadtools/perpendicular.png</file>
         <file>themes/default/mIconSuccess.png</file>
-        <file>themes/default/bubble.svg</file>
         <file>themes/default/mIconClear.png</file>
-        <file>flags/zh.png</file>
+        <file>themes/default/mIconWarning.svg</file>
         <file>themes/default/mIconPaintEffects.svg</file>
-	<file>themes/default/mActionCircularStringCurvePoint.png</file>
-	<file>themes/default/mActionCircularStringRadius.png</file>
+        <file>themes/default/mActionCircularStringCurvePoint.png</file>
+        <file>themes/default/mActionCircularStringCurvePoint.svg</file>
+        <file>themes/default/mActionCircularStringRadius.png</file>
+        <file>themes/default/mActionCircularStringRadius.svg</file>
+        <file>flags/zh.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

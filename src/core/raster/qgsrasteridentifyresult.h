@@ -35,7 +35,7 @@ class CORE_EXPORT QgsRasterIdentifyResult
      *  @param theFormat the result format
      *  @param theResults the results
      */
-    QgsRasterIdentifyResult( QgsRaster::IdentifyFormat theFormat, QMap<int, QVariant> theResults );
+    QgsRasterIdentifyResult( QgsRaster::IdentifyFormat theFormat, const QMap<int, QVariant>& theResults );
 
     /** \brief Constructor. Creates invalid result with error.
      *  @param theError the error

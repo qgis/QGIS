@@ -123,7 +123,6 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         schema = unicode(self.getParameterValue(self.SCHEMA))
-        schemastring = "-lco SCHEMA=" + schema
         table = unicode(self.getParameterValue(self.TABLE))
         pk = unicode(self.getParameterValue(self.PK))
         pkstring = "-lco FID=" + pk
@@ -153,6 +152,10 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
             arguments.append('dbname=' + dbname)
         if len(password) > 0:
             arguments.append('password=' + password)
+        if len(schema) > 0:
+            arguments.append('active_schema=' + schema)
+        else:
+            arguments.append('active_schema=public')
         arguments.append('user=' + user + '"')
         arguments.append(ogrLayer)
         arguments.append('-nlt NONE')
@@ -165,8 +168,6 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
             arguments.append('-addfields')
         if overwrite:
             arguments.append('-overwrite')
-        if len(schema) > 0:
-            arguments.append(schemastring)
         if len(pk) > 0:
             arguments.append(pkstring)
         elif primary_key is not None:

@@ -695,6 +695,7 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
   //qDebug() << "difference gometry - " << diffGeoms->exportToWkt();
 
   QList<QgsGeometry*> geomColl = diffGeoms->asGeometryCollection();
+  delete diffGeoms;
 
   QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt( theQgsInterface->mapCanvas()->extent().asWktPolygon() );
 
@@ -713,7 +714,6 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
       }
     }
     QgsRectangle bBox = conflictGeom->boundingBox();
-    QgsFeature feat;
     FeatureLayer ftrLayer1;
     ftrLayer1.layer = layer1;
     QList<FeatureLayer> errorFtrLayers;
@@ -1263,7 +1263,7 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
         QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
         continue;
       }
-      QgsGeometry* startPoint = QgsGeometry::fromPoint( g2->asPolyline().first() );
+      QgsGeometry* startPoint = QgsGeometry::fromPoint( g2->asPolyline().at( 0 ) );
       QgsGeometry* endPoint = QgsGeometry::fromPoint( g2->asPolyline().last() );
       touched = g1->intersects( startPoint ) || g1->intersects( endPoint );
       delete startPoint;
@@ -1329,7 +1329,7 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorL
       break;
     QgsGeometry* g1 = it->feature.geometry();
 
-    QgsGeometry* startPoint = QgsGeometry::fromPoint( g1->asPolyline().first() );
+    QgsGeometry* startPoint = QgsGeometry::fromPoint( g1->asPolyline().at( 0 ) );
     QgsGeometry* endPoint = QgsGeometry::fromPoint( g1->asPolyline().last() );
 
     QgsRectangle bb = g1->boundingBox();
@@ -1576,7 +1576,7 @@ ErrorList topolTest::checkMultipart( double tolerance, QgsVectorLayer *layer1, Q
   return errorList;
 }
 
-void topolTest::fillFeatureMap( QgsVectorLayer* layer, QgsRectangle extent )
+void topolTest::fillFeatureMap( QgsVectorLayer* layer, const QgsRectangle& extent )
 {
   QgsFeatureIterator fit;
   if ( extent.isEmpty() )
@@ -1602,7 +1602,7 @@ void topolTest::fillFeatureMap( QgsVectorLayer* layer, QgsRectangle extent )
   }
 }
 
-void topolTest::fillFeatureList( QgsVectorLayer* layer, QgsRectangle extent )
+void topolTest::fillFeatureList( QgsVectorLayer* layer, const QgsRectangle& extent )
 {
   QgsFeatureIterator fit;
   if ( extent.isEmpty() )
@@ -1629,7 +1629,7 @@ void topolTest::fillFeatureList( QgsVectorLayer* layer, QgsRectangle extent )
 
 }
 
-QgsSpatialIndex* topolTest::createIndex( QgsVectorLayer* layer, QgsRectangle extent )
+QgsSpatialIndex* topolTest::createIndex( QgsVectorLayer* layer, const QgsRectangle& extent )
 {
   QgsSpatialIndex* index = new QgsSpatialIndex();
 
@@ -1670,7 +1670,7 @@ QgsSpatialIndex* topolTest::createIndex( QgsVectorLayer* layer, QgsRectangle ext
   return index;
 }
 
-ErrorList topolTest::runTest( QString testName, QgsVectorLayer* layer1, QgsVectorLayer* layer2, ValidateType type, double tolerance )
+ErrorList topolTest::runTest( const QString& testName, QgsVectorLayer* layer1, QgsVectorLayer* layer2, ValidateType type, double tolerance )
 {
   QgsDebugMsg( QString( "Running test %1" ).arg( testName ) );
   ErrorList errors;

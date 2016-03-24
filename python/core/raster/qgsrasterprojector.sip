@@ -15,36 +15,36 @@ class QgsRasterProjector : QgsRasterInterface
      */
 
     QgsRasterProjector(
-      QgsCoordinateReferenceSystem theSrcCRS,
-      QgsCoordinateReferenceSystem theDestCRS,
+      const QgsCoordinateReferenceSystem& theSrcCRS,
+      const QgsCoordinateReferenceSystem& theDestCRS,
       int theSrcDatumTransform,
       int theDestDatumTransform,
-      QgsRectangle theDestExtent,
+      const QgsRectangle& theDestExtent,
       int theDestRows, int theDestCols,
       double theMaxSrcXRes, double theMaxSrcYRes,
-      QgsRectangle theExtent
+      const QgsRectangle& theExtent
     );
 
     QgsRasterProjector(
-      QgsCoordinateReferenceSystem theSrcCRS,
-      QgsCoordinateReferenceSystem theDestCRS,
-      QgsRectangle theDestExtent,
+      const QgsCoordinateReferenceSystem& theSrcCRS,
+      const QgsCoordinateReferenceSystem& theDestCRS,
+      const QgsRectangle& theDestExtent,
       int theDestRows, int theDestCols,
       double theMaxSrcXRes, double theMaxSrcYRes,
-      QgsRectangle theExtent
+      const QgsRectangle& theExtent
     );
     QgsRasterProjector(
-      QgsCoordinateReferenceSystem theSrcCRS,
-      QgsCoordinateReferenceSystem theDestCRS,
+      const QgsCoordinateReferenceSystem& theSrcCRS,
+      const QgsCoordinateReferenceSystem& theDestCRS,
       double theMaxSrcXRes, double theMaxSrcYRes,
-      QgsRectangle theExtent
+      const QgsRectangle& theExtent
     );
     QgsRasterProjector();
 
     /** \brief The destructor */
     ~QgsRasterProjector();
 
-    QgsRasterInterface *clone() const /Factory/;
+    virtual QgsRasterProjector *clone() const /Factory/;
 
     int bandCount() const;
 

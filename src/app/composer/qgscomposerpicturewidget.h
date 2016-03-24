@@ -31,8 +31,7 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     Q_OBJECT
 
   public:
-
-    QgsComposerPictureWidget( QgsComposerPicture* picture );
+    explicit QgsComposerPictureWidget( QgsComposerPicture* picture );
     ~QgsComposerPictureWidget();
 
     /** Add the icons of the standard directories to the preview*/

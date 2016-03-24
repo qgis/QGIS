@@ -62,8 +62,8 @@ class GUI_EXPORT QgsDetailedItemDelegate :
                         QPainter * thepPainter,
                         int theHeight ) const;
 
-    QStringList wordWrap( QString theString,
-                          QFontMetrics theMetrics,
+    QStringList wordWrap( const QString& theString,
+                          const QFontMetrics& theMetrics,
                           int theWidth ) const;
     void paintManually( QPainter *thePainter,
                         const QStyleOptionViewItem &theOption,

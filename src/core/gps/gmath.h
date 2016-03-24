@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef __NMEA_GMATH_H__
-#define __NMEA_GMATH_H__
+#ifndef NMEA_GMATH_H
+#define NMEA_GMATH_H
 
 #include "info.h"
 
@@ -106,4 +106,4 @@ extern "C"
 }
 #endif
 
-#endif /* __NMEA_GMATH_H__ */
+#endif /* NMEA_GMATH_H */

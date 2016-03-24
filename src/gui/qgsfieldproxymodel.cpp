@@ -25,7 +25,7 @@ QgsFieldProxyModel::QgsFieldProxyModel( QObject *parent )
   setSourceModel( mModel );
 }
 
-QgsFieldProxyModel *QgsFieldProxyModel::setFilters( Filters filters )
+QgsFieldProxyModel *QgsFieldProxyModel::setFilters( const Filters& filters )
 {
   mFilters = filters;
   return this;

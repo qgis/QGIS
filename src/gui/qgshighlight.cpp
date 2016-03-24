@@ -206,7 +206,7 @@ void QgsHighlight::setWidth( int width )
   mPen.setWidth( width );
 }
 
-void QgsHighlight::paintPoint( QPainter *p, QgsPoint point )
+void QgsHighlight::paintPoint( QPainter *p, const QgsPoint& point )
 {
   QPolygonF r( 5 );
 

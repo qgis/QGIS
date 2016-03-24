@@ -218,7 +218,7 @@ QString QgsFontUtils::standardTestFontFamily()
   return "QGIS Vera Sans";
 }
 
-bool QgsFontUtils::loadStandardTestFonts( QStringList loadstyles )
+bool QgsFontUtils::loadStandardTestFonts( const QStringList& loadstyles )
 {
   // load standard test font from filesystem or testdata.qrc (for unit tests and general testing)
   bool fontsLoaded = false;
@@ -239,7 +239,7 @@ bool QgsFontUtils::loadStandardTestFonts( QStringList loadstyles )
     {
       continue;
     }
-    QString familyStyle = QString( "%1 %2" ).arg( fontFamily ).arg( fontstyle );
+    QString familyStyle = QString( "%1 %2" ).arg( fontFamily, fontstyle );
 
     if ( fontFamilyHasStyle( fontFamily, fontstyle ) )
     {
@@ -260,7 +260,7 @@ bool QgsFontUtils::loadStandardTestFonts( QStringList loadstyles )
         loaded = ( fontID != -1 );
         fontsLoaded = ( fontsLoaded || loaded );
         QgsDebugMsg( QString( "Test font '%1' %2 from filesystem [%3]" )
-                     .arg( familyStyle ).arg( loaded ? "loaded" : "FAILED to load" ).arg( fontPath ) );
+                     .arg( familyStyle, loaded ? "loaded" : "FAILED to load", fontPath ) );
         QFontDatabase db;
         QgsDebugMsg( QString( "font families in %1: %2" ).arg( fontID ).arg( db.applicationFontFamilies( fontID ).join( "," ) ) );
       }
@@ -274,7 +274,7 @@ bool QgsFontUtils::loadStandardTestFonts( QStringList loadstyles )
           fontsLoaded = ( fontsLoaded || loaded );
         }
         QgsDebugMsg( QString( "Test font '%1' %2 from testdata.qrc" )
-                     .arg( familyStyle ).arg( loaded ? "loaded" : "FAILED to load" ) );
+                     .arg( familyStyle, loaded ? "loaded" : "FAILED to load" ) );
       }
     }
   }
@@ -375,7 +375,7 @@ static QMap<QString, QString> createTranslatedStyleMap()
 
 QString QgsFontUtils::translateNamedStyle( const QString& namedStyle )
 {
-  QStringList words = namedStyle.split( " ", QString::SkipEmptyParts );
+  QStringList words = namedStyle.split( ' ', QString::SkipEmptyParts );
   for ( int i = 0, n = words.length(); i < n; ++i )
   {
     words[i] = QCoreApplication::translate( "QFontDatabase", words[i].toUtf8(), 0, QCoreApplication::UnicodeUTF8 );
@@ -386,7 +386,7 @@ QString QgsFontUtils::translateNamedStyle( const QString& namedStyle )
 QString QgsFontUtils::untranslateNamedStyle( const QString& namedStyle )
 {
   static QMap<QString, QString> translatedStyleMap = createTranslatedStyleMap();
-  QStringList words = namedStyle.split( " ", QString::SkipEmptyParts );
+  QStringList words = namedStyle.split( ' ', QString::SkipEmptyParts );
   for ( int i = 0, n = words.length(); i < n; ++i )
   {
     if ( translatedStyleMap.contains( words[i] ) )

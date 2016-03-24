@@ -21,10 +21,10 @@ class QgsDataSourceURI
     QgsDataSourceURI( QString uri );
 
     //! return connection part of URI
-    QString connectionInfo() const;
+    QString connectionInfo( bool expandAuthConfig = true ) const;
 
     //! return complete uri
-    QString uri() const;
+    QString uri( bool expandAuthConfig = true ) const;
 
     //! return complete encoded uri (generic mode)
     QByteArray encodedUri() const;
@@ -38,6 +38,7 @@ class QgsDataSourceURI
     //! Set generic param (generic mode)
     // \note if key exists, another is inserted
     void setParam( const QString &key, const QString &value );
+    //! @note available in python as setParamList
     void setParam( const QString &key, const QStringList &value ) /PyName=setParamList/;
 
     //! Remove generic param (generic mode)
@@ -59,14 +60,16 @@ class QgsDataSourceURI
                         const QString& aDatabase,
                         const QString& aUsername,
                         const QString& aPassword,
-                        SSLmode sslmode = SSLprefer );
+                        SSLmode sslmode = SSLprefer,
+                        const QString& authConfigId = QString() );
 
     //! Set all connection related members at once (for the service case)
     void setConnection( const QString& aService,
                         const QString& aDatabase,
                         const QString& aUsername,
                         const QString& aPassword,
-                        SSLmode sslmode = SSLprefer );
+                        SSLmode sslmode = SSLprefer,
+                        const QString& authConfigId = QString() );
 
     //! Set database
     void setDatabase( const QString &database );
@@ -78,15 +81,19 @@ class QgsDataSourceURI
                         const QString& aSql = QString(),
                         const QString& aKeyColumn = QString() );
 
+    //! set authentication configuration ID
+    void setAuthConfigId( const QString& authcfg );
+
     //! set username
-    void setUsername( QString username );
+    void setUsername( const QString& username );
 
     //! set password
-    void setPassword( QString password );
+    void setPassword( const QString& password );
 
     //! Removes password element from uris
     static QString removePassword( const QString& aUri );
 
+    QString authConfigId() const;
     QString username() const;
     QString schema() const;
     QString table() const;
@@ -101,7 +108,7 @@ class QgsDataSourceURI
     bool selectAtIdDisabled() const;
 
     void clearSchema();
-    void setSql( QString sql );
+    void setSql( const QString& sql );
 
     QString host() const;
     QString database() const;
@@ -112,11 +119,11 @@ class QgsDataSourceURI
     QString service() const;
 
     QString keyColumn() const;
-    void setKeyColumn( QString column );
+    void setKeyColumn( const QString& column );
 
     QGis::WkbType wkbType() const;
     void setWkbType( QGis::WkbType type );
 
     QString srid() const;
-    void setSrid( QString srid );
+    void setSrid( const QString& srid );
 };

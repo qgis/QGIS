@@ -1,5 +1,5 @@
 
-SET (OGR_SRCS qgsogrprovider.cpp qgsogrdataitems.cpp qgsogrfeatureiterator.cpp qgsogrgeometrysimplifier.cpp qgsogrconnpool.cpp)
+SET (OGR_SRCS qgsogrprovider.cpp qgsogrdataitems.cpp qgsogrfeatureiterator.cpp qgsogrgeometrysimplifier.cpp qgsogrconnpool.cpp qgsogrexpressioncompiler.cpp)
 
 SET(OGR_MOC_HDRS qgsogrprovider.h qgsogrdataitems.h qgsogrconnpool.h)
 
@@ -13,6 +13,8 @@ INCLUDE_DIRECTORIES(
   ../../core
   ../../core/geometry
   ${CMAKE_CURRENT_SOURCE_DIR}/../../core/symbology-ng
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
 )

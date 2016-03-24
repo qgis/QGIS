@@ -38,6 +38,7 @@ QgsFeatureListView::QgsFeatureListView( QWidget *parent )
     , mModel( 0 )
     , mCurrentEditSelectionModel( 0 )
     , mFeatureSelectionModel( 0 )
+    , mFeatureSelectionManager( NULL )
     , mItemDelegate( 0 )
     , mEditSelectionDrag( false )
     , mRowAnchor( 0 )
@@ -56,10 +57,15 @@ void QgsFeatureListView::setModel( QgsFeatureListModel* featureListModel )
   mModel = featureListModel;
 
   delete mFeatureSelectionModel;
-  mFeatureSelectionModel = new QgsFeatureSelectionModel( featureListModel, featureListModel, new QgsVectorLayerSelectionManager( featureListModel->layerCache()->layer(), this ), this );
-  setSelectionModel( mFeatureSelectionModel );
 
   mCurrentEditSelectionModel = new QItemSelectionModel( mModel->masterModel(), this );
+  if ( !mFeatureSelectionManager )
+  {
+    mFeatureSelectionManager = new QgsVectorLayerSelectionManager( mModel->layerCache()->layer(), mModel );
+  }
+
+  mFeatureSelectionModel = new QgsFeatureSelectionModel( featureListModel, featureListModel, mFeatureSelectionManager, this );
+  setSelectionModel( mFeatureSelectionModel );
 
   if ( mItemDelegate && mItemDelegate->parent() == this )
   {
@@ -75,9 +81,10 @@ void QgsFeatureListView::setModel( QgsFeatureListModel* featureListModel )
   connect( mFeatureSelectionModel, SIGNAL( requestRepaint() ), this, SLOT( repaintRequested() ) );
 
   connect( mCurrentEditSelectionModel, SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), SLOT( editSelectionChanged( QItemSelection, QItemSelection ) ) );
+
 }
 
-bool QgsFeatureListView::setDisplayExpression( const QString expression )
+bool QgsFeatureListView::setDisplayExpression( const QString& expression )
 {
   if ( mModel->setDisplayExpression( expression ) )
   {
@@ -189,7 +196,7 @@ void QgsFeatureListView::setEditSelection( const QgsFeatureIds &fids )
     mCurrentEditSelectionModel->select( selection, QItemSelectionModel::ClearAndSelect );
 }
 
-void QgsFeatureListView::setEditSelection( const QModelIndex& index, QItemSelectionModel::SelectionFlags command )
+void QgsFeatureListView::setEditSelection( const QModelIndex& index, const QItemSelectionModel::SelectionFlags& command )
 {
   bool ok = true;
   emit aboutToChangeEditSelection( ok );
@@ -198,7 +205,7 @@ void QgsFeatureListView::setEditSelection( const QModelIndex& index, QItemSelect
     mCurrentEditSelectionModel->select( index, command );
 }
 
-void QgsFeatureListView::repaintRequested( QModelIndexList indexes )
+void QgsFeatureListView::repaintRequested( const QModelIndexList& indexes )
 {
   Q_FOREACH ( const QModelIndex& index, indexes )
   {
@@ -337,4 +344,14 @@ void QgsFeatureListView::selectRow( const QModelIndex& index, bool anchor )
   QModelIndex br = model()->index( qMax( mRowAnchor, row ), model()->columnCount() - 1 );
 
   mFeatureSelectionModel->selectFeatures( QItemSelection( tl, br ), command );
+}
+
+void QgsFeatureListView::setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager )
+{
+  delete mFeatureSelectionManager;
+
+  mFeatureSelectionManager = featureSelectionManager;
+
+  if ( mFeatureSelectionModel )
+    mFeatureSelectionModel->setFeatureSelectionManager( mFeatureSelectionManager );
 }

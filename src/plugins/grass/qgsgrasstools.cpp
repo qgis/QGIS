@@ -51,11 +51,12 @@
 class QgsGrassToolsTreeFilterProxyModel : public QSortFilterProxyModel
 {
   public:
-
-    QgsGrassToolsTreeFilterProxyModel( QObject *parent )
+    explicit QgsGrassToolsTreeFilterProxyModel( QObject *parent )
         : QSortFilterProxyModel( parent ), mModel( 0 )
     {
       setDynamicSortFilter( true );
+      mRegExp.setPatternSyntax( QRegExp::Wildcard );
+      mRegExp.setCaseSensitivity( Qt::CaseInsensitive );
     }
 
     void setSourceModel( QAbstractItemModel * sourceModel ) override
@@ -68,19 +69,24 @@ class QgsGrassToolsTreeFilterProxyModel : public QSortFilterProxyModel
     {
       QgsDebugMsg( QString( "filter = %1" ).arg( filter ) );
       if ( mFilter == filter )
+      {
         return;
+      }
       mFilter = filter;
+      mRegExp.setPattern( mFilter );
+
       invalidateFilter();
     }
 
   protected:
 
     QAbstractItemModel* mModel;
-    QString mFilter; //filter string provided
+    QString mFilter; // filter string provided
+    QRegExp mRegExp; // regular expression constructed from filter string
 
     bool filterAcceptsString( const QString & value ) const
     {
-      return value.contains( mFilter, Qt::CaseInsensitive );
+      return value.contains( mRegExp );
     }
 
     // It would be better to apply the filer only to expanded (visible) items, but using mapFromSource() + view here was causing strange errors
@@ -122,7 +128,6 @@ class QgsGrassToolsTreeFilterProxyModel : public QSortFilterProxyModel
 
       for ( int i = 0; i < mModel->rowCount( sourceIndex ); i++ )
       {
-        QgsDebugMsg( QString( "i = %1" ).arg( i ) );
         QModelIndex sourceChildIndex = mModel->index( i, 0, sourceIndex );
         if ( filterAcceptsItem( sourceChildIndex ) )
           return true;
@@ -157,17 +162,13 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget * parent, const char
 
   qRegisterMetaType<QgsDetailedItemData>();
 
-  setWindowTitle( tr( "GRASS Tools" ) );
-  //    setupUi(this);
-
   mIface = iface;
   mCanvas = mIface->mapCanvas();
 
   //statusBar()->hide();
 
   // set the dialog title
-  QString title = tr( "GRASS Tools: %1/%2" ).arg( QgsGrass::getDefaultLocation() ).arg( QgsGrass::getDefaultMapset() );
-  setWindowTitle( title );
+  resetTitle();
 
   // Tree view code.
   if ( !QgsGrass::modulesDebug() )
@@ -212,20 +213,25 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget * parent, const char
   showTabs();
 }
 
-void QgsGrassTools::showTabs()
+void QgsGrassTools::resetTitle()
 {
-  QgsDebugMsg( "entered." );
-
   QString title;
   if ( QgsGrass::activeMode() )
   {
-    title = tr( "GRASS Tools: %1/%2" ).arg( QgsGrass::getDefaultLocation() ).arg( QgsGrass::getDefaultMapset() );
+    title = tr( "GRASS Tools: %1/%2" ).arg( QgsGrass::getDefaultLocation(), QgsGrass::getDefaultMapset() );
   }
   else
   {
     title = tr( "GRASS Tools" );
   }
   setWindowTitle( title );
+}
+
+void QgsGrassTools::showTabs()
+{
+  QgsDebugMsg( "entered." );
+
+  resetTitle();
 
   // Build modules tree if empty
   QgsDebugMsg( QString( "mTreeModel->rowCount() = %1" ).arg( mTreeModel->rowCount() ) );
@@ -267,10 +273,22 @@ void QgsGrassTools::runModule( QString name, bool direct )
   {
 #ifdef Q_OS_WIN
     QgsGrass::putEnv( "GRASS_HTML_BROWSER", QgsGrassUtils::htmlBrowserPath() );
+    QStringList env;
+    QByteArray origPath = qgetenv( "PATH" );
+    QByteArray origPythonPath = qgetenv( "PYTHONPATH" );
+    QString path = QString( origPath ) + QgsGrass::pathSeparator() + QgsGrass::grassModulesPaths().join( QgsGrass::pathSeparator() );
+    QString pythonPath = QString( origPythonPath ) + QgsGrass::pathSeparator() + QgsGrass::getPythonPath();
+    QgsDebugMsg( "path = " + path );
+    QgsDebugMsg( "pythonPath = " + pythonPath );
+    qputenv( "PATH", path.toLocal8Bit() );
+    qputenv( "PYTHONPATH", pythonPath.toLocal8Bit() );
+    // QProcess does not support environment for startDetached() -> set/reset to orig
     if ( !QProcess::startDetached( getenv( "COMSPEC" ) ) )
     {
       QMessageBox::warning( 0, "Warning", tr( "Cannot start command shell (%1)" ).arg( getenv( "COMSPEC" ) ) );
     }
+    qputenv( "PATH", origPath );
+    qputenv( "PYTHONPATH", origPythonPath );
     return;
 #else
 
@@ -285,7 +303,10 @@ void QgsGrassTools::runModule( QString name, bool direct )
   }
   else
   {
+    // set wait cursor because starting module may be slow because of getting temporal datasets (t.list)
+    QApplication::setOverrideCursor( Qt::WaitCursor );
     QgsGrassModule *gmod = new QgsGrassModule( this, name, mIface, direct, mTabWidget );
+    QApplication::restoreOverrideCursor();
     if ( !gmod->errors().isEmpty() )
     {
       QgsGrass::warning( gmod->errors().join( "\n" ) );
@@ -314,7 +335,6 @@ void QgsGrassTools::runModule( QString name, bool direct )
 
   // We must call resize to reset COLUMNS environment variable
   // used by bash !!!
-
 #if 0
   /* TODO: Implement something that resizes the terminal without
    *       crashes.
@@ -549,6 +569,7 @@ void QgsGrassTools::mapsetChanged()
 {
   QgsDebugMsg( "entered." );
 
+  mTabWidget->setCurrentIndex( 0 );
   closeTools();
   mRegion->mapsetChanged();
   showTabs();
@@ -627,7 +648,9 @@ void QgsGrassTools::on_mFilterInput_textChanged( QString theText )
     mTreeView->expandAll();
   }
 
-  QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
+  // using simple wildcard filter which is probably what users is expecting, at least until
+  // there is a filter type switch in UI
+  QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::Wildcard );
   Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
   QRegExp myRegExp( theText, myCaseSensitivity, mySyntax );
   mModelProxy->setFilterRegExp( myRegExp );
@@ -721,7 +744,7 @@ int QgsGrassTools::debug( QStandardItem *item )
     }
     QgsGrassModule *module = new QgsGrassModule( this, name, mIface, false );
     QgsDebugMsg( QString( "module: %1 errors: %2" ).arg( name ).arg( module->errors().size() ) );
-    foreach ( QString error, module->errors() )
+    Q_FOREACH ( QString error, module->errors() )
     {
       // each error may have multiple rows and may be html formated (<br>)
       label += "\n  ERROR:\t" + error.replace( "<br>", "\n" ).replace( "\n", "\n\t" );

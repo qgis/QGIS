@@ -55,7 +55,7 @@ static const QString TEXT_PROVIDER_DESCRIPTION =
   + GDAL_RELEASE_NAME
   + ", running against GDAL/OGR library version "
   + GDALVersionInfo( "RELEASE_NAME" )
-  + ")";
+  + ')';
 
 
 class QgsCPLErrorHandler
@@ -283,7 +283,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
   // make connection to the data source
 
-  QgsDebugMsg( "Data source uri is [" + uri + "]" );
+  QgsDebugMsg( "Data source uri is [" + uri + ']' );
 
   // try to open for update, but disable error messages to avoid a
   // message if the file is read only, because we cope with that
@@ -304,13 +304,13 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   }
   else
   {
-    QStringList theURIParts = uri.split( "|" );
+    QStringList theURIParts = uri.split( '|' );
     mFilePath = theURIParts.at( 0 );
 
     for ( int i = 1 ; i < theURIParts.size(); i++ )
     {
       QString part = theURIParts.at( i );
-      int pos = part.indexOf( "=" );
+      int pos = part.indexOf( '=' );
       QString field = part.left( pos );
       QString value = part.mid( pos + 1 );
 
@@ -360,7 +360,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
       mFilePath = vsiPrefix + mFilePath;
       setDataSourceUri( mFilePath );
     }
-    QgsDebugMsg( QString( "Trying %1 syntax, mFilePath= %2" ).arg( vsiPrefix ).arg( mFilePath ) );
+    QgsDebugMsg( QString( "Trying %1 syntax, mFilePath= %2" ).arg( vsiPrefix, mFilePath ) );
   }
 
   QgsDebugMsg( "mFilePath: " + mFilePath );
@@ -369,7 +369,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   QgsDebugMsg( "mSubsetString: " + mSubsetString );
   CPLSetConfigOption( "OGR_ORGANIZE_POLYGONS", "ONLY_CCW" );  // "SKIP" returns MULTIPOLYGONs for multiringed POLYGONs
 
-  if ( mFilePath.startsWith( "MySQL:" ) && !mLayerName.isEmpty() )
+  if ( mFilePath.startsWith( "MySQL:" ) && !mLayerName.isEmpty() && !mFilePath.endsWith( ",tables=" + mLayerName ) )
   {
     mFilePath += ",tables=" + mLayerName;
   }
@@ -481,7 +481,7 @@ QgsAbstractFeatureSource* QgsOgrProvider::featureSource() const
   return new QgsOgrFeatureSource( this );
 }
 
-bool QgsOgrProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
+bool QgsOgrProvider::setSubsetString( const QString& theSQL, bool updateFeatureCount )
 {
   QgsCPLErrorHandler handler;
 
@@ -556,6 +556,8 @@ bool QgsOgrProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
     extent_ = 0;
   }
 
+  emit dataChanged();
+
   return true;
 }
 
@@ -591,7 +593,7 @@ QString QgsOgrProvider::ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const
   return geom;
 }
 
-OGRwkbGeometryType QgsOgrProvider::ogrWkbGeometryTypeFromName( QString typeName ) const
+OGRwkbGeometryType QgsOgrProvider::ogrWkbGeometryTypeFromName( const QString& typeName ) const
 {
   if ( typeName == "Point" ) return wkbPoint;
   else if ( typeName == "LineString" ) return wkbLineString;
@@ -646,7 +648,7 @@ QStringList QgsOgrProvider::subLayers() const
 
       QString geom = ogrWkbGeometryTypeName( layerGeomType );
 
-      mSubLayerList << QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( theLayerFeatureCount == -1 ? tr( "Unknown" ) : QString::number( theLayerFeatureCount ) ).arg( geom );
+      mSubLayerList << QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName, theLayerFeatureCount == -1 ? tr( "Unknown" ) : QString::number( theLayerFeatureCount ), geom );
     }
     else
     {
@@ -1022,7 +1024,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
     OGRFieldDefnH fldDef = OGR_FD_GetFieldDefn( fdef, targetAttributeId );
     OGRFieldType type = OGR_Fld_GetType( fldDef );
 
-    QVariant attrVal = attrs[targetAttributeId];
+    QVariant attrVal = attrs.at( targetAttributeId );
     if ( attrVal.isNull() || ( type != OFTString && attrVal.toString().isEmpty() ) )
     {
       OGR_F_UnsetField( feature, targetAttributeId );
@@ -1061,8 +1063,8 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
         case OFTString:
           QgsDebugMsg( QString( "Writing string attribute %1 with %2, encoding %3" )
                        .arg( targetAttributeId )
-                       .arg( attrVal.toString() )
-                       .arg( mEncoding->name().data() ) );
+                       .arg( attrVal.toString(),
+                             mEncoding->name().data() ) );
           OGR_F_SetFieldString( feature, targetAttributeId, mEncoding->fromUnicode( attrVal.toString() ).constData() );
           break;
 
@@ -1142,7 +1144,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
         type = OFTString;
         break;
       default:
-        pushError( tr( "type %1 for field %2 not found" ).arg( iter->typeName() ).arg( iter->name() ) );
+        pushError( tr( "type %1 for field %2 not found" ).arg( iter->typeName(), iter->name() ) );
         returnvalue = false;
         continue;
     }
@@ -1156,7 +1158,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
 
     if ( OGR_L_CreateField( ogrLayer, fielddefn, true ) != OGRERR_NONE )
     {
-      pushError( tr( "OGR error creating field %1: %2" ).arg( iter->name() ).arg( CPLGetLastErrorMsg() ) );
+      pushError( tr( "OGR error creating field %1: %2" ).arg( iter->name(), CPLGetLastErrorMsg() ) );
       returnvalue = false;
     }
     OGR_Fld_Destroy( fielddefn );
@@ -1373,7 +1375,7 @@ bool QgsOgrProvider::createSpatialIndex()
 
   QFileInfo fi( mFilePath );     // to get the base name
   //find out, if the .qix file is there
-  QFile indexfile( fi.path().append( "/" ).append( fi.completeBaseName() ).append( ".qix" ) );
+  QFile indexfile( fi.path().append( '/' ).append( fi.completeBaseName() ).append( ".qix" ) );
   return indexfile.exists();
 }
 
@@ -1387,7 +1389,7 @@ bool QgsOgrProvider::createAttributeIndex( int field )
 
   QFileInfo fi( mFilePath );     // to get the base name
   //find out, if the .idm file is there
-  QFile indexfile( fi.path().append( "/" ).append( fi.completeBaseName() ).append( ".idm" ) );
+  QFile indexfile( fi.path().append( '/' ).append( fi.completeBaseName() ).append( ".idm" ) );
   return indexfile.exists();
 }
 
@@ -1606,8 +1608,8 @@ QString  QgsOgrProvider::description() const
 */
 static QString createFileFilter_( QString const &longName, QString const &glob )
 {
-  // return longName + " [OGR] (" + glob.toLower() + " " + glob.toUpper() + ");;";
-  return longName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
+  // return longName + " [OGR] (" + glob.toLower() + ' ' + glob.toUpper() + ");;";
+  return longName + " (" + glob.toLower() + ' ' + glob.toUpper() + ");;";
 } // createFileFilter_
 
 
@@ -1862,6 +1864,107 @@ QString createFilters( QString type )
         myFileFilters += createFileFilter_( QObject::tr( "AutoCAD DXF" ), "*.dxf" );
         myExtensions << "dxf";
       }
+      else if ( driverName.startsWith( "ODS" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "Open Document Spreadsheet" ), "*.ods" );
+        myExtensions << "ods";
+      }
+      else if ( driverName.startsWith( "XLSX" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "MS Office Open XML spreadsheet" ), "*.xlsx" );
+        myExtensions << "xlsx";
+      }
+      else if ( driverName.endsWith( "XLS" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "MS Excel format" ), "*.xls" );
+        myExtensions << "xls";
+      }
+      else if ( driverName.startsWith( "EDIGEO" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "EDIGEO" ), "*.thf" );
+        myExtensions << "thf";
+      }
+      else if ( driverName.startsWith( "NAS" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "NAS - ALKIS" ), "*.xml" );
+        myExtensions << "xml";
+      }
+      else if ( driverName.startsWith( "WAsP" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "WAsP" ), "*.map" );
+        myExtensions << "map";
+      }
+      else if ( driverName.startsWith( "PCIDSK" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "PCI Geomatics Database File" ), "*.pix" );
+        myExtensions << "pix";
+      }
+      else if ( driverName.startsWith( "GPSTrackMaker" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "GPSTrackMaker" ), "*.gtm *.gtz" );
+        myExtensions << "gtm" << "gtz";
+      }
+      else if ( driverName.startsWith( "VFK" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "Czech Cadastral Exchange Data Format" ), "*.vfk" );
+        myExtensions << "vfk";
+      }
+      else if ( driverName.startsWith( "OSM" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "OpenStreetMap" ), "*.osm *.pbf" );
+        myExtensions << "osm" << "pbf";
+      }
+      else if ( driverName.startsWith( "SUA" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "Special Use Airspace Format" ), "*.sua" );
+        myExtensions << "sua";
+      }
+      else if ( driverName.startsWith( "OpenAir" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "OpenAir Special Use Airspace Format" ), "*.txt" );
+        myExtensions << "txt";
+      }
+      else if ( driverName.startsWith( "PDS" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "Planetary Data Systems TABLE" ), "*.xml" );
+        myExtensions << "xml";
+      }
+      else if ( driverName.startsWith( "HTF" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "Hydrographic Transfer Format" ), "*.htf" );
+        myExtensions << "htf";
+      }
+      else if ( driverName.startsWith( "SVG" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "Scalable Vector Graphics" ), "*.svg" );
+        myExtensions << "svg";
+      }
+      else if ( driverName.startsWith( "ARCGEN" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "Arc/Info Generate" ), "*.gen" );
+        myExtensions << "gen";
+      }
+      else if ( driverName.startsWith( "SXF" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "Storage and eXchange Format" ), "*.sxf" );
+        myExtensions << "sxf";
+      }
+      else if ( driverName.startsWith( "PDF" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "Geospatial PDF" ), "*.pdf" );
+        myExtensions << "pdf";
+      }
+      else if ( driverName.startsWith( "SEGY" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "SEG-Y" ), "*.sgy *.segy" );
+        myExtensions << "sgy" << "segy";
+      }
+      else if ( driverName.startsWith( "SEGUKOOA" ) )
+      {
+        myFileFilters += createFileFilter_( QObject::tr( "SEG-P1" ), "*.seg *.seg1 *.sp1" );
+        myFileFilters += createFileFilter_( QObject::tr( "UKOOA P1/90" ), "*.uko *.ukooa" );
+        myExtensions << "seg" << "seg1" << "sp1" << "uko" << "ukooa";
+      }
       else
       {
         // NOP, we don't know anything about the current driver
@@ -1974,12 +2077,12 @@ QString QgsOgrProvider::directoryDrivers() const
 
 QGISEXTERN QStringList fileExtensions()
 {
-  return  createFilters( "extensions" ).split( "|" );
+  return  createFilters( "extensions" ).split( '|' );
 }
 
 QGISEXTERN QStringList wildcards()
 {
-  return  createFilters( "wildcards" ).split( "|" );
+  return  createFilters( "wildcards" ).split( '|' );
 }
 
 
@@ -2078,7 +2181,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   dataSource = OGR_Dr_CreateDataSource( driver, TO8F( uri ), NULL );
   if ( !dataSource )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Creating the data source %1 failed: %2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), QObject::tr( "OGR" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Creating the data source %1 failed: %2" ).arg( uri, QString::fromUtf8( CPLGetLastErrorMsg() ) ), QObject::tr( "OGR" ) );
     return false;
   }
 
@@ -2152,7 +2255,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
 
   if ( !layer )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Creation of OGR data source %1 failed: %2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), QObject::tr( "OGR" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Creation of OGR data source %1 failed: %2" ).arg( uri, QString::fromUtf8( CPLGetLastErrorMsg() ) ), QObject::tr( "OGR" ) );
     return false;
   }
 
@@ -2168,7 +2271,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
 
   for ( QList<QPair<QString, QString> >::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
-    QStringList fields = it->second.split( ";" );
+    QStringList fields = it->second.split( ';' );
 
     if ( fields.size() == 0 )
       continue;
@@ -2217,7 +2320,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
     }
     else
     {
-      QgsMessageLog::logMessage( QObject::tr( "field %1 with unsupported type %2 skipped" ).arg( it->first ).arg( fields[0] ), QObject::tr( "OGR" ) );
+      QgsMessageLog::logMessage( QObject::tr( "field %1 with unsupported type %2 skipped" ).arg( it->first, fields[0] ), QObject::tr( "OGR" ) );
       continue;
     }
 
@@ -2314,7 +2417,7 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   if ( index < 0 || index >= mAttributeFields.count() )
     return;
 
-  const QgsField& fld = mAttributeFields[index];
+  const QgsField& fld = mAttributeFields.at( index );
   if ( fld.name().isNull() )
   {
     return; //not a provider field
@@ -2362,7 +2465,7 @@ QVariant QgsOgrProvider::minimumValue( int index )
   {
     return QVariant();
   }
-  const QgsField& fld = mAttributeFields[index];
+  const QgsField& fld = mAttributeFields.at( index );
 
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
   QByteArray sql = "SELECT MIN(" + mEncoding->fromUnicode( fld.name() );
@@ -2401,7 +2504,7 @@ QVariant QgsOgrProvider::maximumValue( int index )
   {
     return QVariant();
   }
-  const QgsField& fld = mAttributeFields[index];
+  const QgsField& fld = mAttributeFields.at( index );
 
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
   QByteArray sql = "SELECT MAX(" + mEncoding->fromUnicode( fld.name() );
@@ -2434,7 +2537,7 @@ QVariant QgsOgrProvider::maximumValue( int index )
   return value;
 }
 
-QByteArray QgsOgrProvider::quotedIdentifier( QByteArray field )
+QByteArray QgsOgrProvider::quotedIdentifier( QByteArray field ) const
 {
   return QgsOgrUtils::quotedIdentifier( field, ogrDriverName );
 }
@@ -2449,15 +2552,42 @@ QByteArray QgsOgrUtils::quotedIdentifier( QByteArray field, const QString& ogrDr
   if ( ogrDriverName == "MySQL" )
   {
     field.replace( '\\', "\\\\" );
-    field.replace( "`", "``" );
-    return field.prepend( "`" ).append( "`" );
+    field.replace( '`', "``" );
+    return field.prepend( '`' ).append( '`' );
   }
   else
   {
     field.replace( '\\', "\\\\" );
     field.replace( '"', "\\\"" );
-    field.replace( "'", "\\'" );
-    return field.prepend( "\"" ).append( "\"" );
+    field.replace( '\'', "\\'" );
+    return field.prepend( '\"' ).append( '\"' );
+  }
+}
+
+QString QgsOgrUtils::quotedValue( const QVariant& value )
+{
+  if ( value.isNull() )
+    return "NULL";
+
+  switch ( value.type() )
+  {
+    case QVariant::Int:
+    case QVariant::LongLong:
+    case QVariant::Double:
+      return value.toString();
+
+    case QVariant::Bool:
+      //OGR does not support boolean literals
+      return value.toBool() ? "1" : "0";
+
+    default:
+    case QVariant::String:
+      QString v = value.toString();
+      v.replace( '\'', "''" );
+      if ( v.contains( '\\' ) )
+        return v.replace( '\\', "\\\\" ).prepend( "E'" ).append( '\'' );
+      else
+        return v.prepend( '\'' ).append( '\'' );
   }
 }
 
@@ -2544,7 +2674,7 @@ void QgsOgrProvider::recalculateFeatureCount()
 bool QgsOgrProvider::doesStrictFeatureTypeCheck() const
 {
   // FIXME probably other drivers too...
-  return ogrDriverName != "ESRI Shapefile" || geomType == wkbPoint;
+  return ogrDriverName != "ESRI Shapefile" || ( geomType == wkbPoint || geomType == wkbPoint25D );
 }
 
 OGRwkbGeometryType QgsOgrProvider::ogrWkbSingleFlatten( OGRwkbGeometryType type )
@@ -2573,7 +2703,7 @@ OGRLayerH QgsOgrUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTex
   if ( ogrDriverName == "ODBC" ) //the odbc driver does not like schema names for subset
   {
     QString layerNameString = encoding->toUnicode( layerName );
-    int dotIndex = layerNameString.indexOf( "." );
+    int dotIndex = layerNameString.indexOf( '.' );
     if ( dotIndex > 1 )
     {
       QString modifiedLayerName = layerNameString.right( layerNameString.size() - dotIndex - 1 );

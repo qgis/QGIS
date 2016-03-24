@@ -28,17 +28,17 @@ QgsProviderMetadata::QgsProviderMetadata( QString const & _key,
     , library_( _library )
 {}
 
-QString const & QgsProviderMetadata::key() const
+QString QgsProviderMetadata::key() const
 {
   return key_;
 }
 
-QString const & QgsProviderMetadata::description() const
+QString QgsProviderMetadata::description() const
 {
   return description_;
 }
 
-QString const & QgsProviderMetadata::library() const
+QString QgsProviderMetadata::library() const
 {
   return library_;
 }

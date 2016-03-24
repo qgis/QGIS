@@ -19,12 +19,28 @@
 #define QGSOWSSERVER_H
 
 #include "qgsrequesthandler.h"
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+#include "qgsaccesscontrol.h"
+#endif
 
 class QgsOWSServer
 {
   public:
-    QgsOWSServer( const QString& configFilePath, const QMap<QString, QString>& parameters, QgsRequestHandler* rh )
-        : mParameters( parameters ), mRequestHandler( rh ), mConfigFilePath( configFilePath ) {}
+    QgsOWSServer(
+      const QString& configFilePath
+      , const QMap<QString, QString>& parameters
+      , QgsRequestHandler* rh
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      , const QgsAccessControl* ac
+#endif
+    )
+        : mParameters( parameters )
+        , mRequestHandler( rh )
+        , mConfigFilePath( configFilePath )
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+        , mAccessControl( ac )
+#endif
+    {}
     virtual ~QgsOWSServer() {}
 
     virtual void executeRequest() = 0;
@@ -36,6 +52,22 @@ class QgsOWSServer
     QMap<QString, QString> mParameters;
     QgsRequestHandler* mRequestHandler;
     QString mConfigFilePath;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    /** The access control helper */
+    const QgsAccessControl* mAccessControl;
+
+    /** Apply filter strings from the access control to the layers.
+     * @param layer the concerned layer
+     * @param originalLayerFilters the original layer filter
+     *
+     */
+    void applyAccessControlLayerFilters( QgsMapLayer* layer, QMap<QString, QString>& originalLayerFilters ) const;
+#endif
+
+    /** Restores the original layer filters
+     * @param filterMap the original layer filter
+     */
+    void restoreLayerFilters( const QMap < QString, QString >& filterMap ) const;
 };
 
 #endif // QGSOWSSERVER_H

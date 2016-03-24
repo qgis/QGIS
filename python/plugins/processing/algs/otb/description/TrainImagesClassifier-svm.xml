@@ -33,26 +33,24 @@
     <key>io.confmatout</key>
     <name>Output confusion matrix</name>
     <description>Output file containing the confusion matrix (.csv format).</description>
-    <hidden />
   </parameter>
   <parameter>
     <parameter_type source_parameter_type="ParameterType_OutputFilename">OutputFile</parameter_type>
     <key>io.out</key>
     <name>Output model</name>
     <description>Output file containing the model estimated (.txt format).</description>
-    <hidden />
   </parameter>
   <parameter>
-    <parameter_type source_parameter_type="ParameterType_Float">*ParameterNumber</parameter_type>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
     <key>elev.default</key>
     <name>Default elevation</name>
-    <description>This parameter allows setting the default height above ellipsoid when there is no DEM available, no coverage for some points or pixels with no_data in the DEM tiles, and no geoid file has been set. This is also used by some application as an average elevation value.</description>
+    <description>This parameter allows to set the default height above ellipsoid when there is no DEM available, no coverage for some points or pixels with no_data in the DEM tiles, and no geoid file has been set. This is also used by some application as an average elevation value.</description>
     <minValue />
     <maxValue />
     <default>0</default>
   </parameter>
   <parameter>
-    <parameter_type source_parameter_type="ParameterType_Int">*ParameterNumber</parameter_type>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
     <key>sample.mt</key>
     <name>Maximum training sample size per class</name>
     <description>Maximum size per class (in pixels) of the training sample list (default = 1000) (no limit = -1). If equal to -1, then the maximal size of the available training sample list per class will be equal to the surface area of the smallest class multiplied by the training sample ratio.</description>
@@ -61,7 +59,7 @@
     <default>1000</default>
   </parameter>
   <parameter>
-    <parameter_type source_parameter_type="ParameterType_Int">*ParameterNumber</parameter_type>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
     <key>sample.mv</key>
     <name>Maximum validation sample size per class</name>
     <description>Maximum size per class (in pixels) of the validation sample list (default = 1000) (no limit = -1). If equal to -1, then the maximal size of the available validation sample list per class will be equal to the surface area of the smallest class multiplied by the validation sample ratio.</description>
@@ -70,7 +68,16 @@
     <default>1000</default>
   </parameter>
   <parameter>
-    <parameter_type source_parameter_type="ParameterType_Empty">*ParameterBoolean</parameter_type>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>sample.bm</key>
+    <name>Bound sample number by minimum</name>
+    <description>Bound the number of samples for each class by the number of available samples by the smaller class. Proportions between training and validation are respected. Default is true (=1).</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Empty">ParameterBoolean</parameter_type>
     <key>sample.edg</key>
     <name>On edge pixel inclusion</name>
     <description>Takes pixels on polygon edge into consideration when building training and validation samples.</description>
@@ -107,7 +114,7 @@
     <default>0</default>
   </parameter>
   <parameter>
-    <parameter_type source_parameter_type="ParameterType_Choice">*ParameterSelection</parameter_type>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
     <key>classifier.svm.m</key>
     <name>SVM Model Type</name>
     <description>Type of SVM formulation.</description>
@@ -145,7 +152,7 @@
     <default>1</default>
   </parameter>
   <parameter>
-    <parameter_type source_parameter_type="ParameterType_Float">*ParameterNumber</parameter_type>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
     <key>classifier.svm.nu</key>
     <name>Parameter nu of a SVM optimization problem (NU_SVC / ONE_CLASS)</name>
     <description>Parameter nu of a SVM optimization problem.</description>
@@ -154,7 +161,7 @@
     <default>0</default>
   </parameter>
   <parameter>
-    <parameter_type source_parameter_type="ParameterType_Float">*ParameterNumber</parameter_type>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
     <key>classifier.svm.coef0</key>
     <name>Parameter coef0 of a kernel function (POLY / SIGMOID)</name>
     <description>Parameter coef0 of a kernel function (POLY / SIGMOID).</description>
@@ -163,7 +170,7 @@
     <default>0</default>
   </parameter>
   <parameter>
-    <parameter_type source_parameter_type="ParameterType_Float">*ParameterNumber</parameter_type>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
     <key>classifier.svm.gamma</key>
     <name>Parameter gamma of a kernel function (POLY / RBF / SIGMOID)</name>
     <description>Parameter gamma of a kernel function (POLY / RBF / SIGMOID).</description>
@@ -172,7 +179,7 @@
     <default>1</default>
   </parameter>
   <parameter>
-    <parameter_type source_parameter_type="ParameterType_Float">*ParameterNumber</parameter_type>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
     <key>classifier.svm.degree</key>
     <name>Parameter degree of a kernel function (POLY)</name>
     <description>Parameter degree of a kernel function (POLY).</description>
@@ -191,7 +198,7 @@
     <default>True</default>
   </parameter>
   <parameter>
-    <parameter_type source_parameter_type="ParameterType_Int">*ParameterNumber</parameter_type>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
     <key>rand</key>
     <name>set user defined seed</name>
     <description>Set specific seed. with integer value.</description>

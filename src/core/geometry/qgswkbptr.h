@@ -5,6 +5,10 @@
 #include "qgsapplication.h"
 #include "qgis.h"
 
+/** \class QgsWkbPtr
+ * \note not available in Python bindings
+ */
+
 class CORE_EXPORT QgsWkbPtr
 {
     mutable unsigned char *mP;
@@ -36,6 +40,10 @@ class CORE_EXPORT QgsWkbPtr
 
     inline operator unsigned char *() const { return mP; }
 };
+
+/** \class QgsConstWkbPtr
+ * \note not available in Python bindings
+ */
 
 class CORE_EXPORT QgsConstWkbPtr
 {

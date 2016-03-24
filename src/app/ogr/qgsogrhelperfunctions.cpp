@@ -20,7 +20,7 @@
 #include "qgslogger.h"
 #include <QRegExp>
 
-QString createDatabaseURI( QString connectionType, QString host, QString database, QString port, QString user, QString password )
+QString createDatabaseURI( const QString& connectionType, const QString& host, const QString& database, QString port, const QString& user, const QString& password )
 {
   QString uri = "";
 
@@ -34,7 +34,7 @@ QString createDatabaseURI( QString connectionType, QString host, QString databas
     if ( port.isEmpty() )
       port = "5151";
 
-    uri = "SDE:" + host + ",PORT:" + port + "," + database + "," + user + "," + password;
+    uri = "SDE:" + host + ",PORT:" + port + ',' + database + ',' + user + ',' + password;
   }
   else if ( connectionType == "Informix DataBlade" )
   {
@@ -116,26 +116,26 @@ QString createDatabaseURI( QString connectionType, QString host, QString databas
     if (( !user.isEmpty() && !password.isEmpty() ) ||
         ( user.isEmpty() && password.isEmpty() ) )
     {
-      uri += "/";
+      uri += '/';
       if ( !password.isEmpty() )
         uri += password;
     }
 
     if ( !host.isEmpty() || !database.isEmpty() )
     {
-      uri += "@";
+      uri += '@';
 
       if ( !host.isEmpty() )
       {
         uri += host;
         if ( !port.isEmpty() )
-          uri += ":" + port;
+          uri += ':' + port;
       }
 
       if ( !database.isEmpty() )
       {
         if ( !host.isEmpty() )
-          uri += "/";
+          uri += '/';
         uri += database;
       }
     }
@@ -146,11 +146,11 @@ QString createDatabaseURI( QString connectionType, QString host, QString databas
     {
       if ( password.isEmpty() )
       {
-        uri = "ODBC:" + user + "@" + database;
+        uri = "ODBC:" + user + '@' + database;
       }
       else
       {
-        uri = "ODBC:" + user + "/" + password + "@" + database;
+        uri = "ODBC:" + user + '/' + password + '@' + database;
       }
 
     }
@@ -164,7 +164,7 @@ QString createDatabaseURI( QString connectionType, QString host, QString databas
   }
   else if ( connectionType == "PostgreSQL" )
   {
-    uri = "PG:dbname='" + database + "'";
+    uri = "PG:dbname='" + database + '\'';
 
     if ( !host.isEmpty() )
     {
@@ -182,7 +182,7 @@ QString createDatabaseURI( QString connectionType, QString host, QString databas
         uri += QString( " password='%1'" ).arg( password );
     }
 
-    uri += " ";
+    uri += ' ';
   }
 
   QgsDebugMsg( "Connection type is=" + connectionType + " and uri=" + uri );
@@ -190,7 +190,7 @@ QString createDatabaseURI( QString connectionType, QString host, QString databas
 }
 
 
-QString createProtocolURI( QString type, QString url )
+QString createProtocolURI( const QString& type, const QString& url )
 {
   QString uri = "";
   if ( type == "GeoJSON" )

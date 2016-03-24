@@ -70,10 +70,10 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
 
   private slots:
     /** \brief Slot called after the user selects the x, y fields in the field selection gui component */
-    void drawNewVectorLayer( QString, QString, QString );
+    void drawNewVectorLayer( const QString&, const QString&, const QString& );
 
     void on_buttonBox_accepted();
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); };
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
     void on_cboxDatabaseType_currentIndexChanged( int );
     void on_cboxPredefinedQueryList_currentIndexChanged( int );
@@ -84,7 +84,7 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
 
   signals:
     /** \brief signal emitted by the drawNewVectorLayer slot */
-    void drawVectorLayer( QString, QString, QString );
+    void drawVectorLayer( const QString&, const QString&, const QString& );
 };
 
 #endif

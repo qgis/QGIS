@@ -30,7 +30,7 @@
 static const QString TEXT_PROVIDER_KEY = "memory";
 static const QString TEXT_PROVIDER_DESCRIPTION = "Memory provider";
 
-QgsMemoryProvider::QgsMemoryProvider( QString uri )
+QgsMemoryProvider::QgsMemoryProvider( const QString& uri )
     : QgsVectorDataProvider( uri )
     , mSpatialIndex( 0 )
 {
@@ -175,8 +175,10 @@ QgsAbstractFeatureSource* QgsMemoryProvider::featureSource() const
   return new QgsMemoryFeatureSource( this );
 }
 
-QString QgsMemoryProvider::dataSourceUri() const
+QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
 {
+  Q_UNUSED( expandAuthConfig )
+
   QUrl uri( "memory" );
   QString geometry;
   switch ( mWkbType )
@@ -429,7 +431,7 @@ QString QgsMemoryProvider::subsetString()
   return mSubsetString;
 }
 
-bool QgsMemoryProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
+bool QgsMemoryProvider::setSubsetString( const QString& theSQL, bool updateFeatureCount )
 {
   Q_UNUSED( updateFeatureCount );
 
@@ -441,6 +443,8 @@ bool QgsMemoryProvider::setSubsetString( QString theSQL, bool updateFeatureCount
   }
 
   mSubsetString = theSQL;
+
+  emit dataChanged();
   return true;
 }
 

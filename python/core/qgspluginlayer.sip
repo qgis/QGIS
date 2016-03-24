@@ -6,7 +6,7 @@ class QgsPluginLayer : QgsMapLayer
 %End
 
   public:
-    QgsPluginLayer( QString layerType, QString layerName = QString() );
+    QgsPluginLayer( const QString& layerType, const QString& layerName = QString() );
 
     /** Return plugin layer type (the same as used in QgsPluginLayerRegistry) */
     QString pluginLayerType();

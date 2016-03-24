@@ -190,7 +190,7 @@ QString QgsLayerTreeUtils::checkStateToXml( Qt::CheckState state )
   }
 }
 
-Qt::CheckState QgsLayerTreeUtils::checkStateFromXml( QString txt )
+Qt::CheckState QgsLayerTreeUtils::checkStateFromXml( const QString& txt )
 {
   if ( txt == "Qt::Unchecked" )
     return Qt::Unchecked;
@@ -362,4 +362,31 @@ void QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* grou
       updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( node ) );
     }
   }
+}
+
+void QgsLayerTreeUtils::setLegendFilterByExpression( QgsLayerTreeLayer& layer, const QString& expr, bool enabled )
+{
+  layer.setCustomProperty( "legend/expressionFilter", expr );
+  layer.setCustomProperty( "legend/expressionFilterEnabled", enabled );
+}
+
+QString QgsLayerTreeUtils::legendFilterByExpression( const QgsLayerTreeLayer& layer, bool* enabled )
+{
+  if ( enabled )
+    *enabled = layer.customProperty( "legend/expressionFilterEnabled", "" ).toBool();
+  return layer.customProperty( "legend/expressionFilter", "" ).toString();
+}
+
+bool QgsLayerTreeUtils::hasLegendFilterExpression( const QgsLayerTreeGroup& group )
+{
+  foreach ( QgsLayerTreeLayer* l, group.findLayers() )
+  {
+    bool exprEnabled;
+    QString expr = legendFilterByExpression( *l, &exprEnabled );
+    if ( exprEnabled && !expr.isEmpty() )
+    {
+      return true;
+    }
+  }
+  return false;
 }

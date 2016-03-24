@@ -1051,6 +1051,17 @@
     <string>F10</string>
    </property>
   </action>
+  <action name="mActionShowPage">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Pages</string>
+   </property>
+   <property name="toolTip">
+    <string>Show pages</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../../../images/images.qrc"/>

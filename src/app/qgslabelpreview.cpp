@@ -27,13 +27,13 @@ QgsLabelPreview::QgsLabelPreview( QWidget* parent )
   mContext.setMapToPixel( newCoordXForm );
 }
 
-void QgsLabelPreview::setTextColor( QColor color )
+void QgsLabelPreview::setTextColor( const QColor& color )
 {
   mTextColor = color;
   update();
 }
 
-void QgsLabelPreview::setBuffer( double size, QColor color, Qt::PenJoinStyle joinStyle, bool noFill )
+void QgsLabelPreview::setBuffer( double size, const QColor& color, Qt::PenJoinStyle joinStyle, bool noFill )
 {
   mTmpLyr.bufferSize = size * 88 / 25.4; //assume standard dpi for preview;
   mTmpLyr.bufferSizeInMapUnits = false;

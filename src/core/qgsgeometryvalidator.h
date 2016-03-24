@@ -35,17 +35,17 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
     static void validateGeometry( const QgsGeometry *g, QList<QgsGeometry::Error> &errors );
 
   signals:
-    void errorFound( QgsGeometry::Error );
+    void errorFound( const QgsGeometry::Error& );
 
   public slots:
-    void addError( QgsGeometry::Error );
+    void addError( const QgsGeometry::Error& );
 
   private:
     void validatePolyline( int i, QgsPolyline polyline, bool ring = false );
     void validatePolygon( int i, const QgsPolygon &polygon );
     void checkRingIntersections( int p0, int i0, const QgsPolyline &ring0, int p1, int i1, const QgsPolyline &ring1 );
-    double distLine2Point( QgsPoint p, QgsVector v, QgsPoint q );
-    bool intersectLines( QgsPoint p, QgsVector v, QgsPoint q, QgsVector w, QgsPoint &s );
+    double distLine2Point( const QgsPoint& p, const QgsVector& v, const QgsPoint& q );
+    bool intersectLines( const QgsPoint& p, const QgsVector& v, const QgsPoint& q, const QgsVector& w, QgsPoint &s );
     bool ringInRing( const QgsPolyline &inside, const QgsPolyline &outside );
     bool pointInRing( const QgsPolyline &ring, const QgsPoint &p );
 

@@ -1,4 +1,4 @@
-# Find QScintilla2 PyQt4 module
+# Find QScintilla2 PyQt module
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 # QScintilla2 website: http://www.riverbankcomputing.co.uk/software/qscintilla/
@@ -8,7 +8,7 @@
 #
 # This file defines the following variables:
 #
-# QSCI_FOUND - system has QScintilla2 PyQt4 module
+# QSCI_FOUND - system has QScintilla2 PyQt module
 #
 # QSCI_MOD_VERSION_STR - The version of Qsci module as a human readable string.
 #
@@ -31,17 +31,24 @@ ELSE(EXISTS QSCI_MOD_VERSION_STR)
   ENDIF(qsci_ver)
 
   IF(QSCI_FOUND)
-    FIND_PATH(QSCI_SIP_DIR
-      NAMES Qsci/qscimod4.sip
-      PATHS ${PYQT4_SIP_DIR}
-    )
+    IF(ENABLE_QT5)
+      FIND_PATH(QSCI_SIP_DIR
+        NAMES Qsci/qscimod5.sip
+        PATHS ${PYQT5_SIP_DIR}
+      )
+    ELSE(ENABLE_QT5)
+      FIND_PATH(QSCI_SIP_DIR
+        NAMES Qsci/qscimod4.sip
+        PATHS ${PYQT4_SIP_DIR}
+      )
+    ENDIF(ENABLE_QT5)
 
     IF(NOT QSCI_FIND_QUIETLY)
-      MESSAGE(STATUS "Found QScintilla2 PyQt4 module: ${QSCI_MOD_VERSION_STR}")
+      MESSAGE(STATUS "Found QScintilla2 PyQt module: ${QSCI_MOD_VERSION_STR}")
     ENDIF(NOT QSCI_FIND_QUIETLY)
   ELSE(QSCI_FOUND)
     IF(QSCI_FIND_REQUIRED)
-      MESSAGE(FATAL_ERROR "Could not find QScintilla2 PyQt4 module")
+      MESSAGE(FATAL_ERROR "Could not find QScintilla2 PyQt module")
     ENDIF(QSCI_FIND_REQUIRED)
   ENDIF(QSCI_FOUND)
 

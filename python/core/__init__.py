@@ -1,6 +1,13 @@
+try:
+    import sip
+    sip.setapi("QVariant", 2)
+except:
+    pass
+
 import inspect
 import string
 from qgis._core import *
+from PyQt.QtCore import QCoreApplication
 
 
 def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
@@ -66,7 +73,10 @@ def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
     register = kwargs.get('register', True)
     if register and QgsExpression.isFunctionName(name):
         if not QgsExpression.unregisterFunction(name):
-            raise TypeError("Unable to unregister function")
+            msgtitle = QCoreApplication.translate("UserExpressions", "User expressions")
+            msg = QCoreApplication.translate("UserExpressions", "The user expression {0} already exists and could not be unregistered.").format(name)
+            QgsMessageLog.logMessage(msg + "\n", msgtitle, QgsMessageLog.WARNING)
+            return None
 
     function.__name__ = name
     helptext = helptemplate.safe_substitute(name=name, doc=helptext)
@@ -135,7 +145,12 @@ try:
     NULL = QPyNullVariant(int)
 
 except ImportError:
-    pass
+    try:
+        # TODO: Fixme, this creates an invalid variant, not a NULL one
+        from PyQt5.QtCore import QVariant
+        NULL = QVariant()
+    except ImportError:
+        pass
 
 
 class QgsEditError(Exception):

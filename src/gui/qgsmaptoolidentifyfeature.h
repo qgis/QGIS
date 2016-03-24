@@ -40,7 +40,7 @@ class GUI_EXPORT QgsMapToolIdentifyFeature : public QgsMapToolIdentify
     //! change the layer used by the map tool to identify
     void setLayer( QgsVectorLayer* vl ) { mLayer = vl; }
 
-    virtual void canvasReleaseEvent( QMouseEvent* e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
   signals:
     void featureIdentified( const QgsFeature& );

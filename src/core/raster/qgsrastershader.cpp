@@ -178,6 +178,7 @@ void QgsRasterShader::readXML( const QDomElement& elem )
     QColor itemColor;
 
     QDomNodeList itemNodeList = colorRampShaderElem.elementsByTagName( "item" );
+    itemList.reserve( itemNodeList.size() );
     for ( int i = 0; i < itemNodeList.size(); ++i )
     {
       itemElem = itemNodeList.at( i ).toElement();

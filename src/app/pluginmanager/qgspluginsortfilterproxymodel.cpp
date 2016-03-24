@@ -40,7 +40,7 @@ bool QgsPluginSortFilterProxyModel::filterAcceptsRow( int sourceRow, const QMode
 
 
 
-void QgsPluginSortFilterProxyModel::setAcceptedStatuses( QStringList statuses )
+void QgsPluginSortFilterProxyModel::setAcceptedStatuses( const QStringList& statuses )
 {
   mAcceptedStatuses = statuses;
   invalidateFilter();
@@ -48,7 +48,7 @@ void QgsPluginSortFilterProxyModel::setAcceptedStatuses( QStringList statuses )
 
 
 
-void QgsPluginSortFilterProxyModel::setAcceptedSpacers( QString spacers )
+void QgsPluginSortFilterProxyModel::setAcceptedSpacers( const QString& spacers )
 {
   mAcceptedSpacers = spacers;
   invalidateFilter();
@@ -66,7 +66,7 @@ bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex &index ) const
   }
 
   QString status = sourceModel()->data( index, PLUGIN_STATUS_ROLE ).toString();
-  if ( status.endsWith( "Z" ) ) status.chop( 1 );
+  if ( status.endsWith( 'Z' ) ) status.chop( 1 );
   if ( ! mAcceptedStatuses.isEmpty()
        && ! mAcceptedStatuses.contains( "invalid" )
        && ! mAcceptedStatuses.contains( status ) )

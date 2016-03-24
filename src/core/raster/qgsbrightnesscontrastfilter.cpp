@@ -33,7 +33,7 @@ QgsBrightnessContrastFilter::~QgsBrightnessContrastFilter()
 {
 }
 
-QgsRasterInterface * QgsBrightnessContrastFilter::clone() const
+QgsBrightnessContrastFilter* QgsBrightnessContrastFilter::clone() const
 {
   QgsDebugMsg( "Entered" );
   QgsBrightnessContrastFilter * filter = new QgsBrightnessContrastFilter( 0 );

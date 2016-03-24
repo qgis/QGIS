@@ -211,14 +211,13 @@ void QgsFeatureRendererV2::copyPaintEffect( QgsFeatureRendererV2 *destRenderer )
 }
 
 
-QgsFeatureRendererV2::QgsFeatureRendererV2( QString type )
+QgsFeatureRendererV2::QgsFeatureRendererV2( const QString& type )
     : mType( type )
     , mUsingSymbolLevels( false )
     , mCurrentVertexMarkerType( QgsVectorLayer::Cross )
     , mCurrentVertexMarkerSize( 3 )
     , mPaintEffect( 0 )
     , mForceRaster( false )
-    , mRenderResult( QgsRenderResult( true ) )
 {
   mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );
@@ -271,13 +270,9 @@ bool QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
 {
   QgsSymbolV2* symbol = symbolForFeature( feature, context );
   if ( symbol == NULL )
-  {
-    setRenderResult( QgsRenderResult( false ) );
     return false;
-  }
 
   renderFeatureWithSymbol( feature, symbol, context, layer, selected, drawVertexMarker );
-  setRenderResult( symbol->renderResult() );
   return true;
 }
 
@@ -312,7 +307,9 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
       }
       segmentizedGeometry = new QgsGeometry( g );
       deleteSegmentizedGeometry = true;
+      break;
     }
+
     default:
       break;
   }
@@ -329,6 +326,13 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
       QPointF pt;
       _getPoint( pt, context, segmentizedGeometry->asWkb() );
       (( QgsMarkerSymbolV2* )symbol )->renderPoint( pt, &feature, context, layer, selected );
+      if ( context.testFlag( QgsRenderContext::DrawSymbolBounds ) )
+      {
+        //draw debugging rect
+        context.painter()->setPen( Qt::red );
+        context.painter()->setBrush( QColor( 255, 0, 0, 100 ) );
+        context.painter()->drawRect((( QgsMarkerSymbolV2* )symbol )->bounds( pt, context ) );
+      }
     }
     break;
     case QgsWKBTypes::LineString:
@@ -528,7 +532,7 @@ QDomElement QgsFeatureRendererV2::save( QDomDocument& doc )
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( "forceraster", ( mForceRaster ? "1" : "0" ) );
 
-  if ( mPaintEffect )
+  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
 
   return rendererElem;
@@ -655,19 +659,19 @@ bool QgsFeatureRendererV2::legendSymbolItemsCheckable() const
   return false;
 }
 
-bool QgsFeatureRendererV2::legendSymbolItemChecked( QString key )
+bool QgsFeatureRendererV2::legendSymbolItemChecked( const QString& key )
 {
   Q_UNUSED( key );
   return false;
 }
 
-void QgsFeatureRendererV2::checkLegendSymbolItem( QString key, bool state )
+void QgsFeatureRendererV2::checkLegendSymbolItem( const QString& key, bool state )
 {
   Q_UNUSED( key );
   Q_UNUSED( state );
 }
 
-QgsLegendSymbolList QgsFeatureRendererV2::legendSymbolItems( double scaleDenominator, QString rule )
+QgsLegendSymbolList QgsFeatureRendererV2::legendSymbolItems( double scaleDenominator, const QString& rule )
 {
   Q_UNUSED( scaleDenominator );
   Q_UNUSED( rule );
@@ -704,7 +708,7 @@ bool QgsFeatureRendererV2::willRenderFeature( QgsFeature &feat, QgsRenderContext
   return symbolForFeature( feat, context ) != NULL;
 }
 
-void QgsFeatureRendererV2::renderVertexMarker( QPointF& pt, QgsRenderContext& context )
+void QgsFeatureRendererV2::renderVertexMarker( const QPointF &pt, QgsRenderContext& context )
 {
   QgsVectorLayer::drawVertexMarker( pt.x(), pt.y(), *context.painter(),
                                     ( QgsVectorLayer::VertexMarkerType ) mCurrentVertexMarkerType,
@@ -713,20 +717,20 @@ void QgsFeatureRendererV2::renderVertexMarker( QPointF& pt, QgsRenderContext& co
 
 void QgsFeatureRendererV2::renderVertexMarkerPolyline( QPolygonF& pts, QgsRenderContext& context )
 {
-  Q_FOREACH ( QPointF pt, pts )
+  Q_FOREACH ( const QPointF& pt, pts )
     renderVertexMarker( pt, context );
 }
 
 void QgsFeatureRendererV2::renderVertexMarkerPolygon( QPolygonF& pts, QList<QPolygonF>* rings, QgsRenderContext& context )
 {
-  Q_FOREACH ( QPointF pt, pts )
+  Q_FOREACH ( const QPointF& pt, pts )
     renderVertexMarker( pt, context );
 
   if ( rings )
   {
-    Q_FOREACH ( QPolygonF ring, *rings )
+    Q_FOREACH ( const QPolygonF& ring, *rings )
     {
-      Q_FOREACH ( QPointF pt, ring )
+      Q_FOREACH ( const QPointF& pt, ring )
         renderVertexMarker( pt, context );
     }
   }
@@ -814,9 +818,4 @@ void QgsFeatureRendererV2::convertSymbolRotation( QgsSymbolV2 * symbol, const QS
                               : QString() ) + field );
     s->setDataDefinedAngle( dd );
   }
-}
-
-void QgsFeatureRendererV2::setRenderResult( const QgsRenderResult& result )
-{
-  mRenderResult = result;
 }

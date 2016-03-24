@@ -46,7 +46,7 @@ QgsRasterResampleFilter::~QgsRasterResampleFilter()
   delete mZoomedOutResampler;
 }
 
-QgsRasterInterface * QgsRasterResampleFilter::clone() const
+QgsRasterResampleFilter* QgsRasterResampleFilter::clone() const
 {
   QgsDebugMsg( "Entered" );
   QgsRasterResampleFilter * resampler = new QgsRasterResampleFilter( 0 );

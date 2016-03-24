@@ -31,7 +31,7 @@ using namespace SpatialIndex;
 class QgisVisitor : public SpatialIndex::IVisitor
 {
   public:
-    QgisVisitor( QList<QgsFeatureId> & list )
+    explicit QgisVisitor( QList<QgsFeatureId> & list )
         : mList( list ) {}
 
     void visitNode( const INode& n ) override
@@ -52,7 +52,7 @@ class QgisVisitor : public SpatialIndex::IVisitor
 class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
 {
   public:
-    QgsSpatialIndexCopyVisitor( SpatialIndex::ISpatialIndex* newIndex )
+    explicit QgsSpatialIndexCopyVisitor( SpatialIndex::ISpatialIndex* newIndex )
         : mNewIndex( newIndex ) {}
 
     void visitNode( const INode& n ) override
@@ -79,7 +79,9 @@ class QgsFeatureIteratorDataStream : public IDataStream
 {
   public:
     //! constructor - needs to load all data to a vector for later access when bulk loading
-    QgsFeatureIteratorDataStream( const QgsFeatureIterator& fi ) : mFi( fi ), mNextData( 0 )
+    explicit QgsFeatureIteratorDataStream( const QgsFeatureIterator& fi )
+        : mFi( fi )
+        , mNextData( 0 )
     {
       readNextEntry();
     }
@@ -222,7 +224,7 @@ QgsSpatialIndex& QgsSpatialIndex::operator=( const QgsSpatialIndex & other )
   return *this;
 }
 
-Region QgsSpatialIndex::rectToRegion( QgsRectangle rect )
+Region QgsSpatialIndex::rectToRegion( const QgsRectangle& rect )
 {
   double pt1[2], pt2[2];
   pt1[0] = rect.xMinimum();
@@ -287,7 +289,7 @@ bool QgsSpatialIndex::deleteFeature( const QgsFeature& f )
   return d->mRTree->deleteData( r, FID_TO_NUMBER( id ) );
 }
 
-QList<QgsFeatureId> QgsSpatialIndex::intersects( QgsRectangle rect ) const
+QList<QgsFeatureId> QgsSpatialIndex::intersects( const QgsRectangle& rect ) const
 {
   QList<QgsFeatureId> list;
   QgisVisitor visitor( list );
@@ -299,7 +301,7 @@ QList<QgsFeatureId> QgsSpatialIndex::intersects( QgsRectangle rect ) const
   return list;
 }
 
-QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( QgsPoint point, int neighbors ) const
+QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsPoint& point, int neighbors ) const
 {
   QList<QgsFeatureId> list;
   QgisVisitor visitor( list );

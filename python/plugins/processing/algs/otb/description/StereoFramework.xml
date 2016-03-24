@@ -35,7 +35,7 @@
     <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
     <key>elev.default</key>
     <name>Default elevation</name>
-    <description>This parameter allows setting the default height above ellipsoid when there is no DEM available, no coverage for some points or pixels with no_data in the DEM tiles, and no geoid file has been set. This is also used by some application as an average elevation value.</description>
+    <description>This parameter allows to set the default height above ellipsoid when there is no DEM available, no coverage for some points or pixels with no_data in the DEM tiles, and no geoid file has been set. This is also used by some application as an average elevation value.</description>
     <minValue />
     <maxValue />
     <default>0</default>
@@ -62,7 +62,7 @@
     <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
     <key>output.fusionmethod</key>
     <name>Method to fuse measures in each DSM cell</name>
-    <description>This parameter allows choosing the method used to fuse elevation measurements in each output DSM cell</description>
+    <description>This parameter allows to choose the method used to fuse elevation measurements in each output DSM cell</description>
     <options>
       <choices>
         <choice>max</choice>
@@ -167,7 +167,7 @@
     <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
     <key>map.utm.zone</key>
     <name>Zone number</name>
-    <description>The zone number ranges from 1 to 60 and allows defining the transverse mercator projection (along with the hemisphere)</description>
+    <description>The zone number ranges from 1 to 60 and allows to define the transverse mercator projection (along with the hemisphere)</description>
     <minValue />
     <maxValue />
     <default>31</default>
@@ -191,8 +191,8 @@
   <parameter>
     <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
     <key>stereorect.fwdgridstep</key>
-    <name>Step of the deformation grid (in pixels)</name>
-    <description>Stereo-rectification deformation grid only varies slowly. Therefore, it is recommended to use a coarser grid (higher step value) in case of large images</description>
+    <name>Step of the displacement grid (in pixels)</name>
+    <description>Stereo-rectification displacement grid only varies slowly. Therefore, it is recommended to use a coarser grid (higher step value) in case of large images</description>
     <minValue />
     <maxValue />
     <default>16</default>
@@ -201,7 +201,7 @@
     <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
     <key>stereorect.invgridssrate</key>
     <name>Sub-sampling rate for epipolar grid inversion</name>
-    <description>Grid inversion is an heavy process that implies spline regression on control points. To avoid eating to much memory, this parameter allows sub-sampling first the field to invert.</description>
+    <description>Grid inversion is an heavy process that implies spline regression on control points. To avoid eating to much memory, this parameter allows to first sub-sample the field to invert.</description>
     <minValue />
     <maxValue />
     <default>10</default>
@@ -298,7 +298,7 @@
     <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
     <key>mask.variancet</key>
     <name>Discard pixels with low local variance</name>
-    <description>This parameter allows discarding pixels whose local variance is too small (the size of the neighborhood is given by the radius parameter)</description>
+    <description>This parameter allows to discard pixels whose local variance is too small (the size of the neighborhood is given by the radius parameter)</description>
     <minValue />
     <maxValue />
     <default>50</default>

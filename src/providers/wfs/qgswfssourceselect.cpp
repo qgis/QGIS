@@ -358,11 +358,11 @@ void QgsWFSSourceSelect::addLayer()
   if ( extentVariant.isValid() )
   {
     QString extentString = extentVariant.toString();
-    QStringList minMaxSplit = extentString.split( ":" );
+    QStringList minMaxSplit = extentString.split( ':' );
     if ( minMaxSplit.size() > 1 )
     {
-      QStringList xyMinSplit = minMaxSplit[0].split( "," );
-      QStringList xyMaxSplit = minMaxSplit[1].split( "," );
+      QStringList xyMinSplit = minMaxSplit[0].split( ',' );
+      QStringList xyMaxSplit = minMaxSplit[1].split( ',' );
       if ( xyMinSplit.size() > 1 && xyMaxSplit.size() > 1 )
       {
         extent.set( xyMinSplit[0].toDouble(), xyMinSplit[1].toDouble(),
@@ -562,7 +562,7 @@ void QgsWFSSourceSelect::buildQueryButtonClicked()
   buildQuery( treeView->selectionModel()->currentIndex() );
 }
 
-void QgsWFSSourceSelect::filterChanged( QString text )
+void QgsWFSSourceSelect::filterChanged( const QString& text )
 {
   QgsDebugMsg( "WFS FeatureType filter changed to :" + text );
   QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );

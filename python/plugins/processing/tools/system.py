@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -45,6 +46,15 @@ def userFolder():
     return unicode(QDir.toNativeSeparators(userDir))
 
 
+def defaultOutputFolder():
+    folder = os.path.join(os.path.dirname(QgsApplication.qgisUserDbFilePath()),
+                          "processing", "outputs")
+    if not QDir(folder).exists():
+        QDir().mkpath(folder)
+
+    return unicode(QDir.toNativeSeparators(folder))
+
+
 def isWindows():
     return os.name == 'nt'
 
@@ -52,9 +62,11 @@ def isWindows():
 def isMac():
     return sys.platform == 'darwin'
 
+_tempFolderSuffix = unicode(uuid.uuid4()).replace('-', '')
+
 
 def tempFolder():
-    tempDir = os.path.join(unicode(QDir.tempPath()), 'processing')
+    tempDir = os.path.join(unicode(QDir.tempPath()), 'processing' + _tempFolderSuffix)
     if not QDir(tempDir).exists():
         QDir().mkpath(tempDir)
 

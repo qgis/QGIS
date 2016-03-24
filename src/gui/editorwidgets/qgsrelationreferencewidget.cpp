@@ -59,7 +59,8 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
     , mCanvas( NULL )
     , mMessageBar( NULL )
     , mForeignKey( QVariant() )
-    , mFkeyFieldIdx( -1 )
+    , mReferencedFieldIdx( -1 )
+    , mReferencingFieldIdx( -1 )
     , mAllowNull( true )
     , mHighlight( NULL )
     , mMapTool( NULL )
@@ -83,7 +84,9 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
 {
   mTopLayout = new QVBoxLayout( this );
   mTopLayout->setContentsMargins( 0, 0, 0, 0 );
-  mTopLayout->setAlignment( Qt::AlignTop );
+
+  setSizePolicy( sizePolicy().horizontalPolicy(), QSizePolicy::Fixed );
+
   setLayout( mTopLayout );
 
   QHBoxLayout* editLayout = new QHBoxLayout();
@@ -142,9 +145,6 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
   mRemoveFKButton->setText( tr( "No selection" ) );
   editLayout->addWidget( mRemoveFKButton );
 
-  // spacer
-  editLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding ) );
-
   // add line to top layout
   mTopLayout->addLayout( editLayout );
 
@@ -186,7 +186,7 @@ QgsRelationReferenceWidget::~QgsRelationReferenceWidget()
     delete mMapTool;
 }
 
-void QgsRelationReferenceWidget::setRelation( QgsRelation relation, bool allowNullValue )
+void QgsRelationReferenceWidget::setRelation( const QgsRelation& relation, bool allowNullValue )
 {
   mAllowNull = allowNullValue;
   mRemoveFKButton->setVisible( allowNullValue && mReadOnlySelector );
@@ -199,7 +199,8 @@ void QgsRelationReferenceWidget::setRelation( QgsRelation relation, bool allowNu
     mReferencingLayer = relation.referencingLayer();
     mRelationName = relation.name();
     mReferencedLayer = relation.referencedLayer();
-    mFkeyFieldIdx = mReferencedLayer->fieldNameIndex( relation.fieldPairs().first().second );
+    mReferencedFieldIdx = mReferencedLayer->fieldNameIndex( relation.fieldPairs().at( 0 ).second );
+    mReferencingFieldIdx = mReferencingLayer->fieldNameIndex( relation.fieldPairs().at( 0 ).first );
 
     QgsAttributeEditorContext context( mEditorContext, relation, QgsAttributeEditorContext::Single, QgsAttributeEditorContext::Embed );
 
@@ -245,8 +246,10 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
   if ( !mReferencedLayer )
     return;
 
+  // Attributes from the referencing layer
   QgsAttributes attrs = QgsAttributes( mReferencingLayer->fields().count() );
-  attrs[mFkeyFieldIdx] = value;
+  // Set the value on the foreign key field of the referencing record
+  attrs[ mReferencingLayer->fieldNameIndex( mRelation.fieldPairs().at( 0 ).first )] = value;
 
   QgsFeatureRequest request = mRelation.getReferencedFeatureRequest( attrs );
 
@@ -258,7 +261,7 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
     return;
   }
 
-  mForeignKey = mFeature.attribute( mFkeyFieldIdx );
+  mForeignKey = mFeature.attribute( mReferencedFieldIdx );
 
   if ( mReadOnlySelector )
   {
@@ -271,7 +274,7 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
     QString title = expr.evaluate( &context ).toString();
     if ( expr.hasEvalError() )
     {
-      title = mFeature.attribute( mFkeyFieldIdx ).toString();
+      title = mFeature.attribute( mReferencedFieldIdx ).toString();
     }
     mLineEdit->setText( title );
   }
@@ -353,11 +356,11 @@ QVariant QgsRelationReferenceWidget::foreignKey()
   {
     if ( !mFeature.isValid() )
     {
-      return QVariant( mReferencingLayer->fields().at( mFkeyFieldIdx ).type() );
+      return QVariant( mReferencingLayer->fields().at( mReferencingFieldIdx ).type() );
     }
     else
     {
-      return mFeature.attribute( mFkeyFieldIdx );
+      return mFeature.attribute( mReferencedFieldIdx );
     }
   }
 }
@@ -376,6 +379,12 @@ void QgsRelationReferenceWidget::setEditorContext( const QgsAttributeEditorConte
 
 void QgsRelationReferenceWidget::setEmbedForm( bool display )
 {
+  if ( display )
+  {
+    setSizePolicy( sizePolicy().horizontalPolicy(), QSizePolicy::MinimumExpanding );
+    mTopLayout->setAlignment( Qt::AlignTop );
+  }
+
   mAttributeEditorFrame->setVisible( display );
   mEmbedForm = display;
 }
@@ -400,7 +409,7 @@ void QgsRelationReferenceWidget::setOrderByValue( bool orderByValue )
   mOrderByValue = orderByValue;
 }
 
-void QgsRelationReferenceWidget::setFilterFields( QStringList filterFields )
+void QgsRelationReferenceWidget::setFilterFields( const QStringList& filterFields )
 {
   mFilterFields = filterFields;
 }
@@ -447,7 +456,7 @@ void QgsRelationReferenceWidget::init()
         mReferencedLayer->uniqueValues( idx, uniqueValues );
         cb->addItem( mReferencedLayer->attributeAlias( idx ).isEmpty() ? fieldName : mReferencedLayer->attributeAlias( idx ) );
         QVariant nullValue = QSettings().value( "qgis/nullValue", "NULL" );
-        cb->addItem( nullValue.toString(), QVariant( mReferencedLayer->fields()[idx].type() ) );
+        cb->addItem( nullValue.toString(), QVariant( mReferencedLayer->fields().at( idx ).type() ) );
 
         Q_FOREACH ( const QVariant& v, uniqueValues )
         {
@@ -481,11 +490,15 @@ void QgsRelationReferenceWidget::init()
         }
       }
     }
+    else
+    {
+      mFilterContainer->hide();
+    }
 
     QgsExpression exp( mReferencedLayer->displayExpression() );
 
     requestedAttrs += exp.referencedColumns().toSet();
-    requestedAttrs << mRelation.fieldPairs().first().second;
+    requestedAttrs << mRelation.fieldPairs().at( 0 ).second;
 
     QgsAttributeList attributes;
     Q_FOREACH ( const QString& attr, requestedAttrs )
@@ -660,7 +673,7 @@ void QgsRelationReferenceWidget::mapIdentification()
 
   if ( mMessageBar )
   {
-    QString title = QString( "Relation %1 for %2." ).arg( mRelationName ).arg( mReferencingLayer->name() );
+    QString title = QString( "Relation %1 for %2." ).arg( mRelationName, mReferencingLayer->name() );
     QString msg = tr( "Identify a feature of %1 to be associated. Press &lt;ESC&gt; to cancel." ).arg( mReferencedLayer->name() );
     mMessageBarItem = QgsMessageBar::createMessage( title, msg, this );
     mMessageBar->pushItem( mMessageBarItem );
@@ -673,10 +686,10 @@ void QgsRelationReferenceWidget::comboReferenceChanged( int index )
   mReferencedLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( mFeature );
   highlightFeature( mFeature );
   updateAttributeEditorFrame( mFeature );
-  emit foreignKeyChanged( mFeature.attribute( mFkeyFieldIdx ) );
+  emit foreignKeyChanged( mFeature.attribute( mReferencedFieldIdx ) );
 }
 
-void QgsRelationReferenceWidget::updateAttributeEditorFrame( const QgsFeature feature )
+void QgsRelationReferenceWidget::updateAttributeEditorFrame( const QgsFeature& feature )
 {
   // Check if we're running with an embedded frame we need to update
   if ( mAttributeEditorFrame )
@@ -701,15 +714,15 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature& feature )
     QString title = expr.evaluate( &context ).toString();
     if ( expr.hasEvalError() )
     {
-      title = feature.attribute( mFkeyFieldIdx ).toString();
+      title = feature.attribute( mReferencedFieldIdx ).toString();
     }
     mLineEdit->setText( title );
-    mForeignKey = feature.attribute( mFkeyFieldIdx );
+    mForeignKey = feature.attribute( mReferencedFieldIdx );
     mFeature = feature;
   }
   else
   {
-    mComboBox->setCurrentIndex( mComboBox->findData( feature.attribute( mFkeyFieldIdx ), QgsAttributeTableModel::FeatureIdRole ) );
+    mComboBox->setCurrentIndex( mComboBox->findData( feature.attribute( mReferencedFieldIdx ), QgsAttributeTableModel::FeatureIdRole ) );
     mFeature = feature;
   }
 
@@ -813,11 +826,11 @@ void QgsRelationReferenceWidget::filterChanged()
       {
         if ( mReferencedLayer->fields().field( fieldName ).type() == QVariant::String )
         {
-          filters << QString( "\"%1\" = '%2'" ).arg( fieldName ).arg( cb->currentText() );
+          filters << QString( "\"%1\" = '%2'" ).arg( fieldName, cb->currentText() );
         }
         else
         {
-          filters << QString( "\"%1\" = %2" ).arg( fieldName ).arg( cb->currentText() );
+          filters << QString( "\"%1\" = %2" ).arg( fieldName, cb->currentText() );
         }
       }
       attrs << mReferencedLayer->fieldNameIndex( fieldName );

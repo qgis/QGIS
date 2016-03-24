@@ -43,8 +43,8 @@ class GUI_EXPORT QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget
 
     QString min( int index = 0 ) override;
     QString max( int index = 0 ) override;
-    void setMin( QString value, int index = 0 ) override;
-    void setMax( QString value, int index = 0 ) override;
+    void setMin( const QString& value, int index = 0 ) override;
+    void setMax( const QString& value, int index = 0 ) override;
     int selectedBand( int index = 0 ) override;
 
   public slots:

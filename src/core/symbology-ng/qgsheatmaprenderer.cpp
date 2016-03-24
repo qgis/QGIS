@@ -26,6 +26,7 @@
 #include "qgsvectorcolorrampv2.h"
 #include "qgsrendercontext.h"
 #include "qgspainteffect.h"
+#include "qgspainteffectregistry.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -282,7 +283,7 @@ QString QgsHeatmapRenderer::dump() const
   return "[HEATMAP]";
 }
 
-QgsFeatureRendererV2* QgsHeatmapRenderer::clone() const
+QgsHeatmapRenderer* QgsHeatmapRenderer::clone() const
 {
   QgsHeatmapRenderer* newRenderer = new QgsHeatmapRenderer();
   if ( mGradientRamp )
@@ -361,7 +362,7 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument& doc )
   }
   rendererElem.setAttribute( "invert_ramp", QString::number( mInvertRamp ) );
 
-  if ( mPaintEffect )
+  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
 
   return rendererElem;

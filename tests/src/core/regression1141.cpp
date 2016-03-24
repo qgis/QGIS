@@ -56,8 +56,8 @@ class Regression1141: public QObject
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     /** This method tests that we can create a shpfile with diacriticals in its name
      *    and with fields that have diacriticals in their names*/
@@ -87,7 +87,7 @@ void Regression1141::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
   // compute our test file name:
-  QString myTmpDir = QDir::tempPath() + "/";
+  QString myTmpDir = QDir::tempPath() + '/';
   mFileName = myTmpDir +  "ąęćń.shp";
 }
 

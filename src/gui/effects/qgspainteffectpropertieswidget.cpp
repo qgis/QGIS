@@ -27,7 +27,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
-static bool _initWidgetFunction( QString name, QgsPaintEffectWidgetFunc f )
+static bool _initWidgetFunction( const QString& name, QgsPaintEffectWidgetFunc f )
 {
   QgsPaintEffectRegistry* registry = QgsPaintEffectRegistry::instance();
 

@@ -69,6 +69,10 @@ class QgsPaintEffectRegistry
 
   public:
 
+    /** Returns a reference to the singleton instance of the paint effect registry.
+     */
+    static QgsPaintEffectRegistry* instance();
+
     /** Returns the metadata for a specific effect.
      * @param name unique string name for paint effect class
      * @returns paint effect metadata if found, otherwise NULL
@@ -106,8 +110,17 @@ class QgsPaintEffectRegistry
      * effects. All effects except the standard draw source effect are disabled,
      * but are included so that they can be easily drawn just by enabling the effect.
      * @returns default effects stack
+     * @see isDefaultStack()
      */
     static QgsPaintEffect* defaultStack() /Factory/;
+
+    /** Tests whether a paint effect matches the default effects stack.
+     * @param effect paint effect to test
+     * @returns true if effect is default stack
+     * @note added in QGIS 2.12
+     * @see defaultStack()
+     */
+    static bool isDefaultStack( QgsPaintEffect* effect );
 
   protected:
     QgsPaintEffectRegistry();

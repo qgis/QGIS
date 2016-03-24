@@ -26,6 +26,7 @@
 
 #include <cmath>
 
+#include "qgsauthmanager.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
 #include "qgsrasterlayer.h"
@@ -116,13 +117,13 @@ void QgsWcsCapabilities::setUri( QgsDataSourceURI const &theUri )
 
 QString QgsWcsCapabilities::prepareUri( QString uri )
 {
-  if ( !uri.contains( "?" ) )
+  if ( !uri.contains( '?' ) )
   {
-    uri.append( "?" );
+    uri.append( '?' );
   }
   else if ( uri.right( 1 ) != "?" && uri.right( 1 ) != "&" )
   {
-    uri.append( "&" );
+    uri.append( '&' );
   }
 
   return uri;
@@ -159,7 +160,12 @@ bool QgsWcsCapabilities::sendRequest( QString const & url )
   QgsDebugMsg( "url = " + url );
   mError = "";
   QNetworkRequest request( url );
-  setAuthorization( request );
+  if ( !setAuthorization( request ) )
+  {
+    mError = tr( "Download of capabilities failed: network request update failed for authentication config" );
+    QgsMessageLog::logMessage( mError, tr( "WCS" ) );
+    return false;
+  }
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mCacheLoadControl );
   QgsDebugMsg( QString( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) );
@@ -203,7 +209,7 @@ void QgsWcsCapabilities::clear()
   mCapabilities = QgsWcsCapabilitiesProperty();
 }
 
-QString QgsWcsCapabilities::getCapabilitiesUrl( const QString version ) const
+QString QgsWcsCapabilities::getCapabilitiesUrl( const QString& version ) const
 {
   QString url = prepareUri( mUri.param( "url" ) ) + "SERVICE=WCS&REQUEST=GetCapabilities";
 
@@ -260,7 +266,7 @@ bool QgsWcsCapabilities::retrieveServerCapabilities()
   return false;
 }
 
-bool QgsWcsCapabilities::retrieveServerCapabilities( QString preferredVersion )
+bool QgsWcsCapabilities::retrieveServerCapabilities( const QString& preferredVersion )
 {
   clear();
 
@@ -359,7 +365,13 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
       emit statusChanged( tr( "Capabilities request redirected." ) );
 
       QNetworkRequest request( redirect.toUrl() );
-      setAuthorization( request );
+      if ( !setAuthorization( request ) )
+      {
+        mCapabilitiesResponse.clear();
+        mError = tr( "Download of capabilities failed: network request update failed for authentication config" );
+        QgsMessageLog::logMessage( mError, tr( "WCS" ) );
+        return;
+      }
       request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
       request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
@@ -416,7 +428,7 @@ void QgsWcsCapabilities::capabilitiesReplyProgress( qint64 bytesReceived, qint64
 
 QString QgsWcsCapabilities::stripNS( const QString & name )
 {
-  return name.contains( ":" ) ? name.section( ':', 1 ) : name;
+  return name.contains( ':' ) ? name.section( ':', 1 ) : name;
 }
 
 bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapabilitiesProperty &capabilities )
@@ -456,9 +468,9 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
       mErrorTitle = tr( "Dom Exception" );
       mErrorFormat = "text/plain";
       mError = tr( "Could not get WCS capabilities in the expected format (DTD): no %1 found.\nThis might be due to an incorrect WCS Server URL.\nTag:%3\nResponse was:\n%4" )
-               .arg( "Capabilities" )
-               .arg( docElem.tagName() )
-               .arg( QString( xml ) );
+               .arg( "Capabilities",
+                     docElem.tagName(),
+                     QString( xml ) );
     }
 
     QgsLogger::debug( "Dom Exception: " + mError );
@@ -544,7 +556,7 @@ QList<QDomElement> QgsWcsCapabilities::domElements( const QDomElement &element, 
 {
   QList<QDomElement> list;
 
-  QStringList names = path.split( "." );
+  QStringList names = path.split( '.' );
   if ( names.size() == 0 ) return list;
   QString name = names.value( 0 );
   names.removeFirst();
@@ -588,7 +600,7 @@ QStringList QgsWcsCapabilities::domElementsTexts( const QDomElement &element, co
 
 QDomElement QgsWcsCapabilities::domElement( const QDomElement &element, const QString & path )
 {
-  QStringList names = path.split( "." );
+  QStringList names = path.split( '.' );
   if ( names.size() == 0 ) return QDomElement();
 
   QDomElement el = firstChild( element, names.value( 0 ) );
@@ -609,7 +621,7 @@ QString QgsWcsCapabilities::domElementText( const QDomElement &element, const QS
 QList<int> QgsWcsCapabilities::parseInts( const QString &text )
 {
   QList<int> list;
-  Q_FOREACH ( const QString& s, text.split( " " ) )
+  Q_FOREACH ( const QString& s, text.split( ' ' ) )
   {
     bool ok;
     list.append( s.toInt( &ok ) );
@@ -625,7 +637,7 @@ QList<int> QgsWcsCapabilities::parseInts( const QString &text )
 QList<double> QgsWcsCapabilities::parseDoubles( const QString &text )
 {
   QList<double> list;
-  Q_FOREACH ( const QString& s, text.split( " " ) )
+  Q_FOREACH ( const QString& s, text.split( ' ' ) )
   {
     bool ok;
     list.append( s.toDouble( &ok ) );
@@ -644,10 +656,10 @@ QString QgsWcsCapabilities::crsUrnToAuthId( const QString &text )
 
   // URN format: urn:ogc:def:objectType:authority:version:code
   // URN example: urn:ogc:def:crs:EPSG::4326
-  QStringList urn = text.split( ":" );
+  QStringList urn = text.split( ':' );
   if ( urn.size() == 7 )
   {
-    authid = urn.value( 4 ) + ":" + urn.value( 6 );
+    authid = urn.value( 4 ) + ':' + urn.value( 6 );
   }
 
   return authid;
@@ -763,9 +775,9 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
     mErrorTitle = tr( "Dom Exception" );
     mErrorFormat = "text/plain";
     mError = tr( "Could not get WCS capabilities in the expected format (DTD): no %1 found.\nThis might be due to an incorrect WCS Server URL.\nTag:%3\nResponse was:\n%4" )
-             .arg( "CoverageDescription" )
-             .arg( docElem.tagName() )
-             .arg( QString( xml ) );
+             .arg( "CoverageDescription",
+                   docElem.tagName(),
+                   QString( xml ) );
 
     QgsLogger::debug( "Dom Exception: " + mError );
 
@@ -866,10 +878,10 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
     QString endPosition = domElementText( el, "endPosition" );
     QString timeResolution = domElementText( el, "timeResolution" );
     // Format used in request
-    QString time = beginPosition + "/" + endPosition;
+    QString time = beginPosition + '/' + endPosition;
     if ( !timeResolution.isEmpty() )
     {
-      time += "/" + timeResolution;
+      time += '/' + timeResolution;
     }
     coverage->times << time;
   }
@@ -918,9 +930,9 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
     mErrorTitle = tr( "Dom Exception" );
     mErrorFormat = "text/plain";
     mError = tr( "Could not get WCS capabilities in the expected format (DTD): no %1 found.\nThis might be due to an incorrect WCS Server URL.\nTag:%3\nResponse was:\n%4" )
-             .arg( "CoverageDescriptions" )
-             .arg( docElem.tagName() )
-             .arg( QString( xml ) );
+             .arg( "CoverageDescriptions",
+                   docElem.tagName(),
+                   QString( xml ) );
 
     QgsLogger::debug( "Dom Exception: " + mError );
 
@@ -962,7 +974,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
         box = QgsRectangle( low[0], low[1], high[0], high[1] );
       }
       coverage->boundingBoxes.insert( authid, box );
-      QgsDebugMsg( "crs: " + crs.authid() + " " + crs.description() + QString( " axisInverted = %1" ).arg( crs.axisInverted() ) );
+      QgsDebugMsg( "crs: " + crs.authid() + ' ' + crs.description() + QString( " axisInverted = %1" ).arg( crs.axisInverted() ) );
       QgsDebugMsg( "BoundingBox: " + authid + " : " + box.toString() );
     }
   }
@@ -993,10 +1005,10 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
     QString endPosition = domElementText( el, "endTime" );
     QString timeResolution = domElementText( el, "timeResolution" );
     // Format used in request
-    QString time = beginPosition + "/" + endPosition;
+    QString time = beginPosition + '/' + endPosition;
     if ( !timeResolution.isEmpty() )
     {
-      time += "/" + timeResolution;
+      time += '/' + timeResolution;
     }
     coverage->times << time;
   }
@@ -1162,14 +1174,19 @@ QString QgsWcsCapabilities::lastErrorFormat()
   return mErrorFormat;
 }
 
-void QgsWcsCapabilities::setAuthorization( QNetworkRequest &request ) const
+bool QgsWcsCapabilities::setAuthorization( QNetworkRequest &request ) const
 {
   QgsDebugMsg( "entered" );
-  if ( mUri.hasParam( "username" ) && mUri.hasParam( "password" ) )
+  if ( mUri.hasParam( "authcfg" ) && !mUri.param( "authcfg" ).isEmpty() )
+  {
+    return QgsAuthManager::instance()->updateNetworkRequest( request, mUri.param( "authcfg" ) );
+  }
+  else if ( mUri.hasParam( "username" ) && mUri.hasParam( "password" ) )
   {
     QgsDebugMsg( "setAuthorization " + mUri.param( "username" ) );
-    request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUri.param( "username" ) ).arg( mUri.param( "password" ) ).toAscii().toBase64() );
+    request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUri.param( "username" ), mUri.param( "password" ) ).toAscii().toBase64() );
   }
+  return true;
 }
 
 void QgsWcsCapabilities::showMessageBox( const QString& title, const QString& text )

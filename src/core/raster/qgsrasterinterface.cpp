@@ -499,7 +499,7 @@ QgsRasterHistogram QgsRasterInterface::histogram( int theBandNo,
   QString hist;
   for ( int i = 0; i < qMin( myHistogram.histogramVector.size(), 500 ); i++ )
   {
-    hist += QString::number( myHistogram.histogramVector.value( i ) ) + " ";
+    hist += QString::number( myHistogram.histogramVector.value( i ) ) + ' ';
   }
   QgsDebugMsg( "Histogram (max first 500 bins): " + hist );
 #endif

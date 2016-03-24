@@ -22,10 +22,10 @@ class QgsRasterRendererWidget: QWidget
 
     virtual QString min( int index = 0 );
     virtual QString max( int index = 0 );
-    virtual void setMin( QString value, int index = 0 );
-    virtual void setMax( QString value, int index = 0 );
+    virtual void setMin( const QString& value, int index = 0 );
+    virtual void setMax( const QString& value, int index = 0 );
     virtual QString stdDev();
-    virtual void setStdDev( QString value );
+    virtual void setStdDev( const QString& value );
     virtual int selectedBand( int index = 0 );
 
   protected:

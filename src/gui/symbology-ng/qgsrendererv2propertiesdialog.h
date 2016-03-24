@@ -28,6 +28,7 @@ class QgsStyleV2;
 class QgsSymbolV2;
 class QgsPaintEffect;
 class QgsRendererV2Widget;
+class QgsMapCanvas;
 
 class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::QgsRendererV2PropsDialogBase
 {
@@ -36,6 +37,13 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
   public:
     QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyleV2* style, bool embedded = false );
     ~QgsRendererV2PropertiesDialog();
+
+    /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @note added in QGIS 2.12
+     */
+    void setMapCanvas( QgsMapCanvas* canvas );
 
   public slots:
     //! called when user changes renderer type
@@ -56,6 +64,8 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
     QgsRendererV2Widget* mActiveWidget;
 
     QgsPaintEffect* mPaintEffect;
+
+    QgsMapCanvas* mMapCanvas;
 };
 
 

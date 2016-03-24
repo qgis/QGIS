@@ -1,5 +1,6 @@
 {
-  "function": "wordwrap",
+  "name": "wordwrap",
+  "type": "function",
   "description": "Returns a string wrapped to a maximum/minimum number of characters.",
   "arguments": [ {"arg":"string","description":"the string to be wrapped"},
                  {"arg":"wrap_length","description":"an integer. If wrap_length is positive the number represents the ideal maximum number of characters to wrap; if negative, the number represents the minimum number of characters to wrap."},

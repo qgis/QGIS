@@ -78,7 +78,7 @@ void QgsOSMExportDialog::updateLayerName()
     layerType = "polylines";
   else
     layerType = "polygons";
-  editLayerName->setText( QString( "%1_%2" ).arg( baseName ).arg( layerType ) );
+  editLayerName->setText( QString( "%1_%2" ).arg( baseName, layerType ) );
 }
 
 

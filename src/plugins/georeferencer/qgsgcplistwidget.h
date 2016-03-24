@@ -32,7 +32,7 @@ class QgsGCPListWidget : public QTableView
 {
     Q_OBJECT
   public:
-    QgsGCPListWidget( QWidget *parent = 0 );
+    explicit QgsGCPListWidget( QWidget *parent = 0 );
 
     void setGCPList( QgsGCPList *theGCPList );
     void setGeorefTransform( QgsGeorefTransform *theGeorefTransform );

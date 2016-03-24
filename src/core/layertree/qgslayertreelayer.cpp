@@ -30,7 +30,7 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
   attachToLayer();
 }
 
-QgsLayerTreeLayer::QgsLayerTreeLayer( QString layerId, QString name )
+QgsLayerTreeLayer::QgsLayerTreeLayer( const QString& layerId, const QString& name )
     : QgsLayerTreeNode( NodeLayer )
     , mLayerId( layerId )
     , mLayerName( name )
@@ -138,12 +138,12 @@ QString QgsLayerTreeLayer::dump() const
   return QString( "LAYER: %1 visible=%2 expanded=%3 id=%4\n" ).arg( layerName() ).arg( mVisible ).arg( mExpanded ).arg( layerId() );
 }
 
-QgsLayerTreeNode* QgsLayerTreeLayer::clone() const
+QgsLayerTreeLayer* QgsLayerTreeLayer::clone() const
 {
   return new QgsLayerTreeLayer( *this );
 }
 
-void QgsLayerTreeLayer::registryLayersAdded( QList<QgsMapLayer*> layers )
+void QgsLayerTreeLayer::registryLayersAdded( const QList<QgsMapLayer*>& layers )
 {
   Q_FOREACH ( QgsMapLayer* l, layers )
   {

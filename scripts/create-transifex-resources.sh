@@ -7,6 +7,7 @@
 #
 # Tim Sutton, March 2013
 
+# TODO: update script to consider qgis_sr@latin and qgis_zh-Han*
 
 LOCALES=`ls i18n/qgis_*.ts| grep -o "qgis_[a-z\_A-Z]*" | sed 's/qgis_//g' | sort | uniq`
 
@@ -16,7 +17,7 @@ RESOURCE='i18n/qgis_<lang>.ts'
 
 #qgis-application because no _ allowed in resource name
 set -x
-tx set -t QT --auto-local -r QGIS.qgis-application \
+tx set -t QT --minimum-perc=35 --auto-local -r QGIS.qgis-application \
   $RESOURCE \
   --source-lang en \
   --source $TSFILE \

@@ -30,7 +30,7 @@ class QgsVectorLayer;
 class CORE_EXPORT QgsSymbolLayerV2AbstractMetadata
 {
   public:
-    QgsSymbolLayerV2AbstractMetadata( QString name, QString visibleName, QgsSymbolV2::SymbolType type )
+    QgsSymbolLayerV2AbstractMetadata( const QString& name, const QString& visibleName, QgsSymbolV2::SymbolType type )
         : mName( name ), mVisibleName( visibleName ), mType( type ) {}
 
     virtual ~QgsSymbolLayerV2AbstractMetadata() {}
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMeta
 {
   public:
     //! not available in python bindings
-    QgsSymbolLayerV2Metadata( QString name, QString visibleName,
+    QgsSymbolLayerV2Metadata( const QString& name, const QString& visibleName,
                               QgsSymbolV2::SymbolType type,
                               QgsSymbolLayerV2CreateFunc pfCreate,
                               QgsSymbolLayerV2WidgetFunc pfWidget = NULL )
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMeta
     {}
 
     //! not available in python bindings
-    QgsSymbolLayerV2Metadata( QString name, QString visibleName,
+    QgsSymbolLayerV2Metadata( const QString& name, const QString& visibleName,
                               QgsSymbolV2::SymbolType type,
                               QgsSymbolLayerV2CreateFunc pfCreate,
                               QgsSymbolLayerV2CreateFromSldFunc pfCreateFromSld,
@@ -119,16 +119,16 @@ class CORE_EXPORT QgsSymbolLayerV2Registry
     static QgsSymbolLayerV2Registry* instance();
 
     //! return metadata for specified symbol layer. Returns NULL if not found
-    QgsSymbolLayerV2AbstractMetadata* symbolLayerMetadata( QString name ) const;
+    QgsSymbolLayerV2AbstractMetadata* symbolLayerMetadata( const QString& name ) const;
 
     //! register a new symbol layer type. Takes ownership of the metadata instance.
     bool addSymbolLayerType( QgsSymbolLayerV2AbstractMetadata* metadata );
 
     //! create a new instance of symbol layer given symbol layer name and properties
-    QgsSymbolLayerV2* createSymbolLayer( QString name, const QgsStringMap& properties = QgsStringMap() ) const;
+    QgsSymbolLayerV2* createSymbolLayer( const QString& name, const QgsStringMap& properties = QgsStringMap() ) const;
 
     //! create a new instance of symbol layer given symbol layer name and SLD
-    QgsSymbolLayerV2* createSymbolLayerFromSld( QString name, QDomElement &element ) const;
+    QgsSymbolLayerV2* createSymbolLayerFromSld( const QString& name, QDomElement &element ) const;
 
     //! return a list of available symbol layers for a specified symbol type
     QStringList symbolLayersForType( QgsSymbolV2::SymbolType type );

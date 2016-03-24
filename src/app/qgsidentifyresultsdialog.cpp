@@ -369,7 +369,7 @@ QTreeWidgetItem *QgsIdentifyResultsDialog::layerItem( QObject *object )
   return 0;
 }
 
-void QgsIdentifyResultsDialog::addFeature( QgsMapToolIdentify::IdentifyResult result )
+void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyResult& result )
 {
   if ( result.mLayer->type() == QgsMapLayer::VectorLayer )
   {
@@ -471,7 +471,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     if ( i >= fields.count() )
       continue;
 
-    QString value = fields[i].displayString( attrs[i] );
+    QString value = fields.at( i ).displayString( attrs.at( i ) );
     QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << value );
 
     attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
@@ -480,13 +480,13 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
     attrItem->setData( 1, Qt::UserRole, value );
 
-    if ( vlayer->editorWidgetV2( i ) == "Hidden" )
+    if ( vlayer->editFormConfig()->widgetType( i ) == "Hidden" )
     {
       delete attrItem;
       continue;
     }
 
-    value = representValue( vlayer, fields[i].name(), attrs[i] );
+    value = representValue( vlayer, fields[i].name(), attrs.at( i ) );
 
     attrItem->setData( 1, Qt::DisplayRole, value );
 
@@ -513,12 +513,12 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     if ( i >= fields.count() )
       continue;
 
-    QString value = fields[i].displayString( attrs[i] );
-    QString value2 = representValue( vlayer, fields[i].name(), value );
+    QString value = fields.at( i ).displayString( attrs.at( i ) );
+    QString value2 = representValue( vlayer, fields.at( i ).name(), value );
 
     tblResults->setRowCount( j + 1 );
 
-    QgsDebugMsg( QString( "adding item #%1 / %2 / %3 / %4" ).arg( j ).arg( vlayer->name() ).arg( vlayer->attributeDisplayName( i ) ).arg( value2 ) );
+    QgsDebugMsg( QString( "adding item #%1 / %2 / %3 / %4" ).arg( j ).arg( vlayer->name(), vlayer->attributeDisplayName( i ), value2 ) );
 
     QTableWidgetItem *item = new QTableWidgetItem( vlayer->name() );
     item->setData( Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( vlayer ) ) );
@@ -580,7 +580,7 @@ QgsIdentifyPlotCurve::QgsIdentifyPlotCurve( const QMap<QString, QString> &attrib
 
   if ( color == QColor() )
   {
-    color = QgsVectorRandomColorRampV2::randomColors( 1 )[0];
+    color = QgsVectorRandomColorRampV2::randomColors( 1 ).at( 0 );
   }
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   mPlotCurve->setSymbol( new QwtSymbol( QwtSymbol::Ellipse, QBrush( Qt::white ),
@@ -640,7 +640,7 @@ QString QgsIdentifyResultsDialog::representValue( QgsVectorLayer* vlayer, const 
   QVariant cache;
   QMap<QString, QVariant>& layerCaches = mWidgetCaches[vlayer->id()];
 
-  QString widgetType = vlayer->editorWidgetV2( fieldName );
+  QString widgetType = vlayer->editFormConfig()->widgetType( fieldName );
   QgsEditorWidgetFactory* factory = QgsEditorWidgetRegistry::instance()->factory( widgetType );
 
   int idx = vlayer->fieldNameIndex( fieldName );
@@ -654,15 +654,15 @@ QString QgsIdentifyResultsDialog::representValue( QgsVectorLayer* vlayer, const 
   }
   else
   {
-    cache = factory->createCache( vlayer, idx, vlayer->editorWidgetV2Config( fieldName ) );
+    cache = factory->createCache( vlayer, idx, vlayer->editFormConfig()->widgetConfig( fieldName ) );
     layerCaches.insert( fieldName, cache );
   }
 
-  return factory->representValue( vlayer, idx, vlayer->editorWidgetV2Config( fieldName ), cache, value );
+  return factory->representValue( vlayer, idx, vlayer->editFormConfig()->widgetConfig( fieldName ), cache, value );
 }
 
 void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
-    QString label,
+    const QString& label,
     const QMap<QString, QString> &attributes,
     const QMap<QString, QString> &derivedAttributes,
     const QgsFields &fields,
@@ -705,7 +705,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     {
       // Add format combo box item
       // Space added before format to keep it first in ordered list: TODO better (user data)
-      QTreeWidgetItem *formatItem = new QTreeWidgetItem( QStringList() << " " + tr( "Format" ) );
+      QTreeWidgetItem *formatItem = new QTreeWidgetItem( QStringList() << ' ' + tr( "Format" ) );
       layItem->addChild( formatItem );
       lstResults->setItemWidget( formatItem, 1, formatCombo );
       connect( formatCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( formatChanged( int ) ) );
@@ -734,11 +734,11 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
       if ( i >= fields.count() )
         continue;
 
-      QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << attrs[i].toString() );
+      QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << attrs.at( i ).toString() );
 
       attrItem->setData( 0, Qt::DisplayRole, fields[i].name() );
 
-      QVariant value = attrs[i];
+      QVariant value = attrs.at( i );
       attrItem->setData( 1, Qt::DisplayRole, value );
       featItem->addChild( attrItem );
     }
@@ -784,7 +784,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
 
   for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
-    QgsDebugMsg( QString( "adding item #%1 / %2 / %3 / %4" ).arg( j ).arg( layer->name() ).arg( it.key() ).arg( it.value() ) );
+    QgsDebugMsg( QString( "adding item #%1 / %2 / %3 / %4" ).arg( j ).arg( layer->name(), it.key(), it.value() ) );
     QTableWidgetItem *item = new QTableWidgetItem( layer->name() );
     item->setData( Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
     item->setData( Qt::UserRole + 1, layer->id() );
@@ -1696,7 +1696,7 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
       if ( attrIdx < 0 || attrIdx >= fields.count() )
         continue;
 
-      text += QString( "%1: %2\n" ).arg( fields[attrIdx].name() ).arg( it.value().toString() );
+      text += QString( "%1: %2\n" ).arg( fields[attrIdx].name(), it.value().toString() );
     }
   }
   else if ( rlayer )
@@ -1710,7 +1710,7 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
       QTreeWidgetItem *item = featItem->child( i );
       if ( item->childCount() > 0 )
         continue;
-      text += QString( "%1: %2\n" ).arg( item->data( 0, Qt::DisplayRole ).toString() ).arg( item->data( 1, Qt::DisplayRole ).toString() );
+      text += QString( "%1: %2\n" ).arg( item->data( 0, Qt::DisplayRole ).toString(), item->data( 1, Qt::DisplayRole ).toString() );
     }
   }
 

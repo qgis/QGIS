@@ -32,7 +32,7 @@ class GUI_EXPORT QgsRelationManagerDialog : public QWidget, private Ui::QgsRelat
     explicit QgsRelationManagerDialog( QgsRelationManager* relationMgr, QWidget *parent = 0 );
     ~QgsRelationManagerDialog();
 
-    void setLayers( QList< QgsVectorLayer* > );
+    void setLayers( const QList<QgsVectorLayer*>& );
 
     void addRelation( const QgsRelation& rel );
     QList< QgsRelation > relations();

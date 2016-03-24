@@ -122,6 +122,7 @@ QStringList QgsPaintEffectRegistry::effects() const
 
 QgsPaintEffect* QgsPaintEffectRegistry::defaultStack()
 {
+  //NOTE - also remember to update isDefaultStack below if making changes to this list
   QgsEffectStack* stack = new QgsEffectStack();
   QgsDropShadowEffect* dropShadow = new QgsDropShadowEffect();
   dropShadow->setEnabled( false );
@@ -137,4 +138,35 @@ QgsPaintEffect* QgsPaintEffectRegistry::defaultStack()
   innerGlow->setEnabled( false );
   stack->appendEffect( innerGlow );
   return stack;
+}
+
+bool QgsPaintEffectRegistry::isDefaultStack( QgsPaintEffect* effect )
+{
+  QgsEffectStack* effectStack = dynamic_cast< QgsEffectStack* >( effect );
+  if ( !effectStack )
+    return false;
+
+  if ( effectStack->count() != 5 )
+    return false;
+
+  for ( int i = 0; i < 5; ++i )
+  {
+    //only the third effect should be enabled
+    if ( effectStack->effect( i )->enabled() != ( i == 2 ) )
+      return false;
+  }
+
+  if ( !dynamic_cast< QgsDropShadowEffect* >( effectStack->effect( 0 ) ) )
+    return false;
+  if ( !dynamic_cast< QgsOuterGlowEffect* >( effectStack->effect( 1 ) ) )
+    return false;
+  if ( !dynamic_cast< QgsDrawSourceEffect* >( effectStack->effect( 2 ) ) )
+    return false;
+  if ( !dynamic_cast< QgsInnerShadowEffect* >( effectStack->effect( 3 ) ) )
+    return false;
+  if ( !dynamic_cast< QgsInnerGlowEffect* >( effectStack->effect( 4 ) ) )
+    return false;
+
+  //we don't go as far as to check the individual effect's properties
+  return true;
 }

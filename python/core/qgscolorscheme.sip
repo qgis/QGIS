@@ -134,7 +134,7 @@ class QgsUserColorScheme : QgsGplColorScheme
 
     virtual QString schemeName() const;
 
-    virtual QgsColorScheme* clone() const;
+    virtual QgsUserColorScheme* clone() const /Factory/;
 
     virtual bool isEditable() const;
 
@@ -178,7 +178,7 @@ class QgsRecentColorScheme : QgsColorScheme
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
                                            const QColor &baseColor = QColor() );
 
-    QgsColorScheme* clone() const /Factory/;
+    virtual QgsRecentColorScheme* clone() const /Factory/;
 };
 
 /** \ingroup core
@@ -209,7 +209,7 @@ class QgsCustomColorScheme : QgsColorScheme
 
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
 
-    QgsColorScheme* clone() const /Factory/;
+    virtual QgsCustomColorScheme* clone() const /Factory/;
 };
 
 /** \ingroup core
@@ -239,5 +239,5 @@ class QgsProjectColorScheme : QgsColorScheme
 
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
 
-    QgsColorScheme* clone() const /Factory/;
+    virtual QgsProjectColorScheme* clone() const /Factory/;
 };

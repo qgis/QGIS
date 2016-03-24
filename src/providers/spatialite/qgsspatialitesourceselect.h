@@ -87,7 +87,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     void on_cbxAllowGeometrylessTables_stateChanged( int );
     void setSql( const QModelIndex& index );
     void on_cmbConnections_activated( int );
-    void setLayerType( QString table, QString column, QString type );
+    void setLayerType( const QString& table, const QString& column, const QString& type );
     void on_mTablesTreeView_clicked( const QModelIndex &index );
     void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
     //!Sets a new regular expression to the model
@@ -116,7 +116,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     void setConnectionListPosition();
     // Combine the table and column data into a single string
     // useful for display to the user
-    QString fullDescription( QString table, QString column, QString type );
+    QString fullDescription( const QString& table, const QString& column, const QString& type );
     // The column labels
     QStringList mColumnLabels;
     QString mSqlitePath;

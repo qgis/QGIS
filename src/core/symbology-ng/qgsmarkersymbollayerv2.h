@@ -34,9 +34,9 @@
 class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 {
   public:
-    QgsSimpleMarkerSymbolLayerV2( QString name = DEFAULT_SIMPLEMARKER_NAME,
-                                  QColor color = DEFAULT_SIMPLEMARKER_COLOR,
-                                  QColor borderColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
+    QgsSimpleMarkerSymbolLayerV2( const QString& name = DEFAULT_SIMPLEMARKER_NAME,
+                                  const QColor& color = DEFAULT_SIMPLEMARKER_COLOR,
+                                  const QColor& borderColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
                                   double size = DEFAULT_SIMPLEMARKER_SIZE,
                                   double angle = DEFAULT_SIMPLEMARKER_ANGLE,
                                   QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
@@ -58,17 +58,17 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     QgsStringMap properties() const override;
 
-    QgsSymbolLayerV2* clone() const override;
+    QgsSimpleMarkerSymbolLayerV2* clone() const override;
 
-    void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const override;
+    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const override;
 
     QString name() const { return mName; }
-    void setName( QString name ) { mName = name; }
+    void setName( const QString& name ) { mName = name; }
 
     QColor borderColor() const { return mBorderColor; }
-    void setBorderColor( QColor color ) { mBorderColor = color; }
+    void setBorderColor( const QColor& color ) { mBorderColor = color; }
 
     Qt::PenStyle outlineStyle() const { return mOutlineStyle; }
     void setOutlineStyle( Qt::PenStyle outlineStyle ) { mOutlineStyle = outlineStyle; }
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale ) { mOutlineWidthMapUnitScale = scale; }
     const QgsMapUnitScale& outlineWidthMapUnitScale() const { return mOutlineWidthMapUnitScale; }
 
-    bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift = QPointF( 0.0, 0.0 ) ) const override;
+    bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift = QPointF( 0.0, 0.0 ) ) const override;
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit ) override;
     QgsSymbolV2::OutputUnit outputUnit() const override;
@@ -104,11 +104,13 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     void setMapUnitScale( const QgsMapUnitScale& scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
+    QRectF bounds( const QPointF& point, QgsSymbolV2RenderContext& context ) override;
+
   protected:
     void drawMarker( QPainter* p, QgsSymbolV2RenderContext& context );
 
-    bool prepareShape( QString name = QString() );
-    bool prepareShape( QString name, QPolygonF &polygon ) const;
+    bool prepareShape( const QString& name = QString() );
+    bool prepareShape( const QString& name, QPolygonF &polygon ) const;
     bool preparePath( QString name = QString() );
 
     /** Prepares cache image
@@ -133,6 +135,11 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     //Maximum width/height of cache image
     static const int mMaximumCacheWidth = 3000;
+
+  private:
+
+    double calculateSize( QgsSymbolV2RenderContext& context, bool& hasDataDefinedSize ) const;
+    void calculateOffsetAndRotation( QgsSymbolV2RenderContext& context, double scaledSize, bool& hasDataDefinedRotation, QPointF& offset, double& angle ) const;
 };
 
 //////////
@@ -144,7 +151,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 {
   public:
-    QgsSvgMarkerSymbolLayerV2( QString name = DEFAULT_SVGMARKER_NAME,
+    QgsSvgMarkerSymbolLayerV2( const QString& name = DEFAULT_SVGMARKER_NAME,
                                double size = DEFAULT_SVGMARKER_SIZE,
                                double angle = DEFAULT_SVGMARKER_ANGLE,
                                QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
@@ -166,15 +173,15 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     QgsStringMap properties() const override;
 
-    QgsSymbolLayerV2* clone() const override;
+    QgsSvgMarkerSymbolLayerV2* clone() const override;
 
-    void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const override;
+    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     QString path() const { return mPath; }
-    void setPath( QString path );
+    void setPath( const QString& path );
 
-    QColor fillColor() const override { return mFillColor; }
-    void setFillColor( const QColor& c ) override { mFillColor = c; }
+    QColor fillColor() const override { return color(); }
+    void setFillColor( const QColor& color ) override { setColor( color ); }
 
     QColor outlineColor() const override { return mOutlineColor; }
     void setOutlineColor( const QColor& c ) override { mOutlineColor = c; }
@@ -194,18 +201,24 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     void setMapUnitScale( const QgsMapUnitScale& scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift = QPointF( 0.0, 0.0 ) ) const override;
+    bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift = QPointF( 0.0, 0.0 ) ) const override;
+
+    QRectF bounds( const QPointF& point, QgsSymbolV2RenderContext& context ) override;
 
   protected:
     QString mPath;
 
     //param(fill), param(outline), param(outline-width) are going
     //to be replaced in memory
-    QColor mFillColor;
     QColor mOutlineColor;
     double mOutlineWidth;
     QgsSymbolV2::OutputUnit mOutlineWidthUnit;
     QgsMapUnitScale mOutlineWidthMapUnitScale;
+
+  private:
+    double calculateSize( QgsSymbolV2RenderContext& context, bool& hasDataDefinedSize ) const;
+    void calculateOffsetAndRotation( QgsSymbolV2RenderContext& context, double scaledSize, QPointF& offset, double& angle ) const;
+
 };
 
 
@@ -223,10 +236,10 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 class CORE_EXPORT QgsFontMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 {
   public:
-    QgsFontMarkerSymbolLayerV2( QString fontFamily = DEFAULT_FONTMARKER_FONT,
+    QgsFontMarkerSymbolLayerV2( const QString& fontFamily = DEFAULT_FONTMARKER_FONT,
                                 QChar chr = DEFAULT_FONTMARKER_CHR,
                                 double pointSize = DEFAULT_FONTMARKER_SIZE,
-                                QColor color = DEFAULT_FONTMARKER_COLOR,
+                                const QColor& color = DEFAULT_FONTMARKER_COLOR,
                                 double angle = DEFAULT_FONTMARKER_ANGLE );
 
     ~QgsFontMarkerSymbolLayerV2();
@@ -248,17 +261,19 @@ class CORE_EXPORT QgsFontMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     QgsStringMap properties() const override;
 
-    QgsSymbolLayerV2* clone() const override;
+    QgsFontMarkerSymbolLayerV2* clone() const override;
 
-    void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const override;
+    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     // new methods
 
     QString fontFamily() const { return mFontFamily; }
-    void setFontFamily( QString family ) { mFontFamily = family; }
+    void setFontFamily( const QString& family ) { mFontFamily = family; }
 
     QChar character() const { return mChr; }
     void setCharacter( QChar ch ) { mChr = ch; }
+
+    QRectF bounds( const QPointF& point, QgsSymbolV2RenderContext& context ) override;
 
   protected:
 
@@ -266,10 +281,16 @@ class CORE_EXPORT QgsFontMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QFontMetrics* mFontMetrics;
     QChar mChr;
 
+    double mChrWidth;
     QPointF mChrOffset;
     QFont mFont;
     double mOrigSize;
 
+  private:
+
+    QString characterToRender( QgsSymbolV2RenderContext& context, QPointF& charOffset, double& charWidth );
+    void calculateOffsetAndRotation( QgsSymbolV2RenderContext& context, double scaledSize, bool& hasDataDefinedRotation, QPointF& offset, double& angle ) const;
+    double calculateSize( QgsSymbolV2RenderContext& context );
 };
 
 

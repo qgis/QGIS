@@ -28,7 +28,7 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurfaceV2
 {
   public:
     virtual QString geometryType() const override { return "MultiPolygon"; }
-    QgsAbstractGeometryV2* clone() const override;
+    QgsMultiPolygonV2* clone() const override;
 
     bool fromWkt( const QString& wkt ) override;
 
@@ -42,6 +42,10 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurfaceV2
 
     /** Adds a geometry and takes ownership. Returns true in case of success*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g ) override;
+
+  protected:
+
+    virtual bool wktOmitChildType() const override { return true; }
 };
 
 #endif // QGSMULTIPOLYGONV2_H

@@ -175,7 +175,7 @@ class QgsDropShadowEffect : QgsShadowEffect
     virtual ~QgsDropShadowEffect();
 
     virtual QString type() const;
-    virtual QgsPaintEffect* clone() const /Factory/;
+    virtual QgsDropShadowEffect* clone() const /Factory/;
 
   protected:
 
@@ -209,7 +209,7 @@ class QgsInnerShadowEffect : QgsShadowEffect
     virtual ~QgsInnerShadowEffect();
 
     virtual QString type() const;
-    virtual QgsPaintEffect* clone() const /Factory/;
+    virtual QgsInnerShadowEffect* clone() const /Factory/;
 
   protected:
 

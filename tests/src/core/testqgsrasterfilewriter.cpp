@@ -41,14 +41,14 @@ class TestQgsRasterFileWriter: public QObject
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void writeTest();
   private:
-    bool writeTest( QString rasterName );
-    void log( QString msg );
-    void logError( QString msg );
+    bool writeTest( const QString& rasterName );
+    void log( const QString& msg );
+    void logError( const QString& msg );
     QString mTestDataDir;
     QString mReport;
 };
@@ -62,10 +62,10 @@ void TestQgsRasterFileWriter::initTestCase()
   // disable any PAM stuff to make sure stats are consistent
   CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
   QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( "\n", "<br />" );
+  mySettings = mySettings.replace( '\n', "<br />" );
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
-  mTestDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CmakeLists.txt
+  mTestDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
   mReport += "<h1>Raster File Writer Tests</h1>\n";
   mReport += "<p>" + mySettings + "</p>";
 }
@@ -100,11 +100,11 @@ void TestQgsRasterFileWriter::writeTest()
   QVERIFY( allOK );
 }
 
-bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
+bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
 {
   mReport += "<h2>" + theRasterName + "</h2>\n";
 
-  QString myFileName = mTestDataDir + "/" + theRasterName;
+  QString myFileName = mTestDataDir + '/' + theRasterName;
   qDebug() << myFileName;
   QFileInfo myRasterFileInfo( myFileName );
 
@@ -176,12 +176,12 @@ bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
   return ok;
 }
 
-void TestQgsRasterFileWriter::log( QString msg )
+void TestQgsRasterFileWriter::log( const QString& msg )
 {
   mReport += msg + "<br>";
 }
 
-void TestQgsRasterFileWriter::logError( QString msg )
+void TestQgsRasterFileWriter::logError( const QString& msg )
 {
   mReport += "Error:<font color='red'>" + msg + "</font><br>";
   qDebug() << msg;

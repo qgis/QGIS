@@ -194,7 +194,7 @@ class AccessibleProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
   public:
-    AccessibleProxyModel( QObject *parent = 0 ) : QSortFilterProxyModel( parent ) {}
+    explicit AccessibleProxyModel( QObject *parent = 0 ) : QSortFilterProxyModel( parent ) {}
 
     QModelIndexList persistent()
     {

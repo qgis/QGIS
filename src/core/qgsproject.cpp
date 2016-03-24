@@ -27,6 +27,7 @@
 #include "qgslayertreeregistrybridge.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmessagelog.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsprojectfiletransform.h"
@@ -44,6 +45,7 @@
 #include <QObject>
 #include <QTextStream>
 #include <QDir>
+#include <QUrl>
 
 // canonical project instance
 QgsProject *QgsProject::theProject_ = 0;
@@ -64,6 +66,26 @@ QStringList makeKeyTokens_( QString const &scope, QString const &key )
 
   // be sure to include the canonical root node
   keyTokens.push_front( "properties" );
+
+  //check validy of keys since an unvalid xml name will will be dropped upon saving the xml file. If not valid, we print a message to the console.
+  for ( int i = 0; i < keyTokens.size(); ++i )
+  {
+    QString keyToken = keyTokens.at( i );
+
+    //invalid chars in XML are found at http://www.w3.org/TR/REC-xml/#NT-NameChar
+    //note : it seems \x10000-\xEFFFF is valid, but it when added to the regexp, a lot of unwanted characters remain
+    QString nameCharRegexp = QString( "[^:A-Z_a-z\\xC0-\\xD6\\xD8-\\xF6\\xF8-\\x2FF\\x370-\\x37D\\x37F-\\x1FFF\\x200C-\\x200D\\x2070-\\x218F\\x2C00-\\x2FEF\\x3001-\\xD7FF\\xF900-\\xFDCF\\xFDF0-\\xFFFD\\-\\.0-9\\xB7\\x0300-\\x036F\\x203F-\\x2040]" );
+    QString nameStartCharRegexp = QString( "^[^:A-Z_a-z\\xC0-\\xD6\\xD8-\\xF6\\xF8-\\x2FF\\x370-\\x37D\\x37F-\\x1FFF\\x200C-\\x200D\\x2070-\\x218F\\x2C00-\\x2FEF\\x3001-\\xD7FF\\xF900-\\xFDCF\\xFDF0-\\xFFFD]" );
+
+    if ( keyToken.contains( QRegExp( nameCharRegexp ) ) || keyToken.contains( QRegExp( nameStartCharRegexp ) ) )
+    {
+
+      QString errorString = QObject::tr( "Entry token invalid : '%1'. The token will not be saved to file." ).arg( keyToken );
+      QgsMessageLog::logMessage( errorString, QString::null, QgsMessageLog::CRITICAL );
+
+    }
+
+  }
 
   return keyTokens;
 } // makeKeyTokens_
@@ -160,7 +182,7 @@ static
 QgsProperty *addKey_( QString const &scope,
                       QString const &key,
                       QgsPropertyKey *rootProperty,
-                      QVariant value )
+                      const QVariant& value )
 {
   QStringList keySequence = makeKeyTokens_( scope, key );
 
@@ -366,7 +388,7 @@ void QgsProject::setTitle( const QString &title )
 }
 
 
-QString const &QgsProject::title() const
+QString QgsProject::title() const
 {
   return imp_->title;
 } // QgsProject::title() const
@@ -803,7 +825,7 @@ bool QgsProject::read()
 
     imp_->file.close();
 
-    setError( tr( "%1 for file %2" ).arg( errorString ).arg( imp_->file.fileName() ) );
+    setError( tr( "%1 for file %2" ).arg( errorString, imp_->file.fileName() ) );
 
     return false;
   }
@@ -979,7 +1001,7 @@ bool QgsProject::write()
   // Create backup file
   if ( QFile::exists( fileName() ) )
   {
-    QString backup = fileName() + "~";
+    QString backup = fileName() + '~';
     if ( QFile::exists( backup ) )
       QFile::remove( backup );
     QFile::rename( fileName(), backup );
@@ -1189,7 +1211,7 @@ QgsProject::writeEntry( QString const &scope, const QString &key,
 QStringList
 QgsProject::readListEntry( QString const &scope,
                            const QString &key,
-                           QStringList def,
+                           const QStringList& def,
                            bool *ok ) const
 {
   QgsProperty *property = findKey_( scope, key, imp_->properties_ );
@@ -1415,7 +1437,7 @@ QString QgsProject::readPath( QString src ) const
     if ( home.isNull() )
       return vsiPrefix + src;
 
-    QFileInfo fi( home + "/" + src );
+    QFileInfo fi( home + '/' + src );
 
     if ( !fi.exists() )
     {
@@ -1436,14 +1458,14 @@ QString QgsProject::readPath( QString src ) const
   }
 
 #if defined(Q_OS_WIN)
-  srcPath.replace( "\\", "/" );
-  projPath.replace( "\\", "/" );
+  srcPath.replace( '\\', '/' );
+  projPath.replace( '\\', '/' );
 
   bool uncPath = projPath.startsWith( "//" );
 #endif
 
-  QStringList srcElems = srcPath.split( "/", QString::SkipEmptyParts );
-  QStringList projElems = projPath.split( "/", QString::SkipEmptyParts );
+  QStringList srcElems = srcPath.split( '/', QString::SkipEmptyParts );
+  QStringList projElems = projPath.split( '/', QString::SkipEmptyParts );
 
 #if defined(Q_OS_WIN)
   if ( uncPath )
@@ -1478,7 +1500,7 @@ QString QgsProject::readPath( QString src ) const
 }
 
 // return the absolute or relative path to write it to the project file
-QString QgsProject::writePath( QString src, QString relativeBasePath ) const
+QString QgsProject::writePath( const QString& src, const QString& relativeBasePath ) const
 {
   if ( readBoolEntry( "Paths", "/Absolute", false ) || src.isEmpty() )
   {
@@ -1510,7 +1532,7 @@ QString QgsProject::writePath( QString src, QString relativeBasePath ) const
 #if defined( Q_OS_WIN )
   const Qt::CaseSensitivity cs = Qt::CaseInsensitive;
 
-  srcPath.replace( "\\", "/" );
+  srcPath.replace( '\\', '/' );
 
   if ( srcPath.startsWith( "//" ) )
   {
@@ -1518,7 +1540,7 @@ QString QgsProject::writePath( QString src, QString relativeBasePath ) const
     srcPath = "\\\\" + srcPath.mid( 2 );
   }
 
-  projPath.replace( "\\", "/" );
+  projPath.replace( '\\', '/' );
   if ( projPath.startsWith( "//" ) )
   {
     // keep UNC prefix
@@ -1528,8 +1550,8 @@ QString QgsProject::writePath( QString src, QString relativeBasePath ) const
   const Qt::CaseSensitivity cs = Qt::CaseSensitive;
 #endif
 
-  QStringList projElems = projPath.split( "/", QString::SkipEmptyParts );
-  QStringList srcElems = srcPath.split( "/", QString::SkipEmptyParts );
+  QStringList projElems = projPath.split( '/', QString::SkipEmptyParts );
+  QStringList srcElems = srcPath.split( '/', QString::SkipEmptyParts );
 
   // remove project file element
   projElems.removeLast();
@@ -1572,7 +1594,7 @@ QString QgsProject::writePath( QString src, QString relativeBasePath ) const
   return vsiPrefix + srcElems.join( "/" );
 }
 
-void QgsProject::setError( QString errorMessage )
+void QgsProject::setError( const QString& errorMessage )
 {
   mErrorMessage = errorMessage;
 }
@@ -1665,34 +1687,72 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
       mEmbeddedLayers.insert( layerId, qMakePair( projectFilePath, saveFlag ) );
 
       // change datasource path from relative to absolute if necessary
+      // see also QgsMapLayer::readLayerXML
       if ( !useAbsolutePathes )
       {
-        QDomElement provider = mapLayerElem.firstChildElement( "provider" );
-        if ( provider.text() == "spatialite" )
+        QString provider( mapLayerElem.firstChildElement( "provider" ).text() );
+        QDomElement dsElem( mapLayerElem.firstChildElement( "datasource" ) );
+        QString datasource( dsElem.text() );
+        if ( provider == "spatialite" )
         {
-          QDomElement dsElem = mapLayerElem.firstChildElement( "datasource" );
-
-          QgsDataSourceURI uri( dsElem.text() );
-
-          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + uri.database() );
+          QgsDataSourceURI uri( datasource );
+          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + '/' + uri.database() );
           if ( absoluteDs.exists() )
           {
             uri.setDatabase( absoluteDs.absoluteFilePath() );
-            dsElem.removeChild( dsElem.childNodes().at( 0 ) );
-            dsElem.appendChild( projectDocument.createTextNode( uri.uri() ) );
+            datasource = uri.uri();
+          }
+        }
+        else if ( provider == "ogr" )
+        {
+          QStringList theURIParts( datasource.split( '|' ) );
+          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + '/' + theURIParts[0] );
+          if ( absoluteDs.exists() )
+          {
+            theURIParts[0] = absoluteDs.absoluteFilePath();
+            datasource = theURIParts.join( "|" );
+          }
+        }
+        else if ( provider == "gpx" )
+        {
+          QStringList theURIParts( datasource.split( '?' ) );
+          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + '/' + theURIParts[0] );
+          if ( absoluteDs.exists() )
+          {
+            theURIParts[0] = absoluteDs.absoluteFilePath();
+            datasource = theURIParts.join( "?" );
+          }
+        }
+        else if ( provider == "delimitedtext" )
+        {
+          QUrl urlSource( QUrl::fromEncoded( datasource.toAscii() ) );
+
+          if ( !datasource.startsWith( "file:" ) )
+          {
+            QUrl file( QUrl::fromLocalFile( datasource.left( datasource.indexOf( '?' ) ) ) );
+            urlSource.setScheme( "file" );
+            urlSource.setPath( file.path() );
+          }
+
+          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + '/' + urlSource.toLocalFile() );
+          if ( absoluteDs.exists() )
+          {
+            QUrl urlDest = QUrl::fromLocalFile( absoluteDs.absoluteFilePath() );
+            urlDest.setQueryItems( urlSource.queryItems() );
+            datasource = QString::fromAscii( urlDest.toEncoded() );
           }
         }
         else
         {
-          QDomElement dsElem = mapLayerElem.firstChildElement( "datasource" );
-          QString debug( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
-          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
+          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + '/' + datasource );
           if ( absoluteDs.exists() )
           {
-            dsElem.removeChild( dsElem.childNodes().at( 0 ) );
-            dsElem.appendChild( projectDocument.createTextNode( absoluteDs.absoluteFilePath() ) );
+            datasource = absoluteDs.absoluteFilePath();
           }
         }
+
+        dsElem.removeChild( dsElem.childNodes().at( 0 ) );
+        dsElem.appendChild( projectDocument.createTextNode( datasource ) );
       }
 
       if ( addLayer( mapLayerElem, brokenNodes, vectorLayerList ) )
@@ -1951,7 +2011,7 @@ bool QgsProject::topologicalEditing() const
   return ( QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 ) > 0 );
 }
 
-void QgsProjectBadLayerDefaultHandler::handleBadLayers( QList<QDomNode> /*layers*/, QDomDocument /*projectDom*/ )
+void QgsProjectBadLayerDefaultHandler::handleBadLayers( const QList<QDomNode>& /*layers*/, const QDomDocument& /*projectDom*/ )
 {
   // just ignore any bad layers
 }

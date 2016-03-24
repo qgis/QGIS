@@ -24,6 +24,8 @@
 #include <QMutex>
 #include <QString>
 #include <QUrl>
+#include <QObject>
+#include <QSizeF>
 
 class QDomElement;
 class QImage;
@@ -54,6 +56,12 @@ class CORE_EXPORT QgsSvgCacheEntry
     double outlineWidth;
     double widthScaleFactor;
     double rasterScaleFactor;
+
+    /** SVG viewbox size.
+     * @note added in QGIS 2.14
+     */
+    QSizeF viewboxSize;
+
     QColor fill;
     QColor outline;
     QImage* image;
@@ -108,10 +116,43 @@ class CORE_EXPORT QgsSvgCache : public QObject
     const QPicture& svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                                   double widthScaleFactor, double rasterScaleFactor, bool forceVectorOutput = false );
 
+    /** Calculates the viewbox size of a (possibly cached) SVG file.
+     * @param file Absolute or relative path to SVG file.
+     * @param size size of cached image
+     * @param fill color of fill
+     * @param outline color of outline
+     * @param outlineWidth width of outline
+     * @param widthScaleFactor width scale factor
+     * @param rasterScaleFactor raster scale factor
+     * @returns viewbox size set in SVG file
+     * @note added in QGIS 2.14
+     */
+    QSizeF svgViewboxSize( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                           double widthScaleFactor, double rasterScaleFactor );
+
     /** Tests if an svg file contains parameters for fill, outline color, outline width. If yes, possible default values are returned. If there are several
       default values in the svg file, only the first one is considered*/
     void containsParams( const QString& path, bool& hasFillParam, QColor& defaultFillColor, bool& hasOutlineParam, QColor& defaultOutlineColor, bool& hasOutlineWidthParam,
                          double& defaultOutlineWidth ) const;
+
+    /** Tests if an svg file contains parameters for fill, outline color, outline width. If yes, possible default values are returned. If there are several
+     * default values in the svg file, only the first one is considered.
+     * @param path path to SVG file
+     * @param hasFillParam will be true if fill param present in SVG
+     * @param hasDefaultFillParam will be true if fill param has a default value specified
+     * @param defaultFillColor will be set to default fill color specified in SVG, if present
+     * @param hasOutlineParam will be true if outline param present in SVG
+     * @param hasDefaultOutlineColor will be true if outline param has a default value specified
+     * @param defaultOutlineColor will be set to default outline color specified in SVG, if present
+     * @param hasOutlineWidthParam will be true if outline width param present in SVG
+     * @param hasDefaultOutlineWidth will be true if outline width param has a default value specified
+     * @param defaultOutlineWidth will be set to default outline width specified in SVG, if present
+     * @note available in python bindings as containsParamsV2
+     * @note added in QGIS 2.12
+     */
+    void containsParams( const QString& path, bool& hasFillParam, bool& hasDefaultFillParam, QColor& defaultFillColor,
+                         bool& hasOutlineParam, bool& hasDefaultOutlineColor, QColor& defaultOutlineColor,
+                         bool& hasOutlineWidthParam, bool& hasDefaultOutlineWidth, double& defaultOutlineWidth ) const;
 
     /** Get image data*/
     QByteArray getImageData( const QString &path ) const;
@@ -174,11 +215,16 @@ class CORE_EXPORT QgsSvgCache : public QObject
     /** Replaces parameters in elements of a dom node and calls method for all child nodes*/
     void replaceElemParams( QDomElement& elem, const QColor& fill, const QColor& outline, double outlineWidth );
 
-    void containsElemParams( const QDomElement& elem, bool& hasFillParam, QColor& defaultFill, bool& hasOutlineParam, QColor& defaultOutline,
-                             bool& hasOutlineWidthParam, double& defaultOutlineWidth ) const;
+    void containsElemParams( const QDomElement& elem,
+                             bool& hasFillParam, bool& hasDefaultFill, QColor& defaultFill,
+                             bool& hasOutlineParam, bool& hasDefaultOutline, QColor& defaultOutline,
+                             bool& hasOutlineWidthParam, bool& hasDefaultOutlineWidth, double& defaultOutlineWidth ) const;
+
+    /** Calculates scaling for rendered image sizes to SVG logical sizes*/
+    double calcSizeScaleFactor( QgsSvgCacheEntry* entry, const QDomElement& docElem, QSizeF& viewboxSize ) const;
 
     /** Release memory and remove cache entry from mEntryLookup*/
-    void removeCacheEntry( QString s, QgsSvgCacheEntry* entry );
+    void removeCacheEntry( const QString& s, QgsSvgCacheEntry* entry );
 
     /** For debugging*/
     void printEntryList();
@@ -188,6 +234,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
 
     //! Mutex to prevent concurrent access to the class from multiple threads at once (may corrupt the entries otherwise).
     QMutex mMutex;
+
 };
 
 #endif // QGSSVGCACHE_H

@@ -52,6 +52,8 @@ class ProcessingToolbox(BASE, WIDGET):
 
     USE_CATEGORIES = '/Processing/UseSimplifiedInterface'
 
+    updateAlgList = True
+
     def __init__(self):
         super(ProcessingToolbox, self).__init__(None)
         self.setupUi(self)
@@ -118,11 +120,14 @@ class ProcessingToolbox(BASE, WIDGET):
         self.fillTree()
 
     def algsListHasChanged(self):
-        self.fillTree()
+        if self.updateAlgList:
+            self.fillTree()
 
     def updateProvider(self, providerName, updateAlgsList=True):
         if updateAlgsList:
+            self.updateAlgList = False
             Processing.updateAlgsList()
+            self.updateAlgList = True
         for i in xrange(self.algorithmTree.invisibleRootItem().childCount()):
             child = self.algorithmTree.invisibleRootItem().child(i)
             if isinstance(child, TreeProviderItem):
@@ -133,6 +138,7 @@ class ProcessingToolbox(BASE, WIDGET):
                     for i in xrange(child.childCount()):
                         child.child(i).sortChildren(0, Qt.AscendingOrder)
                     break
+        self.addRecentAlgorithms(True)
 
     def showPopupMenu(self, point):
         item = self.algorithmTree.itemAt(point)
@@ -388,7 +394,7 @@ class TreeProviderItem(QTreeWidgetItem):
                 groupItem = groups[alg.group]
             else:
                 groupItem = QTreeWidgetItem()
-                name = alg.i18n_group if alg.i18n_group else "[" + alg.group + "]"
+                name = alg.i18n_group or alg.group
                 groupItem.setText(0, name)
                 groupItem.setToolTip(0, name)
                 groups[alg.group] = groupItem

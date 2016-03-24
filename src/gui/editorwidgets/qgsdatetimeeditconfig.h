@@ -19,6 +19,10 @@
 #include "qgseditorconfigwidget.h"
 #include "ui_qgsdatetimeeditconfig.h"
 
+/** \class QgsDateTimeEditConfig
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsDateTimeEditConfig : public QgsEditorConfigWidget, private Ui::QgsDateTimeEditConfig
 {
     Q_OBJECT
@@ -28,7 +32,7 @@ class GUI_EXPORT QgsDateTimeEditConfig : public QgsEditorConfigWidget, private U
   private slots:
     void updateDemoWidget();
     void updateFieldFormat( int idx );
-    void updateDisplayFormat( QString fieldFormat );
+    void updateDisplayFormat( const QString& fieldFormat );
     void displayFormatChanged( int idx );
     void showHelp( bool buttonChecked );
 

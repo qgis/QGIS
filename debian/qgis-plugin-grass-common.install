@@ -4,3 +4,4 @@ usr/share/qgis/grass/modules/*.qgm
 usr/share/qgis/grass/modules/*.svg
 usr/share/qgis/grass/modules/default.qgc
 usr/share/qgis/grass/scripts/*.py
+usr/share/qgis/grass/qtermwidget/*

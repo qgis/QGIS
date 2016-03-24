@@ -25,8 +25,12 @@
 #include <QMouseEvent>
 #include <cmath>
 
-QgsMapToolCircularStringRadius::QgsMapToolCircularStringRadius( QgsMapToolCapture* parentTool, QgsMapCanvas* canvas, CaptureMode mode ) :
-    QgsMapToolAddCircularString( parentTool, canvas, mode ), mTemporaryEndPointX( 0.0 ), mTemporaryEndPointY( 0.0 ), mRadiusMode( false ), mRadius( 0.0 ),
+QgsMapToolCircularStringRadius::QgsMapToolCircularStringRadius( QgsMapToolCapture* parentTool, QgsMapCanvas* canvas, CaptureMode mode )
+    : QgsMapToolAddCircularString( parentTool, canvas, mode ),
+    mTemporaryEndPointX( 0.0 ),
+    mTemporaryEndPointY( 0.0 ),
+    mRadiusMode( false ),
+    mRadius( 0.0 ),
     mRadiusSpinBox( 0 )
 {
 
@@ -37,7 +41,7 @@ QgsMapToolCircularStringRadius::~QgsMapToolCircularStringRadius()
 
 }
 
-void QgsMapToolCircularStringRadius::canvasMapReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 {
   QgsPointV2 mapPoint( e->mapPoint().x(), e->mapPoint().y() );
 
@@ -111,7 +115,7 @@ void QgsMapToolCircularStringRadius::canvasMapReleaseEvent( QgsMapMouseEvent* e 
   }
 }
 
-void QgsMapToolCircularStringRadius::canvasMapMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolCircularStringRadius::cadCanvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( mPoints.size() > 0 && mRadiusMode )
   {
@@ -135,7 +139,7 @@ void QgsMapToolCircularStringRadius::recalculateCircularString()
   QgsCircularStringV2* cString = new QgsCircularStringV2();
   cString->setPoints( rubberBandPoints );
   delete mRubberBand;
-  mRubberBand = createGeometryRubberBand(( mCaptureMode == CapturePolygon ) ? QGis::Polygon : QGis::Line );
+  mRubberBand = createGeometryRubberBand(( mode() == CapturePolygon ) ? QGis::Polygon : QGis::Line );
   mRubberBand->setGeometry( cString );
   mRubberBand->show();
 }

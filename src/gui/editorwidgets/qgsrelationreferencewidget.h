@@ -54,7 +54,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     ~QgsRelationReferenceWidget();
 
-    void setRelation( QgsRelation relation, bool allowNullValue );
+    void setRelation( const QgsRelation& relation, bool allowNullValue );
 
     void setRelationEditable( bool editable );
 
@@ -83,7 +83,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     //! Set if the widget will order the combobox entries by value
     void setOrderByValue( bool orderByValue );
     //! Set the fields for which filter comboboxes will be created
-    void setFilterFields( QStringList filterFields );
+    void setFilterFields( const QStringList& filterFields );
 
     //! determines the open form button is visible in the widget
     bool openFormButtonVisible() {return mOpenFormButtonVisible;}
@@ -125,7 +125,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void init();
 
   signals:
-    void foreignKeyChanged( QVariant );
+    void foreignKeyChanged( const QVariant& );
 
   private slots:
     void highlightActionTriggered( QAction* action );
@@ -138,7 +138,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
   private:
     void highlightFeature( QgsFeature f = QgsFeature(), CanvasExtent canvasExtent = Fixed );
-    void updateAttributeEditorFrame( const QgsFeature feature );
+    void updateAttributeEditorFrame( const QgsFeature& feature );
 
     // initialized
     QgsAttributeEditorContext mEditorContext;
@@ -146,7 +146,9 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QgsMessageBar* mMessageBar;
     QVariant mForeignKey;
     QgsFeature mFeature;
-    int mFkeyFieldIdx;
+    // Index of the referenced layer key
+    int mReferencedFieldIdx;
+    int mReferencingFieldIdx;
     bool mAllowNull;
     QgsHighlight* mHighlight;
     QgsMapToolIdentifyFeature* mMapTool;

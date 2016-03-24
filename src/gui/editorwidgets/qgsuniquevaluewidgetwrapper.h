@@ -28,7 +28,7 @@
  * <ul>
  * <li><b>Editable</b> <i>If True the user can manually insert new (not yet used) values.</i></li>
  * </ul>
- *
+ * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsUniqueValuesWidgetWrapper : public QgsEditorWidgetWrapper
@@ -39,12 +39,12 @@ class GUI_EXPORT QgsUniqueValuesWidgetWrapper : public QgsEditorWidgetWrapper
 
     // QgsEditorWidgetWrapper interface
   public:
-    QVariant value() override;
+    QVariant value() const override;
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
-    bool valid() override;
+    bool valid() const override;
 
   public slots:
     void setValue( const QVariant& value ) override;

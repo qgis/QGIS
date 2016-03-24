@@ -38,6 +38,9 @@ void QgsMapCanvasSnappingUtils::prepareIndexStarting( int count )
 
 void QgsMapCanvasSnappingUtils::prepareIndexProgress( int index )
 {
+  if ( !mProgress )
+    return;
+
   mProgress->setValue( index );
   if ( index == mProgress->maximum() )
   {

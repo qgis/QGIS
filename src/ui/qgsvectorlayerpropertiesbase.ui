@@ -273,7 +273,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>11</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptsPage_General">
           <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -600,8 +600,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -701,8 +701,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>123</width>
-                <height>38</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -783,8 +783,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -843,8 +843,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>721</width>
-                <height>199</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1002,8 +1002,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>487</width>
-                <height>182</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -1181,8 +1181,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1247,8 +1247,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>134</width>
-                <height>113</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1415,7 +1415,7 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
+                <y>-71</y>
                 <width>714</width>
                 <height>608</height>
                </rect>
@@ -1814,26 +1814,26 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsScaleComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsscalecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsProjectionSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">qgsprojectionselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsScaleRangeWidget</class>
    <extends>QWidget</extends>
    <header>qgsscalerangewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScaleComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsscalecombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsVariableEditorWidget</class>
@@ -1853,8 +1853,8 @@
   <tabstop>pbnIndex</tabstop>
   <tabstop>pbnUpdateExtents</tabstop>
   <tabstop>mScaleVisibilityGroupBox</tabstop>
-  <tabstop>pbnQueryBuilder</tabstop>
   <tabstop>txtSubsetSQL</tabstop>
+  <tabstop>pbnQueryBuilder</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>scrollArea_9</tabstop>
   <tabstop>labelCheckBox</tabstop>
@@ -1865,6 +1865,7 @@
   <tabstop>mSimplifyDrawingAtProvider</tabstop>
   <tabstop>mSimplifyMaximumScaleComboBox</tabstop>
   <tabstop>mForceRasterCheckBox</tabstop>
+  <tabstop>scrollArea_10</tabstop>
   <tabstop>fieldComboRadio</tabstop>
   <tabstop>displayFieldComboBox</tabstop>
   <tabstop>htmlRadio</tabstop>
@@ -1892,7 +1893,6 @@
   <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
   <tabstop>teMetadata</tabstop>
   <tabstop>mButtonEditJoin</tabstop>
-  <tabstop>scrollArea_10</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

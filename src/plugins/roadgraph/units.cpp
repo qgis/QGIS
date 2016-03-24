@@ -65,7 +65,7 @@ QString SpeedUnit::name() const
 {
   if ( mDistanceUnit.name().isNull() || mTimeUnit.name().isNull() )
     return QString();
-  return mDistanceUnit.name() + QString( "/" ) + mTimeUnit.name();
+  return mDistanceUnit.name() + QLatin1String( "/" ) + mTimeUnit.name();
 }
 
 SpeedUnit SpeedUnit::byName( const QString& name )

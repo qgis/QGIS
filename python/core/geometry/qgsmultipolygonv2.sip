@@ -5,7 +5,7 @@ class QgsMultiPolygonV2: public QgsMultiSurfaceV2
 %End
   public:
     virtual QString geometryType() const;
-    QgsAbstractGeometryV2* clone() const;
+    virtual QgsMultiPolygonV2* clone() const;
 
     bool fromWkt( const QString& wkt );
 
@@ -19,4 +19,8 @@ class QgsMultiPolygonV2: public QgsMultiSurfaceV2
 
     /** Adds a geometry and takes ownership. Returns true in case of success*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g );
+
+  protected:
+
+    virtual bool wktOmitChildType() const;
 };

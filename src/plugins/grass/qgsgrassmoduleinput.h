@@ -21,6 +21,7 @@
 #include <QComboBox>
 #include <QCompleter>
 #include <QFileSystemModel>
+#include <QFileSystemWatcher>
 #include <QGroupBox>
 #include <QListView>
 #include <QMap>
@@ -66,14 +67,30 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     /** Get singleton instance of this class. */
     static QgsGrassModuleInputModel* instance();
 
+    QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const override;
+
+
   public slots:
     /** Reload current mapset */
     void reload();
 
-  signals:
+    void onMapsetChanged();
 
-  protected:
+    void onDirectoryChanged( const QString & path );
+    void onFileChanged( const QString & path );
+    void onMapsetSearchPathChanged();
 
+  private:
+    void addMapset( const QString & mapset );
+    void refreshMapset( QStandardItem *mapsetItem, const QString & mapset, const QList<QgsGrassObject::Type> & theTypes = QList<QgsGrassObject::Type>() );
+    // Add to watched paths if exists and if not yet watched
+    void watch( const QString & path );
+    QString mLocationPath;
+    // mapset watched dirs
+    QStringList watchedDirs() { QStringList l; l << "cellhd" << "vector" << "tgis"; return l; }
+    // names of
+    QStringList locationDirNames();
+    QFileSystemWatcher *mWatcher;
 
 };
 
@@ -83,21 +100,17 @@ class QgsGrassModuleInputProxy : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
-    explicit QgsGrassModuleInputProxy( QgsGrassObject::Type type, QObject *parent = 0 );
+    explicit QgsGrassModuleInputProxy( QgsGrassModuleInputModel *sourceModel, QgsGrassObject::Type type, QObject *parent = 0 );
     ~QgsGrassModuleInputProxy() {}
-
-  public slots:
-
-  signals:
 
   protected:
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    bool lessThan( const QModelIndex & left, const QModelIndex & right ) const override;
 
   private:
+    QgsGrassModuleInputModel *mSourceModel;
     QgsGrassObject::Type mType;
-
 };
-
 
 class QgsGrassModuleInputTreeView : public QTreeView
 {
@@ -171,11 +184,14 @@ class QgsGrassModuleInputComboBox : public QComboBox
 
 class QgsGrassModuleInputSelectedDelegate : public QStyledItemDelegate
 {
+    Q_OBJECT
   public:
     explicit QgsGrassModuleInputSelectedDelegate( QObject *parent = 0 );
 
+    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+
+  public slots:
     void handlePressed( const QModelIndex &index );
-    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 
   private:
     mutable QModelIndex mPressedIndex;
@@ -251,6 +267,9 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     void setGeometryTypeOption( const QString & optionName ) { mGeometryTypeOption = optionName; }
     QString geometryTypeOption() const { return mGeometryTypeOption; }
 
+    // list of selected layers in <field>_<type> form, used by QgsGrassModuleSelection
+    QStringList currentLayerCodes();
+
   public slots:
     void onActivated( const QString & text );
 
@@ -286,8 +305,6 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
 
     //! Model containing currently selected maps
     QStandardItemModel *mSelectedModel;
-
-    QSortFilterProxyModel *mSelectedProxy;
 
     //! Combo box with GRASS layers
     QgsGrassModuleInputComboBox *mComboBox;

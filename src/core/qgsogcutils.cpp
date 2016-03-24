@@ -82,7 +82,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGML( const QDomNode& geometryNode )
 QgsGeometry* QgsOgcUtils::geometryFromGML( const QString& xmlString )
 {
   // wrap the string into a root tag to have "gml" namespace (and also as a default namespace)
-  QString xml = QString( "<tmp xmlns=\"%1\" xmlns:gml=\"%1\">%2</tmp>" ).arg( GML_NAMESPACE ).arg( xmlString );
+  QString xml = QString( "<tmp xmlns=\"%1\" xmlns:gml=\"%1\">%2</tmp>" ).arg( GML_NAMESPACE, xmlString );
   QDomDocument doc;
   if ( !doc.setContent( xml, true ) )
     return 0;
@@ -874,7 +874,7 @@ bool QgsOgcUtils::readGMLPositions( QgsPolyline &coords, const QDomElement &elem
 
   coords.clear();
 
-  QStringList pos = elem.text().split( " ", QString::SkipEmptyParts );
+  QStringList pos = elem.text().split( ' ', QString::SkipEmptyParts );
   double x, y;
   bool conversionSuccess;
   int posSize = pos.size();
@@ -953,10 +953,10 @@ QgsRectangle QgsOgcUtils::rectangleFromGMLEnvelope( const QDomNode& envelopeNode
   }
   QString bString = elem.text();
 
-  double xmin = bString.section( " ", 0, 0 ).toDouble( &conversionSuccess );
+  double xmin = bString.section( ' ', 0, 0 ).toDouble( &conversionSuccess );
   if ( !conversionSuccess )
     return rect;
-  double ymin = bString.section( " ", 1, 1 ).toDouble( &conversionSuccess );
+  double ymin = bString.section( ' ', 1, 1 ).toDouble( &conversionSuccess );
   if ( !conversionSuccess )
     return rect;
 
@@ -981,10 +981,10 @@ QgsRectangle QgsOgcUtils::rectangleFromGMLEnvelope( const QDomNode& envelopeNode
   Q_UNUSED( srsDimension );
 
   bString = elem.text();
-  double xmax = bString.section( " ", 0, 0 ).toDouble( &conversionSuccess );
+  double xmax = bString.section( ' ', 0, 0 ).toDouble( &conversionSuccess );
   if ( !conversionSuccess )
     return rect;
-  double ymax = bString.section( " ", 1, 1 ).toDouble( &conversionSuccess );
+  double ymax = bString.section( ' ', 1, 1 ).toDouble( &conversionSuccess );
   if ( !conversionSuccess )
     return rect;
 
@@ -1008,11 +1008,11 @@ QDomElement QgsOgcUtils::rectangleToGMLBox( QgsRectangle* box, QDomDocument& doc
 
   QString coordString;
   coordString += qgsDoubleToString( box->xMinimum(), precision );
-  coordString += ",";
+  coordString += ',';
   coordString += qgsDoubleToString( box->yMinimum(), precision );
-  coordString += " ";
+  coordString += ' ';
   coordString += qgsDoubleToString( box->xMaximum(), precision );
-  coordString += ",";
+  coordString += ',';
   coordString += qgsDoubleToString( box->yMaximum(), precision );
 
   QDomText coordText = doc.createTextNode( coordString );
@@ -1034,7 +1034,7 @@ QDomElement QgsOgcUtils::rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument
 
   QDomElement lowerCornerElem = doc.createElement( "gml:lowerCorner" );
   posList = qgsDoubleToString( env->xMinimum(), precision );
-  posList += " ";
+  posList += ' ';
   posList += qgsDoubleToString( env->yMinimum(), precision );
   QDomText lowerCornerText = doc.createTextNode( posList );
   lowerCornerElem.appendChild( lowerCornerText );
@@ -1042,7 +1042,7 @@ QDomElement QgsOgcUtils::rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument
 
   QDomElement upperCornerElem = doc.createElement( "gml:upperCorner" );
   posList = qgsDoubleToString( env->xMaximum(), precision );
-  posList += " ";
+  posList += ' ';
   posList += qgsDoubleToString( env->yMaximum(), precision );
   QDomText upperCornerText = doc.createTextNode( posList );
   upperCornerElem.appendChild( upperCornerText );
@@ -1051,7 +1051,7 @@ QDomElement QgsOgcUtils::rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument
   return envElem;
 }
 
-QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry* geometry, QDomDocument& doc, QString format, const int &precision )
+QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry* geometry, QDomDocument& doc, const QString& format, const int &precision )
 {
   if ( !geometry || !geometry->asWkb() )
     return QDomElement();
@@ -1075,18 +1075,18 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry* geometry, QDomDocumen
       case QGis::WKBPoint:
       case QGis::WKBMultiPoint25D:
       case QGis::WKBMultiPoint:
-        baseCoordElem = doc.createElement( "gml:pos" );;
+        baseCoordElem = doc.createElement( "gml:pos" );
         break;
       default:
-        baseCoordElem = doc.createElement( "gml:posList" );;
+        baseCoordElem = doc.createElement( "gml:posList" );
         break;
     }
     baseCoordElem.setAttribute( "srsDimension", "2" );
-    cs = " ";
+    cs = ' ';
   }
   else
   {
-    baseCoordElem = doc.createElement( "gml:coordinates" );;
+    baseCoordElem = doc.createElement( "gml:coordinates" );
     baseCoordElem.setAttribute( "cs", cs );
     baseCoordElem.setAttribute( "ts", ts );
   }
@@ -1362,10 +1362,10 @@ QDomElement QgsOgcUtils::createGMLCoordinates( const QgsPolyline &points, QDomDo
   {
     if ( pointIt != points.constBegin() )
     {
-      coordString += " ";
+      coordString += ' ';
     }
     coordString += qgsDoubleToString( pointIt->x() );
-    coordString += ",";
+    coordString += ',';
     coordString += qgsDoubleToString( pointIt->y() );
   }
 
@@ -1387,10 +1387,10 @@ QDomElement QgsOgcUtils::createGMLPositions( const QgsPolyline &points, QDomDocu
   {
     if ( pointIt != points.constBegin() )
     {
-      coordString += " ";
+      coordString += ' ';
     }
     coordString += qgsDoubleToString( pointIt->x() );
-    coordString += " ";
+    coordString += ' ';
     coordString += qgsDoubleToString( pointIt->y() );
   }
 
@@ -1658,7 +1658,7 @@ QgsExpression::NodeFunction* QgsOgcUtils::nodeSpatialOperatorFromOgcFilter( QDom
   }
   if ( !gml2Str.isEmpty() )
   {
-    gml2Args->append( new QgsExpression::NodeLiteral( QVariant( gml2Str.remove( "\n" ) ) ) );
+    gml2Args->append( new QgsExpression::NodeLiteral( QVariant( gml2Str.remove( '\n' ) ) ) );
   }
   else
   {

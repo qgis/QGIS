@@ -1,0 +1,5 @@
+Local Minima and Maxima
+shapes_grid
+ParameterRaster|GRID|Grid|False
+OutputVector|MINIMA|Minima
+OutputVector|MAXIMA|Maxima

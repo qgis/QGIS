@@ -27,6 +27,12 @@ email                : nyall dot dawson at gmail dot com
 // version without notice, or even be removed.
 //
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfeature.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
 #include "qgsfield.h"
 
 #include "qgsgeometry.h"
@@ -35,7 +41,7 @@ class QgsFeaturePrivate : public QSharedData
 {
   public:
 
-    QgsFeaturePrivate( QgsFeatureId id )
+    explicit QgsFeaturePrivate( QgsFeatureId id )
         : fid( id )
         , geometry( 0 )
         , ownsGeometry( false )

@@ -108,6 +108,9 @@ int main( int argc, char **argv )
   stdoutFile.open( stdout, QIODevice::WriteOnly | QIODevice::Unbuffered );
   QDataStream stdoutStream( &stdoutFile );
 
+  qint32 proj, zone;
+  stdinStream >> proj >> zone;
+
   QgsRectangle extent;
   qint32 rows, cols;
   stdinStream >> extent >> cols >> rows;
@@ -118,6 +121,8 @@ int main( int argc, char **argv )
   {
     G_fatal_error( "Cannot set region: %s", err.toUtf8().data() );
   }
+  window.proj = ( int ) proj;
+  window.zone = ( int ) zone;
 
   G_set_window( &window );
 

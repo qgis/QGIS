@@ -261,7 +261,7 @@ void QgsComposerArrowWidget::on_mStartMarkerToolButton_clicked()
 
   if ( openDir.isEmpty() )
   {
-    openDir = s.value( "/UI/lastComposerMarkerDir", "" ).toString();
+    openDir = s.value( "/UI/lastComposerMarkerDir", QDir::homePath() ).toString();
   }
 
   QString svgFileName = QFileDialog::getOpenFileName( this, tr( "Start marker svg file" ), openDir );
@@ -288,7 +288,7 @@ void QgsComposerArrowWidget::on_mEndMarkerToolButton_clicked()
 
   if ( openDir.isEmpty() )
   {
-    openDir = s.value( "/UI/lastComposerMarkerDir", "" ).toString();
+    openDir = s.value( "/UI/lastComposerMarkerDir", QDir::homePath() ).toString();
   }
 
   QString svgFileName = QFileDialog::getOpenFileName( this, tr( "End marker svg file" ), openDir );
@@ -309,7 +309,7 @@ void QgsComposerArrowWidget::on_mLineStyleButton_clicked()
     return;
   }
 
-  QgsLineSymbolV2* newSymbol = dynamic_cast<QgsLineSymbolV2*>( mArrow->lineSymbol()->clone() );
+  QgsLineSymbolV2* newSymbol = mArrow->lineSymbol()->clone();
   QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0, this );
   d.setExpressionContext( mArrow->createExpressionContext() );
 

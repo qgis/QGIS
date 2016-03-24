@@ -31,7 +31,7 @@
 #include "qgsfieldcalculator.h"
 #include "qgsfieldsproperties.h"
 #include "qgslabeldialog.h"
-#include "qgslabelinggui.h"
+#include "qgslabelingwidget.h"
 #include "qgslabel.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
@@ -76,6 +76,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     : QgsOptionsDialogBase( "VectorLayerProperties", parent, fl )
     , layer( lyr )
     , mMetadataFilled( false )
+    , mOriginalSubsetSQL( lyr->subsetString() )
     , mSaveAsMenu( 0 )
     , mLoadStyleMenu( 0 )
     , mRendererDialog( 0 )
@@ -130,7 +131,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     // Create the Labeling dialog tab
     layout = new QVBoxLayout( labelingFrame );
     layout->setMargin( 0 );
-    labelingDialog = new QgsLabelingGui( layer, QgisApp::instance()->mapCanvas(), labelingFrame );
+    labelingDialog = new QgsLabelingWidget( layer, QgisApp::instance()->mapCanvas(), labelingFrame );
     labelingDialog->layout()->setContentsMargins( -1, 0, -1, 0 );
     layout->addWidget( labelingDialog );
     labelingFrame->setLayout( layout );
@@ -365,7 +366,7 @@ void QgsVectorLayerProperties::insertExpression()
   }
 }
 
-void QgsVectorLayerProperties::setDisplayField( QString name )
+void QgsVectorLayerProperties::setDisplayField( const QString& name )
 {
   int idx = displayFieldComboBox->findText( name );
   if ( idx == -1 )
@@ -448,7 +449,7 @@ void QgsVectorLayerProperties::syncToLayer( void )
     mSimplifyDrawingGroupBox->setEnabled( false );
   }
 
-  QStringList myScalesList = PROJECT_SCALES.split( "," );
+  QStringList myScalesList = PROJECT_SCALES.split( ',' );
   myScalesList.append( "1:1" );
   mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
   mSimplifyMaximumScaleComboBox->setScale( 1.0 / simplifyMethod.maximumScale() );
@@ -462,11 +463,6 @@ void QgsVectorLayerProperties::syncToLayer( void )
 
   // reset fields in label dialog
   layer->label()->setFields( layer->fields() );
-
-  if ( layer->hasGeometryType() )
-  {
-    labelingDialog->init();
-  }
 
   Q_NOWARN_DEPRECATED_PUSH
   if ( mOptsPage_LabelsOld )
@@ -495,7 +491,7 @@ void QgsVectorLayerProperties::syncToLayer( void )
   // NOTE: this is not ideal, but a quick fix for QGIS 2.0 release
   bool ok;
   bool dl = QgsProject::instance()->readBoolEntry( "DeprecatedLabels", "/Enabled", false, &ok );
-  if ( !ok || ( ok && !dl ) ) // project not flagged or set to use deprecated labels
+  if ( !ok || !dl ) // project not flagged or set to use deprecated labels
   {
     if ( mOptsPage_LabelsOld )
     {
@@ -508,11 +504,11 @@ void QgsVectorLayerProperties::syncToLayer( void )
     }
   }
 
-  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
-  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::projectScope() );
-  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::layerScope( layer ) );
-  mVariableEditor->reloadContext();
-  mVariableEditor->setEditableScopeIndex( 2 );
+  // set initial state for variable editor
+  updateVariableEditor();
+
+  // updates the init python code and ui
+  updateFieldsPropertiesDialog();
 
 } // syncToLayer()
 
@@ -536,6 +532,7 @@ void QgsVectorLayerProperties::apply()
     layer->setSubsetString( txtSubsetSQL->toPlainText() );
     mMetadataFilled = false;
   }
+  mOriginalSubsetSQL = layer->subsetString();
 
   // set up the scale based layer visibility stuff....
   layer->setScaleBasedVisibility( mScaleVisibilityGroupBox->isChecked() );
@@ -626,6 +623,7 @@ void QgsVectorLayerProperties::apply()
 
   //save variables
   QgsExpressionContextUtils::setLayerVariables( layer, mVariableEditor->variablesInActiveScope() );
+  updateVariableEditor();
 
   // update symbology
   emit refreshLegend( layer->id() );
@@ -647,6 +645,14 @@ void QgsVectorLayerProperties::onCancel()
 
     Q_FOREACH ( const QgsVectorJoinInfo& info, mOldJoins )
       layer->addJoin( info );
+  }
+
+  if ( mOriginalSubsetSQL != layer->subsetString() )
+  {
+    // need to undo changes in subset string - they are applied directly to the layer (not in apply())
+    // by QgsQueryBuilder::accept()
+
+    layer->setSubsetString( mOriginalSubsetSQL );
   }
 }
 
@@ -703,7 +709,7 @@ void QgsVectorLayerProperties::on_mLayerOrigNameLineEdit_textEdited( const QStri
   txtDisplayName->setText( layer->capitaliseLayerName( text ) );
 }
 
-void QgsVectorLayerProperties::on_mCrsSelector_crsChanged( QgsCoordinateReferenceSystem crs )
+void QgsVectorLayerProperties::on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem& crs )
 {
   layer->setCrs( crs );
 }
@@ -1240,6 +1246,7 @@ void QgsVectorLayerProperties::updateSymbologyPage()
   if ( layer->rendererV2() )
   {
     mRendererDialog = new QgsRendererV2PropertiesDialog( layer, QgsStyleV2::defaultStyle(), true );
+    mRendererDialog->setMapCanvas( QgisApp::instance()->mapCanvas() );
 
     // display the menu to choose the output format (fix #5136)
     mActionSaveStyleAs->setText( tr( "Save Style" ) );
@@ -1294,4 +1301,21 @@ void QgsVectorLayerProperties::on_mSimplifyDrawingGroupBox_toggled( bool checked
   {
     mSimplifyDrawingAtProvider->setEnabled( checked );
   }
+}
+
+void QgsVectorLayerProperties::updateVariableEditor()
+{
+  QgsExpressionContext context;
+  mVariableEditor->setContext( &context );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::projectScope() );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::layerScope( layer ) );
+  mVariableEditor->reloadContext();
+  mVariableEditor->setEditableScopeIndex( 2 );
+}
+
+void QgsVectorLayerProperties::updateFieldsPropertiesDialog()
+{
+  QgsEditFormConfig* cfg = layer->editFormConfig();
+  mFieldsPropertiesDialog->setEditFormInit( cfg->uiForm(), cfg->initFunction(), cfg->initCode(), cfg->useInitCode() );
 }

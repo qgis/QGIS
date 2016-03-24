@@ -1,0 +1,15 @@
+{
+  "name": "AND",
+  "type": "operator",
+  "description": "Returns 1 when condition a and b are true.",
+  "arguments": [
+        { "arg": "a", "description": "condition" },
+        { "arg": "b", "description": "condition" }
+  ],
+  "examples": [
+	{ "expression":"TRUE AND TRUE", "returns":"1"},
+	{ "expression":"TRUE AND FALSE", "returns":"0"},
+	{ "expression":"4 = 2+2 AND 1 = 1", "returns":"1"},
+	{ "expression":"4 = 2+2 AND 1 = 2", "returns":"0"}
+  ]
+}

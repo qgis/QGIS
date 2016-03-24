@@ -22,7 +22,7 @@ class QgsGPSDeviceDialog : public QDialog, private Ui::QgsGPSDeviceDialogBase
 {
     Q_OBJECT
   public:
-    QgsGPSDeviceDialog( std::map<QString, QgsGPSDevice*>& devices );
+    explicit QgsGPSDeviceDialog( std::map<QString, QgsGPSDevice*>& devices );
 
   public slots:
     void on_pbnNewDevice_clicked();

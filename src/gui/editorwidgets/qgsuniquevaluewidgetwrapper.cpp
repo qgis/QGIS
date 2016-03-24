@@ -28,7 +28,7 @@ QgsUniqueValuesWidgetWrapper::QgsUniqueValuesWidgetWrapper( QgsVectorLayer* vl, 
 {
 }
 
-QVariant QgsUniqueValuesWidgetWrapper::value()
+QVariant QgsUniqueValuesWidgetWrapper::value() const
 {
   QVariant value;
 
@@ -100,7 +100,7 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
-bool QgsUniqueValuesWidgetWrapper::valid()
+bool QgsUniqueValuesWidgetWrapper::valid() const
 {
   return mComboBox || mLineEdit;
 }

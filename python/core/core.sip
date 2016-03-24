@@ -2,10 +2,16 @@
         version=0,
         keyword_arguments="Optional")
 
-%Import QtCore/QtCoremod.sip
-%Import QtGui/QtGuimod.sip
+%Feature QT5_SUPPORT
+
 %Import QtXml/QtXmlmod.sip
 %Import QtNetwork/QtNetworkmod.sip
+%Import QtSql/QtSqlmod.sip
+
+%If (QT5_SUPPORT)
+  %Import QtPrintSupport/QtPrintSupportmod.sip
+  %Import QtWidgets/QtWidgetsmod.sip
+%End
 
 %Include conversions.sip
 %Include qgsexception.sip
@@ -34,6 +40,7 @@
 %Include qgsdatumtransformstore.sip
 %Include qgsdbfilterproxymodel.sip
 %Include qgsdistancearea.sip
+%Include qgseditformconfig.sip
 %Include qgseditorwidgetconfig.sip
 %Include qgserror.sip
 %Include qgsexpression.sip
@@ -41,6 +48,7 @@
 %Include qgsfeature.sip
 %Include qgsfeatureiterator.sip
 %Include qgsfeaturerequest.sip
+%Include qgsfeaturefilterprovider.sip
 %Include qgsfield.sip
 %Include qgsgeometryvalidator.sip
 %Include qgsgeometrysimplifier.sip
@@ -48,7 +56,9 @@
 %Include qgsmaptopixelgeometrysimplifier.sip
 %Include qgsgml.sip
 %Include qgsgmlschema.sip
-%Include qgshttptransaction.sip
+%If(!QT5_SUPPORT)
+  %Include qgshttptransaction.sip
+%End
 %Include qgslabel.sip
 %Include qgslabelattributes.sip
 %Include qgslabelsearchtree.sip
@@ -131,6 +141,12 @@
 %Include qgsvectorlayerfeatureiterator.sip
 %Include qgsvisibilitypresetcollection.sip
 %Include qgslayerdefinition.sip
+
+%Include auth/qgsauthcertutils.sip
+%Include auth/qgsauthconfig.sip
+// %Include auth/qgsauthcrypto.sip
+%Include auth/qgsauthmanager.sip
+%Include auth/qgsauthmethod.sip
 
 %Include composer/qgsaddremoveitemcommand.sip
 %Include composer/qgsaddremovemultiframecommand.sip

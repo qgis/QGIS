@@ -87,7 +87,7 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
 // For private use by QgsGraduatedHistogramWidget only,
 // not part of stable api or exposed to Python bindings
 //
-
+///@cond
 class GUI_EXPORT QgsGraduatedHistogramEventFilter: public QObject
 {
     Q_OBJECT
@@ -110,5 +110,6 @@ class GUI_EXPORT QgsGraduatedHistogramEventFilter: public QObject
     QwtPlot* mPlot;
     double posToValue( const QPointF& point ) const;
 };
+///@endcond
 
 #endif //QGSGRADUATEDHISTOGRAMWIDGET_H

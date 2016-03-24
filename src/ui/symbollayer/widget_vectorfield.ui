@@ -247,6 +247,18 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mXAttributeComboBox</tabstop>
+  <tabstop>mYAttributeComboBox</tabstop>
+  <tabstop>mScaleSpinBox</tabstop>
+  <tabstop>mCartesianRadioButton</tabstop>
+  <tabstop>mPolarRadioButton</tabstop>
+  <tabstop>mHeightRadioButton</tabstop>
+  <tabstop>mDegreesRadioButton</tabstop>
+  <tabstop>mRadiansRadioButton</tabstop>
+  <tabstop>mClockwiseFromNorthRadioButton</tabstop>
+  <tabstop>mCounterclockwiseFromEastRadioButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

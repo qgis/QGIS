@@ -20,7 +20,16 @@ QMenu::item:selected {  background-color: gray; } */
 </string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>6</number>
+   </property>
+   <property name="topMargin">
+    <number>6</number>
+   </property>
+   <property name="rightMargin">
+    <number>6</number>
+   </property>
+   <property name="bottomMargin">
     <number>6</number>
    </property>
    <item row="3" column="0">
@@ -125,7 +134,16 @@ QMenu::item:selected {  background-color: gray; } */
        </sizepolicy>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item row="1" column="0">
@@ -416,14 +434,13 @@ QMenu::item:selected {  background-color: gray; } */
   <tabstop>btnRemoveGroup</tabstop>
   <tabstop>btnManageGroups</tabstop>
   <tabstop>searchBox</tabstop>
+  <tabstop>tagsLineEdit</tabstop>
   <tabstop>tabItemType</tabstop>
   <tabstop>listItems</tabstop>
-  <tabstop>tagsLineEdit</tabstop>
   <tabstop>btnAddItem</tabstop>
   <tabstop>btnEditItem</tabstop>
   <tabstop>btnRemoveItem</tabstop>
   <tabstop>btnShare</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

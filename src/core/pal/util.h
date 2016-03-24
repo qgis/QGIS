@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _UTIL_H
-#define _UTIL_H
+#ifndef PAL_UTIL_H
+#define PAL_UTIL_H
 
 #include "pal.h"
 #include "rtree.hpp"
@@ -46,6 +46,7 @@ namespace pal
 
   /**
    * \brief For usage in problem solving algorithm
+   * \note not available in Python bindings
    */
   class Feats
   {

@@ -70,6 +70,9 @@
                 <grass name="db.in.ogr"/>
             </section>
         </section>
+        <section label="Upgrade from GRASS 6" version_min="7">
+            <grass name="qgis.v.upgrade"/>
+        </section>
         <section label="Export from GRASS">
             <section label="Export raster from GRASS">
                 <grass name="r.out.gdal.gtiff"/>
@@ -296,6 +299,11 @@
                 <grass name="r.distance"/>
             </section>
         </section>
+        <section label="Query raster maps">
+                <grass name="r.what" version_max="6.4"/>
+                <grass name="r.what.coordinates" version_min="7.0"/>
+                <grass name="r.what.vectorpoints" version_min="7.0"/>
+        </section>
     </section>
 
     <section label="Vector">
@@ -336,6 +344,9 @@
             </section>
             <section label="Convert 2D vector to 3D by sampling raster">
                 <grass name="v.drape"/>
+                <grass name="v.to.2d" version_min="6.4"/>
+                <grass name="v.to.3d.fixed" version_min="6.4"/>
+                <grass name="v.to.3d.attr" version_min="6.4"/>
                 <grass name="v.extrude.fixed"/>
                 <grass name="v.extrude.attr"/>
             </section>
@@ -434,8 +445,8 @@
     </section>
 
     <section label="Imagery">
-        <section label="Develop images and group" version_max="6.4">
-            <grass name="i.image.mosaic" version_max="6.4"/>
+        <section label="Develop images and group">
+            <grass name="i.image.mosaic"/>
         </section>
         <section label="Manage image colors">
             <grass name="i.rgb.his"/>
@@ -449,10 +460,12 @@
             <grass name="i.zc"/>
             <grass name="r.mfilter"/>
         </section>
-        <section label="Tassled cap vegetation index" version_max="6.4">
-            <grass name="i.tasscap4" version_max="6.4"/>
-            <grass name="i.tasscap5" version_max="6.4"/>
-            <grass name="i.tasscap7" version_max="6.4"/>
+        <section label="Tassled cap vegetation index">
+            <grass name="i.tasscap4"/>
+            <grass name="i.tasscap5"/>
+            <grass name="i.tasscap7"/>
+            <grass name="i.tasscap8" version_min="7.0"/>
+            <grass name="i.tasscap.modis" version_min="7.0"/>
         </section>
         <section label="Transform image">
             <grass name="i.fft"/>
@@ -463,7 +476,7 @@
             <grass name="r.bitpattern" version_max="6.4"/>
             <grass name="i.modis.qc" version_min="7.0"/>
             <grass name="r.kappa"/>
-            <grass name="i.oif" version_max="6.4"/>
+            <grass name="i.oif"/>
         </section>
     </section>
 

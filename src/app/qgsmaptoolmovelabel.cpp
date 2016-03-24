@@ -34,7 +34,7 @@ QgsMapToolMoveLabel::~QgsMapToolMoveLabel()
 {
 }
 
-void QgsMapToolMoveLabel::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent* e )
 {
   deleteRubberBands();
 
@@ -65,7 +65,7 @@ void QgsMapToolMoveLabel::canvasPressEvent( QMouseEvent * e )
   }
 }
 
-void QgsMapToolMoveLabel::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolMoveLabel::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( mLabelRubberBand )
   {
@@ -81,7 +81,7 @@ void QgsMapToolMoveLabel::canvasMoveEvent( QMouseEvent * e )
   }
 }
 
-void QgsMapToolMoveLabel::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolMoveLabel::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   if ( !mLabelRubberBand )
   {

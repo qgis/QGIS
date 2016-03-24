@@ -47,7 +47,7 @@ QgsMapToolOffsetCurve::~QgsMapToolOffsetCurve()
 }
 
 
-void QgsMapToolOffsetCurve::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   if ( !mCanvas )
   {
@@ -193,7 +193,7 @@ void QgsMapToolOffsetCurve::placeOffsetCurveToValue()
   setOffsetForRubberBand( mDistanceWidget->value() );
 }
 
-void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   delete mSnapVertexMarker;
   mSnapVertexMarker = 0;

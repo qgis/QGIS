@@ -37,7 +37,7 @@ class CORE_EXPORT QgsHistogramDiagram: public QgsDiagram
     QgsHistogramDiagram();
     ~QgsHistogramDiagram();
 
-    virtual QgsDiagram* clone() const override;
+    virtual QgsHistogramDiagram* clone() const override;
 
     void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position ) override;
 

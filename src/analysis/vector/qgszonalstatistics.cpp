@@ -31,7 +31,7 @@
 #define TO8F(x) QFile::encodeName( x ).constData()
 #endif
 
-QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix, int rasterBand , Statistics stats )
+QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix, int rasterBand, const Statistics& stats )
     : mRasterFilePath( rasterFile )
     , mRasterBand( rasterBand )
     , mPolygonLayer( polygonLayer )
@@ -522,7 +522,7 @@ bool QgsZonalStatistics::validPixel( float value ) const
   return true;
 }
 
-QString QgsZonalStatistics::getUniqueFieldName( QString fieldName )
+QString QgsZonalStatistics::getUniqueFieldName( const QString& fieldName )
 {
   QgsVectorDataProvider* dp = mPolygonLayer->dataProvider();
 

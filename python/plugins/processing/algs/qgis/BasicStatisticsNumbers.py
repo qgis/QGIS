@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import math
 
+from qgis.core import QgsStatisticalSummary
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -51,6 +52,11 @@ class BasicStatisticsNumbers(GeoAlgorithm):
     RANGE = 'RANGE'
     MEDIAN = 'MEDIAN'
     UNIQUE = 'UNIQUE'
+    MINORITY = 'MINORITY'
+    MAJORITY = 'MAJORITY'
+    FIRSTQUARTILE = 'FIRSTQUARTILE'
+    THIRDQUARTILE = 'THIRDQUARTILE'
+    IQR = 'IQR'
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Basic statistics for numeric fields')
@@ -70,11 +76,16 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         self.addOutput(OutputNumber(self.MAX, self.tr('Maximum value')))
         self.addOutput(OutputNumber(self.SUM, self.tr('Sum')))
         self.addOutput(OutputNumber(self.MEAN, self.tr('Mean value')))
+        self.addOutput(OutputNumber(self.STD_DEV, self.tr('Standard deviation')))
         self.addOutput(OutputNumber(self.COUNT, self.tr('Count')))
         self.addOutput(OutputNumber(self.RANGE, self.tr('Range')))
         self.addOutput(OutputNumber(self.MEDIAN, self.tr('Median')))
         self.addOutput(OutputNumber(self.UNIQUE, self.tr('Number of unique values')))
-        self.addOutput(OutputNumber(self.STD_DEV, self.tr('Standard deviation')))
+        self.addOutput(OutputNumber(self.MINORITY, self.tr('Minority (rarest occurring value)')))
+        self.addOutput(OutputNumber(self.MAJORITY, self.tr('Majority (most frequently occurring value)')))
+        self.addOutput(OutputNumber(self.FIRSTQUARTILE, self.tr('First quartile')))
+        self.addOutput(OutputNumber(self.THIRDQUARTILE, self.tr('Third quartile')))
+        self.addOutput(OutputNumber(self.IQR, self.tr('Interquartile Range (IQR)')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -92,6 +103,11 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         meanValue = 0
         medianValue = 0
         stdDevValue = 0
+        minority = 0
+        majority = 0
+        firstQuartile = 0
+        thirdQuartile = 0
+        iqr = 0
 
         isFirst = True
         values = []
@@ -102,43 +118,30 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         current = 0
         for ft in features:
             if ft.attributes()[index]:
-                value = float(ft.attributes()[index])
-                if isFirst:
-                    minValue = value
-                    maxValue = value
-                    isFirst = False
-                else:
-                    if value < minValue:
-                        minValue = value
-                    if value > maxValue:
-                        maxValue = value
-
-                values.append(value)
-                sumValue += value
+                values.append(float(ft.attributes()[index]))
 
             current += 1
             progress.setPercentage(int(current * total))
 
-        # Calculate additional values
-        rValue = maxValue - minValue
-        uniqueValue = vector.getUniqueValuesCount(layer, index)
+        stat = QgsStatisticalSummary()
+        stat.calculate(values)
 
-        if count > 0:
-            meanValue = sumValue / count
-            if meanValue != 0.00:
-                for v in values:
-                    stdDevValue += (v - meanValue) * (v - meanValue)
-                stdDevValue = math.sqrt(stdDevValue / count)
-                cvValue = stdDevValue / meanValue
-
-        if count > 1:
-            tmp = sorted(values)
-
-            # Calculate median
-            if count % 2 == 0:
-                medianValue = 0.5 * (tmp[(count - 1) / 2] + tmp[count / 2])
-            else:
-                medianValue = tmp[(count + 1) / 2 - 1]
+        count = stat.count()
+        uniqueValue = stat.variety()
+        minValue = stat.min()
+        maxValue = stat.max()
+        rValue = stat.range()
+        sumValue = stat.sum()
+        meanValue = stat.mean()
+        medianValue = stat.median()
+        stdDevValue = stat.stDev()
+        if meanValue != 0.00:
+            cvValue = stdDevValue / meanValue
+        minority = stat.minority()
+        majority = stat.majority()
+        firstQuartile = stat.firstQuartile()
+        thirdQuartile = stat.thirdQuartile()
+        iqr = stat.interQuartileRange()
 
         data = []
         data.append('Count: ' + unicode(count))
@@ -151,6 +154,11 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         data.append('Median value: ' + unicode(medianValue))
         data.append('Standard deviation: ' + unicode(stdDevValue))
         data.append('Coefficient of Variation: ' + unicode(cvValue))
+        data.append('Minority (rarest occurring value): ' + unicode(minority))
+        data.append('Majority (most frequently occurring value): ' + unicode(majority))
+        data.append('First quartile: ' + unicode(firstQuartile))
+        data.append('Third quartile: ' + unicode(thirdQuartile))
+        data.append('Interquartile Range (IQR): ' + unicode(iqr))
 
         self.createHTML(outputFile, data)
 
@@ -163,7 +171,11 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         self.setOutputValue(self.MEAN, meanValue)
         self.setOutputValue(self.MEDIAN, medianValue)
         self.setOutputValue(self.STD_DEV, stdDevValue)
-        self.setOutputValue(self.CV, cvValue)
+        self.setOutputValue(self.MINORITY, minority)
+        self.setOutputValue(self.MAJORITY, majority)
+        self.setOutputValue(self.FIRSTQUARTILE, firstQuartile)
+        self.setOutputValue(self.THIRDQUARTILE, thirdQuartile)
+        self.setOutputValue(self.IQR, iqr)
 
     def createHTML(self, outputFile, algData):
         f = open(outputFile, 'w')

@@ -121,7 +121,7 @@ void QgsBlurEffect::readProperties( const QgsStringMap &props )
   }
 }
 
-QgsPaintEffect *QgsBlurEffect::clone() const
+QgsBlurEffect* QgsBlurEffect::clone() const
 {
   QgsBlurEffect* newEffect = new QgsBlurEffect( *this );
   return newEffect;

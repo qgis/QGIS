@@ -18,6 +18,7 @@
 
 #include "qgscoordinatetransform.h"
 #include "qgsfeature.h"
+#include "qgsgeometry.h"
 
 #include <memory>
 #include <QString>
@@ -167,7 +168,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QString featureFilterErrorString() const { return mFilterParserError; }
 
     QString sortKeyAttributeName() const { return mSortKeyAttributeName; }
-    void setSortKeyAttributeName( QString fieldName ) { mSortKeyAttributeName = fieldName; }
+    void setSortKeyAttributeName( const QString& fieldName ) { mSortKeyAttributeName = fieldName; }
 
     /** Returns the current list of predefined scales for the atlas. This is used
      * for maps which are set to the predefined atlas scaling mode.
@@ -207,7 +208,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     bool prepareForFeature( const QgsFeature *feat );
 
     /** Returns the current filename. Must be called after prepareForFeature() */
-    const QString& currentFilename() const;
+    QString currentFilename() const;
 
     void writeXML( QDomElement& elem, QDomDocument& doc ) const;
 
@@ -291,6 +292,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     /** Returns the current atlas feature. Must be called after prepareForFeature( i ). */
     Q_DECL_DEPRECATED QgsFeature* currentFeature() { return &mCurrentFeature; }
 
+    /** Returns the current atlas geometry in the given projection system (default to the coverage layer's CRS) */
+    QgsGeometry currentGeometry( const QgsCoordinateReferenceSystem& projectedTo = QgsCoordinateReferenceSystem() ) const;
+
   public slots:
 
     /** Refreshes the current atlas feature, by refetching its attributes from the vector layer provider
@@ -311,7 +315,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void toggled( bool );
 
     /** Is emitted when the atlas has an updated status bar message for the composer window*/
-    void statusMsgChanged( QString message );
+    void statusMsgChanged( const QString& message );
 
     /** Is emitted when the coverage layer for an atlas changes*/
     void coverageLayerChanged( QgsVectorLayer* layer );
@@ -349,7 +353,6 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QgsVectorLayer* mCoverageLayer;
     bool mSingleFile;
 
-    QgsCoordinateTransform mTransform;
     QString mCurrentFilename;
     // feature ordering
     bool mSortFeatures;
@@ -363,7 +366,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     typedef QMap< QgsFeatureId, QVariant > SorterKeys;
 
   private slots:
-    void removeLayers( QStringList layers );
+    void removeLayers( const QStringList& layers );
 
   private:
     // value of field that is used for ordering of features
@@ -401,6 +404,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     //list of predefined scales
     QVector<qreal> mPredefinedScales;
+
+    // projected geometry cache
+    mutable QMap<long, QgsGeometry> mGeometryCache;
 };
 
 #endif

@@ -18,73 +18,40 @@
 #include "qgsdxfpallabeling.h"
 #include "qgsdxfexport.h"
 #include "qgspalgeometry.h"
+#include "qgspallabeling.h"
 #include "qgsmapsettings.h"
 
 #include "pal/pointset.h"
 #include "pal/labelposition.h"
 
-using namespace pal;
 
-QgsDxfPalLabeling::QgsDxfPalLabeling( QgsDxfExport* dxf, const QgsRectangle& bbox, double scale, QGis::UnitType mapUnits )
-    : QgsPalLabeling()
+QgsDxfLabelProvider::QgsDxfLabelProvider( QgsVectorLayer* layer , QgsDxfExport* dxf )
+    : QgsVectorLayerLabelProvider( layer, false )
     , mDxfExport( dxf )
-    , mImage( 0 )
-    , mPainter( 0 )
 {
-  mSettings = new QgsMapSettings;
-  mSettings->setMapUnits( mapUnits );
-  mSettings->setExtent( bbox );
-
-  int dpi = 96;
-  double factor = 1000 * dpi / scale / 25.4 * QGis::fromUnitToUnitFactor( mapUnits, QGis::Meters );
-  mSettings->setOutputSize( QSize( bbox.width() * factor, bbox.height() * factor ) );
-  mSettings->setOutputDpi( dpi );
-  mSettings->setCrsTransformEnabled( false );
-  init( *mSettings );
-
-  mImage = new QImage( 10, 10, QImage::Format_ARGB32_Premultiplied );
-  mImage->setDotsPerMeterX( 96 / 25.4 * 1000 );
-  mImage->setDotsPerMeterY( 96 / 25.4 * 1000 );
-  mPainter = new QPainter( mImage );
-  mRenderContext.setPainter( mPainter );
-  mRenderContext.setRendererScale( scale );
-  mRenderContext.setExtent( bbox );
-  mRenderContext.setScaleFactor( 96.0 / 25.4 );
-  Q_NOWARN_DEPRECATED_PUSH
-  mRenderContext.setMapToPixel( QgsMapToPixel( 1.0 / factor, bbox.xMinimum(), bbox.yMinimum(), bbox.height() * factor ) );
-  Q_NOWARN_DEPRECATED_POP
 }
 
-QgsDxfPalLabeling::~QgsDxfPalLabeling()
-{
-  delete mPainter;
-  delete mImage;
-  delete mSettings;
-}
-
-void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType, double dpiRatio )
+void QgsDxfLabelProvider::drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const
 {
   Q_UNUSED( context );
-  Q_UNUSED( drawType );
-  Q_UNUSED( dpiRatio );
-
-  if ( drawType == QgsPalLabeling::LabelBuffer )
-  {
-    return;
-  }
 
   //debug: print label infos
   if ( mDxfExport )
   {
-    QgsPalGeometry *g = dynamic_cast< QgsPalGeometry* >( label->getFeaturePart()->getUserGeometry() );
-    if ( !g )
+    QgsTextLabelFeature* lf = dynamic_cast<QgsTextLabelFeature*>( label->getFeaturePart()->feature() );
+    if ( !lf )
       return;
 
+    const QgsPalLayerSettings& tmpLyr = mSettings;
+
     //label text
-    QString txt = g->text( label->getPartId() );
+    QString txt = lf->text( label->getPartId() );
 
     //angle
     double angle = label->getAlpha() * 180 / M_PI;
+
+    QgsFeatureId fid = label->getFeaturePart()->featureId();
+    QString dxfLayer = mDxfLayerNames[fid];
 
     //debug: show label rectangle
 #if 0
@@ -93,7 +60,7 @@ void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& 
     {
       line.append( QgsPoint( label->getX( i ), label->getY( i ) ) );
     }
-    mDxfExport->writePolyline( line, g->dxfLayer(), "CONTINUOUS", 1, 0.01, true );
+    mDxfExport->writePolyline( line, dxfLayer, "CONTINUOUS", 1, 0.01, true );
 #endif
 
     QString wrapchr = tmpLyr.wrapChar.isEmpty() ? "\n" : tmpLyr.wrapChar;
@@ -168,6 +135,12 @@ void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& 
                  .arg( tmpLyr.textFont.bold() ? 1 : 0 )
                  .arg( label->getHeight() / ( 1 + txt.count( "\\P" ) ) * 0.75 ) );
 
-    mDxfExport->writeMText( g->dxfLayer(), txt, QgsPoint( label->getX(), label->getY() ), label->getWidth() * 1.1, angle, tmpLyr.textColor );
+    mDxfExport->writeMText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getWidth() * 1.1, angle, tmpLyr.textColor );
   }
+}
+
+void QgsDxfLabelProvider::registerDxfFeature( QgsFeature& feature, QgsRenderContext& context, const QString& dxfLayerName )
+{
+  registerFeature( feature, context );
+  mDxfLayerNames[feature.id()] = dxfLayerName;
 }

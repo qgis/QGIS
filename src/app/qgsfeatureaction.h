@@ -58,8 +58,8 @@ class APP_EXPORT QgsFeatureAction : public QAction
   private:
     QgsAttributeDialog *newDialog( bool cloneFeature );
 
-    QgsVectorLayer *mLayer;
-    QgsFeature &mFeature;
+    QgsVectorLayer* mLayer;
+    QgsFeature* mFeature;
     int mAction;
     int mIdx;
 

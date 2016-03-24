@@ -6,7 +6,7 @@ class QgsPolygonV2: public QgsCurvePolygonV2
 
   public:
     virtual QString geometryType() const;
-    virtual QgsAbstractGeometryV2* clone() const;
+    virtual QgsPolygonV2* clone() const;
 
     virtual bool fromWkb( const unsigned char* wkb );
     // inherited: bool fromWkt( const QString &wkt );

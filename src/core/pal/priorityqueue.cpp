@@ -279,7 +279,7 @@ namespace pal
       return;
     }
 
-    p[i] = new_p;;
+    p[i] = new_p;
 
     upheap( key );
     downheap( pos[key] );

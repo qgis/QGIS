@@ -90,7 +90,7 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
   }
 }
 
-bool QgsDateTimeEditWrapper::valid()
+bool QgsDateTimeEditWrapper::valid() const
 {
   return mQgsDateTimeEdit || mQDateTimeEdit;
 }
@@ -101,10 +101,22 @@ void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime& dateTime )
   emit valueChanged( dateTime.toString( fieldFormat ) );
 }
 
-QVariant QgsDateTimeEditWrapper::value()
+QVariant QgsDateTimeEditWrapper::value() const
 {
   if ( !mQDateTimeEdit )
     return QVariant( field().type() );
+
+  if ( field().type() == QVariant::DateTime )
+  {
+    if ( mQgsDateTimeEdit )
+    {
+      return mQgsDateTimeEdit->dateTime();
+    }
+    else
+    {
+      return mQDateTimeEdit->dateTime();
+    }
+  }
 
   const QString fieldFormat = config( "field_format", QGSDATETIMEEDIT_DATEFORMAT ).toString();
 
@@ -124,7 +136,7 @@ void QgsDateTimeEditWrapper::setValue( const QVariant &value )
     return;
 
   const QString fieldFormat = config( "field_format", QGSDATETIMEEDIT_DATEFORMAT ).toString();
-  const QDateTime date = QDateTime::fromString( value.toString(), fieldFormat );
+  const QDateTime date = field().type() == QVariant::DateTime ? value.toDateTime() : QDateTime::fromString( value.toString(), fieldFormat );
 
   if ( mQgsDateTimeEdit )
   {

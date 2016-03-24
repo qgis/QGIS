@@ -1,0 +1,18 @@
+{
+  "name": "ILIKE",
+  "type": "operator",
+  "description": "Returns 1 if the first parameter matches case-insensitive the supplied pattern. LIKE can be used instead of ILIKE to make the match case-sensitive. Works with numbers also.",
+  "arguments": [
+	{"arg":"string/number","description":"string to search"},
+	{"arg":"pattern","description":"pattern to find"}
+   ],
+  "examples": [
+	{ "expression":"'A' ILIKE 'A'", "returns":"1"},
+	{ "expression":"'A' ILIKE 'a'", "returns":"1"},
+	{ "expression":"'A' ILIKE 'B'", "returns":"0"},
+	{ "expression":"'ABC' ILIKE 'b'", "returns":"0"},
+	{ "expression":"'ABC' ILIKE 'B'", "returns":"0"},
+	{ "expression":"'ABC' ILIKE '%b%'", "returns":"1"},
+	{ "expression":"'ABC' ILIKE '%B%'", "returns":"1"}
+  ]
+}

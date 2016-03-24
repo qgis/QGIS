@@ -79,6 +79,7 @@ struct QgsPostgresLayerProperty
   bool                          force2d;
   QString                       relKind;
   bool                          isView;
+  QString                       tableComment;
 
 
   // TODO: rename this !
@@ -87,7 +88,7 @@ struct QgsPostgresLayerProperty
   QString   defaultName() const
   {
     QString n = tableName;
-    if ( nSpCols > 1 ) n += "." + geometryColName;
+    if ( nSpCols > 1 ) n += '.' + geometryColName;
     return n;
   }
 
@@ -109,6 +110,7 @@ struct QgsPostgresLayerProperty
     property.force2d         = force2d;
     property.relKind         = relKind;
     property.isView          = isView;
+    property.tableComment    = tableComment;
 
     return property;
   }
@@ -120,25 +122,25 @@ struct QgsPostgresLayerProperty
     Q_FOREACH ( QGis::WkbType type, types )
     {
       if ( !typeString.isEmpty() )
-        typeString += "|";
+        typeString += '|';
       typeString += QString::number( type );
     }
     QString sridString;
     Q_FOREACH ( int srid, srids )
     {
       if ( !sridString.isEmpty() )
-        sridString += "|";
+        sridString += '|';
       sridString += QString::number( srid );
     }
 
     return QString( "%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8 force2d=%9" )
-           .arg( schemaName )
-           .arg( tableName )
-           .arg( geometryColName )
-           .arg( typeString )
-           .arg( sridString )
-           .arg( pkCols.join( "|" ) )
-           .arg( sql )
+           .arg( schemaName,
+                 tableName,
+                 geometryColName,
+                 typeString,
+                 sridString,
+                 pkCols.join( "|" ),
+                 sql )
            .arg( nSpCols )
            .arg( force2d ? "yes" : "no" );
   }
@@ -148,7 +150,7 @@ struct QgsPostgresLayerProperty
 class QgsPostgresResult
 {
   public:
-    QgsPostgresResult( PGresult *theRes = 0 ) : mRes( theRes ) {}
+    explicit QgsPostgresResult( PGresult *theRes = 0 ) : mRes( theRes ) {}
     ~QgsPostgresResult();
 
     QgsPostgresResult &operator=( PGresult *theRes );
@@ -165,6 +167,7 @@ class QgsPostgresResult
     QString PQfname( int col );
     int PQftable( int col );
     int PQftype( int col );
+    int PQfmod( int col );
     int PQftablecol( int col );
     Oid PQoidValue();
 
@@ -216,11 +219,11 @@ class QgsPostgresConn : public QObject
     int pgVersion() { return mPostgresqlVersion; }
 
     //! run a query and free result buffer
-    bool PQexecNR( QString query, bool retry = true );
+    bool PQexecNR( const QString& query, bool retry = true );
 
     //! cursor handling
-    bool openCursor( QString cursorName, QString declare );
-    bool closeCursor( QString cursorName );
+    bool openCursor( const QString& cursorName, const QString& declare );
+    bool closeCursor( const QString& cursorName );
 
     QString uniqueCursorName();
 
@@ -233,14 +236,14 @@ class QgsPostgresConn : public QObject
     //
 
     // run a query and check for errors
-    PGresult *PQexec( QString query, bool logError = true );
+    PGresult *PQexec( const QString& query, bool logError = true );
     void PQfinish();
     QString PQerrorMessage();
-    int PQsendQuery( QString query );
+    int PQsendQuery( const QString& query );
     int PQstatus();
     PGresult *PQgetResult();
-    PGresult *PQprepare( QString stmtName, QString query, int nParams, const Oid *paramTypes );
-    PGresult *PQexecPrepared( QString stmtName, const QStringList &params );
+    PGresult *PQprepare( const QString& stmtName, const QString& query, int nParams, const Oid *paramTypes );
+    PGresult *PQexecPrepared( const QString& stmtName, const QStringList &params );
 
     bool begin();
     bool commit();
@@ -256,7 +259,7 @@ class QgsPostgresConn : public QObject
 
     /** Quote a value for placement in a SQL string.
      */
-    static QString quotedValue( QVariant value );
+    static QString quotedValue( const QVariant& value );
 
     /** Get the list of supported layers
      * @param layers list to store layers in
@@ -291,7 +294,7 @@ class QgsPostgresConn : public QObject
      * @returns true if tables were successfully queried
     */
     bool getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables,
-                       const QString schema = QString() );
+                       const QString& schema = QString() );
 
     qint64 getBinaryInt( QgsPostgresResult &queryResult, int row, int col );
 
@@ -303,7 +306,7 @@ class QgsPostgresConn : public QObject
 
     static QString displayStringForWkbType( QGis::WkbType wkbType );
     static QString displayStringForGeomType( QgsPostgresGeometryColumnType geomType );
-    static QGis::WkbType wkbTypeFromPostgis( QString dbType );
+    static QGis::WkbType wkbTypeFromPostgis( const QString& dbType );
 
     static QString postgisWkbTypeName( QGis::WkbType wkbType );
     static int postgisWkbTypeDim( QGis::WkbType wkbType );
@@ -316,20 +319,20 @@ class QgsPostgresConn : public QObject
 
     static QStringList connectionList();
     static QString selectedConnection();
-    static void setSelectedConnection( QString theConnName );
-    static QgsDataSourceURI connUri( QString theConnName );
-    static bool publicSchemaOnly( QString theConnName );
-    static bool geometryColumnsOnly( QString theConnName );
-    static bool dontResolveType( QString theConnName );
-    static bool allowGeometrylessTables( QString theConnName );
-    static void deleteConnection( QString theConnName );
+    static void setSelectedConnection( const QString& theConnName );
+    static QgsDataSourceURI connUri( const QString& theConnName );
+    static bool publicSchemaOnly( const QString& theConnName );
+    static bool geometryColumnsOnly( const QString& theConnName );
+    static bool dontResolveType( const QString& theConnName );
+    static bool allowGeometrylessTables( const QString& theConnName );
+    static void deleteConnection( const QString& theConnName );
 
     /** A connection needs to be locked when it uses transactions, see QgsPostgresConn::{begin,commit,rollback} */
     void lock() { mLock.lock(); }
     void unlock() { mLock.unlock(); }
 
   private:
-    QgsPostgresConn( QString conninfo, bool readOnly, bool shared, bool transaction );
+    QgsPostgresConn( const QString& conninfo, bool readOnly, bool shared, bool transaction );
     ~QgsPostgresConn();
 
     int mRef;

@@ -1,0 +1,7 @@
+{
+  "name": "$page",
+  "type": "function",
+  "description": "Returns the current page number within a composition.",
+  "examples": [ { "expression":"$page", "returns":"2"}
+  ]
+}

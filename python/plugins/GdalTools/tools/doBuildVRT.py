@@ -28,6 +28,7 @@ from PyQt4.QtGui import QWidget
 
 from ui_widgetBuildVRT import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
+from dialogSRS import GdalToolsSRSDialog as SRSDialog
 import GdalTools_utils as Utils
 
 
@@ -46,23 +47,27 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         self.recurseCheck.hide()
         self.visibleRasterLayers = []
 
-        self.setParamsStatus([
-            (self.inSelector, SIGNAL("filenameChanged()")),
-            (self.outSelector, SIGNAL("filenameChanged()")),
-            (self.resolutionComboBox, SIGNAL("currentIndexChanged(int)"), self.resolutionCheck),
-            (self.srcNoDataSpin, SIGNAL("valueChanged(int)"), self.srcNoDataCheck, 1700),
-            (self.inputDirCheck, SIGNAL("stateChanged(int)")),
-            (self.separateCheck, SIGNAL("stateChanged(int)"), None, 1700),
-            (self.allowProjDiffCheck, SIGNAL("stateChanged(int)"), None, 1700),
-            (self.recurseCheck, SIGNAL("stateChanged(int)"), self.inputDirCheck),
-            (self.inputSelLayersCheck, SIGNAL("stateChanged(int)"))
-        ])
+        self.setParamsStatus(
+            [
+                (self.inSelector, SIGNAL("filenameChanged()")),
+                (self.outSelector, SIGNAL("filenameChanged()")),
+                (self.resolutionComboBox, SIGNAL("currentIndexChanged(int)"), self.resolutionCheck),
+                (self.srcNoDataSpin, SIGNAL("valueChanged(int)"), self.srcNoDataCheck, 1700),
+                (self.inputDirCheck, SIGNAL("stateChanged(int)")),
+                (self.separateCheck, SIGNAL("stateChanged(int)"), None, 1700),
+                (self.targetSRSEdit, SIGNAL("textChanged(const QString &)"), self.targetSRSCheck),
+                (self.allowProjDiffCheck, SIGNAL("stateChanged(int)"), None, 1700),
+                (self.recurseCheck, SIGNAL("stateChanged(int)"), self.inputDirCheck),
+                (self.inputSelLayersCheck, SIGNAL("stateChanged(int)"))
+            ]
+        )
 
         self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFilesEdit)
         self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
         self.connect(self.inputDirCheck, SIGNAL("stateChanged( int )"), self.switchToolMode)
         self.connect(self.inputSelLayersCheck, SIGNAL("stateChanged( int )"), self.switchLayerMode)
         self.connect(self.iface.mapCanvas(), SIGNAL("stateChanged( int )"), self.switchLayerMode)
+        self.connect(self.selectTargetSRSButton, SIGNAL("clicked()"), self.fillTargetSRSEdit)
 
     def initialize(self):
         # connect to mapCanvas.layerChanged() signal
@@ -127,6 +132,11 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             return
         self.inSelector.setFilename(inputDir)
 
+    def fillTargetSRSEdit(self):
+        dialog = SRSDialog("Select the target SRS", self)
+        if dialog.exec_():
+            self.targetSRSEdit.setText(dialog.getProjection())
+
     def getArguments(self):
         arguments = []
         if self.resolutionCheck.isChecked() and self.resolutionComboBox.currentIndex() >= 0:
@@ -136,7 +146,10 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             arguments.append("-separate")
         if self.srcNoDataCheck.isChecked():
             arguments.append("-srcnodata")
-            arguments.append(unicode(self.srcNoDataSpin.value()))
+            arguments.append(str(self.srcNoDataSpin.value()))
+        if self.targetSRSCheck.isChecked() and self.targetSRSEdit.text():
+            arguments.append("-a_srs")
+            arguments.append(self.targetSRSEdit.text())
         if self.allowProjDiffCheck.isChecked():
             arguments.append("-allow_projection_difference")
         arguments.append(self.getOutputFileName())

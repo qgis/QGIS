@@ -5,9 +5,9 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
 %End
   public:
     /** Renderer owns color array*/
-    QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray /Array,Transfer/, int nColors /ArraySize/, const QVector<QString> labels = QVector<QString>() );
+    QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray /Array,Transfer/, int nColors /ArraySize/, const QVector<QString>& labels = QVector<QString>() );
     ~QgsPalettedRasterRenderer();
-    QgsRasterInterface * clone() const /Factory/;
+    virtual QgsPalettedRasterRenderer * clone() const /Factory/;
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input ) /Factory/;
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) /Factory/;
@@ -28,7 +28,7 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
 
     /** Set category label
      *  @note added in 2.1 */
-    void setLabel( int idx, QString label );
+    void setLabel( int idx, const QString& label );
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 

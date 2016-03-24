@@ -285,7 +285,7 @@ void QgsDrawSourceEffect::draw( QgsRenderContext &context )
   }
 }
 
-QgsPaintEffect *QgsDrawSourceEffect::clone() const
+QgsDrawSourceEffect* QgsDrawSourceEffect::clone() const
 {
   return new QgsDrawSourceEffect( *this );
 }

@@ -23,7 +23,7 @@
 
 /**
  * Wraps a color widget. Users will be able to choose a color.
- *
+ * \note not available in Python bindings
  */
 
 class GUI_EXPORT  QgsColorWidgetWrapper : public QgsEditorWidgetWrapper
@@ -34,12 +34,12 @@ class GUI_EXPORT  QgsColorWidgetWrapper : public QgsEditorWidgetWrapper
 
     // QgsEditorWidgetWrapper interface
   public:
-    QVariant value() override;
+    QVariant value() const override;
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
-    bool valid() override;
+    bool valid() const override;
 
   public slots:
     void setValue( const QVariant& value ) override;

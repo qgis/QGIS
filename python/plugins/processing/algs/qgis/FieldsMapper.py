@@ -62,8 +62,8 @@ class FieldsMapper(GeoAlgorithm):
     def getCustomParametersDialog(self):
         return FieldsMapperParametersDialog(self)
 
-    def getCustomModelerParametersDialog(self, modelAlg, algIndex=None):
-        return FieldsMapperModelerParametersDialog(self, modelAlg, algIndex)
+    def getCustomModelerParametersDialog(self, modelAlg, algName=None):
+        return FieldsMapperModelerParametersDialog(self, modelAlg, algName)
 
     def processAlgorithm(self, progress):
         layer = self.getParameterValue(self.INPUT_LAYER)

@@ -179,7 +179,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @see emptyTableMessage
      * @see setEmptyTableBehaviour
      */
-    void setEmptyTableMessage( const QString message );
+    void setEmptyTableMessage( const QString& message );
 
     /** Returns the message for empty tables with no content rows. This message
      * is displayed in the table body if the empty table behaviour is
@@ -376,7 +376,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @param columns list of QgsComposerTableColumns to show in table
      * @see columns
      */
-    void setColumns( QgsComposerTableColumns columns );
+    void setColumns( const QgsComposerTableColumns& columns );
 
     /** Sets the cell style for a cell group.
      * @param group group to set style for

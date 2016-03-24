@@ -102,7 +102,9 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
             for param in alg.parameters:
                 if param.hidden:
                     continue
-
+                if isinstance(param, ParameterExtent):
+                    col += 1
+                    continue
                 widget = self.mainWidget.tblParameters.cellWidget(row, col)
                 if not self.setParamValue(param, widget, alg):
                     self.lblProgress.setText(
@@ -110,7 +112,18 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                     self.algs = None
                     return
                 col += 1
-
+            col = 0
+            for param in alg.parameters:
+                if param.hidden:
+                    continue
+                if isinstance(param, ParameterExtent):
+                    widget = self.mainWidget.tblParameters.cellWidget(row, col)
+                    if not self.setParamValue(param, widget, alg):
+                        self.lblProgress.setText(
+                            self.tr('<b>Missing parameter value: %s (row %d)</b>') % (param.description, row + 1))
+                        self.algs = None
+                        return
+                col += 1
             for out in alg.outputs:
                 if out.hidden:
                     continue
@@ -145,7 +158,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
             pass
 
         for count, alg in enumerate(self.algs):
-            self.setText(self.tr('Processing algorithm %d/%d...') % (count + 1, len(self.algs)))
+            self.setText(self.tr('\nProcessing algorithm %d/%d...') % (count + 1, len(self.algs)))
             self.setInfo(self.tr('<b>Algorithm %s starting...</b>' % alg.name))
             if runalg(alg, self) and not self.canceled:
                 if self.load[count]:
@@ -166,7 +179,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
 
         self.mainWidget.setEnabled(True)
         QMessageBox.information(self, self.tr('Batch processing'),
-                                self.tr('Batch processing successfully completed!'))
+                                self.tr('Batch processing completed'))
 
     def loadHTMLResults(self, alg, num):
         for out in alg.outputs:

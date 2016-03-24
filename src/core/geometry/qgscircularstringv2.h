@@ -35,7 +35,7 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
 
     virtual QString geometryType() const override { return "CircularString"; }
     virtual int dimension() const override { return 1; }
-    virtual QgsAbstractGeometryV2* clone() const override;
+    virtual QgsCircularStringV2* clone() const override;
     virtual void clear() override;
 
     virtual QgsRectangle calculateBoundingBox() const override;
@@ -55,22 +55,38 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     /** Returns the point at index i within the circular string.
      */
     QgsPointV2 pointN( int i ) const;
+
+    /**
+     * @copydoc QgsCurveV2::points()
+     */
     void points( QList<QgsPointV2>& pts ) const override;
 
     /** Sets the circular string's points
      */
     void setPoints( const QList<QgsPointV2>& points );
 
-    //curve interface
+    /**
+     * @copydoc QgsAbstractGeometryV2::length()
+     */
     virtual double length() const override;
+
+    /**
+     * @copydoc QgsCurveV2::startPoint()
+     */
     virtual QgsPointV2 startPoint() const override;
+    /**
+     * @copydoc QgsCurveV2::endPoint()
+     */
     virtual QgsPointV2 endPoint() const override;
+    /**
+     * @copydoc QgsCurveV2::curveToLine()
+     */
     virtual QgsLineStringV2* curveToLine() const override;
 
     void draw( QPainter& p ) const override;
     /** Transforms the geometry using a coordinate transform
      * @param ct coordinate transform
-       @param d transformation direction
+     * @param d transformation direction
      */
     void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform ) override;
     void transform( const QTransform& t ) override;
@@ -78,6 +94,10 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     void clip( const QgsRectangle& rect ) override;
 #endif
     void addToPainterPath( QPainterPath& path ) const override;
+
+    /**
+     * @copydoc QgsCurveV2::drawAsPolygon()
+     */
     void drawAsPolygon( QPainter& p ) const override;
 
     virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex ) override;
@@ -85,16 +105,33 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     virtual bool deleteVertex( const QgsVertexId& position ) override;
 
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
-    bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const override;
+    /**
+     * @copydoc QgsCurveV2::pointAt()
+     */
+    bool pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const override;
 
+    /**
+     * @copydoc QgsCurveV2::sumUpArea()
+     */
     void sumUpArea( double& sum ) const override;
 
+    /**
+     * @copydoc QgsAbstractGeometryV2::hasCurvedSegments()
+     */
     bool hasCurvedSegments() const override { return true; }
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
         @param vertex the vertex id
         @return rotation in radians, clockwise from north*/
     double vertexAngle( const QgsVertexId& vertex ) const override;
+
+    virtual QgsCircularStringV2* reversed() const override;
+
+    virtual bool addZValue( double zValue = 0 ) override;
+    virtual bool addMValue( double mValue = 0 ) override;
+
+    virtual bool dropZValue() override;
+    virtual bool dropMValue() override;
 
   private:
     QVector<double> mX;

@@ -103,6 +103,12 @@ typedef int QgsFeatureId;
 // key = field index, value = field value
 typedef QMap<int, QVariant> QgsAttributeMap;
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfeature.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
 /**
  * A vector of attributes. Mostly equal to QVector<QVariant>.
  */
@@ -112,13 +118,27 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
     QgsAttributes()
         : QVector<QVariant>()
     {}
+    /**
+     * Create a new vector of attributes with the given size
+     *
+     * @param size Number of attributes
+     */
     QgsAttributes( int size )
         : QVector<QVariant>( size )
     {}
+    /**
+     * Constructs a vector with an initial size of size elements. Each element is initialized with value.
+     * @param size Number of elements
+     * @param v    Initial value
+     */
     QgsAttributes( int size, const QVariant& v )
         : QVector<QVariant>( size, v )
     {}
 
+    /**
+     * Copies another vector of attributes
+     * @param v Attributes to copy
+     */
     QgsAttributes( const QVector<QVariant>& v )
         : QVector<QVariant>( v )
     {}
@@ -152,6 +172,11 @@ class QgsField;
 
 #include "qgsfield.h"
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfeature.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 /** \ingroup core
  * The feature class encapsulates a single feature including its id,
@@ -351,7 +376,7 @@ class CORE_EXPORT QgsFeature
      *  @note For Python: raises a KeyError exception instead of returning false
      *  @see setFields
      */
-    bool setAttribute( const QString& name, QVariant value );
+    bool setAttribute( const QString& name, const QVariant& value );
 
     /** Removes an attribute value by field name. Field map must be associated using @link setFields @endlink
      *  before this method can be used.

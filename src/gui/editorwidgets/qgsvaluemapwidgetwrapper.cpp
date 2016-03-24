@@ -22,7 +22,7 @@ QgsValueMapWidgetWrapper::QgsValueMapWidgetWrapper( QgsVectorLayer* vl, int fiel
 }
 
 
-QVariant QgsValueMapWidgetWrapper::value()
+QVariant QgsValueMapWidgetWrapper::value() const
 {
   QVariant v;
 
@@ -55,7 +55,7 @@ void QgsValueMapWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
-bool QgsValueMapWidgetWrapper::valid()
+bool QgsValueMapWidgetWrapper::valid() const
 {
   return mComboBox;
 }

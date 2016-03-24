@@ -68,7 +68,6 @@ class ANALYSIS_EXPORT Triangulation
 
     /** Finds out in which triangle the point with coordinates x and y is and
      * assigns the numbers of the vertices to 'n1', 'n2' and 'n3' and the vertices to 'p1', 'p2' and 'p3'
-     * @note not available in python binding
      */
     virtual bool getTriangle( double x, double y, Point3D* p1, int* n1, Point3D* p2, int* n2, Point3D* p3, int* n3 ) = 0;
 

@@ -90,7 +90,7 @@ class checkDock : public QDockWidget, public Ui::checkDock
      * Filters all errors involving features from specified layer
      * @param layerId layer ID
      */
-    void parseErrorListByLayer( QString layerId );
+    void parseErrorListByLayer( const QString& layerId );
     /**
      * Clears rubberbands when window is hidden
      * @param visible true if the window is visible

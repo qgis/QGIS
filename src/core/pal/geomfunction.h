@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _GEOM_FUNCTION_
-#define _GEOM_FUNCTION_
+#ifndef PAL_GEOM_FUNCTION
+#define PAL_GEOM_FUNCTION
 
 #include "util.h"
 

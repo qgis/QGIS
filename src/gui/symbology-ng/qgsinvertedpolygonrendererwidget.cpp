@@ -111,6 +111,13 @@ QgsFeatureRendererV2* QgsInvertedPolygonRendererWidget::renderer()
   return mRenderer.data();
 }
 
+void QgsInvertedPolygonRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
+{
+  QgsRendererV2Widget::setMapCanvas( canvas );
+  if ( mEmbeddedRendererWidget )
+    mEmbeddedRendererWidget->setMapCanvas( canvas );
+}
+
 void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged( int index )
 {
   QString rendererId = mRendererComboBox->itemData( index ).toString();
@@ -118,6 +125,7 @@ void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged(
   if ( m )
   {
     mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, const_cast<QgsFeatureRendererV2*>( mRenderer->embeddedRenderer() )->clone() ) );
+    mEmbeddedRendererWidget->setMapCanvas( mMapCanvas );
 
     if ( mLayout->count() > 2 )
     {

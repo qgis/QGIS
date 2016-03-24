@@ -127,7 +127,7 @@ bool QgsCodeEditorPython::loadScript( const QString &script )
 
   QTextStream in( &file );
 
-  setText( in.readAll() );
+  setText( in.readAll().trimmed() );
   file.close();
 
   setSciLexerPython();

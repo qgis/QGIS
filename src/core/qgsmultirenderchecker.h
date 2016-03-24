@@ -106,13 +106,13 @@ class CORE_EXPORT QgsMultiRenderChecker
      *
      * @return A report
      */
-    const QString& report() const { return mReport; }
+    QString report() const { return mReport; }
 
     /**
      * @brief controlImagePath
      * @return
      */
-    const QString controlImagePath() const;
+    QString controlImagePath() const;
 
     /** Draws a checkboard pattern for image backgrounds, so that transparency is visible
      * without requiring a transparent background for the image

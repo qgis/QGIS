@@ -7,7 +7,7 @@ class QgsDiagram
     virtual ~QgsDiagram();
     /** Returns an instance that is equivalent to this one
      * @note added in 2.4 */
-    virtual QgsDiagram* clone() const = 0;
+    virtual QgsDiagram* clone() const = 0 /Factory/;
 
     void clearCache();
     QgsExpression* getExpression( const QString& expression, const QgsFields* fields ) /Deprecated/;

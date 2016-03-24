@@ -42,7 +42,7 @@ QString QgsExtentGroupBoxPlugin::includeFile() const
 
 QIcon QgsExtentGroupBoxPlugin::icon() const
 {
-  return QIcon();
+  return QIcon( ":/images/icons/qgis-icon-60x60.png" );
 }
 
 bool QgsExtentGroupBoxPlugin::isContainer() const

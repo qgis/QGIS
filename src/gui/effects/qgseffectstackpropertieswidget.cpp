@@ -29,6 +29,9 @@
 #include <QCheckBox>
 #include <QToolButton>
 
+///@cond
+//not part of public API
+
 static const int EffectItemType = QStandardItem::UserType + 1;
 
 class EffectItem : public QStandardItem
@@ -84,6 +87,7 @@ class EffectItem : public QStandardItem
     QgsPaintEffect* mEffect;
     QgsEffectStackPropertiesWidget* mWidget;
 };
+///@endcond
 
 //
 // QgsEffectStackPropertiesWidget
@@ -345,7 +349,7 @@ void QgsEffectStackPropertiesWidget::changeEffect( QgsPaintEffect* newEffect )
 // QgsEffectStackPropertiesDialog
 //
 
-QgsEffectStackPropertiesDialog::QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent, Qt::WindowFlags f )
+QgsEffectStackPropertiesDialog::QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent, const Qt::WindowFlags& f )
     : QgsDialog( parent, f, QDialogButtonBox::Ok | QDialogButtonBox::Cancel )
     , mPropertiesWidget( 0 )
 {

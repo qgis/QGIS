@@ -31,6 +31,7 @@
 
 const QString QgsExpressionContext::EXPR_FIELDS( "_fields_" );
 const QString QgsExpressionContext::EXPR_FEATURE( "_feature_" );
+const QString QgsExpressionContext::EXPR_ORIGINAL_VALUE( "value" );
 
 //
 // QgsExpressionContextScope
@@ -110,6 +111,51 @@ QStringList QgsExpressionContextScope::variableNames() const
 {
   QStringList names = mVariables.keys();
   return names;
+}
+
+bool QgsExpressionContextScope::variableNameSort( const QString& a, const QString& b )
+{
+  return QString::localeAwareCompare( a, b ) < 0;
+}
+
+// not public API
+/// @cond
+class QgsExpressionContextVariableCompare
+{
+  public:
+    explicit QgsExpressionContextVariableCompare( const QgsExpressionContextScope& scope )
+        : mScope( scope )
+    {  }
+
+    bool operator()( const QString& a, const QString& b ) const
+    {
+      bool aReadOnly = mScope.isReadOnly( a );
+      bool bReadOnly = mScope.isReadOnly( b );
+      if ( aReadOnly != bReadOnly )
+        return aReadOnly;
+      return QString::localeAwareCompare( a, b ) < 0;
+    }
+
+  private:
+    const QgsExpressionContextScope& mScope;
+};
+/// @endcond
+
+QStringList QgsExpressionContextScope::filteredVariableNames() const
+{
+  QStringList allVariables = mVariables.keys();
+  QStringList filtered;
+  Q_FOREACH ( const QString& variable, allVariables )
+  {
+    if ( variable.startsWith( '_' ) )
+      continue;
+
+    filtered << variable;
+  }
+  QgsExpressionContextVariableCompare cmp( *this );
+  qSort( filtered.begin(), filtered.end(), cmp );
+
+  return filtered;
 }
 
 bool QgsExpressionContextScope::isReadOnly( const QString &name ) const
@@ -271,7 +317,7 @@ QStringList QgsExpressionContext::filteredVariableNames() const
   QStringList filtered;
   Q_FOREACH ( const QString& variable, allVariables )
   {
-    if ( variable.startsWith( "_" ) )
+    if ( variable.startsWith( '_' ) )
       continue;
 
     filtered << variable;
@@ -368,6 +414,14 @@ QgsFields QgsExpressionContext::fields() const
   return qvariant_cast<QgsFields>( variable( QgsExpressionContext::EXPR_FIELDS ) );
 }
 
+void QgsExpressionContext::setOriginalValueVariable( const QVariant &value )
+{
+  if ( mStack.isEmpty() )
+    mStack.append( new QgsExpressionContextScope() );
+
+  mStack.last()->setVariable( QgsExpressionContext::EXPR_ORIGINAL_VALUE, value );
+}
+
 
 //
 // QgsExpressionContextUtils
@@ -442,6 +496,9 @@ void QgsExpressionContextUtils::setGlobalVariables( const QgsStringMap &variable
   settings.setValue( QString( "/variables/values" ), customVariableVariants );
 }
 
+///@cond
+//not part of public API
+
 class GetNamedProjectColor : public QgsScopedExpressionFunction
 {
   public:
@@ -490,6 +547,8 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
     QHash< QString, QColor > mColors;
 
 };
+
+///@endcond
 
 QgsExpressionContextScope* QgsExpressionContextUtils::projectScope()
 {
@@ -613,7 +672,7 @@ void QgsExpressionContextUtils::setLayerVariable( QgsMapLayer* layer, const QStr
   layer->setCustomProperty( "variableValues", variableValues );
 }
 
-void QgsExpressionContextUtils::setLayerVariables( QgsMapLayer* layer, const QgsStringMap variables )
+void QgsExpressionContextUtils::setLayerVariables( QgsMapLayer* layer, const QgsStringMap& variables )
 {
   if ( !layer )
     return;
@@ -691,7 +750,7 @@ void QgsExpressionContextUtils::setCompositionVariable( QgsComposition* composit
   composition->setCustomProperty( "variableValues", variableValues );
 }
 
-void QgsExpressionContextUtils::setCompositionVariables( QgsComposition* composition, const QgsStringMap variables )
+void QgsExpressionContextUtils::setCompositionVariables( QgsComposition* composition, const QgsStringMap& variables )
 {
   if ( !composition )
     return;
@@ -793,7 +852,7 @@ void QgsExpressionContextUtils::setComposerItemVariable( QgsComposerItem* compos
   composerItem->setCustomProperty( "variableValues", variableValues );
 }
 
-void QgsExpressionContextUtils::setComposerItemVariables( QgsComposerItem* composerItem, const QgsStringMap variables )
+void QgsExpressionContextUtils::setComposerItemVariables( QgsComposerItem* composerItem, const QgsStringMap& variables )
 {
   if ( !composerItem )
     return;

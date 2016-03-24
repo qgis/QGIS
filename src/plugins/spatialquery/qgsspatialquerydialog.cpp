@@ -252,7 +252,7 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
   }
 } // void QgsSpatialQueryDialog::showResultQuery(QDateTime *datetimeStart, QDateTime *datetimeEnd)
 
-QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, QString fieldFID )
+QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, const QString& fieldFID )
 {
   if ( fids->size() == 0 )
   {
@@ -265,7 +265,7 @@ QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, QString
     lstFID.append( FID_TO_STRING( item.next() ) );
   }
   QString qFormat( "%1 in (%2)" );
-  QString qReturn  = qFormat.arg( fieldFID ).arg( lstFID.join( "," ) );
+  QString qReturn  = qFormat.arg( fieldFID, lstFID.join( "," ) );
   lstFID.clear();
   return qReturn;
 } // QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, QString fieldFID )
@@ -290,7 +290,7 @@ QgsSpatialQueryDialog::TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreat
   return verifyImpossible;
 } // TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreateSubset(QString &msg, QString &fieldFID)
 
-bool QgsSpatialQueryDialog::addLayerSubset( QString name, QString subset )
+bool QgsSpatialQueryDialog::addLayerSubset( const QString& name, const QString& subset )
 {
   QgsVectorLayer *addLyr = new QgsVectorLayer( mLayerTarget->source(), name, mLayerTarget->providerType() );
   if ( ! addLyr->setSubsetString( subset ) )
@@ -322,7 +322,7 @@ QString QgsSpatialQueryDialog::getDescriptionLayerShow( bool isTarget )
                           ? tr( "%1 of %2" ).arg( lyr->selectedFeatureCount() ).arg( lyr->featureCount() )
                           : tr( "all = %1" ).arg( lyr->featureCount() );
 
-  return QString( "%1 (%2)" ).arg( lyr->name() ).arg( sDescFeatures );
+  return QString( "%1 (%2)" ).arg( lyr->name(), sDescFeatures );
 } // QString QgsSpatialQueryDialog::getDescriptionLayerShow(bool isTarget)
 
 QString QgsSpatialQueryDialog::getDescriptionInvalidFeaturesShow( bool isTarget )
@@ -347,7 +347,7 @@ QString QgsSpatialQueryDialog::getDescriptionInvalidFeaturesShow( bool isTarget 
                           ? tr( "%1 of %2(selected features)" ).arg( totalInvalid ).arg( lyr->selectedFeatureCount() )
                           : tr( "%1 of %2" ).arg( totalInvalid ).arg( lyr->featureCount() );
 
-  return QString( "%1: %2" ).arg( lyr->name() ).arg( sDescFeatures );
+  return QString( "%1: %2" ).arg( lyr->name(), sDescFeatures );
 } // QString QgsSpatialQueryDialog::getDescriptionInvalidFeatures(bool isTarget)
 
 void QgsSpatialQueryDialog::connectAll()
@@ -692,7 +692,7 @@ void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
       bool isFly = mIface->mapCanvas()->mapSettings().hasCrsTransformEnabled();
       QString msgFly = tr( "Map \"%1\" \"on the fly\" transformation." ).arg( isFly ? tr( "enable" ) : tr( "disable" ) );
       QString msg = tr( "Coordinate reference system(CRS) of\n\"%1\" is invalid(see CRS of provider)." ).arg( lyr->name() );
-      msg.append( tr( "\n\nCRS of map is %1.\n%2." ).arg( crsMapcanvas ).arg( msgFly ) );
+      msg.append( tr( "\n\nCRS of map is %1.\n%2." ).arg( crsMapcanvas, msgFly ) );
       msg.append( "\n\nUsing CRS of map for all features!" );
 
       QMessageBox::warning( this, tr( "Zoom to feature" ), msg, QMessageBox::Ok );
@@ -825,10 +825,10 @@ void QgsSpatialQueryDialog::on_pbCreateLayerItems_clicked()
   }
 
   QString subset = getSubsetFIDs( fids, fieldFID );
-  QString name = QString( "%1 < %2 > %3" ).arg( mLayerTarget->name() ).arg( cbOperation->currentText() ).arg( mLayerReference->name() );
+  QString name = QString( "%1 < %2 > %3" ).arg( mLayerTarget->name(), cbOperation->currentText(), mLayerReference->name() );
   if ( ! addLayerSubset( name, subset ) )
   {
-    msg = tr( "The query from \"%1\" using \"%2\" in field not possible." ).arg( mLayerTarget->name() ).arg( fieldFID );
+    msg = tr( "The query from \"%1\" using \"%2\" in field not possible." ).arg( mLayerTarget->name(), fieldFID );
     QMessageBox::critical( this, title, msg, QMessageBox::Ok );
   }
 } // void QgsSpatialQueryDialog::on_pbCreateLayerItems_clicked()
@@ -854,7 +854,7 @@ void QgsSpatialQueryDialog::on_pbCreateLayerSelected_clicked()
   QString name = QString( "%1 selected" ).arg( mLayerTarget->name() );
   if ( ! addLayerSubset( name, subset ) )
   {
-    msg = tr( "The query from \"%1\" using \"%2\" in field not possible." ).arg( mLayerTarget->name() ).arg( fieldFID );
+    msg = tr( "The query from \"%1\" using \"%2\" in field not possible." ).arg( mLayerTarget->name(), fieldFID );
     QMessageBox::critical( this, title, msg, QMessageBox::Ok );
   }
 } // void QgsSpatialQueryDialog::on_pbCreateLayerSelected_clicked()
@@ -1020,7 +1020,7 @@ void QgsSpatialQueryDialog::signal_qgis_layerWasAdded( QgsMapLayer* mapLayer )
   mMapIdVectorLayers.insert( lyr->id(), lyr );
 } // QgsSpatialQueryDialog::signal_qgis_layerWasAdded(QgsMapLayer* mapLayer)
 
-void QgsSpatialQueryDialog::signal_qgis_layerWillBeRemoved( QString idLayer )
+void QgsSpatialQueryDialog::signal_qgis_layerWillBeRemoved( const QString& idLayer )
 {
   // If Frozen: the QGis can be: Exit, Add Project, New Project
   if ( mIface->mapCanvas()->isFrozen() )

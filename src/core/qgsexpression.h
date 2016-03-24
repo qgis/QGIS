@@ -21,6 +21,8 @@
 #include <QVariant>
 #include <QList>
 #include <QDomDocument>
+#include <QCoreApplication>
+
 #include "qgis.h"
 
 class QgsFeature;
@@ -89,6 +91,7 @@ division and modulo operators: 1.0/2 returns 0.5 while 1/2 returns 0. */
 Q_NOWARN_DEPRECATED_PUSH
 class CORE_EXPORT QgsExpression
 {
+    Q_DECLARE_TR_FUNCTIONS( QgsExpression )
   public:
     QgsExpression( const QString& expr );
     ~QgsExpression();
@@ -117,6 +120,8 @@ class CORE_EXPORT QgsExpression
      * @note if the returned list contains the QgsFeatureRequest::AllAttributes constant then
      * all attributes from the layer are required for evaluation of the expression.
      * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
+     *
+     * TODO QGIS3: Return QSet<QString>
      */
     QStringList referencedColumns() const;
 
@@ -173,7 +178,7 @@ class CORE_EXPORT QgsExpression
     /** Assign a special column
      * @deprecated use global or project QgsExpressionContext variables instead
      */
-    Q_DECL_DEPRECATED static void setSpecialColumn( const QString& name, QVariant value );
+    Q_DECL_DEPRECATED static void setSpecialColumn( const QString& name, const QVariant& value );
     /** Unset a special column
      * @deprecated use global or project QgsExpressionContext variables instead
      */
@@ -351,10 +356,10 @@ class CORE_EXPORT QgsExpression
       public:
         Function( const QString& fnname,
                   int params,
-                  QString group,
-                  QString helpText = QString(),
+                  const QString& group,
+                  const QString& helpText = QString(),
                   bool usesGeometry = false,
-                  QStringList referencedColumns = QStringList(),
+                  const QStringList& referencedColumns = QStringList(),
                   bool lazyEval = false,
                   bool handlesNull = false,
                   bool isContextual = false )
@@ -439,13 +444,13 @@ class CORE_EXPORT QgsExpression
     class StaticFunction : public Function
     {
       public:
-        Q_DECL_DEPRECATED StaticFunction( QString fnname,
+        Q_DECL_DEPRECATED StaticFunction( const QString& fnname,
                                           int params,
                                           FcnEval fcn,
-                                          QString group,
-                                          QString helpText = QString(),
+                                          const QString& group,
+                                          const QString& helpText = QString(),
                                           bool usesGeometry = false,
-                                          QStringList referencedColumns = QStringList(),
+                                          const QStringList& referencedColumns = QStringList(),
                                           bool lazyEval = false,
                                           const QStringList& aliases = QStringList(),
                                           bool handlesNull = false )
@@ -459,13 +464,13 @@ class CORE_EXPORT QgsExpression
 
         /** Static function for evaluation against a QgsExpressionContext
          */
-        StaticFunction( QString fnname,
+        StaticFunction( const QString& fnname,
                         int params,
                         FcnEvalContext fcn,
-                        QString group,
-                        QString helpText = QString(),
+                        const QString& group,
+                        const QString& helpText = QString(),
                         bool usesGeometry = false,
-                        QStringList referencedColumns = QStringList(),
+                        const QStringList& referencedColumns = QStringList(),
                         bool lazyEval = false,
                         const QStringList& aliases = QStringList(),
                         bool handlesNull = false )
@@ -514,7 +519,7 @@ class CORE_EXPORT QgsExpression
      * @param name function name
      * @see registerFunction
      */
-    static bool unregisterFunction( QString name );
+    static bool unregisterFunction( const QString& name );
 
     //! List of functions owned by the expression engine
     static QList<Function*> gmOwnedFunctions;
@@ -540,10 +545,36 @@ class CORE_EXPORT QgsExpression
      */
     static QList<Function*> specialColumns();
 
-    //! return quoted column reference (in double quotes)
+    /** Returns a quoted column reference (in double quotes)
+     * @see quotedString()
+     * @see quotedValue()
+     */
     static QString quotedColumnRef( QString name );
-    //! return quoted string (in single quotes)
+
+    /** Returns a quoted version of a string (in single quotes)
+     * @see quotedValue()
+     * @see quotedColumnRef()
+     */
     static QString quotedString( QString text );
+
+    /** Returns a string representation of a literal value, including appropriate
+     * quotations where required.
+     * @param value value to convert to a string representation
+     * @note added in QGIS 2.14
+     * @see quotedString()
+     * @see quotedColumnRef()
+     */
+    static QString quotedValue( const QVariant& value );
+
+    /** Returns a string representation of a literal value, including appropriate
+     * quotations where required.
+     * @param value value to convert to a string representation
+     * @param type value type
+     * @note added in QGIS 2.14
+     * @see quotedString()
+     * @see quotedColumnRef()
+     */
+    static QString quotedValue( const QVariant& value, QVariant::Type type );
 
     //////
 
@@ -685,7 +716,7 @@ class CORE_EXPORT QgsExpression
         void setValid( bool valid ) { mValid = valid; }
         bool operator==( const QgsExpression::Interval& other ) const;
         static QgsExpression::Interval invalidInterVal();
-        static QgsExpression::Interval fromString( QString string );
+        static QgsExpression::Interval fromString( const QString& string );
       private:
         double mSeconds;
         bool mValid;
@@ -740,7 +771,7 @@ class CORE_EXPORT QgsExpression
         bool compare( double diff );
         int computeInt( int x, int y );
         double computeDouble( double x, double y );
-        QDateTime computeDateTimeFromInterval( QDateTime d, QgsExpression::Interval *i );
+        QDateTime computeDateTimeFromInterval( const QDateTime& d, QgsExpression::Interval *i );
 
         BinaryOperator mOp;
         Node* mOpLeft;
@@ -913,7 +944,7 @@ class CORE_EXPORT QgsExpression
     /** Returns the translated name for a function group.
      * @param group untranslated group name
      */
-    static QString group( QString group );
+    static QString group( const QString& group );
 
   protected:
     /**
@@ -937,7 +968,75 @@ class CORE_EXPORT QgsExpression
     static QMap<QString, QVariant> gmSpecialColumns;
     static QMap<QString, QString> gmSpecialColumnGroups;
 
-    static QHash<QString, QString> gFunctionHelpTexts;
+    struct HelpArg
+    {
+      HelpArg( const QString& arg, const QString& desc, bool descOnly = false, bool syntaxOnly = false )
+          : mArg( arg )
+          , mDescription( desc )
+          , mDescOnly( descOnly )
+          , mSyntaxOnly( syntaxOnly )
+      {}
+
+      QString mArg;
+      QString mDescription;
+      bool mDescOnly;
+      bool mSyntaxOnly;
+    };
+
+    struct HelpExample
+    {
+      HelpExample( const QString& expression, const QString& returns, const QString& note = QString::null )
+          : mExpression( expression )
+          , mReturns( returns )
+          , mNote( note )
+      {}
+
+      QString mExpression;
+      QString mReturns;
+      QString mNote;
+    };
+
+    struct HelpVariant
+    {
+      HelpVariant( const QString& name, const QString& description,
+                   const QList<HelpArg>& arguments = QList<HelpArg>(),
+                   bool variableLenArguments = false,
+                   const QList<HelpExample>& examples = QList<HelpExample>(),
+                   const QString& notes = QString::null )
+          : mName( name )
+          , mDescription( description )
+          , mArguments( arguments )
+          , mVariableLenArguments( variableLenArguments )
+          , mExamples( examples )
+          , mNotes( notes )
+      {}
+
+      QString mName;
+      QString mDescription;
+      QList<HelpArg> mArguments;
+      bool mVariableLenArguments;
+      QList<HelpExample> mExamples;
+      QString mNotes;
+    };
+
+    struct Help
+    {
+      Help() {}
+
+      Help( const QString& name, const QString& type, const QString& description, const QList<HelpVariant>& variants )
+          : mName( name )
+          , mType( type )
+          , mDescription( description )
+          , mVariants( variants )
+      {}
+
+      QString mName;
+      QString mType;
+      QString mDescription;
+      QList<HelpVariant> mVariants;
+    };
+
+    static QHash<QString, Help> gFunctionHelpTexts;
     static QHash<QString, QString> gVariableHelpTexts;
     static QHash<QString, QString> gGroups;
 
@@ -951,7 +1050,7 @@ class CORE_EXPORT QgsExpression
 };
 Q_NOWARN_DEPRECATED_POP
 
-Q_DECLARE_METATYPE( QgsExpression::Interval );
-Q_DECLARE_METATYPE( QgsExpression::Node* );
+Q_DECLARE_METATYPE( QgsExpression::Interval )
+Q_DECLARE_METATYPE( QgsExpression::Node* )
 
 #endif // QGSEXPRESSION_H

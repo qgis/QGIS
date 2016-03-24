@@ -35,6 +35,9 @@
          <property name="singleStep">
           <double>0.200000000000000</double>
          </property>
+         <property name="value">
+          <double>0.200000000000000</double>
+         </property>
          <property name="showClearButton" stdset="0">
           <bool>false</bool>
          </property>
@@ -109,7 +112,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Border</string>
+          <string>Outline</string>
          </property>
         </widget>
        </item>
@@ -236,7 +239,7 @@
      <item row="4" column="0">
       <widget class="QLabel" name="mBorderWidthLabel">
        <property name="text">
-        <string>Border width</string>
+        <string>Outline width</string>
        </property>
       </widget>
      </item>

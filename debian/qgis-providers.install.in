@@ -11,4 +11,8 @@ usr/lib/qgis/plugins/libspatialiteprovider.so
 usr/lib/qgis/plugins/libwfsprovider.so
 usr/lib/qgis/plugins/libwmsprovider.so
 usr/lib/qgis/plugins/libwcsprovider.so
+usr/lib/qgis/plugins/libbasicauthmethod.so
+usr/lib/qgis/plugins/libidentcertauthmethod.so
+usr/lib/qgis/plugins/libpkcs12authmethod.so
+usr/lib/qgis/plugins/libpkipathsauthmethod.so
 {QT_PLUGIN_DIR}/sqldrivers/libqsqlspatialite.so

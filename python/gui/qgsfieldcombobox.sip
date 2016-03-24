@@ -20,7 +20,7 @@ class QgsFieldComboBox : QComboBox
     explicit QgsFieldComboBox( QWidget *parent /TransferThis/ = 0 );
 
     //! setFilters allows fitering according to the type of field
-    void setFilters( QgsFieldProxyModel::Filters filters );
+    void setFilters( const QgsFieldProxyModel::Filters& filters );
 
     //! currently used filter on list of fields
     QgsFieldProxyModel::Filters filters() const;
@@ -33,7 +33,7 @@ class QgsFieldComboBox : QComboBox
 
   signals:
     //! the signal is emitted when the currently selected field changes
-    void fieldChanged( QString fieldName );
+    void fieldChanged( const QString& fieldName );
 
   public slots:
     //! set the layer of which the fields are listed
@@ -43,5 +43,8 @@ class QgsFieldComboBox : QComboBox
     void setLayer( QgsMapLayer* layer );
 
     //! setField sets the currently selected field
-    void setField( QString fieldName );
+    void setField( const QString& fieldName );
+
+  protected slots:
+    void indexChanged( int i );
 };

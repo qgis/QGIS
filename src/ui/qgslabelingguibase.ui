@@ -14,13 +14,13 @@
    <string>Layer labeling settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_8">
-   <property name="margin">
-    <number>0</number>
-   </property>
    <property name="verticalSpacing">
     <number>6</number>
    </property>
-   <item row="7" column="0">
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item row="6" column="0">
     <widget class="QFrame" name="mLabelingFrame">
      <property name="minimumSize">
       <size>
@@ -94,7 +94,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>614</width>
+               <width>613</width>
                <height>300</height>
               </rect>
              </property>
@@ -494,7 +494,7 @@
               <item>
                <widget class="QStackedWidget" name="mLabelStackedWidget">
                 <property name="currentIndex">
-                 <number>6</number>
+                 <number>5</number>
                 </property>
                 <widget class="QWidget" name="mLabelPage_Text">
                  <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -524,8 +524,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>341</width>
-                       <height>388</height>
+                       <width>433</width>
+                       <height>405</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -1244,8 +1244,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>383</width>
-                       <height>389</height>
+                       <width>400</width>
+                       <height>413</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -1428,11 +1428,11 @@ font-style: italic;</string>
                       <item>
                        <widget class="QFrame" name="mDirectSymbolsFrame">
                         <layout class="QGridLayout" name="gridLayout_33">
-                         <property name="margin">
-                          <number>0</number>
-                         </property>
                          <property name="verticalSpacing">
                           <number>6</number>
+                         </property>
+                         <property name="margin">
+                          <number>0</number>
                          </property>
                          <item row="0" column="2">
                           <spacer name="horizontalSpacer_9">
@@ -1844,8 +1844,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>298</width>
-                       <height>257</height>
+                       <width>332</width>
+                       <height>265</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2205,8 +2205,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>362</width>
-                       <height>697</height>
+                       <width>393</width>
+                       <height>725</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -3008,8 +3008,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>325</width>
-                       <height>424</height>
+                       <width>361</width>
+                       <height>431</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -3489,8 +3489,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>427</width>
-                       <height>829</height>
+                       <width>576</width>
+                       <height>854</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -3533,7 +3533,7 @@ font-style: italic;</string>
                             <enum>QFrame::Sunken</enum>
                            </property>
                            <property name="currentIndex">
-                            <number>0</number>
+                            <number>2</number>
                            </property>
                            <widget class="QWidget" name="pagePoint">
                             <layout class="QGridLayout" name="gridLayout_13">
@@ -4379,6 +4379,9 @@ font-style: italic;</string>
                              <verstretch>0</verstretch>
                             </sizepolicy>
                            </property>
+                           <property name="specialValueText">
+                            <string>No repeat</string>
+                           </property>
                            <property name="decimals">
                             <number>4</number>
                            </property>
@@ -4818,9 +4821,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-401</y>
-                       <width>578</width>
-                       <height>764</height>
+                       <y>0</y>
+                       <width>469</width>
+                       <height>793</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -5142,11 +5145,11 @@ font-style: italic;</string>
                             <enum>QFrame::Raised</enum>
                            </property>
                            <layout class="QGridLayout" name="gridLayout_5">
-                            <property name="margin">
-                             <number>0</number>
-                            </property>
                             <property name="verticalSpacing">
                              <number>6</number>
+                            </property>
+                            <property name="margin">
+                             <number>0</number>
                             </property>
                             <item row="1" column="6">
                              <spacer name="horizontalSpacer_23">
@@ -5240,11 +5243,11 @@ font-style: italic;</string>
                          <item>
                           <widget class="QFrame" name="mUpsidedownFrame">
                            <layout class="QGridLayout" name="gridLayout">
-                            <property name="margin">
-                             <number>0</number>
-                            </property>
                             <property name="verticalSpacing">
                              <number>6</number>
+                            </property>
+                            <property name="margin">
+                             <number>0</number>
                             </property>
                             <item row="1" column="3">
                              <widget class="QRadioButton" name="mUpsidedownRadioAll">
@@ -5343,11 +5346,11 @@ font-style: italic;</string>
                          <item>
                           <widget class="QFrame" name="mLimitLabelFrame">
                            <layout class="QGridLayout" name="gridLayout_20">
-                            <property name="margin">
-                             <number>0</number>
-                            </property>
                             <property name="verticalSpacing">
                              <number>6</number>
+                            </property>
+                            <property name="margin">
+                             <number>0</number>
                             </property>
                             <item row="1" column="0">
                              <spacer name="verticalSpacer_8">
@@ -5400,11 +5403,11 @@ font-style: italic;</string>
                          <item>
                           <widget class="QFrame" name="mMinSizeFrame">
                            <layout class="QGridLayout" name="gridLayout_21">
-                            <property name="margin">
-                             <number>0</number>
-                            </property>
                             <property name="verticalSpacing">
                              <number>6</number>
+                            </property>
+                            <property name="margin">
+                             <number>0</number>
                             </property>
                             <item row="1" column="0">
                              <spacer name="horizontalSpacer_20">
@@ -5632,7 +5635,7 @@ font-style: italic;</string>
      </layout>
     </widget>
    </item>
-   <item row="6" column="0">
+   <item row="5" column="0">
     <widget class="QFrame" name="frameLabelWith">
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <property name="margin">
@@ -5679,66 +5682,6 @@ font-style: italic;</string>
       </item>
      </layout>
     </widget>
-   </item>
-   <item row="2" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_8">
-     <item>
-      <widget class="QComboBox" name="mLabelModeComboBox">
-       <item>
-        <property name="text">
-         <string>No labels</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Show labels for this layer</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../images/images.qrc">
-          <normaloff>:/images/themes/default/propertyicons/labels.svg</normaloff>:/images/themes/default/propertyicons/labels.svg</iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Discourage other labels from covering features in this layer</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_5">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>12</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnEngineSettings">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="toolTip">
-        <string>Automated placement settings (apply to all layers)</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mIconAutoPlacementSettings.svg</normaloff>:/images/themes/default/mIconAutoPlacementSettings.svg</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>24</width>
-         <height>16</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </item>
   </layout>
  </widget>

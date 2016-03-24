@@ -48,10 +48,10 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
     //! add layer to tree
     void addLayer( QgsMapLayer* theMapLayer );
 
-    void addLayers( QList<QgsMapLayer * > layers );
+    void addLayers( const QList<QgsMapLayer*>& layers );
 
     //! layers removed
-    void layersWillBeRemoved( QStringList );
+    void layersWillBeRemoved( const QStringList& );
 
     void on_cbxEnableTopologicalEditingCheckBox_stateChanged( int );
 

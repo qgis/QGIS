@@ -162,7 +162,7 @@ class CORE_EXPORT QgsComposerObject: public QObject
      */
     QStringList customProperties() const;
 
-    /** Creates an expression context relating to the objects's current state. The context includes
+    /** Creates an expression context relating to the objects' current state. The context includes
      * scopes for global, project and composition properties.
      * @note added in QGIS 2.12
      */

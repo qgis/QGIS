@@ -234,7 +234,7 @@ void QgsColorRampShader::setColorRampType( QgsColorRampShader::ColorRamp_TYPE th
   mColorRampType = theColorRampType;
 }
 
-void QgsColorRampShader::setColorRampType( QString theType )
+void QgsColorRampShader::setColorRampType( const QString& theType )
 {
   //When the type of the ramp changes we need to clear out the cache
   mColorCache.clear();

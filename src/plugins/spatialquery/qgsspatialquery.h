@@ -55,7 +55,7 @@ class QgsSpatialQuery
     * \brief Constructor for a Spatial query.
     * \param pb Pointer to the MngProgressBar object.
     */
-    QgsSpatialQuery( MngProgressBar *pb );
+    explicit QgsSpatialQuery( MngProgressBar *pb );
 
     /**
     * \brief Destructor

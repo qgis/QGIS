@@ -3,7 +3,7 @@
   <exec>otbcli_OpticalCalibration</exec>
   <longname>Optical calibration</longname>
   <group>Calibration</group>
-  <description>Perform optical calibration TOA/TOC (Top Of Atmosphere/Top Of Canopy). Supported sensors: QuickBird, Ikonos, WorldView2, Formosat, Spot5, Pleiades</description>
+  <description>Perform optical calibration TOA/TOC (Top Of Atmosphere/Top Of Canopy). Supported sensors: QuickBird, Ikonos, WorldView2, Formosat, Spot5, Pleiades, Spot6. For other sensors the application also allows to provide calibration parameters manually.</description>
   <parameter>
     <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
     <key>in</key>
@@ -35,32 +35,133 @@
     <options>
       <choices>
         <choice>toa</choice>
+        <choice>toatoim</choice>
         </choices>
     </options>
     <default>0</default>
   </parameter>
   <parameter>
-    <parameter_type source_parameter_type="ParameterType_Empty">ParameterBoolean</parameter_type>
-    <key>milli</key>
-    <name>Convert to milli reflectance</name>
-    <description>Flag to use milli-reflectance instead of reflectance.
-This allows saving the image with integer pixel type (in the range [0, 1000]  instead of floating point in the range [0, 1]. In order to do that, use this option and set the output pixel type (-out filename uint16 for example)</description>
-    <default>True</default>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>acqui.minute</key>
+    <name>Minute</name>
+    <description>Minute (0-59)</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
   </parameter>
   <parameter>
-    <parameter_type source_parameter_type="ParameterType_Empty">ParameterBoolean</parameter_type>
-    <key>clamp</key>
-    <name>Clamp of reflectivity values between [0, 100]</name>
-    <description>Clamping in the range [0, 100]. It can be useful to preserve area with specular reflectance.</description>
-    <default>True</default>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>acqui.hour</key>
+    <name>Hour</name>
+    <description>Hour (0-23)</description>
+    <minValue />
+    <maxValue />
+    <default>12</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>acqui.day</key>
+    <name>Day</name>
+    <description>Day (1-31)</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>acqui.month</key>
+    <name>Month</name>
+    <description>Month (1-12)</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>acqui.year</key>
+    <name>Year</name>
+    <description>Year</description>
+    <minValue />
+    <maxValue />
+    <default>2000</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>acqui.sun.elev</key>
+    <name>Sun elevation angle (deg)</name>
+    <description>Sun elevation angle (in degrees)</description>
+    <minValue />
+    <maxValue />
+    <default>90</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>acqui.sun.azim</key>
+    <name>Sun azimuth angle (deg)</name>
+    <description>Sun azimuth angle (in degrees)</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>acqui.view.elev</key>
+    <name>Viewing elevation angle (deg)</name>
+    <description>Viewing elevation angle (in degrees)</description>
+    <minValue />
+    <maxValue />
+    <default>90</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>acqui.view.azim</key>
+    <name>Viewing azimuth angle (deg)</name>
+    <description>Viewing azimuth angle (in degrees)</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
   </parameter>
   <parameter>
     <parameter_type source_parameter_type="ParameterType_InputFilename">ParameterFile</parameter_type>
-    <key>rsr</key>
-    <name>Relative Spectral Response File</name>
-    <description>Sensor relative spectral response file
-By default the application gets these information in the metadata</description>
+    <key>acqui.gainbias</key>
+    <name>Gains | biases</name>
+    <description>Gains | biases</description>
     <isFolder />
     <optional>True</optional>
   </parameter>
-  </root>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputFilename">ParameterFile</parameter_type>
+    <key>acqui.solarilluminations</key>
+    <name>Solar illuminations</name>
+    <description>Solar illuminations (one value per band)</description>
+    <isFolder />
+    <optional>True</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputFilename">ParameterFile</parameter_type>
+    <key>atmo.rsr</key>
+    <name>Relative Spectral Response File</name>
+    <description>Sensor relative spectral response file
+By default the application gets these informations in the metadata</description>
+    <isFolder />
+    <optional>True</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>atmo.radius</key>
+    <name>Window radius (adjacency effects)</name>
+    <description>Window radius for adjacency effects correctionsSetting this parameters will enable the correction ofadjacency effects</description>
+    <minValue />
+    <maxValue />
+    <default>2</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>atmo.pixsize</key>
+    <name>Pixel size (in km)</name>
+    <description>Pixel size (in km )used tocompute adjacency effects, it doesn't have tomatch the image spacing</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+</root>

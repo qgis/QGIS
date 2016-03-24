@@ -75,6 +75,5 @@
     <key>outmeans</key>
     <name>Centroid filename</name>
     <description>Output text file containing centroid positions</description>
-    <hidden />
   </parameter>
   </root>

@@ -24,7 +24,7 @@ class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
 
   public slots:
     void changeCategorizedSymbol();
-    void categoryColumnChanged( QString field );
+    void categoryColumnChanged( const QString& field );
     void categoriesDoubleClicked( const QModelIndex & idx );
     void addCategory();
     void addCategories();
@@ -32,7 +32,7 @@ class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
     void deleteCategories();
     void deleteAllCategories();
 
-    void sizeScaleFieldChanged( QString fldName );
+    void sizeScaleFieldChanged( const QString& fldName );
     void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
 
     void showSymbolLevels();

@@ -32,16 +32,22 @@
 #include <QSharedData>
 #include "qgsfield.h"
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfield.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
 class QgsFieldPrivate : public QSharedData
 {
   public:
 
-    QgsFieldPrivate( QString name = QString(),
+    QgsFieldPrivate( const QString& name = QString(),
                      QVariant::Type type = QVariant::Invalid,
-                     QString typeName = QString(),
+                     const QString& typeName = QString(),
                      int len = 0,
                      int prec = 0,
-                     QString comment = QString() )
+                     const QString& comment = QString() )
         : name( name )
         , type( type )
         , typeName( typeName )
@@ -89,6 +95,12 @@ class QgsFieldPrivate : public QSharedData
     QString comment;
 };
 
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfields.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 class CORE_EXPORT QgsFieldsPrivate : public QSharedData
 {

@@ -10,7 +10,7 @@ class QgsCircularStringV2: public QgsCurveV2
 
     virtual QString geometryType() const;
     virtual int dimension() const;
-    virtual QgsAbstractGeometryV2* clone() const;
+    virtual QgsCircularStringV2* clone() const;
     virtual void clear();
 
     virtual QgsRectangle calculateBoundingBox() const;
@@ -59,6 +59,14 @@ class QgsCircularStringV2: public QgsCurveV2
         @param vertex the vertex id
         @return rotation in radians, clockwise from north*/
     double vertexAngle( const QgsVertexId& vertex ) const;
+
+    virtual QgsCircularStringV2* reversed() const /Factory/;
+
+    virtual bool addZValue( double zValue = 0 );
+    virtual bool addMValue( double mValue = 0 );
+
+    virtual bool dropZValue();
+    virtual bool dropMValue();
 
   private:
     void segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QList<QgsPointV2>& points ) const;

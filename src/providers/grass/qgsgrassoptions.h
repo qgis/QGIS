@@ -31,10 +31,13 @@ class GRASS_LIB_EXPORT QgsGrassOptions : public QgsOptionsDialogBase, private Ui
     ~QgsGrassOptions();
 
   private slots:
+    void on_mGisbaseBrowseButton_clicked();
+    void gisbaseChanged();
     void on_mModulesConfigBrowseButton_clicked();
     void saveOptions();
 
   private:
+
     QString mImportSettingsPath;
     QString mModulesSettingsPath;
 };

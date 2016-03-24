@@ -24,7 +24,7 @@ QgsClassificationWidgetWrapper::QgsClassificationWidgetWrapper( QgsVectorLayer* 
 {
 }
 
-QVariant QgsClassificationWidgetWrapper::value()
+QVariant QgsClassificationWidgetWrapper::value() const
 {
   return mComboBox->itemData( mComboBox->currentIndex() );
 }
@@ -59,7 +59,7 @@ void QgsClassificationWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
-bool QgsClassificationWidgetWrapper::valid()
+bool QgsClassificationWidgetWrapper::valid() const
 {
   return mComboBox;
 }

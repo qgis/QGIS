@@ -43,7 +43,7 @@ QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
   }
 }
 
-void QgsNetworkContentFetcher::fetchContent( const QUrl url )
+void QgsNetworkContentFetcher::fetchContent( const QUrl& url )
 {
   QUrl nextUrlToFetch = url;
   mContentLoaded = false;
@@ -132,7 +132,7 @@ void QgsNetworkContentFetcher::contentLoaded( bool ok )
 
   if ( mReply->error() != QNetworkReply::NoError )
   {
-    QgsMessageLog::logMessage( tr( "HTTP fetch %1 failed with error %2" ).arg( mReply->url().toString() ).arg( mReply->errorString() ) );
+    QgsMessageLog::logMessage( tr( "HTTP fetch %1 failed with error %2" ).arg( mReply->url().toString(), mReply->errorString() ) );
     mContentLoaded = true;
     emit finished();
     return;
@@ -145,7 +145,7 @@ void QgsNetworkContentFetcher::contentLoaded( bool ok )
     QVariant status = mReply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
     if ( !status.isNull() && status.toInt() >= 400 )
     {
-      QgsMessageLog::logMessage( tr( "HTTP fetch %1 failed with error %2" ).arg( mReply->url().toString() ).arg( status.toString() ) );
+      QgsMessageLog::logMessage( tr( "HTTP fetch %1 failed with error %2" ).arg( mReply->url().toString(), status.toString() ) );
     }
     mContentLoaded = true;
     emit finished();

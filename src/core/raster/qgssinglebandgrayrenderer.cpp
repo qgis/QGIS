@@ -32,7 +32,7 @@ QgsSingleBandGrayRenderer::~QgsSingleBandGrayRenderer()
   delete mContrastEnhancement;
 }
 
-QgsRasterInterface * QgsSingleBandGrayRenderer::clone() const
+QgsSingleBandGrayRenderer* QgsSingleBandGrayRenderer::clone() const
 {
   QgsSingleBandGrayRenderer * renderer = new QgsSingleBandGrayRenderer( 0, mGrayBand );
   renderer->setOpacity( mOpacity );

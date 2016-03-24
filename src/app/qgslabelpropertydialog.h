@@ -86,7 +86,7 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     void fillValiComboBox();
 
     /** Insert changed value into mChangedProperties*/
-    void insertChangedValue( QgsPalLayerSettings::DataDefinedProperties p, QVariant value );
+    void insertChangedValue( QgsPalLayerSettings::DataDefinedProperties p, const QVariant& value );
 
     QgsAttributeMap mChangedProperties;
     QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* > mDataDefinedProperties;

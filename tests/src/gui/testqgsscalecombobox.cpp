@@ -51,17 +51,17 @@ void TestQgsScaleComboBox::initTestCase()
   // Create a combobox, and init with predefined scales.
   s = new QgsScaleComboBox();
   QgsDebugMsg( QString( "Initial scale is %1" ).arg( s->scaleString() ) );
-};
+}
 
 void TestQgsScaleComboBox::cleanupTestCase()
 {
   delete s;
   QgsApplication::exitQgis();
-};
+}
 
 void TestQgsScaleComboBox::init()
 {
-};
+}
 
 void TestQgsScaleComboBox::basic()
 {
@@ -133,7 +133,7 @@ void TestQgsScaleComboBox::basic()
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 240 ) ) );
   QCOMPARE( s->scale(), ( double ) 1.0 / ( double ) 240.0 );
 
-};
+}
 
 void TestQgsScaleComboBox::slot_test()
 {
@@ -151,7 +151,7 @@ void TestQgsScaleComboBox::slot_test()
 
 void TestQgsScaleComboBox::cleanup()
 {
-};
+}
 
 QTEST_MAIN( TestQgsScaleComboBox )
 #include "testqgsscalecombobox.moc"

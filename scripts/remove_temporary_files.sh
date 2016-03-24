@@ -22,6 +22,7 @@
 # Tim Sutton, May 2008
 find . -name "*.orig" -delete
 find . -name "*.prepare" -delete
+find . -name "*.sortinc" -delete
 find . -name "astyle*.diff" -delete
 find . -name "*.astyle" -delete
 find . -name "sha*.diff" -delete

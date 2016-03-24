@@ -51,7 +51,7 @@ def adaptBinaryMorphologicalOperation(commands_list):
     val = commands_list[commands_list.index("-filter") + 1]
 
     def replace_dilate(param, value):
-        if ".dilate" in unicode(param):
+        if ".dilate" in str(param):
             return param.replace("dilate", value)
         else:
             return param
@@ -309,6 +309,40 @@ def adaptGeoidSrtm(commands_list):
         else:
             commands_list.append("-elev.geoid")
             commands_list.append(geoid)
+
+
+def adaptComputePolylineFeatureFromImage(commands_list):
+    """
+    Remove parameter and user value instead of giving None.
+    Check geoid file, srtm folder and given elevation and manage arguments.
+    """
+    commands_list2 = commands_list
+    adaptGeoidSrtm(commands_list2)
+    for item in commands_list:
+        if "None" in item:
+            index = commands_list2.index(item)
+            argumentToRemove = commands_list2[index - 1]
+            commands_list2.remove(item)
+            commands_list2.remove(argumentToRemove)
+        # commands_list2.append(item)
+    return commands_list2
+
+
+def adaptComputeOGRLayersFeaturesStatistics(commands_list):
+    """
+    Remove parameter and user value instead of giving None.
+    Check geoid file, srtm folder and given elevation and manage arguments.
+    """
+    commands_list2 = commands_list
+    adaptGeoidSrtm(commands_list2)
+    for item in commands_list:
+        if "None" in item:
+            index = commands_list2.index(item)
+            argumentToRemove = commands_list2[index - 1]
+            commands_list2.remove(item)
+            commands_list2.remove(argumentToRemove)
+        # commands_list2.append(item)
+    return commands_list2
 
 
 def ckeckGeoidSrtmSettings():

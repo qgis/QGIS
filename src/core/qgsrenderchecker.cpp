@@ -54,10 +54,10 @@ QString QgsRenderChecker::controlImagePath() const
 void QgsRenderChecker::setControlName( const QString &theName )
 {
   mControlName = theName;
-  mExpectedImageFile = controlImagePath() + theName + "/" + mControlPathSuffix + theName + ".png";
+  mExpectedImageFile = controlImagePath() + theName + '/' + mControlPathSuffix + theName + ".png";
 }
 
-QString QgsRenderChecker::imageToHash( QString theImageFile )
+QString QgsRenderChecker::imageToHash( const QString& theImageFile )
 {
   QImage myImage;
   myImage.load( theImageFile );
@@ -101,9 +101,9 @@ void QgsRenderChecker::drawBackground( QImage* image )
   p.end();
 }
 
-bool QgsRenderChecker::isKnownAnomaly( QString theDiffImageFile )
+bool QgsRenderChecker::isKnownAnomaly( const QString& theDiffImageFile )
 {
-  QString myControlImageDir = controlImagePath() + mControlName + "/";
+  QString myControlImageDir = controlImagePath() + mControlName + '/';
   QDir myDirectory = QDir( myControlImageDir );
   QStringList myList;
   QString myFilename = "*";
@@ -122,14 +122,14 @@ bool QgsRenderChecker::isKnownAnomaly( QString theDiffImageFile )
     mReport += "<tr><td colspan=3>"
                "Checking if " + myFile + " is a known anomaly.";
     mReport += "</td></tr>";
-    QString myAnomalyHash = imageToHash( controlImagePath() + mControlName + "/" + myFile );
+    QString myAnomalyHash = imageToHash( controlImagePath() + mControlName + '/' + myFile );
     QString myHashMessage = QString(
                               "Checking if anomaly %1 (hash %2)<br>" )
-                            .arg( myFile )
-                            .arg( myAnomalyHash );
+                            .arg( myFile,
+                                  myAnomalyHash );
     myHashMessage += QString( "&nbsp; matches %1 (hash %2)" )
-                     .arg( theDiffImageFile )
-                     .arg( myImageHash );
+                     .arg( theDiffImageFile,
+                           myImageHash );
     //foo CDash
     emitDashMessage( "Anomaly check", QgsDartMeasurement::Text, myHashMessage );
 
@@ -161,7 +161,7 @@ void QgsRenderChecker::emitDashMessage( const QString& name, QgsDartMeasurement:
   emitDashMessage( QgsDartMeasurement( name, type, value ) );
 }
 
-bool QgsRenderChecker::runTest( QString theTestName,
+bool QgsRenderChecker::runTest( const QString& theTestName,
                                 unsigned int theMismatchCount )
 {
   if ( mExpectedImageFile.isEmpty() )
@@ -209,7 +209,7 @@ bool QgsRenderChecker::runTest( QString theTestName,
   // Save the pixmap to disk so the user can make a
   // visual assessment if needed
   //
-  mRenderedImageFile = QDir::tempPath() + "/" + theTestName + "_result.png";
+  mRenderedImageFile = QDir::tempPath() + '/' + theTestName + "_result.png";
 
   myImage.setDotsPerMeterX( myExpectedImage.dotsPerMeterX() );
   myImage.setDotsPerMeterY( myExpectedImage.dotsPerMeterY() );
@@ -225,26 +225,26 @@ bool QgsRenderChecker::runTest( QString theTestName,
 
   //create a world file to go with the image...
 
-  QFile wldFile( QDir::tempPath() + "/" + theTestName + "_result.wld" );
+  QFile wldFile( QDir::tempPath() + '/' + theTestName + "_result.wld" );
   if ( wldFile.open( QIODevice::WriteOnly ) )
   {
     QgsRectangle r = mMapSettings.extent();
 
     QTextStream stream( &wldFile );
     stream << QString( "%1\r\n0 \r\n0 \r\n%2\r\n%3\r\n%4\r\n" )
-    .arg( qgsDoubleToString( mMapSettings.mapUnitsPerPixel() ) )
-    .arg( qgsDoubleToString( -mMapSettings.mapUnitsPerPixel() ) )
-    .arg( qgsDoubleToString( r.xMinimum() + mMapSettings.mapUnitsPerPixel() / 2.0 ) )
-    .arg( qgsDoubleToString( r.yMaximum() - mMapSettings.mapUnitsPerPixel() / 2.0 ) );
+    .arg( qgsDoubleToString( mMapSettings.mapUnitsPerPixel() ),
+          qgsDoubleToString( -mMapSettings.mapUnitsPerPixel() ),
+          qgsDoubleToString( r.xMinimum() + mMapSettings.mapUnitsPerPixel() / 2.0 ),
+          qgsDoubleToString( r.yMaximum() - mMapSettings.mapUnitsPerPixel() / 2.0 ) );
   }
 
   return compareImages( theTestName, theMismatchCount );
 }
 
 
-bool QgsRenderChecker::compareImages( QString theTestName,
+bool QgsRenderChecker::compareImages( const QString& theTestName,
                                       unsigned int theMismatchCount,
-                                      QString theRenderedImageFile )
+                                      const QString& theRenderedImageFile )
 {
   if ( mExpectedImageFile.isEmpty() )
   {
@@ -257,10 +257,9 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   }
   if ( ! theRenderedImageFile.isEmpty() )
   {
-#ifndef Q_OS_WIN
     mRenderedImageFile = theRenderedImageFile;
-#else
-    mRenderedImageFile = theRenderedImageFile.replace( "\\", "/" );
+#ifdef Q_OS_WIN
+    mRenderedImageFile = mRenderedImageFile.replace( '\\', '/' );
 #endif
   }
 
@@ -291,7 +290,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   QImage myDifferenceImage( myExpectedImage.width(),
                             myExpectedImage.height(),
                             QImage::Format_RGB32 );
-  QString myDiffImageFile = QDir::tempPath() + "/" + theTestName + "_result_diff.png";
+  QString myDiffImageFile = QDir::tempPath() + '/' + theTestName + "_result_diff.png";
   myDifferenceImage.fill( qRgb( 152, 219, 249 ) );
 
   //check for mask
@@ -349,10 +348,10 @@ bool QgsRenderChecker::compareImages( QString theTestName,
                              "</tr>"
                              "</table>\n"
                              "<script>\naddComparison(\"td-%1-%7\",\"file://%3\",\"file://%4\",%5,%6);\n</script>\n" )
-                           .arg( theTestName )
-                           .arg( myDiffImageFile )
-                           .arg( mRenderedImageFile )
-                           .arg( mExpectedImageFile )
+                           .arg( theTestName,
+                                 myDiffImageFile,
+                                 mRenderedImageFile,
+                                 mExpectedImageFile )
                            .arg( imgWidth ).arg( imgHeight )
                            .arg( renderCounter++ );
 

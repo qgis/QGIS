@@ -202,7 +202,7 @@ void Heatmap::run()
     QgsDebugMsg( QString( "Radius Field index received: %1" ).arg( rField ) );
 
     // If not using map units, then calculate a conversion factor to convert the radii to map units
-    if ( d.radiusUnit() == HeatmapGui::Meters )
+    if ( d.radiusUnit() == HeatmapGui::LayerUnits )
     {
       radiusToMapUnits = mapUnitsOf( 1, inputLayer->crs() );
     }
@@ -364,9 +364,9 @@ void Heatmap::run()
  *
  */
 
-double Heatmap::mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs )
+double Heatmap::mapUnitsOf( double layerdist, const QgsCoordinateReferenceSystem& layerCrs )
 {
-  // Worker to transform metres input to mapunits
+  // Worker to transform layer input to mapunits
   QgsDistanceArea da;
   da.setSourceCrs( layerCrs.srsid() );
   da.setEllipsoid( layerCrs.ellipsoidAcronym() );
@@ -374,7 +374,7 @@ double Heatmap::mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs
   {
     da.setEllipsoidalMode( true );
   }
-  return meters / da.measureLine( QgsPoint( 0.0, 0.0 ), QgsPoint( 0.0, 1.0 ) );
+  return layerdist / da.measureLine( QgsPoint( 0.0, 0.0 ), QgsPoint( 0.0, 1.0 ) );
 }
 
 int Heatmap::bufferSize( double radius, double cellsize )

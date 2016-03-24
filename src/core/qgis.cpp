@@ -27,6 +27,7 @@
 #include <QDateTime>
 #include "qgsconfig.h"
 #include "qgslogger.h"
+#include "geometry/qgswkbtypes.h"
 
 #include <ogr_api.h>
 
@@ -99,7 +100,57 @@ const char* QGis::qgisUnitTypes[] =
   QT_TRANSLATE_NOOP( "QGis::UnitType", "nautical miles" )
 };
 
-QGis::UnitType QGis::fromLiteral( QString literal, QGis::UnitType defaultType )
+QgsWKBTypes::Type QGis::fromOldWkbType( QGis::WkbType type )
+{
+  switch ( type )
+  {
+    case QGis::WKBPoint: return QgsWKBTypes::Point;
+    case QGis::WKBLineString: return QgsWKBTypes::LineString;
+    case QGis::WKBPolygon: return QgsWKBTypes::Polygon;
+    case QGis::WKBMultiPoint: return QgsWKBTypes::MultiPoint;
+    case QGis::WKBMultiLineString: return QgsWKBTypes::MultiLineString;
+    case QGis::WKBMultiPolygon: return QgsWKBTypes::MultiPolygon;
+    case QGis::WKBNoGeometry: return QgsWKBTypes::NoGeometry;
+    case QGis::WKBPoint25D: return QgsWKBTypes::PointZ;
+    case QGis::WKBLineString25D: return QgsWKBTypes::LineStringZ;
+    case QGis::WKBPolygon25D: return QgsWKBTypes::PolygonZ;
+    case QGis::WKBMultiPoint25D: return QgsWKBTypes::MultiPointZ;
+    case QGis::WKBMultiLineString25D: return QgsWKBTypes::MultiLineStringZ;
+    case QGis::WKBMultiPolygon25D: return QgsWKBTypes::MultiPolygonZ;
+    case QGis::WKBUnknown: return QgsWKBTypes::Unknown;
+    default: break;
+  }
+
+  QgsDebugMsg( QString( "unexpected old wkbType=%1" ).arg( type ) );
+  return ( QgsWKBTypes::Type ) type;
+}
+
+QGis::WkbType QGis::fromNewWkbType( QgsWKBTypes::Type type )
+{
+  switch ( type )
+  {
+    case QgsWKBTypes::Point: return QGis::WKBPoint;
+    case QgsWKBTypes::LineString: return QGis::WKBLineString;
+    case QgsWKBTypes::Polygon: return QGis::WKBPolygon;
+    case QgsWKBTypes::MultiPoint: return QGis::WKBMultiPoint;
+    case QgsWKBTypes::MultiLineString: return QGis::WKBMultiLineString;
+    case QgsWKBTypes::MultiPolygon: return QGis::WKBMultiPolygon;
+    case QgsWKBTypes::NoGeometry: return QGis::WKBNoGeometry;
+    case QgsWKBTypes::PointZ: return QGis::WKBPoint25D;
+    case QgsWKBTypes::LineStringZ: return QGis::WKBLineString25D;
+    case QgsWKBTypes::PolygonZ: return QGis::WKBPolygon25D;
+    case QgsWKBTypes::MultiPointZ: return QGis::WKBMultiPoint25D;
+    case QgsWKBTypes::MultiLineStringZ: return QGis::WKBMultiLineString25D;
+    case QgsWKBTypes::MultiPolygonZ: return QGis::WKBMultiPolygon25D;
+    default: break;
+  }
+
+  QgsDebugMsg( QString( "unexpected new wkbType=%1" ).arg( type ) );
+  return ( QGis::WkbType ) type;
+}
+
+
+QGis::UnitType QGis::fromLiteral( const QString& literal, QGis::UnitType defaultType )
 {
   for ( unsigned int i = 0; i < ( sizeof( qgisUnitTypes ) / sizeof( qgisUnitTypes[0] ) ); i++ )
   {
@@ -121,7 +172,7 @@ QString QGis::tr( QGis::UnitType unit )
   return QCoreApplication::translate( "QGis::UnitType", qPrintable( toLiteral( unit ) ) );
 }
 
-QGis::UnitType QGis::fromTr( QString literal, QGis::UnitType defaultType )
+QGis::UnitType QGis::fromTr( const QString& literal, QGis::UnitType defaultType )
 {
   for ( unsigned int i = 0; i < ( sizeof( qgisUnitTypes ) / sizeof( qgisUnitTypes[0] ) ); i++ )
   {
@@ -266,7 +317,7 @@ bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs )
   return ! qgsVariantLessThan( lhs, rhs );
 }
 
-QString qgsVsiPrefix( QString path )
+QString qgsVsiPrefix( const QString& path )
 {
   if ( path.startsWith( "/vsizip/", Qt::CaseInsensitive ) ||
        path.endsWith( ".zip", Qt::CaseInsensitive ) )
@@ -281,4 +332,102 @@ QString qgsVsiPrefix( QString path )
     return "/vsigzip/";
   else
     return "";
+}
+
+QGis::WkbType QGis::singleType( QGis::WkbType type )
+{
+  switch ( type )
+  {
+    case WKBMultiPoint:         return WKBPoint;
+    case WKBMultiLineString:    return WKBLineString;
+    case WKBMultiPolygon:       return WKBPolygon;
+    case WKBMultiPoint25D:      return WKBPoint25D;
+    case WKBMultiLineString25D: return WKBLineString25D;
+    case WKBMultiPolygon25D:    return WKBPolygon25D;
+    default:                    return fromNewWkbType( QgsWKBTypes::singleType( fromOldWkbType( type ) ) );
+  }
+}
+
+QGis::WkbType QGis::multiType( QGis::WkbType type )
+{
+  switch ( type )
+  {
+    case WKBPoint:         return WKBMultiPoint;
+    case WKBLineString:    return WKBMultiLineString;
+    case WKBPolygon:       return WKBMultiPolygon;
+    case WKBPoint25D:      return WKBMultiPoint25D;
+    case WKBLineString25D: return WKBMultiLineString25D;
+    case WKBPolygon25D:    return WKBMultiPolygon25D;
+    default:               return fromNewWkbType( QgsWKBTypes::multiType( fromOldWkbType( type ) ) );
+  }
+}
+
+QGis::WkbType QGis::flatType( QGis::WkbType type )
+{
+  switch ( type )
+  {
+    case WKBPoint25D:           return WKBPoint;
+    case WKBLineString25D:      return WKBLineString;
+    case WKBPolygon25D:         return WKBPolygon;
+    case WKBMultiPoint25D:      return WKBMultiPoint;
+    case WKBMultiLineString25D: return WKBMultiLineString;
+    case WKBMultiPolygon25D:    return WKBMultiPolygon;
+    default:                    return fromNewWkbType( QgsWKBTypes::flatType( fromOldWkbType( type ) ) );
+  }
+}
+
+bool QGis::isSingleType( QGis::WkbType type )
+{
+  return QgsWKBTypes::isSingleType( fromOldWkbType( type ) );
+}
+
+bool QGis::isMultiType( QGis::WkbType type )
+{
+  return QgsWKBTypes::isMultiType( fromOldWkbType( type ) );
+}
+
+int QGis::wkbDimensions( QGis::WkbType type )
+{
+  if ( type == WKBUnknown || type == WKBNoGeometry )
+    return 0;
+
+  QgsWKBTypes::Type wkbType = fromOldWkbType( type );
+  return 2 + ( QgsWKBTypes::hasZ( wkbType ) ? 1 : 0 ) + ( QgsWKBTypes::hasM( wkbType ) ? 1 : 0 );
+}
+
+const char *QGis::vectorGeometryType( QGis::GeometryType type )
+{
+  switch ( type )
+  {
+    case Point:           return "Point";
+    case Line:            return "Line";
+    case Polygon:         return "Polygon";
+    case UnknownGeometry: return "Unknown geometry";
+    case NoGeometry:      return "No geometry";
+    default:              return "Invalid type";
+  }
+}
+
+
+const char *QGis::featureType( QGis::WkbType type )
+{
+  switch ( type )
+  {
+    case WKBUnknown:            return "WKBUnknown";
+    case WKBPoint:              return "WKBPoint";
+    case WKBLineString:         return "WKBLineString";
+    case WKBPolygon:            return "WKBPolygon";
+    case WKBMultiPoint:         return "WKBMultiPoint";
+    case WKBMultiLineString:    return "WKBMultiLineString";
+    case WKBMultiPolygon:       return "WKBMultiPolygon";
+    case WKBNoGeometry:         return "WKBNoGeometry";
+    case WKBPoint25D:           return "WKBPoint25D";
+    case WKBLineString25D:      return "WKBLineString25D";
+    case WKBPolygon25D:         return "WKBPolygon25D";
+    case WKBMultiPoint25D:      return "WKBMultiPoint25D";
+    case WKBMultiLineString25D: return "WKBMultiLineString25D";
+    case WKBMultiPolygon25D:    return "WKBMultiPolygon25D";
+    default:                    return "invalid wkbtype";
+
+  }
 }

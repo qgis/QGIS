@@ -24,6 +24,7 @@
 #include "qgssymbollayerv2.h"
 #include "qgsogcutils.h"
 #include "qgspainteffect.h"
+#include "qgspainteffectregistry.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -328,10 +329,10 @@ QString QgsInvertedPolygonRenderer::dump() const
   {
     return "INVERTED: NULL";
   }
-  return "INVERTED [" + mSubRenderer->dump() + "]";
+  return "INVERTED [" + mSubRenderer->dump() + ']';
 }
 
-QgsFeatureRendererV2* QgsInvertedPolygonRenderer::clone() const
+QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::clone() const
 {
   QgsInvertedPolygonRenderer* newRenderer;
   if ( mSubRenderer.isNull() )
@@ -375,7 +376,7 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument& doc )
     rendererElem.appendChild( embeddedRendererElem );
   }
 
-  if ( mPaintEffect )
+  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
 
   return rendererElem;
@@ -449,7 +450,7 @@ QgsLegendSymbologyList QgsInvertedPolygonRenderer::legendSymbologyItems( QSize i
   return mSubRenderer->legendSymbologyItems( iconSize );
 }
 
-QgsLegendSymbolList QgsInvertedPolygonRenderer::legendSymbolItems( double scaleDenominator, QString rule )
+QgsLegendSymbolList QgsInvertedPolygonRenderer::legendSymbolItems( double scaleDenominator, const QString& rule )
 {
   if ( !mSubRenderer )
   {

@@ -256,7 +256,7 @@ QMap<int, QString> QgsComposerTable::headerLabels() const
   return headers;
 }
 
-void QgsComposerTable::setColumns( QList<QgsComposerTableColumn*> columns )
+void QgsComposerTable::setColumns( const QList<QgsComposerTableColumn*>& columns )
 {
   //remove existing columns
   qDeleteAll( mColumns );

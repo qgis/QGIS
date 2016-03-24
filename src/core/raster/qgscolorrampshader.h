@@ -44,7 +44,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
       //! default constructor
       ColorRampItem() : value( 0 ) {}
       //! convenience constructor
-      ColorRampItem( double val, QColor col, QString lbl = QString() ) : label( lbl ), value( val ), color( col ) {}
+      ColorRampItem( double val, const QColor& col, const QString& lbl = QString() ) : label( lbl ), value( val ), color( col ) {}
 
       QString label;
       double value;
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     void setColorRampType( QgsColorRampShader::ColorRamp_TYPE theColorRampType );
 
     /** \brief Set the color ramp type*/
-    void setColorRampType( QString );
+    void setColorRampType( const QString& theType );
 
     /** \brief Set the maximum size the color cache can be */
     void setMaximumColorCacheSize( int theSize ) { mMaximumColorCacheSize = theSize; }

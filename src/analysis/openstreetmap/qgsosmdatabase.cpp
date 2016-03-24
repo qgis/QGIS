@@ -282,7 +282,7 @@ bool QgsOSMDatabase::prepareStatements()
     {
       const char* errMsg = sqlite3_errmsg( mDatabase ); // does not require free
       mError = QString( "Error preparing SQL command:\n%1\nSQL:\n%2" )
-               .arg( QString::fromUtf8( errMsg ) ).arg( QString::fromUtf8( sql[i] ) );
+               .arg( QString::fromUtf8( errMsg ), QString::fromUtf8( sql[i] ) );
       return false;
     }
   }
@@ -336,7 +336,7 @@ bool QgsOSMDatabase::createSpatialTable( const QString& tableName, const QString
   QString sqlCreateTable = QString( "CREATE TABLE %1 (id INTEGER PRIMARY KEY" ).arg( quotedIdentifier( tableName ) );
   for ( int i = 0; i < tagKeys.count(); ++i )
     sqlCreateTable += QString( ", %1 TEXT" ).arg( quotedIdentifier( tagKeys[i] ) );
-  sqlCreateTable += ")";
+  sqlCreateTable += ')';
 
   char *errMsg = NULL;
   int ret = sqlite3_exec( mDatabase, sqlCreateTable.toUtf8().constData(), NULL, NULL, &errMsg );
@@ -348,8 +348,8 @@ bool QgsOSMDatabase::createSpatialTable( const QString& tableName, const QString
   }
 
   QString sqlAddGeomColumn = QString( "SELECT AddGeometryColumn(%1, 'geometry', 4326, %2, 'XY')" )
-                             .arg( quotedValue( tableName ) )
-                             .arg( quotedValue( geometryType ) );
+                             .arg( quotedValue( tableName ),
+                                   quotedValue( geometryType ) );
   ret = sqlite3_exec( mDatabase, sqlAddGeomColumn.toUtf8().constData(), NULL, NULL, &errMsg );
   if ( ret != SQLITE_OK )
   {
@@ -530,7 +530,7 @@ void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName
 
 QString QgsOSMDatabase::quotedIdentifier( QString id )
 {
-  id.replace( "\"", "\"\"" );
+  id.replace( '\"', "\"\"" );
   return QString( "\"%1\"" ).arg( id );
 }
 
@@ -539,7 +539,7 @@ QString QgsOSMDatabase::quotedValue( QString value )
   if ( value.isNull() )
     return "NULL";
 
-  value.replace( "'", "''" );
+  value.replace( '\'', "''" );
   return QString( "'%1'" ).arg( value );
 }
 

@@ -80,13 +80,20 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2Widget::renderer()
   return mRenderer;
 }
 
+void QgsSingleSymbolRendererV2Widget::setMapCanvas( QgsMapCanvas* canvas )
+{
+  QgsRendererV2Widget::setMapCanvas( canvas );
+  if ( mSelector )
+    mSelector->setMapCanvas( canvas );
+}
+
 void QgsSingleSymbolRendererV2Widget::changeSingleSymbol()
 {
   // update symbol from the GUI
   mRenderer->setSymbol( mSingleSymbol->clone() );
 }
 
-void QgsSingleSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )
+void QgsSingleSymbolRendererV2Widget::sizeScaleFieldChanged( const QString& fldName )
 {
   mRenderer->setSizeScaleField( fldName );
 }

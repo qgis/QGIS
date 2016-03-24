@@ -85,12 +85,12 @@ class QgsAttributeTableView : QTableView
      * @param atIndex  The QModelIndex, to which the context menu belongs. Relative to the source model.
      *                 In most cases, this will be a @link QgsAttributeTableFilterModel @endlink
      */
-    void willShowContextMenu( QMenu* menu, QModelIndex atIndex );
+    void willShowContextMenu( QMenu* menu, const QModelIndex& atIndex );
 
     void finished();
 
   public slots:
-    void repaintRequested( QModelIndexList indexes );
+    void repaintRequested( const QModelIndexList& indexes );
     void repaintRequested();
     virtual void selectAll();
     virtual void selectRow( int row );

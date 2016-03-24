@@ -192,7 +192,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @param featureRequest  The feature request that was answered
      * @param fids            The feature ids that have been returned
      */
-    void requestCompleted( QgsFeatureRequest featureRequest, QgsFeatureIds fids );
+    void requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids );
 
     /**
      * @brief

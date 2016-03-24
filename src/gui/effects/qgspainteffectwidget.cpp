@@ -469,7 +469,6 @@ void QgsGlowWidget::initGui()
   radioColorRamp->setChecked( mEffect->colorType() == QgsGlowEffect::ColorRamp );
   mRampComboBox->setEnabled( mEffect->colorType() == QgsGlowEffect::ColorRamp );
   mButtonEditRamp->setEnabled( mEffect->colorType() == QgsGlowEffect::ColorRamp );
-  mInvertCheckBox->setEnabled( mEffect->colorType() == QgsGlowEffect::ColorRamp );
   mDrawModeComboBox->setDrawMode( mEffect->drawMode() );
 
   blockSignals( false );

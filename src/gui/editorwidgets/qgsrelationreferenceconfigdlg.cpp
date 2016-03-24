@@ -146,6 +146,7 @@ QgsEditorWidgetConfig QgsRelationReferenceConfigDlg::config()
   if ( mFilterGroupBox->isChecked() )
   {
     QStringList filterFields;
+    filterFields.reserve( mFilterFieldsList->count() );
     for ( int i = 0; i < mFilterFieldsList->count(); i++ )
     {
       filterFields << mFilterFieldsList->item( i )->data( Qt::UserRole ).toString();

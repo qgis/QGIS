@@ -18,6 +18,7 @@ Build-Depends:
  libproj-dev,
  libqt4-dev (>= 4.7.0),
  libqt4-opengl-dev,
+ libqca2-dev, libqca2-plugin-ossl,
  libqtwebkit-dev,
  libqwt5-qt4-dev | libqwt-dev,
  libspatialite-dev,

@@ -80,7 +80,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     class DragList : public QTableWidget
     {
       public:
-        DragList( QWidget* parent = 0 )
+        explicit DragList( QWidget* parent = 0 )
             : QTableWidget( parent )
         {}
 
@@ -98,11 +98,11 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     class DesignerTree : public QTreeWidget
     {
       public:
-        DesignerTree( QWidget* parent = 0 )
+        explicit DesignerTree( QWidget* parent = 0 )
             : QTreeWidget( parent )
         {}
         QTreeWidgetItem* addItem( QTreeWidgetItem* parent, DesignerTreeItemData data );
-        QTreeWidgetItem* addContainer( QTreeWidgetItem* parent, QString title );
+        QTreeWidgetItem* addContainer( QTreeWidgetItem* parent, const QString& title );
 
       protected:
         virtual void dragMoveEvent( QDragMoveEvent *event ) override;
@@ -160,6 +160,15 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     void loadAttributeEditorTree();
     QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement* const widgetDef, QTreeWidgetItem* parent );
 
+    /**
+     * @brief setEditFormInit set the private ui fields
+     * @param editForm
+     * @param editFormInit
+     * @param editFormInitCode
+     * @param editFormInitUseCode
+     */
+    void setEditFormInit( const QString &editForm, const QString &editFormInit, const QString &editFormInitCode, const bool editFormInitUseCode );
+
   signals:
     void toggleEditing();
 
@@ -170,7 +179,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     void onAttributeSelectionChanged();
     void on_pbnSelectEditForm_clicked();
     void on_mEditorLayoutComboBox_currentIndexChanged( int index );
-
+    void on_leEditFormInitUseCode_toggled( bool checked );
     void attributeAdded( int idx );
     void attributeDeleted( int idx );
     void attributeTypeDialog();
@@ -192,7 +201,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     void updateButtons();
 
     FieldConfig configForRow( int row );
-    void setConfigForRow( int row, FieldConfig cfg );
+    void setConfigForRow( int row, const FieldConfig& cfg );
 
     QgsVectorLayer* mLayer;
     DesignerTree* mDesignerTree;

@@ -157,7 +157,7 @@ class QgsVariableEditorTree : public QTreeWidget
       RowBaseColor
     };
 
-    QgsVariableEditorTree( QWidget *parent = 0 );
+    explicit QgsVariableEditorTree( QWidget *parent = 0 );
 
     QTreeWidgetItem *indexToItem( const QModelIndex &index ) const { return itemFromIndex( index ); }
     QModelIndex itemToIndex( QTreeWidgetItem* item ) const { return indexFromItem( item ); }
@@ -185,6 +185,8 @@ class QgsVariableEditorTree : public QTreeWidget
     QColor rowColor( int index ) const;
     void toggleContextExpanded( QTreeWidgetItem *item );
     void editNext( const QModelIndex &index );
+
+    QModelIndex moveCursor( CursorAction cursorAction, Qt::KeyboardModifiers modifiers ) override;
 
     static QIcon mExpandIcon;
 

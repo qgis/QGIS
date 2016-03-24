@@ -36,7 +36,7 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
 
     virtual QString geometryType() const override { return "CompoundCurve"; }
     virtual int dimension() const override { return 1; }
-    virtual QgsAbstractGeometryV2* clone() const override;
+    virtual QgsCompoundCurveV2* clone() const override;
     virtual void clear() override;
 
     virtual QgsRectangle calculateBoundingBox() const override;
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
     virtual bool deleteVertex( const QgsVertexId& position ) override;
 
     virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
-    bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const override;
+    bool pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const override;
 
     void sumUpArea( double& sum ) const override;
 
@@ -108,6 +108,14 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
         @param vertex the vertex id
         @return rotation in radians, clockwise from north*/
     double vertexAngle( const QgsVertexId& vertex ) const override;
+
+    virtual QgsCompoundCurveV2* reversed() const override;
+
+    virtual bool addZValue( double zValue = 0 ) override;
+    virtual bool addMValue( double mValue = 0 ) override;
+
+    virtual bool dropZValue() override;
+    virtual bool dropMValue() override;
 
   private:
     QList< QgsCurveV2* > mCurves;

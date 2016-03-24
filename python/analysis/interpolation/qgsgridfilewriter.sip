@@ -5,7 +5,7 @@ class QgsGridFileWriter
 %End
 
   public:
-    QgsGridFileWriter( QgsInterpolator* i, QString outputPath, QgsRectangle extent, int nCols, int nRows, double cellSizeX, double cellSizeY );
+    QgsGridFileWriter( QgsInterpolator* i, const QString& outputPath, const QgsRectangle& extent, int nCols, int nRows, double cellSizeX, double cellSizeY );
     ~QgsGridFileWriter();
 
     /** Writes the grid file.

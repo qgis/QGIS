@@ -123,7 +123,7 @@ bool QgsAttributeTableFilterModel::selectedOnTop()
   return mSelectedOnTop;
 }
 
-void QgsAttributeTableFilterModel::setFilteredFeatures( QgsFeatureIds ids )
+void QgsAttributeTableFilterModel::setFilteredFeatures( const QgsFeatureIds& ids )
 {
   mFilteredFeatures = ids;
   setFilterMode( ShowFilteredList );
@@ -189,8 +189,9 @@ bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModel
       {
         const QList<QgsFeatureId> addedFeatures = editBuffer->addedFeatures().keys();
         const QList<QgsFeatureId> changedFeatures = editBuffer->changedAttributeValues().keys();
+        const QList<QgsFeatureId> changedGeometries = editBuffer->changedGeometries().keys();
         const QgsFeatureId fid = masterModel()->rowToId( sourceRow );
-        return addedFeatures.contains( fid ) || changedFeatures.contains( fid );
+        return addedFeatures.contains( fid ) || changedFeatures.contains( fid ) || changedGeometries.contains( fid );
       }
       return false;
     }

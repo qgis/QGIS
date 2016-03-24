@@ -18,7 +18,7 @@ class CORE_EXPORT QgsLayerDefinition
     /** Loads the QLR from the XML document.  New layers are added to rootGroup and the map layer registry */
     static bool loadLayerDefinition( QDomDocument doc, QgsLayerTreeGroup* rootGroup, QString &errorMessage );
     /** Export the selected layer tree nodes to a QLR file */
-    static bool exportLayerDefinition( QString path, QList<QgsLayerTreeNode*> selectedTreeNodes, QString &errorMessage );
+    static bool exportLayerDefinition( QString path, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage );
 };
 
 #endif // QGSLAYERDEFINITION_H

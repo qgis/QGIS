@@ -305,14 +305,24 @@ double QgsComposerScaleBar::mapWidth() const
     da.setSourceCrs( mComposition->mapSettings().destinationCrs().srsid() );
     da.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", "WGS84" ) );
 
-    double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMinimum() ), QgsPoint( composerMapRect.xMaximum(), composerMapRect.yMinimum() ) );
-    if ( mUnits == QgsComposerScaleBar::Feet )
+    QGis::UnitType units = QGis::Meters;
+    double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMinimum() ),
+                                     QgsPoint( composerMapRect.xMaximum(), composerMapRect.yMinimum() ),
+                                     units );
+    switch ( mUnits )
     {
-      measure /= QGis::fromUnitToUnitFactor( QGis::Feet, QGis::Meters );
-    }
-    else if ( mUnits == QgsComposerScaleBar::NauticalMiles )
-    {
-      measure /= QGis::fromUnitToUnitFactor( QGis::NauticalMiles, QGis::Meters );
+      case QgsComposerScaleBar::Feet:
+        measure /= QGis::fromUnitToUnitFactor( QGis::Feet, units );
+        break;
+      case QgsComposerScaleBar::NauticalMiles:
+        measure /= QGis::fromUnitToUnitFactor( QGis::NauticalMiles, units );
+        break;
+      case QgsComposerScaleBar::Meters:
+        measure /= QGis::fromUnitToUnitFactor( QGis::Meters, units );
+        break;
+      case QgsComposerScaleBar::MapUnits:
+        //avoid warning
+        break;
     }
     return measure;
   }
@@ -377,7 +387,7 @@ void QgsComposerScaleBar::applyDefaultSettings()
   mPen = QPen( Qt::black );
   mPen.setJoinStyle( mLineJoinStyle );
   mPen.setCapStyle( mLineCapStyle );
-  mPen.setWidthF( 1.0 );
+  mPen.setWidthF( 0.3 );
 
   mBrush.setColor( Qt::black );
   mBrush.setStyle( Qt::SolidPattern );
@@ -750,7 +760,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
   mMaxBarWidth = itemElem.attribute( "maxBarWidth", "150" ).toInt();
   mSegmentMillimeters = itemElem.attribute( "segmentMillimeters", "0.0" ).toDouble();
   mNumMapUnitsPerScaleBarUnit = itemElem.attribute( "numMapUnitsPerScaleBarUnit", "1.0" ).toDouble();
-  mPen.setWidthF( itemElem.attribute( "outlineWidth", "1.0" ).toDouble() );
+  mPen.setWidthF( itemElem.attribute( "outlineWidth", "0.3" ).toDouble() );
   mUnitLabeling = itemElem.attribute( "unitLabel" );
   mLineJoinStyle = QgsSymbolLayerV2Utils::decodePenJoinStyle( itemElem.attribute( "lineJoinStyle", "miter" ) );
   mPen.setJoinStyle( mLineJoinStyle );

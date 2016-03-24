@@ -56,7 +56,7 @@ QgsCompoundCurveV2& QgsCompoundCurveV2::operator=( const QgsCompoundCurveV2 & cu
   return *this;
 }
 
-QgsAbstractGeometryV2 *QgsCompoundCurveV2::clone() const
+QgsCompoundCurveV2 *QgsCompoundCurveV2::clone() const
 {
   return new QgsCompoundCurveV2( *this );
 }
@@ -140,7 +140,7 @@ bool QgsCompoundCurveV2::fromWkt( const QString& wkt )
     return false;
   mWkbType = parts.first;
 
-  QString defaultChildWkbType = QString( "LineString%1%2" ).arg( is3D() ? "Z" : "" ).arg( isMeasure() ? "M" : "" );
+  QString defaultChildWkbType = QString( "LineString%1%2" ).arg( is3D() ? "Z" : "", isMeasure() ? "M" : "" );
 
   Q_FOREACH ( const QString& childWkt, QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType ) )
   {
@@ -161,6 +161,23 @@ bool QgsCompoundCurveV2::fromWkt( const QString& wkt )
       return false;
     }
   }
+
+  //scan through curves and check if dimensionality of curves is different to compound curve.
+  //if so, update the type dimensionality of the compound curve to match
+  bool hasZ = false;
+  bool hasM = false;
+  Q_FOREACH ( const QgsCurveV2* curve, mCurves )
+  {
+    hasZ = hasZ || curve->is3D();
+    hasM = hasM || curve->isMeasure();
+    if ( hasZ && hasM )
+      break;
+  }
+  if ( hasZ )
+    addZValue( 0 );
+  if ( hasM )
+    addMValue( 0 );
+
   return true;
 }
 
@@ -202,15 +219,15 @@ QString QgsCompoundCurveV2::asWkt( int precision ) const
     if ( dynamic_cast<const QgsLineStringV2*>( curve ) )
     {
       // Type names of linear geometries are omitted
-      childWkt = childWkt.mid( childWkt.indexOf( "(" ) );
+      childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
     }
-    wkt += childWkt + ",";
+    wkt += childWkt + ',';
   }
-  if ( wkt.endsWith( "," ) )
+  if ( wkt.endsWith( ',' ) )
   {
     wkt.chop( 1 );
   }
-  wkt += ")";
+  wkt += ')';
   return wkt;
 }
 
@@ -540,15 +557,15 @@ double QgsCompoundCurveV2::closestSegment( const QgsPointV2& pt, QgsPointV2& seg
   return QgsGeometryUtils::closestSegmentFromComponents( mCurves, QgsGeometryUtils::VERTEX, pt, segmentPt, vertexAfter, leftOf, epsilon );
 }
 
-bool QgsCompoundCurveV2::pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const
+bool QgsCompoundCurveV2::pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const
 {
   int currentVertexId = 0;
   for ( int j = 0; j < mCurves.size(); ++j )
   {
     int nCurvePoints = mCurves.at( j )->numPoints();
-    if (( i - currentVertexId ) < nCurvePoints )
+    if (( node - currentVertexId ) < nCurvePoints )
     {
-      return ( mCurves.at( j )->pointAt( i - currentVertexId, vertex, type ) );
+      return ( mCurves.at( j )->pointAt( node - currentVertexId, point, type ) );
     }
     currentVertexId += ( nCurvePoints - 1 );
   }
@@ -606,5 +623,70 @@ double QgsCompoundCurveV2::vertexAngle( const QgsVertexId& vertex ) const
   {
     return 0.0;
   }
+}
+
+QgsCompoundCurveV2* QgsCompoundCurveV2::reversed() const
+{
+  QgsCompoundCurveV2* clone = new QgsCompoundCurveV2();
+  Q_FOREACH ( QgsCurveV2* curve, mCurves )
+  {
+    QgsCurveV2* reversedCurve = curve->reversed();
+    clone->addCurve( reversedCurve );
+  }
+  return clone;
+}
+
+bool QgsCompoundCurveV2::addZValue( double zValue )
+{
+  if ( QgsWKBTypes::hasZ( mWkbType ) )
+    return false;
+
+  mWkbType = QgsWKBTypes::addZ( mWkbType );
+
+  Q_FOREACH ( QgsCurveV2* curve, mCurves )
+  {
+    curve->addZValue( zValue );
+  }
+  return true;
+}
+
+bool QgsCompoundCurveV2::addMValue( double mValue )
+{
+  if ( QgsWKBTypes::hasM( mWkbType ) )
+    return false;
+
+  mWkbType = QgsWKBTypes::addM( mWkbType );
+
+  Q_FOREACH ( QgsCurveV2* curve, mCurves )
+  {
+    curve->addMValue( mValue );
+  }
+  return true;
+}
+
+bool QgsCompoundCurveV2::dropZValue()
+{
+  if ( !QgsWKBTypes::hasZ( mWkbType ) )
+    return false;
+
+  mWkbType = QgsWKBTypes::dropZ( mWkbType );
+  Q_FOREACH ( QgsCurveV2* curve, mCurves )
+  {
+    curve->dropZValue();
+  }
+  return true;
+}
+
+bool QgsCompoundCurveV2::dropMValue()
+{
+  if ( !QgsWKBTypes::hasM( mWkbType ) )
+    return false;
+
+  mWkbType = QgsWKBTypes::dropM( mWkbType );
+  Q_FOREACH ( QgsCurveV2* curve, mCurves )
+  {
+    curve->dropMValue();
+  }
+  return true;
 }
 

@@ -10,56 +10,56 @@ class QgsSymbolLayerV2
   {
     case QgsSymbolV2::Marker:
       if (dynamic_cast<QgsEllipseSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsEllipseSymbolLayerV2;
+	sipType = sipType_QgsEllipseSymbolLayerV2;
       else if (dynamic_cast<QgsFontMarkerSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsFontMarkerSymbolLayerV2;
+	sipType = sipType_QgsFontMarkerSymbolLayerV2;
       else if (dynamic_cast<QgsSimpleMarkerSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsSimpleMarkerSymbolLayerV2;
+	sipType = sipType_QgsSimpleMarkerSymbolLayerV2;
       else if (dynamic_cast<QgsSvgMarkerSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsSvgMarkerSymbolLayerV2;
+	sipType = sipType_QgsSvgMarkerSymbolLayerV2;
       else if (dynamic_cast<QgsVectorFieldSymbolLayer*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsVectorFieldSymbolLayer;
+	sipType = sipType_QgsVectorFieldSymbolLayer;
       else
-	sipClass = sipClass_QgsMarkerSymbolLayerV2;
+	sipType = sipType_QgsMarkerSymbolLayerV2;
       break;
 
     case QgsSymbolV2::Line:
       if (dynamic_cast<QgsMarkerLineSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsMarkerLineSymbolLayerV2;
+	sipType = sipType_QgsMarkerLineSymbolLayerV2;
       else if (dynamic_cast<QgsSimpleLineSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsSimpleLineSymbolLayerV2;
+	sipType = sipType_QgsSimpleLineSymbolLayerV2;
       else
-	sipClass = sipClass_QgsLineSymbolLayerV2;
+	sipType = sipType_QgsLineSymbolLayerV2;
       break;
 
     case QgsSymbolV2::Fill:
       if (dynamic_cast<QgsSimpleFillSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsSimpleFillSymbolLayerV2;
+	sipType = sipType_QgsSimpleFillSymbolLayerV2;
       else if (dynamic_cast<QgsImageFillSymbolLayer*>(sipCpp) != NULL)
       {
 	if (dynamic_cast<QgsLinePatternFillSymbolLayer*>(sipCpp) != NULL)
-	  sipClass = sipClass_QgsLinePatternFillSymbolLayer;
+	  sipType = sipType_QgsLinePatternFillSymbolLayer;
 	else if (dynamic_cast<QgsPointPatternFillSymbolLayer*>(sipCpp) != NULL)
-	  sipClass = sipClass_QgsPointPatternFillSymbolLayer;
+	  sipType = sipType_QgsPointPatternFillSymbolLayer;
 	else if (dynamic_cast<QgsSVGFillSymbolLayer*>(sipCpp) != NULL)
-	  sipClass = sipClass_QgsSVGFillSymbolLayer;
+	  sipType = sipType_QgsSVGFillSymbolLayer;
 	else if (dynamic_cast<QgsRasterFillSymbolLayer*>(sipCpp) != NULL)
-	  sipClass = sipClass_QgsRasterFillSymbolLayer;
+	  sipType = sipType_QgsRasterFillSymbolLayer;
 	else
-	  sipClass = sipClass_QgsImageFillSymbolLayer;
+	  sipType = sipType_QgsImageFillSymbolLayer;
       }
       else if (dynamic_cast<QgsCentroidFillSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsCentroidFillSymbolLayerV2;
+	sipType = sipType_QgsCentroidFillSymbolLayerV2;
       else if (dynamic_cast<QgsGradientFillSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsGradientFillSymbolLayerV2;
+	sipType = sipType_QgsGradientFillSymbolLayerV2;
       else if (dynamic_cast<QgsShapeburstFillSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsShapeburstFillSymbolLayerV2;
+	sipType = sipType_QgsShapeburstFillSymbolLayerV2;
       else
-	sipClass = sipClass_QgsFillSymbolLayerV2;
+	sipType = sipType_QgsFillSymbolLayerV2;
       break;
 
     default:
-      sipClass = 0;
+      sipType = 0;
       break;
   }
 %End
@@ -91,7 +91,7 @@ class QgsSymbolLayerV2
 
     virtual QgsSymbolLayerV2* clone() const = 0 /Factory/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
@@ -232,18 +232,18 @@ class QgsSymbolLayerV2
     virtual bool writeDxf( QgsDxfExport& e,
                            double mmMapUnitScaleFactor,
                            const QString& layerName,
-                           const QgsSymbolV2RenderContext* context,
+                           QgsSymbolV2RenderContext* context,
                            const QgsFeature* f,
                            const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
 
-    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
-    virtual double dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    virtual double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
+    virtual double dxfOffset( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
 
-    virtual QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
+    virtual QColor dxfColor( QgsSymbolV2RenderContext& context ) const;
 
     virtual QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const;
     virtual Qt::PenStyle dxfPenStyle() const;
-    virtual QColor dxfBrushColor( const QgsSymbolV2RenderContext& context ) const;
+    virtual QColor dxfBrushColor( QgsSymbolV2RenderContext& context ) const;
     virtual Qt::BrushStyle dxfBrushStyle() const;
 
     /** Returns the current paint effect for the layer.
@@ -259,15 +259,6 @@ class QgsSymbolLayerV2
      * @see paintEffect
      */
     void setPaintEffect( QgsPaintEffect* effect /Transfer/);
-
-    /** Returns the result of the symbol rendering operation. This should only be
-     * called immediately after a rendering operation (eg calling renderPoint).
-     * @note added in QGIS 2.12
-     * @note this is a temporary method until QGIS 3.0. For QGIS 3.0 the render methods
-     * will return a QgsRenderResult object
-     */
-    // TODO - QGIS 3.0. Remove and make renderPoint, etc return a QgsRenderResult
-    const QgsRenderResult& renderResult() const;
 
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false );
@@ -314,16 +305,6 @@ class QgsSymbolLayerV2
      * @note added in QGIS 2.9
      */
     void copyPaintEffect( QgsSymbolLayerV2* destLayer ) const;
-
-    /** Sets the result of the symbol rendering operation. Subclasses should call
-     * this method after rendering a symbol and update the render result to reflect
-     * to actual result of the symbol render.
-     * @note added in QGIS 2.12
-     * @note this is a temporary method until QGIS 3.0. For QGIS 3.0 the render methods
-     * will return a QgsRenderResult object
-     */
-    // TODO - QGIS 3.0. Remove and make renderPoint, etc return a QgsRenderResult
-    void setRenderResult( const QgsRenderResult& result );
 
 };
 
@@ -376,9 +357,9 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
     void setOffset( QPointF offset );
     QPointF offset();
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit offsetUnit() const;
@@ -404,16 +385,26 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
     void setVerticalAnchorPoint( VerticalAnchorPoint v );
     VerticalAnchorPoint verticalAnchorPoint() const;
 
+    /** Returns the approximate bounding box of the marker symbol layer, taking into account
+     * any data defined overrides and offsets which are set for the marker layer.
+     * @returns approximate symbol bounds, in painter units
+     * @note added in QGIS 2.14
+     * @note this method will become pure virtual in QGIS 3.0
+     */
+    //TODO QGIS 3.0 - make pure virtual
+    virtual QRectF bounds( const QPointF& point, QgsSymbolV2RenderContext& context );
+
   protected:
     QgsMarkerSymbolLayerV2( bool locked = false );
 
     //handles marker offset and anchor point shift together
-    void markerOffset( const QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const;
+    void markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const;
 
-    void markerOffset( const QgsSymbolV2RenderContext& context, double width, double height, double& offsetX, double& offsetY ) const /PyName=markerOffsetWithWidthAndHeight/;
+    //! @note available in python as markerOffsetWithWidthAndHeight
+    void markerOffset( QgsSymbolV2RenderContext& context, double width, double height, double& offsetX, double& offsetY ) const /PyName=markerOffsetWithWidthAndHeight/;
 
     //! @note available in python bindings as markerOffset2
-    void markerOffset( const QgsSymbolV2RenderContext& context, double width, double height,
+    void markerOffset( QgsSymbolV2RenderContext& context, double width, double height,
                        QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
                        double& offsetX, double& offsetY,
                        const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const /PyName=markerOffset2/;
@@ -458,8 +449,8 @@ class QgsLineSymbolLayerV2 : QgsSymbolLayerV2
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
 
-    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
-    virtual double dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    virtual double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
+    virtual double dxfOffset( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
 
   protected:
     QgsLineSymbolLayerV2( bool locked = false );

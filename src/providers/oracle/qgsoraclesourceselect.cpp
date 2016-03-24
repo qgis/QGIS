@@ -55,15 +55,15 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
   if ( index.column() == QgsOracleTableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    foreach ( QGis::WkbType type,
-              QList<QGis::WkbType>()
-              << QGis::WKBPoint
-              << QGis::WKBLineString
-              << QGis::WKBPolygon
-              << QGis::WKBMultiPoint
-              << QGis::WKBMultiLineString
-              << QGis::WKBMultiPolygon
-              << QGis::WKBNoGeometry )
+    Q_FOREACH ( QGis::WkbType type,
+                QList<QGis::WkbType>()
+                << QGis::WKBPoint
+                << QGis::WKBLineString
+                << QGis::WKBPolygon
+                << QGis::WKBMultiPoint
+                << QGis::WKBMultiLineString
+                << QGis::WKBMultiPolygon
+                << QGis::WKBNoGeometry )
     {
       cb->addItem( QgsOracleTableModel::iconForWkbType( type ), QgsOracleConn::displayStringForWkbType( type ), type );
     }
@@ -475,7 +475,7 @@ void QgsOracleSourceSelect::addTables()
 {
   mSelectedTables.clear();
 
-  foreach ( QModelIndex idx, mTablesTreeView->selectionModel()->selection().indexes() )
+  Q_FOREACH ( QModelIndex idx, mTablesTreeView->selectionModel()->selection().indexes() )
   {
     if ( idx.column() != QgsOracleTableModel::dbtmTable )
       continue;
@@ -668,7 +668,7 @@ void QgsOracleSourceSelect::loadTableFromCache()
   if ( !QgsOracleTableCache::loadFromCache( connName, _currentFlags( connName, uri.useEstimatedMetadata(), cbxAllowGeometrylessTables->isChecked() ), layers ) )
     return;
 
-  foreach ( const QgsOracleLayerProperty& layerProperty, layers )
+  Q_FOREACH ( const QgsOracleLayerProperty& layerProperty, layers )
     mTableModel.addTableEntry( layerProperty );
 
   QApplication::setOverrideCursor( Qt::BusyCursor );

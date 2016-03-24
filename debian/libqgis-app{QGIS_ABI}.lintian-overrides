@@ -1,0 +1,1 @@
+libqgis-app{QGIS_ABI}: no-symbols-control-file usr/lib/libqgis_app.so.{QGIS_ABI}

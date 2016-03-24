@@ -17,8 +17,11 @@
 
 #include "qgsgenericfeatureselectionmanager.h"
 #include "qgsdistancearea.h"
+#include "qgsfeaturerequest.h"
+#include "qgsattributeeditorcontext.h"
 
-QgsFeatureSelectionDlg::QgsFeatureSelectionDlg( QgsVectorLayer* vl, QWidget *parent )
+
+QgsFeatureSelectionDlg::QgsFeatureSelectionDlg( QgsVectorLayer* vl, QgsAttributeEditorContext &context, QWidget *parent )
     : QDialog( parent )
     , mVectorLayer( vl )
 {
@@ -29,7 +32,7 @@ QgsFeatureSelectionDlg::QgsFeatureSelectionDlg( QgsVectorLayer* vl, QWidget *par
   mDualView->setFeatureSelectionManager( mFeatureSelection );
 
   // TODO: Proper QgsDistanceArea, proper mapcanvas
-  mDualView->init( mVectorLayer, NULL );
+  mDualView->init( mVectorLayer, NULL, QgsFeatureRequest(), context );
 }
 
 const QgsFeatureIds& QgsFeatureSelectionDlg::selectedFeatures()

@@ -22,10 +22,11 @@
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgisapp.h"
 
 
 QgsMapToolAddRing::QgsMapToolAddRing( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas, QgsMapToolCapture::CapturePolygon )
+    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePolygon )
 {
   mToolName = tr( "Add ring" );
 }
@@ -34,13 +35,13 @@ QgsMapToolAddRing::~QgsMapToolAddRing()
 {
 }
 
-void QgsMapToolAddRing::canvasMapReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
 {
 
   emit messageDiscarded();
 
   //check if we operate on a vector layer
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  QgsVectorLayer *vlayer = currentVectorLayer();
 
   if ( !vlayer )
   {
@@ -91,7 +92,7 @@ void QgsMapToolAddRing::canvasMapReleaseEvent( QgsMapMouseEvent * e )
     QgsCurveV2* curveToAdd = 0;
     if ( hasCurvedSegments && providerSupportsCurvedSegments )
     {
-      curveToAdd = dynamic_cast<QgsCurveV2*>( captureCurve()->clone() );
+      curveToAdd = captureCurve()->clone();
     }
     else
     {

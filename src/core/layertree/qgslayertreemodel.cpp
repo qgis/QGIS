@@ -16,6 +16,7 @@
 #include "qgslayertreemodel.h"
 
 #include "qgslayertree.h"
+#include "qgslayertreeutils.h"
 #include "qgslayertreemodellegendnode.h"
 
 #include <QMimeData>
@@ -35,7 +36,7 @@
 QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *parent )
     : QAbstractItemModel( parent )
     , mRootNode( rootNode )
-    , mFlags( ShowLegend | AllowLegendChangeState )
+    , mFlags( ShowLegend | AllowLegendChangeState | DeferredLegendInvalidation )
     , mAutoCollapseLegendNodesCount( -1 )
     , mLegendFilterByScale( 0 )
     , mLegendMapViewMupp( 0 )
@@ -45,6 +46,9 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *pare
   connectToRootNode();
 
   mFontLayer.setBold( true );
+
+  connect( &mDeferLegendInvalidationTimer, SIGNAL( timeout() ), this, SLOT( invalidateLegendMapBasedData() ) );
+  mDeferLegendInvalidationTimer.setSingleShot( true );
 }
 
 QgsLayerTreeModel::~QgsLayerTreeModel()
@@ -400,7 +404,7 @@ static bool _isChildOfNode( QgsLayerTreeNode* child, QgsLayerTreeNode* node )
   return _isChildOfNode( child->parent(), node );
 }
 
-static bool _isChildOfNodes( QgsLayerTreeNode* child, QList<QgsLayerTreeNode*> nodes )
+static bool _isChildOfNodes( QgsLayerTreeNode* child, const QList<QgsLayerTreeNode*>& nodes )
 {
   Q_FOREACH ( QgsLayerTreeNode* n, nodes )
   {
@@ -556,19 +560,47 @@ void QgsLayerTreeModel::setLegendFilterByScale( double scaleDenominator )
 
 void QgsLayerTreeModel::setLegendFilterByMap( const QgsMapSettings* settings )
 {
+  setLegendFilter( settings, /* useExtent = */ true );
+}
+
+void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings* settings, bool useExtent, const QgsGeometry& polygon, bool useExpressions )
+{
   if ( settings && settings->hasValidSettings() )
   {
-    mLegendFilterByMapSettings.reset( new QgsMapSettings( *settings ) );
-    mLegendFilterByMapHitTest.reset( new QgsMapHitTest( *mLegendFilterByMapSettings ) );
-    mLegendFilterByMapHitTest->run();
+    mLegendFilterMapSettings.reset( new QgsMapSettings( *settings ) );
+    mLegendFilterMapSettings->setLayerStyleOverrides( mLayerStyleOverrides );
+    QgsMapHitTest::LayerFilterExpression exprs;
+    // collect expression filters
+    if ( useExpressions )
+    {
+      foreach ( QgsLayerTreeLayer* nodeLayer, mRootNode->findLayers() )
+      {
+        bool enabled;
+        QString expr = QgsLayerTreeUtils::legendFilterByExpression( *nodeLayer, &enabled );
+        if ( enabled && !expr.isEmpty() )
+        {
+          exprs[ nodeLayer->layerId()] = expr;
+        }
+      }
+    }
+    bool polygonValid = !polygon.isEmpty() && polygon.type() == QGis::Polygon;
+    if ( useExpressions && !useExtent && !polygonValid ) // only expressions
+    {
+      mLegendFilterHitTest.reset( new QgsMapHitTest( *mLegendFilterMapSettings, exprs ) );
+    }
+    else
+    {
+      mLegendFilterHitTest.reset( new QgsMapHitTest( *mLegendFilterMapSettings, polygon, exprs ) );
+    }
+    mLegendFilterHitTest->run();
   }
   else
   {
-    if ( !mLegendFilterByMapSettings )
+    if ( !mLegendFilterMapSettings )
       return; // no change
 
-    mLegendFilterByMapSettings.reset();
-    mLegendFilterByMapHitTest.reset();
+    mLegendFilterMapSettings.reset();
+    mLegendFilterHitTest.reset();
   }
 
   // temporarily disable autocollapse so that legend nodes stay visible
@@ -682,7 +714,7 @@ void QgsLayerTreeModel::nodeLayerLoaded()
   if ( !nodeLayer )
     return;
 
-  // deffered connection to the layer
+  // deferred connection to the layer
   connectToLayer( nodeLayer );
 }
 
@@ -973,7 +1005,7 @@ bool QgsLayerTreeModel::removeRows( int row, int count, const QModelIndex& paren
   return false;
 }
 
-void QgsLayerTreeModel::setFlags( QgsLayerTreeModel::Flags f )
+void QgsLayerTreeModel::setFlags( const QgsLayerTreeModel::Flags& f )
 {
   mFlags = f;
 }
@@ -1018,7 +1050,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::filterLegendNodes( const 
         filtered << node;
     }
   }
-  else if ( mLegendFilterByMapSettings )
+  else if ( mLegendFilterMapSettings )
   {
     Q_FOREACH ( QgsLayerTreeModelLegendNode* node, nodes )
     {
@@ -1027,7 +1059,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::filterLegendNodes( const 
       {
         if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() ) )
         {
-          if ( mLegendFilterByMapHitTest->symbolsForLayer( vl ).contains( ruleKey ) )
+          if ( mLegendFilterHitTest->symbolVisible( ruleKey, vl ) )
             filtered << node;
         }
       }
@@ -1303,6 +1335,16 @@ QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::layerLegendNodes( QgsLaye
 
 void QgsLayerTreeModel::legendInvalidateMapBasedData()
 {
+  if ( !testFlag( DeferredLegendInvalidation ) )
+    invalidateLegendMapBasedData();
+  else
+    mDeferLegendInvalidationTimer.start( 1000 );
+}
+
+void QgsLayerTreeModel::invalidateLegendMapBasedData()
+{
+  QgsDebugCall;
+
   // we have varying icon sizes, and we want icon to be centered and
   // text to be left aligned, so we have to compute the max width of icons
   //

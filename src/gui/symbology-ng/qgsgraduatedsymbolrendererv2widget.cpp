@@ -27,6 +27,7 @@
 #include "qgsludialog.h"
 
 #include "qgsproject.h"
+#include "qgsmapcanvas.h"
 
 #include <QKeyEvent>
 #include <QMenu>
@@ -37,6 +38,9 @@
 #include <QPainter>
 
 // ------------------------------ Model ------------------------------------
+
+///@cond
+//not part of public API
 
 QgsGraduatedSymbolRendererV2Model::QgsGraduatedSymbolRendererV2Model( QObject * parent ) : QAbstractItemModel( parent )
     , mRenderer( 0 )
@@ -69,7 +73,7 @@ void QgsGraduatedSymbolRendererV2Model::addClass( QgsSymbolV2* symbol )
   endInsertRows();
 }
 
-void QgsGraduatedSymbolRendererV2Model::addClass( QgsRendererRangeV2 range )
+void QgsGraduatedSymbolRendererV2Model::addClass( const QgsRendererRangeV2& range )
 {
   if ( !mRenderer )
   {
@@ -372,6 +376,8 @@ void QgsGraduatedSymbolRendererV2ViewStyle::drawPrimitive( PrimitiveElement elem
   QProxyStyle::drawPrimitive( element, option, painter, widget );
 }
 
+///@endcond
+
 // ------------------------------ Widget ------------------------------------
 
 QgsRendererV2Widget* QgsGraduatedSymbolRendererV2Widget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
@@ -381,16 +387,25 @@ QgsRendererV2Widget* QgsGraduatedSymbolRendererV2Widget::create( QgsVectorLayer*
 
 static QgsExpressionContext _getExpressionContext( const void* context )
 {
+  const QgsGraduatedSymbolRendererV2Widget* widget = ( const QgsGraduatedSymbolRendererV2Widget* ) context;
+
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 )
-  //TODO - use actual map canvas settings
-  << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  << QgsExpressionContextUtils::atlasScope( 0 );
 
-  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
-  if ( layer )
-    expContext << QgsExpressionContextUtils::layerScope( layer );
+  if ( widget->mapCanvas() )
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( widget->mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( widget->mapCanvas()->expressionContextScope() );
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+
+  if ( widget->vectorLayer() )
+    expContext << QgsExpressionContextUtils::layerScope( widget->vectorLayer() );
 
   return expContext;
 }
@@ -420,8 +435,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   mExpressionWidget->setFilters( QgsFieldProxyModel::Numeric | QgsFieldProxyModel::Date );
   mExpressionWidget->setLayer( mLayer );
 
-  mSizeUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit );
-
+  mSizeUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
 
   cboGraduatedColorRamp->populate( mStyle );
 
@@ -489,7 +503,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   connect( mHistogramWidget, SIGNAL( rangesModified( bool ) ), this, SLOT( refreshRanges( bool ) ) );
   connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), mHistogramWidget, SLOT( setSourceFieldExp( QString ) ) );
 
-  mExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
+  mExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );
 }
 
 void QgsGraduatedSymbolRendererV2Widget::on_mSizeUnitWidget_changed()
@@ -628,7 +642,7 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount 
   connectUpdateHandlers();
 }
 
-void QgsGraduatedSymbolRendererV2Widget::graduatedColumnChanged( QString field )
+void QgsGraduatedSymbolRendererV2Widget::graduatedColumnChanged( const QString& field )
 {
   mRenderer->setClassAttribute( field );
 }
@@ -773,6 +787,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
   QgsSymbolV2* newSymbol = mGraduatedSymbol->clone();
 
   QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
+  dlg.setMapCanvas( mMapCanvas );
   if ( !dlg.exec() )
   {
     delete newSymbol;
@@ -794,6 +809,9 @@ void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
 
 void QgsGraduatedSymbolRendererV2Widget::updateGraduatedSymbolIcon()
 {
+  if ( !mGraduatedSymbol )
+    return;
+
   QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mGraduatedSymbol, btnChangeGraduatedSymbol->iconSize() );
   btnChangeGraduatedSymbol->setIcon( icon );
 }
@@ -860,6 +878,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeSelectedSymbols()
   {
     QgsSymbolV2* newSymbol = mGraduatedSymbol->clone();
     QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
+    dlg.setMapCanvas( mMapCanvas );
     if ( !dlg.exec() )
     {
       delete newSymbol;
@@ -885,6 +904,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeRangeSymbol( int rangeIdx )
   QgsSymbolV2* newSymbol = mRenderer->ranges()[rangeIdx].symbol()->clone();
 
   QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
+  dlg.setMapCanvas( mMapCanvas );
   if ( !dlg.exec() )
   {
     delete newSymbol;
@@ -1005,7 +1025,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeCurrentValue( QStandardItem * ite
   }
 }
 
-void QgsGraduatedSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )
+void QgsGraduatedSymbolRendererV2Widget::sizeScaleFieldChanged( const QString& fldName )
 {
   mRenderer->setSizeScaleField( fldName );
 }
@@ -1038,7 +1058,7 @@ QList<QgsSymbolV2*> QgsGraduatedSymbolRendererV2Widget::selectedSymbols()
     QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
     for ( ; indexIt != selectedIndexes.constEnd(); ++indexIt )
     {
-      QStringList list = m->model()->data( *indexIt ).toString().split( " " );
+      QStringList list = m->model()->data( *indexIt ).toString().split( ' ' );
       if ( list.size() < 3 )
       {
         continue;

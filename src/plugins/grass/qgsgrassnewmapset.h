@@ -161,6 +161,8 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     void mapsetChanged();
 
     /******************** FINISH ******************/
+    void on_mOpenNewMapsetCheckBox_stateChanged( int state );
+
     //! Set finish page
     void setFinishPage();
 
@@ -180,8 +182,14 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     void keyPressEvent( QKeyEvent * e ) override;
 
     //! Set error line
-    void setError( QLabel *line, const QString &err );
+    void setError( QLabel *line, const QString &err = QString() );
   private:
+    //! Get current gisdbase
+    QString gisdbase();
+
+    //! Test if current gisdbase directory exists
+    bool gisdbaseExists();
+
     //! Pointer to the QGIS interface object
     QgisInterface *mIface;
 
@@ -218,11 +226,9 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     bool mRegionsInited;
 
     std::vector<QgsPoint> mRegionsPoints;
-    //std::vector<double> mRegionsPoints;
 
     //! Last projection used for region
-    QgsCoordinateReferenceSystem mSrs;
-    //bool mSrsSet;
+    QgsCoordinateReferenceSystem mCrs;
 };
 
 #endif // QGSGRASSNEWMAPSET_H

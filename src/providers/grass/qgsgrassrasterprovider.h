@@ -51,16 +51,19 @@ class QgsCoordinateTransform;
   Executes qgis.g.info and keeps it open comunicating through pipe. Restarts the command if raster was updated.
 */
 
-class QgsGrassRasterValue
+class GRASS_LIB_EXPORT QgsGrassRasterValue
 {
   public:
     QgsGrassRasterValue();
     ~QgsGrassRasterValue();
-    void start( QString gisdbase, QString location, QString mapset, QString map );
+
+    void set( const QString & gisdbase, const QString & location, const QString & mapset, const QString & map );
+    void stop();
     // returns raster value, NaN for no data
     // ok is set to true if ok or false on error
     double value( double x, double y, bool *ok );
   private:
+    void start();
     QString mGisdbase;      // map gisdabase
     QString mLocation;      // map location name (not path!)
     QString mMapset;        // map mapset
@@ -77,7 +80,7 @@ class QgsGrassRasterValue
   data residing in a OGC Web Map Service.
 
 */
-class QgsGrassRasterProvider : public QgsRasterDataProvider
+class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
 {
     Q_OBJECT
 
@@ -89,7 +92,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     *                otherwise we contact the host directly.
     *
     */
-    QgsGrassRasterProvider( QString const & uri = 0 );
+    explicit QgsGrassRasterProvider( QString const & uri = 0 );
 
     //! Destructor
     ~QgsGrassRasterProvider();
@@ -207,8 +210,16 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     QString metadata() override;
 
     virtual QDateTime dataTimestamp() const override;
-  private:
 
+    // used by GRASS tools
+    void freeze();
+    void thaw();
+
+  private:
+    void setLastError( QString error );
+    void clearLastError();
+    // append error if it is not empty
+    void appendIfError( QString error );
     /**
     * Flag indicating if the layer data source is a valid layer
     */
@@ -232,6 +243,9 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     QgsGrassRasterValue mRasterValue;
 
     double mNoDataValue;
+
+    QString mLastErrorTitle;
+    QString mLastError;
 };
 
 #endif

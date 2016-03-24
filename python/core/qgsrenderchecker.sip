@@ -37,9 +37,9 @@ class QgsRenderChecker
     void setControlPathSuffix( const QString& theName );
 
     /** Get an md5 hash that uniquely identifies an image */
-    QString imageToHash( QString theImageFile );
+    QString imageToHash( const QString& theImageFile );
 
-    void setRenderedImage( QString theImageFileName );
+    void setRenderedImage( const QString& theImageFileName );
 
     /**
      * The path of the rendered image can be retrieved through that method.
@@ -47,7 +47,7 @@ class QgsRenderChecker
      *
      * @return The path to the rendered image
      */
-    const QString& renderedImage();
+    QString renderedImage();
 
     //! @deprecated since 2.4 - use setMapSettings()
     void setMapRenderer( QgsMapRenderer *  thepMapRenderer ) /Deprecated/;
@@ -80,7 +80,7 @@ class QgsRenderChecker
      * for that by providing a tolerance.
      * @note make sure to call setExpectedImage and setMapRenderer first
      */
-    bool runTest( QString theTestName, unsigned int theMismatchCount = 0 );
+    bool runTest( const QString& theTestName, unsigned int theMismatchCount = 0 );
 
     /**
      * Test using two arbitary images (map renderer will not be used)
@@ -93,7 +93,7 @@ class QgsRenderChecker
      * @param theRenderedImageFile to optionally override the output filename
      * @note: make sure to call setExpectedImage and setRenderedImage first.
      */
-    bool compareImages( QString theTestName, unsigned int theMismatchCount = 0, QString theRenderedImageFile = "" );
+    bool compareImages( const QString& theTestName, unsigned int theMismatchCount = 0, const QString& theRenderedImageFile = "" );
     /** Get a list of all the anomalies. An anomaly is a rendered difference
       * file where there is some red pixel content (indicating a render check
       * mismatch), but where the output was still acceptible. If the render
@@ -101,7 +101,7 @@ class QgsRenderChecker
       * acceptible.
       * @return a bool indicating if the diff matched one of the anomaly files
     */
-    bool isKnownAnomaly( QString theDiffImageFile );
+    bool isKnownAnomaly( const QString& theDiffImageFile );
 
     /** Draws a checkboard pattern for image backgrounds, so that transparency is visible
      * without requiring a transparent background for the image
@@ -113,7 +113,7 @@ class QgsRenderChecker
      *
      * @return Path to the expected image file
      */
-    const QString& expectedImageFile() const;
+    QString expectedImageFile() const;
 
     /**
      * Call this to enable internal buffering of dash messages. You may later call

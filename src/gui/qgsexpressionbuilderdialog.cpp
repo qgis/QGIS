@@ -16,7 +16,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include <QSettings>
 
-QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer* layer, QString startText, QWidget* parent, QString key, const QgsExpressionContext &context )
+QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer* layer, const QString& startText, QWidget* parent, const QString& key, const QgsExpressionContext &context )
     : QDialog( parent ), mRecentKey( key )
 {
   setupUi( this );

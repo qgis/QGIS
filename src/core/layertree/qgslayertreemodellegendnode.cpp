@@ -173,7 +173,7 @@ QSize QgsSymbolV2LegendNode::minimumIconSize() const
   {
     QScopedPointer<QgsRenderContext> context( createTemporaryRenderContext() );
     minSz = QgsImageOperation::nonTransparentImageRect(
-              QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), QSize( mIconSize.width(), 512 ),
+              QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), QSize( minSz.width(), 512 ),
                   context.data() ).toImage(),
               minSz,
               true ).size();
@@ -321,7 +321,7 @@ QSizeF QgsSymbolV2LegendNode::drawSymbol( const QgsLegendSettings& settings, Ite
   if ( QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( s ) )
   {
     // allow marker symbol to occupy bigger area if necessary
-    size = markerSymbol->size() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context, s->outputUnit(), s->mapUnitScale() ) / context.scaleFactor();
+    size = QgsSymbolLayerV2Utils::convertToPainterUnits( context, markerSymbol->size(), s->outputUnit(), s->mapUnitScale() ) / context.scaleFactor();
     height = size;
     width = size;
     if ( width < settings.symbolSize().width() )
@@ -515,8 +515,21 @@ QSizeF QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings& settings,
       if ( QgsRasterRenderer* rasterRenderer = rasterLayer->renderer() )
         itemColor.setAlpha( rasterRenderer->opacity() * 255.0 );
     }
-
     ctx->painter->setBrush( itemColor );
+
+    if ( settings.drawRasterBorder() )
+    {
+      QPen pen;
+      pen.setColor( settings.rasterBorderColor() );
+      pen.setWidthF( settings.rasterBorderWidth() );
+      pen.setJoinStyle( Qt::MiterJoin );
+      ctx->painter->setPen( pen );
+    }
+    else
+    {
+      ctx->painter->setPen( Qt::NoPen );
+    }
+
     ctx->painter->drawRect( QRectF( ctx->point.x(), ctx->point.y() + ( itemHeight - settings.symbolSize().height() ) / 2,
                                     settings.symbolSize().width(), settings.symbolSize().height() ) );
   }
@@ -541,7 +554,7 @@ const QImage& QgsWMSLegendNode::getLegendGraphic() const
     QgsRasterLayer* layer = qobject_cast<QgsRasterLayer*>( mLayerNode->layer() );
     const QgsLayerTreeModel* mod = model();
     if ( ! mod ) return mImage;
-    const QgsMapSettings* ms = mod->legendFilterByMap();
+    const QgsMapSettings* ms = mod->legendFilterMapSettings();
 
     QgsRasterDataProvider* prov = layer->dataProvider();
 

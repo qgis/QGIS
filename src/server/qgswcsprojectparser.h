@@ -20,10 +20,19 @@
 
 #include "qgsserverprojectparser.h"
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+class QgsAccessControl;
+#endif
+
 class SERVER_EXPORT QgsWCSProjectParser
 {
   public:
-    QgsWCSProjectParser( const QString& filePath );
+    QgsWCSProjectParser(
+      const QString& filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      , const QgsAccessControl* ac
+#endif
+    );
     ~QgsWCSProjectParser();
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
@@ -36,6 +45,9 @@ class SERVER_EXPORT QgsWCSProjectParser
 
   private:
     QgsServerProjectParser* mProjectParser;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    const QgsAccessControl* mAccessControl;
+#endif
 };
 
 #endif // QGSWCSPROJECTPARSER_H

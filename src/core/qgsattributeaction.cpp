@@ -40,12 +40,12 @@
 #include <QFileInfo>
 
 
-void QgsAttributeAction::addAction( QgsAction::ActionType type, QString name, QString action, bool capture )
+void QgsAttributeAction::addAction( QgsAction::ActionType type, const QString& name, const QString& action, bool capture )
 {
   mActions << QgsAction( type, name, action, capture );
 }
 
-void QgsAttributeAction::addAction( QgsAction::ActionType type, QString name, QString action, const QString& icon, bool capture )
+void QgsAttributeAction::addAction( QgsAction::ActionType type, const QString& name, const QString& action, const QString& icon, bool capture )
 {
   mActions << QgsAction( type, name, action, icon, capture );
 }
@@ -175,10 +175,10 @@ QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap 
       QString to_replace;
       switch ( i )
       {
-        case 0: to_replace = "[%" + fields[attrIdx].name() + "]"; break;
-        case 1: to_replace = "[%" + mLayer->attributeDisplayName( attrIdx ) + "]"; break;
-        case 2: to_replace = "%" + fields[attrIdx].name(); break;
-        case 3: to_replace = "%" + mLayer->attributeDisplayName( attrIdx ); break;
+        case 0: to_replace = "[%" + fields[attrIdx].name() + ']'; break;
+        case 1: to_replace = "[%" + mLayer->attributeDisplayName( attrIdx ) + ']'; break;
+        case 2: to_replace = '%' + fields[attrIdx].name(); break;
+        case 3: to_replace = '%' + mLayer->attributeDisplayName( attrIdx ); break;
       }
 
       expanded_action = expanded_action.replace( to_replace, it.value().toString() );
@@ -188,7 +188,7 @@ QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap 
   return expanded_action;
 }
 
-QString QgsAttributeAction::expandAction( QString action, QgsFeature &feat, const QMap<QString, QVariant> *substitutionMap )
+QString QgsAttributeAction::expandAction( const QString& action, QgsFeature &feat, const QMap<QString, QVariant> *substitutionMap )
 {
   // This function currently replaces each expression between [% and %]
   // in the action with the result of its evaluation on the feature
@@ -224,7 +224,7 @@ QString QgsAttributeAction::expandAction( QString action, QgsFeature &feat, cons
     if ( exp.hasParserError() )
     {
       QgsDebugMsg( "Expression parser error: " + exp.parserErrorString() );
-      expr_action += action.mid( start, index - start );
+      expr_action += action.midRef( start, index - start );
       continue;
     }
 
@@ -235,7 +235,7 @@ QString QgsAttributeAction::expandAction( QString action, QgsFeature &feat, cons
     if ( exp.hasEvalError() )
     {
       QgsDebugMsg( "Expression parser eval error: " + exp.evalErrorString() );
-      expr_action += action.mid( start, index - start );
+      expr_action += action.midRef( start, index - start );
       continue;
     }
 
@@ -243,7 +243,7 @@ QString QgsAttributeAction::expandAction( QString action, QgsFeature &feat, cons
     expr_action += action.mid( start, pos - start ) + result.toString();
   }
 
-  expr_action += action.mid( index );
+  expr_action += action.midRef( index );
   return expr_action;
 }
 
@@ -276,7 +276,7 @@ bool QgsAttributeAction::readXML( const QDomNode& layer_node )
   if ( !aaNode.isNull() )
   {
     QDomNodeList actionsettings = aaNode.childNodes();
-    for ( unsigned int i = 0; i < actionsettings.length(); ++i )
+    for ( int i = 0; i < actionsettings.size(); ++i )
     {
       QDomElement setting = actionsettings.item( i ).toElement();
       addAction(( QgsAction::ActionType ) setting.attributeNode( "type" ).value().toInt(),

@@ -35,6 +35,40 @@ class GRASS_LIB_EXPORT QgsGrassImportIcon : public QgsAnimatedIcon
     virtual ~QgsGrassImportIcon() {};
 };
 
+// QgsGrassImport items live on the main thread but mProcess, when importInThread() is used, lives on another
+// thread. When QProcess::readyReadStandardError() is connected to  QgsGrassImport, it is processed
+// correctly on the main thread, but we cannot use there mProcess->readAllStandardError() because the process
+// is running on another thread. That is why we create QgsGrassImportProgress on the same thread as the process.
+class GRASS_LIB_EXPORT QgsGrassImportProgress : public QObject
+{
+    Q_OBJECT
+  public:
+    QgsGrassImportProgress( QProcess *process, QObject *parent = 0 );
+
+    void setProcess( QProcess *process );
+    QString progressHtml() { return mProgressHtml; }
+
+    void append( const QString & html );
+    void setRange( int min, int max );
+    void setValue( int value );
+
+  public slots:
+    void onReadyReadStandardError();
+
+  signals:
+    void progressChanged( const QString &recentHtml, const QString &allHtml, int min, int max, int value );
+
+  private:
+    QProcess* mProcess;
+    // All stderr read from the modules converted to HTML
+    QString mProgressHtml;
+    // temporary part of progress, e.g. number of features written.
+    QString mProgressTmpHtml;
+    int mProgressMin;
+    int mProgressMax;
+    int mProgressValue;
+};
+
 class GRASS_LIB_EXPORT QgsGrassImport : public QObject
 {
     Q_OBJECT
@@ -50,6 +84,7 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
     QString error();
     virtual QStringList names() const;
     bool isCanceled() const;
+    QgsGrassImportProgress * progress() { return mProgress; }
   public slots:
     void onFinished();
     // TODO: this is not completely kosher, because QgsGrassImport exist on the main thread
@@ -58,7 +93,7 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
     // and thus recieves the signal.
     // Most probably however, it will work correctly, even if read/write the bool wasn't atomic
     void cancel();
-    void frameChanged() {};
+    void frameChanged() {}
 
   signals:
     // sent when process finished
@@ -67,9 +102,12 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
   protected:
     static bool run( QgsGrassImport *imp );
     void setError( QString error );
+    void addProgressRow( QString html );
     QgsGrassObject mGrassObject;
     QString mError;
     bool mCanceled;
+    QProcess* mProcess;
+    QgsGrassImportProgress* mProgress;
     QFutureWatcher<bool>* mFutureWatcher;
 };
 

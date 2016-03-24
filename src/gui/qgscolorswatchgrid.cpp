@@ -30,7 +30,7 @@
 #define LABEL_SIZE 20 //label rect height
 #define LABEL_MARGIN 4 //spacing between label box and text
 
-QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme* scheme, QString context, QWidget *parent )
+QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme* scheme, const QString& context, QWidget *parent )
     : QWidget( parent )
     , mScheme( scheme )
     , mContext( context )
@@ -358,7 +358,7 @@ int QgsColorSwatchGrid::swatchForPosition( const QPoint &position ) const
 //
 
 
-QgsColorSwatchGridAction::QgsColorSwatchGridAction( QgsColorScheme* scheme, QMenu *menu, QString context, QWidget *parent )
+QgsColorSwatchGridAction::QgsColorSwatchGridAction( QgsColorScheme* scheme, QMenu *menu, const QString& context, QWidget *parent )
     : QWidgetAction( parent )
     , mMenu( menu )
     , mSuppressRecurse( false )

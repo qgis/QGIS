@@ -124,7 +124,7 @@ void QgsLegendModel::setLayerSetAndGroups( const QStringList& layerIds, const QL
   }
 }
 
-void QgsLegendModel::setLayerSet( const QStringList& layerIds, double scaleDenominator, QString rule )
+void QgsLegendModel::setLayerSet( const QStringList& layerIds, double scaleDenominator, const QString& rule )
 {
   mLayerIds = layerIds;
 
@@ -164,7 +164,7 @@ QStandardItem* QgsLegendModel::addGroup( QString text, int position, QStandardIt
   return groupItem;
 }
 
-int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer, double scaleDenominator, QString rule )
+int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer, double scaleDenominator, const QString& rule )
 {
   QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( layerItem );
 
@@ -553,7 +553,7 @@ void QgsLegendModel::removeLayer( const QString& layerId )
   }
 }
 
-void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator, QString rule, QStandardItem* parentItem )
+void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator, const QString& rule, QStandardItem* parentItem )
 {
   if ( !theMapLayer )
   {

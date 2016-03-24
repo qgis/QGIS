@@ -233,7 +233,7 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
      * @deprecated use QgsComposerTable::columns() instead
      * @note not available in python bindings
      */
-    Q_DECL_DEPRECATED void setSortAttributes( const QList<QPair<int, bool> > att );
+    Q_DECL_DEPRECATED void setSortAttributes( const QList<QPair<int, bool> >& att );
 
     /** Returns the attributes used to sort the table's features.
      * @returns a QList of integer/bool pairs, where the integer refers to the attribute index and
@@ -279,7 +279,7 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
 
   private slots:
     /** Checks if this vector layer will be removed (and sets mVectorLayer to 0 if yes) */
-    void removeLayer( QString layerId );
+    void removeLayer( const QString& layerId );
 
 };
 

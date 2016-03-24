@@ -36,16 +36,18 @@ class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
   public:
     QString expression() override;
     bool applyDirectly() override;
+
   protected slots:
     void setExpression( QString exp ) override;
 
   private slots:
-    void setCaseString( int );
+    void setCaseString( int caseSensitiveCheckState );
+    void filterChanged();
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
-    bool valid() override;
+    bool valid() const override;
 
   private:
     QgsFilterLineEdit* mLineEdit;

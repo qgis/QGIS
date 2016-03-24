@@ -345,7 +345,7 @@ QList<double> QgsGeometryAnalyzer::simpleMeasure( QgsGeometry* mpGeometry )
   else
   {
     QgsDistanceArea measure;
-    list.append( measure.measure( mpGeometry ) );
+    list.append( measure.measureArea( mpGeometry ) );
     if ( mpGeometry->type() == QGis::Polygon )
     {
       perim = perimeterMeasure( mpGeometry, measure );
@@ -357,34 +357,7 @@ QList<double> QgsGeometryAnalyzer::simpleMeasure( QgsGeometry* mpGeometry )
 
 double QgsGeometryAnalyzer::perimeterMeasure( QgsGeometry* geometry, QgsDistanceArea& measure )
 {
-  double value = 0.00;
-  if ( geometry->isMultipart() )
-  {
-    QgsMultiPolygon poly = geometry->asMultiPolygon();
-    QgsMultiPolygon::iterator it;
-    QgsPolygon::iterator jt;
-    for ( it = poly.begin(); it != poly.end(); ++it )
-    {
-      for ( jt = it->begin(); jt != it->end(); ++jt )
-      {
-        QgsGeometry* geom = QgsGeometry::fromPolyline( *jt );
-        value = value + measure.measure( geom );
-        delete geom;
-      }
-    }
-  }
-  else
-  {
-    QgsPolygon::iterator jt;
-    QgsPolygon poly = geometry->asPolygon();
-    for ( jt = poly.begin(); jt != poly.end(); ++jt )
-    {
-      QgsGeometry* geom = QgsGeometry::fromPolyline( *jt );
-      value = value + measure.measure( geom );
-      delete geom;
-    }
-  }
-  return value;
+  return measure.measurePerimeter( geometry );
 }
 
 bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shapefileName,
@@ -512,8 +485,8 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
       values = simpleMeasure( dissolveGeometry );
       QgsAttributes attributes( 3 );
       attributes[0] = QVariant( currentKey );
-      attributes[1] = values[ 0 ];
-      attributes[2] = values[ 1 ];
+      attributes[1] = values.at( 0 );
+      attributes[2] = values.at( 1 );
       QgsFeature dissolveFeature;
       dissolveFeature.setAttributes( attributes );
       dissolveFeature.setGeometry( dissolveGeometry );

@@ -1,0 +1,4 @@
+Add Coordinates to points
+shapes_points
+ParameterVector|INPUT|Points|0|False
+OutputVector|OUTPUT|Points with coordinates

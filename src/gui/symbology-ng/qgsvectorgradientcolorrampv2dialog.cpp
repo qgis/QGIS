@@ -100,8 +100,9 @@ void QgsVectorGradientColorRampV2Dialog::on_btnInformation_pressed()
   tableInfo->setRowCount( mRamp->info().count() );
   tableInfo->setColumnCount( 2 );
   int i = 0;
-  for ( QgsStringMap::const_iterator it = mRamp->info().constBegin();
-        it != mRamp->info().constEnd(); ++it )
+  QgsStringMap rampInfo = mRamp->info();
+  for ( QgsStringMap::const_iterator it = rampInfo.constBegin();
+        it != rampInfo.constEnd(); ++it )
   {
     if ( it.key().startsWith( "cpt-city" ) )
       continue;
@@ -204,6 +205,7 @@ void QgsVectorGradientColorRampV2Dialog::updatePreview()
   if ( groupStops->isChecked() )
   {
     int count = treeStops->topLevelItemCount();
+    stops.reserve( count );
     for ( int i = 0; i < count; i++ )
     {
       QTreeWidgetItem* item = treeStops->topLevelItem( i );
@@ -238,7 +240,7 @@ void QgsVectorGradientColorRampV2Dialog::setColor2( const QColor& color )
   updatePreview();
 }
 
-void QgsVectorGradientColorRampV2Dialog::setStopColor( QTreeWidgetItem* item, QColor color )
+void QgsVectorGradientColorRampV2Dialog::setStopColor( QTreeWidgetItem* item, const QColor& color )
 {
   QSize iconSize( 16, 16 );
   QPixmap pixmap( iconSize );

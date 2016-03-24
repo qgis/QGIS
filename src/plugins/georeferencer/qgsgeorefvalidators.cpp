@@ -37,13 +37,13 @@ QValidator::State QgsDMSAndDDValidator::validate( QString &input, int &pos ) con
     if ( input.toInt() > 179 )
       return Invalid;
   }
-  else if ( input.startsWith( "-" ) && input.length() == 5 )
+  else if ( input.startsWith( '-' ) && input.length() == 5 )
   {
     if ( input.toInt() <= -180 )
       return Invalid;
   }
 
-  if ( !input.contains( " " ) )
+  if ( !input.contains( ' ' ) )
   {
     rx.setPattern( "-?\\d*(\\.|,)(\\d+)?" );
     if ( rx.exactMatch( input ) )
@@ -57,8 +57,8 @@ QValidator::State QgsDMSAndDDValidator::validate( QString &input, int &pos ) con
       rx.setPattern( "-?\\d{1,3}\\s60" );
       if ( rx.exactMatch( input ) )
       {
-        int in = input.left( input.indexOf( " " ) ).toInt();
-        int grad =  input.startsWith( "-" ) ? in - 1 : in + 1;
+        int in = input.left( input.indexOf( ' ' ) ).toInt();
+        int grad =  input.startsWith( '-' ) ? in - 1 : in + 1;
         if ( grad <= 180 )
           input = QString::number( grad );
 
@@ -68,9 +68,9 @@ QValidator::State QgsDMSAndDDValidator::validate( QString &input, int &pos ) con
       rx.setPattern( "-?\\d{1,3}\\s\\d{1,2}\\s60" );
       if ( rx.exactMatch( input ) )
       {
-        int min = input.split( " " ).at( 1 ).toInt() + 1;
+        int min = input.split( ' ' ).at( 1 ).toInt() + 1;
         if ( min <= 60 )
-          input = input.left( input.indexOf( " " ) ) + " " + QString::number( min );
+          input = input.left( input.indexOf( ' ' ) ) + ' ' + QString::number( min );
 
         return Acceptable;
       }

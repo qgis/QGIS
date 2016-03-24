@@ -137,7 +137,7 @@ public:
     QString featureFilterErrorString() const;
 
     QString sortKeyAttributeName() const;
-    void setSortKeyAttributeName( QString fieldName );
+    void setSortKeyAttributeName( const QString& fieldName );
 
     /** Returns the current list of predefined scales for the atlas. This is used
      * for maps which are set to the predefined atlas scaling mode.
@@ -177,7 +177,7 @@ public:
     bool prepareForFeature( const QgsFeature * feat );
 
     /** Returns the current filename. Must be called after prepareForFeature() */
-    const QString& currentFilename() const;
+    QString currentFilename() const;
 
     void writeXML( QDomElement& elem, QDomDocument& doc ) const;
 
@@ -260,6 +260,9 @@ public:
     /** Returns the current atlas feature. Must be called after prepareForFeature(). */
     QgsFeature* currentFeature() /Deprecated/;
 
+    /** Returns the current atlas geometry in the given projection system (default to the coverage layer's CRS) */
+    QgsGeometry currentGeometry( const QgsCoordinateReferenceSystem& projectedTo = QgsCoordinateReferenceSystem() ) const;
+
   public slots:
 
     /** Refreshes the current atlas feature, by refetching its attributes from the vector layer provider
@@ -280,7 +283,7 @@ public:
     void toggled( bool );
 
     /** Is emitted when the atlas has an updated status bar message for the composer window*/
-    void statusMsgChanged( QString message );
+    void statusMsgChanged( const QString& message );
 
     /** Is emitted when the coverage layer for an atlas changes*/
     void coverageLayerChanged( QgsVectorLayer* layer );

@@ -7,7 +7,7 @@
 #include "mersenne-twister.h"
 
 
-QgsPointSample::QgsPointSample( QgsVectorLayer* inputLayer, const QString& outputLayer, QString nPointsAttribute, QString minDistAttribute ): mInputLayer( inputLayer ),
+QgsPointSample::QgsPointSample( QgsVectorLayer* inputLayer, const QString& outputLayer, const QString& nPointsAttribute, const QString& minDistAttribute ): mInputLayer( inputLayer ),
     mOutputLayer( outputLayer ), mNumberOfPointsAttribute( nPointsAttribute ), mMinDistanceAttribute( minDistAttribute ), mNCreatedPoints( 0 )
 {
 }

@@ -73,7 +73,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Destructor
     ~QgsGdalProvider();
 
-    QgsRasterInterface * clone() const override;
+    QgsGdalProvider * clone() const override;
 
     /** \brief   Renders the layer as an image
      */
@@ -243,12 +243,12 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /** Remove dataset*/
     bool remove() override;
 
-    QString validateCreationOptions( const QStringList& createOptions, QString format ) override;
+    QString validateCreationOptions( const QStringList& createOptions, const QString& format ) override;
     QString validatePyramidsCreationOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
         const QStringList & theConfigOptions, const QString & fileFormat );
 
   signals:
-    void statusChanged( QString );
+    void statusChanged( const QString& );
 
   private:
     // update mode

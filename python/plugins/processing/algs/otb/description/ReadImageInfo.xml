@@ -15,7 +15,7 @@
     <parameter_type source_parameter_type="ParameterType_Empty">ParameterBoolean</parameter_type>
     <key>keywordlist</key>
     <name>Display the OSSIM keywordlist</name>
-    <description>Output the OSSIM keyword list. It contains metadata information (sensor model, geometry ). Information are stored in keyword list (pairs of key/value)</description>
+    <description>Output the OSSIM keyword list. It contains metadata information (sensor model, geometry ). Informations are stored in keyword list (pairs of key/value)</description>
     <default>True</default>
   </parameter>
   <parameter>

@@ -75,8 +75,6 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
      */
     virtual int numPoints() const = 0;
 
-    virtual double area() const override;
-
     /** Calculates the area of the curve. Derived classes should override this
      * to return the correct area of the curve.
      */
@@ -86,10 +84,25 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
     virtual bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 
     /** Returns the point and vertex id of a point within the curve.
+     * @param node node number, where the first node is 0
+     * @param point will be set to point at corresponding node in the curve
+     * @param type will be set to the vertex type of the node
+     * @returns true if node exists within the curve
      */
-    virtual bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const = 0;
+    virtual bool pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const = 0;
+
+    /** Returns a reversed copy of the curve, where the direction of the curve has been flipped.
+     * @note added in QGIS 2.14
+     */
+    virtual QgsCurveV2* reversed() const = 0;
 
     QgsAbstractGeometryV2* segmentize() const override;
+
+    virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override { return numPoints(); }
+    virtual int ringCount( int /*part*/ = 0 ) const override { return numPoints() > 0 ? 1 : 0; }
+    virtual int partCount() const override { return numPoints() > 0 ? 1 : 0; }
+    virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const override;
+
 };
 
 #endif // QGSCURVEV2_H

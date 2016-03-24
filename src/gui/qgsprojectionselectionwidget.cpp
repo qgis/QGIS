@@ -187,7 +187,7 @@ void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem& c
   if ( crs.isValid() )
   {
     mCrsComboBox->setItemText( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs ),
-                               tr( "Selected CRS (%1, %2)" ).arg( crs.authid() ).arg( crs.description() ) );
+                               tr( "Selected CRS (%1, %2)" ).arg( crs.authid(), crs.description() ) );
     mCrsComboBox->blockSignals( true );
     mCrsComboBox->setCurrentIndex( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs ) );
     mCrsComboBox->blockSignals( false );
@@ -207,11 +207,11 @@ void QgsProjectionSelectionWidget::setLayerCrs( const QgsCoordinateReferenceSyst
   {
     if ( layerItemIndex > -1 )
     {
-      mCrsComboBox->setItemText( layerItemIndex, tr( "Layer CRS (%1, %2)" ).arg( crs.authid() ).arg( crs.description() ) );
+      mCrsComboBox->setItemText( layerItemIndex, tr( "Layer CRS (%1, %2)" ).arg( crs.authid(), crs.description() ) );
     }
     else
     {
-      mCrsComboBox->insertItem( firstRecentCrsIndex(), tr( "Layer CRS (%1, %2)" ).arg( crs.authid() ).arg( crs.description() ), QgsProjectionSelectionWidget::LayerCrs );
+      mCrsComboBox->insertItem( firstRecentCrsIndex(), tr( "Layer CRS (%1, %2)" ).arg( crs.authid(), crs.description() ), QgsProjectionSelectionWidget::LayerCrs );
     }
   }
   else
@@ -228,13 +228,13 @@ void QgsProjectionSelectionWidget::addProjectCrsOption()
 {
   if ( mProjectCrs.isValid() )
   {
-    mCrsComboBox->addItem( tr( "Project CRS (%1 - %2)" ).arg( mProjectCrs.authid() ).arg( mProjectCrs.description() ), QgsProjectionSelectionWidget::ProjectCrs );
+    mCrsComboBox->addItem( tr( "Project CRS (%1 - %2)" ).arg( mProjectCrs.authid(), mProjectCrs.description() ), QgsProjectionSelectionWidget::ProjectCrs );
   }
 }
 
 void QgsProjectionSelectionWidget::addDefaultCrsOption()
 {
-  mCrsComboBox->addItem( tr( "Default CRS (%1 - %2)" ).arg( mDefaultCrs.authid() ).arg( mDefaultCrs.description() ), QgsProjectionSelectionWidget::DefaultCrs );
+  mCrsComboBox->addItem( tr( "Default CRS (%1 - %2)" ).arg( mDefaultCrs.authid(), mDefaultCrs.description() ), QgsProjectionSelectionWidget::DefaultCrs );
 }
 
 void QgsProjectionSelectionWidget::addRecentCrs()
@@ -256,7 +256,7 @@ void QgsProjectionSelectionWidget::addRecentCrs()
     crs.createFromSrsId( srsid );
     if ( crs.isValid() )
     {
-      mCrsComboBox->addItem( tr( "%1 - %2" ).arg( crs.authid() ).arg( crs.description() ), QgsProjectionSelectionWidget::RecentCrs );
+      mCrsComboBox->addItem( tr( "%1 - %2" ).arg( crs.authid(), crs.description() ), QgsProjectionSelectionWidget::RecentCrs );
       mCrsComboBox->setItemData( mCrsComboBox->count() - 1, QVariant(( long long )srsid ), Qt::UserRole + 1 );
     }
     if ( i >= 4 )

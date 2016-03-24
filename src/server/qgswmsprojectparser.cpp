@@ -40,6 +40,7 @@
 #include "qgscomposershape.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
+#include "qgsaccesscontrol.h"
 
 #include <QFileInfo>
 #include <QTextDocument>
@@ -48,8 +49,16 @@
 // this implies that a layer style called "default" will not be usable in WMS server
 #define EMPTY_STYLE_NAME   "default"
 
-QgsWMSProjectParser::QgsWMSProjectParser( const QString& filePath )
+QgsWMSProjectParser::QgsWMSProjectParser(
+  const QString& filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  , const QgsAccessControl* accessControl
+#endif
+)
     : QgsWMSConfigParser()
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    , mAccessControl( accessControl )
+#endif
 {
   mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
   mLegendLayerFont.fromString( mProjectParser->firstComposerLegendElement().attribute( "layerFont" ) );
@@ -118,7 +127,7 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
   }
 
   // can't use layer cache if we are going to apply a non-default style
-  if ( !styleName.isEmpty() )
+  if ( !styleName.isEmpty() && styleName != EMPTY_STYLE_NAME )
     useCache = false;
 
   //does lName refer to a leaf layer
@@ -127,7 +136,7 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
   if ( layerElemIt != projectLayerElements.constEnd() )
   {
     QgsMapLayer* ml = mProjectParser->createLayerFromElement( layerElemIt.value(), useCache );
-    if ( !styleName.isEmpty() )
+    if ( !styleName.isEmpty() && styleName != EMPTY_STYLE_NAME )
     {
       // try to apply the specified style
       if ( !ml->styleManager()->setCurrentStyle( styleName != EMPTY_STYLE_NAME ? styleName : QString() ) )
@@ -185,7 +194,12 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
     if ( legendIt->attribute( "embedded" ) == "1" )
     {
       QString project = mProjectParser->convertToAbsolutePath( legendIt->attribute( "project" ) );
-      QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration( project ) );
+      QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration(
+                                 project
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+                                 , mAccessControl
+#endif
+                               ) );
       if ( p )
       {
         QgsServerProjectParser* pp = p->mProjectParser;
@@ -229,7 +243,12 @@ void QgsWMSProjectParser::addLayersFromGroup( const QDomElement& legendGroupElem
     int drawingOrder = mProjectParser->updateLegendDrawingOrder() ? legendGroupElem.attribute( "drawingOrder", "-1" ).toInt() : -1;
 
     QString project = mProjectParser->convertToAbsolutePath( legendGroupElem.attribute( "project" ) );
-    QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration( project ) );
+    QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration(
+                               project
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+                               , mAccessControl
+#endif
+                             ) );
     if ( p )
     {
       QgsServerProjectParser* pp = p->mProjectParser;
@@ -258,7 +277,8 @@ void QgsWMSProjectParser::addLayersFromGroup( const QDomElement& legendGroupElem
   {
     QMap< int, QDomElement > layerOrderList;
     QDomNodeList groupElemChildren = legendGroupElem.childNodes();
-    for ( int i = 0; i < groupElemChildren.size(); ++i )
+    // for rendering layers has to be add from bottom (end) to top (start)
+    for ( int i = groupElemChildren.size() - 1; i >= 0 ; --i )
     {
       QDomElement elem = groupElemChildren.at( i ).toElement();
       if ( elem.tagName() == "legendgroup" )
@@ -944,7 +964,12 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
         QString project = mProjectParser->convertToAbsolutePath( currentChildElem.attribute( "project" ) );
         QgsDebugMsg( QString( "Project path: %1" ).arg( project ) );
         QString embeddedGroupName = currentChildElem.attribute( "name" );
-        QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration( project ) );
+        QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration(
+                                   project
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+                                   , mAccessControl
+#endif
+                                 ) );
         if ( p )
         {
           QgsServerProjectParser* pp = p->mProjectParser;
@@ -1000,6 +1025,13 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
       {
         continue;
       }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      if ( !mAccessControl->layerReadPermission( currentLayer ) )
+      {
+        continue;
+      }
+#endif
+
       // queryable layer
       if ( nonIdentifiableLayers.contains( currentLayer->id() ) )
       {
@@ -1081,7 +1113,7 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
         QgsConfigParserUtils::appendCRSElementsToLayer( layerElem, doc, crsList, mProjectParser->supportedOutputCrsList() );
 
         //Ex_GeographicBoundingBox
-        QgsConfigParserUtils::appendLayerBoundingBoxes( layerElem, doc, currentLayer->extent(), currentLayer->crs() );
+        QgsConfigParserUtils::appendLayerBoundingBoxes( layerElem, doc, currentLayer->extent(), currentLayer->crs(), crsList, mProjectParser->supportedOutputCrsList() );
       }
 
       // add details about supported styles of the layer
@@ -1241,7 +1273,7 @@ void QgsWMSProjectParser::addOWSLayers( QDomDocument &doc,
                                         const QStringList &nonIdentifiableLayers,
                                         const QString& strHref,
                                         QgsRectangle& combinedBBox,
-                                        QString strGroup ) const
+                                        const QString& strGroup ) const
 {
   const QgsCoordinateReferenceSystem& projectCrs = mProjectParser->projectCRS();
   QDomNodeList legendChildren = legendElem.childNodes();
@@ -1272,7 +1304,12 @@ void QgsWMSProjectParser::addOWSLayers( QDomDocument &doc,
         QString project = mProjectParser->convertToAbsolutePath( currentChildElem.attribute( "project" ) );
         QgsDebugMsg( QString( "Project path: %1" ).arg( project ) );
         QString embeddedGroupName = currentChildElem.attribute( "name" );
-        QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration( project ) );
+        QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration(
+                                   project
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+                                   , mAccessControl
+#endif
+                                 ) );
         if ( p )
         {
           QgsServerProjectParser* pp = p->mProjectParser;
@@ -1537,6 +1574,7 @@ QDomDocument QgsWMSProjectParser::getStyles( QStringList& layerList ) const
   // Create the root element
   QDomElement root = myDocument.createElementNS( "http://www.opengis.net/sld", "StyledLayerDescriptor" );
   root.setAttribute( "version", "1.1.0" );
+  root.setAttribute( "units", "mm" ); // default qgsmaprenderer is Millimeters
   root.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" );
   root.setAttribute( "xmlns:ogc", "http://www.opengis.net/ogc" );
   root.setAttribute( "xmlns:se", "http://www.opengis.net/se" );
@@ -1638,6 +1676,14 @@ QDomDocument QgsWMSProjectParser::describeLayer( QStringList& layerList, const Q
     for ( int j = 0; j < currentLayerList.size(); j++ )
     {
       QgsMapLayer* currentLayer = currentLayerList.at( j );
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      if ( !mAccessControl->layerReadPermission( currentLayer ) )
+      {
+        throw QgsMapServiceException( "Security", "You are not allowed to access to this layer" );
+      }
+#endif
+
       QString layerTypeName = mProjectParser->useLayerIDs() ? currentLayer->id() : currentLayer->name();
 
       // Create the NamedLayer element

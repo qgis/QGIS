@@ -23,7 +23,7 @@ QgsGeorefToolDeletePoint::QgsGeorefToolDeletePoint( QgsMapCanvas* canvas )
 }
 
 // Mouse press event for overriding
-void QgsGeorefToolDeletePoint::canvasPressEvent( QMouseEvent * e )
+void QgsGeorefToolDeletePoint::canvasPressEvent( QgsMapMouseEvent* e )
 {
   // Only add point on Qt:LeftButton
   if ( Qt::LeftButton == e->button() )

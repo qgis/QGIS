@@ -27,10 +27,12 @@ QT4_ADD_RESOURCES(heatmap_RCC_SRCS ${heatmap_RCCS})
 
 ADD_LIBRARY (heatmapplugin   MODULE ${heatmap_SRCS} ${heatmap_MOC_SRCS} ${heatmap_RCC_SRCS} ${heatmap_UIS_H})
 
-INCLUDE_DIRECTORIES(
-     ${CMAKE_CURRENT_BINARY_DIR}
+INCLUDE_DIRECTORIES( SYSTEM
      ${GEOS_INCLUDE_DIR}
      ${GDAL_INCLUDE_DIR}
+)
+INCLUDE_DIRECTORIES(
+     ${CMAKE_CURRENT_BINARY_DIR}
      ../../core
      ../../core/geometry
      ../../core/raster

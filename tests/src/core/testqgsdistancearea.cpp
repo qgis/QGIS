@@ -23,6 +23,10 @@
 #include <qgsdistancearea.h>
 #include <qgspoint.h>
 #include "qgslogger.h"
+#include "qgsgeometryfactory.h"
+#include "qgsgeometry.h"
+#include "qgis.h"
+
 
 class TestQgsDistanceArea: public QObject
 {
@@ -34,6 +38,9 @@ class TestQgsDistanceArea: public QObject
     void basic();
     void test_distances();
     void unit_conversions();
+    void regression13601();
+    void collections();
+    void measureUnits();
 };
 
 void TestQgsDistanceArea::initTestCase()
@@ -89,7 +96,7 @@ void TestQgsDistanceArea::basic()
   daA.setEllipsoid( 6378135.0, 6378135.0 - ( 6378135.0 / 298.26 ) );
   resultA = daA.measureLine( p1, p2 );
   QCOMPARE( resultA, resultB );
-};
+}
 
 void TestQgsDistanceArea::test_distances()
 {
@@ -137,7 +144,7 @@ void TestQgsDistanceArea::test_distances()
     }
   }
 
-};
+}
 
 void TestQgsDistanceArea::unit_conversions()
 {
@@ -163,7 +170,83 @@ void TestQgsDistanceArea::unit_conversions()
   QString myTxt = QgsDistanceArea::textUnit( inputValue, 7, inputUnit, true, false );
   QString expectedTxt = QLocale::system().toString( 2.4710538146717, 'g', 1 + 7 );
   QVERIFY( myTxt.startsWith( expectedTxt ) ); // Ignore units for now.
-};
+}
+
+void TestQgsDistanceArea::regression13601()
+{
+  //test regression #13601
+  QgsDistanceArea calc;
+  calc.setEllipsoidalMode( true );
+  calc.setEllipsoid( "NONE" );
+  calc.setSourceCrs( 1108L );
+  QgsGeometry geom( QgsGeometryFactory::geomFromWkt( "Polygon ((252000 1389000, 265000 1389000, 265000 1385000, 252000 1385000, 252000 1389000))" ) );
+  QVERIFY( qgsDoubleNear( calc.measureArea( &geom ), 52000000, 0.0001 ) );
+}
+
+void TestQgsDistanceArea::collections()
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  //test measuring for collections
+  QgsDistanceArea myDa;
+  myDa.setSourceAuthId( "EPSG:4030" );
+  myDa.setEllipsoidalMode( true );
+  myDa.setEllipsoid( "WGS84" );
+
+  //collection of lines, should be sum of line length
+  QgsGeometry lines( QgsGeometryFactory::geomFromWkt( "GeometryCollection( LineString(0 36.53, 5.76 -48.16), LineString(0 25.54, 24.20 36.70) )" ) );
+  double result = myDa.measure( &lines ); //should measure length
+  QVERIFY( qgsDoubleNear( result, 12006159, 1 ) );
+  result = myDa.measureLength( &lines );
+  QVERIFY( qgsDoubleNear( result, 12006159, 1 ) );
+  result = myDa.measureArea( &lines );
+  QVERIFY( qgsDoubleNear( result, 0 ) );
+
+  //collection of polygons
+  QgsGeometry polys( QgsGeometryFactory::geomFromWkt( "GeometryCollection( Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53)), Polygon((10 20, 15 20, 15 10, 10 20)) )" ) );
+  result = myDa.measure( &polys ); //should measure area
+  QVERIFY( qgsDoubleNear( result, 670434859475LL, 1 ) );
+  result = myDa.measureArea( &polys );
+  QVERIFY( qgsDoubleNear( result, 670434859475LL, 1 ) );
+  result = myDa.measureLength( &polys );
+  QVERIFY( qgsDoubleNear( result, 0 ) );
+
+  //mixed collection
+  QgsGeometry mixed( QgsGeometryFactory::geomFromWkt( "GeometryCollection( LineString(0 36.53, 5.76 -48.16), LineString(0 25.54, 24.20 36.70), Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53)), Polygon((10 20, 15 20, 15 10, 10 20)) )" ) );
+  result = myDa.measure( &mixed ); //should measure area
+  QVERIFY( qgsDoubleNear( result, 670434859475LL, 1 ) );
+  //measure area specifically
+  result = myDa.measureArea( &mixed );
+  QVERIFY( qgsDoubleNear( result, 670434859475LL, 1 ) );
+  //measure length
+  result = myDa.measureLength( &mixed );
+  QVERIFY( qgsDoubleNear( result, 12006159, 1 ) );
+
+  Q_NOWARN_DEPRECATED_POP
+}
+
+void TestQgsDistanceArea::measureUnits()
+{
+  //test regression #13610
+  QgsDistanceArea calc;
+  calc.setEllipsoidalMode( false );
+  calc.setEllipsoid( "NONE" );
+  calc.setSourceCrs( 254L );
+  QGis::UnitType units;
+  QgsPoint p1( 1341683.9854275715, 408256.9562717728 );
+  QgsPoint p2( 1349321.7807031618, 408256.9562717728 );
+
+  double result = calc.measureLine( p1, p2, units );
+  //no OTF, result will be in CRS unit (feet)
+  QCOMPARE( units, QGis::Feet );
+  QVERIFY( qgsDoubleNear( result, 7637.7952755903825, 0.001 ) );
+
+  calc.setEllipsoidalMode( true );
+  calc.setEllipsoid( "WGS84" );
+  result = calc.measureLine( p1, p2, units );
+  //OTF, result will be in meters
+  QCOMPARE( units, QGis::Meters );
+  QVERIFY( qgsDoubleNear( result, 2328.0988253106957, 0.001 ) );
+}
 
 QTEST_MAIN( TestQgsDistanceArea )
 #include "testqgsdistancearea.moc"

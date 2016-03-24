@@ -19,6 +19,7 @@
 #include "qgsformannotationitem.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
 #include <QMouseEvent>
 
 QgsMapToolFormAnnotation::QgsMapToolFormAnnotation( QgsMapCanvas* canvas ): QgsMapToolAnnotation( canvas )
@@ -48,6 +49,7 @@ QgsAnnotationItem* QgsMapToolFormAnnotation::createItem( QMouseEvent* e )
   formItem->setMapPosition( toMapCoordinates( e->pos() ) );
   formItem->setSelected( true );
   formItem->setFrameSize( QSizeF( 200, 100 ) );
+  QgsProject::instance()->setDirty( true );
   return formItem;
 }
 

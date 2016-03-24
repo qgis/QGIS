@@ -77,6 +77,10 @@ namespace pal
             // penalty may need tweaking, given that interior mode ranges up to 12
             n = ( lp->crossesBoundary( obstacle ) ? 6 : 0 );
             break;
+          case PolygonWhole:
+            // n is either 0 or 12
+            n = ( lp->intersectsWithPolygon( obstacle ) ? 12 : 0 );
+            break;
         }
 
         break;
@@ -86,7 +90,7 @@ namespace pal
       lp->setConflictsWithObstacle( true );
 
     //scale cost by obstacle's factor
-    double obstacleCost = obstacle->getFeature()->obstacleFactor() * double( n );
+    double obstacleCost = obstacle->obstacleFactor() * double( n );
 
     // label cost is penalized
     lp->setCost( lp->cost() + obstacleCost );
@@ -95,26 +99,35 @@ namespace pal
 
   ////////
 
-  void CostCalculator::setPolygonCandidatesCost( int nblp, QList< LabelPosition* >& lPos, int max_p, RTree<FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+  void CostCalculator::setPolygonCandidatesCost( int nblp, QList< LabelPosition* >& lPos, RTree<FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
   {
-    int i;
-
     double normalizer;
     // compute raw cost
 #ifdef _DEBUG_
     std::cout << "LabelPosition for feat: " << lPos[0]->feature->uid << std::endl;
 #endif
 
-    for ( i = 0; i < nblp; i++ )
-      setCandidateCostFromPolygon( lPos[i], obstacles, bbx, bby );
+    for ( int i = 0; i < nblp; ++i )
+      setCandidateCostFromPolygon( lPos.at( i ), obstacles, bbx, bby );
 
     // lPos with big values came first (value = min distance from label to Polygon's Perimeter)
-    qSort( lPos.begin(), lPos.end(), candidateSortShrink );
+    // IMPORTANT - only want to sort first nblp positions. The rest have not had the cost
+    // calculated so will have nonsense values
+    QList< LabelPosition* > toSort;
+    for ( int i = 0; i < nblp; ++i )
+    {
+      toSort << lPos.at( i );
+    }
+    qSort( toSort.begin(), toSort.end(), candidateSortShrink );
+    for ( int i = 0; i < nblp; ++i )
+    {
+      lPos[i] = toSort.at( i );
+    }
 
 
     // define the value's range
     double cost_max = lPos.at( 0 )->cost();
-    double cost_min = lPos.at( max_p - 1 )->cost();
+    double cost_min = lPos.at( nblp - 1 )->cost();
 
     cost_max -= cost_min;
 
@@ -129,7 +142,7 @@ namespace pal
 
     // adjust cost => the best is 0.0001, the worst is 0.0021
     // others are set proportionally between best and worst
-    for ( i = 0; i < max_p; i++ )
+    for ( int i = 0; i < nblp; ++i )
     {
 #ifdef _DEBUG_
       std::cout << "   lpos[" << i << "] = " << lPos[i]->cost;
@@ -137,12 +150,12 @@ namespace pal
       //if (cost_max - cost_min < EPSILON)
       if ( cost_max > EPSILON )
       {
-        lPos[i]->mCost = 0.0021 - ( lPos.at( i )->cost() - cost_min ) * normalizer;
+        lPos.at( i )->setCost( 0.0021 - ( lPos.at( i )->cost() - cost_min ) * normalizer );
       }
       else
       {
         //lPos[i]->cost = 0.0001 + (lPos[i]->cost - cost_min) * normalizer;
-        lPos[i]->mCost = 0.0001;
+        lPos.at( i )->setCost( 0.0001 );
       }
 
 #ifdef _DEBUG_
@@ -220,7 +233,7 @@ namespace pal
     {
       int arrangement = feat->feature->layer()->arrangement();
       if ( arrangement == P_FREE || arrangement == P_HORIZ )
-        setPolygonCandidatesCost( stop, feat->lPos, max_p, obstacles, bbx, bby );
+        setPolygonCandidatesCost( stop, feat->lPos, obstacles, bbx, bby );
     }
 
     // add size penalty (small lines/polygons get higher cost)

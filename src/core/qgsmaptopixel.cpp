@@ -288,9 +288,9 @@ QString QgsMapToPixel::showParameters() const
 {
   QString rep;
   QTextStream( &rep ) << "Map units/pixel: " << mMapUnitsPerPixel
-  << " center: " << xCenter << "," << yCenter
+  << " center: " << xCenter << ',' << yCenter
   << " rotation: " << mRotation
-  << " size: " << mWidth << "x" << mHeight;
+  << " size: " << mWidth << 'x' << mHeight;
   return rep;
 }
 

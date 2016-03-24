@@ -22,7 +22,11 @@ INCLUDE_DIRECTORIES(
   ../../core
   ../../core/geometry
   ../../gui
+)
+INCLUDE_DIRECTORIES (SYSTEM
   ${GEOS_INCLUDE_DIR}
+)
+INCLUDE_DIRECTORIES (
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
 )
 

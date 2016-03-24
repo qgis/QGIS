@@ -75,6 +75,7 @@ void QgsConfigureShortcutsDialog::populateActions()
   QList<QAction*> actions = QgsShortcutsManager::instance()->listActions();
 
   QList<QTreeWidgetItem *> items;
+  items.reserve( actions.count() );
   for ( int i = 0; i < actions.count(); ++i )
   {
     QString actionText = actions[i]->text();
@@ -114,8 +115,8 @@ void QgsConfigureShortcutsDialog::saveShortcuts()
   {
     QMessageBox::warning( this, tr( "Saving shortcuts" ),
                           tr( "Cannot write file %1:\n%2." )
-                          .arg( fileName )
-                          .arg( file.errorString() ) );
+                          .arg( fileName,
+                                file.errorString() ) );
     return;
   }
 
@@ -162,8 +163,8 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
   {
     QMessageBox::warning( this, tr( "Loading shortcuts" ),
                           tr( "Cannot read file %1:\n%2." )
-                          .arg( fileName )
-                          .arg( file.errorString() ) );
+                          .arg( fileName,
+                                file.errorString() ) );
     return;
   }
 
@@ -386,7 +387,7 @@ void QgsConfigureShortcutsDialog::setGettingShortcut( bool getting )
   }
 }
 
-void QgsConfigureShortcutsDialog::setCurrentActionShortcut( QKeySequence s )
+void QgsConfigureShortcutsDialog::setCurrentActionShortcut( const QKeySequence& s )
 {
   QAction* action = currentAction();
   if ( !action )

@@ -16,8 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _QGSVECTORFILEWRITER_H_
-#define _QGSVECTORFILEWRITER_H_
+#ifndef QGSVECTORFILEWRITER_H
+#define QGSVECTORFILEWRITER_H
 
 #include "qgsvectorlayer.h"
 #include "qgsfield.h"
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsVectorFileWriter
     class SetOption : public Option
     {
       public:
-        SetOption( const QString& docString, QStringList values, const QString& defaultValue, bool allowNone = false )
+        SetOption( const QString& docString, const QStringList& values, const QString& defaultValue, bool allowNone = false )
             : Option( docString, Set )
             , values( values.toSet() )
             , defaultValue( defaultValue )
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsVectorFileWriter
     class HiddenOption : public Option
     {
       public:
-        HiddenOption( const QString& value )
+        explicit HiddenOption( const QString& value )
             : Option( "", Hidden )
             , mValue( value )
         {}
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsVectorFileWriter
       MetaData()
       {}
 
-      MetaData( QString longName, QString trLongName, QString glob, QString ext, QMap<QString, Option*> driverOptions, QMap<QString, Option*> layerOptions )
+      MetaData( const QString& longName, const QString& trLongName, const QString& glob, const QString& ext, const QMap<QString, Option*>& driverOptions, const QMap<QString, Option*>& layerOptions )
           : longName( longName )
           , trLongName( trLongName )
           , glob( glob )
@@ -174,7 +174,11 @@ class CORE_EXPORT QgsVectorFileWriter
     @param newFilename QString pointer which will contain the new file name created (in case it is different to fileName).
     @param symbologyExport symbology to export
     @param symbologyScale scale of symbology
-    @param filterExtent if not a null pointer, only features intersecting the extent will be saved
+    @param filterExtent if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
+    @param overrideGeometryType set to a valid geometry type to override the default geometry type for the layer. This parameter
+    allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
+    @param forceMulti set to true to force creation of multi* geometries (added in QGIS 2.14)
+    @param includeZ set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
     */
     static WriterError writeAsVectorFormat( QgsVectorLayer* layer,
                                             const QString& fileName,
@@ -189,10 +193,33 @@ class CORE_EXPORT QgsVectorFileWriter
                                             QString *newFilename = 0,
                                             SymbologyExport symbologyExport = NoSymbology,
                                             double symbologyScale = 1.0,
-                                            const QgsRectangle* filterExtent = 0 // added in 2.4
+                                            const QgsRectangle* filterExtent = 0,
+                                            QgsWKBTypes::Type overrideGeometryType = QgsWKBTypes::Unknown,
+                                            bool forceMulti = false,
+                                            bool includeZ = false
                                           );
 
-    //! @note added in v2.2
+    /** Writes a layer out to a vector file.
+     * @param layer layer to write
+     * @param fileName file name to write to
+     * @param fileEncoding encoding to use
+     * @param ct
+     * @param driverName OGR driver to use
+     * @param onlySelected write only selected features of layer
+     * @param errorMessage pointer to buffer fo error message
+     * @param datasourceOptions list of OGR data source creation options
+     * @param layerOptions list of OGR layer creation options
+     * @param skipAttributeCreation only write geometries
+     * @param newFilename QString pointer which will contain the new file name created (in case it is different to fileName).
+     * @param symbologyExport symbology to export
+     * @param symbologyScale scale of symbology
+     * @param filterExtent if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
+     * @param overrideGeometryType set to a valid geometry type to override the default geometry type for the layer. This parameter
+     * allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
+     * @param forceMulti set to true to force creation of multi* geometries (added in QGIS 2.14)
+     * @param includeZ set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
+     * @note added in v2.2
+     */
     static WriterError writeAsVectorFormat( QgsVectorLayer* layer,
                                             const QString& fileName,
                                             const QString& fileEncoding,
@@ -206,7 +233,10 @@ class CORE_EXPORT QgsVectorFileWriter
                                             QString *newFilename = 0,
                                             SymbologyExport symbologyExport = NoSymbology,
                                             double symbologyScale = 1.0,
-                                            const QgsRectangle* filterExtent = 0 // added in 2.4
+                                            const QgsRectangle* filterExtent = 0,
+                                            QgsWKBTypes::Type overrideGeometryType = QgsWKBTypes::Unknown,
+                                            bool forceMulti = false,
+                                            bool includeZ = false
                                           );
 
     /** Create shapefile and initialize it */
@@ -259,7 +289,7 @@ class CORE_EXPORT QgsVectorFileWriter
      * @param theFileName /path/to/file.shp
      * @return bool true if the file was deleted successfully
      */
-    static bool deleteShapeFile( QString theFileName );
+    static bool deleteShapeFile( const QString& theFileName );
 
     SymbologyExport symbologyExport() const { return mSymbologyExport; }
     void setSymbologyExport( SymbologyExport symExport ) { mSymbologyExport = symExport; }
@@ -275,6 +305,7 @@ class CORE_EXPORT QgsVectorFileWriter
 
     OGRDataSourceH mDS;
     OGRLayerH mLayer;
+    OGRSpatialReferenceH mOgrRef;
     OGRGeometryH mGeom;
 
     QgsFields mFields;
@@ -307,7 +338,7 @@ class CORE_EXPORT QgsVectorFileWriter
     /**
      * @deprecated
      */
-    static bool driverMetadata( QString driverName, QString &longName, QString &trLongName, QString &glob, QString &ext );
+    static bool driverMetadata( const QString& driverName, QString &longName, QString &trLongName, QString &glob, QString &ext );
     void createSymbolLayerTable( QgsVectorLayer* vl,  const QgsCoordinateTransform* ct, OGRDataSourceH ds );
     OGRFeatureH createFeature( QgsFeature& feature );
     bool writeFeature( OGRLayerH layer, OGRFeatureH feature );

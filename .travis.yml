@@ -1,5 +1,9 @@
 language: cpp
 
+sudo: required
+dist: precise
+group: edge
+
 os:
   - linux
   - osx
@@ -8,7 +12,7 @@ compiler:
   - clang
 
 git:
-  depth: 1
+  depth: 30
 
 cache: apt
 
@@ -43,3 +47,5 @@ before_script:
 script:
   - ./ci/travis/${TRAVIS_OS_NAME}/script.sh
 
+after_script:
+  - ./ci/travis/${TRAVIS_OS_NAME}/after_script.sh

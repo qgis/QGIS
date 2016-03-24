@@ -171,7 +171,7 @@ QgsVectorLayer* QgsVectorLayerCache::layer()
   return mLayer;
 }
 
-void QgsVectorLayerCache::requestCompleted( QgsFeatureRequest featureRequest, QgsFeatureIds fids )
+void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids )
 {
   // If a request is too large for the cache don't notify to prevent from indexing incomplete requests
   if ( fids.count() < mCache.size() )

@@ -34,7 +34,7 @@ class GUI_EXPORT QgsSlider : public QSlider
     QVariant variantValue() const;
 
   signals:
-    void valueChanged( QVariant );
+    void valueChanged( const QVariant& );
 
   protected slots:
     void valueChanged( int );

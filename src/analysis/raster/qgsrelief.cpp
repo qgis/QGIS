@@ -442,7 +442,7 @@ GDALDatasetH QgsRelief::openOutputFile( GDALDatasetH inputDataset, GDALDriverH o
   }
 
   int xSize = GDALGetRasterXSize( inputDataset );
-  int ySize = GDALGetRasterYSize( inputDataset );;
+  int ySize = GDALGetRasterYSize( inputDataset );
 
   //open output file
   char **papszOptions = NULL;
@@ -510,7 +510,7 @@ bool QgsRelief::exportFrequencyDistributionToCsv( const QString& file )
 
   if ( !minOk || !maxOk )
   {
-    GDALComputeRasterMinMax( elevationBand, TRUE, minMax );
+    GDALComputeRasterMinMax( elevationBand, true, minMax );
   }
 
   //2. go through raster cells and get frequency of classes
@@ -560,7 +560,7 @@ bool QgsRelief::exportFrequencyDistributionToCsv( const QString& file )
   QTextStream outstream( &outFile );
   for ( int i = 0; i < 252; ++i )
   {
-    outstream << QString::number( i ) + "," + QString::number( frequency[i] ) << endl;
+    outstream << QString::number( i ) + ',' + QString::number( frequency[i] ) << endl;
   }
   outFile.close();
   return true;
@@ -593,7 +593,7 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
 
   if ( !minOk || !maxOk )
   {
-    GDALComputeRasterMinMax( elevationBand, TRUE, minMax );
+    GDALComputeRasterMinMax( elevationBand, true, minMax );
   }
 
   //2. go through raster cells and get frequency of classes
@@ -674,6 +674,7 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
   colorList.push_back( QColor( 255, 133, 92 ) );
   colorList.push_back( QColor( 204, 204, 204 ) );
 
+  resultList.reserve( classBreaks.size() );
   for ( int i = 1; i < classBreaks.size(); ++i )
   {
     double minElevation = minMax[0] + classBreaks[i - 1] * frequencyClassRange;

@@ -154,7 +154,7 @@ void checkDock::deleteErrors()
   mRbErrorMarkers.clear();
 }
 
-void checkDock::parseErrorListByLayer( QString layerId )
+void checkDock::parseErrorListByLayer( const QString& layerId )
 {
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mLayerRegistry->mapLayers()[layerId] );
   QList<TopolError*>::Iterator it = mErrorList.begin();

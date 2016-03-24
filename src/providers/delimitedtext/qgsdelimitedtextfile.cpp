@@ -30,7 +30,7 @@
 #include <QUrl>
 
 
-QgsDelimitedTextFile::QgsDelimitedTextFile( QString url ) :
+QgsDelimitedTextFile::QgsDelimitedTextFile( const QString& url ) :
     mFileName( QString() ),
     mEncoding( "UTF-8" ),
     mFile( 0 ),
@@ -136,7 +136,7 @@ void QgsDelimitedTextFile::resetDefinition()
 }
 
 // Extract the provider definition from the url
-bool QgsDelimitedTextFile::setFromUrl( QString url )
+bool QgsDelimitedTextFile::setFromUrl( const QString& url )
 {
   QUrl qurl = QUrl::fromEncoded( url.toAscii() );
   return setFromUrl( qurl );
@@ -160,7 +160,7 @@ bool QgsDelimitedTextFile::setFromUrl( const QUrl &url )
   //
   if ( url.hasQueryItem( "useWatcher" ) )
   {
-    mUseWatcher = ! url.queryItemValue( "useWatcher" ).toUpper().startsWith( 'N' );;
+    mUseWatcher = ! url.queryItemValue( "useWatcher" ).toUpper().startsWith( 'N' );
   }
 
   // The default type is csv, to be consistent with the
@@ -222,7 +222,7 @@ bool QgsDelimitedTextFile::setFromUrl( const QUrl &url )
   }
   if ( url.hasQueryItem( "trimFields" ) )
   {
-    mTrimFields = ! url.queryItemValue( "trimFields" ).toUpper().startsWith( 'N' );;
+    mTrimFields = ! url.queryItemValue( "trimFields" ).toUpper().startsWith( 'N' );
   }
   if ( url.hasQueryItem( "maxFields" ) )
   {
@@ -232,9 +232,9 @@ bool QgsDelimitedTextFile::setFromUrl( const QUrl &url )
   QgsDebugMsg( "Delimited text file is: " + mFileName );
   QgsDebugMsg( "Encoding is: " + mEncoding );
   QgsDebugMsg( "Delimited file type is: " + type );
-  QgsDebugMsg( "Delimiter is: [" + delimiter + "]" );
-  QgsDebugMsg( "Quote character is: [" + quote + "]" );
-  QgsDebugMsg( "Escape character is: [" + escape + "]" );
+  QgsDebugMsg( "Delimiter is: [" + delimiter + ']' );
+  QgsDebugMsg( "Quote character is: [" + quote + ']' );
+  QgsDebugMsg( "Escape character is: [" + escape + ']' );
   QgsDebugMsg( "Skip lines: " + QString::number( mSkipLines ) );
   QgsDebugMsg( "Maximum number of fields in record: " + QString::number( mMaxFields ) );
   QgsDebugMsg( "Use headers: " + QString( mUseHeader ? "Yes" : "No" ) );
@@ -308,13 +308,13 @@ QUrl QgsDelimitedTextFile::url()
   return url;
 }
 
-void QgsDelimitedTextFile::setFileName( QString filename )
+void QgsDelimitedTextFile::setFileName( const QString& filename )
 {
   resetDefinition();
   mFileName = filename;
 }
 
-void QgsDelimitedTextFile::setEncoding( QString encoding )
+void QgsDelimitedTextFile::setEncoding( const QString& encoding )
 {
   resetDefinition();
   mEncoding = encoding;
@@ -341,12 +341,12 @@ void QgsDelimitedTextFile::setTypeWhitespace()
   mType = DelimTypeWhitespace;
 }
 
-void QgsDelimitedTextFile::setTypeRegexp( QString regexp )
+void QgsDelimitedTextFile::setTypeRegexp( const QString& regexp )
 {
   resetDefinition();
   mType = DelimTypeRegexp;
   mDelimRegexp.setPattern( regexp );
-  mAnchoredRegexp = regexp.startsWith( "^" );
+  mAnchoredRegexp = regexp.startsWith( '^' );
   mParser = &QgsDelimitedTextFile::parseRegexp;
   mDefinitionValid = regexp.size() > 0 && mDelimRegexp.isValid();
   if ( ! mDefinitionValid )
@@ -368,11 +368,11 @@ QString QgsDelimitedTextFile::decodeChars( QString chars )
 
 QString QgsDelimitedTextFile::encodeChars( QString chars )
 {
-  chars = chars.replace( "\t", "\\t" );
+  chars = chars.replace( '\t', "\\t" );
   return chars;
 }
 
-void QgsDelimitedTextFile::setTypeCSV( QString delim, QString quote, QString escape )
+void QgsDelimitedTextFile::setTypeCSV( const QString& delim, const QString& quote, const QString& escape )
 {
   resetDefinition();
   mType = DelimTypeCSV;
@@ -437,7 +437,7 @@ void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
     // valid if the number matches its column number..
     else if ( mDefaultFieldRegexp.indexIn( name ) == 0 )
     {
-      int col = mDefaultFieldRegexp.capturedTexts()[1].toInt();
+      int col = mDefaultFieldRegexp.capturedTexts().at( 1 ).toInt();
       nameOk = col == fieldNo;
     }
     // Otherwise it is valid if isn't the name of an existing field...
@@ -484,7 +484,7 @@ QStringList &QgsDelimitedTextFile::fieldNames()
   return mFieldNames;
 }
 
-int QgsDelimitedTextFile::fieldIndex( QString name )
+int QgsDelimitedTextFile::fieldIndex( const QString& name )
 {
   // If not yet opened then reset file to read column headers
   //
@@ -493,7 +493,7 @@ int QgsDelimitedTextFile::fieldIndex( QString name )
   // Field_### and simple integer fields.
   if ( mDefaultFieldRegexp.indexIn( name ) == 0 )
   {
-    return mDefaultFieldRegexp.capturedTexts()[1].toInt() - 1;
+    return mDefaultFieldRegexp.capturedTexts().at( 1 ).toInt() - 1;
   }
   for ( int i = 0; i < mFieldNames.size(); i++ )
   {

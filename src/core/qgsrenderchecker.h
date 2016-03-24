@@ -67,14 +67,14 @@ class CORE_EXPORT QgsRenderChecker
     /** Prefix where the control images are kept.
      * This will be appended to controlImagePath
       */
-    void setControlPathPrefix( const QString &theName ) { mControlPathPrefix = theName + "/"; }
+    void setControlPathPrefix( const QString &theName ) { mControlPathPrefix = theName + '/'; }
 
-    void setControlPathSuffix( const QString& theName ) { mControlPathSuffix = theName + "/"; }
+    void setControlPathSuffix( const QString& theName ) { mControlPathSuffix = theName + '/'; }
 
     /** Get an md5 hash that uniquely identifies an image */
-    QString imageToHash( QString theImageFile );
+    QString imageToHash( const QString& theImageFile );
 
-    void setRenderedImage( QString theImageFileName ) { mRenderedImageFile = theImageFileName; }
+    void setRenderedImage( const QString& theImageFileName ) { mRenderedImageFile = theImageFileName; }
 
     /**
      * The path of the rendered image can be retrieved through that method.
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsRenderChecker
      *
      * @return The path to the rendered image
      */
-    const QString& renderedImage() { return mRenderedImageFile; }
+    QString renderedImage() { return mRenderedImageFile; }
 
     //! @deprecated since 2.4 - use setMapSettings()
     Q_DECL_DEPRECATED void setMapRenderer( QgsMapRenderer *  thepMapRenderer );
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsRenderChecker
      * for that by providing a tolerance.
      * @note make sure to call setExpectedImage and setMapRenderer first
      */
-    bool runTest( QString theTestName, unsigned int theMismatchCount = 0 );
+    bool runTest( const QString& theTestName, unsigned int theMismatchCount = 0 );
 
     /**
      * Test using two arbitary images (map renderer will not be used)
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsRenderChecker
      * @param theRenderedImageFile to optionally override the output filename
      * @note: make sure to call setExpectedImage and setRenderedImage first.
      */
-    bool compareImages( QString theTestName, unsigned int theMismatchCount = 0, QString theRenderedImageFile = "" );
+    bool compareImages( const QString& theTestName, unsigned int theMismatchCount = 0, const QString& theRenderedImageFile = "" );
     /** Get a list of all the anomalies. An anomaly is a rendered difference
       * file where there is some red pixel content (indicating a render check
       * mismatch), but where the output was still acceptible. If the render
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsRenderChecker
       * acceptible.
       * @return a bool indicating if the diff matched one of the anomaly files
     */
-    bool isKnownAnomaly( QString theDiffImageFile );
+    bool isKnownAnomaly( const QString& theDiffImageFile );
 
     /** Draws a checkboard pattern for image backgrounds, so that transparency is visible
      * without requiring a transparent background for the image
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsRenderChecker
      *
      * @return Path to the expected image file
      */
-    const QString& expectedImageFile() const { return mExpectedImageFile; }
+    QString expectedImageFile() const { return mExpectedImageFile; }
 
     /**
      * Call this to enable internal buffering of dash messages. You may later call
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsRenderChecker
      * @return buffered dash messages
      * @note not available in python bindings
      */
-    const QVector<QgsDartMeasurement>& dartMeasurements() const { return mDashMessages; }
+    QVector<QgsDartMeasurement> dartMeasurements() const { return mDashMessages; }
 
   protected:
     QString mReport;
@@ -200,16 +200,16 @@ class CORE_EXPORT QgsRenderChecker
  * @return bool indicating if the WKT are sufficiently equal
  */
 
-inline bool compareWkt( QString a, QString b, double tolerance = 0.000001 )
+inline bool compareWkt( const QString& a, const QString& b, double tolerance = 0.000001 )
 {
-  QgsDebugMsg( QString( "a:%1 b:%2 tol:%3" ).arg( a ).arg( b ).arg( tolerance ) );
+  QgsDebugMsg( QString( "a:%1 b:%2 tol:%3" ).arg( a, b ).arg( tolerance ) );
   QRegExp re( "-?\\d+(?:\\.\\d+)?(?:[eE]\\d+)?" );
 
   QString a0( a ), b0( b );
   a0.replace( re, "#" );
   b0.replace( re, "#" );
 
-  QgsDebugMsg( QString( "a0:%1 b0:%2" ).arg( a0 ).arg( b0 ) );
+  QgsDebugMsg( QString( "a0:%1 b0:%2" ).arg( a0, b0 ) );
 
   if ( a0 != b0 )
     return false;

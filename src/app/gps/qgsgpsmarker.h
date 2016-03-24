@@ -29,8 +29,7 @@ class QPainter;
 class QgsGpsMarker : public QgsMapCanvasItem
 {
   public:
-
-    QgsGpsMarker( QgsMapCanvas* mapCanvas );
+    explicit QgsGpsMarker( QgsMapCanvas* mapCanvas );
 
     void setCenter( const QgsPoint& point );
 

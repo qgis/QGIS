@@ -89,6 +89,8 @@ QgsFeatureRequest::~QgsFeatureRequest()
 
 QgsFeatureRequest& QgsFeatureRequest::setFilterRect( const QgsRectangle& rect )
 {
+  if ( mFilter == FilterNone )
+    mFilter = FilterRect;
   mFilterRect = rect;
   return *this;
 }
@@ -100,7 +102,7 @@ QgsFeatureRequest& QgsFeatureRequest::setFilterFid( QgsFeatureId fid )
   return *this;
 }
 
-QgsFeatureRequest&QgsFeatureRequest::setFilterFids( QgsFeatureIds fids )
+QgsFeatureRequest&QgsFeatureRequest::setFilterFids( const QgsFeatureIds& fids )
 {
   mFilter = FilterFids;
   mFilterFids = fids;
@@ -115,13 +117,26 @@ QgsFeatureRequest& QgsFeatureRequest::setFilterExpression( const QString& expres
   return *this;
 }
 
+QgsFeatureRequest&QgsFeatureRequest::combineFilterExpression( const QString& expression )
+{
+  if ( mFilterExpression )
+  {
+    setFilterExpression( QString( "(%1) AND (%2)" ).arg( mFilterExpression->expression(), expression ) );
+  }
+  else
+  {
+    setFilterExpression( expression );
+  }
+  return *this;
+}
+
 QgsFeatureRequest &QgsFeatureRequest::setExpressionContext( const QgsExpressionContext &context )
 {
   mExpressionContext = context;
   return *this;
 }
 
-QgsFeatureRequest& QgsFeatureRequest::setFlags( QgsFeatureRequest::Flags flags )
+QgsFeatureRequest& QgsFeatureRequest::setFlags( const QgsFeatureRequest::Flags& flags )
 {
   mFlags = flags;
   return *this;

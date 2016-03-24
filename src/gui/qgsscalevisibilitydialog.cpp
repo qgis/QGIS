@@ -21,7 +21,7 @@
 
 
 
-QgsScaleVisibilityDialog::QgsScaleVisibilityDialog( QWidget *parent, QString title, QgsMapCanvas* mapCanvas ) :
+QgsScaleVisibilityDialog::QgsScaleVisibilityDialog( QWidget *parent, const QString& title, QgsMapCanvas* mapCanvas ) :
     QDialog( parent )
 {
   if ( !title.isEmpty() )

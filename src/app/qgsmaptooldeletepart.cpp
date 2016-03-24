@@ -21,6 +21,7 @@
 #include "qgsgeometry.h"
 #include "qgssnappingutils.h"
 #include "qgstolerance.h"
+#include "qgisapp.h"
 
 #include <QMouseEvent>
 
@@ -39,13 +40,13 @@ QgsMapToolDeletePart::~QgsMapToolDeletePart()
   delete mRubberBand;
 }
 
-void QgsMapToolDeletePart::canvasMoveEvent( QMouseEvent *e )
+void QgsMapToolDeletePart::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
   //nothing to do
 }
 
-void QgsMapToolDeletePart::canvasPressEvent( QMouseEvent *e )
+void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent* e )
 {
   mPressedFid = -1;
   mPressedPartNum = -1;
@@ -82,7 +83,7 @@ void QgsMapToolDeletePart::canvasPressEvent( QMouseEvent *e )
   delete geomPart;
 }
 
-void QgsMapToolDeletePart::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 
@@ -133,7 +134,11 @@ QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& f
       vlayer->getFeatures( QgsFeatureRequest().setFilterFid( match.featureId() ) ).nextFeature( f );
       const QgsGeometry* g = f.constGeometry();
       if ( !g->isMultipart() )
-        return geomPart;
+      {
+        fid = match.featureId();
+        delete geomPart;
+        return QgsGeometry::fromPoint( match.point() );
+      }
       if ( g->wkbType() == QGis::WKBMultiPoint || g->wkbType() == QGis::WKBMultiPoint25D )
       {
         fid = match.featureId();

@@ -82,7 +82,7 @@ void QgsRasterTransparency::initializeTransparentPixelList( double theRedValue, 
 /**
   Mutator for transparentSingleValuePixelList, replaces the whole list
 */
-void QgsRasterTransparency::setTransparentSingleValuePixelList( QList<QgsRasterTransparency::TransparentSingleValuePixel> theNewList )
+void QgsRasterTransparency::setTransparentSingleValuePixelList( const QList<QgsRasterTransparency::TransparentSingleValuePixel>& theNewList )
 {
   mTransparentSingleValuePixelList = theNewList;
 }
@@ -90,7 +90,7 @@ void QgsRasterTransparency::setTransparentSingleValuePixelList( QList<QgsRasterT
 /**
   Mutator for transparentThreeValuePixelList, replaces the whole list
 */
-void QgsRasterTransparency::setTransparentThreeValuePixelList( QList<QgsRasterTransparency::TransparentThreeValuePixel> theNewList )
+void QgsRasterTransparency::setTransparentThreeValuePixelList( const QList<QgsRasterTransparency::TransparentThreeValuePixel>& theNewList )
 {
   mTransparentThreeValuePixelList = theNewList;
 }

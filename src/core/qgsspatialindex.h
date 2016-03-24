@@ -80,10 +80,10 @@ class CORE_EXPORT QgsSpatialIndex
     /* queries */
 
     /** Returns features that intersect the specified rectangle */
-    QList<QgsFeatureId> intersects( QgsRectangle rect ) const;
+    QList<QgsFeatureId> intersects( const QgsRectangle& rect ) const;
 
     /** Returns nearest neighbors (their count is specified by second parameter) */
-    QList<QgsFeatureId> nearestNeighbor( QgsPoint point, int neighbors ) const;
+    QList<QgsFeatureId> nearestNeighbor( const QgsPoint& point, int neighbors ) const;
 
     /* debugging */
 
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsSpatialIndex
 
   protected:
     // @note not available in python bindings
-    static SpatialIndex::Region rectToRegion( QgsRectangle rect );
+    static SpatialIndex::Region rectToRegion( const QgsRectangle& rect );
     // @note not available in python bindings
     static bool featureInfo( const QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId &id );
 

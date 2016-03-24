@@ -7,4 +7,4 @@ shift 3
 
 export LD_LIBRARY_PATH PYTHONPATH
 
-$PYUIC4 $@
+exec python $(dirname $0)/pyuic4-wrapper.py $@

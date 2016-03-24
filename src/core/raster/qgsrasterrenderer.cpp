@@ -230,13 +230,13 @@ QString QgsRasterRenderer::minMaxOriginLabel( int theOrigin )
 
   label = QCoreApplication::translate( "QgsRasterRenderer", "%1 %2 of %3.",
                                        "min/max origin label in raster properties, where %1 - estimated/exact, %2 - values (min/max, stddev, etc.), %3 - extent" )
-          .arg( est_exact )
-          .arg( values )
-          .arg( extent );
+          .arg( est_exact,
+                values,
+                extent );
   return label;
 }
 
-int QgsRasterRenderer::minMaxOriginFromName( QString theName )
+int QgsRasterRenderer::minMaxOriginFromName( const QString& theName )
 {
   if ( theName.contains( "Unknown" ) )
   {

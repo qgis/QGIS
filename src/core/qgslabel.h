@@ -149,13 +149,13 @@ class CORE_EXPORT QgsLabel
   private:
     /** Does the actual rendering of a label at the given point */
     void renderLabel( QgsRenderContext &renderContext, QgsPoint point,
-                      QString text, QFont font, QPen pen,
+                      const QString& text, const QFont& font, const QPen& pen,
                       int dx, int dy,
                       double xoffset, double yoffset,
                       double ang,
                       int width, int height, int alignment );
 
-    bool readLabelField( QDomElement &el, int attr, QString prefix );
+    bool readLabelField( QDomElement &el, int attr, const QString& prefix );
 
     /** Get label point for simple feature in map units */
     void labelPoint( std::vector<labelpoint>&, QgsFeature &feature );

@@ -45,6 +45,7 @@ class rasterize(OgrAlgorithm):
     DIMENSIONS = 'DIMENSIONS'
     WIDTH = 'WIDTH'
     HEIGHT = 'HEIGHT'
+    EXTRA = 'EXTRA'
     RTYPE = 'RTYPE'
     OUTPUT = 'OUTPUT'
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
@@ -99,6 +100,8 @@ class rasterize(OgrAlgorithm):
                                          self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
         self.addParameter(ParameterBoolean(self.TFW,
                                            self.tr('Force the generation of an associated ESRI world file (.tfw)'), False))
+        params.append(ParameterString(self.EXTRA,
+                                      self.tr('Additional creation parameters'), '', optional=True))
 
         for param in params:
             param.isAdvanced = True
@@ -119,6 +122,7 @@ class rasterize(OgrAlgorithm):
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
         tfw = unicode(self.getParameterValue(self.TFW))
         out = self.getOutputValue(self.OUTPUT)
+        extra = unicode(self.getParameterValue(self.EXTRA))
 
         arguments = []
         arguments.append('-a')
@@ -156,7 +160,10 @@ class rasterize(OgrAlgorithm):
                 arguments.append("-co TFW=YES")
             if len(bigtiff) > 0:
                 arguments.append("-co BIGTIFF=" + bigtiff)
+        if len(extra) > 0:
+            arguments.append(extra)
         arguments.append('-l')
+
         arguments.append(self.ogrLayerName(inLayer))
         arguments.append(ogrLayer)
 

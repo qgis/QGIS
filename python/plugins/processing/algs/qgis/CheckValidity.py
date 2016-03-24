@@ -44,13 +44,13 @@ class CheckValidity(GeoAlgorithm):
     INVALID_OUTPUT = 'INVALID_OUTPUT'
     ERROR_OUTPUT = 'ERROR_OUTPUT'
 
-    METHODS = ['The one selected in digitizing settings',
-               'QGIS',
-               'GEOS']
-
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Check validity')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+
+        self.methods = [self.tr('The one selected in digitizing settings'),
+                        'QGIS',
+                        'GEOS']
 
         self.addParameter(ParameterVector(
             self.INPUT_LAYER,
@@ -60,7 +60,7 @@ class CheckValidity(GeoAlgorithm):
         self.addParameter(ParameterSelection(
             self.METHOD,
             self.tr('Method'),
-            self.METHODS))
+            self.methods))
 
         self.addOutput(OutputVector(
             self.VALID_OUTPUT,

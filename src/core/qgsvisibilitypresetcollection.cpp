@@ -93,8 +93,7 @@ QStringList QgsVisibilityPresetCollection::presets() const
 
 QStringList QgsVisibilityPresetCollection::presetVisibleLayers( const QString& name ) const
 {
-  QSet<QString> visibleIds = mPresets.value( name ).mVisibleLayerIDs;
-  return visibleIds.toList();
+  return mPresets.value( name ).mVisibleLayerIDs;
 }
 
 
@@ -268,14 +267,14 @@ void QgsVisibilityPresetCollection::writeXML( QDomDocument& doc )
   doc.firstChildElement( "qgis" ).appendChild( visPresetsElem );
 }
 
-void QgsVisibilityPresetCollection::registryLayersRemoved( QStringList layerIDs )
+void QgsVisibilityPresetCollection::registryLayersRemoved( const QStringList& layerIDs )
 {
   Q_FOREACH ( const QString& layerID, layerIDs )
   {
     Q_FOREACH ( const QString& presetName, mPresets.keys() )
     {
       PresetRecord& rec = mPresets[presetName];
-      rec.mVisibleLayerIDs.remove( layerID );
+      rec.mVisibleLayerIDs.removeAll( layerID );
       rec.mPerLayerCheckedLegendSymbols.remove( layerID );
       rec.mPerLayerCurrentStyle.remove( layerID );
     }

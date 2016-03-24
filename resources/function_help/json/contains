@@ -1,5 +1,6 @@
 {
-  "function": "contains",
+  "name": "contains",
+  "type": "function",
   "description": "Tests whether a geometry contains another. Returns true if and only if no points of geometry b lie in the exterior of geometry a, and at least one point of the interior of b lies in the interior of a.",
   "arguments": [ {"arg":"geometry a","description":"a geometry"},
                  {"arg":"geometry b","description":"a geometry"}],

@@ -58,7 +58,7 @@ class DynamicTreeModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-    DynamicTreeModel( QObject *parent = 0 );
+    explicit DynamicTreeModel( QObject *parent = 0 );
 
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
     QModelIndex parent( const QModelIndex &index ) const;

@@ -34,7 +34,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
     //! Function to read the selected scale as text
     QString scaleString();
     //! Function to set the selected scale from text
-    bool setScaleString( QString scaleTxt );
+    bool setScaleString( const QString& scaleTxt );
     //! Function to read the selected scale as double
     double scale();
     //! Function to set the selected scale from double
@@ -45,7 +45,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
     // be expected.
     static QString toString( double scale );
     //! Helper function to convert a scale string to double
-    static double toDouble( QString scaleString, bool *ok = NULL );
+    static double toDouble( const QString& scaleString, bool *ok = NULL );
 
   signals:
     //! Signal is emitted when *user* has finished editing/selecting a new scale.

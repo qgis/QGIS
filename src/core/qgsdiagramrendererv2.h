@@ -29,7 +29,6 @@ class QgsDiagramRendererV2;
 class QgsFeature;
 class QgsRenderContext;
 class QDomElement;
-class QgsPalGeometry;
 class QgsCoordinateTransform;
 class QgsMapToPixel;
 class QgsVectorLayer;
@@ -73,10 +72,8 @@ class CORE_EXPORT QgsDiagramLayerSettings
     QgsDiagramRendererV2* renderer; // if any renderer is assigned, it is owned by this class
 
     //assigned when layer gets prepared
-    pal::Layer* palLayer;
     const QgsCoordinateTransform* ct;
     const QgsMapToPixel* xform;
-    QList<QgsPalGeometry*> geometries;
     QgsFields fields;
 
     int xPosColumn; //attribute index for x coordinate (or -1 if position not data defined)
@@ -249,7 +246,7 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRendererV2
     QgsSingleCategoryDiagramRenderer();
     ~QgsSingleCategoryDiagramRenderer();
 
-    QgsDiagramRendererV2* clone() const override;
+    QgsSingleCategoryDiagramRenderer* clone() const override;
 
     QString rendererName() const override { return "SingleCategory"; }
 
@@ -279,7 +276,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer();
 
-    QgsDiagramRendererV2* clone() const override;
+    QgsLinearlyInterpolatedDiagramRenderer* clone() const override;
 
     /** Returns list with all diagram settings in the renderer*/
     QList<QgsDiagramSettings> diagramSettings() const override;
@@ -306,7 +303,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     void setClassificationAttribute( int index ) { mInterpolationSettings.classificationAttribute = index; }
 
     QString classificationAttributeExpression() const { return mInterpolationSettings.classificationAttributeExpression; }
-    void setClassificationAttributeExpression( QString expression ) { mInterpolationSettings.classificationAttributeExpression = expression; }
+    void setClassificationAttributeExpression( const QString& expression ) { mInterpolationSettings.classificationAttributeExpression = expression; }
 
     bool classificationAttributeIsExpression() const { return mInterpolationSettings.classificationAttributeIsExpression; }
     void setClassificationAttributeIsExpression( bool isExpression ) { mInterpolationSettings.classificationAttributeIsExpression = isExpression; }

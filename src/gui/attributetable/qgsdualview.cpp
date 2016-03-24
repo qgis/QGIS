@@ -165,7 +165,7 @@ void QgsDualView::columnBoxInit()
     if ( fieldIndex == -1 )
       continue;
 
-    if ( mLayerCache->layer()->editorWidgetV2( fieldIndex ) != "Hidden" )
+    if ( mLayerCache->layer()->editFormConfig()->widgetType( fieldIndex ) != "Hidden" )
     {
       QIcon icon = QgsApplication::getThemeIcon( "/mActionNewAttribute.png" );
       QString text = field.name();
@@ -321,8 +321,7 @@ void QgsDualView::previewColumnChanged( QObject* action )
       QMessageBox::warning( this,
                             tr( "Could not set preview column" ),
                             tr( "Could not set column '%1' as preview column.\nParser error:\n%2" )
-                            .arg( previewAction->text() )
-                            .arg( mFeatureList->parserErrorString() )
+                            .arg( previewAction->text(), mFeatureList->parserErrorString() )
                           );
     }
     else
@@ -347,7 +346,7 @@ int QgsDualView::filteredFeatureCount()
   return mFilterModel->rowCount();
 }
 
-void QgsDualView::viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex )
+void QgsDualView::viewWillShowContextMenu( QMenu* menu, const QModelIndex& atIndex )
 {
   QModelIndex sourceIndex = mFilterModel->mapToSource( atIndex );
 
@@ -390,7 +389,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex )
   menu->addAction( tr( "Open form" ), a, SLOT( featureForm() ) );
 }
 
-void QgsDualView::previewExpressionChanged( const QString expression )
+void QgsDualView::previewExpressionChanged( const QString& expression )
 {
   mLayerCache->layer()->setDisplayExpression( expression );
 }
@@ -400,7 +399,7 @@ void QgsDualView::featureFormAttributeChanged()
   mFeatureList->setCurrentFeatureEdited( true );
 }
 
-void QgsDualView::setFilteredFeatures( QgsFeatureIds filteredFeatures )
+void QgsDualView::setFilteredFeatures( const QgsFeatureIds& filteredFeatures )
 {
   mFilterModel->setFilteredFeatures( filteredFeatures );
 }
@@ -413,7 +412,7 @@ void QgsDualView::setRequest( const QgsFeatureRequest& request )
 void QgsDualView::setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager )
 {
   mTableView->setFeatureSelectionManager( featureSelectionManager );
-  // mFeatureList->setFeatureSelectionManager( featureSelectionManager );
+  mFeatureList->setFeatureSelectionManager( featureSelectionManager );
 
   if ( mFeatureSelectionManager && mFeatureSelectionManager->parent() == this )
     delete mFeatureSelectionManager;

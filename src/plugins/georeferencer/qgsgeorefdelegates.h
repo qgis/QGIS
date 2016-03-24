@@ -22,7 +22,7 @@ class QgsNonEditableDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
-    QgsNonEditableDelegate( QWidget *parent = 0 );
+    explicit QgsNonEditableDelegate( QWidget *parent = 0 );
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
                            const QModelIndex &index ) const override
@@ -39,7 +39,7 @@ class QgsDmsAndDdDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
-    QgsDmsAndDdDelegate( QWidget *parent = 0 );
+    explicit QgsDmsAndDdDelegate( QWidget *parent = 0 );
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
                            const QModelIndex &index ) const override;
@@ -52,7 +52,7 @@ class QgsDmsAndDdDelegate : public QStyledItemDelegate
                                const QModelIndex &index ) const override;
 
   private:
-    double dmsToDD( QString dms ) const;
+    double dmsToDD( const QString& dms ) const;
 };
 
 class QgsCoordDelegate : public QStyledItemDelegate
@@ -60,7 +60,7 @@ class QgsCoordDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
-    QgsCoordDelegate( QWidget *parent = 0 );
+    explicit QgsCoordDelegate( QWidget *parent = 0 );
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
                            const QModelIndex &index ) const override;

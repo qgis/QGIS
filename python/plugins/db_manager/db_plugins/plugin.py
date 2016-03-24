@@ -37,10 +37,8 @@ class BaseError(Exception):
         else:
             msg = e
 
-        try:
-            msg = unicode(msg)
-        except UnicodeDecodeError:
-            msg = unicode(msg, 'utf-8')
+        if not isinstance(msg, unicode):
+            msg = unicode(msg, 'utf-8', 'replace') # convert from utf8 and replace errors (if any)
 
         self.msg = msg
         Exception.__init__(self, msg)
@@ -262,7 +260,7 @@ class Database(DbItemObject):
         # may be overloaded by derived classes
         return "row_number() over ()"
 
-    def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False):
+    def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False, filter=""):
         from qgis.core import QgsMapLayer, QgsVectorLayer, QgsRasterLayer
 
         if uniqueCol is None:
@@ -276,7 +274,7 @@ class Database(DbItemObject):
                     uniqueCol = "_uid_"
 
         uri = self.uri()
-        uri.setDataSource("", u"(%s\n)" % sql, geomCol, "", uniqueCol)
+        uri.setDataSource("", u"(%s\n)" % sql, geomCol, filter, uniqueCol)
         if avoidSelectById:
             uri.disableSelectAtId(True)
         provider = self.dbplugin().providerName()

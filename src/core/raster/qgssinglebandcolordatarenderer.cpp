@@ -32,7 +32,7 @@ QgsSingleBandColorDataRenderer::~QgsSingleBandColorDataRenderer()
 {
 }
 
-QgsRasterInterface * QgsSingleBandColorDataRenderer::clone() const
+QgsSingleBandColorDataRenderer* QgsSingleBandColorDataRenderer::clone() const
 {
   QgsSingleBandColorDataRenderer * renderer = new QgsSingleBandColorDataRenderer( 0, mBand );
   renderer->setOpacity( mOpacity );

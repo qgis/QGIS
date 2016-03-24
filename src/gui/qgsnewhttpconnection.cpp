@@ -23,10 +23,11 @@
 #include <QRegExpValidator>
 
 QgsNewHttpConnection::QgsNewHttpConnection(
-  QWidget *parent, const QString& baseKey, const QString& connName, Qt::WindowFlags fl ):
-    QDialog( parent, fl ),
-    mBaseKey( baseKey ),
-    mOriginalConnName( connName )
+  QWidget *parent, const QString& baseKey, const QString& connName, const Qt::WindowFlags& fl )
+    : QDialog( parent, fl )
+    , mBaseKey( baseKey )
+    , mOriginalConnName( connName )
+    , mAuthConfigSelect( 0 )
 {
   setupUi( this );
 
@@ -49,6 +50,9 @@ QgsNewHttpConnection::QgsNewHttpConnection(
   cmbDpiMode->addItem( tr( "UMN" ) );
   cmbDpiMode->addItem( tr( "GeoServer" ) );
 
+  mAuthConfigSelect = new QgsAuthConfigSelect( this );
+  tabAuth->insertTab( 1, mAuthConfigSelect, tr( "Configurations" ) );
+
   if ( !connName.isEmpty() )
   {
     // populate the dialog with the information stored for the connection
@@ -57,7 +61,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     QSettings settings;
 
     QString key = mBaseKey + connName;
-    QString credentialsKey = "/Qgis/" + mCredentialsBaseKey + "/" + connName;
+    QString credentialsKey = "/Qgis/" + mCredentialsBaseKey + '/' + connName;
     txtName->setText( connName );
     txtUrl->setText( settings.value( key + "/url" ).toString() );
 
@@ -92,6 +96,13 @@ QgsNewHttpConnection::QgsNewHttpConnection(
 
     txtUserName->setText( settings.value( credentialsKey + "/username" ).toString() );
     txtPassword->setText( settings.value( credentialsKey + "/password" ).toString() );
+
+    QString authcfg = settings.value( credentialsKey + "/authcfg" ).toString();
+    mAuthConfigSelect->setConfigId( authcfg );
+    if ( !authcfg.isEmpty() )
+    {
+      tabAuth->setCurrentIndex( tabAuth->indexOf( mAuthConfigSelect ) );
+    }
   }
 
   if ( mBaseKey != "/Qgis/connections-wms/" )
@@ -155,7 +166,7 @@ void QgsNewHttpConnection::accept()
 {
   QSettings settings;
   QString key = mBaseKey + txtName->text();
-  QString credentialsKey = "/Qgis/" + mCredentialsBaseKey + "/" + txtName->text();
+  QString credentialsKey = "/Qgis/" + mCredentialsBaseKey + '/' + txtName->text();
 
   // warn if entry was renamed to an existing connection
   if (( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
@@ -181,7 +192,7 @@ void QgsNewHttpConnection::accept()
   if ( !mOriginalConnName.isNull() && mOriginalConnName != key )
   {
     settings.remove( mBaseKey + mOriginalConnName );
-    settings.remove( "/Qgis/" + mCredentialsBaseKey + "/" + mOriginalConnName );
+    settings.remove( "/Qgis/" + mCredentialsBaseKey + '/' + mOriginalConnName );
     settings.sync();
   }
 
@@ -246,6 +257,8 @@ void QgsNewHttpConnection::accept()
 
   settings.setValue( credentialsKey + "/username", txtUserName->text() );
   settings.setValue( credentialsKey + "/password", txtPassword->text() );
+
+  settings.setValue( credentialsKey + "/authcfg", mAuthConfigSelect->configId() );
 
   settings.setValue( mBaseKey + "/selected", txtName->text() );
 

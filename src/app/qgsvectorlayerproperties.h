@@ -37,9 +37,10 @@ class QgsAttributeActionDialog;
 class QgsApplyDialog;
 class QgsLabelDialog;
 class QgsVectorLayer;
-class QgsLabelingGui;
+class QgsLabelingWidget;
 class QgsDiagramProperties;
 class QgsFieldsProperties;
+class QgsRendererV2PropertiesDialog;
 
 class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase
 {
@@ -60,7 +61,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void setRendererDirty( bool ) {}
 
     /** Sets the attribute that is used in the Identify Results dialog box*/
-    void setDisplayField( QString name );
+    void setDisplayField( const QString& name );
 
     /** Adds an attribute to the table (but does not commit it yet)
     @param field the field to add
@@ -103,7 +104,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     void on_pbnQueryBuilder_clicked();
     void on_pbnIndex_clicked();
-    void on_mCrsSelector_crsChanged( QgsCoordinateReferenceSystem crs );
+    void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem& crs );
     void loadDefaultStyle_clicked();
     void saveDefaultStyle_clicked();
     void loadStyle_clicked();
@@ -123,8 +124,8 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
   signals:
 
     /** Emitted when changes to layer were saved to update legend */
-    void refreshLegend( QString layerID, bool expandItem );
-    void refreshLegend( QString layerID );
+    void refreshLegend( const QString& layerID, bool expandItem );
+    void refreshLegend( const QString& layerID );
 
     void toggleEditing( QgsMapLayer * );
 
@@ -140,6 +141,15 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     void aboutToShowStyleMenu();
 
+    /** Updates the variable editor to reflect layer changes
+     */
+    void updateVariableEditor();
+
+    /**
+     * @brief updates the FieldsPropertiesDialog when syncing the layer properties
+     */
+    void updateFieldsPropertiesDialog();
+
   protected:
 
     void saveStyleAs( StyleType styleType );
@@ -153,6 +163,8 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     bool mMetadataFilled;
 
+    QString mOriginalSubsetSQL;
+
     QMenu *mSaveAsMenu;
     QMenu *mLoadStyleMenu;
 
@@ -160,9 +172,9 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QAction* mActionSaveStyleAs;
 
     /** Renderer dialog which is shown*/
-    QDialog* mRendererDialog;
+    QgsRendererV2PropertiesDialog* mRendererDialog;
     /** Labeling dialog. If apply is pressed, options are applied to vector's QgsLabel */
-    QgsLabelingGui* labelingDialog;
+    QgsLabelingWidget* labelingDialog;
     /** Label dialog. If apply is pressed, options are applied to vector's QgsLabel */
     QgsLabelDialog* labelDialog;
     /** Actions dialog. If apply is pressed, the actions are stored for later use */

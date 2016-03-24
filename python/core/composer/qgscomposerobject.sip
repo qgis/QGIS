@@ -135,6 +135,12 @@ class QgsComposerObject : QObject
      */
     QStringList customProperties() const;
 
+    /** Creates an expression context relating to the objects' current state. The context includes
+     * scopes for global, project and composition properties.
+     * @note added in QGIS 2.12
+     */
+    virtual QgsExpressionContext* createExpressionContext() const /Factory/;
+
   public slots:
 
     /** Triggers a redraw for the item*/

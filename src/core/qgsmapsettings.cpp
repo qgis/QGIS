@@ -183,12 +183,12 @@ void QgsMapSettings::updateDerived()
   }
 #endif
 
-  QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ) ).arg( qgsDoubleToString( mapUnitsPerPixelY ) ) );
-  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mSize.width() ) ).arg( qgsDoubleToString( mSize.height() ) ) );
-  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() ) ).arg( qgsDoubleToString( mExtent.height() ) ) );
+  QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ), qgsDoubleToString( mapUnitsPerPixelY ) ) );
+  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mSize.width() ), qgsDoubleToString( mSize.height() ) ) );
+  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() ), qgsDoubleToString( mExtent.height() ) ) );
   QgsDebugMsg( mExtent.toString() );
-  QgsDebugMsg( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / myWidth ) ).arg( qgsDoubleToString( mVisibleExtent.height() / myHeight ) ) );
-  QgsDebugMsg( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / mMapUnitsPerPixel ) ).arg( qgsDoubleToString( mVisibleExtent.height() / mMapUnitsPerPixel ) ) );
+  QgsDebugMsg( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / myWidth ), qgsDoubleToString( mVisibleExtent.height() / myHeight ) ) );
+  QgsDebugMsg( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / mMapUnitsPerPixel ), qgsDoubleToString( mVisibleExtent.height() / mMapUnitsPerPixel ) ) );
   QgsDebugMsg( QString( "Scale (assuming meters as map units) = 1:%1" ).arg( qgsDoubleToString( mScale ) ) );
   QgsDebugMsg( QString( "Rotation: %1 degrees" ).arg( mRotation ) );
 
@@ -272,7 +272,7 @@ void QgsMapSettings::setMapUnits( QGis::UnitType u )
   updateDerived();
 }
 
-void QgsMapSettings::setFlags( QgsMapSettings::Flags flags )
+void QgsMapSettings::setFlags( const QgsMapSettings::Flags& flags )
 {
   mFlags = flags;
 }
@@ -340,6 +340,19 @@ double QgsMapSettings::scale() const
 const QgsCoordinateTransform* QgsMapSettings::layerTransform( QgsMapLayer *layer ) const
 {
   return mDatumTransformStore.transformation( layer );
+}
+
+
+double QgsMapSettings::layerToMapUnits( QgsMapLayer *theLayer, const QgsRectangle& referenceExtent ) const
+{
+  QgsRectangle extent = referenceExtent.isEmpty() ? theLayer->extent() : referenceExtent;
+  QgsPoint l1( extent.xMinimum(), extent.yMinimum() );
+  QgsPoint l2( extent.xMaximum(), extent.yMaximum() );
+  double distLayerUnits = std::sqrt( l1.sqrDist( l2 ) );
+  QgsPoint m1 = layerToMapCoordinates( theLayer, l1 );
+  QgsPoint m2 = layerToMapCoordinates( theLayer, l2 );
+  double distMapUnits = std::sqrt( m1.sqrDist( m2 ) );
+  return distMapUnits / distLayerUnits;
 }
 
 

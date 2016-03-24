@@ -1,5 +1,6 @@
 {
-  "function": "regexp_replace",
+  "name": "regexp_replace",
+  "type": "function",
   "description": "Returns a string with the supplied regular expression replaced.",
   "arguments": [ {"arg":"input_string","description":"the string to replace matches in"},
   {"arg":"regex","description":"The regular expression to replace. Backslash characters must be double escaped (eg \"\\\\s\" to match a white space character). Non-greedy regular expressions are not supported."},

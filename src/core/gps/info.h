@@ -26,8 +26,8 @@
 
 /** \file */
 
-#ifndef __NMEA_INFO_H__
-#define __NMEA_INFO_H__
+#ifndef NMEA_INFO_H
+#define NMEA_INFO_H
 
 #include "nmeatime.h"
 
@@ -126,4 +126,4 @@ extern "C"
 }
 #endif
 
-#endif /* __NMEA_INFO_H__ */
+#endif /* NMEA_INFO_H */

@@ -43,7 +43,7 @@ void TestQgsApplication::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   qDebug( "%s", QgsApplication::showSettings().toUtf8().constData() );
-};
+}
 
 void TestQgsApplication::cleanupTestCase()
 {
@@ -56,7 +56,7 @@ void TestQgsApplication::checkPaths()
   qDebug( "Checking authors file exists:" );
   qDebug( "%s", myPath.toLocal8Bit().constData() );
   QVERIFY( !myPath.isEmpty() );
-};
+}
 
 void TestQgsApplication::checkGdalSkip()
 {

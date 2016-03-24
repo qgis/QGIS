@@ -49,7 +49,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
     QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix = "", int rasterBand = 1,
-                        Statistics stats = Statistics( Count | Sum | Mean ) );
+                        const Statistics& stats = Statistics( Count | Sum | Mean ) );
     ~QgsZonalStatistics();
 
     /** Starts the calculation
@@ -116,7 +116,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     /** Tests whether a pixel's value should be included in the result*/
     bool validPixel( float value ) const;
 
-    QString getUniqueFieldName( QString fieldName );
+    QString getUniqueFieldName( const QString& fieldName );
 
     QString mRasterFilePath;
     /** Raster band to calculate statistics from (defaults to 1)*/

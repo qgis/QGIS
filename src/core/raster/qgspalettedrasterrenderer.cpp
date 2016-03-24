@@ -25,7 +25,7 @@
 #include <QVector>
 
 QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber,
-    QColor* colorArray, int nColors, const QVector<QString> labels ):
+    QColor* colorArray, int nColors, const QVector<QString>& labels ):
     QgsRasterRenderer( input, "paletted" ), mBand( bandNumber ), mNColors( nColors ), mLabels( labels )
 {
   mColors = new QRgb[nColors];
@@ -36,7 +36,7 @@ QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface* input,
   delete[] colorArray;
 }
 
-QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QRgb* colorArray, int nColors, const QVector<QString> labels ):
+QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QRgb* colorArray, int nColors, const QVector<QString>& labels ):
     QgsRasterRenderer( input, "paletted" ), mBand( bandNumber ), mColors( colorArray ), mNColors( nColors ), mLabels( labels )
 {
 }
@@ -46,7 +46,7 @@ QgsPalettedRasterRenderer::~QgsPalettedRasterRenderer()
   delete[] mColors;
 }
 
-QgsRasterInterface * QgsPalettedRasterRenderer::clone() const
+QgsPalettedRasterRenderer* QgsPalettedRasterRenderer::clone() const
 {
   QgsPalettedRasterRenderer * renderer = new QgsPalettedRasterRenderer( 0, mBand, rgbArray(), mNColors );
   renderer->setOpacity( mOpacity );
@@ -143,7 +143,7 @@ QRgb* QgsPalettedRasterRenderer::rgbArray() const
   return rgbValues;
 }
 
-void QgsPalettedRasterRenderer::setLabel( int idx, QString label )
+void QgsPalettedRasterRenderer::setLabel( int idx, const QString& label )
 {
   if ( idx >= mLabels.size() )
   {

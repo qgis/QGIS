@@ -29,7 +29,7 @@ ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
 	WITH_ORACLE=1
 endif
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"wheezy jessie stretch precise trusty utopic vivid"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"wheezy jessie stretch precise trusty utopic vivid wily"))
 	DISTRIBUTION := sid
 endif
 
@@ -74,13 +74,13 @@ CMAKE_OPTS := \
 
 ifeq ($(GRASSVER),7)
 	CMAKE_OPTS += \
-		-DWITH_GRASS=FALSE \
+		-DWITH_GRASS=TRUE \
 		-DWITH_GRASS7=TRUE \
 		-DGRASS_PREFIX7=/usr/lib/$(GRASS)
 else
 	CMAKE_OPTS += \
 		-DWITH_GRASS=TRUE \
-		-DWITH_GRASS7=FALSE \
+		-DWITH_GRASS6=TRUE \
 		-DGRASS_PREFIX=/usr/lib/$(GRASS)
 endif
 
@@ -101,7 +101,7 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid"))
 	CMAKE_OPTS += -DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty utopic vivid sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty utopic vivid wily sid"))
 	CMAKE_OPTS += -DPYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
 endif
 
@@ -115,9 +115,6 @@ endif
 
 ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 	CMAKE_OPTS += -DCMAKE_BUILD_TYPE=Debug
-ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	CMAKE_OPTS += -DENABLE_COVERAGE=TRUE
-endif
 endif
 
 ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
@@ -175,6 +172,7 @@ $(2): $(1)
 		-e "s/\{QGIS_ABI\}/$(QGIS_ABI)/g" \
 		-e "s/\{GRASS\}/$(GRASS)/g" \
 		-e "s/\{GRASSVER\}/$(GRASSVER)/g" \
+		-e "s/\{GRASSVER_QGISABI\}/$(GRASSVER)-$(QGIS_ABI)/g" \
 		$$^ >$$@
 
 templates:: $(2)
@@ -184,6 +182,7 @@ templateclean::
 endef
 
 $(foreach t,$(wildcard debian/*.in),$(eval $(call gentemplate,$(t),$(basename $(t)))))
+$(foreach t,$(wildcard debian/*{GRASSVER_QGIS_ABI}*),$(eval $(call gentemplate,$(t),$(subst {GRASSVER_QGIS_ABI},$(GRASSVER)-$(QGIS_ABI),$(t)))))
 $(foreach t,$(wildcard debian/*{QGIS_ABI}*),$(eval $(call gentemplate,$(t),$(subst {QGIS_ABI},$(QGIS_ABI),$(t)))))
 
 cleantemplates:
@@ -230,8 +229,12 @@ override_dh_auto_install:
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.png
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qbrowser-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qbrowser.png
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-mime-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis-mime.png
-	install -o root -g root -m 644 $(CURDIR)/debian/qgis-icon.xpm $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.xpm
-	install -o root -g root -m 644 $(CURDIR)/debian/qbrowser-icon.xpm $(CURDIR)/debian/tmp/usr/share/pixmaps/qbrowser.xpm
+
+	# Install MIME type icon
+	for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128; do \
+		install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/mimetypes ; \
+		install -o root -g root -m 644 $(CURDIR)/debian/qgis-mime-icon$${size}.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/mimetypes/qgis-mime.png ; \
+	done
 
 	# Install application icon
 	for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128 192x192 256x256 512x512; do \
@@ -265,9 +268,10 @@ override_dh_auto_install:
 	$(RM) $(CURDIR)/debian/tmp/usr/bin/qbrowser
 
 	# qgis binary wrappers
-	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis-provider-grass/usr/bin
-	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-provider-grass/usr/bin/qgis
-	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-provider-grass/usr/bin/qbrowser
+	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis-plugin-grass/usr/bin
+	sed -r -e "s/\{GRASS\}/$(GRASS)/g" $(CURDIR)/debian/qgis.sh.in >$(CURDIR)/debian/qgis.sh
+	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qgis
+	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qbrowser
 
 override_dh_install:
 	# Don't ship srs.db, automatically updated in postinst with crssync
@@ -278,6 +282,12 @@ override_dh_install:
 	# remove unwanted files
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/installdox
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/html/jquery.js
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/jquery.js
+
+	# replace leaflet and jquery urls
+	perl -i -p \
+		-e 's#http://.*/leaflet.css#leaflet/leaflet.css#;s#http://.*/leaflet.js#leaflet/leaflet.js#;s#http://.*/jquery-.*.min.js#jquery-min.js#' \
+		$(CURDIR)/debian/tmp/usr/share/qgis/doc/developersmap.html
 
 	# Don't include a copy of the world.tif also included in osgearth-data
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/globe/world.tif
@@ -305,6 +315,7 @@ override_dh_installmime:
 
 override_dh_python2:
 	dh_python2 --no-guessing-versions
+	dh_python2 --no-guessing-versions usr/share/qgis/grass/scripts
 	dh_sip -ppython-qgis
 
 override_dh_compress:

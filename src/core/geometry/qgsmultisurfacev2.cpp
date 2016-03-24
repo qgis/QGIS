@@ -22,7 +22,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspolygonv2.h"
 #include "qgscurvepolygonv2.h"
 
-QgsAbstractGeometryV2 *QgsMultiSurfaceV2::clone() const
+QgsMultiSurfaceV2 *QgsMultiSurfaceV2::clone() const
 {
   return new QgsMultiSurfaceV2( *this );
 }
@@ -79,7 +79,7 @@ QString QgsMultiSurfaceV2::asJSON( int precision ) const
   {
     if ( dynamic_cast<const QgsSurfaceV2*>( geom ) )
     {
-      json += "[";
+      json += '[';
 
       QgsPolygonV2* polygon = static_cast<const QgsSurfaceV2*>( geom )->surfaceToPolygon();
 

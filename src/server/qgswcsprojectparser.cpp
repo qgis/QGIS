@@ -19,8 +19,22 @@
 #include "qgsconfigcache.h"
 #include "qgsconfigparserutils.h"
 #include "qgsrasterlayer.h"
+#include "qgsmapserviceexception.h"
+#include "qgsmessagelog.h"
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+#include "qgsaccesscontrol.h"
+#endif
 
-QgsWCSProjectParser::QgsWCSProjectParser( const QString& filePath )
+
+QgsWCSProjectParser::QgsWCSProjectParser(
+  const QString& filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  , const QgsAccessControl* as
+#endif
+)
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    : mAccessControl( as )
+#endif
 {
   mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
 }
@@ -81,6 +95,12 @@ void QgsWCSProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDo
       QgsMapLayer *layer = mProjectParser->createLayerFromElement( elem );
       if ( layer && wcsLayersId.contains( layer->id() ) )
       {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+        if ( !mAccessControl->layerReadPermission( layer ) )
+        {
+          continue;
+        }
+#endif
         QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
         layerMap.insert( layer->id(), layer );
 
@@ -201,6 +221,14 @@ void QgsWCSProjectParser::describeCoverage( const QString& aCoveName, QDomElemen
       QgsRasterLayer *rLayer = dynamic_cast<QgsRasterLayer *>( mProjectParser->createLayerFromElement( elem ) );
       if ( !rLayer )
         continue;
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      if ( !mAccessControl->layerReadPermission( rLayer ) )
+      {
+        continue;
+      }
+#endif
+
       QString coveName = rLayer->name();
       coveName = coveName.replace( " ", "_" );
       if ( wcsLayersId.contains( rLayer->id() ) && ( aCoveName == "" || coveNameList.contains( coveName ) ) )

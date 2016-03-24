@@ -200,7 +200,7 @@ void QgsGdalProviderBase::registerGdalDrivers()
   QString myJoinedList = mySettings.value( "gdal/skipList", "" ).toString();
   if ( !myJoinedList.isEmpty() )
   {
-    QStringList myList = myJoinedList.split( " " );
+    QStringList myList = myJoinedList.split( ' ' );
     for ( int i = 0; i < myList.size(); ++i )
     {
       QgsApplication::skipGdalDriver( myList.at( i ) );

@@ -380,6 +380,9 @@ namespace pal
 
       bool OpenRead( const char* a_fileName )
       {
+        if ( m_file )
+          fclose( m_file );
+
         m_file = fopen( a_fileName, "rb" );
         if ( !m_file )
         {
@@ -390,6 +393,9 @@ namespace pal
 
       bool OpenWrite( const char* a_fileName )
       {
+        if ( m_file )
+          fclose( m_file );
+
         m_file = fopen( a_fileName, "wb" );
         if ( !m_file )
         {
@@ -964,7 +970,7 @@ namespace pal
   {
     ASSERT( a_node );
 
-    int firstTime = true;
+    bool firstTime = true;
     Rect rect;
     InitRect( &rect );
 

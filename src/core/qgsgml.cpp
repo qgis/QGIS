@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgml.h"
+#include "qgsauthmanager.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
@@ -58,7 +59,7 @@ QgsGml::QgsGml(
 
   mEndian = QgsApplication::endian();
 
-  int index = mTypeName.indexOf( ":" );
+  int index = mTypeName.indexOf( ':' );
   if ( index != -1 && index < mTypeName.length() )
   {
     mTypeName = mTypeName.mid( index + 1 );
@@ -69,7 +70,7 @@ QgsGml::~QgsGml()
 {
 }
 
-int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangle* extent, const QString& userName, const QString& password )
+int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangle* extent, const QString& userName, const QString& password , const QString& authcfg )
 {
   mUri = uri;
   mWkbType = wkbType;
@@ -83,9 +84,21 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
   mExtent.setMinimal();
 
   QNetworkRequest request( mUri );
-  if ( !userName.isNull() || !password.isNull() )
+  if ( !authcfg.isEmpty() )
   {
-    request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( userName ).arg( password ).toAscii().toBase64() );
+    if ( !QgsAuthManager::instance()->updateNetworkRequest( request, authcfg ) )
+    {
+      QgsMessageLog::logMessage(
+        tr( "GML Getfeature network request update failed for authcfg %1" ).arg( authcfg ),
+        tr( "Network" ),
+        QgsMessageLog::CRITICAL
+      );
+      return 1;
+    }
+  }
+  else if ( !userName.isNull() || !password.isNull() )
+  {
+    request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( userName, password ).toAscii().toBase64() );
   }
   QNetworkReply* reply = QgsNetworkAccessManager::instance()->get( request );
 
@@ -221,12 +234,12 @@ void QgsGml::startElement( const XML_Char* el, const XML_Char** attr )
     mCoordinateSeparator = readAttribute( "cs", attr );
     if ( mCoordinateSeparator.isEmpty() )
     {
-      mCoordinateSeparator = ",";
+      mCoordinateSeparator = ',';
     }
     mTupleSeparator = readAttribute( "ts", attr );
     if ( mTupleSeparator.isEmpty() )
     {
-      mTupleSeparator = " ";
+      mTupleSeparator = ' ';
     }
   }
   if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "pos"
@@ -588,11 +601,11 @@ int QgsGml::readEpsgFromAttribute( int& epsgNr, const XML_Char** attr ) const
       QString epsgNrString;
       if ( epsgString.startsWith( "http" ) ) //e.g. geoserver: "http://www.opengis.net/gml/srs/epsg.xml#4326"
       {
-        epsgNrString = epsgString.section( "#", 1, 1 );
+        epsgNrString = epsgString.section( '#', 1, 1 );
       }
       else //e.g. umn mapserver: "EPSG:4326">
       {
-        epsgNrString = epsgString.section( ":", 1, 1 );
+        epsgNrString = epsgString.section( ':', 1, 1 );
       }
       bool conversionOk;
       int eNr = epsgNrString.toInt( &conversionOk );
@@ -674,7 +687,7 @@ int QgsGml::pointsFromCoordinateString( QList<QgsPoint>& points, const QString& 
 int QgsGml::pointsFromPosListString( QList<QgsPoint>& points, const QString& coordString, int dimension ) const
 {
   // coordinates separated by spaces
-  QStringList coordinates = coordString.split( " ", QString::SkipEmptyParts );
+  QStringList coordinates = coordString.split( ' ', QString::SkipEmptyParts );
 
   if ( coordinates.size() % dimension != 0 )
   {

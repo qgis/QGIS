@@ -6,7 +6,7 @@ class QgsRendererCategoryV2
   public:
 
     //! takes ownership of symbol
-    QgsRendererCategoryV2( QVariant value, QgsSymbolV2* symbol /Transfer/, QString label, bool render = true );
+    QgsRendererCategoryV2( const QVariant& value, QgsSymbolV2* symbol /Transfer/, const QString& label, bool render = true );
 
     //! copy constructor
     QgsRendererCategoryV2( const QgsRendererCategoryV2& cat );
@@ -41,13 +41,15 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
 
   public:
 
-    QgsCategorizedSymbolRendererV2( QString attrName = QString(), QgsCategoryList categories = QgsCategoryList() );
+    QgsCategorizedSymbolRendererV2( const QString& attrName = QString(), const QgsCategoryList& categories = QgsCategoryList() );
 
     virtual ~QgsCategorizedSymbolRendererV2();
 
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
+    //! @note available in python as symbolForFeature2
+    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=symbolForFeature2/;
 
-    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context );
+    //! @note available in python as originalSymbolForFeature2
+    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=originalSymbolForFeature2/;
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
@@ -57,28 +59,29 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual QString dump() const;
 
-    virtual QgsFeatureRendererV2* clone() const /Factory/;
+    virtual QgsCategorizedSymbolRendererV2* clone() const /Factory/;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities();
 
-    virtual QgsSymbolV2List symbols( QgsRenderContext& context );
+    //! @note available in python as symbols2
+    virtual QgsSymbolV2List symbols( QgsRenderContext& context ) /PyName=symbols2/;
     void updateSymbols( QgsSymbolV2 * sym );
 
     const QgsCategoryList& categories() const;
 
     //! return index of category with specified value (-1 if not found)
-    int categoryIndexForValue( QVariant val );
+    int categoryIndexForValue( const QVariant& val );
 
     //! return index of category with specified label (-1 if not found or not unique)
     //! @note added in 2.5
-    int categoryIndexForLabel( QString val );
+    int categoryIndexForLabel( const QString& val );
 
     bool updateCategoryValue( int catIndex, const QVariant &value );
     bool updateCategorySymbol( int catIndex, QgsSymbolV2* symbol /Transfer/ );
-    bool updateCategoryLabel( int catIndex, QString label );
+    bool updateCategoryLabel( int catIndex, const QString& label );
 
     //! @note added in 2.5
     bool updateCategoryRenderState( int catIndex, bool render );
@@ -94,7 +97,7 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     void sortByLabel( Qt::SortOrder order = Qt::AscendingOrder );
 
     QString classAttribute() const;
-    void setClassAttribute( QString attr );
+    void setClassAttribute( const QString& attr );
 
     //! create renderer from XML element
     static QgsFeatureRendererV2* create( QDomElement& element ) /Factory/;
@@ -107,7 +110,10 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
 
     //! return a list of item text / symbol
     //! @note not available in python bindings
-    // virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = QString() );
+    // virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = QString() );
+
+    //! @note added in 2.10
+    QgsLegendSymbolListV2 legendSymbolItemsV2() const;
 
     QgsSymbolV2* sourceSymbol();
     void setSourceSymbol( QgsSymbolV2* sym /Transfer/ );
@@ -130,10 +136,10 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
       */
     void updateColorRamp( QgsVectorColorRampV2* ramp /Transfer/, bool inverted = false );
 
-    void setRotationField( QString fieldOrExpression ) /Deprecated/;
+    void setRotationField( const QString& fieldOrExpression ) /Deprecated/;
     QString rotationField() const /Deprecated/;
 
-    void setSizeScaleField( QString fieldOrExpression );
+    void setSizeScaleField( const QString& fieldOrExpression );
     QString sizeScaleField() const;
 
     void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
@@ -145,11 +151,11 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
 
     //! item in symbology was checked
     // @note added in 2.5
-    virtual bool legendSymbolItemChecked( QString key );
+    virtual bool legendSymbolItemChecked( const QString& key );
 
     //! item in symbology was checked
     // @note added in 2.5
-    virtual void checkLegendSymbolItem( QString key, bool state = true );
+    virtual void checkLegendSymbolItem( const QString& key, bool state = true );
 
     //! If supported by the renderer, return classification attribute for the use in legend
     //! @note added in 2.6
@@ -163,7 +169,7 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
   protected:
     void rebuildHash();
 
-    QgsSymbolV2* symbolForValue( QVariant value );
+    QgsSymbolV2* symbolForValue( const QVariant& value );
 
   private:
     QgsCategorizedSymbolRendererV2( const QgsCategorizedSymbolRendererV2 & );

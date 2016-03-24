@@ -75,7 +75,7 @@ class CORE_EXPORT QgsComposerUtils
      * @param rotation the rotation in degrees to be applied to the rectangle
      * @returns largest scaled version of the rectangle possible
     */
-    static QRectF largestRotatedRectWithinBounds( const QRectF originalRect, const QRectF boundsRect, const double rotation );
+    static QRectF largestRotatedRectWithinBounds( const QRectF &originalRect, const QRectF &boundsRect, const double rotation );
 
     /** Returns the size in mm corresponding to a font point size
      * @param pointSize font size in points
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsComposerUtils
      * @param ok will be true if string could be decoded
      * @returns decoded paper orientation
     */
-    static QgsComposition::PaperOrientation decodePaperOrientation( const QString orientationString, bool &ok );
+    static QgsComposition::PaperOrientation decodePaperOrientation( const QString& orientationString, bool &ok );
 
     /** Decodes a string representing a preset page size
      * @param presetString string to decode
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsComposerUtils
      * @param height double for decoded paper height
      * @returns true if string could be decoded successfully
     */
-    static bool decodePresetPaperSize( const QString presetString, double &width, double &height );
+    static bool decodePresetPaperSize( const QString& presetString, double &width, double &height );
 
     /** Reads all data defined properties from xml
      * @param itemElem dom element containing data defined properties

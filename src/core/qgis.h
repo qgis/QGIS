@@ -28,6 +28,8 @@
 #include <cmath>
 #include <qnumeric.h>
 
+#include <qgswkbtypes.h>
+
 /** \ingroup core
  * The QGis class provides global constants for use throughout the application.
  */
@@ -50,7 +52,8 @@ class CORE_EXPORT QGis
 
     //! Used for symbology operations
     // Feature types
-    enum WkbType
+    // @deprecated use QgsWKBTypes::Type
+    /* Q_DECL_DEPRECATED */ enum WkbType
     {
       WKBUnknown = 0,
       WKBPoint = 1,
@@ -68,89 +71,35 @@ class CORE_EXPORT QGis
       WKBMultiPolygon25D,
     };
 
-    static WkbType singleType( WkbType type )
-    {
-      switch ( type )
-      {
-        case WKBMultiPoint:         return WKBPoint;
-        case WKBMultiLineString:    return WKBLineString;
-        case WKBMultiPolygon:       return WKBPolygon;
-        case WKBMultiPoint25D:      return WKBPoint25D;
-        case WKBMultiLineString25D: return WKBLineString25D;
-        case WKBMultiPolygon25D:    return WKBPolygon25D;
-        default:                    return type;
-      }
-    }
+    //! Map multi to single type
+    // @deprecated use QgsWKBTypes::singleType
+    /* Q_DECL_DEPRECATED */ static WkbType singleType( WkbType type );
 
-    static WkbType multiType( WkbType type )
-    {
-      switch ( type )
-      {
-        case WKBPoint:         return WKBMultiPoint;
-        case WKBLineString:    return WKBMultiLineString;
-        case WKBPolygon:       return WKBMultiPolygon;
-        case WKBPoint25D:      return WKBMultiPoint25D;
-        case WKBLineString25D: return WKBMultiLineString25D;
-        case WKBPolygon25D:    return WKBMultiPolygon25D;
-        default:               return type;
-      }
-    }
+    //! Map single to multitype type
+    // @deprecated use QgsWKBTypes::multiType
+    /* Q_DECL_DEPRECATED */ static WkbType multiType( WkbType type );
 
-    static WkbType flatType( WkbType type )
-    {
-      switch ( type )
-      {
-        case WKBPoint25D:           return WKBPoint;
-        case WKBLineString25D:      return WKBLineString;
-        case WKBPolygon25D:         return WKBPolygon;
-        case WKBMultiPoint25D:      return WKBMultiPoint;
-        case WKBMultiLineString25D: return WKBMultiLineString;
-        case WKBMultiPolygon25D:    return WKBMultiPolygon;
-        default:                    return type;
-      }
-    }
+    //! Map 2d+ to 2d type
+    // @deprecated use QgsWKBTypes::flatType
+    /* Q_DECL_DEPRECATED */ static WkbType flatType( WkbType type );
 
-    static bool isSingleType( WkbType type )
-    {
-      switch ( flatType( type ) )
-      {
-        case WKBPoint:
-        case WKBLineString:
-        case WKBPolygon:
-          return true;
-        default:
-          return false;
-      }
-    }
+    //! Return if type is a single type
+    // @deprecated use QgsWKBTypes::isSingleType
+    /* Q_DECL_DEPRECATED */ static bool isSingleType( WkbType type );
 
-    static bool isMultiType( WkbType type )
-    {
-      switch ( flatType( type ) )
-      {
-        case WKBMultiPoint:
-        case WKBMultiLineString:
-        case WKBMultiPolygon:
-          return true;
-        default:
-          return false;
-      }
-    }
+    //! Return if type is a multi type
+    // @deprecated use QgsWKBTypes::isMultiType
+    /* Q_DECL_DEPRECATED */ static bool isMultiType( WkbType type );
 
-    static int wkbDimensions( WkbType type )
-    {
-      switch ( type )
-      {
-        case WKBUnknown:            return 0;
-        case WKBNoGeometry:         return 0;
-        case WKBPoint25D:           return 3;
-        case WKBLineString25D:      return 3;
-        case WKBPolygon25D:         return 3;
-        case WKBMultiPoint25D:      return 3;
-        case WKBMultiLineString25D: return 3;
-        case WKBMultiPolygon25D:    return 3;
-        default:                    return 2;
-      }
-    }
+    // get dimension of points
+    // @deprecated use QgsWKBTypes::hasZ() and QgsWKBTypes::hasM()
+    /* Q_DECL_DEPRECATED */ static int wkbDimensions( WkbType type );
+
+    //! Converts from old (pre 2.10) WKB type to new WKB type
+    static QgsWKBTypes::Type fromOldWkbType( QGis::WkbType type );
+
+    //! Converts from new (post 2.10) WKB type to old WKB type
+    static QGis::WkbType fromNewWkbType( QgsWKBTypes::Type type );
 
     enum GeometryType
     {
@@ -162,41 +111,10 @@ class CORE_EXPORT QGis
     };
 
     //! description strings for geometry types
-    static const char *vectorGeometryType( GeometryType type )
-    {
-      switch ( type )
-      {
-        case Point:           return "Point";
-        case Line:            return "Line";
-        case Polygon:         return "Polygon";
-        case UnknownGeometry: return "Unknown geometry";
-        case NoGeometry:      return "No geometry";
-        default:              return "Invalid type";
-      }
-    }
+    static const char *vectorGeometryType( GeometryType type );
 
     //! description strings for feature types
-    static const char *featureType( WkbType type )
-    {
-      switch ( type )
-      {
-        case WKBUnknown:            return "WKBUnknown";
-        case WKBPoint:              return "WKBPoint";
-        case WKBLineString:         return "WKBLineString";
-        case WKBPolygon:            return "WKBPolygon";
-        case WKBMultiPoint:         return "WKBMultiPoint";
-        case WKBMultiLineString:    return "WKBMultiLineString";
-        case WKBMultiPolygon:       return "WKBMultiPolygon";
-        case WKBNoGeometry:         return "WKBNoGeometry";
-        case WKBPoint25D:           return "WKBPoint25D";
-        case WKBLineString25D:      return "WKBLineString25D";
-        case WKBPolygon25D:         return "WKBPolygon25D";
-        case WKBMultiPoint25D:      return "WKBMultiPoint25D";
-        case WKBMultiLineString25D: return "WKBMultiLineString25D";
-        case WKBMultiPolygon25D:    return "WKBMultiPolygon25D";
-        default:                    return "invalid wkbtype";
-      }
-    }
+    static const char *featureType( WkbType type );
 
     /** Raster data types.
      *  This is modified and extended copy of GDALDataType.
@@ -243,11 +161,11 @@ class CORE_EXPORT QGis
     //! Provides the canonical name of the type value
     static QString toLiteral( QGis::UnitType unit );
     //! Converts from the canonical name to the type value
-    static UnitType fromLiteral( QString  literal, QGis::UnitType defaultType = UnknownUnit );
+    static UnitType fromLiteral( const QString& literal, QGis::UnitType defaultType = UnknownUnit );
     //! Provides translated version of the type value
     static QString tr( QGis::UnitType unit );
     //! Provides type value from translated version
-    static UnitType fromTr( QString literal, QGis::UnitType defaultType = UnknownUnit );
+    static UnitType fromTr( const QString& literal, QGis::UnitType defaultType = UnknownUnit );
     //! Returns the conversion factor between the specified units
     static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
 
@@ -371,11 +289,19 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
          qRound( ar * pow( 10.0, significantDigits ) ) == qRound( br * pow( 10.0, significantDigits ) );
 }
 
+//
+// a round function which returns a double to guard against overflows
+//
+inline double qgsRound( double x )
+{
+  return x < 0.0 ? std::ceil( x - 0.5 ) : std::floor( x + 0.5 );
+}
+
 bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
 
 bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
 
-CORE_EXPORT QString qgsVsiPrefix( QString path );
+CORE_EXPORT QString qgsVsiPrefix( const QString& path );
 
 /** Allocates size bytes and returns a pointer to the allocated  memory.
     Works like C malloc() but prints debug message by QgsLogger if allocation fails.

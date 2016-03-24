@@ -68,7 +68,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * member function (by default a WKT definition).
      * @param theDefinition A String containing a coordinate reference system definition.
      */
-    explicit QgsCoordinateReferenceSystem( QString theDefinition );
+    explicit QgsCoordinateReferenceSystem( const QString& theDefinition );
 
     /** Use this constructor when you want to create a CRS object using
      *  a postgis SRID, an EpsgCrsId id or a QGIS CRS_ID.
@@ -330,7 +330,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     // Mutators -----------------------------------
     /** Set user hint for validation
      */
-    void setValidationHint( QString html );
+    void setValidationHint( const QString& html );
 
     /** Get user hint for validation
      */
@@ -345,7 +345,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /** Save the proj4-string as a custom CRS
      * @returns bool true if success else false
      */
-    bool saveAsUserCRS( QString name );
+    bool saveAsUserCRS( const QString& name );
 
     /** Returns auth id of related geographic CRS*/
     QString geographicCRSAuthId() const;
@@ -377,7 +377,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /** Set the Description
      * @param theDescription A textual description of the srs.
      */
-    void setDescription( QString theDescription );
+    void setDescription( const QString& theDescription );
 
     /** Set the Proj Proj4String.
      * @param theProj4String Proj4 format specifies
@@ -389,7 +389,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Gets stored in the CRS as:
      * +proj=longlat +datum=WGS84 +no_defs
      */
-    void setProj4String( QString theProj4String );
+    void setProj4String( const QString& theProj4String );
 
     /** Set this Geographic? flag
      * @param theGeoFlag Whether this is a geographic or projected coordinate system
@@ -404,15 +404,15 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /** Set the authority identifier for this srs
      * @param theID the authority identifier for this srs (defaults to 0)
      */
-    void setAuthId( QString theID );
+    void setAuthId( const QString& theID );
     /** Set the projection acronym
      * @param theProjectionAcronym the acronym (must be a valid proj4 projection acronym)
      */
-    void setProjectionAcronym( QString theProjectionAcronym );
+    void setProjectionAcronym( const QString& theProjectionAcronym );
     /** Set the ellipsoid acronym
      * @param theEllipsoidAcronym the acronym (must be a valid proj4 ellipsoid acronym)
      */
-    void setEllipsoidAcronym( QString theEllipsoidAcronym );
+    void setEllipsoidAcronym( const QString& theEllipsoidAcronym );
 
     /** Print the description if debugging
      */
@@ -426,11 +426,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @param theSql The sql query to execute
      * @return An associative array of field name <-> value pairs
      */
-    RecordMap getRecord( QString theSql );
+    RecordMap getRecord( const QString& theSql );
 
     // Open SQLite db and show message if cannot be opened
     // returns the same code as sqlite3_open
-    static int openDb( QString path, sqlite3 **db, bool readonly = true );
+    static int openDb( const QString& path, sqlite3 **db, bool readonly = true );
 
     //!The internal sqlite3 srs.db primary key for this srs
     long    mSrsId;
@@ -462,7 +462,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     OGRSpatialReferenceH mCRS;
 
-    bool loadFromDb( QString db, QString expression, QString value );
+    bool loadFromDb( const QString& db, const QString& expression, const QString& value );
 
     QString mValidationHint;
     mutable QString mWkt;

@@ -27,8 +27,6 @@
 #include <labelposition.h>
 #include "qgsrectangle.h"
 
-using namespace pal;
-
 /** A class to query the labeling structure at a given point (small wraper around pal RTree class)*/
 class CORE_EXPORT QgsLabelSearchTree
 {
@@ -55,11 +53,11 @@ class CORE_EXPORT QgsLabelSearchTree
      * @return true in case of success
      * @note not available in python bindings
      */
-    bool insertLabel( LabelPosition* labelPos, int featureId, const QString& layerName, const QString& labeltext, const QFont& labelfont, bool diagram = false, bool pinned = false );
+    bool insertLabel( pal::LabelPosition* labelPos, int featureId, const QString& layerName, const QString& labeltext, const QFont& labelfont, bool diagram = false, bool pinned = false );
 
   private:
     // set as mutable because RTree template is not const-correct
-    mutable RTree<QgsLabelPosition*, double, 2, double> mSpatialIndex;
+    mutable pal::RTree<QgsLabelPosition*, double, 2, double> mSpatialIndex;
     QList< QgsLabelPosition* > mOwnedPositions;
 };
 

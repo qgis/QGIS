@@ -32,6 +32,13 @@
 #include <QNetworkReply>
 #include <QNetworkDiskCache>
 
+#ifndef QT_NO_OPENSSL
+#include <QSslConfiguration>
+#endif
+
+#include "qgsauthmanager.h"
+
+
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
 {
   public:
@@ -64,7 +71,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
       {
         if ( url.startsWith( exclude ) )
         {
-          QgsDebugMsg( QString( "using default proxy for %1 [exclude %2]" ).arg( url ).arg( exclude ) );
+          QgsDebugMsg( QString( "using default proxy for %1 [exclude %2]" ).arg( url, exclude ) );
           return QList<QNetworkProxy>() << QNetworkProxy();
         }
       }
@@ -140,11 +147,11 @@ void QgsNetworkAccessManager::setFallbackProxyAndExcludes( const QNetworkProxy &
                      proxy.type() == QNetworkProxy::HttpProxy ? "HttpProxy" :
                      proxy.type() == QNetworkProxy::HttpCachingProxy ? "HttpCachingProxy" :
                      proxy.type() == QNetworkProxy::FtpCachingProxy ? "FtpCachingProxy" :
-                     "Undefined" )
-               .arg( proxy.hostName() )
+                     "Undefined",
+                     proxy.hostName() )
                .arg( proxy.port() )
-               .arg( proxy.user() )
-               .arg( proxy.password().isEmpty() ? "not set" : "set" ) );
+               .arg( proxy.user(),
+                     proxy.password().isEmpty() ? "not set" : "set" ) );
 
   mFallbackProxy = proxy;
   mExcludedURLs = excludes;
@@ -158,9 +165,34 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 
   QString userAgent = s.value( "/qgis/networkAndProxy/userAgent", "Mozilla/5.0" ).toString();
   if ( !userAgent.isEmpty() )
-    userAgent += " ";
+    userAgent += ' ';
   userAgent += QString( "QGIS/%1" ).arg( QGis::QGIS_VERSION );
   pReq->setRawHeader( "User-Agent", userAgent.toUtf8() );
+
+#ifndef QT_NO_OPENSSL
+  bool ishttps = pReq->url().scheme().toLower() == "https";
+  if ( ishttps && !QgsAuthManager::instance()->isDisabled() )
+  {
+    QgsDebugMsg( "Adding trusted CA certs to request" );
+    QSslConfiguration sslconfig( pReq->sslConfiguration() );
+    sslconfig.setCaCertificates( QgsAuthManager::instance()->getTrustedCaCertsCache() );
+
+    // check for SSL cert custom config
+    QString hostport( QString( "%1:%2" )
+                      .arg( pReq->url().host().trimmed() )
+                      .arg( pReq->url().port() != -1 ? pReq->url().port() : 443 ) );
+    QgsAuthConfigSslServer servconfig = QgsAuthManager::instance()->getSslCertCustomConfigByHost( hostport.trimmed() );
+    if ( !servconfig.isNull() )
+    {
+      QgsDebugMsg( QString( "Adding SSL custom config to request for %1" ).arg( hostport ) );
+      sslconfig.setProtocol( servconfig.sslProtocol() );
+      sslconfig.setPeerVerifyMode( servconfig.sslPeerVerifyMode() );
+      sslconfig.setPeerVerifyDepth( servconfig.sslPeerVerifyDepth() );
+    }
+
+    pReq->setSslConfiguration( sslconfig );
+  }
+#endif
 
   emit requestAboutToBeCreated( op, req, outgoingData );
   QNetworkReply *reply = QNetworkAccessManager::createRequest( op, req, outgoingData );
@@ -169,6 +201,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 
   // abort request, when network timeout happens
   QTimer *timer = new QTimer( reply );
+  timer->setObjectName( "timeoutTimer" );
   connect( timer, SIGNAL( timeout() ), this, SLOT( abortRequest() ) );
   timer->setSingleShot( true );
   timer->start( s.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt() );
@@ -273,7 +306,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
   bool proxyEnabled = settings.value( "proxy/proxyEnabled", false ).toBool();
   if ( proxyEnabled )
   {
-    excludes = settings.value( "proxy/proxyExcludedUrls", "" ).toString().split( "|", QString::SkipEmptyParts );
+    excludes = settings.value( "proxy/proxyExcludedUrls", "" ).toString().split( '|', QString::SkipEmptyParts );
 
     //read type, host, port, user, passw from settings
     QString proxyHost = settings.value( "proxy/proxyHost", "" ).toString();
@@ -316,7 +349,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
       QgsDebugMsg( QString( "setting proxy %1 %2:%3 %4/%5" )
                    .arg( proxyType )
                    .arg( proxyHost ).arg( proxyPort )
-                   .arg( proxyUser ).arg( proxyPassword )
+                   .arg( proxyUser, proxyPassword )
                  );
       proxy = QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword );
     }

@@ -40,21 +40,20 @@ class GeometryConvert(GeoAlgorithm):
     TYPE = 'TYPE'
     OUTPUT = 'OUTPUT'
 
-    TYPES = ['Centroids',
-             'Nodes',
-             'Linestrings',
-             'Multilinestrings',
-             'Polygons'
-             ]
-
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Convert geometry type')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
+        self.types = [self.tr('Centroids'),
+                      self.tr('Nodes'),
+                      self.tr('Linestrings'),
+                      self.tr('Multilinestrings'),
+                      self.tr('Polygons')]
+
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterSelection(self.TYPE,
-                                             self.tr('New geometry type'), self.TYPES))
+                                             self.tr('New geometry type'), self.types))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Converted')))
 

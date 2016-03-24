@@ -28,12 +28,14 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt4 import uic
-from PyQt4.QtCore import QCoreApplication, QUrl
+from PyQt4.QtCore import QCoreApplication, QUrl, QSettings, QByteArray
 from PyQt4.QtGui import QApplication, QDialogButtonBox
 
 from qgis.utils import iface
+from qgis.core import QgsNetworkAccessManager
 
 from processing.core.ProcessingConfig import ProcessingConfig
+from processing.gui import AlgorithmClassification
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -51,6 +53,9 @@ class AlgorithmDialogBase(BASE, WIDGET):
         super(AlgorithmDialogBase, self).__init__(iface.mainWindow())
         self.setupUi(self)
 
+        self.settings = QSettings()
+        self.restoreGeometry(self.settings.value("/Processing/dialogBase", QByteArray()))
+
         self.executed = False
         self.mainWidget = None
         self.alg = alg
@@ -61,7 +66,9 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         self.btnClose = self.buttonBox.button(QDialogButtonBox.Close)
 
-        self.setWindowTitle(self.alg.name)
+        self.setWindowTitle(AlgorithmClassification.getDisplayName(self.alg))
+
+        self.txtHelp.page().setNetworkAccessManager(QgsNetworkAccessManager.instance())
 
         # load algorithm help if available
         isText, algHelp = self.alg.help()
@@ -74,13 +81,30 @@ class AlgorithmDialogBase(BASE, WIDGET):
             if isText:
                 self.txtHelp.setHtml(algHelp)
             else:
+                self.txtHelp.settings().clearMemoryCaches()
+                self.tabWidget.setTabText(2, self.tr("Help (loading...)"))
+                self.tabWidget.setTabEnabled(2, False)
+                self.txtHelp.loadFinished.connect(self.loadFinished)
+                self.tabWidget.currentChanged.connect(self.loadHelp)
                 self.txtHelp.load(algHelp)
+                self.algHelp = algHelp
         except:
             self.txtHelp.setHtml(
                 self.tr('<h2>Could not open help file :-( </h2>'))
 
         self.showDebug = ProcessingConfig.getSetting(
             ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
+
+    def loadFinished(self):
+        self.tabWidget.setTabEnabled(2, True)
+        self.tabWidget.setTabText(2, self.tr("Help"))
+
+    def loadHelp(self, i):
+        if i == 2:
+            self.txtHelp.findText(self.alg.name)
+
+    def closeEvent(self, evt):
+        self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
 
     def setMainWidget(self):
         self.tabWidget.widget(0).layout().addWidget(self.mainWidget)
@@ -101,7 +125,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
     def setInfo(self, msg, error=False):
         if error:
-            self.txtLog.append('<span style="color:red">%s</span>' % msg)
+            self.txtLog.append('<span style="color:red"><br>%s<br></span>' % msg)
         else:
             self.txtLog.append(msg)
         QCoreApplication.processEvents()

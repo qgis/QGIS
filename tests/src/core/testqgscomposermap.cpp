@@ -24,6 +24,7 @@
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
 #include "qgsproject.h"
 #include "qgsvisibilitypresetcollection.h"
 #include <QObject>
@@ -182,12 +183,34 @@ void TestQgsComposerMap::worldFileGeneration()
   double a, b, c, d, e, f;
   mComposition->computeWorldFileParameters( a, b, c, d, e, f );
 
-  QVERIFY( fabs( a - 4.18048 ) < 0.001 );
-  QVERIFY( fabs( b - 2.41331 ) < 0.001 );
-  QVERIFY( fabs( c - 779444 ) < 1 );
-  QVERIFY( fabs( d - 2.4136 ) < 0.001 );
-  QVERIFY( fabs( e + 4.17997 ) < 0.001 );
-  QVERIFY( fabs( f - 3.34241e+06 ) < 1e+03 );
+  QVERIFY( qgsDoubleNear( a, 4.18048, 0.001 ) );
+  QVERIFY( qgsDoubleNear( b, 2.41331, 0.001 ) );
+  QVERIFY( qgsDoubleNear( c, 779444, 1 ) );
+  QVERIFY( qgsDoubleNear( d, 2.4136, 0.001 ) );
+  QVERIFY( qgsDoubleNear( e, -4.17997, 0.001 ) );
+  QVERIFY( qgsDoubleNear( f, 3.34241e+06, 1e+03 ) );
+
+  //test with map on second page. Parameters should be the same
+  mComposerMap->setItemPosition( 20, 20, QgsComposerItem::UpperLeft, 2 );
+  mComposition->computeWorldFileParameters( a, b, c, d, e, f );
+
+  QVERIFY( qgsDoubleNear( a, 4.18048, 0.001 ) );
+  QVERIFY( qgsDoubleNear( b, 2.41331, 0.001 ) );
+  QVERIFY( qgsDoubleNear( c, 779444, 1 ) );
+  QVERIFY( qgsDoubleNear( d, 2.4136, 0.001 ) );
+  QVERIFY( qgsDoubleNear( e, -4.17997, 0.001 ) );
+  QVERIFY( qgsDoubleNear( f, 3.34241e+06, 1e+03 ) );
+
+  //test computing parameters for specific region
+  mComposerMap->setItemPosition( 20, 20, QgsComposerItem::UpperLeft, 2 );
+  mComposition->computeWorldFileParameters( QRectF( 10, 5, 260, 200 ), a, b, c, d, e, f );
+
+  QVERIFY( qgsDoubleNear( a, 4.18061, 0.001 ) );
+  QVERIFY( qgsDoubleNear( b, 2.41321, 0.001 ) );
+  QVERIFY( qgsDoubleNear( c, 773810, 1 ) );
+  QVERIFY( qgsDoubleNear( d, 2.4137, 0.001 ) );
+  QVERIFY( qgsDoubleNear( e, -4.1798, 0.001 ) );
+  QVERIFY( qgsDoubleNear( f, 3.35331e+06, 1e+03 ) );
 
   mComposition->setGenerateWorldFile( false );
   mComposerMap->setMapRotation( 0.0 );
@@ -257,7 +280,7 @@ void TestQgsComposerMap::dataDefinedLayers()
 
   //test subset of valid layers
   mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
-                                        QString( "'%1|%2'" ).arg( mPolysLayer->name() ).arg( mRasterLayer->name() ), QString() );
+                                        QString( "'%1|%2'" ).arg( mPolysLayer->name(), mRasterLayer->name() ), QString() );
   result = mComposerMap->layersToRender();
   QCOMPARE( result.count(), 2 );
   QVERIFY( result.contains( mPolysLayer->id() ) );
@@ -265,7 +288,7 @@ void TestQgsComposerMap::dataDefinedLayers()
 
   //test non-existant layer
   mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
-                                        QString( "'x|%1|%2'" ).arg( mLinesLayer->name() ).arg( mPointsLayer->name() ), QString() );
+                                        QString( "'x|%1|%2'" ).arg( mLinesLayer->name(), mPointsLayer->name() ), QString() );
   result = mComposerMap->layersToRender();
   QCOMPARE( result.count(), 2 );
   QVERIFY( result.contains( mLinesLayer->id() ) );
@@ -277,9 +300,35 @@ void TestQgsComposerMap::dataDefinedLayers()
   result = mComposerMap->layersToRender();
   QVERIFY( result.isEmpty() );
 
+
+  //test with atlas feature evaluation
+  QgsVectorLayer* atlasLayer = new QgsVectorLayer( "Point?field=col1:string", "atlas", "memory" );
+  QVERIFY( atlasLayer->isValid() );
+  QgsFeature f1( atlasLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( "col1", mLinesLayer->name() );
+  QgsFeature f2( atlasLayer->dataProvider()->fields(), 1 );
+  f2.setAttribute( "col1", mPointsLayer->name() );
+  atlasLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 );
+  mComposition->atlasComposition().setCoverageLayer( atlasLayer );
+  mComposition->atlasComposition().setEnabled( true );
+  mComposition->setAtlasMode( QgsComposition::ExportAtlas );
+  mComposition->atlasComposition().beginRender();
+  mComposition->atlasComposition().prepareForFeature( 0 );
+
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true, QString( "\"col1\"" ), QString() );
+  result = mComposerMap->layersToRender();
+  QCOMPARE( result.count(), 1 );
+  QCOMPARE( result.at( 0 ), mLinesLayer->id() );
+  mComposition->atlasComposition().prepareForFeature( 1 );
+  result = mComposerMap->layersToRender();
+  QCOMPARE( result.count(), 1 );
+  QCOMPARE( result.at( 0 ), mPointsLayer->id() );
+  mComposition->atlasComposition().setEnabled( false );
+  delete atlasLayer;
+
   //render test
   mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
-                                        QString( "'%1|%2'" ).arg( mPolysLayer->name() ).arg( mPointsLayer->name() ), QString() );
+                                        QString( "'%1|%2'" ).arg( mPolysLayer->name(), mPointsLayer->name() ), QString() );
   mComposerMap->setNewExtent( QgsRectangle( -110.0, 25.0, -90, 40.0 ) );
 
   QgsCompositionChecker checker( "composermap_ddlayers", mComposition );
@@ -301,8 +350,8 @@ void TestQgsComposerMap::dataDefinedStyles()
   mComposition->addComposerMap( mComposerMap );
 
   QgsVisibilityPresetCollection::PresetRecord rec;
-  rec.mVisibleLayerIDs.insert( mPointsLayer->id() );
-  rec.mVisibleLayerIDs.insert( mLinesLayer->id() );
+  rec.mVisibleLayerIDs << mPointsLayer->id();
+  rec.mVisibleLayerIDs << mLinesLayer->id();
 
   QgsProject::instance()->visibilityPresetCollection()->insert( "test preset", rec );
 

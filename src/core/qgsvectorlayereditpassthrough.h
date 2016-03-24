@@ -28,6 +28,7 @@ class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffe
     bool addFeature( QgsFeature& f ) override;
     bool addFeatures( QgsFeatureList& features ) override;
     bool deleteFeature( QgsFeatureId fid ) override;
+    bool deleteFeatures( QgsFeatureIds fids ) override;
     bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom ) override;
     bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() ) override;
     bool addAttribute( const QgsField &field ) override;

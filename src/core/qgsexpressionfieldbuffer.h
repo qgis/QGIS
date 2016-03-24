@@ -35,7 +35,7 @@ class CORE_EXPORT QgsExpressionFieldBuffer
     typedef struct ExpressionField
     {
       ExpressionField() {}
-      ExpressionField( QString exp, QgsField fld ) : expression( exp ), field( fld ) {}
+      ExpressionField( const QString& exp, const QgsField& fld ) : expression( exp ), field( fld ) {}
 
       QString expression;
       QgsField field;

@@ -100,8 +100,21 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
     /** Calculates the maximum distance grids within the stack extend
      * beyond the QgsComposerMap's item rect
      * @returns maximum grid extension
+     * @see calculateMaxGridExtension()
      */
     double maxGridExtension() const;
+
+    /** Calculates the maximum distance grids within the stack extend beyond the
+     * QgsComposerMap's item rect. This method calculates the distance for each side of the
+     * map item separately
+     * @param top storage for top extension
+     * @param right storage for right extension
+     * @param bottom storage for bottom extension
+     * @param left storage for left extension
+     * @note added in QGIS 2.12
+     * @see maxGridExtension()
+     */
+    void calculateMaxGridExtension( double& top, double& right, double& bottom, double& left ) const;
 
 };
 
@@ -286,7 +299,20 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * item rect
      * @returns maximum extension in millimetres
      */
-    double maxExtension() const;
+    double maxExtension();
+
+    /** Calculates the maximum distance the grid extends beyond the
+     * QgsComposerMap's item rect. This method calculates the distance for each side of the
+     * map item separately
+     * @param top storage for top extension
+     * @param right storage for right extension
+     * @param bottom storage for bottom extension
+     * @param left storage for left extension
+     * @note added in QGIS 2.12
+     * @see maxExtension()
+     */
+    void calculateMaxExtension( double& top, double& right, double& bottom, double& left );
+
 
     //
     // GRID UNITS
@@ -642,7 +668,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see frameSideFlags
      * @see testFrameSideFlag
     */
-    void setFrameSideFlags( const FrameSideFlags flags );
+    void setFrameSideFlags( const FrameSideFlags& flags );
 
     /** Sets whether the grid frame is drawn for a certain side of the map item.
      * @param flag flag for grid frame side

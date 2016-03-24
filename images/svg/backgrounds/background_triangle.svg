@@ -24,5 +24,5 @@
 		<ns:permits  rdf:resource="http://web.resource.org/cc/DerivativeWorks"></ns:permits>
 	</ns:License>
 </rdf:RDF>
-<polygon fill="param(fill) #FFF" stroke="param(outline) #F00" stroke-width="param(outline-width) 25" points="288.653,59.382 29.639,520.615 550.358,519.107 "/>
+<polygon fill="param(fill)" stroke="param(outline) #F00" stroke-width="param(outline-width)" points="288.653,59.382 29.639,520.615 550.358,519.107 "/>
 </svg>

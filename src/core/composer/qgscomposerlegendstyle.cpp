@@ -49,7 +49,7 @@ void QgsComposerLegendStyle::setMargin( double margin )
   mMarginMap[Right] = margin;
 }
 
-void QgsComposerLegendStyle::writeXML( QString name, QDomElement& elem, QDomDocument & doc ) const
+void QgsComposerLegendStyle::writeXML( const QString& name, QDomElement& elem, QDomDocument & doc ) const
 {
   if ( elem.isNull() ) return;
 
@@ -105,7 +105,7 @@ QString QgsComposerLegendStyle::styleName( Style s )
   return "";
 }
 
-QgsComposerLegendStyle::Style QgsComposerLegendStyle::styleFromName( QString styleName )
+QgsComposerLegendStyle::Style QgsComposerLegendStyle::styleFromName( const QString& styleName )
 {
   if ( styleName == "hidden" ) return Hidden;
   else if ( styleName == "title" ) return Title;

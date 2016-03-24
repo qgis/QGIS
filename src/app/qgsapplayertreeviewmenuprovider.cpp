@@ -53,6 +53,8 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addAction( actions->actionRenameGroupOrLayer( menu ) );
 
+      menu->addAction( actions->actionMutuallyExclusiveGroup( menu ) );
+
       if ( mView->selectedNodes( true ).count() >= 2 )
         menu->addAction( actions->actionGroupSelected( menu ) );
 
@@ -71,7 +73,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( rlayer )
       {
-        menu->addAction( tr( "&Zoom to Best Scale (100%)" ), QgisApp::instance(), SLOT( legendLayerZoomNative() ) );
+        menu->addAction( QgsApplication::getThemeIcon( "/mActionZoomActual.svg" ), tr( "&Zoom to Native Resolution (100%)" ), QgisApp::instance(), SLOT( legendLayerZoomNative() ) );
 
         if ( rlayer->rasterType() != QgsRasterLayer::Palette )
           menu->addAction( tr( "&Stretch Using Current Extent" ), QgisApp::instance(), SLOT( legendLayerStretchUsingCurrentExtent() ) );
@@ -97,7 +99,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       // style-related actions
       if ( layer && mView->selectedLayerNodes().count() == 1 )
       {
-        QMenu *menuStyleManager = new QMenu( tr( "Styles" ) );
+        QMenu *menuStyleManager = new QMenu( tr( "Styles" ), menu );
 
         QgisApp *app = QgisApp::instance();
         menuStyleManager->addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
@@ -196,7 +198,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
 
 
-void QgsAppLayerTreeViewMenuProvider::addLegendLayerAction( QAction* action, QString menu, QString id,
+void QgsAppLayerTreeViewMenuProvider::addLegendLayerAction( QAction* action, const QString& menu, const QString& id,
     QgsMapLayer::LayerType type, bool allLayers )
 {
   mLegendLayerActionMap[type].append( LegendLayerAction( action, menu, id, allLayers ) );
@@ -264,7 +266,7 @@ QList< LegendLayerAction > QgsAppLayerTreeViewMenuProvider::legendLayerActions( 
     Q_FOREACH ( const LegendLayerAction& lyrAction, mLegendLayerActionMap[ type ] )
     {
       Q_UNUSED( lyrAction );
-      QgsDebugMsg( QString( "%1/%2 - %3 layers" ).arg( lyrAction.menu ).arg( lyrAction.action->text() ).arg( lyrAction.layers.count() ) );
+      QgsDebugMsg( QString( "%1/%2 - %3 layers" ).arg( lyrAction.menu, lyrAction.action->text() ).arg( lyrAction.layers.count() ) );
     }
   }
 #endif

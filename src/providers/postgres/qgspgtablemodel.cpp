@@ -28,6 +28,7 @@ QgsPgTableModel::QgsPgTableModel()
   QStringList headerLabels;
   headerLabels << tr( "Schema" );
   headerLabels << tr( "Table" );
+  headerLabels << tr( "Comment" );
   headerLabels << tr( "Column" );
   headerLabels << tr( "Data Type" );
   headerLabels << tr( "Spatial Type" );
@@ -83,6 +84,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
     QStandardItem *geomTypeItem = new QStandardItem( QgsPostgresConn::displayStringForGeomType( layerProperty.geometryColType ) );
 
     QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
+    QStandardItem *commentItem = new QStandardItem( layerProperty.tableComment );
     QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
     QStandardItem *sridItem  = new QStandardItem( wkbType != QGis::WKBNoGeometry ? QString::number( srid ) : "" );
     sridItem->setEditable( wkbType != QGis::WKBNoGeometry && srid == INT_MIN );
@@ -115,6 +117,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
 
     childItemList << schemaNameItem;
     childItemList << tableItem;
+    childItemList << commentItem;
     childItemList << geomItem;
     childItemList << geomTypeItem;
     childItemList << typeItem;
@@ -232,26 +235,16 @@ void QgsPgTableModel::setSql( const QModelIndex &index, const QString &sql )
 
 QIcon QgsPgTableModel::iconForWkbType( QGis::WkbType type )
 {
-  switch ( type )
+  QgsWKBTypes::GeometryType geomType = QgsWKBTypes::geometryType( QgsWKBTypes::Type( type ) );
+  switch ( geomType )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
+    case QgsWKBTypes::PointGeometry:
       return QgsApplication::getThemeIcon( "/mIconPointLayer.svg" );
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
+    case QgsWKBTypes::LineGeometry:
       return QgsApplication::getThemeIcon( "/mIconLineLayer.svg" );
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
+    case QgsWKBTypes::PolygonGeometry:
       return QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" );
-    case QGis::WKBNoGeometry:
-      return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
-    case QGis::WKBUnknown:
+    default:
       break;
   }
   return QgsApplication::getThemeIcon( "/mIconLayer.png" );
@@ -383,6 +376,6 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString& conn
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
 
-  QgsDebugMsg( QString( "returning uri %1" ).arg( uri.uri() ) );
-  return uri.uri();
+  QgsDebugMsg( QString( "returning uri %1" ).arg( uri.uri( false ) ) );
+  return uri.uri( false );
 }

@@ -81,12 +81,12 @@ class TestQgsRasterLayer : public QObject
     void transparency();
     void setRenderer();
   private:
-    bool render( QString theFileName );
-    bool setQml( QString theType );
+    bool render( const QString& theFileName );
+    bool setQml( const QString& theType );
     void populateColorRampShader( QgsColorRampShader* colorRampShader,
                                   QgsVectorColorRampV2* colorRamp,
                                   int numberOfEntries );
-    bool testColorRamp( QString name, QgsVectorColorRampV2* colorRamp,
+    bool testColorRamp( const QString& name, QgsVectorColorRampV2* colorRamp,
                         QgsColorRampShader::ColorRamp_TYPE type, int numberOfEntries );
     QString mTestDataDir;
     QgsRasterLayer * mpRasterLayer;
@@ -124,10 +124,10 @@ void TestQgsRasterLayer::initTestCase()
   // disable any PAM stuff to make sure stats are consistent
   CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
   QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( "\n", "<br />" );
+  mySettings = mySettings.replace( '\n', "<br />" );
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
-  mTestDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CmakeLists.txt
+  mTestDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
   QString myFileName = mTestDataDir + "tenbytenraster.asc";
   QString myLandsatFileName = mTestDataDir + "landsat.tif";
   QString myFloat32FileName = mTestDataDir + "/raster/band1_float32_noct_epsg4326.tif";
@@ -262,7 +262,7 @@ void TestQgsRasterLayer::populateColorRampShader( QgsColorRampShader* colorRampS
   colorRampShader->setColorRampItemList( colorRampItems );
 }
 
-bool TestQgsRasterLayer::testColorRamp( QString name, QgsVectorColorRampV2* colorRamp,
+bool TestQgsRasterLayer::testColorRamp( const QString& name, QgsVectorColorRampV2* colorRamp,
                                         QgsColorRampShader::ColorRamp_TYPE type, int numberOfEntries )
 {
   QgsRasterShader* rasterShader = new QgsRasterShader();
@@ -425,7 +425,7 @@ void TestQgsRasterLayer::checkScaleOffset()
       if ( values.value( bandNo ).isNull() )
       {
         valueString = tr( "no data" );
-        mReport += QString( " %1 = %2 <br>\n" ).arg( myProvider->generateBandName( bandNo ) ).arg( valueString );
+        mReport += QString( " %1 = %2 <br>\n" ).arg( myProvider->generateBandName( bandNo ), valueString );
         delete myRasterLayer;
         QVERIFY( false );
         return;
@@ -435,7 +435,7 @@ void TestQgsRasterLayer::checkScaleOffset()
         double expected = 0.99995432;
         double value = values.value( bandNo ).toDouble();
         valueString = QgsRasterBlock::printValue( value );
-        mReport += QString( " %1 = %2 <br>\n" ).arg( myProvider->generateBandName( bandNo ) ).arg( valueString );
+        mReport += QString( " %1 = %2 <br>\n" ).arg( myProvider->generateBandName( bandNo ), valueString );
         mReport += QString( " value = %1 expected = %2 diff = %3 <br>\n" ).arg( value ).arg( expected ).arg( fabs( value - expected ) );
         QVERIFY( fabs( value - expected ) < 0.0000001 );
       }
@@ -456,7 +456,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
 {
   //before we begin delete any old ovr file (if it exists)
   //and make a copy of the landsat raster into the temp dir
-  QString myTempPath = QDir::tempPath() + "/";
+  QString myTempPath = QDir::tempPath() + '/';
   QFile::remove( myTempPath + "landsat.tif.ovr" );
   QFile::remove( myTempPath + "landsat.tif" );
   QVERIFY( QFile::copy( mTestDataDir + "landsat.tif", myTempPath + "landsat.tif" ) );
@@ -504,7 +504,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
 
 void TestQgsRasterLayer::registry()
 {
-  QString myTempPath = QDir::tempPath() + "/";
+  QString myTempPath = QDir::tempPath() + '/';
   QFile::remove( myTempPath + "landsat.tif.ovr" );
   QFile::remove( myTempPath + "landsat.tif" );
   QVERIFY( QFile::copy( mTestDataDir + "landsat.tif", myTempPath + "landsat.tif" ) );
@@ -524,7 +524,7 @@ void TestQgsRasterLayer::registry()
 //
 
 
-bool TestQgsRasterLayer::render( QString theTestType )
+bool TestQgsRasterLayer::render( const QString& theTestType )
 {
   mReport += "<h2>" + theTestType + "</h2>\n";
   QgsRenderChecker myChecker;
@@ -535,7 +535,7 @@ bool TestQgsRasterLayer::render( QString theTestType )
   return myResultFlag;
 }
 
-bool TestQgsRasterLayer::setQml( QString theType )
+bool TestQgsRasterLayer::setQml( const QString& theType )
 {
   //load a qml style and apply to our layer
   // huh? this is failing but shouldnt!

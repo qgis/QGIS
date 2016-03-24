@@ -102,7 +102,7 @@ class APP_EXPORT QgsClipboard : public QObject
      *  The caller assumes responsibility for destroying the contents
      *  when it's done with it.
      */
-    QgsFeatureList transformedCopyOf( QgsCoordinateReferenceSystem destCRS, const QgsFields &fields = QgsFields() );
+    QgsFeatureList transformedCopyOf( const QgsCoordinateReferenceSystem& destCRS, const QgsFields &fields = QgsFields() );
 
     /*
      *  Get the clipboard CRS

@@ -66,7 +66,7 @@ int main( int argc, char ** argv )
       myTranslationCode = settings.value( "locale/userLocale", "en_US" ).toString();
     }
   }
-  QgsDebugMsg( QString( "Setting translation to %1/qgis_%2" ).arg( i18nPath ).arg( myTranslationCode ) );
+  QgsDebugMsg( QString( "Setting translation to %1/qgis_%2" ).arg( i18nPath, myTranslationCode ) );
 
   /* Translation file for QGIS.
    */

@@ -277,12 +277,8 @@ class SLRasterTable(SLTable, RasterTable):
         return gdalUri
 
     def mimeUri(self):
-        if self.database().connector.isGpkg():
-            # QGIS has no provider to load Geopackage rasters, let's use GDAL
-            uri = u"raster:gdal:%s:%s" % (self.name, self.uri().database())
-        else:
-            # QGIS has no provider to load Rasterlite rasters, let's use GDAL
-            uri = u"raster:gdal:%s:%s" % (self.name, self.rasterliteGdalUri())
+        # QGIS has no provider to load rasters, let's use GDAL
+        uri = u"raster:gdal:%s:%s" % (self.name, self.uri().database())
         return uri
 
     def toMapLayer(self):

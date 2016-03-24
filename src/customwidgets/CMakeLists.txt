@@ -3,6 +3,7 @@ ADD_DEFINITIONS(-DQT_NO_DEBUG)
 ADD_DEFINITIONS(-DQT_SHARED)
 
 IF (QT5_BUILD)
+  FIND_PACKAGE(Qt5UiPlugin REQUIRED)
   FIND_PACKAGE(Qt5Designer REQUIRED)
 ENDIF (QT5_BUILD)
 
@@ -28,6 +29,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgsdatetimeeditplugin.cpp
   qgsdatadefinedbuttonplugin.cpp
   qgsdoublespinboxplugin.cpp
+  qgsexpressionbuilderwidgetplugin.cpp
   qgsextentgroupboxplugin.cpp
   qgsfieldcomboboxplugin.cpp
   qgsfieldexpressionwidgetplugin.cpp
@@ -49,6 +51,7 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgsdatetimeeditplugin.h
   qgsdatadefinedbuttonplugin.h
   qgsdoublespinboxplugin.h
+  qgsexpressionbuilderwidgetplugin.h
   qgsextentgroupboxplugin.h
   qgsfieldcomboboxplugin.h
   qgsfieldexpressionwidgetplugin.h
@@ -63,7 +66,7 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
 )
 
 IF(MSVC)
-  SET_SOURCE_FILES_PROPERTIES(${QGIS_CUSTOMWIDGETS_MOC_SRCS} PROPERTIES COMPILE_FLAGS "/wd4996" )
+  SET_SOURCE_FILES_PROPERTIES(${QGIS_CUSTOMWIDGETS_MOC_SRCS} PROPERTIES COMPILE_FLAGS "/wd4512 /wd4996" )
 ELSE(MSVC)
   SET_SOURCE_FILES_PROPERTIES(${QGIS_CUSTOMWIDGETS_MOC_SRCS} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations" )
 ENDIF(MSVC)
@@ -76,6 +79,7 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
   qgsdatetimeeditplugin.h
   qgsdatadefinedbuttonplugin.h
   qgsdoublespinboxplugin.h
+  qgsexpressionbuilderwidgetplugin.h
   qgsextentgroupboxplugin.h
   qgsfieldcomboboxplugin.h
   qgsfieldexpressionwidgetplugin.h
@@ -103,7 +107,10 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/../gui/attributetable/
   ${CMAKE_CURRENT_SOURCE_DIR}/../gui/editorwidgets/
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
+  ${Qt5UiPlugin_INCLUDE_DIRS} # For Qt5
   ${Qt5Designer_INCLUDE_DIRS} # For Qt5
   ${QT_QTDESIGNER_INCLUDE_DIR} # For Qt4
 )

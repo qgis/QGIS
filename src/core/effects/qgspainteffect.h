@@ -266,7 +266,7 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
     static QgsPaintEffect* create( const QgsStringMap& map );
 
     virtual QString type() const override { return QString( "drawSource" ); }
-    virtual QgsPaintEffect* clone() const override;
+    virtual QgsDrawSourceEffect* clone() const override;
     virtual QgsStringMap properties() const override;
     virtual void readProperties( const QgsStringMap& props ) override;
 

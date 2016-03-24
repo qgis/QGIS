@@ -139,6 +139,7 @@ const string ASResource::AS_CONST_CAST = string("const_cast");
 const string ASResource::AS_DYNAMIC_CAST = string("dynamic_cast");
 const string ASResource::AS_REINTERPRET_CAST = string("reinterpret_cast");
 const string ASResource::AS_STATIC_CAST = string("static_cast");
+const string ASResource::AS_QOBJECT_CAST = string("qobject_cast");
 
 
 /**
@@ -185,6 +186,7 @@ void ASResource::buildCastOperators(vector<const string*> &castOperators)
 	castOperators.push_back(&AS_DYNAMIC_CAST);
 	castOperators.push_back(&AS_REINTERPRET_CAST);
 	castOperators.push_back(&AS_STATIC_CAST);
+	castOperators.push_back(&AS_QOBJECT_CAST); // Qt cast
 }
 
 /**

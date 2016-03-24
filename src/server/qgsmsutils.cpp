@@ -67,7 +67,7 @@ QString QgsMSUtils::createTempFilePath()
   return tempFilePath;
 }
 
-int QgsMSUtils::createTextFile( QString filePath, const QString& text )
+int QgsMSUtils::createTextFile( const QString& filePath, const QString& text )
 {
   QFile file( filePath );
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )

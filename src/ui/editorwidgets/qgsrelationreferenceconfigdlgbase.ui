@@ -157,7 +157,7 @@
   <customwidget>
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
-   <header location="global">qgsfieldexpressionwidget.h</header>
+   <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -167,6 +167,20 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mComboRelation</tabstop>
+  <tabstop>mCbxAllowNull</tabstop>
+  <tabstop>mCbxOrderByValue</tabstop>
+  <tabstop>mCbxShowForm</tabstop>
+  <tabstop>mCbxMapIdentification</tabstop>
+  <tabstop>mCbxReadOnly</tabstop>
+  <tabstop>mFilterGroupBox</tabstop>
+  <tabstop>mAvailableFieldsList</tabstop>
+  <tabstop>mAddFilterButton</tabstop>
+  <tabstop>mRemoveFilterButton</tabstop>
+  <tabstop>mFilterFieldsList</tabstop>
+  <tabstop>mCbxChainFilters</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>

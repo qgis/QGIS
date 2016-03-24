@@ -26,7 +26,7 @@ class QgsColorEffect : QgsPaintEffect
     virtual QString type() const;
     virtual QgsStringMap properties() const;
     virtual void readProperties( const QgsStringMap& props );
-    virtual QgsPaintEffect* clone() const /Factory/;
+    virtual QgsColorEffect* clone() const /Factory/;
 
     /** Sets the brightness modification for the effect.
      * @param brightness Valid values are between -255 and 255, where 0 represents

@@ -25,7 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWKBTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -99,7 +99,7 @@ class Union(GeoAlgorithm):
                         else:
                             int_geom = QgsGeometry(int_geom)
 
-                        if int_geom.wkbType() == 0:
+                        if int_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(int_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
                             # Intersection produced different geomety types
                             temp_list = int_geom.asGeometryCollection()
                             for i in temp_list:
@@ -117,24 +117,24 @@ class Union(GeoAlgorithm):
                                 self.tr('Feature exception while computing union'))
 
                 try:
-                        # the remaining bit of inFeatA's geometry
-                        # if there is nothing left, this will just silently fail and we're good
-                        diff_geom = QgsGeometry(geom)
-                        if len(lstIntersectingB) != 0:
-                            intB = QgsGeometry.unaryUnion(lstIntersectingB)
-                            diff_geom = diff_geom.difference(intB)
+                    # the remaining bit of inFeatA's geometry
+                    # if there is nothing left, this will just silently fail and we're good
+                    diff_geom = QgsGeometry(geom)
+                    if len(lstIntersectingB) != 0:
+                        intB = QgsGeometry.unaryUnion(lstIntersectingB)
+                        diff_geom = diff_geom.difference(intB)
 
-                        if diff_geom.wkbType() == 0:
-                            temp_list = diff_geom.asGeometryCollection()
-                            for i in temp_list:
-                                if i.type() == geom.type():
-                                    diff_geom = QgsGeometry(i)
-                        outFeat.setGeometry(diff_geom)
-                        outFeat.setAttributes(atMapA)
-                        writer.addFeature(outFeat)
+                    if diff_geom.wkbType() == 0 or QgsWKBTypes.flatType(int_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
+                        temp_list = diff_geom.asGeometryCollection()
+                        for i in temp_list:
+                            if i.type() == geom.type():
+                                diff_geom = QgsGeometry(i)
+                    outFeat.setGeometry(diff_geom)
+                    outFeat.setAttributes(atMapA)
+                    writer.addFeature(outFeat)
                 except Exception as err:
-                        raise GeoAlgorithmExecutionException(
-                            self.tr('Feature exception while computing union'))
+                    raise GeoAlgorithmExecutionException(
+                        self.tr('Feature exception while computing union'))
 
         length = len(vproviderA.fields())
 

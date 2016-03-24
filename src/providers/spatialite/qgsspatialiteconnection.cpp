@@ -32,7 +32,7 @@ QStringList QgsSpatiaLiteConnection::connectionList()
   return settings.childGroups();
 }
 
-void QgsSpatiaLiteConnection::deleteConnection( QString name )
+void QgsSpatiaLiteConnection::deleteConnection( const QString& name )
 {
   QSettings settings;
   QString key = "/SpatiaLite/connections/" + name;
@@ -40,7 +40,7 @@ void QgsSpatiaLiteConnection::deleteConnection( QString name )
   settings.remove( key );
 }
 
-QString QgsSpatiaLiteConnection::connectionPath( QString name )
+QString QgsSpatiaLiteConnection::connectionPath( const QString& name )
 {
   QSettings settings;
   return settings.value( "/SpatiaLite/connections/" + name + "/sqlitepath" ).toString();
@@ -48,7 +48,7 @@ QString QgsSpatiaLiteConnection::connectionPath( QString name )
 
 // -------
 
-QgsSpatiaLiteConnection::QgsSpatiaLiteConnection( QString name )
+QgsSpatiaLiteConnection::QgsSpatiaLiteConnection( const QString& name )
 {
   // "name" can be either a saved connection or a path to database
 
@@ -135,7 +135,7 @@ bool QgsSpatiaLiteConnection::updateStatistics()
 #endif
 }
 
-sqlite3 *QgsSpatiaLiteConnection::openSpatiaLiteDb( QString path )
+sqlite3 *QgsSpatiaLiteConnection::openSpatiaLiteDb( const QString& path )
 {
   sqlite3 *handle = NULL;
   int ret;
@@ -266,7 +266,7 @@ error:
   // unexpected IO error
   if ( errMsg )
   {
-    mErrorMsg += "\n";
+    mErrorMsg += '\n';
     mErrorMsg += errMsg;
     sqlite3_free( errMsg );
   }
@@ -494,8 +494,8 @@ QString QgsSpatiaLiteConnection::quotedValue( QString value ) const
   if ( value.isNull() )
     return "NULL";
 
-  value.replace( "'", "''" );
-  return value.prepend( "'" ).append( "'" );
+  value.replace( '\'', "''" );
+  return value.prepend( '\'' ).append( '\'' );
 }
 
 bool QgsSpatiaLiteConnection::checkGeometryColumnsAuth( sqlite3 * handle )
@@ -646,7 +646,7 @@ bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 * handle, const c
   return exists;
 }
 
-bool QgsSpatiaLiteConnection::isDeclaredHidden( sqlite3 * handle, QString table, QString geom )
+bool QgsSpatiaLiteConnection::isDeclaredHidden( sqlite3 * handle, const QString& table, const QString& geom )
 {
   int ret;
   int i;
@@ -660,8 +660,8 @@ bool QgsSpatiaLiteConnection::isDeclaredHidden( sqlite3 * handle, QString table,
     return false;
   // checking if some Layer has been declared as HIDDEN
   QString sql = QString( "SELECT hidden FROM geometry_columns_auth"
-                         " WHERE f_table_name=%1 and f_geometry_column=%2" ).arg( quotedValue( table ) ).
-                arg( quotedValue( geom ) );
+                         " WHERE f_table_name=%1 and f_geometry_column=%2" ).arg( quotedValue( table ),
+                             quotedValue( geom ) );
 
   ret = sqlite3_get_table( handle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
@@ -747,8 +747,8 @@ QgsSqliteHandle* QgsSqliteHandle::openDb( const QString & dbPath, bool shared )
   {
     // failure
     QgsDebugMsg( QString( "Failure while connecting to: %1\n%2" )
-                 .arg( dbPath )
-                 .arg( QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) ) ) );
+                 .arg( dbPath,
+                       QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) ) ) );
     return NULL;
   }
 

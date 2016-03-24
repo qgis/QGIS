@@ -87,27 +87,34 @@ class translate(GdalAlgorithm):
         self.addParameter(ParameterBoolean(self.SDS,
                                            self.tr('Copy all subdatasets of this file to individual output files'),
                                            False))
-        self.addParameter(ParameterSelection(self.RTYPE,
-                                             self.tr('Output raster type'), self.TYPE, 5))
-        self.addParameter(ParameterSelection(self.COMPRESS,
-                                             self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
-        self.addParameter(ParameterNumber(self.JPEGCOMPRESSION,
-                                          self.tr('Set the JPEG compression level'),
-                                          1, 100, 75))
-        self.addParameter(ParameterNumber(self.ZLEVEL,
-                                          self.tr('Set the DEFLATE compression level'),
-                                          1, 9, 6))
-        self.addParameter(ParameterNumber(self.PREDICTOR,
-                                          self.tr('Set the predictor for LZW or DEFLATE compression'),
-                                          1, 3, 1))
-        self.addParameter(ParameterBoolean(self.TILED,
-                                           self.tr('Create tiled output (only used for the GTiff format)'), False))
-        self.addParameter(ParameterSelection(self.BIGTIFF,
-                                             self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
-        self.addParameter(ParameterBoolean(self.TFW,
-                                           self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
-        self.addParameter(ParameterString(self.EXTRA,
-                                          self.tr('Additional creation parameters'), '', optional=True))
+
+        params = []
+        params.append(ParameterSelection(self.RTYPE,
+                                         self.tr('Output raster type'), self.TYPE, 5))
+        params.append(ParameterSelection(self.COMPRESS,
+                                         self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
+        params.append(ParameterNumber(self.JPEGCOMPRESSION,
+                                      self.tr('Set the JPEG compression level'),
+                                      1, 100, 75))
+        params.append(ParameterNumber(self.ZLEVEL,
+                                      self.tr('Set the DEFLATE compression level'),
+                                      1, 9, 6))
+        params.append(ParameterNumber(self.PREDICTOR,
+                                      self.tr('Set the predictor for LZW or DEFLATE compression'),
+                                      1, 3, 1))
+        params.append(ParameterBoolean(self.TILED,
+                                       self.tr('Create tiled output (only used for the GTiff format)'), False))
+        params.append(ParameterSelection(self.BIGTIFF,
+                                         self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
+        params.append(ParameterBoolean(self.TFW,
+                                       self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
+        params.append(ParameterString(self.EXTRA,
+                                      self.tr('Additional creation parameters'), '', optional=True))
+
+        for param in params:
+            param.isAdvanced = True
+            self.addParameter(param)
+
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Converted')))
 
     def getConsoleCommands(self):
@@ -175,6 +182,7 @@ class translate(GdalAlgorithm):
                 arguments.append("-co TFW=YES")
             if len(bigtiff) > 0:
                 arguments.append("-co BIGTIFF=" + bigtiff)
+
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(out)
 

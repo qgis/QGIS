@@ -18,13 +18,17 @@
 #include "qgscolordialog.h"
 #include "qgssymbollevelsv2dialog.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsmapcanvas.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QMenu>
 
 QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style )
-    : QWidget(), mLayer( layer ), mStyle( style )
+    : QWidget()
+    , mLayer( layer )
+    , mStyle( style )
+    , mMapCanvas( 0 )
 {
   contextMenu = new QMenu( tr( "Renderer Options" ), this );
 
@@ -129,6 +133,7 @@ void QgsRendererV2Widget::changeSymbolWidth()
   }
 
   QgsDataDefinedWidthDialog dlg( symbolList, mLayer );
+  dlg.setMapCanvas( mMapCanvas );
 
   if ( QDialog::Accepted == dlg.exec() )
   {
@@ -154,6 +159,7 @@ void QgsRendererV2Widget::changeSymbolSize()
   }
 
   QgsDataDefinedSizeDialog dlg( symbolList, mLayer );
+  dlg.setMapCanvas( mMapCanvas );
 
   if ( QDialog::Accepted == dlg.exec() )
   {
@@ -179,6 +185,7 @@ void QgsRendererV2Widget::changeSymbolAngle()
   }
 
   QgsDataDefinedRotationDialog dlg( symbolList, mLayer );
+  dlg.setMapCanvas( mMapCanvas );
 
   if ( QDialog::Accepted == dlg.exec() )
   {
@@ -207,12 +214,22 @@ void QgsRendererV2Widget::showSymbolLevelsDialog( QgsFeatureRendererV2* r )
   }
 }
 
+void QgsRendererV2Widget::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mMapCanvas = canvas;
+}
+
+const QgsMapCanvas*QgsRendererV2Widget::mapCanvas() const
+{
+  return mMapCanvas;
+}
+
 
 ////////////
 
 #include "qgsfield.h"
 
-QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVectorLayer* layer, QString rotationField, QString sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod )
+QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVectorLayer* layer, const QString& rotationField, const QString& sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod )
     : QObject( menu ), mLayer( layer )
 {
   mRotationMenu = new QMenu( tr( "Rotation field" ) );
@@ -264,7 +281,7 @@ QgsRendererV2DataDefinedMenus::~QgsRendererV2DataDefinedMenus()
   delete mSizeScaleMenu;
 }
 
-void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, QString fieldName, QActionGroup *actionGroup )
+void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, const QString& fieldName, QActionGroup *actionGroup )
 {
   QAction* aExpr = new QAction( tr( "- expression -" ), actionGroup );
   aExpr->setCheckable( true );
@@ -389,6 +406,7 @@ void QgsRendererV2DataDefinedMenus::updateMenu( QActionGroup* actionGroup, QStri
 QgsDataDefinedValueDialog::QgsDataDefinedValueDialog( const QList<QgsSymbolV2*>& symbolList, QgsVectorLayer * layer, const QString & label )
     : mSymbolList( symbolList )
     , mLayer( layer )
+    , mMapCanvas( 0 )
 {
   setupUi( this );
   setWindowFlags( Qt::WindowStaysOnTopHint );
@@ -398,18 +416,41 @@ QgsDataDefinedValueDialog::QgsDataDefinedValueDialog( const QList<QgsSymbolV2*>&
 
 }
 
+void QgsDataDefinedValueDialog::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mMapCanvas = canvas;
+  Q_FOREACH ( QgsDataDefinedButton* ddButton, findChildren<QgsDataDefinedButton*>() )
+  {
+    if ( ddButton->assistant() )
+      ddButton->assistant()->setMapCanvas( mMapCanvas );
+  }
+}
+
+const QgsMapCanvas *QgsDataDefinedValueDialog::mapCanvas() const
+{
+  return mMapCanvas;
+}
+
 static QgsExpressionContext _getExpressionContext( const void* context )
 {
+  const QgsDataDefinedValueDialog* widget = ( const QgsDataDefinedValueDialog* ) context;
+
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 )
-  //TODO - use actual map canvas settings
-  << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  << QgsExpressionContextUtils::atlasScope( 0 );
+  if ( widget->mapCanvas() )
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( widget->mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( widget->mapCanvas()->expressionContextScope() );
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
 
-  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
-  if ( layer )
-    expContext << QgsExpressionContextUtils::layerScope( layer );
+  if ( widget->vectorLayer() )
+    expContext << QgsExpressionContextUtils::layerScope( widget->vectorLayer() );
 
   return expContext;
 }
@@ -418,7 +459,7 @@ void QgsDataDefinedValueDialog::init( const QString & description )
 {
   QgsDataDefined dd = symbolDataDefined();
   mDDBtn->init( mLayer, &dd, QgsDataDefinedButton::Double, description );
-  mDDBtn->registerGetExpressionContextCallback( &_getExpressionContext, const_cast< QgsVectorLayer* >( mLayer ) );
+  mDDBtn->registerGetExpressionContextCallback( &_getExpressionContext, this );
   mSpinBox->setValue( value( mSymbolList.back() ) );
   mSpinBox->setEnabled( !mDDBtn->isActive() );
 }

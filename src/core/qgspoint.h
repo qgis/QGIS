@@ -215,7 +215,7 @@ class CORE_EXPORT QgsPoint
     //! Assignment
     QgsPoint & operator=( const QgsPoint &other );
 
-    QgsVector operator-( QgsPoint p ) const { return QgsVector( m_x - p.m_x, m_y - p.m_y ); }
+    QgsVector operator-( const QgsPoint& p ) const { return QgsVector( m_x - p.m_x, m_y - p.m_y ); }
     QgsPoint &operator+=( const QgsVector &v ) { *this = *this + v; return *this; }
     QgsPoint &operator-=( const QgsVector &v ) { *this = *this - v; return *this; }
     QgsPoint operator+( const QgsVector &v ) const { return QgsPoint( m_x + v.x(), m_y + v.y() ); }

@@ -322,8 +322,8 @@ QFont QgsDetailedItemDelegate::titleFont( const QStyleOptionViewItem &theOption 
 }
 
 
-QStringList QgsDetailedItemDelegate::wordWrap( QString theString,
-    QFontMetrics theMetrics,
+QStringList QgsDetailedItemDelegate::wordWrap( const QString& theString,
+    const QFontMetrics& theMetrics,
     int theWidth ) const
 {
   if ( theString.isEmpty() )

@@ -102,7 +102,7 @@ class ZonalStatistics(GeoAlgorithm):
         rasterGeom = QgsGeometry.fromRect(rasterBBox)
 
         crs = osr.SpatialReference()
-        crs.ImportFromProj4(unicode(layer.crs().toProj4()))
+        crs.ImportFromProj4(str(layer.crs().toProj4()))
 
         if useGlobalExtent:
             xMin = rasterBBox.xMinimum()
@@ -118,6 +118,7 @@ class ZonalStatistics(GeoAlgorithm):
 
             srcOffset = (startColumn, startRow, width, height)
             srcArray = rasterBand.ReadAsArray(*srcOffset)
+            srcArray = srcArray * rasterBand.GetScale() + rasterBand.GetOffset()
 
             newGeoTransform = (
                 geoTransform[0] + srcOffset[0] * geoTransform[1],
@@ -192,6 +193,7 @@ class ZonalStatistics(GeoAlgorithm):
 
                 srcOffset = (startColumn, startRow, width, height)
                 srcArray = rasterBand.ReadAsArray(*srcOffset)
+                srcArray = srcArray * rasterBand.GetScale() + rasterBand.GetOffset()
 
                 newGeoTransform = (
                     geoTransform[0] + srcOffset[0] * geoTransform[1],

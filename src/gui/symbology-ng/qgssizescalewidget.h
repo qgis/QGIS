@@ -24,19 +24,25 @@
 #include <QStandardItemModel>
 
 class QgsVectorLayer;
-class QgsMarkerSymbolV2;
+class QgsSymbolV2;
 class QgsLayerTreeLayer;
 class QgsScaleExpression;
 class QgsDataDefined;
+class QgsMapCanvas;
 
 class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui_SizeScaleBase
 {
     Q_OBJECT
 
   public:
-    QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsMarkerSymbolV2 * symbol );
+    QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsSymbolV2 * symbol );
 
     QgsDataDefined dataDefined() const override;
+
+    /** Returns the vector layer associated with the widget.
+     * @note added in QGIS 2.12
+     */
+    const QgsVectorLayer* layer() const { return mLayer; }
 
   protected:
 
@@ -48,11 +54,12 @@ class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui
 
   private:
 
-    const QgsMarkerSymbolV2* mSymbol;
+    const QgsSymbolV2* mSymbol;
     QgsVectorLayer* mLayer;
     QgsLayerTreeLayer* mLayerTreeLayer;
     QgsLayerTreeGroup mRoot;
     QStandardItemModel mPreviewList;
+    QgsMapCanvas* mMapCanvas;
 
     QgsScaleExpression* createExpression() const;
     void setFromSymbol();

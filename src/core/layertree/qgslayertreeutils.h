@@ -18,6 +18,7 @@
 
 #include <qnamespace.h>
 #include <QList>
+#include <QPair>
 
 class QDomElement;
 class QDomDocument;
@@ -46,7 +47,7 @@ class CORE_EXPORT QgsLayerTreeUtils
     //! Convert Qt::CheckState to QString
     static QString checkStateToXml( Qt::CheckState state );
     //! Convert QString to Qt::CheckState
-    static Qt::CheckState checkStateFromXml( QString txt );
+    static Qt::CheckState checkStateFromXml( const QString& txt );
 
     //! Return true if any of the layers is editable
     static bool layersEditable( const QList<QgsLayerTreeLayer*>& layerNodes );
@@ -64,6 +65,13 @@ class CORE_EXPORT QgsLayerTreeUtils
 
     //! get invisible layers
     static QStringList invisibleLayerList( QgsLayerTreeNode *node );
+
+    //! Set the expression filter of a legend layer
+    static void setLegendFilterByExpression( QgsLayerTreeLayer& layer, const QString& expr, bool enabled = true );
+    //! Return the expression filter of a legend layer
+    static QString legendFilterByExpression( const QgsLayerTreeLayer& layer, bool* enabled = 0 );
+    //! Test if one of the layers in a group has an expression filter
+    static bool hasLegendFilterExpression( const QgsLayerTreeGroup& group );
 };
 
 #endif // QGSLAYERTREEUTILS_H

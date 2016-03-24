@@ -1,0 +1,14 @@
+Grid Statistics for Polygons
+shapes_grid
+ParameterMultipleInput|GRIDS|Grids|3|False
+ParameterVector|POLYGONS|Polygons|2|False
+ParameterBoolean|COUNT         |Number of Cells|True
+ParameterBoolean|MIN           |Minimum|True
+ParameterBoolean|MAX           |Maximum|True
+ParameterBoolean|RANGE         |Range|True
+ParameterBoolean|SUM           |Sum|True
+ParameterBoolean|MEAN          |Mean|True
+ParameterBoolean|VAR           |Variance|True
+ParameterBoolean|STDDEV        |Standard Deviation|True
+ParameterNumber|QUANTILE|Quantiles|None|None|0
+OutputVector|RESULT|Statistics

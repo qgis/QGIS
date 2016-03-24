@@ -17,6 +17,7 @@ email                : marco.hugentobler at sourcepole dot com
 #define QGSGEOMETRYCOLLECTIONV2_H
 
 #include "qgsabstractgeometryv2.h"
+#include "qgspointv2.h"
 #include <QVector>
 
 /** \ingroup core
@@ -33,7 +34,7 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     QgsGeometryCollectionV2& operator=( const QgsGeometryCollectionV2& c );
     virtual ~QgsGeometryCollectionV2();
 
-    virtual QgsAbstractGeometryV2* clone() const override;
+    virtual QgsGeometryCollectionV2* clone() const override;
 
     /** Returns the number of geometries within the collection.
      */
@@ -56,6 +57,12 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     /** Adds a geometry and takes ownership. Returns true in case of success.*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g );
+
+    /** Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
+     * @param g geometry to insert. Ownership is transferred to the collection.
+     * @param index position to insert geometry before
+    */
+    virtual bool insertGeometry( QgsAbstractGeometryV2* g, int index );
 
     /** Removes a geometry from the collection.
      * @param nr index of geometry to remove
@@ -96,6 +103,7 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     virtual double length() const override;
     virtual double area() const override;
+    virtual double perimeter() const override;
 
     bool hasCurvedSegments() const override;
 
@@ -107,8 +115,23 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
         @return rotation in radians, clockwise from north*/
     double vertexAngle( const QgsVertexId& vertex ) const override;
 
+    virtual int vertexCount( int part = 0, int ring = 0 ) const override { return mGeometries[part]->vertexCount( 0, ring ); }
+    virtual int ringCount( int part = 0 ) const override { return mGeometries[part]->ringCount(); }
+    virtual int partCount() const override { return mGeometries.size(); }
+    virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const override { return mGeometries[id.part]->vertexAt( id ); }
+
+    virtual bool addZValue( double zValue = 0 ) override;
+    virtual bool addMValue( double mValue = 0 ) override;
+    virtual bool dropZValue() override;
+    virtual bool dropMValue() override;
+
   protected:
     QVector< QgsAbstractGeometryV2* > mGeometries;
+
+    /** Returns whether child type names are omitted from Wkt representations of the collection
+     * @note added in QGIS 2.12
+     */
+    virtual bool wktOmitChildType() const { return false; }
 
     /** Reads a collection from a WKT string.
      */

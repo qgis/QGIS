@@ -133,7 +133,7 @@ void QgsSpatialQueryPlugin::run()
 }
 
 //! Set icons to the current theme
-void QgsSpatialQueryPlugin::setCurrentTheme( QString )
+void QgsSpatialQueryPlugin::setCurrentTheme( const QString& )
 {
   if ( mSpatialQueryAction )
     mSpatialQueryAction->setIcon( getThemeIcon( "/spatialquery.png" ) );

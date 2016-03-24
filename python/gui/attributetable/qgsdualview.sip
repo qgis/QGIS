@@ -88,7 +88,7 @@ class QgsDualView : QStackedWidget
      * @param filteredFeatures  A list of feature ids
      *
      */
-    void setFilteredFeatures( QgsFeatureIds filteredFeatures );
+    void setFilteredFeatures( const QgsFeatureIds& filteredFeatures );
 
     QgsFeatureIds filteredFeatures();
 
@@ -133,7 +133,7 @@ class QgsDualView : QStackedWidget
      * Is emitted, whenever the display expression is successfully changed
      * @param expression The expression that was applied
      */
-    void displayExpressionChanged( const QString expression );
+    void displayExpressionChanged( const QString& expression );
 
     /**
      * Is emitted, whenever the filter changes

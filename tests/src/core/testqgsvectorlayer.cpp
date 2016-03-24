@@ -119,7 +119,7 @@ void TestQgsVectorLayer::initTestCase()
   //create a non spatial layer that will be used in all tests...
   //
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + "/";
+  mTestDataDir = myDataDir + '/';
   QString myDbfFileName = mTestDataDir + "nonspatial.dbf";
   QFileInfo myDbfFileInfo( myDbfFileName );
   mpNonSpatialLayer = new QgsVectorLayer( myDbfFileInfo.filePath(),

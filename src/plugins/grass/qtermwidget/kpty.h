@@ -25,7 +25,7 @@
 
 #include <QObject>
 
-struct KPtyPrivate;
+class KPtyPrivate;
 struct termios;
 
 /**
@@ -33,10 +33,7 @@ struct termios;
  * controlling TTY, utmp registration and setting various terminal attributes.
  */
 class KPty {
-    Q_DECLARE_PRIVATE(KPty)
-
-public:
-
+  public:
     /**
      * Constructor
      */
@@ -175,7 +172,7 @@ public:
      */
     int slaveFd() const;
 
-protected:
+  protected:
     /**
      * @internal
      */
@@ -185,6 +182,9 @@ protected:
      * @internal
      */
     KPtyPrivate * const d_ptr;
+
+  private:
+    Q_DECLARE_PRIVATE(KPty)
 };
 
 #endif

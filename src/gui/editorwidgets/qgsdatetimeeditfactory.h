@@ -22,10 +22,14 @@
 #define QGSDATETIMEEDIT_TIMEFORMAT "HH:mm:ss"
 #define QGSDATETIMEEDIT_DATETIMEFORMAT "yyyy-MM-dd HH:mm:ss"
 
+/** \class QgsDateTimeEditFactory
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsDateTimeEditFactory : public QgsEditorWidgetFactory
 {
   public:
-    QgsDateTimeEditFactory( QString name );
+    QgsDateTimeEditFactory( const QString& name );
 
     // QgsEditorWidgetFactory interface
   public:

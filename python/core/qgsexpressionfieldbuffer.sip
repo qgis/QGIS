@@ -7,7 +7,7 @@ class QgsExpressionFieldBuffer
     class ExpressionField
     {
       ExpressionField();
-      ExpressionField( QString exp, QgsField fld );
+      ExpressionField( const QString& exp, const QgsField& fld );
     };
 
     QgsExpressionFieldBuffer();

@@ -52,9 +52,18 @@
     <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
     <key>type.anidif.nbiter</key>
     <name>Nb Iterations</name>
-    <description>Number of iterations</description>
+    <description>Controls the sensitivity of the conductance term</description>
     <minValue />
     <maxValue />
     <default>10</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>type.anidif.conductance</key>
+    <name>Conductance</name>
+    <description />
+    <minValue />
+    <maxValue />
+    <default>1</default>
   </parameter>
 </root>

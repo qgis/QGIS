@@ -34,18 +34,18 @@ class QgsPixmapLabel : public QLabel
      * @param width The width for the widget
      * @return An appropriate height
      */
-    virtual int heightForWidth( int width ) const;
+    virtual int heightForWidth( int width ) const override;
 
     /**
      * An optimal size for the widget. Effectively using the height
      * determined from the width with the given aspect ratio.
      * @return A size hint
      */
-    virtual QSize sizeHint() const;
+    virtual QSize sizeHint() const override;
 
   public slots:
     void setPixmap( const QPixmap & );
-    void resizeEvent( QResizeEvent * );
+    void resizeEvent( QResizeEvent * ) override;
   private:
     QPixmap mPixmap;
 };

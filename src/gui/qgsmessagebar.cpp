@@ -130,7 +130,7 @@ void QgsMessageBar::popItem( QgsMessageBarItem *item )
   {
     if ( mCurrentItem )
     {
-      QWidget *widget = dynamic_cast<QWidget*>( mCurrentItem );
+      QWidget *widget = mCurrentItem;
       mLayout->removeWidget( widget );
       mCurrentItem->hide();
       disconnect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );

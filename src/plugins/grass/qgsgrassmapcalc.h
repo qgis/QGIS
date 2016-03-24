@@ -329,7 +329,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
       None
     };
 
-    QgsGrassMapcalcObject( int type );
+    explicit QgsGrassMapcalcObject( int type );
     ~QgsGrassMapcalcObject();
 
     // Set map name, constant value or function/operator
@@ -454,7 +454,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
 class QgsGrassMapcalcConnector: public QGraphicsLineItem, public QgsGrassMapcalcItem
 {
   public:
-    QgsGrassMapcalcConnector( QGraphicsScene * );
+    explicit QgsGrassMapcalcConnector( QGraphicsScene * );
     ~QgsGrassMapcalcConnector();
 
     void paint( QPainter * painter,

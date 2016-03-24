@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>20</height>
+     <height>25</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -200,6 +200,9 @@
     </property>
     <addaction name="mActionHelpContents"/>
     <addaction name="mActionHelpAPI"/>
+    <addaction name="separator"/>
+    <addaction name="mActionReportaBug"/>
+    <addaction name="separator"/>
     <addaction name="mActionNeedSupport"/>
     <addaction name="separator"/>
     <addaction name="mActionQgisHomePage"/>
@@ -1105,10 +1108,10 @@
      <normaloff>:/images/themes/default/mActionZoomActual.svg</normaloff>:/images/themes/default/mActionZoomActual.svg</iconset>
    </property>
    <property name="text">
-    <string>Zoom Actual Size</string>
+    <string>Zoom to Native Resolution (100%)</string>
    </property>
    <property name="toolTip">
-    <string>Zoom to Native Pixel Resolution</string>
+    <string>Zoom to Native Resolution (100%)</string>
    </property>
   </action>
   <action name="mActionMapTips">
@@ -2195,7 +2198,7 @@ Acts on currently active editable layer</string>
   </action>
   <action name="mActionPasteAsNewVector">
    <property name="text">
-    <string>New Vector Layer</string>
+    <string>New Vector Layer...</string>
    </property>
    <property name="toolTip">
     <string>Paste features in clipboard into a new OGR vector layer.</string>
@@ -2203,10 +2206,10 @@ Acts on currently active editable layer</string>
   </action>
   <action name="mActionPasteAsNewMemoryVector">
    <property name="text">
-    <string>New Memory Vector Layer</string>
+    <string>New Temporary Scratch Layer...</string>
    </property>
    <property name="toolTip">
-    <string>Paste features in clipboard into a new memory vector layer.</string>
+    <string>Paste features in clipboard into a new temporary scratch layer.</string>
    </property>
   </action>
   <action name="mActionDxfExport">
@@ -2358,7 +2361,7 @@ Acts on currently active editable layer</string>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCircularStringCurvePoint.png</normaloff>:/images/themes/default/mActionCircularStringCurvePoint.png</iconset>
+     <normaloff>:/images/themes/default/mActionCircularStringCurvePoint.svg</normaloff>:/images/themes/default/mActionCircularStringCurvePoint.svg</iconset>
    </property>
    <property name="text">
     <string>Add circular string</string>
@@ -2370,10 +2373,15 @@ Acts on currently active editable layer</string>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCircularStringRadius.png</normaloff>:/images/themes/default/mActionCircularStringRadius.png</iconset>
+     <normaloff>:/images/themes/default/mActionCircularStringRadius.svg</normaloff>:/images/themes/default/mActionCircularStringRadius.svg</iconset>
    </property>
    <property name="text">
     <string>Add circular string by radius</string>
+   </property>
+  </action>
+  <action name="mActionReportaBug">
+   <property name="text">
+    <string>Report an issue</string>
    </property>
   </action>
  </widget>

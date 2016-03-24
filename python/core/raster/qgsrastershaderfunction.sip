@@ -8,11 +8,11 @@ class QgsRasterShaderFunction
 
 %ConvertToSubClassCode
   if (dynamic_cast<QgsColorRampShader*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsColorRampShader;
+    sipType = sipType_QgsColorRampShader;
   else if (dynamic_cast<QgsPseudoColorShader*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsPseudoColorShader;
+    sipType = sipType_QgsPseudoColorShader;
   else
-    sipClass = 0;
+    sipType = 0;
 %End
 
 

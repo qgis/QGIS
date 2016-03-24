@@ -72,7 +72,7 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
       InvalidTransform = 65535
     };
 
-    QgsGeorefTransform( TransformParametrisation parametrisation );
+    explicit QgsGeorefTransform( TransformParametrisation parametrisation );
     QgsGeorefTransform();
     ~QgsGeorefTransform();
 

@@ -1,5 +1,5 @@
 SET(CPACK_PACKAGE_VERSION_MAJOR "2")
-SET(CPACK_PACKAGE_VERSION_MINOR "11")
+SET(CPACK_PACKAGE_VERSION_MINOR "13")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 SET(RELEASE_NAME "Master")
@@ -308,6 +308,15 @@ ENDIF (WITH_TOUCH)
 # search for QScintilla2 (C++ lib)
 FIND_PACKAGE(QScintilla REQUIRED)
 
+# Master password hash and authentication encryption
+FIND_PACKAGE(QCA REQUIRED)
+# Check for runtime dependency of qca-ossl plugin
+# REQUIRED if unit tests are to be run from build directory
+IF(NOT MSVC)
+include(QCAMacros)
+FIND_QCAOSSL_PLUGIN_CPP(ENABLE_TESTS)
+ENDIF(NOT MSVC)
+
 # ModelTest
 SET(ENABLE_MODELTEST FALSE CACHE BOOL "Enable QT ModelTest (not for production)")
 
@@ -373,6 +382,7 @@ ENDIF()
 #allow override keyword if available
 IF (NOT USE_CXX_11)
   ADD_DEFINITIONS("-Doverride=")
+  ADD_DEFINITIONS("-Dnullptr=0")
 ENDIF()
 
 
@@ -663,25 +673,44 @@ ENDIF (UNIX AND NOT APPLE)
 
 
 #############################################################
+# Python build dependency
+
+IF(ENABLE_QT5)
+  SET(PYTHON_VER 3)
+ELSE(ENABLE_QT5)
+  SET(PYTHON_VER 2)
+ENDIF(ENABLE_QT5)
+
+FIND_PACKAGE(PythonInterp ${PYTHON_VER} REQUIRED)
+
+#############################################################
 # Python bindings
 
 IF (WITH_BINDINGS)
 
-  # python support: check for interpreter, sip, pyqt4
-  FIND_PACKAGE(PythonInterp REQUIRED)
   FIND_PACKAGE(PythonLibrary REQUIRED)
+
+  # python support: check for interpreter, sip, pyqt4
+  IF(ENABLE_QT5)
+    FIND_PACKAGE(PyQt5 REQUIRED)
+    SET(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
+    SET(PYQT_SIP_DIR ${PYQT5_SIP_DIR})
+  ELSE(ENABLE_QT5)
+    FIND_PACKAGE(PyQt4 REQUIRED)
+    # setup SIP variables
+    SET(PYQT_SIP_FLAGS ${PYQT4_SIP_FLAGS})
+    SET(PYQT_SIP_DIR ${PYQT4_SIP_DIR})
+  ENDIF(ENABLE_QT5)
+  SEPARATE_ARGUMENTS(PYQT_SIP_FLAGS) # convert space separated values to a list
+
   FIND_PACKAGE(SIP REQUIRED)
-  FIND_PACKAGE(PyQt4 REQUIRED)
   FIND_PACKAGE(Qsci REQUIRED)
   INCLUDE(PythonMacros)
+  INCLUDE(PyQtMacros)
   INCLUDE(SIPMacros)
-  INCLUDE(PyQt4Macros)
 
-  # setup SIP variables
-  SEPARATE_ARGUMENTS(PYQT4_SIP_FLAGS) # convert space separated values to a list
-  SET(SIP_INCLUDES ${PYQT4_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
+  SET(SIP_INCLUDES ${PYQT_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
   SET(SIP_CONCAT_PARTS 4)
-  SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS})
 
   IF (NOT BINDINGS_GLOBAL_INSTALL)
     SET(PYTHON_SITE_PACKAGES_DIR ${QGIS_DATA_DIR}/python)

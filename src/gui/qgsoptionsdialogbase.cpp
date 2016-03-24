@@ -27,7 +27,7 @@
 #include <QTimer>
 
 
-QgsOptionsDialogBase::QgsOptionsDialogBase( QString settingsKey, QWidget* parent, Qt::WindowFlags fl, QSettings* settings )
+QgsOptionsDialogBase::QgsOptionsDialogBase( const QString& settingsKey, QWidget* parent, const Qt::WindowFlags& fl, QSettings* settings )
     : QDialog( parent, fl )
     , mOptsKey( settingsKey )
     , mInit( false )
@@ -59,7 +59,7 @@ QgsOptionsDialogBase::~QgsOptionsDialogBase()
   mSettings = 0; // null the pointer (in case of outside settings obj)
 }
 
-void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, QString title )
+void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString& title )
 {
   // use pointer to app QSettings if no custom QSettings specified
   // custom QSettings object may be from Python plugin
@@ -147,7 +147,7 @@ void QgsOptionsDialogBase::setSettings( QSettings* settings )
   mDelSettings = false; // don't delete outside obj
 }
 
-void QgsOptionsDialogBase::restoreOptionsBaseUi( QString title )
+void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString& title )
 {
   if ( !mInit )
   {
@@ -224,7 +224,7 @@ void QgsOptionsDialogBase::updateWindowTitle()
   QListWidgetItem *curitem = mOptListWidget->currentItem();
   if ( curitem )
   {
-    setWindowTitle( QString( "%1 | %2" ).arg( mDialogTitle ).arg( curitem->text() ) );
+    setWindowTitle( QString( "%1 | %2" ).arg( mDialogTitle, curitem->text() ) );
   }
   else
   {

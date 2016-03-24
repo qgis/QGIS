@@ -1,39 +1,6 @@
 
 typedef QList<QgsSymbolLayerV2*> QgsSymbolLayerV2List;
 
-/** \ingroup core
- * \class QgsRenderResult
- * \brief A simple container for the results of a rendering operation
- * \note Added in version 2.12
- */
-
-class QgsRenderResult
-{
-%TypeHeaderCode
-#include <qgssymbolv2.h>
-%End
-  public:
-
-    /** Constructor for QgsRenderResult
-     * @param symbolRendered initial value for symbolRendered member
-     */
-    QgsRenderResult( bool symbolRendered );
-
-    /** Bounds of rendered symbol shape.
-     * @note only implemented for marker symbol types
-     */
-    QRectF symbolBounds;
-
-    //! True if a symbol was rendered during the render operation
-    bool symbolRendered;
-
-    /** Unites the render result with another QgsRenderResult object
-     * @param other other render result
-     */
-    void unite( const QgsRenderResult& other );
-};
-
-
 class QgsSymbolV2
 {
 %TypeHeaderCode
@@ -43,10 +10,10 @@ class QgsSymbolV2
 %ConvertToSubClassCode
   switch (sipCpp->type())
   {
-    case QgsSymbolV2::Marker: sipClass = sipClass_QgsMarkerSymbolV2; break;
-    case QgsSymbolV2::Line: sipClass = sipClass_QgsLineSymbolV2; break;
-    case QgsSymbolV2::Fill: sipClass = sipClass_QgsFillSymbolV2; break;
-    default: sipClass = 0; break;
+    case QgsSymbolV2::Marker: sipType = sipType_QgsMarkerSymbolV2; break;
+    case QgsSymbolV2::Line: sipType = sipType_QgsLineSymbolV2; break;
+    case QgsSymbolV2::Fill: sipType = sipType_QgsFillSymbolV2; break;
+    default: sipType = 0; break;
   }
 %End
 
@@ -59,6 +26,8 @@ class QgsSymbolV2
       Mixed, //mixed units in symbol layers
       Pixel
     };
+
+    typedef QList<QgsSymbolV2::OutputUnit> OutputUnitList;
 
     enum SymbolType
     {
@@ -140,7 +109,7 @@ class QgsSymbolV2
     void drawPreviewIcon( QPainter* painter, QSize size, QgsRenderContext* customContext = 0 );
 
     //! export symbol as image format. PNG and SVG supported
-    void exportImage( QString path, QString format, QSize size );
+    void exportImage( const QString& path, const QString& format, const QSize& size );
 
     //! Generate symbol as image
     QImage asImage( QSize size, QgsRenderContext* customContext = 0 );
@@ -189,24 +158,20 @@ class QgsSymbolV2
      * @note added in QGIS 2.9
      * @see setClipFeaturesToExtent
      */
-    double clipFeaturesToExtent() const;
+    bool clipFeaturesToExtent() const;
 
     QSet<QString> usedAttributes() const;
+
+    /** Returns whether the symbol utilises any data defined properties.
+     * @note added in QGIS 2.12
+     */
+    bool hasDataDefinedProperties() const;
 
     void setLayer( const QgsVectorLayer* layer );
     const QgsVectorLayer* layer() const;
 
-     /** Returns the result of the symbol rendering operation. This should only be
-     * called immediately after a rendering operation (eg calling renderPoint).
-     * @note added in QGIS 2.12
-     * @note this is a temporary method until QGIS 3.0. For QGIS 3.0 the render methods
-     * will return a QgsRenderResult object
-     */
-    // TODO - QGIS 3.0. Remove and make renderPoint, etc return a QgsRenderResult
-    const QgsRenderResult& renderResult() const;
-
   protected:
-    QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers /Transfer/ ); // can't be instantiated
+    QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers /Transfer/ ); // can't be instantiated
 
     QgsSymbolLayerV2List cloneLayers() const /Factory/;
 
@@ -229,6 +194,13 @@ class QgsSymbolV2RenderContext
 
     QgsRenderContext& renderContext();
     //void setRenderContext( QgsRenderContext& c );
+
+    /** Sets the original value variable value for data defined symbology
+     * @param value value for original value variable. This usually represents the symbol property value
+     * before any data defined overrides have been applied.
+     * @note added in QGIS 2.12
+     */
+    void setOriginalValueVariable( const QVariant& value );
 
     QgsSymbolV2::OutputUnit outputUnit() const;
     void setOutputUnit( QgsSymbolV2::OutputUnit u );
@@ -282,7 +254,7 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
     */
     static QgsMarkerSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
 
-    QgsMarkerSymbolV2( QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List() );
+    QgsMarkerSymbolV2( const QgsSymbolLayerV2List& layers /Transfer/ = QgsSymbolLayerV2List() );
 
     void setAngle( double angle );
     double angle() const;
@@ -333,7 +305,13 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
 
     void renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsSymbolV2* clone() const /Factory/;
+    /** Returns the approximate bounding box of the marker symbol, which includes the bounding box
+     * of all symbol layers for the symbol.
+     * @returns approximate symbol bounds, in painter units
+     * @note added in QGIS 2.14     */
+    QRectF bounds( const QPointF& point, QgsRenderContext& context ) const;
+
+    virtual QgsMarkerSymbolV2* clone() const /Factory/;
 };
 
 
@@ -350,7 +328,7 @@ class QgsLineSymbolV2 : QgsSymbolV2
     */
     static QgsLineSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
 
-    QgsLineSymbolV2( QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List() );
+    QgsLineSymbolV2( const QgsSymbolLayerV2List& layers /Transfer/ = QgsSymbolLayerV2List() );
 
     void setWidth( double width );
     double width() const;
@@ -372,7 +350,7 @@ class QgsLineSymbolV2 : QgsSymbolV2
 
     void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsSymbolV2* clone() const /Factory/;
+    virtual QgsLineSymbolV2* clone() const /Factory/;
 };
 
 
@@ -389,9 +367,9 @@ class QgsFillSymbolV2 : QgsSymbolV2
     */
     static QgsFillSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
 
-    QgsFillSymbolV2( QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List() );
+    QgsFillSymbolV2( const QgsSymbolLayerV2List& layers /Transfer/ = QgsSymbolLayerV2List() );
     void setAngle( double angle );
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsSymbolV2* clone() const /Factory/;
+    virtual QgsFillSymbolV2* clone() const /Factory/;
 };

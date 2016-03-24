@@ -30,7 +30,7 @@ class APP_EXPORT QgsLabelDialog: public QWidget, private Ui::QgsLabelDialogBase
   public:
     QgsLabelDialog( QgsLabel *label, QWidget * parent = 0 );
     ~QgsLabelDialog();
-    int itemNoForField( QString theFieldName, QStringList theFieldList );
+    int itemNoForField( const QString& theFieldName, const QStringList& theFieldList );
 
     /* Attributes in order used in the table */
     enum Attribute
@@ -82,7 +82,7 @@ class APP_EXPORT QgsLabelDialog: public QWidget, private Ui::QgsLabelDialogBase
   protected:
 
     /** Return field index based on field's name, -1 if not found */
-    int fieldIndexFromName( QString name );
+    int fieldIndexFromName( const QString& name );
 
   private:
     QgsLabel *mLabel;

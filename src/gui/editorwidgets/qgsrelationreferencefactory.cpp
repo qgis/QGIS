@@ -18,7 +18,7 @@
 #include "qgsrelationreferencewidgetwrapper.h"
 #include "qgsrelationreferenceconfigdlg.h"
 
-QgsRelationReferenceFactory::QgsRelationReferenceFactory( QString name, QgsMapCanvas* canvas, QgsMessageBar* messageBar )
+QgsRelationReferenceFactory::QgsRelationReferenceFactory( const QString& name, QgsMapCanvas* canvas, QgsMessageBar* messageBar )
     : QgsEditorWidgetFactory( name )
     , mCanvas( canvas )
     , mMessageBar( messageBar )
@@ -53,6 +53,7 @@ QgsEditorWidgetConfig QgsRelationReferenceFactory::readConfig( const QDomElement
   {
     QStringList filterFields;
     QDomNodeList fieldNodes = filterNode.toElement().elementsByTagName( "field" );
+    filterFields.reserve( fieldNodes.size() );
     for ( int i = 0; i < fieldNodes.size(); i++ )
     {
       QDomElement fieldElement = fieldNodes.at( i ).toElement();

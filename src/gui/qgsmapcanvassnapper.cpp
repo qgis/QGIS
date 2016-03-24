@@ -62,7 +62,8 @@ void QgsMapCanvasSnapper::setMapCanvas( QgsMapCanvas* canvas )
 int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingResult>& results,
     QgsSnapper::SnappingType snap_to,
     double snappingTol,
-    const QList<QgsPoint>& excludePoints )
+    const QList<QgsPoint>& excludePoints,
+    bool allResutInTolerance )
 {
   results.clear();
 
@@ -71,7 +72,11 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
 
   //topological editing on?
   int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
-  if ( topologicalEditing == 0 )
+  if ( allResutInTolerance )
+  {
+    mSnapper->setSnapMode( QgsSnapper::SnapWithResultsWithinTolerances );
+  }
+  else if ( topologicalEditing == 0 )
   {
     mSnapper->setSnapMode( QgsSnapper::SnapWithOneResult );
   }

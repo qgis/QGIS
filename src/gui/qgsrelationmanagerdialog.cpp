@@ -30,7 +30,7 @@ QgsRelationManagerDialog::~QgsRelationManagerDialog()
 {
 }
 
-void QgsRelationManagerDialog::setLayers( QList< QgsVectorLayer* > layers )
+void QgsRelationManagerDialog::setLayers( const QList< QgsVectorLayer* >& layers )
 {
   mLayers = layers;
 
@@ -57,7 +57,7 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   item->setFlags( Qt::ItemIsEditable );
   mRelationsTable->setItem( row, 1, item );
 
-  item = new QTableWidgetItem( rel.fieldPairs().first().referencingField() );
+  item = new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencingField() );
   item->setFlags( Qt::ItemIsEditable );
   mRelationsTable->setItem( row, 2, item );
 
@@ -65,7 +65,7 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   item->setFlags( Qt::ItemIsEditable );
   mRelationsTable->setItem( row, 3, item );
 
-  item = new QTableWidgetItem( rel.fieldPairs().first().referencedField() );
+  item = new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencedField() );
   item->setFlags( Qt::ItemIsEditable );
   mRelationsTable->setItem( row, 4, item );
 
@@ -88,10 +88,10 @@ void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
     QString relationId = addDlg.relationId();
     if ( addDlg.relationId() == "" )
       relationId = QString( "%1_%2_%3_%4" )
-                   .arg( addDlg.referencingLayerId() )
-                   .arg( addDlg.references().first().first )
-                   .arg( addDlg.referencedLayerId() )
-                   .arg( addDlg.references().first().second );
+                   .arg( addDlg.referencingLayerId(),
+                         addDlg.references().at( 0 ).first,
+                         addDlg.referencedLayerId(),
+                         addDlg.references().at( 0 ).second );
 
     QStringList existingNames;
 
@@ -109,7 +109,7 @@ void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
       ++suffix;
     }
     relation.setRelationId( relationId );
-    relation.addFieldPair( addDlg.references().first().first, addDlg.references().first().second );
+    relation.addFieldPair( addDlg.references().at( 0 ).first, addDlg.references().at( 0 ).second );
     relation.setRelationName( addDlg.relationName() );
 
     addRelation( relation );
@@ -126,7 +126,9 @@ QList< QgsRelation > QgsRelationManagerDialog::relations()
 {
   QList< QgsRelation > relations;
 
-  for ( int i = 0; i < mRelationsTable->rowCount(); ++i )
+  int rows = mRelationsTable->rowCount();
+  relations.reserve( rows );
+  for ( int i = 0; i < rows; ++i )
   {
     QgsRelation relation = mRelationsTable->item( i, 0 )->data( Qt::UserRole ).value<QgsRelation>();
     // The name can be editted in the table, so apply this one

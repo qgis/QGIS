@@ -179,7 +179,7 @@ void QgsRelationEditorWidget::setViewMode( QgsDualView::ViewMode mode )
   mViewMode = mode;
 }
 
-void QgsRelationEditorWidget::setQgisRelation( QString qgisRelationId )
+void QgsRelationEditorWidget::setQgisRelation( const QString& qgisRelationId )
 {
   mRelationId = qgisRelationId;
   // by setting the object name appropriately we can properly save the collapsed state
@@ -219,7 +219,7 @@ void QgsRelationEditorWidget::addFeature()
 
 void QgsRelationEditorWidget::linkFeature()
 {
-  QgsFeatureSelectionDlg selectionDlg( mRelation.referencingLayer(), this );
+  QgsFeatureSelectionDlg selectionDlg( mRelation.referencingLayer(), mEditorContext , this );
 
   if ( selectionDlg.exec() )
   {

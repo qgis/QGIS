@@ -133,12 +133,12 @@ void QgsMeasureTool::updateSettings()
 
 //////////////////////////
 
-void QgsMeasureTool::canvasPressEvent( QMouseEvent * e )
+void QgsMeasureTool::canvasPressEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMeasureTool::canvasMoveEvent( QMouseEvent * e )
+void QgsMeasureTool::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( ! mDone )
   {
@@ -150,7 +150,7 @@ void QgsMeasureTool::canvasMoveEvent( QMouseEvent * e )
 }
 
 
-void QgsMeasureTool::canvasReleaseEvent( QMouseEvent * e )
+void QgsMeasureTool::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   QgsPoint point = snapPoint( e->pos() );
 

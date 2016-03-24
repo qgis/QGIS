@@ -30,7 +30,7 @@ class QgsComposerLabelWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
 {
     Q_OBJECT
   public:
-    QgsComposerLabelWidget( QgsComposerLabel* label );
+    explicit QgsComposerLabelWidget( QgsComposerLabel* label );
 
   public slots:
     void on_mHtmlCheckBox_stateChanged( int i );

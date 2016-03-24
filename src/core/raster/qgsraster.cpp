@@ -36,7 +36,7 @@ QString QgsRaster::contrastEnhancementLimitsAsString( ContrastEnhancementLimits 
   return "None";
 }
 
-QgsRaster::ContrastEnhancementLimits QgsRaster::contrastEnhancementLimitsFromString( QString theLimits )
+QgsRaster::ContrastEnhancementLimits QgsRaster::contrastEnhancementLimitsFromString( const QString& theLimits )
 {
   if ( theLimits == "MinMax" )
   {

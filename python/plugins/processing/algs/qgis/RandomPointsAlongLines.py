@@ -51,9 +51,9 @@ class RandomPointsAlongLines(GeoAlgorithm):
         self.addParameter(ParameterVector(self.VECTOR,
                                           self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterNumber(self.POINT_NUMBER,
-                                          self.tr('Number of points'), 1, 9999999, 1))
+                                          self.tr('Number of points'), 1, None, 1))
         self.addParameter(ParameterNumber(self.MIN_DISTANCE,
-                                          self.tr('Minimum distance'), 0.0, 9999999.0, 0.0))
+                                          self.tr('Minimum distance'), 0.0, None, 0.0))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points')))
 

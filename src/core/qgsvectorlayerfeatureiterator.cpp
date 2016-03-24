@@ -26,7 +26,6 @@
 
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( QgsVectorLayer *layer )
 {
-  mLayer = layer;
   mProviderFeatureSource = layer->dataProvider()->featureSource();
   mFields = layer->fields();
   mJoinBuffer = layer->mJoinBuffer->clone();
@@ -171,7 +170,7 @@ QgsVectorLayerFeatureIterator::~QgsVectorLayerFeatureIterator()
   delete mEditGeometrySimplifier;
   mEditGeometrySimplifier = NULL;
 
-  qDeleteAll( mExpressionFieldInfo.values() );
+  qDeleteAll( mExpressionFieldInfo );
 
   close();
 }
@@ -236,6 +235,17 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature& f )
 
     if ( mHasVirtualAttributes )
       addVirtualAttributes( f );
+
+    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mProviderRequest.filterType() != QgsFeatureRequest::FilterExpression )
+    {
+      //filtering by expression, and couldn't do it on the provider side
+      mRequest.expressionContext()->setFeature( f );
+      if ( !mRequest.filterExpression()->evaluate( mRequest.expressionContext() ).toBool() )
+      {
+        //feature did not match filter
+        continue;
+      }
+    }
 
     // update geometry
     // TODO[MK]: FilterRect check after updating the geometry
@@ -412,7 +422,7 @@ void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid
   }
 
   bool subsetAttrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes );
-  if ( !subsetAttrs || ( subsetAttrs && mRequest.subsetOfAttributes().count() > 0 ) )
+  if ( !subsetAttrs || mRequest.subsetOfAttributes().count() > 0 )
   {
     // retrieve attributes from provider
     QgsFeature tmp;
@@ -583,7 +593,7 @@ void QgsVectorLayerFeatureIterator::addVirtualAttributes( QgsFeature& f )
       QgsExpression* exp = it.value();
       mExpressionContext->setFeature( f );
       QVariant val = exp->evaluate( mExpressionContext.data() );
-      mSource->mFields.at( it.key() ).convertCompatible( val );;
+      mSource->mFields.at( it.key() ).convertCompatible( val );
       f.setAttribute( it.key(), val );
     }
   }
@@ -640,7 +650,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesCached( Qg
   const QgsAttributes& featureAttributes = it.value();
   for ( int i = 0; i < featureAttributes.count(); ++i )
   {
-    f.setAttribute( index++, featureAttributes[i] );
+    f.setAttribute( index++, featureAttributes.at( i ) );
   }
 }
 
@@ -653,7 +663,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   QString bkSubsetString = subsetString;
   if ( !subsetString.isEmpty() )
   {
-    subsetString.prepend( "(" ).append( ") AND " );
+    subsetString.prepend( '(' ).append( ") AND " );
   }
 
   QString joinFieldName;
@@ -680,11 +690,11 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
 
       default:
       case QVariant::String:
-        v.replace( "'", "''" );
-        v.prepend( "'" ).append( "'" );
+        v.replace( '\'', "''" );
+        v.prepend( '\'' ).append( '\'' );
         break;
     }
-    subsetString += "=" + v;
+    subsetString += '=' + v;
   }
 
   joinLayer->dataProvider()->setSubsetString( subsetString, false );
@@ -711,7 +721,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
     if ( hasSubset )
     {
       for ( int i = 0; i < subsetIndices.count(); ++i )
-        f.setAttribute( index++, attr[ subsetIndices[i] ] );
+        f.setAttribute( index++, attr.at( subsetIndices.at( i ) ) );
     }
     else
     {
@@ -721,7 +731,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
         if ( i == joinField )
           continue;
 
-        f.setAttribute( index++, attr[i] );
+        f.setAttribute( index++, attr.at( i ) );
       }
     }
   }

@@ -48,6 +48,8 @@ QgsLabelPropertyDialog::~QgsLabelPropertyDialog()
 {
   QSettings settings;
   settings.setValue( QString( "/Windows/ChangeLabelProps/geometry" ), saveGeometry() );
+
+  qDeleteAll( mDataDefinedProperties );
 }
 
 void QgsLabelPropertyDialog::on_buttonBox_clicked( QAbstractButton *button )
@@ -94,7 +96,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const 
       mCurLabelField = vlayer->fieldNameIndex( labelFieldName );
       if ( mCurLabelField >= 0 )
       {
-        mLabelTextLineEdit->setText( attributeValues[mCurLabelField].toString() );
+        mLabelTextLineEdit->setText( attributeValues.at( mCurLabelField ).toString() );
         const QgsFields& layerFields = vlayer->fields();
         switch ( layerFields[mCurLabelField].type() )
         {
@@ -143,7 +145,11 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const 
 
   disableGuiElements();
 
-  mDataDefinedProperties = layerSettings.dataDefinedProperties;
+  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator it = layerSettings.dataDefinedProperties.constBegin();
+  for ( ; it != layerSettings.dataDefinedProperties.constEnd(); ++it )
+  {
+    mDataDefinedProperties.insert( it.key(), it.value() ? new QgsDataDefined( *it.value() ) : 0 );
+  }
 
   //set widget values from data defined results
   setDataDefinedValues( layerSettings, vlayer );
@@ -649,14 +655,14 @@ void QgsLabelPropertyDialog::on_mLabelTextLineEdit_textChanged( const QString& t
   }
 }
 
-void QgsLabelPropertyDialog::insertChangedValue( QgsPalLayerSettings::DataDefinedProperties p, QVariant value )
+void QgsLabelPropertyDialog::insertChangedValue( QgsPalLayerSettings::DataDefinedProperties p, const QVariant& value )
 {
   QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator ddIt = mDataDefinedProperties.find( p );
   if ( ddIt != mDataDefinedProperties.constEnd() )
   {
     QgsDataDefined* dd = ddIt.value();
 
-    if ( dd->isActive() && !dd->useExpression() && !dd->field().isEmpty() )
+    if ( dd && dd->isActive() && !dd->useExpression() && !dd->field().isEmpty() )
     {
       mChangedProperties.insert( mCurLabelFeat.fieldNameIndex( dd->field() ), value );
     }

@@ -12,7 +12,7 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
 
     virtual QString geometryType() const;
     virtual int dimension() const;
-    virtual QgsAbstractGeometryV2* clone() const;
+    virtual QgsCurvePolygonV2* clone() const;
     void clear();
 
 
@@ -29,21 +29,20 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
 
     //surface interface
     virtual double area() const;
-    virtual double length() const;
-    QgsPointV2 centroid() const;
+    virtual double perimeter() const;
     QgsPointV2 pointOnSurface() const;
     QgsPolygonV2* surfaceToPolygon() const;
 
     //curve polygon interface
     int numInteriorRings() const;
-    const QgsCurveV2* exteriorRing() const;
-    const QgsCurveV2* interiorRing( int i ) const;
+    QgsCurveV2* exteriorRing() const;
+    QgsCurveV2* interiorRing( int i ) const;
     virtual QgsPolygonV2* toPolygon() const;
 
     /** Sets exterior ring (takes ownership)*/
     void setExteriorRing( QgsCurveV2* ring /Transfer/ );
     /** Sets interior rings (takes ownership)*/
-    void setInteriorRings( QList<QgsCurveV2*> rings );
+    void setInteriorRings( const QList<QgsCurveV2*>& rings );
     void addInteriorRing( QgsCurveV2* ring /Transfer/ );
     /** Removes ring. Exterior ring is 0, first interior ring 1, ...*/
     bool removeInteriorRing( int nr );
@@ -67,4 +66,13 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
         @param vertex the vertex id
         @return rotation in radians, clockwise from north*/
     double vertexAngle( const QgsVertexId& vertex ) const;
+
+    virtual int vertexCount(int part = 0, int ring = 0) const;
+    virtual int ringCount(int part = 0) const;
+    virtual int partCount() const;
+
+    virtual bool addZValue( double zValue = 0 );
+    virtual bool addMValue( double mValue = 0 );
+    virtual bool dropZValue();
+    virtual bool dropMValue();
 };

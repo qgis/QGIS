@@ -16,7 +16,7 @@
 #include "qgsmaplayeractionregistry.h"
 
 
-QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, Targets targets, QIcon icon )
+QgsMapLayerAction::QgsMapLayerAction( const QString& name, QObject* parent, const Targets& targets, const QIcon& icon )
     : QAction( icon, name, parent )
     , mSingleLayer( false )
     , mActionLayer( 0 )
@@ -27,7 +27,7 @@ QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, Targets tar
 }
 
 /** Creates a map layer action which can run only on a specific layer*/
-QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer* layer, Targets targets, QIcon icon )
+QgsMapLayerAction::QgsMapLayerAction( const QString& name, QObject* parent, QgsMapLayer* layer, const Targets& targets, const QIcon& icon )
     : QAction( icon, name, parent )
     , mSingleLayer( true )
     , mActionLayer( layer )
@@ -38,7 +38,7 @@ QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer
 }
 
 /** Creates a map layer action which can run on a specific type of layer*/
-QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer::LayerType layerType, Targets targets, QIcon icon )
+QgsMapLayerAction::QgsMapLayerAction( const QString& name, QObject* parent, QgsMapLayer::LayerType layerType, const Targets& targets, const QIcon& icon )
     : QAction( icon, name, parent )
     , mSingleLayer( false )
     , mActionLayer( 0 )
@@ -77,7 +77,7 @@ bool QgsMapLayerAction::canRunUsingLayer( QgsMapLayer* layer ) const
   return false;
 }
 
-void QgsMapLayerAction::triggerForFeatures( QgsMapLayer* layer, const QList<QgsFeature> featureList )
+void QgsMapLayerAction::triggerForFeatures( QgsMapLayer* layer, const QList<QgsFeature>& featureList )
 {
   emit triggeredForFeatures( layer, featureList );
 }
@@ -125,7 +125,7 @@ void QgsMapLayerActionRegistry::addMapLayerAction( QgsMapLayerAction * action )
   emit changed();
 }
 
-QList< QgsMapLayerAction* > QgsMapLayerActionRegistry::mapLayerActions( QgsMapLayer* layer, QgsMapLayerAction::Targets targets )
+QList< QgsMapLayerAction* > QgsMapLayerActionRegistry::mapLayerActions( QgsMapLayer* layer, const QgsMapLayerAction::Targets& targets )
 {
   QList< QgsMapLayerAction* > validActions;
   QList<QgsMapLayerAction*>::iterator actionIt;

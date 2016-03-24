@@ -40,12 +40,12 @@ class QgsShapeFile : public QObject
     Q_OBJECT
   public:
 
-    QgsShapeFile( QString fileName, QString encoding = QString() );
+    QgsShapeFile( const QString& fileName, const QString& encoding = QString() );
     ~QgsShapeFile();
     int getFeatureCount();
     QString getFeatureClass();
-    bool insertLayer( QString dbname, QString schema, QString primary_key, QString geom_col,
-                      QString srid, PGconn * conn, QProgressDialog& pro,
+    bool insertLayer( const QString& dbname, const QString& schema, const QString& primary_key, const QString& geom_col,
+                      const QString& srid, PGconn * conn, QProgressDialog& pro,
                       bool &fin, QString& errorText );
 
     bool is_valid();

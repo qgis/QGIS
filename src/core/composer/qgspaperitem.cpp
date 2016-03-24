@@ -149,7 +149,7 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
-  if ( !painter )
+  if ( !painter || !mComposition || !mComposition->pagesVisible() )
   {
     return;
   }

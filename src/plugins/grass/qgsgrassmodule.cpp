@@ -82,7 +82,7 @@ QString QgsGrassModule::findExec( QString file )
 
 #ifdef Q_OS_WIN
   // On windows try .bat first
-  foreach ( QString path, QgsGrass::grassModulesPaths() )
+  Q_FOREACH ( const QString& path, QgsGrass::grassModulesPaths() )
   {
     QString full = path + "/" + file + ".bat";
     if ( QFile::exists( full ) )
@@ -92,7 +92,7 @@ QString QgsGrassModule::findExec( QString file )
   }
 
   // .exe next
-  foreach ( QString path, QgsGrass::grassModulesPaths() )
+  Q_FOREACH ( const QString& path, QgsGrass::grassModulesPaths() )
   {
     QString full = path + "/" + file + ".exe";
     if ( QFile::exists( full ) )
@@ -105,7 +105,7 @@ QString QgsGrassModule::findExec( QString file )
 #endif
 
   // Search for module
-  foreach ( QString path, QgsGrass::grassModulesPaths() )
+  Q_FOREACH ( const QString& path, QgsGrass::grassModulesPaths() )
   {
     QString full = path + "/" + file;
     if ( QFile::exists( full ) )
@@ -182,6 +182,8 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   QgsDebugMsg( "called" );
 
   setupUi( this );
+  // use fixed width font because module's output may be formated
+  mOutputTextBrowser->setStyleSheet( "font-family: Monospace; font-size: 9pt;" );
   lblModuleName->setText( tr( "Module: %1" ).arg( moduleName ) );
   mTools = tools;
   mIface = iface;
@@ -350,7 +352,7 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
 {
   //QgsDebugMsg( QString( "path = %1" ).arg( path ) );
 
-  std::vector<QPixmap> pixmaps;
+  QList<QPixmap> pixmaps;
 
   // Create vector of available pictures
   int cnt = 1;
@@ -381,7 +383,7 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
       pic.render( &painter );
       painter.end();
 
-      pixmaps.push_back( pixmap );
+      pixmaps << pixmap;
     }
     else // PNG
     {
@@ -408,9 +410,14 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
     cnt++;
   }
 
+  if ( pixmaps.isEmpty() )
+  {
+    return QPixmap();
+  }
+
   // Get total width
   int width = 0;
-  for ( unsigned int i = 0; i < pixmaps.size(); i++ )
+  for ( int i = 0; i < pixmaps.size(); i++ )
   {
     width += pixmaps[i].width();
   }
@@ -512,7 +519,7 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
   painter.setRenderHint( QPainter::Antialiasing );
 
   int pos = 0;
-  for ( unsigned int i = 0; i < pixmaps.size(); i++ )
+  for ( int i = 0; i < pixmaps.size(); i++ )
   {
     if ( i == 1 && pixmaps.size() == 3 )   // +
     {
@@ -623,13 +630,15 @@ void QgsGrassModule::run()
         if ( ret == QMessageBox::Cancel )
           return;
 
-        // r.mapcalc does not use standard parser
-        if ( typeid( *mOptions ) != typeid( QgsGrassMapcalc ) )
+#if GRASS_VERSION_MAJOR < 7
+        // r.mapcalc does not use standard parser (does not accept --o) in GRASS 6
+        if ( mXName != "r.mapcalc" )
         {
           arguments.append( "--o" );
-          //mProcess.addArgument( "--o" );
-          //command.append ( " --o" );
         }
+#else
+        arguments.append( "--o" );
+#endif
       }
     }
 
@@ -642,6 +651,7 @@ void QgsGrassModule::run()
     mViewButton->setEnabled( false );
 
     QStringList list = mOptions->arguments();
+    list << arguments;
 
     QStringList argumentsHtml;
     for ( QStringList::Iterator it = list.begin(); it != list.end(); ++it )
@@ -710,7 +720,7 @@ void QgsGrassModule::run()
 
       // Print some important variables
       variables << "QGIS_PREFIX_PATH" << "QGIS_GRASS_CRS" << "GRASS_REGION";
-      foreach ( QString v, variables )
+      Q_FOREACH ( const QString& v, variables )
       {
         mOutputTextBrowser->append( v + "=" + environment.value( v ) + "<BR>" );
       }
@@ -831,8 +841,8 @@ void QgsGrassModule::finished( int exitCode, QProcess::ExitStatus exitStatus )
       mOutputTextBrowser->append( tr( "<B>Successfully finished</B>" ) );
       mProgressBar->setValue( 100 );
       mSuccess = true;
-      mViewButton->setEnabled( true );
-      mOptions->thawOutput();
+      mViewButton->setEnabled( !mOutputVector.isEmpty() || !mOutputRaster.isEmpty() );
+      mOptions->freezeOutput( false );
       mCanvas->refresh();
     }
     else
@@ -860,9 +870,7 @@ void QgsGrassModule::readStdout()
   while ( mProcess.canReadLine() )
   {
     QByteArray ba = mProcess.readLine();
-    //line = QString::fromUtf8( ba ).replace( '\n', "" );
     line = QString::fromLocal8Bit( ba ).replace( '\n', "" );
-    //QgsDebugMsg(QString("line: '%1'").arg(line));
 
     // GRASS_INFO_PERCENT is catched here only because of bugs in GRASS,
     // normaly it should be printed to stderr
@@ -873,7 +881,7 @@ void QgsGrassModule::readStdout()
     }
     else
     {
-      mOutputTextBrowser->append( "<pre>" + line + "</pre>" );
+      mOutputTextBrowser->append( line );
     }
   }
 }
@@ -883,48 +891,23 @@ void QgsGrassModule::readStderr()
   QgsDebugMsg( "called." );
 
   QString line;
-  QRegExp rxpercent( "GRASS_INFO_PERCENT: (\\d+)" );
-  QRegExp rxmessage( "GRASS_INFO_MESSAGE\\(\\d+,\\d+\\): (.*)" );
-  QRegExp rxwarning( "GRASS_INFO_WARNING\\(\\d+,\\d+\\): (.*)" );
-  QRegExp rxerror( "GRASS_INFO_ERROR\\(\\d+,\\d+\\): (.*)" );
-  QRegExp rxend( "GRASS_INFO_END\\(\\d+,\\d+\\)" );
 
   mProcess.setReadChannel( QProcess::StandardError );
   while ( mProcess.canReadLine() )
   {
     QByteArray ba = mProcess.readLine();
-    //line = QString::fromUtf8( ba ).replace( '\n', "" );
     line = QString::fromLocal8Bit( ba ).replace( '\n', "" );
-    //QgsDebugMsg(QString("line: '%1'").arg(line));
 
-    if ( rxpercent.indexIn( line ) != -1 )
+    QString text, html;
+    int percent;
+    QgsGrass::ModuleOutput type =  QgsGrass::parseModuleOutput( line, text, html, percent );
+    if ( type == QgsGrass::OutputPercent )
     {
-      int progress = rxpercent.cap( 1 ).toInt();
-      mProgressBar->setValue( progress );
+      mProgressBar->setValue( percent );
     }
-    else if ( rxmessage.indexIn( line ) != -1 )
+    else if ( type == QgsGrass::OutputMessage || type == QgsGrass::OutputWarning || type == QgsGrass::OutputError )
     {
-      mOutputTextBrowser->append( "<pre>" + rxmessage.cap( 1 ) + "</pre>" );
-    }
-    else if ( rxwarning.indexIn( line ) != -1 )
-    {
-      QString warn = rxwarning.cap( 1 );
-      QString img = QgsApplication::pkgDataPath() + "/themes/default/grass/grass_module_warning.png";
-      mOutputTextBrowser->append( "<img src=\"" + img + "\">" + warn );
-    }
-    else if ( rxerror.indexIn( line ) != -1 )
-    {
-      QString error = rxerror.cap( 1 );
-      QString img = QgsApplication::pkgDataPath() + "/themes/default/grass/grass_module_error.png";
-      mOutputTextBrowser->append( "<img src=\"" + img + "\">" + error );
-    }
-    else if ( rxend.indexIn( line ) != -1 )
-    {
-      // Do nothing
-    }
-    else
-    {
-      mOutputTextBrowser->append( "<pre>" + line + "</pre>" );
+      mOutputTextBrowser->append( html );
     }
   }
 }

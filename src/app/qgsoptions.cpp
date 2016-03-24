@@ -218,7 +218,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   QString myPaths = settings.value( "plugins/searchPathsForPlugins", "" ).toString();
   if ( !myPaths.isEmpty() )
   {
-    QStringList myPathList = myPaths.split( "|" );
+    QStringList myPathList = myPaths.split( '|' );
     QStringList::const_iterator pathIt = myPathList.constBegin();
     for ( ; pathIt != myPathList.constEnd(); ++pathIt )
     {
@@ -233,7 +233,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   myPaths = settings.value( "svg/searchPathsForSVG", "" ).toString();
   if ( !myPaths.isEmpty() )
   {
-    QStringList myPathList = myPaths.split( "|" );
+    QStringList myPathList = myPaths.split( '|' );
     QStringList::const_iterator pathIt = myPathList.constBegin();
     for ( ; pathIt != myPathList.constEnd(); ++pathIt )
     {
@@ -241,6 +241,20 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
       newItem->setText( *pathIt );
       newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       mListSVGPaths->addItem( newItem );
+    }
+  }
+
+  myPaths = settings.value( "composer/searchPathsForTemplates", "" ).toString();
+  if ( !myPaths.isEmpty() )
+  {
+    QStringList myPathList = myPaths.split( '|' );
+    QStringList::const_iterator pathIt = myPathList.constBegin();
+    for ( ; pathIt != myPathList.constEnd(); ++pathIt )
+    {
+      QListWidgetItem* newItem = new QListWidgetItem( mListComposerTemplatePaths );
+      newItem->setText( *pathIt );
+      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      mListComposerTemplatePaths->addItem( newItem );
     }
   }
 
@@ -274,7 +288,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   QString proxyExcludedURLs = settings.value( "proxy/proxyExcludedUrls", "" ).toString();
   if ( !proxyExcludedURLs.isEmpty() )
   {
-    QStringList splitUrls = proxyExcludedURLs.split( "|" );
+    QStringList splitUrls = proxyExcludedURLs.split( '|' );
     QStringList::const_iterator urlIt = splitUrls.constBegin();
     for ( ; urlIt != splitUrls.constEnd(); ++urlIt )
     {
@@ -395,7 +409,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   {
     if ( pkeyIt->contains( "srcTransform" ) || pkeyIt->contains( "destTransform" ) )
     {
-      QStringList split = pkeyIt->split( "/" );
+      QStringList split = pkeyIt->split( '/' );
       QString srcAuthId, destAuthId;
       if ( split.size() > 0 )
       {
@@ -403,7 +417,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
       }
       if ( split.size() > 1 )
       {
-        destAuthId = split.at( 1 ).split( "_" ).at( 0 );
+        destAuthId = split.at( 1 ).split( '_' ).at( 0 );
       }
 
       if ( pkeyIt->contains( "srcTransform" ) )
@@ -544,7 +558,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mSimplifyDrawingSpinBox->setValue( settings.value( "/qgis/simplifyDrawingTol", QGis::DEFAULT_MAPTOPIXEL_THRESHOLD ).toFloat() );
   mSimplifyDrawingAtProvider->setChecked( !settings.value( "/qgis/simplifyLocal", true ).toBool() );
 
-  QStringList myScalesList = PROJECT_SCALES.split( "," );
+  QStringList myScalesList = PROJECT_SCALES.split( ',' );
   myScalesList.append( "1:1" );
   mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
   mSimplifyMaximumScaleComboBox->setScale( 1.0 / settings.value( "/qgis/simplifyMaxScale", 1 ).toFloat() );
@@ -561,7 +575,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   cbxSnappingOptionsDocked->setChecked( settings.value( "/qgis/dockSnapping", false ).toBool() );
   cbxAddPostgisDC->setChecked( settings.value( "/qgis/addPostgisDC", false ).toBool() );
   cbxAddOracleDC->setChecked( settings.value( "/qgis/addOracleDC", false ).toBool() );
-  cbxCompileExpressions->setChecked( settings.value( "/qgis/postgres/compileExpressions", false ).toBool() );
+  cbxCompileExpressions->setChecked( settings.value( "/qgis/compileExpressions", true ).toBool() );
   cbxCreateRasterLegendIcons->setChecked( settings.value( "/qgis/createRasterLegendIcons", false ).toBool() );
   cbxCopyWKTGeomFromTable->setChecked( settings.value( "/qgis/copyGeometryAsWKT", true ).toBool() );
   leNullValue->setText( settings.value( "qgis/nullValue", "NULL" ).toString() );
@@ -659,7 +673,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   myPaths = settings.value( "Map/scales", PROJECT_SCALES ).toString();
   if ( !myPaths.isEmpty() )
   {
-    QStringList myScalesList = myPaths.split( "," );
+    QStringList myScalesList = myPaths.split( ',' );
     QStringList::const_iterator scaleIt = myScalesList.constBegin();
     for ( ; scaleIt != myScalesList.constEnd(); ++scaleIt )
     {
@@ -848,6 +862,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mVariableEditor->reloadContext();
   mVariableEditor->setEditableScopeIndex( 0 );
 
+  mAdvancedSettingsEditor->setSettingsObject( &settings );
+
   // restore window and widget geometry/state
   restoreOptionsBaseUi();
 }
@@ -857,12 +873,12 @@ QgsOptions::~QgsOptions()
 {
 }
 
-void QgsOptions::setCurrentPage( QString pageWidgetName )
+void QgsOptions::setCurrentPage( const QString& pageWidgetName )
 {
   //find the page with a matching widget name
   for ( int idx = 0; idx < mOptionsStackedWidget->count(); ++idx )
   {
-    QWidget * currentPage = mOptionsStackedWidget->widget( idx );
+    QWidget* currentPage = mOptionsStackedWidget->widget( idx );
     if ( currentPage->objectName() == pageWidgetName )
     {
       //found the page, set it as current
@@ -881,7 +897,7 @@ void QgsOptions::on_cbxProjectDefaultNew_toggled( bool checked )
 {
   if ( checked )
   {
-    QString fileName = QgsApplication::qgisSettingsDirPath() + QString( "project_default.qgs" );
+    QString fileName = QgsApplication::qgisSettingsDirPath() + QLatin1String( "project_default.qgs" );
     if ( ! QFile::exists( fileName ) )
     {
       QMessageBox::information( 0, tr( "Save default project" ), tr( "You must set a default project" ) );
@@ -892,7 +908,7 @@ void QgsOptions::on_cbxProjectDefaultNew_toggled( bool checked )
 
 void QgsOptions::on_pbnProjectDefaultSetCurrent_clicked()
 {
-  QString fileName = QgsApplication::qgisSettingsDirPath() + QString( "project_default.qgs" );
+  QString fileName = QgsApplication::qgisSettingsDirPath() + QLatin1String( "project_default.qgs" );
   if ( QgsProject::instance()->write( QFileInfo( fileName ) ) )
   {
     QMessageBox::information( 0, tr( "Save default project" ), tr( "Current project saved as default" ) );
@@ -905,7 +921,7 @@ void QgsOptions::on_pbnProjectDefaultSetCurrent_clicked()
 
 void QgsOptions::on_pbnProjectDefaultReset_clicked()
 {
-  QString fileName = QgsApplication::qgisSettingsDirPath() + QString( "project_default.qgs" );
+  QString fileName = QgsApplication::qgisSettingsDirPath() + QLatin1String( "project_default.qgs" );
   if ( QFile::exists( fileName ) )
   {
     QFile::remove( fileName );
@@ -925,7 +941,7 @@ void QgsOptions::on_pbnTemplateFolderBrowse_pressed()
 
 void QgsOptions::on_pbnTemplateFolderReset_pressed()
 {
-  leTemplateFolder->setText( QgsApplication::qgisSettingsDirPath() + QString( "project_templates" ) );
+  leTemplateFolder->setText( QgsApplication::qgisSettingsDirPath() + QLatin1String( "project_templates" ) );
 }
 
 void QgsOptions::iconSizeChanged( const QString &iconSize )
@@ -952,7 +968,7 @@ void QgsOptions::on_mProjectOnLaunchPushBtn_pressed()
 {
   // Retrieve last used project dir from persistent settings
   QSettings settings;
-  QString lastUsedDir = settings.value( "/UI/lastProjectDir", "." ).toString();
+  QString lastUsedDir = settings.value( "/UI/lastProjectDir", QDir::homePath() ).toString();
   QString projPath = QFileDialog::getOpenFileName( this,
                      tr( "Choose project file to open at launch" ),
                      lastUsedDir,
@@ -978,9 +994,9 @@ void QgsOptions::saveOptions()
       continue;
     QComboBox* varApplyCmbBx = qobject_cast<QComboBox*>( mCustomVariablesTable->cellWidget( i, 0 ) );
     QString customVar = varApplyCmbBx->itemData( varApplyCmbBx->currentIndex() ).toString();
-    customVar += "|";
+    customVar += '|';
     customVar += mCustomVariablesTable->item( i, 1 )->text();
-    customVar += "=";
+    customVar += '=';
     customVar += mCustomVariablesTable->item( i, 2 )->text();
     customVars << customVar;
   }
@@ -992,7 +1008,7 @@ void QgsOptions::saveOptions()
   {
     if ( i != 0 )
     {
-      myPaths += "|";
+      myPaths += '|';
     }
     myPaths += mListPluginPaths->item( i )->text();
   }
@@ -1004,11 +1020,22 @@ void QgsOptions::saveOptions()
   {
     if ( i != 0 )
     {
-      myPaths += "|";
+      myPaths += '|';
     }
     myPaths += mListSVGPaths->item( i )->text();
   }
   settings.setValue( "svg/searchPathsForSVG", myPaths );
+
+  myPaths.clear();
+  for ( int i = 0; i < mListComposerTemplatePaths->count(); ++i )
+  {
+    if ( i != 0 )
+    {
+      myPaths += '|';
+    }
+    myPaths += mListComposerTemplatePaths->item( i )->text();
+  }
+  settings.setValue( "composer/searchPathsForTemplates", myPaths );
 
   //Network timeout
   settings.setValue( "/qgis/networkAndProxy/networkTimeout", mNetworkTimeoutSpinBox->value() );
@@ -1037,7 +1064,7 @@ void QgsOptions::saveOptions()
   {
     if ( i != 0 )
     {
-      proxyExcludeString += "|";
+      proxyExcludeString += '|';
     }
     proxyExcludeString += mExcludeUrlListWidget->item( i )->text();
   }
@@ -1075,7 +1102,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/dockSnapping", cbxSnappingOptionsDocked->isChecked() );
   settings.setValue( "/qgis/addPostgisDC", cbxAddPostgisDC->isChecked() );
   settings.setValue( "/qgis/addOracleDC", cbxAddOracleDC->isChecked() );
-  settings.setValue( "/qgis/postgres/compileExpressions", cbxCompileExpressions->isChecked() );
+  settings.setValue( "/qgis/compileExpressions", cbxCompileExpressions->isChecked() );
   settings.setValue( "/qgis/defaultLegendGraphicResolution", mLegendGraphicResolutionSpinBox->value() );
   bool createRasterLegendIcons = settings.value( "/qgis/createRasterLegendIcons", false ).toBool();
   settings.setValue( "/qgis/createRasterLegendIcons", cbxCreateRasterLegendIcons->isChecked() );
@@ -1280,7 +1307,7 @@ void QgsOptions::saveOptions()
   {
     if ( i != 0 )
     {
-      myPaths += ",";
+      myPaths += ',';
     }
     myPaths += mListGlobalScales->item( i )->text();
   }
@@ -1414,12 +1441,12 @@ void QgsOptions::on_mCustomGroupBoxChkBx_clicked( bool chkd )
   mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
 }
 
-void QgsOptions::on_leProjectGlobalCrs_crsChanged( QgsCoordinateReferenceSystem crs )
+void QgsOptions::on_leProjectGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem& crs )
 {
   mDefaultCrs = crs;
 }
 
-void QgsOptions::on_leLayerGlobalCrs_crsChanged( QgsCoordinateReferenceSystem crs )
+void QgsOptions::on_leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem& crs )
 {
   mLayerDefaultCrs = crs;
 }
@@ -1498,7 +1525,7 @@ QStringList QgsOptions::i18nList()
     // Ignore the 'en' translation file, already added as 'en_US'.
     if ( myFileName.compare( "qgis_en.qm" ) == 0 ) continue;
 
-    myList << myFileName.replace( "qgis_", "" ).replace( ".qm", "" );
+    myList << myFileName.remove( "qgis_" ).remove( ".qm" );
   }
   return myList;
 }
@@ -1519,7 +1546,7 @@ void QgsOptions::on_mCustomVariablesChkBx_toggled( bool chkd )
   mCustomVariablesTable->setEnabled( chkd );
 }
 
-void QgsOptions::addCustomEnvVarRow( QString varName, QString varVal, QString varApply )
+void QgsOptions::addCustomEnvVarRow( const QString& varName, const QString& varVal, const QString& varApply )
 {
   int rowCnt = mCustomVariablesTable->rowCount();
   mCustomVariablesTable->insertRow( rowCnt );
@@ -1612,6 +1639,33 @@ void QgsOptions::on_mBtnRemovePluginPath_clicked()
   QListWidgetItem* itemToRemove = mListPluginPaths->takeItem( currentRow );
   delete itemToRemove;
 }
+
+void QgsOptions::on_mBtnAddTemplatePath_clicked()
+{
+  QString myDir = QFileDialog::getExistingDirectory(
+                    this,
+                    tr( "Choose a directory" ),
+                    QDir::toNativeSeparators( QDir::homePath() ),
+                    QFileDialog::ShowDirsOnly
+                  );
+
+  if ( ! myDir.isEmpty() )
+  {
+    QListWidgetItem* newItem = new QListWidgetItem( mListComposerTemplatePaths );
+    newItem->setText( myDir );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mListComposerTemplatePaths->addItem( newItem );
+    mListComposerTemplatePaths->setCurrentItem( newItem );
+  }
+}
+
+void QgsOptions::on_mBtnRemoveTemplatePath_clicked()
+{
+  int currentRow = mListComposerTemplatePaths->currentRow();
+  QListWidgetItem* itemToRemove = mListComposerTemplatePaths->takeItem( currentRow );
+  delete itemToRemove;
+}
+
 
 void QgsOptions::on_mBtnAddSVGPath_clicked()
 {
@@ -1746,7 +1800,7 @@ void QgsOptions::loadGdalDriverList()
       pszVirtualIO = "v";
     else
       pszVirtualIO = "";
-    myDriversFlags[myGdalDriverDescription] = QString( "%1%2" ).arg( pszRWFlag ).arg( pszVirtualIO );
+    myDriversFlags[myGdalDriverDescription] = QString( "%1%2" ).arg( pszRWFlag, pszVirtualIO );
 
     // get driver extensions and long name
     // the gdal provider can override/add extensions but there is no interface to query this
@@ -1856,7 +1910,7 @@ void QgsOptions::on_pbnDefaultScaleValues_clicked()
 {
   mListGlobalScales->clear();
 
-  QStringList myScalesList = PROJECT_SCALES.split( "," );
+  QStringList myScalesList = PROJECT_SCALES.split( ',' );
   QStringList::const_iterator scaleIt = myScalesList.constBegin();
   for ( ; scaleIt != myScalesList.constEnd(); ++scaleIt )
   {
@@ -1909,6 +1963,7 @@ void QgsOptions::on_pbnExportScales_clicked()
   }
 
   QStringList myScales;
+  myScales.reserve( mListGlobalScales->count() );
   for ( int i = 0; i < mListGlobalScales->count(); ++i )
   {
     myScales.append( mListGlobalScales->item( i )->text() );
@@ -1921,7 +1976,7 @@ void QgsOptions::on_pbnExportScales_clicked()
   }
 }
 
-void QgsOptions::initContrastEnhancement( QComboBox *cbox, QString name, QString defaultVal )
+void QgsOptions::initContrastEnhancement( QComboBox *cbox, const QString& name, const QString& defaultVal )
 {
   QSettings settings;
 
@@ -1935,7 +1990,7 @@ void QgsOptions::initContrastEnhancement( QComboBox *cbox, QString name, QString
   cbox->setCurrentIndex( cbox->findData( contrastEnchacement ) );
 }
 
-void QgsOptions::saveContrastEnhancement( QComboBox *cbox, QString name )
+void QgsOptions::saveContrastEnhancement( QComboBox *cbox, const QString& name )
 {
   QSettings settings;
   QString value = cbox->itemData( cbox->currentIndex() ).toString();
@@ -2023,7 +2078,7 @@ void QgsOptions::on_mButtonAddColor_clicked()
 void QgsOptions::on_mButtonImportColors_clicked()
 {
   QSettings s;
-  QString lastDir = s.value( "/UI/lastGplPaletteDir", "" ).toString();
+  QString lastDir = s.value( "/UI/lastGplPaletteDir", QDir::homePath() ).toString();
   QString filePath = QFileDialog::getOpenFileName( this, tr( "Select palette file" ), lastDir, "GPL (*.gpl);;All files (*.*)" );
   activateWindow();
   if ( filePath.isEmpty() )
@@ -2052,7 +2107,7 @@ void QgsOptions::on_mButtonImportColors_clicked()
 void QgsOptions::on_mButtonExportColors_clicked()
 {
   QSettings s;
-  QString lastDir = s.value( "/UI/lastGplPaletteDir", "" ).toString();
+  QString lastDir = s.value( "/UI/lastGplPaletteDir", QDir::homePath() ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Palette file" ), lastDir, "GPL (*.gpl)" );
   activateWindow();
   if ( fileName.isEmpty() )

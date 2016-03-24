@@ -29,7 +29,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
 {
     Q_OBJECT
   public:
-    QgsProjectionSelector( QWidget* parent, const char *name = "", Qt::WindowFlags fl = 0 );
+    QgsProjectionSelector( QWidget* parent, const char *name = "", const Qt::WindowFlags& fl = 0 );
 
     ~QgsProjectionSelector();
 
@@ -64,19 +64,19 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
      * \arg const QString in The input string to make safe.
      * \return The string made safe for SQL statements.
      */
-    const QString sqlSafeString( const QString theSQL );
+    const QString sqlSafeString( const QString& theSQL );
 
     //! Gets the current authority-style projection identifier
     QString selectedAuthId();
 
   public slots:
-    void setSelectedCrsName( QString theCRSName );
+    void setSelectedCrsName( const QString& theCRSName );
 
     QString selectedName();
 
     void setSelectedCrsId( long theCRSID );
 
-    void setSelectedAuthId( QString authId );
+    void setSelectedAuthId( const QString& authId );
 
     QString selectedProj4String();
 
@@ -98,7 +98,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
      *
      * \warning This function's behaviour is undefined if it is called after the widget is shown.
      */
-    void setOgcWmsCrsFilter( QSet<QString> crsFilter );
+    void setOgcWmsCrsFilter( const QSet<QString>& crsFilter );
     void on_lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
     void on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
     void on_cbxHideDeprecated_stateChanged();
@@ -145,10 +145,10 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
        *
        * \param e The sqlite3 expression (typically "srid" or "sridid")
        */
-    QString getSelectedExpression( QString e );
+    QString getSelectedExpression( const QString& e );
 
     /** Show the user a warning if the srs database could not be found */
-    void showDBMissingWarning( const QString theFileName );
+    void showDBMissingWarning( const QString& theFileName );
     // List view nodes for the tree view of projections
     //! User defined projections node
     QTreeWidgetItem *mUserProjList;
@@ -165,7 +165,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     /**
      * Utility method used in conjunction with name based searching tool
      */
-    long getLargestCRSIDMatch( QString theSql );
+    long getLargestCRSIDMatch( const QString& theSql );
 
     //! add recently used CRS
     void insertRecent( long theCrsId );
@@ -200,7 +200,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     QStringList authorities();
 
   signals:
-    void sridSelected( QString theSRID );
+    void sridSelected( const QString& theSRID );
     //! Refresh any listening canvases
     void refresh();
     //! Let listeners know if find has focus so they can adjust the default button

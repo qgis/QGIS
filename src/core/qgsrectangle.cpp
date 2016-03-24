@@ -126,6 +126,26 @@ void QgsRectangle::scale( double scaleFactor, double centerX, double centerY )
   ymax = centerY + newHeight / 2.0;
 }
 
+void QgsRectangle::grow( double delta )
+{
+  xmin -= delta;
+  xmax += delta;
+  ymin -= delta;
+  ymax += delta;
+}
+
+void QgsRectangle::include( const QgsPoint &p )
+{
+  if ( p.x() < xMinimum() )
+    setXMinimum( p.x() );
+  else if ( p.x() > xMaximum() )
+    setXMaximum( p.x() );
+  if ( p.y() < yMinimum() )
+    setYMinimum( p.y() );
+  if ( p.y() > yMaximum() )
+    setYMaximum( p.y() );
+}
+
 QgsRectangle QgsRectangle::buffer( double width )
 {
   return QgsRectangle( xmin - width, ymin - width, xmax + width, ymax + width );
@@ -209,8 +229,8 @@ bool QgsRectangle::isNull() const
 QString QgsRectangle::asWktCoordinates() const
 {
   QString rep =
-    qgsDoubleToString( xmin ) + " " + qgsDoubleToString( ymin ) + ", " +
-    qgsDoubleToString( xmax ) + " " + qgsDoubleToString( ymax );
+    qgsDoubleToString( xmin ) + ' ' + qgsDoubleToString( ymin ) + ", " +
+    qgsDoubleToString( xmax ) + ' ' + qgsDoubleToString( ymax );
 
   return rep;
 }
@@ -219,11 +239,11 @@ QString QgsRectangle::asWktPolygon() const
 {
   QString rep =
     QString( "POLYGON((" ) +
-    qgsDoubleToString( xmin ) + " " + qgsDoubleToString( ymin ) + ", " +
-    qgsDoubleToString( xmax ) + " " + qgsDoubleToString( ymin ) + ", " +
-    qgsDoubleToString( xmax ) + " " + qgsDoubleToString( ymax ) + ", " +
-    qgsDoubleToString( xmin ) + " " + qgsDoubleToString( ymax ) + ", " +
-    qgsDoubleToString( xmin ) + " " + qgsDoubleToString( ymin ) +
+    qgsDoubleToString( xmin ) + ' ' + qgsDoubleToString( ymin ) + ", " +
+    qgsDoubleToString( xmax ) + ' ' + qgsDoubleToString( ymin ) + ", " +
+    qgsDoubleToString( xmax ) + ' ' + qgsDoubleToString( ymax ) + ", " +
+    qgsDoubleToString( xmin ) + ' ' + qgsDoubleToString( ymax ) + ", " +
+    qgsDoubleToString( xmin ) + ' ' + qgsDoubleToString( ymin ) +
     QString( "))" );
 
   return rep;
@@ -288,11 +308,11 @@ QString QgsRectangle::asPolygon() const
   // NOTE: a polygon isn't a polygon unless its closed. In the case of
   //       a rectangle, that means 5 points (last == first)
   foo
-  << xmin << " " << ymin << ", "
-  << xmin << " " << ymax << ", "
-  << xmax << " " << ymax << ", "
-  << xmax << " " << ymin << ", "
-  << xmin << " " << ymin;
+  << xmin << ' ' << ymin << ", "
+  << xmin << ' ' << ymax << ", "
+  << xmax << ' ' << ymax << ", "
+  << xmax << ' ' << ymin << ", "
+  << xmin << ' ' << ymin;
 
   return rep;
 

@@ -16,7 +16,7 @@ class QgsColorRampShader : QgsRasterShaderFunction
       //! default constructor
       ColorRampItem();
       //! convenience constructor
-      ColorRampItem( double val, QColor col, QString lbl = QString() );
+      ColorRampItem( double val, const QColor& col, const QString& lbl = QString() );
 
       QString label;
       double value;
@@ -52,7 +52,7 @@ class QgsColorRampShader : QgsRasterShaderFunction
     void setColorRampType( QgsColorRampShader::ColorRamp_TYPE theColorRampType );
 
     /** \brief Set the color ramp type*/
-    void setColorRampType( QString );
+    void setColorRampType( const QString& theType );
 
     /** \brief Set the maximum size the color cache can be */
     void setMaximumColorCacheSize( int theSize );

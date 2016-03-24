@@ -32,16 +32,6 @@ __version__ = "3.8"
 
 import copy
 
-try:
-    import processing
-except ImportError as e:
-    raise Exception("Processing must be installed and available in PYTHONPATH")
-
-try:
-    import otbApplication
-except ImportError as e:
-    raise Exception("OTB python plugins must be installed and available in PYTHONPATH")
-
 from processing.algs.otb.OTBUtils import (renameValueField,
                                           remove_dependant_choices,
                                           remove_other_choices,
@@ -65,7 +55,6 @@ def getBinaryMorphologicalOperation(available_app, original_dom_document):
     remove_other_choices(the_root, 'structype', 'ball')
     remove_dependant_choices(the_root, 'filter', 'dilate')
     remove_parameter_by_key(the_root, 'structype.ball.yradius')
-    #defaultWrite(available_app, the_root)
     the_list = defaultSplit(available_app, the_root, 'filter')
     return the_list
 
@@ -651,6 +640,83 @@ def getStereoFramework(available_app, original_dom_document):
     deleteGeoidSrtm(the_root)
     defaultWrite(available_app, the_root)
     return [the_root]
+
+
+def getRasterization(available_app, original_dom_document):
+    """
+    Let only rasterization with an reference image
+    Let only mode auto.
+    Remove all parameters which should be updated once the input file given.
+    Split by SRS : EPSG, fit to ortho, lambert-wgs84 and UTM.
+    Each of these SRS have their own parameters modified in this fonction.
+    Delete GEOID and DEM parameter as they are not updated at the creation of the otb algorithms when you launch QGIS.
+    The values are picked from the settings.
+    """
+    the_list = []
+    rasterization_image = original_dom_document
+
+    import copy
+    rasterization_manual = copy.deepcopy(original_dom_document)
+
+    old_app_name = rasterization_image.find('key').text
+
+    remove_parameter_by_key(rasterization_image, 'szx')
+    remove_parameter_by_key(rasterization_image, 'szy')
+    remove_parameter_by_key(rasterization_image, 'epsg')
+    remove_parameter_by_key(rasterization_image, 'orx')
+    remove_parameter_by_key(rasterization_image, 'ory')
+    remove_parameter_by_key(rasterization_image, 'spx')
+    remove_parameter_by_key(rasterization_image, 'spy')
+
+    remove_parameter_by_key(rasterization_manual, 'im')
+
+    # set a new name according to the choice
+    rasterization_image.find('key').text = '%s-%s' % (old_app_name, "image")
+    rasterization_image.find('longname').text = '%s (%s)' % (old_app_name, "image")
+    defaultWrite('%s-%s' % (old_app_name, "image"), rasterization_image)
+    rasterization_manual.find('key').text = '%s-%s' % (old_app_name, "manual")
+    rasterization_manual.find('longname').text = '%s (%s)' % (old_app_name, "manual")
+    defaultWrite('%s-%s' % (old_app_name, "manual"), rasterization_manual)
+    return [rasterization_image, rasterization_manual]
+
+
+def getVectorDataExtractROI(available_app, original_dom_document):
+    """
+    Delete GEOID and DEM parameter as they are not updated at the creation of the otb algorithms when you launch QGIS.
+    The values are picked from the settings.
+    """
+    the_root = original_dom_document
+    deleteGeoidSrtm(the_root)
+    defaultWrite(available_app, the_root)
+    return [the_root]
+
+
+def getVectorDataReprojection(available_app, original_dom_document):
+    """
+    """
+    the_root = original_dom_document
+    deleteGeoidSrtm(the_root)
+    the_list = defaultSplit(available_app, the_root, 'out.proj')
+    return the_list
+
+
+def getComputePolylineFeatureFromImage(available_app, original_dom_document):
+    """
+    Delete GEOID and DEM parameter as they are not updated at the creation of the otb algorithms when you launch QGIS.
+    The values are picked from the settings.
+    """
+    the_root = original_dom_document
+    deleteGeoidSrtm(the_root)
+    defaultWrite(available_app, the_root)
+    return [the_root]
+
+
+def getDespeckle(available_app, original_dom_document):
+    """
+    """
+    the_root = original_dom_document
+    the_list = defaultSplit(available_app, the_root, 'filter')
+    return the_list
 
 
 def deleteGeoidSrtm(doc):

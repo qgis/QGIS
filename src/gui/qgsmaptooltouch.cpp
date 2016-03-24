@@ -49,7 +49,7 @@ void QgsMapToolTouch::deactivate()
   QgsMapTool::deactivate();
 }
 
-void QgsMapToolTouch::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolTouch::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( !mPinching )
   {
@@ -62,7 +62,7 @@ void QgsMapToolTouch::canvasMoveEvent( QMouseEvent * e )
   }
 }
 
-void QgsMapToolTouch::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolTouch::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   if ( !mPinching )
   {
@@ -84,7 +84,7 @@ void QgsMapToolTouch::canvasReleaseEvent( QMouseEvent * e )
   }
 }
 
-void QgsMapToolTouch::canvasDoubleClickEvent( QMouseEvent *e )
+void QgsMapToolTouch::canvasDoubleClickEvent( QgsMapMouseEvent* e )
 {
   if ( !mPinching )
   {

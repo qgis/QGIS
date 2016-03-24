@@ -41,6 +41,8 @@ typedef QList<int> QgsAttributeList;
 
 #include "qgsmaplayerrenderer.h"
 
+class QgsVectorLayerLabelProvider;
+class QgsVectorLayerDiagramProvider;
 
 /**
  * Implementation of threaded rendering for vector layers.
@@ -84,6 +86,9 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     QgsRenderContext& mContext;
 
+    /** The rendered layer */
+    QgsVectorLayer* mLayer;
+
     QgsFields mFields; // TODO: use fields from mSource
 
     QgsFeatureIds mSelectedFeatureIds;
@@ -102,8 +107,17 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     QStringList mAttrNames;
 
+    //! used with old labeling engine (QgsPalLabeling): whether labeling is enabled
     bool mLabeling;
+    //! used with new labeling engine (QgsPalLabeling): whether diagrams are enabled
     bool mDiagrams;
+
+    //! used with new labeling engine (QgsLabelingEngineV2): provider for labels.
+    //! may be null. no need to delete: if exists it is owned by labeling engine
+    QgsVectorLayerLabelProvider* mLabelProvider;
+    //! used with new labeling engine (QgsLabelingEngineV2): provider for diagrams.
+    //! may be null. no need to delete: if exists it is owned by labeling engine
+    QgsVectorLayerDiagramProvider* mDiagramProvider;
 
     int mLayerTransparency;
     QPainter::CompositionMode mFeatureBlendMode;

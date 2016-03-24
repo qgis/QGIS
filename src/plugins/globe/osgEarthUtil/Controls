@@ -64,7 +64,7 @@ namespace osgEarth { namespace Util { namespace Controls21
             : _top(top), _right(right), _bottom(bottom), _left(left) { }
         Gutter( float y, float x )
             : _top(y), _right(x), _bottom(y), _left(x) { }
-        Gutter( float all )
+        explicit Gutter( float all )
             : _top(all), _right(all), _bottom(all), _left(all) { }
         bool operator !=( const Gutter& rhs ) const {
             return top() != rhs.top() || right() != rhs.right() || bottom() != rhs.bottom() || left() != rhs.left(); }
@@ -270,7 +270,7 @@ namespace osgEarth { namespace Util { namespace Controls21
     class OSGEARTHUTIL_EXPORT ImageControl : public Control
     {
     public:
-        ImageControl( osg::Image* image =0L );
+        explicit ImageControl( osg::Image* image =0L );
 
         void setImage( osg::Image* image );
         osg::Image* getImage() const { return _image.get(); }
@@ -330,7 +330,7 @@ namespace osgEarth { namespace Util { namespace Controls21
     class OSGEARTHUTIL_EXPORT CheckBoxControl : public Control
     {
     public:
-        CheckBoxControl( bool checked =false );
+        explicit CheckBoxControl( bool checked = false );
         CheckBoxControl( bool checked, ControlEventHandler* callback );
 
         void setValue( bool value );
@@ -658,7 +658,7 @@ namespace osgEarth { namespace Util { namespace Controls21
          * Constructs a new canvas and attaches it to a view. Call
          * getOrCreateControlCanvas(view) to create one.
          */
-        ControlCanvas( osgViewer::View* view );
+        explicit ControlCanvas( osgViewer::View* view );
 
     protected:
 

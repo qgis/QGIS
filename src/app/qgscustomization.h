@@ -38,19 +38,19 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
     ~QgsCustomizationDialog();
 
     // get item by path
-    QTreeWidgetItem *item( QString thePath, QTreeWidgetItem *theItem = 0 );
+    QTreeWidgetItem *item( const QString& thePath, QTreeWidgetItem *theItem = 0 );
 
     //
 
     // return current item state for given path
-    bool itemChecked( QString thePath );
+    bool itemChecked( const QString& thePath );
     // set item state for given path
-    void setItemChecked( QString thePath, bool on );
+    void setItemChecked( const QString& thePath, bool on );
 
     // recursively save tree item to settings
-    void itemToSettings( QString thePath, QTreeWidgetItem *theItem, QSettings *theSettings );
+    void itemToSettings( const QString& thePath, QTreeWidgetItem *theItem, QSettings *theSettings );
     // recursively save settings to tree items
-    void settingsToItem( QString thePath, QTreeWidgetItem *theItem, QSettings *theSettings );
+    void settingsToItem( const QString& thePath, QTreeWidgetItem *theItem, QSettings *theSettings );
 
     // save current tree to settings
     void treeToSettings( QSettings *theSettings );
@@ -62,7 +62,7 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
     bool switchWidget( QWidget * widget, QMouseEvent *event );
 
     // Get path of the widget
-    QString widgetPath( QWidget * theWidget, QString thePath = QString() );
+    QString widgetPath( QWidget * theWidget, const QString& thePath = QString() );
 
     void setCatch( bool on );
     bool catchOn();
@@ -94,7 +94,7 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
   private:
     void init();
     QTreeWidgetItem * createTreeItemWidgets();
-    QTreeWidgetItem * readWidgetsXmlNode( QDomNode theNode );
+    QTreeWidgetItem * readWidgetsXmlNode( const QDomNode& theNode );
 
     QString mLastDirSettingsName;
     QSettings* mSettings;
@@ -117,7 +117,7 @@ class APP_EXPORT QgsCustomization : public QObject
 
     void openDialog( QWidget *parent );
     static void customizeWidget( QWidget * widget, QEvent * event, QSettings* settings );
-    static void customizeWidget( QString path, QWidget * widget, QSettings* settings );
+    static void customizeWidget( const QString& path, QWidget * widget, QSettings* settings );
     static void removeFromLayout( QLayout *theLayout, QWidget * widget );
 
     void updateMainWindow( QMenu * theToolBarMenu );

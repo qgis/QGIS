@@ -59,7 +59,7 @@ QgsRasterRendererRegistry::~QgsRasterRendererRegistry()
 {
 }
 
-void QgsRasterRendererRegistry::insert( QgsRasterRendererRegistryEntry entry )
+void QgsRasterRendererRegistry::insert( const QgsRasterRendererRegistryEntry& entry )
 {
   mEntries.insert( entry.name, entry );
   mSortedEntries.append( entry.name );

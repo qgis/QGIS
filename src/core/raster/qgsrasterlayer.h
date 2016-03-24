@@ -303,7 +303,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
                                  QgsRaster::ContrastEnhancementLimits theLimits = QgsRaster::ContrastEnhancementMinMax,
-                                 QgsRectangle theExtent = QgsRectangle(),
+                                 const QgsRectangle& theExtent = QgsRectangle(),
                                  int theSampleSize = SAMPLE_SIZE,
                                  bool theGenerateLookupTableFlag = true );
 
@@ -323,11 +323,11 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Draws a preview of the rasterlayer into a pixmap
     @note - use previewAsImage() for rendering with QGIS>=2.4 */
-    Q_DECL_DEPRECATED QPixmap previewAsPixmap( QSize size, QColor bgColor = Qt::white );
+    Q_DECL_DEPRECATED QPixmap previewAsPixmap( const QSize& size, const QColor& bgColor = Qt::white );
 
     /** \brief Draws a preview of the rasterlayer into a QImage
      @note added in 2.4 */
-    QImage previewAsImage( QSize size, QColor bgColor = Qt::white,
+    QImage previewAsImage( const QSize& size, const QColor& bgColor = Qt::white,
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 
     /**
@@ -341,7 +341,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /**
      * Set the visibility of the given sublayer name
      */
-    virtual void setSubLayerVisibility( QString name, bool vis ) override;
+    virtual void setSubLayerVisibility( const QString& name, bool vis ) override;
 
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
     virtual QDateTime timestamp() const override { return mDataProvider->timestamp() ; }
@@ -353,7 +353,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     Q_DECL_DEPRECATED void updateProgress( int, int );
 
     /** \brief receive progress signal from provider */
-    void onProgress( int, double, QString );
+    void onProgress( int, double, const QString& );
 
   signals:
     /** \brief Signal for notifying listeners of long running processes */

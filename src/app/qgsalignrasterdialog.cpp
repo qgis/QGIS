@@ -44,7 +44,7 @@ static QString _rasterLayerName( const QString& filename )
 /** Helper class to report progress */
 struct QgsAlignRasterDialogProgress : public QgsAlignRaster::ProgressHandler
 {
-  QgsAlignRasterDialogProgress( QProgressBar* pb ) : mPb( pb ) {}
+  explicit QgsAlignRasterDialogProgress( QProgressBar* pb ) : mPb( pb ) {}
   virtual bool progress( double complete ) override
   {
     mPb->setValue(( int ) qRound( complete * 100 ) );
@@ -436,7 +436,7 @@ void QgsAlignRasterLayerConfigDialog::setItem( const QString& inputFilename, con
 void QgsAlignRasterLayerConfigDialog::browseOutputFilename()
 {
   QSettings settings;
-  QString dirName = editOutput->text().isEmpty() ? settings.value( "/UI/lastRasterFileDir", "." ).toString() : editOutput->text();
+  QString dirName = editOutput->text().isEmpty() ? settings.value( "/UI/lastRasterFileDir", QDir::homePath() ).toString() : editOutput->text();
 
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Select output file" ), dirName, tr( "GeoTIFF" ) + " (*.tif *.tiff *.TIF *.TIFF)" );
 

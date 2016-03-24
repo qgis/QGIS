@@ -88,7 +88,7 @@ class TestQgsExpressionContext : public QObject
     class ModifiableFunction : public QgsScopedExpressionFunction
     {
       public:
-        ModifiableFunction( int* v )
+        explicit ModifiableFunction( int* v )
             : QgsScopedExpressionFunction( "test_function", 1, "test" )
             , mVal( v )
         {}
@@ -164,6 +164,10 @@ void TestQgsExpressionContext::contextScope()
   //updating a read only variable should remain read only
   scope.setVariable( "readonly", "newvalue" );
   QVERIFY( scope.isReadOnly( "readonly" ) );
+
+  //test retrieving filtered variable names
+  scope.setVariable( "_hidden_", "hidden" );
+  QCOMPARE( scope.filteredVariableNames(), QStringList() << "readonly" << "notreadonly" << "test" );
 
   //removal
   scope.setVariable( "toremove", 5 );
@@ -525,7 +529,6 @@ void TestQgsExpressionContext::projectScope()
   projectScope = QgsExpressionContextUtils::projectScope();
   QCOMPARE( projectScope->variable( "project_title" ).toString(), QString( "test project" ) );
   delete projectScope;
-  projectScope = 0;
 
   //test setProjectVariables
   QgsStringMap vars;
@@ -583,7 +586,7 @@ void TestQgsExpressionContext::layerScope()
 
   //check that fields were set
   QgsFields fromVar = qvariant_cast<QgsFields>( context.variable( QgsExpressionContext::EXPR_FIELDS ) );
-  QCOMPARE( fromVar, vectorLayer->pendingFields() );
+  QCOMPARE( fromVar, vectorLayer->fields() );
 
   //test setting layer variables
   QgsExpressionContextUtils::setLayerVariable( vectorLayer.data(), "testvar", "testval" );

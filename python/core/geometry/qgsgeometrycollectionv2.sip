@@ -10,6 +10,8 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     //QgsGeometryCollectionV2& operator=( const QgsGeometryCollectionV2& c );
     virtual ~QgsGeometryCollectionV2();
 
+    virtual QgsGeometryCollectionV2* clone() const;
+
     int numGeometries() const;
     //const QgsAbstractGeometryV2* geometryN( int n ) const;
     QgsAbstractGeometryV2* geometryN( int n );
@@ -21,6 +23,13 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     /** Adds a geometry and takes ownership. Returns true in case of success*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g /Transfer/ );
+
+    /** Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
+     * @param g geometry to insert. Ownership is transferred to the collection.
+     * @param index position to insert geometry before
+    */
+    virtual bool insertGeometry( QgsAbstractGeometryV2* g /Transfer/, int index );
+
     virtual bool removeGeometry( int nr );
 
     virtual void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform );
@@ -49,6 +58,7 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     virtual double length() const;
     virtual double area() const;
+    virtual double perimeter() const;
 
     bool hasCurvedSegments() const;
 
@@ -56,4 +66,22 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
         @param vertex the vertex id
         @return rotation in radians, clockwise from north*/
     double vertexAngle( const QgsVertexId& vertex ) const;
+
+    virtual int vertexCount(int part = 0, int ring = 0) const;
+    virtual int ringCount(int part = 0) const;
+    virtual int partCount() const;
+    virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const;
+
+    virtual bool addZValue( double zValue = 0 );
+    virtual bool addMValue( double mValue = 0 );
+    virtual bool dropZValue();
+    virtual bool dropMValue();
+
+  protected:
+
+    /** Returns whether child type names are omitted from Wkt representations of the collection
+     * @note added in QGIS 2.12
+     */
+    virtual bool wktOmitChildType() const;
+
 };

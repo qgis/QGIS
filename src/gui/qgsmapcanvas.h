@@ -428,6 +428,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     QgsExpressionContextScope& expressionContextScope() { return mExpressionContextScope; }
 
+    /** Returns a const reference to the expression context scope for the map canvas.
+     * @note added in QGIS 2.12
+     * @see setExpressionContextScope()
+     */
+    const QgsExpressionContextScope& expressionContextScope() const { return mExpressionContextScope; }
+
   public slots:
 
     /** Repaints the canvas map*/
@@ -437,7 +443,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void selectionChangedSlot();
 
     //! Save the convtents of the map canvas to disk as an image
-    void saveAsImage( QString theFileName, QPixmap * QPixmap = 0, QString = "PNG" );
+    void saveAsImage( const QString& theFileName, QPixmap * QPixmap = 0, const QString& = "PNG" );
 
     //! This slot is connected to the visibility change of one or more layers
     void layerStateChange();
@@ -448,7 +454,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Whether to suppress rendering or not
     void setRenderFlag( bool theFlag );
     //! State of render suppression flag
-    bool renderFlag() {return mRenderFlag;};
+    bool renderFlag() {return mRenderFlag;}
 
     /** A simple helper method to find out if on the fly projections are enabled or not */
     bool hasCrsTransformEnabled();

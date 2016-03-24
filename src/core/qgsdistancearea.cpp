@@ -110,7 +110,7 @@ void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem& srcCRS )
   mCoordTransform->setSourceCrs( srcCRS );
 }
 
-void QgsDistanceArea::setSourceAuthId( QString authId )
+void QgsDistanceArea::setSourceAuthId( const QString& authId )
 {
   QgsCoordinateReferenceSystem srcCRS;
   srcCRS.createFromOgcWmsCrs( authId );
@@ -141,7 +141,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   // Distances in meters.  Flattening is calculated.
   if ( ellipsoid.startsWith( "PARAMETER" ) )
   {
-    QStringList paramList = ellipsoid.split( ":" );
+    QStringList paramList = ellipsoid.split( ':' );
     bool semiMajorOk, semiMinorOk;
     double semiMajor = paramList[1].toDouble( & semiMajorOk );
     double semiMinor = paramList[2].toDouble( & semiMinorOk );
@@ -167,7 +167,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
     return false;
   }
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = "select radius, parameter2 from tbl_ellipsoid where acronym='" + ellipsoid + "'";
+  QString mySql = "select radius, parameter2 from tbl_ellipsoid where acronym='" + ellipsoid + '\'';
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK )
@@ -231,8 +231,8 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   if ( destCRS.srsid() == 0 )
   {
     QString myName = QString( " * %1 (%2)" )
-                     .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ) )
-                     .arg( destCRS.toProj4() );
+                     .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
+                           destCRS.toProj4() );
     destCRS.saveAsUserCRS( myName );
   }
   //
@@ -263,7 +263,7 @@ bool  QgsDistanceArea::setEllipsoid( double semiMajor, double semiMinor )
   return true;
 }
 
-double QgsDistanceArea::measure( const QgsAbstractGeometryV2* geomV2 ) const
+double QgsDistanceArea::measure( const QgsAbstractGeometryV2* geomV2, MeasureType type ) const
 {
   if ( !geomV2 )
   {
@@ -276,9 +276,16 @@ double QgsDistanceArea::measure( const QgsAbstractGeometryV2* geomV2 ) const
     return 0.0;
   }
 
-  if ( !mEllipsoidalMode )
+  MeasureType measureType = type;
+  if ( measureType == Default )
   {
-    if ( geomDimension == 1 )
+    measureType = ( geomDimension == 1 ? Length : Area );
+  }
+
+  if ( !mEllipsoidalMode || mEllipsoid == GEO_NONE )
+  {
+    //no transform required
+    if ( measureType == Length )
     {
       return geomV2->length();
     }
@@ -296,12 +303,12 @@ double QgsDistanceArea::measure( const QgsAbstractGeometryV2* geomV2 ) const
       double sum = 0;
       for ( int i = 0; i < collection->numGeometries(); ++i )
       {
-        sum += measure( collection->geometryN( i ) );
+        sum += measure( collection->geometryN( i ), measureType );
       }
       return sum;
     }
 
-    if ( geomDimension == 1 )
+    if ( measureType == Length )
     {
       const QgsCurveV2* curve = dynamic_cast<const QgsCurveV2*>( geomV2 );
       if ( !curve )
@@ -317,6 +324,9 @@ double QgsDistanceArea::measure( const QgsAbstractGeometryV2* geomV2 ) const
     else
     {
       const QgsSurfaceV2* surface = dynamic_cast<const QgsSurfaceV2*>( geomV2 );
+      if ( !surface )
+        return 0.0;
+
       QgsPolygonV2* polygon = surface->surfaceToPolygon();
 
       double area = 0;
@@ -332,7 +342,6 @@ double QgsDistanceArea::measure( const QgsAbstractGeometryV2* geomV2 ) const
       return area;
     }
   }
-  return 0.0;
 }
 
 double QgsDistanceArea::measure( const QgsGeometry *geometry ) const
@@ -342,6 +351,24 @@ double QgsDistanceArea::measure( const QgsGeometry *geometry ) const
 
   const QgsAbstractGeometryV2* geomV2 = geometry->geometry();
   return measure( geomV2 );
+}
+
+double QgsDistanceArea::measureArea( const QgsGeometry* geometry ) const
+{
+  if ( !geometry )
+    return 0.0;
+
+  const QgsAbstractGeometryV2* geomV2 = geometry->geometry();
+  return measure( geomV2, Area );
+}
+
+double QgsDistanceArea::measureLength( const QgsGeometry* geometry ) const
+{
+  if ( !geometry )
+    return 0.0;
+
+  const QgsAbstractGeometryV2* geomV2 = geometry->geometry();
+  return measure( geomV2, Length );
 }
 
 double QgsDistanceArea::measurePerimeter( const QgsGeometry* geometry ) const
@@ -355,9 +382,9 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry* geometry ) const
     return 0.0;
   }
 
-  if ( !mEllipsoidalMode )
+  if ( !mEllipsoidalMode || mEllipsoid == GEO_NONE )
   {
-    return geomV2->length();
+    return geomV2->perimeter();
   }
 
   //create list with (single) surfaces
@@ -370,6 +397,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry* geometry ) const
   const QgsMultiSurfaceV2* multiSurf = dynamic_cast<const QgsMultiSurfaceV2*>( geomV2 );
   if ( multiSurf )
   {
+    surfaces.reserve(( surf ? 1 : 0 ) + multiSurf->numGeometries() );
     for ( int i = 0; i  < multiSurf->numGeometries(); ++i )
     {
       surfaces.append( static_cast<const QgsSurfaceV2*>( multiSurf->geometryN( i ) ) );
@@ -377,7 +405,6 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry* geometry ) const
   }
 
   double length = 0;
-  QList<QgsPointV2> pointList;
   QList<const QgsSurfaceV2*>::const_iterator surfaceIt = surfaces.constBegin();
   for ( ; surfaceIt != surfaces.constEnd(); ++surfaceIt )
   {
@@ -460,21 +487,29 @@ double QgsDistanceArea::measureLine( const QList<QgsPoint> &points ) const
 
 double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2 ) const
 {
+  QGis::UnitType units;
+  return measureLine( p1, p2, units );
+}
+
+double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2, QGis::UnitType& units ) const
+{
   double result;
+  units = mCoordTransform->sourceCrs().mapUnits();
 
   try
   {
     QgsPoint pp1 = p1, pp2 = p2;
 
-    QgsDebugMsgLevel( QString( "Measuring from %1 to %2" ).arg( p1.toString( 4 ) ).arg( p2.toString( 4 ) ), 3 );
+    QgsDebugMsgLevel( QString( "Measuring from %1 to %2" ).arg( p1.toString( 4 ), p2.toString( 4 ) ), 3 );
     if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
     {
+      units = QGis::Meters;
       QgsDebugMsgLevel( QString( "Ellipsoidal calculations is enabled, using ellipsoid %1" ).arg( mEllipsoid ), 4 );
       QgsDebugMsgLevel( QString( "From proj4 : %1" ).arg( mCoordTransform->sourceCrs().toProj4() ), 4 );
       QgsDebugMsgLevel( QString( "To   proj4 : %1" ).arg( mCoordTransform->destCRS().toProj4() ), 4 );
       pp1 = mCoordTransform->transform( p1 );
       pp2 = mCoordTransform->transform( p2 );
-      QgsDebugMsgLevel( QString( "New points are %1 and %2, calculating..." ).arg( pp1.toString( 4 ) ).arg( pp2.toString( 4 ) ), 4 );
+      QgsDebugMsgLevel( QString( "New points are %1 and %2, calculating..." ).arg( pp1.toString( 4 ), pp2.toString( 4 ) ), 4 );
       result = computeDistanceBearing( pp1, pp2 );
     }
     else
@@ -597,15 +632,9 @@ double QgsDistanceArea::measurePolygon( const QgsCurveV2* curve ) const
 
   QList<QgsPointV2> linePointsV2;
   curve->points( linePointsV2 );
-
   QList<QgsPoint> linePoints;
-  QList<QgsPointV2>::const_iterator ptIt = linePointsV2.constBegin();
-  for ( ; ptIt != linePointsV2.constEnd(); ++ptIt )
-  {
-    linePoints.append( mCoordTransform->transform( QPoint( ptIt->x(), ptIt->y() ) ) );
-  }
-
-  return computePolygonArea( linePoints );
+  QgsGeometry::convertPointList( linePointsV2, linePoints );
+  return measurePolygon( linePoints );
 }
 
 

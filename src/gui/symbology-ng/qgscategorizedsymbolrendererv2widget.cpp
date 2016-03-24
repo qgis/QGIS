@@ -29,6 +29,7 @@
 
 #include "qgsproject.h"
 #include "qgsexpression.h"
+#include "qgsmapcanvas.h"
 
 #include <QKeyEvent>
 #include <QMenu>
@@ -38,6 +39,9 @@
 #include <QPen>
 #include <QPainter>
 #include <QFileDialog>
+
+///@cond
+//not part of public API
 
 QgsCategorizedSymbolRendererV2Model::QgsCategorizedSymbolRendererV2Model( QObject * parent ) : QAbstractItemModel( parent )
     , mRenderer( 0 )
@@ -305,6 +309,7 @@ bool QgsCategorizedSymbolRendererV2Model::dropMimeData( const QMimeData *data, Q
 
 void QgsCategorizedSymbolRendererV2Model::deleteRows( QList<int> rows )
 {
+  qSort( rows ); // list might be unsorted, depending on how the user selected the rows
   for ( int i = rows.size() - 1; i >= 0; i-- )
   {
     beginRemoveRows( QModelIndex(), rows[i], rows[i] );
@@ -364,6 +369,8 @@ void QgsCategorizedSymbolRendererV2ViewStyle::drawPrimitive( PrimitiveElement el
   QProxyStyle::drawPrimitive( element, option, painter, widget );
 }
 
+///@endcond
+
 // ------------------------------ Widget ------------------------------------
 QgsRendererV2Widget* QgsCategorizedSymbolRendererV2Widget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
 {
@@ -372,16 +379,25 @@ QgsRendererV2Widget* QgsCategorizedSymbolRendererV2Widget::create( QgsVectorLaye
 
 static QgsExpressionContext _getExpressionContext( const void* context )
 {
+  const QgsCategorizedSymbolRendererV2Widget* widget = ( const QgsCategorizedSymbolRendererV2Widget* ) context;
+
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 )
-  //TODO - use actual map canvas settings
-  << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  << QgsExpressionContextUtils::atlasScope( 0 );
 
-  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
-  if ( layer )
-    expContext << QgsExpressionContextUtils::layerScope( layer );
+  if ( widget->mapCanvas() )
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( widget->mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( widget->mapCanvas()->expressionContextScope() );
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+
+  if ( widget->vectorLayer() )
+    expContext << QgsExpressionContextUtils::layerScope( widget->vectorLayer() );
 
   return expContext;
 }
@@ -468,7 +484,7 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
 
   btnAdvanced->setMenu( advMenu );
 
-  mExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, layer );
+  mExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );
 }
 
 QgsCategorizedSymbolRendererV2Widget::~QgsCategorizedSymbolRendererV2Widget()
@@ -522,6 +538,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeSelectedSymbols()
   {
     QgsSymbolV2* newSymbol = mCategorizedSymbol->clone();
     QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
+    dlg.setMapCanvas( mMapCanvas );
     if ( !dlg.exec() )
     {
       delete newSymbol;
@@ -555,6 +572,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
   QgsSymbolV2* newSymbol = mCategorizedSymbol->clone();
 
   QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
+  dlg.setMapCanvas( mMapCanvas );
   if ( !dlg.exec() )
   {
     delete newSymbol;
@@ -578,7 +596,7 @@ void QgsCategorizedSymbolRendererV2Widget::populateCategories()
 {
 }
 
-void QgsCategorizedSymbolRendererV2Widget::categoryColumnChanged( QString field )
+void QgsCategorizedSymbolRendererV2Widget::categoryColumnChanged( const QString& field )
 {
   mRenderer->setClassAttribute( field );
 }
@@ -605,6 +623,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorySymbol()
   }
 
   QgsSymbolV2SelectorDialog dlg( symbol, mStyle, mLayer, this );
+  dlg.setMapCanvas( mMapCanvas );
   if ( !dlg.exec() )
   {
     delete symbol;
@@ -720,7 +739,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
                                      tr( "Confirm Delete" ),
                                      tr( "The classification field was changed from '%1' to '%2'.\n"
                                          "Should the existing classes be deleted before classification?" )
-                                     .arg( mOldClassificationAttribute ).arg( attrName ),
+                                     .arg( mOldClassificationAttribute, attrName ),
                                      QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
     if ( res == QMessageBox::Cancel )
     {
@@ -842,7 +861,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategory()
   mModel->addCategory( cat );
 }
 
-void QgsCategorizedSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )
+void QgsCategorizedSymbolRendererV2Widget::sizeScaleFieldChanged( const QString& fldName )
 {
   mRenderer->setSizeScaleField( fldName );
 }

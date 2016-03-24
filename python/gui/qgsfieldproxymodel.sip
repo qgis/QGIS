@@ -36,7 +36,7 @@ class QgsFieldProxyModel : QSortFilterProxyModel
      * @param filters are Filter flags
      * @note added in 2.3
      */
-    QgsFieldProxyModel* setFilters( Filters filters );
+    QgsFieldProxyModel* setFilters( const Filters& filters );
     const Filters& filters() const;
 
     // QSortFilterProxyModel interface

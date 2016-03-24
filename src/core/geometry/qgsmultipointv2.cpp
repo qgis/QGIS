@@ -19,14 +19,24 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspointv2.h"
 #include "qgswkbptr.h"
 
-QgsAbstractGeometryV2 *QgsMultiPointV2::clone() const
+QgsMultiPointV2 *QgsMultiPointV2::clone() const
 {
   return new QgsMultiPointV2( *this );
 }
 
 bool QgsMultiPointV2::fromWkt( const QString& wkt )
 {
-  return fromCollectionWkt( wkt, QList<QgsAbstractGeometryV2*>() << new QgsPointV2, "Point" );
+  QString collectionWkt( wkt );
+  //test for non-standard MultiPoint(x1 y1, x2 y2) format
+  QRegExp regex( "^\\s*MultiPoint\\s*[ZM]*\\s*\\(\\s*\\d" );
+  regex.setCaseSensitivity( Qt::CaseInsensitive );
+  if ( regex.indexIn( collectionWkt ) >= 0 )
+  {
+    //alternate style without extra brackets, upgrade to standard
+    collectionWkt.replace( '(', "((" ).replace( ')', "))" ).replace( ',', "),(" );
+  }
+
+  return fromCollectionWkt( collectionWkt, QList<QgsAbstractGeometryV2*>() << new QgsPointV2, "Point" );
 }
 
 QDomElement QgsMultiPointV2::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
@@ -63,20 +73,19 @@ QDomElement QgsMultiPointV2::asGML3( QDomDocument& doc, int precision, const QSt
 
 QString QgsMultiPointV2::asJSON( int precision ) const
 {
-  QString json = "{\"type\": \"MultiPoint\", \"coordinates\": [";
+  QString json = "{\"type\": \"MultiPoint\", \"coordinates\": ";
+
+  QList<QgsPointV2> pts;
   Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsPointV2*>( geom ) )
     {
       const QgsPointV2* point = static_cast<const QgsPointV2*>( geom );
-      json += QgsGeometryUtils::pointsToJSON( QList<QgsPointV2>() << *point, precision ) + ", ";
+      pts << *point;
     }
   }
-  if ( json.endsWith( ", " ) )
-  {
-    json.chop( 2 ); // Remove last ", "
-  }
-  json += "] }";
+  json += QgsGeometryUtils::pointsToJSON( pts, precision );
+  json += " }";
   return json;
 }
 

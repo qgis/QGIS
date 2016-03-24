@@ -33,7 +33,7 @@ class QgsBlurEffect : QgsPaintEffect
     virtual QString type() const;
     virtual QgsStringMap properties() const;
     virtual void readProperties( const QgsStringMap& props );
-    virtual QgsPaintEffect* clone() const /Factory/;
+    virtual QgsBlurEffect* clone() const /Factory/;
 
     /** Sets blur level (strength)
      * @param level blur level. Depending on the current @link blurMethod @endlink, this parameter

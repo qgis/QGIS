@@ -53,7 +53,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     virtual QString type() const override { return QString( "blur" ); }
     virtual QgsStringMap properties() const override;
     virtual void readProperties( const QgsStringMap& props ) override;
-    virtual QgsPaintEffect* clone() const override;
+    virtual QgsBlurEffect* clone() const override;
 
     /** Sets blur level (strength)
      * @param level blur level. Depending on the current @link blurMethod @endlink, this parameter

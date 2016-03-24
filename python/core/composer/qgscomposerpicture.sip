@@ -242,7 +242,7 @@ class QgsComposerPicture: QgsComposerItem
      * @see pictureExpression
      * @deprecated use QgsComposerObject::dataDefinedProperty( QgsComposerObject::PictureSource ) instead
      */
-    virtual void setPictureExpression( QString expression ) /Deprecated/;
+    virtual void setPictureExpression( const QString& expression ) /Deprecated/;
 
     /** Recalculates the source image (if using an expression for picture's source)
      * and reloads and redraws the picture.

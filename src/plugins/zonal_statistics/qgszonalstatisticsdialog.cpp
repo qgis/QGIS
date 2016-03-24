@@ -200,7 +200,7 @@ QString QgsZonalStatisticsDialog::proposeAttributePrefix() const
   QString proposedPrefix = "";
   while ( !prefixIsValid( proposedPrefix ) )
   {
-    proposedPrefix.prepend( "_" );
+    proposedPrefix.prepend( '_' );
   }
   return proposedPrefix;
 }

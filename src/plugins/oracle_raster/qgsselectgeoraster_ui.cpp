@@ -164,7 +164,7 @@ void QgsOracleSelectGeoraster::connectToServer()
   {
     makeConnection = false;
     QString password = QInputDialog::getText( this,
-                       tr( "Password for %1/<password>@%2" ).arg( username ).arg( database ),
+                       tr( "Password for %1/<password>@%2" ).arg( username, database ),
                        tr( "Please enter your password:" ),
                        QLineEdit::Password,
                        QString::null,
@@ -256,25 +256,25 @@ void QgsOracleSelectGeoraster::showSelection( const QString & line )
   if ( fields.size() < 4 )
   {
     labelStatus->setText( QString( "%1 GeoRaster table%2" )
-                          .arg( count ).arg( plural ) );
+                          .arg( count, plural ) );
     checkBox->setEnabled( false );
   }
   else if ( fields.size() == 4 )
   {
     labelStatus->setText( QString( "%1 GeoRaster column%2 on table %3" )
-                          .arg( count ).arg( plural ).arg( fields[3] ) );
+                          .arg( count, plural, fields[3] ) );
     checkBox->setEnabled( false );
   }
   else if ( fields.size() == 5 )
   {
     labelStatus->setText( QString( "%1 GeoRaster object%2 on table %3 column %4" )
-                          .arg( count ).arg( plural ).arg( fields[3] ).arg( fields[4] ) );
+                          .arg( count, plural, fields[3], fields[4] ) );
     checkBox->setEnabled( true );
   }
   else
   {
     labelStatus->setText( QString( "%1 GeoRaster object%2 on table %3 column %4 where %5" )
-                          .arg( count ).arg( plural ).arg( fields[3] ).arg( fields[4] ).arg( fields[5] ) );
+                          .arg( count, plural, fields[3], fields[4], fields[5] ) );
     checkBox->setEnabled( true );
   }
 
@@ -296,7 +296,7 @@ void QgsOracleSelectGeoraster::showSelection( const QString & line )
   GDALClose( hDS );
 }
 
-void QgsOracleSelectGeoraster::on_listWidget_clicked( QModelIndex Index )
+void QgsOracleSelectGeoraster::on_listWidget_clicked( const QModelIndex& Index )
 {
   Q_UNUSED( Index );
   if ( lineEdit->text() == listWidget->currentItem()->text() )

@@ -24,7 +24,7 @@
 
 #include "qgsgrass.h"
 
-class QgsGrassVectorLayer : public QObject
+class GRASS_LIB_EXPORT QgsGrassVectorLayer : public QObject
 {
     Q_OBJECT
   public:
@@ -33,6 +33,8 @@ class QgsGrassVectorLayer : public QObject
     QgsGrassVectorLayer( const QgsGrassObject &grassObject, int number, struct field_info *fieldInfo, QObject * parent = 0 );
 
     ~QgsGrassVectorLayer();
+
+    QgsGrassObject grassObject() const { return mGrassObject; }
 
     /** Layer number (field) */
     int number() { return mNumber; }
@@ -73,7 +75,7 @@ class QgsGrassVectorLayer : public QObject
     QString mError;
 };
 
-class QgsGrassVector : public QObject
+class GRASS_LIB_EXPORT QgsGrassVector : public QObject
 {
     Q_OBJECT
   public:
@@ -94,6 +96,10 @@ class QgsGrassVector : public QObject
 
     /** Get total number of primitives of given type. Types may be combined by bitwise or) */
     int typeCount( int type ) const;
+
+    /** Maximum layer number (field).
+     * @return max layer number or 0 if no layer exists */
+    int maxLayerNumber() const;
 
     /** Get number of nodes */
     int nodeCount() const { return mNodeCount; }

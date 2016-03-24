@@ -101,7 +101,7 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
     }
     else // Add service
     {
-      replacePath( item, item->path(), path() + "/" + providerKey.toLower() );
+      replacePath( item, item->path(), path() + '/' + providerKey.toLower() );
       children.append( item );
     }
   }

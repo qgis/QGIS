@@ -129,11 +129,8 @@ class QgsSelectedFeature: public QObject
     void beginGeometryChange();
     void endGeometryChange();
 
-    bool hasSelection() const;
-
   signals:
     void selectionChanged();
-    void lastVertexChanged( const QgsPointV2& pt );
     void vertexMapChanged();
 
   public slots:

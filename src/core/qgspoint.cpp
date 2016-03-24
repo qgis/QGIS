@@ -136,7 +136,7 @@ QString QgsPoint::toString( int thePrecision ) const
 {
   QString x = qIsFinite( m_x ) ? QString::number( m_x, 'f', thePrecision ) : QObject::tr( "infinite" );
   QString y = qIsFinite( m_y ) ? QString::number( m_y, 'f', thePrecision ) : QObject::tr( "infinite" );
-  return QString( "%1,%2" ).arg( x ).arg( y );
+  return QString( "%1,%2" ).arg( x, y );
 }
 
 QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffix, const bool padded ) const
@@ -245,7 +245,7 @@ QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffi
   QString rep = myXSign + QString::number( myDegreesX ) + QChar( 176 ) +
                 myMinutesX + QChar( 0x2032 ) +
                 myStrSecondsX + QChar( 0x2033 ) +
-                myXHemisphere + QString( "," ) +
+                myXHemisphere + ',' +
                 myYSign + QString::number( myDegreesY ) + QChar( 176 ) +
                 myMinutesY + QChar( 0x2032 ) +
                 myStrSecondsY + QChar( 0x2033 ) +
@@ -330,7 +330,7 @@ QString QgsPoint::toDegreesMinutes( int thePrecision, const bool useSuffix, cons
 
   QString rep = myXSign + QString::number( myDegreesX ) + QChar( 176 ) +
                 myStrMinutesX + QChar( 0x2032 ) +
-                myXHemisphere + QString( "," ) +
+                myXHemisphere + ',' +
                 myYSign + QString::number( myDegreesY ) + QChar( 176 ) +
                 myStrMinutesY + QChar( 0x2032 ) +
                 myYHemisphere;
@@ -339,7 +339,7 @@ QString QgsPoint::toDegreesMinutes( int thePrecision, const bool useSuffix, cons
 
 QString QgsPoint::wellKnownText() const
 {
-  return QString( "POINT(%1 %2)" ).arg( qgsDoubleToString( m_x ) ).arg( qgsDoubleToString( m_y ) );
+  return QString( "POINT(%1 %2)" ).arg( qgsDoubleToString( m_x ), qgsDoubleToString( m_y ) );
 }
 
 double QgsPoint::sqrDist( double x, double y ) const

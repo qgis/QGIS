@@ -31,7 +31,7 @@ QgsTextDiagram::~QgsTextDiagram()
 {
 }
 
-QgsDiagram* QgsTextDiagram::clone() const
+QgsTextDiagram* QgsTextDiagram::clone() const
 {
   return new QgsTextDiagram( *this );
 }
@@ -51,7 +51,7 @@ QSizeF QgsTextDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCo
   }
   else
   {
-    attrVal = feature.attributes()[is.classificationAttribute];
+    attrVal = feature.attributes().at( is.classificationAttribute );
   }
 
   if ( !attrVal.isValid() )

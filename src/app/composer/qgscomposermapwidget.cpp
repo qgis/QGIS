@@ -38,6 +38,7 @@
 #include "qgsgenericprojectionselector.h"
 #include "qgsproject.h"
 #include "qgsvisibilitypresetcollection.h"
+#include "qgsvisibilitypresets.h"
 #include "qgisgui.h"
 
 #include <QMessageBox>
@@ -148,6 +149,8 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
       connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
                this, SLOT( populateDataDefinedButtons() ) );
       connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( populateDataDefinedButtons() ) );
+
+      compositionAtlasToggled( atlas->enabled() );
     }
   }
 
@@ -280,7 +283,9 @@ QgsComposerObject::DataDefinedProperty QgsComposerMapWidget::ddPropertyForWidget
 
 void QgsComposerMapWidget::compositionAtlasToggled( bool atlasEnabled )
 {
-  if ( atlasEnabled )
+  if ( atlasEnabled &&
+       mComposerMap && mComposerMap->composition() && mComposerMap->composition()->atlasComposition().coverageLayer()
+       && mComposerMap->composition()->atlasComposition().coverageLayer()->wkbType() != QGis::WKBNoGeometry )
   {
     mAtlasCheckBox->setEnabled( true );
   }
@@ -302,7 +307,7 @@ void QgsComposerMapWidget::aboutToShowVisibilityPresetsMenu()
   {
     QAction* a = menu->addAction( presetName, this, SLOT( visibilityPresetSelected() ) );
     a->setCheckable( true );
-    QStringList layers = QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( presetName );
+    QStringList layers = QgsVisibilityPresets::instance()->orderedPresetVisibleLayers( presetName );
     QMap<QString, QString> styles = QgsProject::instance()->visibilityPresetCollection()->presetStyleOverrides( presetName );
     if ( layers == mComposerMap->layerSet() && styles == mComposerMap->layerStyleOverrides() )
       a->setChecked( true );
@@ -319,7 +324,7 @@ void QgsComposerMapWidget::visibilityPresetSelected()
     return;
 
   QString presetName = action->text();
-  QStringList lst = QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( presetName );
+  QStringList lst = QgsVisibilityPresets::instance()->orderedPresetVisibleLayers( presetName );
   if ( mComposerMap )
   {
     mKeepLayerListCheckBox->setChecked( true );
@@ -807,6 +812,7 @@ void QgsComposerMapWidget::handleChangedFrameDisplay( QgsComposerMapGrid::Border
   mComposerMap->beginCommand( tr( "Frame divisions changed" ) );
   grid->setFrameDivisions( mode, border );
   mComposerMap->endCommand();
+  mComposerMap->updateBoundingRect();
 }
 
 void QgsComposerMapWidget::handleChangedAnnotationDisplay( QgsComposerMapGrid::BorderSide border, const QString &text )
@@ -1138,13 +1144,21 @@ void QgsComposerMapWidget::refreshMapComboBox()
 
 void QgsComposerMapWidget::atlasLayerChanged( QgsVectorLayer* layer )
 {
-  // enable or disable fixed scale control based on layer type
-  if ( !layer || !mAtlasCheckBox->isChecked() )
+  if ( !layer || layer->wkbType() == QGis::WKBNoGeometry )
   {
+    //geometryless layer, disable atlas control
+    mAtlasCheckBox->setChecked( false );
+    mAtlasCheckBox->setEnabled( false );
     return;
   }
+  else
+  {
+    mAtlasCheckBox->setEnabled( true );
+  }
 
-  toggleAtlasScalingOptionsByLayerType();
+  // enable or disable fixed scale control based on layer type
+  if ( mAtlasCheckBox->isChecked() )
+    toggleAtlasScalingOptionsByLayerType();
 }
 
 bool QgsComposerMapWidget::hasPredefinedScales() const
@@ -1157,7 +1171,7 @@ bool QgsComposerMapWidget::hasPredefinedScales() const
     // default to global map tool scales
     QSettings settings;
     QString scalesStr( settings.value( "Map/scales", PROJECT_SCALES ).toString() );
-    QStringList myScalesList = scalesStr.split( "," );
+    QStringList myScalesList = scalesStr.split( ',' );
     return myScalesList.size() > 0 && myScalesList[0] != "";
   }
   return true;
@@ -1551,7 +1565,7 @@ void QgsComposerMapWidget::on_mGridLineStyleButton_clicked()
     return;
   }
 
-  QgsLineSymbolV2* newSymbol = dynamic_cast<QgsLineSymbolV2*>( grid->lineSymbol()->clone() );
+  QgsLineSymbolV2* newSymbol = static_cast<QgsLineSymbolV2*>( grid->lineSymbol()->clone() );
   QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0, this );
 
   if ( d.exec() == QDialog::Accepted )
@@ -1576,7 +1590,7 @@ void QgsComposerMapWidget::on_mGridMarkerStyleButton_clicked()
     return;
   }
 
-  QgsMarkerSymbolV2* newSymbol = dynamic_cast<QgsMarkerSymbolV2*>( grid->markerSymbol()->clone() );
+  QgsMarkerSymbolV2* newSymbol = static_cast<QgsMarkerSymbolV2*>( grid->markerSymbol()->clone() );
   QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0, this );
 
   if ( d.exec() == QDialog::Accepted )
@@ -1677,6 +1691,7 @@ void QgsComposerMapWidget::on_mFrameWidthSpinBox_valueChanged( double val )
 
   mComposerMap->beginCommand( tr( "Frame width changed" ) );
   grid->setFrameWidth( val );
+  mComposerMap->updateBoundingRect();
   mComposerMap->update();
   mComposerMap->endCommand();
 }
@@ -1691,6 +1706,7 @@ void QgsComposerMapWidget::on_mCheckGridLeftSide_toggled( bool checked )
 
   mComposerMap->beginCommand( tr( "Frame left side changed" ) );
   grid->setFrameSideFlag( QgsComposerMapGrid::FrameLeft, checked );
+  mComposerMap->updateBoundingRect();
   mComposerMap->update();
   mComposerMap->endCommand();
 }
@@ -1705,6 +1721,7 @@ void QgsComposerMapWidget::on_mCheckGridRightSide_toggled( bool checked )
 
   mComposerMap->beginCommand( tr( "Frame right side changed" ) );
   grid->setFrameSideFlag( QgsComposerMapGrid::FrameRight, checked );
+  mComposerMap->updateBoundingRect();
   mComposerMap->update();
   mComposerMap->endCommand();
 }
@@ -1719,6 +1736,7 @@ void QgsComposerMapWidget::on_mCheckGridTopSide_toggled( bool checked )
 
   mComposerMap->beginCommand( tr( "Frame top side changed" ) );
   grid->setFrameSideFlag( QgsComposerMapGrid::FrameTop, checked );
+  mComposerMap->updateBoundingRect();
   mComposerMap->update();
   mComposerMap->endCommand();
 }
@@ -1733,6 +1751,7 @@ void QgsComposerMapWidget::on_mCheckGridBottomSide_toggled( bool checked )
 
   mComposerMap->beginCommand( tr( "Frame bottom side changed" ) );
   grid->setFrameSideFlag( QgsComposerMapGrid::FrameBottom, checked );
+  mComposerMap->updateBoundingRect();
   mComposerMap->update();
   mComposerMap->endCommand();
 }
@@ -1956,6 +1975,7 @@ void QgsComposerMapWidget::on_mGridTypeComboBox_currentIndexChanged( const QStri
     mGridBlendLabel->setVisible( false );
   }
 
+  mComposerMap->updateBoundingRect();
   mComposerMap->update();
   mComposerMap->endCommand();
 }
@@ -1978,6 +1998,7 @@ void QgsComposerMapWidget::on_mMapGridCRSButton_clicked()
     mComposerMap->beginCommand( tr( "Grid CRS changed" ) );
     QString selectedAuthId = crsDialog.selectedAuthId();
     grid->setCrs( QgsCoordinateReferenceSystem( selectedAuthId ) );
+    mComposerMap->updateBoundingRect();
     mMapGridCRSButton->setText( selectedAuthId );
     mComposerMap->endCommand();
   }
@@ -2513,7 +2534,7 @@ void QgsComposerMapWidget::on_mOverviewFrameMapComboBox_currentIndexChanged( con
 
     //extract id
     bool conversionOk;
-    QStringList textSplit = text.split( " " );
+    QStringList textSplit = text.split( ' ' );
     if ( textSplit.size() < 1 )
     {
       return;
@@ -2548,7 +2569,7 @@ void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
     return;
   }
 
-  QgsFillSymbolV2* newSymbol = dynamic_cast<QgsFillSymbolV2*>( overview->frameSymbol()->clone() );
+  QgsFillSymbolV2* newSymbol = static_cast<QgsFillSymbolV2*>( overview->frameSymbol()->clone() );
   QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0, this );
 
   if ( d.exec() == QDialog::Accepted )

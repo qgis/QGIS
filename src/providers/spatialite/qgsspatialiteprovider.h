@@ -69,7 +69,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Constructor of the vector provider
      * @param uri  uniform resource locator (URI) for a dataset
      */
-    QgsSpatiaLiteProvider( QString const &uri = "" );
+    explicit QgsSpatiaLiteProvider( QString const &uri = "" );
 
     //! Destructor
     virtual ~ QgsSpatiaLiteProvider();
@@ -94,7 +94,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     virtual QString subsetString() override;
 
     /** Mutator for sql where clause used to limit dataset size */
-    virtual bool setSubsetString( QString theSQL, bool updateFeatureCount = true ) override;
+    virtual bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() override { return true; }
 
@@ -467,7 +467,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     struct SLException
     {
-      SLException( char *msg ) : errMsg( msg )
+      explicit SLException( char *msg ) : errMsg( msg )
       {
       }
 

@@ -304,7 +304,7 @@ void QgsSnappingDialog::show()
   mLayerTreeWidget->resizeColumnToContents( 4 );
 }
 
-void QgsSnappingDialog::addLayers( QList<QgsMapLayer *> layers )
+void QgsSnappingDialog::addLayers( const QList<QgsMapLayer *>& layers )
 {
   Q_FOREACH ( QgsMapLayer* layer, layers )
   {
@@ -457,7 +457,7 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
   }
 }
 
-void QgsSnappingDialog::layersWillBeRemoved( QStringList thelayers )
+void QgsSnappingDialog::layersWillBeRemoved( const QStringList& thelayers )
 {
   Q_FOREACH ( const QString& theLayerId, thelayers )
   {
@@ -505,5 +505,6 @@ void QgsSnappingDialog::setSnappingMode()
     mSnapModeComboBox->setCurrentIndex( 1 );
   else // "advanced" or empty (backward compatibility)
     mSnapModeComboBox->setCurrentIndex( 2 );
+  onSnappingModeIndexChanged( mSnapModeComboBox->currentIndex() );
   mSnapModeComboBox->blockSignals( false );
 }

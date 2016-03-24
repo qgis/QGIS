@@ -21,6 +21,14 @@ email                : sherman at mrcc.com
 
 #include "qgsmessagelog.h"
 
+#include <QDataStream>
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfeature.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
 QgsFeature::QgsFeature( QgsFeatureId id )
 {
   d = new QgsFeaturePrivate( id );
@@ -47,6 +55,12 @@ QgsFeature & QgsFeature::operator=( QgsFeature const & rhs )
 QgsFeature::~QgsFeature()
 {
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfeature.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 QgsFeatureId QgsFeature::id() const
 {
@@ -77,6 +91,12 @@ QgsGeometry *QgsFeature::geometryAndOwnership()
 
   return d->geometry;
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfeature.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 void QgsFeature::setFeatureId( QgsFeatureId id )
 {
@@ -135,6 +155,12 @@ void QgsFeature::setGeometry( QgsGeometry* geom )
   d->ownsGeometry = true;
 }
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfeature.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
 /** Set the pointer to the feature geometry
 */
 void QgsFeature::setGeometryAndOwnership( unsigned char *geom, size_t length )
@@ -164,6 +190,11 @@ const QgsFields *QgsFeature::fields() const
   return &( d->fields );
 }
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfeature.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 bool QgsFeature::isValid() const
 {
@@ -188,7 +219,6 @@ void QgsFeature::initAttributes( int fieldCount )
     ptr->clear();
 }
 
-
 bool QgsFeature::setAttribute( int idx, const QVariant &value )
 {
   if ( idx < 0 || idx >= d->attributes.size() )
@@ -202,7 +232,13 @@ bool QgsFeature::setAttribute( int idx, const QVariant &value )
   return true;
 }
 
-bool QgsFeature::setAttribute( const QString& name, QVariant value )
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfeature.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
+bool QgsFeature::setAttribute( const QString& name, const QVariant& value )
 {
   int fieldIdx = fieldNameIndex( name );
   if ( fieldIdx == -1 )
@@ -229,9 +265,8 @@ QVariant QgsFeature::attribute( int fieldIdx ) const
   if ( fieldIdx < 0 || fieldIdx >= d->attributes.count() )
     return QVariant();
 
-  return d->attributes[fieldIdx];
+  return d->attributes.at( fieldIdx );
 }
-
 
 QVariant QgsFeature::attribute( const QString& name ) const
 {
@@ -239,8 +274,14 @@ QVariant QgsFeature::attribute( const QString& name ) const
   if ( fieldIdx == -1 )
     return QVariant();
 
-  return d->attributes[fieldIdx];
+  return d->attributes.at( fieldIdx );
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfeature.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 int QgsFeature::fieldNameIndex( const QString& fieldName ) const
 {

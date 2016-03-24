@@ -20,6 +20,10 @@
 
 class QgsRelationEditorWidget;
 
+/** \class QgsRelationWidgetWrapper
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
 {
     Q_OBJECT
@@ -30,7 +34,7 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
-    bool valid() override;
+    bool valid() const override;
 
   public slots:
     void setFeature( const QgsFeature& feature ) override;

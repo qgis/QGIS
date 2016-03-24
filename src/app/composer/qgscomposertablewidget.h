@@ -27,7 +27,7 @@ class QgsComposerTableWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
 {
     Q_OBJECT
   public:
-    QgsComposerTableWidget( QgsComposerAttributeTable* table );
+    explicit QgsComposerTableWidget( QgsComposerAttributeTable* table );
     ~QgsComposerTableWidget();
 
   protected:

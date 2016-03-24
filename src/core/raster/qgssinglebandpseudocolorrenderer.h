@@ -32,7 +32,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     /** Note: takes ownership of QgsRasterShader*/
     QgsSingleBandPseudoColorRenderer( QgsRasterInterface* input, int band, QgsRasterShader* shader );
     ~QgsSingleBandPseudoColorRenderer();
-    QgsRasterInterface * clone() const override;
+    QgsSingleBandPseudoColorRenderer * clone() const override;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
@@ -41,6 +41,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     /** Takes ownership of the shader*/
     void setShader( QgsRasterShader* shader );
     QgsRasterShader* shader() { return mShader; }
+    //! @note available in python as constShader
     const QgsRasterShader* shader() const { return mShader; }
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;

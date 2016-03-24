@@ -67,7 +67,7 @@ void QgsPluginRegistry::setPythonUtils( QgsPythonUtils* pythonUtils )
   mPythonUtils = pythonUtils;
 }
 
-bool QgsPluginRegistry::isLoaded( QString key ) const
+bool QgsPluginRegistry::isLoaded( const QString& key ) const
 {
   QMap<QString, QgsPluginMetadata>::const_iterator it = mPlugins.find( key );
   if ( it != mPlugins.end() ) // found a c++ plugin?
@@ -81,7 +81,7 @@ bool QgsPluginRegistry::isLoaded( QString key ) const
   return false;
 }
 
-QString QgsPluginRegistry::library( QString key )
+QString QgsPluginRegistry::library( const QString& key )
 {
   QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.find( key );
   if ( it != mPlugins.end() )
@@ -96,7 +96,7 @@ QString QgsPluginRegistry::library( QString key )
   return QString();
 }
 
-QgisPlugin *QgsPluginRegistry::plugin( QString key )
+QgisPlugin *QgsPluginRegistry::plugin( const QString& key )
 {
   QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.find( key );
   if ( it == mPlugins.end() )
@@ -107,7 +107,7 @@ QgisPlugin *QgsPluginRegistry::plugin( QString key )
   return it->plugin();
 }
 
-bool QgsPluginRegistry::isPythonPlugin( QString key ) const
+bool QgsPluginRegistry::isPythonPlugin( const QString& key ) const
 {
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
@@ -117,7 +117,7 @@ bool QgsPluginRegistry::isPythonPlugin( QString key ) const
   return false;
 }
 
-void QgsPluginRegistry::addPlugin( QString key, QgsPluginMetadata metadata )
+void QgsPluginRegistry::addPlugin( const QString& key, const QgsPluginMetadata& metadata )
 {
   mPlugins.insert( key, metadata );
 }
@@ -130,9 +130,9 @@ void QgsPluginRegistry::dump()
         ++it )
   {
     QgsDebugMsg( QString( "PLUGIN: %1 -> (%2, %3)" )
-                 .arg( it.key() )
-                 .arg( it->name() )
-                 .arg( it->library() ) );
+                 .arg( it.key(),
+                       it->name(),
+                       it->library() ) );
   }
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )
@@ -147,7 +147,7 @@ void QgsPluginRegistry::dump()
 }
 
 
-void QgsPluginRegistry::removePlugin( QString key )
+void QgsPluginRegistry::removePlugin( const QString& key )
 {
   QgsDebugMsg( "removing plugin: " + key );
   QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.find( key );
@@ -185,7 +185,7 @@ void QgsPluginRegistry::unloadAll()
 }
 
 
-bool QgsPluginRegistry::checkQgisVersion( QString minVersion, QString maxVersion ) const
+bool QgsPluginRegistry::checkQgisVersion( const QString& minVersion, const QString& maxVersion ) const
 {
   // Parse qgisMinVersion. Must be in form x.y.z or just x.y
   QStringList minVersionParts = minVersion.split( '.' );
@@ -238,7 +238,7 @@ bool QgsPluginRegistry::checkQgisVersion( QString minVersion, QString maxVersion
   // our qgis version - cut release name after version number
   QString qgisVersion = QString( QGis::QGIS_VERSION ).section( '-', 0, 0 );
 
-  QStringList qgisVersionParts = qgisVersion.split( "." );
+  QStringList qgisVersionParts = qgisVersion.split( '.' );
 
   int qgisMajor = qgisVersionParts.at( 0 ).toInt();
   int qgisMinor = qgisVersionParts.at( 1 ).toInt();
@@ -260,7 +260,7 @@ bool QgsPluginRegistry::checkQgisVersion( QString minVersion, QString maxVersion
 }
 
 
-void QgsPluginRegistry::loadPythonPlugin( QString packageName )
+void QgsPluginRegistry::loadPythonPlugin( const QString& packageName )
 {
   if ( !mPythonUtils || !mPythonUtils->isEnabled() )
   {
@@ -291,12 +291,12 @@ void QgsPluginRegistry::loadPythonPlugin( QString packageName )
 
     // add to settings
     settings.setValue( "/PythonPlugins/" + packageName, true );
-    QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (package: %2)" ).arg( pluginName ).arg( packageName ), QObject::tr( "Plugins" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (package: %2)" ).arg( pluginName, packageName ), QObject::tr( "Plugins" ), QgsMessageLog::INFO );
   }
 }
 
 
-void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
+void QgsPluginRegistry::loadCppPlugin( const QString& theFullPathName )
 {
   QSettings settings;
 
@@ -318,7 +318,7 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
   bool loaded = myLib.load();
   if ( !loaded )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Failed to load %1 (Reason: %2)" ).arg( myLib.fileName() ).arg( myLib.errorString() ), QObject::tr( "Plugins" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Failed to load %1 (Reason: %2)" ).arg( myLib.fileName(), myLib.errorString() ), QObject::tr( "Plugins" ) );
     return;
   }
 
@@ -344,7 +344,7 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
           addPlugin( baseName, QgsPluginMetadata( myLib.fileName(), pName(), pl ) );
           //add it to the qsettings file [ts]
           settings.setValue( "/Plugins/" + baseName, true );
-          QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (Path: %2)" ).arg( pName() ).arg( myLib.fileName() ), QObject::tr( "Plugins" ), QgsMessageLog::INFO );
+          QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (Path: %2)" ).arg( pName(), myLib.fileName() ), QObject::tr( "Plugins" ), QgsMessageLog::INFO );
 
           QObject *o = dynamic_cast<QObject *>( pl );
           if ( o )
@@ -397,7 +397,7 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
 }
 
 
-void QgsPluginRegistry::unloadPythonPlugin( QString packageName )
+void QgsPluginRegistry::unloadPythonPlugin( const QString& packageName )
 {
   if ( !mPythonUtils || !mPythonUtils->isEnabled() )
   {
@@ -417,7 +417,7 @@ void QgsPluginRegistry::unloadPythonPlugin( QString packageName )
 }
 
 
-void QgsPluginRegistry::unloadCppPlugin( QString theFullPathName )
+void QgsPluginRegistry::unloadCppPlugin( const QString& theFullPathName )
 {
   QSettings settings;
   QString baseName = QFileInfo( theFullPathName ).baseName();
@@ -437,7 +437,7 @@ void QgsPluginRegistry::unloadCppPlugin( QString theFullPathName )
 
 
 //overloaded version of the next method that will load from multiple directories not just one
-void QgsPluginRegistry::restoreSessionPlugins( QStringList thePluginDirList )
+void QgsPluginRegistry::restoreSessionPlugins( const QStringList& thePluginDirList )
 {
   QStringListIterator myIterator( thePluginDirList );
   while ( myIterator.hasNext() )
@@ -446,7 +446,7 @@ void QgsPluginRegistry::restoreSessionPlugins( QStringList thePluginDirList )
   }
 }
 
-void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
+void QgsPluginRegistry::restoreSessionPlugins( const QString& thePluginDirString )
 {
   QSettings mySettings;
 
@@ -463,7 +463,7 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
 
   for ( uint i = 0; i < myPluginDir.count(); i++ )
   {
-    QString myFullPath = thePluginDirString + "/" + myPluginDir[i];
+    QString myFullPath = thePluginDirString + '/' + myPluginDir[i];
     if ( checkCppPlugin( myFullPath ) )
     {
       // check if the plugin was active on last session
@@ -539,13 +539,13 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
 }
 
 
-bool QgsPluginRegistry::checkCppPlugin( QString pluginFullPath )
+bool QgsPluginRegistry::checkCppPlugin( const QString& pluginFullPath )
 {
   QLibrary myLib( pluginFullPath );
   bool loaded = myLib.load();
   if ( ! loaded )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Failed to load %1 (Reason: %2)" ).arg( myLib.fileName() ).arg( myLib.errorString() ), QObject::tr( "Plugins" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Failed to load %1 (Reason: %2)" ).arg( myLib.fileName(), myLib.errorString() ), QObject::tr( "Plugins" ) );
     return false;
   }
 
@@ -562,7 +562,7 @@ bool QgsPluginRegistry::checkCppPlugin( QString pluginFullPath )
 }
 
 
-bool QgsPluginRegistry::checkPythonPlugin( QString packageName )
+bool QgsPluginRegistry::checkPythonPlugin( const QString& packageName )
 {
   QString pluginName, description, /*category,*/ version;
 
@@ -584,7 +584,7 @@ bool QgsPluginRegistry::checkPythonPlugin( QString packageName )
   return true;
 }
 
-bool QgsPluginRegistry::isPythonPluginCompatible( QString packageName ) const
+bool QgsPluginRegistry::isPythonPluginCompatible( const QString& packageName ) const
 {
   QString minVersion = mPythonUtils->getPluginMetadata( packageName, "qgisMinimumVersion" );
   // try to read qgisMaximumVersion. Note checkQgisVersion can cope with "__error__" value.

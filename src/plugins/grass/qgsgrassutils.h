@@ -60,7 +60,7 @@ class QgsGrassElementDialog: public QObject
 
   public:
     //! Constructor
-    QgsGrassElementDialog( QWidget *parent );
+    explicit QgsGrassElementDialog( QWidget *parent );
 
     //! Destructor
     ~QgsGrassElementDialog();

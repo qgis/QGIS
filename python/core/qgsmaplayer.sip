@@ -12,24 +12,24 @@ class QgsMapLayer : QObject
 %ConvertToSubClassCode
   if (sipCpp->inherits("QgsMapLayer"))
   {
-    sipClass = sipClass_QgsMapLayer;
+    sipType = sipType_QgsMapLayer;
     QgsMapLayer* layer = qobject_cast<QgsMapLayer*>(sipCpp);
     if (layer->type() == QgsMapLayer::VectorLayer)
     {
-      sipClass = sipClass_QgsVectorLayer;
+      sipType = sipType_QgsVectorLayer;
     }
     else if (layer->type() == QgsMapLayer::RasterLayer)
     {
-      sipClass = sipClass_QgsRasterLayer;
+      sipType = sipType_QgsRasterLayer;
     }
     else if (layer->type() == QgsMapLayer::PluginLayer)
     {
-      sipClass = sipClass_QgsPluginLayer;
+      sipType = sipType_QgsPluginLayer;
     }
   }
   else
   {
-    sipClass = 0;
+    sipType = 0;
   }
 
 %End
@@ -48,7 +48,7 @@ class QgsMapLayer : QObject
      * @param lyrname Display Name of the layer
      * @param source datasource of layer
      */
-    QgsMapLayer( QgsMapLayer::LayerType type = QgsMapLayer::VectorLayer, QString lyrname = QString::null, QString source = QString::null );
+    QgsMapLayer( QgsMapLayer::LayerType type = QgsMapLayer::VectorLayer, const QString& lyrname = QString::null, const QString& source = QString::null );
 
     /** Destructor */
     virtual ~QgsMapLayer();
@@ -69,39 +69,39 @@ class QgsMapLayer : QObject
     /** Get the display name of the layer
      * @return the layer name
      */
-    const QString & name() const;
+    QString name() const;
 
     /** Get the original name of the layer */
-    const QString & originalName() const;
+    QString originalName() const;
 
     void setTitle( const QString& title );
-    const QString& title() const;
+    QString title() const;
 
     void setAbstract( const QString& abstract );
-    const QString& abstract() const;
+    QString abstract() const;
 
     void setKeywordList( const QString& keywords );
-    const QString& keywordList() const;
+    QString keywordList() const;
 
     /* Layer dataUrl information */
     void setDataUrl( const QString& dataUrl );
-    const QString& dataUrl() const;
+    QString dataUrl() const;
     void setDataUrlFormat( const QString& dataUrlFormat );
-    const QString& dataUrlFormat() const;
+    QString dataUrlFormat() const;
 
     /* Layer attribution information */
     void setAttribution( const QString& attrib );
-    const QString& attribution() const;
+    QString attribution() const;
     void setAttributionUrl( const QString& attribUrl );
-    const QString& attributionUrl() const;
+    QString attributionUrl() const;
 
     /* Layer metadataUrl information */
     void setMetadataUrl( const QString& metaUrl );
-    const QString& metadataUrl() const;
+    QString metadataUrl() const;
     void setMetadataUrlType( const QString& metaUrlType );
-    const QString& metadataUrlType() const;
+    QString metadataUrlType() const;
     void setMetadataUrlFormat( const QString& metaUrlFormat );
-    const QString& metadataUrlFormat() const;
+    QString metadataUrlFormat() const;
 
     /** Set the blending mode used for rendering a layer */
     void setBlendMode( const QPainter::CompositionMode &blendMode );
@@ -146,7 +146,7 @@ class QgsMapLayer : QObject
     QString publicSource() const;
 
     /** Returns the source for the layer */
-    const QString &source() const;
+    QString source() const;
 
     /**
      * Returns the sublayers of this layer
@@ -161,7 +161,7 @@ class QgsMapLayer : QObject
     virtual void setLayerOrder( const QStringList &layers );
 
     /** Set the visibility of the given sublayer name */
-    virtual void setSubLayerVisibility( QString name, bool vis );
+    virtual void setSubLayerVisibility( const QString& name, bool vis );
 
     /** True if the layer can be edited */
     virtual bool isEditable() const;
@@ -199,14 +199,14 @@ class QgsMapLayer : QObject
 
        @returns true if successful
     */
-    bool writeLayerXML( QDomElement& layerElement, QDomDocument& document, QString relativeBasePath = QString::null );
+    bool writeLayerXML( QDomElement& layerElement, QDomDocument& document, const QString& relativeBasePath = QString::null );
 
     /** Returns the given layer as a layer definition document
         Layer definitions store the data source as well as styling and custom properties.
 
         Layer definitions can be used to load a layer and styling all from a single file.
     */
-    static QDomDocument asLayerDefinition( QList<QgsMapLayer*> layers, QString relativeBasePath = QString::null );
+    static QDomDocument asLayerDefinition( const QList<QgsMapLayer*>& layers, const QString& relativeBasePath = QString::null );
 
     /** Creates a new layer from a layer defininition document
     */
@@ -356,9 +356,9 @@ class QgsMapLayer : QObject
 
     /* Layer legendUrl information */
     void setLegendUrl( const QString& legendUrl );
-    const QString& legendUrl() const;
+    QString legendUrl() const;
     void setLegendUrlFormat( const QString& legendUrlFormat );
-    const QString& legendUrlFormat() const;
+    QString legendUrlFormat() const;
 
     /** @deprecated since 2.4 - returns NULL */
     QImage *cacheImage() /Deprecated/;
@@ -471,7 +471,7 @@ class QgsMapLayer : QObject
     void drawingProgress( int theProgress, int theTotalSteps );
 
     /** Emit a signal with status (e.g. to be caught by QgisApp and display a msg on status bar) */
-    void statusChanged( QString theStatus );
+    void statusChanged( const QString& theStatus );
 
     /** Emit a signal that the layer name has been changed */
     void layerNameChanged();
@@ -536,8 +536,6 @@ class QgsMapLayer : QObject
     /** Write style manager's configuration (if exists). To be called by subclasses. */
     void writeStyleManager( QDomNode& layerNode, QDomDocument& doc ) const;
 
-    /** Debugging member - invoked when a connect() is made to this object */
-    void connectNotify( const char * signal );
 
     /** Add error message */
     void appendError( const QgsErrorMessage & theMessage );

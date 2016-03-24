@@ -29,7 +29,7 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
     QgsLayerTreeLayer* addLayer( QgsMapLayer* layer );
 
     //! Insert existing nodes at specified position. The nodes must not have a parent yet. The nodes will be owned by this group.
-    void insertChildNodes( int index, QList<QgsLayerTreeNode*> nodes /Transfer/ );
+    void insertChildNodes( int index, const QList<QgsLayerTreeNode*>& nodes /Transfer/ );
     //! Insert existing node at specified position. The node must not have a parent yet. The node will be owned by this group.
     void insertChildNode( int index, QgsLayerTreeNode* node /Transfer/ );
     //! Append an existing node. The node must not have a parent yet. The node will be owned by this group.
@@ -66,12 +66,21 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
     virtual QString dump() const;
 
     //! Return a clone of the group. The children are cloned too.
-    virtual QgsLayerTreeNode* clone() const /Factory/;
+    virtual QgsLayerTreeGroup* clone() const /Factory/;
 
     //! Return the check state of the group node
     Qt::CheckState isVisible() const;
     //! Set check state of the group node - will also update children
     void setVisible( Qt::CheckState state );
+
+    //! Return whether the group is mutually exclusive (only one child can be checked at a time)
+    //! @note added in 2.12
+    bool isMutuallyExclusive() const;
+    //! Set whether the group is mutually exclusive (only one child can be checked at a time).
+    //! The initial child index determines which child should be initially checked. The default value
+    //! of -1 will determine automatically (either first one currently checked or none)
+    //! @note added in 2.12
+    void setIsMutuallyExclusive( bool enabled, int initialChildIndex = -1 );
 
   private:
     QgsLayerTreeGroup( const QgsLayerTreeGroup& other );

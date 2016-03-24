@@ -210,7 +210,7 @@ class QgsOuterGlowEffect : QgsGlowEffect
     QgsOuterGlowEffect();
     virtual ~QgsOuterGlowEffect();
     virtual QString type() const;
-    virtual QgsPaintEffect* clone() const /Factory/;
+    virtual QgsOuterGlowEffect* clone() const /Factory/;
 
   protected:
 
@@ -243,7 +243,7 @@ class QgsInnerGlowEffect : QgsGlowEffect
     virtual ~QgsInnerGlowEffect();
 
     virtual QString type() const;
-    virtual QgsPaintEffect* clone() const /Factory/;
+    virtual QgsInnerGlowEffect* clone() const /Factory/;
 
   protected:
 

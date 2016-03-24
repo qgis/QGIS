@@ -24,12 +24,13 @@ The content of this file is based on
 
 from PyQt4.QtCore import Qt, QObject, QSettings, QByteArray, SIGNAL, pyqtSignal
 from PyQt4.QtGui import QDialog, QWidget, QAction, QKeySequence, \
-    QDialogButtonBox, QApplication, QCursor, QMessageBox, QClipboard, QInputDialog, QIcon
+    QDialogButtonBox, QApplication, QCursor, QMessageBox, QClipboard, QInputDialog, QIcon, QStyledItemDelegate, QStandardItemModel, QStandardItem
 from PyQt4.Qsci import QsciAPIs
 
 from qgis.core import QgsProject
 
 from .db_plugins.plugin import BaseError
+from .db_plugins.postgis.plugin import PGDatabase
 from .dlg_db_error import DlgDbError
 from .dlg_query_builder import QueryBuilderDlg
 
@@ -53,11 +54,19 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         QWidget.__init__(self, parent)
         self.iface = iface
         self.db = db
+        self.filter = ""
+        self.allowMultiColumnPk = isinstance(db, PGDatabase) # at the moment only PostgreSQL allows a primary key to span multiple columns, spatialite doesn't
+        self.aliasSubQuery = isinstance(db, PGDatabase)	# only PostgreSQL requires subqueries to be aliases
         self.setupUi(self)
         self.setWindowTitle(
             u"%s - %s [%s]" % (self.windowTitle(), db.connection().connectionName(), db.connection().typeNameString()))
 
         self.defaultLayerName = 'QueryLayer'
+
+        if self.allowMultiColumnPk:
+            self.uniqueColumnCheck.setText(self.trUtf8("Column(s) with unique values"))
+        else:
+            self.uniqueColumnCheck.setText(self.trUtf8("Column with unique values"))
 
         self.editSql.setFocus()
         self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
@@ -71,6 +80,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         copyAction.triggered.connect(self.copySelectedResults)
 
         self.btnExecute.clicked.connect(self.executeSql)
+        self.btnSetFilter.clicked.connect(self.setFilter)
         self.btnClear.clicked.connect(self.clearSql)
 
         self.presetStore.clicked.connect(self.storePreset)
@@ -79,6 +89,18 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.presetCombo.activated[str].connect(self.presetName.setText)
 
         self.updatePresetsCombobox()
+
+        self.geomCombo.setEditable(True)
+        self.geomCombo.lineEdit().setReadOnly(True)
+
+        self.uniqueCombo.setEditable(True)
+        self.uniqueCombo.lineEdit().setReadOnly(True)
+        self.uniqueModel = QStandardItemModel(self.uniqueCombo)
+        self.uniqueCombo.setModel(self.uniqueModel)
+        if self.allowMultiColumnPk:
+            self.uniqueCombo.setItemDelegate(QStyledItemDelegate())
+            self.uniqueModel.itemChanged.connect(self.uniqueChanged)                # react to the (un)checking of an item
+            self.uniqueCombo.lineEdit().textChanged.connect(self.uniqueTextChanged) # there are other events that change the displayed text and some of them can not be caught directly
 
         # hide the load query as layer if feature is not supported
         self._loadAsLayerAvailable = self.db.connector.hasCustomQuerySupport()
@@ -142,10 +164,13 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
     def loadAsLayerToggled(self, checked):
         self.loadAsLayerGroup.setChecked(checked)
         self.loadAsLayerWidget.setVisible(checked)
+        if checked:
+            self.fillColumnCombos()
 
     def clearSql(self):
         self.editSql.clear()
         self.editSql.setFocus()
+        self.filter = ""
 
     def executeSql(self):
 
@@ -161,31 +186,43 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if old_model:
             old_model.deleteLater()
 
-        self.uniqueCombo.clear()
-        self.geomCombo.clear()
+        cols = []
+        quotedCols = []
 
         try:
             # set the new model
             model = self.db.sqlResultModel(sql, self)
             self.viewResult.setModel(model)
             self.lblResult.setText(self.tr("%d rows, %.1f seconds") % (model.affectedRows(), model.secs()))
+            cols = self.viewResult.model().columnNames()
+            for col in cols:
+                quotedCols.append(self.db.connector.quoteId(col))
 
         except BaseError as e:
             QApplication.restoreOverrideCursor()
             DlgDbError.showError(e, self)
+            self.uniqueModel.clear()
+            self.geomCombo.clear()
             return
 
-        cols = sorted(self.viewResult.model().columnNames())
-        self.uniqueCombo.addItems(cols)
-        self.geomCombo.addItems(cols)
+        self.setColumnCombos(cols, quotedCols)
 
         self.update()
         QApplication.restoreOverrideCursor()
 
-    def loadSqlLayer(self):
+    def _getSqlLayer(self, _filter):
         hasUniqueField = self.uniqueColumnCheck.checkState() == Qt.Checked
         if hasUniqueField:
-            uniqueFieldName = self.uniqueCombo.currentText()
+            if self.allowMultiColumnPk:
+                checkedCols = []
+                for item in self.uniqueModel.findItems("*", Qt.MatchWildcard):
+                    if item.checkState() == Qt.Checked:
+                        checkedCols.append(item.data())
+                uniqueFieldName = ",".join(checkedCols)
+            elif self.uniqueCombo.currentIndex() >= 0:
+                uniqueFieldName = self.uniqueModel.item(self.uniqueCombo.currentIndex()).data()
+            else:
+                uniqueFieldName = None
         else:
             uniqueFieldName = None
         hasGeomCol = self.hasGeometryCol.checkState() == Qt.Checked
@@ -196,13 +233,11 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
         query = self._getSqlQuery()
         if query == "":
-            return
+            return None
 
         # remove a trailing ';' from query if present
         if query.strip().endswith(';'):
             query = query.strip()[:-1]
-
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
         from qgis.core import QgsMapLayer, QgsMapLayerRegistry
 
@@ -224,11 +259,23 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
         # create the layer
         layer = self.db.toSqlLayer(query, geomFieldName, uniqueFieldName, newLayerName, layerType,
-                                   self.avoidSelectById.isChecked())
+                                   self.avoidSelectById.isChecked(), _filter)
         if layer.isValid():
-            QgsMapLayerRegistry.instance().addMapLayers([layer], True)
+            return layer
+        else:
+            return None
 
-        QApplication.restoreOverrideCursor()
+    def loadSqlLayer(self):
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        try:
+            layer = self._getSqlLayer(self.filter)
+            if layer == None:
+                return
+
+            from qgis.core import QgsMapLayerRegistry
+            QgsMapLayerRegistry.instance().addMapLayers([layer], True)
+        finally:
+            QApplication.restoreOverrideCursor()
 
     def fillColumnCombos(self):
         query = self._getSqlQuery()
@@ -236,17 +283,6 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             return
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        self.uniqueCombo.clear()
-        self.geomCombo.clear()
-
-        # get a new alias
-        aliasIndex = 0
-        while True:
-            alias = "_%s__%d" % ("subQuery", aliasIndex)
-            escaped = re.compile('\\b("?)' + re.escape(alias) + '\\1\\b')
-            if not escaped.search(query):
-                break
-            aliasIndex += 1
 
         # remove a trailing ';' from query if present
         if query.strip().endswith(';'):
@@ -254,17 +290,34 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
         # get all the columns
         cols = []
+        quotedCols = []
         connector = self.db.connector
-        sql = u"SELECT * FROM (%s\n) AS %s LIMIT 0" % (unicode(query), connector.quoteId(alias))
+        if self.aliasSubQuery:
+            # get a new alias
+            aliasIndex = 0
+            while True:
+                alias = "_subQuery__%d" % aliasIndex
+                escaped = re.compile('\\b("?)' + re.escape(alias) + '\\1\\b')
+                if not escaped.search(query):
+                    break
+                aliasIndex += 1
+
+            sql = u"SELECT * FROM (%s\n) AS %s LIMIT 0" % (unicode(query), connector.quoteId(alias))
+        else:
+            sql = u"SELECT * FROM (%s\n) WHERE 1=0" % unicode(query)
 
         c = None
         try:
             c = connector._execute(None, sql)
             cols = connector._get_cursor_columns(c)
+            for col in cols:
+                quotedCols.append(connector.quoteId(col))
 
         except BaseError as e:
             QApplication.restoreOverrideCursor()
             DlgDbError.showError(e, self)
+            self.uniqueModel.clear()
+            self.geomCombo.clear()
             return
 
         finally:
@@ -272,6 +325,11 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                 c.close()
                 del c
 
+        self.setColumnCombos(cols, quotedCols)
+
+        QApplication.restoreOverrideCursor()
+
+    def setColumnCombos(self, cols, quotedCols):
         # get sensible default columns. do this before sorting in case there's hints in the column order (eg, id is more likely to be first)
         try:
             defaultGeomCol = next(col for col in cols if col in ['geom', 'geometry', 'the_geom', 'way'])
@@ -282,21 +340,56 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         except:
             defaultUniqueCol = None
 
-        cols.sort()
-        self.uniqueCombo.addItems(cols)
+        colNames = sorted(zip(cols, quotedCols))
+        newItems = []
+        uniqueIsFilled = False
+        for (col, quotedCol) in colNames:
+            item = QStandardItem(col)
+            item.setData(quotedCol)
+            item.setEnabled(True)
+            item.setCheckable(self.allowMultiColumnPk)
+            item.setSelectable(not self.allowMultiColumnPk)
+            if self.allowMultiColumnPk:
+                matchingItems = self.uniqueModel.findItems(col)
+                if matchingItems:
+                    item.setCheckState(matchingItems[0].checkState())
+                    uniqueIsFilled = uniqueIsFilled or matchingItems[0].checkState() == Qt.Checked
+                else:
+                    item.setCheckState(Qt.Unchecked)
+            newItems.append(item)
+        if self.allowMultiColumnPk:
+            self.uniqueModel.clear()
+            self.uniqueModel.appendColumn(newItems)
+            self.uniqueChanged()
+        else:
+            previousUniqueColumn = self.uniqueCombo.currentText()
+            self.uniqueModel.clear()
+            self.uniqueModel.appendColumn(newItems)
+            if self.uniqueModel.findItems(previousUniqueColumn):
+                self.uniqueCombo.setEditText(previousUniqueColumn)
+                uniqueIsFilled = True
+
+        oldGeometryColumn = self.geomCombo.currentText()
+        self.geomCombo.clear()
         self.geomCombo.addItems(cols)
+        self.geomCombo.setCurrentIndex(self.geomCombo.findText(oldGeometryColumn, Qt.MatchExactly))
 
-        # set sensible default columns
+        # set sensible default columns if the columns are not already set
         try:
-            self.geomCombo.setCurrentIndex(cols.index(defaultGeomCol))
+            if self.geomCombo.currentIndex() == -1:
+                self.geomCombo.setCurrentIndex(cols.index(defaultGeomCol))
         except:
             pass
+        items = self.uniqueModel.findItems(defaultUniqueCol)
+        if items and not uniqueIsFilled:
+            if self.allowMultiColumnPk:
+                items[0].setCheckState(Qt.Checked)
+            else:
+                self.uniqueCombo.setEditText(defaultUniqueCol)
         try:
-            self.uniqueCombo.setCurrentIndex(cols.index(defaultUniqueCol))
+            pass
         except:
             pass
-
-        QApplication.restoreOverrideCursor()
 
     def copySelectedResults(self):
         if len(self.viewResult.selectedIndexes()) <= 0:
@@ -353,3 +446,29 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if len(sql) == 0:
             sql = self.editSql.text()
         return sql
+
+    def uniqueChanged(self):
+        # when an item is (un)checked, simply trigger an update of the combobox text
+        self.uniqueTextChanged(None)
+
+    def uniqueTextChanged(self, text):
+        # Whenever there is new text displayed in the combobox, check if it is the correct one and if not, display the correct one.
+        checkedItems = []
+        for item in self.uniqueModel.findItems("*", Qt.MatchWildcard):
+            if item.checkState() == Qt.Checked:
+                checkedItems.append(item.text())
+        label = ", ".join(checkedItems)
+        if text != label:
+            self.uniqueCombo.setEditText(label)
+
+    def setFilter(self):
+        from qgis.gui import QgsQueryBuilder
+        layer = self._getSqlLayer("")
+        if not layer:
+            return
+
+        dlg = QgsQueryBuilder(layer)
+        dlg.setSql(self.filter)
+        if dlg.exec_():
+            self.filter = dlg.sql()
+        layer.deleteLater()

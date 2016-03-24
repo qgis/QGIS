@@ -61,6 +61,7 @@
 #include "qgspaperitem.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsprevieweffect.h"
+#include "qgscomposerimageexportoptionsdialog.h"
 #include "ui_qgssvgexportoptions.h"
 
 #include <QCloseEvent>
@@ -107,6 +108,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
     , mTitle( title )
     , mQgis( qgis )
     , mPrinter( 0 )
+    , mSetPageOrientation( false )
     , mUndoView( 0 )
     , mAtlasFeatureAction( 0 )
 {
@@ -339,6 +341,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   viewMenu->addSeparator();
   viewMenu->addAction( mActionShowBoxes );
   viewMenu->addAction( mActionShowRulers );
+  viewMenu->addAction( mActionShowPage );
 
   // Panel and toolbar submenus
   mPanelMenu = new QMenu( tr( "P&anels" ), this );
@@ -529,6 +532,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
     connect( mComposition->undoStack(), SIGNAL( canRedoChanged( bool ) ), mActionRedo, SLOT( setEnabled( bool ) ) );
   }
 
+  mActionShowPage->setChecked( mComposition->pagesVisible() );
   restoreGridSettings();
   connectViewSlots();
   connectCompositionSlots();
@@ -635,9 +639,6 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   connect( atlasMap, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( updateAtlasMapLayerAction( QgsVectorLayer * ) ) );
   connect( atlasMap, SIGNAL( numberFeaturesChanged( int ) ), this, SLOT( updateAtlasPageComboBox( int ) ) );
   connect( atlasMap, SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( atlasFeatureChanged( QgsFeature* ) ) );
-
-  //default printer page setup
-  setPrinterPageDefaults();
 
   // Create size grip (needed by Mac OS X for QMainWindow if QStatusBar is not visible)
   //should not be needed now that composer has a status bar?
@@ -934,12 +935,12 @@ void QgsComposer::statusZoomCombo_zoomEntered()
   mView->setZoomLevel( zoom.toDouble() / 100 );
 }
 
-void QgsComposer::updateStatusCompositionMsg( QString message )
+void QgsComposer::updateStatusCompositionMsg( const QString& message )
 {
   mStatusCompositionLabel->setText( message );
 }
 
-void QgsComposer::updateStatusAtlasMsg( QString message )
+void QgsComposer::updateStatusAtlasMsg( const QString& message )
 {
   mStatusAtlasLabel->setText( message );
 }
@@ -1325,6 +1326,15 @@ void QgsComposer::on_mActionShowBoxes_triggered( bool checked )
   }
 }
 
+void QgsComposer::on_mActionShowPage_triggered( bool checked )
+{
+  //toggle page display
+  if ( mComposition )
+  {
+    mComposition->setPagesVisible( checked );
+  }
+}
+
 void QgsComposer::on_mActionClearGuides_triggered()
 {
   //clear guide lines
@@ -1501,6 +1511,8 @@ void QgsComposer::setComposition( QgsComposition* composition )
   restoreGridSettings();
   setupUndoView();
 
+  mActionShowPage->setChecked( mComposition->pagesVisible() );
+
   //setup atlas composition widget
   QgsAtlasCompositionWidget* oldAtlasWidget = qobject_cast<QgsAtlasCompositionWidget *>( mAtlasDock->widget() );
   delete oldAtlasWidget;
@@ -1514,8 +1526,13 @@ void QgsComposer::setComposition( QgsComposition* composition )
   connect( atlasMap, SIGNAL( numberFeaturesChanged( int ) ), this, SLOT( updateAtlasPageComboBox( int ) ) );
   connect( atlasMap, SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( atlasFeatureChanged( QgsFeature* ) ) );
 
-  //default printer page setup
-  setPrinterPageDefaults();
+  mSetPageOrientation = false;
+  if ( mPrinter )
+  {
+    //if printer has already been created then we need to reset the page orientation to match
+    //new composition
+    setPrinterPageOrientation();
+  }
 }
 
 void QgsComposer::dockVisibilityChanged( bool visible )
@@ -1599,12 +1616,16 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
     {
       outputFileName = file.path();
     }
-
+#ifdef Q_OS_MAC
+    mQgis->activateWindow();
+    this->raise();
+#endif
     outputFileName = QFileDialog::getSaveFileName(
                        this,
-                       tr( "Choose a file name to save the map as" ),
+                       tr( "Save composition as" ),
                        outputFileName,
                        tr( "PDF Format" ) + " (*.pdf *.PDF)" );
+    this->activateWindow();
     if ( outputFileName.isEmpty() )
     {
       return;
@@ -1634,9 +1655,9 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
     }
 
     QSettings myQSettings;
-    QString lastUsedDir = myQSettings.value( "/UI/lastSaveAtlasAsPdfDir", "." ).toString();
+    QString lastUsedDir = myQSettings.value( "/UI/lastSaveAtlasAsPdfDir", QDir::homePath() ).toString();
     outputDir = QFileDialog::getExistingDirectory( this,
-                tr( "Directory where to save PDF files" ),
+                tr( "Export atlas to directory" ),
                 lastUsedDir,
                 QFileDialog::ShowDirsOnly );
     if ( outputDir.isEmpty() )
@@ -1821,7 +1842,9 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
     mComposition->setUseAdvancedEffects( false );
   }
 
-  //orientation and page size are already set to QPrinter in the page setup dialog
+  //set printer page orientation
+  setPrinterPageOrientation();
+
   QPrintDialog printDialog( printer(), 0 );
   if ( printDialog.exec() != QDialog::Accepted )
   {
@@ -1934,7 +1957,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
   // Image size
   int width = ( int )( mComposition->printResolution() * mComposition->paperWidth() / 25.4 );
   int height = ( int )( mComposition-> printResolution() * mComposition->paperHeight() / 25.4 );
-  int dpi = ( int )( mComposition->printResolution() );
+  int dpi = mComposition->printResolution();
 
   int memuse = width * height * 3 / 1000000;  // pixmap + image
   QgsDebugMsg( QString( "Image %1x%2" ).arg( width ).arg( height ) );
@@ -1952,6 +1975,19 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       return;
   }
 
+  //get some defaults from the composition
+  bool cropToContents = mComposition->customProperty( "imageCropToContents", false ).toBool();
+  int marginTop = mComposition->customProperty( "imageCropMarginTop", 0 ).toInt();
+  int marginRight = mComposition->customProperty( "imageCropMarginRight", 0 ).toInt();
+  int marginBottom = mComposition->customProperty( "imageCropMarginBottom", 0 ).toInt();
+  int marginLeft = mComposition->customProperty( "imageCropMarginLeft", 0 ).toInt();
+
+  QgsComposerImageExportOptionsDialog imageDlg( this );
+  imageDlg.setImageSize( QSizeF( mComposition->paperWidth(), mComposition->paperHeight() ) );
+  imageDlg.setResolution( mComposition->printResolution() );
+  imageDlg.setCropToContents( cropToContents );
+  imageDlg.setCropMargins( marginTop, marginRight, marginBottom, marginLeft );
+
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   if ( mode == QgsComposer::Single )
   {
@@ -1959,18 +1995,40 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
     if ( atlasMap->enabled() && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
     {
-      QString lastUsedDir = settings.value( "/UI/lastSaveAsImageDir", "." ).toString();
+      QString lastUsedDir = settings.value( "/UI/lastSaveAsImageDir", QDir::homePath() ).toString();
       outputFileName = QDir( lastUsedDir ).filePath( atlasMap->currentFilename() );
     }
 
-    QPair<QString, QString> fileNExt = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ), outputFileName );
+#ifdef Q_OS_MAC
+    mQgis->activateWindow();
+    this->raise();
+#endif
+    QPair<QString, QString> fileNExt = QgisGui::getSaveAsImageName( this, tr( "Save composition as" ), outputFileName );
+    this->activateWindow();
 
     if ( fileNExt.first.isEmpty() )
     {
       return;
     }
 
+    if ( !imageDlg.exec() )
+      return;
+
+    cropToContents = imageDlg.cropToContents();
+    imageDlg.getCropMargins( marginTop, marginRight, marginBottom, marginLeft );
+    mComposition->setCustomProperty( "imageCropToContents", cropToContents );
+    mComposition->setCustomProperty( "imageCropMarginTop", marginTop );
+    mComposition->setCustomProperty( "imageCropMarginRight", marginRight );
+    mComposition->setCustomProperty( "imageCropMarginBottom", marginBottom );
+    mComposition->setCustomProperty( "imageCropMarginLeft", marginLeft );
+
     mView->setPaintingEnabled( false );
+
+    int worldFilePageNo = -1;
+    if ( mComposition->generateWorldFile() && mComposition->worldFileMap() )
+    {
+      worldFilePageNo = mComposition->worldFileMap()->page() - 1;
+    }
 
     for ( int i = 0; i < mComposition->numPages(); ++i )
     {
@@ -1978,7 +2036,38 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       {
         continue;
       }
-      QImage image = mComposition->printPageAsRaster( i );
+
+      QImage image;
+      QRectF bounds;
+      if ( cropToContents )
+      {
+        if ( mComposition->numPages() == 1 )
+        {
+          // single page, so include everything
+          bounds = mComposition->compositionBounds( true );
+        }
+        else
+        {
+          // multi page, so just clip to items on current page
+          bounds = mComposition->pageItemBounds( i, true );
+        }
+        if ( bounds.width() <= 0 || bounds.height() <= 0 )
+        {
+          //invalid size, skip page
+          continue;
+        }
+        double pixelToMm = 25.4 / mComposition->printResolution();
+        bounds = bounds.adjusted( -marginLeft * pixelToMm,
+                                  -marginTop * pixelToMm,
+                                  marginRight * pixelToMm,
+                                  marginBottom * pixelToMm );
+        image = mComposition->renderRectAsRaster( bounds, QSize(), imageDlg.resolution() );
+      }
+      else
+      {
+        image = mComposition->printPageAsRaster( i, QSize( imageDlg.imageWidth(), imageDlg.imageHeight() ) );
+      }
+
       if ( image.isNull() )
       {
         QMessageBox::warning( 0, tr( "Memory Allocation Error" ),
@@ -1991,16 +2080,19 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
         return;
       }
       bool saveOk;
+      QString outputFilePath;
       if ( i == 0 )
       {
-        saveOk = image.save( fileNExt.first, fileNExt.second.toLocal8Bit().constData() );
+        outputFilePath = fileNExt.first;
       }
       else
       {
         QFileInfo fi( fileNExt.first );
-        QString outputFilePath = fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix();
-        saveOk = image.save( outputFilePath, fileNExt.second.toLocal8Bit().constData() );
+        outputFilePath = fi.absolutePath() + '/' + fi.baseName() + '_' + QString::number( i + 1 ) + '.' + fi.suffix();
       }
+
+      saveOk = image.save( outputFilePath, fileNExt.second.toLocal8Bit().constData() );
+
       if ( !saveOk )
       {
         QMessageBox::warning( this, tr( "Image export error" ),
@@ -2010,21 +2102,24 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
         mView->setPaintingEnabled( true );
         return;
       }
-    }
 
-    //
-    // Write the world file if asked to
-    if ( mComposition->generateWorldFile() )
-    {
-      double a, b, c, d, e, f;
-      mComposition->computeWorldFileParameters( a, b, c, d, e, f );
+      if ( i == worldFilePageNo )
+      {
+        // should generate world file for this page
+        double a, b, c, d, e, f;
+        if ( bounds.isValid() )
+          mComposition->computeWorldFileParameters( bounds, a, b, c, d, e, f );
+        else
+          mComposition->computeWorldFileParameters( a, b, c, d, e, f );
 
-      QFileInfo fi( fileNExt.first );
-      // build the world file name
-      QString worldFileName = fi.absolutePath() + "/" + fi.baseName() + "."
-                              + fi.suffix()[0] + fi.suffix()[fi.suffix().size()-1] + "w";
+        QFileInfo fi( outputFilePath );
+        // build the world file name
+        QString outputSuffix = fi.suffix();
+        QString worldFileName = fi.absolutePath() + '/' + fi.baseName() + '.'
+                                + outputSuffix.at( 0 ) + outputSuffix.at( fi.suffix().size() - 1 ) + 'w';
 
-      writeWorldFile( worldFileName, a, b, c, d, e, f );
+        writeWorldFile( worldFileName, a, b, c, d, e, f );
+      }
     }
 
     mView->setPaintingEnabled( true );
@@ -2046,12 +2141,13 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     }
 
     QSettings myQSettings;
-    QString lastUsedDir = myQSettings.value( "/UI/lastSaveAtlasAsImagesDir", "." ).toString();
+    QString lastUsedDir = myQSettings.value( "/UI/lastSaveAtlasAsImagesDir", QDir::homePath() ).toString();
     QString lastUsedFormat = myQSettings.value( "/UI/lastSaveAtlasAsImagesFormat", "jpg" ).toString();
 
-    QFileDialog dlg( this, tr( "Directory where to save image files" ) );
+    QFileDialog dlg( this, tr( "Export atlas to directory" ) );
     dlg.setFileMode( QFileDialog::Directory );
     dlg.setOption( QFileDialog::ShowDirsOnly, true );
+    dlg.setDirectory( lastUsedDir );
 
     //
     // Build an augmented FileDialog with a combo box to select the output format
@@ -2089,7 +2185,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     }
     QString dir = s.at( 0 );
     QString format = box->currentText();
-    QString fileExt = "." + format;
+    QString fileExt = '.' + format;
 
     if ( dir.isEmpty() )
     {
@@ -2104,6 +2200,17 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
                             QMessageBox::Ok );
       return;
     }
+
+    if ( !imageDlg.exec() )
+      return;
+
+    cropToContents = imageDlg.cropToContents();
+    imageDlg.getCropMargins( marginTop, marginRight, marginBottom, marginLeft );
+    mComposition->setCustomProperty( "imageCropToContents", cropToContents );
+    mComposition->setCustomProperty( "imageCropMarginTop", marginTop );
+    mComposition->setCustomProperty( "imageCropMarginRight", marginRight );
+    mComposition->setCustomProperty( "imageCropMarginBottom", marginBottom );
+    mComposition->setCustomProperty( "imageCropMarginLeft", marginLeft );
 
     myQSettings.setValue( "/UI/lastSaveAtlasAsImagesDir", dir );
 
@@ -2150,20 +2257,59 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
       QString filename = QDir( dir ).filePath( atlasMap->currentFilename() ) + fileExt;
 
+      int worldFilePageNo = -1;
+      if ( mComposition->generateWorldFile() && mComposition->worldFileMap() )
+      {
+        worldFilePageNo = mComposition->worldFileMap()->page() - 1;
+      }
+
       for ( int i = 0; i < mComposition->numPages(); ++i )
       {
         if ( !mComposition->shouldExportPage( i + 1 ) )
         {
           continue;
         }
-        QImage image = mComposition->printPageAsRaster( i );
+
+        QImage image;
+        QRectF bounds;
+        if ( cropToContents )
+        {
+          if ( mComposition->numPages() == 1 )
+          {
+            // single page, so include everything
+            bounds = mComposition->compositionBounds( true );
+          }
+          else
+          {
+            // multi page, so just clip to items on current page
+            bounds = mComposition->pageItemBounds( i, true );
+          }
+          if ( bounds.width() <= 0 || bounds.height() <= 0 )
+          {
+            //invalid size, skip page
+            continue;
+          }
+          double pixelToMm = 25.4 / mComposition->printResolution();
+          bounds = bounds.adjusted( -marginLeft * pixelToMm,
+                                    -marginTop * pixelToMm,
+                                    marginRight * pixelToMm,
+                                    marginBottom * pixelToMm );
+          image = mComposition->renderRectAsRaster( bounds, QSize(), imageDlg.resolution() );
+        }
+        else
+        {
+          //note - we can't safely use the preset width/height set in imageDlg here,
+          //as the atlas may have differing page size. So use resolution instead.
+          image = mComposition->printPageAsRaster( i, QSize(), imageDlg.resolution() );
+        }
+
         QString imageFilename = filename;
 
         if ( i != 0 )
         {
           //append page number
           QFileInfo fi( filename );
-          imageFilename = fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix();
+          imageFilename = fi.absolutePath() + '/' + fi.baseName() + '_' + QString::number( i + 1 ) + '.' + fi.suffix();
         }
 
         bool saveOk = image.save( imageFilename, format.toLocal8Bit().constData() );
@@ -2177,21 +2323,24 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
           QApplication::restoreOverrideCursor();
           return;
         }
-      }
 
-      //
-      // Write the world file if asked to
-      if ( mComposition->generateWorldFile() )
-      {
-        double a, b, c, d, e, f;
-        mComposition->computeWorldFileParameters( a, b, c, d, e, f );
+        if ( i == worldFilePageNo )
+        {
+          // should generate world file for this page
+          double a, b, c, d, e, f;
+          if ( bounds.isValid() )
+            mComposition->computeWorldFileParameters( bounds, a, b, c, d, e, f );
+          else
+            mComposition->computeWorldFileParameters( a, b, c, d, e, f );
 
-        QFileInfo fi( filename );
-        // build the world file name
-        QString worldFileName = fi.absolutePath() + "/" + fi.baseName() + "."
-                                + fi.suffix()[0] + fi.suffix()[fi.suffix().size()-1] + "w";
+          QFileInfo fi( imageFilename );
+          // build the world file name
+          QString outputSuffix = fi.suffix();
+          QString worldFileName = fi.absolutePath() + '/' + fi.baseName() + '.'
+                                  + outputSuffix.at( 0 ) + outputSuffix.at( fi.suffix().size() - 1 ) + 'w';
 
-        writeWorldFile( worldFileName, a, b, c, d, e, f );
+          writeWorldFile( worldFileName, a, b, c, d, e, f );
+        }
       }
     }
     atlasMap->endRender();
@@ -2289,13 +2438,19 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
   QString outputFileName;
   QString outputDir;
   bool groupLayers = false;
+  bool prevSettingLabelsAsOutlines = QgsProject::instance()->readBoolEntry( "PAL", "/DrawOutlineLabels", true );
+  bool clipToContent = false;
+  double marginTop = 0.0;
+  double marginRight = 0.0;
+  double marginBottom = 0.0;
+  double marginLeft = 0.0;
 
   if ( mode == QgsComposer::Single )
   {
     QString lastUsedFile = settings.value( "/UI/lastSaveAsSvgFile", "qgis.svg" ).toString();
     QFileInfo file( lastUsedFile );
 
-    if ( atlasMap->enabled() )
+    if ( atlasMap->enabled() && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
     {
       outputFileName = QDir( file.path() ).filePath( atlasMap->currentFilename() ) + ".svg";
     }
@@ -2305,23 +2460,19 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     }
 
     // open file dialog
+#ifdef Q_OS_MAC
+    mQgis->activateWindow();
+    this->raise();
+#endif
     outputFileName = QFileDialog::getSaveFileName(
                        this,
-                       tr( "Choose a file name to save the map as" ),
+                       tr( "Save composition as" ),
                        outputFileName,
                        tr( "SVG Format" ) + " (*.svg *.SVG)" );
+    this->activateWindow();
 
     if ( outputFileName.isEmpty() )
       return;
-
-    // open otions dialog
-    {
-      QDialog dialog;
-      Ui::QgsSvgExportOptionsDialog options;
-      options.setupUi( &dialog );
-      dialog.exec();
-      groupLayers = options.chkMapLayersAsGroup->isChecked();
-    }
 
     if ( !outputFileName.endsWith( ".svg", Qt::CaseInsensitive ) )
     {
@@ -2347,11 +2498,11 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     }
 
     QSettings myQSettings;
-    QString lastUsedDir = myQSettings.value( "/UI/lastSaveAtlasAsSvgDir", "." ).toString();
+    QString lastUsedDir = myQSettings.value( "/UI/lastSaveAtlasAsSvgDir", QDir::homePath() ).toString();
 
     // open file dialog
     outputDir = QFileDialog::getExistingDirectory( this,
-                tr( "Directory where to save SVG files" ),
+                tr( "Export atlas to directory" ),
                 lastUsedDir,
                 QFileDialog::ShowDirsOnly );
 
@@ -2368,19 +2519,41 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
                             QMessageBox::Ok );
       return;
     }
-
-    // open otions dialog
-    {
-      QDialog dialog;
-      Ui::QgsSvgExportOptionsDialog options;
-      options.setupUi( &dialog );
-      dialog.exec();
-      groupLayers = options.chkMapLayersAsGroup->isChecked();
-    }
-
-
     myQSettings.setValue( "/UI/lastSaveAtlasAsSvgDir", outputDir );
   }
+
+  // open options dialog
+  QDialog dialog;
+  Ui::QgsSvgExportOptionsDialog options;
+  options.setupUi( &dialog );
+  options.chkTextAsOutline->setChecked( prevSettingLabelsAsOutlines );
+  options.chkMapLayersAsGroup->setChecked( mComposition->customProperty( "svgGroupLayers", false ).toBool() );
+  options.mClipToContentGroupBox->setChecked( mComposition->customProperty( "svgCropToContents", false ).toBool() );
+  options.mTopMarginSpinBox->setValue( mComposition->customProperty( "svgCropMarginTop", 0 ).toInt() );
+  options.mRightMarginSpinBox->setValue( mComposition->customProperty( "svgCropMarginRight", 0 ).toInt() );
+  options.mBottomMarginSpinBox->setValue( mComposition->customProperty( "svgCropMarginBottom", 0 ).toInt() );
+  options.mLeftMarginSpinBox->setValue( mComposition->customProperty( "svgCropMarginLeft", 0 ).toInt() );
+
+  if ( dialog.exec() != QDialog::Accepted )
+    return;
+
+  groupLayers = options.chkMapLayersAsGroup->isChecked();
+  clipToContent = options.mClipToContentGroupBox->isChecked();
+  marginTop = options.mTopMarginSpinBox->value();
+  marginRight = options.mRightMarginSpinBox->value();
+  marginBottom = options.mBottomMarginSpinBox->value();
+  marginLeft = options.mLeftMarginSpinBox->value();
+
+  //save dialog settings
+  mComposition->setCustomProperty( "svgGroupLayers", groupLayers );
+  mComposition->setCustomProperty( "svgCropToContents", clipToContent );
+  mComposition->setCustomProperty( "svgCropMarginTop", marginTop );
+  mComposition->setCustomProperty( "svgCropMarginRight", marginRight );
+  mComposition->setCustomProperty( "svgCropMarginBottom", marginBottom );
+  mComposition->setCustomProperty( "svgCropMarginLeft", marginLeft );
+
+  //temporarily override label draw outlines setting
+  QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", options.chkTextAsOutline->isChecked() );
 
   mView->setPaintingEnabled( false );
 
@@ -2395,6 +2568,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       mView->setPaintingEnabled( true );
+      QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", prevSettingLabelsAsOutlines );
       return;
     }
   }
@@ -2423,6 +2597,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
                               QMessageBox::Ok,
                               QMessageBox::Ok );
         mView->setPaintingEnabled( true );
+        QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", prevSettingLabelsAsOutlines );
         return;
       }
       outputFileName = QDir( outputDir ).filePath( atlasMap->currentFilename() ) + ".svg";
@@ -2446,14 +2621,37 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
         else
         {
           QFileInfo fi( outputFileName );
-          currentFileName = fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix();
+          currentFileName = fi.absolutePath() + '/' + fi.baseName() + '_' + QString::number( i + 1 ) + '.' + fi.suffix();
           generator.setFileName( currentFileName );
         }
 
+        QRectF bounds;
+        if ( clipToContent )
+        {
+          if ( mComposition->numPages() == 1 )
+          {
+            // single page, so include everything
+            bounds = mComposition->compositionBounds( true );
+          }
+          else
+          {
+            // multi page, so just clip to items on current page
+            bounds = mComposition->pageItemBounds( i, true );
+          }
+          bounds = bounds.adjusted( -marginLeft, -marginTop, marginRight, marginBottom );
+        }
+        else
+          bounds = QRectF( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
+
         //width in pixel
-        int width = ( int )( mComposition->paperWidth() * mComposition->printResolution() / 25.4 );
+        int width = ( int )( bounds.width() * mComposition->printResolution() / 25.4 );
         //height in pixel
-        int height = ( int )( mComposition->paperHeight() * mComposition->printResolution() / 25.4 );
+        int height = ( int )( bounds.height() * mComposition->printResolution() / 25.4 );
+        if ( width == 0 || height == 0 )
+        {
+          //invalid size, skip this page
+          continue;
+        }
         generator.setSize( QSize( width, height ) );
         generator.setViewBox( QRect( 0, 0, width, height ) );
         generator.setResolution( mComposition->printResolution() ); //because the rendering is done in mm, convert the dpi
@@ -2467,18 +2665,22 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
                                 QMessageBox::Ok,
                                 QMessageBox::Ok );
           mView->setPaintingEnabled( true );
+          QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", prevSettingLabelsAsOutlines );
           return;
         }
 
-        mComposition->renderPage( &p, i );
+        if ( clipToContent )
+          mComposition->renderRect( &p, bounds );
+        else
+          mComposition->renderPage( &p, i );
         p.end();
       }
     }
     else
     {
       //width and height in pixel
-      const int width = ( int )( mComposition->paperWidth() * mComposition->printResolution() / 25.4 );
-      const int height = ( int )( mComposition->paperHeight() * mComposition->printResolution() / 25.4 );
+      const int pageWidth = ( int )( mComposition->paperWidth() * mComposition->printResolution() / 25.4 );
+      const int pageHeight = ( int )( mComposition->paperHeight() * mComposition->printResolution() / 25.4 );
       QList< QgsPaperItem* > paperItems( mComposition->pages() );
 
       for ( int i = 0; i < mComposition->numPages(); ++i )
@@ -2487,6 +2689,34 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
         {
           continue;
         }
+
+        int width = pageWidth;
+        int height = pageHeight;
+
+        QRectF bounds;
+        if ( clipToContent )
+        {
+          if ( mComposition->numPages() == 1 )
+          {
+            // single page, so include everything
+            bounds = mComposition->compositionBounds( true );
+          }
+          else
+          {
+            // multi page, so just clip to items on current page
+            bounds = mComposition->pageItemBounds( i, true );
+          }
+          bounds = bounds.adjusted( -marginLeft, -marginTop, marginRight, marginBottom );
+          width = bounds.width() * mComposition->printResolution() / 25.4;
+          height = bounds.height() * mComposition->printResolution() / 25.4;
+        }
+
+        if ( width == 0 || height == 0 )
+        {
+          //invalid size, skip this page
+          continue;
+        }
+
         QDomDocument svg;
         QDomNode svgDocRoot;
         QgsPaperItem * paperItem = paperItems[i];
@@ -2542,7 +2772,10 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
             generator.setResolution( mComposition->printResolution() ); //because the rendering is done in mm, convert the dpi
 
             QPainter p( &generator );
-            mComposition->renderPage( &p, i );
+            if ( clipToContent )
+              mComposition->renderRect( &p, bounds );
+            else
+              mComposition->renderPage( &p, i );
           }
           // post-process svg output to create groups in a single svg file
           // we create inkscape layers since it's nice and clean and free
@@ -2554,7 +2787,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
             QString errorMsg;
             int errorLine;
             if ( ! doc.setContent( &svgBuffer, false, &errorMsg, &errorLine ) )
-              QMessageBox::warning( 0, tr( "SVG error" ), tr( "There was an error in SVG output for SVG layer " ) + layerName + tr( " on page " ) + QString::number( i + 1 ) + "(" + errorMsg + ")" );
+              QMessageBox::warning( 0, tr( "SVG error" ), tr( "There was an error in SVG output for SVG layer " ) + layerName + tr( " on page " ) + QString::number( i + 1 ) + '(' + errorMsg + ')' );
             if ( 1 == svgLayerId )
             {
               svg = QDomDocument( doc.doctype() );
@@ -2580,7 +2813,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
           }
         }
         QFileInfo fi( outputFileName );
-        QString currentFileName = i == 0 ? outputFileName : fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix();
+        QString currentFileName = i == 0 ? outputFileName : fi.absolutePath() + '/' + fi.baseName() + '_' + QString::number( i + 1 ) + '.' + fi.suffix();
         QFile out( currentFileName );
         bool openOk = out.open( QIODevice::WriteOnly | QIODevice::Text );
         if ( !openOk )
@@ -2590,6 +2823,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
                                 QMessageBox::Ok,
                                 QMessageBox::Ok );
           mView->setPaintingEnabled( true );
+          QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", prevSettingLabelsAsOutlines );
           return;
         }
 
@@ -2604,6 +2838,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     atlasMap->endRender();
 
   mView->setPaintingEnabled( true );
+  QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", prevSettingLabelsAsOutlines );
 }
 
 void QgsComposer::on_mActionSelectMoveItem_triggered()
@@ -2717,8 +2952,8 @@ void QgsComposer::on_mActionSaveProject_triggered()
 
 void QgsComposer::on_mActionNewComposer_triggered()
 {
-  QString title = mQgis->uniqueComposerTitle( this, true );
-  if ( title.isNull() )
+  QString title;
+  if ( !mQgis->uniqueComposerTitle( this, title, true ) )
   {
     return;
   }
@@ -2727,8 +2962,8 @@ void QgsComposer::on_mActionNewComposer_triggered()
 
 void QgsComposer::on_mActionDuplicateComposer_triggered()
 {
-  QString newTitle = mQgis->uniqueComposerTitle( this, false, title() + tr( " copy" ) );
-  if ( newTitle.isNull() )
+  QString newTitle;
+  if ( !mQgis->uniqueComposerTitle( this, newTitle, false, title() + tr( " copy" ) ) )
   {
     return;
   }
@@ -2763,7 +2998,11 @@ void QgsComposer::on_mActionSaveAsTemplate_triggered()
 {
   //show file dialog
   QSettings settings;
-  QString lastSaveDir = settings.value( "UI/lastComposerTemplateDir", "" ).toString();
+  QString lastSaveDir = settings.value( "UI/lastComposerTemplateDir", QDir::homePath() ).toString();
+#ifdef Q_OS_MAC
+  mQgis->activateWindow();
+  this->raise();
+#endif
   QString saveFileName = QFileDialog::getSaveFileName(
                            this,
                            tr( "Save template" ),
@@ -2827,8 +3066,8 @@ void QgsComposer::loadTemplate( const bool newComposer )
 
   if ( newComposer )
   {
-    QString newTitle = mQgis->uniqueComposerTitle( this, true );
-    if ( newTitle.isNull() )
+    QString newTitle;
+    if ( !mQgis->uniqueComposerTitle( this, newTitle, true ) )
     {
       return;
     }
@@ -3241,7 +3480,7 @@ void QgsComposer::createCompositionWidget()
   QgsCompositionWidget* compositionWidget = new QgsCompositionWidget( mGeneralDock, mComposition );
   connect( mComposition, SIGNAL( paperSizeChanged() ), compositionWidget, SLOT( displayCompositionWidthHeight() ) );
   connect( this, SIGNAL( printAsRasterChanged( bool ) ), compositionWidget, SLOT( setPrintAsRasterCheckBox( bool ) ) );
-  connect( compositionWidget, SIGNAL( pageOrientationChanged( QString ) ), this, SLOT( setPrinterPageOrientation( QString ) ) );
+  connect( compositionWidget, SIGNAL( pageOrientationChanged( QString ) ), this, SLOT( pageOrientationChanged( QString ) ) );
   mGeneralDock->setWidget( compositionWidget );
 }
 
@@ -3292,6 +3531,8 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   //restore grid settings
   restoreGridSettings();
 
+  mActionShowPage->setChecked( mComposition->pagesVisible() );
+
   // look for world file composer map, if needed
   // Note: this must be done after maps have been added by addItemsFromXML
   if ( mComposition->generateWorldFile() )
@@ -3337,8 +3578,13 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   connect( atlasMap, SIGNAL( numberFeaturesChanged( int ) ), this, SLOT( updateAtlasPageComboBox( int ) ) );
   connect( atlasMap, SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( atlasFeatureChanged( QgsFeature* ) ) );
 
-  //default printer page setup
-  setPrinterPageDefaults();
+  mSetPageOrientation = false;
+  if ( mPrinter )
+  {
+    //if printer has already been created then we need to reset the page orientation to match
+    //new composition
+    setPrinterPageOrientation();
+  }
 
   //setup items tree view
   mItemsTreeView->setModel( mComposition->itemsModel() );
@@ -3680,6 +3926,8 @@ void QgsComposer::on_mActionPageSetup_triggered()
     return;
   }
 
+  //set printer page orientation
+  setPrinterPageOrientation();
   QPageSetupDialog pageSetupDialog( printer(), this );
   pageSetupDialog.exec();
 }
@@ -3778,7 +4026,7 @@ void QgsComposer::createComposerView()
   connect( tab, SIGNAL( activated() ), mActionHidePanels, SLOT( trigger() ) );
 }
 
-void QgsComposer::writeWorldFile( QString worldFileName, double a, double b, double c, double d, double e, double f ) const
+void QgsComposer::writeWorldFile( const QString& worldFileName, double a, double b, double c, double d, double e, double f ) const
 {
   QFile worldFile( worldFileName );
   if ( !worldFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
@@ -3789,12 +4037,12 @@ void QgsComposer::writeWorldFile( QString worldFileName, double a, double b, dou
 
   // QString::number does not use locale settings (for the decimal point)
   // which is what we want here
-  fout << QString::number( a, 'f' ) << "\r\n";
-  fout << QString::number( d, 'f' ) << "\r\n";
-  fout << QString::number( b, 'f' ) << "\r\n";
-  fout << QString::number( e, 'f' ) << "\r\n";
-  fout << QString::number( c, 'f' ) << "\r\n";
-  fout << QString::number( f, 'f' ) << "\r\n";
+  fout << QString::number( a, 'f', 12 ) << "\r\n";
+  fout << QString::number( d, 'f', 12 ) << "\r\n";
+  fout << QString::number( b, 'f', 12 ) << "\r\n";
+  fout << QString::number( e, 'f', 12 ) << "\r\n";
+  fout << QString::number( c, 'f', 12 ) << "\r\n";
+  fout << QString::number( f, 'f', 12 ) << "\r\n";
 }
 
 
@@ -3850,31 +4098,29 @@ void QgsComposer::updateAtlasMapLayerAction( QgsVectorLayer *coverageLayer )
   }
 }
 
-void QgsComposer::setPrinterPageOrientation( QString orientation )
+void QgsComposer::pageOrientationChanged( const QString& )
 {
-  if ( orientation == tr( "Landscape" ) )
-  {
-    printer()->setOrientation( QPrinter::Landscape );
-  }
-  else
-  {
-    printer()->setOrientation( QPrinter::Portrait );
-  }
+  mSetPageOrientation = false;
 }
 
-void QgsComposer::setPrinterPageDefaults()
+void QgsComposer::setPrinterPageOrientation()
 {
-  double paperWidth = mComposition->paperWidth();
-  double paperHeight = mComposition->paperHeight();
+  if ( !mSetPageOrientation )
+  {
+    double paperWidth = mComposition->paperWidth();
+    double paperHeight = mComposition->paperHeight();
 
-  //set printer page orientation
-  if ( paperWidth > paperHeight )
-  {
-    printer()->setOrientation( QPrinter::Landscape );
-  }
-  else
-  {
-    printer()->setOrientation( QPrinter::Portrait );
+    //set printer page orientation
+    if ( paperWidth > paperHeight )
+    {
+      printer()->setOrientation( QPrinter::Landscape );
+    }
+    else
+    {
+      printer()->setOrientation( QPrinter::Portrait );
+    }
+
+    mSetPageOrientation = true;
   }
 }
 
@@ -3913,7 +4159,7 @@ void QgsComposer::loadAtlasPredefinedScalesFromProject()
     // default to global map tool scales
     QSettings settings;
     QString scalesStr( settings.value( "Map/scales", PROJECT_SCALES ).toString() );
-    scales = scalesStr.split( "," );
+    scales = scalesStr.split( ',' );
   }
 
   for ( QStringList::const_iterator scaleIt = scales.constBegin(); scaleIt != scales.constEnd(); ++scaleIt )

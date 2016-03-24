@@ -18,13 +18,14 @@
 #include "qgsmapcanvas.h"
 #include "qgsvertexmarker.h"
 #include "qgsvectorlayer.h"
+#include "qgisapp.h"
 
 #include <QMouseEvent>
 #include <limits>
 
 QgsMapToolDeleteRing::QgsMapToolDeleteRing( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
-    , vlayer( NULL )
+    , vlayer( 0 )
     , mRubberBand( 0 )
     , mPressedFid( 0 )
     , mPressedPartNum( 0 )
@@ -38,13 +39,13 @@ QgsMapToolDeleteRing::~QgsMapToolDeleteRing()
   delete mRubberBand;
 }
 
-void QgsMapToolDeleteRing::canvasMoveEvent( QMouseEvent *e )
+void QgsMapToolDeleteRing::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
   //nothing to do
 }
 
-void QgsMapToolDeleteRing::canvasPressEvent( QMouseEvent *e )
+void QgsMapToolDeleteRing::canvasPressEvent( QgsMapMouseEvent* e )
 {
   delete mRubberBand;
   mRubberBand = 0;
@@ -93,7 +94,7 @@ void QgsMapToolDeleteRing::canvasPressEvent( QMouseEvent *e )
   ringGeom = 0;
 }
 
-void QgsMapToolDeleteRing::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapToolDeleteRing::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 
@@ -118,7 +119,7 @@ void QgsMapToolDeleteRing::canvasReleaseEvent( QMouseEvent *e )
   }
 }
 
-QgsGeometry* QgsMapToolDeleteRing::ringUnderPoint( QgsPoint p, QgsFeatureId& fid, int& partNum, int& ringNum )
+QgsGeometry* QgsMapToolDeleteRing::ringUnderPoint( const QgsPoint& p, QgsFeatureId& fid, int& partNum, int& ringNum )
 {
   //There is no clean way to find if we are inside the ring of a feature,
   //so we iterate over all the features visible in the canvas

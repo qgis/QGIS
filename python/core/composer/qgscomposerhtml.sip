@@ -63,7 +63,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @see loadHtml
      * @note added in 2.5
      */
-    void setHtml( const QString html );
+    void setHtml( const QString& html );
 
     /** Returns the HTML source displayed in the item if the item is using
      * the QgsComposerHtml::ManualHtml mode.
@@ -144,7 +144,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @see loadHtml
      * @note added in 2.5
      */
-    void setUserStylesheet( const QString stylesheet );
+    void setUserStylesheet( const QString& stylesheet );
 
     /** Returns the user stylesheet CSS rules used while rendering the HTML content. These
      * overriding the styles specified within the HTML source.

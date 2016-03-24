@@ -229,6 +229,15 @@
          </item>
          <item>
           <property name="text">
+           <string>Authentication</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/locked.svg</normaloff>:/images/themes/default/locked.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Network</string>
           </property>
           <property name="toolTip">
@@ -246,6 +255,15 @@
           <property name="icon">
            <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Advanced</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mIconWarning.svg</normaloff>:/images/themes/default/mIconWarning.svg</iconset>
           </property>
          </item>
         </widget>
@@ -443,7 +461,7 @@
                        </sizepolicy>
                       </property>
                       <property name="text">
-                       <string>Qt default</string>
+                       <string>&amp;Qt default</string>
                       </property>
                       <property name="checked">
                        <bool>true</bool>
@@ -931,7 +949,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>655</width>
-                <height>862</height>
+                <height>1057</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -977,6 +995,59 @@
                   </item>
                   <item row="1" column="0" colspan="4">
                    <widget class="QListWidget" name="mListSVGPaths">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>120</height>
+                     </size>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_27">
+                 <property name="title">
+                  <string>Composer Paths</string>
+                 </property>
+                 <layout class="QGridLayout" name="_7">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="mSVGLabel_3">
+                    <property name="text">
+                     <string>Path(s) to search fo extra print templates</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <spacer>
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>31</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="2">
+                   <widget class="QPushButton" name="mBtnAddTemplatePath">
+                    <property name="text">
+                     <string>Add</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="3">
+                   <widget class="QPushButton" name="mBtnRemoveTemplatePath">
+                    <property name="text">
+                     <string>Remove</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0" colspan="4">
+                   <widget class="QListWidget" name="mListComposerTemplatePaths">
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
@@ -1126,10 +1197,10 @@
                     <property name="title">
                      <string>Current environment variables (read-only - bold indicates modified at startup)</string>
                     </property>
-                    <property name="collapsed">
+                    <property name="collapsed" stdset="0">
                      <bool>false</bool>
                     </property>
-                    <property name="saveCollapsedState">
+                    <property name="saveCollapsedState" stdset="0">
                      <bool>true</bool>
                     </property>
                     <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1575,7 +1646,7 @@
                   <item>
                    <widget class="QCheckBox" name="cbxCompileExpressions">
                     <property name="text">
-                     <string>Execute expressions on postgres server-side if possible (Experimental)</string>
+                     <string>Execute expressions on server-side if possible</string>
                     </property>
                    </widget>
                   </item>
@@ -2358,7 +2429,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>526</width>
-                <height>331</height>
+                <height>327</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2687,7 +2758,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>684</width>
-                <height>607</height>
+                <height>602</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3173,7 +3244,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>504</width>
-                <height>308</height>
+                <height>307</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3369,7 +3440,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>501</width>
-                <height>641</height>
+                <height>640</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3990,7 +4061,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>565</width>
-                <height>679</height>
+                <height>647</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4039,7 +4110,7 @@
                   <item row="2" column="0">
                    <widget class="QRadioButton" name="radUseProjectProjection">
                     <property name="text">
-                     <string>Use &amp;project CRS</string>
+                     <string>Use pro&amp;ject CRS</string>
                     </property>
                    </widget>
                   </item>
@@ -4051,7 +4122,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QgsProjectionSelectionWidget" name="leLayerGlobalCrs">
+                   <widget class="QgsProjectionSelectionWidget" name="leLayerGlobalCrs" native="true">
                     <property name="enabled">
                      <bool>false</bool>
                     </property>
@@ -4114,7 +4185,7 @@
                    </widget>
                   </item>
                   <item row="4" column="0" colspan="2">
-                   <widget class="QgsProjectionSelectionWidget" name="leProjectGlobalCrs">
+                   <widget class="QgsProjectionSelectionWidget" name="leProjectGlobalCrs" native="true">
                     <property name="focusPolicy">
                      <enum>Qt::StrongFocus</enum>
                     </property>
@@ -4298,6 +4369,16 @@
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="mOptionsPageAuth">
+          <layout class="QVBoxLayout" name="verticalLayout_45">
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QgsAuthEditorWidgets" name="mAuthConfigsGrpBx"/>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="mOptionsPageNetwork">
           <layout class="QVBoxLayout" name="verticalLayout_20">
            <property name="margin">
@@ -4316,7 +4397,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>610</width>
+                <width>531</width>
                 <height>705</height>
                </rect>
               </property>
@@ -4466,10 +4547,10 @@
                  <property name="checkable">
                   <bool>true</bool>
                  </property>
-                 <property name="collapsed">
+                 <property name="collapsed" stdset="0">
                   <bool>false</bool>
                  </property>
-                 <property name="saveCollapsedState">
+                 <property name="saveCollapsedState" stdset="0">
                   <bool>true</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_1">
@@ -4678,6 +4759,49 @@
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="mOptionsPageSettingsEditor">
+          <layout class="QVBoxLayout" name="verticalLayout_43">
+           <item>
+            <widget class="QGroupBox" name="groupBox_26">
+             <property name="title">
+              <string>Advanced Settings Editor</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_42">
+              <item>
+               <widget class="QWidget" name="mAdvancedSettingsWarning" native="true">
+                <layout class="QVBoxLayout" name="verticalLayout_44">
+                 <item>
+                  <widget class="QLabel" name="label_44">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Changes on this page are dangerous and can break your QGIS installation in various ways. Any change you make is applied immediately, without clicking the &lt;span style=&quot; font-style:italic;&quot;&gt;ok&lt;/span&gt; button.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="mAdvancedSettingsEnableButton">
+                   <property name="text">
+                    <string>I will be careful, I promise!</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QgsSettingsTree" name="mAdvancedSettingsEditor" native="true">
+                <property name="visible">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -4735,6 +4859,12 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
@@ -4744,12 +4874,6 @@
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsProjectionSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -4769,11 +4893,24 @@
    <header location="global">qgsvariableeditorwidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsSettingsTree</class>
+   <extends>QWidget</extends>
+   <header>qgssettingstree.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsAuthEditorWidgets</class>
+   <extends>QTabWidget</extends>
+   <header>qgsautheditorwidgets.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>mOptionsScrollArea_01</tabstop>
   <tabstop>cmbStyle</tabstop>
+  <tabstop>cmbUITheme</tabstop>
   <tabstop>cmbIconSize</tabstop>
   <tabstop>mFontFamilyRadioQt</tabstop>
   <tabstop>mFontFamilyRadioCustom</tabstop>
@@ -4825,6 +4962,7 @@
   <tabstop>cbxIgnoreShapeEncoding</tabstop>
   <tabstop>cbxAddPostgisDC</tabstop>
   <tabstop>cbxAddOracleDC</tabstop>
+  <tabstop>cbxCompileExpressions</tabstop>
   <tabstop>mOptionsScrollArea_04</tabstop>
   <tabstop>chkAddedVisibility</tabstop>
   <tabstop>chkUseRenderCaching</tabstop>
@@ -4935,6 +5073,7 @@
   <tabstop>mOptionsScrollArea_09</tabstop>
   <tabstop>grpLocale</tabstop>
   <tabstop>cboLocale</tabstop>
+  <tabstop>mAuthConfigsGrpBx</tabstop>
   <tabstop>mOptionsScrollArea_10</tabstop>
   <tabstop>leWmsSearch</tabstop>
   <tabstop>mNetworkTimeoutSpinBox</tabstop>
@@ -4954,7 +5093,7 @@
   <tabstop>mExcludeUrlListWidget</tabstop>
   <tabstop>mAddUrlPushButton</tabstop>
   <tabstop>mRemoveUrlPushButton</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>mAdvancedSettingsEnableButton</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
@@ -5005,6 +5144,38 @@
     <hint type="destinationlabel">
      <x>367</x>
      <y>315</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mAdvancedSettingsEnableButton</sender>
+   <signal>clicked()</signal>
+   <receiver>mAdvancedSettingsEditor</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>481</x>
+     <y>261</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>481</x>
+     <y>412</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mAdvancedSettingsEnableButton</sender>
+   <signal>clicked()</signal>
+   <receiver>mAdvancedSettingsWarning</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>481</x>
+     <y>261</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>481</x>
+     <y>164</y>
     </hint>
    </hints>
   </connection>

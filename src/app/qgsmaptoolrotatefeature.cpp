@@ -38,7 +38,7 @@
 
 #define PI 3.14159265
 
-QgsAngleMagnetWidget::QgsAngleMagnetWidget( QString label , QWidget *parent )
+QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString& label , QWidget *parent )
     : QWidget( parent )
 {
   mLayout = new QHBoxLayout( this );
@@ -146,7 +146,7 @@ QgsMapToolRotateFeature::~QgsMapToolRotateFeature()
   deleteRubberband();
 }
 
-void QgsMapToolRotateFeature::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolRotateFeature::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( mRotationActive )
   {
@@ -167,7 +167,7 @@ void QgsMapToolRotateFeature::canvasMoveEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolRotateFeature::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   deleteRotationWidget();
 

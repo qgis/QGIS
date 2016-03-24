@@ -145,7 +145,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
   {
     if ( !uri.startsWith( vsiPrefix ) )
       setDataSourceUri( vsiPrefix + uri );
-    QgsDebugMsg( QString( "Trying %1 syntax, uri= %2" ).arg( vsiPrefix ).arg( dataSourceUri() ) );
+    QgsDebugMsg( QString( "Trying %1 syntax, uri= %2" ).arg( vsiPrefix, dataSourceUri() ) );
   }
 
   QString gdalUri = dataSourceUri();
@@ -155,7 +155,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
 
   if ( !mGdalBaseDataset )
   {
-    QString msg = QString( "Cannot open GDAL dataset %1:\n%2" ).arg( dataSourceUri() ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    QString msg = QString( "Cannot open GDAL dataset %1:\n%2" ).arg( dataSourceUri(), QString::fromUtf8( CPLGetLastErrorMsg() ) );
     appendError( ERRMSG( msg ) );
     return;
   }
@@ -164,7 +164,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
   initBaseDataset();
 }
 
-QgsRasterInterface * QgsGdalProvider::clone() const
+QgsGdalProvider* QgsGdalProvider::clone() const
 {
   QgsDebugMsg( "Entered" );
   QgsGdalProvider * provider = new QgsGdalProvider( dataSourceUri() );
@@ -182,8 +182,8 @@ bool QgsGdalProvider::crsFromWkt( const char *wkt )
     if ( OSRAutoIdentifyEPSG( hCRS ) == OGRERR_NONE )
     {
       QString authid = QString( "%1:%2" )
-                       .arg( OSRGetAuthorityName( hCRS, NULL ) )
-                       .arg( OSRGetAuthorityCode( hCRS, NULL ) );
+                       .arg( OSRGetAuthorityName( hCRS, NULL ),
+                             OSRGetAuthorityCode( hCRS, NULL ) );
       QgsDebugMsg( "authid recognized as " + authid );
       mCrs.createFromOgcWmsCrs( authid );
     }
@@ -343,7 +343,7 @@ QString QgsGdalProvider::metadata()
     myMetadata += "</p>\n";
     myMetadata += "<p>";
     myMetadata += QString::number( mGeoTransform[0] );
-    myMetadata += ",";
+    myMetadata += ',';
     myMetadata += QString::number( mGeoTransform[3] );
     myMetadata += "</p>\n";
 
@@ -352,7 +352,7 @@ QString QgsGdalProvider::metadata()
     myMetadata += "</p>\n";
     myMetadata += "<p>";
     myMetadata += QString::number( mGeoTransform[1] );
-    myMetadata += ",";
+    myMetadata += ',';
     myMetadata += QString::number( mGeoTransform[5] );
     myMetadata += "</p>\n";
   }
@@ -733,7 +733,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
       NULL,
       myGdalMemDataset,
       NULL,
-      FALSE, 0.0, 1
+      false, 0.0, 1
     );
 #if 0
   myWarpOptions->pTransformerArg =
@@ -845,7 +845,7 @@ void QgsGdalProvider::computeMinMax( int theBandNo ) const
   adfMinMax[1] = GDALGetRasterMaximum( myGdalBand, &bGotMax );
   if ( !( bGotMin && bGotMax ) )
   {
-    GDALComputeRasterMinMax( myGdalBand, TRUE, adfMinMax );
+    GDALComputeRasterMinMax( myGdalBand, true, adfMinMax );
   }
   mMinimum[theBandNo-1] = adfMinMax[0];
   mMaximum[theBandNo-1] = adfMinMax[1];
@@ -909,16 +909,16 @@ QString QgsGdalProvider::generateBandName( int theBandNumber ) const
         QString val( *i );
         if ( !val.startsWith( "NETCDF_DIM_EXTRA" ) && !val.contains( "#units=" ) )
           continue;
-        QStringList values = val.split( "=" );
+        QStringList values = val.split( '=' );
         val = values.at( 1 );
         if ( values.at( 0 ) == "NETCDF_DIM_EXTRA" )
         {
-          dimExtraValues = val.replace( QString( "{" ), QString() ).replace( QString( "}" ), QString() ).split( "," );
+          dimExtraValues = val.replace( QString( "{" ), QString() ).replace( QString( "}" ), QString() ).split( ',' );
           //http://qt-project.org/doc/qt-4.8/qregexp.html#capturedTexts
         }
         else
         {
-          unitsMap[ values.at( 0 ).split( "#" ).at( 0 )] = val;
+          unitsMap[ values.at( 0 ).split( '#' ).at( 0 )] = val;
         }
       }
       if ( dimExtraValues.count() > 0 )
@@ -936,7 +936,7 @@ QString QgsGdalProvider::generateBandName( int theBandNumber ) const
             QString val( *i );
             if ( !val.startsWith( "NETCDF_DIM_" ) )
               continue;
-            QStringList values = val.split( "=" );
+            QStringList values = val.split( '=' );
             for ( QStringList::const_iterator j = dimExtraValues.begin();
                   j != dimExtraValues.end(); ++j )
             {
@@ -944,9 +944,9 @@ QString QgsGdalProvider::generateBandName( int theBandNumber ) const
               if ( values.at( 0 ) != "NETCDF_DIM_" + dim )
                 continue;
               if ( unitsMap.contains( dim ) && unitsMap[ dim ] != "" && unitsMap[ dim ] != "none" )
-                bandNameValues.append( dim + "=" + values.at( 1 ) + " (" + unitsMap[ dim ] + ")" );
+                bandNameValues.append( dim + '=' + values.at( 1 ) + " (" + unitsMap[ dim ] + ')' );
               else
-                bandNameValues.append( dim + "=" + values.at( 1 ) );
+                bandNameValues.append( dim + '=' + values.at( 1 ) );
             }
           }
         }
@@ -1278,13 +1278,21 @@ bool QgsGdalProvider::hasHistogram( int theBandNo,
   // get default histogram with force=false to see if there is a cached histo
   double myMinVal, myMaxVal;
   int myBinCount;
-  int *myHistogramArray = 0;
+
+#if GDAL_VERSION_MAJOR >= 2
+  GUIntBig* myHistogramArray = 0;
+  CPLErr myError = GDALGetDefaultHistogramEx( myGdalBand, &myMinVal, &myMaxVal,
+                   &myBinCount, &myHistogramArray, false,
+                   NULL, NULL );
+#else
+  int* myHistogramArray = 0;
 
   // TODO: GDALGetDefaultHistogram has no bIncludeOutOfRange and bApproxOK,
   //       consider consequences
   CPLErr myError = GDALGetDefaultHistogram( myGdalBand, &myMinVal, &myMaxVal,
                    &myBinCount, &myHistogramArray, false,
                    NULL, NULL );
+#endif
 
   if ( myHistogramArray )
     VSIFree( myHistogramArray ); // use VSIFree because allocated by GDAL
@@ -1421,7 +1429,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
   {
     CPLErr eErr = CE_Failure;
     double dfHalfBucket = 0;
-    eErr = GDALGetRasterStatistics( myGdalBand, TRUE, TRUE, &myMinVal, &myMaxVal, NULL, NULL );
+    eErr = GDALGetRasterStatistics( myGdalBand, true, true, &myMinVal, &myMaxVal, NULL, NULL );
     if ( eErr != CE_None )
     {
       delete [] myHistogramArray;
@@ -1433,11 +1441,20 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
   }
 #endif
 
-  int *myHistogramArray = new int[myHistogram.binCount];
+#if GDAL_VERSION_MAJOR >= 2
+  GUIntBig* myHistogramArray = new GUIntBig[myHistogram.binCount];
+  CPLErr myError = GDALGetRasterHistogramEx( myGdalBand, myMinVal, myMaxVal,
+                   myHistogram.binCount, myHistogramArray,
+                   theIncludeOutOfRange, bApproxOK, progressCallback,
+                   &myProg ); //this is the arg for our custom gdal progress callback
+#else
+  int* myHistogramArray = new int[myHistogram.binCount];
   CPLErr myError = GDALGetRasterHistogram( myGdalBand, myMinVal, myMaxVal,
                    myHistogram.binCount, myHistogramArray,
                    theIncludeOutOfRange, bApproxOK, progressCallback,
                    &myProg ); //this is the arg for our custom gdal progress callback
+#endif
+
   if ( myError != CE_None )
   {
     QgsDebugMsg( "Cannot get histogram" );
@@ -1449,12 +1466,14 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
 
   for ( int myBin = 0; myBin < myHistogram.binCount; myBin++ )
   {
+#if GDAL_VERSION_MAJOR < 2
     if ( myHistogramArray[myBin] < 0 ) //can't have less than 0 pixels of any value
     {
       myHistogram.histogramVector.push_back( 0 );
       // QgsDebugMsg( "Added 0 to histogram vector as freq was negative!" );
     }
     else
+#endif
     {
       myHistogram.histogramVector.push_back( myHistogramArray[myBin] );
       myHistogram.nonNullCount += myHistogramArray[myBin];
@@ -1568,14 +1587,14 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
   {
     Q_FOREACH ( const QString& option, theConfigOptions )
     {
-      QStringList opt = option.split( "=" );
+      QStringList opt = option.split( '=' );
       QByteArray key = opt[0].toLocal8Bit();
       QByteArray value = opt[1].toLocal8Bit();
       // save previous value
       myConfigOptionsOld[ opt[0] ] = QString( CPLGetConfigOption( key.data(), NULL ) );
       // set temp. value
       CPLSetConfigOption( key.data(), value.data() );
-      QgsDebugMsg( QString( "set option %1=%2" ).arg( key.data() ).arg( value.data() ) );
+      QgsDebugMsg( QString( "set option %1=%2" ).arg( key.data(), value.data() ) );
     }
   }
 
@@ -1932,8 +1951,8 @@ QGISEXTERN bool isProvider()
 */
 static QString createFileFilter_( QString const &longName, QString const &glob )
 {
-  // return longName + " [GDAL] (" + glob.toLower() + " " + glob.toUpper() + ");;";
-  return longName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
+  // return longName + " [GDAL] (" + glob.toLower() + ' ' + glob.toUpper() + ");;";
+  return longName + " (" + glob.toLower() + ' ' + glob.toUpper() + ");;";
 } // createFileFilter_
 
 void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString, QStringList & theExtensions, QStringList & theWildcards )
@@ -2010,7 +2029,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
     // address is 0, or the first character is null
     while ( myGdalDriverMetadata && myGdalDriverMetadata[0] )
     {
-      metadataTokens = QString( *myGdalDriverMetadata ).split( "=", QString::SkipEmptyParts );
+      metadataTokens = QString( *myGdalDriverMetadata ).split( '=', QString::SkipEmptyParts );
       // QgsDebugMsg(QString("\t%1").arg(*myGdalDriverMetadata));
 
       // XXX add check for malformed metadataTokens
@@ -2044,8 +2063,8 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
       if ( !( myGdalDriverExtension.isEmpty() || myGdalDriverLongName.isEmpty() ) )
       {
         // XXX add check for SDTS; in that case we want (*CATD.DDF)
-        QString glob = "*." + myGdalDriverExtension.replace( "/", " *." );
-        theExtensions << myGdalDriverExtension.replace( "/", "" ).replace( "*", "" ).replace( ".", "" );
+        QString glob = "*." + myGdalDriverExtension.replace( '/', " *." );
+        theExtensions << myGdalDriverExtension.remove( '/' ).remove( '*' ).remove( '.' );
         // Add only the first JP2 driver found to the filter list (it's the one GDAL uses)
         if ( myGdalDriverDescription == "JPEG2000" ||
              myGdalDriverDescription.startsWith( "JP2" ) ) // JP2ECW, JP2KAK, JP2MrSID
@@ -2179,7 +2198,7 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
   {
     if ( !fileName.startsWith( vsiPrefix ) )
       fileName = vsiPrefix + fileName;
-    QgsDebugMsg( QString( "Trying %1 syntax, fileName= %2" ).arg( vsiPrefix ).arg( fileName ) );
+    QgsDebugMsg( QString( "Trying %1 syntax, fileName= %2" ).arg( vsiPrefix, fileName ) );
   }
 
   //open the file using gdal making sure we have handled locale properly
@@ -2726,7 +2745,7 @@ QGISEXTERN QgsGdalProvider * create(
   CSLDestroy( papszOptions );
   if ( dataset == NULL )
   {
-    QgsError error( QString( "Cannot create new dataset  %1:\n%2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), "GDAL provider" );
+    QgsError error( QString( "Cannot create new dataset  %1:\n%2" ).arg( uri, QString::fromUtf8( CPLGetLastErrorMsg() ) ), "GDAL provider" );
     QgsDebugMsg( error.summary() );
     return new QgsGdalProvider( uri, error );
   }
@@ -2859,12 +2878,12 @@ QGISEXTERN QString validateCreationOptionsFormat( const QStringList& createOptio
   int ok = GDALValidateCreationOptions( myGdalDriver, papszOptions );
   CSLDestroy( papszOptions );
 
-  if ( ok == FALSE )
+  if ( !ok )
     return "Failed GDALValidateCreationOptions() test";
   return QString();
 }
 
-QString QgsGdalProvider::validateCreationOptions( const QStringList& createOptions, QString format )
+QString QgsGdalProvider::validateCreationOptions( const QStringList& createOptions, const QString& format )
 {
   QString message;
 
@@ -2884,7 +2903,7 @@ QString QgsGdalProvider::validateCreationOptions( const QStringList& createOptio
   QMap< QString, QString > optionsMap;
   Q_FOREACH ( const QString& option, createOptions )
   {
-    QStringList opt = option.split( "=" );
+    QStringList opt = option.split( '=' );
     optionsMap[ opt[0].toUpper()] = opt[1];
     QgsDebugMsg( "option: " + option );
   }

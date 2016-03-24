@@ -63,7 +63,7 @@ void QgsVersionInfo::versionReplyFinished()
       pos += contentFlag.length();
 
       versionMessage = versionMessage.mid( pos );
-      QStringList parts = versionMessage.split( "|", QString::SkipEmptyParts );
+      QStringList parts = versionMessage.split( '|', QString::SkipEmptyParts );
       // check the version from the  server against our version
       mLatestVersion = parts[0].toInt();
       mDownloadInfo = parts.value( 1 );

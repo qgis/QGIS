@@ -24,7 +24,7 @@ QgsUuidWidgetWrapper::QgsUuidWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QW
 {
 }
 
-QVariant QgsUuidWidgetWrapper::value()
+QVariant QgsUuidWidgetWrapper::value() const
 {
   QVariant v;
 
@@ -49,7 +49,7 @@ void QgsUuidWidgetWrapper::initWidget( QWidget* editor )
     mLineEdit->setEnabled( false );
 }
 
-bool QgsUuidWidgetWrapper::valid()
+bool QgsUuidWidgetWrapper::valid() const
 {
   return mLineEdit || mLabel;
 }

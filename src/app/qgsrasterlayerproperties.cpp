@@ -193,13 +193,13 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
       if ( myRasterPyramidIterator->exists )
       {
         lbxPyramidResolutions->addItem( new QListWidgetItem( myPyramidPixmap,
-                                        QString::number( myRasterPyramidIterator->xDim ) + QString( " x " ) +
+                                        QString::number( myRasterPyramidIterator->xDim ) + QLatin1String( " x " ) +
                                         QString::number( myRasterPyramidIterator->yDim ) ) );
       }
       else
       {
         lbxPyramidResolutions->addItem( new QListWidgetItem( myNoPyramidPixmap,
-                                        QString::number( myRasterPyramidIterator->xDim ) + QString( " x " ) +
+                                        QString::number( myRasterPyramidIterator->xDim ) + QLatin1String( " x " ) +
                                         QString::number( myRasterPyramidIterator->yDim ) ) );
       }
     }
@@ -232,9 +232,12 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   QString pyramidSentence4 = tr( "Please note that building internal pyramids may alter the original data file and once created they cannot be removed!" );
   QString pyramidSentence5 = tr( "Please note that building internal pyramids could corrupt your image - always make a backup of your data first!" );
 
-  tePyramidDescription->setHtml( pyramidFormat.arg( pyramidHeader ).arg( pyramidSentence1 )
-                                 .arg( pyramidSentence2 ).arg( pyramidSentence3 )
-                                 .arg( pyramidSentence4 ).arg( pyramidSentence5 ) );
+  tePyramidDescription->setHtml( pyramidFormat.arg( pyramidHeader,
+                                 pyramidSentence1,
+                                 pyramidSentence2,
+                                 pyramidSentence3,
+                                 pyramidSentence4,
+                                 pyramidSentence5 ) );
 
   tableTransparency->horizontalHeader()->setResizeMode( 0, QHeaderView::Stretch );
   tableTransparency->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
@@ -1038,13 +1041,13 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
     if ( myRasterPyramidIterator->exists )
     {
       lbxPyramidResolutions->addItem( new QListWidgetItem( myPyramidPixmap,
-                                      QString::number( myRasterPyramidIterator->xDim ) + QString( " x " ) +
+                                      QString::number( myRasterPyramidIterator->xDim ) + QLatin1String( " x " ) +
                                       QString::number( myRasterPyramidIterator->yDim ) ) );
     }
     else
     {
       lbxPyramidResolutions->addItem( new QListWidgetItem( myNoPyramidPixmap,
-                                      QString::number( myRasterPyramidIterator->xDim ) + QString( " x " ) +
+                                      QString::number( myRasterPyramidIterator->xDim ) + QLatin1String( " x " ) +
                                       QString::number( myRasterPyramidIterator->yDim ) ) );
     }
   }
@@ -1105,7 +1108,7 @@ void QgsRasterLayerProperties::on_pbnAddValuesManually_clicked()
   tableTransparency->resizeRowsToContents();
 }
 
-void QgsRasterLayerProperties::on_mCrsSelector_crsChanged( QgsCoordinateReferenceSystem crs )
+void QgsRasterLayerProperties::on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem& crs )
 {
   mRasterLayer->setCrs( crs );
 }
@@ -1236,13 +1239,13 @@ void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
     if ( myOutputFile.open( QFile::WriteOnly ) )
     {
       QTextStream myOutputStream( &myOutputFile );
-      myOutputStream << "# " << tr( "QGIS Generated Transparent Pixel Value Export File" ) << "\n";
+      myOutputStream << "# " << tr( "QGIS Generated Transparent Pixel Value Export File" ) << '\n';
       if ( rasterIsMultiBandColor() )
       {
         myOutputStream << "#\n#\n# " << tr( "Red" ) << "\t" << tr( "Green" ) << "\t" << tr( "Blue" ) << "\t" << tr( "Percent Transparent" );
         for ( int myTableRunner = 0; myTableRunner < tableTransparency->rowCount(); myTableRunner++ )
         {
-          myOutputStream << "\n" << QString::number( transparencyCellValue( myTableRunner, 0 ) ) << "\t"
+          myOutputStream << '\n' << QString::number( transparencyCellValue( myTableRunner, 0 ) ) << "\t"
           << QString::number( transparencyCellValue( myTableRunner, 1 ) ) << "\t"
           << QString::number( transparencyCellValue( myTableRunner, 2 ) ) << "\t"
           << QString::number( transparencyCellValue( myTableRunner, 3 ) );
@@ -1254,7 +1257,7 @@ void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
 
         for ( int myTableRunner = 0; myTableRunner < tableTransparency->rowCount(); myTableRunner++ )
         {
-          myOutputStream << "\n" << QString::number( transparencyCellValue( myTableRunner, 0 ) ) << "\t"
+          myOutputStream << '\n' << QString::number( transparencyCellValue( myTableRunner, 0 ) ) << "\t"
           << QString::number( transparencyCellValue( myTableRunner, 1 ) ) << "\t"
           << QString::number( transparencyCellValue( myTableRunner, 2 ) );
         }
@@ -1408,7 +1411,7 @@ void QgsRasterLayerProperties::on_pbnImportTransparentPixelValues_clicked()
         myInputLine = myInputStream.readLine();
         if ( !myInputLine.isEmpty() )
         {
-          if ( !myInputLine.simplified().startsWith( "#" ) )
+          if ( !myInputLine.simplified().startsWith( '#' ) )
           {
             QStringList myTokens = myInputLine.split( QRegExp( "\\s+" ), QString::SkipEmptyParts );
             if ( myTokens.count() != 4 )
@@ -1441,7 +1444,7 @@ void QgsRasterLayerProperties::on_pbnImportTransparentPixelValues_clicked()
         myInputLine = myInputStream.readLine();
         if ( !myInputLine.isEmpty() )
         {
-          if ( !myInputLine.simplified().startsWith( "#" ) )
+          if ( !myInputLine.simplified().startsWith( '#' ) )
           {
             QStringList myTokens = myInputLine.split( QRegExp( "\\s+" ), QString::SkipEmptyParts );
             if ( myTokens.count() != 3 && myTokens.count() != 2 ) // 2 for QGIS < 1.9 compatibility
@@ -1553,7 +1556,7 @@ void QgsRasterLayerProperties::sliderTransparency_valueChanged( int theValue )
 {
   //set the transparency percentage label to a suitable value
   int myInt = static_cast < int >(( theValue / 255.0 ) * 100 );  //255.0 to prevent integer division
-  lblTransparencyPercent->setText( QString::number( myInt ) + "%" );
+  lblTransparencyPercent->setText( QString::number( myInt ) + '%' );
 }//sliderTransparency_valueChanged
 
 void QgsRasterLayerProperties::toggleSaturationControls( int grayscaleMode )

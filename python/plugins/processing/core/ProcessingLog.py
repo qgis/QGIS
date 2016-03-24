@@ -40,7 +40,7 @@ class ProcessingLog:
     LOG_INFO = 'INFO'
     LOG_WARNING = 'WARNING'
     LOG_ALGORITHM = 'ALGORITHM'
-    DATE_FORMAT = u'%a %b %d %Y %H:%M:%S'.encode('utf-8')
+    DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
     recentAlgs = []
 
     @staticmethod
@@ -53,7 +53,7 @@ class ProcessingLog:
                                   encoding='utf-8')
         logfile.write('Started logging at ' +
                       datetime.datetime.now().strftime(
-                          ProcessingLog.DATE_FORMAT).decode('utf-8') + '\n')
+                          ProcessingLog.DATE_FORMAT) + '\n')
         logfile.close()
 
     @staticmethod
@@ -70,7 +70,7 @@ class ProcessingLog:
             # to miss some log info that breaking the algorithm.
             if msgtype == ProcessingLog.LOG_ALGORITHM:
                 line = msgtype + '|' + datetime.datetime.now().strftime(
-                    ProcessingLog.DATE_FORMAT).decode('utf-8') + '|' \
+                    ProcessingLog.DATE_FORMAT) + '|' \
                     + msg + '\n'
                 logfile = codecs.open(ProcessingLog.logFilename(), 'a',
                                       encoding='utf-8')

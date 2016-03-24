@@ -26,7 +26,7 @@
  * \brief A generic dialog to prompt the user for a Coordinate Reference System
  */
 QgsGenericProjectionSelector::QgsGenericProjectionSelector( QWidget *parent,
-    Qt::WindowFlags fl )
+    const Qt::WindowFlags& fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
@@ -50,7 +50,7 @@ void QgsGenericProjectionSelector::setMessage( QString theMessage )
     QString sentence1 = tr( "This layer appears to have no projection specification." );
     QString sentence2 = tr( "By default, this layer will now have its projection set to that of the project, "
                             "but you may override this by selecting a different projection below." );
-    theMessage = format.arg( header ).arg( sentence1 ).arg( sentence2 );
+    theMessage = format.arg( header, sentence1, sentence2 );
   }
 
   QString myStyle = QgsApplication::reportStyleSheet();
@@ -65,7 +65,7 @@ QgsGenericProjectionSelector::~QgsGenericProjectionSelector()
   settings.setValue( "/Windows/ProjectionSelector/geometry", saveGeometry() );
 }
 
-void QgsGenericProjectionSelector::setSelectedCrsName( QString theName )
+void QgsGenericProjectionSelector::setSelectedCrsName( const QString& theName )
 {
   projectionSelector->setSelectedCrsName( theName );
 }
@@ -75,7 +75,7 @@ void QgsGenericProjectionSelector::setSelectedCrsId( long theID )
   projectionSelector->setSelectedCrsId( theID );
 }
 
-void QgsGenericProjectionSelector::setSelectedAuthId( QString theID )
+void QgsGenericProjectionSelector::setSelectedAuthId( const QString& theID )
 {
   projectionSelector->setSelectedAuthId( theID );
 }
@@ -91,7 +91,7 @@ QString QgsGenericProjectionSelector::selectedAuthId()
   return projectionSelector->selectedAuthId();
 }
 
-void QgsGenericProjectionSelector::setOgcWmsCrsFilter( QSet<QString> crsFilter )
+void QgsGenericProjectionSelector::setOgcWmsCrsFilter( const QSet<QString>& crsFilter )
 {
   projectionSelector->setOgcWmsCrsFilter( crsFilter );
 }

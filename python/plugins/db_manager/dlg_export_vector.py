@@ -38,8 +38,13 @@ class DlgExportVector(QDialog, Ui_Dialog):
         self.db = inDb
         self.setupUi(self)
 
+        vectorFilterName = "lastVectorFileFilter" # "lastRasterFileFilter"
+        self.lastUsedVectorFilterSettingsKey = u"/UI/{0}".format(vectorFilterName)
+        self.lastUsedVectorDirSettingsKey = u"/UI/{0}Dir".format(vectorFilterName)
+
         # update UI
         self.setupWorkingMode()
+        self.populateFileFilters()
         self.populateEncodings()
 
     def setupWorkingMode(self):
@@ -61,18 +66,21 @@ class DlgExportVector(QDialog, Ui_Dialog):
         # self.chkSpatialIndex.setEnabled(allowSpatial and hasGeomType)
 
     def chooseOutputFile(self):
-        # get last used dir and format
+        # get last used dir
         settings = QSettings()
-        lastDir = settings.value("/db_manager/lastUsedDir", "")
+        lastUsedDir = settings.value(self.lastUsedVectorDirSettingsKey, ".")
+
+        # get selected filter
+        selectedFilter = self.cboFileFormat.itemData(self.cboFileFormat.currentIndex())
+
         # ask for a filename
-        filename = QFileDialog.getSaveFileName(self, self.tr("Choose where to save the file"), lastDir,
-                                               self.tr("Shapefiles") + " (*.shp)")
+        filename = QFileDialog.getSaveFileName(self, self.tr("Choose where to save the file"), lastUsedDir,
+                                               selectedFilter)
         if filename == "":
             return
-        if filename[-4:] != ".shp":
-            filename += ".shp"
-        # store the last used dir and format
-        settings.setValue("/db_manager/lastUsedDir", QFileInfo(filename).filePath())
+
+        # store the last used dir
+        settings.setValue(self.lastUsedVectorDirSettingsKey, QFileInfo(filename).filePath())
 
         self.editOutputFile.setText(filename)
 
@@ -88,10 +96,24 @@ class DlgExportVector(QDialog, Ui_Dialog):
             idx = 0
         self.cboEncoding.setCurrentIndex(idx)
 
+    def populateFileFilters(self):
+        # populate the combo with supported vector file formats
+        for name, filt in qgis.core.QgsVectorFileWriter.ogrDriverList().iteritems():
+            self.cboFileFormat.addItem(name, filt)
+
+        # set the last used filter
+        settings = QSettings()
+        filt = settings.value(self.lastUsedVectorFilterSettingsKey, "ESRI Shapefile")
+
+        idx = self.cboFileFormat.findText(filt)
+        if idx < 0:
+            idx = 0
+        self.cboFileFormat.setCurrentIndex(idx)
+
     def accept(self):
         # sanity checks
         if self.editOutputFile.text() == "":
-            QMessageBox.information(self, self.tr("Export to file"), self.tr("Output table name is required"))
+            QMessageBox.information(self, self.tr("Export to file"), self.tr("Output file name is required"))
             return
 
         if self.chkSourceSrid.isEnabled() and self.chkSourceSrid.isChecked():
@@ -117,12 +139,13 @@ class DlgExportVector(QDialog, Ui_Dialog):
         try:
             uri = self.editOutputFile.text()
             providerName = "ogr"
-            driverName = "ESRI Shapefile"
 
             options = {}
 
             # set the OGR driver will be used
+            driverName = self.cboFileFormat.itemData(self.cboFileFormat.currentIndex())
             options['driverName'] = driverName
+
             # set the output file encoding
             if self.chkEncoding.isEnabled() and self.chkEncoding.isChecked():
                 enc = self.cboEncoding.currentText()

@@ -233,7 +233,7 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
 
 void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas, QgsGeometry* selectGeometry, QMouseEvent * e )
 {
-  bool doContains = e->modifiers() & Qt::ShiftModifier ? true : false;
-  bool doDifference = e->modifiers() & Qt::ControlModifier ? true : false;
+  bool doContains = e->modifiers() & Qt::ShiftModifier;
+  bool doDifference = e->modifiers() & Qt::ControlModifier;
   setSelectFeatures( canvas, selectGeometry, doContains, doDifference );
 }

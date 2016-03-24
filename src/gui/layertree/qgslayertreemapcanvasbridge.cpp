@@ -324,7 +324,7 @@ void QgsLayerTreeMapCanvasBridge::nodeVisibilityChanged()
   deferredSetCanvasLayers();
 }
 
-void QgsLayerTreeMapCanvasBridge::nodeCustomPropertyChanged( QgsLayerTreeNode* node, QString key )
+void QgsLayerTreeMapCanvasBridge::nodeCustomPropertyChanged( QgsLayerTreeNode* node, const QString& key )
 {
   Q_UNUSED( node );
   if ( key == "overview" )

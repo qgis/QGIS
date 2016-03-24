@@ -27,7 +27,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
-QgsVectorDataProvider::QgsVectorDataProvider( QString uri )
+QgsVectorDataProvider::QgsVectorDataProvider( const QString& uri )
     : QgsDataProvider( uri )
     , mCacheMinMaxDirty( true )
     , mAttrPalIndexName( QgsAttrPalIndexNameHash() )
@@ -252,8 +252,8 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
 {
   int i;
   QgsDebugMsgLevel( QString( "field name = %1 type = %2 length = %3 precision = %4" )
-                    .arg( field.name() )
-                    .arg( QVariant::typeToName( field.type() ) )
+                    .arg( field.name(),
+                          QVariant::typeToName( field.type() ) )
                     .arg( field.length() )
                     .arg( field.precision() ), 2 );
   for ( i = 0; i < mNativeTypes.size(); i++ )
@@ -410,7 +410,7 @@ void QgsVectorDataProvider::fillMinMaxCache()
     QgsAttributes attrs = f.attributes();
     for ( QgsAttributeList::const_iterator it = keys.begin(); it != keys.end(); ++it )
     {
-      const QVariant& varValue = attrs[*it];
+      const QVariant& varValue = attrs.at( *it );
 
       if ( varValue.isNull() )
         continue;
@@ -449,7 +449,7 @@ void QgsVectorDataProvider::fillMinMaxCache()
   mCacheMinMaxDirty = false;
 }
 
-QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, QString value )
+QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, const QString& value )
 {
   QVariant v( value );
 
@@ -542,8 +542,9 @@ QStringList QgsVectorDataProvider::errors()
   return mErrors;
 }
 
-void QgsVectorDataProvider::pushError( QString msg )
+void QgsVectorDataProvider::pushError( const QString& msg )
 {
+  QgsDebugMsg( msg );
   mErrors << msg;
 }
 

@@ -14,10 +14,10 @@ class QgsSmartGroupCondition : QWidget
     QString parameter();
 
     //! sets the given constraint
-    void setConstraint( QString constraint );
+    void setConstraint( const QString& constraint );
 
     //! sets the given param
-    void setParameter( QString param );
+    void setParameter( const QString& param );
 
     //! sets the remove button hidden state to 'hide'
     void hideRemoveButton( bool hide );
@@ -54,10 +54,10 @@ class QgsSmartGroupEditorDialog : QDialog
     // void setConditionMap( QgsSmartConditionMap );
 
     //! sets the operator AND/OR
-    void setOperator( QString );
+    void setOperator( const QString& );
 
     //! sets the smart group Name
-    void setSmartgroupName( QString );
+    void setSmartgroupName( const QString& );
 
   public slots:
 

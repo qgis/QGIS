@@ -20,6 +20,10 @@
 
 #include <QComboBox>
 
+/** \class QgsClassificationWidgetWrapper
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsClassificationWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
@@ -28,12 +32,12 @@ class GUI_EXPORT QgsClassificationWidgetWrapper : public QgsEditorWidgetWrapper
 
     // QgsEditorWidgetWrapper interface
   public:
-    QVariant value() override;
+    QVariant value() const override;
 
   protected:
     QWidget*createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
-    bool valid() override;
+    bool valid() const override;
 
   public slots:
     void setValue( const QVariant& value ) override;

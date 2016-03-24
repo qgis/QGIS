@@ -56,7 +56,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     QgsRasterRenderer( QgsRasterInterface* input = 0, const QString& type = "" );
     virtual ~QgsRasterRenderer();
 
-    QgsRasterInterface * clone() const override = 0;
+    QgsRasterRenderer * clone() const override = 0;
 
     virtual int bandCount() const override;
 
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     static QString minMaxOriginName( int theOrigin );
     static QString minMaxOriginLabel( int theOrigin );
-    static int minMaxOriginFromName( QString theName );
+    static int minMaxOriginFromName( const QString& theName );
 
   protected:
 

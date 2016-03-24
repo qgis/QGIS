@@ -56,12 +56,12 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
      * @param index index of conditional style to edit
      * @param style initial conditional styling options
      */
-    void editStyle( int index, QgsConditionalStyle style );
+    void editStyle( int index, const QgsConditionalStyle& style );
 
     /**
      * @param style initial conditional styling options
      */
-    void loadStyle( QgsConditionalStyle style );
+    void loadStyle( const QgsConditionalStyle& style );
 
     /** Resets the formatting options to their default state.
      */
@@ -71,7 +71,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
      * @brief Set the presets that can be used for quick pick
      * @param styles A list of styles used as presets
      */
-    void setPresets( QList<QgsConditionalStyle> styles );
+    void setPresets( const QList<QgsConditionalStyle>& styles );
 
     /**
      * @brief The default presets for the widget.  Normally set when the widget is
@@ -100,20 +100,20 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
 
     QList<QgsConditionalStyle> getStyles();
 
-    void setFormattingFromStyle( QgsConditionalStyle style );
+    void setFormattingFromStyle( const QgsConditionalStyle& style );
 
   private slots:
     void setExpression();
     void updateIcon();
     void presetSet( int index );
     bool isCustomSet();
-    void ruleClicked( QModelIndex index );
+    void ruleClicked( const QModelIndex& index );
     void reloadStyles();
     void cancelRule();
     void deleteRule();
     void saveRule();
     void addNewRule();
-    void fieldChanged( QString fieldName );
+    void fieldChanged( const QString& fieldName );
 
 };
 

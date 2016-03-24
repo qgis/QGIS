@@ -51,7 +51,7 @@ QAction* QgsLayerTreeViewDefaultActions::actionShowInOverview( QObject* parent )
   if ( !node )
     return 0;
 
-  QAction* a = new QAction( tr( "&Show in overview" ), parent );
+  QAction* a = new QAction( tr( "&Show in Overview" ), parent );
   connect( a, SIGNAL( triggered() ), this, SLOT( showInOverview() ) );
   a->setCheckable( true );
   a->setChecked( node->customProperty( "overview", 0 ).toInt() );
@@ -107,6 +107,19 @@ QAction* QgsLayerTreeViewDefaultActions::actionGroupSelected( QObject* parent )
 {
   QAction* a = new QAction( tr( "&Group Selected" ), parent );
   connect( a, SIGNAL( triggered() ), this, SLOT( groupSelected() ) );
+  return a;
+}
+
+QAction* QgsLayerTreeViewDefaultActions::actionMutuallyExclusiveGroup( QObject* parent )
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if ( !node || !QgsLayerTree::isGroup( node ) )
+    return 0;
+
+  QAction* a = new QAction( tr( "Mutually Exclusive Group" ), parent );
+  a->setCheckable( true );
+  a->setChecked( QgsLayerTree::toGroup( node )->isMutuallyExclusive() );
+  connect( a, SIGNAL( triggered() ), this, SLOT( mutuallyExclusiveGroup() ) );
   return a;
 }
 
@@ -241,7 +254,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const Q
 QString QgsLayerTreeViewDefaultActions::uniqueGroupName( QgsLayerTreeGroup* parentGroup )
 {
   QString prefix = parentGroup == mView->layerTreeModel()->rootGroup() ? "group" : "sub-group";
-  QString newName = prefix + "1";
+  QString newName = prefix + '1';
   for ( int i = 2; parentGroup->findGroup( newName ); ++i )
     newName = prefix + QString::number( i );
   return newName;
@@ -288,4 +301,13 @@ void QgsLayerTreeViewDefaultActions::groupSelected()
   }
 
   mView->setCurrentIndex( mView->layerTreeModel()->node2index( newGroup ) );
+}
+
+void QgsLayerTreeViewDefaultActions::mutuallyExclusiveGroup()
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if ( !node || !QgsLayerTree::isGroup( node ) )
+    return;
+
+  QgsLayerTree::toGroup( node )->setIsMutuallyExclusive( !QgsLayerTree::toGroup( node )->isMutuallyExclusive() );
 }

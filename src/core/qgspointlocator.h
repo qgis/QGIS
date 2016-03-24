@@ -57,7 +57,16 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     ~QgsPointLocator();
 
-    enum Type { Invalid = 0, Vertex = 1, Edge = 2, Area = 4, All = Vertex | Edge | Area };
+    enum Type
+    {
+      Invalid = 0,
+      Vertex = 1,
+      Edge = 2,
+      Area = 4,
+      All = Vertex | Edge | Area
+    };
+
+    Q_DECLARE_FLAGS( Types, Type )
 
     /** Prepare the index for queries. Does nothing if the index already exists.
      * If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
@@ -130,6 +139,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! Implement the interface and pass its instance to QgsPointLocator or QgsSnappingUtils methods.
     struct MatchFilter
     {
+      virtual ~MatchFilter() {}
       virtual bool acceptMatch( const Match& match ) = 0;
     };
 

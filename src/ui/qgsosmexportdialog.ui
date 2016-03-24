@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>456</width>
+    <width>546</width>
     <height>434</height>
    </rect>
   </property>
@@ -173,9 +173,10 @@
   <tabstop>radPolygons</tabstop>
   <tabstop>editLayerName</tabstop>
   <tabstop>btnLoadTags</tabstop>
+  <tabstop>btnSelectAll</tabstop>
+  <tabstop>btnUnselectAll</tabstop>
   <tabstop>viewTags</tabstop>
   <tabstop>chkLoadWhenFinished</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

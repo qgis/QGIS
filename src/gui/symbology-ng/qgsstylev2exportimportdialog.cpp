@@ -13,7 +13,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsstylev2exportimportdialog.h"
+#include "ui_qgsstylev2exportimportdialogbase.h"
 
 #include "qgsstylev2.h"
 #include "qgssymbolv2.h"
@@ -27,6 +29,7 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QStandardItemModel>
+
 
 QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, QWidget *parent, Mode mode )
     : QDialog( parent )
@@ -46,12 +49,14 @@ QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, Q
   connect( pb, SIGNAL( clicked() ), this, SLOT( clearSelection() ) );
 
   QStandardItemModel* model = new QStandardItemModel( listItems );
+
   listItems->setModel( model );
 
   mTempStyle = new QgsStyleV2();
   // TODO validate
   mFileName = "";
   mProgressDlg = NULL;
+  mGroupSelectionDlg = NULL;
   mTempFile = NULL;
   mNetManager = new QNetworkAccessManager( this );
   mNetReply = NULL;
@@ -87,6 +92,10 @@ QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, Q
     importTypeCombo->setHidden( true );
     locationLabel->setHidden( true );
     locationLineEdit->setHidden( true );
+
+    pb = new QPushButton( tr( "Select by group" ) );
+    buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
+    connect( pb, SIGNAL( clicked() ), this, SLOT( selectByGroup() ) );
     groupLabel->setHidden( true );
     groupCombo->setHidden( true );
 
@@ -95,8 +104,8 @@ QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, Q
     {
       QApplication::postEvent( this, new QCloseEvent() );
     }
-  }
 
+  }
   // use Ok button for starting import and export operations
   disconnect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( doExportImport() ) );
@@ -370,6 +379,7 @@ QgsStyleV2ExportImportDialog::~QgsStyleV2ExportImportDialog()
 {
   delete mTempFile;
   delete mTempStyle;
+  delete mGroupSelectionDlg;
 }
 
 void QgsStyleV2ExportImportDialog::selectAll()
@@ -380,6 +390,82 @@ void QgsStyleV2ExportImportDialog::selectAll()
 void QgsStyleV2ExportImportDialog::clearSelection()
 {
   listItems->clearSelection();
+}
+
+void QgsStyleV2ExportImportDialog::selectSymbols( const QStringList& symbolNames )
+{
+  Q_FOREACH ( const QString &symbolName, symbolNames )
+  {
+    QModelIndexList indexes = listItems->model()->match( listItems->model()->index( 0, 0 ), Qt::DisplayRole, symbolName , 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
+    Q_FOREACH ( const QModelIndex &index, indexes )
+    {
+      listItems->selectionModel()->select( index, QItemSelectionModel::Select );
+    }
+  }
+}
+
+void QgsStyleV2ExportImportDialog::deselectSymbols( const QStringList& symbolNames )
+{
+  Q_FOREACH ( const QString &symbolName, symbolNames )
+  {
+    QModelIndexList indexes = listItems->model()->match( listItems->model()->index( 0, 0 ), Qt::DisplayRole, symbolName , 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
+    Q_FOREACH ( const QModelIndex &index, indexes )
+    {
+      QItemSelection deselection( index, index );
+      listItems->selectionModel()->select( deselection, QItemSelectionModel::Deselect );
+    }
+  }
+}
+
+void QgsStyleV2ExportImportDialog::selectGroup( const QString& groupName )
+{
+  QStringList symbolNames = mQgisStyle->symbolsOfGroup( QgsStyleV2::SymbolEntity, mQgisStyle->groupId( groupName ) );
+  selectSymbols( symbolNames );
+  symbolNames = mQgisStyle->symbolsOfGroup( QgsStyleV2::ColorrampEntity, mQgisStyle->groupId( groupName ) );
+  selectSymbols( symbolNames );
+}
+
+
+void QgsStyleV2ExportImportDialog::deselectGroup( const QString& groupName )
+{
+  QStringList symbolNames = mQgisStyle->symbolsOfGroup( QgsStyleV2::SymbolEntity, mQgisStyle->groupId( groupName ) );
+  deselectSymbols( symbolNames );
+  symbolNames = mQgisStyle->symbolsOfGroup( QgsStyleV2::ColorrampEntity, mQgisStyle->groupId( groupName ) );
+  deselectSymbols( symbolNames );
+}
+
+void QgsStyleV2ExportImportDialog::selectSmartgroup( const QString& groupName )
+{
+  QStringList symbolNames = mQgisStyle->symbolsOfSmartgroup( QgsStyleV2::SymbolEntity, mQgisStyle->smartgroupId( groupName ) );
+  selectSymbols( symbolNames );
+  symbolNames = mQgisStyle->symbolsOfSmartgroup( QgsStyleV2::ColorrampEntity, mQgisStyle->smartgroupId( groupName ) );
+  selectSymbols( symbolNames );
+}
+
+void QgsStyleV2ExportImportDialog::deselectSmartgroup( const QString& groupName )
+{
+  QStringList symbolNames = mQgisStyle->symbolsOfSmartgroup( QgsStyleV2::SymbolEntity, mQgisStyle->smartgroupId( groupName ) );
+  deselectSymbols( symbolNames );
+  symbolNames = mQgisStyle->symbolsOfSmartgroup( QgsStyleV2::ColorrampEntity, mQgisStyle->smartgroupId( groupName ) );
+  deselectSymbols( symbolNames );
+}
+
+void QgsStyleV2ExportImportDialog::selectByGroup( )
+{
+  if ( ! mGroupSelectionDlg )
+  {
+    mGroupSelectionDlg = new QgsStyleV2GroupSelectionDialog( mQgisStyle, this );
+    mGroupSelectionDlg->setWindowTitle( tr( "Select symbols by group" ) );
+    connect( mGroupSelectionDlg, SIGNAL( groupSelected( const QString ) ), this, SLOT( selectGroup( const QString ) ) );
+    connect( mGroupSelectionDlg, SIGNAL( groupDeselected( const QString ) ), this, SLOT( deselectGroup( const QString ) ) );
+    connect( mGroupSelectionDlg, SIGNAL( allSelected( ) ), this, SLOT( selectAll( ) ) );
+    connect( mGroupSelectionDlg, SIGNAL( allDeselected( ) ), this, SLOT( clearSelection( ) ) );
+    connect( mGroupSelectionDlg, SIGNAL( smartgroupSelected( const QString ) ), this, SLOT( selectSmartgroup( const QString ) ) );
+    connect( mGroupSelectionDlg, SIGNAL( smartgroupDeselected( const QString ) ), this, SLOT( deselectSmartgroup( const QString ) ) );
+  }
+  mGroupSelectionDlg->show();
+  mGroupSelectionDlg->raise();
+  mGroupSelectionDlg->activateWindow();
 }
 
 void QgsStyleV2ExportImportDialog::importTypeChanged( int index )
@@ -418,7 +504,7 @@ void QgsStyleV2ExportImportDialog::browse()
       return;
     }
     QFileInfo pathInfo( mFileName );
-    QString groupName = pathInfo.fileName().replace( ".xml", "" );
+    QString groupName = pathInfo.fileName().remove( ".xml" );
     groupCombo->setItemText( 0, groupName );
     locationLineEdit->setText( mFileName );
     populateStyles( mTempStyle );
@@ -434,7 +520,7 @@ void QgsStyleV2ExportImportDialog::browse()
   }
 }
 
-void QgsStyleV2ExportImportDialog::downloadStyleXML( QUrl url )
+void QgsStyleV2ExportImportDialog::downloadStyleXML( const QUrl& url )
 {
   // XXX Try to move this code to some core Network interface,
   // HTTP downloading is a generic functionality that might be used elsewhere

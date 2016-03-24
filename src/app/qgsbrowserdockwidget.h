@@ -45,9 +45,11 @@ class QgsBrowserPropertiesWidget : public QWidget
 {
     Q_OBJECT
   public:
-    QgsBrowserPropertiesWidget( QWidget* parent = 0 );
+    explicit QgsBrowserPropertiesWidget( QWidget* parent = 0 );
     static QgsBrowserPropertiesWidget* createWidget( QgsDataItem* item, QWidget* parent = 0 );
-    virtual void setItem( QgsDataItem* item ) = 0;
+    virtual void setItem( QgsDataItem* item ) { Q_UNUSED( item ) }
+    /** Set content widget, usually item paramWidget. Takes ownership. */
+    virtual void setWidget( QWidget* widget );
 
     /** Sets whether the properties widget should display in condensed mode, ie, for display in a dock
      * widget rather than it's own separate dialog.
@@ -61,7 +63,7 @@ class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui:
 {
     Q_OBJECT
   public:
-    QgsBrowserLayerProperties( QWidget* parent = 0 );
+    explicit QgsBrowserLayerProperties( QWidget* parent = 0 );
     void setItem( QgsDataItem* item ) override;
 
     virtual void setCondensedMode( bool condensedMode ) override;
@@ -74,7 +76,7 @@ class QgsBrowserDirectoryProperties : public QgsBrowserPropertiesWidget , privat
 {
     Q_OBJECT
   public:
-    QgsBrowserDirectoryProperties( QWidget* parent = 0 );
+    explicit QgsBrowserDirectoryProperties( QWidget* parent = 0 );
 
     void setItem( QgsDataItem* item ) override;
   private:
@@ -86,7 +88,7 @@ class QgsBrowserPropertiesDialog : public QDialog , private Ui::QgsBrowserProper
 {
     Q_OBJECT
   public:
-    QgsBrowserPropertiesDialog( QString settingsSection, QWidget* parent = 0 );
+    QgsBrowserPropertiesDialog( const QString& settingsSection, QWidget* parent = 0 );
     ~QgsBrowserPropertiesDialog();
 
     void setItem( QgsDataItem* item );
@@ -100,9 +102,9 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
 {
     Q_OBJECT
   public:
-    explicit QgsBrowserDockWidget( QString name, QWidget *parent = 0 );
+    explicit QgsBrowserDockWidget( const QString& name, QWidget *parent = 0 );
     ~QgsBrowserDockWidget();
-    void addFavouriteDirectory( QString favDir );
+    void addFavouriteDirectory( const QString& favDir );
 
   public slots:
     void addLayerAtIndex( const QModelIndex& index );

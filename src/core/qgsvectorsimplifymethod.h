@@ -42,7 +42,7 @@ class CORE_EXPORT QgsVectorSimplifyMethod
     Q_DECLARE_FLAGS( SimplifyHints, SimplifyHint )
 
     /** Sets the simplification hints of the vector layer managed */
-    void setSimplifyHints( SimplifyHints simplifyHints ) { mSimplifyHints = simplifyHints; }
+    void setSimplifyHints( const SimplifyHints& simplifyHints ) { mSimplifyHints = simplifyHints; }
     /** Gets the simplification hints of the vector layer managed */
     inline SimplifyHints simplifyHints() const { return mSimplifyHints; }
 

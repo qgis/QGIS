@@ -61,7 +61,7 @@ class QgsWFSServer: public QgsOWSServer
   public:
     /** Constructor. Takes parameter map and a pointer to a renderer object (does not take ownership)*/
     QgsWFSServer( const QString& configFilePath, QMap<QString, QString>& parameters, QgsWFSProjectParser* cp,
-                  QgsRequestHandler* rh );
+                  QgsRequestHandler* rh, const QgsAccessControl* accessControl );
     ~QgsWFSServer();
 
     void executeRequest() override;
@@ -104,17 +104,17 @@ class QgsWFSServer: public QgsOWSServer
   protected:
 
     void startGetFeature( QgsRequestHandler& request, const QString& format, int prec, QgsCoordinateReferenceSystem& crs, QgsRectangle* rect );
-    void setGetFeature( QgsRequestHandler& request, const QString& format, QgsFeature* feat, int featIdx, int prec, QgsCoordinateReferenceSystem& crs, QgsAttributeList attrIndexes, QSet<QString> excludedAttributes );
+    void setGetFeature( QgsRequestHandler& request, const QString& format, QgsFeature* feat, int featIdx, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes );
     void endGetFeature( QgsRequestHandler& request, const QString& format );
 
     //method for transaction
-    QgsFeatureIds getFeatureIdsFromFilter( QDomElement filter, QgsVectorLayer* layer );
+    QgsFeatureIds getFeatureIdsFromFilter( const QDomElement& filter, QgsVectorLayer* layer );
 
     //methods to write GeoJSON
-    QString createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoordinateReferenceSystem& crs, QgsAttributeList attrIndexes, QSet<QString> excludedAttributes ) /*const*/;
+    QString createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes ) /*const*/;
 
     //methods to write GML2
-    QDomElement createFeatureGML2( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, QgsAttributeList attrIndexes, QSet<QString> excludedAttributes ) /*const*/;
+    QDomElement createFeatureGML2( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes ) /*const*/;
 
     //methods to write GML3
     QDomElement createFeatureGML3( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, QgsAttributeList attrIndexes, QSet<QString> excludedAttributes ) /*const*/;

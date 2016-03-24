@@ -26,5 +26,5 @@ class QgsVectorGradientColorRampV2Dialog : QDialog
 
     void updateStops();
     void updatePreview();
-    void setStopColor( QTreeWidgetItem* item, QColor color );
+    void setStopColor( QTreeWidgetItem* item, const QColor& color );
 };

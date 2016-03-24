@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>310</width>
-    <height>381</height>
+    <width>435</width>
+    <height>359</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -111,8 +111,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>306</width>
-           <height>352</height>
+           <width>431</width>
+           <height>330</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="mainLayout">
@@ -139,7 +139,7 @@
             <property name="collapsed" stdset="0">
              <bool>false</bool>
             </property>
-            <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0">
+            <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1,0">
              <item row="4" column="2">
               <widget class="QToolButton" name="mAtlasSortFeatureDirectionButton">
                <property name="toolTip">
@@ -237,30 +237,6 @@
                </property>
               </widget>
              </item>
-             <item row="5" column="0" colspan="3">
-              <layout class="QHBoxLayout" name="horizontalLayout">
-               <item>
-                <spacer name="horizontalSpacer_3">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QPushButton" name="mApplyConfigButton">
-                 <property name="text">
-                  <string>Apply configuration</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
             </layout>
            </widget>
           </item>
@@ -342,7 +318,7 @@
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -363,7 +339,6 @@
  </customwidgets>
  <tabstops>
   <tabstop>mUseAtlasCheckBox</tabstop>
-  <tabstop>scrollArea</tabstop>
   <tabstop>mConfigurationGroup</tabstop>
   <tabstop>mAtlasCoverageLayerComboBox</tabstop>
   <tabstop>mAtlasHideCoverageCheckBox</tabstop>
@@ -373,11 +348,11 @@
   <tabstop>mAtlasSortFeatureCheckBox</tabstop>
   <tabstop>mAtlasSortFeatureKeyComboBox</tabstop>
   <tabstop>mAtlasSortFeatureDirectionButton</tabstop>
-  <tabstop>mApplyConfigButton</tabstop>
   <tabstop>mOutputGroup</tabstop>
   <tabstop>mAtlasFilenamePatternEdit</tabstop>
   <tabstop>mAtlasFilenameExpressionButton</tabstop>
   <tabstop>mAtlasSingleFileCheckBox</tabstop>
+  <tabstop>scrollArea</tabstop>
  </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>

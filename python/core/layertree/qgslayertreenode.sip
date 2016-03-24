@@ -116,7 +116,7 @@ class QgsLayerTreeNode : QObject
     //! Emitted when check state of a node within the tree has been changed
     void visibilityChanged( QgsLayerTreeNode *node, Qt::CheckState state );
     //! Emitted when a custom property of a node within the tree has been changed or removed
-    void customPropertyChanged( QgsLayerTreeNode *node, QString key );
+    void customPropertyChanged( QgsLayerTreeNode *node, const QString& key );
     //! Emitted when the collapsed/expanded state of a node within the tree has been changed
     void expandedChanged( QgsLayerTreeNode *node, bool expanded );
 

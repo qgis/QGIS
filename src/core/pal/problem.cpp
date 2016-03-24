@@ -1484,8 +1484,8 @@ namespace pal
                     move = *current;
                     retainedChain->feat[j]  = move->feat;
                     retainedChain->label[j] = move->new_label;
-                    current++;
-                    j++;
+                    ++current;
+                    ++j;
                   }
                   retainedChain->feat[j] = seed;
                   retainedChain->label[j] = lid;
@@ -1523,8 +1523,8 @@ namespace pal
                   move = *current;
                   newChain->feat[j]  = move->feat;
                   newChain->label[j] = move->new_label;
-                  current++;
-                  j++;
+                  ++current;
+                  ++j;
                 }
 
                 newChain->feat[j] = seed;
@@ -1581,8 +1581,8 @@ namespace pal
                   move = *current;
                   retainedChain->feat[j]  = move->feat;
                   retainedChain->label[j] = move->new_label;
-                  current++;
-                  j++;
+                  ++current;
+                  ++j;
                 }
                 retainedChain->feat[j] = seed;
                 retainedChain->label[j] = -1;
@@ -1770,8 +1770,8 @@ namespace pal
                     move = *current;
                     retainedChain->feat[j]  = move->feat;
                     retainedChain->label[j] = move->new_label;
-                    current++;
-                    j++;
+                    ++current;
+                    ++j;
                   }
                   retainedChain->feat[j] = seed;
                   retainedChain->label[j] = lid;
@@ -1810,8 +1810,8 @@ namespace pal
                   move = *current;
                   newChain->feat[j]  = move->feat;
                   newChain->label[j] = move->new_label;
-                  current++;
-                  j++;
+                  ++current;
+                  ++j;
                 }
 
                 // add the current candidates into the chain
@@ -1870,8 +1870,8 @@ namespace pal
                   move = *current;
                   retainedChain->feat[j]  = move->feat;
                   retainedChain->label[j] = move->new_label;
-                  current++;
-                  j++;
+                  ++current;
+                  ++j;
                 }
                 retainedChain->feat[j] = seed;
                 retainedChain->label[j] = -1;
@@ -2009,7 +2009,7 @@ namespace pal
 
     maxit = probSize * pal->tabuMaxIt;
 
-    itwimp = probSize * pal->tabuMinIt;;
+    itwimp = probSize * pal->tabuMinIt;
 
     stop_it = itwimp;
 
@@ -2674,7 +2674,7 @@ namespace pal
     int k;
     for ( i = 0; i < nbft; i++ )
     {
-      lyrName = mLabelPositions.at( featStartId[i] )->getLayerName();
+      lyrName = mLabelPositions.at( featStartId[i] )->getFeaturePart()->feature()->provider()->name();
       k = -1;
       for ( j = 0; j < stats->nbLayers; j++ )
       {

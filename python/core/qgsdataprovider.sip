@@ -9,15 +9,15 @@ class QgsDataProvider : QObject
 %ConvertToSubClassCode
     if (sipCpp->inherits("QgsVectorDataProvider"))
     {
-        sipClass = sipClass_QgsVectorDataProvider;
+        sipType = sipType_QgsVectorDataProvider;
     }
     else if (sipCpp->inherits("QgsRasterDataProvider"))
     {
-	sipClass = sipClass_QgsRasterDataProvider;
+	sipType = sipType_QgsRasterDataProvider;
     }
     else
     {
-        sipClass = 0;
+        sipType = 0;
     }
 %End
 
@@ -50,9 +50,10 @@ class QgsDataProvider : QObject
     /**
      * Get the data source specification. This may be a path or database
      * connection string
+     * @param expandAuthConfig Whether to expand any assigned authentication configuration
      * @return data source specification
      */
-    virtual QString dataSourceUri() const;
+    virtual QString dataSourceUri( bool expandAuthConfig = true ) const;
 
 
     /**
@@ -81,7 +82,7 @@ class QgsDataProvider : QObject
      * that can be used by the data provider to create a subset.
      * Must be implemented in the dataprovider.
      */
-    virtual bool setSubsetString( QString subset, bool updateFeatureCount = true );
+    virtual bool setSubsetString( const QString& subset, bool updateFeatureCount = true );
 
     /** Provider supports setting of subset strings */
     virtual bool supportsSubsetString();

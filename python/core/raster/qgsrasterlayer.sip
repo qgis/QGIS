@@ -162,7 +162,7 @@ class QgsRasterLayer : QgsMapLayer
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
                                  QgsRaster::ContrastEnhancementLimits theLimits = QgsRaster::ContrastEnhancementMinMax,
-                                 QgsRectangle theExtent = QgsRectangle(),
+                                 const QgsRectangle& theExtent = QgsRectangle(),
                                  int theSampleSize = QgsRasterLayer::SAMPLE_SIZE,
                                  bool theGenerateLookupTableFlag = true );
 
@@ -180,11 +180,11 @@ class QgsRasterLayer : QgsMapLayer
 
     /** \brief Draws a preview of the rasterlayer into a pixmap
     @note - use previewAsImage() for rendering with QGIS>=2.4 */
-    QPixmap previewAsPixmap( QSize size, QColor bgColor = QColor( 255, 255, 255 ) ) /Deprecated/;
+    QPixmap previewAsPixmap( const QSize& size, const QColor& bgColor = QColor( 255, 255, 255 ) ) /Deprecated/;
 
     /** \brief Draws a preview of the rasterlayer into a QImage
      @note added in 2.4 */
-    QImage previewAsImage( QSize size, QColor bgColor = QColor( 255, 255, 255 ),
+    QImage previewAsImage( const QSize& size, const QColor& bgColor = QColor( 255, 255, 255 ),
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 
     /**
@@ -198,7 +198,7 @@ class QgsRasterLayer : QgsMapLayer
     /**
      * Set the visibility of the given sublayer name
      */
-    virtual void setSubLayerVisibility( QString name, bool vis );
+    virtual void setSubLayerVisibility( const QString& name, bool vis );
 
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
     virtual QDateTime timestamp() const;
@@ -210,7 +210,7 @@ class QgsRasterLayer : QgsMapLayer
     void updateProgress( int, int ) /Deprecated/;
 
     /** \brief receive progress signal from provider */
-    void onProgress( int, double, QString );
+    void onProgress( int, double, const QString& );
 
   signals:
     /** \brief Signal for notifying listeners of long running processes */

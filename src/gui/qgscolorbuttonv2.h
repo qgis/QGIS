@@ -62,7 +62,7 @@ class GUI_EXPORT QgsColorButtonV2 : public QToolButton
      * @param registry a color scheme registry for color swatch grids to show in the drop down menu. If not
      * specified, the button will use the global color scheme registry
      */
-    QgsColorButtonV2( QWidget *parent = 0, QString cdt = "", QgsColorSchemeRegistry* registry = 0 );
+    QgsColorButtonV2( QWidget *parent = 0, const QString& cdt = "", QgsColorSchemeRegistry* registry = 0 );
 
     virtual ~QgsColorButtonV2();
 
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsColorButtonV2 : public QToolButton
      * @param title Title for the color chooser dialog
      * @see colorDialogTitle
      */
-    void setColorDialogTitle( const QString title );
+    void setColorDialogTitle( const QString& title );
 
     /** Returns the title for the color chooser dialog window.
      * @returns title for the color chooser dialog
@@ -145,7 +145,7 @@ class GUI_EXPORT QgsColorButtonV2 : public QToolButton
      * option.
      * @see defaultColor
      */
-    void setDefaultColor( const QColor color );
+    void setDefaultColor( const QColor& color );
 
     /** Returns the default color for the button, which is shown in the button's drop down menu for the
      * "default color" option.
@@ -182,7 +182,7 @@ class GUI_EXPORT QgsColorButtonV2 : public QToolButton
      * @note The "no color" option is only shown if the color button is set to show an alpha channel in the color
      * dialog (see setColorDialogOptions)
      */
-    void setNoColorString( const QString noColorString ) { mNoColorString = noColorString; }
+    void setNoColorString( const QString& noColorString ) { mNoColorString = noColorString; }
 
     /** Returns the string used for the "no color" option in the button's drop down menu.
      * @returns string used for the "no color" menu option
@@ -199,7 +199,7 @@ class GUI_EXPORT QgsColorButtonV2 : public QToolButton
      * @param context context string for the color button's color swatch grids
      * @see context
      */
-    void setContext( const QString context ) { mContext = context; }
+    void setContext( const QString& context ) { mContext = context; }
 
     /** Returns the context string for the color button. The context string is passed to all color swatch
      * grids shown in the button's drop down menu, to allow them to customise their display colors

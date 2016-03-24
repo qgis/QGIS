@@ -22,6 +22,7 @@
 #include <QStringList>
 
 //#include "qgsdataitem.h"
+#include "qgsdatasourceuri.h"
 #include "qgserror.h"
 
 typedef int dataCapabilities_t();
@@ -91,11 +92,23 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * Get the data source specification. This may be a path or database
      * connection string
+     * @param expandAuthConfig Whether to expand any assigned authentication configuration
      * @return data source specification
+     * @note The default authentication configuration expansion is FALSE. This keeps credentials
+     * out of layer data source URIs and project files. Expansion should be specifically done
+     * only when needed within a provider
      */
-    virtual QString dataSourceUri() const
+    virtual QString dataSourceUri( bool expandAuthConfig = false ) const
     {
-      return mDataSourceURI;
+      if ( expandAuthConfig && mDataSourceURI.contains( "authcfg" ) )
+      {
+        QgsDataSourceURI uri( mDataSourceURI );
+        return uri.uri( expandAuthConfig );
+      }
+      else
+      {
+        return mDataSourceURI;
+      }
     }
 
 
@@ -128,7 +141,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * that can be used by the data provider to create a subset.
      * Must be implemented in the dataprovider.
      */
-    virtual bool setSubsetString( QString subset, bool updateFeatureCount = true )
+    virtual bool setSubsetString( const QString& subset, bool updateFeatureCount = true )
     {
       // NOP by default
       Q_UNUSED( subset );

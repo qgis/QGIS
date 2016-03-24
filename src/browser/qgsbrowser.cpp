@@ -42,7 +42,7 @@
 #define QGIS_ICON_SIZE 24
 #endif
 
-QgsBrowser::QgsBrowser( QWidget *parent, Qt::WindowFlags flags )
+QgsBrowser::QgsBrowser( QWidget *parent, const Qt::WindowFlags& flags )
     : QMainWindow( parent, flags )
     , mDirtyMetadata( true )
     , mDirtyPreview( true )
@@ -100,7 +100,7 @@ QgsBrowser::~QgsBrowser()
 
 }
 
-void QgsBrowser::expandPath( QString path )
+void QgsBrowser::expandPath( const QString& path )
 {
   QModelIndex idx = mModel->findPath( path );
   if ( idx.isValid() )
@@ -335,8 +335,8 @@ void QgsBrowser::saveWindowState()
   QSettings settings;
   settings.setValue( "/Windows/Browser/state", saveState() );
   settings.setValue( "/Windows/Browser/geometry", saveGeometry() );
-  settings.setValue( "/Windows/Browser/sizes/0", splitter->sizes()[0] );
-  settings.setValue( "/Windows/Browser/sizes/1", splitter->sizes()[1] );
+  settings.setValue( "/Windows/Browser/sizes/0", splitter->sizes().at( 0 ) );
+  settings.setValue( "/Windows/Browser/sizes/1", splitter->sizes().at( 1 ) );
 }
 
 void QgsBrowser::restoreWindowState()

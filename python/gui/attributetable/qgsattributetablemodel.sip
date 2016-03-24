@@ -158,6 +158,11 @@ class QgsAttributeTableModel : QAbstractTableModel
     void setRequest( const QgsFeatureRequest& request );
 
     /**
+     * Get the the feature request
+     */
+    const QgsFeatureRequest &request() const;
+
+    /**
      * Sets the context in which this table is shown.
      * Will be forwarded to any editor widget created when editing data on this model.
      *
@@ -209,7 +214,7 @@ class QgsAttributeTableModel : QAbstractTableModel
      * Launched when eatures have been deleted
      * @param fids feature ids
      */
-    virtual void featuresDeleted( QgsFeatureIds fid );
+    virtual void featuresDeleted( const QgsFeatureIds& fid );
     /**
      * Launched when a feature has been added
      * @param fid feature id

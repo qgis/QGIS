@@ -72,7 +72,7 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
      * @param theSourceWkt Wkt, typically of the layer's coordinate system
      * @param theDestWkt Wkt, typically of the map canvas coordinate system
      */
-    QgsCoordinateTransform( QString theSourceWkt, QString theDestWkt );
+    QgsCoordinateTransform( const QString& theSourceWkt, const QString& theDestWkt );
 
     /*!
      * Constructs a QgsCoordinateTransform using a Spatial Reference Id
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
      * @param theSourceCRSType On of the enum members defined in QgsCoordinateReferenceSystem::CrsType
      */
     QgsCoordinateTransform( long theSourceSrid,
-                            QString theDestWkt,
+                            const QString& theDestWkt,
                             QgsCoordinateReferenceSystem::CrsType theSourceCRSType = QgsCoordinateReferenceSystem::PostgisCrsId );
 
     //! destructor

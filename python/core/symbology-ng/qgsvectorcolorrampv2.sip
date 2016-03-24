@@ -6,17 +6,17 @@ class QgsVectorColorRampV2
 
 %ConvertToSubClassCode
   if (sipCpp->type() == "gradient")
-    sipClass = sipClass_QgsVectorGradientColorRampV2;
+    sipType = sipType_QgsVectorGradientColorRampV2;
   else if (sipCpp->type() == "random")
-    sipClass = sipClass_QgsVectorRandomColorRampV2;
+    sipType = sipType_QgsVectorRandomColorRampV2;
   else if (sipCpp->type() == "randomcolors")
-    sipClass = sipClass_QgsRandomColorsV2;
+    sipType = sipType_QgsRandomColorsV2;
   else if (sipCpp->type() == "colorbrewer")
-    sipClass = sipClass_QgsVectorColorBrewerColorRampV2;
+    sipType = sipType_QgsVectorColorBrewerColorRampV2;
   else if (sipCpp->type() == "cpt-city")
-    sipClass = sipClass_QgsCptCityColorRampV2;
+    sipType = sipType_QgsCptCityColorRampV2;
   else
-    sipClass = 0;
+    sipType = 0;
 %End
 
   public:
@@ -33,7 +33,7 @@ class QgsVectorColorRampV2
 
     virtual QString type() const = 0;
 
-    virtual QgsVectorColorRampV2* clone() const = 0;
+    virtual QgsVectorColorRampV2* clone() const = 0 /Factory/;
 
     virtual QgsStringMap properties() const = 0;
 
@@ -54,10 +54,10 @@ class QgsVectorGradientColorRampV2 : QgsVectorColorRampV2
 #include <qgsvectorcolorrampv2.h>
 %End
   public:
-    QgsVectorGradientColorRampV2( QColor color1 = DEFAULT_GRADIENT_COLOR1,
-                                  QColor color2 = QColor(0,255,0),
+    QgsVectorGradientColorRampV2( const QColor& color1 = DEFAULT_GRADIENT_COLOR1,
+                                  const QColor& color2 = QColor(0,255,0),
                                   bool discrete = false,
-                                  QgsGradientStopsList stops = QgsGradientStopsList() );
+                                  const QgsGradientStopsList& stops = QgsGradientStopsList() );
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
 
@@ -69,14 +69,14 @@ class QgsVectorGradientColorRampV2 : QgsVectorColorRampV2
 
     virtual QString type() const;
 
-    virtual QgsVectorColorRampV2* clone() const /Factory/;
+    virtual QgsVectorGradientColorRampV2* clone() const /Factory/;
 
     virtual QgsStringMap properties() const;
 
     QColor color1() const;
     QColor color2() const;
-    void setColor1( QColor color );
-    void setColor2( QColor color );
+    void setColor1( const QColor& color );
+    void setColor2( const QColor& color );
 
     bool isDiscrete() const;
     void setDiscrete( bool discrete );
@@ -112,7 +112,7 @@ class QgsVectorRandomColorRampV2 : QgsVectorColorRampV2
 
     virtual QString type() const;
 
-    virtual QgsVectorColorRampV2* clone() const /Factory/;
+    virtual QgsVectorRandomColorRampV2* clone() const /Factory/;
 
     virtual QgsStringMap properties() const;
 
@@ -164,7 +164,7 @@ class QgsRandomColorsV2 : QgsVectorColorRampV2
 
     QString type() const;
 
-    QgsVectorColorRampV2* clone() const;
+    virtual QgsRandomColorsV2* clone() const /Factory/;
 
     QgsStringMap properties() const;
 };
@@ -175,7 +175,7 @@ class QgsVectorColorBrewerColorRampV2 : QgsVectorColorRampV2
 #include <qgsvectorcolorrampv2.h>
 %End
   public:
-    QgsVectorColorBrewerColorRampV2( QString schemeName = DEFAULT_COLORBREWER_SCHEMENAME,
+    QgsVectorColorBrewerColorRampV2( const QString& schemeName = DEFAULT_COLORBREWER_SCHEMENAME,
                                      int colors = DEFAULT_COLORBREWER_COLORS );
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
@@ -186,7 +186,7 @@ class QgsVectorColorBrewerColorRampV2 : QgsVectorColorRampV2
 
     virtual QString type() const;
 
-    virtual QgsVectorColorRampV2* clone() const /Factory/;
+    virtual QgsVectorColorBrewerColorRampV2* clone() const /Factory/;
 
     virtual QgsStringMap properties() const;
 
@@ -194,11 +194,11 @@ class QgsVectorColorBrewerColorRampV2 : QgsVectorColorRampV2
     virtual int count() const;
     int colors() const;
 
-    void setSchemeName( QString schemeName );
+    void setSchemeName( const QString& schemeName );
     void setColors( int colors );
 
     static QStringList listSchemeNames();
-    static QList<int> listSchemeVariants( QString schemeName );
+    static QList<int> listSchemeVariants( const QString& schemeName );
 
   protected:
 
@@ -212,17 +212,17 @@ class QgsCptCityColorRampV2 : QgsVectorGradientColorRampV2
 #include <qgsvectorcolorrampv2.h>
 %End
   public:
-    QgsCptCityColorRampV2( QString schemeName = DEFAULT_CPTCITY_SCHEMENAME,
-                           QString variantName = DEFAULT_CPTCITY_VARIANTNAME,
+    QgsCptCityColorRampV2( const QString& schemeName = DEFAULT_CPTCITY_SCHEMENAME,
+                           const QString& variantName = DEFAULT_CPTCITY_VARIANTNAME,
                            bool doLoadFile = true );
-    QgsCptCityColorRampV2( QString schemeName, QStringList variantList,
-                           QString variantName = QString(), bool doLoadFile = true );
+    QgsCptCityColorRampV2( const QString& schemeName, const QStringList& variantList,
+                           const QString& variantName = QString(), bool doLoadFile = true );
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
 
     virtual QString type() const;
 
-    virtual QgsVectorColorRampV2* clone() const /Factory/;
+    virtual QgsCptCityColorRampV2* clone() const /Factory/;
     void copy( const QgsCptCityColorRampV2* other );
     QgsVectorGradientColorRampV2* cloneGradientRamp() const /Factory/;
 
@@ -233,10 +233,10 @@ class QgsCptCityColorRampV2 : QgsVectorGradientColorRampV2
     QStringList variantList() const;
 
     /* lazy loading - have to call loadPalette() explicitly */
-    void setSchemeName( QString schemeName );
-    void setVariantName( QString variantName );
-    void setVariantList( QStringList variantList );
-    void setName( QString schemeName, QString variantName = "", QStringList variantList = QStringList() );
+    void setSchemeName( const QString& schemeName );
+    void setVariantName( const QString& variantName );
+    void setVariantList( const QStringList& variantList );
+    void setName( const QString& schemeName, const QString& variantName = "", const QStringList& variantList = QStringList() );
 
     void loadPalette();
     bool hasMultiStops() const;

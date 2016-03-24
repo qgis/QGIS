@@ -25,6 +25,7 @@ from utilities import (unitTestDataPath,
                        unittest
                        )
 from providertestbase import ProviderTestCase
+from PyQt4.QtCore import QSettings
 
 try:
     from pyspatialite import dbapi2 as sqlite3
@@ -121,6 +122,12 @@ class TestQgsSpatialiteProvider(TestCase, ProviderTestCase):
     def tearDown(self):
         """Run after each test."""
         pass
+
+    def enableCompiler(self):
+        QSettings().setValue(u'/qgis/compileExpressions', True)
+
+    def disableCompiler(self):
+        QSettings().setValue(u'/qgis/compileExpressions', False)
 
     def test_SplitFeature(self):
         """Create spatialite database"""

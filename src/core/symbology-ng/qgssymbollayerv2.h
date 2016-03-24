@@ -77,7 +77,7 @@ class CORE_EXPORT QgsSymbolLayerV2
 
     virtual QgsSymbolLayerV2* clone() const = 0;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
     { Q_UNUSED( props ); element.appendChild( doc.createComment( QString( "SymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const { Q_UNUSED( mmScaleFactor ); Q_UNUSED( mapUnitScaleFactor ); return QString(); }
@@ -219,18 +219,18 @@ class CORE_EXPORT QgsSymbolLayerV2
     virtual bool writeDxf( QgsDxfExport& e,
                            double mmMapUnitScaleFactor,
                            const QString& layerName,
-                           const QgsSymbolV2RenderContext* context,
+                           QgsSymbolV2RenderContext* context,
                            const QgsFeature* f,
                            const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
 
-    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
-    virtual double dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    virtual double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
+    virtual double dxfOffset( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
 
-    virtual QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
+    virtual QColor dxfColor( QgsSymbolV2RenderContext& context ) const;
 
     virtual QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const;
     virtual Qt::PenStyle dxfPenStyle() const;
-    virtual QColor dxfBrushColor( const QgsSymbolV2RenderContext& context ) const;
+    virtual QColor dxfBrushColor( QgsSymbolV2RenderContext& context ) const;
     virtual Qt::BrushStyle dxfBrushStyle() const;
 
     /** Returns the current paint effect for the layer.
@@ -246,15 +246,6 @@ class CORE_EXPORT QgsSymbolLayerV2
      * @see paintEffect
      */
     void setPaintEffect( QgsPaintEffect* effect );
-
-    /** Returns the result of the symbol rendering operation. This should only be
-     * called immediately after a rendering operation (eg calling renderPoint).
-     * @note added in QGIS 2.12
-     * @note this is a temporary method until QGIS 3.0. For QGIS 3.0 the render methods
-     * will return a QgsRenderResult object
-     */
-    // TODO - QGIS 3.0. Remove and make renderPoint, etc return a QgsRenderResult
-    const QgsRenderResult& renderResult() const { return mRenderResult; }
 
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false );
@@ -316,16 +307,6 @@ class CORE_EXPORT QgsSymbolLayerV2
      */
     void copyPaintEffect( QgsSymbolLayerV2* destLayer ) const;
 
-    /** Sets the result of the symbol rendering operation. Subclasses should call
-     * this method after rendering a symbol and update the render result to reflect
-     * to actual result of the symbol render.
-     * @note added in QGIS 2.12
-     * @note this is a temporary method until QGIS 3.0. For QGIS 3.0 the render methods
-     * will return a QgsRenderResult object
-     */
-    // TODO - QGIS 3.0. Remove and make renderPoint, etc return a QgsRenderResult
-    void setRenderResult( const QgsRenderResult& result );
-
     static const QString EXPR_SIZE;
     static const QString EXPR_ANGLE;
     static const QString EXPR_NAME;
@@ -384,10 +365,6 @@ class CORE_EXPORT QgsSymbolLayerV2
     static const QString EXPR_OFFSET_ALONG_LINE;
     static const QString EXPR_HORIZONTAL_ANCHOR_POINT;
     static const QString EXPR_VERTICAL_ANCHOR_POINT;
-
-  private:
-
-    QgsRenderResult mRenderResult;
 };
 
 //////////////////////
@@ -436,9 +413,9 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     void setOffset( QPointF offset ) { mOffset = offset; }
     QPointF offset() const { return mOffset; }
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const override;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
     { Q_UNUSED( props ); element.appendChild( doc.createComment( QString( "QgsMarkerSymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
 
     void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
@@ -465,16 +442,26 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     void setVerticalAnchorPoint( VerticalAnchorPoint v ) { mVerticalAnchorPoint = v; }
     VerticalAnchorPoint verticalAnchorPoint() const { return mVerticalAnchorPoint; }
 
+    /** Returns the approximate bounding box of the marker symbol layer, taking into account
+     * any data defined overrides and offsets which are set for the marker layer.
+     * @returns approximate symbol bounds, in painter units
+     * @note added in QGIS 2.14
+     * @note this method will become pure virtual in QGIS 3.0
+     */
+    //TODO QGIS 3.0 - make pure virtual
+    virtual QRectF bounds( const QPointF& point, QgsSymbolV2RenderContext& context ) { Q_UNUSED( context ); Q_UNUSED( point ); return QRectF(); }
+
   protected:
     QgsMarkerSymbolLayerV2( bool locked = false );
 
     //handles marker offset and anchor point shift together
-    void markerOffset( const QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const;
+    void markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const;
 
-    void markerOffset( const QgsSymbolV2RenderContext& context, double width, double height, double& offsetX, double& offsetY ) const;
+    //! @note available in python as markerOffsetWithWidthAndHeight
+    void markerOffset( QgsSymbolV2RenderContext& context, double width, double height, double& offsetX, double& offsetY ) const;
 
     //! @note available in python bindings as markerOffset2
-    void markerOffset( const QgsSymbolV2RenderContext& context, double width, double height,
+    void markerOffset( QgsSymbolV2RenderContext& context, double width, double height,
                        QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
                        double& offsetX, double& offsetY,
                        const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const;
@@ -531,7 +518,7 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) override;
 
-    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const override;
+    virtual double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const override;
 
   protected:
     QgsLineSymbolLayerV2( bool locked = false );

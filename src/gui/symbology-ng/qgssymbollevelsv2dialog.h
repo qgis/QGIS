@@ -28,7 +28,7 @@ class GUI_EXPORT QgsSymbolLevelsV2Dialog : public QDialog, private Ui::QgsSymbol
     Q_OBJECT
   public:
     // @note not available in python bindings
-    QgsSymbolLevelsV2Dialog( QgsLegendSymbolList list, bool usingSymbolLevels, QWidget* parent = NULL );
+    QgsSymbolLevelsV2Dialog( const QgsLegendSymbolList& list, bool usingSymbolLevels, QWidget* parent = NULL );
 
     ~QgsSymbolLevelsV2Dialog();
 

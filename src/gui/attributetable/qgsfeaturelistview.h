@@ -25,6 +25,7 @@ class QgsAttributeTableFilterModel;
 class QgsFeatureListModel;
 class QgsFeatureSelectionModel;
 class QgsAttributeTableModel;
+class QgsIFeatureSelectionManager;
 class QgsVectorLayer;
 class QgsVectorLayerCache;
 class QgsFeatureListViewDelegate;
@@ -82,7 +83,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      *
      * @see QgsExpression
      */
-    bool setDisplayExpression( const QString displayExpression );
+    bool setDisplayExpression( const QString& displayExpression );
 
     /**
      * Returns the expression which is currently used to render the features.
@@ -114,6 +115,11 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      */
     void setCurrentFeatureEdited( bool state );
 
+    /**
+     * @brief setFeatureSelectionManager
+     * @param featureSelectionManager We will take ownership
+     */
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
   protected:
     virtual void mouseMoveEvent( QMouseEvent *event ) override;
     virtual void mousePressEvent( QMouseEvent *event ) override;
@@ -133,7 +139,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      * Is emitted, whenever the display expression is successfully changed
      * @param expression The expression that was applied
      */
-    void displayExpressionChanged( const QString expression );
+    void displayExpressionChanged( const QString& expression );
 
     void aboutToChangeEditSelection( bool& ok );
 
@@ -151,14 +157,14 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      * @param index The selection to set
      * @param command selection update mode
      */
-    void setEditSelection( const QModelIndex& index, QItemSelectionModel::SelectionFlags command );
+    void setEditSelection( const QModelIndex& index, const QItemSelectionModel::SelectionFlags& command );
 
     /**
      * Select all currently visible features
      */
     virtual void selectAll() override;
 
-    void repaintRequested( QModelIndexList indexes );
+    void repaintRequested( const QModelIndexList& indexes );
     void repaintRequested();
 
   private slots:
@@ -170,6 +176,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     QgsFeatureListModel *mModel;
     QItemSelectionModel* mCurrentEditSelectionModel;
     QgsFeatureSelectionModel* mFeatureSelectionModel;
+    QgsIFeatureSelectionManager* mFeatureSelectionManager;
     QgsFeatureListViewDelegate* mItemDelegate;
     bool mEditSelectionDrag; // Is set to true when the user initiated a left button click over an edit button and still keeps pressing /**< TODO */
     int mRowAnchor;

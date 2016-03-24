@@ -78,7 +78,7 @@ void QgsConfigParserUtils::appendCRSElementToLayer( QDomElement& layerElement, c
 }
 
 void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent,
-    const QgsCoordinateReferenceSystem& layerCRS )
+    const QgsCoordinateReferenceSystem& layerCRS, const QStringList &crsList, const QStringList& constrainedCrsList )
 {
   if ( layerElem.isNull() )
   {
@@ -123,7 +123,7 @@ void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDo
     ExGeoBBoxElement.appendChild( nBoundLatitudeElement );
   }
 
-
+  /*
   //BoundingBox element
   QDomElement bBoxElement = doc.createElement( "BoundingBox" );
   if ( layerCRS.isValid() )
@@ -141,17 +141,86 @@ void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDo
   bBoxElement.setAttribute( "miny", QString::number( r.yMinimum() ) );
   bBoxElement.setAttribute( "maxx", QString::number( r.xMaximum() ) );
   bBoxElement.setAttribute( "maxy", QString::number( r.yMaximum() ) );
+  */
 
   QDomElement lastCRSElem = layerElem.lastChildElement( version == "1.1.1" ? "SRS" : "CRS" );
   if ( !lastCRSElem.isNull() )
   {
     layerElem.insertAfter( ExGeoBBoxElement, lastCRSElem );
-    layerElem.insertAfter( bBoxElement, ExGeoBBoxElement );
+    //layerElem.insertAfter( bBoxElement, ExGeoBBoxElement );
   }
   else
   {
     layerElem.appendChild( ExGeoBBoxElement );
-    layerElem.appendChild( bBoxElement );
+    //layerElem.appendChild( bBoxElement );
+  }
+
+  //In case the number of advertised CRS is constrained
+  if ( constrainedCrsList.size() > 0 )
+  {
+    for ( int i = constrainedCrsList.size() - 1; i >= 0; --i )
+    {
+      appendLayerBoundingBox( layerElem, doc, layerExtent, layerCRS, constrainedCrsList.at( i ) );
+    }
+  }
+  else //no crs constraint
+  {
+    Q_FOREACH ( const QString& crs, crsList )
+    {
+      appendLayerBoundingBox( layerElem, doc, layerExtent, layerCRS, crs );
+    }
+  }
+}
+
+void QgsConfigParserUtils::appendLayerBoundingBox( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent,
+    const QgsCoordinateReferenceSystem& layerCRS, const QString& crsText )
+{
+  if ( layerElem.isNull() )
+  {
+    return;
+  }
+
+  QString version = doc.documentElement().attribute( "version" );
+
+  const QgsCoordinateReferenceSystem& crs = QgsCRSCache::instance()->crsByAuthId( crsText );
+
+  //transform the layers native CRS into CRS
+  QgsCoordinateTransform crsTransform( layerCRS, crs );
+  QgsRectangle crsExtent = crsTransform.transformBoundingBox( layerExtent );
+
+  //BoundingBox element
+  QDomElement bBoxElement = doc.createElement( "BoundingBox" );
+  if ( crs.isValid() )
+  {
+    bBoxElement.setAttribute( version == "1.1.1" ? "SRS" : "CRS", crs.authid() );
+  }
+
+  if ( version != "1.1.1" && crs.axisInverted() )
+  {
+    crsExtent.invert();
+  }
+
+  bBoxElement.setAttribute( "minx", QString::number( crsExtent.xMinimum() ) );
+  bBoxElement.setAttribute( "miny", QString::number( crsExtent.yMinimum() ) );
+  bBoxElement.setAttribute( "maxx", QString::number( crsExtent.xMaximum() ) );
+  bBoxElement.setAttribute( "maxy", QString::number( crsExtent.yMaximum() ) );
+
+  QDomElement lastBBoxElem = layerElem.lastChildElement( "BoundingBox" );
+  if ( !lastBBoxElem.isNull() )
+  {
+    layerElem.insertAfter( bBoxElement, lastBBoxElem );
+  }
+  else
+  {
+    lastBBoxElem = layerElem.lastChildElement( version == "1.1.1" ? "LatLonBoundingBox" : "EX_GeographicBoundingBox" );
+    if ( !lastBBoxElem.isNull() )
+    {
+      layerElem.insertAfter( bBoxElement, lastBBoxElem );
+    }
+    else
+    {
+      layerElem.appendChild( bBoxElement );
+    }
   }
 }
 

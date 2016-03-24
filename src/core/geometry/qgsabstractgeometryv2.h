@@ -28,45 +28,10 @@ class QgsMultiCurveV2;
 class QgsMultiPointV2;
 class QgsPointV2;
 class QgsConstWkbPtr;
+struct QgsVertexId;
 class QgsWkbPtr;
 class QPainter;
 
-/** \ingroup core
- * \class QgsVertexId
- * \brief Utility class for identifying a unique vertex within a geometry.
- * \note added in QGIS 2.10
- * \note this API is not considered stable and may change for 2.12
- */
-struct CORE_EXPORT QgsVertexId
-{
-  enum VertexType
-  {
-    SegmentVertex = 1, //start / endpoint of a segment
-    CurveVertex
-  };
-
-  QgsVertexId(): part( - 1 ), ring( -1 ), vertex( -1 ), type( SegmentVertex ) {}
-  QgsVertexId( int _part, int _ring, int _vertex, VertexType _type = SegmentVertex )
-      : part( _part ), ring( _ring ), vertex( _vertex ), type( _type ) {}
-
-  /** Returns true if the vertex id is valid
-   */
-  bool isValid() const { return part >= 0 && ring >= 0 && vertex >= 0; }
-
-  bool operator==( const QgsVertexId& other )
-  {
-    return part == other.part && ring == other.ring && vertex == other.vertex;
-  }
-  bool operator!=( const QgsVertexId& other )
-  {
-    return part != other.part || ring != other.ring || vertex != other.vertex;
-  }
-
-  int part;
-  int ring;
-  int vertex;
-  VertexType type;
-};
 
 /** \ingroup core
  * \class QgsAbstractGeometryV2
@@ -254,13 +219,14 @@ class CORE_EXPORT QgsAbstractGeometryV2
 
     /** Returns the point corresponding to a specified vertex id
      */
-    QgsPointV2 vertexAt( const QgsVertexId& id ) const;
+    virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const = 0;
 
     /** Searches for the closest segment of the geometry to a given point.
-     * @param pt Specifies the point for search
+     * @param pt specifies the point to find closest segment to
      * @param segmentPt storage for the closest point within the geometry
-     * @param vertexAfter storage for the id of the vertex after the closest segment
-     * @param leftOf returns if the point lies on the left of right side of the segment ( < 0 means left, > 0 means right )
+     * @param vertexAfter storage for the ID of the vertex at the end of the closest segment
+     * @param leftOf returns whether the point lies on the left side of the nearest segment (true if point is to left of segment,
+     * false if point is to right of segment)
      * @param epsilon epsilon for segment snapping
      * @returns squared distance to closest segment
      */
@@ -294,15 +260,26 @@ class CORE_EXPORT QgsAbstractGeometryV2
      */
     virtual bool deleteVertex( const QgsVertexId& position ) = 0;
 
-    /** Returns the length (or perimeter for area geometries) of the geometry.
-     * @see area
+    /** Returns the length of the geometry.
+     * @see area()
+     * @see perimeter()
      */
     virtual double length() const { return 0.0; }
 
+    /** Returns the perimeter of the geometry.
+     * @see area()
+     * @see length()
+     */
+    virtual double perimeter() const { return 0.0; }
+
     /** Returns the area of the geometry.
-     * @see length
+     * @see length()
+     * @see perimeter()
      */
     virtual double area() const { return 0.0; }
+
+    /** Returns the centroid of the geometry */
+    virtual QgsPointV2 centroid() const;
 
     /** Returns true if the geometry is empty
      */
@@ -317,10 +294,51 @@ class CORE_EXPORT QgsAbstractGeometryV2
      */
     virtual QgsAbstractGeometryV2* segmentize() const { return clone(); }
 
-    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-        @param vertex the vertex id
-        @return rotation in radians, clockwise from north*/
+    /** Returns approximate angle at a vertex. This is usually the average angle between adjacent
+     * segments, and can be pictured as the orientation of a line following the curvature of the
+     * geometry at the specified vertex.
+     * @param vertex the vertex id
+     * @return rotation in radians, clockwise from north
+    */
     virtual double vertexAngle( const QgsVertexId& vertex ) const = 0;
+
+    virtual int vertexCount( int part = 0, int ring = 0 ) const = 0;
+    virtual int ringCount( int part = 0 ) const = 0;
+    virtual int partCount() const = 0;
+
+    /** Adds a z-dimension to the geometry, initialized to a preset value.
+     * @param zValue initial z-value for all nodes
+     * @returns true on success
+     * @note added in QGIS 2.12
+     * @see dropZValue()
+     * @see addMValue()
+     */
+    virtual bool addZValue( double zValue = 0 ) = 0;
+
+    /** Adds a measure to the geometry, initialized to a preset value.
+     * @param mValue initial m-value for all nodes
+     * @returns true on success
+     * @note added in QGIS 2.12
+     * @see dropMValue()
+     * @see addZValue()
+     */
+    virtual bool addMValue( double mValue = 0 ) = 0;
+
+    /** Drops any z-dimensions which exist in the geometry.
+     * @returns true if Z values were present and have been removed
+     * @see addZValue()
+     * @see dropMValue()
+     * @note added in QGIS 2.14
+     */
+    virtual bool dropZValue() = 0;
+
+    /** Drops any measure values which exist in the geometry.
+     * @returns true if m-values were present and have been removed
+     * @see addMValue()
+     * @see dropZValue()
+     * @note added in QGIS 2.14
+     */
+    virtual bool dropMValue() = 0;
 
   protected:
     QgsWKBTypes::Type mWkbType;
@@ -336,9 +354,64 @@ class CORE_EXPORT QgsAbstractGeometryV2
      * @param endianSwap will be set to true if endian from WKB must be swapped to match QGIS platform endianness
      * @param expectedType expected WKB type
      * @returns true if header is valid and matches expected type
+     * @note not available in Python bindings
      */
     static bool readWkbHeader( QgsConstWkbPtr& wkbPtr, QgsWKBTypes::Type& wkbType, bool& endianSwap, QgsWKBTypes::Type expectedType );
 
+};
+
+
+/** \ingroup core
+ * \class QgsVertexId
+ * \brief Utility class for identifying a unique vertex within a geometry.
+ * \note added in QGIS 2.10
+ */
+struct CORE_EXPORT QgsVertexId
+{
+  enum VertexType
+  {
+    SegmentVertex = 1, //start / endpoint of a segment
+    CurveVertex
+  };
+
+  QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex )
+      : part( _part ), ring( _ring ), vertex( _vertex ), type( _type ) {}
+
+  /** Returns true if the vertex id is valid
+   */
+  bool isValid() const { return part >= 0 && ring >= 0 && vertex >= 0; }
+
+  bool operator==( const QgsVertexId& other ) const
+  {
+    return part == other.part && ring == other.ring && vertex == other.vertex;
+  }
+  bool operator!=( const QgsVertexId& other ) const
+  {
+    return part != other.part || ring != other.ring || vertex != other.vertex;
+  }
+  bool partEqual( const QgsVertexId& o ) const
+  {
+    return part >= 0 && o.part == part;
+  }
+  bool ringEqual( const QgsVertexId& o ) const
+  {
+    return partEqual( o ) && ( ring >= 0 && o.ring == ring );
+  }
+  bool vertexEqual( const QgsVertexId& o ) const
+  {
+    return ringEqual( o ) && ( vertex >= 0 && o.ring == ring );
+  }
+  bool isValid( const QgsAbstractGeometryV2* geom ) const
+  {
+    return ( part >= 0 && part < geom->partCount() ) &&
+           ( ring < geom->ringCount( part ) ) &&
+           ( vertex < 0 || vertex < geom->vertexCount( part, ring ) );
+  }
+
+  int part;
+  int ring;
+  int vertex;
+  VertexType type;
 };
 
 #endif //QGSABSTRACTGEOMETRYV2

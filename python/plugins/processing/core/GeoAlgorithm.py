@@ -132,13 +132,16 @@ class GeoAlgorithm:
         groupName = groupName.replace('[', '').replace(']', '').replace(' - ', '_')
         groupName = groupName.replace(' ', '_')
         cmdLineName = self.commandLineName()
-        algName = cmdLineName[cmdLineName.find(':') + 1:].lower()
         validChars = \
             'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
         safeGroupName = ''.join(c for c in groupName if c in validChars)
-        safeAlgName = ''.join(c for c in algName if c in validChars)
 
-        helpUrl = 'http://docs.qgis.org/{}/en/docs/user_manual/processing_algs/{}/{}/{}.html'.format(qgsVersion, providerName, safeGroupName, safeAlgName)
+        safeAlgName = self.name.lower().replace(' ', '-')
+        validChars = \
+            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-'
+        safeAlgName = ''.join(c for c in safeAlgName if c in validChars)
+
+        helpUrl = 'http://docs.qgis.org/{}/en/docs/user_manual/processing_algs/{}/{}.html#{}'.format(qgsVersion, providerName, safeGroupName, safeAlgName)
         return False, helpUrl
 
     def processAlgorithm(self, progress):
@@ -161,7 +164,7 @@ class GeoAlgorithm:
         """
         return None
 
-    def getCustomModelerParametersDialog(self, modelAlg, algIndex=None):
+    def getCustomModelerParametersDialog(self, modelAlg, algName=None):
         """If the algorithm has a custom parameters dialog when called
         from the modeler, it should be returned here, ready to be
         executed.
@@ -235,13 +238,7 @@ class GeoAlgorithm:
             # If something goes wrong and is not caught in the
             # algorithm, we catch it here and wrap it
             lines = [self.tr('Uncaught error while executing algorithm')]
-            errstring = traceback.format_exc()
-            newline = errstring.find('\n')
-            if newline != -1:
-                lines.append(errstring[:newline])
-            else:
-                lines.append(errstring)
-            lines.append(errstring.replace('\n', '|'))
+            lines.append(traceback.format_exc())
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, lines)
             raise GeoAlgorithmExecutionException(
                 unicode(e) + self.tr('\nSee log for more details'))
@@ -435,7 +432,7 @@ class GeoAlgorithm:
                             if layer.name() == inputlayer:
                                 inputlayers[i] = layer.source()
                                 break
-                    param.setValue(",".join(inputlayers))
+                    param.setValue(";".join(inputlayers))
 
     def checkInputCRS(self):
         """It checks that all input layers use the same CRS. If so,

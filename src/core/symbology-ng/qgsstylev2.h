@@ -87,7 +87,7 @@ class CORE_EXPORT QgsStyleV2 : public QObject
      *  \param update set to true when the style DB has to be updated, by default it is false
      *  \return success status of the operation
      */
-    bool addColorRamp( QString name, QgsVectorColorRampV2* colorRamp, bool update = false );
+    bool addColorRamp( const QString& name, QgsVectorColorRampV2* colorRamp, bool update = false );
 
     //! adds a new group and returns the group's id
     /*!
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsStyleV2 : public QObject
      *  \param parent is the id of the parent group when a subgrouo is to be created. By default it is 0 indicating it is not a sub-group
      *  \return returns an int, which is the DB id of the new group created, 0 if the group couldn't be created
      */
-    int addGroup( QString groupName, int parent = 0 );
+    int addGroup( const QString& groupName, int parent = 0 );
 
     //! adds new smartgroup to the database and returns the id
     /*!
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsStyleV2 : public QObject
      *  \param op is the operator between the conditions; AND/OR as QString
      *  \param conditions are the smart group conditions
      */
-    int addSmartgroup( QString name, QString op, QgsSmartConditionMap conditions );
+    int addSmartgroup( const QString& name, const QString& op, const QgsSmartConditionMap& conditions );
 
     //! add symbol to style. takes symbol's ownership
     /*!
@@ -113,23 +113,23 @@ class CORE_EXPORT QgsStyleV2 : public QObject
      *  \param update set to true when the style DB has to be updated, by default it is false
      *  \return success status of the operation
      */
-    bool addSymbol( QString name, QgsSymbolV2* symbol, bool update = false );
+    bool addSymbol( const QString& name, QgsSymbolV2* symbol, bool update = false );
 
     //! adds a new tag and returns the tag's id
     /*!
      *  \param tagName the name of the new tag to be created
      *  \return returns an int, which is the DB id of the new tag created, 0 if the tag couldn't be created
      */
-    int addTag( QString tagName );
+    int addTag( const QString& tagName );
 
     //! return a map of groupid and names for the given parent group
-    QgsSymbolGroupMap childGroupNames( QString parent = "" );
+    QgsSymbolGroupMap childGroupNames( const QString& parent = "" );
 
     //! remove all contents of the style
     void clear();
 
     //! return a NEW copy of color ramp
-    QgsVectorColorRampV2* colorRamp( QString name );
+    QgsVectorColorRampV2* colorRamp( const QString& name );
 
     //! return count of color ramps
     int colorRampCount();
@@ -138,11 +138,11 @@ class CORE_EXPORT QgsStyleV2 : public QObject
     QStringList colorRampNames();
 
     //! return a const pointer to a symbol (doesn't create new instance)
-    const QgsVectorColorRampV2* colorRampRef( QString name ) const;
+    const QgsVectorColorRampV2* colorRampRef( const QString& name ) const;
 
     //! return the id in the style database for the given colorramp name
     //! returns 0 if not found
-    int colorrampId( QString name );
+    int colorrampId( const QString& name );
 
     //! return default application-wide style
     static QgsStyleV2* defaultStyle();
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsStyleV2 : public QObject
      *  \param tags is the list of the tags that are to be applied as QStringList
      *  \return returns the success state of the operation
      */
-    bool tagSymbol( StyleEntity type, QString symbol, QStringList tags );
+    bool tagSymbol( StyleEntity type, const QString& symbol, const QStringList& tags );
 
     //! detags the symbol with the given list
     /*!
@@ -165,19 +165,19 @@ class CORE_EXPORT QgsStyleV2 : public QObject
      *  \param tags is the list of tags that are to be removed as QStringList
      *  \return returns the success state of the operation
      */
-    bool detagSymbol( StyleEntity type, QString symbol, QStringList tags );
+    bool detagSymbol( StyleEntity type, const QString& symbol, const QStringList& tags );
 
     //! remove symbol from style (and delete it)
-    bool removeSymbol( QString name );
+    bool removeSymbol( const QString& name );
 
     //! change symbol's name
-    bool renameSymbol( QString oldName, QString newName );
+    bool renameSymbol( const QString& oldName, const QString& newName );
 
     //! return a NEW copy of symbol
-    QgsSymbolV2* symbol( QString name );
+    QgsSymbolV2* symbol( const QString& name );
 
     //! return a const pointer to a symbol (doesn't create new instance)
-    const QgsSymbolV2* symbolRef( QString name ) const;
+    const QgsSymbolV2* symbolRef( const QString& name ) const;
 
     //! return count of symbols in style
     int symbolCount();
@@ -187,13 +187,13 @@ class CORE_EXPORT QgsStyleV2 : public QObject
 
     //! return the id in the style database for the given symbol name
     //! returns 0 if not found
-    int symbolId( QString name );
+    int symbolId( const QString& name );
     //! return the DB id for the given group name
-    int groupId( QString group );
+    int groupId( const QString& group );
     //! return the DB id for the given tag name
-    int tagId( QString tag );
+    int tagId( const QString& tag );
     //! return the DB id for the given smartgroup name
-    int smartgroupId( QString smartgroup );
+    int smartgroupId( const QString& smartgroup );
 
     //! return the all the groups in the style
     QStringList groupNames();
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsStyleV2 : public QObject
      *  \param groupid is the id of the group to which the entity is assigned
      *  \return returns the success state as bool
      */
-    bool group( StyleEntity type, QString name, int groupid );
+    bool group( StyleEntity type, const QString& name, int groupid );
 
     //! rename the given entity with the specified id
     /*!
@@ -229,7 +229,7 @@ class CORE_EXPORT QgsStyleV2 : public QObject
      *  \param id is the DB id of the entity which is to be renamed
      *  \param newName is the new name of the entity
      */
-    void rename( StyleEntity type, int id, QString newName );
+    void rename( StyleEntity type, int id, const QString& newName );
 
     //! remove the specified entity from the db
     /*!
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsStyleV2 : public QObject
      *  \param tags is a list of tags that are associated with the symbol as a QStringList.
      *  \return returns the success state of the save operation
      */
-    bool saveSymbol( QString name, QgsSymbolV2* symbol, int groupid, QStringList tags );
+    bool saveSymbol( const QString& name, QgsSymbolV2* symbol, int groupid, const QStringList& tags );
 
     //! add the colorramp to the DB
     /*!
@@ -256,16 +256,16 @@ class CORE_EXPORT QgsStyleV2 : public QObject
      *  \param tags is a list of tags that are associated with the color ramp as a QStringList.
      *  \return returns the success state of the save operation
      */
-    bool saveColorRamp( QString name, QgsVectorColorRampV2* ramp, int groupid, QStringList tags );
+    bool saveColorRamp( const QString& name, QgsVectorColorRampV2* ramp, int groupid, const QStringList& tags );
 
     //! remove color ramp from style (and delete it)
-    bool removeColorRamp( QString name );
+    bool removeColorRamp( const QString& name );
 
     //! change ramp's name
-    bool renameColorRamp( QString oldName, QString newName );
+    bool renameColorRamp( const QString& oldName, const QString& newName );
 
     //! load a file into the style
-    bool load( QString filename );
+    bool load( const QString& filename );
 
     //! save style into a file (will use current filename if empty string is passed)
     bool save( QString filename = QString() );
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsStyleV2 : public QObject
      *  \param qword is the query string to search the symbols or colorramps.
      *  \return A QStringList of the matched symbols or colorramps
      * */
-    QStringList findSymbols( StyleEntity type, QString qword );
+    QStringList findSymbols( StyleEntity type, const QString& qword );
 
     //! return the tags associated with the symbol
     /*!
@@ -290,7 +290,7 @@ class CORE_EXPORT QgsStyleV2 : public QObject
      *  \param symbol is the name of the symbol or color ramp
      *  \return A QStringList of the tags that have been applied to that symbol/colorramp
      */
-    QStringList tagsOfSymbol( StyleEntity type, QString symbol );
+    QStringList tagsOfSymbol( StyleEntity type, const QString& symbol );
 
     //! returns the smart groups map with id as key and name as value
     QgsSymbolGroupMap smartgroupsListMap();
@@ -309,13 +309,13 @@ class CORE_EXPORT QgsStyleV2 : public QObject
     QStringList symbolsOfSmartgroup( StyleEntity type, int id );
 
     //! Exports the style as a XML file
-    bool exportXML( QString filename );
+    bool exportXML( const QString& filename );
 
     //! Imports the symbols and colorramps into the default style database from the given XML file
-    bool importXML( QString filename );
+    bool importXML( const QString& filename );
 
   signals:
-    void symbolSaved( QString name, QgsSymbolV2* symbol );
+    void symbolSaved( const QString& name, QgsSymbolV2* symbol );
 
   protected:
 
@@ -330,7 +330,7 @@ class CORE_EXPORT QgsStyleV2 : public QObject
     static QgsStyleV2* mDefaultStyle;
 
     //! convenience function to open the DB and return a sqlite3 object
-    bool openDB( QString filename );
+    bool openDB( const QString& filename );
 
     //! convenience function that would run queries which don't generate return values
     //! \param query query to run
@@ -342,7 +342,7 @@ class CORE_EXPORT QgsStyleV2 : public QObject
     char* getGroupRemoveQuery( int id );
 
     //! gets the id from the table for the given name from the database, 0 if not found
-    int getId( QString table, QString name );
+    int getId( const QString& table, const QString& name );
 
     //! updates the properties of an existing symbol/colorramp
     /*!
@@ -351,7 +351,7 @@ class CORE_EXPORT QgsStyleV2 : public QObject
      *  \param name is the name of an existing symbol or a color ramp
      *  \return Success state of the update operation
      */
-    bool updateSymbol( StyleEntity type, QString name );
+    bool updateSymbol( StyleEntity type, const QString& name );
 
   private:
     Q_DISABLE_COPY( QgsStyleV2 )

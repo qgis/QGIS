@@ -24,7 +24,7 @@ class QgsVectorLayer;
 class QgsStyleV2;
 class QgsFeatureRendererV2;
 class QgsSymbolV2SelectorDialog;
-
+class QgsMapCanvas;
 
 /**
   Base class for renderer settings widgets
@@ -50,12 +50,32 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
     //! show a dialog with renderer's symbol level settings
     void showSymbolLevelsDialog( QgsFeatureRendererV2* r );
 
+    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @see mapCanvas()
+     * @note added in QGIS 2.12
+     */
+    virtual void setMapCanvas( QgsMapCanvas* canvas );
+
+    /** Returns the map canvas associated with the widget.
+     * @see setMapCanvas
+     * @note added in QGIS 2.12
+     */
+    const QgsMapCanvas* mapCanvas() const;
+
+    /** Returns the vector layer associated with the widget.
+     * @note added in QGIS 2.12
+     */
+    const QgsVectorLayer* vectorLayer() const { return mLayer; }
+
   protected:
     QgsVectorLayer* mLayer;
     QgsStyleV2* mStyle;
     QMenu* contextMenu;
     QAction* mCopyAction;
     QAction* mPasteAction;
+    QgsMapCanvas* mMapCanvas;
 
     /** Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
       and by connecting the slot contextMenuViewCategories(const QPoint&)*/
@@ -102,10 +122,10 @@ class QgsRendererV2DataDefinedMenus : public QObject
 
   public:
 
-    Q_DECL_DEPRECATED QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVectorLayer* layer, QString rotationField, QString sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod );
+    Q_DECL_DEPRECATED QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVectorLayer* layer, const QString& rotationField, const QString& sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod );
     ~QgsRendererV2DataDefinedMenus();
 
-    void populateMenu( QMenu* menu, QString fieldName, QActionGroup *actionGroup );
+    void populateMenu( QMenu* menu, const QString& fieldName, QActionGroup *actionGroup );
 #if 0
     void updateMenu( QActionGroup* actionGroup, QString fieldName );
 #endif
@@ -117,8 +137,8 @@ class QgsRendererV2DataDefinedMenus : public QObject
 
   signals:
 
-    void rotationFieldChanged( QString fldName );
-    void sizeScaleFieldChanged( QString fldName );
+    void rotationFieldChanged( const QString& fldName );
+    void sizeScaleFieldChanged( const QString& fldName );
     void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
 
   protected:
@@ -151,6 +171,25 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     QgsDataDefinedValueDialog( const QList<QgsSymbolV2*>& symbolList, QgsVectorLayer * layer, const QString & label );
     virtual ~QgsDataDefinedValueDialog() {}
 
+    /** Sets the map canvas associated with the dialog. This allows the dialog to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @see mapCanvas()
+     * @note added in QGIS 2.12
+     */
+    virtual void setMapCanvas( QgsMapCanvas* canvas );
+
+    /** Returns the map canvas associated with the widget.
+     * @see setMapCanvas
+     * @note added in QGIS 2.12
+     */
+    const QgsMapCanvas* mapCanvas() const;
+
+    /** Returns the vector layer associated with the widget.
+     * @note added in QGIS 2.12
+     */
+    const QgsVectorLayer* vectorLayer() const { return mLayer; }
+
   public slots:
     void dataDefinedChanged();
 
@@ -164,6 +203,7 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
 
     QList<QgsSymbolV2*> mSymbolList;
     QgsVectorLayer* mLayer;
+    QgsMapCanvas* mMapCanvas;
 };
 
 class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog

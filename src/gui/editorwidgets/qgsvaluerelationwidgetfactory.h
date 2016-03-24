@@ -21,6 +21,10 @@
 
 #include <QMap>
 
+/** \class QgsValueRelationWidgetFactory
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsValueRelationWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
