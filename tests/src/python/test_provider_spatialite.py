@@ -14,6 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis
 import os
+import shutil
 import tempfile
 
 from qgis.core import QgsVectorLayer, QgsPoint, QgsFeature
@@ -202,6 +203,16 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         fields = [f.name() for f in l.dataProvider().fields()]
         assert('Geometry' not in fields)
 
+    def test_invalid_iterator(self):
+        """ Test invalid iterator """
+        corrupt_dbname = self.dbname + '.corrupt'
+        shutil.copy(self.dbname, corrupt_dbname)
+        layer = QgsVectorLayer("dbname=%s table=test_pg (geometry)" % corrupt_dbname, "test_pg", "spatialite")
+        # Corrupt the database
+        open(corrupt_dbname, 'wb').write('')
+        layer.getFeatures()
+        layer = None
+        os.unlink(corrupt_dbname)
 
 if __name__ == '__main__':
     unittest.main()
