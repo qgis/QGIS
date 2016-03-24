@@ -99,10 +99,12 @@ class ModelerParametersDialog(QDialog):
             if param.isAdvanced:
                 self.advancedButton = QPushButton()
                 self.advancedButton.setText(self.tr('Show advanced parameters'))
-                self.advancedButton.setMaximumWidth(150)
                 self.advancedButton.clicked.connect(
                     self.showAdvancedParametersClicked)
-                self.verticalLayout.addWidget(self.advancedButton)
+                advancedButtonHLayout = QHBoxLayout()
+                advancedButtonHLayout.addWidget(self.advancedButton)
+                advancedButtonHLayout.addStretch()
+                self.verticalLayout.addLayout(advancedButtonHLayout)
                 break
         for param in self._alg.parameters:
             if param.hidden:
