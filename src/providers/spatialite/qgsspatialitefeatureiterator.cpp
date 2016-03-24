@@ -235,10 +235,16 @@ bool QgsSpatiaLiteFeatureIterator::rewind()
 
 bool QgsSpatiaLiteFeatureIterator::close()
 {
-  if ( !mHandle )
+  if ( mClosed )
     return false;
 
   iteratorClosed();
+
+  if ( !mHandle )
+  {
+    mClosed = true;
+    return false;
+  }
 
   if ( sqliteStatement )
   {
