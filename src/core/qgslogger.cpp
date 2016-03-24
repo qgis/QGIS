@@ -103,7 +103,7 @@ void QgsLogger::debug( const QString& msg, int debuglevel, const char* file, con
 
   if ( sLogFile.isEmpty() )
   {
-    qDebug( "%s", m.toLocal8Bit().constData() );
+    qDebug( "%s", m.toUtf8().constData() );
   }
   else
   {
