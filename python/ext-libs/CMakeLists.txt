@@ -8,34 +8,36 @@ IF (WITH_PYSPATIALITE)
   ADD_SUBDIRECTORY(pyspatialite)
 ENDIF (WITH_PYSPATIALITE)
 
-MACRO(EXT_PYLIB lib)
+MACRO(EXT_PYLIB lib dir)
   STRING(TOUPPER ${lib} ulib)
   SET (WITH_INTERNAL_${ulib} TRUE CACHE BOOL "Determines whether python ${lib} should be included")
   IF(WITH_INTERNAL_${ulib})
-    INSTALL(DIRECTORY ${lib} DESTINATION "${QGIS_PYTHON_DIR}")
+    INSTALL(DIRECTORY ${lib} DESTINATION "${QGIS_PYTHON_DIR}/${dir}")
 
     ADD_CUSTOM_TARGET(py${lib})
 
     FILE(GLOB_RECURSE files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${lib}/*)
     ADD_CUSTOM_COMMAND(TARGET py${lib}
       POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_directory ${lib} "${PYTHON_OUTPUT_DIRECTORY}/${lib}"
+      COMMAND ${CMAKE_COMMAND} -E copy_directory ${lib} "${PYTHON_OUTPUT_DIRECTORY}/${lib}/${dir}"
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
       DEPENDS ${files}
     )
-    PY_COMPILE(py${lib} "${PYTHON_OUTPUT_DIRECTORY}/${lib}")
+    PY_COMPILE(py${lib} "${PYTHON_OUTPUT_DIRECTORY}/${lib}/${dir}")
 
     ADD_DEPENDENCIES(staged-plugins py${lib})
     ADD_CUSTOM_COMMAND(TARGET clean-staged-plugins
-      COMMAND ${CMAKE_COMMAND} -E remove_directory "${PYTHON_OUTPUT_DIRECTORY}/${lib}"
+      COMMAND ${CMAKE_COMMAND} -E remove_directory "${PYTHON_OUTPUT_DIRECTORY}/${lib}/${dir}"
     )
 
   ENDIF(WITH_INTERNAL_${ulib})
 ENDMACRO(EXT_PYLIB lib)
 
 FOREACH(pkg httplib2 jinja2 markupsafe owslib pygments dateutil pytz yaml nose2)
-  EXT_PYLIB(${pkg})
+  EXT_PYLIB(${pkg} .)
 ENDFOREACH(pkg)
+
+EXT_PYLIB(future ..)
 
 SET (WITH_INTERNAL_SIX TRUE CACHE BOOL "Determines whether python six should be included")
 IF(WITH_INTERNAL_SIX)

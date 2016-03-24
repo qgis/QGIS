@@ -193,6 +193,7 @@ cmake %CMAKE_OPT% ^
 	-D WITH_INTERNAL_NOSE2=FALSE ^
 	-D WITH_INTERNAL_MOCK=FALSE ^
 	-D WITH_INTERNAL_HTTPLIB2=FALSE ^
+	-D WITH_INTERNAL_FUTURE=FALSE ^
 	%SRCDIR%
 if errorlevel 1 (echo cmake failed & goto error)
 
