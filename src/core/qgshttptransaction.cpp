@@ -58,7 +58,7 @@ QgsHttpTransaction::QgsHttpTransaction( const QString& uri,
   Q_UNUSED( userName );
   Q_UNUSED( password );
   QSettings s;
-  mNetworkTimeoutMsec = s.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt();
+  mNetworkTimeoutMsec = s.value( "/qgis/networkAndProxy/networkTimeout", "60000" ).toInt();
 }
 
 QgsHttpTransaction::QgsHttpTransaction()
@@ -69,7 +69,7 @@ QgsHttpTransaction::QgsHttpTransaction()
     , mWatchdogTimer( nullptr )
 {
   QSettings s;
-  mNetworkTimeoutMsec = s.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt();
+  mNetworkTimeoutMsec = s.value( "/qgis/networkAndProxy/networkTimeout", "60000" ).toInt();
 }
 
 QgsHttpTransaction::~QgsHttpTransaction()
