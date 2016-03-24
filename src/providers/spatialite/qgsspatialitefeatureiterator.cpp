@@ -123,6 +123,12 @@ bool QgsSpatiaLiteFeatureIterator::close()
 
   iteratorClosed();
 
+  if ( !mHandle )
+  {
+    mClosed = true;
+    return false;
+  }
+
   if ( sqliteStatement )
   {
     sqlite3_finalize( sqliteStatement );
