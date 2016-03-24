@@ -70,7 +70,10 @@ QgsAbstractGeometryV2 *QgsGeometryCheckError::geometry()
 {
   QgsFeature f;
   if ( mCheck->getFeaturePool()->get( featureId(), f ) && f.geometry() )
-    return f.geometry()->geometry()->clone();
+  {
+    QgsAbstractGeometryV2* geom = f.geometry()->geometry();
+    return mVidx.part >= 0 ? QgsGeomUtils::getGeomPart( geom, mVidx.part )->clone() : geom->clone();
+  }
   return nullptr;
 }
 
