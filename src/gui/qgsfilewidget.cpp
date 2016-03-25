@@ -294,7 +294,7 @@ QString QgsFileWidget::toUrl( const QString& path ) const
   QUrl url = QUrl::fromUserInput( urlStr );
   if ( !url.isValid() || !url.isLocalFile() )
   {
-    QgsDebugMsg( QString( "URL: %1 is not valid or not a local file !" ).arg( path ) );
+    QgsDebugMsg( QString( "URL: %1 is not valid or not a local file!" ).arg( path ) );
     rep =  path;
   }
 

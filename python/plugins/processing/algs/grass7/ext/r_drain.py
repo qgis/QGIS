@@ -36,5 +36,5 @@ def checkParameterValuesBeforeExecuting(alg):
     parameters = [alg.getParameterValue(f) for f in ['-c', '-a', '-n']]
     paramscore = [f for f in parameters if f]
     if len(paramscore) > 1:
-        return alg.tr("-c, -a, -n parameters are mutually exclusive !")
+        return alg.tr("-c, -a, -n parameters are mutually exclusive!")
     return None

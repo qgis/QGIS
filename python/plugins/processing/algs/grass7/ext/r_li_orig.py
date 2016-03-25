@@ -68,7 +68,7 @@ def checkMovingWindow(alg):
                     movingWindow = True
 
     if not movingWindow:
-        return alg.tr('Your configuration needs to be a "moving window" configuration !')
+        return alg.tr('Your configuration needs to be a "moving window" configuration!')
 
     return None
 
