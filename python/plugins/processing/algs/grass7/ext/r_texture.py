@@ -35,7 +35,7 @@ methodRef = {'asm': 'ASM', 'contrast': 'Contr', 'corr': 'Corr',
 def checkParameterValuesBeforeExecuting(alg):
     methodList = alg.getParameterValue('method').split(",")
     if len([f for f in methodList if f not in methodRef.keys()]) > 0 and not alg.getParameterValue('-a'):
-        return alg.tr("You need to set the method list with the following values only: asm, contrast, corr, var, idm, sa, se, sv, entr, dv, de, moc1, moc2 !")
+        return alg.tr("You need to set the method list with the following values only: asm, contrast, corr, var, idm, sa, se, sv, entr, dv, de, moc1, moc2!")
 
     return None
 

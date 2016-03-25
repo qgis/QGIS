@@ -36,9 +36,9 @@ def checkParameterValuesBeforeExecuting(alg):
     raster = alg.getParameterValue(u'raster')
 
     if rules and txtrules:
-        return alg.tr("You need to set either a rules file or write directly the rules !")
+        return alg.tr("You need to set either a rules file or write directly the rules!")
     elif (rules and raster) or (txtrules and raster):
-        return alg.tr("You need to set either rules or a raster from which to copy categories !")
+        return alg.tr("You need to set either rules or a raster from which to copy categories!")
 
     return None
 

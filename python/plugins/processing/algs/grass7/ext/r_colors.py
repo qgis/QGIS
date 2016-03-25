@@ -31,7 +31,7 @@ import os
 def checkParameterValuesBeforeExecuting(alg):
     """ Verify if we have the right parameters """
     if alg.getParameterValue('rules_txt') and alg.getParameterValue('rules'):
-        return alg.tr("You need to set either inline rules or a rules file !")
+        return alg.tr("You need to set either inline rules or a rules file!")
 
     return None
 

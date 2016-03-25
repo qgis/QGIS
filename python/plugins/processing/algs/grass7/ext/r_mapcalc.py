@@ -31,7 +31,7 @@ from os import path
 def checkParameterValuesBeforeExecuting(alg):
     """ Verify if we have the right parameters """
     if alg.getParameterValue('expression') and alg.getParameterValue('file'):
-        return alg.tr("You need to set either inline expression or a rules file !")
+        return alg.tr("You need to set either inline expression or a rules file!")
 
     return None
 

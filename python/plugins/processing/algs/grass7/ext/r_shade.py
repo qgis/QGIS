@@ -29,7 +29,7 @@ __revision__ = '$Format:%H$'
 def checkParameterValuesBeforeExecuting(alg):
     """ Verify if we have the right parameters """
     if alg.getParameterValue('brighten') and alg.getParameterValue('bgcolor'):
-        return alg.tr("You need to set either a brighten percentage or a NULL color !")
+        return alg.tr("You need to set either a brighten percentage or a NULL color!")
     return None
 
 

@@ -59,7 +59,7 @@ def checkMovingWindow(alg, outputTxt=False):
     configTxt = alg.getParameterValue('config_txt')
     config = alg.getParameterValue('config')
     if configTxt and config:
-        return alg.tr("You need to set either inline configuration or a configuration file !")
+        return alg.tr("You need to set either inline configuration or a configuration file!")
 
     # Verify that configuration is in moving window
     movingWindow = False

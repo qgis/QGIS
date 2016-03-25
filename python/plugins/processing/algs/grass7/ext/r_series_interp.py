@@ -38,11 +38,11 @@ def checkParameterValuesBeforeExecuting(alg):
     outfile = alg.getParameterValue(u'outfile')
 
     if datapos and infile:
-        return alg.tr("You need to set either inline data positions or an input data positions file !")
+        return alg.tr("You need to set either inline data positions or an input data positions file!")
     if output and outfile:
-        return alg.tr("You need to set either sampling data positions or an output sampling data positions file !")
+        return alg.tr("You need to set either sampling data positions or an output sampling data positions file!")
     if not (datapos or infile or output or outfile):
-        return alg.tr("You need to set input and output data positions parameters !")
+        return alg.tr("You need to set input and output data positions parameters!")
     return None
 
 

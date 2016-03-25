@@ -31,7 +31,7 @@ import os
 def checkParameterValuesBeforeExecuting(alg):
     """ Verify if we have the right parameters """
     if alg.getParameterValue('start_coordinates') and alg.getParameterValue('start_points'):
-        return alg.tr("You need to set either start coordinates OR a start points vector layer !")
+        return alg.tr("You need to set either start coordinates OR a start points vector layer!")
 
     parameters = [alg.getParameterValue(f) for f in ['-c', '-a', '-n']]
     paramscore = [f for f in parameters if f]
