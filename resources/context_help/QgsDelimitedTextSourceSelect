@@ -221,7 +221,7 @@ Each attribute also has a data type, one of string (text), integer, longlong,
 or real number.
 The data type is inferred from the content of the fields - if every non blank value
 is a valid integer then the type is integer, otherwise if it is a valid long long
-nubmer then the type is longlong, otherwise if it is a valid real
+number then the type is longlong, otherwise if it is a valid real
 number then the type is real, otherwise the type is string.  Note that this is
 based on the content of the fields - quoting fields does not change the way they
 are interpreted.
