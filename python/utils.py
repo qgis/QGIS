@@ -581,13 +581,13 @@ def startServerPlugin(packageName):
 #######################
 # IMPORT wrapper
 
+_uses_builtins = True
 try:
     import builtins
-
     _builtin_import = builtins.__import__
 except AttributeError:
+    _uses_builtins = False
     import __builtin__
-
     _builtin_import = __builtin__.__import__
 
 _plugin_modules = {}
@@ -616,7 +616,8 @@ def _import(name, globals={}, locals={}, fromlist=[], level=None):
 
     return mod
 
-try:
+
+if _uses_builtins:
     builtins.__import__ = _import
-except AttributeError:
+else:
     __builtin__.__import__ = _import
