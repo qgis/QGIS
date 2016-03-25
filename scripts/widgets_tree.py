@@ -40,7 +40,7 @@ import sys
 import os
 import glob
 from PyQt.QtWidgets import QWidget, QDialog, QCheckBox, QComboBox, QDial, QPushButton, QLabel, QLCDNumber, QLineEdit, QRadioButton, QScrollBar, QSlider, QSpinBox, QTextEdit, QDateEdit, QTimeEdit, QDateTimeEdit, QListView, QProgressBar, QTableView, QTabWidget, QTextBrowser, QDialogButtonBox, QScrollArea, QGroupBox, QStackedWidget
-from PyQt4.uic import loadUi
+from PyQt.uic import loadUi
 from PyQt.QtXml import QDomDocument
 
 # qwt_plot is missing somehow but it may depend on installed packages

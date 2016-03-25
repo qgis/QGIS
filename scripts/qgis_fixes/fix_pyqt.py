@@ -354,6 +354,7 @@ MAPPING = {
     "PyQt4.uic": [
         ("PyQt.uic", [
             "loadUiType",
+            "loadUi",
         ]),
     ],
     "PyQt4": [

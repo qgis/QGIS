@@ -19,7 +19,7 @@ import glob
 import platform
 import tempfile
 
-from PyQt4.QtCore import QDir
+from PyQt.QtCore import QDir
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
