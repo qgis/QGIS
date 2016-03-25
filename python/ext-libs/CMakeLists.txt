@@ -37,7 +37,9 @@ FOREACH(pkg httplib2 jinja2 markupsafe owslib pygments dateutil pytz yaml nose2)
   EXT_PYLIB(${pkg} .)
 ENDFOREACH(pkg)
 
-EXT_PYLIB(future ..)
+IF(NOT ENABLE_PYTHON3)
+  EXT_PYLIB(future ..)
+ENDIF(NOT ENABLE_PYTHON3)
 
 SET (WITH_INTERNAL_SIX TRUE CACHE BOOL "Determines whether python six should be included")
 IF(WITH_INTERNAL_SIX)
