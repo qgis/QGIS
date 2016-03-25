@@ -151,6 +151,8 @@ class ClipByExtent(GdalAlgorithm):
             if len(bigtiff) > 0:
                 arguments.append("-co BIGTIFF=" + bigtiff)
 
+            arguments.append("-wo OPTIMIZE_SIZE=TRUE")
+
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(out)
 
