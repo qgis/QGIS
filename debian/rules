@@ -251,6 +251,35 @@ endif
 override_dh_auto_install:
 	dh_auto_install
 
+	# remove unwanted files
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/installdox
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/html/jquery.js
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/jquery.js
+
+	# replace leaflet and jquery urls
+	perl -i -p \
+		-e 's#http://.*/leaflet.css#leaflet/leaflet.css#;s#http://.*/leaflet.js#leaflet/leaflet.js#;s#http://.*/jquery-.*.min.js#jquery-min.js#' \
+		$(CURDIR)/debian/tmp/usr/share/qgis/doc/developersmap.html
+
+	# Use /usr/bin/python2.7 explicitly for Python Policy compliance
+	perl -i -pe 's=#!/usr/bin/env python=#!/usr/bin/python2.7=;' $$(find debian/tmp -name "*.py")
+
+	# Don't include a copy of the world.tif also included in osgearth-data
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/globe/world.tif
+
+	# remove extra license files
+	-find $(CURDIR)/debian/tmp/usr/share/qgis/resources/cpt-city-qgis-min/ -name COPYING.xml -delete
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/LICENSE
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/db_manager/LICENSE
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/MetaSearch/LICENSE.txt
+
+	# Man pages are installed by dh_installman
+	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qgis.1
+	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qbrowser.1
+
+	# Don't ship srs.db, automatically updated in postinst with crssync
+	mv $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs.db $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs-template.db
+
 	# Install menu pixmap
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.svg
@@ -306,34 +335,6 @@ override_dh_auto_install:
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qbrowser
 
 override_dh_install:
-	# Don't ship srs.db, automatically updated in postinst with crssync
-	mv $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs.db $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs-template.db
-
-	perl -i -pe 's=#!/usr/bin/env python=#!/usr/bin/python2.7=;' $$(find debian/tmp -name "*.py")
-
-	# remove unwanted files
-	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/installdox
-	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/html/jquery.js
-	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/jquery.js
-
-	# replace leaflet and jquery urls
-	perl -i -p \
-		-e 's#http://.*/leaflet.css#leaflet/leaflet.css#;s#http://.*/leaflet.js#leaflet/leaflet.js#;s#http://.*/jquery-.*.min.js#jquery-min.js#' \
-		$(CURDIR)/debian/tmp/usr/share/qgis/doc/developersmap.html
-
-	# Don't include a copy of the world.tif also included in osgearth-data
-	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/globe/world.tif
-
-	# remove extra license files
-	-find $(CURDIR)/debian/tmp/usr/share/qgis/resources/cpt-city-qgis-min/ -name COPYING.xml -delete
-	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/LICENSE
-	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/db_manager/LICENSE
-	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/MetaSearch/LICENSE.txt
-
-	# Man pages are installed by dh_installman
-	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qgis.1
-	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qbrowser.1
-
 	dh_install --autodest --list-missing
 
 override_dh_installchangelogs:
