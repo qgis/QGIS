@@ -153,7 +153,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self._icon = QIcon(os.path.join(pluginPath, 'images', 'qgis.png'))
+        self._icon = QIcon(os.path.join(pluginPath, 'images', 'qgis.svg'))
 
         self.alglist = [SumLines(), PointsInPolygon(),
                         PointsInPolygonWeighted(), PointsInPolygonUnique(),
