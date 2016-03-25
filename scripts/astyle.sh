@@ -28,9 +28,9 @@ if [ -z "$ASTYLE" ]; then
 fi
 
 if type -p tput >/dev/null; then
-	elcr="$(tput el)$(tput cr)"
+	elcr="$ASTYLEPROGRESS$(tput el)$(tput cr)"
 else
-	elcr="                   \r"
+	elcr="$ASTYLEPROGRESS                   \r"
 fi
 
 if ! type -p flip >/dev/null; then
