@@ -64,7 +64,8 @@ Build-Depends:
  spawn-fcgi, lighttpd, poppler-utils, locales, qt4-doc-html,
  libqt4-sql-sqlite, python-psycopg2
 Build-Conflicts: libqgis-dev, qgis-dev
-#sid stretch jessie vivid wily xenial#Standards-Version: 3.9.6
+#sid stretch xenial#Standards-Version: 3.9.7
+#jessie vivid wily#Standards-Version: 3.9.6
 #wheezy#Standards-Version: 3.9.3
 #precise trusty#Standards-Version: 3.8.4
 #sid stretch jessie#X-Python-Version: >= 2.7, << 2.8
