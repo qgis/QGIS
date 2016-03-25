@@ -18,6 +18,7 @@
 
 #include <cfloat> // for DBL_MAX
 #include <climits>
+#include <limits>
 
 #include "qgsvectordataprovider.h"
 #include "qgsfeature.h"
@@ -402,6 +403,11 @@ void QgsVectorDataProvider::fillMinMaxCache()
       mCacheMinValues[i] = QVariant( INT_MAX );
       mCacheMaxValues[i] = QVariant( INT_MIN );
     }
+    else if ( flds[i].type() == QVariant::LongLong )
+    {
+      mCacheMinValues[i] = QVariant( std::numeric_limits<qlonglong>::max() );
+      mCacheMaxValues[i] = QVariant( std::numeric_limits<qlonglong>::min() );
+    }
     else if ( flds[i].type() == QVariant::Double )
     {
       mCacheMinValues[i] = QVariant( DBL_MAX );
@@ -434,6 +440,14 @@ void QgsVectorDataProvider::fillMinMaxCache()
         if ( value < mCacheMinValues[*it].toInt() )
           mCacheMinValues[*it] = value;
         if ( value > mCacheMaxValues[*it].toInt() )
+          mCacheMaxValues[*it] = value;
+      }
+      else if ( flds[*it].type() == QVariant::LongLong )
+      {
+        qlonglong value = varValue.toLongLong();
+        if ( value < mCacheMinValues[*it].toLongLong() )
+          mCacheMinValues[*it] = value;
+        if ( value > mCacheMaxValues[*it].toLongLong() )
           mCacheMaxValues[*it] = value;
       }
       else if ( flds[*it].type() == QVariant::Double )
