@@ -74,7 +74,7 @@ class RAlgorithm(GeoAlgorithm):
             self.defineCharacteristicsFromFile()
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/r.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/r.svg')
 
     def defineCharacteristicsFromScript(self):
         lines = self.script.split('\n')
