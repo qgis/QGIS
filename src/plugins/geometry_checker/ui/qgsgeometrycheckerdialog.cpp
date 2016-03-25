@@ -39,7 +39,7 @@ QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidge
   layout->addWidget( mTabWidget );
   layout->addWidget( mButtonBox );
 
-  mTabWidget->addTab( new QgsGeometryCheckerSetupTab( iface ), tr( "Setup" ) );
+  mTabWidget->addTab( new QgsGeometryCheckerSetupTab( iface ), tr( "Settings" ) );
   mTabWidget->addTab( new QWidget(), tr( "Result" ) );
   mTabWidget->setTabEnabled( 1, false );
 
