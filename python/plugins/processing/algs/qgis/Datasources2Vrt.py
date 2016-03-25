@@ -100,7 +100,7 @@ class Datasources2Vrt(GeoAlgorithm):
             srcDS = ogr.Open(inFile, 0)
             if srcDS is None:
                 raise GeoAlgorithmExecutionException(
-                    self.tr('Invalid datasource: {}'.format(infile)))
+                    self.tr('Invalid datasource: {}'.format(inFile)))
 
             if schema:
                 inFile = '@dummy@'
