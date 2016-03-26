@@ -135,6 +135,10 @@ endif
 
 ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 	CMAKE_OPTS += -DCMAKE_BUILD_TYPE=Debug
+else
+ifneq (,$(findstring $(DISTRIBUTION),"trusty"))
+	CMAKE_OPTS += -DKEEP_GLOBE_CXX_FLAGS=TRUE
+endif
 endif
 
 ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
