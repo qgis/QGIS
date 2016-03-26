@@ -355,8 +355,6 @@ void QgsSLRootItem::createDatabase()
   QString errCause;
   if ( ::createDb( filename, errCause ) )
   {
-    QMessageBox::information( nullptr, tr( "Create SpatiaLite database" ), tr( "The database has been created" ) );
-
     // add connection
     settings.setValue( "/SpatiaLite/connections/" + QFileInfo( filename ).fileName() + "/sqlitepath", filename );
 
