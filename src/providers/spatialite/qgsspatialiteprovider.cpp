@@ -461,7 +461,9 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
       char* errMsg = nullptr;
       int ret = sqlite3_exec( sqliteHandle, ( "PRAGMA " + pragma ).toUtf8(), nullptr, nullptr, &errMsg );
       if ( ret != SQLITE_OK )
+      {
         QgsDebugMsg( QString( "PRAGMA " ) + pragma + QString( " failed : %1" ).arg( errMsg ? errMsg : "" ) );
+      }
       sqlite3_free( errMsg );
     }
   }
@@ -5014,7 +5016,10 @@ const QgsField & QgsSpatiaLiteProvider::field( int index ) const
   return attributeFields[index];
 }
 
-
+void QgsSpatiaLiteProvider::invalidateConnections( const QString& connection )
+{
+  QgsSpatiaLiteConnPool::instance()->invalidateConnections( connection );
+}
 
 /**
  * Class factory to return a pointer to a newly created
