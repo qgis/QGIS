@@ -167,12 +167,12 @@ class TestPyQgsAppStartup(unittest.TestCase):
                                testDir=os.path.join(self.TMP_DIR, 'test_optionsAsFiles'),
                                testFile="qgis.db",
                                timeOut=270,
-                               additionalArguments=['--help']), "additional arguments: %s" % ' '.join(t[1])
+                               additionalArguments=['--help'])
         self.doTestStartup(option="--configpath",
                            testDir=os.path.join(self.TMP_DIR, 'test_optionsAsFiles'),
                            testFile="qgis.db",
                            timeOut=270,
-                           additionalArguments=['--'], ['--help']), "additional arguments: %s" % ' '.join(t[1])
+                           additionalArguments=['--', '--help'])
 
 
 if __name__ == '__main__':
