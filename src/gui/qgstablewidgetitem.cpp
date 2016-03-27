@@ -39,5 +39,9 @@ int QgsTableWidgetItem::sortRole() const
 
 bool QgsTableWidgetItem::operator<( const QTableWidgetItem& other ) const
 {
+#if QT_VERSION < 0x050000
+  return data( mSortRole ).toString() < other.data( mSortRole ).toString();
+#else
   return data( mSortRole ) < other.data( mSortRole );
+#endif
 }
