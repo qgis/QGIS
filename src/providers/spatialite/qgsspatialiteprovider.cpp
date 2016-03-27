@@ -453,6 +453,19 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   }
   sqliteHandle = handle->handle();
 
+  if ( sqliteHandle )
+  {
+    QStringList pragmaList = anUri.params( "pragma" );
+    Q_FOREACH ( QString pragma, pragmaList )
+    {
+      char* errMsg = nullptr;
+      int ret = sqlite3_exec( sqliteHandle, ( "PRAGMA " + pragma ).toUtf8(), nullptr, nullptr, &errMsg );
+      if ( ret != SQLITE_OK )
+        QgsDebugMsg( QString( "PRAGMA " ) + pragma + QString( " failed : %1" ).arg( errMsg ? errMsg : "" ) );
+      sqlite3_free( errMsg );
+    }
+  }
+
   bool alreadyDone = false;
   bool ret = false;
 
