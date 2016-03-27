@@ -798,22 +798,22 @@ class GeoDB:
 if __name__ == '__main__':
 
     db = GeoDB(host='localhost', dbname='gis', user='gisak', passwd='g')
-    print db.list_schemas()
-    print '=========='
+    print(db.list_schemas())
+    print('==========')
 
     for row in db.list_geotables():
-        print row
-    print '=========='
+        print(row)
+    print('==========')
 
     for row in db.get_table_indexes('trencin'):
-        print row
-    print '=========='
+        print(row)
+    print('==========')
 
     for row in db.get_table_constraints('trencin'):
-        print row
-    print '=========='
+        print(row)
+    print('==========')
 
-    print db.get_table_rows('trencin')
+    print(db.get_table_rows('trencin'))
 
     # for fld in db.get_table_metadata('trencin'):
     # ....print fld

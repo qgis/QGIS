@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-print 'CTEST_FULL_OUTPUT'
+print('CTEST_FULL_OUTPUT')
 
 import qgis  # NOQA
 

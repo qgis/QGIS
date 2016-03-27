@@ -162,7 +162,7 @@ def retrieve_module_name(param):
                 exec("from processing.core.outputs import %s" % param)
                 return os.path.join(dir_p, "outputs.py")
         except ImportError:
-            print "Error parsing ", param
+            print("Error parsing ", param)
     return None
 
 

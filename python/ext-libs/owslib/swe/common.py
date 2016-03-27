@@ -24,7 +24,7 @@ def make_pair(string, cast=None):
         try:
             string = map(lambda x: cast(x), string)
         except:
-            print "Could not cast pair to correct type.  Setting to an empty tuple!"
+            print("Could not cast pair to correct type.  Setting to an empty tuple!")
             string = ""
 
     return tuple(string)

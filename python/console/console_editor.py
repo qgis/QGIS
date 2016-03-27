@@ -529,15 +529,15 @@ class Editor(QsciScintilla):
                 file = file + tmpFileTr
             if _traceback:
                 msgTraceTr = QCoreApplication.translate('PythonConsole', '## Script error: {0}').format(file)
-                print "## %s" % datetime.datetime.now()
-                print unicode(msgTraceTr)
+                print("## %s" % datetime.datetime.now())
+                print(unicode(msgTraceTr))
                 sys.stderr.write(_traceback)
                 p.stderr.close()
             else:
                 msgSuccessTr = QCoreApplication.translate('PythonConsole',
                                                           '## Script executed successfully: {0}').format(file)
-                print "## %s" % datetime.datetime.now()
-                print unicode(msgSuccessTr)
+                print("## %s" % datetime.datetime.now())
+                print(unicode(msgSuccessTr))
                 sys.stdout.write(out)
                 p.stdout.close()
             del p
@@ -547,10 +547,10 @@ class Editor(QsciScintilla):
             IOErrorTr = QCoreApplication.translate('PythonConsole',
                                                    'Cannot execute file {0}. Error: {1}\n').format(filename,
                                                                                                    error.strerror)
-            print '## Error: ' + IOErrorTr
+            print('## Error: ' + IOErrorTr)
         except:
             s = traceback.format_exc()
-            print '## Error: '
+            print('## Error: ')
             sys.stderr.write(s)
 
     def runScriptCode(self):
@@ -1016,7 +1016,7 @@ class EditorTabWidget(QTabWidget):
                 IOErrorTr = QCoreApplication.translate('PythonConsole',
                                                        'The file {0} could not be opened. Error: {1}\n').format(filename,
                                                                                                                 error.strerror)
-                print '## Error: '
+                print('## Error: ')
                 sys.stderr.write(IOErrorTr)
                 return
 
@@ -1115,7 +1115,7 @@ class EditorTabWidget(QTabWidget):
             else:
                 errOnRestore = QCoreApplication.translate("PythonConsole",
                                                           "Unable to restore the file: \n{0}\n").format(pathFile)
-                print '## Error: '
+                print('## Error: ')
                 s = errOnRestore
                 sys.stderr.write(s)
                 self.parent.updateTabListScript(pathFile, action='remove')

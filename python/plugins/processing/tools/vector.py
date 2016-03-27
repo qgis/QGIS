@@ -571,7 +571,7 @@ class VectorWriter:
                 QgsCredentials.instance().put(connInfo, user, passwd)
             else:
                 raise GeoAlgorithmExecutionException("Couldn't connect to database")
-            print uri.uri()
+            print(uri.uri())
             try:
                 db = postgis_utils.GeoDB(host=uri.host(), port=int(uri.port()),
                                          dbname=uri.database(), user=user, passwd=passwd)
@@ -601,7 +601,7 @@ class VectorWriter:
         elif self.destination.startswith(self.SPATIALITE_LAYER_PREFIX):
             self.isNotFileBased = True
             uri = QgsDataSourceURI(self.destination[len(self.SPATIALITE_LAYER_PREFIX):])
-            print uri.uri()
+            print(uri.uri())
             try:
                 db = spatialite_utils.GeoDB(uri=uri)
             except spatialite_utils.DbError as e:
