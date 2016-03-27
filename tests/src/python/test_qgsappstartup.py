@@ -76,32 +76,25 @@ class TestPyQgsAppStartup(unittest.TestCase):
         if env is not None:
             myenv.update(env)
 
-        p = subprocess.Popen(
-            [QGIS_BIN, "--nologo", plugins, customize, option, testDir] + additionalArguments,
-            env=myenv)
+        call = [QGIS_BIN, "--nologo", plugins, customize, option, testDir] + additionalArguments
+        p = subprocess.Popen(call, env=myenv)
 
         s = 0
         ok = True
         while not os.path.exists(myTestFile):
             p.poll()
             if p.returncode is not None:
-                print('Application has returned: {}'.format(p.returncode))
-                ok = False
-                break
+                raise Exception('Return code: {}, Call: "{}", Env: {}'.format(p.returncode, ' '.join(call), env))
             time.sleep(1)
             s += 1
             if s > timeOut:
-                print('Timed out waiting for application start')
-                ok = False
-                break
+                raise Exception('Timed out waiting for application start, Call: "{}", Env: {}'.format(' '.join(call), env))
 
         try:
             p.terminate()
         except OSError as e:
             if e.errno != errno.ESRCH:
-                raise
-
-        return ok
+                raise e
 
     def testOptionsPath(self):
         subdir = 'QGIS'  # Linux
@@ -109,17 +102,17 @@ class TestPyQgsAppStartup(unittest.TestCase):
             subdir = 'qgis.org'
         ini = os.path.join(subdir, 'QGIS2.ini')
         for p in ['test_opts', 'test opts', u'test_optsé€']:
-            assert self.doTestStartup(option="--optionspath",
-                                      testDir=os.path.join(self.TMP_DIR, p),
-                                      testFile=ini,
-                                      timeOut=270), "options path %s" % p
+            self.doTestStartup(option="--optionspath",
+                               testDir=os.path.join(self.TMP_DIR, p),
+                               testFile=ini,
+                               timeOut=270)
 
     def testConfigPath(self):
         for p in ['test_config', 'test config', u'test_configé€']:
-            assert self.doTestStartup(option="--configpath",
-                                      testDir=os.path.join(self.TMP_DIR, p),
-                                      testFile="qgis.db",
-                                      timeOut=270), "config path %s" % p
+            self.doTestStartup(option="--configpath",
+                               testDir=os.path.join(self.TMP_DIR, p),
+                               testFile="qgis.db",
+                               timeOut=270)
 
     def testPluginPath(self):
         for t in ['test_plugins', 'test plugins', u'test_pluginsé€']:
@@ -138,7 +131,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
             # we use here a minimal plugin that writes to 'plugin_started.txt'
             # when it is started. if QGIS_PLUGINPATH is correctly parsed, this
             # plugin is executed and the file is created
-            assert self.doTestStartup(
+            self.doTestStartup(
                 option="--optionspath",
                 testDir=testDir,
                 testFile="plugin_started.txt",
@@ -160,22 +153,26 @@ class TestPyQgsAppStartup(unittest.TestCase):
         f = open(testmod, 'w')
         f.writelines(testcode)
         f.close()
-        msg = 'Creation of test file by executing PYQGIS_STARTUP file failed'
-        assert self.doTestStartup(
+        self.doTestStartup(
             testFile=testfilepath,
             timeOut=270,
-            env={'PYQGIS_STARTUP': testmod}), msg
+            env={'PYQGIS_STARTUP': testmod})
 
     def testOptionsAsFiles(self):
         # verify QGIS accepts filenames that match options after the special option '--'
         # '--help' should return immediatly (after displaying the usage hints)
         # '-- --help' should not exit but try (and probably fail) to load a layer called '--help'
-        for t in [(False, ['--help']), (True, ['--', '--help'])]:
-            assert t[0] == self.doTestStartup(option="--configpath",
-                                              testDir=os.path.join(self.TMP_DIR, 'test_optionsAsFiles'),
-                                              testFile="qgis.db",
-                                              timeOut=270,
-                                              additionalArguments=t[1]), "additional arguments: %s" % ' '.join(t[1])
+        with self.assertRaises(Exception):
+            self.doTestStartup(option="--configpath",
+                               testDir=os.path.join(self.TMP_DIR, 'test_optionsAsFiles'),
+                               testFile="qgis.db",
+                               timeOut=270,
+                               additionalArguments=['--help']), "additional arguments: %s" % ' '.join(t[1])
+        self.doTestStartup(option="--configpath",
+                           testDir=os.path.join(self.TMP_DIR, 'test_optionsAsFiles'),
+                           testFile="qgis.db",
+                           timeOut=270,
+                           additionalArguments=['--'], ['--help']), "additional arguments: %s" % ' '.join(t[1])
 
 
 if __name__ == '__main__':
