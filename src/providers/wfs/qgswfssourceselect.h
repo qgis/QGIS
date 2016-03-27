@@ -49,7 +49,7 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     ~QgsWFSSourceSelect();
 
   signals:
-    void addWfsLayer( const QString& uri, const QString& typeName );
+    void addWfsLayer( const QString& uri, const QString& layerName );
     void connectionsChanged();
 
   private:

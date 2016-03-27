@@ -36,7 +36,7 @@
    <item row="5" column="0">
     <widget class="QCheckBox" name="cbxFeatureCurrentViewExtent">
      <property name="text">
-      <string>Only request features overlapping the current view extent</string>
+      <string>Only request features overlapping the view extent</string>
      </property>
     </widget>
    </item>
