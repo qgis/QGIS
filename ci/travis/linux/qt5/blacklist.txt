@@ -2,7 +2,6 @@ ProcessingGdalAlgorithmsTest
 ProcessingParametersTest
 ProcessingQgisAlgorithmsTest
 PyQgsAnalysis
-PyQgsAppStartup
 PyQgsApplication
 PyQgsAtlasComposition
 PyQgsAttributeTableModel
