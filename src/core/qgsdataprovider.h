@@ -306,6 +306,11 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual QgsError error() const { return mError; }
 
+    /** Invalidate connections corresponding to specified name
+     * @note added in QGIS 2.16
+     */
+    virtual void invalidateConnections( const QString& connection ) { Q_UNUSED( connection ); }
+
   signals:
 
     /**
