@@ -55,6 +55,7 @@
 #include "qgslayertreelayer.h"
 #include "qgslayertreemodel.h"
 #include "qgsunittypes.h"
+#include "qgstablewidgetitem.h"
 
 #include "qgsmessagelog.h"
 
@@ -259,10 +260,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   {
     currentLayer = it.value();
 
-    QTableWidgetItem *twi = new QTableWidgetItem( QString::number( i ) );
+    QgsTableWidgetItem *twi = new QgsTableWidgetItem( QString::number( i ) );
     twIdentifyLayers->setVerticalHeaderItem( i, twi );
 
-    twi = new QTableWidgetItem( currentLayer->name() );
+    twi = new QgsTableWidgetItem( currentLayer->name() );
     twi->setData( Qt::UserRole, it.key() );
     twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
     twIdentifyLayers->setItem( i, 0, twi );
@@ -286,20 +287,23 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       }
     }
 
-    twi = new QTableWidgetItem( type );
+    twi = new QgsTableWidgetItem( type );
     twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
     twIdentifyLayers->setItem( i, 1, twi );
 
-    QCheckBox *cbIdentify = new QCheckBox();
-    cbIdentify->setChecked( !noIdentifyLayerIdList.contains( currentLayer->id() ) );
-    twIdentifyLayers->setCellWidget( i, 2, cbIdentify );
-
-    twi = new QTableWidgetItem( type );
+    twi = new QgsTableWidgetItem();
     twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
-    QCheckBox *cbReadOnly = new QCheckBox();
-    cbReadOnly->setChecked( currentLayer->readOnly() );
-    cbReadOnly->setEnabled( currentLayer->type() == QgsMapLayer::VectorLayer );
-    twIdentifyLayers->setCellWidget( i, 3, cbReadOnly );
+    twi->setFlags( twi->flags() | Qt::ItemIsUserCheckable );
+    twi->setCheckState( noIdentifyLayerIdList.contains( currentLayer->id() ) ? Qt::Unchecked : Qt::Checked );
+    twi->setSortRole( Qt::CheckStateRole );
+    twIdentifyLayers->setItem( i, 2, twi );
+
+    twi = new QgsTableWidgetItem();
+    twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
+    twi->setFlags( twi->flags() | Qt::ItemIsUserCheckable );
+    twi->setCheckState( currentLayer->readOnly() ? Qt::Checked : Qt::Unchecked );
+    twi->setSortRole( Qt::CheckStateRole );
+    twIdentifyLayers->setItem( i, 3, twi );
   }
 
   grpOWSServiceCapabilities->setChecked( QgsProject::instance()->readBoolEntry( "WMSServiceCapabilities", "/", false ) );
@@ -890,15 +894,14 @@ void QgsProjectProperties::apply()
   {
     QString id = twIdentifyLayers->item( i, 0 )->data( Qt::UserRole ).toString();
 
-    QCheckBox *cbIdentify = qobject_cast<QCheckBox *>( twIdentifyLayers->cellWidget( i, 2 ) );
-    if ( cbIdentify && !cbIdentify->isChecked() )
+    if ( twIdentifyLayers->item( i, 2 )->checkState() == Qt::Checked )
     {
       noIdentifyLayerList << id;
     }
-    QCheckBox *cbReadOnly = qobject_cast<QCheckBox *>( twIdentifyLayers->cellWidget( i, 3 ) );
+    bool readonly = twIdentifyLayers->item( i, 3 )->checkState() == Qt::Checked;
     QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
     if ( vl )
-      vl->setReadOnly( cbReadOnly->checkState() == Qt::Checked );
+      vl->setReadOnly( readonly );
   }
 
   QgsProject::instance()->setNonIdentifiableLayers( noIdentifyLayerList );
