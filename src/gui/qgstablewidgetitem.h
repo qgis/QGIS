@@ -26,6 +26,9 @@ class GUI_EXPORT QgsTableWidgetItem : public QTableWidgetItem
 {
   public:
     QgsTableWidgetItem();
+    /**
+     * Creates a new table widget item with the specified text.
+     */
     QgsTableWidgetItem( const QString& text );
 
 
