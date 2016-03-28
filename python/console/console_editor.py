@@ -1181,7 +1181,7 @@ class EditorTabWidget(QTabWidget):
                                 classItem.setToolTip(0, name)
                             if sys.platform.startswith('win'):
                                 classItem.setSizeHint(0, QSize(18, 18))
-                            classItem.setText(1, class_data.lineno)
+                            classItem.setText(1, str(class_data.lineno))
                             iconClass = QgsApplication.getThemeIcon("console/iconClassTreeWidgetConsole.png")
                             classItem.setIcon(0, iconClass)
                             dictObject[name] = class_data.lineno
