@@ -445,7 +445,7 @@ class Editor(QsciScintilla):
                 self.parent.pc.callWidgetMessageBarEditor(msgText, 0, True)
         except urllib.error.URLError as e:
             msgText = QCoreApplication.translate('PythonConsole', 'Connection error: ')
-            self.parent.pc.callWidgetMessageBarEditor(msgText + e.args, 0, True)
+            self.parent.pc.callWidgetMessageBarEditor(msgText + repr(e.args), 0, True)
 
     def hideEditor(self):
         self.parent.pc.splitterObj.hide()
