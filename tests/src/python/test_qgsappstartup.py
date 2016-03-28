@@ -23,6 +23,7 @@ import shutil
 import subprocess
 import tempfile
 import errno
+import locale
 
 from qgis.testing import unittest
 from utilities import unitTestDataPath
@@ -118,6 +119,8 @@ class TestPyQgsAppStartup(unittest.TestCase):
         for t in ['test_plugins', 'test plugins', u'test_pluginsé€']:
 
             # get a unicode test dir
+            if sys.version_info.major == 2:
+                t = t.encode(locale.getpreferredencoding())
             testDir = os.path.join(self.TMP_DIR, t)
 
             # copy from testdata
@@ -137,7 +140,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
                 testFile="plugin_started.txt",
                 timeOut=270,
                 loadPlugins=True,
-                env={'QGIS_PLUGINPATH': testDir.encode('ascii', 'ignore')})
+                env={'QGIS_PLUGINPATH': testDir})
 
     def testPyQgisStartupEnvVar(self):
         # verify PYQGIS_STARTUP env variable file is run by embedded interpreter
