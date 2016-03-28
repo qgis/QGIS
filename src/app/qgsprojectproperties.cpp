@@ -55,6 +55,7 @@
 #include "qgslayertreelayer.h"
 #include "qgslayertreemodel.h"
 #include "qgsunittypes.h"
+#include "qgstablewidgetitem.h"
 
 #include "qgsmessagelog.h"
 
@@ -228,7 +229,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
   QgsMapLayer* currentLayer = nullptr;
 
-  QStringList noIdentifyLayerIdList = QgsProject::instance()->readListEntry( "Identify", "/disabledLayers" );
+  QStringList noIdentifyLayerIdList = QgsProject::instance()->nonIdentifiableLayers();
 
   const QMap<QString, QgsMapLayer*> &mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
 
@@ -245,11 +246,12 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     mLayerSrsId = mProjectSrsId;
   }
 
-  twIdentifyLayers->setColumnCount( 3 );
+  twIdentifyLayers->setColumnCount( 4 );
   twIdentifyLayers->horizontalHeader()->setVisible( true );
   twIdentifyLayers->setHorizontalHeaderItem( 0, new QTableWidgetItem( tr( "Layer" ) ) );
   twIdentifyLayers->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "Type" ) ) );
   twIdentifyLayers->setHorizontalHeaderItem( 2, new QTableWidgetItem( tr( "Identifiable" ) ) );
+  twIdentifyLayers->setHorizontalHeaderItem( 3, new QTableWidgetItem( tr( "Read Only" ) ) );
   twIdentifyLayers->setRowCount( mapLayers.size() );
   twIdentifyLayers->verticalHeader()->setResizeMode( QHeaderView::ResizeToContents );
 
@@ -258,10 +260,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   {
     currentLayer = it.value();
 
-    QTableWidgetItem *twi = new QTableWidgetItem( QString::number( i ) );
+    QgsTableWidgetItem *twi = new QgsTableWidgetItem( QString::number( i ) );
     twIdentifyLayers->setVerticalHeaderItem( i, twi );
 
-    twi = new QTableWidgetItem( currentLayer->name() );
+    twi = new QgsTableWidgetItem( currentLayer->name() );
     twi->setData( Qt::UserRole, it.key() );
     twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
     twIdentifyLayers->setItem( i, 0, twi );
@@ -285,13 +287,23 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       }
     }
 
-    twi = new QTableWidgetItem( type );
+    twi = new QgsTableWidgetItem( type );
     twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
     twIdentifyLayers->setItem( i, 1, twi );
 
-    QCheckBox *cb = new QCheckBox();
-    cb->setChecked( !noIdentifyLayerIdList.contains( currentLayer->id() ) );
-    twIdentifyLayers->setCellWidget( i, 2, cb );
+    twi = new QgsTableWidgetItem();
+    twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
+    twi->setFlags( twi->flags() | Qt::ItemIsUserCheckable );
+    twi->setCheckState( noIdentifyLayerIdList.contains( currentLayer->id() ) ? Qt::Unchecked : Qt::Checked );
+    twi->setSortRole( Qt::CheckStateRole );
+    twIdentifyLayers->setItem( i, 2, twi );
+
+    twi = new QgsTableWidgetItem();
+    twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
+    twi->setFlags( twi->flags() | Qt::ItemIsUserCheckable );
+    twi->setCheckState( currentLayer->readOnly() ? Qt::Checked : Qt::Unchecked );
+    twi->setSortRole( Qt::CheckStateRole );
+    twIdentifyLayers->setItem( i, 3, twi );
   }
 
   grpOWSServiceCapabilities->setChecked( QgsProject::instance()->readBoolEntry( "WMSServiceCapabilities", "/", false ) );
@@ -880,15 +892,19 @@ void QgsProjectProperties::apply()
   QStringList noIdentifyLayerList;
   for ( int i = 0; i < twIdentifyLayers->rowCount(); i++ )
   {
-    QCheckBox *cb = qobject_cast<QCheckBox *>( twIdentifyLayers->cellWidget( i, 2 ) );
-    if ( cb && !cb->isChecked() )
+    QString id = twIdentifyLayers->item( i, 0 )->data( Qt::UserRole ).toString();
+
+    if ( twIdentifyLayers->item( i, 2 )->checkState() == Qt::Checked )
     {
-      QString id = twIdentifyLayers->item( i, 0 )->data( Qt::UserRole ).toString();
       noIdentifyLayerList << id;
     }
+    bool readonly = twIdentifyLayers->item( i, 3 )->checkState() == Qt::Checked;
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
+    if ( vl )
+      vl->setReadOnly( readonly );
   }
 
-  QgsProject::instance()->writeEntry( "Identify", "/disabledLayers", noIdentifyLayerList );
+  QgsProject::instance()->setNonIdentifiableLayers( noIdentifyLayerList );
 
   QgsProject::instance()->writeEntry( "WMSServiceCapabilities", "/", grpOWSServiceCapabilities->isChecked() );
   QgsProject::instance()->writeEntry( "WMSServiceTitle", "/", mWMSTitle->text() );

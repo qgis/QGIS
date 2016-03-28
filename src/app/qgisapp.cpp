@@ -7247,7 +7247,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
   if ( vlayer->isModified() || ( tg && tg->layers().contains( vlayer ) && tg->modified() ) )
     isModified  = true;
 
-  if ( !vlayer->isEditable() && !vlayer->isReadOnly() )
+  if ( !vlayer->isEditable() && !vlayer->readOnly() )
   {
     if ( !( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
     {
@@ -10011,7 +10011,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
       mActionLayerSubsetString->setEnabled( !isEditable && dprovider->supportsSubsetString() );
 
-      mActionToggleEditing->setEnabled( canSupportEditing && !vlayer->isReadOnly() );
+      mActionToggleEditing->setEnabled( canSupportEditing && !vlayer->readOnly() );
       mActionToggleEditing->setChecked( canSupportEditing && isEditable );
       mActionSaveLayerEdits->setEnabled( canSupportEditing && isEditable && vlayer->isModified() );
       mUndoWidget->dockContents()->setEnabled( canSupportEditing && isEditable );

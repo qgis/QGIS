@@ -948,6 +948,8 @@ bool QgsProject::read()
   if ( clean )
     dirty( false );
 
+  emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
+
   return true;
 
 } // QgsProject::read
@@ -994,7 +996,6 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
 
   }
 }
-
 
 bool QgsProject::read( QDomNode &layerNode )
 {
@@ -1885,14 +1886,14 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
   initializeEmbeddedSubtree( projectFilePath, newGroup );
   mLayerTreeRegistryBridge->setEnabled( true );
 
+  QStringList thisProjectIdentifyDisabledLayers = nonIdentifiableLayers();
+
   // consider the layers might be identify disabled in its project
   Q_FOREACH ( const QString& layerId, newGroup->findLayerIds() )
   {
     if ( embeddedIdentifyDisabledLayers.contains( layerId ) )
     {
-      QStringList thisProjectIdentifyDisabledLayers = QgsProject::instance()->readListEntry( "Identify", "/disabledLayers" );
       thisProjectIdentifyDisabledLayers.append( layerId );
-      QgsProject::instance()->writeEntry( "Identify", "/disabledLayers", thisProjectIdentifyDisabledLayers );
     }
 
     QgsLayerTreeLayer *layer = newGroup->findLayer( layerId );
@@ -1901,6 +1902,8 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
       layer->setVisible( invisibleLayers.contains( layerId ) ? Qt::Unchecked : Qt::Checked );
     }
   }
+
+  setNonIdentifiableLayers( thisProjectIdentifyDisabledLayers );
 
   return newGroup;
 }
@@ -2118,4 +2121,39 @@ QgsLayerTreeGroup *QgsProject::layerTreeRoot() const
 QgsVisibilityPresetCollection* QgsProject::visibilityPresetCollection()
 {
   return mVisibilityPresetCollection.data();
+}
+
+void QgsProject::setNonIdentifiableLayers( QList<QgsMapLayer*> layers )
+{
+  QStringList currentLayers = nonIdentifiableLayers();
+
+  QStringList newLayers;
+  Q_FOREACH ( QgsMapLayer* l, layers )
+  {
+    newLayers << l->id();
+  }
+
+  if ( newLayers == currentLayers )
+    return;
+
+  QStringList disabledLayerIds;
+
+  Q_FOREACH ( QgsMapLayer* l, layers )
+  {
+    disabledLayerIds << l->id();
+  }
+
+  setNonIdentifiableLayers( disabledLayerIds );
+}
+
+void QgsProject::setNonIdentifiableLayers( const QStringList& layerIds )
+{
+  writeEntry( "Identify", "/disabledLayers", layerIds );
+
+  emit nonIdentifiableLayersChanged( layerIds );
+}
+
+QStringList QgsProject::nonIdentifiableLayers() const
+{
+  return QgsProject::instance()->readListEntry( "Identify", "/disabledLayers" );
 }

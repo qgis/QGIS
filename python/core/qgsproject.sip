@@ -281,6 +281,21 @@ class QgsProject : QObject
      */
     QgsVisibilityPresetCollection* visibilityPresetCollection();
 
+    /**
+     * Set a list of layers which should not be taken into account on map identification
+     */
+    void setNonIdentifiableLayers( QList<QgsMapLayer*> layers );
+
+    /**
+     * Set a list of layers which should not be taken into account on map identification
+     */
+    void setNonIdentifiableLayers( const QStringList& layerIds );
+
+    /**
+     * Get the list of layers which currently should not be taken into account on map identification
+     */
+    QStringList nonIdentifiableLayers() const;
+
   protected:
 
     /** Set error message from read/write operation
@@ -344,6 +359,9 @@ class QgsProject : QObject
     void loadingLayer( const QString& );
 
     void snapSettingsChanged();
+
+    //! Emitted when the list of layer which are excluded from map identification changes
+    void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 
   private:
 
