@@ -246,6 +246,35 @@ dl.note
 	border-bottom: 1px solid #0d7200;
 }
 
+div.header {
+    border-bottom: 1px solid #a3d49d;
+}
+
+div.directory {
+    border-top: 1px solid #a3d49d;
+    border-bottom: 1px solid #a3d49d;
+}
+
+.directory tr.even {
+    background-color: #fcfcfa;
+}
+
+.icon {
+    background-color: #7cc272;
+}
+
+.arrow {
+    color: #a3d49d;
+}
+
+.directory .levels span {
+    color: #478c3e;
+}
+
+div.qindex, div.navtab {
+    background-color: #ecf5eb;
+    border: 1px solid #a9d6a3;
+}
 /* To overwrite tabs.css */
 .tabs, .tabs2, .tabs3 {
     background-image: inherit;
