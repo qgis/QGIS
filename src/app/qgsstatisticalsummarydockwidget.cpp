@@ -107,7 +107,7 @@ QgsStatisticalSummaryDockWidget::~QgsStatisticalSummaryDockWidget()
 
 void QgsStatisticalSummaryDockWidget::refreshStatistics()
 {
-  if ( !mLayer || !mFieldExpressionWidget->isValidExpression() )
+  if ( !mLayer || ( mFieldExpressionWidget->isExpression() && !mFieldExpressionWidget->isValidExpression() ) )
   {
     mStatisticsTable->setRowCount( 0 );
     return;
