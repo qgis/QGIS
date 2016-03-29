@@ -7746,7 +7746,7 @@ void QgisApp::removeLayer()
   }
 
   bool promptConfirmation = QSettings().value( "qgis/askToDeleteLayers", true ).toBool();
-  bool shiftHeld = QApplication::queryKeyboardModifiers().testFlag(Qt::ShiftModifier);
+  bool shiftHeld = QApplication::queryKeyboardModifiers().testFlag( Qt::ShiftModifier );
   //display a warning
   if ( !shiftHeld && promptConfirmation && QMessageBox::warning( this, tr( "Remove layers and groups" ), tr( "Remove %n legend entries?", "number of legend items to remove", selectedNodes.count() ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
