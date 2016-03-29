@@ -2878,10 +2878,10 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "log", 2, fcnLog, "Math" )
     << new StaticFunction( "round", -1, fcnRound, "Math" )
     << new StaticFunction( "rand", 2, fcnRnd, "Math" )
-    << new StaticFunction( "randf", 2, fcnRndF, "Math" )
+    << new StaticFunction( "randf", ParameterList() << Parameter( "min", true, 0.0 ) << Parameter( "max", true, 1.0 ), fcnRndF, "Math" )
     << new StaticFunction( "max", -1, fcnMax, "Math" )
     << new StaticFunction( "min", -1, fcnMin, "Math" )
-    << new StaticFunction( "clamp", 3, fcnClamp, "Math" )
+    << new StaticFunction( "clamp", ParameterList() << Parameter( "min" ) << Parameter( "value" ) << Parameter( "max" ), fcnClamp, "Math" )
     << new StaticFunction( "scale_linear", 5, fcnLinearScale, "Math" )
     << new StaticFunction( "scale_exp", 6, fcnExpScale, "Math" )
     << new StaticFunction( "floor", 1, fcnFloor, "Math" )
@@ -2915,7 +2915,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "longest_common_substring", 2, fcnLCS, "Fuzzy Matching" )
     << new StaticFunction( "hamming_distance", 2, fcnHamming, "Fuzzy Matching" )
     << new StaticFunction( "soundex", 1, fcnSoundex, "Fuzzy Matching" )
-    << new StaticFunction( "wordwrap", -1, fcnWordwrap, "String" )
+    << new StaticFunction( "wordwrap", ParameterList() << Parameter( "text" ) << Parameter( "length" ) << Parameter( "delimiter", true, " " ), fcnWordwrap, "String" )
     << new StaticFunction( "length", 1, fcnLength, "String" )
     << new StaticFunction( "replace", 3, fcnReplace, "String" )
     << new StaticFunction( "regexp_replace", 3, fcnRegexpReplace, "String" )
@@ -3567,6 +3567,7 @@ QgsExpression::NodeList* QgsExpression::NodeList::clone() const
   {
     nl->mList.append( node->clone() );
   }
+  nl->mNameList = mNameList;
 
   return nl;
 }

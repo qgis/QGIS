@@ -228,6 +228,65 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp.dump(), dump );
     }
 
+    void named_parameter_data()
+    {
+      //test passing named parameters to functions
+      QTest::addColumn<QString>( "string" );
+      QTest::addColumn<bool>( "parserError" );
+      QTest::addColumn<QString>( "dump" );
+      QTest::addColumn<QVariant>( "result" );
+
+      QTest::newRow( "unsupported" ) << "min( val1:=1, val2:=2, val3:=3 )" << true << "" << QVariant();
+      QTest::newRow( "named params named" ) << "clamp( min:=1, value:=2, max:=3)" << false << "clamp(1, 2, 3)" << QVariant( 2.0 );
+      QTest::newRow( "named params unnamed" ) << "clamp(1,2,3)" << false << "clamp(1, 2, 3)" << QVariant( 2.0 );
+      QTest::newRow( "named params mixed" ) << "clamp( 1, value:=2, max:=3)" << false << "clamp(1, 2, 3)" << QVariant( 2.0 );
+      QTest::newRow( "named params mixed bad" ) << "clamp( 1, value:=2, 3)" << true << "" << QVariant();
+      QTest::newRow( "named params mixed 2" ) << "clamp( 1, 2, max:=3)" << false << "clamp(1, 2, 3)" << QVariant( 2.0 );
+      QTest::newRow( "named params reordered" ) << "clamp( value := 2, max:=3, min:=1)" << false << "clamp(1, 2, 3)" << QVariant( 2.0 );
+      QTest::newRow( "named params mixed case" ) << "clamp( Min:=1, vAlUe:=2,MAX:=3)" << false << "clamp(1, 2, 3)" << QVariant( 2.0 );
+      QTest::newRow( "named params expression node" ) << "clamp( min:=1*2, value:=2+2, max:=3+1+2)" << false << "clamp(1 * 2, 2 + 2, 3 + 1 + 2)" << QVariant( 4.0 );
+      QTest::newRow( "named params bad name" ) << "clamp( min:=1, x:=2, y:=3)" << true << "" << QVariant();
+      QTest::newRow( "named params dupe implied" ) << "clamp( 1, 2, value:= 3, max:=4)" << true << "" << QVariant();
+      QTest::newRow( "named params dupe explicit" ) << "clamp( 1, value := 2, value:= 3, max:=4)" << true << "" << QVariant();
+      QTest::newRow( "named params dupe explicit 2" ) << "clamp( value:=1, value := 2, max:=4)" << true << "" << QVariant();
+      QTest::newRow( "named params non optional omitted" ) << "clamp( min:=1, max:=2)" << true << "" << QVariant();
+      QTest::newRow( "optional parameters specified" ) << "wordwrap( 'testxstring', 5, 'x')" << false << "wordwrap('testxstring', 5, 'x')" << QVariant( "test\nstring" );
+      QTest::newRow( "optional parameters specified named" ) << "wordwrap( text:='testxstring', length:=5, delimiter:='x')" << false << "wordwrap('testxstring', 5, 'x')" << QVariant( "test\nstring" );
+      QTest::newRow( "optional parameters unspecified" ) << "wordwrap( text:='test string', length:=5 )" << false << "wordwrap('test string', 5, ' ')" << QVariant( "test\nstring" );
+      QTest::newRow( "named params dupe explicit 3" ) << "wordwrap( 'test string', 5, length:=6 )" << true << "" << QVariant();
+      QTest::newRow( "named params dupe explicit 4" ) << "wordwrap( text:='test string', length:=5, length:=6 )" << true << "" << QVariant();
+    }
+
+    void named_parameter()
+    {
+      QFETCH( QString, string );
+      QFETCH( bool, parserError );
+      QFETCH( QString, dump );
+      QFETCH( QVariant, result );
+
+      QgsExpression exp( string );
+      QCOMPARE( exp.hasParserError(), parserError );
+      if ( exp.hasParserError() )
+      {
+        //parser error, so no point continuing testing
+        qDebug() << exp.parserErrorString();
+        return;
+      }
+
+      QgsExpressionContext context;
+      Q_ASSERT( exp.prepare( &context ) );
+
+      QVariant res = exp.evaluate();
+      if ( exp.hasEvalError() )
+        qDebug() << exp.evalErrorString();
+      if ( res.type() != result.type() )
+      {
+        qDebug() << "got " << res.typeName() << " instead of " << result.typeName();
+      }
+      QCOMPARE( res, result );
+      QCOMPARE( exp.dump(), dump );
+    }
+
     void evaluation_data()
     {
       QTest::addColumn<QString>( "string" );
