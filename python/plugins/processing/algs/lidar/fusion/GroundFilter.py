@@ -30,8 +30,8 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputFile
-from FusionUtils import FusionUtils
-from FusionAlgorithm import FusionAlgorithm
+from .FusionUtils import FusionUtils
+from .FusionAlgorithm import FusionAlgorithm
 
 
 class GroundFilter(FusionAlgorithm):

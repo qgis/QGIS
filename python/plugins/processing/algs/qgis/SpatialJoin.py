@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
-from PyQt4.QtCore import QVariant
+from PyQt.QtGui import QIcon
+from PyQt.QtCore import QVariant
 
 from qgis.core import QGis, QgsFields, QgsField, QgsFeature, QgsGeometry, NULL
 
@@ -118,7 +118,7 @@ class SpatialJoin(GeoAlgorithm):
 
         if not summary:
             joinFields = vector.testForUniqueness(targetFields, joinFields)
-            seq = range(0, len(targetFields) + len(joinFields))
+            seq = range(len(targetFields) + len(joinFields))
             targetFields.extend(joinFields)
             targetFields = dict(zip(seq, targetFields))
         else:
@@ -133,7 +133,7 @@ class SpatialJoin(GeoAlgorithm):
             fieldList.append(field)
             joinFields = vector.testForUniqueness(targetFields, fieldList)
             targetFields.extend(fieldList)
-            seq = range(0, len(targetFields))
+            seq = range(len(targetFields))
             targetFields = dict(zip(seq, targetFields))
 
         fields = QgsFields()

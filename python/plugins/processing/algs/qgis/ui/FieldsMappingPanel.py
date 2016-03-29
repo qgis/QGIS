@@ -29,9 +29,11 @@ import os
 
 from collections import OrderedDict
 
-from PyQt4 import uic
-from PyQt4.QtGui import QBrush, QComboBox, QHeaderView, QIcon, QItemSelectionModel, QLineEdit, QMessageBox, QSpinBox, QStyledItemDelegate
-from PyQt4.QtCore import QAbstractTableModel, QModelIndex, QVariant, Qt, pyqtSlot
+from PyQt import uic
+from PyQt.QtGui import QBrush, QIcon
+from PyQt.QtWidgets import QComboBox, QHeaderView, QLineEdit, QMessageBox, QSpinBox, QStyledItemDelegate
+from PyQt.QtCore import QItemSelectionModel
+from PyQt.QtCore import QAbstractTableModel, QModelIndex, QVariant, Qt, pyqtSlot
 
 from qgis.core import QgsExpression
 from qgis.gui import QgsFieldExpressionWidget
@@ -77,8 +79,8 @@ class FieldsMappingModel(QAbstractTableModel):
         self.endResetModel()
 
     def testAllExpressions(self):
-        self._errors = [None for i in xrange(0, len(self._mapping))]
-        for row in xrange(0, len(self._mapping)):
+        self._errors = [None for i in xrange(len(self._mapping))]
+        for row in xrange(len(self._mapping)):
             self.testExpression(row)
 
     def testExpression(self, row):
@@ -187,7 +189,7 @@ class FieldsMappingModel(QAbstractTableModel):
     def insertRows(self, row, count, index=QModelIndex()):
         self.beginInsertRows(index, row, row + count - 1)
 
-        for i in xrange(0, count):
+        for i in xrange(count):
             field = self.newField()
             self._mapping.insert(row + i, field)
             self._errors.insert(row + i, None)
@@ -382,7 +384,7 @@ class FieldsMappingPanel(BASE, WIDGET):
 
         self.model.insertRows(row - 1, 1)
 
-        for column in xrange(0, self.model.columnCount()):
+        for column in xrange(self.model.columnCount()):
             srcIndex = self.model.index(row + 1, column)
             dstIndex = self.model.index(row - 1, column)
             value = self.model.data(srcIndex, Qt.EditRole)
@@ -408,7 +410,7 @@ class FieldsMappingPanel(BASE, WIDGET):
 
         self.model.insertRows(row + 2, 1)
 
-        for column in xrange(0, self.model.columnCount()):
+        for column in xrange(self.model.columnCount()):
             srcIndex = self.model.index(row, column)
             dstIndex = self.model.index(row + 2, column)
             value = self.model.data(srcIndex, Qt.EditRole)
@@ -434,7 +436,7 @@ class FieldsMappingPanel(BASE, WIDGET):
     def resizeColumns(self):
         header = self.fieldsView.horizontalHeader()
         header.resizeSections(QHeaderView.ResizeToContents)
-        for section in xrange(0, header.count()):
+        for section in xrange(header.count()):
             size = header.sectionSize(section)
             fieldType = FieldsMappingModel.columns[section]['type']
             if fieldType == QgsExpression:

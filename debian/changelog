@@ -4,12 +4,16 @@ qgis (2.15.0) UNRELEASED; urgency=medium
   * New development version 2.15 after branch of 2.14
   * drop ubuntu utopic
   * refine GSL build dependency
+  * limit python-future to stretch, sid, wily and xenial
+
+  [ Matthias Kuhn ]
+  * Add dependency to python-future
 
   [ Bas Couwenberg ]
   * Fix removal of obsolete diversions for bother the grass plugin & provider.
     (closes: #817176)
 
- -- Jürgen E. Fischer <jef@norbit.de>  Fri, 26 Feb 2016 13:23:49 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Thu, 24 Mar 2016 09:53:20 +0100
 
 qgis (2.14.0) unstable; urgency=medium
 

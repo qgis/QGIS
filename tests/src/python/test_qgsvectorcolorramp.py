@@ -12,14 +12,14 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis # switch sip api
+import qgis  # NOQA
 
 from qgis.core import (QgsVectorGradientColorRampV2,
                        QgsGradientStop,
                        QgsVectorRandomColorRampV2,
                        QgsRandomColorsV2,
                        QgsVectorColorBrewerColorRampV2)
-from PyQt4.QtGui import QColor, QGradient
+from PyQt.QtGui import QColor, QGradient
 from qgis.testing import unittest
 
 
@@ -230,7 +230,7 @@ class PyQgsVectorColorRamp(unittest.TestCase):
 
         # test creating from properties
         # QgsRandomColorsV2 has no properties for now, but test to ensure no crash
-        props = r.properties()
+        props = r.properties()  # NOQA
 
         # test cloning ramp
         cloned = r.clone()

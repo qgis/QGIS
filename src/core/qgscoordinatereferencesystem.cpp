@@ -1657,7 +1657,11 @@ bool QgsCoordinateReferenceSystem::loadIDs( QHash<int, QString> &wkts )
            epsg == 2303 || epsg == 2304 || epsg == 2305 || epsg == 2306 || epsg == 2307 || epsg == 2963 || epsg == 2985 || epsg == 2986 || epsg == 3052 ||
            epsg == 3053 || epsg == 3139 || epsg == 3144 || epsg == 3145 || epsg == 3173 || epsg == 3295 || epsg == 3993 || epsg == 4087 || epsg == 4088 ||
            epsg == 5017 || epsg == 5221 || epsg == 5224 || epsg == 5225 || epsg == 5514 || epsg == 5515 || epsg == 5516 || epsg == 5819 || epsg == 5820 ||
-           epsg == 5821 || epsg == 32600 || epsg == 32663 || epsg == 32700 )
+           epsg == 5821 || epsg == 6200 || epsg == 6201 || epsg == 6202 || epsg == 6244 || epsg == 6245 || epsg == 6246 || epsg == 6247 || epsg == 6248 ||
+           epsg == 6249 || epsg == 6250 || epsg == 6251 || epsg == 6252 || epsg == 6253 || epsg == 6254 || epsg == 6255 || epsg == 6256 || epsg == 6257 ||
+           epsg == 6258 || epsg == 6259 || epsg == 6260 || epsg == 6261 || epsg == 6262 || epsg == 6263 || epsg == 6264 || epsg == 6265 || epsg == 6266 ||
+           epsg == 6267 || epsg == 6268 || epsg == 6269 || epsg == 6270 || epsg == 6271 || epsg == 6272 || epsg == 6273 || epsg == 6274 || epsg == 6275 ||
+           epsg == 32600 || epsg == 32663 || epsg == 32700 )
         continue;
 
       if ( OSRImportFromEPSG( crs, epsg ) != OGRERR_NONE )

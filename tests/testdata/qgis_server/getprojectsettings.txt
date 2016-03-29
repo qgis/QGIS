@@ -150,7 +150,7 @@ Content-Type: text/xml; charset=utf-8
     </Style>
     <TreeName>testlayer èé</TreeName>
     <Attributes>
-     <Attribute typeName="Integer" precision="0" length="10" editType="TextEdit" type="int" comment="" name="id"/>
+     <Attribute typeName="Integer64" precision="0" length="10" editType="TextEdit" type="qlonglong" comment="" name="id"/>
      <Attribute typeName="String" precision="0" length="10" editType="TextEdit" type="QString" comment="" name="name"/>
      <Attribute typeName="String" precision="0" length="13" editType="TextEdit" type="QString" comment="" name="utf8nameè"/>
     </Attributes>

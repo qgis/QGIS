@@ -1,0 +1,15 @@
+v.lrs.create
+Creates Linear Reference System
+Vector (v.*)
+ParameterVector|in_lines|Input vector map containing lines|1|False
+ParameterVector|points|Input vector map containing reference points|0|False
+ParameterTableField|lidcol|Column containing line identifiers for lines|in_lines|0|False
+ParameterTableField|pidcol|Column containing line identifiers for points|points|0|False
+ParameterTableField|start_mp|Column containing milepost position for the beginning of next segment|points|0|False
+ParameterTableField|start_off|Column containing offset from milepost for the beginning of next segment|points|0|False
+ParameterTableField|end_mp|Column containing milepost position for the end of previous segment|points|0|False
+ParameterTableField|end_off|Column containing offset from milepost for the end of previous segment|points|0|False
+ParameterNumber|thresh|Maximum distance of point to line allowed|0|None|1|True
+OutputVector|out_lines|LRS lines
+OutputVector|err|LRS Errors
+OutputTable|rstable|RS Table

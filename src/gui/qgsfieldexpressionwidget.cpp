@@ -122,13 +122,15 @@ bool QgsFieldExpressionWidget::isExpression() const
 QString QgsFieldExpressionWidget::currentField( bool *isExpression, bool *isValid ) const
 {
   QString text = currentText();
+  bool valueIsExpression = this->isExpression();
   if ( isValid )
   {
-    *isValid = isValidExpression();
+    // valid if not an expression (ie, set to a field), or set to an expression and expression is valid
+    *isValid = !valueIsExpression || isValidExpression();
   }
   if ( isExpression )
   {
-    *isExpression = this->isExpression();
+    *isExpression = valueIsExpression;
   }
   return text;
 }

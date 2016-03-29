@@ -28,16 +28,8 @@ __revision__ = '$Format:%H$'
 
 import math
 
-from PyQt4.QtCore import Qt
-from PyQt4.QtGui import (QDialog,
-                         QVBoxLayout,
-                         QHBoxLayout,
-                         QLabel,
-                         QLineEdit,
-                         QComboBox,
-                         QCheckBox,
-                         QDialogButtonBox,
-                         QMessageBox)
+from PyQt.QtCore import Qt
+from PyQt.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QComboBox, QCheckBox, QDialogButtonBox, QMessageBox
 
 from processing.core.parameters import (Parameter,
                                         ParameterBoolean,

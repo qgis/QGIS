@@ -78,7 +78,7 @@ void TestQgsWcsPublicServers::init()
   // Unfortunately this seems to be the only way to set timeout, we try to reset it
   // at the end but it can be canceled before ...
   QSettings settings;
-  mOrigTimeout = settings.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt();
+  mOrigTimeout = settings.value( "/qgis/networkAndProxy/networkTimeout", "60000" ).toInt();
   settings.setValue( "/qgis/networkAndProxy/networkTimeout", mTimeout );
 
   //mCacheDir = QDir( "./wcstestcache" );

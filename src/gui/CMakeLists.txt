@@ -267,6 +267,7 @@ SET(QGIS_GUI_SRCS
   qgsslider.cpp
   qgssublayersdialog.cpp
   qgssvgannotationitem.cpp
+  qgstablewidgetitem.cpp
   qgstextannotationitem.cpp
   qgsunitselectionwidget.cpp
   qgsuserinputdockwidget.cpp
@@ -575,6 +576,7 @@ SET(QGIS_GUI_HDRS
   qgsnumericsortlistviewitem.h
   qgsrubberband.h
   qgssvgannotationitem.h
+  qgstablewidgetitem.h
   qgstextannotationitem.h
   qgsuserinputdockwidget.h
   qgsvectorlayertools.h

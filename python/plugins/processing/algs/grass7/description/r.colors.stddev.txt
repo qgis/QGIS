@@ -1,0 +1,7 @@
+r.colors.stddev
+Sets color rules based on stddev from a raster map's mean value.
+Raster (r.*)
+ParameterRaster|map|Name of raster map|False
+*ParameterBoolean|-b|Color using standard deviation bands|False
+*ParameterBoolean|-z|Force center at zero|False
+OutputRaster|output|Stddev Colors

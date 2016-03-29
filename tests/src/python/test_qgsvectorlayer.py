@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis # switch sip api
+import qgis  # NOQA
 
 import os
 
@@ -34,9 +34,7 @@ from qgis.core import (QGis,
                        QgsCoordinateReferenceSystem,
                        QgsProject,
                        QgsUnitTypes)
-from qgis.testing import (start_app,
-                          unittest
-                          )
+from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 start_app()
 
@@ -111,9 +109,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         myPath = os.path.join(unitTestDataPath(), 'lines.shp')
         myLayer = QgsVectorLayer(myPath, 'Lines', 'ogr')
         myCount = myLayer.featureCount()
-        myExpectedCount = 6
-        myMessage = '\nExpected: %s\nGot: %s' % (myCount, myExpectedCount)
-        assert myCount == myExpectedCount, myMessage
+        self.assertEquals(myCount, 6)
 
     # ADD FEATURE
 
@@ -123,33 +119,34 @@ class TestQgsVectorLayer(unittest.TestCase):
         feat.setGeometry(QgsGeometry.fromPoint(QgsPoint(1, 2)))
 
         def checkAfter():
-            assert layer.pendingFeatureCount() == 1
+            self.assertEquals(layer.pendingFeatureCount(), 1)
 
             # check select+nextFeature
             f = layer.getFeatures().next()
-            assert f.geometry().asPoint() == QgsPoint(1, 2)
+            self.assertEquals(f.geometry().asPoint(), QgsPoint(1, 2))
 
             # check feature at id
             f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
-            assert f2.geometry().asPoint() == QgsPoint(1, 2)
+            self.assertEquals(f2.geometry().asPoint(), QgsPoint(1, 2))
 
         def checkBefore():
-            assert layer.pendingFeatureCount() == 0
+            self.assertEquals(layer.pendingFeatureCount(), 0)
 
             # check select+nextFeature
-            self.assertRaises(StopIteration, layer.getFeatures().next)
+            with self.assertRaises(StopIteration):
+                layer.getFeatures().next()
 
         checkBefore()
 
         # try to add feature without editing mode
-        assert not layer.addFeature(feat)
+        self.assertFalse(layer.addFeature(feat))
 
         # add feature
         layer.startEditing()
-        assert layer.addFeature(feat)
+        self.assertTrue(layer.addFeature(feat))
 
         checkAfter()
-        assert layer.dataProvider().featureCount() == 0
+        self.assertEquals(layer.dataProvider().featureCount(), 0)
 
         # now try undo/redo
         layer.undoStack().undo()
@@ -157,10 +154,10 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer.undoStack().redo()
         checkAfter()
 
-        assert layer.commitChanges()
+        self.assertTrue(layer.commitChanges())
 
         checkAfter()
-        assert layer.dataProvider().featureCount() == 1
+        self.assertEquals(layer.dataProvider().featureCount(), 1)
 
     # DELETE FEATURE
 
@@ -169,41 +166,43 @@ class TestQgsVectorLayer(unittest.TestCase):
         fid = 1
 
         def checkAfter():
-            assert layer.pendingFeatureCount() == 0
+            self.assertEquals(layer.pendingFeatureCount(), 0)
 
             # check select+nextFeature
-            self.assertRaises(StopIteration, layer.getFeatures().next)
+            with self.assertRaises(StopIteration):
+                layer.getFeatures().next()
 
             # check feature at id
-            self.assertRaises(StopIteration,
-                              layer.getFeatures(QgsFeatureRequest(fid)).next)
+            with self.assertRaises(StopIteration):
+                layer.getFeatures(QgsFeatureRequest(fid)).next()
 
         def checkBefore():
-            assert layer.pendingFeatureCount() == 1
+            self.assertEquals(layer.pendingFeatureCount(), 1)
 
             # check select+nextFeature
             fi = layer.getFeatures()
             f = fi.next()
-            assert f.geometry().asPoint() == QgsPoint(100, 200)
-            self.assertRaises(StopIteration, fi.next)
+            self.assertEquals(f.geometry().asPoint(), QgsPoint(100, 200))
+            with self.assertRaises(StopIteration):
+                fi.next()
 
             # check feature at id
             f2 = layer.getFeatures(QgsFeatureRequest(fid)).next()
-            assert f2.id() == fid
+            self.assertEquals(f2.id(), fid)
 
         checkBefore()
 
         # try to delete feature without editing mode
-        assert not layer.deleteFeature(fid)
+        self.assertFalse(layer.deleteFeature(fid))
 
         # delete feature
         layer.startEditing()
-        assert layer.deleteFeature(fid)
+        self.assertTrue(layer.deleteFeature(fid))
 
         checkAfter()
 
         # make sure calling it twice does not work
-        assert not layer.deleteFeature(fid)
+        self.assertFalse(layer.deleteFeature(fid))
 
         # now try undo/redo
         layer.undoStack().undo()
@@ -211,12 +210,12 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer.undoStack().redo()
         checkAfter()
 
-        assert layer.dataProvider().featureCount() == 1
+        self.assertEquals(layer.dataProvider().featureCount(), 1)
 
-        assert layer.commitChanges()
+        self.assertTrue(layer.commitChanges())
 
         checkAfter()
-        assert layer.dataProvider().featureCount() == 0
+        self.assertEquals(layer.dataProvider().featureCount(), 0)
 
     def test_DeleteFeatureAfterAddFeature(self):
 
@@ -225,25 +224,26 @@ class TestQgsVectorLayer(unittest.TestCase):
         feat.setGeometry(QgsGeometry.fromPoint(QgsPoint(1, 2)))
 
         def checkBefore():
-            assert layer.pendingFeatureCount() == 0
+            self.assertEquals(layer.pendingFeatureCount(), 0)
 
             # check select+nextFeature
-            self.assertRaises(StopIteration, layer.getFeatures().next)
+            with self.assertRaises(StopIteration):
+                layer.getFeatures().next()
 
         def checkAfter1():
-            assert layer.pendingFeatureCount() == 1
+            self.assertEquals(layer.pendingFeatureCount(), 1)
 
         def checkAfter2():
-            checkBefore() # should be the same state: no features
+            checkBefore()  # should be the same state: no features
 
         checkBefore()
 
         # add feature
         layer.startEditing()
-        assert layer.addFeature(feat)
+        self.assertTrue(layer.addFeature(feat))
         checkAfter1()
         fid = feat.id()
-        assert layer.deleteFeature(fid)
+        self.assertTrue(layer.deleteFeature(fid))
         checkAfter2()
 
         # now try undo/redo
@@ -256,10 +256,10 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer.undoStack().redo()
         checkAfter2()
 
-        assert layer.commitChanges()
+        self.assertTrue(layer.commitChanges())
         checkAfter2()
 
-        assert layer.dataProvider().featureCount() == 0
+        self.assertEquals(layer.dataProvider().featureCount(), 0)
 
     # CHANGE ATTRIBUTE
 
@@ -271,25 +271,25 @@ class TestQgsVectorLayer(unittest.TestCase):
             # check select+nextFeature
             fi = layer.getFeatures()
             f = fi.next()
-            assert f[0] == "good"
+            self.assertEquals(f[0], "good")
 
             # check feature at id
             f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
-            assert f2[0] == "good"
+            self.assertEquals(f2[0], "good")
 
         def checkBefore():
             # check select+nextFeature
             f = layer.getFeatures().next()
-            assert f[0] == "test"
+            self.assertEquals(f[0], "test")
 
         checkBefore()
 
         # try to change attribute without editing mode
-        assert not layer.changeAttributeValue(fid, 0, "good")
+        self.assertFalse(layer.changeAttributeValue(fid, 0, "good"))
 
         # change attribute
         layer.startEditing()
-        assert layer.changeAttributeValue(fid, 0, "good")
+        self.assertTrue(layer.changeAttributeValue(fid, 0, "good"))
 
         checkAfter()
 
@@ -299,44 +299,46 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer.undoStack().redo()
         checkAfter()
 
-        assert layer.commitChanges()
+        self.assertTrue(layer.commitChanges())
         checkAfter()
 
     def test_ChangeAttributeAfterAddFeature(self):
         layer = createLayerWithOnePoint()
-        layer.dataProvider().deleteFeatures([1]) # no need for this feature
+        layer.dataProvider().deleteFeatures([1])  # no need for this feature
 
         newF = QgsFeature()
         newF.setGeometry(QgsGeometry.fromPoint(QgsPoint(1, 1)))
         newF.setAttributes(["hello", 42])
 
         def checkAfter():
-            assert len(layer.pendingFields()) == 2
+            self.assertEquals(len(layer.pendingFields()), 2)
             # check feature
             fi = layer.getFeatures()
             f = fi.next()
             attrs = f.attributes()
-            assert len(attrs) == 2
-            assert attrs[0] == "hello"
-            assert attrs[1] == 12
+            self.assertEquals(len(attrs), 2)
+            self.assertEquals(attrs[0], "hello")
+            self.assertEquals(attrs[1], 12)
 
-            self.assertRaises(StopIteration, fi.next)
+            with self.assertRaises(StopIteration):
+                fi.next()
 
             # check feature at id
             f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
-            assert f2[0] == "hello"
-            assert f2[1] == 12
+            self.assertEquals(f2[0], "hello")
+            self.assertEquals(f2[1], 12)
 
         def checkBefore():
             # check feature
-            self.assertRaises(StopIteration, layer.getFeatures().next)
+            with self.assertRaises(StopIteration):
+                layer.getFeatures().next()
 
         checkBefore()
 
         layer.startEditing()
         layer.beginEditCommand("AddFeature + ChangeAttribute")
-        assert layer.addFeature(newF)
-        assert layer.changeAttributeValue(newF.id(), 1, 12)
+        self.assertTrue(layer.addFeature(newF))
+        self.assertTrue(layer.changeAttributeValue(newF.id(), 1, 12))
         layer.endEditCommand()
 
         checkAfter()
@@ -347,7 +349,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer.undoStack().redo()
         checkAfter()
 
-        assert layer.commitChanges()
+        self.assertTrue(layer.commitChanges())
         checkAfter()
 
         # print "COMMIT ERRORS:"
@@ -362,25 +364,25 @@ class TestQgsVectorLayer(unittest.TestCase):
         def checkAfter():
             # check select+nextFeature
             f = layer.getFeatures().next()
-            assert f.geometry().asPoint() == QgsPoint(300, 400)
+            self.assertEquals(f.geometry().asPoint(), QgsPoint(300, 400))
             # check feature at id
             f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
-            assert f2.geometry().asPoint() == QgsPoint(300, 400)
+            self.assertEquals(f2.geometry().asPoint(), QgsPoint(300, 400))
 
         def checkBefore():
             # check select+nextFeature
             f = layer.getFeatures().next()
-            assert f.geometry().asPoint() == QgsPoint(100, 200)
+            self.assertEquals(f.geometry().asPoint(), QgsPoint(100, 200))
 
         # try to change geometry without editing mode
-        assert not layer.changeGeometry(fid, QgsGeometry.fromPoint(QgsPoint(300, 400)))
+        self.assertFalse(layer.changeGeometry(fid, QgsGeometry.fromPoint(QgsPoint(300, 400))))
 
         checkBefore()
 
         # change geometry
         layer.startEditing()
         layer.beginEditCommand("ChangeGeometry")
-        assert layer.changeGeometry(fid, QgsGeometry.fromPoint(QgsPoint(300, 400)))
+        self.assertTrue(layer.changeGeometry(fid, QgsGeometry.fromPoint(QgsPoint(300, 400))))
         layer.endEditCommand()
 
         checkAfter()
@@ -391,7 +393,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer.undoStack().redo()
         checkAfter()
 
-        assert layer.commitChanges()
+        self.assertTrue(layer.commitChanges())
         checkAfter()
 
     def test_ChangeGeometryAfterChangeAttribute(self):
@@ -401,26 +403,26 @@ class TestQgsVectorLayer(unittest.TestCase):
         def checkAfter():
             # check select+nextFeature
             f = layer.getFeatures().next()
-            assert f.geometry().asPoint() == QgsPoint(300, 400)
-            assert f[0] == "changed"
+            self.assertEquals(f.geometry().asPoint(), QgsPoint(300, 400))
+            self.assertEquals(f[0], "changed")
             # check feature at id
             f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
-            assert f2.geometry().asPoint() == QgsPoint(300, 400)
-            assert f2[0] == "changed"
+            self.assertEquals(f2.geometry().asPoint(), QgsPoint(300, 400))
+            self.assertEquals(f2[0], "changed")
 
         def checkBefore():
             # check select+nextFeature
             f = layer.getFeatures().next()
-            assert f.geometry().asPoint() == QgsPoint(100, 200)
-            assert f[0] == "test"
+            self.assertEquals(f.geometry().asPoint(), QgsPoint(100, 200))
+            self.assertEquals(f[0], "test")
 
         checkBefore()
 
         # change geometry
         layer.startEditing()
         layer.beginEditCommand("ChangeGeometry + ChangeAttribute")
-        assert layer.changeAttributeValue(fid, 0, "changed")
-        assert layer.changeGeometry(fid, QgsGeometry.fromPoint(QgsPoint(300, 400)))
+        self.assertTrue(layer.changeAttributeValue(fid, 0, "changed"))
+        self.assertTrue(layer.changeGeometry(fid, QgsGeometry.fromPoint(QgsPoint(300, 400))))
         layer.endEditCommand()
 
         checkAfter()
@@ -431,36 +433,37 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer.undoStack().redo()
         checkAfter()
 
-        assert layer.commitChanges()
+        self.assertTrue(layer.commitChanges())
         checkAfter()
 
     def test_ChangeGeometryAfterAddFeature(self):
         layer = createLayerWithOnePoint()
-        layer.dataProvider().deleteFeatures([1]) # no need for this feature
+        layer.dataProvider().deleteFeatures([1])  # no need for this feature
 
         newF = QgsFeature()
         newF.setGeometry(QgsGeometry.fromPoint(QgsPoint(1, 1)))
         newF.setAttributes(["hello", 42])
 
         def checkAfter():
-            assert len(layer.pendingFields()) == 2
+            self.assertEquals(len(layer.pendingFields()), 2)
             # check feature
             f = layer.getFeatures().next()
-            assert f.geometry().asPoint() == QgsPoint(2, 2)
+            self.assertEquals(f.geometry().asPoint(), QgsPoint(2, 2))
             # check feature at id
             f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
-            assert f2.geometry().asPoint() == QgsPoint(2, 2)
+            self.assertEquals(f2.geometry().asPoint(), QgsPoint(2, 2))
 
         def checkBefore():
             # check feature
-            self.assertRaises(StopIteration, layer.getFeatures().next)
+            with self.assertRaises(StopIteration):
+                layer.getFeatures().next()
 
         checkBefore()
 
         layer.startEditing()
         layer.beginEditCommand("AddFeature+ChangeGeometry")
-        assert layer.addFeature(newF)
-        assert layer.changeGeometry(newF.id(), QgsGeometry.fromPoint(QgsPoint(2, 2)))
+        self.assertTrue(layer.addFeature(newF))
+        self.assertTrue(layer.changeGeometry(newF.id(), QgsGeometry.fromPoint(QgsPoint(2, 2))))
         layer.endEditCommand()
 
         checkAfter()
@@ -471,7 +474,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer.undoStack().redo()
         checkAfter()
 
-        assert layer.commitChanges()
+        self.assertTrue(layer.commitChanges())
         checkAfter()
 
         # print "COMMIT ERRORS:"
@@ -487,52 +490,52 @@ class TestQgsVectorLayer(unittest.TestCase):
         def checkBefore():
             # check fields
             flds = layer.pendingFields()
-            assert len(flds) == 2
-            assert flds[0].name() == "fldtxt"
-            assert flds[1].name() == "fldint"
+            self.assertEquals(len(flds), 2)
+            self.assertEquals(flds[0].name(), "fldtxt")
+            self.assertEquals(flds[1].name(), "fldint")
 
             # check feature
             f = layer.getFeatures().next()
             attrs = f.attributes()
-            assert len(attrs) == 2
-            assert attrs[0] == "test"
-            assert attrs[1] == 123
+            self.assertEquals(len(attrs), 2)
+            self.assertEquals(attrs[0], "test")
+            self.assertEquals(attrs[1], 123)
 
         def checkAfter():
             # check fields
             flds = layer.pendingFields()
-            assert len(flds) == 3
-            assert flds[0].name() == "fldtxt"
-            assert flds[1].name() == "fldint"
-            assert flds[2].name() == "fld1"
+            self.assertEquals(len(flds), 3)
+            self.assertEquals(flds[0].name(), "fldtxt")
+            self.assertEquals(flds[1].name(), "fldint")
+            self.assertEquals(flds[2].name(), "fld1")
 
             # check feature
             f = layer.getFeatures().next()
             attrs = f.attributes()
-            assert len(attrs) == 3
-            assert attrs[0] == "test"
-            assert attrs[1] == 123
-            assert attrs[2] is None
+            self.assertEquals(len(attrs), 3)
+            self.assertEquals(attrs[0], "test")
+            self.assertEquals(attrs[1], 123)
+            self.assertTrue(attrs[2] is None)
 
             # check feature at id
             f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
-            assert f2[0] == "test"
-            assert f2[1] == 123
-            assert f2[2] is None
+            self.assertEquals(f2[0], "test")
+            self.assertEquals(f2[1], 123)
+            self.assertTrue(f2[2] is None)
 
         # for nt in layer.dataProvider().nativeTypes():
         #    print (nt.mTypeDesc, nt.mTypeName, nt.mType, nt.mMinLen,
         #          nt.mMaxLen, nt.mMinPrec, nt.mMaxPrec)
-        assert layer.dataProvider().supportedType(fld1)
+        self.assertTrue(layer.dataProvider().supportedType(fld1))
 
         # without editing mode
-        assert not layer.addAttribute(fld1)
+        self.assertFalse(layer.addAttribute(fld1))
 
         layer.startEditing()
 
         checkBefore()
 
-        assert layer.addAttribute(fld1)
+        self.assertTrue(layer.addAttribute(fld1))
         checkAfter()
 
         # now try undo/redo
@@ -546,7 +549,7 @@ class TestQgsVectorLayer(unittest.TestCase):
 
     def test_AddAttributeAfterAddFeature(self):
         layer = createLayerWithOnePoint()
-        layer.dataProvider().deleteFeatures([1]) # no need for this feature
+        layer.dataProvider().deleteFeatures([1])  # no need for this feature
 
         newF = QgsFeature()
         newF.setGeometry(QgsGeometry.fromPoint(QgsPoint(1, 1)))
@@ -555,32 +558,33 @@ class TestQgsVectorLayer(unittest.TestCase):
         fld1 = QgsField("fld1", QVariant.Int, "integer")
 
         def checkBefore():
-            assert len(layer.pendingFields()) == 2
+            self.assertEquals(len(layer.pendingFields()), 2)
             # check feature
-            self.assertRaises(StopIteration, layer.getFeatures().next)
+            with self.assertRaises(StopIteration):
+                layer.getFeatures().next()
 
         def checkAfter():
-            assert len(layer.pendingFields()) == 3
+            self.assertEquals(len(layer.pendingFields()), 3)
             # check feature
             f = layer.getFeatures().next()
             attrs = f.attributes()
-            assert len(attrs) == 3
-            assert attrs[0] == "hello"
-            assert attrs[1] == 42
-            assert attrs[2] is None
+            self.assertEquals(len(attrs), 3)
+            self.assertEquals(attrs[0], "hello")
+            self.assertEquals(attrs[1], 42)
+            self.assertTrue(attrs[2] is None)
             # check feature at id
             f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
-            assert f2[0] == "hello"
-            assert f2[1] == 42
-            assert f2[2] is None
+            self.assertEquals(f2[0], "hello")
+            self.assertEquals(f2[1], 42)
+            self.assertTrue(f2[2] is None)
 
         layer.startEditing()
 
         checkBefore()
 
         layer.beginEditCommand("AddFeature + AddAttribute")
-        assert layer.addFeature(newF)
-        assert layer.addAttribute(fld1)
+        self.assertTrue(layer.addFeature(newF))
+        self.assertTrue(layer.addAttribute(fld1))
         layer.endEditCommand()
 
         checkAfter()
@@ -601,7 +605,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         pass  # not interesting to test...?
 
     def test_AddAttributeAfterDeleteAttribute(self):
-        pass # maybe it would be good to test
+        pass  # maybe it would be good to test
 
     # DELETE ATTRIBUTE
 
@@ -613,62 +617,62 @@ class TestQgsVectorLayer(unittest.TestCase):
             {1: {2: 5.5}})
 
         # without editing mode
-        assert not layer.deleteAttribute(0)
+        self.assertFalse(layer.deleteAttribute(0))
 
         def checkBefore():
             flds = layer.pendingFields()
-            assert len(flds) == 3
-            assert flds[0].name() == "fldtxt"
-            assert flds[1].name() == "fldint"
-            assert flds[2].name() == "flddouble"
+            self.assertEquals(len(flds), 3)
+            self.assertEquals(flds[0].name(), "fldtxt")
+            self.assertEquals(flds[1].name(), "fldint")
+            self.assertEquals(flds[2].name(), "flddouble")
 
             f = layer.getFeatures().next()
             attrs = f.attributes()
-            assert len(attrs) == 3
-            assert attrs[0] == "test"
-            assert attrs[1] == 123
-            assert attrs[2] == 5.5
+            self.assertEquals(len(attrs), 3)
+            self.assertEquals(attrs[0], "test")
+            self.assertEquals(attrs[1], 123)
+            self.assertEquals(attrs[2], 5.5)
 
         layer.startEditing()
 
         checkBefore()
 
-        assert layer.deleteAttribute(0)
+        self.assertTrue(layer.deleteAttribute(0))
 
         def checkAfterOneDelete():
             flds = layer.pendingFields()
             # for fld in flds: print "FLD", fld.name()
-            assert len(flds) == 2
-            assert flds[0].name() == "fldint"
-            assert flds[1].name() == "flddouble"
-            assert layer.pendingAllAttributesList() == [0, 1]
+            self.assertEquals(len(flds), 2)
+            self.assertEquals(flds[0].name(), "fldint")
+            self.assertEquals(flds[1].name(), "flddouble")
+            self.assertEquals(layer.pendingAllAttributesList(), [0, 1])
 
             f = layer.getFeatures().next()
             attrs = f.attributes()
-            assert len(attrs) == 2
-            assert attrs[0] == 123
-            assert attrs[1] == 5.5
+            self.assertEquals(len(attrs), 2)
+            self.assertEquals(attrs[0], 123)
+            self.assertEquals(attrs[1], 5.5)
 
         checkAfterOneDelete()
 
         # delete last attribute
-        assert layer.deleteAttribute(0)
+        self.assertTrue(layer.deleteAttribute(0))
 
         def checkAfterTwoDeletes():
-            assert layer.pendingAllAttributesList() == [0]
+            self.assertEquals(layer.pendingAllAttributesList(), [0])
             flds = layer.pendingFields()
             # for fld in flds: print "FLD", fld.name()
-            assert len(flds) == 1
-            assert flds[0].name() == "flddouble"
+            self.assertEquals(len(flds), 1)
+            self.assertEquals(flds[0].name(), "flddouble")
 
             f = layer.getFeatures().next()
             attrs = f.attributes()
-            assert len(attrs) == 1
-            assert attrs[0] == 5.5
+            self.assertEquals(len(attrs), 1)
+            self.assertEquals(attrs[0], 5.5)
             # check feature at id
             f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
-            assert len(f2.attributes()) == 1
-            assert f2[0] == 5.5
+            self.assertEquals(len(f2.attributes()), 1)
+            self.assertEquals(f2[0], 5.5)
 
         checkAfterTwoDeletes()
         layer.undoStack().undo()
@@ -680,7 +684,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer.undoStack().redo()
         checkAfterTwoDeletes()
 
-        assert layer.commitChanges()  # COMMIT!
+        self.assertTrue(layer.commitChanges())  # COMMIT!
         checkAfterTwoDeletes()
 
     def test_DeleteAttributeAfterAddAttribute(self):
@@ -689,29 +693,29 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         def checkAfter():  # layer should be unchanged
             flds = layer.pendingFields()
-            assert len(flds) == 2
-            assert flds[0].name() == "fldtxt"
-            assert flds[1].name() == "fldint"
+            self.assertEquals(len(flds), 2)
+            self.assertEquals(flds[0].name(), "fldtxt")
+            self.assertEquals(flds[1].name(), "fldint")
 
             # check feature
             f = layer.getFeatures().next()
             attrs = f.attributes()
-            assert len(attrs) == 2
-            assert attrs[0] == "test"
-            assert attrs[1] == 123
+            self.assertEquals(len(attrs), 2)
+            self.assertEquals(attrs[0], "test")
+            self.assertEquals(attrs[1], 123)
             # check feature at id
             f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
-            assert len(f2.attributes()) == 2
-            assert f2[0] == "test"
-            assert f2[1] == 123
+            self.assertEquals(len(f2.attributes()), 2)
+            self.assertEquals(f2[0], "test")
+            self.assertEquals(f2[1], 123)
 
         checkAfter()
 
         layer.startEditing()
 
         layer.beginEditCommand("AddAttribute + DeleteAttribute")
-        assert layer.addAttribute(fld1)
-        assert layer.deleteAttribute(2)
+        self.assertTrue(layer.addAttribute(fld1))
+        self.assertTrue(layer.deleteAttribute(2))
         layer.endEditCommand()
 
         checkAfter()
@@ -727,33 +731,34 @@ class TestQgsVectorLayer(unittest.TestCase):
 
     def test_DeleteAttributeAfterAddFeature(self):
         layer = createLayerWithOnePoint()
-        layer.dataProvider().deleteFeatures([1]) # no need for this feature
+        layer.dataProvider().deleteFeatures([1])  # no need for this feature
 
         newF = QgsFeature()
         newF.setGeometry(QgsGeometry.fromPoint(QgsPoint(1, 1)))
         newF.setAttributes(["hello", 42])
 
         def checkBefore():
-            assert len(layer.pendingFields()) == 2
+            self.assertEquals(len(layer.pendingFields()), 2)
             # check feature
-            self.assertRaises(StopIteration, layer.getFeatures().next)
+            with self.assertRaises(StopIteration):
+                layer.getFeatures().next()
 
         def checkAfter1():
-            assert len(layer.pendingFields()) == 2
+            self.assertEquals(len(layer.pendingFields()), 2)
             # check feature
             f = layer.getFeatures().next()
             attrs = f.attributes()
-            assert len(attrs) == 2
-            assert attrs[0] == "hello"
-            assert attrs[1] == 42
+            self.assertEquals(len(attrs), 2)
+            self.assertEquals(attrs[0], "hello")
+            self.assertEquals(attrs[1], 42)
 
         def checkAfter2():
-            assert len(layer.pendingFields()) == 1
+            self.assertEquals(len(layer.pendingFields()), 1)
             # check feature
             f = layer.getFeatures().next()
             attrs = f.attributes()
-            assert len(attrs) == 1
-            assert attrs[0] == 42
+            self.assertEquals(len(attrs), 1)
+            self.assertEquals(attrs[0], 42)
 
         layer.startEditing()
 
@@ -784,32 +789,32 @@ class TestQgsVectorLayer(unittest.TestCase):
             # check feature
             f = layer.getFeatures().next()
             attrs = f.attributes()
-            assert len(attrs) == 2
-            assert attrs[0] == "test"
-            assert attrs[1] == 123
+            self.assertEquals(len(attrs), 2)
+            self.assertEquals(attrs[0], "test")
+            self.assertEquals(attrs[1], 123)
 
         def checkAfter1():
             # check feature
             f = layer.getFeatures().next()
             attrs = f.attributes()
-            assert len(attrs) == 2
-            assert attrs[0] == "changed"
-            assert attrs[1] == 123
+            self.assertEquals(len(attrs), 2)
+            self.assertEquals(attrs[0], "changed")
+            self.assertEquals(attrs[1], 123)
 
         def checkAfter2():
             # check feature
             f = layer.getFeatures().next()
             attrs = f.attributes()
-            assert len(attrs) == 1
-            assert attrs[0] == 123
+            self.assertEquals(len(attrs), 1)
+            self.assertEquals(attrs[0], 123)
 
         layer.startEditing()
 
         checkBefore()
 
-        assert layer.changeAttributeValue(1, 0, "changed")
+        self.assertTrue(layer.changeAttributeValue(1, 0, "changed"))
         checkAfter1()
-        assert layer.deleteAttribute(0)
+        self.assertTrue(layer.deleteAttribute(0))
         checkAfter2()
 
         # now try undo/redo
@@ -829,8 +834,8 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer = createLayerWithOnePoint()
 
         flds = layer.pendingFields()
-        assert flds.indexFromName("fldint") == 1
-        assert flds.indexFromName("fldXXX") == -1
+        self.assertEquals(flds.indexFromName("fldint"), 1)
+        self.assertEquals(flds.indexFromName("fldXXX"), -1)
 
     def test_getFeatures(self):
 
@@ -838,14 +843,14 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         f = QgsFeature()
         fi = layer.getFeatures()
-        assert fi.nextFeature(f)
-        assert f.isValid()
-        assert f.id() == 1
-        assert f.geometry().asPoint() == QgsPoint(100, 200)
-        assert f["fldtxt"] == "test"
-        assert f["fldint"] == 123
+        self.assertTrue(fi.nextFeature(f))
+        self.assertTrue(f.isValid())
+        self.assertEquals(f.id(), 1)
+        self.assertEquals(f.geometry().asPoint(), QgsPoint(100, 200))
+        self.assertEquals(f["fldtxt"], "test")
+        self.assertEquals(f["fldint"], 123)
 
-        assert not fi.nextFeature(f)
+        self.assertFalse(fi.nextFeature(f))
 
     def test_join(self):
 
@@ -873,33 +878,33 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer.addJoin(join2)
 
         flds = layer.pendingFields()
-        assert len(flds) == 6
-        assert flds[2].name() == "joinlayer_x"
-        assert flds[3].name() == "joinlayer_z"
-        assert flds[4].name() == "custom-prefix_x"
-        assert flds[5].name() == "custom-prefix_z"
-        assert flds.fieldOrigin(0) == QgsFields.OriginProvider
-        assert flds.fieldOrigin(2) == QgsFields.OriginJoin
-        assert flds.fieldOrigin(3) == QgsFields.OriginJoin
-        assert flds.fieldOriginIndex(0) == 0
-        assert flds.fieldOriginIndex(2) == 0
-        assert flds.fieldOriginIndex(3) == 2
+        self.assertEquals(len(flds), 6)
+        self.assertEquals(flds[2].name(), "joinlayer_x")
+        self.assertEquals(flds[3].name(), "joinlayer_z")
+        self.assertEquals(flds[4].name(), "custom-prefix_x")
+        self.assertEquals(flds[5].name(), "custom-prefix_z")
+        self.assertEquals(flds.fieldOrigin(0), QgsFields.OriginProvider)
+        self.assertEquals(flds.fieldOrigin(2), QgsFields.OriginJoin)
+        self.assertEquals(flds.fieldOrigin(3), QgsFields.OriginJoin)
+        self.assertEquals(flds.fieldOriginIndex(0), 0)
+        self.assertEquals(flds.fieldOriginIndex(2), 0)
+        self.assertEquals(flds.fieldOriginIndex(3), 2)
 
         f = QgsFeature()
         fi = layer.getFeatures()
-        assert fi.nextFeature(f)
+        self.assertTrue(fi.nextFeature(f))
         attrs = f.attributes()
-        assert len(attrs) == 6
-        assert attrs[0] == "test"
-        assert attrs[1] == 123
-        assert attrs[2] == "foo"
-        assert attrs[3] == 321
-        assert not fi.nextFeature(f)
+        self.assertEquals(len(attrs), 6)
+        self.assertEquals(attrs[0], "test")
+        self.assertEquals(attrs[1], 123)
+        self.assertEquals(attrs[2], "foo")
+        self.assertEquals(attrs[3], 321)
+        self.assertFalse(fi.nextFeature(f))
 
         f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
-        assert len(f2.attributes()) == 6
-        assert f2[2] == "foo"
-        assert f2[3] == 321
+        self.assertEquals(len(f2.attributes()), 6)
+        self.assertEquals(f2[2], "foo")
+        self.assertEquals(f2[3], 321)
 
     def test_InvalidOperations(self):
         layer = createLayerWithOnePoint()
@@ -909,32 +914,32 @@ class TestQgsVectorLayer(unittest.TestCase):
         # ADD FEATURE
 
         newF1 = QgsFeature()
-        assert not layer.addFeature(newF1)  # need attributes like the layer has
+        self.assertFalse(layer.addFeature(newF1))  # need attributes like the layer has)
 
         # DELETE FEATURE
 
-        assert not layer.deleteFeature(-333)
+        self.assertFalse(layer.deleteFeature(-333))
         # we do not check for existence of the feature id if it's
         # not newly added feature
-        #assert not layer.deleteFeature(333)
+        #self.assertFalse(layer.deleteFeature(333))
 
         # CHANGE GEOMETRY
 
-        assert not layer.changeGeometry(
-            -333, QgsGeometry.fromPoint(QgsPoint(1, 1)))
+        self.assertFalse(layer.changeGeometry(
+            -333, QgsGeometry.fromPoint(QgsPoint(1, 1))))
 
         # CHANGE VALUE
 
-        assert not layer.changeAttributeValue(-333, 0, 1)
-        assert not layer.changeAttributeValue(1, -1, 1)
+        self.assertFalse(layer.changeAttributeValue(-333, 0, 1))
+        self.assertFalse(layer.changeAttributeValue(1, -1, 1))
 
         # ADD ATTRIBUTE
 
-        assert not layer.addAttribute(QgsField())
+        self.assertFalse(layer.addAttribute(QgsField()))
 
         # DELETE ATTRIBUTE
 
-        assert not layer.deleteAttribute(-1)
+        self.assertFalse(layer.deleteAttribute(-1))
 
     def onBlendModeChanged(self, mode):
         self.blendModeTest = mode
@@ -946,8 +951,8 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer.blendModeChanged.connect(self.onBlendModeChanged)
         layer.setBlendMode(QPainter.CompositionMode_Screen)
 
-        assert self.blendModeTest == QPainter.CompositionMode_Screen
-        assert layer.blendMode() == QPainter.CompositionMode_Screen
+        self.assertEquals(self.blendModeTest, QPainter.CompositionMode_Screen)
+        self.assertEquals(layer.blendMode(), QPainter.CompositionMode_Screen)
 
     def test_setFeatureBlendMode(self):
         layer = createLayerWithOnePoint()
@@ -956,8 +961,8 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer.featureBlendModeChanged.connect(self.onBlendModeChanged)
         layer.setFeatureBlendMode(QPainter.CompositionMode_Screen)
 
-        assert self.blendModeTest == QPainter.CompositionMode_Screen
-        assert layer.featureBlendMode() == QPainter.CompositionMode_Screen
+        self.assertEquals(self.blendModeTest, QPainter.CompositionMode_Screen)
+        self.assertEquals(layer.featureBlendMode(), QPainter.CompositionMode_Screen)
 
     def test_ExpressionField(self):
         layer = createLayerWithOnePoint()
@@ -980,7 +985,7 @@ class TestQgsVectorLayer(unittest.TestCase):
     def test_ExpressionFieldEllipsoidLengthCalculation(self):
         #create a temporary layer
         temp_layer = QgsVectorLayer("LineString?crs=epsg:3111&field=pk:int", "vl", "memory")
-        assert temp_layer.isValid()
+        self.assertTrue(temp_layer.isValid())
         f1 = QgsFeature(temp_layer.dataProvider().fields(), 1)
         f1.setAttribute("pk", 1)
         f1.setGeometry(QgsGeometry.fromPolyline([QgsPoint(2484588, 2425722), QgsPoint(2482767, 2398853)]))
@@ -994,7 +999,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         QgsProject.instance().writeEntry("Measure", "/Ellipsoid", "WGS84")
         QgsProject.instance().writeEntry("Measurement", "/DistanceUnits", QgsUnitTypes.encodeUnit(QGis.Meters))
 
-        idx = temp_layer.addExpressionField('$length', QgsField('length', QVariant.Double))
+        idx = temp_layer.addExpressionField('$length', QgsField('length', QVariant.Double))  # NOQA
 
         # check value
         f = temp_layer.getFeatures().next()
@@ -1010,7 +1015,7 @@ class TestQgsVectorLayer(unittest.TestCase):
     def test_ExpressionFieldEllipsoidAreaCalculation(self):
         #create a temporary layer
         temp_layer = QgsVectorLayer("Polygon?crs=epsg:3111&field=pk:int", "vl", "memory")
-        assert temp_layer.isValid()
+        self.assertTrue(temp_layer.isValid())
         f1 = QgsFeature(temp_layer.dataProvider().fields(), 1)
         f1.setAttribute("pk", 1)
         f1.setGeometry(QgsGeometry.fromPolygon([[QgsPoint(2484588, 2425722), QgsPoint(2482767, 2398853), QgsPoint(2520109, 2397715), QgsPoint(2520792, 2425494), QgsPoint(2484588, 2425722)]]))
@@ -1024,7 +1029,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         QgsProject.instance().writeEntry("Measure", "/Ellipsoid", "WGS84")
         QgsProject.instance().writeEntry("Measurement", "/AreaUnits", QgsUnitTypes.encodeUnit(QgsUnitTypes.SquareMeters))
 
-        idx = temp_layer.addExpressionField('$area', QgsField('area', QVariant.Double))
+        idx = temp_layer.addExpressionField('$area', QgsField('area', QVariant.Double))  # NOQA
 
         # check value
         f = temp_layer.getFeatures().next()
@@ -1040,7 +1045,7 @@ class TestQgsVectorLayer(unittest.TestCase):
     def test_ExpressionFilter(self):
         layer = createLayerWithOnePoint()
 
-        idx = layer.addExpressionField('5', QgsField('test', QVariant.LongLong))
+        idx = layer.addExpressionField('5', QgsField('test', QVariant.LongLong))  # NOQA
 
         features = layer.getFeatures(QgsFeatureRequest().setFilterExpression('"test" = 6'))
 
@@ -1059,8 +1064,8 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.transparencyTest = 0
         layer.layerTransparencyChanged.connect(self.onLayerTransparencyChanged)
         layer.setLayerTransparency(50)
-        assert self.transparencyTest == 50
-        assert layer.layerTransparency() == 50
+        self.assertEquals(self.transparencyTest, 50)
+        self.assertEquals(layer.layerTransparency(), 50)
 
     def onRendererChanged(self):
         self.rendererChanged = True
@@ -1073,8 +1078,8 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         r = QgsSingleSymbolRendererV2(QgsSymbolV2.defaultSymbol(QGis.Point))
         layer.setRendererV2(r)
-        assert self.rendererChanged
-        assert layer.rendererV2() == r
+        self.assertTrue(self.rendererChanged)
+        self.assertEquals(layer.rendererV2(), r)
 
 # TODO:
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect

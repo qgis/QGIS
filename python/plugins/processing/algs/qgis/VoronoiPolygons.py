@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
+from PyQt.QtGui import QIcon
 
 from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint
 
@@ -38,7 +38,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
-import voronoi
+from . import voronoi
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 

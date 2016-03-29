@@ -8,7 +8,7 @@
 import os
 import sys
 import argparse
-from PyQt4.QtGui import QImage, QColor
+from PyQt.QtGui import QImage, QColor
 import struct
 import urllib2
 import glob

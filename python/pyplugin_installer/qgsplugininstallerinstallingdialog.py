@@ -24,16 +24,16 @@
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import QDir, QUrl, QFile, QCoreApplication
-from PyQt4.QtGui import QDialog
-from PyQt4.QtNetwork import QNetworkRequest, QNetworkReply
+from PyQt.QtCore import QDir, QUrl, QFile, QCoreApplication
+from PyQt.QtWidgets import QDialog
+from PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
 import qgis
 from qgis.core import QgsNetworkAccessManager, QgsAuthManager
 
-from ui_qgsplugininstallerinstallingbase import Ui_QgsPluginInstallerInstallingDialogBase
-from installer_data import removeDir, repositories
-from unzip import unzip
+from .ui_qgsplugininstallerinstallingbase import Ui_QgsPluginInstallerInstallingDialogBase
+from .installer_data import removeDir, repositories
+from .unzip import unzip
 
 
 class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallingDialogBase):
@@ -118,10 +118,10 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
         # if the target directory already exists as a link, remove the link without resolving:
         QFile(pluginDir + unicode(QDir.separator()) + self.plugin["id"]).remove()
         try:
-            unzip(unicode(tmpPath), unicode(pluginDir)) # test extract. If fails, then exception will be raised and no removing occurs
+            unzip(unicode(tmpPath), unicode(pluginDir))  # test extract. If fails, then exception will be raised and no removing occurs
             # removing old plugin files if exist
-            removeDir(QDir.cleanPath(pluginDir + "/" + self.plugin["id"])) # remove old plugin if exists
-            unzip(unicode(tmpPath), unicode(pluginDir)) # final extract.
+            removeDir(QDir.cleanPath(pluginDir + "/" + self.plugin["id"]))  # remove old plugin if exists
+            unzip(unicode(tmpPath), unicode(pluginDir))  # final extract.
         except:
             self.mResult = self.tr("Failed to unzip the plugin package. Probably it's broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:") + "\n" + pluginDir
             self.reject()

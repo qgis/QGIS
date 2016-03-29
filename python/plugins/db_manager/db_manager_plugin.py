@@ -20,11 +20,11 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt.QtCore import Qt, QObject
+from PyQt.QtCore import Qt
 from PyQt.QtWidgets import QAction, QApplication
 from PyQt.QtGui import QIcon
 
-from . import resources_rc
+from . import resources_rc  # NOQA
 
 
 class DBManagerPlugin:

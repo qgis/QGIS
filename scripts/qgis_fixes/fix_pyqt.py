@@ -344,6 +344,19 @@ MAPPING = {
             "QSvgGenerator"
         ]),
     ],
+    "PyQt4.QtSql": [
+        ("PyQt.QtSql", [
+            "QSqlDatabase",
+            "QSqlQuery",
+            "QSqlField"
+        ]),
+    ],
+    "PyQt4.uic": [
+        ("PyQt.uic", [
+            "loadUiType",
+            "loadUi",
+        ]),
+    ],
     "PyQt4": [
         ("PyQt", [
             "QtCore",
@@ -362,7 +375,7 @@ MAPPING = {
 
 def build_pattern():
     bare = set()
-    for old_module, changes in MAPPING.items():
+    for old_module, changes in list(MAPPING.items()):
         for change in changes:
             new_module, members = change
             members = alternates(members)
@@ -451,6 +464,8 @@ class FixPyqt(FixImports):
                 mod_member.replace(Name(new_name, prefix=pref))
             elif new_name == '':
                 self.cannot_convert(node, "This is an invalid module element")
+            else:
+                node.remove()
 
         # Multiple members being imported
         else:

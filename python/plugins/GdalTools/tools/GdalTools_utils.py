@@ -29,8 +29,8 @@ __revision__ = '$Format:%H$'
 # setLastUsedDir( QString *file_or_dir path )
 # -------------------------------------------------
 
-from PyQt4.QtCore import QObject, QSettings, QFileInfo, SIGNAL, QDir, QCoreApplication
-from PyQt4.QtGui import QFileDialog
+from PyQt.QtCore import QObject, QSettings, QFileInfo, QDir, QCoreApplication, pyqtSignal
+from PyQt.QtWidgets import QFileDialog
 
 from qgis.core import QgsApplication, QgsMapLayerRegistry, QgsRectangle, QgsProviderRegistry, QgsLogger
 from qgis.gui import QgsEncodingFileDialog
@@ -153,6 +153,7 @@ def getVectorExtensions():
 
 
 class LayerRegistry(QObject):
+    layersChanged = pyqtSignal()
 
     _instance = None
     _iface = None
@@ -176,9 +177,9 @@ class LayerRegistry(QObject):
 
         LayerRegistry.layers = self.getAllLayers()
         LayerRegistry._instance = self
-        self.connect(QgsMapLayerRegistry.instance(), SIGNAL("removeAll()"), self.removeAllLayers)
-        self.connect(QgsMapLayerRegistry.instance(), SIGNAL("layerWasAdded(QgsMapLayer *)"), self.layerAdded)
-        self.connect(QgsMapLayerRegistry.instance(), SIGNAL("layerWillBeRemoved(QString)"), self.removeLayer)
+        QgsMapLayerRegistry.instance().removeAll.connect(self.removeAllLayers)
+        QgsMapLayerRegistry.instance().layerWasAdded.connect(self.layerAdded)
+        QgsMapLayerRegistry.instance().layerWillBeRemoved.connect(self.removeLayer)
 
     def getAllLayers(self):
         if LayerRegistry._iface and hasattr(LayerRegistry._iface, 'legendInterface'):
@@ -187,15 +188,15 @@ class LayerRegistry(QObject):
 
     def layerAdded(self, layer):
         LayerRegistry.layers.append(layer)
-        self.emit(SIGNAL("layersChanged"))
+        self.layersChanged.emit()
 
     def removeLayer(self, layerId):
-        LayerRegistry.layers = filter(lambda x: x.id() != layerId, LayerRegistry.layers)
-        self.emit(SIGNAL("layersChanged"))
+        LayerRegistry.layers = [x for x in LayerRegistry.layers if x.id() != layerId]
+        self.layersChanged.emit()
 
     def removeAllLayers(self):
         LayerRegistry.layers = []
-        self.emit(SIGNAL("layersChanged"))
+        self.layersChanged.emit()
 
     @classmethod
     def isRaster(self, layer):
@@ -904,7 +905,7 @@ def setProcessEnvironment(process):
         envval = os.getenv(name)
         if envval is None or envval == "":
             envval = unicode(val)
-        elif (platform.system() == "Windows" and val.lower() not in envval.lower().split( sep )) or \
+        elif (platform.system() == "Windows" and val.lower() not in envval.lower().split(sep)) or \
              (platform.system() != "Windows" and val not in envval.split(sep)):
             envval += "%s%s" % (sep, unicode(val))
         else:

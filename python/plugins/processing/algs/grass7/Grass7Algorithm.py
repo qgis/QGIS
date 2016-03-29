@@ -30,8 +30,8 @@ import time
 import uuid
 import importlib
 
-from PyQt4.QtCore import QCoreApplication, QUrl
-from PyQt4.QtGui import QIcon
+from PyQt.QtCore import QCoreApplication, QUrl
+from PyQt.QtGui import QIcon
 
 from qgis.core import QgsRasterLayer
 from qgis.utils import iface
@@ -58,7 +58,7 @@ from processing.core.outputs import (getOutputFromString,
                                      OutputFile,
                                      OutputHTML)
 
-from Grass7Utils import Grass7Utils
+from .Grass7Utils import Grass7Utils
 
 from processing.tools import dataobjects, system
 
@@ -98,7 +98,7 @@ class Grass7Algorithm(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'grass.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
 
     def help(self):
         localDoc = None

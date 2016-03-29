@@ -40,11 +40,11 @@ void QgsOracleColumnTypeThread::run()
 {
   mStopped = false;
 
-  QgsDataSourceURI uri = QgsOracleConn::connUri( mName );
-  QgsOracleConn *conn = QgsOracleConnPool::instance()->acquireConnection( uri.connectionInfo() );
+  QString conninfo = QgsOracleConn::toPoolName( QgsOracleConn::connUri( mName ) );
+  QgsOracleConn *conn = QgsOracleConnPool::instance()->acquireConnection( conninfo );
   if ( !conn )
   {
-    QgsDebugMsg( "Connection failed - " + uri.connectionInfo() );
+    QgsDebugMsg( "Connection failed - " + conninfo );
     mStopped = true;
     return;
   }

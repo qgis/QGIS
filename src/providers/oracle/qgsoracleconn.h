@@ -160,6 +160,7 @@ class QgsOracleConn : public QObject
     static bool onlyExistingTypes( QString theConnName );
     static void deleteConnection( QString theConnName );
     static QString databaseName( QString database, QString host, QString port );
+    static QString toPoolName( QgsDataSourceURI uri );
 
     operator QSqlDatabase() { return mDatabase; }
 

@@ -63,7 +63,8 @@ class LayerPreview(QgsMapCanvas):
 
         if isinstance(item, Table) and item.type in [Table.VectorType, Table.RasterType]:
             # update the preview, but first let the manager chance to show the canvas
-            runPrev = lambda: self._loadTablePreview(item)
+            def runPrev():
+                return self._loadTablePreview(item)
             QTimer.singleShot(50, runPrev)
         else:
             return

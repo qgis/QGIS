@@ -25,23 +25,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import Qt, QUrl, QMetaObject
-from PyQt4.QtGui import (QDialog,
-                         QDialogButtonBox,
-                         QLabel,
-                         QLineEdit,
-                         QFrame,
-                         QPushButton,
-                         QSizePolicy,
-                         QVBoxLayout,
-                         QHBoxLayout,
-                         QTabWidget,
-                         QWidget,
-                         QScrollArea,
-                         QComboBox,
-                         QTableWidgetItem,
-                         QMessageBox)
-from PyQt4.QtWebKit import QWebView
+from PyQt.QtCore import Qt, QUrl, QMetaObject
+from PyQt.QtWidgets import QDialog, QDialogButtonBox, QLabel, QLineEdit, QFrame, QPushButton, QSizePolicy, QVBoxLayout, QHBoxLayout, QTabWidget, QWidget, QScrollArea, QComboBox, QTableWidgetItem, QMessageBox
+from PyQt.QtWebKitWidgets import QWebView
 
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
@@ -139,10 +125,12 @@ class ModelerParametersDialog(QDialog):
             if param.isAdvanced:
                 self.advancedButton = QPushButton()
                 self.advancedButton.setText(self.tr('Show advanced parameters'))
-                self.advancedButton.setMaximumWidth(150)
                 self.advancedButton.clicked.connect(
                     self.showAdvancedParametersClicked)
-                self.verticalLayout.addWidget(self.advancedButton)
+                advancedButtonHLayout = QHBoxLayout()
+                advancedButtonHLayout.addWidget(self.advancedButton)
+                advancedButtonHLayout.addStretch()
+                self.verticalLayout.addLayout(advancedButtonHLayout)
                 break
         for param in self._alg.parameters:
             if param.hidden:

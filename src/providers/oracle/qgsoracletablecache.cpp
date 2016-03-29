@@ -273,8 +273,7 @@ void _testTableCache()
 
   // fetch
 
-  QgsDataSourceURI uri = QgsOracleConn::connUri( connName );
-  QgsOracleConn* c = QgsOracleConnectionPool::instance()->acquireConnection( uri.connectionInfo() );
+  QgsOracleConn* c = QgsOracleConnectionPool::instance()->acquireConnection( QgsOracleConn::toPoolName( QgsOracleConn::connUri( connName ) ) );
   if ( !c )
     return;
 

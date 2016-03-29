@@ -85,7 +85,6 @@ SET(QGIS_CORE_SRCS
   qgscolorschemeregistry.cpp
   qgsconditionalstyle.cpp
   qgscontexthelp.cpp
-  qgscontexthelp_texts.cpp
   qgscoordinatereferencesystem.cpp
   qgscoordinatetransform.cpp
   qgscoordinateutils.cpp
@@ -106,7 +105,6 @@ SET(QGIS_CORE_SRCS
   qgsexpression.cpp
   qgsexpressioncontext.cpp
   qgsexpressionfieldbuffer.cpp
-  qgsexpression_texts.cpp
   qgsfeature.cpp
   qgsfeatureiterator.cpp
   qgsfeaturerequest.cpp
@@ -340,23 +338,27 @@ SET(QGIS_CORE_SRCS
   geometry/qgspolygonv2.cpp
   geometry/qgswkbptr.cpp
   geometry/qgswkbtypes.cpp
+
+  ${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
 )
+
 
 FILE(GLOB JSON_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/function_help/json/*")
 STRING(REPLACE "$" "$$" JSON_HELP_FILES "${JSON_HELP_FILES}")
 STRING(REPLACE "\(" "\\(" JSON_HELP_FILES "${JSON_HELP_FILES}")
 STRING(REPLACE "\)" "\\)" JSON_HELP_FILES "${JSON_HELP_FILES}")
-ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/qgsexpression_texts.cpp
+ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/process_function_template.py ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp
-  COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp -DDST=${CMAKE_CURRENT_SOURCE_DIR}/qgsexpression_texts.cpp -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
+  COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
   DEPENDS ${JSON_HELP_FILES}
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
 FILE(GLOB CONTEXT_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/context_help/*")
-ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/qgscontexthelp_texts.cpp
+ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp
   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/process_contexthelp.py ${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp.temp
-  COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp.temp -DDST=${CMAKE_CURRENT_SOURCE_DIR}/qgscontexthelp_texts.cpp -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
+  COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
   DEPENDS ${CONTEXT_HELP_FILES}
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
@@ -565,7 +567,7 @@ IF(MSVC)
 ELSE(MSVC)
   SET_SOURCE_FILES_PROPERTIES(${QGIS_CORE_MOC_SRCS} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations" )
   IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo))
-    SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O1")
+    SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O1")
   ENDIF ()
 ENDIF(MSVC)
 

@@ -25,7 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import QSettings
+from PyQt.QtCore import QSettings
 from qgis.core import QgsDataSourceURI, QgsVectorLayerImport
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -104,7 +104,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         table = self.getParameterValue(self.TABLENAME).strip()
         if table == '':
             table = layer.name()
-        table = table.replace(' ', '').lower()
+        table = table.replace(' ', '').lower()[0:62]
         providerName = 'postgres'
 
         try:

@@ -184,7 +184,7 @@ class QueryBuilderDlg(QDialog):
             return
         ag = self.ui.operators.currentText()
 
-        if self.evt.focus == "where": # in where section
+        if self.evt.focus == "where":  # in where section
             self.ui.where.insertPlainText(ag)
         else:
             self.ui.col.insertPlainText(ag)
@@ -215,8 +215,8 @@ class QueryBuilderDlg(QDialog):
         if self.ui.columns.currentIndex() <= 0:
             return
         ag = self.ui.columns.currentText()
-        if self.evt.focus == "where": # in where section
-            if ag in self.col_where: # column already called in where section
+        if self.evt.focus == "where":  # in where section
+            if ag in self.col_where:  # column already called in where section
                 response = QMessageBox.question(self, "Column already used in WHERE clause", "Do you want to add column %s again?" % ag, QMessageBox.Yes | QMessageBox.No)
                 if response == QMessageBox.No:
                     self.ui.columns.setCurrentIndex(0)
@@ -224,7 +224,7 @@ class QueryBuilderDlg(QDialog):
             self.ui.where.insertPlainText(ag)
             self.col_where.append(ag)
         elif self.evt.focus == "col":
-            if ag in self.col_col: # column already called in col section
+            if ag in self.col_col:  # column already called in col section
                 response = QMessageBox.question(self, "Column already used in COLUMNS section", "Do you want to add column %s again?" % ag, QMessageBox.Yes | QMessageBox.No)
                 if response == QMessageBox.No:
                     self.ui.columns.setCurrentIndex(0)
@@ -301,7 +301,7 @@ class QueryBuilderDlg(QDialog):
             tab_idx = idx.split(".")[0][1:-1]  # remove "
             col_idx = idx.split(".")[1][1:-1]  # remove '
         except:
-            pop_up_error("All fields are necessary", self)  # FIXME
+            QMessageBox.warning(self, "Use R-Tree", "All fields are necessary", QMessageBox.Cancel)
         tgt = self.ui.table_target.currentText()
         if tgt in (None, "", " ", "Table (Target)"):
             return

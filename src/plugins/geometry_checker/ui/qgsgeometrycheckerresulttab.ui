@@ -155,7 +155,7 @@
        <item row="3" column="0">
         <widget class="QGroupBox" name="groupBoxRowSelectionBehaviour">
          <property name="title">
-          <string>When a row is selected, move to:</string>
+          <string>When a row is selected, move canvas to:</string>
          </property>
          <property name="flat">
           <bool>true</bool>

@@ -66,7 +66,7 @@ void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
   do
   {
     if (( ctx->relation().name() == mRelation.name() && ctx->formMode() == QgsAttributeEditorContext::Embed )
-        || ctx->relation().name() == nmrel.name() )
+        || ( nmrel.isValid() && ctx->relation().name() == nmrel.name() ) )
     {
       w->setVisible( false );
       break;

@@ -379,7 +379,7 @@ protected:
  *
  * Provider to display vector data in a GRASS GIS layer.
  *
- * TODO QGIS3: Remove virtual from non-inherited methods (like isModified, isReadOnly)
+ * TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
  */
 
 
@@ -1090,8 +1090,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     virtual bool isSpatial() const override;
 
-    /** Returns true if the provider is in read-only mode */
-    virtual bool isReadOnly() const;
+    /**
+     * Returns true if the provider is in read-only mode
+     *
+     * @deprecated Use readOnly() instead. Will be made private with QGIS 3
+     *
+     * TODO QGIS3: make private
+     */
+    Q_DECL_DEPRECATED virtual bool isReadOnly() const override;
 
     /** Returns true if the provider has been modified since the last commit */
     virtual bool isModified() const;

@@ -17,11 +17,11 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis # switch sip api
+import qgis  # NOQA
 
 import sys
 import os
-from PyQt4.QtCore import qDebug, QThreadPool
+from PyQt.QtCore import qDebug, QThreadPool
 
 from utilities import (
     getTempfilePath,

@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
+from PyQt.QtGui import QIcon
 
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterExtent

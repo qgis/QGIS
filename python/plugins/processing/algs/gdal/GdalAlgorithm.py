@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
+from PyQt.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
@@ -41,7 +41,7 @@ pluginPath = os.path.normpath(os.path.join(
 class GdalAlgorithm(GeoAlgorithm):
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'gdal.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'gdal.svg'))
 
     def getCustomParametersDialog(self):
         return GdalAlgorithmDialog(self)
@@ -53,7 +53,7 @@ class GdalAlgorithm(GeoAlgorithm):
         return self._formatHelp('''This algorithm is based on the GDAL %s module.
 
                 For more info, see the <a href = 'http://www.gdal.org/%s.html'> module help</a>
-                ''' %  (self.commandName(), self.commandName()))
+                ''' % (self.commandName(), self.commandName()))
 
     def commandName(self):
         alg = self.getCopy()

@@ -22,7 +22,7 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt.QtCore import Qt, QObject, QSettings, QFileInfo
+from PyQt.QtCore import Qt, QSettings, QFileInfo
 from PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
 from PyQt.QtGui import QCursor
 
@@ -39,7 +39,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
         self.db = inDb
         self.setupUi(self)
 
-        vectorFilterName = "lastVectorFileFilter" # "lastRasterFileFilter"
+        vectorFilterName = "lastVectorFileFilter"  # "lastRasterFileFilter"
         self.lastUsedVectorFilterSettingsKey = u"/UI/{0}".format(vectorFilterName)
         self.lastUsedVectorDirSettingsKey = u"/UI/{0}Dir".format(vectorFilterName)
 

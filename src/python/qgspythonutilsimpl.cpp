@@ -32,6 +32,7 @@
 #include <QMessageBox>
 #include <QStringList>
 #include <QDir>
+#include <QDebug>
 
 #if (PY_VERSION_HEX < 0x03000000)
 #define PYOBJ2QSTRING(obj) PyString_AsString( obj )
@@ -68,7 +69,7 @@ bool QgsPythonUtilsImpl::checkSystemImports()
   // it is very useful for cleaning sys.path, which may have undesireable paths, or for
   // isolating/loading the initial environ without requiring a virt env, e.g. homebrew or MacPorts installs on Mac
   runString( "pyqgstart = os.getenv('PYQGIS_STARTUP')\n" );
-  runString( "if pyqgstart is not None and os.path.exists(pyqgstart): execfile(pyqgstart)\n" );
+  runString( "if pyqgstart is not None and os.path.exists(pyqgstart):\n    with open(pyqgstart) as f:\n        exec(f.read())\n" );
 
 #ifdef Q_OS_WIN
   runString( "oldhome=None" );
@@ -81,7 +82,7 @@ bool QgsPythonUtilsImpl::checkSystemImports()
   // locally installed plugins have priority over the system plugins
   // use os.path.expanduser to support usernames with special characters (see #2512)
   QStringList pluginpaths;
-  Q_FOREACH ( QString p, extraPluginsPaths() )
+  Q_FOREACH ( const QString& p, extraPluginsPaths() )
   {
     if ( !QDir( p ).exists() )
     {
@@ -96,7 +97,11 @@ bool QgsPythonUtilsImpl::checkSystemImports()
     // we store here paths in unicode strings
     // the str constant will contain utf8 code (through runString)
     // so we call '...'.decode('utf-8') to make a unicode string
+#if (PY_VERSION_HEX < 0x03000000)
     pluginpaths << '"' + p + "\".decode('utf-8')";
+#else
+    pluginpaths << '"' + p + '"';
+#endif
   }
   pluginpaths << homePluginsPath();
   pluginpaths << '"' + pluginsPath() + '"';
@@ -335,6 +340,7 @@ bool QgsPythonUtilsImpl::runString( const QString& command, QString msgOnError, 
                 + QObject::tr( "Python path:" ) + "<br>" + path;
   str.replace( '\n', "<br>" ).replace( "  ", "&nbsp; " );
 
+  qDebug() << str;
   QgsMessageOutput* msg = QgsMessageOutput::createMessageOutput();
   msg->setTitle( QObject::tr( "Python error" ) );
   msg->setMessage( str, QgsMessageOutput::MessageHtml );

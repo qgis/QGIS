@@ -50,6 +50,6 @@ class ParameterFieldsMapping(Parameter):
                 self.value = eval(value)
                 return True
             except Exception as e:
-                print unicode(e) # display error in console
+                print unicode(e)  # display error in console
                 return False
         return False

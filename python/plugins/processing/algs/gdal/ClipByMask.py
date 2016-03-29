@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
+from PyQt.QtGui import QIcon
 
 from osgeo import gdal
 
@@ -185,6 +185,8 @@ class ClipByMask(GdalAlgorithm):
                 arguments.append("-co TFW=YES")
             if len(bigtiff) > 0:
                 arguments.append("-co BIGTIFF=" + bigtiff)
+
+            arguments.append("-wo OPTIMIZE_SIZE=TRUE")
 
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(out)

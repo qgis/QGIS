@@ -21,5 +21,5 @@ email                : lorenxo86@gmail.com - brush.tyler@gmail.com
 
 def classFactory(iface):
     # load GdalTools class from file GdalTools
-    from GdalTools import GdalTools
+    from .GdalTools import GdalTools
     return GdalTools(iface)

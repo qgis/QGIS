@@ -25,7 +25,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import QVariant
+from PyQt.QtCore import QVariant
 from qgis.core import QGis, QgsField, QgsGeometry, QgsDistanceArea, QgsFeature
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException

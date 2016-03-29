@@ -56,7 +56,7 @@ bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer* layer ) const
 
   bool res = true;
 
-  if ( !layer->isEditable() && !layer->isReadOnly() )
+  if ( !layer->isEditable() && !layer->readOnly() )
   {
     if ( !( layer->dataProvider()->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
     {

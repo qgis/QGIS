@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4 import uic
+from PyQt import uic
 
 from processing.gui.FixedTableDialog import FixedTableDialog
 

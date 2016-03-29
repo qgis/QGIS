@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Friday March 04, 2016
+Tuesday March 29, 2016
 
 
-Last Updated: Friday March 04, 2016
-Last Change : Friday March 04, 2016
+Last Updated: Tuesday March 29, 2016
+Last Change : Tuesday March 29, 2016
 
 
   1. Introduction
@@ -441,6 +441,11 @@ and from OSGeo4W (select Advanced Installation):
 - python-qscintilla
 
 This will also select packages the above packages depend on.
+
+If you install other packages, this might cause issues. Particularly, make sure
+not to install the msinttypes package. It installs a stdint.h file in
+OSGeo4W[64]\include, that conflicts with Visual Studio own stdint.h, which for
+example breaks the build of the virtuallayer provider.
 
 Earlier versions of this document also covered how to build all above
 dependencies.  If you're interested in that, check the history of this page in the Wiki

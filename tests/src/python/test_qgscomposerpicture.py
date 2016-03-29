@@ -12,21 +12,19 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis # switch sip api
+import qgis  # NOQA
 
 import os
 import SocketServer
 import threading
 import SimpleHTTPServer
-from PyQt4.QtCore import QRectF
+from PyQt.QtCore import QRectF
 
 from qgis.core import (QgsComposerPicture,
                        QgsComposition,
                        QgsMapSettings
                        )
-from qgis.testing import (start_app,
-                          unittest
-                          )
+from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from qgscompositionchecker import QgsCompositionChecker
 

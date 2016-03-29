@@ -1,4 +1,4 @@
-from PyQt4 import uic
+from PyQt import uic
 import logging
 
 uic.properties.logger.setLevel(logging.WARNING)

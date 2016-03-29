@@ -12,18 +12,12 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis # switch sip api
+import qgis  # NOQA
 
 from qgis.core import QgsRectangle, QgsPoint
 
-from qgis.testing import (
-    start_app,
-    unittest
-)
-
-from utilities import (
-    compareWkt
-)
+from qgis.testing import start_app, unittest
+from utilities import compareWkt
 
 start_app()
 

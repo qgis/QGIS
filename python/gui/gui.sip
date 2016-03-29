@@ -143,6 +143,7 @@
 %Include qgsslider.sip
 %Include qgssublayersdialog.sip
 %Include qgssvgannotationitem.sip
+%Include qgstablewidgetitem.sip
 %Include qgstextannotationitem.sip
 %Include qgsunitselectionwidget.sip
 %Include qgsuserinputdockwidget.sip

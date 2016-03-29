@@ -28,8 +28,8 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
-from PyQt4.QtGui import QWidget, QPushButton, QLineEdit, QHBoxLayout, QSizePolicy, QFileDialog
-from PyQt4.QtCore import QSettings
+from PyQt.QtWidgets import QWidget, QPushButton, QLineEdit, QHBoxLayout, QSizePolicy, QFileDialog
+from PyQt.QtCore import QSettings
 
 from processing.gui.AutofillDialog import AutofillDialog
 from processing.core.parameters import ParameterMultipleInput

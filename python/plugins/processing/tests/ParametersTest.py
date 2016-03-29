@@ -298,6 +298,19 @@ class ParameterMultipleInputTest(unittest.TestCase):
         self.assertFalse(parameter.setValue(None))
         self.assertEqual(parameter.value, "myLayerFile.shp")
 
+    def testMultipleInput(self):
+        parameter = ParameterMultipleInput('myName', 'myDesc', optional=True)
+        self.assertTrue(parameter.setMinNumInputs(1))
+
+        parameter = ParameterMultipleInput('myName', 'myDesc', optional=False)
+        self.assertFalse(parameter.setMinNumInputs(0))
+
+        parameter.setMinNumInputs(2)
+        self.assertTrue(parameter.setValue(['myLayerFile.shp', 'myLayerFile2.shp']))
+
+        parameter.setMinNumInputs(3)
+        self.assertFalse(parameter.setValue(['myLayerFile.shp', 'myLayerFile2.shp']))
+
     def testGetAsStringWhenRaster(self):
         parameter = ParameterMultipleInput('myName', 'myDesc', datatype=ParameterMultipleInput.TYPE_RASTER)
 

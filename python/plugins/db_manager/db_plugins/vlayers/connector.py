@@ -64,7 +64,7 @@ class VLayerRegistry:
 
     @classmethod
     def instance(cls):
-        if cls._instance == None:
+        if cls._instance is None:
             cls._instance = VLayerRegistry()
         return cls._instance
 

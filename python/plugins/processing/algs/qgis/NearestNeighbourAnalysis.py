@@ -29,7 +29,7 @@ import os
 import math
 import codecs
 
-from PyQt4.QtGui import QIcon
+from PyQt.QtGui import QIcon
 
 from qgis.core import QgsFeatureRequest, QgsFeature, QgsDistanceArea
 

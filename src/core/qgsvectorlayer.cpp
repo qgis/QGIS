@@ -1421,6 +1421,10 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
     return false;
   }
 
+  QDomElement mapLayerNode = layer_node.toElement();
+  if ( mapLayerNode.attribute( "readOnly", "0" ).toInt() == 1 )
+    mReadOnly = true;
+
   QDomElement pkeyElem = pkeyNode.toElement();
   if ( !pkeyElem.isNull() )
   {
@@ -1641,6 +1645,9 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
     provider.appendChild( providerText );
     layer_node.appendChild( provider );
   }
+
+  // save readonly state
+  mapLayerNode.setAttribute( "readOnly", mReadOnly );
 
   // save preview expression
   QDomElement prevExpElem = document.createElement( "previewExpression" );

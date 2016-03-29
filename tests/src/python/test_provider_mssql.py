@@ -12,28 +12,16 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis # switch sip api
+import qgis  # NOQA
 
 import os
 
-from qgis.core import (
-    QgsVectorLayer,
-    QgsFeatureRequest,
-)
+from qgis.core import QgsVectorLayer, QgsFeatureRequest
 
-from PyQt4.QtCore import (
-    QSettings,
-    QDate,
-    QTime,
-    QDateTime,
-    QVariant
-)
+from PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
 
 from utilities import unitTestDataPath
-from qgis.testing import (
-    start_app,
-    unittest
-)
+from qgis.testing import start_app, unittest
 from providertestbase import ProviderTestCase
 
 start_app()

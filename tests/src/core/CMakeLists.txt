@@ -22,6 +22,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
+  ${SQLITE3_INCLUDE_DIR}
   )
 
 #############################################################

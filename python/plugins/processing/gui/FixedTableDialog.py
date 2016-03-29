@@ -27,8 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4 import uic
-from PyQt4.QtGui import QDialog, QPushButton, QAbstractItemView, QDialogButtonBox, QStandardItemModel, QStandardItem
+from PyQt import uic
+from PyQt.QtWidgets import QDialog, QPushButton, QAbstractItemView, QDialogButtonBox
+from PyQt.QtGui import QStandardItemModel, QStandardItem
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(

@@ -61,7 +61,7 @@ class SpatiaLiteDBConnector(DBConnector):
             return False
         try:
             conn = sqlite.connect(path)
-        except self.connection_error_types() as e:
+        except self.connection_error_types():
             return False
         conn.close()
         return True
@@ -88,7 +88,7 @@ class SpatiaLiteDBConnector(DBConnector):
             v = c.fetchone()[0]
             self.has_geometry_columns = v == 1 or v == 3
             self.has_spatialite4 = v == 3
-        except Exception as e:
+        except Exception:
             self.has_geometry_columns = False
             self.has_spatialite4 = False
 
@@ -108,7 +108,7 @@ class SpatiaLiteDBConnector(DBConnector):
             result = self._execute(None, sql).fetchone()[0] == 1
         except ConnectionError:
             result = False
-        except Exception as e:
+        except Exception:
             # SpatiaLite < 4.2 does not have HasGeoPackage() function
             result = False
 
@@ -325,7 +325,7 @@ class SpatiaLiteDBConnector(DBConnector):
         """
 
         if self.is_gpkg:
-            return [] # Not implemented
+            return []  # Not implemented
         if not self.has_geometry_columns:
             return []
         if not self.has_raster:
@@ -488,7 +488,7 @@ class SpatiaLiteDBConnector(DBConnector):
         if self.isRasterTable(table):
             return False
         if self.is_gpkg:
-            return False # Not implemented
+            return False  # Not implemented
 
         c = self._get_cursor()
         sql = u"DROP TABLE %s" % self.quoteId(table)
@@ -503,7 +503,7 @@ class SpatiaLiteDBConnector(DBConnector):
         if self.isRasterTable(table):
             return False
         if self.is_gpkg:
-            return False # Not implemented
+            return False  # Not implemented
 
         sql = u"DELETE FROM %s" % self.quoteId(table)
         self._execute_and_commit(sql)
@@ -517,7 +517,7 @@ class SpatiaLiteDBConnector(DBConnector):
         if self.isRasterTable(table):
             return False
         if self.is_gpkg:
-            return False # Not implemented
+            return False  # Not implemented
 
         c = self._get_cursor()
 
@@ -558,7 +558,7 @@ class SpatiaLiteDBConnector(DBConnector):
 
     def createSpatialView(self, view, query):
         if self.is_gpkg:
-            return False # Not implemented
+            return False  # Not implemented
 
         self.createView(view, query)
         # get type info about the view
@@ -639,7 +639,7 @@ class SpatiaLiteDBConnector(DBConnector):
 
     def isGeometryColumn(self, table, column):
         if self.is_gpkg:
-            return False # Not implemented
+            return False  # Not implemented
 
         c = self._get_cursor()
         schema, tablename = self.getSchemaTableName(table)
@@ -650,7 +650,7 @@ class SpatiaLiteDBConnector(DBConnector):
 
     def addGeometryColumn(self, table, geom_column='geometry', geom_type='POINT', srid=-1, dim=2):
         if self.is_gpkg:
-            return False # Not implemented
+            return False  # Not implemented
 
         schema, tablename = self.getSchemaTableName(table)
         sql = u"SELECT AddGeometryColumn(%s, %s, %d, %s, %s)" % (
@@ -689,7 +689,7 @@ class SpatiaLiteDBConnector(DBConnector):
         if self.isRasterTable(table):
             return False
         if self.is_gpkg:
-            return False # Not implemented
+            return False  # Not implemented
 
         schema, tablename = self.getSchemaTableName(table)
         sql = u"SELECT CreateSpatialIndex(%s, %s)" % (self.quoteString(tablename), self.quoteString(geom_column))
@@ -699,7 +699,7 @@ class SpatiaLiteDBConnector(DBConnector):
         if self.isRasterTable(table):
             return False
         if self.is_gpkg:
-            return False # Not implemented
+            return False  # Not implemented
 
         schema, tablename = self.getSchemaTableName(table)
         try:
@@ -714,7 +714,7 @@ class SpatiaLiteDBConnector(DBConnector):
 
     def hasSpatialIndex(self, table, geom_column='geometry'):
         if self.is_gpkg:
-            return False # Not implemented
+            return False  # Not implemented
         if not self.has_geometry_columns or self.isRasterTable(table):
             return False
         c = self._get_cursor()

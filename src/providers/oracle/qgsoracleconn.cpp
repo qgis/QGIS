@@ -33,8 +33,7 @@ const int QgsOracleConn::sGeomTypeSelectLimit = 100;
 
 QgsOracleConn *QgsOracleConn::connectDb( QgsDataSourceURI uri )
 {
-  QString conninfo = uri.connectionInfo();
-
+  QString conninfo = toPoolName( uri );
   if ( sConnections.contains( conninfo ) )
   {
     QgsDebugMsg( QString( "Using cached connection for %1" ).arg( conninfo ) );
@@ -68,6 +67,7 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceURI uri )
   mDatabase = QSqlDatabase::addDatabase( "QOCISPATIAL", QString( "oracle%1" ).arg( snConnections++ ) );
   mDatabase.setDatabaseName( database );
   QString options = uri.hasParam( "dboptions" ) ? uri.param( "dboptions" ) : "OCI_ATTR_PREFETCH_ROWS=1000";
+  QString workspace = uri.hasParam( "dbworkspace" ) ? uri.param( "dbworkspace" ) : QString::null;
   mDatabase.setConnectOptions( options );
   mDatabase.setUserName( uri.username() );
   mDatabase.setPassword( uri.password() );
@@ -118,6 +118,19 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceURI uri )
     mRef = 0;
     return;
   }
+
+  if ( !workspace.isNull() )
+  {
+    QSqlQuery qry( mDatabase );
+
+    if ( !qry.exec( QString( "BEGIN\nDBMS_WM.GotoWorkspace(%1);\nEND;" ).arg( quotedValue( workspace ) ) ) )
+    {
+      mDatabase.close();
+      QgsMessageLog::logMessage( tr( "Could not switch to workspace %1 [%2]" ).arg( workspace, qry.lastError().databaseText() ), tr( "Oracle" ) );
+      mRef = 0;
+      return;
+    }
+  }
 }
 
 QgsOracleConn::~QgsOracleConn()
@@ -125,6 +138,14 @@ QgsOracleConn::~QgsOracleConn()
   Q_ASSERT( mRef == 0 );
   if ( mDatabase.isOpen() )
     mDatabase.close();
+}
+
+QString QgsOracleConn::toPoolName( QgsDataSourceURI uri )
+{
+  QString conninfo = uri.connectionInfo();
+  if ( uri.hasParam( "dbworkspace" ) )
+    conninfo += " dbworkspace=" + uri.param( "dbworkspace" );
+  return conninfo;
 }
 
 QString QgsOracleConn::connInfo()
@@ -712,6 +733,10 @@ QgsDataSourceURI QgsOracleConn::connUri( QString theConnName )
   if ( !settings.value( key + "/dboptions" ).toString().isEmpty() )
   {
     uri.setParam( "dboptions", settings.value( key + "/dboptions" ).toString() );
+  }
+  if ( !settings.value( key + "/dbworkspace" ).toString().isEmpty() )
+  {
+    uri.setParam( "dbworkspace", settings.value( key + "/dbworkspace" ).toString() );
   }
 
   return uri;

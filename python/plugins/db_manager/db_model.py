@@ -30,10 +30,10 @@ from .dlg_db_error import DlgDbError
 
 from qgis.core import QgsDataSourceURI, QgsVectorLayer, QgsRasterLayer, QgsMimeDataUtils
 
-from . import resources_rc
+from . import resources_rc  # NOQA
 
 try:
-    from qgis.core import QgsVectorLayerImport
+    from qgis.core import QgsVectorLayerImport  # NOQA
     isImportVectorAvail = True
 except:
     isImportVectorAvail = False
@@ -491,7 +491,7 @@ class DBModel(QAbstractItemModel):
                 else:
                     self.notPopulated.emit(index)
 
-        except BaseError as e:
+        except BaseError:
             item.populated = False
             return
 

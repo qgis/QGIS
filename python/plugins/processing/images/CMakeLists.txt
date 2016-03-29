@@ -1,4 +1,4 @@
-FILE(GLOB IMAGE_FILES *.png *.gif)
+FILE(GLOB IMAGE_FILES *.png *.gif *.svg)
 
 ADD_SUBDIRECTORY(ftools)
 ADD_SUBDIRECTORY(gdaltools)

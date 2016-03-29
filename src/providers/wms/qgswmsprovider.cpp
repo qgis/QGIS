@@ -501,7 +501,9 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
     }
 
     QString layers = visibleLayers.join( "," );
+    layers = layers.isNull() ? "" : layers;
     QString styles = visibleStyles.join( "," );
+    styles = styles.isNull() ? "" : styles;
 
     QgsDebugMsg( "Visible layer list of " + layers + " and style list of " + styles );
 

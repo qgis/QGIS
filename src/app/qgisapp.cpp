@@ -2063,7 +2063,7 @@ void QgisApp::createStatusBar()
   mScaleEdit->setToolTip( tr( "Current map scale (formatted as x:y)" ) );
 
   statusBar()->addPermanentWidget( mScaleEdit, 0 );
-  connect( mScaleEdit, SIGNAL( scaleChanged() ), this, SLOT( userScale() ) );
+  connect( mScaleEdit, SIGNAL( scaleChanged( double ) ), this, SLOT( userScale() ) );
 
   if ( QgsMapCanvas::rotationEnabled() )
   {
@@ -3089,8 +3089,18 @@ void QgisApp::about()
     QString versionString = "<html><body><div align='center'><table width='100%'>";
 
     versionString += "<tr>";
-    versionString += "<td>" + tr( "QGIS version" )       + "</td><td>" + QGis::QGIS_VERSION + "</td>";
-    versionString += "<td>" + tr( "QGIS code revision" ) + QString( "</td><td><a href=\"https://github.com/qgis/QGIS/commit/%1\">%1</a></td>" ).arg( QGis::QGIS_DEV_VERSION );
+    versionString += "<td>" + tr( "QGIS version" )       + "</td><td>" + QGis::QGIS_VERSION + "</td><td>";
+
+
+    if ( QString( QGis::QGIS_DEV_VERSION ) == "exported" )
+    {
+      versionString += tr( "QGIS code branch" ) + QString( "</td><td><a href=\"https://github.com/qgis/QGIS/tree/release-%1_%2\">Release %1.%2</a></td>" )
+                       .arg( QGis::QGIS_VERSION_INT / 10000 ).arg( QGis::QGIS_VERSION_INT / 100 % 100 );
+    }
+    else
+    {
+      versionString += tr( "QGIS code revision" ) + QString( "</td><td><a href=\"https://github.com/qgis/QGIS/commit/%1\">%1</a></td>" ).arg( QGis::QGIS_DEV_VERSION );
+    }
 
     versionString += "</tr><tr>";
 
@@ -7264,7 +7274,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
   if ( vlayer->isModified() || ( tg && tg->layers().contains( vlayer ) && tg->modified() ) )
     isModified  = true;
 
-  if ( !vlayer->isEditable() && !vlayer->isReadOnly() )
+  if ( !vlayer->isEditable() && !vlayer->readOnly() )
   {
     if ( !( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
     {
@@ -7763,8 +7773,9 @@ void QgisApp::removeLayer()
   }
 
   bool promptConfirmation = QSettings().value( "qgis/askToDeleteLayers", true ).toBool();
+  bool shiftHeld = QApplication::queryKeyboardModifiers().testFlag(Qt::ShiftModifier);
   //display a warning
-  if ( promptConfirmation && QMessageBox::warning( this, tr( "Remove layers and groups" ), tr( "Remove %n legend entries?", "number of legend items to remove", selectedNodes.count() ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( !shiftHeld && promptConfirmation && QMessageBox::warning( this, tr( "Remove layers and groups" ), tr( "Remove %n legend entries?", "number of legend items to remove", selectedNodes.count() ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -10028,7 +10039,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
       mActionLayerSubsetString->setEnabled( !isEditable && dprovider->supportsSubsetString() );
 
-      mActionToggleEditing->setEnabled( canSupportEditing && !vlayer->isReadOnly() );
+      mActionToggleEditing->setEnabled( canSupportEditing && !vlayer->readOnly() );
       mActionToggleEditing->setChecked( canSupportEditing && isEditable );
       mActionSaveLayerEdits->setEnabled( canSupportEditing && isEditable && vlayer->isModified() );
       mUndoWidget->dockContents()->setEnabled( canSupportEditing && isEditable );
@@ -11106,7 +11117,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
     {
       QgsDebugMsg( "Restarting network reply timeout" );
       timer->setSingleShot( true );
-      timer->start( s.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt() );
+      timer->start( s.value( "/qgis/networkAndProxy/networkTimeout", "60000" ).toInt() );
     }
   }
 }

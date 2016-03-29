@@ -1,7 +1,7 @@
 Algorithm tests
 ===============
 
-To test algorithms you can add entries into `testdata/algorithm_tests.yaml`.
+To test algorithms you can add entries into `testdata/qgis_algorithm_tests.yaml` or `testdata/gdal_algorithm_tests.yaml` as appropriate.
 
 This file is structured with [yaml syntax](http://www.yaml.org/start.html).
 

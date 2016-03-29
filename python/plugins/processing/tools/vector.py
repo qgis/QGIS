@@ -36,7 +36,7 @@ import cStringIO
 
 import psycopg2
 
-from PyQt4.QtCore import QVariant, QSettings
+from PyQt.QtCore import QVariant, QSettings
 from qgis.core import (QGis, QgsFields, QgsField, QgsGeometry, QgsRectangle,
                        QgsSpatialIndex, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer,
                        QgsVectorFileWriter, QgsDistanceArea, QgsDataSourceURI, QgsCredentials)
@@ -462,7 +462,7 @@ def ogrConnectionString(uri):
         while not conn:
             try:
                 conn = psycopg2.connect(dsUri.connectionInfo())
-            except psycopg2.OperationalError as e:
+            except psycopg2.OperationalError:
                 (ok, user, passwd) = QgsCredentials.instance().get(conninfo, dsUri.username(), dsUri.password())
                 if not ok:
                     break

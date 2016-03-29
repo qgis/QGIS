@@ -28,8 +28,8 @@ __revision__ = '$Format:%H$'
 
 import os
 import traceback
-from PyQt4.QtGui import QApplication
-from PyQt4.QtCore import QCoreApplication
+from PyQt.QtWidgets import QApplication
+from PyQt.QtCore import QCoreApplication
 from qgis.core import QgsMapLayerRegistry
 
 from processing.core.ProcessingConfig import ProcessingConfig

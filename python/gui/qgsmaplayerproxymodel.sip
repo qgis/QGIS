@@ -20,6 +20,7 @@ class QgsMapLayerProxyModel : QSortFilterProxyModel
       HasGeometry,
       VectorLayer,
       PluginLayer,
+      WritableLayer,
       All
     };
     typedef QFlags<QgsMapLayerProxyModel::Filter> Filters;
@@ -45,7 +46,13 @@ class QgsMapLayerProxyModel : QSortFilterProxyModel
 
     //! offer the possibility to except some layers to be listed
     void setExceptedLayerList( const QList<QgsMapLayer*>& exceptList );
+    //! Get the list of maplayers which are excluded from the list
     QList<QgsMapLayer*> exceptedLayerList();
+
+    //! Set the list of maplayer ids which are excluded from the list
+    void setExceptedLayerIds( const QStringList& ids );
+    //! Get the list of maplayer ids which are excluded from the list
+    QStringList exceptedLayerIds() const;
 
     // QSortFilterProxyModel interface
   public:

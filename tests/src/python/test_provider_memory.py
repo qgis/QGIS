@@ -36,7 +36,7 @@ from utilities import (
 )
 
 from providertestbase import ProviderTestCase
-from PyQt4.QtCore import QVariant
+from PyQt.QtCore import QVariant
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -271,7 +271,7 @@ class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         # Create test layer
-        cls.vl = QgsVectorLayer(u'Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+        cls.vl = QgsVectorLayer(u'Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:int8&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
                                 u'test', u'memory')
         assert (cls.vl.isValid())
         cls.provider = cls.vl.dataProvider()

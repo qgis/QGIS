@@ -25,7 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import QVariant
+from PyQt.QtCore import QVariant
 from qgis.core import QgsExpression, QgsExpressionContext, QgsExpressionContextUtils, QgsFeature, QgsField, QgsDistanceArea, QgsProject, GEO_NONE
 from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm

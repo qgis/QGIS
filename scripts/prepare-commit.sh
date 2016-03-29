@@ -64,7 +64,11 @@ ASTYLEDIFF=astyle.$REV.diff
 >$ASTYLEDIFF
 
 # reformat
+i=0
+N=$(echo $MODIFIED | wc -w)
 for f in $MODIFIED; do
+	(( i++ )) || true
+
 	case "$f" in
 	src/core/gps/qextserialport/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
 		echo $f skipped
@@ -82,7 +86,7 @@ for f in $MODIFIED; do
 	m=$f.$REV.prepare
 
 	cp $f $m
-	astyle.sh $f
+	ASTYLEPROGRESS=" [$i/$N]" astyle.sh $f
 	if diff -u $m $f >>$ASTYLEDIFF; then
 		# no difference found
 		rm $m

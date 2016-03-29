@@ -28,8 +28,8 @@ __revision__ = '$Format:%H$'
 
 import os
 import importlib
-from PyQt4.QtCore import QCoreApplication
-from PyQt4.QtGui import QIcon
+from PyQt.QtCore import QCoreApplication
+from PyQt.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
@@ -50,7 +50,7 @@ from processing.core.outputs import (getOutputFromString,
 from processing.tools import dataobjects
 from processing.tools.system import getTempFilename, getTempFilenameInTempFolder
 from processing.algs.saga.SagaNameDecorator import decoratedAlgorithmName, decoratedGroupName
-import SagaUtils
+from . import SagaUtils
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))

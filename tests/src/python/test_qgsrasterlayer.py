@@ -12,12 +12,12 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis # switch sip api
+import qgis  # NOQA
 
 import os
 
-from PyQt4.QtCore import QFileInfo
-from PyQt4.QtGui import QColor
+from PyQt.QtCore import QFileInfo
+from PyQt.QtGui import QColor
 
 from qgis.core import (QgsRaster,
                        QgsRasterLayer,
@@ -32,9 +32,7 @@ from qgis.core import (QgsRaster,
                        QgsSingleBandGrayRenderer,
                        QgsSingleBandPseudoColorRenderer)
 from utilities import unitTestDataPath
-from qgis.testing import (start_app,
-                          unittest
-                          )
+from qgis.testing import start_app, unittest
 
 # Convenience instances in case you may need them
 # not used in this test

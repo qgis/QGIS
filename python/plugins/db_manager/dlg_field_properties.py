@@ -23,7 +23,6 @@ __copyright__ = '(C) 2012, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import SIGNAL
 from PyQt.QtWidgets import QDialog, QMessageBox
 
 from .db_plugins.plugin import TableField

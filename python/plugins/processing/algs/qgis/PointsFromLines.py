@@ -26,7 +26,7 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 from osgeo import gdal
-from PyQt4.QtCore import QVariant
+from PyQt.QtCore import QVariant
 from qgis.core import QGis, QgsFeature, QgsFields, QgsField, QgsGeometry, QgsPoint
 from processing.tools import vector, raster, dataobjects
 from processing.core.GeoAlgorithm import GeoAlgorithm

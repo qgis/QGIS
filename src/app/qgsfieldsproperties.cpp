@@ -672,7 +672,7 @@ void QgsFieldsProperties::updateButtons()
 {
   int cap = mLayer->dataProvider()->capabilities();
 
-  mToggleEditingButton->setEnabled(( cap & QgsVectorDataProvider::ChangeAttributeValues ) && !mLayer->isReadOnly() );
+  mToggleEditingButton->setEnabled(( cap & QgsVectorDataProvider::ChangeAttributeValues ) && !mLayer->readOnly() );
 
   if ( mLayer->isEditable() )
   {

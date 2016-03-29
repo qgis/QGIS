@@ -27,9 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4 import uic
-from PyQt4.QtCore import Qt, QCoreApplication
-from PyQt4.QtGui import QMenu, QAction, QTreeWidgetItem, QLabel, QMessageBox
+from PyQt import uic
+from PyQt.QtCore import Qt, QCoreApplication
+from PyQt.QtWidgets import QMenu, QAction, QTreeWidgetItem, QLabel, QMessageBox
 from qgis.utils import iface
 
 from processing.core.Processing import Processing
@@ -126,15 +126,13 @@ class ProcessingToolbox(BASE, WIDGET):
             for i in xrange(item.childCount()):
                 child = item.child(i)
                 showChild = self._filterItem(child, text)
-                show = (showChild or show) and not item in self.disabledProviderItems.values()
+                show = (showChild or show) and item not in self.disabledProviderItems.values()
             item.setHidden(not show)
             return show
         elif isinstance(item, (TreeAlgorithmItem, TreeActionItem)):
             hide = bool(text) and (text not in item.text(0).lower())
             if isinstance(item, TreeAlgorithmItem):
                 hide = hide and (text not in item.alg.commandLineName())
-                if item.alg.shortHelp() is not None:
-                    hide = hide and (text not in item.alg.shortHelp())
             item.setHidden(hide)
             return not hide
         else:

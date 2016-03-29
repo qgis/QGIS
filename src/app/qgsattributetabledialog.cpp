@@ -193,7 +193,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mToggleEditingButton->blockSignals( true );
   mToggleEditingButton->setCheckable( true );
   mToggleEditingButton->setChecked( mLayer->isEditable() );
-  mToggleEditingButton->setEnabled(( canChangeAttributes || canDeleteFeatures || canAddAttributes || canDeleteAttributes || canAddFeatures ) && !mLayer->isReadOnly() );
+  mToggleEditingButton->setEnabled(( canChangeAttributes || canDeleteFeatures || canAddAttributes || canDeleteAttributes || canAddFeatures ) && !mLayer->readOnly() );
   mToggleEditingButton->blockSignals( false );
 
   mSaveEditsButton->setEnabled( mToggleEditingButton->isEnabled() && mLayer->isEditable() );
@@ -349,13 +349,13 @@ void QgsAttributeTableDialog::updateFieldFromExpression()
 {
   bool filtered = mMainView->filterMode() != QgsAttributeTableFilterModel::ShowAll;
   QgsFeatureIds filteredIds = filtered ? mMainView->filteredFeatures() : QgsFeatureIds();
-  runFieldCalculation( mLayer, mFieldCombo->currentText(), mUpdateExpressionText->currentField(), filteredIds );
+  runFieldCalculation( mLayer, mFieldCombo->currentText(), mUpdateExpressionText->asExpression(), filteredIds );
 }
 
 void QgsAttributeTableDialog::updateFieldFromExpressionSelected()
 {
   QgsFeatureIds filteredIds = mLayer->selectedFeaturesIds();
-  runFieldCalculation( mLayer, mFieldCombo->currentText(), mUpdateExpressionText->currentField(), filteredIds );
+  runFieldCalculation( mLayer, mFieldCombo->currentText(), mUpdateExpressionText->asExpression(), filteredIds );
 }
 
 void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, const QString& fieldName, const QString& expression, const QgsFeatureIds& filteredIds )

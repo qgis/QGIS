@@ -20,7 +20,7 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt.QtCore import Qt, QObject
+from PyQt.QtCore import Qt
 from PyQt.QtWidgets import QTableView, QAbstractItemView, QApplication, QAction
 from PyQt.QtGui import QKeySequence, QCursor, QClipboard
 

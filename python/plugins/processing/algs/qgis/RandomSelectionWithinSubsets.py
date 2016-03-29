@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import random
 
-from PyQt4.QtGui import QIcon
+from PyQt.QtGui import QIcon
 
 from qgis.core import QgsFeature
 
@@ -130,6 +130,6 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
                 selran.extend(selFeat)
             layer.setSelectedFeatures(selran)
         else:
-            layer.setSelectedFeatures(range(0, featureCount))
+            layer.setSelectedFeatures(range(featureCount))
 
         self.setOutputValue(self.OUTPUT, filename)

@@ -31,5 +31,5 @@ QgsEditorWidgetWrapper*QgsClassificationWidgetWrapperFactory::create( QgsVectorL
 
 QgsEditorConfigWidget*QgsClassificationWidgetWrapperFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
 {
-  return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "Displays a combo box containing values of attributes used for classification." ) );
+  return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "Displays a combo box containing values of attributes used for classification.\nOnly available when the layer uses a categorized symbol renderer." ) );
 }
