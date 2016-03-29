@@ -70,6 +70,8 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
     QgsDebugMsg( "return Fail" );
     return Fail;
   }
+// Seemed necessary in initial Python testing but can't identify failing case now
+#if 0
   if ( node->nodeType() == QgsExpression::ntLiteral )
   {
     const QgsExpression::NodeLiteral* n = static_cast<const QgsExpression::NodeLiteral*>( node );
@@ -99,7 +101,7 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
     }
 
   }
-
+#endif
   if ( node->nodeType() == QgsExpression::ntUnaryOperator )
   {
     const QgsExpression::NodeUnaryOperator* n = static_cast<const QgsExpression::NodeUnaryOperator*>( node );
@@ -123,25 +125,6 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
     }
   }
 
-  /*  For reasons unknown, compiler thinks bin is unused
-    if ( node->nodeType() == QgsExpression::ntInOperator )
-    {
-
-      const QgsExpression::NodeInOperator *bin( static_cast<const QgsExpression::NodeInOperator*>( node ) );
-      QString left, right;
-
-      QgsDebugMsg( QString( "IN operator - fall through; isNotIn: %1" ).arg( bin->isNotIn() ) );
-
-      Result lr = compileNode( bin->opLeft(), left );
-      Result rr = compileNode( bin->opRight(), right );
-      Result compileResult;
-      QgsDebugMsg( "left: '" + left + "'; right: '" + right +
-                   QString( "'; op: %1; lr: %2; rr: %3" ).arg( bin->op() ).arg( lr ).arg( rr ) );
-      if ( lr == Fail || rr == Fail )
-        return Fail;
-
-    }
-      */
   if ( node->nodeType() == QgsExpression::ntBinaryOperator )
   {
     const QgsExpression::NodeBinaryOperator *bin( static_cast<const QgsExpression::NodeBinaryOperator*>( node ) );
@@ -241,13 +224,15 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
 QString QgsDb2ExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
 {
   ok = true;
+// Seemed necessary in initial Python testing but can't identify failing case now
+#if 0
   if ( value.isNull() )
   {
     //no NULL literal support
     ok = false;
     return QString();
   }
-
+#endif
   switch ( value.type() )
   {
     case QVariant::Bool:
@@ -255,6 +240,7 @@ QString QgsDb2ExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
       return value.toBool() ? "(1=1)" : "(1=0)";
 
     default:
+      QString result = QgsSqlExpressionCompiler::quotedValue( value, ok );
       return QgsSqlExpressionCompiler::quotedValue( value, ok );
   }
 }

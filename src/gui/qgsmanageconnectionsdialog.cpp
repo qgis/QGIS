@@ -332,7 +332,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         if ( root.tagName() != "qgsDb2Connections" )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
-                                    tr( "The file is not an Oracle connections exchange file." ) );
+                                    tr( "The file is not an DB2 connections exchange file." ) );
           return false;
         }
         break;

@@ -80,15 +80,16 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
      * schemas and layers.
      */
     QVector<QgsDataItem*> createChildren() override;
-    //virtual bool equal( const QgsDataItem *other ) override;
+    virtual bool equal( const QgsDataItem *other ) override;
 
     /**
      * Add Refresh, Edit, and Delete actions for every QgsDb2ConnectionItem.
      */
     virtual QList<QAction*> actions() override;
 
-    //virtual bool acceptDrop() override { return true; }
-    //virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
+    virtual bool acceptDrop() override { return true; }
+    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
+    bool handleDrop( const QMimeData * data, const QString& toSchema );
     void refresh() override;
 
     QString connInfo() const { return mConnInfo; }
@@ -150,6 +151,8 @@ class QgsDb2SchemaItem : public QgsDataCollectionItem
 
     void refresh() override {} // do not refresh directly
     void addLayers( QgsDataItem* newLayers );
+    virtual bool acceptDrop() override { return true; }
+    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
 };
 
 /**

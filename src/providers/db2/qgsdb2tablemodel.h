@@ -32,6 +32,7 @@ struct QgsDb2LayerProperty
   QStringList pkCols;
   QString     pkColumnName;
   QString     srid;
+  QString     srsName;
   QString     sql;
   QString     extents;
 };

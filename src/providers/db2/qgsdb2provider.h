@@ -18,7 +18,8 @@
 #ifndef QGSDB2PROVIDER_H
 #define QGSDB2PROVIDER_H
 
-#include <qgsvectordataprovider.h>
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayerimport.h"
 #include <qgscoordinatereferencesystem.h>
 #include "qgsgeometry.h"
 #include <QtSql>
@@ -44,9 +45,9 @@ class QgsDb2Provider : public QgsVectorDataProvider
      *
      * @param connInfo A string containing all connection information.
      */
-    static QSqlDatabase GetDatabase( const QString &connInfo, QString &errMsg );
+    static QSqlDatabase getDatabase( const QString &connInfo, QString &errMsg );
 
-    static bool OpenDatabase( QSqlDatabase db );
+    static bool openDatabase( QSqlDatabase db );
 
     virtual QgsAbstractFeatureSource* featureSource() const override;
 
@@ -71,7 +72,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     /**
      * Update the extent for this layer.
      */
-    void UpdateStatistics();
+    void updateStatistics();
 
     /**
      * Return a map of indexes with field names for this layer.
@@ -137,9 +138,27 @@ class QgsDb2Provider : public QgsVectorDataProvider
     /** Changes existing geometries*/
     virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
+    /** Import a vector layer into the database */
+    static QgsVectorLayerImport::ImportError createEmptyLayer(
+      const QString& uri,
+      const QgsFields &fields,
+      QGis::WkbType wkbType,
+      const QgsCoordinateReferenceSystem *srs,
+      bool overwrite,
+      QMap<int, int> *oldToNewAttrIdxMap,
+      QString *errorMessage = nullptr,
+      const QMap<QString, QVariant> *options = nullptr
+    ) override;
+
+    /** Convert a QgsField to work with DB2 */
+    static bool convertField( QgsField &field );
+
+    /** Convert a QgsField to work with DB2 */
+    static QString qgsFieldToDb2Field( QgsField field );
+
   protected:
     /** Loads fields from input file to member attributeFields */
-    QVariant::Type DecodeSqlType( int typeId );
+    QVariant::Type decodeSqlType( int typeId );
     void loadMetadata();
     void loadFields();
 
@@ -157,6 +176,8 @@ class QgsDb2Provider : public QgsVectorDataProvider
     QString mFidColName;
     QString mExtents;
     long mSRId;
+    int  mEnvironment;
+    QString mSrsName;
     QString mGeometryColName, mGeometryColType;
     QString mLastError; //string containing the last reported error message
     QgsCoordinateReferenceSystem mCrs; //coordinate reference system

@@ -489,7 +489,7 @@ void QgsDb2SourceSelect::on_btnConnect_clicked()
     return;
   }
 
-  QSqlDatabase db = QgsDb2Provider::GetDatabase( mConnInfo, errorMsg );
+  QSqlDatabase db = QgsDb2Provider::getDatabase( mConnInfo, errorMsg );
 
   if ( !errorMsg.isEmpty() )
   {
@@ -714,7 +714,7 @@ void QgsDb2GeomColumnTypeThread::run()
 
       // issue the sql query
       QSqlDatabase db = QSqlDatabase::database( mConnectionName );
-      if ( !QgsDb2Provider::OpenDatabase( db ) )
+      if ( !QgsDb2Provider::openDatabase( db ) )
       {
         QString msg = db.lastError().text();
         QgsDebugMsg( msg );

@@ -178,7 +178,7 @@ bool QgsDb2NewConnection::testConnection()
     return false;
   }
 
-  db = QgsDb2Provider::GetDatabase( connInfo, errMsg );
+  db = QgsDb2Provider::getDatabase( connInfo, errMsg );
   if ( errMsg.isEmpty() )
   {
     QgsDebugMsg( "connection open succeeded " + connInfo );

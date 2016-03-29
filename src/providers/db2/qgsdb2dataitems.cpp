@@ -20,7 +20,15 @@
 #include "qgsdb2newconnection.h"
 #include "qgsdb2geometrycolumns.h"
 #include <qgslogger.h>
-#include <qaction.h>
+//#include <qaction.h>
+#include "qgsmimedatautils.h"
+#include "qgsvectorlayerimport.h"
+
+#include <QSettings>
+#include <QMessageBox>
+//#include <QtSql/QSqlDatabase>
+//#include <QtSql/QSqlError>
+#include <QProgressDialog>
 
 static const QString PROVIDER_KEY = "DB2";
 
@@ -159,7 +167,7 @@ QVector<QgsDataItem*> QgsDb2ConnectionItem::createChildren()
   mConnInfo = connInfo;
   QgsDebugMsg( "mConnInfo: '" + mConnInfo + "'" );
 
-  QSqlDatabase db = QgsDb2Provider::GetDatabase( connInfo, errorMsg );
+  QSqlDatabase db = QgsDb2Provider::getDatabase( connInfo, errorMsg );
   if ( errorMsg.isEmpty() )
   {
     QString connectionName = db.connectionName();
@@ -227,19 +235,30 @@ QVector<QgsDataItem*> QgsDb2ConnectionItem::createChildren()
   return children;
 }
 
+bool QgsDb2ConnectionItem::equal( const QgsDataItem *other )
+{
+  if ( type() != other->type() )
+  {
+    return false;
+  }
+
+  const QgsDb2ConnectionItem *o = qobject_cast<const QgsDb2ConnectionItem *>( other );
+  return ( mPath == o->mPath && mName == o->mName );
+}
+
 QList<QAction*> QgsDb2ConnectionItem::actions()
 {
   QList<QAction*> lst;
 
-  QAction* actionRefresh = new QAction( tr( "Refresh" ), this );
+  QAction* actionRefresh = new QAction( tr( "Refresh connection" ), this );
   connect( actionRefresh, SIGNAL( triggered() ), this, SLOT( refreshConnection() ) );
   lst.append( actionRefresh );
 
-  QAction* actionEdit = new QAction( tr( "Edit..." ), this );
+  QAction* actionEdit = new QAction( tr( "Edit connection..." ), this );
   connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
   lst.append( actionEdit );
 
-  QAction* actionDelete = new QAction( tr( "Delete" ), this );
+  QAction* actionDelete = new QAction( tr( "Delete connection" ), this );
   connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
   lst.append( actionDelete );
 
@@ -275,7 +294,7 @@ void QgsDb2ConnectionItem::deleteConnection()
 void QgsDb2ConnectionItem::refreshConnection()
 {
   QString errMsg;
-  QSqlDatabase db = QgsDb2Provider::GetDatabase( mConnInfo, errMsg );
+  QSqlDatabase db = QgsDb2Provider::getDatabase( mConnInfo, errMsg );
 
   if ( errMsg.isEmpty() )
   {
@@ -287,6 +306,117 @@ void QgsDb2ConnectionItem::refreshConnection()
     QgsDebugMsg( "failed get db2 connection on refresh " + errMsg + " " + mPath + "/error" );
   }
   refresh();
+}
+
+
+bool QgsDb2ConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
+{
+  return handleDrop( data, QString() );
+}
+
+bool QgsDb2ConnectionItem::handleDrop( const QMimeData* data, const QString& toSchema )
+{
+  if ( !QgsMimeDataUtils::isUriList( data ) )
+    return false;
+
+  // TODO: probably should show a GUI with settings etc
+  qApp->setOverrideCursor( Qt::WaitCursor );
+
+  QProgressDialog *progress = new QProgressDialog( tr( "Copying features..." ), tr( "Abort" ), 0, 0, nullptr );
+  progress->setWindowTitle( tr( "Import layer" ) );
+  progress->setWindowModality( Qt::WindowModal );
+  progress->show();
+
+  QStringList importResults;
+  bool hasError = false;
+  bool cancelled = false;
+
+  QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
+  Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
+  {
+    if ( u.layerType != "vector" )
+    {
+      importResults.append( tr( "%1: Not a vector layer!" ).arg( u.name ) );
+      hasError = true; // only vectors can be imported
+      continue;
+    }
+
+    QgsDebugMsg( QString( "uri: %1; name: %2; key: %3" ).arg( u.uri, u.name, u.providerKey ) );
+    // open the source layer
+    QgsVectorLayer* srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey );
+
+    if ( srcLayer->isValid() )
+    {
+      QString tableName;
+      if ( !toSchema.isEmpty() )
+      {
+        tableName = QString( "%1.%2" ).arg( toSchema, u.name );
+      }
+      else
+      {
+        tableName = u.name;
+      }
+
+      QString uri = connInfo() + " table=" + tableName;
+      if ( srcLayer->geometryType() != QGis::NoGeometry )
+        uri += " (geom)";
+
+      QgsVectorLayerImport::ImportError err;
+      QString importError;
+      err = QgsVectorLayerImport::importLayer( srcLayer, uri, "DB2", &srcLayer->crs(), false, &importError, false, nullptr, progress );
+      if ( err == QgsVectorLayerImport::NoError )
+      {
+        importResults.append( tr( "%1: OK!" ).arg( u.name ) );
+        QgsDebugMsg( "import successful" );
+      }
+      else
+      {
+        if ( err == QgsVectorLayerImport::ErrUserCancelled )
+        {
+          cancelled = true;
+          QgsDebugMsg( "import cancelled" );
+        }
+        else
+        {
+          QString errMsg = QString( "%1: %2" ).arg( u.name, importError );
+          QgsDebugMsg( "import failed: " + errMsg );
+          importResults.append( errMsg );
+          hasError = true;
+        }
+      }
+    }
+    else
+    {
+      importResults.append( tr( "%1: OK!" ).arg( u.name ) );
+      hasError = true;
+    }
+
+    delete srcLayer;
+  }
+
+  delete progress;
+  qApp->restoreOverrideCursor();
+
+  if ( cancelled )
+  {
+    QMessageBox::information( nullptr, tr( "Import to DB2 database" ), tr( "Import cancelled." ) );
+    refresh();
+  }
+  else if ( hasError )
+  {
+    QMessageBox::warning( nullptr, tr( "Import to DB2 database" ), tr( "Failed to import some layers!\n\n" ) + importResults.join( "\n" ) );
+  }
+  else
+  {
+    QMessageBox::information( nullptr, tr( "Import to DB2 database" ), tr( "Import was successful." ) );
+  }
+
+  if ( state() == Populated )
+    refresh();
+  else
+    populate();
+
+  return true;
 }
 
 QgsDb2RootItem::QgsDb2RootItem( QgsDataItem* parent, QString name, QString path )
@@ -416,6 +546,15 @@ void QgsDb2SchemaItem::addLayers( QgsDataItem* newLayers )
     QgsDb2LayerItem* layer = (( QgsDb2LayerItem* )child )->createClone();
     addChildItem( layer, true );
   }
+}
+
+bool QgsDb2SchemaItem::handleDrop( const QMimeData* data, Qt::DropAction )
+{
+  QgsDb2ConnectionItem *conn = qobject_cast<QgsDb2ConnectionItem *>( parent() );
+  if ( !conn )
+    return 0;
+
+  return conn->handleDrop( data, mName );
 }
 
 QgsDb2LayerItem* QgsDb2SchemaItem::addLayer( QgsDb2LayerProperty layerProperty, bool refresh )

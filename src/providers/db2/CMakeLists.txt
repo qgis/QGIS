@@ -30,14 +30,15 @@ INCLUDE_DIRECTORIES(
   ../../core
   ../../core/auth  
   ../../core/geometry
-  ${GDAL_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
-  ${QT_INCLUDE_DIR}
-  ${QSCINTILLA_INCLUDE_DIR}
   ../../gui
   ../../gui/auth
   ../../ui  
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+)
+
+INCLUDE_DIRECTORIES(SYSTEM
+  ${GEOS_INCLUDE_DIR}
+  ${QT_INCLUDE_DIR}
 )
 
 ADD_LIBRARY (db2provider MODULE ${DB2_SRCS} ${DB2_HDRS} ${DB2_MOC_SRCS})

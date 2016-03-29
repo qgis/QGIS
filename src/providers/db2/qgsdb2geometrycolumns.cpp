@@ -26,21 +26,37 @@ QgsDb2GeometryColumns::QgsDb2GeometryColumns( const QSqlDatabase db )
 {
   QgsDebugMsg( "constructing" );
 }
-QgsDb2GeometryColumns::~QgsDb2GeometryColumns( void )
+QgsDb2GeometryColumns::~QgsDb2GeometryColumns( )
 {
   mQuery.clear();
 }
+
+
 int QgsDb2GeometryColumns::open()
 {
+  return open( QString(), QString() );
+}
+
+int QgsDb2GeometryColumns::open( const QString &schemaName, const QString &tableName )
+{
   QString queryExtents( "SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME, TYPE_NAME, "
-                        "SRS_ID, MIN_X, MIN_Y, MAX_X, MAX_Y "
+                        "SRS_ID, SRS_NAME, MIN_X, MIN_Y, MAX_X, MAX_Y "
                         "FROM DB2GSE.ST_GEOMETRY_COLUMNS" );
   QString queryNoExtents( "SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME, TYPE_NAME, "
-                          "SRS_ID "
+                          "SRS_ID, SRS_NAME "
                           "FROM DB2GSE.ST_GEOMETRY_COLUMNS" );
   mQuery = QSqlQuery( mDatabase );
   int sqlcode = 0;
   mEnvironment = ENV_LUW;
+
+  if ( !schemaName.isEmpty() && !tableName.isEmpty() )
+  {
+    QString whereClause = QString( " WHERE TABLE_SCHEMA = '%1' AND TABLE_NAME = '%2'" )
+                          .arg( schemaName, tableName );
+    queryExtents += whereClause;
+    queryNoExtents += whereClause;
+  }
+  QgsDebugMsg( queryExtents );
   // issue the sql query
   if ( !mQuery.exec( queryExtents ) )
   {
@@ -66,15 +82,20 @@ int QgsDb2GeometryColumns::open()
       }
     }
   }
-  QgsDebugMsg( QString( "sqlcode: %1" ).arg( sqlcode ) );
+//  QgsDebugMsg( QString( "sqlcode: %1" ).arg( sqlcode ) );
 
   return sqlcode;
 }
+
 bool QgsDb2GeometryColumns::isActive()
 {
   return mQuery.isActive();
 }
 
+int QgsDb2GeometryColumns::db2Environment()
+{
+  return mEnvironment;
+}
 
 bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
 {
@@ -90,26 +111,28 @@ bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
   if ( mQuery.value( 4 ).isNull() )
   {
     layer.srid = QString( "" );
+    layer.srsName = QString( "" );
   }
   else
   {
     layer.srid = mQuery.value( 4 ).toString();
+    layer.srsName = mQuery.value( 5 ).toString();
   }
   layer.extents = QString( "0 0 0 0" ); // no extents
   if ( ENV_LUW == mEnvironment )
   {
-    if ( !mQuery.value( 5 ).isNull() ) // Don't get values if null
+    if ( !mQuery.value( 6 ).isNull() ) // Don't get values if null
     {
       layer.extents = QString(
-                        mQuery.value( 5 ).toString() + " " +
-                        mQuery.value( 6 ).toString() + " " +
-                        mQuery.value( 7 ).toString() + " " +
-                        mQuery.value( 8 ).toString() ).trimmed();
+                        mQuery.value( 6 ).toString() + ' ' +
+                        mQuery.value( 7 ).toString() + ' ' +
+                        mQuery.value( 8 ).toString() + ' ' +
+                        mQuery.value( 9 ).toString() ).trimmed();
     }
   }
-  QgsDebugMsg( "layer: " + layer.schemaName + "."  + layer.tableName + "(" + layer.geometryColName
-               + ") type=" + layer.type + " srid='" + layer.srid +  "'"
-             );
+  QgsDebugMsg( QString( "layer: %1.%2(%3) type='%4' srid='%5' srsName='%6'" )
+               .arg( layer.schemaName, layer.tableName, layer.geometryColName,
+                     layer.type, layer.srid, layer.srsName ) );
   QgsDebugMsg( "Extents: '" + layer.extents + "'" );
 
   layer.pkCols = QStringList();
@@ -118,7 +141,7 @@ bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
   // to set the FID column.
   // We can only use the primary key if it only has one column and
   // the type is Integer or BigInt.
-  QString table = QString( "%1.%2" ).arg( layer.schemaName ).arg( layer.tableName );
+  QString table = QString( "%1.%2" ).arg( layer.schemaName, layer.tableName );
   QSqlIndex pk = mDatabase.primaryIndex( table );
   if ( pk.count() == 1 )
   {
@@ -129,7 +152,6 @@ bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
       QString fidColName = pk.fieldName( 0 );
       layer.pkCols.append( fidColName );
       QgsDebugMsg( "pk is: " + fidColName );
-      QgsDebugMsg( QString( "auto: %1; generated: %2" ).arg( pkFld.isAutoValue() ).arg( pkFld.isGenerated() ) );
     }
   }
   else

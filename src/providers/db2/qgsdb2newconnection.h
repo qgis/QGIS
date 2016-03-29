@@ -22,8 +22,6 @@
 #include "qgscontexthelp.h"
 #include "qgsauthconfigselect.h"
 
-static const int ENV_LUW = 1, ENV_ZOS = 2;
-
 /** \class QgsDb2NewConnection
  * \brief Dialog to allow the user to configure and save connection
  * information for an DB2 database

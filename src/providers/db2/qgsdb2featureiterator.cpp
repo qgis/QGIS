@@ -31,13 +31,14 @@ QgsDb2FeatureIterator::QgsDb2FeatureIterator( QgsDb2FeatureSource* source, bool 
     : QgsAbstractFeatureIteratorFromSource<QgsDb2FeatureSource>( source, ownSource, request )
 {
   mClosed = false;
-  mQuery = NULL;
+  mQuery = nullptr;
+  mFetchCount = 0;
 
   BuildStatement( request );
 
   // connect to the database
   QString errMsg;
-  mDatabase = QgsDb2Provider::GetDatabase( mSource->mConnInfo, errMsg );
+  mDatabase = QgsDb2Provider::getDatabase( mSource->mConnInfo, errMsg );
 
   if ( !errMsg.isEmpty() )
   {
@@ -55,20 +56,25 @@ QgsDb2FeatureIterator::QgsDb2FeatureIterator( QgsDb2FeatureSource* source, bool 
 
 QgsDb2FeatureIterator::~QgsDb2FeatureIterator()
 {
+  QgsDebugMsg( QString( "Fetch count at close: %1" ).arg( mFetchCount ) );
   close();
 }
 
 void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
 {
   bool limitAtProvider = ( mRequest.limit() >= 0 );
-// Note, schema, table and column names are not escaped
-// Not sure if this is a problem with upper/lower case names
+  QString delim = "";
+
   // build sql statement
   mStatement = QString( "SELECT " );
 
-  mStatement += QString( "%1" ).arg( mSource->mFidColName );
-  mFidCol = mSource->mFields.indexFromName( mSource->mFidColName );
-  mAttributesToFetch.append( mFidCol );
+  if ( !mSource->mFidColName.isEmpty() )
+  {
+    mStatement += mSource->mFidColName;
+    mFidCol = mSource->mFields.indexFromName( mSource->mFidColName );
+    mAttributesToFetch.append( mFidCol );
+    delim = ",";
+  }
 
   bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
   Q_FOREACH ( int i, subsetOfAttributes ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList() )
@@ -76,21 +82,17 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     QString fieldname = mSource->mFields.at( i ).name();
     if ( mSource->mFidColName == fieldname )
       continue;
-
-    mStatement += QString( ",%1" ).arg( fieldname );
-
+    mStatement += delim + fieldname;
+    delim = ",";
     mAttributesToFetch.append( i );
+    QgsDebugMsg( QString( "i: %1; name: %2" ).arg( i ).arg( fieldname ) );
   }
 
-  // get geometry col in WKB format
+  // get geometry col if requested and table has spatial column
   if ( !( request.flags() & QgsFeatureRequest::NoGeometry ) && mSource->isSpatial() )
   {
-    mStatement += QString( ",DB2GSE.ST_ASBINARY(%1) AS %1 " ).arg( mSource->mGeometryColName );
-
-//  mStatement += QString( ",VARCHAR(DB2GSE.ST_ASTEXT(%1)) AS %1 " ).arg( mSource->mGeometryColName );
-//    mStatement += QString( ",DB2GSE.ST_ASTEXT(%1) AS %1 " ).arg( mSource->mGeometryColName );
-
-    mAttributesToFetch.append( 2 );
+    mStatement += QString( delim + "DB2GSE.ST_ASBINARY(%1) AS %1 " ).arg( mSource->mGeometryColName );
+    mAttributesToFetch.append( 2 );  // dummy - won't store geometry as an attribute
   }
 
   mStatement += QString( " FROM %1.%2" ).arg( mSource->mSchemaName, mSource->mTableName );
@@ -99,13 +101,25 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   // set spatial filter
   if ( !request.filterRect().isNull() && mSource->isSpatial() && !request.filterRect().isEmpty() )
   {
-    mStatement += QString( " WHERE DB2GSE.ENVELOPESINTERSECT(%1, %2, %3, %4, %5, %6) = 1" ).arg(
-                    mSource->mGeometryColName,
-                    qgsDoubleToString( request.filterRect().xMinimum() ),
-                    qgsDoubleToString( request.filterRect().yMinimum() ),
-                    qgsDoubleToString( request.filterRect().xMaximum() ),
-                    qgsDoubleToString( request.filterRect().yMaximum() ),
-                    QString::number( mSource->mSRId ) );
+    if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+    {
+      QString rectangleWkt = request.filterRect().asWktPolygon();
+      QgsDebugMsg( "filter polygon: " + rectangleWkt );
+      mStatement += QString( " WHERE DB2GSE.ST_Intersects(%1, DB2GSE.ST_POLYGON('%2', %3)) = 1" ).arg(
+                      mSource->mGeometryColName,
+                      rectangleWkt,
+                      QString::number( mSource->mSRId ) );
+    }
+    else
+    {
+      mStatement += QString( " WHERE DB2GSE.ENVELOPESINTERSECT(%1, %2, %3, %4, %5, %6) = 1" ).arg(
+                      mSource->mGeometryColName,
+                      qgsDoubleToString( request.filterRect().xMinimum() ),
+                      qgsDoubleToString( request.filterRect().yMinimum() ),
+                      qgsDoubleToString( request.filterRect().xMaximum() ),
+                      qgsDoubleToString( request.filterRect().yMaximum() ),
+                      QString::number( mSource->mSRId ) );
+    }
     filterAdded = true;
   }
 
@@ -235,7 +249,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     mStatement += mOrderByClause;
   }
 
-  if ( request.limit() > 0 )
+  if ( limitAtProvider && request.limit() > 0 )
   {
     mStatement += QString( " FETCH FIRST %1 ROWS ONLY" ).arg( mRequest.limit() );
   }
@@ -292,11 +306,11 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
       QString attrName = record.fieldName( i );
       if ( attrName == mSource->mGeometryColName )
       {
-        QgsDebugMsg( QString( "Geom col: %1" ).arg( attrName ) ); // not sure why we set geometry as a field value
+//        QgsDebugMsg( QString( "Geom col: %1" ).arg( attrName ) ); // not sure why we set geometry as a field value
       }
       else
       {
-        QgsDebugMsg( QString( "Field: %1; value: %2" ).arg( attrName ).arg( v.toString() ) );
+//        QgsDebugMsg( QString( "Field: %1; value: %2" ).arg( attrName, v.toString() ) );
         /**
          * CHAR and VARCHAR fields seem to get corrupted sometimes when directly
          * calling feature.setAttribute(..., v) with mQuery->value(i). Workaround
@@ -307,7 +321,7 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
           v = QVariant( v.toString() );
         }
         const QgsField &fld = mSource->mFields.at( mAttributesToFetch.at( i ) );
-        QgsDebugMsg( QString( "v.type: %1; fld.type: %2" ).arg( v.type(), fld.type() ) );
+//        QgsDebugMsg( QString( "v.type: %1; fld.type: %2" ).arg( v.type() ).arg( fld.type() ) );
         if ( v.type() != fld.type() )
         {
           v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
@@ -315,7 +329,7 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
         feature.setAttribute( mAttributesToFetch[i], v );
       }
     }
-    QgsDebugMsg( QString( "Fid: %1; value: %2" ).arg( mSource->mFidColName ).arg( record.value( mSource->mFidColName ).toLongLong() ) );
+//    QgsDebugMsg( QString( "Fid: %1; value: %2" ).arg( mSource->mFidColName ).arg( record.value( mSource->mFidColName ).toLongLong() ) );
     feature.setFeatureId( mQuery->record().value( mSource->mFidColName ).toLongLong() );
 
     if ( mSource->isSpatial() )
@@ -336,6 +350,11 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
       }
     }
     feature.setValid( true );
+    mFetchCount++;
+    if ( mFetchCount % 100 == 0 )
+    {
+      QgsDebugMsg( QString( "Fetch count: %1" ).arg( mFetchCount ) );
+    }
     return true;
   }
   QgsDebugMsg( QString( "No feature; lastError: '%1'" ).arg( mQuery->lastError().text() ) );
@@ -356,9 +375,7 @@ bool QgsDb2FeatureIterator::rewind()
   if ( !mQuery )
     return false;
 
-  //mQuery->clear();
-  delete mQuery;
-  mQuery = new QSqlQuery( mDatabase );
+  mQuery->clear();
   mQuery->setForwardOnly( true );
   QgsDebugMsg( "Execute mStatement: " + mStatement );
   if ( !mQuery->exec( mStatement ) )
@@ -370,6 +387,7 @@ bool QgsDb2FeatureIterator::rewind()
   }
   QgsDebugMsg( "leaving rewind" );
   QgsDebugMsg( mQuery->lastError().text() );
+  mFetchCount = 0;
   return true;
 }
 
@@ -383,17 +401,18 @@ bool QgsDb2FeatureIterator::close()
     if ( !mQuery->isActive() )
     {
       QgsDebugMsg( "QgsDb2FeatureIterator::close on inactive query" );
-      return false;
     }
-
-    mQuery->finish();
+    else
+    {
+      mQuery->finish();
+    }
+    delete mQuery;
   }
 
-  if ( mQuery )
-    delete mQuery;
-
   if ( mDatabase.isOpen() )
+  {
     mDatabase.close();
+  }
 
   iteratorClosed();
 

@@ -346,6 +346,13 @@ QString QgsDataSourceURI::keyColumn() const
   return mKeyColumn;
 }
 
+
+void QgsDataSourceURI::setDriver( const QString& driver )
+{
+  mDriver = driver;
+}
+
+
 void QgsDataSourceURI::setKeyColumn( const QString& column )
 {
   mKeyColumn = column;
