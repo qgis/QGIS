@@ -16,8 +16,6 @@ git:
 
 cache: apt
 
-sudo: false
-
 notifications:
   irc: "chat.freenode.net#qgis-test"
   on_failure: change
