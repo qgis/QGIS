@@ -13,17 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-
-#include <QDateTimeEdit>
-#include <QDateEdit>
-#include <QTimeEdit>
-
-
 #include "qgsdatetimeeditwrapper.h"
 #include "qgsdatetimeeditfactory.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
 
+#include <QDateTimeEdit>
+#include <QDateEdit>
+#include <QTimeEdit>
+#include <QTextCharFormat>
+#include <QCalendarWidget>
 
 QgsDateTimeEditWrapper::QgsDateTimeEditWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
@@ -67,6 +66,13 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
 
   const bool calendar = config( "calendar_popup", false ).toBool();
   mQDateTimeEdit->setCalendarPopup( calendar );
+  if ( calendar )
+  {
+    // highlight today's date
+    QTextCharFormat todayFormat;
+    todayFormat.setBackground( QColor( 160, 180, 200 ) );
+    mQDateTimeEdit->calendarWidget()->setDateTextFormat( QDate::currentDate(), todayFormat );
+  }
 
   const bool allowNull = config( "allow_null", true ).toBool();
   if ( mQgsDateTimeEdit )
