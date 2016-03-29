@@ -616,6 +616,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   // Default local simplification algorithm
   mSimplifyAlgorithmComboBox->addItem( tr( "Distance" ), ( int )QgsVectorSimplifyMethod::Distance );
   mSimplifyAlgorithmComboBox->addItem( tr( "SnapToGrid" ), ( int )QgsVectorSimplifyMethod::SnapToGrid );
+  mSimplifyAlgorithmComboBox->addItem( tr( "Visvalingam" ), ( int )QgsVectorSimplifyMethod::Visvalingam );
   mSimplifyAlgorithmComboBox->setCurrentIndex( mSimplifyAlgorithmComboBox->findData( mSettings->value( "/qgis/simplifyAlgorithm", 0 ).toInt() ) );
 
   // Slightly awkard here at the settings value is true to use QImage,

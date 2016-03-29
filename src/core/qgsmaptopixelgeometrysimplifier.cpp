@@ -44,7 +44,6 @@ float QgsMapToPixelSimplifier::calculateLengthSquared2D( double x1, double y1, d
   return ( vx * vx ) + ( vy * vy );
 }
 
- 
 //! Returns whether the points belong to the same grid
 bool QgsMapToPixelSimplifier::equalSnapToGrid( double x1, double y1, double x2, double y2, double gridOriginX, double gridOriginY, float gridInverseSizeXY )
 {
@@ -78,6 +77,32 @@ inline static QgsRectangle calculateBoundingBox( QGis::WkbType wkbType, QgsConst
 
   return r;
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Helper simplification methods for Visvalingam method
+
+// It uses a refactored code of the liblwgeom implementation:
+// https://github.com/postgis/postgis/blob/svn-trunk/liblwgeom/effectivearea.h
+// https://github.com/postgis/postgis/blob/svn-trunk/liblwgeom/effectivearea.c
+
+#define LWDEBUG //
+#define LWDEBUGF //
+#define FP_MAX qMax
+#define FLAGS_GET_Z( flags ) ( ( flags ) & 0x01 )
+#define LW_MSG_MAXLEN 256
+#define lwalloc qgsMalloc
+#define lwfree qgsFree
+#define lwerror qWarning
+
+#include "simplify/effectivearea.h"
+#include "simplify/effectivearea.c"
+
+double* getPoint_internal( const POINTARRAY* inpts, int pointIndex )
+{
+  return inpts->pointlist + ( pointIndex * inpts->dimension );
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 //! Generalize the WKB-geometry using the BBOX of the original geometry
 static bool generalizeWkbGeometryByBoundingBox(
@@ -247,6 +272,40 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
 
         r.combineExtentWith( x, y );
       }
+    }
+    else if ( simplifyAlgorithm == Visvalingam )
+    {
+      map2pixelTol *= map2pixelTol; //-> Use mappixelTol for 'Area' calculations.
+
+      POINTARRAY inpts;
+      inpts.pointlist = ( double* )( const unsigned char* )sourceWkbPtr;
+      inpts.dimension = QGis::wkbDimensions( wkbType );
+      inpts.npoints = numPoints;
+      inpts.flags = 0;
+
+      EFFECTIVE_AREAS* ea;
+      ea = initiate_effectivearea( &inpts );
+
+      int set_area = 0;
+      ptarray_calc_areas( ea, isaLinearRing ? 4 : 2, set_area, map2pixelTol );
+
+      for ( int i = 0; i < numPoints; ++i )
+      {
+        if ( ea->res_arealist[ i ] > map2pixelTol )
+        {
+          double* coord = getPoint_internal( &inpts, i );
+          x = coord[ 0 ];
+          y = coord[ 1 ];
+
+          targetWkbPtr << x << y;
+          lastX = x;
+          lastY = y;
+          numTargetPoints++;
+        }
+      }
+      destroy_effectivearea( ea );
+
+      sourceWkbPtr += numPoints * ( inpts.dimension * sizeof( double ) );
     }
     else
     {

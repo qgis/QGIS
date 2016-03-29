@@ -9,6 +9,7 @@ class QgsMapToPixelSimplifier : QgsAbstractGeometrySimplifier
     {
       Distance    = 0, //!< The simplification uses the distance between points to remove duplicate points
       SnapToGrid  = 1, //!< The simplification uses a grid (similar to ST_SnapToGrid) to remove duplicate points
+      Visvalingam = 2, //!< The simplification gives each point in a line an importance weighting, so that least important points are removed first
     };
 
     QgsMapToPixelSimplifier( int simplifyFlags, double tolerance );
