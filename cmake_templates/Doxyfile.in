@@ -838,7 +838,8 @@ HTML_FOOTER            =
 
 HTML_STYLESHEET        =
 
-# @tomchadwin addition - NEEDS Doxygen version bump to work.
+# @tomchadwin addition - HTML_EXTRA_STYLESHEET needs Doxygen version bump to
+# work.
 # Assumes Doxygen is run from this directory (/cmake_templates) - if not,
 # must specify correct path
 
