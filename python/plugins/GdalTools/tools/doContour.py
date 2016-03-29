@@ -49,6 +49,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
         # set the default QSpinBoxes value
         self.intervalDSpinBox.setValue(10.0)
+        self.outfileFormat = ""
 
         self.setParamsStatus([
             (self.inSelector, "filenameChanged"),
@@ -87,6 +88,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
         self.outSelector.setFilename(outputFile)
         self.lastEncoding = encoding
+        
+        # Get the SHORTNAME from the vector filter and call update to set the
+        # format of output file in the command edit
+        if not self.useDirAsOutput:
+            lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
+            self.outfileFormat = Utils.fillVectorOutputFormat(lastUsedFilter, outputFile)
+            self.someValueChanged()
 
     def getArguments(self):
         arguments = []
@@ -96,6 +104,9 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         if True:  # XXX in this moment the -i argument is not optional
             arguments.append("-i")
             arguments.append(unicode(self.intervalDSpinBox.value()))
+        if not self.outfileFormat == "":
+            arguments.append("-f")
+            arguments.append(self.outfileFormat)
         arguments.append(self.getInputFileName())
         arguments.append(self.outSelector.filename())
         return arguments
