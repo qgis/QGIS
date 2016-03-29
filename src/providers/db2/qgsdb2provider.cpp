@@ -919,7 +919,9 @@ bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
 bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
 {
-  Q_UNUSED( beginStatus, wkbType, commitStatus );
+  Q_UNUSED( beginStatus );
+  Q_UNUSED( wkbType );
+  Q_UNUSED(  commitStatus );  
   QgsDebugMsg( "entering" );
   QgsDebugMsg( "mGeometryColType: " + mGeometryColType );
   int writeCount = 0;
