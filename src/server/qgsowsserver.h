@@ -25,6 +25,8 @@
 
 #include <QHash>
 
+class QgsMapLayer;
+
 class QgsOWSServer
 {
   public:
