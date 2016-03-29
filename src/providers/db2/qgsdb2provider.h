@@ -148,7 +148,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
       const QMap<QString, QVariant> *options = nullptr
-    ) override;
+    );
 
     /** Convert a QgsField to work with DB2 */
     static bool convertField( QgsField &field );

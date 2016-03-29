@@ -32,8 +32,8 @@ int QgsDb2Provider::sConnectionId = 0;
 
 QgsDb2Provider::QgsDb2Provider( QString uri )
     : QgsVectorDataProvider( uri )
-    , mWkbType( QGis::WKBUnknown )
     , mEnvironment( ENV_LUW )
+    , mWkbType( QGis::WKBUnknown )
 {
   QgsDebugMsg( "uri: " + uri );
   QgsDataSourceURI anUri = QgsDataSourceURI( uri );
@@ -42,7 +42,7 @@ QgsDb2Provider::QgsDb2Provider( QString uri )
   else
     mSRId = -1;
 
-  if ( QGis::WKBUnknown != anUri.newWkbType() )
+  if ( 0 != anUri.newWkbType() )
   {
     mWkbType = QGis::fromNewWkbType( anUri.newWkbType() );
   }
@@ -919,6 +919,7 @@ bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
 bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
 {
+  Q_UNUSED( beginStatus, wkbType, commitStatus );
   QgsDebugMsg( "entering" );
   QgsDebugMsg( "mGeometryColType: " + mGeometryColType );
   int writeCount = 0;
