@@ -1,7 +1,7 @@
 export DEBIAN_FRONTEND=noninteractive
 
 wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
-sudo add-apt-repository 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise main' -y
+sudo add-apt-repository 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.8 main' -y
 
 sudo add-apt-repository ppa:ubuntugis/ppa -y
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable -y # For postgresql-9.1-postgis-2.1
