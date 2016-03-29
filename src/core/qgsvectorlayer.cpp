@@ -1002,7 +1002,10 @@ bool QgsVectorLayer::insertVertex( double x, double y, QgsFeatureId atFeatureId,
     return false;
 
   QgsVectorLayerEditUtils utils( this );
-  return utils.insertVertex( x, y, atFeatureId, beforeVertex );
+  bool result = utils.insertVertex( x, y, atFeatureId, beforeVertex );
+  if ( result )
+    updateExtents();
+  return result;
 }
 
 
@@ -1012,7 +1015,11 @@ bool QgsVectorLayer::moveVertex( double x, double y, QgsFeatureId atFeatureId, i
     return false;
 
   QgsVectorLayerEditUtils utils( this );
-  return utils.moveVertex( x, y, atFeatureId, atVertex );
+  bool result = utils.moveVertex( x, y, atFeatureId, atVertex );
+
+  if ( result )
+    updateExtents();
+  return result;
 }
 
 bool QgsVectorLayer::moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, int atVertex )
@@ -1021,13 +1028,21 @@ bool QgsVectorLayer::moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, 
     return false;
 
   QgsVectorLayerEditUtils utils( this );
-  return utils.moveVertex( p, atFeatureId, atVertex );
+  bool result = utils.moveVertex( p, atFeatureId, atVertex );
+
+  if ( result )
+    updateExtents();
+  return result;
 }
 
 bool QgsVectorLayer::deleteVertex( QgsFeatureId atFeatureId, int atVertex )
 {
   QgsVectorLayer::EditResult res = deleteVertexV2( atFeatureId, atVertex );
-  return res == QgsVectorLayer::Success || res == QgsVectorLayer::EmptyGeometry;
+  bool result = ( res == QgsVectorLayer::Success || res == QgsVectorLayer::EmptyGeometry );
+
+  if ( result )
+    updateExtents();
+  return result;
 }
 
 QgsVectorLayer::EditResult QgsVectorLayer::deleteVertexV2( QgsFeatureId featureId, int vertex )
@@ -1036,7 +1051,11 @@ QgsVectorLayer::EditResult QgsVectorLayer::deleteVertexV2( QgsFeatureId featureI
     return QgsVectorLayer::InvalidLayer;
 
   QgsVectorLayerEditUtils utils( this );
-  return utils.deleteVertexV2( featureId, vertex );
+  EditResult result = utils.deleteVertexV2( featureId, vertex );
+
+  if ( result == Success )
+    updateExtents();
+  return result;
 }
 
 
@@ -1152,7 +1171,11 @@ int QgsVectorLayer::addPart( const QList<QgsPoint> &points )
   }
 
   QgsVectorLayerEditUtils utils( this );
-  return utils.addPart( points, *mSelectedFeatureIds.constBegin() );
+  int result = utils.addPart( points, *mSelectedFeatureIds.constBegin() );
+
+  if ( result == 0 )
+    updateExtents();
+  return result;
 }
 
 int QgsVectorLayer::addPart( const QgsPointSequenceV2 &points )
@@ -1174,7 +1197,11 @@ int QgsVectorLayer::addPart( const QgsPointSequenceV2 &points )
   }
 
   QgsVectorLayerEditUtils utils( this );
-  return utils.addPart( points, *mSelectedFeatureIds.constBegin() );
+  int result = utils.addPart( points, *mSelectedFeatureIds.constBegin() );
+
+  if ( result == 0 )
+    updateExtents();
+  return result;
 }
 
 int QgsVectorLayer::addPart( QgsCurveV2* ring )
@@ -1196,7 +1223,11 @@ int QgsVectorLayer::addPart( QgsCurveV2* ring )
   }
 
   QgsVectorLayerEditUtils utils( this );
-  return utils.addPart( ring, *mSelectedFeatureIds.constBegin() );
+  int result = utils.addPart( ring, *mSelectedFeatureIds.constBegin() );
+
+  if ( result == 0 )
+    updateExtents();
+  return result;
 }
 
 int QgsVectorLayer::translateFeature( QgsFeatureId featureId, double dx, double dy )
@@ -1205,7 +1236,11 @@ int QgsVectorLayer::translateFeature( QgsFeatureId featureId, double dx, double 
     return -1;
 
   QgsVectorLayerEditUtils utils( this );
-  return utils.translateFeature( featureId, dx, dy );
+  int result = utils.translateFeature( featureId, dx, dy );
+
+  if ( result == 0 )
+    updateExtents();
+  return result;
 }
 
 int QgsVectorLayer::splitParts( const QList<QgsPoint>& splitLine, bool topologicalEditing )
@@ -2098,7 +2133,11 @@ bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
 
   updateExtents();
 
-  return mEditBuffer->changeGeometry( fid, geom );
+  bool result = mEditBuffer->changeGeometry( fid, geom );
+
+  if ( result )
+    updateExtents();
+  return result;
 }
 
 
@@ -2215,9 +2254,10 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
 
   bool res = mEditBuffer->deleteFeature( fid );
   if ( res )
+  {
     mSelectedFeatureIds.remove( fid ); // remove it from selection
-
-  updateExtents();
+    updateExtents();
+  }
 
   return res;
 }
@@ -2230,9 +2270,10 @@ bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds& fids )
   bool res = mEditBuffer->deleteFeatures( fids );
 
   if ( res )
+  {
     mSelectedFeatureIds.subtract( fids ); // remove it from selection
-
-  updateExtents();
+    updateExtents();
+  }
 
   return res;
 }
