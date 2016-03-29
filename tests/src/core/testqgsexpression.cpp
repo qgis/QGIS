@@ -228,6 +228,65 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp.dump(), dump );
     }
 
+    void named_parameter_data()
+    {
+      //test passing named parameters to functions
+      QTest::addColumn<QString>( "string" );
+      QTest::addColumn<bool>( "parserError" );
+      QTest::addColumn<QString>( "dump" );
+      QTest::addColumn<QVariant>( "result" );
+
+      QTest::newRow( "unsupported" ) << "min( val1:=1, val2:=2, val3:=3 )" << true << "" << QVariant();
+      QTest::newRow( "named params named" ) << "clamp( min:=1, value:=2, max:=3)" << false << "clamp(1, 2, 3)" << QVariant( 2.0 );
+      QTest::newRow( "named params unnamed" ) << "clamp(1,2,3)" << false << "clamp(1, 2, 3)" << QVariant( 2.0 );
+      QTest::newRow( "named params mixed" ) << "clamp( 1, value:=2, max:=3)" << false << "clamp(1, 2, 3)" << QVariant( 2.0 );
+      QTest::newRow( "named params mixed bad" ) << "clamp( 1, value:=2, 3)" << true << "" << QVariant();
+      QTest::newRow( "named params mixed 2" ) << "clamp( 1, 2, max:=3)" << false << "clamp(1, 2, 3)" << QVariant( 2.0 );
+      QTest::newRow( "named params reordered" ) << "clamp( value := 2, max:=3, min:=1)" << false << "clamp(1, 2, 3)" << QVariant( 2.0 );
+      QTest::newRow( "named params mixed case" ) << "clamp( Min:=1, vAlUe:=2,MAX:=3)" << false << "clamp(1, 2, 3)" << QVariant( 2.0 );
+      QTest::newRow( "named params expression node" ) << "clamp( min:=1*2, value:=2+2, max:=3+1+2)" << false << "clamp(1 * 2, 2 + 2, 3 + 1 + 2)" << QVariant( 4.0 );
+      QTest::newRow( "named params bad name" ) << "clamp( min:=1, x:=2, y:=3)" << true << "" << QVariant();
+      QTest::newRow( "named params dupe implied" ) << "clamp( 1, 2, value:= 3, max:=4)" << true << "" << QVariant();
+      QTest::newRow( "named params dupe explicit" ) << "clamp( 1, value := 2, value:= 3, max:=4)" << true << "" << QVariant();
+      QTest::newRow( "named params dupe explicit 2" ) << "clamp( value:=1, value := 2, max:=4)" << true << "" << QVariant();
+      QTest::newRow( "named params non optional omitted" ) << "clamp( min:=1, max:=2)" << true << "" << QVariant();
+      QTest::newRow( "optional parameters specified" ) << "wordwrap( 'testxstring', 5, 'x')" << false << "wordwrap('testxstring', 5, 'x')" << QVariant( "test\nstring" );
+      QTest::newRow( "optional parameters specified named" ) << "wordwrap( text:='testxstring', length:=5, delimiter:='x')" << false << "wordwrap('testxstring', 5, 'x')" << QVariant( "test\nstring" );
+      QTest::newRow( "optional parameters unspecified" ) << "wordwrap( text:='test string', length:=5 )" << false << "wordwrap('test string', 5, ' ')" << QVariant( "test\nstring" );
+      QTest::newRow( "named params dupe explicit 3" ) << "wordwrap( 'test string', 5, length:=6 )" << true << "" << QVariant();
+      QTest::newRow( "named params dupe explicit 4" ) << "wordwrap( text:='test string', length:=5, length:=6 )" << true << "" << QVariant();
+    }
+
+    void named_parameter()
+    {
+      QFETCH( QString, string );
+      QFETCH( bool, parserError );
+      QFETCH( QString, dump );
+      QFETCH( QVariant, result );
+
+      QgsExpression exp( string );
+      QCOMPARE( exp.hasParserError(), parserError );
+      if ( exp.hasParserError() )
+      {
+        //parser error, so no point continuing testing
+        qDebug() << exp.parserErrorString();
+        return;
+      }
+
+      QgsExpressionContext context;
+      Q_ASSERT( exp.prepare( &context ) );
+
+      QVariant res = exp.evaluate();
+      if ( exp.hasEvalError() )
+        qDebug() << exp.evalErrorString();
+      if ( res.type() != result.type() )
+      {
+        qDebug() << "got " << res.typeName() << " instead of " << result.typeName();
+      }
+      QCOMPARE( res, result );
+      QCOMPARE( exp.dump(), dump );
+    }
+
     void evaluation_data()
     {
       QTest::addColumn<QString>( "string" );
@@ -354,28 +413,29 @@ class TestQgsExpression: public QObject
       // math functions
       QTest::newRow( "pi" ) << "pi()" << false << QVariant( M_PI );
       QTest::newRow( "sqrt" ) << "sqrt(16)" << false << QVariant( 4. );
+      QTest::newRow( "sqrt" ) << "sqrt(value:=16)" << false << QVariant( 4. );
       QTest::newRow( "abs(0.1)" ) << "abs(0.1)" << false << QVariant( 0.1 );
       QTest::newRow( "abs(0)" ) << "abs(0)" << false << QVariant( 0. );
-      QTest::newRow( "abs(-0.1)" ) << "abs(-0.1)" << false << QVariant( 0.1 );
+      QTest::newRow( "abs( value:=-0.1)" ) << "abs(value:=-0.1)" << false << QVariant( 0.1 );
       QTest::newRow( "invalid sqrt value" ) << "sqrt('a')" << true << QVariant();
-      QTest::newRow( "degrees to radians" ) << "toint(radians(45)*1000000)" << false << QVariant( 785398 ); // sorry for the nasty hack to work around floating point comparison problems
-      QTest::newRow( "radians to degrees" ) << "toint(degrees(2)*1000)" << false << QVariant( 114592 );
-      QTest::newRow( "sin 0" ) << "sin(0)" << false << QVariant( 0. );
-      QTest::newRow( "cos 0" ) << "cos(0)" << false << QVariant( 1. );
-      QTest::newRow( "tan 0" ) << "tan(0)" << false << QVariant( 0. );
-      QTest::newRow( "asin 0" ) << "asin(0)" << false << QVariant( 0. );
-      QTest::newRow( "acos 1" ) << "acos(1)" << false << QVariant( 0. );
-      QTest::newRow( "atan 0" ) << "atan(0)" << false << QVariant( 0. );
+      QTest::newRow( "degrees to radians" ) << "toint(radians(degrees:=45)*1000000)" << false << QVariant( 785398 ); // sorry for the nasty hack to work around floating point comparison problems
+      QTest::newRow( "radians to degrees" ) << "toint(degrees(radians:=2)*1000)" << false << QVariant( 114592 );
+      QTest::newRow( "sin 0" ) << "sin(angle:=0)" << false << QVariant( 0. );
+      QTest::newRow( "cos 0" ) << "cos(angle:=0)" << false << QVariant( 1. );
+      QTest::newRow( "tan 0" ) << "tan(angle:=0)" << false << QVariant( 0. );
+      QTest::newRow( "asin 0" ) << "asin(value:=0)" << false << QVariant( 0. );
+      QTest::newRow( "acos 1" ) << "acos(value:=1)" << false << QVariant( 0. );
+      QTest::newRow( "atan 0" ) << "atan(value:=0)" << false << QVariant( 0. );
       QTest::newRow( "atan2(0,1)" ) << "atan2(0,1)" << false << QVariant( 0. );
-      QTest::newRow( "atan2(1,0)" ) << "atan2(1,0)" << false << QVariant( M_PI / 2 );
+      QTest::newRow( "atan2(1,0)" ) << "atan2(dx:=1,dy:=0)" << false << QVariant( M_PI / 2 );
       QTest::newRow( "exp(0)" ) << "exp(0)" << false << QVariant( 1. );
-      QTest::newRow( "exp(1)" ) << "exp(1)" << false << QVariant( exp( 1. ) );
+      QTest::newRow( "exp(1)" ) << "exp(value:=1)" << false << QVariant( exp( 1. ) );
       QTest::newRow( "ln(0)" ) << "ln(0)" << false << QVariant();
       QTest::newRow( "log10(-1)" ) << "log10(-1)" << false << QVariant();
-      QTest::newRow( "ln(1)" ) << "ln(1)" << false << QVariant( log( 1. ) );
+      QTest::newRow( "ln(1)" ) << "ln(value:=1)" << false << QVariant( log( 1. ) );
       QTest::newRow( "log10(100)" ) << "log10(100)" << false << QVariant( 2. );
       QTest::newRow( "log(2,32)" ) << "log(2,32)" << false << QVariant( 5. );
-      QTest::newRow( "log(10,1000)" ) << "log(10,1000)" << false << QVariant( 3. );
+      QTest::newRow( "log(10,1000)" ) << "log(base:=10,value:=1000)" << false << QVariant( 3. );
       QTest::newRow( "log(-2,32)" ) << "log(-2,32)" << false << QVariant();
       QTest::newRow( "log(2,-32)" ) << "log(2,-32)" << false << QVariant();
       QTest::newRow( "log(0.5,32)" ) << "log(0.5,32)" << false << QVariant( -5. );
@@ -389,6 +449,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "min(-16.6,3.5,-2.1)" ) << "min(-16.6,3.5,-2.1)" << false << QVariant( -16.6 );
       QTest::newRow( "min(5,3.5,-2.1)" ) << "min(5,3.5,-2.1)" << false << QVariant( -2.1 );
       QTest::newRow( "clamp(-2,1,5)" ) << "clamp(-2,1,5)" << false << QVariant( 1.0 );
+      QTest::newRow( "clamp(min:=-2,value:=1,max:=5)" ) << "clamp(min:=-2,value:=1,max:=5)" << false << QVariant( 1.0 );
       QTest::newRow( "clamp(-2,-10,5)" ) << "clamp(-2,-10,5)" << false << QVariant( -2.0 );
       QTest::newRow( "clamp(-2,100,5)" ) << "clamp(-2,100,5)" << false << QVariant( 5.0 );
       QTest::newRow( "floor(4.9)" ) << "floor(4.9)" << false << QVariant( 4. );
@@ -582,7 +643,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "relate bad 2" ) << "relate(geom_from_wkt('POINT(110 120)'),geom_from_wkt(''))" << false << QVariant();
       QTest::newRow( "relate pattern true" ) << "relate( geom_from_wkt( 'LINESTRING(40 40,120 120)' ), geom_from_wkt( 'LINESTRING(40 40,60 120)' ), '**1F001**' )" << false << QVariant( true );
       QTest::newRow( "relate pattern false" ) << "relate( geom_from_wkt( 'LINESTRING(40 40,120 120)' ), geom_from_wkt( 'LINESTRING(40 40,60 120)' ), '**1F002**' )" << false << QVariant( false );
-      QTest::newRow( "azimuth" ) << "toint(degrees(azimuth( make_point(25, 45), make_point(75, 100)))*1000000)" << false << QVariant( 42273689 );
+      QTest::newRow( "azimuth" ) << "toint(degrees(azimuth( point_a := make_point(25, 45), point_b := make_point(75, 100)))*1000000)" << false << QVariant( 42273689 );
       QTest::newRow( "azimuth" ) << "toint(degrees( azimuth( make_point(75, 100), make_point(25,45) ) )*1000000)" << false << QVariant( 222273689 );
       QTest::newRow( "extrude geom" ) << "geom_to_wkt(extrude( geom_from_wkt('LineString( 1 2, 3 2, 4 3)'),1,2))" << false << QVariant( "Polygon ((1 2, 3 2, 4 3, 5 5, 4 4, 2 4, 1 2))" );
       QTest::newRow( "extrude not geom" ) << "extrude('g',5,6)" << true << QVariant();
@@ -1075,7 +1136,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( v1.toInt() <= 10, true );
       QCOMPARE( v1.toInt() >= 1, true );
 
-      QgsExpression exp2( "rand(-5,-5)" );
+      QgsExpression exp2( "rand(min:=-5,max:=-5)" );
       QVariant v2 = exp2.evaluate();
       QCOMPARE( v2.toInt(), -5 );
 
@@ -1092,7 +1153,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( v1.toDouble() <= 9.5, true );
       QCOMPARE( v1.toDouble() >= 1.5, true );
 
-      QgsExpression exp2( "randf(-0.0005,-0.0005)" );
+      QgsExpression exp2( "randf(min:=-0.0005,max:=-0.0005)" );
       QVariant v2 = exp2.evaluate();
       QCOMPARE( v2.toDouble(), -0.0005 );
 

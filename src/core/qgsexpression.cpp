@@ -2860,28 +2860,28 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
   if ( gmFunctions.isEmpty() )
   {
     gmFunctions
-    << new StaticFunction( "sqrt", 1, fcnSqrt, "Math" )
-    << new StaticFunction( "radians", 1, fcnRadians, "Math" )
-    << new StaticFunction( "degrees", 1, fcnDegrees, "Math" )
-    << new StaticFunction( "azimuth", 2, fcnAzimuth, "Math" )
-    << new StaticFunction( "abs", 1, fcnAbs, "Math" )
-    << new StaticFunction( "cos", 1, fcnCos, "Math" )
-    << new StaticFunction( "sin", 1, fcnSin, "Math" )
-    << new StaticFunction( "tan", 1, fcnTan, "Math" )
-    << new StaticFunction( "asin", 1, fcnAsin, "Math" )
-    << new StaticFunction( "acos", 1, fcnAcos, "Math" )
-    << new StaticFunction( "atan", 1, fcnAtan, "Math" )
-    << new StaticFunction( "atan2", 2, fcnAtan2, "Math" )
-    << new StaticFunction( "exp", 1, fcnExp, "Math" )
-    << new StaticFunction( "ln", 1, fcnLn, "Math" )
-    << new StaticFunction( "log10", 1, fcnLog10, "Math" )
-    << new StaticFunction( "log", 2, fcnLog, "Math" )
-    << new StaticFunction( "round", -1, fcnRound, "Math" )
-    << new StaticFunction( "rand", 2, fcnRnd, "Math" )
-    << new StaticFunction( "randf", 2, fcnRndF, "Math" )
+    << new StaticFunction( "sqrt", ParameterList() << Parameter( "value" ), fcnSqrt, "Math" )
+    << new StaticFunction( "radians", ParameterList() << Parameter( "degrees" ), fcnRadians, "Math" )
+    << new StaticFunction( "degrees", ParameterList() << Parameter( "radians" ), fcnDegrees, "Math" )
+    << new StaticFunction( "azimuth", ParameterList() << Parameter( "point_a" ) << Parameter( "point_b" ), fcnAzimuth, "Math" )
+    << new StaticFunction( "abs", ParameterList() << Parameter( "value" ), fcnAbs, "Math" )
+    << new StaticFunction( "cos", ParameterList() << Parameter( "angle" ), fcnCos, "Math" )
+    << new StaticFunction( "sin", ParameterList() << Parameter( "angle" ), fcnSin, "Math" )
+    << new StaticFunction( "tan", ParameterList() << Parameter( "angle" ), fcnTan, "Math" )
+    << new StaticFunction( "asin", ParameterList() << Parameter( "value" ), fcnAsin, "Math" )
+    << new StaticFunction( "acos", ParameterList() << Parameter( "value" ), fcnAcos, "Math" )
+    << new StaticFunction( "atan", ParameterList() << Parameter( "value" ), fcnAtan, "Math" )
+    << new StaticFunction( "atan2", ParameterList() << Parameter( "dx" ) << Parameter( "dy" ), fcnAtan2, "Math" )
+    << new StaticFunction( "exp", ParameterList() << Parameter( "value" ), fcnExp, "Math" )
+    << new StaticFunction( "ln", ParameterList() << Parameter( "value" ), fcnLn, "Math" )
+    << new StaticFunction( "log10", ParameterList() << Parameter( "value" ), fcnLog10, "Math" )
+    << new StaticFunction( "log", ParameterList() << Parameter( "base" ) << Parameter( "value" ), fcnLog, "Math" )
+    << new StaticFunction( "round", ParameterList() << Parameter( "value" ) << Parameter( "places", true, 0 ), fcnRound, "Math" )
+    << new StaticFunction( "rand", ParameterList() << Parameter( "min" ) << Parameter( "max" ), fcnRnd, "Math" )
+    << new StaticFunction( "randf", ParameterList() << Parameter( "min", true, 0.0 ) << Parameter( "max", true, 1.0 ), fcnRndF, "Math" )
     << new StaticFunction( "max", -1, fcnMax, "Math" )
     << new StaticFunction( "min", -1, fcnMin, "Math" )
-    << new StaticFunction( "clamp", 3, fcnClamp, "Math" )
+    << new StaticFunction( "clamp", ParameterList() << Parameter( "min" ) << Parameter( "value" ) << Parameter( "max" ), fcnClamp, "Math" )
     << new StaticFunction( "scale_linear", 5, fcnLinearScale, "Math" )
     << new StaticFunction( "scale_exp", 6, fcnExpScale, "Math" )
     << new StaticFunction( "floor", 1, fcnFloor, "Math" )
@@ -2915,7 +2915,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "longest_common_substring", 2, fcnLCS, "Fuzzy Matching" )
     << new StaticFunction( "hamming_distance", 2, fcnHamming, "Fuzzy Matching" )
     << new StaticFunction( "soundex", 1, fcnSoundex, "Fuzzy Matching" )
-    << new StaticFunction( "wordwrap", -1, fcnWordwrap, "String" )
+    << new StaticFunction( "wordwrap", ParameterList() << Parameter( "text" ) << Parameter( "length" ) << Parameter( "delimiter", true, " " ), fcnWordwrap, "String" )
     << new StaticFunction( "length", 1, fcnLength, "String" )
     << new StaticFunction( "replace", 3, fcnReplace, "String" )
     << new StaticFunction( "regexp_replace", 3, fcnRegexpReplace, "String" )
@@ -3567,6 +3567,7 @@ QgsExpression::NodeList* QgsExpression::NodeList::clone() const
   {
     nl->mList.append( node->clone() );
   }
+  nl->mNameList = mNameList;
 
   return nl;
 }
@@ -4450,7 +4451,10 @@ QString QgsExpression::helptext( QString name )
           helpContents += delim;
           delim = ", ";
           if ( !a.mDescOnly )
-            helpContents += QString( "<span class=\"argument\">%1</span>" ).arg( a.mArg );
+          {
+            helpContents += QString( "<span class=\"argument %1\">%2%3</span>" ).arg( a.mOptional ? "optional" : "", a.mArg,
+                            a.mDefaultVal.isEmpty() ? "" : '=' + a.mDefaultVal );
+          }
         }
 
         if ( v.mVariableLenArguments )

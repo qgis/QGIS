@@ -304,13 +304,61 @@ class QgsExpression
     // static const char* UnaryOperatorText[];
 
     /**
+      * Represents a single parameter passed to a function.
+      * \note added in QGIS 2.16
+      */
+    class Parameter
+    {
+      public:
+
+        /** Constructor for Parameter.
+         * @param name parameter name, used when named parameter are specified in an expression
+         * @param optional set to true if parameter should be optional
+         * @param defaultValue default value to use for optional parameters
+         */
+        Parameter( const QString& name,
+                   bool optional = false,
+                   const QVariant& defaultValue = QVariant() );
+
+        //! Returns the name of the parameter.
+        QString name() const;
+
+        //! Returns true if the parameter is optional.
+        bool optional() const;
+
+        //! Returns the default value for the parameter.
+        QVariant defaultValue() const;
+
+        bool operator==( const QgsExpression::Parameter& other ) const;
+
+    };
+
+    //! List of parameters, used for function definition
+    typedef QList< QgsExpression::Parameter > ParameterList;
+
+    /**
      * A abstract base class for defining QgsExpression functions.
      */
     class Function
     {
       public:
+
+        //! Constructor for function which uses unnamed parameters
         Function( const QString& fnname,
                   int params,
+                  const QString& group,
+                  const QString& helpText = QString(),
+                  bool usesGeometry = false,
+                  const QStringList& referencedColumns = QStringList(),
+                  bool lazyEval = false,
+                  bool handlesNull = false,
+                  bool isContextual = false );
+
+        /** Constructor for function which uses named parameter list.
+         * @note added in QGIS 2.16
+         */
+        Function( const QString& fnname,
+                  const QgsExpression::ParameterList& params,
                   const QString& group,
                   const QString& helpText = QString(),
                   bool usesGeometry = false,
@@ -322,11 +370,20 @@ class QgsExpression
         virtual ~Function();
 
         /** The name of the function. */
-        QString name();
+        QString name() const;
         /** The number of parameters this function takes. */
-        int params();
+        int params() const;
+
+        /** The mininum number of parameters this function takes. */
+        int minParams() const;
+
+        /** Returns the list of named parameters for the function, if set.
+         * @note added in QGIS 2.16
+        */
+        const QgsExpression::ParameterList& parameters() const;
+
         /** Does this function use a geometry object. */
-        bool usesgeometry();
+        bool usesgeometry() const;
 
         /** Returns a list of possible aliases for the function. These include
          * other permissible names for the function, eg deprecated names.
@@ -339,7 +396,7 @@ class QgsExpression
          * rather than the node results when called.  You can use node->eval(parent, feature) to evaluate the node and return the result
          * Functions are non lazy default and will be given the node return value when called
          */
-        bool lazyEval();
+        bool lazyEval() const;
 
         virtual QStringList referencedColumns() const;
 
@@ -349,9 +406,9 @@ class QgsExpression
         bool isContextual() const;
 
         /** The group the function belongs to. */
-        QString group();
+        QString group() const;
         /** The help text for the function. */
-        const QString helptext();
+        const QString helptext() const;
 
         //! @deprecated Use QgsExpressionContext variant instead
         virtual QVariant func( const QVariantList& values, const QgsFeature* f, QgsExpression* parent ) /Deprecated/;
@@ -562,6 +619,25 @@ class QgsExpression
         virtual void accept( QgsExpression::Visitor& v ) const = 0;
     };
 
+    //! Named node
+    //! @note added in QGIS 2.16
+    class NamedNode
+    {
+      public:
+
+        /** Constructor for NamedNode
+         * @param name node name
+         * @param node node
+         */
+        NamedNode( const QString& name, QgsExpression::Node* node );
+
+        //! Node name
+        QString name;
+
+        //! Node
+        QgsExpression::Node* node;
+    };
+
     class NodeList
     {
       public:
@@ -569,8 +645,26 @@ class QgsExpression
         ~NodeList();
         /** Takes ownership of the provided node */
         void append( QgsExpression::Node* node /Transfer/ );
-        int count();
+
+        /** Adds a named node. Takes ownership of the provided node.
+         * @note added in QGIS 2.16
+        */
+        void append( QgsExpression::NamedNode* node /Transfer/ );
+
+        /** Returns the number of nodes in the list.
+         */
+        int count() const;
+
+        //! Returns true if list contains any named nodes
+        //! @note added in QGIS 2.16
+        bool hasNamedNodes() const;
+
         const QList<QgsExpression::Node*>& list();
+
+        //! Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
+        //! @note added in QGIS 2.16
+        QStringList names() const;
+
         /** Creates a deep copy of this list. Ownership is transferred to the caller */
         QgsExpression::NodeList* clone() const;
 
@@ -698,6 +792,9 @@ class QgsExpression
         virtual bool needsGeometry() const;
         virtual void accept( QgsExpression::Visitor& v ) const;
         virtual QgsExpression::Node* clone() const;
+
+        //! Tests whether the provided argument list is valid for the matching function
+        static bool validateParams( int fnIndex, QgsExpression::NodeList* args, QString& error );
     };
 
     class NodeLiteral : QgsExpression::Node

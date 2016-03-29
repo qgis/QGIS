@@ -90,7 +90,9 @@ for f in sorted(glob.glob('resources/function_help/json/*')):
                     a['arg'],
                     a.get('description', ''),
                     "true" if a.get('descOnly', False) else "false",
-                    "true" if a.get('syntaxOnly', False) else "false")
+                    "true" if a.get('syntaxOnly', False) else "false",
+                    "true" if a.get('optional', False) else "false",
+                    a.get('default', ''))
                 )
 
         cpp.write(",\n          /* variableLenArguments */ {0}".format(
