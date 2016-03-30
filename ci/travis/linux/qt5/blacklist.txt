@@ -74,6 +74,7 @@ PyQgsZonalStatistics
 qgis_alignrastertest
 qgis_atlascompositiontest
 qgis_composereffectstest
+qgis_composerlabeltest
 qgis_composermapgridtest
 qgis_composermapoverviewtest
 qgis_composermaptest

@@ -204,10 +204,14 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     /** Replaces replace '$CURRENT_DATE<(FORMAT)>' with the current date (e.g. $CURRENT_DATE(d 'June' yyyy)*/
     void replaceDateText( QString& text ) const;
 
+    //! Creates an encoded stylesheet url using the current font and label appearance settings
+    QUrl createStylesheetUrl() const;
+
     QScopedPointer<QgsFeature> mExpressionFeature;
     QgsVectorLayer* mExpressionLayer;
     QMap<QString, QVariant> mSubstitutions;
     QgsDistanceArea* mDistanceArea;
+
 };
 
 #endif
