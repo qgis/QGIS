@@ -178,7 +178,6 @@ class TestQgsRelationEditWidget(unittest.TestCase):
 
         self.assertEquals(self.table_view.model().rowCount(), 1)
 
-    @unittest.expectedFailure
     def test_unlink_feature(self):
         """
         Check if a linked feature can be unlinked
