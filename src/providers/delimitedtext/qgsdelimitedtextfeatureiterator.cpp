@@ -138,6 +138,19 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     mLoadGeometry = false;
   }
 
+  // ensure that all attributes required for expression filter are being fetched
+  if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && request.filterType() == QgsFeatureRequest::FilterExpression )
+  {
+    QgsAttributeList attrs = request.subsetOfAttributes();
+    Q_FOREACH ( const QString& field, request.filterExpression()->referencedColumns() )
+    {
+      int attrIdx = mSource->mFields.fieldNameIndex( field );
+      if ( !attrs.contains( attrIdx ) )
+        attrs << attrIdx;
+    }
+    mRequest.setSubsetOfAttributes( attrs );
+  }
+
   QgsDebugMsg( QString( "Iterator is scanning file: " ) + ( mMode == FileScan ? "Yes" : "No" ) );
   QgsDebugMsg( QString( "Iterator is loading geometries: " ) + ( mLoadGeometry ? "Yes" : "No" ) );
   QgsDebugMsg( QString( "Iterator is testing geometries: " ) + ( mTestGeometry ? "Yes" : "No" ) );

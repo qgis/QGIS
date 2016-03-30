@@ -21,6 +21,10 @@ class ProviderTestCase(object):
         result = set([f['pk'] for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression(expression))])
         assert set(expected) == result, 'Expected {} and got {} when testing expression "{}"'.format(set(expected), result, expression)
 
+        # Also check that filter works when referenced fields are not being retrieved by request
+        result = set([f['pk'] for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression(expression).setSubsetOfAttributes([0]))])
+        assert set(expected) == result, 'Expected {} and got {} when testing expression "{}" using empty attribute subset'.format(set(expected), result, expression)
+
     '''
         This is a collection of tests for vector data providers and kept generic.
         To make use of it, subclass it and set self.provider to a provider you want to test.

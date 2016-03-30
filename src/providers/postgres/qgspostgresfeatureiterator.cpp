@@ -89,6 +89,19 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   }
   else if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
+    // ensure that all attributes required for expression filter are being fetched
+    if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
+    {
+      QgsAttributeList attrs = mRequest.subsetOfAttributes();
+      Q_FOREACH ( const QString& field, request.filterExpression()->referencedColumns() )
+      {
+        int attrIdx = mSource->mFields.fieldNameIndex( field );
+        if ( !attrs.contains( attrIdx ) )
+          attrs << attrIdx;
+      }
+      mRequest.setSubsetOfAttributes( attrs );
+    }
+
     if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
     {
       //IMPORTANT - this MUST be the last clause added!
