@@ -919,9 +919,6 @@ bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
 bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
 {
-  Q_UNUSED( beginStatus );
-  Q_UNUSED( wkbType );
-  Q_UNUSED(  commitStatus );  
   QgsDebugMsg( "entering" );
   QgsDebugMsg( "mGeometryColType: " + mGeometryColType );
   int writeCount = 0;
@@ -937,8 +934,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
       return false;
     }
   }
-  bool beginStatus = mDatabase.transaction();
-  QgsDebugMsg( QString( "beginStatus: %1" ).arg( beginStatus ) );
+  mDatabase.transaction();
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
   QSqlQuery queryFid = QSqlQuery( mDatabase );
@@ -953,10 +949,14 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
 
 // Get the first geometry and its wkbType as when we are doing drag/drop,
 // the wkbType is not passed to the DB2 provider from QgsVectorLayerImport
+// Can't figure out how to resolved "unreferenced" wkbType compile message
+// Don't really do anything with it at this point
+#if 0
   QgsGeometry *geom = it.geometry();
   QGis::WkbType wkbType = geom->wkbType();
   QgsDebugMsg( QString( "wkbType: %1" ).arg( wkbType ) );
   QgsDebugMsg( QString( "mWkbType: %1" ).arg( mWkbType ) );
+#endif
 
   QgsAttributes attrs = it.attributes();
   QgsDebugMsg( QString( "attrs.count: %1" ).arg( attrs.count() ) );
@@ -1170,6 +1170,11 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
   bool commitStatus = mDatabase.commit();
   QgsDebugMsg( QString( "commitStatus: %1; write count: %2; featureId: %3" )
                .arg( commitStatus ).arg( writeCount ).arg( queryFid.value( 0 ).toLongLong() ) );
+  if ( !commitStatus )
+  {
+    pushError( "Commit of new features failed" );
+    return false;
+  }
   return true;
 }
 
