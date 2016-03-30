@@ -173,7 +173,7 @@ class CORE_EXPORT QgsDataSourceURI
     QString driver() const;
     //! Sets the driver name
     // @note added in QGIS 2.16
-    void setDriver( const QString& driver );    
+    void setDriver( const QString& driver );
     //! Returns the password
     QString password() const;
     //! Returns the SSL mode

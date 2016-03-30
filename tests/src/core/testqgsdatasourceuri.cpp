@@ -45,11 +45,11 @@ void TestQgsDataSourceUri::checkparser_data()
   QTest::addColumn<QString>( "dbname" );
   QTest::addColumn<QString>( "host" );
   QTest::addColumn<QString>( "port" );
-  QTest::addColumn<QString>( "driver" );  
+  QTest::addColumn<QString>( "driver" );
   QTest::addColumn<QgsDataSourceURI::SSLmode>( "sslmode" );
   QTest::addColumn<QString>( "sql" );
   QTest::addColumn<QString>( "myparam" );
-  
+
 
   QTest::newRow( "oci" )
   << "host=myhost port=1234 user='myname' password='mypasswd' estimatedmetadata=true srid=1000003007 table=\"myschema\".\"mytable\" (GEOM) myparam='myvalue' sql="
@@ -147,7 +147,7 @@ void TestQgsDataSourceUri::checkparser()
   QCOMPARE( ds.database(), dbname );
   QCOMPARE( ds.host(), host );
   QCOMPARE( ds.port(), port );
-  QCOMPARE( ds.driver(), driver );  
+  QCOMPARE( ds.driver(), driver );
   QCOMPARE( ds.sslMode(), sslmode );
   QCOMPARE( ds.sql(), sql );
   QCOMPARE( ds.param( "myparam" ), myparam );
