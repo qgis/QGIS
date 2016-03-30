@@ -347,7 +347,14 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
 
     //add geometry column (as gml)
     QDomElement geomElem = transactionDoc.createElementNS( mWfsNamespace, mGeometryAttribute );
-    QDomElement gmlElem = QgsOgcUtils::geometryToGML( featureIt->constGeometry(), transactionDoc );
+
+    QgsGeometry the_geom( *featureIt->constGeometry() );
+    // convert to multi if the layer geom type is multi and the geom is not
+    if ( QGis::isMultiType( this->geometryType( ) ) && ! the_geom.isMultipart( ) )
+    {
+      the_geom.convertToMultiType();
+    }
+    QDomElement gmlElem = QgsOgcUtils::geometryToGML( &the_geom, transactionDoc );
     if ( !gmlElem.isNull() )
     {
       gmlElem.setAttribute( "srsName", crs().authid() );
@@ -1409,6 +1416,7 @@ bool QgsWFSProvider::sendTransactionDocument( const QDomDocument& doc, QDomDocum
 
   request.setHeader( QNetworkRequest::ContentTypeHeader, "text/xml" );
   QNetworkReply* reply = QgsNetworkAccessManager::instance()->post( request, doc.toByteArray( -1 ) );
+  QgsDebugMsg( "WFS transaction: " + doc.toByteArray( ) );
 
   connect( reply, SIGNAL( finished() ), this, SLOT( networkRequestFinished() ) );
   while ( !mNetworkRequestFinished )
