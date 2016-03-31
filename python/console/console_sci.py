@@ -175,7 +175,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             self.append('from PyQt.QtCore import *')
         elif command == "qtGui":
             # import QtGui class
-            self.append('from PyQt.QtGui import *')
+            self.append('from PyQt.QtGui import *; ')
             self.append('from PyQt.QtWidgets import *')
         self.entered()
         self.move_cursor_to_end()
