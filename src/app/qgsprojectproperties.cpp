@@ -894,7 +894,7 @@ void QgsProjectProperties::apply()
   {
     QString id = twIdentifyLayers->item( i, 0 )->data( Qt::UserRole ).toString();
 
-    if ( twIdentifyLayers->item( i, 2 )->checkState() == Qt::Checked )
+    if ( twIdentifyLayers->item( i, 2 )->checkState() == Qt::Unchecked )
     {
       noIdentifyLayerList << id;
     }

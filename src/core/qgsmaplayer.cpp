@@ -48,6 +48,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsxmlutils.h"
 
 
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
@@ -530,6 +531,11 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   layerElement.setAttribute( "hasScaleBasedVisibilityFlag", hasScaleBasedVisibility() ? 1 : 0 );
   layerElement.setAttribute( "minimumScale", QString::number( minimumScale() ) );
   layerElement.setAttribute( "maximumScale", QString::number( maximumScale() ) );
+
+  if ( !mExtent.isNull() )
+  {
+    layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent, document ) );
+  }
 
   // ID
   QDomElement layerId = document.createElement( "id" );
@@ -1211,6 +1217,12 @@ bool QgsMapLayer::importNamedStyle( QDomDocument& myDocument, QString& myErrorMe
   setScaleBasedVisibility( myRoot.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
   setMinimumScale( myRoot.attribute( "minimumScale" ).toDouble() );
   setMaximumScale( myRoot.attribute( "maximumScale" ).toDouble() );
+
+  QDomNode extentNode = myRoot.namedItem( "extent" );
+  if ( !extentNode.isNull() )
+  {
+    setExtent( QgsXmlUtils::readRectangle( extentNode.toElement() ) );
+  }
 
 #if 0
   //read transparency level

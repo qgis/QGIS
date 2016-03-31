@@ -93,7 +93,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
     if ( !mRequest.filterRect().isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
     {
       // do exact check in case we're doing intersection
-      if ( mSource->mFeatures[*mFeatureIdListIterator].geometry() && mSource->mFeatures[*mFeatureIdListIterator].geometry()->intersects( mSelectRectGeom ) )
+      if ( mSource->mFeatures.value( *mFeatureIdListIterator ).constGeometry() && mSource->mFeatures.value( *mFeatureIdListIterator ).constGeometry()->intersects( mSelectRectGeom ) )
         hasFeature = true;
     }
     else
@@ -101,7 +101,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
 
     if ( mSubsetExpression )
     {
-      mSource->mExpressionContext.setFeature( mSource->mFeatures[*mFeatureIdListIterator] );
+      mSource->mExpressionContext.setFeature( mSource->mFeatures.value( *mFeatureIdListIterator ) );
       if ( !mSubsetExpression->evaluate( &mSource->mExpressionContext ).toBool() )
         hasFeature = false;
     }
@@ -115,7 +115,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
   // copy feature
   if ( hasFeature )
   {
-    feature = mSource->mFeatures[*mFeatureIdListIterator];
+    feature = mSource->mFeatures.value( *mFeatureIdListIterator );
     ++mFeatureIdListIterator;
   }
   else

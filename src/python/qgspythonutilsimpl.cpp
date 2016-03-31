@@ -82,7 +82,7 @@ bool QgsPythonUtilsImpl::checkSystemImports()
   // locally installed plugins have priority over the system plugins
   // use os.path.expanduser to support usernames with special characters (see #2512)
   QStringList pluginpaths;
-  Q_FOREACH ( const QString& p, extraPluginsPaths() )
+  Q_FOREACH ( QString p, extraPluginsPaths() )
   {
     if ( !QDir( p ).exists() )
     {

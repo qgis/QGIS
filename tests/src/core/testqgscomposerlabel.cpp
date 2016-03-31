@@ -22,6 +22,8 @@
 #include "qgsmaprenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgsmultirenderchecker.h"
+#include "qgsfontutils.h"
 
 #include <QObject>
 #include <QtTest/QtTest>
@@ -50,14 +52,16 @@ class TestQgsComposerLabel : public QObject
     void feature_evaluation();
     // test page expressions
     void page_evaluation();
-
     void marginMethods(); //tests getting/setting margins
+    void render();
+    void renderAsHtml();
 
   private:
     QgsComposition* mComposition;
     QgsComposerLabel* mComposerLabel;
     QgsMapSettings *mMapSettings;
     QgsVectorLayer* mVectorLayer;
+    QString mReport;
 };
 
 void TestQgsComposerLabel::initTestCase()
@@ -89,6 +93,15 @@ void TestQgsComposerLabel::initTestCase()
 
 void TestQgsComposerLabel::cleanupTestCase()
 {
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }
+
   delete mComposition;
   delete mMapSettings;
 
@@ -223,6 +236,33 @@ void TestQgsComposerLabel::marginMethods()
   label3.readXML( labelDoc.firstChildElement(), labelDoc );
   QCOMPARE( label3.marginX(), 11.0 );
   QCOMPARE( label3.marginY(), 12.0 );
+}
+
+void TestQgsComposerLabel::render()
+{
+  mComposerLabel->setText( "test label" );
+  mComposerLabel->setFont( QgsFontUtils::getStandardTestFont( "Bold", 48 ) );
+  mComposerLabel->setPos( 70, 70 );
+  mComposerLabel->adjustSizeToText();
+
+  QgsCompositionChecker checker( "composerlabel_render", mComposition );
+  checker.setControlPathPrefix( "composer_label" );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
+}
+
+void TestQgsComposerLabel::renderAsHtml()
+{
+  mComposerLabel->setFontColor( QColor( 200, 40, 60 ) );
+  mComposerLabel->setText( "test <i>html</i>" );
+  mComposerLabel->setFont( QgsFontUtils::getStandardTestFont( "Bold", 48 ) );
+  mComposerLabel->setPos( 70, 70 );
+  mComposerLabel->adjustSizeToText();
+  mComposerLabel->setHtmlState( 1 );
+  mComposerLabel->update();
+
+  QgsCompositionChecker checker( "composerlabel_renderhtml", mComposition );
+  checker.setControlPathPrefix( "composer_label" );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 
 QTEST_MAIN( TestQgsComposerLabel )

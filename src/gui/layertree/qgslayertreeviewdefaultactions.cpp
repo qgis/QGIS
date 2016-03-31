@@ -197,14 +197,18 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer()
 {
   QAction* s = qobject_cast<QAction*>( sender() );
   QgsMapCanvas* canvas = reinterpret_cast<QgsMapCanvas*>( s->data().value<void*>() );
+  QApplication::setOverrideCursor( Qt::WaitCursor );
   zoomToLayer( canvas );
+  QApplication::restoreOverrideCursor();
 }
 
 void QgsLayerTreeViewDefaultActions::zoomToGroup()
 {
   QAction* s = qobject_cast<QAction*>( sender() );
   QgsMapCanvas* canvas = reinterpret_cast<QgsMapCanvas*>( s->data().value<void*>() );
+  QApplication::setOverrideCursor( Qt::WaitCursor );
   zoomToGroup( canvas );
+  QApplication::restoreOverrideCursor();
 }
 
 

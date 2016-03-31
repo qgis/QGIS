@@ -1282,12 +1282,13 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
 
   applyOpacities( layersList, bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
 
-
-  QgsComposition* c = mConfigParser->createPrintComposition( mParameters[ "TEMPLATE" ], mMapRenderer, QMap<QString, QString>( mParameters ) );
+  QStringList highlightLayers;
+  QgsComposition* c = mConfigParser->createPrintComposition( mParameters[ "TEMPLATE" ], mMapRenderer, QMap<QString, QString>( mParameters ), highlightLayers );
   if ( !c )
   {
     restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
     clearFeatureSelections( selectedLayerIdList );
+    QgsWMSConfigParser::removeHighlightLayers( highlightLayers );
     return nullptr;
   }
 
@@ -1353,6 +1354,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
 
   restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
   clearFeatureSelections( selectedLayerIdList );
+  QgsWMSConfigParser::removeHighlightLayers( highlightLayers );
 
   delete c;
   return ba;
@@ -1387,6 +1389,10 @@ QImage* QgsWMSServer::getMap( HitTest* hitTest )
 
   QPainter thePainter( theImage );
   thePainter.setRenderHint( QPainter::Antialiasing ); //make it look nicer
+
+  QStringList layerSet = mMapRenderer->layerSet();
+  QStringList highlightLayers = QgsWMSConfigParser::addHighlightLayers( mParameters, layerSet );
+  mMapRenderer->setLayerSet( layerSet );
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
@@ -1432,6 +1438,7 @@ QImage* QgsWMSServer::getMap( HitTest* hitTest )
 
   restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
   clearFeatureSelections( selectedLayerIdList );
+  QgsWMSConfigParser::removeHighlightLayers( highlightLayers );
 
   // QgsMessageLog::logMessage( "clearing filters" );
   if ( !hitTest )

@@ -20,6 +20,7 @@
 #include <QPointF>
 #include <QSizeF>
 #include <QString>
+#include <gdal_version.h>
 
 class QgsRectangle;
 
@@ -94,6 +95,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
 
 
     //! Resampling algorithm to be used (equivalent to GDAL's enum GDALResampleAlg)
+    //! @note RA_Max, RA_Min, RA_Median, RA_Q1 and RA_Q3 are available on GDAL >= 2.0 builds only
     enum ResampleAlg
     {
       RA_NearestNeighbour = 0, //!< Nearest neighbour (select on one input pixel)
@@ -102,7 +104,12 @@ class ANALYSIS_EXPORT QgsAlignRaster
       RA_CubicSpline = 3,    //!< Cubic B-Spline Approximation (4x4 kernel)
       RA_Lanczos = 4,        //!< Lanczos windowed sinc interpolation (6x6 kernel)
       RA_Average = 5,        //!< Average (computes the average of all non-NODATA contributing pixels)
-      RA_Mode = 6            //!< Mode (selects the value which appears most often of all the sampled points)
+      RA_Mode = 6,            //!< Mode (selects the value which appears most often of all the sampled points)
+      RA_Max = 8, //!< Maximum (selects the maximum of all non-NODATA contributing pixels)
+      RA_Min = 9, //!< Minimum (selects the minimum of all non-NODATA contributing pixels)
+      RA_Median = 10, //!< Median (selects the median of all non-NODATA contributing pixels)
+      RA_Q1 = 11, //!< First quartile (selects the first quartile of all non-NODATA contributing pixels)
+      RA_Q3 = 12, //!< Third quartile (selects the third quartile of all non-NODATA contributing pixels)
     };
 
     //! Definition of one raster layer for alignment

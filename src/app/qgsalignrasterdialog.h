@@ -16,7 +16,7 @@
 #define QGSALIGNRASTERDIALOG_H
 
 #include <QDialog>
-
+#include "qgsalignraster.h"
 #include "ui_qgsalignrasterdialog.h"
 
 class QgsAlignRaster;
@@ -71,10 +71,10 @@ class QgsAlignRasterLayerConfigDialog : public QDialog
 
     QString inputFilename() const;
     QString outputFilename() const;
-    int resampleMethod() const;
+    QgsAlignRaster::ResampleAlg resampleMethod() const;
     bool rescaleValues() const;
 
-    void setItem( const QString& inputFilename, const QString& outputFilename, int resampleMethod, bool rescaleValues );
+    void setItem( const QString& inputFilename, const QString& outputFilename, QgsAlignRaster::ResampleAlg resampleMethod, bool rescaleValues );
 
   protected slots:
     void browseOutputFilename();

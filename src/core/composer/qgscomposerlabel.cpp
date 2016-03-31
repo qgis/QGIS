@@ -133,6 +133,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     webPage->mainFrame()->setZoomFactor( 10.0 );
     webPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
     webPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
+    webPage->settings()->setUserStyleSheetUrl( createStylesheetUrl() );
 
     // QGIS segfaults when rendering web page while in composer if html
     // contains images. So if we are not printing the composition, then
@@ -632,4 +633,19 @@ void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, d
       xShift = -( newWidth - currentWidth / 2.0 );
     }
   }
+}
+
+QUrl QgsComposerLabel::createStylesheetUrl() const
+{
+  QString stylesheet;
+  stylesheet += QString( "body { margin: %1 %2;" ).arg( qMax( mMarginX * mHtmlUnitsToMM, 0.0 ) ).arg( qMax( mMarginY * mHtmlUnitsToMM, 0.0 ) );
+  stylesheet += QgsFontUtils::asCSS( mFont, 0.352778 * mHtmlUnitsToMM );
+  stylesheet += QString( "color: %1;" ).arg( mFontColor.name() );
+  stylesheet += QString( "text-align: %1; }" ).arg( mHAlignment == Qt::AlignLeft ? "left" : mHAlignment == Qt::AlignRight ? "right" : "center" );
+
+  QByteArray ba;
+  ba.append( stylesheet.toUtf8() );
+  QUrl cssFileURL = QUrl( "data:text/css;charset=utf-8;base64," + ba.toBase64() );
+
+  return cssFileURL;
 }

@@ -239,7 +239,7 @@ void QgsAlignRasterDialog::addLayer()
   QgsAlignRaster::List list = mAlign->rasters();
 
   QgsAlignRaster::Item item( d.inputFilename(), d.outputFilename() );
-  item.resampleMethod = ( QgsAlignRaster::ResampleAlg ) d.resampleMethod();
+  item.resampleMethod = d.resampleMethod();
   item.rescaleValues = d.rescaleValues();
   list.append( item );
 
@@ -276,7 +276,7 @@ void QgsAlignRasterDialog::editLayer()
     return;
 
   QgsAlignRaster::Item itemNew( d.inputFilename(), d.outputFilename() );
-  itemNew.resampleMethod = ( QgsAlignRaster::ResampleAlg ) d.resampleMethod();
+  itemNew.resampleMethod = d.resampleMethod();
   itemNew.rescaleValues = d.rescaleValues();
   list[current.row()] = itemNew;
   mAlign->setRasters( list );
@@ -386,11 +386,20 @@ QgsAlignRasterLayerConfigDialog::QgsAlignRasterLayerConfigDialog()
   cboLayers->setFilters( QgsMapLayerProxyModel::RasterLayer );
 
   cboResample = new QComboBox( this );
-  QStringList methods;
-  methods << tr( "Nearest neighbour" ) << tr( "Bilinear (2x2 kernel)" )
-  << tr( "Cubic (4x4 kernel)" ) << tr( "Cubic B-Spline (4x4 kernel)" ) << tr( "Lanczos (6x6 kernel)" )
-  << tr( "Average" ) << tr( "Mode" );
-  cboResample->addItems( methods );
+  cboResample->addItem( tr( "Nearest neighbour" ), QgsAlignRaster::RA_NearestNeighbour );
+  cboResample->addItem( tr( "Bilinear (2x2 kernel)" ), QgsAlignRaster::RA_Bilinear );
+  cboResample->addItem( tr( "Cubic (4x4 kernel)" ), QgsAlignRaster::RA_Cubic );
+  cboResample->addItem( tr( "Cubic B-Spline (4x4 kernel)" ), QgsAlignRaster::RA_CubicSpline );
+  cboResample->addItem( tr( "Lanczos (6x6 kernel)" ), QgsAlignRaster::RA_Lanczos );
+  cboResample->addItem( tr( "Average" ), QgsAlignRaster::RA_Average );
+  cboResample->addItem( tr( "Mode" ), QgsAlignRaster::RA_Mode );
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
+  cboResample->addItem( tr( "Maximum" ), QgsAlignRaster::RA_Max );
+  cboResample->addItem( tr( "Minimum" ), QgsAlignRaster::RA_Min );
+  cboResample->addItem( tr( "Median" ), QgsAlignRaster::RA_Median );
+  cboResample->addItem( tr( "First Quartile (Q1)" ), QgsAlignRaster::RA_Q1 );
+  cboResample->addItem( tr( "Third Quartile (Q3)" ), QgsAlignRaster::RA_Q3 );
+#endif
 
   editOutput = new QLineEdit( this );
   btnBrowse = new QPushButton( tr( "Browse..." ), this );
@@ -428,9 +437,9 @@ QString QgsAlignRasterLayerConfigDialog::outputFilename() const
   return editOutput->text();
 }
 
-int QgsAlignRasterLayerConfigDialog::resampleMethod() const
+QgsAlignRaster::ResampleAlg QgsAlignRasterLayerConfigDialog::resampleMethod() const
 {
-  return cboResample->currentIndex();
+  return static_cast< QgsAlignRaster::ResampleAlg >( cboResample->itemData( cboResample->currentIndex() ).toInt() );
 }
 
 bool QgsAlignRasterLayerConfigDialog::rescaleValues() const
@@ -439,11 +448,11 @@ bool QgsAlignRasterLayerConfigDialog::rescaleValues() const
 }
 
 void QgsAlignRasterLayerConfigDialog::setItem( const QString& inputFilename, const QString& outputFilename,
-    int resampleMethod, bool rescaleValues )
+    QgsAlignRaster::ResampleAlg resampleMethod, bool rescaleValues )
 {
   cboLayers->setLayer( _rasterLayer( inputFilename ) );
   editOutput->setText( outputFilename );
-  cboResample->setCurrentIndex( resampleMethod );
+  cboResample->setCurrentIndex( cboResample->findData( resampleMethod ) );
   chkRescale->setChecked( rescaleValues );
 }
 
