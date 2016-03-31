@@ -214,8 +214,14 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
   myWktStrings << "GEOGCS[\"GCS_South_American_1969\",DATUM[\"D_South_American_1969\",SPHEROID[\"GRS_1967_Truncated\",6378160.0,298.25]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]]";
   myFiles << "";
   myGdalVersionOK << 1900;
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
+  //proj definition for EPSG:4618 was updated in GDAL 2.0 - see https://github.com/OSGeo/proj.4/issues/241
+  myProj4Strings << "+proj=longlat +ellps=aust_SA +towgs84=-66.87,4.37,-38.52,0,0,0,0 +no_defs";
+  myTOWGS84Strings << "+towgs84=-66.87,4.37,-38.52,0,0,0,0";
+#else
   myProj4Strings << "+proj=longlat +ellps=aust_SA +towgs84=-57,1,-41,0,0,0,0 +no_defs";
   myTOWGS84Strings << "+towgs84=-57,1,-41,0,0,0,0";
+#endif
   myAuthIdStrings << "EPSG:4618";
 
   // do test with WKT definitions
