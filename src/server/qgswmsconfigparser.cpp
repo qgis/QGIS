@@ -45,6 +45,12 @@ QgsWMSConfigParser::~QgsWMSConfigParser()
 
 }
 
+QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const
+{
+  QStringList highlightLayers;
+  createPrintComposition( composerTemplate, mapRenderer, parameterMap, highlightLayers );
+}
+
 QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const
 {
   QList<QgsComposerMap*> composerMaps;
