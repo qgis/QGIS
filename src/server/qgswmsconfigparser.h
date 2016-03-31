@@ -26,6 +26,7 @@ class QgsComposerLegend;
 class QgsComposerMap;
 class QgsComposition;
 class QgsMapLayer;
+class QgsLegendModelV2;
 
 
 class SERVER_EXPORT QgsWMSConfigParser
@@ -154,6 +155,8 @@ class SERVER_EXPORT QgsWMSConfigParser
     static QgsVectorLayer* createHighlightLayer( int i, const QString& crsString, QgsGeometry* geom, const QString& labelString, const QStringList& labelSizeSplit, const QStringList& labelColorSplit,
         const QStringList& labelWeightSplit, const QStringList& labelFontSplit, const QStringList& labelBufferSizeSplit,
         const QStringList& labelBufferColorSplit );
+
+    static void setLayerIdsToLegendModel( QgsLegendModelV2* model, const QStringList& layerIds, double scale );
 };
 
 #endif // QGSWMSCONFIGPARSER_H

@@ -48,7 +48,7 @@ QgsWMSConfigParser::~QgsWMSConfigParser()
 QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const
 {
   QStringList highlightLayers;
-  createPrintComposition( composerTemplate, mapRenderer, parameterMap, highlightLayers );
+  return createPrintComposition( composerTemplate, mapRenderer, parameterMap, highlightLayers );
 }
 
 QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const
@@ -200,9 +200,9 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
     QList< QgsComposerLegend* >::iterator legendIt = composerLegends.begin();
     for ( ; legendIt != composerLegends.end(); ++legendIt )
     {
-      if (( *legendIt )->model()->autoUpdate() )
+      if (( *legendIt )->autoUpdateModel() )
       {
-        ( *legendIt )->model()->setLayerSet( bkLayerSet );
+        setLayerIdsToLegendModel(( *legendIt )->modelV2(), bkLayerSet, currentMap->scale() );
       }
     }
 
@@ -232,43 +232,8 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
 
       // get model and layer tree root of the legend
       QgsLegendModelV2* model = currentLegend->modelV2();
-      QgsLayerTreeGroup* root = model->rootGroup();
-
-
-      // get layerIds find in the layer tree root
-      QStringList layerIds = root->findLayerIds();
-      // get map layerIds
       QStringList layerSet = map->layerSet();
-
-      // get map scale
-      double scale = map->scale();
-
-      // Q_FOREACH layer find in the layer tree
-      // remove it if the layer id is not in map layerIds
-      Q_FOREACH ( const QString& layerId, layerIds )
-      {
-        QgsLayerTreeLayer* nodeLayer = root->findLayer( layerId );
-        if ( !nodeLayer )
-        {
-          continue;
-        }
-        if ( !layerSet.contains( layerId ) )
-        {
-          qobject_cast<QgsLayerTreeGroup*>( nodeLayer->parent() )->removeChildNode( nodeLayer );
-        }
-        else
-        {
-          QgsMapLayer* layer = nodeLayer->layer();
-          if ( layer->hasScaleBasedVisibility() )
-          {
-            if ( layer->minimumScale() > scale )
-              qobject_cast<QgsLayerTreeGroup*>( nodeLayer->parent() )->removeChildNode( nodeLayer );
-            else if ( layer->maximumScale() < scale )
-              qobject_cast<QgsLayerTreeGroup*>( nodeLayer->parent() )->removeChildNode( nodeLayer );
-          }
-        }
-      }
-      root->removeChildrenGroupWithoutLayers();
+      setLayerIdsToLegendModel( model, layerSet, map->scale() );
     }
   }
 
@@ -571,4 +536,46 @@ void QgsWMSConfigParser::removeHighlightLayers( const QStringList& layerIds )
   {
     QgsMapLayerRegistry::instance()->removeMapLayers( QStringList() << *idIt );
   }
+}
+
+void QgsWMSConfigParser::setLayerIdsToLegendModel( QgsLegendModelV2* model, const QStringList& layerSet, double scale )
+{
+  if ( !model )
+  {
+    return;
+  }
+
+  // get model and layer tree root of the legend
+  QgsLayerTreeGroup* root = model->rootGroup();
+
+
+  // get layerIds find in the layer tree root
+  QStringList layerIds = root->findLayerIds();
+
+  // Q_FOREACH layer find in the layer tree
+  // remove it if the layer id is not in map layerIds
+  Q_FOREACH ( const QString& layerId, layerIds )
+  {
+    QgsLayerTreeLayer* nodeLayer = root->findLayer( layerId );
+    if ( !nodeLayer )
+    {
+      continue;
+    }
+    if ( !layerSet.contains( layerId ) )
+    {
+      qobject_cast<QgsLayerTreeGroup*>( nodeLayer->parent() )->removeChildNode( nodeLayer );
+    }
+    else
+    {
+      QgsMapLayer* layer = nodeLayer->layer();
+      if ( layer->hasScaleBasedVisibility() )
+      {
+        if ( layer->minimumScale() > scale )
+          qobject_cast<QgsLayerTreeGroup*>( nodeLayer->parent() )->removeChildNode( nodeLayer );
+        else if ( layer->maximumScale() < scale )
+          qobject_cast<QgsLayerTreeGroup*>( nodeLayer->parent() )->removeChildNode( nodeLayer );
+      }
+    }
+  }
+  root->removeChildrenGroupWithoutLayers();
 }
