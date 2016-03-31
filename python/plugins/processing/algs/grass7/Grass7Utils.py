@@ -89,7 +89,7 @@ class Grass7Utils:
         if folder is None:
             if isWindows():
                 if "OSGEO4W_ROOT" in os.environ:
-                    testfolder = os.path.join(unicode(os.environ['OSGEO4W_ROOT']), "apps", "grass")
+                    testfolder = os.path.join(unicode(os.environ['OSGEO4W_ROOT']), "apps")
                 else:
                     testfolder = unicode(QgsApplication.prefixPath())
                 testfolder = os.path.join(testfolder, 'grass')
@@ -103,7 +103,7 @@ class Grass7Utils:
                 if not os.path.isdir(folder):
                     folder = '/Applications/GRASS-7.0.app/Contents/MacOS'
 
-        return folder
+        return folder or ''
 
     @staticmethod
     def grassDescriptionPath():
