@@ -7,8 +7,6 @@ PyQgsAtlasComposition
 PyQgsAttributeTableModel
 PyQgsBlendModes
 PyQgsCategorizedSymbolRendererV2
-PyQgsColorScheme
-PyQgsColorSchemeRegistry
 PyQgsComposerEffects
 PyQgsComposerHtml
 PyQgsComposerLabel
@@ -33,8 +31,6 @@ PyQgsGeometryTest
 PyQgsGraduatedSymbolRendererV2
 PyQgsLayerDefinition
 PyQgsLocalServer
-PyQgsLogger
-PyQgsMapLayerRegistry
 PyQgsMapUnitScale
 PyQgsMemoryProvider
 PyQgsNetworkContentFetcher
