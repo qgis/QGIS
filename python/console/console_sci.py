@@ -616,7 +616,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
             sys.excepthook = excepthook
 
-            super(ShellScintilla, self).runsource(source, filename, symbol)
+            return super(ShellScintilla, self).runsource(source, filename, symbol)
         finally:
             sys.excepthook = hook
 
