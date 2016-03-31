@@ -90,7 +90,8 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     }
   }
 
-  Q_FOREACH ( int i, attrs )  {
+  Q_FOREACH ( int i, attrs )
+  {
     QString fieldname = mSource->mFields.at( i ).name();
     if ( mSource->mFidColName == fieldname )
       continue;
