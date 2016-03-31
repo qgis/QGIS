@@ -826,7 +826,7 @@ void GlobePlugin::setupProxy()
 
 void GlobePlugin::extentsChanged()
 {
-  QgsDebugMsg( "extentsChanged: " + mQGisIface->mapCanvas()->extent().toString() );
+  QgsDebugMsg( "extentsChanged: " + qobject_cast<QgsMapCanvas *>( sender() )->extent().toString() );
 }
 
 void GlobePlugin::imageLayersChanged()
@@ -1014,6 +1014,21 @@ void GlobePlugin::unload()
   mQGisIface->removeToolBarIcon( mQActionPointer );
 
   delete mQActionPointer;
+  delete mQActionSettingsPointer;
+  delete mQActionUnload;
+
+  disconnect( mQGisIface->mapCanvas(), SIGNAL( extentsChanged() ),
+              this, SLOT( extentsChanged() ) );
+  disconnect( mQGisIface->mapCanvas(), SIGNAL( layersChanged() ),
+              this, SLOT( imageLayersChanged() ) );
+  disconnect( mSettingsDialog, SIGNAL( elevationDatasourcesChanged() ),
+              this, SLOT( elevationLayersChanged() ) );
+  disconnect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this,
+              SLOT( projectReady() ) );
+  disconnect( mQGisIface, SIGNAL( newProjectCreated() ), this,
+              SLOT( blankProjectReady() ) );
+  disconnect( this, SIGNAL( xyCoordinates( const QgsPoint & ) ),
+              mQGisIface->mapCanvas(), SIGNAL( xyCoordinates( const QgsPoint & ) ) );
 
 #if 0
   if ( mCoutRdBuf )
