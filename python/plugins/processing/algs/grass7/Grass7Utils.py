@@ -88,8 +88,8 @@ class Grass7Utils:
             folder = None
         if folder is None:
             if isWindows():
-                if "OSGEO4W_ROOT" in environ:
-                    testfolder = os.path.join(unicode(environ['OSGEO4W_ROOT']), "apps", "grass")
+                if "OSGEO4W_ROOT" in os.environ:
+                    testfolder = os.path.join(unicode(os.environ['OSGEO4W_ROOT']), "apps", "grass")
                 else:
                     testfolder = unicode(QgsApplication.prefixPath())
                 testfolder = os.path.join(testfolder, 'grass')
