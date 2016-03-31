@@ -22,6 +22,7 @@ from qgis.core import (QgsField,
 
 from qgis.testing import unittest
 from PyQt.QtCore import QVariant, QUrl
+import os
 
 
 class TestQgsVirtualLayerDefinition(unittest.TestCase):
@@ -33,9 +34,9 @@ class TestQgsVirtualLayerDefinition(unittest.TestCase):
         self.assertEqual(d.toString(), "file:///file")
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).filePath(), "/file")
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(QUrl.fromEncoded(d.toString())).filePath(), "/file")
-        d.setFilePath("C:\\file")
-        self.assertEqual(d.toString(), "file:///C:%5Cfile")
-        self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).filePath(), "C:\\file")
+        d.setFilePath(os.path.join('C:/', 'file'))
+        self.assertEqual(d.toString(), "file:///C:/file")
+        self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).filePath(), os.path.join('C:/', 'file'))
         d.setQuery("SELECT * FROM mytable")
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).query(), "SELECT * FROM mytable")
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(QUrl.fromEncoded(d.toString())).query(), "SELECT * FROM mytable")
