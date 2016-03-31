@@ -181,7 +181,7 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
         {
           if ( layer )
           {
-            layerSet.push_back( layer->id() );
+            layerSet.prepend( layer->id() );
           }
         }
       }
