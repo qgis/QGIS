@@ -133,7 +133,7 @@ def get_help_url():
     """return QGIS MetaSearch help documentation link"""
 
     locale_name = QSettings().value('locale/userLocale')[0:2]
-    version = QGis.QGIS_VERSION[:3]
+    version = QGis.QGIS_VERSION.rsplit('.', 1)[0]
 
     path = '%s/%s/docs/user_manual/plugins/plugins_metasearch.html' % \
            (version, locale_name)
