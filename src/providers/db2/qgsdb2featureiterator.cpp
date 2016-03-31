@@ -77,8 +77,20 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   }
 
   bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
-  Q_FOREACH ( int i, subsetOfAttributes ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList() )
+  QgsAttributeList attrs = subsetOfAttributes ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList();
+
+  // ensure that all attributes required for expression filter are being fetched
+  if ( subsetOfAttributes && request.filterType() == QgsFeatureRequest::FilterExpression )
   {
+    Q_FOREACH ( const QString& field, request.filterExpression()->referencedColumns() )
+    {
+      int attrIdx = mSource->mFields.fieldNameIndex( field );
+      if ( !attrs.contains( attrIdx ) )
+        attrs << attrIdx;
+    }
+  }
+
+  Q_FOREACH ( int i, attrs )  {
     QString fieldname = mSource->mFields.at( i ).name();
     if ( mSource->mFidColName == fieldname )
       continue;

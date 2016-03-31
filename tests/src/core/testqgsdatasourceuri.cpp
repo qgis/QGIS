@@ -87,7 +87,7 @@ void TestQgsDataSourceUri::checkparser_data()
   << "mydb" // dbname
   << "myhost" // host
   << "5432" // port
-  << "IBM DB2 ODBC DRIVER" // driver  
+  << "" // driver
   << QgsDataSourceURI::SSLprefer // sslmode
   << "" // sql
   << "" // myparam
@@ -108,7 +108,7 @@ void TestQgsDataSourceUri::checkparser_data()
   << "mydb" // dbname
   << "myhost" // host
   << "5432" // port
-  << "IBM DB2 ODBC DRIVER" // driver  
+  << "" // driver
   << QgsDataSourceURI::SSLprefer // sslmode
   << "" // sql
   << "" // myparam
