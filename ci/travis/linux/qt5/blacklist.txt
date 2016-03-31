@@ -14,6 +14,8 @@ PyQgsComposerMap
 PyQgsComposerMapGrid
 PyQgsComposerPicture
 PyQgsComposerShapes
+PyQgsComposerPolygon
+PyQgsComposerPolyline
 PyQgsComposition
 PyQgsConditionalStyle
 PyQgsCoordinateTransform

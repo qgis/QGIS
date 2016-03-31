@@ -115,6 +115,10 @@
         <file>themes/default/mActionAddBasicShape.png</file>
         <file>themes/default/mActionAddBasicShape.svg</file>
         <file>themes/default/mActionAddBasicCircle.svg</file>
+        <file>themes/default/mActionEditNodesItem.svg</file>
+        <file>themes/default/mActionAddNodesItem.svg</file>
+        <file>themes/default/mActionAddPolygon.svg</file>
+        <file>themes/default/mActionAddPolyline.svg</file>
         <file>themes/default/mActionAddBasicRectangle.svg</file>
         <file>themes/default/mActionAddBasicTriangle.svg</file>
         <file>themes/default/mActionAddGPSLayer.png</file>
