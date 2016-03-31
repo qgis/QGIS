@@ -95,6 +95,8 @@ void QgsComposerView::setCurrentTool( QgsComposerView::Tool t )
   // do not display points of NodesItem by default
   mNodesItemIndex = -1;
   mNodesItem = nullptr;
+  mPolygonItem.reset();
+  mPolylineItem.reset();
   displayNodes( false );
   unselectNode();
 
@@ -1575,13 +1577,28 @@ void QgsComposerView::deleteSelectedItems()
     if ( mNodesItemIndex != -1 )
     {
       composition()->beginCommand( mNodesItem, tr( "Remove item node" ) );
-      mNodesItem->removeNode( mNodesItemIndex );
+      bool rc = mNodesItem->removeNode( mNodesItemIndex );
       composition()->endCommand();
 
-      scene()->update();
+      bool nodeDeleted = true;
+      if ( rc )
+      {
+        mNodesItemIndex = mNodesItem->selectedNode();
 
-      mNodesItemIndex = -1;
-      mNodesItem = nullptr;
+        if ( mNodesItemIndex != -1 )
+        {
+          nodeDeleted = false;
+          setSelectedNode( mNodesItem, mNodesItemIndex );
+        }
+      }
+
+      if ( nodeDeleted )
+      {
+        scene()->update();
+
+        mNodesItemIndex = -1;
+        mNodesItem = nullptr;
+      }
     }
   }
   else
@@ -1785,38 +1802,122 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
 
   if ( e->key() == Qt::Key_Left )
   {
-    for ( ; itemIt != composerItemList.end(); ++itemIt )
+    if ( mCurrentTool == EditNodesItem )
     {
-      ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
-      ( *itemIt )->move( -1 * increment, 0.0 );
-      ( *itemIt )->endCommand();
+      if ( mNodesItemIndex != -1 )
+      {
+        QPointF currentPos;
+
+        if ( mNodesItem->nodePosition( mNodesItemIndex, currentPos ) )
+        {
+          currentPos.setX( currentPos.x() - 1 );
+
+          composition()->beginCommand( mNodesItem, tr( "Move item node" ) );
+          mNodesItem->moveNode( mNodesItemIndex, currentPos );
+          composition()->endCommand();
+
+          scene()->update();
+        }
+      }
+    }
+    else
+    {
+      for ( ; itemIt != composerItemList.end(); ++itemIt )
+      {
+        ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
+        ( *itemIt )->move( -1 * increment, 0.0 );
+        ( *itemIt )->endCommand();
+      }
     }
   }
   else if ( e->key() == Qt::Key_Right )
   {
-    for ( ; itemIt != composerItemList.end(); ++itemIt )
+    if ( mCurrentTool == EditNodesItem )
     {
-      ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
-      ( *itemIt )->move( increment, 0.0 );
-      ( *itemIt )->endCommand();
+      if ( mNodesItemIndex != -1 )
+      {
+        QPointF currentPos;
+
+        if ( mNodesItem->nodePosition( mNodesItemIndex, currentPos ) )
+        {
+          currentPos.setX( currentPos.x() + 1 );
+
+          composition()->beginCommand( mNodesItem, tr( "Move item node" ) );
+          mNodesItem->moveNode( mNodesItemIndex, currentPos );
+          composition()->endCommand();
+
+          scene()->update();
+        }
+      }
+    }
+    else
+    {
+      for ( ; itemIt != composerItemList.end(); ++itemIt )
+      {
+        ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
+        ( *itemIt )->move( increment, 0.0 );
+        ( *itemIt )->endCommand();
+      }
     }
   }
   else if ( e->key() == Qt::Key_Down )
   {
-    for ( ; itemIt != composerItemList.end(); ++itemIt )
+    if ( mCurrentTool == EditNodesItem )
     {
-      ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
-      ( *itemIt )->move( 0.0, increment );
-      ( *itemIt )->endCommand();
+      if ( mNodesItemIndex != -1 )
+      {
+        QPointF currentPos;
+
+        if ( mNodesItem->nodePosition( mNodesItemIndex, currentPos ) )
+        {
+          currentPos.setY( currentPos.y() + 1 );
+
+          composition()->beginCommand( mNodesItem, tr( "Move item node" ) );
+          mNodesItem->moveNode( mNodesItemIndex, currentPos );
+          composition()->endCommand();
+
+          scene()->update();
+        }
+      }
+    }
+    else
+    {
+      for ( ; itemIt != composerItemList.end(); ++itemIt )
+      {
+        ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
+        ( *itemIt )->move( 0.0, increment );
+        ( *itemIt )->endCommand();
+      }
     }
   }
   else if ( e->key() == Qt::Key_Up )
   {
-    for ( ; itemIt != composerItemList.end(); ++itemIt )
+    if ( mCurrentTool == EditNodesItem )
     {
-      ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
-      ( *itemIt )->move( 0.0, -1 * increment );
-      ( *itemIt )->endCommand();
+      if ( mNodesItemIndex != -1 )
+      {
+        QPointF currentPos;
+
+        if ( mNodesItem->nodePosition( mNodesItemIndex, currentPos ) )
+        {
+          currentPos.setY( currentPos.y() - 1 );
+
+          composition()->beginCommand( mNodesItem, tr( "Move item node" ) );
+          mNodesItem->moveNode( mNodesItemIndex, currentPos );
+          composition()->endCommand();
+
+          scene()->update();
+        }
+      }
+    }
+    else
+    {
+      for ( ; itemIt != composerItemList.end(); ++itemIt )
+      {
+        ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
+        ( *itemIt )->move( 0.0, -1 * increment );
+        ( *itemIt )->endCommand();
+      }
     }
   }
 }
@@ -2213,7 +2314,12 @@ void QgsComposerView::setSelectedNode( QgsComposerNodesItem *shape,
   for ( ; it != nodesShapes.end(); ++it )
   {
     if (( *it ) == shape )
+    {
       ( *it )->setSelectedNode( index );
+      selectNone();
+      ( *it )->setSelected( true );
+      emit selectedItemChanged(( *it ) );
+    }
     else
       ( *it )->unselectNode();
   }

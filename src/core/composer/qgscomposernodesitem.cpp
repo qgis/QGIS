@@ -247,6 +247,30 @@ int QgsComposerNodesItem::nodeAtPosition( const QPointF &node,
   return idx;
 }
 
+bool QgsComposerNodesItem::nodePosition( const int index, QPointF &position )
+{
+  bool rc( false );
+
+  if ( index >= 0 && index < mPolygon.size() )
+  {
+    // get position in item coordinate
+    position = mPolygon.at( index );
+
+    // transform in scene coordinate
+    const double rotRad = mItemRotation * M_PI / 180.;
+    const double hypo = sqrt( pow( position.x(), 2 ) + pow( position.y(), 2 ) );
+    const double betaRad = acos( position.x() / hypo );
+    const double gammaRad = rotRad + betaRad;
+
+    position.setX( cos( gammaRad ) * hypo + scenePos().x() );
+    position.setY( sin( gammaRad ) * hypo + scenePos().y() );
+
+    rc = true;
+  }
+
+  return rc;
+}
+
 bool QgsComposerNodesItem::removeNode( const int index )
 {
   bool rc( false );
@@ -257,8 +281,14 @@ bool QgsComposerNodesItem::removeNode( const int index )
 
     if ( mPolygon.size() < 3 )
       mPolygon.clear();
+    else
+    {
+      int newSelectNode = index;
+      if ( index == mPolygon.size() )
+        newSelectNode = 0;
+      setSelectedNode( newSelectNode );
+    }
 
-    unselectNode();
     updateSceneRect();
 
     rc = true;

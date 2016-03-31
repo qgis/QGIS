@@ -41,6 +41,13 @@ class QgsComposerNodesItem: QgsComposerItem
      */
     int nodeAtPosition( const QPointF &node, const bool searchInRadius = true, const double radius = 10 );
 
+    /** Gets the position of a node in scene coordinate.
+      * @param index of the node
+      * @param position the position of the node
+      * @return true if the index is valid and the position is set, false otherwise
+      */
+    bool nodePosition( const int index, QPointF &position );
+
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is Dom document
@@ -59,6 +66,11 @@ class QgsComposerNodesItem: QgsComposerItem
      * @param index the node to select
      */
     bool setSelectedNode( const int index );
+
+    /** Returns the currently selected node.
+      * @return the index of the selected node, -1 otherwise
+      */
+    int selectedNode();
 
     /** Unselect a node.
      */
