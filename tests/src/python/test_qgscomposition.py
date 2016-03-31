@@ -60,9 +60,8 @@ class TestQgsComposition(unittest.TestCase):
         myComposition = QgsComposition(self.iface.mapCanvas().mapRenderer())
         mySubstitutionMap = {'replace-me': myText}
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
-        myTemplateFile = file(myFile, 'rt')
-        myTemplateContent = myTemplateFile.read()
-        myTemplateFile.close()
+        with open(myFile) as f:
+            myTemplateContent = f.read()
         myDocument = QDomDocument()
         myDocument.setContent(myTemplateContent)
         myComposition.loadFromTemplate(myDocument, mySubstitutionMap)
@@ -76,9 +75,8 @@ class TestQgsComposition(unittest.TestCase):
         """Test that we can get a map if we use no text substitutions."""
         myComposition = QgsComposition(self.iface.mapCanvas().mapRenderer())
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
-        myTemplateFile = file(myFile, 'rt')
-        myTemplateContent = myTemplateFile.read()
-        myTemplateFile.close()
+        with open(myFile) as f:
+            myTemplateContent = f.read()
         myDocument = QDomDocument()
         myDocument.setContent(myTemplateContent)
         myComposition.loadFromTemplate(myDocument)
@@ -111,9 +109,8 @@ class TestQgsComposition(unittest.TestCase):
 
         myComposition = QgsComposition(myMapRenderer)
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
-        myTemplateFile = file(myFile, 'rt')
-        myTemplateContent = myTemplateFile.read()
-        myTemplateFile.close()
+        with open(myFile) as f:
+            myTemplateContent = f.read()
         myDocument = QDomDocument()
         myDocument.setContent(myTemplateContent)
         myComposition.loadFromTemplate(myDocument)

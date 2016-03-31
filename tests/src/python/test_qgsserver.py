@@ -71,7 +71,7 @@ class TestQgsServer(unittest.TestCase):
         try:
             from qgis.server import QgsServerFilter
         except ImportError:
-            print "QGIS Server plugins are not compiled. Skipping test"
+            print("QGIS Server plugins are not compiled. Skipping test")
             return
 
         class SimpleHelloFilter(QgsServerFilter):

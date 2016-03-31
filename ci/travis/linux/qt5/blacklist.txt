@@ -60,15 +60,12 @@ PyQgsSymbolLayerV2
 PyQgsSymbolV2
 PyQgsSyntacticSugar
 PyQgsTabfileProvider
-PyQgsUnitTypes
-PyQgsVectorColorRamp
 PyQgsVectorFileWriter
 PyQgsVectorLayer
 PyQgsVirtualLayerDefinition
 PyQgsVirtualLayerProvider
 PyQgsZonalStatistics
 qgis_alignrastertest
-qgis_atlascompositiontest
 qgis_composereffectstest
 qgis_composerlabeltest
 qgis_composermapgridtest
@@ -83,7 +80,6 @@ qgis_composershapestest
 qgis_composertabletest
 qgis_composertablev2test
 qgis_composerutils
-qgis_coordinatereferencesystemtest
 qgis_ellipsemarkertest
 qgis_fieldexpressionwidget
 qgis_fieldtest
@@ -97,6 +93,5 @@ qgis_maprotationtest
 qgis_markerlinessymboltest
 qgis_painteffecttest
 qgis_pointpatternfillsymboltest
-qgis_rasterlayertest
 qgis_simplemarkertest
 qgis_svgmarkertest

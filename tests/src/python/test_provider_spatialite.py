@@ -28,7 +28,7 @@ from PyQt.QtCore import QSettings
 try:
     from pyspatialite import dbapi2 as sqlite3
 except ImportError:
-    print "You should install pyspatialite to run the tests"
+    print("You should install pyspatialite to run the tests")
     raise ImportError
 
 # Convenience instances in case you may need them

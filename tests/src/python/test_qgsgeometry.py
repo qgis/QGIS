@@ -413,7 +413,7 @@ class TestQgsGeometry(unittest.TestCase):
             QgsPoint(30, 20),
             QgsPoint(20, 20),
         ]])
-        print 'Clip: %s' % myClipPolygon.exportToWkt()
+        print('Clip: %s' % myClipPolygon.exportToWkt())
         writeShape(myMemoryLayer, 'clipGeometryBefore.shp')
         fit = myProvider.getFeatures()
         myFeatures = []
@@ -432,7 +432,7 @@ class TestQgsGeometry(unittest.TestCase):
                 # print 'Original: %s' % myGeometry.exportToWkt()
                 # print 'Combined: %s' % myCombinedGeometry.exportToWkt()
                 # print 'Difference: %s' % myDifferenceGeometry.exportToWkt()
-                print 'Symmetrical: %s' % mySymmetricalGeometry.exportToWkt()
+                print('Symmetrical: %s' % mySymmetricalGeometry.exportToWkt())
 
                 myExpectedWkt = 'Polygon ((20 20, 20 30, 30 30, 30 20, 20 20))'
 
