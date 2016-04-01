@@ -25,6 +25,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+from os.path import join, dirname, abspath
 from processing.core.Processing import Processing
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.core.parameters import ParameterSelection
@@ -75,3 +76,26 @@ def runalg(algOrName, *args, **kwargs):
 
 def runandload(name, *args, **kwargs):
     return Processing.runAlgorithm(name, handleAlgorithmResults, *args, **kwargs)
+
+
+def version():
+    """Returns the Processing version number.
+
+    :returns: The version number.
+    :rtype: int
+    """
+    # Get location of application wide version info
+    root_dir = abspath(join(dirname(__file__), '..'))
+    fid = open(join(root_dir, 'metadata.txt'))
+    version_list = []
+    for line in fid.readlines():
+        if line.startswith('version'):
+            version_string = line.strip().split('=')[1]
+            version_list = version_string.split('.')
+    fid.close()
+
+    version_string = ''
+    for v in version_list:
+        version_string += v.rjust(2, '0')
+
+    return int(version_string.lstrip('0'))
