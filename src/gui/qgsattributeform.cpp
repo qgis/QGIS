@@ -454,9 +454,8 @@ void QgsAttributeForm::init()
           continue;
 
         containerDef->setIsGroupBox( false ); // Toplevel widgets are tabs not groupboxes
-        QString dummy1;
-        bool dummy2;
-        tabPageLayout->addWidget( createWidgetFromDef( widgDef, tabPage, mLayer, mContext, dummy1, dummy2 ) );
+        WidgetInfo widgetInfo = createWidgetFromDef( widgDef, tabPage, mLayer, mContext );
+        tabPageLayout->addWidget( widgetInfo.widget );
       }
       else
       {
@@ -683,9 +682,9 @@ void QgsAttributeForm::initPython()
   }
 }
 
-QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement *widgetDef, QWidget *parent, QgsVectorLayer *vl, QgsAttributeEditorContext &context, QString &labelText, bool &labelOnTop )
+QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributeEditorContext& context )
 {
-  QWidget *newWidget = nullptr;
+  WidgetInfo newWidgetInfo;
 
   switch ( widgetDef->type() )
   {
@@ -702,14 +701,14 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
         const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig()->widgetConfig( fldIdx );
 
         QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, fldIdx, widgetConfig, nullptr, this, mContext );
-        newWidget = eww->widget();
+        newWidgetInfo.widget = eww->widget();
         addWidgetWrapper( eww );
 
-        newWidget->setObjectName( mLayer->fields().at( fldIdx ).name() );
+        newWidgetInfo.widget->setObjectName( mLayer->fields().at( fldIdx ).name() );
       }
 
-      labelOnTop = mLayer->editFormConfig()->labelOnTop( fieldDef->idx() );
-      labelText = mLayer->attributeDisplayName( fieldDef->idx() );
+      newWidgetInfo.labelOnTop = mLayer->editFormConfig()->labelOnTop( fieldDef->idx() );
+      newWidgetInfo.labelText = mLayer->attributeDisplayName( fieldDef->idx() );
 
       break;
     }
@@ -722,10 +721,10 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
       QgsEditorWidgetConfig cfg = mLayer->editFormConfig()->widgetConfig( relDef->relation().id() );
       rww->setConfig( cfg );
       rww->setContext( context );
-      newWidget = rww->widget();
+      newWidgetInfo.widget = rww->widget();
       mWidgets.append( rww );
-      labelText = QString::null;
-      labelOnTop = true;
+      newWidgetInfo.labelText = QString::null;
+      newWidgetInfo.labelOnTop = true;
       break;
     }
 
@@ -746,7 +745,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
         QGroupBox* groupBox = new QGroupBox( parent );
         groupBox->setTitle( container->name() );
         myContainer = groupBox;
-        newWidget = myContainer;
+        newWidgetInfo.widget = myContainer;
       }
       else
       {
@@ -758,7 +757,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
         scrollArea->setWidgetResizable( true );
         scrollArea->setFrameShape( QFrame::NoFrame );
 
-        newWidget = scrollArea;
+        newWidgetInfo.widget = scrollArea;
       }
 
       QGridLayout* gbLayout = new QGridLayout();
@@ -771,29 +770,30 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
 
       Q_FOREACH ( QgsAttributeEditorElement* childDef, children )
       {
-        QString labelText;
-        bool labelOnTop;
-        QWidget* editor = createWidgetFromDef( childDef, myContainer, vl, context, labelText, labelOnTop );
+        WidgetInfo widgetInfo = createWidgetFromDef( childDef, myContainer, vl, context );
 
-        if ( labelText.isNull() )
+        if ( widgetInfo.labelText.isNull() )
         {
-          gbLayout->addWidget( editor, row, column, 1, 2 );
+          gbLayout->addWidget( widgetInfo.widget, row, column, 1, 2 );
           column += 2;
         }
         else
         {
-          QLabel* mypLabel = new QLabel( labelText );
-          if ( labelOnTop )
+          QLabel* mypLabel = new QLabel( widgetInfo.labelText );
+          if ( columnCount > 1 )
+            mypLabel->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
+
+          if ( widgetInfo.labelOnTop )
           {
             gbLayout->addWidget( mypLabel, row, column, 1, 2 );
             ++row;
-            gbLayout->addWidget( editor, row, column, 1, 2 );
+            gbLayout->addWidget( widgetInfo.widget, row, column, 1, 2 );
             column += 2;
           }
           else
           {
             gbLayout->addWidget( mypLabel, row, column++ );
-            gbLayout->addWidget( editor, row, column++ );
+            gbLayout->addWidget( widgetInfo.widget, row, column++ );
           }
         }
 
@@ -807,8 +807,8 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
       spacer->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
       // gbLayout->addWidget( spacer, index, 0 );
 
-      labelText = QString::null;
-      labelOnTop = true;
+      newWidgetInfo.labelText = QString::null;
+      newWidgetInfo.labelOnTop = true;
       break;
     }
 
@@ -817,7 +817,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
       break;
   }
 
-  return newWidget;
+  return newWidgetInfo;
 }
 
 void QgsAttributeForm::addWidgetWrapper( QgsEditorWidgetWrapper* eww )

@@ -185,7 +185,15 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     void initPython();
 
-    QWidget* createWidgetFromDef( const QgsAttributeEditorElement* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributeEditorContext& context, QString& labelText, bool& labelOnTop );
+    struct WidgetInfo
+    {
+      QWidget* widget;
+      QString labelText;
+      bool labelOnTop;
+      bool labelAlignRight;
+    };
+
+    WidgetInfo createWidgetFromDef( const QgsAttributeEditorElement* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributeEditorContext& context );
 
     void addWidgetWrapper( QgsEditorWidgetWrapper* eww );
 
