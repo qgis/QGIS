@@ -121,7 +121,7 @@ QTest::newRow( "DB2" )
 << "GEOM" // geometrycolumn
 << "OBJECTID" // key
 << true // estimatedmetadata
-<< "1000003007" // srid
+<< "4326" // srid
 << QgsWKBTypes::Unknown // type
 << false // selectatid
 << "" // service
