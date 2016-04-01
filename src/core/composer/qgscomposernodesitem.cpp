@@ -60,7 +60,7 @@ bool QgsComposerNodesItem::addNode( const QPointF &pt,
                                     const bool checkArea,
                                     const double radius )
 {
-  const QPointF start = convertToItemCoordinate( pt );
+  const QPointF start = mapFromScene( pt );
   double minDistance = std::numeric_limits<double>::max();
   double maxDistance = ( checkArea ) ? radius : minDistance;
   bool rc = false;
@@ -125,13 +125,6 @@ bool QgsComposerNodesItem::addNode( const QPointF &pt,
   }
 
   return rc;
-}
-
-QPointF QgsComposerNodesItem::convertToItemCoordinate( QPointF node )
-{
-  QTransform transform = QTransform().rotate( -mItemRotation );
-  node -= scenePos();
-  return transform.map( node );
 }
 
 void QgsComposerNodesItem::drawNodes( QPainter *painter ) const
@@ -223,11 +216,11 @@ void QgsComposerNodesItem::paint( QPainter* painter,
   painter->restore();
 }
 
-int QgsComposerNodesItem::nodeAtPosition( const QPointF &node,
+int QgsComposerNodesItem::nodeAtPosition( QPointF node,
     const bool searchInRadius,
     const double radius )
 {
-  const QPointF pt = convertToItemCoordinate( node );
+  const QPointF pt = mapFromScene( node );
   double nearestDistance = std::numeric_limits<double>::max();
   double maxDistance = ( searchInRadius ) ? radius : nearestDistance;
   double distance = 0;
@@ -253,18 +246,7 @@ bool QgsComposerNodesItem::nodePosition( const int index, QPointF &position )
 
   if ( index >= 0 && index < mPolygon.size() )
   {
-    // get position in item coordinate
-    position = mPolygon.at( index );
-
-    // transform in scene coordinate
-    const double rotRad = mItemRotation * M_PI / 180.;
-    const double hypo = sqrt( pow( position.x(), 2 ) + pow( position.y(), 2 ) );
-    const double betaRad = acos( position.x() / hypo );
-    const double gammaRad = rotRad + betaRad;
-
-    position.setX( cos( gammaRad ) * hypo + scenePos().x() );
-    position.setY( sin( gammaRad ) * hypo + scenePos().y() );
-
+    position = mapToScene( mPolygon.at( index ) );
     rc = true;
   }
 
@@ -303,7 +285,7 @@ bool QgsComposerNodesItem::moveNode( const int index, const QPointF &pt )
 
   if ( index >= 0 && index < mPolygon.size() )
   {
-    QPointF nodeItem = convertToItemCoordinate( pt );
+    QPointF nodeItem = mapFromScene( pt );
     mPolygon.replace( index, nodeItem );
     updateSceneRect();
 
@@ -382,15 +364,8 @@ void QgsComposerNodesItem::updateSceneRect()
   // set the new scene rectangle
   const QRectF br = mPolygon.boundingRect();
 
-  const QPointF topLeft = br.topLeft();
-
-  const double angle = mItemRotation * M_PI / 180.;
-  const double member = topLeft.x() - tan( angle ) * topLeft.y();
-  const double newTopLeftX =  cos( angle ) * member + scenePos().x();
-  const double newTopLeftY =  topLeft.y() / cos( angle ) + sin( angle ) * member + scenePos().y();
-
-  QRectF sceneRect = QRectF( newTopLeftX, newTopLeftY, br.width(), br.height() );
-  setSceneRect( sceneRect );
+  const QPointF topLeft = mapToScene( br.topLeft() );
+  setSceneRect( QRectF( topLeft.x(), topLeft.y(), br.width(), br.height() ) );
 
   // update polygon position
   mPolygon.translate( -br.topLeft().x(), -br.topLeft().y() );

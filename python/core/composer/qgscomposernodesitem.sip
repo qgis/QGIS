@@ -39,7 +39,7 @@ class QgsComposerNodesItem: QgsComposerItem
      * limited in space.
      * @param radius is only used if searchInRadius is true
      */
-    int nodeAtPosition( const QPointF &node, const bool searchInRadius = true, const double radius = 10 );
+    int nodeAtPosition( QPointF node, const bool searchInRadius = true, const double radius = 10 );
 
     /** Gets the position of a node in scene coordinate.
       * @param index of the node
@@ -102,9 +102,6 @@ class QgsComposerNodesItem: QgsComposerItem
 
     /** Compute an euclidian distance between 2 nodes. */
     double computeDistance(const QPointF &pt1, const QPointF &pt2) const;
-
-    /** Convert scene coordinate to item coordinates */
-    QPointF convertToItemCoordinate(const QPointF &node);
 
     /** Update the current scene rectangle for this item. */
     void updateSceneRect();

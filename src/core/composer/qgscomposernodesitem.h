@@ -59,7 +59,7 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
     /** Set a tag to indicate if we want to draw or not the shape's nodes.
      * @param display
      */
-    void setDisplayNodes( const bool display = true ) { mDrawNodes = display; };
+    void setDisplayNodes( const bool display = true ) { mDrawNodes = display; }
 
     /** Move a node to a new position.
      * @param index the index of the node to move
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
      * limited in space.
      * @param radius is only used if searchInRadius is true
      */
-    int nodeAtPosition( const QPointF &node, const bool searchInRadius = true, const double radius = 10 );
+    int nodeAtPosition( QPointF node, const bool searchInRadius = true, const double radius = 10 );
 
     /** Gets the position of a node in scene coordinate.
       * @param index of the node
@@ -108,11 +108,11 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
     /** Returns the currently selected node.
       * @return the index of the selected node, -1 otherwise
       */
-    int selectedNode() { return mSelectedNode; };
+    int selectedNode() { return mSelectedNode; }
 
     /** Unselect a node.
      */
-    void unselectNode() { mSelectedNode = -1; };
+    void unselectNode() { mSelectedNode = -1; }
 
     /** Stores state in Dom element
      * @param elem is Dom element corresponding to 'Composer' tag
@@ -143,9 +143,6 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
 
     /** Compute an euclidian distance between 2 nodes. */
     double computeDistance( const QPointF &pt1, const QPointF &pt2 ) const;
-
-    /** Convert scene coordinate to item coordinates */
-    QPointF convertToItemCoordinate( QPointF node );
 
     /** Update the current scene rectangle for this item. */
     void updateSceneRect();
