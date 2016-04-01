@@ -441,9 +441,9 @@ bool QgsServer::init( int & argc, char ** argv )
 void QgsServer::putenv( const QString &var, const QString &val )
 {
 #ifdef _MSC_VER
-  _putenv_s( var.toUtf8().data(), val.toUtf8().data() );
+  _putenv_s( var.toStdString().c_str(), val.toStdString().c_str() );
 #else
-  setenv( var.toUtf8().data(), val.toUtf8().data(), 1 );
+  setenv( var.toStdString().c_str(), val.toStdString().c_str(), 1 );
 #endif
 }
 
