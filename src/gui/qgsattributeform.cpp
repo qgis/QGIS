@@ -735,6 +735,11 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
       if ( !container )
         break;
 
+      int columnCount = container->columnCount();
+
+      if ( columnCount <= 0 )
+        columnCount = 1;
+
       QWidget* myContainer;
       if ( container->isGroupBox() )
       {
@@ -759,7 +764,8 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
       QGridLayout* gbLayout = new QGridLayout();
       myContainer->setLayout( gbLayout );
 
-      int index = 0;
+      int row = 0;
+      int column = 0;
 
       QList<QgsAttributeEditorElement*> children = container->children();
 
@@ -771,25 +777,31 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
 
         if ( labelText.isNull() )
         {
-          gbLayout->addWidget( editor, index, 0, 1, 2 );
+          gbLayout->addWidget( editor, row, column, 1, 2 );
+          column += 2;
         }
         else
         {
           QLabel* mypLabel = new QLabel( labelText );
           if ( labelOnTop )
           {
-            gbLayout->addWidget( mypLabel, index, 0, 1, 2 );
-            ++index;
-            gbLayout->addWidget( editor, index, 0, 1, 2 );
+            gbLayout->addWidget( mypLabel, row, column, 1, 2 );
+            ++row;
+            gbLayout->addWidget( editor, row, column, 1, 2 );
+            column += 2;
           }
           else
           {
-            gbLayout->addWidget( mypLabel, index, 0 );
-            gbLayout->addWidget( editor, index, 1 );
+            gbLayout->addWidget( mypLabel, row, column++ );
+            gbLayout->addWidget( editor, row, column++ );
           }
         }
 
-        ++index;
+        if ( column >= columnCount * 2 )
+        {
+          column = 0;
+          row += 1;
+        }
       }
       QWidget* spacer = new QWidget();
       spacer->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );

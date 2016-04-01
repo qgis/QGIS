@@ -39,6 +39,7 @@
 #include <QSettings>
 #include <QFileDialog>
 #include <QHBoxLayout>
+#include <QFormLayout>
 
 QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent )
     : QWidget( parent )
@@ -169,13 +170,14 @@ QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
 
     case QgsAttributeEditorElement::AeTypeContainer:
     {
-      newWidget = mDesignerTree->addItem( parent, DesignerTreeItemData( DesignerTreeItemData::Container, widgetDef->name() ) );
+      DesignerTreeItemData itemData( DesignerTreeItemData::Container, widgetDef->name() );
 
       const QgsAttributeEditorContainer* container = dynamic_cast<const QgsAttributeEditorContainer*>( widgetDef );
       if ( !container )
-      {
         break;
-      }
+
+      itemData.setColumnCount( container->columnCount() );
+      newWidget = mDesignerTree->addItem( parent, itemData );
 
       Q_FOREACH ( QgsAttributeEditorElement* wdg, container->children() )
       {
@@ -425,12 +427,12 @@ void QgsFieldsProperties::on_mAddTabOrGroupButton_clicked()
   QString name = addTabOrGroup.name();
   if ( addTabOrGroup.tabButtonIsChecked() )
   {
-    mDesignerTree->addContainer( mDesignerTree->invisibleRootItem(), name );
+    mDesignerTree->addContainer( mDesignerTree->invisibleRootItem(), name, addTabOrGroup.columnCount() );
   }
   else
   {
     QTreeWidgetItem* tabItem = addTabOrGroup.tab();
-    mDesignerTree->addContainer( tabItem, name );
+    mDesignerTree->addContainer( tabItem, name, addTabOrGroup.columnCount() );
   }
 }
 
@@ -830,6 +832,7 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
     case DesignerTreeItemData::Container:
     {
       QgsAttributeEditorContainer* container = new QgsAttributeEditorContainer( item->text( 0 ), parent );
+      container->setColumnCount( itemData.columnCount() );
 
       for ( int t = 0; t < item->childCount(); t++ )
       {
@@ -918,8 +921,6 @@ void QgsFieldsProperties::apply()
       excludeAttributesWFS.insert( mFieldsList->item( i, attrNameCol )->text() );
     }
   }
-
-
 
   // tabs and groups
   mLayer->clearAttributeEditorWidgets();
@@ -1032,15 +1033,23 @@ QMimeData* DragList::mimeData( const QList<QTableWidgetItem*> items ) const
  * DesignerTree implementation
  */
 
-QTreeWidgetItem* DesignerTree::addContainer( QTreeWidgetItem* parent, const QString& title )
+QTreeWidgetItem* DesignerTree::addContainer( QTreeWidgetItem* parent, const QString& title, int columnCount )
 {
   QTreeWidgetItem *newItem = new QTreeWidgetItem( QStringList() << title );
   newItem->setBackground( 0, QBrush( Qt::lightGray ) );
-  newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
-  newItem->setData( 0, QgsFieldsProperties::DesignerTreeRole, QgsFieldsProperties::DesignerTreeItemData( QgsFieldsProperties::DesignerTreeItemData::Container, title ).asQVariant() );
+  newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
+  QgsFieldsProperties::DesignerTreeItemData itemData( QgsFieldsProperties::DesignerTreeItemData::Container, title );
+  itemData.setColumnCount( columnCount );
+  newItem->setData( 0, QgsFieldsProperties::DesignerTreeRole, itemData.asQVariant() );
   parent->addChild( newItem );
   newItem->setExpanded( true );
   return newItem;
+}
+
+DesignerTree::DesignerTree( QWidget* parent )
+    : QTreeWidget( parent )
+{
+  connect( this, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( onItemDoubleClicked( QTreeWidgetItem*, int ) ) );
 }
 
 QTreeWidgetItem* DesignerTree::addItem( QTreeWidgetItem* parent, QgsFieldsProperties::DesignerTreeItemData data )
@@ -1049,7 +1058,7 @@ QTreeWidgetItem* DesignerTree::addItem( QTreeWidgetItem* parent, QgsFieldsProper
   newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
   if ( data.type() == QgsFieldsProperties::DesignerTreeItemData::Container )
   {
-    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
+    newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
     newItem->setBackground( 0, QBrush( Qt::lightGray ) );
 
 #if 0
@@ -1196,6 +1205,44 @@ QMimeData* DesignerTree::mimeData( const QList<QTreeWidgetItem*> items ) const
   data->setData( format, encoded );
 
   return data;
+}
+
+void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
+{
+  Q_UNUSED( column )
+  QgsFieldsProperties::DesignerTreeItemData itemData = item->data( 0, QgsFieldsProperties::DesignerTreeRole ).value<QgsFieldsProperties::DesignerTreeItemData>();
+
+  if ( itemData.type() == QgsFieldsProperties::DesignerTreeItemData::Container )
+  {
+    QDialog dlg;
+    dlg.setWindowTitle( tr( "Configure container" ) );
+    QFormLayout* layout = new QFormLayout() ;
+    dlg.setLayout( layout );
+
+    QLineEdit* title = new QLineEdit( itemData.name() );
+    QSpinBox* columnCount = new QSpinBox();
+    columnCount->setRange( 1, 5 );
+    columnCount->setValue( itemData.columnCount() );
+
+    layout->addRow( tr( "Title" ), title );
+    layout->addRow( tr( "Column count" ), columnCount );
+
+    QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
+        | QDialogButtonBox::Cancel );
+
+    connect( buttonBox, SIGNAL( accepted() ), &dlg, SLOT( accept() ) );
+    connect( buttonBox, SIGNAL( rejected() ), &dlg, SLOT( reject() ) );
+
+    layout->addWidget( buttonBox );
+
+    if ( dlg.exec() )
+    {
+      itemData.setColumnCount( columnCount->value() );
+      itemData.setName( title->text() );
+      item->setData( 0, QgsFieldsProperties::DesignerTreeRole, itemData.asQVariant() );
+      item->setText( 0, title->text() );
+    }
+  }
 }
 
 /*

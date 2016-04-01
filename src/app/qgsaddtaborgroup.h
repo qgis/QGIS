@@ -40,9 +40,13 @@ class APP_EXPORT QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroup
 
     QTreeWidgetItem* tab();
 
+    int columnCount() const;
+
     bool tabButtonIsChecked();
 
-  public slots:
+    virtual void accept() override;
+
+  private slots:
     void on_mGroupButton_toggled( bool checked );
     void on_mTabButton_toggled( bool checked );
 

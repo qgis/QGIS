@@ -158,14 +158,23 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
 
     /**
      * Change the name of this container
-     *
-     * @param name
      */
     void setName( const QString& name );
+
+    /**
+     * Get the number of columns in this group
+     */
+    int columnCount() const;
+
+    /**
+     * Set the number of columns in this group
+     */
+    void setColumnCount( int columnCount );
 
   private:
     bool mIsGroupBox;
     QList<QgsAttributeEditorElement*> mChildren;
+    int mColumnCount;
 };
 
 /**

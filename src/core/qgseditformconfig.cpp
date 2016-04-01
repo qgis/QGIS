@@ -369,6 +369,11 @@ QgsAttributeEditorElement* QgsEditFormConfig::attributeEditorElementFromDomEleme
   if ( elem.tagName() == "attributeEditorContainer" )
   {
     QgsAttributeEditorContainer* container = new QgsAttributeEditorContainer( elem.attribute( "name" ), parent );
+    bool ok;
+    int cc = elem.attribute( "columnCount" ).toInt( &ok );
+    if ( !ok )
+      cc = 0;
+    container->setColumnCount( cc );
 
     QDomNodeList childNodeList = elem.childNodes();
 
@@ -419,4 +424,14 @@ void QgsEditFormConfig::onRelationsLoaded()
       }
     }
   }
+}
+
+int QgsAttributeEditorContainer::columnCount() const
+{
+  return mColumnCount;
+}
+
+void QgsAttributeEditorContainer::setColumnCount( int columnCount )
+{
+  mColumnCount = columnCount;
 }

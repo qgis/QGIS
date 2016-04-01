@@ -21,6 +21,7 @@
 #include <QTableWidget>
 #include <QTreeWidget>
 #include <QWidget>
+#include <QSpinBox>
 
 
 #include "qgsvectorlayer.h"
@@ -68,9 +69,13 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
 
         QVariant asQVariant() { return QVariant::fromValue<DesignerTreeItemData>( *this ); }
 
-      protected:
+        int columnCount() const { return mColumnCount; }
+        void setColumnCount( int count ) { mColumnCount = count; }
+
+      private:
         Type mType;
         QString mName;
+        int mColumnCount;
     };
 
     /**
@@ -244,11 +249,9 @@ class DesignerTree : public QTreeWidget
     Q_OBJECT
 
   public:
-    explicit DesignerTree( QWidget* parent = nullptr )
-        : QTreeWidget( parent )
-    {}
+    explicit DesignerTree( QWidget* parent = nullptr );
     QTreeWidgetItem* addItem( QTreeWidgetItem* parent, QgsFieldsProperties::DesignerTreeItemData data );
-    QTreeWidgetItem* addContainer( QTreeWidgetItem* parent, const QString& title );
+    QTreeWidgetItem* addContainer( QTreeWidgetItem* parent, const QString& title , int columnCount );
 
   protected:
     virtual void dragMoveEvent( QDragMoveEvent *event ) override;
@@ -260,6 +263,9 @@ class DesignerTree : public QTreeWidget
   protected:
     virtual QStringList mimeTypes() const override;
     virtual QMimeData* mimeData( const QList<QTreeWidgetItem*> items ) const override;
+
+  private slots:
+    void onItemDoubleClicked( QTreeWidgetItem* item, int column );
 };
 
 Q_DECLARE_METATYPE( QgsFieldsProperties::FieldConfig )
