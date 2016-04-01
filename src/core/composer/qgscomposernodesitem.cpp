@@ -255,27 +255,9 @@ bool QgsComposerNodesItem::nodePosition( const int index, QPointF &position )
 
 bool QgsComposerNodesItem::removeNode( const int index )
 {
-  bool rc( false );
-
-  if ( index >= 0 && index < mPolygon.size() )
-  {
-    mPolygon.remove( index );
-
-    if ( mPolygon.size() < 3 )
-      mPolygon.clear();
-    else
-    {
-      int newSelectNode = index;
-      if ( index == mPolygon.size() )
-        newSelectNode = 0;
-      setSelectedNode( newSelectNode );
-    }
-
+  bool rc = _removeNode( index );
+  if ( rc )
     updateSceneRect();
-
-    rc = true;
-  }
-
   return rc;
 }
 

@@ -59,6 +59,26 @@ bool QgsComposerPolyline::_addNode( const int indexPoint,
   return true;
 }
 
+bool QgsComposerPolyline::_removeNode( const int index )
+{
+  if ( index < 0 || index >= mPolygon.size() )
+    return false;
+
+  mPolygon.remove( index );
+
+  if ( mPolygon.size() < 2 )
+    mPolygon.clear();
+  else
+  {
+    int newSelectNode = index;
+    if ( index >= mPolygon.size() )
+      newSelectNode = mPolygon.size() - 1;
+    setSelectedNode( newSelectNode );
+  }
+
+  return true;
+}
+
 void QgsComposerPolyline::createDefaultPolylineStyleSymbol()
 {
   QgsStringMap properties;

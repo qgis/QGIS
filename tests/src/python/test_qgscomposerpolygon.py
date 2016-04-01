@@ -139,15 +139,6 @@ class TestQgsComposerPolygon(unittest.TestCase):
         assert myTestResult, myMessage
 
         self.assertEqual(self.mComposerPolygon.nodesSize(), 4)
-        rc = self.mComposerPolygon.removeNode(3)
-        self.assertEqual(rc, True)
-        self.assertEqual(self.mComposerPolygon.nodesSize(), 3)
-
-        checker = QgsCompositionChecker(
-            'composerpolygon_removednode', self.mComposition)
-        checker.setControlPathPrefix("composer_polygon")
-        myTestResult, myMessage = checker.testComposition()
-        assert myTestResult, myMessage
 
     def testAddNode(self):
         """Test addNode method"""

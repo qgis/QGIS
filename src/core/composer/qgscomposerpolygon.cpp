@@ -120,3 +120,23 @@ void QgsComposerPolygon::_writeXMLStyle( QDomDocument &doc, QDomElement &elmt ) 
                          doc );
   elmt.appendChild( pe );
 }
+
+bool QgsComposerPolygon::_removeNode( const int index )
+{
+  if ( index < 0 || index >= mPolygon.size() )
+    return false;
+
+  mPolygon.remove( index );
+
+  if ( mPolygon.size() < 3 )
+    mPolygon.clear();
+  else
+  {
+    int newSelectNode = index;
+    if ( index == mPolygon.size() )
+      newSelectNode = 0;
+    setSelectedNode( newSelectNode );
+  }
+
+  return true;
+}

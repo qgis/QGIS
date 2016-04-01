@@ -69,6 +69,8 @@ class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
      * criteres. */
     bool _addNode( const int indexPoint, const QPointF &newPoint, const double radius ) override;
 
+    bool _removeNode( const int nodeIndex ) override;
+
     /** Draw nodes for the current shape. */
     void _draw( QPainter *painter ) override;
 

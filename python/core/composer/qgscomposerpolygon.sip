@@ -23,9 +23,9 @@ class QgsComposerPolygon: QgsComposerNodesItem
 
   protected:
 
-    /** Add the point newPoint at the given position according to some
-     * criteres. */
     bool _addNode( const int indexPoint, const QPointF &newPoint, const double radius );
+
+    bool _removeNode( const int indexPoint );
 
     /** Draw points for the current shape. */
     void _draw( QPainter *painter );

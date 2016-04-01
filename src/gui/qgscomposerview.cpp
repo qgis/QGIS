@@ -1577,27 +1577,24 @@ void QgsComposerView::deleteSelectedItems()
     if ( mNodesItemIndex != -1 )
     {
       composition()->beginCommand( mNodesItem, tr( "Remove item node" ) );
-      bool rc = mNodesItem->removeNode( mNodesItemIndex );
-      composition()->endCommand();
-
-      bool nodeDeleted = true;
-      if ( rc )
+      if ( mNodesItem->removeNode( mNodesItemIndex ) )
       {
-        mNodesItemIndex = mNodesItem->selectedNode();
-
-        if ( mNodesItemIndex != -1 )
+        composition()->endCommand();
+        if ( mNodesItem->nodesSize() > 0 )
         {
-          nodeDeleted = false;
-          setSelectedNode( mNodesItem, mNodesItemIndex );
+          mNodesItemIndex = mNodesItem->selectedNode();
+          // setSelectedNode( mNodesItem, mNodesItemIndex );
         }
-      }
-
-      if ( nodeDeleted )
-      {
+        else
+        {
+          mNodesItemIndex = -1;
+          mNodesItem = nullptr;
+        }
         scene()->update();
-
-        mNodesItemIndex = -1;
-        mNodesItem = nullptr;
+      }
+      else
+      {
+        composition()->cancelCommand();
       }
     }
   }

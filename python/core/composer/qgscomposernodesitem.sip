@@ -87,6 +87,9 @@ class QgsComposerNodesItem: QgsComposerItem
     /** Method called in addNode. */
     virtual bool _addNode( const int nodeIndex, const QPointF &newPoint, const double radius ) = 0;
 
+    /** Method called in removeNode. */
+    virtual bool _removeNode( const int nodeIndex ) = 0;
+
     /** Method called in paint. */
     virtual void _draw( QPainter *painter ) = 0;
 
