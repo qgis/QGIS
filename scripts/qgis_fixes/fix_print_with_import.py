@@ -1,17 +1,23 @@
 from libfuturize.fixes.fix_print_with_import import FixPrintWithImport as FixPrintWithImportOrig
-from lib2to3.fixer_util import Node, Leaf, syms
+from lib2to3.fixer_util import Node, Leaf, syms, find_indentation
 
+import re
 
 class FixPrintWithImport(FixPrintWithImportOrig):
 
-    def match(self, node):
-        isPrint = super(FixPrintWithImport, self).match(node)
-        if isPrint and \
-                len(node.children) == 2 and \
-                isinstance(node.children[0], Leaf) and \
-                isinstance(node.children[1], Node) and node.children[1].type == syms.atom and \
-                isinstance(node.children[1].children[0], Leaf) and node.children[1].children[0].value == '(' and \
-                isinstance(node.children[1].children[-1], Leaf) and node.children[1].children[-1].value == ')':
-            return False
+    def transform(self, node, results):
+        if "fix_print_with_import" in node.prefix:
+            return node
 
-        return ok
+        r = super(FixPrintWithImport, self).transform(node, results)
+
+        if not r or r == node:
+            return r
+
+        if not r.prefix:
+            indentation = find_indentation(node)
+            r.prefix = "# fix_print_with_import\n" + indentation
+        else:
+            r.prefix = re.sub('([ \t]*$)', r'\1# fix_print_with_import\n\1', r.prefix)
+
+        return r
