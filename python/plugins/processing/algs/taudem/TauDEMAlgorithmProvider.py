@@ -71,7 +71,7 @@ class TauDEMAlgorithmProvider(AlgorithmProvider):
         return 'taudem'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.svg')
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)

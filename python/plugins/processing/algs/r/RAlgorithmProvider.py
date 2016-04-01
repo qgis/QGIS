@@ -86,7 +86,7 @@ class RAlgorithmProvider(AlgorithmProvider):
             ProcessingConfig.removeSetting(RUtils.R_USE64)
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'r.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
 
     def getDescription(self):
         return 'R scripts'

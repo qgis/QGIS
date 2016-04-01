@@ -74,7 +74,7 @@ class GetRScriptsAction(ToolboxAction):
         self.group = self.tr('Tools', 'GetRScriptsAction')
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'r.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
 
     def execute(self):
         dlg = GetScriptsAndModelsDialog(GetScriptsAndModelsDialog.RSCRIPTS)
@@ -137,7 +137,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         else:
             self.folder = RUtils.RScriptsFolder()
             self.urlBase = 'https://raw.githubusercontent.com/qgis/QGIS-Processing/master/rscripts/'
-            self.icon = QIcon(os.path.join(pluginPath, 'images', 'r.png'))
+            self.icon = QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
 
         self.lastSelectedItem = None
         self.updateToolbox = False
