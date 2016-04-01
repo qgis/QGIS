@@ -796,6 +796,9 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         if ( ! mPolygonItem.isNull() )
         {
           QPolygonF poly = mPolygonItem.data()->polygon();
+
+          // last (temporary) point is removed
+          poly.remove( poly.count() - 1 );
           if ( poly.size() >= 3 )
           {
             mPolygonItem.data()->setPolygon( poly );
@@ -827,7 +830,9 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
           // ignore the last point due to release event before doubleClick event
           QPolygonF poly = mPolygonItem.data()->polygon();
 
-          if ( poly.size() >= 3 )
+          // last (temporary) point is removed
+          poly.remove( poly.count() - 1 );
+          if ( poly.size() >= 2 )
           {
             mPolygonItem.data()->setPolygon( poly );
 
