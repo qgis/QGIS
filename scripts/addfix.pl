@@ -48,9 +48,9 @@ libfuturize.fixes.fix_future_standard_library_urllib
 libfuturize.fixes.fix_metaclass
 libfuturize.fixes.fix_next_call
 libfuturize.fixes.fix_object
-libfuturize.fixes.fix_print_with_import
 libfuturize.fixes.fix_raise
 libfuturize.fixes.fix_xrange_with_import
+
 libpasteurize.fixes.fix_newstyle
 /;
 
