@@ -116,7 +116,7 @@ void TestQgsDataSourceUri::checkparser_data()
 
   QTest::newRow( "DB2" )
   << "host=localhost port=50000 user='osuser' password='osuserpw' estimatedmetadata=true srid=4326 key=OBJECTID table=TEST.ZIPPOINT (GEOM) myparam='myvalue' driver='IBM DB2 ODBC DRIVER' sql="
-  << "ZIPPOINT" // table
+  << "TEST.ZIPPOINT" // table
   << "GEOM" // geometrycolumn
   << "OBJECTID" // key
   << true // estimatedmetadata
