@@ -1810,7 +1810,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
 
         if ( mNodesItem->nodePosition( mNodesItemIndex, currentPos ) )
         {
-          currentPos.setX( currentPos.x() - 1 );
+          currentPos.setX( currentPos.x() - increment );
 
           composition()->beginCommand( mNodesItem, tr( "Move item node" ) );
           mNodesItem->moveNode( mNodesItemIndex, currentPos );
@@ -1840,7 +1840,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
 
         if ( mNodesItem->nodePosition( mNodesItemIndex, currentPos ) )
         {
-          currentPos.setX( currentPos.x() + 1 );
+          currentPos.setX( currentPos.x() + increment );
 
           composition()->beginCommand( mNodesItem, tr( "Move item node" ) );
           mNodesItem->moveNode( mNodesItemIndex, currentPos );
@@ -1870,7 +1870,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
 
         if ( mNodesItem->nodePosition( mNodesItemIndex, currentPos ) )
         {
-          currentPos.setY( currentPos.y() + 1 );
+          currentPos.setY( currentPos.y() + increment );
 
           composition()->beginCommand( mNodesItem, tr( "Move item node" ) );
           mNodesItem->moveNode( mNodesItemIndex, currentPos );
@@ -1900,7 +1900,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
 
         if ( mNodesItem->nodePosition( mNodesItemIndex, currentPos ) )
         {
-          currentPos.setY( currentPos.y() - 1 );
+          currentPos.setY( currentPos.y() - increment );
 
           composition()->beginCommand( mNodesItem, tr( "Move item node" ) );
           mNodesItem->moveNode( mNodesItemIndex, currentPos );
