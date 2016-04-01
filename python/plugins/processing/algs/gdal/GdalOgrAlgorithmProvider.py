@@ -105,7 +105,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
         return 'gdalogr'
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'gdal.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'gdal.svg'))
 
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs

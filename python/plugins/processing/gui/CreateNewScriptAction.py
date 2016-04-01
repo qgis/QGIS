@@ -49,7 +49,7 @@ class CreateNewScriptAction(ToolboxAction):
         if self.scriptType == self.SCRIPT_PYTHON:
             return QIcon(os.path.join(pluginPath, 'images', 'script.png'))
         elif self.scriptType == self.SCRIPT_R:
-            return QIcon(os.path.join(pluginPath, 'images', 'r.png'))
+            return QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
 
     def execute(self):
         dlg = None

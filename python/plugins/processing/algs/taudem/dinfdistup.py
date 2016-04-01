@@ -66,7 +66,7 @@ class DinfDistUp(GeoAlgorithm):
     }
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.svg')
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('D-Infinity Distance Up')

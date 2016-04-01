@@ -98,7 +98,7 @@ class GrassAlgorithmProvider(AlgorithmProvider):
         return 'grass'
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'grass.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
 
     def getSupportedOutputVectorLayerExtensions(self):
         return ['shp']
