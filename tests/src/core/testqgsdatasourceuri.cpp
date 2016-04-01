@@ -115,6 +115,26 @@ void TestQgsDataSourceUri::checkparser_data()
   ;
 }
 
+QTest::newRow( "DB2" )
+<< "host=localhost port=50000 user='osuser' password='osuserpw' estimatedmetadata=true srid=4326 key=OBJECTID table=TEST.ZIPPOINT (GEOM) myparam='myvalue' driver='IBM DB2 ODBC DRIVER' sql="
+<< "ZIPPOINT" // table
+<< "GEOM" // geometrycolumn
+<< "OBJECTID" // key
+<< true // estimatedmetadata
+<< "1000003007" // srid
+<< QgsWKBTypes::Unknown // type
+<< false // selectatid
+<< "" // service
+<< "osuser" // user
+<< "osuserpw" // password
+<< "OSTEST" // dbname
+<< "localhost" // host
+<< "50000" // port
+<< "IBM DB2 ODBC DRIVER" // driver
+<< QgsDataSourceURI::SSLprefer // sslmode
+<< "" // sql
+<< "myvalue" // myparam
+;
 void TestQgsDataSourceUri::checkparser()
 {
   QFETCH( QString, uri );
@@ -155,7 +175,6 @@ void TestQgsDataSourceUri::checkparser()
   QCOMPARE( ds.sql(), sql );
   QCOMPARE( ds.param( "myparam" ), myparam );
 }
-
 
 QTEST_MAIN( TestQgsDataSourceUri )
 #include "testqgsdatasourceuri.moc"
