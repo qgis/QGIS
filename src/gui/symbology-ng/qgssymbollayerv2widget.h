@@ -201,6 +201,7 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
   private slots:
 
     void updateAssistantSymbol();
+    void penJoinStyleChanged();
 
   private:
 
