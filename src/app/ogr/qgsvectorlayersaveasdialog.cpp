@@ -28,15 +28,20 @@
 QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mCRS( srsid )
+    , mLayer( 0 )
 {
   setup();
 }
 
-QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, const QgsRectangle& layerExtent, bool layerHasSelectedFeatures, int options, QWidget* parent, Qt::WindowFlags fl )
+QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options, QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
-    , mCRS( srsid )
-    , mLayerExtent( layerExtent )
+    , mLayer( layer )
 {
+  if ( layer )
+  {
+    mCRS = layer->crs().srsid();
+    mLayerExtent = layer->extent();
+  }
   setup();
   if ( !( options & Symbology ) )
   {
@@ -46,7 +51,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, const QgsRec
     mScaleSpinBox->hide();
   }
 
-  mSelectedOnly->setEnabled( layerHasSelectedFeatures );
+  mSelectedOnly->setEnabled( layer && layer->selectedFeatureCount() != 0 );
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
 }
 
@@ -213,17 +218,40 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
   {
     mEncodingComboBox->setCurrentIndex( mEncodingComboBox->findText( "UTF-8" ) );
     mEncodingComboBox->setDisabled( true );
-    mSkipAttributeCreation->setEnabled( true );
+    mAttributesSelection->setChecked( true );
   }
   else if ( format() == "DXF" )
   {
-    mSkipAttributeCreation->setChecked( true );
-    mSkipAttributeCreation->setDisabled( true );
+    mAttributesSelection->setChecked( true );
+    mAttributesSelection->setDisabled( true );
   }
   else
   {
     mEncodingComboBox->setEnabled( true );
-    mSkipAttributeCreation->setEnabled( true );
+    mAttributesSelection->setEnabled( true );
+  }
+
+  if ( mLayer )
+  {
+    mAttributeTable->setRowCount( mLayer->fields().count() );
+    mAttributeTable->setColumnCount( 2 );
+    mAttributeTable->setHorizontalHeaderLabels( QStringList() << tr( "Name" ) << tr( "Type" ) );
+
+    int i = 0;
+    Q_FOREACH ( const QgsField &fld, mLayer->fields() )
+    {
+      Qt::ItemFlags flags = mLayer->providerType() != "oracle" || !fld.typeName().contains( "SDO_GEOMETRY" ) ? Qt::ItemIsEnabled : Qt::NoItemFlags;
+      QTableWidgetItem *item;
+      item = new QTableWidgetItem( fld.name() );
+      item->setFlags( flags | Qt::ItemIsUserCheckable );
+      item->setCheckState( Qt::Unchecked );
+      mAttributeTable->setItem( i, 0, item );
+      item = new QTableWidgetItem( fld.typeName() );
+      item->setFlags( flags );
+      mAttributeTable->setItem( i++, 1, item );
+    }
+
+    mAttributeTable->resizeColumnsToContents();
   }
 
   QgsVectorFileWriter::MetaData driverMetaData;
@@ -430,9 +458,24 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
   return options + mOgrLayerOptions->toPlainText().split( '\n' );
 }
 
-bool QgsVectorLayerSaveAsDialog::skipAttributeCreation() const
+bool QgsVectorLayerSaveAsDialog::attributeSelection() const
 {
-  return mSkipAttributeCreation->isChecked();
+  return mAttributesSelection->isChecked();
+}
+
+QgsAttributeList QgsVectorLayerSaveAsDialog::selectedAttributes() const
+{
+  QgsAttributeList attributes;
+
+  for ( int i = 0; i < mAttributeTable->rowCount(); i++ )
+  {
+    if ( mAttributeTable->item( i, 0 )->checkState() == Qt::Checked )
+    {
+      attributes.append( i );
+    }
+  }
+
+  return attributes;
 }
 
 bool QgsVectorLayerSaveAsDialog::addToCanvas() const
@@ -525,4 +568,21 @@ void QgsVectorLayerSaveAsDialog::on_mGeometryTypeComboBox_currentIndexChanged( i
 
   mForceMultiCheckBox->setEnabled( currentIndexData != -1 );
   mIncludeZCheckBox->setEnabled( currentIndexData != -1 );
+}
+
+void QgsVectorLayerSaveAsDialog::on_mSelectAllAttributes_clicked()
+{
+  for ( int i = 0; i < mAttributeTable->rowCount(); i++ )
+  {
+    if ( mAttributeTable->item( i, 0 )->flags() & Qt::ItemIsEnabled )
+      mAttributeTable->item( i, 0 )->setCheckState( Qt::Checked );
+  }
+}
+
+void QgsVectorLayerSaveAsDialog::on_mDeselectAllAttributes_clicked()
+{
+  for ( int i = 0; i < mAttributeTable->rowCount(); i++ )
+  {
+    mAttributeTable->item( i, 0 )->setCheckState( Qt::Unchecked );
+  }
 }

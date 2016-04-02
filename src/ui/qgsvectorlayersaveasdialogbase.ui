@@ -71,7 +71,7 @@
        </widget>
       </item>
       <item row="2" column="1" colspan="2">
-       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>
         </property>
@@ -90,8 +90,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>555</width>
-        <height>650</height>
+        <width>553</width>
+        <height>548</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -120,13 +120,55 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="mSkipAttributeCreation">
-         <property name="toolTip">
-          <string>This allows one to suppress attribute creation as some OGR drivers (eg. DGN, DXF) don't support it.</string>
+        <widget class="QgsCollapsibleGroupBox" name="mAttributesSelection">
+         <property name="title">
+          <string>Limit attributes to export</string>
          </property>
-         <property name="text">
-          <string>Skip attribute creation</string>
+         <property name="checkable">
+          <bool>true</bool>
          </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <property name="collapsed">
+          <bool>true</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QTableWidget" name="mAttributeTable">
+            <property name="rowCount">
+             <number>1</number>
+            </property>
+            <property name="columnCount">
+             <number>2</number>
+            </property>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <row/>
+            <column/>
+            <column/>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QPushButton" name="mSelectAllAttributes">
+              <property name="text">
+               <string>Select All</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="mDeselectAllAttributes">
+              <property name="text">
+               <string>Deselect All</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
@@ -246,7 +288,7 @@
          <property name="title">
           <string>Custom Options</string>
          </property>
-         <property name="collapsed" stdset="0">
+         <property name="collapsed">
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
@@ -357,12 +399,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsProjectionSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsprojectionselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
@@ -370,8 +406,14 @@
   </customwidget>
   <customwidget>
    <class>QgsExtentGroupBox</class>
-   <extends>QGroupBox</extends>
+   <extends>QgsCollapsibleGroupBox</extends>
    <header>qgsextentgroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -383,7 +425,7 @@
   <tabstop>scrollArea</tabstop>
   <tabstop>mEncodingComboBox</tabstop>
   <tabstop>mSelectedOnly</tabstop>
-  <tabstop>mSkipAttributeCreation</tabstop>
+  <tabstop>mAttributesSelection</tabstop>
   <tabstop>mAddToCanvas</tabstop>
   <tabstop>mSymbologyExportComboBox</tabstop>
   <tabstop>mScaleSpinBox</tabstop>

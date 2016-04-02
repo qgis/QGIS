@@ -5690,7 +5690,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
     options &= ~QgsVectorLayerSaveAsDialog::Symbology;
   }
 
-  QgsVectorLayerSaveAsDialog *dialog = new QgsVectorLayerSaveAsDialog( vlayer->crs().srsid(), vlayer->extent(), vlayer->selectedFeatureCount() != 0, options, this );
+  QgsVectorLayerSaveAsDialog *dialog = new QgsVectorLayerSaveAsDialog( vlayer, options, this );
 
   dialog->setCanvasExtent( mMapCanvas->mapSettings().visibleExtent(), mMapCanvas->mapSettings().destinationCrs() );
   dialog->setIncludeZ( QgsWKBTypes::hasZ( QGis::fromOldWkbType( vlayer->wkbType() ) ) );
@@ -5745,14 +5745,15 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
               dialog->onlySelected(),
               &errorMessage,
               datasourceOptions, dialog->layerOptions(),
-              dialog->skipAttributeCreation(),
+              dialog->attributeSelection() && dialog->selectedAttributes().isEmpty(),
               &newFilename,
               static_cast< QgsVectorFileWriter::SymbologyExport >( dialog->symbologyExport() ),
               dialog->scaleDenominator(),
               dialog->hasFilterExtent() ? &filterExtent : nullptr,
               autoGeometryType ? QgsWKBTypes::Unknown : forcedGeometryType,
               dialog->forceMulti(),
-              dialog->includeZ()
+              dialog->includeZ(),
+              dialog->selectedAttributes()
             );
 
     delete ct;

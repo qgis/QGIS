@@ -39,7 +39,7 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     };
 
     QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
-    QgsVectorLayerSaveAsDialog( long srsid, const QgsRectangle& layerExtent, bool layerHasSelectedFeatures, int options = AllOptions, QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
+    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options = AllOptions, QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
     ~QgsVectorLayerSaveAsDialog();
 
     QString format() const;
@@ -48,7 +48,8 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     QStringList datasourceOptions() const;
     QStringList layerOptions() const;
     long crs() const;
-    bool skipAttributeCreation() const;
+    bool attributeSelection() const;
+    QgsAttributeList selectedAttributes() const;
     bool addToCanvas() const;
     /** Returns type of symbology export.
         0: No symbology
@@ -104,6 +105,8 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     void on_mSymbologyExportComboBox_currentIndexChanged( const QString& text );
     void on_mGeometryTypeComboBox_currentIndexChanged( int index );
     void accept() override;
+    void on_mSelectAllAttributes_clicked();
+    void on_mDeselectAllAttributes_clicked();
 
   private:
     void setup();
@@ -113,6 +116,7 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
 
     QgsRectangle mLayerExtent;
     QgsCoordinateReferenceSystem mLayerCrs;
+    QgsVectorLayer *mLayer;
 };
 
 #endif // QGSVECTORLAYERSAVEASDIALOG_H

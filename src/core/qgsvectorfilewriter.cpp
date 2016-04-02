@@ -1759,16 +1759,12 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
   }
 
   // attribute handling
-  for ( int fldIdx = 0; fldIdx < mFields.count(); ++fldIdx )
+  for ( QMap<int, int>::const_iterator it = mAttrIdxToOgrIdx.constBegin(); it != mAttrIdxToOgrIdx.constEnd(); ++it )
   {
-    if ( !mAttrIdxToOgrIdx.contains( fldIdx ) )
-    {
-      QgsDebugMsg( QString( "no ogr field for field %1" ).arg( fldIdx ) );
-      continue;
-    }
+    int fldIdx = it.key();
+    int ogrField = it.value();
 
     const QVariant& attrValue = feature.attribute( fldIdx );
-    int ogrField = mAttrIdxToOgrIdx[ fldIdx ];
 
     if ( !attrValue.isValid() || attrValue.isNull() )
       continue;
@@ -1950,6 +1946,16 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
   return poFeature;
 }
 
+void QgsVectorFileWriter::resetMap( const QgsAttributeList &attributes )
+{
+  QMap<int, int> omap( mAttrIdxToOgrIdx );
+  mAttrIdxToOgrIdx.clear();
+  for ( int i = 0; i < attributes.size(); i++ )
+  {
+    mAttrIdxToOgrIdx.insert( attributes[i], omap[i] );
+  }
+}
+
 bool QgsVectorFileWriter::writeFeature( OGRLayerH layer, OGRFeatureH feature )
 {
   if ( OGR_L_CreateFeature( layer, feature ) != OGRERR_NONE )
@@ -1998,7 +2004,8 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     const QgsRectangle* filterExtent,
     QgsWKBTypes::Type overrideGeometryType,
     bool forceMulti,
-    bool includeZ )
+    bool includeZ,
+    QgsAttributeList attributes )
 {
   QgsCoordinateTransform* ct = nullptr;
   if ( destCRS && layer )
@@ -2007,7 +2014,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   }
 
   QgsVectorFileWriter::WriterError error = writeAsVectorFormat( layer, fileName, fileEncoding, ct, driverName, onlySelected,
-      errorMessage, datasourceOptions, layerOptions, skipAttributeCreation, newFilename, symbologyExport, symbologyScale, filterExtent, overrideGeometryType, forceMulti, includeZ );
+      errorMessage, datasourceOptions, layerOptions, skipAttributeCreation, newFilename, symbologyExport, symbologyScale, filterExtent, overrideGeometryType, forceMulti, includeZ, attributes );
   delete ct;
   return error;
 }
@@ -2028,7 +2035,8 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     const QgsRectangle* filterExtent,
     QgsWKBTypes::Type overrideGeometryType,
     bool forceMulti,
-    bool includeZ )
+    bool includeZ,
+    QgsAttributeList attributes )
 {
   if ( !layer )
   {
@@ -2061,7 +2069,27 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     destWkbType = QgsWKBTypes::multiType( destWkbType );
   }
 
-  QgsFields fields = skipAttributeCreation ? QgsFields() : layer->fields();
+  if ( skipAttributeCreation )
+    attributes.clear();
+  else if ( attributes.isEmpty() )
+  {
+    Q_FOREACH ( int idx, layer->attributeList() )
+    {
+      const QgsField &fld = layer->fields()[idx];
+      if ( layer->providerType() == "oracle" && fld.typeName().contains( "SDO_GEOMETRY" ) )
+        continue;
+      attributes.append( idx );
+    }
+  }
+
+  QgsFields fields;
+  if ( !attributes.isEmpty() )
+  {
+    Q_FOREACH ( int attrIdx, attributes )
+    {
+      fields.append( layer->fields()[attrIdx] );
+    }
+  }
 
   if ( layer->providerType() == "ogr" && layer->dataProvider() )
   {
@@ -2116,6 +2144,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     new QgsVectorFileWriter( fileName, fileEncoding, fields, QGis::fromNewWkbType( destWkbType ), outputCRS, driverName, datasourceOptions, layerOptions, newFilename, symbologyExport );
   writer->setSymbologyScaleDenominator( symbologyScale );
 
+
   if ( newFilename )
   {
     QgsDebugMsg( "newFilename = " + *newFilename );
@@ -2136,18 +2165,17 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     errorMessage->clear();
   }
 
-  QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->attributeList();
   QgsFeature fet;
 
   //add possible attributes needed by renderer
-  writer->addRendererAttributes( layer, allAttr );
+  writer->addRendererAttributes( layer, attributes );
 
   QgsFeatureRequest req;
   if ( layer->wkbType() == QGis::WKBNoGeometry )
   {
     req.setFlags( QgsFeatureRequest::NoGeometry );
   }
-  req.setSubsetOfAttributes( allAttr );
+  req.setSubsetOfAttributes( attributes );
   if ( onlySelected )
     req.setFilterFids( layer->selectedFeaturesIds() );
   QgsFeatureIterator fit = layer->getFeatures( req );
@@ -2190,6 +2218,8 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     transactionsEnabled = false;
   }
 
+  writer->resetMap( attributes );
+
   // write all features
   while ( fit.nextFeature( fet ) )
   {
@@ -2219,7 +2249,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     if ( fet.constGeometry() && filterExtent && !fet.constGeometry()->intersects( *filterExtent ) )
       continue;
 
-    if ( allAttr.size() < 1 && skipAttributeCreation )
+    if ( attributes.size() < 1 && skipAttributeCreation )
     {
       fet.initAttributes( 0 );
     }

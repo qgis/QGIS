@@ -179,6 +179,7 @@ class CORE_EXPORT QgsVectorFileWriter
      * allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
      * @param forceMulti set to true to force creation of multi* geometries (added in QGIS 2.14)
      * @param includeZ set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
+     * @param attributes attributes to export (empty means all unless skipAttributeCreation is set)
      */
     static WriterError writeAsVectorFormat( QgsVectorLayer* layer,
                                             const QString& fileName,
@@ -196,14 +197,15 @@ class CORE_EXPORT QgsVectorFileWriter
                                             const QgsRectangle* filterExtent = nullptr,
                                             QgsWKBTypes::Type overrideGeometryType = QgsWKBTypes::Unknown,
                                             bool forceMulti = false,
-                                            bool includeZ = false
+                                            bool includeZ = false,
+                                            QgsAttributeList attributes = QgsAttributeList()
                                           );
 
     /** Writes a layer out to a vector file.
      * @param layer layer to write
      * @param fileName file name to write to
      * @param fileEncoding encoding to use
-     * @param ct
+     * @param ct pointer to coordinate transform to reproject exported geometries with
      * @param driverName OGR driver to use
      * @param onlySelected write only selected features of layer
      * @param errorMessage pointer to buffer fo error message
@@ -218,7 +220,8 @@ class CORE_EXPORT QgsVectorFileWriter
      * allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
      * @param forceMulti set to true to force creation of multi* geometries (added in QGIS 2.14)
      * @param includeZ set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
-     * @note added in v2.2
+     * @param attributes attributes to export (empty means all unless skipAttributeCreation is set)
+     * @note added in 2.2
      */
     static WriterError writeAsVectorFormat( QgsVectorLayer* layer,
                                             const QString& fileName,
@@ -236,7 +239,8 @@ class CORE_EXPORT QgsVectorFileWriter
                                             const QgsRectangle* filterExtent = nullptr,
                                             QgsWKBTypes::Type overrideGeometryType = QgsWKBTypes::Unknown,
                                             bool forceMulti = false,
-                                            bool includeZ = false
+                                            bool includeZ = false,
+                                            QgsAttributeList attributes = QgsAttributeList()
                                           );
 
     /** Create a new vector file writer */
@@ -356,6 +360,7 @@ class CORE_EXPORT QgsVectorFileWriter
 
   private:
     void init( QString vectorFileName, QString fileEncoding, const QgsFields& fields, QgsWKBTypes::Type geometryType, const QgsCoordinateReferenceSystem* srs, const QString& driverName, QStringList datasourceOptions, QStringList layerOptions, QString* newFilename );
+    void resetMap( const QgsAttributeList &attributes );
 
     QgsRenderContext mRenderContext;
 
