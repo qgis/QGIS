@@ -275,13 +275,20 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
       if ( fld.type() == QVariant::ByteArray && fld.typeName().endsWith( ".SDO_GEOMETRY" ) )
       {
         QByteArray *ba = static_cast<QByteArray*>( v.data() );
-        unsigned char *copy = new unsigned char[ba->size()];
-        memcpy( copy, ba->constData(), ba->size() );
+        if ( ba->size() > 0 )
+        {
+          unsigned char *copy = new unsigned char[ba->size()];
+          memcpy( copy, ba->constData(), ba->size() );
 
-        QgsGeometry *g = new QgsGeometry();
-        g->fromWkb( copy, ba->size() );
-        v = g->exportToWkt();
-        delete g;
+          QgsGeometry *g = new QgsGeometry();
+          g->fromWkb( copy, ba->size() );
+          v = g->exportToWkt();
+          delete g;
+        }
+        else
+        {
+          v = QVariant( QVariant::String );
+        }
       }
       else if ( v.type() != fld.type() )
         v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
