@@ -1,5 +1,5 @@
 /***************************************************************************
-   qgsextentroupboxplugin.h
+   qgsextentgroupboxplugin.h
     --------------------------------------
    Date                 : 28.07.2015
    Copyright            : (C) 2015 Denis Rouzaud
