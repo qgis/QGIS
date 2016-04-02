@@ -3,6 +3,7 @@ from lib2to3.fixer_util import Node, Leaf, syms, find_indentation
 
 import re
 
+
 class FixPrintWithImport(FixPrintWithImportOrig):
 
     def transform(self, node, results):
