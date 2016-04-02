@@ -54,13 +54,13 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " <a href=\"http://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui\">translator's page.</a>"
                       ) );
   addGuiTip( myTip );
-  myTip.setTitle( tr( "QGIS Mailing lists" ) );
+  myTip.setTitle( tr( "Getting Help With QGIS" ) );
   myTip.setContent( tr( "If you need help using QGIS"
                         " we have a 'users' mailing list where users help each other with issues"
-                        " related to using our software. We also have a 'developers' mailing list."
-                        " for those wanting help and to discuss things relating to the QGIS code base."
-                        " Details on how to subscribe are in the <a href=\"http://qgis.org/en/site/forusers/support.html#mailing-lists\">community section</a> of"
-                        " the QGIS home page."
+                        " related to using our software. We also have a 'developers' mailing list"
+                        " for those wanting help and discuss things relating to the QGIS code base."
+                        " Details on different means to get help are described in the"
+                        " <a href=\"http://qgis.org/en/site/forusers/support.html#mailing-lists\">community section</a> of the QGIS home page."
                       ) );
   addGuiTip( myTip );
   myTip.setTitle( tr( "Is it 'QGIS' or 'Quantum GIS'?" ) );
@@ -91,7 +91,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
                       ) );
   addGuiTip( myTip );
   myTip.setTitle( tr( "Moving Elements and Maps in the Print Composer" ) );
-  myTip.setContent( tr( "In the print composer tool bar you can find two buttons for moving"
+  myTip.setContent( tr( "In the print composer toolbar you can find two buttons for moving"
                         " elements. The left one (right arrow icon) selects and moves elements"
                         " in the layout. After selecting the element with this tool you can also"
                         " move them around with the arrow keys. For accurate positioning use the"
@@ -142,11 +142,9 @@ QgsTipFactory::QgsTipFactory() : QObject()
                       ) );
   addGuiTip( myTip );
   // by Tim
-  myTip.setTitle( tr( "Stopping rendering" ) );
+  myTip.setTitle( tr( "Disabling rendering" ) );
   myTip.setContent( tr( "Sometimes you have a very large dataset which takes ages"
-                        " to draw. You can press 'Esc' (the escape key), or click the 'Stop"
-                        " map rendering' icon in the status bar to the bottom of the window at any"
-                        " time to halt rendering. If you are going to be performing several"
+                        " to draw. If you are going to be performing several"
                         " actions (e.g. modifying symbology options) and wish to temporarily"
                         " disable map rendering while you do so, you can uncheck the 'Render'"
                         " checkbox in the bottom right of the status bar. Don't forget to check"
@@ -176,7 +174,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " have the financial ability to help, please consider sponsoring the"
                         " development of QGIS. We use money from sponsors to pay for"
                         " travel and costs related to our regular hackfest meetings, and to generally"
-                        " support the goals of our project. Please see the <a"
+                        " support the goals of our project. Please see the<a"
                         " href=\"http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html\">QGIS Sponsorship Web"
                         " Page</a> for more details."
                       ) );
@@ -194,7 +192,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   addGenericTip( myTip );
   // by yjacolin
   myTip.setTitle( tr( "Add an action to layer" ) );
-  myTip.setContent( tr( "Action in a layer allow user to trigger action when clicking on a geometry"
+  myTip.setContent( tr( "Action in a layer allows user to trigger action when clicking on a geometry"
                         " with 'Run Feature Action' tools."
                         "For example, you can open a HTML page using the field value of the geometry "
                         "as a parameter. Look at the <a href=\"http://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html?#actions-menu\">documentation</a>."
