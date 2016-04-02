@@ -144,6 +144,11 @@ class QgsWFSProvider : public QgsVectorDataProvider
      */
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
 
+    /**
+     * Returns feature datasource ID from the internal QGIS feature ID
+     */
+    virtual QVariant dataSourceFeatureId( const QgsFeatureId fid ) const override;
+
     /** Collects information about the field types. Is called internally from QgsWFSProvider ctor. The method delegates the work to request specific ones and gives back the name of the geometry attribute and the thematic attributes with their types*/
     int describeFeatureType( const QString& uri, QString& geometryAttribute,
                              QgsFields& fields, QGis::WkbType& geomType );

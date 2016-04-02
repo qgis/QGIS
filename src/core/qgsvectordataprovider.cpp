@@ -224,10 +224,15 @@ QString QgsVectorDataProvider::capabilitiesString() const
   return abilitiesList.join( ", " );
 }
 
-
 int QgsVectorDataProvider::fieldNameIndex( const QString& fieldName ) const
 {
   return fields().fieldNameIndex( fieldName );
+}
+
+QVariant QgsVectorDataProvider::dataSourceFeatureId( const QgsFeatureId fid ) const
+{
+  Q_UNUSED( fid );
+  return QVariant();
 }
 
 QMap<QString, int> QgsVectorDataProvider::fieldNameMap() const
