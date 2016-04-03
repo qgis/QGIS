@@ -78,7 +78,6 @@ class TestQgsVectorLayer(unittest.TestCase):
         assert len(features) > 0
 
         dest_file_name = os.path.join(str(QDir.tempPath()), 'datetime.shp')
-        print(dest_file_name)
         crs = QgsCoordinateReferenceSystem()
         crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
         write_result = QgsVectorFileWriter.writeAsVectorFormat(
@@ -134,7 +133,6 @@ class TestQgsVectorLayer(unittest.TestCase):
         assert len(features) > 0
 
         dest_file_name = os.path.join(str(QDir.tempPath()), 'datetime.tab')
-        print(dest_file_name)
         crs = QgsCoordinateReferenceSystem()
         crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
         write_result = QgsVectorFileWriter.writeAsVectorFormat(
@@ -191,7 +189,6 @@ class TestQgsVectorLayer(unittest.TestCase):
         # check with both a standard PointZ and 25d style Point25D type
         for t in [QgsWKBTypes.PointZ, QgsWKBTypes.Point25D]:
             dest_file_name = os.path.join(str(QDir.tempPath()), 'point_{}.shp'.format(QgsWKBTypes.displayString(t)))
-            print(dest_file_name)
             crs = QgsCoordinateReferenceSystem()
             crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
             write_result = QgsVectorFileWriter.writeAsVectorFormat(
@@ -215,7 +212,6 @@ class TestQgsVectorLayer(unittest.TestCase):
             #this tests that saving a layer with z WITHOUT explicitly telling the writer to keep z values,
             #will stay retain the z values
             dest_file_name = os.path.join(str(QDir.tempPath()), 'point_{}_copy.shp'.format(QgsWKBTypes.displayString(t)))
-            print(dest_file_name)
             crs = QgsCoordinateReferenceSystem()
             crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
             write_result = QgsVectorFileWriter.writeAsVectorFormat(
@@ -253,7 +249,6 @@ class TestQgsVectorLayer(unittest.TestCase):
         assert len(features) > 0
 
         dest_file_name = os.path.join(str(QDir.tempPath()), 'to_multi.shp')
-        print(dest_file_name)
         crs = QgsCoordinateReferenceSystem()
         crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
         write_result = QgsVectorFileWriter.writeAsVectorFormat(
@@ -272,6 +267,90 @@ class TestQgsVectorLayer(unittest.TestCase):
         wkt = g.exportToWkt()
         expWkt = 'MultiPoint ((1 2))'
         assert compareWkt(expWkt, wkt), "saving geometry with multi conversion failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+    def testWriteShapefileWithAttributeSubsets(self):
+        """Tests writing subsets of attributes to files."""
+        ml = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=id:int&field=field1:int&field=field2:int&field=field3:int'),
+            'test',
+            'memory')
+
+        assert ml is not None, 'Provider not initialized'
+        assert ml.isValid(), 'Source layer not valid'
+        provider = ml.dataProvider()
+        assert provider is not None
+
+        ft = QgsFeature()
+        ft.setGeometry(QgsGeometry.fromWkt('Point (1 2)'))
+        ft.setAttributes([1, 11, 12, 13])
+        res, features = provider.addFeatures([ft])
+        assert res
+        assert len(features) > 0
+
+        #first write out with all attributes
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'all_attributes.shp')
+        crs = QgsCoordinateReferenceSystem()
+        crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+            ml,
+            dest_file_name,
+            'utf-8',
+            crs,
+            'ESRI Shapefile',
+            attributes=[])
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+
+        # Open result and check
+        created_layer = QgsVectorLayer(u'{}|layerid=0'.format(dest_file_name), u'test', u'ogr')
+        self.assertEqual(created_layer.fields().count(), 4)
+        f = created_layer.getFeatures(QgsFeatureRequest()).next()
+        self.assertEqual(f['id'], 1)
+        self.assertEqual(f['field1'], 11)
+        self.assertEqual(f['field2'], 12)
+        self.assertEqual(f['field3'], 13)
+
+        #now test writing out only a subset of attributes
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'subset_attributes.shp')
+        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+            ml,
+            dest_file_name,
+            'utf-8',
+            crs,
+            'ESRI Shapefile',
+            attributes=[1, 3])
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+
+        # Open result and check
+        created_layer = QgsVectorLayer(u'{}|layerid=0'.format(dest_file_name), u'test', u'ogr')
+        self.assertEqual(created_layer.fields().count(), 2)
+        f = created_layer.getFeatures(QgsFeatureRequest()).next()
+        self.assertEqual(f['field1'], 11)
+        self.assertEqual(f['field3'], 13)
+
+        #finally test writing no attributes
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'subset_attributes.shp')
+        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+            ml,
+            dest_file_name,
+            'utf-8',
+            crs,
+            'ESRI Shapefile',
+            skipAttributeCreation=True)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+
+        # Open result and check
+        created_layer = QgsVectorLayer(u'{}|layerid=0'.format(dest_file_name), u'test', u'ogr')
+        # expect only a default 'FID' field for shapefiles
+        self.assertEqual(created_layer.fields().count(), 1)
+        self.assertEqual(created_layer.fields()[0].name(), 'FID')
+        # in this case we also check that the geometry exists, to make sure feature has been correctly written
+        # even without attributes
+        f = created_layer.getFeatures(QgsFeatureRequest()).next()
+        g = f.geometry()
+        wkt = g.exportToWkt()
+        expWkt = 'Point (1 2)'
+        assert compareWkt(expWkt, wkt), "geometry not saved correctly when saving without attributes : mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+        self.assertEqual(f['FID'], 0)
 
 
 if __name__ == '__main__':
