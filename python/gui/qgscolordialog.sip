@@ -114,11 +114,4 @@ class QgsColorDialogV2 : QDialog
 
     void closeEvent( QCloseEvent* e );
 
-    void mousePressEvent( QMouseEvent* e );
-
-    void mouseMoveEvent( QMouseEvent *e );
-
-    void mouseReleaseEvent( QMouseEvent *e );
-
-    void keyPressEvent( QKeyEvent *e );
 };
