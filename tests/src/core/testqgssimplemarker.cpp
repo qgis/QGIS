@@ -59,6 +59,9 @@ class TestQgsSimpleMarkerSymbol : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void simpleMarkerSymbol();
+    void simpleMarkerSymbolBevelJoin();
+    void simpleMarkerSymbolMiterJoin();
+    void simpleMarkerSymbolRoundJoin();
     void bounds();
 
   private:
@@ -138,6 +141,45 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbol()
   mSimpleMarkerLayer->setSize( 5 );
   mSimpleMarkerLayer->setOutlineWidth( 1 );
   QVERIFY( imageCheck( "simplemarker" ) );
+}
+
+void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolBevelJoin()
+{
+  mReport += "<h2>Simple marker symbol layer test</h2>\n";
+
+  mSimpleMarkerLayer->setColor( Qt::blue );
+  mSimpleMarkerLayer->setBorderColor( Qt::black );
+  mSimpleMarkerLayer->setName( "triangle" );
+  mSimpleMarkerLayer->setSize( 25 );
+  mSimpleMarkerLayer->setOutlineWidth( 3 );
+  mSimpleMarkerLayer->setPenJoinStyle( Qt::BevelJoin );
+  QVERIFY( imageCheck( "simplemarker_beveljoin" ) );
+}
+
+void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolMiterJoin()
+{
+  mReport += "<h2>Simple marker symbol layer test</h2>\n";
+
+  mSimpleMarkerLayer->setColor( Qt::blue );
+  mSimpleMarkerLayer->setBorderColor( Qt::black );
+  mSimpleMarkerLayer->setName( "triangle" );
+  mSimpleMarkerLayer->setSize( 25 );
+  mSimpleMarkerLayer->setOutlineWidth( 3 );
+  mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
+  QVERIFY( imageCheck( "simplemarker_miterjoin" ) );
+}
+
+void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolRoundJoin()
+{
+  mReport += "<h2>Simple marker symbol layer test</h2>\n";
+
+  mSimpleMarkerLayer->setColor( Qt::blue );
+  mSimpleMarkerLayer->setBorderColor( Qt::black );
+  mSimpleMarkerLayer->setName( "triangle" );
+  mSimpleMarkerLayer->setSize( 25 );
+  mSimpleMarkerLayer->setOutlineWidth( 3 );
+  mSimpleMarkerLayer->setPenJoinStyle( Qt::RoundJoin );
+  QVERIFY( imageCheck( "simplemarker_roundjoin" ) );
 }
 
 void TestQgsSimpleMarkerSymbol::bounds()

@@ -48,8 +48,9 @@ static void _fixQPictureDPI( QPainter* p )
 
 //////
 
-QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( const QString& name, const QColor& color, const QColor& borderColor, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod )
-    : mOutlineStyle( Qt::SolidLine ), mOutlineWidth( 0 ), mOutlineWidthUnit( QgsSymbolV2::MM )
+QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( const QString& name, const QColor& color, const QColor& borderColor, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod,
+    Qt::PenJoinStyle penJoinStyle )
+    : mOutlineStyle( Qt::SolidLine ), mOutlineWidth( 0 ), mOutlineWidthUnit( QgsSymbolV2::MM ), mPenJoinStyle( penJoinStyle )
 {
   mName = name;
   mColor = color;
@@ -68,6 +69,7 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
   QString name = DEFAULT_SIMPLEMARKER_NAME;
   QColor color = DEFAULT_SIMPLEMARKER_COLOR;
   QColor borderColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR;
+  Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE;
   double size = DEFAULT_SIMPLEMARKER_SIZE;
   double angle = DEFAULT_SIMPLEMARKER_ANGLE;
   QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD;
@@ -89,6 +91,10 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
   {
     borderColor = QgsSymbolLayerV2Utils::decodeColor( props["line_color"] );
   }
+  if ( props.contains( "joinstyle" ) )
+  {
+    penJoinStyle = QgsSymbolLayerV2Utils::decodePenJoinStyle( props["joinstyle"] );
+  }
   if ( props.contains( "size" ) )
     size = props["size"].toDouble();
   if ( props.contains( "angle" ) )
@@ -96,7 +102,7 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
   if ( props.contains( "scale_method" ) )
     scaleMethod = QgsSymbolLayerV2Utils::decodeScaleMethod( props["scale_method"] );
 
-  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( name, color, borderColor, size, angle, scaleMethod );
+  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( name, color, borderColor, size, angle, scaleMethod, penJoinStyle );
   if ( props.contains( "offset" ) )
     m->setOffset( QgsSymbolLayerV2Utils::decodePoint( props["offset"] ) );
   if ( props.contains( "offset_unit" ) )
@@ -168,6 +174,7 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   mBrush = QBrush( brushColor );
   mPen = QPen( penColor );
   mPen.setStyle( mOutlineStyle );
+  mPen.setJoinStyle( mPenJoinStyle );
   mPen.setWidthF( QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), mOutlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
 
   QColor selBrushColor = context.renderContext().selectionColor();
@@ -190,8 +197,8 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   // - drawing to screen (not printer)
   mUsingCache = !hasDataDefinedRotation && !hasDataDefinedSize && !context.renderContext().forceVectorOutput()
                 && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR_BORDER )
-                && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_STYLE ) &&
-                !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE );
+                && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_STYLE )
+                && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_JOIN_STYLE ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE );
 
   // use either QPolygonF or QPainterPath for drawing
   // TODO: find out whether drawing directly doesn't bring overhead - if not, use it for all shapes
@@ -259,7 +266,7 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareCache( QgsSymbolV2RenderContext& conte
   double scaledSize = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), mSize, mSizeUnit, mSizeMapUnitScale );
 
   // calculate necessary image size for the cache
-  double pw = (( qgsDoubleNear( mPen.widthF(), 0.0 ) ? 1 : mPen.widthF() ) + 1 ) / 2 * 2;  // make even (round up); handle cosmetic pen
+  double pw = qRound((( qgsDoubleNear( mPen.widthF(), 0.0 ) ? 1 : mPen.widthF() * 4 ) + 1 ) ) / 2 * 2; // make even (round up); handle cosmetic pen
   int imageSize = ( static_cast< int >( scaledSize ) + pw ) / 2 * 2 + 1; //  make image width, height odd; account for pen width
   double center = imageSize / 2.0;
 
@@ -560,6 +567,16 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( QPointF point, QgsSymbolV2Render
         mSelPen.setStyle( QgsSymbolLayerV2Utils::decodePenStyle( outlineStyle ) );
       }
     }
+    if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_JOIN_STYLE ) )
+    {
+      context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenJoinStyle( mPenJoinStyle ) );
+      QString style = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_JOIN_STYLE, context, QVariant(), &ok ).toString();
+      if ( ok )
+      {
+        mPen.setJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( style ) );
+        mSelPen.setJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( style ) );
+      }
+    }
 
     p->setBrush( context.selected() ? mSelBrush : mBrush );
     p->setPen( context.selected() ? mSelPen : mPen );
@@ -664,6 +681,7 @@ QgsStringMap QgsSimpleMarkerSymbolLayerV2::properties() const
   map["outline_width"] = QString::number( mOutlineWidth );
   map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
   map["outline_width_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOutlineWidthMapUnitScale );
+  map["joinstyle"] = QgsSymbolLayerV2Utils::encodePenJoinStyle( mPenJoinStyle );
   map["horizontal_anchor_point"] = QString::number( mHorizontalAnchorPoint );
   map["vertical_anchor_point"] = QString::number( mVerticalAnchorPoint );
 
@@ -675,7 +693,7 @@ QgsStringMap QgsSimpleMarkerSymbolLayerV2::properties() const
 
 QgsSimpleMarkerSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::clone() const
 {
-  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( mName, mColor, mBorderColor, mSize, mAngle, mScaleMethod );
+  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( mName, mColor, mBorderColor, mSize, mAngle, mScaleMethod, mPenJoinStyle );
   m->setOffset( mOffset );
   m->setSizeUnit( mSizeUnit );
   m->setSizeMapUnitScale( mSizeMapUnitScale );

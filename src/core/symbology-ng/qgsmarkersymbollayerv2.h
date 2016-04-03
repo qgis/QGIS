@@ -22,6 +22,7 @@
 #define DEFAULT_SIMPLEMARKER_NAME         "circle"
 #define DEFAULT_SIMPLEMARKER_COLOR        QColor(255,0,0)
 #define DEFAULT_SIMPLEMARKER_BORDERCOLOR  QColor(0,0,0)
+#define DEFAULT_SIMPLEMARKER_JOINSTYLE    Qt::BevelJoin
 #define DEFAULT_SIMPLEMARKER_SIZE         DEFAULT_POINT_SIZE
 #define DEFAULT_SIMPLEMARKER_ANGLE        0
 
@@ -34,12 +35,24 @@
 class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 {
   public:
+    /** Constructor for QgsSimpleMarkerSymbolLayerV2.
+    * @param name symbol name, should be one of "square", "rectangle", "diamond",
+    * "pentagon", "triangle", "equilateral_triangle", "star", "regular_star", "arrow",
+    *  "circle", "cross", "cross2", "line", "x", "arrowhead", "filled_arrowhead"
+    * @param color fill color for symbol
+    * @param borderColor border color for symbol
+    * @param size symbol size (in mm)
+    * @param angle symbol rotation angle
+    * @param scaleMethod scaling method for data defined scaling
+    * @param penJoinStyle join style for outline pen
+    */
     QgsSimpleMarkerSymbolLayerV2( const QString& name = DEFAULT_SIMPLEMARKER_NAME,
                                   const QColor& color = DEFAULT_SIMPLEMARKER_COLOR,
                                   const QColor& borderColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
                                   double size = DEFAULT_SIMPLEMARKER_SIZE,
                                   double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                  QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+                                  QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
+                                  Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE );
 
     // static stuff
 
@@ -70,8 +83,19 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QColor borderColor() const { return mBorderColor; }
     void setBorderColor( const QColor& color ) { mBorderColor = color; }
 
+    /** Get outline join style.
+     * @note added in 2.4 */
     Qt::PenStyle outlineStyle() const { return mOutlineStyle; }
+    /** Set outline join style.
+     * @note added in 2.4 */
     void setOutlineStyle( Qt::PenStyle outlineStyle ) { mOutlineStyle = outlineStyle; }
+
+    /** Get outline join style.
+     * @note added in 2.16 */
+    Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
+    /** Set outline join style.
+     * @note added in 2.16 */
+    void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 
     /** Get outline color.
      * @note added in 2.1 */
@@ -122,6 +146,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     double mOutlineWidth;
     QgsSymbolV2::OutputUnit mOutlineWidthUnit;
     QgsMapUnitScale mOutlineWidthMapUnitScale;
+    Qt::PenJoinStyle mPenJoinStyle;
     QPen mPen;
     QBrush mBrush;
     QPolygonF mPolygon;

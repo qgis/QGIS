@@ -455,6 +455,7 @@ QgsSimpleMarkerSymbolLayerV2Widget::QgsSimpleMarkerSymbolLayerV2Widget( const Qg
   connect( lstNames, SIGNAL( currentRowChanged( int ) ), this, SLOT( setName() ) );
   connect( btnChangeColorBorder, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColorBorder( const QColor& ) ) );
   connect( btnChangeColorFill, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColorFill( const QColor& ) ) );
+  connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penJoinStyleChanged() ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize() ) );
   connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setAngle() ) );
   connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
@@ -503,6 +504,9 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   mOutlineWidthSpinBox->blockSignals( true );
   mOutlineWidthSpinBox->setValue( mLayer->outlineWidth() );
   mOutlineWidthSpinBox->blockSignals( false );
+  cboJoinStyle->blockSignals( true );
+  cboJoinStyle->setPenJoinStyle( mLayer->penJoinStyle() );
+  cboJoinStyle->blockSignals( false );
 
   // without blocking signals the value gets changed because of slot setOffset()
   spinOffsetX->blockSignals( true );
@@ -542,6 +546,7 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   registerDataDefinedButton( mBorderColorDDBtn, "color_border", QgsDataDefinedButton::String, QgsDataDefinedButton::colorAlphaDesc() );
   registerDataDefinedButton( mOutlineWidthDDBtn, "outline_width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
   registerDataDefinedButton( mOutlineStyleDDBtn, "outline_style", QgsDataDefinedButton::String, QgsDataDefinedButton::lineStyleDesc() );
+  registerDataDefinedButton( mJoinStyleDDBtn, "join_style", QgsDataDefinedButton::String, QgsDataDefinedButton::penJoinStyleDesc() );
   registerDataDefinedButton( mSizeDDBtn, "size", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
   registerDataDefinedButton( mAngleDDBtn, "angle", QgsDataDefinedButton::Double, QgsDataDefinedButton::double180RotDesc() );
   registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::String, QgsDataDefinedButton::doubleXYDesc() );
@@ -571,6 +576,12 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setColorBorder( const QColor& color )
 void QgsSimpleMarkerSymbolLayerV2Widget::setColorFill( const QColor& color )
 {
   mLayer->setColor( color );
+  emit changed();
+}
+
+void QgsSimpleMarkerSymbolLayerV2Widget::penJoinStyleChanged()
+{
+  mLayer->setPenJoinStyle( cboJoinStyle->penJoinStyle() );
   emit changed();
 }
 
