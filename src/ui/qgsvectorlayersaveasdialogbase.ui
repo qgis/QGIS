@@ -71,7 +71,7 @@
        </widget>
       </item>
       <item row="2" column="1" colspan="2">
-       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
+       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>
         </property>
@@ -89,9 +89,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>553</width>
-        <height>548</height>
+        <y>-427</y>
+        <width>555</width>
+        <height>899</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -130,12 +130,18 @@
          <property name="checked">
           <bool>false</bool>
          </property>
-         <property name="collapsed">
+         <property name="collapsed" stdset="0">
           <bool>true</bool>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
            <widget class="QTableWidget" name="mAttributeTable">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>200</height>
+             </size>
+            </property>
             <property name="rowCount">
              <number>1</number>
             </property>
@@ -288,7 +294,7 @@
          <property name="title">
           <string>Custom Options</string>
          </property>
-         <property name="collapsed">
+         <property name="collapsed" stdset="0">
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
@@ -426,6 +432,9 @@
   <tabstop>mEncodingComboBox</tabstop>
   <tabstop>mSelectedOnly</tabstop>
   <tabstop>mAttributesSelection</tabstop>
+  <tabstop>mAttributeTable</tabstop>
+  <tabstop>mSelectAllAttributes</tabstop>
+  <tabstop>mDeselectAllAttributes</tabstop>
   <tabstop>mAddToCanvas</tabstop>
   <tabstop>mSymbologyExportComboBox</tabstop>
   <tabstop>mScaleSpinBox</tabstop>
@@ -434,7 +443,6 @@
   <tabstop>mIncludeZCheckBox</tabstop>
   <tabstop>mOgrDatasourceOptions</tabstop>
   <tabstop>mOgrLayerOptions</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
