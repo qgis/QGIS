@@ -211,6 +211,7 @@ SET(QGIS_GUI_SRCS
   qgsformannotationitem.cpp
   qgsgenericprojectionselector.cpp
   qgsgeometryrubberband.cpp
+  qgsgradientstopeditor.cpp
   qgsgroupwmsdatadialog.cpp
   qgshighlight.cpp
   qgshistogramwidget.cpp
@@ -355,6 +356,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfocuswatcher.h
   qgsformannotationitem.h
   qgsgenericprojectionselector.h
+  qgsgradientstopeditor.h
   qgsgroupwmsdatadialog.h
   qgshistogramwidget.h
   qgshtmlannotationitem.h

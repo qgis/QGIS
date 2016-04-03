@@ -235,6 +235,19 @@ void QgsVectorGradientColorRampV2::convertToDiscrete( bool discrete )
   mDiscrete = discrete;
 }
 
+bool stopLessThan( const QgsGradientStop &s1, const QgsGradientStop &s2 )
+{
+  return s1.offset < s2.offset;
+}
+
+void QgsVectorGradientColorRampV2::setStops( const QgsGradientStopsList &stops )
+{
+  mStops = stops;
+
+  //sort stops by offset
+  qSort( mStops.begin(), mStops.end(), stopLessThan );
+}
+
 void QgsVectorGradientColorRampV2::addStopsToGradient( QGradient* gradient, double alpha )
 {
   //copy color ramp stops to a QGradient
