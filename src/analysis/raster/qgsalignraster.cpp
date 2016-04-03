@@ -477,7 +477,7 @@ bool QgsAlignRaster::createAndWarp( const Item& raster )
     psWarpOptions->panDstBands[i] = i + 1;
   }
 
-  psWarpOptions->eResampleAlg = ( GDALResampleAlg ) raster.resampleMethod;
+  psWarpOptions->eResampleAlg = static_cast< GDALResampleAlg >( raster.resampleMethod );
 
   // our progress function
   psWarpOptions->pfnProgress = _progress;

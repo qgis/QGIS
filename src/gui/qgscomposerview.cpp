@@ -372,7 +372,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
           if (( item->type() == QgsComposerItem::ComposerPolygon
                 || item->type() == QgsComposerItem::ComposerPolyline ) )
           {
-            QgsComposerNodesItem* itemP = dynamic_cast<QgsComposerNodesItem *>( item );
+            QgsComposerNodesItem* itemP = static_cast<QgsComposerNodesItem *>( item );
             int index = itemP->nodeAtPosition( scenePoint );
             if ( index != -1 )
             {
