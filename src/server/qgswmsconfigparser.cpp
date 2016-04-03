@@ -393,6 +393,7 @@ QgsVectorLayer* QgsWMSConfigParser::createHighlightLayer( int i, const QString& 
         fet.setAttribute( 3, "Center" );
         fet.setAttribute( 4, "Half" );
       }
+      delete point;
     }
 
     layer->setCustomProperty( "labeling/fieldName", "label" );
