@@ -51,7 +51,7 @@
    <extends>QDoubleSpinBox</extends>
    <header>qgis.gui</header>
    <container>1</container>
-  </customwidget> 
+  </customwidget>
  </customwidgets>
  <resources/>
  <connections/>
