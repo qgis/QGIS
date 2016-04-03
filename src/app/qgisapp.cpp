@@ -1551,16 +1551,6 @@ void QgisApp::createActions()
   mActionAddPgLayer = 0;
 #endif
 
-#ifndef HAVE_MSSQL
-  delete mActionAddMssqlLayer;
-  mActionAddMssqlLayer = 0;
-#endif
-
-#ifndef HAVE_DB2
-  delete mActionAddDb2Layer;
-  mActionAddDb2Layer = 0;
-#endif
-
 #ifndef HAVE_ORACLE
   delete mActionAddOracleLayer;
   mActionAddOracleLayer = nullptr;
@@ -2224,12 +2214,8 @@ void QgisApp::setTheme( const QString& theThemeName )
 #endif
   mActionNewSpatiaLiteLayer->setIcon( QgsApplication::getThemeIcon( "/mActionNewSpatiaLiteLayer.svg" ) );
   mActionAddSpatiaLiteLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddSpatiaLiteLayer.svg" ) );
-#ifdef HAVE_MSSQL
   mActionAddMssqlLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddMssqlLayer.svg" ) );
-#endif
-#ifdef HAVE_DB2
   mActionAddDb2Layer->setIcon( QgsApplication::getThemeIcon( "/mActionAddDb2Layer.svg" ) );
-#endif
 #ifdef HAVE_ORACLE
   mActionAddOracleLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddOracleLayer.svg" ) );
 #endif
@@ -3866,7 +3852,6 @@ void QgisApp::replaceSelectedVectorLayer( const QString& oldId, const QString& u
 
 void QgisApp::addMssqlLayer()
 {
-#ifdef HAVE_MSSQL
   // show the MSSQL dialog
   QDialog *dbs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( "mssql", this ) );
   if ( !dbs )
@@ -3878,12 +3863,10 @@ void QgisApp::addMssqlLayer()
            this, SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
   dbs->exec();
   delete dbs;
-#endif
 } // QgisApp::addMssqlLayer()
 
 void QgisApp::addDb2Layer()
 {
-#ifdef HAVE_DB2
   // show the DB2 dialog
   QgsDebugMsg( "Show dialog for DB2 " );
   QDialog *dbs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( "DB2", this ) );
@@ -3896,7 +3879,6 @@ void QgisApp::addDb2Layer()
            this, SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
   dbs->exec();
   delete dbs;
-#endif
 } // QgisApp::addDb2Layer()
 
 void QgisApp::addOracleLayer()

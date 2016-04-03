@@ -717,14 +717,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void addSelectedVectorLayer( const QString& uri, const QString& layerName, const QString& provider );
     //! Replace the selected layer by a vector layer defined by uri, layer name, data source uri
     void replaceSelectedVectorLayer( const QString& oldId, const QString& uri, const QString& layerName, const QString& provider );
-    //#ifdef HAVE_MSSQL
     //! Add a MSSQL layer to the map
     void addMssqlLayer();
-    //#endif
-    //#ifdef HAVE_DB2
     //! Add a DB2 layer to the map
     void addDb2Layer();
-    //#endif
     //#ifdef HAVE_ORACLE
     //! Add a Oracle layer to the map
     void addOracleLayer();
