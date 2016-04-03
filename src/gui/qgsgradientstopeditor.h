@@ -81,6 +81,10 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
      */
     void setSelectedStopOffset( double offset );
 
+
+
+    void setSelectedStopDetails( const QColor& color, double offset );
+
     /** Deletes the current selected stop. This slot has no effect if either the
      * first or last stop is selected, as they cannot be deleted.
      */

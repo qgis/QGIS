@@ -184,6 +184,27 @@ void QgsGradientStopEditor::setSelectedStopOffset( double offset )
   }
 }
 
+void QgsGradientStopEditor::setSelectedStopDetails( const QColor &color, double offset )
+{
+  if ( mSelectedStop > 0 && mSelectedStop < mGradient.count() - 1 )
+  {
+    mStops[ mSelectedStop - 1 ].color = color;
+    mStops[ mSelectedStop - 1 ].offset = offset;
+    mGradient.setStops( mStops );
+  }
+  else if ( mSelectedStop == 0 )
+  {
+    mGradient.setColor1( color );
+  }
+  else
+  {
+    mGradient.setColor2( color );
+  }
+
+  update();
+  emit changed();
+}
+
 void QgsGradientStopEditor::deleteSelectedStop()
 {
   if ( selectedStopIsMovable() )

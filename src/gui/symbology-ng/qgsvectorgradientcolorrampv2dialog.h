@@ -21,6 +21,11 @@
 #include "ui_qgsvectorgradientcolorrampv2dialogbase.h"
 
 class QgsVectorGradientColorRampV2;
+class QwtPlot;
+class QwtPlotCurve;
+class QwtPlotMarker;
+class QwtPlotPicker;
+class QgsGradientPlotEventFilter;
 
 class GUI_EXPORT QgsVectorGradientColorRampV2Dialog : public QDialog, private Ui::QgsVectorGradientColorRampV2DialogBase
 {
@@ -28,6 +33,7 @@ class GUI_EXPORT QgsVectorGradientColorRampV2Dialog : public QDialog, private Ui
 
   public:
     QgsVectorGradientColorRampV2Dialog( QgsVectorGradientColorRampV2* ramp, QWidget* parent = nullptr );
+    ~QgsVectorGradientColorRampV2Dialog();
 
   public slots:
     void setColor1( const QColor& color );
@@ -48,7 +54,60 @@ class GUI_EXPORT QgsVectorGradientColorRampV2Dialog : public QDialog, private Ui
     void selectedStopChanged( const QgsGradientStop& stop );
     void colorWidgetChanged( const QColor& color );
     void on_mPositionSpinBox_valueChanged( double val );
+    void on_mPlotHueCheckbox_toggled( bool checked );
+    void on_mPlotLightnessCheckbox_toggled( bool checked );
+    void on_mPlotSaturationCheckbox_toggled( bool checked );
+    void on_mPlotAlphaCheckbox_toggled( bool checked );
+    void plotMousePress( QPointF point );
+    void plotMouseRelease( QPointF point );
+    void plotMouseMove( QPointF point );
 
+  private:
+
+    QwtPlotCurve* mLightnessCurve;
+    QwtPlotCurve* mSaturationCurve;
+    QwtPlotCurve* mHueCurve;
+    QwtPlotCurve* mAlphaCurve;
+    QList< QwtPlotMarker* > mMarkers;
+    QwtPlotPicker* mPicker;
+    QgsGradientPlotEventFilter* mPlotFilter;
+    int mCurrentPlotColorComponent;
+    int mCurrentPlotMarkerIndex;
+
+    void updatePlot();
+    void addPlotMarker( double x, double y, const QColor &color, bool isSelected = false );
+    void addMarkersForColor( double x, const QColor &color, bool isSelected = false );
 };
+
+
+//
+// NOTE:
+// For private only, not part of stable api or exposed to Python bindings
+//
+/// @cond PRIVATE
+class GUI_EXPORT QgsGradientPlotEventFilter: public QObject
+{
+    Q_OBJECT
+
+  public:
+
+    QgsGradientPlotEventFilter( QwtPlot *plot );
+
+    virtual ~QgsGradientPlotEventFilter() {}
+
+    virtual bool eventFilter( QObject* object, QEvent* event ) override;
+
+  signals:
+
+    void mousePress( QPointF );
+    void mouseRelease( QPointF );
+    void mouseMove( QPointF );
+
+  private:
+
+    QwtPlot* mPlot;
+    QPointF mapPoint( QPointF point ) const;
+};
+///@endcond
 
 #endif
