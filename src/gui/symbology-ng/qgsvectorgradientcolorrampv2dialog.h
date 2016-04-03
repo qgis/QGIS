@@ -33,29 +33,22 @@ class GUI_EXPORT QgsVectorGradientColorRampV2Dialog : public QDialog, private Ui
     void setColor1( const QColor& color );
     void setColor2( const QColor& color );
 
-    void toggledStops( bool on );
-    void addStop();
-    void removeStop();
-
-    void stopDoubleClicked( QTreeWidgetItem* item, int column );
-    void setItemStopColor( const QColor& newColor );
-
   protected slots:
     void on_cboType_currentIndexChanged( int index );
     void on_btnInformation_pressed();
 
   protected:
-
-    void updateStops();
-    void updatePreview();
-    void setStopColor( QTreeWidgetItem* item, const QColor& color );
-
     QgsVectorGradientColorRampV2* mRamp;
 
-    static const int StopColorRole = Qt::UserRole + 1;
-    static const int StopOffsetRole = Qt::UserRole + 2;
+  private slots:
 
-    QTreeWidgetItem* mCurrentItem;
+    void updateRampFromStopEditor();
+    void updateColorButtons();
+    void updateStopEditor();
+    void selectedStopChanged( const QgsGradientStop& stop );
+    void colorWidgetChanged( const QColor& color );
+    void on_mPositionSpinBox_valueChanged( double val );
+
 };
 
 #endif
