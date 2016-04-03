@@ -105,6 +105,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     QgsAttributeEditorContainer( const QString& name, QObject *parent )
         : QgsAttributeEditorElement( AeTypeContainer, name, parent )
         , mIsGroupBox( true )
+        , mColumnCount( 1 )
     {}
 
     //! Destructor

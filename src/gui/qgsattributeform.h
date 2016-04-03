@@ -187,6 +187,12 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     struct WidgetInfo
     {
+      WidgetInfo()
+          : widget( nullptr )
+          , labelOnTop( false )
+          , labelAlignRight( false )
+      {}
+
       QWidget* widget;
       QString labelText;
       bool labelOnTop;
