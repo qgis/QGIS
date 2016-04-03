@@ -405,9 +405,9 @@ class ProviderTestCase(object):
 
         for field_to_fetch in ['pk', 'cnt', 'name', 'name2']:
             for f in self.provider.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([field_to_fetch], self.provider.fields())):
-                # Check that all other fields are NULL
-                for other_field in [field.name() for field in self.provider.fields() if field.name() != field_to_fetch]:
-                    if other_field == 'pk':
+                # Check that all other fields are NULL and force name to lower-case
+                for other_field in [field.name() for field in self.provider.fields() if field.name().lower() != field_to_fetch]:
+                    if other_field == 'pk' or other_field == 'PK':
                         # skip checking the primary key field, as it may be validly fetched by providers to use as feature id
                         continue
                     self.assertEqual(f[other_field], NULL, 'Value for field "{}" was present when it should not have been fetched by request'.format(other_field))

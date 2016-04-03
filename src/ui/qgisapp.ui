@@ -148,6 +148,7 @@
      <addaction name="mActionAddPgLayer"/>
      <addaction name="mActionAddSpatiaLiteLayer"/>
      <addaction name="mActionAddMssqlLayer"/>
+     <addaction name="mActionAddDb2Layer"/>	 
      <addaction name="mActionAddOracleLayer"/>
      <addaction name="mActionAddWmsLayer"/>
      <addaction name="mActionAddLayerSeparator"/>
@@ -339,6 +340,7 @@
    <addaction name="mActionAddPgLayer"/>
    <addaction name="mActionAddSpatiaLiteLayer"/>
    <addaction name="mActionAddMssqlLayer"/>
+   <addaction name="mActionAddDb2Layer"/>  
    <addaction name="mActionAddOracleLayer"/>
    <addaction name="mActionAddWmsLayer"/>
    <addaction name="mActionAddWcsLayer"/>
@@ -1337,6 +1339,18 @@
     <string>Ctrl+Shift+M</string>
    </property>
   </action>
+  <action name="mActionAddDb2Layer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddDb2Layer.svg</normaloff>:/images/themes/default/mActionAddDb2Layer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add DB2 Spatial Layer...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+2</string>
+   </property>
+  </action>  
   <action name="mActionAddOracleLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">

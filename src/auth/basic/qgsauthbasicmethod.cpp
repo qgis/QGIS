@@ -33,6 +33,7 @@ QgsAuthBasicMethod::QgsAuthBasicMethod()
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceURI );
   setDataProviders( QStringList()
                     << "postgres"
+                    << "db2"
                     << "ows"
                     << "wfs"  // convert to lowercase
                     << "wcs"
