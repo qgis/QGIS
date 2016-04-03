@@ -181,6 +181,7 @@ SET(QGIS_GUI_SRCS
   qgscomposeritemcombobox.cpp
   qgscomposerruler.cpp
   qgscomposerview.cpp
+  qgscompoundcolorwidget.cpp
   qgscredentialdialog.cpp
   qgscursors.cpp
   qgsdatadefinedbutton.cpp
@@ -329,6 +330,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgscomposeritemcombobox.h
   qgscomposerruler.h
   qgscomposerview.h
+  qgscompoundcolorwidget.h
   qgscredentialdialog.h
   qgsdatadefinedbutton.h
   qgsdatumtransformdialog.h

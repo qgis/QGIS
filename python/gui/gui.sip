@@ -53,6 +53,7 @@
 %Include qgscomposeritemcombobox.sip
 %Include qgscomposerruler.sip
 %Include qgscomposerview.sip
+%Include qgscompoundcolorwidget.sip
 %Include qgscredentialdialog.sip
 %Include qgsdatadefinedbutton.sip
 %Include qgsdetaileditemdata.sip
