@@ -475,7 +475,7 @@ QgsDb2LayerItem::QgsDb2LayerItem( QgsDataItem* parent, QString name, QString pat
     : QgsLayerItem( parent, name, path, QString(), layerType, PROVIDER_KEY )
     , mLayerProperty( layerProperty )
 {
-  QgsDebugMsg( "new db2 layer created : " + layerType );
+  QgsDebugMsg( QString( "new db2 layer created : %1" ).arg( layerType ) );
   mUri = createUri();
   setState( Populated );
 }
