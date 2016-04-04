@@ -36,18 +36,18 @@ QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2()
     , mSymbolHeightUnit( QgsSymbolV2::MM )
     , mOutlineColor( Qt::black )
     , mOutlineStyle( Qt::SolidLine )
+    , mPenJoinStyle( DEFAULT_ELLIPSE_JOINSTYLE )
     , mOutlineWidth( 0 )
     , mOutlineWidthUnit( QgsSymbolV2::MM )
 {
   mColor = Qt::white;
   mPen.setColor( mOutlineColor );
   mPen.setStyle( mOutlineStyle );
+  mPen.setJoinStyle( mPenJoinStyle );
   mPen.setWidth( 1.0 );
-  mPen.setJoinStyle( Qt::MiterJoin );
   mBrush.setColor( mColor );
   mBrush.setStyle( Qt::SolidPattern );
   mOffset = QPointF( 0, 0 );
-
   mAngle = 0;
 }
 
@@ -97,6 +97,10 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
   else if ( properties.contains( "line_style" ) )
   {
     layer->setOutlineStyle( QgsSymbolLayerV2Utils::decodePenStyle( properties["line_style"] ) );
+  }
+  if ( properties.contains( "joinstyle" ) )
+  {
+    layer->setPenJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( properties["joinstyle"] ) );
   }
   if ( properties.contains( "outline_width" ) )
   {
@@ -224,6 +228,15 @@ void QgsEllipseSymbolLayerV2::renderPoint( QPointF point, QgsSymbolV2RenderConte
       mPen.setStyle( style );
     }
   }
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_JOIN_STYLE ) )
+  {
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenJoinStyle( mPenJoinStyle ) );
+    QString style = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_JOIN_STYLE, context, QVariant(), &ok ).toString();
+    if ( ok )
+    {
+      mPen.setJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( style ) );
+    }
+  }
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL_COLOR ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( mColor ) );
@@ -337,6 +350,7 @@ void QgsEllipseSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
   }
   mPen.setColor( mOutlineColor );
   mPen.setStyle( mOutlineStyle );
+  mPen.setJoinStyle( mPenJoinStyle );
   mPen.setWidthF( QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), mOutlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
   mBrush.setColor( mColor );
   prepareExpressions( context );
@@ -481,6 +495,7 @@ QgsStringMap QgsEllipseSymbolLayerV2::properties() const
   map["outline_width"] = QString::number( mOutlineWidth );
   map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
   map["outline_width_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOutlineWidthMapUnitScale );
+  map["joinstyle"] = QgsSymbolLayerV2Utils::encodePenJoinStyle( mPenJoinStyle );
   map["color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
   map["outline_color"] = QgsSymbolLayerV2Utils::encodeColor( mOutlineColor );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
