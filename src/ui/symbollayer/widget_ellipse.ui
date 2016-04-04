@@ -26,7 +26,17 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="1">
+     <item row="2" column="0">
+      <widget class="QLabel" name="mSymbolHeightLabel">
+       <property name="text">
+        <string>Symbol height</string>
+       </property>
+       <property name="buddy">
+        <cstring>mHeightSpinBox</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_6">
        <item>
         <widget class="QComboBox" name="mHorizontalAnchorComboBox">
@@ -82,7 +92,7 @@
        </item>
       </layout>
      </item>
-     <item row="7" column="0">
+     <item row="8" column="0">
       <widget class="QLabel" name="mAnchorPointLabel">
        <property name="text">
         <string>Anchor point</string>
@@ -92,7 +102,7 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="0">
+     <item row="7" column="0">
       <widget class="QLabel" name="label_5">
        <property name="text">
         <string>Offset X,Y</string>
@@ -203,7 +213,7 @@
        </item>
       </layout>
      </item>
-     <item row="5" column="1">
+     <item row="2" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QgsDoubleSpinBox" name="mHeightSpinBox">
@@ -246,7 +256,7 @@
        </item>
       </layout>
      </item>
-     <item row="3" column="1">
+     <item row="5" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QgsDoubleSpinBox" name="mOutlineWidthSpinBox">
@@ -289,7 +299,7 @@
        </item>
       </layout>
      </item>
-     <item row="6" column="1">
+     <item row="7" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_5">
        <item>
         <widget class="QgsDoubleSpinBox" name="spinOffsetX">
@@ -354,16 +364,6 @@
        </item>
       </layout>
      </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="mSymbolHeightLabel">
-       <property name="text">
-        <string>Symbol height</string>
-       </property>
-       <property name="buddy">
-        <cstring>mHeightSpinBox</cstring>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
@@ -371,7 +371,7 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
+     <item row="5" column="0">
       <widget class="QLabel" name="mOutlineWidthLabel">
        <property name="text">
         <string>Outline width</string>
@@ -381,7 +381,7 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
+     <item row="6" column="0">
       <widget class="QLabel" name="mRotationLabel">
        <property name="text">
         <string>Rotation</string>
@@ -391,7 +391,7 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
+     <item row="6" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_10">
        <item>
         <widget class="QgsDoubleSpinBox" name="mRotationSpinBox">
@@ -461,7 +461,7 @@
        </item>
       </layout>
      </item>
-     <item row="2" column="0">
+     <item row="3" column="0">
       <widget class="QLabel" name="mOutlineStyleLabel">
        <property name="text">
         <string>Outline style</string>
@@ -471,13 +471,37 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
+     <item row="3" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_8">
        <item>
         <widget class="QgsPenStyleComboBox" name="mOutlineStyleComboBox"/>
        </item>
        <item>
         <widget class="QgsDataDefinedButton" name="mOutlineStyleDDBtn">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_8">
+       <property name="text">
+        <string>Join style</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <item>
+        <widget class="QgsPenJoinStyleComboBox" name="cboJoinStyle"/>
+       </item>
+       <item>
+        <widget class="QgsDataDefinedButton" name="mJoinStyleDDBtn">
          <property name="text">
           <string>...</string>
          </property>
@@ -570,6 +594,11 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsPenJoinStyleComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgspenstylecombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsPenStyleComboBox</class>
    <extends>QComboBox</extends>
    <header>qgspenstylecombobox.h</header>
@@ -582,14 +611,16 @@
   <tabstop>mBorderColorDDBtn</tabstop>
   <tabstop>mWidthSpinBox</tabstop>
   <tabstop>mSymbolWidthDDBtn</tabstop>
+  <tabstop>mHeightSpinBox</tabstop>
+  <tabstop>mSymbolHeightDDBtn</tabstop>
   <tabstop>mOutlineStyleComboBox</tabstop>
   <tabstop>mOutlineStyleDDBtn</tabstop>
+  <tabstop>cboJoinStyle</tabstop>
+  <tabstop>mJoinStyleDDBtn</tabstop>
   <tabstop>mOutlineWidthSpinBox</tabstop>
   <tabstop>mOutlineWidthDDBtn</tabstop>
   <tabstop>mRotationSpinBox</tabstop>
   <tabstop>mRotationDDBtn</tabstop>
-  <tabstop>mHeightSpinBox</tabstop>
-  <tabstop>mSymbolHeightDDBtn</tabstop>
   <tabstop>spinOffsetX</tabstop>
   <tabstop>spinOffsetY</tabstop>
   <tabstop>mOffsetDDBtn</tabstop>

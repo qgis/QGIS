@@ -35,6 +35,13 @@ class QgsEllipseSymbolLayerV2 : QgsMarkerSymbolLayerV2
     Qt::PenStyle outlineStyle() const;
     void setOutlineStyle( Qt::PenStyle outlineStyle );
 
+    /** Get outline join style.
+     * @note added in 2.16 */
+    Qt::PenJoinStyle penJoinStyle() const;
+    /** Set outline join style.
+     * @note added in 2.16 */
+    void setPenJoinStyle( Qt::PenJoinStyle style );
+
     void setOutlineWidth( double w );
     double outlineWidth() const;
 
