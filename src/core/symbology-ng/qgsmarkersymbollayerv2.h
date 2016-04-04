@@ -165,6 +165,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     double calculateSize( QgsSymbolV2RenderContext& context, bool& hasDataDefinedSize ) const;
     void calculateOffsetAndRotation( QgsSymbolV2RenderContext& context, double scaledSize, bool& hasDataDefinedRotation, QPointF& offset, double& angle ) const;
+    bool symbolNeedsBrush( const QString& symbolName ) const;
 };
 
 //////////

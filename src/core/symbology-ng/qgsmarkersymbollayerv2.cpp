@@ -278,10 +278,12 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareCache( QgsSymbolV2RenderContext& conte
   mCache = QImage( QSize( imageSize, imageSize ), QImage::Format_ARGB32_Premultiplied );
   mCache.fill( 0 );
 
+  bool needsBrush = symbolNeedsBrush( mName );
+
   QPainter p;
   p.begin( &mCache );
   p.setRenderHint( QPainter::Antialiasing );
-  p.setBrush( mBrush );
+  p.setBrush( needsBrush ? mBrush : Qt::NoBrush );
   p.setPen( mPen );
   p.translate( QPointF( center, center ) );
   drawMarker( &p, context );
@@ -296,7 +298,7 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareCache( QgsSymbolV2RenderContext& conte
 
   p.begin( &mSelCache );
   p.setRenderHint( QPainter::Antialiasing );
-  p.setBrush( mSelBrush );
+  p.setBrush( needsBrush ? mSelBrush : Qt::NoBrush );
   p.setPen( mSelPen );
   p.translate( QPointF( center, center ) );
   drawMarker( &p, context );
@@ -311,7 +313,7 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareCache( QgsSymbolV2RenderContext& conte
     p.begin( &mSelCache );
     p.setRenderHint( QPainter::Antialiasing );
     p.fillRect( 0, 0, imageSize, imageSize, selColor );
-    p.setBrush( mBrush );
+    p.setBrush( needsBrush ? mBrush : Qt::NoBrush );
     p.setPen( mPen );
     p.translate( QPointF( center, center ) );
     drawMarker( &p, context );
@@ -456,9 +458,8 @@ bool QgsSimpleMarkerSymbolLayerV2::preparePath( QString name )
   }
   else if ( name == "arrowhead" )
   {
-    mPath.moveTo( 0, 0 );
-    mPath.lineTo( -1, -1 );
-    mPath.moveTo( 0, 0 );
+    mPath.moveTo( -1, -1 );
+    mPath.lineTo( 0, 0 );
     mPath.lineTo( -1, 1 );
     return true;
   }
@@ -488,10 +489,11 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( QPointF point, QgsSymbolV2Render
   //data defined shape?
   bool createdNewPath = false;
   bool ok = true;
+  QString name = mName;
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME ) )
   {
     context.setOriginalValueVariable( mName );
-    QString name = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME, context, QVariant(), &ok ).toString();
+    name = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME, context, QVariant(), &ok ).toString();
     if ( ok )
     {
       if ( !prepareShape( name ) ) // drawing as a polygon
@@ -499,6 +501,10 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( QPointF point, QgsSymbolV2Render
         preparePath( name ); // drawing as a painter path
       }
       createdNewPath = true;
+    }
+    else
+    {
+      name = mName;
     }
   }
 
@@ -578,7 +584,14 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( QPointF point, QgsSymbolV2Render
       }
     }
 
-    p->setBrush( context.selected() ? mSelBrush : mBrush );
+    if ( symbolNeedsBrush( name ) )
+    {
+      p->setBrush( context.selected() ? mSelBrush : mBrush );
+    }
+    else
+    {
+      p->setBrush( Qt::NoBrush );
+    }
     p->setPen( context.selected() ? mSelPen : mPen );
 
     if ( !mPolygon.isEmpty() )
@@ -661,6 +674,11 @@ void QgsSimpleMarkerSymbolLayerV2::calculateOffsetAndRotation( QgsSymbolV2Render
 
   if ( angle )
     offset = _rotatedOffset( offset, angle );
+}
+
+bool QgsSimpleMarkerSymbolLayerV2::symbolNeedsBrush( const QString &symbolName ) const
+{
+  return symbolName != "arrowhead";
 }
 
 QgsStringMap QgsSimpleMarkerSymbolLayerV2::properties() const
