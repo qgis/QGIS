@@ -440,8 +440,8 @@ QgsSimpleMarkerSymbolLayerV2Widget::QgsSimpleMarkerSymbolLayerV2Widget( const Qg
 
   QSize size = lstNames->iconSize();
   QStringList names;
-  names << "circle" << "rectangle" << "diamond" << "pentagon" << "cross" << "cross2" << "triangle"
-  << "equilateral_triangle" << "star" << "regular_star" << "arrow" << "line" << "arrowhead" << "filled_arrowhead";
+  names << "circle" << "rectangle" << "diamond" << "pentagon" << "cross" << "cross2" << "triangle" << "equilateral_triangle" << "star"
+  << "regular_star" << "arrow" << "line" << "arrowhead" << "filled_arrowhead" << "semi_circle" << "third_circle" << "quarter_circle";
   double markerSize = DEFAULT_POINT_SIZE * 2;
   for ( int i = 0; i < names.count(); ++i )
   {
@@ -541,7 +541,7 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
                              "<b>pentagon</b>|<b>triangle</b>|<b>equilateral_triangle</b>|"
                              "<b>star</b>|<b>regular_star</b>|<b>arrow</b>|<b>filled_arrowhead</b>|"
                              "<b>circle</b>|<b>cross</b>|<b>x</b>|"
-                             "<b>cross2</b>|<b>line</b>|<b>arrowhead</b>]" ) );
+                             "<b>cross2</b>|<b>line</b>|<b>arrowhead</b>|<b>semi_circle</b>|<b>third_circle</b>|<b>quarter_circle</b>]" ) );
   registerDataDefinedButton( mFillColorDDBtn, "color", QgsDataDefinedButton::String, QgsDataDefinedButton::colorAlphaDesc() );
   registerDataDefinedButton( mBorderColorDDBtn, "color_border", QgsDataDefinedButton::String, QgsDataDefinedButton::colorAlphaDesc() );
   registerDataDefinedButton( mOutlineWidthDDBtn, "outline_width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );

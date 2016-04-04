@@ -432,6 +432,24 @@ bool QgsSimpleMarkerSymbolLayerV2::preparePath( QString name )
     mPath.addEllipse( QRectF( -1, -1, 2, 2 ) ); // x,y,w,h
     return true;
   }
+  else if ( name == "semi_circle" )
+  {
+    mPath.arcTo( -1, -1, 2, 2, 0, 180 );
+    mPath.lineTo( 0, 0 );
+    return true;
+  }
+  else if ( name == "third_circle" )
+  {
+    mPath.arcTo( -1, -1, 2, 2, 90, 120 );
+    mPath.lineTo( 0, 0 );
+    return true;
+  }
+  else if ( name == "quarter_circle" )
+  {
+    mPath.arcTo( -1, -1, 2, 2, 90, 90 );
+    mPath.lineTo( 0, 0 );
+    return true;
+  }
   else if ( name == "cross" )
   {
     mPath.moveTo( -1, 0 );
