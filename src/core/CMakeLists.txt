@@ -455,6 +455,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmaprendererjob.h
   qgsmaprendererparalleljob.h
   qgsmaprenderersequentialjob.h
+  qgsmapsettings.h
   qgsmessagelog.h
   qgsmessageoutput.h
   qgsnetworkaccessmanager.h

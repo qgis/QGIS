@@ -45,7 +45,7 @@ void QgsDatumTransformStore::addEntry( const QString& layerId, const QString& sr
   mEntries.insert( layerId, lt );
 }
 
-bool QgsDatumTransformStore::hasEntryForLayer( QgsMapLayer* layer ) const
+bool QgsDatumTransformStore::hasEntryForLayer( const QgsMapLayer* layer ) const
 {
   return mEntries.contains( layer->id() );
 }
@@ -71,6 +71,16 @@ const QgsCoordinateTransform* QgsDatumTransformStore::transformation( QgsMapLaye
   else
   {
     return QgsCoordinateTransformCache::instance()->transform( srcAuthId, dstAuthId );
+  }
+}
+
+void QgsDatumTransformStore::entries( QList< QPair< QString, Entry> >& list ) const
+{
+  list.clear();
+  QHash< QString, Entry >::const_iterator it = mEntries.constBegin();
+  for ( ; it != mEntries.constEnd(); ++it )
+  {
+    list.append( qMakePair( it.key(), it.value() ) );
   }
 }
 

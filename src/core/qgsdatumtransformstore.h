@@ -32,25 +32,6 @@ class QDomElement;
 class CORE_EXPORT QgsDatumTransformStore
 {
   public:
-    explicit QgsDatumTransformStore( const QgsCoordinateReferenceSystem& destCrs );
-
-    void clear();
-
-    void setDestinationCrs( const QgsCoordinateReferenceSystem& destCrs );
-
-    void addEntry( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform, int destDatumTransform );
-
-    bool hasEntryForLayer( QgsMapLayer* layer ) const;
-
-    /** Will return transform from layer's CRS to current destination CRS.
-     *  Will emit datumTransformInfoRequested signal if the layer has no entry.
-     *  Returns an instance from QgsCoordinateTransformCache
-     */
-    const QgsCoordinateTransform* transformation( QgsMapLayer* layer ) const;
-
-    void readXML( const QDomNode& parentNode );
-
-    void writeXML( QDomNode& parentNode, QDomDocument& theDoc ) const;
 
     struct Entry
     {
@@ -59,6 +40,30 @@ class CORE_EXPORT QgsDatumTransformStore
       int srcDatumTransform; //-1 if unknown or not specified
       int destDatumTransform;
     };
+
+    explicit QgsDatumTransformStore( const QgsCoordinateReferenceSystem& destCrs );
+
+    void clear();
+
+    void setDestinationCrs( const QgsCoordinateReferenceSystem& destCrs );
+
+    void addEntry( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform, int destDatumTransform );
+
+    bool hasEntryForLayer( const QgsMapLayer* layer ) const;
+
+    /** Will return transform from layer's CRS to current destination CRS.
+     *  Will emit datumTransformInfoRequested signal if the layer has no entry.
+     *  Returns an instance from QgsCoordinateTransformCache
+     */
+    const QgsCoordinateTransform* transformation( QgsMapLayer* layer ) const;
+
+    void entries( QList< QPair< QString, Entry> >& list ) const;
+
+    void readXML( const QDomNode& parentNode );
+
+    void writeXML( QDomNode& parentNode, QDomDocument& theDoc ) const;
+
+
 
   protected:
     QgsCoordinateReferenceSystem mDestCRS;

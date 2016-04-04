@@ -512,6 +512,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     void refreshMap();
 
+    void askDatumTransform( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId );
+
   signals:
     /** Let the owner know how far we are with render operations */
     //! @deprecated since 2.4 - already unused in 2.0 anyway
@@ -659,8 +661,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void connectNotify( const char * signal ) override;
 #endif
+
     //! Make sure the datum transform store is properly populated
     void updateDatumTransformEntries();
+
 
   private:
     /// this class is non-copyable
@@ -785,6 +789,8 @@ class QgsMapCanvasRendererSync : public QObject
     void onDestCrsR2C();
 
     void onLayersC2R();
+
+    void syncDatumTransforms();
 
   protected:
     QgsMapCanvas* mCanvas;
