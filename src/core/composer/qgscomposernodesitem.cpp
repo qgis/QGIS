@@ -204,7 +204,7 @@ void QgsComposerNodesItem::paint( QPainter* painter,
 
   painter->save();
   painter->setPen( Qt::NoPen );
-  painter->setBrush( brush() );
+  painter->setBrush( Qt::NoBrush );
   painter->setRenderHint( QPainter::Antialiasing, true );
 
   rescaleToFitBoundingBox();
