@@ -121,6 +121,9 @@ void QgsComposerPolyline::_draw( QPainter *painter )
   mPolylineStyleSymbol->renderPolyline( t.map( mPolygon ), nullptr, context );
   mPolylineStyleSymbol->stopRender( context );
   painter->scale( dotsPerMM, dotsPerMM );
+
+  // transparent background
+  setBackgroundColor( QColor( 0, 0, 0, 0 ) );
 }
 
 void QgsComposerPolyline::_readXMLStyle( const QDomElement &elmt )
