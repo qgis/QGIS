@@ -97,7 +97,7 @@ else
 	CMAKE_OPTS += -DWITH_INTERNAL_NOSE2=FALSE -DWITH_INTERNAL_SIX=FALSE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"stretch unstable wily xenial"))
+ifeq (,$(findstring $(DISTRIBUTION),"stretch sid wily xenial"))
 	CMAKE_OPTS += -DWITH_INTERNAL_FUTURE=TRUE
 else
 	CMAKE_OPTS += -DWITH_INTERNAL_FUTURE=FALSE
