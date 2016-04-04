@@ -10875,8 +10875,9 @@ void QgisApp::namSetup()
 #endif
 }
 
-void QgisApp::namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *auth )
+void QgisApp::namAuthenticationRequired( QNetworkReply *inReply, QAuthenticator *auth )
 {
+  QPointer<QNetworkReply> reply( inReply );
   Q_ASSERT( qApp->thread() == QThread::currentThread() );
 
   QString username = auth->user();
@@ -10911,7 +10912,7 @@ void QgisApp::namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *a
     if ( !ok )
       return;
 
-    if ( reply->isFinished() )
+    if ( reply.isNull() || reply->isFinished() )
       return;
 
     if ( auth->user() != username || ( password != auth->password() && !password.isNull() ) )
