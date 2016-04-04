@@ -75,6 +75,15 @@ class QgsRelationReferenceWidget : QWidget
      * @note added in QGIS 2.16
      */
     void showIndeterminateState();
+    /**
+     * Determines if a button for adding new features should be shown.
+     */
+    bool allowAddFeatures() const;
+
+    /**
+     * Determines if a button for adding new features should be shown.
+     */
+    void setAllowAddFeatures( bool allowAddFeatures );
 
   public slots:
     //! open the form of the related feature in a new dialog
