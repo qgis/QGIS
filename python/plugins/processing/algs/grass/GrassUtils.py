@@ -87,6 +87,8 @@ class GrassUtils:
             return ''
 
         folder = ProcessingConfig.getSetting(GrassUtils.GRASS_FOLDER)
+        if not os.path.exists(folder):
+            folder = None
         if folder is None:
             if isWindows():
                 testfolder = os.path.dirname(QgsApplication.prefixPath())
@@ -106,6 +108,8 @@ class GrassUtils:
     @staticmethod
     def grassWinShell():
         folder = ProcessingConfig.getSetting(GrassUtils.GRASS_WIN_SHELL)
+        if not os.path.exists(folder):
+            folder = None
         if folder is None:
             folder = os.path.dirname(unicode(QgsApplication.prefixPath()))
             folder = os.path.join(folder, 'msys')
