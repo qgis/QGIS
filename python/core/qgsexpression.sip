@@ -377,6 +377,11 @@ class QgsExpression
         /** The mininum number of parameters this function takes. */
         int minParams() const;
 
+        /** Returns the list of named parameters for the function, if set.
+         * @note added in QGIS 2.16
+        */
+        const QgsExpression::ParameterList& parameters() const;
+
         /** Does this function use a geometry object. */
         bool usesgeometry() const;
 
@@ -646,7 +651,14 @@ class QgsExpression
         */
         void append( QgsExpression::NamedNode* node /Transfer/ );
 
+        /** Returns the number of nodes in the list.
+         */
         int count() const;
+
+        //! Returns true if list contains any named nodes
+        //! @note added in QGIS 2.16
+        bool hasNamedNodes() const;
+
         const QList<QgsExpression::Node*>& list();
 
         //! Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
