@@ -60,6 +60,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget* editor )
     mWidget->setFilterFields( config( "FilterFields" ).toStringList() );
     mWidget->setChainFilters( config( "ChainFilters" ).toBool() );
   }
+  mWidget->setAllowAddFeatures( config( "AllowAddFeatures", false ).toBool() );
 
   QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( "Relation" ).toString() );
 
