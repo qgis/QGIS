@@ -319,11 +319,5 @@ class TestQgsServer(unittest.TestCase):
         self.assertNotEquals(-1, h.find('Content-Type: image/png'), "Header: %s\nResponse:\n%s" % (h, r))
 
 
-    # The following code was used to test type conversion in python bindings
-    # def test_qpair(self):
-    #    """Test QPair bindings"""
-    #    f, s = self.server.testQPair(('First', 'Second'))
-    #    self.assertEqual(f, 'First')
-    #    self.assertEqual(s, 'Second')
 if __name__ == '__main__':
     unittest.main()
