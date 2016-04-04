@@ -3549,7 +3549,7 @@
                   <item row="0" column="0">
                    <widget class="QLabel" name="mSVGLabel_3">
                     <property name="text">
-                     <string>Path(s) to search fo extra print templates</string>
+                     <string>Path(s) to search for extra print templates</string>
                     </property>
                    </widget>
                   </item>
