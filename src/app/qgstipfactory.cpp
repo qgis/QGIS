@@ -33,7 +33,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " you make must be made available in source form to whoever you give"
                         " modified versions to, and that you can not create a new version of"
                         " QGIS under a 'closed source' license. Visit"
-                        " <a href=\"http://qgis.org\"> the QGIS home page (http://qgis.org)</a>"
+                        " <a href=\"https://qgis.org\"> the QGIS home page (https://qgis.org)</a>"
                         " for more information."
                       ) );
   addGenericTip( myTip );
@@ -41,7 +41,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setTitle( tr( "QGIS Publications" ) );
   myTip.setContent( tr( "If you write a scientific paper or any other article"
                         " that refers to QGIS we would love to include your work"
-                        " in the <a href=\"http://qgis.org/en/site/about/case_studies/index.html\">case studies section</a> of"
+                        " in the <a href=\"https://qgis.org/en/site/about/case_studies/index.html\">case studies section</a> of"
                         " the QGIS home page."
                       ) );
   addGenericTip( myTip );
@@ -51,16 +51,16 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " and would appreciate your help! The translation process is"
                         " fairly straight forward - instructions are available in the"
                         " QGIS wiki"
-                        " <a href=\"http://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui\">translator's page.</a>"
+                        " <a href=\"https://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui\">translator's page.</a>"
                       ) );
   addGuiTip( myTip );
   myTip.setTitle( tr( "Getting Help With QGIS" ) );
   myTip.setContent( tr( "If you need help using QGIS"
-                        " we have a 'users' mailing list where users help each other with issues"
-                        " related to using our software. We also have a 'developers' mailing list"
+                        " there is a 'users' mailing list where users help each other with issues"
+                        " related to using QGIS. We also have a 'developers' mailing list"
                         " for those wanting help and discuss things relating to the QGIS code base."
                         " Details on different means to get help are described in the"
-                        " <a href=\"http://qgis.org/en/site/forusers/support.html#mailing-lists\">community section</a> of the QGIS home page."
+                        " <a href=\"https://qgis.org/en/site/forusers/support.html#mailing-lists\">community section</a> of the QGIS home page."
                       ) );
   addGuiTip( myTip );
   myTip.setTitle( tr( "Is it 'QGIS' or 'Quantum GIS'?" ) );
@@ -86,7 +86,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "You can add a current date variable to your map"
                         " layout. Create a regular text label and add the string"
                         " $CURRENT_DATE(yyyy-MM-dd) to the text box. See the"
-                        " <a href=\"http://qt-project.org/doc/qt-5.0/qtcore/qdate.html#toString\">"
+                        " <a href=\"https://doc.qt.io/qt-4.8/qdate.html#toString\">"
                         "QDate::toString format documentation</a> for the possible date formats."
                       ) );
   addGuiTip( myTip );
@@ -175,7 +175,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " development of QGIS. We use money from sponsors to pay for"
                         " travel and costs related to our regular hackfest meetings, and to generally"
                         " support the goals of our project. Please see the<a"
-                        " href=\"http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html\">QGIS Sponsorship Web"
+                        " href=\"https://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html\">QGIS Sponsorship Web"
                         " Page</a> for more details."
                       ) );
   addGenericTip( myTip );
@@ -184,7 +184,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "QGIS has plugins that extend its functionality."
                         " QGIS ships with some core plugins you can explore from the"
                         " Plugins->Manage and Install Plugins menu. In addition there are a lot"
-                        " of <a href=\"http://plugins.qgis.org/\">Python plugins </a>"
+                        " of <a href=\"https://plugins.qgis.org/\">Python plugins </a>"
                         " contributed by the user community that can be"
                         " installed via this same menu. Don't miss out on all QGIS has to offer!"
                         " Check out the plugins and see what they can do for you."
@@ -195,7 +195,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "Action in a layer allows user to trigger action when clicking on a geometry"
                         " with 'Run Feature Action' tools."
                         "For example, you can open a HTML page using the field value of the geometry "
-                        "as a parameter. Look at the <a href=\"http://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html?#actions-menu\">documentation</a>."
+                        "as a parameter. Look at the <a href=\"https://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html?#actions-menu\">documentation</a>."
                       ) );
   addGuiTip( myTip );
   // by yjacolin
