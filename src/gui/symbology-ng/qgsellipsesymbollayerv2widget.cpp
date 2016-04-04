@@ -49,19 +49,18 @@ QgsEllipseSymbolLayerV2Widget::QgsEllipseSymbolLayerV2Widget( const QgsVectorLay
   names << "circle" << "rectangle" << "cross" << "triangle";
   QSize iconSize = mShapeListWidget->iconSize();
 
-  QStringList::const_iterator nameIt = names.constBegin();
-  for ( ; nameIt != names.constEnd(); ++nameIt )
+  Q_FOREACH ( const QString& name, names )
   {
     QgsEllipseSymbolLayerV2* lyr = new QgsEllipseSymbolLayerV2();
-    lyr->setSymbolName( *nameIt );
+    lyr->setSymbolName( name );
     lyr->setOutlineColor( QColor( 0, 0, 0 ) );
     lyr->setFillColor( QColor( 200, 200, 200 ) );
     lyr->setSymbolWidth( 4 );
     lyr->setSymbolHeight( 2 );
     QIcon icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( lyr, QgsSymbolV2::MM, iconSize );
     QListWidgetItem* item = new QListWidgetItem( icon, "", mShapeListWidget );
-    item->setToolTip( *nameIt );
-    item->setData( Qt::UserRole, *nameIt );
+    item->setToolTip( name );
+    item->setData( Qt::UserRole, name );
     delete lyr;
   }
 
