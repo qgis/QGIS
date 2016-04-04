@@ -44,9 +44,22 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
     mAttributeList = mRequest.subsetOfAttributes();
     if ( mAttributeList.isEmpty() )
       mAttributeList = mSource->mFields.allAttributesList();
+
+    // ensure that all attributes required for expression filter are being fetched
+    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
+    {
+      Q_FOREACH ( const QString& field, mRequest.filterExpression()->referencedColumns() )
+      {
+        int attrIdx = mSource->mFields.fieldNameIndex( field );
+        if ( !mAttributeList.contains( attrIdx ) )
+          mAttributeList << attrIdx;
+      }
+    }
+
   }
   else
     mAttributeList = mSource->mFields.allAttributesList();
+
 
   QString whereClause;
 
