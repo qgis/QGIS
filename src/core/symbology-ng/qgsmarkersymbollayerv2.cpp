@@ -342,6 +342,21 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareShape( const QString& name, QPolygonF 
     polygon = QPolygonF( QRectF( QPointF( -1, -1 ), QPointF( 1, 1 ) ) );
     return true;
   }
+  else if ( name == "quarter_square" )
+  {
+    polygon = QPolygonF( QRectF( QPointF( -1, -1 ), QPointF( 0, 0 ) ) );
+    return true;
+  }
+  else if ( name == "half_square" )
+  {
+    polygon = QPolygonF( QRectF( QPointF( -1, -1 ), QPointF( 0, 1 ) ) );
+    return true;
+  }
+  else if ( name == "diagonal_half_square" )
+  {
+    polygon << QPointF( -1, -1 ) << QPointF( 1, 1 ) << QPointF( -1, 1 );
+    return true;
+  }
   else if ( name == "diamond" )
   {
     polygon << QPointF( -1, 0 ) << QPointF( 0, 1 )
