@@ -551,7 +551,9 @@ class CORE_EXPORT QgsExpression
           return min;
         }
 
-        /** Returns the list of named parameters for the function, if set. */
+        /** Returns the list of named parameters for the function, if set.
+         * @note added in QGIS 2.16
+        */
         const ParameterList& parameters() const { return mParameterList; }
 
         /** Does this function use a geometry object. */
@@ -928,9 +930,12 @@ class CORE_EXPORT QgsExpression
         */
         void append( NamedNode* node ) { mList.append( node->node ); mNameList.append( node->name.toLower() ); mHasNamedNodes = true; }
 
+        /** Returns the number of nodes in the list.
+         */
         int count() const { return mList.count(); }
 
         //! Returns true if list contains any named nodes
+        //! @note added in QGIS 2.16
         bool hasNamedNodes() const { return mHasNamedNodes; }
 
         QList<Node*> list() { return mList; }
@@ -1362,17 +1367,22 @@ class CORE_EXPORT QgsExpression
 
     struct HelpArg
     {
-      HelpArg( const QString& arg, const QString& desc, bool descOnly = false, bool syntaxOnly = false )
+      HelpArg( const QString& arg, const QString& desc, bool descOnly = false, bool syntaxOnly = false,
+               bool optional = false, const QString& defaultVal = QString() )
           : mArg( arg )
           , mDescription( desc )
           , mDescOnly( descOnly )
           , mSyntaxOnly( syntaxOnly )
+          , mOptional( optional )
+          , mDefaultVal( defaultVal )
       {}
 
       QString mArg;
       QString mDescription;
       bool mDescOnly;
       bool mSyntaxOnly;
+      bool mOptional;
+      QString mDefaultVal;
     };
 
     struct HelpExample
