@@ -76,8 +76,11 @@ class RUtils:
         folder = ProcessingConfig.getSetting(RUtils.R_LIBS_USER)
         if folder is None:
             folder = unicode(os.path.join(userFolder(), 'rlibs'))
-        mkdir(folder)
-
+        try:
+            mkdir(folder)
+        except:
+            folder = unicode(os.path.join(userFolder(), 'rlibs'))
+            mkdir(folder)
         return os.path.abspath(unicode(folder))
 
     @staticmethod
@@ -85,7 +88,11 @@ class RUtils:
         folder = ProcessingConfig.getSetting(RUtils.RSCRIPTS_FOLDER)
         if folder is None:
             folder = unicode(os.path.join(userFolder(), 'rscripts'))
-        mkdir(folder)
+        try:
+            mkdir(folder)
+        except:
+            folder = unicode(os.path.join(userFolder(), 'rscripts'))
+            mkdir(folder)
 
         return os.path.abspath(folder)
 
