@@ -79,6 +79,12 @@ static QString stripText(QString text)
   return text;
 }
 
+static QString stripNamedText(QString text)
+{
+  text.remove(":=");
+  return text.trimmed();
+}
+
 static QString stripColumnRef(QString text)
 {
   // strip double quotes on start,end
@@ -109,6 +115,8 @@ column_ref  {col_first}{col_next}*
 deprecated_function "$"[xXyY]_?[aA][tT]
 special_col "$"{column_ref}
 variable "@"{column_ref}
+
+named_node {column_ref}{white}*":="{white}*
 
 col_str_char  "\"\""|[^\"]
 column_ref_quoted  "\""{col_str_char}*"\""
@@ -195,6 +203,8 @@ string      "'"{str_char}*"'"
 {string}  { TEXT_FILTER(stripText); return STRING; }
 
 {deprecated_function} { TEXT; return FUNCTION; }
+
+{named_node} { TEXT_FILTER(stripNamedText); return NAMED_NODE; }
 
 {special_col}        { TEXT; return SPECIAL_COL; }
 

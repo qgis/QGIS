@@ -22,6 +22,7 @@
 #include <QList>
 #include <QDomDocument>
 #include <QCoreApplication>
+#include <QSet>
 
 #include "qgis.h"
 #include "qgsunittypes.h"
@@ -424,9 +425,54 @@ class CORE_EXPORT QgsExpression
     //! @note not available in Python bindings
     static const char* UnaryOperatorText[];
 
+    /**
+      * Represents a single parameter passed to a function.
+      * \note added in QGIS 2.16
+      */
+    class CORE_EXPORT Parameter
+    {
+      public:
+
+        /** Constructor for Parameter.
+         * @param name parameter name, used when named parameter are specified in an expression
+         * @param optional set to true if parameter should be optional
+         * @param defaultValue default value to use for optional parameters
+         */
+        Parameter( const QString& name,
+                   bool optional = false,
+                   const QVariant& defaultValue = QVariant() )
+            : mName( name )
+            , mOptional( optional )
+            , mDefaultValue( defaultValue )
+        {}
+
+        //! Returns the name of the parameter.
+        QString name() const { return mName; }
+
+        //! Returns true if the parameter is optional.
+        bool optional() const { return mOptional; }
+
+        //! Returns the default value for the parameter.
+        QVariant defaultValue() const { return mDefaultValue; }
+
+        bool operator==( const Parameter& other ) const
+        {
+          return ( QString::compare( mName, other.mName, Qt::CaseInsensitive ) == 0 );
+        }
+
+      private:
+        QString mName;
+        bool mOptional;
+        QVariant mDefaultValue;
+    };
+
+    //! List of parameters, used for function definition
+    typedef QList< Parameter > ParameterList;
+
+    //! @deprecated will be removed in QGIS 3.0
     typedef QVariant( *FcnEval )( const QVariantList& values, const QgsFeature* f, QgsExpression* parent );
 
-    /** Function definition for evaluation against an expression context
+    /** Function definition for evaluation against an expression context, using a list of values as parameters to the function.
      */
     typedef QVariant( *FcnEvalContext )( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent );
 
@@ -436,6 +482,8 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT Function
     {
       public:
+
+        //! Constructor for function which uses unnamed parameters
         Function( const QString& fnname,
                   int params,
                   const QString& group,
@@ -454,16 +502,63 @@ class CORE_EXPORT QgsExpression
             , mLazyEval( lazyEval )
             , mHandlesNull( handlesNull )
             , mIsContextual( isContextual )
+        {
+        }
+
+        /** Constructor for function which uses named parameter list.
+         * @note added in QGIS 2.16
+         */
+        Function( const QString& fnname,
+                  const ParameterList& params,
+                  const QString& group,
+                  const QString& helpText = QString(),
+                  bool usesGeometry = false,
+                  const QStringList& referencedColumns = QStringList(),
+                  bool lazyEval = false,
+                  bool handlesNull = false,
+                  bool isContextual = false )
+            : mName( fnname )
+            , mParameterList( params )
+            , mUsesGeometry( usesGeometry )
+            , mGroup( group )
+            , mHelpText( helpText )
+            , mReferencedColumns( referencedColumns )
+            , mLazyEval( lazyEval )
+            , mHandlesNull( handlesNull )
+            , mIsContextual( isContextual )
         {}
 
         virtual ~Function() {}
 
         /** The name of the function. */
-        QString name() { return mName; }
+        QString name() const { return mName; }
+
         /** The number of parameters this function takes. */
-        int params() { return mParams; }
+        int params() const { return mParameterList.isEmpty() ? mParams : mParameterList.count(); }
+
+        /** The mininum number of parameters this function takes. */
+        int minParams() const
+        {
+          if ( mParameterList.isEmpty() )
+            return mParams;
+
+          int min = 0;
+          Q_FOREACH ( const Parameter& param, mParameterList )
+          {
+            if ( !param.optional() )
+              min++;
+          }
+          return min;
+        }
+
+        /** Returns the list of named parameters for the function, if set.
+         * @note added in QGIS 2.16
+        */
+        const ParameterList& parameters() const { return mParameterList; }
+
         /** Does this function use a geometry object. */
-        bool usesgeometry() { return mUsesGeometry; }
+        //TODO QGIS 3.0 - rename to usesGeometry()
+        bool usesgeometry() const { return mUsesGeometry; }
 
         /** Returns a list of possible aliases for the function. These include
          * other permissible names for the function, eg deprecated names.
@@ -475,7 +570,7 @@ class CORE_EXPORT QgsExpression
         /** True if this function should use lazy evaluation.  Lazy evaluation functions take QgsExpression::Node objects
          * rather than the node results when called.  You can use node->eval(parent, feature) to evaluate the node and return the result
          * Functions are non lazy default and will be given the node return value when called **/
-        bool lazyEval() { return mLazyEval; }
+        bool lazyEval() const { return mLazyEval; }
 
         virtual QStringList referencedColumns() const { return mReferencedColumns; }
 
@@ -485,9 +580,10 @@ class CORE_EXPORT QgsExpression
         bool isContextual() const { return mIsContextual; }
 
         /** The group the function belongs to. */
-        QString group() { return mGroup; }
+        QString group() const { return mGroup; }
         /** The help text for the function. */
-        const QString helptext() { return mHelpText.isEmpty() ? QgsExpression::helptext( mName ) : mHelpText; }
+        //TODO QGIS 3.0 - rename to helpText()
+        const QString helptext() const { return mHelpText.isEmpty() ? QgsExpression::helptext( mName ) : mHelpText; }
 
         //! @deprecated Use QgsExpressionContext variant instead
         Q_DECL_DEPRECATED virtual QVariant func( const QVariantList&, const QgsFeature*, QgsExpression* );
@@ -515,6 +611,7 @@ class CORE_EXPORT QgsExpression
       private:
         QString mName;
         int mParams;
+        ParameterList mParameterList;
         bool mUsesGeometry;
         QString mGroup;
         QString mHelpText;
@@ -550,10 +647,28 @@ class CORE_EXPORT QgsExpression
 
         virtual ~StaticFunction() {}
 
-        /** Static function for evaluation against a QgsExpressionContext
+        /** Static function for evaluation against a QgsExpressionContext, using an unnamed list of parameter values.
          */
         StaticFunction( const QString& fnname,
                         int params,
+                        FcnEvalContext fcn,
+                        const QString& group,
+                        const QString& helpText = QString(),
+                        bool usesGeometry = false,
+                        const QStringList& referencedColumns = QStringList(),
+                        bool lazyEval = false,
+                        const QStringList& aliases = QStringList(),
+                        bool handlesNull = false )
+            : Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull )
+            , mFnc( nullptr )
+            , mContextFnc( fcn )
+            , mAliases( aliases )
+        {}
+
+        /** Static function for evaluation against a QgsExpressionContext, using a named list of parameter values.
+         */
+        StaticFunction( const QString& fnname,
+                        const ParameterList& params,
                         FcnEvalContext fcn,
                         const QString& group,
                         const QString& helpText = QString(),
@@ -780,15 +895,55 @@ class CORE_EXPORT QgsExpression
         virtual void accept( Visitor& v ) const = 0;
     };
 
+    //! Named node
+    //! @note added in QGIS 2.16
+    class CORE_EXPORT NamedNode
+    {
+      public:
+
+        /** Constructor for NamedNode
+         * @param name node name
+         * @param node node
+         */
+        NamedNode( const QString& name, Node* node )
+            : name( name )
+            , node( node )
+        {}
+
+        //! Node name
+        QString name;
+
+        //! Node
+        Node* node;
+    };
+
     class CORE_EXPORT NodeList
     {
       public:
-        NodeList() {}
+        NodeList() : mHasNamedNodes( false ) {}
         virtual ~NodeList() { qDeleteAll( mList ); }
         /** Takes ownership of the provided node */
-        void append( Node* node ) { mList.append( node ); }
-        int count() { return mList.count(); }
+        void append( Node* node ) { mList.append( node ); mNameList.append( QString() ); }
+
+        /** Adds a named node. Takes ownership of the provided node.
+         * @note added in QGIS 2.16
+        */
+        void append( NamedNode* node ) { mList.append( node->node ); mNameList.append( node->name.toLower() ); mHasNamedNodes = true; }
+
+        /** Returns the number of nodes in the list.
+         */
+        int count() const { return mList.count(); }
+
+        //! Returns true if list contains any named nodes
+        //! @note added in QGIS 2.16
+        bool hasNamedNodes() const { return mHasNamedNodes; }
+
         QList<Node*> list() { return mList; }
+
+        //! Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
+        //! @note added in QGIS 2.16
+        QStringList names() const { return mNameList; }
+
         /** Creates a deep copy of this list. Ownership is transferred to the caller */
         NodeList* clone() const;
 
@@ -796,6 +951,11 @@ class CORE_EXPORT QgsExpression
 
       protected:
         QList<Node*> mList;
+        QStringList mNameList;
+
+      private:
+
+        bool mHasNamedNodes;
     };
 
     class CORE_EXPORT Interval
@@ -928,8 +1088,45 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeFunction : public Node
     {
       public:
-        NodeFunction( int fnIndex, NodeList* args ) : mFnIndex( fnIndex ), mArgs( args ) {}
-        //NodeFunction( QString name, NodeList* args ) : mName(name), mArgs(args) {}
+        NodeFunction( int fnIndex, NodeList* args ) : mFnIndex( fnIndex )
+        {
+          const ParameterList& functionParams = Functions()[mFnIndex]->parameters();
+          if ( !args || !args->hasNamedNodes() || functionParams.isEmpty() )
+          {
+            // no named parameters, or function does not support them
+            mArgs = args;
+          }
+          else
+          {
+            mArgs = new NodeList();
+
+            int idx = 0;
+            //first loop through unnamed arguments
+            while ( args->names().at( idx ).isEmpty() )
+            {
+              mArgs->append( args->list().at( idx )->clone() );
+              idx++;
+            }
+
+            //next copy named parameters in order expected by function
+            for ( ; idx < functionParams.count(); ++idx )
+            {
+              int nodeIdx = args->names().indexOf( functionParams.at( idx ).name().toLower() );
+              if ( nodeIdx < 0 )
+              {
+                //parameter not found - insert default value for parameter
+                mArgs->append( new NodeLiteral( functionParams.at( idx ).defaultValue() ) );
+              }
+              else
+              {
+                mArgs->append( args->list().at( nodeIdx )->clone() );
+              }
+            }
+
+            delete args;
+          }
+        }
+
         virtual ~NodeFunction() { delete mArgs; }
 
         int fnIndex() const { return mFnIndex; }
@@ -945,13 +1142,84 @@ class CORE_EXPORT QgsExpression
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
 
+        //! Tests whether the provided argument list is valid for the matching function
+        static bool validateParams( int fnIndex, NodeList* args, QString& error )
+        {
+          if ( !args || !args->hasNamedNodes() )
+            return true;
+
+          const ParameterList& functionParams = Functions()[fnIndex]->parameters();
+          if ( functionParams.isEmpty() )
+          {
+            error = QString( "%1 does not supported named parameters" ).arg( Functions()[fnIndex]->name() );
+            return false;
+          }
+          else
+          {
+            QSet< int > providedArgs;
+            QSet< int > handledArgs;
+            int idx = 0;
+            //first loop through unnamed arguments
+            while ( args->names().at( idx ).isEmpty() )
+            {
+              providedArgs << idx;
+              handledArgs << idx;
+              idx++;
+            }
+
+            //next check named parameters
+            for ( ; idx < functionParams.count(); ++idx )
+            {
+              int nodeIdx = args->names().indexOf( functionParams.at( idx ).name().toLower() );
+              if ( nodeIdx < 0 )
+              {
+                if ( !functionParams.at( idx ).optional() )
+                {
+                  error = QString( "No value specified for parameter '%1' for %2" ).arg( functionParams.at( idx ).name(), Functions()[fnIndex]->name() );
+                  return false;
+                }
+              }
+              else
+              {
+                if ( providedArgs.contains( idx ) )
+                {
+                  error = QString( "Duplicate parameter specified for '%1' for %2" ).arg( functionParams.at( idx ).name(), Functions()[fnIndex]->name() );
+                  return false;
+                }
+              }
+              providedArgs << idx;
+              handledArgs << nodeIdx;
+            }
+
+            //last check for bad names
+            idx = 0;
+            Q_FOREACH ( const QString& name, args->names() )
+            {
+              if ( !name.isEmpty() && !functionParams.contains( name ) )
+              {
+                error = QString( "Invalid parameter name '%1' for %2" ).arg( name, Functions()[fnIndex]->name() );
+                return false;
+              }
+              if ( !name.isEmpty() && !handledArgs.contains( idx ) )
+              {
+                int functionIdx = functionParams.indexOf( name );
+                if ( providedArgs.contains( functionIdx ) )
+                {
+                  error = QString( "Duplicate parameter specified for '%1' for %2" ).arg( functionParams.at( functionIdx ).name(), Functions()[fnIndex]->name() );
+                  return false;
+                }
+              }
+              idx++;
+            }
+
+          }
+          return true;
+        }
+
       protected:
         int mFnIndex;
         NodeList* mArgs;
 
-      private:
-
-        QgsExpression::Function* getFunc() const;
     };
 
     class CORE_EXPORT NodeLiteral : public Node
@@ -1099,17 +1367,22 @@ class CORE_EXPORT QgsExpression
 
     struct HelpArg
     {
-      HelpArg( const QString& arg, const QString& desc, bool descOnly = false, bool syntaxOnly = false )
+      HelpArg( const QString& arg, const QString& desc, bool descOnly = false, bool syntaxOnly = false,
+               bool optional = false, const QString& defaultVal = QString() )
           : mArg( arg )
           , mDescription( desc )
           , mDescOnly( descOnly )
           , mSyntaxOnly( syntaxOnly )
+          , mOptional( optional )
+          , mDefaultVal( defaultVal )
       {}
 
       QString mArg;
       QString mDescription;
       bool mDescOnly;
       bool mSyntaxOnly;
+      bool mOptional;
+      QString mDefaultVal;
     };
 
     struct HelpExample
