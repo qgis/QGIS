@@ -41,6 +41,13 @@ class TestQgsServer(unittest.TestCase):
                 pass
         self.server = QgsServer()
 
+    def assert_headers(self, header, body):
+        headers = Message(StringIO(header))
+        if 'content-length' in headers:
+            content_length = int(headers['content-length'])
+            body_length = len(body)
+            self.assertEqual(content_length, body_length, msg="Header reported content-length: %d Actual body length was: %d" % (content_length, body_length))
+
     def test_destructor_segfaults(self):
         """Segfault on destructor?"""
         server = QgsServer()
@@ -294,12 +301,23 @@ class TestQgsServer(unittest.TestCase):
         for id, req in tests:
             self.wfs_getfeature_compare(id, req)
 
-    def assert_headers(self, header, body):
-        headers = Message(StringIO(header))
-        if 'content-length' in headers:
-            content_length = int(headers['content-length'])
-            body_length = len(body)
-            self.assertEqual(content_length, body_length, msg="Header reported content-length: %d Actual body length was: %d" % (content_length, body_length))
+    def test_getLegendGraphics(self):
+        """Test that does not return an exception but an image"""
+        parms = {
+            'MAP': self.testdata_path + "test%2Bproject.qgs",
+            'SERVICE': 'WMS',
+            'VERSIONE': '1.0.0',
+            'REQUEST': 'GetLegendGraphic',
+            'FORMAT': 'image/png',
+            #'WIDTH': '20', # optional
+            #'HEIGHT': '20', # optional
+            'LAYER': u'testlayer+èé',
+        }
+        qs = '&'.join([u"%s=%s" % (k, v) for k, v in parms.iteritems()])
+        h, r = self.server.handleRequest(qs)
+        self.assertEquals(-1, h.find('Content-Type: text/xml; charset=utf-8'), "Header: %s\nResponse:\n%s" % (h, r))
+        self.assertNotEquals(-1, h.find('Content-Type: image/png'), "Header: %s\nResponse:\n%s" % (h, r))
+
 
     # The following code was used to test type conversion in python bindings
     # def test_qpair(self):
@@ -307,7 +325,5 @@ class TestQgsServer(unittest.TestCase):
     #    f, s = self.server.testQPair(('First', 'Second'))
     #    self.assertEqual(f, 'First')
     #    self.assertEqual(s, 'Second')
-
-
 if __name__ == '__main__':
     unittest.main()
