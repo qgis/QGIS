@@ -79,7 +79,7 @@ class JoinAttributes(GeoAlgorithm):
         cache = {}
         features = vector.features(layer2)
         total = 100.0 / len(features)
-        for current, feat in features:
+        for current, feat in enumerate(features):
             attrs = feat.attributes()
             joinValue2 = unicode(attrs[joinField2Index])
             if joinValue2 not in cache:
