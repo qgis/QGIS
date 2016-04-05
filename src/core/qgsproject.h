@@ -106,11 +106,20 @@ class CORE_EXPORT QgsProject : public QObject
     //@{
     bool isDirty() const;
 
-    // ### QGIS 3: remove in favor of setDirty(...)
-    void dirty( bool b );
+    /**
+     * Flag the project as dirty (modified). If this flag is set, the user will
+     * be asked to save changes to the project before closing the current project.
+     *
+     * @deprecated use setDirty instead
+     */
+    Q_DECL_DEPRECATED inline void dirty( bool b ) { setDirty( b ); }
 
-    /** Set project as dirty (modified).
-     *  @note added in 2.4 */
+    /**
+     * Flag the project as dirty (modified). If this flag is set, the user will
+     * be asked to save changes to the project before closing the current project.
+     *
+     * @note added in 2.4
+     */
     void setDirty( bool b );
     //@}
 

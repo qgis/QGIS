@@ -391,7 +391,7 @@ void QgsProject::setTitle( const QString &title )
 {
   imp_->title = title;
 
-  dirty( true );
+  setDirty( true );
 }
 
 
@@ -406,15 +406,9 @@ bool QgsProject::isDirty() const
   return imp_->dirty;
 } // bool QgsProject::isDirty()
 
-
-void QgsProject::dirty( bool b )
-{
-  imp_->dirty = b;
-} // bool QgsProject::isDirty()
-
 void QgsProject::setDirty( bool b )
 {
-  dirty( b );
+  imp_->dirty = b;
 }
 
 
@@ -423,7 +417,7 @@ void QgsProject::setFileName( QString const &name )
 {
   imp_->file.setFileName( name );
 
-  dirty( true );
+  setDirty( true );
 } // void QgsProject::setFileName( QString const &name )
 
 
@@ -941,12 +935,13 @@ bool QgsProject::read()
   mVisibilityPresetCollection.reset( new QgsVisibilityPresetCollection() );
   mVisibilityPresetCollection->readXML( *doc );
 
+
   // read the project: used by map canvas and legend
   emit readProject( *doc );
 
   // if all went well, we're allegedly in pristine state
   if ( clean )
-    dirty( false );
+    setDirty( false );
 
   emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
 
@@ -1194,7 +1189,7 @@ bool QgsProject::write()
     return false;
   }
 
-  dirty( false );               // reset to pristine state
+  setDirty( false );               // reset to pristine state
 
   emit projectSaved();
 
@@ -1207,7 +1202,7 @@ void QgsProject::clearProperties()
 {
   clear();
 
-  dirty( true );
+  setDirty( true );
 } // QgsProject::clearProperties()
 
 
@@ -1215,7 +1210,7 @@ void QgsProject::clearProperties()
 bool
 QgsProject::writeEntry( QString const &scope, const QString &key, bool value )
 {
-  dirty( true );
+  setDirty( true );
 
   return addKey_( scope, key, &imp_->properties_, value );
 } // QgsProject::writeEntry ( ..., bool value )
@@ -1225,7 +1220,7 @@ bool
 QgsProject::writeEntry( QString const &scope, const QString &key,
                         double value )
 {
-  dirty( true );
+  setDirty( true );
 
   return addKey_( scope, key, &imp_->properties_, value );
 } // QgsProject::writeEntry ( ..., double value )
@@ -1234,7 +1229,7 @@ QgsProject::writeEntry( QString const &scope, const QString &key,
 bool
 QgsProject::writeEntry( QString const &scope, const QString &key, int value )
 {
-  dirty( true );
+  setDirty( true );
 
   return addKey_( scope, key, &imp_->properties_, value );
 } // QgsProject::writeEntry ( ..., int value )
@@ -1244,7 +1239,7 @@ bool
 QgsProject::writeEntry( QString const &scope, const QString &key,
                         const QString &value )
 {
-  dirty( true );
+  setDirty( true );
 
   return addKey_( scope, key, &imp_->properties_, value );
 } // QgsProject::writeEntry ( ..., const QString &value )
@@ -1254,7 +1249,7 @@ bool
 QgsProject::writeEntry( QString const &scope, const QString &key,
                         const QStringList &value )
 {
-  dirty( true );
+  setDirty( true );
 
   return addKey_( scope, key, &imp_->properties_, value );
 } // QgsProject::writeEntry ( ..., const QStringList &value )
@@ -1390,7 +1385,7 @@ bool QgsProject::removeEntry( QString const &scope, const QString &key )
 {
   removeKey_( scope, key, imp_->properties_ );
 
-  dirty( true );
+  setDirty( true );
 
   return !findKey_( scope, key, imp_->properties_ );
 } // QgsProject::removeEntry

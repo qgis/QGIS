@@ -72,7 +72,7 @@ void QgsComposerMultiFrameCommand::restoreState( QDomDocument& stateDoc )
   if ( mMultiFrame )
   {
     mMultiFrame->readXML( stateDoc.documentElement().firstChild().toElement(), stateDoc );
-    QgsProject::instance()->dirty( true );
+    QgsProject::instance()->setDirty( true );
   }
 }
 

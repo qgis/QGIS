@@ -636,7 +636,7 @@ void QgsVectorLayerProperties::apply()
 
   layer->triggerRepaint();
   // notify the project we've made a change
-  QgsProject::instance()->dirty( true );
+  QgsProject::instance()->setDirty( true );
 }
 
 void QgsVectorLayerProperties::onCancel()

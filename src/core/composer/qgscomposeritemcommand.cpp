@@ -118,7 +118,7 @@ void QgsComposerItemCommand::restoreState( QDomDocument& stateDoc ) const
 
   destItem->readXML( stateDoc.documentElement().firstChild().toElement(), stateDoc );
   destItem->repaint();
-  QgsProject::instance()->dirty( true );
+  QgsProject::instance()->setDirty( true );
 }
 
 //

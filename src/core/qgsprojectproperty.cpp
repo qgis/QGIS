@@ -370,8 +370,7 @@ bool QgsPropertyKey::readXML( QDomNode & keyNode )
         QgsDebugMsg( QString( "unable to parse key value %1" ).arg( subkeys.item( i ).nodeName() ) );
       }
     }
-    else             // otherwise it's a subkey, so just
-      // recurse on down the remaining keys
+    else // otherwise it's a subkey, so just recurse on down the remaining keys
     {
       addKey( subkeys.item( i ).nodeName() );
 

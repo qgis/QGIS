@@ -4048,7 +4048,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   mMapCanvas->setCanvasColor( QColor( myRed, myGreen, myBlue ) );
   mOverviewCanvas->setBackgroundColor( QColor( myRed, myGreen, myBlue ) );
 
-  prj->dirty( false );
+  prj->setDirty( false );
 
   setTitleBarText_( *this );
 
@@ -4072,7 +4072,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   prj->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );
   prj->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
   prj->writeEntry( "SpatialRefSys", "/ProjectCRSID", static_cast< int >( srs.srsid() ) );
-  prj->dirty( false );
+  prj->setDirty( false );
   if ( srs.mapUnits() != QGis::UnknownUnit )
   {
     mMapCanvas->setMapUnits( srs.mapUnits() );
@@ -9577,7 +9577,7 @@ void QgisApp::showMapCanvas()
 void QgisApp::markDirty()
 {
   // notify the project that there was a change
-  QgsProject::instance()->dirty( true );
+  QgsProject::instance()->setDirty( true );
 }
 
 void QgisApp::extentChanged()

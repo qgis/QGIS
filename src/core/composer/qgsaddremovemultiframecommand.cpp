@@ -78,7 +78,7 @@ void QgsAddRemoveMultiFrameCommand::switchState()
       mComposition->addMultiFrame( mMultiFrame );
       mState = Added;
     }
-    QgsProject::instance()->dirty( true );
+    QgsProject::instance()->setDirty( true );
   }
 }
 

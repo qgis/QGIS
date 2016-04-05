@@ -416,7 +416,7 @@ void QgsComposition::setPaperSize( const double width, const double height, bool
     mPages.at( i )->setSceneRect( QRectF( 0, currentY, width, height ) );
     currentY += ( height + mSpaceBetweenPages );
   }
-  QgsProject::instance()->dirty( true );
+  QgsProject::instance()->setDirty( true );
   updateBounds();
   emit paperSizeChanged();
 }
@@ -542,7 +542,7 @@ void QgsComposition::setNumPages( const int pages )
     }
   }
 
-  QgsProject::instance()->dirty( true );
+  QgsProject::instance()->setDirty( true );
   updateBounds();
 
   emit nPagesChanged();
@@ -604,7 +604,7 @@ void QgsComposition::setPageStyleSymbol( QgsFillSymbolV2* symbol )
 {
   delete mPageStyleSymbol;
   mPageStyleSymbol = static_cast<QgsFillSymbolV2*>( symbol->clone() );
-  QgsProject::instance()->dirty( true );
+  QgsProject::instance()->setDirty( true );
 }
 
 void QgsComposition::createDefaultPageStyleSymbol()
@@ -848,7 +848,7 @@ void QgsComposition::setPrintResolution( const int dpi )
 {
   mPrintResolution = dpi;
   emit printResolutionChanged();
-  QgsProject::instance()->dirty( true );
+  QgsProject::instance()->setDirty( true );
 }
 
 void QgsComposition::setUseAdvancedEffects( const bool effectsEnabled )
@@ -1801,7 +1801,7 @@ void QgsComposition::alignSelectedItemsLeft()
     subcommand->saveAfterState();
   }
   mUndoStack->push( parentCommand );
-  QgsProject::instance()->dirty( true );
+  QgsProject::instance()->setDirty( true );
 }
 
 void QgsComposition::alignSelectedItemsHCenter()
@@ -1831,7 +1831,7 @@ void QgsComposition::alignSelectedItemsHCenter()
     subcommand->saveAfterState();
   }
   mUndoStack->push( parentCommand );
-  QgsProject::instance()->dirty( true );
+  QgsProject::instance()->setDirty( true );
 }
 
 void QgsComposition::alignSelectedItemsRight()
@@ -1861,7 +1861,7 @@ void QgsComposition::alignSelectedItemsRight()
     subcommand->saveAfterState();
   }
   mUndoStack->push( parentCommand );
-  QgsProject::instance()->dirty( true );
+  QgsProject::instance()->setDirty( true );
 }
 
 void QgsComposition::alignSelectedItemsTop()
@@ -1890,7 +1890,7 @@ void QgsComposition::alignSelectedItemsTop()
     subcommand->saveAfterState();
   }
   mUndoStack->push( parentCommand );
-  QgsProject::instance()->dirty( true );
+  QgsProject::instance()->setDirty( true );
 }
 
 void QgsComposition::alignSelectedItemsVCenter()
@@ -1918,7 +1918,7 @@ void QgsComposition::alignSelectedItemsVCenter()
     subcommand->saveAfterState();
   }
   mUndoStack->push( parentCommand );
-  QgsProject::instance()->dirty( true );
+  QgsProject::instance()->setDirty( true );
 }
 
 void QgsComposition::alignSelectedItemsBottom()
@@ -1946,7 +1946,7 @@ void QgsComposition::alignSelectedItemsBottom()
     subcommand->saveAfterState();
   }
   mUndoStack->push( parentCommand );
-  QgsProject::instance()->dirty( true );
+  QgsProject::instance()->setDirty( true );
 }
 
 void QgsComposition::lockSelectedItems()
@@ -1964,7 +1964,7 @@ void QgsComposition::lockSelectedItems()
 
   setAllUnselected();
   mUndoStack->push( parentCommand );
-  QgsProject::instance()->dirty( true );
+  QgsProject::instance()->setDirty( true );
 }
 
 void QgsComposition::unlockAllItems()
@@ -1993,7 +1993,7 @@ void QgsComposition::unlockAllItems()
     }
   }
   mUndoStack->push( parentCommand );
-  QgsProject::instance()->dirty( true );
+  QgsProject::instance()->setDirty( true );
 }
 
 QgsComposerItemGroup *QgsComposition::groupItems( QList<QgsComposerItem *> items )
@@ -2073,7 +2073,7 @@ void QgsComposition::updateZValues( const bool addUndoCommands )
   if ( addUndoCommands )
   {
     mUndoStack->push( parentCommand );
-    QgsProject::instance()->dirty( true );
+    QgsProject::instance()->setDirty( true );
   }
 }
 
@@ -2422,7 +2422,7 @@ void QgsComposition::endCommand()
     if ( mActiveItemCommand->containsChange() ) //protect against empty commands
     {
       mUndoStack->push( mActiveItemCommand );
-      QgsProject::instance()->dirty( true );
+      QgsProject::instance()->setDirty( true );
     }
     else
     {
@@ -2467,7 +2467,7 @@ void QgsComposition::endMultiFrameCommand()
     if ( mActiveMultiFrameCommand->containsChange() )
     {
       mUndoStack->push( mActiveMultiFrameCommand );
-      QgsProject::instance()->dirty( true );
+      QgsProject::instance()->setDirty( true );
     }
     else
     {
@@ -2708,7 +2708,7 @@ void QgsComposition::pushAddRemoveCommand( QgsComposerItem* item, const QString&
   QgsAddRemoveItemCommand* c = new QgsAddRemoveItemCommand( state, item, this, text );
   connectAddRemoveCommandSignals( c );
   undoStack()->push( c );
-  QgsProject::instance()->dirty( true );
+  QgsProject::instance()->setDirty( true );
 }
 
 void QgsComposition::connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c )
