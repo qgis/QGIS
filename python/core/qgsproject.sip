@@ -65,8 +65,12 @@ class QgsProject : QObject
      */
     void dirty( bool b ) /Deprecated/;
 
-    /** Set project as dirty (modified).
-     *  @note added in 2.4 */
+    /**
+     * Flag the project as dirty (modified). If this flag is set, the user will
+     * be asked to save changes to the project before closing the current project.
+     *
+     * @note added in 2.4
+     */
     void setDirty( bool b );
     //@}
 
@@ -300,6 +304,26 @@ class QgsProject : QObject
      * Get the list of layers which currently should not be taken into account on map identification
      */
     QStringList nonIdentifiableLayers() const;
+
+    /**
+     * Transactional editing means that on supported datasources (postgres databases) the edit state of
+     * all tables that originate from the same database are synchronized and executed in a server side
+     * transaction.
+     *
+     * @note Added in QGIS 2.16
+     */
+    bool autoTransaction() const;
+
+    /**
+     * Transactional editing means that on supported datasources (postgres databases) the edit state of
+     * all tables that originate from the same database are synchronized and executed in a server side
+     * transaction.
+     *
+     * Make sure that this is only called when all layers are not in edit mode.
+     *
+     * @note Added in QGIS 2.16
+     */
+    void setAutoTransaction(bool autoTransaction );
 
   protected:
 
