@@ -278,6 +278,54 @@ inline void ( *cast_to_fptr( void *p ) )()
 }
 #endif
 
+/** RAII signal blocking class. Used for temporarily blocking signals from a QObject
+ * for the lifetime of QgsSignalBlocker object.
+ * @see whileBlocking()
+ * @note added in QGIS 2.16
+ * @note not available in Python bindings
+ */
+// based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
+template<class Object> class QgsSignalBlocker
+{
+  public:
+
+    QgsSignalBlocker( Object* object )
+        : mObject( object )
+        , mPreviousState( object->blockSignals( true ) )
+    {}
+
+    ~QgsSignalBlocker()
+    {
+      mObject->blockSignals( mPreviousState );
+    }
+
+    Object* operator->() { return mObject; }
+
+  private:
+
+    Object* mObject;
+    bool mPreviousState;
+
+};
+
+/** Temporarily blocks signals from a QObject while calling a single method from the object.
+ *
+ * Usage:
+ *   whileBlocking( checkBox )->setChecked( true );
+ *   whileBlocking( spinBox )->setValue( 50 );
+ *
+ * No signals will be emitted when calling these methods.
+ *
+ * @note added in QGIS 2.16
+ * @see QgsSignalBlocker
+ * @note not available in Python bindings
+ */
+// based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
+template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object* object )
+{
+  return QgsSignalBlocker<Object>( object );
+}
+
 //
 // return a string representation of a double
 //

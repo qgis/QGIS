@@ -32,32 +32,6 @@
 
 #include <limits>
 
-///@cond PRIVATE
-
-// RAII class to block a QObject signal until destroyed
-struct SignalBlocker
-{
-  SignalBlocker( QObject * object )
-      : mObject( object )
-  {
-    mObject->blockSignals( true );
-  }
-  ~SignalBlocker()
-  {
-    mObject->blockSignals( false );
-  }
-private:
-  QObject * mObject;
-
-  SignalBlocker( const SignalBlocker& rh );
-  SignalBlocker& operator=( const SignalBlocker& rh );
-
-
-
-};
-
-///@endcond
-
 void QgsSizeScaleWidget::setFromSymbol()
 {
   if ( !mSymbol )
@@ -82,20 +56,18 @@ void QgsSizeScaleWidget::setFromSymbol()
     {
       if ( scaleMethodComboBox->itemData( i ).toInt() == int( expr.type() ) )
       {
-        ( SignalBlocker( scaleMethodComboBox ), scaleMethodComboBox->setCurrentIndex( i ) );
+        whileBlocking( scaleMethodComboBox )->setCurrentIndex( i );
         break;
       }
     }
 
-    // the (,) is used to create the Blocker first, then call the setter
-    // the unamed SignalBlocker is destroyed at the end of the line (semicolumn)
-    ( SignalBlocker( mExpressionWidget ), mExpressionWidget->setField( expr.baseExpression() ) );
-    ( SignalBlocker( minValueSpinBox ), minValueSpinBox->setValue( expr.minValue() ) );
-    ( SignalBlocker( maxValueSpinBox ), maxValueSpinBox->setValue( expr.maxValue() ) );
-    ( SignalBlocker( minSizeSpinBox ), minSizeSpinBox->setValue( expr.minSize() ) );
-    ( SignalBlocker( maxSizeSpinBox ), maxSizeSpinBox->setValue( expr.maxSize() ) );
-    ( SignalBlocker( nullSizeSpinBox ), nullSizeSpinBox->setValue( expr.nullSize() ) );
-    ( SignalBlocker( exponentSpinBox ), exponentSpinBox->setValue( expr.exponent() ) );
+    whileBlocking( mExpressionWidget )->setField( expr.baseExpression() );
+    whileBlocking( minValueSpinBox )->setValue( expr.minValue() );
+    whileBlocking( maxValueSpinBox )->setValue( expr.maxValue() );
+    whileBlocking( minSizeSpinBox )->setValue( expr.minSize() );
+    whileBlocking( maxSizeSpinBox )->setValue( expr.maxSize() );
+    whileBlocking( nullSizeSpinBox )->setValue( expr.nullSize() );
+    whileBlocking( exponentSpinBox )->setValue( expr.exponent() );
   }
   updatePreview();
 }
@@ -329,8 +301,8 @@ void QgsSizeScaleWidget::computeFromLayerTriggered()
       min = qMin( min, value );
     }
   }
-  ( SignalBlocker( minValueSpinBox ), minValueSpinBox->setValue( min ) );
-  ( SignalBlocker( maxSizeSpinBox ), maxValueSpinBox->setValue( max ) );
+  whileBlocking( minValueSpinBox )->setValue( min );
+  whileBlocking( maxValueSpinBox )->setValue( max );
   updatePreview();
 }
 

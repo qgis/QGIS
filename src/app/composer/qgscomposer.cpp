@@ -936,9 +936,7 @@ void QgsComposer::updateStatusZoom()
   //current zoomLevel
   double zoomLevel = mView->transform().m11() * 100 / scale100;
 
-  mStatusZoomCombo->blockSignals( true );
-  mStatusZoomCombo->lineEdit()->setText( tr( "%1%" ).arg( zoomLevel, 0, 'f', 1 ) );
-  mStatusZoomCombo->blockSignals( false );
+  whileBlocking( mStatusZoomCombo )->lineEdit()->setText( tr( "%1%" ).arg( zoomLevel, 0, 'f', 1 ) );
 }
 
 void QgsComposer::statusZoomCombo_currentIndexChanged( int index )
@@ -948,9 +946,7 @@ void QgsComposer::statusZoomCombo_currentIndexChanged( int index )
   {
     mView->setZoomLevel( selectedZoom );
     //update zoom combobox text for correct format (one decimal place, trailing % sign)
-    mStatusZoomCombo->blockSignals( true );
-    mStatusZoomCombo->lineEdit()->setText( tr( "%1%" ).arg( selectedZoom * 100.0, 0, 'f', 1 ) );
-    mStatusZoomCombo->blockSignals( false );
+    whileBlocking( mStatusZoomCombo )->lineEdit()->setText( tr( "%1%" ).arg( selectedZoom * 100.0, 0, 'f', 1 ) );
   }
 }
 
@@ -1087,9 +1083,7 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
                           tr( "Atlas in not currently enabled for this composition!" ),
                           QMessageBox::Ok,
                           QMessageBox::Ok );
-    mActionAtlasPreview->blockSignals( true );
-    mActionAtlasPreview->setChecked( false );
-    mActionAtlasPreview->blockSignals( false );
+    whileBlocking( mActionAtlasPreview )->setChecked( false );
     mStatusAtlasLabel->setText( QString() );
     return;
   }
@@ -1217,9 +1211,7 @@ void QgsComposer::atlasPageComboEditingFinished()
 
   if ( !ok || page > mComposition->atlasComposition().numFeatures() || page < 1 )
   {
-    mAtlasPageComboBox->blockSignals( true );
-    mAtlasPageComboBox->setCurrentIndex( mComposition->atlasComposition().currentFeatureNumber() );
-    mAtlasPageComboBox->blockSignals( false );
+    whileBlocking( mAtlasPageComboBox )->setCurrentIndex( mComposition->atlasComposition().currentFeatureNumber() );
   }
   else if ( page != mComposition->atlasComposition().currentFeatureNumber() + 1 )
   {
@@ -1573,9 +1565,7 @@ void QgsComposer::dockVisibilityChanged( bool visible )
 {
   if ( visible )
   {
-    mActionHidePanels->blockSignals( true );
-    mActionHidePanels->setChecked( false );
-    mActionHidePanels->blockSignals( false );
+    whileBlocking( mActionHidePanels )->setChecked( false );
   }
 }
 
@@ -4136,9 +4126,7 @@ void QgsComposer::setAtlasFeature( QgsMapLayer* layer, const QgsFeature& feat )
   {
     mComposition->setAtlasMode( QgsComposition::PreviewAtlas );
     //update gui controls
-    mActionAtlasPreview->blockSignals( true );
-    mActionAtlasPreview->setChecked( true );
-    mActionAtlasPreview->blockSignals( false );
+    whileBlocking( mActionAtlasPreview )->setChecked( true );
     mActionAtlasFirst->setEnabled( true );
     mActionAtlasLast->setEnabled( true );
     mActionAtlasNext->setEnabled( true );

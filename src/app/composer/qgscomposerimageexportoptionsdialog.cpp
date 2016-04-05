@@ -157,20 +157,12 @@ void QgsComposerImageExportOptionsDialog::clipToContentsToggled( bool state )
 
   if ( state )
   {
-    mWidthSpinBox->blockSignals( true );
-    mWidthSpinBox->setValue( 0 );
-    mWidthSpinBox->blockSignals( false );
-    mHeightSpinBox->blockSignals( true );
-    mHeightSpinBox->setValue( 0 );
-    mHeightSpinBox->blockSignals( false );
+    whileBlocking( mWidthSpinBox )->setValue( 0 );
+    whileBlocking( mHeightSpinBox )->setValue( 0 );
   }
   else
   {
-    mWidthSpinBox->blockSignals( true );
-    mWidthSpinBox->setValue( mImageSize.width() * mResolutionSpinBox->value() / 25.4 );
-    mWidthSpinBox->blockSignals( false );
-    mHeightSpinBox->blockSignals( true );
-    mHeightSpinBox->setValue( mImageSize.height() * mResolutionSpinBox->value() / 25.4 );
-    mHeightSpinBox->blockSignals( false );
+    whileBlocking( mWidthSpinBox )->setValue( mImageSize.width() * mResolutionSpinBox->value() / 25.4 );
+    whileBlocking( mHeightSpinBox )->setValue( mImageSize.height() * mResolutionSpinBox->value() / 25.4 );
   }
 }

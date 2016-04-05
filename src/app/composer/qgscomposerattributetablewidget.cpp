@@ -545,9 +545,7 @@ void QgsComposerAttributeTableWidget::atlasToggled()
   if ( !mComposerTable )
     return;
 
-  mSourceComboBox->blockSignals( true );
-  mSourceComboBox->setCurrentIndex( mSourceComboBox->findData( mComposerTable->source() ) );
-  mSourceComboBox->blockSignals( false );
+  whileBlocking( mSourceComboBox )->setCurrentIndex( mSourceComboBox->findData( mComposerTable->source() ) );
 
   if ( !atlasEnabled && mComposerTable->filterToAtlasFeature() )
   {
@@ -646,9 +644,7 @@ void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
 
 void QgsComposerAttributeTableWidget::setMaximumNumberOfFeatures( int n )
 {
-  mMaximumRowsSpinBox->blockSignals( true );
-  mMaximumRowsSpinBox->setValue( n );
-  mMaximumRowsSpinBox->blockSignals( false );
+  whileBlocking( mMaximumRowsSpinBox )->setValue( n );
 }
 
 void QgsComposerAttributeTableWidget::on_mShowOnlyVisibleFeaturesCheckBox_stateChanged( int state )
