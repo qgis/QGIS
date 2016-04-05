@@ -384,6 +384,16 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareShape( const QString& name, QPolygonF 
     << QPointF( 0, -1 );
     return true;
   }
+  else if ( name == "left_half_triangle" )
+  {
+    polygon << QPointF( 0, 1 ) << QPointF( 1, 1 ) << QPointF( 0, -1 );
+    return true;
+  }
+  else if ( name == "right_half_triangle" )
+  {
+    polygon << QPointF( -1, 1 ) << QPointF( 0, 1 ) << QPointF( 0, -1 );
+    return true;
+  }
   else if ( name == "star" )
   {
     double sixth = 1.0 / 3;
