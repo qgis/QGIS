@@ -4,6 +4,8 @@ from PyQt.QtWidgets import QAction, QMenu
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from qgis.utils import iface
+import os
+from PyQt4.QtGui import QIcon
 
 algorithmsToolbar = None
 menusSettingsGroup = 'Menus'
@@ -106,7 +108,14 @@ def initializeMenus():
     for provider in Processing.providers:
         for alg in provider.algs:
             d = defaultMenuEntries.get(alg.commandLineName(), "")
-            setting = Setting(menusSettingsGroup, "MENU_" + alg.commandLineName(), alg.name, d)
+            setting = Setting(menusSettingsGroup, "MENU_" + alg.commandLineName(),
+                              "Menu path", d)
+            ProcessingConfig.addSetting(setting)
+            setting = Setting(menusSettingsGroup, "BUTTON_" + alg.commandLineName(),
+                              "Add button", False)
+            ProcessingConfig.addSetting(setting)
+            setting = Setting(menusSettingsGroup, "ICON_" + alg.commandLineName(),
+                              "Icon", "", valuetype = Setting.FILE)
             ProcessingConfig.addSetting(setting)
 
     ProcessingConfig.readSettings()
@@ -121,9 +130,15 @@ def createMenus():
     for provider in list(Processing.algs.values()):
         for alg in list(provider.values()):
             menuPath = ProcessingConfig.getSetting("MENU_" + alg.commandLineName())
+            addButton = ProcessingConfig.getSetting("BUTTON_" + alg.commandLineName())
+            icon = ProcessingConfig.getSetting("ICON_" + alg.commandLineName())
+            if icon and os.path.exists(icon):
+                icon = QIcon(icon)
+            else:
+                icon = None
             if menuPath:
                 paths = menuPath.split("/")
-                addAlgorithmEntry(alg, paths[0], paths[-1])
+                addAlgorithmEntry(alg, paths[0], paths[-1], addButton = addButton, icon = icon)
 
 
 def removeMenus():
@@ -165,7 +180,7 @@ def removeAlgorithmEntry(alg, menuName, submenuName, actionText=None, delButton=
     if delButton:
         global algorithmsToolbar
         if algorithmsToolbar is not None:
-            action = Processing.findAction(algorithmsToolbar.actions(), alg, actionText)
+            action = findAction(algorithmsToolbar.actions(), alg, actionText)
             if action is not None:
                 algorithmsToolbar.removeAction(action)
 

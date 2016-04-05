@@ -203,16 +203,30 @@ class ConfigDialog(BASE, WIDGET):
             groupItem.setEditable(False)
 
             for alg in provider.algs:
-                labelItem = QStandardItem(alg.name)
-                labelItem.setIcon(icon)
-                labelItem.setEditable(False)
+                algItem = QStandardItem(alg.name)
+                algItem.setIcon(icon)
+                algItem.setEditable(False)
                 try:
-                    setting = ProcessingConfig.settings["MENU_" + alg.commandLineName()]
+                    settingMenu = ProcessingConfig.settings["MENU_" + alg.commandLineName()]
+                    settingButton = ProcessingConfig.settings["BUTTON_" + alg.commandLineName()]
+                    settingIcon = ProcessingConfig.settings["ICON_" + alg.commandLineName()]
                 except:
                     continue
-                self.items[setting] = SettingItem(setting)
-
-                groupItem.insertRow(0, [labelItem, self.items[setting]])
+                self.items[settingMenu] = SettingItem(settingMenu)
+                self.items[settingButton] = SettingItem(settingButton)
+                self.items[settingIcon] = SettingItem(settingIcon)
+                menuLabelItem = QStandardItem("Menu path")
+                menuLabelItem.setEditable(False)
+                buttonLabelItem = QStandardItem("Add button in toolbar")
+                buttonLabelItem.setEditable(False)
+                iconLabelItem = QStandardItem("Icon")
+                iconLabelItem.setEditable(False)
+                emptyItem = QStandardItem()
+                emptyItem.setEditable(False)
+                algItem.insertRow(0, [menuLabelItem, self.items[settingMenu]])
+                algItem.insertRow(0, [buttonLabelItem, self.items[settingButton]])
+                algItem.insertRow(0, [iconLabelItem, self.items[settingIcon]])
+                groupItem.insertRow(0, [algItem, emptyItem])
 
             emptyItem = QStandardItem()
             emptyItem.setEditable(False)
