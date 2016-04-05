@@ -42,7 +42,13 @@
     </spacer>
    </item>
    <item row="1" column="1">
-    <widget class="QSpinBox" name="sbWidgetWidth">
+    <widget class="QgsSpinBox" name="sbWidgetWidth">
+     <property name="specialValueText">
+      <string>Auto</string>
+     </property>
+     <property name="suffix">
+      <string> px</string>
+     </property>
      <property name="maximum">
       <number>10000</number>
      </property>
@@ -56,9 +62,12 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QSpinBox" name="sbWidgetHeight">
+    <widget class="QgsSpinBox" name="sbWidgetHeight">
+     <property name="specialValueText">
+      <string>Auto</string>
+     </property>
      <property name="suffix">
-      <string/>
+      <string> px</string>
      </property>
      <property name="prefix">
       <string/>
@@ -83,6 +92,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
