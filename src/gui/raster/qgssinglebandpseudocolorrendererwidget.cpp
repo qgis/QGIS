@@ -338,9 +338,9 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
   for ( ; value_it != entryValues.end(); ++value_it, ++color_it )
   {
     QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
-    newItem->setText( 0, QString::number( *value_it, 'f' ) );
+    newItem->setText( 0, QString::number( *value_it, 'g' ) );
     newItem->setBackground( 1, QBrush( *color_it ) );
-    newItem->setText( 2, QString::number( *value_it, 'f' ) );
+    newItem->setText( 2, QString::number( *value_it, 'g' ) );
     newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
   }
 }
@@ -375,7 +375,7 @@ void QgsSingleBandPseudoColorRendererWidget::populateColormapTreeWidget( const Q
   for ( ; it != colorRampItems.constEnd(); ++it )
   {
     QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
-    newItem->setText( 0, QString::number( it->value, 'f' ) );
+    newItem->setText( 0, QString::number( it->value, 'g' ) );
     newItem->setBackground( 1, QBrush( it->color ) );
     newItem->setText( 2, it->label );
   }
@@ -611,7 +611,7 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
         for ( ; it != colorRampItemList.end(); ++it )
         {
           QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
-          newItem->setText( 0, QString::number( it->value, 'f' ) );
+          newItem->setText( 0, QString::number( it->value, 'g' ) );
           newItem->setBackground( 1, QBrush( it->color ) );
           newItem->setText( 2, it->label );
         }
