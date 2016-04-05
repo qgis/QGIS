@@ -565,6 +565,11 @@ void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV
   {
     mPainterPath.addEllipse( QRectF( -size.width() / 2.0, -size.height() / 2.0, size.width(), size.height() ) );
   }
+  else if ( symbolName == "semi_circle" )
+  {
+    mPainterPath.arcTo( -size.width() / 2.0, -size.height() / 2.0, size.width(), size.height(), 0, 180 );
+    mPainterPath.lineTo( 0, 0 );
+  }
   else if ( symbolName == "rectangle" )
   {
     mPainterPath.addRect( QRectF( -size.width() / 2.0, -size.height() / 2.0, size.width(), size.height() ) );
@@ -582,6 +587,20 @@ void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV
     mPainterPath.lineTo( -size.width() / 2.0, size.height() / 2.0 );
     mPainterPath.lineTo( size.width() / 2.0, size.height() / 2.0 );
     mPainterPath.lineTo( 0, -size.height() / 2.0 );
+  }
+  else if ( symbolName == "left_half_triangle" )
+  {
+    mPainterPath.moveTo( 0, size.height() / 2.0 );
+    mPainterPath.lineTo( size.width() / 2.0, size.height() / 2.0 );
+    mPainterPath.lineTo( 0, -size.height() / 2.0 );
+    mPainterPath.lineTo( 0, size.height() / 2.0 );
+  }
+  else if ( symbolName == "right_half_triangle" )
+  {
+    mPainterPath.moveTo( -size.width() / 2.0, size.height() / 2.0 );
+    mPainterPath.lineTo( 0, size.height() / 2.0 );
+    mPainterPath.lineTo( 0, -size.height() / 2.0 );
+    mPainterPath.lineTo( -size.width() / 2.0, size.height() / 2.0 );
   }
 }
 

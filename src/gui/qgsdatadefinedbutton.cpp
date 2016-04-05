@@ -904,7 +904,8 @@ QString QgsDataDefinedButton::fillStyleDesc()
 
 QString QgsDataDefinedButton::markerStyleDesc()
 {
-  return trString() + QLatin1String( "[<b>circle</b>|<b>rectangle</b>|<b>cross</b>|<b>triangle</b>]" );
+  return trString() + QLatin1String( "[<b>circle</b>|<b>rectangle</b>|<b>cross</b>|<b>triangle"
+                                     "</b>|<b>right_half_triangle</b>|<b>left_half_triangle</b>|<b>semi_circle</b>]" );
 }
 
 QString QgsDataDefinedButton::customDashDesc()
