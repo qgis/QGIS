@@ -50,7 +50,32 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
     QList<QgsMapLayer *> mapLayersByName( const QString& layerName );
 
     //! Retrieve the mapLayers collection (mainly intended for use by projection)
-    const QMap<QString, QgsMapLayer*> & mapLayers();
+    QMap<QString, QgsMapLayer*> mapLayers();
+
+    /**
+     * Get map layers of a certain type.
+     *
+     * Example:
+     *
+     *     QVector<QgsVectorLayer*> vectorLayers = QgsMapLayerRegistry::instance()->layers<QgsVectorLayer*>();
+     *
+     * @note not available in Python bindings
+     * @note added in QGIS 2.16
+     */
+    template <typename T>
+    QVector<T> layers() const
+    {
+      QVector<T> layers;
+      Q_FOREACH ( QgsMapLayer* layer, mMapLayers.values() )
+      {
+        T tLayer = qobject_cast<T>( layer );
+        if ( tLayer )
+        {
+          layers << tLayer;
+        }
+      }
+      return layers;
+    }
 
     /**
      * @brief
