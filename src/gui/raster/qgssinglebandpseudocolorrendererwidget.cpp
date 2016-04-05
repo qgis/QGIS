@@ -166,12 +166,52 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRendererWidget::renderer()
   return renderer;
 }
 
+void QgsSingleBandPseudoColorRendererWidget::autolabel()
+{
+  bool discrete = mColorInterpolationComboBox->currentText() == tr( "Discrete" );
+  QString label = "";
+  int myTopLevelItemCount = mColormapTreeWidget->topLevelItemCount();
+  QTreeWidgetItem* myCurrentItem;
+  for ( int i = 0; i < myTopLevelItemCount; ++i )
+  {
+    myCurrentItem = mColormapTreeWidget->topLevelItem( i );
+    //If the item is null or does not have a pixel values set, skip
+    if ( !myCurrentItem || myCurrentItem->text( 0 ) == "" )
+    {
+      continue;
+    }
+
+    if ( discrete )
+    {
+      if ( i == 0)
+      {
+        label = "< " + myCurrentItem->text( 0 );
+      }
+      else
+      {
+        label = mColormapTreeWidget->topLevelItem( i - 1 )->text( 0 ) + " - " + myCurrentItem->text( 0 );
+      }
+    }
+    else
+    {
+      label = myCurrentItem->text( 0 );
+    }
+
+    if ( myCurrentItem->text( 2 ) == "" || myCurrentItem->text( 2 ) == label || myCurrentItem->foreground( 2 ).color() == QColor( Qt::gray ) )
+    {
+      myCurrentItem->setText( 2, label );
+      myCurrentItem->setForeground( 2, QBrush( QColor( Qt::gray ) ) );
+    }
+  }
+}
+
 void QgsSingleBandPseudoColorRendererWidget::on_mAddEntryButton_clicked()
 {
   QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
-  newItem->setText( 0, "0.0" );
+  newItem->setText( 0, "0" );
   newItem->setBackground( 1, QBrush( QColor( Qt::magenta ) ) );
-  newItem->setText( 2, tr( "Custom color map entry" ) );
+  newItem->setText( 2, "" );
+  autolabel();
   emit widgetChanged();
 }
 
@@ -356,9 +396,10 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
     QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
     newItem->setText( 0, QString::number( *value_it, 'g' ) );
     newItem->setBackground( 1, QBrush( *color_it ) );
-    newItem->setText( 2, QString::number( *value_it, 'g' ) );
+    newItem->setText( 2, "" );
     newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
   }
+  autolabel();
   emit widgetChanged();
 }
 
@@ -396,6 +437,7 @@ void QgsSingleBandPseudoColorRendererWidget::populateColormapTreeWidget( const Q
     newItem->setBackground( 1, QBrush( it->color ) );
     newItem->setText( 2, it->label );
   }
+  autolabel();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromBandButton_clicked()
@@ -600,7 +642,26 @@ void QgsSingleBandPseudoColorRendererWidget::on_mColormapTreeWidget_itemDoubleCl
   }
   else
   {
+    if ( column == 2 )
+    {
+      item->setForeground( 2, QBrush() );
+    }
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
+  }
+}
+
+void QgsSingleBandPseudoColorRendererWidget::on_mColormapTreeWidget_itemChanged( QTreeWidgetItem* item, int column )
+{
+  if ( column == 0 ) // change item value
+  {
+    autolabel();
+  }
+  else if ( column == 2 ) // change item label
+  {
+    if ( item->text( 2 ).isEmpty() )
+    {
+      autolabel();
+    }
   }
 }
 
@@ -654,6 +715,12 @@ void QgsSingleBandPseudoColorRendererWidget::on_mBandComboBox_currentIndexChange
   QList<int> myBands;
   myBands.append( mBandComboBox->itemData( index ).toInt() );
   mMinMaxWidget->setBands( myBands );
+}
+
+void QgsSingleBandPseudoColorRendererWidget::on_mColorInterpolationComboBox_currentIndexChanged( int index )
+{
+  Q_UNUSED(index);
+  autolabel();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin )
