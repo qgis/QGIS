@@ -22,6 +22,7 @@
 #include <QColor>
 #include <QStringList>
 #include <QTextStream>
+#include <QObject>
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
@@ -1604,7 +1605,7 @@ QgsExpression::Node* QgsOgcUtils::nodeFromOgcFilter( QDomElement &element, QStri
     return nodeIsBetweenFromOgcFilter( element, errorMessage );
   }
 
-  errorMessage += QString( "unable to convert '%1' element to a valid expression: it is not supported yet or it has invalid arguments" ).arg( element.tagName() );
+  errorMessage += QObject::tr( "unable to convert '%1' element to a valid expression: it is not supported yet or it has invalid arguments" ).arg( element.tagName() );
   return nullptr;
 }
 
@@ -1619,7 +1620,7 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodeBinaryOperatorFromOgcFilter(
   if ( op < 0 )
   {
     if ( errorMessage.isEmpty() )
-      errorMessage = QString( "'%1' binary operator not supported." ).arg( element.tagName() );
+      errorMessage = QObject::tr( "'%1' binary operator not supported." ).arg( element.tagName() );
     return nullptr;
   }
 
@@ -1628,7 +1629,7 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodeBinaryOperatorFromOgcFilter(
   if ( !expr )
   {
     if ( errorMessage.isEmpty() )
-      errorMessage = QString( "invalid left operand for '%1' binary operator" ).arg( element.tagName() );
+      errorMessage = QObject::tr( "invalid left operand for '%1' binary operator" ).arg( element.tagName() );
     return nullptr;
   }
 
@@ -1638,7 +1639,7 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodeBinaryOperatorFromOgcFilter(
     if ( !opRight )
     {
       if ( errorMessage.isEmpty() )
-        errorMessage = QString( "invalid right operand for '%1' binary operator" ).arg( element.tagName() );
+        errorMessage = QObject::tr( "invalid right operand for '%1' binary operator" ).arg( element.tagName() );
       delete expr;
       return nullptr;
     }
@@ -1649,7 +1650,7 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodeBinaryOperatorFromOgcFilter(
   if ( expr == leftOp )
   {
     if ( errorMessage.isEmpty() )
-      errorMessage = QString( "only one operand for '%1' binary operator" ).arg( element.tagName() );
+      errorMessage = QObject::tr( "only one operand for '%1' binary operator" ).arg( element.tagName() );
     delete expr;
     return nullptr;
   }
@@ -1685,7 +1686,7 @@ QgsExpression::NodeFunction* QgsOgcUtils::nodeSpatialOperatorFromOgcFilter( QDom
   }
   else
   {
-    errorMessage = "No OGC Geometry found";
+    errorMessage = QObject::tr( "No OGC Geometry found" );
     delete gml2Args;
     return nullptr;
   }
@@ -1708,7 +1709,7 @@ QgsExpression::NodeUnaryOperator* QgsOgcUtils::nodeNotFromOgcFilter( QDomElement
   if ( !operand )
   {
     if ( errorMessage.isEmpty() )
-      errorMessage = QString( "invalid operand for '%1' unary operator" ).arg( element.tagName() );
+      errorMessage = QObject::tr( "invalid operand for '%1' unary operator" ).arg( element.tagName() );
     return nullptr;
   }
 
@@ -1720,7 +1721,7 @@ QgsExpression::NodeFunction* QgsOgcUtils::nodeFunctionFromOgcFilter( QDomElement
 {
   if ( element.isNull() || element.tagName() != "Function" )
   {
-    errorMessage = QString( "ogc:Function expected, got %1" ).arg( element.tagName() );
+    errorMessage = QObject::tr( "ogc:Function expected, got %1" ).arg( element.tagName() );
     return nullptr;
   }
 
@@ -1759,7 +1760,7 @@ QgsExpression::Node* QgsOgcUtils::nodeLiteralFromOgcFilter( QDomElement &element
 {
   if ( element.isNull() || element.tagName() != "Literal" )
   {
-    errorMessage = QString( "ogc:Literal expected, got %1" ).arg( element.tagName() );
+    errorMessage = QObject::tr( "ogc:Literal expected, got %1" ).arg( element.tagName() );
     return nullptr;
   }
 
@@ -1781,7 +1782,7 @@ QgsExpression::Node* QgsOgcUtils::nodeLiteralFromOgcFilter( QDomElement &element
         if ( root )
           delete root;
 
-        errorMessage = QString( "'%1' is an invalid or not supported content for ogc:Literal" ).arg( operandElem.tagName() );
+        errorMessage = QObject::tr( "'%1' is an invalid or not supported content for ogc:Literal" ).arg( operandElem.tagName() );
         return nullptr;
       }
     }
@@ -1826,7 +1827,7 @@ QgsExpression::NodeColumnRef* QgsOgcUtils::nodeColumnRefFromOgcFilter( QDomEleme
 {
   if ( element.isNull() || element.tagName() != "PropertyName" )
   {
-    errorMessage = QString( "ogc:PropertyName expected, got %1" ).arg( element.tagName() );
+    errorMessage = QObject::tr( "ogc:PropertyName expected, got %1" ).arg( element.tagName() );
     return nullptr;
   }
 
@@ -1879,7 +1880,7 @@ QgsExpression::Node* QgsOgcUtils::nodeIsBetweenFromOgcFilter( QDomElement& eleme
     if ( upperBound )
       delete upperBound;
 
-    errorMessage = "missing some required sub-elements in ogc:PropertyIsBetween";
+    errorMessage = QObject::tr( "missing some required sub-elements in ogc:PropertyIsBetween" );
     return nullptr;
   }
 
@@ -1947,7 +1948,7 @@ QDomElement QgsOgcUtils::expressionNodeToOgcFilter( const QgsExpression::Node* n
       return expressionColumnRefToOgcFilter( static_cast<const QgsExpression::NodeColumnRef*>( node ), doc, errorMessage );
 
     default:
-      errorMessage = QString( "Node type not supported: %1" ).arg( node->nodeType() );
+      errorMessage = QObject::tr( "Node type not supported: %1" ).arg( node->nodeType() );
       return QDomElement();
   }
 }
@@ -1974,7 +1975,7 @@ QDomElement QgsOgcUtils::expressionUnaryOperatorToOgcFilter( const QgsExpression
       }
       else
       {
-        errorMessage = QString( "This use of unary operator not implemented yet" );
+        errorMessage = QObject::tr( "This use of unary operator not implemented yet" );
         return QDomElement();
       }
       break;
@@ -1984,7 +1985,7 @@ QDomElement QgsOgcUtils::expressionUnaryOperatorToOgcFilter( const QgsExpression
       break;
 
     default:
-      errorMessage = QString( "Unary operator %1 not implemented yet" ).arg( QgsExpression::UnaryOperatorText[node->op()] );
+      errorMessage = QObject::tr( "Unary operator %1 not implemented yet" ).arg( QgsExpression::UnaryOperatorText[node->op()] );
       return QDomElement();
   }
 
@@ -2038,7 +2039,7 @@ QDomElement QgsOgcUtils::expressionBinaryOperatorToOgcFilter( const QgsExpressio
   {
     // not implemented binary operators
     // TODO: regex, % (mod), ^ (pow) are not supported yet
-    errorMessage = QString( "Binary operator %1 not implemented yet" ).arg( QgsExpression::BinaryOperatorText[op] );
+    errorMessage = QObject::tr( "Binary operator %1 not implemented yet" ).arg( QgsExpression::BinaryOperatorText[op] );
     return QDomElement();
   }
 
@@ -2077,7 +2078,7 @@ QDomElement QgsOgcUtils::expressionLiteralToOgcFilter( const QgsExpression::Node
       break;
 
     default:
-      errorMessage = QString( "Literal type not supported: %1" ).arg( node->value().type() );
+      errorMessage = QObject::tr( "Literal type not supported: %1" ).arg( node->value().type() );
       return QDomElement();
   }
 
@@ -2207,7 +2208,7 @@ QDomElement QgsOgcUtils::expressionFunctionToOgcFilter( const QgsExpression::Nod
     {
       delete geom;
 
-      errorMessage = QString( "<BBOX> is currently supported only in form: bbox($geometry, geomFromWKT('...'))" );
+      errorMessage = QObject::tr( "<BBOX> is currently supported only in form: bbox($geometry, geomFromWKT('...'))" );
       return QDomElement();
     }
   }
@@ -2224,7 +2225,7 @@ QDomElement QgsOgcUtils::expressionFunctionToOgcFilter( const QgsExpression::Nod
       otherNode = argNodes[0];
     else
     {
-      errorMessage = QString( "Unable to translate spatial operator: at least one must refer to geometry." );
+      errorMessage = QObject::tr( "Unable to translate spatial operator: at least one must refer to geometry." );
       return QDomElement();
     }
 
@@ -2233,7 +2234,7 @@ QDomElement QgsOgcUtils::expressionFunctionToOgcFilter( const QgsExpression::Nod
     // the other node must be a geometry constructor
     if ( otherNode->nodeType() != QgsExpression::ntFunction )
     {
-      errorMessage = "spatial operator: the other operator must be a geometry constructor function";
+      errorMessage = QObject::tr( "spatial operator: the other operator must be a geometry constructor function" );
       return QDomElement();
     }
 
@@ -2244,7 +2245,7 @@ QDomElement QgsOgcUtils::expressionFunctionToOgcFilter( const QgsExpression::Nod
       QgsExpression::Node* firstFnArg = otherFn->args()->list()[0];
       if ( firstFnArg->nodeType() != QgsExpression::ntLiteral )
       {
-        errorMessage = "geom_from_wkt: argument must be string literal";
+        errorMessage = QObject::tr( "geom_from_wkt: argument must be string literal" );
         return QDomElement();
       }
       QString wkt = static_cast<const QgsExpression::NodeLiteral*>( firstFnArg )->value().toString();
@@ -2257,7 +2258,7 @@ QDomElement QgsOgcUtils::expressionFunctionToOgcFilter( const QgsExpression::Nod
       QgsExpression::Node* firstFnArg = otherFn->args()->list()[0];
       if ( firstFnArg->nodeType() != QgsExpression::ntLiteral )
       {
-        errorMessage = "geom_from_gml: argument must be string literal";
+        errorMessage = QObject::tr( "geom_from_gml: argument must be string literal" );
         return QDomElement();
       }
 
@@ -2265,7 +2266,7 @@ QDomElement QgsOgcUtils::expressionFunctionToOgcFilter( const QgsExpression::Nod
       QString gml = static_cast<const QgsExpression::NodeLiteral*>( firstFnArg )->value().toString();
       if ( !geomDoc.setContent( gml, true ) )
       {
-        errorMessage = "geom_from_gml: unable to parse XML";
+        errorMessage = QObject::tr( "geom_from_gml: unable to parse XML" );
         return QDomElement();
       }
 
@@ -2274,7 +2275,7 @@ QDomElement QgsOgcUtils::expressionFunctionToOgcFilter( const QgsExpression::Nod
     }
     else
     {
-      errorMessage = "spatial operator: unknown geometry constructor function";
+      errorMessage = QObject::tr( "spatial operator: unknown geometry constructor function" );
       return QDomElement();
     }
 
@@ -2288,7 +2289,7 @@ QDomElement QgsOgcUtils::expressionFunctionToOgcFilter( const QgsExpression::Nod
 
   if ( fd->params() == 0 )
   {
-    errorMessage = QString( "Special columns / constants are not supported." );
+    errorMessage = QObject::tr( "Special columns/constants are not supported." );
     return QDomElement();
   }
 
