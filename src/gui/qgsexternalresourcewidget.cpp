@@ -142,7 +142,11 @@ void QgsExternalResourceWidget::updateDocumentViewer()
   {
     const QPixmap* pm = mPixmapLabel->pixmap();
 
-    if ( pm )
+    if ( !pm || pm->isNull() )
+    {
+      mPixmapLabel->setMinimumSize( QSize( 0, 0 ) );
+    }
+    else
     {
       QSize size( mDocumentViewerWidth, mDocumentViewerHeight );
       if ( size.width() == 0 && size.height() > 0 )
@@ -165,7 +169,7 @@ void QgsExternalResourceWidget::updateDocumentViewer()
 
 void QgsExternalResourceWidget::loadDocument( const QString& path )
 {
-  if ( path.isNull() )
+  if ( path.isEmpty() )
   {
 #ifdef WITH_QTWEBKIT
     if ( mDocumentViewerContent == Web )
@@ -176,6 +180,7 @@ void QgsExternalResourceWidget::loadDocument( const QString& path )
     if ( mDocumentViewerContent == Image )
     {
       mPixmapLabel->clear();
+      updateDocumentViewer();
     }
   }
 
@@ -190,12 +195,8 @@ void QgsExternalResourceWidget::loadDocument( const QString& path )
   if ( mDocumentViewerContent == Image )
   {
     QPixmap pm( path );
-    if ( !pm.isNull() )
-    {
-      mPixmapLabel->setPixmap( pm );
-
-      updateDocumentViewer();
-    }
+    mPixmapLabel->setPixmap( pm );
+    updateDocumentViewer();
   }
 }
 
