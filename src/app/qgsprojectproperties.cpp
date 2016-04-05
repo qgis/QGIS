@@ -142,6 +142,16 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   ///////////////////////////////////////////////////////////
   // Properties stored in QgsProject
 
+  Q_FOREACH ( QgsVectorLayer* layer, QgsMapLayerRegistry::instance()->layers<QgsVectorLayer*>() )
+  {
+    if ( layer->isEditable() )
+    {
+      mAutoTransaction->setEnabled( false );
+      mAutoTransaction->setToolTip( tr( "Layers are in edit mode. Stop edit mode on all layers to toggle transactional editing." ) );
+    }
+  }
+
+  mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
   title( QgsProject::instance()->title() );
   projectFileName->setText( QgsProject::instance()->fileName() );
 
@@ -703,6 +713,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     on_cbxProjectionEnabled_toggled( myProjectionEnabled );
   }
 
+  mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
+
+  // Variables editor
   mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
   mVariableEditor->context()->appendScope( QgsExpressionContextUtils::projectScope() );
   mVariableEditor->reloadContext();
@@ -787,6 +800,7 @@ void QgsProjectProperties::apply()
 
   // Set the project title
   QgsProject::instance()->setTitle( title() );
+  QgsProject::instance()->setAutoTransaction( mAutoTransaction->isChecked() );
 
   // set the mouse display precision method and the
   // number of decimal places for the manual option

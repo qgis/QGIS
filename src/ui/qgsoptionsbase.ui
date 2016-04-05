@@ -1395,7 +1395,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>604</width>
-                <height>788</height>
+                <height>757</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1641,13 +1641,6 @@
                    <widget class="QCheckBox" name="cbxCompileExpressions">
                     <property name="text">
                      <string>Execute expressions on server-side if possible</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QCheckBox" name="cbxAutoTransaction">
-                    <property name="text">
-                     <string>Create transaction groups automatically whenever possible (Experimental)</string>
                     </property>
                    </widget>
                   </item>
@@ -2479,8 +2472,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>168</width>
-                <height>276</height>
+                <width>617</width>
+                <height>575</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2584,8 +2577,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>521</width>
-                <height>354</height>
+                <width>617</width>
+                <height>575</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3384,8 +3377,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>537</width>
-                <height>591</height>
+                <width>604</width>
+                <height>584</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -4678,7 +4671,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>552</width>
+                <width>604</width>
                 <height>791</height>
                </rect>
               </property>
@@ -5263,7 +5256,6 @@
   <tabstop>cbxAddPostgisDC</tabstop>
   <tabstop>cbxAddOracleDC</tabstop>
   <tabstop>cbxCompileExpressions</tabstop>
-  <tabstop>cbxAutoTransaction</tabstop>
   <tabstop>mBtnRemoveHiddenPath</tabstop>
   <tabstop>mListHiddenBrowserPaths</tabstop>
   <tabstop>mOptionsScrollArea_04</tabstop>

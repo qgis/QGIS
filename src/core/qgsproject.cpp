@@ -37,6 +37,8 @@
 #include "qgsvisibilitypresetcollection.h"
 #include "qgslayerdefinition.h"
 #include "qgsunittypes.h"
+#include "qgstransaction.h"
+#include "qgstransactiongroup.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -324,6 +326,7 @@ struct QgsProject::Imp
   QFile file;                 // current physical project file
   QgsPropertyKey properties_; // property hierarchy
   QString title;              // project title
+  bool autoTransaction;  // transaction grouped editing
   bool dirty;                 // project has been modified since it has been read or saved
 
   Imp()
@@ -344,6 +347,7 @@ struct QgsProject::Imp
     file.setFileName( QString() );
     properties_.clearKeys();
     title.clear();
+    autoTransaction = false;
     dirty = false;
   }
 
@@ -363,6 +367,8 @@ QgsProject::QgsProject()
   // whenever layers are added to or removed from the registry,
   // layer tree will be updated
   mLayerTreeRegistryBridge = new QgsLayerTreeRegistryBridge( mRootGroup, this );
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( addToTransactionGroups( QList<QgsMapLayer*> ) ) );
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersRemoved( QStringList ) ), this, SLOT( cleanTransactionGroups() ) );
 } // QgsProject ctor
 
 
@@ -884,6 +890,14 @@ bool QgsProject::read()
   // now get project title
   _getTitle( *doc, imp_->title );
 
+  QDomNodeList nl = doc->elementsByTagName( "autotransaction" );
+  if ( nl.count() )
+  {
+    QDomElement transactionElement = nl.at( 0 ).toElement();
+    if ( transactionElement.attribute( "active", "0" ).toInt() == 1 )
+      imp_->autoTransaction = true;
+  }
+
   // read the layer tree from project file
 
   mRootGroup->setCustomProperty( "loading", 1 );
@@ -992,6 +1006,52 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
   }
 }
 
+void QgsProject::addToTransactionGroups( const QList<QgsMapLayer*> layers )
+{
+  if ( autoTransaction() )
+  {
+    Q_FOREACH ( QgsMapLayer* layer, layers )
+    {
+      QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
+      if ( vlayer )
+      {
+        if ( QgsTransaction::supportsTransaction( vlayer ) )
+        {
+          QString connString = QgsDataSourceURI( vlayer->source() ).connectionInfo();
+          QString key = vlayer->providerType();
+
+          QgsTransactionGroup* tg = mTransactionGroups.value( qMakePair( key, connString ) );
+
+          if ( !tg )
+          {
+            tg = new QgsTransactionGroup();
+            mTransactionGroups.insert( qMakePair( key, connString ), tg );
+
+            connect( tg, SIGNAL( commitError( QString ) ), this, SLOT( displayMapToolMessage( QString ) ) );
+          }
+          tg->addLayer( vlayer );
+        }
+      }
+    }
+  }
+}
+
+void QgsProject::cleanTransactionGroups( bool force )
+{
+  for ( QMap< QPair< QString, QString>, QgsTransactionGroup*>::Iterator tg = mTransactionGroups.begin(); tg != mTransactionGroups.end(); )
+  {
+    if ( tg.value()->isEmpty() || force )
+    {
+      delete tg.value();
+      tg = mTransactionGroups.erase( tg );
+    }
+    else
+    {
+      ++tg;
+    }
+  }
+}
+
 bool QgsProject::read( QDomNode &layerNode )
 {
   QList<QDomNode> brokenNodes;
@@ -1041,6 +1101,10 @@ bool QgsProject::write()
   // title
   QDomElement titleNode = doc->createElement( "title" );
   qgisNode.appendChild( titleNode );
+
+  QDomElement transactionNode = doc->createElement( "autotransaction" );
+  transactionNode.setAttribute( "active", imp_->autoTransaction ? "1" : "0" );
+  qgisNode.appendChild( transactionNode );
 
   QDomText titleText = doc->createTextNode( title() );  // XXX why have title TWICE?
   titleNode.appendChild( titleText );
@@ -2151,4 +2215,27 @@ void QgsProject::setNonIdentifiableLayers( const QStringList& layerIds )
 QStringList QgsProject::nonIdentifiableLayers() const
 {
   return QgsProject::instance()->readListEntry( "Identify", "/disabledLayers" );
+}
+
+bool QgsProject::autoTransaction() const
+{
+  return imp_->autoTransaction;
+}
+
+void QgsProject::setAutoTransaction( bool autoTransaction )
+{
+  if ( autoTransaction != imp_->autoTransaction )
+  {
+    imp_->autoTransaction = autoTransaction;
+
+    if ( autoTransaction )
+      addToTransactionGroups( QgsMapLayerRegistry::instance()->mapLayers().values() );
+    else
+      cleanTransactionGroups( true );
+  }
+}
+
+QMap<QPair<QString, QString>, QgsTransactionGroup*> QgsProject::transactionGroups()
+{
+  return mTransactionGroups;
 }
