@@ -175,14 +175,7 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant& value )
     for ( int i = 0; i < mListWidget->count(); ++i )
     {
       QListWidgetItem* item = mListWidget->item( i );
-      if ( config( "OrderByValue" ).toBool() )
-      {
-        item->setCheckState( checkList.contains( item->data( Qt::UserRole ).toString() ) ? Qt::Checked : Qt::Unchecked );
-      }
-      else
-      {
-        item->setCheckState( checkList.contains( item->data( Qt::UserRole ).toString() ) ? Qt::Checked : Qt::Unchecked );
-      }
+      item->setCheckState( checkList.contains( item->data( Qt::UserRole ).toString() ) ? Qt::Checked : Qt::Unchecked );
     }
   }
   else if ( mComboBox )
@@ -209,70 +202,27 @@ QgsValueRelationWidgetWrapper::ValueRelationCache QgsValueRelationWidgetWrapper:
 
   QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( config.value( "Layer" ).toString() ) );
 
-  if ( layer )
+  if ( !layer )
+    return cache;
+
+  int ki = layer->fieldNameIndex( config.value( "Key" ).toString() );
+  int vi = layer->fieldNameIndex( config.value( "Value" ).toString() );
+
+  QgsFeatureRequest request;
+
+  request.setFlags( QgsFeatureRequest::NoGeometry );
+  request.setSubsetOfAttributes( QgsAttributeList() << ki << vi );
+  if ( !config.value( "FilterExpression" ).toString().isEmpty() )
   {
-    int ki = layer->fieldNameIndex( config.value( "Key" ).toString() );
-    int vi = layer->fieldNameIndex( config.value( "Value" ).toString() );
+    request.setFilterExpression( config.value( "FilterExpression" ).toString() );
+  }
 
-    QgsExpressionContext context;
-    context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::layerScope( layer );
+  QgsFeatureIterator fit = layer->getFeatures( request );
 
-    QgsExpression *e = nullptr;
-    if ( !config.value( "FilterExpression" ).toString().isEmpty() )
-    {
-      e = new QgsExpression( config.value( "FilterExpression" ).toString() );
-      if ( e->hasParserError() || !e->prepare( &context ) )
-        ki = -1;
-    }
-
-    if ( ki >= 0 && vi >= 0 )
-    {
-      QSet<int> attributes;
-      attributes << ki << vi;
-
-      QgsFeatureRequest::Flags flags = QgsFeatureRequest::NoGeometry;
-
-      bool requiresAllAttributes = false;
-      if ( e )
-      {
-        if ( e->needsGeometry() )
-          flags = QgsFeatureRequest::NoFlags;
-
-        Q_FOREACH ( const QString& field, e->referencedColumns() )
-        {
-          if ( field == QgsFeatureRequest::AllAttributes )
-          {
-            requiresAllAttributes = true;
-            break;
-          }
-          int idx = layer->fieldNameIndex( field );
-          if ( idx < 0 )
-            continue;
-          attributes << idx;
-        }
-      }
-
-      QgsFeatureRequest fr = QgsFeatureRequest().setFlags( flags );
-      if ( !requiresAllAttributes )
-      {
-        fr.setSubsetOfAttributes( attributes.toList() );
-      }
-
-      QgsFeatureIterator fit = layer->getFeatures( fr );
-
-      QgsFeature f;
-      while ( fit.nextFeature( f ) )
-      {
-        context.setFeature( f );
-        if ( e && !e->evaluate( &context ).toBool() )
-          continue;
-
-        cache.append( ValueRelationItem( f.attribute( ki ), f.attribute( vi ).toString() ) );
-      }
-    }
-    delete e;
+  QgsFeature f;
+  while ( fit.nextFeature( f ) )
+  {
+    cache.append( ValueRelationItem( f.attribute( ki ), f.attribute( vi ).toString() ) );
   }
 
   if ( config.value( "OrderByValue" ).toBool() )
