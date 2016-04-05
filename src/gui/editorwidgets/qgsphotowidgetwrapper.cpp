@@ -160,11 +160,11 @@ void QgsPhotoWidgetWrapper::showIndeterminateState()
 QWidget* QgsPhotoWidgetWrapper::createWidget( QWidget* parent )
 {
   QWidget* container = new QWidget( parent );
-  QGridLayout* layout = new QGridLayout( container );
-  QgsFilterLineEdit* le = new QgsFilterLineEdit( container );
-  QgsPixmapLabel* label = new QgsPixmapLabel( parent );
+  QGridLayout* layout = new QGridLayout();
+  QgsFilterLineEdit* le = new QgsFilterLineEdit();
+  QgsPixmapLabel* label = new QgsPixmapLabel();
   label->setObjectName( "PhotoLabel" );
-  QPushButton* pb = new QPushButton( tr( "..." ), container );
+  QPushButton* pb = new QPushButton( tr( "..." ) );
   pb->setObjectName( "FileChooserButton" );
 
   layout->addWidget( label, 0, 0, 1, 2 );

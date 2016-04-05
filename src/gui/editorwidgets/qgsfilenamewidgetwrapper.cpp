@@ -70,8 +70,8 @@ QWidget* QgsFileNameWidgetWrapper::createWidget( QWidget* parent )
   container->setBackgroundRole( QPalette::Window );
   container->setAutoFillBackground( true );
 
-  QLineEdit* le = new QgsFilterLineEdit( container );
-  QPushButton* pbn = new QPushButton( tr( "..." ), container );
+  QLineEdit* le = new QgsFilterLineEdit();
+  QPushButton* pbn = new QPushButton( tr( "..." ) );
   QGridLayout* layout = new QGridLayout();
 
   layout->setMargin( 0 );
