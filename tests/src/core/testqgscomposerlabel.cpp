@@ -24,6 +24,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsmultirenderchecker.h"
 #include "qgsfontutils.h"
+#include "qgsproject.h"
 
 #include <QObject>
 #include <QtTest/QtTest>
@@ -55,6 +56,7 @@ class TestQgsComposerLabel : public QObject
     void marginMethods(); //tests getting/setting margins
     void render();
     void renderAsHtml();
+    void renderAsHtmlRelative();
 
   private:
     QgsComposition* mComposition;
@@ -261,6 +263,22 @@ void TestQgsComposerLabel::renderAsHtml()
   mComposerLabel->update();
 
   QgsCompositionChecker checker( "composerlabel_renderhtml", mComposition );
+  checker.setControlPathPrefix( "composer_label" );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
+}
+
+void TestQgsComposerLabel::renderAsHtmlRelative()
+{
+  QgsProject::instance()->setFileName( QString( TEST_DATA_DIR ) +  QDir::separator() + "test.qgs" );
+  mComposerLabel->setFontColor( QColor( 200, 40, 60 ) );
+  mComposerLabel->setText( "test <img src=\"small_sample_image.png\" />" );
+  mComposerLabel->setFont( QgsFontUtils::getStandardTestFont( "Bold", 48 ) );
+  mComposerLabel->setPos( 70, 70 );
+  mComposerLabel->adjustSizeToText();
+  mComposerLabel->setHtmlState( 1 );
+  mComposerLabel->update();
+
+  QgsCompositionChecker checker( "composerlabel_renderhtmlrelative", mComposition );
   checker.setControlPathPrefix( "composer_label" );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }

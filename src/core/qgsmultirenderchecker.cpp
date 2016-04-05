@@ -154,7 +154,7 @@ bool QgsCompositionChecker::testComposition( QString &theReport, int page, int p
   //QRectF targetArea( 0, 0, 3507, 2480 );
   mComposition->renderPage( &expectedPainter, page );
   expectedPainter.end();
-  newImage.save( mExpectedImageFile, "PNG" );
+  newImage.save( controlImagePath() + QDir::separator() + "expected_" + mTestName + ".png", "PNG" );
   return true;
 #endif //0
 

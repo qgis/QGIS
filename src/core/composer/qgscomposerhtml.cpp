@@ -184,8 +184,11 @@ void QgsComposerHtml::loadHtml( const bool useCache, const QgsExpressionContext 
   //reset page size. otherwise viewport size increases but never decreases again
   mWebPage->setViewportSize( QSize( maxFrameWidth() * mHtmlUnitsToMM, 0 ) );
 
-  //set html, using the specified url as base if in Url mode
-  mWebPage->mainFrame()->setHtml( loadedHtml, mContentMode == QgsComposerHtml::Url ? QUrl( mActualFetchedUrl ) : QUrl() );
+  //set html, using the specified url as base if in Url mode or the project file if in manual mode
+  const QUrl baseUrl = mContentMode == QgsComposerHtml::Url ?
+                       QUrl( mActualFetchedUrl ) :
+                       QUrl::fromLocalFile( QgsProject::instance()->fileInfo().absoluteFilePath() );
+  mWebPage->mainFrame()->setHtml( loadedHtml, baseUrl );
 
   //set user stylesheet
   QWebSettings* settings = mWebPage->settings();
