@@ -289,6 +289,9 @@ template<class Object> class QgsSignalBlocker
 {
   public:
 
+    /** Constructor for QgsSignalBlocker
+     * @param object QObject to block signals from
+     */
     QgsSignalBlocker( Object* object )
         : mObject( object )
         , mPreviousState( object->blockSignals( true ) )
@@ -299,6 +302,7 @@ template<class Object> class QgsSignalBlocker
       mObject->blockSignals( mPreviousState );
     }
 
+    //! Returns pointer to blocked QObject
     Object* operator->() { return mObject; }
 
   private:
