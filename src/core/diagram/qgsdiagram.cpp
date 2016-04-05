@@ -76,38 +76,24 @@ void QgsDiagram::setPenWidth( QPen& pen, const QgsDiagramSettings& s, const QgsR
 
 QSizeF QgsDiagram::sizePainterUnits( QSizeF size, const QgsDiagramSettings& s, const QgsRenderContext& c )
 {
-  if ( s.sizeType == QgsDiagramSettings::MM )
-  {
-    return QSizeF( size.width() * c.scaleFactor(), size.height() * c.scaleFactor() );
-  }
-  else
-  {
-    return QSizeF( size.width() / c.mapToPixel().mapUnitsPerPixel(), size.height() / c.mapToPixel().mapUnitsPerPixel() );
-  }
+  return QSizeF( QgsSymbolLayerV2Utils::convertToPainterUnits( c, size.width(), s.sizeType, s.sizeScale ), QgsSymbolLayerV2Utils::convertToPainterUnits( c, size.height(), s.sizeType, s.sizeScale ) );
 }
 
 float QgsDiagram::sizePainterUnits( float l, const QgsDiagramSettings& s, const QgsRenderContext& c )
 {
-  if ( s.sizeType == QgsDiagramSettings::MM )
-  {
-    return l * c.scaleFactor();
-  }
-  else
-  {
-    return l / c.mapToPixel().mapUnitsPerPixel();
-  }
+  return QgsSymbolLayerV2Utils::convertToPainterUnits( c, l, s.sizeType, s.sizeScale );
 }
 
 QFont QgsDiagram::scaledFont( const QgsDiagramSettings& s, const QgsRenderContext& c )
 {
   QFont f = s.font;
-  if ( s.sizeType == QgsDiagramSettings::MM )
+  if ( s.sizeType == QgsSymbolV2::MapUnit )
   {
-    f.setPixelSize( s.font.pointSizeF() * 0.376 * c.scaleFactor() );
+    f.setPixelSize( s.font.pointSizeF() / c.mapToPixel().mapUnitsPerPixel() );
   }
   else
   {
-    f.setPixelSize( s.font.pointSizeF() / c.mapToPixel().mapUnitsPerPixel() );
+    f.setPixelSize( s.font.pointSizeF() * 0.376 * c.scaleFactor() );
   }
 
   return f;

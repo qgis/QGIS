@@ -702,7 +702,10 @@
                        <item row="1" column="1">
                         <widget class="QgsDoubleSpinBox" name="mBarWidthSpinBox">
                          <property name="minimum">
-                          <double>0.010000000000000</double>
+                          <double>0.00000000000000</double>
+                         </property>
+                         <property name="maximum">
+                          <double>99999999.99000000000</double>
                          </property>
                          <property name="value">
                           <double>5.000000000000000</double>
@@ -1006,7 +1009,17 @@
                    </widget>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QComboBox" name="mDiagramUnitComboBox"/>
+                   <widget class="QgsUnitSelectionWidget" name="mDiagramUnitComboBox" native="true">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
+                    </property>
+                   </widget>
                   </item>
                   <item row="4" column="0">
                    <spacer name="verticalSpacer_3">
