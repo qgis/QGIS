@@ -6,7 +6,7 @@ Priority: optional
 Build-Depends:
  bison,
  cmake (>= 2.8),
-#wily xenial# cmake (<< 3.3.2),
+#wily# cmake (<< 3.3.2),
 #sid stretch jessie wheezy saucy trusty utopic vivid wily xenial# debhelper (>= 9),
 #sid stretch jessie trusty vivid wily xenial# dh-python,
 #precise# debhelper (>= 7),
