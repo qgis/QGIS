@@ -757,7 +757,6 @@ void QgsMapCanvas::askDatumTransform( const QgsMapLayer* ml, const QString& srcA
     }
 
     mSettings.datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, srcTransform, destTransform );
-    //mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, srcTransform, destTransform );
 
     if ( d.rememberSelection() )
     {

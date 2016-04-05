@@ -57,6 +57,9 @@ class CORE_EXPORT QgsDatumTransformStore
      */
     const QgsCoordinateTransform* transformation( QgsMapLayer* layer ) const;
 
+    /** Returns the entry in the store
+        @param list entries will be appended to the list
+        @note not available in python bindings*/
     void entries( QList< QPair< QString, Entry> >& list ) const;
 
     void readXML( const QDomNode& parentNode );

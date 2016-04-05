@@ -19,7 +19,7 @@ class QgsDatumTransformStore
 
     void addEntry( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform, int destDatumTransform );
 
-    bool hasEntryForLayer( QgsMapLayer* layer ) const;
+    bool hasEntryForLayer( const QgsMapLayer* layer ) const;
 
     /** Will return transform from layer's CRS to current destination CRS.
      *  Will emit datumTransformInfoRequested signal if the layer has no entry.

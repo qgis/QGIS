@@ -256,6 +256,10 @@ class CORE_EXPORT QgsMapSettings: public QObject
 
     void writeXML( QDomNode& theNode, QDomDocument& theDoc );
 
+    /** Updates datum transformation for layer
+        @param ml the map layer
+        @param srcAuthId id for source layer
+        @param destAuthId id for dest layer*/
     void getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId );
 
   protected:
