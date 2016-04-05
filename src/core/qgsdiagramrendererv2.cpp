@@ -181,7 +181,7 @@ void QgsDiagramSettings::readXML( const QDomElement& elem, const QgsVectorLayer*
     scaleBasedVisibility = minScaleDenominator >= 0 && maxScaleDenominator >= 0;
   }
 
-  //mm vs map units
+  //mm vs map units for diagram
   if ( elem.attribute( "sizeType" ) == "MM" )
   {
     sizeType = MM;
@@ -190,6 +190,10 @@ void QgsDiagramSettings::readXML( const QDomElement& elem, const QgsVectorLayer*
   {
     sizeType = MapUnits;
   }
+
+  //mm vs map units for line
+  lineSizeType = QgsSymbolLayerV2Utils::decodeOutputUnit( elem.attribute( "lineSizeType" ) );
+  lineSizeScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( elem.attribute( "lineSizeScale" ) );
 
   //label placement method
   if ( elem.attribute( "labelPlacementMethod" ) == "Height" )
@@ -299,7 +303,7 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc,
   categoryElem.setAttribute( "maxScaleDenominator", QString::number( maxScaleDenominator ) );
   categoryElem.setAttribute( "transparency", QString::number( transparency ) );
 
-  // site type (mm vs. map units)
+  // site type (mm vs. map units) for diagram
   if ( sizeType == MM )
   {
     categoryElem.setAttribute( "sizeType", "MM" );
@@ -308,6 +312,10 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc,
   {
     categoryElem.setAttribute( "sizeType", "MapUnits" );
   }
+
+  // site type (mm vs. map units) for line
+  categoryElem.setAttribute( "lineSizeType", QgsSymbolLayerV2Utils::encodeOutputUnit( lineSizeType ) );
+  categoryElem.setAttribute( "lineSizeScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( lineSizeScale ) );
 
   // label placement method (text diagram)
   if ( labelPlacementMethod == Height )

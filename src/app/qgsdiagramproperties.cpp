@@ -86,6 +86,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
   mDiagramUnitComboBox->insertItem( 0, tr( "mm" ), QgsDiagramSettings::MM );
   mDiagramUnitComboBox->insertItem( 1, tr( "Map units" ), QgsDiagramSettings::MapUnits );
+  mDiagramLineUnitComboBox->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
 
   QGis::GeometryType layerType = layer->geometryType();
   if ( layerType == QGis::UnknownGeometry || layerType == QGis::NoGeometry )
@@ -193,6 +194,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     mDiagramFrame->setEnabled( false );
     mFixedSizeRadio->setChecked( true );
     mDiagramUnitComboBox->setCurrentIndex( mDiagramUnitComboBox->findText( tr( "mm" ) ) );
+    mDiagramLineUnitComboBox->setUnit( QgsSymbolV2::MM );
     mLabelPlacementComboBox->setCurrentIndex( mLabelPlacementComboBox->findText( tr( "x-height" ) ) );
     mDiagramSizeSpinBox->setEnabled( true );
     mDiagramSizeSpinBox->setValue( 15 );
@@ -271,6 +273,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       {
         mDiagramUnitComboBox->setCurrentIndex( 1 );
       }
+      mDiagramLineUnitComboBox->setUnit( settingList.at( 0 ).lineSizeType );
+      mDiagramLineUnitComboBox->setMapUnitScale( settingList.at( 0 ).lineSizeScale );
 
       if ( settingList.at( 0 ).labelPlacementMethod == QgsDiagramSettings::Height )
       {
@@ -701,6 +705,8 @@ void QgsDiagramProperties::apply()
   ds.categoryLabels = categoryLabels;
   ds.size = QSizeF( mDiagramSizeSpinBox->value(), mDiagramSizeSpinBox->value() );
   ds.sizeType = static_cast<QgsDiagramSettings::SizeType>( mDiagramUnitComboBox->itemData( mDiagramUnitComboBox->currentIndex() ).toInt() );
+  ds.lineSizeType = mDiagramLineUnitComboBox->unit();
+  ds.lineSizeScale = mDiagramLineUnitComboBox->getMapUnitScale();
   ds.labelPlacementMethod = static_cast<QgsDiagramSettings::LabelPlacementMethod>( mLabelPlacementComboBox->itemData( mLabelPlacementComboBox->currentIndex() ).toInt() );
   ds.scaleByArea = mScaleDependencyComboBox->itemData( mScaleDependencyComboBox->currentIndex() ).toBool();
 
