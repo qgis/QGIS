@@ -70,7 +70,7 @@ QgsExpression *QgsDiagram::getExpression( const QString &expression, const QgsEx
 
 void QgsDiagram::setPenWidth( QPen& pen, const QgsDiagramSettings& s, const QgsRenderContext& c )
 {
-  pen.setWidthF( QgsSymbolLayerV2Utils::convertToPainterUnits( c, s.penWidth, s.lineSizeType, s.lineSizeScale ) );
+  pen.setWidthF( QgsSymbolLayerV2Utils::convertToPainterUnits( c, s.penWidth, s.lineSizeUnit, s.lineSizeScale ) );
 }
 
 

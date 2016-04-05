@@ -298,6 +298,8 @@ class CORE_EXPORT QgsDiagramLayerSettings
 class CORE_EXPORT QgsDiagramSettings
 {
   public:
+
+    //! @deprecated use QgsSymbolV2::OutputUnit instead
     enum SizeType
     {
       MM,
@@ -322,7 +324,7 @@ class CORE_EXPORT QgsDiagramSettings
     QgsDiagramSettings()
         : enabled( true )
         , sizeType( QgsSymbolV2::MM )
-        , lineSizeType( QgsSymbolV2::MM )
+        , lineSizeUnit( QgsSymbolV2::MM )
         , penWidth( 0.0 )
         , labelPlacementMethod( QgsDiagramSettings::Height )
         , diagramOrientation( QgsDiagramSettings::Up )
@@ -342,22 +344,26 @@ class CORE_EXPORT QgsDiagramSettings
     //! @note added in 2.10
     QList< QString > categoryLabels;
     QSizeF size; //size
-    /** Diagram size unit index (mm, map units, or pixels)
-     * @note added in 2.16
+
+    /** Diagram size unit
      */
     QgsSymbolV2::OutputUnit sizeType;
+
     /** Diagram size unit scale
      * @note added in 2.16
      */
     QgsMapUnitScale sizeScale;
-    /** Line unit index (mm, map units, or pixels)
+
+    /** Line unit index
      * @note added in 2.16
      */
-    QgsSymbolV2::OutputUnit lineSizeType;
+    QgsSymbolV2::OutputUnit lineSizeUnit;
+
     /** Line unit scale
      * @note added in 2.16
      */
     QgsMapUnitScale lineSizeScale;
+
     QColor backgroundColor;
     QColor penColor;
     double penWidth;

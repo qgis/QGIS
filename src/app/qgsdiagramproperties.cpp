@@ -266,7 +266,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       mScaleVisibilityGroupBox->setChecked( settingList.at( 0 ).scaleBasedVisibility );
       mDiagramUnitComboBox->setUnit( settingList.at( 0 ).sizeType );
       mDiagramUnitComboBox->setMapUnitScale( settingList.at( 0 ).sizeScale );
-      mDiagramLineUnitComboBox->setUnit( settingList.at( 0 ).lineSizeType );
+      mDiagramLineUnitComboBox->setUnit( settingList.at( 0 ).lineSizeUnit );
       mDiagramLineUnitComboBox->setMapUnitScale( settingList.at( 0 ).lineSizeScale );
 
       if ( settingList.at( 0 ).labelPlacementMethod == QgsDiagramSettings::Height )
@@ -699,7 +699,7 @@ void QgsDiagramProperties::apply()
   ds.size = QSizeF( mDiagramSizeSpinBox->value(), mDiagramSizeSpinBox->value() );
   ds.sizeType = mDiagramUnitComboBox->unit();
   ds.sizeScale = mDiagramUnitComboBox->getMapUnitScale();
-  ds.lineSizeType = mDiagramLineUnitComboBox->unit();
+  ds.lineSizeUnit = mDiagramLineUnitComboBox->unit();
   ds.lineSizeScale = mDiagramLineUnitComboBox->getMapUnitScale();
   ds.labelPlacementMethod = static_cast<QgsDiagramSettings::LabelPlacementMethod>( mLabelPlacementComboBox->itemData( mLabelPlacementComboBox->currentIndex() ).toInt() );
   ds.scaleByArea = mScaleDependencyComboBox->itemData( mScaleDependencyComboBox->currentIndex() ).toBool();

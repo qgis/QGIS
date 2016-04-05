@@ -260,6 +260,8 @@ class QgsDiagramSettings
 #include <qgsdiagramrendererv2.h>
 %End
   public:
+
+    //! @deprecated use QgsSymbolV2::OutputUnit instead
     enum SizeType
     {
       MM,
@@ -289,14 +291,26 @@ class QgsDiagramSettings
     //! @note added in 2.10
     QList< QString > categoryLabels;
     QSizeF size; //size
-    //! Diagram size unit index (mm, map units, or pixels)
+
+    /** Diagram size unit
+     */
     QgsSymbolV2::OutputUnit sizeType;
-    //! Diagram size unit scale
+
+    /** Diagram size unit scale
+     * @note added in 2.16
+     */
     QgsMapUnitScale sizeScale;
-    //! Line unit index (mm, map units, or pixels)
-    QgsSymbolV2::OutputUnit lineSizeType;
-    //! Line unit scale
+
+    /** Line unit index
+     * @note added in 2.16
+     */
+    QgsSymbolV2::OutputUnit lineSizeUnit;
+
+    /** Line unit scale
+     * @note added in 2.16
+     */
     QgsMapUnitScale lineSizeScale;
+
     QColor backgroundColor;
     QColor penColor;
     double penWidth;
