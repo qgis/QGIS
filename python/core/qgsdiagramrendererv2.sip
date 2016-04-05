@@ -289,7 +289,14 @@ class QgsDiagramSettings
     //! @note added in 2.10
     QList< QString > categoryLabels;
     QSizeF size; //size
-    SizeType sizeType; //mm or map units
+    //! Diagram size unit index (mm, map units, or pixels)
+    QgsSymbolV2::OutputUnit sizeType;
+    //! Diagram size unit scale
+    QgsMapUnitScale sizeScale;
+    //! Line unit index (mm, map units, or pixels)
+    QgsSymbolV2::OutputUnit lineSizeType;
+    //! Line unit scale
+    QgsMapUnitScale lineSizeScale;
     QColor backgroundColor;
     QColor penColor;
     double penWidth;

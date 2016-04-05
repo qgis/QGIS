@@ -84,8 +84,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
   mMaxValueSpinBox->setShowClearButton( false );
 
-  mDiagramUnitComboBox->insertItem( 0, tr( "mm" ), QgsDiagramSettings::MM );
-  mDiagramUnitComboBox->insertItem( 1, tr( "Map units" ), QgsDiagramSettings::MapUnits );
+  mDiagramUnitComboBox->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
+  mDiagramLineUnitComboBox->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
 
   QGis::GeometryType layerType = layer->geometryType();
   if ( layerType == QGis::UnknownGeometry || layerType == QGis::NoGeometry )
@@ -192,7 +192,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     mDiagramTypeFrame->setEnabled( false );
     mDiagramFrame->setEnabled( false );
     mFixedSizeRadio->setChecked( true );
-    mDiagramUnitComboBox->setCurrentIndex( mDiagramUnitComboBox->findText( tr( "mm" ) ) );
+    mDiagramUnitComboBox->setUnit( QgsSymbolV2::MM );
+    mDiagramLineUnitComboBox->setUnit( QgsSymbolV2::MM );
     mLabelPlacementComboBox->setCurrentIndex( mLabelPlacementComboBox->findText( tr( "x-height" ) ) );
     mDiagramSizeSpinBox->setEnabled( true );
     mDiagramSizeSpinBox->setValue( 15 );
@@ -263,14 +264,10 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       mScaleRangeWidget->setScaleRange( 1.0 / ( settingList.at( 0 ).maxScaleDenominator > 0 ? settingList.at( 0 ).maxScaleDenominator : layer->maximumScale() ),
                                         1.0 / ( settingList.at( 0 ).minScaleDenominator > 0 ? settingList.at( 0 ).minScaleDenominator : layer->minimumScale() ) );
       mScaleVisibilityGroupBox->setChecked( settingList.at( 0 ).scaleBasedVisibility );
-      if ( settingList.at( 0 ).sizeType == QgsDiagramSettings::MM )
-      {
-        mDiagramUnitComboBox->setCurrentIndex( 0 );
-      }
-      else
-      {
-        mDiagramUnitComboBox->setCurrentIndex( 1 );
-      }
+      mDiagramUnitComboBox->setUnit( settingList.at( 0 ).sizeType );
+      mDiagramUnitComboBox->setMapUnitScale( settingList.at( 0 ).sizeScale );
+      mDiagramLineUnitComboBox->setUnit( settingList.at( 0 ).lineSizeType );
+      mDiagramLineUnitComboBox->setMapUnitScale( settingList.at( 0 ).lineSizeScale );
 
       if ( settingList.at( 0 ).labelPlacementMethod == QgsDiagramSettings::Height )
       {
@@ -700,7 +697,10 @@ void QgsDiagramProperties::apply()
   ds.categoryAttributes = categoryAttributes;
   ds.categoryLabels = categoryLabels;
   ds.size = QSizeF( mDiagramSizeSpinBox->value(), mDiagramSizeSpinBox->value() );
-  ds.sizeType = static_cast<QgsDiagramSettings::SizeType>( mDiagramUnitComboBox->itemData( mDiagramUnitComboBox->currentIndex() ).toInt() );
+  ds.sizeType = mDiagramUnitComboBox->unit();
+  ds.sizeScale = mDiagramUnitComboBox->getMapUnitScale();
+  ds.lineSizeType = mDiagramLineUnitComboBox->unit();
+  ds.lineSizeScale = mDiagramLineUnitComboBox->getMapUnitScale();
   ds.labelPlacementMethod = static_cast<QgsDiagramSettings::LabelPlacementMethod>( mLabelPlacementComboBox->itemData( mLabelPlacementComboBox->currentIndex() ).toInt() );
   ds.scaleByArea = mScaleDependencyComboBox->itemData( mScaleDependencyComboBox->currentIndex() ).toBool();
 

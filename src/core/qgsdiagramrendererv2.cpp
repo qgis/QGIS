@@ -181,15 +181,21 @@ void QgsDiagramSettings::readXML( const QDomElement& elem, const QgsVectorLayer*
     scaleBasedVisibility = minScaleDenominator >= 0 && maxScaleDenominator >= 0;
   }
 
-  //mm vs map units
-  if ( elem.attribute( "sizeType" ) == "MM" )
+  //diagram size unit type and scale
+  if ( elem.attribute( "sizeType" ) == "MapUnits" )
   {
-    sizeType = MM;
+    //compatibility with pre-2.16 project files
+    sizeType = QgsSymbolV2::MapUnit;
   }
   else
   {
-    sizeType = MapUnits;
+    sizeType = QgsSymbolLayerV2Utils::decodeOutputUnit( elem.attribute( "sizeType" ) );
   }
+  sizeScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( elem.attribute( "sizeScale" ) );
+
+  //line width unit type and scale
+  lineSizeType = QgsSymbolLayerV2Utils::decodeOutputUnit( elem.attribute( "lineSizeType" ) );
+  lineSizeScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( elem.attribute( "lineSizeScale" ) );
 
   //label placement method
   if ( elem.attribute( "labelPlacementMethod" ) == "Height" )
@@ -299,15 +305,13 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc,
   categoryElem.setAttribute( "maxScaleDenominator", QString::number( maxScaleDenominator ) );
   categoryElem.setAttribute( "transparency", QString::number( transparency ) );
 
-  // site type (mm vs. map units)
-  if ( sizeType == MM )
-  {
-    categoryElem.setAttribute( "sizeType", "MM" );
-  }
-  else
-  {
-    categoryElem.setAttribute( "sizeType", "MapUnits" );
-  }
+  //diagram size unit type and scale
+  categoryElem.setAttribute( "sizeType", QgsSymbolLayerV2Utils::encodeOutputUnit( sizeType ) );
+  categoryElem.setAttribute( "sizeScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( sizeScale ) );
+
+  //line width unit type and scale
+  categoryElem.setAttribute( "lineSizeType", QgsSymbolLayerV2Utils::encodeOutputUnit( lineSizeType ) );
+  categoryElem.setAttribute( "lineSizeScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( lineSizeScale ) );
 
   // label placement method (text diagram)
   if ( labelPlacementMethod == Height )
@@ -417,9 +421,20 @@ QSizeF QgsDiagramRendererV2::sizeMapUnits( const QgsFeature& feature, const QgsR
   }
 
   QSizeF size = diagramSize( feature, c );
-  if ( s.sizeType == QgsDiagramSettings::MM )
+  if ( size.isValid() )
   {
-    convertSizeToMapUnits( size, c );
+    if ( s.sizeType == QgsSymbolV2::MM )
+    {
+      double pixelToMap = c.scaleFactor() * c.mapToPixel().mapUnitsPerPixel();
+      size.rwidth() *= pixelToMap;
+      size.rheight() *= pixelToMap;
+    }
+    else if ( s.sizeType == QgsSymbolV2::Pixel )
+    {
+      double pixelToMap = c.mapToPixel().mapUnitsPerPixel();
+      size.rwidth() *= pixelToMap;
+      size.rheight() *= pixelToMap;
+    }
   }
   return size;
 }

@@ -144,7 +144,7 @@ class TestQgsDiagram : public QObject
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsDiagramSettings::MM;
+      ds.sizeType = QgsSymbolV2::MM;
       ds.size = QSizeF( 5, 5 );
       ds.angleOffset = 0;
 
@@ -181,7 +181,7 @@ class TestQgsDiagram : public QObject
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsDiagramSettings::MM;
+      ds.sizeType = QgsSymbolV2::MM;
       ds.size = QSizeF( 5, 5 );
       ds.angleOffset = 0;
 

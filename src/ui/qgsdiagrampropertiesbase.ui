@@ -702,7 +702,10 @@
                        <item row="1" column="1">
                         <widget class="QgsDoubleSpinBox" name="mBarWidthSpinBox">
                          <property name="minimum">
-                          <double>0.010000000000000</double>
+                          <double>0.00000000000000</double>
+                         </property>
+                         <property name="maximum">
+                          <double>99999999.99000000000</double>
                          </property>
                          <property name="value">
                           <double>5.000000000000000</double>
@@ -763,13 +766,33 @@
                         </widget>
                        </item>
                        <item row="5" column="0">
+                        <widget class="QLabel" name="mPenWidthLabel">
+                         <property name="text">
+                          <string>Line Unit</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="5" column="1">
+                        <widget class="QgsUnitSelectionWidget" name="mDiagramLineUnitComboBox" native="true">
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="focusPolicy">
+                          <enum>Qt::StrongFocus</enum>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="6" column="0">
                         <widget class="QLabel" name="mAngleOffsetLabel">
                          <property name="text">
                           <string>Start angle</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="5" column="1">
+                       <item row="6" column="1">
                         <widget class="QComboBox" name="mAngleOffsetComboBox"/>
                        </item>
                        <item row="3" column="1">
@@ -986,7 +1009,17 @@
                    </widget>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QComboBox" name="mDiagramUnitComboBox"/>
+                   <widget class="QgsUnitSelectionWidget" name="mDiagramUnitComboBox" native="true">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
+                    </property>
+                   </widget>
                   </item>
                   <item row="4" column="0">
                    <spacer name="verticalSpacer_3">
@@ -1839,6 +1872,12 @@
    <extends>QWidget</extends>
    <header>qgsscalerangewidget.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mEnableDiagramsCheckBox</tabstop>
@@ -1858,6 +1897,7 @@
   <tabstop>mBackgroundColorButton</tabstop>
   <tabstop>mDiagramPenColorButton</tabstop>
   <tabstop>mPenWidthSpinBox</tabstop>
+  <tabstop>mDiagramLineUnitComboBox</tabstop>
   <tabstop>mAngleOffsetComboBox</tabstop>
   <tabstop>mDiagramFontButton</tabstop>
   <tabstop>mShowAllCheckBox</tabstop>

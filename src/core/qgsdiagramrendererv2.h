@@ -24,6 +24,7 @@
 
 #include "qgsfeature.h"
 #include "qgsexpressioncontext.h"
+#include "qgssymbollayerv2.h"
 
 class QgsDiagram;
 class QgsDiagramRendererV2;
@@ -320,7 +321,8 @@ class CORE_EXPORT QgsDiagramSettings
 
     QgsDiagramSettings()
         : enabled( true )
-        , sizeType( MM )
+        , sizeType( QgsSymbolV2::MM )
+        , lineSizeType( QgsSymbolV2::MM )
         , penWidth( 0.0 )
         , labelPlacementMethod( QgsDiagramSettings::Height )
         , diagramOrientation( QgsDiagramSettings::Up )
@@ -340,7 +342,22 @@ class CORE_EXPORT QgsDiagramSettings
     //! @note added in 2.10
     QList< QString > categoryLabels;
     QSizeF size; //size
-    SizeType sizeType; //mm or map units
+    /** Diagram size unit index (mm, map units, or pixels)
+     * @note added in 2.16
+     */
+    QgsSymbolV2::OutputUnit sizeType;
+    /** Diagram size unit scale
+     * @note added in 2.16
+     */
+    QgsMapUnitScale sizeScale;
+    /** Line unit index (mm, map units, or pixels)
+     * @note added in 2.16
+     */
+    QgsSymbolV2::OutputUnit lineSizeType;
+    /** Line unit scale
+     * @note added in 2.16
+     */
+    QgsMapUnitScale lineSizeScale;
     QColor backgroundColor;
     QColor penColor;
     double penWidth;
