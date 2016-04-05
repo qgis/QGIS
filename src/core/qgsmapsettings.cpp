@@ -708,7 +708,29 @@ void QgsMapSettings::getDatumTransformInfo( const QgsMapLayer* ml, const QString
     return;
   }
 
-  //check if default datum transformation available
+  //check if default datum transformation is available in environment variable
+  const char* envChar = getenv( "DEFAULT_DATUM_TRANSFORM" );
+  if ( envChar )
+  {
+    QString envString( envChar );
+    QStringList transformSplit = envString.split( ";" );
+    for ( int i = 0; i < transformSplit.size(); ++i )
+    {
+      QStringList slashSplit = transformSplit.at( i ).split( "/" );
+      if ( slashSplit.size() < 4 )
+      {
+        continue;
+      }
+
+      if ( slashSplit.at( 0 ) == srcAuthId && slashSplit.at( 1 ) == destAuthId )
+      {
+        datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, slashSplit.at( 2 ).toInt(), slashSplit.at( 3 ).toInt() );
+        return;
+      }
+    }
+  }
+
+  //check if default datum transformation is available in settings
   QSettings s;
   QString settingsString = "/Projections/" + srcAuthId + "//" + destAuthId;
   QVariant defaultSrcTransform = s.value( settingsString + "_srcTransform" );
