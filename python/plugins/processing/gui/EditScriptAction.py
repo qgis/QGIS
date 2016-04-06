@@ -42,12 +42,12 @@ class EditScriptAction(ContextAction):
 
     def isEnabled(self):
         if self.scriptType == ScriptEditorDialog.SCRIPT_PYTHON:
-            return isinstance(self.alg, ScriptAlgorithm) and self.alg.allowEdit
+            return isinstance(self.itemData, ScriptAlgorithm) and self.itemData.allowEdit
         elif self.scriptType == ScriptEditorDialog.SCRIPT_R:
-            return isinstance(self.alg, RAlgorithm)
+            return isinstance(self.itemData, RAlgorithm)
 
     def execute(self):
-        dlg = ScriptEditorDialog(self.scriptType, self.alg)
+        dlg = ScriptEditorDialog(self.scriptType, self.itemData)
         dlg.show()
         dlg.exec_()
         if dlg.update:

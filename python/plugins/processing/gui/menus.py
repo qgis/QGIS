@@ -1,11 +1,14 @@
+import os
+from PyQt.QtWidgets import QAction, QMenu
+from PyQt4.QtGui import QIcon
 from processing.core.Processing import Processing
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from PyQt.QtWidgets import QAction, QMenu
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from qgis.utils import iface
-import os
-from PyQt4.QtGui import QIcon
+from processing.gui.MessageBarProgress import MessageBarProgress
+from processing.gui.AlgorithmExecutor import runalg
+from processing.gui.Postprocessing import handleAlgorithmResults
 
 algorithmsToolbar = None
 menusSettingsGroup = 'Menus'
@@ -196,19 +199,26 @@ def _executeAlgorithm(alg):
         dlg.exec_()
         return
     alg = alg.getCopy()
-    dlg = alg.getCustomParametersDialog()
-    if not dlg:
-        dlg = AlgorithmDialog(alg)
-    canvas = iface.mapCanvas()
-    prevMapTool = canvas.mapTool()
-    dlg.show()
-    dlg.exec_()
-    if canvas.mapTool() != prevMapTool:
-        try:
-            canvas.mapTool().reset()
-        except:
-            pass
-        canvas.setMapTool(prevMapTool)
+    if (alg.getVisibleParametersCount() + alg.getVisibleOutputsCount()) > 0:
+        dlg = alg.getCustomParametersDialog()
+        if not dlg:
+            dlg = AlgorithmDialog(alg)
+        canvas = iface.mapCanvas()
+        prevMapTool = canvas.mapTool()
+        dlg.show()
+        dlg.exec_()
+        if canvas.mapTool() != prevMapTool:
+            try:
+                canvas.mapTool().reset()
+            except:
+                pass
+            canvas.setMapTool(prevMapTool)
+    else:
+        progress = MessageBarProgress()
+        runalg(alg, progress)
+        handleAlgorithmResults(alg, progress)
+        progress.close()
+
 
 
 def getMenu(name, parent):

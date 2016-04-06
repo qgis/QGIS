@@ -32,12 +32,6 @@ from PyQt.QtCore import QCoreApplication
 
 class ToolboxAction:
 
-    def __init__(self):
-        # This should be true if the action should be shown even if
-        # there are no algorithms in the provider (for instance,
-        # when it is deactivated
-        self.showAlways = False
-
     def setData(self, toolbox):
         self.toolbox = toolbox
 

@@ -31,8 +31,8 @@ from PyQt.QtCore import QCoreApplication
 
 class ContextAction:
 
-    def setData(self, alg, toolbox):
-        self.alg = alg
+    def setData(self, itemData, toolbox):
+        self.itemData = itemData
         self.toolbox = toolbox
 
     def updateToolbox(self):

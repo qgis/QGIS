@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    DeleteModelAction.py
+    NewPreconfiguredAlgorithmAction.py
     ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
+    Date                 : April 2016
+    Copyright            : (C) 2016 by Victor Olaya
     Email                : volayaf at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -17,35 +17,29 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__date__ = 'April 2016'
+__copyright__ = '(C) 2016, Victor Olaya'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
 __revision__ = '$Format:%H$'
 
-import os
-from PyQt.QtWidgets import QMessageBox
 from processing.gui.ContextAction import ContextAction
-from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
+from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.preconfigured.PreconfiguredAlgorithmDialog import PreconfiguredAlgorithmDialog
+from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorithm
 
-
-class DeleteModelAction(ContextAction):
+class NewPreconfiguredAlgorithmAction(ContextAction):
 
     def __init__(self):
-        self.name = self.tr('Delete model', 'DeleteModelAction')
+        self.name = self.tr('Create preconfigured algorithm', 'NewPreconfiguredAlgorithmAction')
 
     def isEnabled(self):
-        return isinstance(self.itemData, ModelerAlgorithm)
+        return (isinstance(self.itemData, GeoAlgorithm) and
+                not isinstance(self.itemData, PreconfiguredAlgorithm))
 
     def execute(self):
-        reply = QMessageBox.question(
-            None,
-            self.tr('Confirmation', 'DeleteModelAction'),
-            self.tr('Are you sure you want to delete this model?', 'DeleteModelAction'),
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No)
-        if reply == QMessageBox.Yes:
-            os.remove(self.itemData.descriptionFile)
-            self.toolbox.updateProvider('model')
+        dlg = PreconfiguredAlgorithmDialog(self.itemData, self.toolbox)
+        dlg.exec_()
