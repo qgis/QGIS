@@ -706,7 +706,7 @@ void TestQgsPoint::vector()
 
   // length
   QCOMPARE( v1.length(), 0.0 );
-  QVERIFY( qgsDoubleNear( v2.length(), sqrt( 5 ), 0.000000001 ) );
+  QVERIFY( qgsDoubleNear( v2.length(), sqrt( 5.0 ), 0.000000001 ) );
 
   // perpVector
   QCOMPARE( QgsVector( 2, 3 ).perpVector().x(), -3.0 );
