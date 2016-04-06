@@ -207,6 +207,73 @@ class PyQgsMapUnitScale(unittest.TestCase):
         size = QgsSymbolLayerV2Utils.convertToPainterUnits(r, 2, QgsSymbolV2.Pixel, c)
         self.assertAlmostEqual(size, 2.0, places=5)
 
+    def testConvertToMapUnits(self):
+        # test QgsSymbolLayerV2Utils::convertToMapUnits() using QgsMapUnitScale
+
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 100, 100))
+        ms.setOutputSize(QSize(100, 50))
+        ms.setOutputDpi(300)
+        r = QgsRenderContext.fromMapSettings(ms)
+
+        # renderer scale should be about 1:291937841
+
+        # start with no min/max scale
+        c = QgsMapUnitScale()
+
+        size = QgsSymbolLayerV2Utils.convertToMapUnits(r, 2, QgsSymbolV2.MapUnit, c)
+        self.assertEqual(size, 2.0)
+        size = QgsSymbolLayerV2Utils.convertToMapUnits(r, 2, QgsSymbolV2.MM, c)
+        self.assertAlmostEqual(size, 47.244094, places=5)
+        size = QgsSymbolLayerV2Utils.convertToMapUnits(r, 2, QgsSymbolV2.Pixel, c)
+        self.assertAlmostEqual(size, 4.0, places=5)
+
+        # minimum size greater than the calculated size, so size should be limited to minSizeMM
+        c.minSizeMM = 5
+        c.minSizeMMEnabled = True
+        size = QgsSymbolLayerV2Utils.convertToMapUnits(r, 2, QgsSymbolV2.MapUnit, c)
+        self.assertAlmostEqual(size, 118.1102362, places=5)
+        # only conversion from mapunits should be affected
+        size = QgsSymbolLayerV2Utils.convertToMapUnits(r, 2, QgsSymbolV2.MM, c)
+        self.assertAlmostEqual(size, 47.244094, places=5)
+        size = QgsSymbolLayerV2Utils.convertToMapUnits(r, 2, QgsSymbolV2.Pixel, c)
+        self.assertAlmostEqual(size, 4.0, places=5)
+        c.minSizeMMEnabled = False
+
+        # maximum size less than the calculated size, so size should be limited to maxSizeMM
+        c.maxSizeMM = 0.05
+        c.maxSizeMMEnabled = True
+        size = QgsSymbolLayerV2Utils.convertToMapUnits(r, 2, QgsSymbolV2.MapUnit, c)
+        self.assertAlmostEqual(size, 1.1811023622047245, places=5)
+        # only conversion from mapunits should be affected
+        size = QgsSymbolLayerV2Utils.convertToMapUnits(r, 2, QgsSymbolV2.MM, c)
+        self.assertAlmostEqual(size, 47.244094, places=5)
+        size = QgsSymbolLayerV2Utils.convertToMapUnits(r, 2, QgsSymbolV2.Pixel, c)
+        self.assertAlmostEqual(size, 4.0, places=5)
+        c.maxSizeMMEnabled = False
+
+        # test with minimum scale set
+        c.minScale = 1 / 150000000.0
+        size = QgsSymbolLayerV2Utils.convertToMapUnits(r, 2, QgsSymbolV2.MapUnit, c)
+        self.assertAlmostEqual(size, 15.57001821, places=5)
+        # only conversion from mapunits should be affected
+        size = QgsSymbolLayerV2Utils.convertToMapUnits(r, 2, QgsSymbolV2.MM, c)
+        self.assertAlmostEqual(size, 47.244094, places=5)
+        size = QgsSymbolLayerV2Utils.convertToMapUnits(r, 2, QgsSymbolV2.Pixel, c)
+        self.assertAlmostEqual(size, 4.0, places=5)
+        c.minScale = 0
+
+        # test with maximum scale set
+        c.maxScale = 1 / 1550000000.0
+        size = QgsSymbolLayerV2Utils.convertToMapUnits(r, 2, QgsSymbolV2.MapUnit, c)
+        self.assertAlmostEqual(size, 1.50677595625, places=5)
+        # only conversion from mapunits should be affected
+        size = QgsSymbolLayerV2Utils.convertToMapUnits(r, 2, QgsSymbolV2.MM, c)
+        self.assertAlmostEqual(size, 47.244094, places=5)
+        size = QgsSymbolLayerV2Utils.convertToMapUnits(r, 2, QgsSymbolV2.Pixel, c)
+        self.assertAlmostEqual(size, 4.0, places=5)
+        c.maxScale = 0
+
     def testPixelSizeScaleFactor(self):
         # test QgsSymbolLayerV2Utils::pixelSizeScaleFactor() using QgsMapUnitScale
 

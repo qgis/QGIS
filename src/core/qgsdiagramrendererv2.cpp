@@ -423,18 +423,9 @@ QSizeF QgsDiagramRendererV2::sizeMapUnits( const QgsFeature& feature, const QgsR
   QSizeF size = diagramSize( feature, c );
   if ( size.isValid() )
   {
-    if ( s.sizeType == QgsSymbolV2::MM )
-    {
-      double pixelToMap = c.scaleFactor() * c.mapToPixel().mapUnitsPerPixel();
-      size.rwidth() *= pixelToMap;
-      size.rheight() *= pixelToMap;
-    }
-    else if ( s.sizeType == QgsSymbolV2::Pixel )
-    {
-      double pixelToMap = c.mapToPixel().mapUnitsPerPixel();
-      size.rwidth() *= pixelToMap;
-      size.rheight() *= pixelToMap;
-    }
+    double width = QgsSymbolLayerV2Utils::convertToMapUnits( c, size.width(), s.sizeType, s.sizeScale );
+    size.rheight() *= width / size.width();
+    size.setWidth( width );
   }
   return size;
 }
