@@ -81,6 +81,8 @@ QWidget* QgsWebViewWidgetWrapper::createWidget( QWidget* parent )
   layout->addWidget( webView, 0, 0, 1, 2 );
   layout->addWidget( le, 1, 0 );
   layout->addWidget( pb, 1, 1 );
+  layout->setMargin( 0 );
+  layout->setContentsMargins( 0, 0, 0, 0 );
 
   container->setLayout( layout );
 
