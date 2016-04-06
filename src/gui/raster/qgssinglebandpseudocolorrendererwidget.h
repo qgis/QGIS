@@ -87,6 +87,7 @@ class QgsTreeWidgetItem: public QObject, public QTreeWidgetItem
 
   public:
     virtual void setData( int column, int role, const QVariant & value );
+    virtual bool operator< ( const QTreeWidgetItem & other ) const;
 
   signals:
     void itemEdited( QTreeWidgetItem* item, int column );
