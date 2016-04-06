@@ -41,6 +41,14 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QgsPointV2 closestVertex( const QgsAbstractGeometryV2& geom, const QgsPointV2& pt, QgsVertexId& id );
 
+    /** Returns the distance along a geometry from its first vertex to the specified vertex.
+     * @param geom geometry
+     * @param id vertex id to find distance to
+     * @returns distance to vertex (following geometry)
+     * @note added in QGIS 2.16
+     */
+    static double distanceToVertex( const QgsAbstractGeometryV2& geom, const QgsVertexId& id );
+
     /** Returns vertices adjacent to a specified vertex within a geometry.
      */
     static void adjacentVertices( const QgsAbstractGeometryV2& geom, QgsVertexId atVertex, QgsVertexId& beforeVertex, QgsVertexId& afterVertex );

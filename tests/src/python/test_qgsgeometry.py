@@ -1837,6 +1837,22 @@ class TestQgsGeometry(unittest.TestCase):
         wkt = geom.exportToWkt()
         assert compareWkt(expWkt, wkt), "addMValue to Point failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
+    def testDistanceToVertex(self):
+        """ Test distanceToVertex calculation """
+        g = QgsGeometry()
+        self.assertEqual(g.distanceToVertex(0), -1)
+
+        g = QgsGeometry.fromWkt('LineString ()')
+        self.assertEqual(g.distanceToVertex(0), -1)
+
+        g = QgsGeometry.fromWkt('Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
+        self.assertEqual(g.distanceToVertex(0), 0)
+        self.assertEqual(g.distanceToVertex(1), 1)
+        self.assertEqual(g.distanceToVertex(2), 2)
+        self.assertEqual(g.distanceToVertex(3), 3)
+        self.assertEqual(g.distanceToVertex(4), 4)
+        self.assertEqual(g.distanceToVertex(5), -1)
+
     def testRelates(self):
         """ Test relationships between geometries. Note the bulk of these tests were taken from the PostGIS relate testdata """
         with open(os.path.join(TEST_DATA_DIR, 'relates_data.csv'), 'r') as d:

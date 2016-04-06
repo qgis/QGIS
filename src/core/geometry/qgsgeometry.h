@@ -227,6 +227,14 @@ class CORE_EXPORT QgsGeometry
     QgsPoint closestVertex( const QgsPoint& point, int& atVertex, int& beforeVertex, int& afterVertex, double& sqrDist ) const;
 
     /**
+     * Returns the distance along this geometry from its first vertex to the specified vertex.
+     * @param vertex vertex index to calculate distance to
+     * @returns distance to vertex (following geometry), or -1 for invalid vertex numbers
+     * @note added in QGIS 2.16
+     */
+    double distanceToVertex( int vertex ) const;
+
+    /**
      * Returns the indexes of the vertices before and after the given vertex index.
      *
      * This function takes into account the following factors:
