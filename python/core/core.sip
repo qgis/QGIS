@@ -289,6 +289,7 @@
 %Include symbology-ng/qgsheatmaprenderer.sip
 %Include symbology-ng/qgsinvertedpolygonrenderer.sip
 %Include symbology-ng/qgslegendsymbolitemv2.sip
+%Include symbology-ng/qgsnullsymbolrenderer.sip
 %Include symbology-ng/qgspointdisplacementrenderer.sip
 %Include symbology-ng/qgsrendererv2.sip
 %Include symbology-ng/qgsrendererv2registry.sip

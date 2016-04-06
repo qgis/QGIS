@@ -23,6 +23,7 @@
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgsheatmaprenderer.h"
 #include "qgs25drenderer.h"
+#include "qgsnullsymbolrenderer.h"
 
 QgsRendererV2Registry::QgsRendererV2Registry()
 {
@@ -61,6 +62,10 @@ QgsRendererV2Registry::QgsRendererV2Registry()
   addRenderer( new QgsRendererV2Metadata( "25dRenderer",
                                           QObject::tr( "2.5 D" ),
                                           Qgs25DRenderer::create ) );
+
+  addRenderer( new QgsRendererV2Metadata( "nullSymbol",
+                                          QObject::tr( "No Symbols" ),
+                                          QgsNullSymbolRenderer::create ) );
 }
 
 QgsRendererV2Registry::~QgsRendererV2Registry()

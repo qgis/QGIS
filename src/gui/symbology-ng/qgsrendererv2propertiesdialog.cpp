@@ -26,6 +26,7 @@
 #include "qgsinvertedpolygonrendererwidget.h"
 #include "qgsheatmaprendererwidget.h"
 #include "qgs25drendererwidget.h"
+#include "qgsnullsymbolrendererwidget.h"
 
 #include "qgsorderbydialog.h"
 #include "qgsapplication.h"
@@ -73,6 +74,7 @@ static void _initRendererWidgetFunctions()
   _initRenderer( "invertedPolygonRenderer", QgsInvertedPolygonRendererWidget::create, "rendererInvertedSymbol.svg" );
   _initRenderer( "heatmapRenderer", QgsHeatmapRendererWidget::create, "rendererHeatmapSymbol.svg" );
   _initRenderer( "25dRenderer", Qgs25DRendererWidget::create, "renderer25dSymbol.svg" );
+  _initRenderer( "nullSymbol", QgsNullSymbolRendererWidget::create, "rendererNullSymbol.svg" );
   initialized = true;
 }
 
