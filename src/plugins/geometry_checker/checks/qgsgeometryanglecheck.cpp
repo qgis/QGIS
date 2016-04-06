@@ -38,8 +38,8 @@ void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError*>& errors
           QgsVector v21, v23;
           try
           {
-            v21 = QgsVector( p1.x() - p2.x(), p1.y() - p2.y() ).normal();
-            v23 = QgsVector( p3.x() - p2.x(), p3.y() - p2.y() ).normal();
+            v21 = QgsVector( p1.x() - p2.x(), p1.y() - p2.y() ).normalized();
+            v23 = QgsVector( p3.x() - p2.x(), p3.y() - p2.y() ).normalized();
           }
           catch ( const QgsException& )
           {
@@ -84,8 +84,8 @@ void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError* error, int method, 
   QgsVector v21, v23;
   try
   {
-    v21 = QgsVector( p1.x() - p2.x(), p1.y() - p2.y() ).normal();
-    v23 = QgsVector( p3.x() - p2.x(), p3.y() - p2.y() ).normal();
+    v21 = QgsVector( p1.x() - p2.x(), p1.y() - p2.y() ).normalized();
+    v23 = QgsVector( p3.x() - p2.x(), p3.y() - p2.y() ).normalized();
   }
   catch ( const QgsException& )
   {
