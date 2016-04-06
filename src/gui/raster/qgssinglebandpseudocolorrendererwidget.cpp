@@ -228,6 +228,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mAddEntryButton_clicked()
   newItem->setText( 0, "0" );
   newItem->setBackground( 1, QBrush( QColor( Qt::magenta ) ) );
   newItem->setText( 2, "" );
+  newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
   connect( newItem, SIGNAL( itemEdited( QTreeWidgetItem*, int ) ),
            this, SLOT( mColormapTreeWidget_itemEdited( QTreeWidgetItem*, int ) ) );
   mColormapTreeWidget->sortItems( 0, Qt::AscendingOrder );
@@ -409,6 +410,7 @@ void QgsSingleBandPseudoColorRendererWidget::populateColormapTreeWidget( const Q
     newItem->setText( 0, QString::number( it->value, 'g' ) );
     newItem->setBackground( 1, QBrush( it->color ) );
     newItem->setText( 2, it->label );
+    newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
     connect( newItem, SIGNAL( itemEdited( QTreeWidgetItem*, int ) ),
              this, SLOT( mColormapTreeWidget_itemEdited( QTreeWidgetItem*, int ) ) );
   }
@@ -675,6 +677,7 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
           newItem->setText( 0, QString::number( it->value, 'g' ) );
           newItem->setBackground( 1, QBrush( it->color ) );
           newItem->setText( 2, it->label );
+          newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
           connect( newItem, SIGNAL( itemEdited( QTreeWidgetItem*, int ) ),
                    this, SLOT( mColormapTreeWidget_itemEdited( QTreeWidgetItem*, int ) ) );
         }
