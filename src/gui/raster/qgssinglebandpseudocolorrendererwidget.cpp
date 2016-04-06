@@ -39,6 +39,13 @@ void QgsTreeWidgetItem::setData( int column, int role, const QVariant & value )
   }
 }
 
+// override < operator to allow sorting
+bool QgsTreeWidgetItem::operator<( const QTreeWidgetItem & other ) const
+{
+  // could use treeWidget()->sortColumn() instead of 0
+  return text( 0 ).toDouble() < other.text( 0 ).toDouble();
+}
+
 QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent )
     : QgsRasterRendererWidget( layer, extent )
     , mMinMaxWidget( nullptr )
@@ -214,6 +221,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mAddEntryButton_clicked()
   newItem->setText( 2, "" );
   connect( newItem, SIGNAL( itemEdited( QTreeWidgetItem*, int ) ),
            this, SLOT( mColormapTreeWidget_itemEdited( QTreeWidgetItem*, int ) ) );
+  mColormapTreeWidget->sortItems( 0, Qt::AscendingOrder );
   autoLabel();
 }
 
@@ -228,55 +236,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mDeleteEntryButton_clicked()
 
 void QgsSingleBandPseudoColorRendererWidget::on_mSortButton_clicked()
 {
-  bool inserted = false;
-  int myCurrentIndex = 0;
-  int myTopLevelItemCount = mColormapTreeWidget->topLevelItemCount();
-  QTreeWidgetItem* myCurrentItem;
-  QList<QgsColorRampShader::ColorRampItem> myColorRampItems;
-  for ( int i = 0; i < myTopLevelItemCount; ++i )
-  {
-    myCurrentItem = mColormapTreeWidget->topLevelItem( i );
-    //If the item is null or does not have a pixel values set, skip
-    if ( !myCurrentItem || myCurrentItem->text( 0 ) == "" )
-    {
-      continue;
-    }
-
-    //Create a copy of the new Color ramp Item
-    QgsColorRampShader::ColorRampItem myNewColorRampItem;
-    myNewColorRampItem.value = myCurrentItem->text( 0 ).toDouble();
-    myNewColorRampItem.color = myCurrentItem->background( 1 ).color();
-    myNewColorRampItem.label = myCurrentItem->text( 2 );
-
-    //Simple insertion sort - speed is not a huge factor here
-    inserted = false;
-    myCurrentIndex = 0;
-    while ( !inserted )
-    {
-      if ( 0 == myColorRampItems.size() || myCurrentIndex == myColorRampItems.size() )
-      {
-        myColorRampItems.push_back( myNewColorRampItem );
-        inserted = true;
-      }
-      else if ( myColorRampItems[myCurrentIndex].value > myNewColorRampItem.value )
-      {
-        myColorRampItems.insert( myCurrentIndex, myNewColorRampItem );
-        inserted = true;
-      }
-      else if ( myColorRampItems[myCurrentIndex].value <= myNewColorRampItem.value  && myCurrentIndex == myColorRampItems.size() - 1 )
-      {
-        myColorRampItems.push_back( myNewColorRampItem );
-        inserted = true;
-      }
-      else if ( myColorRampItems[myCurrentIndex].value <= myNewColorRampItem.value && myColorRampItems[myCurrentIndex+1].value > myNewColorRampItem.value )
-      {
-        myColorRampItems.insert( myCurrentIndex + 1, myNewColorRampItem );
-        inserted = true;
-      }
-      myCurrentIndex++;
-    }
-  }
-  populateColormapTreeWidget( myColorRampItems );
+  mColormapTreeWidget->sortItems( 0, Qt::AscendingOrder );
 }
 
 void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
@@ -648,6 +608,7 @@ void QgsSingleBandPseudoColorRendererWidget::mColormapTreeWidget_itemEdited( QTr
 
   if ( column == 0 ) // item value edited
   {
+    mColormapTreeWidget->sortItems( 0, Qt::AscendingOrder );
     autoLabel();
   }
   else if ( column == 2 ) // item label edited
