@@ -192,7 +192,7 @@ void QgsSingleBandPseudoColorRendererWidget::autoLabel()
 
     if ( discrete )
     {
-      if ( i == 0)
+      if ( i == 0 )
       {
         label = "< " + myCurrentItem->text( 0 ) + unit;
       }
@@ -232,7 +232,7 @@ void QgsSingleBandPseudoColorRendererWidget::setUnitFromLabels()
 
     if ( discrete )
     {
-      if ( i == 0)
+      if ( i == 0 )
       {
         label = "< " + myCurrentItem->text( 0 );
       }
@@ -256,7 +256,7 @@ void QgsSingleBandPseudoColorRendererWidget::setUnitFromLabels()
   suffixes.removeDuplicates();
   int max = 0;
   QString unit;
-  for( int i = 0; i < suffixes.count(); ++i )
+  for ( int i = 0; i < suffixes.count(); ++i )
   {
     int n = allSuffixes.count( suffixes[i] );
     if ( n > max )
@@ -268,7 +268,7 @@ void QgsSingleBandPseudoColorRendererWidget::setUnitFromLabels()
   // Set this suffix as unit if at least used twice
   if ( max >= 2 )
   {
-    mUnitLineEdit->setText(unit);
+    mUnitLineEdit->setText( unit );
   }
   autoLabel();
 }
