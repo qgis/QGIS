@@ -47,7 +47,7 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
 
   private:
     void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem>& colorRampItems );
-    void autolabel();
+    void autoLabel();
 
   private slots:
     void on_mAddEntryButton_clicked();
@@ -58,7 +58,7 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void on_mLoadFromFileButton_clicked();
     void on_mExportToFileButton_clicked();
     void on_mColormapTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column );
-    void on_mColormapTreeWidget_itemChanged( QTreeWidgetItem* item, int column );
+    void mColormapTreeWidget_itemEdited( QTreeWidgetItem* item, int column );
     void on_mBandComboBox_currentIndexChanged( int index );
     void on_mColorInterpolationComboBox_currentIndexChanged( int index );
     void on_mMinLineEdit_textChanged( const QString & text ) { Q_UNUSED( text ); resetClassifyButton(); }
@@ -75,6 +75,19 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void showMinMaxOrigin();
     QgsRasterMinMaxWidget * mMinMaxWidget;
     int mMinMaxOrigin;
+};
+
+class QgsTreeWidgetItem: public QObject, public QTreeWidgetItem
+{
+    Q_OBJECT
+  public:
+    explicit QgsTreeWidgetItem( QTreeWidget * parent, int type = Type ) : QTreeWidgetItem( parent, type ) {}
+
+  public:
+    virtual void setData( int column, int role, const QVariant & value );
+
+  signals:
+    void itemEdited( QTreeWidgetItem* item, int column );
 };
 
 #endif // QGSSINGLEBANDCOLORRENDERERWIDGET_H
