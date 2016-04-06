@@ -48,6 +48,7 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
   private:
     void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem>& colorRampItems );
     void autoLabel();
+    void setUnitFromLabels();
 
   private slots:
     void on_mAddEntryButton_clicked();
@@ -57,6 +58,7 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void on_mLoadFromBandButton_clicked();
     void on_mLoadFromFileButton_clicked();
     void on_mExportToFileButton_clicked();
+    void on_mUnitLineEdit_textEdited( const QString & text ) { Q_UNUSED( text ); autoLabel(); }
     void on_mColorInterpolationComboBox_currentIndexChanged();
     void on_mColormapTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column );
     void mColormapTreeWidget_itemEdited( QTreeWidgetItem* item, int column );

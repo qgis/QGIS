@@ -186,6 +186,47 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRendererWidget::renderer()
 void QgsSingleBandPseudoColorRendererWidget::autoLabel()
 {
   bool discrete = mColorInterpolationComboBox->currentText() == tr( "Discrete" );
+  QString unit = mUnitLineEdit->text();
+  QString label = "";
+  int myTopLevelItemCount = mColormapTreeWidget->topLevelItemCount();
+  QTreeWidgetItem* myCurrentItem;
+  for ( int i = 0; i < myTopLevelItemCount; ++i )
+  {
+    myCurrentItem = mColormapTreeWidget->topLevelItem( i );
+    //If the item is null or does not have a pixel values set, skip
+    if ( !myCurrentItem || myCurrentItem->text( 0 ) == "" )
+    {
+      continue;
+    }
+
+    if ( discrete )
+    {
+      if ( i == 0)
+      {
+        label = "< " + myCurrentItem->text( 0 ) + unit;
+      }
+      else
+      {
+        label = mColormapTreeWidget->topLevelItem( i - 1 )->text( 0 ) + " - " + myCurrentItem->text( 0 ) + unit;
+      }
+    }
+    else
+    {
+      label = myCurrentItem->text( 0 ) + unit;
+    }
+
+    if ( myCurrentItem->text( 2 ) == "" || myCurrentItem->text( 2 ) == label || myCurrentItem->foreground( 2 ).color() == QColor( Qt::gray ) )
+    {
+      myCurrentItem->setText( 2, label );
+      myCurrentItem->setForeground( 2, QBrush( QColor( Qt::gray ) ) );
+    }
+  }
+}
+
+void QgsSingleBandPseudoColorRendererWidget::setUnitFromLabels()
+{
+  bool discrete = mColorInterpolationComboBox->currentText() == tr( "Discrete" );
+  QStringList allSuffixes;
   QString label = "";
   int myTopLevelItemCount = mColormapTreeWidget->topLevelItemCount();
   QTreeWidgetItem* myCurrentItem;
@@ -214,12 +255,31 @@ void QgsSingleBandPseudoColorRendererWidget::autoLabel()
       label = myCurrentItem->text( 0 );
     }
 
-    if ( myCurrentItem->text( 2 ) == "" || myCurrentItem->text( 2 ) == label || myCurrentItem->foreground( 2 ).color() == QColor( Qt::gray ) )
+    if ( myCurrentItem->text( 2 ).startsWith( label ) )
     {
-      myCurrentItem->setText( 2, label );
-      myCurrentItem->setForeground( 2, QBrush( QColor( Qt::gray ) ) );
+      allSuffixes.append( myCurrentItem->text( 2 ).mid( label.length() ) );
     }
   }
+  // find most common suffix
+  QStringList suffixes = QStringList( allSuffixes );
+  suffixes.removeDuplicates();
+  int max = 0;
+  QString unit;
+  for( int i = 0; i < suffixes.count(); ++i )
+  {
+    int n = allSuffixes.count( suffixes[i] );
+    if ( n > max )
+    {
+      max = n;
+      unit = suffixes[i];
+    }
+  }
+  // Set this suffix as unit if at least used twice
+  if ( max >= 2 )
+  {
+    mUnitLineEdit->setText(unit);
+  }
+  autoLabel();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::on_mAddEntryButton_clicked()
@@ -409,7 +469,7 @@ void QgsSingleBandPseudoColorRendererWidget::populateColormapTreeWidget( const Q
     connect( newItem, SIGNAL( itemEdited( QTreeWidgetItem*, int ) ),
              this, SLOT( mColormapTreeWidget_itemEdited( QTreeWidgetItem*, int ) ) );
   }
-  autoLabel();
+  setUnitFromLabels();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromBandButton_clicked()
@@ -676,7 +736,7 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
           connect( newItem, SIGNAL( itemEdited( QTreeWidgetItem*, int ) ),
                    this, SLOT( mColormapTreeWidget_itemEdited( QTreeWidgetItem*, int ) ) );
         }
-        autoLabel();
+        setUnitFromLabels();
         mClipCheckBox->setChecked( colorRampShader->clip() );
       }
     }
