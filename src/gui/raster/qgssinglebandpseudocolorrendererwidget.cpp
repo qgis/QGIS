@@ -661,7 +661,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mColormapTreeWidget_itemDoubleCl
 
 void QgsSingleBandPseudoColorRendererWidget::mColormapTreeWidget_itemEdited( QTreeWidgetItem* item, int column )
 {
-  (void)item;
+  Q_UNUSED( item );
 
   if ( column == 0 ) // item value edited
   {
@@ -729,12 +729,6 @@ void QgsSingleBandPseudoColorRendererWidget::on_mBandComboBox_currentIndexChange
   QList<int> myBands;
   myBands.append( mBandComboBox->itemData( index ).toInt() );
   mMinMaxWidget->setBands( myBands );
-}
-
-void QgsSingleBandPseudoColorRendererWidget::on_mColorInterpolationComboBox_currentIndexChanged( int index )
-{
-  (void)index;
-  autoLabel();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin )
