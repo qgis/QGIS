@@ -403,10 +403,14 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
   QList<double>::const_iterator value_it = entryValues.begin();
   QVector<QColor>::const_iterator color_it = entryColors.begin();
 
+  // calculate a reasonable number of decimals to display
+  double maxabs = log10( std::max<double>( std::fabs( max ), std::fabs( min ) ) );
+  int nDecimals = round( std::max<double>( 3.0 + maxabs - log10( max - min ), maxabs <= 6.0 ? maxabs + 0.49 : 0.0 ) );
+
   for ( ; value_it != entryValues.end(); ++value_it, ++color_it )
   {
     QgsTreeWidgetItem* newItem = new QgsTreeWidgetItem( mColormapTreeWidget );
-    newItem->setText( 0, QString::number( *value_it, 'g' ) );
+    newItem->setText( 0, QString::number( *value_it, 'g', nDecimals ) );
     newItem->setBackground( 1, QBrush( *color_it ) );
     newItem->setText( 2, "" );
     newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
