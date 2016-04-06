@@ -113,6 +113,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QLineEdit" name="mUnitLineEdit">
+         <property name="toolTip">
+          <string>Unit suffix</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -374,6 +381,7 @@
   <tabstop>mLoadFromBandButton</tabstop>
   <tabstop>mLoadFromFileButton</tabstop>
   <tabstop>mExportToFileButton</tabstop>
+  <tabstop>mUnitLineEdit</tabstop>
   <tabstop>mColormapTreeWidget</tabstop>
   <tabstop>mClipCheckBox</tabstop>
   <tabstop>mColorRampComboBox</tabstop>
