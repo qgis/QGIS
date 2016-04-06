@@ -29,6 +29,16 @@
 #include <QSettings>
 #include <QTextStream>
 
+// override setData to emit signal when edited. By default the itemChanged signal fires way too often
+void QgsTreeWidgetItem::setData( int column, int role, const QVariant & value )
+{
+  QTreeWidgetItem::setData( column, role, value );
+  if ( role == Qt::EditRole )
+  {
+    emit itemEdited( this, column );
+  }
+}
+
 QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent )
     : QgsRasterRendererWidget( layer, extent )
     , mMinMaxWidget( nullptr )
@@ -166,7 +176,7 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRendererWidget::renderer()
   return renderer;
 }
 
-void QgsSingleBandPseudoColorRendererWidget::autolabel()
+void QgsSingleBandPseudoColorRendererWidget::autoLabel()
 {
   bool discrete = mColorInterpolationComboBox->currentText() == tr( "Discrete" );
   QString label = "";
@@ -207,11 +217,13 @@ void QgsSingleBandPseudoColorRendererWidget::autolabel()
 
 void QgsSingleBandPseudoColorRendererWidget::on_mAddEntryButton_clicked()
 {
-  QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
+  QgsTreeWidgetItem* newItem = new QgsTreeWidgetItem( mColormapTreeWidget );
   newItem->setText( 0, "0" );
   newItem->setBackground( 1, QBrush( QColor( Qt::magenta ) ) );
   newItem->setText( 2, "" );
-  autolabel();
+  connect( newItem, SIGNAL( itemEdited( QTreeWidgetItem*, int ) ),
+           this, SLOT( mColormapTreeWidget_itemEdited( QTreeWidgetItem*, int ) ) );
+  autoLabel();
   emit widgetChanged();
 }
 
@@ -393,13 +405,15 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
 
   for ( ; value_it != entryValues.end(); ++value_it, ++color_it )
   {
-    QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
+    QgsTreeWidgetItem* newItem = new QgsTreeWidgetItem( mColormapTreeWidget );
     newItem->setText( 0, QString::number( *value_it, 'g' ) );
     newItem->setBackground( 1, QBrush( *color_it ) );
     newItem->setText( 2, "" );
     newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
+    connect( newItem, SIGNAL( itemEdited( QTreeWidgetItem*, int ) ),
+             this, SLOT( mColormapTreeWidget_itemEdited( QTreeWidgetItem*, int ) ) );
   }
-  autolabel();
+  autoLabel();
   emit widgetChanged();
 }
 
@@ -432,12 +446,14 @@ void QgsSingleBandPseudoColorRendererWidget::populateColormapTreeWidget( const Q
   QList<QgsColorRampShader::ColorRampItem>::const_iterator it = colorRampItems.constBegin();
   for ( ; it != colorRampItems.constEnd(); ++it )
   {
-    QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
+    QgsTreeWidgetItem* newItem = new QgsTreeWidgetItem( mColormapTreeWidget );
     newItem->setText( 0, QString::number( it->value, 'g' ) );
     newItem->setBackground( 1, QBrush( it->color ) );
     newItem->setText( 2, it->label );
+    connect( newItem, SIGNAL( itemEdited( QTreeWidgetItem*, int ) ),
+             this, SLOT( mColormapTreeWidget_itemEdited( QTreeWidgetItem*, int ) ) );
   }
-  autolabel();
+  autoLabel();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromBandButton_clicked()
@@ -650,18 +666,18 @@ void QgsSingleBandPseudoColorRendererWidget::on_mColormapTreeWidget_itemDoubleCl
   }
 }
 
-void QgsSingleBandPseudoColorRendererWidget::on_mColormapTreeWidget_itemChanged( QTreeWidgetItem* item, int column )
+void QgsSingleBandPseudoColorRendererWidget::mColormapTreeWidget_itemEdited( QTreeWidgetItem* item, int column )
 {
-  if ( column == 0 ) // change item value
+  Q_UNUSED( item );
+
+  if ( column == 0 ) // item value edited
   {
-    autolabel();
+    autoLabel();
   }
-  else if ( column == 2 ) // change item label
+  else if ( column == 2 ) // item label edited
   {
-    if ( item->text( 2 ).isEmpty() )
-    {
-      autolabel();
-    }
+    // call autoLabel to fill when empty or gray out when same as autoLabel
+    autoLabel();
   }
 }
 
@@ -695,11 +711,14 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
         QList<QgsColorRampShader::ColorRampItem>::const_iterator it = colorRampItemList.constBegin();
         for ( ; it != colorRampItemList.end(); ++it )
         {
-          QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
+          QgsTreeWidgetItem* newItem = new QgsTreeWidgetItem( mColormapTreeWidget );
           newItem->setText( 0, QString::number( it->value, 'g' ) );
           newItem->setBackground( 1, QBrush( it->color ) );
           newItem->setText( 2, it->label );
+          connect( newItem, SIGNAL( itemEdited( QTreeWidgetItem*, int ) ),
+                   this, SLOT( mColormapTreeWidget_itemEdited( QTreeWidgetItem*, int ) ) );
         }
+        autoLabel();
         mClipCheckBox->setChecked( colorRampShader->clip() );
       }
     }
@@ -720,7 +739,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mBandComboBox_currentIndexChange
 void QgsSingleBandPseudoColorRendererWidget::on_mColorInterpolationComboBox_currentIndexChanged( int index )
 {
   Q_UNUSED(index);
-  autolabel();
+  autoLabel();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin )
