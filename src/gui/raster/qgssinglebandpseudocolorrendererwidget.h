@@ -53,7 +53,6 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void on_mAddEntryButton_clicked();
     void on_mDeleteEntryButton_clicked();
     void on_mNumberOfEntriesSpinBox_valueChanged();
-    void on_mSortButton_clicked();
     void on_mClassifyButton_clicked();
     void on_mLoadFromBandButton_clicked();
     void on_mLoadFromFileButton_clicked();
