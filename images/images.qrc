@@ -486,6 +486,7 @@
         <file>themes/default/rendererCategorizedSymbol.svg</file>
         <file>themes/default/rendererGraduatedSymbol.png</file>
         <file>themes/default/rendererGraduatedSymbol.svg</file>
+        <file>themes/default/rendererNullSymbol.svg</file>        
         <file>themes/default/rendererSingleSymbol.png</file>
         <file>themes/default/rendererSingleSymbol.svg</file>
         <file>themes/default/rendererRuleBasedSymbol.svg</file>

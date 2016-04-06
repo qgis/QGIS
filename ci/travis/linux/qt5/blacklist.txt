@@ -36,6 +36,7 @@ PyQgsLocalServer
 PyQgsMapUnitScale
 PyQgsMemoryProvider
 PyQgsNetworkContentFetcher
+PyQgsNullSymbolRenderer
 PyQgsPalLabelingBase
 PyQgsPalLabelingCanvas
 PyQgsPalLabelingComposer

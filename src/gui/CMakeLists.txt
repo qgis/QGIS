@@ -22,6 +22,7 @@ SET(QGIS_GUI_SRCS
   symbology-ng/qgsheatmaprendererwidget.cpp
   symbology-ng/qgsinvertedpolygonrendererwidget.cpp
   symbology-ng/qgslayerpropertieswidget.cpp
+  symbology-ng/qgsnullsymbolrendererwidget.cpp
   symbology-ng/qgspenstylecombobox.cpp
   symbology-ng/qgspointdisplacementrendererwidget.cpp
   symbology-ng/qgsrendererv2propertiesdialog.cpp
@@ -427,6 +428,7 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgsheatmaprendererwidget.h
   symbology-ng/qgsinvertedpolygonrendererwidget.h
   symbology-ng/qgslayerpropertieswidget.h
+  symbology-ng/qgsnullsymbolrendererwidget.h
   symbology-ng/qgspenstylecombobox.h
   symbology-ng/qgspointdisplacementrendererwidget.h
   symbology-ng/qgsrendererv2propertiesdialog.h
