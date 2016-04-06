@@ -52,7 +52,6 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
   private slots:
     void on_mAddEntryButton_clicked();
     void on_mDeleteEntryButton_clicked();
-    void on_mSortButton_clicked();
     void on_mClassifyButton_clicked();
     void on_mLoadFromBandButton_clicked();
     void on_mLoadFromFileButton_clicked();

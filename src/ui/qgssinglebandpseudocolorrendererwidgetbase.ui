@@ -71,20 +71,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="mSortButton">
-         <property name="toolTip">
-          <string>Sort colormap items</string>
-         </property>
-         <property name="text">
-          <string>...</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../../images/images.qrc">
-           <normaloff>:/images/themes/default/mActionArrowDown.png</normaloff>:/images/themes/default/mActionArrowDown.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QToolButton" name="mLoadFromBandButton">
          <property name="toolTip">
           <string>Load color map from band</string>
@@ -385,7 +371,6 @@
   <tabstop>mColorInterpolationComboBox</tabstop>
   <tabstop>mAddEntryButton</tabstop>
   <tabstop>mDeleteEntryButton</tabstop>
-  <tabstop>mSortButton</tabstop>
   <tabstop>mLoadFromBandButton</tabstop>
   <tabstop>mLoadFromFileButton</tabstop>
   <tabstop>mExportToFileButton</tabstop>

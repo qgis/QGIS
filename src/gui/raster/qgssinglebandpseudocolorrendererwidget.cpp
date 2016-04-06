@@ -235,11 +235,6 @@ void QgsSingleBandPseudoColorRendererWidget::on_mDeleteEntryButton_clicked()
   }
 }
 
-void QgsSingleBandPseudoColorRendererWidget::on_mSortButton_clicked()
-{
-  mColormapTreeWidget->sortItems( 0, Qt::AscendingOrder );
-}
-
 void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
 {
   int bandComboIndex = mBandComboBox->currentIndex();
