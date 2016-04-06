@@ -25,20 +25,20 @@ from qgis.testing import unittest
 
 class PyQgsVectorColorRamp(unittest.TestCase):
 
-    def testQgsVectorRandomColorRampV2(self):
+    def testQgsVectorGradientRampV2(self):
         # test gradient with only start/end color
-        r = QgsVectorGradientColorRampV2(QColor(200, 0, 0), QColor(0, 200, 0))
+        r = QgsVectorGradientColorRampV2(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
         self.assertEqual(r.type(), 'gradient')
-        self.assertEqual(r.color1(), QColor(200, 0, 0))
-        self.assertEqual(r.color2(), QColor(0, 200, 0))
+        self.assertEqual(r.color1(), QColor(200, 0, 0, 100))
+        self.assertEqual(r.color2(), QColor(0, 200, 0, 200))
         self.assertEqual(r.isDiscrete(), False)
         self.assertEqual(len(r.stops()), 0)
         self.assertEqual(r.count(), 2)
         self.assertEqual(r.value(0), 0.0)
         self.assertEqual(r.value(1), 1.0)
-        self.assertEqual(r.color(0), QColor(200, 0, 0))
-        self.assertEqual(r.color(1), QColor(0, 200, 0))
-        self.assertEqual(r.color(0.5), QColor(100, 100, 0))
+        self.assertEqual(r.color(0), QColor(200, 0, 0, 100))
+        self.assertEqual(r.color(1), QColor(0, 200, 0, 200))
+        self.assertEqual(r.color(0.5), QColor(100, 100, 0, 150))
 
         # test gradient with stops
         r = QgsVectorGradientColorRampV2(QColor(200, 0, 0), QColor(0, 200, 0), False, [QgsGradientStop(0.1, QColor(180, 20, 40)),
@@ -57,7 +57,7 @@ class PyQgsVectorColorRamp(unittest.TestCase):
         self.assertEqual(r.color(0.1), QColor(180, 20, 40))
         self.assertEqual(r.color(0.5), QColor(110, 40, 70))
         self.assertEqual(r.color(0.9), QColor(40, 60, 100))
-        self.assertEqual(r.color(0.95), QColor(20, 129, 50))
+        self.assertEqual(r.color(0.95), QColor(20, 130, 50))
         self.assertEqual(r.color(1), QColor(0, 200, 0))
 
         # test setters
@@ -135,7 +135,7 @@ class PyQgsVectorColorRamp(unittest.TestCase):
         self.assertEqual(g.stops()[2], (0.9, QColor(40, 60, 100, 127)))
         self.assertEqual(g.stops()[3], (1.0, QColor(0, 200, 0, 127)))
 
-    def testQgsVectorRandomColorRampV2_2(self):
+    def testQgsVectorRandomColorRampV2(self):
         # test random color ramp
         r = QgsVectorRandomColorRampV2(5)
         self.assertEqual(r.type(), 'random')
