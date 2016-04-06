@@ -754,12 +754,6 @@ void QgsSingleBandPseudoColorRendererWidget::on_mBandComboBox_currentIndexChange
   mMinMaxWidget->setBands( myBands );
 }
 
-void QgsSingleBandPseudoColorRendererWidget::on_mColorInterpolationComboBox_currentIndexChanged( int index )
-{
-  Q_UNUSED(index);
-  autoLabel();
-}
-
 void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin )
 {
   Q_UNUSED( theBandNo );
