@@ -103,7 +103,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   mColorInterpolationComboBox->setCurrentIndex( 1 );
   mClassificationModeComboBox->addItem( tr( "Continuous" ), Continuous );
   mClassificationModeComboBox->addItem( tr( "Equal interval" ), EqualInterval );
-  //quantile would be nice as well
+  mClassificationModeComboBox->addItem( tr( "Quantile" ), Quantile );
 
   mNumberOfEntriesSpinBox->setValue( 5 ); // some default
 
@@ -343,6 +343,38 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
       }
     }
   }
+  else if ( mClassificationModeComboBox->itemData( mClassificationModeComboBox->currentIndex() ).toInt() == Quantile )
+  { // Quantile
+    mMinMaxWidget->load();
+
+    numberOfEntries = mNumberOfEntriesSpinBox->value();
+
+    int bandNr = mBandComboBox->itemData( bandComboIndex ).toInt();
+    //QgsRasterHistogram myRasterHistogram = mRasterLayer->dataProvider()->histogram( bandNr );
+
+    double myMin = std::numeric_limits<double>::quiet_NaN();
+    double myMax = std::numeric_limits<double>::quiet_NaN();
+
+    QgsRectangle myExtent = mMinMaxWidget->extent();
+    int mySampleSize = mMinMaxWidget->sampleSize();
+
+    double intervalDiff;
+    if ( numberOfEntries > 1 )
+    {
+      intervalDiff = 1.0 / ( numberOfEntries - 1 );
+      entryValues.reserve( numberOfEntries );
+      for ( int i = 0; i < numberOfEntries; ++i )
+      {
+        mRasterLayer->dataProvider()->cumulativeCut( bandNr, 0.0, i * intervalDiff, myMin, myMax, myExtent, mySampleSize );
+        entryValues.push_back( myMax );
+      }
+    }
+    else if ( numberOfEntries == 1 )
+    {
+      mRasterLayer->dataProvider()->cumulativeCut( bandNr, 0.0, 0.5, myMin, myMax, myExtent, mySampleSize );
+      entryValues.push_back( myMax );
+    }
+  }
   else // EqualInterval
   {
     numberOfEntries = mNumberOfEntriesSpinBox->value();
@@ -438,7 +470,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
 
 void QgsSingleBandPseudoColorRendererWidget::on_mClassificationModeComboBox_currentIndexChanged( int index )
 {
-  mNumberOfEntriesSpinBox->setEnabled( mClassificationModeComboBox->itemData( index ).toInt() == EqualInterval );
+  mNumberOfEntriesSpinBox->setEnabled( mClassificationModeComboBox->itemData( index ).toInt() != Continuous );
 }
 
 void QgsSingleBandPseudoColorRendererWidget::on_mColorRampComboBox_currentIndexChanged( int index )

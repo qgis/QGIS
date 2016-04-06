@@ -33,6 +33,9 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
 
     void setBands( const QList<int> & theBands ) { mBands = theBands; }
 
+    QgsRectangle extent() { QgsRectangle myExtent; return mCurrentExtentRadioButton->isChecked() ? mExtent : myExtent; }
+    int sampleSize() { return mEstimateRadioButton->isChecked() ? 250000 : 0; }
+
     // Load programmaticaly with current values
     void load() { on_mLoadPushButton_clicked(); }
 

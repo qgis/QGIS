@@ -65,10 +65,9 @@ void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
     double myMin = std::numeric_limits<double>::quiet_NaN();
     double myMax = std::numeric_limits<double>::quiet_NaN();
 
-    QgsRectangle myExtent; // empty == full
+    QgsRectangle myExtent = extent(); // empty == full
     if ( mCurrentExtentRadioButton->isChecked() )
     {
-      myExtent = mExtent; // current
       origin |= QgsRasterRenderer::MinMaxSubExtent;
     }
     else
@@ -77,10 +76,9 @@ void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
     }
     QgsDebugMsg( QString( "myExtent.isEmpty() = %1" ).arg( myExtent.isEmpty() ) );
 
-    int mySampleSize = 0; // 0 == exact
+    int mySampleSize = sampleSize(); // 0 == exact
     if ( mEstimateRadioButton->isChecked() )
     {
-      mySampleSize = 250000;
       origin |= QgsRasterRenderer::MinMaxEstimated;
     }
     else
