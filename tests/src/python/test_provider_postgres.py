@@ -17,7 +17,7 @@ import qgis  # NOQA
 import os
 from qgis.core import NULL
 
-from qgis.core import QgsVectorLayer, QgsFeatureRequest
+from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature
 from PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -165,6 +165,16 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         test_query_attribute(self.dbconn, '(SELECT -1::int8 i, NULL::geometry(Point) g)', 'i', -1, 1)
         test_query_attribute(self.dbconn, '(SELECT -65535::int8 i, NULL::geometry(Point) g)', 'i', -65535, 1)
 
+    def testPktMapInsert(self):
+        vl = QgsVectorLayer('{} table="qgis_test"."{}" key="pk" sql='.format(self.dbconn, 'books_view'), "books_view", "postgres")
+        self.assertTrue(vl.isValid())
+        f = QgsFeature(vl.fields())
+        f.setAttribute(0, NULL)
+        f.setAttribute(1, 'Das Drama des begabten Kindes')
+        r, f = vl.dataProvider().addFeatures([f])
+        self.assertTrue(r)
+        self.assertIsNotNone(f[0]['pk'])
+        vl.deleteFeatures([f[0].id()])
 
 if __name__ == '__main__':
     unittest.main()

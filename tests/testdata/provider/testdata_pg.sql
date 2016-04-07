@@ -309,3 +309,30 @@ INSERT INTO qgis_test.child_table_good (geom, code1) VALUES ('srid=4326;Point(1 
 INSERT INTO qgis_test.child_table2_good (geom, code2) VALUES ('srid=4326;Point(-1 -1)'::geometry, 'child2 1');
 INSERT INTO qgis_test.child_table2_good (geom, code2) VALUES ('srid=4326;Point(-1 1)'::geometry, 'child2 2');
 
+--------------------------------------
+-- A writable view
+--
+CREATE OR REPLACE VIEW qgis_test.books_view
+  AS
+    SELECT *
+    FROM qgis_test.books;
+
+CREATE OR REPLACE FUNCTION qgis_test.books_view_insert()
+  RETURNS trigger AS
+$BODY$
+BEGIN
+  INSERT INTO qgis_test.books (
+    "name"
+  )
+  VALUES (
+    NEW.name
+  )
+  RETURNING pk INTO NEW.pk;
+
+  RETURN NEW;
+END; $BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+CREATE TRIGGER books_view_ON_INSERT INSTEAD OF INSERT ON qgis_test.books_view
+  FOR EACH ROW EXECUTE PROCEDURE qgis_test.books_view_insert();
