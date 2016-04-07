@@ -248,7 +248,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
   return jobMapSettings;
 }
 
-void QgsComposerMap::cache( void )
+void QgsComposerMap::cache()
 {
   if ( mPreviewMode == Rectangle )
   {

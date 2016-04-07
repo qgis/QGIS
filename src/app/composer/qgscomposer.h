@@ -85,13 +85,13 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void zoomFull();
 
     //! Return pointer to map canvas
-    QgsMapCanvas *mapCanvas( void );
+    QgsMapCanvas* mapCanvas();
 
     //! Return pointer to composer view
-    QgsComposerView *view( void );
+    QgsComposerView* view();
 
     //! Return current composition
-    QgsComposition* composition( void ) { return mComposition; }
+    QgsComposition* composition() { return mComposition; }
 
     //! Restore the window and toolbar state
     void restoreWindowState();

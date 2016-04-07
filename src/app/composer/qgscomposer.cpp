@@ -824,7 +824,7 @@ void QgsComposer::connectOtherSlots()
   connect( this, SIGNAL( zoomLevelChanged() ), this, SLOT( updateStatusZoom() ) );
 }
 
-void QgsComposer::open( void )
+void QgsComposer::open()
 {
   if ( mFirstTime )
   {
@@ -1222,17 +1222,17 @@ void QgsComposer::atlasPageComboEditingFinished()
   }
 }
 
-QgsMapCanvas *QgsComposer::mapCanvas( void )
+QgsMapCanvas* QgsComposer::mapCanvas()
 {
   return mQgis->mapCanvas();
 }
 
-QgsComposerView *QgsComposer::view( void )
+QgsComposerView* QgsComposer::view()
 {
   return mView;
 }
 
-void QgsComposer::zoomFull( void )
+void QgsComposer::zoomFull()
 {
   if ( mView )
   {

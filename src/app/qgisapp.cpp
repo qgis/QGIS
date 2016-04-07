@@ -9763,7 +9763,7 @@ void QgisApp::selectionChanged( QgsMapLayer *layer )
   }
 }
 
-void QgisApp::legendLayerSelectionChanged( void )
+void QgisApp::legendLayerSelectionChanged()
 {
   QList<QgsLayerTreeLayer*> selectedLayers = mLayerTreeView ? mLayerTreeView->selectedLayerNodes() : QList<QgsLayerTreeLayer*>();
 

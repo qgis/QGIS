@@ -643,7 +643,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void toolButtonActionTriggered( QAction * );
 
     //! layer selection changed
-    void legendLayerSelectionChanged( void );
+    void legendLayerSelectionChanged();
 
     //! Watch for QFileOpenEvent.
     virtual bool event( QEvent *event ) override;

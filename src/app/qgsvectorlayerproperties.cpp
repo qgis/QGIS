@@ -384,7 +384,7 @@ void QgsVectorLayerProperties::setDisplayField( const QString& name )
 }
 
 //! @note in raster props, this method is called sync()
-void QgsVectorLayerProperties::syncToLayer( void )
+void QgsVectorLayerProperties::syncToLayer()
 {
   // populate the general information
   mLayerOrigNameLineEdit->setText( layer->originalName() );

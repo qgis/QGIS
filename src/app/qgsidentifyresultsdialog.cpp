@@ -74,7 +74,7 @@ QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWeb
 #endif
 }
 
-void QgsIdentifyResultsWebView::print( void )
+void QgsIdentifyResultsWebView::print()
 {
   QPrinter printer;
   QPrintDialog *dialog = new QPrintDialog( &printer );

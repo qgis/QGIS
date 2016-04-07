@@ -1414,7 +1414,7 @@ void QgsVectorLayer::enableLabels( bool on )
   mLabelOn = on;
 }
 
-bool QgsVectorLayer::hasLabelsEnabled( void ) const
+bool QgsVectorLayer::hasLabelsEnabled() const
 {
   return mLabelOn;
 }

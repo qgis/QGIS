@@ -56,7 +56,7 @@ class APP_EXPORT QgsIdentifyResultsWebView : public QgsWebView
     QgsIdentifyResultsWebView( QWidget *parent = nullptr );
     QSize sizeHint() const override;
   public slots:
-    void print( void );
+    void print();
   protected:
     void contextMenuEvent( QContextMenuEvent* ) override;
     QgsWebView *createWindow( QWebPage::WebWindowType type ) override;
