@@ -551,7 +551,6 @@ class QgsVectorLayer : QgsMapLayer
      */
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
 
-	// TODO QGIS 3 add /In,Out/ to get back updated features
     /** Adds a feature
         @param f feature to add
         @param alsoUpdateExtent If True, will also go to the effort of e.g. updating the extents.
