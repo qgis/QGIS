@@ -115,7 +115,7 @@ def initializeMenus():
                               "Add button", False)
             ProcessingConfig.addSetting(setting)
             setting = Setting(menusSettingsGroup, "ICON_" + alg.commandLineName(),
-                              "Icon", "", valuetype = Setting.FILE)
+                              "Icon", "", valuetype=Setting.FILE)
             ProcessingConfig.addSetting(setting)
 
     ProcessingConfig.readSettings()
@@ -138,7 +138,7 @@ def createMenus():
                 icon = None
             if menuPath:
                 paths = menuPath.split("/")
-                addAlgorithmEntry(alg, paths[0], paths[-1], addButton = addButton, icon = icon)
+                addAlgorithmEntry(alg, paths[0], paths[-1], addButton=addButton, icon=icon)
 
 
 def removeMenus():
