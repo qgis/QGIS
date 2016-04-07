@@ -312,7 +312,14 @@ INSERT INTO qgis_test.child_table2_good (geom, code2) VALUES ('srid=4326;Point(-
 --------------------------------------
 -- A writable view
 --
-CREATE OR REPLACE VIEW qgis_test.books_view
+
+CREATE TABLE qgis_test.bikes
+(
+  pk serial NOT NULL,
+  name character varying(255)
+);
+
+CREATE OR REPLACE VIEW qgis_test.bikes_view
   AS
     SELECT *
     FROM qgis_test.books;
@@ -321,7 +328,7 @@ CREATE OR REPLACE FUNCTION qgis_test.books_view_insert()
   RETURNS trigger AS
 $BODY$
 BEGIN
-  INSERT INTO qgis_test.books (
+  INSERT INTO qgis_test.bikes (
     "name"
   )
   VALUES (
@@ -331,8 +338,7 @@ BEGIN
 
   RETURN NEW;
 END; $BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
+  LANGUAGE plpgsql VOLATILE;
 
-CREATE TRIGGER books_view_ON_INSERT INSTEAD OF INSERT ON qgis_test.books_view
-  FOR EACH ROW EXECUTE PROCEDURE qgis_test.books_view_insert();
+CREATE TRIGGER bikes_view_ON_INSERT INSTEAD OF INSERT ON qgis_test.bikes_view
+  FOR EACH ROW EXECUTE PROCEDURE qgis_test.bikes_view_insert();
