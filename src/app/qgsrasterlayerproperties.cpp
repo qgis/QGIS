@@ -30,7 +30,6 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstyleguiutils.h"
-#include "qgsmaplayerstylemanager.h"
 #include "qgsmaprenderer.h"
 #include "qgsmaptoolemitpoint.h"
 #include "qgsmaptopixel.h"
@@ -106,6 +105,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   connect( lyr->styleManager(), SIGNAL( currentStyleChanged( QString ) ), this, SLOT( syncToLayer() ) );
 
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
+  connect( this, SIGNAL( rejected() ), this, SLOT( onCancel() ) );
+
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
 
   connect( mOptionsStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( mOptionsStackedWidget_CurrentChanged( int ) ) );
@@ -1707,6 +1708,8 @@ void QgsRasterLayerProperties::loadStyle_clicked()
   if ( !fileName.endsWith( ".qml", Qt::CaseInsensitive ) )
     fileName += ".qml";
 
+  mOldStyle = mRasterLayer->styleManager()->style( mRasterLayer->styleManager()->currentStyle() );
+
   bool defaultLoadedFlag = false;
   QString message = mRasterLayer->loadNamedStyle( fileName, defaultLoadedFlag );
   if ( defaultLoadedFlag )
@@ -1776,4 +1779,16 @@ bool QgsRasterLayerProperties::rasterIsMultiBandColor()
   return mRasterLayer && nullptr != dynamic_cast<QgsMultiBandColorRenderer*>( mRasterLayer->renderer() );
 }
 
-
+void QgsRasterLayerProperties::onCancel()
+{
+  if ( mOldStyle.xmlData() != mRasterLayer->styleManager()->style( mRasterLayer->styleManager()->currentStyle() ).xmlData() )
+  {
+    // need to reset style to previous - style applied directly to the layer (not in apply())
+    QString myMessage;
+    QDomDocument doc( "qgis" );
+    int errorLine, errorColumn;
+    doc.setContent( mOldStyle.xmlData(), false, &myMessage, &errorLine, &errorColumn );
+    mRasterLayer->importNamedStyle( doc, myMessage );
+    syncToLayer();
+  }
+}
