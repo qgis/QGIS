@@ -165,7 +165,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         test_query_attribute(self.dbconn, '(SELECT -1::int8 i, NULL::geometry(Point) g)', 'i', -1, 1)
         test_query_attribute(self.dbconn, '(SELECT -65535::int8 i, NULL::geometry(Point) g)', 'i', -65535, 1)
 
-    def testPktMapInsert(self):
+    def testPktIntInsert(self):
         vl = QgsVectorLayer('{} table="qgis_test"."{}" key="pk" sql='.format(self.dbconn, 'bikes_view'), "bikes_view", "postgres")
         self.assertTrue(vl.isValid())
         f = QgsFeature(vl.fields())
@@ -173,7 +173,18 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         f['name'] = 'Cilo'
         r, f = vl.dataProvider().addFeatures([f])
         self.assertTrue(r)
-        self.assertNotEqual(f[0]['pk'], NULL)
+        self.assertNotEqual(f[0]['pk'], NULL, f[0].attributes())
+        vl.deleteFeatures([f[0].id()])
+
+    def testPktMapInsert(self):
+        vl = QgsVectorLayer('{} table="qgis_test"."{}" key="obj_id" sql='.format(self.dbconn, 'oid_serial_table'), "oid_serial", "postgres")
+        self.assertTrue(vl.isValid())
+        f = QgsFeature(vl.fields())
+        f['obj_id'] = vl.dataProvider().defaultValue(0)
+        f['name'] = 'Test'
+        r, f = vl.dataProvider().addFeatures([f])
+        self.assertTrue(r)
+        self.assertNotEqual(f[0]['obj_id'], NULL, f[0].attributes())
         vl.deleteFeatures([f[0].id()])
 
 if __name__ == '__main__':

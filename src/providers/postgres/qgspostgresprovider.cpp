@@ -1918,7 +1918,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
     insert += values + ')';
 
-    if ( mPrimaryKeyType == pktFidMap )
+    if ( mPrimaryKeyType == pktFidMap || mPrimaryKeyType == pktInt )
     {
       insert += " RETURNING ";
 

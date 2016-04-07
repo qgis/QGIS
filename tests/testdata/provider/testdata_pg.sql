@@ -310,7 +310,7 @@ INSERT INTO qgis_test.child_table2_good (geom, code2) VALUES ('srid=4326;Point(-
 INSERT INTO qgis_test.child_table2_good (geom, code2) VALUES ('srid=4326;Point(-1 1)'::geometry, 'child2 2');
 
 --------------------------------------
--- A writable view
+-- A writable view with an int pk
 --
 
 CREATE TABLE qgis_test.bikes
@@ -342,3 +342,18 @@ END; $BODY$
 
 CREATE TRIGGER bikes_view_ON_INSERT INSTEAD OF INSERT ON qgis_test.bikes_view
   FOR EACH ROW EXECUTE PROCEDURE qgis_test.bikes_view_insert();
+
+--------------------------------------
+-- A string primary key to force usage of pktMap
+--
+
+CREATE SEQUENCE qgis_test.oid_serial;
+
+CREATE TABLE qgis_test.oid_serial_table
+(
+  obj_id varchar(16) NOT NULL,
+  name character varying(255),
+  CONSTRAINT pkey_oid_serial PRIMARY KEY (obj_id)
+);
+
+ALTER TABLE qgis_test.oid_serial_table ALTER COLUMN obj_id SET DEFAULT 'prf_' || nextval('qgis_test.oid_serial');
