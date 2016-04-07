@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    PreconfiguredAlgorithmAction.py
+    PreconfiguredAlgorithm.py
     ---------------------
     Date                 : April 2016
     Copyright            : (C) 2016 by Victor Olaya
