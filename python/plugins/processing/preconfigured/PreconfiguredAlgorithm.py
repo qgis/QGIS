@@ -31,6 +31,7 @@ from processing.modeler.ModelerUtils import ModelerUtils
 from processing.core.GeoAlgorithm import GeoAlgorithm
 import json
 
+
 class PreconfiguredAlgorithm(GeoAlgorithm):
 
     def __init__(self, descriptionFile):

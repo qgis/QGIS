@@ -31,6 +31,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.preconfigured.PreconfiguredAlgorithmDialog import PreconfiguredAlgorithmDialog
 from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorithm
 
+
 class NewPreconfiguredAlgorithmAction(ContextAction):
 
     def __init__(self):

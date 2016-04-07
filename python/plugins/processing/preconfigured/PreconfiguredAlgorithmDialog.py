@@ -83,6 +83,7 @@ class PreconfiguredAlgorithmDialog(AlgorithmDialog):
                                      self.tr('Wrong or missing parameter values'))
         self.close()
 
+
 class SettingsPanel(QWidget):
 
     def __init__(self):

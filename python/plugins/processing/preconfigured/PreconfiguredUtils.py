@@ -20,6 +20,7 @@
 import os
 from processing.tools.system import mkdir, userFolder
 
+
 def preconfiguredAlgorithmsFolder():
     folder = unicode(os.path.join(userFolder(), 'preconfigured'))
     mkdir(folder)
@@ -34,4 +35,3 @@ def algAsDict(alg):
     for out in alg.outputs:
         outputs[out.name] = out.value
     return {"parameters": params, "outputs": outputs, "algname": alg.commandLineName()}
-
