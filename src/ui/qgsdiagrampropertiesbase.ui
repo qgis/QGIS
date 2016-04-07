@@ -10,7 +10,7 @@
     <height>491</height>
    </rect>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_8" stretch="0,0,1">
+  <layout class="QVBoxLayout" name="verticalLayout_8" stretch="0,1">
    <property name="leftMargin">
     <number>6</number>
    </property>
@@ -39,11 +39,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QCheckBox" name="mEnableDiagramsCheckBox">
-        <property name="text">
-         <string>Show diagrams for this layer</string>
-        </property>
-       </widget>
+       <widget class="QComboBox" name="mDiagramTypeComboBox"/>
       </item>
       <item>
        <spacer name="horizontalSpacer_7">
@@ -93,50 +89,6 @@
          </size>
         </property>
        </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QFrame" name="mDiagramTypeFrame">
-     <layout class="QHBoxLayout" name="diagramTypeAndPriorityLayout">
-      <property name="spacing">
-       <number>2</number>
-      </property>
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="mTypeLabel">
-        <property name="text">
-         <string>Diagram type</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="mDiagramTypeComboBox"/>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
       </item>
      </layout>
     </widget>
@@ -1877,9 +1829,8 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mEnableDiagramsCheckBox</tabstop>
-  <tabstop>mEngineSettingsButton</tabstop>
   <tabstop>mDiagramTypeComboBox</tabstop>
+  <tabstop>mEngineSettingsButton</tabstop>
   <tabstop>mDiagramOptionsListWidget</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mAttributesTreeWidget</tabstop>
