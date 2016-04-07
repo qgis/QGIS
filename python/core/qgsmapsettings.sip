@@ -8,7 +8,6 @@ class QgsMapSettings
   public:
     QgsMapSettings();
     QgsMapSettings( const QgsMapSettings& other );
-    QgsMapSettings& operator=( const QgsMapSettings& other );
 
     //! Return geographical coordinates of the rectangle that should be rendered.
     //! The actual visible extent used for rendering could be slightly different
