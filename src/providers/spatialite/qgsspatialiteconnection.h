@@ -131,7 +131,7 @@ class QgsSqliteHandle
     //
   public:
     QgsSqliteHandle( sqlite3 * handle, const QString& dbPath, bool shared )
-        : ref( shared ? 1 : -1 ), sqlite_handle( handle ), mDbPath( dbPath )
+        : ref( shared ? 1 : -1 ), sqlite_handle( handle ), mDbPath( dbPath ), mIsValid( true )
     {
     }
 
@@ -143,6 +143,16 @@ class QgsSqliteHandle
     QString dbPath() const
     {
       return mDbPath;
+    }
+
+    bool isValid() const
+    {
+      return mIsValid;
+    }
+
+    void invalidate()
+    {
+      mIsValid = false;
     }
 
     //
@@ -165,6 +175,7 @@ class QgsSqliteHandle
     int ref;
     sqlite3 *sqlite_handle;
     QString mDbPath;
+    bool mIsValid;
 
     static QMap < QString, QgsSqliteHandle * > handles;
 };

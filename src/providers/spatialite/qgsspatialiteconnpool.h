@@ -36,13 +36,15 @@ inline void qgsConnectionPool_ConnectionDestroy( QgsSqliteHandle* c )
 
 inline void qgsConnectionPool_InvalidateConnection( QgsSqliteHandle* c )
 {
-  Q_UNUSED( c );
+  /* Invalidation is used in particular by the WFS provider that uses a */
+  /* temporary spatialite DB and want to delete it at some point. For that */
+  /* it must invalidate all handles pointing to it */
+  c->invalidate();
 }
 
 inline bool qgsConnectionPool_ConnectionIsValid( QgsSqliteHandle* c )
 {
-  Q_UNUSED( c );
-  return true;
+  return c->isValid();
 }
 
 

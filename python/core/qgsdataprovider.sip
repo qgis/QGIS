@@ -218,6 +218,11 @@ class QgsDataProvider : QObject
      */
     virtual QgsError error() const;
 
+    /** Invalidate connections corresponding to specified name
+     * @note added in QGIS 2.16
+     */
+    virtual void invalidateConnections( const QString& connection );
+
   signals:
 
     /**

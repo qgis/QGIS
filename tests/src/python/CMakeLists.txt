@@ -74,6 +74,7 @@ ADD_PYTHON_TEST(PyQgsMapLayerRegistry test_qgsmaplayerregistry.py)
 ADD_PYTHON_TEST(PyQgsVirtualLayerProvider test_provider_virtual.py)
 ADD_PYTHON_TEST(PyQgsVirtualLayerDefinition test_qgsvirtuallayerdefinition.py)
 ADD_PYTHON_TEST(PyQgsLayerDefinition test_qgslayerdefinition.py)
+ADD_PYTHON_TEST(PyQgsWFSProvider test_provider_wfs.py)
 
 IF (NOT WIN32)
   ADD_PYTHON_TEST(PyQgsLogger test_qgslogger.py)

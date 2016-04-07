@@ -59,7 +59,7 @@ class CORE_EXPORT QgsOWSConnection : public QObject
     //! @deprecated use mConnectionInfo instead
     Q_DECL_DEPRECATED QString connectionInfo();
 
-  private:
+  protected:
     QgsDataSourceURI mUri;
     QString mService;
 };

@@ -22,6 +22,19 @@
 class QgsAbstractGeometrySimplifier;
 
 /** \ingroup core
+ * Interface that can be optionaly attached to an iterator so its
+ * nextFeature() implementaton can check if it must stop as soon as possible.
+ * @note Added in QGIS 2.16
+ * @note not available in Python bindings
+ */
+class CORE_EXPORT QgsInterruptionChecker
+{
+  public:
+    //! return true if the iterator must stop as soon as possible
+    virtual bool mustStop() const = 0;
+};
+
+/** \ingroup core
  * Internal feature iterator to be implemented within data providers
  */
 class CORE_EXPORT QgsAbstractFeatureIterator
@@ -40,6 +53,16 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     virtual bool rewind() = 0;
     //! end of iterating: free the resources / lock
     virtual bool close() = 0;
+
+    /** Attach an object that can be queried regularly by the iterator to check
+     * if it must stopped. This is mostly useful for iterators where a single
+     * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
+     * WFS provider. When nextFeature()/fetchFeature() is reasonably fast, it is not necessary
+     * to implement this method. The default implementation does nothing.
+     * @note added in QGIS 2.16
+     * @note not available in Python bindings
+     */
+    virtual void setInterruptionChecker( QgsInterruptionChecker* interruptionChecker );
 
   protected:
     /**
@@ -168,8 +191,6 @@ class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
     bool mOwnSource;
 };
 
-
-
 /**
  * \ingroup core
  * Wrapper for iterator of features from vector data provider or vector layer
@@ -194,6 +215,15 @@ class CORE_EXPORT QgsFeatureIterator
 
     //! find out whether the iterator is still valid or closed already
     bool isClosed() const;
+
+    /** Attach an object that can be queried regularly by the iterator to check
+     * if it must stopped. This is mostly useful for iterators where a single
+     * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
+     * WFS provider.
+     * @note added in QGIS 2.16
+     * @note not available in Python bindings
+     */
+    void setInterruptionChecker( QgsInterruptionChecker* interruptionChecker );
 
     friend bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 );
     friend bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 );
@@ -263,6 +293,12 @@ inline bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator
 inline bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )
 {
   return !( fi1 == fi2 );
+}
+
+inline void QgsFeatureIterator::setInterruptionChecker( QgsInterruptionChecker* interruptionChecker )
+{
+  if ( mIter )
+    mIter->setInterruptionChecker( interruptionChecker );
 }
 
 #endif // QGSFEATUREITERATOR_H

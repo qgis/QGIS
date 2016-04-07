@@ -44,6 +44,7 @@
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRenderContext& context )
     : QgsMapLayerRenderer( layer->id() )
     , mContext( context )
+    , mInterruptionChecker( context )
     , mLayer( layer )
     , mFields( layer->fields() )
     , mRendererV2( nullptr )
@@ -246,6 +247,11 @@ bool QgsVectorLayerRenderer::render()
   }
 
   QgsFeatureIterator fit = mSource->getFeatures( featureRequest );
+  // Attach an interruption checker so that iterators that have potentially
+  // slow fetchFeature() implementations, such as in the WFS provider, can
+  // check it, instead of relying on just the mContext.renderingStopped() check
+  // in drawRendererV2()
+  fit.setInterruptionChecker( &mInterruptionChecker );
 
   if (( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels ) && mRendererV2->usingSymbolLevels() )
     drawRendererV2Levels( fit );
@@ -392,9 +398,6 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
-    if ( !fet.constGeometry() )
-      continue; // skip features without geometry
-
     if ( mContext.renderingStopped() )
     {
       qDebug( "rendering stop!" );
@@ -402,6 +405,9 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
       delete mContext.expressionContext().popScope();
       return;
     }
+
+    if ( !fet.constGeometry() )
+      continue; // skip features without geometry
 
     mContext.expressionContext().setFeature( fet );
     QgsSymbolV2* sym = mRendererV2->symbolForFeature( fet, mContext );
@@ -626,4 +632,19 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QStringList
 
   mContext.labelingEngine()->prepareDiagramLayer( layer, attributeNames, mContext ); // will make internal copy of diagSettings + initialize it
 
+}
+
+/*  -----------------------------------------  */
+/*  QgsVectorLayerRendererInterruptionChecker  */
+/*  -----------------------------------------  */
+
+QgsVectorLayerRendererInterruptionChecker::QgsVectorLayerRendererInterruptionChecker
+( const QgsRenderContext& context )
+    : mContext( context )
+{
+}
+
+bool QgsVectorLayerRendererInterruptionChecker::mustStop() const
+{
+  return mContext.renderingStopped();
 }

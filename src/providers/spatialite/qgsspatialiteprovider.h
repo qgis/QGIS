@@ -233,6 +233,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     QgsAttributeList pkAttributeIndexes() override;
 
+    void invalidateConnections( const QString& connection ) override;
+
   signals:
     /**
      *   This is emitted whenever the worker thread has fully calculated the

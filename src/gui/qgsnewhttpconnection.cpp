@@ -50,6 +50,12 @@ QgsNewHttpConnection::QgsNewHttpConnection(
   cmbDpiMode->addItem( tr( "UMN" ) );
   cmbDpiMode->addItem( tr( "GeoServer" ) );
 
+  cmbVersion->clear();
+  cmbVersion->addItem( tr( "Auto-detect" ) );
+  cmbVersion->addItem( tr( "1.0" ) );
+  cmbVersion->addItem( tr( "1.1" ) );
+  cmbVersion->addItem( tr( "2.0" ) );
+
   mAuthConfigSelect = new QgsAuthConfigSelect( this );
   tabAuth->insertTab( 1, mAuthConfigSelect, tr( "Configurations" ) );
 
@@ -92,7 +98,18 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     }
     cmbDpiMode->setCurrentIndex( dpiIdx );
 
+    QString version = settings.value( key + "/version" ).toString();
+    int versionIdx = 0; // AUTO
+    if ( version == "1.0.0" )
+      versionIdx = 1;
+    else if ( version == "1.1.0" )
+      versionIdx = 2;
+    else if ( version == "2.0.0" )
+      versionIdx = 3;
+    cmbVersion->setCurrentIndex( versionIdx );
+
     txtReferer->setText( settings.value( key + "/referer" ).toString() );
+    txtMaxNumFeatures->setText( settings.value( key + "/maxnumfeatures" ).toString() );
 
     txtUserName->setText( settings.value( credentialsKey + "/username" ).toString() );
     txtPassword->setText( settings.value( credentialsKey + "/password" ).toString() );
@@ -107,6 +124,20 @@ QgsNewHttpConnection::QgsNewHttpConnection(
 
   if ( mBaseKey != "/Qgis/connections-wms/" )
   {
+    if ( mBaseKey != "/Qgis/connections-wcs/" &&
+         mBaseKey != "/Qgis/connections-wfs/" )
+    {
+      cbxIgnoreAxisOrientation->setVisible( false );
+      cbxInvertAxisOrientation->setVisible( false );
+      mGroupBox->layout()->removeWidget( cbxIgnoreAxisOrientation );
+      mGroupBox->layout()->removeWidget( cbxInvertAxisOrientation );
+    }
+
+    if ( mBaseKey == "/Qgis/connections-wfs/" )
+    {
+      cbxIgnoreAxisOrientation->setText( tr( "Ignore axis orientation (WFS 1.1/WFS 2.0)" ) );
+    }
+
     if ( mBaseKey == "/Qgis/connections-wcs/" )
     {
       cbxIgnoreGetMapURI->setText( tr( "Ignore GetCoverage URI reported in capabilities" ) );
@@ -115,12 +146,8 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     else
     {
       cbxIgnoreGetMapURI->setVisible( false );
-      cbxIgnoreAxisOrientation->setVisible( false );
-      cbxInvertAxisOrientation->setVisible( false );
       cbxSmoothPixmapTransform->setVisible( false );
       mGroupBox->layout()->removeWidget( cbxIgnoreGetMapURI );
-      mGroupBox->layout()->removeWidget( cbxIgnoreAxisOrientation );
-      mGroupBox->layout()->removeWidget( cbxInvertAxisOrientation );
       mGroupBox->layout()->removeWidget( cbxSmoothPixmapTransform );
     }
 
@@ -136,12 +163,22 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     mGroupBox->layout()->removeWidget( txtReferer );
     lblReferer->setVisible( false );
     mGroupBox->layout()->removeWidget( lblReferer );
-
-    // Adjust height
-    int w = width();
-    adjustSize();
-    resize( w, height() );
   }
+
+  if ( mBaseKey != "/Qgis/connections-wfs/" )
+  {
+    cmbVersion->setVisible( false );
+    mGroupBox->layout()->removeWidget( cmbVersion );
+    lblMaxNumFeatures->setVisible( false );
+    mGroupBox->layout()->removeWidget( lblMaxNumFeatures );
+    txtMaxNumFeatures->setVisible( false );
+    mGroupBox->layout()->removeWidget( txtMaxNumFeatures );
+  }
+
+  // Adjust height
+  int w = width();
+  adjustSize();
+  resize( w, height() );
 
   on_txtName_textChanged( connName );
 }
@@ -219,11 +256,18 @@ void QgsNewHttpConnection::accept()
   }
 
   settings.setValue( key + "/url", url.toString() );
+
+  if ( mBaseKey == "/Qgis/connections-wms/" ||
+       mBaseKey == "/Qgis/connections-wcs/" ||
+       mBaseKey == "/Qgis/connections-wfs/" )
+  {
+    settings.setValue( key + "/ignoreAxisOrientation", cbxIgnoreAxisOrientation->isChecked() );
+    settings.setValue( key + "/invertAxisOrientation", cbxInvertAxisOrientation->isChecked() );
+  }
+
   if ( mBaseKey == "/Qgis/connections-wms/" || mBaseKey == "/Qgis/connections-wcs/" )
   {
     settings.setValue( key + "/ignoreGetMapURI", cbxIgnoreGetMapURI->isChecked() );
-    settings.setValue( key + "/ignoreAxisOrientation", cbxIgnoreAxisOrientation->isChecked() );
-    settings.setValue( key + "/invertAxisOrientation", cbxInvertAxisOrientation->isChecked() );
     settings.setValue( key + "/smoothPixmapTransform", cbxSmoothPixmapTransform->isChecked() );
 
     int dpiMode = 0;
@@ -251,6 +295,28 @@ void QgsNewHttpConnection::accept()
   if ( mBaseKey == "/Qgis/connections-wms/" )
   {
     settings.setValue( key + "/ignoreGetFeatureInfoURI", cbxIgnoreGetFeatureInfoURI->isChecked() );
+  }
+  if ( mBaseKey == "/Qgis/connections-wfs/" )
+  {
+    QString version = "auto";
+    switch ( cmbVersion->currentIndex() )
+    {
+      case 0:
+        version = "auto";
+        break;
+      case 1:
+        version = "1.0.0";
+        break;
+      case 2:
+        version = "1.1.0";
+        break;
+      case 3:
+        version = "2.0.0";
+        break;
+    }
+    settings.setValue( key + "/version", version );
+
+    settings.setValue( key + "/maxnumfeatures", txtMaxNumFeatures->text() );
   }
 
   settings.setValue( key + "/referer", txtReferer->text() );

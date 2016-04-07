@@ -67,6 +67,7 @@ PyQgsVectorFileWriter
 PyQgsVectorLayer
 PyQgsVirtualLayerDefinition
 PyQgsVirtualLayerProvider
+PyQgsWFSProvider
 PyQgsZonalStatistics
 qgis_alignrastertest
 qgis_composereffectstest

@@ -195,15 +195,23 @@ protected:
  *
  * Used to access data provided by a web feature service.
  *
- * The url can be a HTTP url to a WFS 1.0.0 server or a GML2 data file path.
- * Examples are http://foobar/wfs or /foo/bar/file.gml
+ * The url can be a HTTP url to a WFS server (legacy, e.g. http://foobar/wfs?TYPENAME=xxx&SRSNAME=yyy[&FILTER=zzz]), or,
+ * starting with QGIS 2.16, a URI constructed using the QgsDataSourceURI class with the following parameters :
+ * - url=string (mandatory): HTTP url to a WFS server endpoint. e.g http://foobar/wfs
+ * - typename=string (mandatory): WFS typename
+ * - srsname=string (recommended): SRS like 'EPSG:XXXX'
+ * - username=string
+ * - password=string
+ * - authcfg=string
+ * - version=auto/1.0.0/1.1.0/2.0.0
+ * - filter=string: QGIS expression or OGC/FES filter
+ * - retrictToRequestBBOX=1: to download only features in the view extent (or more generally
+ *   in the bounding box of the feature iterator)
+ * - maxNumFeatures=number
+ * - IgnoreAxisOrientation=1: to ignore EPSG axis order for WFS 1.1 or 2.0
+ * - InvertAxisOrientation=1: to invert axis order
  *
- * If a GML2 file path is provided the driver will attempt to read the schema from a
- * file in the same directory with the same basename + “.xsd”. This xsd file must be
- * in the same format as a WFS describe feature type response. If no xsd file is provide
- * then the driver will attempt to guess the attribute types from the file.
- *
- * In the case of a HTTP URL the ‘FILTER’ query string parameter can be used to filter
+ * The ‘FILTER’ query string parameter can be used to filter
  * the WFS feature type. The ‘FILTER’ key value can either be a QGIS expression
  * or an OGC XML filter. If the value is set to a QGIS expression the driver will
  * turn it into OGC XML filter before passing it to the WFS server. Beware the

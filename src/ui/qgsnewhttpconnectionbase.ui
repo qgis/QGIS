@@ -33,7 +33,7 @@
       <string>Connection details</string>
      </property>
      <layout class="QGridLayout">
-      <item row="4" column="0" colspan="2">
+      <item row="4" column="0" colspan="3">
        <widget class="QTabWidget" name="tabAuth">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
@@ -115,7 +115,7 @@
         </widget>
        </widget>
       </item>
-      <item row="0" column="1">
+      <item row="0" column="2">
        <widget class="QLineEdit" name="txtName">
         <property name="minimumSize">
          <size>
@@ -170,14 +170,14 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="1" column="2">
        <widget class="QLineEdit" name="txtUrl">
         <property name="toolTip">
          <string>HTTP address of the Web Map Server</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
+      <item row="7" column="2">
        <widget class="QComboBox" name="cmbDpiMode"/>
       </item>
       <item row="6" column="0">
@@ -190,41 +190,69 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="1">
+      <item row="6" column="2">
        <widget class="QLineEdit" name="txtReferer"/>
       </item>
-      <item row="15" column="0" colspan="2">
+      <item row="16" column="0" colspan="3">
        <widget class="QCheckBox" name="cbxSmoothPixmapTransform">
         <property name="text">
          <string>Smooth pixmap transform</string>
         </property>
        </widget>
       </item>
-      <item row="14" column="0" colspan="2">
+      <item row="15" column="0" colspan="3">
        <widget class="QCheckBox" name="cbxInvertAxisOrientation">
         <property name="text">
          <string>Invert axis orientation</string>
         </property>
        </widget>
       </item>
-      <item row="13" column="0" colspan="2">
+      <item row="14" column="0" colspan="3">
        <widget class="QCheckBox" name="cbxIgnoreAxisOrientation">
         <property name="text">
          <string>Ignore axis orientation (WMS 1.3/WMTS)</string>
         </property>
        </widget>
       </item>
-      <item row="11" column="0" colspan="2">
+      <item row="12" column="0" colspan="3">
        <widget class="QCheckBox" name="cbxIgnoreGetMapURI">
         <property name="text">
          <string>Ignore GetMap/GetTile URI reported in capabilities</string>
         </property>
        </widget>
       </item>
-      <item row="12" column="0" colspan="2">
+      <item row="13" column="0" colspan="3">
        <widget class="QCheckBox" name="cbxIgnoreGetFeatureInfoURI">
         <property name="text">
          <string>Ignore GetFeatureInfo URI reported in capabilities</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="liblVersion">
+        <property name="text">
+         <string>Version</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="2">
+       <widget class="QComboBox" name="cmbVersion">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select protocol version&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0">
+       <widget class="QLabel" name="lblMaxNumFeatures">
+        <property name="text">
+         <string>Max. number of features</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="2">
+       <widget class="QLineEdit" name="txtMaxNumFeatures">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter a number to limit the maximum number of features retrieved in a single GetFeature request. If let to empty, server default will apply.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
       </item>

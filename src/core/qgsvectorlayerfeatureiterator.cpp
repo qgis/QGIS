@@ -94,6 +94,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     : QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>( source, ownSource, request )
     , mFetchedFid( false )
     , mEditGeometrySimplifier( nullptr )
+    , mInterruptionChecker( nullptr )
 {
   prepareExpressions();
 
@@ -236,6 +237,7 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature& f )
   {
     mChangedFeaturesIterator.close();
     mProviderIterator = mSource->mProviderFeatureSource->getFeatures( mProviderRequest );
+    mProviderIterator.setInterruptionChecker( mInterruptionChecker );
   }
 
   while ( mProviderIterator.nextFeature( f ) )
@@ -310,8 +312,11 @@ bool QgsVectorLayerFeatureIterator::close()
   return true;
 }
 
-
-
+void QgsVectorLayerFeatureIterator::setInterruptionChecker( QgsInterruptionChecker* interruptionChecker )
+{
+  mProviderIterator.setInterruptionChecker( interruptionChecker );
+  mInterruptionChecker = interruptionChecker;
+}
 
 bool QgsVectorLayerFeatureIterator::fetchNextAddedFeature( QgsFeature& f )
 {
