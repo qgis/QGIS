@@ -322,9 +322,9 @@ CREATE TABLE qgis_test.bikes
 CREATE OR REPLACE VIEW qgis_test.bikes_view
   AS
     SELECT *
-    FROM qgis_test.books;
+    FROM qgis_test.bikes;
 
-CREATE OR REPLACE FUNCTION qgis_test.books_view_insert()
+CREATE OR REPLACE FUNCTION qgis_test.bikes_view_insert()
   RETURNS trigger AS
 $BODY$
 BEGIN
