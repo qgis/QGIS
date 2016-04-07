@@ -372,7 +372,8 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     QgsComposerTableColumns* columns() { return &mColumns; }
 
     /** Replaces the columns in the table with a specified list of QgsComposerTableColumns.
-     * @param columns list of QgsComposerTableColumns to show in table
+     * @param columns list of QgsComposerTableColumns to show in table. Ownership of columns
+     * is transferred to the table.
      * @see columns
      */
     void setColumns( const QgsComposerTableColumns& columns );
