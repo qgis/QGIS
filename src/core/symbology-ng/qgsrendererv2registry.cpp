@@ -28,6 +28,10 @@
 QgsRendererV2Registry::QgsRendererV2Registry()
 {
   // add default renderers
+  addRenderer( new QgsRendererV2Metadata( "nullSymbol",
+                                          QObject::tr( "No Symbols" ),
+                                          QgsNullSymbolRenderer::create ) );
+
   addRenderer( new QgsRendererV2Metadata( "singleSymbol",
                                           QObject::tr( "Single Symbol" ),
                                           QgsSingleSymbolRendererV2::create,
@@ -62,10 +66,6 @@ QgsRendererV2Registry::QgsRendererV2Registry()
   addRenderer( new QgsRendererV2Metadata( "25dRenderer",
                                           QObject::tr( "2.5 D" ),
                                           Qgs25DRenderer::create ) );
-
-  addRenderer( new QgsRendererV2Metadata( "nullSymbol",
-                                          QObject::tr( "No Symbols" ),
-                                          QgsNullSymbolRenderer::create ) );
 }
 
 QgsRendererV2Registry::~QgsRendererV2Registry()

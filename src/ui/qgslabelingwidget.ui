@@ -25,6 +25,10 @@
         <property name="text">
          <string>No labels</string>
         </property>
+        <property name="icon">
+         <iconset resource="../../images/images.qrc">
+          <normaloff>:/images/themes/default/labelingNone.svg</normaloff>:/images/themes/default/labelingNone.svg</iconset>
+        </property>
        </item>
        <item>
         <property name="text">
