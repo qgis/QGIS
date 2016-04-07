@@ -52,10 +52,6 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
                 self.getDescription(),
                 Grass7Utils.GRASS_FOLDER, self.tr('GRASS7 folder'),
                 Grass7Utils.grassPath(), valuetype=Setting.FOLDER))
-            ProcessingConfig.addSetting(Setting(
-                self.getDescription(),
-                Grass7Utils.GRASS_WIN_SHELL, self.tr('Msys folder'),
-                Grass7Utils.grassWinShell(), valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(
             self.getDescription(),
             Grass7Utils.GRASS_LOG_COMMANDS,
@@ -69,7 +65,6 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.unload(self)
         if isWindows() or isMac():
             ProcessingConfig.removeSetting(Grass7Utils.GRASS_FOLDER)
-            ProcessingConfig.removeSetting(Grass7Utils.GRASS_WIN_SHELL)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_COMMANDS)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_CONSOLE)
 
