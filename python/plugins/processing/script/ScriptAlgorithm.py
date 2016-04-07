@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import re
-from qgis.core import *
+from qgis.core import QgsExpressionContextUtils
 from PyQt.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.Help2Html import getHtmlFromHelpFile
