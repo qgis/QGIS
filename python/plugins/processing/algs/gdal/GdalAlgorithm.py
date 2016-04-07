@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing.tools import dataobjects
 
 
 __author__ = 'Victor Olaya'
@@ -47,7 +48,15 @@ class GdalAlgorithm(GeoAlgorithm):
         return GdalAlgorithmDialog(self)
 
     def processAlgorithm(self, progress):
-        GdalUtils.runGdal(self.getConsoleCommands(), progress)
+        commands = self.getConsoleCommands()
+        layers = dataobjects.getVectorLayers()
+        for i, c in enumerate(commands):
+            for layer in layers:
+                if layer.source() in c:
+                    c = c.replace(layer.source(), dataobjects.exportVectorLayer(layer))
+
+            commands[i] = c
+        GdalUtils.runGdal(commands, progress)
 
     def shortHelp(self):
         return self._formatHelp('''This algorithm is based on the GDAL %s module.
