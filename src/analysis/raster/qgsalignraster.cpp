@@ -253,7 +253,7 @@ bool QgsAlignRaster::checkInputParameters()
   }
 
   mXSize = mYSize = 0;
-  std::fill( &mGeoTransform[0], &mGeoTransform[5], 0 );
+  std::fill_n( mGeoTransform, 6, 0 );
 
   double finalExtent[4] = { 0, 0, 0, 0 };
 
