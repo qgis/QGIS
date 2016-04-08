@@ -838,6 +838,13 @@ HTML_FOOTER            =
 
 HTML_STYLESHEET        =
 
+# @tomchadwin addition - HTML_EXTRA_STYLESHEET needs Doxygen version bump to
+# work.
+# Assumes Doxygen is run from this directory (/cmake_templates) - if not,
+# correct the path
+
+HTML_EXTRA_STYLESHEET  = ../doc/api_custom.css
+
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output.
 # Doxygen will adjust the colors in the stylesheet and background images
 # according to this color. Hue is specified as an angle on a colorwheel,
@@ -846,7 +853,7 @@ HTML_STYLESHEET        =
 # 180 is cyan, 240 is blue, 300 purple, and 360 is red again.
 # The allowed range is 0 to 359.
 
-HTML_COLORSTYLE_HUE    = 220
+HTML_COLORSTYLE_HUE    = 113
 
 # The HTML_COLORSTYLE_SAT tag controls the purity (or saturation) of
 # the colors in the HTML output. For a value of 0 the output will use
