@@ -193,7 +193,7 @@ bool QgsAlignRaster::setParametersFromRaster( const RasterInfo& rasterInfo, cons
     else
     {
       mGridOffsetX = customGridOffset.x();
-      mGridOffsetY = customGridOffset.x();
+      mGridOffsetY = customGridOffset.y();
     }
   }
   else
@@ -253,8 +253,7 @@ bool QgsAlignRaster::checkInputParameters()
   }
 
   mXSize = mYSize = 0;
-  for ( int i = 0; i < 6; ++i )
-    mGeoTransform[i] = 0;
+  std::fill( &mGeoTransform[0], &mGeoTransform[5], 0 );
 
   double finalExtent[4] = { 0, 0, 0, 0 };
 
@@ -432,7 +431,7 @@ bool QgsAlignRaster::createAndWarp( const Item& raster )
   GDALDatasetH hSrcDS = GDALOpen( raster.inputFilename.toLocal8Bit().constData(), GA_ReadOnly );
   if ( !hSrcDS )
   {
-    mErrorMessage = QObject::tr( "Unable to open input file: " ) + raster.inputFilename;
+    mErrorMessage = QObject::tr( "Unable to open input file: %1" ).arg( raster.inputFilename );
     return false;
   }
 
@@ -448,13 +447,13 @@ bool QgsAlignRaster::createAndWarp( const Item& raster )
   if ( !hDstDS )
   {
     GDALClose( hSrcDS );
-    mErrorMessage = QObject::tr( "Unable to create output file: " ) + raster.outputFilename;
+    mErrorMessage = QObject::tr( "Unable to create output file: %1" ).arg( raster.outputFilename );
     return false;
   }
 
   // Write out the projection definition.
   GDALSetProjection( hDstDS, mCrsWkt.toAscii().constData() );
-  GDALSetGeoTransform( hDstDS, ( double* )mGeoTransform );
+  GDALSetGeoTransform( hDstDS, mGeoTransform );
 
   // Copy the color table, if required.
   GDALColorTableH hCT = GDALGetRasterColorTable( GDALGetRasterBand( hSrcDS, 1 ) );
