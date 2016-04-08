@@ -3563,7 +3563,6 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
 
   connectViewSlots();
   connectCompositionSlots();
-  createCompositionWidget();
 
   //read and restore all the items
   QDomElement atlasElem;
@@ -3581,23 +3580,8 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
 
   mActionShowPage->setChecked( mComposition->pagesVisible() );
 
-  // look for world file composer map, if needed
-  // Note: this must be done after maps have been added by addItemsFromXML
-  if ( mComposition->generateWorldFile() )
-  {
-    QDomElement compositionElem = compositionNodeList.at( 0 ).toElement();
-    QgsComposerMap* worldFileMap = nullptr;
-    QList<const QgsComposerMap*> maps = mComposition->composerMapItems();
-    for ( QList<const QgsComposerMap*>::const_iterator it = maps.begin(); it != maps.end(); ++it )
-    {
-      if (( *it )->id() == compositionElem.attribute( "worldFileMap" ).toInt() )
-      {
-        worldFileMap = const_cast<QgsComposerMap*>( *it );
-        break;
-      }
-    }
-    mComposition->setWorldFileMap( worldFileMap );
-  }
+  // update composition widget, must be done after items loaded
+  createCompositionWidget();
 
   //make sure z values are consistent
   mComposition->refreshZList();

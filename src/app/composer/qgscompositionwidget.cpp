@@ -78,6 +78,7 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
 
     // world file generation
     mGenerateWorldFileCheckBox->setChecked( mComposition->generateWorldFile() );
+    mWorldFileMapComboBox->setEnabled( mComposition->generateWorldFile() );
 
     // populate the map list
     mWorldFileMapComboBox->clear();
@@ -85,13 +86,16 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     QList<const QgsComposerMap*>::const_iterator mapItemIt = availableMaps.constBegin();
     for ( ; mapItemIt != availableMaps.constEnd(); ++mapItemIt )
     {
-      mWorldFileMapComboBox->addItem( tr( "Map %1" ).arg(( *mapItemIt )->id() ), qVariantFromValue(( void* )*mapItemIt ) );
+      mWorldFileMapComboBox->addItem( tr( "Map %1" ).arg(( *mapItemIt )->id() ), ( *mapItemIt )->id() );
     }
 
-    int idx = mWorldFileMapComboBox->findData( qVariantFromValue(( void* )mComposition->worldFileMap() ) );
-    if ( idx != -1 )
+    if ( mComposition->worldFileMap() )
     {
-      mWorldFileMapComboBox->setCurrentIndex( idx );
+      int idx = mWorldFileMapComboBox->findData( mComposition->worldFileMap()->id() );
+      if ( idx != -1 )
+      {
+        mWorldFileMapComboBox->setCurrentIndex( idx );
+      }
     }
 
     // Connect to addition / removal of maps
@@ -679,7 +683,7 @@ void QgsCompositionWidget::onComposerMapAdded( QgsComposerMap* map )
     return;
   }
 
-  mWorldFileMapComboBox->addItem( tr( "Map %1" ).arg( map->id() ), qVariantFromValue(( void* )map ) );
+  mWorldFileMapComboBox->addItem( tr( "Map %1" ).arg( map->id() ), map->id() );
   if ( mWorldFileMapComboBox->count() == 1 )
   {
     mComposition->setWorldFileMap( map );
@@ -696,7 +700,7 @@ void QgsCompositionWidget::onItemRemoved( QgsComposerItem* item )
   QgsComposerMap* map = dynamic_cast<QgsComposerMap*>( item );
   if ( map )
   {
-    int idx = mWorldFileMapComboBox->findData( qVariantFromValue(( void* )map ) );
+    int idx = mWorldFileMapComboBox->findData( map->id() );
     if ( idx != -1 )
     {
       mWorldFileMapComboBox->removeItem( idx );
@@ -720,7 +724,8 @@ void QgsCompositionWidget::on_mWorldFileMapComboBox_currentIndexChanged( int ind
   }
   else
   {
-    QgsComposerMap* map = reinterpret_cast<QgsComposerMap*>( mWorldFileMapComboBox->itemData( index ).value<void*>() );
+    int mapId = mWorldFileMapComboBox->itemData( index ).toInt();
+    QgsComposerMap* map = const_cast< QgsComposerMap* >( mComposition->getComposerMapById( mapId ) );
     mComposition->setWorldFileMap( map );
   }
 }
@@ -772,5 +777,7 @@ void QgsCompositionWidget::blockSignals( bool block )
   mOffsetXSpinBox->blockSignals( block );
   mOffsetYSpinBox->blockSignals( block );
   mSnapToleranceSpinBox->blockSignals( block );
+  mGenerateWorldFileCheckBox->blockSignals( block );
+  mWorldFileMapComboBox->blockSignals( block );
 }
 

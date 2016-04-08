@@ -86,7 +86,6 @@ void QgsComposition::init()
   mPageStyleSymbol = nullptr;
   mPrintAsRaster = false;
   mGenerateWorldFile = false;
-  mWorldFileMap = nullptr;
   mUseAdvancedEffects = true;
   mSnapToGrid = false;
   mGridVisible = false;
@@ -164,7 +163,6 @@ QgsComposition::QgsComposition()
     , mPageStyleSymbol( 0 )
     , mPrintAsRaster( false )
     , mGenerateWorldFile( false )
-    , mWorldFileMap( 0 )
     , mUseAdvancedEffects( true )
     , mSnapToGrid( false )
     , mGridVisible( false )
@@ -851,6 +849,17 @@ void QgsComposition::setPrintResolution( const int dpi )
   QgsProject::instance()->setDirty( true );
 }
 
+QgsComposerMap* QgsComposition::worldFileMap() const
+{
+  return dynamic_cast< QgsComposerMap* >( const_cast< QgsComposerItem* >( getComposerItemByUuid( mWorldFileMapId ) ) );
+}
+
+void QgsComposition::setWorldFileMap( QgsComposerMap* map )
+{
+  mWorldFileMapId = map ? map->uuid() : QString();
+  QgsProject::instance()->setDirty( true );
+}
+
 void QgsComposition::setUseAdvancedEffects( const bool effectsEnabled )
 {
   mUseAdvancedEffects = effectsEnabled;
@@ -933,10 +942,7 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   compositionElem.setAttribute( "printAsRaster", mPrintAsRaster );
 
   compositionElem.setAttribute( "generateWorldFile", mGenerateWorldFile ? 1 : 0 );
-  if ( mGenerateWorldFile && mWorldFileMap )
-  {
-    compositionElem.setAttribute( "worldFileMap", mWorldFileMap->id() );
-  }
+  compositionElem.setAttribute( "worldFileMap", mWorldFileMapId );
 
   compositionElem.setAttribute( "alignmentSnap", mAlignmentSnap ? 1 : 0 );
   compositionElem.setAttribute( "guidesVisible", mGuidesVisible ? 1 : 0 );
@@ -1047,6 +1053,7 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   mPrintResolution = compositionElem.attribute( "printResolution", "300" ).toInt();
 
   mGenerateWorldFile = compositionElem.attribute( "generateWorldFile", "0" ).toInt() == 1 ? true : false;
+  mWorldFileMapId = compositionElem.attribute( "worldFileMap" );
 
   //data defined properties
   QgsComposerUtils::readDataDefinedPropertyMap( compositionElem, &mDataDefinedNames, &mDataDefinedProperties );
@@ -3105,12 +3112,13 @@ QGraphicsView *QgsComposition::graphicsView() const
 
 void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c, double& d, double& e, double& f ) const
 {
-  if ( !mWorldFileMap )
+  const QgsComposerMap* map = worldFileMap();
+  if ( !map )
   {
     return;
   }
 
-  int pageNumber = mWorldFileMap->page() - 1;
+  int pageNumber = map->page() - 1;
   double pageY = pageNumber * ( mPageHeight + mSpaceBetweenPages );
   QRectF pageRect( 0, pageY, mPageWidth, mPageHeight );
   computeWorldFileParameters( pageRect, a, b, c, d, e, f );
@@ -3119,8 +3127,8 @@ void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c
 void QgsComposition::computeWorldFileParameters( const QRectF& exportRegion, double& a, double& b, double& c, double& d, double& e, double& f ) const
 {
   // World file parameters : affine transformation parameters from pixel coordinates to map coordinates
-
-  if ( !mWorldFileMap )
+  QgsComposerMap* map = worldFileMap();
+  if ( !map )
   {
     return;
   }
@@ -3128,10 +3136,10 @@ void QgsComposition::computeWorldFileParameters( const QRectF& exportRegion, dou
   double destinationHeight = exportRegion.height();
   double destinationWidth = exportRegion.width();
 
-  QRectF mapItemSceneRect = mWorldFileMap->mapRectToScene( mWorldFileMap->rect() );
-  QgsRectangle mapExtent = *mWorldFileMap->currentMapExtent();
+  QRectF mapItemSceneRect = map->mapRectToScene( map->rect() );
+  QgsRectangle mapExtent = *map->currentMapExtent();
 
-  double alpha = mWorldFileMap->mapRotation() / 180 * M_PI;
+  double alpha = map->mapRotation() / 180 * M_PI;
 
   double xRatio = mapExtent.width() / mapItemSceneRect.width();
   double yRatio = mapExtent.height() / mapItemSceneRect.height();
@@ -3140,7 +3148,7 @@ void QgsComposition::computeWorldFileParameters( const QRectF& exportRegion, dou
   double yCenter = mapExtent.center().y();
 
   // get the extent (in map units) for the region
-  QPointF mapItemPos = mWorldFileMap->pos();
+  QPointF mapItemPos = map->pos();
   //adjust item position so it is relative to export region
   mapItemPos.rx() -= exportRegion.left();
   mapItemPos.ry() -= exportRegion.top();
