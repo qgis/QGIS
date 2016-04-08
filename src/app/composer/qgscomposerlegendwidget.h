@@ -67,7 +67,7 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     void on_mBoxSpaceSpinBox_valueChanged( double d );
     void on_mColumnSpaceSpinBox_valueChanged( double d );
     void on_mCheckBoxAutoUpdate_stateChanged( int state );
-    void on_mMapComboBox_currentIndexChanged( int index );
+    void composerMapChanged( const QgsComposerItem* item );
 
     void on_mRasterBorderGroupBox_toggled( bool state );
     void on_mRasterBorderWidthSpinBox_valueChanged( double d );
@@ -92,9 +92,6 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
 
     void setCurrentNodeStyleFromAction();
 
-  protected:
-    void showEvent( QShowEvent * event ) override;
-
   private slots:
     /** Sets GUI according to state of mLegend*/
     void setGuiElements();
@@ -105,8 +102,6 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
   private:
     QgsComposerLegendWidget();
     void blockAllSignals( bool b );
-    void refreshMapComboBox();
-
 
     QgsComposerLegend* mLegend;
 };

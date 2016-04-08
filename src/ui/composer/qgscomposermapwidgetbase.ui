@@ -23,7 +23,16 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -54,9 +63,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-1446</y>
-        <width>444</width>
-        <height>2493</height>
+        <y>-1044</y>
+        <width>438</width>
+        <height>2111</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -1350,7 +1359,7 @@
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QComboBox" name="mOverviewFrameMapComboBox"/>
+              <widget class="QgsComposerItemComboBox" name="mOverviewFrameMapComboBox"/>
              </item>
              <item row="1" column="0">
               <widget class="QLabel" name="mOverviewFrameStyleLabel">
@@ -1435,6 +1444,11 @@
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsComposerItemComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgscomposeritemcombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

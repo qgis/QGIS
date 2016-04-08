@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-499</y>
-        <width>392</width>
-        <height>1291</height>
+        <y>0</y>
+        <width>391</width>
+        <height>1102</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -198,7 +198,7 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QComboBox" name="mComposerMapComboBox"/>
+           <widget class="QgsComposerItemComboBox" name="mComposerMapComboBox"/>
           </item>
           <item row="4" column="0" colspan="2">
            <widget class="QCheckBox" name="mIntersectAtlasCheckBox">
@@ -789,6 +789,11 @@
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsComposerItemComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgscomposeritemcombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

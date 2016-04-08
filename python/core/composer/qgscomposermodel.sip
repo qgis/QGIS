@@ -23,6 +23,14 @@ class QgsComposerModel : QAbstractItemModel
 %End
   public:
 
+    //! Columns returned by the model
+    enum Columns
+    {
+      Visibility, /*!< Item visibility check box */
+      LockStatus, /*!< Item lock status check box */
+      ItemId, /*!< Item ID */
+    };
+
     /** Constructor
      * @param composition composition to attach to
      * @param parent parent object
@@ -202,6 +210,13 @@ class QgsComposerModel : QAbstractItemModel
      */
     void updateItemSelectStatus( QgsComposerItem *item );
 
+    /** Returns the QModelIndex corresponding to a QgsComposerItem, if possible
+     * @param item QgsComposerItem to find index for
+     * @param column column number for created QModelIndex
+     * @returns QModelIndex corresponding to item and specified column
+     */
+    QModelIndex indexForItem( QgsComposerItem *item, const int column = 0 );
+
   public slots:
 
     /** Sets an item as the current selection from a QModelIndex
@@ -210,3 +225,65 @@ class QgsComposerModel : QAbstractItemModel
      */
     void setSelected( const QModelIndex &index );
 };
+
+
+/**
+ * /class QgsComposerProxyModel
+ * /ingroup core
+ * /brief Allows for filtering a QgsComposerModel by item type.
+ * /note added in 2.16
+ */
+class QgsComposerProxyModel: QSortFilterProxyModel
+{
+%TypeHeaderCode
+#include "qgscomposermodel.h"
+%End
+  public:
+
+    /** Constructor for QgsComposerProxyModel.
+     * @param composition composition to attach model to
+     * @param parent optional parent
+     */
+    QgsComposerProxyModel( QgsComposition* composition, QObject *parent /TransferThis/ = nullptr );
+
+    /** Returns the current item type filter, or QgsComposerItem::ComposerItem if no
+     * item type filter is set.
+     * @see setFilterType()
+     */
+    QgsComposerItem::ItemType filterType() const;
+
+    /** Sets the item type filter. Only matching item types will be shown.
+     * @param itemType type to filter. Set to QgsComposerItem::ComposerItem to show all
+     * item types.
+     * @see filterType()
+     */
+    void setFilterType( QgsComposerItem::ItemType itemType );
+
+    /** Sets a list of specific items to exclude from the model
+     * @param exceptList list of items to exclude
+     * @see exceptedItemList()
+     */
+    void setExceptedItemList( const QList< QgsComposerItem* >& exceptList );
+
+    /** Returns the list of specific items excluded from the model.
+     * @see setExceptedItemList()
+     */
+    QList< QgsComposerItem* > exceptedItemList() const;
+
+    /** Returns the QgsComposerModel used in this proxy model.
+     */
+    QgsComposerModel* sourceLayerModel() const;
+
+    /** Returns the QgsComposerItem corresponding to an index from the source
+     * QgsComposerModel model.
+     * @param sourceIndex a QModelIndex
+     * @returns QgsComposerItem for specified index from QgsComposerModel
+     */
+    QgsComposerItem* itemFromSourceIndex( const QModelIndex& sourceIndex ) const;
+
+  protected:
+    bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const;
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
+};
+

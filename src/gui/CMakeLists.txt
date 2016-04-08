@@ -174,6 +174,7 @@ SET(QGIS_GUI_SRCS
   qgscolorschemelist.cpp
   qgscolorswatchgrid.cpp
   qgscolorwidgets.cpp
+  qgscomposeritemcombobox.cpp
   qgscomposerruler.cpp
   qgscomposerview.cpp
   qgscredentialdialog.cpp
@@ -317,6 +318,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgscolorschemelist.h
   qgscolorswatchgrid.h
   qgscolorwidgets.h
+  qgscomposeritemcombobox.h
   qgscomposerruler.h
   qgscomposerview.h
   qgscredentialdialog.h

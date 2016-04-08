@@ -152,6 +152,11 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
 
       compositionAtlasToggled( atlas->enabled() );
     }
+
+    mOverviewFrameMapComboBox->setComposition( composerMap->composition() );
+    mOverviewFrameMapComboBox->setItemType( QgsComposerItem::ComposerMap );
+    mOverviewFrameMapComboBox->setExceptedItemList( QList< QgsComposerItem* >() << composerMap );
+    connect( mOverviewFrameMapComboBox, SIGNAL( itemChanged( const QgsComposerItem* ) ), this, SLOT( overviewMapChanged( const QgsComposerItem* ) ) );
   }
 
   //connections for data defined buttons
@@ -952,12 +957,6 @@ void QgsComposerMapWidget::on_mDrawCanvasItemsCheckBox_stateChanged( int state )
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapWidget::showEvent( QShowEvent * event )
-{
-  refreshMapComboBox();
-  QWidget::showEvent( event );
-}
-
 void QgsComposerMapWidget::addPageToToolbox( QWidget* widget, const QString& name )
 {
   Q_UNUSED( name );
@@ -1093,53 +1092,6 @@ void QgsComposerMapWidget::initAnnotationDirectionBox( QComboBox* c, QgsComposer
     return;
   }
   c->setCurrentIndex( c->findData( dir ) );
-}
-
-void QgsComposerMapWidget::refreshMapComboBox()
-{
-  if ( !mComposerMap )
-  {
-    return;
-  }
-
-  mOverviewFrameMapComboBox->blockSignals( true );
-
-  //save the current entry in case it is still present after refresh
-  QString saveComboText = mOverviewFrameMapComboBox->currentText();
-
-  mOverviewFrameMapComboBox->clear();
-  mOverviewFrameMapComboBox->addItem( tr( "None" ), -1 );
-  const QgsComposition* composition = mComposerMap->composition();
-  if ( !composition )
-  {
-    return;
-  }
-
-  QList<const QgsComposerMap*> availableMaps = composition->composerMapItems();
-  QList<const QgsComposerMap*>::const_iterator mapItemIt = availableMaps.constBegin();
-  for ( ; mapItemIt != availableMaps.constEnd(); ++mapItemIt )
-  {
-    if (( *mapItemIt )->id() != mComposerMap->id() )
-    {
-      mOverviewFrameMapComboBox->addItem( tr( "Map %1" ).arg(( *mapItemIt )->id() ), ( *mapItemIt )->id() );
-    }
-  }
-
-  if ( !saveComboText.isEmpty() )
-  {
-    int saveTextIndex = mOverviewFrameMapComboBox->findText( saveComboText );
-    if ( saveTextIndex == -1 )
-    {
-      //entry is no longer present
-      mOverviewFrameMapComboBox->setCurrentIndex( mOverviewFrameMapComboBox->findText( tr( "None" ) ) );
-    }
-    else
-    {
-      mOverviewFrameMapComboBox->setCurrentIndex( saveTextIndex );
-    }
-  }
-
-  mOverviewFrameMapComboBox->blockSignals( false );
 }
 
 void QgsComposerMapWidget::atlasLayerChanged( QgsVectorLayer* layer )
@@ -2412,9 +2364,7 @@ void QgsComposerMapWidget::setOverviewItems( const QgsComposerMapOverview* overv
   mOverviewCheckBox->setChecked( overview->enabled() );
 
   //overview frame
-  refreshMapComboBox();
-  int overviewMapFrameId = overview->frameMapId();
-  mOverviewFrameMapComboBox->setCurrentIndex( mOverviewFrameMapComboBox->findData( overviewMapFrameId ) );
+  mOverviewFrameMapComboBox->setItem( mComposerMap->composition()->getComposerMapById( overview->frameMapId() ) );
   //overview frame blending mode
   mOverviewBlendModeComboBox->setBlendMode( overview->blendMode() );
   //overview inverted
@@ -2508,7 +2458,7 @@ void QgsComposerMapWidget::on_mOverviewCheckBox_toggled( bool state )
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapWidget::on_mOverviewFrameMapComboBox_currentIndexChanged( const QString& text )
+void QgsComposerMapWidget::overviewMapChanged( const QgsComposerItem* item )
 {
   QgsComposerMapOverview* overview = currentOverview();
   if ( !overview )
@@ -2516,47 +2466,12 @@ void QgsComposerMapWidget::on_mOverviewFrameMapComboBox_currentIndexChanged( con
     return;
   }
 
-  int id;
-
-  if ( text == tr( "None" ) )
-  {
-    id = -1;
-  }
-  else
-  {
-
-    //get composition
-    const QgsComposition* composition = mComposerMap->composition();
-    if ( !composition )
-    {
-      return;
-    }
-
-    //extract id
-    bool conversionOk;
-    QStringList textSplit = text.split( ' ' );
-    if ( textSplit.size() < 1 )
-    {
-      return;
-    }
-
-    QString idString = textSplit.at( textSplit.size() - 1 );
-    id = idString.toInt( &conversionOk );
-
-    if ( !conversionOk )
-    {
-      return;
-    }
-
-    const QgsComposerMap* composerMap = composition->getComposerMapById( id );
-    if ( !composerMap )
-    {
-      return;
-    }
-  }
+  const QgsComposerMap* map = dynamic_cast< const QgsComposerMap* >( item );
+  if ( !map )
+    return;
 
   mComposerMap->beginCommand( tr( "Overview map changed" ) );
-  overview->setFrameMap( id );
+  overview->setFrameMap( map->id() );
   mComposerMap->update();
   mComposerMap->endCommand();
 }

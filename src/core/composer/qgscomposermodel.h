@@ -19,11 +19,12 @@
 #define QGSCOMPOSERMODEL_H
 
 #include <QAbstractItemModel>
+#include <QSortFilterProxyModel>
 #include <QStringList>
 #include <QSet>
+#include "qgscomposeritem.h"
 
 class QgsComposition;
-class QgsComposerItem;
 class QGraphicsItem;
 
 /**
@@ -49,6 +50,14 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
     Q_OBJECT
 
   public:
+
+    //! Columns returned by the model
+    enum Columns
+    {
+      Visibility = 0, /*!< Item visibility check box */
+      LockStatus, /*!< Item lock status check box */
+      ItemId, /*!< Item ID */
+    };
 
     /** Constructor
      * @param composition composition to attach to
@@ -229,6 +238,13 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      */
     void updateItemSelectStatus( QgsComposerItem *item );
 
+    /** Returns the QModelIndex corresponding to a QgsComposerItem, if possible
+     * @param item QgsComposerItem to find index for
+     * @param column column number for created QModelIndex
+     * @returns QModelIndex corresponding to item and specified column
+     */
+    QModelIndex indexForItem( QgsComposerItem *item, const int column = 0 );
+
   public slots:
 
     /** Sets an item as the current selection from a QModelIndex
@@ -247,13 +263,6 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
 
   private:
 
-    enum Columns
-    {
-      Visibility = 0,
-      LockStatus,
-      ItemId
-    };
-
     /** Parent composition*/
     QgsComposition* mComposition;
 
@@ -262,13 +271,6 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @returns item corresponding to index
      */
     QgsComposerItem* itemFromIndex( const QModelIndex &index ) const;
-
-    /** Returns the QModelIndex corresponding to a QgsComposerItem, if possible
-     * @param item QgsComposerItem to find index for
-     * @param column column number for created QModelIndex
-     * @returns QModelIndex corresponding to item and specified column
-     */
-    QModelIndex indexForItem( QgsComposerItem *item, const int column = 0 );
 
     /** Rebuilds the list of all composer items which are present in the composition. This is
      * called when the stacking of order changes or when items are removed/restored to the
@@ -288,5 +290,72 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
 
     friend class TestQgsComposerModel;
 };
+
+
+/**
+ * /class QgsComposerProxyModel
+ * /ingroup core
+ * /brief Allows for filtering a QgsComposerModel by item type.
+ * /note added in 2.16
+ */
+class CORE_EXPORT QgsComposerProxyModel: public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+
+    /** Constructor for QgsComposerProxyModel.
+     * @param composition composition to attach model to
+     * @param parent optional parent
+     */
+    QgsComposerProxyModel( QgsComposition* composition, QObject *parent = nullptr );
+
+    /** Returns the current item type filter, or QgsComposerItem::ComposerItem if no
+     * item type filter is set.
+     * @see setFilterType()
+     */
+    QgsComposerItem::ItemType filterType() const { return mItemTypeFilter; }
+
+    /** Sets the item type filter. Only matching item types will be shown.
+     * @param itemType type to filter. Set to QgsComposerItem::ComposerItem to show all
+     * item types.
+     * @see filterType()
+     */
+    void setFilterType( QgsComposerItem::ItemType itemType );
+
+    /** Sets a list of specific items to exclude from the model
+     * @param exceptList list of items to exclude
+     * @see exceptedItemList()
+     */
+    void setExceptedItemList( const QList< QgsComposerItem* >& exceptList );
+
+    /** Returns the list of specific items excluded from the model.
+     * @see setExceptedItemList()
+     */
+    QList< QgsComposerItem* > exceptedItemList() const { return mExceptedList; }
+
+    /** Returns the QgsComposerModel used in this proxy model.
+     */
+    QgsComposerModel* sourceLayerModel() const { return static_cast< QgsComposerModel* >( sourceModel() ); }
+
+    /** Returns the QgsComposerItem corresponding to an index from the source
+     * QgsComposerModel model.
+     * @param sourceIndex a QModelIndex
+     * @returns QgsComposerItem for specified index from QgsComposerModel
+     */
+    QgsComposerItem* itemFromSourceIndex( const QModelIndex& sourceIndex ) const;
+
+  protected:
+    bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const override;
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+
+  private:
+    QgsComposition* mComposition;
+    QgsComposerItem::ItemType mItemTypeFilter;
+    QList< QgsComposerItem* > mExceptedList;
+
+};
+
+
 
 #endif //QGSCOMPOSERMODEL
