@@ -45,25 +45,23 @@ class GdalUtils:
 
     @staticmethod
     def runGdal(commands, progress):
-        envval = unicode(os.getenv('PATH'))
+        envval = os.getenv('PATH')
         # We need to give some extra hints to get things picked up on OS X
-        if platform.system() == 'Darwin':
-            if os.path.isfile(os.path.join(QgsApplication.prefixPath(), "bin", "gdalinfo")):
-                # Looks like there's a bundled gdal. Let's use it.
-                os.environ['PATH'] = "%s%s%s" % (os.path.join(QgsApplication.prefixPath(), "bin"), os.pathsep, envval)
-                os.environ['DYLD_LIBRARY_PATH'] = os.path.join(QgsApplication.prefixPath(), "lib")
-            else:
-                # Nothing internal. Let's see if we can find it elsewhere.
-                settings = QSettings()
-                path = unicode(settings.value('/GdalTools/gdalPath', ''))
-                envval += '%s%s' % (os.pathsep, path)
-                os.putenv('PATH', envval)
+        isDarwin = False
+        try:
+            isDarwin = platform.system() == 'Darwin'
+        except IOError: # https://travis-ci.org/m-kuhn/QGIS#L1493-L1526
+            pass
+        if isDarwin and os.path.isfile(os.path.join(QgsApplication.prefixPath(), "bin", "gdalinfo")):
+            # Looks like there's a bundled gdal. Let's use it.
+            os.environ['PATH'] = "{}{}{}".format(os.path.join(QgsApplication.prefixPath(), "bin"), os.pathsep, envval)
+            os.environ['DYLD_LIBRARY_PATH'] = os.path.join(QgsApplication.prefixPath(), "lib")
         else:
             # Other platforms should use default gdal finder codepath
             settings = QSettings()
-            path = unicode(settings.value('/GdalTools/gdalPath', ''))
+            path = settings.value('/GdalTools/gdalPath', '')
             if not path.lower() in envval.lower().split(os.pathsep):
-                envval += '%s%s' % (os.pathsep, path)
+                envval += '{}{}'.format(os.pathsep, path)
                 os.putenv('PATH', envval)
 
         loglines = []
