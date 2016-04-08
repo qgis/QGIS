@@ -29,9 +29,12 @@ import os
 
 from PyQt import uic
 from PyQt.QtCore import pyqtSignal
+from PyQt.QtGui import QDialog
 
 from math import log10, floor
-from processing.gui.NumberInputDialog import NumberInputDialog
+from qgis.core import (QgsDataSourceURI, QgsCredentials,  QgsExpressionContext,
+                        QgsExpressionContextUtils, QgsExpression)
+from qgis.gui import QgsEncodingFileDialog, QgsExpressionBuilderDialog
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -46,6 +49,7 @@ class NumberInputPanel(BASE, WIDGET):
         super(NumberInputPanel, self).__init__(None)
         self.setupUi(self)
 
+        self.spnValue.setExpressionsEnabled(True)
         self.isInteger = isInteger
         if self.isInteger:
             self.spnValue.setDecimals(0)
@@ -74,15 +78,27 @@ class NumberInputPanel(BASE, WIDGET):
             self.spnValue.setValue(0)
             self.spnValue.setClearValue(0)
 
-        self.btnCalc.clicked.connect(self.showNumberInputDialog)
+        self.btnCalc.setFixedHeight(self.spnValue.height())
+
+        self.btnCalc.clicked.connect(self.showExpressionsBuilder)
 
         self.spnValue.valueChanged.connect(lambda: self.hasChanged.emit())
 
-    def showNumberInputDialog(self):
-        dlg = NumberInputDialog(self.isInteger)
-        dlg.exec_()
-        if dlg.value is not None:
-            self.spnValue.setValue(dlg.value)
+    def showExpressionsBuilder(self):
+        context = QgsExpressionContext()
+        context.appendScope(QgsExpressionContextUtils.globalScope())
+        context.appendScope(QgsExpressionContextUtils.projectScope())
+        dlg = QgsExpressionBuilderDialog(None, self.spnValue.text(), self, "generic", context)
+        dlg.setWindowTitle(self.tr("Expression based input"));
+        if dlg.exec_() == QDialog.Accepted:
+            exp = QgsExpression(dlg.expressionText())
+            if not exp.hasParserError():
+                result =  exp.evaluate(context)
+                if not exp.hasEvalError():
+                    try:
+                        self.spnValue.setValue(float(result))
+                    except:
+                        pass
 
     def getValue(self):
         return self.spnValue.value()

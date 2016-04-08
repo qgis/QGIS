@@ -32,8 +32,9 @@ from PyQt import uic
 from PyQt.QtCore import QCoreApplication, QSettings
 from PyQt.QtWidgets import QDialog, QMenu, QAction, QFileDialog
 from PyQt.QtGui import QCursor
-from qgis.gui import QgsEncodingFileDialog
-from qgis.core import QgsDataSourceURI, QgsCredentials
+from qgis.gui import QgsEncodingFileDialog, QgsExpressionBuilderDialog
+from qgis.core import QgsDataSourceURI, QgsCredentials,  QgsExpressionContext,\
+                     QgsExpressionContextUtils, QgsExpression
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.outputs import OutputVector
@@ -78,6 +79,11 @@ class OutputSelectionPanel(BASE, WIDGET):
             actionSaveToFile.triggered.connect(self.selectFile)
             popupMenu.addAction(actionSaveToFile)
 
+            actionShowExpressionsBuilder = QAction(
+                self.tr('Use expression...'), self.btnSelect)
+            actionShowExpressionsBuilder.triggered.connect(self.showExpressionsBuilder)
+            popupMenu.addAction(actionShowExpressionsBuilder)
+
             if isinstance(self.output, OutputVector) \
                     and self.alg.provider.supportsNonFileBasedOutput():
                 actionSaveToMemory = QAction(
@@ -99,6 +105,14 @@ class OutputSelectionPanel(BASE, WIDGET):
                 popupMenu.addAction(actionSaveToPostGIS)
 
             popupMenu.exec_(QCursor.pos())
+
+    def showExpressionsBuilder(self):
+        context = QgsExpressionContext()
+        context.appendScope(QgsExpressionContextUtils.projectScope())
+        dlg = QgsExpressionBuilderDialog(None, self.leText.text(), self, "generic", context)
+        dlg.setWindowTitle(self.tr("Expression based output"));
+        if dlg.exec_() == QDialog.Accepted:
+            self.leText.setText(dlg.expressionText())
 
     def saveToTemporaryFile(self):
         self.leText.setText('')
@@ -202,6 +216,13 @@ class OutputSelectionPanel(BASE, WIDGET):
 
     def getValue(self):
         fileName = unicode(self.leText.text())
+        context = QgsExpressionContext()
+        context.appendScope(QgsExpressionContextUtils.projectScope())
+        exp = QgsExpression(fileName)
+        if not exp.hasParserError():
+            result =  exp.evaluate(context)
+            if not exp.hasEvalError():
+                fileName = result
         if fileName.strip() in ['', self.SAVE_TO_TEMP_FILE]:
             value = None
         elif fileName.startswith('memory:'):
