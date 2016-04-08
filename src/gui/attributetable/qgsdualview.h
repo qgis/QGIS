@@ -180,6 +180,16 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     void setAttributeTableConfig( const QgsAttributeTableConfig& config );
 
+    /**
+     * Set the expression used for sorting the table and feature list.
+     */
+    void setSortExpression( const QString& sortExpression );
+
+    /**
+     * Get the expression used for sorting the table and feature list.
+     */
+    QString sortExpression() const;
+
   protected:
     /**
      * Initializes widgets which depend on the attributes of this layer
@@ -239,6 +249,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void viewWillShowContextMenu( QMenu* menu, const QModelIndex& atIndex );
 
     void previewExpressionChanged( const QString& expression );
+
+    void sortByPreviewExpression();
 
     /**
      * Will be called whenever the currently shown feature form changes.

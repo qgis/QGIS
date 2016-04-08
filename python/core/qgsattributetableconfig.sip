@@ -104,4 +104,15 @@ class QgsAttributeTableConfig
      * Deserialize to XML on layer load
      */
     void readXml( const QDomNode& node );
+
+    /**
+     * Get the expression used for sorting.
+     */
+    QString sortExpression() const;
+
+    /**
+     * Set the sort expression used for sorting.
+     */
+    void setSortExpression( const QString& sortExpression );
+
 };

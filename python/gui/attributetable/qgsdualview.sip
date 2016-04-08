@@ -115,16 +115,41 @@ class QgsDualView : QStackedWidget
      */
     QgsAttributeTableModel* masterModel() const;
 
+    /**
+     * Set the request
+     *
+     * @param request The request
+     */
     void setRequest( const QgsFeatureRequest& request );
 
+    /**
+     * Set the feature selection model
+     *
+     * @param featureSelectionManager the feature selection model
+     */
     void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
 
+    /**
+     * Returns the table view
+     *
+     * @return The table view
+     */
     QgsAttributeTableView* tableView();
     /**
      * Set the attribute table config which should be used to control
      * the appearance of the attribute table.
      */
     void setAttributeTableConfig( const QgsAttributeTableConfig& config );
+
+    /**
+     * Set the expression used for sorting the table and feature list.
+     */
+    void setSortExpression( const QString& sortExpression );
+
+    /**
+     * Get the expression used for sorting the table and feature list.
+     */
+    QString sortExpression() const;
 
   protected:
     /**

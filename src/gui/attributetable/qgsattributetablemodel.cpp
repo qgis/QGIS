@@ -39,7 +39,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
     : QAbstractTableModel( parent )
     , mLayerCache( layerCache )
     , mFieldCount( 0 )
-    , mCachedField( -1 )
+    , mSortCacheExpression( "" )
     , mExtraColumns( 0 )
 {
   mExpressionContext << QgsExpressionContextUtils::globalScope()
@@ -160,7 +160,7 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
   // clean old references
   for ( int i = row; i < row + count; i++ )
   {
-    mFieldCache.remove( mRowIdMap[i] );
+    mSortCache.remove( mRowIdMap[i] );
     mIdRowMap.remove( mRowIdMap[i] );
     mRowIdMap.remove( i );
   }
@@ -206,7 +206,8 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
 
   if ( featOk && mFeatureRequest.acceptFeature( mFeat ) )
   {
-    mFieldCache[fid] = mFeat.attribute( mCachedField );
+    mExpressionContext.setFeature( mFeat );
+    mSortCache[fid] = mSortCacheExpression.evaluate();
 
     int n = mRowIdMap.size();
     beginInsertRows( QModelIndex(), n, n );
@@ -236,10 +237,8 @@ void QgsAttributeTableModel::editCommandEnded()
 
 void QgsAttributeTableModel::attributeDeleted( int idx )
 {
-  if ( idx == mCachedField )
-  {
-    prefetchColumnData( -1 );
-  }
+  if ( mSortCacheAttributes.contains( idx ) )
+    prefetchSortData( "" );
 }
 
 void QgsAttributeTableModel::layerDeleted()
@@ -256,9 +255,13 @@ void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, c
 {
   QgsDebugMsgLevel( QString( "(%4) fid: %1, idx: %2, value: %3" ).arg( fid ).arg( idx ).arg( value.toString() ).arg( mFeatureRequest.filterType() ), 3 );
 
-  if ( idx == mCachedField )
-    mFieldCache[fid] = value;
-
+  if ( mSortCacheAttributes.contains( idx ) )
+  {
+    // if the expression used multiple fields, this will not work but this way we don't have
+    // to run the expensive query in the 80% cases where we just have a simple column for sorting
+    // or it's the first used column, this works just fine
+    mSortCache[fid] = value;
+  }
   // No filter request: skip all possibly heavy checks
   if ( mFeatureRequest.filterType() == QgsFeatureRequest::FilterNone )
   {
@@ -577,26 +580,21 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
       return QVariant( Qt::AlignLeft );
   }
 
-  QVariant val;
-
-  // if we don't have the row in current cache, load it from layer first
-  if ( mCachedField == fieldId )
+  if ( role == SortRole )
   {
-    val = mFieldCache[rowId];
+    return mSortCache[rowId];
   }
-  else
+
+  if ( mFeat.id() != rowId || !mFeat.isValid() )
   {
-    if ( mFeat.id() != rowId || !mFeat.isValid() )
-    {
-      if ( !loadFeatureAtId( rowId ) )
-        return QVariant( "ERROR" );
+    if ( !loadFeatureAtId( rowId ) )
+      return QVariant( "ERROR" );
 
-      if ( mFeat.id() != rowId )
-        return QVariant( "ERROR" );
-    }
-
-    val = mFeat.attribute( fieldId );
+    if ( mFeat.id() != rowId )
+      return QVariant( "ERROR" );
   }
+
+  QVariant val = mFeat.attribute( fieldId );
 
   if ( role == Qt::DisplayRole )
   {
@@ -730,32 +728,49 @@ QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const
 
 void QgsAttributeTableModel::prefetchColumnData( int column )
 {
-  mFieldCache.clear();
-
-  if ( column == -1 )
+  if ( column == -1 || column >= mAttributes.count() )
   {
-    mCachedField = -1;
+    prefetchSortData( "" );
   }
   else
   {
-    if ( column >= mAttributes.count() )
-      return;
-    int fieldId = mAttributes.at( column );
-    const QgsFields& fields = layer()->fields();
-    QStringList fldNames;
-    fldNames << fields[fieldId].name();
-
-    QgsFeatureRequest r( mFeatureRequest );
-    QgsFeatureIterator it = mLayerCache->getFeatures( r.setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( fldNames, fields ) );
-
-    QgsFeature f;
-    while ( it.nextFeature( f ) )
-    {
-      mFieldCache.insert( f.id(), f.attribute( fieldId ) );
-    }
-
-    mCachedField = fieldId;
+    prefetchSortData( mLayerCache->layer()->fields().at( mAttributes.at( column ) ).name() );
   }
+}
+
+void QgsAttributeTableModel::prefetchSortData( const QString& expressionString )
+{
+  mSortCache.clear();
+  mSortCacheAttributes.clear();
+
+  mSortCacheExpression = QgsExpression( expressionString );
+
+  mSortCacheExpression.prepare( &mExpressionContext );
+
+  Q_FOREACH ( const QString& col, mSortCacheExpression.referencedColumns() )
+  {
+    mSortCacheAttributes.append( mLayerCache->layer()->fieldNameIndex( col ) );
+  }
+
+  QgsFeatureRequest request = QgsFeatureRequest( mFeatureRequest )
+                              .setFlags( QgsFeatureRequest::NoGeometry )
+                              .setSubsetOfAttributes( mSortCacheAttributes );
+  QgsFeatureIterator it = mLayerCache->getFeatures( request );
+
+  QgsFeature f;
+  while ( it.nextFeature( f ) )
+  {
+    mExpressionContext.setFeature( f );
+    mSortCache.insert( f.id(), mSortCacheExpression.evaluate( &mExpressionContext ) );
+  }
+}
+
+QString QgsAttributeTableModel::sortCacheExpression() const
+{
+  if ( mSortCacheExpression.rootNode() )
+    return mSortCacheExpression.expression();
+  else
+    return QString();
 }
 
 void QgsAttributeTableModel::setRequest( const QgsFeatureRequest& request )

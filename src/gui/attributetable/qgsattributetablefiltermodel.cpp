@@ -194,6 +194,20 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
       endResetModel();
     }
   }
+
+  sort( config.sortExpression() );
+}
+
+void QgsAttributeTableFilterModel::sort( QString expression, Qt::SortOrder order )
+{
+  QSortFilterProxyModel::sort( -1 );
+  masterModel()->prefetchSortData( expression );
+  QSortFilterProxyModel::sort( 0, order ) ;
+}
+
+QString QgsAttributeTableFilterModel::sortExpression() const
+{
+  return masterModel()->sortCacheExpression();
 }
 
 void QgsAttributeTableFilterModel::setSelectedOnTop( bool selectedOnTop )
