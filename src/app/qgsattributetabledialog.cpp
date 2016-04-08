@@ -16,6 +16,8 @@
 
 #include <QDockWidget>
 #include <QMessageBox>
+#include <QGridLayout>
+#include <QDialogButtonBox>
 
 #include "qgsattributetabledialog.h"
 #include "qgsattributetablemodel.h"
@@ -23,11 +25,11 @@
 #include "qgsattributetableview.h"
 #include "qgsorganizetablecolumnsdialog.h"
 
-#include <qgsapplication.h>
-#include <qgsvectordataprovider.h>
-#include <qgsvectorlayer.h>
-#include <qgsexpression.h>
-
+#include "qgsapplication.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsexpression.h"
+#include "qgsexpressionbuilderwidget.h"
 #include "qgisapp.h"
 #include "qgsaddattrdialog.h"
 #include "qgsdelattrdialog.h"
@@ -613,6 +615,52 @@ void QgsAttributeTableDialog::on_mAddFeature_clicked()
   if ( action.addFeature() )
   {
     masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
+  }
+}
+
+void QgsAttributeTableDialog::on_mSortButton_clicked()
+{
+  QgsAttributeTableConfig config = mLayer->attributeTableConfig();
+
+  QDialog orderByDlg;
+  orderByDlg.setWindowTitle( tr( "Configure attribute table sort order" ) );
+  QDialogButtonBox* dialogButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  QGridLayout* layout = new QGridLayout();
+  connect( dialogButtonBox, SIGNAL( accepted() ), &orderByDlg, SLOT( accept() ) );
+  connect( dialogButtonBox, SIGNAL( rejected() ), &orderByDlg, SLOT( reject() ) );
+  orderByDlg.setLayout( layout );
+
+  QGroupBox* sortingGroupBox = new QGroupBox();
+  sortingGroupBox->setTitle( tr( "Enable sorting order in attribute table" ) );
+  sortingGroupBox->setCheckable( true );
+  sortingGroupBox->setChecked( !mMainView->sortExpression().isEmpty() );
+  layout->addWidget( sortingGroupBox );
+  sortingGroupBox->setLayout( new QGridLayout() );
+
+  QgsExpressionBuilderWidget* expressionBuilder = new QgsExpressionBuilderWidget();
+  expressionBuilder->setExpressionText( mMainView->sortExpression().isEmpty() ? mLayer->displayExpression() : mMainView->sortExpression() );
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+  expressionBuilder->setExpressionContext( context );
+  expressionBuilder->setLayer( mLayer );
+  sortingGroupBox->layout()->addWidget( expressionBuilder );
+
+  layout->addWidget( dialogButtonBox );
+  if ( orderByDlg.exec() )
+  {
+    if ( sortingGroupBox->isChecked() )
+    {
+      mMainView->setSortExpression( expressionBuilder->expressionText() );
+      config.setSortExpression( expressionBuilder->expressionText() );
+    }
+    else
+    {
+      mMainView->setSortExpression( QString() );
+      config.setSortExpression( QString() );
+    }
+
+    mLayer->setAttributeTableConfig( config );
   }
 }
 

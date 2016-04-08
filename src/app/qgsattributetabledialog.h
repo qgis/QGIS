@@ -154,6 +154,8 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     void on_mHelpButton_clicked() { QgsContextHelp::run( metaObject()->className() ); }
 
+    void on_mSortButton_clicked();
+
     void on_mExpressionSelectButton_clicked();
     void filterColumnChanged( QObject* filterAction );
     void filterExpressionBuilder();

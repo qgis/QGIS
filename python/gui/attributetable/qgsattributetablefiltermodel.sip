@@ -142,6 +142,20 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
      */
     virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
 
+    /**
+     * Sort by the given expression using the given order.
+     * Prefetches all the data from the layer to speed up sorting.
+     *
+     * @param column The expression which should be used for sorting
+     * @param order  The order ( Qt::AscendingOrder or Qt::DescendingOrder )
+     */
+    void sort( QString expression, Qt::SortOrder order = Qt::AscendingOrder );
+
+    /**
+     * The expression which is used to sort the attribute table.
+     */
+    QString sortExpression() const;
+
     /** Returns the map canvas*/
     QgsMapCanvas* mapCanvas() const;
 

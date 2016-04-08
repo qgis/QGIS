@@ -173,6 +173,18 @@ void QgsAttributeTableConfig::readXml( const QDomNode& node )
       }
     }
   }
+
+  mSortExpression = configNode.toElement().attribute( "sortExpression" );
+}
+
+QString QgsAttributeTableConfig::sortExpression() const
+{
+  return mSortExpression;
+}
+
+void QgsAttributeTableConfig::setSortExpression( const QString& sortExpression )
+{
+  mSortExpression = sortExpression;
 }
 
 void QgsAttributeTableConfig::writeXml( QDomNode& node ) const
@@ -181,6 +193,8 @@ void QgsAttributeTableConfig::writeXml( QDomNode& node ) const
 
   QDomElement configElement  = doc.createElement( "attributetableconfig" );
   configElement.setAttribute( "actionWidgetStyle", mActionWidgetStyle == ButtonList ? "buttonList" : "dropDown" );
+
+  configElement.setAttribute( "sortExpression", mSortExpression );
 
   QDomElement columnsElement  = doc.createElement( "columns" );
 

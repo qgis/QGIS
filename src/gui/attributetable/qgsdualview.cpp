@@ -196,6 +196,10 @@ void QgsDualView::columnBoxInit()
   {
     mFeatureListPreviewButton->defaultAction()->trigger();
   }
+
+  QAction* sortByPreviewExpression = new QAction( QgsApplication::getThemeIcon( "sort.svg" ), tr( "Sort by preview expression" ), this );
+  connect( sortByPreviewExpression, SIGNAL( triggered( bool ) ), this, SLOT( sortByPreviewExpression() ) );
+  mFeatureListPreviewButton->addAction( sortByPreviewExpression );
 }
 
 void QgsDualView::setView( QgsDualView::ViewMode view )
@@ -439,6 +443,11 @@ void QgsDualView::previewExpressionChanged( const QString& expression )
   mLayerCache->layer()->setDisplayExpression( expression );
 }
 
+void QgsDualView::sortByPreviewExpression()
+{
+  setSortExpression( mFeatureList->displayExpression() );
+}
+
 void QgsDualView::featureFormAttributeChanged()
 {
   mFeatureList->setCurrentFeatureEdited( true );
@@ -468,6 +477,19 @@ void QgsDualView::setFeatureSelectionManager( QgsIFeatureSelectionManager* featu
 void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig& config )
 {
   mFilterModel->setAttributeTableConfig( config );
+}
+
+void QgsDualView::setSortExpression( const QString& sortExpression )
+{
+  if ( sortExpression.isNull() )
+    mFilterModel->sort( -1 );
+  else
+    mFilterModel->sort( sortExpression );
+}
+
+QString QgsDualView::sortExpression() const
+{
+  return mFilterModel->sortExpression();
 }
 
 void QgsDualView::progress( int i, bool& cancel )

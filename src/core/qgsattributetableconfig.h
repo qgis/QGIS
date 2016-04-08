@@ -110,10 +110,20 @@ class CORE_EXPORT QgsAttributeTableConfig
      */
     void readXml( const QDomNode& node );
 
+    /**
+     * Get the expression used for sorting.
+     */
+    QString sortExpression() const;
+
+    /**
+     * Set the sort expression used for sorting.
+     */
+    void setSortExpression( const QString& sortExpression );
 
   private:
     QVector<ColumnConfig> mColumns;
     ActionWidgetStyle mActionWidgetStyle;
+    QString mSortExpression;
 };
 
 Q_DECLARE_METATYPE( QgsAttributeTableConfig::ColumnConfig )
