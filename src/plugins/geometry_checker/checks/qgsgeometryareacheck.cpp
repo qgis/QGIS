@@ -182,14 +182,6 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, 
     return method == MergeIdenticalAttribute ? true : false;
   }
 
-
-  // Remove polygon from source geometry
-  deleteFeatureGeometryPart( feature, partIdx, changes );
-  if ( mergeFeature.id() == feature.id() && mergePartIdx > partIdx )
-  {
-    --mergePartIdx;
-  }
-
   // Merge geometries
   QgsAbstractGeometryV2* mergeGeom = mergeFeature.geometry()->geometry();
   QgsGeometryEngine* geomEngine = QgsGeomUtils::createGeomEngine( QgsGeomUtils::getGeomPart( mergeGeom, mergePartIdx ), QgsGeometryCheckPrecision::tolerance() );
@@ -199,6 +191,14 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, 
   {
     return false;
   }
+
+  // Remove polygon from source geometry
+  deleteFeatureGeometryPart( feature, partIdx, changes );
+  if ( mergeFeature.id() == feature.id() && mergePartIdx > partIdx )
+  {
+    --mergePartIdx;
+  }
+  // Replace polygon in merge geometry
   replaceFeatureGeometryPart( mergeFeature, mergePartIdx, combinedGeom, changes );
 
   return true;
