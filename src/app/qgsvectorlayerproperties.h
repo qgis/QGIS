@@ -161,7 +161,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     void setPbnQueryBuilderEnabled();
 
-    QgsVectorLayer *layer;
+    QgsVectorLayer *mLayer;
 
     bool mMetadataFilled;
 
@@ -190,9 +190,6 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QList< QgsVectorJoinInfo > mOldJoins;
 
     void initDiagramTab();
-
-    /** Buffer pixmap which takes the picture of renderers before they are assigned to the vector layer*/
-    //QPixmap bufferPixmap;
 
     /** Adds a new join to mJoinTreeWidget*/
     void addJoinToTreeWidget( const QgsVectorJoinInfo& join , const int insertIndex = -1 );
