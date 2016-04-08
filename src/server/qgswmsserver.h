@@ -35,7 +35,7 @@ class QgsConfigParser;
 class QgsFeature;
 class QgsFeatureRendererV2;
 class QgsMapLayer;
-class QgsMapRenderer;
+class QgsMapSettings;
 class QgsPoint;
 class QgsRasterLayer;
 class QgsRasterRenderer;
@@ -62,7 +62,21 @@ class QgsWMSServer: public QgsOWSServer
 {
   public:
     /** Constructor. Does _NOT_ take ownership of
-        QgsConfigParser, QgsCapabilitiesCache and QgsMapRenderer*/
+        QgsConfigParser, QgsCapabilitiesCache and QgsMapSettings*/
+    QgsWMSServer(
+      const QString& configFilePath
+      , QMap<QString, QString> &parameters
+      , QgsWMSConfigParser* cp
+      , QgsRequestHandler* rh
+      , QgsMapSettings* settings
+      , QgsCapabilitiesCache* capCache
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      , const QgsAccessControl* accessControl
+#endif
+    );
+
+    /** Constructor. Does _NOT_ take ownership of
+        QgsConfigParser, QgsCapabilitiesCache and QgsMapSettings*/
     QgsWMSServer(
       const QString& configFilePath
       , QMap<QString, QString> &parameters
@@ -74,6 +88,7 @@ class QgsWMSServer: public QgsOWSServer
       , const QgsAccessControl* accessControl
 #endif
     );
+
     ~QgsWMSServer();
 
     void executeRequest() override;
@@ -127,7 +142,7 @@ class QgsWMSServer: public QgsOWSServer
       @param layersList out: list with WMS layer names
       @param stylesList out: list with WMS style names
       @param layerIdList out: list with QGIS layer ids
-      @return image configured together with mMapRenderer (or 0 in case of error). The calling function takes ownership of the image*/
+      @return image configured together with mMapSettings (or 0 in case of error). The calling function takes ownership of the image*/
     QImage* initializeRendering( QStringList& layersList, QStringList& stylesList, QStringList& layerIdList );
 
     /** Creates a QImage from the HEIGHT and WIDTH parameters
@@ -135,7 +150,7 @@ class QgsWMSServer: public QgsOWSServer
      @param height image height (or -1 if height should be taken from HEIGHT wms parameter)
      @return 0 in case of error*/
     QImage* createImage( int width = -1, int height = -1 ) const;
-    /** Configures mMapRenderer to the parameters
+    /** Configures mMapSettings to the parameters
      HEIGHT, WIDTH, BBOX, CRS.
      @param paintDevice the device that is used for painting (for dpi)
      @return 0 in case of success*/
@@ -147,7 +162,7 @@ class QgsWMSServer: public QgsOWSServer
     set to the layer and style names according to the SLD
     @return 0 in case of success*/
     int initializeSLDParser( QStringList& layersList, QStringList& stylesList );
-    static bool infoPointToMapCoordinates( int i, int j, QgsPoint* infoPoint, QgsMapRenderer* mapRenderer );
+    static bool infoPointToMapCoordinates( int i, int j, QgsPoint* infoPoint, QgsMapSettings* mapRenderer );
     /** Appends feature info xml for the layer to the layer element of the feature info dom document
     @param featureBBox the bounding box of the selected features in output CRS
     @return 0 in case of success*/
@@ -156,7 +171,7 @@ class QgsWMSServer: public QgsOWSServer
                                     int nFeatures,
                                     QDomDocument& infoDocument,
                                     QDomElement& layerElement,
-                                    QgsMapRenderer* mapRender,
+                                    QgsMapSettings* mapRender,
                                     QgsRenderContext& renderContext,
                                     const QString& version,
                                     const QString& infoFormat,
@@ -169,11 +184,11 @@ class QgsWMSServer: public QgsOWSServer
                                     const QString& version,
                                     const QString& infoFormat ) const;
 
-    /** Creates a layer set and returns a stringlist with layer ids that can be passed to a QgsMapRenderer. Usually used in conjunction with readLayersAndStyles
+    /** Creates a layer set and returns a stringlist with layer ids that can be passed to a QgsMapSettings. Usually used in conjunction with readLayersAndStyles
        @param scaleDenominator Filter out layer if scale based visibility does not match (or use -1 if no scale restriction)*/
     QStringList layerSet( const QStringList& layersList, const QStringList& stylesList, const QgsCoordinateReferenceSystem& destCRS, double scaleDenominator = -1 ) const;
 
-    /** Record which symbols would be used if the map was in the current configuration of mMapRenderer. This is useful for content-based legend*/
+    /** Record which symbols would be used if the map was in the current configuration of mMapSettings. This is useful for content-based legend*/
     void runHitTest( QPainter* painter, HitTest& hitTest );
     /** Record which symbols within one layer would be rendered with the given renderer context*/
     void runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbols, QgsRenderContext& context );
@@ -247,7 +262,7 @@ class QgsWMSServer: public QgsOWSServer
     void cleanupAfterRequest();
 
     /** Map containing the WMS parameters*/
-    QgsMapRenderer* mMapRenderer;
+    QgsMapSettings* mMapSettings;
 
     QgsCapabilitiesCache* mCapabilitiesCache;
 
@@ -258,6 +273,8 @@ class QgsWMSServer: public QgsOWSServer
     // speficy if layer or rule item labels should be drawn in the legend graphic with GetLegendGraphics
     bool mDrawLegendLayerLabel;
     bool mDrawLegendItemLabel;
+
+    bool mOwnsMapSettings;
 
     QDomElement createFeatureGML(
       QgsFeature* feat,
@@ -279,7 +296,7 @@ class QgsWMSServer: public QgsOWSServer
     int getWMSPrecision( int defaultValue ) const;
 
     /** Gets layer search rectangle (depending on request parameter, layer type, map and layer crs)*/
-    QgsRectangle featureInfoSearchRect( QgsVectorLayer* ml, QgsMapRenderer* mr, const QgsRenderContext& rct, const QgsPoint& infoPoint ) const;
+    QgsRectangle featureInfoSearchRect( QgsVectorLayer* ml, QgsMapSettings* mr, const QgsRenderContext& rct, const QgsPoint& infoPoint ) const;
 
     /** Reads and extracts the different options in the FORMAT_OPTIONS parameter*/
     void readFormatOptions( QMap<QString, QString>& formatOptions ) const;
