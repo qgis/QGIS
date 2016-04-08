@@ -33,8 +33,10 @@ from PyQt.QtGui import QDialog
 
 from math import log10, floor
 from qgis.core import (QgsDataSourceURI, QgsCredentials,  QgsExpressionContext,
-                        QgsExpressionContextUtils, QgsExpression)
+                        QgsExpressionContextUtils, QgsExpression, QgsRasterLayer)
 from qgis.gui import QgsEncodingFileDialog, QgsExpressionBuilderDialog
+from qgis.utils import iface
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -87,7 +89,9 @@ class NumberInputPanel(BASE, WIDGET):
     def showExpressionsBuilder(self):
         context = QgsExpressionContext()
         context.appendScope(QgsExpressionContextUtils.globalScope())
-        context.appendScope(QgsExpressionContextUtils.projectScope())
+        scope = QgsExpressionContextUtils.projectScope()
+        self.addVariablesToScope(scope)
+        context.appendScope(scope)
         dlg = QgsExpressionBuilderDialog(None, self.spnValue.text(), self, "generic", context)
         dlg.setWindowTitle(self.tr("Expression based input"));
         if dlg.exec_() == QDialog.Accepted:
@@ -99,6 +103,41 @@ class NumberInputPanel(BASE, WIDGET):
                         self.spnValue.setValue(float(result))
                     except:
                         pass
+
+    def addVariablesToScope(self, scope):
+        layers = dataobjects.getAllLayers()
+        for layer in layers:
+            name = layer.name()
+            scope.setVariable("%s_minx" % name, layer.extent().xMinimum())
+            scope.setVariable("%s_miny" % name, layer.extent().yMinimum())
+            scope.setVariable("%s_maxx" % name, layer.extent().xMaximum())
+            scope.setVariable("%s_maxy" % name, layer.extent().yMaximum())
+            if isinstance(layer, QgsRasterLayer):
+                cellsize = (layer.extent().xMaximum()
+                            - layer.extent().xMinimum()) / layer.width()
+                scope.setVariable("%s_cellsize" % name, cellsize)
+
+        layers = dataobjects.getRasterLayers()
+        for layer in layers:
+            for i in range(layer.bandCount()):
+                stats = layer.dataProvider().bandStatistics(i + 1)
+                scope.setVariable("%s_band%i_avg" % (name, i + 1), stats.mean)
+                scope.setVariable("%s_band%i_stddev" % (name, i + 1), stats.stdDev)
+                scope.setVariable("%s_band%i_min" % (name, i + 1), stats.minimumValue)
+                scope.setVariable("%s_band%i_max" % (name, i + 1), stats.maximumValue)
+
+        extent = iface.mapCanvas().extent()
+        scope.setVariable("canvasextent_minx", extent.xMinimum())
+        scope.setVariable("canvasextent_miny", extent.yMinimum())
+        scope.setVariable("canvasextent_maxx", extent.xMaximum())
+        scope.setVariable("canvasextent_maxy", extent.yMaximum())
+
+        extent = iface.mapCanvas().fullExtent()
+        scope.setVariable("fullextent_minx", extent.xMinimum())
+        scope.setVariable("fullextent_miny", extent.yMinimum())
+        scope.setVariable("fullextent_maxx", extent.xMaximum())
+        scope.setVariable("fullextent_maxy", extent.yMaximum())
+
 
     def getValue(self):
         return self.spnValue.value()
