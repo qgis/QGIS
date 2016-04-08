@@ -1262,11 +1262,12 @@ void QgsVectorLayerProperties::updateSymbologyPage()
 
 void QgsVectorLayerProperties::setPbnQueryBuilderEnabled()
 {
-  pbnQueryBuilder->setEnabled( mLayer->dataProvider() &&
+  pbnQueryBuilder->setEnabled( mLayer &&
+                               mLayer->dataProvider() &&
                                mLayer->dataProvider()->supportsSubsetString() &&
                                !mLayer->isEditable() );
 
-  if ( mLayer->isEditable() )
+  if ( mLayer && mLayer->isEditable() )
   {
     pbnQueryBuilder->setToolTip( tr( "Stop editing mode to enable this." ) );
   }
