@@ -190,12 +190,19 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
         (( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) != 0 && ( !mConnection->hasSpatial() || !mSource->mHasSpatialIndex ) ) )
     {
       QByteArray *ba = static_cast<QByteArray*>( mQry.value( col++ ).data() );
-      unsigned char *copy = new unsigned char[ba->size()];
-      memcpy( copy, ba->constData(), ba->size() );
+      if ( ba->size() > 0 )
+      {
+        unsigned char *copy = new unsigned char[ba->size()];
+        memcpy( copy, ba->constData(), ba->size() );
 
-      QgsGeometry *g = new QgsGeometry();
-      g->fromWkb( copy, ba->size() );
-      feature.setGeometry( g );
+        QgsGeometry *g = new QgsGeometry();
+        g->fromWkb( copy, ba->size() );
+        feature.setGeometry( g );
+      }
+      else
+      {
+        feature.setGeometry( 0 );
+      }
 
       if (( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) != 0 && ( !mConnection->hasSpatial() || !mSource->mHasSpatialIndex ) &&
           mRequest.filterType() == QgsFeatureRequest::FilterRect &&
