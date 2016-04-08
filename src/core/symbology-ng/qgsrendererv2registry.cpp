@@ -29,11 +29,11 @@ QgsRendererV2Registry::QgsRendererV2Registry()
 {
   // add default renderers
   addRenderer( new QgsRendererV2Metadata( "nullSymbol",
-                                          QObject::tr( "No Symbols" ),
+                                          QObject::tr( "No symbols" ),
                                           QgsNullSymbolRenderer::create ) );
 
   addRenderer( new QgsRendererV2Metadata( "singleSymbol",
-                                          QObject::tr( "Single Symbol" ),
+                                          QObject::tr( "Single symbol" ),
                                           QgsSingleSymbolRendererV2::create,
                                           QgsSingleSymbolRendererV2::createFromSld ) );
 
@@ -51,11 +51,11 @@ QgsRendererV2Registry::QgsRendererV2Registry()
                                           QgsRuleBasedRendererV2::createFromSld ) );
 
   addRenderer( new QgsRendererV2Metadata( "pointDisplacement",
-                                          QObject::tr( "Point Displacement" ),
+                                          QObject::tr( "Point displacement" ),
                                           QgsPointDisplacementRenderer::create ) );
 
   addRenderer( new QgsRendererV2Metadata( "invertedPolygonRenderer",
-                                          QObject::tr( "Inverted Polygons" ),
+                                          QObject::tr( "Inverted polygons" ),
                                           QgsInvertedPolygonRenderer::create ) );
 
   addRenderer( new QgsRendererV2Metadata( "heatmapRenderer",
