@@ -294,7 +294,7 @@ void QgsGrassPlugin::initGui()
   if ( !QgsRendererV2Registry::instance()->renderersList().contains( "grassEdit" ) )
   {
     QgsRendererV2Registry::instance()->addRenderer( new QgsRendererV2Metadata( "grassEdit",
-        QObject::tr( "GRASS Edit" ),
+        QObject::tr( "GRASS edit" ),
         QgsGrassEditRenderer::create,
         QIcon( QgsApplication::defaultThemePath() + "rendererGrassSymbol.svg" ),
         QgsGrassEditRendererWidget::create ) );

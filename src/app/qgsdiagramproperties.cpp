@@ -66,8 +66,9 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   mDiagramOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
 
   mDiagramTypeComboBox->blockSignals( true );
-  mDiagramTypeComboBox->addItem( tr( "No diagrams" ), "None" );
-  QPixmap pix = QgsApplication::getThemePixmap( "pie-chart" );
+  QPixmap pix = QgsApplication::getThemePixmap( "diagramNone" );
+  mDiagramTypeComboBox->addItem( pix, tr( "No diagrams" ), "None" );
+  pix = QgsApplication::getThemePixmap( "pie-chart" );
   mDiagramTypeComboBox->addItem( pix, tr( "Pie chart" ), DIAGRAM_NAME_PIE );
   pix = QgsApplication::getThemePixmap( "text" );
   mDiagramTypeComboBox->addItem( pix, tr( "Text diagram" ), DIAGRAM_NAME_TEXT );

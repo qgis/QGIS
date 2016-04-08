@@ -439,7 +439,8 @@
         <file>themes/default/mMessageLog.svg</file>
         <file>themes/default/mMessageLogRead.svg</file>
         <file>themes/default/north_arrow.png</file>
-        <file>themes/default/pie-chart.png</file>
+        <file>themes/default/diagramNone.svg</file>
+        <file>themes/default/pie-chart.svg</file>
         <file>themes/default/plugin.png</file>
         <file>themes/default/pluginExperimental.png</file>
         <file>themes/default/pluginDeprecated.png</file>
@@ -495,6 +496,7 @@
         <file>themes/default/rendererHeatmapSymbol.svg</file>
         <file>themes/default/renderer25dSymbol.svg</file>
         <file>themes/default/rendererGrassSymbol.svg</file>
+        <file>themes/default/labelingNone.svg</file>
         <file>themes/default/labelingSingle.svg</file>
         <file>themes/default/labelingRuleBased.svg</file>
         <file>themes/default/labelingObstacle.svg</file>
