@@ -30,6 +30,8 @@
 
 #define INF 1E20
 
+/// @cond PRIVATE
+
 template <typename PixelOperation>
 void QgsImageOperation::runPixelOperation( QImage &image, PixelOperation& operation )
 {
@@ -172,6 +174,8 @@ void QgsImageOperation::runBlockOperationInThreads( QImage &image, BlockOperatio
   QtConcurrent::blockingMap( blocks, operation );
 }
 
+
+///@endcond
 
 //
 //operation specific code
