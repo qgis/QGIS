@@ -21,6 +21,7 @@
 #include <QRegExp>
 #include <QColor>
 #include <QUuid>
+#include <QMutex>
 
 #include <math.h>
 #include <limits>
@@ -2857,6 +2858,13 @@ QList<QgsExpression::Function*> QgsExpression::gmOwnedFunctions;
 
 const QList<QgsExpression::Function*>& QgsExpression::Functions()
 {
+  // The construction of the list isn't thread-safe, and without the mutex,
+  // crashes in the WFS provider may occur, since it can parse expressions
+  // in parallel.
+  // The mutex needs to be recursive.
+  static QMutex sFunctionsMutex( QMutex::Recursive );
+  QMutexLocker locker( &sFunctionsMutex );
+
   if ( gmFunctions.isEmpty() )
   {
     gmFunctions
