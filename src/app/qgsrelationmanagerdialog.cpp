@@ -40,6 +40,8 @@ void QgsRelationManagerDialog::setLayers( const QList< QgsVectorLayer* >& layers
   {
     addRelation( rel );
   }
+
+  mRelationsTable->sortByColumn( 0, Qt::AscendingOrder );
 }
 
 void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
