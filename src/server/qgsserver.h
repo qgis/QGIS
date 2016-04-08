@@ -40,6 +40,7 @@
 #include "qgsserverinterfaceimpl.h"
 #endif
 
+class QgsMapSettings;
 
 /** \ingroup server
  * The QgsServer class provides OGC web services.
@@ -124,6 +125,7 @@ class SERVER_EXPORT QgsServer
     static QString* sConfigFilePath;
     static QgsCapabilitiesCache* sCapabilitiesCache;
     static QgsMapRenderer* sMapRenderer;
+    static QgsMapSettings* sMapSettings;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     static QgsServerInterfaceImpl* sServerInterface;
     static bool sInitPython;

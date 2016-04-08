@@ -45,11 +45,18 @@ QgsWMSConfigParser::~QgsWMSConfigParser()
 
 }
 
+QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapSettings* mapSettings, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const
+{
+  return 0; //todo: fixme
+}
+
 QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const
 {
   QStringList highlightLayers;
   return createPrintComposition( composerTemplate, mapRenderer, parameterMap, highlightLayers );
 }
+
+
 
 QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const
 {

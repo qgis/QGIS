@@ -34,6 +34,7 @@
 #include "qgswfsserver.h"
 #include "qgswcsserver.h"
 #include "qgsmapserviceexception.h"
+#include "qgsmapsettings.h"
 #include "qgspallabeling.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmaplayerregistry.h"
@@ -62,6 +63,7 @@
 QString* QgsServer::sConfigFilePath = nullptr;
 QgsCapabilitiesCache* QgsServer::sCapabilitiesCache = nullptr;
 QgsMapRenderer* QgsServer::sMapRenderer = nullptr;
+QgsMapSettings* QgsServer::sMapSettings = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 QgsServerInterfaceImpl*QgsServer::sServerInterface = nullptr;
 bool QgsServer::sInitPython = true;
@@ -412,6 +414,7 @@ bool QgsServer::init( int & argc, char ** argv )
   //create cache for capabilities XML
   sCapabilitiesCache = new QgsCapabilitiesCache();
   sMapRenderer =  new QgsMapRenderer;
+  sMapSettings = new QgsMapSettings();
   sMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
 #ifdef ENABLE_MS_TESTS
@@ -620,7 +623,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
           , parameterMap
           , p
           , theRequestHandler.data()
-          , sMapRenderer
+          , sMapSettings
           , sCapabilitiesCache
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
           , accessControl
