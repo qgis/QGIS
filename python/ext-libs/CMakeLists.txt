@@ -45,6 +45,7 @@ IF(NOT ENABLE_PYTHON3)
     FILE(GLOB items RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/future future/*)
 
     FOREACH(item ${items})
+      INSTALL(DIRECTORY future/${item} DESTINATION "${QGIS_PYTHON_DIR}")
       FILE(GLOB_RECURSE files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/future future/*)
       ADD_CUSTOM_COMMAND(TARGET pyfuture
         POST_BUILD
