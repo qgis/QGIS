@@ -159,6 +159,8 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     void updateSymbologyPage();
 
+    void setPbnQueryBuilderEnabled();
+
     QgsVectorLayer *layer;
 
     bool mMetadataFilled;
