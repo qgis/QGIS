@@ -220,7 +220,6 @@ def _executeAlgorithm(alg):
         progress.close()
 
 
-
 def getMenu(name, parent):
     menus = [c for c in parent.children() if isinstance(c, QMenu) and c.title() == name]
     if menus:

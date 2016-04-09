@@ -102,7 +102,7 @@ QList< QgsComposerItem*> QgsComposerItemComboBox::exceptedItemList() const
 {
   return mProxyModel->exceptedItemList();
 }
- QgsComposerItem* QgsComposerItemComboBox::item( int index ) const
+QgsComposerItem* QgsComposerItemComboBox::item( int index ) const
 {
   const QModelIndex proxyIndex = mProxyModel->index( index, 0 );
   if ( !proxyIndex.isValid() )
