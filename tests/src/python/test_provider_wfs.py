@@ -276,7 +276,8 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
     <xsd:complexContent>
       <xsd:extension base="gml:AbstractFeatureType">
         <xsd:sequence>
-          <xsd:element maxOccurs="1" minOccurs="0" name="intfield" nillable="true" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="INTFIELD" nillable="true" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="GEOMETRY" nillable="true" type="xsd:int"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="longfield" nillable="true" type="xsd:long"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="stringfield" nillable="true" type="xsd:string"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="geometryProperty" nillable="true" type="gml:PointPropertyType"/>
@@ -291,7 +292,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.0.0'", u'test', u'WFS')
         assert vl.isValid()
         self.assertEquals(vl.wkbType(), QgsWKBTypes.Point)
-        self.assertEquals(len(vl.fields()), 3)
+        self.assertEquals(len(vl.fields()), 4)
         self.assertEquals(vl.featureCount(), 0)
         reference = QgsGeometry.fromRect(
             QgsRectangle(-71.123, 66.33, -65.32, 78.3))
@@ -309,15 +310,19 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
     <my:typename fid="typename.0">
       <my:geometryProperty>
           <gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#4326"><gml:coordinates decimal="." cs="," ts=" ">2,49</gml:coordinates></gml:Point></my:geometryProperty>
-      <my:intfield>1</my:intfield>
+      <my:INTFIELD>1</my:INTFIELD>
+      <my:GEOMETRY>2</my:GEOMETRY>
       <my:longfield>1234567890123</my:longfield>
       <my:stringfield>foo</my:stringfield>
     </my:typename>
   </gml:featureMember>
 </wfs:FeatureCollection>""")
 
-        values = [f['intfield'] for f in vl.getFeatures()]
+        values = [f['INTFIELD'] for f in vl.getFeatures()]
         self.assertEquals(values, [1])
+
+        values = [f['GEOMETRY'] for f in vl.getFeatures()]
+        self.assertEquals(values, [2])
 
         values = [f['longfield'] for f in vl.getFeatures()]
         self.assertEquals(values, [1234567890123])

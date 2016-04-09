@@ -166,49 +166,65 @@ bool QgsWFSSharedData::createCache()
   cacheFields.append( QgsField( QgsWFSConstants::FIELD_HEXWKB_GEOM, QVariant::String, "string" ) );
 
   bool ogrWaySuccessfull = false;
+  QString geometryFieldname( "__spatialite_geometry" );
 #ifdef USE_OGR_FOR_DB_CREATION
-  // Creating a spatialite database can be quite slow on some file systems
-  // so we create a GDAL in-memory file, and then copy it on
-  // the file system.
-  QString vsimemFilename;
-  QStringList datasourceOptions;
-  datasourceOptions.push_back( "INIT_WITH_EPSG=NO" );
-  vsimemFilename.sprintf( "/vsimem/qgis_wfs_cache_template_%p/features.sqlite", this );
-  mCacheTablename = CPLGetBasename( vsimemFilename.toStdString().c_str() );
-  VSIUnlink( vsimemFilename.toStdString().c_str() );
-  QgsVectorFileWriter* writer = new QgsVectorFileWriter( vsimemFilename, "",
-      cacheFields, QGis::WKBPolygon, nullptr, "SpatiaLite", datasourceOptions );
-  if ( writer->hasError() == QgsVectorFileWriter::NoError )
+  // Only GDAL >= 2.0 can use an alternate geometry field name
+#if GDAL_VERSION_MAJOR < 2
+  const bool hasGeometryField = cacheFields.fieldNameIndex( "geometry" ) >= 0;
+  if ( !hasGeometryField )
+#endif
   {
-    delete writer;
-
-    // Copy the temporary database back to disk
-    vsi_l_offset nLength = 0;
-    GByte* pabyData = VSIGetMemFileBuffer( vsimemFilename.toStdString().c_str(), &nLength, TRUE );
-    VSILFILE* fp = VSIFOpenL( mCacheDbname.toStdString().c_str(), "wb " );
-    if ( fp != nullptr )
+#if GDAL_VERSION_MAJOR < 2
+    geometryFieldname = "GEOMETRY";
+#endif
+    // Creating a spatialite database can be quite slow on some file systems
+    // so we create a GDAL in-memory file, and then copy it on
+    // the file system.
+    QString vsimemFilename;
+    QStringList datasourceOptions;
+    QStringList layerOptions;
+    datasourceOptions.push_back( "INIT_WITH_EPSG=NO" );
+    layerOptions.push_back( "LAUNDER=NO" ); // to get exact matches for field names, especially regarding case
+#if GDAL_VERSION_MAJOR >= 2
+    layerOptions.push_back( "GEOMETRY_NAME=__spatialite_geometry" );
+#endif
+    vsimemFilename.sprintf( "/vsimem/qgis_wfs_cache_template_%p/features.sqlite", this );
+    mCacheTablename = CPLGetBasename( vsimemFilename.toStdString().c_str() );
+    VSIUnlink( vsimemFilename.toStdString().c_str() );
+    QgsVectorFileWriter* writer = new QgsVectorFileWriter( vsimemFilename, "",
+        cacheFields, QGis::WKBPolygon, nullptr, "SpatiaLite", datasourceOptions, layerOptions );
+    if ( writer->hasError() == QgsVectorFileWriter::NoError )
     {
-      VSIFWriteL( pabyData, 1, nLength, fp );
-      VSIFCloseL( fp );
-      CPLFree( pabyData );
+      delete writer;
+
+      // Copy the temporary database back to disk
+      vsi_l_offset nLength = 0;
+      GByte* pabyData = VSIGetMemFileBuffer( vsimemFilename.toStdString().c_str(), &nLength, TRUE );
+      VSILFILE* fp = VSIFOpenL( mCacheDbname.toStdString().c_str(), "wb " );
+      if ( fp != nullptr )
+      {
+        VSIFWriteL( pabyData, 1, nLength, fp );
+        VSIFCloseL( fp );
+        CPLFree( pabyData );
+      }
+      else
+      {
+        CPLFree( pabyData );
+        QgsMessageLog::logMessage( tr( "Cannot create temporary SpatiaLite cache" ), tr( "WFS" ) );
+        return false;
+      }
+
+      ogrWaySuccessfull = true;
     }
     else
     {
-      CPLFree( pabyData );
-      QgsMessageLog::logMessage( tr( "Cannot create temporary SpatiaLite cache" ), tr( "WFS" ) );
-      return false;
+      // Be tolerant on failures. Some (Windows) GDAL >= 1.11 builds may
+      // not define SPATIALITE_412_OR_LATER, and thus the call to
+      // spatialite_init() may cause failures, which will require using the
+      // slower method
+      delete writer;
+      VSIUnlink( vsimemFilename.toStdString().c_str() );
     }
-
-    ogrWaySuccessfull = true;
-  }
-  else
-  {
-    // Be tolerant on failures. Some (Windows) GDAL >= 1.11 builds may
-    // not define SPATIALITE_412_OR_LATER, and thus the call to
-    // spatialite_init() may cause failures, which will require using the
-    // slower method
-    delete writer;
-    VSIUnlink( vsimemFilename.toStdString().c_str() );
   }
 #endif
   if ( !ogrWaySuccessfull )
@@ -300,12 +316,12 @@ bool QgsWFSSharedData::createCache()
       if ( rc != SQLITE_OK )
         ret = false;
 
-      sql = QString( "SELECT AddGeometryColumn('%1','geometry',0,'POLYGON',2)" ).arg( mCacheTablename );
+      sql = QString( "SELECT AddGeometryColumn('%1','%2',0,'POLYGON',2)" ).arg( mCacheTablename ).arg( geometryFieldname );
       rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
         ret = false;
 
-      sql = QString( "SELECT CreateSpatialIndex('%1','geometry')" ).arg( mCacheTablename );
+      sql = QString( "SELECT CreateSpatialIndex('%1','%2')" ).arg( mCacheTablename ).arg( geometryFieldname );
       rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
         ret = false;
@@ -336,7 +352,7 @@ bool QgsWFSSharedData::createCache()
   // regarding crashes, since this is a temporary DB
   QgsDataSourceURI dsURI;
   dsURI.setDatabase( mCacheDbname );
-  dsURI.setDataSource( "", mCacheTablename, "geometry", "", "ogc_fid" );
+  dsURI.setDataSource( "", mCacheTablename, geometryFieldname, "", "ogc_fid" );
   QStringList pragmas;
   pragmas << "synchronous=OFF";
   pragmas << "journal_mode=MEMORY";
