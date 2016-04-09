@@ -128,18 +128,11 @@ class Dissolve(GeoAlgorithm):
             for key, value in myDict.items():
                 nElement += 1
                 progress.setPercentage(int(nElement * 100 / nFeat))
-                for i in range(len(value)):
-                    tmpInGeom = value[i]
-
-                    if i == 0:
-                        tmpOutGeom = tmpInGeom
-                    else:
-                        try:
-                            tmpOutGeom = QgsGeometry(
-                                tmpOutGeom.combine(tmpInGeom))
-                        except:
-                            raise GeoAlgorithmExecutionException(
-                                self.tr('Geometry exception while dissolving'))
+                try:
+                    tmpOutGeom = QgsGeometry.unaryUnion(value)
+                except:
+                    raise GeoAlgorithmExecutionException(
+                        self.tr('Geometry exception while dissolving'))
                 outFeat.setGeometry(tmpOutGeom)
                 outFeat.setAttributes(attrDict[key])
                 writer.addFeature(outFeat)
