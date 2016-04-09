@@ -277,7 +277,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( const QString& name, QWidget * paren
   mLayoutBrowser->addWidget( mBrowserView );
 
   mWidgetFilter->hide();
-  mLeFilter->setPlaceholderText( tr( "Type here to visible items..." ) );
+  mLeFilter->setPlaceholderText( tr( "Type here to filter visible items..." ) );
   // icons from http://www.fatcow.com/free-icons License: CC Attribution 3.0
 
   QMenu* menu = new QMenu( this );
