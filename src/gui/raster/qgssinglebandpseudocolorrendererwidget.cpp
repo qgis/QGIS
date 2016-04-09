@@ -39,11 +39,29 @@ void QgsTreeWidgetItem::setData( int column, int role, const QVariant & value )
   }
 }
 
-// override < operator to allow sorting
+// override < operator to allow numeric sorting
+/** Returns true if the text in the item is less than the text in the other item, otherwise returns false.
+ *
+ *  Compares on numeric value of text if possible, otherwise on text.
+ */
 bool QgsTreeWidgetItem::operator<( const QTreeWidgetItem & other ) const
 {
-  // could use treeWidget()->sortColumn() instead of 0
-  return text( 0 ).toDouble() < other.text( 0 ).toDouble();
+  int column = treeWidget()->sortColumn();
+  bool ok1, ok2, val;
+  val = text( column ).toDouble( &ok1 ) < other.text( column ).toDouble( &ok2 );
+  if ( ok1 && ok2 )
+  {
+    return val;
+  }
+  else if ( ok1 || ok2 )
+  {
+    // sort numbers before strings
+    return ok1;
+  }
+  else
+  {
+    return text( column ) < other.text( column );
+  }
 }
 
 QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent )
@@ -174,6 +192,10 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRendererWidget::renderer()
   return renderer;
 }
 
+/** Generate labels from the values in the color map.
+ *  Skip labels which were manually edited (black text).
+ *  Text of generated labels is made gray
+ */
 void QgsSingleBandPseudoColorRendererWidget::autoLabel()
 {
   bool discrete = mColorInterpolationComboBox->currentText() == tr( "Discrete" );
@@ -214,6 +236,7 @@ void QgsSingleBandPseudoColorRendererWidget::autoLabel()
   }
 }
 
+/** Extract the unit out of the current labels and set the unit field. */
 void QgsSingleBandPseudoColorRendererWidget::setUnitFromLabels()
 {
   bool discrete = mColorInterpolationComboBox->currentText() == tr( "Discrete" );
@@ -689,12 +712,14 @@ void QgsSingleBandPseudoColorRendererWidget::on_mColormapTreeWidget_itemDoubleCl
   {
     if ( column == 2 )
     {
+      // Set text color to default black, which signifies a manually edited label
       item->setForeground( 2, QBrush() );
     }
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
   }
 }
 
+/** Update the colormap table after manual edit. */
 void QgsSingleBandPseudoColorRendererWidget::mColormapTreeWidget_itemEdited( QTreeWidgetItem* item, int column )
 {
   Q_UNUSED( item );
