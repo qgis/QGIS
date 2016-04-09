@@ -11,6 +11,9 @@ class QgsRasterMinMaxWidget: QWidget
 
     void setBands( const QList<int> & theBands );
 
+    QgsRectangle extent();
+    int sampleSize();
+
     // Load programmaticaly with current values
     void load();
 
