@@ -51,8 +51,9 @@ class QgsSpatiaLiteFeatureIterator;
   */
 class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 {
-  Q_OBJECT public:
+    Q_OBJECT
 
+  public:
     /** Import a vector layer into the database */
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
@@ -76,9 +77,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     virtual QgsAbstractFeatureSource* featureSource() const override;
 
-    /**
-        *   Returns the permanent storage type for this layer as a friendly name.
-        */
+    //! Returns the permanent storage type for this layer as a friendly name.
     virtual QString storageType() const override;
 
     /** Get the QgsCoordinateReferenceSystem for this layer
@@ -235,6 +234,46 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     void invalidateConnections( const QString& connection ) override;
 
+    // static functions
+    static void convertToGeosWKB( const unsigned char *blob, int blob_size,
+                                  unsigned char **wkb, int *geom_size );
+    static int computeMultiWKB3Dsize( const unsigned char *p_in, int little_endian,
+                                      int endian_arch );
+    static QString quotedIdentifier( QString id );
+    static QString quotedValue( QString value );
+
+    struct SLFieldNotFound {}; //! Exception to throw
+
+    struct SLException
+    {
+      explicit SLException( char *msg ) : errMsg( msg )
+      {
+      }
+
+      SLException( const SLException &e ) : errMsg( e.errMsg )
+      {
+      }
+
+      ~SLException()
+      {
+        if ( errMsg )
+          sqlite3_free( errMsg );
+      }
+
+      QString errorMessage() const
+      {
+        return errMsg ? QString::fromUtf8( errMsg ) : "unknown cause";
+      }
+
+    private:
+      char *errMsg;
+    };
+
+    /**
+     * sqlite3 handles pointer
+     */
+    QgsSqliteHandle *mHandle;
+
   signals:
     /**
      *   This is emitted whenever the worker thread has fully calculated the
@@ -257,16 +296,19 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
   private:
 
-    /** Loads fields from input file to member attributeFields */
+    //! Loads fields from input file to member mAttributeFields
     void loadFields();
 
-    /** For views, try to get primary key from a dedicated meta table */
+    //! For views, try to get primary key from a dedicated meta table
     void determineViewPrimaryKey();
 
-    /** Check if a table/view has any triggers.  Triggers can be used on views to make them editable.*/
+    //! Check if a table/view has any triggers.  Triggers can be used on views to make them editable.
     bool hasTriggers();
 
-    /** Convert a QgsField to work with SL */
+    //! Check if a table has a row id (internal primary key)
+    bool hasRowid();
+
+    //! Convert a QgsField to work with SL
     static bool convertField( QgsField &field );
 
     QString geomParam() const;
@@ -274,112 +316,86 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //! get SpatiaLite version string
     QString spatialiteVersion();
 
-    QgsFields attributeFields;
-    /**
-       * Flag indicating if the layer data source is a valid SpatiaLite layer
-       */
-    bool valid;
-    /**
-       * Flag indicating if the layer data source is based on a query
-       */
-    bool isQuery;
-    /**
-       * Flag indicating if the layer data source is based on a plain Table
-       */
+    QgsFields mAttributeFields;
+
+    //! Flag indicating if the layer data source is a valid SpatiaLite layer
+    bool mValid;
+
+    //! Flag indicating if the layer data source is based on a query
+    bool mIsQuery;
+
+    //! Flag indicating if the layer data source is based on a plain Table
     bool mTableBased;
-    /**
-       * Flag indicating if the layer data source is based on a View
-       */
+
+    //! Flag indicating if the layer data source is based on a View
     bool mViewBased;
-    /**
-       * Flag indicating if the layer data source is based on a VirtualShape
-       */
+
+    //! Flag indicating if the layer data source is based on a VirtualShape
     bool mVShapeBased;
-    /**
-       * Flag indicating if the layer data source has ReadOnly restrictions
-       */
+
+    //! Flag indicating if the layer data source has ReadOnly restrictions
     bool mReadOnly;
-    /**
-       * DB full path
-       */
+
+    //! DB full path
     QString mSqlitePath;
-    /**
-     * Name of the table with no schema
-     */
+
+    //! Name of the table with no schema
     QString mTableName;
-    /**
-       * Name of the table or subquery
-       */
+
+    //! Name of the table or subquery
     QString mQuery;
-    /**
-       * Name of the primary key column in the table
-       */
+
+    //! Name of the primary key column in the table
     QString mPrimaryKey;
-    /**
-       * List of primary key columns in the table
-       */
+
+    //! List of primary key columns in the table
     QgsAttributeList mPrimaryKeyAttrs;
-    /**
-       * Name of the geometry column in the table
-       */
+
+    //! Name of the geometry column in the table
     QString mGeometryColumn;
-    /**
-     * Name of the SpatialIndex table
-     */
+
+    //! Name of the SpatialIndex table
     QString mIndexTable;
-    /**
-       * Name of the SpatialIndex geometry column
-       */
+
+    //! Name of the SpatialIndex geometry column
     QString mIndexGeometry;
-    /**
-     * Geometry type
-     */
-    QGis::WkbType geomType;
-    /**
-     * SQLite handle
-     */
-    sqlite3 *sqliteHandle;
-    /**
-     * String used to define a subset of the layer
-     */
+
+    //! Geometry type
+    QGis::WkbType mGeomType;
+
+    //! SQLite handle
+    sqlite3 *mSqliteHandle;
+
+    //! String used to define a subset of the layer
     QString mSubsetString;
-    /**
-       * CoodDimensions of the layer
-       */
+
+    //! CoordDimensions of the layer
     int nDims;
-    /**
-       * Spatial reference id of the layer
-       */
+
+    //! Spatial reference id of the layer
     int mSrid;
-    /**
-      * auth id
-     */
+
+    //! auth id
     QString mAuthId;
-    /**
-      * proj4text
-     */
+
+    //! proj4text
     QString mProj4text;
-    /**
-     * Rectangle that contains the extent (bounding box) of the layer
-     */
-    QgsRectangle layerExtent;
 
-    /**
-     * Number of features in the layer
-     */
-    long numberFeatures;
-    /**
-     * this Geometry is supported by an R*Tree spatial index
-     */
-    bool spatialIndexRTree;
-    /**
-     * this Geometry is supported by an MBR cache spatial index
-     */
-    bool spatialIndexMbrCache;
+    //! Rectangle that contains the extent (bounding box) of the layer
+    QgsRectangle mLayerExtent;
 
-    int enabledCapabilities;
+    //! Number of features in the layer
+    long mNumberFeatures;
 
-    const QgsField & field( int index ) const;
+    //! this Geometry is supported by an R*Tree spatial index
+    bool mSpatialIndexRTree;
+
+    //! this Geometry is supported by an MBR cache spatial index
+    bool mSpatialIndexMbrCache;
+
+    int mEnabledCapabilities;
+
+    const QgsField &field( int index ) const;
 
     //! SpatiaLite version string
     QString mSpatialiteVersionInfo;
@@ -421,14 +437,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     bool getFeature( sqlite3_stmt *stmt, bool fetchGeometry,
                      QgsFeature &feature,
                      const QgsAttributeList &fetchAttributes );
-  public:
-    // static functions
 
-    static void convertToGeosWKB( const unsigned char *blob, int blob_size,
-                                  unsigned char **wkb, int *geom_size );
-    static int computeMultiWKB3Dsize( const unsigned char *p_in, int little_endian,
-                                      int endian_arch );
-  private:
     void updatePrimaryKeyCapabilities();
 
     int computeSizeFromMultiWKB2D( const unsigned char *p_in, int nDims,
@@ -463,42 +472,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
       GEOS_3D_MULTIPOLYGON       = -2147483642,
       GEOS_3D_GEOMETRYCOLLECTION = -2147483641,
     };
-
-  public:
-    static QString quotedIdentifier( QString id );
-    static QString quotedValue( QString value );
-
-    struct SLFieldNotFound {}; //! Exception to throw
-
-    struct SLException
-    {
-      explicit SLException( char *msg ) : errMsg( msg )
-      {
-      }
-
-      SLException( const SLException &e ) : errMsg( e.errMsg )
-      {
-      }
-
-      ~SLException()
-      {
-        if ( errMsg )
-          sqlite3_free( errMsg );
-      }
-
-      QString errorMessage() const
-      {
-        return errMsg ? QString::fromUtf8( errMsg ) : "unknown cause";
-      }
-
-    private:
-      char *errMsg;
-    };
-
-    /**
-     * sqlite3 handles pointer
-     */
-    QgsSqliteHandle *handle;
 
     friend class QgsSpatiaLiteFeatureSource;
 

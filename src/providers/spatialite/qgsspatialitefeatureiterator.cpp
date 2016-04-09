@@ -378,7 +378,7 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
   }
   else if ( rect.isFinite() )
   {
-    if ( mSource->spatialIndexRTree )
+    if ( mSource->mSpatialIndexRTree )
     {
       // using the RTree spatial index
       QString mbrFilter = QString( "xmin <= %1 AND " ).arg( qgsDoubleToString( rect.xMaximum() ) );
@@ -391,7 +391,7 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
                            QgsSpatiaLiteProvider::quotedIdentifier( idxName ),
                            mbrFilter );
     }
-    else if ( mSource->spatialIndexMbrCache )
+    else if ( mSource->mSpatialIndexMbrCache )
     {
       // using the MbrCache spatial index
       QString idxName = QString( "cache_%1_%2" ).arg( mSource->mIndexTable, mSource->mIndexGeometry );
@@ -578,16 +578,16 @@ bool QgsSpatiaLiteFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest
 QgsSpatiaLiteFeatureSource::QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvider* p )
     : mGeometryColumn( p->mGeometryColumn )
     , mSubsetString( p->mSubsetString )
-    , mFields( p->attributeFields )
+    , mFields( p->mAttributeFields )
     , mQuery( p->mQuery )
-    , isQuery( p->isQuery )
+    , mIsQuery( p->mIsQuery )
     , mViewBased( p->mViewBased )
     , mVShapeBased( p->mVShapeBased )
     , mIndexTable( p->mIndexTable )
     , mIndexGeometry( p->mIndexGeometry )
     , mPrimaryKey( p->mPrimaryKey )
-    , spatialIndexRTree( p->spatialIndexRTree )
-    , spatialIndexMbrCache( p->spatialIndexMbrCache )
+    , mSpatialIndexRTree( p->mSpatialIndexRTree )
+    , mSpatialIndexMbrCache( p->mSpatialIndexMbrCache )
     , mSqlitePath( p->mSqlitePath )
 {
 }

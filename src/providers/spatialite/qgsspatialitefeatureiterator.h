@@ -39,14 +39,14 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
     QString mSubsetString;
     QgsFields mFields;
     QString mQuery;
-    bool isQuery;
+    bool mIsQuery;
     bool mViewBased;
     bool mVShapeBased;
     QString mIndexTable;
     QString mIndexGeometry;
     QString mPrimaryKey;
-    bool spatialIndexRTree;
-    bool spatialIndexMbrCache;
+    bool mSpatialIndexRTree;
+    bool mSpatialIndexMbrCache;
     QString mSqlitePath;
 
     friend class QgsSpatiaLiteFeatureIterator;
