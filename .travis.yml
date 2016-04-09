@@ -3,7 +3,9 @@ matrix:
     # QT4 based build with Python 2.7 // using container based builds and prebuild binary dependencies in osgeo4travis
     - os: linux
       language: cpp
-      env: QT_VERSION=4
+      env:
+        - QT_VERSION=4
+        - LLVM_VERSION=3.8
       sudo: false
       cache:
         apt: true
@@ -14,12 +16,12 @@ matrix:
         postgresql: "9.4"
         apt:
           sources:
-            - llvm-toolchain-precise-3.6
+            - llvm-toolchain-precise-3.8
             - ubuntu-toolchain-r-test
             - george-edison55-precise-backports # doxygen 1.8.3
           packages:
             - bison
-            - clang-3.6
+            - clang-3.8
             - doxygen
             - flex
             - flip
