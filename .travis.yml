@@ -1,4 +1,5 @@
 matrix:
+  fast_finish: true
   include:
     # QT4 based build with Python 2.7 // using container based builds and prebuild binary dependencies in osgeo4travis
     - os: linux
