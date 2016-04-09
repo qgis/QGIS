@@ -44,7 +44,7 @@ QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVecto
     : QDialog( parent )
     , mRamp( ramp )
     , mCurrentPlotColorComponent( -1 )
-    , mCurrentPlotMarkerIndex( -1 )
+    , mCurrentPlotMarkerIndex( 0 )
 {
   setupUi( this );
 #ifdef Q_OS_MAC
@@ -81,8 +81,6 @@ QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVecto
 
   mStopEditor->setGradientRamp( *mRamp );
   connect( mStopEditor, SIGNAL( changed() ), this, SLOT( updateRampFromStopEditor() ) );
-  connect( mStopEditor, SIGNAL( selectedStopChanged( QgsGradientStop ) ), this, SLOT( selectedStopChanged( QgsGradientStop ) ) );
-  mStopEditor->selectStop( 0 );
 
   connect( mColorWidget, SIGNAL( currentColorChanged( QColor ) ), this, SLOT( colorWidgetChanged( QColor ) ) );
   connect( mDeleteStopButton, SIGNAL( clicked() ), mStopEditor, SLOT( deleteSelectedStop() ) );
@@ -97,7 +95,7 @@ QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVecto
 
   mLightnessCurve = new QwtPlotCurve();
   mLightnessCurve->setTitle( "Lightness" );
-  mLightnessCurve->setPen( QPen( Qt::black ) ),
+  mLightnessCurve->setPen( QPen( Qt::black, 0.0 ) ),
   mLightnessCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
 
 // QwtSymbol symbol( QwtSymbol::Ellipse,
@@ -107,19 +105,19 @@ QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVecto
 
   mHueCurve = new QwtPlotCurve();
   mHueCurve->setTitle( "Hue" );
-  mHueCurve->setPen( QPen( Qt::red ) ),
+  mHueCurve->setPen( QPen( Qt::red, 0.0 ) ),
   mHueCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mHueCurve->attach( mPlot );
 
   mSaturationCurve = new QwtPlotCurve();
   mSaturationCurve->setTitle( "Saturation" );
-  mSaturationCurve->setPen( QPen( Qt::blue ) ),
+  mSaturationCurve->setPen( QPen( Qt::blue, 0.0 ) ),
   mSaturationCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mSaturationCurve->attach( mPlot );
 
   mAlphaCurve = new QwtPlotCurve();
   mAlphaCurve->setTitle( "Alpha" );
-  mAlphaCurve->setPen( QPen( Qt::gray ) ),
+  mAlphaCurve->setPen( QPen( Qt::gray, 0.0 ) ),
   mAlphaCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mAlphaCurve->attach( mPlot );
 
@@ -151,7 +149,8 @@ QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVecto
   mSaturationCurve->setVisible( mPlotSaturationCheckbox->isChecked() );
   mAlphaCurve->setVisible( mPlotAlphaCheckbox->isChecked() );
 
-  updatePlot();
+  connect( mStopEditor, SIGNAL( selectedStopChanged( QgsGradientStop ) ), this, SLOT( selectedStopChanged( QgsGradientStop ) ) );
+  mStopEditor->selectStop( 0 );
 }
 
 QgsVectorGradientColorRampV2Dialog::~QgsVectorGradientColorRampV2Dialog()
@@ -299,6 +298,8 @@ void QgsVectorGradientColorRampV2Dialog::selectedStopChanged( const QgsGradientS
     mPositionSpinBox->setDisabled( false );
     mDeleteStopButton->setDisabled( false );
   }
+
+  updatePlot();
 }
 
 void QgsVectorGradientColorRampV2Dialog::colorWidgetChanged( const QColor &color )
@@ -441,14 +442,17 @@ bool byX( QPointF p1, QPointF p2 )
 
 void QgsVectorGradientColorRampV2Dialog::addPlotMarker( double x, double y, const QColor& color, bool isSelected )
 {
-  // TODO - selected stop marker should have darker border
-  //TODO - use nicer border color
+  QColor borderColor = color.darker( 200 );
+  borderColor.setAlpha( 255 );
+
+  QColor brushColor = color;
+  brushColor.setAlpha( 255 );
 
   QwtPlotMarker *marker = new QwtPlotMarker();
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-  marker->setSymbol( new QwtSymbol( QwtSymbol::Ellipse, QBrush( color ), QPen( Qt::black, isSelected ? 2 : 0 ), QSize( 10, 10 ) ) );
+  marker->setSymbol( new QwtSymbol( QwtSymbol::Ellipse,  QBrush( brushColor ), QPen( borderColor, isSelected ? 2 : 1 ), QSize( 10, 10 ) ) );
 #else
-  marker->setSymbol( QwtSymbol( QwtSymbol::Ellipse, QBrush( color ), QPen( Qt::black, isSelected ? 2 : 0 ), QSize( 10, 10 ) ) );
+  marker->setSymbol( QwtSymbol( QwtSymbol::Ellipse,  QBrush( brushColor ), QPen( borderColor, isSelected ? 2 : 1 ), QSize( 10, 10 ) ) );
 #endif
   marker->setValue( x, y );
   marker->attach( mPlot );
@@ -521,10 +525,17 @@ void QgsVectorGradientColorRampV2Dialog::updatePlot()
   qSort( saturationPoints.begin(), saturationPoints.end(), byX );
   qSort( alphaPoints.begin(), alphaPoints.end(), byX );
 
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+  mLightnessCurve->setSamples( lightnessPoints );
+  mHueCurve->setSamples( huePoints );
+  mSaturationCurve->setSamples( saturationPoints );
+  mAlphaCurve->setSamples( alphaPoints );
+#else
   mLightnessCurve->setData( lightnessPoints );
   mHueCurve->setData( huePoints );
   mSaturationCurve->setData( saturationPoints );
   mAlphaCurve->setData( alphaPoints );
+#endif
   mPlot->replot();
 }
 
