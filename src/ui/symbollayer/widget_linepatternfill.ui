@@ -23,22 +23,13 @@
    <property name="horizontalSpacing">
     <number>28</number>
    </property>
-   <property name="leftMargin">
-    <number>1</number>
-   </property>
-   <property name="topMargin">
-    <number>1</number>
-   </property>
-   <property name="rightMargin">
-    <number>1</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>1</number>
    </property>
    <item row="1" column="0">
-    <widget class="QLabel" name="mAngleLabel">
+    <widget class="QLabel" name="mRotationLabel">
      <property name="text">
-      <string>Angle</string>
+      <string>Rotation</string>
      </property>
     </widget>
    </item>
@@ -162,11 +153,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -176,6 +162,11 @@
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
