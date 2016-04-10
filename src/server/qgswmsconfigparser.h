@@ -119,11 +119,13 @@ class SERVER_EXPORT QgsWMSConfigParser
     /** Creates a print composition, usually for a GetPrint request. Replaces map and label parameters*/
     QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const;
 
-    QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapSettings* mapSettings, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const;
+    QgsComposition* createPrintComposition( const QString& composerTemplate, const QgsMapSettings* mapSettings, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const;
 
 
     /** Creates a composition from the project file (probably delegated to the fallback parser)*/
     virtual QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const = 0;
+
+    virtual QgsComposition* initComposition( const QString& composerTemplate, const QgsMapSettings* mapSettings, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const = 0;
 
     /** Adds print capabilities to xml document. ParentElem usually is the <Capabilities> element*/
     virtual void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;

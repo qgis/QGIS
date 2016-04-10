@@ -1,5 +1,5 @@
 
-class QgsMapSettings
+class QgsMapSettings: QObject
 {
 %TypeHeaderCode
 #include <qgsmapsettings.h>

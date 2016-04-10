@@ -74,6 +74,10 @@ class SERVER_EXPORT QgsWMSProjectParser : public QgsWMSConfigParser
 
     //printing
     QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap* >& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const override;
+
+    QgsComposition* initComposition( const QString& composerTemplate, const QgsMapSettings* mapSettings, QList< QgsComposerMap* >& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const override;
+
+
     void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;
 
     //todo: fixme

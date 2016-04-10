@@ -735,6 +735,15 @@ QgsComposition* QgsSLDConfigParser::initComposition( const QString& composerTemp
   return nullptr;
 }
 
+QgsComposition* QgsSLDConfigParser::initComposition( const QString& composerTemplate, const QgsMapSettings* mapSettings, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const
+{
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->initComposition( composerTemplate, mapSettings, mapList, legendList, labelList, htmlFrameList );
+  }
+  return nullptr;
+}
+
 void QgsSLDConfigParser::printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
   if ( mFallbackParser )

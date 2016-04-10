@@ -45,27 +45,14 @@ QgsWMSConfigParser::~QgsWMSConfigParser()
 
 }
 
-QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapSettings* mapSettings, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const
-{
-  return 0; //todo: fixme
-}
-
-QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const
-{
-  QStringList highlightLayers;
-  return createPrintComposition( composerTemplate, mapRenderer, parameterMap, highlightLayers );
-}
-
-
-
-QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const
+QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& composerTemplate, const QgsMapSettings* mapSettings, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const
 {
   QList<QgsComposerMap*> composerMaps;
   QList<QgsComposerLegend*> composerLegends;
   QList<QgsComposerLabel*> composerLabels;
   QList<const QgsComposerHtml*> composerHtmls;
 
-  QgsComposition* c = initComposition( composerTemplate, mapRenderer, composerMaps, composerLegends, composerLabels, composerHtmls );
+  QgsComposition* c = initComposition( composerTemplate, mapSettings, composerMaps, composerLegends, composerLabels, composerHtmls );
   if ( !c )
   {
     return nullptr;
@@ -120,7 +107,7 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
 
     //Change x- and y- of extent for WMS 1.3.0 if axis inverted
     QString version = parameterMap.value( "VERSION" );
-    if ( version == "1.3.0" && mapRenderer && mapRenderer->destinationCrs().axisInverted() )
+    if ( version == "1.3.0" && mapSettings && mapSettings->destinationCrs().axisInverted() )
     {
       r.invert();
     }
@@ -217,8 +204,8 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
     currentMap->grid()->setIntervalX( parameterMap.value( mapId + ":GRID_INTERVAL_X" ).toDouble() );
     currentMap->grid()->setIntervalY( parameterMap.value( mapId + ":GRID_INTERVAL_Y" ).toDouble() );
   }
-//update legend
-// if it has an auto-update model
+  //update legend
+  // if it has an auto-update model
   Q_FOREACH ( QgsComposerLegend* currentLegend, composerLegends )
   {
     if ( !currentLegend )
@@ -244,7 +231,7 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
     }
   }
 
-//replace label text
+  //replace label text
   Q_FOREACH ( QgsComposerLabel *currentLabel, composerLabels )
   {
     QString title = parameterMap.value( currentLabel->id().toUpper() );
@@ -264,7 +251,7 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
     currentLabel->setText( title );
   }
 
-//replace html url
+  //replace html url
   Q_FOREACH ( const QgsComposerHtml *currentHtml, composerHtmls )
   {
     QgsComposerHtml * html = const_cast<QgsComposerHtml *>( currentHtml );
@@ -294,6 +281,25 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
   }
 
   return c;
+}
+
+QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const
+{
+  QStringList highlightLayers;
+  return createPrintComposition( composerTemplate, mapRenderer, parameterMap, highlightLayers );
+}
+
+
+
+QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const
+{
+  if ( !mapRenderer )
+  {
+    return 0;
+  }
+
+  const QgsMapSettings& mapSettings = mapRenderer->mapSettings();
+  return createPrintComposition( composerTemplate, &mapSettings, parameterMap, highlightLayers );
 }
 
 QStringList QgsWMSConfigParser::addHighlightLayers( const QMap<QString, QString>& parameterMap, QStringList& layerSet, const QString& parameterPrefix )

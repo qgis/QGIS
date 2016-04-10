@@ -471,6 +471,22 @@ bool QgsWMSProjectParser::WMSInspireActivated() const
 
 QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap* >& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlList ) const
 {
+  if ( !mapRenderer )
+  {
+    return 0;
+  }
+
+  const QgsMapSettings& mapSettings = mapRenderer->mapSettings();
+  return initComposition( composerTemplate, &mapSettings, mapList, legendList, labelList, htmlList );
+}
+
+QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTemplate, const QgsMapSettings* mapSettings, QList< QgsComposerMap* >& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlList ) const
+{
+  if ( !mapSettings )
+  {
+    return 0;
+  }
+
   //Create composition from xml
   QDomElement composerElem = composerByName( composerTemplate );
   if ( composerElem.isNull() )
@@ -484,7 +500,7 @@ QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTem
     return nullptr;
   }
 
-  QgsComposition* composition = new QgsComposition( mapRenderer->mapSettings() ); //set resolution, paper size from composer element attributes
+  QgsComposition* composition = new QgsComposition( *mapSettings ); //set resolution, paper size from composer element attributes
   if ( !composition->readXML( compositionElem, *( mProjectParser->xmlDocument() ) ) )
   {
     delete composition;
