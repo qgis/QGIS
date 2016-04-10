@@ -394,23 +394,7 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareShape( const QString& name, QPolygonF 
     polygon << QPointF( -1, 1 ) << QPointF( 0, 1 ) << QPointF( 0, -1 );
     return true;
   }
-  else if ( name == "star" )
-  {
-    double sixth = 1.0 / 3;
-
-    polygon << QPointF( 0, -1 )
-    << QPointF( -sixth, -sixth )
-    << QPointF( -1, -sixth )
-    << QPointF( -sixth, 0 )
-    << QPointF( -1, 1 )
-    << QPointF( 0, + sixth )
-    << QPointF( 1, 1 )
-    << QPointF( + sixth, 0 )
-    << QPointF( 1, -sixth )
-    << QPointF( + sixth, -sixth );
-    return true;
-  }
-  else if ( name == "regular_star" )
+  else if ( name == "star" || name == "regular_star" )
   {
     double inner_r = cos( DEG2RAD( 72.0 ) ) / cos( DEG2RAD( 36.0 ) );
 

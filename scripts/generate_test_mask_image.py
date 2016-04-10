@@ -8,7 +8,7 @@
 import os
 import sys
 import argparse
-from PyQt.QtGui import QImage, QColor, qRed, qBlue, qGreen, qAlpha, qRgb
+from PyQt4.QtGui import QImage, QColor, qRed, qBlue, qGreen, qAlpha, qRgb
 import struct
 import urllib2
 import glob
