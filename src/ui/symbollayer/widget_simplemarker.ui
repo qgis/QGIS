@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>513</width>
+    <width>517</width>
     <height>398</height>
    </rect>
   </property>
@@ -43,7 +43,7 @@
        <property name="value">
         <double>1.000000000000000</double>
        </property>
-       <property name="showClearButton">
+       <property name="showClearButton" stdset="0">
         <bool>false</bool>
        </property>
       </widget>
@@ -80,6 +80,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="specialValueText">
+        <string>Hairline</string>
+       </property>
        <property name="decimals">
         <number>6</number>
        </property>
@@ -89,8 +92,8 @@
        <property name="singleStep">
         <double>0.200000000000000</double>
        </property>
-       <property name="showClearButton">
-        <bool>false</bool>
+       <property name="showClearButton" stdset="0">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

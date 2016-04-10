@@ -14,7 +14,16 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>1</number>
+   </property>
+   <property name="topMargin">
+    <number>1</number>
+   </property>
+   <property name="rightMargin">
+    <number>1</number>
+   </property>
+   <property name="bottomMargin">
     <number>1</number>
    </property>
    <item row="1" column="0">
@@ -155,6 +164,9 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="specialValueText">
+          <string>No outline</string>
+         </property>
          <property name="decimals">
           <number>6</number>
          </property>
@@ -164,8 +176,8 @@
          <property name="singleStep">
           <double>0.200000000000000</double>
          </property>
-         <property name="showClearButton">
-          <bool>false</bool>
+         <property name="showClearButton" stdset="0">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -200,7 +212,7 @@
          <property name="singleStep">
           <double>0.200000000000000</double>
          </property>
-         <property name="showClearButton">
+         <property name="showClearButton" stdset="0">
           <bool>false</bool>
          </property>
         </widget>
