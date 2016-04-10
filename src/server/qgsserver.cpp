@@ -79,12 +79,14 @@ bool QgsServer::sCaptureOutput = false;
 
 QgsServer::QgsServer( int &argc, char **argv )
 {
+  saveEnvVars();
   init( argc, argv );
 }
 
 
 QgsServer::QgsServer()
 {
+  saveEnvVars();
   init();
 }
 
@@ -438,6 +440,7 @@ bool QgsServer::init( int & argc, char ** argv )
   QgsEditorWidgetRegistry::initEditors();
   sInitialised = true;
   QgsMessageLog::logMessage( "Server initialized", "Server", QgsMessageLog::INFO );
+
   return true;
 }
 
@@ -450,6 +453,23 @@ void QgsServer::putenv( const QString &var, const QString &val )
 #endif
 }
 
+void QgsServer::saveEnvVars()
+{
+  saveEnvVar( "MAX_CACHE_LAYERS" );
+  saveEnvVar( "DEFAULT_DATUM_TRANSFORM" );
+}
+
+void QgsServer::saveEnvVar( const QString& variableName )
+{
+  const char* env = getenv( variableName.toLocal8Bit() );
+  if ( !env )
+  {
+    return;
+  }
+
+  mEnvironmentVariables.insert( variableName, QString::fromLocal8Bit( env ) );
+}
+
 /**
  * @brief Handles the request
  * @param queryString
@@ -457,6 +477,12 @@ void QgsServer::putenv( const QString &var, const QString &val )
  */
 QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryString )
 {
+  //apply environment variables
+  QHash< QString, QString >::const_iterator envIt = mEnvironmentVariables.constBegin();
+  for ( ; envIt != mEnvironmentVariables.constEnd(); ++envIt )
+  {
+    putenv( envIt.key(), envIt.value() );
+  }
 
   /*
    * This is mainly for python bindings, passing QUERY_STRING
