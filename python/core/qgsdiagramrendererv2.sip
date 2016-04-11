@@ -410,7 +410,56 @@ class QgsDiagramRendererV2
      */
     virtual QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const /Factory/;
 
+    /** Returns true if renderer will show legend items for diagram attributes.
+     * @note added in QGIS 2.16
+     * @see setAttributeLegend()
+     * @see sizeLegend()
+     */
+    bool attributeLegend() const;
+
+    /** Sets whether the renderer will show legend items for diagram attributes.
+     * @param enabled set to true to show diagram attribute legend
+     * @note added in QGIS 2.16
+     * @see attributeLegend()
+     * @see setSizeLegend()
+     */
+    void setAttributeLegend( bool enabled );
+
+    /** Returns true if renderer will show legend items for diagram sizes.
+     * @note added in QGIS 2.16
+     * @see setSizeLegend()
+     * @see attributeLegend()
+     * @see sizeLegendSymbol()
+     */
+    bool sizeLegend() const;
+
+    /** Sets whether the renderer will show legend items for diagram sizes.
+     * @param enabled set to true to show diagram size legend
+     * @note added in QGIS 2.16
+     * @see sizeLegend()
+     * @see setAttributeLegend()
+     * @see setSizeLegendSymbol()
+     */
+    void setSizeLegend( bool enabled );
+
+    /** Returns the marker symbol used for rendering the diagram size legend.
+     * @note added in QGIS 2.16
+     * @see setSizeLegendSymbol()
+     * @see sizeLegend()
+     */
+    QgsMarkerSymbolV2* sizeLegendSymbol() const;
+
+    /** Sets the marker symbol used for rendering the diagram size legend.
+     * @param symbol marker symbol, ownership is transferred to the renderer.
+     * @note added in QGIS 2.16
+     * @see sizeLegendSymbol()
+     * @see setSizeLegend()
+     */
+    void setSizeLegendSymbol( QgsMarkerSymbolV2* symbol /Transfer/ );
+
   protected:
+    QgsDiagramRendererV2( const QgsDiagramRendererV2& other );
+    //QgsDiagramRendererV2& operator=( const QgsDiagramRendererV2& other );
 
     /** Returns diagram settings for a feature (or false if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
      * @param feature the feature
