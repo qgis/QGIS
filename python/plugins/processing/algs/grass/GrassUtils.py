@@ -86,7 +86,7 @@ class GrassUtils:
         if not isWindows() and not isMac():
             return ''
 
-        folder = ProcessingConfig.getSetting(GrassUtils.GRASS_FOLDER)
+        folder = ProcessingConfig.getSetting(GrassUtils.GRASS_FOLDER) or ''
         if not os.path.exists(folder):
             folder = None
         if folder is None:
@@ -107,7 +107,7 @@ class GrassUtils:
 
     @staticmethod
     def grassWinShell():
-        folder = ProcessingConfig.getSetting(GrassUtils.GRASS_WIN_SHELL)
+        folder = ProcessingConfig.getSetting(GrassUtils.GRASS_WIN_SHELL) or ''
         if not os.path.exists(folder):
             folder = None
         if folder is None:

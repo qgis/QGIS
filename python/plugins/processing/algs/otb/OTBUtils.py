@@ -101,24 +101,15 @@ def findOtbLibPath():
 
 
 def otbLibPath():
-    folder = findOtbLibPath()
-    if folder is None:
-        folder = ProcessingConfig.getSetting(OTB_LIB_FOLDER)
-    return folder
+    return ProcessingConfig.getSetting(OTB_LIB_FOLDER) or ''
 
 
 def otbSRTMPath():
-    folder = ProcessingConfig.getSetting(OTB_SRTM_FOLDER)
-    if folder is None:
-        folder = ""
-    return folder
+    return ProcessingConfig.getSetting(OTB_SRTM_FOLDER) or ''
 
 
 def otbGeoidPath():
-    filepath = ProcessingConfig.getSetting(OTB_GEOID_FILE)
-    if filepath is None:
-        filepath = ""
-    return filepath
+    return ProcessingConfig.getSetting(OTB_GEOID_FILE) or ''
 
 
 def otbDescriptionPath():
