@@ -31,6 +31,7 @@ import platform
 from PyQt.QtCore import QSettings
 from qgis.core import QgsApplication
 from processing.core.ProcessingLog import ProcessingLog
+from processing.core.SilentProgress import SilentProgress
 
 try:
     from osgeo import gdal
@@ -44,7 +45,9 @@ class GdalUtils:
     supportedRasters = None
 
     @staticmethod
-    def runGdal(commands, progress):
+    def runGdal(commands, progress=None):
+        if progress is None:
+            progress=SilentProgress()
         envval = os.getenv('PATH')
         # We need to give some extra hints to get things picked up on OS X
         isDarwin = False
