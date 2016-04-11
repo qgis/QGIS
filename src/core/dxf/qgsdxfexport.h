@@ -20,6 +20,7 @@
 
 #include "qgsgeometry.h"
 #include "qgssymbolv2.h"
+
 #include <QColor>
 #include <QList>
 #include <QTextStream>
@@ -28,6 +29,12 @@ class QgsMapLayer;
 class QgsPoint;
 class QgsSymbolLayerV2;
 class QIODevice;
+class QgsPalLayerSettings;
+
+namespace pal
+{
+  class LabelPosition;
+};
 
 class CORE_EXPORT QgsDxfExport
 {
@@ -283,6 +290,9 @@ class CORE_EXPORT QgsDxfExport
     //! return list of available DXF encodings
     static QStringList encodings();
 
+    void drawLabel( QString layerId, QgsRenderContext& context, pal::LabelPosition* label, const QgsPalLayerSettings &settings );
+    void registerDxfLayer( QString layerId, QgsFeatureId fid, QString layer );
+
   private:
     QList< QPair<QgsVectorLayer*, int> > mLayers;
 
@@ -350,6 +360,9 @@ class CORE_EXPORT QgsDxfExport
 
     QHash<QString, int> mBlockHandles;
     QString mBlockHandle;
+
+    //! DXF layer name for each label feature
+    QMap< QString, QMap<QgsFeatureId, QString> > mDxfLayerNames;
 };
 
 #endif // QGSDXFEXPORT_H

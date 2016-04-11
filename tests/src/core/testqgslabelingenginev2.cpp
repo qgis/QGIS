@@ -259,7 +259,7 @@ void TestQgsLabelingEngineV2::testRuleBased()
 
   delete rl2;
 
-  /*
+#if 0
   QPainter p( &img );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   context.setPainter( &p );
@@ -267,7 +267,8 @@ void TestQgsLabelingEngineV2::testRuleBased()
   QgsLabelingEngineV2 engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsRuleBasedLabelProvider( , vl ) );
-  engine.run( context );*/
+  engine.run( context );
+#endif
 }
 
 void TestQgsLabelingEngineV2::zOrder()

@@ -21,8 +21,11 @@
 #include "qgsmaprenderer.h"
 #include "qgsrendercontext.h"
 #include "qgsvectorlayerlabelprovider.h"
+#include "qgsrulebasedlabeling.h"
 
 class QgsDxfExport;
+class QgsPalLayerSettings;
+class QgsRuleBasedLabeling;
 
 
 /** Implements a derived label provider internally used for DXF export
@@ -34,10 +37,10 @@ class QgsDxfLabelProvider : public QgsVectorLayerLabelProvider
 {
   public:
     //! construct the provider
-    explicit QgsDxfLabelProvider( QgsVectorLayer* layer, QgsDxfExport* dxf );
+    explicit QgsDxfLabelProvider( QgsVectorLayer* layer, QgsDxfExport* dxf, const QgsPalLayerSettings *settings );
 
     //! re-implementation that writes to DXF file instead of drawing with QPainter
-    virtual void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const override;
+    void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const override;
 
     //! registration method that keeps track of DXF layer names of individual features
     void registerDxfFeature( QgsFeature& feature, QgsRenderContext &context, const QString& dxfLayerName );
@@ -45,8 +48,29 @@ class QgsDxfLabelProvider : public QgsVectorLayerLabelProvider
   protected:
     //! pointer to parent DXF export where this instance is used
     QgsDxfExport* mDxfExport;
-    //! DXF layer name for each label feature
-    QMap<QgsFeatureId, QString> mDxfLayerNames;
 };
+
+class QgsDxfRuleBasedLabelProvider : public QgsRuleBasedLabelProvider
+{
+  public:
+    //! construct the provider
+    explicit QgsDxfRuleBasedLabelProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer* layer, QgsDxfExport* dxf );
+
+    void reinit( QgsVectorLayer* layer );
+
+    //! re-implementation that writes to DXF file instead of drawing with QPainter
+    void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
+
+    //! registration method that keeps track of DXF layer names of individual features
+    void registerDxfFeature( QgsFeature& feature, QgsRenderContext &context, const QString& dxfLayerName );
+
+    virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, bool withFeatureLoop, const QgsPalLayerSettings *settings ) override;
+
+  protected:
+    //! pointer to parent DXF export where this instance is used
+    QgsDxfExport* mDxfExport;
+};
+
+
 
 #endif // QGSDXFPALLABELING_H
