@@ -870,7 +870,7 @@ void QgsDxfExport::writeBlocks()
     writeGroup( 1, "" );
 
     // maplayer 0 -> block receives layer from INSERT statement
-    ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits ), "0", &ctx, nullptr );
+    ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits ), "0", ctx );
 
     writeGroup( 0, "ENDBLK" );
     writeHandle();
@@ -984,7 +984,7 @@ void QgsDxfExport::writeEntities()
       continue;
     }
 
-    QgsFeatureRequest freq = QgsFeatureRequest().setSubsetOfAttributes( attributes, vl->fields() );
+    QgsFeatureRequest freq = QgsFeatureRequest().setSubsetOfAttributes( attributes, vl->fields() ).setExpressionContext( ctx.expressionContext() );
     if ( !mExtent.isEmpty() )
     {
       freq.setFilterRect( mExtent );
@@ -3329,7 +3329,7 @@ void QgsDxfExport::endSection()
   writeGroup( 0, "ENDSEC" );
 }
 
-void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, const QColor& color, const QgsFeature* f, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol )
+void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, const QColor& color, QgsSymbolV2RenderContext &ctx, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol, double angle )
 {
 #if 0
   // debug: draw rectangle for debugging
@@ -3356,9 +3356,7 @@ void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, const Q
     const QgsMarkerSymbolLayerV2* msl = dynamic_cast< const QgsMarkerSymbolLayerV2* >( symbolLayer );
     if ( msl && symbol )
     {
-      QgsRenderContext ct;
-      QgsSymbolV2RenderContext ctx( ct, QgsSymbolV2::MapUnit, symbol->alpha(), false, symbol->renderHints(), f );
-      if ( symbolLayer->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, msl->sizeUnit(), mMapUnits ), layer, &ctx, f, QPointF( pt.x(), pt.y() ) ) )
+      if ( symbolLayer->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, msl->sizeUnit(), mMapUnits ), layer, ctx, QPointF( pt.x(), pt.y() ) ) )
       {
         return;
       }
@@ -3374,6 +3372,7 @@ void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, const Q
     writeGroup( 100, "AcDbBlockReference" );
     writeGroup( 8, layer );
     writeGroup( 2, blockIt.value() ); // Block name
+    writeGroup( 50, angle ); // angle
     writeGroup( 0, pt );  // Insertion point (in OCS)
   }
 }
@@ -3659,10 +3658,12 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QString& lay
   Qt::BrushStyle brushStyle( Qt::NoBrush );
   double width = -1;
   double offset = 0.0;
+  double angle = 0.0;
   if ( mSymbologyExport != NoSymbology && symbolLayer )
   {
     width = symbolLayer->dxfWidth( *this, ctx );
     offset = symbolLayer->dxfOffset( *this, ctx );
+    angle = symbolLayer->dxfAngle( ctx );
     penStyle = symbolLayer->dxfPenStyle();
     brushStyle = symbolLayer->dxfBrushStyle();
 
@@ -3679,7 +3680,7 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QString& lay
   // single point
   if ( geometryType == QGis::WKBPoint || geometryType == QGis::WKBPoint25D )
   {
-    writePoint( geom->asPoint(), layer, penColor, fet, symbolLayer, symbol );
+    writePoint( geom->asPoint(), layer, penColor, ctx, symbolLayer, symbol, angle );
     return;
   }
 
@@ -3690,7 +3691,7 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QString& lay
     QgsMultiPoint::const_iterator it = multiPoint.constBegin();
     for ( ; it != multiPoint.constEnd(); ++it )
     {
-      writePoint( *it, layer, penColor, fet, symbolLayer, symbol );
+      writePoint( *it, layer, penColor, ctx, symbolLayer, symbol, angle );
     }
 
     return;

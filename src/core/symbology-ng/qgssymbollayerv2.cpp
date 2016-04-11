@@ -256,18 +256,12 @@ QVariant QgsSymbolLayerV2::evaluateDataDefinedProperty( const QString& property,
   return defaultVal;
 }
 
-bool QgsSymbolLayerV2::writeDxf( QgsDxfExport& e,
-                                 double mmMapUnitScaleFactor,
-                                 const QString& layerName,
-                                 QgsSymbolV2RenderContext *context,
-                                 const QgsFeature* f,
-                                 QPointF shift ) const
+bool QgsSymbolLayerV2::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolV2RenderContext &context, QPointF shift ) const
 {
   Q_UNUSED( e );
   Q_UNUSED( mmMapUnitScaleFactor );
   Q_UNUSED( layerName );
   Q_UNUSED( context );
-  Q_UNUSED( f );
   Q_UNUSED( shift );
   return false;
 }
@@ -290,6 +284,12 @@ QColor QgsSymbolLayerV2::dxfColor( QgsSymbolV2RenderContext &context ) const
 {
   Q_UNUSED( context );
   return color();
+}
+
+double QgsSymbolLayerV2::dxfAngle( QgsSymbolV2RenderContext &context ) const
+{
+  Q_UNUSED( context );
+  return 0.0;
 }
 
 QVector<qreal> QgsSymbolLayerV2::dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const

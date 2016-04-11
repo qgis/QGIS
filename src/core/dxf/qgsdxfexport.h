@@ -327,7 +327,7 @@ class CORE_EXPORT QgsDxfExport
     void startSection();
     void endSection();
 
-    void writePoint( const QgsPoint &pt, const QString &layer, const QColor& color, const QgsFeature *f, const QgsSymbolLayerV2 *symbolLayer, const QgsSymbolV2 *symbol );
+    void writePoint( const QgsPoint &pt, const QString &layer, const QColor& color, QgsSymbolV2RenderContext &ctx, const QgsSymbolLayerV2 *symbolLayer, const QgsSymbolV2 *symbol, double angle );
     void writeVertex( const QgsPoint &pt, const QString &layer );
     void writeDefaultLinetypes();
     void writeSymbolLayerLinetype( const QgsSymbolLayerV2 *symbolLayer );

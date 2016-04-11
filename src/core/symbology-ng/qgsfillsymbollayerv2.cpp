@@ -422,6 +422,17 @@ QColor QgsSimpleFillSymbolLayerV2::dxfColor( QgsSymbolV2RenderContext &context )
   return mBorderColor;
 }
 
+double QgsSimpleFillSymbolLayerV2::dxfAngle( QgsSymbolV2RenderContext &context ) const
+{
+  double angle = mAngle;
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE ) )
+  {
+    context.setOriginalValueVariable( mAngle );
+    angle = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE, context, mAngle ).toDouble();
+  }
+  return angle;
+}
+
 Qt::PenStyle QgsSimpleFillSymbolLayerV2::dxfPenStyle() const
 {
   return mBorderStyle;

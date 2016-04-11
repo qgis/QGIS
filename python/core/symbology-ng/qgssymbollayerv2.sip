@@ -252,17 +252,13 @@ class QgsSymbolLayerV2
      */
     virtual QVariant evaluateDataDefinedProperty( const QString& property, const QgsSymbolV2RenderContext& context, const QVariant& defaultVal = QVariant(), bool *ok = 0 ) const;
 
-    virtual bool writeDxf( QgsDxfExport& e,
-                           double mmMapUnitScaleFactor,
-                           const QString& layerName,
-                           QgsSymbolV2RenderContext* context,
-                           const QgsFeature* f,
-                           QPointF shift = QPointF( 0.0, 0.0 ) ) const;
+    virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolV2RenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
 
     virtual double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
     virtual double dxfOffset( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
 
     virtual QColor dxfColor( QgsSymbolV2RenderContext& context ) const;
+    virtual double dxfAngle( QgsSymbolV2RenderContext& context ) const;
 
     virtual QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const;
     virtual Qt::PenStyle dxfPenStyle() const;
