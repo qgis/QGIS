@@ -78,6 +78,7 @@ QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QStr
   if ( !mProjectPath.isEmpty() )
   {
     QgsProject::instance()->setFileName( mProjectPath );
+    QgsProject::instance()->read();
   }
 }
 
