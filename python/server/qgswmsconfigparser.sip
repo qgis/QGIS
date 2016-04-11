@@ -103,6 +103,7 @@ class QgsWMSConfigParser
    /** Creates a print composition, usually for a GetPrint request. Replaces map and label parameters*/
     QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const;
 
+    /** Creates a print composition, usually for a GetPrint request. Replaces map and label parameters*/
     QgsComposition* createPrintComposition( const QString& composerTemplate, const QgsMapSettings* mapSettings, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const;
 
     /** Creates a composition from the project file (probably delegated to the fallback parser)*/
