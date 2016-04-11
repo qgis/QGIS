@@ -576,6 +576,7 @@
         <file>icons/qgis-icon-60x60_xmas.png</file>
         <file>themes/default/mActionTracing.png</file>
         <file>themes/default/vector_grid.png</file>
+        <file>themes/default/legend.svg</file>
         <file>themes/default/multieditChangedValues.svg</file>
         <file>themes/default/multieditMixedValues.svg</file>
         <file>themes/default/multieditSameValues.svg</file>

@@ -463,8 +463,56 @@ class CORE_EXPORT QgsDiagramRendererV2
      */
     virtual QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const;
 
+    /** Returns true if renderer will show legend items for diagram attributes.
+     * @note added in QGIS 2.16
+     * @see setAttributeLegend()
+     * @see sizeLegend()
+     */
+    bool attributeLegend() const { return mShowAttributeLegend; }
+
+    /** Sets whether the renderer will show legend items for diagram attributes.
+     * @param enabled set to true to show diagram attribute legend
+     * @note added in QGIS 2.16
+     * @see attributeLegend()
+     * @see setSizeLegend()
+     */
+    void setAttributeLegend( bool enabled ) { mShowAttributeLegend = enabled; }
+
+    /** Returns true if renderer will show legend items for diagram sizes.
+     * @note added in QGIS 2.16
+     * @see setSizeLegend()
+     * @see attributeLegend()
+     * @see sizeLegendSymbol()
+     */
+    bool sizeLegend() const { return mShowSizeLegend; }
+
+    /** Sets whether the renderer will show legend items for diagram sizes.
+     * @param enabled set to true to show diagram size legend
+     * @note added in QGIS 2.16
+     * @see sizeLegend()
+     * @see setAttributeLegend()
+     * @see setSizeLegendSymbol()
+     */
+    void setSizeLegend( bool enabled ) { mShowSizeLegend = enabled; }
+
+    /** Returns the marker symbol used for rendering the diagram size legend.
+     * @note added in QGIS 2.16
+     * @see setSizeLegendSymbol()
+     * @see sizeLegend()
+     */
+    QgsMarkerSymbolV2* sizeLegendSymbol() const { return mSizeLegendSymbol.data(); }
+
+    /** Sets the marker symbol used for rendering the diagram size legend.
+     * @param symbol marker symbol, ownership is transferred to the renderer.
+     * @note added in QGIS 2.16
+     * @see sizeLegendSymbol()
+     * @see setSizeLegend()
+     */
+    void setSizeLegendSymbol( QgsMarkerSymbolV2* symbol ) { mSizeLegendSymbol.reset( symbol ); }
+
   protected:
     QgsDiagramRendererV2( const QgsDiagramRendererV2& other );
+    QgsDiagramRendererV2& operator=( const QgsDiagramRendererV2& other );
 
     /** Returns diagram settings for a feature (or false if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
      * @param feature the feature
@@ -488,6 +536,15 @@ class CORE_EXPORT QgsDiagramRendererV2
 
     /** Reference to the object that does the real diagram rendering*/
     QgsDiagram* mDiagram;
+
+    //! Whether to show an attribute legend for the diagrams
+    bool mShowAttributeLegend;
+
+    //! Whether to show a size legend for the diagrams
+    bool mShowSizeLegend;
+
+    //! Marker symbol to use in size legends
+    QScopedPointer< QgsMarkerSymbolV2 > mSizeLegendSymbol;
 };
 
 /** Renders the diagrams for all features with the same settings*/

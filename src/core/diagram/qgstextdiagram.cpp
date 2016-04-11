@@ -54,44 +54,20 @@ QSizeF QgsTextDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCo
     attrVal = feature.attributes().at( is.classificationAttribute );
   }
 
-  if ( !attrVal.isValid() )
+  bool ok = false;
+  double val = attrVal.toDouble( &ok );
+  if ( !ok )
   {
     return QSizeF(); //zero size if attribute is missing
   }
 
-  double scaledValue = attrVal.toDouble();
-  double scaledLowerValue = is.lowerValue;
-  double scaledUpperValue = is.upperValue;
-  double scaledLowerSizeWidth = is.lowerSize.width();
-  double scaledLowerSizeHeight = is.lowerSize.height();
-  double scaledUpperSizeWidth = is.upperSize.width();
-  double scaledUpperSizeHeight = is.upperSize.height();
+  return sizeForValue( val, s, is );
+}
 
-  // interpolate the squared value if scale by area
-  if ( s.scaleByArea )
-  {
-    scaledValue = sqrt( scaledValue );
-    scaledLowerValue = sqrt( scaledLowerValue );
-    scaledUpperValue = sqrt( scaledUpperValue );
-    scaledLowerSizeWidth = sqrt( scaledLowerSizeWidth );
-    scaledLowerSizeHeight = sqrt( scaledLowerSizeHeight );
-    scaledUpperSizeWidth = sqrt( scaledUpperSizeWidth );
-    scaledUpperSizeHeight = sqrt( scaledUpperSizeHeight );
-  }
-
-  //interpolate size
-  double scaledRatio = ( scaledValue - scaledLowerValue ) / ( scaledUpperValue - scaledLowerValue );
-
-  QSizeF size = QSizeF( is.upperSize.width() * scaledRatio + is.lowerSize.width() * ( 1 - scaledRatio ),
-                        is.upperSize.height() * scaledRatio + is.lowerSize.height() * ( 1 - scaledRatio ) );
-
-  // Scale, if extension is smaller than the specified minimum
-  if ( size.width() <= s.minimumSize && size.height() <= s.minimumSize )
-  {
-    size.scale( s.minimumSize, s.minimumSize, Qt::KeepAspectRatio );
-  }
-
-  return size;
+double QgsTextDiagram::legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const
+{
+  QSizeF size = sizeForValue( value, s, is );
+  return qMax( size.width(), size.height() );
 }
 
 QSizeF QgsTextDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
