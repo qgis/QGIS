@@ -469,8 +469,11 @@ void QgsSymbolV2::startRender( QgsRenderContext& context, const QgsFields* field
 void QgsSymbolV2::stopRender( QgsRenderContext& context )
 {
   Q_UNUSED( context )
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
-    layer->stopRender( *mSymbolRenderContext );
+  if ( mSymbolRenderContext )
+  {
+    Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+      layer->stopRender( *mSymbolRenderContext );
+  }
 
   delete mSymbolRenderContext;
   mSymbolRenderContext = nullptr;

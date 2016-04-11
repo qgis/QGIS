@@ -118,6 +118,8 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const override;
     QColor dxfColor( QgsSymbolV2RenderContext& context ) const override;
+    double dxfAngle( QgsSymbolV2RenderContext& context ) const override;
+
     Qt::PenStyle dxfPenStyle() const override;
     QColor dxfBrushColor( QgsSymbolV2RenderContext &context ) const override;
     Qt::BrushStyle dxfBrushStyle() const override;
@@ -562,14 +564,15 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
     void setOutputUnit( QgsSymbolV2::OutputUnit unit ) override;
     QgsSymbolV2::OutputUnit outputUnit() const override;
 
-    void setMapUnitScale( const QgsMapUnitScale& scale ) override;
+    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
     virtual double estimateMaxBleed() const override;
 
-    virtual double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const override;
-    virtual QColor dxfColor( QgsSymbolV2RenderContext& context ) const override;
-    virtual Qt::PenStyle dxfPenStyle() const override;
+    double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const override;
+    QColor dxfColor( QgsSymbolV2RenderContext& context ) const override;
+
+    Qt::PenStyle dxfPenStyle() const override;
 
     QSet<QString> usedAttributes() const override;
 
