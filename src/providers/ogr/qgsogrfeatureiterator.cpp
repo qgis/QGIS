@@ -44,6 +44,10 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
   mFeatureFetched = false;
 
   mConn = QgsOgrConnPool::instance()->acquireConnection( mSource->mProvider->dataSourceUri() );
+  if ( mConn->ds == nullptr )
+  {
+    return;
+  }
 
   if ( mSource->mLayerName.isNull() )
   {
@@ -53,10 +57,18 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
   {
     ogrLayer = OGR_DS_GetLayerByName( mConn->ds, TO8( mSource->mLayerName ) );
   }
+  if ( ogrLayer == nullptr )
+  {
+    return;
+  }
 
   if ( !mSource->mSubsetString.isEmpty() )
   {
     ogrLayer = QgsOgrUtils::setSubsetString( ogrLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString );
+    if ( ogrLayer == nullptr )
+    {
+      return;
+    }
     mSubsetStringSet = true;
   }
 
@@ -204,7 +216,7 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature& feature )
 {
   feature.setValid( false );
 
-  if ( mClosed )
+  if ( mClosed || ogrLayer == nullptr )
     return false;
 
   if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
@@ -249,7 +261,7 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature& feature )
 
 bool QgsOgrFeatureIterator::rewind()
 {
-  if ( mClosed )
+  if ( mClosed || ogrLayer == nullptr )
     return false;
 
   OGR_L_ResetReading( ogrLayer );
