@@ -47,7 +47,7 @@ class GdalUtils:
     @staticmethod
     def runGdal(commands, progress=None):
         if progress is None:
-            progress=SilentProgress()
+            progress = SilentProgress()
         envval = os.getenv('PATH')
         # We need to give some extra hints to get things picked up on OS X
         isDarwin = False
