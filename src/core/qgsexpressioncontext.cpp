@@ -713,6 +713,9 @@ void QgsExpressionContextUtils::setLayerVariables( QgsMapLayer* layer, const Qgs
 
 QgsExpressionContextScope* QgsExpressionContextUtils::mapSettingsScope( const QgsMapSettings& mapSettings )
 {
+  // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsComposerMap::createExpressionContext()
+  // (rationale is described in QgsComposerMap::createExpressionContext() )
+
   QgsExpressionContextScope* scope = new QgsExpressionContextScope( QObject::tr( "Map Settings" ) );
 
   //add known map settings context variables

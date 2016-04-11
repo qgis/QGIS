@@ -84,6 +84,7 @@ ENDMACRO (ADD_QGIS_TEST)
 #############################################################
 # Tests:
 
+ADD_QGIS_TEST(25drenderertest testqgs25drenderer.cpp)
 ADD_QGIS_TEST(applicationtest testqgsapplication.cpp)
 ADD_QGIS_TEST(atlascompositiontest testqgsatlascomposition.cpp)
 ADD_QGIS_TEST(authcryptotest testqgsauthcrypto.cpp)
