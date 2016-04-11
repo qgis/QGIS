@@ -867,14 +867,14 @@ void QgsApplication::initQgis()
 
 void QgsApplication::exitQgis()
 {
-  delete QgsProviderRegistry::instance();
-
   delete QgsAuthManager::instance();
 
   //Ensure that all remaining deleteLater QObjects are actually deleted before we exit.
   //This isn't strictly necessary (since we're exiting anyway) but doing so prevents a lot of
   //LeakSanitiser noise which hides real issues
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
+
+  delete QgsProviderRegistry::instance();
 
   //delete all registered functions from expression engine (see above comment)
   QgsExpression::cleanRegisteredFunctions();
