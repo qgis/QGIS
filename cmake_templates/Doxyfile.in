@@ -843,7 +843,7 @@ HTML_STYLESHEET        =
 # Assumes Doxygen is run from this directory (/cmake_templates) - if not,
 # correct the path
 
-HTML_EXTRA_STYLESHEET  = ../doc/api_custom.css
+HTML_EXTRA_STYLESHEET  = @CMAKE_SOURCE_DIR@/doc/api_custom.css
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output.
 # Doxygen will adjust the colors in the stylesheet and background images
