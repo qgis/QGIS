@@ -130,6 +130,7 @@ QString QgsWFSProvider::subsetString()
 bool QgsWFSProvider::setSubsetString( const QString& theSQL, bool updateFeatureCount )
 {
   mSubsetString = theSQL;
+  mCacheMinMaxDirty = true;
 
   // update URI
   mShared->mURI.setFilter( theSQL );

@@ -1078,6 +1078,7 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString& subset, bool upda
     }
   }
 
+  mCacheMinMaxDirty = true;
   emit dataChanged();
   return valid;
 }

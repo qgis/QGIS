@@ -228,6 +228,67 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </wfs:member>
 </wfs:FeatureCollection>""")
 
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+ <fes:And>
+  <fes:PropertyIsGreaterThan>
+   <fes:ValueReference>cnt</fes:ValueReference>
+   <fes:Literal>100</fes:Literal>
+  </fes:PropertyIsGreaterThan>
+  <fes:PropertyIsLessThan>
+   <fes:ValueReference>cnt</fes:ValueReference>
+   <fes:Literal>400</fes:Literal>
+  </fes:PropertyIsLessThan>
+ </fes:And>
+</fes:Filter>
+&RESULTTYPE=hits"""), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       numberMatched="2" numberReturned="0" timeStamp="2016-03-25T14:51:48.998Z">
+</wfs:FeatureCollection>""")
+
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+ <fes:And>
+  <fes:PropertyIsGreaterThan>
+   <fes:ValueReference>cnt</fes:ValueReference>
+   <fes:Literal>100</fes:Literal>
+  </fes:PropertyIsGreaterThan>
+  <fes:PropertyIsLessThan>
+   <fes:ValueReference>cnt</fes:ValueReference>
+   <fes:Literal>400</fes:Literal>
+  </fes:PropertyIsLessThan>
+ </fes:And>
+</fes:Filter>
+"""), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my"
+                       numberMatched="2" numberReturned="2" timeStamp="2016-03-25T14:51:48.998Z">
+  <wfs:member>
+    <my:typename gml:id="typename.1">
+      <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>70.8 -68.2</gml:lowerCorner><gml:upperCorner>70.8 -68.2</gml:upperCorner></gml:Envelope></gml:boundedBy>
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="typename.geom.1"><gml:pos>70.8 -68.2</gml:pos></gml:Point></my:geometryProperty>
+      <my:pk>2</my:pk>
+      <my:cnt>200</my:cnt>
+      <my:name>Apple</my:name>
+      <my:name2>Apple</my:name2>
+      <my:num_char>2</my:num_char>
+    </my:typename>
+  </wfs:member>
+  <wfs:member>
+    <my:typename gml:id="typename.3">
+      <my:pk>3</my:pk>
+      <my:cnt>300</my:cnt>
+      <my:name>Pear</my:name>
+      <my:name2>PEaR</my:name2>
+      <my:num_char>3</my:num_char>
+    </my:typename>
+  </wfs:member>
+</wfs:FeatureCollection>""")
+
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
