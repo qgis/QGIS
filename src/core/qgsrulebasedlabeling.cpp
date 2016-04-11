@@ -15,12 +15,11 @@
 #include "qgsrulebasedlabeling.h"
 
 
-
 QgsRuleBasedLabelProvider::QgsRuleBasedLabelProvider( const QgsRuleBasedLabeling& rules, QgsVectorLayer* layer, bool withFeatureLoop )
     : QgsVectorLayerLabelProvider( layer, withFeatureLoop )
     , mRules( rules )
 {
-  mRules.rootRule()->createSubProviders( layer, mSubProviders );
+  mRules.rootRule()->createSubProviders( layer, mSubProviders, this );
 }
 
 QgsRuleBasedLabelProvider::~QgsRuleBasedLabelProvider()
@@ -28,6 +27,10 @@ QgsRuleBasedLabelProvider::~QgsRuleBasedLabelProvider()
   // sub-providers owned by labeling engine
 }
 
+QgsVectorLayerLabelProvider *QgsRuleBasedLabelProvider::createProvider( QgsVectorLayer *layer, bool withFeatureLoop, const QgsPalLayerSettings *settings )
+{
+  return new QgsVectorLayerLabelProvider( layer, withFeatureLoop, settings );
+}
 
 bool QgsRuleBasedLabelProvider::prepare( const QgsRenderContext& context, QStringList& attributeNames )
 {
@@ -213,19 +216,20 @@ QDomElement QgsRuleBasedLabeling::Rule::save( QDomDocument& doc ) const
   return ruleElem;
 }
 
-void QgsRuleBasedLabeling::Rule::createSubProviders( QgsVectorLayer* layer, QgsRuleBasedLabeling::RuleToProviderMap& subProviders )
+void QgsRuleBasedLabeling::Rule::createSubProviders( QgsVectorLayer* layer, QgsRuleBasedLabeling::RuleToProviderMap& subProviders, QgsRuleBasedLabelProvider *provider )
 {
   if ( mSettings )
   {
     // add provider!
-    QgsVectorLayerLabelProvider* p = new QgsVectorLayerLabelProvider( layer, false, mSettings );
+    QgsVectorLayerLabelProvider *p = provider->createProvider( layer, false, mSettings );
+    delete subProviders.value( this, nullptr );
     subProviders[this] = p;
   }
 
   // call recursively
   Q_FOREACH ( Rule* rule, mChildren )
   {
-    rule->createSubProviders( layer, subProviders );
+    rule->createSubProviders( layer, subProviders, provider );
   }
 }
 
@@ -261,6 +265,8 @@ QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerF
     return Filtered;
 
   bool registered = false;
+
+  Q_ASSERT( !mSettings == subProviders.contains( this ) );
 
   // do we have active subprovider for the rule?
   if ( subProviders.contains( this ) && mIsActive )

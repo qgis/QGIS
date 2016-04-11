@@ -46,9 +46,10 @@ class QgsDiagramLayerSettings;
 class CORE_EXPORT QgsLabelPosition
 {
   public:
-    QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, const QString& labeltext, const QFont& labelfont, bool upside_down, bool diagram = false, bool pinned = false ):
-        featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), labelText( labeltext ), labelFont( labelfont ), upsideDown( upside_down ), isDiagram( diagram ), isPinned( pinned ) {}
-    QgsLabelPosition(): featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), labelText( "" ), labelFont( QFont() ), upsideDown( false ), isDiagram( false ), isPinned( false ) {}
+    QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, const QString& labeltext, const QFont& labelfont, bool upside_down, bool diagram = false, bool pinned = false )
+        : featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), labelText( labeltext ), labelFont( labelfont ), upsideDown( upside_down ), isDiagram( diagram ), isPinned( pinned ) {}
+    QgsLabelPosition()
+        : featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), labelText( "" ), labelFont( QFont() ), upsideDown( false ), isDiagram( false ), isPinned( false ) {}
     int featureId;
     double rotation;
     QVector< QgsPoint > cornerPoints;
@@ -72,7 +73,7 @@ class CORE_EXPORT QgsLabelingEngineInterface
 
     //! called when we're going to start with rendering
     //! @deprecated since 2.4 - use override with QgsMapSettings
-    Q_DECL_DEPRECATED virtual void init( QgsMapRenderer* mp ) = 0;
+    Q_DECL_DEPRECATED virtual void init( QgsMapRenderer *mp ) = 0;
     //! called when we're going to start with rendering
     virtual void init( const QgsMapSettings& mapSettings ) = 0;
     //! called to find out whether the layer is used for labeling
@@ -85,19 +86,19 @@ class CORE_EXPORT QgsLabelingEngineInterface
     virtual int prepareLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx ) = 0;
     //! returns PAL layer settings for a registered layer
     //! @deprecated since 2.12 - if direct access to QgsPalLayerSettings is necessary, use QgsPalLayerSettings::fromLayer()
-    Q_DECL_DEPRECATED virtual QgsPalLayerSettings& layer( const QString& layerName ) = 0;
+    Q_DECL_DEPRECATED virtual QgsPalLayerSettings &layer( const QString &layerName ) = 0;
     //! adds a diagram layer to the labeling engine
     //! @note added in QGIS 2.12
-    virtual int prepareDiagramLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx )
+    virtual int prepareDiagramLayer( QgsVectorLayer *layer, QStringList &attrNames, QgsRenderContext &ctx )
     { Q_UNUSED( layer ); Q_UNUSED( attrNames ); Q_UNUSED( ctx ); return 0; }
     //! adds a diagram layer to the labeling engine
     //! @deprecated since 2.12 - use prepareDiagramLayer()
-    Q_DECL_DEPRECATED virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings* s )
+    Q_DECL_DEPRECATED virtual int addDiagramLayer( QgsVectorLayer *layer, const QgsDiagramLayerSettings *s )
     { Q_UNUSED( layer ); Q_UNUSED( s ); return 0; }
     //! called for every feature
-    virtual void registerFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context, const QString& dxfLayer = QString::null ) = 0;
+    virtual void registerFeature( const QString &layerID, QgsFeature &feat, QgsRenderContext &context ) = 0;
     //! called for every diagram feature
-    virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context )
+    virtual void registerDiagramFeature( const QString &layerID, QgsFeature &feat, QgsRenderContext &context )
     { Q_UNUSED( layerID ); Q_UNUSED( feat ); Q_UNUSED( context ); }
     //! called when the map is drawn and labels should be placed
     virtual void drawLabeling( QgsRenderContext& context ) = 0;

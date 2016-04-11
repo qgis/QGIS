@@ -35,7 +35,7 @@ class QgsLabelingEngineInterface
 
     //! called when we're going to start with rendering
     //! @deprecated since 2.4 - use override with QgsMapSettings
-    virtual void init( QgsMapRenderer* mp ) = 0 /Deprecated/;
+    virtual void init( QgsMapRenderer *mp ) = 0 /Deprecated/;
     //! called when we're going to start with rendering
     virtual void init( const QgsMapSettings& mapSettings ) = 0;
     //! called to find out whether the layer is used for labeling
@@ -48,17 +48,17 @@ class QgsLabelingEngineInterface
     virtual int prepareLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx ) = 0;
     //! returns PAL layer settings for a registered layer
     //! @deprecated since 2.12 - if direct access to QgsPalLayerSettings is necessary, use QgsPalLayerSettings::fromLayer()
-    virtual QgsPalLayerSettings& layer( const QString& layerName ) = 0 /Deprecated/;
+    virtual QgsPalLayerSettings &layer( const QString &layerName ) = 0 /Deprecated/;
     //! adds a diagram layer to the labeling engine
     //! @note added in QGIS 2.12
-    virtual int prepareDiagramLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx );
+    virtual int prepareDiagramLayer( QgsVectorLayer *layer, QStringList &attrNames, QgsRenderContext &ctx );
     //! adds a diagram layer to the labeling engine
     //! @deprecated since 2.12 - use prepareDiagramLayer()
-    virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings* s ) /Deprecated/;
+    virtual int addDiagramLayer( QgsVectorLayer *layer, const QgsDiagramLayerSettings *s ) /Deprecated/;
     //! called for every feature
-    virtual void registerFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context, const QString& dxfLayer = QString::null ) = 0;
+    virtual void registerFeature( const QString &layerID, QgsFeature &feat, QgsRenderContext &context ) = 0;
     //! called for every diagram feature
-    virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context );
+    virtual void registerDiagramFeature( const QString &layerID, QgsFeature &feat, QgsRenderContext &context );
     //! called when the map is drawn and labels should be placed
     virtual void drawLabeling( QgsRenderContext& context ) = 0;
     //! called when we're done with rendering
@@ -268,7 +268,7 @@ class QgsMapRenderer : QObject
     //! Accessor for render context
     QgsRenderContext* rendererContext();
 
-    //! Labeling engine (NULL if there's no custom engine)
+    //! Labeling engine (nullptr if there's no custom engine)
     QgsLabelingEngineInterface* labelingEngine();
 
     //! Set labeling engine. Previous engine (if any) is deleted.

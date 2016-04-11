@@ -2093,12 +2093,10 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
 #endif
 }
 
-void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &context, const QString& dxfLayer, QgsLabelFeature** labelFeature , QgsGeometry* obstacleGeometry )
+void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &context, QgsLabelFeature** labelFeature , QgsGeometry* obstacleGeometry )
 {
   // either used in QgsPalLabeling (palLayer is set) or in QgsLabelingEngineV2 (labelFeature is set)
   Q_ASSERT( labelFeature );
-
-  Q_UNUSED( dxfLayer ); // now handled in QgsDxfLabelProvider
 
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
   mCurFeat = &f;
@@ -2114,7 +2112,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   {
     if ( isObstacle )
     {
-      registerObstacleFeature( f, context, QString(), labelFeature, obstacleGeometry );
+      registerObstacleFeature( f, context, labelFeature, obstacleGeometry );
     }
     return;
   }
@@ -2966,10 +2964,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   lf->setDataDefinedValues( dataDefinedValues );
 }
 
-void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderContext &context, const QString& dxfLayer, QgsLabelFeature** obstacleFeature, QgsGeometry* obstacleGeometry )
+void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderContext &context, QgsLabelFeature** obstacleFeature, QgsGeometry* obstacleGeometry )
 {
-  Q_UNUSED( dxfLayer ); // now handled in QgsDxfLabelProvider
-
   mCurFeat = &f;
 
   const QgsGeometry* geom = nullptr;
@@ -3963,9 +3959,8 @@ int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLaye
   return 0;
 }
 
-void QgsPalLabeling::registerFeature( const QString& layerID, QgsFeature& f, QgsRenderContext &context, const QString& dxfLayer )
+void QgsPalLabeling::registerFeature( const QString& layerID, QgsFeature& f, QgsRenderContext &context )
 {
-  Q_UNUSED( dxfLayer ); // now handled by QgsDxfLabelProvider
   if ( QgsVectorLayerLabelProvider* provider = mLabelProviders.value( layerID, nullptr ) )
     provider->registerFeature( f, context );
 }
