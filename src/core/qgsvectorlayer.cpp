@@ -377,6 +377,7 @@ void QgsVectorLayer::reload()
   if ( mDataProvider )
   {
     mDataProvider->reloadData();
+    updateFields();
   }
 }
 
@@ -1454,6 +1455,8 @@ bool QgsVectorLayer::startEditing()
 
   emit beforeEditingStarted();
 
+  mDataProvider->enterUpdateMode();
+
   if ( mDataProvider->transaction() )
   {
     mEditBuffer = new QgsVectorLayerEditPassthrough( this );
@@ -2417,6 +2420,8 @@ bool QgsVectorLayer::commitChanges()
   updateFields();
   mDataProvider->updateExtents();
 
+  mDataProvider->leaveUpdateMode();
+
   emit repaintRequested();
 
   return success;
@@ -2466,6 +2471,8 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
 
   if ( rollbackExtent )
     updateExtents();
+
+  mDataProvider->leaveUpdateMode();
 
   emit repaintRequested();
   return true;
