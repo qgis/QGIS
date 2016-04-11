@@ -72,9 +72,22 @@ class SERVER_EXPORT QgsWMSProjectParser : public QgsWMSConfigParser
     bool WMSInspireActivated() const override;
     void inspireCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;
 
-    //printing
+    /** Creates a composition from the project file (probably delegated to the fallback parser)
+    @param composerTemplate the composer template
+    @param mapRenderer the map renderer
+    @param mapList out: list of composer maps
+    @param legendList out: list of legends
+    @param labelList out: list of labels
+    @param htmlFrameList out: list of frames*/
     QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap* >& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const override;
 
+    /** Creates a composition from the project file (probably delegated to the fallback parser)
+    @param composerTemplate the composer template
+    @param mapSettings the map settings
+    @param mapList out: list of composer maps
+    @param legendList out: list of legends
+    @param labelList out: list of labels
+    @param htmlFrameList out: list of frames*/
     QgsComposition* initComposition( const QString& composerTemplate, const QgsMapSettings* mapSettings, QList< QgsComposerMap* >& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const override;
 
 

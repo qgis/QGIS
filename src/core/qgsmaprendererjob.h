@@ -136,7 +136,10 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      */
     const QgsMapSettings& mapSettings() const;
 
+    /** Sets feature filter provider
+    @param p the filter provider*/
     void setFeatureFilterProvider( const QgsFeatureFilterProvider* p ) { mFeatureFilterProvider = p; }
+    /** Returns the feature filter provider*/
     const QgsFeatureFilterProvider* featureFilterProvider() const { return mFeatureFilterProvider; }
 
   signals:

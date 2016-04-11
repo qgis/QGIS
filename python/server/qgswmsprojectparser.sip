@@ -54,8 +54,22 @@ class QgsWMSProjectParser : public QgsWMSConfigParser
     double imageQuality() const  /*override*/ ;
     int WMSPrecision() const  /*override*/ ;
 
-    //printing
-    //QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap* >& mapList, //QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const  /*override*/ ;
+    /** Creates a composition from the project file (probably delegated to the fallback parser)
+    @param composerTemplate the composer template
+    @param mapRenderer the map renderer
+    @param mapList out: list of composer maps
+    @param legendList out: list of legends
+    @param labelList out: list of labels
+    @param htmlFrameList out: list of frames*/
+    virtual QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList /Out/, QList< QgsComposerLegend* >& legendList /Out/, QList< QgsComposerLabel* >& labelList /Out/, QList<const QgsComposerHtml *>& htmlFrameList /Out/  ) const;
+    /** Creates a composition from the project file (probably delegated to the fallback parser)
+    @param composerTemplate the composer template
+    @param mapSettings the map settings
+    @param mapList out: list of composer maps
+    @param legendList out: list of legends
+    @param labelList out: list of labels
+    @param htmlFrameList out: list of frames*/
+    virtual QgsComposition* initComposition( const QString& composerTemplate, const QgsMapSettings* mapSettings, QList< QgsComposerMap*>& mapList /Out/, QList< QgsComposerLegend* >& legendList /Out/, QList< QgsComposerLabel* >& labelList /Out/, QList<const QgsComposerHtml *>& htmlFrameList /Out/ ) const;
 
     void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const  /*override*/ ;
 

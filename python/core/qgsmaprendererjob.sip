@@ -97,6 +97,12 @@ class QgsMapRendererJob : QObject
      */
     const QgsMapSettings& mapSettings() const;
 
+    /** Sets feature filter provider
+    @param p the filter provider*/
+    void setFeatureFilterProvider( const QgsFeatureFilterProvider* p );
+    /** Returns the feature filter provider*/
+    const QgsFeatureFilterProvider* featureFilterProvider() const;
+
   signals:
 
     //! emitted when asynchronous rendering is finished (or canceled).

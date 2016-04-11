@@ -56,7 +56,12 @@ class CORE_EXPORT QgsMapSettings: public QObject
     Q_OBJECT
   public:
     QgsMapSettings();
+    /** The copy constructor
+    @param other the other settings*/
     QgsMapSettings( const QgsMapSettings& other );
+    /** Assignment operator
+    @param other the other settings
+    @note not available in python bindings*/
     QgsMapSettings& operator=( const QgsMapSettings& other );
 
     //! Return geographical coordinates of the rectangle that should be rendered.

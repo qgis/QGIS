@@ -7,6 +7,8 @@ class QgsMapSettings: QObject
 
   public:
     QgsMapSettings();
+    /** The copy constructor
+    @param other the other settings*/
     QgsMapSettings( const QgsMapSettings& other );
 
     //! Return geographical coordinates of the rectangle that should be rendered.

@@ -19,6 +19,8 @@ class QgsDatumTransformStore
 
     void addEntry( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform, int destDatumTransform );
 
+    /** Tests if the store has an entry for the map layer
+    @param layer the layer*/
     bool hasEntryForLayer( const QgsMapLayer* layer ) const;
 
     /** Will return transform from layer's CRS to current destination CRS.
