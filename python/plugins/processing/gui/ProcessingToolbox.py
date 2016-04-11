@@ -133,7 +133,8 @@ class ProcessingToolbox(BASE, WIDGET):
             item.setHidden(not show)
             return show
         elif isinstance(item, (TreeAlgorithmItem, TreeActionItem)):
-            hide = bool(text) and (text not in item.text(0).lower())
+            #hide = bool(text) and (text not in item.text(0).lower())
+            hide = bool(text) and not any(text in t for t in [item.text(0).lower(), item.data(0, Qt.UserRole).lower()])
             if isinstance(item, TreeAlgorithmItem):
                 hide = hide and (text not in item.alg.commandLineName())
             item.setHidden(hide)
@@ -327,10 +328,11 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         QTreeWidgetItem.__init__(self)
         self.alg = alg
         icon = alg.getIcon()
-        name = AlgorithmClassification.getDisplayName(alg)
+        nameEn, name = AlgorithmClassification.getDisplayNames(alg)
         self.setIcon(0, icon)
         self.setToolTip(0, name)
         self.setText(0, name)
+        self.setData(0, Qt.UserRole, nameEn)
 
 
 class TreeActionItem(QTreeWidgetItem):
@@ -338,8 +340,9 @@ class TreeActionItem(QTreeWidgetItem):
     def __init__(self, action):
         QTreeWidgetItem.__init__(self)
         self.action = action
-        self.setText(0, action.name)
+        self.setText(0, action.i18n_name)
         self.setIcon(0, action.getIcon())
+        self.setData(0, Qt.UserRole, action.name)
 
 
 class TreeProviderItem(QTreeWidgetItem):

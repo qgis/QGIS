@@ -36,8 +36,8 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class CreateNewModelAction(ToolboxAction):
 
     def __init__(self):
-        self.name = self.tr('Create new model', 'CreateNewModelAction')
-        self.group = self.tr('Tools', 'CreateNewModelAction')
+        self.name, self.i18n_name = self.trAction('Create new model')
+        self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'model.png'))

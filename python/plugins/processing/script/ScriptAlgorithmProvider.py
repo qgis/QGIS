@@ -45,7 +45,7 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.actions.extend([CreateNewScriptAction(self.tr('Create new script', 'ScriptAlgorithmProvider'),
+        self.actions.extend([CreateNewScriptAction('Create new script',
                                                    CreateNewScriptAction.SCRIPT_PYTHON),
                              AddScriptFromFileAction(),
                              GetScriptsAction()])
