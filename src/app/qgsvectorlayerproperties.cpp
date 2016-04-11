@@ -37,7 +37,6 @@
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstyleguiutils.h"
-#include "qgsmaplayerstylemanager.h"
 #include "qgspluginmetadata.h"
 #include "qgspluginregistry.h"
 #include "qgsproject.h"
@@ -650,6 +649,17 @@ void QgsVectorLayerProperties::onCancel()
 
     mLayer->setSubsetString( mOriginalSubsetSQL );
   }
+
+  if ( mOldStyle.xmlData() != mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() ).xmlData() )
+  {
+    // need to reset style to previous - style applied directly to the layer (not in apply())
+    QString myMessage;
+    QDomDocument doc( "qgis" );
+    int errorLine, errorColumn;
+    doc.setContent( mOldStyle.xmlData(), false, &myMessage, &errorLine, &errorColumn );
+    mLayer->importNamedStyle( doc, myMessage );
+    syncToLayer();
+  }
 }
 
 void QgsVectorLayerProperties::on_pbnQueryBuilder_clicked()
@@ -815,6 +825,8 @@ void QgsVectorLayerProperties::loadStyle_clicked()
   {
     return;
   }
+
+  mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
 
   QString myMessage;
   bool defaultLoadedFlag = false;
