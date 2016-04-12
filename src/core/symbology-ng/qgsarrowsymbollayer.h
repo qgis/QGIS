@@ -151,6 +151,8 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     double mScaledOffset;
     HeadType mComputedHeadType;
 
+    QScopedPointer<QgsExpressionContextScope> mExpressionScope;
+
     void _resolveDataDefined( QgsSymbolV2RenderContext& );
 };
 

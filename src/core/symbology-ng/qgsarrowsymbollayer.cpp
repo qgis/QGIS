@@ -150,6 +150,7 @@ QSet<QString> QgsArrowSymbolLayer::usedAttributes() const
 
 void QgsArrowSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
 {
+  mExpressionScope.reset( new QgsExpressionContextScope() );
   mScaledArrowWidth = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), arrowWidth(), arrowWidthUnit(), arrowWidthUnitScale() );
   mScaledArrowStartWidth = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), arrowStartWidth(), arrowStartWidthUnit(), arrowStartWidthUnitScale() );
   mScaledHeadSize = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), headSize(), headSizeUnit(), headSizeUnitScale() );
@@ -543,10 +544,14 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbolV2Re
     return;
   }
 
+  context.renderContext().expressionContext().appendScope( mExpressionScope.data() );
+  mExpressionScope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT, points.size() + 1 );
+  mExpressionScope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, 1 );
   if ( isCurved() )
   {
     for ( int pIdx = 0; pIdx < points.size() - 1; pIdx += 2 )
     {
+      mExpressionScope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, pIdx + 1 );
       _resolveDataDefined( context );
 
       if ( points.size() - pIdx >= 3 )
@@ -579,6 +584,7 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbolV2Re
     // only straight arrows
     for ( int pIdx = 0; pIdx < points.size() - 1; pIdx++ )
     {
+      mExpressionScope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, pIdx + 1 );
       _resolveDataDefined( context );
 
       // origin point
@@ -590,5 +596,6 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbolV2Re
       mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext() );
     }
   }
+  context.renderContext().expressionContext().popScope();
 }
 

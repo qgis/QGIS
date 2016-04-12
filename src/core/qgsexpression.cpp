@@ -4601,6 +4601,8 @@ void QgsExpression::initVariableHelp()
   //symbol variables
   gVariableHelpTexts.insert( "geometry_part_count", QCoreApplication::translate( "variable_help", "Number of parts in rendered feature's geometry." ) );
   gVariableHelpTexts.insert( "geometry_part_num", QCoreApplication::translate( "variable_help", "Current geometry part number for feature being rendered." ) );
+  gVariableHelpTexts.insert( "geometry_point_count", QCoreApplication::translate( "variable_help", "Number of points in the rendered geometry's part. It is only meaningful for line geometries and for symbol layers that set this variable." ) );
+  gVariableHelpTexts.insert( "geometry_point_num", QCoreApplication::translate( "variable_help", "Current point number in the rendered geometry's part. It is only meaningful for line geometries and for symbol layers that set this variable." ) );
 
   gVariableHelpTexts.insert( "symbol_color", QCoreApplication::translate( "symbol_color", "Color of symbol used to render the feature." ) );
   gVariableHelpTexts.insert( "symbol_angle", QCoreApplication::translate( "symbol_angle", "Angle of symbol used to render the feature (valid for marker symbols only)." ) );

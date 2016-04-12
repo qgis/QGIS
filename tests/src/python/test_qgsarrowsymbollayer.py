@@ -39,7 +39,8 @@ from qgis.core import (
     QgsRectangle,
     QgsArrowSymbolLayer,
     QgsSymbolV2,
-    QgsMultiRenderChecker
+    QgsMultiRenderChecker,
+    QgsDataDefined
 )
 
 from qgis.testing import start_app, unittest
@@ -76,7 +77,11 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
 
     def test_1(self):
         sym = self.lines_layer.rendererV2().symbol()
-        sym_layer = QgsArrowSymbolLayer.create({'arrow_width': '5', 'head_size': '6.5'})
+        sym_layer = QgsArrowSymbolLayer.create({'head_size': '6.5'})
+        dd = QgsDataDefined("(@geometry_point_num % 4) * 2")
+        sym_layer.setDataDefinedProperty("arrow_width", dd)
+        dd2 = QgsDataDefined("(@geometry_point_num % 4) * 2")
+        sym_layer.setDataDefinedProperty("head_size", dd2)
         fill_sym = QgsFillSymbolV2.createSimple({'color': '#8bcfff', 'outline_color': '#000000', 'outline_style': 'solid', 'outline_width': '1'})
         sym_layer.setSubSymbol(fill_sym)
         sym.changeSymbolLayer(0, sym_layer)
