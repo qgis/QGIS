@@ -53,10 +53,10 @@ class PostGisDBConnector(DBConnector):
 
         # Do not get db and user names from the env if service is used
         if uri.service() is None:
-            self.dbname = uri.database() or os.environ.get('PGDATABASE') or username
-            uri.setDatabase(self.dbname)
             if username is None:
                 username = os.environ.get('USER')
+            self.dbname = uri.database() or os.environ.get('PGDATABASE') or username
+            uri.setDatabase(self.dbname)
 
         expandedConnInfo = self._connectionInfo()
         try:
