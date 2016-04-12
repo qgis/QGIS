@@ -8,8 +8,8 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
 
     /** Constructor for QgsSimpleMarkerSymbolLayerV2.
     * @param name symbol name, should be one of "square", "rectangle", "diamond",
-    * "pentagon", "triangle", "equilateral_triangle", "star", "arrow",
-    * "circle", "cross", "cross2", "line", "x", "arrowhead", "filled_arrowhead",
+    * "pentagon", "hexagon", "triangle", "equilateral_triangle", "star", "arrow",
+    * "circle", "cross", "cross_fill", "cross2", "line", "x", "arrowhead", "filled_arrowhead",
     * "semi_circle", "third_circle", "quarter_circle", "quarter_square", "half_square",
     * "diagonal_half_square", "right_half_triangle", "left_half_triangle"
     * @param color fill color for symbol
