@@ -93,6 +93,12 @@ class SERVER_EXPORT QgsServer
 #endif
 
   private:
+
+    void saveEnvVars();
+
+    /** Saves environment variable into mEnvironmentVariables if defined*/
+    void saveEnvVar( const QString& variableName );
+
     // All functions that where previously in the main file are now
     // static methods of this class
     static QString configPath( const QString& defaultConfigPath,
@@ -128,6 +134,9 @@ class SERVER_EXPORT QgsServer
     static int sArgc;
     static QgsApplication* sQgsApplication;
     static bool sCaptureOutput;
+
+    /** Pass important environment variables to the fcgi processes*/
+    QHash< QString, QString > mEnvironmentVariables;
 };
 #endif // QGSSERVER_H
 
