@@ -8,6 +8,15 @@
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/stagecount 0)
 
+# The target port-plugins acts as a container for all port-plugin-XXX targets
+# Each port-plugin-XXX target will run scripts/2to3 on a plugin and migrate
+# Python 3 and Qt 5 code.
+ADD_CUSTOM_TARGET(port-plugins)
+SET (PORT_PLUGINS FALSE CACHE BOOL "Determines whether python plugins in staged or installed locations should be migrated to Python 3 and Qt 5")
+IF(PORT_PLUGINS)
+  ADD_CUSTOM_TARGET(port-plugins-on-build ALL DEPENDS port-plugins)
+ENDIF(PORT_PLUGINS)
+
 MACRO (PLUGIN_INSTALL plugin subdir )
   FILE(READ ${CMAKE_BINARY_DIR}/stagecount n)
   MATH(EXPR n "${n}+1")
@@ -24,12 +33,16 @@ MACRO (PLUGIN_INSTALL plugin subdir )
     ADD_DEPENDENCIES(zzz-${plugin}-stageinstall zzz-${plugin}-depend)
 
     ADD_CUSTOM_COMMAND(TARGET zzz-${plugin}-stageinstall
-	COMMAND ${CMAKE_COMMAND} -P ${_cmake}
+      COMMAND ${CMAKE_COMMAND} -P ${_cmake}
     )
 
     ADD_CUSTOM_TARGET(clean-staged-${plugin}
       COMMAND ${CMAKE_COMMAND} -E remove_directory ${PYTHON_OUTPUT_DIRECTORY}/plugins/${plugin}
     )
+
+    ADD_CUSTOM_TARGET(port-plugin-${plugin})
+    PY_2TO3(port-plugin-${plugin} ${PYTHON_OUTPUT_DIRECTORY}/plugins/${plugin})
+    ADD_DEPENDENCIES(port-plugins port-plugin-${plugin})
 
     ADD_DEPENDENCIES(staged-plugins zzz-${plugin}-stageinstall)
     ADD_CUSTOM_TARGET(staged-${plugin} DEPENDS zzz-${plugin}-stageinstall)

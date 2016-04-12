@@ -37,5 +37,6 @@ cmake \
       -DWITH_SERVER=ON \
       -DENABLE_QT5=ON \
       -DENABLE_PYTHON3=ON \
+      -DPORT_PLUGINS=ON \
       -DCXX_EXTRA_FLAGS="$CLANG_WARNINGS" \
       ..
