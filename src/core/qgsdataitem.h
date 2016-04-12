@@ -247,7 +247,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     QString mToolTip;
     QString mIconName;
     QIcon mIcon;
-    static QMap<QString, QIcon> mIconMap;
+    QMap<QString, QIcon> mIconMap;
 
   public slots:
     /** Safely delete the item:

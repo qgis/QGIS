@@ -27,9 +27,6 @@
 #include <QSettings>
 #include <QScrollArea>
 
-QIcon QgsCollapsibleGroupBoxBasic::mCollapseIcon;
-QIcon QgsCollapsibleGroupBoxBasic::mExpandIcon;
-
 QgsCollapsibleGroupBoxBasic::QgsCollapsibleGroupBoxBasic( QWidget *parent )
     : QGroupBox( parent )
 {
@@ -65,11 +62,8 @@ void QgsCollapsibleGroupBoxBasic::init()
   mTitleClicked = false;
 
   // init icons
-  if ( mCollapseIcon.isNull() )
-  {
-    mCollapseIcon = QgsApplication::getThemeIcon( "/mIconCollapse.png" );
-    mExpandIcon = QgsApplication::getThemeIcon( "/mIconExpand.png" );
-  }
+  mCollapseIcon = QgsApplication::getThemeIcon( "/mIconCollapse.png" );
+  mExpandIcon = QgsApplication::getThemeIcon( "/mIconExpand.png" );
 
   // collapse button
   mCollapseButton = new QgsGroupBoxCollapseButton( this );

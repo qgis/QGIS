@@ -159,8 +159,8 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     bool mShiftDown;
     bool mTitleClicked;
 
-    static QIcon mCollapseIcon;
-    static QIcon mExpandIcon;
+    QIcon mCollapseIcon;
+    QIcon mExpandIcon;
 };
 
 /** \ingroup gui
