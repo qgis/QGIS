@@ -442,43 +442,43 @@ bool QgsFields::operator==( const QgsFields &other ) const
 QgsFields::const_iterator QgsFields::constBegin() const noexcept
 {
   if ( d->fields.isEmpty() )
-  return const_iterator();
+    return const_iterator();
 
   return const_iterator( &d->fields.first() );
 }
 
 QgsFields::const_iterator QgsFields::constEnd() const noexcept
-  {
-    if ( d->fields.isEmpty() )
+{
+  if ( d->fields.isEmpty() )
     return const_iterator();
 
-    return const_iterator( &d->fields.last() + 1 );
-  }
+  return const_iterator( &d->fields.last() + 1 );
+}
 
-  QgsFields::const_iterator QgsFields::begin() const noexcept
-    {
-      if ( d->fields.isEmpty() )
-      return const_iterator();
+QgsFields::const_iterator QgsFields::begin() const noexcept
+{
+  if ( d->fields.isEmpty() )
+    return const_iterator();
 
-      return const_iterator( &d->fields.first() );
-    }
+  return const_iterator( &d->fields.first() );
+}
 
-    QgsFields::const_iterator QgsFields::end() const noexcept
-      {
-        if ( d->fields.isEmpty() )
-        return const_iterator();
+QgsFields::const_iterator QgsFields::end() const noexcept
+{
+  if ( d->fields.isEmpty() )
+    return const_iterator();
 
-        return const_iterator( &d->fields.last() + 1 );
-      }
+  return const_iterator( &d->fields.last() + 1 );
+}
 
-      QgsFields::iterator QgsFields::begin()
-      {
-        if ( d->fields.isEmpty() )
-          return iterator();
+QgsFields::iterator QgsFields::begin()
+{
+  if ( d->fields.isEmpty() )
+    return iterator();
 
-        d.detach();
-        return iterator( &d->fields.first() );
-      }
+  d.detach();
+  return iterator( &d->fields.first() );
+}
 
 QgsFields::iterator QgsFields::end()
 {
