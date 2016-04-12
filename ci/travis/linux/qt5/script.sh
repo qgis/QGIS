@@ -1,5 +1,6 @@
 export PYTHONPATH=${HOME}/osgeo4travis/lib/python3.3/site-packages/
 export CTEST_PARALLEL_LEVEL=1
+export LD_PRELOAD=libSegFault.so
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
