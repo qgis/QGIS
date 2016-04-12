@@ -348,7 +348,31 @@ void QgsEllipseSymbolLayerV2::stopRender( QgsSymbolV2RenderContext & )
 
 QgsEllipseSymbolLayerV2* QgsEllipseSymbolLayerV2::clone() const
 {
-  return dynamic_cast< QgsEllipseSymbolLayerV2* >( QgsEllipseSymbolLayerV2::create( properties() ) );
+  QgsEllipseSymbolLayerV2* m = new QgsEllipseSymbolLayerV2();
+  m->setSymbolName( mSymbolName );
+  m->setSymbolWidth( mSymbolWidth );
+  m->setSymbolHeight( mSymbolHeight );
+  m->setOutlineStyle( mOutlineStyle );
+  m->setOffset( mOffset );
+  m->setOffsetUnit( mOffsetUnit );
+  m->setOffsetMapUnitScale( mOffsetMapUnitScale );
+  m->setOutlineStyle( mOutlineStyle );
+  m->setOutlineWidth( mOutlineWidth );
+  m->setColor( color() );
+  m->setOutlineColor( mOutlineColor );
+  m->setSymbolWidthUnit( mSymbolWidthUnit );
+  m->setSymbolWidthMapUnitScale( mSymbolWidthMapUnitScale );
+  m->setSymbolHeightUnit( mSymbolHeightUnit );
+  m->setSymbolHeightMapUnitScale( mSymbolHeightMapUnitScale );
+  m->setOutlineWidthUnit( mOutlineWidthUnit );
+  m->setOutlineWidthMapUnitScale( mOutlineWidthMapUnitScale );
+  m->setAngle( mAngle );
+  m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
+  m->setVerticalAnchorPoint( mVerticalAnchorPoint );
+
+  copyDataDefinedProperties( m );
+  copyPaintEffect( m );
+  return m;
 }
 
 void QgsEllipseSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
