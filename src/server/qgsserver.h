@@ -40,6 +40,7 @@
 #include "qgsserverinterfaceimpl.h"
 #endif
 
+class QgsMapSettings;
 
 /** \ingroup server
  * The QgsServer class provides OGC web services.
@@ -93,6 +94,12 @@ class SERVER_EXPORT QgsServer
 #endif
 
   private:
+
+    void saveEnvVars();
+
+    /** Saves environment variable into mEnvironmentVariables if defined*/
+    void saveEnvVar( const QString& variableName );
+
     // All functions that where previously in the main file are now
     // static methods of this class
     static QString configPath( const QString& defaultConfigPath,
@@ -118,6 +125,7 @@ class SERVER_EXPORT QgsServer
     static QString* sConfigFilePath;
     static QgsCapabilitiesCache* sCapabilitiesCache;
     static QgsMapRenderer* sMapRenderer;
+    static QgsMapSettings* sMapSettings;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     static QgsServerInterfaceImpl* sServerInterface;
     static bool sInitPython;
@@ -128,6 +136,9 @@ class SERVER_EXPORT QgsServer
     static int sArgc;
     static QgsApplication* sQgsApplication;
     static bool sCaptureOutput;
+
+    /** Pass important environment variables to the fcgi processes*/
+    QHash< QString, QString > mEnvironmentVariables;
 };
 #endif // QGSSERVER_H
 

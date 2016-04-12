@@ -34,6 +34,7 @@
 #include "qgswfsserver.h"
 #include "qgswcsserver.h"
 #include "qgsmapserviceexception.h"
+#include "qgsmapsettings.h"
 #include "qgspallabeling.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmaplayerregistry.h"
@@ -62,6 +63,7 @@
 QString* QgsServer::sConfigFilePath = nullptr;
 QgsCapabilitiesCache* QgsServer::sCapabilitiesCache = nullptr;
 QgsMapRenderer* QgsServer::sMapRenderer = nullptr;
+QgsMapSettings* QgsServer::sMapSettings = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 QgsServerInterfaceImpl*QgsServer::sServerInterface = nullptr;
 bool QgsServer::sInitPython = true;
@@ -77,12 +79,14 @@ bool QgsServer::sCaptureOutput = false;
 
 QgsServer::QgsServer( int &argc, char **argv )
 {
+  saveEnvVars();
   init( argc, argv );
 }
 
 
 QgsServer::QgsServer()
 {
+  saveEnvVars();
   init();
 }
 
@@ -410,6 +414,7 @@ bool QgsServer::init( int & argc, char ** argv )
   //create cache for capabilities XML
   sCapabilitiesCache = new QgsCapabilitiesCache();
   sMapRenderer =  new QgsMapRenderer;
+  sMapSettings = new QgsMapSettings();
   sMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
 #ifdef ENABLE_MS_TESTS
@@ -435,6 +440,7 @@ bool QgsServer::init( int & argc, char ** argv )
   QgsEditorWidgetRegistry::initEditors();
   sInitialised = true;
   QgsMessageLog::logMessage( "Server initialized", "Server", QgsMessageLog::INFO );
+
   return true;
 }
 
@@ -447,6 +453,23 @@ void QgsServer::putenv( const QString &var, const QString &val )
 #endif
 }
 
+void QgsServer::saveEnvVars()
+{
+  saveEnvVar( "MAX_CACHE_LAYERS" );
+  saveEnvVar( "DEFAULT_DATUM_TRANSFORM" );
+}
+
+void QgsServer::saveEnvVar( const QString& variableName )
+{
+  const char* env = getenv( variableName.toLocal8Bit() );
+  if ( !env )
+  {
+    return;
+  }
+
+  mEnvironmentVariables.insert( variableName, QString::fromLocal8Bit( env ) );
+}
+
 /**
  * @brief Handles the request
  * @param queryString
@@ -454,6 +477,12 @@ void QgsServer::putenv( const QString &var, const QString &val )
  */
 QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryString )
 {
+  //apply environment variables
+  QHash< QString, QString >::const_iterator envIt = mEnvironmentVariables.constBegin();
+  for ( ; envIt != mEnvironmentVariables.constEnd(); ++envIt )
+  {
+    putenv( envIt.key(), envIt.value() );
+  }
 
   /*
    * This is mainly for python bindings, passing QUERY_STRING
@@ -612,7 +641,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
           , parameterMap
           , p
           , theRequestHandler.data()
-          , sMapRenderer
+          , sMapSettings
           , sCapabilitiesCache
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
           , accessControl

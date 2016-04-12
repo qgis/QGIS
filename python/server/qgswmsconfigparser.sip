@@ -101,10 +101,32 @@ class QgsWMSConfigParser
     QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const;
 
    /** Creates a print composition, usually for a GetPrint request. Replaces map and label parameters*/
-    QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const;
+    QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers /Out/ ) const;
 
-    /** Creates a composition from the project file (probably delegated to the fallback parser)*/
-    //virtual QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList /Out/, QList< QgsComposerLegend* >& legendList /Out/, QList< QgsComposerLabel* >& labelList /Out/, QList<const QgsComposerHtml *>& htmlFrameList /Out/ ) const = 0;
+    /** Creates a print composition (usually for a GetPrint request
+        @param composerTemplate the template
+        @param mapSettings the map settings
+        @param parameterMap the request parameter / values
+        @param highlightLayers list of highlight layers is returned
+     */
+    QgsComposition* createPrintComposition( const QString& composerTemplate, const QgsMapSettings* mapSettings, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers /Out/ ) const;
+
+    /** Creates a composition from the project file (probably delegated to the fallback parser)
+    @param composerTemplate the composer template
+    @param mapRenderer the map renderer
+    @param mapList out: list of composer maps
+    @param legendList out: list of legends
+    @param labelList out: list of labels
+    @param htmlFrameList out: list of frames*/
+    virtual QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList /Out/, QList< QgsComposerLegend* >& legendList /Out/, QList< QgsComposerLabel* >& labelList /Out/, QList<const QgsComposerHtml *>& htmlFrameList /Out/  ) const = 0;
+    /** Creates a composition from the project file (probably delegated to the fallback parser)
+    @param composerTemplate the composer template
+    @param mapSettings the map settings
+    @param mapList out: list of composer maps
+    @param legendList out: list of legends
+    @param labelList out: list of labels
+    @param htmlFrameList out: list of frames*/
+    virtual QgsComposition* initComposition( const QString& composerTemplate, const QgsMapSettings* mapSettings, QList< QgsComposerMap*>& mapList /Out/, QList< QgsComposerLegend* >& legendList /Out/, QList< QgsComposerLabel* >& labelList /Out/, QList<const QgsComposerHtml *>& htmlFrameList /Out/ ) const = 0;
 
     /** Adds print capabilities to xml document. ParentElem usually is the <Capabilities> element*/
     virtual void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;

@@ -24,14 +24,17 @@
 #include "qgsmessagelog.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsvectorlayer.h"
 #include "qgsxmlutils.h"
+
+#include <QSettings>
 
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 
 QgsMapSettings::QgsMapSettings()
-    : mDpi( qt_defaultDpiX() ) // DPI that will be used by default for QImage instances
+    : QObject(), mDpi( qt_defaultDpiX() ) // DPI that will be used by default for QImage instances
     , mSize( QSize( 0, 0 ) )
     , mExtent()
     , mRotation( 0.0 )
@@ -53,6 +56,35 @@ QgsMapSettings::QgsMapSettings()
   setMapUnits( QGis::Degrees );
 }
 
+QgsMapSettings::QgsMapSettings( const QgsMapSettings& other ): QObject(), mDatumTransformStore( mDestCRS )
+{
+  *this = other;
+}
+
+QgsMapSettings& QgsMapSettings::operator=( const QgsMapSettings & other )
+{
+  mDpi = other.mDpi;
+  mSize = other.mSize;
+  mExtent = other.mExtent;
+  mRotation = other.mRotation;
+  mLayers = other.mLayers;
+  mLayerStyleOverrides = other.mLayerStyleOverrides;
+  mExpressionContext = other.mExpressionContext;
+  mProjectionsEnabled = other.mProjectionsEnabled;
+  mDestCRS = other.mDestCRS;
+  mDatumTransformStore = other.mDatumTransformStore;
+  mBackgroundColor = other.mBackgroundColor;
+  mSelectionColor = other.mSelectionColor;
+  mFlags = other.mFlags;
+  mImageFormat = other.mImageFormat;
+  mValid = other.mValid;
+  mVisibleExtent = other.mVisibleExtent;
+  mMapUnitsPerPixel = other.mMapUnitsPerPixel;
+  mScale = other.mScale;
+  mScaleCalculator = other.mScaleCalculator;
+  mMapToPixel = other.mMapToPixel;
+  return *this;
+}
 
 QgsRectangle QgsMapSettings::extent() const
 {
@@ -229,6 +261,7 @@ QStringList QgsMapSettings::layers() const
 void QgsMapSettings::setLayers( const QStringList& layers )
 {
   mLayers = layers;
+  updateDatumTransformEntries();
 }
 
 QMap<QString, QString> QgsMapSettings::layerStyleOverrides() const
@@ -244,6 +277,7 @@ void QgsMapSettings::setLayerStyleOverrides( const QMap<QString, QString>& overr
 void QgsMapSettings::setCrsTransformEnabled( bool enabled )
 {
   mProjectionsEnabled = enabled;
+  updateDatumTransformEntries();
 }
 
 bool QgsMapSettings::hasCrsTransformEnabled() const
@@ -256,6 +290,7 @@ void QgsMapSettings::setDestinationCrs( const QgsCoordinateReferenceSystem& crs 
 {
   mDestCRS = crs;
   mDatumTransformStore.setDestinationCrs( crs );
+  updateDatumTransformEntries();
 }
 
 const QgsCoordinateReferenceSystem& QgsMapSettings::destinationCrs() const
@@ -640,4 +675,80 @@ void QgsMapSettings::writeXML( QDomNode& theNode, QDomDocument& theDoc )
   theNode.appendChild( renderMapTileElem );
 
   mDatumTransformStore.writeXML( theNode, theDoc );
+}
+
+void QgsMapSettings::updateDatumTransformEntries()
+{
+  if ( !hasCrsTransformEnabled() )
+    return;
+
+  QString destAuthId = destinationCrs().authid();
+  Q_FOREACH ( const QString& layerID, layers() )
+  {
+    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
+    if ( !layer )
+      continue;
+
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+    if ( vl && vl->geometryType() == QGis::NoGeometry )
+      continue;
+
+    // if there are more options, ask the user which datum transform to use
+    if ( !datumTransformStore().hasEntryForLayer( layer ) )
+    {
+      getDatumTransformInfo( layer, layer->crs().authid(), destAuthId );
+    }
+  }
+}
+
+void QgsMapSettings::getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId )
+{
+  if ( !ml )
+  {
+    return;
+  }
+
+  //check if default datum transformation is available in environment variable
+  const char* envChar = getenv( "DEFAULT_DATUM_TRANSFORM" );
+  if ( envChar )
+  {
+    QString envString( envChar );
+    QStringList transformSplit = envString.split( ";" );
+    for ( int i = 0; i < transformSplit.size(); ++i )
+    {
+      QStringList slashSplit = transformSplit.at( i ).split( "/" );
+      if ( slashSplit.size() < 4 )
+      {
+        continue;
+      }
+
+      if ( slashSplit.at( 0 ) == srcAuthId && slashSplit.at( 1 ) == destAuthId )
+      {
+        datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, slashSplit.at( 2 ).toInt(), slashSplit.at( 3 ).toInt() );
+        return;
+      }
+    }
+  }
+
+  //check if default datum transformation is available in settings
+  QSettings s;
+  QString settingsString = "/Projections/" + srcAuthId + "//" + destAuthId;
+  QVariant defaultSrcTransform = s.value( settingsString + "_srcTransform" );
+  QVariant defaultDestTransform = s.value( settingsString + "_destTransform" );
+  if ( defaultSrcTransform.isValid() && defaultDestTransform.isValid() )
+  {
+    datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, defaultSrcTransform.toInt(), defaultDestTransform.toInt() );
+    return;
+  }
+
+  if ( s.value( "/Projections/showDatumTransformDialog", false ).toBool() )
+  {
+    //QgsMapCanvas brings a dialog to ask for the datum transformation
+    emit datumTransformationRequested( ml, srcAuthId, destAuthId );
+  }
+
+  if ( !datumTransformStore().hasEntryForLayer( ml ) )
+  {
+    datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, -1, -1 );
+  }
 }

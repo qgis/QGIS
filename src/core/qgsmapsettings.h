@@ -18,6 +18,7 @@
 
 #include <QColor>
 #include <QImage>
+#include <QObject>
 #include <QSize>
 #include <QStringList>
 
@@ -50,10 +51,18 @@ class QgsMapLayer;
  *
  * @note added in 2.4
  */
-class CORE_EXPORT QgsMapSettings
+class CORE_EXPORT QgsMapSettings: public QObject
 {
+    Q_OBJECT
   public:
     QgsMapSettings();
+    /** The copy constructor
+    @param other the other settings*/
+    QgsMapSettings( const QgsMapSettings& other );
+    /** Assignment operator
+    @param other the other settings
+    @note not available in python bindings*/
+    QgsMapSettings& operator=( const QgsMapSettings& other );
 
     //! Return geographical coordinates of the rectangle that should be rendered.
     //! The actual visible extent used for rendering could be slightly different
@@ -252,6 +261,12 @@ class CORE_EXPORT QgsMapSettings
 
     void writeXML( QDomNode& theNode, QDomDocument& theDoc );
 
+    /** Updates datum transformation for layer
+        @param ml the map layer
+        @param srcAuthId id for source layer
+        @param destAuthId id for dest layer*/
+    void getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId );
+
   protected:
 
     int mDpi;
@@ -289,6 +304,11 @@ class CORE_EXPORT QgsMapSettings
     QgsMapToPixel mMapToPixel;
 
     void updateDerived();
+
+    void updateDatumTransformEntries();
+
+  signals:
+    void datumTransformationRequested( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId );
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapSettings::Flags )

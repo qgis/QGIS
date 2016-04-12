@@ -1,5 +1,5 @@
 
-class QgsMapSettings
+class QgsMapSettings: QObject
 {
 %TypeHeaderCode
 #include <qgsmapsettings.h>
@@ -7,6 +7,9 @@ class QgsMapSettings
 
   public:
     QgsMapSettings();
+    /** The copy constructor
+    @param other the other settings*/
+    QgsMapSettings( const QgsMapSettings& other );
 
     //! Return geographical coordinates of the rectangle that should be rendered.
     //! The actual visible extent used for rendering could be slightly different
@@ -203,6 +206,12 @@ class QgsMapSettings
     void readXML( QDomNode& theNode );
 
     void writeXML( QDomNode& theNode, QDomDocument& theDoc );
+
+    /** Updates datum transformation for layer
+        @param ml the map layer
+        @param srcAuthId id for source layer
+        @param destAuthId id for dest layer*/
+    void getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId );
 
   protected:
 

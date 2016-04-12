@@ -110,8 +110,36 @@ QgsMapCanvasRendererSync::QgsMapCanvasRendererSync( QgsMapCanvas* canvas, QgsMap
   connect( mRenderer, SIGNAL( destinationSrsChanged() ), this, SLOT( onDestCrsR2C() ) );
 
   connect( mCanvas, SIGNAL( layersChanged() ), this, SLOT( onLayersC2R() ) );
+
+  //sync datum transform with mMapRenderer
+  connect( mCanvas, SIGNAL( hasCrsTransformEnabledChanged( bool ) ), this, SLOT( syncDatumTransforms() ) );
+  connect( mCanvas, SIGNAL( destinationCrsChanged() ), this, SLOT( syncDatumTransforms() ) );
+  connect( mCanvas, SIGNAL( layersChanged() ), this, SLOT( syncDatumTransforms() ) );
+
   // TODO: layers R2C ? (should not happen!)
 
+}
+
+void QgsMapCanvasRendererSync::syncDatumTransforms()
+{
+  if ( !mRenderer || !mCanvas )
+  {
+    return;
+  }
+
+  mRenderer->clearLayerCoordinateTransforms();
+
+  const QgsMapSettings& settings = mCanvas->mapSettings();
+  const QgsDatumTransformStore& transformStore = settings.datumTransformStore();
+
+  QList<QPair< QString, QgsDatumTransformStore::Entry> > entryList;
+  transformStore.entries( entryList );
+
+  QList<QPair< QString, QgsDatumTransformStore::Entry> >::const_iterator entryIt = entryList.constBegin();
+  for ( ; entryIt != entryList.constEnd(); ++entryIt )
+  {
+    mRenderer->addLayerCoordinateTransform( entryIt->first, entryIt->second.srcAuthId, entryIt->second.destAuthId, entryIt->second.srcDatumTransform, entryIt->second.destDatumTransform );
+  }
 }
 
 void QgsMapCanvasRendererSync::onExtentC2R()
@@ -232,6 +260,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
            this, SLOT( readProject( const QDomDocument & ) ) );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
            this, SLOT( writeProject( QDomDocument & ) ) );
+  connect( &mSettings, SIGNAL( datumTransformationRequested( const QgsMapLayer*, const QString&, const QString& ) ), this, SLOT( askDatumTransform( const QgsMapLayer*, const QString&, const QString& ) ) );
 
   mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
   mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
@@ -448,8 +477,6 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       }
     }
 
-    updateDatumTransformEntries();
-
     QgsDebugMsg( "Layers have changed, refreshing" );
     emit layersChanged();
 
@@ -506,9 +533,6 @@ void QgsMapCanvas::setCrsTransformEnabled( bool enabled )
     return;
 
   mSettings.setCrsTransformEnabled( enabled );
-
-  updateDatumTransformEntries();
-
   refresh();
 
   emit hasCrsTransformEnabledChanged( enabled );
@@ -546,9 +570,6 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   }
 
   mSettings.setDestinationCrs( crs );
-
-  updateDatumTransformEntries();
-
   emit destinationCrsChanged();
 }
 
@@ -701,6 +722,48 @@ void QgsMapCanvas::refreshMap()
   mMapUpdateTimer.start();
 
   emit renderStarting();
+}
+
+void QgsMapCanvas::askDatumTransform( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId )
+{
+  QSettings s;
+  QString settingsString = "/Projections/" + srcAuthId + "//" + destAuthId;
+
+  const QgsCoordinateReferenceSystem& srcCRS = QgsCRSCache::instance()->crsByAuthId( srcAuthId );
+  const QgsCoordinateReferenceSystem& destCRS = QgsCRSCache::instance()->crsByAuthId( destAuthId );
+
+  //get list of datum transforms
+  QList< QList< int > > dt = QgsCoordinateTransform::datumTransformations( srcCRS, destCRS );
+  if ( dt.size() < 2 )
+  {
+    return;
+  }
+
+  //if several possibilities:  present dialog
+  QgsDatumTransformDialog d( ml->name(), dt );
+  d.setDatumTransformInfo( srcCRS.authid(), destCRS.authid() );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    int srcTransform = -1;
+    int destTransform = -1;
+    QList<int> t = d.selectedDatumTransform();
+    if ( !t.isEmpty() )
+    {
+      srcTransform = t.at( 0 );
+    }
+    if ( t.size() > 1 )
+    {
+      destTransform = t.at( 1 );
+    }
+
+    mSettings.datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, srcTransform, destTransform );
+
+    if ( d.rememberSelection() )
+    {
+      s.setValue( settingsString + "_srcTransform", srcTransform );
+      s.setValue( settingsString + "_destTransform", destTransform );
+    }
+  }
 }
 
 
@@ -1630,8 +1693,7 @@ void QgsMapCanvas::layerCrsChange()
   QObject *theSender = sender();
   QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( theSender );
   QString destAuthId = mSettings.destinationCrs().authid();
-  getDatumTransformInfo( layer, layer->crs().authid(), destAuthId );
-
+  mSettings.getDatumTransformInfo( layer, layer->crs().authid(), destAuthId );
 } // layerCrsChange
 
 
@@ -1717,6 +1779,12 @@ void QgsMapCanvas::connectNotify( const char * signal )
 
 void QgsMapCanvas::updateDatumTransformEntries()
 {
+  //mSettings.updateDatumTransformEntries(); ?
+}
+
+#if 0
+void QgsMapCanvas::updateDatumTransformEntries()
+{
   if ( !mSettings.hasCrsTransformEnabled() )
     return;
 
@@ -1736,6 +1804,7 @@ void QgsMapCanvas::updateDatumTransformEntries()
       getDatumTransformInfo( layer, layer->crs().authid(), destAuthId );
   }
 }
+#endif //0
 
 
 
@@ -1890,73 +1959,9 @@ void QgsMapCanvas::writeProject( QDomDocument & doc )
   // TODO: store only units, extent, projections, dest CRS
 }
 
-/** Ask user which datum transform to use*/
 void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId )
 {
-  if ( !ml )
-  {
-    return;
-  }
-
-  //check if default datum transformation available
-  QSettings s;
-  QString settingsString = "/Projections/" + srcAuthId + "//" + destAuthId;
-  QVariant defaultSrcTransform = s.value( settingsString + "_srcTransform" );
-  QVariant defaultDestTransform = s.value( settingsString + "_destTransform" );
-  if ( defaultSrcTransform.isValid() && defaultDestTransform.isValid() )
-  {
-    mSettings.datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, defaultSrcTransform.toInt(), defaultDestTransform.toInt() );
-    mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, defaultSrcTransform.toInt(), defaultDestTransform.toInt() );
-    return;
-  }
-
-  const QgsCoordinateReferenceSystem& srcCRS = QgsCRSCache::instance()->crsByAuthId( srcAuthId );
-  const QgsCoordinateReferenceSystem& destCRS = QgsCRSCache::instance()->crsByAuthId( destAuthId );
-
-  if ( !s.value( "/Projections/showDatumTransformDialog", false ).toBool() )
-  {
-    // just use the default transform
-    mSettings.datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, -1, -1 );
-    mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, -1, -1 );
-    return;
-  }
-
-  //get list of datum transforms
-  QList< QList< int > > dt = QgsCoordinateTransform::datumTransformations( srcCRS, destCRS );
-  if ( dt.size() < 2 )
-  {
-    return;
-  }
-
-  //if several possibilities:  present dialog
-  QgsDatumTransformDialog d( ml->name(), dt );
-  d.setDatumTransformInfo( srcCRS.authid(), destCRS.authid() );
-  if ( d.exec() == QDialog::Accepted )
-  {
-    int srcTransform = -1;
-    int destTransform = -1;
-    QList<int> t = d.selectedDatumTransform();
-    if ( !t.isEmpty() )
-    {
-      srcTransform = t.at( 0 );
-    }
-    if ( t.size() > 1 )
-    {
-      destTransform = t.at( 1 );
-    }
-    mSettings.datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, srcTransform, destTransform );
-    mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, srcTransform, destTransform );
-    if ( d.rememberSelection() )
-    {
-      s.setValue( settingsString + "_srcTransform", srcTransform );
-      s.setValue( settingsString + "_destTransform", destTransform );
-    }
-  }
-  else
-  {
-    mSettings.datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, -1, -1 );
-    mMapRenderer->addLayerCoordinateTransform( ml->id(), srcAuthId, destAuthId, -1, -1 );
-  }
+  mSettings.getDatumTransformInfo( ml, srcAuthId, destAuthId );
 }
 
 void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPoint* center )
