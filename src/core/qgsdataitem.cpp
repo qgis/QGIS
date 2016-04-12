@@ -202,8 +202,6 @@ const QIcon &QgsZipItem::iconZip()
   return icon;
 }
 
-QMap<QString, QIcon> QgsDataItem::mIconMap = QMap<QString, QIcon>();
-
 QgsAnimatedIcon * QgsDataItem::mPopulatingIcon = nullptr;
 
 QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, const QString& name, const QString& path )

@@ -28,14 +28,6 @@
 #include <QPointer>
 #include <QGroupBox>
 
-
-QIcon QgsDataDefinedButton::mIconDataDefine;
-QIcon QgsDataDefinedButton::mIconDataDefineOn;
-QIcon QgsDataDefinedButton::mIconDataDefineError;
-QIcon QgsDataDefinedButton::mIconDataDefineExpression;
-QIcon QgsDataDefinedButton::mIconDataDefineExpressionOn;
-QIcon QgsDataDefinedButton::mIconDataDefineExpressionError;
-
 QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
     const QgsVectorLayer* vl,
     const QgsDataDefined* datadefined,

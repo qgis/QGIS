@@ -247,8 +247,6 @@ void QgsVariableEditorWidget::selectionChanged()
 // VariableEditorTree
 //
 
-QIcon QgsVariableEditorTree::mExpandIcon;
-
 QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
     : QTreeWidget( parent )
     , mEditorDelegate( nullptr )
