@@ -13,15 +13,14 @@ PyQgsComposerLabel
 PyQgsComposerMap
 PyQgsComposerMapGrid
 PyQgsComposerPicture
-PyQgsComposerShapes
 PyQgsComposerPolygon
 PyQgsComposerPolyline
+PyQgsComposerShapes
 PyQgsComposition
 PyQgsConditionalStyle
 PyQgsCoordinateTransform
 PyQgsDelimitedTextProvider
 PyQgsDistanceArea
-PyQgsDocCoverage
 PyQgsEditWidgets
 PyQgsFeature
 PyQgsFeatureIterator
@@ -69,7 +68,6 @@ PyQgsVirtualLayerDefinition
 PyQgsVirtualLayerProvider
 PyQgsWFSProvider
 PyQgsZonalStatistics
-qgis_alignrastertest
 qgis_composereffectstest
 qgis_composerlabeltest
 qgis_composermapgridtest
@@ -85,7 +83,6 @@ qgis_composertabletest
 qgis_composertablev2test
 qgis_composerutils
 qgis_ellipsemarkertest
-qgis_fieldexpressionwidget
 qgis_fieldtest
 qgis_geometrytest
 qgis_gradienttest
