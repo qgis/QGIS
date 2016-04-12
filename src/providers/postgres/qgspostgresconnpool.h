@@ -70,6 +70,8 @@ class QgsPostgresConnPool : public QgsConnectionPool<QgsPostgresConn*, QgsPostgr
   public:
     static QgsPostgresConnPool* instance();
 
+    static void cleanupInstance();
+
   protected:
     Q_DISABLE_COPY( QgsPostgresConnPool )
 
@@ -77,7 +79,7 @@ class QgsPostgresConnPool : public QgsConnectionPool<QgsPostgresConn*, QgsPostgr
     QgsPostgresConnPool();
     ~QgsPostgresConnPool();
 
-    static QgsPostgresConnPool sInstance;
+    static QgsPostgresConnPool* sInstance;
 };
 
 

@@ -4130,6 +4130,10 @@ QGISEXTERN QgsTransaction* createTransaction( const QString& connString )
   return new QgsPostgresTransaction( connString );
 }
 
+QGISEXTERN void cleanupProvider()
+{
+  QgsPostgresConnPool::cleanupInstance();
+}
 
 // ----------
 
