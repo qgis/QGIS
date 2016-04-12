@@ -92,6 +92,7 @@ qgis_linefillsymboltest
 qgis_maprenderertest
 qgis_maprotationtest
 qgis_markerlinessymboltest
+qgis_openstreetmaptest
 qgis_painteffecttest
 qgis_pointpatternfillsymboltest
 qgis_simplemarkertest
