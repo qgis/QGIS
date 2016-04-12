@@ -4,5 +4,5 @@ export LD_PRELOAD=libSegFault.so
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-xvfb-run ctest -V -E "$(cat ${DIR}/blacklist.txt | paste -sd '|' -)" -S ./qgis-test-travis.ctest --output-on-failure
-# xvfb-run ctest -V -S ./qgis-test-travis.ctest --output-on-failure
+# xvfb-run ctest -V -E "$(cat ${DIR}/blacklist.txt | paste -sd '|' -)" -S ./qgis-test-travis.ctest --output-on-failure
+xvfb-run ctest -V -S ./qgis-test-travis.ctest --output-on-failure
