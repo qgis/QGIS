@@ -412,8 +412,8 @@ QString QgsApplication::iconPath( const QString& iconFile )
 
 QIcon QgsApplication::getThemeIcon( const QString &theName )
 {
-  QgsApplication* app = static_cast<QgsApplication*>( instance() );
-  if ( app->mIconCache.contains( theName ) )
+  QgsApplication* app = qobject_cast<QgsApplication*>( instance() );
+  if ( app && app->mIconCache.contains( theName ) )
     return app->mIconCache.value( theName );
 
   QIcon icon;
@@ -435,7 +435,8 @@ QIcon QgsApplication::getThemeIcon( const QString &theName )
     icon = QIcon();
   }
 
-  app->mIconCache.insert( theName, icon );
+  if ( app )
+    app->mIconCache.insert( theName, icon );
   return icon;
 }
 
