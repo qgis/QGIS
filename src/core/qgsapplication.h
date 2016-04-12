@@ -407,6 +407,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString sUserName;
     static QString sUserFullName;
     static QString sPlatformName;
+
+    QMap<QString, QIcon> mIconCache;
 };
 
 #endif
