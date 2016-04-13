@@ -41,7 +41,9 @@ from qgis.core import (
     QgsVectorLayer,
     QgsFeatureRequest,
     QgsRectangle,
-    QgsMessageLog
+    QgsMessageLog,
+    QgsFeature,
+    QgsFeatureIterator
 )
 
 from qgis.testing import start_app, unittest
@@ -79,234 +81,6 @@ class MessageLogger(QObject):
 
     def messages(self):
         return self.log
-
-# Retrieve the data for a layer
-
-
-def layerData(layer, request={}, offset=0):
-    first = True
-    data = {}
-    fields = []
-    fieldTypes = []
-    fr = QgsFeatureRequest()
-    if request:
-        if 'exact' in request and request['exact']:
-            fr.setFlags(QgsFeatureRequest.ExactIntersect)
-        if 'nogeom' in request and request['nogeom']:
-            fr.setFlags(QgsFeatureRequest.NoGeometry)
-        if 'fid' in request:
-            fr.setFilterFid(request['fid'])
-        elif 'extents' in request:
-            fr.setFilterRect(QgsRectangle(*request['extents']))
-        if 'attributes' in request:
-            fr.setSubsetOfAttributes(request['attributes'])
-
-    for f in layer.getFeatures(fr):
-        if first:
-            first = False
-            for field in f.fields():
-                fields.append(str(field.name()))
-                fieldTypes.append(str(field.typeName()))
-        fielddata = dict((name, unicode(f[name])) for name in fields)
-        g = f.geometry()
-        if g:
-            fielddata[geomkey] = str(g.exportToWkt())
-        else:
-            fielddata[geomkey] = "None"
-
-        fielddata[fidkey] = f.id()
-        id = fielddata[fields[0]]
-        description = fielddata[fields[1]]
-        fielddata['id'] = id
-        fielddata['description'] = description
-        data[f.id() + offset] = fielddata
-    if 'id' not in fields:
-        fields.insert(0, 'id')
-    if 'description' not in fields:
-        fields.insert(1, 'description')
-    fields.append(fidkey)
-    fields.append(geomkey)
-    return fields, fieldTypes, data
-
-# Retrieve the data for a delimited text url
-
-
-def delimitedTextData(testname, filename, requests, verbose, **params):
-    # Create a layer for the specified file and query parameters
-    # and return the data for the layer (fields, data)
-
-    filepath = os.path.join(unitTestDataPath("delimitedtext"), filename)
-    url = QUrl.fromLocalFile(filepath)
-    if not requests:
-        requests = [{}]
-    for k in params.keys():
-        url.addQueryItem(k, params[k])
-    urlstr = url.toString()
-    log = []
-    with MessageLogger('DelimitedText') as logger:
-        if verbose:
-            print(testname)
-        layer = QgsVectorLayer(urlstr, 'test', 'delimitedtext')
-        uri = unicode(layer.dataProvider().dataSourceUri())
-        if verbose:
-            print(uri)
-        basename = os.path.basename(filepath)
-        if not basename.startswith('test'):
-            basename = 'file'
-        uri = re.sub(r'^file\:\/\/[^\?]*', 'file://' + basename, uri)
-        fields = []
-        fieldTypes = []
-        data = {}
-        if layer.isValid():
-            for nr, r in enumerate(requests):
-                if verbose:
-                    print("Processing request", nr + 1, repr(r))
-                if callable(r):
-                    r(layer)
-                    if verbose:
-                        print("Request function executed")
-                if callable(r):
-                    continue
-                rfields, rtypes, rdata = layerData(layer, r, nr * 1000)
-                if len(rfields) > len(fields):
-                    fields = rfields
-                    fieldTypes = rtypes
-                data.update(rdata)
-                if not rdata:
-                    log.append("Request " + str(nr) + " did not return any data")
-                if verbose:
-                    print("Request returned", len(rdata.keys()), "features")
-        for msg in logger.messages():
-            filelogname = 'temp_file' if 'tmp' in filename.lower() else filename
-            msg = re.sub(r'file\s+.*' + re.escape(filename), 'file ' + filelogname, msg)
-            msg = msg.replace(filepath, filelogname)
-            log.append(msg)
-        return dict(fields=fields, fieldTypes=fieldTypes, data=data, log=log, uri=uri, geometryType=layer.geometryType())
-
-
-def printWanted(testname, result):
-    # Routine to export the result as a function definition
-    print()
-    print("def {0}():".format(testname))
-    data = result['data']
-    log = result['log']
-    fields = result['fields']
-    prefix = '    '
-
-    # Dump the data for a layer - used to construct unit tests
-    print(prefix + "wanted={}")
-    print(prefix + "wanted['uri']=" + repr(result['uri']))
-    print(prefix + "wanted['fieldTypes']=" + repr(result['fieldTypes']))
-    print(prefix + "wanted['geometryType']=" + repr(result['geometryType']))
-    print(prefix + "wanted['data']={")
-    for k in sorted(data.keys()):
-        row = data[k]
-        print(prefix + "    {0}: {{".format(repr(k)))
-        for f in fields:
-            print(prefix + "        " + repr(f) + ": " + repr(row[f]) + ",")
-        print(prefix + "        },")
-    print(prefix + "    }")
-
-    print(prefix + "wanted['log']=[")
-    for msg in log:
-        print(prefix + '    ' + repr(msg) + ',')
-    print(prefix + '    ]')
-    print('    return wanted')
-    print()
-
-
-def recordDifference(record1, record2):
-    # Compare a record defined as a dictionary
-    for k in record1.keys():
-        if k not in record2:
-            return "Field {0} is missing".format(k)
-        r1k = record1[k]
-        r2k = record2[k]
-        if k == geomkey:
-            if not compareWkt(r1k, r2k):
-                return "Geometry differs: {0:.50} versus {1:.50}".format(r1k, r2k)
-        else:
-            if record1[k] != record2[k]:
-                return "Field {0} differs: {1:.50} versus {2:.50}".format(k, repr(r1k), repr(r2k))
-    for k in record2.keys():
-        if k not in record1:
-            return "Output contains extra field {0}".format(k)
-    return ''
-
-
-def runTest(file, requests, **params):
-    testname = inspect.stack()[1][3]
-    verbose = not rebuildTests
-    if verbose:
-        print("Running test:", testname)
-    result = delimitedTextData(testname, file, requests, verbose, **params)
-    if rebuildTests:
-        printWanted(testname, result)
-        assert False, "Test not run - being rebuilt"
-    try:
-        wanted = eval('want.{0}()'.format(testname))
-    except:
-        printWanted(testname, result)
-        assert False, "Test results not available for {0}".format(testname)
-
-    data = result['data']
-    log = result['log']
-    failures = []
-    if result['uri'] != wanted['uri']:
-        msg = "Layer Uri ({0}) doesn't match expected ({1})".format(
-            result['uri'], wanted['uri'])
-        print('    ' + msg)
-        failures.append(msg)
-    if result['fieldTypes'] != wanted['fieldTypes']:
-        msg = "Layer field types ({0}) doesn't match expected ({1})".format(
-            result['fieldTypes'], wanted['fieldTypes'])
-        failures.append(msg)
-    if result['geometryType'] != wanted['geometryType']:
-        msg = "Layer geometry type ({0}) doesn't match expected ({1})".format(
-            result['geometryType'], wanted['geometryType'])
-        failures.append(msg)
-    wanted_data = wanted['data']
-    for id in sorted(wanted_data.keys()):
-        print('getting wanted data')
-        wrec = wanted_data[id]
-        print('getting received data')
-        trec = data.get(id, {})
-        print('getting description')
-        description = wrec['description']
-        print('getting difference')
-        difference = recordDifference(wrec, trec)
-        if not difference:
-            print('    {0}: Passed'.format(description))
-        else:
-            print('    {0}: {1}'.format(description, difference))
-            failures.append(description + ': ' + difference)
-    for id in sorted(data.keys()):
-        if id not in wanted_data:
-            msg = "Layer contains unexpected extra data with id: \"{0}\"".format(id)
-            print('    ' + msg)
-            failures.append(msg)
-    common = []
-    log_wanted = wanted['log']
-    for l in log:
-        if l in log_wanted:
-            common.append(l)
-    for l in log_wanted:
-        if l not in common:
-            msg = 'Missing log message: ' + l
-            print('    ' + msg)
-            failures.append(msg)
-    for l in log:
-        if l not in common:
-            msg = 'Extra log message: ' + l
-            print('    ' + msg)
-            failures.append(msg)
-    if len(log) == len(common) and len(log_wanted) == len(common):
-        print('    Message log correct: Passed')
-
-    if failures:
-        printWanted(testname, result)
-
-    assert len(failures) == 0, "\n".join(failures)
 
 
 class TestQgsDelimitedTextProviderXY(unittest.TestCase, ProviderTestCase):
@@ -384,6 +158,233 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         # toggle full ctest output to debug flaky CI test
         print('CTEST_FULL_OUTPUT')
 
+    def layerData(self, layer, request={}, offset=0):
+        # Retrieve the data for a layer
+        first = True
+        data = {}
+        fields = []
+        fieldTypes = []
+        fr = QgsFeatureRequest()
+        if request:
+            if 'exact' in request and request['exact']:
+                fr.setFlags(QgsFeatureRequest.ExactIntersect)
+            if 'nogeom' in request and request['nogeom']:
+                fr.setFlags(QgsFeatureRequest.NoGeometry)
+            if 'fid' in request:
+                fr.setFilterFid(request['fid'])
+            elif 'extents' in request:
+                fr.setFilterRect(QgsRectangle(*request['extents']))
+            if 'attributes' in request:
+                fr.setSubsetOfAttributes(request['attributes'])
+
+        # IMPORTANT - we do not use `for f in layer.getFeatures(fr):` as we need
+        # to verify that existing attributes and geometry are correctly cleared
+        # from the feature when calling nextFeature()
+        it = layer.getFeatures(fr)
+        f = QgsFeature()
+        while it.nextFeature(f):
+            if first:
+                first = False
+                for field in f.fields():
+                    fields.append(str(field.name()))
+                    fieldTypes.append(str(field.typeName()))
+            fielddata = dict((name, unicode(f[name])) for name in fields)
+            g = f.constGeometry()
+            if g:
+                fielddata[geomkey] = str(g.exportToWkt())
+            else:
+                fielddata[geomkey] = "None"
+
+            fielddata[fidkey] = f.id()
+            id = fielddata[fields[0]]
+            description = fielddata[fields[1]]
+            fielddata['id'] = id
+            fielddata['description'] = description
+            data[f.id() + offset] = fielddata
+
+        if 'id' not in fields:
+            fields.insert(0, 'id')
+        if 'description' not in fields:
+            fields.insert(1, 'description')
+        fields.append(fidkey)
+        fields.append(geomkey)
+        return fields, fieldTypes, data
+
+    def delimitedTextData(self, testname, filename, requests, verbose, **params):
+        # Retrieve the data for a delimited text url
+        # Create a layer for the specified file and query parameters
+        # and return the data for the layer (fields, data)
+
+        filepath = os.path.join(unitTestDataPath("delimitedtext"), filename)
+        url = QUrl.fromLocalFile(filepath)
+        if not requests:
+            requests = [{}]
+        for k in params.keys():
+            url.addQueryItem(k, params[k])
+        urlstr = url.toString()
+        log = []
+        with MessageLogger('DelimitedText') as logger:
+            if verbose:
+                print(testname)
+            layer = QgsVectorLayer(urlstr, 'test', 'delimitedtext')
+            uri = unicode(layer.dataProvider().dataSourceUri())
+            if verbose:
+                print(uri)
+            basename = os.path.basename(filepath)
+            if not basename.startswith('test'):
+                basename = 'file'
+            uri = re.sub(r'^file\:\/\/[^\?]*', 'file://' + basename, uri)
+            fields = []
+            fieldTypes = []
+            data = {}
+            if layer.isValid():
+                for nr, r in enumerate(requests):
+                    if verbose:
+                        print("Processing request", nr + 1, repr(r))
+                    if callable(r):
+                        r(layer)
+                        if verbose:
+                            print("Request function executed")
+                    if callable(r):
+                        continue
+                    rfields, rtypes, rdata = self.layerData(layer, r, nr * 1000)
+                    if len(rfields) > len(fields):
+                        fields = rfields
+                        fieldTypes = rtypes
+                    data.update(rdata)
+                    if not rdata:
+                        log.append("Request " + str(nr) + " did not return any data")
+                    if verbose:
+                        print("Request returned", len(rdata.keys()), "features")
+            for msg in logger.messages():
+                filelogname = 'temp_file' if 'tmp' in filename.lower() else filename
+                msg = re.sub(r'file\s+.*' + re.escape(filename), 'file ' + filelogname, msg)
+                msg = msg.replace(filepath, filelogname)
+                log.append(msg)
+            return dict(fields=fields, fieldTypes=fieldTypes, data=data, log=log, uri=uri, geometryType=layer.geometryType())
+
+    def printWanted(self, testname, result):
+        # Routine to export the result as a function definition
+        print()
+        print("def {0}():".format(testname))
+        data = result['data']
+        log = result['log']
+        fields = result['fields']
+        prefix = '    '
+
+        # Dump the data for a layer - used to construct unit tests
+        print(prefix + "wanted={}")
+        print(prefix + "wanted['uri']=" + repr(result['uri']))
+        print(prefix + "wanted['fieldTypes']=" + repr(result['fieldTypes']))
+        print(prefix + "wanted['geometryType']=" + repr(result['geometryType']))
+        print(prefix + "wanted['data']={")
+        for k in sorted(data.keys()):
+            row = data[k]
+            print(prefix + "    {0}: {{".format(repr(k)))
+            for f in fields:
+                print(prefix + "        " + repr(f) + ": " + repr(row[f]) + ",")
+            print(prefix + "        },")
+        print(prefix + "    }")
+
+        print(prefix + "wanted['log']=[")
+        for msg in log:
+            print(prefix + '    ' + repr(msg) + ',')
+        print(prefix + '    ]')
+        print('    return wanted')
+        print()
+
+    def recordDifference(self, record1, record2):
+        # Compare a record defined as a dictionary
+        for k in record1.keys():
+            if k not in record2:
+                return "Field {0} is missing".format(k)
+            r1k = record1[k]
+            r2k = record2[k]
+            if k == geomkey:
+                if not compareWkt(r1k, r2k):
+                    return "Geometry differs: {0:.50} versus {1:.50}".format(r1k, r2k)
+            else:
+                if record1[k] != record2[k]:
+                    return "Field {0} differs: {1:.50} versus {2:.50}".format(k, repr(r1k), repr(r2k))
+        for k in record2.keys():
+            if k not in record1:
+                return "Output contains extra field {0}".format(k)
+        return ''
+
+    def runTest(self, file, requests, **params):
+        testname = inspect.stack()[1][3]
+        verbose = not rebuildTests
+        if verbose:
+            print("Running test:", testname)
+        result = self.delimitedTextData(testname, file, requests, verbose, **params)
+        if rebuildTests:
+            printWanted(testname, result)
+            assert False, "Test not run - being rebuilt"
+        try:
+            wanted = eval('want.{0}()'.format(testname))
+        except:
+            printWanted(testname, result)
+            assert False, "Test results not available for {0}".format(testname)
+
+        data = result['data']
+        log = result['log']
+        failures = []
+        if result['uri'] != wanted['uri']:
+            msg = "Layer Uri ({0}) doesn't match expected ({1})".format(
+                result['uri'], wanted['uri'])
+            print('    ' + msg)
+            failures.append(msg)
+        if result['fieldTypes'] != wanted['fieldTypes']:
+            msg = "Layer field types ({0}) doesn't match expected ({1})".format(
+                result['fieldTypes'], wanted['fieldTypes'])
+            failures.append(msg)
+        if result['geometryType'] != wanted['geometryType']:
+            msg = "Layer geometry type ({0}) doesn't match expected ({1})".format(
+                result['geometryType'], wanted['geometryType'])
+            failures.append(msg)
+        wanted_data = wanted['data']
+        for id in sorted(wanted_data.keys()):
+            print('getting wanted data')
+            wrec = wanted_data[id]
+            print('getting received data')
+            trec = data.get(id, {})
+            print('getting description')
+            description = wrec['description']
+            print('getting difference')
+            difference = self.recordDifference(wrec, trec)
+            if not difference:
+                print('    {0}: Passed'.format(description))
+            else:
+                print('    {0}: {1}'.format(description, difference))
+                failures.append(description + ': ' + difference)
+        for id in sorted(data.keys()):
+            if id not in wanted_data:
+                msg = "Layer contains unexpected extra data with id: \"{0}\"".format(id)
+                print('    ' + msg)
+                failures.append(msg)
+        common = []
+        log_wanted = wanted['log']
+        for l in log:
+            if l in log_wanted:
+                common.append(l)
+        for l in log_wanted:
+            if l not in common:
+                msg = 'Missing log message: ' + l
+                print('    ' + msg)
+                failures.append(msg)
+        for l in log:
+            if l not in common:
+                msg = 'Extra log message: ' + l
+                print('    ' + msg)
+                failures.append(msg)
+        if len(log) == len(common) and len(log_wanted) == len(common):
+            print('    Message log correct: Passed')
+
+        if failures:
+            printWanted(testname, result)
+
+        assert len(failures) == 0, "\n".join(failures)
+
     def test_001_provider_defined(self):
         registry = QgsProviderRegistry.instance()
         metadata = registry.providerMetadata('delimitedtext')
@@ -394,154 +395,154 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         filename = 'test.csv'
         params = {'geomType': 'none', 'type': 'csv'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_003_field_naming(self):
         # Management of missing/duplicate/invalid field names
         filename = 'testfields.csv'
         params = {'geomType': 'none', 'type': 'csv'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_004_max_fields(self):
         # Limiting maximum number of fields
         filename = 'testfields.csv'
         params = {'geomType': 'none', 'maxFields': '7', 'type': 'csv'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_005_load_whitespace(self):
         # Whitespace file parsing
         filename = 'test.space'
         params = {'geomType': 'none', 'type': 'whitespace'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_006_quote_escape(self):
         # Quote and escape file parsing
         filename = 'test.pipe'
         params = {'geomType': 'none', 'quote': '"', 'delimiter': '|', 'escape': '\\'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_007_multiple_quote(self):
         # Multiple quote and escape characters
         filename = 'test.quote'
         params = {'geomType': 'none', 'quote': '\'"', 'type': 'csv', 'escape': '"\''}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_008_badly_formed_quotes(self):
         # Badly formed quoted fields
         filename = 'test.badquote'
         params = {'geomType': 'none', 'quote': '"', 'type': 'csv', 'escape': '"'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_009_skip_lines(self):
         # Skip lines
         filename = 'test2.csv'
         params = {'geomType': 'none', 'useHeader': 'no', 'type': 'csv', 'skipLines': '2'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_010_read_coordinates(self):
         # Skip lines
         filename = 'testpt.csv'
         params = {'yField': 'geom_y', 'xField': 'geom_x', 'type': 'csv'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_011_read_wkt(self):
         # Reading WKT geometry field
         filename = 'testwkt.csv'
         params = {'delimiter': '|', 'type': 'csv', 'wktField': 'geom_wkt'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_012_read_wkt_point(self):
         # Read WKT points
         filename = 'testwkt.csv'
         params = {'geomType': 'point', 'delimiter': '|', 'type': 'csv', 'wktField': 'geom_wkt'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_013_read_wkt_line(self):
         # Read WKT linestrings
         filename = 'testwkt.csv'
         params = {'geomType': 'line', 'delimiter': '|', 'type': 'csv', 'wktField': 'geom_wkt'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_014_read_wkt_polygon(self):
         # Read WKT polygons
         filename = 'testwkt.csv'
         params = {'geomType': 'polygon', 'delimiter': '|', 'type': 'csv', 'wktField': 'geom_wkt'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_015_read_dms_xy(self):
         # Reading degrees/minutes/seconds angles
         filename = 'testdms.csv'
         params = {'yField': 'lat', 'xField': 'lon', 'type': 'csv', 'xyDms': 'yes'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_016_decimal_point(self):
         # Reading degrees/minutes/seconds angles
         filename = 'testdp.csv'
         params = {'yField': 'geom_y', 'xField': 'geom_x', 'type': 'csv', 'delimiter': ';', 'decimalPoint': ','}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_017_regular_expression_1(self):
         # Parsing regular expression delimiter
         filename = 'testre.txt'
         params = {'geomType': 'none', 'trimFields': 'Y', 'delimiter': 'RE(?:GEXP)?', 'type': 'regexp'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_018_regular_expression_2(self):
         # Parsing regular expression delimiter with capture groups
         filename = 'testre.txt'
         params = {'geomType': 'none', 'trimFields': 'Y', 'delimiter': '(RE)(GEXP)?', 'type': 'regexp'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_019_regular_expression_3(self):
         # Parsing anchored regular expression
         filename = 'testre2.txt'
         params = {'geomType': 'none', 'trimFields': 'Y', 'delimiter': '^(.{5})(.{30})(.{5,})', 'type': 'regexp'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_020_regular_expression_4(self):
         # Parsing zero length re
         filename = 'testre3.txt'
         params = {'geomType': 'none', 'delimiter': 'x?', 'type': 'regexp'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_021_regular_expression_5(self):
         # Parsing zero length re 2
         filename = 'testre3.txt'
         params = {'geomType': 'none', 'delimiter': '\\b', 'type': 'regexp'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_022_utf8_encoded_file(self):
         # UTF8 encoded file test
         filename = 'testutf8.csv'
         params = {'geomType': 'none', 'delimiter': '|', 'type': 'csv', 'encoding': 'utf-8'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_023_latin1_encoded_file(self):
         # Latin1 encoded file test
         filename = 'testlatin1.csv'
         params = {'geomType': 'none', 'delimiter': '|', 'type': 'csv', 'encoding': 'latin1'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_024_filter_rect_xy(self):
         # Filter extents on XY layer
@@ -551,7 +552,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             {'extents': [10, 30, 30, 50]},
             {'extents': [10, 30, 30, 50], 'exact': 1},
             {'extents': [110, 130, 130, 150]}]
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_025_filter_rect_wkt(self):
         # Filter extents on WKT layer
@@ -561,7 +562,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             {'extents': [10, 30, 30, 50]},
             {'extents': [10, 30, 30, 50], 'exact': 1},
             {'extents': [110, 130, 130, 150]}]
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_026_filter_fid(self):
         # Filter on feature id
@@ -572,7 +573,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             {'fid': 9},
             {'fid': 20},
             {'fid': 3}]
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_027_filter_attributes(self):
         # Filter on attributes
@@ -585,14 +586,14 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             {'attributes': [3, 1], 'fid': 9},
             {'attributes': [1, 3, 7], 'fid': 9},
             {'attributes': [], 'fid': 9}]
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_028_substring_test(self):
         # CSV file parsing
         filename = 'test.csv'
         params = {'geomType': 'none', 'subset': 'id % 2 = 1', 'type': 'csv'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_029_file_watcher(self):
         # Testing file watcher
@@ -646,7 +647,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             rewritefile,
             {'fid': 2},
         ]
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_030_filter_rect_xy_spatial_index(self):
         # Filter extents on XY layer with spatial index
@@ -659,7 +660,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             {},
             {'extents': [-1000, -1000, 1000, 1000]}
         ]
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_031_filter_rect_wkt_spatial_index(self):
         # Filter extents on WKT layer with spatial index
@@ -672,7 +673,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             {},
             {'extents': [-1000, -1000, 1000, 1000]}
         ]
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_032_filter_rect_wkt_create_spatial_index(self):
         # Filter extents on WKT layer building spatial index
@@ -688,7 +689,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             {},
             {'extents': [-1000, -1000, 1000, 1000]}
         ]
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_033_reset_subset_string(self):
         # CSV file parsing
@@ -707,49 +708,56 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             lambda layer: layer.dataProvider().setSubsetString("id % 2 = 0", True),
             {},
         ]
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_034_csvt_file(self):
         # CSVT field types
         filename = 'testcsvt.csv'
         params = {'geomType': 'none', 'type': 'csv'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_035_csvt_file2(self):
         # CSV field types 2
         filename = 'testcsvt2.txt'
         params = {'geomType': 'none', 'type': 'csv', 'delimiter': '|'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_036_csvt_file_invalid_types(self):
         # CSV field types invalid string format
         filename = 'testcsvt3.csv'
         params = {'geomType': 'none', 'type': 'csv'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_037_csvt_file_invalid_file(self):
         # CSV field types invalid file
         filename = 'testcsvt4.csv'
         params = {'geomType': 'none', 'type': 'csv'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_038_type_inference(self):
         # Skip lines
         filename = 'testtypes.csv'
         params = {'yField': 'lat', 'xField': 'lon', 'type': 'csv'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
 
     def test_039_issue_13749(self):
         # First record contains missing geometry
         filename = 'test13749.csv'
         params = {'yField': 'geom_y', 'xField': 'geom_x', 'type': 'csv'}
         requests = None
-        runTest(filename, requests, **params)
+        self.runTest(filename, requests, **params)
+
+    def test_040_issue_14666(self):
+        # x/y containing some null geometries
+        filename = 'test14666.csv'
+        params = {'yField': 'y', 'xField': 'x', 'type': 'csv', 'delimiter': '\\t'}
+        requests = None
+        self.runTest(filename, requests, **params)
 
 
 if __name__ == '__main__':

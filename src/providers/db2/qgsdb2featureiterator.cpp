@@ -360,7 +360,12 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
       else
       {
         QgsDebugMsg( "Geometry is empty" );
+        feature.setGeometry( nullptr );
       }
+    }
+    else
+    {
+      feature.setGeometry( nullptr );
     }
     feature.setValid( true );
     mFetchCount++;

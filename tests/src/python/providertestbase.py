@@ -14,8 +14,52 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import QgsRectangle, QgsFeatureRequest, QgsFeature, QgsGeometry, NULL
 
+from utilities import(
+    compareWkt
+)
+
 
 class ProviderTestCase(object):
+
+    def testGetFeatures(self):
+        """ Test that expected results are returned when fetching all features """
+
+        # IMPORTANT - we do not use `for f in provider.getFeatures()` as we are also
+        # testing that existing attributes & geometry in f are overwritten correctly
+        # (for f in ... uses a new QgsFeature for every iteration)
+
+        it = self.provider.getFeatures()
+        f = QgsFeature()
+        attributes = {}
+        geometries = {}
+        while it.nextFeature(f):
+            # split off the first 5 attributes only - some provider test datasets will include
+            # additional attributes which we ignore
+            attrs = f.attributes()[0:5]
+            # force the num_char attribute to be text - some providers (eg delimited text) will
+            # automatically detect that this attribute contains numbers and set it as a numeric
+            # field
+            attrs[4] = str(attrs[4])
+            attributes[f['pk']] = attrs
+            geometries[f['pk']] = f.constGeometry() and f.constGeometry().exportToWkt()
+
+        expected_attributes = {5: [5, -200, NULL, 'NuLl', '5'],
+                               3: [3, 300, 'Pear', 'PEaR', '3'],
+                               1: [1, 100, 'Orange', 'oranGe', '1'],
+                               2: [2, 200, 'Apple', 'Apple', '2'],
+                               4: [4, 400, 'Honey', 'Honey', '4']}
+        self.assertEqual(attributes, expected_attributes, 'Expected {}, got {}'.format(expected_attributes, attributes))
+
+        expected_geometries = {1: 'Point (-70.332 66.33)',
+                               2: 'Point (-68.2 70.8)',
+                               3: None,
+                               4: 'Point(-65.32 78.3)',
+                               5: 'Point(-71.123 78.23)'}
+        for pk, geom in expected_geometries.iteritems():
+            if geom:
+                assert compareWkt(geom, geometries[pk]), "Geometry {} mismatch Expected:\n{}\nGot:\n{}\n".format(pk, geom, geometries[pk].exportToWkt())
+            else:
+                self.assertFalse(geometries[pk], 'Expected null geometry for {}'.format(pk))
 
     def assert_query(self, provider, expression, expected):
         result = set([f['pk'] for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression(expression))])

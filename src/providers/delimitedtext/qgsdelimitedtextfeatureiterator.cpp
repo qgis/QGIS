@@ -56,7 +56,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     QgsRectangle rect = request.filterRect();
 
     // If request doesn't overlap extents, then nothing to return
-    if ( ! rect.intersects( mSource->mExtent ) )
+    if ( ! rect.intersects( mSource->mExtent ) && !mTestSubset )
     {
       QgsDebugMsg( "Rectangle outside layer extents - no features to return" );
       mMode = FeatureIds;
@@ -64,11 +64,12 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     // If the request extents include the entire layer, then revert to
     // a file scan
 
-    else if ( rect.contains( mSource->mExtent ) )
+    else if ( rect.contains( mSource->mExtent ) && !mTestSubset )
     {
       QgsDebugMsg( "Rectangle contains layer extents - bypass spatial filter" );
       mTestGeometry = false;
     }
+
     // If we have a spatial index then use it.  The spatial index already accounts
     // for the subset.  Also means we don't have to test geometries unless doing exact
     // intersection
@@ -332,9 +333,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
     feature.setFields( mSource->mFields ); // allow name-based attribute lookups
     feature.setFeatureId( fid );
     feature.initAttributes( mSource->mFields.count() );
-
-    if ( geom )
-      feature.setGeometry( geom );
+    feature.setGeometry( geom );
 
     // If we are testing subset expression, then need all attributes just in case.
     // Could be more sophisticated, but probably not worth it!

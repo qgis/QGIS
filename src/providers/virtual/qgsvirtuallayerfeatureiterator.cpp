@@ -228,6 +228,10 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature& feature )
     {
       feature.setGeometry( spatialiteBlobToQgsGeometry( blob.constData(), blob.size() ) );
     }
+    else
+    {
+      feature.setGeometry( nullptr );
+    }
   }
 
   feature.setValid( true );

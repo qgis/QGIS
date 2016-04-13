@@ -2395,3 +2395,57 @@ def test_039_issue_13749():
         u'1 records have missing geometry definitions',
     ]
     return wanted
+
+
+def test_040_issue_14666():
+    wanted = {}
+    wanted['uri'] = u'file://test14666.csv?yField=y&xField=x&type=csv&delimiter=\\t'
+    wanted['fieldTypes'] = ['integer', 'double', 'double']
+    wanted['geometryType'] = 0
+    wanted['data'] = {
+        2: {
+            'id': u'1',
+            'description': u'7.15417',
+            'x': u'7.15417',
+            'y': u'50.680622',
+            '#fid': 2,
+            '#geometry': 'Point (7.1541699999999997 50.68062199999999962)',
+        },
+        3: {
+            'id': u'2',
+            'description': u'7.119219',
+            'x': u'7.119219',
+            'y': u'50.739814',
+            '#fid': 3,
+            '#geometry': 'Point (7.11921900000000019 50.73981400000000264)',
+        },
+        4: {
+            'id': u'3',
+            'description': u'NULL',
+            'x': u'NULL',
+            'y': u'NULL',
+            '#fid': 4,
+            '#geometry': 'None',
+        },
+        5: {
+            'id': u'4',
+            'description': u'NULL',
+            'x': u'NULL',
+            'y': u'NULL',
+            '#fid': 5,
+            '#geometry': 'None',
+        },
+        6: {
+            'id': u'5',
+            'description': u'7.129229',
+            'x': u'7.129229',
+            'y': u'50.703692',
+            '#fid': 6,
+            '#geometry': 'Point (7.12922899999999959 50.70369199999999665)',
+        },
+    }
+    wanted['log'] = [
+        u'Errors in file test14666.csv',
+        u'2 records have missing geometry definitions',
+    ]
+    return wanted

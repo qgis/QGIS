@@ -779,7 +779,7 @@ void QgsDelimitedTextProvider::rescanFile()
   bool foundFirstGeometry = false;
   while ( fi.nextFeature( f ) )
   {
-    if ( mGeometryType != QGis::NoGeometry )
+    if ( mGeometryType != QGis::NoGeometry && f.constGeometry() )
     {
       if ( !foundFirstGeometry )
       {

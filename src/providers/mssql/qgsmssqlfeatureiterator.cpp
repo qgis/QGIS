@@ -315,6 +315,14 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature& feature )
         g->fromWkb( wkb, mParser.GetWkbLen() );
         feature.setGeometry( g );
       }
+      else
+      {
+        feature.setGeometry( nullptr );
+      }
+    }
+    else
+    {
+      feature.setGeometry( nullptr );
     }
 
     feature.setValid( true );
