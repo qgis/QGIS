@@ -660,14 +660,14 @@ void QgsVectorLayerProperties::onCancel()
     layer->setSubsetString( mOriginalSubsetSQL );
   }
 
-  if ( mOldStyle.xmlData() != mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() ).xmlData() )
+  if ( mOldStyle.xmlData() != layer->styleManager()->style( layer->styleManager()->currentStyle() ).xmlData() )
   {
     // need to reset style to previous - style applied directly to the layer (not in apply())
     QString myMessage;
     QDomDocument doc( "qgis" );
     int errorLine, errorColumn;
     doc.setContent( mOldStyle.xmlData(), false, &myMessage, &errorLine, &errorColumn );
-    mLayer->importNamedStyle( doc, myMessage );
+    layer->importNamedStyle( doc, myMessage );
     syncToLayer();
   }
 }
@@ -836,7 +836,7 @@ void QgsVectorLayerProperties::loadStyle_clicked()
     return;
   }
 
-  mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
+  mOldStyle = layer->styleManager()->style( layer->styleManager()->currentStyle() );
 
   QString myMessage;
   bool defaultLoadedFlag = false;
