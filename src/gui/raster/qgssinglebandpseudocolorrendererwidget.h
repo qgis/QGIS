@@ -47,6 +47,13 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin );
 
   private:
+    enum Column
+    {
+      ValueColumn = 0,
+      ColorColumn = 1,
+      LabelColumn = 2,
+    };
+
     void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem>& colorRampItems );
     void autoLabel();
     void setUnitFromLabels();
@@ -89,7 +96,6 @@ class GUI_EXPORT QgsTreeWidgetItem: public QObject, public QTreeWidgetItem
     /** Constructs a tree widget item of the specified type and appends it to the items in the given parent. */
     explicit QgsTreeWidgetItem( QTreeWidget * parent, int type = Type ) : QTreeWidgetItem( parent, type ) {}
 
-  public:
     /** Sets the value for the item's column and role to the given value. */
     virtual void setData( int column, int role, const QVariant & value );
     virtual bool operator< ( const QTreeWidgetItem & other ) const;
