@@ -121,14 +121,12 @@ QgsSpatiaLiteProvider::createEmptyLayer(
 
   // create the table
   {
-    QgsSqliteHandle *handle;
-    sqlite3 *mSqliteHandle = nullptr;
     char *errMsg = nullptr;
     int toCommit = false;
     QString sql;
 
     // trying to open the SQLite DB
-    handle = QgsSqliteHandle::openDb( sqlitePath );
+    QgsSqliteHandle *handle = QgsSqliteHandle::openDb( sqlitePath );
     if ( !handle )
     {
       QgsDebugMsg( "Connection to database failed. Import of layer aborted." );
@@ -137,7 +135,7 @@ QgsSpatiaLiteProvider::createEmptyLayer(
       return QgsVectorLayerImport::ErrConnectionFailed;
     }
 
-    mSqliteHandle = handle->handle();
+    sqlite3 *sqliteHandle = handle->handle();
 
     // get the pk's name and type
     if ( primaryKey.isEmpty() )
@@ -190,7 +188,7 @@ QgsSpatiaLiteProvider::createEmptyLayer(
 
     try
     {
-      int ret = sqlite3_exec( mSqliteHandle, "BEGIN", nullptr, nullptr, &errMsg );
+      int ret = sqlite3_exec( sqliteHandle, "BEGIN", nullptr, nullptr, &errMsg );
       if ( ret != SQLITE_OK )
         throw SLException( errMsg );
 
@@ -202,14 +200,14 @@ QgsSpatiaLiteProvider::createEmptyLayer(
         sql = QString( "DROP TABLE IF EXISTS %1" )
               .arg( quotedIdentifier( tableName ) );
 
-        ret = sqlite3_exec( mSqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
+        ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
         if ( ret != SQLITE_OK )
           throw SLException( errMsg );
 
         sql = QString( "DELETE FROM geometry_columns WHERE upper(f_table_name) = upper(%1)" )
               .arg( quotedValue( tableName ) );
 
-        ret = sqlite3_exec( mSqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
+        ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
         if ( ret != SQLITE_OK )
           throw SLException( errMsg );
       }
@@ -219,7 +217,7 @@ QgsSpatiaLiteProvider::createEmptyLayer(
                   quotedIdentifier( primaryKey ),
                   primaryKeyType );
 
-      ret = sqlite3_exec( mSqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
+      ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
       if ( ret != SQLITE_OK )
         throw SLException( errMsg );
 
@@ -291,7 +289,7 @@ QgsSpatiaLiteProvider::createEmptyLayer(
               .arg( QgsSpatiaLiteProvider::quotedValue( geometryType ) )
               .arg( dim );
 
-        ret = sqlite3_exec( mSqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
+        ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
         if ( ret != SQLITE_OK )
           throw SLException( errMsg );
       }
@@ -300,7 +298,7 @@ QgsSpatiaLiteProvider::createEmptyLayer(
         geometryColumn = QString();
       }
 
-      ret = sqlite3_exec( mSqliteHandle, "COMMIT", nullptr, nullptr, &errMsg );
+      ret = sqlite3_exec( sqliteHandle, "COMMIT", nullptr, nullptr, &errMsg );
       if ( ret != SQLITE_OK )
         throw SLException( errMsg );
 
@@ -321,7 +319,7 @@ QgsSpatiaLiteProvider::createEmptyLayer(
       if ( toCommit )
       {
         // ROLLBACK after some previous error
-        sqlite3_exec( mSqliteHandle, "ROLLBACK", nullptr, nullptr, nullptr );
+        sqlite3_exec( sqliteHandle, "ROLLBACK", nullptr, nullptr, nullptr );
       }
 
       QgsSqliteHandle::closeDb( handle );
@@ -5259,19 +5257,12 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                            const QString& styleName, const QString& styleDescription,
                            const QString& uiFileContent, bool useAsDefault, QString& errCause )
 {
-  QgsSqliteHandle *handle;
-  sqlite3 *mSqliteHandle = nullptr;
-  char **results;
-  int rows;
-  int columns;
-  char *errMsg = nullptr;
-
   QgsDataSourceURI dsUri( uri );
   QString sqlitePath = dsUri.database();
   QgsDebugMsg( "Database is: " + sqlitePath );
 
   // trying to open the SQLite DB
-  handle = QgsSqliteHandle::openDb( sqlitePath );
+  QgsSqliteHandle *handle = QgsSqliteHandle::openDb( sqlitePath );
   if ( !handle )
   {
     QgsDebugMsg( "Connection to database failed. Save style aborted." );
@@ -5279,12 +5270,16 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
     return false;
   }
 
-  mSqliteHandle = handle->handle();
+  sqlite3 *sqliteHandle = handle->handle();
 
   // check if layer_styles table already exist
   QString countIfExist = QString( "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='%1';" ).arg( "layer_styles" );
 
-  int ret = sqlite3_get_table( mSqliteHandle, countIfExist.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  char **results;
+  int rows;
+  int columns;
+  char *errMsg = nullptr;
+  int ret = sqlite3_get_table( sqliteHandle, countIfExist.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( SQLITE_OK != ret )
   {
     QgsSqliteHandle::closeDb( handle );
@@ -5320,7 +5315,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                                    ",ui text"
                                    ",update_time timestamp DEFAULT CURRENT_TIMESTAMP"
                                    ")" );
-    ret = sqlite3_exec( mSqliteHandle, createQuery.toUtf8().constData(), nullptr, nullptr, &errMsg );
+    ret = sqlite3_exec( sqliteHandle, createQuery.toUtf8().constData(), nullptr, nullptr, &errMsg );
     if ( SQLITE_OK != ret )
     {
       QgsSqliteHandle::closeDb( handle );
@@ -5368,7 +5363,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                        .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.geometryColumn() ) )
                        .arg( QgsSpatiaLiteProvider::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) );
 
-  ret = sqlite3_get_table( mSqliteHandle, checkQuery.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  ret = sqlite3_get_table( sqliteHandle, checkQuery.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( SQLITE_OK != ret )
   {
     QgsSqliteHandle::closeDb( handle );
@@ -5428,7 +5423,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
     sql = QString( "BEGIN; %1; %2; COMMIT;" ).arg( removeDefaultSql, sql );
   }
 
-  ret = sqlite3_exec( mSqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
+  ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
   if ( SQLITE_OK != ret )
   {
     QgsSqliteHandle::closeDb( handle );
@@ -5447,20 +5442,12 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
 
 QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
 {
-  QgsSqliteHandle *handle;
-  sqlite3 *mSqliteHandle = nullptr;
-  char **results;
-  int rows;
-  int columns;
-  char *errMsg = nullptr;
-  QString sql;
-
   QgsDataSourceURI dsUri( uri );
   QString sqlitePath = dsUri.database();
   QgsDebugMsg( "Database is: " + sqlitePath );
 
   // trying to open the SQLite DB
-  handle = QgsSqliteHandle::openDb( sqlitePath );
+  QgsSqliteHandle *handle = QgsSqliteHandle::openDb( sqlitePath );
   if ( !handle )
   {
     QgsDebugMsg( "Connection to database failed. Save style aborted." );
@@ -5468,7 +5455,7 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
     return "";
   }
 
-  mSqliteHandle = handle->handle();
+  sqlite3 *sqliteHandle = handle->handle();
 
   QString selectQmlQuery = QString( "SELECT styleQML"
                                     " FROM layer_styles"
@@ -5483,7 +5470,11 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
                            .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.table() ) )
                            .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.geometryColumn() ) );
 
-  int ret = sqlite3_get_table( mSqliteHandle, selectQmlQuery.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  char **results;
+  int rows;
+  int columns;
+  char *errMsg = nullptr;
+  int ret = sqlite3_get_table( sqliteHandle, selectQmlQuery.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( SQLITE_OK != ret )
   {
     QgsSqliteHandle::closeDb( handle );
@@ -5502,20 +5493,12 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
 QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &names,
                            QStringList &descriptions, QString& errCause )
 {
-  QgsSqliteHandle *handle;
-  sqlite3 *mSqliteHandle = nullptr;
-  char **results;
-  int rows;
-  int columns;
-  char *errMsg = nullptr;
-  QString sql;
-
   QgsDataSourceURI dsUri( uri );
   QString sqlitePath = dsUri.database();
   QgsDebugMsg( "Database is: " + sqlitePath );
 
   // trying to open the SQLite DB
-  handle = QgsSqliteHandle::openDb( sqlitePath );
+  QgsSqliteHandle *handle = QgsSqliteHandle::openDb( sqlitePath );
   if ( !handle )
   {
     QgsDebugMsg( "Connection to database failed. Save style aborted." );
@@ -5523,12 +5506,16 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
     return -1;
   }
 
-  mSqliteHandle = handle->handle();
+  sqlite3 *sqliteHandle = handle->handle();
 
   // check if layer_styles table already exist
   QString countIfExist = QString( "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='%1';" ).arg( "layer_styles" );
 
-  int ret = sqlite3_get_table( mSqliteHandle, countIfExist.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  char **results;
+  int rows;
+  int columns;
+  char *errMsg = nullptr;
+  int ret = sqlite3_get_table( sqliteHandle, countIfExist.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( SQLITE_OK != ret )
   {
     QgsSqliteHandle::closeDb( handle );
@@ -5564,7 +5551,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
                                .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.table() ) )
                                .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.geometryColumn() ) );
 
-  ret = sqlite3_get_table( mSqliteHandle, selectRelatedQuery.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  ret = sqlite3_get_table( sqliteHandle, selectRelatedQuery.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( SQLITE_OK != ret )
   {
     QgsSqliteHandle::closeDb( handle );
@@ -5591,7 +5578,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
                               .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.table() ) )
                               .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.geometryColumn() ) );
 
-  ret = sqlite3_get_table( mSqliteHandle, selectOthersQuery.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  ret = sqlite3_get_table( sqliteHandle, selectOthersQuery.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( SQLITE_OK != ret )
   {
     QgsSqliteHandle::closeDb( handle );
@@ -5614,20 +5601,12 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
 
 QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& errCause )
 {
-  QgsSqliteHandle *handle;
-  sqlite3 *mSqliteHandle = nullptr;
-  char **results;
-  int rows;
-  int columns;
-  char *errMsg = nullptr;
-  QString sql;
-
   QgsDataSourceURI dsUri( uri );
   QString sqlitePath = dsUri.database();
   QgsDebugMsg( "Database is: " + sqlitePath );
 
   // trying to open the SQLite DB
-  handle = QgsSqliteHandle::openDb( sqlitePath );
+  QgsSqliteHandle *handle = QgsSqliteHandle::openDb( sqlitePath );
   if ( !handle )
   {
     QgsDebugMsg( "Connection to database failed. Save style aborted." );
@@ -5635,11 +5614,15 @@ QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& e
     return "";
   }
 
-  mSqliteHandle = handle->handle();
+  sqlite3 *sqliteHandle = handle->handle();
 
   QString style;
   QString selectQmlQuery = QString( "SELECT styleQml FROM layer_styles WHERE id=%1" ).arg( QgsSpatiaLiteProvider::quotedValue( styleId ) );
-  int ret = sqlite3_get_table( mSqliteHandle, selectQmlQuery.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  char **results;
+  int rows;
+  int columns;
+  char *errMsg = nullptr;
+  int ret = sqlite3_get_table( sqliteHandle, selectQmlQuery.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( SQLITE_OK == ret )
   {
     if ( 1 == rows )
