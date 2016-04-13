@@ -126,6 +126,9 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
 
     virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
+    inline void lock();
+    inline void unlock();
+
     bool mExpressionCompiled;
     bool mOrderByCompiled;
     bool mLastFetch;

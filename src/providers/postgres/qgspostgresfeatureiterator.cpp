@@ -46,7 +46,6 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   else
   {
     mConn = source->mTransactionConnection;
-    mConn->lock();
     mIsTransactionConnection = true;
   }
 
@@ -227,6 +226,8 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
   {
     QString fetch = QString( "FETCH FORWARD %1 FROM %2" ).arg( mFeatureQueueSize ).arg( mCursorName );
     QgsDebugMsgLevel( QString( "fetching %1 features." ).arg( mFeatureQueueSize ), 4 );
+
+    lock();
     if ( mConn->PQsendQuery( fetch ) == 0 ) // fetch features asynchronously
     {
       QgsMessageLog::logMessage( QObject::tr( "Fetching from cursor %1 failed\nDatabase error: %2" ).arg( mCursorName, mConn->PQerrorMessage() ), QObject::tr( "PostGIS" ) );
@@ -257,6 +258,7 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
         getFeature( queryResult, row, mFeatureQueue.back() );
       } // for each row in queue
     }
+    unlock();
   }
 
   if ( mFeatureQueue.empty() )
@@ -319,13 +321,28 @@ bool QgsPostgresFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::
   return mOrderByCompiled;
 }
 
+void QgsPostgresFeatureIterator::lock()
+{
+  if ( mIsTransactionConnection )
+    mConn->lock();
+}
+
+void QgsPostgresFeatureIterator::unlock()
+{
+  if ( mIsTransactionConnection )
+    mConn->unlock();
+}
+
 bool QgsPostgresFeatureIterator::rewind()
 {
   if ( mClosed )
     return false;
 
   // move cursor to first record
+
+  lock();
   mConn->PQexecNR( QString( "move absolute 0 in %1" ).arg( mCursorName ) );
+  unlock();
   mFeatureQueue.clear();
   mFetched = 0;
   mLastFetch = false;
@@ -338,15 +355,13 @@ bool QgsPostgresFeatureIterator::close()
   if ( !mConn )
     return false;
 
+  lock();
   mConn->closeCursor( mCursorName );
+  unlock();
 
   if ( !mIsTransactionConnection )
   {
     QgsPostgresConnPool::instance()->releaseConnection( mConn );
-  }
-  else
-  {
-    mConn->unlock();
   }
   mConn = nullptr;
 
@@ -598,15 +613,17 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause, long
   if ( !orderBy.isEmpty() )
     query += QString( " ORDER BY %1 " ).arg( orderBy );
 
+  lock();
   if ( !mConn->openCursor( mCursorName, query ) )
   {
-
+    unlock();
     // reloading the fields might help next time around
     // TODO how to cleanly force reload of fields?  P->loadFields();
     if ( closeOnFail )
       close();
     return false;
   }
+  unlock();
 
   mLastFetch = false;
   return true;
