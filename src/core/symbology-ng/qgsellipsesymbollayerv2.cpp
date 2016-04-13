@@ -367,6 +367,8 @@ QgsEllipseSymbolLayerV2* QgsEllipseSymbolLayerV2::clone() const
   m->setSymbolWidth( mSymbolWidth );
   m->setSymbolHeight( mSymbolHeight );
   m->setOutlineStyle( mOutlineStyle );
+  m->setOffset( mOffset );
+  m->setOffsetUnit( mOffsetUnit );
   m->setOffsetMapUnitScale( mOffsetMapUnitScale );
   m->setOutlineStyle( mOutlineStyle );
   m->setPenJoinStyle( mPenJoinStyle );
