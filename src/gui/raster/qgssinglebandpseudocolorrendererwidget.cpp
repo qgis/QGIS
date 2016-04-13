@@ -220,7 +220,7 @@ void QgsSingleBandPseudoColorRendererWidget::autoLabel()
       }
       else if ( currentItem->text( ValueColumn ).toDouble() == std::numeric_limits<double>::infinity() )
       {
-        label = "> " + mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn );
+        label = "> " + mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn ) + unit;
       }
       else
       {
@@ -262,6 +262,10 @@ void QgsSingleBandPseudoColorRendererWidget::setUnitFromLabels()
       if ( i == 0 )
       {
         label = "<= " + currentItem->text( ValueColumn );
+      }
+      else if ( currentItem->text( ValueColumn ).toDouble() == std::numeric_limits<double>::infinity() )
+      {
+        label = "> " + mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn );
       }
       else
       {
