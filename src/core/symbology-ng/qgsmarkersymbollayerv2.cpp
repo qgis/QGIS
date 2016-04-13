@@ -372,6 +372,12 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareShape( const QString& name, QPolygonF 
     << QPointF( 0, -1 );
     return true;
   }
+  else if ( name == "hexagon" )
+  {
+    polygon << QPointF( -1, 0.5 ) << QPointF( 0, 1 ) << QPointF( 1, 0.5 )
+    << QPointF( 1, -0.5 ) << QPointF( 0, -1 ) << QPointF( -1, -0.5 );
+    return true;
+  }
   else if ( name == "triangle" )
   {
     polygon << QPointF( -1, 1 ) << QPointF( 1, 1 ) << QPointF( 0, -1 );
@@ -467,6 +473,23 @@ bool QgsSimpleMarkerSymbolLayerV2::preparePath( QString name )
     mPath.lineTo( 1, 0 ); // horizontal
     mPath.moveTo( 0, -1 );
     mPath.lineTo( 0, 1 ); // vertical
+    return true;
+  }
+  else if ( name == "cross_fill" )
+  {
+    mPath.moveTo( -1, -0.2 );
+    mPath.lineTo( -1, 0.2 );
+    mPath.lineTo( -0.2, 0.2 );
+    mPath.lineTo( -0.2, 1 );
+    mPath.lineTo( 0.2, 1 );
+    mPath.lineTo( 0.2, 0.2 );
+    mPath.lineTo( 1, 0.2 );
+    mPath.lineTo( 1, -0.2 );
+    mPath.lineTo( 0.2, -0.2 );
+    mPath.lineTo( 0.2, -1 );
+    mPath.lineTo( -0.2, -1 );
+    mPath.lineTo( -0.2, -0.2 );
+    mPath.lineTo( -1, -0.2 );
     return true;
   }
   else if ( name == "x" || name == "cross2" )
