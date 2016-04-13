@@ -39,15 +39,17 @@ class QgsDxfLabelProvider : public QgsVectorLayerLabelProvider
     //! construct the provider
     explicit QgsDxfLabelProvider( QgsVectorLayer* layer, QgsDxfExport* dxf, const QgsPalLayerSettings *settings );
 
-    //! re-implementation that writes to DXF file instead of drawing with QPainter
-    // @param context render context
-    // @param label label
+    /** Re-implementation that writes to DXF file instead of drawing with QPainter
+     * @param context render context
+     * @param label label
+     */
     void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const override;
 
-    //! registration method that keeps track of DXF layer names of individual features
-    // @param feature feature
-    // @param context render context
-    // @param dxfLayerName name of dxf layer
+    /** Registration method that keeps track of DXF layer names of individual features
+     * @param feature feature
+     * @param context render context
+     * @param dxfLayerName name of dxf layer
+     */
     void registerDxfFeature( QgsFeature& feature, QgsRenderContext &context, const QString& dxfLayerName );
 
   protected:
@@ -67,19 +69,22 @@ class QgsDxfRuleBasedLabelProvider : public QgsRuleBasedLabelProvider
     //! construct the provider
     explicit QgsDxfRuleBasedLabelProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer* layer, QgsDxfExport* dxf );
 
-    //! reinitialize the subproviders with QgsDxfLabelProviders
-    //@param layer layer
+    /** Reinitialize the subproviders with QgsDxfLabelProviders
+     * @param layer layer
+     */
     void reinit( QgsVectorLayer* layer );
 
-    //! re-implementation that writes to DXF file instead of drawing with QPainter
-    // @param context render context
-    // @param label label
+    /** Re-implementation that writes to DXF file instead of drawing with QPainter
+     * @param context render context
+     * @param label label
+     */
     void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
 
-    //! registration method that keeps track of DXF layer names of individual features
-    // @param feature feature
-    // @param context render context
-    // @param dxfLayerName name of dxf layer
+    /** Registration method that keeps track of DXF layer names of individual features
+     * @param feature feature
+     * @param context render context
+     * @param dxfLayerName name of dxf layer
+     */
     void registerDxfFeature( QgsFeature& feature, QgsRenderContext &context, const QString& dxfLayerName );
 
     //! create QgsDxfLabelProvider

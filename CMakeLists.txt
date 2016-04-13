@@ -16,7 +16,44 @@ ENDIF (APPLE)
 
 # Note the version no is Mmmpp for Major/minor/patch, 0-padded, thus '10100' for 1.1.0
 MATH(EXPR QGIS_VERSION_INT "${CPACK_PACKAGE_VERSION_MAJOR}*10000+${CPACK_PACKAGE_VERSION_MINOR}*100+${CPACK_PACKAGE_VERSION_PATCH}")
-MESSAGE(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSION_INT})")
+
+#############################################################
+# create qgsversion.h
+IF (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
+  FIND_PROGRAM(GITCOMMAND git PATHS c:/cygwin/bin)
+  IF(GITCOMMAND)
+    IF(WIN32)
+      ADD_CUSTOM_COMMAND(
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        COMMAND for /f \"usebackq tokens=1\" %%a in "(`\"${GITCOMMAND}\" log -n1 --oneline`)" do echo \#define QGSVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
+        COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
+        MAIN_DEPENDENCY ${CMAKE_SOURCE_DIR}/.git/index
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      )
+    ELSE(WIN32)
+      ADD_CUSTOM_COMMAND(
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        COMMAND ${GITCOMMAND} log -n1 --pretty=\#define\\ QGSVERSION\\ \\"%h\\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
+        COMMAND ${GITCOMMAND} config remote.$$\(${GITCOMMAND} config branch.$$\(${GITCOMMAND} name-rev --name-only HEAD\).remote\).url | sed -e 's/^/\#define QGS_GIT_REMOTE_URL \"/' -e 's/$$/\"/' >>${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
+        COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
+        MAIN_DEPENDENCY ${CMAKE_SOURCE_DIR}/.git/index
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      )
+    ENDIF(WIN32)
+  ELSE(GITCOMMAND)
+    MESSAGE(STATUS "git marker, but no git found - version will be unknown")
+    SET(REVISION "unknown")
+    FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h "#define QGSVERSION \"unknown\"")
+  ENDIF(GITCOMMAND)
+ELSE (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
+  SET(REVISION "exported")
+  FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h "#define QGSVERSION \"exported\"")
+ENDIF (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
+
+FILE(READ ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h VERSIONFILE)
+STRING(REGEX REPLACE "^.*#define QGSVERSION \"([^\"]+)\".*$" "\\1" QGSVERSION "${VERSIONFILE}")
+
+MESSAGE(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSION_INT} / ${QGSVERSION})")
 
 #############################################################
 # CMake settings
@@ -734,39 +771,6 @@ INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
 # Added by Jef to prevent python core and gui libs linking to other qgisCore and qgisGui libs
 # that may be in the same install prefix
 LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/src/core ${CMAKE_BINARY_DIR}/src/gui)
-
-#############################################################
-# create qgsversion.h
-IF (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
-  FIND_PROGRAM(GITCOMMAND git PATHS c:/cygwin/bin)
-  IF(GITCOMMAND)
-    IF(WIN32)
-      ADD_CUSTOM_COMMAND(
-        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
-        COMMAND for /f \"usebackq tokens=1\" %%a in "(`\"${GITCOMMAND}\" log -n1 --oneline`)" do echo \#define QGSVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
-        COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
-        MAIN_DEPENDENCY ${CMAKE_SOURCE_DIR}/.git/index
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-      )
-    ELSE(WIN32)
-      ADD_CUSTOM_COMMAND(
-        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
-        COMMAND ${GITCOMMAND} log -n1 --pretty=\#define\\ QGSVERSION\\ \\"%h\\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
-        COMMAND ${GITCOMMAND} config remote.$$\(${GITCOMMAND} config branch.$$\(${GITCOMMAND} name-rev --name-only HEAD\).remote\).url | sed -e 's/^/\#define QGS_GIT_REMOTE_URL \"/' -e 's/$$/\"/' >>${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
-        COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
-        MAIN_DEPENDENCY ${CMAKE_SOURCE_DIR}/.git/index
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-      )
-    ENDIF(WIN32)
-  ELSE(GITCOMMAND)
-    MESSAGE(STATUS "git marker, but no git found - version will be unknown")
-    SET(REVISION "unknown")
-    FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h "#define QGSVERSION \"unknown\"")
-  ENDIF(GITCOMMAND)
-ELSE (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
-  SET(REVISION "exported")
-  FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h "#define QGSVERSION \"exported\"")
-ENDIF (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
 
 ADD_CUSTOM_TARGET(version ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h)
 

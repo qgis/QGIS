@@ -310,9 +310,10 @@ class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
 
     virtual void registerFeature( QgsFeature& feature, QgsRenderContext& context, QgsGeometry* obstacleGeometry = nullptr ) override;
 
-    // new methods
+    //! create a label provider
     virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, bool withFeatureLoop, const QgsPalLayerSettings *settings );
 
+    //! return subproviders
     virtual QList<QgsAbstractLabelProvider*> subProviders() override;
 
   protected:
