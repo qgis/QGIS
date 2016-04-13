@@ -44,7 +44,7 @@ IF(WITH_APIDOC)
     ADD_CUSTOM_TARGET(apidoc ALL
             COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-            DEPENDS qgis_core qgis_gui qgis_analysis
+            DEPENDS qgis_core qgis_gui qgis_analysis version
             COMMENT "Generating API documentation" VERBATIM)
     INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api/html/ DESTINATION ${QGIS_DATA_DIR}/doc/api)
     INSTALL(FILES ../images/icons/qgis-icon-60x60.png DESTINATION ${QGIS_DATA_DIR}/doc/api)
