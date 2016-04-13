@@ -290,7 +290,10 @@ class CORE_EXPORT QgsDxfExport
     //! return list of available DXF encodings
     static QStringList encodings();
 
+    //! output the label
     void drawLabel( QString layerId, QgsRenderContext& context, pal::LabelPosition* label, const QgsPalLayerSettings &settings );
+
+    //! register name of layer for feature
     void registerDxfLayer( QString layerId, QgsFeatureId fid, QString layer );
 
   private:

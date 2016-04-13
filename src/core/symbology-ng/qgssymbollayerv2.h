@@ -235,17 +235,31 @@ class CORE_EXPORT QgsSymbolLayerV2
      */
     virtual QVariant evaluateDataDefinedProperty( const QString& property, const QgsSymbolV2RenderContext& context, const QVariant& defaultVal = QVariant(), bool *ok = nullptr ) const;
 
+    //! write as DXF
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolV2RenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
 
+    //! get line width
     virtual double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
+
+    //! get offset
     virtual double dxfOffset( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
 
+    //! get color
     virtual QColor dxfColor( QgsSymbolV2RenderContext& context ) const;
+
+    //! get angle
     virtual double dxfAngle( QgsSymbolV2RenderContext& context ) const;
 
+    //! get dash pattern
     virtual QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const;
+
+    //! get pen style
     virtual Qt::PenStyle dxfPenStyle() const;
+
+    //! get brush/fill color
     virtual QColor dxfBrushColor( QgsSymbolV2RenderContext& context ) const;
+
+    //! get brush/fill style
     virtual Qt::BrushStyle dxfBrushStyle() const;
 
     /** Returns the current paint effect for the layer.
