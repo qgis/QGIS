@@ -383,123 +383,129 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
           entryValues.push_back( min + value * ( max - min ) );
         }
       }
-    }
-  }
-  else if ( mClassificationModeComboBox->itemData( mClassificationModeComboBox->currentIndex() ).toInt() == Quantile )
-  { // Quantile
-    numberOfEntries = mNumberOfEntriesSpinBox->value();
-
-    int bandNr = mBandComboBox->itemData( bandComboIndex ).toInt();
-    //QgsRasterHistogram rasterHistogram = mRasterLayer->dataProvider()->histogram( bandNr );
-
-    double cut1 = std::numeric_limits<double>::quiet_NaN();
-    double cut2 = std::numeric_limits<double>::quiet_NaN();
-
-    QgsRectangle extent = mMinMaxWidget->extent();
-    int sampleSize = mMinMaxWidget->sampleSize();
-
-    // set min and max from histogram, used later to calculate number of decimals to display
-    mRasterLayer->dataProvider()->cumulativeCut( bandNr, 0.0, 1.0, min, max, extent, sampleSize );
-
-    double intervalDiff;
-    if ( numberOfEntries > 1 )
-    {
-      entryValues.reserve( numberOfEntries );
-      if ( discrete )
+      // for continuous mode take original color map colors
+      for ( int i = 0; i < numberOfEntries; ++i )
       {
-        intervalDiff = 1.0 / ( numberOfEntries );
-        for ( int i = 1; i < numberOfEntries; ++i )
-        {
-          mRasterLayer->dataProvider()->cumulativeCut( bandNr, 0.0, i * intervalDiff, cut1, cut2, extent, sampleSize );
-          entryValues.push_back( cut2 );
-        }
-        entryValues.push_back( std::numeric_limits<double>::infinity() );
-      }
-      else
-      {
-        intervalDiff = 1.0 / ( numberOfEntries - 1 );
-        for ( int i = 0; i < numberOfEntries; ++i )
-        {
-          mRasterLayer->dataProvider()->cumulativeCut( bandNr, 0.0, i * intervalDiff, cut1, cut2, extent, sampleSize );
-          entryValues.push_back( cut2 );
-        }
+        entryColors.push_back( colorRamp->color( colorRamp->value( i ) ) );
       }
     }
-    else if ( numberOfEntries == 1 )
-    {
-      mRasterLayer->dataProvider()->cumulativeCut( bandNr, 0.0, 0.5, cut1, cut2, extent, sampleSize );
-      entryValues.push_back( cut2 );
-    }
   }
-  else // EqualInterval
+  else // for other classification modes interpolate colors linearly
   {
     numberOfEntries = mNumberOfEntriesSpinBox->value();
 
-    if ( numberOfEntries > 1 )
-    {
-      entryValues.reserve( numberOfEntries );
-      if ( discrete )
-      {
-        // in discrete mode the lowest value is not an entry and the highest
-        // value is inf, there are ( numberOfEntries ) of which the first
-        // and last are not used.
-        double intervalDiff = ( max - min ) / ( numberOfEntries );
+    if ( mClassificationModeComboBox->itemData( mClassificationModeComboBox->currentIndex() ).toInt() == Quantile )
+    { // Quantile
+      int bandNr = mBandComboBox->itemData( bandComboIndex ).toInt();
+      //QgsRasterHistogram rasterHistogram = mRasterLayer->dataProvider()->histogram( bandNr );
 
-        for ( int i = 1; i < numberOfEntries; ++i )
+      double cut1 = std::numeric_limits<double>::quiet_NaN();
+      double cut2 = std::numeric_limits<double>::quiet_NaN();
+
+      QgsRectangle extent = mMinMaxWidget->extent();
+      int sampleSize = mMinMaxWidget->sampleSize();
+
+      // set min and max from histogram, used later to calculate number of decimals to display
+      mRasterLayer->dataProvider()->cumulativeCut( bandNr, 0.0, 1.0, min, max, extent, sampleSize );
+
+      double intervalDiff;
+      if ( numberOfEntries > 1 )
+      {
+        entryValues.reserve( numberOfEntries );
+        if ( discrete )
         {
-          entryValues.push_back( min + i * intervalDiff );
+          intervalDiff = 1.0 / ( numberOfEntries );
+          for ( int i = 1; i < numberOfEntries; ++i )
+          {
+            mRasterLayer->dataProvider()->cumulativeCut( bandNr, 0.0, i * intervalDiff, cut1, cut2, extent, sampleSize );
+            entryValues.push_back( cut2 );
+          }
+          entryValues.push_back( std::numeric_limits<double>::infinity() );
         }
-        entryValues.push_back( std::numeric_limits<double>::infinity() );
-      }
-      else
-      {
-        //because the highest value is also an entry, there are (numberOfEntries - 1) intervals
-        double intervalDiff = ( max - min ) / ( numberOfEntries - 1 );
-
-        for ( int i = 0; i < numberOfEntries; ++i )
+        else
         {
-          entryValues.push_back( min + i * intervalDiff );
+          intervalDiff = 1.0 / ( numberOfEntries - 1 );
+          for ( int i = 0; i < numberOfEntries; ++i )
+          {
+            mRasterLayer->dataProvider()->cumulativeCut( bandNr, 0.0, i * intervalDiff, cut1, cut2, extent, sampleSize );
+            entryValues.push_back( cut2 );
+          }
+        }
+      }
+      else if ( numberOfEntries == 1 )
+      {
+        mRasterLayer->dataProvider()->cumulativeCut( bandNr, 0.0, 0.5, cut1, cut2, extent, sampleSize );
+        entryValues.push_back( cut2 );
+      }
+    }
+    else // EqualInterval
+    {
+      if ( numberOfEntries > 1 )
+      {
+        entryValues.reserve( numberOfEntries );
+        if ( discrete )
+        {
+          // in discrete mode the lowest value is not an entry and the highest
+          // value is inf, there are ( numberOfEntries ) of which the first
+          // and last are not used.
+          double intervalDiff = ( max - min ) / ( numberOfEntries );
+
+          for ( int i = 1; i < numberOfEntries; ++i )
+          {
+            entryValues.push_back( min + i * intervalDiff );
+          }
+          entryValues.push_back( std::numeric_limits<double>::infinity() );
+        }
+        else
+        {
+          //because the highest value is also an entry, there are (numberOfEntries - 1) intervals
+          double intervalDiff = ( max - min ) / ( numberOfEntries - 1 );
+
+          for ( int i = 0; i < numberOfEntries; ++i )
+          {
+            entryValues.push_back( min + i * intervalDiff );
+          }
+        }
+      }
+      else if ( numberOfEntries == 1 )
+      {
+        if ( discrete )
+        {
+          entryValues.push_back( std::numeric_limits<double>::infinity() );
+        }
+        else
+        {
+          entryValues.push_back(( max + min ) / 2 );
         }
       }
     }
-    else if ( numberOfEntries == 1 )
-    {
-      if ( discrete )
-      {
-        entryValues.push_back( std::numeric_limits<double>::infinity() );
-      }
-      else
-      {
-        entryValues.push_back(( max + min ) / 2 );
-      }
-    }
-  }
 
-  if ( ! colorRamp )
-  {
-    //hard code color range from blue -> red (previous default)
-    int colorDiff = 0;
-    if ( numberOfEntries != 0 )
+    if ( ! colorRamp )
     {
-      colorDiff = ( int )( 255 / numberOfEntries );
-    }
+      //hard code color range from blue -> red (previous default)
+      int colorDiff = 0;
+      if ( numberOfEntries != 0 )
+      {
+        colorDiff = ( int )( 255 / numberOfEntries );
+      }
 
-    entryColors.reserve( numberOfEntries );
-    for ( int i = 0; i < numberOfEntries; ++i )
-    {
-      QColor currentColor;
-      int idx = mInvertCheckBox->isChecked() ? numberOfEntries - i - 1 : i;
-      currentColor.setRgb( colorDiff*idx, 0, 255 - colorDiff * idx );
-      entryColors.push_back( currentColor );
+      entryColors.reserve( numberOfEntries );
+      for ( int i = 0; i < numberOfEntries; ++i )
+      {
+        QColor currentColor;
+        int idx = mInvertCheckBox->isChecked() ? numberOfEntries - i - 1 : i;
+        currentColor.setRgb( colorDiff*idx, 0, 255 - colorDiff * idx );
+        entryColors.push_back( currentColor );
+      }
     }
-  }
-  else
-  {
-    entryColors.reserve( numberOfEntries );
-    for ( int i = 0; i < numberOfEntries; ++i )
+    else
     {
-      int idx = mInvertCheckBox->isChecked() ? numberOfEntries - i - 1 : i;
-      entryColors.push_back( colorRamp->color((( double ) idx ) / ( numberOfEntries - 1 ) ) );
+      entryColors.reserve( numberOfEntries );
+      for ( int i = 0; i < numberOfEntries; ++i )
+      {
+        int idx = mInvertCheckBox->isChecked() ? numberOfEntries - i - 1 : i;
+        entryColors.push_back( colorRamp->color((( double ) idx ) / ( numberOfEntries - 1 ) ) );
+      }
     }
   }
 
