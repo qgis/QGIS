@@ -218,6 +218,10 @@ void QgsSingleBandPseudoColorRendererWidget::autoLabel()
       {
         label = "<= " + currentItem->text( ValueColumn ) + unit;
       }
+      else if ( currentItem->text( ValueColumn ).toDouble() == std::numeric_limits<double>::infinity() )
+      {
+        label = "> " + mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn );
+      }
       else
       {
         label = mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn ) + " - " + currentItem->text( ValueColumn ) + unit;
@@ -330,6 +334,8 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
   //QgsRasterBandStats myRasterBandStats = mRasterLayer->dataProvider()->bandStatistics( bandNr );
   int numberOfEntries = 0;
 
+  bool discrete = mColorInterpolationComboBox->currentText() == tr( "Discrete" );
+
   QList<double> entryValues;
   QVector<QColor> entryColors;
 
@@ -343,18 +349,29 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
     if ( colorRamp )
     {
       numberOfEntries = colorRamp->count();
-      entryValues.reserve( colorRamp->count() );
-      for ( int i = 0; i < colorRamp->count(); ++i )
+      entryValues.reserve( numberOfEntries );
+      if ( discrete )
       {
-        double value = colorRamp->value( i );
-        entryValues.push_back( min + value * ( max - min ) );
+        double intervalDiff = ( max - min ) * ( numberOfEntries - 1 ) / numberOfEntries;
+        for ( int i = 1; i < numberOfEntries; ++i )
+        {
+          double value = colorRamp->value( i );
+          entryValues.push_back( min + value * intervalDiff );
+        }
+        entryValues.push_back( std::numeric_limits<double>::infinity() );
+      }
+      else
+      {
+        for ( int i = 0; i < numberOfEntries; ++i )
+        {
+          double value = colorRamp->value( i );
+          entryValues.push_back( min + value * ( max - min ) );
+        }
       }
     }
   }
   else if ( mClassificationModeComboBox->itemData( mClassificationModeComboBox->currentIndex() ).toInt() == Quantile )
   { // Quantile
-    mMinMaxWidget->load();
-
     numberOfEntries = mNumberOfEntriesSpinBox->value();
 
     int bandNr = mBandComboBox->itemData( bandComboIndex ).toInt();
@@ -366,15 +383,31 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
     QgsRectangle extent = mMinMaxWidget->extent();
     int sampleSize = mMinMaxWidget->sampleSize();
 
+    // set min and max from histogram, used later to calculate number of decimals to display
+    mRasterLayer->dataProvider()->cumulativeCut( bandNr, 0.0, 1.0, min, max, extent, sampleSize );
+
     double intervalDiff;
     if ( numberOfEntries > 1 )
     {
-      intervalDiff = 1.0 / ( numberOfEntries - 1 );
       entryValues.reserve( numberOfEntries );
-      for ( int i = 0; i < numberOfEntries; ++i )
+      if ( discrete )
       {
-        mRasterLayer->dataProvider()->cumulativeCut( bandNr, 0.0, i * intervalDiff, cut1, cut2, extent, sampleSize );
-        entryValues.push_back( cut2 );
+        intervalDiff = 1.0 / ( numberOfEntries );
+        for ( int i = 1; i < numberOfEntries; ++i )
+        {
+          mRasterLayer->dataProvider()->cumulativeCut( bandNr, 0.0, i * intervalDiff, cut1, cut2, extent, sampleSize );
+          entryValues.push_back( cut2 );
+        }
+        entryValues.push_back( std::numeric_limits<double>::infinity() );
+      }
+      else
+      {
+        intervalDiff = 1.0 / ( numberOfEntries - 1 );
+        for ( int i = 0; i < numberOfEntries; ++i )
+        {
+          mRasterLayer->dataProvider()->cumulativeCut( bandNr, 0.0, i * intervalDiff, cut1, cut2, extent, sampleSize );
+          entryValues.push_back( cut2 );
+        }
       }
     }
     else if ( numberOfEntries == 1 )
@@ -386,44 +419,46 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
   else // EqualInterval
   {
     numberOfEntries = mNumberOfEntriesSpinBox->value();
-    //double currentValue = myRasterBandStats.minimumValue;
-    double currentValue = min;
-    double intervalDiff;
+
     if ( numberOfEntries > 1 )
     {
-      //because the highest value is also an entry, there are (numberOfEntries - 1)
-      //intervals
-      //intervalDiff = ( myRasterBandStats.maximumValue - myRasterBandStats.minimumValue ) /
-      intervalDiff = ( max - min ) / ( numberOfEntries - 1 );
-    }
-    else
-    {
-      //intervalDiff = myRasterBandStats.maximumValue - myRasterBandStats.minimumValue;
-      intervalDiff = max - min;
-    }
+      entryValues.reserve( numberOfEntries );
+      if ( discrete )
+      {
+        // in discrete mode the lowest value is not an entry and the highest
+        // value is inf, there are ( numberOfEntries ) of which the first
+        // and last are not used.
+        double intervalDiff = ( max - min ) / ( numberOfEntries );
 
-    entryValues.reserve( numberOfEntries );
-    for ( int i = 0; i < numberOfEntries; ++i )
+        for ( int i = 1; i < numberOfEntries; ++i )
+        {
+          entryValues.push_back( min + i * intervalDiff );
+        }
+        entryValues.push_back( std::numeric_limits<double>::infinity() );
+      }
+      else
+      {
+        //because the highest value is also an entry, there are (numberOfEntries - 1) intervals
+        double intervalDiff = ( max - min ) / ( numberOfEntries - 1 );
+
+        for ( int i = 0; i < numberOfEntries; ++i )
+        {
+          entryValues.push_back( min + i * intervalDiff );
+        }
+      }
+    }
+    else if ( numberOfEntries == 1 )
     {
-      entryValues.push_back( currentValue );
-      currentValue += intervalDiff;
+      if ( discrete )
+      {
+        entryValues.push_back( std::numeric_limits<double>::infinity() );
+      }
+      else
+      {
+        entryValues.push_back(( max + min ) / 2 );
+      }
     }
   }
-
-#if 0
-  //hard code color range from blue -> red for now. Allow choice of ramps in future
-  int colorDiff = 0;
-  if ( numberOfEntries != 0 )
-  {
-    colorDiff = ( int )( 255 / numberOfEntries );
-  }
-  for ( int i = 0; i < numberOfEntries; ++i )
-  {
-    QColor currentColor;
-    currentColor.setRgb( colorDiff*i, 0, 255 - colorDiff * i );
-    entryColors.push_back( currentColor );
-  }
-#endif
 
   if ( ! colorRamp )
   {
@@ -478,6 +513,8 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
 void QgsSingleBandPseudoColorRendererWidget::on_mClassificationModeComboBox_currentIndexChanged( int index )
 {
   mNumberOfEntriesSpinBox->setEnabled( mClassificationModeComboBox->itemData( index ).toInt() != Continuous );
+  mMinLineEdit->setEnabled( mClassificationModeComboBox->itemData( index ).toInt() != Quantile );
+  mMaxLineEdit->setEnabled( mClassificationModeComboBox->itemData( index ).toInt() != Quantile );
 }
 
 void QgsSingleBandPseudoColorRendererWidget::on_mColorRampComboBox_currentIndexChanged( int index )
