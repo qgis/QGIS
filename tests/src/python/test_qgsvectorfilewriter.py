@@ -329,7 +329,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(f['field3'], 13)
 
         #finally test writing no attributes
-        dest_file_name = os.path.join(str(QDir.tempPath()), 'subset_attributes.shp')
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'no_attributes.shp')
         write_result = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
             dest_file_name,
