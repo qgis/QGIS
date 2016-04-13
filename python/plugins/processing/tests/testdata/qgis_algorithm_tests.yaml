@@ -186,7 +186,7 @@ tests:
         name: expected/eliminate_largest_area.gml
         type: vector
 
-        
+
   - name: Dissolve with geometries reported as valid but as invalid with isGeosValid
     algorithm: qgis:dissolve
     params:
@@ -264,6 +264,25 @@ tests:
     results:
       OUTPUT:
         name: expected/buffer_polys_dissolve.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:rectanglesovalsdiamondsfixed
+    name: Create fixed distance rectange buffers around points
+    params:
+      HEIGHT: 0.25
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+      ROTATION: 45
+      SEGMENTS: 36
+      SHAPE: 0
+      WIDTH: 0.5
+    results:
+      OUTPUT_LAYER:
+        name: expected/rectanglesovalsdiamondsfixed.gml
         type: vector
         compare:
           geometry:

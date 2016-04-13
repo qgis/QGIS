@@ -144,6 +144,8 @@ from .Smooth import Smooth
 from .ReverseLineDirection import ReverseLineDirection
 from .SpatialIndex import SpatialIndex
 from .DefineProjection import DefineProjection
+from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
+from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -193,7 +195,9 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SplitLinesWithLines(), CreateConstantRaster(),
                         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
                         CheckValidity(), OrientedMinimumBoundingBox(), Smooth(),
-                        ReverseLineDirection(), SpatialIndex(), DefineProjection()
+                        ReverseLineDirection(), SpatialIndex(), DefineProjection(),
+                        RectanglesOvalsDiamondsVariable(),
+                        RectanglesOvalsDiamondsFixed()
                         ]
 
         if hasMatplotlib:
