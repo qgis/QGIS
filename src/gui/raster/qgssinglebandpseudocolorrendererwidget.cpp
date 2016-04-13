@@ -383,7 +383,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
         {
           // if color ramp is continuous scale values to get equally distributed classes.
           // Doesn't work perfectly when stops are non equally distributed.
-          intervalDiff *= ( numberOfEntries - 1 ) / numberOfEntries;
+          intervalDiff *= ( numberOfEntries - 1 ) / ( double )numberOfEntries;
         }
 
         // skip first value (always 0.0)
