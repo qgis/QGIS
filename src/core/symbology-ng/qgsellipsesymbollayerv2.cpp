@@ -597,6 +597,14 @@ void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV
   {
     mPainterPath.addRect( QRectF( -size.width() / 2.0, -size.height() / 2.0, size.width(), size.height() ) );
   }
+  else if ( symbolName == "diamond" )
+  {
+    mPainterPath.moveTo( -size.width() / 2.0, 0 );
+    mPainterPath.lineTo( 0, size.height() / 2.0 );
+    mPainterPath.lineTo( size.width() / 2.0, 0 );
+    mPainterPath.lineTo( 0, -size.height() / 2.0 );
+    mPainterPath.lineTo( -size.width() / 2.0, 0 );
+  }
   else if ( symbolName == "cross" )
   {
     mPainterPath.moveTo( 0, -size.height() / 2.0 );
