@@ -65,6 +65,17 @@ QgsOfflineEditing::~QgsOfflineEditing()
 /**
  * convert current project to offline project
  * returns offline project file path
+ *
+ * Workflow:
+ *  - copy layers to spatialite
+ *  - create spatialite db at offlineDataPath
+ *  - create table for each layer
+ *  - add new spatialite layer
+ *  - copy features
+ *  - save as offline project
+ *  - mark offline layers
+ *  - remove remote layers
+ *  - mark as offline project
  */
 bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath, const QString& offlineDbFile, const QStringList& layerIds )
 {
@@ -129,6 +140,9 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
         if ( newLayer )
         {
           layerIdMapping.insert( origLayerId, newLayer );
+          // remove remote layer
+          QgsMapLayerRegistry::instance()->removeMapLayers(
+            QStringList() << vl->id() );
         }
       }
 
@@ -172,19 +186,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
       return true;
     }
   }
-
   return false;
-
-  // Workflow:
-  // copy layers to spatialite
-  // create spatialite db at offlineDataPath
-  // create table for each layer
-  // add new spatialite layer
-  // copy features
-  // save as offline project
-  // mark offline layers
-  // remove remote layers
-  // mark as offline project
 }
 
 bool QgsOfflineEditing::isOfflineProject()
@@ -655,10 +657,6 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
       {
         showWarning( newLayer->commitErrors().join( "\n" ) );
       }
-
-      // remove remote layer
-      QgsMapLayerRegistry::instance()->removeMapLayers(
-        QStringList() << layer->id() );
     }
     return newLayer;
   }

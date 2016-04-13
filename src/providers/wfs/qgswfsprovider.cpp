@@ -168,10 +168,7 @@ void QgsWFSProvider::reloadData()
 void QgsWFSProvider::deleteData()
 {
   mSelectedFeatures.clear();
-  for ( int i = 0; i < mFeatures.size(); i++ )
-  {
-    delete mFeatures[i];
-  }
+  qDeleteAll( mFeatures );
   mFeatures.clear();
 }
 
@@ -213,85 +210,13 @@ bool QgsWFSProvider::isValid()
 
 QgsFeatureIterator QgsWFSProvider::getFeatures( const QgsFeatureRequest& request )
 {
-#if 0
-  if ( !( request.flags() & QgsFeatureRequest::NoGeometry ) )
-  {
-    QgsRectangle rect = request.filterRect();
-    if ( !rect.isEmpty() )
-    {
-      QString dsURI = dataSourceUri();
-      //first time through, initialize GetRenderedOnly args
-      //ctor cannot initialize because layer object not available then
-      if ( ! mInitGro )
-      { //did user check "Cache Features" in WFS layer source selection?
-        if ( dsURI.contains( "BBOX=" ) )
-        { //no: initialize incremental getFeature
-          if ( initGetRenderedOnly( rect ) )
-          {
-            mGetRenderedOnly = true;
-          }
-          else
-          { //initialization failed;
-            QgsDebugMsg( QString( "GetRenderedOnly initialization failed; incorrect operation may occur\n%1" )
-                         .arg( dataSourceUri() ) );
-            QMessageBox( QMessageBox::Warning, "Non-Cached layer initialization failed!",
-                         QString( "Incorrect operation may occur:\n%1" ).arg( dataSourceUri() ) );
-          }
-        }
-        mInitGro = true;
-      }
-
-      if ( mGetRenderedOnly )
-      { //"Cache Features" was not selected for this layer
-        //has rendered extent expanded beyond last-retrieved WFS extent?
-        //NB: "intersect" instead of "contains" tolerates rounding errors;
-        //    avoids unnecessary second fetch on zoom-in/zoom-out sequences
-        QgsRectangle olap( rect );
-        olap = olap.intersect( &mGetExtent );
-        if ( qgsDoubleNear( rect.width(), olap.width() ) && qgsDoubleNear( rect.height(), olap.height() ) )
-        { //difference between canvas and layer extents is within rounding error: do not re-fetch
-          QgsDebugMsg( QString( "Layer %1 GetRenderedOnly: no fetch required" ).arg( mLayer->name() ) );
-        }
-        else
-        { //combined old and new extents might speed up local panning & zooming
-          mGetExtent.combineExtentWith( &rect );
-          //but see if the combination is useless or too big
-          double pArea = mGetExtent.width() * mGetExtent.height();
-          double cArea = rect.width() * rect.height();
-          if ( olap.isEmpty() || pArea > ( cArea * 4.0 ) )
-          { //new canvas extent does not overlap or combining old and new extents would
-            //fetch > 4 times the area to be rendered; get only what will be rendered
-            mGetExtent = rect;
-          }
-          QgsDebugMsg( QString( "Layer %1 GetRenderedOnly: fetching extent %2" )
-                       .arg( mLayer->name(), mGetExtent.asWktCoordinates() ) );
-          dsURI = dsURI.replace( QRegExp( "BBOX=[^&]*" ),
-                                 QString( "BBOX=%1,%2,%3,%4" )
-                                 .arg( qgsDoubleToString( mGetExtent.xMinimum() ) )
-                                 .arg( qgsDoubleToString( mGetExtent.yMinimum() ) )
-                                 .arg( qgsDoubleToString( mGetExtent.xMaximum() ) )
-                                 .arg( qgsDoubleToString( mGetExtent.yMaximum() ) ) );
-          //TODO: BBOX may not be combined with FILTER. WFS spec v. 1.1.0, sec. 14.7.3 ff.
-          //      if a FILTER is present, the BBOX must be merged into it, capabilities permitting.
-          //      Else one criterion must be abandoned and the user warned.  [WBC 111221]
-          setDataSourceUri( dsURI );
-          reloadData();
-          mLayer->updateExtents();
-        }
-      }
-    }
-
-  }
-  return new QgsWFSFeatureIterator( new QgsWFSFeatureSource( this ), true, request );
-#else
   QgsRectangle rect = request.filterRect();
   if ( !( request.flags() & QgsFeatureRequest::NoGeometry ) && !rect.isEmpty() )
   {
     deleteData();
     reloadData();
   }
-  return new QgsWFSFeatureIterator( new QgsWFSFeatureSource( this ), true, request );
-#endif
+  return QgsFeatureIterator( new QgsWFSFeatureIterator( new QgsWFSFeatureSource( this ), true, request ) );
 }
 
 int QgsWFSProvider::getFeature( const QString& uri )
