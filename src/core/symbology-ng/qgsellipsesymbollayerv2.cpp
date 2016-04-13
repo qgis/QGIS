@@ -379,6 +379,9 @@ QgsEllipseSymbolLayerV2* QgsEllipseSymbolLayerV2::clone() const
   m->setSymbolHeightMapUnitScale( mSymbolHeightMapUnitScale );
   m->setOutlineWidthUnit( mOutlineWidthUnit );
   m->setOutlineWidthMapUnitScale( mOutlineWidthMapUnitScale );
+  m->setAngle( mAngle );
+  m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
+  m->setVerticalAnchorPoint( mVerticalAnchorPoint );
 
   copyDataDefinedProperties( m );
   copyPaintEffect( m );
