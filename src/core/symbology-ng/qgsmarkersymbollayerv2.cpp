@@ -365,17 +365,34 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareShape( const QString& name, QPolygonF 
   }
   else if ( name == "pentagon" )
   {
+    /* angular-representation of hardcoded values used
     polygon << QPointF( sin( DEG2RAD( 288.0 ) ), - cos( DEG2RAD( 288.0 ) ) )
     << QPointF( sin( DEG2RAD( 216.0 ) ), - cos( DEG2RAD( 216.0 ) ) )
     << QPointF( sin( DEG2RAD( 144.0 ) ), - cos( DEG2RAD( 144.0 ) ) )
     << QPointF( sin( DEG2RAD( 72.0 ) ), - cos( DEG2RAD( 72.0 ) ) )
+    << QPointF( 0, -1 ); */
+    polygon << QPointF( -0.9511, -0.3090 )
+    << QPointF( -0.5878, 0.8090 )
+    << QPointF( 0.5878, 0.8090 )
+    << QPointF( 0.9511, -0.3090 )
     << QPointF( 0, -1 );
     return true;
   }
   else if ( name == "hexagon" )
   {
-    polygon << QPointF( -1, 0.5 ) << QPointF( 0, 1 ) << QPointF( 1, 0.5 )
-    << QPointF( 1, -0.5 ) << QPointF( 0, -1 ) << QPointF( -1, -0.5 );
+    /* angular-representation of hardcoded values used
+    polygon << QPointF( sin( DEG2RAD( 300.0 ) ), - cos( DEG2RAD( 300.0 ) ) )
+    << QPointF( sin( DEG2RAD( 240.0 ) ), - cos( DEG2RAD( 240.0 ) ) )
+    << QPointF( sin( DEG2RAD( 180.0 ) ), - cos( DEG2RAD( 180.0 ) ) )
+    << QPointF( sin( DEG2RAD( 120.0 ) ), - cos( DEG2RAD( 120.0 ) ) )
+    << QPointF( sin( DEG2RAD( 60.0 ) ), - cos( DEG2RAD( 60.0 ) ) )
+    << QPointF( 0, -1 ); */
+    polygon << QPointF( -0.8660, -0.5 )
+    << QPointF( -0.8660, 0.5 )
+    << QPointF( 0, 1 )
+    << QPointF( 0.8660, 0.5 )
+    << QPointF( 0.8660, -0.5 )
+    << QPointF( 0, -1 );
     return true;
   }
   else if ( name == "triangle" )
@@ -385,8 +402,12 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareShape( const QString& name, QPolygonF 
   }
   else if ( name == "equilateral_triangle" )
   {
+    /* angular-representation of hardcoded values used
     polygon << QPointF( sin( DEG2RAD( 240.0 ) ), - cos( DEG2RAD( 240.0 ) ) )
     << QPointF( sin( DEG2RAD( 120.0 ) ), - cos( DEG2RAD( 120.0 ) ) )
+    << QPointF( 0, -1 ); */
+    polygon << QPointF( -0.8660, 0.5 )
+    << QPointF( 0.8660, 0.5 )
     << QPointF( 0, -1 );
     return true;
   }
