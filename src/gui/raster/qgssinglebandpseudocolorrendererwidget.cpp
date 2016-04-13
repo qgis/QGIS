@@ -352,7 +352,22 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
       entryValues.reserve( numberOfEntries );
       if ( discrete )
       {
-        double intervalDiff = ( max - min ) * ( numberOfEntries - 1 ) / numberOfEntries;
+        double intervalDiff = max - min;
+
+        // remove last class when ColorRamp is gradient and discrete, as they are implemented with an extra stop
+        QgsVectorGradientColorRampV2* colorGradientRamp = dynamic_cast<QgsVectorGradientColorRampV2*>( colorRamp );
+        if ( colorGradientRamp != NULL && colorGradientRamp->isDiscrete() )
+        {
+          numberOfEntries--;
+        }
+        else
+        {
+          // if color ramp is continuous scale values to get equally distributed classes.
+          // Doesn't work perfectly when stops are non equally distributed.
+          intervalDiff *= ( numberOfEntries - 1 ) / numberOfEntries;
+        }
+
+        // skip first value (always 0.0)
         for ( int i = 1; i < numberOfEntries; ++i )
         {
           double value = colorRamp->value( i );
