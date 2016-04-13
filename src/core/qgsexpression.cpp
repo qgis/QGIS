@@ -21,6 +21,7 @@
 #include <QRegExp>
 #include <QColor>
 #include <QUuid>
+#include <QMutex>
 
 #include <math.h>
 #include <limits>
@@ -2143,6 +2144,25 @@ static QVariant fcnAzimuth( const QVariantList& values, const QgsExpressionConte
   }
 }
 
+static QVariant fcnProject( const QVariantList& values, const QgsExpressionContext *, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+
+  if ( geom.type() != QGis::Point )
+  {
+    parent->setEvalErrorString( "'project' requires a point geometry" );
+    return QVariant();
+  }
+
+  double distance = getDoubleValue( values.at( 1 ), parent );
+  double bearing = getDoubleValue( values.at( 2 ), parent );
+
+  QgsPoint p = geom.asPoint();
+  QgsPoint newPoint = p.project( distance, ( 180 * bearing ) / M_PI );
+
+  return QVariant::fromValue( QgsGeometry( new QgsPointV2( newPoint.x(), newPoint.y() ) ) );
+}
+
 static QVariant fcnExtrude( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   if ( values.length() != 3 )
@@ -2841,7 +2861,7 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "overlaps" << "within" << "buffer" << "centroid" << "bounds" << "reverse" << "exterior_ring"
     << "bounds_width" << "bounds_height" << "is_closed" << "convex_hull" << "difference"
     << "distance" << "intersection" << "sym_difference" << "combine"
-    << "extrude" << "azimuth" << "closest_point" << "shortest_line"
+    << "extrude" << "azimuth" <<  "project" << "closest_point" << "shortest_line"
     << "union" << "geom_to_wkt" << "geomToWKT" << "geometry"
     << "transform" << "get_feature" << "getFeature"
     << "levenshtein" << "longest_common_substring" << "hamming_distance"
@@ -2857,6 +2877,13 @@ QList<QgsExpression::Function*> QgsExpression::gmOwnedFunctions;
 
 const QList<QgsExpression::Function*>& QgsExpression::Functions()
 {
+  // The construction of the list isn't thread-safe, and without the mutex,
+  // crashes in the WFS provider may occur, since it can parse expressions
+  // in parallel.
+  // The mutex needs to be recursive.
+  static QMutex sFunctionsMutex( QMutex::Recursive );
+  QMutexLocker locker( &sFunctionsMutex );
+
   if ( gmFunctions.isEmpty() )
   {
     gmFunctions
@@ -2864,6 +2891,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "radians", ParameterList() << Parameter( "degrees" ), fcnRadians, "Math" )
     << new StaticFunction( "degrees", ParameterList() << Parameter( "radians" ), fcnDegrees, "Math" )
     << new StaticFunction( "azimuth", ParameterList() << Parameter( "point_a" ) << Parameter( "point_b" ), fcnAzimuth, "Math" )
+    << new StaticFunction( "project", ParameterList() << Parameter( "point" ) << Parameter( "distance" ) << Parameter( "bearing" ), fcnProject, "GeometryGroup" )
     << new StaticFunction( "abs", ParameterList() << Parameter( "value" ), fcnAbs, "Math" )
     << new StaticFunction( "cos", ParameterList() << Parameter( "angle" ), fcnCos, "Math" )
     << new StaticFunction( "sin", ParameterList() << Parameter( "angle" ), fcnSin, "Math" )

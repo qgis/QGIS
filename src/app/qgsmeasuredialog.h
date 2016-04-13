@@ -36,10 +36,10 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f = nullptr );
 
     //! Save position
-    void saveWindowLocation( void );
+    void saveWindowLocation();
 
     //! Restore last window position/size
-    void restorePosition( void );
+    void restorePosition();
 
     //! Add new point
     void addPoint( const QgsPoint &point );

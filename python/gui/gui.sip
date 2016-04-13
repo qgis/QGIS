@@ -49,6 +49,7 @@
 %Include qgscolorschemelist.sip
 %Include qgscolorswatchgrid.sip
 %Include qgscolorwidgets.sip
+%Include qgscomposeritemcombobox.sip
 %Include qgscomposerruler.sip
 %Include qgscomposerview.sip
 %Include qgscredentialdialog.sip
@@ -208,6 +209,7 @@
 %Include symbology-ng/qgsheatmaprendererwidget.sip
 %Include symbology-ng/qgsinvertedpolygonrendererwidget.sip
 %Include symbology-ng/qgslayerpropertieswidget.sip
+%Include symbology-ng/qgsnullsymbolrendererwidget.sip
 %Include symbology-ng/qgspenstylecombobox.sip
 %Include symbology-ng/qgspointdisplacementrendererwidget.sip
 %Include symbology-ng/qgsrendererv2propertiesdialog.sip

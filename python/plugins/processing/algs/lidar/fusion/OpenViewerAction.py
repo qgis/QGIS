@@ -36,8 +36,8 @@ from .FusionUtils import FusionUtils
 class OpenViewerAction(ToolboxAction):
 
     def __init__(self):
-        self.name = self.tr('Open Fusion LAS viewer')
-        self.group = self.tr('Visualization')
+        self.name, self.i18n_name = self.trAction('Open Fusion LAS viewer')
+        self.group, self.i18n_group = self.trAction('Visualization')
 
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + '/../../../images/tool.png')

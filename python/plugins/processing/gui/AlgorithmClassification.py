@@ -74,3 +74,7 @@ def getDisplayNameEn(alg):
 
 def getDisplayName(alg):
     return alg.i18n_name or alg.name
+
+
+def getDisplayNames(alg):
+    return alg.name, alg.i18n_name

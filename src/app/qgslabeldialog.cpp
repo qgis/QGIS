@@ -272,7 +272,7 @@ void QgsLabelDialog::init()
 
 
 
-void QgsLabelDialog::changeFont( void )
+void QgsLabelDialog::changeFont()
 {
   QgsDebugMsg( "entering." );
 
@@ -290,7 +290,7 @@ void QgsLabelDialog::changeFont( void )
   lblSample->setFont( mFont );
 }
 
-void QgsLabelDialog::changeFontColor( void )
+void QgsLabelDialog::changeFontColor()
 {
   QgsDebugMsg( "entering." );
 
@@ -304,7 +304,7 @@ void QgsLabelDialog::changeFontColor( void )
   lblSample->setPalette( palette );
 }
 
-void QgsLabelDialog::changeBufferColor( void )
+void QgsLabelDialog::changeBufferColor()
 {
   QgsDebugMsg( "entering." );
 

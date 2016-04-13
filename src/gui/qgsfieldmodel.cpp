@@ -240,25 +240,6 @@ int QgsFieldModel::columnCount( const QModelIndex &parent ) const
 
 QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
 {
-  static QIcon intIcon;
-  if ( intIcon.isNull() )
-    intIcon = QgsApplication::getThemeIcon( "/mIconFieldInteger.svg" );
-  static QIcon floatIcon;
-  if ( floatIcon.isNull() )
-    floatIcon = QgsApplication::getThemeIcon( "/mIconFieldFloat.svg" );
-  static QIcon stringIcon;
-  if ( stringIcon.isNull() )
-    stringIcon = QgsApplication::getThemeIcon( "/mIconFieldText.svg" );
-  static QIcon dateIcon;
-  if ( dateIcon.isNull() )
-    dateIcon = QgsApplication::getThemeIcon( "/mIconFieldDate.svg" );
-  static QIcon dateTimeIcon;
-  if ( dateTimeIcon.isNull() )
-    dateTimeIcon = QgsApplication::getThemeIcon( "/mIconFieldDateTime.svg" );
-  static QIcon timeIcon;
-  if ( timeIcon.isNull() )
-    timeIcon = QgsApplication::getThemeIcon( "/mIconFieldTime.svg" );
-
   if ( !index.isValid() )
     return QVariant();
 

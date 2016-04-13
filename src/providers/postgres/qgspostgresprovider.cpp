@@ -1918,8 +1918,21 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
     insert += values + ')';
 
+    if ( mPrimaryKeyType == pktFidMap || mPrimaryKeyType == pktInt )
+    {
+      insert += " RETURNING ";
+
+      QString delim;
+      Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+      {
+        insert += delim + quotedIdentifier( mAttributeFields.at( idx ).name() );
+        delim = ',';
+      }
+    }
+
     QgsDebugMsg( QString( "prepare addfeatures: %1" ).arg( insert ) );
     QgsPostgresResult stmt( conn->PQprepare( "addfeatures", insert, fieldId.size() + offset - 1, nullptr ) );
+
     if ( stmt.PQresultStatus() != PGRES_COMMAND_OK )
       throw PGException( stmt );
 
@@ -1961,7 +1974,16 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       }
 
       QgsPostgresResult result( conn->PQexecPrepared( "addfeatures", params ) );
-      if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+
+      if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+      {
+        for ( int i = 0; i < mPrimaryKeyAttrs.size(); ++i )
+        {
+          int idx = mPrimaryKeyAttrs.at( i );
+          features->setAttribute( idx, convertValue( mAttributeFields.at( idx ).type(), result.PQgetvalue( 0, i ) ) );
+        }
+      }
+      else if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         throw PGException( result );
 
       if ( mPrimaryKeyType == pktOid )
@@ -4108,6 +4130,10 @@ QGISEXTERN QgsTransaction* createTransaction( const QString& connString )
   return new QgsPostgresTransaction( connString );
 }
 
+QGISEXTERN void cleanupProvider()
+{
+  QgsPostgresConnPool::cleanupInstance();
+}
 
 // ----------
 

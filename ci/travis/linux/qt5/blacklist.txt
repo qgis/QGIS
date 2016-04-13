@@ -13,15 +13,14 @@ PyQgsComposerLabel
 PyQgsComposerMap
 PyQgsComposerMapGrid
 PyQgsComposerPicture
-PyQgsComposerShapes
 PyQgsComposerPolygon
 PyQgsComposerPolyline
+PyQgsComposerShapes
 PyQgsComposition
 PyQgsConditionalStyle
 PyQgsCoordinateTransform
 PyQgsDelimitedTextProvider
 PyQgsDistanceArea
-PyQgsDocCoverage
 PyQgsEditWidgets
 PyQgsFeature
 PyQgsFeatureIterator
@@ -36,6 +35,7 @@ PyQgsLocalServer
 PyQgsMapUnitScale
 PyQgsMemoryProvider
 PyQgsNetworkContentFetcher
+PyQgsNullSymbolRenderer
 PyQgsPalLabelingBase
 PyQgsPalLabelingCanvas
 PyQgsPalLabelingComposer
@@ -66,8 +66,8 @@ PyQgsVectorFileWriter
 PyQgsVectorLayer
 PyQgsVirtualLayerDefinition
 PyQgsVirtualLayerProvider
+PyQgsWFSProvider
 PyQgsZonalStatistics
-qgis_alignrastertest
 qgis_composereffectstest
 qgis_composerlabeltest
 qgis_composermapgridtest
@@ -83,7 +83,6 @@ qgis_composertabletest
 qgis_composertablev2test
 qgis_composerutils
 qgis_ellipsemarkertest
-qgis_fieldexpressionwidget
 qgis_fieldtest
 qgis_geometrytest
 qgis_gradienttest
@@ -93,6 +92,7 @@ qgis_linefillsymboltest
 qgis_maprenderertest
 qgis_maprotationtest
 qgis_markerlinessymboltest
+qgis_openstreetmaptest
 qgis_painteffecttest
 qgis_pointpatternfillsymboltest
 qgis_simplemarkertest

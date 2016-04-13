@@ -412,22 +412,32 @@ QString QgsApplication::iconPath( const QString& iconFile )
 
 QIcon QgsApplication::getThemeIcon( const QString &theName )
 {
+  QgsApplication* app = qobject_cast<QgsApplication*>( instance() );
+  if ( app && app->mIconCache.contains( theName ) )
+    return app->mIconCache.value( theName );
+
+  QIcon icon;
+
   QString myPreferredPath = activeThemePath() + QDir::separator() + theName;
   QString myDefaultPath = defaultThemePath() + QDir::separator() + theName;
   if ( QFile::exists( myPreferredPath ) )
   {
-    return QIcon( myPreferredPath );
+    icon = QIcon( myPreferredPath );
   }
   else if ( QFile::exists( myDefaultPath ) )
   {
     //could still return an empty icon if it
     //doesnt exist in the default theme either!
-    return QIcon( myDefaultPath );
+    icon = QIcon( myDefaultPath );
   }
   else
   {
-    return QIcon();
+    icon = QIcon();
   }
+
+  if ( app )
+    app->mIconCache.insert( theName, icon );
+  return icon;
 }
 
 // TODO: add some caching mechanism ?

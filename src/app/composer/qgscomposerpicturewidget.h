@@ -45,12 +45,11 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     void on_mAddDirectoryButton_clicked();
     void on_mRemoveDirectoryButton_clicked();
     void on_mRotationFromComposerMapCheckBox_stateChanged( int state );
-    void on_mComposerMapComboBox_activated( const QString & text );
+    void composerMapChanged( const QgsComposerItem* item );
     void on_mResizeModeComboBox_currentIndexChanged( int index );
     void on_mAnchorPointComboBox_currentIndexChanged( int index );
 
   protected:
-    void showEvent( QShowEvent * event ) override;
     void resizeEvent( QResizeEvent * event ) override;
 
     QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget ) override;
@@ -86,8 +85,6 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     bool testSvgFile( const QString& filename ) const;
     /** Tests if a file is a valid pixel format*/
     bool testImageFile( const QString& filename ) const;
-    /** Updates the map combo box with the current composer map ids*/
-    void refreshMapComboBox();
 
     //! Renders an svg file to a QIcon, correctly handling any SVG parameters present in the file
     QIcon svgToIcon( const QString& filePath ) const;

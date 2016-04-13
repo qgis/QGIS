@@ -697,6 +697,44 @@ long QgsVectorLayer::featureCount( QgsSymbolV2* symbol )
   return mSymbolFeatureCountMap.value( symbol );
 }
 
+/** Used by QgsVectorLayer::countSymbolFeatures() to provide an interruption checker
+ *  @note not available in Python bindings
+ */
+class QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures: public QgsInterruptionChecker
+{
+  public:
+
+    /** Constructor */
+    QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures( QProgressDialog* dialog )
+        : mDialog( dialog )
+    {
+    }
+
+    virtual bool mustStop() const
+    {
+      if ( mDialog->isVisible() )
+      {
+        // So that we get a chance of hitting the Abort button
+#ifdef Q_OS_LINUX
+        // For some reason on Windows hasPendingEvents() always return true,
+        // but one iteration is actually enough on Windows to get good interactivity
+        // whereas on Linux we must allow for far more iterations.
+        // For safety limit the number of iterations
+        int nIters = 0;
+        while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+#endif
+        {
+          QCoreApplication::processEvents();
+        }
+        return mDialog->wasCanceled();
+      }
+      return false;
+    }
+
+  private:
+    QProgressDialog* mDialog;
+};
+
 bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
 {
   if ( mSymbolFeatureCounted )
@@ -729,12 +767,34 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   }
 
   long nFeatures = featureCount();
-  QProgressDialog progressDialog( tr( "Updating feature count for layer %1" ).arg( name() ), tr( "Abort" ), 0, nFeatures );
+
+  QWidget* mainWindow = nullptr;
+  Q_FOREACH ( QWidget* widget, qApp->topLevelWidgets() )
+  {
+    if ( widget->objectName() == "QgisApp" )
+    {
+      mainWindow = widget;
+      break;
+    }
+  }
+
+  QProgressDialog progressDialog( tr( "Updating feature count for layer %1" ).arg( name() ), tr( "Abort" ), 0, nFeatures, mainWindow );
   progressDialog.setWindowTitle( tr( "QGIS" ) );
   progressDialog.setWindowModality( Qt::WindowModal );
+  if ( showProgress )
+  {
+    // Properly initialize to 0 as recommended in doc so that the evaluation
+    // of the total time properly works
+    progressDialog.setValue( 0 );
+  }
   int featuresCounted = 0;
 
   QgsFeatureIterator fit = getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );
+  QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures interruptionCheck( &progressDialog );
+  if ( showProgress )
+  {
+    fit.setInterruptionChecker( &interruptionCheck );
+  }
 
   // Renderer (rule based) may depend on context scale, with scale is ignored if 0
   QgsRenderContext renderContext;
@@ -746,6 +806,8 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   mRendererV2->startRender( renderContext, fields() );
 
   QgsFeature f;
+  QTime time;
+  time.start();
   while ( fit.nextFeature( f ) )
   {
     renderContext.expressionContext().setFeature( f );
@@ -758,19 +820,33 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
 
     if ( showProgress )
     {
-      if ( featuresCounted % 50 == 0 )
+      // Refresh progress every 50 features or second
+      if (( featuresCounted % 50 == 0 ) || time.elapsed() > 1000 )
       {
+        time.restart();
         if ( featuresCounted > nFeatures ) //sometimes the feature count is not correct
         {
           progressDialog.setMaximum( 0 );
         }
         progressDialog.setValue( featuresCounted );
-        if ( progressDialog.wasCanceled() )
-        {
-          mSymbolFeatureCountMap.clear();
-          mRendererV2->stopRender( renderContext );
-          return false;
-        }
+      }
+      // So that we get a chance of hitting the Abort button
+#ifdef Q_OS_LINUX
+      // For some reason on Windows hasPendingEvents() always return true,
+      // but one iteration is actually enough on Windows to get good interactivity
+      // whereas on Linux we must allow for far more iterations.
+      // For safety limit the number of iterations
+      int nIters = 0;
+      while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+#endif
+      {
+        QCoreApplication::processEvents();
+      }
+      if ( progressDialog.wasCanceled() )
+      {
+        mSymbolFeatureCountMap.clear();
+        mRendererV2->stopRender( renderContext );
+        return false;
       }
     }
   }
@@ -1338,7 +1414,7 @@ void QgsVectorLayer::enableLabels( bool on )
   mLabelOn = on;
 }
 
-bool QgsVectorLayer::hasLabelsEnabled( void ) const
+bool QgsVectorLayer::hasLabelsEnabled() const
 {
   return mLabelOn;
 }

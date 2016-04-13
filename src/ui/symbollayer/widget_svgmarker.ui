@@ -26,6 +26,9 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="specialValueText">
+          <string>No outline</string>
+         </property>
          <property name="decimals">
           <number>6</number>
          </property>
@@ -38,7 +41,7 @@
          <property name="value">
           <double>0.200000000000000</double>
          </property>
-         <property name="showClearButton">
+         <property name="showClearButton" stdset="0">
           <bool>false</bool>
          </property>
         </widget>
@@ -334,7 +337,7 @@
          <property name="value">
           <double>1.000000000000000</double>
          </property>
-         <property name="showClearButton">
+         <property name="showClearButton" stdset="0">
           <bool>false</bool>
          </property>
         </widget>

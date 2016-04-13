@@ -363,7 +363,19 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
 
     QgsMarkerSymbolV2( const QgsSymbolLayerV2List& layers /Transfer/ = QgsSymbolLayerV2List() );
 
+    /** Sets the angle for the whole symbol. Individual symbol layer sizes
+     * will be rotated to maintain their current relative angle to the whole symbol angle.
+     * @param angle new symbol angle
+     * @see angle()
+     */
     void setAngle( double angle );
+
+    /** Returns the marker angle for the whole symbol. Note that for symbols with
+     * multiple symbol layers, this will correspond just to the angle of
+     * the first symbol layer.
+     * @note added in QGIS 2.16
+     * @see setAngle()
+     */
     double angle() const;
 
     /** Set data defined angle for whole symbol (including all symbol layers).
@@ -389,8 +401,59 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
      */
     void setLineAngle( double lineAngle );
 
+    /** Sets the size for the whole symbol. Individual symbol layer sizes
+     * will be scaled to maintain their current relative size to the whole symbol size.
+     * @param size new symbol size
+     * @see size()
+     * @see setSizeUnit()
+     * @see setSizeMapUnitScale()
+     */
     void setSize( double size );
+
+    /** Returns the size for the whole symbol, which is the maximum size of
+     * all marker symbol layers in the symbol.
+     * @see setSize()
+     * @see sizeUnit()
+     * @see sizeMapUnitScale()
+     */
     double size() const;
+
+    /** Sets the size units for the whole symbol (including all symbol layers).
+     * @param unit size units
+     * @note added in QGIS 2.16
+     * @see sizeUnit()
+     * @see setSizeMapUnitScale()
+     * @see setSize()
+     */
+    void setSizeUnit( OutputUnit unit );
+
+    /** Returns the size units for the whole symbol (including all symbol layers).
+     * @returns size units, or mixed units if symbol layers have different units
+     * @note added in QGIS 2.16
+     * @see setSizeUnit()
+     * @see sizeMapUnitScale()
+     * @see size()
+     */
+    OutputUnit sizeUnit() const;
+
+    /** Sets the size map unit scale for the whole symbol (including all symbol layers).
+     * @param scale map unit scale
+     * @note added in QGIS 2.16
+     * @see sizeMapUnitScale()
+     * @see setSizeUnit()
+     * @see setSize()
+     */
+    void setSizeMapUnitScale( const QgsMapUnitScale& scale );
+
+    /** Returns the size map unit scale for the whole symbol. Note that for symbols with
+     * multiple symbol layers, this will correspond just to the map unit scale
+     * for the first symbol layer.
+     * @note added in QGIS 2.16
+     * @see setSizeMapUnitScale()
+     * @see sizeUnit()
+     * @see size()
+     */
+    QgsMapUnitScale sizeMapUnitScale() const;
 
     /** Set data defined size for whole symbol (including all symbol layers).
      * @param dd data defined size
@@ -415,7 +478,8 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
     /** Returns the approximate bounding box of the marker symbol, which includes the bounding box
      * of all symbol layers for the symbol.
      * @returns approximate symbol bounds, in painter units
-     * @note added in QGIS 2.14     */
+     * @note added in QGIS 2.14
+     */
     QRectF bounds( QPointF point, QgsRenderContext& context ) const;
 
     virtual QgsMarkerSymbolV2* clone() const /Factory/;

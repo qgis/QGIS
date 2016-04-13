@@ -84,6 +84,7 @@ ENDMACRO (ADD_QGIS_TEST)
 #############################################################
 # Tests:
 
+ADD_QGIS_TEST(25drenderertest testqgs25drenderer.cpp)
 ADD_QGIS_TEST(applicationtest testqgsapplication.cpp)
 ADD_QGIS_TEST(atlascompositiontest testqgsatlascomposition.cpp)
 ADD_QGIS_TEST(authcryptotest testqgsauthcrypto.cpp)
@@ -134,6 +135,7 @@ ADD_QGIS_TEST(fontmarkertest2 testqgsfontmarker.cpp)
 ADD_QGIS_TEST(geometryimporttest testqgsgeometryimport.cpp)
 ADD_QGIS_TEST(geometrytest testqgsgeometry.cpp)
 ADD_QGIS_TEST(geometryutilstest testqgsgeometryutils.cpp)
+ADD_QGIS_TEST(gmltest testqgsgml.cpp)
 ADD_QGIS_TEST(gradienttest testqgsgradients.cpp )
 ADD_QGIS_TEST(graduatedsymbolrenderertest testqgsgraduatedsymbolrenderer.cpp)
 ADD_QGIS_TEST(histogramtest testqgshistogram.cpp)

@@ -30,6 +30,7 @@
 #include "qgsmapcanvas.h"
 #include "qgscontexthelp.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsmaplayerstylemanager.h"
 
 class QgsMapLayer;
 
@@ -159,7 +160,9 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     void updateSymbologyPage();
 
-    QgsVectorLayer *layer;
+    void setPbnQueryBuilderEnabled();
+
+    QgsVectorLayer *mLayer;
 
     bool mMetadataFilled;
 
@@ -187,10 +190,11 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     //! List of joins of a layer at the time of creation of the dialog. Used to return joins to previous state if dialog is cancelled
     QList< QgsVectorJoinInfo > mOldJoins;
 
-    void initDiagramTab();
+    /** Previous layer style. Used to reset style to previous state if new style
+     * was loaded but dialog is cancelled */
+    QgsMapLayerStyle mOldStyle;
 
-    /** Buffer pixmap which takes the picture of renderers before they are assigned to the vector layer*/
-    //QPixmap bufferPixmap;
+    void initDiagramTab();
 
     /** Adds a new join to mJoinTreeWidget*/
     void addJoinToTreeWidget( const QgsVectorJoinInfo& join , const int insertIndex = -1 );

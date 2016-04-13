@@ -336,9 +336,21 @@ class QgsSymbolLayerV2Utils
      * @param unit units for specified size
      * @param scale map unit scale
      * @note added in QGIS 2.12
-     * @see lineWidthScaleFactor
+     * @see lineWidthScaleFactor()
+     * @see convertToMapUnits()
      */
     static double convertToPainterUnits( const QgsRenderContext&c, double size, QgsSymbolV2::OutputUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+
+    /** Converts a size from the specied units to map units. The conversion respects the limits
+     * specified by the optional scale parameter.
+     * @param c render context
+     * @param size size to convert
+     * @param unit units for specified size
+     * @param scale map unit scale
+     * @note added in QGIS 2.16
+     * @see convertToPainterUnits()
+     */
+    static double convertToMapUnits( const QgsRenderContext&c, double size, QgsSymbolV2::OutputUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
     /** Returns scale factor painter units -> pixel dimensions*/
     static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );

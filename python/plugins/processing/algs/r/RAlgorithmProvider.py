@@ -52,7 +52,7 @@ class RAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.__init__(self)
         self.activate = False
         self.actions.append(CreateNewScriptAction(
-            self.tr('Create new R script'), CreateNewScriptAction.SCRIPT_R))
+            'Create new R script', CreateNewScriptAction.SCRIPT_R))
         self.actions.append(GetRScriptsAction())
         self.contextMenuActions = \
             [EditScriptAction(EditScriptAction.SCRIPT_R),

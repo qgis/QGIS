@@ -362,7 +362,27 @@ void QgsEllipseSymbolLayerV2::stopRender( QgsSymbolV2RenderContext & )
 
 QgsEllipseSymbolLayerV2* QgsEllipseSymbolLayerV2::clone() const
 {
-  return dynamic_cast< QgsEllipseSymbolLayerV2* >( QgsEllipseSymbolLayerV2::create( properties() ) );
+  QgsEllipseSymbolLayerV2* m = new QgsEllipseSymbolLayerV2();
+  m->setSymbolName( mSymbolName );
+  m->setSymbolWidth( mSymbolWidth );
+  m->setSymbolHeight( mSymbolHeight );
+  m->setOutlineStyle( mOutlineStyle );
+  m->setOffsetMapUnitScale( mOffsetMapUnitScale );
+  m->setOutlineStyle( mOutlineStyle );
+  m->setPenJoinStyle( mPenJoinStyle );
+  m->setOutlineWidth( mOutlineWidth );
+  m->setColor( color() );
+  m->setOutlineColor( mOutlineColor );
+  m->setSymbolWidthUnit( mSymbolWidthUnit );
+  m->setSymbolWidthMapUnitScale( mSymbolWidthMapUnitScale );
+  m->setSymbolHeightUnit( mSymbolHeightUnit );
+  m->setSymbolHeightMapUnitScale( mSymbolHeightMapUnitScale );
+  m->setOutlineWidthUnit( mOutlineWidthUnit );
+  m->setOutlineWidthMapUnitScale( mOutlineWidthMapUnitScale );
+
+  copyDataDefinedProperties( m );
+  copyPaintEffect( m );
+  return m;
 }
 
 void QgsEllipseSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
@@ -565,6 +585,11 @@ void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV
   {
     mPainterPath.addEllipse( QRectF( -size.width() / 2.0, -size.height() / 2.0, size.width(), size.height() ) );
   }
+  else if ( symbolName == "semi_circle" )
+  {
+    mPainterPath.arcTo( -size.width() / 2.0, -size.height() / 2.0, size.width(), size.height(), 0, 180 );
+    mPainterPath.lineTo( 0, 0 );
+  }
   else if ( symbolName == "rectangle" )
   {
     mPainterPath.addRect( QRectF( -size.width() / 2.0, -size.height() / 2.0, size.width(), size.height() ) );
@@ -582,6 +607,20 @@ void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV
     mPainterPath.lineTo( -size.width() / 2.0, size.height() / 2.0 );
     mPainterPath.lineTo( size.width() / 2.0, size.height() / 2.0 );
     mPainterPath.lineTo( 0, -size.height() / 2.0 );
+  }
+  else if ( symbolName == "left_half_triangle" )
+  {
+    mPainterPath.moveTo( 0, size.height() / 2.0 );
+    mPainterPath.lineTo( size.width() / 2.0, size.height() / 2.0 );
+    mPainterPath.lineTo( 0, -size.height() / 2.0 );
+    mPainterPath.lineTo( 0, size.height() / 2.0 );
+  }
+  else if ( symbolName == "right_half_triangle" )
+  {
+    mPainterPath.moveTo( -size.width() / 2.0, size.height() / 2.0 );
+    mPainterPath.lineTo( 0, size.height() / 2.0 );
+    mPainterPath.lineTo( 0, -size.height() / 2.0 );
+    mPainterPath.lineTo( -size.width() / 2.0, size.height() / 2.0 );
   }
 }
 

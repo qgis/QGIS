@@ -60,9 +60,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>314</width>
-        <height>805</height>
+        <y>-166</y>
+        <width>313</width>
+        <height>719</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -471,7 +471,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QComboBox" name="mComposerMapComboBox"/>
+           <widget class="QgsComposerItemComboBox" name="mComposerMapComboBox"/>
           </item>
           <item row="0" column="0" colspan="2">
            <widget class="QgsDoubleSpinBox" name="mPictureRotationSpinBox">
@@ -501,9 +501,10 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
+   <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
+   <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
@@ -511,10 +512,14 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsDataDefinedButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
-   <container>1</container>
+   <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsComposerItemComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgscomposeritemcombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

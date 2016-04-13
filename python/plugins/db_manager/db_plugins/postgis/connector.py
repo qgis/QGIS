@@ -48,11 +48,15 @@ class PostGisDBConnector(DBConnector):
         self.host = uri.host() or os.environ.get('PGHOST')
         self.port = uri.port() or os.environ.get('PGPORT')
 
-        username = uri.username() or os.environ.get('PGUSER') or os.environ.get('USER')
+        username = uri.username() or os.environ.get('PGUSER')
         password = uri.password() or os.environ.get('PGPASSWORD')
 
-        self.dbname = uri.database() or os.environ.get('PGDATABASE') or username
-        uri.setDatabase(self.dbname)
+        # Do not get db and user names from the env if service is used
+        if uri.service() is None:
+            if username is None:
+                username = os.environ.get('USER')
+            self.dbname = uri.database() or os.environ.get('PGDATABASE') or username
+            uri.setDatabase(self.dbname)
 
         expandedConnInfo = self._connectionInfo()
         try:

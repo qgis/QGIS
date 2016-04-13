@@ -232,7 +232,7 @@
          <property name="singleStep">
           <double>0.200000000000000</double>
          </property>
-         <property name="showClearButton">
+         <property name="showClearButton" stdset="0">
           <bool>false</bool>
          </property>
         </widget>
@@ -266,6 +266,9 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="specialValueText">
+          <string>Hairline</string>
+         </property>
          <property name="decimals">
           <number>6</number>
          </property>
@@ -275,8 +278,8 @@
          <property name="singleStep">
           <double>0.200000000000000</double>
          </property>
-         <property name="showClearButton">
-          <bool>false</bool>
+         <property name="showClearButton" stdset="0">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -437,7 +440,7 @@
          <property name="singleStep">
           <double>0.200000000000000</double>
          </property>
-         <property name="showClearButton">
+         <property name="showClearButton" stdset="0">
           <bool>false</bool>
          </property>
         </widget>

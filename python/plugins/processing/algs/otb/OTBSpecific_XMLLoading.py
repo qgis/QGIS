@@ -171,7 +171,7 @@ def adaptColorMapping(commands_list):
     The output of this algorithm must be in uint8.
     """
     indexInput = commands_list.index("-out")
-    commands_list[indexInput + 1] = commands_list[indexInput + 1] + " uint8"
+    commands_list[indexInput + 1] = commands_list[indexInput + 1] + '" "uint8"'
     return commands_list
 
 
@@ -188,7 +188,6 @@ def adaptStereoFramework(commands_list):
             argumentToRemove = commands_list2[index - 1]
             commands_list2.remove(item)
             commands_list2.remove(argumentToRemove)
-        #commands_list2.append(item)
     return commands_list2
 
 

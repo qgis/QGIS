@@ -89,7 +89,6 @@ Copyright:                   Carl Anderson
                        2014, Radoslaw Guzinski <rmgu@dhi-gras.com>
        2004-2006, 2009-2015, Radim Blazek <blazek@itc.it>
                   2004-2015, Marco Hugentobler <marco@sourcepole.ch>
-       2008-2012, 2014-2015, Jürgen E. Fischer <jef@norbit.de>
                   2009-2015, Alexander Bruy <alexander.bruy@gmail.com>
                   2012-2015, The QGIS Project
                   2012-2015, Larry Shaffer <lshaffer@boundlessgeo.com>
@@ -111,6 +110,7 @@ Copyright:                   Carl Anderson
                  2008, 2015, Stéphane Brunner <stephane.brunner@camptocamp.org>
       2005, 2012, 2014-2016, Hugo Mercier <hugo.mercier@oslandia.com>
                   2005-2016, Martin Dobias <wonder.sk@gmail.com>
+       2008-2012, 2014-2016, Jürgen E. Fischer <jef@norbit.de>
                   2012-2016, Denis Rouzaud <denis.rouzaud@gmail.com>
                   2012-2016, Matthias Kuhn <matthias@opengis.ch>
                   2012-2016, Victor Olaya <volayaf@gmail.com>
@@ -249,6 +249,7 @@ License: GPL-2+
 
 Files: src/app/gps/qwtpolar-0.1/*
  src/app/gps/qwtpolar-1.0/*
+ src/app/gps/qwtpolar-1.1.1/*
 Copyright: 2008, Uwe Rathmann
 Comment: This library is free software; you can redistribute it and/or
  modify it under the terms of the Qwt License, Version 1.0
@@ -468,30 +469,23 @@ Files: cmake/FindIconv.cmake
 Copyright: 2009, Juergen E. Fischer <jef at norbit dot de>
 License: BSD-3-Clause
 
-Files: cmake/FindLibPython.py
- cmake/FindPyQt4.cmake
- cmake/FindPyQt4.py
- cmake/FindPyQt5.cmake
- cmake/FindPyQt5.py
- cmake/FindSIP.py
-Copyright: 2007, Simon Edwards <simon@simonzone.com>
-License: BSD-3-Clause
-
 Files: cmake/FindOSGEARTH.cmake
 Copyright: 2011-2013, Pirmin Kalberer
                 2011, Jürgen E. Fischer <jef at norbit.de>
                 2013, William Kyngesburye
 License: BSD-3-Clause
 
-Files: cmake/FindPyQt4.cmake
-Copyright: 2007-2008, Simon Edwards <simon@simonzone.com>
-License: BSD-3-Clause
-
-Files: cmake/FindPythonLibrary.cmake
+Files: cmake/FindLibPython.py
+ cmake/FindPyQt4.cmake
+ cmake/FindPyQt4.py
+ cmake/FindPyQt5.cmake
+ cmake/FindPyQt5.py
+ cmake/FindPythonLibrary.cmake
  cmake/FindSIP.cmake
+ cmake/FindSIP.py
  cmake/PythonMacros.cmake
  cmake/SIPMacros.cmake
-Copyright: 2007, Simon Edwards <simon@simonzone.com>
+Copyright: 2007-2008, Simon Edwards <simon@simonzone.com>
 License: BSD-3-Clause
 
 Files: cmake/FindQCA.cmake

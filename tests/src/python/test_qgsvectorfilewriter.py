@@ -25,6 +25,7 @@ from qgis.core import (QgsVectorLayer,
                        )
 from PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 import os
+import osgeo.gdal
 import platform
 from qgis.testing import start_app, unittest
 from utilities import writeShape, compareWkt
@@ -163,8 +164,8 @@ class TestQgsVectorLayer(unittest.TestCase):
         assert isinstance(f.attributes()[datetime_idx], QDateTime)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22)))
 
-    # This test fails on Travis Linux build for unknown reason (probably GDAL version related)
-    @unittest.expectedFailure(os.environ.get('TRAVIS') and 'linux' in platform.system().lower())
+    # This test fails with GDAL version < 2
+    @unittest.expectedFailure(osgeo.gdal.VersionInfo()[:1] < 2)
     def testWriteShapefileWithZ(self):
         """Check writing geometries with Z dimension to an ESRI shapefile."""
 

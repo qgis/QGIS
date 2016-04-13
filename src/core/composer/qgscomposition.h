@@ -442,11 +442,35 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     bool printAsRaster() const {return mPrintAsRaster;}
     void setPrintAsRaster( const bool enabled ) { mPrintAsRaster = enabled; }
 
+    /** Returns true if the composition will generate corresponding world files when pages
+     * are exported.
+     * @see setGenerateWorldFile()
+     * @see worldFileMap()
+     */
     bool generateWorldFile() const { return mGenerateWorldFile; }
-    void setGenerateWorldFile( const bool enabled ) { mGenerateWorldFile = enabled; }
 
-    QgsComposerMap* worldFileMap() const { return mWorldFileMap; }
-    void setWorldFileMap( QgsComposerMap* map ) { mWorldFileMap = map; }
+    /** Sets whether the composition will generate corresponding world files when pages
+     * are exported.
+     * @param enabled set to true to generate world files
+     * @see generateWorldFile()
+     * @see setWorldFileMap()
+     */
+    void setGenerateWorldFile( bool enabled ) { mGenerateWorldFile = enabled; }
+
+    /** Returns the map item which will be used to generate corresponding world files when the
+     * composition is exported, or nullptr if no corresponding map is set.
+     * @see setWorldFileMap()
+     * @see generateWorldFile()
+     */
+    QgsComposerMap* worldFileMap() const;
+
+    /** Sets the map item which will be used to generate corresponding world files when the
+     * composition is exported.
+     * @param map composer map item
+     * @see worldFileMap()
+     * @see setGenerateWorldFile()
+     */
+    void setWorldFileMap( QgsComposerMap* map );
 
     /** Returns true if a composition should use advanced effects such as blend modes */
     bool useAdvancedEffects() const {return mUseAdvancedEffects;}
@@ -912,8 +936,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /** Flag if a world file should be generated on raster export */
     bool mGenerateWorldFile;
-    /** Composer map to use for the world file generation */
-    QgsComposerMap* mWorldFileMap;
+
+    /** Item ID for composer map to use for the world file generation */
+    QString mWorldFileMapId;
 
     /** Flag if advanced visual effects such as blend modes should be used. True by default*/
     bool mUseAdvancedEffects;

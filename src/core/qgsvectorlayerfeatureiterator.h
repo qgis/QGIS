@@ -84,6 +84,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     //! end of iterating: free the resources / lock
     virtual bool close() override;
 
+    virtual void setInterruptionChecker( QgsInterruptionChecker* interruptionChecker ) override;
+
   protected:
     //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature ) override;
@@ -178,6 +180,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     QgsAbstractGeometrySimplifier* mEditGeometrySimplifier;
 
     QScopedPointer<QgsExpressionContext> mExpressionContext;
+
+    QgsInterruptionChecker* mInterruptionChecker;
 
     /**
      * Will always return true. We assume that ordering has been done on provider level already.

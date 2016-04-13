@@ -187,9 +187,8 @@ tests:
         type: vector
 
         
-  - name: dissolve
+  - name: Dissolve with geometries reported as valid but as invalid with isGeosValid
     algorithm: qgis:dissolve
-    #input is valid as validateGeometry(), but invalid in isGeosValid()
     params:
       DISSOLVE_ALL: 'True'
       FIELD: None
@@ -202,11 +201,10 @@ tests:
         name: expected/innerRingTouchesOuterRing_output.gml
         compare:
           geometry:
-            precision: 7
+            precision: 5
 
-  - name: dissolve
+  - name: Dissolve with NULL geometries
     algorithm: qgis:dissolve
-    #input contains NULL geometries
     params:
       DISSOLVE_ALL: 'True'
       FIELD: None
@@ -221,9 +219,8 @@ tests:
           geometry:
             precision: 7
 
-  - name: dissolve
+  - name: Dissolve with invalid geometries
     algorithm: qgis:dissolve
-    #input contains invalid geometries
     params:
       DISSOLVE_ALL: 'True'
       FIELD: None
@@ -253,7 +250,7 @@ tests:
         type: vector
         compare:
           geometry:
-            precision: 13
+            precision: 7
 
   - algorithm: qgis:fixeddistancebuffer
     name: Polygon buffer with dissolve
@@ -268,3 +265,6 @@ tests:
       OUTPUT:
         name: expected/buffer_polys_dissolve.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7

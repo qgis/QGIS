@@ -491,25 +491,6 @@ QgsFields::iterator QgsFields::end()
 
 QIcon QgsFields::iconForField( int fieldIdx ) const
 {
-  static QIcon intIcon;
-  if ( intIcon.isNull() )
-    intIcon = QgsApplication::getThemeIcon( "/mIconFieldInteger.svg" );
-  static QIcon floatIcon;
-  if ( floatIcon.isNull() )
-    floatIcon = QgsApplication::getThemeIcon( "/mIconFieldFloat.svg" );
-  static QIcon stringIcon;
-  if ( stringIcon.isNull() )
-    stringIcon = QgsApplication::getThemeIcon( "/mIconFieldText.svg" );
-  static QIcon dateIcon;
-  if ( dateIcon.isNull() )
-    dateIcon = QgsApplication::getThemeIcon( "/mIconFieldDate.svg" );
-  static QIcon dateTimeIcon;
-  if ( dateTimeIcon.isNull() )
-    dateTimeIcon = QgsApplication::getThemeIcon( "/mIconFieldDateTime.svg" );
-  static QIcon timeIcon;
-  if ( timeIcon.isNull() )
-    timeIcon = QgsApplication::getThemeIcon( "/mIconFieldTime.svg" );
-
   switch ( d->fields.at( fieldIdx ).field.type() )
   {
     case QVariant::Int:
@@ -517,27 +498,27 @@ QIcon QgsFields::iconForField( int fieldIdx ) const
     case QVariant::LongLong:
     case QVariant::ULongLong:
     {
-      return intIcon;
+      return QgsApplication::getThemeIcon( "/mIconFieldInteger.svg" );
     }
     case QVariant::Double:
     {
-      return floatIcon;
+      return QgsApplication::getThemeIcon( "/mIconFieldFloat.svg" );
     }
     case QVariant::String:
     {
-      return stringIcon;
+      return QgsApplication::getThemeIcon( "/mIconFieldText.svg" );
     }
     case QVariant::Date:
     {
-      return dateIcon;
+      return QgsApplication::getThemeIcon( "/mIconFieldDate.svg" );
     }
     case QVariant::DateTime:
     {
-      return dateTimeIcon;
+      return QgsApplication::getThemeIcon( "/mIconFieldDateTime.svg" );
     }
     case QVariant::Time:
     {
-      return timeIcon;
+      return QgsApplication::getThemeIcon( "/mIconFieldTime.svg" );
     }
     default:
       return QIcon();

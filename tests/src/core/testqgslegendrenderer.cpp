@@ -110,6 +110,7 @@ class TestQgsLegendRenderer : public QObject
 
     void testBasic();
     void testBigMarker();
+    void testMapUnits();
     void testLongSymbolText();
     void testThreeColumns();
     void testFilterByMap();
@@ -286,6 +287,42 @@ void TestQgsLegendRenderer::testBigMarker()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+}
+
+void TestQgsLegendRenderer::testMapUnits()
+{
+  QString testName = "legend_mapunits";
+
+  QgsMarkerSymbolV2* sym = new QgsMarkerSymbolV2();
+  sym->setColor( Qt::red );
+  sym->setSize( 100 );
+  sym->setSizeUnit( QgsSymbolV2::MapUnit );
+  QgsCategorizedSymbolRendererV2* catRenderer = dynamic_cast<QgsCategorizedSymbolRendererV2*>( mVL3->rendererV2() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategorySymbol( 0, sym );
+
+  sym = new QgsMarkerSymbolV2();
+  sym->setColor( Qt::green );
+  sym->setSize( 300 );
+  sym->setSizeUnit( QgsSymbolV2::MapUnit );
+  catRenderer->updateCategorySymbol( 1, sym );
+
+  sym = new QgsMarkerSymbolV2();
+  sym->setColor( Qt::blue );
+  sym->setSize( 5 );
+  sym->setSizeUnit( QgsSymbolV2::MM );
+  catRenderer->updateCategorySymbol( 2, sym );
+
+  QgsLayerTreeGroup* root = new QgsLayerTreeGroup();
+  root->addLayer( mVL3 );
+  QgsLayerTreeModel legendModel( root );
+
+  QgsLegendSettings settings;
+  _setStandardTestFont( settings );
+  settings.setMmPerMapUnit( 0.1 );
+  settings.setMapScale( 1000 );
   _renderLegend( testName, &legendModel, settings );
   QVERIFY( _verifyImage( testName, mReport ) );
 }

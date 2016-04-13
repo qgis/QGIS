@@ -3401,6 +3401,56 @@ double QgsSymbolLayerV2Utils::convertToPainterUnits( const QgsRenderContext &c, 
   return convertedSize;
 }
 
+double QgsSymbolLayerV2Utils::convertToMapUnits( const QgsRenderContext &c, double size, QgsSymbolV2::OutputUnit unit, const QgsMapUnitScale &scale )
+{
+  double mup = c.mapToPixel().mapUnitsPerPixel();
+
+  switch ( unit )
+  {
+    case QgsSymbolV2::MapUnit:
+    {
+      // check scale
+      double minSizeMU = -DBL_MAX;
+      if ( scale.minSizeMMEnabled )
+      {
+        minSizeMU = scale.minSizeMM * c.scaleFactor() * c.rasterScaleFactor() * mup;
+      }
+      if ( !qgsDoubleNear( scale.minScale, 0.0 ) )
+      {
+        minSizeMU = qMax( minSizeMU, size * ( scale.minScale * c.rendererScale() ) );
+      }
+      size = qMax( size, minSizeMU );
+
+      double maxSizeMU = DBL_MAX;
+      if ( scale.maxSizeMMEnabled )
+      {
+        maxSizeMU = scale.maxSizeMM * c.scaleFactor() * c.rasterScaleFactor() * mup;
+      }
+      if ( !qgsDoubleNear( scale.maxScale, 0.0 ) )
+      {
+        maxSizeMU = qMin( maxSizeMU, size * ( scale.maxScale * c.rendererScale() ) );
+      }
+      size = qMin( size, maxSizeMU );
+
+      return size;
+    }
+    case QgsSymbolV2::MM:
+    {
+      return size * c.scaleFactor() * c.rasterScaleFactor() * mup;
+    }
+    case QgsSymbolV2::Pixel:
+    {
+      return size * mup;
+    }
+
+    case QgsSymbolV2::Mixed:
+    case QgsSymbolV2::Percentage:
+      //no sensible value
+      return 0.0;
+  }
+  return 0.0;
+}
+
 double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale )
 {
   switch ( u )

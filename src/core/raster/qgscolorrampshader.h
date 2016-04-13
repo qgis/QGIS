@@ -93,7 +93,15 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const override;
 
+    /** Sets whether the shader should not render values out of range.
+     * @param clip set to true to clip values which are out of range.
+     * @see clip()
+     */
     void setClip( bool clip ) { mClip = clip; }
+
+    /** Returns whether the shader will clip values which are out of range.
+     * @see setClip()
+     */
     bool clip() const { return mClip; }
 
   private:

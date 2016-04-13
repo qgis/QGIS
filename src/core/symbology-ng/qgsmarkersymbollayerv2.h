@@ -38,10 +38,10 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     /** Constructor for QgsSimpleMarkerSymbolLayerV2.
     * @param name symbol name, should be one of "square", "rectangle", "diamond",
-    * "pentagon", "triangle", "equilateral_triangle", "star", "regular_star", "arrow",
+    * "pentagon", "triangle", "equilateral_triangle", "star", "arrow",
     * "circle", "cross", "cross2", "line", "x", "arrowhead", "filled_arrowhead",
     * "semi_circle", "third_circle", "quarter_circle", "quarter_square", "half_square",
-    * "diagonal_half_square"
+    * "diagonal_half_square", "right_half_triangle", "left_half_triangle"
     * @param color fill color for symbol
     * @param borderColor border color for symbol
     * @param size symbol size (in mm)

@@ -31,19 +31,23 @@
 static QColor _interpolate( const QColor& c1, const QColor& c2, const double value )
 {
   if ( qIsNaN( value ) ) return c2;
-  int r = static_cast< int >( c1.red() + value * ( c2.red() - c1.red() ) );
-  int g = static_cast< int >( c1.green() + value * ( c2.green() - c1.green() ) );
-  int b = static_cast< int >( c1.blue() + value * ( c2.blue() - c1.blue() ) );
-  int a = static_cast< int >( c1.alpha() + value * ( c2.alpha() - c1.alpha() ) );
 
-  return QColor::fromRgb( r, g, b, a );
+  qreal r = ( c1.redF() + value * ( c2.redF() - c1.redF() ) );
+  qreal g = ( c1.greenF() + value * ( c2.greenF() - c1.greenF() ) );
+  qreal b = ( c1.blueF() + value * ( c2.blueF() - c1.blueF() ) );
+  qreal a = ( c1.alphaF() + value * ( c2.alphaF() - c1.alphaF() ) );
+
+  return QColor::fromRgbF( r, g, b, a );
 }
 
 //////////////
 
 QgsVectorGradientColorRampV2::QgsVectorGradientColorRampV2( const QColor& color1, const QColor& color2,
     bool discrete, const QgsGradientStopsList& stops )
-    : mColor1( color1 ), mColor2( color2 ), mDiscrete( discrete ), mStops( stops )
+    : mColor1( color1 )
+    , mColor2( color2 )
+    , mDiscrete( discrete )
+    , mStops( stops )
 {
 }
 

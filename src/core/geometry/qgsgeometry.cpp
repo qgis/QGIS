@@ -361,6 +361,22 @@ QgsPoint QgsGeometry::closestVertex( const QgsPoint& point, int& atVertex, int& 
   return QgsPoint( vp.x(), vp.y() );
 }
 
+double QgsGeometry::distanceToVertex( int vertex ) const
+{
+  if ( !d->geometry )
+  {
+    return -1;
+  }
+
+  QgsVertexId id;
+  if ( !vertexIdFromVertexNr( vertex, id ) )
+  {
+    return -1;
+  }
+
+  return QgsGeometryUtils::distanceToVertex( *( d->geometry ), id );
+}
+
 void QgsGeometry::adjacentVertices( int atVertex, int& beforeVertex, int& afterVertex ) const
 {
   if ( !d->geometry )

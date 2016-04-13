@@ -32,12 +32,6 @@ from PyQt.QtCore import QCoreApplication
 
 class ToolboxAction:
 
-    def __init__(self):
-        # This should be true if the action should be shown even if
-        # there are no algorithms in the provider (for instance,
-        # when it is deactivated
-        self.showAlways = False
-
     def setData(self, toolbox):
         self.toolbox = toolbox
 
@@ -48,3 +42,8 @@ class ToolboxAction:
         if context == '':
             context = self.__class__.__name__
         return QCoreApplication.translate(context, string)
+
+    def trAction(self, string, context=''):
+        if context == '':
+            context = self.__class__.__name__
+        return string, QCoreApplication.translate(context, string)

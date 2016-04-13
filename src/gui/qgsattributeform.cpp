@@ -780,14 +780,18 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         else
         {
           QLabel* mypLabel = new QLabel( widgetInfo.labelText );
-          if ( columnCount > 1 )
+          if ( columnCount > 1 && !widgetInfo.labelOnTop )
+          {
             mypLabel->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
+          }
 
           if ( widgetInfo.labelOnTop )
           {
-            gbLayout->addWidget( mypLabel, row, column, 1, 2 );
-            ++row;
-            gbLayout->addWidget( widgetInfo.widget, row, column, 1, 2 );
+            QVBoxLayout* c = new QVBoxLayout();
+            mypLabel->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+            c->layout()->addWidget( mypLabel );
+            c->layout()->addWidget( widgetInfo.widget );
+            gbLayout->addLayout( c, row, column, 1, 2 );
             column += 2;
           }
           else
@@ -805,7 +809,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       }
       QWidget* spacer = new QWidget();
       spacer->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
-      // gbLayout->addWidget( spacer, index, 0 );
+      gbLayout->addWidget( spacer, ++row, 0 );
 
       newWidgetInfo.labelText = QString::null;
       newWidgetInfo.labelOnTop = true;

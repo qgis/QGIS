@@ -45,7 +45,6 @@ class Grass7Utils:
     GRASS_REGION_YMAX = 'GRASS7_REGION_YMAX'
     GRASS_REGION_CELLSIZE = 'GRASS7_REGION_CELLSIZE'
     GRASS_FOLDER = 'GRASS7_FOLDER'
-    GRASS_WIN_SHELL = 'GRASS7_WIN_SHELL'
     GRASS_LOG_COMMANDS = 'GRASS7_LOG_COMMANDS'
     GRASS_LOG_CONSOLE = 'GRASS7_LOG_CONSOLE'
 
@@ -84,7 +83,7 @@ class Grass7Utils:
         if not isWindows() and not isMac():
             return ''
 
-        folder = ProcessingConfig.getSetting(Grass7Utils.GRASS_FOLDER)
+        folder = ProcessingConfig.getSetting(Grass7Utils.GRASS_FOLDER) or ''
         if not os.path.exists(folder):
             folder = None
         if folder is None:
@@ -107,23 +106,12 @@ class Grass7Utils:
         return folder or ''
 
     @staticmethod
-    def grassWinShell():
-        folder = ProcessingConfig.getSetting(Grass7Utils.GRASS_WIN_SHELL)
-        if not os.path.exists(folder):
-            folder = None
-        if folder is None:
-            folder = os.path.dirname(unicode(QgsApplication.prefixPath()))
-            folder = os.path.join(folder, 'msys')
-        return folder
-
-    @staticmethod
     def grassDescriptionPath():
         return os.path.join(os.path.dirname(__file__), 'description')
 
     @staticmethod
     def createGrass7Script(commands):
         folder = Grass7Utils.grassPath()
-        shell = Grass7Utils.grassWinShell()
 
         script = Grass7Utils.grassScriptFilename()
         gisrc = userFolder() + os.sep + 'processing.gisrc7'  # FIXME: use temporary file
@@ -142,9 +130,6 @@ class Grass7Utils:
         output = open(script, 'w')
         output.write('set HOME=' + os.path.expanduser('~') + '\n')
         output.write('set GISRC=' + gisrc + '\n')
-        output.write('set GRASS_SH=' + shell + '\\bin\\sh.exe\n')
-        output.write('set PATH=' + shell + os.sep + 'bin;' + shell + os.sep
-                     + 'lib;' + '%PATH%\n')
         output.write('set WINGISBASE=' + folder + '\n')
         output.write('set GISBASE=' + folder + '\n')
         output.write('set GRASS_PROJSHARE=' + folder + os.sep + 'share'

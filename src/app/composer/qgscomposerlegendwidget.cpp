@@ -64,6 +64,10 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
   mRasterBorderColorButton->setAllowAlpha( true );
   mRasterBorderColorButton->setContext( "composer " );
 
+  mMapComboBox->setComposition( legend->composition() );
+  mMapComboBox->setItemType( QgsComposerItem::ComposerMap );
+  connect( mMapComboBox, SIGNAL( itemChanged( const QgsComposerItem* ) ), this, SLOT( composerMapChanged( const QgsComposerItem* ) ) );
+
   //add widget for item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, legend );
   mainLayout->addWidget( itemPropertiesWidget );
@@ -132,17 +136,9 @@ void QgsComposerLegendWidget::setGuiElements()
   mRasterBorderColorButton->setColor( mLegend->rasterBorderColor() );
 
   mCheckBoxAutoUpdate->setChecked( mLegend->autoUpdateModel() );
-  refreshMapComboBox();
 
   const QgsComposerMap* map = mLegend->composerMap();
-  if ( map )
-  {
-    mMapComboBox->setCurrentIndex( mMapComboBox->findData( map->id() ) );
-  }
-  else
-  {
-    mMapComboBox->setCurrentIndex( mMapComboBox->findData( -1 ) );
-  }
+  mMapComboBox->setItem( map );
   mFontColorButton->setColor( mLegend->fontColor() );
   blockAllSignals( false );
 
@@ -553,15 +549,9 @@ void QgsComposerLegendWidget::on_mCheckBoxAutoUpdate_stateChanged( int state )
   }
 }
 
-void QgsComposerLegendWidget::on_mMapComboBox_currentIndexChanged( int index )
+void QgsComposerLegendWidget::composerMapChanged( const QgsComposerItem* item )
 {
   if ( !mLegend )
-  {
-    return;
-  }
-
-  QVariant itemData = mMapComboBox->itemData( index );
-  if ( itemData.type() == QVariant::Invalid )
   {
     return;
   }
@@ -572,21 +562,13 @@ void QgsComposerLegendWidget::on_mMapComboBox_currentIndexChanged( int index )
     return;
   }
 
-  int mapNr = itemData.toInt();
-  if ( mapNr < 0 )
+  const QgsComposerMap* map = dynamic_cast< const QgsComposerMap* >( item );
+  if ( map )
   {
-    mLegend->setComposerMap( nullptr );
-  }
-  else
-  {
-    const QgsComposerMap* map = comp->getComposerMapById( mapNr );
-    if ( map )
-    {
-      mLegend->beginCommand( tr( "Legend map changed" ) );
-      mLegend->setComposerMap( map );
-      mLegend->updateItem();
-      mLegend->endCommand();
-    }
+    mLegend->beginCommand( tr( "Legend map changed" ) );
+    mLegend->setComposerMap( map );
+    mLegend->updateItem();
+    mLegend->endCommand();
   }
 }
 
@@ -957,48 +939,6 @@ void QgsComposerLegendWidget::blockAllSignals( bool b )
   mRasterBorderGroupBox->blockSignals( b );
   mRasterBorderColorButton->blockSignals( b );
   mRasterBorderWidthSpinBox->blockSignals( b );
-}
-
-void QgsComposerLegendWidget::refreshMapComboBox()
-{
-  if ( !mLegend )
-  {
-    return;
-  }
-
-  const QgsComposition* composition = mLegend->composition();
-  if ( !composition )
-  {
-    return;
-  }
-
-  //save current entry
-  int currentMapId = mMapComboBox->itemData( mMapComboBox->currentIndex() ).toInt();
-  mMapComboBox->clear();
-
-  QList<const QgsComposerMap*> availableMaps = composition->composerMapItems();
-  QList<const QgsComposerMap*>::const_iterator mapItemIt = availableMaps.constBegin();
-  for ( ; mapItemIt != availableMaps.constEnd(); ++mapItemIt )
-  {
-    mMapComboBox->addItem( tr( "Map %1" ).arg(( *mapItemIt )->id() ), ( *mapItemIt )->id() );
-  }
-  mMapComboBox->addItem( tr( "None" ), -1 );
-
-  //the former entry is not there anymore
-  int entry = mMapComboBox->findData( currentMapId );
-  if ( entry == -1 )
-  {
-  }
-  else
-  {
-    mMapComboBox->setCurrentIndex( entry );
-  }
-}
-
-void QgsComposerLegendWidget::showEvent( QShowEvent * event )
-{
-  refreshMapComboBox();
-  QWidget::showEvent( event );
 }
 
 void QgsComposerLegendWidget::selectedChanged( const QModelIndex & current, const QModelIndex & previous )

@@ -48,6 +48,7 @@ class QgsProjectBadLayerHandler;
 class QgsRelationManager;
 class QgsVectorLayer;
 class QgsVisibilityPresetCollection;
+class QgsTransactionGroup;
 
 /** \ingroup core
  * Reads and writes project states.
@@ -352,6 +353,36 @@ class CORE_EXPORT QgsProject : public QObject
      */
     QStringList nonIdentifiableLayers() const;
 
+    /**
+     * Transactional editing means that on supported datasources (postgres databases) the edit state of
+     * all tables that originate from the same database are synchronized and executed in a server side
+     * transaction.
+     *
+     * @note Added in QGIS 2.16
+     */
+    bool autoTransaction() const;
+
+    /**
+     * Transactional editing means that on supported datasources (postgres databases) the edit state of
+     * all tables that originate from the same database are synchronized and executed in a server side
+     * transaction.
+     *
+     * Make sure that this is only called when all layers are not in edit mode.
+     *
+     * @note Added in QGIS 2.16
+     */
+    void setAutoTransaction( bool autoTransaction );
+
+    /**
+     * Map of transaction groups
+     *
+     * QPair( providerKey, connString ) -> transactionGroup
+     *
+     * @note Added in QGIS 2.16
+     * @note Not available in python bindings
+     */
+    QMap< QPair< QString, QString>, QgsTransactionGroup*> transactionGroups();
+
   protected:
     /** Set error message from read/write operation
      * @note not available in Python bindings
@@ -418,6 +449,10 @@ class CORE_EXPORT QgsProject : public QObject
     //! Emitted when the list of layer which are excluded from map identification changes
     void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 
+  private slots:
+    void addToTransactionGroups( const QList<QgsMapLayer*> layers );
+    void cleanTransactionGroups( bool force = false );
+
   private:
 
     QgsProject(); // private 'cause it's a singleton
@@ -451,6 +486,9 @@ class CORE_EXPORT QgsProject : public QObject
     QgsLayerTreeGroup* mRootGroup;
 
     QgsLayerTreeRegistryBridge* mLayerTreeRegistryBridge;
+
+    //! map of transaction group: QPair( providerKey, connString ) -> transactionGroup
+    QMap< QPair< QString, QString>, QgsTransactionGroup*> mTransactionGroups;
 
     QScopedPointer<QgsVisibilityPresetCollection> mVisibilityPresetCollection;
 }; // QgsProject

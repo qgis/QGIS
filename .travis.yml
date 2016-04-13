@@ -1,21 +1,63 @@
-
 matrix:
+  fast_finish: true
   include:
-    # QT4 based build with Python 2 // using a sudo environment
+    # QT4 based build with Python 2.7 // using container based builds and prebuild binary dependencies in osgeo4travis
     - os: linux
       language: cpp
-      env: QT_VERSION=4
-      sudo: true
-      dist: precise
-      group: legacy
+      env:
+        - QT_VERSION=4
+        - LLVM_VERSION=3.8
+      sudo: false
+      cache:
+        apt: true
+        directories:
+          - $HOME/.ccache
+      compiler: clang
       addons:
-        postgresql: "9.1"
-      compiler:
-      - clang
+        postgresql: "9.4"
+        apt:
+          sources:
+            - llvm-toolchain-precise-3.8
+            - ubuntu-toolchain-r-test
+            - george-edison55-precise-backports # doxygen 1.8.3
+          packages:
+            - bison
+            - clang-3.8
+            - doxygen
+            - flex
+            - flip
+            - libfcgi-dev
+            - libpq-dev
+            - libqscintilla2-dev
+            - libqt4-dev
+            - libqt4-opengl-dev
+            - libqt4-sql-sqlite
+            - libqtwebkit-dev
+            - libqwt-dev
+            - libspatialindex-dev
+            - libspatialite-dev
+            - libsqlite3-dev
+            - pkg-config
+            - poppler-utils
+            - pyqt4-dev-tools
+            - python
+            - python-dev
+            - python-numpy
+            - python-pip
+            - python-psycopg2
+            - python-qscintilla2
+            - python-qt4-dev
+            - python-qt4-sql
+            - python-sip
+            - python-sip-dev
+            - txt2tags
+            - xvfb
     # QT5 based build with Python 3 // using container based builds and prebuild binary dependencies in osgeo4travis
     - os: linux
       language: python # This lets us use newer python versions from virtualenv
-      env: QT_VERSION=5
+      env:
+        - QT_VERSION=5
+        - LLVM_VERSION=3.8
       sudo: false
       cache:
         apt: true
@@ -27,7 +69,7 @@ matrix:
         postgresql: "9.4"
         apt:
           sources:
-            - llvm-toolchain-precise-3.6
+            - llvm-toolchain-precise-3.8
             - ubuntu-toolchain-r-test
             - george-edison55-precise-backports # doxygen 1.8.3
           packages:
@@ -42,7 +84,7 @@ matrix:
             - txt2tags
             - xvfb
             - flip
-            - clang-3.6
+            - clang-3.8
     # OSX based build with QT4 and Python 2
     - os: osx
 

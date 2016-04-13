@@ -89,6 +89,35 @@ QgsPointV2 QgsGeometryUtils::closestVertex( const QgsAbstractGeometryV2& geom, c
   return minDistPoint;
 }
 
+double QgsGeometryUtils::distanceToVertex( const QgsAbstractGeometryV2 &geom, const QgsVertexId &id )
+{
+  double currentDist = 0;
+  QgsVertexId vertexId;
+  QgsPointV2 vertex;
+  QgsPointV2 previousVertex;
+
+  bool first = true;
+  while ( geom.nextVertex( vertexId, vertex ) )
+  {
+    if ( !first )
+    {
+      currentDist += sqrt( QgsGeometryUtils::sqrDistance2D( previousVertex, vertex ) );
+    }
+
+    previousVertex = vertex;
+    first = false;
+
+    if ( vertexId == id )
+    {
+      //found target vertex
+      return currentDist;
+    }
+  }
+
+  //could not find target vertex
+  return -1;
+}
+
 void QgsGeometryUtils::adjacentVertices( const QgsAbstractGeometryV2& geom, QgsVertexId atVertex, QgsVertexId& beforeVertex, QgsVertexId& afterVertex )
 {
   bool polygonType = ( geom.dimension()  == 2 );

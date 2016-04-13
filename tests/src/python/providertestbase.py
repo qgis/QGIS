@@ -165,6 +165,10 @@ class ProviderTestCase(object):
         """Individual providers may need to override this depending on their subset string formats"""
         return '"cnt" > 100 and "cnt" < 410'
 
+    def getSubsetString2(self):
+        """Individual providers may need to override this depending on their subset string formats"""
+        return '"cnt" > 100 and "cnt" < 400'
+
     def testOrderByUncompiled(self):
         try:
             self.disableCompiler()
@@ -282,6 +286,11 @@ class ProviderTestCase(object):
         features = [f['pk'] for f in self.provider.getFeatures(QgsFeatureRequest().setFilterRect(extent))]
         assert set(features) == set([2, 4]), 'Got {} instead'.format(features)
 
+        # test with an empty rectangle
+        extent = QgsRectangle()
+        features = [f['pk'] for f in self.provider.getFeatures(QgsFeatureRequest().setFilterRect(extent))]
+        assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
+
     def testGetFeaturesPolyFilterRectTests(self):
         """ Test fetching features from a polygon layer with filter rect"""
         try:
@@ -298,6 +307,11 @@ class ProviderTestCase(object):
         # Test with exact intersection
         features = [f['pk'] for f in self.poly_provider.getFeatures(QgsFeatureRequest().setFilterRect(extent).setFlags(QgsFeatureRequest.ExactIntersect))]
         assert set(features) == set([2, 3]), 'Got {} instead'.format(features)
+
+        # test with an empty rectangle
+        extent = QgsRectangle()
+        features = [f['pk'] for f in self.provider.getFeatures(QgsFeatureRequest().setFilterRect(extent))]
+        assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
 
     def testRectAndExpression(self):
         extent = QgsRectangle(-70, 67, -60, 80)
@@ -349,9 +363,21 @@ class ProviderTestCase(object):
         self.assertEqual(self.provider.minimumValue(1), -200)
         self.assertEqual(self.provider.minimumValue(2), 'Apple')
 
+        subset = self.getSubsetString()
+        self.provider.setSubsetString(subset)
+        min_value = self.provider.minimumValue(1)
+        self.provider.setSubsetString(None)
+        self.assertEqual(min_value, 200)
+
     def testMaxValue(self):
         self.assertEqual(self.provider.maximumValue(1), 400)
         self.assertEqual(self.provider.maximumValue(2), 'Pear')
+
+        subset = self.getSubsetString2()
+        self.provider.setSubsetString(subset)
+        max_value = self.provider.maximumValue(1)
+        self.provider.setSubsetString(None)
+        self.assertEqual(max_value, 300)
 
     def testExtent(self):
         reference = QgsGeometry.fromRect(
@@ -363,6 +389,12 @@ class ProviderTestCase(object):
     def testUnique(self):
         self.assertEqual(set(self.provider.uniqueValues(1)), set([-200, 100, 200, 300, 400]))
         assert set([u'Apple', u'Honey', u'Orange', u'Pear', NULL]) == set(self.provider.uniqueValues(2)), 'Got {}'.format(set(self.provider.uniqueValues(2)))
+
+        subset = self.getSubsetString2()
+        self.provider.setSubsetString(subset)
+        values = self.provider.uniqueValues(1)
+        self.provider.setSubsetString(None)
+        self.assertEqual(set(values), set([200, 300]))
 
     def testFeatureCount(self):
         assert self.provider.featureCount() == 5, 'Got {}'.format(self.provider.featureCount())

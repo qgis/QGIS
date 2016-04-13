@@ -54,7 +54,7 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void on_mResolutionSpinBox_valueChanged( const int value );
     void on_mPrintAsRasterCheckBox_toggled( bool state );
     void on_mGenerateWorldFileCheckBox_toggled( bool state );
-    void on_mWorldFileMapComboBox_currentIndexChanged( int index );
+    void worldFileMapChanged( const QgsComposerItem* );
 
     void on_mGridResolutionSpinBox_valueChanged( double d );
     void on_mOffsetXSpinBox_valueChanged( double d );
@@ -73,10 +73,6 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void pageOrientationChanged( const QString& orientation );
 
   private slots:
-    /* when a new map is added */
-    void onComposerMapAdded( QgsComposerMap* );
-    /* when a map is deleted */
-    void onItemRemoved( QgsComposerItem* );
 
     /** Must be called when a data defined button changes*/
     void updateDataDefinedProperty();

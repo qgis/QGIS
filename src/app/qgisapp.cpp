@@ -7248,8 +7248,9 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
   QString connString = QgsDataSourceURI( vlayer->source() ).connectionInfo();
   QString key = vlayer->providerType();
 
-  QMap< QPair< QString, QString>, QgsTransactionGroup*>::iterator tIt = mTransactionGroups.find( qMakePair( key, connString ) );
-  QgsTransactionGroup* tg = ( tIt != mTransactionGroups.end() ? tIt.value() : nullptr );
+  QMap< QPair< QString, QString>, QgsTransactionGroup*> transactionGroups = QgsProject::instance()->transactionGroups();
+  QMap< QPair< QString, QString>, QgsTransactionGroup*>::iterator tIt = transactionGroups .find( qMakePair( key, connString ) );
+  QgsTransactionGroup* tg = ( tIt != transactionGroups.end() ? tIt.value() : nullptr );
 
   bool isModified = false;
 
@@ -7706,22 +7707,6 @@ void QgisApp::removingLayers( const QStringList& theLayers )
       return;
 
     toggleEditing( vlayer, false );
-  }
-
-  if ( autoTransaction() )
-  {
-    for ( QMap< QPair< QString, QString>, QgsTransactionGroup*>::Iterator tg = mTransactionGroups.begin(); tg != mTransactionGroups.end(); )
-    {
-      if ( tg.value()->isEmpty() )
-      {
-        delete tg.value();
-        tg = mTransactionGroups.erase( tg );
-      }
-      else
-      {
-        ++tg;
-      }
-    }
   }
 }
 
@@ -9606,26 +9591,6 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *>& theLayers )
         connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( layerEditStateChanged() ) );
       }
 
-      if ( autoTransaction() )
-      {
-        if ( QgsTransaction::supportsTransaction( vlayer ) )
-        {
-          QString connString = QgsDataSourceURI( vlayer->source() ).connectionInfo();
-          QString key = vlayer->providerType();
-
-          QgsTransactionGroup* tg = mTransactionGroups.value( qMakePair( key, connString ) );
-
-          if ( !tg )
-          {
-            tg = new QgsTransactionGroup();
-            mTransactionGroups.insert( qMakePair( key, connString ), tg );
-
-            connect( tg, SIGNAL( commitError( QString ) ), this, SLOT( displayMapToolMessage( QString ) ) );
-          }
-          tg->addLayer( vlayer );
-        }
-      }
-
       connect( vlayer, SIGNAL( raiseError( QString ) ), this, SLOT( onLayerError( QString ) ) );
 
       provider = vProvider;
@@ -9798,7 +9763,7 @@ void QgisApp::selectionChanged( QgsMapLayer *layer )
   }
 }
 
-void QgisApp::legendLayerSelectionChanged( void )
+void QgisApp::legendLayerSelectionChanged()
 {
   QList<QgsLayerTreeLayer*> selectedLayers = mLayerTreeView ? mLayerTreeView->selectedLayerNodes() : QList<QgsLayerTreeLayer*>();
 
@@ -10252,23 +10217,6 @@ void QgisApp::refreshActionFeatureAction()
 
   bool layerHasActions = vlayer->actions()->size() || !QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).isEmpty();
   mActionFeatureAction->setEnabled( layerHasActions );
-}
-
-bool QgisApp::autoTransaction() const
-{
-  QSettings settings;
-  return settings.value( "/qgis/autoTransaction", false ).toBool();
-}
-
-void QgisApp::setAutoTransaction( bool state )
-{
-  QSettings settings;
-
-  if ( settings.value( "/qgis/autoTransaction", false ).toBool() != state )
-  {
-
-    settings.setValue( "/qgis/autoTransaction", state );
-  }
 }
 
 /////////////////////////////////////////////////////////////////

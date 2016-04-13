@@ -44,6 +44,19 @@ typedef QList<int> QgsAttributeList;
 class QgsVectorLayerLabelProvider;
 class QgsVectorLayerDiagramProvider;
 
+/** Interruption checker used by QgsVectorLayerRenderer::render()
+ * @note not available in Python bindings
+ */
+class QgsVectorLayerRendererInterruptionChecker: public QgsInterruptionChecker
+{
+  public:
+    /** Constructor */
+    QgsVectorLayerRendererInterruptionChecker( const QgsRenderContext& context );
+    bool mustStop() const override;
+  private:
+    const QgsRenderContext& mContext;
+};
+
 /**
  * Implementation of threaded rendering for vector layers.
  *
@@ -86,6 +99,8 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
   protected:
 
     QgsRenderContext& mContext;
+
+    QgsVectorLayerRendererInterruptionChecker mInterruptionChecker;
 
     /** The rendered layer */
     QgsVectorLayer* mLayer;

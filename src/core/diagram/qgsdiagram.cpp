@@ -89,7 +89,8 @@ QFont QgsDiagram::scaledFont( const QgsDiagramSettings& s, const QgsRenderContex
   QFont f = s.font;
   if ( s.sizeType == QgsSymbolV2::MapUnit )
   {
-    f.setPixelSize( s.font.pointSizeF() / c.mapToPixel().mapUnitsPerPixel() );
+    int pixelsize = s.font.pointSizeF() / c.mapToPixel().mapUnitsPerPixel();
+    f.setPixelSize( pixelsize > 0 ? pixelsize : 1 );
   }
   else
   {

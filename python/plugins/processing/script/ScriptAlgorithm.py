@@ -26,6 +26,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import re
+from qgis.core import QgsExpressionContextUtils
 from PyQt.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.Help2Html import getHtmlFromHelpFile
@@ -53,6 +55,7 @@ from processing.core.outputs import OutputFile
 from processing.core.outputs import OutputDirectory
 from processing.core.outputs import getOutputFromString
 from processing.script.WrongScriptException import WrongScriptException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -307,9 +310,6 @@ class ScriptAlgorithm(GeoAlgorithm):
                         'Problem with line %d', 'ScriptAlgorithm') % (self.descriptionFile or '', line))
 
     def processAlgorithm(self, progress):
-
-        script = 'import processing\n'
-
         ns = {}
         ns['progress'] = progress
         ns['scriptDescriptionFile'] = self.descriptionFile
@@ -320,7 +320,18 @@ class ScriptAlgorithm(GeoAlgorithm):
         for out in self.outputs:
             ns[out.name] = out.value
 
+        variables = re.findall("@[a-zA-Z0-9_]*", self.script)
+        print variables
+        script = 'import processing\n'
         script += self.script
+
+        scope = QgsExpressionContextUtils.projectScope()
+        for var in variables:
+            varname = var[1:]
+            if not scope.hasVariable(varname):
+                raise GeoAlgorithmExecutionException("Wrong variable: %s" % varname)
+            script = script.replace(var, scope.variable(varname))
+
         exec((script), ns)
         for out in self.outputs:
             out.setValue(ns[out.name])

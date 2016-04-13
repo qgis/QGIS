@@ -53,6 +53,14 @@ class TestQgsOgcUtils : public QObject
 
     void testExpressionToOgcFilter();
     void testExpressionToOgcFilter_data();
+
+    void testExpressionToOgcFilterWFS11();
+    void testExpressionToOgcFilterWFS11_data();
+
+#if QT_VERSION < 0x050000
+    void testExpressionToOgcFilterWFS20();
+    void testExpressionToOgcFilterWFS20_data();
+#endif
 };
 
 
@@ -323,8 +331,16 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
     "</ogc:Or>"
     "</ogc:Filter>" );
 
+  QTest::newRow( "intersects_bbox" ) << QString( "intersects_bbox($geometry, geomFromWKT('POINT (5 6)'))" ) << QString(
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
+    "<ogc:BBOX>"
+    "<ogc:PropertyName>geometry</ogc:PropertyName>"
+    "<gml:Box><gml:coordinates cs=\",\" ts=\" \">5,6 5,6</gml:coordinates></gml:Box>"
+    "</ogc:BBOX>"
+    "</ogc:Filter>" );
+
   QTest::newRow( "intersects + wkt" ) << QString( "intersects($geometry, geomFromWKT('POINT (5 6)'))" ) << QString(
-    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
     "<ogc:Intersects>"
     "<ogc:PropertyName>geometry</ogc:PropertyName>"
     "<gml:Point><gml:coordinates cs=\",\" ts=\" \">5,6</gml:coordinates></gml:Point>"
@@ -332,28 +348,140 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
     "</ogc:Filter>" );
 
   QTest::newRow( "contains + gml" ) << QString( "contains($geometry, geomFromGML('<Point><coordinates cs=\",\" ts=\" \">5,6</coordinates></Point>'))" ) << QString(
-    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
     "<ogc:Contains>"
     "<ogc:PropertyName>geometry</ogc:PropertyName>"
     "<Point><coordinates cs=\",\" ts=\" \">5,6</coordinates></Point>"
     "</ogc:Contains>"
     "</ogc:Filter>" );
-
-  /*
-  QTest::newRow( "bbox with GML3 Envelope" )
-  << QString( "intersects_bbox($geometry, geomFromGML('<gml:Envelope><gml:lowerCorner>13.0983 31.5899</gml:lowerCorner><gml:upperCorner>35.5472 42.8143</gml:upperCorner></gml:Envelope>'))" )
-  << QString(
-  "<ogc:Filter>"
-    "<ogc:BBOX>"
-      "<ogc:PropertyName>Geometry</ogc:PropertyName>"
-        "<gml:Envelope>"
-        "<gml:lowerCorner>13.0983 31.5899</gml:lowerCorner>"
-        "<gml:upperCorner>35.5472 42.8143</gml:upperCorner>"
-      "</gml:Envelope>"
-    "</ogc:BBOX>"
-  "</ogc:Filter>" );
-  */
 }
+
+void TestQgsOgcUtils::testExpressionToOgcFilterWFS11()
+{
+  QFETCH( QString, exprText );
+  QFETCH( QString, srsName );
+  QFETCH( QString, xmlText );
+
+  QgsExpression exp( exprText );
+  QVERIFY( !exp.hasParserError() );
+
+  QString errorMsg;
+  QDomDocument doc;
+  QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( exp, doc,
+                           QgsOgcUtils::GML_3_1_0, QgsOgcUtils::FILTER_OGC_1_1, "my_geometry_name", srsName, true, false, &errorMsg );
+
+  if ( !errorMsg.isEmpty() )
+    qDebug( "ERROR: %s", errorMsg.toAscii().data() );
+
+  QVERIFY( !filterElem.isNull() );
+
+  doc.appendChild( filterElem );
+
+  qDebug( "EXPR: %s", exp.expression().toAscii().data() );
+  qDebug( "SRSNAME: %s", srsName.toAscii().data() );
+  qDebug( "OGC : %s", doc.toString( -1 ).toAscii().data() );
+
+  QCOMPARE( xmlText, doc.toString( -1 ) );
+}
+
+void TestQgsOgcUtils::testExpressionToOgcFilterWFS11_data()
+{
+  QTest::addColumn<QString>( "exprText" );
+  QTest::addColumn<QString>( "srsName" );
+  QTest::addColumn<QString>( "xmlText" );
+
+  QTest::newRow( "bbox" )
+  << QString( "intersects_bbox($geometry, geomFromWKT('POLYGON((2 49,2 50,3 50,3 49,2 49))'))" )
+  << QString( "urn:ogc:def:crs:EPSG::4326" )
+  << QString(
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
+    "<ogc:BBOX>"
+    "<ogc:PropertyName>my_geometry_name</ogc:PropertyName>"
+    "<gml:Envelope srsName=\"urn:ogc:def:crs:EPSG::4326\">"
+    "<gml:lowerCorner>49 2</gml:lowerCorner>"
+    "<gml:upperCorner>50 3</gml:upperCorner>"
+    "</gml:Envelope>"
+    "</ogc:BBOX>"
+    "</ogc:Filter>" );
+}
+
+// There's an issue with QT 5 that appears to reverse the order of multiple attributes
+#if QT_VERSION < 0x050000
+
+void TestQgsOgcUtils::testExpressionToOgcFilterWFS20()
+{
+  QFETCH( QString, exprText );
+  QFETCH( QString, srsName );
+  QFETCH( QString, xmlText );
+
+  QgsExpression exp( exprText );
+  QVERIFY( !exp.hasParserError() );
+
+  QString errorMsg;
+  QDomDocument doc;
+  QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( exp, doc,
+                           QgsOgcUtils::GML_3_2_1, QgsOgcUtils::FILTER_FES_2_0, "my_geometry_name", srsName, true, false, &errorMsg );
+
+  if ( !errorMsg.isEmpty() )
+    qDebug( "ERROR: %s", errorMsg.toAscii().data() );
+
+  QVERIFY( !filterElem.isNull() );
+
+  doc.appendChild( filterElem );
+
+  qDebug( "EXPR: %s", exp.expression().toAscii().data() );
+  qDebug( "SRSNAME: %s", srsName.toAscii().data() );
+  qDebug( "OGC : %s", doc.toString( -1 ).toAscii().data() );
+
+  QCOMPARE( xmlText, doc.toString( -1 ) );
+}
+
+void TestQgsOgcUtils::testExpressionToOgcFilterWFS20_data()
+{
+  QTest::addColumn<QString>( "exprText" );
+  QTest::addColumn<QString>( "srsName" );
+  QTest::addColumn<QString>( "xmlText" );
+
+  QTest::newRow( "=" ) << QString( "NAME = 'New York'" ) << QString() << QString(
+    "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\">"
+    "<fes:PropertyIsEqualTo>"
+    "<fes:ValueReference>NAME</fes:ValueReference>"
+    "<fes:Literal>New York</fes:Literal>"
+    "</fes:PropertyIsEqualTo></fes:Filter>" );
+
+  QTest::newRow( "bbox" )
+  << QString( "intersects_bbox($geometry, geomFromWKT('POLYGON((2 49,2 50,3 50,3 49,2 49))'))" )
+  << QString( "urn:ogc:def:crs:EPSG::4326" )
+  << QString(
+    "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:gml=\"http://www.opengis.net/gml/3.2\">"
+    "<fes:BBOX>"
+    "<fes:ValueReference>my_geometry_name</fes:ValueReference>"
+    "<gml:Envelope srsName=\"urn:ogc:def:crs:EPSG::4326\">"
+    "<gml:lowerCorner>49 2</gml:lowerCorner>"
+    "<gml:upperCorner>50 3</gml:upperCorner>"
+    "</gml:Envelope>"
+    "</fes:BBOX>"
+    "</fes:Filter>" );
+
+  QTest::newRow( "intersects" )
+  << QString( "intersects($geometry, geomFromWKT('POLYGON((2 49,2 50,3 50,3 49,2 49))'))" )
+  << QString( "urn:ogc:def:crs:EPSG::4326" )
+  << QString(
+    "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:gml=\"http://www.opengis.net/gml/3.2\">"
+    "<fes:Intersects>"
+    "<fes:ValueReference>my_geometry_name</fes:ValueReference>"
+    "<gml:Polygon gml:id=\"qgis_id_geom_1\" srsName=\"urn:ogc:def:crs:EPSG::4326\">"
+    "<gml:exterior>"
+    "<gml:LinearRing>"
+    "<gml:posList srsDimension=\"2\">49 2 50 2 50 3 49 3 49 2</gml:posList>"
+    "</gml:LinearRing>"
+    "</gml:exterior>"
+    "</gml:Polygon>"
+    "</fes:Intersects>"
+    "</fes:Filter>" );
+}
+
+#endif
 
 
 QTEST_MAIN( TestQgsOgcUtils )

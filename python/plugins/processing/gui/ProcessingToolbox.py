@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -32,6 +33,7 @@ from PyQt.QtCore import Qt, QCoreApplication
 from PyQt.QtWidgets import QMenu, QAction, QTreeWidgetItem, QLabel, QMessageBox
 from qgis.utils import iface
 
+from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.core.Processing import Processing
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -41,7 +43,8 @@ from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
 from processing.gui.ConfigDialog import ConfigDialog
-
+from processing.gui.MessageBarProgress import MessageBarProgress
+from processing.gui.AlgorithmExecutor import runalg
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -130,7 +133,8 @@ class ProcessingToolbox(BASE, WIDGET):
             item.setHidden(not show)
             return show
         elif isinstance(item, (TreeAlgorithmItem, TreeActionItem)):
-            hide = bool(text) and (text not in item.text(0).lower())
+            #hide = bool(text) and (text not in item.text(0).lower())
+            hide = bool(text) and not any(text in t for t in [item.text(0).lower(), item.data(0, Qt.UserRole).lower()])
             if isinstance(item, TreeAlgorithmItem):
                 hide = hide and (text not in item.alg.commandLineName())
             item.setHidden(hide)
@@ -194,11 +198,14 @@ class ProcessingToolbox(BASE, WIDGET):
             editRenderingStylesAction.triggered.connect(
                 self.editRenderingStyles)
             popupmenu.addAction(editRenderingStylesAction)
+
+        if isinstance(item, (TreeAlgorithmItem, TreeActionItem)):
+            data = item.alg if isinstance(item, TreeAlgorithmItem) else item.action
             actions = Processing.contextMenuActions
             if len(actions) > 0:
                 popupmenu.addSeparator()
             for action in actions:
-                action.setData(alg, self)
+                action.setData(data, self)
                 if action.isEnabled():
                     contextMenuAction = QAction(action.name,
                                                 self.algorithmTree)
@@ -237,24 +244,30 @@ class ProcessingToolbox(BASE, WIDGET):
                 dlg.exec_()
                 return
             alg = alg.getCopy()
-            dlg = alg.getCustomParametersDialog()
-            if not dlg:
-                dlg = AlgorithmDialog(alg)
-            canvas = iface.mapCanvas()
-            prevMapTool = canvas.mapTool()
-            dlg.show()
-            dlg.exec_()
-            if canvas.mapTool() != prevMapTool:
-                try:
-                    canvas.mapTool().reset()
-                except:
-                    pass
-                canvas.setMapTool(prevMapTool)
-            if dlg.executed:
-                showRecent = ProcessingConfig.getSetting(
-                    ProcessingConfig.SHOW_RECENT_ALGORITHMS)
-                if showRecent:
-                    self.addRecentAlgorithms(True)
+            if (alg.getVisibleParametersCount() + alg.getVisibleOutputsCount()) > 0:
+                dlg = alg.getCustomParametersDialog()
+                if not dlg:
+                    dlg = AlgorithmDialog(alg)
+                canvas = iface.mapCanvas()
+                prevMapTool = canvas.mapTool()
+                dlg.show()
+                dlg.exec_()
+                if canvas.mapTool() != prevMapTool:
+                    try:
+                        canvas.mapTool().reset()
+                    except:
+                        pass
+                    canvas.setMapTool(prevMapTool)
+                if dlg.executed:
+                    showRecent = ProcessingConfig.getSetting(
+                        ProcessingConfig.SHOW_RECENT_ALGORITHMS)
+                    if showRecent:
+                        self.addRecentAlgorithms(True)
+            else:
+                progress = MessageBarProgress()
+                runalg(alg, progress)
+                handleAlgorithmResults(alg, progress)
+                progress.close()
         if isinstance(item, TreeActionItem):
             action = item.action
             action.setData(self)
@@ -315,10 +328,11 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         QTreeWidgetItem.__init__(self)
         self.alg = alg
         icon = alg.getIcon()
-        name = AlgorithmClassification.getDisplayName(alg)
+        nameEn, name = AlgorithmClassification.getDisplayNames(alg)
         self.setIcon(0, icon)
         self.setToolTip(0, name)
         self.setText(0, name)
+        self.setData(0, Qt.UserRole, nameEn)
 
 
 class TreeActionItem(QTreeWidgetItem):
@@ -326,8 +340,9 @@ class TreeActionItem(QTreeWidgetItem):
     def __init__(self, action):
         QTreeWidgetItem.__init__(self)
         self.action = action
-        self.setText(0, action.name)
+        self.setText(0, action.i18n_name)
         self.setIcon(0, action.getIcon())
+        self.setData(0, Qt.UserRole, action.name)
 
 
 class TreeProviderItem(QTreeWidgetItem):

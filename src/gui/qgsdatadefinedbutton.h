@@ -370,12 +370,12 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
 
     QScopedPointer<QgsDataDefinedAssistant> mAssistant;
 
-    static QIcon mIconDataDefine;
-    static QIcon mIconDataDefineOn;
-    static QIcon mIconDataDefineError;
-    static QIcon mIconDataDefineExpression;
-    static QIcon mIconDataDefineExpressionOn;
-    static QIcon mIconDataDefineExpressionError;
+    QIcon mIconDataDefine;
+    QIcon mIconDataDefineOn;
+    QIcon mIconDataDefineError;
+    QIcon mIconDataDefineExpression;
+    QIcon mIconDataDefineExpressionOn;
+    QIcon mIconDataDefineExpressionError;
 
     ExpressionContextCallback mExpressionContextCallback;
     const void* mExpressionContextCallbackContext;

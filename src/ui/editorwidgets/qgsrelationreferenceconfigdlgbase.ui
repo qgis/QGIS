@@ -14,20 +14,10 @@
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
+   <item row="4" column="0" colspan="2">
+    <widget class="QCheckBox" name="mCbxShowForm">
      <property name="text">
-      <string>Display expression</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true"/>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Relation</string>
+      <string>Show embedded form</string>
      </property>
     </widget>
    </item>
@@ -41,17 +31,27 @@
      </property>
     </widget>
    </item>
+   <item row="6" column="0" colspan="2">
+    <widget class="QCheckBox" name="mCbxReadOnly">
+     <property name="text">
+      <string>Use a read-only line edit instead of a combobox</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Relation</string>
+     </property>
+    </widget>
+   </item>
    <item row="3" column="0">
     <widget class="QCheckBox" name="mCbxOrderByValue">
      <property name="text">
       <string>Order by value</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="2">
-    <widget class="QCheckBox" name="mCbxShowForm">
-     <property name="text">
-      <string>Show embedded form</string>
      </property>
     </widget>
    </item>
@@ -62,14 +62,14 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0" colspan="2">
-    <widget class="QCheckBox" name="mCbxReadOnly">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
      <property name="text">
-      <string>Use a read-only line edit instead of a combobox</string>
+      <string>Display expression</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="0" colspan="2">
+   <item row="8" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="mFilterGroupBox">
      <property name="title">
       <string>Filters</string>
@@ -148,19 +148,26 @@
      </layout>
     </widget>
    </item>
+   <item row="7" column="0" colspan="2">
+    <widget class="QCheckBox" name="mCbxAllowAddFeatures">
+     <property name="text">
+      <string>Allow adding new features</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsFieldExpressionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsfieldexpressionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

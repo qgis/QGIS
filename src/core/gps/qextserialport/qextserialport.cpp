@@ -166,7 +166,7 @@ QByteArray QextSerialPort::readAll()
 Returns the baud rate of the serial port.  For a list of possible return values see
 the definition of the enum BaudRateType.
 */
-BaudRateType QextSerialPort::baudRate(void) const
+BaudRateType QextSerialPort::baudRate() const
 {
     return Settings.BaudRate;
 }

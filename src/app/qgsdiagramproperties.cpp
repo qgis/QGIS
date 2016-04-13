@@ -65,8 +65,16 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   // get rid of annoying outer focus rect on Mac
   mDiagramOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
 
-  connect( mEnableDiagramsCheckBox, SIGNAL( toggled( bool ) ), mDiagramTypeFrame, SLOT( setEnabled( bool ) ) );
-  connect( mEnableDiagramsCheckBox, SIGNAL( toggled( bool ) ), mDiagramFrame, SLOT( setEnabled( bool ) ) );
+  mDiagramTypeComboBox->blockSignals( true );
+  QPixmap pix = QgsApplication::getThemePixmap( "diagramNone" );
+  mDiagramTypeComboBox->addItem( pix, tr( "No diagrams" ), "None" );
+  pix = QgsApplication::getThemePixmap( "pie-chart" );
+  mDiagramTypeComboBox->addItem( pix, tr( "Pie chart" ), DIAGRAM_NAME_PIE );
+  pix = QgsApplication::getThemePixmap( "text" );
+  mDiagramTypeComboBox->addItem( pix, tr( "Text diagram" ), DIAGRAM_NAME_TEXT );
+  pix = QgsApplication::getThemePixmap( "histogram" );
+  mDiagramTypeComboBox->addItem( pix, tr( "Histogram" ), DIAGRAM_NAME_HISTOGRAM );
+  mDiagramTypeComboBox->blockSignals( false );
 
   mScaleRangeWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
   mSizeFieldExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
@@ -90,9 +98,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   QGis::GeometryType layerType = layer->geometryType();
   if ( layerType == QGis::UnknownGeometry || layerType == QGis::NoGeometry )
   {
-    mEnableDiagramsCheckBox->setChecked( false );
-    mEnableDiagramsCheckBox->setEnabled( false );
-    mDiagramTypeFrame->setEnabled( false );
+    mDiagramTypeComboBox->setEnabled( false );
     mDiagramFrame->setEnabled( false );
   }
 
@@ -121,15 +127,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       break;
   }
   mPlacementComboBox->blockSignals( false );
-
-  mDiagramTypeComboBox->blockSignals( true );
-  QPixmap pix = QgsApplication::getThemePixmap( "pie-chart" );
-  mDiagramTypeComboBox->addItem( pix, tr( "Pie chart" ), DIAGRAM_NAME_PIE );
-  pix = QgsApplication::getThemePixmap( "text" );
-  mDiagramTypeComboBox->addItem( pix, tr( "Text diagram" ), DIAGRAM_NAME_TEXT );
-  pix = QgsApplication::getThemePixmap( "histogram" );
-  mDiagramTypeComboBox->addItem( pix, tr( "Histogram" ), DIAGRAM_NAME_HISTOGRAM );
-  mDiagramTypeComboBox->blockSignals( false );
 
   mLabelPlacementComboBox->addItem( tr( "Height" ), QgsDiagramSettings::Height );
   mLabelPlacementComboBox->addItem( tr( "x-height" ), QgsDiagramSettings::XHeight );
@@ -188,9 +185,9 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   const QgsDiagramRendererV2* dr = layer->diagramRenderer();
   if ( !dr ) //no diagram renderer yet, insert reasonable default
   {
-    mEnableDiagramsCheckBox->setChecked( false );
-    mDiagramTypeFrame->setEnabled( false );
-    mDiagramFrame->setEnabled( false );
+    mDiagramTypeComboBox->blockSignals( true );
+    mDiagramTypeComboBox->setCurrentIndex( 0 );
+    mDiagramTypeComboBox->blockSignals( false );
     mFixedSizeRadio->setChecked( true );
     mDiagramUnitComboBox->setUnit( QgsSymbolV2::MM );
     mDiagramLineUnitComboBox->setUnit( QgsSymbolV2::MM );
@@ -225,9 +222,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
         break;
     }
     mBackgroundColorButton->setColor( QColor( 255, 255, 255, 255 ) );
-    mDiagramTypeComboBox->blockSignals( true );
-    mDiagramTypeComboBox->setCurrentIndex( 0 );
-    mDiagramTypeComboBox->blockSignals( false );
     //force a refresh of widget status to match diagram type
     on_mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
   }
@@ -249,9 +243,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     QList<QgsDiagramSettings> settingList = dr->diagramSettings();
     if ( !settingList.isEmpty() )
     {
-      mEnableDiagramsCheckBox->setChecked( settingList.at( 0 ).enabled );
-      mDiagramTypeFrame->setEnabled( mEnableDiagramsCheckBox->isChecked() );
-      mDiagramFrame->setEnabled( mEnableDiagramsCheckBox->isChecked() );
+      mDiagramFrame->setEnabled( settingList.at( 0 ).enabled );
       mDiagramFont = settingList.at( 0 ).font;
       QSizeF size = settingList.at( 0 ).size;
       mBackgroundColorButton->setColor( settingList.at( 0 ).backgroundColor );
@@ -385,16 +377,17 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
     if ( dr->diagram() )
     {
-      QString diagramName = dr->diagram()->diagramName();
+      mDiagramType = dr->diagram()->diagramName();
+
       mDiagramTypeComboBox->blockSignals( true );
-      mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findData( diagramName ) );
+      mDiagramTypeComboBox->setCurrentIndex( settingList.at( 0 ).enabled ? mDiagramTypeComboBox->findData( mDiagramType ) : 0 );
       mDiagramTypeComboBox->blockSignals( false );
       //force a refresh of widget status to match diagram type
       on_mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
       if ( mDiagramTypeComboBox->currentIndex() == -1 )
       {
         QMessageBox::warning( this, tr( "Unknown diagram type." ),
-                              tr( "The diagram type '%1' is unknown. A default type is selected for you." ).arg( diagramName ), QMessageBox::Ok );
+                              tr( "The diagram type '%1' is unknown. A default type is selected for you." ).arg( mDiagramType ), QMessageBox::Ok );
         mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findData( DIAGRAM_NAME_PIE ) );
       }
     }
@@ -414,71 +407,79 @@ QgsDiagramProperties::~QgsDiagramProperties()
 
 void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int index )
 {
-  QString diagramType = mDiagramTypeComboBox->itemData( index ).toString();
-
-  if ( DIAGRAM_NAME_TEXT == diagramType )
+  if ( index == 0 )
   {
-    mTextOptionsFrame->show();
-    mBackgroundColorLabel->show();
-    mBackgroundColorButton->show();
-    mDiagramFontButton->show();
+    mDiagramFrame->setEnabled( false );
   }
   else
   {
-    mTextOptionsFrame->hide();
-    mBackgroundColorLabel->hide();
-    mBackgroundColorButton->hide();
-    mDiagramFontButton->hide();
-  }
+    mDiagramFrame->setEnabled( true );
 
-  if ( DIAGRAM_NAME_HISTOGRAM == diagramType )
-  {
-    mBarWidthLabel->show();
-    mBarWidthSpinBox->show();
-    mBarOptionsFrame->show();
-    mAttributeBasedScalingRadio->setChecked( true );
-    mFixedSizeRadio->setEnabled( false );
-    mDiagramSizeSpinBox->setEnabled( false );
-    mLinearlyScalingLabel->setText( tr( "Bar length: Scale linearly, so that the following value matches the specified bar length:" ) );
-    mSizeLabel->setText( tr( "Bar length" ) );
-    mFrameIncreaseSize->setVisible( false );
-  }
-  else
-  {
-    mBarWidthLabel->hide();
-    mBarWidthSpinBox->hide();
-    mBarOptionsFrame->hide();
-    mLinearlyScalingLabel->setText( tr( "Scale linearly between 0 and the following attribute value / diagram size:" ) );
-    mSizeLabel->setText( tr( "Size" ) );
-    mAttributeBasedScalingRadio->setEnabled( true );
-    mFixedSizeRadio->setEnabled( true );
-    mDiagramSizeSpinBox->setEnabled( mFixedSizeRadio->isChecked() );
-    mFrameIncreaseSize->setVisible( true );
-  }
+    mDiagramType = mDiagramTypeComboBox->itemData( index ).toString();
 
-  if ( DIAGRAM_NAME_TEXT == diagramType || DIAGRAM_NAME_PIE == diagramType )
-  {
-    mScaleDependencyComboBox->show();
-    mScaleDependencyLabel->show();
-  }
-  else
-  {
-    mScaleDependencyComboBox->hide();
-    mScaleDependencyLabel->hide();
-  }
+    if ( DIAGRAM_NAME_TEXT == mDiagramType )
+    {
+      mTextOptionsFrame->show();
+      mBackgroundColorLabel->show();
+      mBackgroundColorButton->show();
+      mDiagramFontButton->show();
+    }
+    else
+    {
+      mTextOptionsFrame->hide();
+      mBackgroundColorLabel->hide();
+      mBackgroundColorButton->hide();
+      mDiagramFontButton->hide();
+    }
 
-  if ( DIAGRAM_NAME_PIE == diagramType )
-  {
-    mAngleOffsetComboBox->show();
-    mAngleOffsetLabel->show();
-  }
-  else
-  {
-    mAngleOffsetComboBox->hide();
-    mAngleOffsetLabel->hide();
+    if ( DIAGRAM_NAME_HISTOGRAM == mDiagramType )
+    {
+      mBarWidthLabel->show();
+      mBarWidthSpinBox->show();
+      mBarOptionsFrame->show();
+      mAttributeBasedScalingRadio->setChecked( true );
+      mFixedSizeRadio->setEnabled( false );
+      mDiagramSizeSpinBox->setEnabled( false );
+      mLinearlyScalingLabel->setText( tr( "Bar length: Scale linearly, so that the following value matches the specified bar length:" ) );
+      mSizeLabel->setText( tr( "Bar length" ) );
+      mFrameIncreaseSize->setVisible( false );
+    }
+    else
+    {
+      mBarWidthLabel->hide();
+      mBarWidthSpinBox->hide();
+      mBarOptionsFrame->hide();
+      mLinearlyScalingLabel->setText( tr( "Scale linearly between 0 and the following attribute value / diagram size:" ) );
+      mSizeLabel->setText( tr( "Size" ) );
+      mAttributeBasedScalingRadio->setEnabled( true );
+      mFixedSizeRadio->setEnabled( true );
+      mDiagramSizeSpinBox->setEnabled( mFixedSizeRadio->isChecked() );
+      mFrameIncreaseSize->setVisible( true );
+    }
+
+    if ( DIAGRAM_NAME_TEXT == mDiagramType || DIAGRAM_NAME_PIE == mDiagramType )
+    {
+      mScaleDependencyComboBox->show();
+      mScaleDependencyLabel->show();
+    }
+    else
+    {
+      mScaleDependencyComboBox->hide();
+      mScaleDependencyLabel->hide();
+    }
+
+    if ( DIAGRAM_NAME_PIE == mDiagramType )
+    {
+      mAngleOffsetComboBox->show();
+      mAngleOffsetLabel->show();
+    }
+    else
+    {
+      mAngleOffsetComboBox->hide();
+      mAngleOffsetLabel->hide();
+    }
   }
 }
-
 QString QgsDiagramProperties::guessLegendText( const QString& expression )
 {
   //trim unwanted characters from expression text for legend
@@ -598,11 +599,10 @@ void QgsDiagramProperties::on_mEngineSettingsButton_clicked()
 
 void QgsDiagramProperties::apply()
 {
-  bool diagramsEnabled = mEnableDiagramsCheckBox->isChecked();
+  int index = mDiagramTypeComboBox->currentIndex();
+  bool diagramsEnabled = ( index != 0 );
 
   QgsDiagram* diagram = nullptr;
-  int index = mDiagramTypeComboBox->currentIndex();
-  QString diagramType = mDiagramTypeComboBox->itemData( index ).toString();
 
   if ( diagramsEnabled && 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
   {
@@ -661,11 +661,11 @@ void QgsDiagramProperties::apply()
   }
 #endif
 
-  if ( diagramType == DIAGRAM_NAME_TEXT )
+  if ( mDiagramType == DIAGRAM_NAME_TEXT )
   {
     diagram = new QgsTextDiagram();
   }
-  else if ( diagramType == DIAGRAM_NAME_PIE )
+  else if ( mDiagramType == DIAGRAM_NAME_PIE )
   {
     diagram = new QgsPieDiagram();
   }
@@ -675,7 +675,7 @@ void QgsDiagramProperties::apply()
   }
 
   QgsDiagramSettings ds;
-  ds.enabled = mEnableDiagramsCheckBox->isChecked();
+  ds.enabled = ( mDiagramTypeComboBox->currentIndex() != 0 );
   ds.font = mDiagramFont;
   ds.transparency = mTransparencySpinBox->value() * 255.0 / 100.0;
 

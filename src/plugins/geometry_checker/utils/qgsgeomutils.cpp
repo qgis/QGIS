@@ -75,7 +75,7 @@ namespace QgsGeomUtils
           QgsPointV2 p2 = geom1->vertexAt( QgsVertexId( iPart1, iRing1, jVert1 ) );
           double lambdap1 = 0.;
           double lambdap2 = qSqrt( QgsGeometryUtils::sqrDistance2D( p1, p2 ) );
-          QgsVector d = QgsVector( p2.x() - p1.x(), p2.y() - p1.y() ).normal();
+          QgsVector d = QgsVector( p2.x() - p1.x(), p2.y() - p1.y() ).normalized();
 
           for ( int iPart2 = 0, nParts2 = geom2->partCount(); iPart2 < nParts2; ++iPart2 )
           {

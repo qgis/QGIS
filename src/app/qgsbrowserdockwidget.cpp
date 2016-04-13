@@ -107,7 +107,7 @@ QgsBrowserLayerProperties::QgsBrowserLayerProperties( QWidget* parent ) :
 {
   setupUi( this );
 
-  mUriLabel = new QgsBrowserPropertiesWrapLabel( "", this );
+  mUriLabel = new QgsBrowserPropertiesWrapLabel( QString(), this );
   mHeaderGridLayout->addItem( new QWidgetItem( mUriLabel ), 1, 1 );
 }
 
@@ -221,7 +221,7 @@ QgsBrowserDirectoryProperties::QgsBrowserDirectoryProperties( QWidget* parent ) 
 {
   setupUi( this );
 
-  mPathLabel = new QgsBrowserPropertiesWrapLabel( "", mHeaderWidget );
+  mPathLabel = new QgsBrowserPropertiesWrapLabel( QString(), mHeaderWidget );
   mHeaderGridLayout->addItem( new QWidgetItem( mPathLabel ), 0, 1 );
 }
 
@@ -277,7 +277,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( const QString& name, QWidget * paren
   mLayoutBrowser->addWidget( mBrowserView );
 
   mWidgetFilter->hide();
-  mLeFilter->setPlaceholderText( tr( "Type here to filter current item..." ) );
+  mLeFilter->setPlaceholderText( tr( "Type here to filter visible items..." ) );
   // icons from http://www.fatcow.com/free-icons License: CC Attribution 3.0
 
   QMenu* menu = new QMenu( this );
@@ -664,8 +664,12 @@ void QgsBrowserDockWidget::showFilterWidget( bool visible )
   mWidgetFilter->setVisible( visible );
   if ( ! visible )
   {
-    mLeFilter->setText( "" );
+    mLeFilter->setText( QString() );
     setFilter();
+  }
+  else
+  {
+    mLeFilter->setFocus();
   }
 }
 
@@ -808,8 +812,10 @@ void QgsDockBrowserTreeView::dragMoveEvent( QDragMoveEvent* e )
 //
 
 QgsBrowserTreeFilterProxyModel::QgsBrowserTreeFilterProxyModel( QObject* parent )
-    : QSortFilterProxyModel( parent ), mModel( nullptr )
-    , mFilter( "" ), mPatternSyntax( "normal" ), mCaseSensitivity( Qt::CaseInsensitive )
+    : QSortFilterProxyModel( parent )
+    , mModel( nullptr )
+    , mPatternSyntax( "normal" )
+    , mCaseSensitivity( Qt::CaseInsensitive )
 {
   setDynamicSortFilter( true );
 }
@@ -903,7 +909,8 @@ bool QgsBrowserTreeFilterProxyModel::filterAcceptsString( const QString& value )
 
 bool QgsBrowserTreeFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex& sourceParent ) const
 {
-  if ( mFilter == "" || !mModel ) return true;
+  if ( mFilter.isEmpty() || !mModel )
+    return true;
 
   QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
   return filterAcceptsItem( sourceIndex ) || filterAcceptsAncestor( sourceIndex ) || filterAcceptsDescendant( sourceIndex );

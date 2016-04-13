@@ -141,7 +141,9 @@ bool TestStyleV2::imageCheck( QgsMapSettings& ms, const QString& testName )
 bool TestStyleV2::testValidColor( QgsVectorColorRampV2 *ramp, double value, const QColor& expected )
 {
   QColor result = ramp->color( value );
-  if ( result != expected )
+  //use int color components when testing (builds some fuzziness into test)
+  if ( result.red() != expected.red() || result.green() != expected.green() || result.blue() != expected.blue()
+       || result.alpha() != expected.alpha() )
   {
     QWARN( QString( "value = %1 result = %2 expected = %3" ).arg( value ).arg(
              result.name(), expected.name() ).toLocal8Bit().data() );
@@ -189,8 +191,8 @@ void TestStyleV2::testLoadColorRamps()
 
   // values for color tests
   QMultiMap< QString, QPair< double, QColor> > colorTests;
-  colorTests.insert( "test_gradient", qMakePair( 0.25, QColor( "#ff7f7f" ) ) );
-  colorTests.insert( "test_gradient", qMakePair( 0.66, QColor( "#adadff" ) ) );
+  colorTests.insert( "test_gradient", qMakePair( 0.25, QColor( "#ff8080" ) ) );
+  colorTests.insert( "test_gradient", qMakePair( 0.66, QColor( "#aeaeff" ) ) );
   // cannot test random colors!
   colorTests.insert( "test_cb1", qMakePair( 0.25, QColor( "#fdae61" ) ) );
   colorTests.insert( "test_cb1", qMakePair( 0.66, QColor( "#abdda4" ) ) );
@@ -205,8 +207,8 @@ void TestStyleV2::testLoadColorRamps()
   colorTests.insert( "test_cc2", qMakePair( 0.25, QColor( "#de77ae" ) ) );
   colorTests.insert( "test_cc2", qMakePair( 0.66, QColor( "#b8e186" ) ) );
   colorRampsTest << "test_cc3";
-  colorTests.insert( "test_cc3", qMakePair( 0.25, QColor( "#7f7f7f" ) ) );
-  colorTests.insert( "test_cc3", qMakePair( 0.66, QColor( "#ffad00" ) ) );
+  colorTests.insert( "test_cc3", qMakePair( 0.25, QColor( "#808080" ) ) );
+  colorTests.insert( "test_cc3", qMakePair( 0.66, QColor( "#ffae00" ) ) );
 
   QgsDebugMsg( "loaded colorRamps: " + colorRamps.join( " " ) );
 

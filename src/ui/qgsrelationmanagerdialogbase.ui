@@ -16,7 +16,13 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTableWidget" name="mRelationsTable">
+     <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
      <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="verticalHeaderShowSortIndicator" stdset="0">
       <bool>true</bool>
      </attribute>
      <column>

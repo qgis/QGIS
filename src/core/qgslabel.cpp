@@ -483,7 +483,7 @@ void QgsLabel::setFields( const QgsFields & fields )
   mFields = fields;
 }
 
-QgsFields & QgsLabel::fields( void )
+QgsFields & QgsLabel::fields( )
 {
   return mFields;
 }
@@ -507,7 +507,7 @@ QString QgsLabel::labelField( int attr ) const
   return mFields.at( fieldIndex ).name();
 }
 
-QgsLabelAttributes *QgsLabel::labelAttributes( void )
+QgsLabelAttributes *QgsLabel::labelAttributes()
 {
   return mLabelAttributes;
 }

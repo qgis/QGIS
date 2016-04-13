@@ -41,8 +41,9 @@ class CreateNewScriptAction(ToolboxAction):
     SCRIPT_R = 1
 
     def __init__(self, actionName, scriptType):
-        self.name = actionName
-        self.group = self.tr('Tools', 'CreateNewScriptAction')
+        self.name, self.i18n_name = self.trAction(actionName)
+        self.group, self.i18n_group = self.trAction('Tools')
+
         self.scriptType = scriptType
 
     def getIcon(self):

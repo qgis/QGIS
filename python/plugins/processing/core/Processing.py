@@ -56,6 +56,8 @@ from processing.algs.r.RAlgorithmProvider import RAlgorithmProvider
 from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
 from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
 from processing.algs.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvider
+from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider
+
 from processing.tools import dataobjects
 
 
@@ -138,6 +140,7 @@ class Processing:
         Processing.addProvider(Grass7AlgorithmProvider(), updateList=False)
         Processing.addProvider(ScriptAlgorithmProvider(), updateList=False)
         Processing.addProvider(TauDEMAlgorithmProvider(), updateList=False)
+        Processing.addProvider(PreconfiguredAlgorithmProvider(), updateList=False)
         Processing.addProvider(Processing.modeler, updateList=False)
         Processing.modeler.initializeSettings()
 

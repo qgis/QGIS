@@ -643,7 +643,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void toolButtonActionTriggered( QAction * );
 
     //! layer selection changed
-    void legendLayerSelectionChanged( void );
+    void legendLayerSelectionChanged();
 
     //! Watch for QFileOpenEvent.
     virtual bool event( QEvent *event ) override;
@@ -671,9 +671,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void refreshActionFeatureAction();
 
     QMenu *panelMenu() { return mPanelMenu; }
-
-    bool autoTransaction() const;
-    void setAutoTransaction( bool state );
 
   protected:
 
@@ -1682,9 +1679,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsPluginManager *mPluginManager;
 
     QgsComposerManager *mComposerManager;
-
-    //! map of transaction group: QPair( providerKey, connString ) -> transactionGroup
-    QMap< QPair< QString, QString>, QgsTransactionGroup*> mTransactionGroups;
 
     //! Persistent tile scale slider
     QgsTileScaleWidget *mpTileScaleWidget;

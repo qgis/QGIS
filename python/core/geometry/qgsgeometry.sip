@@ -171,9 +171,26 @@ class QgsGeometry
 
     /**
      * Returns the vertex closest to the given point, the corresponding vertex index, squared distance snap point / target point
-     * and the indices of the vertices before/after. The vertices before/after are -1 if not present
+     * and the indices of the vertices before and after the closest vertex.
+     * @param point point to search for
+     * @param atVertex will be set to the vertex index of the closest found vertex
+     * @param beforeVertex will be set to the vertex index of the previous vertex from the closest one. Will be set to -1 if
+     * not present.
+     * @param afterVertex will be set to the vertex index of the next vertex after the closest one. Will be set to -1 if
+     * not present.
+     * @param sqrDist will be set to the square distance between the closest vertex and the specified point
+     * @returns closest point in geometry
      */
+    //TODO QGIS 3.0 - rename beforeVertex to previousVertex, afterVertex to nextVertex
     QgsPoint closestVertex( const QgsPoint& point, int& atVertex /Out/, int& beforeVertex /Out/, int& afterVertex /Out/, double& sqrDist /Out/ ) const;
+
+    /**
+     * Returns the distance along this geometry from its first vertex to the specified vertex.
+     * @param vertex vertex index to calculate distance to
+     * @returns distance to vertex (following geometry), or -1 for invalid vertex numbers
+     * @note added in QGIS 2.16
+     */
+    double distanceToVertex( int vertex ) const;
 
     /**
      * Returns the indexes of the vertices before and after the given vertex index.

@@ -48,6 +48,13 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, picture );
   mainLayout->addWidget( itemPropertiesWidget );
 
+  if ( mPicture->composition() )
+  {
+    mComposerMapComboBox->setComposition( mPicture->composition() );
+    mComposerMapComboBox->setItemType( QgsComposerItem::ComposerMap );
+    connect( mComposerMapComboBox, SIGNAL( itemChanged( const QgsComposerItem* ) ), this, SLOT( composerMapChanged( const QgsComposerItem* ) ) );
+  }
+
   setGuiElementValues();
   mPreviewsLoadingLabel->hide();
 
@@ -277,23 +284,18 @@ void QgsComposerPictureWidget::on_mRotationFromComposerMapCheckBox_stateChanged(
   }
   else
   {
-    int currentItemIndex = mComposerMapComboBox->currentIndex();
-    if ( currentItemIndex == -1 )
-    {
-      return;
-    }
-    int composerId = mComposerMapComboBox->itemData( currentItemIndex, Qt::UserRole ).toInt();
-
-    mPicture->setRotationMap( composerId );
+    const QgsComposerMap* map = dynamic_cast< const QgsComposerMap* >( mComposerMapComboBox->currentItem() );
+    int mapId = map ? map->id() : -1;
+    mPicture->setRotationMap( mapId );
     mPictureRotationSpinBox->setEnabled( false );
     mComposerMapComboBox->setEnabled( true );
   }
   mPicture->endCommand();
 }
 
-void QgsComposerPictureWidget::on_mComposerMapComboBox_activated( const QString & text )
+void QgsComposerPictureWidget::composerMapChanged( const QgsComposerItem* item )
 {
-  if ( !mPicture || text.isEmpty() || !mPicture->useRotationMap() )
+  if ( !mPicture )
   {
     return;
   }
@@ -305,24 +307,8 @@ void QgsComposerPictureWidget::on_mComposerMapComboBox_activated( const QString 
     return;
   }
 
-  //extract id
-  int id;
-  bool conversionOk;
-  QStringList textSplit = text.split( ' ' );
-  if ( textSplit.size() < 1 )
-  {
-    return;
-  }
-
-  QString idString = textSplit.at( textSplit.size() - 1 );
-  id = idString.toInt( &conversionOk );
-
-  if ( !conversionOk )
-  {
-    return;
-  }
-
-  const QgsComposerMap* composerMap = composition->getComposerMapById( id );
+  const QgsComposerMap* composerMap = dynamic_cast< const QgsComposerMap*>( item );
+  int id = composerMap ? composerMap->id() : -1;
   if ( !composerMap )
   {
     return;
@@ -331,45 +317,6 @@ void QgsComposerPictureWidget::on_mComposerMapComboBox_activated( const QString 
   mPicture->setRotationMap( id );
   mPicture->update();
   mPicture->endCommand();
-}
-
-void QgsComposerPictureWidget::refreshMapComboBox()
-{
-  mComposerMapComboBox->blockSignals( true );
-  //save the current entry in case it is still present after refresh
-  QString saveCurrentComboText = mComposerMapComboBox->currentText();
-
-  mComposerMapComboBox->clear();
-
-  if ( mPicture )
-  {
-    //insert available maps into mMapComboBox
-    const QgsComposition* composition = mPicture->composition();
-    if ( composition )
-    {
-      QList<const QgsComposerMap*> availableMaps = composition->composerMapItems();
-      QList<const QgsComposerMap*>::const_iterator mapItemIt = availableMaps.constBegin();
-      for ( ; mapItemIt != availableMaps.constEnd(); ++mapItemIt )
-      {
-        mComposerMapComboBox->addItem( tr( "Map %1" ).arg(( *mapItemIt )->id() ), ( *mapItemIt )->id() );
-      }
-    }
-  }
-
-  if ( !saveCurrentComboText.isEmpty() )
-  {
-    if ( mComposerMapComboBox->findText( saveCurrentComboText ) == -1 )
-    {
-      //the former entry is no longer present. Inform the scalebar about the changed composer map
-      on_mComposerMapComboBox_activated( mComposerMapComboBox->currentText() );
-    }
-    else
-    {
-      //the former entry is still present. Make it the current entry again
-      mComposerMapComboBox->setCurrentIndex( mComposerMapComboBox->findText( saveCurrentComboText ) );
-    }
-  }
-  mComposerMapComboBox->blockSignals( false );
 }
 
 void QgsComposerPictureWidget::setPicRotationSpinValue( double r )
@@ -397,19 +344,17 @@ void QgsComposerPictureWidget::setGuiElementValues()
     mPictureLineEdit->setText( mPicture->picturePath() );
     mPictureRotationSpinBox->setValue( mPicture->pictureRotation() );
 
-    refreshMapComboBox();
+    const QgsComposerMap* map = mPicture->composition()->getComposerMapById( mPicture->rotationMap() );
+    if ( map )
+      mComposerMapComboBox->setItem( map );
+    else
+      mComposerMapComboBox->setCurrentIndex( 0 );
 
     if ( mPicture->useRotationMap() )
     {
       mRotationFromComposerMapCheckBox->setCheckState( Qt::Checked );
       mPictureRotationSpinBox->setEnabled( false );
       mComposerMapComboBox->setEnabled( true );
-      QString mapText = tr( "Map %1" ).arg( mPicture->rotationMap() );
-      int itemId = mComposerMapComboBox->findText( mapText );
-      if ( itemId >= 0 )
-      {
-        mComposerMapComboBox->setCurrentIndex( itemId );
-      }
     }
     else
     {
@@ -718,12 +663,6 @@ void QgsComposerPictureWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
   mPicture->setSvgBorderWidth( d );
   mPicture->endCommand();
   mPicture->update();
-}
-
-void QgsComposerPictureWidget::showEvent( QShowEvent * event )
-{
-  Q_UNUSED( event );
-  refreshMapComboBox();
 }
 
 void QgsComposerPictureWidget::resizeEvent( QResizeEvent * event )

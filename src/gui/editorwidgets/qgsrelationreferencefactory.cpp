@@ -47,6 +47,7 @@ QgsEditorWidgetConfig QgsRelationReferenceFactory::readConfig( const QDomElement
   cfg.insert( "Relation", configElement.attribute( "Relation" ) );
   cfg.insert( "MapIdentification", configElement.attribute( "MapIdentification" ) == "1" );
   cfg.insert( "ReadOnly", configElement.attribute( "ReadOnly" ) == "1" );
+  cfg.insert( "AllowAddFeatures", configElement.attribute( "AllowAddFeatures" ) == "1" );
 
   QDomNode filterNode = configElement.elementsByTagName( "FilterFields" ).at( 0 );
   if ( !filterNode.isNull() )
@@ -78,6 +79,7 @@ void QgsRelationReferenceFactory::writeConfig( const QgsEditorWidgetConfig& conf
   configElement.setAttribute( "Relation", config["Relation"].toString() );
   configElement.setAttribute( "MapIdentification", config["MapIdentification"].toBool() );
   configElement.setAttribute( "ReadOnly", config["ReadOnly"].toBool() );
+  configElement.setAttribute( "AllowAddFeatures", config["AllowAddFeatures"].toBool() );
 
   if ( config.contains( "FilterFields" ) )
   {

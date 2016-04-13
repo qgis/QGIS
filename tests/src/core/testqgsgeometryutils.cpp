@@ -43,6 +43,7 @@ class TestQgsGeometryUtils: public QObject
     void testLinePerpendicularAngle();
     void testAverageAngle_data();
     void testAverageAngle();
+    void testDistanceToVertex();
 };
 
 
@@ -328,6 +329,36 @@ void TestQgsGeometryUtils::testAverageAngle()
 
   double averageAngle = QgsGeometryUtils::averageAngle( angle1 * M_PI / 180.0, angle2 * M_PI / 180.0 ) * 180.0 / M_PI;
   QVERIFY( qgsDoubleNear( averageAngle, expected, 0.0000000001 ) );
+}
+
+void TestQgsGeometryUtils::testDistanceToVertex()
+{
+  //test with linestring
+  QgsLineStringV2* outerRing1 = new QgsLineStringV2();
+  outerRing1->setPoints( QList<QgsPointV2>() << QgsPointV2( 1, 1 ) << QgsPointV2( 1, 2 ) << QgsPointV2( 2, 2 ) << QgsPointV2( 2, 1 ) << QgsPointV2( 1, 1 ) );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 0, 0 ) ), 0.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 0, 1 ) ), 1.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 0, 2 ) ), 2.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 0, 3 ) ), 3.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 0, 4 ) ), 4.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 0, 5 ) ), -1.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 1, 1 ) ), -1.0 );
+
+  //test with polygon
+  QgsPolygonV2 polygon1;
+  polygon1.setExteriorRing( outerRing1 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( polygon1, QgsVertexId( 0, 0, 0 ) ), 0.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( polygon1, QgsVertexId( 0, 0, 1 ) ), 1.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( polygon1, QgsVertexId( 0, 0, 2 ) ), 2.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( polygon1, QgsVertexId( 0, 0, 3 ) ), 3.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( polygon1, QgsVertexId( 0, 0, 4 ) ), 4.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( polygon1, QgsVertexId( 0, 0, 5 ) ), -1.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( polygon1, QgsVertexId( 0, 1, 1 ) ), -1.0 );
+
+  //test with point
+  QgsPointV2 point( 1, 2 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( point, QgsVertexId( 0, 0, 0 ) ), 0.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( point, QgsVertexId( 0, 0, 1 ) ), -1.0 );
 }
 
 

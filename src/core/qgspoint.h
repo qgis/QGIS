@@ -31,30 +31,82 @@
 
 class CORE_EXPORT QgsVector
 {
-    double m_x, m_y;
 
   public:
+
+    /** Default constructor for QgsVector. Creates a vector with length of 0.0.
+     */
     QgsVector();
+
+    /** Constructor for QgsVector taking x and y component values.
+     * @param x x-component
+     * @param y y-component
+     */
     QgsVector( double x, double y );
 
-    //! @note not available in Python bindings
-    QgsVector operator-( void ) const;
+    //! Swaps the sign of the x and y components of the vector.
+    QgsVector operator-() const;
+
+    /** Returns a vector where the components have been multiplied by a scalar value.
+     * @param scalar factor to multiply by
+     */
     QgsVector operator*( double scalar ) const;
+
+    /** Returns a vector where the components have been divided by a scalar value.
+     * @param scalar factor to divide by
+     */
     QgsVector operator/( double scalar ) const;
+
+    /** Returns the sum of the x component of this vector multiplied by the x component of another
+     * vector plus the y component of this vector multipled by the y component of another vector.
+     */
     double operator*( QgsVector v ) const;
+
+    /** Returns the length of the vector.
+     */
     double length() const;
 
+    /** Returns the vector's x-component.
+     * @see y()
+     */
     double x() const;
+
+    /** Returns the vector's y-component.
+     * @see x()
+     */
     double y() const;
 
-    // perpendicular vector (rotated 90 degrees counter-clockwise)
+    /** Returns the perpendicular vector to this vector (rotated 90 degrees counter-clockwise)
+     */
     QgsVector perpVector() const;
 
-    //! @note not available in Python bindings
-    double angle( void ) const;
+    /** Returns the angle of the vector in radians.
+     */
+    double angle() const;
+
+    /** Returns the angle between this vector and another vector in radians.
+     */
     double angle( QgsVector v ) const;
+
+    /** Rotates the vector by a specified angle.
+     * @param rot angle in radians
+     */
     QgsVector rotateBy( double rot ) const;
-    QgsVector normal() const;
+
+    /** Returns the vector's normalized (or "unit") vector (ie same angle but length of 1.0). Will throw an expection
+     * if called on a vector with length of 0.
+     * @deprecated use normalized() instead
+     */
+    Q_DECL_DEPRECATED QgsVector normal() const;
+
+    /** Returns the vector's normalized (or "unit") vector (ie same angle but length of 1.0). Will throw an expection
+     * if called on a vector with length of 0.
+     */
+    QgsVector normalized() const;
+
+  private:
+
+    double mX, mY;
 
 };
 
@@ -179,17 +231,44 @@ class CORE_EXPORT QgsPoint
      */
     QString wellKnownText() const;
 
-    /** Returns the squared distance between this point and x,y*/
+    /** Returns the squared distance between this point a specified x, y coordinate.
+     * @see distance()
+    */
     double sqrDist( double x, double y ) const;
 
-    /** Returns the squared distance between this and other point*/
+    /** Returns the squared distance between this point another point.
+     * @see distance()
+    */
     double sqrDist( const QgsPoint& other ) const;
+
+    /** Returns the distance between this point and a specified x, y coordinate.
+     * @param x x-coordniate
+     * @param y y-coordinate
+     * @see sqrDist()
+     * @note added in QGIS 2.16
+    */
+    double distance( double x, double y ) const;
+
+    /** Returns the distance between this point and another point.
+     * @param other other point
+     * @see sqrDist()
+     * @note added in QGIS 2.16
+    */
+    double distance( const QgsPoint& other ) const;
 
     /** Returns the minimum distance between this point and a segment */
     double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint& minDistPoint, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 
     /** Calculates azimuth between this point and other one (clockwise in degree, starting from north) */
-    double azimuth( const QgsPoint& other );
+    double azimuth( const QgsPoint& other ) const;
+
+    /** Returns a new point which correponds to this point projected by a specified distance
+     * in a specified bearing.
+     * @param distance distance to project
+     * @param bearing angle to project in, clockwise in degrees starting from north
+     * @note added in QGIS 2.16
+     */
+    QgsPoint project( double distance, double bearing ) const;
 
     /** Compares this point with another point with a fuzzy tolerance
      * @param other point to compare with
@@ -217,11 +296,32 @@ class CORE_EXPORT QgsPoint
     //! Assignment
     QgsPoint & operator=( const QgsPoint &other );
 
+    //! Calculates the vector obtained by subtracting a point from this point
     QgsVector operator-( const QgsPoint& p ) const { return QgsVector( m_x - p.m_x, m_y - p.m_y ); }
+
+    //! Adds a vector to this point in place
     QgsPoint &operator+=( QgsVector v ) { *this = *this + v; return *this; }
+
+    //! Subtracts a vector from this point in place
     QgsPoint &operator-=( QgsVector v ) { *this = *this - v; return *this; }
+
+    //! Adds a vector to this point
     QgsPoint operator+( QgsVector v ) const { return QgsPoint( m_x + v.x(), m_y + v.y() ); }
+
+    //! Subtracts a vector from this point
     QgsPoint operator-( QgsVector v ) const { return QgsPoint( m_x - v.x(), m_y - v.y() ); }
+
+    //! Multiplies the coordinates in this point by a scalar quantity
+    QgsPoint operator*( double scalar ) const { return QgsPoint( m_x * scalar, m_y * scalar ); }
+
+    //! Divides the coordinates in this point by a scalar quantity
+    QgsPoint operator/( double scalar ) const { return QgsPoint( m_x / scalar, m_y / scalar ); }
+
+    //! Multiplies the coordinates in this point by a scalar quantity in place
+    QgsPoint &operator*=( double scalar ) { m_x *= scalar; m_y *= scalar; return *this; }
+
+    //! Divides the coordinates in this point by a scalar quantity in place
+    QgsPoint &operator/=( double scalar ) { m_x /= scalar; m_y /= scalar; return *this; }
 
   private:
 

@@ -59,9 +59,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>327</width>
-        <height>1085</height>
+        <y>-445</y>
+        <width>326</width>
+        <height>949</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -462,7 +462,7 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QComboBox" name="mWorldFileMapComboBox">
+           <widget class="QgsComposerItemComboBox" name="mWorldFileMapComboBox">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -648,21 +648,10 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
+   <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsVariableEditorWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">qgsvariableeditorwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDataDefinedButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
@@ -675,9 +664,25 @@
    <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
+   <class>QgsComposerItemComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgscomposeritemcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsVariableEditorWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgsvariableeditorwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

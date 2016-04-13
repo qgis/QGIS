@@ -142,7 +142,7 @@
            <string>OWS server</string>
           </property>
           <property name="toolTip">
-           <string>OWS server</string>
+           <string>WMS/WFS Server Configuration</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -168,6 +168,15 @@
           <property name="icon">
            <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/relation.svg</normaloff>:/images/themes/default/relation.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Data Sources</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/attributes.png</normaloff>:/images/themes/default/propertyicons/attributes.png</iconset>
           </property>
          </item>
          <item>
@@ -218,7 +227,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>7</number>
          </property>
          <widget class="QWidget" name="mProjOpts_01">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -247,8 +256,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>776</height>
+                <width>583</width>
+                <height>712</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -749,8 +758,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>776</height>
+                <width>319</width>
+                <height>46</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -808,8 +817,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>776</height>
+                <width>134</width>
+                <height>100</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -2436,7 +2445,18 @@
            </property>
           </layout>
          </widget>
-         <widget class="QWidget" name="page">
+         <widget class="QWidget" name="mTab_DataSources">
+          <layout class="QFormLayout" name="formLayout">
+           <item row="0" column="0" colspan="2">
+            <widget class="QCheckBox" name="mAutoTransaction">
+             <property name="text">
+              <string>Automatically create transaction groups where possible</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="mTab_Variables">
           <layout class="QVBoxLayout" name="verticalLayout_23">
            <item>
             <widget class="QGroupBox" name="groupBox_4">
@@ -2524,6 +2544,12 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsVariableEditorWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgsvariableeditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsCodeEditorPython</class>
    <extends>QWidget</extends>
    <header>qgscodeeditorpython.h</header>
@@ -2533,12 +2559,6 @@
    <class>QgsProjectionSelector</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselector.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsVariableEditorWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">qgsvariableeditorwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

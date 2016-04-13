@@ -55,8 +55,8 @@ WIDGET, BASE = uic.loadUiType(
 class GetScriptsAction(ToolboxAction):
 
     def __init__(self):
-        self.name = self.tr('Get scripts from on-line scripts collection', 'GetScriptsAction')
-        self.group = self.tr('Tools', 'GetScriptsAction')
+        self.name, self.i18n_name = self.trAction('Get scripts from on-line scripts collection')
+        self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'script.png'))
@@ -71,8 +71,8 @@ class GetScriptsAction(ToolboxAction):
 class GetRScriptsAction(ToolboxAction):
 
     def __init__(self):
-        self.name = self.tr('Get R scripts from on-line scripts collection', 'GetRScriptsAction')
-        self.group = self.tr('Tools', 'GetRScriptsAction')
+        self.name, self.i18n_name = self.trAction('Get R scripts from on-line scripts collection')
+        self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
@@ -87,8 +87,8 @@ class GetRScriptsAction(ToolboxAction):
 class GetModelsAction(ToolboxAction):
 
     def __init__(self):
-        self.name = self.tr('Get models from on-line scripts collection', 'GetModelsAction')
-        self.group = self.tr('Tools', 'GetModelsAction')
+        self.name, self.i18n_name = self.trAction('Get models from on-line scripts collection')
+        self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'model.png'))

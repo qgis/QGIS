@@ -16,11 +16,19 @@
 #include "qgspostgresconnpool.h"
 #include "qgspostgresconn.h"
 
-QgsPostgresConnPool QgsPostgresConnPool::sInstance;
+QgsPostgresConnPool* QgsPostgresConnPool::sInstance = nullptr;
 
 QgsPostgresConnPool* QgsPostgresConnPool::instance()
 {
-  return &sInstance;
+  if ( !sInstance )
+    sInstance = new QgsPostgresConnPool();
+  return sInstance;
+}
+
+void QgsPostgresConnPool::cleanupInstance()
+{
+  delete sInstance;
+  sInstance = nullptr;
 }
 
 QgsPostgresConnPool::QgsPostgresConnPool() : QgsConnectionPool<QgsPostgresConn*, QgsPostgresConnPoolGroup>()

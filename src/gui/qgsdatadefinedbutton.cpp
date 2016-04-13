@@ -28,14 +28,6 @@
 #include <QPointer>
 #include <QGroupBox>
 
-
-QIcon QgsDataDefinedButton::mIconDataDefine;
-QIcon QgsDataDefinedButton::mIconDataDefineOn;
-QIcon QgsDataDefinedButton::mIconDataDefineError;
-QIcon QgsDataDefinedButton::mIconDataDefineExpression;
-QIcon QgsDataDefinedButton::mIconDataDefineExpressionOn;
-QIcon QgsDataDefinedButton::mIconDataDefineExpressionError;
-
 QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
     const QgsVectorLayer* vl,
     const QgsDataDefined* datadefined,
@@ -904,7 +896,8 @@ QString QgsDataDefinedButton::fillStyleDesc()
 
 QString QgsDataDefinedButton::markerStyleDesc()
 {
-  return trString() + QLatin1String( "[<b>circle</b>|<b>rectangle</b>|<b>cross</b>|<b>triangle</b>]" );
+  return trString() + QLatin1String( "[<b>circle</b>|<b>rectangle</b>|<b>cross</b>|<b>triangle"
+                                     "</b>|<b>right_half_triangle</b>|<b>left_half_triangle</b>|<b>semi_circle</b>]" );
 }
 
 QString QgsDataDefinedButton::customDashDesc()

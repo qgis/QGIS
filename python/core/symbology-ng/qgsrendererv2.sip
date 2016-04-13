@@ -50,6 +50,8 @@ class QgsFeatureRendererV2
     sipType = sipType_QgsPointDisplacementRenderer;
   else if (sipCpp->type() == "25dRenderer")
     sipType = sipType_Qgs25DRenderer;
+  else if (sipCpp->type() == "nullSymbol")
+    sipType = sipType_QgsNullSymbolRenderer;
   else
     sipType = 0;
 %End
