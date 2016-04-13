@@ -208,8 +208,11 @@
        <property name="maximum">
         <number>255</number>
        </property>
+       <property name="minimum">
+        <number>2</number>
+       </property>
        <property name="value">
-        <number>0</number>
+        <number>5</number>
        </property>
       </widget>
      </item>

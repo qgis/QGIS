@@ -347,7 +347,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
 
   //int bandNr = mBandComboBox->itemData( bandComboIndex ).toInt();
   //QgsRasterBandStats myRasterBandStats = mRasterLayer->dataProvider()->bandStatistics( bandNr );
-  int numberOfEntries = 0;
+  int numberOfEntries;
 
   bool discrete = mColorInterpolationComboBox->currentText() == tr( "Discrete" );
 
@@ -408,6 +408,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
   else // for other classification modes interpolate colors linearly
   {
     numberOfEntries = mNumberOfEntriesSpinBox->value();
+    if ( numberOfEntries < 2 ) return; // < 2 classes is not useful, shouldn't happen, but if it happens save it from crashing
 
     if ( mClassificationModeComboBox->itemData( mClassificationModeComboBox->currentIndex() ).toInt() == Quantile )
     { // Quantile
@@ -423,74 +424,51 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
       // set min and max from histogram, used later to calculate number of decimals to display
       mRasterLayer->dataProvider()->cumulativeCut( bandNr, 0.0, 1.0, min, max, extent, sampleSize );
 
-      double intervalDiff;
-      if ( numberOfEntries > 1 )
+      entryValues.reserve( numberOfEntries );
+      if ( discrete )
       {
-        entryValues.reserve( numberOfEntries );
-        if ( discrete )
+        double intervalDiff = 1.0 / ( numberOfEntries );
+        for ( int i = 1; i < numberOfEntries; ++i )
         {
-          intervalDiff = 1.0 / ( numberOfEntries );
-          for ( int i = 1; i < numberOfEntries; ++i )
-          {
-            mRasterLayer->dataProvider()->cumulativeCut( bandNr, 0.0, i * intervalDiff, cut1, cut2, extent, sampleSize );
-            entryValues.push_back( cut2 );
-          }
-          entryValues.push_back( std::numeric_limits<double>::infinity() );
+          mRasterLayer->dataProvider()->cumulativeCut( bandNr, 0.0, i * intervalDiff, cut1, cut2, extent, sampleSize );
+          entryValues.push_back( cut2 );
         }
-        else
-        {
-          intervalDiff = 1.0 / ( numberOfEntries - 1 );
-          for ( int i = 0; i < numberOfEntries; ++i )
-          {
-            mRasterLayer->dataProvider()->cumulativeCut( bandNr, 0.0, i * intervalDiff, cut1, cut2, extent, sampleSize );
-            entryValues.push_back( cut2 );
-          }
-        }
+        entryValues.push_back( std::numeric_limits<double>::infinity() );
       }
-      else if ( numberOfEntries == 1 )
+      else
       {
-        mRasterLayer->dataProvider()->cumulativeCut( bandNr, 0.0, 0.5, cut1, cut2, extent, sampleSize );
-        entryValues.push_back( cut2 );
+        double intervalDiff = 1.0 / ( numberOfEntries - 1 );
+        for ( int i = 0; i < numberOfEntries; ++i )
+        {
+          mRasterLayer->dataProvider()->cumulativeCut( bandNr, 0.0, i * intervalDiff, cut1, cut2, extent, sampleSize );
+          entryValues.push_back( cut2 );
+        }
       }
     }
     else // EqualInterval
     {
-      if ( numberOfEntries > 1 )
+      entryValues.reserve( numberOfEntries );
+      if ( discrete )
       {
-        entryValues.reserve( numberOfEntries );
-        if ( discrete )
-        {
-          // in discrete mode the lowest value is not an entry and the highest
-          // value is inf, there are ( numberOfEntries ) of which the first
-          // and last are not used.
-          double intervalDiff = ( max - min ) / ( numberOfEntries );
+        // in discrete mode the lowest value is not an entry and the highest
+        // value is inf, there are ( numberOfEntries ) of which the first
+        // and last are not used.
+        double intervalDiff = ( max - min ) / ( numberOfEntries );
 
-          for ( int i = 1; i < numberOfEntries; ++i )
-          {
-            entryValues.push_back( min + i * intervalDiff );
-          }
-          entryValues.push_back( std::numeric_limits<double>::infinity() );
-        }
-        else
+        for ( int i = 1; i < numberOfEntries; ++i )
         {
-          //because the highest value is also an entry, there are (numberOfEntries - 1) intervals
-          double intervalDiff = ( max - min ) / ( numberOfEntries - 1 );
-
-          for ( int i = 0; i < numberOfEntries; ++i )
-          {
-            entryValues.push_back( min + i * intervalDiff );
-          }
+          entryValues.push_back( min + i * intervalDiff );
         }
+        entryValues.push_back( std::numeric_limits<double>::infinity() );
       }
-      else if ( numberOfEntries == 1 )
+      else
       {
-        if ( discrete )
+        //because the highest value is also an entry, there are (numberOfEntries - 1) intervals
+        double intervalDiff = ( max - min ) / ( numberOfEntries - 1 );
+
+        for ( int i = 0; i < numberOfEntries; ++i )
         {
-          entryValues.push_back( std::numeric_limits<double>::infinity() );
-        }
-        else
-        {
-          entryValues.push_back(( max + min ) / 2 );
+          entryValues.push_back( min + i * intervalDiff );
         }
       }
     }
