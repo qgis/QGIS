@@ -112,6 +112,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
           whereClauses.append( whereClause );
           //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
           mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
+          mCompileStatus = ( mExpressionCompiled ? Compiled : PartiallyCompiled );
         }
       }
       if ( result != QgsSqlExpressionCompiler::Complete )

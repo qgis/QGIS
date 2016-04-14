@@ -179,6 +179,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   }
 
   mExpressionCompiled = false;
+  mCompileStatus = NoCompilation;
   if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
     QgsDebugMsg( QString( "compileExpressions: %1" ).arg( QSettings().value( "/qgis/compileExpressions", true ).toString() ) );
@@ -199,6 +200,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
 
         //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
         mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
+        mCompileStatus = ( mExpressionCompiled ? Compiled : PartiallyCompiled );
         limitAtProvider = mExpressionCompiled;
       }
       else

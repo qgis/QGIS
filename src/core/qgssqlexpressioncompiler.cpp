@@ -81,7 +81,16 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       switch ( n->op() )
       {
         case QgsExpression::uoNot:
-          break;
+        {
+          QString right;
+          if ( compileNode( n->operand(), right ) == Complete )
+          {
+            result = "( NOT " + right + ')';
+            return Complete;
+          }
+
+          return Fail;
+        }
 
         case QgsExpression::uoMinus:
           break;

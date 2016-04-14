@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsRectangle, QgsFeatureRequest, QgsFeature, QgsGeometry, NULL
+from qgis.core import QgsRectangle, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsAbstractFeatureIterator, NULL
 
 from utilities import(
     compareWkt
@@ -61,9 +61,30 @@ class ProviderTestCase(object):
             else:
                 self.assertFalse(geometries[pk], 'Expected null geometry for {}'.format(pk))
 
+    def uncompiledFilters(self):
+        """ Individual derived provider tests should override this to return a list of expressions which
+        cannot be compiled """
+        return set()
+
+    def partiallyCompiledFilters(self):
+        """ Individual derived provider tests should override this to return a list of expressions which
+        should be partially compiled """
+        return set()
+
     def assert_query(self, provider, expression, expected):
         result = set([f['pk'] for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression(expression))])
         assert set(expected) == result, 'Expected {} and got {} when testing expression "{}"'.format(set(expected), result, expression)
+
+        if self.compiled:
+            # Check compilation status
+            it = provider.getFeatures(QgsFeatureRequest().setFilterExpression(expression))
+
+            if expression in self.uncompiledFilters():
+                self.assertEqual(it.compileStatus(), QgsAbstractFeatureIterator.NoCompilation)
+            elif expression in self.partiallyCompiledFilters():
+                self.assertEqual(it.compileStatus(), QgsAbstractFeatureIterator.PartiallyCompiled)
+            else:
+                self.assertEqual(it.compileStatus(), QgsAbstractFeatureIterator.Compiled)
 
         # Also check that filter works when referenced fields are not being retrieved by request
         result = set([f['pk'] for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression(expression).setSubsetOfAttributes([0]))])
@@ -155,6 +176,7 @@ class ProviderTestCase(object):
         self.assert_query(provider, 'num_char IN (2, 4, 5)', [2, 4, 5])
 
     def testGetFeaturesUncompiled(self):
+        self.compiled = False
         try:
             self.disableCompiler()
         except AttributeError:
@@ -164,6 +186,7 @@ class ProviderTestCase(object):
     def testGetFeaturesCompiled(self):
         try:
             self.enableCompiler()
+            self.compiled = True
             self.runGetFeatureTests(self.provider)
         except AttributeError:
             print('Provider does not support compiling')

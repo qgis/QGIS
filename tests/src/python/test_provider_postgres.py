@@ -58,6 +58,12 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     def disableCompiler(self):
         QSettings().setValue(u'/qgis/compileExpressions', False)
 
+    def uncompiledFilters(self):
+        return set([])
+
+    def partiallyCompiledFilters(self):
+        return set([])
+
     # HERE GO THE PROVIDER SPECIFIC TESTS
     def testDefaultValue(self):
         self.assertEqual(self.provider.defaultValue(0), u'nextval(\'qgis_test."someData_pk_seq"\'::regclass)')

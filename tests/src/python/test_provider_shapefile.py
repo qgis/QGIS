@@ -66,6 +66,48 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
     def disableCompiler(self):
         QSettings().setValue(u'/qgis/compileExpressions', False)
 
+    def uncompiledFilters(self):
+        return set(['name ILIKE \'QGIS\'',
+                    '"name" NOT LIKE \'Ap%\'',
+                    '"name" NOT ILIKE \'QGIS\'',
+                    '"name" NOT ILIKE \'pEAR\'',
+                    'name <> \'Apple\'',
+                    '"name" <> \'apple\'',
+                    '(name = \'Apple\') is not null',
+                    'name ILIKE \'aPple\'',
+                    'name ILIKE \'%pp%\'',
+                    'cnt = 1100 % 1000',
+                    '"name" || \' \' || "name" = \'Orange Orange\'',
+                    '"name" || \' \' || "cnt" = \'Orange 100\'',
+                    '\'x\' || "name" IS NOT NULL',
+                    '\'x\' || "name" IS NULL',
+                    'cnt = 10 ^ 2',
+                    '"name" ~ \'[OP]ra[gne]+\'',
+                    'false and NULL',
+                    'true and NULL',
+                    'NULL and false',
+                    'NULL and true',
+                    'NULL and NULL',
+                    'false or NULL',
+                    'true or NULL',
+                    'NULL or false',
+                    'NULL or true',
+                    'NULL or NULL',
+                    'not null',
+                    'not name = \'Apple\'',
+                    'not name = \'Apple\' or name = \'Apple\'',
+                    'not name = \'Apple\' or not name = \'Apple\'',
+                    'not name = \'Apple\' and pk = 4',
+                    'not name = \'Apple\' and not pk = 4',
+                    'num_char IN (2, 4, 5)'])
+
+    def partiallyCompiledFilters(self):
+        return set(['name = \'Apple\'',
+                    'name = \'apple\'',
+                    'name LIKE \'Apple\'',
+                    'name LIKE \'aPple\'',
+                    '"name"="name2"'])
+
     def testRepack(self):
         vl = QgsVectorLayer(u'{}|layerid=0'.format(self.repackfile), u'test', u'ogr')
 

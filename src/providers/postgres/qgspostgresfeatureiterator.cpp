@@ -112,6 +112,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
         fallbackWhereClause = whereClause;
         whereClause = QgsPostgresUtils::andWhereClauses( whereClause, compiler.result() );
         mExpressionCompiled = true;
+        mCompileStatus = Compiled;
       }
       else
       {

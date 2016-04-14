@@ -4,6 +4,15 @@ class QgsAbstractFeatureIterator
 #include <qgsfeatureiterator.h>
 %End
   public:
+
+    //! Status of expression compilation for filter expression requests
+    enum CompileStatus
+    {
+      NoCompilation, /*!< Expression could not be compiled or not attempt was made to compile expression */
+      PartiallyCompiled, /*!< Expression was partially compiled, but extra checks need to be applied to features*/
+      Compiled, /*!< Expression was fully compiled and delegated to data provider source*/
+    };
+
     //! base class constructor - stores the iteration parameters
     QgsAbstractFeatureIterator( const QgsFeatureRequest& request );
 
@@ -17,6 +26,11 @@ class QgsAbstractFeatureIterator
     virtual bool rewind() = 0;
     //! end of iterating: free the resources / lock
     virtual bool close() = 0;
+
+    /** Returns the status of expression compilation for filter expression requests.
+     * @note added in QGIS 2.16
+     */
+    CompileStatus compileStatus() const;
 
   protected:
     /**
@@ -84,6 +98,7 @@ class QgsFeatureIterator
     PyErr_SetString(PyExc_StopIteration,"");
   }
 %End
+
     //! construct invalid iterator
     QgsFeatureIterator();
     //! construct a valid iterator
@@ -101,4 +116,10 @@ class QgsFeatureIterator
 
     //! find out whether the iterator is still valid or closed already
     bool isClosed() const;
+
+    /** Returns the status of expression compilation for filter expression requests.
+     * @note added in QGIS 2.16
+     */
+    QgsAbstractFeatureIterator::CompileStatus compileStatus() const;
+
 };

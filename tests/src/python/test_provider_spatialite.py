@@ -131,6 +131,16 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
     def disableCompiler(self):
         QSettings().setValue(u'/qgis/compileExpressions', False)
 
+    def uncompiledFilters(self):
+        return set(['cnt = 10 ^ 2',
+                    '"name" ~ \'[OP]ra[gne]+\''])
+
+    def partiallyCompiledFilters(self):
+        return set(['"name" NOT LIKE \'Ap%\'',
+                    'name LIKE \'Apple\'',
+                    'name LIKE \'aPple\''
+                    ])
+
     def test_SplitFeature(self):
         """Create spatialite database"""
         layer = QgsVectorLayer("dbname=%s table=test_pg (geometry)" % self.dbname, "test_pg", "spatialite")

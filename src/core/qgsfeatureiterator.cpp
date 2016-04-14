@@ -26,6 +26,7 @@ QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest&
     , mZombie( false )
     , refs( 0 )
     , mFetchedCount( 0 )
+    , mCompileStatus( NoCompilation )
     , mGeometrySimplifier( nullptr )
     , mLocalSimplification( false )
     , mUseCachedFeatures( false )

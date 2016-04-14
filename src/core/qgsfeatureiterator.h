@@ -40,6 +40,15 @@ class CORE_EXPORT QgsInterruptionChecker
 class CORE_EXPORT QgsAbstractFeatureIterator
 {
   public:
+
+    //! Status of expression compilation for filter expression requests
+    enum CompileStatus
+    {
+      NoCompilation, /*!< Expression could not be compiled or not attempt was made to compile expression */
+      PartiallyCompiled, /*!< Expression was partially compiled, but extra checks need to be applied to features*/
+      Compiled, /*!< Expression was fully compiled and delegated to data provider source*/
+    };
+
     //! base class constructor - stores the iteration parameters
     QgsAbstractFeatureIterator( const QgsFeatureRequest& request );
 
@@ -63,6 +72,11 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * @note not available in Python bindings
      */
     virtual void setInterruptionChecker( QgsInterruptionChecker* interruptionChecker );
+
+    /** Returns the status of expression compilation for filter expression requests.
+     * @note added in QGIS 2.16
+     */
+    CompileStatus compileStatus() const { return mCompileStatus; }
 
   protected:
     /**
@@ -123,6 +137,9 @@ class CORE_EXPORT QgsAbstractFeatureIterator
 
     //! Number of features already fetched by iterator
     long mFetchedCount;
+
+    //! Status of compilation of filter expression
+    CompileStatus mCompileStatus;
 
     //! Setup the simplification of geometries to fetch using the specified simplify method
     virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod );
@@ -224,6 +241,11 @@ class CORE_EXPORT QgsFeatureIterator
      * @note not available in Python bindings
      */
     void setInterruptionChecker( QgsInterruptionChecker* interruptionChecker );
+
+    /** Returns the status of expression compilation for filter expression requests.
+     * @note added in QGIS 2.16
+     */
+    QgsAbstractFeatureIterator::CompileStatus compileStatus() const { return mIter->compileStatus(); }
 
     friend bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 );
     friend bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 );
