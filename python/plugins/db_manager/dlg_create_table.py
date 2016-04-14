@@ -24,7 +24,7 @@ The content of this file is based on
 
 from PyQt.QtCore import Qt, QModelIndex
 from PyQt.QtWidgets import QItemDelegate, QComboBox, QDialog, QPushButton, QDialogButtonBox, QMessageBox, QApplication
-from PyQt.QtCore import QItemSelectionModel
+from PyQt.QtCore import QItemSelectionModel, pyqtSignal
 
 from .db_plugins.data_model import TableFieldsModel
 from .db_plugins.plugin import DbError, ConnectionError
@@ -36,6 +36,8 @@ from .ui.ui_DlgCreateTable import Ui_DbManagerDlgCreateTable as Ui_Dialog
 class TableFieldsDelegate(QItemDelegate):
 
     """ delegate with some special item editors """
+
+    columnNameChanged = pyqtSignal()
 
     def __init__(self, field_types, parent=None):
         QItemDelegate.__init__(self, parent)

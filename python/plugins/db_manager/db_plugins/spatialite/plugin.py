@@ -148,7 +148,7 @@ class SLDatabase(Database):
         self.runVacuum()
 
     def runVacuum(self):
-        self.database().aboutToChange()
+        self.database().aboutToChange.emit()
         self.database().connector.runVacuum()
         self.database().refresh()
 

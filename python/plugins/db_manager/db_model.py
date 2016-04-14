@@ -20,7 +20,8 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt.QtCore import Qt, QObject, qDebug, QByteArray, QMimeData, QDataStream, QIODevice, QFileInfo, QAbstractItemModel, QModelIndex, pyqtSignal
+from functools import partial
+from PyQt.QtCore import Qt, QObject, qDebug, QByteArray, QMimeData, QDataStream, QIODevice, QFileInfo, QAbstractItemModel, QModelIndex, pyqtSignal, pyqtSlot
 from PyQt.QtWidgets import QApplication, QMessageBox
 from PyQt.QtGui import QIcon
 
@@ -302,7 +303,7 @@ class DBModel(QAbstractItemModel):
         for dbtype in supportedDbTypes():
             dbpluginclass = createDbPlugin(dbtype)
             item = PluginItem(dbpluginclass, self.rootItem)
-            item.itemChanged.connect(self.refreshItem)
+            item.itemChanged.connect(partial(self.refreshItem, item))
 
     def refreshItem(self, item):
         if isinstance(item, TreeItem):
@@ -486,7 +487,7 @@ class DBModel(QAbstractItemModel):
             if prevPopulated or force:
                 if item.populate():
                     for child in item.childItems:
-                        child.itemChanged.connect(self.refreshItem)
+                        child.itemChanged.connect(partial(self.refreshItem, item))
                     self._onDataChanged(index)
                 else:
                     self.notPopulated.emit(index)
