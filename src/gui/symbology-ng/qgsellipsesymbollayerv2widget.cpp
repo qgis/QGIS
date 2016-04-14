@@ -46,7 +46,7 @@ QgsEllipseSymbolLayerV2Widget::QgsEllipseSymbolLayerV2Widget( const QgsVectorLay
   mRotationSpinBox->setClearValue( 0.0 );
 
   QStringList names;
-  names << "circle" << "rectangle" << "cross" << "triangle" << "right_half_triangle" << "left_half_triangle" << "semi_circle";
+  names << "circle" << "rectangle" << "diamond" << "cross" << "triangle" << "right_half_triangle" << "left_half_triangle" << "semi_circle";
   QSize iconSize = mShapeListWidget->iconSize();
 
   Q_FOREACH ( const QString& name, names )

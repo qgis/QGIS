@@ -367,6 +367,8 @@ QgsEllipseSymbolLayerV2* QgsEllipseSymbolLayerV2::clone() const
   m->setSymbolWidth( mSymbolWidth );
   m->setSymbolHeight( mSymbolHeight );
   m->setOutlineStyle( mOutlineStyle );
+  m->setOffset( mOffset );
+  m->setOffsetUnit( mOffsetUnit );
   m->setOffsetMapUnitScale( mOffsetMapUnitScale );
   m->setOutlineStyle( mOutlineStyle );
   m->setPenJoinStyle( mPenJoinStyle );
@@ -596,6 +598,14 @@ void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV
   else if ( symbolName == "rectangle" )
   {
     mPainterPath.addRect( QRectF( -size.width() / 2.0, -size.height() / 2.0, size.width(), size.height() ) );
+  }
+  else if ( symbolName == "diamond" )
+  {
+    mPainterPath.moveTo( -size.width() / 2.0, 0 );
+    mPainterPath.lineTo( 0, size.height() / 2.0 );
+    mPainterPath.lineTo( size.width() / 2.0, 0 );
+    mPainterPath.lineTo( 0, -size.height() / 2.0 );
+    mPainterPath.lineTo( -size.width() / 2.0, 0 );
   }
   else if ( symbolName == "cross" )
   {
