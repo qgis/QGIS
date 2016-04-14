@@ -100,6 +100,51 @@ QFont QgsDiagram::scaledFont( const QgsDiagramSettings& s, const QgsRenderContex
   return f;
 }
 
+QSizeF QgsDiagram::sizeForValue( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const
+{
+  double scaledValue = value;
+  double scaledLowerValue = is.lowerValue;
+  double scaledUpperValue = is.upperValue;
+  double scaledLowerSizeWidth = is.lowerSize.width();
+  double scaledLowerSizeHeight = is.lowerSize.height();
+  double scaledUpperSizeWidth = is.upperSize.width();
+  double scaledUpperSizeHeight = is.upperSize.height();
+
+  // interpolate the squared value if scale by area
+  if ( s.scaleByArea )
+  {
+    scaledValue = sqrt( scaledValue );
+    scaledLowerValue = sqrt( scaledLowerValue );
+    scaledUpperValue = sqrt( scaledUpperValue );
+    scaledLowerSizeWidth = sqrt( scaledLowerSizeWidth );
+    scaledLowerSizeHeight = sqrt( scaledLowerSizeHeight );
+    scaledUpperSizeWidth = sqrt( scaledUpperSizeWidth );
+    scaledUpperSizeHeight = sqrt( scaledUpperSizeHeight );
+  }
+
+  //interpolate size
+  double scaledRatio = ( scaledValue - scaledLowerValue ) / ( scaledUpperValue - scaledLowerValue );
+
+  QSizeF size = QSizeF( is.upperSize.width() * scaledRatio + is.lowerSize.width() * ( 1 - scaledRatio ),
+                        is.upperSize.height() * scaledRatio + is.lowerSize.height() * ( 1 - scaledRatio ) );
+
+  // Scale, if extension is smaller than the specified minimum
+  if ( size.width() <= s.minimumSize && size.height() <= s.minimumSize )
+  {
+    bool p = false; // preserve height == width
+    if ( qgsDoubleNear( size.width(), size.height() ) )
+      p = true;
+
+    size.scale( s.minimumSize, s.minimumSize, Qt::KeepAspectRatio );
+
+    // If height == width, recover here (overwrite floating point errors)
+    if ( p )
+      size.setWidth( size.height() );
+  }
+
+  return size;
+}
+
 void QgsDiagram::renderDiagram( const QgsAttributes& attributes, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position )
 {
   QgsFeature feature;

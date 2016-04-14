@@ -20,6 +20,8 @@
 #include "qgsrendercontext.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgsfontutils.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgssymbolv2.h"
 
 #include <QDomElement>
 #include <QPainter>
@@ -377,6 +379,9 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc,
 
 QgsDiagramRendererV2::QgsDiagramRendererV2()
     : mDiagram( nullptr )
+    , mShowAttributeLegend( true )
+    , mShowSizeLegend( false )
+    , mSizeLegendSymbol( QgsMarkerSymbolV2::createSimple( QgsStringMap() ) )
 {
 }
 
@@ -393,7 +398,19 @@ void QgsDiagramRendererV2::setDiagram( QgsDiagram* d )
 
 QgsDiagramRendererV2::QgsDiagramRendererV2( const QgsDiagramRendererV2& other )
     : mDiagram( other.mDiagram ? other.mDiagram->clone() : nullptr )
+    , mShowAttributeLegend( other.mShowAttributeLegend )
+    , mShowSizeLegend( other.mShowSizeLegend )
+    , mSizeLegendSymbol( other.mSizeLegendSymbol.data() ? other.mSizeLegendSymbol->clone() : nullptr )
 {
+}
+
+QgsDiagramRendererV2 &QgsDiagramRendererV2::operator=( const QgsDiagramRendererV2 & other )
+{
+  mDiagram = other.mDiagram ? other.mDiagram->clone() : nullptr;
+  mShowAttributeLegend = other.mShowAttributeLegend;
+  mShowSizeLegend = other.mShowSizeLegend;
+  mSizeLegendSymbol.reset( other.mSizeLegendSymbol.data() ? other.mSizeLegendSymbol->clone() : nullptr );
+  return *this;
 }
 
 void QgsDiagramRendererV2::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos ) const
@@ -497,6 +514,13 @@ void QgsDiagramRendererV2::_readXML( const QDomElement& elem, const QgsVectorLay
   {
     mDiagram = nullptr;
   }
+  mShowAttributeLegend = ( elem.attribute( "attributeLegend", "1" ) != "0" );
+  mShowSizeLegend = ( elem.attribute( "sizeLegend", "0" ) != "0" );
+  QDomElement sizeLegendSymbolElem = elem.firstChildElement( "symbol" );
+  if ( !sizeLegendSymbolElem.isNull() && sizeLegendSymbolElem.attribute( "name" ) == "sizeSymbol" )
+  {
+    mSizeLegendSymbol.reset( QgsSymbolLayerV2Utils::loadSymbol<QgsMarkerSymbolV2>( sizeLegendSymbolElem ) );
+  }
 }
 
 void QgsDiagramRendererV2::_writeXML( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
@@ -508,6 +532,10 @@ void QgsDiagramRendererV2::_writeXML( QDomElement& rendererElem, QDomDocument& d
   {
     rendererElem.setAttribute( "diagramType", mDiagram->diagramName() );
   }
+  rendererElem.setAttribute( "attributeLegend", mShowAttributeLegend );
+  rendererElem.setAttribute( "sizeLegend", mShowSizeLegend );
+  QDomElement sizeLegendSymbolElem = QgsSymbolLayerV2Utils::saveSymbol( "sizeSymbol", mSizeLegendSymbol.data(), doc );
+  rendererElem.appendChild( sizeLegendSymbolElem );
 }
 
 QgsSingleCategoryDiagramRenderer::QgsSingleCategoryDiagramRenderer(): QgsDiagramRendererV2()
@@ -686,10 +714,33 @@ QList< QgsLayerTreeModelLegendNode* > QgsDiagramRendererV2::legendItems( QgsLaye
 
 QList< QgsLayerTreeModelLegendNode* > QgsSingleCategoryDiagramRenderer::legendItems( QgsLayerTreeLayer* nodeLayer ) const
 {
-  return mSettings.legendItems( nodeLayer );
+  QList< QgsLayerTreeModelLegendNode* > nodes;
+  if ( mShowAttributeLegend )
+    nodes = mSettings.legendItems( nodeLayer );
+
+  return nodes;
 }
 
 QList< QgsLayerTreeModelLegendNode* > QgsLinearlyInterpolatedDiagramRenderer::legendItems( QgsLayerTreeLayer* nodeLayer ) const
 {
-  return mSettings.legendItems( nodeLayer );
+  QList< QgsLayerTreeModelLegendNode* > nodes;
+  if ( mShowAttributeLegend )
+    nodes = mSettings.legendItems( nodeLayer );
+
+  if ( mShowSizeLegend && mDiagram && mSizeLegendSymbol.data() )
+  {
+    // add size legend
+    Q_FOREACH ( double v, QgsSymbolLayerV2Utils::prettyBreaks( mInterpolationSettings.lowerValue, mInterpolationSettings.upperValue, 4 ) )
+    {
+      double size = mDiagram->legendSize( v, mSettings, mInterpolationSettings );
+      QgsLegendSymbolItemV2 si( mSizeLegendSymbol.data(), QString::number( v ), nullptr );
+      QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( si.symbol() );
+      s->setSize( size );
+      s->setSizeUnit( mSettings.sizeType );
+      s->setSizeMapUnitScale( mSettings.sizeScale );
+      nodes << new QgsSymbolV2LegendNode( nodeLayer, si );
+    }
+  }
+
+  return nodes;
 }

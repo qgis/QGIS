@@ -83,6 +83,21 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature& feature, const QgsRen
   return size;
 }
 
+double QgsHistogramDiagram::legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const
+{
+  if ( qgsDoubleNear( is.upperValue, is.lowerValue ) )
+    return s.minimumSize; // invalid value range => zero size
+
+  // Scale, if extension is smaller than the specified minimum
+  if ( value < s.minimumSize )
+  {
+    value = s.minimumSize;
+  }
+
+  double scaleFactor = (( is.upperSize.width() - is.lowerSize.width() ) / ( is.upperValue - is.lowerValue ) );
+  return value * scaleFactor;
+}
+
 QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
 {
   Q_UNUSED( c );

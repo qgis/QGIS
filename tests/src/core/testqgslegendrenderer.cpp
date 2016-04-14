@@ -34,8 +34,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsgeometry.h"
-
-
+#include "qgsdiagramrendererv2.h"
+#include "diagram/qgspiediagram.h"
 
 static QString _fileNameForTest( const QString& testName )
 {
@@ -118,6 +118,8 @@ class TestQgsLegendRenderer : public QObject
     void testRasterBorder();
     void testFilterByPolygon();
     void testFilterByExpression();
+    void testDiagramAttributeLegend();
+    void testDiagramSizeLegend();
 
   private:
     QgsLayerTreeGroup* mRoot;
@@ -541,6 +543,85 @@ void TestQgsLegendRenderer::testFilterByExpression()
   _setStandardTestFont( settings );
   _renderLegend( testName2, &legendModel, settings );
   QVERIFY( _verifyImage( testName2, report2 ) );
+}
+
+void TestQgsLegendRenderer::testDiagramAttributeLegend()
+{
+  QgsVectorLayer* vl4 = new QgsVectorLayer( "Point", "Point Layer", "memory" );
+  QgsMapLayerRegistry::instance()->addMapLayer( vl4 );
+
+  QgsDiagramSettings ds;
+  ds.categoryColors = QList<QColor>() << QColor( 255, 0, 0 ) << QColor( 0, 255, 0 );
+  ds.categoryAttributes = QList<QString>() << "\"cat1\"" << "\"cat2\"";
+  ds.categoryLabels = QStringList() << "cat 1" << "cat 2";
+
+  QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+  dr->setLowerValue( 0.0 );
+  dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
+  dr->setUpperValue( 10 );
+  dr->setUpperSize( QSizeF( 40, 40 ) );
+  dr->setClassificationAttribute( 0 );
+  dr->setDiagram( new QgsPieDiagram() );
+  dr->setDiagramSettings( ds );
+  dr->setSizeLegend( false );
+  dr->setAttributeLegend( true );
+  vl4->setDiagramRenderer( dr );
+
+  QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+  dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+  dls.setShowAllDiagrams( true );
+  vl4->setDiagramLayerSettings( dls );
+
+  QgsLayerTreeGroup* root = new QgsLayerTreeGroup();
+  root->addLayer( vl4 );
+  QgsLayerTreeModel legendModel( root );
+
+  QgsLegendSettings settings;
+  _setStandardTestFont( settings, "Bold" );
+  _renderLegend( "legend_diagram_attributes", &legendModel, settings );
+  QVERIFY( _verifyImage( "legend_diagram_attributes", mReport ) );
+
+  QgsMapLayerRegistry::instance()->removeMapLayer( vl4 );
+}
+
+void TestQgsLegendRenderer::testDiagramSizeLegend()
+{
+  QgsVectorLayer* vl4 = new QgsVectorLayer( "Point", "Point Layer", "memory" );
+  QgsMapLayerRegistry::instance()->addMapLayer( vl4 );
+
+  QgsDiagramSettings ds;
+  ds.categoryColors = QList<QColor>() << QColor( 255, 0, 0 ) << QColor( 0, 255, 0 );
+  ds.categoryAttributes = QList<QString>() << "\"cat1\"" << "\"cat2\"";
+  ds.categoryLabels = QStringList() << "cat 1" << "cat 2";
+  ds.scaleByArea = false;
+
+  QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+  dr->setLowerValue( 0.0 );
+  dr->setLowerSize( QSizeF( 1, 1 ) );
+  dr->setUpperValue( 10 );
+  dr->setUpperSize( QSizeF( 20, 20 ) );
+  dr->setClassificationAttribute( 0 );
+  dr->setDiagram( new QgsPieDiagram() );
+  dr->setDiagramSettings( ds );
+  dr->setSizeLegend( true );
+  dr->setAttributeLegend( false );
+  vl4->setDiagramRenderer( dr );
+
+  QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+  dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+  dls.setShowAllDiagrams( true );
+  vl4->setDiagramLayerSettings( dls );
+
+  QgsLayerTreeGroup* root = new QgsLayerTreeGroup();
+  root->addLayer( vl4 );
+  QgsLayerTreeModel legendModel( root );
+
+  QgsLegendSettings settings;
+  _setStandardTestFont( settings, "Bold" );
+  _renderLegend( "legend_diagram_size", &legendModel, settings );
+  QVERIFY( _verifyImage( "legend_diagram_size", mReport ) );
+
+  QgsMapLayerRegistry::instance()->removeMapLayer( vl4 );
 }
 
 QTEST_MAIN( TestQgsLegendRenderer )
