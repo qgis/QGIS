@@ -320,7 +320,7 @@ class Editor(QsciScintilla):
         menu.addSeparator()
         menu.addAction(iconFind,
                        QCoreApplication.translate("PythonConsole", "Find Text"),
-                       self.showFindWidget)
+                       self.openFindWidget)
         cutAction = menu.addAction(iconCut,
                                    QCoreApplication.translate("PythonConsole", "Cut"),
                                    self.cut, QKeySequence.Cut)
@@ -380,9 +380,13 @@ class Editor(QsciScintilla):
             showCodeInspection.setEnabled(True)
         menu.exec_(self.mapToGlobal(e.pos()))
 
-    def findText(self, forward):
+    def findText(self, forward, showMessage=True, findFirst=False):
         lineFrom, indexFrom, lineTo, indexTo = self.getSelection()
-        line, index = self.getCursorPosition()
+        if findFirst:
+            line = 0
+            index = 0
+        else:
+            line, index = self.getCursorPosition()
         text = self.parent.pc.lineEditFind.text()
         re = False
         wrap = self.parent.pc.wrapAround.isChecked()
@@ -400,12 +404,19 @@ class Editor(QsciScintilla):
             if notFound:
                 styleError = 'QLineEdit {background-color: #d65253; \
                                         color: #ffffff;}'
-                msgText = QCoreApplication.translate('PythonConsole',
-                                                     '<b>"{0}"</b> was not found.').format(text)
-                self.parent.pc.callWidgetMessageBarEditor(msgText, 0, True)
+                if showMessage:
+                    msgText = QCoreApplication.translate('PythonConsole',
+                                                         '<b>"{0}"</b> was not found.').format(text)
+                    self.parent.pc.callWidgetMessageBarEditor(msgText, 0, True)
             else:
                 styleError = ''
             self.parent.pc.lineEditFind.setStyleSheet(styleError)
+
+    def findNext(self):
+        self.findText(True)
+
+    def findPrevious(self):
+        self.findText(False)
 
     def objectListEditor(self):
         listObj = self.parent.pc.listClassMethod
@@ -451,14 +462,25 @@ class Editor(QsciScintilla):
         self.parent.pc.splitterObj.hide()
         self.parent.pc.showEditorButton.setChecked(False)
 
-    def showFindWidget(self):
+    def openFindWidget(self):
+        wF = self.parent.pc.widgetFind
+        wF.show()
+        if self.hasSelectedText():
+            self.parent.pc.lineEditFind.setText(self.selectedText().strip())
+        self.parent.pc.lineEditFind.setFocus()
+        self.parent.pc.findTextButton.setChecked(True)
+
+    def closeFindWidget(self):
+        wF = self.parent.pc.widgetFind
+        wF.hide()
+        self.parent.pc.findTextButton.setChecked(False)
+
+    def toggleFindWidget(self):
         wF = self.parent.pc.widgetFind
         if wF.isVisible():
-            wF.hide()
-            self.parent.pc.findTextButton.setChecked(False)
+            self.closeFindWidget()
         else:
-            wF.show()
-            self.parent.pc.findTextButton.setChecked(True)
+            self.openFindWidget()
 
     def commentEditorCode(self, commentCheck):
         self.beginUndoAction()

@@ -22,7 +22,7 @@ import os
 
 from PyQt.QtCore import Qt, QTimer, QSettings, QCoreApplication, QSize, QByteArray, QFileInfo, QUrl, QDir
 from PyQt.QtWidgets import QDockWidget, QToolBar, QToolButton, QWidget, QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication
-from PyQt.QtGui import QDesktopServices
+from PyQt.QtGui import QDesktopServices, QKeySequence, QShortcut
 from PyQt.QtWidgets import QVBoxLayout
 from qgis.utils import iface
 from .console_sci import ShellScintilla
@@ -501,7 +501,7 @@ class PythonConsoleWidget(QWidget):
 
         ##------------ Signal -------------------------------
 
-        self.findTextButton.toggled.connect(self.findTextEditor)
+        self.findTextButton.triggered.connect(self._toggleFind)
         self.objectListButton.toggled.connect(self.toggleObjectListWidget)
         self.commentEditorButton.triggered.connect(self.commentCode)
         self.uncommentEditorButton.triggered.connect(self.uncommentCode)
@@ -519,13 +519,36 @@ class PythonConsoleWidget(QWidget):
         self.saveAsFileButton.triggered.connect(self.saveAsScriptFile)
         self.helpButton.triggered.connect(self.openHelp)
         self.listClassMethod.itemClicked.connect(self.onClickGoToLine)
-        self.lineEditFind.returnPressed.connect(self._findText)
+        self.lineEditFind.returnPressed.connect(self._findNext)
         self.findNextButton.clicked.connect(self._findNext)
         self.findPrevButton.clicked.connect(self._findPrev)
         self.lineEditFind.textChanged.connect(self._textFindChanged)
 
-    def _findText(self):
-        self.tabEditorWidget.currentWidget().newEditor.findText(True)
+        self.findScut = QShortcut(QKeySequence.Find, self.widgetEditor)
+        self.findScut.setContext(Qt.WidgetWithChildrenShortcut)
+        self.findScut.activated.connect(self._openFind)
+
+        self.findNextScut = QShortcut(QKeySequence.FindNext, self.widgetEditor)
+        self.findNextScut.setContext(Qt.WidgetWithChildrenShortcut)
+        self.findNextScut.activated.connect(self._findNext)
+
+        self.findPreviousScut = QShortcut(QKeySequence.FindPrevious, self.widgetEditor)
+        self.findPreviousScut.setContext(Qt.WidgetWithChildrenShortcut)
+        self.findPreviousScut.activated.connect(self._findPrev)
+
+        # Escape on editor hides the find bar
+        self.findScut = QShortcut(Qt.Key_Escape, self.widgetEditor)
+        self.findScut.setContext(Qt.WidgetWithChildrenShortcut)
+        self.findScut.activated.connect(self._closeFind)
+
+    def _toggleFind(self):
+        self.tabEditorWidget.currentWidget().newEditor.toggleFindWidget()
+
+    def _openFind(self):
+        self.tabEditorWidget.currentWidget().newEditor.openFindWidget()
+
+    def _closeFind(self):
+        self.tabEditorWidget.currentWidget().newEditor.closeFindWidget()
 
     def _findNext(self):
         self.tabEditorWidget.currentWidget().newEditor.findText(True)
@@ -537,6 +560,7 @@ class PythonConsoleWidget(QWidget):
         if self.lineEditFind.text():
             self.findNextButton.setEnabled(True)
             self.findPrevButton.setEnabled(True)
+            self.tabEditorWidget.currentWidget().newEditor.findText(True, showMessage=False, findFirst=True)
         else:
             self.lineEditFind.setStyleSheet('')
             self.findNextButton.setEnabled(False)
@@ -566,9 +590,6 @@ class PythonConsoleWidget(QWidget):
 
     def toggleObjectListWidget(self, checked):
         self.listClassMethod.show() if checked else self.listClassMethod.hide()
-
-    def findTextEditor(self, checked):
-        self.widgetFind.show() if checked else self.widgetFind.hide()
 
     def pasteEditor(self):
         self.tabEditorWidget.currentWidget().newEditor.paste()
