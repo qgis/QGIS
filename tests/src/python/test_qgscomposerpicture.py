@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 import os
-import SocketServer
+import socketserver
 import threading
 import SimpleHTTPServer
 from PyQt.QtCore import QRectF
@@ -40,7 +40,7 @@ class TestQgsComposerPicture(unittest.TestCase):
         os.chdir(unitTestDataPath() + '')
         handler = SimpleHTTPServer.SimpleHTTPRequestHandler
 
-        cls.httpd = SocketServer.TCPServer(('localhost', 0), handler)
+        cls.httpd = socketserver.TCPServer(('localhost', 0), handler)
         cls.port = cls.httpd.server_address[1]
 
         cls.httpd_thread = threading.Thread(target=cls.httpd.serve_forever)

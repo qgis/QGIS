@@ -20,9 +20,9 @@ from qgis.core import QgsNetworkContentFetcher
 from utilities import unitTestDataPath
 from PyQt.QtCore import QUrl, QCoreApplication
 from PyQt.QtNetwork import QNetworkReply
-import SocketServer
+import socketserver
 import threading
-import SimpleHTTPServer
+import http.server
 
 
 class TestQgsNetworkContentFetcher(unittest.TestCase):
@@ -31,9 +31,9 @@ class TestQgsNetworkContentFetcher(unittest.TestCase):
     def setUpClass(cls):
         # Bring up a simple HTTP server
         os.chdir(unitTestDataPath() + '')
-        handler = SimpleHTTPServer.SimpleHTTPRequestHandler
+        handler = http.server.SimpleHTTPRequestHandler
 
-        cls.httpd = SocketServer.TCPServer(('localhost', 0), handler)
+        cls.httpd = socketserver.TCPServer(('localhost', 0), handler)
         cls.port = cls.httpd.server_address[1]
 
         cls.httpd_thread = threading.Thread(target=cls.httpd.serve_forever)
