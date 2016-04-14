@@ -25,10 +25,9 @@ PyQgsPalLabelingComposer
 PyQgsPalLabelingPlacement
 PyQgsPalLabelingServer
 PyQgsPostgresProvider
-PyQgsProject
 PyQgsRangeWidgets
 PyQgsRasterLayer
-PyQgsRelation
+PyQgsRelationEditWidget
 PyQgsRulebasedRenderer
 PyQgsServer
 PyQgsServerAccessControl
@@ -38,14 +37,10 @@ PyQgsSipCoverage
 PyQgsSpatialiteProvider
 PyQgsSymbolExpressionVariables
 PyQgsSymbolV2
-PyQgsSyntacticSugar
-PyQgsTabfileProvider
 PyQgsVectorFileWriter
-PyQgsVectorLayer
 PyQgsVirtualLayerDefinition
 PyQgsVirtualLayerProvider
 PyQgsWFSProvider
-PyQgsZonalStatistics
 qgis_composereffectstest
 qgis_composerlabeltest
 qgis_composermapgridtest
