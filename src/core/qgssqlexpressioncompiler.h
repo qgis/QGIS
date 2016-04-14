@@ -50,6 +50,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
       CaseInsensitiveStringMatch = 0x01,  //!< Provider performs case-insensitive string matching for all strings
       LikeIsCaseInsensitive = 0x02, //!< Provider treats LIKE as case-insensitive
       NoNullInBooleanLogic = 0x04, //!< Provider does not support using NULL with boolean logic, eg "(...) OR NULL"
+      NoUnaryMinus = 0x08, //!< Provider does not unary minus, eg " -( 100 * 2 ) = ..."
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

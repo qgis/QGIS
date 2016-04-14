@@ -93,7 +93,19 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
         }
 
         case QgsExpression::uoMinus:
-          break;
+        {
+          if ( mFlags.testFlag( NoUnaryMinus ) )
+            return Fail;
+
+          QString right;
+          if ( compileNode( n->operand(), right ) == Complete )
+          {
+            result = "( - (" + right + "))";
+            return Complete;
+          }
+
+          return Fail;
+        }
       }
 
       break;

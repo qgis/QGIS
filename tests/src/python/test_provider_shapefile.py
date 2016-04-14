@@ -99,7 +99,12 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
                     'not name = \'Apple\' or not name = \'Apple\'',
                     'not name = \'Apple\' and pk = 4',
                     'not name = \'Apple\' and not pk = 4',
-                    'num_char IN (2, 4, 5)'])
+                    'num_char IN (2, 4, 5)',
+                    '-cnt > 0',
+                    '-cnt < 0',
+                    '-cnt - 1 = -101',
+                    '-(-cnt) = 100',
+                    '-(cnt) = -(100)'])
 
     def partiallyCompiledFilters(self):
         return set(['name = \'Apple\'',
