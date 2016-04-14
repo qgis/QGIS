@@ -105,7 +105,7 @@ class TestQgsRelation(unittest.TestCase):
         rel.setReferencedLayer(self.referencedLayer.id())
         rel.addFieldPair('foreignkey', 'y')
 
-        feat = self.referencedLayer.getFeatures().next()
+        feat = next(self.referencedLayer.getFeatures())
 
         it = rel.getRelatedFeatures(feat)
 
@@ -119,7 +119,7 @@ class TestQgsRelation(unittest.TestCase):
         rel.setReferencedLayer(self.referencedLayer.id())
         rel.addFieldPair('foreignkey', 'y')
 
-        feat = self.referencingLayer.getFeatures().next()
+        feat = next(self.referencingLayer.getFeatures())
 
         f = rel.getReferencedFeature(feat)
 

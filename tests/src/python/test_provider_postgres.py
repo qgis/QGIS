@@ -79,7 +79,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(fields.at(fields.indexFromName('time_field')).type(), QVariant.Time)
         self.assertEqual(fields.at(fields.indexFromName('datetime_field')).type(), QVariant.DateTime)
 
-        f = vl.getFeatures(QgsFeatureRequest()).next()
+        f = next(vl.getFeatures(QgsFeatureRequest()))
 
         date_idx = vl.fieldNameIndex('date_field')
         self.assertTrue(isinstance(f.attributes()[date_idx], QDate))

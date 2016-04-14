@@ -173,7 +173,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         btn.click()
         # magically the above code selects the feature here...
 
-        link_feature = self.vl_link.getFeatures(QgsFeatureRequest().setFilterExpression('"fk_book"={}'.format(f[0]))).next()
+        link_feature = next(self.vl_link.getFeatures(QgsFeatureRequest().setFilterExpression('"fk_book"={}'.format(f[0]))))
         self.assertIsNotNone(link_feature[0])
 
         self.assertEquals(self.table_view.model().rowCount(), 1)
@@ -258,7 +258,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         request = QgsFeatureRequest()
         if filter:
             request.setFilterExpression(filter)
-        book = layer.getFeatures(request).next()
+        book = next(layer.getFeatures(request))
         self.wrapper.setFeature(book)
 
         self.table_view = self.widget.findChild(QTableView)
