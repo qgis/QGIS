@@ -15,9 +15,14 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 import os
-from qgis.core import NULL
 
-from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature
+from qgis.core import (
+    QgsVectorLayer,
+    QgsFeatureRequest,
+    QgsFeature,
+    QgsTransactionGroup,
+    NULL
+)
 from PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -37,10 +42,10 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         # Create test layers
         cls.vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
-        assert(cls.vl.isValid())
+        assert cls.vl.isValid()
         cls.provider = cls.vl.dataProvider()
         cls.poly_vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'postgres')
-        assert(cls.poly_vl.isValid())
+        assert cls.poly_vl.isValid()
         cls.poly_provider = cls.poly_vl.dataProvider()
 
     @classmethod
@@ -55,13 +60,13 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
     # HERE GO THE PROVIDER SPECIFIC TESTS
     def testDefaultValue(self):
-        assert self.provider.defaultValue(0) == u'nextval(\'qgis_test."someData_pk_seq"\'::regclass)'
-        assert self.provider.defaultValue(1) == NULL
-        assert self.provider.defaultValue(2) == '\'qgis\'::text'
+        self.assertEqual(self.provider.defaultValue(0), u'nextval(\'qgis_test."someData_pk_seq"\'::regclass)')
+        self.assertEqual(self.provider.defaultValue(1), NULL)
+        self.assertEqual(self.provider.defaultValue(2), '\'qgis\'::text')
 
     def testDateTimeTypes(self):
         vl = QgsVectorLayer('%s table="qgis_test"."date_times" sql=' % (self.dbconn), "testdatetimes", "postgres")
-        assert(vl.isValid())
+        self.assertTrue(vl.isValid())
 
         fields = vl.dataProvider().fields()
         self.assertEqual(fields.at(fields.indexFromName('date_field')).type(), QVariant.Date)
@@ -71,30 +76,28 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         f = vl.getFeatures(QgsFeatureRequest()).next()
 
         date_idx = vl.fieldNameIndex('date_field')
-        assert isinstance(f.attributes()[date_idx], QDate)
+        self.assertTrue(isinstance(f.attributes()[date_idx], QDate))
         self.assertEqual(f.attributes()[date_idx], QDate(2004, 3, 4))
         time_idx = vl.fieldNameIndex('time_field')
-        assert isinstance(f.attributes()[time_idx], QTime)
+        self.assertTrue(isinstance(f.attributes()[time_idx], QTime))
         self.assertEqual(f.attributes()[time_idx], QTime(13, 41, 52))
         datetime_idx = vl.fieldNameIndex('datetime_field')
-        assert isinstance(f.attributes()[datetime_idx], QDateTime)
+        self.assertTrue(isinstance(f.attributes()[datetime_idx], QDateTime))
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2004, 3, 4), QTime(13, 41, 52)))
 
     def testQueryLayers(self):
         def test_query(dbconn, query, key):
             ql = QgsVectorLayer('%s srid=4326 table="%s" (geom) key=\'%s\' sql=' % (dbconn, query.replace('"', '\\"'), key), "testgeom", "postgres")
-            print(query, key)
-            assert(ql.isValid())
+            self.assertTrue(ql.isValid(), '{} ({})'.format(query, key))
 
         test_query(self.dbconn, '(SELECT NULL::integer "Id1", NULL::integer "Id2", NULL::geometry(Point, 4326) geom LIMIT 0)', '"Id1","Id2"')
 
     def testWkbTypes(self):
         def test_table(dbconn, table_name, wkt):
             vl = QgsVectorLayer('%s srid=4326 table="qgis_test".%s (geom) sql=' % (dbconn, table_name), "testgeom", "postgres")
-            assert(vl.isValid())
+            self.assertTrue(vl.isValid())
             for f in vl.getFeatures():
-                print(f.geometry().exportToWkt(), wkt)
-                assert f.geometry().exportToWkt() == wkt
+                self.assertEqual(f.geometry().exportToWkt(), wkt)
 
         test_table(self.dbconn, 'p2d', 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
         test_table(self.dbconn, 'p3d', 'PolygonZ ((0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0 0))')
@@ -186,6 +189,16 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(r)
         self.assertNotEqual(f[0]['obj_id'], NULL, f[0].attributes())
         vl.deleteFeatures([f[0].id()])
+
+    def testNestedInsert(self):
+        tg = QgsTransactionGroup()
+        tg.addLayer(self.vl)
+        self.vl.startEditing()
+        it = self.vl.getFeatures()
+        f = next(it)
+        f['pk'] = NULL
+        self.vl.addFeature(f) # Should not deadlock during an active iteration
+        f = next(it)
 
 if __name__ == '__main__':
     unittest.main()
