@@ -261,11 +261,11 @@ def start_app():
         s = QGISAPP.showSettings()
         print(s)
 
-    import atexit
+        import atexit
 
-    @atexit.register
-    def exitQgis():
-        QGISAPP.exitQgis()
+        @atexit.register
+        def exitQgis():
+            QGISAPP.exitQgis()
 
     return QGISAPP
 
