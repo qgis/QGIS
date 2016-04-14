@@ -1560,6 +1560,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsDockWidget *mOverviewDock;
     QgsDockWidget *mpGpsDock;
     QgsDockWidget *mLogDock;
+    QDockWidget *mTaskManagerDock;
 
 #ifdef Q_OS_MAC
     //! Window menu action to select this window

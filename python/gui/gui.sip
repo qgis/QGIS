@@ -161,6 +161,7 @@
 %Include qgstablewidgetbase.sip
 %Include qgstabwidget.sip
 %Include qgstablewidgetitem.sip
+%Include qgstaskmanagerwidget.sip
 %Include qgstextannotationitem.sip
 %Include qgstextformatwidget.sip
 %Include qgstextpreview.sip

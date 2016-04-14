@@ -308,6 +308,7 @@ SET(QGIS_GUI_SRCS
   qgstablewidgetbase.cpp
   qgstabwidget.cpp
   qgstablewidgetitem.cpp
+  qgstaskmanagerwidget.cpp
   qgstextannotationitem.cpp
   qgstextformatwidget.cpp
   qgstextpreview.cpp
@@ -465,6 +466,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgssubstitutionlistwidget.h
   qgstablewidgetbase.h
   qgstabwidget.h
+  qgstaskmanagerwidget.h
   qgstextformatwidget.h
   qgstextpreview.h
   qgstreewidgetitem.h

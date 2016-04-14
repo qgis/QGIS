@@ -184,6 +184,7 @@ ADD_QGIS_TEST(stringutilstest testqgsstringutils.cpp)
 ADD_QGIS_TEST(styletest testqgsstyle.cpp)
 ADD_QGIS_TEST(svgmarkertest testqgssvgmarker.cpp)
 ADD_QGIS_TEST(symboltest testqgssymbol.cpp)
+ADD_QGIS_TEST(taskmanagertest testqgstaskmanager.cpp)
 ADD_QGIS_TEST(tracertest testqgstracer.cpp)
 #for some obscure reason calling this test "fontutils" kills the build on Ubuntu 15.10
 ADD_QGIS_TEST(typographicstylingutils testqgsfontutils.cpp)
