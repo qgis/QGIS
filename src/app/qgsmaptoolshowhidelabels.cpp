@@ -119,45 +119,58 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent * e )
   }
 
   bool doHide = e->modifiers() & Qt::ShiftModifier;
-
-  QgsFeatureIds selectedFeatIds;
+  bool labelChanged = false;
+  QString editTxt = doHide ? tr( "Hid labels" ) : tr( "Showed labels" );
+  vlayer->beginEditCommand( editTxt );
 
   if ( !doHide )
   {
     QgsDebugMsg( "Showing labels operation" );
 
+    QgsFeatureIds selectedFeatIds;
     if ( !selectedFeatures( vlayer, selectedFeatIds ) )
     {
       return;
+    }
+
+    QgsDebugMsg( "Number of selected labels or features: " + QString::number( selectedFeatIds.size() ) );
+
+    if ( selectedFeatIds.isEmpty() )
+    {
+      return;
+    }
+
+    Q_FOREACH ( QgsFeatureId fid, selectedFeatIds )
+    {
+      mCurrentLabelPos.featureId = fid;
+
+      mCurrentLabelPos.isDiagram = false;
+      bool labChanged = showHide( vlayer, true );
+
+      mCurrentLabelPos.isDiagram = true;
+      bool diagChanged = showHide( vlayer, true );
+
+      if ( labChanged || diagChanged )
+      {
+        // TODO: highlight features (maybe with QTimer?)
+        labelChanged = labelChanged || true;
+      }
     }
   }
   else
   {
     QgsDebugMsg( "Hiding labels operation" );
 
-    if ( !selectedLabelFeatures( vlayer, selectedFeatIds ) )
+    QList<QgsLabelPosition> positions;
+    if ( selectedLabelFeatures( vlayer, positions ) )
     {
-      return;
-    }
-  }
+      Q_FOREACH ( QgsLabelPosition pos, positions )
+      {
+        mCurrentLabelPos = pos;
 
-  QgsDebugMsg( "Number of selected labels or features: " + QString::number( selectedFeatIds.size() ) );
-
-  if ( selectedFeatIds.isEmpty() )
-  {
-    return;
-  }
-
-  bool labelChanged = false;
-  QString editTxt = doHide ? tr( "Hid labels" ) : tr( "Showed labels" );
-
-  vlayer->beginEditCommand( editTxt );
-  Q_FOREACH ( QgsFeatureId fid, selectedFeatIds )
-  {
-    if ( showHideLabel( vlayer, fid, doHide ) )
-    {
-      // TODO: highlight features (maybe with QTimer?)
-      labelChanged = true;
+        if ( showHide( vlayer, false ) )
+          labelChanged = labelChanged || true;
+      }
     }
   }
 
@@ -224,10 +237,11 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer* vlayer,
 }
 
 bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer* vlayer,
-    QgsFeatureIds& selectedFeatIds )
+    QList<QgsLabelPosition> &listPos )
 {
-  // get list of all drawn labels from current layer that intersect rubberband
+  listPos.clear();
 
+  // get list of all drawn labels from current layer that intersect rubberband
   const QgsLabelingResults* labelingResults = mCanvas->labelingResults();
   if ( !labelingResults )
   {
@@ -238,7 +252,6 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer* vlayer,
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QgsRectangle ext = mRubberBand->asGeometry()->boundingBox();
-
   QList<QgsLabelPosition> labelPosList = labelingResults->labelsWithinRect( ext );
 
   QList<QgsLabelPosition>::const_iterator it;
@@ -252,7 +265,7 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer* vlayer,
       continue;
     }
 
-    selectedFeatIds.insert( mCurrentLabelPos.featureId );
+    listPos.append(( *it ) );
   }
 
   QApplication::restoreOverrideCursor();
@@ -260,41 +273,38 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer* vlayer,
   return true;
 }
 
-bool QgsMapToolShowHideLabels::showHideLabel( QgsVectorLayer* vlayer,
-    QgsFeatureId fid,
-    bool hide )
+bool QgsMapToolShowHideLabels::showHide( QgsVectorLayer *vl, const bool show )
 {
-
   // verify attribute table has proper field setup
   bool showSuccess;
   int showCol;
   int showVal;
 
-  if ( !dataDefinedShowHide( vlayer, fid, showVal, showSuccess, showCol ) )
+  if ( !dataDefinedShowHide( vl, mCurrentLabelPos.featureId, showVal,
+                             showSuccess, showCol ) )
   {
     return false;
   }
 
-  int curVal = hide ? 0 : 1;
-
   // check if attribute value is already the same
-  if ( showSuccess && showVal == curVal )
+  if ( showSuccess && showVal == show )
   {
     return false;
   }
 
   // allow NULL (maybe default) value to stand for show label (i.e. 1)
   // skip NULL attributes if trying to show label
-  if ( !showSuccess && curVal == 1 )
+  if ( !showSuccess && show == 1 )
   {
     return false;
   }
 
   // different attribute value, edit table
-  if ( !vlayer->changeAttributeValue( fid, showCol, curVal ) )
+  if ( ! vl->changeAttributeValue( mCurrentLabelPos.featureId, showCol, show ) )
   {
     QgsDebugMsg( "Failed write to attribute table" );
     return false;
   }
+
   return true;
 }

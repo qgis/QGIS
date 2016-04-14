@@ -48,9 +48,14 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
         @param yCol out: index of the attribute for data defined y coordinate
         @return true if layer fields set up and exist*/
     bool layerCanPin( QgsMapLayer* ml, int& xCol, int& yCol ) const;
-    /** Returns true if layer has attribute field set up
-      @param showCol out: attribute column for data defined label showing*/
-    bool layerCanShowHide( QgsMapLayer* layer, int& showCol ) const;
+    /** Returns true if layer has attribute field set up for diagrams
+      @param showCol out: attribute column for data defined diagram showing
+      @note added in QGIS 2.16 */
+    bool diagramCanShowHide( QgsMapLayer* layer, int& showCol ) const;
+    /** Returns true if layer has attribute field set up for labels
+      @param showCol out: attribute column for data defined label showing
+      @note added in QGIS 2.16 */
+    bool labelCanShowHide( QgsMapLayer* layer, int& showCol ) const;
     /** Checks if labels in a layer can be rotated
       @param rotationCol out: attribute column for data defined label rotation*/
     bool layerIsRotatable( QgsMapLayer *layer, int& rotationCol ) const;
@@ -149,6 +154,12 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
       @return true if data defined show/hide is enabled on the layer
       */
     bool dataDefinedShowHide( QgsVectorLayer* vlayer, QgsFeatureId featureId, int& show, bool& showSuccess, int& showCol ) const;
+
+    /** Returns the pin status for the current label/diagram
+      @return true if the label/diagram is pinned, false otherwise
+      @note added in QGIS 2.16
+      */
+    bool isPinned();
 
   private:
     QgsPalLayerSettings mInvalidLabelSettings;

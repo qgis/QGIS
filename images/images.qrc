@@ -237,6 +237,7 @@
         <file>themes/default/mActionLabel.png</file>
         <file>themes/default/mActionLabel.svg</file>
         <file>themes/default/mActionLabeling.png</file>
+        <file>themes/default/mActionDiagramProperties.svg</file>
         <file>themes/default/mActionLocalCumulativeCutStretch.png</file>
         <file>themes/default/mActionLocalHistogramStretch.png</file>
         <file>themes/default/mActionLowerItems.png</file>

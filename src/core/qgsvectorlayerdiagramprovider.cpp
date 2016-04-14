@@ -285,7 +285,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   double ddPosX = 0.0;
   double ddPosY = 0.0;
   bool ddPos = ( ddColX >= 0 && ddColY >= 0 );
-  if ( ddPos )
+  if ( ddPos && ! feat.attribute( ddColX ).isNull() && ! feat.attribute( ddColY ).isNull() )
   {
     bool posXOk, posYOk;
     ddPosX = feat.attribute( ddColX ).toDouble( &posXOk );
@@ -306,6 +306,18 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
       ddPosX -= diagramWidth / 2.0;
       ddPosY -= diagramHeight / 2.0;
     }
+  }
+  else
+    ddPos = false;
+
+  int ddColShow = mSettings.showColumn;
+  if ( ddColShow >= 0 && ! feat.attribute( ddColShow ).isNull() )
+  {
+    bool showOk;
+    bool ddShow = feat.attribute( ddColShow ).toDouble( &showOk );
+
+    if ( showOk && ! ddShow )
+      return nullptr;
   }
 
   QgsDiagramLabelFeature* lf = new QgsDiagramLabelFeature( feat.id(), geomCopy, QSizeF( diagramWidth, diagramHeight ) );

@@ -152,6 +152,7 @@
 #include "qgsgpsinformationwidget.h"
 #include "qgsguivectorlayertools.h"
 #include "qgslabelingwidget.h"
+#include "qgsdiagramproperties.h"
 #include "qgslayerdefinition.h"
 #include "qgslayertree.h"
 #include "qgslayertreemapcanvasbridge.h"
@@ -1546,6 +1547,8 @@ void QgisApp::createActions()
   connect( mActionRotateLabel, SIGNAL( triggered() ), this, SLOT( rotateLabel() ) );
   connect( mActionChangeLabelProperties, SIGNAL( triggered() ), this, SLOT( changeLabelProperties() ) );
 
+  connect( mActionDiagramProperties, SIGNAL( triggered() ), this, SLOT( diagramProperties() ) );
+
 #ifndef HAVE_POSTGRESQL
   delete mActionAddPgLayer;
   mActionAddPgLayer = 0;
@@ -1650,6 +1653,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionMergeFeatureAttributes );
   mMapToolGroup->addAction( mActionNodeTool );
   mMapToolGroup->addAction( mActionRotatePointSymbols );
+
   mMapToolGroup->addAction( mActionPinLabels );
   mMapToolGroup->addAction( mActionShowHideLabels );
   mMapToolGroup->addAction( mActionMoveLabel );
@@ -2331,6 +2335,7 @@ void QgisApp::setTheme( const QString& theThemeName )
   mActionMoveLabel->setIcon( QgsApplication::getThemeIcon( "/mActionMoveLabel.png" ) );
   mActionRotateLabel->setIcon( QgsApplication::getThemeIcon( "/mActionRotateLabel.svg" ) );
   mActionChangeLabelProperties->setIcon( QgsApplication::getThemeIcon( "/mActionChangeLabelProperties.png" ) );
+  mActionDiagramProperties->setIcon( QgsApplication::getThemeIcon( "/mActionDiagramProperties.svg" ) );
   mActionDecorationCopyright->setIcon( QgsApplication::getThemeIcon( "/copyright_label.png" ) );
   mActionDecorationNorthArrow->setIcon( QgsApplication::getThemeIcon( "/north_arrow.png" ) );
   mActionDecorationScaleBar->setIcon( QgsApplication::getThemeIcon( "/scale_bar.png" ) );
@@ -2542,6 +2547,7 @@ void QgisApp::createCanvasTools()
   mMapTools.mNodeTool->setAction( mActionNodeTool );
   mMapTools.mRotatePointSymbolsTool = new QgsMapToolRotatePointSymbols( mMapCanvas );
   mMapTools.mRotatePointSymbolsTool->setAction( mActionRotatePointSymbols );
+
   mMapTools.mPinLabels = new QgsMapToolPinLabels( mMapCanvas );
   mMapTools.mPinLabels->setAction( mActionPinLabels );
   mMapTools.mShowHideLabels = new QgsMapToolShowHideLabels( mMapCanvas );
@@ -5493,6 +5499,45 @@ void QgisApp::labeling()
       mMapCanvas->refresh();
     }
   }
+
+  activateDeactivateLayerRelatedActions( vlayer );
+}
+
+void QgisApp::diagramProperties()
+{
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( activeLayer() );
+  if ( !vlayer )
+  {
+    messageBar()->pushMessage( tr( "Diagram Properties" ),
+                               tr( "Please select a vector layer first" ),
+                               QgsMessageBar::INFO,
+                               messageTimeout() );
+    return;
+  }
+
+  QDialog dlg;
+  dlg.setWindowTitle( tr( "Layer diagram properties" ) );
+  QgsDiagramProperties *gui = new QgsDiagramProperties( vlayer, &dlg, mMapCanvas );
+  gui->layout()->setContentsMargins( 0, 0, 0, 0 );
+  QVBoxLayout *layout = new QVBoxLayout( &dlg );
+  layout->addWidget( gui );
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(
+    QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Apply,
+    Qt::Horizontal, &dlg );
+  layout->addWidget( buttonBox );
+
+  dlg.setLayout( layout );
+
+  connect( buttonBox->button( QDialogButtonBox::Ok ), SIGNAL( clicked() ),
+           &dlg, SLOT( accept() ) );
+  connect( buttonBox->button( QDialogButtonBox::Cancel ), SIGNAL( clicked() ),
+           &dlg, SLOT( reject() ) );
+  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ),
+           gui, SLOT( apply() ) );
+
+  if ( dlg.exec() )
+    gui->apply();
 
   activateDeactivateLayerRelatedActions( vlayer );
 }
@@ -9819,19 +9864,20 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     enablePin =
       enablePin ||
       ( qobject_cast<QgsMapToolPinLabels*>( mMapTools.mPinLabels ) &&
-        qobject_cast<QgsMapToolPinLabels*>( mMapTools.mPinLabels )->layerCanPin( vlayer, colX, colY ) );
+        ( qobject_cast<QgsMapToolPinLabels*>( mMapTools.mPinLabels )->labelMoveable( vlayer, colX, colY )
+          || qobject_cast<QgsMapToolPinLabels*>( mMapTools.mPinLabels )->diagramMoveable( vlayer, colX, colY ) ) );
 
     enableShowHide =
       enableShowHide ||
       ( qobject_cast<QgsMapToolShowHideLabels*>( mMapTools.mShowHideLabels ) &&
-        qobject_cast<QgsMapToolShowHideLabels*>( mMapTools.mShowHideLabels )->layerCanShowHide( vlayer, colShow ) );
+        ( qobject_cast<QgsMapToolShowHideLabels*>( mMapTools.mShowHideLabels )->labelCanShowHide( vlayer, colShow )
+          || qobject_cast<QgsMapToolShowHideLabels*>( mMapTools.mShowHideLabels )->diagramCanShowHide( vlayer, colShow ) ) );
 
     enableMove =
       enableMove ||
       ( qobject_cast<QgsMapToolMoveLabel*>( mMapTools.mMoveLabel ) &&
         ( qobject_cast<QgsMapToolMoveLabel*>( mMapTools.mMoveLabel )->labelMoveable( vlayer, colX, colY )
-          || qobject_cast<QgsMapToolMoveLabel*>( mMapTools.mMoveLabel )->diagramMoveable( vlayer, colX, colY ) )
-      );
+          || qobject_cast<QgsMapToolMoveLabel*>( mMapTools.mMoveLabel )->diagramMoveable( vlayer, colX, colY ) ) );
 
     enableRotate =
       enableRotate ||
@@ -9916,6 +9962,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionRotateLabel->setEnabled( false );
     mActionChangeLabelProperties->setEnabled( false );
 
+    mActionDiagramProperties->setEnabled( false );
+
     mActionLocalHistogramStretch->setEnabled( false );
     mActionFullHistogramStretch->setEnabled( false );
     mActionLocalCumulativeCutStretch->setEnabled( false );
@@ -9956,6 +10004,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionDecreaseContrast->setEnabled( false );
     mActionZoomActualSize->setEnabled( false );
     mActionLabeling->setEnabled( true );
+    mActionDiagramProperties->setEnabled( true );
 
     mActionSelectFeatures->setEnabled( true );
     mActionSelectPolygon->setEnabled( true );
@@ -10174,6 +10223,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionSplitFeatures->setEnabled( false );
     mActionSplitParts->setEnabled( false );
     mActionLabeling->setEnabled( false );
+    mActionDiagramProperties->setEnabled( false );
 
     //NOTE: This check does not really add any protection, as it is called on load not on layer select/activate
     //If you load a layer with a provider and idenitfy ability then load another without, the tool would be disabled for both

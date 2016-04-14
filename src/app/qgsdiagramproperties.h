@@ -22,13 +22,14 @@
 #include <ui_qgsdiagrampropertiesbase.h>
 
 class QgsVectorLayer;
+class QgsMapCanvas;
 
 class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPropertiesBase
 {
     Q_OBJECT
 
   public:
-    QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent );
+    QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent, QgsMapCanvas *canvas );
 
     ~QgsDiagramProperties();
 
@@ -59,7 +60,7 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     QString mDiagramType;
 
     QString guessLegendText( const QString &expression );
-
+    QgsMapCanvas *mMapCanvas;
 };
 
 #endif // QGSDIAGRAMPROPERTIES_H

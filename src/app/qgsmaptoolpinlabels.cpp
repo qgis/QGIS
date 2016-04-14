@@ -187,9 +187,9 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
   {
     mCurrentLabelPos = *it;
 
-    if ( mCurrentLabelPos.isPinned )
+    if ( isPinned() )
     {
-      QString labelStringID = QString( "%0|%1" ).arg( mCurrentLabelPos.layerID, QString::number( mCurrentLabelPos.featureId ) );
+      QString labelStringID = QString( "%0|%1|%2" ).arg( QString::number( mCurrentLabelPos.isDiagram ), mCurrentLabelPos.layerID, QString::number( mCurrentLabelPos.featureId ) );
 
       // don't highlight again
       if ( mHighlights.contains( labelStringID ) )
@@ -278,13 +278,13 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent *
       continue;
     }
 
-    QString labelStringID = QString( "%0|%1" ).arg( mCurrentLabelPos.layerID, QString::number( mCurrentLabelPos.featureId ) );
+    QString labelStringID = QString( "%0|%1|%2" ).arg( QString::number( mCurrentLabelPos.isDiagram ), mCurrentLabelPos.layerID, QString::number( mCurrentLabelPos.featureId ) );
 
     // unpin label
-    if ( mCurrentLabelPos.isPinned && ( doUnpin  || toggleUnpinOrPin ) )
+    if ( isPinned() && ( doUnpin  || toggleUnpinOrPin ) )
     {
       // unpin previously pinned label (set attribute table fields to NULL)
-      if ( pinUnpinLabel( vlayer, mCurrentLabelPos, false ) )
+      if ( pinUnpinFeature( vlayer, mCurrentLabelPos, false ) )
       {
         labelChanged = true;
       }
@@ -293,12 +293,11 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent *
         QgsDebugMsg( QString( "Unpin failed for layer, label: %0, %1" ).arg( labellyr, labeltxt ) );
       }
     }
-
     // pin label
-    if ( !mCurrentLabelPos.isPinned && ( !doUnpin || toggleUnpinOrPin ) )
+    else if ( ! isPinned() && ( !doUnpin || toggleUnpinOrPin ) )
     {
       // pin label's location, and optionally rotation, to attribute table
-      if ( pinUnpinLabel( vlayer, mCurrentLabelPos, true ) )
+      if ( pinUnpinFeature( vlayer, mCurrentLabelPos, true ) )
       {
         labelChanged = true;
       }
@@ -323,7 +322,7 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent *
 
 bool QgsMapToolPinLabels::pinUnpinLabel( QgsVectorLayer* vlayer,
     const QgsLabelPosition& labelpos,
-    bool pin )
+    const bool pin )
 {
   // skip diagrams
   if ( labelpos.isDiagram )
@@ -426,6 +425,78 @@ bool QgsMapToolPinLabels::pinUnpinLabel( QgsVectorLayer* vlayer,
 
     return false;
   }
+
+  return true;
+}
+
+bool QgsMapToolPinLabels::pinUnpinFeature( QgsVectorLayer* vlayer,
+    const QgsLabelPosition& labelpos,
+    const bool pin )
+{
+  bool rc = false;
+
+  if ( ! mCurrentLabelPos.isDiagram )
+    rc = pinUnpinLabel( vlayer, labelpos, pin );
+  else
+    rc = pinUnpinDiagram( vlayer, labelpos, pin );
+
+  return rc;
+}
+
+bool QgsMapToolPinLabels::pinUnpinDiagram( QgsVectorLayer* vlayer,
+    const QgsLabelPosition& labelpos,
+    const bool pin )
+{
+
+  // skip diagrams
+  if ( ! labelpos.isDiagram )
+    return false;
+
+  // verify attribute table has x, y fields mapped
+  int xCol, yCol;
+  double xPosOrig, yPosOrig;
+  bool xSuccess, ySuccess;
+
+  if ( !dataDefinedPosition( vlayer, mCurrentLabelPos.featureId, xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
+    return false;
+
+  // edit attribute table
+  int fid = labelpos.featureId;
+
+  bool writeFailed = false;
+  QString labelText = currentLabelText( 24 );
+
+  if ( pin )
+  {
+    QgsPoint referencePoint = mCurrentLabelPos.labelRect.center();
+    double labelX = referencePoint.x();
+    double labelY = referencePoint.y();
+
+    // transform back to layer crs, if on-fly on
+    if ( mCanvas->mapSettings().hasCrsTransformEnabled() )
+    {
+      QgsPoint transformedPoint = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, referencePoint );
+      labelX = transformedPoint.x();
+      labelY = transformedPoint.y();
+    }
+
+    vlayer->beginEditCommand( tr( "Pinned diagram" ) + QString( " '%1'" ).arg( labelText ) );
+    writeFailed = !vlayer->changeAttributeValue( fid, xCol, labelX );
+    if ( !vlayer->changeAttributeValue( fid, yCol, labelY ) )
+      writeFailed = true;
+    vlayer->endEditCommand();
+  }
+  else
+  {
+    vlayer->beginEditCommand( tr( "Unpinned diagram" ) + QString( " '%1'" ).arg( labelText ) );
+    writeFailed = !vlayer->changeAttributeValue( fid, xCol, QVariant( QString::null ) );
+    if ( !vlayer->changeAttributeValue( fid, yCol, QVariant( QString::null ) ) )
+      writeFailed = true;
+    vlayer->endEditCommand();
+  }
+
+  if ( writeFailed )
+    return false;
 
   return true;
 }

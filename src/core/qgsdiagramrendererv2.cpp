@@ -37,6 +37,7 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings()
     , xform( nullptr )
     , xPosColumn( -1 )
     , yPosColumn( -1 )
+    , showColumn( -1 )
     , showAll( true )
 {
 }
@@ -56,6 +57,7 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings&
     , fields( rh.fields )
     , xPosColumn( rh.xPosColumn )
     , yPosColumn( rh.yPosColumn )
+    , showColumn( rh.showColumn )
     , showAll( rh.showAll )
 {
 }
@@ -76,6 +78,7 @@ QgsDiagramLayerSettings&QgsDiagramLayerSettings::operator=( const QgsDiagramLaye
   fields = rh.fields;
   xPosColumn = rh.xPosColumn;
   yPosColumn = rh.yPosColumn;
+  showColumn = rh.showColumn;
   showAll = rh.showAll;
   return *this;
 }
@@ -116,6 +119,7 @@ void QgsDiagramLayerSettings::readXML( const QDomElement& elem, const QgsVectorL
   dist = elem.attribute( "dist" ).toDouble();
   xPosColumn = elem.attribute( "xPosColumn" ).toInt();
   yPosColumn = elem.attribute( "yPosColumn" ).toInt();
+  showColumn = elem.attribute( "showColumn" ).toInt();
   showAll = ( elem.attribute( "showAll", "0" ) != "0" );
 }
 
@@ -132,6 +136,7 @@ void QgsDiagramLayerSettings::writeXML( QDomElement& layerElem, QDomDocument& do
   diagramLayerElem.setAttribute( "dist", QString::number( dist ) );
   diagramLayerElem.setAttribute( "xPosColumn", xPosColumn );
   diagramLayerElem.setAttribute( "yPosColumn", yPosColumn );
+  diagramLayerElem.setAttribute( "showColumn", showColumn );
   diagramLayerElem.setAttribute( "showAll", showAll );
   layerElem.appendChild( diagramLayerElem );
 }
@@ -147,6 +152,10 @@ QSet<QString> QgsDiagramLayerSettings::referencedFields( const QgsExpressionCont
     referenced << fieldsParameter.at( xPosColumn ).name();
   if ( yPosColumn >= 0 && yPosColumn < fieldsParameter.count() )
     referenced << fieldsParameter.at( yPosColumn ).name();
+
+  // and the ones needed for data defined diagram visibility
+  if ( showColumn >= 0 && showColumn < fieldsParameter.count() )
+    referenced << fieldsParameter.at( showColumn ).name();
 
   return referenced;
 }

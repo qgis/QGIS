@@ -89,7 +89,17 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
     //! Pin or unpin label relative to whether its editable
     bool pinUnpinLabel( QgsVectorLayer* vlayer,
                         const QgsLabelPosition& labelpos,
-                        bool pin );
+                        const bool pin );
+
+    //! Pin or unpin diagram relative to whether its editable
+    bool pinUnpinDiagram( QgsVectorLayer* vlayer,
+                          const QgsLabelPosition& labelpos,
+                          const bool pin );
+
+    //! Pin or unpin a feature (diagram or label)
+    bool pinUnpinFeature( QgsVectorLayer* vlayer,
+                          const QgsLabelPosition& labelpos,
+                          const bool pin );
 };
 
 #endif // QGSMAPTOOLPINLABELS_H

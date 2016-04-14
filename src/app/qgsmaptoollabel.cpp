@@ -562,7 +562,14 @@ bool QgsMapToolLabel::dataDefinedShowHide( QgsVectorLayer* vlayer, QgsFeatureId 
     return false;
   }
 
-  if ( !layerCanShowHide( vlayer, showCol ) )
+  if ( mCurrentLabelPos.isDiagram )
+  {
+    if ( ! diagramCanShowHide( vlayer, showCol ) )
+    {
+      return false;
+    }
+  }
+  else if ( ! labelCanShowHide( vlayer, showCol ) )
   {
     return false;
   }
@@ -633,7 +640,7 @@ bool QgsMapToolLabel::layerCanPin( QgsMapLayer* ml, int& xCol, int& yCol ) const
   return canPin;
 }
 
-bool QgsMapToolLabel::layerCanShowHide( QgsMapLayer* ml, int& showCol ) const
+bool QgsMapToolLabel::labelCanShowHide( QgsMapLayer* ml, int& showCol ) const
 {
   //QgsDebugMsg( "entered" );
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( ml );
@@ -650,4 +657,48 @@ bool QgsMapToolLabel::layerCanShowHide( QgsMapLayer* ml, int& showCol ) const
   }
 
   return false;
+}
+
+bool QgsMapToolLabel::isPinned()
+{
+  bool rc = false;
+
+  if ( ! mCurrentLabelPos.isDiagram )
+  {
+    rc = mCurrentLabelPos.isPinned;
+  }
+  else
+  {
+    // for diagrams, the isPinned attribute is not set. So we check directly if
+    // there's data defined.
+    int xCol, yCol;
+    double x, y;
+    bool xSuccess, ySuccess;
+
+    if ( dataDefinedPosition( currentLayer(), mCurrentLabelPos.featureId, x,
+                              xSuccess, y, ySuccess, xCol, yCol ) && xSuccess && ySuccess )
+      rc = true;
+  }
+
+  return rc;
+}
+
+bool QgsMapToolLabel::diagramCanShowHide( QgsMapLayer* ml, int& showCol ) const
+{
+  bool rc = false;
+
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( ml );
+
+  if ( vlayer && vlayer->isEditable() && vlayer->diagramsEnabled() )
+  {
+    const QgsDiagramLayerSettings *dls = vlayer->diagramLayerSettings();
+
+    if ( dls && dls->showColumn >= 0 )
+    {
+      showCol = dls->showColumn;
+      rc = true;
+    }
+  }
+
+  return rc;
 }
