@@ -261,6 +261,12 @@ def start_app():
         s = QGISAPP.showSettings()
         print(s)
 
+    import atexit
+
+    @atexit.register
+    def exitQgis():
+        QGISAPP.exitQgis()
+
     return QGISAPP
 
 
