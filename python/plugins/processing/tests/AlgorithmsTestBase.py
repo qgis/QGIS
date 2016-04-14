@@ -76,10 +76,10 @@ class AlgorithmsTest:
             for param in zip(alg.parameters, params):
                 param[0].setValue(param[1])
         else:
-            for k, p in params.iteritems():
+            for k, p in params.items():
                 alg.setParameterValue(k, p)
 
-        for r, p in defs['results'].iteritems():
+        for r, p in defs['results'].items():
             alg.setOutputValue(r, self.load_result_param(p))
 
         expectFailure = False
@@ -109,7 +109,7 @@ class AlgorithmsTest:
         if isinstance(params, list):
             return [self.load_param(p) for p in params]
         elif isinstance(params, dict):
-            return {key: self.load_param(p) for key, p in params.iteritems()}
+            return {key: self.load_param(p) for key, p in params.items()}
         else:
             return params
 
@@ -178,7 +178,7 @@ class AlgorithmsTest:
         """
         Checks if result produced by an algorithm matches with the expected specification.
         """
-        for id, expected_result in expected.iteritems():
+        for id, expected_result in expected.items():
             if 'vector' == expected_result['type']:
                 expected_lyr = self.load_layer(expected_result)
                 try:
