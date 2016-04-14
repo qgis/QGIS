@@ -457,6 +457,11 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     QgsMapSettings mMapSettings;
 
     QHash< QString, QgsLayerCoordinateTransform > mLayerCoordinateTransformInfo;
+
+    QHash< QPair< QString, QString >, QPair< int, int > > mDefaultDatumTransformations;
+
+  private:
+    void readDefaultDatumTransformations();
 };
 
 #endif
