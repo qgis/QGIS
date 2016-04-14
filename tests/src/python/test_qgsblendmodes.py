@@ -44,8 +44,7 @@ from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
 
 from utilities import unitTestDataPath
-# Convenience instances in case you may need them
-start_app()
+
 TEST_DATA_DIR = unitTestDataPath()
 
 
