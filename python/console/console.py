@@ -407,9 +407,9 @@ class PythonConsoleWidget(QWidget):
         }
 
         self.classMenu = QMenu()
-        for (title, icon), commands in default_command.iteritems():
+        for (title, icon), commands in default_command.items():
             action = self.classMenu.addAction(icon, title)
-            action.triggered[()].connect(
+            action.triggered.connect(
                 lambda commands=commands: self.shell.commandConsole(commands))
 
         cM = self.toolBar.widgetForAction(self.actionClass)
