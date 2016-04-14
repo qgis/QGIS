@@ -15,6 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 import os
+import sys
 import shutil
 import tempfile
 
@@ -31,8 +32,8 @@ except ImportError:
     print("You should install pyspatialite to run the tests")
     raise ImportError
 
-# Convenience instances in case you may need them
-start_app()
+# Pass no_exit=True: for some reason this crashes on exit on Travis MacOSX
+start_app(sys.platform != 'darwin')
 TEST_DATA_DIR = unitTestDataPath()
 
 

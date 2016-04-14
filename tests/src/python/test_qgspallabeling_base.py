@@ -55,7 +55,7 @@ from utilities import (
 )
 
 
-start_app()
+start_app(sys.platform != 'darwin') # No cleanup on mac os x, it crashes the pallabellingcanvas test on exit
 FONTSLOADED = loadTestFonts()
 
 PALREPORT = 'PAL_REPORT' in os.environ
