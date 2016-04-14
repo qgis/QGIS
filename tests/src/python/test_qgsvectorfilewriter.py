@@ -164,8 +164,6 @@ class TestQgsVectorLayer(unittest.TestCase):
         assert isinstance(f.attributes()[datetime_idx], QDateTime)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22)))
 
-    # This test fails with GDAL version < 2
-    @unittest.expectedFailure(osgeo.gdal.VersionInfo()[:1] < 2)
     def testWriteShapefileWithZ(self):
         """Check writing geometries with Z dimension to an ESRI shapefile."""
 
