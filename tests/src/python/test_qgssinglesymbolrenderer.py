@@ -19,7 +19,7 @@
 
 __author__ = 'Matthias Kuhn'
 __date__ = 'December 2015'
-__copyright__ = '(C) 2015, Matthiasd Kuhn'
+__copyright__ = '(C) 2015, Matthias Kuhn'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
