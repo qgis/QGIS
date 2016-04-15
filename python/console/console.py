@@ -21,8 +21,8 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 import os
 
 from PyQt.QtCore import Qt, QTimer, QSettings, QCoreApplication, QSize, QByteArray, QFileInfo, QUrl, QDir
-from PyQt.QtWidgets import QDockWidget, QToolBar, QToolButton, QWidget, QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication
-from PyQt.QtGui import QDesktopServices, QKeySequence, QShortcut
+from PyQt.QtWidgets import QDockWidget, QToolBar, QToolButton, QWidget, QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication, QShortcut
+from PyQt.QtGui import QDesktopServices, QKeySequence
 from PyQt.QtWidgets import QVBoxLayout
 from qgis.utils import iface
 from .console_sci import ShellScintilla
