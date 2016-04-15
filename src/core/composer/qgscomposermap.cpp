@@ -2151,6 +2151,14 @@ QgsExpressionContext* QgsComposerMap::createExpressionContext() const
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_id", QgsComposerItem::id(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_rotation", mMapRotation, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_scale", scale(), true ) );
+
+  QgsRectangle extent( *currentMapExtent() );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_width", extent.width(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_height", extent.height(), true ) );
+  QgsGeometry* centerPoint = QgsGeometry::fromPoint( extent.center() );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_center", QVariant::fromValue( *centerPoint ), true ) );
+  delete centerPoint;
+
   context->appendScope( scope );
 
   return context;
