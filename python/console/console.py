@@ -31,6 +31,7 @@ from .console_editor import EditorTabWidget
 from .console_settings import optionsDialog
 from qgis.core import QgsApplication, QgsContextHelp
 from qgis.gui import QgsFilterLineEdit
+from functools import partial
 
 import sys
 
@@ -57,6 +58,8 @@ def show_console():
     if settings.value('pythonConsole/contextHelpOnFirstLaunch', True, type=bool):
         QgsContextHelp.run("PythonConsole")
         settings.setValue('pythonConsole/contextHelpOnFirstLaunch', False)
+
+    return _console
 
 _console_output = None
 
@@ -409,8 +412,7 @@ class PythonConsoleWidget(QWidget):
         self.classMenu = QMenu()
         for (title, icon), commands in default_command.items():
             action = self.classMenu.addAction(icon, title)
-            action.triggered.connect(
-                lambda commands=commands: self.shell.commandConsole(commands))
+            action.triggered.connect(partial(self.shell.commandConsole, commands))
 
         cM = self.toolBar.widgetForAction(self.actionClass)
         cM.setMenu(self.classMenu)
