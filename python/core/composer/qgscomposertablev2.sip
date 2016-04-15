@@ -347,10 +347,11 @@ class QgsComposerTableV2: QgsComposerMultiFrame
     QgsComposerTableColumns* columns();
 
     /** Replaces the columns in the table with a specified list of QgsComposerTableColumns.
-     * @param columns list of QgsComposerTableColumns to show in table
+     * @param columns list of QgsComposerTableColumns to show in table. Ownership of columns
+     * is transferred to the table.
      * @see columns
      */
-    void setColumns( const QgsComposerTableColumns& columns );
+    void setColumns( const QgsComposerTableColumns& columns /Transfer/ );
 
     /** Sets the cell style for a cell group.
      * @param group group to set style for
