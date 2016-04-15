@@ -10,6 +10,7 @@ PyQgsComposerMapGrid
 PyQgsComposerPicture
 PyQgsComposerPolygon
 PyQgsComposerShapes
+PyQgsConsole
 PyQgsDelimitedTextProvider
 PyQgsEditWidgets
 PyQgsGeometryGeneratorSymbolLayerV2
