@@ -129,6 +129,9 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
         if ( newLayer )
         {
           layerIdMapping.insert( origLayerId, newLayer );
+          // remove remote layer
+          QgsMapLayerRegistry::instance()->removeMapLayers(
+            QStringList() << origLayerId );
         }
       }
 
@@ -645,7 +648,16 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
         int remoteCount = remoteFeatureIds.size();
         for ( int i = 0; i < remoteCount; i++ )
         {
-          addFidLookup( db, layerId, offlineFeatureIds.at( i ), remoteFeatureIds.at( remoteCount - ( i + 1 ) ) );
+          // Check if the online feature has been fetched (WFS download aborted for some reason)
+          if ( i < offlineFeatureIds.count() )
+          {
+            addFidLookup( db, layerId, offlineFeatureIds.at( i ), remoteFeatureIds.at( remoteCount - ( i + 1 ) ) );
+          }
+          else
+          {
+            showWarning( QString( "Feature cannot be copied to the offline layer, please check if the online layer '%1' is sill accessible." ).arg( layer->name() ) );
+            return nullptr;
+          }
           emit progressUpdated( featureCount++ );
         }
         sqlExec( db, "COMMIT" );
@@ -654,10 +666,6 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
       {
         showWarning( newLayer->commitErrors().join( "\n" ) );
       }
-
-      // remove remote layer
-      QgsMapLayerRegistry::instance()->removeMapLayers(
-        QStringList() << layer->id() );
     }
     return newLayer;
   }
