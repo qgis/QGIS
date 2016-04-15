@@ -481,6 +481,7 @@ bool QgsMemoryProvider::setSubsetString( const QString& theSQL, bool updateFeatu
   }
 
   mSubsetString = theSQL;
+  mCacheMinMaxDirty = true;
 
   emit dataChanged();
   return true;
