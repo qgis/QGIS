@@ -76,6 +76,9 @@ QgsNewNameDialog::QgsNewNameDialog( const QString& source, const QString& initia
   mErrorLabel->setWordWrap( true );
   layout()->addWidget( mErrorLabel );
 
+  mLineEdit->setFocus();
+  mLineEdit->selectAll();
+
   nameChanged();
 }
 
