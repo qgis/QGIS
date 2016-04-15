@@ -251,7 +251,7 @@
       <string>If checked, any pixels with a value out of range will not be rendered</string>
      </property>
      <property name="text">
-      <string>Clip raster values which are out of range</string>
+      <string>Clip out of range values</string>
      </property>
     </widget>
    </item>

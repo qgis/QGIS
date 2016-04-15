@@ -513,7 +513,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
 
   // calculate a reasonable number of decimals to display
   double maxabs = log10( qMax( qAbs( max ), qAbs( min ) ) );
-  int nDecimals = qRound( qMax( 3.0 + maxabs - log10( max - min ), maxabs <= 6.0 ? maxabs + 0.49 : 0.0 ) );
+  int nDecimals = qRound( qMax( 3.0 + maxabs - log10( max - min ), maxabs <= 16.0 ? maxabs + 0.49 : 0.0 ) );
 
   for ( ; value_it != entryValues.end(); ++value_it, ++color_it )
   {
@@ -561,7 +561,7 @@ void QgsSingleBandPseudoColorRendererWidget::populateColormapTreeWidget( const Q
   for ( ; it != colorRampItems.constEnd(); ++it )
   {
     QgsTreeWidgetItem* newItem = new QgsTreeWidgetItem( mColormapTreeWidget );
-    newItem->setText( ValueColumn, QString::number( it->value, 'g' ) );
+    newItem->setText( ValueColumn, QString::number( it->value, 'g', 16 ) );
     newItem->setBackground( ColorColumn, QBrush( it->color ) );
     newItem->setText( LabelColumn, it->label );
     newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
@@ -830,7 +830,7 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
         for ( ; it != colorRampItemList.end(); ++it )
         {
           QgsTreeWidgetItem* newItem = new QgsTreeWidgetItem( mColormapTreeWidget );
-          newItem->setText( ValueColumn, QString::number( it->value, 'g' ) );
+          newItem->setText( ValueColumn, QString::number( it->value, 'g', 16 ) );
           newItem->setBackground( ColorColumn, QBrush( it->color ) );
           newItem->setText( LabelColumn, it->label );
           newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
@@ -853,6 +853,13 @@ void QgsSingleBandPseudoColorRendererWidget::on_mBandComboBox_currentIndexChange
   QList<int> bands;
   bands.append( mBandComboBox->itemData( index ).toInt() );
   mMinMaxWidget->setBands( bands );
+}
+
+void QgsSingleBandPseudoColorRendererWidget::on_mColorInterpolationComboBox_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+  mClipCheckBox->setEnabled( mColorInterpolationComboBox->currentText() == tr( "Linear" ) );
+  autoLabel();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin )

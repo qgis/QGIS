@@ -71,7 +71,7 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void on_mColormapTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column );
     void mColormapTreeWidget_itemEdited( QTreeWidgetItem* item, int column );
     void on_mBandComboBox_currentIndexChanged( int index );
-    void on_mColorInterpolationComboBox_currentIndexChanged( int index ) { Q_UNUSED( index ); autoLabel(); }
+    void on_mColorInterpolationComboBox_currentIndexChanged( int index );
     void on_mMinLineEdit_textChanged( const QString & text ) { Q_UNUSED( text ); resetClassifyButton(); }
     void on_mMaxLineEdit_textChanged( const QString & text ) { Q_UNUSED( text ); resetClassifyButton(); }
     void on_mMinLineEdit_textEdited( const QString & text ) { Q_UNUSED( text ); mMinMaxOrigin = QgsRasterRenderer::MinMaxUser; showMinMaxOrigin(); }
