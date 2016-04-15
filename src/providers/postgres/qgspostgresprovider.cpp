@@ -2524,11 +2524,11 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
   {
     pushError( tr( "PostGIS error while changing geometry values: %1" ).arg( e.errorMessage() ) );
     conn->rollback();
-    mConnectionRW->PQexecNR( "DEALLOCATE updatefeatures" );
+    conn->PQexecNR( "DEALLOCATE updatefeatures" );
     if ( mSpatialColType == sctTopoGeometry )
     {
-      mConnectionRO->PQexecNR( "DEALLOCATE getid" );
-      mConnectionRW->PQexecNR( "DEALLOCATE replacetopogeom" );
+      connectionRO()->PQexecNR( "DEALLOCATE getid" );
+      conn->PQexecNR( "DEALLOCATE replacetopogeom" );
     }
     returnvalue = false;
   }
