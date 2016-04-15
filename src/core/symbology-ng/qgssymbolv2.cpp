@@ -934,7 +934,8 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
     delete segmentizedGeometry;
   }
 
-  context.expressionContext().popScope();
+  if ( mSymbolRenderContext->expressionContextScope() )
+    context.expressionContext().popScope();
 }
 
 QgsSymbolV2RenderContext* QgsSymbolV2::symbolRenderContext()
