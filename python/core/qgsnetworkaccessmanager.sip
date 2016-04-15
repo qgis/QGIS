@@ -60,12 +60,32 @@ class QgsNetworkAccessManager : QNetworkAccessManager
     //! Setup the NAM according to the user's settings
     void setupDefaultProxyAndCache();
 
+    //! return whether the system proxy should be used
     bool useSystemProxy();
+
+  public slots:
+    /** Send GET request, calls get().
+     * Emits requestSent().
+     * @param request request to be sent
+     * @deprecated use get() directly
+     */
+    void sendGet( const QNetworkRequest & request ) /Deprecated/;
+    /** Abort and delete reply.
+     * @param reply reply to be aborted.
+     * @deprecated use abort() and deleteLayer() on the reply directly
+     */
+    void deleteReply( QNetworkReply * reply ) /Deprecated/;
 
   signals:
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
     void requestCreated( QNetworkReply * );
     void requestTimedOut( QNetworkReply * );
+    /** Emitted when request was sent by request()
+     * @param reply request reply
+     * @param sender the object which called request() slot.
+     * @deprecated only emitted from deprecated sendGet
+     */
+    void requestSent( QNetworkReply * reply, QObject *sender );
 
   protected:
     virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0 );
