@@ -2,7 +2,7 @@ qgis (2.15.0) UNRELEASED; urgency=medium
 
   [ Jürgen E. Fischer ]
   * New development version 2.15 after branch of 2.14
-  * drop ubuntu utopic
+  * drop ubuntu utopic and vivid
   * refine GSL build dependency
   * limit python-future to stretch, sid, wily and xenial
 
