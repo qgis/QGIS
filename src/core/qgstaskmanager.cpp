@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgstaskmanager.h"
-#include <QMutex>
+#include <QtConcurrentRun>
 
 
 //
@@ -26,9 +26,23 @@
 QgsTask::QgsTask( const QString &name )
     : QObject()
     , mDescription( name )
-    , mStatus( Running )
+    , mStatus( Queued )
     , mProgress( 0.0 )
+    , mShouldTerminate( false )
 {}
+
+void QgsTask::start()
+{
+  mStatus = Running;
+  emit statusChanged( Running );
+  emit begun();
+  run();
+}
+
+void QgsTask::terminate()
+{
+  mShouldTerminate = true;
+}
 
 void QgsTask::setProgress( double progress )
 {
@@ -74,28 +88,33 @@ QgsTaskManager::QgsTaskManager( QObject* parent )
 
 QgsTaskManager::~QgsTaskManager()
 {
-  QMap< long, QgsTask* >::const_iterator it = mTasks.constBegin();
+  //first tell all tasks to cancel
+  terminateAll();
+
+  //then clean them up, including waiting for them to terminate
+  QMap< long, TaskInfo >::const_iterator it = mTasks.constBegin();
   for ( ; it != mTasks.constEnd(); ++it )
   {
-    cleanupAndDeleteTask( it.value() );
+    cleanupAndDeleteTask( it.value().task );
   }
 }
 
 long QgsTaskManager::addTask( QgsTask* task )
 {
-  static QMutex sAddMutex( QMutex::Recursive );
-  QMutexLocker locker( &sAddMutex );
-
   mTasks.insert( mNextTaskId, task );
+
   connect( task, SIGNAL( progressChanged( double ) ), this, SLOT( taskProgressChanged( double ) ) );
   connect( task, SIGNAL( statusChanged( int ) ), this, SLOT( taskStatusChanged( int ) ) );
+
+  mTasks[ mNextTaskId ].future = QtConcurrent::run( task, &QgsTask::start );
+
   emit taskAdded( mNextTaskId );
   return mNextTaskId++;
 }
 
 bool QgsTaskManager::deleteTask( long id )
 {
-  QgsTask* task = mTasks.value( id );
+  QgsTask* task = mTasks.value( id ).task;
   return deleteTask( task );
 }
 
@@ -107,9 +126,9 @@ bool QgsTaskManager::deleteTask( QgsTask *task )
   bool result = cleanupAndDeleteTask( task );
 
   // remove from internal task list
-  for ( QMap< long, QgsTask* >::iterator it = mTasks.begin(); it != mTasks.end(); )
+  for ( QMap< long, TaskInfo >::iterator it = mTasks.begin(); it != mTasks.end(); )
   {
-    if ( it.value() == task )
+    if ( it.value().task == task )
       it = mTasks.erase( it );
     else
       ++it;
@@ -120,12 +139,17 @@ bool QgsTaskManager::deleteTask( QgsTask *task )
 
 QgsTask*QgsTaskManager::task( long id ) const
 {
-  return mTasks.value( id );
+  return mTasks.value( id ).task;
 }
 
 QList<QgsTask*> QgsTaskManager::tasks() const
 {
-  return mTasks.values();
+  QList< QgsTask* > list;
+  for ( QMap< long, TaskInfo >::const_iterator it = mTasks.constBegin(); it != mTasks.constEnd(); ++it )
+  {
+    list << it.value().task;
+  }
+  return list;
 }
 
 long QgsTaskManager::taskId( QgsTask *task ) const
@@ -133,13 +157,26 @@ long QgsTaskManager::taskId( QgsTask *task ) const
   if ( !task )
     return -1;
 
-  QMap< long, QgsTask* >::const_iterator it = mTasks.constBegin();
+  QMap< long, TaskInfo >::const_iterator it = mTasks.constBegin();
   for ( ; it != mTasks.constEnd(); ++it )
   {
-    if ( it.value() == task )
+    if ( it.value().task == task )
       return it.key();
   }
   return -1;
+}
+
+void QgsTaskManager::terminateAll()
+{
+  QMap< long, TaskInfo >::iterator it = mTasks.begin();
+  for ( ; it != mTasks.end(); ++it )
+  {
+    QgsTask* task = it.value().task;
+    if ( task->isActive() )
+    {
+      task->terminate();
+    }
+  }
 }
 
 void QgsTaskManager::taskProgressChanged( double progress )
@@ -173,6 +210,17 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
 
   if ( task->isActive() )
     task->terminate();
+
+  // wait for task to terminate
+  QMap< long, TaskInfo >::iterator it = mTasks.begin();
+  for ( ; it != mTasks.end(); ++it )
+  {
+    if ( it.value().task == task )
+    {
+      it.value().future.waitForFinished();
+      break;
+    }
+  }
 
   emit taskAboutToBeDeleted( taskId( task ) );
 

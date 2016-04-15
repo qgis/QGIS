@@ -26,11 +26,20 @@ class TestTask : public QgsTask
 
   public:
 
-    TestTask( const QString& desc = QString() ) : QgsTask( desc ) {}
+    TestTask( const QString& desc = QString() ) : QgsTask( desc ), runCalled( false ) {}
 
     void emitProgressChanged( double progress ) { setProgress( progress ); }
     void emitTaskStopped() { stopped(); }
     void emitTaskCompleted() { completed(); }
+
+    bool runCalled;
+
+  protected:
+
+    void run() override
+    {
+      runCalled = true;
+    }
 
 };
 
@@ -44,6 +53,13 @@ class TestTerminationTask : public TestTask
     {
       //make sure task has been terminated by manager prior to deletion
       Q_ASSERT( status() == QgsTask::Terminated );
+    }
+
+  protected:
+
+    void run() override
+    {
+      QTest::qSleep( 1000 );
     }
 };
 
@@ -93,18 +109,28 @@ void TestQgsTaskManager::cleanup()
 void TestQgsTaskManager::task()
 {
   QScopedPointer< TestTask > task( new TestTask( "desc" ) );
-  QCOMPARE( task->status(), QgsTask::Running );
+  QCOMPARE( task->status(), QgsTask::Queued );
   QCOMPARE( task->description(), QString( "desc" ) );
+  QVERIFY( !task->isActive() );
+
+  QSignalSpy startedSpy( task.data(), SIGNAL( begun() ) );
+  QSignalSpy statusSpy( task.data(), SIGNAL( statusChanged( int ) ) );
+
+  task->start();
+  QCOMPARE( task->status(), QgsTask::Running );
   QVERIFY( task->isActive() );
+  QVERIFY( task->runCalled );
+  QCOMPARE( startedSpy.count(), 1 );
+  QCOMPARE( statusSpy.count(), 1 );
+  QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy.last().at( 0 ).toInt() ), QgsTask::Running );
 
   //test that calling stopped sets correct state
   QSignalSpy stoppedSpy( task.data(), SIGNAL( taskStopped() ) );
-  QSignalSpy statusSpy( task.data(), SIGNAL( statusChanged( int ) ) );
   task->emitTaskStopped();
   QCOMPARE( task->status(), QgsTask::Terminated );
   QVERIFY( !task->isActive() );
   QCOMPARE( stoppedSpy.count(), 1 );
-  QCOMPARE( statusSpy.count(), 1 );
+  QCOMPARE( statusSpy.count(), 2 );
   QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy.last().at( 0 ).toInt() ), QgsTask::Terminated );
 
   //test that calling completed sets correct state
@@ -211,6 +237,9 @@ void TestQgsTaskManager::taskTerminationBeforeDelete()
   TestTask* task = new TestTerminationTask();
   manager->addTask( task );
 
+  //SHOULD NOT BE NEEDED...
+  task->start();
+
   // if task is not terminated assert will trip
   delete manager;
   QApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
@@ -273,13 +302,18 @@ void TestQgsTaskManager::statusChanged()
 
   QSignalSpy spy( &manager, SIGNAL( statusChanged( long, int ) ) );
 
-  task->emitTaskStopped();
+  task->start();
   QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.last().at( 0 ).toLongLong(), 0LL );
+  QCOMPARE( static_cast< QgsTask::TaskStatus >( spy.last().at( 1 ).toInt() ), QgsTask::Running );
+
+  task->emitTaskStopped();
+  QCOMPARE( spy.count(), 2 );
   QCOMPARE( spy.last().at( 0 ).toLongLong(), 0LL );
   QCOMPARE( static_cast< QgsTask::TaskStatus >( spy.last().at( 1 ).toInt() ), QgsTask::Terminated );
 
   task2->emitTaskCompleted();
-  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.count(), 3 );
   QCOMPARE( spy.last().at( 0 ).toLongLong(), 1LL );
   QCOMPARE( static_cast< QgsTask::TaskStatus >( spy.last().at( 1 ).toInt() ), QgsTask::Complete );
 }

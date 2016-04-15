@@ -14,11 +14,10 @@ class QgsTask : QObject
     //! Status of tasks
     enum TaskStatus
     {
+      Queued, /*!< Task is queued and has not begun */
       Running, /*!< Task is currently running */
       Complete, /*!< Task successfully completed */
       Terminated, /*!< Task was terminated or errored */
-      // Paused,
-      // Queued,
     };
 
     /** Constructor for QgsTask.
@@ -26,10 +25,12 @@ class QgsTask : QObject
      */
     QgsTask( const QString& description = QString() );
 
-    //! Will be called when task has been terminated, either through
-    //! user interaction or other reason (eg application exit)
-    //! @note derived classes must ensure they call the base method
-    virtual void terminate();
+    //! Starts the task.
+    void start();
+
+    //! Notifies the task that it should terminate.
+    //! @see isCancelled()
+    void terminate();
 
     //! Returns true if the task is active, ie it is not complete and has
     //! not been terminated.
@@ -58,6 +59,11 @@ class QgsTask : QObject
     //! completed() or stopped()
     void statusChanged( int status );
 
+    //! Will be emitted by task to indicate its commencement.
+    //! @note derived classes should not emit this signal directly, it will automatically
+    //! be emitted when the task begins
+    void begun();
+
     //! Will be emitted by task to indicate its completion.
     //! @note derived classes should not emit this signal directly, instead they should call
     //! completed()
@@ -69,7 +75,7 @@ class QgsTask : QObject
     //! stopped()//!
     void taskStopped();
 
-  protected:
+  public slots:
 
     //! Sets the task's current progress. Should be called whenever the
     //! task wants to update it's progress. Calling will automatically emit the progressChanged
@@ -85,6 +91,17 @@ class QgsTask : QObject
     //! reason other than successful completion.
     //! Calling will automatically emit the statusChanged and taskStopped signals.
     void stopped();
+
+  protected:
+
+    //! Derived tasks must implement a run() method. This method will be called when the
+    //! task commences (ie via calling start() ).
+    virtual void run() = 0;
+
+    //! Will return true if task should terminate ASAP. Derived classes run() methods
+    //! should periodically check this and terminate in a safe manner.
+    bool isCancelled() const;
+
 };
 
 /** \ingroup core
@@ -150,6 +167,9 @@ class QgsTaskManager : QObject
      * @returns task ID, or -1 if task not found
      */
     long taskId( QgsTask* task ) const;
+
+    //! Instructs all tasks tracked by the manager to terminate.
+    void terminateAll();
 
   signals:
 

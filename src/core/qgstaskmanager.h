@@ -21,10 +21,12 @@
 #include <QObject>
 #include <QMap>
 #include <QAbstractItemModel>
+#include <QFuture>
 
 /** \ingroup core
  * \class QgsTask
- * \brief Interface class for long running background tasks which will be handled by a QgsTaskManager
+ * \brief Interface class for long running background tasks. Tasks can be controlled directly,
+ * or added to a QgsTaskManager for automatic management.
  * \note Added in version 2.16
  */
 class CORE_EXPORT QgsTask : public QObject
@@ -36,11 +38,10 @@ class CORE_EXPORT QgsTask : public QObject
     //! Status of tasks
     enum TaskStatus
     {
+      Queued, /*!< Task is queued and has not begun */
       Running, /*!< Task is currently running */
       Complete, /*!< Task successfully completed */
       Terminated, /*!< Task was terminated or errored */
-      // Paused,
-      // Queued,
     };
 
     /** Constructor for QgsTask.
@@ -48,13 +49,12 @@ class CORE_EXPORT QgsTask : public QObject
      */
     QgsTask( const QString& description = QString() );
 
-    //! Will be called when task has been terminated, either through
-    //! user interaction or other reason (eg application exit)
-    //! @note derived classes must ensure they call the base method
-    virtual void terminate()
-    {
-      stopped();
-    }
+    //! Starts the task.
+    void start();
+
+    //! Notifies the task that it should terminate.
+    //! @see isCancelled()
+    void terminate();
 
     //! Returns true if the task is active, ie it is not complete and has
     //! not been terminated.
@@ -83,6 +83,11 @@ class CORE_EXPORT QgsTask : public QObject
     //! completed() or stopped()
     void statusChanged( int status );
 
+    //! Will be emitted by task to indicate its commencement.
+    //! @note derived classes should not emit this signal directly, it will automatically
+    //! be emitted when the task begins
+    void begun();
+
     //! Will be emitted by task to indicate its completion.
     //! @note derived classes should not emit this signal directly, instead they should call
     //! completed()
@@ -94,7 +99,7 @@ class CORE_EXPORT QgsTask : public QObject
     //! stopped()//!
     void taskStopped();
 
-  protected:
+  public slots:
 
     //! Sets the task's current progress. Should be called whenever the
     //! task wants to update it's progress. Calling will automatically emit the progressChanged
@@ -111,11 +116,22 @@ class CORE_EXPORT QgsTask : public QObject
     //! Calling will automatically emit the statusChanged and taskStopped signals.
     void stopped();
 
+  protected:
+
+    //! Derived tasks must implement a run() method. This method will be called when the
+    //! task commences (ie via calling start() ).
+    virtual void run() = 0;
+
+    //! Will return true if task should terminate ASAP. Derived classes run() methods
+    //! should periodically check this and terminate in a safe manner.
+    bool isCancelled() const { return mShouldTerminate; }
+
   private:
 
     QString mDescription;
     TaskStatus mStatus;
     double mProgress;
+    bool mShouldTerminate;
 
 };
 
@@ -143,7 +159,8 @@ class CORE_EXPORT QgsTaskManager : public QObject
     virtual ~QgsTaskManager();
 
     /** Adds a task to the manager. Ownership of the task is transferred
-     * to the manager.
+     * to the manager, and the task manager will be responsible for starting
+     * the task.
      * @param task task to add
      * @returns unique task ID
      */
@@ -182,6 +199,9 @@ class CORE_EXPORT QgsTaskManager : public QObject
      */
     long taskId( QgsTask* task ) const;
 
+    //! Instructs all tasks tracked by the manager to terminate.
+    void terminateAll();
+
   signals:
 
     //! Will be emitted when a task reports a progress change
@@ -210,7 +230,17 @@ class CORE_EXPORT QgsTaskManager : public QObject
   private:
 
     static QgsTaskManager *sInstance;
-    QMap< long, QgsTask* > mTasks;
+
+    struct TaskInfo
+    {
+      TaskInfo( QgsTask* task = nullptr )
+          : task( task )
+      {}
+      QgsTask* task;
+      QFuture< void > future;
+    };
+
+    QMap< long, TaskInfo > mTasks;
 
     //! Tracks the next unique task ID
     long mNextTaskId;
