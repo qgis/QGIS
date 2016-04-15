@@ -11,10 +11,11 @@ FILE(WRITE ${CMAKE_BINARY_DIR}/stagecount 0)
 # The target port-plugins acts as a container for all port-plugin-XXX targets
 # Each port-plugin-XXX target will run scripts/2to3 on a plugin and migrate
 # Python 3 and Qt 5 code.
-ADD_CUSTOM_TARGET(port-plugins)
 SET (PORT_PLUGINS FALSE CACHE BOOL "Determines whether python plugins in staged or installed locations should be migrated to Python 3 and Qt 5")
 IF(PORT_PLUGINS)
-  ADD_CUSTOM_TARGET(port-plugins-on-build ALL DEPENDS port-plugins)
+  ADD_CUSTOM_TARGET(port-plugins ALL)
+ELSE(PORT_PLUGINS)
+  ADD_CUSTOM_TARGET(port-plugins)
 ENDIF(PORT_PLUGINS)
 
 MACRO (PLUGIN_INSTALL plugin subdir )

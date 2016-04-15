@@ -6,6 +6,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+from builtins import chr
+from builtins import range
 __author__ = 'Sebastian Dietrich'
 __date__ = '19/11/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
@@ -59,7 +61,7 @@ class TestQgsProject(unittest.TestCase):
         ]
         for r in charRanges:
             for c in range(r[0], r[1]):
-                validStartChars += unichr(c)
+                validStartChars += chr(c)
 
         # generate the characters that are only allowed inside a token, not at the start
         validInlineChars = u"-.\xB7"
@@ -70,7 +72,7 @@ class TestQgsProject(unittest.TestCase):
         ]
         for r in charRanges:
             for c in range(r[0], r[1]):
-                validInlineChars += unichr(c)
+                validInlineChars += chr(c)
 
         # test forbidden start characters
         for c in invalidChars + validInlineChars:

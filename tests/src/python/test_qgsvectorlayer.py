@@ -122,11 +122,11 @@ class TestQgsVectorLayer(unittest.TestCase):
             self.assertEquals(layer.pendingFeatureCount(), 1)
 
             # check select+nextFeature
-            f = layer.getFeatures().next()
+            f = next(layer.getFeatures())
             self.assertEquals(f.geometry().asPoint(), QgsPoint(1, 2))
 
             # check feature at id
-            f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
+            f2 = next(layer.getFeatures(QgsFeatureRequest(f.id())))
             self.assertEquals(f2.geometry().asPoint(), QgsPoint(1, 2))
 
         def checkBefore():
@@ -134,7 +134,7 @@ class TestQgsVectorLayer(unittest.TestCase):
 
             # check select+nextFeature
             with self.assertRaises(StopIteration):
-                layer.getFeatures().next()
+                next(layer.getFeatures())
 
         checkBefore()
 
@@ -170,24 +170,24 @@ class TestQgsVectorLayer(unittest.TestCase):
 
             # check select+nextFeature
             with self.assertRaises(StopIteration):
-                layer.getFeatures().next()
+                next(layer.getFeatures())
 
             # check feature at id
             with self.assertRaises(StopIteration):
-                layer.getFeatures(QgsFeatureRequest(fid)).next()
+                next(layer.getFeatures(QgsFeatureRequest(fid)))
 
         def checkBefore():
             self.assertEquals(layer.pendingFeatureCount(), 1)
 
             # check select+nextFeature
             fi = layer.getFeatures()
-            f = fi.next()
+            f = next(fi)
             self.assertEquals(f.geometry().asPoint(), QgsPoint(100, 200))
             with self.assertRaises(StopIteration):
-                fi.next()
+                next(fi)
 
             # check feature at id
-            f2 = layer.getFeatures(QgsFeatureRequest(fid)).next()
+            f2 = next(layer.getFeatures(QgsFeatureRequest(fid)))
             self.assertEquals(f2.id(), fid)
 
         checkBefore()
@@ -228,7 +228,7 @@ class TestQgsVectorLayer(unittest.TestCase):
 
             # check select+nextFeature
             with self.assertRaises(StopIteration):
-                layer.getFeatures().next()
+                next(layer.getFeatures())
 
         def checkAfter1():
             self.assertEquals(layer.pendingFeatureCount(), 1)
@@ -270,16 +270,16 @@ class TestQgsVectorLayer(unittest.TestCase):
         def checkAfter():
             # check select+nextFeature
             fi = layer.getFeatures()
-            f = fi.next()
+            f = next(fi)
             self.assertEquals(f[0], "good")
 
             # check feature at id
-            f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
+            f2 = next(layer.getFeatures(QgsFeatureRequest(f.id())))
             self.assertEquals(f2[0], "good")
 
         def checkBefore():
             # check select+nextFeature
-            f = layer.getFeatures().next()
+            f = next(layer.getFeatures())
             self.assertEquals(f[0], "test")
 
         checkBefore()
@@ -314,24 +314,24 @@ class TestQgsVectorLayer(unittest.TestCase):
             self.assertEquals(len(layer.pendingFields()), 2)
             # check feature
             fi = layer.getFeatures()
-            f = fi.next()
+            f = next(fi)
             attrs = f.attributes()
             self.assertEquals(len(attrs), 2)
             self.assertEquals(attrs[0], "hello")
             self.assertEquals(attrs[1], 12)
 
             with self.assertRaises(StopIteration):
-                fi.next()
+                next(fi)
 
             # check feature at id
-            f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
+            f2 = next(layer.getFeatures(QgsFeatureRequest(f.id())))
             self.assertEquals(f2[0], "hello")
             self.assertEquals(f2[1], 12)
 
         def checkBefore():
             # check feature
             with self.assertRaises(StopIteration):
-                layer.getFeatures().next()
+                next(layer.getFeatures())
 
         checkBefore()
 
@@ -363,15 +363,15 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         def checkAfter():
             # check select+nextFeature
-            f = layer.getFeatures().next()
+            f = next(layer.getFeatures())
             self.assertEquals(f.geometry().asPoint(), QgsPoint(300, 400))
             # check feature at id
-            f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
+            f2 = next(layer.getFeatures(QgsFeatureRequest(f.id())))
             self.assertEquals(f2.geometry().asPoint(), QgsPoint(300, 400))
 
         def checkBefore():
             # check select+nextFeature
-            f = layer.getFeatures().next()
+            f = next(layer.getFeatures())
             self.assertEquals(f.geometry().asPoint(), QgsPoint(100, 200))
 
         # try to change geometry without editing mode
@@ -402,17 +402,17 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         def checkAfter():
             # check select+nextFeature
-            f = layer.getFeatures().next()
+            f = next(layer.getFeatures())
             self.assertEquals(f.geometry().asPoint(), QgsPoint(300, 400))
             self.assertEquals(f[0], "changed")
             # check feature at id
-            f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
+            f2 = next(layer.getFeatures(QgsFeatureRequest(f.id())))
             self.assertEquals(f2.geometry().asPoint(), QgsPoint(300, 400))
             self.assertEquals(f2[0], "changed")
 
         def checkBefore():
             # check select+nextFeature
-            f = layer.getFeatures().next()
+            f = next(layer.getFeatures())
             self.assertEquals(f.geometry().asPoint(), QgsPoint(100, 200))
             self.assertEquals(f[0], "test")
 
@@ -447,16 +447,16 @@ class TestQgsVectorLayer(unittest.TestCase):
         def checkAfter():
             self.assertEquals(len(layer.pendingFields()), 2)
             # check feature
-            f = layer.getFeatures().next()
+            f = next(layer.getFeatures())
             self.assertEquals(f.geometry().asPoint(), QgsPoint(2, 2))
             # check feature at id
-            f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
+            f2 = next(layer.getFeatures(QgsFeatureRequest(f.id())))
             self.assertEquals(f2.geometry().asPoint(), QgsPoint(2, 2))
 
         def checkBefore():
             # check feature
             with self.assertRaises(StopIteration):
-                layer.getFeatures().next()
+                next(layer.getFeatures())
 
         checkBefore()
 
@@ -495,7 +495,7 @@ class TestQgsVectorLayer(unittest.TestCase):
             self.assertEquals(flds[1].name(), "fldint")
 
             # check feature
-            f = layer.getFeatures().next()
+            f = next(layer.getFeatures())
             attrs = f.attributes()
             self.assertEquals(len(attrs), 2)
             self.assertEquals(attrs[0], "test")
@@ -510,7 +510,7 @@ class TestQgsVectorLayer(unittest.TestCase):
             self.assertEquals(flds[2].name(), "fld1")
 
             # check feature
-            f = layer.getFeatures().next()
+            f = next(layer.getFeatures())
             attrs = f.attributes()
             self.assertEquals(len(attrs), 3)
             self.assertEquals(attrs[0], "test")
@@ -518,7 +518,7 @@ class TestQgsVectorLayer(unittest.TestCase):
             self.assertTrue(attrs[2] is None)
 
             # check feature at id
-            f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
+            f2 = next(layer.getFeatures(QgsFeatureRequest(f.id())))
             self.assertEquals(f2[0], "test")
             self.assertEquals(f2[1], 123)
             self.assertTrue(f2[2] is None)
@@ -561,19 +561,19 @@ class TestQgsVectorLayer(unittest.TestCase):
             self.assertEquals(len(layer.pendingFields()), 2)
             # check feature
             with self.assertRaises(StopIteration):
-                layer.getFeatures().next()
+                next(layer.getFeatures())
 
         def checkAfter():
             self.assertEquals(len(layer.pendingFields()), 3)
             # check feature
-            f = layer.getFeatures().next()
+            f = next(layer.getFeatures())
             attrs = f.attributes()
             self.assertEquals(len(attrs), 3)
             self.assertEquals(attrs[0], "hello")
             self.assertEquals(attrs[1], 42)
             self.assertTrue(attrs[2] is None)
             # check feature at id
-            f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
+            f2 = next(layer.getFeatures(QgsFeatureRequest(f.id())))
             self.assertEquals(f2[0], "hello")
             self.assertEquals(f2[1], 42)
             self.assertTrue(f2[2] is None)
@@ -626,7 +626,7 @@ class TestQgsVectorLayer(unittest.TestCase):
             self.assertEquals(flds[1].name(), "fldint")
             self.assertEquals(flds[2].name(), "flddouble")
 
-            f = layer.getFeatures().next()
+            f = next(layer.getFeatures())
             attrs = f.attributes()
             self.assertEquals(len(attrs), 3)
             self.assertEquals(attrs[0], "test")
@@ -647,7 +647,7 @@ class TestQgsVectorLayer(unittest.TestCase):
             self.assertEquals(flds[1].name(), "flddouble")
             self.assertEquals(layer.pendingAllAttributesList(), [0, 1])
 
-            f = layer.getFeatures().next()
+            f = next(layer.getFeatures())
             attrs = f.attributes()
             self.assertEquals(len(attrs), 2)
             self.assertEquals(attrs[0], 123)
@@ -665,12 +665,12 @@ class TestQgsVectorLayer(unittest.TestCase):
             self.assertEquals(len(flds), 1)
             self.assertEquals(flds[0].name(), "flddouble")
 
-            f = layer.getFeatures().next()
+            f = next(layer.getFeatures())
             attrs = f.attributes()
             self.assertEquals(len(attrs), 1)
             self.assertEquals(attrs[0], 5.5)
             # check feature at id
-            f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
+            f2 = next(layer.getFeatures(QgsFeatureRequest(f.id())))
             self.assertEquals(len(f2.attributes()), 1)
             self.assertEquals(f2[0], 5.5)
 
@@ -698,13 +698,13 @@ class TestQgsVectorLayer(unittest.TestCase):
             self.assertEquals(flds[1].name(), "fldint")
 
             # check feature
-            f = layer.getFeatures().next()
+            f = next(layer.getFeatures())
             attrs = f.attributes()
             self.assertEquals(len(attrs), 2)
             self.assertEquals(attrs[0], "test")
             self.assertEquals(attrs[1], 123)
             # check feature at id
-            f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
+            f2 = next(layer.getFeatures(QgsFeatureRequest(f.id())))
             self.assertEquals(len(f2.attributes()), 2)
             self.assertEquals(f2[0], "test")
             self.assertEquals(f2[1], 123)
@@ -741,12 +741,12 @@ class TestQgsVectorLayer(unittest.TestCase):
             self.assertEquals(len(layer.pendingFields()), 2)
             # check feature
             with self.assertRaises(StopIteration):
-                layer.getFeatures().next()
+                next(layer.getFeatures())
 
         def checkAfter1():
             self.assertEquals(len(layer.pendingFields()), 2)
             # check feature
-            f = layer.getFeatures().next()
+            f = next(layer.getFeatures())
             attrs = f.attributes()
             self.assertEquals(len(attrs), 2)
             self.assertEquals(attrs[0], "hello")
@@ -755,7 +755,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         def checkAfter2():
             self.assertEquals(len(layer.pendingFields()), 1)
             # check feature
-            f = layer.getFeatures().next()
+            f = next(layer.getFeatures())
             attrs = f.attributes()
             self.assertEquals(len(attrs), 1)
             self.assertEquals(attrs[0], 42)
@@ -787,7 +787,7 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         def checkBefore():
             # check feature
-            f = layer.getFeatures().next()
+            f = next(layer.getFeatures())
             attrs = f.attributes()
             self.assertEquals(len(attrs), 2)
             self.assertEquals(attrs[0], "test")
@@ -795,7 +795,7 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         def checkAfter1():
             # check feature
-            f = layer.getFeatures().next()
+            f = next(layer.getFeatures())
             attrs = f.attributes()
             self.assertEquals(len(attrs), 2)
             self.assertEquals(attrs[0], "changed")
@@ -803,7 +803,7 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         def checkAfter2():
             # check feature
-            f = layer.getFeatures().next()
+            f = next(layer.getFeatures())
             attrs = f.attributes()
             self.assertEquals(len(attrs), 1)
             self.assertEquals(attrs[0], 123)
@@ -901,7 +901,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEquals(attrs[3], 321)
         self.assertFalse(fi.nextFeature(f))
 
-        f2 = layer.getFeatures(QgsFeatureRequest(f.id())).next()
+        f2 = next(layer.getFeatures(QgsFeatureRequest(f.id())))
         self.assertEquals(len(f2.attributes()), 6)
         self.assertEquals(f2[2], "foo")
         self.assertEquals(f2[3], 321)
@@ -971,12 +971,12 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         idx = layer.addExpressionField('5', QgsField('test', QVariant.LongLong))
 
-        self.assertEquals(layer.getFeatures().next()[idx], 5)
+        self.assertEquals(next(layer.getFeatures())[idx], 5)
         self.assertEquals(layer.pendingFields().count(), cnt + 1)
 
         layer.updateExpressionField(idx, '9')
 
-        self.assertEquals(layer.getFeatures().next()[idx], 9)
+        self.assertEquals(next(layer.getFeatures())[idx], 9)
 
         layer.removeExpressionField(idx)
 
@@ -1002,13 +1002,13 @@ class TestQgsVectorLayer(unittest.TestCase):
         idx = temp_layer.addExpressionField('$length', QgsField('length', QVariant.Double))  # NOQA
 
         # check value
-        f = temp_layer.getFeatures().next()
+        f = next(temp_layer.getFeatures())
         expected = 26932.156
         self.assertAlmostEqual(f['length'], expected, 3)
 
         # change project length unit, check calculation respects unit
         QgsProject.instance().writeEntry("Measurement", "/DistanceUnits", QgsUnitTypes.encodeUnit(QGis.Feet))
-        f = temp_layer.getFeatures().next()
+        f = next(temp_layer.getFeatures())
         expected = 88360.0918635
         self.assertAlmostEqual(f['length'], expected, 3)
 
@@ -1032,13 +1032,13 @@ class TestQgsVectorLayer(unittest.TestCase):
         idx = temp_layer.addExpressionField('$area', QgsField('area', QVariant.Double))  # NOQA
 
         # check value
-        f = temp_layer.getFeatures().next()
+        f = next(temp_layer.getFeatures())
         expected = 1009089817.0
         self.assertAlmostEqual(f['area'], expected, delta=1.0)
 
         # change project area unit, check calculation respects unit
         QgsProject.instance().writeEntry("Measurement", "/AreaUnits", QgsUnitTypes.encodeUnit(QgsUnitTypes.SquareMiles))
-        f = temp_layer.getFeatures().next()
+        f = next(temp_layer.getFeatures())
         expected = 389.6117565069
         self.assertAlmostEqual(f['area'], expected, 3)
 

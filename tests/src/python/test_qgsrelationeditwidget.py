@@ -34,8 +34,7 @@ from qgis.gui import (
 )
 
 from PyQt.QtCore import QTimer
-from PyQt.QtWidgets import QToolButton, QTableView
-from PyQt.QtGui import QApplication
+from PyQt.QtWidgets import QToolButton, QTableView, QApplication
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -103,7 +102,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
 
         self.assertEquals(1, len([f for f in self.vl_b.getFeatures()]))
 
-        fid = self.vl_b.getFeatures(QgsFeatureRequest().setFilterExpression('"name"=\'Design Patterns. Elements of Reusable Object-Oriented Software\'')).next().id()
+        fid = next(self.vl_b.getFeatures(QgsFeatureRequest().setFilterExpression('"name"=\'Design Patterns. Elements of Reusable Object-Oriented Software\''))).id()
 
         self.widget.featureSelectionManager().select([fid])
 
@@ -126,7 +125,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
 
         self.assertEquals(self.table_view.model().rowCount(), 4)
 
-    @unittest.expectedFailure
+    @unittest.expectedFailure(os.environ['QT_VERSION'] == '4' and os.environ['TRAVIS_OS_NAME'] == 'linux') # It's probably not related to this variables at all, but that's the closest we can get to the real source of this problem at the moment...
     def test_add_feature(self):
         """
         Check if a new related feature is added
@@ -173,7 +172,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         btn.click()
         # magically the above code selects the feature here...
 
-        link_feature = self.vl_link.getFeatures(QgsFeatureRequest().setFilterExpression('"fk_book"={}'.format(f[0]))).next()
+        link_feature = next(self.vl_link.getFeatures(QgsFeatureRequest().setFilterExpression('"fk_book"={}'.format(f[0]))))
         self.assertIsNotNone(link_feature[0])
 
         self.assertEquals(self.table_view.model().rowCount(), 1)
@@ -258,7 +257,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         request = QgsFeatureRequest()
         if filter:
             request.setFilterExpression(filter)
-        book = layer.getFeatures(request).next()
+        book = next(layer.getFeatures(request))
         self.wrapper.setFeature(book)
 
         self.table_view = self.widget.findChild(QTableView)

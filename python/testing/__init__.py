@@ -223,7 +223,7 @@ unittest.TestCase = TestCase
 unittest.expectedFailure = expectedFailure
 
 
-def start_app():
+def start_app(cleanup=True):
     """
     Will start a QgsApplication and call all initialization code like
     registering the providers and other infrastructure. It will not load
@@ -232,6 +232,11 @@ def start_app():
     You can always get the reference to a running app by calling `QgsApplication.instance()`.
 
     The initialization will only happen once, so it is safe to call this method repeatedly.
+
+        Parameters
+        ----------
+
+        cleanup: Do cleanup on exit. Defaults to true.
 
         Returns
         -------
@@ -258,14 +263,14 @@ def start_app():
         QGISAPP = QgsApplication(argvb, myGuiFlag)
 
         QGISAPP.initQgis()
-        s = QGISAPP.showSettings()
-        print(s)
+        print(QGISAPP.showSettings())
 
-        import atexit
+        if cleanup:
+            import atexit
 
-        @atexit.register
-        def exitQgis():
-            QGISAPP.exitQgis()
+            @atexit.register
+            def exitQgis():
+                QGISAPP.exitQgis()
 
     return QGISAPP
 

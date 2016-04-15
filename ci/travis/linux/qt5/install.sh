@@ -20,8 +20,6 @@ CLANG_WARNINGS="-Wimplicit-fallthrough"
 # Include this line for debug reasons
 #      -DCMAKE_BUILD_TYPE=RelWithDebInfo \
 #
-# Server fails at the moment on Qt5 because QFtp has been removed
-#      -DWITH_SERVER=ON \
 cmake \
       -DCMAKE_PREFIX_PATH=/home/travis/osgeo4travis \
       -DWITH_STAGED_PLUGINS=ON \
