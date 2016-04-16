@@ -1,6 +1,8 @@
 brew tap osgeo/osgeo4mac
 brew update
 brew install osgeo/osgeo4mac/qgis-28 --without-postgis --without-postgresql --without-grass --without-gpsbabel --only-dependencies
+brew install https://raw.githubusercontent.com/opengisch/homebrew-versions/sip-4.17/sip417.rb
+brew link --overwrite sip417
 brew install qca
 brew install spawn-fcgi
 brew install lighttpd
