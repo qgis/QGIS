@@ -86,7 +86,7 @@ class GdalUtils:
                 progress.setConsoleInfo(line)
                 loglines.append(line)
         except IOError as e:
-            raise IOError(e.message + u'\nAfter reading {} lines, last lines: {}'.format(len(logines), u'\n'.join(loglines[-10:])))
+            raise IOError(e.message + u'\nAfter reading {} lines, last lines: {}'.format(len(loglines), u'\n'.join(loglines[-10:])))
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
         GdalUtils.consoleOutput = loglines
 
