@@ -68,9 +68,8 @@ class OgrInfo(GdalAlgorithm):
     def processAlgorithm(self, progress):
         GdalUtils.runGdal(self.getConsoleCommands(), progress)
         output = self.getOutputValue(self.OUTPUT)
-        f = open(output, 'w')
-        f.write('<pre>')
-        for s in GdalUtils.getConsoleOutput()[1:]:
-            f.write(unicode(s))
-        f.write('</pre>')
-        f.close()
+        with open(output, 'w') as f:
+            f.write('<pre>')
+            for s in GdalUtils.getConsoleOutput()[1:]:
+                f.write(s)
+            f.write('</pre>')
