@@ -15,7 +15,7 @@
 
 #include "qgsdartmeasurement.h"
 
-#include <QDebug>
+#include <QTextStream>
 
 QgsDartMeasurement::QgsDartMeasurement( const QString& name, Type type, const QString& value )
     : mName( name )
@@ -42,7 +42,8 @@ const QString QgsDartMeasurement::toString() const
 
 void QgsDartMeasurement::send() const
 {
-  qDebug() << toString() + '\n';
+  QTextStream out( stdout );
+  out << toString() << endl;
 }
 
 const QString QgsDartMeasurement::typeToString( QgsDartMeasurement::Type type )
