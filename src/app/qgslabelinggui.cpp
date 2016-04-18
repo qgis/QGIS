@@ -333,6 +333,7 @@ void QgsLabelingGui::init()
 
   // set the current field or add the current expression to the bottom of the list
   mFieldExpressionWidget->setField( lyr.fieldName );
+  mRenderAsHTML->setChecked( lyr.renderAsHTML );
 
   // populate placement options
   mCentroidRadioWhole->setChecked( lyr.centroidWhole );
@@ -630,6 +631,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   lyr.enabled = ( mMode == Labels || mMode == ObstaclesOnly );
   lyr.drawLabels = ( mMode == Labels );
+  lyr.renderAsHTML = mRenderAsHTML->isChecked();
 
   bool isExpression;
   lyr.fieldName = mFieldExpressionWidget->currentField( &isExpression );

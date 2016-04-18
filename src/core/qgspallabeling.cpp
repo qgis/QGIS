@@ -36,6 +36,7 @@
 #include <QFontMetrics>
 #include <QTime>
 #include <QPainter>
+#include <QTextDocument>
 
 #include "diagram/qgsdiagram.h"
 #include "qgsdiagramrendererv2.h"
@@ -117,6 +118,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   drawLabels = true;
   isExpression = false;
   fieldIndex = 0;
+  renderAsHTML = false;
 
   // text style
   textFont = QApplication::font();
@@ -377,6 +379,7 @@ QgsPalLayerSettings& QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   // text style
   fieldName = s.fieldName;
   isExpression = s.isExpression;
+  renderAsHTML = s.renderAsHTML;
   textFont = s.textFont;
   textNamedStyle = s.textNamedStyle;
   fontSizeInMapUnits = s.fontSizeInMapUnits;
@@ -803,6 +806,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
 
   // text style
   fieldName = layer->customProperty( "labeling/fieldName" ).toString();
+  renderAsHTML = layer->customProperty( "labeling/renderAsHTML" ).toBool();
   isExpression = layer->customProperty( "labeling/isExpression" ).toBool();
   QFont appFont = QApplication::font();
   mTextFontFamily = layer->customProperty( "labeling/fontFamily", QVariant( appFont.family() ) ).toString();
@@ -1022,6 +1026,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
 
   // text style
   layer->setCustomProperty( "labeling/fieldName", fieldName );
+  layer->setCustomProperty( "labeling/renderAsHTML", renderAsHTML );
   layer->setCustomProperty( "labeling/isExpression", isExpression );
   layer->setCustomProperty( "labeling/fontFamily", textFont.family() );
   layer->setCustomProperty( "labeling/namedStyle", QgsFontUtils::untranslateNamedStyle( textNamedStyle ) );
@@ -1910,23 +1915,34 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
   }
 
   double w = 0.0, h = 0.0;
-  QStringList multiLineSplit = QgsPalLabeling::splitToLines( text, wrapchr );
-  int lines = multiLineSplit.size();
-
-  double labelHeight = fm->ascent() + fm->descent(); // ignore +1 for baseline
-
-  h += fm->height() + static_cast< double >(( lines - 1 ) * labelHeight * multilineH );
-  h /= rasterCompressFactor;
-
-  for ( int i = 0; i < lines; ++i )
+  if ( renderAsHTML )
   {
-    double width = fm->width( multiLineSplit.at( i ) );
-    if ( width > w )
-    {
-      w = width;
-    }
+    QTextDocument doc;
+    doc.setDocumentMargin( 0 );
+    doc.setHtml( text );
+    h = doc.size().height();
+    w = doc.size().width();
   }
-  w /= rasterCompressFactor;
+  else
+  {
+    QStringList multiLineSplit = QgsPalLabeling::splitToLines( text, wrapchr );
+    int lines = multiLineSplit.size();
+
+    double labelHeight = fm->ascent() + fm->descent(); // ignore +1 for baseline
+
+    h += fm->height() + static_cast< double >(( lines - 1 ) * labelHeight * multilineH );
+    h /= rasterCompressFactor;
+
+    for ( int i = 0; i < lines; ++i )
+    {
+      double width = fm->width( multiLineSplit.at( i ) );
+      if ( width > w )
+      {
+        w = width;
+      }
+    }
+    w /= rasterCompressFactor;
+  }
 
 #if 0 // XXX strk
   QgsPoint ptSize = xform->toMapCoordinatesF( w, h );
