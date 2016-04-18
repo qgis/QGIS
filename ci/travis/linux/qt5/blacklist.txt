@@ -1,6 +1,7 @@
 ProcessingGdalAlgorithmsTest
 ProcessingParametersTest
 ProcessingQgisAlgorithmsTest
+PyQgsArrowSymbolLayer
 PyQgsBlendModes
 PyQgsComposerEffects
 PyQgsComposerHtml
