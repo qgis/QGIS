@@ -17,7 +17,7 @@
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
 
-#include "qgsattributeaction.h"
+#include "qgsactionmanager.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsexpression.h"
 #include "qgsconditionalstyle.h"

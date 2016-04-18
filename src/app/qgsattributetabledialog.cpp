@@ -37,7 +37,7 @@
 #include "qgsproject.h"
 #include "qgsfieldcalculator.h"
 #include "qgsfeatureaction.h"
-#include "qgsattributeaction.h"
+#include "qgsactionmanager.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsmessagebar.h"
 #include "qgsexpressionselectiondialog.h"

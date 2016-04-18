@@ -34,7 +34,7 @@
 #include <QVector>
 
 #include "qgsvectorlayer.h"
-#include "qgsattributeaction.h"
+#include "qgsactionmanager.h"
 #include "qgis.h" //for globals
 #include "qgsapplication.h"
 #include "qgsclipper.h"
@@ -150,7 +150,7 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
     , mEditCommandActive( false )
 
 {
-  mActions = new QgsAttributeAction( this );
+  mActions = new QgsActionManager( this );
   mConditionalStyles = new QgsConditionalLayerStyles();
 
   // if we're given a provider type, try to create and bind one to this layer

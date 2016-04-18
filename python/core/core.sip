@@ -19,6 +19,8 @@
 %Include qgis.sip
 
 %Include qgsapplication.sip
+%Include qgsaction.sip
+%Include qgsactionmanager.sip
 %Include qgsattributeaction.sip
 %Include qgsbrowsermodel.sip
 %Include qgsclipper.sip

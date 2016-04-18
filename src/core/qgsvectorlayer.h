@@ -39,7 +39,7 @@ class QPainter;
 class QImage;
 
 class QgsAbstractGeometrySimplifier;
-class QgsAttributeAction;
+class QgsActionManager;
 class QgsConditionalLayerStyles;
 class QgsCoordinateTransform;
 class QgsCurveV2;
@@ -625,7 +625,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     const QgsLabel *label() const;
 
-    QgsAttributeAction *actions() { return mActions; }
+    /**
+     * Get all layer actions defined on this layer.
+     *
+     * The pointer which is returned directly points to the actions object
+     * which is used by the layer, so any changes are immediately applied.
+     */
+    QgsActionManager *actions() { return mActions; }
 
     /**
      * The number of features that are selected in this layer
@@ -1988,7 +1994,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QString mProviderKey;
 
     /** The user-defined actions that are accessed from the Identify Results dialog box */
-    QgsAttributeAction* mActions;
+    QgsActionManager* mActions;
 
     /** Flag indicating whether the layer is in read-only mode (editing disabled) or not */
     bool mReadOnly;

@@ -19,7 +19,7 @@
 #define QGSIDENTIFYRESULTSDIALOG_H
 
 #include "ui_qgsidentifyresultsbase.h"
-#include "qgsattributeaction.h"
+#include "qgsactionmanager.h"
 #include "qgscontexthelp.h"
 #include "qgsfeature.h"
 #include "qgsfeaturestore.h"
