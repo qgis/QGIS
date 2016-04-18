@@ -9904,6 +9904,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
   if ( !layer )
   {
+    mLayerTreeDock->setWindowTitle( tr( "Layers Panel" ) );
+
     mActionSelectFeatures->setEnabled( false );
     mActionSelectPolygon->setEnabled( false );
     mActionSelectFreehand->setEnabled( false );
@@ -9976,6 +9978,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionZoomToLayer->setEnabled( false );
     return;
   }
+
+  mLayerTreeDock->setWindowTitle( tr( "Layers Panel - %1" ).arg( layer->name() ) );
 
   mActionLayerProperties->setEnabled( QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() );
   mActionAddToOverview->setEnabled( true );
