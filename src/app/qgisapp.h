@@ -12,8 +12,7 @@
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+ *                                                                         * ***************************************************************************/
 
 #ifndef QGISAPP_H
 #define QGISAPP_H
@@ -94,6 +93,8 @@ class QgsScaleComboBox;
 class QgsDataItem;
 class QgsTileScaleWidget;
 
+class QgsLabelingWidget;
+class QgsMapStylingWidget;
 class QgsDiagramProperties;
 
 #include <QMainWindow>
@@ -114,6 +115,7 @@ class QgsDiagramProperties;
 #include "qgsmessagebar.h"
 #include "qgsbookmarks.h"
 #include "qgswelcomepageitemsmodel.h"
+
 
 #include "ui_qgisapp.h"
 
@@ -1089,6 +1091,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Called when some layer's editing mode was toggled on/off */
     void layerEditStateChanged();
 
+    /** Update the label toolbar buttons */
+    void updateLabelToolButtons();
+
     /** Activates or deactivates actions depending on the current maplayer type.
     Is called from the legend when the current legend item has changed*/
     void activateDeactivateLayerRelatedActions( QgsMapLayer *layer );
@@ -1163,6 +1168,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! shows label settings dialog (for labeling-ng)
     void labeling();
+
+    //! shows the map styling dock
+    void mapStyleDock();
 
     //! diagrams properties
     void diagramProperties();
@@ -1284,6 +1292,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** Pushes a layer error to the message bar */
     void onLayerError( const QString& msg );
+
+    /** Set the layer for the map style dock. Doesn't show the style dock */
+    void setMapStyleDockLayer( QgsMapLayer *layer );
 
   signals:
     /** Emitted when a key is pressed and we want non widget sublasses to be able
@@ -1682,6 +1693,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsSnappingDialog *mSnappingDialog;
 
     QgsPluginManager *mPluginManager;
+    QDockWidget *mMapStylingDock;
+    QgsMapStylingWidget* mMapStyleWidget;
 
     QgsComposerManager *mComposerManager;
 
@@ -1720,6 +1733,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMapCanvasTracer* mTracer;
 
     QAction* mActionFilterLegend;
+    QAction* mActionStyleDock;
 
     QgsLegendFilterButton* mLegendExpressionFilterButton;
 

@@ -75,6 +75,7 @@
 #include <qgsnetworkaccessmanager.h>
 #include <qgsapplication.h>
 #include <qgscomposition.h>
+#include <qgsmapstylingwidget.h>
 
 #include <QNetworkReply>
 #include <QNetworkProxy>
@@ -715,6 +716,16 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
   mUndoWidget->hide();
+
+  mMapStylingDock = new QDockWidget( this );
+  mMapStylingDock->setWindowTitle( tr( "Map Styling" ) );
+  mMapStyleWidget = new QgsMapStylingWidget( mMapCanvas );
+  mMapStylingDock->setWidget( mMapStyleWidget );
+
+  connect( mMapStyleWidget, SIGNAL( styleChanged( QgsMapLayer* ) ), this, SLOT( updateLabelToolButtons() ) );
+
+  addDockWidget( Qt::RightDockWidgetArea, mMapStylingDock );
+  mMapStylingDock->hide();
 
   mSnappingDialog = new QgsSnappingDialog( this, mMapCanvas );
   mSnappingDialog->setObjectName( "SnappingOption" );
@@ -2399,6 +2410,9 @@ void QgisApp::setupConnections()
   // connect legend signals
   connect( mLayerTreeView, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
            this, SLOT( activateDeactivateLayerRelatedActions( QgsMapLayer * ) ) );
+  connect( mLayerTreeView, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
+           this, SLOT( setMapStyleDockLayer( QgsMapLayer* ) ) );
+
   connect( mLayerTreeView->selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ),
            this, SLOT( legendLayerSelectionChanged() ) );
   connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( addedChildren( QgsLayerTreeNode*, int, int ) ),
@@ -2748,6 +2762,11 @@ void QgisApp::initLayerTreeView()
   mLegendExpressionFilterButton->setToolTip( tr( "Filter legend by expression" ) );
   connect( mLegendExpressionFilterButton, SIGNAL( toggled( bool ) ), this, SLOT( toggleFilterLegendByExpression( bool ) ) );
 
+  mActionStyleDock = new QAction( tr( "Map Styling" ), this );
+  mActionStyleDock->setToolTip( tr( "Open the map styling dock" ) );
+  mActionStyleDock->setIcon( QgsApplication::getThemeIcon( "propertyicons/symbology.png" ) );
+  connect( mActionStyleDock, SIGNAL( triggered() ), this, SLOT( mapStyleDock() ) );
+
   // expand / collapse tool buttons
   QAction* actionExpandAll = new QAction( tr( "Expand All" ), this );
   actionExpandAll->setIcon( QgsApplication::getThemeIcon( "/mActionExpandTree.svg" ) );
@@ -2758,6 +2777,9 @@ void QgisApp::initLayerTreeView()
   actionCollapseAll->setToolTip( tr( "Collapse All" ) );
   connect( actionCollapseAll, SIGNAL( triggered( bool ) ), mLayerTreeView, SLOT( collapseAll() ) );
 
+  QWidget* spacer = new QWidget();
+  spacer->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
   QToolBar* toolbar = new QToolBar();
   toolbar->setIconSize( QSize( 16, 16 ) );
   toolbar->addAction( actionAddGroup );
@@ -2767,6 +2789,8 @@ void QgisApp::initLayerTreeView()
   toolbar->addAction( actionExpandAll );
   toolbar->addAction( actionCollapseAll );
   toolbar->addAction( mActionRemoveLayer );
+  toolbar->addWidget( spacer );
+  toolbar->addAction( mActionStyleDock );
 
   QVBoxLayout* vboxLayout = new QVBoxLayout;
   vboxLayout->setMargin( 0 );
@@ -5460,47 +5484,33 @@ void QgisApp::labeling()
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( activeLayer() );
   if ( !vlayer )
   {
-    messageBar()->pushMessage( tr( "Labeling Options" ),
-                               tr( "Please select a vector layer first" ),
-                               QgsMessageBar::INFO,
-                               messageTimeout() );
     return;
   }
 
+  mapStyleDock();
+}
 
-  QDialog dlg;
-  dlg.setWindowTitle( tr( "Layer labeling settings" ) );
-  QgsLabelingWidget *labelingGui = new QgsLabelingWidget( vlayer, mMapCanvas, &dlg );
-  labelingGui->layout()->setContentsMargins( 0, 0, 0, 0 );
-  QVBoxLayout *layout = new QVBoxLayout( &dlg );
-  layout->addWidget( labelingGui );
-
-  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Apply, Qt::Horizontal, &dlg );
-  layout->addWidget( buttonBox );
-
-  dlg.setLayout( layout );
-
-  QSettings settings;
-  dlg.restoreGeometry( settings.value( "/Windows/Labeling/geometry" ).toByteArray() );
-
-  connect( buttonBox->button( QDialogButtonBox::Ok ), SIGNAL( clicked() ), &dlg, SLOT( accept() ) );
-  connect( buttonBox->button( QDialogButtonBox::Cancel ), SIGNAL( clicked() ), &dlg, SLOT( reject() ) );
-  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), labelingGui, SLOT( apply() ) );
-
-  if ( dlg.exec() )
+void QgisApp::setMapStyleDockLayer( QgsMapLayer* layer )
+{
+  if ( !layer )
   {
-    labelingGui->writeSettingsToLayer();
-
-    settings.setValue( "/Windows/Labeling/geometry", dlg.saveGeometry() );
-
-    // trigger refresh
-    if ( mMapCanvas )
-    {
-      mMapCanvas->refresh();
-    }
+    mMapStylingDock->setEnabled( false );
+    return;
   }
 
-  activateDeactivateLayerRelatedActions( vlayer );
+  mMapStylingDock->setEnabled( true );
+  // We don't set the layer if the dock isn't open mainly to save
+  // the extra work if it's not needed
+  if ( mMapStylingDock->isVisible() )
+    mMapStyleWidget->setLayer( layer );
+
+  mMapStylingDock->setWindowTitle( tr( "Map Styling - %1" ).arg( layer->name() ) );
+}
+
+void QgisApp::mapStyleDock()
+{
+  mMapStylingDock->show();
+  setMapStyleDockLayer( activeLayer() );
 }
 
 void QgisApp::diagramProperties()
@@ -9848,7 +9858,7 @@ void QgisApp::layerEditStateChanged()
   }
 }
 
-void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
+void QgisApp::updateLabelToolButtons()
 {
   bool enableMove = false, enableRotate = false, enablePin = false, enableShowHide = false, enableChange = false;
 
@@ -9895,6 +9905,11 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   mActionMoveLabel->setEnabled( enableMove );
   mActionRotateLabel->setEnabled( enableRotate );
   mActionChangeLabelProperties->setEnabled( enableChange );
+}
+
+void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
+{
+  updateLabelToolButtons();
 
   mMenuPasteAs->setEnabled( clipboard() && !clipboard()->isEmpty() );
   mActionPasteAsNewVector->setEnabled( clipboard() && !clipboard()->isEmpty() );
