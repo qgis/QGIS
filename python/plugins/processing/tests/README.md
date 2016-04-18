@@ -22,19 +22,19 @@ A basic test appears under the toplevel key `tests` and looks like this:
 How To
 ------
 
-To add a new test you can follow these steps:
+To add a new test please follow these steps:
 
-Run the algorithm you want to test in QGIS from the processing toolbox. If the
+ 1. **Run the algorithm** you want to test in QGIS from the processing toolbox. If the
 result is a vector layer prefer GML as output for its support of mixed
 geometry types and good readability. Redirect output to
-`python/plugins/processing/tests/testdata/expected`
+`python/plugins/processing/tests/testdata/expected`. For input layers prefer to use what's already there in the folder `testdata`. If you need extra data, put it into `testdata/custom`.
 
-When you have run the algorithm, go to "Processing" > "History" and find the
-algorithm which you have just run. Right click the algorithm and click "Create test".
+ 2. When you have run the algorithm, go to *Processing* > *History* and find the
+algorithm which you have just run. **Right click the algorithm and click "Create Test"**.
 A new window will open with a text definition.
 
-Open the file `python/plugins/processing/tests/testdata/algorithm_tests.yaml`,
-copy the text definition there.
+ 3. Open the file `python/plugins/processing/tests/testdata/algorithm_tests.yaml`,
+**copy the text definition** there.
 
 The first string from the command goes to the key `algorithm`, the subsequent
 ones to params and the last one(s) to results.
