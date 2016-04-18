@@ -70,6 +70,9 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
  * Examples include a project's scope, which could contain information about the current project such as
  * the project file's location. QgsExpressionContextScope can encapsulate both variables (static values)
  * and functions(which are calculated only when an expression is evaluated).
+ *
+ * See QgsExpressionContextUtils for helper methods for working with QgsExpressionContextScope objects.
+ *
  * \note added in QGIS 2.12
  */
 
@@ -235,6 +238,9 @@ class CORE_EXPORT QgsExpressionContextScope
  * their evaluated result. A QgsExpressionContext consists of a stack of QgsExpressionContextScope objects,
  * where scopes added later to the stack will override conflicting variables and functions from scopes
  * lower in the stack.
+ *
+ * See QgsExpressionContextUtils for helper methods for working with QgsExpressionContext objects.
+ *
  * \note added in QGIS 2.12
  */
 class CORE_EXPORT QgsExpressionContext
