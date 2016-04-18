@@ -1,5 +1,5 @@
 /***************************************************************************
-                               qgsattributeaction.cpp
+                               qgsactionmanager.cpp
 
  A class that stores and controls the managment and execution of actions
  associated. Actions are defined to be external programs that are run
@@ -22,7 +22,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsattributeaction.h"
+#include "qgsactionmanager.h"
 #include "qgspythonrunner.h"
 #include "qgsrunprocess.h"
 #include "qgsvectorlayer.h"
@@ -40,17 +40,22 @@
 #include <QFileInfo>
 
 
-void QgsAttributeAction::addAction( QgsAction::ActionType type, const QString& name, const QString& action, bool capture )
+void QgsActionManager::addAction( QgsAction::ActionType type, const QString& name, const QString& action, bool capture )
 {
   mActions << QgsAction( type, name, action, capture );
 }
 
-void QgsAttributeAction::addAction( QgsAction::ActionType type, const QString& name, const QString& action, const QString& icon, bool capture )
+void QgsActionManager::addAction( QgsAction::ActionType type, const QString& name, const QString& action, const QString& icon, bool capture )
 {
   mActions << QgsAction( type, name, action, icon, capture );
 }
 
-void QgsAttributeAction::removeAction( int index )
+void QgsActionManager::addAction( const QgsAction& action )
+{
+  mActions << action;
+}
+
+void QgsActionManager::removeAction( int index )
 {
   if ( index >= 0 && index < mActions.size() )
   {
@@ -58,7 +63,7 @@ void QgsAttributeAction::removeAction( int index )
   }
 }
 
-void QgsAttributeAction::doAction( int index, const QgsFeature& feat, int defaultValueIndex )
+void QgsActionManager::doAction( int index, const QgsFeature& feat, int defaultValueIndex )
 {
   QMap<QString, QVariant> substitutionMap;
   if ( defaultValueIndex >= 0 )
@@ -71,7 +76,7 @@ void QgsAttributeAction::doAction( int index, const QgsFeature& feat, int defaul
   doAction( index, feat, &substitutionMap );
 }
 
-void QgsAttributeAction::doAction( int index, const QgsFeature &feat, const QMap<QString, QVariant> *substitutionMap )
+void QgsActionManager::doAction( int index, const QgsFeature &feat, const QMap<QString, QVariant> *substitutionMap )
 {
   if ( index < 0 || index >= size() )
     return;
@@ -91,7 +96,17 @@ void QgsAttributeAction::doAction( int index, const QgsFeature &feat, const QMap
   runAction( newAction );
 }
 
-void QgsAttributeAction::runAction( const QgsAction &action, void ( *executePython )( const QString & ) )
+void QgsActionManager::clearActions()
+{
+  mActions.clear();
+}
+
+QList<QgsAction> QgsActionManager::listActions() const
+{
+  return mActions;
+}
+
+void QgsActionManager::runAction( const QgsAction &action, void ( *executePython )( const QString & ) )
 {
   if ( action.type() == QgsAction::OpenUrl )
   {
@@ -127,7 +142,7 @@ void QgsAttributeAction::runAction( const QgsAction &action, void ( *executePyth
   }
 }
 
-QgsExpressionContext QgsAttributeAction::createExpressionContext() const
+QgsExpressionContext QgsActionManager::createExpressionContext() const
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
@@ -138,7 +153,7 @@ QgsExpressionContext QgsAttributeAction::createExpressionContext() const
   return context;
 }
 
-QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap &attributes,
+QString QgsActionManager::expandAction( QString action, const QgsAttributeMap &attributes,
     uint clickedOnValue )
 {
   // This function currently replaces all %% characters in the action
@@ -196,7 +211,7 @@ QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap 
   return expanded_action;
 }
 
-QString QgsAttributeAction::expandAction( const QString& action, QgsFeature &feat, const QMap<QString, QVariant> *substitutionMap )
+QString QgsActionManager::expandAction( const QString& action, QgsFeature &feat, const QMap<QString, QVariant> *substitutionMap )
 {
   // This function currently replaces each expression between [% and %]
   // in the action with the result of its evaluation on the feature
@@ -256,7 +271,7 @@ QString QgsAttributeAction::expandAction( const QString& action, QgsFeature &fea
 }
 
 
-bool QgsAttributeAction::writeXML( QDomNode& layer_node, QDomDocument& doc ) const
+bool QgsActionManager::writeXML( QDomNode& layer_node, QDomDocument& doc ) const
 {
   QDomElement aActions = doc.createElement( "attributeactions" );
 
@@ -275,7 +290,7 @@ bool QgsAttributeAction::writeXML( QDomNode& layer_node, QDomDocument& doc ) con
   return true;
 }
 
-bool QgsAttributeAction::readXML( const QDomNode& layer_node )
+bool QgsActionManager::readXML( const QDomNode& layer_node )
 {
   mActions.clear();
 
@@ -297,9 +312,9 @@ bool QgsAttributeAction::readXML( const QDomNode& layer_node )
   return true;
 }
 
-void ( *QgsAttributeAction::smPythonExecute )( const QString & ) = nullptr;
+void ( *QgsActionManager::smPythonExecute )( const QString & ) = nullptr;
 
-void QgsAttributeAction::setPythonExecute( void ( *runPython )( const QString & ) )
+void QgsActionManager::setPythonExecute( void ( *runPython )( const QString & ) )
 {
   smPythonExecute = runPython;
 }

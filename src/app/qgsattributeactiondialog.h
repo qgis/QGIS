@@ -24,18 +24,16 @@ back to QgsVectorLayer.
 #define QGSATTRIBUTEACTIONDIALOG_H
 
 #include "ui_qgsattributeactiondialogbase.h"
-#include "qgsattributeaction.h"
+#include "qgsactionmanager.h"
 #include "qgsfield.h"
 #include <QMap>
-
-class QgsAttributeAction;
 
 class APP_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDialogBase
 {
     Q_OBJECT
 
   public:
-    QgsAttributeActionDialog( QgsAttributeAction* actions,
+    QgsAttributeActionDialog( QgsActionManager* actions,
                               const QgsFields& fields,
                               QWidget* parent = nullptr );
 
@@ -72,7 +70,7 @@ class APP_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttrib
     QString uniqueName( QString name );
 
     // Pointer to the QgsAttributeAction in the class that created us.
-    QgsAttributeAction *mActions;
+    QgsActionManager *mActions;
 };
 
 #endif

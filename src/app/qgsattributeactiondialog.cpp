@@ -33,7 +33,7 @@ back to QgsVectorLayer.
 #include <QSettings>
 #include <QImageWriter>
 
-QgsAttributeActionDialog::QgsAttributeActionDialog( QgsAttributeAction* actions,
+QgsAttributeActionDialog::QgsAttributeActionDialog( QgsActionManager* actions,
     const QgsFields& fields,
     QWidget* parent ):
     QWidget( parent ), mActions( actions )

@@ -115,7 +115,7 @@ void QgsActionMenu::reloadActions()
   clear();
 
   delete mActions;
-  mActions = new QgsAttributeAction( *mLayer->actions() );
+  mActions = new QgsActionManager( *mLayer->actions() );
 
   for ( int idx = 0; idx < mActions->size(); ++idx )
   {

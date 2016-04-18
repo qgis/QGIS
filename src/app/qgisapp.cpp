@@ -107,7 +107,7 @@
 #include "qgsalignrasterdialog.h"
 #include "qgsapplayertreeviewmenuprovider.h"
 #include "qgsapplication.h"
-#include "qgsattributeaction.h"
+#include "qgsactionmanager.h"
 #include "qgsattributetabledialog.h"
 #include "qgsauthmanager.h"
 #include "qgsauthguiutils.h"
@@ -5345,7 +5345,7 @@ void QgisApp::refreshFeatureActions()
   if ( !vlayer )
     return;
 
-  QgsAttributeAction *actions = vlayer->actions();
+  QgsActionManager *actions = vlayer->actions();
   for ( int i = 0; i < actions->size(); i++ )
   {
     QAction *action = mFeatureActionMenu->addAction( actions->at( i ).name() );
