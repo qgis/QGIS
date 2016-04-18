@@ -84,6 +84,9 @@ class QgsFieldExpressionWidget : QWidget
     //! convenience slot to connect QgsMapLayerComboBox layer signal
     void setLayer( QgsMapLayer* layer );
 
+    //! sets the current row in the widget
+    void setRow( int row );
+
     //! sets the current field or expression in the widget
     void setField( const QString &fieldName );
 

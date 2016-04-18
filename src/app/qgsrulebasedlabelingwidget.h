@@ -72,26 +72,36 @@ class APP_EXPORT QgsRuleBasedLabelingModel : public QAbstractItemModel
 };
 
 
+class QgsLabelingRulePropsDialog;
+
 
 class QgsRuleBasedLabelingWidget : public QWidget, private Ui::QgsRuleBasedLabelingWidget
 {
     Q_OBJECT
   public:
-    QgsRuleBasedLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent = nullptr );
+    QgsRuleBasedLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent = nullptr, bool dockMode = false );
     ~QgsRuleBasedLabelingWidget();
 
     //! save config to layer
     void writeSettingsToLayer();
+    void setDockMode( bool enabled );
 
   signals:
+    void widgetChanged();
 
   protected slots:
+    void saveRuleEdit();
     void addRule();
+    void saveRule();
+    void rejectRule();
     void editRule();
     void editRule( const QModelIndex& index );
     void removeRule();
     void copy();
     void paste();
+
+  private:
+    void addNewRule( QgsRuleBasedLabeling::Rule* newrule );
 
   protected:
     QgsRuleBasedLabeling::Rule* currentRule();
@@ -102,10 +112,12 @@ class QgsRuleBasedLabelingWidget : public QWidget, private Ui::QgsRuleBasedLabel
 
     QgsRuleBasedLabeling::Rule* mRootRule;
     QgsRuleBasedLabelingModel* mModel;
+    QgsLabelingRulePropsDialog* mRuleProps;
 
     QAction* mCopyAction;
     QAction* mPasteAction;
     QAction* mDeleteAction;
+    bool mDockMode;
 };
 
 
@@ -120,14 +132,29 @@ class APP_EXPORT QgsLabelingRulePropsDialog : public QDialog, private Ui::QgsLab
     Q_OBJECT
 
   public:
-    QgsLabelingRulePropsDialog( QgsRuleBasedLabeling::Rule* rule, QgsVectorLayer* layer, QWidget* parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
+    enum Mode
+    {
+      Adding,
+      Editing
+    };
+
+    QgsLabelingRulePropsDialog( QgsRuleBasedLabeling::Rule* rule, QgsVectorLayer* layer,
+                                QWidget* parent = nullptr, QgsMapCanvas* mapCanvas = nullptr,
+                                bool dockMode = false );
     ~QgsLabelingRulePropsDialog();
 
     QgsRuleBasedLabeling::Rule* rule() { return mRule; }
 
+    Mode currentMode() { return mCurrentMode; }
+    void setCurrentMode( Mode currentMode ) { mCurrentMode = currentMode; }
+
+  signals:
+    void widgetChanged();
+
   public slots:
     void testFilter();
     void buildExpression();
+    void updateRule();
     void accept() override;
 
   protected:
@@ -138,6 +165,8 @@ class APP_EXPORT QgsLabelingRulePropsDialog : public QDialog, private Ui::QgsLab
     QgsPalLayerSettings* mSettings; // a clone of original settings
 
     QgsMapCanvas* mMapCanvas;
+    bool mDockMode;
+    Mode mCurrentMode;
 };
 
 

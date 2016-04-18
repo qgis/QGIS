@@ -127,6 +127,9 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! convenience slot to connect QgsMapLayerComboBox layer signal
     void setLayer( QgsMapLayer* layer );
 
+    //! sets the current row in the widget
+    void setRow( int row ) { mCombo->setCurrentIndex( row ); }
+
     //! sets the current field or expression in the widget
     void setField( const QString &fieldName );
 

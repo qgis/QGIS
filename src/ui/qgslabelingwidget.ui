@@ -97,6 +97,16 @@
    <item>
     <widget class="QStackedWidget" name="mStackedWidget"/>
    </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="spacing">
+      <number>12</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+    </layout>
+   </item>
   </layout>
  </widget>
  <resources>

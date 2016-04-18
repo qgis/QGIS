@@ -24,12 +24,14 @@
 #include <QClipboard>
 #include <QMessageBox>
 
-QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent )
+QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent, bool dockMode )
     : QWidget( parent )
     , mLayer( layer )
     , mCanvas( canvas )
     , mRootRule( nullptr )
     , mModel( nullptr )
+    , mRuleProps( nullptr )
+    , mDockMode( dockMode )
 {
   setupUi( this );
 
@@ -76,6 +78,11 @@ QgsRuleBasedLabelingWidget::~QgsRuleBasedLabelingWidget()
   delete mRootRule;
 }
 
+void QgsRuleBasedLabelingWidget::setDockMode( bool enabled )
+{
+  mDockMode = enabled;
+}
+
 void QgsRuleBasedLabelingWidget::writeSettingsToLayer()
 {
   // also clear old-style labeling config
@@ -86,29 +93,81 @@ void QgsRuleBasedLabelingWidget::writeSettingsToLayer()
 
 void QgsRuleBasedLabelingWidget::addRule()
 {
-  QgsRuleBasedLabeling::Rule* newrule = new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings );
+  if ( mRuleProps )
+    mStackedWidget->removeWidget( mRuleProps );
 
-  QgsLabelingRulePropsDialog dlg( newrule, mLayer, this, mCanvas );
-  if ( dlg.exec() )
+  delete mRuleProps;
+  mRuleProps = nullptr;
+
+  // TODO Delete rule
+  QgsRuleBasedLabeling::Rule* newrule = new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings );
+  mRuleProps = new QgsLabelingRulePropsDialog( newrule, mLayer, this, mCanvas, mDockMode );
+  mRuleProps->setCurrentMode( QgsLabelingRulePropsDialog::Adding );
+
+  mStackedWidget->addWidget( mRuleProps );
+  mStackedWidget->setCurrentWidget( mRuleProps );
+
+  connect( mRuleProps, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
+  connect( mRuleProps, SIGNAL( accepted() ), this, SLOT( saveRule() ) );
+  connect( mRuleProps, SIGNAL( rejected() ), this, SLOT( rejectRule() ) );
+  addNewRule( newrule );
+}
+
+void QgsRuleBasedLabelingWidget::saveRuleEdit()
+{
+  QModelIndex index = viewRules->selectionModel()->currentIndex();
+  mModel->updateRule( index.parent(), index.row() );
+  if ( mRuleProps )
+    mStackedWidget->removeWidget( mRuleProps );
+
+  delete mRuleProps;
+  mRuleProps = nullptr;
+  mStackedWidget->setCurrentIndex( 0 );
+  emit widgetChanged();
+}
+
+void QgsRuleBasedLabelingWidget::saveRule()
+{
+  if ( mRuleProps )
+    mStackedWidget->removeWidget( mRuleProps );
+
+  delete mRuleProps;
+  mRuleProps = nullptr;
+  mStackedWidget->setCurrentIndex( 0 );
+  emit widgetChanged();
+}
+
+void QgsRuleBasedLabelingWidget::addNewRule( QgsRuleBasedLabeling::Rule* newrule )
+{
+  if ( currentRule() )
   {
-    QgsRuleBasedLabeling::Rule* current = currentRule();
-    if ( current )
-    {
-      // add after this rule
-      QModelIndex currentIndex = viewRules->selectionModel()->currentIndex();
-      mModel->insertRule( currentIndex.parent(), currentIndex.row() + 1, newrule );
-    }
-    else
-    {
-      // append to root rule
-      int rows = mModel->rowCount();
-      mModel->insertRule( QModelIndex(), rows, newrule );
-    }
+    // add after this rule
+    QModelIndex currentIndex = viewRules->selectionModel()->currentIndex();
+    mModel->insertRule( currentIndex.parent(), currentIndex.row() + 1, newrule );
+    viewRules->selectionModel()->select( mModel->index( currentIndex.row() + 1, 0 ), QItemSelectionModel::ClearAndSelect );
   }
   else
   {
-    delete newrule;
+    // append to root rule
+    int rows = mModel->rowCount();
+    mModel->insertRule( QModelIndex(), rows, newrule );
+    viewRules->selectionModel()->select( mModel->index( rows, 0 ), QItemSelectionModel::ClearAndSelect );
   }
+}
+
+void QgsRuleBasedLabelingWidget::rejectRule()
+{
+  if ( mRuleProps->currentMode() == QgsLabelingRulePropsDialog::Adding )
+    removeRule();
+
+  mStackedWidget->setCurrentIndex( 0 );
+
+  if ( mRuleProps )
+    mStackedWidget->removeWidget( mRuleProps );
+
+  delete mRuleProps;
+  mRuleProps = nullptr;
+  emit widgetChanged();
 }
 
 void QgsRuleBasedLabelingWidget::editRule()
@@ -120,14 +179,24 @@ void QgsRuleBasedLabelingWidget::editRule( const QModelIndex& index )
 {
   if ( !index.isValid() )
     return;
-  QgsRuleBasedLabeling::Rule* rule = mModel->ruleForIndex( index );
 
-  QgsLabelingRulePropsDialog dlg( rule, mLayer, this, mCanvas );
-  if ( dlg.exec() )
-  {
-    // model should know about the change and emit dataChanged signal for the view
-    mModel->updateRule( index.parent(), index.row() );
-  }
+  if ( mRuleProps )
+    mStackedWidget->removeWidget( mRuleProps );
+
+  delete mRuleProps;
+  mRuleProps = nullptr;
+
+  QgsRuleBasedLabeling::Rule* rule = mModel->ruleForIndex( index );
+  mRuleProps = new QgsLabelingRulePropsDialog( rule, mLayer, this, mCanvas, mDockMode );
+  mRuleProps->setCurrentMode( QgsLabelingRulePropsDialog::Editing );
+
+  connect( mRuleProps, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
+
+  mStackedWidget->addWidget( mRuleProps );
+  mStackedWidget->setCurrentWidget( mRuleProps );
+
+  connect( mRuleProps, SIGNAL( accepted() ), this, SLOT( saveRuleEdit() ) );
+  connect( mRuleProps, SIGNAL( rejected() ), this, SLOT( rejectRule() ) );
 }
 
 void QgsRuleBasedLabelingWidget::removeRule()
@@ -142,6 +211,7 @@ void QgsRuleBasedLabelingWidget::removeRule()
   }
   // make sure that the selection is gone
   viewRules->selectionModel()->clear();
+  emit widgetChanged();
 }
 
 void QgsRuleBasedLabelingWidget::copy()
@@ -154,6 +224,7 @@ void QgsRuleBasedLabelingWidget::copy()
 
   QMimeData* mime = mModel->mimeData( indexlist );
   QApplication::clipboard()->setMimeData( mime );
+  emit widgetChanged();
 }
 
 void QgsRuleBasedLabelingWidget::paste()
@@ -166,6 +237,7 @@ void QgsRuleBasedLabelingWidget::paste()
   else
     index = indexlist.first();
   mModel->dropMimeData( mime, Qt::CopyAction, index.row(), index.column(), index.parent() );
+  emit widgetChanged();
 }
 
 QgsRuleBasedLabeling::Rule* QgsRuleBasedLabelingWidget::currentRule()
@@ -550,8 +622,8 @@ void QgsRuleBasedLabelingModel::updateRule( const QModelIndex& parent, int row )
 
 /////////
 
-QgsLabelingRulePropsDialog::QgsLabelingRulePropsDialog( QgsRuleBasedLabeling::Rule* rule, QgsVectorLayer* layer, QWidget* parent, QgsMapCanvas* mapCanvas )
-    : QDialog( parent ), mRule( rule ), mLayer( layer ), mLabelingGui( nullptr ), mSettings( nullptr ), mMapCanvas( mapCanvas )
+QgsLabelingRulePropsDialog::QgsLabelingRulePropsDialog( QgsRuleBasedLabeling::Rule* rule, QgsVectorLayer* layer, QWidget* parent, QgsMapCanvas* mapCanvas, bool dockMode )
+    : QDialog( parent ), mRule( rule ), mLayer( layer ), mLabelingGui( nullptr ), mSettings( nullptr ), mMapCanvas( mapCanvas ), mDockMode( dockMode )
 {
   setupUi( this );
 #ifdef Q_OS_MAC
@@ -588,17 +660,21 @@ QgsLabelingRulePropsDialog::QgsLabelingRulePropsDialog( QgsRuleBasedLabeling::Ru
     mSettings = new QgsPalLayerSettings;
   }
 
-  mLabelingGui = new QgsLabelingGui( mLayer, mMapCanvas, mSettings, this );
+  mLabelingGui = new QgsLabelingGui( nullptr, mMapCanvas, mSettings, this );
+  mLabelingGui->setDockMode( mDockMode );
   mLabelingGui->layout()->setContentsMargins( 0, 0, 0, 0 );
   QVBoxLayout* l = new QVBoxLayout;
   l->addWidget( mLabelingGui );
   groupSettings->setLayout( l );
 
   mLabelingGui->setLabelMode( QgsLabelingGui::Labels );
-  mLabelingGui->init();
+  mLabelingGui->setLayer( mLayer );
 
   connect( btnExpressionBuilder, SIGNAL( clicked() ), this, SLOT( buildExpression() ) );
   connect( btnTestFilter, SIGNAL( clicked() ), this, SLOT( testFilter() ) );
+  connect( editFilter, SIGNAL( textEdited( QString ) ), this, SIGNAL( widgetChanged() ) );
+  connect( mLabelingGui, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
+  connect( this, SIGNAL( widgetChanged() ), this, SLOT( updateRule() ) );
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/QgsLabelingRulePropsDialog/geometry" ).toByteArray() );
@@ -686,7 +762,7 @@ void QgsLabelingRulePropsDialog::buildExpression()
     editFilter->setText( dlg.expressionText() );
 }
 
-void QgsLabelingRulePropsDialog::accept()
+void QgsLabelingRulePropsDialog::updateRule()
 {
   mRule->setFilterExpression( editFilter->text() );
   mRule->setDescription( editDescription->text() );
@@ -694,6 +770,10 @@ void QgsLabelingRulePropsDialog::accept()
   mRule->setScaleMinDenom( groupScale->isChecked() ? mScaleRangeWidget->minimumScaleDenom() : 0 );
   mRule->setScaleMaxDenom( groupScale->isChecked() ? mScaleRangeWidget->maximumScaleDenom() : 0 );
   mRule->setSettings( groupSettings->isChecked() ? new QgsPalLayerSettings( mLabelingGui->layerSettings() ) : nullptr );
+}
 
+void QgsLabelingRulePropsDialog::accept()
+{
+  updateRule();
   QDialog::accept();
 }
