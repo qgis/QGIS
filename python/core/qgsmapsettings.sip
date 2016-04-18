@@ -119,6 +119,22 @@ class QgsMapSettings
     //! Return the calculated scale of the map
     double scale() const;
 
+    /** Sets the current map date and time. This property can be used for maps which alter their appearance
+     * based on a time attribute, such as animated maps.
+     * @param datetime date time property for rendered map
+     * @see dateTime()
+     * @note added in QGIS 2.16
+     */
+    void setDateTime( const QDateTime& datetime );
+
+    /** Returns the current map date and time. This property can be used for maps which alter their appearance
+     * based on a time attribute, such as animated maps.
+     * @returns date time property for rendered map, or an invalid date time if unset
+     * @see setDateTime()
+     * @note added in QGIS 2.16
+     */
+    QDateTime dateTime() const;
+
     /** Sets the expression context. This context is used for all expression evaluation
      * associated with this map settings.
      * @see expressionContext()

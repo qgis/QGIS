@@ -20,6 +20,7 @@
 #include <QImage>
 #include <QSize>
 #include <QStringList>
+#include <QDateTime>
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatumtransformstore.h"
@@ -181,6 +182,24 @@ class CORE_EXPORT QgsMapSettings
      */
     const QgsExpressionContext& expressionContext() const { return mExpressionContext; }
 
+    /** Sets the current map date and time. This property can be used for maps which alter their appearance
+     * based on a time attribute, such as animated maps. When set, the property is available via the
+     * \@map_datetime expression variable.
+     * @param datetime date time property for rendered map
+     * @see dateTime()
+     * @note added in QGIS 2.16
+     */
+    void setDateTime( const QDateTime& datetime ) { mDateTime = datetime; }
+
+    /** Returns the current map date and time. This property can be used for maps which alter their appearance
+     * based on a time attribute, such as animated maps. When set, the property is available via the
+     * \@map_datetime expression variable.
+     * @returns date time property for rendered map, or an invalid date time if unset
+     * @see setDateTime()
+     * @note added in QGIS 2.16
+     */
+    QDateTime dateTime() const { return mDateTime; }
+
     // -- utility functions --
 
     //! @note not available in python bindings
@@ -261,6 +280,8 @@ class CORE_EXPORT QgsMapSettings
     QgsRectangle mExtent;
 
     double mRotation;
+
+    QDateTime mDateTime;
 
     QStringList mLayers;
     QMap<QString, QString> mLayerStyleOverrides;

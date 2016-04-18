@@ -214,6 +214,24 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.8
     void setRotation( double degrees );
 
+    /** Sets the current canvas date and time. This property can be used for maps which alter their appearance
+     * based on a time attribute, such as animated maps. When set, the property is available via the
+     * \@map_datetime expression variable.
+     * @param datetime date time property for canvas
+     * @see dateTime()
+     * @note added in QGIS 2.16
+     */
+    void setDateTime( const QDateTime& datetime );
+
+    /** Returns the current canvas date and time. This property can be used for maps which alter their appearance
+     * based on a time attribute, such as animated maps. When set, the property is available via the
+     * \@map_datetime expression variable.
+     * @returns date time property for canvas, or an invalid date time if unset
+     * @see setDateTime()
+     * @note added in QGIS 2.16
+     */
+    QDateTime dateTime() const;
+
     //! Set the center of the map canvas, in geographical coordinates
     //! @note added in 2.8
     void setCenter( const QgsPoint& center );
