@@ -224,6 +224,8 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QgsRubberBand* mRubberBand;
     QgsSearchWidgetWrapper* mCurrentSearchWidgetWrapper;
 
+    void updateMultiEditButtonState();
+
     friend class TestQgsAttributeTable;
 };
 

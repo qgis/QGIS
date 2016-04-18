@@ -23,6 +23,7 @@
 #include "qgspythonrunner.h"
 #include "qgsrelationwidgetwrapper.h"
 #include "qgsvectordataprovider.h"
+#include "qgsattributeformeditorwidget.h"
 
 #include <QDir>
 #include <QTextStream>
@@ -48,9 +49,10 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &featur
     , mButtonBox( nullptr )
     , mFormNr( sFormCounter++ )
     , mIsSaving( false )
-    , mIsAddDialog( false )
     , mPreventFeatureRefresh( false )
+    , mIsSettingFeature( false )
     , mEditCommandMessage( tr( "Attributes changed" ) )
+    , mMode( SingleEditMode )
 {
   init();
   initPython();
@@ -65,6 +67,7 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &featur
   connect( vl, SIGNAL( updatedFields() ), this, SLOT( onUpdatedFields() ) );
   connect( vl, SIGNAL( beforeAddingExpressionField( QString ) ), this, SLOT( preventFeatureRefresh() ) );
   connect( vl, SIGNAL( beforeRemovingExpressionField( int ) ), this, SLOT( preventFeatureRefresh() ) );
+  connect( vl, SIGNAL( selectionChanged() ), this, SLOT( layerSelectionChanged() ) );
 }
 
 QgsAttributeForm::~QgsAttributeForm()
@@ -78,7 +81,7 @@ void QgsAttributeForm::hideButtonBox()
   mButtonBox->hide();
 
   // Make sure that changes are taken into account if somebody tries to figure out if there have been some
-  if ( !mIsAddDialog )
+  if ( mMode == SingleEditMode )
     connect( mLayer, SIGNAL( beforeModifiedCheck() ), this, SLOT( save() ) );
 }
 
@@ -105,9 +108,72 @@ bool QgsAttributeForm::editable()
   return mFeature.isValid() && mLayer->isEditable();
 }
 
+void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
+{
+  if ( mode == mMode )
+    return;
+
+  if ( mMode == MultiEditMode )
+  {
+    //switching out of multi edit mode triggers a save
+    save();
+  }
+
+  mMode = mode;
+
+  if ( mButtonBox->isVisible() && mMode == SingleEditMode )
+  {
+    connect( mLayer, SIGNAL( beforeModifiedCheck() ), this, SLOT( save() ) );
+  }
+  else
+  {
+    disconnect( mLayer, SIGNAL( beforeModifiedCheck() ), this, SLOT( save() ) );
+  }
+
+  //update all form editor widget modes to match
+  Q_FOREACH ( QgsAttributeFormEditorWidget* w, findChildren<  QgsAttributeFormEditorWidget* >() )
+  {
+    switch ( mode )
+    {
+      case QgsAttributeForm::SingleEditMode:
+        w->setMode( QgsAttributeFormEditorWidget::DefaultMode );
+        break;
+
+      case QgsAttributeForm::AddFeatureMode:
+        w->setMode( QgsAttributeFormEditorWidget::DefaultMode );
+        break;
+
+      case QgsAttributeForm::MultiEditMode:
+        w->setMode( QgsAttributeFormEditorWidget::MultiEditMode );
+        break;
+
+#if 0
+      case QgsAttributeForm::SearchMode:
+        w->setMode( QgsAttributeFormEditorWidget::SearchMode );
+        break;
+#endif
+    }
+  }
+
+  switch ( mode )
+  {
+    case QgsAttributeForm::SingleEditMode:
+      setFeature( mFeature );
+      break;
+
+    case QgsAttributeForm::AddFeatureMode:
+      break;
+
+    case QgsAttributeForm::MultiEditMode:
+      resetMultiEdit( false );
+      break;
+  }
+
+}
+
 void QgsAttributeForm::setIsAddDialog( bool isAddDialog )
 {
-  mIsAddDialog = isAddDialog;
+  setMode( isAddDialog ? AddFeatureMode : SingleEditMode );
 
   synchronizeEnabledState();
 }
@@ -126,44 +192,47 @@ void QgsAttributeForm::changeAttribute( const QString& field, const QVariant& va
 
 void QgsAttributeForm::setFeature( const QgsFeature& feature )
 {
+  mIsSettingFeature = true;
   mFeature = feature;
 
-  resetValues();
-
-  synchronizeEnabledState();
-
-  Q_FOREACH ( QgsAttributeFormInterface* iface, mInterfaces )
+  switch ( mMode )
   {
-    iface->featureChanged();
+    case SingleEditMode:
+    case AddFeatureMode:
+    {
+      resetValues();
+
+      synchronizeEnabledState();
+
+      Q_FOREACH ( QgsAttributeFormInterface* iface, mInterfaces )
+      {
+        iface->featureChanged();
+      }
+      break;
+    }
+    case MultiEditMode:
+    {
+      //ignore setFeature
+      break;
+    }
   }
+  mIsSettingFeature = false;
 }
 
-bool QgsAttributeForm::save()
+bool QgsAttributeForm::saveEdits()
 {
-  if ( mIsSaving )
-    return true;
-
-  mIsSaving = true;
-
-  bool changedLayer = false;
-
   bool success = true;
-
-  emit beforeSave( success );
-
-  // Somebody wants to prevent this form from saving
-  if ( !success )
-    return false;
+  bool changedLayer = false;
 
   QgsFeature updatedFeature = QgsFeature( mFeature );
 
-  if ( mFeature.isValid() || mIsAddDialog )
+  if ( mFeature.isValid() || mMode == AddFeatureMode )
   {
     bool doUpdate = false;
 
     // An add dialog should perform an action by default
     // and not only if attributes have "changed"
-    if ( mIsAddDialog )
+    if ( mMode == AddFeatureMode )
       doUpdate = true;
 
     QgsAttributes src = mFeature.attributes();
@@ -199,7 +268,7 @@ bool QgsAttributeForm::save()
 
     if ( doUpdate )
     {
-      if ( mIsAddDialog )
+      if ( mMode == AddFeatureMode )
       {
         mFeature.setValid( true );
         mLayer->beginEditCommand( mEditCommandMessage );
@@ -208,7 +277,7 @@ bool QgsAttributeForm::save()
         {
           mFeature.setAttributes( updatedFeature.attributes() );
           mLayer->endEditCommand();
-          mIsAddDialog = false;
+          setMode( SingleEditMode );
           changedLayer = true;
         }
         else
@@ -262,6 +331,110 @@ bool QgsAttributeForm::save()
   if ( changedLayer )
     mLayer->triggerRepaint();
 
+  return success;
+}
+
+void QgsAttributeForm::resetMultiEdit( bool promptToSave )
+{
+  if ( promptToSave )
+    save();
+
+  setMultiEditFeatureIds( mLayer->selectedFeaturesIds() );
+}
+
+bool QgsAttributeForm::saveMultiEdits()
+{
+  //find changed attributes
+  QMap< int, QVariant > newAttributeValues;
+  QMap< int, QgsAttributeFormEditorWidget* >::const_iterator wIt = mFormEditorWidgets.constBegin();
+  for ( ; wIt != mFormEditorWidgets.constEnd(); ++ wIt )
+  {
+    QgsAttributeFormEditorWidget* w = wIt.value();
+    if ( !w->hasChanged() )
+      continue;
+
+    if ( !w->currentValue().isValid() // if the widget returns invalid (== do not change)
+         || mLayer->editFormConfig()->readOnly( wIt.key() ) ) // or the field cannot be edited ...
+    {
+      continue;
+    }
+
+    // let editor know we've accepted the changes
+    w->changesCommitted();
+
+    newAttributeValues.insert( wIt.key(), w->currentValue() );
+  }
+
+  if ( newAttributeValues.isEmpty() )
+  {
+    //nothing to change
+    return true;
+  }
+
+#if 0
+  // prompt for save
+  int res = QMessageBox::information( this, tr( "Multiedit attributes" ),
+                                      tr( "Edits will be applied to all selected features" ), QMessageBox::Ok | QMessageBox::Cancel );
+  if ( res != QMessageBox::Ok )
+  {
+    resetMultiEdit();
+    return false;
+  }
+#endif
+
+  mLayer->beginEditCommand( tr( "Updated multiple feature attributes" ) );
+
+  bool success = true;
+
+  Q_FOREACH ( QgsFeatureId fid, mMultiEditFeatureIds )
+  {
+    QMap< int, QVariant >::const_iterator aIt = newAttributeValues.constBegin();
+    for ( ; aIt != newAttributeValues.constEnd(); ++aIt )
+    {
+      success &= mLayer->changeAttributeValue( fid, aIt.key(), aIt.value() );
+    }
+  }
+
+  if ( success )
+  {
+    mLayer->endEditCommand();
+    mLayer->triggerRepaint();
+  }
+  else
+  {
+    mLayer->destroyEditCommand();
+  }
+
+  return success;
+}
+
+bool QgsAttributeForm::save()
+{
+  if ( mIsSaving )
+    return true;
+
+  mIsSaving = true;
+
+  bool success = true;
+
+  emit beforeSave( success );
+
+  // Somebody wants to prevent this form from saving
+  if ( !success )
+    return false;
+
+  switch ( mMode )
+  {
+    case SingleEditMode:
+    case AddFeatureMode:
+      success = saveEdits();
+      break;
+
+    case MultiEditMode:
+      success = saveMultiEdits();
+      break;
+  }
+
   mIsSaving = false;
 
   return success;
@@ -281,7 +454,21 @@ void QgsAttributeForm::onAttributeChanged( const QVariant& value )
 
   Q_ASSERT( eww );
 
-  emit attributeChanged( eww->field().name(), value );
+  switch ( mMode )
+  {
+    case SingleEditMode:
+    case AddFeatureMode:
+    {
+      // don't emit signal if it was triggered by a feature change
+      if ( !mIsSettingFeature )
+      {
+        emit attributeChanged( eww->field().name(), value );
+      }
+      break;
+    }
+    case MultiEditMode:
+      break;
+  }
 }
 
 void QgsAttributeForm::onAttributeAdded( int idx )
@@ -362,7 +549,7 @@ void QgsAttributeForm::refreshFeature()
 
 void QgsAttributeForm::synchronizeEnabledState()
 {
-  bool isEditable = ( mFeature.isValid() || mIsAddDialog ) && mLayer->isEditable();
+  bool isEditable = ( mFeature.isValid() || mMode == AddFeatureMode ) && mLayer->isEditable();
 
   Q_FOREACH ( QgsWidgetWrapper* ww, mWidgets )
   {
@@ -409,6 +596,8 @@ void QgsAttributeForm::init()
 
   // Get a layout
   setLayout( new QGridLayout( this ) );
+
+  mFormEditorWidgets.clear();
 
   // Try to load Ui-File for layout
   if ( mLayer->editFormConfig()->layout() == QgsEditFormConfig::UiFileLayout && !mLayer->editFormConfig()->uiForm().isEmpty() )
@@ -504,10 +693,17 @@ void QgsAttributeForm::init()
       // This will also create the widget
       QWidget *l = new QLabel( fieldName );
       QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, idx, widgetConfig, nullptr, this, mContext );
-      QWidget *w = eww ? eww->widget() : new QLabel( QString( "<p style=\"color: red; font-style: italic;\">Failed to create widget with type '%1'</p>" ).arg( widgetType ) );
 
-      if ( w )
-        w->setObjectName( field.name() );
+      QWidget* w = nullptr;
+      if ( eww )
+      {
+        w = new QgsAttributeFormEditorWidget( eww, this );
+        mFormEditorWidgets.insert( idx, static_cast< QgsAttributeFormEditorWidget* >( w ) );
+      }
+      else
+      {
+        w = new QLabel( QString( "<p style=\"color: red; font-style: italic;\">Failed to create widget with type '%1'</p>" ).arg( widgetType ) );
+      }
 
       if ( eww )
         addWidgetWrapper( eww );
@@ -701,7 +897,11 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig()->widgetConfig( fldIdx );
 
         QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, fldIdx, widgetConfig, nullptr, this, mContext );
-        newWidgetInfo.widget = eww->widget();
+
+        QWidget* w = new QgsAttributeFormEditorWidget( eww, this );
+        mFormEditorWidgets.insert( fldIdx, static_cast< QgsAttributeFormEditorWidget* >( w ) );
+
+        newWidgetInfo.widget = w;
         addWidgetWrapper( eww );
 
         newWidgetInfo.widget->setObjectName( mLayer->fields().at( fldIdx ).name() );
@@ -921,4 +1121,100 @@ bool QgsAttributeForm::eventFilter( QObject* object, QEvent* e )
   }
 
   return false;
+}
+
+void QgsAttributeForm::scanForEqualAttributes( QgsFeatureIterator& fit, QSet< int >& mixedValueFields, QHash< int, QVariant >& fieldSharedValues ) const
+{
+  mixedValueFields.clear();
+  fieldSharedValues.clear();
+
+  QgsFeature f;
+  bool first = true;
+  while ( fit.nextFeature( f ) )
+  {
+    for ( int i = 0; i < mLayer->fields().count(); ++i )
+    {
+      if ( mixedValueFields.contains( i ) )
+        continue;
+
+      if ( first )
+      {
+        fieldSharedValues[i] = f.attribute( i );
+      }
+      else
+      {
+        if ( fieldSharedValues.value( i ) != f.attribute( i ) )
+        {
+          fieldSharedValues.remove( i );
+          mixedValueFields.insert( i );
+        }
+      }
+    }
+    first = false;
+
+    if ( mixedValueFields.count() == mLayer->fields().count() )
+    {
+      // all attributes are mixed, no need to keep scanning
+      break;
+    }
+  }
+}
+
+
+void QgsAttributeForm::layerSelectionChanged()
+{
+  switch ( mMode )
+  {
+    case SingleEditMode:
+    case AddFeatureMode:
+      break;
+
+    case MultiEditMode:
+      resetMultiEdit();
+      break;
+  }
+}
+
+void QgsAttributeForm::setMultiEditFeatureIds( const QgsFeatureIds& fids )
+{
+  mMultiEditFeatureIds = fids;
+
+  if ( fids.isEmpty() )
+  {
+    // no selected features
+    QMap< int, QgsAttributeFormEditorWidget* >::const_iterator wIt = mFormEditorWidgets.constBegin();
+    for ( ; wIt != mFormEditorWidgets.constEnd(); ++ wIt )
+    {
+      wIt.value()->initialize( QVariant() );
+    }
+    return;
+  }
+
+  QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFilterFids( fids ) );
+
+  // Scan through all features to determine which attributes are initially the same
+  QSet< int > mixedValueFields;
+  QHash< int, QVariant > fieldSharedValues;
+  scanForEqualAttributes( fit, mixedValueFields, fieldSharedValues );
+
+  // also fetch just first feature
+  fit = mLayer->getFeatures( QgsFeatureRequest().setFilterFid( *fids.constBegin() ) );
+  QgsFeature firstFeature;
+  fit.nextFeature( firstFeature );
+
+  Q_FOREACH ( int field, mixedValueFields )
+  {
+    if ( QgsAttributeFormEditorWidget* w = mFormEditorWidgets.value( field, nullptr ) )
+    {
+      w->initialize( firstFeature.attribute( field ), true );
+    }
+  }
+  QHash< int, QVariant >::const_iterator sharedValueIt = fieldSharedValues.constBegin();
+  for ( ; sharedValueIt != fieldSharedValues.constEnd(); ++sharedValueIt )
+  {
+    if ( QgsAttributeFormEditorWidget* w = mFormEditorWidgets.value( sharedValueIt.key(), nullptr ) )
+    {
+      w->initialize( sharedValueIt.value(), false );
+    }
+  }
 }

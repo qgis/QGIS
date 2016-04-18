@@ -85,8 +85,16 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * Change the current view mode.
      *
      * @param view The view mode to set
+     * @see view()
      */
     void setView( ViewMode view );
+
+    /**
+     * Returns the current view mode.
+     * @see setView()
+     * @note added in QGIS 2.16
+     */
+    ViewMode view() const;
 
     /**
      * Set the filter mode
@@ -164,6 +172,11 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     bool saveEditChanges();
 
     void openConditionalStyles();
+
+    /** Sets whether multi edit mode is enabled.
+     * @note added in QGIS 2.16
+     */
+    void setMultiEditEnabled( bool enabled );
 
   signals:
     /**

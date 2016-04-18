@@ -363,7 +363,7 @@
         <file>themes/default/mIconDataDefineExpression.svg</file>
         <file>themes/default/mIconDataDefineExpressionError.svg</file>
         <file>themes/default/mIconDataDefineExpressionOn.svg</file>
-		<file>themes/default/mIconDb2.svg</file>
+        <file>themes/default/mIconDb2.svg</file>
         <file>themes/default/mIconDbSchema.png</file>
         <file>themes/default/mIconDelete.png</file>
         <file>themes/default/mIconDeselected.svg</file>
@@ -488,7 +488,7 @@
         <file>themes/default/rendererCategorizedSymbol.svg</file>
         <file>themes/default/rendererGraduatedSymbol.png</file>
         <file>themes/default/rendererGraduatedSymbol.svg</file>
-        <file>themes/default/rendererNullSymbol.svg</file>        
+        <file>themes/default/rendererNullSymbol.svg</file>
         <file>themes/default/rendererSingleSymbol.png</file>
         <file>themes/default/rendererSingleSymbol.svg</file>
         <file>themes/default/rendererRuleBasedSymbol.svg</file>
@@ -576,6 +576,7 @@
         <file>icons/qgis-icon-60x60_xmas.png</file>
         <file>themes/default/mActionTracing.png</file>
         <file>themes/default/vector_grid.png</file>
+        <file>themes/default/multiedit.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

@@ -20,6 +20,15 @@ class QgsAttributeForm : QWidget
 %End
 
   public:
+
+    //! Form modes
+    enum Mode
+    {
+      SingleEditMode, /*!< Single edit mode, for editing a single feature */
+      MultiEditMode, /*!< Multi edit mode, for editing fields of multiple features at once */
+      // TODO: SearchMode, /*!< Form values are used for searching/filtering the layer */
+    };
+
     explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature& feature = QgsFeature(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext(), QWidget *parent /TransferThis/ = 0 );
     ~QgsAttributeForm();
 
@@ -60,6 +69,19 @@ class QgsAttributeForm : QWidget
      * @return Editable mode of this form
      */
     bool editable();
+
+    /** Returns the current mode of the form.
+     * @note added in QGIS 2.16
+     * @see setMode()
+     */
+    Mode mode() const;
+
+    /** Sets the current mode of the form.
+     * @param mode form mode
+     * @note added in QGIS 2.16
+     * @see mode()
+     */
+    void setMode( Mode mode );
 
     /**
      * Toggles the form mode between edit feature and add feature.

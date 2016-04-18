@@ -47,8 +47,16 @@ class QgsDualView : QStackedWidget
      * Change the current view mode.
      *
      * @param view The view mode to set
+     * @see view()
      */
     void setView( ViewMode view );
+
+    /**
+     * Returns the current view mode.
+     * @see setView()
+     * @note added in QGIS 2.16
+     */
+    ViewMode view() const;
 
     /**
      * Set the filter mode
