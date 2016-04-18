@@ -67,26 +67,34 @@ class GdalUtils:
                 envval += '{}{}'.format(os.pathsep, path)
                 os.putenv('PATH', envval)
 
-        loglines = []
-        loglines.append('GDAL execution console output')
         fused_command = ' '.join([unicode(c) for c in commands])
         progress.setInfo('GDAL command:')
         progress.setCommand(fused_command)
-        proc = subprocess.Popen(
-            fused_command,
-            shell=True,
-            stdout=subprocess.PIPE,
-            stdin=open(os.devnull),
-            stderr=subprocess.STDOUT,
-            universal_newlines=True,
-        ).stdout
         progress.setInfo('GDAL command output:')
-        try:
-            for line in proc:
-                progress.setConsoleInfo(line)
-                loglines.append(line)
-        except IOError as e:
-            raise IOError(e.message + u'\nAfter reading {} lines, last lines: {}'.format(len(loglines), u'\n'.join(loglines[-10:])))
+        success = False
+        retry_count = 0
+        while success == False:
+            loglines = []
+            loglines.append('GDAL execution console output')
+            try:
+                proc = subprocess.Popen(
+                    fused_command,
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    stdin=open(os.devnull),
+                    stderr=subprocess.STDOUT,
+                    universal_newlines=True,
+                ).stdout
+                for line in proc:
+                    progress.setConsoleInfo(line)
+                    loglines.append(line)
+                success = True
+            except IOError as e:
+                if retry_count < 5:
+                    retry_count += 1
+                else:
+                    raise IOError(e.message + u'\nTried 5 times without success. Last iteration stopped after reading {} line(s).\nLast line(s):\n{}'.format(len(loglines), u'\n'.join(loglines[-10:])))
+
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
         GdalUtils.consoleOutput = loglines
 
