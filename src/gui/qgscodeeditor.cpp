@@ -20,6 +20,7 @@
 #include <QWidget>
 #include <QFont>
 #include <QDebug>
+#include <QFocusEvent>
 
 QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString& title, bool folding, bool margin )
     : QsciScintilla( parent )
@@ -42,6 +43,50 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString& title, bool foldin
 
 QgsCodeEditor::~QgsCodeEditor()
 {
+}
+
+// Workaround a bug in QScintilla 2.8.X
+void QgsCodeEditor::focusOutEvent( QFocusEvent *event )
+{
+#if QSCINTILLA_VERSION >= 0x020800 && QSCINTILLA_VERSION < 0x020900
+  if ( event->reason() != Qt::ActiveWindowFocusReason )
+  {
+    /* There's a bug in all QScintilla 2.8.X, where
+       a focus out event that is not due to ActiveWindowFocusReason doesn't
+       lead to the bliking caret being disabled. The hack consists in making
+       QsciScintilla::focusOutEvent believe that the event is a ActiveWindowFocusReason
+       The bug was fixed in 2.9 per:
+        2015-04-14  Phil Thompson  <phil@riverbankcomputing.com>
+
+        * qt/qsciscintillabase.cpp:
+        Fixed a problem notifying when focus is lost to another application
+        widget.
+        [41734678234e]
+    */
+    QFocusEvent newFocusEvent( QEvent::FocusOut, Qt::ActiveWindowFocusReason );
+    QsciScintilla::focusOutEvent( &newFocusEvent );
+  }
+  else
+#endif
+  {
+    QsciScintilla::focusOutEvent( event );
+  }
+}
+
+// This workaround a likely bug in QScintilla. The ESC key should not be consumned
+// by the main entry, so that the default behaviour (Dialog closing) can trigger,
+// but only is the auto-completion suggestion list isn't displayed
+void QgsCodeEditor::keyPressEvent( QKeyEvent * event )
+{
+  if ( event->key() == Qt::Key_Escape && !isListActive() )
+  {
+    // Shortcut QScintilla and redirect the event to the QWidget handler
+    QWidget::keyPressEvent( event );
+  }
+  else
+  {
+    QsciScintilla::keyPressEvent( event );
+  }
 }
 
 void QgsCodeEditor::setSciWidget()
