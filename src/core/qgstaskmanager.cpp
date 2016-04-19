@@ -23,8 +23,9 @@
 // QgsTask
 //
 
-QgsTask::QgsTask( const QString &name )
+QgsTask::QgsTask( const QString &name, const Flags& flags )
     : QObject()
+    , mFlags( flags )
     , mDescription( name )
     , mStatus( Queued )
     , mProgress( 0.0 )
@@ -39,7 +40,7 @@ void QgsTask::start()
   run();
 }
 
-void QgsTask::terminate()
+void QgsTask::cancel()
 {
   mShouldTerminate = true;
 }
@@ -89,7 +90,7 @@ QgsTaskManager::QgsTaskManager( QObject* parent )
 QgsTaskManager::~QgsTaskManager()
 {
   //first tell all tasks to cancel
-  terminateAll();
+  cancelAll();
 
   //then clean them up, including waiting for them to terminate
   QMap< long, TaskInfo >::const_iterator it = mTasks.constBegin();
@@ -166,7 +167,7 @@ long QgsTaskManager::taskId( QgsTask *task ) const
   return -1;
 }
 
-void QgsTaskManager::terminateAll()
+void QgsTaskManager::cancelAll()
 {
   QMap< long, TaskInfo >::iterator it = mTasks.begin();
   for ( ; it != mTasks.end(); ++it )
@@ -174,7 +175,7 @@ void QgsTaskManager::terminateAll()
     QgsTask* task = it.value().task;
     if ( task->isActive() )
     {
-      task->terminate();
+      task->cancel();
     }
   }
 }
@@ -209,7 +210,7 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
     return false;
 
   if ( task->isActive() )
-    task->terminate();
+    task->cancel();
 
   // wait for task to terminate
   QMap< long, TaskInfo >::iterator it = mTasks.begin();

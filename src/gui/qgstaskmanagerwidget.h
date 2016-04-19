@@ -17,11 +17,11 @@
 #ifndef QGSTASKMANAGERWIDGET_H
 #define QGSTASKMANAGERWIDGET_H
 
-#include <QTreeView>
 #include <QStyledItemDelegate>
 
 class QgsTaskManager;
 class QgsTask;
+class QTreeView;
 
 /** \ingroup gui
  * \class QgsTaskManagerWidget
@@ -29,7 +29,7 @@ class QgsTask;
  * @see QgsTaskManager
  * @note introduced in QGIS 2.16
  */
-class GUI_EXPORT QgsTaskManagerWidget : public QTreeView
+class GUI_EXPORT QgsTaskManagerWidget : public QWidget
 {
     Q_OBJECT
 
@@ -41,6 +41,9 @@ class GUI_EXPORT QgsTaskManagerWidget : public QTreeView
      */
     QgsTaskManagerWidget( QgsTaskManager* manager, QWidget* parent = nullptr );
 
+  private:
+
+    QTreeView* mTreeView;
 };
 
 

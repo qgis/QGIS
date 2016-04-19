@@ -20,27 +20,39 @@
 #include "qgsapplication.h"
 #include <QPainter>
 #include <QMouseEvent>
+#include <QTreeView>
+#include <QLayout>
+#include <QToolBar>
+#include <QAction>
 
 //
 // QgsTaskManagerWidget
 //
 
 QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *parent )
-    : QTreeView( parent )
+    : QWidget( parent )
 {
   Q_ASSERT( manager );
 
-  setModel( new QgsTaskManagerModel( manager, this ) );
+  QVBoxLayout* vLayout = new QVBoxLayout();
+  vLayout->setMargin( 0 );
+#if 0
+  QToolBar* toolbar = new QToolBar();
+  toolbar->setIconSize( QSize( 16, 16 ) );
+  toolbar->addAction( new QAction( "test", this ) );
+  vLayout->addWidget( toolbar );
+#endif
+  mTreeView = new QTreeView();
+  mTreeView->setModel( new QgsTaskManagerModel( manager, this ) );
+  mTreeView->setItemDelegateForColumn( 1, new QgsProgressBarDelegate( this ) );
+  mTreeView->setItemDelegateForColumn( 2, new QgsTaskStatusDelegate( this ) );
+  mTreeView->setHeaderHidden( true );
+  mTreeView->setRootIsDecorated( false );
+  mTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
+  vLayout->addWidget( mTreeView );
 
-  setItemDelegateForColumn( 1, new QgsProgressBarDelegate( this ) );
-  setItemDelegateForColumn( 2, new QgsTaskStatusDelegate( this ) );
-
-  setHeaderHidden( true );
-  setRootIsDecorated( false );
-  setSelectionBehavior( QAbstractItemView::SelectRows );
+  setLayout( vLayout );
 }
-
-
 
 
 //
@@ -178,7 +190,7 @@ bool QgsTaskManagerModel::setData( const QModelIndex &index, const QVariant &val
     case Status:
     {
       if ( value.toBool() )
-        task->terminate();
+        task->cancel();
       return true;
     }
 

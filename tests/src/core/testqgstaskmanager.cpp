@@ -27,6 +27,7 @@ class TestTask : public QgsTask
   public:
 
     TestTask( const QString& desc = QString() ) : QgsTask( desc ), runCalled( false ) {}
+    TestTask( const QString& desc, const QgsTask::Flags& flags ) : QgsTask( desc, flags ), runCalled( false ) {}
 
     void emitProgressChanged( double progress ) { setProgress( progress ); }
     void emitTaskStopped() { stopped(); }
@@ -59,7 +60,9 @@ class TestTerminationTask : public TestTask
 
     void run() override
     {
-      QTest::qSleep( 1000 );
+      while ( !isCancelled() )
+        {}
+      stopped();
     }
 };
 
@@ -112,6 +115,8 @@ void TestQgsTaskManager::task()
   QCOMPARE( task->status(), QgsTask::Queued );
   QCOMPARE( task->description(), QString( "desc" ) );
   QVERIFY( !task->isActive() );
+  QVERIFY( task->canCancel() );
+  QVERIFY( task->flags() & QgsTask::ProgressReport );
 
   QSignalSpy startedSpy( task.data(), SIGNAL( begun() ) );
   QSignalSpy statusSpy( task.data(), SIGNAL( statusChanged( int ) ) );
@@ -143,6 +148,16 @@ void TestQgsTaskManager::task()
   QCOMPARE( completeSpy.count(), 1 );
   QCOMPARE( statusSpy2.count(), 1 );
   QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy2.last().at( 0 ).toInt() ), QgsTask::Complete );
+
+  // test flags
+  task.reset( new TestTask( "desc", QgsTask::ProgressReport ) );
+  QVERIFY( !task->canCancel() );
+  QVERIFY( task->flags() & QgsTask::ProgressReport );
+  QVERIFY( !( task->flags() & QgsTask::CancelSupport ) );
+  task.reset( new TestTask( "desc", QgsTask::CancelSupport ) );
+  QVERIFY( task->canCancel() );
+  QVERIFY( !( task->flags() & QgsTask::ProgressReport ) );
+  QVERIFY( task->flags() & QgsTask::CancelSupport );
 }
 
 
@@ -237,8 +252,9 @@ void TestQgsTaskManager::taskTerminationBeforeDelete()
   TestTask* task = new TestTerminationTask();
   manager->addTask( task );
 
-  //SHOULD NOT BE NEEDED...
-  task->start();
+  // wait till task spins up
+  while ( !task->isActive() )
+    {}
 
   // if task is not terminated assert will trip
   delete manager;

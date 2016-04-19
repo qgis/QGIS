@@ -20,20 +20,36 @@ class QgsTask : QObject
       Terminated, /*!< Task was terminated or errored */
     };
 
+    //! Task flags
+    enum Flag
+    {
+      CancelSupport, //!< Task can be cancelled
+      ProgressReport, //!< Task will report its progress
+      AllFlags, //!< Task supports all flags
+    };
+    typedef QFlags<QgsTask::Flag> Flags;
+
     /** Constructor for QgsTask.
      * @param description text description of task
+     * @param flags task flags
      */
-    QgsTask( const QString& description = QString() );
+    QgsTask( const QString& description = QString(), const Flags& flags = AllFlags );
+
+    //! Returns the flags associated with the task.
+    Flags flags() const;
 
     //! Starts the task.
     void start();
 
     //! Notifies the task that it should terminate.
     //! @see isCancelled()
-    void terminate();
+    void cancel();
+
+    //! Returns true if the task can be cancelled.
+    bool canCancel() const;
 
     //! Returns true if the task is active, ie it is not complete and has
-    //! not been terminated.
+    //! not been cancelled.
     bool isActive() const;
 
     //! Returns the current task status.
@@ -104,6 +120,8 @@ class QgsTask : QObject
 
 };
 
+QFlags<QgsTask::Flag> operator|(QgsTask::Flag f1, QFlags<QgsTask::Flag> f2);
+
 /** \ingroup core
  * \class QgsTaskManager
  * \brief Task manager for managing a set of long-running QgsTask tasks. This class can be created directly,
@@ -169,7 +187,7 @@ class QgsTaskManager : QObject
     long taskId( QgsTask* task ) const;
 
     //! Instructs all tasks tracked by the manager to terminate.
-    void terminateAll();
+    void cancelAll();
 
   signals:
 

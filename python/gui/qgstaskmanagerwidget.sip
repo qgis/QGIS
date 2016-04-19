@@ -4,7 +4,7 @@
  * @see QgsTaskManager
  * @note introduced in QGIS 2.16
  */
-class QgsTaskManagerWidget : QTreeView
+class QgsTaskManagerWidget : QWidget
 {
 %TypeHeaderCode
 #include <qgstaskmanagerwidget.h>
