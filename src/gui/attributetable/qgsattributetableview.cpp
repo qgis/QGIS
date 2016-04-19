@@ -17,7 +17,9 @@
 #include <QSettings>
 #include <QHeaderView>
 #include <QMenu>
+#include <QToolButton>
 
+#include "qgsactionmanager.h"
 #include "qgsattributetableview.h"
 #include "qgsattributetablemodel.h"
 #include "qgsattributetabledelegate.h"
@@ -38,7 +40,6 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
     , mFeatureSelectionManager( nullptr )
     , mModel( nullptr )
     , mActionPopup( nullptr )
-    , mLayerCache( nullptr )
     , mRowSectionAnchor( 0 )
     , mCtrlDragSelectionFlag( QItemSelectionModel::Select )
 {
@@ -47,6 +48,9 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
 
   //verticalHeader()->setDefaultSectionSize( 20 );
   horizontalHeader()->setHighlightSections( false );
+
+  // We need mouse move events to create the action button on hover
+  setMouseTracking( true );
 
   mTableDelegate = new QgsAttributeTableDelegate( this );
   setItemDelegate( mTableDelegate );
@@ -132,6 +136,22 @@ void QgsAttributeTableView::setFeatureSelectionManager( QgsIFeatureSelectionMana
     mFeatureSelectionModel->setFeatureSelectionManager( mFeatureSelectionManager );
 }
 
+QWidget* QgsAttributeTableView::createActionWidget()
+{
+  QToolButton* toolButton = new QToolButton( this );
+
+  for ( int i = 0; i < mFilterModel->layer()->actions()->size(); ++i )
+  {
+    const QgsAction& action = mFilterModel->layer()->actions()->at( i );
+
+    QAction* act = new QAction( action.icon(), action.shortTitle(), toolButton );
+
+    toolButton->addAction( act );
+  }
+
+  return toolButton;
+}
+
 void QgsAttributeTableView::closeEvent( QCloseEvent *e )
 {
   Q_UNUSED( e );
@@ -155,6 +175,15 @@ void QgsAttributeTableView::mouseReleaseEvent( QMouseEvent *event )
 
 void QgsAttributeTableView::mouseMoveEvent( QMouseEvent *event )
 {
+  QModelIndex index = indexAt( event->pos() );
+  if ( index.column() == 0 )
+  {
+    Q_ASSERT( index.isValid() );
+
+    if ( !indexWidget( index ) )
+      setIndexWidget( index, createActionWidget() );
+  }
+
   setSelectionMode( QAbstractItemView::NoSelection );
   QTableView::mouseMoveEvent( event );
   setSelectionMode( QAbstractItemView::ExtendedSelection );

@@ -275,14 +275,16 @@ bool QgsActionManager::writeXML( QDomNode& layer_node, QDomDocument& doc ) const
 {
   QDomElement aActions = doc.createElement( "attributeactions" );
 
-  for ( int i = 0; i < mActions.size(); i++ )
+  Q_FOREACH ( const QgsAction& action, mActions )
   {
     QDomElement actionSetting = doc.createElement( "actionsetting" );
-    actionSetting.setAttribute( "type", mActions[i].type() );
-    actionSetting.setAttribute( "name", mActions[i].name() );
-    actionSetting.setAttribute( "icon", mActions[i].iconPath() );
-    actionSetting.setAttribute( "action", mActions[i].action() );
-    actionSetting.setAttribute( "capture", mActions[i].capture() );
+    actionSetting.setAttribute( "type", action.type() );
+    actionSetting.setAttribute( "name", action.name() );
+    actionSetting.setAttribute( "shortTitle", action.shortTitle() );
+    actionSetting.setAttribute( "icon", action.iconPath() );
+    actionSetting.setAttribute( "action", action.action() );
+    actionSetting.setAttribute( "showInAttributeTable", action.showInAttributeTable() );
+    actionSetting.setAttribute( "capture", action.capture() );
     aActions.appendChild( actionSetting );
   }
   layer_node.appendChild( aActions );
@@ -302,11 +304,15 @@ bool QgsActionManager::readXML( const QDomNode& layer_node )
     for ( int i = 0; i < actionsettings.size(); ++i )
     {
       QDomElement setting = actionsettings.item( i ).toElement();
-      addAction( static_cast< QgsAction::ActionType >( setting.attributeNode( "type" ).value().toInt() ),
-                 setting.attributeNode( "name" ).value(),
-                 setting.attributeNode( "action" ).value(),
-                 setting.attributeNode( "icon" ).value(),
-                 setting.attributeNode( "capture" ).value().toInt() != 0 );
+      mActions.append(
+        QgsAction( static_cast< QgsAction::ActionType >( setting.attributeNode( "type" ).value().toInt() ),
+                   setting.attributeNode( "name" ).value(),
+                   setting.attributeNode( "action" ).value(),
+                   setting.attributeNode( "icon" ).value(),
+                   setting.attributeNode( "capture" ).value().toInt() != 0,
+                   setting.attributeNode( "shortTitle" ).value(),
+                   setting.attributeNode( "showInAttributeTable" ).value().toInt() != 0 )
+      );
     }
   }
   return true;

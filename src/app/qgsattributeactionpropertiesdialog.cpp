@@ -27,17 +27,18 @@
 #include <QFileDialog>
 #include <QImageWriter>
 
-QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString& name, const QString& iconPath, const QString& actionText, bool capture, QgsVectorLayer* layer, QWidget* parent )
+QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString& description, const QString& shortTitle, const QString& iconPath, const QString& actionText, bool capture, QgsVectorLayer* layer, QWidget* parent )
     : QDialog( parent )
     , mLayer( layer )
 {
   setupUi( this );
 
   mActionType->setCurrentIndex( type );
-  mActionName->setText( name );
+  mActionName->setText( description );
+  mShortTitle->setText( shortTitle );
   mActionIcon->setText( iconPath );
   mIconPreview->setPixmap( QPixmap( iconPath ) );
-  mActionText->setPlainText( actionText );
+  mActionText->setText( actionText );
   mCaptureOutput->setChecked( capture );
 
   // display the expression builder
@@ -96,9 +97,14 @@ QgsAction::ActionType QgsAttributeActionPropertiesDialog::type() const
   return static_cast<QgsAction::ActionType>( mActionType->currentIndex() );
 }
 
-QString QgsAttributeActionPropertiesDialog::name() const
+QString QgsAttributeActionPropertiesDialog::description() const
 {
   return mActionName->text();
+}
+
+QString QgsAttributeActionPropertiesDialog::shortTitle() const
+{
+  return mShortTitle->text();
 }
 
 QString QgsAttributeActionPropertiesDialog::iconPath() const
@@ -108,7 +114,7 @@ QString QgsAttributeActionPropertiesDialog::iconPath() const
 
 QString QgsAttributeActionPropertiesDialog::actionText() const
 {
-  return mActionText->toPlainText();
+  return mActionText->text();
 }
 
 bool QgsAttributeActionPropertiesDialog::capture() const
@@ -123,18 +129,18 @@ void QgsAttributeActionPropertiesDialog::browse()
                      this, tr( "Select an action", "File dialog window title" ), QDir::homePath() );
 
   if ( !action.isNull() )
-    mActionText->insertPlainText( action );
+    mActionText->insertText( action );
 }
 
 void QgsAttributeActionPropertiesDialog::insertExpressionOrField()
 {
-  QString selText = mActionText->textCursor().selectedText();
+  QString selText = mActionText->selectedText();
 
   // edit the selected expression if there's one
   if ( selText.startsWith( "[%" ) && selText.endsWith( "%]" ) )
     selText = selText.mid( 2, selText.size() - 4 );
 
-  mActionText->insertPlainText( "[%" + mFieldExpression->currentField() + "%]" );
+  mActionText->insertText( "[%" + mFieldExpression->currentField() + "%]" );
 }
 
 void QgsAttributeActionPropertiesDialog::chooseIcon()
@@ -156,7 +162,7 @@ void QgsAttributeActionPropertiesDialog::chooseIcon()
 
 void QgsAttributeActionPropertiesDialog::updateButtons()
 {
-  if ( mActionName->text().isEmpty() || mActionText->toPlainText().isEmpty() )
+  if ( mActionName->text().isEmpty() || mActionText->text().isEmpty() )
   {
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
   }

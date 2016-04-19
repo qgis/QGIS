@@ -95,19 +95,22 @@ void QgsAttributeActionDialog::insertRow( int row, const QgsAction& action )
   item = new QTableWidgetItem( textForType( action.type() ) );
   item->setData( Qt::UserRole, action.type() );
   item->setFlags( item->flags() & ~Qt::ItemIsEditable );
-  mAttributeActionTable->setItem( row, 0, item );
+  mAttributeActionTable->setItem( row, Type, item );
 
-  // Name
-  mAttributeActionTable->setItem( row, 1, new QTableWidgetItem( action.name() ) );
+  // Description
+  mAttributeActionTable->setItem( row, Description, new QTableWidgetItem( action.name() ) );
+
+  // Short Title
+  mAttributeActionTable->setItem( row, ShortTitle, new QTableWidgetItem( action.shortTitle() ) );
 
   // Action text
-  mAttributeActionTable->setItem( row, 2, new QTableWidgetItem( action.action() ) );
+  mAttributeActionTable->setItem( row, ActionText, new QTableWidgetItem( action.action() ) );
 
   // Capture output
   item = new QTableWidgetItem();
-  item->setFlags( item->flags() & ~( Qt::ItemIsEditable | Qt::ItemIsUserCheckable ) );
+  item->setFlags( item->flags() & ~( Qt::ItemIsEditable ) );
   item->setCheckState( action.capture() ? Qt::Checked : Qt::Unchecked );
-  mAttributeActionTable->setItem( row, 3, item );
+  mAttributeActionTable->setItem( row, Capture, item );
 
   // Icon
   QIcon icon = action.icon();
@@ -182,11 +185,12 @@ void QgsAttributeActionDialog::swapRows( int row1, int row2 )
 
 QgsAction QgsAttributeActionDialog::rowToAction( int row ) const
 {
-  QgsAction action( static_cast<QgsAction::ActionType>( mAttributeActionTable->item( row, 0 )->data( Qt::UserRole ).toInt() ),
-                    mAttributeActionTable->item( row, 1 )->text(),
-                    mAttributeActionTable->item( row, 2 )->text(),
+  QgsAction action( static_cast<QgsAction::ActionType>( mAttributeActionTable->item( row, Type )->data( Qt::UserRole ).toInt() ),
+                    mAttributeActionTable->item( row, Description )->text(),
+                    mAttributeActionTable->item( row, ActionText )->text(),
                     mAttributeActionTable->verticalHeaderItem( row )->data( Qt::UserRole ).toString(),
-                    mAttributeActionTable->item( row, 3 )->checkState() == Qt::Checked );
+                    mAttributeActionTable->item( row, Capture )->checkState() == Qt::Checked,
+                    mAttributeActionTable->item( row, ShortTitle )->text() );
   return action;
 }
 
@@ -237,7 +241,7 @@ void QgsAttributeActionDialog::insert()
 
   if ( dlg.exec() )
   {
-    QString name = uniqueName( dlg.name() );
+    QString name = uniqueName( dlg.description() );
 
     insertRow( pos, dlg.type(), name, dlg.actionText(), dlg.iconPath(), dlg.capture() );
   }
@@ -280,11 +284,12 @@ void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem* item )
   int row = item->row();
 
   QgsAttributeActionPropertiesDialog actionProperties(
-    static_cast<QgsAction::ActionType>( mAttributeActionTable->item( row, 0 )->data( Qt::UserRole ).toInt() ),
-    mAttributeActionTable->item( row, 1 )->text(),
+    static_cast<QgsAction::ActionType>( mAttributeActionTable->item( row, Type )->data( Qt::UserRole ).toInt() ),
+    mAttributeActionTable->item( row, Description )->text(),
+    mAttributeActionTable->item( row, ShortTitle )->text(),
     mAttributeActionTable->verticalHeaderItem( row )->data( Qt::UserRole ).toString(),
-    mAttributeActionTable->item( row, 2 )->text(),
-    mAttributeActionTable->item( row, 3 )->checkState() == Qt::Checked,
+    mAttributeActionTable->item( row, ActionText )->text(),
+    mAttributeActionTable->item( row, Capture )->checkState() == Qt::Checked,
     mLayer
   );
 
@@ -292,11 +297,12 @@ void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem* item )
 
   if ( actionProperties.exec() )
   {
-    mAttributeActionTable->item( row, 0 )->setData( Qt::UserRole, actionProperties.type() );
-    mAttributeActionTable->item( row, 0 )->setText( textForType( actionProperties.type() ) );
-    mAttributeActionTable->item( row, 1 )->setText( actionProperties.name() );
-    mAttributeActionTable->item( row, 2 )->setText( actionProperties.actionText() );
-    mAttributeActionTable->item( row, 3 )->setCheckState( actionProperties.capture() ? Qt::Checked : Qt::Unchecked );
+    mAttributeActionTable->item( row, Type )->setData( Qt::UserRole, actionProperties.type() );
+    mAttributeActionTable->item( row, Type )->setText( textForType( actionProperties.type() ) );
+    mAttributeActionTable->item( row, Description )->setText( actionProperties.description() );
+    mAttributeActionTable->item( row, ShortTitle )->setText( actionProperties.shortTitle() );
+    mAttributeActionTable->item( row, ActionText )->setText( actionProperties.actionText() );
+    mAttributeActionTable->item( row, Capture )->setCheckState( actionProperties.capture() ? Qt::Checked : Qt::Unchecked );
     mAttributeActionTable->verticalHeaderItem( row )->setData( Qt::UserRole, actionProperties.iconPath() );
     mAttributeActionTable->verticalHeaderItem( row )->setIcon( QIcon( actionProperties.iconPath() ) );
   }

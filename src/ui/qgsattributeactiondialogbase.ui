@@ -146,7 +146,7 @@
          <enum>QAbstractItemView::SelectRows</enum>
         </property>
         <property name="columnCount">
-         <number>4</number>
+         <number>6</number>
         </property>
         <column>
          <property name="text">
@@ -155,7 +155,12 @@
         </column>
         <column>
          <property name="text">
-          <string>Name</string>
+          <string>Description</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Short Title</string>
          </property>
         </column>
         <column>
@@ -166,6 +171,11 @@
         <column>
          <property name="text">
           <string>Capture</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Show In Attribute Table</string>
          </property>
         </column>
        </widget>
@@ -195,6 +205,39 @@
          <iconset resource="../../images/images.qrc">
           <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
         </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QgsCollapsibleGroupBox" name="mShowInAttributeTable">
+     <property name="title">
+      <string>Show in Attribute Table</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Layout</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="comboBox">
+        <item>
+         <property name="text">
+          <string>Combo Box</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Separate Buttons</string>
+         </property>
+        </item>
        </widget>
       </item>
      </layout>

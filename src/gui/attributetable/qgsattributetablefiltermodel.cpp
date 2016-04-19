@@ -67,6 +67,17 @@ void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )
   QSortFilterProxyModel::sort( column, order );
 }
 
+QVariant QgsAttributeTableFilterModel::data( const QModelIndex& index, int role ) const
+{
+  if ( index.column() == 0 )
+    return "Wow";
+  else
+  {
+    QModelIndex sourceIndex = QSortFilterProxyModel::index( index.row(), index.column() - 1, index.parent() );
+    return QSortFilterProxyModel::data( sourceIndex, role );
+  }
+}
+
 void QgsAttributeTableFilterModel::setSelectedOnTop( bool selectedOnTop )
 {
   if ( mSelectedOnTop != selectedOnTop )

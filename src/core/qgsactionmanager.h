@@ -138,7 +138,7 @@ class CORE_EXPORT QgsActionManager
     /**
      * Get the action at the specified index.
      */
-    QgsAction at( int idx ) const { return mActions.at( idx ); }
+    const QgsAction& at( int idx ) const { return mActions.at( idx ); }
 
     /**
      * Get the action at the specified index.

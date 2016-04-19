@@ -35,23 +35,27 @@ class CORE_EXPORT QgsAction
       OpenUrl,
     };
 
-    QgsAction( ActionType type, const QString& name, const QString& action, bool capture )
+    QgsAction( ActionType type, const QString& description, const QString& action, bool capture )
         : mType( type )
-        , mName( name )
+        , mDescription( description )
         , mAction( action )
         , mCaptureOutput( capture )
     {}
 
-    QgsAction( ActionType type, const QString& name, const QString& action, const QString& icon, bool capture )
+    QgsAction( ActionType type, const QString& description, const QString& action, const QString& icon, bool capture, const QString& shortTitle = QString(), bool showInAttributeTable = true )
         : mType( type )
-        , mName( name )
+        , mDescription( description )
+        , mShortTitle( shortTitle )
         , mIcon( icon )
         , mAction( action )
         , mCaptureOutput( capture )
+        , mShowInAttributeTable( showInAttributeTable )
     {}
 
-    //! The name of the action
-    QString name() const { return mName; }
+    //! The name of the action. This may be a longer description.
+    QString name() const { return mDescription; }
+
+    QString shortTitle() const { return mShortTitle; }
 
     //! The path to the icon
     QString iconPath() const { return mIcon; }
@@ -68,15 +72,20 @@ class CORE_EXPORT QgsAction
     //! Whether to capture output for display when this action is run
     bool capture() const { return mCaptureOutput; }
 
-    //! Whether the action is runable on the current platform
+    //! Returns true if the action should be shown on the attribute table
+    bool showInAttributeTable() const { return mShowInAttributeTable; }
+
+    //! Checks if the action is runable on the current platform
     bool runable() const;
 
   private:
     ActionType mType;
-    QString mName;
+    QString mDescription;
+    QString mShortTitle;
     QString mIcon;
     QString mAction;
     bool mCaptureOutput;
+    bool mShowInAttributeTable;
 };
 
 #endif // QGSACTION_H

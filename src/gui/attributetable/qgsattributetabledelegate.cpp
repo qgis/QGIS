@@ -17,6 +17,7 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QPainter>
+#include <QToolButton>
 
 #include "qgsattributeeditor.h"
 #include "qgsattributetabledelegate.h"
@@ -27,6 +28,7 @@
 #include "qgsfeatureselectionmodel.h"
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
+#include "qgsactionmanager.h"
 
 
 QgsVectorLayer* QgsAttributeTableDelegate::layer( const QAbstractItemModel *model )
@@ -55,10 +57,7 @@ const QgsAttributeTableModel* QgsAttributeTableDelegate::masterModel( const QAbs
   return nullptr;
 }
 
-QWidget *QgsAttributeTableDelegate::createEditor(
-  QWidget *parent,
-  const QStyleOptionViewItem &option,
-  const QModelIndex &index ) const
+QWidget* QgsAttributeTableDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
   QgsVectorLayer *vl = layer( index.model() );
@@ -119,9 +118,8 @@ void QgsAttributeTableDelegate::setFeatureSelectionModel( QgsFeatureSelectionMod
   mFeatureSelectionModel = featureSelectionModel;
 }
 
-void QgsAttributeTableDelegate::paint( QPainter * painter,
-                                       const QStyleOptionViewItem & option,
-                                       const QModelIndex & index ) const
+
+void QgsAttributeTableDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   QgsFeatureId fid = index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
 
@@ -136,15 +134,23 @@ void QgsAttributeTableDelegate::paint( QPainter * painter,
   if ( mFeatureSelectionModel && mFeatureSelectionModel->isSelected( fid ) )
     myOpt.state |= QStyle::State_Selected;
 
-  QItemDelegate::paint( painter, myOpt, index );
 
-  if ( option.state & QStyle::State_HasFocus )
+  if ( index.column() == 0 )
   {
-    QRect r = option.rect.adjusted( 1, 1, -1, -1 );
-    QPen p( QBrush( QColor( 0, 255, 127 ) ), 2 );
-    painter->save();
-    painter->setPen( p );
-    painter->drawRect( r );
-    painter->restore();
+    painter->drawImage( QPoint( 0, 0 ), mActionButtonImage );
+  }
+  else
+  {
+    QItemDelegate::paint( painter, myOpt, index );
+
+    if ( option.state & QStyle::State_HasFocus )
+    {
+      QRect r = option.rect.adjusted( 1, 1, -1, -1 );
+      QPen p( QBrush( QColor( 0, 255, 127 ) ), 2 );
+      painter->save();
+      painter->setPen( p );
+      painter->drawRect( r );
+      painter->restore();
+    }
   }
 }
