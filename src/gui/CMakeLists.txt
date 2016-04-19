@@ -276,6 +276,7 @@ SET(QGIS_GUI_SRCS
   qgssearchquerybuilder.cpp
   qgsslider.cpp
   qgssublayersdialog.cpp
+  qgssqlcomposerdialog.cpp
   qgssvgannotationitem.cpp
   qgstablewidgetitem.cpp
   qgstextannotationitem.cpp
@@ -416,6 +417,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsscalewidget.h
   qgssearchquerybuilder.h
   qgsslider.h
+  qgssqlcomposerdialog.h
   qgssublayersdialog.h
   qgsunitselectionwidget.h
   qgsuserinputdockwidget.h
@@ -595,6 +597,7 @@ SET(QGIS_GUI_HDRS
   qgsmaptip.h
   qgsnumericsortlistviewitem.h
   qgsrubberband.h
+  qgssqlcomposerdialog.h
   qgssvgannotationitem.h
   qgstablewidgetitem.h
   qgstextannotationitem.h
@@ -673,6 +676,7 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsowssourceselectbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssqlcomposerdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
 )
 
