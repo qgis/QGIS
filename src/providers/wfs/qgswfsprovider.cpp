@@ -146,7 +146,6 @@ QgsWFSProvider::~QgsWFSProvider()
 
 QgsAbstractFeatureSource* QgsWFSProvider::featureSource() const
 {
-  return new QgsWFSFeatureSource( this );
   QgsWFSFeatureSource *fs = new QgsWFSFeatureSource( this );
   connect( fs, SIGNAL( extentRequested( const QgsRectangle & ) ),
            this, SLOT( extendExtent( const QgsRectangle & ) ) );
