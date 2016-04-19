@@ -81,7 +81,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     , mRendererDialog( nullptr )
     , labelingDialog( nullptr )
     , labelDialog( nullptr )
-    , actionDialog( nullptr )
+    , mActionDialog( nullptr )
     , diagramPropertiesDialog( nullptr )
     , mFieldsPropertiesDialog( nullptr )
 {
@@ -157,10 +157,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   // Create the Actions dialog tab
   QVBoxLayout *actionLayout = new QVBoxLayout( actionOptionsFrame );
   actionLayout->setMargin( 0 );
-  const QgsFields &fields = mLayer->fields();
-  actionDialog = new QgsAttributeActionDialog( mLayer->actions(), fields, actionOptionsFrame );
-  actionDialog->layout()->setMargin( 0 );
-  actionLayout->addWidget( actionDialog );
+  mActionDialog = new QgsAttributeActionDialog( *mLayer->actions(), actionOptionsFrame );
+  mActionDialog->layout()->setMargin( 0 );
+  actionLayout->addWidget( mActionDialog );
 
   // Create the menu for the save style button to choose the output format
   mSaveAsMenu = new QMenu( this );
@@ -450,7 +449,7 @@ void QgsVectorLayerProperties::syncToLayer()
   // load appropriate symbology page (V1 or V2)
   updateSymbologyPage();
 
-  actionDialog->init();
+  mActionDialog->init( *mLayer->actions() );
 
   if ( labelingDialog )
     labelingDialog->adaptToLayer();
@@ -554,7 +553,11 @@ void QgsVectorLayerProperties::apply()
     mLayer->setDisplayField( displayFieldComboBox->currentField() );
   }
 
-  actionDialog->apply();
+  mLayer->actions()->clearActions();
+  Q_FOREACH ( const QgsAction& action, mActionDialog->actions() )
+  {
+    mLayer->actions()->addAction( action );
+  }
 
   Q_NOWARN_DEPRECATED_PUSH
   if ( mOptsPage_LabelsOld )
