@@ -18,6 +18,8 @@
 #include "qgsspatialindex.h"
 #include "qgswfsfeatureiterator.h"
 #include "qgswfsrequest.h"
+#include "qgswfscapabilities.h"
+#include "qgsogcutils.h"
 
 /** This class holds data, and logic, shared between QgsWFSProvider, QgsWFSFeatureIterator
  *  and QgsWFSFeatureDownloader. It manages the on-disk cache, as a Spatialite
@@ -62,7 +64,7 @@ class QgsWFSSharedData : public QObject
     void serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featureList );
 
     /** Called by QgsWFSFeatureDownloader::run() at the end of the download process. */
-    void endOfDownload( bool success, int featureCount );
+    void endOfDownload( bool success, int featureCount, bool truncatedResponse, bool interrupted, QString errorMsg );
 
     /** Used by QgsWFSProvider::reloadData(). The effect is to invalid
         all the caching state, so that a new request results in fresh download */
@@ -90,16 +92,18 @@ class QgsWFSSharedData : public QObject
     bool isFeatureCountExact() const { return mFeatureCountExact; }
 
     /** Return whether the server support RESULTTYPE=hits */
-    bool supportsHits() const { return mSupportsHits; }
+    bool supportsHits() const { return mCaps.supportsHits; }
 
-    /** Compute WFS filter from the filter in the URI */
-    void computeFilter();
-
-    /** Return WFS filter */
-    QString WFSFilter() const { return mWFSFilter; }
+    /** Compute WFS filter from the sql or filter in the URI */
+    bool computeFilter( QString& errorMsg );
 
     /** Return srsName */
     QString srsName() const;
+
+  signals:
+
+    /** Raise error */
+    void raiseError( const QString& errorMsg );
 
   protected:
     friend class QgsWFSFeatureIterator;
@@ -121,6 +125,12 @@ class QgsWFSSharedData : public QObject
     /** Name of geometry attribute */
     QString mGeometryAttribute;
 
+    /** Layer properties */
+    QList< QgsOgcUtils::LayerProperties > mLayerPropertiesList;
+
+    /** Map a field name to the pair (typename, fieldname) that describes its source field */
+    QMap< QString, QPair<QString, QString> > mMapFieldNameToSrcLayerNameFieldName;
+
     /** The data provider of the on-disk cache */
     QgsVectorDataProvider* mCacheDataProvider;
 
@@ -130,14 +140,14 @@ class QgsWFSSharedData : public QObject
     /** Server-side or user-side limit of downloaded features (in a single GetFeature()). Valid if > 0 */
     int mMaxFeatures;
 
-    /** Server-side limit of downloaded features. Valid if > 0 */
-    int mMaxFeaturesServer;
+    /** Server capabilities */
+    QgsWFSCapabilities::Capabilities mCaps;
 
-    /** Whether resultType=hits is supported */
-    bool mSupportsHits;
+    /** Whether progress dialog should be hidden */
+    bool mHideProgressDialog;
 
-    /** Whether paging is enabled (WFS 2.0) */
-    bool mSupportsPaging;
+    /** SELECT DISTINCT */
+    bool mDistinctSelect;
 
   private:
 
@@ -152,6 +162,9 @@ class QgsWFSSharedData : public QObject
 
     /** WFS filter */
     QString mWFSFilter;
+
+    /** WFS SORTBY */
+    QString mSortBy;
 
     /** The background feature downloader */
     QgsWFSThreadedFeatureDownloader* mDownloader;
@@ -194,8 +207,15 @@ class QgsWFSSharedData : public QObject
         cached, so as to avoid to cache duplicates. */
     QSet<QString> getExistingCachedGmlIds( const QVector<QgsWFSFeatureGmlIdPair>& featureList );
 
+    /** Returns the set of md5 of features that have already been downloaded and
+        cached, so as to avoid to cache duplicates. */
+    QSet<QString> getExistingCachedMD5( const QVector<QgsWFSFeatureGmlIdPair>& featureList );
+
     /** Create the on-disk cache and connect to it */
     bool createCache();
+
+    /** Log error to QgsMessageLog and raise it to the provider */
+    void pushError( const QString& errorMsg );
 };
 
 /** Utility class to issue a GetFeature resultType=hits request */

@@ -98,6 +98,12 @@ class QgsWFSDataSourceURI
     /** Set OGC filter xml or a QGIS expression */
     void setFilter( const QString& filterIn );
 
+    /** Get SQL query */
+    QString sql() const;
+
+    /** Set SQL query */
+    void setSql( const QString& sql );
+
     /** Returns whether GetFeature request should include the request bounding box. Defaults to false */
     bool isRestrictedToRequestBBOX() const;
 
@@ -107,15 +113,20 @@ class QgsWFSDataSourceURI
     /** Returns whether axis orientation should be inverted. Defaults to false */
     bool invertAxisOrientation() const;
 
+    /** For debug purposes. Checks that functions used in sql match functions declared by the server. Defaults to false */
+    bool validateSqlFunctions() const;
+
+    /** Whether to hide download progress dialog in QGIS main app. Defaults to false */
+    bool hideDownloadProgressDialog() const;
+
     /** Return authorization parameters */
     QgsWFSAuthorization& auth() { return mAuth; }
 
     /** Builds a derived uri from a base uri */
-    //! @param filter can be an OGC filter xml or a QGIS expression
     static QString build( const QString& uri,
                           const QString& typeName,
                           const QString& crsString = QString(),
-                          const QString& filter = QString(),
+                          const QString& sql = QString(),
                           bool restrictToCurrentViewExtent = false );
 
   private:

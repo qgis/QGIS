@@ -39,6 +39,7 @@ class QgsWFSRequest : public QObject
 
     enum ErrorCode { NoError,
                      NetworkError,
+                     TimeoutError,
                      XmlError,
                      ServerExceptionError,
                      WFSVersionNotSupported
@@ -67,6 +68,7 @@ class QgsWFSRequest : public QObject
   protected slots:
     void replyProgress( qint64, qint64 );
     void replyFinished();
+    void requestTimedOut( QNetworkReply* reply );
 
   protected:
     /** URI */
@@ -89,6 +91,12 @@ class QgsWFSRequest : public QObject
 
     /** Whether to force refresh (i.e. issue a network request and not use cache) */
     bool mForceRefresh;
+
+    /** Whether the request has timed-out */
+    bool mTimedout;
+
+    /** Whether we already received bytes */
+    bool mGotNonEmptyResponse;
 
   protected:
 

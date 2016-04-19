@@ -141,6 +141,16 @@ void QgsWFSDataSourceURI::setFilter( const QString& filter )
   }
 }
 
+QString QgsWFSDataSourceURI::sql() const
+{
+  return mURI.sql();
+}
+
+void QgsWFSDataSourceURI::setSql( const QString& sql )
+{
+  mURI.setSql( sql );
+}
+
 bool QgsWFSDataSourceURI::isRestrictedToRequestBBOX() const
 {
   return mURI.hasParam( QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX ) &&
@@ -157,16 +167,26 @@ bool QgsWFSDataSourceURI::invertAxisOrientation() const
   return mURI.hasParam( QgsWFSConstants::URI_PARAM_INVERTAXISORIENTATION );
 }
 
+bool QgsWFSDataSourceURI::validateSqlFunctions() const
+{
+  return mURI.hasParam( QgsWFSConstants::URI_PARAM_VALIDATESQLFUNCTIONS );
+}
+
+bool QgsWFSDataSourceURI::hideDownloadProgressDialog() const
+{
+  return mURI.hasParam( QgsWFSConstants::URI_PARAM_HIDEDOWNLOADPROGRESSDIALOG );
+}
+
 QString QgsWFSDataSourceURI::build( const QString& baseUri,
                                     const QString& typeName,
                                     const QString& crsString,
-                                    const QString& filter,
+                                    const QString& sql,
                                     bool restrictToCurrentViewExtent )
 {
   QgsWFSDataSourceURI uri( baseUri );
   uri.setTypeName( typeName );
   uri.setSRSName( crsString );
-  uri.setFilter( filter );
+  uri.setSql( sql );
   if ( restrictToCurrentViewExtent )
     uri.mURI.setParam( QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX, "1" );
   return uri.uri();

@@ -20,6 +20,7 @@
 
 #include "ui_qgswfssourceselectbase.h"
 #include "qgscontexthelp.h"
+#include "qgswfscapabilities.h"
 
 #include <QItemDelegate>
 #include <QStandardItemModel>
@@ -27,6 +28,7 @@
 
 class QgsGenericProjectionSelector;
 class QgsWFSCapabilities;
+class QgsSQLComposerDialog;
 
 class QgsWFSItemDelegate : public QItemDelegate
 {
@@ -66,8 +68,9 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     QSortFilterProxyModel* mModelProxy;
     QPushButton *mBuildQueryButton;
     QPushButton *mAddButton;
-
-    void populateConnectionList();
+    QgsWFSCapabilities::Capabilities mCaps;
+    QModelIndex mSQLIndex;
+    QgsSQLComposerDialog* mSQLComposerDialog;
 
     /** Returns the best suited CRS from a set of authority ids
        1. project CRS if contained in the set
@@ -93,6 +96,9 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     void treeWidgetCurrentRowChanged( const QModelIndex & current, const QModelIndex & previous );
     void buildQueryButtonClicked();
     void filterChanged( const QString& text );
+    void updateSql();
+
+    void populateConnectionList();
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 

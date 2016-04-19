@@ -21,15 +21,17 @@
 #include "qgswfscapabilities.h"
 #include "qgswfsprovider.h"
 #include "qgswfsdatasourceuri.h"
+#include "qgswfsutils.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsgenericprojectionselector.h"
-#include "qgsexpressionbuilderdialog.h"
 #include "qgscontexthelp.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
 #include "qgsmanageconnectionsdialog.h"
+#include "qgssqlstatement.h"
+#include "qgssqlcomposerdialog.h"
 
 #include <QDomDocument>
 #include <QListWidgetItem>
@@ -43,12 +45,13 @@ enum
   MODEL_IDX_TITLE,
   MODEL_IDX_NAME,
   MODEL_IDX_ABSTRACT,
-  MODEL_IDX_FILTER
+  MODEL_IDX_SQL
 };
 
 QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool embeddedMode )
     : QDialog( parent, fl )
     , mCapabilities( nullptr )
+    , mSQLComposerDialog( nullptr )
 {
   setupUi( this );
 
@@ -89,13 +92,14 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WindowFlags fl, boo
   QgsDebugMsg( "restoring settings" );
   restoreGeometry( settings.value( "/Windows/WFSSourceSelect/geometry" ).toByteArray() );
   cbxUseTitleLayerName->setChecked( settings.value( "/Windows/WFSSourceSelect/UseTitleLayerName", false ).toBool() );
+  cbxFeatureCurrentViewExtent->setChecked( settings.value( "/Windows/WFSSourceSelect/FeatureCurrentViewExtent", true ).toBool() );
   mHoldDialogOpen->setChecked( settings.value( "/Windows/WFSSourceSelect/HoldDialogOpen", false ).toBool() );
 
   mModel = new QStandardItemModel();
   mModel->setHorizontalHeaderItem( MODEL_IDX_TITLE, new QStandardItem( "Title" ) );
   mModel->setHorizontalHeaderItem( MODEL_IDX_NAME, new QStandardItem( "Name" ) );
   mModel->setHorizontalHeaderItem( MODEL_IDX_ABSTRACT, new QStandardItem( "Abstract" ) );
-  mModel->setHorizontalHeaderItem( MODEL_IDX_FILTER, new QStandardItem( "Filter" ) );
+  mModel->setHorizontalHeaderItem( MODEL_IDX_SQL, new QStandardItem( "Sql" ) );
 
   mModelProxy = new QSortFilterProxyModel( this );
   mModelProxy->setSourceModel( mModel );
@@ -112,6 +116,7 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
   QgsDebugMsg( "saving settings" );
   settings.setValue( "/Windows/WFSSourceSelect/geometry", saveGeometry() );
   settings.setValue( "/Windows/WFSSourceSelect/UseTitleLayerName", cbxUseTitleLayerName->isChecked() );
+  settings.setValue( "/Windows/WFSSourceSelect/FeatureCurrentViewExtent", cbxFeatureCurrentViewExtent->isChecked() );
   settings.setValue( "/Windows/WFSSourceSelect/HoldDialogOpen", mHoldDialogOpen->isChecked() );
 
   delete mItemDelegate;
@@ -224,16 +229,21 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
         break;
     }
     // handle errors
-    QMessageBox::critical( nullptr, title, mCapabilities->errorMessage() );
+    QMessageBox* box = new QMessageBox( QMessageBox::Critical, title, mCapabilities->errorMessage(), QMessageBox::Ok, this );
+    box->setAttribute( Qt::WA_DeleteOnClose );
+    box->setModal( true );
+    box->setObjectName( "WFSCapabilitiesErrorBox" );
+    if ( !property( "hideDialogs" ).toBool() )
+      box->open();
 
     mAddButton->setEnabled( false );
     return;
   }
 
-  QgsWFSCapabilities::Capabilities caps = mCapabilities->capabilities();
+  mCaps = mCapabilities->capabilities();
 
   mAvailableCRS.clear();
-  Q_FOREACH ( const QgsWFSCapabilities::FeatureType& featureType, caps.featureTypes )
+  Q_FOREACH ( const QgsWFSCapabilities::FeatureType& featureType, mCaps.featureTypes )
   {
     // insert the typenames, titles and abstracts into the tree view
     QStandardItem* titleItem = new QStandardItem( featureType.title );
@@ -250,7 +260,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
     mAvailableCRS.insert( featureType.name, featureType.crslist );
   }
 
-  if ( !caps.featureTypes.isEmpty() )
+  if ( !mCaps.featureTypes.isEmpty() )
   {
     treeView->resizeColumnToContents( MODEL_IDX_TITLE );
     treeView->resizeColumnToContents( MODEL_IDX_NAME );
@@ -280,26 +290,28 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
 
 void QgsWFSSourceSelect::addEntryToServerList()
 {
-  QgsNewHttpConnection nc( nullptr, QgsWFSConstants::CONNECTIONS_WFS );
-  nc.setWindowTitle( tr( "Create a new WFS connection" ) );
+  QgsNewHttpConnection* nc = new QgsNewHttpConnection( this, QgsWFSConstants::CONNECTIONS_WFS );
+  nc->setAttribute( Qt::WA_DeleteOnClose );
+  nc->setWindowTitle( tr( "Create a new WFS connection" ) );
 
-  if ( nc.exec() )
-  {
-    populateConnectionList();
-    emit connectionsChanged();
-  }
+  // For testability, do not use exec()
+  if ( !property( "hideDialogs" ).toBool() )
+    nc->open();
+  connect( nc, SIGNAL( accepted() ), this, SLOT( populateConnectionList() ) );
+  connect( nc, SIGNAL( accepted() ), this, SIGNAL( connectionsChanged() ) );
 }
 
 void QgsWFSSourceSelect::modifyEntryOfServerList()
 {
-  QgsNewHttpConnection nc( nullptr, QgsWFSConstants::CONNECTIONS_WFS, cmbConnections->currentText() );
-  nc.setWindowTitle( tr( "Modify WFS connection" ) );
+  QgsNewHttpConnection* nc = new QgsNewHttpConnection( this, QgsWFSConstants::CONNECTIONS_WFS, cmbConnections->currentText() );
+  nc->setAttribute( Qt::WA_DeleteOnClose );
+  nc->setWindowTitle( tr( "Modify WFS connection" ) );
 
-  if ( nc.exec() )
-  {
-    populateConnectionList();
-    emit connectionsChanged();
-  }
+  // For testability, do not use exec()
+  if ( !property( "hideDialogs" ).toBool() )
+    nc->open();
+  connect( nc, SIGNAL( accepted() ), this, SLOT( populateConnectionList() ) );
+  connect( nc, SIGNAL( accepted() ), this, SIGNAL( connectionsChanged() ) );
 }
 
 void QgsWFSSourceSelect::deleteEntryOfServerList()
@@ -371,23 +383,17 @@ void QgsWFSSourceSelect::addLayer()
     int row = idx.row();
     QString typeName = mModel->item( row, MODEL_IDX_NAME )->text(); //WFS repository's name for layer
     QString titleName = mModel->item( row, MODEL_IDX_TITLE )->text(); //WFS type name title for layer name (if option is set)
-    QString filter = mModel->item( row, MODEL_IDX_FILTER )->text(); //optional filter specified by user
+    QString sql = mModel->item( row, MODEL_IDX_SQL )->text(); //optional SqL specified by user
     QString layerName = typeName;
     if ( cbxUseTitleLayerName->isChecked() && !titleName.isEmpty() )
     {
       layerName = titleName;
     }
-    QgsDebugMsg( "Layer " + typeName + " Filter is " + filter );
+    QgsDebugMsg( "Layer " + typeName + " SQL is " + sql );
 
-    //is "Only request features overlapping the view extent" checked?
-    if ( !cbxFeatureCurrentViewExtent->isChecked() )
-    { //no: entire WFS layer will be retrieved and cached
-      mUri = QgsWFSDataSourceURI::build( connection.uri().uri(), typeName, pCrsString, filter );
-    }
-    else
-    { //yes
-      mUri = QgsWFSDataSourceURI::build( connection.uri().uri(), typeName, pCrsString, filter, true );
-    }
+    mUri = QgsWFSDataSourceURI::build( connection.uri().uri(), typeName, pCrsString,
+                                       sql, cbxFeatureCurrentViewExtent->isChecked() );
+
     emit addWfsLayer( mUri, layerName );
   }
 
@@ -397,44 +403,260 @@ void QgsWFSSourceSelect::addLayer()
   }
 }
 
+class QgsWFSValidatorCallback: public QObject, public QgsSQLComposerDialog::SQLValidatorCallback
+{
+  public:
+    QgsWFSValidatorCallback( QObject* parent,
+                             QgsWFSDataSourceURI uri, const QString& allSql,
+                             const QgsWFSCapabilities::Capabilities& caps );
+    bool isValid( const QString& sql, QString& errorReason ) override;
+  private:
+    QgsWFSDataSourceURI mURI;
+    QString mAllSql;
+    const QgsWFSCapabilities::Capabilities& mCaps;
+};
+
+QgsWFSValidatorCallback::QgsWFSValidatorCallback( QObject* parent,
+    QgsWFSDataSourceURI uri,
+    const QString& allSql,
+    const QgsWFSCapabilities::Capabilities& caps )
+    : QObject( parent )
+    , mURI( uri )
+    , mAllSql( allSql )
+    , mCaps( caps )
+{
+}
+
+bool QgsWFSValidatorCallback::isValid( const QString& sqlStr, QString& errorReason )
+{
+  errorReason.clear();
+  if ( sqlStr.isEmpty() || sqlStr == mAllSql )
+    return true;
+
+  QgsWFSDataSourceURI uri( mURI );
+  uri.setSql( sqlStr );
+  QgsWFSProvider p( uri.uri(), mCaps );
+  if ( !p.isValid() )
+  {
+    errorReason = p.processSQLErrorMsg();
+    return false;
+  }
+
+  return true;
+}
+
+class QgsWFSTableSelectedCallback: public QObject, public QgsSQLComposerDialog::TableSelectedCallback
+{
+  public:
+    QgsWFSTableSelectedCallback( QgsSQLComposerDialog* dialog,
+                                 QgsWFSDataSourceURI uri,
+                                 const QgsWFSCapabilities::Capabilities& caps );
+    void tableSelected( const QString& name ) override;
+
+  private:
+    QgsSQLComposerDialog* mDialog;
+    QgsWFSDataSourceURI mURI;
+    const QgsWFSCapabilities::Capabilities& mCaps;
+};
+
+QgsWFSTableSelectedCallback::QgsWFSTableSelectedCallback( QgsSQLComposerDialog* dialog,
+    QgsWFSDataSourceURI uri,
+    const QgsWFSCapabilities::Capabilities& caps )
+    : QObject( dialog )
+    , mDialog( dialog )
+    , mURI( uri )
+    , mCaps( caps )
+{
+}
+
+void QgsWFSTableSelectedCallback::tableSelected( const QString& name )
+{
+  QString typeName( QgsSQLStatement::stripQuotedIdentifier( name ) );
+  QString prefixedTypename( mCaps.addPrefixIfNeeded( typeName ) );
+  if ( prefixedTypename.isEmpty() )
+    return;
+  QgsWFSDataSourceURI uri( mURI );
+  uri.setTypeName( prefixedTypename );
+  QgsWFSProvider p( uri.uri(), mCaps );
+  if ( !p.isValid() )
+  {
+    return;
+  }
+
+  QList< QgsSQLComposerDialog::PairNameType> fieldList;
+  QString fieldNamePrefix( QgsSQLStatement::quotedIdentifierIfNeeded( typeName ) + "." );
+  Q_FOREACH ( const QgsField& field, p.fields().toList() )
+  {
+    QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( field.name() ) );
+    fieldList << QgsSQLComposerDialog::PairNameType( fieldName, field.typeName() );
+  }
+  if ( !p.geometryAttribute().isEmpty() )
+  {
+    QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( p.geometryAttribute() ) );
+    fieldList << QgsSQLComposerDialog::PairNameType( fieldName, "geometry" );
+  }
+  fieldList << QgsSQLComposerDialog::PairNameType( fieldNamePrefix + "*", "" );
+
+  mDialog->addColumnNames( fieldList, name );
+}
+
 void QgsWFSSourceSelect::buildQuery( const QModelIndex& index )
 {
   if ( !index.isValid() )
   {
     return;
   }
-  QModelIndex filterIndex = index.sibling( index.row(), MODEL_IDX_FILTER );
-  QString typeName = index.sibling( index.row(), MODEL_IDX_NAME ).data().toString();
+
+  const QString typeName = index.sibling( index.row(), MODEL_IDX_NAME ).data().toString();
 
   //get available fields for wfs layer
   QgsWFSConnection connection( cmbConnections->currentText() );
   QgsWFSDataSourceURI uri( connection.uri().uri() );
   uri.setTypeName( typeName );
-  QgsWFSProvider p( uri.uri() );
+  QgsWFSProvider p( uri.uri(), mCaps );
   if ( !p.isValid() )
   {
+    QMessageBox* box = new QMessageBox( QMessageBox::Critical, tr( "Server exception" ), tr( "DescribeFeatureType failed" ), QMessageBox::Ok, this );
+    box->setAttribute( Qt::WA_DeleteOnClose );
+    box->setModal( true );
+    box->setObjectName( "WFSFeatureTypeErrorBox" );
+    if ( !property( "hideDialogs" ).toBool() )
+      box->open();
+
     return;
   }
 
-  QgsFields fields( p.fields() );
-
-  //show expression builder
-  QgsExpressionBuilderDialog d( nullptr, filterIndex.data().toString() );
-
-  //add available attributes to expression builder
-  QgsExpressionBuilderWidget* w = d.expressionBuilder();
-  if ( !w )
+  QModelIndex filterIndex = index.sibling( index.row(), MODEL_IDX_SQL );
+  QString sql( filterIndex.data().toString() );
+  QString displayedTypeName( typeName );
+  if ( !mCaps.setAmbiguousUnprefixedTypename.contains( QgsWFSUtils::removeNamespacePrefix( typeName ) ) )
+    displayedTypeName = QgsWFSUtils::removeNamespacePrefix( typeName );
+  QString allSql( "SELECT * FROM " + QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ) );
+  if ( sql.isEmpty() )
   {
-    return;
+    sql = allSql;
   }
 
-  w->loadFieldNames( fields );
+  QgsSQLComposerDialog* d = new QgsSQLComposerDialog( this );
 
-  if ( d.exec() == QDialog::Accepted )
+  QgsWFSValidatorCallback* validatorCbk = new QgsWFSValidatorCallback( d, uri, allSql, mCaps );
+  d->setSQLValidatorCallback( validatorCbk );
+
+  QgsWFSTableSelectedCallback* tableSelectedCbk = new QgsWFSTableSelectedCallback( d, uri, mCaps );
+  d->setTableSelectedCallback( tableSelectedCbk );
+
+  const bool bSupportJoins = mCaps.featureTypes.size() > 1 && mCaps.supportsJoins;
+  d->setSupportMultipleTables( bSupportJoins );
+
+  QMap< QString, QString > mapTypenameToTitle;
+  Q_FOREACH ( const QgsWFSCapabilities::FeatureType f, mCaps.featureTypes )
+    mapTypenameToTitle[f.name] = f.title;
+
+  QList< QgsSQLComposerDialog::PairNameTitle > tablenames;
+  tablenames << QgsSQLComposerDialog::PairNameTitle(
+    QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ), mapTypenameToTitle[typeName] );
+  if ( bSupportJoins )
   {
-    QgsDebugMsg( "Expression text = " + w->expressionText() );
-    mModelProxy->setData( filterIndex, QVariant( w->expressionText() ) );
+    for ( int i = 0; i < mModel->rowCount(); i++ )
+    {
+      const QString iterTypename = mModel->index( i, MODEL_IDX_NAME ).data().toString();
+      if ( iterTypename != typeName )
+      {
+        QString displayedIterTypename( iterTypename );
+        QString unprefixedIterTypename( QgsWFSUtils::removeNamespacePrefix( iterTypename ) );
+        if ( !mCaps.setAmbiguousUnprefixedTypename.contains( unprefixedIterTypename ) )
+          displayedIterTypename = unprefixedIterTypename;
+
+        tablenames << QgsSQLComposerDialog::PairNameTitle(
+          QgsSQLStatement::quotedIdentifierIfNeeded( displayedIterTypename ), mapTypenameToTitle[iterTypename] );
+      }
+    }
   }
+  d->addTableNames( tablenames );
+
+  QList< QgsSQLComposerDialog::Function> functionList;
+  Q_FOREACH ( const QgsWFSCapabilities::Function& f, mCaps.functionList )
+  {
+    QgsSQLComposerDialog::Function dialogF;
+    dialogF.name = f.name;
+    dialogF.returnType = f.returnType;
+    dialogF.minArgs = f.minArgs;
+    dialogF.maxArgs = f.maxArgs;
+    Q_FOREACH ( const QgsWFSCapabilities::Argument& arg, f.argumentList )
+    {
+      dialogF.argumentList << QgsSQLComposerDialog::Argument( arg.name, arg.type );
+    }
+    functionList << dialogF;
+  }
+  d->addFunctions( functionList );
+
+  QList< QgsSQLComposerDialog::Function> spatialPredicateList;
+  Q_FOREACH ( const QgsWFSCapabilities::Function& f, mCaps.spatialPredicatesList )
+  {
+    QgsSQLComposerDialog::Function dialogF;
+    dialogF.name = f.name;
+    dialogF.returnType = f.returnType;
+    dialogF.minArgs = f.minArgs;
+    dialogF.maxArgs = f.maxArgs;
+    Q_FOREACH ( const QgsWFSCapabilities::Argument& arg, f.argumentList )
+    {
+      dialogF.argumentList << QgsSQLComposerDialog::Argument( arg.name, arg.type );
+    }
+    spatialPredicateList << dialogF;
+  }
+  d->addSpatialPredicates( spatialPredicateList );
+
+  QList< QgsSQLComposerDialog::PairNameType> fieldList;
+  QString fieldNamePrefix;
+  if ( bSupportJoins )
+  {
+    fieldNamePrefix = QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ) + ".";
+  }
+  Q_FOREACH ( const QgsField& field, p.fields().toList() )
+  {
+    QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( field.name() ) );
+    fieldList << QgsSQLComposerDialog::PairNameType( fieldName, field.typeName() );
+  }
+  if ( !p.geometryAttribute().isEmpty() )
+  {
+    QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( p.geometryAttribute() ) );
+    fieldList << QgsSQLComposerDialog::PairNameType( fieldName, "geometry" );
+  }
+  fieldList << QgsSQLComposerDialog::PairNameType( fieldNamePrefix + "*", "" );
+
+  d->addColumnNames( fieldList, QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ) );
+
+  d->setSql( sql );
+
+  d->setAttribute( Qt::WA_DeleteOnClose );
+  d->setModal( true );
+  // For testability, do not use exec()
+  if ( !property( "hideDialogs" ).toBool() )
+    d->open();
+  connect( d, SIGNAL( accepted() ), this, SLOT( updateSql() ) );
+  mSQLIndex = index;
+  mSQLComposerDialog = d;
+}
+
+void QgsWFSSourceSelect::updateSql()
+{
+  QgsDebugMsg( "updateSql called" );
+  Q_ASSERT( mSQLComposerDialog );
+
+  const QString typeName = mSQLIndex.sibling( mSQLIndex.row(), MODEL_IDX_NAME ).data().toString();
+  QModelIndex filterIndex = mSQLIndex.sibling( mSQLIndex.row(), MODEL_IDX_SQL );
+
+  QString sql = mSQLComposerDialog->sql();
+  mSQLComposerDialog = nullptr;
+
+  QString displayedTypeName( typeName );
+  if ( !mCaps.setAmbiguousUnprefixedTypename.contains( QgsWFSUtils::removeNamespacePrefix( typeName ) ) )
+    displayedTypeName = QgsWFSUtils::removeNamespacePrefix( typeName );
+  QString allSql( "SELECT * FROM " + QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ) );
+  if ( sql == allSql )
+    sql.clear();
+  QgsDebugMsg( "SQL text = " + sql );
+  mModelProxy->setData( filterIndex, QVariant( sql ) );
 }
 
 void QgsWFSSourceSelect::changeCRS()

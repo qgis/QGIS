@@ -50,13 +50,16 @@
 static const QString TEXT_PROVIDER_KEY = "WFS";
 static const QString TEXT_PROVIDER_DESCRIPTION = "WFS data provider";
 
-QgsWFSProvider::QgsWFSProvider( const QString& uri )
+QgsWFSProvider::QgsWFSProvider( const QString& uri, const QgsWFSCapabilities::Capabilities caps )
     : QgsVectorDataProvider( uri )
     , mShared( new QgsWFSSharedData( uri ) )
     , mWKBType( QGis::WKBUnknown )
     , mValid( true )
     , mCapabilities( 0 )
 {
+  mShared->mCaps = caps;
+  connect( mShared.data(), SIGNAL( raiseError( const QString& ) ), this, SLOT( pushErrorSlot( const QString& ) ) );
+
   if ( uri.isEmpty() )
   {
     mValid = false;
@@ -80,14 +83,34 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
     return;
   }
 
-  mSubsetString = mShared->mURI.filter();
-  mShared->computeFilter();
-
-  //fetch attributes of layer and type of its geometry attribute
-  //WBC 111221: extracting geometry type here instead of getFeature allows successful
-  //layer creation even when no features are retrieved (due to, e.g., BBOX or FILTER)
-  if ( !describeFeatureType( mShared->mGeometryAttribute, mShared->mFields, mWKBType ) )
+  if ( !mShared->mURI.sql().isEmpty() )
   {
+    if ( !processSQL( mShared->mURI.sql(), mProcessSQLErrorMsg ) )
+    {
+      QgsMessageLog::logMessage( mProcessSQLErrorMsg, tr( "WFS" ) );
+      mValid = false;
+      return;
+    }
+    mSubsetString = mShared->mURI.sql();
+  }
+  else
+  {
+    mSubsetString = mShared->mURI.filter();
+
+    //fetch attributes of layer and type of its geometry attribute
+    //WBC 111221: extracting geometry type here instead of getFeature allows successful
+    //layer creation even when no features are retrieved (due to, e.g., BBOX or FILTER)
+    if ( !describeFeatureType( mShared->mGeometryAttribute, mShared->mFields, mWKBType ) )
+    {
+      mValid = false;
+      return;
+    }
+    mThisTypenameFields = mShared->mFields;
+  }
+
+  if ( !mShared->computeFilter( mProcessSQLErrorMsg ) )
+  {
+    QgsMessageLog::logMessage( mProcessSQLErrorMsg, tr( "WFS" ) );
     mValid = false;
     return;
   }
@@ -107,6 +130,456 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
 
 QgsWFSProvider::~QgsWFSProvider()
 {
+  QgsDebugMsg( "~QgsWFSProvider()" );
+}
+
+class QgsWFSProviderSQLFunctionValidator: public QgsSQLStatement::RecursiveVisitor
+{
+  public:
+    QgsWFSProviderSQLFunctionValidator(
+      const QList<QgsWFSCapabilities::Function>& spatialPredicatesList,
+      const QList<QgsWFSCapabilities::Function>& functionList );
+
+    bool hasError() const { return mError; }
+
+    const QString& errorMessage() const { return mErrorMessage; }
+
+  protected:
+    void visit( const QgsSQLStatement::NodeFunction& n ) override;
+
+  private:
+    const QList<QgsWFSCapabilities::Function>& mSpatialPredicatesList;
+    const QList<QgsWFSCapabilities::Function>& mFunctionList;
+    bool mError;
+    QString mErrorMessage;
+};
+
+QgsWFSProviderSQLFunctionValidator::QgsWFSProviderSQLFunctionValidator(
+  const QList<QgsWFSCapabilities::Function>& spatialPredicatesList,
+  const QList<QgsWFSCapabilities::Function>& functionList )
+    : mSpatialPredicatesList( spatialPredicatesList )
+    , mFunctionList( functionList )
+    , mError( false )
+{
+}
+
+void QgsWFSProviderSQLFunctionValidator::visit( const QgsSQLStatement::NodeFunction& n )
+{
+  if ( !mError )
+  {
+    bool foundMatch = false;
+    Q_FOREACH ( const QgsWFSCapabilities::Function& f, mSpatialPredicatesList )
+    {
+      if ( n.name().compare( f.name, Qt::CaseInsensitive ) == 0 ||
+           ( "ST_" + n.name() ).compare( f.name, Qt::CaseInsensitive ) == 0 )
+      {
+        foundMatch = true;
+      }
+    }
+    Q_FOREACH ( const QgsWFSCapabilities::Function& f, mFunctionList )
+    {
+      if ( n.name().compare( f.name, Qt::CaseInsensitive ) == 0 )
+      {
+        foundMatch = true;
+      }
+    }
+    if ( !foundMatch )
+    {
+      mError = true;
+      mErrorMessage = QObject::tr( "Function '%1' is not declared by the WFS server" ).arg( n.name() );
+    }
+    QgsSQLStatement::RecursiveVisitor::visit( n );
+  }
+}
+
+class QgsWFSProviderSQLColumnRefValidator: public QgsSQLStatement::RecursiveVisitor
+{
+  public:
+    QgsWFSProviderSQLColumnRefValidator(
+      const QgsWFSCapabilities::Capabilities& caps,
+      const QString& defaultTypeName,
+      const QMap< QString, QString >& mapTypenameAliasToTypename,
+      const QMap < QString, QgsFields >& mapTypenameToFields,
+      const QMap < QString, QString >& mapTypenameToGeometryAttribute );
+
+    bool hasError() const { return mError; }
+
+    const QString& errorMessage() const { return mErrorMessage; }
+
+  protected:
+    void visit( const QgsSQLStatement::NodeColumnRef& n ) override;
+
+  private:
+    const QgsWFSCapabilities::Capabilities mCaps;
+    QString mDefaultTypeName;
+    const QMap< QString, QString >& mMapTableAliasToName;
+    const QMap < QString, QgsFields >& mMapTypenameToFields;
+    const QMap < QString, QString >& mMapTypenameToGeometryAttribute;
+    bool mError;
+    QString mErrorMessage;
+};
+
+QgsWFSProviderSQLColumnRefValidator::QgsWFSProviderSQLColumnRefValidator(
+  const QgsWFSCapabilities::Capabilities& caps,
+  const QString& defaultTypeName,
+  const QMap< QString, QString >& mapTypenameAliasToTypename,
+  const QMap < QString, QgsFields >& mapTypenameToFields,
+  const QMap < QString, QString >& mapTypenameToGeometryAttribute )
+    : mCaps( caps )
+    , mDefaultTypeName( defaultTypeName )
+    , mMapTableAliasToName( mapTypenameAliasToTypename )
+    , mMapTypenameToFields( mapTypenameToFields )
+    , mMapTypenameToGeometryAttribute( mapTypenameToGeometryAttribute )
+    , mError( false )
+{
+}
+
+void QgsWFSProviderSQLColumnRefValidator::visit( const QgsSQLStatement::NodeColumnRef& n )
+{
+  if ( !mError && !n.star() )
+  {
+    QString typeName = mDefaultTypeName;
+    if ( !n.tableName().isEmpty() )
+    {
+      if ( mMapTableAliasToName.contains( n.tableName() ) )
+        typeName = mMapTableAliasToName[n.tableName()];
+      else if ( mMapTableAliasToName.contains( mCaps.addPrefixIfNeeded( n.tableName() ) ) )
+        typeName = mMapTableAliasToName[mCaps.addPrefixIfNeeded( n.tableName() )];
+      else
+      {
+        mError = true;
+        mErrorMessage = QObject::tr( "Column '%1' references a non existing table" ).
+                        arg( n.dump() );
+        return;
+      }
+    }
+
+    QgsFields tableFields = mMapTypenameToFields[typeName];
+    int idx = tableFields.fieldNameIndex( n.name() );
+    if ( idx < 0 && mMapTypenameToGeometryAttribute[typeName] != n.name() )
+    {
+      mError = true;
+      mErrorMessage = QObject::tr( "Column '%1' references a non existing field" ).
+                      arg( n.dump() );
+      return;
+    }
+
+    QgsSQLStatement::RecursiveVisitor::visit( n );
+  }
+}
+
+
+bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg )
+{
+  errorMsg.clear();
+  QgsSQLStatement sql( sqlString );
+  if ( sql.hasParserError() )
+  {
+    errorMsg = tr( "SQL query is invalid: %1" ).arg( sql.parserErrorString() );
+    return false;
+  }
+  if ( !sql.doBasicValidationChecks( errorMsg ) )
+  {
+    errorMsg = tr( "SQL query is invalid: %1" ).arg( errorMsg );
+    return false;
+  }
+  if ( sql.rootNode()->nodeType() != QgsSQLStatement::ntSelect )
+  {
+    // Shouldn't happen
+    QgsDebugMsg( "SQL statement is not a SELECT. This should not happen" );
+    return false;
+  }
+  const QgsSQLStatement::NodeSelect* select = dynamic_cast<const QgsSQLStatement::NodeSelect*>( sql.rootNode() );
+  Q_ASSERT( select );
+  mShared->mDistinctSelect = select->distinct();
+
+  QMap< QString, QString > mapTypenameAliasToTypename;
+  QMap< QString, QString > mapTypenameToTypenameAlias; // reverse map of the previous one
+  QList<QgsSQLStatement::NodeTableDef*> tables = select->tables();
+  QList< QString> typenameList;
+  bool severalTablesWithSameNameButDifferentPrefix = false;
+  QSet< QString > unprefixTypenames;
+  Q_FOREACH ( QgsSQLStatement::NodeTableDef* table, tables )
+  {
+    QString prefixedTypename( mShared->mCaps.addPrefixIfNeeded( table->name() ) );
+    if ( prefixedTypename.isEmpty() )
+    {
+      errorMsg = tr( "Typename '%1' is ambiguous without prefix" ).arg( table->name() );
+      return false;
+    }
+    typenameList << prefixedTypename;
+    if ( unprefixTypenames.contains( QgsWFSUtils::removeNamespacePrefix( prefixedTypename ) ) )
+    {
+      severalTablesWithSameNameButDifferentPrefix = true;
+    }
+    unprefixTypenames.insert( QgsWFSUtils::removeNamespacePrefix( prefixedTypename ) );
+    if ( table->alias().isEmpty() )
+    {
+      mapTypenameAliasToTypename[ prefixedTypename ] = prefixedTypename;
+      mapTypenameToTypenameAlias[ prefixedTypename ] = prefixedTypename;
+    }
+    else
+    {
+      mapTypenameAliasToTypename[ table->alias()] = prefixedTypename;
+      mapTypenameToTypenameAlias[ prefixedTypename ] = table->alias();
+    }
+  }
+
+  QList<QgsSQLStatement::NodeJoin*> joins = select->joins();
+  Q_FOREACH ( QgsSQLStatement::NodeJoin* join, joins )
+  {
+    QgsSQLStatement::NodeTableDef* table = join->tableDef();
+    QString prefixedTypename( mShared->mCaps.addPrefixIfNeeded( table->name() ) );
+    if ( prefixedTypename.isEmpty() )
+    {
+      errorMsg = tr( "Typename '%1' is ambiguous without prefix" ).arg( table->name() );
+      return false;
+    }
+    typenameList << prefixedTypename;
+    if ( unprefixTypenames.contains( QgsWFSUtils::removeNamespacePrefix( prefixedTypename ) ) )
+    {
+      severalTablesWithSameNameButDifferentPrefix = true;
+    }
+    unprefixTypenames.insert( QgsWFSUtils::removeNamespacePrefix( prefixedTypename ) );
+    if ( table->alias().isEmpty() )
+    {
+      mapTypenameAliasToTypename[ prefixedTypename ] = prefixedTypename;
+      mapTypenameToTypenameAlias[ prefixedTypename ] = prefixedTypename;
+    }
+    else
+    {
+      mapTypenameAliasToTypename[ table->alias()] = prefixedTypename;
+      mapTypenameToTypenameAlias[ prefixedTypename ] = table->alias();
+    }
+  }
+
+  if ( typenameList.size() > 1 && !mShared->mCaps.supportsJoins )
+  {
+    errorMsg = tr( "JOINs are not supported by this server" );
+    return false;
+  }
+
+  if ( !typenameList.contains( mShared->mURI.typeName() ) )
+  {
+    errorMsg = tr( "FROM or JOIN clause should contain the table name '%1'" ).arg( mShared->mURI.typeName() );
+    return false;
+  }
+
+  QString concatenatedTypenames;
+  Q_FOREACH ( QString typeName, typenameList )
+  {
+    if ( !concatenatedTypenames.isEmpty() )
+      concatenatedTypenames += ",";
+    concatenatedTypenames += typeName;
+  }
+
+  QgsWFSDescribeFeatureType describeFeatureType( mShared->mURI.uri() );
+  if ( !describeFeatureType.requestFeatureType( mShared->mWFSVersion,
+       concatenatedTypenames ) )
+  {
+    errorMsg = tr( "DescribeFeatureType failed for url %1: %2" ).
+               arg( dataSourceUri() ).arg( describeFeatureType.errorMessage() );
+    return false;
+  }
+
+  const QByteArray& response = describeFeatureType.response();
+
+  QDomDocument describeFeatureDocument;
+  errorMsg.clear();
+  if ( !describeFeatureDocument.setContent( response, true, &errorMsg ) )
+  {
+    QgsDebugMsg( response );
+    errorMsg = tr( "DescribeFeatureType failed for url %1: %2" ).
+               arg( dataSourceUri() ).arg( errorMsg );
+    return false;
+  }
+
+  mShared->mLayerPropertiesList.clear();
+  QMap < QString, QgsFields > mapTypenameToFields;
+  QMap < QString, QString > mapTypenameToGeometryAttribute;
+  Q_FOREACH ( QString typeName, typenameList )
+  {
+    QString geometryAttribute;
+    QgsFields fields;
+    QGis::WkbType geomType;
+    if ( !readAttributesFromSchema( describeFeatureDocument,
+                                    typeName,
+                                    geometryAttribute, fields, geomType, errorMsg ) )
+    {
+      errorMsg = tr( "Analysis of DescribeFeatureType response failed for url %1, typeName %2: %3" ).
+                 arg( dataSourceUri() ).arg( typeName ).arg( errorMsg );
+      return false;
+    }
+
+    mapTypenameToFields[typeName] = fields;
+    mapTypenameToGeometryAttribute[typeName] = geometryAttribute;
+    if ( typeName == mShared->mURI.typeName() )
+    {
+      mShared->mGeometryAttribute = geometryAttribute;
+      mWKBType = geomType;
+      mThisTypenameFields = fields;
+    }
+
+    QgsOgcUtils::LayerProperties layerProperties;
+    layerProperties.mName = typeName;
+    layerProperties.mGeometryAttribute = geometryAttribute;
+    if ( typeName == mShared->mURI.typeName() )
+      layerProperties.mSRSName = mShared->srsName();
+
+    mShared->mLayerPropertiesList << layerProperties;
+  }
+
+  const QString& defaultTypeName = mShared->mURI.typeName();
+  QgsWFSProviderSQLColumnRefValidator oColumnValidator(
+    mShared->mCaps,
+    defaultTypeName,
+    mapTypenameAliasToTypename,
+    mapTypenameToFields,
+    mapTypenameToGeometryAttribute );
+  sql.acceptVisitor( oColumnValidator );
+  if ( oColumnValidator.hasError() )
+  {
+    errorMsg = oColumnValidator.errorMessage();
+    return false;
+  }
+
+  if ( mShared->mURI.validateSqlFunctions() )
+  {
+    QgsWFSProviderSQLFunctionValidator oValidator( mShared->mCaps.spatialPredicatesList,
+        mShared->mCaps.functionList );
+    sql.acceptVisitor( oValidator );
+    if ( oValidator.hasError() )
+    {
+      errorMsg = oValidator.errorMessage();
+      return false;
+    }
+  }
+
+  QList<QgsSQLStatement::NodeSelectedColumn*> columns = select->columns();
+  QMap< QString, QPair<QString, QString> > mapFieldNameToSrcLayerNameFieldName;
+  mShared->mFields.clear();
+  Q_FOREACH ( QgsSQLStatement::NodeSelectedColumn* selectedcolumn, columns )
+  {
+    QgsSQLStatement::Node* column = selectedcolumn->column();
+    if ( column->nodeType() != QgsSQLStatement::ntColumnRef )
+    {
+      errorMsg = tr( "Column '%1' is not a direct reference to a table column" ).arg( column->dump() );
+      return false;
+    }
+    QgsSQLStatement::NodeColumnRef* columnRef = dynamic_cast<QgsSQLStatement::NodeColumnRef*>( column );
+    Q_ASSERT( columnRef );
+
+    QString columnTableTypename = defaultTypeName;
+    if ( !columnRef->tableName().isEmpty() )
+    {
+      if ( mapTypenameAliasToTypename.contains( columnRef->tableName() ) )
+        columnTableTypename = mapTypenameAliasToTypename[columnRef->tableName()];
+      else
+        columnTableTypename = mShared->mCaps.addPrefixIfNeeded( columnRef->tableName() );
+    }
+
+    if ( columnRef->star() )
+    {
+      // table.* syntax
+      if ( !columnRef->tableName().isEmpty() )
+      {
+        const QgsFields tableFields = mapTypenameToFields[columnTableTypename];
+        for ( int i = 0; i < tableFields.size();i++ )
+        {
+          const QgsField& srcField = tableFields[i];
+          QString fieldName( srcField.name() );
+          // If several tables selected, prefix by table name
+          if ( typenameList.size() > 1 )
+          {
+            QString tablePrefix( mShared->mCaps.addPrefixIfNeeded( columnRef->tableName() ) );
+            if ( tablePrefix.isEmpty() ) // might be an alias
+              tablePrefix = columnRef->tableName();
+            if ( !severalTablesWithSameNameButDifferentPrefix )
+              tablePrefix = QgsWFSUtils::removeNamespacePrefix( tablePrefix );
+            fieldName = tablePrefix + "." + fieldName;
+          }
+          QgsField field( fieldName, srcField.type(), srcField.typeName() );
+          if ( mapFieldNameToSrcLayerNameFieldName.contains( fieldName ) )
+          {
+            errorMsg = tr( "Field '%1': a field with the same name already exists" ).arg( field.name() );
+            return false;
+          }
+
+          mapFieldNameToSrcLayerNameFieldName[ field.name()] =
+            QPair<QString, QString>( columnTableTypename, srcField.name() );
+          mShared->mFields.append( field );
+        }
+      }
+      else
+      {
+        // * syntax
+        Q_FOREACH ( QString typeName, typenameList )
+        {
+          const QgsFields tableFields = mapTypenameToFields[typeName];
+          for ( int i = 0; i < tableFields.size();i++ )
+          {
+            const QgsField& srcField = tableFields[i];
+            QString fieldName( srcField.name() );
+            // If several tables selected, prefix by table name
+            if ( typenameList.size() > 1 )
+            {
+              QString tablePrefix( mapTypenameToTypenameAlias[typeName] );
+              if ( !severalTablesWithSameNameButDifferentPrefix )
+                tablePrefix = QgsWFSUtils::removeNamespacePrefix( tablePrefix );
+              fieldName = tablePrefix + "." + fieldName;
+            }
+            QgsField field( fieldName, srcField.type(), srcField.typeName() );
+            mapFieldNameToSrcLayerNameFieldName[ field.name()] =
+              QPair<QString, QString>( typeName, srcField.name() );
+            mShared->mFields.append( field );
+          }
+        }
+      }
+    }
+    // Regular field
+    else if ( mapTypenameToGeometryAttribute[columnTableTypename] != columnRef->name() )
+    {
+      const QgsFields tableFields = mapTypenameToFields[columnTableTypename];
+      int idx = tableFields.fieldNameIndex( columnRef->name() );
+      if ( idx < 0 )
+      {
+        QgsDebugMsg( QString( "Should not happen. Cannot find field for %1" ).arg( columnRef->name() ) );
+        continue;
+      }
+
+      QString fieldName( columnRef->name() );
+      if ( !selectedcolumn->alias().isEmpty() )
+        fieldName = selectedcolumn->alias();
+      else if ( !columnRef->tableName().isEmpty() )
+      {
+        QString tablePrefix( mShared->mCaps.addPrefixIfNeeded( columnRef->tableName() ) );
+        if ( tablePrefix.isEmpty() ) // might be an alias
+          tablePrefix = columnRef->tableName();
+        if ( !severalTablesWithSameNameButDifferentPrefix )
+          tablePrefix = QgsWFSUtils::removeNamespacePrefix( tablePrefix );
+        fieldName = tablePrefix + "." + fieldName;
+      }
+      if ( mapFieldNameToSrcLayerNameFieldName.contains( fieldName ) )
+      {
+        errorMsg = tr( "Field '%1': a field with the same name already exists" ).arg( column->dump() );
+        return false;
+      }
+
+      QgsField field( fieldName, tableFields[idx].type(), tableFields[idx].typeName() );
+      mapFieldNameToSrcLayerNameFieldName[ field.name()] =
+        QPair<QString, QString>( columnTableTypename, tableFields[idx].name() );
+      mShared->mFields.append( field );
+    }
+  }
+
+  mShared->mMapFieldNameToSrcLayerNameFieldName = mapFieldNameToSrcLayerNameFieldName;
+
+  return true;
+}
+
+void QgsWFSProvider::pushErrorSlot( const QString& errorMsg )
+{
+  pushError( errorMsg );
 }
 
 void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsWFSFeatureGmlIdPair> list )
@@ -133,9 +606,30 @@ bool QgsWFSProvider::setSubsetString( const QString& theSQL, bool updateFeatureC
   mCacheMinMaxDirty = true;
 
   // update URI
-  mShared->mURI.setFilter( theSQL );
+  mShared->mFields = mThisTypenameFields;
+  mShared->mLayerPropertiesList.clear();
+  mShared->mMapFieldNameToSrcLayerNameFieldName.clear();
+  mShared->mDistinctSelect = false;
+  if ( theSQL.startsWith( "SELECT ", Qt::CaseInsensitive ) )
+  {
+    QString errorMsg;
+    if ( !processSQL( theSQL, errorMsg ) )
+    {
+      QgsMessageLog::logMessage( errorMsg, tr( "WFS" ) );
+      return false;
+    }
+    mShared->mURI.setSql( theSQL );
+    mShared->mURI.setFilter( QString() );
+  }
+  else
+  {
+    mShared->mURI.setSql( QString() );
+    mShared->mURI.setFilter( theSQL );
+  }
   setDataSourceUri( mShared->mURI.uri() );
-  mShared->computeFilter();
+  QString errorMsg;
+  if ( !mShared->computeFilter( errorMsg ) )
+    QgsMessageLog::logMessage( errorMsg, tr( "WFS" ) );
   reloadData();
   if ( updateFeatureCount )
     featureCount();
@@ -172,6 +666,11 @@ const QgsFields& QgsWFSProvider::fields() const
   return mShared->mFields;
 }
 
+QString QgsWFSProvider::geometryAttribute() const
+{
+  return mShared->mGeometryAttribute;
+}
+
 QgsCoordinateReferenceSystem QgsWFSProvider::crs()
 {
   return mShared->mSourceCRS;
@@ -205,7 +704,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
   {
     return false;
   }
-  removeNamespacePrefix( tname );
+  tname = QgsWFSUtils::removeNamespacePrefix( tname );
 
   //Add the features
   QgsFeatureList::iterator featureIt = flist.begin();
@@ -225,7 +724,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
       if ( value.isValid() && !value.isNull() )
       {
         QDomElement fieldElem = transactionDoc.createElementNS( mApplicationNamespace, mShared->mFields.at( i ).name() );
-        QDomText fieldText = transactionDoc.createTextNode( value.toString() );
+        QDomText fieldText = transactionDoc.createTextNode( convertToXML( value ) );
         fieldElem.appendChild( fieldText );
         featureElem.appendChild( fieldElem );
       }
@@ -425,6 +924,19 @@ bool QgsWFSProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
   }
 }
 
+QString QgsWFSProvider::convertToXML( const QVariant& value )
+{
+  QString valueStr( value.toString() );
+  if ( value.type() == QVariant::DateTime )
+  {
+    QDateTime dt = value.toDateTime().toUTC();
+    valueStr.sprintf( "%04d-%02d-%02dT%02d:%02d:%02d.%03dZ",
+                      dt.date().year(), dt.date().month(), dt.date().day(),
+                      dt.time().hour(), dt.time().minute(), dt.time().second(), dt.time().msec() );
+  }
+  return valueStr;
+}
+
 bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
   //find out typename from uri and strip namespace prefix
@@ -464,7 +976,7 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       propertyElem.appendChild( nameElem );
 
       QDomElement valueElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, "Value" );
-      QDomText valueText = transactionDoc.createTextNode( attMapIt.value().toString() );
+      QDomText valueText = transactionDoc.createTextNode( convertToXML( attMapIt.value() ) );
       valueElem.appendChild( valueText );
       propertyElem.appendChild( valueElem );
 
@@ -525,80 +1037,114 @@ bool QgsWFSProvider::describeFeatureType( QString& geometryAttribute, QgsFields&
     return false;
   }
 
-  if ( readAttributesFromSchema( describeFeatureDocument,
-                                 geometryAttribute, fields, geomType ) != 0 )
+  if ( !readAttributesFromSchema( describeFeatureDocument,
+                                  mShared->mURI.typeName(),
+                                  geometryAttribute, fields, geomType, errorMsg ) )
   {
-    QgsMessageLog::logMessage( tr( "DescribeFeatureType failed for url %1: %2" ).
-                               arg( dataSourceUri() ).arg( tr( "failed retrieving attributes from schema" ) ), tr( "WFS" ) );
+    QgsMessageLog::logMessage( tr( "Analysis of DescribeFeatureType response failed for url %1: %2" ).
+                               arg( dataSourceUri() ).arg( errorMsg ), tr( "WFS" ) );
     return false;
   }
 
   return true;
 }
 
-int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& geometryAttribute, QgsFields& fields, QGis::WkbType& geomType )
+bool QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc,
+    const QString& prefixedTypename,
+    QString& geometryAttribute,
+    QgsFields& fields,
+    QGis::WkbType& geomType,
+    QString& errorMsg )
 {
   //get the <schema> root element
   QDomNodeList schemaNodeList = schemaDoc.elementsByTagNameNS( QgsWFSConstants::XMLSCHEMA_NAMESPACE, "schema" );
   if ( schemaNodeList.length() < 1 )
   {
-    return 1;
+    errorMsg = tr( "Cannot find schema root element" );
+    return false;
   }
   QDomElement schemaElement = schemaNodeList.at( 0 ).toElement();
   mApplicationNamespace = schemaElement.attribute( "targetNamespace" );
-  QDomElement complexTypeElement; //the <complexType> element corresponding to the feature type
 
-  //find out, on which lines the first <element> or the first <complexType> occur. If <element> occurs first (mapserver), read the type of the relevant <complexType> tag. If <complexType> occurs first (geoserver), search for information about the feature type directly under this first complexType element
-
-  int firstElementTagPos = schemaElement.elementsByTagNameNS( QgsWFSConstants::XMLSCHEMA_NAMESPACE, "element" ).at( 0 ).toElement().columnNumber();
-  int firstComplexTypeTagPos = schemaElement.elementsByTagNameNS( QgsWFSConstants::XMLSCHEMA_NAMESPACE, "complexType" ).at( 0 ).toElement().columnNumber();
-
-  if ( firstComplexTypeTagPos < firstElementTagPos )
+  // Remove the namespace on the typename
+  QString unprefixedTypename = prefixedTypename;
+  if ( unprefixedTypename.contains( ':' ) )
   {
-    //geoserver
-    complexTypeElement = schemaElement.elementsByTagNameNS( QgsWFSConstants::XMLSCHEMA_NAMESPACE, "complexType" ).at( 0 ).toElement();
+    unprefixedTypename = unprefixedTypename.section( ':', 1 );
   }
-  else
+
+  // Find the element whose name is the typename that interests us, and
+  // collect the correspond type.
+  QDomElement elementElement = schemaElement.firstChildElement( "element" );
+  QString elementTypeString;
+  while ( !elementElement.isNull() )
   {
-    //UMN mapserver
-    QString complexTypeType;
-    QDomNodeList typeElementNodeList = schemaElement.elementsByTagNameNS( QgsWFSConstants::XMLSCHEMA_NAMESPACE, "element" );
-    QDomElement typeElement = typeElementNodeList.at( 0 ).toElement();
-    complexTypeType = typeElement.attribute( "type" );
-
-    if ( complexTypeType.isEmpty() )
+    QString name = elementElement.attribute( "name" );
+    if ( name == unprefixedTypename )
     {
-      return 3;
+      elementTypeString = elementElement.attribute( "type" );
+      break;
     }
-
-    //remove the namespace on complexTypeType
-    if ( complexTypeType.contains( ':' ) )
+    elementElement = elementElement.nextSiblingElement( "element" );
+  }
+  if ( elementTypeString.isEmpty() )
+  {
+    // "http://demo.deegree.org/inspire-workspace/services/wfs?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=ad:Address"
+    QDomElement iter = schemaElement.firstChildElement();
+    bool onlyIncludeOrImport = true;
+    bool foundImport = false;
+    while ( !iter.isNull() )
     {
-      complexTypeType = complexTypeType.section( ':', 1, 1 );
-    }
-
-    //find <complexType name=complexTypeType
-    QDomNodeList complexTypeNodeList = schemaElement.elementsByTagNameNS( QgsWFSConstants::XMLSCHEMA_NAMESPACE, "complexType" );
-    for ( int i = 0; i < complexTypeNodeList.size(); ++i )
-    {
-      if ( complexTypeNodeList.at( i ).toElement().attribute( "name" ) == complexTypeType )
+      if ( iter.tagName() == "import" )
+        foundImport = true;
+      else if ( iter.tagName() != "include" )
       {
-        complexTypeElement = complexTypeNodeList.at( i ).toElement();
+        onlyIncludeOrImport = false;
         break;
       }
+      iter = iter.nextSiblingElement();
     }
+    if ( foundImport && onlyIncludeOrImport )
+    {
+      errorMsg = tr( "it is probably a schema for Complex Features" );
+    }
+    else
+    {
+      errorMsg = tr( "Cannot find element '%1'" ).arg( unprefixedTypename );
+    }
+
+    return false;
   }
 
+  //remove the namespace on type
+  if ( elementTypeString.contains( ':' ) )
+  {
+    elementTypeString = elementTypeString.section( ':', 1 );
+  }
+
+  //the <complexType> element corresponding to the feature type
+  QDomElement complexTypeElement = schemaElement.firstChildElement( "complexType" );
+  while ( !complexTypeElement.isNull() )
+  {
+    QString name = complexTypeElement.attribute( "name" );
+    if ( name == elementTypeString )
+    {
+      break;
+    }
+    complexTypeElement = complexTypeElement.nextSiblingElement( "complexType" );
+  }
   if ( complexTypeElement.isNull() )
   {
-    return 4;
+    errorMsg = tr( "Cannot find ComplexType element '%1'" ).arg( elementTypeString );
+    return false;
   }
 
   //we have the relevant <complexType> element. Now find out the geometry and the thematic attributes
   QDomNodeList attributeNodeList = complexTypeElement.elementsByTagNameNS( QgsWFSConstants::XMLSCHEMA_NAMESPACE, "element" );
   if ( attributeNodeList.size() < 1 )
   {
-    return 5;
+    errorMsg = tr( "Cannot find attribute elements" );
+    return false;
   }
 
   bool foundGeometryAttribute = false;
@@ -610,6 +1156,15 @@ int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& 
     QString name = attributeElement.attribute( "name" );
     //attribute type
     QString type = attributeElement.attribute( "type" );
+    if ( type.isEmpty() )
+    {
+      QDomElement extension = attributeElement.firstChildElement( "complexType" ).
+                              firstChildElement( "simpleContent" ).firstChildElement( "extension" );
+      if ( !extension.isNull() )
+      {
+        type = extension.attribute( "base" );
+      }
+    }
 
     //is it a geometry attribute?
     //MH 090428: sometimes the <element> tags for geometry attributes have only attribute ref="gml:polygonProperty" and no name
@@ -628,13 +1183,18 @@ int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& 
       {
         attributeType = QVariant::Double;
       }
-      else if ( type.contains( "int", Qt::CaseInsensitive ) )
+      else if ( type.contains( "int", Qt::CaseInsensitive ) ||
+                type.contains( "short", Qt::CaseInsensitive ) )
       {
         attributeType = QVariant::Int;
       }
       else if ( type.contains( "long", Qt::CaseInsensitive ) )
       {
         attributeType = QVariant::LongLong;
+      }
+      else if ( type.contains( "dateTime", Qt::CaseInsensitive ) )
+      {
+        attributeType = QVariant::DateTime;
       }
       fields.append( QgsField( name, attributeType, type ) );
     }
@@ -644,7 +1204,7 @@ int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& 
     geomType = QGis::WKBNoGeometry;
   }
 
-  return 0;
+  return true;
 }
 
 QString QgsWFSProvider::name() const
@@ -660,28 +1220,6 @@ QString QgsWFSProvider::description() const
 int QgsWFSProvider::capabilities() const
 {
   return mCapabilities;
-}
-
-void QgsWFSProvider::removeNamespacePrefix( QString& tname ) const
-{
-  if ( tname.contains( ':' ) )
-  {
-    QStringList splitList = tname.split( ':' );
-    if ( splitList.size() > 1 )
-    {
-      tname = splitList.at( 1 );
-    }
-  }
-}
-
-QString QgsWFSProvider::nameSpacePrefix( const QString& tname ) const
-{
-  QStringList splitList = tname.split( ':' );
-  if ( splitList.size() < 2 )
-  {
-    return QString();
-  }
-  return splitList.at( 0 );
 }
 
 bool QgsWFSProvider::sendTransactionDocument( const QDomDocument& doc, QDomDocument& serverResponse )
@@ -713,7 +1251,7 @@ QDomElement QgsWFSProvider::createTransactionElement( QDomDocument& doc ) const
   transactionElem.setAttribute( "xsi:schemaLocation", mApplicationNamespace + ' '
                                 + describeFeatureTypeURL.toEncoded() );
 
-  QString namespacePrefix = nameSpacePrefix( mShared->mURI.typeName() );
+  QString namespacePrefix = QgsWFSUtils::nameSpacePrefix( mShared->mURI.typeName() );
   if ( !namespacePrefix.isEmpty() )
   {
     transactionElem.setAttribute( "xmlns:" + namespacePrefix, mApplicationNamespace );
@@ -790,37 +1328,39 @@ QStringList QgsWFSProvider::insertedFeatureIds( const QDomDocument& serverRespon
 
 bool QgsWFSProvider::getCapabilities()
 {
-  mCapabilities = 0;
+  mCapabilities = QgsVectorDataProvider::SelectAtId;
 
-  QgsWFSCapabilities getCapabilities( mShared->mURI.uri() );
-  if ( !getCapabilities.requestCapabilities( true ) )
+  if ( mShared->mCaps.version.isEmpty() )
   {
-    QgsMessageLog::logMessage( tr( "GetCapabilities failed for url %1: %2" ).
-                               arg( dataSourceUri() ).arg( getCapabilities.errorMessage() ), tr( "WFS" ) );
-    return false;
+    QgsWFSCapabilities getCapabilities( mShared->mURI.uri() );
+    if ( !getCapabilities.requestCapabilities( true ) )
+    {
+      QgsMessageLog::logMessage( tr( "GetCapabilities failed for url %1: %2" ).
+                                 arg( dataSourceUri() ).arg( getCapabilities.errorMessage() ), tr( "WFS" ) );
+      return false;
+    }
+
+    const QgsWFSCapabilities::Capabilities caps = getCapabilities.capabilities();
+    mShared->mCaps = caps;
   }
 
-  const QgsWFSCapabilities::Capabilities caps = getCapabilities.capabilities();
-
-  mShared->mWFSVersion = caps.version;
+  mShared->mWFSVersion = mShared->mCaps.version;
   if ( mShared->mURI.maxNumFeatures() > 0 )
     mShared->mMaxFeatures = mShared->mURI.maxNumFeatures();
   else
-    mShared->mMaxFeatures = caps.maxFeatures;
-  mShared->mMaxFeaturesServer = caps.maxFeatures;
-  mShared->mSupportsHits = caps.supportsHits;
-  mShared->mSupportsPaging = caps.supportsPaging;
+    mShared->mMaxFeatures = mShared->mCaps.maxFeatures;
 
   //find the <FeatureType> for this layer
   QString thisLayerName = mShared->mURI.typeName();
-  for ( int i = 0; i < caps.featureTypes.size(); i++ )
+  bool foundLayer = false;
+  for ( int i = 0; i < mShared->mCaps.featureTypes.size(); i++ )
   {
-    if ( thisLayerName == caps.featureTypes[i].name )
+    if ( thisLayerName == mShared->mCaps.featureTypes[i].name )
     {
-      const QgsRectangle& r = caps.featureTypes[i].bboxLongLat;
-      if ( mShared->mSourceCRS.authid().isEmpty() && caps.featureTypes[i].crslist.size() != 0 )
+      const QgsRectangle& r = mShared->mCaps.featureTypes[i].bboxLongLat;
+      if ( mShared->mSourceCRS.authid().isEmpty() && mShared->mCaps.featureTypes[i].crslist.size() != 0 )
       {
-        mShared->mSourceCRS.createFromOgcWmsCrs( caps.featureTypes[i].crslist[0] );
+        mShared->mSourceCRS.createFromOgcWmsCrs( mShared->mCaps.featureTypes[i].crslist[0] );
       }
       if ( !r.isNull() )
       {
@@ -836,26 +1376,31 @@ bool QgsWFSProvider::getCapabilities()
 
         QgsDebugMsg( "layer ext:" + mExtent.toString() );
       }
-      if ( caps.featureTypes[i].insertCap )
+      if ( mShared->mCaps.featureTypes[i].insertCap )
       {
         mCapabilities |= QgsVectorDataProvider::AddFeatures;
       }
-      if ( caps.featureTypes[i].updateCap )
+      if ( mShared->mCaps.featureTypes[i].updateCap )
       {
         mCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;
         mCapabilities |= QgsVectorDataProvider::ChangeGeometries;
       }
-      if ( caps.featureTypes[i].deleteCap )
+      if ( mShared->mCaps.featureTypes[i].deleteCap )
       {
         mCapabilities |= QgsVectorDataProvider::DeleteFeatures;
       }
 
-      return true;
+      foundLayer = true;
     }
   }
-  QgsMessageLog::logMessage( tr( "Could not find typename %1 in capabilites for url %2" ).
-                             arg( thisLayerName ).arg( dataSourceUri() ), tr( "WFS" ) );
-  return false;
+
+  if ( !foundLayer )
+  {
+    QgsMessageLog::logMessage( tr( "Could not find typename %1 in capabilites for url %2" ).
+                               arg( thisLayerName ).arg( dataSourceUri() ), tr( "WFS" ) );
+  }
+
+  return foundLayer;
 }
 
 QGis::WkbType QgsWFSProvider::geomTypeFromPropertyType( const QString& attName, const QString& propType )

@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include "qgswfscapabilities.h"
 #include "qgswfsconstants.h"
+#include "qgswfsutils.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsogcutils.h"
@@ -63,8 +64,23 @@ void QgsWFSCapabilities::Capabilities::clear()
   maxFeatures = 0;
   supportsHits = false;
   supportsPaging = false;
+  supportsJoins = false;
   version = "";
   featureTypes.clear();
+  spatialPredicatesList.clear();
+  functionList.clear();
+  setAllTypenames.clear();
+  mapUnprefixedTypenameToPrefixedTypename.clear();
+  setAmbiguousUnprefixedTypename.clear();
+}
+
+QString QgsWFSCapabilities::Capabilities::addPrefixIfNeeded( const QString& name ) const
+{
+  if ( name.contains( ':' ) )
+    return name;
+  if ( setAmbiguousUnprefixedTypename.contains( name ) )
+    return "";
+  return mapUnprefixedTypenameToPrefixedTypename[name];
 }
 
 void QgsWFSCapabilities::capabilitiesReplyFinished()
@@ -156,6 +172,16 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
         {
           mCaps.supportsPaging = true;
           QgsDebugMsg( "Supports paging" );
+        }
+      }
+      else if ( contraint.attribute( "name" ) == "ImplementsStandardJoins" ||
+                contraint.attribute( "name" ) == "ImplementsSpatialJoins" /* WFS 2.0 */ )
+      {
+        QDomElement value = contraint.firstChildElement( "DefaultValue" );
+        if ( !value.isNull() && value.text() == "TRUE" )
+        {
+          mCaps.supportsJoins = true;
+          QgsDebugMsg( "Supports joins" );
         }
       }
     }
@@ -323,6 +349,50 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
     mCaps.featureTypes.push_back( featureType );
   }
 
+  Q_FOREACH ( const FeatureType& f, mCaps.featureTypes )
+  {
+    mCaps.setAllTypenames.insert( f.name );
+    QString unprefixed( QgsWFSUtils::removeNamespacePrefix( f.name ) );
+    if ( !mCaps.setAmbiguousUnprefixedTypename.contains( unprefixed ) )
+    {
+      if ( mCaps.mapUnprefixedTypenameToPrefixedTypename.contains( unprefixed ) )
+      {
+        mCaps.setAmbiguousUnprefixedTypename.insert( unprefixed );
+        mCaps.mapUnprefixedTypenameToPrefixedTypename.remove( unprefixed );
+      }
+      else
+      {
+        mCaps.mapUnprefixedTypenameToPrefixedTypename[unprefixed] = f.name;
+      }
+    }
+  }
+
+  //go to <Filter_Capabilities>
+  QDomElement filterCapabilitiesElem = doc.firstChildElement( "Filter_Capabilities" );
+  if ( !filterCapabilitiesElem.isNull() )
+    parseFilterCapabilities( filterCapabilitiesElem );
+
+  // Hard-coded functions
+  Function f_ST_GeometryFromText( "ST_GeometryFromText", 1, 2 );
+  f_ST_GeometryFromText.returnType = "gml:AbstractGeometryType";
+  f_ST_GeometryFromText.argumentList << Argument( "wkt", "xs:string" );
+  f_ST_GeometryFromText.argumentList << Argument( "srsname", "xs:string" );
+  mCaps.functionList << f_ST_GeometryFromText;
+
+  Function f_ST_GeomFromGML( "ST_GeomFromGML", 1 );
+  f_ST_GeomFromGML.returnType = "gml:AbstractGeometryType";
+  f_ST_GeomFromGML.argumentList << Argument( "gml", "xs:string" );
+  mCaps.functionList << f_ST_GeomFromGML;
+
+  Function f_ST_MakeEnvelope( "ST_MakeEnvelope", 4, 5 );
+  f_ST_MakeEnvelope.returnType = "gml:AbstractGeometryType";
+  f_ST_MakeEnvelope.argumentList << Argument( "minx", "xs:double" );
+  f_ST_MakeEnvelope.argumentList << Argument( "miny", "xs:double" );
+  f_ST_MakeEnvelope.argumentList << Argument( "maxx", "xs:double" );
+  f_ST_MakeEnvelope.argumentList << Argument( "maxy", "xs:double" );
+  f_ST_MakeEnvelope.argumentList << Argument( "srsname", "xs:string" );
+  mCaps.functionList << f_ST_MakeEnvelope;
+
   emit gotCapabilities();
 }
 
@@ -401,6 +471,146 @@ void QgsWFSCapabilities::parseSupportedOperations( const QDomElement& operations
         deleteCap = true;
       }
     }
+  }
+}
+
+static QgsWFSCapabilities::Function getSpatialPredicate( const QString& name )
+{
+  QgsWFSCapabilities::Function f;
+  // WFS 1.0 advertize Intersect, but for conveniency we internally convert it to Intersects
+  if ( name == "Intersect" )
+    f.name = "ST_Intersects";
+  else
+    f.name = ( name == "BBOX" ) ? "BBOX" : "ST_" + name;
+  f.returnType = "xs:boolean";
+  if ( name == "DWithin" || name == "Beyond" )
+  {
+    f.minArgs = 3;
+    f.maxArgs = 3;
+    f.argumentList << QgsWFSCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
+    f.argumentList << QgsWFSCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
+    f.argumentList << QgsWFSCapabilities::Argument( "distance" );
+  }
+  else
+  {
+    f.minArgs = 2;
+    f.maxArgs = 2;
+    f.argumentList << QgsWFSCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
+    f.argumentList << QgsWFSCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
+  }
+  return f;
+}
+
+void QgsWFSCapabilities::parseFilterCapabilities( const QDomElement& filterCapabilitiesElem )
+{
+  // WFS 1.0
+  QDomElement spatial_Operators = filterCapabilitiesElem.firstChildElement( "Spatial_Capabilities" ).firstChildElement( "Spatial_Operators" );
+  QDomElement spatial_Operator = spatial_Operators.firstChildElement();
+  while ( !spatial_Operator.isNull() )
+  {
+    QString name = spatial_Operator.tagName();
+    if ( !name.isEmpty() )
+    {
+      mCaps.spatialPredicatesList << getSpatialPredicate( name );
+    }
+    spatial_Operator = spatial_Operator.nextSiblingElement();
+  }
+
+  // WFS 1.1 and 2.0
+  QDomElement spatialOperators = filterCapabilitiesElem.firstChildElement( "Spatial_Capabilities" ).firstChildElement( "SpatialOperators" );
+  QDomElement spatialOperator = spatialOperators.firstChildElement( "SpatialOperator" );
+  while ( !spatialOperator.isNull() )
+  {
+    QString name = spatialOperator.attribute( "name" );
+    if ( !name.isEmpty() )
+    {
+      mCaps.spatialPredicatesList << getSpatialPredicate( name );
+    }
+    spatialOperator = spatialOperator.nextSiblingElement( "SpatialOperator" );
+  }
+
+  // WFS 1.0
+  QDomElement function_Names = filterCapabilitiesElem.firstChildElement( "Scalar_Capabilities" )
+                               .firstChildElement( "Arithmetic_Operators" )
+                               .firstChildElement( "Functions" )
+                               .firstChildElement( "Function_Names" );
+  QDomElement function_NameElem = function_Names.firstChildElement( "Function_Name" );
+  while ( !function_NameElem.isNull() )
+  {
+    Function f;
+    f.name = function_NameElem.text();
+    bool ok;
+    int nArgs = function_NameElem.attribute( "nArgs" ).toInt( &ok );
+    if ( ok )
+    {
+      if ( nArgs >= 0 )
+      {
+        f.minArgs = nArgs;
+        f.maxArgs = nArgs;
+      }
+      else
+      {
+        f.minArgs = -nArgs;
+      }
+    }
+    mCaps.functionList << f;
+    function_NameElem = function_NameElem.nextSiblingElement( "Function_Name" );
+  }
+
+  // WFS 1.1
+  QDomElement functionNames = filterCapabilitiesElem.firstChildElement( "Scalar_Capabilities" )
+                              .firstChildElement( "ArithmeticOperators" )
+                              .firstChildElement( "Functions" )
+                              .firstChildElement( "FunctionNames" );
+  QDomElement functionNameElem = functionNames.firstChildElement( "FunctionName" );
+  while ( !functionNameElem.isNull() )
+  {
+    Function f;
+    f.name = functionNameElem.text();
+    bool ok;
+    int nArgs = functionNameElem.attribute( "nArgs" ).toInt( &ok );
+    if ( ok )
+    {
+      if ( nArgs >= 0 )
+      {
+        f.minArgs = nArgs;
+        f.maxArgs = nArgs;
+      }
+      else
+      {
+        f.minArgs = -nArgs;
+      }
+    }
+    mCaps.functionList << f;
+    functionNameElem = functionNameElem.nextSiblingElement( "FunctionName" );
+  }
+
+  QDomElement functions = filterCapabilitiesElem.firstChildElement( "Functions" );
+  QDomElement functionElem = functions.firstChildElement( "Function" );
+  while ( !functionElem.isNull() )
+  {
+    QString name = functionElem.attribute( "name" );
+    if ( !name.isEmpty() )
+    {
+      Function f;
+      f.name = name;
+      QDomElement returnsElem = functionElem.firstChildElement( "Returns" );
+      f.returnType = returnsElem.text();
+      QDomElement argumentsElem = functionElem.firstChildElement( "Arguments" );
+      QDomElement argumentElem = argumentsElem.firstChildElement( "Argument" );
+      while ( !argumentElem.isNull() )
+      {
+        Argument arg;
+        arg.name = argumentElem.attribute( "name" );
+        arg.type = argumentElem.firstChildElement( "Type" ).text();
+        f.argumentList << arg;
+        argumentElem = argumentElem.nextSiblingElement( "Argument" );
+      }
+      f.minArgs = f.argumentList.count();
+      f.maxArgs = f.argumentList.count();
+      mCaps.functionList << f;
+    }
+    functionElem = functionElem.nextSiblingElement( "Function" );
   }
 }
 

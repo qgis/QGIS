@@ -24,6 +24,7 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
+#include "qgswfscapabilities.h"
 #include "qgswfsfeatureiterator.h"
 #include "qgswfsdatasourceuri.h"
 
@@ -61,7 +62,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     Q_OBJECT
   public:
 
-    explicit QgsWFSProvider( const QString& uri );
+    explicit QgsWFSProvider( const QString& uri, const QgsWFSCapabilities::Capabilities caps = QgsWFSCapabilities::Capabilities() );
     ~QgsWFSProvider();
 
     /* Inherited from QgsVectorDataProvider */
@@ -95,6 +96,10 @@ class QgsWFSProvider : public QgsVectorDataProvider
     virtual int capabilities() const override;
 
     /* new functions */
+
+    QString geometryAttribute() const;
+
+    const QString processSQLErrorMsg() const { return mProcessSQLErrorMsg; }
 
     //Editing operations
     /**
@@ -135,6 +140,8 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     void featureReceivedAnalyzeOneFeature( QVector<QgsWFSFeatureGmlIdPair> );
 
+    void pushErrorSlot( const QString& errorMsg );
+
   private:
     /** Mutable data shared between provider and feature sources */
     QSharedPointer<QgsWFSSharedData> mShared;
@@ -156,6 +163,10 @@ class QgsWFSProvider : public QgsVectorDataProvider
     QString mApplicationNamespace;
     /** Server capabilities for this layer (generated from capabilities document)*/
     int mCapabilities;
+    /** Fields of this typename. Might be different from mShared->mFields in case of SELECT */
+    QgsFields mThisTypenameFields;
+
+    QString mProcessSQLErrorMsg;
 
     /** Collects information about the field types. Is called internally from QgsWFSProvider ctor.
        The method gives back the name of
@@ -163,15 +174,14 @@ class QgsWFSProvider : public QgsVectorDataProvider
     bool describeFeatureType( QString& geometryAttribute,
                               QgsFields& fields, QGis::WkbType& geomType );
 
-    /** Reads the name of the geometry attribute, the thematic attributes and their types from a dom document. Returns 0 in case of success*/
-    int readAttributesFromSchema( QDomDocument& schemaDoc, QString& geometryAttribute, QgsFields& fields, QGis::WkbType& geomType );
+    /** For a given typename, reads the name of the geometry attribute, the
+        thematic attributes and their types from a dom document. Returns true in case of success*/
+    bool readAttributesFromSchema( QDomDocument& schemaDoc,
+                                   const QString& prefixedTypename,
+                                   QString& geometryAttribute,
+                                   QgsFields& fields, QGis::WkbType& geomType, QString& errorMsg );
 
     //helper methods for WFS-T
-
-    /** Removes a possible namespace prefix from a typename*/
-    void removeNamespacePrefix( QString& tname ) const;
-    /** Returns namespace prefix (or an empty string if there is no prefix)*/
-    QString nameSpacePrefix( const QString& tname ) const;
 
     /** Sends the transaction document to the server using HTTP POST
       @return true if transmission to the server succeeded, otherwise false
@@ -191,6 +201,10 @@ class QgsWFSProvider : public QgsVectorDataProvider
     void handleException( const QDomDocument& serverResponse );
     /** Converts DescribeFeatureType schema geometry property type to WKBType*/
     QGis::WkbType geomTypeFromPropertyType( const QString& attName, const QString& propType );
+    /** Convert the value to its appropriate XML representation */
+    QString convertToXML( const QVariant& value );
+
+    bool processSQL( const QString& sqlString, QString& errorMsg );
 };
 
 #endif /* QGSWFSPROVIDER_H */

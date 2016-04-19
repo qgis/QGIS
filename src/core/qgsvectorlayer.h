@@ -205,6 +205,7 @@ protected:
  * - password=string
  * - authcfg=string
  * - version=auto/1.0.0/1.1.0/2.0.0
+ *  -sql=string: full SELECT SQL statement with optional WHERE, ORDER BY and possibly with JOIN if supported on server
  * - filter=string: QGIS expression or OGC/FES filter
  * - retrictToRequestBBOX=1: to download only features in the view extent (or more generally
  *   in the bounding box of the feature iterator)
