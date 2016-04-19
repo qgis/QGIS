@@ -154,7 +154,7 @@ QgsExpressionContext QgsActionManager::createExpressionContext() const
 }
 
 QString QgsActionManager::expandAction( QString action, const QgsAttributeMap &attributes,
-    uint clickedOnValue )
+                                        uint clickedOnValue )
 {
   // This function currently replaces all %% characters in the action
   // with the value from values[clickedOnValue].second, and then
