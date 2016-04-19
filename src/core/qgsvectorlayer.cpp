@@ -979,6 +979,7 @@ bool QgsVectorLayer::setSubsetString( const QString& subset )
   // get the updated data source string from the provider
   mDataSource = mDataProvider->dataSourceUri();
   updateExtents();
+  updateFields();
 
   if ( res )
     emit repaintRequested();
