@@ -293,9 +293,10 @@ void QgsMapRendererJob::drawLabeling( const QgsMapSettings& settings, QgsRenderC
   renderContext.setPainter( painter );
   renderContext.setLabelingEngine( labelingEngine );
 
+#if !defined(QGIS_DISABLE_DEPRECATED)
   // old labeling - to be removed at some point...
   drawOldLabeling( settings, renderContext );
-
+#endif
   drawNewLabeling( settings, renderContext, labelingEngine );
 
   if ( labelingEngine2 )

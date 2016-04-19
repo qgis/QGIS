@@ -668,6 +668,11 @@ IF (UNIX AND NOT APPLE)
   SET (QGIS_MANUAL_DIR  ${CMAKE_INSTALL_PREFIX}/${QGIS_MANUAL_SUBDIR})
 ENDIF (UNIX AND NOT APPLE)
 
+SET (DISABLE_DEPRECATED ${ENABLE_QT5} CACHE BOOL "If set to true, it will disable deprecated functionality to prepare for the next generation of QGIS")
+IF (DISABLE_DEPRECATED)
+  ADD_DEFINITIONS(-DQGIS_DISABLE_DEPRECATED)
+ENDIF (DISABLE_DEPRECATED)
+
 
 #############################################################
 # Python build dependency
