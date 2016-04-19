@@ -189,7 +189,7 @@ bool QgsWFSProvider::isValid()
 
 QgsFeatureIterator QgsWFSProvider::getFeatures( const QgsFeatureRequest& request )
 {
-  return new QgsWFSFeatureIterator( new QgsWFSFeatureSource( this ), true, request );
+  return QgsFeatureIterator( new QgsWFSFeatureIterator( new QgsWFSFeatureSource( this ), true, request ) );
 }
 
 bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
