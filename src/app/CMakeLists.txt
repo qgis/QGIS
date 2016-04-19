@@ -11,6 +11,7 @@ SET(QGIS_APP_SRCS
   qgsjoindialog.cpp
   qgsannotationwidget.cpp
   qgsattributeactiondialog.cpp
+  qgsattributeactionpropertiesdialog.cpp
   qgsattributetypedialog.cpp
   qgsattributetabledialog.cpp
   qgsbookmarks.cpp
@@ -184,6 +185,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsannotationwidget.h
   qgsapplayertreeviewmenuprovider.h
   qgsattributeactiondialog.h
+  qgsattributeactionpropertiesdialog.h
   qgsattributetypedialog.h
   qgsattributetabledialog.h
   qgsbookmarks.h

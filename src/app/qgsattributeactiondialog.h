@@ -33,44 +33,39 @@ class APP_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttrib
     Q_OBJECT
 
   public:
-    QgsAttributeActionDialog( QgsActionManager* actions,
-                              const QgsFields& fields,
+    QgsAttributeActionDialog( const QgsActionManager& actions,
                               QWidget* parent = nullptr );
 
     ~QgsAttributeActionDialog() {}
 
-    void init();
+    void init( const QgsActionManager& action );
 
-  public slots:
-    void moveUp();
-    void moveDown();
-    void browse();
-    void remove();
-    void insert();
-    void insertField();
-    void insertExpression();
+    QList<QgsAction> actions() const;
+
     void apply();
-    void update();
-    void addDefaultActions();
-    void itemSelectionChanged();
 
   private slots:
+    void moveUp();
+    void moveDown();
+    void remove();
+    void insert();
+    void addDefaultActions();
+    void itemDoubleClicked( QTableWidgetItem* item );
     void updateButtons();
-    void chooseIcon();
 
   private:
-
-    void insertRow( int row, QgsAction::ActionType type, const QString &name, const QString &action, const QString& iconPath, bool capture );
+    void insertRow( int row, const QgsAction& action );
+    void insertRow( int row, QgsAction::ActionType type, const QString& name, const QString& actionText, const QString& iconPath, bool capture );
     void swapRows( int row1, int row2 );
+    QgsAction rowToAction( int row ) const;
 
-    void insert( int pos );
+    QString textForType( QgsAction::ActionType type );
 
     void rowSelected( int row );
 
     QString uniqueName( QString name );
 
-    // Pointer to the QgsAttributeAction in the class that created us.
-    QgsActionManager *mActions;
+    QgsVectorLayer* mLayer;
 };
 
 #endif
