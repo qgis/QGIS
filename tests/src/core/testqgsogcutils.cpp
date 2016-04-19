@@ -61,6 +61,9 @@ class TestQgsOgcUtils : public QObject
     void testExpressionToOgcFilterWFS20();
     void testExpressionToOgcFilterWFS20_data();
 #endif
+
+    void testSQLStatementToOgcFilter();
+    void testSQLStatementToOgcFilter_data();
 };
 
 
@@ -331,6 +334,26 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
     "</ogc:Or>"
     "</ogc:Filter>" );
 
+  QTest::newRow( "not in" ) << QString( "A NOT IN (10,20,30)" ) << QString(
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+    "<ogc:Not>"
+    "<ogc:Or>"
+    "<ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
+    "<ogc:Literal>10</ogc:Literal>"
+    "</ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
+    "<ogc:Literal>20</ogc:Literal>"
+    "</ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
+    "<ogc:Literal>30</ogc:Literal>"
+    "</ogc:PropertyIsEqualTo>"
+    "</ogc:Or>"
+    "</ogc:Not>"
+    "</ogc:Filter>" );
+
   QTest::newRow( "intersects_bbox" ) << QString( "intersects_bbox($geometry, geomFromWKT('POINT (5 6)'))" ) << QString(
     "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
     "<ogc:BBOX>"
@@ -482,6 +505,355 @@ void TestQgsOgcUtils::testExpressionToOgcFilterWFS20_data()
 }
 
 #endif
+
+Q_DECLARE_METATYPE( QgsOgcUtils::GMLVersion )
+Q_DECLARE_METATYPE( QgsOgcUtils::FilterVersion )
+Q_DECLARE_METATYPE( QList<QgsOgcUtils::LayerProperties> )
+
+void TestQgsOgcUtils::testSQLStatementToOgcFilter()
+{
+  QFETCH( QString, statementText );
+  QFETCH( QgsOgcUtils::GMLVersion, gmlVersion );
+  QFETCH( QgsOgcUtils::FilterVersion, filterVersion );
+  QFETCH( QList<QgsOgcUtils::LayerProperties>, layerProperties );
+  QFETCH( QString, xmlText );
+
+  QgsSQLStatement statement( statementText );
+  if ( !statement.hasParserError() )
+  {
+    qDebug( "%s", statement.parserErrorString().toAscii().data() );
+    QVERIFY( !statement.hasParserError() );
+  }
+
+  QString errorMsg;
+  QDomDocument doc;
+  //QgsOgcUtils::GMLVersion gmlVersion = QgsOgcUtils::GML_3_2_1;
+  //QgsOgcUtils::FilterVersion filterVersion = QgsOgcUtils::FILTER_FES_2_0;
+  bool honourAxisOrientation = true;
+  bool invertAxisOrientation = false;
+  //QList<QgsOgcUtils::LayerProperties> layerProperties;
+  QDomElement filterElem = QgsOgcUtils::SQLStatementToOgcFilter( statement,
+                           doc,
+                           gmlVersion,
+                           filterVersion,
+                           layerProperties,
+                           honourAxisOrientation,
+                           invertAxisOrientation,
+                           QMap<QString, QString>(),
+                           &errorMsg );
+
+  if ( !errorMsg.isEmpty() )
+    qDebug( "ERROR: %s", errorMsg.toAscii().data() );
+
+  QVERIFY( !filterElem.isNull() );
+
+  doc.appendChild( filterElem );
+
+  qDebug( "SQL:    %s", statement.statement().toAscii().data() );
+  qDebug( "GML:    %s", gmlVersion == QgsOgcUtils::GML_2_1_2 ? "2.1.2" :
+          gmlVersion == QgsOgcUtils::GML_3_1_0 ? "3.1.0" :
+          gmlVersion == QgsOgcUtils::GML_3_2_1 ? "3.2.1" : "unknown" );
+  qDebug( "FILTER: %s", filterVersion == QgsOgcUtils::FILTER_OGC_1_0 ? "OGC 1.0" :
+          filterVersion == QgsOgcUtils::FILTER_OGC_1_1 ? "OGC 1.1" :
+          filterVersion == QgsOgcUtils::FILTER_FES_2_0 ? "FES 2.0" : "unknown" );
+  qDebug( "OGC :   %s", doc.toString( -1 ).toAscii().data() );
+
+  QCOMPARE( doc.toString( -1 ), xmlText );
+}
+
+void TestQgsOgcUtils::testSQLStatementToOgcFilter_data()
+{
+  QList<QgsOgcUtils::LayerProperties> layerProperties;
+
+  QTest::addColumn<QString>( "statementText" );
+  QTest::addColumn<QgsOgcUtils::GMLVersion>( "gmlVersion" );
+  QTest::addColumn<QgsOgcUtils::FilterVersion>( "filterVersion" );
+  QTest::addColumn< QList<QgsOgcUtils::LayerProperties> >( "layerProperties" );
+  QTest::addColumn<QString>( "xmlText" );
+
+  QTest::newRow( "= 1.0" ) << QString( "SELECT * FROM t WHERE NAME = 'New York'" ) <<
+  QgsOgcUtils::GML_2_1_2 << QgsOgcUtils::FILTER_OGC_1_0 << layerProperties <<
+  QString(
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+    "<ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyName>NAME</ogc:PropertyName>"
+    "<ogc:Literal>New York</ogc:Literal>"
+    "</ogc:PropertyIsEqualTo>"
+    "</ogc:Filter>" );
+
+  QTest::newRow( "= 2.0" ) << QString( "SELECT * FROM t WHERE NAME = 'New York'" ) <<
+  QgsOgcUtils::GML_3_2_1 << QgsOgcUtils::FILTER_FES_2_0 << layerProperties <<
+  QString(
+    "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\">"
+    "<fes:PropertyIsEqualTo>"
+    "<fes:ValueReference>NAME</fes:ValueReference>"
+    "<fes:Literal>New York</fes:Literal>"
+    "</fes:PropertyIsEqualTo>"
+    "</fes:Filter>" );
+
+  QTest::newRow( ">" ) << QString( "SELECT * FROM t WHERE COUNT > 3" ) <<
+  QgsOgcUtils::GML_2_1_2 << QgsOgcUtils::FILTER_OGC_1_0 << layerProperties <<
+  QString(
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+    "<ogc:PropertyIsGreaterThan>"
+    "<ogc:PropertyName>COUNT</ogc:PropertyName>"
+    "<ogc:Literal>3</ogc:Literal>"
+    "</ogc:PropertyIsGreaterThan></ogc:Filter>" );
+
+  QTest::newRow( "and+or" ) << QString( "SELECT * FROM t WHERE (FIELD1 <= 10 OR FIELD1 > 20) AND STATUS >= 1.5" ) <<
+  QgsOgcUtils::GML_2_1_2 << QgsOgcUtils::FILTER_OGC_1_0 << layerProperties << QString(
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+    "<ogc:And>"
+    "<ogc:Or>"
+    "<ogc:PropertyIsLessThanOrEqualTo>"
+    "<ogc:PropertyName>FIELD1</ogc:PropertyName>"
+    "<ogc:Literal>10</ogc:Literal>"
+    "</ogc:PropertyIsLessThanOrEqualTo>"
+    "<ogc:PropertyIsGreaterThan>"
+    "<ogc:PropertyName>FIELD1</ogc:PropertyName>"
+    "<ogc:Literal>20</ogc:Literal>"
+    "</ogc:PropertyIsGreaterThan>"
+    "</ogc:Or>"
+    "<ogc:PropertyIsGreaterThanOrEqualTo>"
+    "<ogc:PropertyName>STATUS</ogc:PropertyName>"
+    "<ogc:Literal>1.5</ogc:Literal>"
+    "</ogc:PropertyIsGreaterThanOrEqualTo>"
+    "</ogc:And>"
+    "</ogc:Filter>" );
+
+  QTest::newRow( "is null" ) << QString( "SELECT * FROM t WHERE A IS NULL" ) <<
+  QgsOgcUtils::GML_2_1_2 << QgsOgcUtils::FILTER_OGC_1_0 << layerProperties << QString(
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+    "<ogc:PropertyIsNull>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
+    "</ogc:PropertyIsNull>"
+    "</ogc:Filter>" );
+
+  QTest::newRow( "is not null" ) << QString( "SELECT * FROM t WHERE A IS NOT NULL" ) <<
+  QgsOgcUtils::GML_2_1_2 << QgsOgcUtils::FILTER_OGC_1_0 << layerProperties << QString(
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+    "<ogc:Not>"
+    "<ogc:PropertyIsNull>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
+    "</ogc:PropertyIsNull>"
+    "</ogc:Not>"
+    "</ogc:Filter>" );
+
+  QTest::newRow( "in" ) << QString( "SELECT * FROM t WHERE A IN (10,20,30)" ) <<
+  QgsOgcUtils::GML_2_1_2 << QgsOgcUtils::FILTER_OGC_1_0 << layerProperties << QString(
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+    "<ogc:Or>"
+    "<ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
+    "<ogc:Literal>10</ogc:Literal>"
+    "</ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
+    "<ogc:Literal>20</ogc:Literal>"
+    "</ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
+    "<ogc:Literal>30</ogc:Literal>"
+    "</ogc:PropertyIsEqualTo>"
+    "</ogc:Or>"
+    "</ogc:Filter>" );
+
+  QTest::newRow( "not in" ) << QString( "SELECT * FROM t WHERE A NOT IN (10,20,30)" ) <<
+  QgsOgcUtils::GML_2_1_2 << QgsOgcUtils::FILTER_OGC_1_0 << layerProperties << QString(
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+    "<ogc:Not>"
+    "<ogc:Or>"
+    "<ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
+    "<ogc:Literal>10</ogc:Literal>"
+    "</ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
+    "<ogc:Literal>20</ogc:Literal>"
+    "</ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
+    "<ogc:Literal>30</ogc:Literal>"
+    "</ogc:PropertyIsEqualTo>"
+    "</ogc:Or>"
+    "</ogc:Not>"
+    "</ogc:Filter>" );
+
+  QTest::newRow( "between" ) << QString( "SELECT * FROM t WHERE A BETWEEN 1 AND 2" ) <<
+  QgsOgcUtils::GML_2_1_2 << QgsOgcUtils::FILTER_OGC_1_0 << layerProperties << QString(
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+    "<ogc:PropertyIsBetween>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
+    "<ogc:LowerBoundary><ogc:Literal>1</ogc:Literal></ogc:LowerBoundary>"
+    "<ogc:UpperBoundary><ogc:Literal>2</ogc:Literal></ogc:UpperBoundary>"
+    "</ogc:PropertyIsBetween>"
+    "</ogc:Filter>" );
+
+  QTest::newRow( "not between" ) << QString( "SELECT * FROM t WHERE A NOT BETWEEN 1 AND 2" ) <<
+  QgsOgcUtils::GML_2_1_2 << QgsOgcUtils::FILTER_OGC_1_0 << layerProperties << QString(
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+    "<ogc:Not>"
+    "<ogc:PropertyIsBetween>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
+    "<ogc:LowerBoundary><ogc:Literal>1</ogc:Literal></ogc:LowerBoundary>"
+    "<ogc:UpperBoundary><ogc:Literal>2</ogc:Literal></ogc:UpperBoundary>"
+    "</ogc:PropertyIsBetween>"
+    "</ogc:Not>"
+    "</ogc:Filter>" );
+
+  QTest::newRow( "intersects + wkt" ) << QString( "SELECT * FROM t WHERE ST_Intersects(geom, ST_GeometryFromText('POINT (5 6)'))" ) <<
+  QgsOgcUtils::GML_2_1_2 << QgsOgcUtils::FILTER_OGC_1_0 << layerProperties << QString(
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
+    "<ogc:Intersects>"
+    "<ogc:PropertyName>geom</ogc:PropertyName>"
+    "<gml:Point><gml:coordinates cs=\",\" ts=\" \">5,6</gml:coordinates></gml:Point>"
+    "</ogc:Intersects>"
+    "</ogc:Filter>" );
+
+  QTest::newRow( "contains + gml" ) << QString( "SELECT * FROM t WHERE ST_Contains(geom, ST_GeomFromGML('<gml:Point xmlns:gml=\"http://www.opengis.net/gml\"><gml:coordinates cs=\",\" ts=\" \">5,6</gml:coordinates></gml:Point>'))" ) <<
+  QgsOgcUtils::GML_2_1_2 << QgsOgcUtils::FILTER_OGC_1_0 << layerProperties << QString(
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
+    "<ogc:Contains>"
+    "<ogc:PropertyName>geom</ogc:PropertyName>"
+    "<gml:Point xmlns:gml=\"http://www.opengis.net/gml\"><gml:coordinates xmlns:gml=\"http://www.opengis.net/gml\" cs=\",\" ts=\" \">5,6</gml:coordinates></gml:Point>"
+    "</ogc:Contains>"
+    "</ogc:Filter>" );
+
+  QTest::newRow( "abs" ) << QString( "SELECT * FROM t WHERE ABS(x) < 5" ) <<
+  QgsOgcUtils::GML_2_1_2 << QgsOgcUtils::FILTER_OGC_1_0 << layerProperties << QString(
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+    "<ogc:PropertyIsLessThan>"
+    "<ogc:Function name=\"ABS\">"
+    "<ogc:PropertyName>x</ogc:PropertyName>"
+    "</ogc:Function>"
+    "<ogc:Literal>5</ogc:Literal>"
+    "</ogc:PropertyIsLessThan>"
+    "</ogc:Filter>" );
+
+  QTest::newRow( "bbox + wkt + explicit srs" ) << QString( "SELECT * FROM t WHERE BBOX(geom, ST_MakeEnvelope(2.2, 49, 3, 50, 4326))" ) <<
+  QgsOgcUtils::GML_3_1_0 << QgsOgcUtils::FILTER_OGC_1_1 << layerProperties << QString(
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
+    "<ogc:BBOX>"
+    "<ogc:PropertyName>geom</ogc:PropertyName>"
+    "<gml:Envelope srsName=\"urn:ogc:def:crs:EPSG::4326\">"
+    "<gml:lowerCorner>49 2.2</gml:lowerCorner>"
+    "<gml:upperCorner>50 3</gml:upperCorner>"
+    "</gml:Envelope>"
+    "</ogc:BBOX>"
+    "</ogc:Filter>" );
+
+// There's an issue with QT 5 that appears to reverse the order of multiple attributes
+#if QT_VERSION < 0x050000
+
+  QTest::newRow( "intersects + wkt + explicit srs" ) << QString( "SELECT * FROM t WHERE ST_Intersects(geom, ST_GeometryFromText('POINT (5 6)', 'urn:ogc:def:crs:EPSG::4326'))" ) <<
+  QgsOgcUtils::GML_3_2_1 << QgsOgcUtils::FILTER_FES_2_0 << layerProperties << QString(
+    "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:gml=\"http://www.opengis.net/gml/3.2\">"
+    "<fes:Intersects>"
+    "<fes:ValueReference>geom</fes:ValueReference>"
+    "<gml:Point gml:id=\"qgis_id_geom_1\" srsName=\"urn:ogc:def:crs:EPSG::4326\">"
+    "<gml:pos srsDimension=\"2\">6 5</gml:pos>"
+    "</gml:Point>"
+    "</fes:Intersects>"
+    "</fes:Filter>" );
+
+  QTest::newRow( "intersects + wkt + explicit srs int" ) << QString( "SELECT * FROM t WHERE ST_Intersects(geom, ST_GeometryFromText('POINT (5 6)', 4326))" ) <<
+  QgsOgcUtils::GML_3_2_1 << QgsOgcUtils::FILTER_FES_2_0 << layerProperties << QString(
+    "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:gml=\"http://www.opengis.net/gml/3.2\">"
+    "<fes:Intersects>"
+    "<fes:ValueReference>geom</fes:ValueReference>"
+    "<gml:Point gml:id=\"qgis_id_geom_1\" srsName=\"urn:ogc:def:crs:EPSG::4326\">"
+    "<gml:pos srsDimension=\"2\">6 5</gml:pos>"
+    "</gml:Point>"
+    "</fes:Intersects>"
+    "</fes:Filter>" );
+
+  QTest::newRow( "dwithin + wkt" ) << QString( "SELECT * FROM t WHERE ST_DWithin(geom, ST_GeometryFromText('POINT (5 6)', 'urn:ogc:def:crs:EPSG::4326'), '3 m')" ) <<
+  QgsOgcUtils::GML_3_2_1 << QgsOgcUtils::FILTER_FES_2_0 << layerProperties << QString(
+    "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:gml=\"http://www.opengis.net/gml/3.2\">"
+    "<fes:DWithin>"
+    "<fes:ValueReference>geom</fes:ValueReference>"
+    "<gml:Point gml:id=\"qgis_id_geom_1\" srsName=\"urn:ogc:def:crs:EPSG::4326\">"
+    "<gml:pos srsDimension=\"2\">6 5</gml:pos>"
+    "</gml:Point>"
+    "<fes:Distance uom=\"m\">3</fes:Distance>"
+    "</fes:DWithin>"
+    "</fes:Filter>" );
+
+  QList<QgsOgcUtils::LayerProperties> layerProperties4326_FES20;
+  QgsOgcUtils::LayerProperties prop;
+  prop.mSRSName = "urn:ogc:def:crs:EPSG::4326";
+  prop.mGeometryAttribute = "geom";
+  layerProperties4326_FES20.append( prop );
+
+  QTest::newRow( "intersects + wkt + implicit SRS" ) << QString( "SELECT * FROM t WHERE ST_Intersects(geom, ST_GeometryFromText('POINT (5 6)'))" ) <<
+  QgsOgcUtils::GML_3_2_1 << QgsOgcUtils::FILTER_FES_2_0 << layerProperties4326_FES20 << QString(
+    "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:gml=\"http://www.opengis.net/gml/3.2\">"
+    "<fes:Intersects>"
+    "<fes:ValueReference>geom</fes:ValueReference>"
+    "<gml:Point gml:id=\"qgis_id_geom_1\" srsName=\"urn:ogc:def:crs:EPSG::4326\">"
+    "<gml:pos srsDimension=\"2\">6 5</gml:pos>"
+    "</gml:Point>"
+    "</fes:Intersects>"
+    "</fes:Filter>" );
+
+  QTest::newRow( "intersects join 2.0" ) << QString( "SELECT * FROM t, t2 WHERE ST_Intersects(t.geom, t2.geom)" ) <<
+  QgsOgcUtils::GML_3_2_1 << QgsOgcUtils::FILTER_FES_2_0 << layerProperties << QString(
+    "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\">"
+    "<fes:Intersects>"
+    "<fes:ValueReference>t/geom</fes:ValueReference>"
+    "<fes:ValueReference>t2/geom</fes:ValueReference>"
+    "</fes:Intersects>"
+    "</fes:Filter>" );
+
+  QTest::newRow( "attrib join USING 2.0" ) << QString( "SELECT * FROM t JOIN t2 USING (a)" ) <<
+  QgsOgcUtils::GML_3_2_1 << QgsOgcUtils::FILTER_FES_2_0 << layerProperties << QString(
+    "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\">"
+    "<fes:PropertyIsEqualTo>"
+    "<fes:ValueReference>t/a</fes:ValueReference>"
+    "<fes:ValueReference>t2/a</fes:ValueReference>"
+    "</fes:PropertyIsEqualTo>"
+    "</fes:Filter>" );
+
+  QTest::newRow( "attrib join multi USING 2.0" ) << QString( "SELECT * FROM t JOIN t2 USING (a, b)" ) <<
+  QgsOgcUtils::GML_3_2_1 << QgsOgcUtils::FILTER_FES_2_0 << layerProperties << QString(
+    "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\">"
+    "<fes:And>"
+    "<fes:PropertyIsEqualTo>"
+    "<fes:ValueReference>t/a</fes:ValueReference>"
+    "<fes:ValueReference>t2/a</fes:ValueReference>"
+    "</fes:PropertyIsEqualTo>"
+    "<fes:PropertyIsEqualTo>"
+    "<fes:ValueReference>t/b</fes:ValueReference>"
+    "<fes:ValueReference>t2/b</fes:ValueReference>"
+    "</fes:PropertyIsEqualTo>"
+    "</fes:And>"
+    "</fes:Filter>" );
+
+  QTest::newRow( "attrib join ON 2.0" ) << QString( "SELECT * FROM t aliased_t JOIN t2 aliasted_t2 ON aliased_t.a = aliasted_t2.b" ) <<
+  QgsOgcUtils::GML_3_2_1 << QgsOgcUtils::FILTER_FES_2_0 << layerProperties << QString(
+    "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\">"
+    "<fes:PropertyIsEqualTo>"
+    "<fes:ValueReference>t/a</fes:ValueReference>"
+    "<fes:ValueReference>t2/b</fes:ValueReference>"
+    "</fes:PropertyIsEqualTo>"
+    "</fes:Filter>" );
+
+  QTest::newRow( "attrib multi join 2.0" ) << QString( "SELECT * FROM t aliased_t JOIN t2 aliasted_t2 ON aliased_t.a = aliasted_t2.b JOIN t3 USING (c)" ) <<
+  QgsOgcUtils::GML_3_2_1 << QgsOgcUtils::FILTER_FES_2_0 << layerProperties << QString(
+    "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\">"
+    "<fes:And>"
+    "<fes:PropertyIsEqualTo>"
+    "<fes:ValueReference>t/a</fes:ValueReference>"
+    "<fes:ValueReference>t2/b</fes:ValueReference>"
+    "</fes:PropertyIsEqualTo>"
+    "<fes:PropertyIsEqualTo>"
+    "<fes:ValueReference>t2/c</fes:ValueReference>"
+    "<fes:ValueReference>t3/c</fes:ValueReference>"
+    "</fes:PropertyIsEqualTo>"
+    "</fes:And>"
+    "</fes:Filter>" );
+#endif
+}
 
 
 QTEST_MAIN( TestQgsOgcUtils )
