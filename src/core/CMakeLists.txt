@@ -16,6 +16,7 @@ SET(QGIS_CORE_SRCS
   gps/tok.c
 
   symbology-ng/qgs25drenderer.cpp
+  symbology-ng/qgsarrowsymbollayer.cpp
   symbology-ng/qgscategorizedsymbolrendererv2.cpp
   symbology-ng/qgscolorbrewerpalette.cpp
   symbology-ng/qgscptcityarchive.cpp

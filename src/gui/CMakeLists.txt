@@ -10,6 +10,7 @@ SET(QGIS_GUI_SRCS
 
   symbology-ng/qgs25drendererwidget.cpp
   symbology-ng/characterwidget.cpp
+  symbology-ng/qgsarrowsymbollayerwidget.cpp
   symbology-ng/qgsbrushstylecombobox.cpp
   symbology-ng/qgscategorizedsymbolrendererv2widget.cpp
   symbology-ng/qgscolorrampcombobox.cpp
@@ -421,6 +422,7 @@ SET(QGIS_GUI_MOC_HDRS
 
   symbology-ng/qgs25drendererwidget.h
   symbology-ng/characterwidget.h
+  symbology-ng/qgsarrowsymbollayerwidget.h
   symbology-ng/qgsbrushstylecombobox.h
   symbology-ng/qgscategorizedsymbolrendererv2widget.h
   symbology-ng/qgscolorrampcombobox.h

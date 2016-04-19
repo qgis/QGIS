@@ -37,6 +37,8 @@ const QString QgsExpressionContext::EXPR_SYMBOL_COLOR( "symbol_color" );
 const QString QgsExpressionContext::EXPR_SYMBOL_ANGLE( "symbol_angle" );
 const QString QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT( "geometry_part_count" );
 const QString QgsExpressionContext::EXPR_GEOMETRY_PART_NUM( "geometry_part_num" );
+const QString QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT( "geometry_point_count" );
+const QString QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM( "geometry_point_num" );
 
 //
 // QgsExpressionContextScope

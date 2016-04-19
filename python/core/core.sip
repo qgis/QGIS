@@ -305,6 +305,7 @@
 %Include symbology-ng/qgssymbollayerv2registry.sip
 %Include symbology-ng/qgssymbollayerv2utils.sip
 %Include symbology-ng/qgsvectorfieldsymbollayer.sip
+%Include symbology-ng/qgsarrowsymbollayer.sip
 
 %Include symbology-ng/qgssymbologyv2conversion.sip
 
