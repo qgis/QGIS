@@ -39,12 +39,26 @@
  * getAndStealReadyFeatures() to collect the features that have been completely
  * parsed.
  * @note not available in Python bindings
+ * @note Added in QGIS 2.16
  */
 class CORE_EXPORT QgsGmlStreamingParser
 {
   public:
 
     typedef QPair<QgsFeature*, QString> QgsGmlFeaturePtrGmlIdPair;
+
+    /** Layer properties */
+    class LayerProperties
+    {
+      public:
+        /** Constructor */
+        LayerProperties() {}
+
+        /** Layer name */
+        QString mName;
+        /** Geometry attribute name */
+        QString mGeometryAttribute;
+    };
 
     /** Axis orientation logic. */
     typedef enum
@@ -63,7 +77,18 @@ class CORE_EXPORT QgsGmlStreamingParser
                            const QgsFields & fields,
                            AxisOrientationLogic axisOrientationLogic = Honour_EPSG_if_urn,
                            bool invertAxisOrientation = false );
+
+    /** Constructor for a join layer, or dealing with renamed fields*/
+    QgsGmlStreamingParser( const QList<LayerProperties>& layerProperties,
+                           const QgsFields & fields,
+                           const QMap< QString, QPair<QString, QString> >& mapFieldNameToSrcLayerNameFieldName,
+                           AxisOrientationLogic axisOrientationLogic = Honour_EPSG_if_urn,
+                           bool invertAxisOrientation = false );
     ~QgsGmlStreamingParser();
+
+    /** Process a new chunk of data. atEnd must be set to true when this is
+        the last chunk of data. */
+    bool processData( const QByteArray& data, bool atEnd, QString& errorMsg );
 
     /** Process a new chunk of data. atEnd must be set to true when this is
         the last chunk of data. */
@@ -93,6 +118,9 @@ class CORE_EXPORT QgsGmlStreamingParser
     /** Return the exception text. */
     const QString& exceptionText() const { return mExceptionText; }
 
+    /** Return whether a "truncatedResponse" element is found */
+    bool isTruncatedResponse() const { return mTruncatedResponse; }
+
   private:
 
     enum ParseMode
@@ -105,6 +133,9 @@ class CORE_EXPORT QgsGmlStreamingParser
       upperCorner,
       feature,  // feature element containing attrs and geo (inside gml:featureMember)
       attribute,
+      tuple, // wfs:Tuple of a join layer
+      featureTuple,
+      attributeTuple,
       geometry,
       coordinate,
       posList,
@@ -195,6 +226,10 @@ class CORE_EXPORT QgsGmlStreamingParser
     /** List of (feature, gml_id) pairs */
     QVector<QgsGmlFeaturePtrGmlIdPair> mFeatureList;
 
+    /** Describe the various feature types of a join layer */
+    QList<LayerProperties> mLayerProperties;
+    QMap< QString, LayerProperties > mMapTypeNameToProperties;
+
     /** Typename without namespace prefix */
     QString mTypeName;
     QByteArray mTypeNameBA;
@@ -214,8 +249,11 @@ class CORE_EXPORT QgsGmlStreamingParser
 
     bool mIsException;
     QString mExceptionText;
+    bool mTruncatedResponse;
     /** Parsing depth */
     int mParseDepth;
+    int mFeatureTupleDepth;
+    QString mCurrentTypename; /** Used to track the current (unprefixed) typename for wfs:Member in join layer */
     /** Keep track about the most important nested elements*/
     QStack<ParseMode> mParseModeStack;
     /** This contains the character data if an important element has been encountered*/
