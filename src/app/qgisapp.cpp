@@ -2763,9 +2763,11 @@ void QgisApp::initLayerTreeView()
   connect( mLegendExpressionFilterButton, SIGNAL( toggled( bool ) ), this, SLOT( toggleFilterLegendByExpression( bool ) ) );
 
   mActionStyleDock = new QAction( tr( "Map Styling" ), this );
+  mActionStyleDock->setCheckable( true );
   mActionStyleDock->setToolTip( tr( "Open the map styling dock" ) );
   mActionStyleDock->setIcon( QgsApplication::getThemeIcon( "propertyicons/symbology.png" ) );
-  connect( mActionStyleDock, SIGNAL( triggered() ), this, SLOT( mapStyleDock() ) );
+  connect( mActionStyleDock, SIGNAL( toggled( bool ) ), this, SLOT( mapStyleDock( bool ) ) );
+  connect( mMapStylingDock, SIGNAL( visibilityChanged(bool) ), mActionStyleDock, SLOT( setChecked(bool) ) );
 
   // expand / collapse tool buttons
   QAction* actionExpandAll = new QAction( tr( "Expand All" ), this );
@@ -5487,7 +5489,7 @@ void QgisApp::labeling()
     return;
   }
 
-  mapStyleDock();
+  mapStyleDock( true );
 }
 
 void QgisApp::setMapStyleDockLayer( QgsMapLayer* layer )
@@ -5505,9 +5507,9 @@ void QgisApp::setMapStyleDockLayer( QgsMapLayer* layer )
     mMapStyleWidget->setLayer( layer );
 }
 
-void QgisApp::mapStyleDock()
+void QgisApp::mapStyleDock( bool enabled )
 {
-  mMapStylingDock->show();
+  mMapStylingDock->setVisible( enabled );
   setMapStyleDockLayer( activeLayer() );
 }
 

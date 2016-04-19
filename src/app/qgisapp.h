@@ -1170,7 +1170,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void labeling();
 
     //! shows the map styling dock
-    void mapStyleDock();
+    void mapStyleDock(bool enabled);
 
     //! diagrams properties
     void diagramProperties();
