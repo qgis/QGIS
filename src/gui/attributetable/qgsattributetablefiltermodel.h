@@ -42,6 +42,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
       ShowEdited
     };
 
+
     /**
      *
      * Make sure, the master model is already loaded, so the selection will get synchronized.
@@ -153,6 +154,8 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
 
     /** Returns the map canvas*/
     QgsMapCanvas* mapCanvas() const { return mCanvas; }
+
+    virtual QVariant data( const QModelIndex& index, int role ) const override;
 
   protected:
     /**

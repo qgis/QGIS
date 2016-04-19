@@ -31,6 +31,15 @@ back to QgsVectorLayer.
 class APP_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDialogBase
 {
     Q_OBJECT
+  private:
+    enum ColumnIndexes
+    {
+      Type,
+      Description,
+      ShortTitle,
+      ActionText,
+      Capture
+    };
 
   public:
     QgsAttributeActionDialog( const QgsActionManager& actions,
