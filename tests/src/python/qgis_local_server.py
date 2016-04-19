@@ -495,7 +495,7 @@ class QgisLocalServer(object):
             except urllib2.URLError as resp:
                 raise ServerProcessError(
                     'Web/FCGI Process Request URLError',
-                    'Cound not connect to process: ' + str(resp.code),
+                    'Cound not connect to process',
                     resp.reason
                 )
             else:
