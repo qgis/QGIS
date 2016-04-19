@@ -21,6 +21,7 @@
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgscolorscheme.h"
+#include "qgsgeometry.h"
 #include <QObject>
 #include <QtTest/QtTest>
 
@@ -46,6 +47,7 @@ class TestQgsExpressionContext : public QObject
     void globalScope();
     void projectScope();
     void layerScope();
+    void mapSettingsScope();
     void featureBasedContext();
 
   private:
@@ -620,6 +622,27 @@ void TestQgsExpressionContext::layerScope()
   QCOMPARE( layerScope->variable( "var1" ).toString(), QString( "val1" ) );
   QCOMPARE( layerScope->variable( "var2" ).toString(), QString( "val2" ) );
   delete layerScope;
+}
+
+void TestQgsExpressionContext::mapSettingsScope()
+{
+  QgsMapSettings ms;
+  ms.setRotation( 45 );
+  ms.setExtent( QgsRectangle( 0, 500, 1000, 2000 ) );
+  ms.setOutputSize( QSize( 10000, 20000 ) );
+  ms.setTimeValue( QDateTime( QDate( 1984, 04, 05 ), QTime( 14, 15, 16 ) ) );
+
+  QScopedPointer<QgsExpressionContextScope> scope( QgsExpressionContextUtils::mapSettingsScope( ms ) );
+  QCOMPARE( scope->variable( "map_id" ).toString(), QString( "canvas" ) );
+  QCOMPARE( scope->variable( "map_rotation" ).toInt(), 45 );
+  QCOMPARE( qRound( scope->variable( "map_scale" ).toDouble() / 100 ), qRound( ms.scale() / 100.0 ) );
+  QCOMPARE( scope->variable( "map_extent_width" ).toInt(), 1000 );
+  QCOMPARE( scope->variable( "map_extent_height" ).toInt(), 1500 );
+
+  QgsGeometry center = scope->variable( "map_extent_center" ).value<QgsGeometry>();
+  QCOMPARE( center.asQPointF().toPoint(), QPoint( 500, 1250 ) );
+
+  QCOMPARE( scope->variable( "map_timevalue" ).toDateTime(), QDateTime( QDate( 1984, 04, 05 ), QTime( 14, 15, 16 ) ) );
 }
 
 void TestQgsExpressionContext::featureBasedContext()

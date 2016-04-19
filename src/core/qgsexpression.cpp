@@ -4593,6 +4593,8 @@ void QgsExpression::initVariableHelp()
   gVariableHelpTexts.insert( "map_extent_center", QCoreApplication::translate( "variable_help", "Center of map." ) );
   gVariableHelpTexts.insert( "map_extent_width", QCoreApplication::translate( "variable_help", "Width of map." ) );
   gVariableHelpTexts.insert( "map_extent_height", QCoreApplication::translate( "variable_help", "Height of map." ) );
+  gVariableHelpTexts.insert( "map_datetime", QCoreApplication::translate( "variable_help", "Returns the current map date and time. This variable can be used for maps which alter their appearance"
+                             " based on a time attribute, such as animated maps." ) );
 
   gVariableHelpTexts.insert( "row_number", QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) );
   gVariableHelpTexts.insert( "grid_number", QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );

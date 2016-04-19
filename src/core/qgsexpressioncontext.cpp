@@ -729,6 +729,7 @@ QgsExpressionContextScope* QgsExpressionContextUtils::mapSettingsScope( const Qg
   QgsGeometry* centerPoint = QgsGeometry::fromPoint( mapSettings.visibleExtent().center() );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_center", QVariant::fromValue( *centerPoint ), true ) );
   delete centerPoint;
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_timevalue", mapSettings.timeValue(), true ) );
 
   return scope;
 }

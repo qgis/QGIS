@@ -958,8 +958,17 @@ void QgsMapCanvas::setRotation( double degrees )
   // notify canvas items of change (needed?)
   updateCanvasItemPositions();
 
-} // setRotation
+}
 
+void QgsMapCanvas::setTimeValue( const QVariant& timeValue )
+{
+  mSettings.setTimeValue( timeValue );
+}
+
+QVariant QgsMapCanvas::timeValue() const
+{
+  return mSettings.timeValue();
+}
 
 void QgsMapCanvas::updateScale()
 {
