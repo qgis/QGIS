@@ -47,9 +47,9 @@ class CORE_EXPORT QgsTask : public QObject
     //! Task flags
     enum Flag
     {
-      CancelSupport = 1 << 1, //!< Task can be cancelled
-      ProgressReport = 1 << 2, //!< Task will report its progress
-      AllFlags = CancelSupport | ProgressReport, //!< Task supports all flags
+      CanCancel = 1 << 1, //!< Task can be cancelled
+      CanReportProgress = 1 << 2, //!< Task will report its progress
+      AllFlags = CanCancel | CanReportProgress, //!< Task supports all flags
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -62,15 +62,8 @@ class CORE_EXPORT QgsTask : public QObject
     //! Returns the flags associated with the task.
     Flags flags() const { return mFlags; }
 
-    //! Starts the task.
-    void start();
-
-    //! Notifies the task that it should terminate.
-    //! @see isCancelled()
-    void cancel();
-
     //! Returns true if the task can be cancelled.
-    bool canCancel() const { return mFlags & CancelSupport; }
+    bool canCancel() const { return mFlags & CanCancel; }
 
     //! Returns true if the task is active, ie it is not complete and has
     //! not been cancelled.
@@ -84,6 +77,30 @@ class CORE_EXPORT QgsTask : public QObject
 
     //! Returns the task's progress (between 0.0 and 100.0)
     double progress() const { return mProgress; }
+
+  public slots:
+
+    //! Starts the task.
+    void start();
+
+    //! Notifies the task that it should terminate.
+    //! @see isCancelled()
+    void cancel();
+
+    //! Sets the task's current progress. If task reports the CanReportProgress flag then
+    //! the derived class should call this method whenever the task wants to update its
+    //! progress. Calling will automatically emit the progressChanged signal.
+    //! @param progress percent of progress, from 0.0 - 100.0
+    void setProgress( double progress );
+
+    //! Sets the task as completed. Should be called when the task is complete.
+    //! Calling will automatically emit the statusChanged and taskCompleted signals.
+    void completed();
+
+    //! Sets the task as stopped. Should be called whenever the task ends for any
+    //! reason other than successful completion.
+    //! Calling will automatically emit the statusChanged and taskStopped signals.
+    void stopped();
 
   signals:
 
@@ -115,31 +132,15 @@ class CORE_EXPORT QgsTask : public QObject
     //! stopped()//!
     void taskStopped();
 
-  public slots:
-
-    //! Sets the task's current progress. Should be called whenever the
-    //! task wants to update it's progress. Calling will automatically emit the progressChanged
-    //! signal.
-    //! @param progress percent of progress, from 0.0 - 100.0
-    void setProgress( double progress );
-
-    //! Sets the task as completed. Should be called when the task is complete.
-    //! Calling will automatically emit the statusChanged and taskCompleted signals.
-    void completed();
-
-    //! Sets the task as stopped. Should be called whenever the task ends for any
-    //! reason other than successful completion.
-    //! Calling will automatically emit the statusChanged and taskStopped signals.
-    void stopped();
-
   protected:
 
     //! Derived tasks must implement a run() method. This method will be called when the
     //! task commences (ie via calling start() ).
     virtual void run() = 0;
 
-    //! Will return true if task should terminate ASAP. Derived classes run() methods
-    //! should periodically check this and terminate in a safe manner.
+    //! Will return true if task should terminate ASAP. If the task reports the CanCancel
+    //! flag, then derived classes' run() methods should periodically check this and
+    //! terminate in a safe manner.
     bool isCancelled() const { return mShouldTerminate; }
 
   private:
