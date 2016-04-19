@@ -41,8 +41,14 @@ QgsCodeEditorSQL::~QgsCodeEditorSQL()
 
 void QgsCodeEditorSQL::setSciLexerSQL()
 {
+  QFont font = getMonospaceFont();
+
   QsciLexerSQL* sqlLexer = new QsciLexerSQL( this );
-  sqlLexer->setDefaultFont( QFont( "Sans", 10 ) );
+  sqlLexer->setDefaultFont( font );
+  sqlLexer->setFont( font, -1 );
+  font.setBold( true );
+  sqlLexer->setFont( font, QsciLexerSQL::Keyword );
+  sqlLexer->setColor( Qt::darkYellow, QsciLexerSQL::DoubleQuotedString ); // fields
 
   setLexer( sqlLexer );
 }
