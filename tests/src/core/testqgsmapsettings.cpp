@@ -32,7 +32,7 @@ class TestQgsMapSettings: public QObject
     void visibleExtent();
     void mapUnitsPerPixel();
     void visiblePolygon();
-    void dateTime();
+    void timeValue();
 
   private:
     QString toString( const QPolygonF& p, int decimalPlaces = 2 ) const;
@@ -148,16 +148,16 @@ void TestQgsMapSettings::visiblePolygon()
             QString( "32.32 28.03,103.03 -42.67,67.67 -78.03,-3.03 -7.32" ) );
 }
 
-void TestQgsMapSettings::dateTime()
+void TestQgsMapSettings::timeValue()
 {
   QgsMapSettings ms;
   //default should be no datetime set
-  QVERIFY( !ms.dateTime().isValid() );
-  ms.setDateTime( QDateTime( QDate( 2011, 10, 30 ), QTime( 13, 1, 14 ) ) );
-  QCOMPARE( ms.dateTime(), QDateTime( QDate( 2011, 10, 30 ), QTime( 13, 1, 14 ) ) );
+  QVERIFY( !ms.timeValue().isValid() );
+  ms.setTimeValue( QDateTime( QDate( 2011, 10, 30 ), QTime( 13, 1, 14 ) ) );
+  QCOMPARE( ms.timeValue().toDateTime(), QDateTime( QDate( 2011, 10, 30 ), QTime( 13, 1, 14 ) ) );
   //clear date time
-  ms.setDateTime( QDateTime() ) ;
-  QVERIFY( !ms.dateTime().isValid() );
+  ms.setTimeValue( QVariant() ) ;
+  QVERIFY( !ms.timeValue().isValid() );
 }
 
 QTEST_MAIN( TestQgsMapSettings )

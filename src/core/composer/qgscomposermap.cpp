@@ -2160,7 +2160,7 @@ QgsExpressionContext* QgsComposerMap::createExpressionContext() const
   delete centerPoint;
 
   // NOTE: when QgsComposition::mapSettings is removed this value should be taken from a composition/layout context object
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_datetime", mComposition->mapSettings().dateTime(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_timevalue", mComposition->mapSettings().timeValue(), true ) );
 
   context->appendScope( scope );
 

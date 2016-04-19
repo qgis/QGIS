@@ -43,7 +43,7 @@ class TestQgsMapCanvas : public QObject
 
     void testMapRendererInteraction();
     void testPanByKeyboard();
-    void datetime();
+    void timeValue();
 
   private:
     QgsMapCanvas* mCanvas;
@@ -155,19 +155,19 @@ void TestQgsMapCanvas::testPanByKeyboard()
   }
 }
 
-void TestQgsMapCanvas::datetime()
+void TestQgsMapCanvas::timeValue()
 {
-  //default should be no datetime set (also check canvas' mapsettings)
-  QVERIFY( !mCanvas->dateTime().isValid() );
-  QVERIFY( !mCanvas->mapSettings().dateTime().isValid() );
-  mCanvas->setDateTime( QDateTime( QDate( 2011, 10, 30 ), QTime( 13, 1, 14 ) ) );
-  QCOMPARE( mCanvas->dateTime(), QDateTime( QDate( 2011, 10, 30 ), QTime( 13, 1, 14 ) ) );
+  //default should be no timevalue set (also check canvas' mapsettings)
+  QVERIFY( !mCanvas->timeValue().isValid() );
+  QVERIFY( !mCanvas->mapSettings().timeValue().isValid() );
+  mCanvas->setTimeValue( QDateTime( QDate( 2011, 10, 30 ), QTime( 13, 1, 14 ) ) );
+  QCOMPARE( mCanvas->timeValue().toDateTime(), QDateTime( QDate( 2011, 10, 30 ), QTime( 13, 1, 14 ) ) );
   //check that datetime has been correctly set in mapsettings
-  QCOMPARE( mCanvas->mapSettings().dateTime(), QDateTime( QDate( 2011, 10, 30 ), QTime( 13, 1, 14 ) ) );
+  QCOMPARE( mCanvas->mapSettings().timeValue().toDateTime(), QDateTime( QDate( 2011, 10, 30 ), QTime( 13, 1, 14 ) ) );
   //clear date time
-  mCanvas->setDateTime( QDateTime() ) ;
-  QVERIFY( !mCanvas->dateTime().isValid() );
-  QVERIFY( !mCanvas->mapSettings().dateTime().isValid() );
+  mCanvas->setTimeValue( QVariant() ) ;
+  QVERIFY( !mCanvas->timeValue().isValid() );
+  QVERIFY( !mCanvas->mapSettings().timeValue().isValid() );
 }
 
 

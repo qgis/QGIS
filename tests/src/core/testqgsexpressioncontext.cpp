@@ -630,7 +630,7 @@ void TestQgsExpressionContext::mapSettingsScope()
   ms.setRotation( 45 );
   ms.setExtent( QgsRectangle( 0, 500, 1000, 2000 ) );
   ms.setOutputSize( QSize( 10000, 20000 ) );
-  ms.setDateTime( QDateTime( QDate( 1984, 04, 05 ), QTime( 14, 15, 16 ) ) );
+  ms.setTimeValue( QDateTime( QDate( 1984, 04, 05 ), QTime( 14, 15, 16 ) ) );
 
   QScopedPointer<QgsExpressionContextScope> scope( QgsExpressionContextUtils::mapSettingsScope( ms ) );
   QCOMPARE( scope->variable( "map_id" ).toString(), QString( "canvas" ) );
@@ -642,7 +642,7 @@ void TestQgsExpressionContext::mapSettingsScope()
   QgsGeometry center = scope->variable( "map_extent_center" ).value<QgsGeometry>();
   QCOMPARE( center.asQPointF().toPoint(), QPoint( 500, 1250 ) );
 
-  QCOMPARE( scope->variable( "map_datetime" ).toDateTime(), QDateTime( QDate( 1984, 04, 05 ), QTime( 14, 15, 16 ) ) );
+  QCOMPARE( scope->variable( "map_timevalue" ).toDateTime(), QDateTime( QDate( 1984, 04, 05 ), QTime( 14, 15, 16 ) ) );
 }
 
 void TestQgsExpressionContext::featureBasedContext()

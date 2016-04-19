@@ -960,14 +960,14 @@ void QgsMapCanvas::setRotation( double degrees )
 
 }
 
-void QgsMapCanvas::setDateTime( const QDateTime &datetime )
+void QgsMapCanvas::setTimeValue( const QVariant& timeValue )
 {
-  mSettings.setDateTime( datetime );
+  mSettings.setTimeValue( timeValue );
 }
 
-QDateTime QgsMapCanvas::dateTime() const
+QVariant QgsMapCanvas::timeValue() const
 {
-  return mSettings.dateTime();
+  return mSettings.timeValue();
 }
 
 void QgsMapCanvas::updateScale()
