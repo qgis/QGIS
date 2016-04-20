@@ -92,8 +92,12 @@ void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDo
   //Ex_GeographicBoundingBox
   QDomElement ExGeoBBoxElement;
   //transform the layers native CRS into WGS84
-  QgsCoordinateTransform exGeoTransform( layerCRS, wgs84 );
-  QgsRectangle wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );
+  QgsRectangle wgs84BoundingRect;
+  if ( !layerExtent.isNull() )
+  {
+    QgsCoordinateTransform exGeoTransform( layerCRS, wgs84 );
+    wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );
+  }
   if ( version == "1.1.1" )   // WMS Version 1.1.1
   {
     ExGeoBBoxElement = doc.createElement( "LatLonBoundingBox" );
@@ -185,8 +189,12 @@ void QgsConfigParserUtils::appendLayerBoundingBox( QDomElement& layerElem, QDomD
   const QgsCoordinateReferenceSystem& crs = QgsCRSCache::instance()->crsByAuthId( crsText );
 
   //transform the layers native CRS into CRS
-  QgsCoordinateTransform crsTransform( layerCRS, crs );
-  QgsRectangle crsExtent = crsTransform.transformBoundingBox( layerExtent );
+  QgsRectangle crsExtent;
+  if ( !layerExtent.isNull() )
+  {
+    QgsCoordinateTransform crsTransform( layerCRS, crs );
+    crsExtent = crsTransform.transformBoundingBox( layerExtent );
+  }
 
   //BoundingBox element
   QDomElement bBoxElement = doc.createElement( "BoundingBox" );
