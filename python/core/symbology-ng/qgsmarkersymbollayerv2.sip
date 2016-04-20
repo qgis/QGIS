@@ -221,6 +221,41 @@ class QgsFontMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
     QChar character() const;
     void setCharacter( QChar ch );
 
+    /** Get outline color.
+     * @note added in 2.16 */
+    QColor outlineColor() const;
+    /** Set outline color.
+     * @note added in 2.16 */
+    void setOutlineColor( const QColor& color );
+
+    /** Get outline width.
+     * @note added in 2.16 */
+    double outlineWidth() const;
+    /** Set outline width.
+     * @note added in 2.16 */
+    void setOutlineWidth( double width );
+
+    /** Get outline width unit.
+     * @note added in 2.16 */
+    QgsSymbolV2::OutputUnit outlineWidthUnit() const;
+    /** Set outline width unit.
+     * @note added in 2.16 */
+    void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit );
+
+    /** Get outline width map unit scale.
+     * @note added in 2.16 */
+    const QgsMapUnitScale& outlineWidthMapUnitScale() const;
+    /** Set outline width map unit scale.
+     * @note added in 2.16 */
+    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale );
+
+    /** Get outline join style.
+     * @note added in 2.16 */
+    Qt::PenJoinStyle penJoinStyle() const;
+    /** Set outline join style.
+     * @note added in 2.16 */
+    void setPenJoinStyle( Qt::PenJoinStyle style );
+
     QRectF bounds( QPointF point, QgsSymbolV2RenderContext& context );
 
 };

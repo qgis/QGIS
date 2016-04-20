@@ -260,6 +260,8 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 #define DEFAULT_FONTMARKER_CHR    QChar('A')
 #define DEFAULT_FONTMARKER_SIZE   POINT2MM(12)
 #define DEFAULT_FONTMARKER_COLOR  QColor(Qt::black)
+#define DEFAULT_FONTMARKER_BORDERCOLOR  QColor(Qt::white)
+#define DEFAULT_FONTMARKER_JOINSTYLE    Qt::MiterJoin
 #define DEFAULT_FONTMARKER_ANGLE  0
 
 class CORE_EXPORT QgsFontMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
@@ -302,6 +304,41 @@ class CORE_EXPORT QgsFontMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QChar character() const { return mChr; }
     void setCharacter( QChar ch ) { mChr = ch; }
 
+    /** Get outline color.
+     * @note added in 2.16 */
+    QColor outlineColor() const override { return mOutlineColor; }
+    /** Set outline color.
+     * @note added in 2.16 */
+    void setOutlineColor( const QColor& color ) override { mOutlineColor = color; }
+
+    /** Get outline width.
+     * @note added in 2.16 */
+    double outlineWidth() const { return mOutlineWidth; }
+    /** Set outline width.
+     * @note added in 2.16 */
+    void setOutlineWidth( double width ) { mOutlineWidth = width; }
+
+    /** Get outline width unit.
+     * @note added in 2.16 */
+    QgsSymbolV2::OutputUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
+    /** Set outline width unit.
+     * @note added in 2.16 */
+    void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit ) { mOutlineWidthUnit = unit; }
+
+    /** Get outline width map unit scale.
+     * @note added in 2.16 */
+    const QgsMapUnitScale& outlineWidthMapUnitScale() const { return mOutlineWidthMapUnitScale; }
+    /** Set outline width map unit scale.
+     * @note added in 2.16 */
+    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale ) { mOutlineWidthMapUnitScale = scale; }
+
+    /** Get outline join style.
+     * @note added in 2.16 */
+    Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
+    /** Set outline join style.
+     * @note added in 2.16 */
+    void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
+
     QRectF bounds( QPointF point, QgsSymbolV2RenderContext& context ) override;
 
   protected:
@@ -316,6 +353,15 @@ class CORE_EXPORT QgsFontMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     double mOrigSize;
 
   private:
+
+    QColor mOutlineColor;
+    double mOutlineWidth;
+    QgsSymbolV2::OutputUnit mOutlineWidthUnit;
+    QgsMapUnitScale mOutlineWidthMapUnitScale;
+    Qt::PenJoinStyle mPenJoinStyle;
+
+    QPen mPen;
+    QBrush mBrush;
 
     QString characterToRender( QgsSymbolV2RenderContext& context, QPointF& charOffset, double& charWidth );
     void calculateOffsetAndRotation( QgsSymbolV2RenderContext& context, double scaledSize, bool& hasDataDefinedRotation, QPointF& offset, double& angle ) const;
