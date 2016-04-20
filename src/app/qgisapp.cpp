@@ -5503,8 +5503,6 @@ void QgisApp::setMapStyleDockLayer( QgsMapLayer* layer )
   // the extra work if it's not needed
   if ( mMapStylingDock->isVisible() )
     mMapStyleWidget->setLayer( layer );
-
-  mMapStylingDock->setWindowTitle( tr( "Map Styling - %1" ).arg( layer->name() ) );
 }
 
 void QgisApp::mapStyleDock()

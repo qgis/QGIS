@@ -23,6 +23,9 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
   mNotSupportedPage = mStackedWidget->addWidget( new QLabel( "Not supported currently" ) );
   mVectorPage = mStackedWidget->addWidget( mMapStyleTabs );
 
+  mLayerTitleLabel = new QLabel();
+  mLayerTitleLabel->setAlignment( Qt::AlignHCenter );
+  layout->addWidget( mLayerTitleLabel );
   layout->addWidget( mStackedWidget );
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Reset | QDialogButtonBox::Apply );
   mLiveApplyCheck = new QCheckBox( "Live update" );
@@ -58,9 +61,15 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
 void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
 {
   if ( !layer )
+  {
+    mLayerTitleLabel->setText( "" );
+    mStackedWidget->setCurrentIndex( mNotSupportedPage );
     return;
+  }
 
   mBlockAutoApply = true;
+
+  mLayerTitleLabel->setText( layer->name() );
 
   mCurrentLayer = layer;
 

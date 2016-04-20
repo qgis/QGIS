@@ -2,6 +2,7 @@
 #define QGSMAPSTYLESDOCK_H
 
 #include <QWidget>
+#include <QLabel>
 #include <QTabWidget>
 #include <QStackedWidget>
 #include <QDialogButtonBox>
@@ -34,6 +35,7 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget
     int mLabelTabIndex;
     QgsMapCanvas* mMapCanvas;
     bool mBlockAutoApply;
+    QLabel* mLayerTitleLabel;
     QgsMapLayer* mCurrentLayer;
     QStackedWidget* mStackedWidget;
     QTabWidget *mMapStyleTabs;
