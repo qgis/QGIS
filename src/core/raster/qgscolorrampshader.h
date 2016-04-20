@@ -54,11 +54,12 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
       bool operator<( const ColorRampItem& other ) const { return value < other.value; }
     };
 
+    /** Supported methods for color interpolation. */
     enum ColorRamp_TYPE
     {
-      INTERPOLATED,
-      DISCRETE,
-      EXACT
+      INTERPOLATED, //!< Interpolates the color between two class breaks linearly.
+      DISCRETE,     //!< Assigns the color of the higher class for every pixel between two class breaks.
+      EXACT         //!< Assigns the color of the exact matching value in the color ramp item list
     };
 
     /** \brief Get the custom colormap*/
@@ -70,8 +71,10 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     /** \brief Get the color ramp type as a string */
     QString colorRampTypeAsQString();
 
-    /** \brief Get the maximum size the color cache can be*/
-    int maximumColorCacheSize() { return mMaximumColorCacheSize; }
+    /** \brief Get the maximum size the color cache can be
+     * @deprecated will be removed in QGIS 3.0. Color cache is not used anymore.
+     */
+    Q_DECL_DEPRECATED int maximumColorCacheSize() { return mMaximumColorCacheSize; }
 
     /** \brief Set custom colormap */
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ); //TODO: sort on set
@@ -82,8 +85,10 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     /** \brief Set the color ramp type*/
     void setColorRampType( const QString& theType );
 
-    /** \brief Set the maximum size the color cache can be */
-    void setMaximumColorCacheSize( int theSize ) { mMaximumColorCacheSize = theSize; }
+    /** \brief Set the maximum size the color cache can be
+     * @deprecated will be removed in QGIS 3.0. Color cache is not used anymore.
+     */
+    Q_DECL_DEPRECATED void setMaximumColorCacheSize( int theSize ) { mMaximumColorCacheSize = theSize; }
 
     /** \brief Generates and new RGB value based on one input value */
     bool shade( double, int*, int*, int*, int* ) override;
@@ -105,10 +110,6 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     bool clip() const { return mClip; }
 
   private:
-    /** Current index from which to start searching the color table*/
-    int mCurrentColorRampItemIndex;
-
-    //TODO: Consider pulling this out as a separate class and internally storing as a QMap rather than a QList
     /** This vector holds the information for classification based on values.
      * Each item holds a value, a label and a color. The member
      * mDiscreteClassification holds if one color is applied for all values
@@ -119,27 +120,17 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     /** \brief The color ramp type */
     QgsColorRampShader::ColorRamp_TYPE mColorRampType;
 
-    /** \brief Cache of values that have already been looked up */
-    QMap<double, QColor> mColorCache;
+    /** Look up table to speed up finding the right color.
+      * It is initialized on the first call to shade(). */
+    QList<int> mLUT;
+    double mLUTOffset;
+    double mLUTFactor;
+    bool mLUTInitialized = false;
 
     /** Maximum size of the color cache. The color cache could eat a ton of
-     * memory if you have 32-bit data */
-    int mMaximumColorCacheSize;
-
-    /** Gets the color for a pixel value from the classification vector
-     * mValueClassification. Assigns the color of the lower class for every
-     * pixel between two class breaks.*/
-    bool discreteColor( double, int*, int*, int*, int* );
-
-    /** Gets the color for a pixel value from the classification vector
-     * mValueClassification. Assigns the color of the exact matching value in
-     * the color ramp item list */
-    bool exactColor( double, int*, int*, int*, int* );
-
-    /** Gets the color for a pixel value from the classification vector
-     * mValueClassification. Interpolates the color between two class breaks
-     * linearly.*/
-    bool interpolatedColor( double, int*, int*, int*, int* );
+     * memory if you have 32-bit data
+     * @deprecated will be removed in QGIS 3.0 */
+    Q_DECL_DEPRECATED int mMaximumColorCacheSize;
 
     /** Do not render values out of range */
     bool mClip;
