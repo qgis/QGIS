@@ -206,5 +206,31 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.vl.addFeature(f) # Should not deadlock during an active iteration
         f = next(it)
 
+    def testDomainTypes(self):
+        """Test that domain types are correctly mapped"""
+
+        vl = QgsVectorLayer('%s table="qgis_test"."domains" sql=' % (self.dbconn), "domains", "postgres")
+        self.assertTrue(vl.isValid())
+
+        fields = vl.dataProvider().fields()
+
+        expected = {}
+        expected['fld_var_char_domain'] = {'type': QVariant.String, 'typeName': 'qgis_test.var_char_domain', 'length': -1}
+        expected['fld_var_char_domain_6'] = {'type': QVariant.String, 'typeName': 'qgis_test.var_char_domain_6', 'length': 6}
+        expected['fld_character_domain'] = {'type': QVariant.String, 'typeName': 'qgis_test.character_domain', 'length': 1}
+        expected['fld_character_domain_6'] = {'type': QVariant.String, 'typeName': 'qgis_test.character_domain_6', 'length': 6}
+        expected['fld_char_domain'] = {'type': QVariant.String, 'typeName': 'qgis_test.char_domain', 'length': 1}
+        expected['fld_char_domain_6'] = {'type': QVariant.String, 'typeName': 'qgis_test.char_domain_6', 'length': 6}
+        expected['fld_text_domain'] = {'type': QVariant.String, 'typeName': 'qgis_test.text_domain', 'length': -1}
+        expected['fld_numeric_domain'] = {'type': QVariant.Double, 'typeName': 'qgis_test.numeric_domain', 'length': 10, 'precision': 4}
+
+        for f, e in expected.iteritems():
+            self.assertEqual(fields.at(fields.indexFromName(f)).type(), e['type'])
+            self.assertEqual(fields.at(fields.indexFromName(f)).typeName(), e['typeName'])
+            self.assertEqual(fields.at(fields.indexFromName(f)).length(), e['length'])
+            if 'precision' in e:
+                self.assertEqual(fields.at(fields.indexFromName(f)).precision(), e['precision'])
+
+
 if __name__ == '__main__':
     unittest.main()
