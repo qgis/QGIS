@@ -70,9 +70,6 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   mLayerName = capitaliseLayerName( mLayerOrigName );
   QgsDebugMsg( "display name: '" + mLayerName + '\'' );
 
-  // Set short name = the first original name
-  mShortName = lyrname;
-
   // Generate the unique ID of this layer
   QDateTime dt = QDateTime::currentDateTime();
   mID = lyrname + dt.toString( "yyyyMMddhhmmsszzz" );
