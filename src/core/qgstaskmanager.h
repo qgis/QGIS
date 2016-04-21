@@ -166,6 +166,9 @@ class CORE_EXPORT QgsTask : public QObject
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsTask::Flags )
 
+//! List of QgsTask objects
+typedef QList< QgsTask* > QgsTaskList;
+
 /** \ingroup core
  * \class QgsTaskManager
  * \brief Task manager for managing a set of long-running QgsTask tasks. This class can be created directly,
@@ -193,9 +196,13 @@ class CORE_EXPORT QgsTaskManager : public QObject
      * to the manager, and the task manager will be responsible for starting
      * the task.
      * @param task task to add
+     * @param dependencies list of dependent tasks. These tasks must be completed
+     * before task can run. If any dependent tasks are cancelled this task will also
+     * be cancelled. Dependent tasks must also be added to this task manager for proper
+     * handling of dependencies.
      * @returns unique task ID
      */
-    long addTask( QgsTask* task );
+    long addTask( QgsTask* task, const QgsTaskList& dependencies = QgsTaskList() );
 
     /** Deletes the specified task, first terminating it if it is currently
      * running.
@@ -232,6 +239,9 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     //! Instructs all tasks tracked by the manager to terminate.
     void cancelAll();
+
+    //! Returns true if all dependencies for the specified task are satisfied
+    bool dependenciesSatisified( long taskId ) const;
 
   signals:
 
@@ -272,6 +282,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     };
 
     QMap< long, TaskInfo > mTasks;
+    QMap< long, QgsTaskList > mTaskDependencies;
 
     //! Tracks the next unique task ID
     long mNextTaskId;
@@ -281,6 +292,11 @@ class CORE_EXPORT QgsTaskManager : public QObject
     //! Process the queue of outstanding jobs and starts up any
     //! which are ready to go.
     void processQueue();
+
+    //! Recursively cancel dependent tasks
+    //! @param taskId id of terminated task to cancel any other tasks
+    //! which are dependent on
+    void cancelDependentTasks( long taskId );
 
 };
 

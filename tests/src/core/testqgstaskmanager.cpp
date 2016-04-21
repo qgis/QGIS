@@ -85,6 +85,7 @@ class TestQgsTaskManager : public QObject
     void progressChanged();
     void statusChanged();
     void holdTask();
+    void dependancies();
 
   private:
 
@@ -149,6 +150,15 @@ void TestQgsTaskManager::task()
   QCOMPARE( completeSpy.count(), 1 );
   QCOMPARE( statusSpy2.count(), 1 );
   QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy2.last().at( 0 ).toInt() ), QgsTask::Complete );
+
+  // test that cancelling tasks which have not begin immediately ends them
+  task.reset( new TestTask() );
+  task->cancel(); // Queued task
+  QCOMPARE( task->status(), QgsTask::Terminated );
+  task.reset( new TestTask() );
+  task->hold(); // OnHold task
+  task->cancel();
+  QCOMPARE( task->status(), QgsTask::Terminated );
 
   // test flags
   task.reset( new TestTask( "desc", QgsTask::CanReportProgress ) );
@@ -348,6 +358,53 @@ void TestQgsTaskManager::holdTask()
   task->unhold();
   // wait for task to spin up
   while ( task->status() == QgsTask::Queued ) {}
+  QCOMPARE( task->status(), QgsTask::Running );
+}
+
+void TestQgsTaskManager::dependancies()
+{
+  QgsTaskManager manager;
+
+  //test that cancelling tasks cancels all tasks which are dependant on them
+  TestTask* task = new TestTask();
+  task->hold();
+  TestTask* childTask = new TestTask();
+  childTask->hold();
+  TestTask* grandChildTask = new TestTask();
+  grandChildTask->hold();
+
+  manager.addTask( task, QgsTaskList() << childTask );
+  manager.addTask( childTask, QgsTaskList() << grandChildTask );
+  manager.addTask( grandChildTask );
+
+  grandChildTask->cancel();
+  QCOMPARE( childTask->status(), QgsTask::Terminated );
+  QCOMPARE( task->status(), QgsTask::Terminated );
+
+  // test that tasks are queued until dependancies are resolved
+  task = new TestTask();
+  childTask = new TestTask();
+  childTask->hold();
+  long taskId = manager.addTask( task, QgsTaskList() << childTask );
+  long childTaskId = manager.addTask( childTask );
+  QVERIFY( !manager.dependenciesSatisified( taskId ) );
+  QVERIFY( manager.dependenciesSatisified( childTaskId ) );
+
+  QCOMPARE( childTask->status(), QgsTask::OnHold );
+  QCOMPARE( task->status(), QgsTask::Queued );
+
+  childTask->unhold();
+  //wait for childTask to spin up
+  while ( !childTask->isActive() ) {}
+  QCOMPARE( childTask->status(), QgsTask::Running );
+  QCOMPARE( task->status(), QgsTask::Queued );
+  childTask->emitTaskCompleted();
+  //wait for childTask to complete
+  while ( childTask->isActive() ) {}
+  QVERIFY( manager.dependenciesSatisified( taskId ) );
+  QCOMPARE( childTask->status(), QgsTask::Complete );
+  //wait for task to spin up
+  while ( !task->isActive() ) {}
   QCOMPARE( task->status(), QgsTask::Running );
 }
 

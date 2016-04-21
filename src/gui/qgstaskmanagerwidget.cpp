@@ -334,6 +334,7 @@ void QgsTaskStatusDelegate::paint( QPainter *painter, const QStyleOptionViewItem
   switch ( static_cast< QgsTask::TaskStatus >( index.data().toInt() ) )
   {
     case QgsTask::Queued:
+    case QgsTask::OnHold:
       icon = QgsApplication::getThemeIcon( "/mIconFieldTime.svg" );
       break;
     case QgsTask::Running:

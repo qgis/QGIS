@@ -134,6 +134,9 @@ class QgsTask : QObject
 
 QFlags<QgsTask::Flag> operator|(QgsTask::Flag f1, QFlags<QgsTask::Flag> f2);
 
+//! List of QgsTask objects
+typedef QList< QgsTask* > QgsTaskList;
+
 /** \ingroup core
  * \class QgsTaskManager
  * \brief Task manager for managing a set of long-running QgsTask tasks. This class can be created directly,
@@ -159,11 +162,16 @@ class QgsTaskManager : QObject
     virtual ~QgsTaskManager();
 
     /** Adds a task to the manager. Ownership of the task is transferred
-     * to the manager.
+     * to the manager, and the task manager will be responsible for starting
+     * the task.
      * @param task task to add
+     * @param dependencies list of dependent tasks. These tasks must be completed
+     * before task can run. If any dependent tasks are cancelled this task will also
+     * be cancelled. Dependent tasks must also be added to this task manager for proper
+     * handling of dependencies.
      * @returns unique task ID
      */
-    long addTask( QgsTask* task /Transfer/ );
+    long addTask( QgsTask* task /Transfer/, const QgsTaskList& dependencies = QgsTaskList() );
 
     /** Deletes the specified task, first terminating it if it is currently
      * running.
@@ -200,6 +208,9 @@ class QgsTaskManager : QObject
 
     //! Instructs all tasks tracked by the manager to terminate.
     void cancelAll();
+
+    //! Returns true if all dependencies for the specified task are satisfied
+    bool dependenciesSatisified( long taskId ) const;
 
   signals:
 
