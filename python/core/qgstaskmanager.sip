@@ -212,6 +212,13 @@ class QgsTaskManager : QObject
     //! Returns true if all dependencies for the specified task are satisfied
     bool dependenciesSatisified( long taskId ) const;
 
+    //! Returns the set of task IDs on which a task is dependent
+    //! @note not available in Python bindings
+    //QSet< long > dependencies( long taskId ) const;
+
+    //! Will return true if the specified task has circular dependencies
+    bool hasCircularDependencies( long taskId ) const;
+
   signals:
 
     //! Will be emitted when a task reports a progress change

@@ -135,6 +135,11 @@ long QgsTaskManager::addTask( QgsTask* task, const QgsTaskList& dependencies )
     mTaskDependencies.insert( mNextTaskId, dependencies );
   }
 
+  if ( hasCircularDependencies( mNextTaskId ) )
+  {
+    task->cancel();
+  }
+
   emit taskAdded( mNextTaskId );
   processQueue();
 
@@ -220,6 +225,55 @@ bool QgsTaskManager::dependenciesSatisified( long taskId ) const
   }
 
   return true;
+}
+
+QSet<long> QgsTaskManager::dependencies( long taskId ) const
+{
+  QSet<long> results;
+  if ( resolveDependencies( taskId, taskId, results ) )
+    return results;
+  else
+    return QSet<long>();
+}
+
+bool QgsTaskManager::resolveDependencies( long firstTaskId, long currentTaskId, QSet<long>& results ) const
+{
+  if ( !mTaskDependencies.contains( currentTaskId ) )
+    return true;
+
+  Q_FOREACH ( QgsTask* task, mTaskDependencies.value( currentTaskId ) )
+  {
+    long dependentTaskId = taskId( task );
+    if ( dependentTaskId >= 0 )
+    {
+      if ( dependentTaskId == firstTaskId )
+        // circular
+        return false;
+
+      //add task as dependent
+      results.insert( dependentTaskId );
+      //plus all its other dependencies
+      QSet< long > newTaskDeps;
+      if ( !resolveDependencies( firstTaskId, dependentTaskId, newTaskDeps ) )
+        return false;
+
+      if ( newTaskDeps.contains( firstTaskId ) )
+      {
+        // circular
+        return false;
+      }
+
+      results.unite( newTaskDeps );
+    }
+  }
+
+  return true;
+}
+
+bool QgsTaskManager::hasCircularDependencies( long taskId ) const
+{
+  QSet< long > d;
+  return !resolveDependencies( taskId, taskId, d );
 }
 
 void QgsTaskManager::taskProgressChanged( double progress )

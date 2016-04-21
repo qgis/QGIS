@@ -373,9 +373,18 @@ void TestQgsTaskManager::dependancies()
   TestTask* grandChildTask = new TestTask();
   grandChildTask->hold();
 
-  manager.addTask( task, QgsTaskList() << childTask );
-  manager.addTask( childTask, QgsTaskList() << grandChildTask );
-  manager.addTask( grandChildTask );
+  long taskId = manager.addTask( task, QgsTaskList() << childTask );
+  long childTaskId = manager.addTask( childTask, QgsTaskList() << grandChildTask );
+  long grandChildTaskId = manager.addTask( grandChildTask );
+
+  // check dependency resolution
+  QCOMPARE( manager.dependencies( grandChildTaskId ), QSet< long >() );
+  QCOMPARE( manager.dependencies( childTaskId ), QSet< long >() << grandChildTaskId );
+  QCOMPARE( manager.dependencies( taskId ), QSet< long >() << childTaskId << grandChildTaskId );
+
+  QVERIFY( !manager.hasCircularDependencies( taskId ) );
+  QVERIFY( !manager.hasCircularDependencies( childTaskId ) );
+  QVERIFY( !manager.hasCircularDependencies( grandChildTaskId ) );
 
   grandChildTask->cancel();
   QCOMPARE( childTask->status(), QgsTask::Terminated );
@@ -385,8 +394,8 @@ void TestQgsTaskManager::dependancies()
   task = new TestTask();
   childTask = new TestTask();
   childTask->hold();
-  long taskId = manager.addTask( task, QgsTaskList() << childTask );
-  long childTaskId = manager.addTask( childTask );
+  taskId = manager.addTask( task, QgsTaskList() << childTask );
+  childTaskId = manager.addTask( childTask );
   QVERIFY( !manager.dependenciesSatisified( taskId ) );
   QVERIFY( manager.dependenciesSatisified( childTaskId ) );
 
@@ -406,6 +415,29 @@ void TestQgsTaskManager::dependancies()
   //wait for task to spin up
   while ( !task->isActive() ) {}
   QCOMPARE( task->status(), QgsTask::Running );
+  task->emitTaskCompleted();
+
+
+  // test circular dependency detection
+  task = new TestTask();
+  task->hold();
+  childTask = new TestTask();
+  childTask->hold();
+  grandChildTask = new TestTask();
+  grandChildTask->hold();
+
+  taskId = manager.addTask( task, QgsTaskList() << childTask );
+  childTaskId = manager.addTask( childTask, QgsTaskList() << grandChildTask );
+  grandChildTaskId = manager.addTask( grandChildTask, QgsTaskList() << task );
+
+  QVERIFY( manager.hasCircularDependencies( taskId ) );
+  QVERIFY( manager.hasCircularDependencies( childTaskId ) );
+  QVERIFY( manager.hasCircularDependencies( grandChildTaskId ) );
+
+  //expect all these circular tasks to be terminated
+  QCOMPARE( task->status(), QgsTask::Terminated );
+  QCOMPARE( childTask->status(), QgsTask::Terminated );
+  QCOMPARE( grandChildTask->status(), QgsTask::Terminated );
 }
 
 
