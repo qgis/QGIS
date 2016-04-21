@@ -193,7 +193,13 @@ def open_stack_dialog(type, value, tb, msg, pop_error=True):
 
 
 def qgis_excepthook(type, value, tb):
-    showException(type, value, tb, None, messagebar=True)
+    # detect if running in the main thread
+    in_main_thread = True
+    if QThread.currentThread() != QgsApplication.instance().thread():
+        in_main_thread = False
+
+    # only use messagebar if running in main thread - otherwise it will crash!
+    showException(type, value, tb, None, messagebar=in_main_thread)
 
 
 def installErrorHook():
