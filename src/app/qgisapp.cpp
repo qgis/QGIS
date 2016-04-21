@@ -558,6 +558,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     , mInternalClipboard( nullptr )
     , mShowProjectionTab( false )
     , mPythonUtils( nullptr )
+    , mMapStylingDock( nullptr )
     , mComposerManager( nullptr )
     , mpTileScaleWidget( nullptr )
     , mpGpsWidget( nullptr )
@@ -566,7 +567,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     , mProjectLastModified()
     , mWelcomePage( nullptr )
     , mCentralContainer( nullptr )
-    , mMapStylingDock( nullptr )
 {
   if ( smInstance )
   {
