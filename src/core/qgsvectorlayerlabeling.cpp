@@ -39,7 +39,7 @@ QgsAbstractVectorLayerLabeling* QgsAbstractVectorLayerLabeling::create( const QD
 QgsVectorLayerLabelProvider* QgsVectorLayerSimpleLabeling::provider( QgsVectorLayer* layer ) const
 {
   if ( layer->customProperty( "labeling" ).toString() == QLatin1String( "pal" ) && layer->labelsEnabled() )
-    return new QgsVectorLayerLabelProvider( layer, false );
+    return new QgsVectorLayerLabelProvider( layer, QString(), false );
 
   return nullptr;
 }

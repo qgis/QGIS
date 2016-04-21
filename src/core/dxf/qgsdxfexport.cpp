@@ -978,7 +978,7 @@ void QgsDxfExport::writeEntities()
     }
     else
     {
-      lp = new QgsDxfLabelProvider( vl, this, nullptr );
+      lp = new QgsDxfLabelProvider( vl, QString(), this, nullptr );
       engine.addProvider( lp );
 
       if ( !lp->prepare( ctx, attributes ) )

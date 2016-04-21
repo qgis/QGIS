@@ -53,7 +53,7 @@ class CORE_EXPORT QgsLabelSearchTree
      * @return true in case of success
      * @note not available in python bindings
      */
-    bool insertLabel( pal::LabelPosition* labelPos, int featureId, const QString& layerName, const QString& labeltext, const QFont& labelfont, bool diagram = false, bool pinned = false );
+    bool insertLabel( pal::LabelPosition* labelPos, int featureId, const QString& layerName, const QString& labeltext, const QFont& labelfont, bool diagram = false, bool pinned = false, const QString& providerId = QString() );
 
   private:
     // set as mutable because RTree template is not const-correct

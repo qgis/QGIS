@@ -119,6 +119,9 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          */
         bool isElse() const { return mElseRule; }
 
+        //! Unique rule identifier (for identification of rule within labeling, used as provider ID)
+        QString ruleKey() const { return mRuleKey; }
+
         //! set new settings (or NULL). Deletes old settings if any.
         void setSettings( QgsPalLayerSettings* settings );
 
@@ -160,6 +163,8 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          */
         void setIsElse( bool iselse ) { mElseRule = iselse; }
 
+        //! Override the assigned rule key (should be used just internally by rule-based labeling)
+        void setRuleKey( const QString& key ) { mRuleKey = key; }
 
         // parent / child operations
 
@@ -260,6 +265,8 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         RuleList mElseRules;
         bool mIsActive; // whether it is enabled or not
 
+        QString mRuleKey; // string used for unique identification of rule within labeling
+
         // temporary
         QgsExpression* mFilter;
 
@@ -311,7 +318,7 @@ class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
     virtual void registerFeature( QgsFeature& feature, QgsRenderContext& context, QgsGeometry* obstacleGeometry = nullptr ) override;
 
     //! create a label provider
-    virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, bool withFeatureLoop, const QgsPalLayerSettings *settings );
+    virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString& providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings );
 
     //! return subproviders
     virtual QList<QgsAbstractLabelProvider*> subProviders() override;

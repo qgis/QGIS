@@ -16,7 +16,7 @@
 
 
 QgsRuleBasedLabelProvider::QgsRuleBasedLabelProvider( const QgsRuleBasedLabeling& rules, QgsVectorLayer* layer, bool withFeatureLoop )
-    : QgsVectorLayerLabelProvider( layer, withFeatureLoop )
+    : QgsVectorLayerLabelProvider( layer, QString(), withFeatureLoop )
     , mRules( rules )
 {
   mRules.rootRule()->createSubProviders( layer, mSubProviders, this );
@@ -27,9 +27,9 @@ QgsRuleBasedLabelProvider::~QgsRuleBasedLabelProvider()
   // sub-providers owned by labeling engine
 }
 
-QgsVectorLayerLabelProvider *QgsRuleBasedLabelProvider::createProvider( QgsVectorLayer *layer, bool withFeatureLoop, const QgsPalLayerSettings *settings )
+QgsVectorLayerLabelProvider *QgsRuleBasedLabelProvider::createProvider( QgsVectorLayer *layer, const QString& providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings )
 {
-  return new QgsVectorLayerLabelProvider( layer, withFeatureLoop, settings );
+  return new QgsVectorLayerLabelProvider( layer, providerId, withFeatureLoop, settings );
 }
 
 bool QgsRuleBasedLabelProvider::prepare( const QgsRenderContext& context, QStringList& attributeNames )
@@ -67,6 +67,7 @@ QgsRuleBasedLabeling::Rule::Rule( QgsPalLayerSettings* settings, int scaleMinDen
     , mIsActive( true )
     , mFilter( nullptr )
 {
+  mRuleKey = QUuid::createUuid().toString();
   initFilter();
 }
 
@@ -162,11 +163,11 @@ QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::create( const QDomElement
   QString description = ruleElem.attribute( "description" );
   int scaleMinDenom = ruleElem.attribute( "scalemindenom", "0" ).toInt();
   int scaleMaxDenom = ruleElem.attribute( "scalemaxdenom", "0" ).toInt();
-  //QString ruleKey = ruleElem.attribute( "key" );
+  QString ruleKey = ruleElem.attribute( "key" );
   Rule* rule = new Rule( settings, scaleMinDenom, scaleMaxDenom, filterExp, description );
 
-  //if ( !ruleKey.isEmpty() )
-  //  rule->mRuleKey = ruleKey;
+  if ( !ruleKey.isEmpty() )
+    rule->mRuleKey = ruleKey;
 
   rule->setActive( ruleElem.attribute( "active", "1" ).toInt() );
 
@@ -206,7 +207,7 @@ QDomElement QgsRuleBasedLabeling::Rule::save( QDomDocument& doc ) const
     ruleElem.setAttribute( "description", mDescription );
   if ( !mIsActive )
     ruleElem.setAttribute( "active", 0 );
-  //ruleElem.setAttribute( "key", mRuleKey );
+  ruleElem.setAttribute( "key", mRuleKey );
 
   for ( RuleList::const_iterator it = mChildren.constBegin(); it != mChildren.constEnd(); ++it )
   {
@@ -221,7 +222,7 @@ void QgsRuleBasedLabeling::Rule::createSubProviders( QgsVectorLayer* layer, QgsR
   if ( mSettings )
   {
     // add provider!
-    QgsVectorLayerLabelProvider *p = provider->createProvider( layer, false, mSettings );
+    QgsVectorLayerLabelProvider *p = provider->createProvider( layer, mRuleKey, false, mSettings );
     Q_ASSERT( !subProviders.contains( this ) );
     subProviders[this] = p;
   }
