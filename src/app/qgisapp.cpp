@@ -566,6 +566,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     , mProjectLastModified()
     , mWelcomePage( nullptr )
     , mCentralContainer( nullptr )
+    , mMapStylingDock( nullptr )
 {
   if ( smInstance )
   {
@@ -2767,7 +2768,7 @@ void QgisApp::initLayerTreeView()
   mActionStyleDock->setToolTip( tr( "Open the map styling dock" ) );
   mActionStyleDock->setIcon( QgsApplication::getThemeIcon( "propertyicons/symbology.png" ) );
   connect( mActionStyleDock, SIGNAL( toggled( bool ) ), this, SLOT( mapStyleDock( bool ) ) );
-  connect( mMapStylingDock, SIGNAL( visibilityChanged(bool) ), mActionStyleDock, SLOT( setChecked(bool) ) );
+  connect( mMapStylingDock, SIGNAL( visibilityChanged( bool ) ), mActionStyleDock, SLOT( setChecked( bool ) ) );
 
   // expand / collapse tool buttons
   QAction* actionExpandAll = new QAction( tr( "Expand All" ), this );
