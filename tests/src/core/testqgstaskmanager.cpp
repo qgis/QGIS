@@ -84,6 +84,7 @@ class TestQgsTaskManager : public QObject
     void taskId();
     void progressChanged();
     void statusChanged();
+    void holdTask();
 
   private:
 
@@ -332,6 +333,22 @@ void TestQgsTaskManager::statusChanged()
   QCOMPARE( spy.count(), 3 );
   QCOMPARE( spy.last().at( 0 ).toLongLong(), 1LL );
   QCOMPARE( static_cast< QgsTask::TaskStatus >( spy.last().at( 1 ).toInt() ), QgsTask::Complete );
+}
+
+void TestQgsTaskManager::holdTask()
+{
+  QgsTaskManager manager;
+  TestTask* task = new TestTask();
+  //hold task
+  task->hold();
+  manager.addTask( task );
+  //should not be started
+  QCOMPARE( task->status(), QgsTask::OnHold );
+
+  task->unhold();
+  // wait for task to spin up
+  while ( task->status() == QgsTask::Queued ) {}
+  QCOMPARE( task->status(), QgsTask::Running );
 }
 
 

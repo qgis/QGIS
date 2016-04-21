@@ -39,6 +39,7 @@ class CORE_EXPORT QgsTask : public QObject
     enum TaskStatus
     {
       Queued, /*!< Task is queued and has not begun */
+      OnHold, /*!< Task is queued but on hold and will not be started */
       Running, /*!< Task is currently running */
       Complete, /*!< Task successfully completed */
       Terminated, /*!< Task was terminated or errored */
@@ -86,6 +87,16 @@ class CORE_EXPORT QgsTask : public QObject
     //! Notifies the task that it should terminate.
     //! @see isCancelled()
     void cancel();
+
+    //! Called when the task is placed on hold. If the task in not queued
+    //! (ie it is running or has finished) then calling this has no effect.
+    //! @see unhold()
+    void hold();
+
+    //! Called when the task should be unheld and re-added to the queue. If the
+    //! task in not currently being held then calling this has no effect.
+    //! @see unhold()
+    void unhold();
 
     //! Sets the task's current progress. If task reports the CanReportProgress flag then
     //! the derived class should call this method whenever the task wants to update its
@@ -266,6 +277,10 @@ class CORE_EXPORT QgsTaskManager : public QObject
     long mNextTaskId;
 
     bool cleanupAndDeleteTask( QgsTask* task );
+
+    //! Process the queue of outstanding jobs and starts up any
+    //! which are ready to go.
+    void processQueue();
 
 };
 

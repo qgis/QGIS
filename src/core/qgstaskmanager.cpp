@@ -45,6 +45,24 @@ void QgsTask::cancel()
   mShouldTerminate = true;
 }
 
+void QgsTask::hold()
+{
+  if ( mStatus == Queued )
+  {
+    mStatus = OnHold;
+    emit statusChanged( OnHold );
+  }
+}
+
+void QgsTask::unhold()
+{
+  if ( mStatus == OnHold )
+  {
+    mStatus = Queued;
+    emit statusChanged( Queued );
+  }
+}
+
 void QgsTask::setProgress( double progress )
 {
   mProgress = progress;
@@ -107,9 +125,9 @@ long QgsTaskManager::addTask( QgsTask* task )
   connect( task, SIGNAL( progressChanged( double ) ), this, SLOT( taskProgressChanged( double ) ) );
   connect( task, SIGNAL( statusChanged( int ) ), this, SLOT( taskStatusChanged( int ) ) );
 
-  mTasks[ mNextTaskId ].future = QtConcurrent::run( task, &QgsTask::start );
-
   emit taskAdded( mNextTaskId );
+  processQueue();
+
   return mNextTaskId++;
 }
 
@@ -202,6 +220,7 @@ void QgsTaskManager::taskStatusChanged( int status )
     return;
 
   emit statusChanged( id, status );
+  processQueue();
 }
 
 bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
@@ -227,4 +246,16 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
 
   task->deleteLater();
   return true;
+}
+
+void QgsTaskManager::processQueue()
+{
+  for ( QMap< long, TaskInfo >::iterator it = mTasks.begin(); it != mTasks.end(); ++it )
+  {
+    QgsTask* task = it.value().task;
+    if ( task && task->status() == QgsTask::Queued )
+    {
+      mTasks[ it.key()].future = QtConcurrent::run( task, &QgsTask::start );
+    }
+  }
 }
