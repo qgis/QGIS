@@ -185,51 +185,25 @@ class edit(object):
             return False
 
 
-class QgsTaskException(Exception):
-
-    def __init__(self, msg):
-        self.msg = msg
-
-    def __str__(self):
-        return self.msg
-
-
-class QgsTaskResult(Exception):
-
-    def __init__(self, r):
-        self.r = r
-
-    def result(self):
-        return self.r
-
-
 class QgsTaskWrapper(QgsTask):
 
     def __init__(self, description, function, *extraArgs):
-        QgsTask.__init__(self, description, QgsTask.ProgressReport)
+        QgsTask.__init__(self, description)
         self.extraArgs = extraArgs
         self.function = function
-        self.task_result = None
-        self.task_error = None
+        self.result = None
+        self.exception = None
 
     def run(self):
         try:
-            for status in self.function(*self.extraArgs):
-                self.setProgress(status)
-        except QgsTaskException as e:
-            self.task_error = e.msg
+            self.function(self, *self.extraArgs)
+        except Exception as ex:
+            # report error
+            self.exception = ex
             self.stopped()
-        except QgsTaskResult as r:
-            self.task_result = r.result()
-            self.completed()
-        else:
-            self.completed()
+            return
 
-    def result(self):
-        return self.task_result
-
-    def error(self):
-        return self.task_error
+        self.completed()
 
 
 def fromFunction(cls, description, function, extraArgs):
