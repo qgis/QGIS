@@ -1,5 +1,8 @@
 class QgsCoordinateTransformCache
 {
+%TypeHeaderCode
+#include <qgscrscache.h>
+%End
   public:
     static QgsCoordinateTransformCache* instance();
 
