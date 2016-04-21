@@ -25,7 +25,7 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
                                   double size = DEFAULT_SIMPLEMARKER_SIZE,
                                   double angle = DEFAULT_SIMPLEMARKER_ANGLE,
                                   QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
-                                  Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEFILL_JOINSTYLE );
+                                  Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE );
 
     // static stuff
 
