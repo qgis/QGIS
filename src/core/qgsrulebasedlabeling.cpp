@@ -266,8 +266,6 @@ QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerF
 
   bool registered = false;
 
-  Q_ASSERT( !mSettings == subProviders.contains( this ) );
-
   // do we have active subprovider for the rule?
   if ( subProviders.contains( this ) && mIsActive )
   {
