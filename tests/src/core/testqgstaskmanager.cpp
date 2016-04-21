@@ -16,6 +16,9 @@
  ***************************************************************************/
 
 #include "qgstaskmanager.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsvectorlayer.h"
+#include "qgsapplication.h"
 #include <QObject>
 #include <QSharedPointer>
 #include <QtTest/QtTest>
@@ -86,6 +89,7 @@ class TestQgsTaskManager : public QObject
     void statusChanged();
     void holdTask();
     void dependancies();
+    void layerDependencies();
 
   private:
 
@@ -93,12 +97,13 @@ class TestQgsTaskManager : public QObject
 
 void TestQgsTaskManager::initTestCase()
 {
-
+  QgsApplication::init();
+  QgsApplication::initQgis();
 }
 
 void TestQgsTaskManager::cleanupTestCase()
 {
-
+  QgsApplication::exitQgis();
 }
 
 void TestQgsTaskManager::init()
@@ -438,6 +443,36 @@ void TestQgsTaskManager::dependancies()
   QCOMPARE( task->status(), QgsTask::Terminated );
   QCOMPARE( childTask->status(), QgsTask::Terminated );
   QCOMPARE( grandChildTask->status(), QgsTask::Terminated );
+}
+
+void TestQgsTaskManager::layerDependencies()
+{
+  //make some layers
+  QgsVectorLayer* layer1 = new QgsVectorLayer( "Point?field=col1:string&field=col2:string&field=col3:string", "layer1", "memory" );
+  QVERIFY( layer1->isValid() );
+  QgsVectorLayer* layer2 = new QgsVectorLayer( "Point?field=col1:string&field=col2:string&field=col3:string", "layer2", "memory" );
+  QVERIFY( layer2->isValid() );
+  QgsVectorLayer* layer3 = new QgsVectorLayer( "Point?field=col1:string&field=col2:string&field=col3:string", "layer3", "memory" );
+  QVERIFY( layer3->isValid() );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList< QgsMapLayer* >() << layer1 << layer2 << layer3 );
+
+  QgsTaskManager manager;
+
+  //test that remove layers cancels all tasks which are dependant on them
+  TestTask* task = new TestTask();
+  task->hold();
+  long taskId = manager.addTask( task );
+  manager.setDependentLayers( taskId, QStringList() << layer2->id() << layer3->id() );
+
+  QCOMPARE( task->status(), QgsTask::OnHold );
+  //removing layer1 should have no effect
+  QgsMapLayerRegistry::instance()->removeMapLayers( QList< QgsMapLayer* >() << layer1 );
+  QCOMPARE( task->status(), QgsTask::OnHold );
+  //removing layer3 should cancel task
+  QgsMapLayerRegistry::instance()->removeMapLayers( QList< QgsMapLayer* >() << layer3 );
+  QCOMPARE( task->status(), QgsTask::Terminated );
+
+  QgsMapLayerRegistry::instance()->removeMapLayers( QList< QgsMapLayer* >() << layer2 );
 }
 
 

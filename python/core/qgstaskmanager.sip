@@ -219,6 +219,22 @@ class QgsTaskManager : QObject
     //! Will return true if the specified task has circular dependencies
     bool hasCircularDependencies( long taskId ) const;
 
+    /** Sets a list of layers on which as task is dependent. The task will automatically
+     * be cancelled if any of these layers are above to be removed.
+     * @param taskId task ID
+     * @param layerIds list of layer IDs
+     * @see dependentLayers()
+     */
+    void setDependentLayers( long taskId, const QStringList& layerIds );
+
+    /** Returns a list of layers on which as task is dependent. The task will automatically
+     * be cancelled if any of these layers are above to be removed.
+     * @param taskId task ID
+     * @returns list of layer IDs
+     * @see setDependentLayers()
+     */
+    QStringList dependentLayers( long taskId ) const;
+
   signals:
 
     //! Will be emitted when a task reports a progress change

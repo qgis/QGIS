@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgstaskmanager.h"
+#include "qgsmaplayerregistry.h"
 #include <QtConcurrentRun>
 
 
@@ -108,7 +109,10 @@ QgsTaskManager *QgsTaskManager::instance()
 QgsTaskManager::QgsTaskManager( QObject* parent )
     : QObject( parent )
     , mNextTaskId( 0 )
-{}
+{
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ),
+           this, SLOT( layersWillBeRemoved( QStringList ) ) );
+}
 
 QgsTaskManager::~QgsTaskManager()
 {
@@ -276,6 +280,16 @@ bool QgsTaskManager::hasCircularDependencies( long taskId ) const
   return !resolveDependencies( taskId, taskId, d );
 }
 
+void QgsTaskManager::setDependentLayers( long taskId, const QStringList& layerIds )
+{
+  mLayerDependencies.insert( taskId, layerIds );
+}
+
+QStringList QgsTaskManager::dependentLayers( long taskId ) const
+{
+  return mLayerDependencies.value( taskId, QStringList() );
+}
+
 void QgsTaskManager::taskProgressChanged( double progress )
 {
   QgsTask* task = qobject_cast< QgsTask* >( sender() );
@@ -305,6 +319,31 @@ void QgsTaskManager::taskStatusChanged( int status )
 
   emit statusChanged( id, status );
   processQueue();
+}
+
+void QgsTaskManager::layersWillBeRemoved( const QStringList& layerIds )
+{
+  // scan through layers to be removed
+  Q_FOREACH ( const QString& layerId, layerIds )
+  {
+    // scan through tasks with layer dependencies
+    for ( QMap< long, QStringList >::const_iterator it = mLayerDependencies.constBegin();
+          it != mLayerDependencies.constEnd(); ++it )
+    {
+      if ( !it.value().contains( layerId ) )
+      {
+        //task not dependent on this layer
+        continue;
+      }
+
+      QgsTask* dependentTask = task( it.key() );
+      if ( dependentTask && ( dependentTask->status() != QgsTask::Complete || dependentTask->status() != QgsTask::Terminated ) )
+      {
+        // incomplete task is dependent on this layer!
+        dependentTask->cancel();
+      }
+    }
+  }
 }
 
 bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
