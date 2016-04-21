@@ -228,23 +228,21 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
   if ( !task )
     return false;
 
-  if ( task->isActive() )
-    task->cancel();
-
-  // wait for task to terminate
-  QMap< long, TaskInfo >::iterator it = mTasks.begin();
-  for ( ; it != mTasks.end(); ++it )
-  {
-    if ( it.value().task == task )
-    {
-      it.value().future.waitForFinished();
-      break;
-    }
-  }
-
   emit taskAboutToBeDeleted( taskId( task ) );
 
-  task->deleteLater();
+  if ( task->isActive() )
+  {
+    task->cancel();
+    // delete task when it's terminated
+    connect( task, SIGNAL( taskCompleted() ), task, SLOT( deleteLater() ) );
+    connect( task, SIGNAL( taskStopped() ), task, SLOT( deleteLater() ) );
+  }
+  else
+  {
+    //task already finished, kill it
+    task->deleteLater();
+  }
+
   return true;
 }
 
