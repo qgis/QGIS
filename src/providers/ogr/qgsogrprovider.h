@@ -335,7 +335,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     bool mValid;
 
-    OGRwkbGeometryType geomType;
+    OGRwkbGeometryType mOGRGeomType;
     long mFeaturesCounted;
 
     mutable QStringList mSubLayerList;
@@ -356,6 +356,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool mWriteAccess;
 
     bool mShapefileMayBeCorrupted;
+
+    /** Converts the geometry to the layer type if necessary. Takes ownership of the passed geometry */
+    OGRGeometryH ConvertGeometryIfNecessary( OGRGeometryH );
 };
 
 
