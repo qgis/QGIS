@@ -48,8 +48,9 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
   connect( mLabelingWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
 
   // Only labels for now but styles and diagrams will come later
-  QWidget* widget = new QWidget;
-  widget->setLayout( new QGridLayout );
+  QScrollArea* widget = new QScrollArea;
+  widget->setWidgetResizable( true );
+  widget->setFrameStyle( QFrame::NoFrame );
   mStyleTabIndex = mMapStyleTabs->addTab( widget, QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "Styles" );
   mLabelTabIndex = mMapStyleTabs->addTab( mLabelingWidget, QgsApplication::getThemeIcon( "labelingSingle.svg" ), "Labeling" );
 //  int diagramTabIndex = mMapStyleTabs->addTab( new QWidget(), QgsApplication::getThemeIcon( "propertyicons/diagram.png" ), "Diagrams" );
@@ -138,16 +139,11 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer( int currentPage )
     if ( currentPage == mStyleTabIndex )
     {
       // TODO Refactor props dialog so we don't have to do this
-      mMapStyleTabs->widget( mStyleTabIndex )->layout()->removeWidget( mVectorStyleWidget );
-      if ( mVectorStyleWidget )
-      {
-        delete mVectorStyleWidget;
-        mVectorStyleWidget = nullptr;
-      }
+      QScrollArea* area = qobject_cast<QScrollArea*>( mMapStyleTabs->widget( mStyleTabIndex ) );
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( layer );
       mVectorStyleWidget = new QgsRendererV2PropertiesDialog( vlayer, QgsStyleV2::defaultStyle(), true );
       connect( mVectorStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
-      mMapStyleTabs->widget( mStyleTabIndex )->layout()->addWidget( mVectorStyleWidget );
+      area->setWidget( mVectorStyleWidget );
     }
   }
   else if ( layer->type() == QgsMapLayer::RasterLayer )
