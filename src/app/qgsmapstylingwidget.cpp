@@ -128,18 +128,15 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer( int currentPage )
 
   mLayerTitleLabel->setText( layer->name() );
 
-  QgsDebugMsg( QString( "Current page %1" ).arg( currentPage ) );
   if ( layer->type() == QgsMapLayer::VectorLayer )
   {
     mStackedWidget->setCurrentIndex( mVectorPage );
     if ( currentPage == mLabelTabIndex )
     {
-      QgsDebugMsg( "Setting label stuff!" );
       mLabelingWidget->setLayer( layer );
     }
     if ( currentPage == mStyleTabIndex )
     {
-      QgsDebugMsg( "Setting style stuff!!!" );
       // TODO Refactor props dialog so we don't have to do this
       mMapStyleTabs->widget( mStyleTabIndex )->layout()->removeWidget( mVectorStyleWidget );
       if ( mVectorStyleWidget )
