@@ -7,11 +7,18 @@
 #include "qgsapplication.h"
 #include "qgslabelingwidget.h"
 #include "qgsmapstylingwidget.h"
+#include "qgsrendererv2propertiesdialog.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
+#include "qgsstylev2.h"
+#include "qgsvectorlayer.h"
+#include "qgsproject.h"
 
 QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent ) :
-    QWidget( parent ), mMapCanvas( canvas ), mBlockAutoApply( false ), mCurrentLayer( nullptr )
+    QWidget( parent )
+    , mMapCanvas( canvas )
+    , mBlockAutoApply( false )
+    , mCurrentLayer( nullptr )
 {
   QBoxLayout* layout = new QVBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -41,12 +48,16 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
   connect( mLabelingWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
 
   // Only labels for now but styles and diagrams will come later
-//  int styleTabIndex = mMapStyleTabs->addTab( new QWidget(), QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "Styles" );
+  QWidget* widget = new QWidget;
+  widget->setLayout( new QGridLayout );
+  mStyleTabIndex = mMapStyleTabs->addTab( widget, QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "Styles" );
   mLabelTabIndex = mMapStyleTabs->addTab( mLabelingWidget, QgsApplication::getThemeIcon( "labelingSingle.svg" ), "Labeling" );
 //  int diagramTabIndex = mMapStyleTabs->addTab( new QWidget(), QgsApplication::getThemeIcon( "propertyicons/diagram.png" ), "Diagrams" );
 //  mMapStyleTabs->setTabEnabled( styleTabIndex, false );
 //  mMapStyleTabs->setTabEnabled( diagramTabIndex, false );
   mMapStyleTabs->setCurrentIndex( mLabelTabIndex );
+
+  connect( mMapStyleTabs, SIGNAL( currentChanged( int ) ), this, SLOT( updateCurrentWidgetLayer( int ) ) );
 
   connect( mLiveApplyCheck, SIGNAL( toggled( bool ) ), mButtonBox->button( QDialogButtonBox::Apply ), SLOT( setDisabled( bool ) ) );
 
@@ -67,32 +78,10 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
     return;
   }
 
-  mBlockAutoApply = true;
-
-  mLayerTitleLabel->setText( layer->name() );
-
   mCurrentLayer = layer;
 
-  if ( layer->type() == QgsMapLayer::VectorLayer )
-  {
-    mStackedWidget->setCurrentIndex( mVectorPage );
-    // TODO Once there is support for more then just labels
-    // we need to add a check for the just the current tab
-    mMapStyleTabs->setCurrentIndex( mLabelTabIndex );
-    mLabelingWidget->setLayer( layer );
-  }
-  else if ( layer->type() == QgsMapLayer::RasterLayer )
-  {
-    mStackedWidget->setCurrentIndex( mNotSupportedPage );
-  }
-  else if ( layer->type() == QgsMapLayer::PluginLayer )
-  {
-    mStackedWidget->setCurrentIndex( mNotSupportedPage );
-  }
-
-  mBlockAutoApply = false;
-
-  mButtonBox->button( QDialogButtonBox::Reset )->setEnabled( false );
+  // TODO Adjust for raster
+  updateCurrentWidgetLayer( mMapStyleTabs->currentIndex() );
 }
 
 void QgsMapStylingWidget::apply()
@@ -102,6 +91,16 @@ void QgsMapStylingWidget::apply()
   {
     mLabelingWidget->apply();
     mButtonBox->button( QDialogButtonBox::Reset )->setEnabled( true );
+    emit styleChanged( mCurrentLayer );
+  }
+  if ( mStackedWidget->currentIndex() == mVectorPage &&
+       mMapStyleTabs->currentIndex() == mStyleTabIndex )
+  {
+    mVectorStyleWidget->apply();
+    mButtonBox->button( QDialogButtonBox::Reset )->setEnabled( true );
+    QgsProject::instance()->setDirty( true );
+    mMapCanvas->clearCache();
+    mMapCanvas->refresh();
     emit styleChanged( mCurrentLayer );
   }
 }
@@ -119,4 +118,51 @@ void QgsMapStylingWidget::resetSettings()
   {
     mLabelingWidget->resetSettings();
   }
+}
+
+void QgsMapStylingWidget::updateCurrentWidgetLayer( int currentPage )
+{
+  mBlockAutoApply = true;
+
+  QgsMapLayer* layer = mCurrentLayer;
+
+  mLayerTitleLabel->setText( layer->name() );
+
+  QgsDebugMsg( QString( "Current page %1" ).arg( currentPage ) );
+  if ( layer->type() == QgsMapLayer::VectorLayer )
+  {
+    mStackedWidget->setCurrentIndex( mVectorPage );
+    if ( currentPage == mLabelTabIndex )
+    {
+      QgsDebugMsg( "Setting label stuff!" );
+      mLabelingWidget->setLayer( layer );
+    }
+    if ( currentPage == mStyleTabIndex )
+    {
+      QgsDebugMsg( "Setting style stuff!!!" );
+      // TODO Refactor props dialog so we don't have to do this
+      mMapStyleTabs->widget( mStyleTabIndex )->layout()->removeWidget( mVectorStyleWidget );
+      if ( mVectorStyleWidget )
+      {
+        delete mVectorStyleWidget;
+        mVectorStyleWidget = nullptr;
+      }
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( layer );
+      mVectorStyleWidget = new QgsRendererV2PropertiesDialog( vlayer, QgsStyleV2::defaultStyle(), true );
+      connect( mVectorStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
+      mMapStyleTabs->widget( mStyleTabIndex )->layout()->addWidget( mVectorStyleWidget );
+    }
+  }
+  else if ( layer->type() == QgsMapLayer::RasterLayer )
+  {
+    mStackedWidget->setCurrentIndex( mNotSupportedPage );
+  }
+  else if ( layer->type() == QgsMapLayer::PluginLayer )
+  {
+    mStackedWidget->setCurrentIndex( mNotSupportedPage );
+  }
+
+  mBlockAutoApply = false;
+
+  mButtonBox->button( QDialogButtonBox::Reset )->setEnabled( false );
 }

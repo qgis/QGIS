@@ -11,6 +11,7 @@
 class QgsLabelingWidget;
 class QgsMapLayer;
 class QgsMapCanvas;
+class QgsRendererV2PropertiesDialog;
 
 
 class APP_EXPORT QgsMapStylingWidget : public QWidget
@@ -29,9 +30,13 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget
     void autoApply();
     void resetSettings();
 
+  private slots:
+    void updateCurrentWidgetLayer( int currentPage );
+
   private:
     int mNotSupportedPage;
     int mVectorPage;
+    int mStyleTabIndex;
     int mLabelTabIndex;
     QgsMapCanvas* mMapCanvas;
     bool mBlockAutoApply;
@@ -40,6 +45,7 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget
     QStackedWidget* mStackedWidget;
     QTabWidget *mMapStyleTabs;
     QgsLabelingWidget *mLabelingWidget;
+    QgsRendererV2PropertiesDialog* mVectorStyleWidget;
     QDialogButtonBox* mButtonBox;
     QCheckBox* mLiveApplyCheck;
 

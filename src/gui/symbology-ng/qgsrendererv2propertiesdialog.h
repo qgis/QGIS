@@ -55,6 +55,8 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
      */
     void layerVariablesChanged();
 
+    void widgetChanged();
+
   public slots:
     //! called when user changes renderer type
     void rendererChanged();
@@ -68,6 +70,7 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
     void changeOrderBy( const QgsFeatureRequest::OrderBy& orderBy, bool orderByEnabled );
 
   protected:
+    void connectValueChanged( QList<QWidget *> widgets, const char *slot );
 
     //! Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent * event ) override;

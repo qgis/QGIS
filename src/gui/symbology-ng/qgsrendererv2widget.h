@@ -82,6 +82,8 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
      */
     void layerVariablesChanged();
 
+    void widgetChanged();
+
   protected:
     QgsVectorLayer* mLayer;
     QgsStyleV2* mStyle;

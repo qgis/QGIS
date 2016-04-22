@@ -91,6 +91,7 @@ void QgsSingleSymbolRendererV2Widget::changeSingleSymbol()
 {
   // update symbol from the GUI
   mRenderer->setSymbol( mSingleSymbol->clone() );
+  emit widgetChanged();
 }
 
 void QgsSingleSymbolRendererV2Widget::sizeScaleFieldChanged( const QString& fldName )
