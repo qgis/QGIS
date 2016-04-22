@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>517</width>
+    <width>461</width>
     <height>398</height>
    </rect>
   </property>
@@ -120,58 +120,72 @@
     </layout>
    </item>
    <item row="10" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_5">
+    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QComboBox" name="mHorizontalAnchorComboBox">
-       <item>
-        <property name="text">
-         <string>Left</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>HCenter</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Right</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsDataDefinedButton" name="mHorizontalAnchorDDBtn">
-       <property name="text">
-        <string>...</string>
+      <layout class="QHBoxLayout" name="horizontalLayout_9">
+       <property name="topMargin">
+        <number>0</number>
        </property>
-      </widget>
+       <item>
+        <widget class="QComboBox" name="mVerticalAnchorComboBox">
+         <item>
+          <property name="text">
+           <string>Top</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>VCenter</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Bottom</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsDataDefinedButton" name="mVerticalAnchorDDBtn">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
-      <widget class="QComboBox" name="mVerticalAnchorComboBox">
-       <item>
-        <property name="text">
-         <string>Top</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>VCenter</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Bottom</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsDataDefinedButton" name="mVerticalAnchorDDBtn">
-       <property name="text">
-        <string>...</string>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <property name="topMargin">
+        <number>0</number>
        </property>
-      </widget>
+       <item>
+        <widget class="QComboBox" name="mHorizontalAnchorComboBox">
+         <item>
+          <property name="text">
+           <string>Left</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>HCenter</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Right</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsDataDefinedButton" name="mHorizontalAnchorDDBtn">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
@@ -550,10 +564,6 @@
   <tabstop>spinOffsetY</tabstop>
   <tabstop>mOffsetDDBtn</tabstop>
   <tabstop>mOffsetUnitWidget</tabstop>
-  <tabstop>mHorizontalAnchorComboBox</tabstop>
-  <tabstop>mHorizontalAnchorDDBtn</tabstop>
-  <tabstop>mVerticalAnchorComboBox</tabstop>
-  <tabstop>mVerticalAnchorDDBtn</tabstop>
   <tabstop>lstNames</tabstop>
   <tabstop>mNameDDBtn</tabstop>
  </tabstops>

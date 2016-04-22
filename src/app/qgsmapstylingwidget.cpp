@@ -55,7 +55,7 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
 //  int diagramTabIndex = mMapStyleTabs->addTab( new QWidget(), QgsApplication::getThemeIcon( "propertyicons/diagram.png" ), "Diagrams" );
 //  mMapStyleTabs->setTabEnabled( styleTabIndex, false );
 //  mMapStyleTabs->setTabEnabled( diagramTabIndex, false );
-  mMapStyleTabs->setCurrentIndex( mLabelTabIndex );
+  mMapStyleTabs->setCurrentIndex( mStyleTabIndex );
 
   connect( mMapStyleTabs, SIGNAL( currentChanged( int ) ), this, SLOT( updateCurrentWidgetLayer( int ) ) );
 
