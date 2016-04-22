@@ -14,9 +14,9 @@ __revision__ = '$Format:%H$'
 
 import qgis
 
-from PyQt.QtGui import QColor
-from PyQt.QtGui import QPolygonF
-from PyQt.QtCore import QPointF
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtGui import QPolygonF
+from qgis.PyQt.QtCore import QPointF
 
 from qgis.core import (QgsComposerPolygon,
                        QgsComposerItem,

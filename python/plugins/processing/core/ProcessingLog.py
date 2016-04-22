@@ -31,7 +31,7 @@ import datetime
 from processing.tools.system import userFolder
 from processing.core.ProcessingConfig import ProcessingConfig
 from qgis.core import QgsMessageLog
-from PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 
 
 class ProcessingLog:

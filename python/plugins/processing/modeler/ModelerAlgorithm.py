@@ -33,8 +33,8 @@ import time
 import json
 import codecs
 import traceback
-from PyQt.QtCore import QCoreApplication, QPointF
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QCoreApplication, QPointF
+from qgis.PyQt.QtGui import QIcon
 from qgis.core import QgsRasterLayer, QgsVectorLayer
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface

@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.core import QgsVectorLayer, QgsFeatureRequest
-from PyQt.QtCore import QDate, QTime, QDateTime, QVariant
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
 from qgis.testing import (
     start_app,
     unittest

@@ -16,8 +16,8 @@ import qgis  # NOQA
 
 import os
 
-from PyQt.QtCore import QFileInfo, QDir
-from PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtCore import QFileInfo, QDir
+from qgis.PyQt.tXml import QDomDocument
 
 from qgis.core import (QgsComposition,
                        QgsPoint,

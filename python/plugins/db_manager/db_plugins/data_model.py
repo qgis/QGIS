@@ -20,9 +20,9 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt.QtCore import Qt, QTime, QRegExp, QAbstractTableModel
-from PyQt.QtGui import QFont, QStandardItemModel, QStandardItem
-from PyQt.QtWidgets import QApplication
+from qgis.PyQt.QtCore import Qt, QTime, QRegExp, QAbstractTableModel
+from qgis.PyQt.QtGui import QFont, QStandardItemModel, QStandardItem
+from qgis.PyQt.QtWidgets import QApplication
 
 from .plugin import DbError
 

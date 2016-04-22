@@ -28,8 +28,8 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt import uic
-from PyQt.QtWidgets import QMenu, QAction, QInputDialog
-from PyQt.QtGui import QCursor
+from qgis.PyQt.QtWidgets import QMenu, QAction, QInputDialog
+from qgis.PyQt.QtGui import QCursor
 
 from qgis.gui import QgsMessageBar
 from qgis.core import QgsRasterLayer, QgsVectorLayer

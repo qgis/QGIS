@@ -31,7 +31,7 @@ import os
 
 from processing.tools.vector import resolveFieldIndex
 from processing.tools.vector import features
-from PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsRasterLayer
 from qgis.core import QgsVectorLayer
 from processing.tools.system import isWindows

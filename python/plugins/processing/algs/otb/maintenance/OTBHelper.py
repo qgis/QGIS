@@ -693,7 +693,7 @@ def create_html_description():
 if __name__ == "__main__":
     # Prepare the environment
     from qgis.core import QgsApplication
-    from PyQt.QtWidgets import QApplication
+    from qgis.PyQt.QtWidgets import QApplication
     app = QApplication([])
     QgsApplication.setPrefixPath("/usr", True)
     QgsApplication.initQgis()

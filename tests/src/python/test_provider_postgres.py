@@ -23,7 +23,7 @@ from qgis.core import (
     QgsTransactionGroup,
     NULL
 )
-from PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
+from qgis.PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase

@@ -21,7 +21,7 @@ from qgis.core import (QgsField,
                        )
 
 from qgis.testing import unittest
-from PyQt.QtCore import QVariant, QUrl
+from qgis.PyQt.QtCore import QVariant, QUrl
 import os
 
 

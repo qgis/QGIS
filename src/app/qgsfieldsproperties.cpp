@@ -214,7 +214,7 @@ void QgsFieldsProperties::setEditFormInit( const QString &editForm,
                      "field.\n"
                      "An example follows:\n"
                      "\"\"\"\n"
-                     "from PyQt.QtWidgets import QWidget\n\n"
+                     "from qgis.PyQt.QtWidgets import QWidget\n\n"
                      "def my_form_open(dialog, layer, feature):\n"
                      "\tgeom = feature.geometry()\n"
                      "\tcontrol = dialog.findChild(QWidget, \"MyLineEdit\")\n" ) );

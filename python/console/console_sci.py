@@ -19,10 +19,10 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from PyQt.QtCore import Qt, QSettings, QByteArray, QCoreApplication, QFile, QSize
-from PyQt.QtWidgets import QDialog, QMenu, QShortcut, QApplication
-from PyQt.QtGui import QColor, QKeySequence, QFont, QFontMetrics, QStandardItemModel, QStandardItem, QClipboard
-from PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
+from qgis.PyQt.QtCore import Qt, QSettings, QByteArray, QCoreApplication, QFile, QSize
+from qgis.PyQt.QtWidgets import QDialog, QMenu, QShortcut, QApplication
+from qgis.PyQt.QtGui import QColor, QKeySequence, QFont, QFontMetrics, QStandardItemModel, QStandardItem, QClipboard
+from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
 
 import sys
 import os

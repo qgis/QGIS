@@ -25,10 +25,10 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import Qt, QSettings
-from PyQt.QtGui import QColor, QFont, QKeySequence
-from PyQt.QtWidgets import QShortcut
-from PyQt.Qsci import QsciScintilla, QsciLexerSQL
+from qgis.PyQt.QtCore import Qt, QSettings
+from qgis.PyQt.QtGui import QColor, QFont, QKeySequence
+from qgis.PyQt.QtWidgets import QShortcut
+from qgis.PyQt.Qsci import QsciScintilla, QsciLexerSQL
 
 
 class SqlEdit(QsciScintilla):

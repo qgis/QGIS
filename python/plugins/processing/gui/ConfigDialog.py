@@ -28,10 +28,10 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt import uic
-from PyQt.QtCore import (Qt,
+from qgis.PyQt.QtCore import (Qt,
                          QEvent,
                          QPyNullVariant)
-from PyQt.QtWidgets import (QFileDialog,
+from qgis.PyQt.QtWidgets import (QFileDialog,
                             QDialog,
                             QStyle,
                             QMessageBox,
@@ -41,7 +41,7 @@ from PyQt.QtWidgets import (QFileDialog,
                             QToolButton,
                             QHBoxLayout,
                             QComboBox)
-from PyQt.QtGui import (QIcon,
+from qgis.PyQt.QtGui import (QIcon,
                         QStandardItemModel,
                         QStandardItem)
 

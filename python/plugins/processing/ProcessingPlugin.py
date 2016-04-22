@@ -30,9 +30,9 @@ import inspect
 import os
 import sys
 
-from PyQt.QtCore import Qt, QCoreApplication, QDir
-from PyQt.QtWidgets import QMenu, QAction
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QDir
+from qgis.PyQt.QtWidgets import QMenu, QAction
+from qgis.PyQt.QtGui import QIcon
 
 from processing.core.Processing import Processing
 from processing.gui.ProcessingToolbox import ProcessingToolbox

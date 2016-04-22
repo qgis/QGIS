@@ -21,7 +21,7 @@ import glob
 import osgeo.gdal
 
 from qgis.core import QgsVectorLayer, QgsFeatureRequest
-from PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase

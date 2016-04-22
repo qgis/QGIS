@@ -27,8 +27,8 @@ import shutil
 import StringIO
 import tempfile
 
-from PyQt.QtCore import QSize, qDebug
-from PyQt.QtGui import QFont, QColor
+from qgis.PyQt.QtCore import QSize, qDebug
+from qgis.PyQt.QtGui import QFont, QColor
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,

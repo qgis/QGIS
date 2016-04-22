@@ -20,10 +20,10 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 """
 import os
 
-from PyQt.QtCore import Qt, QTimer, QSettings, QCoreApplication, QSize, QByteArray, QFileInfo, QUrl, QDir
-from PyQt.QtWidgets import QDockWidget, QToolBar, QToolButton, QWidget, QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication, QShortcut
-from PyQt.QtGui import QDesktopServices, QKeySequence
-from PyQt.QtWidgets import QVBoxLayout
+from qgis.PyQt.QtCore import Qt, QTimer, QSettings, QCoreApplication, QSize, QByteArray, QFileInfo, QUrl, QDir
+from qgis.PyQt.QtWidgets import QDockWidget, QToolBar, QToolButton, QWidget, QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication, QShortcut
+from qgis.PyQt.QtGui import QDesktopServices, QKeySequence
+from qgis.PyQt.QtWidgets import QVBoxLayout
 from qgis.utils import iface
 from .console_sci import ShellScintilla
 from .console_output import ShellOutputScintilla
@@ -403,10 +403,10 @@ class PythonConsoleWidget(QWidget):
             ["import processing"],
             (QCoreApplication.translate("PythonConsole", "Import PyQt.QtCore Class"),
              QgsApplication.getThemeIcon("console/iconQtCoreConsole.png")):
-            ["from PyQt.QtCore import *"],
+            ["from qgis.PyQt.QtCore import *"],
             (QCoreApplication.translate("PythonConsole", "Import PyQt.QtGui Class"),
              QgsApplication.getThemeIcon("console/iconQtGuiConsole.png")):
-            ["from PyQt.QtGui import *", "from PyQt.QtWidgets import *"]
+            ["from qgis.PyQt.QtGui import *", "from qgis.PyQt.QtWidgets import *"]
         }
 
         self.classMenu = QMenu()

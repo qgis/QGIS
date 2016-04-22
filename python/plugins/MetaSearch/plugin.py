@@ -25,9 +25,9 @@
 
 import logging
 
-from PyQt.QtCore import QCoreApplication
-from PyQt.QtWidgets import QAction
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtWidgets import QAction
+from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsApplication
 from MetaSearch.dialogs.maindialog import MetaSearchDialog

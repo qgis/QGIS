@@ -21,9 +21,9 @@ email                : brush.tyler@gmail.com
 """
 
 from functools import partial
-from PyQt.QtCore import Qt, QObject, qDebug, QByteArray, QMimeData, QDataStream, QIODevice, QFileInfo, QAbstractItemModel, QModelIndex, pyqtSignal, pyqtSlot
-from PyQt.QtWidgets import QApplication, QMessageBox
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import Qt, QObject, qDebug, QByteArray, QMimeData, QDataStream, QIODevice, QFileInfo, QAbstractItemModel, QModelIndex, pyqtSignal, pyqtSlot
+from qgis.PyQt.QtWidgets import QApplication, QMessageBox
+from qgis.PyQt.QtGui import QIcon
 
 from .db_plugins import supportedDbTypes, createDbPlugin
 from .db_plugins.plugin import BaseError, Table, Database

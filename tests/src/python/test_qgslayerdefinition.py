@@ -22,7 +22,7 @@ from qgis.core import (QgsProject,
 from qgis.testing import unittest, start_app
 from utilities import unitTestDataPath
 
-from PyQt.QtXml import QDomDocument
+from qgis.PyQt.tXml import QDomDocument
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

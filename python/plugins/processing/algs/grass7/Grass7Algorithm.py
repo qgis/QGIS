@@ -30,8 +30,8 @@ import time
 import uuid
 import importlib
 
-from PyQt.QtCore import QCoreApplication, QUrl
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QCoreApplication, QUrl
+from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsRasterLayer
 from qgis.utils import iface

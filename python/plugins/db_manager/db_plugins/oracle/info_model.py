@@ -23,7 +23,7 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt.QtWidgets import QApplication
+from qgis.PyQt.QtWidgets import QApplication
 from qgis.core import QGis
 
 from ..info_model import TableInfo, VectorTableInfo, DatabaseInfo

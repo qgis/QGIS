@@ -23,8 +23,8 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt.QtCore import QPyNullVariant
-from PyQt.QtSql import QSqlDatabase
+from qgis.PyQt.QtCore import QPyNullVariant
+from qgis.PyQt.QtSql import QSqlDatabase
 
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table

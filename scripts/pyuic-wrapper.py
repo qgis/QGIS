@@ -1,1 +1,1 @@
-import PyQt.uic.pyuic
+import qgis.PyQt.uic.pyuic

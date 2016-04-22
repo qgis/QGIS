@@ -16,8 +16,8 @@ import qgis  # NOQA
 
 import os
 
-from PyQt.QtCore import QFileInfo
-from PyQt.QtGui import QColor
+from qgis.PyQt.QtCore import QFileInfo
+from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (QgsRaster,
                        QgsRasterLayer,

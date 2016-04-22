@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorithm
 from processing.preconfigured.PreconfiguredUtils import preconfiguredAlgorithmsFolder

@@ -20,8 +20,8 @@ import qgis  # NOQA
 
 import os
 
-from PyQt.QtCore import Qt, QPointF
-from PyQt.QtGui import QFont
+from qgis.PyQt.QtCore import Qt, QPointF
+from qgis.PyQt.QtGui import QFont
 
 from qgis.core import QgsPalLayerSettings
 

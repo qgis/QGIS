@@ -31,7 +31,7 @@ import os
 import json
 
 from PyQt import uic
-from PyQt.QtWidgets import QDialog, QTreeWidgetItem
+from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 
 from processing.core.ProcessingLog import ProcessingLog
 

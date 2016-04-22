@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 import subprocess
-from PyQt.QtGui import QIcon
-from PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QMessageBox
 from processing.gui.ToolboxAction import ToolboxAction
 from .FusionUtils import FusionUtils
 

@@ -18,8 +18,8 @@ import os
 from qgis.testing import unittest
 from qgis.core import QgsNetworkContentFetcher
 from utilities import unitTestDataPath
-from PyQt.QtCore import QUrl, QCoreApplication
-from PyQt.QtNetwork import QNetworkReply
+from qgis.PyQt.QtCore import QUrl, QCoreApplication
+from qgis.PyQt.tNetwork import QNetworkReply
 import socketserver
 import threading
 import http.server

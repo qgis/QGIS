@@ -20,9 +20,9 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt.QtCore import Qt, QSettings, QTimer
-from PyQt.QtGui import QColor, QCursor
-from PyQt.QtWidgets import QApplication
+from qgis.PyQt.QtCore import Qt, QSettings, QTimer
+from qgis.PyQt.QtGui import QColor, QCursor
+from qgis.PyQt.QtWidgets import QApplication
 
 from qgis.gui import QgsMapCanvas, QgsMapCanvasLayer, QgsMessageBar
 from qgis.core import QgsVectorLayer, QgsMapLayerRegistry

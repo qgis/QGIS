@@ -22,9 +22,9 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt.QtCore import Qt, QSettings, QFileInfo
-from PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
-from PyQt.QtGui import QCursor
+from qgis.PyQt.QtCore import Qt, QSettings, QFileInfo
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
+from qgis.PyQt.QtGui import QCursor
 
 import qgis.core
 from qgis.utils import iface

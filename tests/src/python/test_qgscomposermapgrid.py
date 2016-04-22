@@ -14,7 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from PyQt.QtGui import QPainter, QColor
+from qgis.PyQt.QtGui import QPainter, QColor
 
 from qgis.core import (QgsComposerMap,
                        QgsComposerMapGrid,

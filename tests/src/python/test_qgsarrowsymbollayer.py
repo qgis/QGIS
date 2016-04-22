@@ -27,8 +27,8 @@ import qgis  # NOQA
 
 import os
 
-from PyQt.QtCore import QSize
-from PyQt.QtGui import QColor
+from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (
     QgsVectorLayer,

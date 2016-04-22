@@ -32,7 +32,7 @@ import subprocess
 import os
 import locale
 from qgis.core import QgsApplication
-from PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import userFolder, isWindows, isMac, tempFolder, mkdir

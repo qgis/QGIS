@@ -24,9 +24,9 @@ The content of this file is based on
 
 import functools
 
-from PyQt.QtCore import Qt, QSettings, QByteArray, QSize
-from PyQt.QtWidgets import QMainWindow, QApplication, QMenu, QTabWidget, QGridLayout, QSpacerItem, QSizePolicy, QDockWidget, QStatusBar, QMenuBar, QToolBar, QTabBar
-from PyQt.QtGui import QIcon, QKeySequence
+from qgis.PyQt.QtCore import Qt, QSettings, QByteArray, QSize
+from qgis.PyQt.QtWidgets import QMainWindow, QApplication, QMenu, QTabWidget, QGridLayout, QSpacerItem, QSizePolicy, QDockWidget, QStatusBar, QMenuBar, QToolBar, QTabBar
+from qgis.PyQt.QtGui import QIcon, QKeySequence
 
 from qgis.gui import QgsMessageBar
 from .info_viewer import InfoViewer

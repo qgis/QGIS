@@ -23,7 +23,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsFeatureRequest,
                        QgsWKBTypes
                        )
-from PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 import os
 import osgeo.gdal
 import platform
