@@ -357,3 +357,44 @@ CREATE TABLE qgis_test.oid_serial_table
 );
 
 ALTER TABLE qgis_test.oid_serial_table ALTER COLUMN obj_id SET DEFAULT 'prf_' || nextval('qgis_test.oid_serial');
+
+
+--------------------------------------
+-- Test use of domain types
+--
+
+CREATE DOMAIN qgis_test.var_char_domain
+  AS character varying;
+
+CREATE DOMAIN qgis_test.var_char_domain_6
+  AS character varying(6);
+
+CREATE DOMAIN qgis_test.character_domain
+  AS character;
+
+CREATE DOMAIN qgis_test.character_domain_6
+  AS character(6);
+
+CREATE DOMAIN qgis_test.char_domain
+  AS char;
+
+CREATE DOMAIN qgis_test.char_domain_6
+  AS char(6);
+
+CREATE DOMAIN qgis_test.text_domain
+  AS text;
+
+CREATE DOMAIN qgis_test.numeric_domain
+  AS numeric(10,4);
+
+CREATE TABLE qgis_test.domains
+(
+  fld_var_char_domain qgis_test.var_char_domain,
+  fld_var_char_domain_6 qgis_test.var_char_domain_6,
+  fld_character_domain qgis_test.character_domain,
+  fld_character_domain_6 qgis_test.character_domain_6,
+  fld_char_domain qgis_test.char_domain,
+  fld_char_domain_6 qgis_test.char_domain_6,
+  fld_text_domain qgis_test.text_domain,
+  fld_numeric_domain qgis_test.numeric_domain
+);

@@ -737,6 +737,7 @@ bool QgsPostgresProvider::loadFields()
 
 
   QMap<int, QMap<int, QString> > fmtFieldTypeMap, descrMap, defValMap;
+  QMap<int, QMap<int, int> > attTypeIdMap;
   if ( result.PQnfields() > 0 )
   {
     // Collect table oids
@@ -761,7 +762,7 @@ bool QgsPostgresProvider::loadFields()
       QString tableoidsFilter = '(' + tableoidsList.join( "," ) + ')';
 
       // Collect formatted field types
-      sql = "SELECT attrelid, attnum, pg_catalog.format_type(atttypid,atttypmod), pg_catalog.col_description(attrelid,attnum), pg_catalog.pg_get_expr(adbin,adrelid)"
+      sql = "SELECT attrelid, attnum, pg_catalog.format_type(atttypid,atttypmod), pg_catalog.col_description(attrelid,attnum), pg_catalog.pg_get_expr(adbin,adrelid), atttypid"
             " FROM pg_attribute"
             " LEFT OUTER JOIN pg_attrdef ON attrelid=adrelid AND attnum=adnum"
             " WHERE attrelid IN " + tableoidsFilter;
@@ -773,9 +774,11 @@ bool QgsPostgresProvider::loadFields()
         QString formatType = fmtFieldTypeResult.PQgetvalue( i, 2 );
         QString descr = fmtFieldTypeResult.PQgetvalue( i, 3 );
         QString defVal = fmtFieldTypeResult.PQgetvalue( i, 4 );
+        int attType = fmtFieldTypeResult.PQgetvalue( i, 5 ).toInt();
         fmtFieldTypeMap[attrelid][attnum] = formatType;
         descrMap[attrelid][attnum] = descr;
         defValMap[attrelid][attnum] = defVal;
+        attTypeIdMap[attrelid][attnum] = attType;
       }
     }
   }
@@ -789,16 +792,32 @@ bool QgsPostgresProvider::loadFields()
       continue;
 
     int fldtyp = result.PQftype( i );
+    int fldMod = result.PQfmod( i );
     int fieldPrec = -1;
     int tableoid = result.PQftable( i );
     int attnum = result.PQftablecol( i );
+    int atttypid = attTypeIdMap[tableoid][attnum];
 
     const PGTypeInfo& typeInfo = typeMap.value( fldtyp );
     QString fieldTypeName = typeInfo.typeName;
     QString fieldTType = typeInfo.typeType;
     int fieldSize = typeInfo.typeLen;
 
+    bool isDomain = ( typeMap.value( atttypid ).typeType == "d" );
+
     QString formattedFieldType = fmtFieldTypeMap[tableoid][attnum];
+    QString originalFormattedFieldType = formattedFieldType;
+    if ( isDomain )
+    {
+      // get correct formatted field type for domain
+      sql = QString( "SELECT format_type(%1, %2)" ).arg( fldtyp ).arg( fldMod );
+      QgsPostgresResult fmtFieldModResult( connectionRO()->PQexec( sql ) );
+      if ( fmtFieldModResult.PQntuples() > 0 )
+      {
+        formattedFieldType = fmtFieldModResult.PQgetvalue( 0, 0 );
+      }
+    }
+
     QString fieldComment = descrMap[tableoid][attnum];
 
     QVariant::Type fieldType;
@@ -904,6 +923,9 @@ bool QgsPostgresProvider::loadFields()
       }
       else if ( fieldTypeName == "bpchar" )
       {
+        // although postgres internally uses "bpchar", this is exposed to users as character in postgres
+        fieldTypeName = "character";
+
         fieldType = QVariant::String;
 
         QRegExp re( "character\\((\\d+)\\)" );
@@ -970,6 +992,12 @@ bool QgsPostgresProvider::loadFields()
     }
 
     fields << fieldName;
+
+    if ( isDomain )
+    {
+      //field was defined using domain, so use domain type name for fieldTypeName
+      fieldTypeName = originalFormattedFieldType;
+    }
 
     mAttrPalIndexName.insert( i, fieldName );
     mDefaultValues.insert( mAttributeFields.size(), defValMap[tableoid][attnum] );
