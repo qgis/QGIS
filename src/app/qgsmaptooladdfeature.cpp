@@ -325,11 +325,11 @@ QgsAbstractGeometryV2* QgsMapToolAddFeature::outputGeometry( const QgsCurveV2* c
   bool providerSupportsCurves = v->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
   QgsWKBTypes::Type providerGeomType = QGis::fromOldWkbType( v->dataProvider()->geometryType() );
 
-                                       //convert to straight line if necessary
-                                       bool convertToStraightLine = ( !providerSupportsCurves || !QgsWKBTypes::isCurvedType( providerGeomType ) );
-                                       if ( convertToStraightLine )
-{
-  outputGeometry = c->segmentize();
+  //convert to straight line if necessary
+  bool convertToStraightLine = ( !providerSupportsCurves || !QgsWKBTypes::isCurvedType( providerGeomType ) );
+  if ( convertToStraightLine )
+  {
+    outputGeometry = c->segmentize();
   }
   else
   {
@@ -338,8 +338,8 @@ QgsAbstractGeometryV2* QgsMapToolAddFeature::outputGeometry( const QgsCurveV2* c
 
   //polygon
   if ( QgsWKBTypes::geometryType( providerGeomType ) == QgsWKBTypes::PolygonGeometry )
-{
-  QgsCurvePolygonV2* polygon = convertToStraightLine ? new QgsPolygonV2() : new QgsCurvePolygonV2();
+  {
+    QgsCurvePolygonV2* polygon = convertToStraightLine ? new QgsPolygonV2() : new QgsCurvePolygonV2();
     if ( polygon )
     {
       polygon->setExteriorRing( dynamic_cast<QgsCurveV2*>( outputGeometry ) );
@@ -349,19 +349,19 @@ QgsAbstractGeometryV2* QgsMapToolAddFeature::outputGeometry( const QgsCurveV2* c
 
   //set z/m types
   if ( QgsWKBTypes::hasZ( providerGeomType ) )
-{
-  outputGeometry->addZValue();
+  {
+    outputGeometry->addZValue();
   }
   if ( QgsWKBTypes::hasM( providerGeomType ) )
-{
-  outputGeometry->addMValue();
+  {
+    outputGeometry->addMValue();
   }
 
   //convert to multitype if necessary
   if ( QgsWKBTypes::isMultiType( providerGeomType ) )
-{
-  QgsGeometryCollectionV2* multiGeom = dynamic_cast<QgsGeometryCollectionV2*>
-                                       ( QgsGeometryFactory::geomFromWkbType( providerGeomType ) );
+  {
+    QgsGeometryCollectionV2* multiGeom = dynamic_cast<QgsGeometryCollectionV2*>
+                                         ( QgsGeometryFactory::geomFromWkbType( providerGeomType ) );
     if ( multiGeom )
     {
       multiGeom->addGeometry( outputGeometry );
