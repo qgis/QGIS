@@ -83,7 +83,7 @@ class TestQgsTaskManager : public QObject
     void createInstance();
     void addTask();
     void deleteTask();
-    void taskTerminationBeforeDelete();
+    //void taskTerminationBeforeDelete();
     void taskId();
     void progressChanged();
     void statusChanged();
@@ -259,6 +259,8 @@ void TestQgsTaskManager::deleteTask()
   QCOMPARE( spy.last().at( 0 ).toLongLong(), 0LL );
 }
 
+#if 0
+// we don't run this by default - the sendPostedEvents call is fragile
 void TestQgsTaskManager::taskTerminationBeforeDelete()
 {
   //test that task is terminated by manager prior to delete
@@ -276,6 +278,7 @@ void TestQgsTaskManager::taskTerminationBeforeDelete()
   delete manager;
   QApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
 }
+#endif
 
 void TestQgsTaskManager::taskId()
 {

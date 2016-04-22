@@ -108,6 +108,7 @@ QgsTaskManager *QgsTaskManager::instance()
 
 QgsTaskManager::QgsTaskManager( QObject* parent )
     : QObject( parent )
+    , mTaskMutex( new QMutex( QMutex::Recursive ) )
     , mNextTaskId( 0 )
 {
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ),
@@ -120,15 +121,20 @@ QgsTaskManager::~QgsTaskManager()
   cancelAll();
 
   //then clean them up, including waiting for them to terminate
+  mTaskMutex->lock();
   QMap< long, TaskInfo >::const_iterator it = mTasks.constBegin();
   for ( ; it != mTasks.constEnd(); ++it )
   {
     cleanupAndDeleteTask( it.value().task );
   }
+  mTaskMutex->unlock();
+
+  delete mTaskMutex;
 }
 
 long QgsTaskManager::addTask( QgsTask* task, const QgsTaskList& dependencies )
 {
+  QMutexLocker ml( mTaskMutex );
   mTasks.insert( mNextTaskId, task );
 
   connect( task, SIGNAL( progressChanged( double ) ), this, SLOT( taskProgressChanged( double ) ) );
@@ -152,6 +158,7 @@ long QgsTaskManager::addTask( QgsTask* task, const QgsTaskList& dependencies )
 
 bool QgsTaskManager::deleteTask( long id )
 {
+  QMutexLocker ml( mTaskMutex );
   QgsTask* task = mTasks.value( id ).task;
   return deleteTask( task );
 }
@@ -164,6 +171,7 @@ bool QgsTaskManager::deleteTask( QgsTask *task )
   bool result = cleanupAndDeleteTask( task );
 
   // remove from internal task list
+  QMutexLocker ml( mTaskMutex );
   for ( QMap< long, TaskInfo >::iterator it = mTasks.begin(); it != mTasks.end(); )
   {
     if ( it.value().task == task )
@@ -177,11 +185,13 @@ bool QgsTaskManager::deleteTask( QgsTask *task )
 
 QgsTask*QgsTaskManager::task( long id ) const
 {
+  QMutexLocker ml( mTaskMutex );
   return mTasks.value( id ).task;
 }
 
 QList<QgsTask*> QgsTaskManager::tasks() const
 {
+  QMutexLocker ml( mTaskMutex );
   QList< QgsTask* > list;
   for ( QMap< long, TaskInfo >::const_iterator it = mTasks.constBegin(); it != mTasks.constEnd(); ++it )
   {
@@ -195,19 +205,23 @@ long QgsTaskManager::taskId( QgsTask *task ) const
   if ( !task )
     return -1;
 
+  QMutexLocker ml( mTaskMutex );
   QMap< long, TaskInfo >::const_iterator it = mTasks.constBegin();
   for ( ; it != mTasks.constEnd(); ++it )
   {
     if ( it.value().task == task )
+    {
       return it.key();
+    }
   }
   return -1;
 }
 
 void QgsTaskManager::cancelAll()
 {
-  QMap< long, TaskInfo >::iterator it = mTasks.begin();
-  for ( ; it != mTasks.end(); ++it )
+  QMutexLocker ml( mTaskMutex );
+  QMap< long, TaskInfo >::const_iterator it = mTasks.constBegin();
+  for ( ; it != mTasks.constEnd(); ++it )
   {
     QgsTask* task = it.value().task;
     if ( task->isActive() )
@@ -219,6 +233,8 @@ void QgsTaskManager::cancelAll()
 
 bool QgsTaskManager::dependenciesSatisified( long taskId ) const
 {
+  QMutexLocker ml( mTaskMutex );
+
   if ( !mTaskDependencies.contains( taskId ) )
     return true;
 
@@ -242,6 +258,8 @@ QSet<long> QgsTaskManager::dependencies( long taskId ) const
 
 bool QgsTaskManager::resolveDependencies( long firstTaskId, long currentTaskId, QSet<long>& results ) const
 {
+  QMutexLocker ml( mTaskMutex );
+
   if ( !mTaskDependencies.contains( currentTaskId ) )
     return true;
 
@@ -282,11 +300,13 @@ bool QgsTaskManager::hasCircularDependencies( long taskId ) const
 
 void QgsTaskManager::setDependentLayers( long taskId, const QStringList& layerIds )
 {
+  QMutexLocker ml( mTaskMutex );
   mLayerDependencies.insert( taskId, layerIds );
 }
 
 QStringList QgsTaskManager::dependentLayers( long taskId ) const
 {
+  QMutexLocker ml( mTaskMutex );
   return mLayerDependencies.value( taskId, QStringList() );
 }
 
@@ -323,6 +343,7 @@ void QgsTaskManager::taskStatusChanged( int status )
 
 void QgsTaskManager::layersWillBeRemoved( const QStringList& layerIds )
 {
+  QMutexLocker ml( mTaskMutex );
   // scan through layers to be removed
   Q_FOREACH ( const QString& layerId, layerIds )
   {
@@ -371,6 +392,7 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
 
 void QgsTaskManager::processQueue()
 {
+  QMutexLocker ml( mTaskMutex );
   for ( QMap< long, TaskInfo >::iterator it = mTasks.begin(); it != mTasks.end(); ++it )
   {
     QgsTask* task = it.value().task;
@@ -383,6 +405,8 @@ void QgsTaskManager::processQueue()
 
 void QgsTaskManager::cancelDependentTasks( long taskId )
 {
+  QMutexLocker ml( mTaskMutex );
+
   QgsTask* cancelledTask = task( taskId );
   for ( QMap< long, QgsTaskList >::iterator it = mTaskDependencies.begin(); it != mTaskDependencies.end(); ++it )
   {

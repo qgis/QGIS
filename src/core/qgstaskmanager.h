@@ -305,6 +305,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
       QFuture< void > future;
     };
 
+    mutable QMutex* mTaskMutex;
     QMap< long, TaskInfo > mTasks;
     QMap< long, QgsTaskList > mTaskDependencies;
     QMap< long, QStringList > mLayerDependencies;
