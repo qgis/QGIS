@@ -20,6 +20,7 @@
 #include "qgscurvepolygonv2.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryfactory.h"
 #include "qgslinestringv2.h"
 #include "qgsmultipointv2.h"
 #include "qgsmapcanvas.h"
@@ -236,39 +237,11 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       //create QgsFeature with wkb representation
       QScopedPointer< QgsFeature > f( new QgsFeature( vlayer->fields(), 0 ) );
 
-      //does compoundcurve contain circular strings?
-      //does provider support circular strings?
-      bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
-      bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
+      QgsAbstractGeometryV2* geomToAdd = outputGeometry( captureCurve(), vlayer );
+      f->setGeometry( new QgsGeometry( geomToAdd ) );
 
-      QgsCurveV2* curveToAdd = nullptr;
-      if ( hasCurvedSegments && providerSupportsCurvedSegments )
+      if ( mode() == CapturePolygon )
       {
-        curveToAdd = captureCurve()->clone();
-      }
-      else
-      {
-        curveToAdd = captureCurve()->curveToLine();
-      }
-
-      if ( mode() == CaptureLine )
-      {
-        f->setGeometry( new QgsGeometry( curveToAdd ) );
-      }
-      else
-      {
-        QgsCurvePolygonV2* poly = nullptr;
-        if ( hasCurvedSegments && providerSupportsCurvedSegments )
-        {
-          poly = new QgsCurvePolygonV2();
-        }
-        else
-        {
-          poly = new QgsPolygonV2();
-        }
-        poly->setExteriorRing( curveToAdd );
-        f->setGeometry( new QgsGeometry( poly ) );
-
         int avoidIntersectionsReturn = f->geometry()->avoidIntersections();
         if ( avoidIntersectionsReturn == 1 )
         {
@@ -338,4 +311,63 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       stopCapturing();
     }
   }
+}
+
+QgsAbstractGeometryV2* QgsMapToolAddFeature::outputGeometry( const QgsCurveV2* c, const QgsVectorLayer* v ) const
+{
+  if ( !c || !v )
+  {
+    return 0;
+  }
+
+  QgsAbstractGeometryV2* outputGeometry = 0;
+
+  bool providerSupportsCurves = v->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
+  QgsWKBTypes::Type providerGeomType = QGis::fromOldWkbType( v->dataProvider()->geometryType() );
+
+                                       //convert to straight line if necessary
+                                       bool convertToStraightLine = ( !providerSupportsCurves || !QgsWKBTypes::isCurvedType( providerGeomType ) );
+                                       if ( convertToStraightLine )
+{
+  outputGeometry = c->segmentize();
+  }
+  else
+  {
+    outputGeometry = c->clone();
+  }
+
+  //polygon
+  if ( QgsWKBTypes::geometryType( providerGeomType ) == QgsWKBTypes::PolygonGeometry )
+{
+  QgsCurvePolygonV2* polygon = convertToStraightLine ? new QgsPolygonV2() : new QgsCurvePolygonV2();
+    if ( polygon )
+    {
+      polygon->setExteriorRing( dynamic_cast<QgsCurveV2*>( outputGeometry ) );
+      outputGeometry = polygon;
+    }
+  }
+
+  //set z/m types
+  if ( QgsWKBTypes::hasZ( providerGeomType ) )
+{
+  outputGeometry->addZValue();
+  }
+  if ( QgsWKBTypes::hasM( providerGeomType ) )
+{
+  outputGeometry->addMValue();
+  }
+
+  //convert to multitype if necessary
+  if ( QgsWKBTypes::isMultiType( providerGeomType ) )
+{
+  QgsGeometryCollectionV2* multiGeom = dynamic_cast<QgsGeometryCollectionV2*>
+                                       ( QgsGeometryFactory::geomFromWkbType( providerGeomType ) );
+    if ( multiGeom )
+    {
+      multiGeom->addGeometry( outputGeometry );
+      outputGeometry = multiGeom;
+    }
+  }
+
+  return outputGeometry;
 }
