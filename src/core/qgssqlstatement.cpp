@@ -73,6 +73,22 @@ QString QgsSQLStatement::quotedIdentifier( QString name )
 
 QString QgsSQLStatement::quotedIdentifierIfNeeded( QString name )
 {
+  // This might not be complete, but it must be at least what we recognize
+  static const char* const reservedKeyWords[] =
+  {
+    "AND", "OR", "NOT", "LIKE", "IN", "IS", "BETWEEN", "NULL", "SELECT", "ALL", "DISTINCT", "CAST", "AS",
+    "FROM", "JOIN", "ON", "USING", "WHERE", "ORDER", "BY", "ASC", "DESC",
+    "LEFT", "RIGHT", "INNER", "OUTER", "CROSS", "FULL", "NATURAL", "UNION",
+    "OFFSET", "LIMIT", "GROUP", "HAVING"
+  };
+
+  for ( size_t i = 0; i < sizeof( reservedKeyWords ) / sizeof( reservedKeyWords[0] ); ++i )
+  {
+    if ( name.compare( QString( reservedKeyWords[i] ), Qt::CaseInsensitive ) == 0 )
+    {
+      return quotedIdentifier( name );
+    }
+  }
   return identifierRE.exactMatch( name ) ? name : quotedIdentifier( name );
 }
 

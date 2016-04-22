@@ -56,10 +56,10 @@ class TestQgsSQLStatementCustomFunctions(unittest.TestCase):
     def testNominalColumns(self):
         statement = "SELECT null, 1234567890123456789, a, b b_alias, 'literal', CAST(1 AS varchar), "
         statement += "\"1c\", *, \"*\", a.*, foo(), bar(baz, baw), t.c AS \"1quoted\", "
-        statement += "COUNT(*), COUNT(*) a, COUNT(DISTINCT x), COUNT(DISTINCT x) AS a FROM t"
+        statement += "COUNT(*), COUNT(*) a, COUNT(DISTINCT x), COUNT(DISTINCT x) AS a, \"select\" FROM t"
         expected_dump = "SELECT NULL, 1234567890123456789, a, b AS b_alias, 'literal', CAST(1 AS varchar), "
         expected_dump += "\"1c\", *, \"*\", a.*, foo(), bar(baz, baw), t.c AS \"1quoted\", "
-        expected_dump += "COUNT(*), COUNT(*) AS a, COUNT(DISTINCT x), COUNT(DISTINCT x) AS a FROM t"
+        expected_dump += "COUNT(*), COUNT(*) AS a, COUNT(DISTINCT x), COUNT(DISTINCT x) AS a, \"select\" FROM t"
         self.checkNominal(statement, expected_dump)
 
     def testNominalFrom(self):
