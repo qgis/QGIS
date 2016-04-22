@@ -166,23 +166,10 @@ class FieldSorter
 
     bool operator()( const QPair< QgsFeatureId, QString > & id1, const QPair< QgsFeatureId, QString >& id2 )
     {
-      bool result = true;
-
-      if ( mKeys[ id1.first ].type() == QVariant::Int )
-      {
-        result = mKeys[ id1.first ].toInt() < mKeys[ id2.first ].toInt();
-      }
-      else if ( mKeys[ id1.first ].type() == QVariant::Double )
-      {
-        result = mKeys[ id1.first ].toDouble() < mKeys[ id2.first ].toDouble();
-      }
-      else if ( mKeys[ id1.first ].type() == QVariant::String )
-      {
-        result = ( QString::localeAwareCompare( mKeys[ id1.first ].toString(), mKeys[ id2.first ].toString() ) < 0 );
-      }
-
-      return mAscending ? result : !result;
+      return mAscending ? qgsVariantLessThan( mKeys.value( id1.first ), mKeys.value( id2.first ) )
+             : qgsVariantGreaterThan( mKeys.value( id1.first ), mKeys.value( id2.first ) );
     }
+
   private:
     QgsAtlasComposition::SorterKeys& mKeys;
     bool mAscending;

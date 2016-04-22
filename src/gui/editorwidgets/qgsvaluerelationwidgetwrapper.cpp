@@ -15,6 +15,7 @@
 
 #include "qgsvaluerelationwidgetwrapper.h"
 
+#include "qgis.h"
 #include "qgsfield.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvaluerelationwidgetfactory.h"
@@ -27,23 +28,13 @@
 bool QgsValueRelationWidgetWrapper::orderByKeyLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
     , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
 {
-  switch ( p1.first.type() )
-  {
-    case QVariant::String:
-      return p1.first.toString() < p2.first.toString();
-
-    case QVariant::Double:
-      return p1.first.toDouble() < p2.first.toDouble();
-
-    default:
-      return p1.first.toInt() < p2.first.toInt();
-  }
+  return qgsVariantLessThan( p1.first, p2.first );
 }
 
 bool QgsValueRelationWidgetWrapper::orderByValueLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
     , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
 {
-  return p1.second < p2.second;
+  return qgsVariantLessThan( p1.second, p2.second );
 }
 
 QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )

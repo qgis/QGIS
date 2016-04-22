@@ -32,60 +32,8 @@ QgsComposerAttributeTableCompare::QgsComposerAttributeTableCompare()
 
 bool QgsComposerAttributeTableCompare::operator()( const QgsAttributeMap& m1, const QgsAttributeMap& m2 )
 {
-  QVariant v1 = m1[mCurrentSortColumn];
-  QVariant v2 = m2[mCurrentSortColumn];
-
-  bool less = false;
-
-  //sort null values first
-  if ( v1.isNull() && v2.isNull() )
-  {
-    less = false;
-  }
-  else if ( v1.isNull() )
-  {
-    less = true;
-  }
-  else if ( v2.isNull() )
-  {
-    less = false;
-  }
-  else
-  {
-    //otherwise sort by converting to corresponding type and comparing
-    switch ( v1.type() )
-    {
-      case QVariant::Int:
-      case QVariant::UInt:
-      case QVariant::LongLong:
-      case QVariant::ULongLong:
-        less = v1.toLongLong() < v2.toLongLong();
-        break;
-
-      case QVariant::Double:
-        less = v1.toDouble() < v2.toDouble();
-        break;
-
-      case QVariant::Date:
-        less = v1.toDate() < v2.toDate();
-        break;
-
-      case QVariant::DateTime:
-        less = v1.toDateTime() < v2.toDateTime();
-        break;
-
-      case QVariant::Time:
-        less = v1.toTime() < v2.toTime();
-        break;
-
-      default:
-        //use locale aware compare for strings
-        less = v1.toString().localeAwareCompare( v2.toString() ) < 0;
-        break;
-    }
-  }
-
-  return ( mAscending ? less : !less );
+  return ( mAscending ? qgsVariantLessThan( m1[mCurrentSortColumn], m2[mCurrentSortColumn] )
+           : qgsVariantGreaterThan( m1[mCurrentSortColumn], m2[mCurrentSortColumn] ) );
 }
 
 

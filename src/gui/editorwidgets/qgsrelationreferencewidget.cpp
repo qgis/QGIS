@@ -34,22 +34,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsattributetablemodel.h"
 
-bool orderByLessThan( const QgsRelationReferenceWidget::ValueRelationItem& p1
-                      , const QgsRelationReferenceWidget::ValueRelationItem& p2 )
-{
-  switch ( p1.first.type() )
-  {
-    case QVariant::String:
-      return p1.first.toString() < p2.first.toString();
-
-    case QVariant::Double:
-      return p1.first.toDouble() < p2.first.toDouble();
-
-    default:
-      return p1.first.toInt() < p2.first.toInt();
-  }
-}
-
 QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
     : QWidget( parent )
     , mEditorContext( QgsAttributeEditorContext() )
