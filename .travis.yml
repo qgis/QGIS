@@ -8,10 +8,10 @@ matrix:
       sudo: required
       dist: precise
       group: legacy
+      compiler: clang
     - os: osx
+      compiler: clang
 
-compiler:
-  - clang
 
 git:
   depth: 30
