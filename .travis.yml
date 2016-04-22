@@ -1,12 +1,14 @@
 language: cpp
 
-sudo: required
-dist: precise
-group: legacy
-
-os:
-  - linux
-  - osx
+matrix:
+  allow_failures:
+    - os: osx
+  include:
+    - os: linux
+      sudo: required
+      dist: precise
+      group: legacy
+    - os: osx
 
 compiler:
   - clang
