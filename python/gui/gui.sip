@@ -121,6 +121,7 @@
 %Include qgsnewmemorylayerdialog.sip
 %Include qgsnewnamedialog.sip
 %Include qgsnewvectorlayerdialog.sip
+%Include qgsnewgeopackagelayerdialog.sip
 %Include qgsnumericsortlistviewitem.sip
 %Include qgsoptionsdialogbase.sip
 %Include qgsorderbydialog.sip

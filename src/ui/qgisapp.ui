@@ -137,6 +137,7 @@
      </property>
      <addaction name="mActionNewVectorLayer"/>
      <addaction name="mActionNewSpatiaLiteLayer"/>
+     <addaction name="mActionNewGeoPackageLayer"/>
      <addaction name="mActionNewMemoryLayer"/>
     </widget>
     <widget class="QMenu" name="mAddLayerMenu">
@@ -2467,6 +2468,15 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Layer Diagram Options</string>
+   </property>
+  </action>
+  <action name="mActionNewGeoPackageLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewGeoPackageLayer.svg</normaloff>:/images/themes/default/mActionNewGeoPackageLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>New GeoPackage Layer...</string>
    </property>
   </action>
  </widget>
