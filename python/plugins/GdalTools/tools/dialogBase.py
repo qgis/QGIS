@@ -23,9 +23,9 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import Qt, QProcess, QUrl, QIODevice, QCoreApplication, pyqtSignal
-from PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox, QErrorMessage, QApplication
-from PyQt.QtGui import QIcon, QDesktopServices
+from qgis.PyQt.QtCore import Qt, QProcess, QUrl, QIODevice, QCoreApplication, pyqtSignal
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox, QErrorMessage, QApplication
+from qgis.PyQt.QtGui import QIcon, QDesktopServices
 
 # to know the os
 import platform

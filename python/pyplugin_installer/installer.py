@@ -23,9 +23,9 @@
  ***************************************************************************/
 """
 
-from PyQt.QtCore import Qt, QObject, QSettings, QDir, QUrl
-from PyQt.QtWidgets import QMessageBox, QLabel, QFrame, QApplication
-from PyQt.QtNetwork import QNetworkRequest
+from qgis.PyQt.QtCore import Qt, QObject, QSettings, QDir, QUrl
+from qgis.PyQt.QtWidgets import QMessageBox, QLabel, QFrame, QApplication
+from qgis.PyQt.QtNetwork import QNetworkRequest
 
 import qgis
 from qgis.core import QgsApplication, QgsNetworkAccessManager

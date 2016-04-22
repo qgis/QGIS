@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.gui.ScriptEditorDialog import ScriptEditorDialog

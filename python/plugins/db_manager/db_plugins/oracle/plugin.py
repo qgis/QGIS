@@ -26,9 +26,9 @@ The content of this file is based on
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import OracleDBConnector
 
-from PyQt.QtCore import Qt, QSettings, QPyNullVariant
-from PyQt.QtGui import QIcon, QKeySequence
-from PyQt.QtWidgets import QAction, QApplication, QMessageBox
+from qgis.PyQt.QtCore import Qt, QSettings, QPyNullVariant
+from qgis.PyQt.QtGui import QIcon, QKeySequence
+from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
 
 from qgis.core import QgsVectorLayer
 

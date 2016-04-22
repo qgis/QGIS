@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt import uic
-from PyQt.QtWidgets import QFileDialog
+from qgis.PyQt.QtWidgets import QFileDialog
 
 from processing.tools.system import isWindows
 

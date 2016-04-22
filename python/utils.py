@@ -32,8 +32,8 @@ QGIS utilities module
 
 """
 
-from PyQt.QtCore import QCoreApplication, QLocale
-from PyQt.QtWidgets import QPushButton, QApplication
+from qgis.PyQt.QtCore import QCoreApplication, QLocale
+from qgis.PyQt.QtWidgets import QPushButton, QApplication
 from qgis.core import QGis, QgsExpression, QgsMessageLog, qgsfunction, QgsMessageOutput
 from qgis.gui import QgsMessageBar
 

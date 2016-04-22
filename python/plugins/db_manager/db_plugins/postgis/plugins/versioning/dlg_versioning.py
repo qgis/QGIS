@@ -21,8 +21,8 @@ Based on PG_Manager by Martin Dobias <wonder.sk@gmail.com> (GPLv2 license)
  ***************************************************************************/
 """
 
-from PyQt.QtCore import Qt
-from PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox, QApplication
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox, QApplication
 
 from .ui_DlgVersioning import Ui_DlgVersioning
 

@@ -23,8 +23,8 @@ __copyright__ = '(C) 2011, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import Qt, pyqtSignal, pyqtProperty
-from PyQt.QtWidgets import QWidget, QComboBox
+from qgis.PyQt.QtCore import Qt, pyqtSignal, pyqtProperty
+from qgis.PyQt.QtWidgets import QWidget, QComboBox
 
 from qgis.core import QgsMapLayerRegistry, QgsMapLayer
 

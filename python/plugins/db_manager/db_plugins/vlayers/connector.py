@@ -19,7 +19,7 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 """
 
-from PyQt.QtCore import QUrl, QTemporaryFile
+from qgis.PyQt.QtCore import QUrl, QTemporaryFile
 
 from ..connector import DBConnector
 from ..plugin import Table

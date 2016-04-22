@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox
 
 from processing.gui.ContextAction import ContextAction
 

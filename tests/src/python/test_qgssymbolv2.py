@@ -27,8 +27,8 @@ import qgis  # NOQA
 
 from utilities import unitTestDataPath
 
-from PyQt.QtCore import QDir
-from PyQt.QtGui import QImage, QColor, QPainter
+from qgis.PyQt.QtCore import QDir
+from qgis.PyQt.QtGui import QImage, QColor, QPainter
 
 from qgis.core import (QgsGeometry,
                        QgsSymbolV2,

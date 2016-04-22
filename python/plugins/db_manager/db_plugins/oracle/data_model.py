@@ -23,7 +23,7 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt.QtCore import QTime
+from qgis.PyQt.QtCore import QTime
 
 from ..data_model import TableDataModel, SqlResultModel, BaseTableModel
 from ..plugin import DbError

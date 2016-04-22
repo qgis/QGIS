@@ -32,9 +32,9 @@ import json
 import os
 
 from PyQt import uic
-from PyQt.QtCore import Qt
-from PyQt.QtGui import QIcon, QCursor
-from PyQt.QtWidgets import QMenu, QAction, QMessageBox, QFileDialog, QApplication
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QIcon, QCursor
+from qgis.PyQt.QtWidgets import QMenu, QAction, QMessageBox, QFileDialog, QApplication
 
 from qgis.core import QgsApplication
 from qgis.utils import iface

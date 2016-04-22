@@ -24,7 +24,7 @@
  ***************************************************************************/
 """
 
-from PyQt.QtWidgets import QDialog
+from qgis.PyQt.QtWidgets import QDialog
 
 from .ui_qgsplugininstallerpluginerrorbase import Ui_QgsPluginInstallerPluginErrorDialogBase
 

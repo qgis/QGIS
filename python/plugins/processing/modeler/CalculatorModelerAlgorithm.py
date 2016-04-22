@@ -25,8 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import Qt, QMetaObject
-from PyQt.QtWidgets import QDialogButtonBox, QTextEdit, QLineEdit, QVBoxLayout
+from qgis.PyQt.QtCore import Qt, QMetaObject
+from qgis.PyQt.QtWidgets import QDialogButtonBox, QTextEdit, QLineEdit, QVBoxLayout
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException

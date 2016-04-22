@@ -19,9 +19,9 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from PyQt.QtCore import QCoreApplication, QSize, QSettings, QFileInfo, Qt
-from PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QTableWidgetItem
-from PyQt.QtGui import QIcon, QFont, QColor
+from qgis.PyQt.QtCore import QCoreApplication, QSize, QSettings, QFileInfo, Qt
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QTableWidgetItem
+from qgis.PyQt.QtGui import QIcon, QFont, QColor
 from .console_compile_apis import PrepareAPIDialog
 
 from .ui_console_settings import Ui_SettingsDialogPythonConsole

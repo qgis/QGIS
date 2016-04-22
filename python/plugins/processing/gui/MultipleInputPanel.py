@@ -29,7 +29,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt import uic
-from PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtCore import pyqtSignal
 
 from processing.gui.MultipleInputDialog import MultipleInputDialog
 from processing.gui.MultipleFileInputDialog import MultipleFileInputDialog

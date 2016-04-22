@@ -18,9 +18,9 @@ email                : lorenxo86@gmail.com
  ***************************************************************************/
 """
 # Import the PyQt and QGIS libraries
-from PyQt.QtCore import QCoreApplication, QSettings, QLocale, QFileInfo, QTranslator
-from PyQt.QtWidgets import QMessageBox, QMenu, QAction
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QCoreApplication, QSettings, QLocale, QFileInfo, QTranslator
+from qgis.PyQt.QtWidgets import QMessageBox, QMenu, QAction
+from qgis.PyQt.QtGui import QIcon
 from qgis.core import QGis
 import qgis.utils
 

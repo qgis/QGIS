@@ -25,7 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya, Carterix Geomatics'
 
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException

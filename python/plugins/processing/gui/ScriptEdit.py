@@ -27,12 +27,12 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtCore import Qt, QSettings
-from PyQt.QtGui import QFont, QColor, QKeySequence
-from PyQt.QtWidgets import QShortcut
+from qgis.PyQt.QtCore import Qt, QSettings
+from qgis.PyQt.QtGui import QFont, QColor, QKeySequence
+from qgis.PyQt.QtWidgets import QShortcut
 from qgis.core import QgsApplication
 
-from PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
+from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
 
 from processing.gui.LexerR import LexerR
 

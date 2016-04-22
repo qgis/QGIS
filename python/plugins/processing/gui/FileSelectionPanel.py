@@ -28,8 +28,8 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt import uic
-from PyQt.QtWidgets import QFileDialog
-from PyQt.QtCore import QSettings
+from qgis.PyQt.QtWidgets import QFileDialog
+from qgis.PyQt.QtCore import QSettings
 
 from processing.tools.system import isWindows
 

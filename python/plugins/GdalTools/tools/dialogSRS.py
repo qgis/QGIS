@@ -23,7 +23,7 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt.QtWidgets import QDialog, QVBoxLayout, QDialogButtonBox
+from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QDialogButtonBox
 from qgis.gui import QgsProjectionSelector
 
 

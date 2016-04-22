@@ -28,8 +28,8 @@ __revision__ = '$Format:%H$'
 
 import os
 import importlib
-from PyQt.QtCore import QCoreApplication
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog

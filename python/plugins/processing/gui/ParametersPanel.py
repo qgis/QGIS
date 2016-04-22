@@ -35,9 +35,9 @@ import locale
 from qgis.core import QgsMapLayerRegistry, QgsMapLayer
 
 from PyQt import uic
-from PyQt.QtCore import QCoreApplication, QVariant
-from PyQt.QtWidgets import QWidget, QLayout, QVBoxLayout, QHBoxLayout, QToolButton, QLabel, QCheckBox, QComboBox, QLineEdit, QPlainTextEdit
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtWidgets import QWidget, QLayout, QVBoxLayout, QHBoxLayout, QToolButton, QLabel, QCheckBox, QComboBox, QLineEdit, QPlainTextEdit
+from qgis.PyQt.QtGui import QIcon
 
 from processing.core.ProcessingConfig import ProcessingConfig
 

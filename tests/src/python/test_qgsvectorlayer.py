@@ -16,8 +16,8 @@ import qgis  # NOQA
 
 import os
 
-from PyQt.QtCore import QVariant
-from PyQt.QtGui import QPainter
+from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtGui import QPainter
 
 from qgis.core import (QGis,
                        QgsVectorLayer,

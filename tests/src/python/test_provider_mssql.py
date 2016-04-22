@@ -18,7 +18,7 @@ import os
 
 from qgis.core import QgsVectorLayer, QgsFeatureRequest
 
-from PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
+from qgis.PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
 
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest

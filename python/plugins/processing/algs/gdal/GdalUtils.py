@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import subprocess
 import platform
-from PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings
 from qgis.core import QgsApplication
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.SilentProgress import SilentProgress

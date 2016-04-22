@@ -23,9 +23,9 @@ __copyright__ = '(C) 2011, Alexander Bruy'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import Qt, QCoreApplication, QThread, QMutex
-from PyQt.QtWidgets import QDialog, QDialogButtonBox, QApplication, QMessageBox
-from PyQt.QtGui import QCursor
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QThread, QMutex
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QApplication, QMessageBox
+from qgis.PyQt.QtGui import QCursor
 
 from .ui_dialogExtractProjection import Ui_GdalToolsDialog as Ui_Dialog
 from . import GdalTools_utils as Utils

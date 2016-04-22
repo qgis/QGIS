@@ -20,8 +20,8 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt.QtCore import pyqtSignal
-from PyQt.QtWidgets import QWidget, QTreeView, QMenu, QLabel
+from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtWidgets import QWidget, QTreeView, QMenu, QLabel
 
 from qgis.core import QgsMapLayerRegistry, QgsMessageLog
 from qgis.gui import QgsMessageBar, QgsMessageBarItem

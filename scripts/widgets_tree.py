@@ -44,7 +44,7 @@ from PyQt.uic import loadUi
 from PyQt.QtXml import QDomDocument
 
 # qwt_plot is missing somehow but it may depend on installed packages
-from PyQt4 import Qwt5 as qwt_plot
+from qgis.PyQt import Qwt5 as qwt_plot
 sys.modules['qwt_plot'] = qwt_plot
 
 # loadUi is looking for custom widget in module which is lowercase version of
@@ -126,7 +126,7 @@ class UiInspector:
 
 
 if __name__ == '__main__':
-    from PyQt4.QtCore import QApplication
+    from qgis.PyQt.QtCore import QApplication
     app = QApplication(sys.argv) # required by loadUi
     inspector = UiInspector()
     xml = inspector.xml()

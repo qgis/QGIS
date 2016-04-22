@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint
 

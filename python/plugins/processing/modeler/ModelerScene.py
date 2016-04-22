@@ -26,8 +26,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import QPointF, Qt
-from PyQt.QtWidgets import QGraphicsItem, QGraphicsScene
+from qgis.PyQt.QtCore import QPointF, Qt
+from qgis.PyQt.QtWidgets import QGraphicsItem, QGraphicsScene
 from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
 from processing.modeler.ModelerArrowItem import ModelerArrowItem
 from processing.modeler.ModelerAlgorithm import ValueFromInput, ValueFromOutput

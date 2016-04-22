@@ -21,9 +21,9 @@ Portions of this file contain code from Eric4 APIsManager module.
 
 import os
 
-from PyQt.Qsci import QsciAPIs
-from PyQt.QtWidgets import QDialog, QDialogButtonBox
-from PyQt.QtCore import QCoreApplication
+from qgis.PyQt.Qsci import QsciAPIs
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
+from qgis.PyQt.QtCore import QCoreApplication
 
 from .ui_console_compile_apis import Ui_APIsDialogPythonConsole
 

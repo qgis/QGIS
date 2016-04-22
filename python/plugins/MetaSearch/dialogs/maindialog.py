@@ -31,9 +31,9 @@ import json
 import os.path
 from urllib2 import build_opener, install_opener, ProxyHandler
 
-from PyQt.QtCore import QSettings, Qt
-from PyQt.QtWidgets import QApplication, QDialog, QDialogButtonBox, QMessageBox, QTreeWidgetItem, QWidget
-from PyQt.QtGui import QColor, QCursor
+from qgis.PyQt.QtCore import QSettings, Qt
+from qgis.PyQt.QtWidgets import QApplication, QDialog, QDialogButtonBox, QMessageBox, QTreeWidgetItem, QWidget
+from qgis.PyQt.QtGui import QColor, QCursor
 
 from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform, QgsGeometry, QgsPoint,

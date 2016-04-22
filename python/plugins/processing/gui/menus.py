@@ -1,5 +1,5 @@
 import os
-from PyQt.QtWidgets import QAction, QMenu
+from qgis.PyQt.QtWidgets import QAction, QMenu
 from PyQt4.QtGui import QIcon
 from processing.core.Processing import Processing
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
