@@ -2274,6 +2274,7 @@ QgsStringMap QgsFontMarkerSymbolLayerV2::properties() const
   props["outline_width"] = QString::number( mOutlineWidth );
   props["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
   props["outline_width_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOutlineWidthMapUnitScale );
+  props["joinstyle"] = QgsSymbolLayerV2Utils::encodePenJoinStyle( mPenJoinStyle );
   props["angle"] = QString::number( mAngle );
   props["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
   props["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
