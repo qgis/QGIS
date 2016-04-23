@@ -2737,9 +2737,8 @@ void QgsCentroidFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   mLayer = static_cast<QgsCentroidFillSymbolLayerV2*>( layer );
 
   // set values
-  mDrawInsideCheckBox->blockSignals( true );
-  mDrawInsideCheckBox->setChecked( mLayer->pointOnSurface() );
-  mDrawInsideCheckBox->blockSignals( false );
+  whileBlocking( mDrawInsideCheckBox )->setChecked( mLayer->pointOnSurface() );
+  whileBlocking( mDrawAllPartsCheckBox )->setChecked( mLayer->pointOnAllParts() );
 }
 
 QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2Widget::symbolLayer()
@@ -2750,6 +2749,12 @@ QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2Widget::symbolLayer()
 void QgsCentroidFillSymbolLayerV2Widget::on_mDrawInsideCheckBox_stateChanged( int state )
 {
   mLayer->setPointOnSurface( state == Qt::Checked );
+  emit changed();
+}
+
+void QgsCentroidFillSymbolLayerV2Widget::on_mDrawAllPartsCheckBox_stateChanged( int state )
+{
+  mLayer->setPointOnAllParts( state == Qt::Checked );
   emit changed();
 }
 

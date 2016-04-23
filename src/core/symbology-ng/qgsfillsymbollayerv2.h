@@ -1095,9 +1095,20 @@ class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     void setPointOnSurface( bool pointOnSurface ) { mPointOnSurface = pointOnSurface; }
     bool pointOnSurface() const { return mPointOnSurface; }
 
+    /** Sets whether a point is drawn for all parts or only on the biggest part of multi-part features.
+     * @note added in 2.16 */
+    void setPointOnAllParts( bool pointOnAllParts ) { mPointOnAllParts = pointOnAllParts; }
+    /** Returns whether a point is drawn for all parts or only on the biggest part of multi-part features.
+     * @note added in 2.16 */
+    bool pointOnAllParts() const { return mPointOnAllParts; }
+
   protected:
     QgsMarkerSymbolV2* mMarker;
     bool mPointOnSurface;
+    bool mPointOnAllParts;
+
+    QgsFeatureId mCurrentFeatureId;
+    int mBiggestPartIndex;
 };
 
 #endif

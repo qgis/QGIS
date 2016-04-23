@@ -627,6 +627,7 @@ class GUI_EXPORT QgsCentroidFillSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
 
   private slots:
     void on_mDrawInsideCheckBox_stateChanged( int state );
+    void on_mDrawAllPartsCheckBox_stateChanged( int state );
 
 };
 
