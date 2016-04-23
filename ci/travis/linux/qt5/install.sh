@@ -29,7 +29,6 @@ cmake \
       -DENABLE_PGTEST=ON \
       -DWITH_QSPATIALITE=ON \
       -DWITH_QWTPOLAR=OFF \
-      -DWITH_QTWEBKIT=OFF \
       -DWITH_APIDOC=ON \
       -DWITH_ASTYLE=ON \
       -DWITH_SERVER=ON \
