@@ -1,9 +1,5 @@
 ProcessingGdalAlgorithmsTest
-ProcessingParametersTest
 ProcessingQgisAlgorithmsTest
-PyQgsArrowSymbolLayer
-PyQgsComposerEffects
-PyQgsComposerHtml
 PyQgsComposerPicture
 PyQgsDelimitedTextProvider
 PyQgsEditWidgets
@@ -30,10 +26,7 @@ PyQgsVectorFileWriter
 PyQgsVirtualLayerDefinition
 PyQgsVirtualLayerProvider
 PyQgsWFSProvider
-qgis_composereffectstest
-qgis_composerlabeltest
 qgis_composermapgridtest
-qgis_composermultiframetest
 qgis_composertabletest
 qgis_composertablev2test
 qgis_composerutils
