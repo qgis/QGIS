@@ -26,9 +26,11 @@ PyQgsVectorFileWriter
 PyQgsVirtualLayerDefinition
 PyQgsVirtualLayerProvider
 PyQgsWFSProvider
+qgis_qgisappclipboard
 qgis_composermapgridtest
 qgis_composertabletest
 qgis_composertablev2test
 qgis_composerutils
 qgis_fieldtest
+qgis_ogrutilstest
 qgis_openstreetmaptest
