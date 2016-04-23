@@ -48,11 +48,16 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
   connect( mLabelingWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
 
   // Only labels for now but styles and diagrams will come later
-  QScrollArea* widget = new QScrollArea;
-  widget->setWidgetResizable( true );
-  widget->setFrameStyle( QFrame::NoFrame );
-  mStyleTabIndex = mMapStyleTabs->addTab( widget, QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "Styles" );
-  mLabelTabIndex = mMapStyleTabs->addTab( mLabelingWidget, QgsApplication::getThemeIcon( "labelingSingle.svg" ), "Labeling" );
+  QScrollArea* stylescroll = new QScrollArea;
+  stylescroll->setWidgetResizable( true );
+  stylescroll->setFrameStyle( QFrame::NoFrame );
+  QScrollArea* labelscroll = new QScrollArea;
+  labelscroll->setWidgetResizable( true );
+  labelscroll->setFrameStyle( QFrame::NoFrame );
+  labelscroll->setWidget( mLabelingWidget );
+
+  mStyleTabIndex = mMapStyleTabs->addTab( stylescroll, QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "Styles" );
+  mLabelTabIndex = mMapStyleTabs->addTab( labelscroll, QgsApplication::getThemeIcon( "labelingSingle.svg" ), "Labeling" );
 //  int diagramTabIndex = mMapStyleTabs->addTab( new QWidget(), QgsApplication::getThemeIcon( "propertyicons/diagram.png" ), "Diagrams" );
 //  mMapStyleTabs->setTabEnabled( styleTabIndex, false );
 //  mMapStyleTabs->setTabEnabled( diagramTabIndex, false );
