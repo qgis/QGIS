@@ -41,13 +41,14 @@ MACRO (PLUGIN_INSTALL plugin subdir )
       COMMAND ${CMAKE_COMMAND} -E remove_directory ${PYTHON_OUTPUT_DIRECTORY}/plugins/${plugin}
     )
 
-    ADD_CUSTOM_TARGET(port-plugin-${plugin})
-    PY_2TO3(port-plugin-${plugin} ${PYTHON_OUTPUT_DIRECTORY}/plugins/${plugin})
-    ADD_DEPENDENCIES(port-plugins port-plugin-${plugin})
-
     ADD_DEPENDENCIES(staged-plugins zzz-${plugin}-stageinstall)
     ADD_CUSTOM_TARGET(staged-${plugin} DEPENDS zzz-${plugin}-stageinstall)
     FILE(WRITE ${_cmake} "")
+
+    ADD_CUSTOM_TARGET(port-plugin-${plugin})
+    PY_2TO3(port-plugin-${plugin} ${PYTHON_OUTPUT_DIRECTORY}/plugins/${plugin})
+    ADD_DEPENDENCIES(port-plugins port-plugin-${plugin})
+    ADD_DEPENDENCIES(port-plugin-${plugin} staged-${plugin})
   ENDIF(NOT TARGET zzz-${plugin}-stageinstall)
 
   ADD_CUSTOM_TARGET(zzz-${plugin}-${n}-depend DEPENDS ${ARGN})
