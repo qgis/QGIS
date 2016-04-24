@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>597</width>
-    <height>296</height>
+    <width>473</width>
+    <height>417</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -63,7 +63,7 @@
      <item>
       <widget class="QPushButton" name="btnChangeCategorizedSymbol">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
          <horstretch>1</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -74,6 +74,26 @@
       </widget>
      </item>
      <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <item>
       <widget class="QLabel" name="label_10">
        <property name="text">
         <string>Color ramp</string>
@@ -83,7 +103,7 @@
      <item>
       <widget class="QgsColorRampComboBox" name="cboCategorizedColorRamp">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
          <horstretch>1</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -103,6 +123,19 @@
         <string>Invert</string>
        </property>
       </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </item>
@@ -150,16 +183,24 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="btnAddCategory">
+      <widget class="QToolButton" name="btnAddCategory">
        <property name="text">
         <string>Add</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="btnDeleteCategories">
+      <widget class="QToolButton" name="btnDeleteCategories">
        <property name="text">
         <string>Delete</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
        </property>
       </widget>
      </item>
@@ -167,6 +208,10 @@
       <widget class="QPushButton" name="btnDeleteAllCategories">
        <property name="text">
         <string>Delete all</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
        </property>
       </widget>
      </item>
@@ -209,9 +254,6 @@
  </customwidgets>
  <tabstops>
   <tabstop>btnChangeCategorizedSymbol</tabstop>
-  <tabstop>cboCategorizedColorRamp</tabstop>
-  <tabstop>mButtonEditRamp</tabstop>
-  <tabstop>cbxInvertedColorRamp</tabstop>
   <tabstop>viewCategories</tabstop>
   <tabstop>btnAddCategories</tabstop>
   <tabstop>btnAddCategory</tabstop>
@@ -219,6 +261,8 @@
   <tabstop>btnDeleteAllCategories</tabstop>
   <tabstop>btnAdvanced</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>
