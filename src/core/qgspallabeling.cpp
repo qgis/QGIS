@@ -2209,7 +2209,6 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     }
   }
 
-
   // NOTE: this should come AFTER any option that affects font metrics
   QScopedPointer<QFontMetricsF> labelFontMetrics( new QFontMetricsF( labelFont ) );
   double labelX, labelY; // will receive label size

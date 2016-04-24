@@ -438,6 +438,8 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   connect( mSelectAllButton, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
   connect( mUnSelectAllButton, SIGNAL( clicked() ), this, SLOT( unSelectAll() ) );
 
+  mFileLineEdit->setFocus();
+
   //last dxf symbology mode
   QSettings s;
   mSymbologyModeComboBox->setCurrentIndex( QgsProject::instance()->readEntry( "dxf", "/lastDxfSymbologyMode", s.value( "qgis/lastDxfSymbologyMode", "2" ).toString() ).toInt() );

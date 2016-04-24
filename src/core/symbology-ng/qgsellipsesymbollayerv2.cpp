@@ -840,70 +840,68 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
   {
     if ( qgsDoubleNear( halfWidth, halfHeight ) )
     {
-      QPointF pt( t.map( QPointF( 0, 0 ) ) );
+      QgsPointV2 pt( t.map( QPointF( 0, 0 ) ) );
       e.writeFilledCircle( layerName, oc, pt, halfWidth );
     }
     else
     {
-      QgsPolyline line;
-      line.reserve( 40 );
+      QgsPointSequenceV2 line;
+
       double stepsize = 2 * M_PI / 40;
       for ( int i = 0; i < 39; ++i )
       {
         double angle = stepsize * i;
         double x = halfWidth * cos( angle );
         double y = halfHeight * sin( angle );
-        QPointF pt( t.map( QPointF( x, y ) ) );
-        line.push_back( pt );
+        line << QgsPointV2( t.map( QPointF( x, y ) ) );
       }
       //close ellipse with first point
-      line.push_back( line.at( 0 ) );
+      line << line.at( 0 );
+
       if ( mBrush.style() != Qt::NoBrush )
-        e.writePolygon( QgsPolygon() << line, layerName, "SOLID", fc );
+        e.writePolygon( QgsRingSequenceV2() << line, layerName, "SOLID", fc );
       if ( mPen.style() != Qt::NoPen )
         e.writePolyline( line, layerName, "CONTINUOUS", oc, outlineWidth );
     }
   }
   else if ( symbolName == "rectangle" )
   {
-    QgsPolygon p( 1 );
-    p[0].resize( 5 );
-    p[0][0] = t.map( QPointF( -halfWidth, -halfHeight ) );
-    p[0][1] = t.map( QPointF( halfWidth, -halfHeight ) );
-    p[0][2] = t.map( QPointF( halfWidth, halfHeight ) );
-    p[0][3] = t.map( QPointF( -halfWidth, halfHeight ) );
-    p[0][4] = p[0][0];
+    QgsPointSequenceV2 p;
+    p << QgsPointV2( t.map( QPointF( -halfWidth, -halfHeight ) ) )
+    << QgsPointV2( t.map( QPointF( halfWidth, -halfHeight ) ) )
+    << QgsPointV2( t.map( QPointF( halfWidth, halfHeight ) ) )
+    << QgsPointV2( t.map( QPointF( -halfWidth, halfHeight ) ) );
+    p << p[0];
+
     if ( mBrush.style() != Qt::NoBrush )
-      e.writePolygon( p, layerName, "SOLID", fc );
+      e.writePolygon( QgsRingSequenceV2() << p, layerName, "SOLID", fc );
     if ( mPen.style() != Qt::NoPen )
-      e.writePolyline( p[0], layerName, "CONTINUOUS", oc, outlineWidth );
+      e.writePolyline( p, layerName, "CONTINUOUS", oc, outlineWidth );
     return true;
   }
   else if ( symbolName == "cross" && mPen.style() != Qt::NoPen )
   {
-    QgsPolyline line( 2 );
-    line[0] = t.map( QPointF( -halfWidth, 0 ) );
-    line[1] = t.map( QPointF( halfWidth, 0 ) );
-    e.writePolyline( line, layerName, "CONTINUOUS", oc, outlineWidth );
-
-    line[0] = t.map( QPointF( 0, halfHeight ) );
-    line[1] = t.map( QPointF( 0, -halfHeight ) );
-    e.writePolyline( line, layerName, "CONTINUOUS", oc, outlineWidth );
-
+    e.writePolyline( QgsPointSequenceV2()
+                     << QgsPointV2( t.map( QPointF( -halfWidth, 0 ) ) )
+                     << QgsPointV2( t.map( QPointF( halfWidth, 0 ) ) ),
+                     layerName, "CONTINUOUS", oc, outlineWidth );
+    e.writePolyline( QgsPointSequenceV2()
+                     << QgsPointV2( t.map( QPointF( 0, halfHeight ) ) )
+                     << QgsPointV2( t.map( QPointF( 0, -halfHeight ) ) ),
+                     layerName, "CONTINUOUS", oc, outlineWidth );
     return true;
   }
   else if ( symbolName == "triangle" )
   {
-    QgsPolygon p( 1 );
-    p[0].resize( 4 );
-    p[0][0] = QPointF( t.map( QPointF( -halfWidth, -halfHeight ) ) );
-    p[0][1] = QPointF( t.map( QPointF( halfWidth, -halfHeight ) ) );
-    p[0][2] = QPointF( t.map( QPointF( 0, halfHeight ) ) );
-    p[0][3] = p[0][0];
+    QgsPointSequenceV2 p;
+    p << QgsPointV2( t.map( QPointF( -halfWidth, -halfHeight ) ) )
+    << QgsPointV2( t.map( QPointF( halfWidth, -halfHeight ) ) )
+    << QgsPointV2( t.map( QPointF( 0, halfHeight ) ) );
+    p << p[0];
     if ( mBrush.style() != Qt::NoBrush )
-      e.writePolygon( p, layerName, "SOLID", fc );
+      e.writePolygon( QgsRingSequenceV2() << p, layerName, "SOLID", fc );
     if ( mPen.style() != Qt::NoPen )
-      e.writePolyline( p[0], layerName, "CONTINUOUS", oc, outlineWidth );
+      e.writePolyline( p, layerName, "CONTINUOUS", oc, outlineWidth );
     return true;
   }
 
