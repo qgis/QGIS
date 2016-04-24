@@ -287,7 +287,7 @@ bool QgsMapToolShowHideLabels::showHide( QgsVectorLayer *vl, const bool show )
   }
 
   // check if attribute value is already the same
-  if ( showSuccess && showVal == show )
+  if ( showSuccess && ( showVal != 0 ) == show )
   {
     return false;
   }
