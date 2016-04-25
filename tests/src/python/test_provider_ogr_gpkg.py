@@ -56,10 +56,11 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f = QgsFeature()
         f.setGeometry(QgsGeometry.fromWkt('POLYGON ((0 0,0 1,1 1,0 0))'))
         vl.dataProvider().addFeatures([f])
-        got = [f.geometry() for f in vl.getFeatures()][0]
+        got = [f for f in vl.getFeatures()][0]
+        got_geom = got.geometry()
         reference = QgsGeometry.fromWkt('MultiPolygon (((0 0, 0 1, 1 1, 0 0)))')
         # The geometries must be binarily identical
-        self.assertEqual(got.asWkb(), reference.asWkb(), 'Expected {}, got {}'.format(reference.exportToWkt(), got.exportToWkt()))
+        self.assertEqual(got_geom.asWkb(), reference.asWkb(), 'Expected {}, got {}'.format(reference.exportToWkt(), got_geom.exportToWkt()))
 
     @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 0))
     def testCurveGeometryType(self):
@@ -74,10 +75,11 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f = QgsFeature()
         f.setGeometry(QgsGeometry.fromWkt('POLYGON ((0 0,0 1,1 1,0 0))'))
         vl.dataProvider().addFeatures([f])
-        got = [f.geometry() for f in vl.getFeatures()][0]
+        got = [f for f in vl.getFeatures()][0]
+        got_geom = got.geometry()
         reference = QgsGeometry.fromWkt('CurvePolygon (((0 0, 0 1, 1 1, 0 0)))')
         # The geometries must be binarily identical
-        self.assertEqual(got.asWkb(), reference.asWkb(), 'Expected {}, got {}'.format(reference.exportToWkt(), got.exportToWkt()))
+        self.assertEqual(got_geom.asWkb(), reference.asWkb(), 'Expected {}, got {}'.format(reference.exportToWkt(), got_geom.exportToWkt()))
 
     def testFidSupport(self):
 
