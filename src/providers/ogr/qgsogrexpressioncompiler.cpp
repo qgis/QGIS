@@ -43,6 +43,8 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExp
     return Fail;
   else if ( mSource->mDriverName == "MSSQLSpatial" )
     return Fail;
+  else if ( mSource->mDriverName == "GPKG" )
+    return Fail;
 
   return QgsSqlExpressionCompiler::compile( exp );
 }

@@ -82,7 +82,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
   // filter if we choose to ignore them (fixes #11223)
   if (( mSource->mDriverName != "VRT" && mSource->mDriverName != "OGR_VRT" ) || mRequest.filterRect().isNull() )
   {
-    QgsOgrProviderUtils::setRelevantFields( ogrLayer, mSource->mFields.count(), mFetchGeometry, attrs );
+    QgsOgrProviderUtils::setRelevantFields( ogrLayer, mSource->mFields.count(), mFetchGeometry, attrs, mSource->mFirstFieldIsFid );
   }
 
   // spatial query to select features
@@ -279,8 +279,15 @@ bool QgsOgrFeatureIterator::close()
 
 void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex )
 {
+  if ( mSource->mFirstFieldIsFid && attindex == 0 )
+  {
+    f.setAttribute( 0, static_cast<qint64>( OGR_F_GetFID( ogrFet ) ) );
+    return;
+  }
+
+  int attindexWithoutFid = ( mSource->mFirstFieldIsFid ) ? attindex - 1 : attindex;
   bool ok = false;
-  QVariant value = QgsOgrUtils::getOgrFeatureAttribute( ogrFet, mSource->mFields, attindex, mSource->mEncoding, &ok );
+  QVariant value = QgsOgrUtils::getOgrFeatureAttribute( ogrFet, mSource->mFieldsWithoutFid, attindexWithoutFid, mSource->mEncoding, &ok );
   if ( !ok )
     return;
 
@@ -354,7 +361,10 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider* p )
   mSubsetString = p->mSubsetString;
   mEncoding = p->mEncoding; // no copying - this is a borrowed pointer from Qt
   mFields = p->mAttributeFields;
+  for ( int i = ( p->mFirstFieldIsFid ) ? 1 : 0; i < mFields.size(); i++ )
+    mFieldsWithoutFid.append( mFields.at( i ) );
   mDriverName = p->ogrDriverName;
+  mFirstFieldIsFid = p->mFirstFieldIsFid;
   mOgrGeometryTypeFilter = wkbFlatten( p->mOgrGeometryTypeFilter );
   QgsOgrConnPool::instance()->ref( mFilePath );
 }

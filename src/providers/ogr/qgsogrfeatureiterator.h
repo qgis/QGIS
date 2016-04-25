@@ -40,6 +40,8 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
     QString mSubsetString;
     QTextCodec* mEncoding;
     QgsFields mFields;
+    bool mFirstFieldIsFid;
+    QgsFields mFieldsWithoutFid;
     OGRwkbGeometryType mOgrGeometryTypeFilter;
     QString mDriverName;
 

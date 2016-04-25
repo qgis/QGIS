@@ -271,6 +271,7 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer(
 
 QgsOgrProvider::QgsOgrProvider( QString const & uri )
     : QgsVectorDataProvider( uri )
+    , mFirstFieldIsFid( false )
     , ogrDataSource( nullptr )
     , mExtent( nullptr )
     , ogrLayer( nullptr )
@@ -733,6 +734,21 @@ void QgsOgrProvider::loadFields()
   OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
   if ( fdef )
   {
+    // Expose the OGR FID if it comes from a "real" column (typically GPKG)
+    // and make sure that this FID column is not exposed as a regular OGR field (shouldn't happen normally)
+    mFirstFieldIsFid = !( EQUAL( OGR_L_GetFIDColumn( ogrLayer ), "" ) ) &&
+                       OGR_FD_GetFieldIndex( fdef, OGR_L_GetFIDColumn( ogrLayer ) ) < 0;
+    if ( mFirstFieldIsFid )
+    {
+      mAttributeFields.append(
+        QgsField(
+          OGR_L_GetFIDColumn( ogrLayer ),
+          QVariant::LongLong,
+          "Integer64"
+        )
+      );
+    }
+
     for ( int i = 0; i < OGR_FD_GetFieldCount( fdef ); ++i )
     {
       OGRFieldDefnH fldDef = OGR_FD_GetFieldDefn( fdef, i );
@@ -817,23 +833,23 @@ QString QgsOgrProvider::storageType() const
 
 void QgsOgrProvider::setRelevantFields( OGRLayerH ogrLayer, bool fetchGeometry, const QgsAttributeList &fetchAttributes )
 {
-  QgsOgrProviderUtils::setRelevantFields( ogrLayer, mAttributeFields.count(), fetchGeometry, fetchAttributes );
+  QgsOgrProviderUtils::setRelevantFields( ogrLayer, mAttributeFields.count(), fetchGeometry, fetchAttributes, mFirstFieldIsFid );
 }
 
 
-void QgsOgrProviderUtils::setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes )
+void QgsOgrProviderUtils::setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes, bool firstAttrIsFid )
 {
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
   if ( OGR_L_TestCapability( ogrLayer, OLCIgnoreFields ) )
   {
     QVector<const char*> ignoredFields;
     OGRFeatureDefnH featDefn = OGR_L_GetLayerDefn( ogrLayer );
-    for ( int i = 0; i < fieldCount; i++ )
+    for ( int i = ( firstAttrIsFid ? 1 : 0 ); i < fieldCount; i++ )
     {
       if ( !fetchAttributes.contains( i ) )
       {
         // add to ignored fields
-        ignoredFields.append( OGR_Fld_GetNameRef( OGR_FD_GetFieldDefn( featDefn, i ) ) );
+        ignoredFields.append( OGR_Fld_GetNameRef( OGR_FD_GetFieldDefn( featDefn, firstAttrIsFid ? i - 1 : i ) ) );
       }
     }
 
@@ -1025,45 +1041,65 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
 
   QgsLocaleNumC l;
 
+  int qgisAttId = ( mFirstFieldIsFid ) ? 1 : 0;
+  // If the first attribute is the FID and the user has set it, then use it
+  if ( mFirstFieldIsFid && attrs.count() > 0 )
+  {
+    QVariant attrFid = attrs.at( 0 );
+    if ( !attrFid.isNull() )
+    {
+      bool ok = false;
+      qlonglong id = attrFid.toLongLong( &ok );
+      if ( ok )
+      {
+#if GDAL_VERSION_MAJOR >= 2
+        OGR_F_SetFID( feature, static_cast<GIntBig>( id ) );
+#else
+        OGR_F_SetFID( feature, static_cast<long>( id ) );
+#endif
+      }
+    }
+  }
+
   //add possible attribute information
-  for ( int targetAttributeId = 0; targetAttributeId < attrs.count(); ++targetAttributeId )
+  for ( int ogrAttId = 0; qgisAttId < attrs.count(); ++qgisAttId, ++ogrAttId )
   {
     // don't try to set field from attribute map if it's not present in layer
-    if ( targetAttributeId < 0 || targetAttributeId >= OGR_FD_GetFieldCount( fdef ) )
+    if ( ogrAttId >= OGR_FD_GetFieldCount( fdef ) )
       continue;
 
     //if(!s.isEmpty())
     // continue;
     //
-    OGRFieldDefnH fldDef = OGR_FD_GetFieldDefn( fdef, targetAttributeId );
+    OGRFieldDefnH fldDef = OGR_FD_GetFieldDefn( fdef, ogrAttId );
     OGRFieldType type = OGR_Fld_GetType( fldDef );
 
-    QVariant attrVal = attrs.at( targetAttributeId );
+    QVariant attrVal = attrs.at( qgisAttId );
     if ( attrVal.isNull() || ( type != OFTString && attrVal.toString().isEmpty() ) )
     {
-      OGR_F_UnsetField( feature, targetAttributeId );
+      OGR_F_UnsetField( feature, ogrAttId );
     }
     else
     {
       switch ( type )
       {
         case OFTInteger:
-          OGR_F_SetFieldInteger( feature, targetAttributeId, attrVal.toInt() );
+          OGR_F_SetFieldInteger( feature, ogrAttId, attrVal.toInt() );
           break;
 
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
         case OFTInteger64:
-          OGR_F_SetFieldInteger64( feature, targetAttributeId, attrVal.toLongLong() );
+          OGR_F_SetFieldInteger64( feature, ogrAttId, attrVal.toLongLong() );
           break;
 #endif
 
         case OFTReal:
-          OGR_F_SetFieldDouble( feature, targetAttributeId, attrVal.toDouble() );
+          OGR_F_SetFieldDouble( feature, ogrAttId, attrVal.toDouble() );
           break;
 
         case OFTDate:
-          OGR_F_SetFieldDateTime( feature, targetAttributeId,
+          OGR_F_SetFieldDateTime( feature, ogrAttId,
                                   attrVal.toDate().year(),
                                   attrVal.toDate().month(),
                                   attrVal.toDate().day(),
@@ -1072,7 +1108,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
           break;
 
         case OFTTime:
-          OGR_F_SetFieldDateTime( feature, targetAttributeId,
+          OGR_F_SetFieldDateTime( feature, ogrAttId,
                                   0, 0, 0,
                                   attrVal.toTime().hour(),
                                   attrVal.toTime().minute(),
@@ -1081,7 +1117,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
           break;
 
         case OFTDateTime:
-          OGR_F_SetFieldDateTime( feature, targetAttributeId,
+          OGR_F_SetFieldDateTime( feature, ogrAttId,
                                   attrVal.toDateTime().date().year(),
                                   attrVal.toDateTime().date().month(),
                                   attrVal.toDateTime().date().day(),
@@ -1093,14 +1129,14 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
 
         case OFTString:
           QgsDebugMsg( QString( "Writing string attribute %1 with %2, encoding %3" )
-                       .arg( targetAttributeId )
+                       .arg( qgisAttId )
                        .arg( attrVal.toString(),
                              mEncoding->name().data() ) );
-          OGR_F_SetFieldString( feature, targetAttributeId, mEncoding->fromUnicode( attrVal.toString() ).constData() );
+          OGR_F_SetFieldString( feature, ogrAttId, mEncoding->fromUnicode( attrVal.toString() ).constData() );
           break;
 
         default:
-          QgsMessageLog::logMessage( tr( "type %1 for attribute %2 not found" ).arg( type ).arg( targetAttributeId ), tr( "OGR" ) );
+          QgsMessageLog::logMessage( tr( "type %1 for attribute %2 not found" ).arg( type ).arg( qgisAttId ), tr( "OGR" ) );
           break;
       }
     }
@@ -1113,9 +1149,16 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
   }
   else
   {
-    long id = OGR_F_GetFID( feature );
+    QgsFeatureId id = static_cast<QgsFeatureId>( OGR_F_GetFID( feature ) );
     if ( id >= 0 )
+    {
       f.setFeatureId( id );
+
+      if ( mFirstFieldIsFid && attrs.count() > 0 )
+      {
+        f.setAttribute( 0, id );
+      }
+    }
   }
   OGR_F_Destroy( feature );
 
@@ -1215,6 +1258,12 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
   qSort( attrsLst.begin(), attrsLst.end(), qGreater<int>() );
   Q_FOREACH ( int attr, attrsLst )
   {
+    if ( attr == 0 && mFirstFieldIsFid )
+    {
+      pushError( tr( "Cannot delete feature id column" ) );
+      res = false;
+      break;
+    }
     if ( OGR_L_DeleteField( ogrLayer, attr ) != OGRERR_NONE )
     {
       pushError( tr( "OGR error deleting field %1: %2" ).arg( attr ).arg( CPLGetLastErrorMsg() ) );
@@ -1266,6 +1315,21 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     for ( QgsAttributeMap::const_iterator it2 = attr.begin(); it2 != attr.end(); ++it2 )
     {
       int f = it2.key();
+      if ( mFirstFieldIsFid )
+      {
+        if ( f == 0 )
+        {
+          if ( it2->toLongLong() != fid )
+          {
+            pushError( tr( "Changing feature id of feature %1 is not allowed." ).arg( fid ) );
+            continue;
+          }
+        }
+        else
+        {
+          --f;
+        }
+      }
 
       OGRFieldDefnH fd = OGR_F_GetFieldDefnRef( of, f );
       if ( !fd )

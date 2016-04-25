@@ -295,6 +295,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QString ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const;
     OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString& typeName ) const;
     QgsFields mAttributeFields;
+    bool mFirstFieldIsFid;
     OGRDataSourceH ogrDataSource;
     OGREnvelope* mExtent;
 
@@ -365,7 +366,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 class QgsOgrProviderUtils
 {
   public:
-    static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes );
+    static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes, bool firstAttrIsFid );
     static OGRLayerH setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTextCodec* encoding, const QString& subsetString );
     static QByteArray quotedIdentifier( QByteArray field, const QString& ogrDriverName );
 
