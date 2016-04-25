@@ -80,7 +80,7 @@ class warp(GdalAlgorithm):
                                        self.tr('Destination SRS'), ''))
         self.addParameter(ParameterString(self.NO_DATA,
                                           self.tr("Nodata value, leave blank to take the nodata value from input"),
-                                          '-9999'))
+                                          '', optional=True))
         self.addParameter(ParameterNumber(self.TR,
                                           self.tr('Output file resolution in target georeferenced units (leave 0 for no change)'),
                                           0.0, None, 0.0))

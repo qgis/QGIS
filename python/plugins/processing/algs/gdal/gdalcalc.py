@@ -88,7 +88,7 @@ class gdalcalc(GdalAlgorithm):
         self.addParameter(ParameterString(self.FORMULA,
                                           self.tr('Calculation in gdalnumeric syntax using +-/* or any numpy array functions (i.e. logical_and())'), 'A*2', optional=False))
         self.addParameter(ParameterString(self.NO_DATA,
-                                          self.tr('Set output nodata value'), '-9999'))
+                                          self.tr('Set output nodata value'), '', optional=True))
         self.addParameter(ParameterSelection(self.RTYPE,
                                              self.tr('Output raster type'), self.TYPE, 5))
         #self.addParameter(ParameterBoolean(
