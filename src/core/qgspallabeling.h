@@ -695,8 +695,8 @@ class CORE_EXPORT QgsPalLayerSettings
                              QVariant& exprVal, QgsExpressionContext &context, const QVariant& originalValue = QVariant() );
 
     void parseTextStyle( QFont& labelFont,
-                         QgsPalLayerSettings::SizeUnit fontunits,
-                         QgsRenderContext& context );
+                         QgsRenderContext& context,
+                         double fontSizeScaleFactor = 1.0 );
 
     void parseTextBuffer( QgsRenderContext& context );
 
