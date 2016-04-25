@@ -2226,7 +2226,6 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   }
 
   int fontPixelSize = sizeToPixel( fontSize, context, fontunits, true, fontSizeMapUnitScale );
-  double fontSizeScaleFactor = fontSize / ( fontPixelSize - 0.5 );
   // don't try to show font sizes less than 1 pixel (Qt complains)
   if ( fontPixelSize < 1 )
   {
@@ -2284,7 +2283,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
 
   // calculate rest of font attributes and store any data defined values
   // this is done here for later use in making label backgrounds part of collision management (when implemented)
-  parseTextStyle( labelFont, context, fontSizeScaleFactor );
+  parseTextStyle( labelFont, fontunits, context );
   parseTextFormatting( context );
   parseTextBuffer( context );
   parseShapeBackground( context );
@@ -3189,7 +3188,8 @@ bool QgsPalLayerSettings::dataDefinedValEval( DataDefinedValueType valType,
 }
 
 void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
-    QgsRenderContext &context, double fontSizeScaleFactor )
+    QgsPalLayerSettings::SizeUnit fontunits,
+    QgsRenderContext &context )
 {
   // NOTE: labelFont already has pixelSize set, so pointSize or pointSizeF might return -1
 
@@ -3319,7 +3319,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
       wordspace = wspacing;
     }
   }
-  labelFont.setWordSpacing( wordspace * fontSizeScaleFactor + 0.5 );
+  labelFont.setWordSpacing( sizeToPixel( wordspace, context, fontunits, false, fontSizeMapUnitScale ) );
 
   // data defined letter spacing?
   double letterspace = labelFont.letterSpacing();
@@ -3333,7 +3333,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
       letterspace = lspacing;
     }
   }
-  labelFont.setLetterSpacing( QFont::AbsoluteSpacing, letterspace * fontSizeScaleFactor + 0.5 );
+  labelFont.setLetterSpacing( QFont::AbsoluteSpacing, sizeToPixel( letterspace, context, fontunits, false, fontSizeMapUnitScale ) );
 
   // data defined font capitalization?
   QFont::Capitalization fontcaps = labelFont.capitalization();
@@ -3846,19 +3846,14 @@ double QgsPalLayerSettings::scaleToPixelContext( double size, const QgsRenderCon
 
   if ( unit == MapUnits && mapUnitsPerPixel > 0.0 )
   {
-    size = size / mapUnitsPerPixel;
-    //check max/min size
-    if ( mapUnitScale.minSizeMMEnabled )
-      size = qMax( size, mapUnitScale.minSizeMM * c.scaleFactor() );
-    if ( mapUnitScale.maxSizeMMEnabled )
-      size = qMin( size, mapUnitScale.maxSizeMM * c.scaleFactor() );
+    size = size / mapUnitsPerPixel * ( rasterfactor ? c.rasterScaleFactor() : 1 );
   }
   else // e.g. in points or mm
   {
     double ptsTomm = ( unit == Points ? 0.352778 : 1 );
-    size *= ptsTomm * c.scaleFactor();
+    size *= ptsTomm * c.scaleFactor() * ( rasterfactor ? c.rasterScaleFactor() : 1 );
   }
-  return size * ( rasterfactor ? c.rasterScaleFactor() : 1 );
+  return size;
 }
 
 // -------------
