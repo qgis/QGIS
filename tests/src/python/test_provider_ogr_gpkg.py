@@ -44,11 +44,8 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         """Run after all tests"""
         shutil.rmtree(cls.basetestpath, True)
 
+    @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(1, 11, 0))
     def testSingleToMultiPolygonPromotion(self):
-
-        version_num = int(gdal.VersionInfo('VERSION_NUM'))
-        if version_num < GDAL_COMPUTE_VERSION(1, 11, 0):
-            return
 
         tmpfile = os.path.join(self.basetestpath, 'testSingleToMultiPolygonPromotion.gpkg')
         ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
@@ -59,14 +56,13 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f = QgsFeature()
         f.setGeometry(QgsGeometry.fromWkt('POLYGON ((0 0,0 1,1 1,0 0))'))
         vl.dataProvider().addFeatures([f])
-        got = [f.geometry().exportToWkt(0) for f in vl.getFeatures()][0]
-        self.assertEqual(got, 'MultiPolygon (((0 0, 0 1, 1 1, 0 0)))')
+        got = [f.geometry() for f in vl.getFeatures()][0]
+        reference = QgsGeometry.fromWkt('MultiPolygon (((0 0, 0 1, 1 1, 0 0)))')
+        # The geometries must be binarily identical
+        self.assertEqual(got.asWkb(), reference.asWkb(), 'Expected {}, got {}'.format(reference.exportToWkt(), got.exportToWkt()))
 
+    @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 0))
     def testCurveGeometryType(self):
-
-        version_num = int(gdal.VersionInfo('VERSION_NUM'))
-        if version_num < GDAL_COMPUTE_VERSION(2, 0, 0):
-            return
 
         tmpfile = os.path.join(self.basetestpath, 'testCurveGeometryType.gpkg')
         ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
@@ -78,11 +74,16 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f = QgsFeature()
         f.setGeometry(QgsGeometry.fromWkt('POLYGON ((0 0,0 1,1 1,0 0))'))
         vl.dataProvider().addFeatures([f])
-        got = [f.geometry().exportToWkt(0) for f in vl.getFeatures()][0]
-        self.assertEqual(got, 'CurvePolygon ((0 0, 0 1, 1 1, 0 0))')
+        got = [f.geometry() for f in vl.getFeatures()][0]
+        reference = QgsGeometry.fromWkt('CurvePolygon (((0 0, 0 1, 1 1, 0 0)))')
+        # The geometries must be binarily identical
+        self.assertEqual(got.asWkb(), reference.asWkb(), 'Expected {}, got {}'.format(reference.exportToWkt(), got.exportToWkt()))
 
     def testFidSupport(self):
 
+        # We do not use @unittest.expectedFailure since the test might actually succeed
+        # on Linux 64bit with GDAL 1.11, where "long" is 64 bit...
+        # GDAL 2.0 is guaranteed to properly support it on all platforms
         version_num = int(gdal.VersionInfo('VERSION_NUM'))
         if version_num < GDAL_COMPUTE_VERSION(2, 0, 0):
             return
