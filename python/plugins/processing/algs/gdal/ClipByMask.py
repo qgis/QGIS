@@ -73,7 +73,7 @@ class ClipByMask(GdalAlgorithm):
                                           [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterString(self.NO_DATA,
                                           self.tr("Nodata value, leave blank to take the nodata value from input"),
-                                          '-9999'))
+                                          '', optional=True))
         self.addParameter(ParameterBoolean(self.ALPHA_BAND,
                                            self.tr('Create and output alpha band'), False))
         self.addParameter(ParameterBoolean(self.CROP_TO_CUTLINE,

@@ -85,7 +85,7 @@ class rasterize(GdalAlgorithm):
                                          self.TYPE, 5))
         params.append(ParameterString(self.NO_DATA,
                                       self.tr("Nodata value"),
-                                      '-9999'))
+                                      '', optional=True))
         params.append(ParameterSelection(self.COMPRESS,
                                          self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
         params.append(ParameterNumber(self.JPEGCOMPRESSION,
