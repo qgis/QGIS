@@ -72,7 +72,7 @@ QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec* encoding )
       continue;
     }
 
-    QString name = encoding->toUnicode( OGR_Fld_GetNameRef( fldDef ) );
+    QString name = encoding ? encoding->toUnicode( OGR_Fld_GetNameRef( fldDef ) ) : QString::fromUtf8( OGR_Fld_GetNameRef( fldDef ) );
     QVariant::Type varType;
     switch ( OGR_Fld_GetType( fldDef ) )
     {
@@ -137,8 +137,13 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
     switch ( fields.at( attIndex ).type() )
     {
       case QVariant::String:
-        value = QVariant( encoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attIndex ) ) );
+      {
+        if ( encoding )
+          value = QVariant( encoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attIndex ) ) );
+        else
+          value = QVariant( QString::fromUtf8( OGR_F_GetFieldAsString( ogrFet, attIndex ) ) );
         break;
+      }
       case QVariant::Int:
         value = QVariant( OGR_F_GetFieldAsInteger( ogrFet, attIndex ) );
         break;
