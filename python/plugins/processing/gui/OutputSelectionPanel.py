@@ -108,11 +108,17 @@ class OutputSelectionPanel(BASE, WIDGET):
 
     def showExpressionsBuilder(self):
         context = QgsExpressionContext()
-        context.appendScope(QgsExpressionContextUtils.projectScope())
+        context.appendScope(QgsExpressionContextUtils.globalScope())
+        scope = QgsExpressionContextUtils.projectScope()
+        self.addVariablesToScope(scope)
         dlg = QgsExpressionBuilderDialog(None, self.leText.text(), self, "generic", context)
         dlg.setWindowTitle(self.tr("Expression based output"));
         if dlg.exec_() == QDialog.Accepted:
             self.leText.setText(dlg.expressionText())
+
+    def addVariablesToScope(self, scope):
+        for param in self.ag.parameters:
+            scope.setVariable("%s_value" % param.name, "")
 
     def saveToTemporaryFile(self):
         self.leText.setText('')
