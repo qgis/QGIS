@@ -64,7 +64,7 @@ class ClipByExtent(GdalAlgorithm):
             self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterString(self.NO_DATA,
                                           self.tr("Nodata value, leave blank to take the nodata value from input"),
-                                          ''))
+                                          '', optional=True))
         self.addParameter(ParameterExtent(self.PROJWIN, self.tr('Clipping extent')))
 
         params = []
