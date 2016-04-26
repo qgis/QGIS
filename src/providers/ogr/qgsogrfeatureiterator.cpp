@@ -17,6 +17,7 @@
 #include "qgsogrprovider.h"
 #include "qgsogrgeometrysimplifier.h"
 #include "qgsogrexpressioncompiler.h"
+#include "qgssqliteexpressioncompiler.h"
 
 #include "qgsogrutils.h"
 #include "qgsapplication.h"
@@ -100,13 +101,20 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
   if ( request.filterType() == QgsFeatureRequest::FilterExpression
        && QSettings().value( "/qgis/compileExpressions", true ).toBool() )
   {
-    QgsOgrExpressionCompiler compiler = QgsOgrExpressionCompiler( source );
+    QgsSqlExpressionCompiler* compiler;
+    if ( source->mDriverName == "SQLite" || source->mDriverName == "GPKG" )
+    {
+      compiler = new QgsSQLiteExpressionCompiler( source->mFields );
+    }
+    else
+    {
+      compiler = new QgsOgrExpressionCompiler( source );
+    }
 
-    QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
-
+    QgsSqlExpressionCompiler::Result result = compiler->compile( request.filterExpression() );
     if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
     {
-      QString whereClause = compiler.result();
+      QString whereClause = compiler->result();
       if ( OGR_L_SetAttributeFilter( ogrLayer, mSource->mEncoding->fromUnicode( whereClause ).constData() ) == OGRERR_NONE )
       {
         //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
@@ -118,6 +126,8 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
     {
       OGR_L_SetAttributeFilter( ogrLayer, nullptr );
     }
+
+    delete compiler;
   }
   else
   {

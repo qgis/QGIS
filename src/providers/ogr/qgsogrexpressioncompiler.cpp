@@ -35,15 +35,11 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExp
     return Fail;
   else if ( mSource->mDriverName == "OCI" )
     return Fail;
-  else if ( mSource->mDriverName == "SQLite" )
-    return Fail;
   else if ( mSource->mDriverName == "ODBC" )
     return Fail;
   else if ( mSource->mDriverName == "PGeo" )
     return Fail;
   else if ( mSource->mDriverName == "MSSQLSpatial" )
-    return Fail;
-  else if ( mSource->mDriverName == "GPKG" )
     return Fail;
 
   return QgsSqlExpressionCompiler::compile( exp );
