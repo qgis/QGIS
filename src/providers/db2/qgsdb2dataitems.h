@@ -118,18 +118,6 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
 
   private:
     QString mConnInfo;
-    QString mService;
-    QString mHost;
-    QString mDriver;
-    QString mPort;
-    QString mDatabase;
-    QString mUsername;
-    QString mPassword;
-    QString mAuthcfg;
-    int     mEnvironment;
-    bool mUseGeometryColumns;
-    bool mUseEstimatedMetadata;
-    bool mAllowGeometrylessTables;
 
     void readConnectionSettings();
 };

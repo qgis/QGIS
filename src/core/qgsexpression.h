@@ -518,6 +518,7 @@ class CORE_EXPORT QgsExpression
                   bool handlesNull = false,
                   bool isContextual = false )
             : mName( fnname )
+            , mParams( 0 )
             , mParameterList( params )
             , mUsesGeometry( usesGeometry )
             , mGroup( group )
