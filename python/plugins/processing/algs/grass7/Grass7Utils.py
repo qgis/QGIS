@@ -84,7 +84,7 @@ class Grass7Utils:
             return ''
 
         folder = ProcessingConfig.getSetting(Grass7Utils.GRASS_FOLDER) or ''
-        if folder and not os.path.exists(folder):
+        if not os.path.exists(folder):
             folder = None
         if folder is None:
             if isWindows():
