@@ -226,6 +226,7 @@ SET(QGIS_GUI_SRCS
   qgsfiledropedit.cpp
   qgsfilewidget.cpp
   qgsfilterlineedit.cpp
+  qgsfloatingwidget.cpp
   qgsfocuswatcher.cpp
   qgsformannotationitem.cpp
   qgsgenericprojectionselector.cpp
@@ -393,6 +394,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfiledropedit.h
   qgsfilewidget.h
   qgsfilterlineedit.h
+  qgsfloatingwidget.h
   qgsfocuswatcher.h
   qgsformannotationitem.h
   qgsgenericprojectionselector.h
