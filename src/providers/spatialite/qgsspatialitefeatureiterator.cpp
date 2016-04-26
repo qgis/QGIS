@@ -17,7 +17,7 @@
 #include "qgsspatialiteconnection.h"
 #include "qgsspatialiteconnpool.h"
 #include "qgsspatialiteprovider.h"
-#include "qgsspatialiteexpressioncompiler.h"
+#include "qgssqliteexpressioncompiler.h"
 
 #include "qgsgeometry.h"
 #include "qgslogger.h"
@@ -98,7 +98,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
 
     if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
     {
-      QgsSpatiaLiteExpressionCompiler compiler = QgsSpatiaLiteExpressionCompiler( source );
+      QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields );
 
       QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
 
@@ -139,7 +139,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   {
     Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBy() )
     {
-      QgsSpatiaLiteExpressionCompiler compiler = QgsSpatiaLiteExpressionCompiler( source );
+      QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields );
       QgsExpression expression = clause.expression();
       if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
       {

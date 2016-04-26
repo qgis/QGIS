@@ -1,5 +1,5 @@
 /***************************************************************************
-                             qgsspatialiteexpressioncompiler.h
+                             qgssqliteexpressioncompiler.h
                              ---------------------------------
     begin                : November 2015
     copyright            : (C) 2015 Nyall Dawson
@@ -13,18 +13,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSPATIALITEEXPRESSIONCOMPILER_H
-#define QGSSPATIALITEEXPRESSIONCOMPILER_H
+#ifndef QGSSQLITEEXPRESSIONCOMPILER_H
+#define QGSSQLITEEXPRESSIONCOMPILER_H
 
 #include "qgssqlexpressioncompiler.h"
 #include "qgsexpression.h"
-#include "qgsspatialitefeatureiterator.h"
 
-class QgsSpatiaLiteExpressionCompiler : public QgsSqlExpressionCompiler
+/** \ingroup core
+ * \class QgsSQLiteExpressionCompiler
+ * \brief Expression compiler for translation to SQlite SQL WHERE clauses.
+ *
+ * This class is designed to be used by spatialite and OGR providers.
+ * \note Added in version 2.16
+ * \note Not part of stable API, may change in future versions of QGIS
+ * \note Not available in Python bindings
+ */
+
+class CORE_EXPORT QgsSQLiteExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
 
-    explicit QgsSpatiaLiteExpressionCompiler( QgsSpatiaLiteFeatureSource* source );
+    /** Constructor for expression compiler.
+     * @param fields fields from provider
+     */
+    explicit QgsSQLiteExpressionCompiler( const QgsFields& fields );
 
   protected:
 
@@ -34,4 +46,4 @@ class QgsSpatiaLiteExpressionCompiler : public QgsSqlExpressionCompiler
 
 };
 
-#endif // QGSSPATIALITEEXPRESSIONCOMPILER_H
+#endif // QGSSQLITEEXPRESSIONCOMPILER_H

@@ -188,6 +188,7 @@ SET(QGIS_CORE_SRCS
   qgssnappingutils.cpp
   qgsspatialindex.cpp
   qgssqlexpressioncompiler.cpp
+  qgssqliteexpressioncompiler.cpp
   qgsstatisticalsummary.cpp
   qgsstringutils.cpp
   qgstextlabelfeature.cpp

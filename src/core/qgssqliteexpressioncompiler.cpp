@@ -1,5 +1,5 @@
 /***************************************************************************
-                             qgsspatialiteexpressioncompiler.cpp
+                             qgssqliteexpressioncompiler.cpp
                              -----------------------------------
     begin                : November 2015
     copyright            : (C) 2015 Nyall Dawson
@@ -13,16 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsspatialiteexpressioncompiler.h"
+#include "qgssqliteexpressioncompiler.h"
 #include "qgssqlexpressioncompiler.h"
-#include "qgsspatialiteprovider.h"
 
-QgsSpatiaLiteExpressionCompiler::QgsSpatiaLiteExpressionCompiler( QgsSpatiaLiteFeatureSource* source )
-    : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::LikeIsCaseInsensitive )
+QgsSQLiteExpressionCompiler::QgsSQLiteExpressionCompiler( const QgsFields& fields )
+    : QgsSqlExpressionCompiler( fields, QgsSqlExpressionCompiler::LikeIsCaseInsensitive )
 {
 }
 
-QgsSqlExpressionCompiler::Result QgsSpatiaLiteExpressionCompiler::compileNode( const QgsExpression::Node* node, QString& result )
+QgsSqlExpressionCompiler::Result QgsSQLiteExpressionCompiler::compileNode( const QgsExpression::Node* node, QString& result )
 {
   switch ( node->nodeType() )
   {
@@ -47,12 +46,14 @@ QgsSqlExpressionCompiler::Result QgsSpatiaLiteExpressionCompiler::compileNode( c
   return QgsSqlExpressionCompiler::compileNode( node, result );
 }
 
-QString QgsSpatiaLiteExpressionCompiler::quotedIdentifier( const QString& identifier )
+QString QgsSQLiteExpressionCompiler::quotedIdentifier( const QString& identifier )
 {
-  return QgsSpatiaLiteProvider::quotedIdentifier( identifier );
+  QString id( identifier );
+  id.replace( '\"', "\"\"" );
+  return id.prepend( '\"' ).append( '\"' );
 }
 
-QString QgsSpatiaLiteExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
+QString QgsSQLiteExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
 {
   ok = true;
 
@@ -73,10 +74,10 @@ QString QgsSpatiaLiteExpressionCompiler::quotedValue( const QVariant& value, boo
     default:
     case QVariant::String:
       QString v = value.toString();
-      v.replace( '\'', "''" );
-      if ( v.contains( '\\' ) )
-        return v.replace( '\\', "\\\\" ).prepend( "E'" ).append( '\'' );
-      else
-        return v.prepend( '\'' ).append( '\'' );
+      // https://www.sqlite.org/lang_expr.html :
+      // """A string constant is formed by enclosing the string in single quotes (').
+      // A single quote within the string can be encoded by putting two single quotes
+      // in a row - as in Pascal. C-style escapes using the backslash character are not supported because they are not standard SQL. """
+      return v.replace( '\'', "''" ).prepend( '\'' ).append( '\'' );
   }
 }
