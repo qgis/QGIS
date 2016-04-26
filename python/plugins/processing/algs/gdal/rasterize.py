@@ -126,7 +126,9 @@ class rasterize(GdalAlgorithm):
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT)
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
-        noData = unicode(self.getParameterValue(self.NO_DATA))
+        noData = self.getParameterValue(self.NO_DATA)
+        if noData is not None:
+            noData = unicode(noData)
         jpegcompression = unicode(self.getParameterValue(self.JPEGCOMPRESSION))
         predictor = unicode(self.getParameterValue(self.PREDICTOR))
         zlevel = unicode(self.getParameterValue(self.ZLEVEL))
@@ -135,7 +137,9 @@ class rasterize(GdalAlgorithm):
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
         tfw = unicode(self.getParameterValue(self.TFW))
         out = self.getOutputValue(self.OUTPUT)
-        extra = unicode(self.getParameterValue(self.EXTRA))
+        extra = self.getParameterValue(self.EXTRA)
+        if extra is not None:
+            extra = unicode(extra)
         rastext = unicode(self.getParameterValue(self.RAST_EXT))
 
         arguments = []
@@ -172,7 +176,7 @@ class rasterize(GdalAlgorithm):
             arguments.append(unicode(self.getParameterValue(self.WIDTH)))
             arguments.append(unicode(self.getParameterValue(self.HEIGHT)))
 
-        if len(noData) > 0:
+        if noData and len(noData) > 0:
             arguments.append('-a_nodata')
             arguments.append(noData)
 
@@ -190,7 +194,7 @@ class rasterize(GdalAlgorithm):
                 arguments.append("-co TFW=YES")
             if len(bigtiff) > 0:
                 arguments.append("-co BIGTIFF=" + bigtiff)
-        if len(extra) > 0:
+        if extra and len(extra) > 0:
             arguments.append(extra)
         arguments.append('-l')
 
