@@ -32,6 +32,7 @@
 #include <QMessageBox>
 #include <QStringList>
 #include <QDir>
+#include <QStandardPaths>
 #include <QDebug>
 
 #if (PY_VERSION_HEX < 0x03000000)
@@ -209,6 +210,19 @@ bool QgsPythonUtilsImpl::checkQgisUser()
   return true;
 }
 
+void QgsPythonUtilsImpl::doGlobalImports()
+{
+  QString startupPath = QStandardPaths::locate( QStandardPaths::AppDataLocation, "global_startup.py" );
+  //runString( "if os.path.exists(" + startuppath + "): from global_startup import *\n" );
+  if ( !startupPath.isEmpty() )
+  {
+    runString( "import importlib.util" );
+    runString( QString( "spec = importlib.util.spec_from_file_location('global_startup','%1')" ).arg( startupPath ) );
+    runString( "module = importlib.util.module_from_spec(spec)" );
+    runString( "spec.loader.exec_module(module)" );
+  }
+}
+
 void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
 {
   init();
@@ -224,6 +238,7 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
     exitPython();
     return;
   }
+  doGlobalImports();
   finish();
 }
 
@@ -249,6 +264,7 @@ void QgsPythonUtilsImpl::initServerPython( QgsServerInterface* interface )
   // This is the other main difference with initInterface() for desktop plugins
   runString( "qgis.utils.initServerInterface(" + QString::number(( unsigned long ) interface ) + ')' );
 
+  doGlobalImports();
   finish();
 }
 
