@@ -215,7 +215,7 @@ void QgsWMSConnectionItem::deleteConnection()
 
 // ---------------------------------------------------------------------------
 
-QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, QgsDataSourceURI dataSourceUri, const QgsWmsLayerProperty &layerProperty )
+QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceURI& dataSourceUri, const QgsWmsLayerProperty &layerProperty )
     : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, "wms" )
     , mCapabilitiesProperty( capabilitiesProperty )
     , mDataSourceUri( dataSourceUri )
