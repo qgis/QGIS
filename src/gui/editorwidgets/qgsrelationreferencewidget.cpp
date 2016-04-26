@@ -351,7 +351,11 @@ QVariant QgsRelationReferenceWidget::foreignKey()
   }
   else
   {
-    if ( !mFeature.isValid() )
+    if ( mReferencingFieldIdx < 0 || mReferencingFieldIdx >= mReferencingLayer->fields().count() )
+    {
+      return QVariant();
+    }
+    else if ( !mFeature.isValid() )
     {
       return QVariant( mReferencingLayer->fields().at( mReferencingFieldIdx ).type() );
     }
