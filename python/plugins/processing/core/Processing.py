@@ -26,6 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import sys
+import traceback
 
 from PyQt.QtCore import Qt, QCoreApplication
 from PyQt.QtWidgets import QApplication
@@ -96,7 +97,7 @@ class Processing:
             ProcessingLog.addToLog(
                 ProcessingLog.LOG_ERROR,
                 Processing.tr('Could not load provider: %s\n%s')
-                % (provider.getDescription(), unicode(sys.exc_info()[1])))
+                % (provider.getDescription(), traceback.format_exc()))
             Processing.removeProvider(provider)
 
     @staticmethod
