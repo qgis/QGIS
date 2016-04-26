@@ -15,6 +15,7 @@
 
 #include <QItemSelectionModel>
 
+#include "qgis.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetablemodel.h"
 #include "qgsvectorlayer.h"
@@ -56,39 +57,8 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
     }
   }
 
-
-  QVariant leftData = left.data( QgsAttributeTableModel::SortRole );
-  QVariant rightData = right.data( QgsAttributeTableModel::SortRole );
-
-  if ( leftData.isNull() )
-    return true;
-
-  if ( rightData.isNull() )
-    return false;
-
-  switch ( leftData.type() )
-  {
-    case QVariant::Int:
-    case QVariant::UInt:
-    case QVariant::LongLong:
-    case QVariant::ULongLong:
-      return leftData.toLongLong() < rightData.toLongLong();
-
-    case QVariant::Double:
-      return leftData.toDouble() < rightData.toDouble();
-
-    case QVariant::Date:
-      return leftData.toDate() < rightData.toDate();
-
-    case QVariant::Time:
-      return leftData.toTime() < rightData.toTime();
-
-    case QVariant::DateTime:
-      return leftData.toDateTime() < rightData.toDateTime();
-
-    default:
-      return leftData.toString().localeAwareCompare( rightData.toString() ) < 0;
-  }
+  return qgsVariantLessThan( left.data( QgsAttributeTableModel::SortRole ),
+                             right.data( QgsAttributeTableModel::SortRole ) );
 }
 
 void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )

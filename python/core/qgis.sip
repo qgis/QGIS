@@ -233,6 +233,17 @@ class QGis
     static double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
 };
 
+//! Compares two QVariant values and returns whether the first is less than the second.
+//! Useful for sorting lists of variants, correctly handling sorting of the various
+//! QVariant data types (such as strings, numeric values, dates and times)
+//! @see qgsVariantGreaterThan()
+bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
+
+//! Compares two QVariant values and returns whether the first is greater than the second.
+//! Useful for sorting lists of variants, correctly handling sorting of the various
+//! QVariant data types (such as strings, numeric values, dates and times)
+//! @see qgsVariantLessThan()
+bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
 
 /** Wkt string that represents a geographic coord sys
  * @note added to replace GEOWkt

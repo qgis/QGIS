@@ -260,6 +260,14 @@ void qgsFree( void *ptr )
 
 bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs )
 {
+  // invalid < NULL < any value
+  if ( !lhs.isValid() )
+    return rhs.isValid();
+  else if ( lhs.isNull() )
+    return rhs.isValid() && !rhs.isNull();
+  else if ( !rhs.isValid() || rhs.isNull() )
+    return false;
+
   switch ( lhs.type() )
   {
     case QVariant::Int:
@@ -280,6 +288,39 @@ bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs )
       return lhs.toTime() < rhs.toTime();
     case QVariant::DateTime:
       return lhs.toDateTime() < rhs.toDateTime();
+    case QVariant::Bool:
+      return lhs.toBool() < rhs.toBool();
+
+    case QVariant::List:
+    {
+      const QList<QVariant> &lhsl = lhs.toList();
+      const QList<QVariant> &rhsl = rhs.toList();
+
+      int i, n = qMin( lhsl.size(), rhsl.size() );
+      for ( i = 0; i < n && lhsl[i].type() == rhsl[i].type() && lhsl[i].isNull() == rhsl[i].isNull() && lhsl[i] == rhsl[i]; i++ )
+        ;
+
+      if ( i == n )
+        return lhsl.size() < rhsl.size();
+      else
+        return qgsVariantLessThan( lhsl[i], rhsl[i] );
+    }
+
+    case QVariant::StringList:
+    {
+      const QStringList &lhsl = lhs.toStringList();
+      const QStringList &rhsl = rhs.toStringList();
+
+      int i, n = qMin( lhsl.size(), rhsl.size() );
+      for ( i = 0; i < n && lhsl[i] == rhsl[i]; i++ )
+        ;
+
+      if ( i == n )
+        return lhsl.size() < rhsl.size();
+      else
+        return lhsl[i] < rhsl[i];
+    }
+
     default:
       return QString::localeAwareCompare( lhs.toString(), rhs.toString() ) < 0;
   }

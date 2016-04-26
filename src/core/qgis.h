@@ -314,9 +314,17 @@ inline double qgsRound( double x )
   return x < 0.0 ? std::ceil( x - 0.5 ) : std::floor( x + 0.5 );
 }
 
-bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
+//! Compares two QVariant values and returns whether the first is less than the second.
+//! Useful for sorting lists of variants, correctly handling sorting of the various
+//! QVariant data types (such as strings, numeric values, dates and times)
+//! @see qgsVariantGreaterThan()
+CORE_EXPORT bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
 
-bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
+//! Compares two QVariant values and returns whether the first is greater than the second.
+//! Useful for sorting lists of variants, correctly handling sorting of the various
+//! QVariant data types (such as strings, numeric values, dates and times)
+//! @see qgsVariantLessThan()
+CORE_EXPORT bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
 
 CORE_EXPORT QString qgsVsiPrefix( const QString& path );
 
