@@ -34,7 +34,7 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
 
   protected:
     const QgsOgrProvider* mProvider;
-    QString mFilePath;
+    QString mDataSource;
     QString mLayerName;
     int mLayerIndex;
     QString mSubsetString;
