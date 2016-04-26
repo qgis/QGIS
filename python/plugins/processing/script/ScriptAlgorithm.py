@@ -54,6 +54,7 @@ from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputFile
 from processing.core.outputs import OutputDirectory
 from processing.core.outputs import getOutputFromString
+from processing.core.ProcessingLog import ProcessingLog
 from processing.script.WrongScriptException import WrongScriptException
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
@@ -321,16 +322,19 @@ class ScriptAlgorithm(GeoAlgorithm):
             ns[out.name] = out.value
 
         variables = re.findall("@[a-zA-Z0-9_]*", self.script)
-        print variables
         script = 'import processing\n'
         script += self.script
 
-        scope = QgsExpressionContextUtils.projectScope()
+        projectScope = QgsExpressionContextUtils.projectScope()
+        globalScope = QgsExpressionContextUtils.globalScope()
         for var in variables:
             varname = var[1:]
-            if not scope.hasVariable(varname):
-                raise GeoAlgorithmExecutionException("Wrong variable: %s" % varname)
-            script = script.replace(var, scope.variable(varname))
+            if projectScope.hasVariable(varname):
+                script = script.replace(var, projectScope.variable(varname))
+            elif globalScope.hasVariable(varname):
+                script = script.replace(var, globalScope.variable(varname))
+            else:
+                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, "Cannot find variable: %s" % varname)
 
         exec((script), ns)
         for out in self.outputs:
