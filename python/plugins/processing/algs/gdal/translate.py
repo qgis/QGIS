@@ -85,7 +85,7 @@ class translate(GdalAlgorithm):
                                            self.tr('Output size is a percentage of input size'), True))
         self.addParameter(ParameterString(self.NO_DATA,
                                           self.tr("Nodata value, leave blank to take the nodata value from input"),
-                                          ''))
+                                          '', optional=True))
         self.addParameter(ParameterSelection(self.EXPAND,
                                              self.tr('Expand'), ['none', 'gray', 'rgb', 'rgba']))
         self.addParameter(ParameterCrs(self.SRS,
