@@ -396,7 +396,7 @@ bool QgsOgrProvider::setSubsetString( const QString& theSQL, bool updateFeatureC
 {
   QgsCPLErrorHandler handler;
 
-  if ( ogrDataSource == nullptr )
+  if ( !ogrDataSource )
     return false;
 
   if ( theSQL == mSubsetString && mFeaturesCounted >= 0 )
@@ -729,7 +729,7 @@ void QgsOgrProvider::loadFields()
   QgsOgrConnPool::instance()->invalidateConnections( dataSourceUri() );
   //the attribute fields need to be read again when the encoding changes
   mAttributeFields.clear();
-  if ( ogrLayer == nullptr )
+  if ( !ogrLayer )
     return;
 
   if ( mOgrGeometryTypeFilter != wkbUnknown )
@@ -2828,7 +2828,7 @@ bool QgsOgrProvider::syncToDisc()
 
 void QgsOgrProvider::recalculateFeatureCount()
 {
-  if ( ogrLayer == nullptr )
+  if ( !ogrLayer )
   {
     mFeaturesCounted = 0;
     return;
@@ -3061,7 +3061,7 @@ void QgsOgrProvider::open( OpenMode mode )
 
       ogrLayer = ogrOrigLayer;
     }
-    if ( ogrLayer != nullptr )
+    if ( ogrLayer )
     {
       mValid = true;
       mDynamicWriteAccess = true;
@@ -3133,7 +3133,7 @@ bool QgsOgrProvider::enterUpdateMode()
     QgsDebugMsg( QString( "Reopening %1 in update mode" ).arg( dataSourceUri() ) );
     close();
     open( OpenModeForceUpdate );
-    if ( ogrDataSource == nullptr || !mWriteAccess )
+    if ( !ogrDataSource || !mWriteAccess )
     {
       QgsMessageLog::logMessage( tr( "Cannot reopen datasource %1 in update mode" ).arg( dataSourceUri() ), tr( "OGR" ) );
       pushError( tr( "Cannot reopen datasource %1 in update mode" ).arg( dataSourceUri() ) );
@@ -3166,7 +3166,7 @@ bool QgsOgrProvider::leaveUpdateMode()
     QgsDebugMsg( QString( "Reopening %1 in read-only mode" ).arg( dataSourceUri() ) );
     close();
     open( OpenModeForceReadOnly );
-    if ( ogrDataSource == nullptr )
+    if ( !ogrDataSource )
     {
       QgsMessageLog::logMessage( tr( "Cannot reopen datasource %1 in read-only mode" ).arg( dataSourceUri() ), tr( "OGR" ) );
       pushError( tr( "Cannot reopen datasource %1 in read-only mode" ).arg( dataSourceUri() ) );
