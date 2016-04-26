@@ -99,10 +99,14 @@ class gdalcalc(GdalAlgorithm):
 
     def getConsoleCommands(self):
         out = self.getOutputValue(self.OUTPUT)
-        extra = unicode(self.getParameterValue(self.EXTRA))
+        extra = self.getParameterValue(self.EXTRA)
+        if extra is not None:
+            extra = unicode(extra)
         #debug = self.getParameterValue(self.DEBUG)
         formula = self.getParameterValue(self.FORMULA)
-        noData = unicode(self.getParameterValue(self.NO_DATA))
+        noData = self.getParameterValue(self.NO_DATA)
+        if noData is not None:
+            noData = unicode(noData)
 
         arguments = []
         arguments.append('--calc')
@@ -111,10 +115,10 @@ class gdalcalc(GdalAlgorithm):
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
         arguments.append('--type')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
-        if len(noData) > 0:
+        if noData and len(noData) > 0:
             arguments.append('--NoDataValue')
             arguments.append(noData)
-        if len(extra) > 0:
+        if extra and len(extra) > 0:
             arguments.append(extra)
         #if debug:
         #    arguments.append('--debug')
