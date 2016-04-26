@@ -42,6 +42,10 @@
 const QString POSTGRES_KEY = "postgres";
 const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
 
+// Add this offset to the database integer primary keys
+// to support the whole range of values (including negative)
+// See http://hub.qgis.org/issues/14262
+#define PKINT_OFFSET (2^32)
 
 QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     : QgsVectorDataProvider( uri )
@@ -194,6 +198,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
       key = "tid";
       break;
     case pktInt:
+    case pktInt64:
       Q_ASSERT( mPrimaryKeyAttrs.size() == 1 );
       Q_ASSERT( mPrimaryKeyAttrs[0] >= 0 && mPrimaryKeyAttrs[0] < mAttributeFields.count() );
       key = mAttributeFields.at( mPrimaryKeyAttrs.at( 0 ) ).name();
@@ -402,6 +407,7 @@ QString QgsPostgresProvider::pkParamWhereClause( int offset, const char *alias )
       break;
 
     case pktInt:
+    case pktInt64:
       Q_ASSERT( mPrimaryKeyAttrs.size() == 1 );
       whereClause = QString( "%3%1=$%2" ).arg( quotedIdentifier( field( mPrimaryKeyAttrs[0] ).name() ) ).arg( offset ).arg( aliased );
       break;
@@ -442,8 +448,12 @@ void QgsPostgresProvider::appendPkParams( QgsFeatureId featureId, QStringList &p
   switch ( mPrimaryKeyType )
   {
     case pktOid:
-    case pktInt:
+    case pktInt64:
       params << QString::number( featureId );
+      break;
+
+    case pktInt:
+      params << QString::number( featureId - PKINT_OFFSET );
       break;
 
     case pktTid:
@@ -508,6 +518,11 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields& 
 
     case pktInt:
       Q_ASSERT( pkAttrs.size() == 1 );
+      whereClause = QString( "%1=%2" ).arg( QgsPostgresConn::quotedIdentifier( fields[ pkAttrs[0] ].name() ) ).arg( featureId - PKINT_OFFSET );
+      break;
+
+    case pktInt64:
+      Q_ASSERT( pkAttrs.size() == 1 );
       whereClause = QString( "%1=%2" ).arg( QgsPostgresConn::quotedIdentifier( fields[ pkAttrs[0] ].name() ) ).arg( featureId );
       break;
 
@@ -558,6 +573,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds& featureIds, const Qg
   {
     case pktOid:
     case pktInt:
+    case pktInt64:
     {
       QString expr;
 
@@ -569,7 +585,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds& featureIds, const Qg
 
         Q_FOREACH ( const QgsFeatureId featureId, featureIds )
         {
-          expr += delim + FID_TO_STRING( featureId );
+          expr += delim + FID_TO_STRING( pkType == pktOid ? featureId : pkType == pktInt64 ? featureId : featureId - PKINT_OFFSET );
           delim = ',';
         }
         expr += ')';
@@ -1285,11 +1301,11 @@ bool QgsPostgresProvider::determinePrimaryKey()
       res = connectionRO()->PQexec( sql );
       QgsDebugMsg( QString( "Got %1 rows." ).arg( res.PQntuples() ) );
 
-      bool isInt = true;
       bool mightBeNull = false;
       QString primaryKey;
       QString delim = "";
 
+      mPrimaryKeyType = pktFidMap; // int by default, will downgrade if needed
       for ( int i = 0; i < res.PQntuples(); i++ )
       {
         QString name = res.PQgetvalue( i, 0 );
@@ -1310,15 +1326,21 @@ bool QgsPostgresProvider::determinePrimaryKey()
         }
         const QgsField& fld = mAttributeFields.at( idx );
 
-        if ( isInt &&
-             fld.type() != QVariant::Int &&
-             fld.type() != QVariant::LongLong )
-          isInt = false;
+        if ( i )
+        {
+          mPrimaryKeyType = pktFidMap; // multi-field
+        }
+        else if ( fld.type() == QVariant::LongLong )
+        {
+          mPrimaryKeyType = pktInt64; // 64bit integer
+        }
+        else if ( fld.type() == QVariant::Int )
+        {
+          mPrimaryKeyType = pktInt;
+        }
 
         mPrimaryKeyAttrs << idx;
       }
-
-      mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && isInt ) ? pktInt : pktFidMap;
 
       if (( mightBeNull || isParentTable ) && !mUseEstimatedMetadata && !uniqueData( primaryKey ) )
       {
@@ -1407,7 +1429,19 @@ void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
     {
       if ( mUseEstimatedMetadata || uniqueData( primaryKey ) )
       {
-        mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && ( mAttributeFields.at( mPrimaryKeyAttrs.at( 0 ) ).type() == QVariant::Int || mAttributeFields.at( mPrimaryKeyAttrs.at( 0 ) ).type() == QVariant::LongLong ) ) ? pktInt : pktFidMap;
+        mPrimaryKeyType = pktFidMap; // Map by default
+        if ( mPrimaryKeyAttrs.size() == 1 )
+        {
+          const QgsField& fld = mAttributeFields.at( 0 );
+          if ( fld.type() == QVariant::LongLong )
+          {
+            mPrimaryKeyType = pktInt64; // 64bit integer
+          }
+          else if ( fld.type() == QVariant::Int )
+          {
+            mPrimaryKeyType = pktInt; // account for signed
+          }
+        }
       }
       else
       {
@@ -1835,7 +1869,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       delim = ',';
     }
 
-    if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap )
+    if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap || mPrimaryKeyType == pktInt64 )
     {
       Q_FOREACH ( int idx, mPrimaryKeyAttrs )
       {
@@ -1944,7 +1978,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
     insert += values + ')';
 
-    if ( mPrimaryKeyType == pktFidMap || mPrimaryKeyType == pktInt )
+    if ( mPrimaryKeyType == pktFidMap || mPrimaryKeyType == pktInt || mPrimaryKeyType == pktInt64 )
     {
       insert += " RETURNING ";
 
@@ -2020,15 +2054,19 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     }
 
     // update feature ids
-    if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap )
+    if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap || mPrimaryKeyType == pktInt64 )
     {
       for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
       {
         QgsAttributes attrs = features->attributes();
 
-        if ( mPrimaryKeyType == pktInt )
+        if ( mPrimaryKeyType == pktInt64 )
         {
           features->setFeatureId( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) );
+        }
+        else if ( mPrimaryKeyType == pktInt )
+        {
+          features->setFeatureId( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) + PKINT_OFFSET );
         }
         else
         {
