@@ -202,7 +202,7 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
     bboxNode = bboxElem.removeChild( bboxNode );
 
     QDomDocument filterDoc;
-    filterDoc.setContent( mWFSFilter, true );
+    ( void )filterDoc.setContent( mWFSFilter, true );
     QDomNode filterNode = filterDoc.firstChildElement().firstChildElement();
     filterNode = filterDoc.firstChildElement().removeChild( filterNode );
 

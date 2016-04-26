@@ -334,7 +334,7 @@ bool QgsWFSSharedData::createCache()
     if ( rc != SQLITE_OK )
       ret = false;
 
-    sqlite3_exec( db, "COMMIT", nullptr, nullptr, nullptr );
+    ( void )sqlite3_exec( db, "COMMIT", nullptr, nullptr, nullptr );
 
     QgsSLConnect::sqlite3_close( db );
   }
