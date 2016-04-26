@@ -459,7 +459,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
   ParseMode theParseMode( mParseModeStack.isEmpty() ? none : mParseModeStack.top() );
 
   // Figure out if the GML namespace is GML_NAMESPACE or GML32_NAMESPACE
-  if ( mGMLNameSpaceURIPtr == nullptr && pszSep != nullptr )
+  if ( !mGMLNameSpaceURIPtr && pszSep )
   {
     if ( nsLen == ( int )strlen( GML_NAMESPACE ) && memcmp( el, GML_NAMESPACE, nsLen ) == 0 )
     {
@@ -544,7 +544,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
     mParseModeStack.push( QgsGmlStreamingParser::upperCorner );
     mStringCash.clear();
   }
-  else if ( theParseMode == none && mTypeNamePtr == nullptr &&
+  else if ( theParseMode == none && !mTypeNamePtr &&
             LOCALNAME_EQUALS( "Tuple" ) )
   {
     Q_ASSERT( !mCurrentFeature );
@@ -852,7 +852,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
     mParseModeStack.pop();
     mFeatureTupleDepth = 0;
   }
-  else if (( theParseMode == tuple && mTypeNamePtr == nullptr &&
+  else if (( theParseMode == tuple && !mTypeNamePtr &&
              LOCALNAME_EQUALS( "Tuple" ) ) ||
            ( theParseMode == feature && localNameLen == mTypeName.size() &&
              memcmp( pszLocalName, mTypeNamePtr, mTypeName.size() ) == 0 ) )

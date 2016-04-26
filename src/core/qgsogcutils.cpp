@@ -3181,7 +3181,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
     const QString& leftTable )
 {
   QgsSQLStatement::Node* onExpr = node->onExpr();
-  if ( onExpr != nullptr )
+  if ( onExpr )
   {
     return toOgcFilter( onExpr );
   }
@@ -3261,7 +3261,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   }
 
   // Process WHERE conditions
-  if ( node->where() != nullptr )
+  if ( node->where() )
   {
     QDomElement whereElem = toOgcFilter( node->where() );
     if ( !mErrorMessage.isEmpty() )

@@ -99,9 +99,9 @@ QgsWFSFeatureDownloader::~QgsWFSFeatureDownloader()
 {
   stop();
 
-  if ( mProgressDialog != nullptr )
+  if ( mProgressDialog )
     mProgressDialog->deleteLater();
-  if ( mTimer != nullptr )
+  if ( mTimer )
     mTimer->deleteLater();
 }
 
@@ -161,7 +161,7 @@ void QgsWFSFeatureDownloader::createProgressDialog()
 {
   if ( mStop )
     return;
-  Q_ASSERT( mProgressDialog == nullptr );
+  Q_ASSERT( !mProgressDialog );
   mProgressDialog = new QgsWFSProgressDialog( tr( "Loading features for layer %1" ).arg( mShared->mURI.typeName() ),
       tr( "Abort" ), 0, mNumberMatched, mMainWindow );
   mProgressDialog->setWindowTitle( tr( "QGIS" ) );
@@ -377,7 +377,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
     }
   }
 
-  if ( mMainWindow != nullptr )
+  if ( mMainWindow )
   {
     // In case the header of the GetFeature response doesn't contain the total
     // number of features, or we don't get it within 4 seconds, we will issue
@@ -511,7 +511,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
 
       // Consider if we should display a progress dialog
       // We can only do that if we know how many features will be downloaded
-      if ( mTimer == nullptr && maxFeatures != 1 && mMainWindow != nullptr )
+      if ( !mTimer && maxFeatures != 1 && mMainWindow )
       {
         if ( mNumberMatched < 0 )
         {
@@ -644,12 +644,12 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
   // test suite.
   emit endOfDownload( success );
 
-  if ( mProgressDialog != nullptr )
+  if ( mProgressDialog )
   {
     mProgressDialog->deleteLater();
     mProgressDialog = nullptr;
   }
-  if ( mTimer != nullptr )
+  if ( mTimer )
   {
     mTimer->deleteLater();
     mTimer = nullptr;
@@ -678,7 +678,7 @@ QgsWFSThreadedFeatureDownloader::~QgsWFSThreadedFeatureDownloader()
 
 void QgsWFSThreadedFeatureDownloader::stop()
 {
-  if ( mDownloader != nullptr )
+  if ( mDownloader )
   {
     mDownloader->stop();
     wait();
@@ -721,7 +721,7 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource* source,
   int genCounter = ( mShared->mURI.isRestrictedToRequestBBOX() && !request.filterRect().isNull() ) ?
                    mShared->registerToCache( this, request.filterRect() ) : mShared->registerToCache( this );
   mDownloadFinished = genCounter < 0;
-  if ( mShared->mCacheDataProvider == nullptr )
+  if ( !mShared->mCacheDataProvider )
     return;
 
   QgsDebugMsg( QString( "QgsWFSFeatureIterator::constructor(): genCounter=%1 " ).arg( genCounter ) );
@@ -825,7 +825,7 @@ void QgsWFSFeatureIterator::connectSignals( QObject* downloader )
 void QgsWFSFeatureIterator::endOfDownload( bool )
 {
   mDownloadFinished = true;
-  if ( mLoop != nullptr )
+  if ( mLoop )
     mLoop->quit();
 }
 
@@ -840,7 +840,7 @@ void QgsWFSFeatureIterator::featureReceivedSynchronous( QVector<QgsWFSFeatureGml
 {
   QgsDebugMsg( QString( "QgsWFSFeatureIterator::featureReceivedSynchronous %1 features" ).arg( list.size() ) );
   QMutexLocker locker( &mMutex );
-  if ( mWriterStream == nullptr )
+  if ( !mWriterStream )
   {
     mWriterStream = new QDataStream( &mWriterByteArray, QIODevice::WriteOnly );
   }
@@ -848,7 +848,7 @@ void QgsWFSFeatureIterator::featureReceivedSynchronous( QVector<QgsWFSFeatureGml
   {
     *mWriterStream << pair.first;
   }
-  if ( mWriterFile == nullptr && mWriterByteArray.size() > mWriteTransferThreshold )
+  if ( !mWriterFile && mWriterByteArray.size() > mWriteTransferThreshold )
   {
     QString thisStr;
     thisStr.sprintf( "%p", this );
@@ -868,7 +868,7 @@ void QgsWFSFeatureIterator::featureReceivedSynchronous( QVector<QgsWFSFeatureGml
 void QgsWFSFeatureIterator::featureReceived( int /*featureCount*/ )
 {
   //QgsDebugMsg( QString("QgsWFSFeatureIterator::featureReceived %1 features").arg(featureCount) );
-  if ( mLoop != nullptr )
+  if ( mLoop )
     mLoop->quit();
 }
 
@@ -879,7 +879,7 @@ void QgsWFSFeatureIterator::checkInterruption()
   if ( mInterruptionChecker && mInterruptionChecker->mustStop() )
   {
     mDownloadFinished = true;
-    if ( mLoop != nullptr )
+    if ( mLoop )
       mLoop->quit();
   }
 }
@@ -936,7 +936,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
 
     const QgsGeometry* constGeom = cachedFeature.constGeometry();
     if ( !mRequest.filterRect().isNull() &&
-         ( constGeom == nullptr || !constGeom->intersects( mRequest.filterRect() ) ) )
+         ( !constGeom || !constGeom->intersects( mRequest.filterRect() ) ) )
     {
       continue;
     }
@@ -949,7 +949,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
   while ( true )
   {
     // Initialize a reader stream if there's a writer stream available
-    if ( mReaderStream == nullptr )
+    if ( !mReaderStream )
     {
       {
         QMutexLocker locker( &mMutex );
@@ -981,7 +981,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
     }
 
     // Read from the stream
-    if ( mReaderStream != nullptr )
+    if ( mReaderStream )
     {
       while ( !mReaderStream->atEnd() )
       {
@@ -1010,7 +1010,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
 
         const QgsGeometry* constGeom = feat.constGeometry();
         if ( !mRequest.filterRect().isNull() &&
-             ( constGeom == nullptr || !constGeom->intersects( mRequest.filterRect() ) ) )
+             ( !constGeom || !constGeom->intersects( mRequest.filterRect() ) ) )
         {
           continue;
         }
@@ -1045,7 +1045,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
     mLoop = &loop;
     QTimer timer( this );
     timer.start( 50 );
-    if ( mInterruptionChecker != nullptr )
+    if ( mInterruptionChecker )
       connect( &timer, SIGNAL( timeout() ), this, SLOT( checkInterruption() ) );
     loop.exec( QEventLoop::ExcludeUserInputEvents );
     mLoop = nullptr;
@@ -1078,7 +1078,7 @@ bool QgsWFSFeatureIterator::rewind()
     requestCache.setFilterExpression( QString( QgsWFSConstants::FIELD_GEN_COUNTER + " <= %1" ).arg( genCounter ) );
   else
     mDownloadFinished = true;
-  if ( mShared->mCacheDataProvider != nullptr )
+  if ( mShared->mCacheDataProvider )
     mCacheIterator = mShared->mCacheDataProvider->getFeatures( requestCache );
   return true;
 }

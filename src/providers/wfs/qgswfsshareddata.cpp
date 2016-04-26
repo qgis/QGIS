@@ -264,7 +264,7 @@ bool QgsWFSSharedData::createCache()
       vsi_l_offset nLength = 0;
       GByte* pabyData = VSIGetMemFileBuffer( vsimemFilename.toStdString().c_str(), &nLength, TRUE );
       VSILFILE* fp = VSIFOpenL( mCacheDbname.toStdString().c_str(), "wb " );
-      if ( fp != nullptr )
+      if ( fp )
       {
         VSIFWriteL( pabyData, 1, nLength, fp );
         VSIFCloseL( fp );
@@ -431,12 +431,12 @@ bool QgsWFSSharedData::createCache()
   dsURI.setParam( "pragma", pragmas );
   mCacheDataProvider = ( QgsVectorDataProvider* )( QgsProviderRegistry::instance()->provider(
                          "spatialite", dsURI.uri() ) );
-  if ( mCacheDataProvider != nullptr && !mCacheDataProvider->isValid() )
+  if ( mCacheDataProvider && !mCacheDataProvider->isValid() )
   {
     delete mCacheDataProvider;
     mCacheDataProvider = nullptr;
   }
-  if ( mCacheDataProvider == nullptr )
+  if ( !mCacheDataProvider )
   {
     QgsMessageLog::logMessage( tr( "Cannot connect to temporary SpatiaLite cache" ), tr( "WFS" ) );
     return false;
@@ -501,7 +501,7 @@ int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator* iterator, QgsRecta
     }
   }
 
-  if ( newDownloadNeeded || mDownloader == nullptr )
+  if ( newDownloadNeeded || !mDownloader )
   {
     mRect = rect;
     // to prevent deadlock when waiting the end of the downloader thread that will try to take the mutex in serializeFeatures()
@@ -672,7 +672,7 @@ QSet<QString> QgsWFSSharedData::getExistingCachedMD5( const QVector<QgsWFSFeatur
 // Used by WFS-T
 QString QgsWFSSharedData::findGmlId( QgsFeatureId fid )
 {
-  if ( mCacheDataProvider == nullptr )
+  if ( !mCacheDataProvider )
     return QString();
   QgsFeatureRequest request;
   request.setFilterFid( fid );
@@ -698,7 +698,7 @@ QString QgsWFSSharedData::findGmlId( QgsFeatureId fid )
 // Used by WFS-T
 bool QgsWFSSharedData::deleteFeatures( const QgsFeatureIds& fidlist )
 {
-  if ( mCacheDataProvider == nullptr )
+  if ( !mCacheDataProvider )
     return false;
 
   {
@@ -712,7 +712,7 @@ bool QgsWFSSharedData::deleteFeatures( const QgsFeatureIds& fidlist )
 // Used by WFS-T
 bool QgsWFSSharedData::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
-  if ( mCacheDataProvider == nullptr )
+  if ( !mCacheDataProvider )
     return false;
 
   // We need to replace the geometry by its bounding box and issue a attribute
@@ -754,7 +754,7 @@ bool QgsWFSSharedData::changeGeometryValues( const QgsGeometryMap &geometry_map 
 // Used by WFS-T
 bool QgsWFSSharedData::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
-  if ( mCacheDataProvider == nullptr )
+  if ( !mCacheDataProvider )
     return false;
 
   const QgsFields & dataProviderFields = mCacheDataProvider->fields();
@@ -795,7 +795,7 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
         return;
       }
     }
-    if ( mCacheDataProvider == nullptr )
+    if ( !mCacheDataProvider )
     {
       return;
     }
@@ -1034,7 +1034,7 @@ void QgsWFSSharedData::invalidateCache()
   mFeatureCount = 0;
   mFeatureCountExact = false;
   mTotalFeaturesAttemptedToBeCached = 0;
-  if ( !mCacheDbname.isEmpty() && mCacheDataProvider != nullptr )
+  if ( !mCacheDbname.isEmpty() && mCacheDataProvider )
   {
     // We need to invalidate connections pointing to the cache, so as to
     // be able to delete the file.
