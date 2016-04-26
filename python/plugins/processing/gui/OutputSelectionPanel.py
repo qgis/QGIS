@@ -34,7 +34,7 @@ from PyQt.QtWidgets import QDialog, QMenu, QAction, QFileDialog
 from PyQt.QtGui import QCursor
 from qgis.gui import QgsEncodingFileDialog, QgsExpressionBuilderDialog
 from qgis.core import QgsDataSourceURI, QgsCredentials,  QgsExpressionContext,\
-                     QgsExpressionContextUtils, QgsExpression
+                     QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.outputs import OutputVector
@@ -107,18 +107,20 @@ class OutputSelectionPanel(BASE, WIDGET):
             popupMenu.exec_(QCursor.pos())
 
     def showExpressionsBuilder(self):
-        context = QgsExpressionContext()
-        context.appendScope(QgsExpressionContextUtils.globalScope())
-        scope = QgsExpressionContextUtils.projectScope()
-        self.addVariablesToScope(scope)
-        dlg = QgsExpressionBuilderDialog(None, self.leText.text(), self, "generic", context)
+        dlg = QgsExpressionBuilderDialog(None, self.leText.text(), self, "generic", self.expressionContext())
         dlg.setWindowTitle(self.tr("Expression based output"));
         if dlg.exec_() == QDialog.Accepted:
             self.leText.setText(dlg.expressionText())
 
-    def addVariablesToScope(self, scope):
+    def expressionContext(self):
+        context = QgsExpressionContext()
+        context.appendScope(QgsExpressionContextUtils.globalScope())
+        context.appendScope(QgsExpressionContextUtils.projectScope())
+        processingScope = QgsExpressionContextScope()
         for param in self.ag.parameters:
-            scope.setVariable("%s_value" % param.name, "")
+            processingScope.setVariable("%s_value" % param.name, "")
+        context.appendScope(processingScope)
+        return context
 
     def saveToTemporaryFile(self):
         self.leText.setText('')
@@ -222,8 +224,7 @@ class OutputSelectionPanel(BASE, WIDGET):
 
     def getValue(self):
         fileName = unicode(self.leText.text())
-        context = QgsExpressionContext()
-        context.appendScope(QgsExpressionContextUtils.projectScope())
+        context = self.expressionContext()
         exp = QgsExpression(fileName)
         if not exp.hasParserError():
             result =  exp.evaluate(context)

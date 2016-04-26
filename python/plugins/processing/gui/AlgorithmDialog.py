@@ -123,6 +123,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
     def evaluateExpression(self, text):
         context = QgsExpressionContext()
+        context.appendScope(QgsExpressionContextUtils.globalScope())
         context.appendScope(QgsExpressionContextUtils.projectScope())
         exp = QgsExpression(text)
         if exp.hasParserError():
