@@ -169,6 +169,7 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
       break;
 
     case QgsAttributeForm::AddFeatureMode:
+      synchronizeEnabledState();
       break;
 
     case QgsAttributeForm::MultiEditMode:
@@ -181,8 +182,6 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
 void QgsAttributeForm::setIsAddDialog( bool isAddDialog )
 {
   setMode( isAddDialog ? AddFeatureMode : SingleEditMode );
-
-  synchronizeEnabledState();
 }
 
 void QgsAttributeForm::changeAttribute( const QString& field, const QVariant& value )
