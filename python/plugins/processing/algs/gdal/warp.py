@@ -106,7 +106,9 @@ class warp(GdalAlgorithm):
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Reprojected')))
 
     def getConsoleCommands(self):
-        noData = unicode(self.getParameterValue(self.NO_DATA))
+        noData = self.getParameterValue(self.NO_DATA)
+        if noData is not None:
+            noData = unicode(noData)
         srccrs = self.getParameterValue(self.SOURCE_SRS)
         dstcrs = self.getParameterValue(self.DEST_SRS)
         jpegcompression = unicode(self.getParameterValue(self.JPEGCOMPRESSION))
@@ -126,7 +128,7 @@ class warp(GdalAlgorithm):
         if len(dstcrs) > 0:
             arguments.append('-t_srs')
             arguments.append(dstcrs)
-        if len(noData) > 0:
+        if noData and len(noData) > 0:
             arguments.append('-dstnodata')
             arguments.append(noData)
         arguments.append('-r')
@@ -139,8 +141,10 @@ class warp(GdalAlgorithm):
             arguments.append('-tr')
             arguments.append(unicode(self.getParameterValue(self.TR)))
             arguments.append(unicode(self.getParameterValue(self.TR)))
-        extra = unicode(self.getParameterValue(self.EXTRA))
-        if len(extra) > 0:
+        extra = self.getParameterValue(self.EXTRA)
+        if extra is not None:
+            extra = unicode(extra)
+        if extra and len(extra) > 0:
             arguments.append(extra)
         if GdalUtils.getFormatShortNameFromFilename(out) == "GTiff":
             arguments.append("-co COMPRESS=" + compress)
