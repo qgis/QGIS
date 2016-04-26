@@ -821,8 +821,16 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
 
   double fontSize = layer->customProperty( "labeling/fontSize" ).toDouble();
   fontSizeInMapUnits = layer->customProperty( "labeling/fontSizeInMapUnits" ).toBool();
-  fontSizeMapUnitScale.minScale = layer->customProperty( "labeling/fontSizeMapUnitMinScale", 0.0 ).toDouble();
-  fontSizeMapUnitScale.maxScale = layer->customProperty( "labeling/fontSizeMapUnitMaxScale", 0.0 ).toDouble();
+  if ( layer->customProperty( "labeling/fontSizeMapUnitScale" ).toString().isEmpty() )
+  {
+    //fallback to older property
+    fontSizeMapUnitScale.minScale = layer->customProperty( "labeling/fontSizeMapUnitMinScale", 0.0 ).toDouble();
+    fontSizeMapUnitScale.maxScale = layer->customProperty( "labeling/fontSizeMapUnitMaxScale", 0.0 ).toDouble();
+  }
+  else
+  {
+    fontSizeMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( layer->customProperty( "labeling/fontSizeMapUnitScale" ).toString() );
+  }
   int fontWeight = layer->customProperty( "labeling/fontWeight" ).toInt();
   bool fontItalic = layer->customProperty( "labeling/fontItalic" ).toBool();
   textFont = QFont( fontFamily, fontSize, fontWeight, fontItalic );
@@ -876,8 +884,16 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   }
 
   bufferSizeInMapUnits = layer->customProperty( "labeling/bufferSizeInMapUnits" ).toBool();
-  bufferSizeMapUnitScale.minScale = layer->customProperty( "labeling/bufferSizeMapUnitMinScale", 0.0 ).toDouble();
-  bufferSizeMapUnitScale.maxScale = layer->customProperty( "labeling/bufferSizeMapUnitMaxScale", 0.0 ).toDouble();
+  if ( layer->customProperty( "labeling/bufferSizeMapUnitScale" ).toString().isEmpty() )
+  {
+    //fallback to older property
+    bufferSizeMapUnitScale.minScale = layer->customProperty( "labeling/bufferSizeMapUnitMinScale", 0.0 ).toDouble();
+    bufferSizeMapUnitScale.maxScale = layer->customProperty( "labeling/bufferSizeMapUnitMaxScale", 0.0 ).toDouble();
+  }
+  else
+  {
+    bufferSizeMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( layer->customProperty( "labeling/bufferSizeMapUnitScale" ).toString() );
+  }
   bufferColor = _readColor( layer, "labeling/bufferColor", Qt::white, false );
   bufferTransp = layer->customProperty( "labeling/bufferTransp" ).toInt();
   bufferBlendMode = QgsMapRenderer::getCompositionMode(
@@ -893,26 +909,58 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   shapeSize = QPointF( layer->customProperty( "labeling/shapeSizeX", QVariant( 0.0 ) ).toDouble(),
                        layer->customProperty( "labeling/shapeSizeY", QVariant( 0.0 ) ).toDouble() );
   shapeSizeUnits = static_cast< SizeUnit >( layer->customProperty( "labeling/shapeSizeUnits", QVariant( MM ) ).toUInt() );
-  shapeSizeMapUnitScale.minScale = layer->customProperty( "labeling/shapeSizeMapUnitMinScale", 0.0 ).toDouble();
-  shapeSizeMapUnitScale.maxScale = layer->customProperty( "labeling/shapeSizeMapUnitMaxScale", 0.0 ).toDouble();
+  if ( layer->customProperty( "labeling/shapeSizeMapUnitScale" ).toString().isEmpty() )
+  {
+    //fallback to older property
+    shapeSizeMapUnitScale.minScale = layer->customProperty( "labeling/shapeSizeMapUnitMinScale", 0.0 ).toDouble();
+    shapeSizeMapUnitScale.maxScale = layer->customProperty( "labeling/shapeSizeMapUnitMaxScale", 0.0 ).toDouble();
+  }
+  else
+  {
+    shapeSizeMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( layer->customProperty( "labeling/shapeSizeMapUnitScale" ).toString() );
+  }
   shapeRotationType = static_cast< RotationType >( layer->customProperty( "labeling/shapeRotationType", QVariant( RotationSync ) ).toUInt() );
   shapeRotation = layer->customProperty( "labeling/shapeRotation", QVariant( 0.0 ) ).toDouble();
   shapeOffset = QPointF( layer->customProperty( "labeling/shapeOffsetX", QVariant( 0.0 ) ).toDouble(),
                          layer->customProperty( "labeling/shapeOffsetY", QVariant( 0.0 ) ).toDouble() );
   shapeOffsetUnits = static_cast< SizeUnit >( layer->customProperty( "labeling/shapeOffsetUnits", QVariant( MM ) ).toUInt() );
-  shapeOffsetMapUnitScale.minScale = layer->customProperty( "labeling/shapeOffsetMapUnitMinScale", 0.0 ).toDouble();
-  shapeOffsetMapUnitScale.maxScale = layer->customProperty( "labeling/shapeOffsetMapUnitMaxScale", 0.0 ).toDouble();
+  if ( layer->customProperty( "labeling/shapeOffsetMapUnitScale" ).toString().isEmpty() )
+  {
+    //fallback to older property
+    shapeOffsetMapUnitScale.minScale = layer->customProperty( "labeling/shapeOffsetMapUnitMinScale", 0.0 ).toDouble();
+    shapeOffsetMapUnitScale.maxScale = layer->customProperty( "labeling/shapeOffsetMapUnitMaxScale", 0.0 ).toDouble();
+  }
+  else
+  {
+    shapeOffsetMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( layer->customProperty( "labeling/shapeOffsetMapUnitScale" ).toString() );
+  }
   shapeRadii = QPointF( layer->customProperty( "labeling/shapeRadiiX", QVariant( 0.0 ) ).toDouble(),
                         layer->customProperty( "labeling/shapeRadiiY", QVariant( 0.0 ) ).toDouble() );
   shapeRadiiUnits = static_cast< SizeUnit >( layer->customProperty( "labeling/shapeRadiiUnits", QVariant( MM ) ).toUInt() );
-  shapeRadiiMapUnitScale.minScale = layer->customProperty( "labeling/shapeRaddiMapUnitMinScale", 0.0 ).toDouble();
-  shapeRadiiMapUnitScale.maxScale = layer->customProperty( "labeling/shapeRaddiMapUnitMaxScale", 0.0 ).toDouble();
+  if ( layer->customProperty( "labeling/shapeRadiiMapUnitScale" ).toString().isEmpty() )
+  {
+    //fallback to older property
+    shapeRadiiMapUnitScale.minScale = layer->customProperty( "labeling/shapeRadiiMapUnitMinScale", 0.0 ).toDouble();
+    shapeRadiiMapUnitScale.maxScale = layer->customProperty( "labeling/shapeRadiiMapUnitMaxScale", 0.0 ).toDouble();
+  }
+  else
+  {
+    shapeRadiiMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( layer->customProperty( "labeling/shapeRadiiMapUnitScale" ).toString() );
+  }
   shapeFillColor = _readColor( layer, "labeling/shapeFillColor", Qt::white, true );
   shapeBorderColor = _readColor( layer, "labeling/shapeBorderColor", Qt::darkGray, true );
   shapeBorderWidth = layer->customProperty( "labeling/shapeBorderWidth", QVariant( .0 ) ).toDouble();
   shapeBorderWidthUnits = static_cast< SizeUnit >( layer->customProperty( "labeling/shapeBorderWidthUnits", QVariant( MM ) ).toUInt() );
-  shapeBorderWidthMapUnitScale.minScale = layer->customProperty( "labeling/shapeBorderWidthMapUnitMinScale", 0.0 ).toDouble();
-  shapeBorderWidthMapUnitScale.maxScale = layer->customProperty( "labeling/shapeBorderWidthMapUnitMaxScale", 0.0 ).toDouble();
+  if ( layer->customProperty( "labeling/shapeBorderWidthMapUnitScale" ).toString().isEmpty() )
+  {
+    //fallback to older property
+    shapeBorderWidthMapUnitScale.minScale = layer->customProperty( "labeling/shapeBorderWidthMapUnitMinScale", 0.0 ).toDouble();
+    shapeBorderWidthMapUnitScale.maxScale = layer->customProperty( "labeling/shapeBorderWidthMapUnitMaxScale", 0.0 ).toDouble();
+  }
+  else
+  {
+    shapeBorderWidthMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( layer->customProperty( "labeling/shapeBorderWidthMapUnitScale" ).toString() );
+  }
   shapeJoinStyle = static_cast< Qt::PenJoinStyle >( layer->customProperty( "labeling/shapeJoinStyle", QVariant( Qt::BevelJoin ) ).toUInt() );
   shapeTransparency = layer->customProperty( "labeling/shapeTransparency", QVariant( 0 ) ).toInt();
   shapeBlendMode = QgsMapRenderer::getCompositionMode(
@@ -924,13 +972,29 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   shadowOffsetAngle = layer->customProperty( "labeling/shadowOffsetAngle", QVariant( 135 ) ).toInt();
   shadowOffsetDist = layer->customProperty( "labeling/shadowOffsetDist", QVariant( 1.0 ) ).toDouble();
   shadowOffsetUnits = static_cast< SizeUnit >( layer->customProperty( "labeling/shadowOffsetUnits", QVariant( MM ) ).toUInt() );
-  shadowOffsetMapUnitScale.minScale = layer->customProperty( "labeling/shadowOffsetMapUnitMinScale", 0.0 ).toDouble();
-  shadowOffsetMapUnitScale.maxScale = layer->customProperty( "labeling/shadowOffsetMapUnitMaxScale", 0.0 ).toDouble();
+  if ( layer->customProperty( "labeling/shadowOffsetMapUnitScale" ).toString().isEmpty() )
+  {
+    //fallback to older property
+    shadowOffsetMapUnitScale.minScale = layer->customProperty( "labeling/shadowOffsetMapUnitMinScale", 0.0 ).toDouble();
+    shadowOffsetMapUnitScale.maxScale = layer->customProperty( "labeling/shadowOffsetMapUnitMaxScale", 0.0 ).toDouble();
+  }
+  else
+  {
+    shadowOffsetMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( layer->customProperty( "labeling/shadowOffsetMapUnitScale" ).toString() );
+  }
   shadowOffsetGlobal = layer->customProperty( "labeling/shadowOffsetGlobal", QVariant( true ) ).toBool();
   shadowRadius = layer->customProperty( "labeling/shadowRadius", QVariant( 1.5 ) ).toDouble();
   shadowRadiusUnits = static_cast< SizeUnit >( layer->customProperty( "labeling/shadowRadiusUnits", QVariant( MM ) ).toUInt() );
-  shadowRadiusMapUnitScale.minScale = layer->customProperty( "labeling/shadowRadiusMapUnitMinScale", 0.0 ).toDouble();
-  shadowRadiusMapUnitScale.maxScale = layer->customProperty( "labeling/shadowRadiusMapUnitMaxScale", 0.0 ).toDouble();
+  if ( layer->customProperty( "labeling/shadowRadiusMapUnitScale" ).toString().isEmpty() )
+  {
+    //fallback to older property
+    shadowRadiusMapUnitScale.minScale = layer->customProperty( "labeling/shadowRadiusMapUnitMinScale", 0.0 ).toDouble();
+    shadowRadiusMapUnitScale.maxScale = layer->customProperty( "labeling/shadowRadiusMapUnitMaxScale", 0.0 ).toDouble();
+  }
+  else
+  {
+    shadowRadiusMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( layer->customProperty( "labeling/shadowRadiusMapUnitScale" ).toString() );
+  }
   shadowRadiusAlphaOnly = layer->customProperty( "labeling/shadowRadiusAlphaOnly", QVariant( false ) ).toBool();
   shadowTransparency = layer->customProperty( "labeling/shadowTransparency", QVariant( 30 ) ).toInt();
   shadowScale = layer->customProperty( "labeling/shadowScale", QVariant( 100 ) ).toInt();
@@ -949,15 +1013,31 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   fitInPolygonOnly = layer->customProperty( "labeling/fitInPolygonOnly", QVariant( false ) ).toBool();
   dist = layer->customProperty( "labeling/dist" ).toDouble();
   distInMapUnits = layer->customProperty( "labeling/distInMapUnits" ).toBool();
-  distMapUnitScale.minScale = layer->customProperty( "labeling/distMapUnitMinScale", 0.0 ).toDouble();
-  distMapUnitScale.maxScale = layer->customProperty( "labeling/distMapUnitMaxScale", 0.0 ).toDouble();
+  if ( layer->customProperty( "labeling/distMapUnitScale" ).toString().isEmpty() )
+  {
+    //fallback to older property
+    distMapUnitScale.minScale = layer->customProperty( "labeling/distMapUnitMinScale", 0.0 ).toDouble();
+    distMapUnitScale.maxScale = layer->customProperty( "labeling/distMapUnitMaxScale", 0.0 ).toDouble();
+  }
+  else
+  {
+    distMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( layer->customProperty( "labeling/distMapUnitScale" ).toString() );
+  }
   offsetType = static_cast< OffsetType >( layer->customProperty( "labeling/offsetType", QVariant( FromPoint ) ).toUInt() );
   quadOffset = static_cast< QuadrantPosition >( layer->customProperty( "labeling/quadOffset", QVariant( QuadrantOver ) ).toUInt() );
   xOffset = layer->customProperty( "labeling/xOffset", QVariant( 0.0 ) ).toDouble();
   yOffset = layer->customProperty( "labeling/yOffset", QVariant( 0.0 ) ).toDouble();
   labelOffsetInMapUnits = layer->customProperty( "labeling/labelOffsetInMapUnits", QVariant( true ) ).toBool();
-  labelOffsetMapUnitScale.minScale = layer->customProperty( "labeling/labelOffsetMapUnitMinScale", 0.0 ).toDouble();
-  labelOffsetMapUnitScale.maxScale = layer->customProperty( "labeling/labelOffsetMapUnitMaxScale", 0.0 ).toDouble();
+  if ( layer->customProperty( "labeling/labelOffsetMapUnitScale" ).toString().isEmpty() )
+  {
+    //fallback to older property
+    labelOffsetMapUnitScale.minScale = layer->customProperty( "labeling/labelOffsetMapUnitMinScale", 0.0 ).toDouble();
+    labelOffsetMapUnitScale.maxScale = layer->customProperty( "labeling/labelOffsetMapUnitMaxScale", 0.0 ).toDouble();
+  }
+  else
+  {
+    labelOffsetMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( layer->customProperty( "labeling/labelOffsetMapUnitScale" ).toString() );
+  }
   angleOffset = layer->customProperty( "labeling/angleOffset", QVariant( 0.0 ) ).toDouble();
   preserveRotation = layer->customProperty( "labeling/preserveRotation", QVariant( true ) ).toBool();
   maxCurvedCharAngleIn = layer->customProperty( "labeling/maxCurvedCharAngleIn", QVariant( 20.0 ) ).toDouble();
@@ -965,8 +1045,16 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   priority = layer->customProperty( "labeling/priority" ).toInt();
   repeatDistance = layer->customProperty( "labeling/repeatDistance", 0.0 ).toDouble();
   repeatDistanceUnit = static_cast< SizeUnit >( layer->customProperty( "labeling/repeatDistanceUnit", QVariant( MM ) ).toUInt() );
-  repeatDistanceMapUnitScale.minScale = layer->customProperty( "labeling/repeatDistanceMapUnitMinScale", 0.0 ).toDouble();
-  repeatDistanceMapUnitScale.maxScale = layer->customProperty( "labeling/repeatDistanceMapUnitMaxScale", 0.0 ).toDouble();
+  if ( layer->customProperty( "labeling/repeatDistanceMapUnitScale" ).toString().isEmpty() )
+  {
+    //fallback to older property
+    repeatDistanceMapUnitScale.minScale = layer->customProperty( "labeling/repeatDistanceMapUnitMinScale", 0.0 ).toDouble();
+    repeatDistanceMapUnitScale.maxScale = layer->customProperty( "labeling/repeatDistanceMapUnitMaxScale", 0.0 ).toDouble();
+  }
+  else
+  {
+    repeatDistanceMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( layer->customProperty( "labeling/repeatDistanceMapUnitScale" ).toString() );
+  }
 
   // rendering
   int scalemn = layer->customProperty( "labeling/scaleMin", QVariant( 0 ) ).toInt();
@@ -1027,8 +1115,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/namedStyle", QgsFontUtils::untranslateNamedStyle( textNamedStyle ) );
   layer->setCustomProperty( "labeling/fontSize", textFont.pointSizeF() );
   layer->setCustomProperty( "labeling/fontSizeInMapUnits", fontSizeInMapUnits );
-  layer->setCustomProperty( "labeling/fontSizeMapUnitMinScale", fontSizeMapUnitScale.minScale );
-  layer->setCustomProperty( "labeling/fontSizeMapUnitMaxScale", fontSizeMapUnitScale.maxScale );
+  layer->setCustomProperty( "labeling/fontSizeMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( fontSizeMapUnitScale ) );
   layer->setCustomProperty( "labeling/fontWeight", textFont.weight() );
   layer->setCustomProperty( "labeling/fontItalic", textFont.italic() );
   layer->setCustomProperty( "labeling/fontStrikeout", textFont.strikeOut() );
@@ -1058,8 +1145,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/bufferDraw", bufferDraw );
   layer->setCustomProperty( "labeling/bufferSize", bufferSize );
   layer->setCustomProperty( "labeling/bufferSizeInMapUnits", bufferSizeInMapUnits );
-  layer->setCustomProperty( "labeling/bufferSizeMapUnitMinScale", bufferSizeMapUnitScale.minScale );
-  layer->setCustomProperty( "labeling/bufferSizeMapUnitMaxScale", bufferSizeMapUnitScale.maxScale );
+  layer->setCustomProperty( "labeling/bufferSizeMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( bufferSizeMapUnitScale ) );
   _writeColor( layer, "labeling/bufferColor", bufferColor );
   layer->setCustomProperty( "labeling/bufferNoFill", bufferNoFill );
   layer->setCustomProperty( "labeling/bufferTransp", bufferTransp );
@@ -1074,26 +1160,22 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/shapeSizeX", shapeSize.x() );
   layer->setCustomProperty( "labeling/shapeSizeY", shapeSize.y() );
   layer->setCustomProperty( "labeling/shapeSizeUnits", static_cast< unsigned int >( shapeSizeUnits ) );
-  layer->setCustomProperty( "labeling/shapeSizeMapUnitMinScale", shapeSizeMapUnitScale.minScale );
-  layer->setCustomProperty( "labeling/shapeSizeMapUnitMaxScale", shapeSizeMapUnitScale.maxScale );
+  layer->setCustomProperty( "labeling/shapeSizeMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( shapeSizeMapUnitScale ) );
   layer->setCustomProperty( "labeling/shapeRotationType", static_cast< unsigned int >( shapeRotationType ) );
   layer->setCustomProperty( "labeling/shapeRotation", shapeRotation );
   layer->setCustomProperty( "labeling/shapeOffsetX", shapeOffset.x() );
   layer->setCustomProperty( "labeling/shapeOffsetY", shapeOffset.y() );
   layer->setCustomProperty( "labeling/shapeOffsetUnits", static_cast< unsigned int >( shapeOffsetUnits ) );
-  layer->setCustomProperty( "labeling/shapeOffsetMapUnitMinScale", shapeOffsetMapUnitScale.minScale );
-  layer->setCustomProperty( "labeling/shapeOffsetMapUnitMaxScale", shapeOffsetMapUnitScale.maxScale );
+  layer->setCustomProperty( "labeling/shapeOffsetMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( shapeOffsetMapUnitScale ) );
   layer->setCustomProperty( "labeling/shapeRadiiX", shapeRadii.x() );
   layer->setCustomProperty( "labeling/shapeRadiiY", shapeRadii.y() );
   layer->setCustomProperty( "labeling/shapeRadiiUnits", static_cast< unsigned int >( shapeRadiiUnits ) );
-  layer->setCustomProperty( "labeling/shapeRadiiMapUnitMinScale", shapeRadiiMapUnitScale.minScale );
-  layer->setCustomProperty( "labeling/shapeRadiiMapUnitMaxScale", shapeRadiiMapUnitScale.maxScale );
+  layer->setCustomProperty( "labeling/shapeRadiiMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( shapeRadiiMapUnitScale ) );
   _writeColor( layer, "labeling/shapeFillColor", shapeFillColor, true );
   _writeColor( layer, "labeling/shapeBorderColor", shapeBorderColor, true );
   layer->setCustomProperty( "labeling/shapeBorderWidth", shapeBorderWidth );
   layer->setCustomProperty( "labeling/shapeBorderWidthUnits", static_cast< unsigned int >( shapeBorderWidthUnits ) );
-  layer->setCustomProperty( "labeling/shapeBorderWidthMapUnitMinScale", shapeBorderWidthMapUnitScale.minScale );
-  layer->setCustomProperty( "labeling/shapeBorderWidthMapUnitMaxScale", shapeBorderWidthMapUnitScale.maxScale );
+  layer->setCustomProperty( "labeling/shapeBorderWidthMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( shapeBorderWidthMapUnitScale ) );
   layer->setCustomProperty( "labeling/shapeJoinStyle", static_cast< unsigned int >( shapeJoinStyle ) );
   layer->setCustomProperty( "labeling/shapeTransparency", shapeTransparency );
   layer->setCustomProperty( "labeling/shapeBlendMode", QgsMapRenderer::getBlendModeEnum( shapeBlendMode ) );
@@ -1104,13 +1186,11 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/shadowOffsetAngle", shadowOffsetAngle );
   layer->setCustomProperty( "labeling/shadowOffsetDist", shadowOffsetDist );
   layer->setCustomProperty( "labeling/shadowOffsetUnits", static_cast< unsigned int >( shadowOffsetUnits ) );
-  layer->setCustomProperty( "labeling/shadowOffsetMapUnitMinScale", shadowOffsetMapUnitScale.minScale );
-  layer->setCustomProperty( "labeling/shadowOffsetMapUnitMaxScale", shadowOffsetMapUnitScale.maxScale );
+  layer->setCustomProperty( "labeling/shadowOffsetMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( shadowOffsetMapUnitScale ) );
   layer->setCustomProperty( "labeling/shadowOffsetGlobal", shadowOffsetGlobal );
   layer->setCustomProperty( "labeling/shadowRadius", shadowRadius );
   layer->setCustomProperty( "labeling/shadowRadiusUnits", static_cast< unsigned int >( shadowRadiusUnits ) );
-  layer->setCustomProperty( "labeling/shadowRadiusMapUnitMinScale", shadowRadiusMapUnitScale.minScale );
-  layer->setCustomProperty( "labeling/shadowRadiusMapUnitMaxScale", shadowRadiusMapUnitScale.maxScale );
+  layer->setCustomProperty( "labeling/shadowRadiusMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( shadowRadiusMapUnitScale ) );
   layer->setCustomProperty( "labeling/shadowRadiusAlphaOnly", shadowRadiusAlphaOnly );
   layer->setCustomProperty( "labeling/shadowTransparency", shadowTransparency );
   layer->setCustomProperty( "labeling/shadowScale", shadowScale );
@@ -1126,15 +1206,13 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/fitInPolygonOnly", fitInPolygonOnly );
   layer->setCustomProperty( "labeling/dist", dist );
   layer->setCustomProperty( "labeling/distInMapUnits", distInMapUnits );
-  layer->setCustomProperty( "labeling/distMapUnitMinScale", distMapUnitScale.minScale );
-  layer->setCustomProperty( "labeling/distMapUnitMaxScale", distMapUnitScale.maxScale );
+  layer->setCustomProperty( "labeling/distMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( distMapUnitScale ) );
   layer->setCustomProperty( "labeling/offsetType", static_cast< unsigned int >( offsetType ) );
   layer->setCustomProperty( "labeling/quadOffset", static_cast< unsigned int >( quadOffset ) );
   layer->setCustomProperty( "labeling/xOffset", xOffset );
   layer->setCustomProperty( "labeling/yOffset", yOffset );
   layer->setCustomProperty( "labeling/labelOffsetInMapUnits", labelOffsetInMapUnits );
-  layer->setCustomProperty( "labeling/labelOffsetMapUnitMinScale", labelOffsetMapUnitScale.minScale );
-  layer->setCustomProperty( "labeling/labelOffsetMapUnitMaxScale", labelOffsetMapUnitScale.maxScale );
+  layer->setCustomProperty( "labeling/labelOffsetMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( labelOffsetMapUnitScale ) );
   layer->setCustomProperty( "labeling/angleOffset", angleOffset );
   layer->setCustomProperty( "labeling/preserveRotation", preserveRotation );
   layer->setCustomProperty( "labeling/maxCurvedCharAngleIn", maxCurvedCharAngleIn );
@@ -1142,8 +1220,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/priority", priority );
   layer->setCustomProperty( "labeling/repeatDistance", repeatDistance );
   layer->setCustomProperty( "labeling/repeatDistanceUnit", repeatDistanceUnit );
-  layer->setCustomProperty( "labeling/repeatDistanceMapUnitMinScale", repeatDistanceMapUnitScale.minScale );
-  layer->setCustomProperty( "labeling/repeatDistanceMapUnitMaxScale", repeatDistanceMapUnitScale.maxScale );
+  layer->setCustomProperty( "labeling/repeatDistanceMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( repeatDistanceMapUnitScale ) );
 
   // rendering
   layer->setCustomProperty( "labeling/scaleVisibility", scaleVisibility );
@@ -1196,8 +1273,16 @@ void QgsPalLayerSettings::readXml( QDomElement& elem )
 
   double fontSize = textStyleElem.attribute( "fontSize" ).toDouble();
   fontSizeInMapUnits = textStyleElem.attribute( "fontSizeInMapUnits" ).toInt();
-  fontSizeMapUnitScale.minScale = textStyleElem.attribute( "fontSizeMapUnitMinScale", "0" ).toDouble();
-  fontSizeMapUnitScale.maxScale = textStyleElem.attribute( "fontSizeMapUnitMaxScale", "0" ).toDouble();
+  if ( !textStyleElem.hasAttribute( "fontSizeMapUnitScale" ) )
+  {
+    //fallback to older property
+    fontSizeMapUnitScale.minScale = textStyleElem.attribute( "fontSizeMapUnitMinScale", "0" ).toDouble();
+    fontSizeMapUnitScale.maxScale = textStyleElem.attribute( "fontSizeMapUnitMaxScale", "0" ).toDouble();
+  }
+  else
+  {
+    fontSizeMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( textStyleElem.attribute( "fontSizeMapUnitScale" ) );
+  }
   int fontWeight = textStyleElem.attribute( "fontWeight" ).toInt();
   bool fontItalic = textStyleElem.attribute( "fontItalic" ).toInt();
   textFont = QFont( fontFamily, fontSize, fontWeight, fontItalic );
@@ -1253,8 +1338,16 @@ void QgsPalLayerSettings::readXml( QDomElement& elem )
   }
 
   bufferSizeInMapUnits = textBufferElem.attribute( "bufferSizeInMapUnits" ).toInt();
-  bufferSizeMapUnitScale.minScale = textBufferElem.attribute( "bufferSizeMapUnitMinScale", "0" ).toDouble();
-  bufferSizeMapUnitScale.maxScale = textBufferElem.attribute( "bufferSizeMapUnitMaxScale", "0" ).toDouble();
+  if ( !textBufferElem.hasAttribute( "bufferSizeMapUnitScale" ) )
+  {
+    //fallback to older property
+    bufferSizeMapUnitScale.minScale = textBufferElem.attribute( "bufferSizeMapUnitMinScale", "0" ).toDouble();
+    bufferSizeMapUnitScale.maxScale = textBufferElem.attribute( "bufferSizeMapUnitMaxScale", "0" ).toDouble();
+  }
+  else
+  {
+    bufferSizeMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( textBufferElem.attribute( "bufferSizeMapUnitScale" ) );
+  }
   bufferColor = QgsSymbolLayerV2Utils::decodeColor( textBufferElem.attribute( "bufferColor", QgsSymbolLayerV2Utils::encodeColor( Qt::white ) ) );
   bufferTransp = textBufferElem.attribute( "bufferTransp" ).toInt();
   bufferBlendMode = QgsMapRenderer::getCompositionMode(
@@ -1271,26 +1364,58 @@ void QgsPalLayerSettings::readXml( QDomElement& elem )
   shapeSize = QPointF( backgroundElem.attribute( "shapeSizeX", "0" ).toDouble(),
                        backgroundElem.attribute( "shapeSizeY", "0" ).toDouble() );
   shapeSizeUnits = static_cast< SizeUnit >( backgroundElem.attribute( "shapeSizeUnits", QString::number( MM ) ).toUInt() );
-  shapeSizeMapUnitScale.minScale = backgroundElem.attribute( "shapeSizeMapUnitMinScale", "0" ).toDouble();
-  shapeSizeMapUnitScale.maxScale = backgroundElem.attribute( "shapeSizeMapUnitMaxScale", "0" ).toDouble();
+  if ( !backgroundElem.hasAttribute( "shapeSizeMapUnitScale" ) )
+  {
+    //fallback to older property
+    shapeSizeMapUnitScale.minScale = backgroundElem.attribute( "shapeSizeMapUnitMinScale", "0" ).toDouble();
+    shapeSizeMapUnitScale.maxScale = backgroundElem.attribute( "shapeSizeMapUnitMaxScale", "0" ).toDouble();
+  }
+  else
+  {
+    shapeSizeMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( backgroundElem.attribute( "shapeSizeMapUnitScale" ) );
+  }
   shapeRotationType = static_cast< RotationType >( backgroundElem.attribute( "shapeRotationType", QString::number( RotationSync ) ).toUInt() );
   shapeRotation = backgroundElem.attribute( "shapeRotation", "0" ).toDouble();
   shapeOffset = QPointF( backgroundElem.attribute( "shapeOffsetX", "0" ).toDouble(),
                          backgroundElem.attribute( "shapeOffsetY", "0" ).toDouble() );
   shapeOffsetUnits = static_cast< SizeUnit >( backgroundElem.attribute( "shapeOffsetUnits", QString::number( MM ) ).toUInt() );
-  shapeOffsetMapUnitScale.minScale = backgroundElem.attribute( "shapeOffsetMapUnitMinScale", "0" ).toDouble();
-  shapeOffsetMapUnitScale.maxScale = backgroundElem.attribute( "shapeOffsetMapUnitMaxScale", "0" ).toDouble();
+  if ( !backgroundElem.hasAttribute( "shapeOffsetMapUnitScale" ) )
+  {
+    //fallback to older property
+    shapeOffsetMapUnitScale.minScale = backgroundElem.attribute( "shapeOffsetMapUnitMinScale", "0" ).toDouble();
+    shapeOffsetMapUnitScale.maxScale = backgroundElem.attribute( "shapeOffsetMapUnitMaxScale", "0" ).toDouble();
+  }
+  else
+  {
+    shapeOffsetMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( backgroundElem.attribute( "shapeOffsetMapUnitScale" ) );
+  }
   shapeRadii = QPointF( backgroundElem.attribute( "shapeRadiiX", "0" ).toDouble(),
                         backgroundElem.attribute( "shapeRadiiY", "0" ).toDouble() );
   shapeRadiiUnits = static_cast< SizeUnit >( backgroundElem.attribute( "shapeRadiiUnits", QString::number( MM ) ).toUInt() );
-  shapeRadiiMapUnitScale.minScale = backgroundElem.attribute( "shapeRaddiMapUnitMinScale", "0" ).toDouble();
-  shapeRadiiMapUnitScale.maxScale = backgroundElem.attribute( "shapeRaddiMapUnitMaxScale", "0" ).toDouble();
+  if ( !backgroundElem.hasAttribute( "shapeRadiiMapUnitScale" ) )
+  {
+    //fallback to older property
+    shapeRadiiMapUnitScale.minScale = backgroundElem.attribute( "shapeRadiiMapUnitMinScale", "0" ).toDouble();
+    shapeRadiiMapUnitScale.maxScale = backgroundElem.attribute( "shapeRadiiMapUnitMaxScale", "0" ).toDouble();
+  }
+  else
+  {
+    shapeRadiiMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( backgroundElem.attribute( "shapeRadiiMapUnitScale" ) );
+  }
   shapeFillColor = QgsSymbolLayerV2Utils::decodeColor( backgroundElem.attribute( "shapeFillColor", QgsSymbolLayerV2Utils::encodeColor( Qt::white ) ) );
   shapeBorderColor = QgsSymbolLayerV2Utils::decodeColor( backgroundElem.attribute( "shapeBorderColor", QgsSymbolLayerV2Utils::encodeColor( Qt::darkGray ) ) );
   shapeBorderWidth = backgroundElem.attribute( "shapeBorderWidth", "0" ).toDouble();
   shapeBorderWidthUnits = static_cast< SizeUnit >( backgroundElem.attribute( "shapeBorderWidthUnits", QString::number( MM ) ).toUInt() );
-  shapeBorderWidthMapUnitScale.minScale = backgroundElem.attribute( "shapeBorderWidthMapUnitMinScale", "0" ).toDouble();
-  shapeBorderWidthMapUnitScale.maxScale = backgroundElem.attribute( "shapeBorderWidthMapUnitMaxScale", "0" ).toDouble();
+  if ( !backgroundElem.hasAttribute( "shapeBorderWidthMapUnitScale" ) )
+  {
+    //fallback to older property
+    shapeBorderWidthMapUnitScale.minScale = backgroundElem.attribute( "shapeBorderWidthMapUnitMinScale", "0" ).toDouble();
+    shapeBorderWidthMapUnitScale.maxScale = backgroundElem.attribute( "shapeBorderWidthMapUnitMaxScale", "0" ).toDouble();
+  }
+  else
+  {
+    shapeBorderWidthMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( backgroundElem.attribute( "shapeBorderWidthMapUnitScale" ) );
+  }
   shapeJoinStyle = static_cast< Qt::PenJoinStyle >( backgroundElem.attribute( "shapeJoinStyle", QString::number( Qt::BevelJoin ) ).toUInt() );
   shapeTransparency = backgroundElem.attribute( "shapeTransparency", "0" ).toInt();
   shapeBlendMode = QgsMapRenderer::getCompositionMode(
@@ -1303,13 +1428,29 @@ void QgsPalLayerSettings::readXml( QDomElement& elem )
   shadowOffsetAngle = shadowElem.attribute( "shadowOffsetAngle", "135" ).toInt();
   shadowOffsetDist = shadowElem.attribute( "shadowOffsetDist", "1" ).toDouble();
   shadowOffsetUnits = static_cast< SizeUnit >( shadowElem.attribute( "shadowOffsetUnits", QString::number( MM ) ).toUInt() );
-  shadowOffsetMapUnitScale.minScale = shadowElem.attribute( "shadowOffsetMapUnitMinScale", "0" ).toDouble();
-  shadowOffsetMapUnitScale.maxScale = shadowElem.attribute( "shadowOffsetMapUnitMaxScale", "0" ).toDouble();
+  if ( !shadowElem.hasAttribute( "shadowOffsetMapUnitScale" ) )
+  {
+    //fallback to older property
+    shadowOffsetMapUnitScale.minScale = shadowElem.attribute( "shadowOffsetMapUnitMinScale", "0" ).toDouble();
+    shadowOffsetMapUnitScale.maxScale = shadowElem.attribute( "shadowOffsetMapUnitMaxScale", "0" ).toDouble();
+  }
+  else
+  {
+    shadowOffsetMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( shadowElem.attribute( "shadowOffsetMapUnitScale" ) );
+  }
   shadowOffsetGlobal = shadowElem.attribute( "shadowOffsetGlobal", "1" ).toInt();
   shadowRadius = shadowElem.attribute( "shadowRadius", "1.5" ).toDouble();
   shadowRadiusUnits = static_cast< SizeUnit >( shadowElem.attribute( "shadowRadiusUnits", QString::number( MM ) ).toUInt() );
-  shadowRadiusMapUnitScale.minScale = shadowElem.attribute( "shadowRadiusMapUnitMinScale", "0" ).toDouble();
-  shadowRadiusMapUnitScale.maxScale = shadowElem.attribute( "shadowRadiusMapUnitMaxScale", "0" ).toDouble();
+  if ( !shadowElem.hasAttribute( "shadowRadiusMapUnitScale" ) )
+  {
+    //fallback to older property
+    shadowRadiusMapUnitScale.minScale = shadowElem.attribute( "shadowRadiusMapUnitMinScale", "0" ).toDouble();
+    shadowRadiusMapUnitScale.maxScale = shadowElem.attribute( "shadowRadiusMapUnitMaxScale", "0" ).toDouble();
+  }
+  else
+  {
+    shadowRadiusMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( shadowElem.attribute( "shadowRadiusMapUnitScale" ) );
+  }
   shadowRadiusAlphaOnly = shadowElem.attribute( "shadowRadiusAlphaOnly", "0" ).toInt();
   shadowTransparency = shadowElem.attribute( "shadowTransparency", "30" ).toInt();
   shadowScale = shadowElem.attribute( "shadowScale", "100" ).toInt();
@@ -1329,15 +1470,31 @@ void QgsPalLayerSettings::readXml( QDomElement& elem )
   fitInPolygonOnly = placementElem.attribute( "fitInPolygonOnly", "0" ).toInt();
   dist = placementElem.attribute( "dist" ).toDouble();
   distInMapUnits = placementElem.attribute( "distInMapUnits" ).toInt();
-  distMapUnitScale.minScale = placementElem.attribute( "distMapUnitMinScale", "0" ).toDouble();
-  distMapUnitScale.maxScale = placementElem.attribute( "distMapUnitMaxScale", "0" ).toDouble();
+  if ( !placementElem.hasAttribute( "distMapUnitScale" ) )
+  {
+    //fallback to older property
+    distMapUnitScale.minScale = placementElem.attribute( "distMapUnitMinScale", "0" ).toDouble();
+    distMapUnitScale.maxScale = placementElem.attribute( "distMapUnitMaxScale", "0" ).toDouble();
+  }
+  else
+  {
+    distMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( placementElem.attribute( "distMapUnitScale" ) );
+  }
   offsetType = static_cast< OffsetType >( placementElem.attribute( "offsetType", QString::number( FromPoint ) ).toUInt() );
   quadOffset = static_cast< QuadrantPosition >( placementElem.attribute( "quadOffset", QString::number( QuadrantOver ) ).toUInt() );
   xOffset = placementElem.attribute( "xOffset", "0" ).toDouble();
   yOffset = placementElem.attribute( "yOffset", "0" ).toDouble();
   labelOffsetInMapUnits = placementElem.attribute( "labelOffsetInMapUnits", "1" ).toInt();
-  labelOffsetMapUnitScale.minScale = placementElem.attribute( "labelOffsetMapUnitMinScale", "0" ).toDouble();
-  labelOffsetMapUnitScale.maxScale = placementElem.attribute( "labelOffsetMapUnitMaxScale", "0" ).toDouble();
+  if ( !placementElem.hasAttribute( "labelOffsetMapUnitScale" ) )
+  {
+    //fallback to older property
+    labelOffsetMapUnitScale.minScale = placementElem.attribute( "labelOffsetMapUnitMinScale", "0" ).toDouble();
+    labelOffsetMapUnitScale.maxScale = placementElem.attribute( "labelOffsetMapUnitMaxScale", "0" ).toDouble();
+  }
+  else
+  {
+    labelOffsetMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( placementElem.attribute( "labelOffsetMapUnitScale" ) );
+  }
   angleOffset = placementElem.attribute( "angleOffset", "0" ).toDouble();
   preserveRotation = placementElem.attribute( "preserveRotation", "1" ).toInt();
   maxCurvedCharAngleIn = placementElem.attribute( "maxCurvedCharAngleIn", "20" ).toDouble();
@@ -1345,8 +1502,16 @@ void QgsPalLayerSettings::readXml( QDomElement& elem )
   priority = placementElem.attribute( "priority" ).toInt();
   repeatDistance = placementElem.attribute( "repeatDistance", "0" ).toDouble();
   repeatDistanceUnit = static_cast< SizeUnit >( placementElem.attribute( "repeatDistanceUnit", QString::number( MM ) ).toUInt() );
-  repeatDistanceMapUnitScale.minScale = placementElem.attribute( "repeatDistanceMapUnitMinScale", "0" ).toDouble();
-  repeatDistanceMapUnitScale.maxScale = placementElem.attribute( "repeatDistanceMapUnitMaxScale", "0" ).toDouble();
+  if ( !placementElem.hasAttribute( "repeatDistanceMapUnitScale" ) )
+  {
+    //fallback to older property
+    repeatDistanceMapUnitScale.minScale = placementElem.attribute( "repeatDistanceMapUnitMinScale", "0" ).toDouble();
+    repeatDistanceMapUnitScale.maxScale = placementElem.attribute( "repeatDistanceMapUnitMaxScale", "0" ).toDouble();
+  }
+  else
+  {
+    repeatDistanceMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( placementElem.attribute( "repeatDistanceMapUnitScale" ) );
+  }
 
   // rendering
   QDomElement renderingElem = elem.firstChildElement( "rendering" );
@@ -1388,8 +1553,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument& doc )
   textStyleElem.setAttribute( "namedStyle", QgsFontUtils::untranslateNamedStyle( textNamedStyle ) );
   textStyleElem.setAttribute( "fontSize", textFont.pointSizeF() );
   textStyleElem.setAttribute( "fontSizeInMapUnits", fontSizeInMapUnits );
-  textStyleElem.setAttribute( "fontSizeMapUnitMinScale", fontSizeMapUnitScale.minScale );
-  textStyleElem.setAttribute( "fontSizeMapUnitMaxScale", fontSizeMapUnitScale.maxScale );
+  textStyleElem.setAttribute( "fontSizeMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( fontSizeMapUnitScale ) );
   textStyleElem.setAttribute( "fontWeight", textFont.weight() );
   textStyleElem.setAttribute( "fontItalic", textFont.italic() );
   textStyleElem.setAttribute( "fontStrikeout", textFont.strikeOut() );
@@ -1421,8 +1585,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument& doc )
   textBufferElem.setAttribute( "bufferDraw", bufferDraw );
   textBufferElem.setAttribute( "bufferSize", bufferSize );
   textBufferElem.setAttribute( "bufferSizeInMapUnits", bufferSizeInMapUnits );
-  textBufferElem.setAttribute( "bufferSizeMapUnitMinScale", bufferSizeMapUnitScale.minScale );
-  textBufferElem.setAttribute( "bufferSizeMapUnitMaxScale", bufferSizeMapUnitScale.maxScale );
+  textBufferElem.setAttribute( "bufferSizeMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( bufferSizeMapUnitScale ) );
   textBufferElem.setAttribute( "bufferColor", QgsSymbolLayerV2Utils::encodeColor( bufferColor ) );
   textBufferElem.setAttribute( "bufferNoFill", bufferNoFill );
   textBufferElem.setAttribute( "bufferTransp", bufferTransp );
@@ -1438,26 +1601,22 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument& doc )
   backgroundElem.setAttribute( "shapeSizeX", shapeSize.x() );
   backgroundElem.setAttribute( "shapeSizeY", shapeSize.y() );
   backgroundElem.setAttribute( "shapeSizeUnits", static_cast< unsigned int >( shapeSizeUnits ) );
-  backgroundElem.setAttribute( "shapeSizeMapUnitMinScale", shapeSizeMapUnitScale.minScale );
-  backgroundElem.setAttribute( "shapeSizeMapUnitMaxScale", shapeSizeMapUnitScale.maxScale );
+  backgroundElem.setAttribute( "shapeSizeMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( shapeSizeMapUnitScale ) );
   backgroundElem.setAttribute( "shapeRotationType", static_cast< unsigned int >( shapeRotationType ) );
   backgroundElem.setAttribute( "shapeRotation", shapeRotation );
   backgroundElem.setAttribute( "shapeOffsetX", shapeOffset.x() );
   backgroundElem.setAttribute( "shapeOffsetY", shapeOffset.y() );
   backgroundElem.setAttribute( "shapeOffsetUnits", static_cast< unsigned int >( shapeOffsetUnits ) );
-  backgroundElem.setAttribute( "shapeOffsetMapUnitMinScale", shapeOffsetMapUnitScale.minScale );
-  backgroundElem.setAttribute( "shapeOffsetMapUnitMaxScale", shapeOffsetMapUnitScale.maxScale );
+  backgroundElem.setAttribute( "shapeOffsetMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( shapeOffsetMapUnitScale ) );
   backgroundElem.setAttribute( "shapeRadiiX", shapeRadii.x() );
   backgroundElem.setAttribute( "shapeRadiiY", shapeRadii.y() );
   backgroundElem.setAttribute( "shapeRadiiUnits", static_cast< unsigned int >( shapeRadiiUnits ) );
-  backgroundElem.setAttribute( "shapeRadiiMapUnitMinScale", shapeRadiiMapUnitScale.minScale );
-  backgroundElem.setAttribute( "shapeRadiiMapUnitMaxScale", shapeRadiiMapUnitScale.maxScale );
+  backgroundElem.setAttribute( "shapeRadiiMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( shapeRadiiMapUnitScale ) );
   backgroundElem.setAttribute( "shapeFillColor", QgsSymbolLayerV2Utils::encodeColor( shapeFillColor ) );
   backgroundElem.setAttribute( "shapeBorderColor", QgsSymbolLayerV2Utils::encodeColor( shapeBorderColor ) );
   backgroundElem.setAttribute( "shapeBorderWidth", shapeBorderWidth );
   backgroundElem.setAttribute( "shapeBorderWidthUnits", static_cast< unsigned int >( shapeBorderWidthUnits ) );
-  backgroundElem.setAttribute( "shapeBorderWidthMapUnitMinScale", shapeBorderWidthMapUnitScale.minScale );
-  backgroundElem.setAttribute( "shapeBorderWidthMapUnitMaxScale", shapeBorderWidthMapUnitScale.maxScale );
+  backgroundElem.setAttribute( "shapeBorderWidthMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( shapeBorderWidthMapUnitScale ) );
   backgroundElem.setAttribute( "shapeJoinStyle", static_cast< unsigned int >( shapeJoinStyle ) );
   backgroundElem.setAttribute( "shapeTransparency", shapeTransparency );
   backgroundElem.setAttribute( "shapeBlendMode", QgsMapRenderer::getBlendModeEnum( shapeBlendMode ) );
@@ -1469,13 +1628,11 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument& doc )
   shadowElem.setAttribute( "shadowOffsetAngle", shadowOffsetAngle );
   shadowElem.setAttribute( "shadowOffsetDist", shadowOffsetDist );
   shadowElem.setAttribute( "shadowOffsetUnits", static_cast< unsigned int >( shadowOffsetUnits ) );
-  shadowElem.setAttribute( "shadowOffsetMapUnitMinScale", shadowOffsetMapUnitScale.minScale );
-  shadowElem.setAttribute( "shadowOffsetMapUnitMaxScale", shadowOffsetMapUnitScale.maxScale );
+  shadowElem.setAttribute( "shadowOffsetMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( shadowOffsetMapUnitScale ) );
   shadowElem.setAttribute( "shadowOffsetGlobal", shadowOffsetGlobal );
   shadowElem.setAttribute( "shadowRadius", shadowRadius );
   shadowElem.setAttribute( "shadowRadiusUnits", static_cast< unsigned int >( shadowRadiusUnits ) );
-  shadowElem.setAttribute( "shadowRadiusMapUnitMinScale", shadowRadiusMapUnitScale.minScale );
-  shadowElem.setAttribute( "shadowRadiusMapUnitMaxScale", shadowRadiusMapUnitScale.maxScale );
+  shadowElem.setAttribute( "shadowRadiusMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( shadowRadiusMapUnitScale ) );
   shadowElem.setAttribute( "shadowRadiusAlphaOnly", shadowRadiusAlphaOnly );
   shadowElem.setAttribute( "shadowTransparency", shadowTransparency );
   shadowElem.setAttribute( "shadowScale", shadowScale );
@@ -1492,15 +1649,13 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument& doc )
   placementElem.setAttribute( "fitInPolygonOnly", fitInPolygonOnly );
   placementElem.setAttribute( "dist", dist );
   placementElem.setAttribute( "distInMapUnits", distInMapUnits );
-  placementElem.setAttribute( "distMapUnitMinScale", distMapUnitScale.minScale );
-  placementElem.setAttribute( "distMapUnitMaxScale", distMapUnitScale.maxScale );
+  placementElem.setAttribute( "distMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( distMapUnitScale ) );
   placementElem.setAttribute( "offsetType", static_cast< unsigned int >( offsetType ) );
   placementElem.setAttribute( "quadOffset", static_cast< unsigned int >( quadOffset ) );
   placementElem.setAttribute( "xOffset", xOffset );
   placementElem.setAttribute( "yOffset", yOffset );
   placementElem.setAttribute( "labelOffsetInMapUnits", labelOffsetInMapUnits );
-  placementElem.setAttribute( "labelOffsetMapUnitMinScale", labelOffsetMapUnitScale.minScale );
-  placementElem.setAttribute( "labelOffsetMapUnitMaxScale", labelOffsetMapUnitScale.maxScale );
+  placementElem.setAttribute( "labelOffsetMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( labelOffsetMapUnitScale ) );
   placementElem.setAttribute( "angleOffset", angleOffset );
   placementElem.setAttribute( "preserveRotation", preserveRotation );
   placementElem.setAttribute( "maxCurvedCharAngleIn", maxCurvedCharAngleIn );
@@ -1508,8 +1663,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument& doc )
   placementElem.setAttribute( "priority", priority );
   placementElem.setAttribute( "repeatDistance", repeatDistance );
   placementElem.setAttribute( "repeatDistanceUnit", repeatDistanceUnit );
-  placementElem.setAttribute( "repeatDistanceMapUnitMinScale", repeatDistanceMapUnitScale.minScale );
-  placementElem.setAttribute( "repeatDistanceMapUnitMaxScale", repeatDistanceMapUnitScale.maxScale );
+  placementElem.setAttribute( "repeatDistanceMapUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( repeatDistanceMapUnitScale ) );
 
   // rendering
   QDomElement renderingElem = doc.createElement( "rendering" );
