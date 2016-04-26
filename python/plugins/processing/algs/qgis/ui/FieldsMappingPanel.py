@@ -313,7 +313,7 @@ class FieldsMappingPanel(BASE, WIDGET):
         self.addButton.setIcon(
             QIcon(':/images/themes/default/mActionAdd.svg'))
         self.deleteButton.setIcon(
-            QIcon(':/images/themes/default/mActionRemove.svg'))
+            QIcon(':/images/themes/default/mActionDeleteSelected.svg'))
         self.upButton.setIcon(
             QIcon(':/images/themes/default/mActionArrowUp.png'))
         self.downButton.setIcon(

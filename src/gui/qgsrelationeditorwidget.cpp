@@ -62,7 +62,7 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget* parent )
   buttonLayout->addWidget( mAddFeatureButton );
   // delete feature
   mDeleteFeatureButton = new QToolButton( this );
-  mDeleteFeatureButton->setIcon( QgsApplication::getThemeIcon( "/mActionRemove.svg" ) );
+  mDeleteFeatureButton->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteSelected.svg" ) );
   mDeleteFeatureButton->setText( tr( "Delete feature" ) );
   mDeleteFeatureButton->setObjectName( "mDeleteFeatureButton" );
   buttonLayout->addWidget( mDeleteFeatureButton );
