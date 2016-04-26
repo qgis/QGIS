@@ -17,11 +17,14 @@
 #ifndef QGSTASKMANAGERWIDGET_H
 #define QGSTASKMANAGERWIDGET_H
 
+#include "qgsfloatingwidget.h"
 #include <QStyledItemDelegate>
+#include <QToolButton>
 
 class QgsTaskManager;
 class QgsTask;
 class QTreeView;
+class QProgressBar;
 
 /** \ingroup gui
  * \class QgsTaskManagerWidget
@@ -45,6 +48,62 @@ class GUI_EXPORT QgsTaskManagerWidget : public QWidget
 
     QTreeView* mTreeView;
 };
+
+/** \ingroup gui
+ * \class QgsTaskManagerFloatingWidget
+ * A widget which displays tasks from a QgsTaskManager and allows for interaction with the manager
+ * @see QgsTaskManager
+ * @note introduced in QGIS 2.16
+ */
+class GUI_EXPORT QgsTaskManagerFloatingWidget : public QgsFloatingWidget
+{
+    Q_OBJECT
+
+  public:
+
+    /** Constructor for QgsTaskManagerWidget
+     * @param manager task manager associated with widget
+     * @param parent parent widget
+     */
+    QgsTaskManagerFloatingWidget( QgsTaskManager* manager, QWidget* parent = nullptr );
+
+};
+
+/** \ingroup gui
+ * \class QgsTaskManagerFloatingWidget
+ * A widget which displays tasks from a QgsTaskManager and allows for interaction with the manager
+ * @see QgsTaskManager
+ * @note introduced in QGIS 2.16
+ */
+class GUI_EXPORT QgsTaskManagerStatusBarWidget : public QToolButton
+{
+    Q_OBJECT
+
+  public:
+
+    /** Constructor for QgsTaskManagerWidget
+     * @param manager task manager associated with widget
+     * @param parent parent widget
+     */
+    QgsTaskManagerStatusBarWidget( QgsTaskManager* manager, QWidget* parent = nullptr );
+
+    QSize sizeHint() const override;
+
+  private slots:
+
+    void toggleDisplay();
+    void overallProgressChanged( double progess );
+    void countActiveTasksChanged( int count );
+    void allFinished();
+    void showButton();
+
+  private:
+
+    QgsTaskManagerFloatingWidget* mFloatingWidget;
+    QProgressBar* mProgressBar;
+    QgsTaskManager* mManager;
+};
+
 
 
 /** \ingroup gui

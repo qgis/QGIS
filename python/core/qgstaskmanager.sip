@@ -235,6 +235,17 @@ class QgsTaskManager : QObject
      */
     QStringList dependentLayers( long taskId ) const;
 
+    /** Returns a list of the active (queued or running) tasks.
+     * @see countActiveTasks()
+     */
+    QList< QgsTask* > activeTasks() const;
+
+    /** Returns the number of active (queued or running) tasks.
+     * @see activeTasks()
+     * @see countActiveTasksChanged()
+     */
+    int countActiveTasks() const;
+
   signals:
 
     //! Will be emitted when a task reports a progress change
@@ -254,5 +265,13 @@ class QgsTaskManager : QObject
     //! Emitted when a task is about to be deleted
     //! @param taskId ID of task
     void taskAboutToBeDeleted( long taskId );
+
+    //! Emitted when all tasks are complete
+    //! @see countActiveTasksChanged()
+    void allTasksFinished();
+
+    //! Emitted when the number of active tasks changes
+    //! @see countActiveTasks()
+    void countActiveTasksChanged( int count );
 
 };

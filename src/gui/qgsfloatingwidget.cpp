@@ -15,7 +15,8 @@
 
 #include "qgsfloatingwidget.h"
 #include <QEvent>
-
+#include <QStyleOption>
+#include <QPainter>
 
 //
 // QgsFloatingWidget
@@ -67,6 +68,15 @@ void QgsFloatingWidget::showEvent( QShowEvent *e )
 {
   anchorPointChanged();
   QWidget::showEvent( e );
+}
+
+void QgsFloatingWidget::paintEvent( QPaintEvent* e )
+{
+  Q_UNUSED( e );
+  QStyleOption opt;
+  opt.init( this );
+  QPainter p( this );
+  style()->drawPrimitive( QStyle::PE_Widget, &opt, &p, this );
 }
 
 void QgsFloatingWidget::anchorPointChanged()

@@ -78,6 +78,7 @@ class QgsSnappingWidget;
 class QgsStatusBarCoordinatesWidget;
 class QgsStatusBarMagnifierWidget;
 class QgsStatusBarScaleWidget;
+class QgsTaskManagerStatusBarWidget;
 class QgsTransactionGroup;
 class QgsUndoWidget;
 class QgsUserInputDockWidget;
@@ -1560,7 +1561,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsDockWidget *mOverviewDock;
     QgsDockWidget *mpGpsDock;
     QgsDockWidget *mLogDock;
-    QDockWidget *mTaskManagerDock;
 
 #ifdef Q_OS_MAC
     //! Window menu action to select this window
@@ -1672,6 +1672,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     } mMapTools;
 
     QgsMapTool *mNonEditMapTool;
+
+    QgsTaskManagerStatusBarWidget* mTaskManagerWidget;
 
     QgsStatusBarScaleWidget* mScaleWidget;
 

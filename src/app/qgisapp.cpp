@@ -853,13 +853,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QMainWindow::addDockWidget( Qt::BottomDockWidgetArea, mUserInputDockWidget );
   mUserInputDockWidget->setFloating( true );
 
-  // create the task manager dock on starting QGIS - this is like the browser
-  mTaskManagerDock = new QDockWidget( tr( "Task Manager" ), this );
-  mTaskManagerDock->setObjectName( "TaskManager" );
-  addDockWidget( Qt::RightDockWidgetArea, mTaskManagerDock );
-  mTaskManagerDock->setWidget( new QgsTaskManagerWidget( QgsTaskManager::instance(), mTaskManagerDock ) );
-  mTaskManagerDock->hide();
-
   // create the GPS tool on starting QGIS - this is like the browser
   mpGpsWidget = new QgsGPSInformationWidget( mMapCanvas );
   //create the dock widget
@@ -1148,8 +1141,8 @@ QgisApp::QgisApp()
     , mOverviewDock( nullptr )
     , mpGpsDock( nullptr )
     , mLogDock( nullptr )
-    , mTaskManagerDock( nullptr )
     , mNonEditMapTool( nullptr )
+    , mTaskManagerWidget( nullptr )
     , mScaleWidget( nullptr )
     , mMagnifierWidget( nullptr )
     , mCoordsEdit( nullptr )

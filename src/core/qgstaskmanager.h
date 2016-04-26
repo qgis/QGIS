@@ -266,12 +266,28 @@ class CORE_EXPORT QgsTaskManager : public QObject
      */
     QStringList dependentLayers( long taskId ) const;
 
+    /** Returns a list of the active (queued or running) tasks.
+     * @see countActiveTasks()
+     */
+    QList< QgsTask* > activeTasks() const { return mActiveTasks; }
+
+    /** Returns the number of active (queued or running) tasks.
+     * @see activeTasks()
+     * @see countActiveTasksChanged()
+     */
+    int countActiveTasks() const { return mActiveTasks.count(); }
+
   signals:
 
     //! Will be emitted when a task reports a progress change
     //! @param taskId ID of task
     //! @param progress percent of progress, from 0.0 - 100.0
     void progressChanged( long taskId, double progress );
+
+    //! Will be emitted when only a single task remains to complete
+    //! and that task has reported a progress change
+    //! @param progress percent of progress, from 0.0 - 100.0
+    void progressChanged( double progress );
 
     //! Will be emitted when a task reports a status change
     //! @param taskId ID of task
@@ -285,6 +301,14 @@ class CORE_EXPORT QgsTaskManager : public QObject
     //! Emitted when a task is about to be deleted
     //! @param taskId ID of task
     void taskAboutToBeDeleted( long taskId );
+
+    //! Emitted when all tasks are complete
+    //! @see countActiveTasksChanged()
+    void allTasksFinished();
+
+    //! Emitted when the number of active tasks changes
+    //! @see countActiveTasks()
+    void countActiveTasksChanged( int count );
 
   private slots:
 
@@ -312,6 +336,9 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     //! Tracks the next unique task ID
     long mNextTaskId;
+
+    //! List of active (queued or running) tasks
+    QList< QgsTask* > mActiveTasks;
 
     bool cleanupAndDeleteTask( QgsTask* task );
 

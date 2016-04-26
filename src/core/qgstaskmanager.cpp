@@ -312,6 +312,7 @@ QStringList QgsTaskManager::dependentLayers( long taskId ) const
 
 void QgsTaskManager::taskProgressChanged( double progress )
 {
+  QMutexLocker ml( mTaskMutex );
   QgsTask* task = qobject_cast< QgsTask* >( sender() );
 
   //find ID of task
@@ -320,6 +321,10 @@ void QgsTaskManager::taskProgressChanged( double progress )
     return;
 
   emit progressChanged( id, progress );
+  if ( mActiveTasks.count() == 1 )
+  {
+    emit progressChanged( progress );
+  }
 }
 
 void QgsTaskManager::taskStatusChanged( int status )
@@ -393,6 +398,8 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
 void QgsTaskManager::processQueue()
 {
   QMutexLocker ml( mTaskMutex );
+  int prevActiveCount = mActiveTasks.count();
+  mActiveTasks.clear();
   for ( QMap< long, TaskInfo >::iterator it = mTasks.begin(); it != mTasks.end(); ++it )
   {
     QgsTask* task = it.value().task;
@@ -400,6 +407,20 @@ void QgsTaskManager::processQueue()
     {
       mTasks[ it.key()].future = QtConcurrent::run( task, &QgsTask::start );
     }
+
+    if ( task && ( task->status() != QgsTask::Complete && task->status() != QgsTask::Terminated ) )
+    {
+      mActiveTasks << task;
+    }
+  }
+
+  if ( mActiveTasks.isEmpty() )
+  {
+    emit allTasksFinished();
+  }
+  if ( prevActiveCount != mActiveTasks.count() )
+  {
+    emit countActiveTasksChanged( mActiveTasks.count() );
   }
 }
 

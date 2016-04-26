@@ -87,6 +87,8 @@ class TestQgsTaskManager : public QObject
     void taskId();
     void progressChanged();
     void statusChanged();
+    void allTasksFinished();
+    void activeTasks();
     void holdTask();
     void dependancies();
     void layerDependencies();
@@ -312,18 +314,40 @@ void TestQgsTaskManager::progressChanged()
   manager.addTask( task2 );
 
   QSignalSpy spy( &manager, SIGNAL( progressChanged( long, double ) ) );
+  QSignalSpy spy2( &manager, SIGNAL( progressChanged( double ) ) );
 
   task->emitProgressChanged( 50.0 );
   QCOMPARE( task->progress(), 50.0 );
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( spy.last().at( 0 ).toLongLong(), 0LL );
   QCOMPARE( spy.last().at( 1 ).toDouble(), 50.0 );
+  //multiple running tasks, so progressChanged(double) should not be emitted
+  QCOMPARE( spy2.count(), 0 );
 
   task2->emitProgressChanged( 75.0 );
   QCOMPARE( task2->progress(), 75.0 );
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( spy.last().at( 0 ).toLongLong(), 1LL );
   QCOMPARE( spy.last().at( 1 ).toDouble(), 75.0 );
+  QCOMPARE( spy2.count(), 0 );
+
+  task->emitTaskCompleted();
+  task2->emitProgressChanged( 80.0 );
+  //single running task, so progressChanged(double) should be emitted
+  QCOMPARE( spy2.count(), 1 );
+  QCOMPARE( spy2.last().at( 0 ).toDouble(), 80.0 );
+
+  TestTask* task3 = new TestTask();
+  manager.addTask( task3 );
+  //multiple running tasks, so progressChanged(double) should not be emitted
+  task2->emitProgressChanged( 81.0 );
+  QCOMPARE( spy2.count(), 1 );
+
+  task2->emitTaskStopped();
+  task3->emitProgressChanged( 30.0 );
+  //single running task, so progressChanged(double) should be emitted
+  QCOMPARE( spy2.count(), 2 );
+  QCOMPARE( spy2.last().at( 0 ).toDouble(), 30.0 );
 }
 
 void TestQgsTaskManager::statusChanged()
@@ -351,6 +375,76 @@ void TestQgsTaskManager::statusChanged()
   QCOMPARE( spy.count(), 3 );
   QCOMPARE( spy.last().at( 0 ).toLongLong(), 1LL );
   QCOMPARE( static_cast< QgsTask::TaskStatus >( spy.last().at( 1 ).toInt() ), QgsTask::Complete );
+}
+
+void TestQgsTaskManager::allTasksFinished()
+{
+  // check that allTasksFinished signal is correctly emitted by manager
+  QgsTaskManager manager;
+  TestTask* task = new TestTask();
+  TestTask* task2 = new TestTask();
+  manager.addTask( task );
+  manager.addTask( task2 );
+  while ( task2->status() != QgsTask::Running ) { }
+
+  QSignalSpy spy( &manager, SIGNAL( allTasksFinished() ) );
+
+  task->emitTaskStopped();
+  while ( task->status() == QgsTask::Running ) { }
+  QCOMPARE( spy.count(), 0 );
+  task2->emitTaskCompleted();
+  while ( task2->status() == QgsTask::Running ) { }
+  QCOMPARE( spy.count(), 1 );
+
+  TestTask* task3 = new TestTask();
+  TestTask* task4 = new TestTask();
+  manager.addTask( task3 );
+  while ( task3->status() != QgsTask::Running ) { }
+  manager.addTask( task4 );
+  while ( task4->status() != QgsTask::Running ) { }
+  task3->emitTaskStopped();
+  while ( task3->status() == QgsTask::Running ) { }
+  QCOMPARE( spy.count(), 1 );
+  TestTask* task5 = new TestTask();
+  manager.addTask( task5 );
+  while ( task5->status() != QgsTask::Running ) { }
+  task4->emitTaskStopped();
+  while ( task4->status() == QgsTask::Running ) { }
+  QCOMPARE( spy.count(), 1 );
+  task5->emitTaskStopped();
+  while ( task5->status() == QgsTask::Running ) { }
+  QCOMPARE( spy.count(), 2 );
+}
+
+void TestQgsTaskManager::activeTasks()
+{
+  // check that statusChanged signals emitted by tasks result in statusChanged signal from manager
+  QgsTaskManager manager;
+  TestTask* task = new TestTask();
+  TestTask* task2 = new TestTask();
+  QSignalSpy spy( &manager, SIGNAL( countActiveTasksChanged( int ) ) );
+  manager.addTask( task );
+  QCOMPARE( manager.activeTasks().toSet(), ( QList< QgsTask* >() << task ).toSet() );
+  QCOMPARE( manager.countActiveTasks(), 1 );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.last().at( 0 ).toInt(), 1 );
+  manager.addTask( task2 );
+  QCOMPARE( manager.activeTasks().toSet(), ( QList< QgsTask* >() << task << task2 ).toSet() );
+  QCOMPARE( manager.countActiveTasks(), 2 );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.last().at( 0 ).toInt(), 2 );
+  task->emitTaskCompleted();
+  while ( task->status() == QgsTask::Running ) { }
+  QCOMPARE( manager.activeTasks().toSet(), ( QList< QgsTask* >() << task2 ).toSet() );
+  QCOMPARE( manager.countActiveTasks(), 1 );
+  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( spy.last().at( 0 ).toInt(), 1 );
+  task2->emitTaskCompleted();
+  while ( task2->status() == QgsTask::Running ) { }
+  QVERIFY( manager.activeTasks().isEmpty() );
+  QCOMPARE( manager.countActiveTasks(), 0 );
+  QCOMPARE( spy.count(), 4 );
+  QCOMPARE( spy.last().at( 0 ).toInt(), 0 );
 }
 
 void TestQgsTaskManager::holdTask()

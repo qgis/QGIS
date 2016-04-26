@@ -23,6 +23,7 @@
 #include <QTreeView>
 #include <QLayout>
 #include <QToolBar>
+#include <QProgressBar>
 #include <QAction>
 
 //
@@ -49,7 +50,9 @@ QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *pa
   mTreeView->setHeaderHidden( true );
   mTreeView->setRootIsDecorated( false );
   mTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
+
   vLayout->addWidget( mTreeView );
+
 
   setLayout( vLayout );
 }
@@ -376,4 +379,98 @@ bool QgsTaskStatusDelegate::editorEvent( QEvent *event, QAbstractItemModel *mode
   }
 
   return false;
+}
+
+QgsTaskManagerFloatingWidget::QgsTaskManagerFloatingWidget( QgsTaskManager *manager, QWidget *parent )
+    : QgsFloatingWidget( parent )
+{
+  setLayout( new QVBoxLayout() );
+  setMinimumSize( 250, 150 );
+  QgsTaskManagerWidget* w = new QgsTaskManagerWidget( manager );
+  layout()->addWidget( w );
+  setStyleSheet( ".QgsTaskManagerFloatingWidget { border-top-left-radius: 8px;"
+                 "border-top-right-radius: 8px; background-color: rgb(0, 0, 0, 70%); }" );
+}
+
+QgsTaskManagerStatusBarWidget::QgsTaskManagerStatusBarWidget( QgsTaskManager *manager, QWidget *parent )
+    : QToolButton( parent )
+    , mProgressBar( nullptr )
+    , mManager( manager )
+{
+  setAutoRaise( true );
+  setSizePolicy( QSizePolicy::Fixed, QSizePolicy::MinimumExpanding );
+  setLayout( new QVBoxLayout() );
+
+  mProgressBar = new QProgressBar();
+  mProgressBar->setMinimum( 0 );
+  mProgressBar->setMaximum( 0 );
+  layout()->setContentsMargins( 5, 5, 5, 5 );
+  layout()->addWidget( mProgressBar );
+
+  mFloatingWidget = new QgsTaskManagerFloatingWidget( manager, parent ? parent->window() : nullptr );
+  mFloatingWidget->setAnchorWidget( this );
+  mFloatingWidget->setAnchorPoint( QgsFloatingWidget::BottomMiddle );
+  mFloatingWidget->setAnchorWidgetPoint( QgsFloatingWidget::TopMiddle );
+  mFloatingWidget->hide();
+  connect( this, SIGNAL( clicked( bool ) ), this, SLOT( toggleDisplay() ) );
+  hide();
+
+  connect( manager, SIGNAL( taskAdded( long ) ), this, SLOT( showButton() ) );
+  connect( manager, SIGNAL( allTasksFinished() ), this, SLOT( allFinished() ) );
+  connect( manager, SIGNAL( progressChanged( double ) ), this, SLOT( overallProgressChanged( double ) ) );
+  connect( manager, SIGNAL( countActiveTasksChanged( int ) ), this, SLOT( countActiveTasksChanged( int ) ) );
+}
+
+QSize QgsTaskManagerStatusBarWidget::sizeHint() const
+{
+  int width = 100;
+  int height = QToolButton::sizeHint().height();
+  return QSize( width, height );
+}
+
+void QgsTaskManagerStatusBarWidget::toggleDisplay()
+{
+  if ( mFloatingWidget->isVisible() )
+    mFloatingWidget->hide();
+  else
+  {
+    mFloatingWidget->show();
+    mFloatingWidget->raise();
+  }
+}
+
+void QgsTaskManagerStatusBarWidget::overallProgressChanged( double progress )
+{
+  mProgressBar->setValue( progress );
+  if ( mProgressBar->maximum( ) == 0 )
+    mProgressBar->setMaximum( 100 );
+  setToolTip( mManager->activeTasks().at( 0 )->description() );
+}
+
+void QgsTaskManagerStatusBarWidget::countActiveTasksChanged( int count )
+{
+  if ( count > 1 )
+  {
+    mProgressBar->setMaximum( 0 );
+    setToolTip( tr( "%1 active tasks running" ).arg( count ) );
+  }
+}
+
+void QgsTaskManagerStatusBarWidget::allFinished()
+{
+  mFloatingWidget->hide();
+  hide();
+
+  mProgressBar->setMaximum( 0 );
+  mProgressBar->setValue( 0 );
+}
+
+void QgsTaskManagerStatusBarWidget::showButton()
+{
+  if ( !isVisible() )
+  {
+    mProgressBar->setMaximum( 100 );
+    mProgressBar->setValue( 0 );
+    show();
+  }
 }

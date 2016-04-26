@@ -19,6 +19,50 @@ class QgsTaskManagerWidget : QWidget
 
 };
 
+/** \ingroup gui
+ * \class QgsTaskManagerFloatingWidget
+ * A widget which displays tasks from a QgsTaskManager and allows for interaction with the manager
+ * @see QgsTaskManager
+ * @note introduced in QGIS 2.16
+ */
+class QgsTaskManagerFloatingWidget : QgsFloatingWidget
+{
+%TypeHeaderCode
+#include <qgstaskmanagerwidget.h>
+%End
+
+  public:
+
+    /** Constructor for QgsTaskManagerWidget
+     * @param manager task manager associated with widget
+     * @param parent parent widget
+     */
+    QgsTaskManagerFloatingWidget( QgsTaskManager* manager, QWidget* parent = nullptr );
+
+};
+
+/** \ingroup gui
+ * \class QgsTaskManagerFloatingWidget
+ * A widget which displays tasks from a QgsTaskManager and allows for interaction with the manager
+ * @see QgsTaskManager
+ * @note introduced in QGIS 2.16
+ */
+class QgsTaskManagerStatusBarWidget : QToolButton
+{
+%TypeHeaderCode
+#include <qgstaskmanagerwidget.h>
+%End
+
+  public:
+
+    /** Constructor for QgsTaskManagerStatusBarWidget
+     * @param manager task manager associated with widget
+     * @param parent parent widget
+     */
+    QgsTaskManagerStatusBarWidget( QgsTaskManager* manager, QWidget* parent = nullptr );
+
+};
+
 
 /** \ingroup gui
  * \class QgsTaskManagerModel
