@@ -44,7 +44,6 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         """Run after all tests"""
         shutil.rmtree(cls.basetestpath, True)
 
-    @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(1, 11, 0))
     def testSingleToMultiPolygonPromotion(self):
 
         tmpfile = os.path.join(self.basetestpath, 'testSingleToMultiPolygonPromotion.gpkg')
