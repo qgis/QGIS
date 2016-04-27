@@ -24,6 +24,7 @@
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
+#include "qgsvectorlayerlabeling.h"
 
 #include <QColorDialog>
 #include <QFontDatabase>
@@ -31,14 +32,14 @@
 #include <QDialogButtonBox>
 
 
-QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString& layerId, int featureId, const QFont& labelFont, const QString& labelText, QWidget * parent, Qt::WindowFlags f ):
+QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString& layerId, const QString& providerId, int featureId, const QFont& labelFont, const QString& labelText, QWidget * parent, Qt::WindowFlags f ):
     QDialog( parent, f ), mLabelFont( labelFont ), mCurLabelField( -1 )
 {
   setupUi( this );
   fillHaliComboBox();
   fillValiComboBox();
 
-  init( layerId, featureId, labelText );
+  init( layerId, providerId, featureId, labelText );
 
   QSettings settings;
   restoreGeometry( settings.value( QString( "/Windows/ChangeLabelProps/geometry" ) ).toByteArray() );
@@ -60,11 +61,15 @@ void QgsLabelPropertyDialog::on_buttonBox_clicked( QAbstractButton *button )
   }
 }
 
-void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const QString& labelText )
+void QgsLabelPropertyDialog::init( const QString& layerId, const QString& providerId, int featureId, const QString& labelText )
 {
   //get feature attributes
   QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
   if ( !vlayer )
+  {
+    return;
+  }
+  if ( !vlayer->labeling() )
   {
     return;
   }
@@ -79,7 +84,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const 
 
   blockElementSignals( true );
 
-  QgsPalLayerSettings layerSettings = QgsPalLayerSettings::fromLayer( vlayer );
+  QgsPalLayerSettings layerSettings = vlayer->labeling()->settings( vlayer, providerId );
 
   //get label field and fill line edit
   if ( layerSettings.isExpression && !labelText.isNull() )

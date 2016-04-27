@@ -75,7 +75,7 @@ void QgsLabelSearchTree::labelsInRect( const QgsRectangle& r, QList<QgsLabelPosi
   }
 }
 
-bool QgsLabelSearchTree::insertLabel( pal::LabelPosition* labelPos, int featureId, const QString& layerName, const QString& labeltext, const QFont& labelfont, bool diagram, bool pinned )
+bool QgsLabelSearchTree::insertLabel( pal::LabelPosition* labelPos, int featureId, const QString& layerName, const QString& labeltext, const QFont& labelfont, bool diagram, bool pinned, const QString& providerId )
 {
   if ( !labelPos )
   {
@@ -93,7 +93,7 @@ bool QgsLabelSearchTree::insertLabel( pal::LabelPosition* labelPos, int featureI
     cornerPoints.push_back( QgsPoint( labelPos->getX( i ), labelPos->getY( i ) ) );
   }
   QgsLabelPosition* newEntry = new QgsLabelPosition( featureId, labelPos->getAlpha(), cornerPoints, QgsRectangle( c_min[0], c_min[1], c_max[0], c_max[1] ),
-      labelPos->getWidth(), labelPos->getHeight(), layerName, labeltext, labelfont, labelPos->getUpsideDown(), diagram, pinned );
+      labelPos->getWidth(), labelPos->getHeight(), layerName, labeltext, labelfont, labelPos->getUpsideDown(), diagram, pinned, providerId );
   mSpatialIndex.Insert( c_min, c_max, newEntry );
   mOwnedPositions << newEntry;
   return true;

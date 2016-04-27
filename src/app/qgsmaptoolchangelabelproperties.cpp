@@ -33,13 +33,15 @@ void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent* e )
 {
   deleteRubberBands();
 
-  if ( !labelAtPosition( e, mCurrentLabelPos ) || mCurrentLabelPos.isDiagram )
+  QgsLabelPosition labelPos;
+  if ( !labelAtPosition( e, labelPos ) || labelPos.isDiagram )
   {
+    mCurrentLabel = LabelDetails();
     return;
   }
 
-  QgsVectorLayer* vlayer = currentLayer();
-  if ( !vlayer || !vlayer->isEditable() )
+  mCurrentLabel = LabelDetails( labelPos );
+  if ( !mCurrentLabel.valid || !mCurrentLabel.layer || !mCurrentLabel.layer->isEditable() )
   {
     return;
   }
@@ -50,18 +52,19 @@ void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent* e )
 void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
-  QgsVectorLayer* vlayer = currentLayer();
-  if ( mLabelRubberBand && mCanvas && vlayer )
+  if ( mLabelRubberBand && mCurrentLabel.valid )
   {
     QString labeltext = QString(); // NULL QString signifies no expression
-    bool settingsOk;
-    QgsPalLayerSettings& labelSettings = currentLabelSettings( &settingsOk );
-    if ( settingsOk && labelSettings.isExpression )
+    if ( mCurrentLabel.settings.isExpression )
     {
-      labeltext = mCurrentLabelPos.labelText;
+      labeltext = mCurrentLabel.pos.labelText;
     }
 
-    QgsLabelPropertyDialog d( mCurrentLabelPos.layerID, mCurrentLabelPos.featureId, mCurrentLabelPos.labelFont, labeltext, nullptr );
+    QgsLabelPropertyDialog d( mCurrentLabel.pos.layerID,
+                              mCurrentLabel.pos.providerID,
+                              mCurrentLabel.pos.featureId,
+                              mCurrentLabel.pos.labelFont,
+                              labeltext, nullptr );
 
     connect( &d, SIGNAL( applied() ), this, SLOT( dialogPropertiesApplied() ) );
     if ( d.exec() == QDialog::Accepted )
@@ -75,7 +78,7 @@ void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent* e )
 
 void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap& changes )
 {
-  QgsVectorLayer* vlayer = currentLayer();
+  QgsVectorLayer* vlayer = mCurrentLabel.layer;
   if ( !vlayer )
     return;
 
@@ -86,7 +89,7 @@ void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap& chang
     QgsAttributeMap::const_iterator changeIt = changes.constBegin();
     for ( ; changeIt != changes.constEnd(); ++changeIt )
     {
-      vlayer->changeAttributeValue( mCurrentLabelPos.featureId, changeIt.key(), changeIt.value() );
+      vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, changeIt.key(), changeIt.value() );
     }
 
     vlayer->endEditCommand();

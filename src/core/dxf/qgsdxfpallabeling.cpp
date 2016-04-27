@@ -22,8 +22,8 @@
 #include "qgslogger.h"
 
 
-QgsDxfLabelProvider::QgsDxfLabelProvider( QgsVectorLayer* layer, QgsDxfExport* dxf, const QgsPalLayerSettings *settings )
-    : QgsVectorLayerLabelProvider( layer, false, settings )
+QgsDxfLabelProvider::QgsDxfLabelProvider( QgsVectorLayer* layer, const QString& providerId, QgsDxfExport* dxf, const QgsPalLayerSettings *settings )
+    : QgsVectorLayerLabelProvider( layer, providerId, false, settings )
     , mDxfExport( dxf )
 {
 }
@@ -52,11 +52,11 @@ void QgsDxfRuleBasedLabelProvider::reinit( QgsVectorLayer* layer )
   mRules.rootRule()->createSubProviders( layer, mSubProviders, this );
 }
 
-QgsVectorLayerLabelProvider *QgsDxfRuleBasedLabelProvider::createProvider( QgsVectorLayer *layer, bool withFeatureLoop, const QgsPalLayerSettings *settings )
+QgsVectorLayerLabelProvider *QgsDxfRuleBasedLabelProvider::createProvider( QgsVectorLayer *layer, const QString& providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings )
 {
   QgsDebugMsg( "Entering." );
   Q_UNUSED( withFeatureLoop );
-  return new QgsDxfLabelProvider( layer, mDxfExport, settings );
+  return new QgsDxfLabelProvider( layer, providerId, mDxfExport, settings );
 }
 
 void QgsDxfRuleBasedLabelProvider::drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const
