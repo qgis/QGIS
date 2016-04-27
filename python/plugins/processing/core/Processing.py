@@ -61,12 +61,14 @@ from processing.preconfigured.PreconfiguredAlgorithmProvider import Preconfigure
 
 from processing.tools import dataobjects
 
+
 class AlgListWatcher(QObject):
 
     providerAdded = pyqtSignal(str)
     providerRemoved = pyqtSignal(str)
 
 algListWatcher = AlgListWatcher()
+
 
 class Processing:
 

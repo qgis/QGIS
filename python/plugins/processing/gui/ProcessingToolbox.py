@@ -322,7 +322,6 @@ class ProcessingToolbox(BASE, WIDGET):
                     break
         self.algorithmTree.insertTopLevelItem(i, providerItem)
 
-
     def fillTreeUsingProviders(self):
         self.algorithmTree.clear()
         self.disabledProviderItems = {}

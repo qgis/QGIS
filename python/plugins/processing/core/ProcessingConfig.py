@@ -32,6 +32,7 @@ from PyQt.QtGui import QIcon
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
 
+
 class SettingsWatcher(QObject):
 
     settingsChanged = pyqtSignal()
