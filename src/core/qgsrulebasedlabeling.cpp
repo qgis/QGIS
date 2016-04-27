@@ -116,6 +116,17 @@ void QgsRuleBasedLabeling::Rule::updateElseRules()
   }
 }
 
+void QgsRuleBasedLabeling::Rule::subProviderIds( QStringList& list ) const
+{
+  Q_FOREACH ( const Rule* rule, mChildren )
+  {
+    if ( rule->settings() )
+      list << rule->ruleKey();
+
+    rule->subProviderIds( list );
+  }
+}
+
 
 void QgsRuleBasedLabeling::Rule::appendChild( QgsRuleBasedLabeling::Rule* rule )
 {
@@ -136,6 +147,22 @@ void QgsRuleBasedLabeling::Rule::removeChildAt( int i )
   delete mChildren.at( i );
   mChildren.removeAt( i );
   updateElseRules();
+}
+
+const QgsRuleBasedLabeling::Rule* QgsRuleBasedLabeling::Rule::findRuleByKey( const QString& key ) const
+{
+  // we could use a hash / map for search if this will be slow...
+
+  if ( key == mRuleKey )
+    return this;
+
+  Q_FOREACH ( Rule* rule, mChildren )
+  {
+    const Rule* r = rule->findRuleByKey( key );
+    if ( r )
+      return r;
+  }
+  return nullptr;
 }
 
 QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::clone() const
@@ -340,12 +367,22 @@ QgsRuleBasedLabeling::QgsRuleBasedLabeling( QgsRuleBasedLabeling::Rule* root )
 QgsRuleBasedLabeling::QgsRuleBasedLabeling( const QgsRuleBasedLabeling& other )
 {
   mRootRule = other.mRootRule->clone();
+
+  // normally with clone() the individual rules get new keys (UUID), but here we want to keep
+  // the tree of rules intact, so that other components that may use the rule keys work nicely (e.g. visibility presets)
+  mRootRule->setRuleKey( other.mRootRule->ruleKey() );
+  RuleList origDescendants = other.mRootRule->descendants();
+  RuleList clonedDescendants = mRootRule->descendants();
+  Q_ASSERT( origDescendants.count() == clonedDescendants.count() );
+  for ( int i = 0; i < origDescendants.count(); ++i )
+    clonedDescendants[i]->setRuleKey( origDescendants[i]->ruleKey() );
 }
 
 QgsRuleBasedLabeling::~QgsRuleBasedLabeling()
 {
   delete mRootRule;
 }
+
 
 QgsRuleBasedLabeling*QgsRuleBasedLabeling::create( const QDomElement& element )
 {
@@ -379,4 +416,21 @@ QDomElement QgsRuleBasedLabeling::save( QDomDocument& doc ) const
 QgsVectorLayerLabelProvider* QgsRuleBasedLabeling::provider( QgsVectorLayer* layer ) const
 {
   return new QgsRuleBasedLabelProvider( *this, layer, false );
+}
+
+QStringList QgsRuleBasedLabeling::subProviders() const
+{
+  QStringList lst;
+  mRootRule->subProviderIds( lst );
+  return lst;
+}
+
+QgsPalLayerSettings QgsRuleBasedLabeling::settings( QgsVectorLayer* layer, const QString& providerId ) const
+{
+  Q_UNUSED( layer );
+  const Rule* rule = mRootRule->findRuleByKey( providerId );
+  if ( rule && rule->settings() )
+    return *rule->settings();
+
+  return QgsPalLayerSettings();
 }

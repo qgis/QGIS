@@ -180,6 +180,14 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * @return A list of rules
          */
         RuleList& children() { return mChildren; }
+
+        /**
+         * Returns all children, grand-children, grand-grand-children, grand-gra... you get it
+         *
+         * @return A list of descendant rules
+         */
+        RuleList descendants() const { RuleList l; Q_FOREACH ( Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
+
         /**
          * The parent rule
          *
@@ -202,6 +210,9 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         //! delete child rule
         void removeChildAt( int i );
 
+        //! Try to find a rule given its unique key
+        const Rule* findRuleByKey( const QString& key ) const;
+
         //! clone this rule, return new instance
         Rule* clone() const;
 
@@ -221,6 +232,9 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
         //! add providers
         void createSubProviders( QgsVectorLayer* layer, RuleToProviderMap& subProviders, QgsRuleBasedLabelProvider *provider );
+
+        //! append rule keys of descendants that contain valid settings (i.e. they will be sub-providers)
+        void subProviderIds( QStringList& list ) const;
 
         //! call prepare() on sub-providers and populate attributeNames
         void prepare( const QgsRenderContext& context, QStringList& attributeNames, RuleToProviderMap& subProviders );
@@ -294,6 +308,8 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     virtual QString type() const override;
     virtual QDomElement save( QDomDocument& doc ) const override;
     virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer* layer ) const override;
+    virtual QStringList subProviders() const override;
+    virtual QgsPalLayerSettings settings( QgsVectorLayer* layer, const QString& providerId = QString() ) const override;
 
   protected:
     Rule* mRootRule;

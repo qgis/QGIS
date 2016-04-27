@@ -56,3 +56,11 @@ QDomElement QgsVectorLayerSimpleLabeling::save( QDomDocument& doc ) const
   elem.setAttribute( "type", "simple" );
   return elem;
 }
+
+QgsPalLayerSettings QgsVectorLayerSimpleLabeling::settings( QgsVectorLayer* layer, const QString& providerId ) const
+{
+  if ( providerId.isEmpty() )
+    return QgsPalLayerSettings::fromLayer( layer );
+  else
+    return QgsPalLayerSettings();
+}

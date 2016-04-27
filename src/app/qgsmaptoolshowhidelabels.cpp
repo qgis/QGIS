@@ -257,15 +257,15 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer* vlayer,
   QList<QgsLabelPosition>::const_iterator it;
   for ( it = labelPosList.constBegin() ; it != labelPosList.constEnd(); ++it )
   {
-    mCurrentLabelPos = *it;
+    const QgsLabelPosition& pos = *it;
 
-    if ( mCurrentLabelPos.layerID != vlayer->id() )
+    if ( pos.layerID != vlayer->id() )
     {
       // only work with labels from the current active and editable layer
       continue;
     }
 
-    listPos.append(( *it ) );
+    listPos.append( pos );
   }
 
   QApplication::restoreOverrideCursor();
