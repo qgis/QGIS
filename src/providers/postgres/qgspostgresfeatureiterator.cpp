@@ -581,7 +581,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause, long
       break;
 
     case pktInt:
-    case pktInt64:
+    case pktUint64:
       query += delim + QgsPostgresConn::quotedIdentifier( mSource->mFields.at( mSource->mPrimaryKeyAttrs.at( 0 ) ).name() );
       delim = ',';
       break;
@@ -716,7 +716,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
       break;
 
     case pktInt:
-    case pktInt64:
+    case pktUint64:
       fid = mConn->getBinaryInt( queryResult, row, col++ );
       if ( !subsetOfAttributes || fetchAttributes.contains( mSource->mPrimaryKeyAttrs.at( 0 ) ) )
       {
