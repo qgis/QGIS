@@ -17,6 +17,7 @@
 
 #include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
+#include "qgsgeos.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 
@@ -439,6 +440,7 @@ QgsTracer::QgsTracer()
     : mGraph( 0 )
     , mReprojectionEnabled( false )
     , mMaxFeatureCount( 0 )
+    , mHasTopologyProblem( false )
 {
 }
 
@@ -447,6 +449,8 @@ bool QgsTracer::initGraph()
 {
   if ( mGraph )
     return true; // already initialized
+
+  mHasTopologyProblem = false;
 
   QgsFeature f;
   QgsMultiPolyline mpl;
@@ -499,23 +503,37 @@ bool QgsTracer::initGraph()
 
   t2.start();
 
+  int timeNodingCall = 0;
+
 #if 0
   // without noding - if data are known to be noded beforehand
-  int timeNodingCall = 0;
 #else
   QgsGeometry* allGeom = QgsGeometry::fromMultiPolyline( mpl );
 
-  t2a.start();
-  GEOSGeometry* allNoded = GEOSNode_r( QgsGeometry::getGEOSHandler(), allGeom->asGeos() );
-  int timeNodingCall = t2a.elapsed();
+  try
+  {
+    t2a.start();
+    // GEOSNode_r may throw an exception
+    GEOSGeometry* allNoded = GEOSNode_r( QgsGeometry::getGEOSHandler(), allGeom->asGeos() );
+    timeNodingCall = t2a.elapsed();
 
-  QgsGeometry* noded = new QgsGeometry;
-  noded->fromGeos( allNoded );
-  delete allGeom;
+    QgsGeometry* noded = new QgsGeometry;
+    noded->fromGeos( allNoded );
+    delete allGeom;
 
-  mpl = noded->asMultiPolyline();
+    mpl = noded->asMultiPolyline();
 
-  delete noded;
+    delete noded;
+  }
+  catch ( GEOSException &e )
+  {
+    // no big deal... we will just not have nicely noded linework, potentially
+    // missing some intersections
+
+    mHasTopologyProblem = true;
+
+    QgsDebugMsg( "Tracer Noding Exception: " + e.what() );
+  }
 #endif
 
   int timeNoding = t2.elapsed();
