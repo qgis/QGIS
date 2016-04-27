@@ -1,5 +1,5 @@
 /***************************************************************************
-  QgsFilterTableFieldsDialog.cpp
+  qgsorganizetablecolumnsdialog.cpp
   -------------------
          date                 : Feb 2016
          copyright            : Stéphane Brunner
@@ -17,7 +17,7 @@
 #include <QDockWidget>
 #include <QMessageBox>
 
-#include "qgsfiltertablefieldsdialog.h"
+#include "qgsorganizetablecolumnsdialog.h"
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetableview.h"
@@ -41,7 +41,7 @@
 #include "qgseditorwidgetregistry.h"
 
 
-QgsFilterTableFieldsDialog::QgsFilterTableFieldsDialog( const QgsVectorLayer* vl, const QStringList visble, QWidget *parent, Qt::WindowFlags flags )
+QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLayer* vl, const QStringList visble, QWidget *parent, Qt::WindowFlags flags )
     : QDialog( parent, flags )
 {
   setupUi( this );
@@ -76,13 +76,13 @@ QgsFilterTableFieldsDialog::QgsFilterTableFieldsDialog( const QgsVectorLayer* vl
   restoreGeometry( settings.value( "/Windows/QgsFilterTableFieldsDialog/geometry" ).toByteArray() );
 }
 
-QgsFilterTableFieldsDialog::~QgsFilterTableFieldsDialog()
+QgsOrganizeTableColumnsDialog::~QgsOrganizeTableColumnsDialog()
 {
   QSettings settings;
   settings.setValue( "/Windows/QgsFilterTableFieldsDialog/geometry", saveGeometry() );
 }
 
-QStringList QgsFilterTableFieldsDialog::selectedFields()
+QStringList QgsOrganizeTableColumnsDialog::selectedFields() const
 {
   QStringList selectionList;
   for ( int i = 0 ; i < mFieldsList->count() ; i++ )

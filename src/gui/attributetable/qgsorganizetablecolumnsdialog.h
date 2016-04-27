@@ -1,5 +1,5 @@
 /***************************************************************************
-  QgsFilterTableFieldsDialog.h - dialog for attribute table
+  qgsorganizetablecolumnsdialog.h - dialog for attribute table
   -------------------
          date                 : Feb 2016
          copyright            : Stéphane Brunner
@@ -14,35 +14,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSFILTERTABLEFIELDSDIALOG_H_
-#define QGSFILTERTABLEFIELDSDIALOG_H_
+#ifndef QGSORGANIZEFILTERTABLESDIALOG_H_
+#define QGSORGANIZEFILTERTABLESDIALOG_H_
 
 #include <QDialog>
-#include <QModelIndex>
-#include <QItemSelectionModel>
 
-#include <time.h>
+#include "ui_qgsorganizetablecolumnsdialog.h"
 
-#include "ui_qgsfiltertablefieldsdialog.h"
-#include "qgscontexthelp.h"
+class QgsVectorLayer;
 
-#include "qgsattributedialog.h"
-#include "qgsvectorlayer.h" //QgsFeatureIds
-#include "qgsfieldmodel.h"
-#include "qgssearchwidgetwrapper.h"
-#include <QDockWidget>
-
-class QDialogButtonBox;
-class QPushButton;
-class QLineEdit;
-class QComboBox;
-class QMenu;
-class QSignalMapper;
-class QgsAttributeTableModel;
-class QgsAttributeTableFilterModel;
-class QgsRubberBand;
-
-class GUI_EXPORT QgsFilterTableFieldsDialog : public QDialog, private Ui::QgsFilterTableFieldsDialog
+class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::QgsOrganizeTableColumnsDialog
 {
     Q_OBJECT
 
@@ -54,17 +35,17 @@ class GUI_EXPORT QgsFilterTableFieldsDialog : public QDialog, private Ui::QgsFil
      * @param parent parent object
      * @param flags window flags
      */
-    QgsFilterTableFieldsDialog( const QgsVectorLayer* vl, QStringList visible, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window );
+    QgsOrganizeTableColumnsDialog( const QgsVectorLayer* vl, QStringList visible, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window );
     /**
      * Destructor
      */
-    ~QgsFilterTableFieldsDialog();
+    ~QgsOrganizeTableColumnsDialog();
 
     /**
      * Get the selected fields name
      * @return The selected fields name
      */
-    QStringList selectedFields();
+    QStringList selectedFields() const;
 };
 
 #endif

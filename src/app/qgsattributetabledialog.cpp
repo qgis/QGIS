@@ -21,7 +21,7 @@
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetableview.h"
-#include "qgsfiltertablefieldsdialog.h"
+#include "qgsorganizetablecolumnsdialog.h"
 
 #include <qgsapplication.h>
 #include <qgsvectordataprovider.h>
@@ -776,7 +776,7 @@ void QgsAttributeTableDialog::on_mFilterTableFields_clicked()
     return;
   }
 
-  QgsFilterTableFieldsDialog dialog( mLayer, mVisibleFields );
+  QgsOrganizeTableColumnsDialog dialog( mLayer, mVisibleFields );
   if ( dialog.exec() == QDialog::Accepted )
   {
     mVisibleFields = dialog.selectedFields();
