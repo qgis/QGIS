@@ -36,7 +36,7 @@ from qgis.utils import iface
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.core.Processing import Processing, algListWatcher
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.ProcessingConfig import ProcessingConfig
+from processing.core.ProcessingConfig import ProcessingConfig, settingsWatcher
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui import AlgorithmClassification
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -52,8 +52,6 @@ WIDGET, BASE = uic.loadUiType(
 
 
 class ProcessingToolbox(BASE, WIDGET):
-
-    updateAlgList = True
 
     def __init__(self):
         super(ProcessingToolbox, self).__init__(None)
@@ -85,6 +83,7 @@ class ProcessingToolbox(BASE, WIDGET):
 
         algListWatcher.providerRemoved.connect(self.removeProvider)
         algListWatcher.providerAdded.connect(self.addProvider)
+        settingsWatcher.settingsChanged.connect(self.fillTree)
 
     def showDisabled(self):
         self.txtDisabled.setVisible(False)
@@ -157,12 +156,7 @@ class ProcessingToolbox(BASE, WIDGET):
             QMessageBox.warning(self, "Activate provider",
                                 "The provider has been activated, but it might need additional configuration.")
 
-
-    def updateProvider(self, providerName, updateAlgsList=True):
-        if updateAlgsList:
-            self.updateAlgList = False
-            Processing.updateAlgsList()
-            self.updateAlgList = True
+    def updateProvider(self, providerName):
         item = self._providerItem(providerName)
         if item is not None:
             item.refresh()
