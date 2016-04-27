@@ -162,6 +162,9 @@ int QgsSublayersDialog::exec()
     return QDialog::Accepted;
   }
 
+  layersTable->sortByColumn( 1, Qt::AscendingOrder );
+  layersTable->setSortingEnabled( true );
+
   // if we got here, disable override cursor, open dialog and return result
   // TODO add override cursor where it is missing (e.g. when opening via "Add Raster")
   QCursor cursor;
