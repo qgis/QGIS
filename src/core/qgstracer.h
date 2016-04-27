@@ -76,6 +76,11 @@ class CORE_EXPORT QgsTracer : public QObject
     //! Whether the internal data structures have been initialized
     bool isInitialized() const { return mGraph != nullptr; }
 
+    //! Whether there was an error during graph creation due to noding exception,
+    //! indicating some input data topology problems
+    //! @note added in QGIS 2.14.2
+    bool hasTopologyProblem() const { return mHasTopologyProblem; }
+
     //! Possible errors that may happen when calling findShortestPath()
     enum PathError
     {
@@ -127,6 +132,9 @@ class CORE_EXPORT QgsTracer : public QObject
     //! Limit of how many features can be in the graph (0 means no limit).
     //! This is to avoid possibly long graph preparation for complicated layers
     int mMaxFeatureCount;
+    //! A flag indicating that there was an error during graph creation
+    //! due to noding exception, indicating some input data topology problems
+    bool mHasTopologyProblem;
 };
 
 

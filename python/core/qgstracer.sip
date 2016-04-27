@@ -49,6 +49,11 @@ class QgsTracer : QObject
     //! Whether the internal data structures have been initialized
     bool isInitialized() const;
 
+    //! Whether there was an error during graph creation due to noding exception,
+    //! indicating some input data topology problems
+    //! @note added in QGIS 2.14.2
+    bool hasTopologyProblem() const;
+
     //! Possible errors that may happen when calling findShortestPath()
     enum PathError
     {
