@@ -250,7 +250,7 @@ void QgsRuleBasedLabeling::Rule::createSubProviders( QgsVectorLayer* layer, QgsR
   {
     // add provider!
     QgsVectorLayerLabelProvider *p = provider->createProvider( layer, mRuleKey, false, mSettings );
-    Q_ASSERT( !subProviders.contains( this ) );
+    delete subProviders.value( this, nullptr );
     subProviders[this] = p;
   }
 
