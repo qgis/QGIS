@@ -419,7 +419,7 @@ class ModelerParametersDialog(QDialog):
                 if param.name in alg.params:
                     value = alg.params[param.name]
                 else:
-                    value = None
+                    value = param.default
                 if isinstance(param, (
                         ParameterRaster,
                         ParameterVector,
