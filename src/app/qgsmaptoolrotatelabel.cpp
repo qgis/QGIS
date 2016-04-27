@@ -61,29 +61,26 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent* e )
     return;
 
   // only rotate non-pinned OverPoint placements until other placements are supported in pal::Feature
-  QgsPalLayerSettings& layerSettings = mCurrentLabel.settings;
-  QgsVectorLayer* vlayer = mCurrentLabel.layer;
 
   if ( !mCurrentLabel.pos.isPinned
-       && layerSettings.placement != QgsPalLayerSettings::OverPoint )
+       && mCurrentLabel.settings.placement != QgsPalLayerSettings::OverPoint )
   {
     return;
   }
 
   // rotate unpinned labels (i.e. no hali/vali settings) as if hali/vali was Center/Half
-  if ( !rotationPoint( mRotationPoint, false, !mCurrentLabel.pos.isPinned ) )
+  if ( !currentLabelRotationPoint( mRotationPoint, false, !mCurrentLabel.pos.isPinned ) )
   {
     return;
   }
 
-  int rotationCol;
-  if ( layerIsRotatable( vlayer, rotationCol ) )
+  if ( true )
   {
     mCurrentMouseAzimuth = azimuthToCCW( mRotationPoint.azimuth( toMapCoordinates( e->pos() ) ) );
 
-
     bool hasRotationValue;
-    if ( dataDefinedRotation( vlayer, mCurrentLabel.pos.featureId, mCurrentRotation, hasRotationValue, true ) )
+    int rotationCol;
+    if ( currentLabelDataDefinedRotation( mCurrentRotation, hasRotationValue, rotationCol, true ) )
     {
       if ( !hasRotationValue )
       {
@@ -162,7 +159,7 @@ void QgsMapToolRotateLabel::canvasReleaseEvent( QgsMapMouseEvent* e )
   }
 
   int rotationCol;
-  if ( !layerIsRotatable( vlayer, rotationCol ) )
+  if ( !labelIsRotatable( vlayer, mCurrentLabel.settings, rotationCol ) )
   {
     return;
   }

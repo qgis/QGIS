@@ -100,7 +100,7 @@ void QgsMapToolLabel::createRubberBands()
 
     //fixpoint rubber band
     QgsPoint fixPoint;
-    if ( rotationPoint( fixPoint, false, false ) )
+    if ( currentLabelRotationPoint( fixPoint, false, false ) )
     {
       if ( mCanvas )
       {
@@ -222,7 +222,7 @@ bool QgsMapToolLabel::currentFeature( QgsFeature& f, bool fetchGeom )
                             ).nextFeature( f );
 }
 
-QFont QgsMapToolLabel::labelFontCurrentFeature()
+QFont QgsMapToolLabel::currentLabelFont()
 {
   QFont font;
 
@@ -293,7 +293,7 @@ QFont QgsMapToolLabel::labelFontCurrentFeature()
   return font;
 }
 
-bool QgsMapToolLabel::preserveRotation()
+bool QgsMapToolLabel::currentLabelPreserveRotation()
 {
   if ( mCurrentLabel.valid )
   {
@@ -303,7 +303,7 @@ bool QgsMapToolLabel::preserveRotation()
   return true; // default, so there is no accidental data loss
 }
 
-bool QgsMapToolLabel::rotationPoint( QgsPoint& pos, bool ignoreUpsideDown, bool rotatingUnpinned )
+bool QgsMapToolLabel::currentLabelRotationPoint( QgsPoint& pos, bool ignoreUpsideDown, bool rotatingUnpinned )
 {
   QVector<QgsPoint> cornerPoints = mCurrentLabel.pos.cornerPoints;
   if ( cornerPoints.size() < 4 )
@@ -438,8 +438,11 @@ int QgsMapToolLabel::dataDefinedColumnIndex( QgsPalLayerSettings::DataDefinedPro
   return -1;
 }
 
-bool QgsMapToolLabel::dataDefinedPosition( QgsVectorLayer* vlayer, QgsFeatureId featureId, double& x, bool& xSuccess, double& y, bool& ySuccess, int& xCol, int& yCol ) const
+bool QgsMapToolLabel::currentLabelDataDefinedPosition( double& x, bool& xSuccess, double& y, bool& ySuccess, int& xCol, int& yCol ) const
 {
+  QgsVectorLayer* vlayer = mCurrentLabel.layer;
+  QgsFeatureId featureId = mCurrentLabel.pos.featureId;
+
   xSuccess = false;
   ySuccess = false;
 
@@ -484,27 +487,33 @@ bool QgsMapToolLabel::layerIsRotatable( QgsVectorLayer* vlayer, int& rotationCol
 
   Q_FOREACH ( const QString& providerId, vlayer->labeling()->subProviders() )
   {
-    QString fieldname = dataDefinedColumnName( QgsPalLayerSettings::Rotation,
-                        vlayer->labeling()->settings( vlayer, providerId ) );
-    rotationCol = vlayer->fieldNameIndex( fieldname );
-    if ( rotationCol != -1 )
+    if ( labelIsRotatable( vlayer, vlayer->labeling()->settings( vlayer, providerId ), rotationCol ) )
       return true;
   }
 
   return false;
 }
 
-
-bool QgsMapToolLabel::dataDefinedRotation( QgsVectorLayer* vlayer, QgsFeatureId featureId, double& rotation, bool& rotationSuccess, bool ignoreXY ) const
+bool QgsMapToolLabel::labelIsRotatable( QgsVectorLayer* layer, const QgsPalLayerSettings& settings, int& rotationCol ) const
 {
+  QString rColName = dataDefinedColumnName( QgsPalLayerSettings::Rotation, settings );
+  rotationCol = layer->fieldNameIndex( rColName );
+  return rotationCol != -1;
+}
+
+
+bool QgsMapToolLabel::currentLabelDataDefinedRotation( double& rotation, bool& rotationSuccess, int& rCol, bool ignoreXY ) const
+{
+  QgsVectorLayer* vlayer = mCurrentLabel.layer;
+  QgsFeatureId featureId = mCurrentLabel.pos.featureId;
+
   rotationSuccess = false;
   if ( !vlayer )
   {
     return false;
   }
 
-  int rotationCol;
-  if ( !layerIsRotatable( vlayer, rotationCol ) )
+  if ( !labelIsRotatable( vlayer, mCurrentLabel.settings, rCol ) )
   {
     return false;
   }
@@ -521,13 +530,13 @@ bool QgsMapToolLabel::dataDefinedRotation( QgsVectorLayer* vlayer, QgsFeatureId 
     int xCol, yCol;
     double x, y;
     bool xSuccess, ySuccess;
-    if ( !dataDefinedPosition( vlayer, featureId, x, xSuccess, y, ySuccess, xCol, yCol ) || !xSuccess || !ySuccess )
+    if ( !currentLabelDataDefinedPosition( x, xSuccess, y, ySuccess, xCol, yCol ) || !xSuccess || !ySuccess )
     {
       return false;
     }
   }
 
-  rotation = f.attribute( rotationCol ).toDouble( &rotationSuccess );
+  rotation = f.attribute( rCol ).toDouble( &rotationSuccess );
   return true;
 }
 

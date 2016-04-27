@@ -272,7 +272,7 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent *
     if ( isPinned() && ( doUnpin  || toggleUnpinOrPin ) )
     {
       // unpin previously pinned label (set attribute table fields to NULL)
-      if ( pinUnpinLabel( vlayer, pos, false ) )
+      if ( pinUnpinCurrentFeature( false ) )
       {
         labelChanged = true;
       }
@@ -285,7 +285,7 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent *
     if ( !isPinned() && ( !doUnpin || toggleUnpinOrPin ) )
     {
       // pin label's location, and optionally rotation, to attribute table
-      if ( pinUnpinLabel( vlayer, pos, true ) )
+      if ( pinUnpinCurrentFeature( true ) )
       {
         labelChanged = true;
       }
@@ -308,10 +308,11 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent *
   }
 }
 
-bool QgsMapToolPinLabels::pinUnpinLabel( QgsVectorLayer* vlayer,
-    const QgsLabelPosition& labelpos,
-    const bool pin )
+bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
 {
+  QgsVectorLayer* vlayer = mCurrentLabel.layer;
+  const QgsLabelPosition& labelpos = mCurrentLabel.pos;
+
   // skip diagrams
   if ( labelpos.isDiagram )
   {
@@ -324,7 +325,7 @@ bool QgsMapToolPinLabels::pinUnpinLabel( QgsVectorLayer* vlayer,
   double xPosOrig, yPosOrig;
   bool xSuccess, ySuccess;
 
-  if ( !dataDefinedPosition( vlayer, labelpos.featureId, xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
+  if ( !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
   {
     QgsDebugMsg( QString( "Label X or Y column not mapped, skipping" ) );
     return false;
@@ -335,11 +336,10 @@ bool QgsMapToolPinLabels::pinUnpinLabel( QgsVectorLayer* vlayer,
   bool rSuccess = false;
   double defRot;
 
-  bool hasRCol = ( layerIsRotatable( vlayer, rCol )
-                   && dataDefinedRotation( vlayer, labelpos.featureId, defRot, rSuccess, true ) );
+  bool hasRCol = currentLabelDataDefinedRotation( defRot, rSuccess, rCol, true );
 
   // get whether to preserve predefined rotation data during label pin/unpin operations
-  bool preserveRot = preserveRotation();
+  bool preserveRot = currentLabelPreserveRotation();
 
   // edit attribute table
   int fid = labelpos.featureId;
@@ -353,7 +353,7 @@ bool QgsMapToolPinLabels::pinUnpinLabel( QgsVectorLayer* vlayer,
 //     QgsPoint labelpoint = labelpos.cornerPoints.at( 0 );
 
     QgsPoint referencePoint;
-    if ( !rotationPoint( referencePoint, !preserveRot, false ) )
+    if ( !currentLabelRotationPoint( referencePoint, !preserveRot, false ) )
     {
       referencePoint.setX( labelpos.labelRect.xMinimum() );
       referencePoint.setY( labelpos.labelRect.yMinimum() );
@@ -417,27 +417,23 @@ bool QgsMapToolPinLabels::pinUnpinLabel( QgsVectorLayer* vlayer,
   return true;
 }
 
-bool QgsMapToolPinLabels::pinUnpinFeature( QgsVectorLayer* vlayer,
-    const QgsLabelPosition& labelpos,
-    const bool pin )
+bool QgsMapToolPinLabels::pinUnpinCurrentFeature( bool pin )
 {
   bool rc = false;
 
-  if ( ! mCurrentLabelPos.isDiagram )
-    rc = pinUnpinLabel( vlayer, labelpos, pin );
+  if ( ! mCurrentLabel.pos.isDiagram )
+    rc = pinUnpinCurrentLabel( pin );
   else
-    rc = pinUnpinDiagram( vlayer, labelpos, pin );
+    rc = pinUnpinCurrentDiagram( pin );
 
   return rc;
 }
 
-bool QgsMapToolPinLabels::pinUnpinDiagram( QgsVectorLayer* vlayer,
-    const QgsLabelPosition& labelpos,
-    const bool pin )
+bool QgsMapToolPinLabels::pinUnpinCurrentDiagram( bool pin )
 {
 
   // skip diagrams
-  if ( ! labelpos.isDiagram )
+  if ( ! mCurrentLabel.pos.isDiagram )
     return false;
 
   // verify attribute table has x, y fields mapped
@@ -445,18 +441,18 @@ bool QgsMapToolPinLabels::pinUnpinDiagram( QgsVectorLayer* vlayer,
   double xPosOrig, yPosOrig;
   bool xSuccess, ySuccess;
 
-  if ( !dataDefinedPosition( vlayer, mCurrentLabelPos.featureId, xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
+  if ( !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
     return false;
 
   // edit attribute table
-  int fid = labelpos.featureId;
+  int fid = mCurrentLabel.pos.featureId;
 
   bool writeFailed = false;
   QString labelText = currentLabelText( 24 );
 
   if ( pin )
   {
-    QgsPoint referencePoint = mCurrentLabelPos.labelRect.center();
+    QgsPoint referencePoint = mCurrentLabel.pos.labelRect.center();
     double labelX = referencePoint.x();
     double labelY = referencePoint.y();
 
