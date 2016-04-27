@@ -48,8 +48,9 @@ from PyQt.QtGui import (QIcon,
 from qgis.gui import QgsDoubleSpinBox
 from qgis.gui import QgsSpinBox
 
-from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingConfig import Setting
+from processing.core.ProcessingConfig import (ProcessingConfig,
+                                              settingsWatcher,
+                                              Setting)
 from processing.core.Processing import Processing
 from processing.gui.menus import updateMenus
 from processing.gui.menus import menusSettingsGroup
@@ -249,6 +250,7 @@ class ConfigDialog(BASE, WIDGET):
                     return
             setting.save()
         Processing.updateAlgsList()
+        settingsWatcher.settingsChanged.emit()
         updateMenus()
 
         QDialog.accept(self)

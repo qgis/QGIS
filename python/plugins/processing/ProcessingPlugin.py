@@ -62,7 +62,6 @@ class ProcessingPlugin:
         self.toolbox = ProcessingToolbox()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
         self.toolbox.hide()
-        Processing.addAlgListListener(self.toolbox)
 
         self.menu = QMenu(self.iface.mainWindow().menuBar())
         self.menu.setObjectName('processing')
@@ -147,7 +146,6 @@ class ProcessingPlugin:
             self.commander = CommanderWindow(
                 self.iface.mainWindow(),
                 self.iface.mapCanvas())
-            Processing.addAlgListListener(self.commander)
         self.commander.prepareGui()
         self.commander.show()
 
