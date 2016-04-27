@@ -16,6 +16,8 @@
 #ifndef QGSSQLITEEXPRESSIONCOMPILER_H
 #define QGSSQLITEEXPRESSIONCOMPILER_H
 
+///@cond PRIVATE
+
 #include "qgssqlexpressioncompiler.h"
 #include "qgsexpression.h"
 
@@ -45,5 +47,7 @@ class CORE_EXPORT QgsSQLiteExpressionCompiler : public QgsSqlExpressionCompiler
     virtual QString quotedValue( const QVariant& value, bool& ok ) override;
 
 };
+
+///@endcond
 
 #endif // QGSSQLITEEXPRESSIONCOMPILER_H

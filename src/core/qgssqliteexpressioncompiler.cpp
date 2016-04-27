@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+///@cond PRIVATE
+
 #include "qgssqliteexpressioncompiler.h"
 #include "qgssqlexpressioncompiler.h"
 
@@ -81,3 +83,5 @@ QString QgsSQLiteExpressionCompiler::quotedValue( const QVariant& value, bool& o
       return v.replace( '\'', "''" ).prepend( '\'' ).append( '\'' );
   }
 }
+
+///@endcond
