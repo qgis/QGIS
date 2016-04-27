@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>539</width>
-    <height>836</height>
+    <width>386</width>
+    <height>660</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -76,7 +76,7 @@
      </item>
     </layout>
    </item>
-   <item row="4" column="0">
+   <item row="1" column="0">
     <widget class="QLabel" name="label">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -92,7 +92,7 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
+   <item row="1" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_12">
      <property name="topMargin">
       <number>0</number>
@@ -138,7 +138,7 @@
      </item>
     </layout>
    </item>
-   <item row="8" column="0">
+   <item row="2" column="0">
     <widget class="QLabel" name="mSymbolWidthLabel">
      <property name="text">
       <string>Symbol width</string>
@@ -148,7 +148,7 @@
      </property>
     </widget>
    </item>
-   <item row="8" column="1">
+   <item row="2" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QgsDoubleSpinBox" name="mWidthSpinBox">
@@ -191,7 +191,17 @@
      </item>
     </layout>
    </item>
-   <item row="16" column="1">
+   <item row="3" column="0">
+    <widget class="QLabel" name="mSymbolHeightLabel">
+     <property name="text">
+      <string>Symbol height</string>
+     </property>
+     <property name="buddy">
+      <cstring>mHeightSpinBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QgsDoubleSpinBox" name="mHeightSpinBox">
@@ -234,7 +244,7 @@
      </item>
     </layout>
    </item>
-   <item row="22" column="0">
+   <item row="4" column="0">
     <widget class="QLabel" name="mOutlineStyleLabel">
      <property name="text">
       <string>Outline style</string>
@@ -244,7 +254,7 @@
      </property>
     </widget>
    </item>
-   <item row="22" column="1">
+   <item row="4" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_8">
      <item>
       <widget class="QgsPenStyleComboBox" name="mOutlineStyleComboBox"/>
@@ -258,7 +268,7 @@
      </item>
     </layout>
    </item>
-   <item row="26" column="0">
+   <item row="5" column="0">
     <widget class="QLabel" name="label_8">
      <property name="text">
       <string>Join style</string>
@@ -268,7 +278,7 @@
      </property>
     </widget>
    </item>
-   <item row="26" column="1">
+   <item row="5" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_7">
      <item>
       <widget class="QgsPenJoinStyleComboBox" name="cboJoinStyle"/>
@@ -282,7 +292,7 @@
      </item>
     </layout>
    </item>
-   <item row="30" column="0">
+   <item row="6" column="0">
     <widget class="QLabel" name="mOutlineWidthLabel">
      <property name="text">
       <string>Outline width</string>
@@ -292,7 +302,7 @@
      </property>
     </widget>
    </item>
-   <item row="30" column="1">
+   <item row="6" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QgsDoubleSpinBox" name="mOutlineWidthSpinBox">
@@ -338,7 +348,7 @@
      </item>
     </layout>
    </item>
-   <item row="36" column="0">
+   <item row="7" column="0">
     <widget class="QLabel" name="mRotationLabel">
      <property name="text">
       <string>Rotation</string>
@@ -348,7 +358,7 @@
      </property>
     </widget>
    </item>
-   <item row="36" column="1">
+   <item row="7" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_10">
      <item>
       <widget class="QgsDoubleSpinBox" name="mRotationSpinBox">
@@ -375,7 +385,7 @@
      </item>
     </layout>
    </item>
-   <item row="40" column="0">
+   <item row="8" column="0">
     <widget class="QLabel" name="label_5">
      <property name="text">
       <string>Offset X,Y</string>
@@ -385,7 +395,7 @@
      </property>
     </widget>
    </item>
-   <item row="40" column="1">
+   <item row="8" column="1">
     <layout class="QGridLayout" name="gridLayout">
      <item row="4" column="0">
       <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true">
@@ -457,7 +467,7 @@
      </item>
     </layout>
    </item>
-   <item row="44" column="0">
+   <item row="9" column="0">
     <widget class="QLabel" name="mAnchorPointLabel">
      <property name="text">
       <string>Anchor point</string>
@@ -467,7 +477,7 @@
      </property>
     </widget>
    </item>
-   <item row="44" column="1">
+   <item row="9" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_13">
      <item>
       <widget class="QComboBox" name="mVerticalAnchorComboBox">
@@ -497,7 +507,7 @@
      </item>
     </layout>
    </item>
-   <item row="48" column="1">
+   <item row="10" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_14">
      <item>
       <widget class="QComboBox" name="mHorizontalAnchorComboBox">
@@ -527,7 +537,7 @@
      </item>
     </layout>
    </item>
-   <item row="52" column="0" colspan="2">
+   <item row="11" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_11">
      <item>
       <widget class="QListWidget" name="mShapeListWidget">
@@ -584,25 +594,9 @@
      </item>
     </layout>
    </item>
-   <item row="16" column="0">
-    <widget class="QLabel" name="mSymbolHeightLabel">
-     <property name="text">
-      <string>Symbol height</string>
-     </property>
-     <property name="buddy">
-      <cstring>mHeightSpinBox</cstring>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>QgsColorButtonV2</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>QgsDataDefinedButton</class>
    <extends>QToolButton</extends>
@@ -617,6 +611,12 @@
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
