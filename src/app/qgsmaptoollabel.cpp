@@ -548,7 +548,7 @@ bool QgsMapToolLabel::dataDefinedShowHide( QgsVectorLayer* vlayer, QgsFeatureId 
     return false;
   }
 
-  if ( mCurrentLabelPos.isDiagram )
+  if ( mCurrentLabel.pos.isDiagram )
   {
     if ( ! diagramCanShowHide( vlayer, showCol ) )
     {
@@ -661,11 +661,9 @@ bool QgsMapToolLabel::isPinned()
   return rc;
 }
 
-bool QgsMapToolLabel::diagramCanShowHide( QgsMapLayer* ml, int& showCol ) const
+bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer* vlayer, int& showCol ) const
 {
   bool rc = false;
-
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( ml );
 
   if ( vlayer && vlayer->isEditable() && vlayer->diagramsEnabled() )
   {

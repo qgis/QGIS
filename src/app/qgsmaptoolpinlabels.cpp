@@ -187,6 +187,8 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
   {
     const QgsLabelPosition& pos = *it;
 
+    mCurrentLabel = LabelDetails( pos );
+
     if ( isPinned() )
     {
       QString labelStringID = QString( "%0|%1|%2" ).arg( QString::number( pos.isDiagram ), pos.layerID, QString::number( pos.featureId ) );
@@ -445,6 +447,7 @@ bool QgsMapToolPinLabels::pinUnpinCurrentDiagram( bool pin )
     return false;
 
   // edit attribute table
+  QgsVectorLayer* vlayer = mCurrentLabel.layer;
   int fid = mCurrentLabel.pos.featureId;
 
   bool writeFailed = false;
