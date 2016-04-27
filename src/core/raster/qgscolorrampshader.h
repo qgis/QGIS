@@ -130,7 +130,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     /** Maximum size of the color cache. The color cache could eat a ton of
      * memory if you have 32-bit data
      * @deprecated will be removed in QGIS 3.0 */
-    Q_DECL_DEPRECATED int mMaximumColorCacheSize;
+    int mMaximumColorCacheSize;
 
     /** Do not render values out of range */
     bool mClip;

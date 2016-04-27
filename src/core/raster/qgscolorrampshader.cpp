@@ -100,7 +100,7 @@ bool QgsColorRampShader::shade( double theValue, int* theReturnRedValue, int* th
       if ( rangeValue > 0 )
       {
         int lutSize = 256; // TODO: test if speed can be increased with a different LUT size
-        mLUTFactor = ( lutSize + 0.0000001 ) / rangeValue; // increase slightly to make sure last LUT category is correct
+        mLUTFactor = ( lutSize - 0.0000001 ) / rangeValue; // decrease slightly to make sure last LUT category is correct
         idx = 0;
         double val;
         mLUT.reserve( lutSize );
