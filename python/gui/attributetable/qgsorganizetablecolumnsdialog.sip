@@ -1,7 +1,7 @@
-class QgsFilterTableFieldsDialog : QDialog
+class QgsOrganizeTableColumnsDialog : QDialog
 {
 %TypeHeaderCode
-#include <qgsfiltertablefieldsdialog.h>
+#include <qgsorganizetablecolumnsdialog.h>
 %End
 
   public:
@@ -12,8 +12,8 @@ class QgsFilterTableFieldsDialog : QDialog
      * @param parent parent object
      * @param flags window flags
      */
-    QgsFilterTableFieldsDialog( const QgsVectorLayer* vl, QStringList visible, QWidget *parent /TransferThis/ = nullptr, Qt::WindowFlags flags = Qt::Window );
-    ~QgsFilterTableFieldsDialog();
+    QgsOrganizeTableColumnsDialog( const QgsVectorLayer* vl, QStringList visible, QWidget *parent /TransferThis/ = nullptr, Qt::WindowFlags flags = Qt::Window );
+    ~QgsOrganizeTableColumnsDialog();
 
     /**
      * Get the selected fields name

@@ -62,7 +62,7 @@ SET(QGIS_GUI_SRCS
   attributetable/qgsfieldconditionalformatwidget.cpp
   attributetable/qgsgenericfeatureselectionmanager.cpp
   attributetable/qgsvectorlayerselectionmanager.cpp
-  attributetable/qgsfiltertablefieldsdialog.cpp
+  attributetable/qgsorganizetablecolumnsdialog.cpp
 
   auth/qgsauthauthoritieseditor.cpp
   auth/qgsauthcertificateinfo.cpp
@@ -473,7 +473,7 @@ SET(QGIS_GUI_MOC_HDRS
   attributetable/qgsgenericfeatureselectionmanager.h
   attributetable/qgsifeatureselectionmanager.h
   attributetable/qgsvectorlayerselectionmanager.h
-  attributetable/qgsfiltertablefieldsdialog.h
+  attributetable/qgsorganizetablecolumnsdialog.h
 
   auth/qgsauthauthoritieseditor.h
   auth/qgsauthcertificateinfo.h
