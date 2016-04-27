@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import sys
 import traceback
 
-from PyQt.QtCore import Qt, QCoreApplication
+from PyQt.QtCore import Qt, QCoreApplication, QObject, pyqtSignal
 from PyQt.QtWidgets import QApplication
 from PyQt.QtGui import QCursor
 
@@ -61,6 +61,12 @@ from processing.preconfigured.PreconfiguredAlgorithmProvider import Preconfigure
 
 from processing.tools import dataobjects
 
+class AlgListWatcher(QObject):
+
+    providerAdded = pyqtSignal(str)
+    providerRemoved = pyqtSignal(str)
+
+algListWatcher = AlgListWatcher()
 
 class Processing:
 
@@ -93,6 +99,7 @@ class Processing:
             ProcessingConfig.readSettings()
             if updateList:
                 Processing.updateAlgsList()
+            algListWatcher.providerAdded.emit(provider.getName())
         except:
             ProcessingLog.addToLog(
                 ProcessingLog.LOG_ERROR,
@@ -111,7 +118,7 @@ class Processing:
             provider.unload()
             Processing.providers.remove(provider)
             del Processing.algs[provider.getName()]
-            Processing.fireAlgsListHasChanged()
+            algListWatcher.providerRemoved.emit(provider.getName())
         except:
             # This try catch block is here to avoid problems if the
             # plugin with a provider is unloaded after the Processing
@@ -151,8 +158,6 @@ class Processing:
         ProcessingConfig.readSettings()
         RenderingStyles.loadStyles()
         Processing.loadFromProviders()
-        # Inform registered listeners that all providers' algorithms have been loaded
-        Processing.fireAlgsListHasChanged()
 
     @staticmethod
     def updateAlgsList():
@@ -162,7 +167,6 @@ class Processing:
         """
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         Processing.loadFromProviders()
-        Processing.fireAlgsListHasChanged()
         QApplication.restoreOverrideCursor()
 
     @staticmethod
@@ -176,28 +180,6 @@ class Processing:
         providers = [p for p in Processing.providers if p.getName() != "model"]
         for provider in providers:
             provider.loadAlgorithms()
-
-    @staticmethod
-    def addAlgListListener(listener):
-        """
-        Listener should implement a algsListHasChanged() method.
-
-        Whenever the list of algorithms changes, that method will be
-        called for all registered listeners.
-        """
-        Processing.listeners.append(listener)
-
-    @staticmethod
-    def removeAlgListListener(listener):
-        try:
-            Processing.listeners.remove(listener)
-        except:
-            pass
-
-    @staticmethod
-    def fireAlgsListHasChanged():
-        for listener in Processing.listeners:
-            listener.algsListHasChanged()
 
     @staticmethod
     def loadAlgorithms():

@@ -34,7 +34,7 @@ from PyQt.QtWidgets import QMenu, QAction, QTreeWidgetItem, QLabel, QMessageBox
 from qgis.utils import iface
 
 from processing.gui.Postprocessing import handleAlgorithmResults
-from processing.core.Processing import Processing
+from processing.core.Processing import Processing, algListWatcher
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.MessageDialog import MessageDialog
@@ -82,6 +82,9 @@ class ProcessingToolbox(BASE, WIDGET):
             self.searchBox.setPlaceholderText(self.tr('Search...'))
 
         self.fillTree()
+
+        algListWatcher.providerRemoved.connect(self.removeProvider)
+        algListWatcher.providerAdded.connect(self.addProvider)
 
     def showDisabled(self):
         self.txtDisabled.setVisible(False)
@@ -154,27 +157,31 @@ class ProcessingToolbox(BASE, WIDGET):
             QMessageBox.warning(self, "Activate provider",
                                 "The provider has been activated, but it might need additional configuration.")
 
-    def algsListHasChanged(self):
-        if self.updateAlgList:
-            self.fillTree()
-            self.textChanged()
 
     def updateProvider(self, providerName, updateAlgsList=True):
         if updateAlgsList:
             self.updateAlgList = False
             Processing.updateAlgsList()
             self.updateAlgList = True
+        item = self._providerItem(providerName)
+        if item is not None:
+            item.refresh()
+            item.sortChildren(0, Qt.AscendingOrder)
+            for i in xrange(item.childCount()):
+                item.child(i).sortChildren(0, Qt.AscendingOrder)
+            self.addRecentAlgorithms(True)
+
+    def removeProvider(self, providerName):
+        item = self._providerItem(providerName)
+        if item is not None:
+            self.algorithmTree.invisibleRootItem().removeChild(item)
+
+    def _providerItem(self, providerName):
         for i in xrange(self.algorithmTree.invisibleRootItem().childCount()):
             child = self.algorithmTree.invisibleRootItem().child(i)
             if isinstance(child, TreeProviderItem):
                 if child.providerName == providerName:
-                    child.refresh()
-                    # sort categories and items in categories
-                    child.sortChildren(0, Qt.AscendingOrder)
-                    for i in xrange(child.childCount()):
-                        child.child(i).sortChildren(0, Qt.AscendingOrder)
-                    break
-        self.addRecentAlgorithms(True)
+                    return child
 
     def showPopupMenu(self, point):
         item = self.algorithmTree.itemAt(point)
@@ -303,6 +310,24 @@ class ProcessingToolbox(BASE, WIDGET):
                     recentItem.setExpanded(True)
 
             self.algorithmTree.setWordWrap(True)
+
+    def addProvider(self, providerName):
+        name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
+        providerItem = TreeProviderItem(providerName, None, self)
+        if ProcessingConfig.getSetting(name):
+            providerItem.setHidden(providerItem.childCount() == 0)
+        else:
+            providerItem = TreeProviderItem(providerName, None, self)
+            providerItem.setHidden(True)
+            self.disabledProviderItems[providerName] = providerItem
+
+        for i in xrange(self.algorithmTree.invisibleRootItem().childCount()):
+            child = self.algorithmTree.invisibleRootItem().child(i)
+            if isinstance(child, TreeProviderItem):
+                if child.text(0) > providerItem.text(0):
+                    break
+        self.algorithmTree.insertTopLevelItem(i, providerItem)
+
 
     def fillTreeUsingProviders(self):
         self.algorithmTree.clear()
