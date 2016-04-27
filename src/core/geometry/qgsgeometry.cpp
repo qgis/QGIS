@@ -132,6 +132,11 @@ QgsAbstractGeometryV2* QgsGeometry::geometry() const
 
 void QgsGeometry::setGeometry( QgsAbstractGeometryV2* geometry )
 {
+  if ( d->geometry == geometry )
+  {
+    return;
+  }
+
   detach( false );
   if ( d->geometry )
   {

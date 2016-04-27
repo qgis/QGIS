@@ -42,6 +42,9 @@ class CORE_EXPORT QgsMultiLineStringV2: public QgsMultiCurveV2
     /** Adds a geometry and takes ownership. Returns true in case of success*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g ) override;
 
+    /** Returns the geometry converted to QgsMultiCurveV2*/
+    QgsAbstractGeometryV2* toCurveType() const override;
+
   protected:
 
     virtual bool wktOmitChildType() const override { return true; }
