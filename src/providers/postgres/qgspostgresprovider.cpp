@@ -1285,7 +1285,6 @@ bool QgsPostgresProvider::determinePrimaryKey()
       res = connectionRO()->PQexec( sql );
       QgsDebugMsg( QString( "Got %1 rows." ).arg( res.PQntuples() ) );
 
-      bool isInt = true;
       bool mightBeNull = false;
       QString primaryKey;
       QString delim = "";
@@ -1308,17 +1307,10 @@ bool QgsPostgresProvider::determinePrimaryKey()
           QgsDebugMsg( "Skipping " + name );
           continue;
         }
-        const QgsField& fld = mAttributeFields.at( idx );
-
-        if ( isInt &&
-             fld.type() != QVariant::Int &&
-             fld.type() != QVariant::LongLong )
-          isInt = false;
-
         mPrimaryKeyAttrs << idx;
       }
 
-      mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && isInt ) ? pktInt : pktFidMap;
+      mPrimaryKeyType = pktFidMap;
 
       if (( mightBeNull || isParentTable ) && !mUseEstimatedMetadata && !uniqueData( primaryKey ) )
       {
@@ -1407,7 +1399,7 @@ void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
     {
       if ( mUseEstimatedMetadata || uniqueData( primaryKey ) )
       {
-        mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && ( mAttributeFields.at( mPrimaryKeyAttrs.at( 0 ) ).type() == QVariant::Int || mAttributeFields.at( mPrimaryKeyAttrs.at( 0 ) ).type() == QVariant::LongLong ) ) ? pktInt : pktFidMap;
+        mPrimaryKeyType = pktFidMap;
       }
       else
       {
