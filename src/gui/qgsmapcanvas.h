@@ -635,9 +635,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Overridden resize event
     void resizeEvent( QResizeEvent * e ) override;
 
-    //! Overridden paint event
-    void paintEvent( QPaintEvent * e ) override;
-
     //! Overridden show event
     void showEvent( QShowEvent * e ) override;
 
