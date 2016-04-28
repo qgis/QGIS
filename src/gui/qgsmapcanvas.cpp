@@ -194,7 +194,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mCache( nullptr )
     , mPreviewEffect( nullptr )
     , mSnappingUtils( nullptr )
-    , mFirstResize( false )
+    , mFirstResizeDone( false )
     , mExpressionContextScope( tr( "Map Canvas" ) )
 {
   setObjectName( name );
@@ -1353,11 +1353,11 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent* e )
 
 } // mouseReleaseEvent
 
-void QgsMapCanvas::updateMapSize()
+void QgsMapCanvas::forceResize()
 {
   mResizeTimer->start( 500 );
 
-  QSize lastSize = size();
+  QSize lastSize = viewport()->size();
   mSettings.setOutputSize( lastSize );
   mMapRenderer->setOutputSize( lastSize, mSettings.outputDpi() );
 
@@ -1379,18 +1379,17 @@ void QgsMapCanvas::updateMapSize()
 void QgsMapCanvas::resizeEvent( QResizeEvent * e )
 {
   QGraphicsView::resizeEvent( e );
-  QSize lastSize = viewport()->size();
 
-  if ( mFirstResize )
+  QSize size = viewport()->size();
+  QRect current = mScene->sceneRect();
+  if ( current.width() < size.width() || current.height() < size.height() )
   {
-      mScene->setSceneRect( QRectF( 0, 0, lastSize.width(), lastSize.height() ) );
-      moveCanvasContents( true );
-      return;
+    forceResize();
   }
-
-  updateMapSize();
-
-  mFirstResize = true;
+  else
+  {
+    moveCanvasContents( true );
+  }
 }
 
 void QgsMapCanvas::paintEvent( QPaintEvent *e )
@@ -1398,6 +1397,11 @@ void QgsMapCanvas::paintEvent( QPaintEvent *e )
   // no custom event handling anymore
 
   QGraphicsView::paintEvent( e );
+}
+
+void QgsMapCanvas::showEvent( QShowEvent *e )
+{
+  forceResize();
 } // paintEvent
 
 void QgsMapCanvas::updateCanvasItemPositions()
