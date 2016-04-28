@@ -46,7 +46,6 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
         : QItemDelegate( parent )
         , mLayer( nullptr )
         , mFeatureSelectionModel( nullptr )
-        , mActionButtonWidget( nullptr )
     {
     }
 
@@ -80,13 +79,15 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
 
     void setFeatureSelectionModel( QgsFeatureSelectionModel* featureSelectionModel );
 
-  private:
-    QWidget* createActionWidget( QWidget* parent, QgsVectorLayer* layer ) const;
+    /**
+     * Set an image that represents an action widget
+     */
+    void setActionWidgetImage( const QImage& image );
 
+  private:
     QgsVectorLayer* mLayer;
     QgsFeatureSelectionModel* mFeatureSelectionModel;
-    QWidget* mActionButtonWidget;
-    QImage mActionButtonImage;
+    QImage mActionWidgetImage;
 };
 
 #endif //QGSATTRIBUTETABLEDELEGATE_H

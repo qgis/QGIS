@@ -22,6 +22,7 @@
 %Include qgsaction.sip
 %Include qgsactionmanager.sip
 %Include qgsattributeaction.sip
+%Include qgsattributetableconfig.sip
 %Include qgsbrowsermodel.sip
 %Include qgsclipper.sip
 %Include qgscolorscheme.sip

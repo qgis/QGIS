@@ -464,6 +464,11 @@ void QgsDualView::setFeatureSelectionManager( QgsIFeatureSelectionManager* featu
   mFeatureSelectionManager = featureSelectionManager;
 }
 
+void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig& config )
+{
+  mFilterModel->setAttributeTableConfig( config );
+}
+
 void QgsDualView::progress( int i, bool& cancel )
 {
   if ( !mProgressDlg )

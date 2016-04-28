@@ -79,6 +79,7 @@ SET(QGIS_CORE_SRCS
   qgsapplication.cpp
   qgsaction.cpp
   qgsactionmanager.cpp
+  qgsattributetableconfig.cpp
   qgsbrowsermodel.cpp
   qgscachedfeatureiterator.cpp
   qgscacheindex.cpp
@@ -591,7 +592,7 @@ SET(QGIS_CORE_HDRS
 
   qgis.h
   qgsaction.h
-  qgsactionmanager.h
+  qgsattributetableconfig.h
   qgsattributeaction.h
   qgscachedfeatureiterator.h
   qgscacheindex.h

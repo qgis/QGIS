@@ -65,6 +65,11 @@ class QgsDualView : QStackedWidget
      */
     void setFilterMode( QgsAttributeTableFilterModel::FilterMode filterMode );
 
+    /**
+     * Get the filter mode
+     *
+     * @return the filter mode
+     */
     QgsAttributeTableFilterModel::FilterMode filterMode();
 
     /**
@@ -98,6 +103,9 @@ class QgsDualView : QStackedWidget
      */
     void setFilteredFeatures( const QgsFeatureIds& filteredFeatures );
 
+    /**
+     * Get a list of currently visible feature ids.
+     */
     QgsFeatureIds filteredFeatures();
 
     /**
@@ -112,6 +120,11 @@ class QgsDualView : QStackedWidget
     void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
 
     QgsAttributeTableView* tableView();
+    /**
+     * Set the attribute table config which should be used to control
+     * the appearance of the attribute table.
+     */
+    void setAttributeTableConfig( const QgsAttributeTableConfig& config );
 
   protected:
     /**

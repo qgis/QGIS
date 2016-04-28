@@ -1926,8 +1926,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   // process the attribute actions
   mActions->readXML( node );
 
-  mEditFormConfig->readXml( node );
-
   QDomNode annotationFormNode = node.namedItem( "annotationform" );
   if ( !annotationFormNode.isNull() )
   {
@@ -1987,6 +1985,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   }
 
   mEditFormConfig->readXml( node );
+
+  mAttributeTableConfig.readXml( node );
 
   mConditionalStyles->readXml( node );
 
@@ -2154,6 +2154,8 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
   mEditFormConfig->writeXml( node );
 
+  mAttributeTableConfig.writeXml( node );
+
   mConditionalStyles->writeXml( node, doc );
 
   return true;
@@ -2266,11 +2268,11 @@ void QgsVectorLayer::addAttributeAlias( int attIndex, const QString& aliasString
 QString QgsVectorLayer::attributeAlias( int attributeIndex ) const
 {
   if ( attributeIndex < 0 || attributeIndex >= fields().count() )
-    return "";
+    return QString();
 
   QString name = fields().at( attributeIndex ).name();
 
-  return mAttributeAliasMap.value( name, "" );
+  return mAttributeAliasMap.value( name, QString() );
 }
 
 QString QgsVectorLayer::attributeDisplayName( int attributeIndex ) const
@@ -3589,6 +3591,16 @@ void QgsVectorLayer::readSldLabeling( const QDomNode& node )
       }
     }
   }
+}
+
+QgsAttributeTableConfig QgsVectorLayer::attributeTableConfig() const
+{
+  return mAttributeTableConfig;
+}
+
+void QgsVectorLayer::setAttributeTableConfig( const QgsAttributeTableConfig& attributeTableConfig )
+{
+  mAttributeTableConfig = attributeTableConfig;
 }
 
 void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings& s )

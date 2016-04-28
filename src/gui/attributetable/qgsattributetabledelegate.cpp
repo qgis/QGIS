@@ -118,29 +118,36 @@ void QgsAttributeTableDelegate::setFeatureSelectionModel( QgsFeatureSelectionMod
   mFeatureSelectionModel = featureSelectionModel;
 }
 
+void QgsAttributeTableDelegate::setActionWidgetImage( const QImage& image )
+{
+  mActionWidgetImage = image;
+}
+
 
 void QgsAttributeTableDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
-  QgsFeatureId fid = index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
+  QgsAttributeTableFilterModel::ColumnType columnType = static_cast<QgsAttributeTableFilterModel::ColumnType>( index.model()->data( index, QgsAttributeTableFilterModel::TypeRole ).toInt() );
 
-  QStyleOptionViewItem myOpt = option;
-
-  if ( index.model()->data( index, Qt::EditRole ).isNull() )
+  if ( columnType == QgsAttributeTableFilterModel::ColumnTypeActionButton )
   {
-    myOpt.font.setItalic( true );
-    myOpt.palette.setColor( QPalette::Text, QColor( "gray" ) );
-  }
-
-  if ( mFeatureSelectionModel && mFeatureSelectionModel->isSelected( fid ) )
-    myOpt.state |= QStyle::State_Selected;
-
-
-  if ( index.column() == 0 )
-  {
-    painter->drawImage( QPoint( 0, 0 ), mActionButtonImage );
+    QRect r = option.rect.adjusted( -1, 0, 0, 0 );
+    painter->drawImage( r.x(), r.y(), mActionWidgetImage );
   }
   else
   {
+    QgsFeatureId fid = index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
+
+    QStyleOptionViewItem myOpt = option;
+
+    if ( index.model()->data( index, Qt::EditRole ).isNull() )
+    {
+      myOpt.font.setItalic( true );
+      myOpt.palette.setColor( QPalette::Text, QColor( "gray" ) );
+    }
+
+    if ( mFeatureSelectionModel && mFeatureSelectionModel->isSelected( fid ) )
+      myOpt.state |= QStyle::State_Selected;
+
     QItemDelegate::paint( painter, myOpt, index );
 
     if ( option.state & QStyle::State_HasFocus )
