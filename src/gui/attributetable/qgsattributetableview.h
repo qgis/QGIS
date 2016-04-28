@@ -47,7 +47,6 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
 
   public:
     QgsAttributeTableView( QWidget* parent = nullptr );
-    virtual ~QgsAttributeTableView();
 
     virtual void setModel( QgsAttributeTableFilterModel* filterModel );
 
@@ -140,9 +139,12 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
   private slots:
     void modelDeleted();
     void showHorizontalSortIndicator();
+    void actionTriggered();
+    void columnSizeChanged( int index, int oldWidth, int newWidth );
 
   private:
-    QWidget* createActionWidget();
+    void updateActionImage( QWidget* widget );
+    QWidget* createActionWidget( QgsFeatureId fid );
 
     void selectRow( int row, bool anchor );
     QgsAttributeTableModel* mMasterModel;
@@ -154,6 +156,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     QMenu *mActionPopup;
     int mRowSectionAnchor;
     QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag;
+    QWidget* mActionWidget;
 };
 
 #endif

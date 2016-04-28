@@ -34,6 +34,7 @@
 #include "qgssnapper.h"
 #include "qgsvectorsimplifymethod.h"
 #include "qgseditformconfig.h"
+#include "qgsattributetableconfig.h"
 
 class QPainter;
 class QImage;
@@ -631,7 +632,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * The pointer which is returned directly points to the actions object
      * which is used by the layer, so any changes are immediately applied.
      */
-    QgsActionManager *actions() { return mActions; }
+    QgsActionManager* actions() { return mActions; }
 
     /**
      * The number of features that are selected in this layer
@@ -1321,7 +1322,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void clearAttributeEditorWidgets() { mEditFormConfig->clearTabs(); }
 
-    /** Returns the alias of an attribute name or an empty string if there is no alias */
+    /**
+     * Returns the alias of an attribute name or a null string if there is no alias.
+     *
+     * @see {@attributeDisplayName( int attributeIndex )} which returns the field name
+     *      if no alias is defined.
+     */
     QString attributeAlias( int attributeIndex ) const;
 
     /** Convenience function that returns the attribute alias if defined or the field name else */
@@ -1685,6 +1691,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note added in QGIS 2.12
      */
     QgsConditionalLayerStyles *conditionalStyles() const;
+
+    /**
+     * Get the attribute table configuration object.
+     * This defines the appearance of the attribute table.
+     */
+    QgsAttributeTableConfig attributeTableConfig() const;
+
+    /**
+     * Set the attribute table configuration object.
+     * This defines the appearance of the attribute table.
+     */
+    void setAttributeTableConfig( const QgsAttributeTableConfig& attributeTableConfig );
 
   public slots:
     /**
@@ -2087,6 +2105,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool mEditCommandActive;
 
     QgsFeatureIds mDeletedFids;
+
+    QgsAttributeTableConfig mAttributeTableConfig;
 
     friend class QgsVectorLayerFeatureSource;
 };

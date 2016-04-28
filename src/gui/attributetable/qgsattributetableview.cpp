@@ -64,12 +64,8 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
 
   connect( verticalHeader(), SIGNAL( sectionPressed( int ) ), this, SLOT( selectRow( int ) ) );
   connect( verticalHeader(), SIGNAL( sectionEntered( int ) ), this, SLOT( _q_selectRow( int ) ) );
+  connect( horizontalHeader(), SIGNAL( sectionResized( int, int, int ) ), this, SLOT( columnSizeChanged( int, int, int ) ) );
   connect( horizontalHeader(), SIGNAL( sortIndicatorChanged( int, Qt::SortOrder ) ), this, SLOT( showHorizontalSortIndicator() ) );
-}
-
-QgsAttributeTableView::~QgsAttributeTableView()
-{
-  delete mActionPopup;
 }
 
 bool QgsAttributeTableView::eventFilter( QObject *object, QEvent *event )
@@ -123,6 +119,9 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel* filterModel 
     connect( mFeatureSelectionModel, SIGNAL( requestRepaint( QModelIndexList ) ), this, SLOT( repaintRequested( QModelIndexList ) ) );
     connect( mFeatureSelectionModel, SIGNAL( requestRepaint() ), this, SLOT( repaintRequested() ) );
   }
+
+  mActionWidget = createActionWidget( 0 );
+  mActionWidget->setVisible( false );
 }
 
 void QgsAttributeTableView::setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager )
@@ -136,18 +135,34 @@ void QgsAttributeTableView::setFeatureSelectionManager( QgsIFeatureSelectionMana
     mFeatureSelectionModel->setFeatureSelectionManager( mFeatureSelectionManager );
 }
 
-QWidget* QgsAttributeTableView::createActionWidget()
+QWidget* QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
 {
   QToolButton* toolButton = new QToolButton( this );
+  toolButton->setPopupMode( QToolButton::MenuButtonPopup );
 
-  for ( int i = 0; i < mFilterModel->layer()->actions()->size(); ++i )
+  QgsActionManager* actions = mFilterModel->layer()->actions();
+
+  for ( int i = 0; i < actions->size(); ++i )
   {
-    const QgsAction& action = mFilterModel->layer()->actions()->at( i );
+    const QgsAction& action = actions->at( i );
 
-    QAction* act = new QAction( action.icon(), action.shortTitle(), toolButton );
+    QAction* act = new QAction( action.icon(), action.shortTitle().isEmpty() ? action.name() : action.shortTitle(), toolButton );
+    act->setToolTip( action.name() );
+    act->setData( i );
+    act->setProperty( "fid", fid );
+
+    connect( act, SIGNAL( triggered( bool ) ), this, SLOT( actionTriggered() ) );
 
     toolButton->addAction( act );
+
+    if ( actions->defaultAction() == i )
+      toolButton->setDefaultAction( act );
   }
+
+  if ( !toolButton->actions().isEmpty() && actions->defaultAction() == -1 )
+    toolButton->setDefaultAction( toolButton->actions().first() );
+
+  updateActionImage( toolButton );
 
   return toolButton;
 }
@@ -176,12 +191,12 @@ void QgsAttributeTableView::mouseReleaseEvent( QMouseEvent *event )
 void QgsAttributeTableView::mouseMoveEvent( QMouseEvent *event )
 {
   QModelIndex index = indexAt( event->pos() );
-  if ( index.column() == 0 )
+  if ( index.data( QgsAttributeTableFilterModel::TypeRole ) == QgsAttributeTableFilterModel::ColumnTypeActionButton )
   {
     Q_ASSERT( index.isValid() );
 
     if ( !indexWidget( index ) )
-      setIndexWidget( index, createActionWidget() );
+      setIndexWidget( index, createActionWidget( mFilterModel->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong() ) );
   }
 
   setSelectionMode( QAbstractItemView::NoSelection );
@@ -246,7 +261,7 @@ void QgsAttributeTableView::contextMenuEvent( QContextMenuEvent* event )
   if ( !vlayer )
     return;
 
-  mActionPopup = new QMenu();
+  mActionPopup = new QMenu( this );
 
   mActionPopup->addAction( tr( "Select All" ), this, SLOT( selectAll() ), QKeySequence::SelectAll );
 
@@ -317,4 +332,33 @@ void QgsAttributeTableView::selectRow( int row, bool anchor )
 void QgsAttributeTableView::showHorizontalSortIndicator()
 {
   horizontalHeader()->setSortIndicatorShown( true );
+}
+
+void QgsAttributeTableView::actionTriggered()
+{
+  QAction* action = qobject_cast<QAction*>( sender() );
+  QgsFeatureId fid = action->property( "fid" ).toLongLong();
+
+  QgsFeature f;
+  mFilterModel->layerCache()->getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f );
+
+  mFilterModel->layer()->actions()->doAction( action->data().toInt(), f );
+}
+
+void QgsAttributeTableView::columnSizeChanged( int index, int oldWidth, int newWidth )
+{
+  Q_UNUSED( oldWidth )
+  if ( mFilterModel->actionColumnIndex() == index )
+  {
+    mActionWidget->resize( newWidth, mActionWidget->height() );
+    updateActionImage( mActionWidget );
+  }
+}
+
+void QgsAttributeTableView::updateActionImage( QWidget* widget )
+{
+  QImage image( widget->size(), QImage::Format_ARGB32_Premultiplied );
+  QPainter painter( &image );
+  widget->render( &painter );
+  mTableDelegate->setActionWidgetImage( image );
 }

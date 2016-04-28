@@ -51,9 +51,10 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
   public:
     enum Role
     {
-      SortRole = Qt::UserRole + 1,
-      FeatureIdRole = Qt::UserRole + 2,
-      FieldIndexRole = Qt::UserRole + 3
+      SortRole = Qt::UserRole + 1, //!< Role used for sorting
+      FeatureIdRole,               //!< Get the feature id of the feature in this row
+      FieldIndexRole,              //!< Get the field index of this column
+      UserRole                     //!< Start further roles starting from this role
     };
 
   public:

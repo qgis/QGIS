@@ -1321,6 +1321,18 @@ class QgsVectorLayer : QgsMapLayer
      */
     QgsConditionalLayerStyles *conditionalStyles() const;
 
+    /**
+     * Get the attribute table configuration object.
+     * This defines the appearance of the attribute table.
+     */
+    QgsAttributeTableConfig attributeTableConfig() const;
+
+    /**
+     * Set the attribute table configuration object.
+     * This defines the appearance of the attribute table.
+     */
+    void setAttributeTableConfig( const QgsAttributeTableConfig& attributeTableConfig );
+
   public slots:
     /**
      * Select feature by its ID

@@ -23,7 +23,6 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include <QString>
 
-class QgsCoordinateTransform;
 class QgsMapToPixel;
 class QgsCurveV2;
 class QgsMultiCurveV2;

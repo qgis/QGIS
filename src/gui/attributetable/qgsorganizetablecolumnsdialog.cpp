@@ -41,57 +41,76 @@
 #include "qgseditorwidgetregistry.h"
 
 
-QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLayer* vl, const QStringList visble, QWidget *parent, Qt::WindowFlags flags )
+QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLayer* vl, QWidget* parent, Qt::WindowFlags flags )
     : QDialog( parent, flags )
 {
   setupUi( this );
   if ( vl )
   {
+    QgsAttributeTableConfig config = vl->attributeTableConfig();
+    config.update( vl->fields() );
+
     mFieldsList->clear();
-    const QgsFields& layerAttributes = vl->fields();
-    for ( int idx = 0; idx < layerAttributes.count(); ++idx )
+
+    Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig& columnConfig, config.columns() )
     {
-      QListWidgetItem* item = new QListWidgetItem( layerAttributes[idx].name(), mFieldsList );
-      item->setCheckState( visble.contains( layerAttributes[idx].name() ) ? Qt::Checked : Qt::Unchecked );
-      switch ( vl->fields().fieldOrigin( idx ) )
+      QListWidgetItem* item;
+      if ( columnConfig.mType == QgsAttributeTableConfig::Action )
       {
-        case QgsFields::OriginExpression:
-          item->setIcon( QgsApplication::getThemeIcon( "/mIconExpression.svg" ) );
-          break;
+        item = new QListWidgetItem( tr( "[Action Widget]" ), mFieldsList );
+        item->setIcon( QgsApplication::getThemeIcon( "/propertyicons/action.svg" ) );
+      }
+      else
+      {
+        int idx = vl->fieldNameIndex( columnConfig.mName );
+        item = new QListWidgetItem( vl->attributeDisplayName( idx ), mFieldsList );
 
-        case QgsFields::OriginJoin:
-          item->setIcon( QgsApplication::getThemeIcon( "/propertyicons/join.png" ) );
-          break;
+        switch ( vl->fields().fieldOrigin( idx ) )
+        {
+          case QgsFields::OriginExpression:
+            item->setIcon( QgsApplication::getThemeIcon( "/mIconExpression.svg" ) );
+            break;
 
-        default:
-          item->setIcon( QgsApplication::getThemeIcon( "/propertyicons/attributes.png" ) );
-          break;
+          case QgsFields::OriginJoin:
+            item->setIcon( QgsApplication::getThemeIcon( "/propertyicons/join.png" ) );
+            break;
+
+          default:
+            item->setIcon( QgsApplication::getThemeIcon( "/propertyicons/attributes.png" ) );
+            break;
+        }
       }
 
-      item->setData( Qt::UserRole, idx );
+      item->setCheckState( columnConfig.mHidden ? Qt::Unchecked : Qt::Checked );
+      item->setData( Qt::UserRole, QVariant::fromValue( columnConfig ) );
     }
   }
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/QgsFilterTableFieldsDialog/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( "/Windows/QgsOrganizeTableColumnsDialog/geometry" ).toByteArray() );
 }
 
 QgsOrganizeTableColumnsDialog::~QgsOrganizeTableColumnsDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/QgsFilterTableFieldsDialog/geometry", saveGeometry() );
+  settings.setValue( "/Windows/QgsOrganizeTableColumnsDialog/geometry", saveGeometry() );
 }
 
-QStringList QgsOrganizeTableColumnsDialog::selectedFields() const
+QgsAttributeTableConfig QgsOrganizeTableColumnsDialog::config() const
 {
-  QStringList selectionList;
+  QVector<QgsAttributeTableConfig::ColumnConfig> columns;
+
   for ( int i = 0 ; i < mFieldsList->count() ; i++ )
   {
     const QListWidgetItem* item = mFieldsList->item( i );
-    if ( item->checkState() == Qt::Checked )
-    {
-      selectionList.push_back( item->text() );
-    }
+    QgsAttributeTableConfig::ColumnConfig columnConfig = item->data( Qt::UserRole ).value<QgsAttributeTableConfig::ColumnConfig>();
+
+    columnConfig.mHidden = item->checkState() == Qt::Unchecked;
+
+    columns.append( columnConfig );
   }
-  return selectionList;
+
+  QgsAttributeTableConfig config;
+  config.setColumns( columns );
+  return config;
 }

@@ -21,6 +21,8 @@
 
 #include "ui_qgsorganizetablecolumnsdialog.h"
 
+#include "qgsattributetableconfig.h"
+
 class QgsVectorLayer;
 
 class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::QgsOrganizeTableColumnsDialog
@@ -35,17 +37,17 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
      * @param parent parent object
      * @param flags window flags
      */
-    QgsOrganizeTableColumnsDialog( const QgsVectorLayer* vl, QStringList visible, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window );
+    QgsOrganizeTableColumnsDialog( const QgsVectorLayer* vl, QWidget* parent = nullptr, Qt::WindowFlags flags = Qt::Window );
+
     /**
      * Destructor
      */
     ~QgsOrganizeTableColumnsDialog();
 
     /**
-     * Get the selected fields name
-     * @return The selected fields name
+     * Get the updated configuration
      */
-    QStringList selectedFields() const;
+    QgsAttributeTableConfig config() const;
 };
 
 #endif

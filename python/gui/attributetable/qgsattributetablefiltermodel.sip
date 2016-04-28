@@ -13,6 +13,18 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
       ShowEdited
     };
 
+    enum ColumnType
+    {
+      ColumnTypeField,       //!< This column shows a field
+      ColumnTypeActionButton //!< This column shows action buttons
+    };
+
+    enum Role
+    {
+      TypeRole = QgsAttributeTableModel::UserRole //!< The type of a given column
+    };
+
+
     /**
      *
      * Make sure, the master model is already loaded, so the selection will get synchronized.
@@ -98,6 +110,25 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
 
     /** Returns the map canvas*/
     QgsMapCanvas* mapCanvas() const;
+
+    virtual QVariant data( const QModelIndex& index, int role ) const;
+
+    QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
+
+    /**
+     * Get the index of the first column that contains an action widget.
+     * Returns -1 if none is defined.
+     */
+    int actionColumnIndex() const;
+
+    int columnCount( const QModelIndex &parent ) const;
+
+    /**
+     * Set the attribute table configuration to control which fields are shown,
+     * in which order they are shown as well as if and where an action column
+     * is shown.
+     */
+    void setAttributeTableConfig( const QgsAttributeTableConfig& config );
 
   protected:
     /**

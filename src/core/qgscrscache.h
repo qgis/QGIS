@@ -42,7 +42,6 @@ class CORE_EXPORT QgsCoordinateTransformCache
     void invalidateCrs( const QString& crsAuthId );
 
   private:
-    static QgsCoordinateTransformCache* mInstance;
     QMultiHash< QPair< QString, QString >, QgsCoordinateTransform* > mTransforms; //same auth_id pairs might have different datum transformations
 
     QgsCoordinateTransformCache();

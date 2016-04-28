@@ -125,6 +125,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   // Initialize dual view
   mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, context );
+  mMainView->setAttributeTableConfig( mLayer->attributeTableConfig() );
 
   // Initialize filter gui elements
   mFilterActionMapper = new QSignalMapper( this );
@@ -776,17 +777,12 @@ void QgsAttributeTableDialog::on_mFilterTableFields_clicked()
     return;
   }
 
-  QgsOrganizeTableColumnsDialog dialog( mLayer, mVisibleFields );
+  QgsOrganizeTableColumnsDialog dialog( mLayer );
   if ( dialog.exec() == QDialog::Accepted )
   {
-    mVisibleFields = dialog.selectedFields();
-
-    const QgsFields layerAttributes = mLayer->fields();
-    for ( int idx = 0; idx < layerAttributes.count(); ++idx )
-    {
-      mMainView->tableView()->setColumnHidden(
-        idx, !mVisibleFields.contains( layerAttributes[idx].name() ) );
-    }
+    QgsAttributeTableConfig config = dialog.config();
+    mLayer->setAttributeTableConfig( config );
+    mMainView->setAttributeTableConfig( config );
   }
 }
 
