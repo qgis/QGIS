@@ -347,6 +347,7 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         self.alg = alg
         icon = alg.getIcon()
         nameEn, name = AlgorithmClassification.getDisplayNames(alg)
+        name = name if name != '' else nameEn
         self.setIcon(0, icon)
         self.setToolTip(0, name)
         self.setText(0, name)
