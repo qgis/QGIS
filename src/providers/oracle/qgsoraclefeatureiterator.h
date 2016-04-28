@@ -82,6 +82,7 @@ class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
     QSqlQuery mQry;
     bool mRewind;
     bool mExpressionCompiled;
+    bool mFetchGeometry;
     QgsAttributeList mAttributeList;
 };
 
