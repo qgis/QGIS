@@ -541,6 +541,12 @@ class GeoAlgorithm:
         s = s[:-1] + ')'
         return s
 
+    def displayName(self):
+        return self.i18n_name or self.name
+
+    def displayNames(self):
+        return self.name, self.i18n_name
+
     def tr(self, string, context=''):
         if context == '':
             context = self.__class__.__name__

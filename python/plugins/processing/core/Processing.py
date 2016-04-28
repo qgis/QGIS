@@ -36,8 +36,7 @@ from qgis.utils import iface
 from qgis.core import QgsMessageLog
 
 import processing
-from processing.gui import AlgorithmClassification
-from processing.modeler.ModelerUtils import ModelerUtils
+from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -45,20 +44,6 @@ from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.AlgorithmExecutor import runalg
-from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
-from processing.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
-from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider
-from processing.algs.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
-from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
-from processing.algs.lidar.LidarToolsAlgorithmProvider import LidarToolsAlgorithmProvider
-from processing.algs.gdal.GdalOgrAlgorithmProvider import GdalOgrAlgorithmProvider
-from processing.algs.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
-from processing.algs.r.RAlgorithmProvider import RAlgorithmProvider
-from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
-from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
-from processing.algs.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvider
-from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider
-
 from processing.tools import dataobjects
 
 
@@ -85,22 +70,21 @@ class Processing:
     # All the registered context menu actions for the toolbox
     contextMenuActions = []
 
-    modeler = ModelerAlgorithmProvider()
-
     @staticmethod
-    def addProvider(provider, updateList=True):
+    def addProvider(provider):
         """Use this method to add algorithms from external providers.
         """
 
-        # Note: this might slow down the initialization process if
-        # there are many new providers added. Should think of a
-        # different solution
+        if provider.getName() in [p.getName for p in Processing.providers]:
+            return
         try:
             provider.initializeSettings()
             Processing.providers.append(provider)
             ProcessingConfig.readSettings()
-            if updateList:
-                Processing.updateAlgsList()
+            provider.loadAlgorithms()
+            Processing.algs[provider.getName()] = {a.commandLineName(): a for a in provider.algs}
+            Processing.actions[provider.getName()] = provider.actions
+            Processing.contextMenuActions.extend(provider.contextMenuActions)
             algListWatcher.providerAdded.emit(provider.getName())
         except:
             ProcessingLog.addToLog(
@@ -125,7 +109,7 @@ class Processing:
             # This try catch block is here to avoid problems if the
             # plugin with a provider is unloaded after the Processing
             # framework itself has been unloaded. It is a quick fix
-            # before I found out how to properly avoid that.
+            # before I find out how to properly avoid that.
             pass
 
     @staticmethod
@@ -139,27 +123,12 @@ class Processing:
     @staticmethod
     def initialize():
         # Add the basic providers
-        Processing.addProvider(QGISAlgorithmProvider(), updateList=False)
-        Processing.addProvider(ModelerOnlyAlgorithmProvider(), updateList=False)
-        Processing.addProvider(GdalOgrAlgorithmProvider(), updateList=False)
-        Processing.addProvider(LidarToolsAlgorithmProvider(), updateList=False)
-        Processing.addProvider(OTBAlgorithmProvider(), updateList=False)
-        Processing.addProvider(RAlgorithmProvider(), updateList=False)
-        Processing.addProvider(SagaAlgorithmProvider(), updateList=False)
-        Processing.addProvider(GrassAlgorithmProvider(), updateList=False)
-        Processing.addProvider(Grass7AlgorithmProvider(), updateList=False)
-        Processing.addProvider(ScriptAlgorithmProvider(), updateList=False)
-        Processing.addProvider(TauDEMAlgorithmProvider(), updateList=False)
-        Processing.addProvider(PreconfiguredAlgorithmProvider(), updateList=False)
-        Processing.addProvider(Processing.modeler, updateList=False)
-        Processing.modeler.initializeSettings()
-
+        for c in AlgorithmProvider.__subclasses__():
+            Processing.addProvider(c())
         # And initialize
-        AlgorithmClassification.loadClassification()
         ProcessingConfig.initialize()
         ProcessingConfig.readSettings()
         RenderingStyles.loadStyles()
-        Processing.loadFromProviders()
 
     @staticmethod
     def updateAlgsList():
@@ -168,20 +137,9 @@ class Processing:
         algorithm providers.
         """
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        Processing.loadFromProviders()
+        for p in Processing.providers:
+            Processing.reloadProvider(p)
         QApplication.restoreOverrideCursor()
-
-    @staticmethod
-    def loadFromProviders():
-        Processing.loadAlgorithms()
-        Processing.loadActions()
-        Processing.loadContextMenuActions()
-
-    @staticmethod
-    def updateProviders():
-        providers = [p for p in Processing.providers if p.getName() != "model"]
-        for provider in providers:
-            provider.loadAlgorithms()
 
     @staticmethod
     def reloadProvider(providerName):
@@ -191,50 +149,6 @@ class Processing:
                 Processing.algs[
                     p.getName()] = {a.commandLineName(): a for a in p.algs}
 
-    @staticmethod
-    def loadAlgorithms():
-        Processing.algs = {}
-        Processing.updateProviders()
-        providers = [p for p in Processing.providers if p.getName() != "model"]
-        for provider in providers:
-            providerAlgs = provider.algs
-            algs = {}
-            for alg in providerAlgs:
-                algs[alg.commandLineName()] = alg
-            Processing.algs[provider.getName()] = algs
-
-        provs = {}
-        for provider in Processing.providers:
-            provs[provider.getName()] = provider
-
-        ModelerUtils.allAlgs = Processing.algs
-        ModelerUtils.providers = provs
-
-        Processing.modeler.loadAlgorithms()
-
-        algs = {}
-        for alg in Processing.modeler.algs:
-            algs[alg.commandLineName()] = alg
-        Processing.algs[Processing.modeler.getName()] = algs
-
-    @staticmethod
-    def loadActions():
-        for provider in Processing.providers:
-            providerActions = provider.actions
-            actions = list()
-            for action in providerActions:
-                actions.append(action)
-            Processing.actions[provider.getName()] = actions
-
-        Processing.actions[provider.getName()] = actions
-
-    @staticmethod
-    def loadContextMenuActions():
-        Processing.contextMenuActions = []
-        for provider in Processing.providers:
-            providerActions = provider.contextMenuActions
-            for action in providerActions:
-                Processing.contextMenuActions.append(action)
 
     @staticmethod
     def getAlgorithm(name):

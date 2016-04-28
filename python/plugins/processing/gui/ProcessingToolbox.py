@@ -38,7 +38,6 @@ from processing.core.Processing import Processing, algListWatcher
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig, settingsWatcher
 from processing.gui.MessageDialog import MessageDialog
-from processing.gui import AlgorithmClassification
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
@@ -344,7 +343,7 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         QTreeWidgetItem.__init__(self)
         self.alg = alg
         icon = alg.getIcon()
-        nameEn, name = AlgorithmClassification.getDisplayNames(alg)
+        nameEn, name = alg.displayNames()
         name = name if name != '' else nameEn
         self.setIcon(0, icon)
         self.setToolTip(0, name)

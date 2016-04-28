@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from operator import attrgetter
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -35,6 +34,8 @@ import codecs
 import traceback
 from qgis.PyQt.QtCore import QCoreApplication, QPointF
 from qgis.PyQt.QtGui import QIcon
+from operator import attrgetter
+
 from qgis.core import QgsRasterLayer, QgsVectorLayer
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
@@ -55,6 +56,7 @@ from processing.core.parameters import (getParameterFromString,
                                         ParameterMultipleInput)
 from processing.tools import dataobjects
 from processing.gui.Help2Html import getHtmlFromDescriptionsDict
+from processing.core.Processing import Processing
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -90,17 +92,17 @@ class Algorithm():
         self.name = None
         self.description = ""
 
-        #The type of the algorithm, indicated as a string, which corresponds
-        #to the string used to refer to it in the python console
+        # The type of the algorithm, indicated as a string, which corresponds
+        # to the string used to refer to it in the python console
         self.consoleName = consoleName
 
         self._algInstance = None
 
-        #A dict of Input object. keys are param names
+        # A dict of Input object. keys are param names
         self.params = {}
 
-        #A dict of ModelerOutput with final output descriptions. Keys are output names.
-        #Outputs not final are not stored in this dict
+        # A dict of ModelerOutput with final output descriptions. Keys are output names.
+        # Outputs not final are not stored in this dict
         self.outputs = {}
 
         self.pos = None
@@ -117,7 +119,7 @@ class Algorithm():
     @property
     def algorithm(self):
         if self._algInstance is None:
-            self._algInstance = ModelerUtils.getAlgorithm(self.consoleName).getCopy()
+            self._algInstance = Processing.getAlgorithm(self.consoleName).getCopy()
         return self._algInstance
 
     def setName(self, model):
@@ -227,7 +229,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         # Geoalgorithms in this model. A dict of Algorithm objects, with names as keys
         self.algs = {}
 
-        #Input parameters. A dict of Input objects, with names as keys
+        # Input parameters. A dict of Input objects, with names as keys
         self.inputs = {}
         GeoAlgorithm.__init__(self)
 
@@ -526,7 +528,7 @@ class ModelerAlgorithm(GeoAlgorithm):
 
     def checkBeforeOpeningParametersDialog(self):
         for alg in self.algs.values():
-            algInstance = ModelerUtils.getAlgorithm(alg.consoleName)
+            algInstance = Processing.getAlgorithm(alg.consoleName)
             if algInstance is None:
                 return "The model you are trying to run contains an algorithm that is not available: <i>%s</i>" % alg.consoleName
 
@@ -651,7 +653,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                     model.group = line[len('GROUP:'):]
                 elif line.startswith('ALGORITHM:'):
                     algLine = line[len('ALGORITHM:'):]
-                    alg = ModelerUtils.getAlgorithm(algLine)
+                    alg = Processing.getAlgorithm(algLine)
                     if alg is not None:
                         modelAlg = Algorithm(alg.commandLineName())
                         modelAlg.description = alg.name
@@ -702,7 +704,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                         modelAlgs.append(modelAlg.name)
                     else:
                         raise WrongModelException(
-                            _tr('Error in algorithm name: %s', ) % algLine)
+                            _tr('Error in algorithm name: %s',) % algLine)
                 line = lines.readline().strip('\n').strip('\r')
             for modelAlg in model.algs.values():
                 for name, value in modelAlg.params.iteritems():
