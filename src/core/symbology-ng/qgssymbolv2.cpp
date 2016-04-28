@@ -733,11 +733,14 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
     deleteSegmentizedGeometry = true;
   }
 
+  mSymbolRenderContext->setGeometryPartCount( segmentizedGeometry->geometry()->partCount() );
+  mSymbolRenderContext->setGeometryPartNum( 1 );
+
   if ( mSymbolRenderContext->expressionContextScope() )
   {
     context.expressionContext().appendScope( mSymbolRenderContext->expressionContextScope() );
     QgsExpressionContextUtils::updateSymbolScope( this, mSymbolRenderContext->expressionContextScope() );
-    mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT, segmentizedGeometry->geometry()->partCount() );
+    mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT, mSymbolRenderContext->geometryPartCount() );
     mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, 1 );
   }
 
@@ -833,6 +836,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
       for ( int i = 0; i < mp->numGeometries(); ++i )
       {
+        mSymbolRenderContext->setGeometryPartNum( i + 1 );
         mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1 );
 
         const QgsPointV2* point = static_cast< const QgsPointV2* >( mp->geometryN( i ) );
@@ -868,6 +872,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
       for ( unsigned int i = 0; i < num && wkbPtr; ++i )
       {
+        mSymbolRenderContext->setGeometryPartNum( i + 1 );
         mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1 );
 
         if ( geomCollection )
@@ -914,6 +919,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
       for ( unsigned int i = 0; i < num && wkbPtr; ++i )
       {
+        mSymbolRenderContext->setGeometryPartNum( i + 1 );
         mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1 );
 
         if ( geomCollection )
@@ -1002,7 +1008,9 @@ QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymb
     mSelected( selected ),
     mRenderHints( renderHints ),
     mFeature( f ),
-    mFields( fields )
+    mFields( fields ),
+    mGeometryPartCount( 0 ),
+    mGeometryPartNum( 0 )
 {
 }
 
@@ -1440,6 +1448,8 @@ void QgsMarkerSymbolV2::renderPointUsingLayer( QgsMarkerSymbolLayerV2* layer, QP
 void QgsMarkerSymbolV2::renderPoint( QPointF point, const QgsFeature* f, QgsRenderContext& context, int layerIdx, bool selected )
 {
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f, nullptr, mapUnitScale() );
+  symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
+  symbolContext.setGeometryPartNum( symbolRenderContext()->geometryPartNum() );
 
   if ( layerIdx != -1 )
   {
@@ -1646,6 +1656,8 @@ void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature*
   //save old painter
   QPainter* renderPainter = context.painter();
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f, nullptr, mapUnitScale() );
+  symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
+  symbolContext.setGeometryPartNum( symbolRenderContext()->geometryPartNum() );
 
   if ( layerIdx != -1 )
   {
@@ -1723,6 +1735,8 @@ QgsFillSymbolV2::QgsFillSymbolV2( const QgsSymbolLayerV2List& layers )
 void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layerIdx, bool selected )
 {
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f, nullptr, mapUnitScale() );
+  symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
+  symbolContext.setGeometryPartNum( symbolRenderContext()->geometryPartNum() );
 
   if ( layerIdx != -1 )
   {

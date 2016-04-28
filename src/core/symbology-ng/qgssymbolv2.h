@@ -379,6 +379,24 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     //! @note added in 2.4
     const QgsFields* fields() const { return mFields; }
 
+    /** Part count of current geometry
+     * @note added in QGIS 2.16
+     */
+    int geometryPartCount() const { return mGeometryPartCount; }
+    /** Sets the part count of current geometry
+     * @note added in QGIS 2.16
+     */
+    void setGeometryPartCount( int count ) { mGeometryPartCount = count; }
+
+    /** Part number of current geometry
+     * @note added in QGIS 2.16
+     */
+    int geometryPartNum() const { return mGeometryPartNum; }
+    /** Sets the part number of current geometry
+     * @note added in QGIS 2.16
+     */
+    void setGeometryPartNum( int num ) { mGeometryPartNum = num; }
+
     double outputLineWidth( double width ) const;
     double outputPixelSize( double size ) const;
 
@@ -410,6 +428,8 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     int mRenderHints;
     const QgsFeature* mFeature; //current feature
     const QgsFields* mFields;
+    int mGeometryPartCount;
+    int mGeometryPartNum;
 
 
     QgsSymbolV2RenderContext( const QgsSymbolV2RenderContext& rh );

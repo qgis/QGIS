@@ -893,4 +893,11 @@ class QgsCentroidFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     void setPointOnSurface( bool pointOnSurface );
     bool pointOnSurface() const;
+
+    /** Sets whether a point is drawn for all parts or only on the biggest part of multi-part features.
+     * @note added in 2.16 */
+    void setPointOnAllParts( bool pointOnAllParts );
+    /** Returns whether a point is drawn for all parts or only on the biggest part of multi-part features.
+     * @note added in 2.16 */
+    bool pointOnAllParts() const;
 };
