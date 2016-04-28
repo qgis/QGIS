@@ -678,6 +678,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
   protected:
 
+    virtual void resizeEvent( QResizeEvent* event);
     //! Handle state changes (WindowTitleChange)
     virtual void changeEvent( QEvent *event ) override;
     //! Have some control over closing of the application

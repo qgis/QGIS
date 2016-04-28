@@ -501,6 +501,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.8
     static void enableRotation( bool enabled );
 
+    void updateMapSize();
+
   private slots:
     //! called when current maptool is destroyed
     void mapToolDestroyed();
@@ -662,7 +664,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Make sure the datum transform store is properly populated
     void updateDatumTransformEntries();
 
-  private:
+private:
     /// this class is non-copyable
     /**
        @note
@@ -737,6 +739,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsMapRendererCache* mCache;
 
     QTimer *mResizeTimer;
+
+    bool mFirstResize;
 
     QgsPreviewEffect* mPreviewEffect;
 

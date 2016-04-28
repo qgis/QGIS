@@ -10284,6 +10284,12 @@ void QgisApp::refreshActionFeatureAction()
   mActionFeatureAction->setEnabled( layerHasActions );
 }
 
+void QgisApp::resizeEvent(QResizeEvent *event)
+{
+    mapCanvas()->updateMapSize();
+
+}
+
 /////////////////////////////////////////////////////////////////
 //
 //
