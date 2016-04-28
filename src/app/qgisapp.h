@@ -678,7 +678,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
   protected:
 
-    virtual void resizeEvent( QResizeEvent* event);
     //! Handle state changes (WindowTitleChange)
     virtual void changeEvent( QEvent *event ) override;
     //! Have some control over closing of the application
@@ -1171,7 +1170,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void labeling();
 
     //! shows the map styling dock
-    void mapStyleDock(bool enabled);
+    void mapStyleDock( bool enabled );
 
     //! diagrams properties
     void diagramProperties();

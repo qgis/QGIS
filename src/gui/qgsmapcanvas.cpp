@@ -194,7 +194,6 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mCache( nullptr )
     , mPreviewEffect( nullptr )
     , mSnappingUtils( nullptr )
-    , mFirstResizeDone( false )
     , mExpressionContextScope( tr( "Map Canvas" ) )
 {
   setObjectName( name );
@@ -1353,7 +1352,7 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent* e )
 
 } // mouseReleaseEvent
 
-void QgsMapCanvas::forceResize()
+void QgsMapCanvas::updateMapSize()
 {
   mResizeTimer->start( 500 );
 
@@ -1381,10 +1380,9 @@ void QgsMapCanvas::resizeEvent( QResizeEvent * e )
   QGraphicsView::resizeEvent( e );
 
   QSize size = viewport()->size();
-  QRect current = mScene->sceneRect();
-  if ( current.width() < size.width() || current.height() < size.height() )
+  if ( size.width() > mSettings.outputSize().width() || size.height() > mSettings.outputSize().height() )
   {
-    forceResize();
+    updateMapSize();
   }
   else
   {
@@ -1401,7 +1399,7 @@ void QgsMapCanvas::paintEvent( QPaintEvent *e )
 
 void QgsMapCanvas::showEvent( QShowEvent *e )
 {
-  forceResize();
+  Q_UNUSED( e );
 } // paintEvent
 
 void QgsMapCanvas::updateCanvasItemPositions()

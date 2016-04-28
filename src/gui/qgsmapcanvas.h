@@ -503,7 +503,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Force a resize of the map canvas item
     //! @note added in 2.16
-    void forceResize();
+    void updateMapSize();
 
   private slots:
     //! called when current maptool is destroyed
