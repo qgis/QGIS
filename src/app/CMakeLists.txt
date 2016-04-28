@@ -74,6 +74,8 @@ SET(QGIS_APP_SRCS
   qgsmaptoolmovefeature.cpp
   qgsmaptoolmovelabel.cpp
   qgsmaptooloffsetcurve.cpp
+  qgsmaptooloffsetpointsymbol.cpp
+  qgsmaptoolpointsymbol.cpp
   qgsmaptoolreshape.cpp
   qgsmaptoolrotatefeature.cpp
   qgsmaptoolrotatelabel.cpp
@@ -100,6 +102,7 @@ SET(QGIS_APP_SRCS
   qgsmeasuretool.cpp
   qgsmergeattributesdialog.cpp
   qgsoptions.cpp
+  qgspointmarkeritem.cpp
   qgspointrotationitem.cpp
   qgspluginmetadata.cpp
   qgspluginregistry.cpp
@@ -250,6 +253,8 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolmovelabel.h
   qgsmaptoollabel.h
   qgsmaptooloffsetcurve.h
+  qgsmaptooloffsetpointsymbol.h
+  qgsmaptoolpointsymbol.h
   qgsmaptoolreshape.h
   qgsmaptoolrotatefeature.h
   qgsmaptoolrotatelabel.h
