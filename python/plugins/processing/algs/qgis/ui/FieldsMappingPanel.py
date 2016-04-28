@@ -463,7 +463,7 @@ class FieldsMappingPanel(BASE, WIDGET):
             self.model.index(end, self.model.columnCount() - 1))
 
     def updateLayerCombo(self):
-        layers = dataobjects.getVectorLayers()
+        layers = dataobjects.getTables()
         layers.sort(key=lambda lay: lay.name())
         for layer in layers:
             self.layerCombo.addItem(layer.name(), layer)
