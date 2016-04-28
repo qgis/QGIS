@@ -288,6 +288,7 @@
     <addaction name="mActionMergeFeatureAttributes"/>
     <addaction name="mActionNodeTool"/>
     <addaction name="mActionRotatePointSymbols"/>
+    <addaction name="mActionOffsetPointSymbol"/>
    </widget>
    <addaction name="mProjectMenu"/>
    <addaction name="mEditMenu"/>
@@ -404,6 +405,7 @@
    <addaction name="mActionMergeFeatures"/>
    <addaction name="mActionMergeFeatureAttributes"/>
    <addaction name="mActionRotatePointSymbols"/>
+   <addaction name="mActionOffsetPointSymbol"/>
   </widget>
   <widget class="QToolBar" name="mMapNavToolBar">
    <property name="windowTitle">
@@ -894,6 +896,18 @@
    </property>
    <property name="text">
     <string>Rotate Point Symbols</string>
+   </property>
+  </action>
+  <action name="mActionOffsetPointSymbol">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRotatePointSymbols.png</normaloff>:/images/themes/default/mActionRotatePointSymbols.png</iconset>
+   </property>
+   <property name="text">
+    <string>Offset Point Symbol</string>
    </property>
   </action>
   <action name="mActionSnappingOptions">
