@@ -341,7 +341,8 @@ bool QgsOracleFeatureIterator::openQuery( QString whereClause )
   {
     QString query = "SELECT ", delim = "";
 
-    if (( mRequest.flags() & QgsFeatureRequest::NoGeometry ) == 0 && !mSource->mGeometryColumn.isNull() )
+    if ((( mRequest.flags() & QgsFeatureRequest::NoGeometry ) == 0 && !mSource->mGeometryColumn.isNull() ) ||
+        (( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) != 0 && ( !mConnection->hasSpatial() || !mSource->mHasSpatialIndex ) ) )
     {
       query += QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn );
       delim = ",";
