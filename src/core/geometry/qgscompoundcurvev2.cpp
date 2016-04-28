@@ -390,6 +390,15 @@ void QgsCompoundCurveV2::addCurve( QgsCurveV2* c )
     {
       setZMTypeFromSubGeometry( c, QgsWKBTypes::CompoundCurve );
     }
+
+    if ( QgsWKBTypes::hasZ( mWkbType ) && !QgsWKBTypes::hasZ( c->wkbType() ) )
+    {
+      c->addZValue();
+    }
+    if ( QgsWKBTypes::hasM( mWkbType ) && !QgsWKBTypes::hasM( c->wkbType() ) )
+    {
+      c->addMValue();
+    }
     clearCache();
   }
 }
