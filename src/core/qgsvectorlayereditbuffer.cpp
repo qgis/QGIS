@@ -714,7 +714,7 @@ QgsAbstractGeometryV2* QgsVectorLayerEditBuffer::outputGeometry( QgsAbstractGeom
     QgsGeometryCollectionV2* geomCollection = dynamic_cast<QgsGeometryCollectionV2*>( outputGeom );
     if ( geomCollection )
     {
-      geomCollection->addGeometry( geom );
+      geomCollection->addGeometry( geom->clone() );
     }
   }
 
