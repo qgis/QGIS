@@ -1,0 +1,15 @@
+i.vi
+Calculates different types of vegetation indices.
+Imagery (i.*)
+ParameterRaster|red|Name of input red channel surface reflectance map [0.0-1.0]|True
+ParameterSelection|viname|Type of vegetation index|arvi;dvi;evi;evi2;gvi;gari;gemi;ipvi;msavi;msavi2;ndvi;pvi;savi;sr;vari;wdvi|10
+ParameterRaster|nir|Name of input nir channel surface reflectance map [0.0-1.0]|True
+ParameterRaster|green|Name of input green channel surface reflectance map [0.0-1.0]|True
+ParameterRaster|blue|Name of input blue channel surface reflectance map [0.0-1.0]|True
+ParameterRaster|band5|Name of input 5th channel surface reflectance map [0.0-1.0]|True
+ParameterRaster|band7|Name of input 7th channel surface reflectance map [0.0-1.0]|True
+ParameterString|soil_line_slope|Value of the slope of the soil line (MSAVI2 only)|None|False|True
+ParameterString|soil_line_intercept|Value of the factor of reduction of soil noise (MSAVI2 only)|None|False|True
+ParameterString|soil_noise_reduction|Value of the slope of the soil line (MSAVI2 only)|None|False|True
+ParameterSelection|storage_bit|Maximum bits for digital numbers|7;8;9;10;16|1
+OutputRaster|output|Vegetation Index
