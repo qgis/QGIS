@@ -47,6 +47,7 @@ from processing.tools import dataobjects
 
 
 GEOM_TYPE_MAP = {
+    QGis.WKBNoGeometry: 'none',
     QGis.WKBPoint: 'Point',
     QGis.WKBLineString: 'LineString',
     QGis.WKBPolygon: 'Polygon',
@@ -535,6 +536,13 @@ class VectorWriter:
     POSTGIS_LAYER_PREFIX = 'postgis:'
     SPATIALITE_LAYER_PREFIX = 'spatialite:'
 
+    nogeometry_extensions = [
+        u'csv',
+        u'dbf',
+        u'ods',
+        u'xlsx',
+    ]
+
     def __init__(self, destination, encoding, fields, geometryType,
                  crs, options=None):
         self.destination = destination
@@ -592,9 +600,10 @@ class VectorWriter:
                                   for f in fields)
 
             _runSQL("CREATE TABLE %s.%s (%s)" % (uri.schema(), uri.table().lower(), fieldsdesc))
-            _runSQL("SELECT AddGeometryColumn('{schema}', '{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
-                table=uri.table().lower(), schema=uri.schema(), srid=crs.authid().split(":")[-1],
-                typmod=GEOM_TYPE_MAP[geometryType].upper()))
+            if geometryType != QGis.WKBNoGeometry:
+                _runSQL("SELECT AddGeometryColumn('{schema}', '{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
+                    table=uri.table().lower(), schema=uri.schema(), srid=crs.authid().split(":")[-1],
+                    typmod=GEOM_TYPE_MAP[geometryType].upper()))
 
             self.layer = QgsVectorLayer(uri.uri(), uri.table(), "postgres")
             self.writer = self.layer.dataProvider()
@@ -622,9 +631,10 @@ class VectorWriter:
 
             _runSQL("DROP TABLE IF EXISTS %s" % uri.table().lower())
             _runSQL("CREATE TABLE %s (%s)" % (uri.table().lower(), fieldsdesc))
-            _runSQL("SELECT AddGeometryColumn('{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
-                table=uri.table().lower(), srid=crs.authid().split(":")[-1],
-                typmod=GEOM_TYPE_MAP[geometryType].upper()))
+            if geometryType != QGis.WKBNoGeometry:
+                _runSQL("SELECT AddGeometryColumn('{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
+                    table=uri.table().lower(), srid=crs.authid().split(":")[-1],
+                    typmod=GEOM_TYPE_MAP[geometryType].upper()))
 
             self.layer = QgsVectorLayer(uri.uri(), uri.table(), "spatialite")
             self.writer = self.layer.dataProvider()
@@ -636,11 +646,21 @@ class VectorWriter:
                 extension = extension[extension.find('*.') + 2:]
                 extension = extension[:extension.find(' ')]
                 OGRCodes[extension] = value
+            OGRCodes['dbf'] = "DBF file"
 
             extension = self.destination[self.destination.rfind('.') + 1:]
+
             if extension not in OGRCodes:
                 extension = 'shp'
                 self.destination = self.destination + '.shp'
+
+            if geometryType == QGis.WKBNoGeometry:
+                if extension == 'shp':
+                    extension = 'dbf'
+                    self.destination = self.destination[:self.destination.rfind('.')] + '.dbf'
+                if extension not in self.nogeometry_extensions:
+                    raise GeoAlgorithmExecutionException(
+                        "Unsupported format for tables with no geometry")
 
             qgsfields = QgsFields()
             for field in fields:
