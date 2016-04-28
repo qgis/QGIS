@@ -135,7 +135,7 @@ class ProcessingToolbox(BASE, WIDGET):
             item.setHidden(not show)
             return show
         elif isinstance(item, (TreeAlgorithmItem, TreeActionItem)):
-            #hide = bool(text) and (text not in item.text(0).lower())
+            # hide = bool(text) and (text not in item.text(0).lower())
             hide = bool(text) and not any(text in t for t in [item.text(0).lower(), item.data(0, Qt.UserRole).lower()])
             if isinstance(item, TreeAlgorithmItem):
                 hide = hide and (text not in item.alg.commandLineName())
@@ -157,6 +157,7 @@ class ProcessingToolbox(BASE, WIDGET):
                                 "The provider has been activated, but it might need additional configuration.")
 
     def updateProvider(self, providerName):
+        Processing.reloadProvider(providerName)
         item = self._providerItem(providerName)
         if item is not None:
             item.refresh()
@@ -308,9 +309,7 @@ class ProcessingToolbox(BASE, WIDGET):
     def addProvider(self, providerName):
         name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
         providerItem = TreeProviderItem(providerName, None, self)
-        if ProcessingConfig.getSetting(name):
-            providerItem.setHidden(providerItem.childCount() == 0)
-        else:
+        if not ProcessingConfig.getSetting(name):
             providerItem = TreeProviderItem(providerName, None, self)
             providerItem.setHidden(True)
             self.disabledProviderItems[providerName] = providerItem
@@ -330,7 +329,6 @@ class ProcessingToolbox(BASE, WIDGET):
             name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
             if ProcessingConfig.getSetting(name):
                 providerItem = TreeProviderItem(providerName, self.algorithmTree, self)
-                providerItem.setHidden(providerItem.childCount() == 0)
             else:
                 disabled.append(providerName)
         self.algorithmTree.sortItems(0, Qt.AscendingOrder)
@@ -435,3 +433,5 @@ class TreeProviderItem(QTreeWidgetItem):
         self.setToolTip(0, self.text(0))
         for groupItem in groups.values():
             self.addChild(groupItem)
+
+        self.setHidden(self.childCount() == 0)

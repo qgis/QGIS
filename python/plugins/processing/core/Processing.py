@@ -184,6 +184,14 @@ class Processing:
             provider.loadAlgorithms()
 
     @staticmethod
+    def reloadProvider(providerName):
+        for p in Processing.providers:
+            if p.getName() == providerName:
+                p.loadAlgorithms()
+                Processing.algs[
+                    p.getName()] = {a.commandLineName(): a for a in p.algs}
+
+    @staticmethod
     def loadAlgorithms():
         Processing.algs = {}
         Processing.updateProviders()
