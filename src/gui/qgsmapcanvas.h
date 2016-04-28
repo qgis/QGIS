@@ -501,6 +501,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.8
     static void enableRotation( bool enabled );
 
+    //! Force a resize of the map canvas item
+    //! @note added in 2.16
+    void updateMapSize();
+
   private slots:
     //! called when current maptool is destroyed
     void mapToolDestroyed();
@@ -631,8 +635,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Overridden resize event
     void resizeEvent( QResizeEvent * e ) override;
 
-    //! Overridden paint event
-    void paintEvent( QPaintEvent * e ) override;
+    //! Overridden show event
+    void showEvent( QShowEvent * e ) override;
 
     //! Overridden drag enter event
     void dragEnterEvent( QDragEnterEvent * e ) override;
