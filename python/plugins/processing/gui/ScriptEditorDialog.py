@@ -17,7 +17,6 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Alexander Bruy'
 __date__ = 'December 2012'
 __copyright__ = '(C) 2012, Alexander Bruy'
@@ -39,7 +38,7 @@ from qgis.PyQt.QtWidgets import QMenu, QAction, QMessageBox, QFileDialog, QAppli
 from qgis.core import QgsApplication
 from qgis.utils import iface
 
-from processing.modeler.ModelerUtils import ModelerUtils
+from processing.core.Processing import Processing
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.algs.r.RAlgorithm import RAlgorithm
@@ -63,8 +62,8 @@ class ScriptEditorDialog(BASE, WIDGET):
         super(ScriptEditorDialog, self).__init__(None)
         self.setupUi(self)
 
-        self.setWindowFlags(Qt.WindowMinimizeButtonHint |
-                            Qt.WindowMaximizeButtonHint |
+        self.setWindowFlags(Qt.WindowMinimizeButtonHint | 
+                            Qt.WindowMaximizeButtonHint | 
                             Qt.WindowCloseButtonHint)
         # Set icons
         self.btnOpen.setIcon(
@@ -271,10 +270,10 @@ class ScriptEditorDialog(BASE, WIDGET):
     def runAlgorithm(self):
         if self.algType == self.SCRIPT_PYTHON:
             alg = ScriptAlgorithm(None, unicode(self.editor.text()))
-            alg.provider = ModelerUtils.providers['script']
+            alg.provider = Processing.getProviderFromName('script')
         if self.algType == self.SCRIPT_R:
             alg = RAlgorithm(None, unicode(self.editor.text()))
-            alg.provider = ModelerUtils.providers['r']
+            alg.provider = Processing.getProviderFromName('r')
 
         dlg = alg.getCustomParametersDialog()
         if not dlg:

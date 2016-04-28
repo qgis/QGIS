@@ -57,9 +57,6 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
                                             ModelerUtils.MODELS_FOLDER, self.tr('Models folder', 'ModelerAlgorithmProvider'),
                                             ModelerUtils.modelsFolder(), valuetype=Setting.FOLDER))
 
-    def setAlgsList(self, algs):
-        ModelerUtils.allAlgs = algs
-
     def modelsFolder(self):
         return ModelerUtils.modelsFolder()
 

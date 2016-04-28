@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.gui import AlgorithmClassification
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -35,6 +34,7 @@ from qgis.PyQt.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings, 
 from qgis.PyQt.QtWidgets import QGraphicsView, QTreeWidget, QMessageBox, QFileDialog, QTreeWidgetItem
 from qgis.PyQt.QtGui import QIcon, QImage, QPainter
 from qgis.core import QgsApplication
+from processing.core.Processing import Processing
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
@@ -61,8 +61,8 @@ class ModelerDialog(BASE, WIDGET):
 
         self.zoom = 1
 
-        self.setWindowFlags(Qt.WindowMinimizeButtonHint |
-                            Qt.WindowMaximizeButtonHint |
+        self.setWindowFlags(Qt.WindowMinimizeButtonHint | 
+                            Qt.WindowMaximizeButtonHint | 
                             Qt.WindowCloseButtonHint)
 
         settings = QSettings()
@@ -89,7 +89,7 @@ class ModelerDialog(BASE, WIDGET):
                 if text in ModelerParameterDefinitionDialog.paramTypes:
                     self.addInputOfType(text, event.pos())
                 else:
-                    alg = ModelerUtils.getAlgorithm(text)
+                    alg = Processing.getAlgorithm(text)
                     if alg is not None:
                         self._addAlgorithm(alg.getCopy(), event.pos())
                 event.accept()
@@ -226,7 +226,7 @@ class ModelerDialog(BASE, WIDGET):
     def editHelp(self):
         if self.alg.provider is None:
             # Might happen if model is opened from modeler dialog
-            self.alg.provider = ModelerUtils.providers['model']
+            self.alg.provider = Processing.getProviderFromName('model')
         alg = self.alg.getCopy()
         dlg = HelpEditionDialog(alg)
         dlg.exec_()
@@ -243,7 +243,7 @@ class ModelerDialog(BASE, WIDGET):
 
         if self.alg.provider is None:
             # Might happen if model is opened from modeler dialog
-            self.alg.provider = ModelerUtils.providers['model']
+            self.alg.provider = Processing.getProviderFromName('model')
         alg = self.alg.getCopy()
         dlg = AlgorithmDialog(alg)
         dlg.exec_()
@@ -390,7 +390,7 @@ class ModelerDialog(BASE, WIDGET):
                     pos = QPointF(pos)
                 self.alg.addParameter(ModelerParameter(dlg.param, pos))
                 self.repaintModel()
-                #self.view.ensureVisible(self.scene.getLastParameterItem())
+                # self.view.ensureVisible(self.scene.getLastParameterItem())
                 self.hasChanged = True
 
     def getPositionForParameterItem(self):
@@ -469,14 +469,13 @@ class ModelerDialog(BASE, WIDGET):
     def fillAlgorithmTreeUsingProviders(self):
         self.algorithmTree.clear()
         text = unicode(self.searchBox.text())
-        allAlgs = ModelerUtils.allAlgs
+        allAlgs = Processing.algs
         for providerName in allAlgs.keys():
             name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
             if not ProcessingConfig.getSetting(name):
                 continue
             groups = {}
-            provider = allAlgs[providerName]
-            algs = provider.values()
+            algs = allAlgs[providerName].values()
 
             # Add algorithms
             for alg in algs:
@@ -498,12 +497,10 @@ class ModelerDialog(BASE, WIDGET):
 
             if len(groups) > 0:
                 providerItem = QTreeWidgetItem()
-                providerItem.setText(0,
-                                     ModelerUtils.providers[providerName].getDescription())
-                providerItem.setToolTip(0,
-                                        ModelerUtils.providers[providerName].getDescription())
-                providerItem.setIcon(0,
-                                     ModelerUtils.providers[providerName].getIcon())
+                provider = Processing.getProviderFromName(providerName)
+                providerItem.setText(0, provider.getDescription())
+                providerItem.setToolTip(0, provider.getDescription())
+                providerItem.setIcon(0, provider.getIcon())
                 for groupItem in groups.values():
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)
@@ -521,7 +518,7 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         QTreeWidgetItem.__init__(self)
         self.alg = alg
         icon = alg.getIcon()
-        name = AlgorithmClassification.getDisplayName(alg)
+        name = alg.displayName()
         self.setIcon(0, icon)
         self.setToolTip(0, name)
         self.setText(0, name)
