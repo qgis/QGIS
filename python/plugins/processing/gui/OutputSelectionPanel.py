@@ -142,7 +142,9 @@ class OutputSelectionPanel(BASE, WIDGET):
             password = settings.value(mySettings + '/password')
             uri = QgsDataSourceURI()
             uri.setConnection(host, str(port), dbname, user, password)
-            uri.setDataSource(dlg.schema, dlg.table, "the_geom")
+            uri.setDataSource(dlg.schema, dlg.table,
+                              "the_geom" if self.output.hasGeometry() else None)
+
             connInfo = uri.connectionInfo()
             (success, user, passwd) = QgsCredentials.instance().get(connInfo, None, None)
             if success:
@@ -182,7 +184,8 @@ class OutputSelectionPanel(BASE, WIDGET):
 
             uri = QgsDataSourceURI()
             uri.setDatabase(fileName)
-            uri.setDataSource('', self.output.name.lower(), 'the_geom')
+            uri.setDataSource('', self.output.name.lower(),
+                              'the_geom' if self.output.hasGeometry() else None)
             self.leText.setText("spatialite:" + uri.uri())
 
     def saveToMemory(self):
