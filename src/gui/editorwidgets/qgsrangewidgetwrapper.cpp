@@ -169,7 +169,7 @@ void QgsRangeWidgetWrapper::initWidget( QWidget* editor )
         mQgsDial->setSingleStep( step );
     }
 
-    connect( editor, SIGNAL( valueChanged( QVariant ) ), this, SLOT( valueChanged( QVariant ) ) );
+    connect( editor, SIGNAL( valueChanged( QVariant ) ), this, SLOT( valueChangedVariant( QVariant ) ) );
   }
   else if ( mDial )
   {
@@ -198,7 +198,7 @@ bool QgsRangeWidgetWrapper::valid() const
   return mSlider || mDial || mQgsDial || mQgsSlider || mIntSpinBox || mDoubleSpinBox;
 }
 
-void QgsRangeWidgetWrapper::valueChanged( const QVariant& v )
+void QgsRangeWidgetWrapper::valueChangedVariant( const QVariant& v )
 {
   if ( v.type() == QVariant::Int )
     valueChanged( v.toInt() );
