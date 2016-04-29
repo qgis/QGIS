@@ -156,8 +156,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
     void updateLayerFields();
 
-    QgsAbstractGeometryV2* outputGeometry( QgsAbstractGeometryV2* geom ) const;
-
   protected:
     QgsVectorLayer* L;
     friend class QgsVectorLayer;
@@ -191,6 +189,8 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     /** Changed geometries which are not commited. */
     QgsGeometryMap mChangedGeometries;
 
+  private:
+    QgsAbstractGeometryV2* outputGeometry( QgsAbstractGeometryV2* geom ) const;
 };
 
 #endif // QGSVECTORLAYEREDITBUFFER_H
