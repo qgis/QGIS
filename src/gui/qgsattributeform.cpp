@@ -58,6 +58,7 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &featur
     , mPreventFeatureRefresh( false )
     , mIsSettingFeature( false )
     , mIsSettingMultiEditFeatures( false )
+    , mUnsavedMultiEditChanges( false )
     , mEditCommandMessage( tr( "Attributes changed" ) )
     , mMode( SingleEditMode )
 {
@@ -123,8 +124,19 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
   if ( mMode == MultiEditMode )
   {
     //switching out of multi edit mode triggers a save
-    save();
+    if ( mUnsavedMultiEditChanges )
+    {
+      // prompt for save
+      int res = QMessageBox::information( this, tr( "Multiedit attributes" ),
+                                          tr( "Apply changes to edited features?" ), QMessageBox::Yes | QMessageBox::No );
+      if ( res == QMessageBox::Yes )
+      {
+        save();
+      }
+    }
+    clearMultiEditMessages();
   }
+  mUnsavedMultiEditChanges = false;
 
   mMode = mode;
 
@@ -345,6 +357,7 @@ void QgsAttributeForm::resetMultiEdit( bool promptToSave )
   if ( promptToSave )
     save();
 
+  mUnsavedMultiEditChanges = false;
   setMultiEditFeatureIds( mLayer->selectedFeaturesIds() );
 }
 
@@ -452,6 +465,7 @@ bool QgsAttributeForm::save()
   }
 
   mIsSaving = false;
+  mUnsavedMultiEditChanges = false;
 
   return success;
 }
@@ -500,6 +514,8 @@ void QgsAttributeForm::onAttributeChanged( const QVariant& value )
     {
       if ( !mIsSettingMultiEditFeatures )
       {
+        mUnsavedMultiEditChanges = true;
+
         QLabel *msgLabel = new QLabel( tr( "Unsaved multiedit changes: <a href=\"#apply\">apply changes</a> or <a href=\"#reset\">reset changes</a>." ), mMessageBar );
         msgLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
         msgLabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
