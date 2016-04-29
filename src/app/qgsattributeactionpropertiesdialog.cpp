@@ -150,7 +150,7 @@ void QgsAttributeActionPropertiesDialog::chooseIcon()
   Q_FOREACH ( const QByteArray& format, list )
     formatList << QString( "*.%1" ).arg( QString( format ) );
 
-  QString filter = QString( "Images( %1 ); All( *.* )" ).arg( formatList.join( " " ) );
+  QString filter = tr( "Images( %1 ); All( *.* )" ).arg( formatList.join( " " ) );
   QString icon = QFileDialog::getOpenFileName( this, tr( "Choose Icon..." ), mActionIcon->text(), filter );
 
   if ( !icon.isNull() )
