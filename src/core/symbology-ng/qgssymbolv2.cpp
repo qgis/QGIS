@@ -758,7 +758,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
         //draw debugging rect
         context.painter()->setPen( Qt::red );
         context.painter()->setBrush( QColor( 255, 0, 0, 100 ) );
-        context.painter()->drawRect( static_cast<QgsMarkerSymbolV2*>( this )->bounds( pt, context ) );
+        context.painter()->drawRect( static_cast<QgsMarkerSymbolV2*>( this )->bounds( pt, context, feature ) );
       }
     }
     break;
@@ -1422,9 +1422,9 @@ void QgsMarkerSymbolV2::renderPoint( QPointF point, const QgsFeature* f, QgsRend
   }
 }
 
-QRectF QgsMarkerSymbolV2::bounds( QPointF point, QgsRenderContext& context ) const
+QRectF QgsMarkerSymbolV2::bounds( QPointF point, QgsRenderContext& context, const QgsFeature& feature ) const
 {
-  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, nullptr, nullptr, mapUnitScale() );
+  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, &feature, feature.fields(), mapUnitScale() );
 
   QRectF bound;
   Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )

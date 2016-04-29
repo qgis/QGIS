@@ -60,6 +60,9 @@ class TestQgsSimpleMarkerSymbol : public QObject
 
     void simpleMarkerSymbol();
     void bounds();
+    void boundsWithOffset();
+    void boundsWithRotation();
+    void boundsWithRotationAndOffset();
 
   private:
     bool mTestHasError;
@@ -152,6 +155,57 @@ void TestQgsSimpleMarkerSymbol::bounds()
   mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
   bool result = imageCheck( "simplemarker_bounds" );
   mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
+  mSimpleMarkerLayer->removeDataDefinedProperty( "size" );
+  QVERIFY( result );
+}
+
+void TestQgsSimpleMarkerSymbol::boundsWithOffset()
+{
+  mSimpleMarkerLayer->setColor( QColor( 200, 200, 200 ) );
+  mSimpleMarkerLayer->setBorderColor( QColor( 0, 0, 0 ) );
+  mSimpleMarkerLayer->setName( "circle" );
+  mSimpleMarkerLayer->setSize( 5 );
+  mSimpleMarkerLayer->setDataDefinedProperty( "offset", new QgsDataDefined( true, true, "if(importance > 2, '5,10', '10, 5')" ) );
+  mSimpleMarkerLayer->setOutlineWidth( 0.5 );
+
+  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
+  bool result = imageCheck( "simplemarker_boundsoffset" );
+  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
+  mSimpleMarkerLayer->removeDataDefinedProperty( "offset" );
+  QVERIFY( result );
+}
+
+void TestQgsSimpleMarkerSymbol::boundsWithRotation()
+{
+  mSimpleMarkerLayer->setColor( QColor( 200, 200, 200 ) );
+  mSimpleMarkerLayer->setBorderColor( QColor( 0, 0, 0 ) );
+  mSimpleMarkerLayer->setName( "square" );
+  mSimpleMarkerLayer->setSize( 5 );
+  mSimpleMarkerLayer->setDataDefinedProperty( "angle", new QgsDataDefined( true, true, "importance * 20" ) );
+  mSimpleMarkerLayer->setOutlineWidth( 0.5 );
+
+  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
+  bool result = imageCheck( "simplemarker_boundsrotation" );
+  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
+  mSimpleMarkerLayer->removeDataDefinedProperty( "angle" );
+  QVERIFY( result );
+}
+
+void TestQgsSimpleMarkerSymbol::boundsWithRotationAndOffset()
+{
+  mSimpleMarkerLayer->setColor( QColor( 200, 200, 200 ) );
+  mSimpleMarkerLayer->setBorderColor( QColor( 0, 0, 0 ) );
+  mSimpleMarkerLayer->setName( "square" );
+  mSimpleMarkerLayer->setSize( 5 );
+  mSimpleMarkerLayer->setDataDefinedProperty( "offset", new QgsDataDefined( true, true, "if(importance > 2, '5,10', '10, 5')" ) );
+  mSimpleMarkerLayer->setDataDefinedProperty( "angle", new QgsDataDefined( true, false, QString(), "heading" ) );
+  mSimpleMarkerLayer->setOutlineWidth( 0.5 );
+
+  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
+  bool result = imageCheck( "simplemarker_boundsrotationoffset" );
+  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
+  mSimpleMarkerLayer->removeDataDefinedProperty( "offset" );
+  mSimpleMarkerLayer->removeDataDefinedProperty( "angle" );
   QVERIFY( result );
 }
 

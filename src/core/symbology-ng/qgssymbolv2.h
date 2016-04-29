@@ -545,10 +545,16 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
     void renderPoint( QPointF point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
     /** Returns the approximate bounding box of the marker symbol, which includes the bounding box
-     * of all symbol layers for the symbol.
+     * of all symbol layers for the symbol. It is recommended to use this method only between startRender()
+     * and stopRender() calls, or data defined rotation and offset will not be correctly calculated.
+     * @param point location of rendered point in painter units
+     * @param context render context
+     * @param feature feature being rendered at point (optional). If not specified, the bounds calculation will not
+     * include data defined parameters such as offset and rotation
      * @returns approximate symbol bounds, in painter units
-     * @note added in QGIS 2.14     */
-    QRectF bounds( QPointF point, QgsRenderContext& context ) const;
+     * @note added in QGIS 2.14
+    */
+    QRectF bounds( QPointF point, QgsRenderContext& context, const QgsFeature &feature = QgsFeature() ) const;
 
     virtual QgsMarkerSymbolV2* clone() const override;
 
