@@ -187,16 +187,17 @@ class edit(object):
 
 class QgsTaskWrapper(QgsTask):
 
-    def __init__(self, description, function, *extraArgs):
+    def __init__(self, description, function, *args, **kwargs):
         QgsTask.__init__(self, description)
-        self.extraArgs = extraArgs
+        self.args = args
+        self.kwargs = kwargs
         self.function = function
         self.result = None
         self.exception = None
 
     def run(self):
         try:
-            self.function(self, *self.extraArgs)
+            self.result = self.function(self, *self.args, **self.kwargs)
         except Exception as ex:
             # report error
             self.exception = ex
@@ -206,7 +207,7 @@ class QgsTaskWrapper(QgsTask):
         self.completed()
 
 
-def fromFunction(cls, description, function, extraArgs):
-    return QgsTaskWrapper(description, function, extraArgs)
+def fromFunction(cls, description, function, *args, **kwargs):
+    return QgsTaskWrapper(description, function, *args, **kwargs)
 
 QgsTask.fromFunction = classmethod(fromFunction)
