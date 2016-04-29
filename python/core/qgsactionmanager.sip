@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsattributemanager.h
+                          qgsactionmanager.sip
 
  These classes store and control the managment and execution of actions
  associated with a particular Qgis layer. Actions are defined to be

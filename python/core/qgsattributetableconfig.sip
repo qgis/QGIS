@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsattributetableconfig.h - QgsAttributeTableConfig
+  qgsattributetableconfig.sip
 
  ---------------------
  begin                : 27.4.2016

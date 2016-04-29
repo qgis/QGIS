@@ -283,7 +283,6 @@ bool QgsActionManager::writeXML( QDomNode& layer_node, QDomDocument& doc ) const
     actionSetting.setAttribute( "shortTitle", action.shortTitle() );
     actionSetting.setAttribute( "icon", action.iconPath() );
     actionSetting.setAttribute( "action", action.action() );
-    actionSetting.setAttribute( "showInAttributeTable", action.showInAttributeTable() );
     actionSetting.setAttribute( "capture", action.capture() );
     aActions.appendChild( actionSetting );
   }
@@ -310,8 +309,8 @@ bool QgsActionManager::readXML( const QDomNode& layer_node )
                    setting.attributeNode( "action" ).value(),
                    setting.attributeNode( "icon" ).value(),
                    setting.attributeNode( "capture" ).value().toInt() != 0,
-                   setting.attributeNode( "shortTitle" ).value(),
-                   setting.attributeNode( "showInAttributeTable" ).value().toInt() != 0 )
+                   setting.attributeNode( "shortTitle" ).value()
+                 )
       );
     }
   }
