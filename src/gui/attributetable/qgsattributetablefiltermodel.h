@@ -228,6 +228,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
 
   private slots:
     void selectionChanged();
+    void onColumnsAboutToBeInserted();
 
   private:
     QgsFeatureIds mFilteredFeatures;
@@ -236,6 +237,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     bool mSelectedOnTop;
     QgsAttributeTableModel* mTableModel;
 
+    QgsAttributeTableConfig mConfig;
     QVector<int> mColumnMapping;
 };
 

@@ -39,4 +39,9 @@ class QgsAttributeTableDelegate : QItemDelegate
     void setEditorData( QWidget *editor, const QModelIndex &index ) const;
 
     void setFeatureSelectionModel( QgsFeatureSelectionModel* featureSelectionModel );
+
+    /**
+     * Set an image that represents an action widget
+     */
+    void setActionWidgetImage( const QImage& image );
 };

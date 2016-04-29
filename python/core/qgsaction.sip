@@ -33,12 +33,35 @@ class QgsAction
       OpenUrl,
     };
 
-    QgsAction( ActionType type, const QString& name, const QString& action, bool capture );
+    /**
+     * Create a new QgsAction
+     *
+     * @param type          The type of this action
+     * @param description   A human readable description string
+     * @param action        The action text. Its interpretation depends on the type
+     * @param capture       If this is set to true, the output will be captured when an action is run
+     */
+    QgsAction( ActionType type, const QString& description, const QString& action, bool capture );
 
-    QgsAction( ActionType type, const QString& name, const QString& action, const QString& icon, bool capture );
 
-    //! The name of the action
+    /**
+     * Create a new QgsAction
+     *
+     * @param type          The type of this action
+     * @param description   A human readable description string
+     * @param action        The action text. Its interpretation depends on the type
+     * @param icon          Path to an icon for this action
+     * @param capture       If this is set to true, the output will be captured when an action is run
+     * @param shortTitle    A short string used to label user interface elements like buttons
+     */
+    QgsAction( ActionType type, const QString& description, const QString& action, const QString& icon, bool capture, const QString& shortTitle = QString() );
+
+
+    //! The name of the action. This may be a longer description.
     QString name() const;
+
+    //! The short title is used to label user interface elements like buttons
+    QString shortTitle() const;
 
     //! The path to the icon
     QString iconPath() const;
