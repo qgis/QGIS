@@ -111,13 +111,16 @@ int QgsAttributeTableFilterModel::columnCount( const QModelIndex& parent ) const
 
 void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTableConfig& config )
 {
+  mConfig = config;
+  mConfig.update( layer()->fields() );
+
   int columnIndex = 0;
   int configIndex = 0;
   bool resetModel = false;
 
-  for ( ; configIndex < config.columns().size(); ++configIndex )
+  for ( ; configIndex < mConfig.columns().size(); ++configIndex )
   {
-    const QgsAttributeTableConfig::ColumnConfig& columnConfig = config.columns().at( configIndex );
+    const QgsAttributeTableConfig::ColumnConfig& columnConfig = mConfig.columns().at( configIndex );
 
     // Hidden? No reason for further checks
     if ( columnConfig.mHidden )
@@ -143,7 +146,6 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
       beginResetModel();
       resetModel = true;
     }
-
 
     // New column? append
     Q_ASSERT( mColumnMapping.size() == columnIndex );
@@ -183,6 +185,7 @@ void QgsAttributeTableFilterModel::setSourceModel( QgsAttributeTableModel* sourc
   }
 
   QSortFilterProxyModel::setSourceModel( sourceModel );
+  disconnect( mTableModel, SIGNAL( columnsAboutToBeInserted( QModelIndex, int, int ) ), this, SLOT( onColumnsAboutToBeInserted() ) );
 }
 
 bool QgsAttributeTableFilterModel::selectedOnTop()
@@ -288,6 +291,11 @@ void QgsAttributeTableFilterModel::selectionChanged()
     sort( sortColumn(), sortOrder() );
     invalidate();
   }
+}
+
+void QgsAttributeTableFilterModel::onColumnsAboutToBeInserted()
+{
+  setAttributeTableConfig( mConfig );
 }
 
 void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
