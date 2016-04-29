@@ -330,9 +330,9 @@ template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object* ob
   return QgsSignalBlocker<Object>( object );
 }
 
-//
-// return a string representation of a double
-//
+//! Returns a string representation of a double
+//! @param a double value
+//! @param precision number of decimal places to retain
 inline QString qgsDoubleToString( double a, int precision = 17 )
 {
   if ( precision )
@@ -341,18 +341,17 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
     return QString::number( a, 'f', precision );
 }
 
-//
-// compare two doubles (but allow some difference)
-//
+//! Compare two doubles (but allow some difference)
+//! @param a first double
+//! @param b second double
+//! @param epsilon maximum difference allowable between doubles
 inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON )
 {
   const double diff = a - b;
   return diff > -epsilon && diff <= epsilon;
 }
 
-//
-// compare two doubles using specified number of significant digits
-//
+//! Compare two doubles using specified number of significant digits
 inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
 {
   // The most simple would be to print numbers as %.xe and compare as strings
@@ -368,17 +367,23 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
          qRound( ar * pow( 10.0, significantDigits ) ) == qRound( br * pow( 10.0, significantDigits ) );
 }
 
-//
-// a round function which returns a double to guard against overflows
-//
+//! A round function which returns a double to guard against overflows
 inline double qgsRound( double x )
 {
   return x < 0.0 ? std::ceil( x - 0.5 ) : std::floor( x + 0.5 );
 }
 
-bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
+//! Compares two QVariant values and returns whether the first is less than the second.
+//! Useful for sorting lists of variants, correctly handling sorting of the various
+//! QVariant data types (such as strings, numeric values, dates and times)
+//! @see qgsVariantGreaterThan()
+CORE_EXPORT bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
 
-bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
+//! Compares two QVariant values and returns whether the first is greater than the second.
+//! Useful for sorting lists of variants, correctly handling sorting of the various
+//! QVariant data types (such as strings, numeric values, dates and times)
+//! @see qgsVariantLessThan()
+CORE_EXPORT bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
 
 CORE_EXPORT QString qgsVsiPrefix( const QString& path );
 

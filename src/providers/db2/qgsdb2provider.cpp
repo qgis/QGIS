@@ -32,6 +32,7 @@ int QgsDb2Provider::sConnectionId = 0;
 
 QgsDb2Provider::QgsDb2Provider( QString uri )
     : QgsVectorDataProvider( uri )
+    , mNumberFeatures( 0 )
     , mEnvironment( ENV_LUW )
     , mWkbType( QGis::WKBUnknown )
 {

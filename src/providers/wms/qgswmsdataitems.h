@@ -50,8 +50,8 @@ class QgsWMSLayerItem : public QgsLayerItem
     Q_OBJECT
   public:
     QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path,
-                     const QgsWmsCapabilitiesProperty &capabilitiesProperty,
-                     QgsDataSourceURI dataSourceUri,
+                     const QgsWmsCapabilitiesProperty& capabilitiesProperty,
+                     const QgsDataSourceURI& dataSourceUri,
                      const QgsWmsLayerProperty &layerProperty );
     ~QgsWMSLayerItem();
 

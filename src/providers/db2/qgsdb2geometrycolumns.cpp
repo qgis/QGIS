@@ -23,6 +23,7 @@
 
 QgsDb2GeometryColumns::QgsDb2GeometryColumns( const QSqlDatabase db )
     : mDatabase( db )
+    , mEnvironment( ENV_LUW )
 {
   QgsDebugMsg( "constructing" );
 }

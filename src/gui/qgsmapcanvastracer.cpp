@@ -65,6 +65,11 @@ void QgsMapCanvasTracer::reportError( QgsTracer::PathError err, bool addingVerte
       break;
   }
 
+  if ( message.isEmpty() && hasTopologyProblem() )
+  {
+    message = tr( "Tracing may not work correctly. Please check topology of the input layers." );
+  }
+
   if ( message.isEmpty() )
     return;
 

@@ -185,8 +185,18 @@ class CORE_EXPORT QgsDxfExport
      * @param z z value of the point (defaults to 0.0)
      * @param skipz write point in 2d (defaults to false)
      * @note available in python bindings as writeGroupPoint
+     * @deprecated use QgsPointV2 version instead
      */
-    void writeGroup( int code, const QgsPoint &p, double z = 0.0, bool skipz = false );
+    Q_DECL_DEPRECATED void writeGroup( int code, const QgsPoint &p, double z = 0.0, bool skipz = false );
+
+    /**
+     * Write a group code with a point
+     * @param code group code
+     * @param p point value
+     * @note available in python bindings as writeGroupPointV2
+     * @note added in 2.15
+     */
+    void writeGroup( int code, const QgsPointV2 &p );
 
     /**
      * Write a group code with color value
@@ -235,19 +245,44 @@ class CORE_EXPORT QgsDxfExport
      * @param line polyline
      * @param layer layer name to use
      * @param lineStyleName line type to use
-     * @param color coolor to use
+     * @param color color to use
      * @param width line width to use
+     * @deprecated use QgsPointSequenceV2 variant
      */
-    void writePolyline( const QgsPolyline &line, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
+    Q_DECL_DEPRECATED void writePolyline( const QgsPolyline &line, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
+
+    /**
+     * Draw dxf primitives (LWPOLYLINE)
+     * @param line polyline
+     * @param layer layer name to use
+     * @param lineStyleName line type to use
+     * @param color color to use
+     * @param width line width to use
+     * @note not available in Python bindings
+     * @note added in 2.15
+     */
+    void writePolyline( const QgsPointSequenceV2 &line, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
 
     /**
      * Draw dxf filled polygon (HATCH)
      * @param polygon polygon
      * @param layer layer name to use
      * @param hatchPattern hatchPattern to use
-     * @param color coolor to use
+     * @param color color to use
+     * @deprecated use version with QgsRingSequenceV2
      */
-    void writePolygon( const QgsPolygon &polygon, const QString &layer, const QString &hatchPattern, const QColor& color );
+    Q_DECL_DEPRECATED void writePolygon( const QgsPolygon &polygon, const QString &layer, const QString &hatchPattern, const QColor& color );
+
+    /**
+     * Draw dxf filled polygon (HATCH)
+     * @param polygon polygon
+     * @param layer layer name to use
+     * @param hatchPattern hatchPattern to use
+     * @param color color to use
+     * @note not available in Python bindings
+     * @note added in 2.15
+     */
+    void writePolygon( const QgsRingSequenceV2 &polygon, const QString &layer, const QString &hatchPattern, const QColor& color );
 
     /**
      * Draw dxf filled polygon (SOLID)
@@ -262,22 +297,57 @@ class CORE_EXPORT QgsDxfExport
     Q_DECL_DEPRECATED void writeSolid( const QString &layer, const QColor& color, const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, const QgsPoint &pt4 );
 
     //! Write line (as a polyline)
-    void writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
+    //! @deprecated use QgsPointV2 version
+    Q_DECL_DEPRECATED void writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
+
+    //! Write line (as a polyline)
+    //! @note added in 2.15
+    void writeLine( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
 
     //! Write point
-    void writePoint( const QString &layer, const QColor& color, const QgsPoint &pt );
+    //! @deprecated use QgsPointV2 version
+    Q_DECL_DEPRECATED void writePoint( const QString &layer, const QColor& color, const QgsPoint &pt );
+
+    //! Write point
+    //! @note available in Python bindings as writePointV2
+    //! @note added in 2.15
+    void writePoint( const QString &layer, const QColor& color, const QgsPointV2 &pt );
 
     //! Write filled circle (as hatch)
-    void writeFilledCircle( const QString &layer, const QColor& color, const QgsPoint &pt, double radius );
+    //! @deprecated use QgsPointV2 version
+    Q_DECL_DEPRECATED void writeFilledCircle( const QString &layer, const QColor& color, const QgsPoint &pt, double radius );
+
+    //! Write filled circle (as hatch)
+    //! @note available in Python bindings as writePointV2
+    //! @note added in 2.15
+    void writeFilledCircle( const QString &layer, const QColor& color, const QgsPointV2 &pt, double radius );
 
     //! Write circle (as polyline)
-    void writeCircle( const QString &layer, const QColor& color, const QgsPoint &pt, double radius, const QString &lineStyleName, double width );
+    //! @deprecated use QgsPointV2 version
+    Q_DECL_DEPRECATED void writeCircle( const QString &layer, const QColor& color, const QgsPoint &pt, double radius, const QString &lineStyleName, double width );
+
+    //! Write circle (as polyline)
+    //! @note available in Python bindings as writeCircleV2
+    //! @note added in 2.15
+    void writeCircle( const QString &layer, const QColor& color, const QgsPointV2 &pt, double radius, const QString &lineStyleName, double width );
 
     //! Write text (TEXT)
-    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor& color );
+    //! @deprecated use QgsPointV2 version
+    Q_DECL_DEPRECATED void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor& color );
+
+    //! Write text (TEXT)
+    //! @note available in Python bindings as writeTextV2
+    //! @note added in 2.15
+    void writeText( const QString &layer, const QString &text, const QgsPointV2 &pt, double size, double angle, const QColor& color );
 
     //! Write mtext (MTEXT)
-    void writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, const QColor& color );
+    //! @deprecated use QgsPointV2 version
+    Q_DECL_DEPRECATED void writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, const QColor& color );
+
+    //! Write mtext (MTEXT)
+    //! @note available in Python bindings as writeMTextV2
+    //! @note added in 2.15
+    void writeMText( const QString &layer, const QString &text, const QgsPointV2 &pt, double width, double angle, const QColor& color );
 
     static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
 
@@ -340,8 +410,7 @@ class CORE_EXPORT QgsDxfExport
     void startSection();
     void endSection();
 
-    void writePoint( const QgsPoint &pt, const QString &layer, const QColor& color, QgsSymbolV2RenderContext &ctx, const QgsSymbolLayerV2 *symbolLayer, const QgsSymbolV2 *symbol, double angle );
-    void writeVertex( const QgsPoint &pt, const QString &layer );
+    void writePoint( const QgsPointV2 &pt, const QString &layer, const QColor& color, QgsSymbolV2RenderContext &ctx, const QgsSymbolLayerV2 *symbolLayer, const QgsSymbolV2 *symbol, double angle );
     void writeDefaultLinetypes();
     void writeSymbolLayerLinetype( const QgsSymbolLayerV2 *symbolLayer );
     void writeLinetype( const QString &styleName, const QVector<qreal> &pattern, QgsSymbolV2::OutputUnit u );

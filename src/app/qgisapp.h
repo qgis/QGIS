@@ -12,7 +12,8 @@
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
- *                                                                         * ***************************************************************************/
+ *                                                                         *
+ ***************************************************************************/
 
 #ifndef QGISAPP_H
 #define QGISAPP_H
@@ -1170,7 +1171,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void labeling();
 
     //! shows the map styling dock
-    void mapStyleDock(bool enabled);
+    void mapStyleDock( bool enabled );
 
     //! diagrams properties
     void diagramProperties();

@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout_1">
      <item>
       <widget class="QCheckBox" name="mDrawInsideCheckBox">
        <property name="sizePolicy">
@@ -26,6 +26,20 @@
        </property>
        <property name="text">
         <string>Force point inside polygon</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QCheckBox" name="mDrawAllPartsCheckBox">
+       <property name="text">
+        <string>Draw point on every part of multi-part features</string>
+       </property>
+       <property name="toolTip">
+        <string>When unchecked, a single point will be drawn on the biggest part of multi-part features</string>
        </property>
       </widget>
      </item>

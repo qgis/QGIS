@@ -130,6 +130,7 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent * e )
     QgsFeatureIds selectedFeatIds;
     if ( !selectedFeatures( vlayer, selectedFeatIds ) )
     {
+      vlayer->destroyEditCommand();
       return;
     }
 
@@ -137,17 +138,18 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent * e )
 
     if ( selectedFeatIds.isEmpty() )
     {
+      vlayer->destroyEditCommand();
       return;
     }
 
     Q_FOREACH ( QgsFeatureId fid, selectedFeatIds )
     {
-      mCurrentLabelPos.featureId = fid;
+      mCurrentLabel.pos.featureId = fid;
 
-      mCurrentLabelPos.isDiagram = false;
+      mCurrentLabel.pos.isDiagram = false;
       bool labChanged = showHide( vlayer, true );
 
-      mCurrentLabelPos.isDiagram = true;
+      mCurrentLabel.pos.isDiagram = true;
       bool diagChanged = showHide( vlayer, true );
 
       if ( labChanged || diagChanged )
@@ -166,7 +168,7 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent * e )
     {
       Q_FOREACH ( QgsLabelPosition pos, positions )
       {
-        mCurrentLabelPos = pos;
+        mCurrentLabel.pos = pos;
 
         if ( showHide( vlayer, false ) )
           labelChanged = labelChanged || true;
@@ -257,15 +259,15 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer* vlayer,
   QList<QgsLabelPosition>::const_iterator it;
   for ( it = labelPosList.constBegin() ; it != labelPosList.constEnd(); ++it )
   {
-    mCurrentLabelPos = *it;
+    const QgsLabelPosition& pos = *it;
 
-    if ( mCurrentLabelPos.layerID != vlayer->id() )
+    if ( pos.layerID != vlayer->id() )
     {
       // only work with labels from the current active and editable layer
       continue;
     }
 
-    listPos.append(( *it ) );
+    listPos.append( pos );
   }
 
   QApplication::restoreOverrideCursor();
@@ -280,14 +282,14 @@ bool QgsMapToolShowHideLabels::showHide( QgsVectorLayer *vl, const bool show )
   int showCol;
   int showVal;
 
-  if ( !dataDefinedShowHide( vl, mCurrentLabelPos.featureId, showVal,
+  if ( !dataDefinedShowHide( vl, mCurrentLabel.pos.featureId, showVal,
                              showSuccess, showCol ) )
   {
     return false;
   }
 
   // check if attribute value is already the same
-  if ( showSuccess && showVal == show )
+  if ( showSuccess && ( showVal != 0 ) == show )
   {
     return false;
   }
@@ -300,7 +302,7 @@ bool QgsMapToolShowHideLabels::showHide( QgsVectorLayer *vl, const bool show )
   }
 
   // different attribute value, edit table
-  if ( ! vl->changeAttributeValue( mCurrentLabelPos.featureId, showCol, show ) )
+  if ( ! vl->changeAttributeValue( mCurrentLabel.pos.featureId, showCol, show ) )
   {
     QgsDebugMsg( "Failed write to attribute table" );
     return false;

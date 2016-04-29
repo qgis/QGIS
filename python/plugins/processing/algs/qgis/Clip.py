@@ -72,7 +72,7 @@ class Clip(GeoAlgorithm):
         geomType = layerA.dataProvider().geometryType()
         if geomType in GEOM_25D:
             raise GeoAlgorithmExecutionException(
-                self.tr('Input layer has unsupported geometry type {}').format(geomType))
+                self.tr('Input layer does not support 2.5D type geometry ({}).').format(QgsWKBTypes.displayString(geomType)))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layerA.pendingFields(),

@@ -39,7 +39,7 @@ QgsAbstractVectorLayerLabeling* QgsAbstractVectorLayerLabeling::create( const QD
 QgsVectorLayerLabelProvider* QgsVectorLayerSimpleLabeling::provider( QgsVectorLayer* layer ) const
 {
   if ( layer->customProperty( "labeling" ).toString() == QLatin1String( "pal" ) && layer->labelsEnabled() )
-    return new QgsVectorLayerLabelProvider( layer, false );
+    return new QgsVectorLayerLabelProvider( layer, QString(), false );
 
   return nullptr;
 }
@@ -55,4 +55,12 @@ QDomElement QgsVectorLayerSimpleLabeling::save( QDomDocument& doc ) const
   QDomElement elem = doc.createElement( "labeling" );
   elem.setAttribute( "type", "simple" );
   return elem;
+}
+
+QgsPalLayerSettings QgsVectorLayerSimpleLabeling::settings( QgsVectorLayer* layer, const QString& providerId ) const
+{
+  if ( providerId.isEmpty() )
+    return QgsPalLayerSettings::fromLayer( layer );
+  else
+    return QgsPalLayerSettings();
 }

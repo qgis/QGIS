@@ -19,6 +19,8 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgsdxfexport.h"
 #include "qgsexpression.h"
+#include "qgsgeometry.h"
+#include "qgsgeometrycollectionv2.h"
 #include "qgsrendercontext.h"
 #include "qgsproject.h"
 #include "qgssvgcache.h"
@@ -3384,7 +3386,7 @@ QSet<QString> QgsPointPatternFillSymbolLayer::usedAttributes() const
 //////////////
 
 
-QgsCentroidFillSymbolLayerV2::QgsCentroidFillSymbolLayerV2(): mMarker( nullptr ), mPointOnSurface( false )
+QgsCentroidFillSymbolLayerV2::QgsCentroidFillSymbolLayerV2(): mMarker( nullptr ), mPointOnSurface( false ), mPointOnAllParts( true )
 {
   setSubSymbol( new QgsMarkerSymbolV2() );
 }
@@ -3400,6 +3402,8 @@ QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2::create( const QgsStringMap& prop
 
   if ( properties.contains( "point_on_surface" ) )
     sl->setPointOnSurface( properties["point_on_surface"].toInt() != 0 );
+  if ( properties.contains( "point_on_all_parts" ) )
+    sl->setPointOnAllParts( properties["point_on_all_parts"].toInt() != 0 );
 
   return sl;
 }
@@ -3419,6 +3423,9 @@ void QgsCentroidFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
 {
   mMarker->setAlpha( context.alpha() );
   mMarker->startRender( context.renderContext(), context.fields() );
+
+  mCurrentFeatureId = -1;
+  mBiggestPartIndex = 0;
 }
 
 void QgsCentroidFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
@@ -3430,14 +3437,51 @@ void QgsCentroidFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList
 {
   Q_UNUSED( rings );
 
-  QPointF centroid = mPointOnSurface ? QgsSymbolLayerV2Utils::polygonPointOnSurface( points ) : QgsSymbolLayerV2Utils::polygonCentroid( points );
-  mMarker->renderPoint( centroid, context.feature(), context.renderContext(), -1, context.selected() );
+  if ( !mPointOnAllParts )
+  {
+    const QgsFeature* feature = context.feature();
+    if ( feature )
+    {
+      if ( feature->id() != mCurrentFeatureId )
+      {
+        mCurrentFeatureId = feature->id();
+        mBiggestPartIndex = 1;
+
+        if ( context.geometryPartCount() > 1 )
+        {
+          const QgsGeometry *geom = feature->constGeometry();
+          const QgsGeometryCollectionV2* geomCollection = dynamic_cast<const QgsGeometryCollectionV2*>( geom->geometry() );
+
+          double area = 0;
+          double areaBiggest = 0;
+          for ( int i = 0; i < context.geometryPartCount(); ++i )
+          {
+            area = geomCollection->geometryN( i )->area();
+            if ( area > areaBiggest )
+            {
+              areaBiggest = area;
+              mBiggestPartIndex = i + 1;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  QgsDebugMsg( QString( "num: %1, count: %2" ).arg( context.geometryPartNum() ).arg( context.geometryPartCount() ) );
+
+  if ( mPointOnAllParts || ( context.geometryPartNum() == mBiggestPartIndex ) )
+  {
+    QPointF centroid = mPointOnSurface ? QgsSymbolLayerV2Utils::polygonPointOnSurface( points ) : QgsSymbolLayerV2Utils::polygonCentroid( points );
+    mMarker->renderPoint( centroid, context.feature(), context.renderContext(), -1, context.selected() );
+  }
 }
 
 QgsStringMap QgsCentroidFillSymbolLayerV2::properties() const
 {
   QgsStringMap map;
   map["point_on_surface"] = QString::number( mPointOnSurface );
+  map["point_on_all_parts"] = QString::number( mPointOnAllParts );
   return map;
 }
 
@@ -3448,6 +3492,7 @@ QgsCentroidFillSymbolLayerV2* QgsCentroidFillSymbolLayerV2::clone() const
   x->mColor = mColor;
   x->setSubSymbol( mMarker->clone() );
   x->setPointOnSurface( mPointOnSurface );
+  x->setPointOnAllParts( mPointOnAllParts );
   copyPaintEffect( x );
   return x;
 }

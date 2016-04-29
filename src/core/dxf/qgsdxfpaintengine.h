@@ -20,10 +20,11 @@
 
 #include <QPaintEngine>
 #include "qgsgeometryfactory.h"
+#include "qgsabstractgeometryv2.h"
 
 class QgsDxfExport;
 class QgsDxfPaintDevice;
-class QgsPoint;
+
 
 /** \class QgsDxfPaintEngine
  * \note not available in Python bindings
@@ -61,11 +62,11 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     QBrush mBrush;
     QString mLayer;
     QPointF mShift;
-    QgsPolygon mPolygon;
+    QgsRingSequenceV2 mPolygon;
     QPolygonF mCurrentPolygon;
     QList<QPointF> mCurrentCurve;
 
-    QgsPoint toDxfCoordinates( QPointF pt ) const;
+    QgsPointV2 toDxfCoordinates( QPointF pt ) const;
     double currentWidth() const;
 
     void moveTo( double dx, double dy );
@@ -74,7 +75,7 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     void endPolygon();
     void endCurve();
 
-    void setRing( QgsPolyline &polyline, const QPointF * points, int pointCount );
+    void setRing( QgsPointSequenceV2 &polyline, const QPointF * points, int pointCount );
 
     //utils for bezier curve calculation
     static QPointF bezierPoint( const QList<QPointF>& controlPolygon, double t );

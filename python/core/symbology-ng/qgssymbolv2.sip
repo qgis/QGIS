@@ -317,6 +317,24 @@ class QgsSymbolV2RenderContext
     //! @note added in 2.4
     const QgsFields* fields() const;
 
+    /** Part count of current geometry
+     * @note added in QGIS 2.16
+     */
+    int geometryPartCount() const;
+    /** Sets the part count of current geometry
+     * @note added in QGIS 2.16
+     */
+    void setGeometryPartCount( int count );
+
+    /** Part number of current geometry
+     * @note added in QGIS 2.16
+     */
+    int geometryPartNum() const;
+    /** Sets the part number of current geometry
+     * @note added in QGIS 2.16
+     */
+    void setGeometryPartNum( int num );
+
     double outputLineWidth( double width ) const;
     double outputPixelSize( double size ) const;
 

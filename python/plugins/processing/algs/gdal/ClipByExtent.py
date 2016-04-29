@@ -73,7 +73,7 @@ class ClipByExtent(GdalAlgorithm):
             self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterString(self.NO_DATA,
                                           self.tr("Nodata value, leave blank to take the nodata value from input"),
-                                          ''))
+                                          '', optional=True))
         self.addParameter(ParameterExtent(self.PROJWIN, self.tr('Clipping extent')))
 
         params = []
@@ -107,9 +107,13 @@ class ClipByExtent(GdalAlgorithm):
 
     def getConsoleCommands(self):
         out = self.getOutputValue(self.OUTPUT)
-        noData = unicode(self.getParameterValue(self.NO_DATA))
+        noData = self.getParameterValue(self.NO_DATA)
+        if noData is not None:
+            noData = unicode(noData)
         projwin = unicode(self.getParameterValue(self.PROJWIN))
-        extra = unicode(self.getParameterValue(self.EXTRA))
+        extra = self.getParameterValue(self.EXTRA)
+        if extra is not None:
+            extra = unicode(extra)
         jpegcompression = unicode(self.getParameterValue(self.JPEGCOMPRESSION))
         predictor = unicode(self.getParameterValue(self.PREDICTOR))
         zlevel = unicode(self.getParameterValue(self.ZLEVEL))
@@ -123,7 +127,7 @@ class ClipByExtent(GdalAlgorithm):
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
-        if len(noData) > 0:
+        if noData and len(noData) > 0:
             arguments.append('-a_nodata')
             arguments.append(noData)
 
@@ -134,7 +138,7 @@ class ClipByExtent(GdalAlgorithm):
         arguments.append(regionCoords[1])
         arguments.append(regionCoords[2])
 
-        if len(extra) > 0:
+        if extra and len(extra) > 0:
             arguments.append(extra)
         if GdalUtils.getFormatShortNameFromFilename(out) == "GTiff":
             arguments.append("-co COMPRESS=" + compress)
@@ -150,8 +154,6 @@ class ClipByExtent(GdalAlgorithm):
                 arguments.append("-co TFW=YES")
             if len(bigtiff) > 0:
                 arguments.append("-co BIGTIFF=" + bigtiff)
-
-            arguments.append("-wo OPTIMIZE_SIZE=TRUE")
 
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(out)

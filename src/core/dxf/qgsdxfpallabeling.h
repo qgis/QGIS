@@ -37,7 +37,7 @@ class QgsDxfLabelProvider : public QgsVectorLayerLabelProvider
 {
   public:
     //! construct the provider
-    explicit QgsDxfLabelProvider( QgsVectorLayer* layer, QgsDxfExport* dxf, const QgsPalLayerSettings *settings );
+    explicit QgsDxfLabelProvider( QgsVectorLayer* layer, const QString& providerId, QgsDxfExport* dxf, const QgsPalLayerSettings *settings );
 
     /** Re-implementation that writes to DXF file instead of drawing with QPainter
      * @param context render context
@@ -88,7 +88,7 @@ class QgsDxfRuleBasedLabelProvider : public QgsRuleBasedLabelProvider
     void registerDxfFeature( QgsFeature& feature, QgsRenderContext &context, const QString& dxfLayerName );
 
     //! create QgsDxfLabelProvider
-    virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, bool withFeatureLoop, const QgsPalLayerSettings *settings ) override;
+    virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString& providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings ) override;
 
   protected:
     //! pointer to parent DXF export where this instance is used

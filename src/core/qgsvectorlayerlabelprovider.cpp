@@ -49,8 +49,8 @@ static void _fixQPictureDPI( QPainter* p )
 
 
 
-QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer, bool withFeatureLoop, const QgsPalLayerSettings* settings, const QString& layerName )
-    : QgsAbstractLabelProvider( layer->id() )
+QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer, const QString& providerId, bool withFeatureLoop, const QgsPalLayerSettings* settings, const QString& layerName )
+    : QgsAbstractLabelProvider( layer->id(), providerId )
     , mSettings( settings ? *settings : QgsPalLayerSettings::fromLayer( layer ) )
     , mLayerGeometryType( layer->geometryType() )
     , mRenderer( layer->rendererV2() )
@@ -490,7 +490,7 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext& context, pal::Lab
 
   // add to the results
   QString labeltext = label->getFeaturePart()->feature()->labelText();
-  mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, labeltext, dFont, false, lf->hasFixedPosition() );
+  mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, labeltext, dFont, false, lf->hasFixedPosition(), mProviderId );
 }
 
 

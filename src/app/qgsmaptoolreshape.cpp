@@ -100,6 +100,30 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
         reshapeReturn = geom->reshapeGeometry( points() );
         if ( reshapeReturn == 0 )
         {
+          //avoid intersections on polygon layers
+          if ( vlayer->geometryType() == QGis::Polygon )
+          {
+            //ignore all current layer features as they should be reshaped too
+            QMap<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures;
+            ignoreFeatures.insert( vlayer, vlayer->allFeatureIds() );
+
+            if ( geom->avoidIntersections( ignoreFeatures ) != 0 )
+            {
+              emit messageEmitted( tr( "An error was reported during intersection removal" ), QgsMessageBar::CRITICAL );
+              vlayer->destroyEditCommand();
+              stopCapturing();
+              return;
+            }
+
+            if ( geom->isGeosEmpty() ) //intersection removal might have removed the whole geometry
+            {
+              emit messageEmitted( tr( "The feature cannot be reshaped because the resulting geometry is empty" ), QgsMessageBar::CRITICAL );
+              vlayer->destroyEditCommand();
+              stopCapturing();
+              return;
+            }
+          }
+
           vlayer->changeGeometry( f.id(), geom );
           reshapeDone = true;
         }

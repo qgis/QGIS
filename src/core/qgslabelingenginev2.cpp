@@ -381,9 +381,10 @@ QgsAbstractLabelProvider*QgsLabelFeature::provider() const
 
 }
 
-QgsAbstractLabelProvider::QgsAbstractLabelProvider( const QString& layerId )
+QgsAbstractLabelProvider::QgsAbstractLabelProvider( const QString& layerId, const QString& providerId )
     : mEngine( nullptr )
     , mLayerId( layerId )
+    , mProviderId( providerId )
     , mFlags( DrawLabels )
     , mPlacement( QgsPalLayerSettings::AroundPoint )
     , mLinePlacementFlags( 0 )

@@ -70,6 +70,9 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   mLayerName = capitaliseLayerName( mLayerOrigName );
   QgsDebugMsg( "display name: '" + mLayerName + '\'' );
 
+  mShortName = "";
+  //mShortName.replace( QRegExp( "[\\W]" ), "_" );
+
   // Generate the unique ID of this layer
   QDateTime dt = QDateTime::currentDateTime();
   mID = lyrname + dt.toString( "yyyyMMddhhmmsszzz" );
@@ -659,26 +662,34 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   QDomElement layerName = document.createElement( "layername" );
   QDomText layerNameText = document.createTextNode( originalName() );
   layerName.appendChild( layerNameText );
+  layerElement.appendChild( layerName );
 
   // layer short name
-  QDomElement layerShortName = document.createElement( "shortname" );
-  QDomText layerShortNameText = document.createTextNode( shortName() );
-  layerShortName.appendChild( layerShortNameText );
+  if ( !mShortName.isEmpty() )
+  {
+    QDomElement layerShortName = document.createElement( "shortname" );
+    QDomText layerShortNameText = document.createTextNode( mShortName );
+    layerShortName.appendChild( layerShortNameText );
+    layerElement.appendChild( layerShortName );
+  }
 
   // layer title
-  QDomElement layerTitle = document.createElement( "title" );
-  QDomText layerTitleText = document.createTextNode( title() );
-  layerTitle.appendChild( layerTitleText );
+  if ( !mTitle.isEmpty() )
+  {
+    QDomElement layerTitle = document.createElement( "title" );
+    QDomText layerTitleText = document.createTextNode( mTitle );
+    layerTitle.appendChild( layerTitleText );
+    layerElement.appendChild( layerTitle );
+  }
 
   // layer abstract
-  QDomElement layerAbstract = document.createElement( "abstract" );
-  QDomText layerAbstractText = document.createTextNode( abstract() );
-  layerAbstract.appendChild( layerAbstractText );
-
-  layerElement.appendChild( layerName );
-  layerElement.appendChild( layerShortName );
-  layerElement.appendChild( layerTitle );
-  layerElement.appendChild( layerAbstract );
+  if ( !mAbstract.isEmpty() )
+  {
+    QDomElement layerAbstract = document.createElement( "abstract" );
+    QDomText layerAbstractText = document.createTextNode( mAbstract );
+    layerAbstract.appendChild( layerAbstractText );
+    layerElement.appendChild( layerAbstract );
+  }
 
   // layer keyword list
   QStringList keywordStringList = keywordList().split( ',' );

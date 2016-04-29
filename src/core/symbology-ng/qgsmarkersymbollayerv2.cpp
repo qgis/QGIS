@@ -1049,25 +1049,22 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
 
     polygon = t.map( polygon );
 
-    QgsPolygon p( 1 );
-    p.resize( 1 );
-    p[0].resize( polygon.size() + 1 );
-    int i = 0;
-    for ( i = 0; i < polygon.size(); i++ )
-      p[0][i] = polygon[i];
-    p[0][i] = p[0][0];
+    QgsPointSequenceV2 p;
+    for ( int i = 0; i < polygon.size(); i++ )
+      p << QgsPointV2( polygon[i] );
+    p << p[0];
 
     if ( mBrush.style() != Qt::NoBrush )
-      e.writePolygon( p, layerName, "SOLID", bc );
+      e.writePolygon( QgsRingSequenceV2() << p, layerName, "SOLID", bc );
     if ( mPen.style() != Qt::NoPen )
-      e.writePolyline( p[0], layerName, "CONTINUOUS", pc, outlineWidth );
+      e.writePolyline( p, layerName, "CONTINUOUS", pc, outlineWidth );
   }
   else if ( name == "circle" )
   {
     if ( mBrush.style() != Qt::NoBrush )
-      e.writeFilledCircle( layerName, bc, shift, halfSize );
+      e.writeFilledCircle( layerName, bc, QgsPointV2( shift ), halfSize );
     if ( mPen.style() != Qt::NoPen )
-      e.writeCircle( layerName, pc, shift, halfSize, "CONTINUOUS", outlineWidth );
+      e.writeCircle( layerName, pc, QgsPointV2( shift ), halfSize, "CONTINUOUS", outlineWidth );
   }
   else if ( name == "line" )
   {
@@ -1075,7 +1072,7 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
     QPointF pt2 = t.map( QPointF( 0, halfSize ) );
 
     if ( mPen.style() != Qt::NoPen )
-      e.writeLine( pt1, pt2, layerName, "CONTINUOUS", pc, outlineWidth );
+      e.writeLine( QgsPointV2( pt1 ), QgsPointV2( pt2 ), layerName, "CONTINUOUS", pc, outlineWidth );
   }
   else if ( name == "cross" )
   {
@@ -1086,8 +1083,8 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
       QPointF pt3 = t.map( QPointF( 0, -halfSize ) );
       QPointF pt4 = t.map( QPointF( 0, halfSize ) );
 
-      e.writeLine( pt1, pt2, layerName, "CONTINUOUS", pc, outlineWidth );
-      e.writeLine( pt3, pt4, layerName, "CONTINUOUS", pc, outlineWidth );
+      e.writeLine( QgsPointV2( pt1 ), QgsPointV2( pt2 ), layerName, "CONTINUOUS", pc, outlineWidth );
+      e.writeLine( QgsPointV2( pt3 ), QgsPointV2( pt4 ), layerName, "CONTINUOUS", pc, outlineWidth );
     }
   }
   else if ( name == "x" || name == "cross2" )
@@ -1099,8 +1096,8 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
       QPointF pt3 = t.map( QPointF( halfSize, -halfSize ) );
       QPointF pt4 = t.map( QPointF( -halfSize, halfSize ) );
 
-      e.writeLine( pt1, pt2, layerName, "CONTINUOUS", pc, outlineWidth );
-      e.writeLine( pt3, pt4, layerName, "CONTINUOUS", pc, outlineWidth );
+      e.writeLine( QgsPointV2( pt1 ), QgsPointV2( pt2 ), layerName, "CONTINUOUS", pc, outlineWidth );
+      e.writeLine( QgsPointV2( pt3 ), QgsPointV2( pt4 ), layerName, "CONTINUOUS", pc, outlineWidth );
     }
   }
   else if ( name == "arrowhead" )
@@ -1111,8 +1108,8 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
       QPointF pt2 = t.map( QPointF( 0, 0 ) );
       QPointF pt3 = t.map( QPointF( -halfSize, -halfSize ) );
 
-      e.writeLine( pt1, pt2, layerName, "CONTINUOUS", pc, outlineWidth );
-      e.writeLine( pt3, pt2, layerName, "CONTINUOUS", pc, outlineWidth );
+      e.writeLine( QgsPointV2( pt1 ), QgsPointV2( pt2 ), layerName, "CONTINUOUS", pc, outlineWidth );
+      e.writeLine( QgsPointV2( pt3 ), QgsPointV2( pt2 ), layerName, "CONTINUOUS", pc, outlineWidth );
     }
   }
   else
@@ -1983,6 +1980,10 @@ QgsFontMarkerSymbolLayerV2::QgsFontMarkerSymbolLayerV2( const QString& fontFamil
   mSizeUnit = QgsSymbolV2::MM;
   mOffset = QPointF( 0, 0 );
   mOffsetUnit = QgsSymbolV2::MM;
+  mOutlineColor = DEFAULT_FONTMARKER_BORDERCOLOR;
+  mOutlineWidth = 0.0;
+  mOutlineWidthUnit = QgsSymbolV2::MM;
+  mPenJoinStyle = DEFAULT_FONTMARKER_JOINSTYLE;
 }
 
 QgsFontMarkerSymbolLayerV2::~QgsFontMarkerSymbolLayerV2()
@@ -2010,6 +2011,11 @@ QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::create( const QgsStringMap& props 
     angle = props["angle"].toDouble();
 
   QgsFontMarkerSymbolLayerV2* m = new QgsFontMarkerSymbolLayerV2( fontFamily, chr, pointSize, color, angle );
+
+  if ( props.contains( "outline_color" ) )
+    m->setOutlineColor( QgsSymbolLayerV2Utils::decodeColor( props["outline_color"] ) );
+  if ( props.contains( "outline_width" ) )
+    m->setOutlineWidth( props["outline_width"].toDouble() );
   if ( props.contains( "offset" ) )
     m->setOffset( QgsSymbolLayerV2Utils::decodePoint( props["offset"] ) );
   if ( props.contains( "offset_unit" ) )
@@ -2020,14 +2026,16 @@ QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::create( const QgsStringMap& props 
     m->setSizeUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["size_unit"] ) );
   if ( props.contains( "size_map_unit_scale" ) )
     m->setSizeMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( props["size_map_unit_scale"] ) );
+  if ( props.contains( "outline_width_unit" ) )
+    m->setOutlineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["outline_width_unit"] ) );
+  if ( props.contains( "outline_width_map_unit_scale" ) )
+    m->setOutlineWidthMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( props["outline_width_map_unit_scale"] ) );
+  if ( props.contains( "joinstyle" ) )
+    m->setPenJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( props["joinstyle"] ) );
   if ( props.contains( "horizontal_anchor_point" ) )
-  {
     m->setHorizontalAnchorPoint( QgsMarkerSymbolLayerV2::HorizontalAnchorPoint( props[ "horizontal_anchor_point" ].toInt() ) );
-  }
   if ( props.contains( "vertical_anchor_point" ) )
-  {
     m->setVerticalAnchorPoint( QgsMarkerSymbolLayerV2::VerticalAnchorPoint( props[ "vertical_anchor_point" ].toInt() ) );
-  }
 
   m->restoreDataDefinedProperties( props );
 
@@ -2041,6 +2049,17 @@ QString QgsFontMarkerSymbolLayerV2::layerType() const
 
 void QgsFontMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
+  QColor brushColor = mColor;
+  QColor penColor = mOutlineColor;
+
+  brushColor.setAlphaF( mColor.alphaF() * context.alpha() );
+  penColor.setAlphaF( mOutlineColor.alphaF() * context.alpha() );
+
+  mBrush = QBrush( brushColor );
+  mPen = QPen( penColor );
+  mPen.setJoinStyle( mPenJoinStyle );
+  mPen.setWidthF( QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), mOutlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
+
   mFont = QFont( mFontFamily );
   mFont.setPixelSize( QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), mSize, mSizeUnit, mSizeMapUnitScale ) );
   delete mFontMetrics;
@@ -2152,20 +2171,63 @@ void QgsFontMarkerSymbolLayerV2::renderPoint( QPointF point, QgsSymbolV2RenderCo
   if ( !p )
     return;
 
-  QColor penColor = mColor;
+  QTransform transform;
+
   bool ok;
+  QColor brushColor = mColor;
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( mColor ) );
     QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR, context, QVariant(), &ok ).toString();
     if ( ok )
+      brushColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
+  }
+  brushColor = context.selected() ? context.renderContext().selectionColor() : brushColor;
+  brushColor.setAlphaF( brushColor.alphaF() * context.alpha() );
+  mBrush.setColor( brushColor );
+
+  QColor penColor = mOutlineColor;
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR_BORDER ) )
+  {
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( mOutlineColor ) );
+    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR_BORDER, context, QVariant(), &ok ).toString();
+    if ( ok )
       penColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
   }
-  penColor = context.selected() ? context.renderContext().selectionColor() : penColor;
   penColor.setAlphaF( penColor.alphaF() * context.alpha() );
 
-  p->setPen( penColor );
-  p->setFont( mFont );
+  double penWidth = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), mOutlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH ) )
+  {
+    context.setOriginalValueVariable( mOutlineWidth );
+    double outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH, context, QVariant(), &ok ).toDouble();
+    if ( ok )
+    {
+      penWidth = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
+    }
+  }
+
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_JOIN_STYLE ) )
+  {
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenJoinStyle( mPenJoinStyle ) );
+    QString style = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_JOIN_STYLE, context, QVariant(), &ok ).toString();
+    if ( ok )
+    {
+      mPen.setJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( style ) );
+    }
+  }
+
+  p->setBrush( mBrush );
+  if ( !qgsDoubleNear( penWidth, 0.0 ) )
+  {
+    mPen.setColor( penColor );
+    mPen.setWidthF( penWidth );
+    p->setPen( mPen );
+  }
+  else
+  {
+    p->setPen( Qt::NoPen );
+  }
   p->save();
 
   QPointF chrOffset = mChrOffset;
@@ -2179,18 +2241,20 @@ void QgsFontMarkerSymbolLayerV2::renderPoint( QPointF point, QgsSymbolV2RenderCo
   double angle = 0;
   calculateOffsetAndRotation( context, sizeToRender, hasDataDefinedRotation, offset, angle );
 
-  p->translate( point + offset );
+  transform.translate( point.x() + offset.x(), point.y() + offset.y() );
+
+  if ( !qgsDoubleNear( angle, 0.0 ) )
+    transform.rotate( angle );
 
   if ( !qgsDoubleNear( sizeToRender, mOrigSize ) )
   {
     double s = sizeToRender / mOrigSize;
-    p->scale( s, s );
+    transform.scale( s, s );
   }
 
-  if ( !qgsDoubleNear( angle, 0 ) )
-    p->rotate( angle );
-
-  p->drawText( -chrOffset, charToRender );
+  QPainterPath path;
+  path.addText( -chrOffset.x(), -chrOffset.y(), mFont, charToRender );
+  p->drawPath( transform.map( path ) );
   p->restore();
 }
 
@@ -2203,6 +2267,11 @@ QgsStringMap QgsFontMarkerSymbolLayerV2::properties() const
   props["size_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mSizeUnit );
   props["size_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mSizeMapUnitScale );
   props["color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
+  props["outline_color"] = QgsSymbolLayerV2Utils::encodeColor( mOutlineColor );
+  props["outline_width"] = QString::number( mOutlineWidth );
+  props["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
+  props["outline_width_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOutlineWidthMapUnitScale );
+  props["joinstyle"] = QgsSymbolLayerV2Utils::encodePenJoinStyle( mPenJoinStyle );
   props["angle"] = QString::number( mAngle );
   props["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
   props["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
@@ -2219,6 +2288,11 @@ QgsStringMap QgsFontMarkerSymbolLayerV2::properties() const
 QgsFontMarkerSymbolLayerV2* QgsFontMarkerSymbolLayerV2::clone() const
 {
   QgsFontMarkerSymbolLayerV2* m = new QgsFontMarkerSymbolLayerV2( mFontFamily, mChr, mSize, mColor, mAngle );
+  m->setOutlineColor( mOutlineColor );
+  m->setOutlineWidth( mOutlineWidth );
+  m->setOutlineWidthUnit( mOutlineWidthUnit );
+  m->setOutlineWidthMapUnitScale( mOutlineWidthMapUnitScale );
+  m->setPenJoinStyle( mPenJoinStyle );
   m->setOffset( mOffset );
   m->setOffsetUnit( mOffsetUnit );
   m->setOffsetMapUnitScale( mOffsetMapUnitScale );

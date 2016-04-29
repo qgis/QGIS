@@ -82,7 +82,7 @@ class ClipByMask(GdalAlgorithm):
                                           [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterString(self.NO_DATA,
                                           self.tr("Nodata value, leave blank to take the nodata value from input"),
-                                          '-9999'))
+                                          '', optional=True))
         self.addParameter(ParameterBoolean(self.ALPHA_BAND,
                                            self.tr('Create and output alpha band'), False))
         self.addParameter(ParameterBoolean(self.CROP_TO_CUTLINE,
@@ -125,11 +125,15 @@ class ClipByMask(GdalAlgorithm):
         maskLayer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.MASK))
         ogrMask = ogrConnectionString(mask)[1:-1]
-        noData = unicode(self.getParameterValue(self.NO_DATA))
+        noData = self.getParameterValue(self.NO_DATA)
+        if noData is not None:
+            noData = unicode(noData)
         addAlphaBand = self.getParameterValue(self.ALPHA_BAND)
         cropToCutline = self.getParameterValue(self.CROP_TO_CUTLINE)
         keepResolution = self.getParameterValue(self.KEEP_RESOLUTION)
-        extra = unicode(self.getParameterValue(self.EXTRA))
+        extra = self.getParameterValue(self.EXTRA)
+        if extra is not None:
+            extra = unicode(extra)
         jpegcompression = unicode(self.getParameterValue(self.JPEGCOMPRESSION))
         predictor = unicode(self.getParameterValue(self.PREDICTOR))
         zlevel = unicode(self.getParameterValue(self.ZLEVEL))
@@ -144,7 +148,7 @@ class ClipByMask(GdalAlgorithm):
         arguments.append('-q')
         arguments.append('-of')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
-        if len(noData) > 0:
+        if noData and len(noData) > 0:
             arguments.append('-dstnodata')
             arguments.append(noData)
 
@@ -169,7 +173,7 @@ class ClipByMask(GdalAlgorithm):
         if addAlphaBand:
             arguments.append('-dstalpha')
 
-        if len(extra) > 0:
+        if extra and len(extra) > 0:
             arguments.append(extra)
         if GdalUtils.getFormatShortNameFromFilename(out) == "GTiff":
             arguments.append("-co COMPRESS=" + compress)

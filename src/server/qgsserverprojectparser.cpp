@@ -50,7 +50,7 @@ QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QStr
       currentElement = layerNodeList.at( i ).toElement();
       mProjectLayerElements.push_back( currentElement );
       QString lName = layerShortName( currentElement );
-      if ( lName.isNull() )
+      if ( lName.isEmpty() )
         lName = layerName( currentElement );
       mProjectLayerElementsByName.insert( lName, currentElement );
       mProjectLayerElementsById.insert( layerId( currentElement ), currentElement );

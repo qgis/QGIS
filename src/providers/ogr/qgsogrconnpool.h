@@ -35,7 +35,8 @@ inline QString qgsConnectionPool_ConnectionToName( QgsOgrConn* c )
 inline void qgsConnectionPool_ConnectionCreate( QString connInfo, QgsOgrConn*& c )
 {
   c = new QgsOgrConn;
-  c->ds = OGROpen( connInfo.toUtf8().constData(), false, nullptr );
+  QString filePath = connInfo.left( connInfo.indexOf( "|" ) );
+  c->ds = OGROpen( filePath.toUtf8().constData(), false, nullptr );
   c->path = connInfo;
   c->valid = true;
 }

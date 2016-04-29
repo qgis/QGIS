@@ -27,10 +27,17 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtCore import QPyNullVariant, QCoreApplication, QSettings
+from PyQt.QtCore import QPyNullVariant, QCoreApplication, QSettings, QObject, pyqtSignal
 from PyQt.QtGui import QIcon
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
+
+
+class SettingsWatcher(QObject):
+
+    settingsChanged = pyqtSignal()
+
+settingsWatcher = SettingsWatcher()
 
 
 class ProcessingConfig:

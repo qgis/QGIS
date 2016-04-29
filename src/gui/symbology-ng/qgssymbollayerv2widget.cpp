@@ -2493,13 +2493,17 @@ QgsFontMarkerSymbolLayerV2Widget::QgsFontMarkerSymbolLayerV2Widget( const QgsVec
 
   setupUi( this );
   mSizeUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
+  mBorderWidthUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
   mOffsetUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
   widgetChar = new CharacterWidget;
   scrollArea->setWidget( widgetChar );
 
   btnColor->setAllowAlpha( true );
-  btnColor->setColorDialogTitle( tr( "Select symbol color" ) );
+  btnColor->setColorDialogTitle( tr( "Select symbol fill color" ) );
   btnColor->setContext( "symbology" );
+  btnBorderColor->setAllowAlpha( true );
+  btnBorderColor->setColorDialogTitle( tr( "Select symbol outline color" ) );
+  btnBorderColor->setContext( "symbology" );
 
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
@@ -2512,7 +2516,10 @@ QgsFontMarkerSymbolLayerV2Widget::QgsFontMarkerSymbolLayerV2Widget( const QgsVec
 
   connect( cboFont, SIGNAL( currentFontChanged( const QFont & ) ), this, SLOT( setFontFamily( const QFont& ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize( double ) ) );
+  connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penJoinStyleChanged() ) );
   connect( btnColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
+  connect( btnBorderColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColorBorder( const QColor& ) ) );
+  connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penJoinStyleChanged() ) );
   connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setAngle( double ) ) );
   connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
   connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
@@ -2535,18 +2542,12 @@ void QgsFontMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
 
   QFont layerFont( mLayer->fontFamily() );
   // set values
-  cboFont->blockSignals( true );
-  cboFont->setCurrentFont( layerFont );
-  cboFont->blockSignals( false );
-  spinSize->blockSignals( true );
-  spinSize->setValue( mLayer->size() );
-  spinSize->blockSignals( false );
-  btnColor->blockSignals( true );
-  btnColor->setColor( mLayer->color() );
-  btnColor->blockSignals( false );
-  spinAngle->blockSignals( true );
-  spinAngle->setValue( mLayer->angle() );
-  spinAngle->blockSignals( false );
+  whileBlocking( cboFont )->setCurrentFont( layerFont );
+  whileBlocking( spinSize )->setValue( mLayer->size() );
+  whileBlocking( btnColor )->setColor( mLayer->color() );
+  whileBlocking( btnBorderColor )->setColor( mLayer->outlineColor() );
+  whileBlocking( mBorderWidthSpinBox )->setValue( mLayer->outlineWidth() );
+  whileBlocking( spinAngle )->setValue( mLayer->angle() );
 
   widgetChar->blockSignals( true );
   widgetChar->updateFont( layerFont );
@@ -2554,34 +2555,36 @@ void QgsFontMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   widgetChar->blockSignals( false );
 
   //block
-  spinOffsetX->blockSignals( true );
-  spinOffsetX->setValue( mLayer->offset().x() );
-  spinOffsetX->blockSignals( false );
-  spinOffsetY->blockSignals( true );
-  spinOffsetY->setValue( mLayer->offset().y() );
-  spinOffsetY->blockSignals( false );
+  whileBlocking( spinOffsetX )->setValue( mLayer->offset().x() );
+  whileBlocking( spinOffsetY )->setValue( mLayer->offset().y() );
 
   mSizeUnitWidget->blockSignals( true );
   mSizeUnitWidget->setUnit( mLayer->sizeUnit() );
   mSizeUnitWidget->setMapUnitScale( mLayer->sizeMapUnitScale() );
   mSizeUnitWidget->blockSignals( false );
 
+  mBorderWidthUnitWidget->blockSignals( true );
+  mBorderWidthUnitWidget->setUnit( mLayer->outlineWidthUnit() );
+  mBorderWidthUnitWidget->setMapUnitScale( mLayer->outlineWidthMapUnitScale() );
+  mBorderWidthUnitWidget->blockSignals( false );
+
   mOffsetUnitWidget->blockSignals( true );
   mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
   mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
   mOffsetUnitWidget->blockSignals( false );
 
+  whileBlocking( cboJoinStyle )->setPenJoinStyle( mLayer->penJoinStyle() );
+
   //anchor points
-  mHorizontalAnchorComboBox->blockSignals( true );
-  mVerticalAnchorComboBox->blockSignals( true );
-  mHorizontalAnchorComboBox->setCurrentIndex( mLayer->horizontalAnchorPoint() );
-  mVerticalAnchorComboBox->setCurrentIndex( mLayer->verticalAnchorPoint() );
-  mHorizontalAnchorComboBox->blockSignals( false );
-  mVerticalAnchorComboBox->blockSignals( false );
+  whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mLayer->horizontalAnchorPoint() );
+  whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mLayer->verticalAnchorPoint() );
 
   registerDataDefinedButton( mSizeDDBtn, "size", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
   registerDataDefinedButton( mRotationDDBtn, "angle", QgsDataDefinedButton::Double, QgsDataDefinedButton::double180RotDesc() );
   registerDataDefinedButton( mColorDDBtn, "color", QgsDataDefinedButton::String, QgsDataDefinedButton::colorAlphaDesc() );
+  registerDataDefinedButton( mBorderColorDDBtn, "color_border", QgsDataDefinedButton::String, QgsDataDefinedButton::colorAlphaDesc() );
+  registerDataDefinedButton( mBorderWidthDDBtn, "outline_width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
+  registerDataDefinedButton( mJoinStyleDDBtn, "join_style", QgsDataDefinedButton::String, QgsDataDefinedButton::penJoinStyleDesc() );
   registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::String, QgsDataDefinedButton::doubleXYDesc() );
   registerDataDefinedButton( mHorizontalAnchorDDBtn, "horizontal_anchor_point", QgsDataDefinedButton::String, QgsDataDefinedButton::horizontalAnchorDesc() );
   registerDataDefinedButton( mVerticalAnchorDDBtn, "vertical_anchor_point", QgsDataDefinedButton::String, QgsDataDefinedButton::verticalAnchorDesc() );
@@ -2605,6 +2608,12 @@ void QgsFontMarkerSymbolLayerV2Widget::setFontFamily( const QFont& font )
 void QgsFontMarkerSymbolLayerV2Widget::setColor( const QColor& color )
 {
   mLayer->setColor( color );
+  emit changed();
+}
+
+void QgsFontMarkerSymbolLayerV2Widget::setColorBorder( const QColor& color )
+{
+  mLayer->setOutlineColor( color );
   emit changed();
 }
 
@@ -2633,6 +2642,12 @@ void QgsFontMarkerSymbolLayerV2Widget::setOffset()
   emit changed();
 }
 
+void QgsFontMarkerSymbolLayerV2Widget::penJoinStyleChanged()
+{
+  mLayer->setPenJoinStyle( cboJoinStyle->penJoinStyle() );
+  emit changed();
+}
+
 void QgsFontMarkerSymbolLayerV2Widget::on_mSizeUnitWidget_changed()
 {
   if ( mLayer )
@@ -2653,6 +2668,16 @@ void QgsFontMarkerSymbolLayerV2Widget::on_mOffsetUnitWidget_changed()
   }
 }
 
+void QgsFontMarkerSymbolLayerV2Widget::on_mBorderWidthUnitWidget_changed()
+{
+  if ( mLayer )
+  {
+    mLayer->setOutlineWidthUnit( mSizeUnitWidget->unit() );
+    mLayer->setOutlineWidthMapUnitScale( mSizeUnitWidget->getMapUnitScale() );
+    emit changed();
+  }
+}
+
 void QgsFontMarkerSymbolLayerV2Widget::on_mHorizontalAnchorComboBox_currentIndexChanged( int index )
 {
   if ( mLayer )
@@ -2667,6 +2692,15 @@ void QgsFontMarkerSymbolLayerV2Widget::on_mVerticalAnchorComboBox_currentIndexCh
   if ( mLayer )
   {
     mLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayerV2::VerticalAnchorPoint( index ) );
+    emit changed();
+  }
+}
+
+void QgsFontMarkerSymbolLayerV2Widget::on_mBorderWidthSpinBox_valueChanged( double d )
+{
+  if ( mLayer )
+  {
+    mLayer->setOutlineWidth( d );
     emit changed();
   }
 }
@@ -2703,9 +2737,8 @@ void QgsCentroidFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   mLayer = static_cast<QgsCentroidFillSymbolLayerV2*>( layer );
 
   // set values
-  mDrawInsideCheckBox->blockSignals( true );
-  mDrawInsideCheckBox->setChecked( mLayer->pointOnSurface() );
-  mDrawInsideCheckBox->blockSignals( false );
+  whileBlocking( mDrawInsideCheckBox )->setChecked( mLayer->pointOnSurface() );
+  whileBlocking( mDrawAllPartsCheckBox )->setChecked( mLayer->pointOnAllParts() );
 }
 
 QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2Widget::symbolLayer()
@@ -2716,6 +2749,12 @@ QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2Widget::symbolLayer()
 void QgsCentroidFillSymbolLayerV2Widget::on_mDrawInsideCheckBox_stateChanged( int state )
 {
   mLayer->setPointOnSurface( state == Qt::Checked );
+  emit changed();
+}
+
+void QgsCentroidFillSymbolLayerV2Widget::on_mDrawAllPartsCheckBox_stateChanged( int state )
+{
+  mLayer->setPointOnAllParts( state == Qt::Checked );
   emit changed();
 }
 

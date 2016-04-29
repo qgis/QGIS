@@ -501,6 +501,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.8
     static void enableRotation( bool enabled );
 
+
   private slots:
     //! called when current maptool is destroyed
     void mapToolDestroyed();
@@ -745,6 +746,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsSnappingUtils* mSnappingUtils;
 
     QgsExpressionContextScope mExpressionContextScope;
+
+    //! Force a resize of the map canvas item
+    //! @note added in 2.16
+    void updateMapSize();
 
 }; // class QgsMapCanvas
 Q_NOWARN_DEPRECATED_POP

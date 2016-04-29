@@ -286,6 +286,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     bool mIsSettingMultiEditFeatures;
 
     QgsFeatureIds mMultiEditFeatureIds;
+    bool mUnsavedMultiEditChanges;
 
     QString mEditCommandMessage;
 

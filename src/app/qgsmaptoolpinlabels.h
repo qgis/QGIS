@@ -86,20 +86,14 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
     //! Select valid labels to pin or unpin
     void pinUnpinLabels( const QgsRectangle& ext, QMouseEvent * e );
 
-    //! Pin or unpin label relative to whether its editable
-    bool pinUnpinLabel( QgsVectorLayer* vlayer,
-                        const QgsLabelPosition& labelpos,
-                        const bool pin );
+    //! Pin or unpin current label relative to whether its editable
+    bool pinUnpinCurrentLabel( bool pin );
 
     //! Pin or unpin diagram relative to whether its editable
-    bool pinUnpinDiagram( QgsVectorLayer* vlayer,
-                          const QgsLabelPosition& labelpos,
-                          const bool pin );
+    bool pinUnpinCurrentDiagram( bool pin );
 
-    //! Pin or unpin a feature (diagram or label)
-    bool pinUnpinFeature( QgsVectorLayer* vlayer,
-                          const QgsLabelPosition& labelpos,
-                          const bool pin );
+    //! Pin or unpin current feature (diagram or label)
+    bool pinUnpinCurrentFeature( bool pin );
 };
 
 #endif // QGSMAPTOOLPINLABELS_H

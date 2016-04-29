@@ -85,7 +85,7 @@ class translate(GdalAlgorithm):
                                            self.tr('Output size is a percentage of input size'), True))
         self.addParameter(ParameterString(self.NO_DATA,
                                           self.tr("Nodata value, leave blank to take the nodata value from input"),
-                                          ''))
+                                          '', optional=True))
         self.addParameter(ParameterSelection(self.EXPAND,
                                              self.tr('Expand'), ['none', 'gray', 'rgb', 'rgba']))
         self.addParameter(ParameterCrs(self.SRS,
@@ -129,13 +129,17 @@ class translate(GdalAlgorithm):
         out = self.getOutputValue(translate.OUTPUT)
         outsize = unicode(self.getParameterValue(self.OUTSIZE))
         outsizePerc = unicode(self.getParameterValue(self.OUTSIZE_PERC))
-        noData = unicode(self.getParameterValue(self.NO_DATA))
+        noData = self.getParameterValue(self.NO_DATA)
+        if noData is not None:
+            noData = unicode(noData)
         expand = unicode(self.getParameterFromName(
             self.EXPAND).options[self.getParameterValue(self.EXPAND)])
         projwin = unicode(self.getParameterValue(self.PROJWIN))
         crsId = self.getParameterValue(self.SRS)
         sds = self.getParameterValue(self.SDS)
-        extra = unicode(self.getParameterValue(self.EXTRA))
+        extra = self.getParameterValue(self.EXTRA)
+        if extra is not None:
+            extra = unicode(extra)
         jpegcompression = unicode(self.getParameterValue(self.JPEGCOMPRESSION))
         predictor = unicode(self.getParameterValue(self.PREDICTOR))
         zlevel = unicode(self.getParameterValue(self.ZLEVEL))
@@ -157,7 +161,7 @@ class translate(GdalAlgorithm):
             arguments.append('-outsize')
             arguments.append(outsize)
             arguments.append(outsize)
-        if len(noData) > 0:
+        if noData and len(noData) > 0:
             arguments.append('-a_nodata')
             arguments.append(noData)
         if expand != 'none':
@@ -180,7 +184,7 @@ class translate(GdalAlgorithm):
             arguments.append(unicode(crsId))
         if sds:
             arguments.append('-sds')
-        if len(extra) > 0:
+        if extra and len(extra) > 0:
             arguments.append(extra)
         if GdalUtils.getFormatShortNameFromFilename(out) == "GTiff":
             arguments.append("-co COMPRESS=" + compress)

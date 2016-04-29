@@ -202,7 +202,7 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
     bboxNode = bboxElem.removeChild( bboxNode );
 
     QDomDocument filterDoc;
-    filterDoc.setContent( mWFSFilter, true );
+    ( void )filterDoc.setContent( mWFSFilter, true );
     QDomNode filterNode = filterDoc.firstChildElement().firstChildElement();
     filterNode = filterDoc.firstChildElement().removeChild( filterNode );
 
@@ -692,7 +692,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
           g->fromWkb( wkbClone, wkbGeom.size() );
           cachedFeature.setGeometry( g );
         }
-        catch ( const QgsWkbException& e )
+        catch ( const QgsWkbException& )
         {
           QgsDebugMsg( QString( "Invalid WKB for cached feature %1" ).arg( cachedFeature.id() ) );
           delete[] wkbClone;

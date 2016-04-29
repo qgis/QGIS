@@ -142,16 +142,15 @@ class TestQgsComposerHtml(unittest.TestCase):
         myComposition = QgsComposition(self.iface.mapCanvas().mapRenderer())
         mySubstitutionMap = {'replace-me': 'Foo bar'}
         myFile = os.path.join(TEST_DATA_DIR, 'template.qpt')
-        myTemplateFile = file(myFile, 'rt')
-        myTemplateContent = myTemplateFile.read()
-        myTemplateFile.close()
+        with open(myFile, 'rt') as myTemplateFile:
+            myTemplateContent = myTemplateFile.read()
         myDocument = QDomDocument()
         myDocument.setContent(myTemplateContent)
         myComposition.loadFromTemplate(myDocument, mySubstitutionMap)
         myItem = myComposition.getComposerItemById('html-test')
         myComposerHtml = myComposition.getComposerHtmlByItem(myItem)
         myMessage = 'Could not retrieve the composer html given an item'
-        assert myComposerHtml is not None, myMessage
+        self.assertIsNotNone(myComposerHtml, myMessage)
 
 if __name__ == '__main__':
     unittest.main()

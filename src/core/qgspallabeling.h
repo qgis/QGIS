@@ -58,6 +58,7 @@ class QgsMapSettings;
 class QgsLabelFeature;
 class QgsLabelingEngineV2;
 class QgsVectorLayerLabelProvider;
+class QgsDxfExport;
 class QgsVectorLayerDiagramProvider;
 
 class CORE_EXPORT QgsPalLayerSettings
@@ -1055,6 +1056,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
                                        const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
 
     friend class QgsVectorLayerLabelProvider; // to allow calling the static methods above
+    friend class QgsDxfExport;                // to allow calling the static methods above
 
     void deleteTemporaryData();
 

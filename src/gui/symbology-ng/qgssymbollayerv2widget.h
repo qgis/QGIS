@@ -572,12 +572,18 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
   public slots:
     void setFontFamily( const QFont& font );
     void setColor( const QColor& color );
+
+    /** Set outline color.
+     * @note added in 2.16 */
+    void setColorBorder( const QColor& color );
     void setSize( double size );
     void setAngle( double angle );
     void setCharacter( QChar chr );
     void setOffset();
     void on_mSizeUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
+    void on_mBorderWidthUnitWidget_changed();
+    void on_mBorderWidthSpinBox_valueChanged( double d );
     void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
 
@@ -587,6 +593,7 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
 
   private slots:
 
+    void penJoinStyleChanged();
     void updateAssistantSymbol();
 
   private:
@@ -620,6 +627,7 @@ class GUI_EXPORT QgsCentroidFillSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
 
   private slots:
     void on_mDrawInsideCheckBox_stateChanged( int state );
+    void on_mDrawAllPartsCheckBox_stateChanged( int state );
 
 };
 

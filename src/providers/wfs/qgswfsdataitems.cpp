@@ -27,7 +27,7 @@
 #include <QEventLoop>
 
 
-QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, QString name, QgsDataSourceURI uri, QString featureType, QString title, QString crsString )
+QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, QString name, const QgsDataSourceURI& uri, QString featureType, QString title, QString crsString )
     : QgsLayerItem( parent, title, parent->path() + '/' + name, QString(), QgsLayerItem::Vector, "WFS" )
 {
   mUri = QgsWFSDataSourceURI::build( uri.uri(), featureType, crsString );
