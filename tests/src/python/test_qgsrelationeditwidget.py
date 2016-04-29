@@ -34,7 +34,7 @@ from qgis.gui import (
 )
 
 from qgis.PyQt.QtCore import QTimer
-from qgis.PyQt.tWidgets import QToolButton, QTableView, QApplication
+from qgis.PyQt.QtWidgets import QToolButton, QTableView, QApplication
 from qgis.testing import start_app, unittest
 
 start_app()

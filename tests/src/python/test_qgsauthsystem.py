@@ -22,9 +22,9 @@ from qgis.gui import QgsAuthEditorWidgets
 
 
 from qgis.PyQt.QtCore import QFileInfo, qDebug
-from qgis.PyQt.tWidgets import QDialog, QVBoxLayout, QDialogButtonBox
-from qgis.PyQt.tTest import QTest
-from qgis.PyQt.tNetwork import QSsl, QSslError, QSslSocket
+from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QDialogButtonBox
+from qgis.PyQt.QtTest import QTest
+from qgis.PyQt.QtNetwork import QSsl, QSslError, QSslSocket
 
 from qgis.testing import (
     start_app,
