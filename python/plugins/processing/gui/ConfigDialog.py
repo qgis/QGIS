@@ -27,23 +27,23 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt import uic
+from qgis.PyQt import uic
 from qgis.PyQt.QtCore import (Qt,
-                         QEvent,
-                         QPyNullVariant)
+                              QEvent,
+                              QPyNullVariant)
 from qgis.PyQt.QtWidgets import (QFileDialog,
-                            QDialog,
-                            QStyle,
-                            QMessageBox,
-                            QStyledItemDelegate,
-                            QLineEdit,
-                            QWidget,
-                            QToolButton,
-                            QHBoxLayout,
-                            QComboBox)
+                                 QDialog,
+                                 QStyle,
+                                 QMessageBox,
+                                 QStyledItemDelegate,
+                                 QLineEdit,
+                                 QWidget,
+                                 QToolButton,
+                                 QHBoxLayout,
+                                 QComboBox)
 from qgis.PyQt.QtGui import (QIcon,
-                        QStandardItemModel,
-                        QStandardItem)
+                             QStandardItemModel,
+                             QStandardItem)
 
 from qgis.gui import QgsDoubleSpinBox
 from qgis.gui import QgsSpinBox

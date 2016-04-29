@@ -25,8 +25,8 @@ import subprocess
 
 from qgis.PyQt.QtCore import QRect, QRectF, QSize, QSizeF, qDebug
 from qgis.PyQt.QtGui import QImage, QColor, QPainter
-from qgis.PyQt.tPrintSupport import QPrinter
-from qgis.PyQt.tSvg import QSvgRenderer, QSvgGenerator
+from qgis.PyQt.QtPrintSupport import QPrinter
+from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
 
 from qgis.core import QgsComposition, QgsMapSettings, QgsProject, QgsComposerMap
 

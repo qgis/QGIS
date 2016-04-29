@@ -23,7 +23,7 @@ __copyright__ = '(C) 2007, Martin Dobias'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt import QtCore
+from qgis.PyQt import QtCore
 from qgis.core import QgsFeature, QgsGeometry
 
 

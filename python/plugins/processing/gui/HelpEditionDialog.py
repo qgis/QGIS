@@ -30,7 +30,7 @@ __revision__ = '$Format:%H$'
 import os
 import json
 
-from PyQt import uic
+from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 
 from processing.core.ProcessingLog import ProcessingLog

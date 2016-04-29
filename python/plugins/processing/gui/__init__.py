@@ -1,4 +1,4 @@
-from PyQt import uic
+from qgis.PyQt import uic
 import logging
 
 uic.properties.logger.setLevel(logging.WARNING)

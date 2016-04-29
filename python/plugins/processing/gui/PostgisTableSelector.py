@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QTreeWidgetItem, QMessageBox
-from PyQt import uic
+from qgis.PyQt import uic
 from processing.algs.qgis.postgis_utils import GeoDB
 from qgis.core import QgsDataSourceURI, QgsCredentials
 
