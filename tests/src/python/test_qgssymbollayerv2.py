@@ -28,7 +28,7 @@ import qgis  # NOQA
 import os
 
 from qgis.PyQt.QtCore import pyqtWrapperType, Qt, QDir, QFile, QIODevice, QPointF
-from qgis.PyQt.tXml import QDomDocument
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (QgsCentroidFillSymbolLayerV2,

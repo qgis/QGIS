@@ -29,7 +29,7 @@ from qgis.core import (QgsGraduatedSymbolRendererV2,
                        QgsRenderContext
                        )
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.tXml import QDomDocument
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtGui import QColor
 
 start_app()
