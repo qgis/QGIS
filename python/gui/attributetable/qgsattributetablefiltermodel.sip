@@ -4,6 +4,9 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
 #include <qgsattributetablefiltermodel.h>
 %End
   public:
+    /**
+     * The filter mode defines how the rows should be filtered.
+     */
     enum FilterMode
     {
       ShowAll,
@@ -13,12 +16,20 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
       ShowEdited
     };
 
+    /**
+     * The type of a column.
+     */
     enum ColumnType
     {
       ColumnTypeField,       //!< This column shows a field
       ColumnTypeActionButton //!< This column shows action buttons
     };
 
+    /**
+     * The additional roles defined by this filter model.
+     * The values of these roles start just after the roles defined by
+     * QgsAttributeTableModel so they do not conflict.
+     */
     enum Role
     {
       TypeRole = QgsAttributeTableModel::UserRole //!< The type of a given column
@@ -26,7 +37,6 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
 
 
     /**
-     *
      * Make sure, the master model is already loaded, so the selection will get synchronized.
      *
      * @param parent parent object (owner)
@@ -35,6 +45,13 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
      */
     QgsAttributeTableFilterModel( QgsMapCanvas* canvas, QgsAttributeTableModel* sourceModel, QObject* parent /TransferThis/ = 0 );
 
+    /**
+     * Set the attribute table model that backs this model
+     *
+     * @param sourceModel The model
+     *
+     * @note added in 2.0
+     */
     void setSourceModel( QgsAttributeTableModel* sourceModel );
 
     /**
@@ -60,6 +77,11 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
      */
     virtual void setFilteredFeatures( const QgsFeatureIds& ids );
 
+    /**
+     * Get a list of currently filtered feature ids
+     *
+     * @return A list of feature ids
+     */
     QgsFeatureIds filteredFeatures();
 
     /**
@@ -69,6 +91,9 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
      */
     void setFilterMode( FilterMode filterMode );
 
+    /**
+     * The current filterModel
+     */
     FilterMode filterMode();
 
     /**
@@ -107,6 +132,15 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
     virtual QModelIndex mapToMaster( const QModelIndex &proxyIndex ) const;
 
     virtual QModelIndex mapFromMaster( const QModelIndex &sourceIndex ) const;
+
+    /**
+     * Sort by the given column using the given order.
+     * Prefetches all the data from the layer to speed up sorting.
+     *
+     * @param column The column which should be sorted
+     * @param order  The order ( Qt::AscendingOrder or Qt::DescendingOrder )
+     */
+    virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
 
     /** Returns the map canvas*/
     QgsMapCanvas* mapCanvas() const;
@@ -151,20 +185,10 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
      */
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 
-    /**
-     * Sort by the given column using the given order.
-     * Prefetches all the data from the layer to speed up sorting.
-     *
-     * @param column The column which should be sorted
-     * @param order  The order ( Qt::AscendingOrder or Qt::DescendingOrder )
-     */
-    virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
-
   public slots:
     /**
      * Is called upon every change of the visible extents on the map canvas.
      * When a change is signalled, the filter is updated and invalidated if needed.
-     *
      */
     void extentsChanged();
 

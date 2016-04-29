@@ -33,21 +33,32 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     Q_OBJECT
 
   public:
+    /**
+     * The filter mode defines how the rows should be filtered.
+     */
     enum FilterMode
     {
-      ShowAll,
-      ShowSelected,
-      ShowVisible,
-      ShowFilteredList,
-      ShowEdited
+      ShowAll,          //!< Show all features
+      ShowSelected,     //!< Show only selected features
+      ShowVisible,      //!< Show only visible features (depends on the map canvas)
+      ShowFilteredList, //!< Show only features whose ids are on the filter list. {@see setFilteredFeatures}
+      ShowEdited        //!< Show only features which have unsaved changes
     };
 
+    /**
+     * The type of a column.
+     */
     enum ColumnType
     {
       ColumnTypeField,       //!< This column shows a field
       ColumnTypeActionButton //!< This column shows action buttons
     };
 
+    /**
+     * The additional roles defined by this filter model.
+     * The values of these roles start just after the roles defined by
+     * QgsAttributeTableModel so they do not conflict.
+     */
     enum Role
     {
       TypeRole = QgsAttributeTableModel::UserRole //!< The type of a given column
@@ -55,7 +66,6 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
 
 
     /**
-     *
      * Make sure, the master model is already loaded, so the selection will get synchronized.
      *
      * @param parent parent object (owner)
@@ -112,8 +122,6 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
 
     /**
      * The current filterModel
-     *
-     * @return Mode
      */
     FilterMode filterMode() { return mFilterMode; }
 
@@ -215,7 +223,6 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     /**
      * Is called upon every change of the visible extents on the map canvas.
      * When a change is signalled, the filter is updated and invalidated if needed.
-     *
      */
     void extentsChanged();
 

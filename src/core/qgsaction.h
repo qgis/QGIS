@@ -35,6 +35,14 @@ class CORE_EXPORT QgsAction
       OpenUrl,
     };
 
+    /**
+     * Create a new QgsAction
+     *
+     * @param type          The type of this action
+     * @param description   A human readable description string
+     * @param action        The action text. Its interpretation depends on the type
+     * @param capture       If this is set to true, the output will be captured when an action is run
+     */
     QgsAction( ActionType type, const QString& description, const QString& action, bool capture )
         : mType( type )
         , mDescription( description )
@@ -42,19 +50,30 @@ class CORE_EXPORT QgsAction
         , mCaptureOutput( capture )
     {}
 
-    QgsAction( ActionType type, const QString& description, const QString& action, const QString& icon, bool capture, const QString& shortTitle = QString(), bool showInAttributeTable = true )
+
+    /**
+     * Create a new QgsAction
+     *
+     * @param type          The type of this action
+     * @param description   A human readable description string
+     * @param action        The action text. Its interpretation depends on the type
+     * @param icon          Path to an icon for this action
+     * @param capture       If this is set to true, the output will be captured when an action is run
+     * @param shortTitle    A short string used to label user interface elements like buttons
+     */
+    QgsAction( ActionType type, const QString& description, const QString& action, const QString& icon, bool capture, const QString& shortTitle = QString() )
         : mType( type )
         , mDescription( description )
         , mShortTitle( shortTitle )
         , mIcon( icon )
         , mAction( action )
         , mCaptureOutput( capture )
-        , mShowInAttributeTable( showInAttributeTable )
     {}
 
     //! The name of the action. This may be a longer description.
     QString name() const { return mDescription; }
 
+    //! The short title is used to label user interface elements like buttons
     QString shortTitle() const { return mShortTitle; }
 
     //! The path to the icon
@@ -72,9 +91,6 @@ class CORE_EXPORT QgsAction
     //! Whether to capture output for display when this action is run
     bool capture() const { return mCaptureOutput; }
 
-    //! Returns true if the action should be shown on the attribute table
-    bool showInAttributeTable() const { return mShowInAttributeTable; }
-
     //! Checks if the action is runable on the current platform
     bool runable() const;
 
@@ -85,7 +101,6 @@ class CORE_EXPORT QgsAction
     QString mIcon;
     QString mAction;
     bool mCaptureOutput;
-    bool mShowInAttributeTable;
 };
 
 #endif // QGSACTION_H
