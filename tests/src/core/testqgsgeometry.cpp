@@ -3311,6 +3311,12 @@ void TestQgsGeometry::exportToGeoJSON()
   obtained = geom->exportToGeoJSON();
   geojson = "{\"type\": \"MultiPolygon\", \"coordinates\": [[[ [0, 0], [10, 0], [10, 10], [0, 10], [0, 0]]], [[ [2, 2], [4, 2], [4, 4], [2, 4], [2, 2]]]] }";
   QCOMPARE( obtained, geojson );
+
+  // no geometry
+  QgsGeometry nullGeom( nullptr );
+  obtained = nullGeom.exportToGeoJSON();
+  geojson = "null";
+  QCOMPARE( obtained, geojson );
 }
 
 bool TestQgsGeometry::renderCheck( const QString& theTestName, const QString& theComment, int mismatchCount )

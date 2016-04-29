@@ -912,7 +912,7 @@ QString QgsGeometry::exportToGeoJSON( int precision ) const
 {
   if ( !d->geometry )
   {
-    return QString();
+    return QString( "null" );
   }
   return d->geometry->asJSON( precision );
 }
