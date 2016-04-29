@@ -28,7 +28,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt import QtGui
+from qgis.PyQt import QtGui
 from processing.core.GeoAlgorithm import GeoAlgorithm
 
 from .LAStoolsUtils import LAStoolsUtils

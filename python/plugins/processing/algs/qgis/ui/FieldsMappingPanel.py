@@ -29,7 +29,7 @@ import os
 
 from collections import OrderedDict
 
-from PyQt import uic
+from qgis.PyQt import uic
 from qgis.PyQt.QtGui import QBrush, QIcon
 from qgis.PyQt.QtWidgets import QComboBox, QHeaderView, QLineEdit, QMessageBox, QSpinBox, QStyledItemDelegate
 from qgis.PyQt.QtCore import QItemSelectionModel

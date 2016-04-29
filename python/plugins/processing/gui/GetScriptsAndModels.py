@@ -30,7 +30,7 @@ import os
 import json
 from functools import partial
 
-from PyQt import uic
+from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QUrl
 from qgis.PyQt.QtGui import QIcon, QCursor
 from qgis.PyQt.QtWidgets import QApplication, QTreeWidgetItem, QPushButton
