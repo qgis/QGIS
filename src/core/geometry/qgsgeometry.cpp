@@ -1509,8 +1509,9 @@ bool QgsGeometry::deleteRing( int ringNum, int partNum )
   }
 
   detach( true );
-
-  return QgsGeometryEditUtils::deleteRing( d->geometry, ringNum, partNum );
+  bool ok = QgsGeometryEditUtils::deleteRing( d->geometry, ringNum, partNum );
+  removeWkbGeos();
+  return ok;
 }
 
 bool QgsGeometry::deletePart( int partNum )
@@ -1661,6 +1662,7 @@ void QgsGeometry::mapToPixel( const QgsMapToPixel& mtp )
   {
     detach();
     d->geometry->transform( mtp.transform() );
+    removeWkbGeos();
   }
 }
 
