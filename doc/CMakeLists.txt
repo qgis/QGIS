@@ -31,6 +31,14 @@ IF(WITH_APIDOC)
   FIND_PACKAGE(Doxygen 1.8.2 REQUIRED)
   IF(DOXYGEN_FOUND)
 
+    # Whether to generate QHP file
+    SET (GENERATE_QHP FALSE CACHE BOOL "Determines whether to generate Qt QHP help from the QGIS API Docs")
+    IF (GENERATE_QHP)
+      SET(WITH_QHP YES)
+    ELSE(GENERATE_QHP)
+      SET(WITH_QHP NO)
+    ENDIF(GENERATE_QHP)
+
     FIND_FILE(QT_TAG_FILE
       NAMES qt4.tags qt4.tag qt.tags qt.tag
       PATHS "${QT_DOC_DIR}"
