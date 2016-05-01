@@ -114,50 +114,86 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
   mConfig = config;
   mConfig.update( layer()->fields() );
 
-  int columnIndex = 0;
-  int configIndex = 0;
-  bool resetModel = false;
+  QVector<int> newColumnMapping;
 
-  for ( ; configIndex < mConfig.columns().size(); ++configIndex )
+  Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig& columnConfig, mConfig.columns() )
   {
-    const QgsAttributeTableConfig::ColumnConfig& columnConfig = mConfig.columns().at( configIndex );
-
-    // Hidden? No reason for further checks
+    // Hidden? Forget about this column
     if ( columnConfig.mHidden )
       continue;
 
-    // Do the previous and current definition match?
-    if ( mColumnMapping.size() > columnIndex )
+    // The new value for the mapping (field index or -1 for action column)
+    int newValue = ( columnConfig.mType == QgsAttributeTableConfig::Action ) ? -1 : layer()->fieldNameIndex( columnConfig.mName );
+    newColumnMapping << newValue;
+  }
+
+  if ( newColumnMapping != mColumnMapping )
+  {
+    bool requiresReset = false;
+    int firstRemovedColumn = -1;
+    int removedColumnCount = 0;
+
+    // Check if there have a contiguous set of columns have been removed or if we require a full reset
+    for ( int i = 0; i < qMin( newColumnMapping.size(), mColumnMapping.size() - removedColumnCount ); ++i )
     {
-      if (( columnConfig.mType == QgsAttributeTableConfig::Action && mColumnMapping.at( columnIndex ) == -1 ) ||
-          ( columnConfig.mType == QgsAttributeTableConfig::Field && mColumnMapping.at( columnIndex ) == layer()->fieldNameIndex( columnConfig.mName ) ) )
-      {
-        ++columnIndex;
+      if ( newColumnMapping.at( i ) == mColumnMapping.at( i + removedColumnCount ) )
         continue;
-      }
-      else // There is a mismatch between previous and current configuration: remove all remaining columns, they will be readded
+
+      if ( firstRemovedColumn == -1 )
       {
-        mColumnMapping.remove( columnIndex, mColumnMapping.count() - columnIndex );
+        firstRemovedColumn = i;
+
+        while ( i < mColumnMapping.size() - removedColumnCount && mColumnMapping.at( i + removedColumnCount ) != newColumnMapping.at( i ) )
+        {
+          ++removedColumnCount;
+        }
+      }
+      else
+      {
+        requiresReset = true;
+        break;
       }
     }
 
-    if ( ! resetModel )
+    // No difference found so far
+    if ( firstRemovedColumn == -1 )
+    {
+      if ( newColumnMapping.size() > mColumnMapping.size() )
+      {
+        // More columns: appended to the end
+        beginInsertColumns( QModelIndex(), mColumnMapping.size(), newColumnMapping.size() - 1 );
+        mColumnMapping = newColumnMapping;
+        endInsertColumns();
+      }
+      else
+      {
+        // Less columns: removed from the end
+        beginRemoveColumns( QModelIndex(), newColumnMapping.size(), mColumnMapping.size() - 1 );
+        mColumnMapping = newColumnMapping;
+        endRemoveColumns();
+      }
+    }
+    else
+    {
+      if ( newColumnMapping.size() == mColumnMapping.size() - removedColumnCount )
+      {
+        beginRemoveColumns( QModelIndex(), firstRemovedColumn, firstRemovedColumn + removedColumnCount );
+        mColumnMapping = newColumnMapping;
+        endRemoveColumns();
+      }
+      else
+      {
+        requiresReset = true;
+      }
+    }
+
+    if ( requiresReset )
     {
       beginResetModel();
-      resetModel = true;
+      mColumnMapping = newColumnMapping;
+      endResetModel();
     }
-
-    // New column? append
-    Q_ASSERT( mColumnMapping.size() == columnIndex );
-    if ( columnConfig.mType == QgsAttributeTableConfig::Action )
-      mColumnMapping.append( -1 );
-    else
-      mColumnMapping.append( layer()->fieldNameIndex( columnConfig.mName ) );
-
-    ++columnIndex;
   }
-  if ( resetModel )
-    endResetModel();
 }
 
 void QgsAttributeTableFilterModel::setSelectedOnTop( bool selectedOnTop )
@@ -185,7 +221,15 @@ void QgsAttributeTableFilterModel::setSourceModel( QgsAttributeTableModel* sourc
   }
 
   QSortFilterProxyModel::setSourceModel( sourceModel );
-  disconnect( mTableModel, SIGNAL( columnsAboutToBeInserted( QModelIndex, int, int ) ), this, SLOT( onColumnsAboutToBeInserted() ) );
+
+  // Disconnect any code to update columns in the parent, we handle this manually
+  disconnect( sourceModel, SIGNAL( columnsAboutToBeInserted( QModelIndex, int, int ) ), this, SLOT( _q_sourceColumnsAboutToBeInserted( QModelIndex, int, int ) ) );
+  disconnect( sourceModel, SIGNAL( columnsInserted( QModelIndex, int, int ) ), this, SLOT( _q_sourceColumnsInserted( QModelIndex, int, int ) ) );
+  disconnect( sourceModel, SIGNAL( columnsAboutToBeRemoved( QModelIndex, int, int ) ), this, SLOT( _q_sourceColumnsAboutToBeRemoved( QModelIndex, int, int ) ) );
+  disconnect( sourceModel, SIGNAL( columnsRemoved( QModelIndex, int, int ) ), this, SLOT( _q_sourceColumnsRemoved( QModelIndex, int, int ) ) );
+
+  connect( mTableModel, SIGNAL( columnsAboutToBeInserted( QModelIndex, int, int ) ), this, SLOT( onColumnsChanged() ) );
+  connect( mTableModel, SIGNAL( columnsAboutToBeRemoved( QModelIndex, int, int ) ), this, SLOT( onColumnsChanged() ) );
 }
 
 bool QgsAttributeTableFilterModel::selectedOnTop()
@@ -293,7 +337,7 @@ void QgsAttributeTableFilterModel::selectionChanged()
   }
 }
 
-void QgsAttributeTableFilterModel::onColumnsAboutToBeInserted()
+void QgsAttributeTableFilterModel::onColumnsChanged()
 {
   setAttributeTableConfig( mConfig );
 }
