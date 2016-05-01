@@ -66,7 +66,7 @@ void QgsAttributeFormEditorWidget::setMode( QgsAttributeFormEditorWidget::Mode m
 
 void QgsAttributeFormEditorWidget::setIsMixed( bool mixed )
 {
-  if ( mixed )
+  if ( mWidget && mixed )
     mWidget->showIndeterminateState( );
   mMultiEditButton->setIsMixed( mixed );
   mIsMixed = mixed;
@@ -123,7 +123,8 @@ void QgsAttributeFormEditorWidget::resetValue()
 {
   mIsChanged = false;
   mBlockValueUpdate = true;
-  mWidget->setValue( mPreviousValue );
+  if ( mWidget )
+    mWidget->setValue( mPreviousValue );
   mBlockValueUpdate = false;
 
   switch ( mMode )

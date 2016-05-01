@@ -3455,7 +3455,7 @@ void QgsCentroidFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList
         if ( context.geometryPartCount() > 1 )
         {
           const QgsGeometry *geom = feature->constGeometry();
-          const QgsGeometryCollectionV2* geomCollection = dynamic_cast<const QgsGeometryCollectionV2*>( geom->geometry() );
+          const QgsGeometryCollectionV2* geomCollection = static_cast<const QgsGeometryCollectionV2*>( geom->geometry() );
 
           double area = 0;
           double areaBiggest = 0;
