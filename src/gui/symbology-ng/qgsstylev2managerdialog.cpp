@@ -75,8 +75,8 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   shareMenu->addAction( exportAction );
   QAction *importAction = new QAction( tr( "Import..." ), this );
   shareMenu->addAction( importAction );
-  exportAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingExport.svg" ) ) );
-  importAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingImport.svg" ) ) );
+  exportAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileSave.svg" ) ) );
+  importAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileOpen.svg" ) ) );
   connect( actnExportAsPNG, SIGNAL( triggered() ), this, SLOT( exportItemsPNG() ) );
   connect( actnExportAsSVG, SIGNAL( triggered() ), this, SLOT( exportItemsSVG() ) );
   connect( exportAction, SIGNAL( triggered() ), this, SLOT( exportItems() ) );

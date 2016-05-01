@@ -506,7 +506,7 @@ QMenu::item:selected {  background-color: gray; } */
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSharingExport.svg</normaloff>:/images/themes/default/mActionSharingExport.svg</iconset>
+     <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
    </property>
    <property name="text">
     <string>Export selected symbol(s) as PNG...</string>
@@ -521,7 +521,7 @@ QMenu::item:selected {  background-color: gray; } */
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSharingExport.svg</normaloff>:/images/themes/default/mActionSharingExport.svg</iconset>
+     <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
    </property>
    <property name="text">
     <string>Export selected symbol(s) as SVG...</string>

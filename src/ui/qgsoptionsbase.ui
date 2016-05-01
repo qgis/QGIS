@@ -45,16 +45,7 @@
        <property name="spacing">
         <number>0</number>
        </property>
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
+       <property name="margin">
         <number>0</number>
        </property>
        <item>
@@ -293,35 +284,17 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
+       <property name="margin">
         <number>0</number>
        </property>
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -337,8 +310,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>720</width>
-                <height>718</height>
+                <width>618</width>
+                <height>582</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -734,15 +707,25 @@
                      </widget>
                     </item>
                     <item row="1" column="5">
-                     <widget class="QPushButton" name="mProjectOnLaunchPushBtn">
+                     <widget class="QToolButton" name="mProjectOnLaunchPushBtn">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
                       </property>
+                      <property name="toolTip">
+                       <string>Select file</string>
+                      </property>
+                      <property name="statusTip">
+                       <string/>
+                      </property>
                       <property name="text">
-                       <string>...</string>
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
                       </property>
                      </widget>
                     </item>
@@ -871,16 +854,30 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="pbnTemplateFolderBrowse">
+                     <widget class="QToolButton" name="pbnTemplateFolderBrowse">
+                      <property name="toolTip">
+                       <string>Select folder</string>
+                      </property>
                       <property name="text">
-                       <string>Browse</string>
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="pbnTemplateFolderReset">
-                      <property name="text">
+                     <widget class="QToolButton" name="pbnTemplateFolderReset">
+                      <property name="toolTip">
                        <string>Reset</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/mActionUndo.png</normaloff>:/images/themes/default/mActionUndo.png</iconset>
                       </property>
                      </widget>
                     </item>
@@ -985,16 +982,7 @@
          </widget>
          <widget class="QWidget" name="mOptionsPageSystem">
           <layout class="QVBoxLayout" name="verticalLayout_7">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -1010,8 +998,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>658</width>
-                <height>877</height>
+                <width>601</width>
+                <height>822</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1042,16 +1030,30 @@
                    </spacer>
                   </item>
                   <item row="0" column="2">
-                   <widget class="QPushButton" name="mBtnAddSVGPath">
+                   <widget class="QToolButton" name="mBtnAddSVGPath">
+                    <property name="toolTip">
+                     <string>Add new path</string>
+                    </property>
                     <property name="text">
-                     <string>Add</string>
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                     </property>
                    </widget>
                   </item>
                   <item row="0" column="3">
-                   <widget class="QPushButton" name="mBtnRemoveSVGPath">
+                   <widget class="QToolButton" name="mBtnRemoveSVGPath">
+                    <property name="toolTip">
+                     <string>Remove path</string>
+                    </property>
                     <property name="text">
-                     <string>Remove</string>
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
                   </item>
@@ -1095,16 +1097,30 @@
                    </spacer>
                   </item>
                   <item row="0" column="2">
-                   <widget class="QPushButton" name="mBtnAddPluginPath">
+                   <widget class="QToolButton" name="mBtnAddPluginPath">
+                    <property name="toolTip">
+                     <string>Add new path</string>
+                    </property>
                     <property name="text">
-                     <string>Add</string>
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                     </property>
                    </widget>
                   </item>
                   <item row="0" column="3">
-                   <widget class="QPushButton" name="mBtnRemovePluginPath">
+                   <widget class="QToolButton" name="mBtnRemovePluginPath">
+                    <property name="toolTip">
+                     <string>Remove path</string>
+                    </property>
                     <property name="text">
-                     <string>Remove</string>
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
                   </item>
@@ -1141,9 +1157,16 @@
                    </spacer>
                   </item>
                   <item row="0" column="2">
-                   <widget class="QPushButton" name="mRestoreDefaultWindowStateBtn">
-                    <property name="text">
+                   <widget class="QToolButton" name="mRestoreDefaultWindowStateBtn">
+                    <property name="toolTip">
                      <string>Reset</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/mActionUndo.png</normaloff>:/images/themes/default/mActionUndo.png</iconset>
                     </property>
                    </widget>
                   </item>
@@ -1170,28 +1193,42 @@
                  </property>
                  <layout class="QGridLayout" name="gridLayout_32">
                   <item row="1" column="3">
-                   <widget class="QPushButton" name="mRemoveCustomVarBtn">
+                   <widget class="QToolButton" name="mRemoveCustomVarBtn">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
+                    <property name="toolTip">
+                     <string>Remove variable</string>
+                    </property>
                     <property name="text">
-                     <string>Remove</string>
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
                   </item>
                   <item row="1" column="2">
-                   <widget class="QPushButton" name="mAddCustomVarBtn">
+                   <widget class="QToolButton" name="mAddCustomVarBtn">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
+                    <property name="toolTip">
+                     <string>Add new variable</string>
+                    </property>
                     <property name="text">
-                     <string>Add</string>
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                     </property>
                    </widget>
                   </item>
@@ -1206,10 +1243,10 @@
                     <property name="title">
                      <string>Current environment variables (read-only - bold indicates modified at startup)</string>
                     </property>
-                    <property name="collapsed" stdset="0">
+                    <property name="collapsed">
                      <bool>false</bool>
                     </property>
-                    <property name="saveCollapsedState" stdset="0">
+                    <property name="saveCollapsedState">
                      <bool>true</bool>
                     </property>
                     <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1369,16 +1406,7 @@
          </widget>
          <widget class="QWidget" name="mOptionsPageDataSources">
           <layout class="QVBoxLayout" name="verticalLayout_26">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -1394,8 +1422,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>604</width>
-                <height>757</height>
+                <width>601</width>
+                <height>622</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1694,9 +1722,16 @@
                    </widget>
                   </item>
                   <item row="0" column="2">
-                   <widget class="QPushButton" name="mBtnRemoveHiddenPath">
+                   <widget class="QToolButton" name="mBtnRemoveHiddenPath">
+                    <property name="toolTip">
+                     <string>Remove path</string>
+                    </property>
                     <property name="text">
-                     <string>Remove</string>
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
                   </item>
@@ -1727,16 +1762,7 @@
          </widget>
          <widget class="QWidget" name="mOptionsPageRendering">
           <layout class="QVBoxLayout" name="verticalLayout_12">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -1752,8 +1778,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>736</width>
-                <height>846</height>
+                <width>601</width>
+                <height>673</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -1971,16 +1997,7 @@
                   <string>Rendering quality</string>
                  </property>
                  <layout class="QVBoxLayout" name="_5">
-                  <property name="leftMargin">
-                   <number>11</number>
-                  </property>
-                  <property name="topMargin">
-                   <number>11</number>
-                  </property>
-                  <property name="rightMargin">
-                   <number>11</number>
-                  </property>
-                  <property name="bottomMargin">
+                  <property name="margin">
                    <number>11</number>
                   </property>
                   <item>
@@ -2002,16 +2019,7 @@
                   <item>
                    <widget class="QWidget" name="widget" native="true">
                     <layout class="QHBoxLayout" name="horizontalLayout_19">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
+                     <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
@@ -2095,16 +2103,7 @@
                      <item>
                       <widget class="QWidget" name="widget_3" native="true">
                        <layout class="QHBoxLayout" name="horizontalLayout_22">
-                        <property name="leftMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="topMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="rightMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="bottomMargin">
+                        <property name="margin">
                          <number>0</number>
                         </property>
                         <item>
@@ -2136,16 +2135,7 @@
                      <item>
                       <widget class="QWidget" name="widget_4" native="true">
                        <layout class="QHBoxLayout" name="horizontalLayout_23">
-                        <property name="leftMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="topMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="rightMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="bottomMargin">
+                        <property name="margin">
                          <number>0</number>
                         </property>
                         <item>
@@ -2177,16 +2167,7 @@
                      <item>
                       <widget class="QWidget" name="widget_5" native="true">
                        <layout class="QHBoxLayout" name="horizontalLayout_24">
-                        <property name="leftMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="topMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="rightMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="bottomMargin">
+                        <property name="margin">
                          <number>0</number>
                         </property>
                         <item>
@@ -2225,16 +2206,7 @@
                      <item>
                       <widget class="QWidget" name="widget_6" native="true">
                        <layout class="QHBoxLayout" name="horizontalLayout_25">
-                        <property name="leftMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="topMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="rightMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="bottomMargin">
+                        <property name="margin">
                          <number>0</number>
                         </property>
                         <item>
@@ -2266,16 +2238,7 @@
                      <item>
                       <widget class="QWidget" name="widget_7" native="true">
                        <layout class="QHBoxLayout" name="horizontalLayout_18">
-                        <property name="leftMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="topMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="rightMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="bottomMargin">
+                        <property name="margin">
                          <number>0</number>
                         </property>
                         <item>
@@ -2332,16 +2295,7 @@
                      <item>
                       <widget class="QWidget" name="widget_2" native="true">
                        <layout class="QHBoxLayout" name="horizontalLayout_20">
-                        <property name="leftMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="topMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="rightMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="bottomMargin">
+                        <property name="margin">
                          <number>0</number>
                         </property>
                         <item>
@@ -2447,16 +2401,7 @@
          </widget>
          <widget class="QWidget" name="mOptionsPageColors">
           <layout class="QVBoxLayout" name="verticalLayout_38">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -2472,8 +2417,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>617</width>
-                <height>575</height>
+                <width>618</width>
+                <height>582</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2484,30 +2429,58 @@
                  </property>
                  <layout class="QGridLayout" name="gridLayout_12">
                   <item row="3" column="1">
-                   <widget class="QPushButton" name="mButtonPasteColors">
-                    <property name="text">
+                   <widget class="QToolButton" name="mButtonPasteColors">
+                    <property name="toolTip">
                      <string>Paste colors</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/mActionEditPaste.png</normaloff>:/images/themes/default/mActionEditPaste.png</iconset>
                     </property>
                    </widget>
                   </item>
                   <item row="5" column="1">
-                   <widget class="QPushButton" name="mButtonExportColors">
+                   <widget class="QToolButton" name="mButtonExportColors">
+                    <property name="toolTip">
+                     <string>Export colors</string>
+                    </property>
                     <property name="text">
-                     <string>Export</string>
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
                     </property>
                    </widget>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QPushButton" name="mButtonAddColor">
-                    <property name="text">
+                   <widget class="QToolButton" name="mButtonAddColor">
+                    <property name="toolTip">
                      <string>Add color</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                     </property>
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QPushButton" name="mButtonRemoveColor">
-                    <property name="text">
+                   <widget class="QToolButton" name="mButtonRemoveColor">
+                    <property name="toolTip">
                      <string>Remove color</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
                   </item>
@@ -2525,16 +2498,30 @@
                    </spacer>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QPushButton" name="mButtonCopyColors">
-                    <property name="text">
+                   <widget class="QToolButton" name="mButtonCopyColors">
+                    <property name="toolTip">
                      <string>Copy colors</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/mActionCopySelected.png</normaloff>:/images/themes/default/mActionCopySelected.png</iconset>
                     </property>
                    </widget>
                   </item>
                   <item row="4" column="1">
-                   <widget class="QPushButton" name="mButtonImportColors">
+                   <widget class="QToolButton" name="mButtonImportColors">
+                    <property name="toolTip">
+                     <string>Import colors from file</string>
+                    </property>
                     <property name="text">
-                     <string>Import</string>
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
                     </property>
                    </widget>
                   </item>
@@ -2552,16 +2539,7 @@
          </widget>
          <widget class="QWidget" name="mOptionsPageMapCanvas">
           <layout class="QVBoxLayout" name="verticalLayout_16">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -2577,8 +2555,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>617</width>
-                <height>575</height>
+                <width>618</width>
+                <height>582</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2890,16 +2868,7 @@
          </widget>
          <widget class="QWidget" name="mOptionsPageMapTools">
           <layout class="QVBoxLayout" name="verticalLayout_14">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -2915,8 +2884,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>647</width>
-                <height>710</height>
+                <width>618</width>
+                <height>582</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3352,16 +3321,7 @@
          </widget>
          <widget class="QWidget" name="mOptionsPageComposer">
           <layout class="QVBoxLayout" name="verticalLayout_36">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -3377,8 +3337,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>604</width>
-                <height>584</height>
+                <width>618</width>
+                <height>582</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3560,16 +3520,30 @@
                    </spacer>
                   </item>
                   <item row="0" column="2">
-                   <widget class="QPushButton" name="mBtnAddTemplatePath">
+                   <widget class="QToolButton" name="mBtnAddTemplatePath">
+                    <property name="toolTip">
+                     <string>Add new path</string>
+                    </property>
                     <property name="text">
-                     <string>Add</string>
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                     </property>
                    </widget>
                   </item>
                   <item row="0" column="3">
-                   <widget class="QPushButton" name="mBtnRemoveTemplatePath">
+                   <widget class="QToolButton" name="mBtnRemoveTemplatePath">
+                    <property name="toolTip">
+                     <string>Remove path</string>
+                    </property>
                     <property name="text">
-                     <string>Remove</string>
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
                   </item>
@@ -3607,16 +3581,7 @@
          </widget>
          <widget class="QWidget" name="mOptionsPageDigitizing">
           <layout class="QVBoxLayout" name="verticalLayout_17">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -3632,8 +3597,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>566</width>
-                <height>707</height>
+                <width>618</width>
+                <height>582</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4152,16 +4117,7 @@
          </widget>
          <widget class="QWidget" name="mOptionsPageGDAL">
           <layout class="QVBoxLayout" name="verticalLayout_4">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -4177,8 +4133,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>462</width>
-                <height>382</height>
+                <width>618</width>
+                <height>582</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4291,16 +4247,7 @@
          </widget>
          <widget class="QWidget" name="mOptionsPageCRS">
           <layout class="QVBoxLayout" name="verticalLayout_18">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -4316,8 +4263,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>560</width>
-                <height>681</height>
+                <width>601</width>
+                <height>620</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4378,7 +4325,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QgsProjectionSelectionWidget" name="leLayerGlobalCrs" native="true">
+                   <widget class="QgsProjectionSelectionWidget" name="leLayerGlobalCrs">
                     <property name="enabled">
                      <bool>false</bool>
                     </property>
@@ -4441,7 +4388,7 @@
                    </widget>
                   </item>
                   <item row="4" column="0" colspan="2">
-                   <widget class="QgsProjectionSelectionWidget" name="leProjectGlobalCrs" native="true">
+                   <widget class="QgsProjectionSelectionWidget" name="leProjectGlobalCrs">
                     <property name="focusPolicy">
                      <enum>Qt::StrongFocus</enum>
                     </property>
@@ -4459,7 +4406,7 @@
                   <item row="1" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_38">
                     <item>
-                     <widget class="QPushButton" name="mAddDefaultTransformButton">
+                     <widget class="QToolButton" name="mAddDefaultTransformButton">
                       <property name="text">
                        <string/>
                       </property>
@@ -4470,7 +4417,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="mRemoveDefaultTransformButton">
+                     <widget class="QToolButton" name="mRemoveDefaultTransformButton">
                       <property name="text">
                        <string/>
                       </property>
@@ -4537,16 +4484,7 @@
          </widget>
          <widget class="QWidget" name="mOptionsPageLocale">
           <layout class="QVBoxLayout" name="verticalLayout_19">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -4562,8 +4500,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>303</width>
-                <height>236</height>
+                <width>618</width>
+                <height>582</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4646,16 +4584,7 @@
          </widget>
          <widget class="QWidget" name="mOptionsPageNetwork">
           <layout class="QVBoxLayout" name="verticalLayout_20">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -4671,8 +4600,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>604</width>
-                <height>791</height>
+                <width>601</width>
+                <height>616</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -4802,9 +4731,16 @@
                    <widget class="QLineEdit" name="mCacheDirectory"/>
                   </item>
                   <item row="0" column="2">
-                   <widget class="QPushButton" name="mBrowseCacheDirectory">
+                   <widget class="QToolButton" name="mBrowseCacheDirectory">
+                    <property name="toolTip">
+                     <string>Select folder</string>
+                    </property>
                     <property name="text">
-                     <string>...</string>
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
                     </property>
                    </widget>
                   </item>
@@ -4819,9 +4755,16 @@
                    <widget class="QSpinBox" name="mCacheSize"/>
                   </item>
                   <item row="2" column="2">
-                   <widget class="QPushButton" name="mClearCache">
-                    <property name="text">
+                   <widget class="QToolButton" name="mClearCache">
+                    <property name="toolTip">
                      <string>Clear</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/mActionUndo.png</normaloff>:/images/themes/default/mActionUndo.png</iconset>
                     </property>
                    </widget>
                   </item>
@@ -4839,61 +4782,13 @@
                  <property name="checkable">
                   <bool>true</bool>
                  </property>
-                 <property name="collapsed" stdset="0">
+                 <property name="collapsed">
                   <bool>false</bool>
                  </property>
-                 <property name="saveCollapsedState" stdset="0">
+                 <property name="saveCollapsedState">
                   <bool>true</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_1">
-                  <item row="7" column="0" rowspan="2" colspan="5">
-                   <widget class="QGroupBox" name="grpUrlExclude">
-                    <property name="title">
-                     <string>Exclude URLs (starting with)</string>
-                    </property>
-                    <property name="flat">
-                     <bool>true</bool>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_5">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <item row="2" column="2">
-                      <widget class="QPushButton" name="mRemoveUrlPushButton">
-                       <property name="text">
-                        <string>Remove</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="0">
-                      <widget class="QPushButton" name="mAddUrlPushButton">
-                       <property name="text">
-                        <string>Add</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="0" colspan="4">
-                      <widget class="QListWidget" name="mExcludeUrlListWidget"/>
-                     </item>
-                     <item row="2" column="1">
-                      <spacer name="horizontalSpacer">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
                   <item row="0" column="0" colspan="5">
                    <layout class="QGridLayout" name="gridLayout_17">
                     <item row="0" column="1">
@@ -5008,6 +4903,75 @@
                      </widget>
                     </item>
                    </layout>
+                  </item>
+                  <item row="7" column="0" rowspan="2" colspan="5">
+                   <widget class="QGroupBox" name="grpUrlExclude">
+                    <property name="title">
+                     <string/>
+                    </property>
+                    <property name="flat">
+                     <bool>true</bool>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_5">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <item row="2" column="3">
+                      <widget class="QToolButton" name="mRemoveUrlPushButton">
+                       <property name="toolTip">
+                        <string>Remove selected URL</string>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="icon">
+                        <iconset resource="../../images/images.qrc">
+                         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="2">
+                      <widget class="QToolButton" name="mAddUrlPushButton">
+                       <property name="toolTip">
+                        <string>Add URL to exclude</string>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="icon">
+                        <iconset resource="../../images/images.qrc">
+                         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_47">
+                       <property name="text">
+                        <string>Exclude URLs (starting with)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <spacer name="horizontalSpacer">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item row="3" column="0" colspan="4">
+                      <widget class="QListWidget" name="mExcludeUrlListWidget"/>
+                     </item>
+                    </layout>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -5163,6 +5127,12 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsColorSchemeList</class>
    <extends>QWidget</extends>
    <header location="global">qgscolorschemelist.h</header>
@@ -5172,12 +5142,6 @@
    <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
    <header location="global">qgsvariableeditorwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsProjectionSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -5370,7 +5334,6 @@
   <tabstop>grpLocale</tabstop>
   <tabstop>cboLocale</tabstop>
   <tabstop>mAuthConfigsGrpBx</tabstop>
-  <tabstop>mOptionsScrollArea_10</tabstop>
   <tabstop>leWmsSearch</tabstop>
   <tabstop>mNetworkTimeoutSpinBox</tabstop>
   <tabstop>mDefaultCapabilitiesExpirySpinBox</tabstop>
@@ -5387,8 +5350,6 @@
   <tabstop>leProxyPort</tabstop>
   <tabstop>leProxyUser</tabstop>
   <tabstop>leProxyPassword</tabstop>
-  <tabstop>mExcludeUrlListWidget</tabstop>
-  <tabstop>mAddUrlPushButton</tabstop>
   <tabstop>mRemoveUrlPushButton</tabstop>
   <tabstop>mAdvancedSettingsEnableButton</tabstop>
   <tabstop>cbxCheckVersion</tabstop>
