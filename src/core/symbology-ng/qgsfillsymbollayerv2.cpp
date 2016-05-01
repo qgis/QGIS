@@ -3386,7 +3386,12 @@ QSet<QString> QgsPointPatternFillSymbolLayer::usedAttributes() const
 //////////////
 
 
-QgsCentroidFillSymbolLayerV2::QgsCentroidFillSymbolLayerV2(): mMarker( nullptr ), mPointOnSurface( false ), mPointOnAllParts( true )
+QgsCentroidFillSymbolLayerV2::QgsCentroidFillSymbolLayerV2()
+    : mMarker( nullptr )
+    , mPointOnSurface( false )
+    , mPointOnAllParts( true )
+    , mCurrentFeatureId( -1 )
+    , mBiggestPartIndex( -1 )
 {
   setSubSymbol( new QgsMarkerSymbolV2() );
 }

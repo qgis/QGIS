@@ -623,7 +623,14 @@ void QgsRuleBasedLabelingModel::updateRule( const QModelIndex& parent, int row )
 /////////
 
 QgsLabelingRulePropsDialog::QgsLabelingRulePropsDialog( QgsRuleBasedLabeling::Rule* rule, QgsVectorLayer* layer, QWidget* parent, QgsMapCanvas* mapCanvas, bool dockMode )
-    : QDialog( parent ), mRule( rule ), mLayer( layer ), mLabelingGui( nullptr ), mSettings( nullptr ), mMapCanvas( mapCanvas ), mDockMode( dockMode )
+    : QDialog( parent )
+    , mRule( rule )
+    , mLayer( layer )
+    , mLabelingGui( nullptr )
+    , mSettings( nullptr )
+    , mMapCanvas( mapCanvas )
+    , mDockMode( dockMode )
+    , mCurrentMode( Adding )
 {
   setupUi( this );
 #ifdef Q_OS_MAC

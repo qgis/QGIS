@@ -25,6 +25,11 @@ QgsArrowSymbolLayer::QgsArrowSymbolLayer()
     , mHeadSizeUnit( QgsSymbolV2::MM )
     , mHeadType( HeadSingle )
     , mIsCurved( true )
+    , mScaledArrowWidth( 1.0 )
+    , mScaledArrowStartWidth( 1.0 )
+    , mScaledHeadSize( 1.5 )
+    , mScaledOffset( 0.0 )
+    , mComputedHeadType( HeadSingle )
 {
   /* default values */
   setOffset( 0.0 );
