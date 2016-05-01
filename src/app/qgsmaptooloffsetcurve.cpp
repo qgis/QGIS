@@ -334,6 +334,7 @@ void QgsMapToolOffsetCurve::createDistanceWidget()
   mDistanceWidget->setMaximum( 99999999 );
   mDistanceWidget->setDecimals( 6 );
   mDistanceWidget->setPrefix( tr( "Offset: " ) );
+  mDistanceWidget->setClearValue( 0.0 );
   QgisApp::instance()->addUserInputWidget( mDistanceWidget );
 
   mDistanceWidget->setFocus( Qt::TabFocusReason );
