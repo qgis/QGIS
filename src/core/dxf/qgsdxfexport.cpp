@@ -3784,7 +3784,7 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QString& lay
       {
         QgsGeos geos( geom );
         offsetGeom = geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
-        if ( offsetGeom )
+        if ( !offsetGeom )
           offsetGeom = geom;
       }
 
