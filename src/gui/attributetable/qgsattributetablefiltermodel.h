@@ -228,7 +228,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
 
   private slots:
     void selectionChanged();
-    void onColumnsAboutToBeInserted();
+    void onColumnsChanged();
 
   private:
     QgsFeatureIds mFilteredFeatures;
