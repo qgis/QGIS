@@ -3409,6 +3409,14 @@ void TestQgsGeometry::wkbInOut()
   QString wkt = g14182.exportToWkt();
   QCOMPARE( wkt, QString() );
 
+  //WKB with a truncated header
+  const char *badHeaderHexwkb = "0102";
+  wkb = hex2bytes( badHeaderHexwkb, &size );
+  QgsGeometry badHeader;
+  // NOTE: wkb onwership transferred to QgsGeometry
+  badHeader.fromWkb( wkb, size );
+  QVERIFY( badHeader.isEmpty() );
+  QCOMPARE( badHeader.wkbType(), QGis::WKBUnknown );
 }
 
 QTEST_MAIN( TestQgsGeometry )
