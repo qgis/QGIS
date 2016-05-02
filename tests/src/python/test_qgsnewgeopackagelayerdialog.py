@@ -18,9 +18,9 @@ import sys
 import tempfile
 import shutil
 
-from PyQt.QtCore import QObject, QCoreApplication, QSettings, Qt, QEventLoop, QItemSelectionModel, QModelIndex
-from PyQt.QtWidgets import QApplication, QWidget, QLineEdit, QDialogButtonBox, QTreeWidget, QComboBox, QPushButton, QToolButton
-from PyQt.QtTest import QTest
+from qgis.PyQt.QtCore import QObject, QCoreApplication, QSettings, Qt, QEventLoop, QItemSelectionModel, QModelIndex
+from qgis.PyQt.QtWidgets import QApplication, QWidget, QLineEdit, QDialogButtonBox, QTreeWidget, QComboBox, QPushButton, QToolButton
+from qgis.PyQt.QtTest import QTest
 
 from qgis.core import QGis, QgsMapLayerRegistry
 from qgis.gui import QgsNewGeoPackageLayerDialog
