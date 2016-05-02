@@ -81,7 +81,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
       Vertex = 1,    //!< Snapped to a vertex. Can be a vertex of the geometry or an intersection.
       Edge = 2,      //!< Snapped to an edge
       Area = 4,      //!< Snapped to an area
-      All = Vertex | Edge | Area //!< Conmbination of vertex, edge and area
+      All = Vertex | Edge | Area //!< Combination of vertex, edge and area
     };
 
     Q_DECLARE_FLAGS( Types, Type )
