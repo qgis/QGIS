@@ -89,11 +89,13 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
           HardLock
         };
 
-        CadConstraint( QLineEdit* lineEdit, QToolButton* lockerButton, QToolButton* relativeButton = nullptr )
+        CadConstraint( QLineEdit* lineEdit, QToolButton* lockerButton, QToolButton* relativeButton = nullptr, QToolButton* repeatingLockButton = nullptr )
             : mLineEdit( lineEdit )
             , mLockerButton( lockerButton )
             , mRelativeButton( relativeButton )
+            , mRepeatingLockButton( repeatingLockButton )
             , mLockMode( NoLock )
+            , mRepeatingLock( false )
             , mRelative( false )
             , mValue( 0.0 )
         {}
@@ -107,6 +109,14 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
          * Is any kind of lock mode enabled
          */
         bool isLocked() const { return mLockMode != NoLock; }
+
+        /** Returns true if a repeating lock is set for the constraint. Repeating locks are not
+         * automatically cleared after a new point is added.
+         * @note added in QGIS 2.16
+         * @see setRepeatingLock()
+         */
+        bool isRepeatingLock() const { return mRepeatingLock; }
+
         /**
          * Is the constraint in relative mode
          */
@@ -125,6 +135,14 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
          * Set the lock mode
          */
         void setLockMode( LockMode mode );
+
+        /** Sets whether a repeating lock is set for the constraint. Repeating locks are not
+         * automatically cleared after a new point is added.
+         * @param repeating set to true to set the lock to repeat automatically
+         * @note added in QGIS 2.16
+         * @see isRepeatingLock()
+         */
+        void setRepeatingLock( bool repeating );
 
         /**
          * Set if the constraint should be treated relative
@@ -152,7 +170,9 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
         QLineEdit* mLineEdit;
         QToolButton* mLockerButton;
         QToolButton* mRelativeButton;
+        QToolButton* mRepeatingLockButton;
         LockMode mLockMode;
+        bool mRepeatingLock;
         bool mRelative;
         double mValue;
     };
@@ -329,10 +349,14 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     void constraintFocusOut();
 
     //! unlock all constraints
-    void releaseLocks();
+    //! @param releaseRepeatingLocks set to false to preserve the lock for any constraints set to repeating lock mode
+    void releaseLocks( bool releaseRepeatingLocks = true );
 
     //! set the relative properties of constraints
     void setConstraintRelative( bool activate );
+
+    //! Set the repeating lock property of constraints
+    void setConstraintRepeatingLock( bool activate );
 
     //! activate/deactivate tools. It is called when tools are activated manually (from the GUI)
     //! it will call setCadEnabled to properly update the UI.

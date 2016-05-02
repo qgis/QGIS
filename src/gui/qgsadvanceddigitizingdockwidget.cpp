@@ -103,10 +103,10 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
 
   mCadPaintItem = new QgsAdvancedDigitizingCanvasItem( canvas, this ) ;
 
-  mAngleConstraint = new CadConstraint( mAngleLineEdit, mLockAngleButton, mRelativeAngleButton );
-  mDistanceConstraint = new CadConstraint( mDistanceLineEdit, mLockDistanceButton ) ;
-  mXConstraint = new CadConstraint( mXLineEdit, mLockXButton, mRelativeXButton );
-  mYConstraint = new CadConstraint( mYLineEdit, mLockYButton, mRelativeYButton ) ;
+  mAngleConstraint = new CadConstraint( mAngleLineEdit, mLockAngleButton, mRelativeAngleButton, mRepeatingLockAngleButton );
+  mDistanceConstraint = new CadConstraint( mDistanceLineEdit, mLockDistanceButton, nullptr, mRepeatingLockDistanceButton ) ;
+  mXConstraint = new CadConstraint( mXLineEdit, mLockXButton, mRelativeXButton, mRepeatingLockXButton );
+  mYConstraint = new CadConstraint( mYLineEdit, mLockYButton, mRelativeYButton, mRepeatingLockYButton ) ;
   mAdditionalConstraint = NoConstraint ;
 
   mMapCanvas->installEventFilter( this );
@@ -135,6 +135,10 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   connect( mRelativeAngleButton, SIGNAL( clicked( bool ) ), this, SLOT( setConstraintRelative( bool ) ) );
   connect( mRelativeXButton, SIGNAL( clicked( bool ) ), this, SLOT( setConstraintRelative( bool ) ) );
   connect( mRelativeYButton, SIGNAL( clicked( bool ) ), this, SLOT( setConstraintRelative( bool ) ) );
+  connect( mRepeatingLockDistanceButton, SIGNAL( clicked( bool ) ), this, SLOT( setConstraintRepeatingLock( bool ) ) );
+  connect( mRepeatingLockAngleButton, SIGNAL( clicked( bool ) ), this, SLOT( setConstraintRepeatingLock( bool ) ) );
+  connect( mRepeatingLockXButton, SIGNAL( clicked( bool ) ), this, SLOT( setConstraintRepeatingLock( bool ) ) );
+  connect( mRepeatingLockYButton, SIGNAL( clicked( bool ) ), this, SLOT( setConstraintRepeatingLock( bool ) ) );
   connect( mAngleLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
   connect( mDistanceLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
   connect( mXLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
@@ -262,6 +266,26 @@ void QgsAdvancedDigitizingDockWidget::setConstraintRelative( bool activate )
   }
 }
 
+void QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock( bool activate )
+{
+  if ( sender() == mRepeatingLockDistanceButton )
+  {
+    mDistanceConstraint->setRepeatingLock( activate );
+  }
+  else if ( sender() == mRepeatingLockAngleButton )
+  {
+    mAngleConstraint->setRepeatingLock( activate );
+  }
+  else if ( sender() == mRepeatingLockXButton )
+  {
+    mXConstraint->setRepeatingLock( activate );
+  }
+  else if ( sender() == mRepeatingLockYButton )
+  {
+    mYConstraint->setRepeatingLock( activate );
+  }
+}
+
 void QgsAdvancedDigitizingDockWidget::setConstructionMode( bool enabled )
 {
   mConstructionMode = enabled;
@@ -291,16 +315,20 @@ void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction* action )
   }
 }
 
-void QgsAdvancedDigitizingDockWidget::releaseLocks()
+void QgsAdvancedDigitizingDockWidget::releaseLocks( bool releaseRepeatingLocks )
 {
   // release all locks except construction mode
 
   lockAdditionalConstraint( NoConstraint );
 
-  mAngleConstraint->setLockMode( CadConstraint::NoLock );
-  mDistanceConstraint->setLockMode( CadConstraint::NoLock );
-  mXConstraint->setLockMode( CadConstraint::NoLock );
-  mYConstraint->setLockMode( CadConstraint::NoLock );
+  if ( releaseRepeatingLocks || !mAngleConstraint->isRepeatingLock() )
+    mAngleConstraint->setLockMode( CadConstraint::NoLock );
+  if ( releaseRepeatingLocks || !mDistanceConstraint->isRepeatingLock() )
+    mDistanceConstraint->setLockMode( CadConstraint::NoLock );
+  if ( releaseRepeatingLocks || !mXConstraint->isRepeatingLock() )
+    mXConstraint->setLockMode( CadConstraint::NoLock );
+  if ( releaseRepeatingLocks || !mYConstraint->isRepeatingLock() )
+    mYConstraint->setLockMode( CadConstraint::NoLock );
 }
 
 #if 0
@@ -899,7 +927,7 @@ bool QgsAdvancedDigitizingDockWidget::canvasReleaseEvent( QgsMapMouseEvent* e, b
 
   addPoint( e->mapPoint() );
 
-  releaseLocks();
+  releaseLocks( false );
 
   if ( e->button() == Qt::LeftButton )
   {
@@ -947,7 +975,7 @@ bool QgsAdvancedDigitizingDockWidget::canvasKeyPressEventFilter( QKeyEvent* e )
     case Qt::Key_Delete:
     {
       removePreviousPoint();
-      releaseLocks();
+      releaseLocks( false );
       break;
     }
     case Qt::Key_Escape:
@@ -984,7 +1012,7 @@ void QgsAdvancedDigitizingDockWidget::keyPressEvent( QKeyEvent *e )
     case Qt::Key_Delete:
     {
       removePreviousPoint();
-      releaseLocks();
+      releaseLocks( false );
       break;
     }
     case Qt::Key_Escape:
@@ -1228,11 +1256,30 @@ void QgsAdvancedDigitizingDockWidget::CadConstraint::setLockMode( LockMode mode 
 {
   mLockMode = mode;
   mLockerButton->setChecked( mode == HardLock );
+  if ( mRepeatingLockButton )
+  {
+    if ( mode == HardLock )
+    {
+      mRepeatingLockButton->setEnabled( true );
+    }
+    else
+    {
+      mRepeatingLockButton->setChecked( false );
+      mRepeatingLockButton->setEnabled( false );
+    }
+  }
 
   if ( mode == NoLock )
   {
     mLineEdit->clear();
   }
+}
+
+void QgsAdvancedDigitizingDockWidget::CadConstraint::setRepeatingLock( bool repeating )
+{
+  mRepeatingLock = repeating;
+  if ( mRepeatingLockButton )
+    mRepeatingLockButton->setChecked( repeating );
 }
 
 void QgsAdvancedDigitizingDockWidget::CadConstraint::setRelative( bool relative )

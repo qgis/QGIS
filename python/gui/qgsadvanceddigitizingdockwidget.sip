@@ -67,7 +67,7 @@ class QgsAdvancedDigitizingDockWidget : QDockWidget
           HardLock
         };
 
-        CadConstraint( QLineEdit* lineEdit, QToolButton* lockerButton, QToolButton* relativeButton = 0 );
+        CadConstraint( QLineEdit* lineEdit, QToolButton* lockerButton, QToolButton* relativeButton = nullptr, QToolButton* repeatingLockButton = nullptr );
 
         /**
          * The current lock mode of this constraint
@@ -78,6 +78,14 @@ class QgsAdvancedDigitizingDockWidget : QDockWidget
          * Is any kind of lock mode enabled
          */
         bool isLocked() const;
+
+        /** Returns true if a repeating lock is set for the constraint. Repeating locks are not
+         * automatically cleared after a new point is added.
+         * @note added in QGIS 2.16
+         * @see setRepeatingLock()
+         */
+        bool isRepeatingLock() const;
+
         /**
          * Is the constraint in relative mode
          */
@@ -96,6 +104,14 @@ class QgsAdvancedDigitizingDockWidget : QDockWidget
          * Set the lock mode
          */
         void setLockMode( LockMode mode );
+
+        /** Sets whether a repeating lock is set for the constraint. Repeating locks are not
+         * automatically cleared after a new point is added.
+         * @param repeating set to true to set the lock to repeat automatically
+         * @note added in QGIS 2.16
+         * @see isRepeatingLock()
+         */
+        void setRepeatingLock( bool repeating );
 
         /**
          * Set if the constraint should be treated relative
@@ -284,7 +300,8 @@ class QgsAdvancedDigitizingDockWidget : QDockWidget
     void lockConstraint( bool activate = true );
 
     //! unlock all constraints
-    void releaseLocks();
+    //! @param releaseRepeatingLocks set to false to preserve the lock for any constraints set to repeating lock mode
+    void releaseLocks( bool releaseRepeatingLocks = true );
 
     //! set the relative properties of constraints
     void setConstraintRelative( bool activate );
