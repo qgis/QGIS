@@ -167,6 +167,8 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
 
     virtual QModelIndex mapFromSource( const QModelIndex& sourceIndex ) const override;
 
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
     /**
      * Sort by the given column using the given order.
      * Prefetches all the data from the layer to speed up sorting.

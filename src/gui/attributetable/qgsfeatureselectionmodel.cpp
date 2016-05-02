@@ -59,6 +59,8 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
 {
   QgsFeatureIds ids;
 
+  QgsDebugMsg( QString( "Index count: %1" ).arg( selection.indexes().size() ) );
+
   Q_FOREACH ( const QModelIndex& index, selection.indexes() )
   {
     QgsFeatureId id = index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
