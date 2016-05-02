@@ -78,8 +78,18 @@ class TestQgsGrassCommand
       RedoAll
     };
 
-    TestQgsGrassCommand() : command( AddFeature ), verify( true ), fid( 0 ), geometry( 0 ) {}
-    TestQgsGrassCommand( Command c ) : command( c ), verify( true ), fid( 0 ), geometry( 0 ) {}
+    TestQgsGrassCommand()
+        : command( AddFeature )
+        , verify( true )
+        , fid( 0 )
+        , geometry( 0 )
+    {}
+    TestQgsGrassCommand( Command c )
+        : command( c )
+        , verify( true )
+        , fid( 0 )
+        , geometry( 0 )
+    {}
 
     QString toString() const;
     Command command;

@@ -50,7 +50,10 @@ static void _fixQPictureDPI( QPainter* p )
 
 QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( const QString& name, const QColor& color, const QColor& borderColor, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod,
     Qt::PenJoinStyle penJoinStyle )
-    : mOutlineStyle( Qt::SolidLine ), mOutlineWidth( 0 ), mOutlineWidthUnit( QgsSymbolV2::MM ), mPenJoinStyle( penJoinStyle )
+    : mOutlineStyle( Qt::SolidLine )
+    , mOutlineWidth( 0 )
+    , mOutlineWidthUnit( QgsSymbolV2::MM )
+    , mPenJoinStyle( penJoinStyle )
 {
   mName = name;
   mColor = color;

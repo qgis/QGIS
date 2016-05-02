@@ -22,8 +22,8 @@
 #include <QStandardItem>
 
 
-QgsStyleV2GroupSelectionDialog::QgsStyleV2GroupSelectionDialog( QgsStyleV2 *style, QWidget *parent ) :
-    QDialog( parent )
+QgsStyleV2GroupSelectionDialog::QgsStyleV2GroupSelectionDialog( QgsStyleV2 *style, QWidget *parent )
+    : QDialog( parent )
     , mStyle( style )
 {
   setupUi( this );

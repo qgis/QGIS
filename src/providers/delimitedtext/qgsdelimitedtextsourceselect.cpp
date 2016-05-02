@@ -33,13 +33,13 @@
 
 const int MAX_SAMPLE_LENGTH = 200;
 
-QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt::WindowFlags fl, bool embedded ):
-    QDialog( parent, fl ),
-    mFile( new QgsDelimitedTextFile() ),
-    mExampleRowCount( 20 ),
-    mBadRowCount( 0 ),
-    mPluginKey( "/Plugin-DelimitedText" ),
-    mLastFileType( "" )
+QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt::WindowFlags fl, bool embedded )
+    : QDialog( parent, fl )
+    , mFile( new QgsDelimitedTextFile() )
+    , mExampleRowCount( 20 )
+    , mBadRowCount( 0 )
+    , mPluginKey( "/Plugin-DelimitedText" )
+    , mLastFileType( "" )
 {
 
   setupUi( this );

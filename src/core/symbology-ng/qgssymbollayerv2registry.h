@@ -31,7 +31,10 @@ class CORE_EXPORT QgsSymbolLayerV2AbstractMetadata
 {
   public:
     QgsSymbolLayerV2AbstractMetadata( const QString& name, const QString& visibleName, QgsSymbolV2::SymbolType type )
-        : mName( name ), mVisibleName( visibleName ), mType( type ) {}
+        : mName( name )
+        , mVisibleName( visibleName )
+        , mType( type )
+    {}
 
     virtual ~QgsSymbolLayerV2AbstractMetadata() {}
 

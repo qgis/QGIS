@@ -33,7 +33,10 @@
 QgsGeometryCheckerFixDialog::QgsGeometryCheckerFixDialog( QgsGeometryChecker *checker,
     const QList<QgsGeometryCheckError *> &errors,
     QgisInterface* iface, QWidget *parent )
-    : QDialog( parent ), mChecker( checker ), mErrors( errors ), mIface( iface )
+    : QDialog( parent )
+    , mChecker( checker )
+    , mErrors( errors )
+    , mIface( iface )
 {
   setWindowTitle( tr( "Fix errors" ) );
 

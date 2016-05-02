@@ -26,10 +26,10 @@
 #include <cmath>
 
 QgsMapToolCircularStringRadius::QgsMapToolCircularStringRadius( QgsMapToolCapture* parentTool, QgsMapCanvas* canvas, CaptureMode mode )
-    : QgsMapToolAddCircularString( parentTool, canvas, mode ),
-    mTemporaryEndPoint( QgsPointV2() ),
-    mRadius( 0.0 ),
-    mRadiusSpinBox( nullptr )
+    : QgsMapToolAddCircularString( parentTool, canvas, mode )
+    , mTemporaryEndPoint( QgsPointV2() )
+    , mRadius( 0.0 )
+    , mRadiusSpinBox( nullptr )
 {
 
 }

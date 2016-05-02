@@ -20,7 +20,9 @@
 #include "qgsmapcanvas.h"
 
 QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( QgisInterface* iface, QgsVectorLayer* layer, const Statistics& stats, const QStringList &messages, QWidget *parent )
-    : QDialog( parent ), mIface( iface ), mLayer( layer )
+    : QDialog( parent )
+    , mIface( iface )
+    , mLayer( layer )
 {
   ui.setupUi( this );
 

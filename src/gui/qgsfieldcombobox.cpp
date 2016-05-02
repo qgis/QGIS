@@ -18,8 +18,8 @@
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 
-QgsFieldComboBox::QgsFieldComboBox( QWidget *parent ) :
-    QComboBox( parent )
+QgsFieldComboBox::QgsFieldComboBox( QWidget *parent )
+    : QComboBox( parent )
 {
   mFieldProxyModel = new QgsFieldProxyModel( this );
   setModel( mFieldProxyModel );

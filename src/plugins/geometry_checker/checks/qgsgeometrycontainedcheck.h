@@ -18,7 +18,9 @@ class QgsGeometryContainedCheckError : public QgsGeometryCheckError
                                     const QgsPointV2& errorLocation,
                                     QgsFeatureId otherId
                                   )
-        : QgsGeometryCheckError( check, featureId, errorLocation, QgsVertexId(), otherId, ValueOther ), mOtherId( otherId ) { }
+        : QgsGeometryCheckError( check, featureId, errorLocation, QgsVertexId(), otherId, ValueOther )
+        , mOtherId( otherId )
+    { }
     QgsFeatureId otherId() const { return mOtherId; }
 
     bool isEqual( QgsGeometryCheckError* other ) const override

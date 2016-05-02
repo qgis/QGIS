@@ -277,7 +277,8 @@ void QgsRendererV2Widget::applyChanges()
 #include "qgsfield.h"
 
 QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVectorLayer* layer, const QString& rotationField, const QString& sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod )
-    : QObject( menu ), mLayer( layer )
+    : QObject( menu )
+    , mLayer( layer )
 {
   mRotationMenu = new QMenu( tr( "Rotation field" ) );
   mSizeScaleMenu = new QMenu( tr( "Size scale field" ) );

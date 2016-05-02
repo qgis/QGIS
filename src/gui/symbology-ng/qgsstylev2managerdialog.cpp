@@ -41,7 +41,9 @@
 #include "qgslogger.h"
 
 QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* parent )
-    : QDialog( parent ), mStyle( style ), mModified( false )
+    : QDialog( parent )
+    , mStyle( style )
+    , mModified( false )
 {
   setupUi( this );
 #ifdef Q_OS_MAC

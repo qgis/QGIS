@@ -1622,7 +1622,8 @@ QgsGrassModuleFile::~QgsGrassModuleFile()
 /***************************** QgsGrassModuleCheckBox *********************************/
 
 QgsGrassModuleCheckBox::QgsGrassModuleCheckBox( const QString & text, QWidget * parent )
-    : QCheckBox( text, parent ), mText( text )
+    : QCheckBox( text, parent )
+    , mText( text )
 {
   QgsDebugMsg( "entered" );
   adjustText();

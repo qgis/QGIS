@@ -53,7 +53,10 @@ class CORE_EXPORT QgsAttributeEditorElement : public QObject
      * @param parent
      */
     QgsAttributeEditorElement( AttributeEditorType type, const QString& name, QObject *parent = nullptr )
-        : QObject( parent ), mType( type ), mName( name ) {}
+        : QObject( parent )
+        , mType( type )
+        , mName( name )
+    {}
 
     //! Destructor
     virtual ~QgsAttributeEditorElement() {}
@@ -194,7 +197,9 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
      * @param parent The parent of this widget (used as container)
      */
     QgsAttributeEditorField( const QString& name, int idx, QObject *parent )
-        : QgsAttributeEditorElement( AeTypeField, name, parent ), mIdx( idx ) {}
+        : QgsAttributeEditorElement( AeTypeField, name, parent )
+        , mIdx( idx )
+    {}
 
     //! Destructor
     virtual ~QgsAttributeEditorField() {}
@@ -300,7 +305,9 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     {
       GroupData() {}
       GroupData( const QString& name, const QList<QString>& fields )
-          : mName( name ), mFields( fields ) {}
+          : mName( name )
+          , mFields( fields )
+      {}
       QString mName;
       QList<QString> mFields;
     };
@@ -309,7 +316,10 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     {
       TabData() {}
       TabData( const QString& name, const QList<QString>& fields, const QList<GroupData>& groups )
-          : mName( name ), mFields( fields ), mGroups( groups ) {}
+          : mName( name )
+          , mFields( fields )
+          , mGroups( groups )
+      {}
       QString mName;
       QList<QString> mFields;
       QList<GroupData> mGroups;

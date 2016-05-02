@@ -54,7 +54,10 @@ typedef QList< QPair<QString, QgsSymbolV2*> > QgsLegendSymbolList;
 class CORE_EXPORT QgsSymbolV2LevelItem
 {
   public:
-    QgsSymbolV2LevelItem( QgsSymbolV2* symbol, int layer ) : mSymbol( symbol ), mLayer( layer ) {}
+    QgsSymbolV2LevelItem( QgsSymbolV2* symbol, int layer )
+        : mSymbol( symbol )
+        , mLayer( layer )
+    {}
     QgsSymbolV2* symbol() { return mSymbol; }
     int layer() { return mLayer; }
   protected:

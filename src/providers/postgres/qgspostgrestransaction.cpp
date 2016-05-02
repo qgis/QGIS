@@ -21,7 +21,8 @@
 #include "qgis.h"
 
 QgsPostgresTransaction::QgsPostgresTransaction( const QString &connString )
-    : QgsTransaction( connString ), mConn( nullptr )
+    : QgsTransaction( connString )
+    , mConn( nullptr )
 {
 
 }

@@ -42,7 +42,9 @@ class ANALYSIS_EXPORT Node
     void setPoint( Point3D* p );
 };
 
-inline Node::Node() : mPoint( nullptr ), mNext( nullptr )
+inline Node::Node()
+    : mPoint( nullptr )
+    , mNext( nullptr )
 {
 
 }

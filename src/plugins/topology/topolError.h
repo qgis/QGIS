@@ -29,15 +29,19 @@ typedef bool ( TopolError::*fixFunction )();
 class FeatureLayer
 {
   public:
-    FeatureLayer() :
-        layer( nullptr ), feature( QgsFeature() ) {}
+    FeatureLayer()
+        : layer( nullptr )
+        , feature( QgsFeature() )
+    {}
     /**
      * Constructor
      * @param theLayer layer pointer
      * @param theFeature QgsFeature
      */
-    FeatureLayer( QgsVectorLayer* theLayer, const QgsFeature& theFeature ) :
-        layer( theLayer ), feature( theFeature ) {}
+    FeatureLayer( QgsVectorLayer* theLayer, const QgsFeature& theFeature )
+        : layer( theLayer )
+        , feature( theFeature )
+    {}
 
     QgsVectorLayer* layer;
     QgsFeature feature;

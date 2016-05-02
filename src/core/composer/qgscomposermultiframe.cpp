@@ -18,11 +18,11 @@
 #include "qgscomposition.h"
 #include <QtCore>
 
-QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c, bool createUndoCommands ):
-    QgsComposerObject( c ),
-    mResizeMode( UseExistingFrames ),
-    mCreateUndoCommands( createUndoCommands ),
-    mIsRecalculatingSize( false )
+QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c, bool createUndoCommands )
+    : QgsComposerObject( c )
+    , mResizeMode( UseExistingFrames )
+    , mCreateUndoCommands( createUndoCommands )
+    , mIsRecalculatingSize( false )
 {
   mComposition->addMultiFrame( this );
   connect( mComposition, SIGNAL( nPagesChanged() ), this, SLOT( handlePageChange() ) );

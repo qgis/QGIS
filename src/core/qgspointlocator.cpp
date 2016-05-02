@@ -63,7 +63,10 @@ static const double POINT_LOC_EPSILON = 1e-12;
 class QgsPointLocator_Stream : public IDataStream
 {
   public:
-    explicit QgsPointLocator_Stream( const QLinkedList<RTree::Data*>& dataList ) : mDataList( dataList ), mIt( mDataList ) { }
+    explicit QgsPointLocator_Stream( const QLinkedList<RTree::Data*>& dataList )
+        : mDataList( dataList )
+        , mIt( mDataList )
+    { }
     ~QgsPointLocator_Stream() { }
 
     virtual IData* getNext() override { return mIt.next(); }
@@ -88,7 +91,11 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
 {
   public:
     QgsPointLocator_VisitorNearestVertex( QgsPointLocator* pl, QgsPointLocator::Match& m, const QgsPoint& srcPoint, QgsPointLocator::MatchFilter* filter = nullptr )
-        : mLocator( pl ), mBest( m ), mSrcPoint( srcPoint ), mFilter( filter ) {}
+        : mLocator( pl )
+        , mBest( m )
+        , mSrcPoint( srcPoint )
+        , mFilter( filter )
+    {}
 
     void visitNode( const INode& n ) override { Q_UNUSED( n ); }
     void visitData( std::vector<const IData*>& v ) override { Q_UNUSED( v ); }
@@ -128,7 +135,11 @@ class QgsPointLocator_VisitorNearestEdge : public IVisitor
 {
   public:
     QgsPointLocator_VisitorNearestEdge( QgsPointLocator* pl, QgsPointLocator::Match& m, const QgsPoint& srcPoint, QgsPointLocator::MatchFilter* filter = nullptr )
-        : mLocator( pl ), mBest( m ), mSrcPoint( srcPoint ), mFilter( filter ) {}
+        : mLocator( pl )
+        , mBest( m )
+        , mSrcPoint( srcPoint )
+        , mFilter( filter )
+    {}
 
     void visitNode( const INode& n ) override { Q_UNUSED( n ); }
     void visitData( std::vector<const IData*>& v ) override { Q_UNUSED( v ); }
@@ -174,7 +185,10 @@ class QgsPointLocator_VisitorArea : public IVisitor
   public:
     //! constructor
     QgsPointLocator_VisitorArea( QgsPointLocator* pl, const QgsPoint& origPt, QgsPointLocator::MatchList& list )
-        : mLocator( pl ), mList( list ), mGeomPt( QgsGeometry::fromPoint( origPt ) ) {}
+        : mLocator( pl )
+        , mList( list )
+        , mGeomPt( QgsGeometry::fromPoint( origPt ) )
+    {}
 
     ~QgsPointLocator_VisitorArea() { delete mGeomPt; }
 
@@ -508,7 +522,11 @@ class QgsPointLocator_VisitorEdgesInRect : public IVisitor
 {
   public:
     QgsPointLocator_VisitorEdgesInRect( QgsPointLocator* pl, QgsPointLocator::MatchList& lst, const QgsRectangle& srcRect, QgsPointLocator::MatchFilter* filter = nullptr )
-        : mLocator( pl ), mList( lst ), mSrcRect( srcRect ), mFilter( filter ) {}
+        : mLocator( pl )
+        , mList( lst )
+        , mSrcRect( srcRect )
+        , mFilter( filter )
+    {}
 
     void visitNode( const INode& n ) override { Q_UNUSED( n ); }
     void visitData( std::vector<const IData*>& v ) override { Q_UNUSED( v ); }

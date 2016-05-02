@@ -2062,8 +2062,8 @@ QgsGrassMapcalcFunction::~QgsGrassMapcalcFunction()
 /******************** CANVAS VIEW ******************************/
 
 QgsGrassMapcalcView::QgsGrassMapcalcView( QgsGrassMapcalc * mapcalc,
-    QWidget * parent, Qt::WindowFlags f ) :
-    QGraphicsView( parent )
+    QWidget * parent, Qt::WindowFlags f )
+    : QGraphicsView( parent )
 {
   Q_UNUSED( f );
   setAttribute( Qt::WA_StaticContents );

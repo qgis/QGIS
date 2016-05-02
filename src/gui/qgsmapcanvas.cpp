@@ -72,7 +72,10 @@ email                : sherman at mrcc.com
 class QgsMapCanvas::CanvasProperties
 {
   public:
-    CanvasProperties() : mouseButtonDown( false ), panSelectorDown( false ) { }
+    CanvasProperties()
+        : mouseButtonDown( false )
+        , panSelectorDown( false )
+    { }
 
     //!Flag to indicate status of mouse button
     bool mouseButtonDown;

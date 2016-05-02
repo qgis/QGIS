@@ -23,8 +23,9 @@ Unit::Unit()
   mMultipler = 1.0;
 }
 
-Unit::Unit( const QString& name, double multipler ) :
-    mName( name ), mMultipler( multipler )
+Unit::Unit( const QString& name, double multipler )
+    : mName( name )
+    , mMultipler( multipler )
 {
 }
 
@@ -50,14 +51,16 @@ Unit Unit::byName( const QString& name )
   return Unit();
 }
 
-SpeedUnit::SpeedUnit() :
-    mTimeUnit( "", 1 ), mDistanceUnit( "", 1 )
+SpeedUnit::SpeedUnit()
+    : mTimeUnit( "", 1 )
+    , mDistanceUnit( "", 1 )
 {
 
 }
 
-SpeedUnit::SpeedUnit( const Unit& distanceUnit, const Unit& timeUnit ) :
-    mTimeUnit( timeUnit ), mDistanceUnit( distanceUnit )
+SpeedUnit::SpeedUnit( const Unit& distanceUnit, const Unit& timeUnit )
+    : mTimeUnit( timeUnit )
+    , mDistanceUnit( distanceUnit )
 {
 }
 

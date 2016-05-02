@@ -15,8 +15,8 @@
 
 #include "qgswfsdescribefeaturetype.h"
 
-QgsWFSDescribeFeatureType::QgsWFSDescribeFeatureType( const QString& theUri ) :
-    QgsWFSRequest( theUri )
+QgsWFSDescribeFeatureType::QgsWFSDescribeFeatureType( const QString& theUri )
+    : QgsWFSRequest( theUri )
 {
 }
 

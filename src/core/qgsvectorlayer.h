@@ -414,7 +414,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       Q_DECL_DEPRECATED RangeData() { mMin = QVariant( 0 ); mMax = QVariant( 5 ); mStep = QVariant( 1 );}
       //! @deprecated Use the editorWidgetV2() system instead
       Q_DECL_DEPRECATED RangeData( const QVariant& theMin, const QVariant& theMax, const QVariant& theStep )
-          : mMin( theMin ), mMax( theMax ), mStep( theStep ) {}
+          : mMin( theMin )
+          , mMax( theMax )
+          , mStep( theStep )
+      {}
 
       QVariant mMin;
       QVariant mMax;
@@ -423,7 +426,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     struct ValueRelationData
     {
-      ValueRelationData() : mAllowNull( false ), mOrderByValue( false ), mAllowMulti( false ) {}
+      ValueRelationData()
+          : mAllowNull( false )
+          , mOrderByValue( false )
+          , mAllowMulti( false )
+      {}
       ValueRelationData( const QString& layer, const QString& key, const QString& value, bool allowNull, bool orderByValue,
                          bool allowMulti = false,
                          const QString& filterExpression = QString::null )

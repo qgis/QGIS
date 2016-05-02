@@ -1000,17 +1000,17 @@ QgsSymbolV2RenderContext* QgsSymbolV2::symbolRenderContext()
 
 
 QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha, bool selected, int renderHints, const QgsFeature* f, const QgsFields* fields, const QgsMapUnitScale& mapUnitScale )
-    : mRenderContext( c ),
-    mExpressionContextScope( nullptr ),
-    mOutputUnit( u ),
-    mMapUnitScale( mapUnitScale ),
-    mAlpha( alpha ),
-    mSelected( selected ),
-    mRenderHints( renderHints ),
-    mFeature( f ),
-    mFields( fields ),
-    mGeometryPartCount( 0 ),
-    mGeometryPartNum( 0 )
+    : mRenderContext( c )
+    , mExpressionContextScope( nullptr )
+    , mOutputUnit( u )
+    , mMapUnitScale( mapUnitScale )
+    , mAlpha( alpha )
+    , mSelected( selected )
+    , mRenderHints( renderHints )
+    , mFeature( f )
+    , mFields( fields )
+    , mGeometryPartCount( 0 )
+    , mGeometryPartNum( 0 )
 {
 }
 

@@ -458,7 +458,8 @@ QgsStringMap QgsRandomColorsV2::properties() const
 ////////////
 
 QgsVectorColorBrewerColorRampV2::QgsVectorColorBrewerColorRampV2( const QString& schemeName, int colors )
-    : mSchemeName( schemeName ), mColors( colors )
+    : mSchemeName( schemeName )
+    , mColors( colors )
 {
   loadPalette();
 }

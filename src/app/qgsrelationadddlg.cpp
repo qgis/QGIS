@@ -1,8 +1,8 @@
 #include "qgsrelationadddlg.h"
 #include "qgsvectorlayer.h"
 
-QgsRelationAddDlg::QgsRelationAddDlg( QWidget *parent ) :
-    QDialog( parent )
+QgsRelationAddDlg::QgsRelationAddDlg( QWidget *parent )
+    : QDialog( parent )
 {
   setupUi( this );
 

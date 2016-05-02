@@ -17,7 +17,9 @@ class QgsGeometryDuplicateCheckError : public QgsGeometryCheckError
                                     QgsFeatureId featureId,
                                     const QgsPointV2& errorLocation,
                                     const QList<QgsFeatureId>& duplicates )
-        : QgsGeometryCheckError( check, featureId, errorLocation, QgsVertexId(), duplicatesString( duplicates ) ), mDuplicates( duplicates ) { }
+        : QgsGeometryCheckError( check, featureId, errorLocation, QgsVertexId(), duplicatesString( duplicates ) )
+        , mDuplicates( duplicates )
+    { }
     const QList<QgsFeatureId>& duplicates() const { return mDuplicates; }
 
     bool isEqual( QgsGeometryCheckError* other ) const override

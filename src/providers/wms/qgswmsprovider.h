@@ -600,7 +600,11 @@ class QgsWmsTiledImageDownloadHandler : public QObject
 
     struct TileRequest
     {
-      TileRequest( const QUrl& u, const QRectF& r, int i ) : url( u ), rect( r ), index( i ) {}
+      TileRequest( const QUrl& u, const QRectF& r, int i )
+          : url( u )
+          , rect( r )
+          , index( i )
+      {}
       QUrl url;
       QRectF rect;
       int index;
@@ -649,7 +653,11 @@ class QgsWmsStatistics
   public:
     struct Stat
     {
-      Stat() : errors( 0 ), cacheHits( 0 ), cacheMisses( 0 ) {}
+      Stat()
+          : errors( 0 )
+          , cacheHits( 0 )
+          , cacheMisses( 0 )
+      {}
       int errors;
       int cacheHits;
       int cacheMisses;

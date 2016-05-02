@@ -30,7 +30,10 @@
 #include "qgslogger.h"
 
 QgsRectangle::QgsRectangle( double newxmin, double newymin, double newxmax, double newymax )
-    : xmin( newxmin ), ymin( newymin ), xmax( newxmax ), ymax( newymax )
+    : xmin( newxmin )
+    , ymin( newymin )
+    , xmax( newxmax )
+    , ymax( newymax )
 {
   normalize();
 }

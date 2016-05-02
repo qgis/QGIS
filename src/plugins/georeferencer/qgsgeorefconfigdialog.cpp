@@ -19,8 +19,8 @@
 #include "qgsgeorefconfigdialog.h"
 #include "qgis.h"
 
-QgsGeorefConfigDialog::QgsGeorefConfigDialog( QWidget *parent ) :
-    QDialog( parent )
+QgsGeorefConfigDialog::QgsGeorefConfigDialog( QWidget *parent )
+    : QDialog( parent )
 {
   setupUi( this );
 

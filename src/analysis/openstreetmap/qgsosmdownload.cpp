@@ -22,7 +22,8 @@ QString QgsOSMDownload::queryFromRect( const QgsRectangle& rect )
 
 
 QgsOSMDownload::QgsOSMDownload()
-    : mServiceUrl( defaultServiceUrl() ), mReply( nullptr )
+    : mServiceUrl( defaultServiceUrl() )
+    , mReply( nullptr )
 {
 }
 

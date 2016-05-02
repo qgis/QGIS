@@ -77,7 +77,8 @@ void QgsSmartGroupCondition::hideRemoveButton( bool hide )
 // Editor Dialog Functions  //
 // ------------------------ //
 QgsSmartGroupEditorDialog::QgsSmartGroupEditorDialog( QgsStyleV2* style, QWidget* parent )
-    : QDialog( parent ), mStyle( style )
+    : QDialog( parent )
+    , mStyle( style )
 {
   setupUi( this );
 

@@ -1295,7 +1295,8 @@ bool QgsCptCitySelectionItem::equal( const QgsCptCityDataItem *other )
 //-----------------------------------------------------------------------
 QgsCptCityAllRampsItem::QgsCptCityAllRampsItem( QgsCptCityDataItem* parent,
     const QString& name, const QVector<QgsCptCityDataItem*>& items )
-    : QgsCptCityCollectionItem( parent, name, QString() ), mItems( items )
+    : QgsCptCityCollectionItem( parent, name, QString() )
+    , mItems( items )
 {
   mType = AllRamps;
   mValid = true;
@@ -1328,7 +1329,9 @@ QVector<QgsCptCityDataItem*> QgsCptCityAllRampsItem::createChildren()
 
 QgsCptCityBrowserModel::QgsCptCityBrowserModel( QObject *parent,
     QgsCptCityArchive* archive, ViewType viewType )
-    : QAbstractItemModel( parent ), mArchive( archive ), mViewType( viewType )
+    : QAbstractItemModel( parent )
+    , mArchive( archive )
+    , mViewType( viewType )
 {
   Q_ASSERT( mArchive );
   QgsDebugMsg( "archiveName = " + archive->archiveName() + " viewType=" + static_cast< int >( viewType ) );

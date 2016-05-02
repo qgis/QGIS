@@ -52,7 +52,8 @@ class QgsGrassToolsTreeFilterProxyModel : public QSortFilterProxyModel
 {
   public:
     explicit QgsGrassToolsTreeFilterProxyModel( QObject *parent )
-        : QSortFilterProxyModel( parent ), mModel( 0 )
+        : QSortFilterProxyModel( parent )
+        , mModel( 0 )
     {
       setDynamicSortFilter( true );
       mRegExp.setPatternSyntax( QRegExp::Wildcard );

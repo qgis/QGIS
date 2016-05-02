@@ -95,7 +95,8 @@ void QgsCustomLayerOrderWidget::modelUpdated()
 ///@cond PRIVATE
 
 CustomLayerOrderModel::CustomLayerOrderModel( QgsLayerTreeMapCanvasBridge* bridge, QObject* parent )
-    : QAbstractListModel( parent ), mBridge( bridge )
+    : QAbstractListModel( parent )
+    , mBridge( bridge )
 {
 }
 

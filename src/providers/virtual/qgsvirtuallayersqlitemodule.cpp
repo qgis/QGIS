@@ -256,7 +256,10 @@ struct VTableCursor
   QgsFeatureIterator mIterator;
   bool mEof;
 
-  VTableCursor( VTable *vtab ) : mVtab( vtab ), mEof( true ) {}
+  VTableCursor( VTable *vtab )
+      : mVtab( vtab )
+      , mEof( true )
+  {}
 
   void filter( const QgsFeatureRequest& request )
   {

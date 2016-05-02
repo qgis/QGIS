@@ -691,7 +691,8 @@ void QgsCptCityColorRampV2Dialog::refreshModel( const QModelIndex& index )
 /// @cond PRIVATE
 
 TreeFilterProxyModel::TreeFilterProxyModel( QObject* parent, QgsCptCityBrowserModel* model )
-    : QSortFilterProxyModel( parent ), mModel( model )
+    : QSortFilterProxyModel( parent )
+    , mModel( model )
 {
   setSourceModel( mModel );
 }

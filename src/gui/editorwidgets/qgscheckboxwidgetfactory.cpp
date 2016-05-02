@@ -18,8 +18,8 @@
 #include "qgscheckboxwidgetwrapper.h"
 #include "qgscheckboxconfigdlg.h"
 
-QgsCheckboxWidgetFactory::QgsCheckboxWidgetFactory( const QString& name ) :
-    QgsEditorWidgetFactory( name )
+QgsCheckboxWidgetFactory::QgsCheckboxWidgetFactory( const QString& name )
+    : QgsEditorWidgetFactory( name )
 {
 }
 

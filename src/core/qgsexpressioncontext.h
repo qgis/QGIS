@@ -89,7 +89,11 @@ class CORE_EXPORT QgsExpressionContextScope
        * @param value intial variable value
        * @param readOnly true if variable should not be editable by users
        */
-      StaticVariable( const QString& name = QString(), const QVariant& value = QVariant(), bool readOnly = false ) : name( name ), value( value ), readOnly( readOnly ) {}
+      StaticVariable( const QString& name = QString(), const QVariant& value = QVariant(), bool readOnly = false )
+          : name( name )
+          , value( value )
+          , readOnly( readOnly )
+      {}
 
       /** Variable name */
       QString name;

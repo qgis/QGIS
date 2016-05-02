@@ -189,7 +189,9 @@ class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
 {
   public:
     QgsAbstractFeatureIteratorFromSource( T* source, bool ownSource, const QgsFeatureRequest& request )
-        : QgsAbstractFeatureIterator( request ), mSource( source ), mOwnSource( ownSource )
+        : QgsAbstractFeatureIterator( request )
+        , mSource( source )
+        , mOwnSource( ownSource )
     {
       mSource->iteratorOpened( this );
     }

@@ -180,8 +180,12 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
       bool selected;
       bool drawMarkers;
       int layer;
-      FeatureDecoration( QgsFeature& a_feature, bool a_selected, bool a_drawMarkers, int a_layer ) :
-          feature( a_feature ), selected( a_selected ), drawMarkers( a_drawMarkers ), layer( a_layer ) {}
+      FeatureDecoration( QgsFeature& a_feature, bool a_selected, bool a_drawMarkers, int a_layer )
+          : feature( a_feature )
+          , selected( a_selected )
+          , drawMarkers( a_drawMarkers )
+          , layer( a_layer )
+      {}
     };
     QList<FeatureDecoration> mFeatureDecorations;
 

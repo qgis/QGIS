@@ -590,7 +590,12 @@ void QgsRuleBasedRendererV2Widget::selectedRulesChanged()
 ///////////
 
 QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent , QgsMapCanvas* mapCanvas )
-    : QDialog( parent ), mRule( rule ), mLayer( layer ), mSymbolSelector( nullptr ), mSymbol( nullptr ), mMapCanvas( mapCanvas )
+    : QDialog( parent )
+    , mRule( rule )
+    , mLayer( layer )
+    , mSymbolSelector( nullptr )
+    , mSymbol( nullptr )
+    , mMapCanvas( mapCanvas )
 {
   setupUi( this );
 #ifdef Q_OS_MAC

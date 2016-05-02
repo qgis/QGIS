@@ -57,7 +57,10 @@ class ANALYSIS_EXPORT QgsOSMNode : public QgsOSMElement
 {
   public:
     QgsOSMNode() : mPoint() {}
-    QgsOSMNode( QgsOSMId id, const QgsPoint& point ) : QgsOSMElement( QgsOSMElementID::Node, id ), mPoint( point ) {}
+    QgsOSMNode( QgsOSMId id, const QgsPoint& point )
+        : QgsOSMElement( QgsOSMElementID::Node, id )
+        , mPoint( point )
+    {}
 
     QgsPoint point() const { return mPoint; }
 
@@ -77,7 +80,10 @@ class ANALYSIS_EXPORT QgsOSMWay : public QgsOSMElement
 {
   public:
     QgsOSMWay() {}
-    QgsOSMWay( QgsOSMId id, const QList<QgsOSMId>& nodes ) : QgsOSMElement( QgsOSMElementID::Way, id ), mNodes( nodes ) {}
+    QgsOSMWay( QgsOSMId id, const QList<QgsOSMId>& nodes )
+        : QgsOSMElement( QgsOSMElementID::Way, id )
+        , mNodes( nodes )
+    {}
 
     QList<QgsOSMId> nodes() const { return mNodes; }
 

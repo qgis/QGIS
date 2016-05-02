@@ -97,7 +97,11 @@ class TestQgsLegendRenderer : public QObject
 
   public:
     TestQgsLegendRenderer()
-        : mRoot( 0 ), mVL1( 0 ), mVL2( 0 ), mVL3( 0 ), mRL( 0 )
+        : mRoot( 0 )
+        , mVL1( 0 )
+        , mVL2( 0 )
+        , mVL3( 0 )
+        , mRL( 0 )
     {}
 
   private slots:

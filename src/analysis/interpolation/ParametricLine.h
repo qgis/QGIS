@@ -58,12 +58,18 @@ class ANALYSIS_EXPORT ParametricLine
 
 //-----------------------------------------constructors and destructor----------------------
 
-inline ParametricLine::ParametricLine() : mDegree( 0 ), mParent( nullptr ), mControlPoly( nullptr )
+inline ParametricLine::ParametricLine()
+    : mDegree( 0 )
+    , mParent( nullptr )
+    , mControlPoly( nullptr )
 {
 
 }
 
-inline ParametricLine::ParametricLine( ParametricLine* par, QVector<Point3D*>* controlpoly ) : mDegree( 0 ), mParent( par ), mControlPoly( controlpoly )
+inline ParametricLine::ParametricLine( ParametricLine* par, QVector<Point3D*>* controlpoly )
+    : mDegree( 0 )
+    , mParent( par )
+    , mControlPoly( controlpoly )
 {
 
 }

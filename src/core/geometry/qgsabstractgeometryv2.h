@@ -381,7 +381,11 @@ struct CORE_EXPORT QgsVertexId
   };
 
   QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex )
-      : part( _part ), ring( _ring ), vertex( _vertex ), type( _type ) {}
+      : part( _part )
+      , ring( _ring )
+      , vertex( _vertex )
+      , type( _type )
+  {}
 
   /** Returns true if the vertex id is valid
    */

@@ -30,7 +30,8 @@
 #include "qgsosmdownload.h"
 
 QgsOSMDownloadDialog::QgsOSMDownloadDialog( QWidget* parent )
-    : QDialog( parent ), mDownload( new QgsOSMDownload )
+    : QDialog( parent )
+    , mDownload( new QgsOSMDownload )
 {
   setupUi( this );
 

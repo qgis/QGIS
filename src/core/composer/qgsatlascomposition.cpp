@@ -162,7 +162,10 @@ void QgsAtlasComposition::setSortKeyAttributeIndex( int idx )
 class FieldSorter
 {
   public:
-    FieldSorter( QgsAtlasComposition::SorterKeys& keys, bool ascending = true ) : mKeys( keys ), mAscending( ascending ) {}
+    FieldSorter( QgsAtlasComposition::SorterKeys& keys, bool ascending = true )
+        : mKeys( keys )
+        , mAscending( ascending )
+    {}
 
     bool operator()( const QPair< QgsFeatureId, QString > & id1, const QPair< QgsFeatureId, QString >& id2 )
     {

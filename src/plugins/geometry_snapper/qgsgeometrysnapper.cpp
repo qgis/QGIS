@@ -25,7 +25,10 @@
 #include "qgssnapindex.h"
 
 QgsGeometrySnapper::QgsGeometrySnapper( QgsVectorLayer *adjustLayer, QgsVectorLayer *referenceLayer, bool selectedOnly, double snapToleranceMapUnits, const QgsMapSettings *mapSettings )
-    : mAdjustLayer( adjustLayer ), mReferenceLayer( referenceLayer ), mSnapToleranceMapUnits( snapToleranceMapUnits ), mMapSettings( mapSettings )
+    : mAdjustLayer( adjustLayer )
+    , mReferenceLayer( referenceLayer )
+    , mSnapToleranceMapUnits( snapToleranceMapUnits )
+    , mMapSettings( mapSettings )
 {
   if ( selectedOnly )
   {

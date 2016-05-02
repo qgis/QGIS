@@ -22,8 +22,8 @@
 #include "qgsproject.h"
 #include <QSettings>
 
-QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent ) :
-    QWidget( parent )
+QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
+    : QWidget( parent )
 {
   mDialog = new QgsGenericProjectionSelector( this );
 

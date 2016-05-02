@@ -34,7 +34,8 @@
 
 
 QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f )
-    : QDialog( tool->canvas()->topLevelWidget(), f ), mTool( tool )
+    : QDialog( tool->canvas()->topLevelWidget(), f )
+    , mTool( tool )
 {
   setupUi( this );
 

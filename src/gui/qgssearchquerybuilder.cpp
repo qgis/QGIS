@@ -32,7 +32,8 @@
 
 QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer* layer,
     QWidget *parent, const Qt::WindowFlags& fl )
-    : QDialog( parent, fl ), mLayer( layer )
+    : QDialog( parent, fl )
+    , mLayer( layer )
 {
   setupUi( this );
   setupListViews();

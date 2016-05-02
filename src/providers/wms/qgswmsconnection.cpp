@@ -36,8 +36,8 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsWMSConnection::QgsWMSConnection( const QString& theConnName ) :
-    mConnName( theConnName )
+QgsWMSConnection::QgsWMSConnection( const QString& theConnName )
+    : mConnName( theConnName )
 {
   QgsDebugMsg( "theConnName = " + theConnName );
 

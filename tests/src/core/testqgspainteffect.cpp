@@ -48,7 +48,10 @@
 class DummyPaintEffect : public QgsPaintEffect
 {
   public:
-    DummyPaintEffect( const QString& prop1, const QString& prop2 ) : mProp1( prop1 ), mProp2( prop2 ) {}
+    DummyPaintEffect( const QString& prop1, const QString& prop2 )
+        : mProp1( prop1 )
+        , mProp2( prop2 )
+    {}
     virtual ~DummyPaintEffect() {}
     virtual QString type() const override { return "Dummy"; }
     virtual QgsPaintEffect* clone() const override { return new DummyPaintEffect( mProp1, mProp2 ); }

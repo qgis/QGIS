@@ -256,7 +256,13 @@ class QgsGPSData
 class QgsGPXHandler
 {
   public:
-    explicit QgsGPXHandler( QgsGPSData& data ) : mData( data ), mObj( nullptr ), mString( nullptr ), mDouble( nullptr ), mInt( nullptr ) { }
+    explicit QgsGPXHandler( QgsGPSData& data )
+        : mData( data )
+        , mObj( nullptr )
+        , mString( nullptr )
+        , mDouble( nullptr )
+        , mInt( nullptr )
+    { }
 
     /** This function is called when expat encounters a new start element in
         the XML stream. */

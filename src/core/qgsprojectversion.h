@@ -32,7 +32,11 @@ class CORE_EXPORT QgsProjectVersion
 
   public:
 
-    QgsProjectVersion() : mMajor( 0 ), mMinor( 0 ), mSub( 0 ) {}
+    QgsProjectVersion()
+        : mMajor( 0 )
+        , mMinor( 0 )
+        , mSub( 0 )
+    {}
     ~QgsProjectVersion() {}
     QgsProjectVersion( int major, int minor, int sub, const QString& name = "" );
     QgsProjectVersion( const QString& string );

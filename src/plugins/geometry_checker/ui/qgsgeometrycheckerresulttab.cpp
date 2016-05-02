@@ -38,7 +38,11 @@
 QString QgsGeometryCheckerResultTab::sSettingsGroup = "/geometry_checker/default_fix_methods/";
 
 QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface* iface, QgsGeometryChecker* checker, QgsFeaturePool *featurePool, QTabWidget* tabWidget, QWidget* parent )
-    : QWidget( parent ), mTabWidget( tabWidget ), mIface( iface ), mChecker( checker ), mFeaturePool( featurePool )
+    : QWidget( parent )
+    , mTabWidget( tabWidget )
+    , mIface( iface )
+    , mChecker( checker )
+    , mFeaturePool( featurePool )
 {
   ui.setupUi( this );
   mErrorCount = 0;

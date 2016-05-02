@@ -23,7 +23,8 @@
 #include "qgsosmimport.h"
 
 QgsOSMImportDialog::QgsOSMImportDialog( QWidget* parent )
-    : QDialog( parent ), mImport( new QgsOSMXmlImport )
+    : QDialog( parent )
+    , mImport( new QgsOSMXmlImport )
 {
   setupUi( this );
 

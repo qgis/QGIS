@@ -263,8 +263,11 @@ class QgsIdentifyResultsDialogMapLayerAction : public QAction
     Q_OBJECT
 
   public:
-    QgsIdentifyResultsDialogMapLayerAction( const QString &name, QObject *parent, QgsMapLayerAction* action, QgsMapLayer* layer, QgsFeature * f ) :
-        QAction( name, parent ), mAction( action ), mFeature( f ), mLayer( layer )
+    QgsIdentifyResultsDialogMapLayerAction( const QString &name, QObject *parent, QgsMapLayerAction* action, QgsMapLayer* layer, QgsFeature * f )
+        : QAction( name, parent )
+        , mAction( action )
+        , mFeature( f )
+        , mLayer( layer )
     {}
 
   public slots:

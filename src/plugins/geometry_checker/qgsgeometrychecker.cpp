@@ -25,7 +25,9 @@
 
 
 QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck*>& checks, QgsFeaturePool *featurePool )
-    : mChecks( checks ), mFeaturePool( featurePool ), mMergeAttributeIndex( -1 )
+    : mChecks( checks )
+    , mFeaturePool( featurePool )
+    , mMergeAttributeIndex( -1 )
 {
 }
 

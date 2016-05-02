@@ -176,20 +176,20 @@ void QgsRendererRangeV2::toSld( QDomDocument &doc, QDomElement &element, QgsStri
 int QgsRendererRangeV2LabelFormat::MaxPrecision = 15;
 int QgsRendererRangeV2LabelFormat::MinPrecision = -6;
 
-QgsRendererRangeV2LabelFormat::QgsRendererRangeV2LabelFormat():
-    mFormat( " %1 - %2 " ),
-    mPrecision( 4 ),
-    mTrimTrailingZeroes( false ),
-    mNumberScale( 1.0 ),
-    mNumberSuffix( "" ),
-    mReTrailingZeroes( "[.,]?0*$" ),
-    mReNegativeZero( "^\\-0(?:[.,]0*)?$" )
+QgsRendererRangeV2LabelFormat::QgsRendererRangeV2LabelFormat()
+    : mFormat( " %1 - %2 " )
+    , mPrecision( 4 )
+    , mTrimTrailingZeroes( false )
+    , mNumberScale( 1.0 )
+    , mNumberSuffix( "" )
+    , mReTrailingZeroes( "[.,]?0*$" )
+    , mReNegativeZero( "^\\-0(?:[.,]0*)?$" )
 {
 }
 
-QgsRendererRangeV2LabelFormat::QgsRendererRangeV2LabelFormat( const QString& format, int precision, bool trimTrailingZeroes ):
-    mReTrailingZeroes( "[.,]?0*$" ),
-    mReNegativeZero( "^\\-0(?:[.,]0*)?$" )
+QgsRendererRangeV2LabelFormat::QgsRendererRangeV2LabelFormat( const QString& format, int precision, bool trimTrailingZeroes )
+    : mReTrailingZeroes( "[.,]?0*$" )
+    , mReNegativeZero( "^\\-0(?:[.,]0*)?$" )
 {
   setFormat( format );
   setPrecision( precision );

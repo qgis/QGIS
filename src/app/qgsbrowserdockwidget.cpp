@@ -62,8 +62,8 @@ void QgsBrowserPropertiesWrapLabel::adjustHeight( QSizeF size )
   setMaximumHeight( height );
 }
 
-QgsBrowserPropertiesWidget::QgsBrowserPropertiesWidget( QWidget* parent ) :
-    QWidget( parent )
+QgsBrowserPropertiesWidget::QgsBrowserPropertiesWidget( QWidget* parent )
+    : QWidget( parent )
 {
 }
 
@@ -102,8 +102,8 @@ QgsBrowserPropertiesWidget* QgsBrowserPropertiesWidget::createWidget( QgsDataIte
   return propertiesWidget;
 }
 
-QgsBrowserLayerProperties::QgsBrowserLayerProperties( QWidget* parent ) :
-    QgsBrowserPropertiesWidget( parent )
+QgsBrowserLayerProperties::QgsBrowserLayerProperties( QWidget* parent )
+    : QgsBrowserPropertiesWidget( parent )
 {
   setupUi( this );
 
@@ -215,8 +215,8 @@ void QgsBrowserLayerProperties::setCondensedMode( bool condensedMode )
   }
 }
 
-QgsBrowserDirectoryProperties::QgsBrowserDirectoryProperties( QWidget* parent ) :
-    QgsBrowserPropertiesWidget( parent )
+QgsBrowserDirectoryProperties::QgsBrowserDirectoryProperties( QWidget* parent )
+    : QgsBrowserPropertiesWidget( parent )
     , mDirectoryWidget( nullptr )
 {
   setupUi( this );
@@ -236,8 +236,8 @@ void QgsBrowserDirectoryProperties::setItem( QgsDataItem* item )
   mLayout->addWidget( mDirectoryWidget );
 }
 
-QgsBrowserPropertiesDialog::QgsBrowserPropertiesDialog( const QString& settingsSection, QWidget* parent ) :
-    QDialog( parent )
+QgsBrowserPropertiesDialog::QgsBrowserPropertiesDialog( const QString& settingsSection, QWidget* parent )
+    : QDialog( parent )
     , mPropertiesWidget( nullptr )
     , mSettingsSection( settingsSection )
 {
@@ -262,8 +262,8 @@ void QgsBrowserPropertiesDialog::setItem( QgsDataItem* item )
   setWindowTitle( item->type() == QgsDataItem::Layer ? tr( "Layer Properties" ) : tr( "Directory Properties" ) );
 }
 
-QgsBrowserDockWidget::QgsBrowserDockWidget( const QString& name, QWidget * parent ) :
-    QDockWidget( parent )
+QgsBrowserDockWidget::QgsBrowserDockWidget( const QString& name, QWidget * parent )
+    : QDockWidget( parent )
     , mModel( nullptr )
     , mProxyModel( nullptr )
     , mPropertiesWidgetEnabled( false )

@@ -25,7 +25,8 @@
 //QgsComposerAttributeTableCompare
 
 QgsComposerAttributeTableCompare::QgsComposerAttributeTableCompare()
-    : mCurrentSortColumn( 0 ), mAscending( true )
+    : mCurrentSortColumn( 0 )
+    , mAscending( true )
 {
 }
 

@@ -38,13 +38,21 @@ namespace QgsVirtualLayerQueryParser
   {
     public:
       ColumnDef()
-          : mType( QVariant::Invalid ), mWkbType( QgsWKBTypes::Unknown ), mSrid( -1 )
+          : mType( QVariant::Invalid )
+          , mWkbType( QgsWKBTypes::Unknown )
+          , mSrid( -1 )
       {}
       ColumnDef( const QString& name, QgsWKBTypes::Type aWkbType, long aSrid )
-          : mName( name ), mType( QVariant::UserType ), mWkbType( aWkbType ), mSrid( aSrid )
+          : mName( name )
+          , mType( QVariant::UserType )
+          , mWkbType( aWkbType )
+          , mSrid( aSrid )
       {}
       ColumnDef( const QString& name, QVariant::Type aType )
-          : mName( name ), mType( aType ), mWkbType( QgsWKBTypes::NoGeometry ), mSrid( -1 )
+          : mName( name )
+          , mType( aType )
+          , mWkbType( QgsWKBTypes::NoGeometry )
+          , mSrid( -1 )
       {}
 
       QString name() const { return mName; }

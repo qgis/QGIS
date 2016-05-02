@@ -30,30 +30,30 @@
 #include <QUrl>
 
 
-QgsDelimitedTextFile::QgsDelimitedTextFile( const QString& url ) :
-    mFileName( QString() ),
-    mEncoding( "UTF-8" ),
-    mFile( nullptr ),
-    mStream( nullptr ),
-    mUseWatcher( true ),
-    mWatcher( nullptr ),
-    mDefinitionValid( false ),
-    mUseHeader( true ),
-    mDiscardEmptyFields( false ),
-    mTrimFields( false ),
-    mSkipLines( 0 ),
-    mMaxFields( 0 ),
-    mMaxNameLength( 200 ), // Don't want field names to be too unweildy!
-    mAnchoredRegexp( false ),
-    mLineNumber( -1 ),
-    mRecordLineNumber( -1 ),
-    mRecordNumber( -1 ),
-    mHoldCurrentRecord( false ),
-    mMaxRecordNumber( -1 ),
-    mMaxFieldCount( 0 ),
-    mDefaultFieldName( "field_%1" ),
+QgsDelimitedTextFile::QgsDelimitedTextFile( const QString& url )
+    : mFileName( QString() )
+    , mEncoding( "UTF-8" )
+    , mFile( nullptr )
+    , mStream( nullptr )
+    , mUseWatcher( true )
+    , mWatcher( nullptr )
+    , mDefinitionValid( false )
+    , mUseHeader( true )
+    , mDiscardEmptyFields( false )
+    , mTrimFields( false )
+    , mSkipLines( 0 )
+    , mMaxFields( 0 )
+    , mMaxNameLength( 200 ) // Don't want field names to be too unweildy!
+    , mAnchoredRegexp( false )
+    , mLineNumber( -1 )
+    , mRecordLineNumber( -1 )
+    , mRecordNumber( -1 )
+    , mHoldCurrentRecord( false )
+    , mMaxRecordNumber( -1 )
+    , mMaxFieldCount( 0 )
+    , mDefaultFieldName( "field_%1" )
     // field_ is optional in following regexp to simplify QgsDelimitedTextFile::fieldNumber()
-    mDefaultFieldRegexp( "^(?:field_)?(\\d+)$", Qt::CaseInsensitive )
+    , mDefaultFieldRegexp( "^(?:field_)?(\\d+)$", Qt::CaseInsensitive )
 {
   // The default type is CSV
   setTypeCSV();

@@ -87,8 +87,8 @@ extern "C"
 #define GRASS_UNLOCK sMutex.unlock();
 
 QgsGrassObject::QgsGrassObject( const QString& gisdbase, const QString& location,
-                                const QString& mapset, const QString& name, Type type ) :
-    mGisdbase( gisdbase )
+                                const QString& mapset, const QString& name, Type type )
+    : mGisdbase( gisdbase )
     , mLocation( location )
     , mMapset( mapset )
     , mName( name )

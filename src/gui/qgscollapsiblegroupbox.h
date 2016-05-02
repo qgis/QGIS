@@ -35,7 +35,10 @@ class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
 
   public:
     QgsGroupBoxCollapseButton( QWidget *parent = nullptr )
-        : QToolButton( parent ), mAltDown( false ), mShiftDown( false ) {}
+        : QToolButton( parent )
+        , mAltDown( false )
+        , mShiftDown( false )
+    {}
 
     ~QgsGroupBoxCollapseButton() {}
 

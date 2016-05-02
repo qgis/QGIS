@@ -34,10 +34,10 @@ QgsComposerNodesItem::QgsComposerNodesItem( QString tagName,
 QgsComposerNodesItem::QgsComposerNodesItem( QString tagName,
     QPolygonF polygon,
     QgsComposition* c )
-    : QgsComposerItem( c ),
-    mTagName( tagName ),
-    mSelectedNode( -1 ),
-    mDrawNodes( false )
+    : QgsComposerItem( c )
+    , mTagName( tagName )
+    , mSelectedNode( -1 )
+    , mDrawNodes( false )
 {
   const QRectF boundingRect = polygon.boundingRect();
   setSceneRect( boundingRect );

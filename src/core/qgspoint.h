@@ -118,7 +118,9 @@ class CORE_EXPORT QgsPoint
 {
   public:
     /// Default constructor
-    QgsPoint() : m_x( 0.0 ), m_y( 0.0 )
+    QgsPoint()
+        : m_x( 0.0 )
+        , m_y( 0.0 )
     {}
 
     /** Create a point from another point */
@@ -129,7 +131,8 @@ class CORE_EXPORT QgsPoint
      * @param y y coordinate
      */
     QgsPoint( double x, double y )
-        : m_x( x ), m_y( y )
+        : m_x( x )
+        , m_y( y )
     {}
 
     /** Create a point from a QPointF
@@ -137,7 +140,8 @@ class CORE_EXPORT QgsPoint
      * @note added in QGIS 2.7
      */
     QgsPoint( QPointF point )
-        : m_x( point.x() ), m_y( point.y() )
+        : m_x( point.x() )
+        , m_y( point.y() )
     {}
 
     /** Create a point from a QPoint
@@ -145,7 +149,8 @@ class CORE_EXPORT QgsPoint
      * @note added in QGIS 2.7
      */
     QgsPoint( QPoint point )
-        : m_x( point.x() ), m_y( point.y() )
+        : m_x( point.x() )
+        , m_y( point.y() )
     {}
 
     ~QgsPoint()
