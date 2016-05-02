@@ -1148,7 +1148,16 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry* geometry, QDomDocumen
   bool hasZValue = false;
 
   QgsConstWkbPtr wkbPtr( geometry->asWkb(), geometry->wkbSize() );
-  wkbPtr.readHeader();
+  try
+  {
+    wkbPtr.readHeader();
+  }
+  catch ( const QgsWkbException &e )
+  {
+    Q_UNUSED( e );
+    // WKB exception while reading header
+    return QDomElement();
+  }
 
   if ( gmlVersion != GML_2_1_2 )
   {
