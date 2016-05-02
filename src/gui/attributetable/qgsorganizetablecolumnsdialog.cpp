@@ -47,12 +47,12 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
   setupUi( this );
   if ( vl )
   {
-    QgsAttributeTableConfig config = vl->attributeTableConfig();
-    config.update( vl->fields() );
+    mConfig = vl->attributeTableConfig();
+    mConfig.update( vl->fields() );
 
     mFieldsList->clear();
 
-    Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig& columnConfig, config.columns() )
+    Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig& columnConfig, mConfig.columns() )
     {
       QListWidgetItem* item;
       if ( columnConfig.mType == QgsAttributeTableConfig::Action )
@@ -110,7 +110,7 @@ QgsAttributeTableConfig QgsOrganizeTableColumnsDialog::config() const
     columns.append( columnConfig );
   }
 
-  QgsAttributeTableConfig config;
+  QgsAttributeTableConfig config = mConfig;
   config.setColumns( columns );
   return config;
 }

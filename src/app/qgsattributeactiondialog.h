@@ -26,6 +26,7 @@ back to QgsVectorLayer.
 #include "ui_qgsattributeactiondialogbase.h"
 #include "qgsactionmanager.h"
 #include "qgsfield.h"
+#include "qgsattributetableconfig.h"
 #include <QMap>
 
 class APP_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDialogBase
@@ -48,11 +49,13 @@ class APP_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttrib
 
     ~QgsAttributeActionDialog() {}
 
-    void init( const QgsActionManager& action );
+    void init( const QgsActionManager& action , const QgsAttributeTableConfig& attributeTableConfig );
 
     QList<QgsAction> actions() const;
 
-    void apply();
+    bool showWidgetInAttributeTable() const;
+
+    QgsAttributeTableConfig::ActionWidgetStyle attributeTableWidgetStyle() const;
 
   private slots:
     void moveUp();

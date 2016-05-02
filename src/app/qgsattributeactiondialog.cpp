@@ -56,10 +56,10 @@ QgsAttributeActionDialog::QgsAttributeActionDialog( const QgsActionManager& acti
   connect( mAddButton, SIGNAL( clicked( bool ) ), this, SLOT( insert() ) );
   connect( mAddDefaultActionsButton, SIGNAL( clicked() ), this, SLOT( addDefaultActions() ) );
 
-  init( actions );
+  init( actions, mLayer->attributeTableConfig() );
 }
 
-void QgsAttributeActionDialog::init( const QgsActionManager& actions )
+void QgsAttributeActionDialog::init( const QgsActionManager& actions, const QgsAttributeTableConfig& attributeTableConfig )
 {
   // Start from a fresh slate.
   mAttributeActionTable->setRowCount( 0 );
@@ -72,6 +72,13 @@ void QgsAttributeActionDialog::init( const QgsActionManager& actions )
   }
 
   updateButtons();
+
+  QgsAttributeTableConfig::ColumnConfig visibleActionWidgetConfig = QgsAttributeTableConfig::ColumnConfig();
+  visibleActionWidgetConfig.mType = QgsAttributeTableConfig::Action;
+  visibleActionWidgetConfig.mHidden = false;
+
+  mShowInAttributeTable->setChecked( attributeTableConfig.actionWidgetVisible() );
+  mAttributeTableWidgetType->setCurrentIndex( attributeTableConfig.actionWidgetStyle() );
 }
 
 QList<QgsAction> QgsAttributeActionDialog::actions() const
@@ -84,6 +91,16 @@ QList<QgsAction> QgsAttributeActionDialog::actions() const
   }
 
   return actions;
+}
+
+bool QgsAttributeActionDialog::showWidgetInAttributeTable() const
+{
+  return mShowInAttributeTable->isChecked();
+}
+
+QgsAttributeTableConfig::ActionWidgetStyle QgsAttributeActionDialog::attributeTableWidgetStyle() const
+{
+  return static_cast<QgsAttributeTableConfig::ActionWidgetStyle>( mAttributeTableWidgetType->currentIndex() );
 }
 
 void QgsAttributeActionDialog::insertRow( int row, const QgsAction& action )

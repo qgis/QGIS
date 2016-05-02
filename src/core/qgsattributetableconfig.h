@@ -49,6 +49,15 @@ class CORE_EXPORT QgsAttributeTableConfig
       bool mHidden;  //!< Flag that controls if the column is hidden
     };
 
+    /**
+     * The style of the action widget in the attribute table.
+     */
+    enum ActionWidgetStyle
+    {
+      ButtonList,   //!< A list of buttons
+      DropDown      //!< A tool button with a dropdown to select the current action
+    };
+
     QgsAttributeTableConfig();
 
     /**
@@ -72,6 +81,26 @@ class CORE_EXPORT QgsAttributeTableConfig
     void update( const QgsFields& fields );
 
     /**
+     * Returns true if the action widget is visible
+     */
+    bool actionWidgetVisible() const;
+
+    /**
+     * Set if the action widget is visible
+     */
+    void setActionWidgetVisible( bool visible );
+
+    /**
+     * Get the style of the action widget
+     */
+    ActionWidgetStyle actionWidgetStyle() const;
+
+    /**
+     * Set the style of the action widget
+     */
+    void setActionWidgetStyle( const ActionWidgetStyle& actionWidgetStyle );
+
+    /**
      * Serialize to XML on layer save
      */
     void writeXml( QDomNode& node ) const;
@@ -81,8 +110,10 @@ class CORE_EXPORT QgsAttributeTableConfig
      */
     void readXml( const QDomNode& node );
 
+
   private:
     QVector<ColumnConfig> mColumns;
+    ActionWidgetStyle mActionWidgetStyle;
 };
 
 Q_DECLARE_METATYPE( QgsAttributeTableConfig::ColumnConfig )

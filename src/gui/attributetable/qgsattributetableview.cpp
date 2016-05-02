@@ -18,6 +18,7 @@
 #include <QHeaderView>
 #include <QMenu>
 #include <QToolButton>
+#include <QHBoxLayout>
 
 #include "qgsactionmanager.h"
 #include "qgsattributetableview.h"
@@ -122,6 +123,7 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel* filterModel 
 
   mActionWidget = createActionWidget( 0 );
   mActionWidget->setVisible( false );
+  updateActionImage( mActionWidget );
 }
 
 void QgsAttributeTableView::setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager )
@@ -137,10 +139,24 @@ void QgsAttributeTableView::setFeatureSelectionManager( QgsIFeatureSelectionMana
 
 QWidget* QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
 {
-  QToolButton* toolButton = new QToolButton( this );
-  toolButton->setPopupMode( QToolButton::MenuButtonPopup );
-
+  QgsAttributeTableConfig attributeTableConfig = mFilterModel->layer()->attributeTableConfig();
   QgsActionManager* actions = mFilterModel->layer()->actions();
+
+  QToolButton* toolButton = nullptr;
+  QWidget* container = nullptr;
+
+  if ( attributeTableConfig.actionWidgetStyle() == QgsAttributeTableConfig::DropDown )
+  {
+    toolButton  = new QToolButton( this );
+    toolButton->setPopupMode( QToolButton::MenuButtonPopup );
+    container = toolButton;
+  }
+  else
+  {
+    container = new QWidget( this );
+    container->setLayout( new QHBoxLayout() );
+    container->layout()->setMargin( 0 );
+  }
 
   for ( int i = 0; i < actions->size(); ++i )
   {
@@ -156,18 +172,27 @@ QWidget* QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
 
     connect( act, SIGNAL( triggered( bool ) ), this, SLOT( actionTriggered() ) );
 
-    toolButton->addAction( act );
+    if ( attributeTableConfig.actionWidgetStyle() == QgsAttributeTableConfig::DropDown )
+    {
+      toolButton->addAction( act );
 
-    if ( actions->defaultAction() == i )
-      toolButton->setDefaultAction( act );
+      if ( actions->defaultAction() == i )
+        toolButton->setDefaultAction( act );
+
+      container = toolButton;
+    }
+    else
+    {
+      QToolButton* btn = new QToolButton;
+      btn->setDefaultAction( act );
+      container->layout()->addWidget( btn );
+    }
   }
 
-  if ( !toolButton->actions().isEmpty() && actions->defaultAction() == -1 )
+  if ( toolButton && !toolButton->actions().isEmpty() && actions->defaultAction() == -1 )
     toolButton->setDefaultAction( toolButton->actions().first() );
 
-  updateActionImage( toolButton );
-
-  return toolButton;
+  return container;
 }
 
 void QgsAttributeTableView::closeEvent( QCloseEvent *e )
