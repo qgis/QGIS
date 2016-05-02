@@ -468,3 +468,13 @@ QModelIndex QgsAttributeTableFilterModel::mapFromSource( const QModelIndex& sour
 
   return index( proxyIndex.row(), mColumnMapping.indexOf( proxyIndex.column() ), proxyIndex.parent() );
 }
+
+Qt::ItemFlags QgsAttributeTableFilterModel::flags( const QModelIndex& index ) const
+{
+  // Handle the action column flags here, the master model doesn't know it
+  if ( mColumnMapping.at( index.column() ) == -1 )
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+
+  QModelIndex source_index = mapToSource( index );
+  return masterModel()->flags( source_index );
+}
