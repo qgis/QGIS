@@ -248,6 +248,7 @@ SET(QGIS_GUI_SRCS
   qgsnewmemorylayerdialog.cpp
   qgsnewnamedialog.cpp
   qgsnewvectorlayerdialog.cpp
+  qgsnewgeopackagelayerdialog.cpp
   qgsnumericsortlistviewitem.cpp
   qgsoptionsdialogbase.cpp
   qgsorderbydialog.cpp
@@ -387,6 +388,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsnewmemorylayerdialog.h
   qgsnewnamedialog.h
   qgsnewvectorlayerdialog.h
+  qgsnewgeopackagelayerdialog.h
   qgsoptionsdialogbase.h
   qgsorderbydialog.h
   qgsowssourceselect.h

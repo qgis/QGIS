@@ -254,7 +254,12 @@
 // GDAL/OGR includes
 //
 #include <ogr_api.h>
+#include <gdal_version.h>
 #include <proj_api.h>
+
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
+#define SUPPORT_GEOPACKAGE
+#endif
 
 //
 // Other includes
@@ -334,6 +339,7 @@ extern "C"
 #include <spatialite.h>
 }
 #include "qgsnewspatialitelayerdialog.h"
+#include "qgsnewgeopackagelayerdialog.h"
 
 #include "qgspythonutils.h"
 
@@ -1431,6 +1437,7 @@ void QgisApp::createActions()
 
   connect( mActionNewVectorLayer, SIGNAL( triggered() ), this, SLOT( newVectorLayer() ) );
   connect( mActionNewSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( newSpatialiteLayer() ) );
+  connect( mActionNewGeoPackageLayer, SIGNAL( triggered() ), this, SLOT( newGeoPackageLayer() ) );
   connect( mActionNewMemoryLayer, SIGNAL( triggered() ), this, SLOT( newMemoryLayer() ) );
   connect( mActionShowRasterCalculator, SIGNAL( triggered() ), this, SLOT( showRasterCalculator() ) );
   connect( mActionShowAlignRasterTool, SIGNAL( triggered() ), this, SLOT( showAlignRasterTool() ) );
@@ -1725,6 +1732,11 @@ void QgisApp::createMenus()
    * For Mac, About and Exit are also automatically moved by Qt to the Application menu.
    */
 
+  // Layer menu
+#ifndef SUPPORT_GEOPACKAGE
+  mNewLayerMenu->removeAction( mActionNewGeoPackageLayer );
+#endif
+
   // Panel and Toolbar Submenus
   mPanelMenu = new QMenu( tr( "Panels" ), this );
   mPanelMenu->setObjectName( "mPanelMenu" );
@@ -1980,6 +1992,9 @@ void QgisApp::createToolBars()
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionNewVectorLayer );
   bt->addAction( mActionNewSpatiaLiteLayer );
+#ifdef SUPPORT_GEOPACKAGE
+  bt->addAction( mActionNewGeoPackageLayer );
+#endif
   bt->addAction( mActionNewMemoryLayer );
 
   QAction* defNewLayerAction = mActionNewVectorLayer;
@@ -1994,6 +2009,11 @@ void QgisApp::createToolBars()
     case 2:
       defNewLayerAction = mActionNewMemoryLayer;
       break;
+#ifdef SUPPORT_GEOPACKAGE
+    case 3:
+      defNewLayerAction = mActionNewGeoPackageLayer;
+      break;
+#endif
   }
   bt->setDefaultAction( defNewLayerAction );
   QAction* newLayerAction = mLayerToolBar->addWidget( bt );
@@ -3668,10 +3688,10 @@ void QgisApp::loadOGRSublayers( const QString& layertype, const QString& uri, co
     }
 
     QString layerName = elements.value( 0 );
-    QString layerType = elements.value( 1 );
-    if ( layerType == "any" )
+    QString layerGeometryType = elements.value( 1 );
+    if ( layerGeometryType == "any" )
     {
-      layerType = "";
+      layerGeometryType = "";
       elements.removeAt( 1 );
     }
 
@@ -3684,16 +3704,17 @@ void QgisApp::loadOGRSublayers( const QString& layertype, const QString& uri, co
       composedURI = uri + "|layerindex=" + layerName;
     }
 
-    if ( !layerType.isEmpty() )
+    if ( !layerGeometryType.isEmpty() )
     {
-      composedURI += "|geometrytype=" + layerType;
+      composedURI += "|geometrytype=" + layerGeometryType;
     }
 
     // addVectorLayer( composedURI, list.at( i ), "ogr" );
 
     QgsDebugMsg( "Creating new vector layer using " + composedURI );
-    QString name = list.at( i );
-    name.replace( ':', ' ' );
+    QString name = layerName;
+    if ( !layerGeometryType.isEmpty() )
+      name += " " + layerGeometryType;
     QgsVectorLayer *layer = new QgsVectorLayer( composedURI, fileName + " " + name, "ogr", false );
     if ( layer && layer->isValid() )
     {
@@ -4364,6 +4385,12 @@ void QgisApp::newSpatialiteLayer()
 {
   QgsNewSpatialiteLayerDialog spatialiteDialog( this );
   spatialiteDialog.exec();
+}
+
+void QgisApp::newGeoPackageLayer()
+{
+  QgsNewGeoPackageLayerDialog dialog( this );
+  dialog.exec();
 }
 
 void QgisApp::showRasterCalculator()
@@ -11227,6 +11254,8 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( "/UI/defaultNewLayer", 1 );
   else if ( action == mActionNewMemoryLayer )
     settings.setValue( "/UI/defaultNewLayer", 2 );
+  else if ( action == mActionNewGeoPackageLayer )
+    settings.setValue( "/UI/defaultNewLayer", 3 );
   bt->setDefaultAction( action );
 }
 
