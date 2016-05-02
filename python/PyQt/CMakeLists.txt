@@ -1,5 +1,5 @@
-SET (QGIS_PYQT_DIR ${QGIS_DATA_DIR}/python/PyQt)
-SET (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
+SET (QGIS_PYQT_DIR ${PYTHON_SITE_PACKAGES_DIR}/qgis/PyQt)
+SET (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python/qgis/PyQt)
 
 SET(PYQT_COMPAT_FILES
   __init__.py
@@ -9,7 +9,15 @@ SET(PYQT_COMPAT_FILES
   QtPrintSupport.py
   QtWebKit.py
   QtWebKitWidgets.py
+  QtNetwork.py
+  QtXml.py
+  QtSql.py
+  QtTest.py
+  QtSvg.py
   Qsci.py
+  uic/__init__.py
+  uic/pyuic.py
+  uic/properties.py
 )
 
 ADD_CUSTOM_TARGET(pyqtcompat ALL)
@@ -21,16 +29,16 @@ ELSE(ENABLE_QT5)
 ENDIF(ENABLE_QT5)
 
 FOREACH(pyfile ${PYQT_COMPAT_FILES})
+  GET_FILENAME_COMPONENT(_dir ${pyfile} PATH)
   SET(pyfile ${PYQT_PREFIX}/${pyfile})
-  LIST(APPEND PYQT_COMPAT_FILES_PREFIXED ${pyfile})
   ADD_CUSTOM_COMMAND(TARGET pyqtcompat
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${PYTHON_OUTPUT_DIRECTORY}/PyQt
-    COMMAND ${CMAKE_COMMAND} -E copy ${pyfile} ${PYTHON_OUTPUT_DIRECTORY}/PyQt
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${PYTHON_OUTPUT_DIRECTORY}/${_dir}
+    COMMAND ${CMAKE_COMMAND} -E copy ${pyfile} ${PYTHON_OUTPUT_DIRECTORY}/${_dir}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     DEPENDS ${pyfile}
   )
+  INSTALL(FILES ${pyfile} DESTINATION "${QGIS_PYQT_DIR}/${_dir}")
 ENDFOREACH(pyfile)
-PY_COMPILE(pyqtcompat "${PYTHON_OUTPUT_DIRECTORY}/PyQt")
 
-INSTALL(FILES ${PYQT_COMPAT_FILES_PREFIXED} DESTINATION "${QGIS_PYQT_DIR}")
+PY_COMPILE(pyqtcompat "${PYTHON_OUTPUT_DIRECTORY}")
