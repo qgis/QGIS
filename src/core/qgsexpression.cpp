@@ -4288,7 +4288,7 @@ QVariant QgsExpression::NodeColumnRef::eval( QgsExpression *parent, const QgsExp
   if ( index < 0 )
   {
     // have not yet found field index - first check explicitly set fields collection
-    if ( context->hasVariable( QgsExpressionContext::EXPR_FIELDS ) )
+    if ( context && context->hasVariable( QgsExpressionContext::EXPR_FIELDS ) )
     {
       QgsFields fields = qvariant_cast<QgsFields>( context->variable( QgsExpressionContext::EXPR_FIELDS ) );
       index = fields.fieldNameIndex( mName );
