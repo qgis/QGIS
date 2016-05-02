@@ -252,6 +252,13 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="3">
+    <widget class="QCheckBox" name="mShowInAttributeTable">
+     <property name="text">
+      <string>Show in attribute table</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>

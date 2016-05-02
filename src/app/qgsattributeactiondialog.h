@@ -38,7 +38,8 @@ class APP_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttrib
       Description,
       ShortTitle,
       ActionText,
-      Capture
+      Capture,
+      ShowInAttributeTable
     };
 
   public:

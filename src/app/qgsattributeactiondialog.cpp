@@ -112,6 +112,12 @@ void QgsAttributeActionDialog::insertRow( int row, const QgsAction& action )
   item->setCheckState( action.capture() ? Qt::Checked : Qt::Unchecked );
   mAttributeActionTable->setItem( row, Capture, item );
 
+  // Capture output
+  item = new QTableWidgetItem();
+  item->setFlags( item->flags() & ~( Qt::ItemIsEditable ) );
+  item->setCheckState( action.showInAttributeTable() ? Qt::Checked : Qt::Unchecked );
+  mAttributeActionTable->setItem( row, ShowInAttributeTable, item );
+
   // Icon
   QIcon icon = action.icon();
   QTableWidgetItem* headerItem = new QTableWidgetItem( icon, "" );
@@ -190,6 +196,7 @@ QgsAction QgsAttributeActionDialog::rowToAction( int row ) const
                     mAttributeActionTable->item( row, ActionText )->text(),
                     mAttributeActionTable->verticalHeaderItem( row )->data( Qt::UserRole ).toString(),
                     mAttributeActionTable->item( row, Capture )->checkState() == Qt::Checked,
+                    mAttributeActionTable->item( row, ShowInAttributeTable )->checkState() == Qt::Checked,
                     mAttributeActionTable->item( row, ShortTitle )->text() );
   return action;
 }
@@ -290,6 +297,7 @@ void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem* item )
     mAttributeActionTable->verticalHeaderItem( row )->data( Qt::UserRole ).toString(),
     mAttributeActionTable->item( row, ActionText )->text(),
     mAttributeActionTable->item( row, Capture )->checkState() == Qt::Checked,
+    mAttributeActionTable->item( row, ShowInAttributeTable )->checkState() == Qt::Checked,
     mLayer
   );
 
@@ -303,6 +311,7 @@ void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem* item )
     mAttributeActionTable->item( row, ShortTitle )->setText( actionProperties.shortTitle() );
     mAttributeActionTable->item( row, ActionText )->setText( actionProperties.actionText() );
     mAttributeActionTable->item( row, Capture )->setCheckState( actionProperties.capture() ? Qt::Checked : Qt::Unchecked );
+    mAttributeActionTable->item( row, ShowInAttributeTable )->setCheckState( actionProperties.showInAttributeTable() ? Qt::Checked : Qt::Unchecked );
     mAttributeActionTable->verticalHeaderItem( row )->setData( Qt::UserRole, actionProperties.iconPath() );
     mAttributeActionTable->verticalHeaderItem( row )->setIcon( QIcon( actionProperties.iconPath() ) );
   }

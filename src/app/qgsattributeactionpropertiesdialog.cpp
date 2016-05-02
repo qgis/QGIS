@@ -27,7 +27,7 @@
 #include <QFileDialog>
 #include <QImageWriter>
 
-QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString& description, const QString& shortTitle, const QString& iconPath, const QString& actionText, bool capture, QgsVectorLayer* layer, QWidget* parent )
+QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString& description, const QString& shortTitle, const QString& iconPath, const QString& actionText, bool capture, bool showInAttributeTable, QgsVectorLayer* layer, QWidget* parent )
     : QDialog( parent )
     , mLayer( layer )
 {
@@ -40,6 +40,7 @@ QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsActio
   mIconPreview->setPixmap( QPixmap( iconPath ) );
   mActionText->setText( actionText );
   mCaptureOutput->setChecked( capture );
+  mShowInAttributeTable->setChecked( showInAttributeTable );
 
   // display the expression builder
   QgsExpressionContext context;
@@ -115,6 +116,11 @@ QString QgsAttributeActionPropertiesDialog::iconPath() const
 QString QgsAttributeActionPropertiesDialog::actionText() const
 {
   return mActionText->text();
+}
+
+bool QgsAttributeActionPropertiesDialog::showInAttributeTable() const
+{
+  return mShowInAttributeTable->isChecked();
 }
 
 bool QgsAttributeActionPropertiesDialog::capture() const
