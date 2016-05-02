@@ -291,10 +291,10 @@ bool QgsWFSSharedData::createCache()
   {
     QString sql;
 
-    sqlite3_exec( db, "PRAGMA synchronous=OFF", nullptr, nullptr, nullptr );
-    sqlite3_exec( db, "PRAGMA journal_mode=MEMORY", nullptr, nullptr, nullptr );
+    ( void )sqlite3_exec( db, "PRAGMA synchronous=OFF", nullptr, nullptr, nullptr );
+    ( void )sqlite3_exec( db, "PRAGMA journal_mode=MEMORY", nullptr, nullptr, nullptr );
 
-    sqlite3_exec( db, "BEGIN", nullptr, nullptr, nullptr );
+    ( void )sqlite3_exec( db, "BEGIN", nullptr, nullptr, nullptr );
 
     if ( !ogrWaySuccessfull )
     {
