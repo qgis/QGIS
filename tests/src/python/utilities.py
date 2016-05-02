@@ -18,8 +18,8 @@ import glob
 import platform
 import tempfile
 
-from PyQt.QtCore import QSize, QDir
-from PyQt.QtWidgets import QWidget
+from qgis.PyQt.QtCore import QSize, QDir
+from qgis.PyQt.QtWidgets import QWidget
 
 from qgis.core import (
     QgsApplication,

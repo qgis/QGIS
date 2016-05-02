@@ -36,18 +36,18 @@ from qgis.gui import (
     QgsFeatureListView
 )
 
-from PyQt.QtCore import (
+from qgis.PyQt.QtCore import (
     QTimer
 )
 
-from PyQt.QtWidgets import (
+from qgis.PyQt.QtWidgets import (
     QWidget,
     QToolButton,
     QTableView,
     QListView
 )
 
-from PyQt.QtGui import (
+from qgis.PyQt.QtGui import (
     QApplication
 )
 
