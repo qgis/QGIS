@@ -174,7 +174,7 @@ except ImportError:
         # TODO: Fixme, this creates an invalid variant, not a NULL one
         from PyQt5.QtCore import QVariant
         NULL = QVariant()
-    except ImportError:
+    except (ImportError, RuntimeError):
         pass
 
 
