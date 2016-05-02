@@ -66,7 +66,7 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
 
   mMapComboBox->setComposition( legend->composition() );
   mMapComboBox->setItemType( QgsComposerItem::ComposerMap );
-  connect( mMapComboBox, SIGNAL( itemChanged( const QgsComposerItem* ) ), this, SLOT( composerMapChanged( const QgsComposerItem* ) ) );
+  connect( mMapComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( composerMapChanged( QgsComposerItem* ) ) );
 
   //add widget for item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, legend );
@@ -549,7 +549,7 @@ void QgsComposerLegendWidget::on_mCheckBoxAutoUpdate_stateChanged( int state )
   }
 }
 
-void QgsComposerLegendWidget::composerMapChanged( const QgsComposerItem* item )
+void QgsComposerLegendWidget::composerMapChanged( QgsComposerItem* item )
 {
   if ( !mLegend )
   {
@@ -562,7 +562,7 @@ void QgsComposerLegendWidget::composerMapChanged( const QgsComposerItem* item )
     return;
   }
 
-  const QgsComposerMap* map = dynamic_cast< const QgsComposerMap* >( item );
+  QgsComposerMap* map = dynamic_cast< QgsComposerMap* >( item );
   if ( map )
   {
     mLegend->beginCommand( tr( "Legend map changed" ) );

@@ -54,7 +54,7 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void on_mResolutionSpinBox_valueChanged( const int value );
     void on_mPrintAsRasterCheckBox_toggled( bool state );
     void on_mGenerateWorldFileCheckBox_toggled( bool state );
-    void worldFileMapChanged( const QgsComposerItem* );
+    void worldFileMapChanged( QgsComposerItem* );
 
     void on_mGridResolutionSpinBox_valueChanged( double d );
     void on_mOffsetXSpinBox_valueChanged( double d );

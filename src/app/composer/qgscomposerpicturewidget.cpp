@@ -52,7 +52,7 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
   {
     mComposerMapComboBox->setComposition( mPicture->composition() );
     mComposerMapComboBox->setItemType( QgsComposerItem::ComposerMap );
-    connect( mComposerMapComboBox, SIGNAL( itemChanged( const QgsComposerItem* ) ), this, SLOT( composerMapChanged( const QgsComposerItem* ) ) );
+    connect( mComposerMapComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( composerMapChanged( QgsComposerItem* ) ) );
   }
 
   setGuiElementValues();
@@ -293,7 +293,7 @@ void QgsComposerPictureWidget::on_mRotationFromComposerMapCheckBox_stateChanged(
   mPicture->endCommand();
 }
 
-void QgsComposerPictureWidget::composerMapChanged( const QgsComposerItem* item )
+void QgsComposerPictureWidget::composerMapChanged( QgsComposerItem* item )
 {
   if ( !mPicture )
   {
@@ -307,7 +307,7 @@ void QgsComposerPictureWidget::composerMapChanged( const QgsComposerItem* item )
     return;
   }
 
-  const QgsComposerMap* composerMap = dynamic_cast< const QgsComposerMap*>( item );
+  QgsComposerMap* composerMap = dynamic_cast< QgsComposerMap*>( item );
   int id = composerMap ? composerMap->id() : -1;
   if ( !composerMap )
   {
