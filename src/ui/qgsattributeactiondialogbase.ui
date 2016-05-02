@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>609</width>
+    <width>653</width>
     <height>731</height>
    </rect>
   </property>
@@ -227,15 +227,15 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QComboBox" name="comboBox">
+       <widget class="QComboBox" name="mAttributeTableWidgetType">
         <item>
          <property name="text">
-          <string>Combo Box</string>
+          <string>Separate Buttons</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Separate Buttons</string>
+          <string>Combo Box</string>
          </property>
         </item>
        </widget>

@@ -47,6 +47,9 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
      * Get the updated configuration
      */
     QgsAttributeTableConfig config() const;
+
+  private:
+    QgsAttributeTableConfig mConfig;
 };
 
 #endif

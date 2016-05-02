@@ -82,6 +82,37 @@ void QgsAttributeTableConfig::update( const QgsFields& fields )
   }
 }
 
+bool QgsAttributeTableConfig::actionWidgetVisible() const
+{
+  Q_FOREACH ( const ColumnConfig& columnConfig, mColumns )
+  {
+    if ( columnConfig.mType == Action && columnConfig.mHidden == false )
+      return true;
+  }
+  return false;
+}
+
+void QgsAttributeTableConfig::setActionWidgetVisible( bool visible )
+{
+  for ( int i = 0; i < mColumns.size(); ++i )
+  {
+    if ( mColumns.at( i ).mType == Action )
+    {
+      mColumns[i].mHidden = !visible;
+    }
+  }
+}
+
+QgsAttributeTableConfig::ActionWidgetStyle QgsAttributeTableConfig::actionWidgetStyle() const
+{
+  return mActionWidgetStyle;
+}
+
+void QgsAttributeTableConfig::setActionWidgetStyle( const ActionWidgetStyle& actionWidgetStyle )
+{
+  mActionWidgetStyle = actionWidgetStyle;
+}
+
 
 void QgsAttributeTableConfig::readXml( const QDomNode& node )
 {
@@ -115,6 +146,11 @@ void QgsAttributeTableConfig::readXml( const QDomNode& node )
       mColumns.append( column );
     }
   }
+
+  if ( configNode.toElement().attribute( "actionWidgetStyle" ) == "buttonList" )
+    mActionWidgetStyle = ButtonList;
+  else
+    mActionWidgetStyle = DropDown;
 }
 
 void QgsAttributeTableConfig::writeXml( QDomNode& node ) const
@@ -122,6 +158,7 @@ void QgsAttributeTableConfig::writeXml( QDomNode& node ) const
   QDomDocument doc( node.ownerDocument() );
 
   QDomElement configElement  = doc.createElement( "attributetableconfig" );
+  configElement.setAttribute( "actionWidgetStyle", mActionWidgetStyle == ButtonList ? "buttonList" : "dropDown" );
 
   QDomElement columnsElement  = doc.createElement( "columns" );
 

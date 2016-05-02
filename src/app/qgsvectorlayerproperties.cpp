@@ -449,7 +449,7 @@ void QgsVectorLayerProperties::syncToLayer()
   // load appropriate symbology page (V1 or V2)
   updateSymbologyPage();
 
-  mActionDialog->init( *mLayer->actions() );
+  mActionDialog->init( *mLayer->actions(), mLayer->attributeTableConfig() );
 
   if ( labelingDialog )
     labelingDialog->adaptToLayer();
@@ -558,6 +558,21 @@ void QgsVectorLayerProperties::apply()
   {
     mLayer->actions()->addAction( action );
   }
+  QgsAttributeTableConfig attributeTableConfig = mLayer->attributeTableConfig();
+  attributeTableConfig.setActionWidgetStyle( mActionDialog->attributeTableWidgetStyle() );
+  QVector<QgsAttributeTableConfig::ColumnConfig> columns = attributeTableConfig.columns();
+
+  for ( int i = 0; i < columns.size(); ++i )
+  {
+    if ( columns.at( i ).mType == QgsAttributeTableConfig::Action )
+    {
+      columns[i].mHidden = !mActionDialog->showWidgetInAttributeTable();
+    }
+  }
+
+  attributeTableConfig.setColumns( columns );
+
+  mLayer->setAttributeTableConfig( attributeTableConfig );
 
   Q_NOWARN_DEPRECATED_PUSH
   if ( mOptsPage_LabelsOld )
