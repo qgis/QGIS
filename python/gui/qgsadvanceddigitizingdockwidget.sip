@@ -104,8 +104,10 @@ class QgsAdvancedDigitizingDockWidget : QDockWidget
 
         /**
          * Set the value of the constraint
+         * @param value new value for constraint
+         * @param updateWidget set to false to prevent automatically updating the associated widget's value
          */
-        void setValue( double value );
+        void setValue( double value, bool updateWidget = true );
 
         /**
          * Toggle lock mode

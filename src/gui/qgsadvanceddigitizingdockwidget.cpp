@@ -29,6 +29,7 @@
 #include "qgsmessagebaritem.h"
 #include "qgspoint.h"
 #include "qgslinestringv2.h"
+#include "qgsfocuswatcher.h"
 
 struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
 {
@@ -138,6 +139,19 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   connect( mDistanceLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
   connect( mXLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
   connect( mYLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
+  connect( mAngleLineEdit, SIGNAL( textEdited( QString ) ), this, SLOT( constraintTextEdited( QString ) ) );
+  connect( mDistanceLineEdit, SIGNAL( textEdited( QString ) ), this, SLOT( constraintTextEdited( QString ) ) );
+  connect( mXLineEdit, SIGNAL( textEdited( QString ) ), this, SLOT( constraintTextEdited( QString ) ) );
+  connect( mYLineEdit, SIGNAL( textEdited( QString ) ), this, SLOT( constraintTextEdited( QString ) ) );
+  //also watch for focus out events on these widgets
+  QgsFocusWatcher* angleWatcher = new QgsFocusWatcher( mAngleLineEdit );
+  connect( angleWatcher, SIGNAL( focusOut() ), this, SLOT( constraintFocusOut() ) );
+  QgsFocusWatcher* distanceWatcher = new QgsFocusWatcher( mDistanceLineEdit );
+  connect( distanceWatcher, SIGNAL( focusOut() ), this, SLOT( constraintFocusOut() ) );
+  QgsFocusWatcher* xWatcher = new QgsFocusWatcher( mXLineEdit );
+  connect( xWatcher, SIGNAL( focusOut() ), this, SLOT( constraintFocusOut() ) );
+  QgsFocusWatcher* yWatcher = new QgsFocusWatcher( mYLineEdit );
+  connect( yWatcher, SIGNAL( focusOut() ), this, SLOT( constraintFocusOut() ) );
 
   // config menu
   QMenu *menu = new QMenu( this );
@@ -300,9 +314,8 @@ void QgsAdvancedDigitizingDockWidget::emit pointChanged()
 }
 #endif
 
-void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default true */ )
+QgsAdvancedDigitizingDockWidget::CadConstraint* QgsAdvancedDigitizingDockWidget::objectToConstraint( const QObject* obj ) const
 {
-  QObject* obj = sender();
   CadConstraint* constraint = nullptr;
   if ( obj == mAngleLineEdit || obj == mLockAngleButton )
   {
@@ -320,6 +333,53 @@ void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default t
   {
     constraint = mYConstraint;
   }
+  return constraint;
+}
+
+double QgsAdvancedDigitizingDockWidget::parseUserInput( const QString& inputValue, bool& ok ) const
+{
+  ok = false;
+  double value = inputValue.toDouble( &ok );
+  if ( ok )
+  {
+    return value;
+  }
+  else
+  {
+    // try to evalute expression
+    QgsExpression expr( inputValue );
+    QVariant result = expr.evaluate();
+    if ( expr.hasEvalError() )
+      ok = false;
+    else
+      value = result.toDouble( &ok );
+    return value;
+  }
+}
+
+void QgsAdvancedDigitizingDockWidget::updateConstraintValue( CadConstraint* constraint, const QString& textValue, bool convertExpression )
+{
+  if ( !constraint || textValue.isEmpty() )
+  {
+    return;
+  }
+
+  if ( constraint->lockMode() == CadConstraint::NoLock )
+    return;
+
+  bool ok;
+  double value = parseUserInput( textValue, ok );
+  if ( !ok )
+    return;
+
+  constraint->setValue( value, convertExpression );
+  // run a fake map mouse event to update the paint item
+  emit pointChanged( mCadPointList.value( 0 ) );
+}
+
+void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default true */ )
+{
+  CadConstraint* constraint = objectToConstraint( sender() );
   if ( !constraint )
   {
     return;
@@ -328,28 +388,17 @@ void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default t
   if ( activate )
   {
     QString textValue = constraint->lineEdit()->text();
-    bool ok;
-    double value = textValue.toDouble( &ok );
     if ( !textValue.isEmpty() )
     {
+      bool ok;
+      double value = parseUserInput( textValue, ok );
       if ( ok )
       {
         constraint->setValue( value );
       }
       else
       {
-        // try to evalute expression
-        QgsExpression expr( textValue );
-        QVariant result = expr.evaluate();
-        value = result.toDouble( &ok );
-        if ( expr.hasEvalError() || !ok )
-        {
-          activate = false;
-        }
-        else
-        {
-          constraint->setValue( value );
-        }
+        activate = false;
       }
     }
     else
@@ -370,6 +419,32 @@ void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default t
     // run a fake map mouse event to update the paint item
     emit pointChanged( mCadPointList.value( 0 ) );
   }
+}
+
+void QgsAdvancedDigitizingDockWidget::constraintTextEdited( const QString& textValue )
+{
+  CadConstraint* constraint = objectToConstraint( sender() );
+  if ( !constraint )
+  {
+    return;
+  }
+
+  updateConstraintValue( constraint, textValue, false );
+}
+
+void QgsAdvancedDigitizingDockWidget::constraintFocusOut()
+{
+  QLineEdit* lineEdit = qobject_cast< QLineEdit* >( sender()->parent() );
+  if ( !lineEdit )
+    return;
+
+  CadConstraint* constraint = objectToConstraint( lineEdit );
+  if ( !constraint )
+  {
+    return;
+  }
+
+  updateConstraintValue( constraint, lineEdit->text(), true );
 }
 
 void QgsAdvancedDigitizingDockWidget::lockAdditionalConstraint( AdditionalConstraint constraint )
@@ -1169,10 +1244,11 @@ void QgsAdvancedDigitizingDockWidget::CadConstraint::setRelative( bool relative 
   }
 }
 
-void QgsAdvancedDigitizingDockWidget::CadConstraint::setValue( double value )
+void QgsAdvancedDigitizingDockWidget::CadConstraint::setValue( double value, bool updateWidget )
 {
   mValue = value;
-  mLineEdit->setText( QString::number( value, 'f' ) );
+  if ( updateWidget )
+    mLineEdit->setText( QString::number( value, 'f' ) );
 }
 
 void QgsAdvancedDigitizingDockWidget::CadConstraint::toggleLocked()
