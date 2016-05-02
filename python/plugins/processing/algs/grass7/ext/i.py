@@ -45,7 +45,7 @@ def multipleOutputDir(alg, field, basename=None):
     # Otherwise, export everything
     else:
         commands = ["for r in $(g.list type=rast); do".format(basename)]
-    commands.append("  r.out.gdal -c -t input=${{r}} output={}/${{r}}.tif createopt=\"TFW=YES,COMPRESS=LZW\"".format(outputDir))
+    commands.append("  r.out.gdal -c -t -f input=${{r}} output={}/${{r}}.tif createopt=\"TFW=YES,COMPRESS=LZW\"".format(outputDir))
     commands.append("done")
     alg.commands.extend(commands)
     alg.outputCommands.extend(commands)
@@ -160,7 +160,7 @@ def exportInputRasters(alg, rasterDic):
     for inputName, outputName in rasterDic.iteritems():
         inputRaster = alg.getParameterValue(inputName)
         outputRaster = alg.getOutputFromName(outputName)
-        command = 'r.out.gdal -c -t --overwrite createopt="TFW=YES,COMPRESS=LZW" input={} output=\"{}\"'.format(
+        command = 'r.out.gdal -c -t -f --overwrite createopt="TFW=YES,COMPRESS=LZW" input={} output=\"{}\"'.format(
             alg.exportedLayers[inputRaster],
             outputRaster.value
         )
