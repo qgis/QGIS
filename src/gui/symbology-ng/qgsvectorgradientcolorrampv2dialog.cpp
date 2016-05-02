@@ -88,36 +88,33 @@ QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVecto
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/GradientEditor/geometry" ).toByteArray() );
 
-  // mPlot->setCanvasBackground( Qt::white );
+  mPlot->setFrameStyle( QFrame::NoFrame );
+  mPlot->canvas()->setFrameStyle( QFrame::NoFrame );
   mPlot->setAxisScale( QwtPlot::yLeft, 0.0, 1.0 );
-// mPlot->insertLegend( new QwtLegend() );
   mPlot->enableAxis( QwtPlot::yLeft, false );
 
   mLightnessCurve = new QwtPlotCurve();
   mLightnessCurve->setTitle( "Lightness" );
-  mLightnessCurve->setPen( QPen( Qt::black, 0.0 ) ),
+  mLightnessCurve->setPen( QPen( QColor( 70, 150, 255 ), 0.0 ) ),
   mLightnessCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
 
-// QwtSymbol symbol( QwtSymbol::Ellipse,
-  //QBrush( Qt::yellow ), QPen( Qt::red, 1 ), QSize( 8, 8 ) );
-  //mLightnessCurve->setSymbol( symbol );
   mLightnessCurve->attach( mPlot );
 
   mHueCurve = new QwtPlotCurve();
   mHueCurve->setTitle( "Hue" );
-  mHueCurve->setPen( QPen( Qt::red, 0.0 ) ),
+  mHueCurve->setPen( QPen( QColor( 255, 215, 70 ), 0.0 ) ),
   mHueCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mHueCurve->attach( mPlot );
 
   mSaturationCurve = new QwtPlotCurve();
   mSaturationCurve->setTitle( "Saturation" );
-  mSaturationCurve->setPen( QPen( Qt::blue, 0.0 ) ),
+  mSaturationCurve->setPen( QPen( QColor( 255, 70, 150 ), 0.0 ) ),
   mSaturationCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mSaturationCurve->attach( mPlot );
 
   mAlphaCurve = new QwtPlotCurve();
   mAlphaCurve->setTitle( "Alpha" );
-  mAlphaCurve->setPen( QPen( Qt::gray, 0.0 ) ),
+  mAlphaCurve->setPen( QPen( QColor( 50, 50, 50 ), 0.0 ) ),
   mAlphaCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mAlphaCurve->attach( mPlot );
 
