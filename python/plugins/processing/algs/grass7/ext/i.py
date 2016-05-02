@@ -27,6 +27,8 @@ __revision__ = '$Format:%H$'
 
 from processing.core.parameters import ParameterRaster, getParameterFromString
 from processing.tools.system import isWindows
+from ..Grass7Utils import Grass7Utils
+from os import path
 
 
 def multipleOutputDir(alg, field, basename=None):
@@ -92,9 +94,12 @@ def orderedInput(alg, inputParameter, targetParameterDef):
     return rootFilename
 
 
-def regroupRasters(alg, field, groupField, subgroupField=None):
+def regroupRasters(alg, field, groupField, subgroupField=None, sigsetField=None):
     """
     Group multiple input rasters into a group
+    * If there is a subgroupField, a subgroup will automatically created.
+    * When a sigset file is provided, the file is copied into the sigset
+      directory of the subgroup.
     """
     # List of rasters names
     rasters = alg.getParameterFromName(field)
@@ -118,6 +123,19 @@ def regroupRasters(alg, field, groupField, subgroupField=None):
     )
     alg.commands.append(command)
 
+    # If there is a sigset and a subgroupField, we copy the sigset file
+    if subgroupField and sigsetField:
+        sigsetFile = alg.getParameterValue(sigsetField)
+        shortSigsetFile = path.basename(sigsetFile)
+        if sigsetFile:
+            interSigsetFile = path.join(Grass7Utils.grassMapsetFolder(),
+                                        'PERMANENT',
+                                        'group', group.value,
+                                        'subgroup', subgroup.value,
+                                        'sigset', shortSigsetFile)
+            copyFile(alg, sigsetFile, interSigsetFile)
+            alg.setParameterValue(sigsetField, shortSigsetFile)
+
     # modify parameters values
     alg.processCommand()
 
@@ -127,8 +145,6 @@ def regroupRasters(alg, field, groupField, subgroupField=None):
     alg.parameters.remove(group)
     if subgroupField:
         alg.parameters.remove(subgroup)
-
-    if subgroupField:
         return group.value, subgroup.value
 
     return group.value
@@ -176,10 +192,32 @@ def file2Output(alg, output):
     return outputFile
 
 
+def createDestDir(alg, toFile):
+    """ Generates an mkdir command for GRASS7 script """
+    # Creates the destination directory
+    command = "{} {}".format(
+        "MD" if isWindows() else "mkdir -p",
+        path.dirname(toFile)
+    )
+    alg.commands.append(command)
+
+
 def moveFile(alg, fromFile, toFile):
-    # move the file
-    if isWindows():
-        command = "MOVE /Y {} {}".format(fromFile, toFile)
-    else:
-        command = "mv -f {} {}".format(fromFile, toFile)
+    """ Generates a move command for GRASS7 script """
+    createDestDir(alg, toFile)
+    command = "{} {} {}".format(
+        "MOVE /Y" if isWindows() else "mv -f",
+        fromFile,
+        toFile
+    )
+    alg.commands.append(command)
+
+
+def copyFile(alg, fromFile, toFile):
+    """ Generates a copy command for GRASS7 script """
+    createDestDir(alg, toFile)
+    command = "{} {} {}".format(
+        "COPY /Y" if isWindows() else "cp -f",
+        fromFile,
+        toFile)
     alg.commands.append(command)
