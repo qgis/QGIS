@@ -118,7 +118,7 @@ def regroupRasters(alg, field, groupField, subgroupField=None, sigsetField=None)
 
     command = 'i.group group={}{} input={}'.format(
         group.value,
-        ' subgroup={}'.format(subgroup.value) if subgroup else '',
+        ' subgroup={}'.format(subgroup.value) if subgroupField else '',
         ','.join([alg.exportedLayers[f] for f in rastersList])
     )
     alg.commands.append(command)
