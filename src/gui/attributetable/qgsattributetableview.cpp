@@ -146,6 +146,9 @@ QWidget* QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
   {
     const QgsAction& action = actions->at( i );
 
+    if ( !action.showInAttributeTable() )
+      continue;
+
     QAction* act = new QAction( action.icon(), action.shortTitle().isEmpty() ? action.name() : action.shortTitle(), toolButton );
     act->setToolTip( action.name() );
     act->setData( i );

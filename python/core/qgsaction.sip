@@ -56,6 +56,18 @@ class QgsAction
      */
     QgsAction( ActionType type, const QString& description, const QString& action, const QString& icon, bool capture, const QString& shortTitle = QString() );
 
+    /**
+     * Create a new QgsAction
+     *
+     * @param type                 The type of this action
+     * @param description          A human readable description string
+     * @param action               The action text. Its interpretation depends on the type
+     * @param icon                 Path to an icon for this action
+     * @param capture              If this is set to true, the output will be captured when an action is run
+     * @param showInAttributeTable If this is false, the action will be hidden on the attribute table action widget
+     * @param shortTitle           A short string used to label user interface elements like buttons
+     */
+    QgsAction( ActionType type, const QString& description, const QString& action, const QString& icon, bool capture, bool showInAttributeTable, const QString& shortTitle = QString() );
 
     //! The name of the action. This may be a longer description.
     QString name() const;
@@ -77,6 +89,9 @@ class QgsAction
 
     //! Whether to capture output for display when this action is run
     bool capture() const;
+
+    //! Wheter this action should be shown on the attribute table
+    bool showInAttributeTable() const;
 
     //! Whether the action is runable on the current platform
     bool runable() const;
