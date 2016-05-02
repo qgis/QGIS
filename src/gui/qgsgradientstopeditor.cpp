@@ -133,6 +133,21 @@ void QgsGradientStopEditor::paintEvent( QPaintEvent *event )
 
 void QgsGradientStopEditor::selectStop( int index )
 {
+  if ( index > 0 && index < mGradient.count() - 1 )
+  {
+    // need to map original stop index across to cached, possibly out of order stop index
+    QgsGradientStop selectedStop = mGradient.stops().at( index - 1 );
+    index = 1;
+    Q_FOREACH ( const QgsGradientStop& stop, mStops )
+    {
+      if ( stop == selectedStop )
+      {
+        break;
+      }
+      index++;
+    }
+  }
+
   mSelectedStop = index;
   emit selectedStopChanged( selectedStop() );
   update();
@@ -266,7 +281,7 @@ int QgsGradientStopEditor::findClosestStop( int x, int threshold ) const
   // otherwise it's impossible to select a stop which sits above the first/last stop, making
   // it impossible to move or delete these
   int i = 1;
-  Q_FOREACH ( const QgsGradientStop& stop, mStops )
+  Q_FOREACH ( const QgsGradientStop& stop, mGradient.stops() )
   {
     currentDiff = qAbs( relativePositionToPoint( stop.offset ) + 1 - x );
     if (( threshold < 0 || currentDiff < threshold ) && currentDiff < closestDiff )

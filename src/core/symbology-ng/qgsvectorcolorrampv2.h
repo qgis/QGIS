@@ -81,6 +81,11 @@ class CORE_EXPORT QgsGradientStop
     double offset;
     //! Gradient color at stop
     QColor color;
+
+    bool operator==( const QgsGradientStop& other ) const
+    {
+      return other.color == color && qgsDoubleNear( other.offset, offset );
+    }
 };
 
 //! List of gradient stops

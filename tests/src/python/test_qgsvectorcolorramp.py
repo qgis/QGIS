@@ -26,6 +26,14 @@ from qgis.testing import unittest
 class PyQgsVectorColorRamp(unittest.TestCase):
 
     def testQgsVectorGradientRampV2(self):
+        # test QgsGradientStop
+        stop = QgsGradientStop(0.9, QColor(200, 150, 100))
+        self.assertEqual(stop.offset, 0.9)
+        self.assertEqual(stop.color, QColor(200, 150, 100))
+        self.assertEqual(QgsGradientStop(0.1, QColor(180, 20, 30)), QgsGradientStop(0.1, QColor(180, 20, 30)))
+        self.assertNotEqual(QgsGradientStop(0.1, QColor(180, 20, 30)), QgsGradientStop(0.2, QColor(180, 20, 30)))
+        self.assertNotEqual(QgsGradientStop(0.1, QColor(180, 20, 30)), QgsGradientStop(0.1, QColor(180, 40, 30)))
+
         # test gradient with only start/end color
         r = QgsVectorGradientColorRampV2(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
         self.assertEqual(r.type(), 'gradient')
