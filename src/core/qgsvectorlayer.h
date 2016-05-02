@@ -1325,7 +1325,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**
      * Returns the alias of an attribute name or a null string if there is no alias.
      *
-     * @see {@attributeDisplayName( int attributeIndex )} which returns the field name
+     * @see {attributeDisplayName( int attributeIndex )} which returns the field name
      *      if no alias is defined.
      */
     QString attributeAlias( int attributeIndex ) const;

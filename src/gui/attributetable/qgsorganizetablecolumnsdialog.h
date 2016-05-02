@@ -33,7 +33,6 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
     /**
      * Constructor
      * @param vl The concerned vector layer
-     * @param visible the current list of visible fields name
      * @param parent parent object
      * @param flags window flags
      */
