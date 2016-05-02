@@ -38,6 +38,9 @@ class QgsLabelingWidget : public QWidget, private Ui::QgsLabelingWidget
     QgsMapCanvas* mCanvas;
 
     QWidget* mWidget;
+
+    //! Delete the child widget
+    void deleteWidget();
 };
 
 #endif // QGSLABELINGWIDGET_H
