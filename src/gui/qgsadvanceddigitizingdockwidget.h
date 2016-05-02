@@ -89,6 +89,12 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
           HardLock
         };
 
+        /** Constructor for CadConstraint.
+         * @param lineEdit associated line edit for constraint value
+         * @param lockerButton associated button for locking constraint
+         * @param relativeButton optional button for toggling relative constraint mode
+         * @param repeatingLockButton optional button for toggling repeating lock mode
+         */
         CadConstraint( QLineEdit* lineEdit, QToolButton* lockerButton, QToolButton* relativeButton = nullptr, QToolButton* repeatingLockButton = nullptr )
             : mLineEdit( lineEdit )
             , mLockerButton( lockerButton )
@@ -413,6 +419,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     double parseUserInput( const QString& inputValue, bool& ok ) const;
 
     /** Updates a constraint value based on a text input.
+     * @param constraint constraint to update
      * @param textValue user entered text value, may be an expression
      * @param convertExpression set to true to update widget contents to calculated expression value
      */

@@ -67,6 +67,12 @@ class QgsAdvancedDigitizingDockWidget : QDockWidget
           HardLock
         };
 
+        /** Constructor for CadConstraint.
+         * @param lineEdit associated line edit for constraint value
+         * @param lockerButton associated button for locking constraint
+         * @param relativeButton optional button for toggling relative constraint mode
+         * @param repeatingLockButton optional button for toggling repeating lock mode
+         */
         CadConstraint( QLineEdit* lineEdit, QToolButton* lockerButton, QToolButton* relativeButton = nullptr, QToolButton* repeatingLockButton = nullptr );
 
         /**
