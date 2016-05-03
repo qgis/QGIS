@@ -57,6 +57,7 @@
 %Include qgsgml.sip
 %Include qgsgmlschema.sip
 %Include qgshistogram.sip
+%Include qgsjsonutils.sip
 %Include qgsmaptopixelgeometrysimplifier.sip
 %Include qgstransaction.sip
 %Include qgstransactiongroup.sip
