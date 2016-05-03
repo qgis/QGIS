@@ -190,39 +190,39 @@ class ParameterFileTest(unittest.TestCase):
     def testSetValue(self):
         parameter = ParameterFile('myName', 'myDesc')
         self.assertTrue(parameter.setValue('myFile.png'))
-        self.assertEquals(parameter.value, 'myFile.png')
+        self.assertEqual(parameter.value, 'myFile.png')
 
     def testOptional(self):
         optionalParameter = ParameterFile('myName', 'myDesc', optional=True)
         self.assertTrue(optionalParameter.setValue('myFile.png'))
-        self.assertEquals(optionalParameter.value, 'myFile.png')
+        self.assertEqual(optionalParameter.value, 'myFile.png')
 
         self.assertTrue(optionalParameter.setValue(""))
-        self.assertEquals(optionalParameter.value, '')
+        self.assertEqual(optionalParameter.value, '')
 
         self.assertTrue(optionalParameter.setValue(None))
-        self.assertEquals(optionalParameter.value, None)
+        self.assertEqual(optionalParameter.value, None)
 
         requiredParameter = ParameterFile('myName', 'myDesc', optional=False)
         self.assertTrue(requiredParameter.setValue('myFile.png'))
-        self.assertEquals(requiredParameter.value, 'myFile.png')
+        self.assertEqual(requiredParameter.value, 'myFile.png')
 
         self.assertFalse(requiredParameter.setValue(''))
-        self.assertEquals(requiredParameter.value, 'myFile.png')
+        self.assertEqual(requiredParameter.value, 'myFile.png')
 
         self.assertFalse(requiredParameter.setValue('  '))
-        self.assertEquals(requiredParameter.value, 'myFile.png')
+        self.assertEqual(requiredParameter.value, 'myFile.png')
 
         self.assertFalse(requiredParameter.setValue(None))
-        self.assertEquals(requiredParameter.value, 'myFile.png')
+        self.assertEqual(requiredParameter.value, 'myFile.png')
 
     def testSetValueWithExtension(self):
         parameter = ParameterFile('myName', 'myDesc', ext="png")
         self.assertTrue(parameter.setValue('myFile.png'))
-        self.assertEquals(parameter.value, 'myFile.png')
+        self.assertEqual(parameter.value, 'myFile.png')
 
         self.assertFalse(parameter.setValue('myFile.bmp'))
-        self.assertEquals(parameter.value, 'myFile.png')
+        self.assertEqual(parameter.value, 'myFile.png')
 
     def testGetValueAsCommandLineParameter(self):
         parameter = ParameterFile('myName', 'myDesc')
@@ -237,13 +237,13 @@ class TestParameterFixedTable(unittest.TestCase):
             ['a0', 'a1', 'a2'],
             ['b0', 'b1', 'b2']
         ]
-        self.assertEquals(ParameterFixedTable.tableToString(table), 'a0,a1,a2,b0,b1,b2')
+        self.assertEqual(ParameterFixedTable.tableToString(table), 'a0,a1,a2,b0,b1,b2')
 
         table = [['a0']]
-        self.assertEquals(ParameterFixedTable.tableToString(table), 'a0')
+        self.assertEqual(ParameterFixedTable.tableToString(table), 'a0')
 
         table = [[]]
-        self.assertEquals(ParameterFixedTable.tableToString(table), '')
+        self.assertEqual(ParameterFixedTable.tableToString(table), '')
 
     def testSetStringValue(self):
         parameter = ParameterFixedTable('myName', 'myDesc')
@@ -345,7 +345,7 @@ class ParameterNumberTest(unittest.TestCase):
     def testSetValue(self):
         parameter = ParameterNumber('myName', 'myDescription')
         self.assertTrue(parameter.setValue(5))
-        self.assertEquals(parameter.value, 5)
+        self.assertEqual(parameter.value, 5)
 
     def testSetValueOnlyValidNumbers(self):
         parameter = ParameterNumber('myName', 'myDescription')

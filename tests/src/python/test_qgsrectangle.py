@@ -163,7 +163,7 @@ class TestQgsRectangle(unittest.TestCase):
         myResult = rect1.toString()
         myMessage = ('Expected: %s\nGot: %s\n' %
                      (myExpectedResult, myResult))
-        self.assertEquals(myResult, myExpectedResult, myMessage)
+        self.assertEqual(myResult, myExpectedResult, myMessage)
 
         rect1 = QgsRectangle(0.0, 0.0, 5.0, 5.0)
         rect1.unionRect(rect2)

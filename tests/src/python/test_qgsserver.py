@@ -315,7 +315,7 @@ class TestQgsServer(unittest.TestCase):
         }
         qs = '&'.join([u"%s=%s" % (k, v) for k, v in parms.iteritems()])
         h, r = self.server.handleRequest(qs)
-        self.assertEquals(-1, h.find('Content-Type: text/xml; charset=utf-8'), "Header: %s\nResponse:\n%s" % (h, r))
+        self.assertEqual(-1, h.find('Content-Type: text/xml; charset=utf-8'), "Header: %s\nResponse:\n%s" % (h, r))
         self.assertNotEquals(-1, h.find('Content-Type: image/png'), "Header: %s\nResponse:\n%s" % (h, r))
 
 
