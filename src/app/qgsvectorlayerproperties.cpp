@@ -559,6 +559,7 @@ void QgsVectorLayerProperties::apply()
     mLayer->actions()->addAction( action );
   }
   QgsAttributeTableConfig attributeTableConfig = mLayer->attributeTableConfig();
+  attributeTableConfig.update( mLayer->fields() );
   attributeTableConfig.setActionWidgetStyle( mActionDialog->attributeTableWidgetStyle() );
   QVector<QgsAttributeTableConfig::ColumnConfig> columns = attributeTableConfig.columns();
 

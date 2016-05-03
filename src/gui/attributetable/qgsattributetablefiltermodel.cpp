@@ -478,3 +478,16 @@ Qt::ItemFlags QgsAttributeTableFilterModel::flags( const QModelIndex& index ) co
   QModelIndex source_index = mapToSource( index );
   return masterModel()->flags( source_index );
 }
+
+QModelIndex QgsAttributeTableFilterModel::index( int row, int column, const QModelIndex& parent ) const
+{
+  if ( column > -1 && mColumnMapping.at( column ) == -1 )
+  {
+    QModelIndex index = QSortFilterProxyModel::index( row, 0, parent );
+    return createIndex( row, column, index.internalPointer() );
+  }
+  else
+  {
+    return QSortFilterProxyModel::index( row, 0, parent );
+  }
+}

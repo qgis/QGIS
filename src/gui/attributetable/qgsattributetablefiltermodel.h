@@ -167,7 +167,9 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
 
     virtual QModelIndex mapFromSource( const QModelIndex& sourceIndex ) const override;
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
 
     /**
      * Sort by the given column using the given order.
