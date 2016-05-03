@@ -4,6 +4,7 @@ PyQgsComposerPicture
 PyQgsDelimitedTextProvider
 PyQgsEditWidgets
 PyQgsGeometryTest
+PyQgsJSONUtils
 PyQgsLocalServer
 PyQgsMapUnitScale
 PyQgsMemoryProvider
