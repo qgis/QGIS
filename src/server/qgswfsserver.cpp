@@ -38,6 +38,7 @@
 #include "qgsrequesthandler.h"
 #include "qgsogcutils.h"
 #include "qgsaccesscontrol.h"
+#include "qgsjsonutils.h"
 
 #include <QImage>
 #include <QPainter>
@@ -1865,42 +1866,30 @@ QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( const QDomElement& filterEl
 
 QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoordinateReferenceSystem &, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes ) /*const*/
 {
-  QString fStr = "{\"type\": \"Feature\",\n";
+  QString id = QString( "%1.%2" ).arg( mTypeName, FID_TO_STRING( feat->id() ) );
 
-  fStr += "   \"id\": ";
-  fStr += "\"" + mTypeName + "." + QString::number( feat->id() ) + "\"";
-  fStr += ",\n";
-
+  //copy feature so we can modify its geometry as required
+  QgsFeature f( *feat );
   const QgsGeometry* geom = feat->constGeometry();
+  bool withGeom = false;
   if ( geom && mWithGeom && mGeometryName != "NONE" )
   {
-    QgsRectangle box = geom->boundingBox();
-
-    fStr += " \"bbox\": [ " + qgsDoubleToString( box.xMinimum(), prec ) + ", " + qgsDoubleToString( box.yMinimum(), prec ) + ", " + qgsDoubleToString( box.xMaximum(), prec ) + ", " + qgsDoubleToString( box.yMaximum(), prec ) + "],\n";
-
-    fStr += "  \"geometry\": ";
+    withGeom = true;
     if ( mGeometryName == "EXTENT" )
     {
+      QgsRectangle box = geom->boundingBox();
       QgsGeometry* bbox = QgsGeometry::fromRect( box );
-      fStr += bbox->exportToGeoJSON( prec );
-      delete bbox;
+      f.setGeometry( bbox );
     }
     else if ( mGeometryName == "CENTROID" )
     {
       QgsGeometry* centroid = geom->centroid();
-      fStr += centroid->exportToGeoJSON( prec );
-      delete centroid;
+      f.setGeometry( centroid );
     }
-    else
-      fStr += geom->exportToGeoJSON( prec );
-    fStr += ",\n";
   }
 
-  //read all attribute values from the feature
-  fStr += "   \"properties\": {\n";
-  QgsAttributes featureAttributes = feat->attributes();
   const QgsFields* fields = feat->fields();
-  int attributeCounter = 0;
+  QgsAttributeList attrsToExport;
   for ( int i = 0; i < attrIndexes.count(); ++i )
   {
     int idx = attrIndexes[i];
@@ -1914,36 +1903,13 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoord
     {
       continue;
     }
-    QVariant val = featureAttributes[idx];
 
-    if ( attributeCounter == 0 )
-      fStr += "    \"";
-    else
-      fStr += "   ,\"";
-    fStr += attributeName;
-    fStr += "\": ";
-    if ( val.type() == 6 || val.type() == 2 )
-    {
-      fStr +=  val.toString();
-    }
-    else
-    {
-      fStr += "\"";
-      fStr +=  val.toString()
-               .replace( '"', "\\\"" )
-               .replace( '\r', "\\r" )
-               .replace( '\n', "\\n" );
-      fStr += "\"";
-    }
-    fStr += "\n";
-    ++attributeCounter;
+    attrsToExport << idx;
   }
 
-  fStr += "   }\n";
+  bool withAttributes = !attrsToExport.isEmpty();
 
-  fStr += "  }";
-
-  return fStr;
+  return QgsJSONUtils::featureToGeoJSON( f, prec, attrsToExport, withGeom, withAttributes, id );
 }
 
 QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes ) /*const*/
