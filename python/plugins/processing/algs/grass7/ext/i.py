@@ -4,9 +4,9 @@
 ***************************************************************************
     i.py
     ----
-    Date                 : February 2016
+    Date                 : April 2016
     Copyright            : (C) 2016 by Médéric Ribreux
-    Email                : medspx at medspx dot fr
+    Email                : mederic dot ribreux at medspx dot fr
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -18,7 +18,7 @@
 """
 
 __author__ = 'Médéric Ribreux'
-__date__ = 'March 2016'
+__date__ = 'April 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
 # This will get replaced with a git SHA1 when you do a git archive
@@ -94,12 +94,13 @@ def orderedInput(alg, inputParameter, targetParameterDef):
     return rootFilename
 
 
-def regroupRasters(alg, field, groupField, subgroupField=None, sigsetField=None):
+def regroupRasters(alg, field, groupField, subgroupField=None, extFile=None):
     """
     Group multiple input rasters into a group
     * If there is a subgroupField, a subgroup will automatically created.
-    * When a sigset file is provided, the file is copied into the sigset
+    * When an external file is provided, the file is copied into the respective
       directory of the subgroup.
+    * extFile is a dict of the form 'parameterName':'directory name'.
     """
     # List of rasters names
     rasters = alg.getParameterFromName(field)
@@ -123,24 +124,32 @@ def regroupRasters(alg, field, groupField, subgroupField=None, sigsetField=None)
     )
     alg.commands.append(command)
 
-    # If there is a sigset and a subgroupField, we copy the sigset file
-    if subgroupField and sigsetField:
-        sigsetFile = alg.getParameterValue(sigsetField)
-        shortSigsetFile = path.basename(sigsetFile)
-        if sigsetFile:
-            interSigsetFile = path.join(Grass7Utils.grassMapsetFolder(),
-                                        'PERMANENT',
-                                        'group', group.value,
-                                        'subgroup', subgroup.value,
-                                        'sigset', shortSigsetFile)
-            copyFile(alg, sigsetFile, interSigsetFile)
-            alg.setParameterValue(sigsetField, shortSigsetFile)
+    # Handle external files
+    origExtParams = {}
+    if subgroupField and extFile:
+        for ext in extFile.keys():
+            extFileName = alg.getParameterValue(ext)
+            if extFileName:
+                shortFileName = path.basename(extFileName)
+                destPath = path.join(Grass7Utils.grassMapsetFolder(),
+                                     'PERMANENT',
+                                     'group', group.value,
+                                     'subgroup', subgroup.value,
+                                     extFile[ext], shortFileName)
+            copyFile(alg, extFileName, destPath)
+            origExtParams[ext] = extFileName
+            alg.setParameterValue(ext, shortFileName)
 
     # modify parameters values
     alg.processCommand()
 
     # Re-add input rasters
     alg.addParameter(rasters)
+
+    # replace external files value with original value
+    for param in origExtParams.keys():
+        alg.setParameterValue(param, origExtParams[param])
+
     # Delete group:
     alg.parameters.remove(group)
     if subgroupField:
