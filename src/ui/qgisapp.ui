@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>19</height>
+     <height>25</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -271,6 +271,7 @@
     <addaction name="mActionAddFeature"/>
     <addaction name="mActionMoveFeature"/>
     <addaction name="mActionDeleteSelected"/>
+    <addaction name="mActionMultiEditAttributes"/>
     <addaction name="separator"/>
     <addaction name="mActionRotateFeature"/>
     <addaction name="mActionSimplifyFeature"/>
@@ -2477,6 +2478,18 @@ Acts on currently active editable layer</string>
    </property>
    <property name="text">
     <string>New GeoPackage Layer...</string>
+   </property>
+  </action>
+  <action name="mActionMultiEditAttributes">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAllEdits.svg</normaloff>:/images/themes/default/mActionAllEdits.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Modify Attributes of Selected Features</string>
+   </property>
+   <property name="toolTip">
+    <string>Modify the Attributes of all Selected Features Simultaneously</string>
    </property>
   </action>
  </widget>
