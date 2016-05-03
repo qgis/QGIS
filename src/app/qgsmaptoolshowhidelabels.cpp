@@ -288,21 +288,25 @@ bool QgsMapToolShowHideLabels::showHide( QgsVectorLayer *vl, const bool show )
     return false;
   }
 
+  // we need to pass int value to the provider
+  // (committing bool value would fail on int field)
+  int curVal = show ? 1 : 0;
+
   // check if attribute value is already the same
-  if ( showSuccess && ( showVal != 0 ) == show )
+  if ( showSuccess && showVal == curVal )
   {
     return false;
   }
 
   // allow NULL (maybe default) value to stand for show label (i.e. 1)
   // skip NULL attributes if trying to show label
-  if ( !showSuccess && show == 1 )
+  if ( !showSuccess && curVal == 1 )
   {
     return false;
   }
 
   // different attribute value, edit table
-  if ( ! vl->changeAttributeValue( mCurrentLabel.pos.featureId, showCol, show ) )
+  if ( ! vl->changeAttributeValue( mCurrentLabel.pos.featureId, showCol, curVal ) )
   {
     QgsDebugMsg( "Failed write to attribute table" );
     return false;
