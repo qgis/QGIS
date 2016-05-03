@@ -2503,7 +2503,8 @@ void QgsGdalProvider::initBaseDataset()
              || mGeoTransform[2] != 0.0
              || mGeoTransform[4] != 0.0
              || mGeoTransform[5] > 0.0 ) )
-      || GDALGetGCPCount( mGdalBaseDataset ) > 0 )
+      || GDALGetGCPCount( mGdalBaseDataset ) > 0
+      || GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
   {
     QgsLogger::warning( "Creating Warped VRT." );
 
@@ -2580,7 +2581,16 @@ void QgsGdalProvider::initBaseDataset()
   if ( !crsFromWkt( GDALGetProjectionRef( mGdalDataset ) ) &&
        !crsFromWkt( GDALGetGCPProjection( mGdalDataset ) ) )
   {
-    QgsDebugMsg( "No valid CRS identified" );
+    if ( mGdalBaseDataset != mGdalDataset &&
+         GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
+    {
+      // Warped VRT of RPC is in EPSG:4326
+      mCrs.createFromOgcWmsCrs( "EPSG:4326" );
+    }
+    else
+    {
+      QgsDebugMsg( "No valid CRS identified" );
+    }
   }
 
   //set up the coordinat transform - in the case of raster this is mainly used to convert
