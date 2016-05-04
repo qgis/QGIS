@@ -800,26 +800,57 @@ void QgsMapCanvas::updateMap()
 //the format defaults to "PNG" if not specified
 void QgsMapCanvas::saveAsImage( const QString& theFileName, QPixmap * theQPixmap, const QString& theFormat )
 {
+  QPainter painter;
+  QImage image;
+
   //
   //check if the optional QPaintDevice was supplied
   //
   if ( theQPixmap )
   {
+    image = theQPixmap->toImage();
+    painter.begin( &image );
+
     // render
-    QPainter painter;
-    painter.begin( theQPixmap );
     QgsMapRendererCustomPainterJob job( mSettings, &painter );
     job.start();
     job.waitForFinished();
     emit renderComplete( &painter );
-    painter.end();
-
-    theQPixmap->save( theFileName, theFormat.toLocal8Bit().data() );
   }
   else //use the map view
   {
-    mMap->contentImage().save( theFileName, theFormat.toLocal8Bit().data() );
+    image = mMap->contentImage().copy();
+    painter.begin( &image );
   }
+
+  // draw annotations
+  QStyleOptionGraphicsItem option;
+  option.initFrom( this );
+  QGraphicsItem* item;
+  QListIterator<QGraphicsItem*> i( items() );
+  i.toBack();
+  while ( i.hasPrevious() )
+  {
+    item = i.previous();
+
+    if ( !item || item->data( 0 ).toString() != "AnnotationItem" )
+    {
+      continue;
+    }
+
+    painter.save();
+
+    QPointF itemScenePos = item->scenePos();
+    painter.translate( itemScenePos.x(), itemScenePos.y() );
+
+    item->paint( &painter, &option );
+
+    painter.restore();
+  }
+
+  painter.end();
+  image.save( theFileName, theFormat.toLocal8Bit().data() );
+
   //create a world file to go with the image...
   QgsRectangle myRect = mapSettings().visibleExtent();
   QString myHeader;
