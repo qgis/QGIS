@@ -1183,55 +1183,22 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry* geometry, QDomDocumen
     baseCoordElem.setAttribute( "ts", ts );
   }
 
-  switch ( geometry->wkbType() )
+  try
   {
-    case QGis::WKBPoint25D:
-    case QGis::WKBPoint:
+    switch ( geometry->wkbType() )
     {
-      QDomElement pointElem = doc.createElement( "gml:Point" );
-      if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
-        pointElem.setAttribute( "gml:id", gmlIdBase );
-      if ( !srsName.isEmpty() )
-        pointElem.setAttribute( "srsName", srsName );
-      QDomElement coordElem = baseCoordElem.cloneNode().toElement();
-
-      double x, y;
-      if ( invertAxisOrientation )
-        wkbPtr >> y >> x;
-      else
-        wkbPtr >> x >> y;
-      QDomText coordText = doc.createTextNode( qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision ) );
-
-      coordElem.appendChild( coordText );
-      pointElem.appendChild( coordElem );
-      return pointElem;
-    }
-    case QGis::WKBMultiPoint25D:
-      hasZValue = true;
-      //intentional fall-through
-      FALLTHROUGH;
-    case QGis::WKBMultiPoint:
-    {
-      QDomElement multiPointElem = doc.createElement( "gml:MultiPoint" );
-      if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
-        multiPointElem.setAttribute( "gml:id", gmlIdBase );
-      if ( !srsName.isEmpty() )
-        multiPointElem.setAttribute( "srsName", srsName );
-
-      int nPoints;
-      wkbPtr >> nPoints;
-
-      for ( int idx = 0; idx < nPoints; ++idx )
+      case QGis::WKBPoint25D:
+      case QGis::WKBPoint:
       {
-        QDomElement pointMemberElem = doc.createElement( "gml:pointMember" );
         QDomElement pointElem = doc.createElement( "gml:Point" );
         if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
-          pointElem.setAttribute( "gml:id", gmlIdBase + QString( ".%1" ).arg( idx + 1 ) );
+          pointElem.setAttribute( "gml:id", gmlIdBase );
+        if ( !srsName.isEmpty() )
+          pointElem.setAttribute( "srsName", srsName );
         QDomElement coordElem = baseCoordElem.cloneNode().toElement();
 
-        wkbPtr.readHeader();
-
         double x, y;
+
         if ( invertAxisOrientation )
           wkbPtr >> y >> x;
         else
@@ -1240,88 +1207,71 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry* geometry, QDomDocumen
 
         coordElem.appendChild( coordText );
         pointElem.appendChild( coordElem );
-
-        if ( hasZValue )
-        {
-          wkbPtr += sizeof( double );
-        }
-        pointMemberElem.appendChild( pointElem );
-        multiPointElem.appendChild( pointMemberElem );
+        return pointElem;
       }
-      return multiPointElem;
-    }
-    case QGis::WKBLineString25D:
-      hasZValue = true;
-      //intentional fall-through
-      FALLTHROUGH;
-    case QGis::WKBLineString:
-    {
-      QDomElement lineStringElem = doc.createElement( "gml:LineString" );
-      if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
-        lineStringElem.setAttribute( "gml:id", gmlIdBase );
-      if ( !srsName.isEmpty() )
-        lineStringElem.setAttribute( "srsName", srsName );
-      // get number of points in the line
-
-      int nPoints;
-      wkbPtr >> nPoints;
-
-      QDomElement coordElem = baseCoordElem.cloneNode().toElement();
-      QString coordString;
-      for ( int idx = 0; idx < nPoints; ++idx )
+      case QGis::WKBMultiPoint25D:
+        hasZValue = true;
+        //intentional fall-through
+        FALLTHROUGH;
+      case QGis::WKBMultiPoint:
       {
-        if ( idx != 0 )
-        {
-          coordString += ts;
-        }
+        QDomElement multiPointElem = doc.createElement( "gml:MultiPoint" );
+        if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
+          multiPointElem.setAttribute( "gml:id", gmlIdBase );
+        if ( !srsName.isEmpty() )
+          multiPointElem.setAttribute( "srsName", srsName );
 
-        double x, y;
-        if ( invertAxisOrientation )
-          wkbPtr >> y >> x;
-        else
-          wkbPtr >> x >> y;
-        coordString += qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision );
+        int nPoints;
+        wkbPtr >> nPoints;
 
-        if ( hasZValue )
+        for ( int idx = 0; idx < nPoints; ++idx )
         {
-          wkbPtr += sizeof( double );
+          QDomElement pointMemberElem = doc.createElement( "gml:pointMember" );
+          QDomElement pointElem = doc.createElement( "gml:Point" );
+          if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
+            pointElem.setAttribute( "gml:id", gmlIdBase + QString( ".%1" ).arg( idx + 1 ) );
+          QDomElement coordElem = baseCoordElem.cloneNode().toElement();
+
+          wkbPtr.readHeader();
+
+          double x, y;
+          if ( invertAxisOrientation )
+            wkbPtr >> y >> x;
+          else
+            wkbPtr >> x >> y;
+          QDomText coordText = doc.createTextNode( qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision ) );
+
+          coordElem.appendChild( coordText );
+          pointElem.appendChild( coordElem );
+
+          if ( hasZValue )
+          {
+            wkbPtr += sizeof( double );
+          }
+          pointMemberElem.appendChild( pointElem );
+          multiPointElem.appendChild( pointMemberElem );
         }
+        return multiPointElem;
       }
-      QDomText coordText = doc.createTextNode( coordString );
-      coordElem.appendChild( coordText );
-      lineStringElem.appendChild( coordElem );
-      return lineStringElem;
-    }
-    case QGis::WKBMultiLineString25D:
-      hasZValue = true;
-      //intentional fall-through
-      FALLTHROUGH;
-    case QGis::WKBMultiLineString:
-    {
-      QDomElement multiLineStringElem = doc.createElement( "gml:MultiLineString" );
-      if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
-        multiLineStringElem.setAttribute( "gml:id", gmlIdBase );
-      if ( !srsName.isEmpty() )
-        multiLineStringElem.setAttribute( "srsName", srsName );
-
-      int nLines;
-      wkbPtr >> nLines;
-
-      for ( int jdx = 0; jdx < nLines; jdx++ )
+      case QGis::WKBLineString25D:
+        hasZValue = true;
+        //intentional fall-through
+        FALLTHROUGH;
+      case QGis::WKBLineString:
       {
-        QDomElement lineStringMemberElem = doc.createElement( "gml:lineStringMember" );
         QDomElement lineStringElem = doc.createElement( "gml:LineString" );
         if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
-          lineStringElem.setAttribute( "gml:id", gmlIdBase + QString( ".%1" ).arg( jdx + 1 ) );
-
-        wkbPtr.readHeader();
+          lineStringElem.setAttribute( "gml:id", gmlIdBase );
+        if ( !srsName.isEmpty() )
+          lineStringElem.setAttribute( "srsName", srsName );
+        // get number of points in the line
 
         int nPoints;
         wkbPtr >> nPoints;
 
         QDomElement coordElem = baseCoordElem.cloneNode().toElement();
         QString coordString;
-        for ( int idx = 0; idx < nPoints; idx++ )
+        for ( int idx = 0; idx < nPoints; ++idx )
         {
           if ( idx != 0 )
           {
@@ -1333,7 +1283,6 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry* geometry, QDomDocumen
             wkbPtr >> y >> x;
           else
             wkbPtr >> x >> y;
-
           coordString += qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision );
 
           if ( hasZValue )
@@ -1344,121 +1293,40 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry* geometry, QDomDocumen
         QDomText coordText = doc.createTextNode( coordString );
         coordElem.appendChild( coordText );
         lineStringElem.appendChild( coordElem );
-        lineStringMemberElem.appendChild( lineStringElem );
-        multiLineStringElem.appendChild( lineStringMemberElem );
+        return lineStringElem;
       }
-      return multiLineStringElem;
-    }
-    case QGis::WKBPolygon25D:
-      hasZValue = true;
-      //intentional fall-through
-      FALLTHROUGH;
-    case QGis::WKBPolygon:
-    {
-      QDomElement polygonElem = doc.createElement( "gml:Polygon" );
-      if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
-        polygonElem.setAttribute( "gml:id", gmlIdBase );
-      if ( !srsName.isEmpty() )
-        polygonElem.setAttribute( "srsName", srsName );
-
-      // get number of rings in the polygon
-      int numRings;
-      wkbPtr >> numRings;
-
-      if ( numRings == 0 ) // sanity check for zero rings in polygon
-        return QDomElement();
-
-      int *ringNumPoints = new int[numRings]; // number of points in each ring
-
-      for ( int idx = 0; idx < numRings; idx++ )
+      case QGis::WKBMultiLineString25D:
+        hasZValue = true;
+        //intentional fall-through
+        FALLTHROUGH;
+      case QGis::WKBMultiLineString:
       {
-        QString boundaryName = ( gmlVersion == GML_2_1_2 ) ? "gml:outerBoundaryIs" : "gml:exterior";
-        if ( idx != 0 )
-        {
-          boundaryName = ( gmlVersion == GML_2_1_2 ) ? "gml:innerBoundaryIs" : "gml:interior";
-        }
-        QDomElement boundaryElem = doc.createElement( boundaryName );
-        QDomElement ringElem = doc.createElement( "gml:LinearRing" );
-        // get number of points in the ring
-        int nPoints;
-        wkbPtr >> nPoints;
-        ringNumPoints[idx] = nPoints;
-
-        QDomElement coordElem = baseCoordElem.cloneNode().toElement();
-        QString coordString;
-        for ( int jdx = 0; jdx < nPoints; jdx++ )
-        {
-          if ( jdx != 0 )
-          {
-            coordString += ts;
-          }
-
-          double x, y;
-          if ( invertAxisOrientation )
-            wkbPtr >> y >> x;
-          else
-            wkbPtr >> x >> y;
-
-          coordString += qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision );
-          if ( hasZValue )
-          {
-            wkbPtr += sizeof( double );
-          }
-        }
-        QDomText coordText = doc.createTextNode( coordString );
-        coordElem.appendChild( coordText );
-        ringElem.appendChild( coordElem );
-        boundaryElem.appendChild( ringElem );
-        polygonElem.appendChild( boundaryElem );
-      }
-      delete [] ringNumPoints;
-      return polygonElem;
-    }
-    case QGis::WKBMultiPolygon25D:
-      hasZValue = true;
-      //intentional fall-through
-      FALLTHROUGH;
-    case QGis::WKBMultiPolygon:
-    {
-      QDomElement multiPolygonElem = doc.createElement( "gml:MultiPolygon" );
-      if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
-        multiPolygonElem.setAttribute( "gml:id", gmlIdBase );
-      if ( !srsName.isEmpty() )
-        multiPolygonElem.setAttribute( "srsName", srsName );
-
-      int numPolygons;
-      wkbPtr >> numPolygons;
-
-      for ( int kdx = 0; kdx < numPolygons; kdx++ )
-      {
-        QDomElement polygonMemberElem = doc.createElement( "gml:polygonMember" );
-        QDomElement polygonElem = doc.createElement( "gml:Polygon" );
+        QDomElement multiLineStringElem = doc.createElement( "gml:MultiLineString" );
         if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
-          polygonElem.setAttribute( "gml:id", gmlIdBase + QString( ".%1" ).arg( kdx + 1 ) );
+          multiLineStringElem.setAttribute( "gml:id", gmlIdBase );
+        if ( !srsName.isEmpty() )
+          multiLineStringElem.setAttribute( "srsName", srsName );
 
-        wkbPtr.readHeader();
+        int nLines;
+        wkbPtr >> nLines;
 
-        int numRings;
-        wkbPtr >> numRings;
-
-        for ( int idx = 0; idx < numRings; idx++ )
+        for ( int jdx = 0; jdx < nLines; jdx++ )
         {
-          QString boundaryName = ( gmlVersion == GML_2_1_2 ) ? "gml:outerBoundaryIs" : "gml:exterior";
-          if ( idx != 0 )
-          {
-            boundaryName = ( gmlVersion == GML_2_1_2 ) ? "gml:innerBoundaryIs" : "gml:interior";
-          }
-          QDomElement boundaryElem = doc.createElement( boundaryName );
-          QDomElement ringElem = doc.createElement( "gml:LinearRing" );
+          QDomElement lineStringMemberElem = doc.createElement( "gml:lineStringMember" );
+          QDomElement lineStringElem = doc.createElement( "gml:LineString" );
+          if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
+            lineStringElem.setAttribute( "gml:id", gmlIdBase + QString( ".%1" ).arg( jdx + 1 ) );
+
+          wkbPtr.readHeader();
 
           int nPoints;
           wkbPtr >> nPoints;
 
           QDomElement coordElem = baseCoordElem.cloneNode().toElement();
           QString coordString;
-          for ( int jdx = 0; jdx < nPoints; jdx++ )
+          for ( int idx = 0; idx < nPoints; idx++ )
           {
-            if ( jdx != 0 )
+            if ( idx != 0 )
             {
               coordString += ts;
             }
@@ -1478,17 +1346,158 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry* geometry, QDomDocumen
           }
           QDomText coordText = doc.createTextNode( coordString );
           coordElem.appendChild( coordText );
+          lineStringElem.appendChild( coordElem );
+          lineStringMemberElem.appendChild( lineStringElem );
+          multiLineStringElem.appendChild( lineStringMemberElem );
+        }
+        return multiLineStringElem;
+      }
+      case QGis::WKBPolygon25D:
+        hasZValue = true;
+        //intentional fall-through
+        FALLTHROUGH;
+      case QGis::WKBPolygon:
+      {
+        QDomElement polygonElem = doc.createElement( "gml:Polygon" );
+        if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
+          polygonElem.setAttribute( "gml:id", gmlIdBase );
+        if ( !srsName.isEmpty() )
+          polygonElem.setAttribute( "srsName", srsName );
+
+        // get number of rings in the polygon
+        int numRings;
+        wkbPtr >> numRings;
+
+        if ( numRings == 0 ) // sanity check for zero rings in polygon
+          return QDomElement();
+
+        int *ringNumPoints = new int[numRings]; // number of points in each ring
+
+        for ( int idx = 0; idx < numRings; idx++ )
+        {
+          QString boundaryName = ( gmlVersion == GML_2_1_2 ) ? "gml:outerBoundaryIs" : "gml:exterior";
+          if ( idx != 0 )
+          {
+            boundaryName = ( gmlVersion == GML_2_1_2 ) ? "gml:innerBoundaryIs" : "gml:interior";
+          }
+          QDomElement boundaryElem = doc.createElement( boundaryName );
+          QDomElement ringElem = doc.createElement( "gml:LinearRing" );
+          // get number of points in the ring
+          int nPoints;
+          wkbPtr >> nPoints;
+          ringNumPoints[idx] = nPoints;
+
+          QDomElement coordElem = baseCoordElem.cloneNode().toElement();
+          QString coordString;
+          for ( int jdx = 0; jdx < nPoints; jdx++ )
+          {
+            if ( jdx != 0 )
+            {
+              coordString += ts;
+            }
+
+            double x, y;
+            if ( invertAxisOrientation )
+              wkbPtr >> y >> x;
+            else
+              wkbPtr >> x >> y;
+
+            coordString += qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision );
+            if ( hasZValue )
+            {
+              wkbPtr += sizeof( double );
+            }
+          }
+          QDomText coordText = doc.createTextNode( coordString );
+          coordElem.appendChild( coordText );
           ringElem.appendChild( coordElem );
           boundaryElem.appendChild( ringElem );
           polygonElem.appendChild( boundaryElem );
-          polygonMemberElem.appendChild( polygonElem );
-          multiPolygonElem.appendChild( polygonMemberElem );
         }
+        delete [] ringNumPoints;
+        return polygonElem;
       }
-      return multiPolygonElem;
+      case QGis::WKBMultiPolygon25D:
+        hasZValue = true;
+        //intentional fall-through
+        FALLTHROUGH;
+      case QGis::WKBMultiPolygon:
+      {
+        QDomElement multiPolygonElem = doc.createElement( "gml:MultiPolygon" );
+        if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
+          multiPolygonElem.setAttribute( "gml:id", gmlIdBase );
+        if ( !srsName.isEmpty() )
+          multiPolygonElem.setAttribute( "srsName", srsName );
+
+        int numPolygons;
+        wkbPtr >> numPolygons;
+
+        for ( int kdx = 0; kdx < numPolygons; kdx++ )
+        {
+          QDomElement polygonMemberElem = doc.createElement( "gml:polygonMember" );
+          QDomElement polygonElem = doc.createElement( "gml:Polygon" );
+          if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
+            polygonElem.setAttribute( "gml:id", gmlIdBase + QString( ".%1" ).arg( kdx + 1 ) );
+
+          wkbPtr.readHeader();
+
+          int numRings;
+          wkbPtr >> numRings;
+
+          for ( int idx = 0; idx < numRings; idx++ )
+          {
+            QString boundaryName = ( gmlVersion == GML_2_1_2 ) ? "gml:outerBoundaryIs" : "gml:exterior";
+            if ( idx != 0 )
+            {
+              boundaryName = ( gmlVersion == GML_2_1_2 ) ? "gml:innerBoundaryIs" : "gml:interior";
+            }
+            QDomElement boundaryElem = doc.createElement( boundaryName );
+            QDomElement ringElem = doc.createElement( "gml:LinearRing" );
+
+            int nPoints;
+            wkbPtr >> nPoints;
+
+            QDomElement coordElem = baseCoordElem.cloneNode().toElement();
+            QString coordString;
+            for ( int jdx = 0; jdx < nPoints; jdx++ )
+            {
+              if ( jdx != 0 )
+              {
+                coordString += ts;
+              }
+
+              double x, y;
+              if ( invertAxisOrientation )
+                wkbPtr >> y >> x;
+              else
+                wkbPtr >> x >> y;
+
+              coordString += qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision );
+
+              if ( hasZValue )
+              {
+                wkbPtr += sizeof( double );
+              }
+            }
+            QDomText coordText = doc.createTextNode( coordString );
+            coordElem.appendChild( coordText );
+            ringElem.appendChild( coordElem );
+            boundaryElem.appendChild( ringElem );
+            polygonElem.appendChild( boundaryElem );
+            polygonMemberElem.appendChild( polygonElem );
+            multiPolygonElem.appendChild( polygonMemberElem );
+          }
+        }
+        return multiPolygonElem;
+      }
+      default:
+        return QDomElement();
     }
-    default:
-      return QDomElement();
+  }
+  catch ( const QgsWkbException &e )
+  {
+    Q_UNUSED( e );
+    return QDomElement();
   }
 }
 
