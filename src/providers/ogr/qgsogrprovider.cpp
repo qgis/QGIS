@@ -385,7 +385,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 QgsOgrProvider::~QgsOgrProvider()
 {
   close();
-  QgsOgrConnPool::instance()->unref( mFilePath );
+  QgsOgrConnPool::instance()->unref( dataSourceUri() );
 }
 
 QgsAbstractFeatureSource* QgsOgrProvider::featureSource() const
@@ -1216,7 +1216,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
   {
     // adding attributes in mapinfo requires to be able to delete the .dat file
     // so drop any cached connections.
-    QgsOgrConnPool::instance()->invalidateConnections( filePath() );
+    QgsOgrConnPool::instance()->invalidateConnections( dataSourceUri() );
   }
 
   bool returnvalue = true;
@@ -2792,7 +2792,7 @@ QString QgsOgrProviderUtils::quotedValue( const QVariant& value )
 bool QgsOgrProvider::syncToDisc()
 {
   //for shapefiles, remove spatial index files and create a new index
-  QgsOgrConnPool::instance()->unref( mFilePath );
+  QgsOgrConnPool::instance()->unref( dataSourceUri() );
   bool shapeIndex = false;
   if ( ogrDriverName == "ESRI Shapefile" )
   {
