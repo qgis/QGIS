@@ -43,6 +43,7 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
     , mActionPopup( nullptr )
     , mRowSectionAnchor( 0 )
     , mCtrlDragSelectionFlag( QItemSelectionModel::Select )
+    , mActionWidget( nullptr )
 {
   QSettings settings;
   restoreGeometry( settings.value( "/BetterAttributeTable/geometry" ).toByteArray() );

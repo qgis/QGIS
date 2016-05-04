@@ -235,6 +235,7 @@ QString QgsAttributeActionDialog::textForType( QgsAction::ActionType type )
     case QgsAction::OpenUrl:
       return tr( "Open URL" );
   }
+  return QString();
 }
 
 void QgsAttributeActionDialog::remove()

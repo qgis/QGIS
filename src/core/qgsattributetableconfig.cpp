@@ -18,6 +18,7 @@
 #include <QStringList>
 
 QgsAttributeTableConfig::QgsAttributeTableConfig()
+    : mActionWidgetStyle( DropDown )
 {
 
 }
