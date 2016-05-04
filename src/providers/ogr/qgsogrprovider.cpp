@@ -384,6 +384,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 QgsOgrProvider::~QgsOgrProvider()
 {
   close();
+  QgsOgrConnPool::instance()->unref( mFilePath );
 }
 
 QgsAbstractFeatureSource* QgsOgrProvider::featureSource() const
@@ -2969,8 +2970,6 @@ void QgsOgrProvider::close()
   setProperty( "_debug_open_mode", "invalid" );
 
   updateExtents();
-
-  QgsOgrConnPool::instance()->unref( mFilePath );
 }
 
 void QgsOgrProvider::reloadData()
