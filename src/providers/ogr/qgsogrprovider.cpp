@@ -1212,6 +1212,13 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
   if ( !doInitialActionsForEdition() )
     return false;
 
+  if ( ogrDriverName == "MapInfo File" )
+  {
+    // adding attributes in mapinfo requires to be able to delete the .dat file
+    // so drop any cached connections.
+    QgsOgrConnPool::instance()->invalidateConnections( filePath() );
+  }
+
   bool returnvalue = true;
 
   for ( QList<QgsField>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
