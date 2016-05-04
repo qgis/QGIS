@@ -202,11 +202,11 @@ unless( $dopoint ) {
 	run( "git commit -a -m 'Bump version to $newmajor.$newminor'", "bump version failed" );
 }
 
-my $topush = ($dopoint ? "" : "master ") . "$relbranch $reltag $ltrtag";
+my $topush = ($dopoint ? "" : "master ") . "$relbranch";
 
 print "Push dry-run...\n";
-run( "git push -n origin $topush", "push dry run failed" );
-print "Now manually push and upload the tarballs :\n\tgit push origin $topush\n\trsync qgis-$version.tar.bz2* qgis.org:/var/www/downloads/\n\n";
+run( "git push -n --follow-tags origin $topush", "push dry run failed" );
+print "Now manually push and upload the tarballs :\n\tgit push --follow-tags origin $topush\n\trsync qgis-$version.tar.bz2* qgis.org:/var/www/downloads/\n\n";
 
 
 =head1 NAME
