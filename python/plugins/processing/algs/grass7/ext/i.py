@@ -51,7 +51,7 @@ def multipleOutputDir(alg, field, basename=None):
     alg.outputCommands.extend(commands)
 
 
-def orderedInput(alg, inputParameter, targetParameterDef):
+def orderedInput(alg, inputParameter, targetParameterDef, numSeq=None):
     """Inport multiple rasters in the order"""
     rasters = alg.getParameterValue(inputParameter).split(';')
     # TODO: make targetParameter
@@ -59,12 +59,16 @@ def orderedInput(alg, inputParameter, targetParameterDef):
     rootFilename = '{}_'.format(alg.getTempFilename())
     inputParameter.value = rootFilename
     alg.addParameter(inputParameter)
+    # Handle specific range
+    if numSeq is None:
+        numSeq = range(1, len(rasters) + 1)
+
     for idx in range(len(rasters)):
         layer = rasters[idx]
         if layer in alg.exportedLayers.keys():
             continue
         else:
-            destFilename = '{}{}'.format(rootFilename, idx + 1)
+            destFilename = '{}{}'.format(rootFilename, numSeq[idx])
             alg.setSessionProjectionFromLayer(layer, alg.commands)
             alg.exportedLayers[layer] = destFilename
             command = 'r.external input={} band=1 output={} --overwrite -o'.format(layer, destFilename)

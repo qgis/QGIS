@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    i_landsat_toar.py
+    i_landsat_acca.py
     -----------------
     Date                 : March 2016
     Copyright            : (C) 2016 by Médéric Ribreux
@@ -25,18 +25,17 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from i import multipleOutputDir, verifyRasterNum, regroupRasters, orderedInput
-from processing.core.parameters import getParameterFromString
+from i import verifyRasterNum, orderedInput
 
 
 def checkParameterValuesBeforeExecuting(alg):
-    return verifyRasterNum(alg, 'rasters', 5, 12)
+    return verifyRasterNum(alg, 'rasters', 5, 5)
 
 
 def processInputs(alg):
     orderedInput(alg, 'rasters',
                  "ParameterString|input|Base name of input raster bands|None|False|False",
-                 [1, 2, 3, 4, 5, 61, 62, 7, 8])
+                 [2, 3, 4, 5, 61])
 
 
 def processCommand(alg):
@@ -44,25 +43,7 @@ def processCommand(alg):
     rasters = alg.getParameterFromName('rasters')
     alg.parameters.remove(rasters)
 
-    # Remove output
-    output = alg.getOutputFromName('output')
-    alg.removeOutputFromName('output')
-
-    # Create output parameter
-    param = getParameterFromString("ParameterString|output|output basename|None|False|False")
-    param.value = '{}_'.format(alg.getTempFilename())
-    alg.addParameter(param)
-
     alg.processCommand()
 
-    # re-add output
-    alg.addOutput(output)
+    # re-add rasters
     alg.addParameter(rasters)
-
-
-def processOutputs(alg):
-    param = alg.getParameterFromName('output')
-    multipleOutputDir(alg, 'output', param.value)
-
-    # Delete output parameter
-    alg.parameters.remove(param)
