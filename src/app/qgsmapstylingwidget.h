@@ -45,7 +45,6 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget
     void setLayer( QgsMapLayer* layer );
     void apply();
     void autoApply();
-    void resetSettings();
 
   private slots:
     void updateCurrentWidgetLayer( int currentPage );

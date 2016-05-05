@@ -44,7 +44,7 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
   mLayerTitleLabel->setAlignment( Qt::AlignHCenter );
   layout->addWidget( mLayerTitleLabel );
   layout->addWidget( mStackedWidget );
-  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Reset | QDialogButtonBox::Apply );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Apply );
   mLiveApplyCheck = new QCheckBox( "Live update" );
   mLiveApplyCheck->setChecked( true );
 
@@ -79,10 +79,8 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
   connect( mLiveApplyCheck, SIGNAL( toggled( bool ) ), mButtonBox->button( QDialogButtonBox::Apply ), SLOT( setDisabled( bool ) ) );
 
   connect( mButtonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
-  connect( mButtonBox->button( QDialogButtonBox::Reset ), SIGNAL( clicked() ), this, SLOT( resetSettings() ) );
 
   mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( false );
-  mButtonBox->button( QDialogButtonBox::Reset )->setEnabled( false );
 
 }
 
@@ -109,19 +107,15 @@ void QgsMapStylingWidget::apply()
       if ( currentPage == mLabelTabIndex )
       {
         mLabelingWidget->apply();
-        mButtonBox->button( QDialogButtonBox::Reset )->setEnabled( true );
         emit styleChanged( mCurrentLayer );
-    QgsDebugMsg("Label Style");
       }
       else if ( currentPage == mStyleTabIndex )
       {
         mVectorStyleWidget->apply();
-        mButtonBox->button( QDialogButtonBox::Reset )->setEnabled( true );
         QgsProject::instance()->setDirty( true );
         mMapCanvas->clearCache();
         mMapCanvas->refresh();
         emit styleChanged( mCurrentLayer );
-    QgsDebugMsg("Map Style");
       }
       QString errorMsg;
       QDomDocument doc( "style" );
@@ -139,15 +133,6 @@ void QgsMapStylingWidget::autoApply()
   if ( mLiveApplyCheck->isChecked() && !mBlockAutoApply )
   {
       mAutoApplyTimer->start(100);
-  }
-}
-
-void QgsMapStylingWidget::resetSettings()
-{
-  if ( mStackedWidget->currentIndex() == mVectorPage &&
-       mMapStyleTabs->currentIndex() == mLabelTabIndex )
-  {
-    mLabelingWidget->resetSettings();
   }
 }
 
@@ -192,8 +177,6 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer( int currentPage )
   }
 
   mBlockAutoApply = false;
-
-  mButtonBox->button( QDialogButtonBox::Reset )->setEnabled( false );
 }
 
 
@@ -210,7 +193,6 @@ void QgsMapLayerStyleCommand::undo()
    QString error;
    mLayer->readSymbology( mLastState, error);
    mLayer->triggerRepaint();
-   QgsDebugMsg( error );
 }
 
 void QgsMapLayerStyleCommand::redo()
@@ -218,5 +200,4 @@ void QgsMapLayerStyleCommand::redo()
    QString error;
    mLayer->readSymbology( mXml, error);
    mLayer->triggerRepaint();
-   QgsDebugMsg( error );
 }
