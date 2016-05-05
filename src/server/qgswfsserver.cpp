@@ -1474,7 +1474,15 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
     mTypeName = typeNameElem.tagName();
 
     layerList = mConfigParser->mapLayerFromTypeName( mTypeName );
-    currentLayer = layerList.at( 0 );
+    // Could be empty!
+    if ( layerList.count() > 0 )
+    {
+      currentLayer = layerList.at( 0 );
+    }
+    else
+    {
+      throw QgsMapServiceException( "RequestNotWellFormed", QString( "Wrong TypeName: %1" ).arg( mTypeName ) );
+    }
 
     QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( currentLayer );
     // it's a vectorlayer and defined by the administrator as a WFS layer
