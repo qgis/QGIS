@@ -92,7 +92,12 @@ class TestQgsJSONUtils(unittest.TestCase):
         self.assertEqual(QgsJSONUtils.encodeValue('string'), '"string"')
         self.assertEqual(QgsJSONUtils.encodeValue('str\ning'), '"str\\ning"')
         self.assertEqual(QgsJSONUtils.encodeValue('str\ring'), '"str\\ring"')
-        self.assertEqual(QgsJSONUtils.encodeValue('str"ing'), '"str\\"ing"')
+        self.assertEqual(QgsJSONUtils.encodeValue('str\bing'), '"str\\bing"')
+        self.assertEqual(QgsJSONUtils.encodeValue('str\ting'), '"str\\ting"')
+        self.assertEqual(QgsJSONUtils.encodeValue('str\\ing'), '"str\\\\ing"')
+        self.assertEqual(QgsJSONUtils.encodeValue('str\\ning'), '"str\\\\ning"')
+        self.assertEqual(QgsJSONUtils.encodeValue('str\n\\\\ing'), '"str\\n\\\\\\\\ing"')
+        self.assertEqual(QgsJSONUtils.encodeValue('str/ing'), '"str\\/ing"')
 
     def testFeatureToGeoJSON(self):
         """ test converting features to GeoJSON """
