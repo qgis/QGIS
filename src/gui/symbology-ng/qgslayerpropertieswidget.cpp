@@ -64,6 +64,7 @@ static void _initWidgetFunctions()
   _initWidgetFunction( "ArrowLine", QgsArrowSymbolLayerWidget::create );
 
   _initWidgetFunction( "SimpleMarker", QgsSimpleMarkerSymbolLayerV2Widget::create );
+  _initWidgetFunction( "FilledMarker", QgsFilledMarkerSymbolLayerWidget::create );
   _initWidgetFunction( "SvgMarker", QgsSvgMarkerSymbolLayerV2Widget::create );
   _initWidgetFunction( "FontMarker", QgsFontMarkerSymbolLayerV2Widget::create );
   _initWidgetFunction( "EllipseMarker", QgsEllipseSymbolLayerV2Widget::create );

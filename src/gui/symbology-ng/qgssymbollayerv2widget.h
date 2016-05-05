@@ -186,6 +186,7 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
     virtual QgsSymbolLayerV2* symbolLayer() override;
 
   public slots:
+    //TODO QGIS 3.0 - rename to setShape
     void setName();
     void setColorBorder( const QColor& color );
     void setColorFill( const QColor& color );
@@ -246,6 +247,60 @@ class GUI_EXPORT QgsSimpleFillSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     QgsSimpleFillSymbolLayerV2* mLayer;
 };
 
+
+///////////
+
+#include "ui_widget_filledmarker.h"
+
+class QgsFilledMarkerSymbolLayer;
+
+/** \ingroup gui
+ * \class QgsFilledMarkerSymbolLayerWidget
+ * \brief Widget for configuring QgsFilledMarkerSymbolLayer symbol layers.
+ * \note Added in version 2.16
+ */
+class GUI_EXPORT QgsFilledMarkerSymbolLayerWidget : public QgsSymbolLayerV2Widget, private Ui::WidgetFilledMarker
+{
+    Q_OBJECT
+
+  public:
+
+    /** Constructor for QgsFilledMarkerSymbolLayerWidget.
+     * @param vl associated vector layer
+     * @param parent parent widget
+     */
+    QgsFilledMarkerSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
+
+    ~QgsFilledMarkerSymbolLayerWidget();
+
+    /** Creates a new QgsFilledMarkerSymbolLayerWidget.
+     * @param vl associated vector layer
+     */
+    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsFilledMarkerSymbolLayerWidget( vl ); }
+
+    // from base class
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) override;
+    virtual QgsSymbolLayerV2* symbolLayer() override;
+
+  protected:
+    QgsFilledMarkerSymbolLayer* mLayer;
+
+  private slots:
+
+    void updateAssistantSymbol();
+    void setShape();
+    void setSize();
+    void setAngle();
+    void setOffset();
+    void on_mSizeUnitWidget_changed();
+    void on_mOffsetUnitWidget_changed();
+    void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
+    void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
+
+  private:
+
+    QgsMarkerSymbolV2* mAssistantPreviewSymbol;
+};
 
 ///////////
 

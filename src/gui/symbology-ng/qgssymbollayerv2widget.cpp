@@ -442,18 +442,16 @@ QgsSimpleMarkerSymbolLayerV2Widget::QgsSimpleMarkerSymbolLayerV2Widget( const Qg
     mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mVectorLayer, mAssistantPreviewSymbol ) );
 
   QSize size = lstNames->iconSize();
-  QStringList names;
-  names << "circle" << "rectangle" << "diamond" << "pentagon" << "hexagon" << "cross" << "cross_fill" << "triangle" << "equilateral_triangle"
-  << "star" << "arrow" << "line" << "arrowhead" << "cross2" << "filled_arrowhead" << "semi_circle" << "third_circle" << "quarter_circle"
-  << "quarter_square" << "half_square" << "diagonal_half_square" << "right_half_triangle" << "left_half_triangle";
   double markerSize = DEFAULT_POINT_SIZE * 2;
-  Q_FOREACH ( const QString& name, names )
+  Q_FOREACH ( QgsSimpleMarkerSymbolLayerBase::Shape shape, QgsSimpleMarkerSymbolLayerBase::availableShapes() )
   {
-    QgsSimpleMarkerSymbolLayerV2* lyr = new QgsSimpleMarkerSymbolLayerV2( name, QColor( 200, 200, 200 ), QColor( 0, 0, 0 ), markerSize );
+    QgsSimpleMarkerSymbolLayerV2* lyr = new QgsSimpleMarkerSymbolLayerV2( shape, markerSize );
+    lyr->setColor( QColor( 200, 200, 200 ) );
+    lyr->setOutlineColor( QColor( 0, 0, 0 ) );
     QIcon icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( lyr, QgsSymbolV2::MM, size );
     QListWidgetItem* item = new QListWidgetItem( icon, QString(), lstNames );
-    item->setData( Qt::UserRole, name );
-    item->setToolTip( name );
+    item->setData( Qt::UserRole, static_cast< int >( shape ) );
+    item->setToolTip( QgsSimpleMarkerSymbolLayerBase::encodeShape( shape ) );
     delete lyr;
   }
 
@@ -482,10 +480,10 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   mLayer = static_cast<QgsSimpleMarkerSymbolLayerV2*>( layer );
 
   // set values
-  QString name = mLayer->name();
+  QgsSimpleMarkerSymbolLayerBase::Shape shape = mLayer->shape();
   for ( int i = 0; i < lstNames->count(); ++i )
   {
-    if ( lstNames->item( i )->data( Qt::UserRole ).toString() == name )
+    if ( static_cast< QgsSimpleMarkerSymbolLayerBase::Shape >( lstNames->item( i )->data( Qt::UserRole ).toInt() ) == shape )
     {
       lstNames->setCurrentRow( i );
       break;
@@ -569,7 +567,7 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2Widget::symbolLayer()
 
 void QgsSimpleMarkerSymbolLayerV2Widget::setName()
 {
-  mLayer->setName( lstNames->currentItem()->data( Qt::UserRole ).toString() );
+  mLayer->setShape( static_cast< QgsSimpleMarkerSymbolLayerBase::Shape>( lstNames->currentItem()->data( Qt::UserRole ).toInt() ) );
   emit changed();
 }
 
@@ -838,6 +836,187 @@ void QgsSimpleFillSymbolLayerV2Widget::on_mOffsetUnitWidget_changed()
     emit changed();
   }
 }
+
+///////////
+
+QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
+    : QgsSymbolLayerV2Widget( parent, vl )
+{
+  mLayer = nullptr;
+
+  setupUi( this );
+  mSizeUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
+  mOffsetUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
+
+  spinOffsetX->setClearValue( 0.0 );
+  spinOffsetY->setClearValue( 0.0 );
+
+  //make a temporary symbol for the size assistant preview
+  mAssistantPreviewSymbol = new QgsMarkerSymbolV2();
+
+  if ( mVectorLayer )
+    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mVectorLayer, mAssistantPreviewSymbol ) );
+
+  QSize size = lstNames->iconSize();
+  double markerSize = DEFAULT_POINT_SIZE * 2;
+  Q_FOREACH ( QgsSimpleMarkerSymbolLayerBase::Shape shape, QgsSimpleMarkerSymbolLayerBase::availableShapes() )
+  {
+    if ( !QgsSimpleMarkerSymbolLayerBase::shapeIsFilled( shape ) )
+      continue;
+
+    QgsSimpleMarkerSymbolLayerV2* lyr = new QgsSimpleMarkerSymbolLayerV2( shape, markerSize );
+    lyr->setColor( QColor( 200, 200, 200 ) );
+    lyr->setOutlineColor( QColor( 0, 0, 0 ) );
+    QIcon icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( lyr, QgsSymbolV2::MM, size );
+    QListWidgetItem* item = new QListWidgetItem( icon, QString(), lstNames );
+    item->setData( Qt::UserRole, static_cast< int >( shape ) );
+    item->setToolTip( QgsSimpleMarkerSymbolLayerBase::encodeShape( shape ) );
+    delete lyr;
+  }
+
+  connect( lstNames, SIGNAL( currentRowChanged( int ) ), this, SLOT( setShape() ) );
+  connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize() ) );
+  connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setAngle() ) );
+  connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
+  connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
+  connect( this, SIGNAL( changed() ), this, SLOT( updateAssistantSymbol() ) );
+}
+
+QgsFilledMarkerSymbolLayerWidget::~QgsFilledMarkerSymbolLayerWidget()
+{
+  delete mAssistantPreviewSymbol;
+}
+
+void QgsFilledMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
+{
+  if ( layer->layerType() != "FilledMarker" )
+    return;
+
+  // layer type is correct, we can do the cast
+  mLayer = static_cast<QgsFilledMarkerSymbolLayer*>( layer );
+
+  // set values
+  QgsSimpleMarkerSymbolLayerBase::Shape shape = mLayer->shape();
+  for ( int i = 0; i < lstNames->count(); ++i )
+  {
+    if ( static_cast< QgsSimpleMarkerSymbolLayerBase::Shape >( lstNames->item( i )->data( Qt::UserRole ).toInt() ) == shape )
+    {
+      lstNames->setCurrentRow( i );
+      break;
+    }
+  }
+  whileBlocking( spinSize )->setValue( mLayer->size() );
+  whileBlocking( spinAngle )->setValue( mLayer->angle() );
+  whileBlocking( spinOffsetX )->setValue( mLayer->offset().x() );
+  whileBlocking( spinOffsetY )->setValue( mLayer->offset().y() );
+
+  mSizeUnitWidget->blockSignals( true );
+  mSizeUnitWidget->setUnit( mLayer->sizeUnit() );
+  mSizeUnitWidget->setMapUnitScale( mLayer->sizeMapUnitScale() );
+  mSizeUnitWidget->blockSignals( false );
+  mOffsetUnitWidget->blockSignals( true );
+  mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
+  mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
+  mOffsetUnitWidget->blockSignals( false );
+
+  //anchor points
+  whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mLayer->horizontalAnchorPoint() );
+  whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mLayer->verticalAnchorPoint() );
+
+  registerDataDefinedButton( mNameDDBtn, "name", QgsDataDefinedButton::String, tr( "string " ) + QLatin1String( "[<b>square</b>|<b>rectangle</b>|<b>diamond</b>|"
+                             "<b>pentagon</b>|<b>hexagon</b>|<b>triangle</b>|<b>equilateral_triangle</b>|"
+                             "<b>star</b>|<b>arrow</b>|<b>filled_arrowhead</b>|"
+                             "<b>circle</b>|<b>cross</b>|<b>cross_fill</b>|<b>x</b>|"
+                             "<b>line</b>|<b>arrowhead</b>|<b>cross2</b>|<b>semi_circle</b>|<b>third_circle</b>|<b>quarter_circle</b>|"
+                             "<b>quarter_square</b>|<b>half_square</b>|<b>diagonal_half_square</b>|<b>right_half_triangle</b>|<b>left_half_triangle</b>]" ) );
+  registerDataDefinedButton( mSizeDDBtn, "size", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
+  registerDataDefinedButton( mAngleDDBtn, "angle", QgsDataDefinedButton::Double, QgsDataDefinedButton::double180RotDesc() );
+  registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::String, QgsDataDefinedButton::doubleXYDesc() );
+  registerDataDefinedButton( mHorizontalAnchorDDBtn, "horizontal_anchor_point", QgsDataDefinedButton::String, QgsDataDefinedButton::horizontalAnchorDesc() );
+  registerDataDefinedButton( mVerticalAnchorDDBtn, "vertical_anchor_point", QgsDataDefinedButton::String, QgsDataDefinedButton::verticalAnchorDesc() );
+
+  updateAssistantSymbol();
+}
+
+QgsSymbolLayerV2* QgsFilledMarkerSymbolLayerWidget::symbolLayer()
+{
+  return mLayer;
+}
+
+void QgsFilledMarkerSymbolLayerWidget::setShape()
+{
+  mLayer->setShape( static_cast< QgsSimpleMarkerSymbolLayerBase::Shape>( lstNames->currentItem()->data( Qt::UserRole ).toInt() ) );
+  emit changed();
+}
+
+void QgsFilledMarkerSymbolLayerWidget::setSize()
+{
+  mLayer->setSize( spinSize->value() );
+  emit changed();
+}
+
+void QgsFilledMarkerSymbolLayerWidget::setAngle()
+{
+  mLayer->setAngle( spinAngle->value() );
+  emit changed();
+}
+
+void QgsFilledMarkerSymbolLayerWidget::setOffset()
+{
+  mLayer->setOffset( QPointF( spinOffsetX->value(), spinOffsetY->value() ) );
+  emit changed();
+}
+
+void QgsFilledMarkerSymbolLayerWidget::on_mSizeUnitWidget_changed()
+{
+  if ( mLayer )
+  {
+    mLayer->setSizeUnit( mSizeUnitWidget->unit() );
+    mLayer->setSizeMapUnitScale( mSizeUnitWidget->getMapUnitScale() );
+    emit changed();
+  }
+}
+
+void QgsFilledMarkerSymbolLayerWidget::on_mOffsetUnitWidget_changed()
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetUnit( mOffsetUnitWidget->unit() );
+    mLayer->setOffsetMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
+    emit changed();
+  }
+}
+
+void QgsFilledMarkerSymbolLayerWidget::on_mHorizontalAnchorComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setHorizontalAnchorPoint(( QgsMarkerSymbolLayerV2::HorizontalAnchorPoint ) index );
+    emit changed();
+  }
+}
+
+void QgsFilledMarkerSymbolLayerWidget::on_mVerticalAnchorComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setVerticalAnchorPoint(( QgsMarkerSymbolLayerV2::VerticalAnchorPoint ) index );
+    emit changed();
+  }
+}
+
+void QgsFilledMarkerSymbolLayerWidget::updateAssistantSymbol()
+{
+  for ( int i = mAssistantPreviewSymbol->symbolLayerCount() - 1 ; i >= 0; --i )
+  {
+    mAssistantPreviewSymbol->deleteSymbolLayer( i );
+  }
+  mAssistantPreviewSymbol->appendSymbolLayer( mLayer->clone() );
+  QgsDataDefined* ddSize = mLayer->getDataDefinedProperty( "size" );
+  if ( ddSize )
+    mAssistantPreviewSymbol->setDataDefinedSize( *ddSize );
+}
+
 
 ///////////
 
