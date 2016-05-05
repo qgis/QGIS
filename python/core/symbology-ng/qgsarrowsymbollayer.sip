@@ -23,7 +23,7 @@ class QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     virtual QgsSymbolV2* subSymbol();
 
     /** Set the sub symbol used for filling */
-    virtual bool setSubSymbol( QgsSymbolV2* symbol );
+    virtual bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
 
     /** Return a list of attributes required to render this feature */
     virtual QSet<QString> usedAttributes() const;
@@ -106,6 +106,9 @@ class QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
 
     /** Main drawing method */
     void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context );
-private:
+
+    void setColor( const QColor& c );
+
+  private:
     QgsArrowSymbolLayer( const QgsArrowSymbolLayer& );
 };

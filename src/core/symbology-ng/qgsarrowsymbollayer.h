@@ -127,6 +127,8 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     /** Main drawing method */
     void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context ) override;
 
+    void setColor( const QColor& c ) override;
+
   private:
     /** Filling sub symbol */
     QScopedPointer<QgsFillSymbolV2> mSymbol;

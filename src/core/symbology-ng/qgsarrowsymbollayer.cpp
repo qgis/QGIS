@@ -45,6 +45,7 @@ bool QgsArrowSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
     mSymbol.reset( static_cast<QgsFillSymbolV2*>( symbol ) );
     return true;
   }
+  delete symbol;
   return false;
 }
 
@@ -602,5 +603,13 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbolV2Re
     }
   }
   context.renderContext().expressionContext().popScope();
+}
+
+void QgsArrowSymbolLayer::setColor( const QColor& c )
+{
+  if ( mSymbol.data() )
+    mSymbol->setColor( c );
+
+  mColor = c;
 }
 
