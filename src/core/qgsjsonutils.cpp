@@ -113,9 +113,15 @@ QString QgsJSONUtils::encodeValue( const QVariant &value )
 
     default:
     case QVariant::String:
-      QString v = value.toString().replace( '"', "\\\"" )
+      QString v = value.toString()
+                  .replace( '\\', "\\\\" )
+                  .replace( '"', "\\\"" )
                   .replace( '\r', "\\r" )
+                  .replace( '\b', "\\b" )
+                  .replace( '\t', "\\t" )
+                  .replace( '/', "\\/" )
                   .replace( '\n', "\\n" );
+
       return v.prepend( '"' ).append( '"' );
   }
 }
