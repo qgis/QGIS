@@ -7,12 +7,29 @@
 #include <QStackedWidget>
 #include <QDialogButtonBox>
 #include <QCheckBox>
+#include <QUndoCommand>
+#include <QDomNode>
+#include <QTimer>
 
 class QgsLabelingWidget;
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRendererV2PropertiesDialog;
+class QgsUndoWidget;
 
+class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
+{
+  public:
+    QgsMapLayerStyleCommand( QgsMapLayer* layer, const QDomNode& current, const QDomNode& last);
+
+    virtual void undo() override;
+    virtual void redo() override;
+
+  private:
+    QgsMapLayer* mLayer;
+    QDomNode mXml;
+    QDomNode mLastState;
+};
 
 class APP_EXPORT QgsMapStylingWidget : public QWidget
 {
@@ -38,8 +55,11 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget
     int mVectorPage;
     int mStyleTabIndex;
     int mLabelTabIndex;
+    QTimer* mAutoApplyTimer;
+    QDomNode mLastStyleXml;
     QgsMapCanvas* mMapCanvas;
     bool mBlockAutoApply;
+    QgsUndoWidget* mUndoWidget;
     QLabel* mLayerTitleLabel;
     QgsMapLayer* mCurrentLayer;
     QStackedWidget* mStackedWidget;

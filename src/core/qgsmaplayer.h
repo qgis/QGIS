@@ -488,6 +488,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Return pointer to layer's undo stack */
     QUndoStack *undoStack();
 
+    QUndoStack *undoStackStyles();
+
     /* Layer legendUrl information */
     void setLegendUrl( const QString& legendUrl ) { mLegendUrl = legendUrl; }
     QString legendUrl() const { return mLegendUrl; }
@@ -775,6 +777,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Collection of undoable operations for this layer. **/
     QUndoStack mUndoStack;
+
+    QUndoStack mUndoStackStyles;
 
     //! Layer's persistent storage of additional properties (may be used by plugins)
     QgsObjectCustomProperties mCustomProperties;
