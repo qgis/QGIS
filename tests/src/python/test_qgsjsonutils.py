@@ -248,5 +248,43 @@ class TestQgsJSONUtils(unittest.TestCase):
 }"""
         self.assertEqual(exporter.exportFeature(feature, id=29), expected)
 
+        # test injecting extra attributes
+        expected = """{
+   "type":"Feature",
+   "id":5,
+   "properties":{
+      "name":"Valsier Peninsula",
+      "cost":6.8,
+      "population":198,
+      "extra":"val1",
+      "extra2":2
+   }
+}"""
+        self.assertEqual(exporter.exportFeature(feature, extraProperties={"extra": "val1", "extra2": 2}), expected)
+
+        exporter.setIncludeAttributes(False)
+        expected = """{
+   "type":"Feature",
+   "id":5,
+   "properties":{
+      "extra":"val1",
+      "extra2":{"nested_map":5,
+"nested_map2":"val"},
+      "extra3":[1,2,3]
+   }
+}"""
+        self.assertEqual(exporter.exportFeature(feature, extraProperties={"extra": "val1", "extra2": {"nested_map": 5, "nested_map2": "val"}, "extra3": [1, 2, 3]}), expected)
+        exporter.setIncludeGeometry(True)
+        expected = """{
+   "type":"Feature",
+   "id":5,
+   "geometry":
+   {"type": "Point", "coordinates": [5, 6]},
+   "properties":{
+      "extra":"val1",
+      "extra2":2
+   }
+}"""
+
 if __name__ == "__main__":
     unittest.main()

@@ -85,11 +85,13 @@ class CORE_EXPORT QgsJSONExporter
 
     /** Returns a GeoJSON string representation of a feature.
      * @param feature feature to convert
+     * @param extraProperties map of extra attributes to include in feature's properties
      * @param id optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
      * ID is used.
      * @returns GeoJSON string
      */
     QString exportFeature( const QgsFeature& feature,
+                           const QVariantMap& extraProperties = QVariantMap(),
                            const QVariant& id = QVariant() ) const;
 
   private:
