@@ -136,8 +136,10 @@ class AlgorithmsTest:
         try:
             if param['type'] == 'vector' or param['type'] == 'raster':
                 return self.load_layer(param)
-            if param['type'] == 'multi':
+            elif param['type'] == 'multi':
                 return [self.load_param(p) for p in param['params']]
+            elif param['type'] == 'file':
+                return self.filepath_from_param(param)
         except TypeError:
             # No type specified, use whatever is there
             return param

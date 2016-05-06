@@ -236,3 +236,231 @@ tests:
       output:
         hash: 270bbef9dd111af5df23a819cb0848e104e0cf4949e794a67fa0b3f2
         type: rasterhash
+
+  - algorithm: grass7:i.group
+    name: GRASS7 i.group
+    params:
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      input:
+        type: multi
+        params:
+        - name: custom/grass7/raster_6class.tif
+          type: raster
+        - name: custom/grass7/raster_5class.tif
+          type: raster
+        - name: custom/grass7/raster_4class.tif
+          type: raster
+    results:
+      group:
+        hash: e1a433546cc1fdf7061adc0d9b77676c9d66ee8e0773d471bdb39a37
+        type: rasterhash
+        
+  - algorithm: grass7:i.cluster
+    name: GRASS7 i.cluster
+    params:
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      classes: 5
+      convergence: 98
+      input:
+        params:
+        - name: custom/grass7/raster_6class.tif
+          type: raster
+        - name: custom/grass7/raster_5class.tif
+          type: raster
+        - name: custom/grass7/raster_4class.tif
+          type: raster
+        type: multi
+      iterations: 30
+      min_size: 17
+      separation: 0
+    results:
+      signaturefile:
+        type: regex
+        name: expected/grass7/i.cluster.sig.txt
+        rules:
+          - '#Class 1'
+          - '1.83333 1.53759 3.31579'
+          - '#Class 2'
+          - '2.11045 4.35498 3.32266'
+          - '#Class 3'
+          - '5.32655 1.72558 3.32713'
+          - '#Class 4'
+          - '4.34567 4.36522 3.30235'
+          - '#Class 5'
+          - '6 4.55734 3.30291'
+
+  - algorithm: grass7:i.oif
+    name: GRASS7 i.oif
+    params:
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      input:
+        params:
+        - name: custom/grass7/float_raster.tif
+          type: raster
+        - name: custom/grass7/raster_6class.tif
+          type: raster
+        - name: custom/grass7/raster_5class.tif
+          type: raster
+        - name: custom/grass7/raster_4class.tif
+          type: raster
+        type: multi
+    results:
+      output:
+        type: regex
+        name: expected/grass7/i.oif.txt
+        rules:
+          - '118773.1947'
+          - '4541.9055'
+          - '4369.2930'
+          - '128.6900'
+  
+  - algorithm: grass7:i.fft
+    name: GRASS7 i.fft
+    params:
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      input:
+        name: custom/grass7/float_raster.tif
+        type: raster
+    results:
+      imaginary:
+        hash: 94249384dd8b6019f0024501bc9a093cba9dd025c183d3fb46d77027
+        type: rasterhash
+      real:
+        hash: 09ab93c65aa2dde4da422b62a5ed3e38208e2da072cec2b0eb837a47
+        type: rasterhash
+
+  - algorithm: grass7:i.segment
+    name: GRASS7 i.segment
+    params:
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      input:
+        params:
+        - name: custom/grass7/raster_6class.tif
+          type: raster
+        - name: custom/grass7/raster_5class.tif
+          type: raster
+        - name: custom/grass7/raster_4class.tif
+          type: raster
+        type: multi
+      iterations: 20
+      memory: 300
+      method: 0
+      minsize: 1
+      similarity: 0
+      threshold: 0.5
+    results:
+      goodness:
+        hash: 5cb3cc31a68c03ea76578559b04ffa5f81331a4232abb38d09b29ea4
+        type: rasterhash
+      output:
+        hash: b65992a5d48b867d4a32a533f38e7a72cb1ba18f1e261c6be132baca
+        type: rasterhash
+
+  - algorithm: grass7:i.gensig
+    name: GRASS7 i.gensig
+    params:
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      input:
+        params:
+        - name: custom/grass7/float_raster.tif
+          type: raster
+        type: multi
+      trainingmap:
+        name: custom/grass7/raster_4class.tif
+        type: raster
+    results:
+      signaturefile:
+        type: file
+        name: expected/grass7/i.gensig.txt
+
+  - algorithm: grass7:i.gensigset
+    name: GRASS7 i.gensigset
+    params:
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      input:
+        params:
+        - name: custom/grass7/float_raster.tif
+          type: raster
+        type: multi
+      maxsig: 5
+      trainingmap:
+        name: custom/grass7/raster_4class.tif
+        type: raster
+    results:
+      signaturefile:
+        type: file
+        name: expected/grass7/i.gensigset.txt
+
+  - algorithm: grass7:i.rgb.his
+    name: GRASS7 i.rgb.his
+    params:
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      blue:
+        name: custom/grass7/raster_6class.tif
+        type: raster
+      green:
+        name: custom/grass7/raster_5class.tif
+        type: raster
+      red:
+        name: custom/grass7/raster_4class.tif
+        type: raster
+    results:
+      hue:
+        hash: d82c717b0aca5c7bb49d6f2b086a188a6fbdc397c533734911261f74
+        type: rasterhash
+      intensity:
+        hash: 6d75d7a40460611301a1f2c2b162d08ae20fb5527d80509f19748b3c
+        type: rasterhash
+      saturation:
+        hash: 07578ad38cf948473a519f040acb0235f60a592904ac8ef46aa607e1
+        type: rasterhash
+        
+  - algorithm: grass7:i.pansharpen
+    name: GRASS7 i.pansharpen
+    params:
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      blue:
+        name: custom/grass7/raster_4class.tif
+        type: raster
+      green:
+        name: custom/grass7/raster_5class.tif
+        type: raster
+      method: 2
+      pan:
+        name: custom/grass7/float_raster.tif
+        type: raster
+      red:
+        name: custom/grass7/raster_6class.tif
+        type: raster
+    results:
+      blueoutput:
+        hash: b8f6f6d11751ec26eb93daed87611e473efe6146ad3e84bce13c3393
+        type: rasterhash
+      greenoutput:
+        hash: 522356ef99242f7be6ad65c23af9148f5a807deca89c1efec1db38c1
+        type: rasterhash
+      redoutput:
+        hash: c6b99e12c2eab3016bbf8d15888c353c3fdb1b84674deac78e3e2bfc
+        type: rasterhash
+
+# Don't work, needs to handle external files in tests code
+  - algorithm: grass7:i.smap
+    name: GRASS7 i.smap
+    params:
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      blocksize: 1024
+      input:
+        params:
+        - name: custom/grass7/float_raster.tif
+          type: raster
+        type: multi
+      signaturefile:
+        type: file
+        name: expected/grass7/i.gensigset.txt
+    results:
+      goodness:
+        hash: 26c3f407312e8a9e03e91c32e526f71ea9cfa78037a90a5f78f0818e
+        type: rasterhash
+      output:
+        hash: f9e99ac3891b23c650add0478bb5225444183c61c6a4c321a7c2a16f
+        type: rasterhash
