@@ -25,9 +25,13 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from i import regroupRasters, file2Output, moveFile
+from i import regroupRasters, file2Output, moveFile, verifyRasterNum
 from os import path
 from ..Grass7Utils import Grass7Utils
+
+
+def checkParameterValuesBeforeExecuting(alg):
+    return verifyRasterNum(alg, 'input', 2)
 
 
 def processCommand(alg):
