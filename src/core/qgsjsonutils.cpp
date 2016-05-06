@@ -111,6 +111,40 @@ QString QgsJSONUtils::encodeValue( const QVariant &value )
     case QVariant::Bool:
       return value.toBool() ? "true" : "false";
 
+    case QVariant::StringList:
+    {
+      QStringList input = value.toStringList();
+      QStringList output;
+      Q_FOREACH ( const QString& string, input )
+      {
+        output << encodeValue( string );
+      }
+      return output.join( "," ).prepend( '[' ).append( ']' );
+    }
+
+    case QVariant::List:
+    {
+      QVariantList input = value.toList();
+      QStringList output;
+      Q_FOREACH ( const QVariant& v, input )
+      {
+        output << encodeValue( v );
+      }
+      return output.join( "," ).prepend( '[' ).append( ']' );
+    }
+
+    case QVariant::Map:
+    {
+      QMap< QString, QVariant > input = value.toMap();
+      QStringList output;
+      QMap< QString, QVariant >::const_iterator it = input.constBegin();
+      for ( ; it != input.constEnd(); ++it )
+      {
+        output << encodeValue( it.key() ) + ':' + encodeValue( it.value() );
+      }
+      return output.join( ",\n" ).prepend( '{' ).append( '}' );
+    }
+
     default:
     case QVariant::String:
       QString v = value.toString()

@@ -98,6 +98,12 @@ class TestQgsJSONUtils(unittest.TestCase):
         self.assertEqual(QgsJSONUtils.encodeValue('str\\ning'), '"str\\\\ning"')
         self.assertEqual(QgsJSONUtils.encodeValue('str\n\\\\ing'), '"str\\n\\\\\\\\ing"')
         self.assertEqual(QgsJSONUtils.encodeValue('str/ing'), '"str\\/ing"')
+        self.assertEqual(QgsJSONUtils.encodeValue([5, 6]), '[5,6]')
+        self.assertEqual(QgsJSONUtils.encodeValue(['a', 'b', 'c']), '["a","b","c"]')
+        self.assertEqual(QgsJSONUtils.encodeValue(['a', 3, 'c']), '["a",3,"c"]')
+        self.assertEqual(QgsJSONUtils.encodeValue(['a', 'c\nd']), '["a","c\\nd"]')
+        self.assertEqual(QgsJSONUtils.encodeValue({'key': 'value', 'key2': 5}), '{"key":"value",\n"key2":5}')
+        self.assertEqual(QgsJSONUtils.encodeValue({'key': [1, 2, 3], 'key2': {'nested': 'nested\\result'}}), '{"key":[1,2,3],\n"key2":{"nested":"nested\\\\result"}}')
 
     def testFeatureToGeoJSON(self):
         """ test converting features to GeoJSON """
