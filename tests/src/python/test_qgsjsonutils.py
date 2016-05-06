@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.testing import unittest, start_app
-from qgis.core import QgsJSONUtils, QgsFeature, QgsField, QgsFields, QgsWKBTypes, QgsGeometry, QgsPointV2, QgsLineStringV2, NULL
+from qgis.core import QgsJSONUtils, QgsJSONExporter, QgsFeature, QgsField, QgsFields, QgsWKBTypes, QgsGeometry, QgsPointV2, QgsLineStringV2, NULL
 from qgis.PyQt.QtCore import QVariant, QTextCodec
 
 start_app()
@@ -105,7 +105,7 @@ class TestQgsJSONUtils(unittest.TestCase):
         self.assertEqual(QgsJSONUtils.encodeValue({'key': 'value', 'key2': 5}), '{"key":"value",\n"key2":5}')
         self.assertEqual(QgsJSONUtils.encodeValue({'key': [1, 2, 3], 'key2': {'nested': 'nested\\result'}}), '{"key":[1,2,3],\n"key2":{"nested":"nested\\\\result"}}')
 
-    def testFeatureToGeoJSON(self):
+    def testJSONExporter(self):
         """ test converting features to GeoJSON """
         fields = QgsFields()
         fields.append(QgsField("name", QVariant.String))
@@ -115,6 +115,8 @@ class TestQgsJSONUtils(unittest.TestCase):
         feature = QgsFeature(fields, 5)
         feature.setGeometry(QgsGeometry(QgsPointV2(5, 6)))
         feature.setAttributes(['Valsier Peninsula', 6.8, 198])
+
+        exporter = QgsJSONExporter()
 
         expected = """{
    "type":"Feature",
@@ -127,7 +129,7 @@ class TestQgsJSONUtils(unittest.TestCase):
       "population":198
    }
 }"""
-        self.assertEqual(QgsJSONUtils.featureToGeoJSON(feature), expected)
+        self.assertEqual(exporter.exportFeature(feature), expected)
 
         # test with linestring for bbox inclusion
         l = QgsLineStringV2()
@@ -146,10 +148,12 @@ class TestQgsJSONUtils(unittest.TestCase):
       "population":198
    }
 }"""
-        self.assertEqual(QgsJSONUtils.featureToGeoJSON(feature), expected)
+        self.assertEqual(exporter.exportFeature(feature), expected)
 
         # test that precision is respected
         feature.setGeometry(QgsGeometry(QgsPointV2(5.444444444, 6.333333333)))
+        exporter.setPrecision(3)
+        self.assertEqual(exporter.precision(), 3)
         expected = """{
    "type":"Feature",
    "id":5,
@@ -161,10 +165,13 @@ class TestQgsJSONUtils(unittest.TestCase):
       "population":198
    }
 }"""
-        self.assertEqual(QgsJSONUtils.featureToGeoJSON(feature, 3), expected)
+        self.assertEqual(exporter.exportFeature(feature), expected)
         feature.setGeometry(QgsGeometry(QgsPointV2(5, 6)))
+        exporter.setPrecision(17)
 
         # test that attribute subset is respected
+        exporter.setAttributes([0, 2])
+        self.assertEqual(exporter.attributes(), [0, 2])
         expected = """{
    "type":"Feature",
    "id":5,
@@ -175,8 +182,10 @@ class TestQgsJSONUtils(unittest.TestCase):
       "population":198
    }
 }"""
-        self.assertEqual(QgsJSONUtils.featureToGeoJSON(feature, attrIndexes=[0, 2]), expected)
+        self.assertEqual(exporter.exportFeature(feature), expected)
 
+        exporter.setAttributes([1])
+        self.assertEqual(exporter.attributes(), [1])
         expected = """{
    "type":"Feature",
    "id":5,
@@ -186,9 +195,12 @@ class TestQgsJSONUtils(unittest.TestCase):
       "cost":6.8
    }
 }"""
-        self.assertEqual(QgsJSONUtils.featureToGeoJSON(feature, attrIndexes=[1]), expected)
+        self.assertEqual(exporter.exportFeature(feature), expected)
+        exporter.setAttributes([])
 
         # test excluding geometry
+        exporter.setIncludeGeometry(False)
+        self.assertEqual(exporter.includeGeometry(), False)
         feature.setGeometry(QgsGeometry(QgsLineStringV2(l)))
 
         expected = """{
@@ -200,23 +212,29 @@ class TestQgsJSONUtils(unittest.TestCase):
       "population":198
    }
 }"""
-        self.assertEqual(QgsJSONUtils.featureToGeoJSON(feature, includeGeom=False), expected)
+        self.assertEqual(exporter.exportFeature(feature), expected)
+        exporter.setIncludeGeometry(True)
+
         feature.setGeometry(QgsGeometry(QgsPointV2(5, 6)))
 
         # test excluding attributes
+        exporter.setIncludeAttributes(False)
+        self.assertEqual(exporter.includeAttributes(), False)
         expected = """{
    "type":"Feature",
    "id":5,
    "geometry":
    {"type": "Point", "coordinates": [5, 6]}
 }"""
-        self.assertEqual(QgsJSONUtils.featureToGeoJSON(feature, includeAttributes=False), expected)
+        self.assertEqual(exporter.exportFeature(feature), expected)
 
+        exporter.setIncludeGeometry(False)
         expected = """{
    "type":"Feature",
    "id":5
 }"""
-        self.assertEqual(QgsJSONUtils.featureToGeoJSON(feature, includeGeom=False, includeAttributes=False), expected)
+        self.assertEqual(exporter.exportFeature(feature), expected)
+        exporter.setIncludeAttributes(True)
 
         # test overriding ID
         expected = """{
@@ -228,7 +246,7 @@ class TestQgsJSONUtils(unittest.TestCase):
       "population":198
    }
 }"""
-        self.assertEqual(QgsJSONUtils.featureToGeoJSON(feature, includeGeom=False, id=29), expected)
+        self.assertEqual(exporter.exportFeature(feature, id=29), expected)
 
 if __name__ == "__main__":
     unittest.main()

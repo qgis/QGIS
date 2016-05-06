@@ -1868,13 +1868,16 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoord
 {
   QString id = QString( "%1.%2" ).arg( mTypeName, FID_TO_STRING( feat->id() ) );
 
+  QgsJSONExporter exporter;
+  exporter.setPrecision( prec );
+
   //copy feature so we can modify its geometry as required
   QgsFeature f( *feat );
   const QgsGeometry* geom = feat->constGeometry();
-  bool withGeom = false;
+  exporter.setIncludeGeometry( false );
   if ( geom && mWithGeom && mGeometryName != "NONE" )
   {
-    withGeom = true;
+    exporter.setIncludeGeometry( true );
     if ( mGeometryName == "EXTENT" )
     {
       QgsRectangle box = geom->boundingBox();
@@ -1907,9 +1910,10 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoord
     attrsToExport << idx;
   }
 
-  bool withAttributes = !attrsToExport.isEmpty();
+  exporter.setIncludeAttributes( !attrsToExport.isEmpty() );
+  exporter.setAttributes( attrsToExport );
 
-  return QgsJSONUtils::featureToGeoJSON( f, prec, attrsToExport, withGeom, withAttributes, id );
+  return exporter.exportFeature( f, id );
 }
 
 QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes ) /*const*/
