@@ -55,14 +55,35 @@ class QgsJSONExporter
      * @param attributes list of attribute indexes, or an empty list to include all
      * attributes
      * @see attributes()
+     * @see setExcludedAttributes()
+     * @note Attributes excluded via setExcludedAttributes() take precedence over
+     * attributes specified by this method.
      */
     void setAttributes( const QgsAttributeList& attributes );
 
     /** Returns the list of attributes which will be included in the JSON exports, or
      * an empty list if all attributes will be included.
      * @see setAttributes()
+     * @see excludedAttributes()
+     * @note Attributes excluded via excludedAttributes() take precedence over
+     * attributes returned by this method.
      */
     QgsAttributeList attributes() const;
+
+    /** Sets a list of attributes to specifically exclude from the JSON exports. Excluded attributes
+     * take precedence over attributes included via setAttributes().
+     * @param attributes list of attribute indexes to exclude
+     * @see excludedAttributes()
+     * @see setAttributes()
+     */
+    void setExcludedAttributes( const QgsAttributeList& attributes );
+
+    /** Returns a list of attributes which will be specifically excluded from the JSON exports. Excluded attributes
+     * take precedence over attributes included via attributes().
+     * @see setExcludedAttributes()
+     * @see attributes()
+     */
+    QgsAttributeList excludedAttributes() const;
 
     /** Returns a GeoJSON string representation of a feature.
      * @param feature feature to convert

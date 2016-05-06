@@ -198,6 +198,63 @@ class TestQgsJSONUtils(unittest.TestCase):
         self.assertEqual(exporter.exportFeature(feature), expected)
         exporter.setAttributes([])
 
+        # text excluding attributes
+
+        exporter.setExcludedAttributes([1])
+        self.assertEqual(exporter.excludedAttributes(), [1])
+        expected = """{
+   "type":"Feature",
+   "id":5,
+   "geometry":
+   {"type": "Point", "coordinates": [5, 6]},
+   "properties":{
+      "name":"Valsier Peninsula",
+      "population":198
+   }
+}"""
+        self.assertEqual(exporter.exportFeature(feature), expected)
+
+        exporter.setExcludedAttributes([1, 2])
+        self.assertEqual(exporter.excludedAttributes(), [1, 2])
+        expected = """{
+   "type":"Feature",
+   "id":5,
+   "geometry":
+   {"type": "Point", "coordinates": [5, 6]},
+   "properties":{
+      "name":"Valsier Peninsula"
+   }
+}"""
+        self.assertEqual(exporter.exportFeature(feature), expected)
+
+        exporter.setExcludedAttributes([0, 1, 2])
+        self.assertEqual(exporter.excludedAttributes(), [0, 1, 2])
+        expected = """{
+   "type":"Feature",
+   "id":5,
+   "geometry":
+   {"type": "Point", "coordinates": [5, 6]}
+}"""
+        self.assertEqual(exporter.exportFeature(feature), expected)
+
+        # test that excluded attributes take precedence over included
+
+        exporter.setAttributes([1, 2])
+        exporter.setExcludedAttributes([0, 1])
+        expected = """{
+   "type":"Feature",
+   "id":5,
+   "geometry":
+   {"type": "Point", "coordinates": [5, 6]},
+   "properties":{
+      "population":198
+   }
+}"""
+        self.assertEqual(exporter.exportFeature(feature), expected)
+
+        exporter.setAttributes([])
+        exporter.setExcludedAttributes([])
+
         # test excluding geometry
         exporter.setIncludeGeometry(False)
         self.assertEqual(exporter.includeGeometry(), False)
