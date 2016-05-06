@@ -15,6 +15,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsundowidget.h"
+#include "qgsrendererv2.h"
+#include "qgsrendererv2registry.h"
 
 QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent ) :
     QWidget( parent )
@@ -28,7 +30,7 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
 
   mAutoApplyTimer = new QTimer( this );
   mAutoApplyTimer->setSingleShot( true );
-  connect( mAutoApplyTimer, SIGNAL( timeout()), this, SLOT(apply()));
+  connect( mAutoApplyTimer, SIGNAL( timeout() ), this, SLOT( apply() ) );
 
   mStackedWidget = new QStackedWidget( this );
   mMapStyleTabs = new QTabWidget( this );
@@ -103,33 +105,35 @@ void QgsMapStylingWidget::apply()
 {
   if ( mStackedWidget->currentIndex() == mVectorPage )
   {
-      QString undoName = "Style Change";
-      int currentPage = mMapStyleTabs->currentIndex();
-      if ( currentPage == mLabelTabIndex )
-      {
-        mLabelingWidget->apply();
-        emit styleChanged( mCurrentLayer );
-        undoName = "Label Change";
-      }
-      else if ( currentPage == mStyleTabIndex )
-      {
-        mVectorStyleWidget->apply();
-        QgsProject::instance()->setDirty( true );
-        mMapCanvas->clearCache();
-        mMapCanvas->refresh();
-        emit styleChanged( mCurrentLayer );
-        undoName = "Style Change";
-      }
-      QString errorMsg;
-      QDomDocument doc( "style" );
-      QDomElement rootNode = doc.createElement( "qgis" );
-      doc.appendChild( rootNode );
-      mCurrentLayer->writeSymbology( rootNode, doc, errorMsg );
-      mCurrentLayer->undoStackStyles()->beginMacro( undoName );
-      mCurrentLayer->undoStackStyles()->push( new QgsMapLayerStyleCommand( mCurrentLayer, rootNode, mLastStyleXml ) );
-      mCurrentLayer->undoStackStyles()->endMacro();
-      // Override the last style on the stack
-      mLastStyleXml = rootNode.cloneNode();
+    QString undoName = "Style Change";
+    int currentPage = mMapStyleTabs->currentIndex();
+    if ( currentPage == mLabelTabIndex )
+    {
+      mLabelingWidget->apply();
+      emit styleChanged( mCurrentLayer );
+      undoName = "Label Change";
+    }
+    else if ( currentPage == mStyleTabIndex )
+    {
+      mVectorStyleWidget->apply();
+      QgsProject::instance()->setDirty( true );
+      mMapCanvas->clearCache();
+      mMapCanvas->refresh();
+      emit styleChanged( mCurrentLayer );
+      QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mCurrentLayer );
+      QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( layer->rendererV2()->type() );
+      undoName = QString( "Style Change - %1" ).arg( m->visibleName() );
+    }
+    QString errorMsg;
+    QDomDocument doc( "style" );
+    QDomElement rootNode = doc.createElement( "qgis" );
+    doc.appendChild( rootNode );
+    mCurrentLayer->writeSymbology( rootNode, doc, errorMsg );
+    mCurrentLayer->undoStackStyles()->beginMacro( undoName );
+    mCurrentLayer->undoStackStyles()->push( new QgsMapLayerStyleCommand( mCurrentLayer, rootNode, mLastStyleXml ) );
+    mCurrentLayer->undoStackStyles()->endMacro();
+    // Override the last style on the stack
+    mLastStyleXml = rootNode.cloneNode();
   }
 }
 
@@ -137,7 +141,7 @@ void QgsMapStylingWidget::autoApply()
 {
   if ( mLiveApplyCheck->isChecked() && !mBlockAutoApply )
   {
-      mAutoApplyTimer->start(100);
+    mAutoApplyTimer->start( 100 );
   }
 }
 
@@ -168,7 +172,7 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer( int currentPage )
     }
     QString errorMsg;
     QDomDocument doc( "style" );
-    mLastStyleXml = doc.createElement("style");
+    mLastStyleXml = doc.createElement( "style" );
     doc.appendChild( mLastStyleXml );
     mCurrentLayer->writeSymbology( mLastStyleXml, doc, errorMsg );
   }
@@ -185,7 +189,7 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer( int currentPage )
 }
 
 
-QgsMapLayerStyleCommand::QgsMapLayerStyleCommand(QgsMapLayer *layer, const QDomNode &current, const QDomNode &last)
+QgsMapLayerStyleCommand::QgsMapLayerStyleCommand( QgsMapLayer *layer, const QDomNode &current, const QDomNode &last )
     : QUndoCommand()
     , mLayer( layer )
     , mXml( current )
@@ -195,14 +199,14 @@ QgsMapLayerStyleCommand::QgsMapLayerStyleCommand(QgsMapLayer *layer, const QDomN
 
 void QgsMapLayerStyleCommand::undo()
 {
-   QString error;
-   mLayer->readSymbology( mLastState, error);
-   mLayer->triggerRepaint();
+  QString error;
+  mLayer->readSymbology( mLastState, error );
+  mLayer->triggerRepaint();
 }
 
 void QgsMapLayerStyleCommand::redo()
 {
-   QString error;
-   mLayer->readSymbology( mXml, error);
-   mLayer->triggerRepaint();
+  QString error;
+  mLayer->readSymbology( mXml, error );
+  mLayer->triggerRepaint();
 }
