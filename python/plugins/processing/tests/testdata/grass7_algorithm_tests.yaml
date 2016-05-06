@@ -599,3 +599,21 @@ tests:
       output:
         hash: f564acd642f6f0ea76cbe55d3565d083e055d2e81dde97365f786bad
         type: rasterhash
+
+  - algorithm: grass7:i.atcorr
+    name: GRASS7 i.atcorr
+    params:
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      input:
+        name: custom/grass7/raster_6class.tif
+        type: raster
+      visibility:
+        name: custom/grass7/raster_5class.tif
+        type: raster
+      parameters:
+        type: file
+        name: /home/medspx/projects/QGIS/python/plugins/processing/tests/testdata/custom/grass7/i.atcorr.txt
+    results:
+      output:
+        hash: fc3dbc04793ecba0a24400d489f3ebd0660400232602487e6861306c
+        type: rasterhash
