@@ -1913,7 +1913,7 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoord
   exporter.setIncludeAttributes( !attrsToExport.isEmpty() );
   exporter.setAttributes( attrsToExport );
 
-  return exporter.exportFeature( f, id );
+  return exporter.exportFeature( f, QVariantMap(), id );
 }
 
 QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes ) /*const*/
