@@ -22,7 +22,7 @@ originally part of the larger QgsRasterLayer class
 #define QGSCOLORRAMPSHADER_H
 
 #include <QColor>
-#include <QMap>
+#include <QVector>
 
 #include "qgsrastershaderfunction.h"
 
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     };
 
     /** \brief Get the custom colormap*/
-    QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const {return mColorRampItemList;}
+    QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const {return mColorRampItemList.toList();}
 
     /** \brief Get the color ramp type */
     QgsColorRampShader::ColorRamp_TYPE colorRampType() const {return mColorRampType;}
@@ -115,14 +115,14 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * mDiscreteClassification holds if one color is applied for all values
      * between two class breaks (true) or if the item values are (linearly)
      * interpolated for values between the item values (false)*/
-    QList<QgsColorRampShader::ColorRampItem> mColorRampItemList;
+    QVector<QgsColorRampShader::ColorRampItem> mColorRampItemList;
 
     /** \brief The color ramp type */
     QgsColorRampShader::ColorRamp_TYPE mColorRampType;
 
     /** Look up table to speed up finding the right color.
       * It is initialized on the first call to shade(). */
-    QList<int> mLUT;
+    QVector<int> mLUT;
     double mLUTOffset;
     double mLUTFactor;
     bool mLUTInitialized = false;

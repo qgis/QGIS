@@ -52,7 +52,7 @@ QString QgsColorRampShader::colorRampTypeAsQString()
 
 void QgsColorRampShader::setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList )
 {
-  mColorRampItemList = theList;
+  mColorRampItemList = theList.toVector();
   // Reset the look up table when the color ramp is changed
   mLUTInitialized = false;
   mLUT.clear();
@@ -236,7 +236,7 @@ bool QgsColorRampShader::shade( double theRedValue, double theGreenValue,
 
 void QgsColorRampShader::legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const
 {
-  QList<QgsColorRampShader::ColorRampItem>::const_iterator colorRampIt = mColorRampItemList.constBegin();
+  QVector<QgsColorRampShader::ColorRampItem>::const_iterator colorRampIt = mColorRampItemList.constBegin();
   for ( ; colorRampIt != mColorRampItemList.constEnd(); ++colorRampIt )
   {
     symbolItems.push_back( qMakePair( colorRampIt->label, colorRampIt->color ) );
