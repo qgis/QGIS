@@ -29,12 +29,56 @@ QgsJSONExporter::QgsJSONExporter( int precision, bool includeGeometry, bool incl
 QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVariantMap& extraProperties,
                                         const QVariant& id ) const
 {
+  //first step is to build up the properties list
+  QString properties;
+
+  int attributeCounter = 0;
+  if ( mIncludeAttributes || !extraProperties.isEmpty() )
+  {
+    //read all attribute values from the feature
+
+
+    if ( mIncludeAttributes )
+    {
+      const QgsFields* fields = feature.fields();
+
+      for ( int i = 0; i < fields->count(); ++i )
+      {
+        if (( !mAttributeIndexes.isEmpty() && !mAttributeIndexes.contains( i ) ) || mExcludedAttributeIndexes.contains( i ) )
+          continue;
+
+        if ( attributeCounter > 0 )
+          properties += ",\n";
+        QVariant val =  feature.attributes().at( i );
+
+        properties += QString( "      \"%1\":%2" ).arg( fields->at( i ).name(), QgsJSONUtils::encodeValue( val ) );
+
+        ++attributeCounter;
+      }
+    }
+
+    if ( !extraProperties.isEmpty() )
+    {
+      QVariantMap::const_iterator it = extraProperties.constBegin();
+      for ( ; it != extraProperties.constEnd(); ++it )
+      {
+        if ( attributeCounter > 0 )
+          properties += ",\n";
+
+        properties += QString( "      \"%1\":%2" ).arg( it.key(), QgsJSONUtils::encodeValue( it.value() ) );
+
+        ++attributeCounter;
+      }
+    }
+  }
+  bool hasProperties = attributeCounter > 0;
+
   QString s = "{\n   \"type\":\"Feature\",\n";
 
   // ID
   s += QString( "   \"id\":%1" ).arg( !id.isValid() ? QString::number( feature.id() ) : QgsJSONUtils::encodeValue( id ) );
 
-  if ( mIncludeAttributes || mIncludeGeometry || !extraProperties.isEmpty() )
+  if ( hasProperties || mIncludeGeometry )
     s += ",\n";
   else
     s += '\n';
@@ -53,55 +97,19 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
     }
     s += "   \"geometry\":\n   ";
     s += geom->exportToGeoJSON( mPrecision );
-    if ( mIncludeAttributes || !extraProperties.isEmpty() )
+    if ( hasProperties )
       s += ",\n";
     else
       s += '\n';
   }
 
-  if ( mIncludeAttributes || !extraProperties.isEmpty() )
+  if ( hasProperties )
   {
     //read all attribute values from the feature
-    s += "   \"properties\":{\n";
-    int attributeCounter = 0;
-
-    if ( mIncludeAttributes )
-    {
-      const QgsFields* fields = feature.fields();
-
-      for ( int i = 0; i < fields->count(); ++i )
-      {
-        if ( !mAttributeIndexes.isEmpty() && !mAttributeIndexes.contains( i ) )
-          continue;
-
-        if ( attributeCounter > 0 )
-          s += ",\n";
-        QVariant val =  feature.attributes().at( i );
-
-        s += QString( "      \"%1\":%2" ).arg( fields->at( i ).name(), QgsJSONUtils::encodeValue( val ) );
-
-        ++attributeCounter;
-      }
-    }
-
-    if ( !extraProperties.isEmpty() )
-    {
-      QVariantMap::const_iterator it = extraProperties.constBegin();
-      for ( ; it != extraProperties.constEnd(); ++it )
-      {
-        if ( attributeCounter > 0 )
-          s += ",\n";
-
-        s += QString( "      \"%1\":%2" ).arg( it.key(), QgsJSONUtils::encodeValue( it.value() ) );
-
-        ++attributeCounter;
-      }
-    }
-
-    s += "\n   }\n";
+    s += "   \"properties\":{\n" + properties + "\n   }\n";
   }
 
-  s += "}";
+  s += '}';
 
   return s;
 }

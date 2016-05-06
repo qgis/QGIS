@@ -74,14 +74,35 @@ class CORE_EXPORT QgsJSONExporter
      * @param attributes list of attribute indexes, or an empty list to include all
      * attributes
      * @see attributes()
+     * @see setExcludedAttributes()
+     * @note Attributes excluded via setExcludedAttributes() take precedence over
+     * attributes specified by this method.
      */
     void setAttributes( const QgsAttributeList& attributes ) { mAttributeIndexes = attributes; }
 
     /** Returns the list of attributes which will be included in the JSON exports, or
      * an empty list if all attributes will be included.
      * @see setAttributes()
+     * @see excludedAttributes()
+     * @note Attributes excluded via excludedAttributes() take precedence over
+     * attributes returned by this method.
      */
     QgsAttributeList attributes() const { return mAttributeIndexes; }
+
+    /** Sets a list of attributes to specifically exclude from the JSON exports. Excluded attributes
+     * take precedence over attributes included via setAttributes().
+     * @param attributes list of attribute indexes to exclude
+     * @see excludedAttributes()
+     * @see setAttributes()
+     */
+    void setExcludedAttributes( const QgsAttributeList& attributes ) { mExcludedAttributeIndexes = attributes; }
+
+    /** Returns a list of attributes which will be specifically excluded from the JSON exports. Excluded attributes
+     * take precedence over attributes included via attributes().
+     * @see setExcludedAttributes()
+     * @see attributes()
+     */
+    QgsAttributeList excludedAttributes() const { return mExcludedAttributeIndexes; }
 
     /** Returns a GeoJSON string representation of a feature.
      * @param feature feature to convert
@@ -100,7 +121,11 @@ class CORE_EXPORT QgsJSONExporter
     int mPrecision;
 
     //! List of attribute indexes to include in export, or empty list to include all attributes
+    //! @see mExcludedAttributeIndexes
     QgsAttributeList mAttributeIndexes;
+
+    //! List of attribute indexes to exclude from export
+    QgsAttributeList mExcludedAttributeIndexes;
 
     //! Whether to include geometry in JSON export
     bool mIncludeGeometry;
@@ -138,24 +163,6 @@ class CORE_EXPORT QgsJSONUtils
      * @note this function is a wrapper around QgsOgrUtils::stringToFields()
      */
     static QgsFields stringToFields( const QString& string, QTextCodec* encoding );
-
-    /** Returns a GeoJSON string representation of a feature.
-     * @param feature feature to convert
-     * @param precision maximum number of decimal places to use for geometry coordinates
-     * @param attrIndexes list of attribute indexes to include in GeoJSON, or an empty list to include
-     * all attributes
-     * @param includeGeom set to false to avoid including the geometry representation in the JSON output
-     * @param includeAttributes set to false to avoid including any attribute values in the JSON output
-     * @param id optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
-     * ID is used.
-     * @returns GeoJSON string
-     */
-    static QString featureToGeoJSON( const QgsFeature& feature,
-                                     int precision = 17,
-                                     const QgsAttributeList& attrIndexes = QgsAttributeList(),
-                                     bool includeGeom = true,
-                                     bool includeAttributes = true,
-                                     const QVariant& id = QVariant() );
 
     /** Encodes a value to a JSON string representation, adding appropriate quotations and escaping
      * where required.
