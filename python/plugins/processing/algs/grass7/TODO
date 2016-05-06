@@ -8,7 +8,7 @@ i.* modules:
 
 * i.albedo: needs better data
 * i.aster.toar: needs OutputDir support in tests
-* i.atcorr: broken implementation
+* i.atcorr: OK (basic implementation)
 * i.biomass: OK (basic implementation)
 * i.cca: needs OutputDir support in tests
 * i.cluster: OK (full implementation)
