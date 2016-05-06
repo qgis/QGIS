@@ -47,7 +47,8 @@ from processing.core.outputs import (
 from processing.core.parameters import (
     ParameterRaster,
     ParameterVector,
-    ParameterMultipleInput
+    ParameterMultipleInput,
+    ParameterFile
 )
 
 
@@ -147,6 +148,17 @@ def createTest(text):
             p = {
                 'type': 'multi',
                 'params': newparam
+            }
+            if not schema:
+                p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
+
+            params[param.name] = p
+        elif isinstance(param, ParameterFile):
+            filename = token[1:-1]
+            schema, filepath = extractSchemaPath(filename)
+            p = {
+                'type': 'file',
+                'name': filepath
             }
             if not schema:
                 p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
