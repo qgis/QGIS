@@ -85,7 +85,6 @@ class AlgorithmsTest:
         QgsMapLayerRegistry.instance().removeAllMapLayers()
 
         params = self.load_params(defs['params'])
-
         alg = processing.Processing.getAlgorithm(defs['algorithm']).getCopy()
 
         if isinstance(params, list):
@@ -100,7 +99,7 @@ class AlgorithmsTest:
 
         expectFailure = False
         if 'expectedFailure' in defs:
-            exec('\n'.join(defs['expectedFailure'][:-1])) in globals(), locals()
+            exec(('\n'.join(defs['expectedFailure'][:-1])), globals(), locals())
             expectFailure = eval(defs['expectedFailure'][-1])
 
         def doCheck():
@@ -174,7 +173,7 @@ class AlgorithmsTest:
         if param['type'] == 'vector':
             lyr = QgsVectorLayer(filepath, param['name'], 'ogr')
         elif param['type'] == 'raster':
-            lyr = QgsRasterLayer(filepath, param['name'], 'ogr')
+            lyr = QgsRasterLayer(filepath, param['name'], 'gdal')
 
         self.assertTrue(lyr.isValid(), 'Could not load layer "{}"'.format(filepath))
         QgsMapLayerRegistry.instance().addMapLayer(lyr)
