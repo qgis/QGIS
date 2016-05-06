@@ -276,23 +276,6 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
   int cap = provider->capabilities();
   bool success = true;
 
-  //convert added features to a type accepted by the backend
-  QgsFeatureMap::iterator addedIt = mAddedFeatures.begin();
-  for ( ; addedIt != mAddedFeatures.end(); ++addedIt )
-  {
-    QgsGeometry* geom = addedIt.value().geometry();
-    if ( geom )
-    {
-      geom->setGeometry( outputGeometry( geom->geometry() ) );
-    }
-  }
-
-  QgsGeometryMap::iterator changedIt = mChangedGeometries.begin();
-  for ( ; changedIt != mChangedGeometries.end(); ++changedIt )
-  {
-    changedIt.value().setGeometry( outputGeometry( changedIt.value().geometry() ) );
-  }
-
   // geometry updates   attribute updates
   // yes                no                    => changeGeometryValues
   // no                 yes                   => changeAttributeValues
@@ -688,64 +671,4 @@ void QgsVectorLayerEditBuffer::updateAttributeMapIndex( QgsAttributeMap& map, in
 void QgsVectorLayerEditBuffer::updateLayerFields()
 {
   L->updateFields();
-}
-
-QgsAbstractGeometryV2* QgsVectorLayerEditBuffer::outputGeometry( QgsAbstractGeometryV2* geom ) const
-{
-  if ( !geom || !L )
-  {
-    delete geom;
-    return nullptr;
-  }
-
-  QgsWKBTypes::Type providerGeomType = QGis::fromOldWkbType( L->dataProvider()->geometryType() );
-
-  if ( geom->wkbType() == providerGeomType )
-  {
-    return geom;
-  }
-
-  QgsAbstractGeometryV2* outputGeom = geom;
-
-  //convert to multitype if necessary
-  if ( QgsWKBTypes::isMultiType( providerGeomType ) && !QgsWKBTypes::isMultiType( geom->wkbType() ) )
-  {
-    outputGeom = QgsGeometryFactory::geomFromWkbType( providerGeomType );
-    QgsGeometryCollectionV2* geomCollection = dynamic_cast<QgsGeometryCollectionV2*>( outputGeom );
-    if ( geomCollection )
-    {
-      geomCollection->addGeometry( geom->clone() );
-    }
-  }
-
-  //convert to curved type if necessary
-  if ( !QgsWKBTypes::isCurvedType( outputGeom->wkbType() ) && QgsWKBTypes::isCurvedType( providerGeomType ) )
-  {
-    QgsAbstractGeometryV2* curveGeom = outputGeom->toCurveType();
-    if ( curveGeom )
-    {
-      outputGeom = curveGeom;
-    }
-  }
-
-  //convert to linear type from curved type
-  if ( QgsWKBTypes::isCurvedType( outputGeom->wkbType() ) && !QgsWKBTypes::isCurvedType( providerGeomType ) )
-  {
-    QgsAbstractGeometryV2* segmentizedGeom  = outputGeom->segmentize();
-    if ( segmentizedGeom )
-    {
-      outputGeom = segmentizedGeom;
-    }
-  }
-
-  //set z/m types
-  if ( QgsWKBTypes::hasZ( providerGeomType ) )
-  {
-    outputGeom->addZValue();
-  }
-  if ( QgsWKBTypes::hasM( providerGeomType ) )
-  {
-    outputGeom->addMValue();
-  }
-  return outputGeom;
 }

@@ -188,9 +188,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
     /** Changed geometries which are not commited. */
     QgsGeometryMap mChangedGeometries;
-
-  private:
-    QgsAbstractGeometryV2* outputGeometry( QgsAbstractGeometryV2* geom ) const;
 };
 
 #endif // QGSVECTORLAYEREDITBUFFER_H
