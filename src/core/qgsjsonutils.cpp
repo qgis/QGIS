@@ -17,54 +17,48 @@
 #include "qgsogrutils.h"
 #include "qgsgeometry.h"
 
-QgsFeatureList QgsJSONUtils::stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding )
+
+QgsJSONExporter::QgsJSONExporter( int precision, bool includeGeometry, bool includeAttributes )
+    : mPrecision( precision )
+    , mIncludeGeometry( includeGeometry )
+    , mIncludeAttributes( includeAttributes )
 {
-  return QgsOgrUtils::stringToFeatureList( string, fields, encoding );
+
 }
 
-QgsFields QgsJSONUtils::stringToFields( const QString &string, QTextCodec *encoding )
-{
-  return QgsOgrUtils::stringToFields( string, encoding );
-}
-
-QString QgsJSONUtils::featureToGeoJSON( const QgsFeature& feature,
-                                        int precision,
-                                        const QgsAttributeList& attrIndexes,
-                                        bool includeGeom,
-                                        bool includeAttributes,
-                                        const QVariant& id )
+QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVariant& id ) const
 {
   QString s = "{\n   \"type\":\"Feature\",\n";
 
   // ID
-  s += QString( "   \"id\":%1" ).arg( !id.isValid() ? QString::number( feature.id() ) : encodeValue( id ) );
+  s += QString( "   \"id\":%1" ).arg( !id.isValid() ? QString::number( feature.id() ) : QgsJSONUtils::encodeValue( id ) );
 
-  if ( includeAttributes || includeGeom )
+  if ( mIncludeAttributes || mIncludeGeometry )
     s += ",\n";
   else
     s += '\n';
 
   const QgsGeometry* geom = feature.constGeometry();
-  if ( geom && !geom->isEmpty() && includeGeom )
+  if ( geom && !geom->isEmpty() && mIncludeGeometry )
   {
     QgsRectangle box = geom->boundingBox();
 
     if ( QgsWKBTypes::flatType( geom->geometry()->wkbType() ) != QgsWKBTypes::Point )
     {
-      s += QString( "   \"bbox\":[%1, %2, %3, %4],\n" ).arg( qgsDoubleToString( box.xMinimum(), precision ),
-           qgsDoubleToString( box.yMinimum(), precision ),
-           qgsDoubleToString( box.xMaximum(), precision ),
-           qgsDoubleToString( box.yMaximum(), precision ) );
+      s += QString( "   \"bbox\":[%1, %2, %3, %4],\n" ).arg( qgsDoubleToString( box.xMinimum(), mPrecision ),
+           qgsDoubleToString( box.yMinimum(), mPrecision ),
+           qgsDoubleToString( box.xMaximum(), mPrecision ),
+           qgsDoubleToString( box.yMaximum(), mPrecision ) );
     }
     s += "   \"geometry\":\n   ";
-    s += geom->exportToGeoJSON( precision );
-    if ( includeAttributes )
+    s += geom->exportToGeoJSON( mPrecision );
+    if ( mIncludeAttributes )
       s += ",\n";
     else
       s += '\n';
   }
 
-  if ( includeAttributes )
+  if ( mIncludeAttributes )
   {
     //read all attribute values from the feature
     s += "   \"properties\":{\n";
@@ -74,14 +68,14 @@ QString QgsJSONUtils::featureToGeoJSON( const QgsFeature& feature,
 
     for ( int i = 0; i < fields->count(); ++i )
     {
-      if ( !attrIndexes.isEmpty() && !attrIndexes.contains( i ) )
+      if ( !mAttributeIndexes.isEmpty() && !mAttributeIndexes.contains( i ) )
         continue;
 
       if ( attributeCounter > 0 )
         s += ",\n";
       QVariant val =  feature.attributes().at( i );
 
-      s += QString( "      \"%1\":%2" ).arg( fields->at( i ).name(), encodeValue( val ) );
+      s += QString( "      \"%1\":%2" ).arg( fields->at( i ).name(), QgsJSONUtils::encodeValue( val ) );
 
       ++attributeCounter;
     }
@@ -92,6 +86,21 @@ QString QgsJSONUtils::featureToGeoJSON( const QgsFeature& feature,
   s += "}";
 
   return s;
+}
+
+
+//
+// QgsJSONUtils
+//
+
+QgsFeatureList QgsJSONUtils::stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding )
+{
+  return QgsOgrUtils::stringToFeatureList( string, fields, encoding );
+}
+
+QgsFields QgsJSONUtils::stringToFields( const QString &string, QTextCodec *encoding )
+{
+  return QgsOgrUtils::stringToFields( string, encoding );
 }
 
 QString QgsJSONUtils::encodeValue( const QVariant &value )

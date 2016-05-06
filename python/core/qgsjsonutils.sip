@@ -1,4 +1,82 @@
 /** \ingroup core
+ * \class QgsJSONExporter
+ * \brief Handles exporting QgsFeature features to GeoJSON features.
+ * \note Added in version 2.16
+ */
+
+class QgsJSONExporter
+{
+%TypeHeaderCode
+#include <qgsjsonutils.h>
+%End
+  public:
+
+    /** Constructor for QgsJSONExporter.
+     * @param precision maximum number of decimal places to use for geometry coordinates
+     * @param includeGeometry set to false to avoid including the geometry representation in the JSON output
+     * @param includeAttributes set to false to avoid including any attribute values in the JSON output
+     */
+    QgsJSONExporter( int precision = 17, bool includeGeometry = true, bool includeAttributes = true );
+
+    /** Sets the maximum number of decimal places to use in geometry coordinates.
+     * @param precision number of decimal places
+     * @see precision()
+     */
+    void setPrecision( int precision );
+
+    /** Returns the maximum number of decimal places to use in geometry coordinates.
+     * @see setPrecision()
+     */
+    int precision() const;
+
+    /** Sets whether to include geometry in the JSON exports.
+     * @param includeGeometry set to false to prevent geometry inclusion
+     * @see includeGeometry()
+     */
+    void setIncludeGeometry( bool includeGeometry );
+
+    /** Returns whether geometry will be included in the JSON exports.
+     * @see setIncludeGeometry()
+     */
+    bool includeGeometry() const;
+
+    /** Sets whether to include attributes in the JSON exports.
+     * @param includeAttributes set to false to prevent attribute inclusion
+     * @see includeAttributes()
+     */
+    void setIncludeAttributes( bool includeAttributes );
+
+    /** Returns whether attributes will be included in the JSON exports.
+     * @see setIncludeAttributes()
+     */
+    bool includeAttributes() const;
+
+    /** Sets the list of attributes to include in the JSON exports.
+     * @param attributes list of attribute indexes, or an empty list to include all
+     * attributes
+     * @see attributes()
+     */
+    void setAttributes( const QgsAttributeList& attributes );
+
+    /** Returns the list of attributes which will be included in the JSON exports, or
+     * an empty list if all attributes will be included.
+     * @see setAttributes()
+     */
+    QgsAttributeList attributes() const;
+
+    /** Returns a GeoJSON string representation of a feature.
+     * @param feature feature to convert
+     * @param id optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
+     * ID is used.
+     * @returns GeoJSON string
+     */
+    QString exportFeature( const QgsFeature& feature,
+                           const QVariant& id = QVariant() ) const;
+
+};
+
+
+/** \ingroup core
  * \class QgsJSONUtils
  * \brief Helper utilities for working with JSON and GeoJSON conversions.
  * \note Added in version 2.16
@@ -30,24 +108,6 @@ class QgsJSONUtils
      * @note this function is a wrapper around QgsOgrUtils::stringToFields()
      */
     static QgsFields stringToFields( const QString& string, QTextCodec* encoding );
-
-    /** Returns a GeoJSON string representation of a feature.
-     * @param feature feature to convert
-     * @param precision maximum number of decimal places to use for geometry coordinates
-     * @param attrIndexes list of attribute indexes to include in GeoJSON, or an empty list to include
-     * all attributes
-     * @param includeGeom set to false to avoid including the geometry representation in the JSON output
-     * @param includeAttributes set to false to avoid including any attribute values in the JSON output
-     * @param id optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
-     * ID is used.
-     * @returns GeoJSON string
-     */
-    static QString featureToGeoJSON( const QgsFeature& feature,
-                                     int precision = 17,
-                                     const QgsAttributeList& attrIndexes = QgsAttributeList(),
-                                     bool includeGeom = true,
-                                     bool includeAttributes = true,
-                                     const QVariant& id = QVariant() );
 
     /** Encodes a value to a JSON string representation, adding appropriate quotations and escaping
      * where required.
