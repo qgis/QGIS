@@ -139,10 +139,18 @@ def createTest(text):
         elif isinstance(param, ParameterMultipleInput):
             multiparams = token[1:-1].split(';')
             newparam = []
+
+            # Handle datatype detection
+            dataType = param.dataType()
+            if dataType in ['points', 'lines', 'polygons', 'any vectors']:
+                dataType = 'vector'
+            else:
+                dataType = 'raster'
+
             for mp in multiparams:
                 schema, filepath = extractSchemaPath(mp)
                 newparam.append({
-                    'type': 'vector',
+                    'type': dataType,
                     'name': filepath
                 })
             p = {
