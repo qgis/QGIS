@@ -443,7 +443,6 @@ tests:
         hash: c6b99e12c2eab3016bbf8d15888c353c3fdb1b84674deac78e3e2bfc
         type: rasterhash
 
-# Don't work, needs to handle external files in tests code
   - algorithm: grass7:i.smap
     name: GRASS7 i.smap
     params:
@@ -463,4 +462,140 @@ tests:
         type: rasterhash
       output:
         hash: f9e99ac3891b23c650add0478bb5225444183c61c6a4c321a7c2a16f
+        type: rasterhash
+
+  - algorithm: grass7:i.maxlik
+    name: GRASS7 i.maxlik
+    params:
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      input:
+        params:
+        - name: custom/grass7/raster_6class.tif
+          type: raster
+        - name: custom/grass7/raster_5class.tif
+          type: raster
+        - name: custom/grass7/raster_4class.tif
+          type: raster
+        type: multi
+      signaturefile:
+        type: file
+        name: custom/grass7/i.cluster.txt
+    results:
+      output:
+        hash: a7b63bdda06fdcac715b8fe22e440238594a3dd0e189ca2328a3d694
+        type: rasterhash
+      reject:
+        hash: 87b3d0be1315a040a61c4d4dec2bd5837881ad207a4140a89a28997a
+        type: rasterhash
+
+#  - algorithm: grass7:i.evapo.time
+#    name: GRASS7 i.evapo.time
+#    params:
+#      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+#      eta:
+#        params:
+#        - name: custom/grass7/raster_5class.tif
+#          type: raster
+#        - name: custom/grass7/raster_4class.tif
+#          type: raster
+#        type: multi
+#      eta_doy:
+#        params:
+#        - name: custom/grass7/raster_6class.tif
+#          type: raster
+#        - name: custom/grass7/raster_5class.tif
+#          type: raster
+#        type: multi
+#      eto:
+#        params:
+#        - name: custom/grass7/float_raster.tif
+#          type: raster
+#        - name: custom/grass7/raster_6class.tif
+#          type: raster
+#        type: multi
+#    results:
+#      output:
+#        hash: a361b729bf0b0628fa66822297dc57e71e0b2e56331f7145c3cfdce6
+#        type: rasterhash
+
+  - algorithm: grass7:i.eb.hsebal01
+    name: GRASS7 i.eb.hsebal01
+    params:
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      aerodynresistance:
+        name: custom/grass7/raster_6class.tif
+        type: raster
+      frictionvelocitystar: 0.32407
+      netradiation:
+        name: custom/grass7/raster_4class.tif
+        type: raster
+      soilheatflux:
+        name: custom/grass7/raster_5class.tif
+        type: raster
+      temperaturemeansealevel:
+        name: custom/grass7/float_raster.tif
+        type: raster
+      vapourpressureactual: 1.511
+    results:
+      output:
+        hash: 2706c64a65a6a603857937554a5e8787a1429e1ca6b8551b0dea7b8f
+        type: rasterhash
+        
+  - algorithm: grass7:i.modis.qc
+    name: GRASS7 i.modis.qc
+    params:
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      input:
+        name: custom/grass7/float_raster.tif
+        type: raster
+      productname: 8
+      qcname: 5
+    results:
+      output:
+        hash: 0439e59b8c142a7f58cdece674c058891b64aafb1273ed6ce5e3ecf9
+        type: rasterhash
+
+  - algorithm: grass7:i.image.mosaic
+    name: GRASS7 i.image.mosaic
+    params:
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      input:
+        params:
+        - name: custom/grass7/raster_6class.tif
+          type: raster
+        - name: custom/grass7/raster_5class.tif
+          type: raster
+        - name: custom/grass7/raster_4class.tif
+          type: raster
+        type: multi
+    results:
+      output:
+        hash: 651bde2da0f150c0dbe7790da98f371e56de20a3f1cbb13ef6a69657
+        type: rasterhash
+
+  - algorithm: grass7:i.eb.hsebal01.coords
+    name: GRASS7 i.eb.hsebal01.coords
+    params:
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      aerodynresistance:
+        name: custom/grass7/float_raster.tif
+        type: raster
+      column_dry_pixel: '50'
+      column_wet_pixel: '10'
+      frictionvelocitystar: 0.32407
+      netradiation:
+        name: custom/grass7/float_raster.tif
+        type: raster
+      row_dry_pixel: '50'
+      row_wet_pixel: '10'
+      soilheatflux:
+        name: custom/grass7/float_raster.tif
+        type: raster
+      temperaturemeansealevel:
+        name: custom/grass7/float_raster.tif
+        type: raster
+      vapourpressureactual: 1.511
+    results:
+      output:
+        hash: f564acd642f6f0ea76cbe55d3565d083e055d2e81dde97365f786bad
         type: rasterhash
