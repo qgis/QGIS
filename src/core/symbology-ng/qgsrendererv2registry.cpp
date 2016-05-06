@@ -112,3 +112,13 @@ QStringList QgsRendererV2Registry::renderersList()
 {
   return mRenderersOrder;
 }
+
+
+QList<QGis::GeometryType> QgsRendererV2AbstractMetadata::supportedGeometryTypes()
+{
+    QList<QGis::GeometryType> types;
+    types << QGis::Polygon;
+    types << QGis::Line;
+    types << QGis::Point;
+    return types;
+}

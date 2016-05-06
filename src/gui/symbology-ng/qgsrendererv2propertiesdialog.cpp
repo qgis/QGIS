@@ -131,7 +131,8 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
   Q_FOREACH ( const QString& name, renderers )
   {
     QgsRendererV2AbstractMetadata* m = reg->rendererMetadata( name );
-    cboRenderers->addItem( m->icon(), m->visibleName(), name );
+    if ( m->supportedGeometryTypes().contains( mLayer->geometryType() ) )
+        cboRenderers->addItem( m->icon(), m->visibleName(), name );
   }
 
   cboRenderers->setCurrentIndex( -1 ); // set no current renderer
