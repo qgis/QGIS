@@ -29,17 +29,38 @@ QgsJSONExporter::QgsJSONExporter( const QgsVectorLayer* vectorLayer, int precisi
     , mIncludeRelatedAttributes( false )
     , mLayerId( vectorLayer ? vectorLayer->id() : QString() )
 {
-
+  if ( vectorLayer )
+  {
+    mCrs = vectorLayer->crs();
+    mTransform.setSourceCrs( mCrs );
+  }
+  mTransform.setDestCRS( QgsCoordinateReferenceSystem( 4326, QgsCoordinateReferenceSystem::EpsgCrsId ) );
 }
 
 void QgsJSONExporter::setVectorLayer( const QgsVectorLayer* vectorLayer )
 {
   mLayerId = vectorLayer ? vectorLayer->id() : QString();
+  if ( vectorLayer )
+  {
+    mCrs = vectorLayer->crs();
+    mTransform.setSourceCrs( mCrs );
+  }
 }
 
 QgsVectorLayer *QgsJSONExporter::vectorLayer() const
 {
   return qobject_cast< QgsVectorLayer* >( QgsMapLayerRegistry::instance()->mapLayer( mLayerId ) );
+}
+
+void QgsJSONExporter::setSourceCrs( const QgsCoordinateReferenceSystem& crs )
+{
+  mCrs = crs;
+  mTransform.setSourceCrs( mCrs );
+}
+
+const QgsCoordinateReferenceSystem& QgsJSONExporter::sourceCrs() const
+{
+  return mCrs;
 }
 
 QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVariantMap& extraProperties,
@@ -53,9 +74,18 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
   const QgsGeometry* geom = feature.constGeometry();
   if ( geom && !geom->isEmpty() && mIncludeGeometry )
   {
-    QgsRectangle box = geom->boundingBox();
+    const QgsGeometry* exportGeom = geom;
+    if ( mCrs.isValid() )
+    {
+      QgsGeometry* clone = new QgsGeometry( *geom );
+      if ( clone->transform( mTransform ) == 0 )
+        exportGeom = clone;
+      else
+        delete clone;
+    }
+    QgsRectangle box = exportGeom->boundingBox();
 
-    if ( QgsWKBTypes::flatType( geom->geometry()->wkbType() ) != QgsWKBTypes::Point )
+    if ( QgsWKBTypes::flatType( exportGeom->geometry()->wkbType() ) != QgsWKBTypes::Point )
     {
       s += QString( "   \"bbox\":[%1, %2, %3, %4],\n" ).arg( qgsDoubleToString( box.xMinimum(), mPrecision ),
            qgsDoubleToString( box.yMinimum(), mPrecision ),
@@ -63,8 +93,11 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
            qgsDoubleToString( box.yMaximum(), mPrecision ) );
     }
     s += "   \"geometry\":\n   ";
-    s += geom->exportToGeoJSON( mPrecision );
+    s += exportGeom->exportToGeoJSON( mPrecision );
     s += ",\n";
+
+    if ( exportGeom != geom )
+      delete exportGeom;
   }
   else
   {
