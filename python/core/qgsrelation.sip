@@ -57,14 +57,14 @@ class QgsRelation
     void setRelationName( const QString& name );
 
     /**
-     * Set the referencing layer id. This layer will be searched in the registry.
+     * Set the referencing (child) layer id. This layer will be searched in the registry.
      *
      * @param id
      */
     void setReferencingLayer( const QString& id );
 
     /**
-     * Set the referenced layer id. This layer will be searched in the registry.
+     * Set the referenced (parent) layer id. This layer will be searched in the registry.
      *
      * @param id
      */
@@ -72,17 +72,17 @@ class QgsRelation
 
     /**
      * Add a field pairs which is part of this relation
-     * The first element of each pair are the field names fo the foreign key.
+     * The first element of each pair are the field names of the foreign key.
      * The second element of each pair are the field names of the matching primary key.
      *
-     * @param referencingField  The field name on the referencing layer (FK)
-     * @param referencedField   The field name on the referenced layer  (PK)
+     * @param referencingField  The field name on the referencing (child) layer (FK)
+     * @param referencedField   The field name on the referenced (parent) layer  (PK)
      */
     void addFieldPair( const QString& referencingField, const QString& referencedField );
 
     /**
      * Add a field pairs which is part of this relation
-     * The first element of each pair are the field names fo the foreign key.
+     * The first element of each pair are the field names of the foreign key.
      * The second element of each pair are the field names of the matching primary key.
      *
      * @param fieldPair A pair of two strings
@@ -206,7 +206,7 @@ class QgsRelation
 
     /**
      * Returns a list of attributes used to form the referenced fields
-     * (most likely primary key) on the referenced layer.
+     * (most likely primary key) on the referenced (parent) layer.
      *
      * @return A list of attributes
      */
@@ -214,7 +214,7 @@ class QgsRelation
 
     /**
      * Returns a list of attributes used to form the referencing fields
-     * (foreign key) on the referencing layer.
+     * (foreign key) on the referencing (child) layer.
      *
      * @return A list of attributes
      */
