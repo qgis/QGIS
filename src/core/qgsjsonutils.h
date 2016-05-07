@@ -17,6 +17,8 @@
 #define QGSJSONUTILS_H
 
 #include "qgsfeature.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 
 class QTextCodec;
 class QgsVectorLayer;
@@ -24,6 +26,9 @@ class QgsVectorLayer;
 /** \ingroup core
  * \class QgsJSONExporter
  * \brief Handles exporting QgsFeature features to GeoJSON features.
+ *
+ * Note that geometries will be automatically reprojected to WGS84 to match GeoJSON spec
+ * if either the source vector layer or source CRS is set.
  * \note Added in version 2.16
  */
 
@@ -83,7 +88,8 @@ class CORE_EXPORT QgsJSONExporter
      */
     bool includeRelated() const { return mIncludeRelatedAttributes; }
 
-    /** Sets the associated vector layer (required for related attribute export).
+    /** Sets the associated vector layer (required for related attribute export). This will automatically
+     * update the sourceCrs() to match.
      * @param vectorLayer vector layer
      * @see vectorLayer()
      */
@@ -93,6 +99,20 @@ class CORE_EXPORT QgsJSONExporter
      * @see setVectorLayer()
      */
     QgsVectorLayer* vectorLayer() const;
+
+    /** Sets the source CRS for feature geometries. The source CRS must be set if geometries are to be
+     * correctly automatically reprojected to WGS 84, to match GeoJSON specifications.
+     * @param crs source CRS for input feature geometries
+     * @note the source CRS will be overwritten when a vector layer is specified via setVectorLayer()
+     * @see sourceCrs()
+     */
+    void setSourceCrs( const QgsCoordinateReferenceSystem& crs );
+
+    /** Returns the source CRS for feature geometries. The source CRS must be set if geometries are to be
+     * correctly automatically reprojected to WGS 84, to match GeoJSON specifications.
+     * @see setSourceCrs()
+     */
+    const QgsCoordinateReferenceSystem& sourceCrs() const;
 
     /** Sets the list of attributes to include in the JSON exports.
      * @param attributes list of attribute indexes, or an empty list to include all
@@ -148,7 +168,6 @@ class CORE_EXPORT QgsJSONExporter
      */
     QString exportFeatures( const QgsFeatureList& features ) const;
 
-
   private:
 
     //! Maximum number of decimal places for geometry coordinates
@@ -172,6 +191,10 @@ class CORE_EXPORT QgsJSONExporter
 
     //! Layer ID of associated vector layer. Required for related attribute export.
     QString mLayerId;
+
+    QgsCoordinateReferenceSystem mCrs;
+
+    QgsCoordinateTransform mTransform;
 
 };
 

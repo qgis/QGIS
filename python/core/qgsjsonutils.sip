@@ -1,6 +1,9 @@
 /** \ingroup core
  * \class QgsJSONExporter
  * \brief Handles exporting QgsFeature features to GeoJSON features.
+ *
+ * Note that geometries will be automatically reprojected to WGS84 to match GeoJSON spec
+ * if either the source vector layer or source CRS is set.
  * \note Added in version 2.16
  */
 
@@ -63,7 +66,8 @@ class QgsJSONExporter
      */
     bool includeRelated() const;
 
-    /** Sets the associated vector layer (required for related attribute export).
+    /** Sets the associated vector layer (required for related attribute export). This will automatically
+     * update the sourceCrs() to match.
      * @param vectorLayer vector layer
      * @see vectorLayer()
      */
@@ -73,6 +77,20 @@ class QgsJSONExporter
      * @see setVectorLayer()
      */
     QgsVectorLayer* vectorLayer() const;
+
+    /** Sets the source CRS for feature geometries. The source CRS must be set if geometries are to be
+     * correctly automatically reprojected to WGS 84, to match GeoJSON specifications.
+     * @param crs source CRS for input feature geometries
+     * @note the source CRS will be overwritten when a vector layer is specified via setVectorLayer()
+     * @see sourceCrs()
+     */
+    void setSourceCrs( const QgsCoordinateReferenceSystem& crs );
+
+    /** Returns the source CRS for feature geometries. The source CRS must be set if geometries are to be
+     * correctly automatically reprojected to WGS 84, to match GeoJSON specifications.
+     * @see setSourceCrs()
+     */
+    const QgsCoordinateReferenceSystem& sourceCrs() const;
 
     /** Sets the list of attributes to include in the JSON exports.
      * @param attributes list of attribute indexes, or an empty list to include all
@@ -127,6 +145,10 @@ class QgsJSONExporter
      * @see exportFeature()
      */
     QString exportFeatures( const QgsFeatureList& features ) const;
+
+  private:
+
+    QgsJSONExporter( const QgsJSONExporter& );
 
 };
 

@@ -15,7 +15,22 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.testing import unittest, start_app
-from qgis.core import QgsJSONUtils, QgsJSONExporter, QgsProject, QgsMapLayerRegistry, QgsFeature, QgsField, QgsFields, QgsWKBTypes, QgsGeometry, QgsPointV2, QgsLineStringV2, NULL, QgsVectorLayer, QgsRelation
+from qgis.core import (QgsJSONUtils,
+                       QgsJSONExporter,
+                       QgsCoordinateReferenceSystem,
+                       QgsProject,
+                       QgsMapLayerRegistry,
+                       QgsFeature,
+                       QgsField,
+                       QgsFields,
+                       QgsWKBTypes,
+                       QgsGeometry,
+                       QgsPointV2,
+                       QgsLineStringV2,
+                       NULL,
+                       QgsVectorLayer,
+                       QgsRelation
+                       )
 from qgis.PyQt.QtCore import QVariant, QTextCodec
 
 start_app()
@@ -363,6 +378,45 @@ class TestQgsJSONUtils(unittest.TestCase):
 }"""
         self.assertEqual(exporter.exportFeature(feature, extraProperties={"extra": "val1", "extra2": {"nested_map": 5, "nested_map2": "val"}, "extra3": [1, 2, 3]}), expected)
         exporter.setIncludeGeometry(True)
+
+    def testExportFeatureCrs(self):
+        """ Test CRS transform when exporting features """
+
+        exporter = QgsJSONExporter()
+        self.assertFalse(exporter.sourceCrs().isValid())
+
+        #test layer
+        layer = QgsVectorLayer("Point?crs=epsg:3111&field=fldtxt:string",
+                               "parent", "memory")
+        exporter = QgsJSONExporter(layer)
+        self.assertTrue(exporter.sourceCrs().isValid())
+        self.assertEqual(exporter.sourceCrs().authid(), 'EPSG:3111')
+
+        exporter.setSourceCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.EpsgCrsId))
+        self.assertTrue(exporter.sourceCrs().isValid())
+        self.assertEqual(exporter.sourceCrs().authid(), 'EPSG:3857')
+
+        # vector layer CRS should override
+        exporter.setVectorLayer(layer)
+        self.assertEqual(exporter.sourceCrs().authid(), 'EPSG:3111')
+
+        # test that exported feature is reprojected
+        feature = QgsFeature(layer.fields(), 5)
+        feature.setGeometry(QgsGeometry(QgsPointV2(2502577, 2403869)))
+        feature.setAttributes(['test point'])
+
+        # low precision, only need rough coordinate to check and don't want to deal with rounding errors
+        exporter.setPrecision(1)
+        expected = """{
+   "type":"Feature",
+   "id":5,
+   "geometry":
+   {"type": "Point", "coordinates": [145, -37.9]},
+   "properties":{
+      "fldtxt":"test point"
+   }
+}"""
+        self.assertEqual(exporter.exportFeature(feature), expected)
 
     def testExportFeatureRelations(self):
         """ Test exporting a feature with relations """
