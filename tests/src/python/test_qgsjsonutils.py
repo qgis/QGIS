@@ -256,7 +256,8 @@ class TestQgsJSONUtils(unittest.TestCase):
    "type":"Feature",
    "id":5,
    "geometry":
-   {"type": "Point", "coordinates": [5, 6]}
+   {"type": "Point", "coordinates": [5, 6]},
+   "properties":null
 }"""
         self.assertEqual(exporter.exportFeature(feature), expected)
 
@@ -286,6 +287,7 @@ class TestQgsJSONUtils(unittest.TestCase):
         expected = """{
    "type":"Feature",
    "id":5,
+   "geometry":null,
    "properties":{
       "name":"Valsier Peninsula",
       "cost":6.8,
@@ -304,14 +306,17 @@ class TestQgsJSONUtils(unittest.TestCase):
    "type":"Feature",
    "id":5,
    "geometry":
-   {"type": "Point", "coordinates": [5, 6]}
+   {"type": "Point", "coordinates": [5, 6]},
+   "properties":null
 }"""
         self.assertEqual(exporter.exportFeature(feature), expected)
 
         exporter.setIncludeGeometry(False)
         expected = """{
    "type":"Feature",
-   "id":5
+   "id":5,
+   "geometry":null,
+   "properties":null
 }"""
         self.assertEqual(exporter.exportFeature(feature), expected)
         exporter.setIncludeAttributes(True)
@@ -320,6 +325,7 @@ class TestQgsJSONUtils(unittest.TestCase):
         expected = """{
    "type":"Feature",
    "id":29,
+   "geometry":null,
    "properties":{
       "name":"Valsier Peninsula",
       "cost":6.8,
@@ -332,6 +338,7 @@ class TestQgsJSONUtils(unittest.TestCase):
         expected = """{
    "type":"Feature",
    "id":5,
+   "geometry":null,
    "properties":{
       "name":"Valsier Peninsula",
       "cost":6.8,
@@ -346,6 +353,7 @@ class TestQgsJSONUtils(unittest.TestCase):
         expected = """{
    "type":"Feature",
    "id":5,
+   "geometry":null,
    "properties":{
       "extra":"val1",
       "extra2":{"nested_map":5,
@@ -408,6 +416,7 @@ class TestQgsJSONUtils(unittest.TestCase):
         expected = """{
    "type":"Feature",
    "id":0,
+   "geometry":null,
    "properties":{
       "fldtxt":"test1",
       "fldint":67,
@@ -425,6 +434,7 @@ class TestQgsJSONUtils(unittest.TestCase):
         expected = """{
    "type":"Feature",
    "id":0,
+   "geometry":null,
    "properties":{
       "fldtxt":"test2",
       "fldint":68,
@@ -443,6 +453,7 @@ class TestQgsJSONUtils(unittest.TestCase):
         expected = """{
    "type":"Feature",
    "id":0,
+   "geometry":null,
    "properties":{
       "fldtxt":"test2",
       "fldint":68,
@@ -458,6 +469,7 @@ class TestQgsJSONUtils(unittest.TestCase):
         expected = """{
    "type":"Feature",
    "id":0,
+   "geometry":null,
    "properties":{
       "fldtxt":"test2",
       "fldint":68,

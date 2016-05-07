@@ -45,9 +45,34 @@ QgsVectorLayer *QgsJSONExporter::vectorLayer() const
 QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVariantMap& extraProperties,
                                         const QVariant& id ) const
 {
-  //first step is to build up the properties list
-  QString properties;
+  QString s = "{\n   \"type\":\"Feature\",\n";
 
+  // ID
+  s += QString( "   \"id\":%1,\n" ).arg( !id.isValid() ? QString::number( feature.id() ) : QgsJSONUtils::encodeValue( id ) );
+
+  const QgsGeometry* geom = feature.constGeometry();
+  if ( geom && !geom->isEmpty() && mIncludeGeometry )
+  {
+    QgsRectangle box = geom->boundingBox();
+
+    if ( QgsWKBTypes::flatType( geom->geometry()->wkbType() ) != QgsWKBTypes::Point )
+    {
+      s += QString( "   \"bbox\":[%1, %2, %3, %4],\n" ).arg( qgsDoubleToString( box.xMinimum(), mPrecision ),
+           qgsDoubleToString( box.yMinimum(), mPrecision ),
+           qgsDoubleToString( box.xMaximum(), mPrecision ),
+           qgsDoubleToString( box.yMaximum(), mPrecision ) );
+    }
+    s += "   \"geometry\":\n   ";
+    s += geom->exportToGeoJSON( mPrecision );
+    s += ",\n";
+  }
+  else
+  {
+    s += "   \"geometry\":null,\n";
+  }
+
+  // build up properties element
+  QString properties;
   int attributeCounter = 0;
   if ( mIncludeAttributes || !extraProperties.isEmpty() )
   {
@@ -124,40 +149,15 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
 
   bool hasProperties = attributeCounter > 0;
 
-  QString s = "{\n   \"type\":\"Feature\",\n";
-
-  // ID
-  s += QString( "   \"id\":%1" ).arg( !id.isValid() ? QString::number( feature.id() ) : QgsJSONUtils::encodeValue( id ) );
-
-  if ( hasProperties || mIncludeGeometry )
-    s += ",\n";
-  else
-    s += '\n';
-
-  const QgsGeometry* geom = feature.constGeometry();
-  if ( geom && !geom->isEmpty() && mIncludeGeometry )
-  {
-    QgsRectangle box = geom->boundingBox();
-
-    if ( QgsWKBTypes::flatType( geom->geometry()->wkbType() ) != QgsWKBTypes::Point )
-    {
-      s += QString( "   \"bbox\":[%1, %2, %3, %4],\n" ).arg( qgsDoubleToString( box.xMinimum(), mPrecision ),
-           qgsDoubleToString( box.yMinimum(), mPrecision ),
-           qgsDoubleToString( box.xMaximum(), mPrecision ),
-           qgsDoubleToString( box.yMaximum(), mPrecision ) );
-    }
-    s += "   \"geometry\":\n   ";
-    s += geom->exportToGeoJSON( mPrecision );
-    if ( hasProperties )
-      s += ",\n";
-    else
-      s += '\n';
-  }
-
+  s += "   \"properties\":";
   if ( hasProperties )
   {
     //read all attribute values from the feature
-    s += "   \"properties\":{\n" + properties + "\n   }\n";
+    s += "{\n" + properties + "\n   }\n";
+  }
+  else
+  {
+    s += "null\n";
   }
 
   s += '}';
