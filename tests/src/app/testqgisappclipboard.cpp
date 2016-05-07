@@ -46,6 +46,7 @@ class TestQgisAppClipboard : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void copyPaste();
+    void copyToText();
     void pasteWkt();
     void pasteGeoJson();
     void retrieveFields();
@@ -65,6 +66,11 @@ TestQgisAppClipboard::TestQgisAppClipboard()
 //runs before all tests
 void TestQgisAppClipboard::initTestCase()
 {
+  // Set up the QSettings environment
+  QCoreApplication::setOrganizationName( "QGIS" );
+  QCoreApplication::setOrganizationDomain( "qgis.org" );
+  QCoreApplication::setApplicationName( "QGIS-TEST" );
+
   qDebug() << "TestQgisAppClipboard::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
@@ -111,6 +117,86 @@ void TestQgisAppClipboard::copyPaste()
     qDebug() << pastedLayer->featureCount() << " features in pasted layer";
     QVERIFY( pastedLayer->featureCount() == filesCounts.value( fileName ) );
   }
+}
+
+void TestQgisAppClipboard::copyToText()
+{
+  //set clipboard to some QgsFeatures
+  QgsFields fields;
+  fields.append( QgsField( "int_field", QVariant::Int ) );
+  fields.append( QgsField( "string_field", QVariant::String ) );
+  QgsFeature feat( fields, 5 );
+  feat.setAttribute( "int_field", 9 );
+  feat.setAttribute( "string_field", "val" );
+  feat.setGeometry( new QgsGeometry( new QgsPointV2( 5, 6 ) ) );
+  QgsFeature feat2( fields, 6 );
+  feat2.setAttribute( "int_field", 19 );
+  feat2.setAttribute( "string_field", "val2" );
+  feat2.setGeometry( new QgsGeometry( new QgsPointV2( 7, 8 ) ) );
+  QgsFeatureStore feats;
+  feats.addFeature( feat );
+  feats.addFeature( feat2 );
+  feats.setFields( fields );
+  mQgisApp->clipboard()->replaceWithCopyOf( feats );
+
+  // attributes only
+  QSettings settings;
+  settings.setValue( "/qgis/copyFeatureFormat", QgsClipboard::AttributesOnly );
+  QString result = mQgisApp->clipboard()->generateClipboardText();
+  QCOMPARE( result, QString( "int_field\tstring_field\n9\tval\n19\tval2" ) );
+
+  // attributes with WKT
+  settings.setValue( "/qgis/copyFeatureFormat", QgsClipboard::AttributesWithWKT );
+  result = mQgisApp->clipboard()->generateClipboardText();
+  QCOMPARE( result, QString( "wkt_geom\tint_field\tstring_field\nPoint (5 6)\t9\tval\nPoint (7 8)\t19\tval2" ) );
+
+  // GeoJSON
+  settings.setValue( "/qgis/copyFeatureFormat", QgsClipboard::GeoJSON );
+  result = mQgisApp->clipboard()->generateClipboardText();
+  QString expected = "{ \"type\": \"FeatureCollection\",\n    \"features\":[\n"
+                     "{\n   \"type\":\"Feature\",\n"
+                     "   \"id\":5,\n"
+                     "   \"geometry\":\n"
+                     "   {\"type\": \"Point\", \"coordinates\": [5, 6]},\n"
+                     "   \"properties\":{\n"
+                     "      \"int_field\":9,\n"
+                     "      \"string_field\":\"val\"\n"
+                     "   }\n"
+                     "},\n"
+                     "{\n   \"type\":\"Feature\",\n"
+                     "   \"id\":6,\n"
+                     "   \"geometry\":\n"
+                     "   {\"type\": \"Point\", \"coordinates\": [7, 8]},\n"
+                     "   \"properties\":{\n"
+                     "      \"int_field\":19,\n"
+                     "      \"string_field\":\"val2\"\n"
+                     "   }\n}\n]}";
+  QCOMPARE( result, expected );
+
+  // test CRS is transformed correctly for GeoJSON
+
+  QgsCoordinateReferenceSystem crs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
+  feats = QgsFeatureStore();
+  feats.setCrs( crs );
+  feat.setGeometry( new QgsGeometry( new QgsPointV2( 2502577, 2403869 ) ) );
+  feats.addFeature( feat );
+  feats.setFields( fields );
+  mQgisApp->clipboard()->replaceWithCopyOf( feats );
+
+  result = mQgisApp->clipboard()->generateClipboardText();
+
+  // just test coordinates as integers - that's enough to verify that reprojection has occurred
+  // and helps avoid rounding issues
+  QRegExp regex( "\\[([-\\d.]+), ([-\\d.]+)\\]" );
+  ( void )regex.indexIn( result );
+  QStringList list = regex.capturedTexts();
+  QCOMPARE( list.count(), 3 );
+
+  int x = qRound( list.at( 1 ).toDouble() );
+  int y = qRound( list.at( 2 ).toDouble() );
+
+  QCOMPARE( x, 145 );
+  QCOMPARE( y, -38 );
 }
 
 void TestQgisAppClipboard::pasteWkt()
