@@ -78,10 +78,18 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
     if ( mCrs.isValid() )
     {
       QgsGeometry* clone = new QgsGeometry( *geom );
-      if ( clone->transform( mTransform ) == 0 )
-        exportGeom = clone;
-      else
+      try
+      {
+        if ( clone->transform( mTransform ) == 0 )
+          exportGeom = clone;
+        else
+          delete clone;
+      }
+      catch ( QgsCsException &cse )
+      {
+        Q_UNUSED( cse );
         delete clone;
+      }
     }
     QgsRectangle box = exportGeom->boundingBox();
 
