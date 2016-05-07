@@ -16,14 +16,30 @@
 #include "qgsjsonutils.h"
 #include "qgsogrutils.h"
 #include "qgsgeometry.h"
+#include "qgsvectorlayer.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsrelation.h"
+#include "qgsrelationmanager.h"
+#include "qgsproject.h"
 
-
-QgsJSONExporter::QgsJSONExporter( int precision, bool includeGeometry, bool includeAttributes )
+QgsJSONExporter::QgsJSONExporter( const QgsVectorLayer* vectorLayer, int precision )
     : mPrecision( precision )
-    , mIncludeGeometry( includeGeometry )
-    , mIncludeAttributes( includeAttributes )
+    , mIncludeGeometry( true )
+    , mIncludeAttributes( true )
+    , mIncludeRelatedAttributes( false )
+    , mLayerId( vectorLayer ? vectorLayer->id() : QString() )
 {
 
+}
+
+void QgsJSONExporter::setVectorLayer( const QgsVectorLayer* vectorLayer )
+{
+  mLayerId = vectorLayer ? vectorLayer->id() : QString();
+}
+
+QgsVectorLayer *QgsJSONExporter::vectorLayer() const
+{
+  return qobject_cast< QgsVectorLayer* >( QgsMapLayerRegistry::instance()->mapLayer( mLayerId ) );
 }
 
 QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVariantMap& extraProperties,
@@ -36,7 +52,6 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
   if ( mIncludeAttributes || !extraProperties.isEmpty() )
   {
     //read all attribute values from the feature
-
 
     if ( mIncludeAttributes )
     {
@@ -70,7 +85,43 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
         ++attributeCounter;
       }
     }
+
+    // related attributes
+    QgsVectorLayer* vl = vectorLayer();
+    if ( vl && mIncludeRelatedAttributes )
+    {
+      QList< QgsRelation > relations = QgsProject::instance()->relationManager()->referencedRelations( vl );
+      Q_FOREACH ( const QgsRelation& relation, relations )
+      {
+        if ( attributeCounter > 0 )
+          properties += ",\n";
+
+        QgsFeatureRequest req = relation.getRelatedFeaturesRequest( feature );
+        req.setFlags( QgsFeatureRequest::NoGeometry );
+        QgsVectorLayer* childLayer = relation.referencingLayer();
+        QString relatedFeatureAttributes;
+        if ( childLayer )
+        {
+          QgsFeatureIterator it = childLayer->getFeatures( req );
+          QgsFeature relatedFet;
+          int relationFeatures = 0;
+          while ( it.nextFeature( relatedFet ) )
+          {
+            if ( relationFeatures > 0 )
+              relatedFeatureAttributes += ",\n";
+
+            relatedFeatureAttributes += QgsJSONUtils::exportAttributes( relatedFet );
+            relationFeatures++;
+          }
+        }
+        relatedFeatureAttributes.prepend( '[' ).append( ']' );
+
+        properties += QString( "      \"%1\":%2" ).arg( relation.name(), relatedFeatureAttributes );
+        attributeCounter++;
+      }
+    }
   }
+
   bool hasProperties = attributeCounter > 0;
 
   QString s = "{\n   \"type\":\"Feature\",\n";
@@ -113,6 +164,7 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
 
   return s;
 }
+
 
 
 //
@@ -194,3 +246,19 @@ QString QgsJSONUtils::encodeValue( const QVariant &value )
       return v.prepend( '"' ).append( '"' );
   }
 }
+
+QString QgsJSONUtils::exportAttributes( const QgsFeature& feature )
+{
+  const QgsFields* fields = feature.fields();
+  QString attrs;
+  for ( int i = 0; i < fields->count(); ++i )
+  {
+    if ( i > 0 )
+      attrs += ",\n";
+
+    QVariant val = feature.attributes().at( i );
+    attrs += encodeValue( fields->at( i ).name() ) + ':' + encodeValue( val );
+  }
+  return attrs.prepend( '{' ).append( '}' );
+}
+

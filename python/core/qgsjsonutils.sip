@@ -12,11 +12,10 @@ class QgsJSONExporter
   public:
 
     /** Constructor for QgsJSONExporter.
+     * @param vectorLayer associated vector layer (required for related attribute export)
      * @param precision maximum number of decimal places to use for geometry coordinates
-     * @param includeGeometry set to false to avoid including the geometry representation in the JSON output
-     * @param includeAttributes set to false to avoid including any attribute values in the JSON output
      */
-    QgsJSONExporter( int precision = 17, bool includeGeometry = true, bool includeAttributes = true );
+    QgsJSONExporter( const QgsVectorLayer* vectorLayer = nullptr, int precision = 17 );
 
     /** Sets the maximum number of decimal places to use in geometry coordinates.
      * @param precision number of decimal places
@@ -50,6 +49,30 @@ class QgsJSONExporter
      * @see setIncludeAttributes()
      */
     bool includeAttributes() const;
+
+    /** Sets whether to include attributes of features linked via references in the JSON exports.
+     * @param includeRelated set to true to include attributes for any related child features
+     * within the exported properties element.
+     * @note associated vector layer must be set with setVectorLayer()
+     * @see includeRelated()
+     */
+    void setIncludeRelated( bool includeRelated );
+
+    /** Returns whether attributes of related (child) features will be included in the JSON exports.
+     * @see setIncludeRelated()
+     */
+    bool includeRelated() const;
+
+    /** Sets the associated vector layer (required for related attribute export).
+     * @param vectorLayer vector layer
+     * @see vectorLayer()
+     */
+    void setVectorLayer( const QgsVectorLayer* vectorLayer );
+
+    /** Returns the associated vector layer, if set.
+     * @see setVectorLayer()
+     */
+    QgsVectorLayer* vectorLayer() const;
 
     /** Sets the list of attributes to include in the JSON exports.
      * @param attributes list of attribute indexes, or an empty list to include all
@@ -138,4 +161,9 @@ class QgsJSONUtils
      * @returns encoded value
      */
     static QString encodeValue( const QVariant& value );
+
+    /** Exports all attributes from a QgsFeature as a JSON map type.
+     * @param feature feature to export
+     */
+    static QString exportAttributes( const QgsFeature& feature );
 };
