@@ -843,6 +843,9 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
 
     virtual QSet<QString> usedAttributes() const;
 
+    void setColor( const QColor& c );
+    virtual QColor color() const;
+
   protected:
     void applyDataDefinedSettings( QgsSymbolV2RenderContext& context );
 };
@@ -879,6 +882,7 @@ class QgsCentroidFillSymbolLayerV2 : QgsFillSymbolLayerV2
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     void setColor( const QColor& color );
+    QColor color() const;
 
     QgsSymbolV2* subSymbol();
     bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );

@@ -14,7 +14,7 @@ class QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
      *
      * @return A new QgsArrowSymbolLayer
      */
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties ) /Factory/;
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
 
     /** Virtual constructor */
     virtual QgsArrowSymbolLayer* clone() const /Factory/;
@@ -108,6 +108,7 @@ class QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context );
 
     void setColor( const QColor& c );
+    virtual QColor color() const;
 
   private:
     QgsArrowSymbolLayer( const QgsArrowSymbolLayer& );

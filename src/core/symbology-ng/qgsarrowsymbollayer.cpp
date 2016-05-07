@@ -613,3 +613,8 @@ void QgsArrowSymbolLayer::setColor( const QColor& c )
   mColor = c;
 }
 
+QColor QgsArrowSymbolLayer::color() const
+{
+  return mSymbol.data() ? mSymbol->color() : mColor;
+}
+

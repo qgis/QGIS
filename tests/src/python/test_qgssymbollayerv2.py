@@ -364,6 +364,14 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
+        # test colors, need to make sure colors are passed/retrieved from subsymbol
+        mSymbolLayer.setColor(QColor(150, 50, 100))
+        self.assertEqual(mSymbolLayer.color(), QColor(150, 50, 100))
+        self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(150, 50, 100))
+        mSymbolLayer.subSymbol().setColor(QColor(250, 150, 200))
+        self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(250, 150, 200))
+        self.assertEqual(mSymbolLayer.color(), QColor(250, 150, 200))
+
     def testQgsLinePatternFillSymbolLayer(self):
         """
         Create a new style from a .sld file and match test
@@ -404,8 +412,16 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
+        # test colors, need to make sure colors are passed/retrieved from subsymbol
+        mSymbolLayer.setColor(QColor(150, 50, 100))
+        self.assertEqual(mSymbolLayer.color(), QColor(150, 50, 100))
+        self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(150, 50, 100))
+        mSymbolLayer.subSymbol().setColor(QColor(250, 150, 200))
+        self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(250, 150, 200))
+        self.assertEqual(mSymbolLayer.color(), QColor(250, 150, 200))
+
     @unittest.expectedFailure
-    def testQgsPointPatternFillSymbolLayer(self):
+    def testQgsPointPatternFillSymbolLayerSld(self):
         """
         Create a new style from a .sld file and match test
         """
@@ -451,6 +467,20 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).size()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
+
+    def testQgsPointPatternFillSymbolLayer(self):
+        """
+        Test point pattern fill
+        """
+        # test colors, need to make sure colors are passed/retrieved from subsymbol
+        mSymbolLayer = QgsPointPatternFillSymbolLayer.create()
+
+        mSymbolLayer.setColor(QColor(150, 50, 100))
+        self.assertEqual(mSymbolLayer.color(), QColor(150, 50, 100))
+        self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(150, 50, 100))
+        mSymbolLayer.subSymbol().setColor(QColor(250, 150, 200))
+        self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(250, 150, 200))
+        self.assertEqual(mSymbolLayer.color(), QColor(250, 150, 200))
 
     def testQgsSVGFillSymbolLayer(self):
         """
@@ -521,6 +551,14 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).color().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
+
+        # test colors, need to make sure colors are passed/retrieved from subsymbol
+        mSymbolLayer.setColor(QColor(150, 50, 100))
+        self.assertEqual(mSymbolLayer.color(), QColor(150, 50, 100))
+        self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(150, 50, 100))
+        mSymbolLayer.subSymbol().setColor(QColor(250, 150, 200))
+        self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(250, 150, 200))
+        self.assertEqual(mSymbolLayer.color(), QColor(250, 150, 200))
 
     def testQgsSimpleLineSymbolLayerV2(self):
         """
@@ -691,7 +729,6 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mValue = mSymbolLayer.angle()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
-
 
 if __name__ == '__main__':
     unittest.main()

@@ -2331,6 +2331,11 @@ void QgsLinePatternFillSymbolLayer::setColor( const QColor& c )
   mColor = c;
 }
 
+QColor QgsLinePatternFillSymbolLayer::color() const
+{
+  return mFillLineSymbol ? mFillLineSymbol->color() : mColor;
+}
+
 QgsLinePatternFillSymbolLayer::~QgsLinePatternFillSymbolLayer()
 {
   delete mFillLineSymbol;
@@ -3392,6 +3397,18 @@ QSet<QString> QgsPointPatternFillSymbolLayer::usedAttributes() const
   return attributes;
 }
 
+void QgsPointPatternFillSymbolLayer::setColor( const QColor& c )
+{
+  mColor = c;
+  if ( mMarkerSymbol )
+    mMarkerSymbol->setColor( c );
+}
+
+QColor QgsPointPatternFillSymbolLayer::color() const
+{
+  return mMarkerSymbol ? mMarkerSymbol->color() : mColor;
+}
+
 //////////////
 
 
@@ -3431,6 +3448,11 @@ void QgsCentroidFillSymbolLayerV2::setColor( const QColor& color )
 {
   mMarker->setColor( color );
   mColor = color;
+}
+
+QColor QgsCentroidFillSymbolLayerV2::color() const
+{
+  return mMarker ? mMarker->color() : mColor;
 }
 
 void QgsCentroidFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
