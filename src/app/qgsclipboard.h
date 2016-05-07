@@ -53,6 +53,15 @@ class APP_EXPORT QgsClipboard : public QObject
 {
     Q_OBJECT
   public:
+
+    //! Available formats for copying features as text
+    enum CopyFormat
+    {
+      AttributesOnly, /*!< Tab delimited text, attributes only */
+      AttributesWithWKT, /*!< Tab delimited text, with geometry in WKT format */
+      GeoJSON, /*!< GeoJSON FeatureCollection format */
+    };
+
     /**
      * Constructor for the clipboard.
      */
@@ -146,6 +155,11 @@ class APP_EXPORT QgsClipboard : public QObject
      */
     void setSystemClipboard();
 
+    /** Creates a text representation of the clipboard features.
+     * @returns clipboard text, respecting user export format
+     */
+    QString generateClipboardText() const;
+
     /** Attempts to convert a string to a list of features, by parsing the string as WKT and GeoJSON
      * @param string string to convert
      * @param fields fields for resultant features
@@ -169,6 +183,9 @@ class APP_EXPORT QgsClipboard : public QObject
 
     /** True when the data from the system clipboard should be read */
     bool mUseSystemClipboard;
+
+    friend class TestQgisAppClipboard;
+
 };
 
 #endif

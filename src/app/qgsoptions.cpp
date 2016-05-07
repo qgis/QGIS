@@ -42,6 +42,7 @@
 #include "qgscolordialog.h"
 #include "qgsexpressioncontext.h"
 #include "qgsunittypes.h"
+#include "qgsclipboard.h"
 
 #include <QInputDialog>
 #include <QFileDialog>
@@ -604,7 +605,15 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   cbxEvaluateDefaultValues->setChecked( mSettings->value( "/qgis/evaluateDefaultValues", false ).toBool() );
   cbxCompileExpressions->setChecked( mSettings->value( "/qgis/compileExpressions", true ).toBool() );
   cbxCreateRasterLegendIcons->setChecked( mSettings->value( "/qgis/createRasterLegendIcons", false ).toBool() );
-  cbxCopyWKTGeomFromTable->setChecked( mSettings->value( "/qgis/copyGeometryAsWKT", true ).toBool() );
+
+  mComboCopyFeatureFormat->addItem( tr( "Plain text, no geometry" ), QgsClipboard::AttributesOnly );
+  mComboCopyFeatureFormat->addItem( tr( "Plain text, WKT geometry" ), QgsClipboard::AttributesWithWKT );
+  mComboCopyFeatureFormat->addItem( tr( "GeoJSON" ), QgsClipboard::GeoJSON );
+  if ( mSettings->contains( "/qgis/copyFeatureFormat" ) )
+    mComboCopyFeatureFormat->setCurrentIndex( mComboCopyFeatureFormat->findData( mSettings->value( "/qgis/copyFeatureFormat", true ).toInt() ) );
+  else
+    mComboCopyFeatureFormat->setCurrentIndex( mComboCopyFeatureFormat->findData( mSettings->value( "/qgis/copyGeometryAsWKT", true ).toBool() ?
+        QgsClipboard::AttributesWithWKT : QgsClipboard::AttributesOnly ) );
   leNullValue->setText( mSettings->value( "qgis/nullValue", "NULL" ).toString() );
   cbxIgnoreShapeEncoding->setChecked( mSettings->value( "/qgis/ignoreShapeEncoding", true ).toBool() );
   cbxCanvasRotation->setChecked( QgsMapCanvas::rotationEnabled() );
@@ -1157,7 +1166,8 @@ void QgsOptions::saveOptions()
   mSettings->setValue( "/qgis/defaultLegendGraphicResolution", mLegendGraphicResolutionSpinBox->value() );
   bool createRasterLegendIcons = mSettings->value( "/qgis/createRasterLegendIcons", false ).toBool();
   mSettings->setValue( "/qgis/createRasterLegendIcons", cbxCreateRasterLegendIcons->isChecked() );
-  mSettings->setValue( "/qgis/copyGeometryAsWKT", cbxCopyWKTGeomFromTable->isChecked() );
+  mSettings->setValue( "/qgis/copyFeatureFormat", mComboCopyFeatureFormat->itemData( mComboCopyFeatureFormat->currentIndex() ).toInt() );
+
   mSettings->setValue( "/qgis/new_layers_visible", chkAddedVisibility->isChecked() );
   mSettings->setValue( "/qgis/enable_anti_aliasing", chkAntiAliasing->isChecked() );
   mSettings->setValue( "/qgis/enable_render_caching", chkUseRenderCaching->isChecked() );
