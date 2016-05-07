@@ -466,6 +466,69 @@ class TestQgsJSONUtils(unittest.TestCase):
 }"""
         self.assertEqual(exporter.exportFeature(pf2), expected)
 
+    def testExportFeatures(self):
+        """ Test exporting feature collections """
+
+        fields = QgsFields()
+        fields.append(QgsField("name", QVariant.String))
+        fields.append(QgsField("cost", QVariant.Double))
+        fields.append(QgsField("population", QVariant.Int))
+
+        feature = QgsFeature(fields, 5)
+        feature.setGeometry(QgsGeometry(QgsPointV2(5, 6)))
+        feature.setAttributes(['Valsier Peninsula', 6.8, 198])
+
+        exporter = QgsJSONExporter()
+
+        # single feature
+        expected = """{ "type": "FeatureCollection",
+    "features":[
+{
+   "type":"Feature",
+   "id":5,
+   "geometry":
+   {"type": "Point", "coordinates": [5, 6]},
+   "properties":{
+      "name":"Valsier Peninsula",
+      "cost":6.8,
+      "population":198
+   }
+}
+]}"""
+        self.assertEqual(exporter.exportFeatures([feature]), expected)
+
+        # multiple features
+        feature2 = QgsFeature(fields, 6)
+        feature2.setGeometry(QgsGeometry(QgsPointV2(7, 8)))
+        feature2.setAttributes(['Henry Gale Island', 9.7, 38])
+
+        expected = """{ "type": "FeatureCollection",
+    "features":[
+{
+   "type":"Feature",
+   "id":5,
+   "geometry":
+   {"type": "Point", "coordinates": [5, 6]},
+   "properties":{
+      "name":"Valsier Peninsula",
+      "cost":6.8,
+      "population":198
+   }
+},
+{
+   "type":"Feature",
+   "id":6,
+   "geometry":
+   {"type": "Point", "coordinates": [7, 8]},
+   "properties":{
+      "name":"Henry Gale Island",
+      "cost":9.7,
+      "population":38
+   }
+}
+]}"""
+        self.assertEqual(exporter.exportFeatures([feature, feature2]), expected)
+
 
 if __name__ == "__main__":
     unittest.main()

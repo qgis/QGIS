@@ -165,6 +165,17 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
   return s;
 }
 
+QString QgsJSONExporter::exportFeatures( const QgsFeatureList& features ) const
+{
+  QStringList featureJSON;
+  Q_FOREACH ( const QgsFeature& feature, features )
+  {
+    featureJSON << exportFeature( feature );
+  }
+
+  return QString( "{ \"type\": \"FeatureCollection\",\n    \"features\":[\n%1\n]}" ).arg( featureJSON.join( ",\n" ) );
+}
+
 
 
 //
