@@ -128,7 +128,7 @@ void QgsMapStylingWidget::apply()
     QDomDocument doc( "style" );
     QDomElement rootNode = doc.createElement( "qgis" );
     doc.appendChild( rootNode );
-    mCurrentLayer->writeSymbology( rootNode, doc, errorMsg );
+    mCurrentLayer->writeStyle( rootNode, doc, errorMsg );
     mCurrentLayer->undoStackStyles()->beginMacro( undoName );
     mCurrentLayer->undoStackStyles()->push( new QgsMapLayerStyleCommand( mCurrentLayer, rootNode, mLastStyleXml ) );
     mCurrentLayer->undoStackStyles()->endMacro();

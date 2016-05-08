@@ -1313,6 +1313,11 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   }
 
   return true;
+}
+
+bool QgsRasterLayer::readStyle(const QDomNode &node, QString &errorMessage)
+{
+   readSymbology( node, errorMessage );
 } //readSymbology
 
 /**
@@ -1487,6 +1492,12 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
   layer_node.appendChild( blendModeElement );
 
   return true;
+}
+
+bool QgsRasterLayer::writeStyle(QDomNode &node, QDomDocument &doc, QString &errorMessage) const
+{
+    return writeSymbology( node, doc, errorMessage );
+
 } // bool QgsRasterLayer::writeSymbology
 
 /*

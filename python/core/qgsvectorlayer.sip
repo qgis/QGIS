@@ -493,6 +493,13 @@ class QgsVectorLayer : QgsMapLayer
      */
     bool readSymbology( const QDomNode& node, QString& errorMessage );
 
+    /** Read the style for the current layer from the Dom node supplied.
+     * @param node node that will contain the style definition for this layer.
+     * @param errorMessage reference to string that will be updated with any error messages
+     * @return true in case of success.
+     */
+    bool readStyle( const QDomNode& node, QString& errorMessage );
+
     /** Write the symbology for the layer into the docment provided.
      *  @param node the node that will have the style element added to it.
      *  @param doc the document that will have the QDomNode added.
@@ -500,6 +507,14 @@ class QgsVectorLayer : QgsMapLayer
      *  @return true in case of success.
      */
     bool writeSymbology( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const;
+
+    /** Write just the style information for the layer into the document
+     *  @param node the node that will have the style element added to it.
+     *  @param doc the document that will have the QDomNode added.
+     *  @param errorMessage reference to string that will be updated with any error messages
+     *  @return true in case of success.
+     */
+    bool writeStyle( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const;
 
     bool writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const;
     bool readSld( const QDomNode& node, QString& errorMessage );
