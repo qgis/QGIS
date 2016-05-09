@@ -465,6 +465,7 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   viewCategories->setStyle( new QgsCategorizedSymbolRendererV2ViewStyle( viewCategories->style() ) );
 
   connect( mModel, SIGNAL( rowsMoved() ), this, SLOT( rowsMoved() ) );
+  connect( mModel, SIGNAL( dataChanged(QModelIndex,QModelIndex) ), this, SIGNAL( widgetChanged() ));
 
   connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( categoryColumnChanged( QString ) ) );
 
@@ -590,6 +591,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
   updateCategorizedSymbolIcon();
 
   mRenderer->updateSymbols( mCategorizedSymbol );
+  emit widgetChanged();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::updateCategorizedSymbolIcon()
@@ -605,6 +607,7 @@ void QgsCategorizedSymbolRendererV2Widget::populateCategories()
 void QgsCategorizedSymbolRendererV2Widget::categoryColumnChanged( const QString& field )
 {
   mRenderer->setClassAttribute( field );
+  emit widgetChanged();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::categoriesDoubleClicked( const QModelIndex & idx )
@@ -637,6 +640,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorySymbol()
   }
 
   mRenderer->updateCategorySymbol( catIdx, symbol );
+  emit widgetChanged();
 }
 
 static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, QgsSymbolV2* symbol )
@@ -813,6 +817,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   mRenderer = r;
   if ( ! keepExistingColors && ramp ) applyColorRamp();
   delete ramp;
+  emit widgetChanged();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::applyColorRamp()
@@ -852,11 +857,13 @@ void QgsCategorizedSymbolRendererV2Widget::deleteCategories()
 {
   QList<int> categoryIndexes = selectedCategories();
   mModel->deleteRows( categoryIndexes );
+  emit widgetChanged();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::deleteAllCategories()
 {
   mModel->removeAllRows();
+  emit widgetChanged();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::addCategory()
@@ -865,16 +872,19 @@ void QgsCategorizedSymbolRendererV2Widget::addCategory()
   QgsSymbolV2 *symbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
   QgsRendererCategoryV2 cat( QString(), symbol, QString(), true );
   mModel->addCategory( cat );
+  emit widgetChanged();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::sizeScaleFieldChanged( const QString& fldName )
 {
   mRenderer->setSizeScaleField( fldName );
+  emit widgetChanged();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod )
 {
   mRenderer->setScaleMethod( scaleMethod );
+  emit widgetChanged();
 }
 
 QList<QgsSymbolV2*> QgsCategorizedSymbolRendererV2Widget::selectedSymbols()

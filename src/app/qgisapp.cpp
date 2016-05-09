@@ -678,6 +678,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mUndoWidget = new QgsUndoWidget( nullptr, mMapCanvas );
   mUndoWidget->setObjectName( "Undo" );
 
+  mUndoDock = new QDockWidget( tr("Undo/Redo Panel"), nullptr );
+  mUndoDock->setWidget( mUndoWidget );
+
   // Advanced Digitizing dock
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this );
   mAdvancedDigitizingDockWidget->setObjectName( "AdvancedDigitizingTools" );
@@ -721,8 +724,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   // initialize the plugin manager
   mPluginManager = new QgsPluginManager( this, restorePlugins );
 
-  addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
-  mUndoWidget->hide();
+  addDockWidget( Qt::LeftDockWidgetArea, mUndoDock );
+  mUndoDock->hide();
 
   mMapStylingDock = new QDockWidget( this );
   mMapStylingDock->setWindowTitle( tr( "Map Styling" ) );
@@ -10001,7 +10004,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionCopyStyle->setEnabled( false );
     mActionPasteStyle->setEnabled( false );
 
-    mUndoWidget->dockContents()->setEnabled( false );
+    mUndoDock->widget()->setEnabled( false );
     mActionUndo->setEnabled( false );
     mActionRedo->setEnabled( false );
     mActionSimplifyFeature->setEnabled( false );
@@ -10103,7 +10106,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionToggleEditing->setEnabled( canSupportEditing && !vlayer->readOnly() );
       mActionToggleEditing->setChecked( canSupportEditing && isEditable );
       mActionSaveLayerEdits->setEnabled( canSupportEditing && isEditable && vlayer->isModified() );
-      mUndoWidget->dockContents()->setEnabled( canSupportEditing && isEditable );
+      mUndoDock->widget()->setEnabled( canSupportEditing && isEditable );
       mActionUndo->setEnabled( canSupportEditing );
       mActionRedo->setEnabled( canSupportEditing );
 
@@ -10209,7 +10212,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     }
     else
     {
-      mUndoWidget->dockContents()->setEnabled( false );
+      mUndoDock->widget()->setEnabled( false );
       mActionUndo->setEnabled( false );
       mActionRedo->setEnabled( false );
     }
@@ -10262,7 +10265,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionToggleEditing->setEnabled( false );
     mActionToggleEditing->setChecked( false );
     mActionSaveLayerEdits->setEnabled( false );
-    mUndoWidget->dockContents()->setEnabled( false );
+    mUndoDock->widget()->setEnabled( false );
     mActionUndo->setEnabled( false );
     mActionRedo->setEnabled( false );
     mActionSaveLayerDefinition->setEnabled( true );

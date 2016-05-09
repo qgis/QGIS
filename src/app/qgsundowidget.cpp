@@ -22,10 +22,9 @@
 
 
 QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
-    : QDockWidget( parent )
+    : QWidget( parent )
 {
   setupUi( this );
-  setWidget( dockWidgetContents );
 
   connect( undoButton, SIGNAL( clicked() ), this, SLOT( undo() ) );
   connect( redoButton, SIGNAL( clicked() ), this, SLOT( redo() ) );
@@ -35,7 +34,7 @@ QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
   undoButton->setDisabled( true );
   redoButton->setDisabled( true );
   mMapCanvas = mapCanvas;
-  mUndoView = new QUndoView( dockWidgetContents );
+  mUndoView = new QUndoView( this );
   gridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
   mUndoStack = nullptr;
   mPreviousIndex = 0;
@@ -156,7 +155,7 @@ void QgsUndoWidget::setUndoStack( QUndoStack* undoStack )
   mUndoView->setStack( undoStack );
   mUndoView->setObjectName( "undoView" );
   gridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
-  setWidget( dockWidgetContents );
+//  setWidget( dockWidgetContents );
   connect( mUndoStack, SIGNAL( canUndoChanged( bool ) ), this, SLOT( undoChanged( bool ) ) );
   connect( mUndoStack, SIGNAL( canRedoChanged( bool ) ), this, SLOT( redoChanged( bool ) ) );
 
@@ -169,7 +168,7 @@ void QgsUndoWidget::setUndoStack( QUndoStack* undoStack )
 
 
 
-void QgsUndoWidget::setupUi( QDockWidget *UndoWidget )
+void QgsUndoWidget::setupUi( QWidget *UndoWidget )
 {
   if ( UndoWidget->objectName().isEmpty() )
     UndoWidget->setObjectName( QString::fromUtf8( "UndoWidget" ) );
@@ -200,14 +199,14 @@ void QgsUndoWidget::setupUi( QDockWidget *UndoWidget )
 
   gridLayout->addItem( spacerItem1, 0, 1, 1, 1 );
 
-  UndoWidget->setWidget( dockWidgetContents );
+  UndoWidget->setLayout( gridLayout );
 
   retranslateUi( UndoWidget );
 
   QMetaObject::connectSlotsByName( UndoWidget );
 } // setupUi
 
-void QgsUndoWidget::retranslateUi( QDockWidget *UndoWidget )
+void QgsUndoWidget::retranslateUi(QWidget *UndoWidget )
 {
   UndoWidget->setWindowTitle( QApplication::translate( "UndoWidget", "Undo/Redo Panel", nullptr, QApplication::UnicodeUTF8 ) );
   undoButton->setText( QApplication::translate( "UndoWidget", "Undo", nullptr, QApplication::UnicodeUTF8 ) );

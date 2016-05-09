@@ -50,7 +50,7 @@
        </item>
        <item>
         <property name="text">
-         <string>Discourage other labels from covering features in this layer</string>
+         <string>Blocking</string>
         </property>
         <property name="icon">
          <iconset resource="../../images/images.qrc">

@@ -82,6 +82,12 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
      */
     void layerVariablesChanged();
 
+    /**
+     * Emmited when something on the widget has changed.
+     * All widgets will fire this event to notify of an internal change.
+     */
+    void widgetChanged();
+
   protected:
     QgsVectorLayer* mLayer;
     QgsStyleV2* mStyle;

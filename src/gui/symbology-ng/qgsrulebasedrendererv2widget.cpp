@@ -105,6 +105,8 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
 
   connect( btnRenderingOrder, SIGNAL( clicked() ), this, SLOT( setRenderingOrder() ) );
 
+  connect( mModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SIGNAL(widgetChanged()));
+
   currentRuleChanged();
   selectedRulesChanged();
 
@@ -148,6 +150,7 @@ void QgsRuleBasedRendererV2Widget::addRule()
       mModel->insertRule( QModelIndex(), rows, newrule );
     }
     mModel->clearFeatureCounts();
+    emit widgetChanged();
   }
   else
   {

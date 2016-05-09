@@ -94,6 +94,7 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
     layout()->setContentsMargins( 0, 0, 0, 0 );
   }
 
+
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( onOK() ) );
 
   // initialize registry's widget functions
@@ -162,6 +163,47 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
 
   // no renderer found... this mustn't happen
   Q_ASSERT( rendererIdx != -1 && "there must be a renderer!" );
+  connectValueChanged( findChildren<QWidget*>(), SIGNAL( widgetChanged() ) );
+}
+
+void QgsRendererV2PropertiesDialog::connectValueChanged( QList<QWidget *> widgets, const char *slot )
+{
+  Q_FOREACH ( QWidget* widget, widgets )
+  {
+    if ( QgsDataDefinedButton* w = qobject_cast<QgsDataDefinedButton*>( widget ) )
+    {
+      connect( w, SIGNAL( dataDefinedActivated( bool ) ), this, slot );
+      connect( w, SIGNAL( dataDefinedChanged( QString ) ), this, slot );
+    }
+    else if ( QgsFieldExpressionWidget* w = qobject_cast<QgsFieldExpressionWidget*>( widget ) )
+    {
+      connect( w, SIGNAL( fieldChanged( QString ) ), this,  slot );
+    }
+    else if ( QComboBox* w =  qobject_cast<QComboBox*>( widget ) )
+    {
+      connect( w, SIGNAL( currentIndexChanged( int ) ), this, slot );
+    }
+    else if ( QSpinBox* w =  qobject_cast<QSpinBox*>( widget ) )
+    {
+      connect( w, SIGNAL( valueChanged( int ) ), this, slot );
+    }
+    else if ( QDoubleSpinBox* w =  qobject_cast<QDoubleSpinBox*>( widget ) )
+    {
+      connect( w , SIGNAL( valueChanged( double ) ), this, slot );
+    }
+    else if ( QgsColorButtonV2* w =  qobject_cast<QgsColorButtonV2*>( widget ) )
+    {
+      connect( w, SIGNAL( colorChanged( QColor ) ), this, slot );
+    }
+    else if ( QCheckBox* w =  qobject_cast<QCheckBox*>( widget ) )
+    {
+      connect( w, SIGNAL( toggled( bool ) ), this, slot );
+    }
+    else if ( QLineEdit* w =  qobject_cast<QLineEdit*>( widget ) )
+    {
+      connect( w, SIGNAL( textEdited( QString ) ), this, slot );
+    }
+  }
 }
 
 QgsRendererV2PropertiesDialog::~QgsRendererV2PropertiesDialog()
@@ -227,6 +269,7 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
       changeOrderBy( mActiveWidget->renderer()->orderBy(), mActiveWidget->renderer()->orderByEnabled() );
       connect( mActiveWidget, SIGNAL( layerVariablesChanged() ), this, SIGNAL( layerVariablesChanged() ) );
     }
+    connect( mActiveWidget, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
   }
   else
   {

@@ -1792,6 +1792,80 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
 bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage )
 {
+  readStyle( node, errorMessage );
+
+  // process the attribute actions
+  mActions->readXML( node );
+
+  mEditFormConfig->readXml( node );
+
+  QDomNode annotationFormNode = node.namedItem( "annotationform" );
+  if ( !annotationFormNode.isNull() )
+  {
+    QDomElement e = annotationFormNode.toElement();
+    mAnnotationForm = QgsProject::instance()->readPath( e.text() );
+  }
+
+  mAttributeAliasMap.clear();
+  QDomNode aliasesNode = node.namedItem( "aliases" );
+  if ( !aliasesNode.isNull() )
+  {
+    QDomElement aliasElem;
+
+    QDomNodeList aliasNodeList = aliasesNode.toElement().elementsByTagName( "alias" );
+    for ( int i = 0; i < aliasNodeList.size(); ++i )
+    {
+      aliasElem = aliasNodeList.at( i ).toElement();
+
+      QString field;
+      if ( aliasElem.hasAttribute( "field" ) )
+      {
+        field = aliasElem.attribute( "field" );
+      }
+      else
+      {
+        int index = aliasElem.attribute( "index" ).toInt();
+
+        if ( index >= 0 && index < fields().count() )
+          field = fields().at( index ).name();
+      }
+
+      mAttributeAliasMap.insert( field, aliasElem.attribute( "name" ) );
+    }
+  }
+
+  //Attributes excluded from WMS and WFS
+  mExcludeAttributesWMS.clear();
+  QDomNode excludeWMSNode = node.namedItem( "excludeAttributesWMS" );
+  if ( !excludeWMSNode.isNull() )
+  {
+    QDomNodeList attributeNodeList = excludeWMSNode.toElement().elementsByTagName( "attribute" );
+    for ( int i = 0; i < attributeNodeList.size(); ++i )
+    {
+      mExcludeAttributesWMS.insert( attributeNodeList.at( i ).toElement().text() );
+    }
+  }
+
+  mExcludeAttributesWFS.clear();
+  QDomNode excludeWFSNode = node.namedItem( "excludeAttributesWFS" );
+  if ( !excludeWFSNode.isNull() )
+  {
+    QDomNodeList attributeNodeList = excludeWFSNode.toElement().elementsByTagName( "attribute" );
+    for ( int i = 0; i < attributeNodeList.size(); ++i )
+    {
+      mExcludeAttributesWFS.insert( attributeNodeList.at( i ).toElement().text() );
+    }
+  }
+
+  mEditFormConfig->readXml( node );
+
+  mConditionalStyles->readXml( node );
+
+  return true;
+}
+
+bool QgsVectorLayer::readStyle(const QDomNode &node, QString &errorMessage)
+{
   emit readCustomSymbology( node.toElement(), errorMessage );
 
   if ( hasGeometryType() )
@@ -1922,78 +1996,77 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       }
     }
   }
-
-  // process the attribute actions
-  mActions->readXML( node );
-
-  QDomNode annotationFormNode = node.namedItem( "annotationform" );
-  if ( !annotationFormNode.isNull() )
-  {
-    QDomElement e = annotationFormNode.toElement();
-    mAnnotationForm = QgsProject::instance()->readPath( e.text() );
-  }
-
-  mAttributeAliasMap.clear();
-  QDomNode aliasesNode = node.namedItem( "aliases" );
-  if ( !aliasesNode.isNull() )
-  {
-    QDomElement aliasElem;
-
-    QDomNodeList aliasNodeList = aliasesNode.toElement().elementsByTagName( "alias" );
-    for ( int i = 0; i < aliasNodeList.size(); ++i )
-    {
-      aliasElem = aliasNodeList.at( i ).toElement();
-
-      QString field;
-      if ( aliasElem.hasAttribute( "field" ) )
-      {
-        field = aliasElem.attribute( "field" );
-      }
-      else
-      {
-        int index = aliasElem.attribute( "index" ).toInt();
-
-        if ( index >= 0 && index < fields().count() )
-          field = fields().at( index ).name();
-      }
-
-      mAttributeAliasMap.insert( field, aliasElem.attribute( "name" ) );
-    }
-  }
-
-  //Attributes excluded from WMS and WFS
-  mExcludeAttributesWMS.clear();
-  QDomNode excludeWMSNode = node.namedItem( "excludeAttributesWMS" );
-  if ( !excludeWMSNode.isNull() )
-  {
-    QDomNodeList attributeNodeList = excludeWMSNode.toElement().elementsByTagName( "attribute" );
-    for ( int i = 0; i < attributeNodeList.size(); ++i )
-    {
-      mExcludeAttributesWMS.insert( attributeNodeList.at( i ).toElement().text() );
-    }
-  }
-
-  mExcludeAttributesWFS.clear();
-  QDomNode excludeWFSNode = node.namedItem( "excludeAttributesWFS" );
-  if ( !excludeWFSNode.isNull() )
-  {
-    QDomNodeList attributeNodeList = excludeWFSNode.toElement().elementsByTagName( "attribute" );
-    for ( int i = 0; i < attributeNodeList.size(); ++i )
-    {
-      mExcludeAttributesWFS.insert( attributeNodeList.at( i ).toElement().text() );
-    }
-  }
-
-  mEditFormConfig->readXml( node );
-
-  mAttributeTableConfig.readXml( node );
-
-  mConditionalStyles->readXml( node );
-
   return true;
 }
 
 bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
+{
+  return writeStyle( node, doc, errorMessage );
+  // FIXME
+  // edittypes are written to the layerNode
+  // by slot QgsEditorWidgetRegistry::writeMapLayer()
+  // triggered by signal QgsProject::writeMapLayer()
+  // still other editing settings are written here,
+  // although they are not part of symbology either
+
+  QDomElement afField = doc.createElement( "annotationform" );
+  QDomText afText = doc.createTextNode( QgsProject::instance()->writePath( mAnnotationForm ) );
+  afField.appendChild( afText );
+  node.appendChild( afField );
+
+  //attribute aliases
+  if ( !mAttributeAliasMap.isEmpty() )
+  {
+    QDomElement aliasElem = doc.createElement( "aliases" );
+    QMap<QString, QString>::const_iterator a_it = mAttributeAliasMap.constBegin();
+    for ( ; a_it != mAttributeAliasMap.constEnd(); ++a_it )
+    {
+      int idx = fieldNameIndex( a_it.key() );
+      if ( idx < 0 )
+        continue;
+
+      QDomElement aliasEntryElem = doc.createElement( "alias" );
+      aliasEntryElem.setAttribute( "field", a_it.key() );
+      aliasEntryElem.setAttribute( "index", idx );
+      aliasEntryElem.setAttribute( "name", a_it.value() );
+      aliasElem.appendChild( aliasEntryElem );
+    }
+    node.appendChild( aliasElem );
+  }
+
+  //exclude attributes WMS
+  QDomElement excludeWMSElem = doc.createElement( "excludeAttributesWMS" );
+  QSet<QString>::const_iterator attWMSIt = mExcludeAttributesWMS.constBegin();
+  for ( ; attWMSIt != mExcludeAttributesWMS.constEnd(); ++attWMSIt )
+  {
+    QDomElement attrElem = doc.createElement( "attribute" );
+    QDomText attrText = doc.createTextNode( *attWMSIt );
+    attrElem.appendChild( attrText );
+    excludeWMSElem.appendChild( attrElem );
+  }
+  node.appendChild( excludeWMSElem );
+
+  //exclude attributes WFS
+  QDomElement excludeWFSElem = doc.createElement( "excludeAttributesWFS" );
+  QSet<QString>::const_iterator attWFSIt = mExcludeAttributesWFS.constBegin();
+  for ( ; attWFSIt != mExcludeAttributesWFS.constEnd(); ++attWFSIt )
+  {
+    QDomElement attrElem = doc.createElement( "attribute" );
+    QDomText attrText = doc.createTextNode( *attWFSIt );
+    attrElem.appendChild( attrText );
+    excludeWFSElem.appendChild( attrElem );
+  }
+  node.appendChild( excludeWFSElem );
+
+  // add attribute actions
+  mActions->writeXML( node, doc );
+  mEditFormConfig->writeXml( node );
+  mConditionalStyles->writeXml( node, doc );
+
+  return true;
+}
+
+bool QgsVectorLayer::writeStyle(QDomNode &node, QDomDocument &doc, QString &errorMessage) const
 {
   QDomElement mapLayerNode = node.toElement();
 
@@ -2092,72 +2165,6 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
         mDiagramLayerSettings->writeXML( mapLayerNode, doc, this );
     }
   }
-
-  // FIXME
-  // edittypes are written to the layerNode
-  // by slot QgsEditorWidgetRegistry::writeMapLayer()
-  // triggered by signal QgsProject::writeMapLayer()
-  // still other editing settings are written here,
-  // although they are not part of symbology either
-
-  QDomElement afField = doc.createElement( "annotationform" );
-  QDomText afText = doc.createTextNode( QgsProject::instance()->writePath( mAnnotationForm ) );
-  afField.appendChild( afText );
-  node.appendChild( afField );
-
-  //attribute aliases
-  if ( !mAttributeAliasMap.isEmpty() )
-  {
-    QDomElement aliasElem = doc.createElement( "aliases" );
-    QMap<QString, QString>::const_iterator a_it = mAttributeAliasMap.constBegin();
-    for ( ; a_it != mAttributeAliasMap.constEnd(); ++a_it )
-    {
-      int idx = fieldNameIndex( a_it.key() );
-      if ( idx < 0 )
-        continue;
-
-      QDomElement aliasEntryElem = doc.createElement( "alias" );
-      aliasEntryElem.setAttribute( "field", a_it.key() );
-      aliasEntryElem.setAttribute( "index", idx );
-      aliasEntryElem.setAttribute( "name", a_it.value() );
-      aliasElem.appendChild( aliasEntryElem );
-    }
-    node.appendChild( aliasElem );
-  }
-
-  //exclude attributes WMS
-  QDomElement excludeWMSElem = doc.createElement( "excludeAttributesWMS" );
-  QSet<QString>::const_iterator attWMSIt = mExcludeAttributesWMS.constBegin();
-  for ( ; attWMSIt != mExcludeAttributesWMS.constEnd(); ++attWMSIt )
-  {
-    QDomElement attrElem = doc.createElement( "attribute" );
-    QDomText attrText = doc.createTextNode( *attWMSIt );
-    attrElem.appendChild( attrText );
-    excludeWMSElem.appendChild( attrElem );
-  }
-  node.appendChild( excludeWMSElem );
-
-  //exclude attributes WFS
-  QDomElement excludeWFSElem = doc.createElement( "excludeAttributesWFS" );
-  QSet<QString>::const_iterator attWFSIt = mExcludeAttributesWFS.constBegin();
-  for ( ; attWFSIt != mExcludeAttributesWFS.constEnd(); ++attWFSIt )
-  {
-    QDomElement attrElem = doc.createElement( "attribute" );
-    QDomText attrText = doc.createTextNode( *attWFSIt );
-    attrElem.appendChild( attrText );
-    excludeWFSElem.appendChild( attrElem );
-  }
-  node.appendChild( excludeWFSElem );
-
-  // add attribute actions
-  mActions->writeXML( node, doc );
-
-  mEditFormConfig->writeXml( node );
-
-  mAttributeTableConfig.writeXml( node );
-
-  mConditionalStyles->writeXml( node, doc );
-
   return true;
 }
 
