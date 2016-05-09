@@ -308,7 +308,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   mCurrentRubberBands.clear();
 
   QList<QTableWidgetItem*> items;
-  QList<QgsPoint> errorPositions;
+  QVector<QgsPoint> errorPositions;
   QgsRectangle totextent;
 
   if ( current )

@@ -123,7 +123,7 @@ class QgsExpressionSorter
 
       expressionContext->appendScope( scope );
 
-      QList<QgsIndexedFeature> indexedFeatures;
+      QVector<QgsIndexedFeature> indexedFeatures;
 
       QgsIndexedFeature indexedFeature;
 
