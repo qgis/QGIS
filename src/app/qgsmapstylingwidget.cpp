@@ -39,7 +39,7 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
   mVectorPage = mStackedWidget->addWidget( mMapStyleTabs );
 
   // create undo widget
-  mUndoWidget = new QgsUndoWidget( nullptr, mMapCanvas );
+  mUndoWidget = new QgsUndoWidget( this->mMapStyleTabs, mMapCanvas );
   mUndoWidget->setObjectName( "Undo Styles" );
 
   mLayerTitleLabel = new QLabel();

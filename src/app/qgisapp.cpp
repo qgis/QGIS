@@ -678,6 +678,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mUndoWidget = new QgsUndoWidget( nullptr, mMapCanvas );
   mUndoWidget->setObjectName( "Undo" );
 
+  mUndoDock = new QDockWidget( "Undo", nullptr );
+  mUndoDock->setWidget( mUndoWidget );
+
   // Advanced Digitizing dock
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this );
   mAdvancedDigitizingDockWidget->setObjectName( "AdvancedDigitizingTools" );
@@ -721,8 +724,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   // initialize the plugin manager
   mPluginManager = new QgsPluginManager( this, restorePlugins );
 
-  addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
-  mUndoWidget->hide();
+  addDockWidget( Qt::LeftDockWidgetArea, mUndoDock );
+  mUndoDock->hide();
 
   mMapStylingDock = new QDockWidget( this );
   mMapStylingDock->setWindowTitle( tr( "Map Styling" ) );
@@ -10023,7 +10026,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionCopyStyle->setEnabled( false );
     mActionPasteStyle->setEnabled( false );
 
-    mUndoWidget->dockContents()->setEnabled( false );
+    mUndoDock->widget()->setEnabled( false );
     mActionUndo->setEnabled( false );
     mActionRedo->setEnabled( false );
     mActionSimplifyFeature->setEnabled( false );

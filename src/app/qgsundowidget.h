@@ -33,7 +33,7 @@ class QgsMapLayer;
 /**
  * Class that handles undo display fo undo commands
  */
-class APP_EXPORT QgsUndoWidget : public QDockWidget
+class APP_EXPORT QgsUndoWidget : public QWidget
 {
     Q_OBJECT
   public:
@@ -45,8 +45,8 @@ class APP_EXPORT QgsUndoWidget : public QDockWidget
     QSpacerItem *spacerItem1;
 
     QgsUndoWidget( QWidget * parent, QgsMapCanvas* mapCanvas );
-    void setupUi( QDockWidget *UndoWidget );
-    void retranslateUi( QDockWidget *UndoWidget );
+    void setupUi( QWidget *UndoWidget );
+    void retranslateUi( QWidget *UndoWidget );
 
     /**
      * Setting new undo stack for undo view
