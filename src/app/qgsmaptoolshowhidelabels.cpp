@@ -166,7 +166,7 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent * e )
     QList<QgsLabelPosition> positions;
     if ( selectedLabelFeatures( vlayer, positions ) )
     {
-      Q_FOREACH ( QgsLabelPosition pos, positions )
+      Q_FOREACH ( const QgsLabelPosition& pos, positions )
       {
         mCurrentLabel.pos = pos;
 

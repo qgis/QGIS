@@ -116,7 +116,7 @@ bool QgsWFSUtils::removeDir( const QString &dirName )
 {
   QDir dir( dirName );
   QFileInfoList fileList( dir.entryInfoList( QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files ) );
-  Q_FOREACH ( QFileInfo info, fileList )
+  Q_FOREACH ( const QFileInfo& info, fileList )
   {
     bool result;
     if ( info.isDir() )
@@ -219,7 +219,7 @@ void QgsWFSUtils::init()
   {
     const qint64 currentTimestamp = QDateTime::currentMSecsSinceEpoch();
     QFileInfoList fileList( dir.entryInfoList( QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files ) );
-    Q_FOREACH ( QFileInfo info, fileList )
+    Q_FOREACH ( const QFileInfo& info, fileList )
     {
       if ( info.isDir() && info.fileName().startsWith( "pid_" ) )
       {

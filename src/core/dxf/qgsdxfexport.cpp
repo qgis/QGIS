@@ -3393,7 +3393,7 @@ void QgsDxfExport::writePoint( const QgsPointV2 &pt, const QString& layer, const
 void QgsDxfExport::writePolyline( const QgsPolyline &line, const QString& layer, const QString& lineStyleName, const QColor& color, double width )
 {
   QgsPointSequenceV2 s;
-  Q_FOREACH ( const QgsPoint p, line )
+  Q_FOREACH ( const QgsPoint& p, line )
     s << QgsPointV2( p );
   writePolyline( s, layer, lineStyleName, color, width );
 }
@@ -3468,10 +3468,10 @@ void QgsDxfExport::writePolygon( const QgsPolygon &polygon, const QString& layer
 {
   QgsRingSequenceV2 r;
 
-  Q_FOREACH ( const QgsPolyline l, polygon )
+  Q_FOREACH ( const QgsPolyline& l, polygon )
   {
     QgsPointSequenceV2 s;
-    Q_FOREACH ( const QgsPoint p, l )
+    Q_FOREACH ( const QgsPoint& p, l )
       s << QgsPointV2( p );
     r << s;
   }

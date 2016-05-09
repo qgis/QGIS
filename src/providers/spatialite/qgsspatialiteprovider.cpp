@@ -451,7 +451,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   if ( mSqliteHandle )
   {
     QStringList pragmaList = anUri.params( "pragma" );
-    Q_FOREACH ( QString pragma, pragmaList )
+    Q_FOREACH ( const QString& pragma, pragmaList )
     {
       char* errMsg = nullptr;
       int ret = sqlite3_exec( mSqliteHandle, ( "PRAGMA " + pragma ).toUtf8(), nullptr, nullptr, &errMsg );

@@ -49,7 +49,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget* parent, Qt::W
   QObject::connect( mLayersTable->selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( onTableRowChanged( const QModelIndex&, const QModelIndex& ) ) );
 
   // prepare provider list
-  Q_FOREACH ( QString pk, QgsProviderRegistry::instance()->providerList() )
+  Q_FOREACH ( const QString& pk, QgsProviderRegistry::instance()->providerList() )
   {
     // we cannot know before trying to actually load a dataset
     // if the provider is raster or vector
@@ -293,7 +293,7 @@ void QgsVirtualLayerSourceSelect::onImportLayer()
   if ( mEmbeddedSelectionDialog->exec() == QDialog::Accepted )
   {
     QStringList ids = mEmbeddedSelectionDialog->layers();
-    Q_FOREACH ( QString id, ids )
+    Q_FOREACH ( const QString& id, ids )
     {
       QgsVectorLayer *vl = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
       addEmbeddedLayer( vl->name(), vl->providerType(), vl->dataProvider()->encoding(), vl->source() );

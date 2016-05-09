@@ -180,7 +180,7 @@ int QgsGml::getFeatures( const QByteArray &data, QGis::WkbType* wkbType, QgsRect
 void QgsGml::fillMapsFromParser()
 {
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = mParser.getAndStealReadyFeatures();
-  Q_FOREACH ( QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair featPair, features )
+  Q_FOREACH ( const QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair& featPair, features )
   {
     QgsFeature* feat = featPair.first;
     const QString& gmlId = featPair.second;
