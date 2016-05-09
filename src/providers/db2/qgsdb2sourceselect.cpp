@@ -697,8 +697,8 @@ void QgsDb2GeomColumnTypeThread::run()
     {
       QString table;
       table = QString( "%1[%2]" )
-              .arg( layerProperty.schemaName.isEmpty() ? "" : QString( "[%1]." ).arg( layerProperty.schemaName ) )
-              .arg( layerProperty.tableName );
+              .arg( layerProperty.schemaName.isEmpty() ? "" : QString( "[%1]." ).arg( layerProperty.schemaName ),
+                    layerProperty.tableName );
 
       QString query = QString( "SELECT %3"
                                " UPPER([%1].STGeometryType()),"
@@ -706,10 +706,10 @@ void QgsDb2GeomColumnTypeThread::run()
                                " FROM %2"
                                " WHERE [%1] IS NOT NULL %4"
                                " GROUP BY [%1].STGeometryType(), [%1].STSrid" )
-                      .arg( layerProperty.geometryColName )
-                      .arg( table )
-                      .arg( mUseEstimatedMetadata ? "TOP 1" : "" )
-                      .arg( layerProperty.sql.isEmpty() ? "" : QString( " AND %1" ).arg( layerProperty.sql ) );
+                      .arg( layerProperty.geometryColName,
+                            table,
+                            mUseEstimatedMetadata ? "TOP 1" : "",
+                            layerProperty.sql.isEmpty() ? "" : QString( " AND %1" ).arg( layerProperty.sql ) );
 
       // issue the sql query
       QSqlDatabase db = QSqlDatabase::database( mConnectionName );

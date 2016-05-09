@@ -225,12 +225,12 @@ QSqlDatabase QgsDb2Provider::getDatabase( const QString &connInfo, QString &errM
     {
       connectionString = QString( "Driver={%1};Hostname=%2;Port=%3;"
                                   "Protocol=TCPIP;Database=%4;Uid=%5;Pwd=%6;" )
-                         .arg( driver )
-                         .arg( host )
+                         .arg( driver,
+                               host )
                          .arg( db.port() )
-                         .arg( databaseName )
-                         .arg( userName )
-                         .arg( password );
+                         .arg( databaseName,
+                               userName,
+                               password );
     }
     else
     {
@@ -1012,9 +1012,9 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
     statement += QString( "%1" ).arg( mGeometryColName );
 
     values += QString( "db2gse.%1(CAST (%2 AS BLOB(2M)),%3)" )
-              .arg( mGeometryColType )
-              .arg( QString( "?" ) )
-              .arg( QString::number( mSRId ) );
+              .arg( mGeometryColType,
+                    QString( "?" ),
+                    QString::number( mSRId ) );
   }
 
   QgsDebugMsg( statement );
@@ -1230,9 +1230,9 @@ bool QgsDb2Provider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     query.setForwardOnly( true );
 
     statement += QString( "db2gse.%1(CAST (%2 AS BLOB(2M)),%3)" )
-                 .arg( mGeometryColType )
-                 .arg( QString( "?" ) )
-                 .arg( QString::number( mSRId ) );
+                 .arg( mGeometryColType,
+                       QString( "?" ),
+                       QString::number( mSRId ) );
 
     // set attribute filter
     statement += QString( " WHERE %1=%2" ).arg( mFidColName, FID_TO_STRING( fid ) );

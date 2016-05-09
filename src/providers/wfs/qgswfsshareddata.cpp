@@ -378,19 +378,19 @@ bool QgsWFSSharedData::createCache()
           type = "BIGINT";
         else if ( field.type() == QVariant::Double )
           type = "REAL";
-        sql += QString( ", %1 %2" ).arg( quotedIdentifier( field.name() ) ).arg( type );
+        sql += QString( ", %1 %2" ).arg( quotedIdentifier( field.name() ), type );
       }
       sql += ")";
       rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
         ret = false;
 
-      sql = QString( "SELECT AddGeometryColumn('%1','%2',0,'POLYGON',2)" ).arg( mCacheTablename ).arg( geometryFieldname );
+      sql = QString( "SELECT AddGeometryColumn('%1','%2',0,'POLYGON',2)" ).arg( mCacheTablename, geometryFieldname );
       rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
         ret = false;
 
-      sql = QString( "SELECT CreateSpatialIndex('%1','%2')" ).arg( mCacheTablename ).arg( geometryFieldname );
+      sql = QString( "SELECT CreateSpatialIndex('%1','%2')" ).arg( mCacheTablename, geometryFieldname );
       rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
         ret = false;

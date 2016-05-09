@@ -558,7 +558,9 @@ bool QgsDb2SchemaItem::handleDrop( const QMimeData* data, Qt::DropAction )
 QgsDb2LayerItem* QgsDb2SchemaItem::addLayer( QgsDb2LayerProperty layerProperty, bool refresh )
 {
   QGis::WkbType wkbType = QgsDb2TableModel::wkbTypeFromDb2( layerProperty.type );
-  QString tip = tr( "DB2 *** %1 as %2 in %3" ).arg( layerProperty.geometryColName ).arg( QgsDb2TableModel::displayStringForWkbType( wkbType ) ).arg( layerProperty.srid );
+  QString tip = tr( "DB2 *** %1 as %2 in %3" ).arg( layerProperty.geometryColName,
+                QgsDb2TableModel::displayStringForWkbType( wkbType ),
+                layerProperty.srid );
   QgsDebugMsg( tip );
   QgsLayerItem::LayerType layerType;
   switch ( wkbType )

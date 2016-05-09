@@ -490,7 +490,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
 
   OGR_DS_Destroy( hDS );
 
-  QString uri( QString( "%1|layername=%2" ).arg( mDatabaseEdit->text() ).arg( tableName ) );
+  QString uri( QString( "%1|layername=%2" ).arg( mDatabaseEdit->text(), tableName ) );
   QString userVisiblelayerName( layerIdentifier.isEmpty() ? tableName : layerIdentifier );
   QgsVectorLayer *layer = new QgsVectorLayer( uri, userVisiblelayerName, "ogr" );
   if ( layer->isValid() )
