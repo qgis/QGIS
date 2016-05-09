@@ -1096,8 +1096,7 @@ void QgsStyleV2ManagerDialog::removeGroup()
 
 void QgsStyleV2ManagerDialog::groupRenamed( QStandardItem * item )
 {
-  QString data = item->data( Qt::UserRole + 1 ).toString();
-  QgsDebugMsg( "Symbol group edited: data=" + data + " text=" + item->text() );
+  QgsDebugMsg( "Symbol group edited: data=" + item->data( Qt::UserRole + 1 ).toString() + " text=" + item->text() );
   int id = item->data( Qt::UserRole + 1 ).toInt();
   QString name = item->text();
   if ( item->parent()->data( Qt::UserRole + 1 ) == "smartgroups" )

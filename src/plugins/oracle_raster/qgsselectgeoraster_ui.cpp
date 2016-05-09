@@ -157,7 +157,6 @@ void QgsOracleSelectGeoraster::connectToServer()
   QSettings settings;
   QString key = "/Oracle/connections/" + cmbConnections->currentText();
   QString username = settings.value( key + "/username" ).toString();
-  QString password = settings.value( key + "/password" ).toString();
   QString savepass = settings.value( key + "/savepass" ).toString();
   QString database = settings.value( key + "/database" ).toString();
   QString subdtset = settings.value( key + "/subdtset" ).toString();
@@ -165,12 +164,12 @@ void QgsOracleSelectGeoraster::connectToServer()
   if ( savepass == "false" )
   {
     makeConnection = false;
-    QString password = QInputDialog::getText( this,
-                       tr( "Password for %1/<password>@%2" ).arg( username, database ),
-                       tr( "Please enter your password:" ),
-                       QLineEdit::Password,
-                       QString::null,
-                       &makeConnection );
+    ( void )QInputDialog::getText( this,
+                                   tr( "Password for %1/<password>@%2" ).arg( username, database ),
+                                   tr( "Please enter your password:" ),
+                                   QLineEdit::Password,
+                                   QString::null,
+                                   &makeConnection );
   }
   if ( makeConnection )
   {

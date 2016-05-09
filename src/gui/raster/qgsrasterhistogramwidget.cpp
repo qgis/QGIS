@@ -688,7 +688,7 @@ void QgsRasterHistogramWidget::on_mSaveAsImageButton_clicked()
 
   QPair< QString, QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
   QFileInfo myInfo( myFileNameAndFilter.first );
-  if ( QFileInfo( myFileNameAndFilter.first ).baseName() != "" )
+  if ( myInfo.baseName() != "" )
   {
     histoSaveAsImage( myFileNameAndFilter.first );
   }

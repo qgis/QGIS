@@ -371,7 +371,6 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc,
   categoryElem.setAttribute( "minimumSize", QString::number( minimumSize ) );
   categoryElem.setAttribute( "angleOffset", QString::number( angleOffset ) );
 
-  QString colors;
   int nCats = qMin( categoryColors.size(), categoryAttributes.size() );
   for ( int i = 0; i < nCats; ++i )
   {

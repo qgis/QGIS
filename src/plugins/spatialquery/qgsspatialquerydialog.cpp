@@ -536,7 +536,6 @@ void QgsSpatialQueryDialog::populateCbTargetLayer()
   QMapIterator <QString, QgsMapLayer*> item( layers );
   QgsMapLayer * mapLayer = nullptr;
   QgsVectorLayer * lyr = nullptr;
-  QString layerId;
   while ( item.hasNext() )
   {
     item.next();

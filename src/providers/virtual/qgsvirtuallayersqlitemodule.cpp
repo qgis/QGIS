@@ -337,7 +337,7 @@ int vtableCreateConnect( sqlite3* sql, void* aux, int argc, const char* const* a
   }
 
   QScopedPointer<VTable> newVtab;
-  QString vname( argv[2] );
+
   int r;
   if ( argc == 4 )
   {

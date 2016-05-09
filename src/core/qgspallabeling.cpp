@@ -3015,7 +3015,9 @@ bool QgsPalLayerSettings::dataDefinedValEval( DataDefinedValueType valType,
 {
   if ( dataDefinedEvaluate( p, exprVal, &context, originalValue ) )
   {
-    QString dbgStr = QString( "exprVal %1:" ).arg( mDataDefinedNames.value( p ).first ) + "%1";
+#ifdef QGISDEBUG
+    QString dbgStr = QString( "exprVal %1:" ).arg( mDataDefinedNames.value( p ).first ) + "%1"; // clazy:exclude=unused-non-trivial-variable
+#endif
 
     switch ( valType )
     {

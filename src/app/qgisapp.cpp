@@ -10477,8 +10477,6 @@ void QgisApp::refreshActionFeatureAction()
 // this is a slot for action from GUI to add raster layer
 void QgisApp::addRasterLayer()
 {
-  QString fileFilters;
-
   QStringList selectedFiles;
   QString e;//only for parameter correctness
   QString title = tr( "Open a GDAL Supported Raster Data Source" );
@@ -10856,6 +10854,7 @@ void QgisApp::showBookmarks()
 
 void QgisApp::oldProjectVersionWarning( const QString& oldVersion )
 {
+  Q_UNUSED( oldVersion );
   QSettings settings;
 
   if ( settings.value( "/qgis/warnOldProjectVersion", QVariant( true ) ).toBool() )
@@ -10864,24 +10863,6 @@ void QgisApp::oldProjectVersionWarning( const QString& oldVersion )
                             " When saving this project file, QGIS will update it to the latest version, "
                             "possibly rendering it useless for older versions of QGIS." );
 
-    QString text =  tr( "<p>This project file was saved by an older version of QGIS."
-                        " When saving this project file, QGIS will update it to the latest version, "
-                        "possibly rendering it useless for older versions of QGIS."
-                        "<p>Even though QGIS developers try to maintain backwards "
-                        "compatibility, some of the information from the old project "
-                        "file might be lost."
-                        " To improve the quality of QGIS, we appreciate "
-                        "if you file a bug report at %3."
-                        " Be sure to include the old project file, and state the version of "
-                        "QGIS you used to discover the error."
-                        "<p>To remove this warning when opening an older project file, "
-                        "uncheck the box '%5' in the %4 menu."
-                        "<p>Version of the project file: %1<br>Current version of QGIS: %2" )
-                    .arg( oldVersion,
-                          QGis::QGIS_VERSION,
-                          "<a href=\"https://hub.qgis.org/projects/quantum-gis\">https://hub.qgis.org/projects/quantum-gis</a> ",
-                          tr( "<tt>Settings:Options:General</tt>", "Menu path to setting options" ),
-                          tr( "Warn me when opening a project file saved with an older version of QGIS" ) );
     QString title =  tr( "Project file is older" );
 
 #ifdef ANDROID
@@ -11225,8 +11206,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
     timer->stop();
   }
 
-  QString requesturl = reply->request().url().toString();
-  QgsDebugMsg( QString( "SSL errors occurred accessing URL:\n%1" ).arg( requesturl ) );
+  QgsDebugMsg( QString( "SSL errors occurred accessing URL:\n%1" ).arg( reply->request().url().toString() ) );
 
   QString hostport( QString( "%1:%2" )
                     .arg( reply->url().host() )

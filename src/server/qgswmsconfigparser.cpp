@@ -314,7 +314,6 @@ QStringList QgsWMSConfigParser::addHighlightLayers( const QMap<QString, QString>
     }
 
     //create renderer from sld
-    QString sld = symbolSplit[i];
     QDomDocument sldDoc;
     if ( !sldDoc.setContent( symbolSplit[i], true ) )
     {

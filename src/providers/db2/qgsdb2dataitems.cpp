@@ -170,9 +170,8 @@ QVector<QgsDataItem*> QgsDb2ConnectionItem::createChildren()
   QSqlDatabase db = QgsDb2Provider::getDatabase( connInfo, errorMsg );
   if ( errorMsg.isEmpty() )
   {
-    QString connectionName = db.connectionName();
     //children.append( new QgsFavouritesItem(this, "connection successful", mPath + "/success"));
-    QgsDebugMsg( "DB open successful for connection " + connectionName );
+    QgsDebugMsg( "DB open successful for connection " + db.connectionName() );
   }
   else
   {
@@ -180,7 +179,7 @@ QVector<QgsDataItem*> QgsDb2ConnectionItem::createChildren()
     QgsDebugMsg( "DB not open " + errorMsg );
     return children;
   }
-  QString connectionName = db.connectionName();
+
   QgsDb2GeometryColumns db2GC = QgsDb2GeometryColumns( db );
   int sqlcode = db2GC.open();
 
@@ -295,10 +294,9 @@ void QgsDb2ConnectionItem::refreshConnection()
 {
   QString errMsg;
   QSqlDatabase db = QgsDb2Provider::getDatabase( mConnInfo, errMsg );
-
+  Q_UNUSED( db );
   if ( errMsg.isEmpty() )
   {
-    QString connectionName = db.connectionName();
     QgsDebugMsg( "successful get db2 connection on refresh" );
   }
   else

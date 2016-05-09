@@ -936,7 +936,7 @@ int main( int argc, char *argv[] )
   QString i18nPath = QgsApplication::i18nPath();
   QString myUserLocale = mySettings.value( "locale/userLocale", "" ).toString();
   bool myLocaleOverrideFlag = mySettings.value( "locale/overrideFlag", false ).toBool();
-  QString myLocale;
+
   //
   // Priority of translation is:
   //  - command line

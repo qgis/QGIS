@@ -756,7 +756,6 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
         {
           continue;
         }
-        QString key = keyValueSplit.at( 0 );
         QString value = keyValueSplit.at( 1 );
         valueSplit = value.split( ' ' );
         if ( !hasFillParam && value.startsWith( "param(fill)" ) )

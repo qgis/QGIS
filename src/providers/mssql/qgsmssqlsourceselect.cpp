@@ -789,8 +789,7 @@ void QgsMssqlGeomColumnTypeThread::run()
       QSqlDatabase db = QSqlDatabase::database( mConnectionName );
       if ( !QgsMssqlProvider::OpenDatabase( db ) )
       {
-        QString msg = db.lastError().text();
-        QgsDebugMsg( msg );
+        QgsDebugMsg( db.lastError().text() );
         continue;
       }
 
@@ -798,8 +797,7 @@ void QgsMssqlGeomColumnTypeThread::run()
       q.setForwardOnly( true );
       if ( !q.exec( query ) )
       {
-        QString msg = q.lastError().text();
-        QgsDebugMsg( msg );
+        QgsDebugMsg( q.lastError().text() );
       }
 
       QString type;

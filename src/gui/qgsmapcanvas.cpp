@@ -1180,10 +1180,6 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
     return;
   }
 
-  QPainter paint;
-  QPen     pen( Qt::gray );
-  QgsPoint ll, ur;
-
   if ( ! mCanvasProperties->mouseButtonDown )
   {
     // Don't want to interfer with mouse events

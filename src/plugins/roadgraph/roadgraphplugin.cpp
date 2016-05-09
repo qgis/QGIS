@@ -199,7 +199,6 @@ QgisInterface* RoadGraphPlugin::iface()
 
 const QgsGraphDirector* RoadGraphPlugin::director() const
 {
-  QString layerId;
   QgsVectorLayer *layer = nullptr;
   QMap< QString, QgsMapLayer* > mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
   QMap< QString, QgsMapLayer* >::const_iterator it;

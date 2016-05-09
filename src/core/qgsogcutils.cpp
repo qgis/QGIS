@@ -914,12 +914,6 @@ QgsRectangle QgsOgcUtils::rectangleFromGMLBox( const QDomNode& boxNode )
 
 bool QgsOgcUtils::readGMLPositions( QgsPolyline &coords, const QDomElement &elem )
 {
-  //tupel and coord separator are the same
-  QString coordSeparator = " ";
-  QString tupelSeparator = " ";
-  //"decimal" has to be "."
-
-
   coords.clear();
 
   QStringList pos = elem.text().split( ' ', QString::SkipEmptyParts );

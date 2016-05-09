@@ -44,8 +44,7 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource* source,
   if ( !mDatabase.open() )
   {
     QgsDebugMsg( "Failed to open database" );
-    QString msg = mDatabase.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( mDatabase.lastError().text() );
     return;
   }
 
@@ -399,8 +398,7 @@ bool QgsMssqlFeatureIterator::rewind()
 
   if ( !result )
   {
-    QString msg = mQuery->lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( mQuery->lastError().text() );
     delete mQuery;
     mQuery = nullptr;
     if ( mDatabase.isOpen() )

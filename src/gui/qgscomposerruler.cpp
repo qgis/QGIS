@@ -361,8 +361,10 @@ int QgsComposerRuler::optimumNumberDivisions( double rulerScale, int scaleMultip
 
 void QgsComposerRuler::setSceneTransform( const QTransform& transform )
 {
+#if 0
   QString debug = QString::number( transform.dx() ) + ',' + QString::number( transform.dy() ) + ','
                   + QString::number( transform.m11() ) + ',' + QString::number( transform.m22() );
+#endif
   mTransform = transform;
   update();
 }

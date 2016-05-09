@@ -353,8 +353,7 @@ void QgsMssqlProvider::loadMetadata()
   query.setForwardOnly( true );
   if ( !query.exec( QString( "select f_geometry_column, coord_dimension, srid, geometry_type from geometry_columns where f_table_schema = '%1' and f_table_name = '%2'" ).arg( mSchemaName, mTableName ) ) )
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( query.lastError().text() );
   }
   if ( query.isActive() && query.next() )
   {
@@ -373,8 +372,7 @@ void QgsMssqlProvider::loadFields()
   query.setForwardOnly( true );
   if ( !query.exec( QString( "exec sp_columns @table_name = N'%1', @table_owner = '%2'" ).arg( mTableName, mSchemaName ) ) )
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( query.lastError().text( ) );
     return;
   }
   if ( query.isActive() )
@@ -447,8 +445,7 @@ void QgsMssqlProvider::loadFields()
       query.setForwardOnly( true );
       if ( !query.exec( QString( "exec sp_pkeys @table_name = N'%1', @table_owner = '%2' " ).arg( mTableName, mSchemaName ) ) )
       {
-        QString msg = query.lastError().text();
-        QgsDebugMsg( msg );
+        QgsDebugMsg( query.lastError().text() );
       }
       if ( query.isActive() && query.next() )
       {
@@ -462,8 +459,7 @@ void QgsMssqlProvider::loadFields()
         if ( !query.exec( QString( "select count(distinct [%1]), count([%1]) from [%2].[%3]" )
                           .arg( pk, mSchemaName, mTableName ) ) )
         {
-          QString msg = query.lastError().text();
-          QgsDebugMsg( msg );
+          QgsDebugMsg( query.lastError().text() );
         }
         if ( query.isActive() && query.next() && query.value( 0 ).toInt() == query.value( 1 ).toInt() )
         {
@@ -512,8 +508,7 @@ QVariant QgsMssqlProvider::minimumValue( int index )
 
   if ( !query.exec( sql ) )
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( query.lastError().text() );
   }
 
   if ( query.isActive() && query.next() )
@@ -544,8 +539,7 @@ QVariant QgsMssqlProvider::maximumValue( int index )
 
   if ( !query.exec( sql ) )
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( query.lastError().text() );
   }
 
   if ( query.isActive() && query.next() )
@@ -585,8 +579,7 @@ void QgsMssqlProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, i
 
   if ( !query.exec( sql ) )
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( query.lastError().text() );
   }
 
   if ( query.isActive() )
@@ -666,8 +659,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate )
 
   if ( !query.exec( statement ) )
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( query.lastError().text() );
   }
 
   if ( !query.isActive() )
@@ -851,8 +843,6 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       QgsDebugMsg( msg );
       if ( !mSkipFailures )
       {
-        QString msg = query.lastError().text();
-        QgsDebugMsg( msg );
         pushError( msg );
         return false;
       }
@@ -1016,8 +1006,7 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
   query.setForwardOnly( true );
   if ( !query.exec( statement ) )
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( query.lastError().text() );
     return false;
   }
 
@@ -1051,8 +1040,7 @@ bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds &attributes )
 
   if ( !query.exec( statement ) )
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( query.lastError().text() );
     return false;
   }
 
@@ -1119,8 +1107,7 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
     // use prepared statement to prevent from sql injection
     if ( !query.prepare( statement ) )
     {
-      QString msg = query.lastError().text();
-      QgsDebugMsg( msg );
+      QgsDebugMsg( query.lastError().text() );
       return false;
     }
 
@@ -1181,8 +1168,7 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
 
     if ( !query.exec() )
     {
-      QString msg = query.lastError().text();
-      QgsDebugMsg( msg );
+      QgsDebugMsg( query.lastError().text() );
       return false;
     }
   }
@@ -1239,8 +1225,7 @@ bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
 
     if ( !query.prepare( statement ) )
     {
-      QString msg = query.lastError().text();
-      QgsDebugMsg( msg );
+      QgsDebugMsg( query.lastError().text() );
       return false;
     }
 
@@ -1258,8 +1243,7 @@ bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
 
     if ( !query.exec() )
     {
-      QString msg = query.lastError().text();
-      QgsDebugMsg( msg );
+      QgsDebugMsg( query.lastError().text() );
       return false;
     }
   }
@@ -1293,8 +1277,7 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds & id )
 
   if ( !query.exec( statement ) )
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( query.lastError().text() );
     return false;
   }
 
@@ -1351,8 +1334,7 @@ bool QgsMssqlProvider::createSpatialIndex()
 
   if ( !query.exec( statement ) )
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( query.lastError().text() );
     return false;
   }
 
@@ -1380,8 +1362,7 @@ bool QgsMssqlProvider::createAttributeIndex( int field )
 
   if ( !query.exec( statement ) )
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( query.lastError().text() );
     return false;
   }
 

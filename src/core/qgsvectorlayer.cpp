@@ -882,9 +882,7 @@ QgsRectangle QgsVectorLayer::extent()
     QgsRectangle mbr = mDataProvider->extent();
 
     // show the extent
-    QString s = mbr.toString();
-
-    QgsDebugMsg( "Extent of layer: " +  s );
+    QgsDebugMsg( "Extent of layer: " + mbr.toString() );
     // store the extent
     setExtent( mbr );
 

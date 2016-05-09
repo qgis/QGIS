@@ -107,8 +107,7 @@ void QgsBrowserTreeView::expandTree( const QModelIndex & index )
   if ( !model() )
     return;
 
-  QString itemPath = model()->data( index, QgsBrowserModel::PathRole ).toString();
-  QgsDebugMsg( "itemPath = " + itemPath );
+  QgsDebugMsg( "itemPath = " + model()->data( index, QgsBrowserModel::PathRole ).toString() );
 
   expand( index );
   QModelIndex parentIndex = model()->parent( index );

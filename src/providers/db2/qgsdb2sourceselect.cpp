@@ -499,7 +499,6 @@ void QgsDb2SourceSelect::on_btnConnect_clicked()
     return;
   }
 
-  QString connectionName = db.connectionName();
   QgsDb2GeometryColumns db2GC = QgsDb2GeometryColumns( db );
   int sqlcode = db2GC.open();
   if ( 0 != sqlcode )
@@ -716,8 +715,7 @@ void QgsDb2GeomColumnTypeThread::run()
       QSqlDatabase db = QSqlDatabase::database( mConnectionName );
       if ( !QgsDb2Provider::openDatabase( db ) )
       {
-        QString msg = db.lastError().text();
-        QgsDebugMsg( msg );
+        QgsDebugMsg( db.lastError().text() );
         continue;
       }
 
@@ -725,8 +723,7 @@ void QgsDb2GeomColumnTypeThread::run()
       q.setForwardOnly( true );
       if ( !q.exec( query ) )
       {
-        QString msg = q.lastError().text();
-        QgsDebugMsg( msg );
+        QgsDebugMsg( q.lastError().text() );
       }
 
       QString type;

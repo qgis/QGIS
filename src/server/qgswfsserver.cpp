@@ -1692,7 +1692,6 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
         const QgsFields& fields = provider->fields();
         QMap<QString, int> fieldMap = provider->fieldNameMap();
         QMap<QString, int>::const_iterator fieldMapIt;
-        QString fieldName;
 
         // Loop through the insert elements
         QDomNodeList inNodeList = typeNameElem.elementsByTagNameNS( WFS_NAMESPACE, "Insert" );

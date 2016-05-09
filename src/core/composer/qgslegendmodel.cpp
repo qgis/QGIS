@@ -784,7 +784,6 @@ bool QgsLegendModel::removeRows( int row, int count, const QModelIndex & parent 
 QMimeData* QgsLegendModel::mimeData( const QModelIndexList &indexes ) const
 {
   QMimeData* mimeData = new QMimeData();
-  QByteArray encodedData;
   QDomDocument xmlDoc;
   QDomElement xmlRootElement = xmlDoc.createElement( "LegendModelDragData" );
   xmlDoc.appendChild( xmlRootElement );

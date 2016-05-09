@@ -279,6 +279,7 @@ void QgsLabelDialog::changeFont()
   qreal fontSize = mFont.pointSizeF();
   bool resultFlag;
   QFont newFont = QgisGui::getFont( resultFlag, mFont );
+  Q_UNUSED( newFont );
   if ( !resultFlag )
     return;
 

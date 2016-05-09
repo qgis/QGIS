@@ -901,7 +901,6 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
   QSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", QDir::homePath() ).toString();
 
-  QString format, extension;
   if ( styleType == DB )
   {
     QString infoWindowTitle = QObject::tr( "Save style to DB (%1)" ).arg( mLayer->providerType() );

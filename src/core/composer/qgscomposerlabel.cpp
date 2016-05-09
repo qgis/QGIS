@@ -395,8 +395,6 @@ QFont QgsComposerLabel::font() const
 
 bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc ) const
 {
-  QString alignment;
-
   if ( elem.isNull() )
   {
     return false;
@@ -429,8 +427,6 @@ bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc ) const
 
 bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument& doc )
 {
-  QString alignment;
-
   if ( itemElem.isNull() )
   {
     return false;

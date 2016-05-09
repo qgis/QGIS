@@ -122,7 +122,6 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem* item )
   QgsMapLayer::LayerType type = layerItem->mapLayerType();
   QString layerMetadata = tr( "Error" );
   QgsCoordinateReferenceSystem layerCrs;
-  QString notice;
 
   // temporarily override /Projections/defaultBehaviour to avoid dialog prompt
   QSettings settings;

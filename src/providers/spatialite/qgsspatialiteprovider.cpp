@@ -3501,7 +3501,6 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
 {
   sqlite3_stmt *stmt = nullptr;
   QString sql;
-  QString txt;
 
   uniqueValues.clear();
 

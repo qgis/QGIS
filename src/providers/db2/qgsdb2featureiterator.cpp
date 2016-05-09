@@ -400,8 +400,7 @@ bool QgsDb2FeatureIterator::rewind()
   QgsDebugMsg( "Execute mStatement: " + mStatement );
   if ( !mQuery->exec( mStatement ) )
   {
-    QString msg = mQuery->lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( mQuery->lastError().text() );
     close();
     return false;
   }

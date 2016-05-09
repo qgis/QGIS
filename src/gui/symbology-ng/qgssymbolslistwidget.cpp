@@ -182,8 +182,6 @@ void QgsSymbolsListWidget::populateSymbolView()
 void QgsSymbolsListWidget::populateSymbols( const QStringList& names )
 {
   QSize previewSize = viewSymbols->iconSize();
-  QPixmap p( previewSize );
-  QPainter painter;
 
   QStandardItemModel* model = qobject_cast<QStandardItemModel*>( viewSymbols->model() );
   if ( !model )

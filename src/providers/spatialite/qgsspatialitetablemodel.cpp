@@ -53,8 +53,6 @@ void QgsSpatiaLiteTableModel::addTableEntry( const QString& type, const QString&
   }
 
   //path to icon for specified type
-  QString typeName;
-
   QGis::WkbType wkbType = qgisTypeFromDbType( type );
   QIcon iconFile = iconForType( wkbType );
 

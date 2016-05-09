@@ -368,8 +368,6 @@ void QgsHandleBadLayers::apply()
     int idx = mLayerList->item( i, 0 )->data( Qt::UserRole ).toInt();
     QDomNode &node = const_cast<QDomNode &>( mLayers[ idx ] );
 
-    QString type = mLayerList->item( i, 1 )->text();
-    QString provider = mLayerList->item( i, 2 )->text();
     QTableWidgetItem *item = mLayerList->item( i, 4 );
     QString datasource = item->text();
 

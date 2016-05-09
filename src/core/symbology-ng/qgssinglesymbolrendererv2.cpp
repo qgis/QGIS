@@ -208,7 +208,6 @@ QgsSingleSymbolRendererV2* QgsSingleSymbolRendererV2::clone() const
 void QgsSingleSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &element ) const
 {
   QgsStringMap props;
-  QString errorMsg;
   if ( mRotation.data() )
     props[ "angle" ] = mRotation->expression();
   if ( mSizeScale.data() )

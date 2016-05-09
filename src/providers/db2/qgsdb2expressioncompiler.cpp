@@ -240,7 +240,6 @@ QString QgsDb2ExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
       return value.toBool() ? "(1=1)" : "(1=0)";
 
     default:
-      QString result = QgsSqlExpressionCompiler::quotedValue( value, ok );
       return QgsSqlExpressionCompiler::quotedValue( value, ok );
   }
 }

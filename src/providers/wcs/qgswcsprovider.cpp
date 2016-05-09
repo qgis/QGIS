@@ -1910,7 +1910,7 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
 
 void QgsWcsDownloadHandler::cacheReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  QString msg = tr( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) );
-  QgsDebugMsgLevel( msg, 3 );
-  //emit statusChanged( msg );
+  Q_UNUSED( bytesReceived );
+  Q_UNUSED( bytesTotal );
+  QgsDebugMsgLevel( tr( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ), 3 );
 }

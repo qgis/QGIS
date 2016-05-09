@@ -197,8 +197,9 @@ void eVisImageDisplayWidget::displayImage()
 */
 void eVisImageDisplayWidget::displayUrlImage( const QString& url )
 {
-  QUrl myUrl( url );
+  Q_UNUSED( url );
 #if QT_VERSION < 0x050000
+  QUrl myUrl( url );
   mHttpConnection->setHost( myUrl.host() );
   mCurrentHttpImageRequestId = mHttpConnection->get( myUrl.path().replace( '\\', '/' ), mHttpBuffer );
 #endif

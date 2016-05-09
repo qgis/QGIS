@@ -1370,8 +1370,10 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
         !e0.isNull();
         e0 = e0.nextSiblingElement( "Layer" ) )
   {
-    QString id = e0.firstChildElement( "ows:Identifier" ).text();
+#ifdef QGISDEBUG
+    QString id = e0.firstChildElement( "ows:Identifier" ).text();  // clazy:exclude=unused-non-trivial-variable
     QgsDebugMsg( QString( "Layer %1" ).arg( id ) );
+#endif
 
     QgsWmtsTileLayer l;
     l.tileMode   = WMTS;

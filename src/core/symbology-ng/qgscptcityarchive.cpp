@@ -967,7 +967,7 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
   if ( ! mRampsMap.isEmpty() )
     return mRampsMap;
 
-  QString curName, prevName, prevPath, curVariant, curSep, schemeName;
+  QString curName, prevName, curVariant, curSep, schemeName;
   QStringList listVariant;
   QStringList schemeNamesAll, schemeNames;
   bool prevAdd, curAdd;

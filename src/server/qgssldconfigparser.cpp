@@ -466,7 +466,6 @@ QDomDocument QgsSLDConfigParser::getStyles( QStringList& layerList ) const
   for ( int i = 0; i < layerList.size(); i++ )
   {
     QString layerName;
-    QString typeName;
     layerName = layerList.at( i );
     QDomElement userLayerElement = findUserLayerElement( layerName );
     if ( userLayerElement.isNull() )
@@ -1003,7 +1002,6 @@ bool QgsSLDConfigParser::labelSettingsFromUserStyle( const QDomElement& userStyl
   int polyColorRed = 0;
   int polyColorGreen = 0;
   int polyColorBlue = 0;
-  QString elemText;
   QString fontfamily = QString( "Helvetica" );
   QString fontstyle = QString( "Normal" );
   int fontsize = 14;

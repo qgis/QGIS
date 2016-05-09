@@ -35,7 +35,6 @@ int main( int argc, char ** argv )
   QCoreApplication::setOrganizationDomain( "qgis.org" );
   QCoreApplication::setApplicationName( "QGIS2" );
 
-  QString context = QString::null;
   QString myTranslationCode = "";
 
   if ( argc == 2 )

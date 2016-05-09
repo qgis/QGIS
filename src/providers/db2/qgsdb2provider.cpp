@@ -278,7 +278,7 @@ void QgsDb2Provider::loadFields()
 {
   mAttributeFields.clear();
   //mDefaultValues.clear();
-  QString table = QString( "%1.%2" ).arg( mSchemaName ).arg( mTableName );
+  QString table = QString( "%1.%2" ).arg( mSchemaName, mTableName );
 
   // Use the Qt functionality to get the fields and their definitions.
   QSqlRecord r = mDatabase.record( table );
@@ -544,8 +544,7 @@ void QgsDb2Provider::updateStatistics()
 
   if ( !query.exec( statement ) )
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( query.lastError().text() );
   }
 
   if ( !query.isActive() )
@@ -600,8 +599,7 @@ void QgsDb2Provider::updateStatistics()
 
     if ( !query.exec( statement ) || !query.isActive() )
     {
-      QString msg = query.lastError().text();
-      QgsDebugMsg( msg );
+      QgsDebugMsg( query.lastError().text() );
     }
 
     if ( query.next() )
@@ -779,8 +777,7 @@ bool QgsDb2Provider::deleteFeatures( const QgsFeatureIds & id )
   QgsDebugMsg( statement );
   if ( !query.exec( statement ) )
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( query.lastError().text() );
     return false;
   }
 
@@ -851,8 +848,7 @@ bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     // use prepared statement to prevent from sql injection
     if ( !query.prepare( statement ) )
     {
-      QString msg = query.lastError().text();
-      QgsDebugMsg( msg );
+      QgsDebugMsg( query.lastError().text() );
       return false;
     }
     QgsDebugMsg( statement );
@@ -910,8 +906,7 @@ bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
     if ( !query.exec() )
     {
-      QString msg = query.lastError().text();
-      QgsDebugMsg( msg );
+      QgsDebugMsg( query.lastError().text() );
       return false;
     }
   }
@@ -1244,8 +1239,7 @@ bool QgsDb2Provider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     QgsDebugMsg( statement );
     if ( !query.prepare( statement ) )
     {
-      QString msg = query.lastError().text();
-      QgsDebugMsg( msg );
+      QgsDebugMsg( query.lastError().text() );
       return false;
     }
 
@@ -1255,8 +1249,7 @@ bool QgsDb2Provider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 
     if ( !query.exec() )
     {
-      QString msg = query.lastError().text();
-      QgsDebugMsg( msg );
+      QgsDebugMsg( query.lastError().text() );
       return false;
     }
   }
@@ -1310,8 +1303,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer(
 
     if ( !query.exec( statement ) || !query.isActive() )
     {
-      QString msg = query.lastError().text();
-      QgsDebugMsg( msg );
+      QgsDebugMsg( query.lastError().text() );
     }
 
     if ( query.next() )
@@ -1324,8 +1316,6 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer(
       QgsDebugMsg( "Couldn't get srs_name from db2gse.st_spatial_reference_systems" );
     }
   }
-
-  QString dbName = dsUri.database();
 
   QString schemaName = dsUri.schema().toUpper();
   QString tableName = dsUri.table().toUpper();
@@ -1433,7 +1423,6 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer(
     int offset = 0;
 
     // get the list of fields
-    QList<QgsField> flist;
     QgsDebugMsg( "PrimaryKey: '" + primaryKey + "'" );
     for ( int i = 0; i < fieldCount; ++i )
     {

@@ -634,7 +634,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   initContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandSingleByte, "multiBandSingleByte", "NoEnhancement" );
   initContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandMultiByte, "multiBandMultiByte", "StretchToMinimumMaximum" );
 
-  QString cumulativeCutText = tr( "Cumulative pixel count cut" );
   cboxContrastEnhancementLimits->addItem( tr( "Cumulative pixel count cut" ), "CumulativeCut" );
   cboxContrastEnhancementLimits->addItem( tr( "Minimum / maximum" ), "MinMax" );
   cboxContrastEnhancementLimits->addItem( tr( "Mean +/- standard deviation" ), "StdDev" );
@@ -807,7 +806,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
 
   //set elements in digitizing tab
   mLineWidthSpinBox->setValue( mSettings->value( "/qgis/digitizing/line_width", 1 ).toInt() );
-  QColor digitizingColor;
   myRed = mSettings->value( "/qgis/digitizing/line_color_red", 255 ).toInt();
   myGreen = mSettings->value( "/qgis/digitizing/line_color_green", 0 ).toInt();
   myBlue = mSettings->value( "/qgis/digitizing/line_color_blue", 0 ).toInt();

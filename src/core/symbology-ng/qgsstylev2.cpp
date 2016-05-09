@@ -1311,7 +1311,6 @@ QgsSmartConditionMap QgsStyleV2::smartgroup( int id )
     }
 
     QDomElement smartEl = doc.documentElement();
-    QString op = smartEl.attribute( "operator" );
     QDomNodeList conditionNodes = smartEl.childNodes();
 
     for ( int i = 0; i < conditionNodes.count(); i++ )

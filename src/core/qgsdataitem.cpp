@@ -1442,7 +1442,6 @@ QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, const QString& fileP
   QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString();
   int zipFileCount = 0;
   QStringList zipFileList;
-  QFileInfo fileInfo( filePath );
   QString vsiPrefix = QgsZipItem::vsiPrefix( filePath );
   QgsZipItem * zipItem = nullptr;
   bool populated = false;
