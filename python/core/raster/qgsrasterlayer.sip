@@ -210,7 +210,7 @@ class QgsRasterLayer : QgsMapLayer
     virtual void setSubLayerVisibility( const QString& name, bool vis );
 
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
-    virtual QDateTime timestamp() conste
+    virtual QDateTime timestamp() const;
 
   public slots:
     void showStatusMessage( const QString & theMessage );
@@ -235,7 +235,7 @@ class QgsRasterLayer : QgsMapLayer
     bool readSymbology( const QDomNode& node, QString& errorMessage );
 
     /** \brief Read the style information for the current layer from the Dom node supplied */
-    bool readStyle(const QDomNode &node, QString &errorMessage) override;
+    bool readStyle(const QDomNode &node, QString &errorMessage);
 
     /** \brief Reads layer specific state from project file Dom node */
     bool readXml( const QDomNode& layer_node );
@@ -244,7 +244,7 @@ class QgsRasterLayer : QgsMapLayer
     bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage ) const;
 
     /** \brief Write the style for the layer into the docment provided */
-    bool writeStyle(QDomNode &node, QDomDocument &doc, QString &errorMessage) const override;
+    bool writeStyle(QDomNode &node, QDomDocument &doc, QString &errorMessage) const;
 
     /** \brief Write layer specific state to project file Dom node */
     bool writeXml( QDomNode & layer_node, QDomDocument & doc );

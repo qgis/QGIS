@@ -49,8 +49,6 @@ class CORE_EXPORT QgsRendererV2AbstractMetadata
     QIcon icon() const { return mIcon; }
     void setIcon( const QIcon& icon ) { mIcon = icon; }
 
-    virtual QList<QGis::GeometryType> supportedGeometryTypes();
-
     /** Return new instance of the renderer given the DOM element. Returns NULL on error.
      * Pure virtual function: must be implemented in derived classes.  */
     virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) = 0;
