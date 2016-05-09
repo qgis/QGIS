@@ -248,6 +248,9 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     QString mUserStylesheet;
     bool mEnableUserStylesheet;
 
+    //! JSON string representation of current atlas feature
+    QString mAtlasFeatureJSON;
+
     QgsNetworkContentFetcher* mFetcher;
 
     double htmlUnitsToMM(); //calculate scale factor

@@ -25,6 +25,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsdistancearea.h"
+#include "qgsjsonutils.h"
 
 #include "qgswebpage.h"
 #include "qgswebframe.h"
@@ -207,6 +208,14 @@ void QgsComposerHtml::loadHtml( const bool useCache, const QgsExpressionContext 
 
   while ( !mLoaded )
   {
+    qApp->processEvents();
+  }
+
+  //inject JSON feature
+  if ( !mAtlasFeatureJSON.isEmpty() )
+  {
+    mWebPage->mainFrame()->evaluateJavaScript( QString( "if ( typeof setFeature === \"function\" ) { setFeature(%1); }" ).arg( mAtlasFeatureJSON ) );
+    //needs an extra process events here to give javascript a chance to execute
     qApp->processEvents();
   }
 
@@ -544,6 +553,11 @@ void QgsComposerHtml::setExpressionContext( const QgsFeature &feature, QgsVector
     mDistanceArea->setEllipsoidalMode( mComposition->mapSettings().hasCrsTransformEnabled() );
   }
   mDistanceArea->setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+
+  // create JSON representation of feature
+  QgsJSONExporter exporter( layer );
+  exporter.setIncludeRelated( true );
+  mAtlasFeatureJSON = exporter.exportFeature( feature );
 }
 
 void QgsComposerHtml::refreshExpressionContext()
