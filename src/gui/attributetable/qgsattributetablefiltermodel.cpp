@@ -214,7 +214,6 @@ void QgsAttributeTableFilterModel::setSourceModel( QgsAttributeTableModel* sourc
 {
   mTableModel = sourceModel;
 
-  mColumnMapping.append( -1 ); // -1 for actions column
   for ( int i = 0; i < mTableModel->columnCount(); ++i )
   {
     mColumnMapping.append( i );
@@ -488,6 +487,6 @@ QModelIndex QgsAttributeTableFilterModel::index( int row, int column, const QMod
   }
   else
   {
-    return QSortFilterProxyModel::index( row, 0, parent );
+    return QSortFilterProxyModel::index( row, column, parent );
   }
 }

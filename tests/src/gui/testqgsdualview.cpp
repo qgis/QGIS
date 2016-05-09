@@ -42,6 +42,12 @@ class TestQgsDualView : public QObject
     void init(); // will be called before each testfunction is executed.
     void cleanup(); // will be called after every testfunction.
 
+    void testColumnCount();
+
+    void testColumnHeaders();
+
+    void testData();
+
     void testSelectAll();
 
     void testAttributeFormSharedValueScanning();
@@ -91,6 +97,34 @@ void TestQgsDualView::init()
 void TestQgsDualView::cleanup()
 {
   delete mDualView;
+}
+
+void TestQgsDualView::testColumnCount()
+{
+  QCOMPARE( mDualView->tableView()->model()->columnCount(), mPointsLayer->fields().count() );
+}
+
+void TestQgsDualView::testColumnHeaders()
+{
+  for ( int i = 0; i < mPointsLayer->fields().count(); ++i )
+  {
+    const QgsField& fld = mPointsLayer->fields().at( i );
+    QCOMPARE( mDualView->tableView()->model()->headerData( i, Qt::Horizontal ).toString(), fld.name() );
+  }
+}
+
+void TestQgsDualView::testData()
+{
+  QgsFeature feature;
+  mPointsLayer->getFeatures( QgsFeatureRequest().setFilterFid( 0 ) ).nextFeature( feature );
+
+  for ( int i = 0; i < mPointsLayer->fields().count(); ++i )
+  {
+    const QgsField& fld = mPointsLayer->fields().at( i );
+
+    QModelIndex index = mDualView->tableView()->model()->index( 0, i );
+    QCOMPARE( mDualView->tableView()->model()->data( index ).toString(), fld.displayString( feature.attribute( i ) ) );
+  }
 }
 
 void TestQgsDualView::testSelectAll()
