@@ -43,6 +43,10 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurfaceV2
     /** Adds a geometry and takes ownership. Returns true in case of success*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g ) override;
 
+    /** Returns the geometry converted to the more generic curve type QgsMultiSurfaceV2
+    @return the converted geometry. Caller takes ownership*/
+    QgsAbstractGeometryV2* toCurveType() const override;
+
   protected:
 
     virtual bool wktOmitChildType() const override { return true; }

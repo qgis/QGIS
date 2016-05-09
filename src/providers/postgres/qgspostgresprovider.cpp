@@ -2371,14 +2371,19 @@ void QgsPostgresProvider::appendGeomParam( const QgsGeometry *geom, QStringList 
   }
 
   QString param;
-  const unsigned char *buf = geom->asWkb();
-  for ( int i = 0; i < geom->wkbSize(); ++i )
+
+  QgsGeometry* convertedGeom = convertToProviderType( geom );
+  const unsigned char *buf = convertedGeom ? convertedGeom->asWkb() : geom->asWkb();
+  size_t wkbSize = convertedGeom ? convertedGeom->wkbSize() : geom->wkbSize();
+
+  for ( size_t i = 0; i < wkbSize; ++i )
   {
     if ( connectionRO()->useWkbHex() )
       param += QString( "%1" ).arg(( int ) buf[i], 2, 16, QChar( '0' ) );
     else
       param += QString( "\\%1" ).arg(( int ) buf[i], 3, 8, QChar( '0' ) );
   }
+  delete convertedGeom;
   params << param;
 }
 
