@@ -266,3 +266,16 @@ void QgsPhotoWidgetWrapper::setEnabled( bool enabled )
   if ( mButton )
     mButton->setEnabled( enabled );
 }
+
+void QgsPhotoWidgetWrapper::updateConstraintWidgetStatus()
+{
+  if ( mLineEdit )
+  {
+    if ( mValidConstraint )
+      mLineEdit->setStyleSheet( "" );
+    else
+    {
+      mLineEdit->setStyleSheet( "QgsFilterLineEdit { background-color: #dd7777; }" );
+    }
+  }
+}

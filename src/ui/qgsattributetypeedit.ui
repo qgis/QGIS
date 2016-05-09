@@ -14,9 +14,6 @@
    <string>Edit Widget Properties</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="3" column="1">
-    <widget class="QStackedWidget" name="stackedWidget"/>
-   </item>
    <item row="0" column="1">
     <widget class="QCheckBox" name="isFieldEditableCheckBox">
      <property name="text">
@@ -37,10 +34,10 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0" rowspan="8">
+   <item row="0" column="0" rowspan="11">
     <widget class="QListWidget" name="selectionListWidget"/>
    </item>
-   <item row="7" column="1">
+   <item row="10" column="1">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -50,6 +47,9 @@
      </property>
     </widget>
    </item>
+   <item row="6" column="1">
+    <widget class="QStackedWidget" name="stackedWidget"/>
+   </item>
    <item row="2" column="1">
     <widget class="QCheckBox" name="notNullCheckBox">
      <property name="text">
@@ -57,8 +57,32 @@
      </property>
     </widget>
    </item>
+   <item row="4" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Constraint</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsFieldExpressionWidget" name="constraintExpression" native="true"/>
+     </item>
+    </layout>
+   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>selectionListWidget</tabstop>
   <tabstop>isFieldEditableCheckBox</tabstop>

@@ -22,9 +22,9 @@
 
 QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsWidgetWrapper( vl, editor, parent )
+    , mValidConstraint( true )
     , mFieldIdx( fieldIdx )
 {
-  connect( this, SIGNAL( valueChanged( QVariant ) ), this, SLOT( onValueChanged( QVariant ) ) );
 }
 
 int QgsEditorWidgetWrapper::fieldIdx() const
@@ -61,8 +61,8 @@ void QgsEditorWidgetWrapper::setEnabled( bool enabled )
 
 void QgsEditorWidgetWrapper::setFeature( const QgsFeature& feature )
 {
+  mFeature = feature;
   setValue( feature.attribute( mFieldIdx ) );
-  onValueChanged( value() );
 }
 
 void QgsEditorWidgetWrapper::valueChanged( const QString& value )
@@ -95,27 +95,69 @@ void QgsEditorWidgetWrapper::valueChanged()
   emit valueChanged( value() );
 }
 
-void QgsEditorWidgetWrapper::updateConstraintsOk( bool constraintStatus )
+void QgsEditorWidgetWrapper::updateConstraintWidgetStatus()
 {
-  if ( constraintStatus )
-  {
+  if ( mValidConstraint )
     widget()->setStyleSheet( "" );
+  else
+    widget()->setStyleSheet( "background-color: #dd7777;" );
+}
+
+void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
+{
+  bool toEmit( false );
+  QString errStr( "predicate is True" );
+  QString expression = layer()->editFormConfig()->constraint( mFieldIdx );
+  QVariant value = ft.attribute( mFieldIdx );
+
+  if ( ! expression.isEmpty() )
+  {
+    QgsExpressionContext context =
+      QgsExpressionContextUtils::createFeatureBasedContext( ft, *ft.fields() );
+
+    context.setFeature( ft );
+    QgsExpression expr( expression );
+
+    mValidConstraint = expr.evaluate( &context ).toBool();
+
+    if ( expr.hasParserError() )
+      errStr = expr.parserErrorString();
+    else if ( expr.hasEvalError() )
+      errStr = expr.evalErrorString();
+    else if ( ! mValidConstraint )
+      errStr = "predicate is False";
+
+    toEmit = true;
   }
   else
+    mValidConstraint = true;
+
+  if ( layer()->editFormConfig()->notNull( mFieldIdx ) )
   {
-    widget()->setStyleSheet( "QWidget{ background-color: '#dd7777': }" );
+    if ( !expression.isEmpty() )
+    {
+      QString fieldName = ft.fields()->field( mFieldIdx ).name();
+      expression = "( " + expression + " ) AND ( " + fieldName + " IS NOT NULL)";
+    }
+    else
+      expression = "NotNull";
+
+    mValidConstraint = mValidConstraint && !value.isNull();
+
+    if ( value.isNull() )
+      errStr = "predicate is False";
+
+    toEmit = true;
+  }
+
+  if ( toEmit )
+  {
+    updateConstraintWidgetStatus();
+    emit constraintStatusChanged( expression, errStr, mValidConstraint );
   }
 }
 
-void QgsEditorWidgetWrapper::onValueChanged( const QVariant& value )
+bool QgsEditorWidgetWrapper::isValidConstraint() const
 {
-  if ( layer()->editFormConfig()->notNull( mFieldIdx ) )
-  {
-    if ( value.isNull() != mIsNull )
-    {
-      updateConstraintsOk( value.isNull() );
-      emit constraintStatusChanged( "NotNull", !value.isNull() );
-      mIsNull = value.isNull();
-    }
-  }
+  return mValidConstraint;
 }

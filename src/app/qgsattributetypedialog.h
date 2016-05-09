@@ -94,6 +94,18 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
      */
     bool notNull() const;
 
+    /**
+     * Getter for the constraint expression
+     * @note added in QGIS 2.16
+     */
+    QString constraint() const;
+
+    /**
+     * Setter for the constraint expression
+     * @note added in QGIS 2.16
+     */
+    void setConstraint( const QString &str );
+
   private slots:
     /**
      * Slot to handle change of index in combobox to select correct page

@@ -234,7 +234,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void onAttributeAdded( int idx );
     void onAttributeDeleted( int idx );
     void onUpdatedFields();
-    void onConstraintStatusChanged( const QString& constraint, bool ok );
+    void onConstraintStatusChanged( const QString& constraint, const QString& err, bool ok );
 
     void preventFeatureRefresh();
     void synchronizeEnabledState();
@@ -298,6 +298,18 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     QString createFilterExpression() const;
 
+    //! constraints management
+    void updateAllConstaints();
+    void updateConstraints( QgsEditorWidgetWrapper *w );
+    bool currentFormFeature( QgsFeature &feature );
+    bool currentFormValidConstraints( QStringList &invalidFields );
+    void constraintDependencies( QgsEditorWidgetWrapper *w, QList<QgsEditorWidgetWrapper*> &wDeps );
+    void clearInvalidConstraintsMessage();
+    void displayInvalidConstraintMessage( const QStringList &invalidFields );
+    void displayNullFieldsMessage();
+    QgsMessageBarItem *mInvalidConstraintMessageBarItem;
+    QgsMessageBarItem *mFieldNotInitializedMessageBarItem;
+
     QgsVectorLayer* mLayer;
     QgsFeature mFeature;
     QgsMessageBar* mMessageBar;
@@ -336,6 +348,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QMap<QWidget*, QLabel*> mBuddyMap;
 
     friend class TestQgsDualView;
+    friend class TestQgsAttributeForm;
 };
 
 #endif // QGSATTRIBUTEFORM_H

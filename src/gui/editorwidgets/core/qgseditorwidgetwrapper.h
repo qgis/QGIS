@@ -110,6 +110,21 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     virtual void showIndeterminateState() {}
 
+    /**
+     * Update constraint.
+     * @param featureContext the feature to use to evaluate the constraint
+     * @note added in QGIS 2.16
+     */
+    void updateConstraint( const QgsFeature &featureContext );
+
+    /**
+     * Get the current constraint status.
+     * @return true if the constraint is valid or if there's not constraint,
+     * false otherwise
+     * @note added in QGIS 2.16
+     */
+    bool isValidConstraint() const;
+
   signals:
     /**
      * Emit this signal, whenever the value changed.
@@ -119,11 +134,13 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     void valueChanged( const QVariant& value );
 
     /**
+     * Emit this signal when the constraint status changed.
      * @brief constraintStatusChanged
-     * @param constraint
+     * @param constraint represented as a string
+     * @param err the error represented as a string. Empty if none.
      * @param status
      */
-    void constraintStatusChanged( const QString& constraint, bool status );
+    void constraintStatusChanged( const QString& constraint, const QString& err, bool status );
 
   public slots:
     /**
@@ -192,7 +209,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     void valueChanged();
 
-  private:
+  protected:
     /**
      * This should update the widget with a visual cue if a constraint status
      * changed.
@@ -202,18 +219,15 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      *
      * This can be overwritten in subclasses to allow individual widgets to
      * change the visual cue.
+     * @note added in QGIS 2.16
      */
-    virtual void updateConstraintsOk( bool constraintStatus );
+    virtual void updateConstraintWidgetStatus();
 
-  private slots:
-    /**
-     * @brief mFieldIdx
-     */
-    void onValueChanged( const QVariant& value );
+    bool mValidConstraint;
 
   private:
     int mFieldIdx;
-    bool mIsNull;
+    QgsFeature mFeature;
 };
 
 // We'll use this class inside a QVariant in the widgets properties

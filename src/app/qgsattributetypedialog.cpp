@@ -71,6 +71,8 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/QgsAttributeTypeDialog/geometry" ).toByteArray() );
+
+  constraintExpression->setLayer( vl );
 }
 
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
@@ -181,6 +183,16 @@ bool QgsAttributeTypeDialog::labelOnTop() const
 bool QgsAttributeTypeDialog::notNull() const
 {
   return notNullCheckBox->isChecked();
+}
+
+void QgsAttributeTypeDialog::setConstraint( const QString &str )
+{
+  constraintExpression->setField( str );
+}
+
+QString QgsAttributeTypeDialog::constraint() const
+{
+  return constraintExpression->asExpression();
 }
 
 void QgsAttributeTypeDialog::setFieldEditable( bool editable )

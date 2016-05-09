@@ -139,3 +139,14 @@ void QgsRelationReferenceWidgetWrapper::foreignKeyChanged( QVariant value )
   }
   emit valueChanged( value );
 }
+
+void QgsRelationReferenceWidgetWrapper::updateConstraintWidgetStatus()
+{
+  if ( mWidget )
+  {
+    if ( mValidConstraint )
+      mWidget->setStyleSheet( "" );
+    else
+      mWidget->setStyleSheet( ".QComboBox { background-color: #dd7777; }" );
+  }
+}

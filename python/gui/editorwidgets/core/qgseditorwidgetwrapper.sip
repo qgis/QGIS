@@ -88,6 +88,21 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
      */
     virtual void showIndeterminateState();
 
+    /**
+     * Update constraint.
+     * @param featureContext the feature to use to evaluate the constraint
+     * @note added in QGIS 2.16
+     */
+    void updateConstraint( const QgsFeature &featureContext );
+
+    /**
+     * Get the current constraint status.
+     * @return true if the constraint is valid or if there's not constraint,
+     * false otherwise
+     * @note added in QGIS 2.16
+     */
+    bool isValidConstraint() const;
+
   signals:
     /**
      * Emit this signal, whenever the value changed.
@@ -95,6 +110,13 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
      * @param value The new value
      */
     void valueChanged( const QVariant& value );
+
+    /**
+     * @brief constraintStatusChanged
+     * @param constraint
+     * @param status
+     */
+    void constraintStatusChanged( const QString& constraint, const QString& err, bool status );
 
   public slots:
     /**
@@ -162,4 +184,17 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
      * Will call the value() method to determine the emitted value
      */
     void valueChanged();
+
+  protected:
+    /**
+     * This should update the widget with a visual cue if a constraint status
+     * changed.
+     *
+     * By default a stylesheet will be applied on the widget that changes the
+     * background color to red.
+     *
+     * This can be overwritten in subclasses to allow individual widgets to
+     * change the visual cue.
+     */
+    virtual void updateConstraintWidgetStatus();
 };

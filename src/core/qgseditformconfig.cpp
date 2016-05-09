@@ -119,6 +119,22 @@ bool QgsEditFormConfig::labelOnTop( int idx ) const
     return false;
 }
 
+QString QgsEditFormConfig::constraint( int idx ) const
+{
+  QString expr = "";
+
+  if ( idx >= 0 && idx < mFields.count() )
+    expr = mConstraints.value( mFields.at( idx ).name(), "" );
+
+  return expr;
+}
+
+void QgsEditFormConfig::setConstraint( int idx, const QString& str )
+{
+  if ( idx >= 0 && idx < mFields.count() )
+    mConstraints[ mFields.at( idx ).name()] = str;
+}
+
 bool QgsEditFormConfig::notNull( int idx ) const
 {
   if ( idx >= 0 && idx < mFields.count() )

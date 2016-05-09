@@ -477,6 +477,22 @@ class QgsEditFormConfig : QObject
     void setReadOnly( int idx, bool readOnly = true );
 
     /**
+     * Returns the constraint expression of a specific field
+     * @param idx The index of the field
+     * @return the expression
+     * @note added in QGIS 2.16
+     */
+    QString constraint( int idx ) const;
+
+    /**
+     * Set the constraint expression for a specific field
+     * @param idx the field index
+     * @param str the constraint expression
+     * @note added in QGIS 2.16
+     */
+    void setConstraint( int idx, const QString& str );
+
+    /**
      * Returns if the field at fieldidx should be treated as NOT NULL value
      */
     bool notNull( int fieldidx) const;

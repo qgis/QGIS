@@ -49,6 +49,8 @@ int QgsAttributeForm::sFormCounter = 0;
 
 QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature, const QgsAttributeEditorContext &context, QWidget* parent )
     : QWidget( parent )
+    , mInvalidConstraintMessageBarItem( nullptr )
+    , mFieldNotInitializedMessageBarItem( nullptr )
     , mLayer( vl )
     , mMessageBar( nullptr )
     , mMultiEditUnsavedMessageBarItem( nullptr )
@@ -79,6 +81,10 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &featur
   connect( vl, SIGNAL( beforeAddingExpressionField( QString ) ), this, SLOT( preventFeatureRefresh() ) );
   connect( vl, SIGNAL( beforeRemovingExpressionField( int ) ), this, SLOT( preventFeatureRefresh() ) );
   connect( vl, SIGNAL( selectionChanged() ), this, SLOT( layerSelectionChanged() ) );
+
+  // constraints management
+  displayNullFieldsMessage();
+  updateAllConstaints();
 }
 
 QgsAttributeForm::~QgsAttributeForm()
@@ -688,8 +694,135 @@ void QgsAttributeForm::onAttributeChanged( const QVariant& value )
     }
   }
 
+  updateConstraints( eww );
 
+  // emit
   emit attributeChanged( eww->field().name(), value );
+}
+
+void QgsAttributeForm::updateAllConstaints()
+{
+  Q_FOREACH ( QgsWidgetWrapper* ww, mWidgets )
+  {
+    QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
+    if ( eww )
+      updateConstraints( eww );
+  }
+}
+
+void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
+{
+  // get the current feature set in the form
+  QgsFeature ft;
+  if ( currentFormFeature( ft ) )
+  {
+    // update eww constraint
+    eww->updateConstraint( ft );
+
+    // update eww dependencies constraint
+    QList<QgsEditorWidgetWrapper*> deps;
+    constraintDependencies( eww, deps );
+
+    Q_FOREACH ( QgsEditorWidgetWrapper* depsEww, deps )
+      depsEww->updateConstraint( ft );
+
+    // sync ok button status
+    synchronizeEnabledState();
+  }
+}
+
+bool QgsAttributeForm::currentFormFeature( QgsFeature &feature )
+{
+  bool rc = true;
+  feature = QgsFeature( mFeature );
+  QgsAttributes src = feature.attributes();
+  QgsAttributes dst = feature.attributes();
+
+  Q_FOREACH ( QgsWidgetWrapper* ww, mWidgets )
+  {
+    QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
+    if ( eww && dst.count() > eww->fieldIdx() )
+    {
+      QVariant dstVar = dst.at( eww->fieldIdx() );
+      QVariant srcVar = eww->value();
+      // need to check dstVar.isNull() != srcVar.isNull()
+      // otherwise if dstVar=NULL and scrVar=0, then dstVar = srcVar
+      if (( dstVar != srcVar || dstVar.isNull() != srcVar.isNull() ) && srcVar.isValid() && !mLayer->editFormConfig()->readOnly( eww->fieldIdx() ) )
+        dst[eww->fieldIdx()] = srcVar;
+    }
+    else
+    {
+      rc = false;
+      break;
+    }
+  }
+
+  feature.setAttributes( dst );
+
+  return rc;
+}
+
+void QgsAttributeForm::displayNullFieldsMessage()
+{
+  QStringList notInitializedFields;
+  Q_FOREACH ( QgsWidgetWrapper* ww, mWidgets )
+  {
+    QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
+    if ( eww )
+    {
+      if ( mFeature.attribute( eww->fieldIdx() ).isNull() )
+        notInitializedFields.append( eww->field().name() );
+    }
+  }
+
+  if ( ! notInitializedFields.isEmpty() )
+  {
+    mFieldNotInitializedMessageBarItem =
+      new QgsMessageBarItem( tr( "Some fields are NULL: " ),
+                             notInitializedFields.join( ", " ),
+                             QgsMessageBar::INFO );
+    mMessageBar->pushItem( mFieldNotInitializedMessageBarItem );
+  }
+
+}
+
+void QgsAttributeForm::clearInvalidConstraintsMessage()
+{
+  if ( mInvalidConstraintMessageBarItem != nullptr )
+  {
+    mMessageBar->popWidget( mInvalidConstraintMessageBarItem );
+    mInvalidConstraintMessageBarItem = nullptr;
+  }
+}
+
+void QgsAttributeForm::displayInvalidConstraintMessage( const QStringList &f )
+{
+  clearInvalidConstraintsMessage();
+
+  mInvalidConstraintMessageBarItem =
+    new QgsMessageBarItem( tr( "Invalid fields:" ),
+                           f.join( ", " ), QgsMessageBar::WARNING );
+  mMessageBar->pushItem( mInvalidConstraintMessageBarItem );
+}
+
+bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields )
+{
+  bool valid( true );
+
+  Q_FOREACH ( QgsWidgetWrapper* ww, mWidgets )
+  {
+    QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
+    if ( eww )
+    {
+      if ( ! eww->isValidConstraint() )
+      {
+        invalidFields.append( eww->field().name() );
+        valid = false; // continue to get all invalif fields
+      }
+    }
+  }
+
+  return valid;
 }
 
 void QgsAttributeForm::onAttributeAdded( int idx )
@@ -749,11 +882,9 @@ void QgsAttributeForm::onUpdatedFields()
   setFeature( mFeature );
 }
 
-void QgsAttributeForm::onConstraintStatusChanged( const QString& constraint, bool ok )
+void QgsAttributeForm::onConstraintStatusChanged( const QString& constraint,
+    const QString& err, bool ok )
 {
-  Q_UNUSED( constraint )
-
-
   QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( sender() );
   Q_ASSERT( eww );
 
@@ -761,6 +892,9 @@ void QgsAttributeForm::onConstraintStatusChanged( const QString& constraint, boo
 
   if ( buddy )
   {
+    QString tooltip = "Expression: " + constraint + "\n" + "Constraint: " + err;
+    buddy->setToolTip( tooltip );
+
     if ( !buddy->property( "originalText" ).isValid() )
       buddy->setProperty( "originalText", buddy->text() );
 
@@ -775,6 +909,38 @@ void QgsAttributeForm::onConstraintStatusChanged( const QString& constraint, boo
     {
       // good
       buddy->setText( QString( "%1<font color=\"green\">*</font>" ).arg( text ) );
+    }
+  }
+}
+
+void QgsAttributeForm::constraintDependencies( QgsEditorWidgetWrapper *w,
+    QList<QgsEditorWidgetWrapper*> &wDeps )
+{
+  QString name =  w->field().name();
+
+  // for each widget in the current form
+  Q_FOREACH ( QgsWidgetWrapper* ww, mWidgets )
+  {
+    // get the wrapper
+    QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
+    if ( eww )
+    {
+      // compare name to not compare w to itself
+      QString ewwName = eww->field().name();
+      if ( name != ewwName )
+      {
+        // get expression and referencedColumns
+        QgsExpression expr = eww->layer()->editFormConfig()->constraint( eww->fieldIdx() );
+
+        Q_FOREACH ( const QString& colName, expr.referencedColumns() )
+        {
+          if ( name == colName )
+          {
+            wDeps.append( eww );
+            break;
+          }
+        }
+      }
     }
   }
 }
@@ -817,6 +983,18 @@ void QgsAttributeForm::synchronizeEnabledState()
     ww->setEnabled( isEditable && fieldEditable );
   }
 
+  // push a message and disable the OK button if constraints are invalid
+  clearInvalidConstraintsMessage();
+
+  QStringList invalidFields;
+  bool validConstraint = currentFormValidConstraints( invalidFields );
+
+  if ( ! validConstraint )
+    displayInvalidConstraintMessage( invalidFields );
+
+  isEditable = isEditable & validConstraint;
+
+  // change ok button status
   QPushButton* okButton = mButtonBox->button( QDialogButtonBox::Ok );
   if ( okButton )
     okButton->setEnabled( isEditable );
@@ -980,7 +1158,7 @@ void QgsAttributeForm::init()
         w = new QLabel( QString( "<p style=\"color: red; font-style: italic;\">Failed to create widget with type '%1'</p>" ).arg( widgetType ) );
       }
 
-      l->setBuddy( w );
+      l->setBuddy( eww->widget() );
 
       if ( w )
         w->setObjectName( field.name() );
@@ -1440,12 +1618,11 @@ void QgsAttributeForm::afterWidgetInit()
       }
 
       connect( eww, SIGNAL( valueChanged( const QVariant& ) ), this, SLOT( onAttributeChanged( const QVariant& ) ) );
-      connect( eww, SIGNAL( constraintStatusChanged( QString, bool ) ), this, SLOT( onConstraintStatusChanged( QString, bool ) ) );
+      connect( eww, SIGNAL( constraintStatusChanged( QString, QString, bool ) ), this, SLOT( onConstraintStatusChanged( QString, QString, bool ) ) );
     }
   }
 
   // Update buddy widget list
-
   mBuddyMap.clear();
   QList<QLabel*> labels = findChildren<QLabel*>();
 
