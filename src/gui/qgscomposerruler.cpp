@@ -12,11 +12,12 @@ const unsigned int COUNT_VALID_MAGNITUDES = 5;
 const int QgsComposerRuler::validScaleMultiples[] = {1, 2, 5};
 const int QgsComposerRuler::validScaleMagnitudes[] = {1, 10, 100, 1000, 10000};
 
-QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d ) : QWidget( nullptr ),
-    mDirection( d ),
-    mComposition( nullptr ),
-    mLineSnapItem( nullptr ),
-    mScaleMinPixelsWidth( 0 )
+QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d )
+    : QWidget( nullptr )
+    , mDirection( d )
+    , mComposition( nullptr )
+    , mLineSnapItem( nullptr )
+    , mScaleMinPixelsWidth( 0 )
 {
   setMouseTracking( true );
 

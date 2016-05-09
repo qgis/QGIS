@@ -52,7 +52,10 @@ class QgsGeometryCheck : public QObject
     {
       Change() {}
       Change( ChangeWhat _what, ChangeType _type, QgsVertexId _vidx = QgsVertexId() )
-          : what( _what ), type( _type ), vidx( _vidx ) {}
+          : what( _what )
+          , type( _type )
+          , vidx( _vidx )
+      {}
       ChangeWhat what;
       ChangeType type;
       QgsVertexId vidx;
@@ -60,7 +63,10 @@ class QgsGeometryCheck : public QObject
 
     typedef QMap<QgsFeatureId, QList<Change> > Changes;
 
-    QgsGeometryCheck( CheckType checkType, QgsFeaturePool* featurePool ) : mCheckType( checkType ), mFeaturePool( featurePool ) {}
+    QgsGeometryCheck( CheckType checkType, QgsFeaturePool* featurePool )
+        : mCheckType( checkType )
+        , mFeaturePool( featurePool )
+    {}
     virtual ~QgsGeometryCheck() {}
     virtual void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList& messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const = 0;
     virtual void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const = 0;

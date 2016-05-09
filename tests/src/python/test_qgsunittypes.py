@@ -20,7 +20,7 @@ from qgis.core import (
     QGis,
     QgsSymbolV2
 )
-from PyQt.QtCore import QLocale
+from qgis.PyQt.QtCore import QLocale
 
 # enforce C locale because the tests expect it
 # (decimal separators / thousand separators)

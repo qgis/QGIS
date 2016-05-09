@@ -22,8 +22,8 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt.QtCore import Qt, pyqtSignal
-from PyQt.QtWidgets import QDialog, QMessageBox, QApplication
+from qgis.PyQt.QtCore import Qt, pyqtSignal
+from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QApplication
 
 from .db_plugins.data_model import TableFieldsModel, TableConstraintsModel, TableIndexesModel
 from .db_plugins.plugin import BaseError

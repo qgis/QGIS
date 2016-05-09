@@ -103,6 +103,11 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     void setFilterMode( QgsAttributeTableFilterModel::FilterMode filterMode );
 
+    /**
+     * Get the filter mode
+     *
+     * @return the filter mode
+     */
     QgsAttributeTableFilterModel::FilterMode filterMode() { return mFilterModel->filterMode(); }
 
     /**
@@ -136,6 +141,9 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     void setFilteredFeatures( const QgsFeatureIds& filteredFeatures );
 
+    /**
+     * Get a list of currently visible feature ids.
+     */
     QgsFeatureIds filteredFeatures() { return mFilterModel->filteredFeatures(); }
 
     /**
@@ -145,9 +153,32 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     QgsAttributeTableModel* masterModel() const { return mMasterModel; }
 
+    /**
+     * Set the request
+     *
+     * @param request The request
+     */
     void setRequest( const QgsFeatureRequest& request );
 
+    /**
+     * Set the feature selection model
+     *
+     * @param featureSelectionManager the feature selection model
+     */
     void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
+
+    /**
+     * Returns the table view
+     *
+     * @return The table view
+     */
+    QgsAttributeTableView* tableView() { return mTableView; }
+
+    /**
+     * Set the attribute table config which should be used to control
+     * the appearance of the attribute table.
+     */
+    void setAttributeTableConfig( const QgsAttributeTableConfig& config );
 
   protected:
     /**
@@ -258,8 +289,11 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
     Q_OBJECT
 
   public:
-    QgsAttributeTableAction( const QString &name, QgsDualView *dualView, int action, const QModelIndex &fieldIdx ) :
-        QAction( name, dualView ), mDualView( dualView ), mAction( action ), mFieldIdx( fieldIdx )
+    QgsAttributeTableAction( const QString &name, QgsDualView *dualView, int action, const QModelIndex &fieldIdx )
+        : QAction( name, dualView )
+        , mDualView( dualView )
+        , mAction( action )
+        , mFieldIdx( fieldIdx )
     {}
 
   public slots:
@@ -277,8 +311,11 @@ class GUI_EXPORT QgsAttributeTableMapLayerAction : public QAction
     Q_OBJECT
 
   public:
-    QgsAttributeTableMapLayerAction( const QString &name, QgsDualView *dualView, QgsMapLayerAction* action, const QModelIndex &fieldIdx ) :
-        QAction( name, dualView ), mDualView( dualView ), mAction( action ), mFieldIdx( fieldIdx )
+    QgsAttributeTableMapLayerAction( const QString &name, QgsDualView *dualView, QgsMapLayerAction* action, const QModelIndex &fieldIdx )
+        : QAction( name, dualView )
+        , mDualView( dualView )
+        , mAction( action )
+        , mFieldIdx( fieldIdx )
     {}
 
   public slots:

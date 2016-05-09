@@ -28,9 +28,9 @@ __revision__ = '$Format:%H$'
 import os
 import json
 
-from PyQt import uic
-from PyQt.QtGui import QIcon
-from PyQt.QtWidgets import QTableWidgetItem, QComboBox, QLineEdit, QHeaderView, QFileDialog, QMessageBox
+from qgis.PyQt import uic
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QLineEdit, QHeaderView, QFileDialog, QMessageBox
 
 from qgis.core import QgsApplication
 

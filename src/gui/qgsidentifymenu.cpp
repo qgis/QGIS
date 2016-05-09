@@ -18,7 +18,7 @@
 #include "qgsidentifymenu.h"
 
 #include "qgsapplication.h"
-#include "qgsattributeaction.h"
+#include "qgsactionmanager.h"
 #include "qgshighlight.h"
 
 

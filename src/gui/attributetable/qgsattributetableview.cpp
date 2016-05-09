@@ -17,7 +17,10 @@
 #include <QSettings>
 #include <QHeaderView>
 #include <QMenu>
+#include <QToolButton>
+#include <QHBoxLayout>
 
+#include "qgsactionmanager.h"
 #include "qgsattributetableview.h"
 #include "qgsattributetablemodel.h"
 #include "qgsattributetabledelegate.h"
@@ -38,15 +41,18 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
     , mFeatureSelectionManager( nullptr )
     , mModel( nullptr )
     , mActionPopup( nullptr )
-    , mLayerCache( nullptr )
     , mRowSectionAnchor( 0 )
     , mCtrlDragSelectionFlag( QItemSelectionModel::Select )
+    , mActionWidget( nullptr )
 {
   QSettings settings;
   restoreGeometry( settings.value( "/BetterAttributeTable/geometry" ).toByteArray() );
 
   //verticalHeader()->setDefaultSectionSize( 20 );
   horizontalHeader()->setHighlightSections( false );
+
+  // We need mouse move events to create the action button on hover
+  setMouseTracking( true );
 
   mTableDelegate = new QgsAttributeTableDelegate( this );
   setItemDelegate( mTableDelegate );
@@ -60,12 +66,8 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
 
   connect( verticalHeader(), SIGNAL( sectionPressed( int ) ), this, SLOT( selectRow( int ) ) );
   connect( verticalHeader(), SIGNAL( sectionEntered( int ) ), this, SLOT( _q_selectRow( int ) ) );
+  connect( horizontalHeader(), SIGNAL( sectionResized( int, int, int ) ), this, SLOT( columnSizeChanged( int, int, int ) ) );
   connect( horizontalHeader(), SIGNAL( sortIndicatorChanged( int, Qt::SortOrder ) ), this, SLOT( showHorizontalSortIndicator() ) );
-}
-
-QgsAttributeTableView::~QgsAttributeTableView()
-{
-  delete mActionPopup;
 }
 
 bool QgsAttributeTableView::eventFilter( QObject *object, QEvent *event )
@@ -119,6 +121,10 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel* filterModel 
     connect( mFeatureSelectionModel, SIGNAL( requestRepaint( QModelIndexList ) ), this, SLOT( repaintRequested( QModelIndexList ) ) );
     connect( mFeatureSelectionModel, SIGNAL( requestRepaint() ), this, SLOT( repaintRequested() ) );
   }
+
+  mActionWidget = createActionWidget( 0 );
+  mActionWidget->setVisible( false );
+  updateActionImage( mActionWidget );
 }
 
 void QgsAttributeTableView::setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager )
@@ -130,6 +136,64 @@ void QgsAttributeTableView::setFeatureSelectionManager( QgsIFeatureSelectionMana
 
   if ( mFeatureSelectionModel )
     mFeatureSelectionModel->setFeatureSelectionManager( mFeatureSelectionManager );
+}
+
+QWidget* QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
+{
+  QgsAttributeTableConfig attributeTableConfig = mFilterModel->layer()->attributeTableConfig();
+  QgsActionManager* actions = mFilterModel->layer()->actions();
+
+  QToolButton* toolButton = nullptr;
+  QWidget* container = nullptr;
+
+  if ( attributeTableConfig.actionWidgetStyle() == QgsAttributeTableConfig::DropDown )
+  {
+    toolButton  = new QToolButton( this );
+    toolButton->setPopupMode( QToolButton::MenuButtonPopup );
+    container = toolButton;
+  }
+  else
+  {
+    container = new QWidget( this );
+    container->setLayout( new QHBoxLayout() );
+    container->layout()->setMargin( 0 );
+  }
+
+  for ( int i = 0; i < actions->size(); ++i )
+  {
+    const QgsAction& action = actions->at( i );
+
+    if ( !action.showInAttributeTable() )
+      continue;
+
+    QAction* act = new QAction( action.icon(), action.shortTitle().isEmpty() ? action.name() : action.shortTitle(), toolButton );
+    act->setToolTip( action.name() );
+    act->setData( i );
+    act->setProperty( "fid", fid );
+
+    connect( act, SIGNAL( triggered( bool ) ), this, SLOT( actionTriggered() ) );
+
+    if ( attributeTableConfig.actionWidgetStyle() == QgsAttributeTableConfig::DropDown )
+    {
+      toolButton->addAction( act );
+
+      if ( actions->defaultAction() == i )
+        toolButton->setDefaultAction( act );
+
+      container = toolButton;
+    }
+    else
+    {
+      QToolButton* btn = new QToolButton;
+      btn->setDefaultAction( act );
+      container->layout()->addWidget( btn );
+    }
+  }
+
+  if ( toolButton && !toolButton->actions().isEmpty() && actions->defaultAction() == -1 )
+    toolButton->setDefaultAction( toolButton->actions().first() );
+
+  return container;
 }
 
 void QgsAttributeTableView::closeEvent( QCloseEvent *e )
@@ -155,6 +219,15 @@ void QgsAttributeTableView::mouseReleaseEvent( QMouseEvent *event )
 
 void QgsAttributeTableView::mouseMoveEvent( QMouseEvent *event )
 {
+  QModelIndex index = indexAt( event->pos() );
+  if ( index.data( QgsAttributeTableFilterModel::TypeRole ) == QgsAttributeTableFilterModel::ColumnTypeActionButton )
+  {
+    Q_ASSERT( index.isValid() );
+
+    if ( !indexWidget( index ) )
+      setIndexWidget( index, createActionWidget( mFilterModel->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong() ) );
+  }
+
   setSelectionMode( QAbstractItemView::NoSelection );
   QTableView::mouseMoveEvent( event );
   setSelectionMode( QAbstractItemView::ExtendedSelection );
@@ -217,7 +290,7 @@ void QgsAttributeTableView::contextMenuEvent( QContextMenuEvent* event )
   if ( !vlayer )
     return;
 
-  mActionPopup = new QMenu();
+  mActionPopup = new QMenu( this );
 
   mActionPopup->addAction( tr( "Select All" ), this, SLOT( selectAll() ), QKeySequence::SelectAll );
 
@@ -288,4 +361,33 @@ void QgsAttributeTableView::selectRow( int row, bool anchor )
 void QgsAttributeTableView::showHorizontalSortIndicator()
 {
   horizontalHeader()->setSortIndicatorShown( true );
+}
+
+void QgsAttributeTableView::actionTriggered()
+{
+  QAction* action = qobject_cast<QAction*>( sender() );
+  QgsFeatureId fid = action->property( "fid" ).toLongLong();
+
+  QgsFeature f;
+  mFilterModel->layerCache()->getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f );
+
+  mFilterModel->layer()->actions()->doAction( action->data().toInt(), f );
+}
+
+void QgsAttributeTableView::columnSizeChanged( int index, int oldWidth, int newWidth )
+{
+  Q_UNUSED( oldWidth )
+  if ( mFilterModel->actionColumnIndex() == index )
+  {
+    mActionWidget->resize( newWidth, mActionWidget->height() );
+    updateActionImage( mActionWidget );
+  }
+}
+
+void QgsAttributeTableView::updateActionImage( QWidget* widget )
+{
+  QImage image( widget->size(), QImage::Format_ARGB32_Premultiplied );
+  QPainter painter( &image );
+  widget->render( &painter );
+  mTableDelegate->setActionWidgetImage( image );
 }

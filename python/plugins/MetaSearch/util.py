@@ -40,9 +40,9 @@ from jinja2 import Environment, FileSystemLoader
 from pygments import highlight
 from pygments.lexers import XmlLexer
 from pygments.formatters import HtmlFormatter
-from PyQt.QtCore import QSettings
-from PyQt.QtWidgets import QMessageBox
-from PyQt.uic import loadUiType
+from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.uic import loadUiType
 
 from qgis.core import QGis
 

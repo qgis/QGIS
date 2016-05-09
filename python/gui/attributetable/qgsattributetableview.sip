@@ -19,7 +19,7 @@ class QgsAttributeTableView : QTableView
     /**
      * This event filter is installed on the verticalHeader to intercept mouse press and release
      * events. These are used to disable / enable live synchronisation with the map canvas selection
-     * which can be slow due to recurring canvas repaints. Updating the
+     * which can be slow due to recurring canvas repaints.
      *
      * @param object The object which is the target of the event.
      * @param event  The intercepted event

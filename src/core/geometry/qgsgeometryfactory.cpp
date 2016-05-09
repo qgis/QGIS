@@ -36,7 +36,17 @@ QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr wkbPtr )
     return nullptr;
 
   //find out type (bytes 2-5)
-  QgsWKBTypes::Type type = wkbPtr.readHeader();
+  QgsWKBTypes::Type type = QgsWKBTypes::Unknown;
+  try
+  {
+    type = wkbPtr.readHeader();
+  }
+  catch ( const QgsWkbException &e )
+  {
+    Q_UNUSED( e );
+    QgsDebugMsg( "WKB exception while reading header: " + e.what() );
+    return nullptr;
+  }
   wkbPtr -= 1 + sizeof( int );
 
   QgsAbstractGeometryV2* geom = nullptr;

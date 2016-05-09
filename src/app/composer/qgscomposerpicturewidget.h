@@ -45,7 +45,7 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     void on_mAddDirectoryButton_clicked();
     void on_mRemoveDirectoryButton_clicked();
     void on_mRotationFromComposerMapCheckBox_stateChanged( int state );
-    void composerMapChanged( const QgsComposerItem* item );
+    void composerMapChanged( QgsComposerItem* item );
     void on_mResizeModeComboBox_currentIndexChanged( int index );
     void on_mAnchorPointComboBox_currentIndexChanged( int index );
 

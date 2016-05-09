@@ -948,6 +948,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void newMemoryLayer();
     //! Create a new empty spatialite layer
     void newSpatialiteLayer();
+    //! Create a new empty GeoPackage layer
+    void newGeoPackageLayer();
     //! Print the current map view frame
     void newPrintComposer();
     void showComposerManager();
@@ -1032,6 +1034,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void mergeSelectedFeatures();
     //! merges the attributes of selected features
     void mergeAttributesOfSelectedFeatures();
+    //! Modifies the attributes of selected features via feature form
+    void modifyAttributesOfSelectedFeatures();
     //! provides operations with nodes
     void nodeTool();
     //! activates the rotate points tool

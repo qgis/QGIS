@@ -24,55 +24,61 @@ back to QgsVectorLayer.
 #define QGSATTRIBUTEACTIONDIALOG_H
 
 #include "ui_qgsattributeactiondialogbase.h"
-#include "qgsattributeaction.h"
+#include "qgsactionmanager.h"
 #include "qgsfield.h"
+#include "qgsattributetableconfig.h"
 #include <QMap>
-
-class QgsAttributeAction;
 
 class APP_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDialogBase
 {
     Q_OBJECT
+  private:
+    enum ColumnIndexes
+    {
+      Type,
+      Description,
+      ShortTitle,
+      ActionText,
+      Capture,
+      ShowInAttributeTable
+    };
 
   public:
-    QgsAttributeActionDialog( QgsAttributeAction* actions,
-                              const QgsFields& fields,
+    QgsAttributeActionDialog( const QgsActionManager& actions,
                               QWidget* parent = nullptr );
 
     ~QgsAttributeActionDialog() {}
 
-    void init();
+    void init( const QgsActionManager& action , const QgsAttributeTableConfig& attributeTableConfig );
 
-  public slots:
-    void moveUp();
-    void moveDown();
-    void browse();
-    void remove();
-    void insert();
-    void insertField();
-    void insertExpression();
-    void apply();
-    void update();
-    void addDefaultActions();
-    void itemSelectionChanged();
+    QList<QgsAction> actions() const;
+
+    bool showWidgetInAttributeTable() const;
+
+    QgsAttributeTableConfig::ActionWidgetStyle attributeTableWidgetStyle() const;
 
   private slots:
+    void moveUp();
+    void moveDown();
+    void remove();
+    void insert();
+    void addDefaultActions();
+    void itemDoubleClicked( QTableWidgetItem* item );
     void updateButtons();
-    void chooseIcon();
 
   private:
-
-    void insertRow( int row, QgsAction::ActionType type, const QString &name, const QString &action, const QString& iconPath, bool capture );
+    void insertRow( int row, const QgsAction& action );
+    void insertRow( int row, QgsAction::ActionType type, const QString& name, const QString& actionText, const QString& iconPath, bool capture );
     void swapRows( int row1, int row2 );
+    QgsAction rowToAction( int row ) const;
 
-    void insert( int pos );
+    QString textForType( QgsAction::ActionType type );
 
     void rowSelected( int row );
 
     QString uniqueName( QString name );
 
-    // Pointer to the QgsAttributeAction in the class that created us.
-    QgsAttributeAction *mActions;
+    QgsVectorLayer* mLayer;
 };
 
 #endif

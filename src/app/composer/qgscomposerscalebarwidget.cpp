@@ -86,7 +86,7 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scale
     mMapItemComboBox->setItemType( QgsComposerItem::ComposerMap );
   }
 
-  connect( mMapItemComboBox, SIGNAL( itemChanged( const QgsComposerItem* ) ), this, SLOT( composerMapChanged( const QgsComposerItem* ) ) );
+  connect( mMapItemComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( composerMapChanged( QgsComposerItem* ) ) );
 
   blockMemberSignals( false );
   setGuiElements(); //set the GUI elements to the state of scaleBar
@@ -630,9 +630,9 @@ void QgsComposerScaleBarWidget::segmentSizeRadioChanged( QAbstractButton* radio 
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::composerMapChanged( const QgsComposerItem* item )
+void QgsComposerScaleBarWidget::composerMapChanged( QgsComposerItem* item )
 {
-  const QgsComposerMap* composerMap = dynamic_cast< const QgsComposerMap* >( item );
+  QgsComposerMap* composerMap = dynamic_cast< QgsComposerMap* >( item );
   if ( !composerMap )
   {
     return;

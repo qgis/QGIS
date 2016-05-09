@@ -30,7 +30,7 @@ import sys
 import difflib
 import functools
 
-from PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsApplication, QgsFeatureRequest, QgsVectorLayer
 from nose2.compat import unittest
 
@@ -82,7 +82,7 @@ class TestCase(_TestCase):
                 geom1 = feats[1].geometry().geometry().asWkt(precision)
             else:
                 geom1 = None
-            _TestCase.assertEquals(
+            _TestCase.assertEqual(
                 self,
                 geom0,
                 geom1,

@@ -21,10 +21,10 @@ from qgis.core import QgsAuthManager, QgsAuthCertUtils, QgsPkiBundle, QgsAuthMet
 from qgis.gui import QgsAuthEditorWidgets
 
 
-from PyQt.QtCore import QFileInfo, qDebug
-from PyQt.QtWidgets import QDialog, QVBoxLayout, QDialogButtonBox
-from PyQt.QtTest import QTest
-from PyQt.QtNetwork import QSsl, QSslError, QSslSocket
+from qgis.PyQt.QtCore import QFileInfo, qDebug
+from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QDialogButtonBox
+from qgis.PyQt.QtTest import QTest
+from qgis.PyQt.QtNetwork import QSsl, QSslError, QSslSocket
 
 from qgis.testing import (
     start_app,

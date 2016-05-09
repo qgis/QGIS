@@ -28,9 +28,9 @@ from qgis.core import (QgsGraduatedSymbolRendererV2,
                        QgsSymbolLayerV2Utils,
                        QgsRenderContext
                        )
-from PyQt.QtCore import Qt
-from PyQt.QtXml import QDomDocument
-from PyQt.QtGui import QColor
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtGui import QColor
 
 start_app()
 

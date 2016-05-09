@@ -1,5 +1,5 @@
 import os
-from PyQt.QtWidgets import QAction, QMenu
+from qgis.PyQt.QtWidgets import QAction, QMenu
 from PyQt4.QtGui import QIcon
 from processing.core.Processing import Processing
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
@@ -156,7 +156,8 @@ def removeMenus():
 def addAlgorithmEntry(alg, menuName, submenuName, actionText=None, icon=None, addButton=False):
     action = QAction(icon or alg.getIcon(), actionText or alg.name, iface.mainWindow())
     action.triggered.connect(lambda: _executeAlgorithm(alg))
-
+    action.setObjectName("mProcessingUserMenu_%s" % alg.commandLineName())
+    
     if menuName:
         menu = getMenu(menuName, iface.mainWindow().menuBar())
         submenu = getMenu(submenuName, menu)

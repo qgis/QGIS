@@ -353,9 +353,9 @@ QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& 
       if ( symbol->type() == QgsSymbolV2::Marker )
       {
         if ( bounds.isValid() )
-          bounds = bounds.united( static_cast< QgsMarkerSymbolV2* >( symbol )->bounds( pt, context ) );
+          bounds = bounds.united( static_cast< QgsMarkerSymbolV2* >( symbol )->bounds( pt, context, fet ) );
         else
-          bounds = static_cast< QgsMarkerSymbolV2* >( symbol )->bounds( pt, context );
+          bounds = static_cast< QgsMarkerSymbolV2* >( symbol )->bounds( pt, context, fet );
       }
     }
 

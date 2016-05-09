@@ -23,9 +23,9 @@ email                : brush.tyler@gmail.com
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import PostGisDBConnector
 
-from PyQt.QtCore import QSettings, Qt, QRegExp
-from PyQt.QtGui import QIcon
-from PyQt.QtWidgets import QAction, QApplication, QMessageBox
+from qgis.PyQt.QtCore import QSettings, Qt, QRegExp
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
 from qgis.gui import QgsMessageBar
 
 from ..plugin import ConnectionError, InvalidDataException, DBPlugin, Database, Schema, Table, VectorTable, RasterTable, \

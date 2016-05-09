@@ -278,7 +278,7 @@ class QgsVectorLayer : QgsMapLayer
      */
     // const QgsLabel *label() const;
 
-    QgsAttributeAction *actions();
+    QgsActionManager *actions();
 
     /**
      * The number of features that are selected in this layer
@@ -1335,6 +1335,18 @@ class QgsVectorLayer : QgsMapLayer
      * @note added in QGIS 2.12
      */
     QgsConditionalLayerStyles *conditionalStyles() const;
+
+    /**
+     * Get the attribute table configuration object.
+     * This defines the appearance of the attribute table.
+     */
+    QgsAttributeTableConfig attributeTableConfig() const;
+
+    /**
+     * Set the attribute table configuration object.
+     * This defines the appearance of the attribute table.
+     */
+    void setAttributeTableConfig( const QgsAttributeTableConfig& attributeTableConfig );
 
   public slots:
     /**

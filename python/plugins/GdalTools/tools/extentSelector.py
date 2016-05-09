@@ -23,9 +23,9 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import pyqtSignal
-from PyQt.QtWidgets import QWidget
-from PyQt.QtGui import QColor
+from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtWidgets import QWidget
+from qgis.PyQt.QtGui import QColor
 from qgis.core import QgsPoint, QgsRectangle, QGis
 from qgis.gui import QgsMapTool, QgsMapToolEmitPoint, QgsRubberBand
 

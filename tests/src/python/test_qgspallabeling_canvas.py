@@ -21,7 +21,7 @@ import qgis  # NOQA
 
 import sys
 import os
-from PyQt.QtCore import qDebug, QThreadPool
+from qgis.PyQt.QtCore import qDebug, QThreadPool
 
 from utilities import (
     getTempfilePath,

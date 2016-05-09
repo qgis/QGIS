@@ -34,7 +34,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
      *
      * @return A new QgsArrowSymbolLayer
      */
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties );
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
 
     /** Virtual constructor */
     virtual QgsArrowSymbolLayer* clone() const override;
@@ -126,6 +126,9 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
 
     /** Main drawing method */
     void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context ) override;
+
+    void setColor( const QColor& c ) override;
+    virtual QColor color() const override;
 
   private:
     /** Filling sub symbol */

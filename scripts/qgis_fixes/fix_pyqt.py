@@ -11,7 +11,7 @@ from lib2to3.fixer_util import (Name, Comma, FromImport, Newline,
 
 MAPPING = {
     "PyQt4.QtGui": [
-        ("PyQt.QtGui", [
+        ("qgis.PyQt.QtGui", [
          "QIcon",
          "QCursor",
          "QColor",
@@ -34,7 +34,7 @@ MAPPING = {
          "QFontMetricsF",
          "QGradient",
          ]),
-        ("PyQt.QtWidgets", [
+        ("qgis.PyQt.QtWidgets", [
          "QAbstractButton",
          "QAbstractGraphicsShapeItem",
          "QAbstractItemDelegate",
@@ -235,7 +235,7 @@ MAPPING = {
          "qDrawWinButton",
          "qDrawWinPanel",
          ]),
-        ("PyQt.QtPrintSupport", [
+        ("qgis.PyQt.QtPrintSupport", [
             "QPrinter",
             "QAbstractPrintDialog",
             "QPageSetupDialog",
@@ -245,13 +245,13 @@ MAPPING = {
             "QPrintPreviewWidget",
             "QPrinterInfo",
         ]),
-        ("PyQt.QtCore", [
+        ("qgis.PyQt.QtCore", [
          "QItemSelectionModel",
          "QSortFilterProxyModel",
          ]),
     ],
     "PyQt4.QtCore": [
-        ("PyQt.QtCore", [
+        ("qgis.PyQt.QtCore", [
             "QAbstractItemModel",
             "QAbstractTableModel",
             "QByteArray",
@@ -306,15 +306,15 @@ MAPPING = {
         ]),
     ],
     "PyQt4.QtNetwork": [
-        ("PyQt.QtNetwork", ["QNetworkReply", "QNetworkRequest"])
+        ("qgis.PyQt.QtNetwork", ["QNetworkReply", "QNetworkRequest"])
     ],
     "PyQt4.QtXml": [
-        ("PyQt.QtXml", [
+        ("qgis.PyQt.QtXml", [
             "QDomDocument"
         ]),
     ],
     "PyQt4.Qsci": [
-        ("PyQt.Qsci", [
+        ("qgis.PyQt.Qsci", [
             "QsciAPIs",
             "QsciLexerCustom",
             "QsciLexerPython",
@@ -324,7 +324,7 @@ MAPPING = {
         ]),
     ],
     "PyQt4.QtWebKit": [
-        ("PyQt.QtWebKitWidgets", [
+        ("qgis.PyQt.QtWebKitWidgets", [
             "QGraphicsWebView",
             "QWebFrame",
             "QWebHitTestResult",
@@ -334,25 +334,25 @@ MAPPING = {
         ]),
     ],
     "PyQt4.QtTest": [
-        ("PyQt.QtTest", [
+        ("qgis.PyQt.QtTest", [
             "QTest",
         ]),
     ],
     "PyQt4.QtSvg": [
-        ("PyQt.QtSvg", [
+        ("qgis.PyQt.QtSvg", [
             "QSvgRenderer",
             "QSvgGenerator"
         ]),
     ],
     "PyQt4.QtSql": [
-        ("PyQt.QtSql", [
+        ("qgis.PyQt.QtSql", [
             "QSqlDatabase",
             "QSqlQuery",
             "QSqlField"
         ]),
     ],
     "PyQt4.uic": [
-        ("PyQt.uic", [
+        ("qgis.PyQt.uic", [
             "loadUiType",
             "loadUi",
         ]),

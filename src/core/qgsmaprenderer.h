@@ -47,9 +47,33 @@ class CORE_EXPORT QgsLabelPosition
 {
   public:
     QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, const QString& labeltext, const QFont& labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString& providerId = QString() )
-        : featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), labelText( labeltext ), labelFont( labelfont ), upsideDown( upside_down ), isDiagram( diagram ), isPinned( pinned ), providerID( providerId ) {}
+        : featureId( id )
+        , rotation( r )
+        , cornerPoints( corners )
+        , labelRect( rect )
+        , width( w )
+        , height( h )
+        , layerID( layer )
+        , labelText( labeltext )
+        , labelFont( labelfont )
+        , upsideDown( upside_down )
+        , isDiagram( diagram )
+        , isPinned( pinned )
+        , providerID( providerId )
+    {}
     QgsLabelPosition()
-        : featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), labelText( "" ), labelFont( QFont() ), upsideDown( false ), isDiagram( false ), isPinned( false ) {}
+        : featureId( -1 )
+        , rotation( 0 )
+        , labelRect( QgsRectangle() )
+        , width( 0 )
+        , height( 0 )
+        , layerID( "" )
+        , labelText( "" )
+        , labelFont( QFont() )
+        , upsideDown( false )
+        , isDiagram( false )
+        , isPinned( false )
+    {}
     int featureId;
     double rotation;
     QVector< QgsPoint > cornerPoints;

@@ -19,7 +19,7 @@
 #define QGSIDENTIFYRESULTSDIALOG_H
 
 #include "ui_qgsidentifyresultsbase.h"
-#include "qgsattributeaction.h"
+#include "qgsactionmanager.h"
 #include "qgscontexthelp.h"
 #include "qgsfeature.h"
 #include "qgsfeaturestore.h"
@@ -263,8 +263,11 @@ class QgsIdentifyResultsDialogMapLayerAction : public QAction
     Q_OBJECT
 
   public:
-    QgsIdentifyResultsDialogMapLayerAction( const QString &name, QObject *parent, QgsMapLayerAction* action, QgsMapLayer* layer, QgsFeature * f ) :
-        QAction( name, parent ), mAction( action ), mFeature( f ), mLayer( layer )
+    QgsIdentifyResultsDialogMapLayerAction( const QString &name, QObject *parent, QgsMapLayerAction* action, QgsMapLayer* layer, QgsFeature * f )
+        : QAction( name, parent )
+        , mAction( action )
+        , mFeature( f )
+        , mLayer( layer )
     {}
 
   public slots:

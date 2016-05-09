@@ -26,12 +26,19 @@
 #include <QTextStream>
 #include <QMessageBox>
 
-QgsRasterFileWriter::QgsRasterFileWriter( const QString& outputUrl ):
-    mMode( Raw ), mOutputUrl( outputUrl ), mOutputProviderKey( "gdal" ), mOutputFormat( "GTiff" ),
-    mTiledMode( false ), mMaxTileWidth( 500 ), mMaxTileHeight( 500 ),
-    mBuildPyramidsFlag( QgsRaster::PyramidsFlagNo ),
-    mPyramidsFormat( QgsRaster::PyramidsGTiff ),
-    mProgressDialog( nullptr ), mPipe( nullptr ), mInput( nullptr )
+QgsRasterFileWriter::QgsRasterFileWriter( const QString& outputUrl )
+    : mMode( Raw )
+    , mOutputUrl( outputUrl )
+    , mOutputProviderKey( "gdal" )
+    , mOutputFormat( "GTiff" )
+    , mTiledMode( false )
+    , mMaxTileWidth( 500 )
+    , mMaxTileHeight( 500 )
+    , mBuildPyramidsFlag( QgsRaster::PyramidsFlagNo )
+    , mPyramidsFormat( QgsRaster::PyramidsGTiff )
+    , mProgressDialog( nullptr )
+    , mPipe( nullptr )
+    , mInput( nullptr )
 {
 
 }

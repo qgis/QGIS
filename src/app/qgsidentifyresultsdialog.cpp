@@ -18,7 +18,7 @@
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsattributeaction.h"
+#include "qgsactionmanager.h"
 #include "qgsattributedialog.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsfeatureaction.h"

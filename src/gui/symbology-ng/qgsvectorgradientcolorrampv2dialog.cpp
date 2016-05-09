@@ -28,7 +28,9 @@
 #include <QTextEdit>
 
 QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVectorGradientColorRampV2* ramp, QWidget* parent )
-    : QDialog( parent ), mRamp( ramp ), mCurrentItem( nullptr )
+    : QDialog( parent )
+    , mRamp( ramp )
+    , mCurrentItem( nullptr )
 {
   setupUi( this );
 #ifdef Q_OS_MAC

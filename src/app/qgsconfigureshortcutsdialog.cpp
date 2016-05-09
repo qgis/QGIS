@@ -29,7 +29,8 @@
 #include <QSettings>
 
 QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget* parent )
-    : QDialog( parent ), mGettingShortcut( false )
+    : QDialog( parent )
+    , mGettingShortcut( false )
 {
   setupUi( this );
 

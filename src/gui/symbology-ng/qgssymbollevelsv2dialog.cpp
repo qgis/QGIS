@@ -28,7 +28,9 @@
 ////////////////
 
 QgsSymbolLevelsV2Dialog::QgsSymbolLevelsV2Dialog( const QgsLegendSymbolList& list, bool usingSymbolLevels, QWidget* parent )
-    : QDialog( parent ), mList( list ), mForceOrderingEnabled( false )
+    : QDialog( parent )
+    , mList( list )
+    , mForceOrderingEnabled( false )
 {
   setupUi( this );
 

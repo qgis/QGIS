@@ -30,7 +30,10 @@
 #include <QSettings>
 
 QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid& deco, QWidget* parent )
-    : QDialog( parent ), mDeco( deco ), mLineSymbol( nullptr ), mMarkerSymbol( nullptr )
+    : QDialog( parent )
+    , mDeco( deco )
+    , mLineSymbol( nullptr )
+    , mMarkerSymbol( nullptr )
 {
   setupUi( this );
 

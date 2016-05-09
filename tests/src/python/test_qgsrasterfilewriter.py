@@ -17,7 +17,7 @@ import qgis  # NOQA
 import os
 import glob
 
-from PyQt.QtCore import QTemporaryFile, QDir
+from qgis.PyQt.QtCore import QTemporaryFile, QDir
 from qgis.core import (QgsRasterLayer,
                        QgsRasterChecker,
                        QgsRasterPipe,

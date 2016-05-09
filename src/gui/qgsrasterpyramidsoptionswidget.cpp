@@ -29,7 +29,8 @@
 
 
 QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget* parent, const QString& provider )
-    : QWidget( parent ), mProvider( provider )
+    : QWidget( parent )
+    , mProvider( provider )
 {
   setupUi( this );
 

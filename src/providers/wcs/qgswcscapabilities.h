@@ -37,7 +37,14 @@ class QNetworkReply;
 /** CoverageSummary structure */
 struct QgsWcsCoverageSummary
 {
-  QgsWcsCoverageSummary() : orderId( 0 ), valid( false ), described( false ), width( 0 ), height( 0 ), hasSize( false ) { }
+  QgsWcsCoverageSummary()
+      : orderId( 0 )
+      , valid( false )
+      , described( false )
+      , width( 0 )
+      , height( 0 )
+      , hasSize( false )
+  { }
 
   int           orderId;
   QString       identifier;

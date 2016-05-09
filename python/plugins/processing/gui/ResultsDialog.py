@@ -27,10 +27,10 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt import uic
-from PyQt.QtCore import QUrl
-from PyQt.QtGui import QIcon
-from PyQt.QtWidgets import QStyle, QTreeWidgetItem
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QStyle, QTreeWidgetItem
 
 from processing.core.ProcessingResults import ProcessingResults
 

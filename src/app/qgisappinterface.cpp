@@ -41,7 +41,7 @@
 #include "qgsfield.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfeatureaction.h"
-#include "qgsattributeaction.h"
+#include "qgsactionmanager.h"
 #include "qgsattributetabledialog.h"
 
 

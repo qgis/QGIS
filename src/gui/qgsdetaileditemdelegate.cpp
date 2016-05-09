@@ -25,10 +25,10 @@
 #include <QModelIndex>
 #include <QCheckBox>
 #include <QLinearGradient>
-QgsDetailedItemDelegate::QgsDetailedItemDelegate( QObject * parent ) :
-    QAbstractItemDelegate( parent ),
-    mpWidget( new QgsDetailedItemWidget() ),
-    mpCheckBox( new QCheckBox() )
+QgsDetailedItemDelegate::QgsDetailedItemDelegate( QObject * parent )
+    : QAbstractItemDelegate( parent )
+    , mpWidget( new QgsDetailedItemWidget() )
+    , mpCheckBox( new QCheckBox() )
 
 {
   //mpWidget->setFixedHeight(80);

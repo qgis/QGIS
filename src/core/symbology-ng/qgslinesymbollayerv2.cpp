@@ -655,7 +655,11 @@ double QgsSimpleLineSymbolLayerV2::dxfOffset( const QgsDxfExport& e, QgsSymbolV2
 class MyLine
 {
   public:
-    MyLine( QPointF p1, QPointF p2 ) : mVertical( false ), mIncreasing( false ), mT( 0.0 ), mLength( 0.0 )
+    MyLine( QPointF p1, QPointF p2 )
+        : mVertical( false )
+        , mIncreasing( false )
+        , mT( 0.0 )
+        , mLength( 0.0 )
     {
       if ( p1 == p2 )
         return; // invalid
@@ -807,6 +811,11 @@ void QgsMarkerLineSymbolLayerV2::setColor( const QColor& color )
 {
   mMarker->setColor( color );
   mColor = color;
+}
+
+QColor QgsMarkerLineSymbolLayerV2::color() const
+{
+  return mMarker ? mMarker->color() : mColor;
 }
 
 void QgsMarkerLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )

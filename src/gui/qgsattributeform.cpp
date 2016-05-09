@@ -186,6 +186,7 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
 
     case QgsAttributeForm::MultiEditMode:
       resetMultiEdit( false );
+      synchronizeEnabledState();
       break;
   }
 
@@ -433,7 +434,8 @@ bool QgsAttributeForm::saveMultiEdits()
     mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Changes could not be applied" ), QgsMessageBar::WARNING, messageTimeout() );
   }
 
-  mMessageBar->pushItem( mMultiEditMessageBarItem );
+  if ( !mButtonBox->isVisible() )
+    mMessageBar->pushItem( mMultiEditMessageBarItem );
   return success;
 }
 
@@ -482,12 +484,14 @@ void QgsAttributeForm::clearMultiEditMessages()
 {
   if ( mMultiEditUnsavedMessageBarItem )
   {
-    mMessageBar->popWidget( mMultiEditUnsavedMessageBarItem );
+    if ( !mButtonBox->isVisible() )
+      mMessageBar->popWidget( mMultiEditUnsavedMessageBarItem );
     mMultiEditUnsavedMessageBarItem = nullptr;
   }
   if ( mMultiEditMessageBarItem )
   {
-    mMessageBar->popWidget( mMultiEditMessageBarItem );
+    if ( !mButtonBox->isVisible() )
+      mMessageBar->popWidget( mMultiEditMessageBarItem );
     mMultiEditMessageBarItem = nullptr;
   }
 }
@@ -523,7 +527,8 @@ void QgsAttributeForm::onAttributeChanged( const QVariant& value )
         clearMultiEditMessages();
 
         mMultiEditUnsavedMessageBarItem = new QgsMessageBarItem( msgLabel, QgsMessageBar::WARNING );
-        mMessageBar->pushItem( mMultiEditUnsavedMessageBarItem );
+        if ( !mButtonBox->isVisible() )
+          mMessageBar->pushItem( mMultiEditUnsavedMessageBarItem );
       }
       break;
     }
@@ -608,7 +613,9 @@ void QgsAttributeForm::refreshFeature()
 
 void QgsAttributeForm::synchronizeEnabledState()
 {
-  bool isEditable = ( mFeature.isValid() || mMode == AddFeatureMode ) && mLayer->isEditable();
+  bool isEditable = ( mFeature.isValid()
+                      || mMode == AddFeatureMode
+                      || mMode == MultiEditMode ) && mLayer->isEditable();
 
   Q_FOREACH ( QgsWidgetWrapper* ww, mWidgets )
   {

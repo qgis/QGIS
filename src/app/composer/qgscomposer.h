@@ -616,7 +616,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     struct PanelStatus
     {
-      PanelStatus( bool visible = true, bool active = false ) : isVisible( visible ), isActive( active ) {}
+      PanelStatus( bool visible = true, bool active = false )
+          : isVisible( visible )
+          , isActive( active )
+      {}
       bool isVisible;
       bool isActive;
     };

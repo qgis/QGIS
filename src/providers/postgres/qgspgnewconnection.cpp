@@ -26,7 +26,8 @@
 #include "qgspostgresconn.h"
 
 QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
-    : QDialog( parent, fl ), mOriginalConnName( connName )
+    : QDialog( parent, fl )
+    , mOriginalConnName( connName )
     , mAuthConfigSelect( nullptr )
 {
   setupUi( this );

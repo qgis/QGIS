@@ -28,14 +28,14 @@
 #include <QMouseEvent>
 
 QgsMapToolRotatePointSymbols::QgsMapToolRotatePointSymbols( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas ),
-    mActiveLayer( nullptr ),
-    mFeatureNumber( 0 ),
-    mCurrentMouseAzimut( 0.0 ),
-    mCurrentRotationFeature( 0.0 ),
-    mRotating( false ),
-    mRotationItem( nullptr ),
-    mCtrlPressed( false )
+    : QgsMapToolEdit( canvas )
+    , mActiveLayer( nullptr )
+    , mFeatureNumber( 0 )
+    , mCurrentMouseAzimut( 0.0 )
+    , mCurrentRotationFeature( 0.0 )
+    , mRotating( false )
+    , mRotationItem( nullptr )
+    , mCtrlPressed( false )
 {
 
 }

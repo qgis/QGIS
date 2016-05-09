@@ -16,9 +16,9 @@ import qgis  # NOQA
 
 import os
 
-from PyQt.QtCore import QFileInfo
-from PyQt.QtXml import QDomDocument
-from PyQt.QtGui import QPainter
+from qgis.PyQt.QtCore import QFileInfo
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtGui import QPainter
 
 from qgis.core import (QgsComposerMap,
                        QgsRectangle,

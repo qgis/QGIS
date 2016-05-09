@@ -20,7 +20,9 @@
 #include <QGraphicsScene>
 
 QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsHtmlAnnotationItem* item, QWidget * parent, Qt::WindowFlags f )
-    : QDialog( parent, f ), mItem( item ), mEmbeddedWidget( nullptr )
+    : QDialog( parent, f )
+    , mItem( item )
+    , mEmbeddedWidget( nullptr )
 {
   setupUi( this );
   setWindowTitle( tr( "HTML annotation" ) );

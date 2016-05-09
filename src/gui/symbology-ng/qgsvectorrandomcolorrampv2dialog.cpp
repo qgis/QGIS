@@ -21,7 +21,8 @@
 
 
 QgsVectorRandomColorRampV2Dialog::QgsVectorRandomColorRampV2Dialog( QgsVectorRandomColorRampV2* ramp, QWidget* parent )
-    : QDialog( parent ), mRamp( ramp )
+    : QDialog( parent )
+    , mRamp( ramp )
 {
   setupUi( this );
 

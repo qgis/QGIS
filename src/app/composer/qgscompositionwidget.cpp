@@ -123,7 +123,7 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
   connect( mPaperOrientationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
   connect( mPaperOrientationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mPaperOrientationComboBox, SLOT( setDisabled( bool ) ) );
 
-  connect( mWorldFileMapComboBox, SIGNAL( itemChanged( const QgsComposerItem* ) ), this, SLOT( worldFileMapChanged( const QgsComposerItem* ) ) );
+  connect( mWorldFileMapComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( worldFileMapChanged( QgsComposerItem* ) ) );
 
   //initialize data defined buttons
   populateDataDefinedButtons();
@@ -661,15 +661,15 @@ void QgsCompositionWidget::on_mGenerateWorldFileCheckBox_toggled( bool state )
   mWorldFileMapComboBox->setEnabled( state );
 }
 
-void QgsCompositionWidget::worldFileMapChanged( const QgsComposerItem* item )
+void QgsCompositionWidget::worldFileMapChanged( QgsComposerItem* item )
 {
   if ( !mComposition )
   {
     return;
   }
 
-  const QgsComposerMap* map = dynamic_cast< const QgsComposerMap* >( item );
-  mComposition->setWorldFileMap( const_cast< QgsComposerMap* >( map ) );
+  QgsComposerMap* map = dynamic_cast< QgsComposerMap* >( item );
+  mComposition->setWorldFileMap( map );
 }
 
 void QgsCompositionWidget::on_mGridResolutionSpinBox_valueChanged( double d )

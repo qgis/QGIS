@@ -37,10 +37,17 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     {
       public:
         //! Constructor variant to build a live layer reference
-        SourceLayer( const QString& name, const QString& ref ) : mName( name ), mRef( ref ) {}
+        SourceLayer( const QString& name, const QString& ref )
+            : mName( name )
+            , mRef( ref )
+        {}
         //! Constructor variant to build a layer with a provider and a source
         SourceLayer( const QString& name, const QString& source, const QString& provider, const QString& encoding )
-            : mName( name ), mSource( source ), mProvider( provider ), mEncoding( encoding ) {}
+            : mName( name )
+            , mSource( source )
+            , mProvider( provider )
+            , mEncoding( encoding )
+        {}
 
         //! Is it a live layer or not ?
         bool isReferenced() const { return !mRef.isEmpty(); }

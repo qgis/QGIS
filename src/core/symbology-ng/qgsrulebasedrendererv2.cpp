@@ -822,7 +822,8 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
 /////////////////////
 
 QgsRuleBasedRendererV2::QgsRuleBasedRendererV2( QgsRuleBasedRendererV2::Rule* root )
-    : QgsFeatureRendererV2( "RuleRenderer" ), mRootRule( root )
+    : QgsFeatureRendererV2( "RuleRenderer" )
+    , mRootRule( root )
 {
 }
 

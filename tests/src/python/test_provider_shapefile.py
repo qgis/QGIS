@@ -21,7 +21,7 @@ import glob
 import osgeo.gdal
 
 from qgis.core import QgsVectorLayer, QgsFeatureRequest
-from PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
@@ -121,8 +121,8 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
         ids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk=1'))]
         vl.setSelectedFeatures(ids)
-        self.assertEquals(vl.selectedFeaturesIds(), ids)
-        self.assertEquals(vl.pendingFeatureCount(), 5)
+        self.assertEqual(vl.selectedFeaturesIds(), ids)
+        self.assertEqual(vl.pendingFeatureCount(), 5)
         self.assertTrue(vl.startEditing())
         self.assertTrue(vl.deleteFeature(3))
         self.assertTrue(vl.commitChanges())

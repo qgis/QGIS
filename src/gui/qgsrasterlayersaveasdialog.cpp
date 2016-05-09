@@ -28,10 +28,12 @@
 QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLayer,
     QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
     const QgsCoordinateReferenceSystem& layerCrs, const QgsCoordinateReferenceSystem& currentCrs,
-    QWidget* parent, const Qt::WindowFlags& f ) :
-    QDialog( parent, f )
-    , mRasterLayer( rasterLayer ), mDataProvider( sourceProvider )
-    , mCurrentExtent( currentExtent ), mLayerCrs( layerCrs )
+    QWidget* parent, const Qt::WindowFlags& f )
+    : QDialog( parent, f )
+    , mRasterLayer( rasterLayer )
+    , mDataProvider( sourceProvider )
+    , mCurrentExtent( currentExtent )
+    , mLayerCrs( layerCrs )
     , mCurrentCrs( currentCrs )
     , mResolutionState( OriginalResolution )
 {

@@ -16,8 +16,8 @@ import qgis  # NOQA
 
 import os
 
-from PyQt.QtCore import QUrl, qDebug
-from PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtCore import QUrl, qDebug
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsComposition,
                        QgsComposerHtml,
                        QgsComposerFrame,

@@ -476,14 +476,16 @@ void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
 // ----
 
 QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( QWidget *parent, QSettings* settings )
-    : QgsCollapsibleGroupBoxBasic( parent ), mSettings( settings )
+    : QgsCollapsibleGroupBoxBasic( parent )
+    , mSettings( settings )
 {
   init();
 }
 
 QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( const QString &title,
     QWidget *parent, QSettings* settings )
-    : QgsCollapsibleGroupBoxBasic( title, parent ), mSettings( settings )
+    : QgsCollapsibleGroupBoxBasic( title, parent )
+    , mSettings( settings )
 {
   init();
 }

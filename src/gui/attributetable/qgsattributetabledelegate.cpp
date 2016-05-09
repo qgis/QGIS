@@ -17,6 +17,7 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QPainter>
+#include <QToolButton>
 
 #include "qgsattributeeditor.h"
 #include "qgsattributetabledelegate.h"
@@ -27,6 +28,7 @@
 #include "qgsfeatureselectionmodel.h"
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
+#include "qgsactionmanager.h"
 
 
 QgsVectorLayer* QgsAttributeTableDelegate::layer( const QAbstractItemModel *model )
@@ -55,10 +57,7 @@ const QgsAttributeTableModel* QgsAttributeTableDelegate::masterModel( const QAbs
   return nullptr;
 }
 
-QWidget *QgsAttributeTableDelegate::createEditor(
-  QWidget *parent,
-  const QStyleOptionViewItem &option,
-  const QModelIndex &index ) const
+QWidget* QgsAttributeTableDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
   QgsVectorLayer *vl = layer( index.model() );
@@ -119,32 +118,46 @@ void QgsAttributeTableDelegate::setFeatureSelectionModel( QgsFeatureSelectionMod
   mFeatureSelectionModel = featureSelectionModel;
 }
 
-void QgsAttributeTableDelegate::paint( QPainter * painter,
-                                       const QStyleOptionViewItem & option,
-                                       const QModelIndex & index ) const
+void QgsAttributeTableDelegate::setActionWidgetImage( const QImage& image )
 {
-  QgsFeatureId fid = index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
+  mActionWidgetImage = image;
+}
 
-  QStyleOptionViewItem myOpt = option;
 
-  if ( index.model()->data( index, Qt::EditRole ).isNull() )
+void QgsAttributeTableDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+{
+  QgsAttributeTableFilterModel::ColumnType columnType = static_cast<QgsAttributeTableFilterModel::ColumnType>( index.model()->data( index, QgsAttributeTableFilterModel::TypeRole ).toInt() );
+
+  if ( columnType == QgsAttributeTableFilterModel::ColumnTypeActionButton )
   {
-    myOpt.font.setItalic( true );
-    myOpt.palette.setColor( QPalette::Text, QColor( "gray" ) );
+    QRect r = option.rect.adjusted( -1, 0, 0, 0 );
+    painter->drawImage( r.x(), r.y(), mActionWidgetImage );
   }
-
-  if ( mFeatureSelectionModel && mFeatureSelectionModel->isSelected( fid ) )
-    myOpt.state |= QStyle::State_Selected;
-
-  QItemDelegate::paint( painter, myOpt, index );
-
-  if ( option.state & QStyle::State_HasFocus )
+  else
   {
-    QRect r = option.rect.adjusted( 1, 1, -1, -1 );
-    QPen p( QBrush( QColor( 0, 255, 127 ) ), 2 );
-    painter->save();
-    painter->setPen( p );
-    painter->drawRect( r );
-    painter->restore();
+    QgsFeatureId fid = index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
+
+    QStyleOptionViewItem myOpt = option;
+
+    if ( index.model()->data( index, Qt::EditRole ).isNull() )
+    {
+      myOpt.font.setItalic( true );
+      myOpt.palette.setColor( QPalette::Text, QColor( "gray" ) );
+    }
+
+    if ( mFeatureSelectionModel && mFeatureSelectionModel->isSelected( fid ) )
+      myOpt.state |= QStyle::State_Selected;
+
+    QItemDelegate::paint( painter, myOpt, index );
+
+    if ( option.state & QStyle::State_HasFocus )
+    {
+      QRect r = option.rect.adjusted( 1, 1, -1, -1 );
+      QPen p( QBrush( QColor( 0, 255, 127 ) ), 2 );
+      painter->save();
+      painter->setPen( p );
+      painter->drawRect( r );
+      painter->restore();
+    }
   }
 }

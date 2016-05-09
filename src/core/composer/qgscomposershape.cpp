@@ -22,12 +22,13 @@
 #include "qgscomposermodel.h"
 #include <QPainter>
 
-QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerItem( composition ),
-    mShape( Ellipse ),
-    mCornerRadius( 0 ),
-    mUseSymbolV2( false ), //default to not using SymbolV2 for shapes, to preserve 2.0 api
-    mShapeStyleSymbol( nullptr ),
-    mMaxSymbolBleed( 0 )
+QgsComposerShape::QgsComposerShape( QgsComposition* composition )
+    : QgsComposerItem( composition )
+    , mShape( Ellipse )
+    , mCornerRadius( 0 )
+    , mUseSymbolV2( false ) //default to not using SymbolV2 for shapes, to preserve 2.0 api
+    , mShapeStyleSymbol( nullptr )
+    , mMaxSymbolBleed( 0 )
 {
   setFrameEnabled( true );
   createDefaultShapeStyleSymbol();
@@ -40,13 +41,13 @@ QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerIt
   }
 }
 
-QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ):
-    QgsComposerItem( x, y, width, height, composition ),
-    mShape( Ellipse ),
-    mCornerRadius( 0 ),
-    mUseSymbolV2( false ), //default to not using SymbolV2 for shapes, to preserve 2.0 api
-    mShapeStyleSymbol( nullptr ),
-    mMaxSymbolBleed( 0 )
+QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition )
+    : QgsComposerItem( x, y, width, height, composition )
+    , mShape( Ellipse )
+    , mCornerRadius( 0 )
+    , mUseSymbolV2( false ) //default to not using SymbolV2 for shapes, to preserve 2.0 api
+    , mShapeStyleSymbol( nullptr )
+    , mMaxSymbolBleed( 0 )
 {
   setSceneRect( QRectF( x, y, width, height ) );
   setFrameEnabled( true );

@@ -34,7 +34,7 @@ import test_qgsdelimitedtextprovider_wanted as want  # NOQA
 
 rebuildTests = 'REBUILD_DELIMITED_TEXT_TESTS' in os.environ
 
-from PyQt.QtCore import QCoreApplication, QUrl, QObject
+from qgis.PyQt.QtCore import QCoreApplication, QUrl, QObject
 
 from qgis.core import (
     QgsProviderRegistry,

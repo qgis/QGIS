@@ -428,7 +428,10 @@ enum QgsWmsDpiMode
 
 struct QgsWmsParserSettings
 {
-  QgsWmsParserSettings( bool ignAxis = false, bool invAxis = false ) : ignoreAxisOrientation( ignAxis ), invertAxisOrientation( invAxis ) {}
+  QgsWmsParserSettings( bool ignAxis = false, bool invAxis = false )
+      : ignoreAxisOrientation( ignAxis )
+      , invertAxisOrientation( invAxis )
+  {}
   bool ignoreAxisOrientation;
   bool invertAxisOrientation;
 };
@@ -436,7 +439,11 @@ struct QgsWmsParserSettings
 struct QgsWmsAuthorization
 {
   QgsWmsAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& referer = QString(), const QString& authcfg = QString() )
-      : mUserName( userName ), mPassword( password ), mReferer( referer ), mAuthCfg( authcfg ) {}
+      : mUserName( userName )
+      , mPassword( password )
+      , mReferer( referer )
+      , mAuthCfg( authcfg )
+  {}
 
   bool setAuthorization( QNetworkRequest &request ) const
   {

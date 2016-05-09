@@ -19,8 +19,8 @@
 
 #include <QSettings>
 
-QgsDateTimeEditFactory::QgsDateTimeEditFactory( const QString& name ) :
-    QgsEditorWidgetFactory( name )
+QgsDateTimeEditFactory::QgsDateTimeEditFactory( const QString& name )
+    : QgsEditorWidgetFactory( name )
 {
 }
 

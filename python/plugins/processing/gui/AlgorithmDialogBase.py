@@ -28,9 +28,9 @@ __revision__ = '$Format:%H$'
 import os
 import webbrowser
 
-from PyQt import uic
-from PyQt.QtCore import QCoreApplication, QSettings, QByteArray, QUrl
-from PyQt.QtWidgets import QApplication, QDialogButtonBox, QDesktopWidget
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QCoreApplication, QSettings, QByteArray, QUrl
+from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox, QDesktopWidget
 
 from qgis.utils import iface
 from qgis.core import QgsNetworkAccessManager

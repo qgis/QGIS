@@ -17,8 +17,8 @@
 #include "qgsgroupwmsdatadialog.h"
 
 
-QgsGroupWMSDataDialog::QgsGroupWMSDataDialog( QWidget *parent, const Qt::WindowFlags& fl ) :
-    QDialog( parent, fl )
+QgsGroupWMSDataDialog::QgsGroupWMSDataDialog( QWidget *parent, const Qt::WindowFlags& fl )
+    : QDialog( parent, fl )
 {
   setupUi( this );
   // WMS Name validator

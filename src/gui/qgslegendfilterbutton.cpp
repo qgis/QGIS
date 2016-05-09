@@ -21,8 +21,8 @@
 #include <qgsapplication.h>
 #include <qgsexpressionbuilderdialog.h>
 
-QgsLegendFilterButton::QgsLegendFilterButton( QWidget* parent ) :
-    QToolButton( parent )
+QgsLegendFilterButton::QgsLegendFilterButton( QWidget* parent )
+    : QToolButton( parent )
     , mMenu( nullptr )
     , mLayer( nullptr )
 {

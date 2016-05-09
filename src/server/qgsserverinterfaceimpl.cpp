@@ -21,8 +21,8 @@
 
 
 /** Constructor */
-QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache* capCache ) :
-    mCapabilitiesCache( capCache )
+QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache* capCache )
+    : mCapabilitiesCache( capCache )
 {
   mRequestHandler = nullptr;
   mAccessControls = new QgsAccessControl();

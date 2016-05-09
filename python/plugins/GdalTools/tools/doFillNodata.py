@@ -23,8 +23,8 @@ __copyright__ = '(C) 2011, Alexander Bruy'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import Qt, QCoreApplication, QDir
-from PyQt.QtWidgets import QWidget
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QDir
+from qgis.PyQt.QtWidgets import QWidget
 
 from .ui_widgetFillNodata import Ui_GdalToolsWidget as Ui_Widget
 from .widgetBatchBase import GdalToolsBaseBatchWidget as BaseBatchWidget

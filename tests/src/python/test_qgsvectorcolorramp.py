@@ -19,7 +19,7 @@ from qgis.core import (QgsVectorGradientColorRampV2,
                        QgsVectorRandomColorRampV2,
                        QgsRandomColorsV2,
                        QgsVectorColorBrewerColorRampV2)
-from PyQt.QtGui import QColor, QGradient
+from qgis.PyQt.QtGui import QColor, QGradient
 from qgis.testing import unittest
 
 

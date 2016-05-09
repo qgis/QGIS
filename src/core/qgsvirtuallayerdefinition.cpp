@@ -22,10 +22,10 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
-QgsVirtualLayerDefinition::QgsVirtualLayerDefinition( const QString& filePath ) :
-    mFilePath( filePath ),
-    mGeometryWkbType( QgsWKBTypes::Unknown ),
-    mGeometrySrid( 0 )
+QgsVirtualLayerDefinition::QgsVirtualLayerDefinition( const QString& filePath )
+    : mFilePath( filePath )
+    , mGeometryWkbType( QgsWKBTypes::Unknown )
+    , mGeometrySrid( 0 )
 {
 }
 

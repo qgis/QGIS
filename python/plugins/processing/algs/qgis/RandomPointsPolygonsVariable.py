@@ -28,8 +28,8 @@ __revision__ = '$Format:%H$'
 import os
 import random
 
-from PyQt.QtGui import QIcon
-from PyQt.QtCore import QVariant
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QGis, QgsFields, QgsField, QgsFeature, QgsPoint,
                        QgsGeometry, QgsSpatialIndex, QgsDistanceArea)
 

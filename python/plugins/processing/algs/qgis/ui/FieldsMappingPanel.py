@@ -29,11 +29,11 @@ import os
 
 from collections import OrderedDict
 
-from PyQt import uic
-from PyQt.QtGui import QBrush, QIcon
-from PyQt.QtWidgets import QComboBox, QHeaderView, QLineEdit, QMessageBox, QSpinBox, QStyledItemDelegate
-from PyQt.QtCore import QItemSelectionModel
-from PyQt.QtCore import QAbstractTableModel, QModelIndex, QVariant, Qt, pyqtSlot
+from qgis.PyQt import uic
+from qgis.PyQt.QtGui import QBrush, QIcon
+from qgis.PyQt.QtWidgets import QComboBox, QHeaderView, QLineEdit, QMessageBox, QSpinBox, QStyledItemDelegate
+from qgis.PyQt.QtCore import QItemSelectionModel
+from qgis.PyQt.QtCore import QAbstractTableModel, QModelIndex, QVariant, Qt, pyqtSlot
 
 from qgis.core import QgsExpression
 from qgis.gui import QgsFieldExpressionWidget
@@ -313,7 +313,7 @@ class FieldsMappingPanel(BASE, WIDGET):
         self.addButton.setIcon(
             QIcon(':/images/themes/default/mActionAdd.svg'))
         self.deleteButton.setIcon(
-            QIcon(':/images/themes/default/mActionRemove.svg'))
+            QIcon(':/images/themes/default/mActionDeleteSelected.svg'))
         self.upButton.setIcon(
             QIcon(':/images/themes/default/mActionArrowUp.png'))
         self.downButton.setIcon(

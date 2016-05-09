@@ -30,7 +30,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import re
-from PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsApplication
 import subprocess
 from processing.core.ProcessingConfig import ProcessingConfig

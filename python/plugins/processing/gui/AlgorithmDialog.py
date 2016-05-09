@@ -25,9 +25,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import Qt
-from PyQt.QtWidgets import QMessageBox, QApplication, QPushButton, QWidget, QVBoxLayout
-from PyQt.QtGui import QCursor, QColor, QPalette
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QPushButton, QWidget, QVBoxLayout
+from qgis.PyQt.QtGui import QCursor, QColor, QPalette
 
 from qgis.core import QgsMapLayerRegistry
 

@@ -5,11 +5,11 @@
 
 #include <ui_qgslabelingwidget.h>
 #include <qgspallabeling.h>
+#include "qgsvectorlayerlabeling.h"
 
 class QgsLabelingGui;
 class QgsMapCanvas;
 class QgsRuleBasedLabelingWidget;
-class QgsAbstractVectorLayerLabeling;
 class QgsVectorLayer;
 class QgsMapLayer;
 
@@ -51,7 +51,7 @@ class QgsLabelingWidget : public QWidget, private Ui::QgsLabelingWidget
 
     QWidget* mWidget;
     QgsLabelingGui* mLabelGui;
-    QgsAbstractVectorLayerLabeling* mOldSettings;
+    QScopedPointer< QgsAbstractVectorLayerLabeling > mOldSettings;
     QgsPalLayerSettings mOldPalSettings;
 };
 

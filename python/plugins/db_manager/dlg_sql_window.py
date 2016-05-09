@@ -22,10 +22,10 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt.QtCore import Qt, pyqtSignal
-from PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputDialog, QStyledItemDelegate
-from PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardItemModel, QStandardItem
-from PyQt.Qsci import QsciAPIs
+from qgis.PyQt.QtCore import Qt, pyqtSignal
+from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputDialog, QStyledItemDelegate
+from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardItemModel, QStandardItem
+from qgis.PyQt.Qsci import QsciAPIs
 
 from qgis.core import QgsProject
 

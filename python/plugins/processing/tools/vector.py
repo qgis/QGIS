@@ -36,7 +36,7 @@ import cStringIO
 
 import psycopg2
 
-from PyQt.QtCore import QVariant, QSettings
+from qgis.PyQt.QtCore import QVariant, QSettings
 from qgis.core import (QGis, QgsFields, QgsField, QgsGeometry, QgsRectangle,
                        QgsSpatialIndex, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer,
                        QgsVectorFileWriter, QgsDistanceArea, QgsDataSourceURI, QgsCredentials)

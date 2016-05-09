@@ -25,7 +25,7 @@ from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
 from qgis.server import QgsServer, QgsAccessControlFilter
 from qgis.core import QgsRenderChecker
-from PyQt.QtCore import QSize
+from qgis.PyQt.QtCore import QSize
 import tempfile
 import urllib
 import base64
@@ -278,7 +278,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         self._img_diff_error(response, headers, "WMS_GetLegendGraphic_Country", 250, QSize(10, 10))
 
         response, headers = self._get_restricted(query_string)
-        self.assertEquals(
+        self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for GetMap is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
@@ -334,7 +334,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "SRS": "EPSG:3857"
         }.items()])
         response, headers = self._get_restricted(query_string)
-        self.assertEquals(
+        self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for GetMap is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
@@ -653,7 +653,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         }.items()])
 
         response, headers = self._get_fullaccess(query_string)
-        self.assertEquals(
+        self.assertEqual(
             headers.get("Content-Type"), "image/tiff",
             "Content type for GetMap is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
@@ -661,7 +661,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "Image for GetCoverage is wrong")
 
         response, headers = self._get_restricted(query_string)
-        self.assertEquals(
+        self.assertEqual(
             headers.get("Content-Type"), "image/tiff",
             "Content type for GetMap is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
@@ -683,7 +683,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         }.items()])
 
         response, headers = self._get_restricted(query_string)
-        self.assertEquals(
+        self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for GetMap is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
@@ -698,7 +698,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         self._test_colors({1: "blue"})
 
         response, headers = self._post_fullaccess(data.format(color="red"))
-        self.assertEquals(
+        self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for Insert is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
@@ -707,7 +707,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         self._test_colors({2: "red"})
 
         response, headers = self._post_restricted(data.format(color="blue"))
-        self.assertEquals(
+        self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for Insert is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
@@ -716,7 +716,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "WFS/Transactions Insert succeed\n%s" % response)
 
         response, headers = self._post_restricted(data.format(color="red"), "LAYER_PERM=no")
-        self.assertEquals(
+        self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for Insert is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
@@ -725,7 +725,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "WFS/Transactions Insert succeed\n%s" % response)
 
         response, headers = self._post_restricted(data.format(color="yellow"), "LAYER_PERM=yes")
-        self.assertEquals(
+        self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for Insert is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
@@ -738,7 +738,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         self._test_colors({1: "blue"})
 
         response, headers = self._post_restricted(data.format(color="yellow"))
-        self.assertEquals(
+        self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for GetMap is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
@@ -748,7 +748,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         self._test_colors({1: "blue"})
 
         response, headers = self._post_fullaccess(data.format(color="red"))
-        self.assertEquals(
+        self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for Update is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
@@ -757,7 +757,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         self._test_colors({1: "red"})
 
         response, headers = self._post_restricted(data.format(color="blue"))
-        self.assertEquals(
+        self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for Update is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
@@ -767,7 +767,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         self._test_colors({1: "red"})
 
         response, headers = self._post_restricted(data.format(color="yellow"), "LAYER_PERM=no")
-        self.assertEquals(
+        self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for Update is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
@@ -777,7 +777,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         self._test_colors({1: "red"})
 
         response, headers = self._post_restricted(data.format(color="yellow"), "LAYER_PERM=yes")
-        self.assertEquals(
+        self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for Update is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
@@ -790,7 +790,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         self._test_colors({1: "blue"})
 
         response, headers = self._post_fullaccess(data)
-        self.assertEquals(
+        self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for GetMap is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
@@ -802,7 +802,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         self._test_colors({1: "blue"})
 
         response, headers = self._post_restricted(data)
-        self.assertEquals(
+        self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for GetMap is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
@@ -815,7 +815,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         self._test_colors({1: "red"})
 
         response, headers = self._post_restricted(data, "LAYER_PERM=no")
-        self.assertEquals(
+        self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for GetMap is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
@@ -824,7 +824,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "WFS/Transactions Delete succeed\n%s" % response)
 
         response, headers = self._post_restricted(data, "LAYER_PERM=yes")
-        self.assertEquals(
+        self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for GetMap is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
@@ -1375,7 +1375,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         for line in data[0].split("\n"):
             if line != "":
                 header = line.split(":")
-                self.assertEquals(len(header), 2, line)
+                self.assertEqual(len(header), 2, line)
                 headers[str(header[0])] = str(header[1]).strip()
 
         return data[1], headers
@@ -1427,7 +1427,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         return control.compareImages(control_image), control.report()
 
     def _img_diff_error(self, response, headers, image, max_diff=10, max_size_diff=QSize()):
-        self.assertEquals(
+        self.assertEqual(
             headers.get("Content-Type"), "image/png",
             "Content type is wrong: %s" % headers.get("Content-Type"))
         test, report = self._img_diff(response, image, max_diff, max_size_diff)

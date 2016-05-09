@@ -105,7 +105,10 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     struct Error
     {
-      Error( const QString& lid, const QString& msg ) : layerID( lid ), message( msg ) {}
+      Error( const QString& lid, const QString& msg )
+          : layerID( lid )
+          , message( msg )
+      {}
 
       QString layerID;
       QString message;

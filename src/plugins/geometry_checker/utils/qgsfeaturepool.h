@@ -45,7 +45,9 @@ class QgsFeaturePool
     struct MapEntry
     {
       MapEntry( QgsFeature* _feature, QLinkedList<QgsFeatureId>::iterator _ageIt )
-          : feature( _feature ), ageIt( _ageIt ) {}
+          : feature( _feature )
+          , ageIt( _ageIt )
+      {}
       QgsFeature* feature;
       QLinkedList<QgsFeatureId>::iterator ageIt;
     };

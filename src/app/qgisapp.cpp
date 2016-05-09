@@ -107,7 +107,7 @@
 #include "qgsalignrasterdialog.h"
 #include "qgsapplayertreeviewmenuprovider.h"
 #include "qgsapplication.h"
-#include "qgsattributeaction.h"
+#include "qgsactionmanager.h"
 #include "qgsattributetabledialog.h"
 #include "qgsauthmanager.h"
 #include "qgsauthguiutils.h"
@@ -254,7 +254,12 @@
 // GDAL/OGR includes
 //
 #include <ogr_api.h>
+#include <gdal_version.h>
 #include <proj_api.h>
+
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
+#define SUPPORT_GEOPACKAGE
+#endif
 
 //
 // Other includes
@@ -334,6 +339,7 @@ extern "C"
 #include <spatialite.h>
 }
 #include "qgsnewspatialitelayerdialog.h"
+#include "qgsnewgeopackagelayerdialog.h"
 
 #include "qgspythonutils.h"
 
@@ -1031,6 +1037,8 @@ QgisApp::QgisApp()
     , mBookMarksDockWidget( nullptr )
     , mSnappingDialog( nullptr )
     , mPluginManager( nullptr )
+    , mMapStylingDock( nullptr )
+    , mMapStyleWidget( nullptr )
     , mComposerManager( nullptr )
     , mpTileScaleWidget( nullptr )
     , mLastComposerId( 0 )
@@ -1043,6 +1051,7 @@ QgisApp::QgisApp()
     , mVectorLayerTools( nullptr )
     , mTracer( nullptr )
     , mActionFilterLegend( nullptr )
+    , mActionStyleDock( nullptr )
     , mLegendExpressionFilterButton( nullptr )
     , mSnappingUtils( nullptr )
     , mProjectLastModified()
@@ -1379,6 +1388,7 @@ void QgisApp::createActions()
   connect( mActionDeletePart, SIGNAL( triggered() ), this, SLOT( deletePart() ) );
   connect( mActionMergeFeatures, SIGNAL( triggered() ), this, SLOT( mergeSelectedFeatures() ) );
   connect( mActionMergeFeatureAttributes, SIGNAL( triggered() ), this, SLOT( mergeAttributesOfSelectedFeatures() ) );
+  connect( mActionMultiEditAttributes, SIGNAL( triggered() ), this, SLOT( modifyAttributesOfSelectedFeatures() ) );
   connect( mActionNodeTool, SIGNAL( triggered() ), this, SLOT( nodeTool() ) );
   connect( mActionRotatePointSymbols, SIGNAL( triggered() ), this, SLOT( rotatePointSymbols() ) );
   connect( mActionSnappingOptions, SIGNAL( triggered() ), this, SLOT( snappingOptions() ) );
@@ -1428,6 +1438,7 @@ void QgisApp::createActions()
 
   connect( mActionNewVectorLayer, SIGNAL( triggered() ), this, SLOT( newVectorLayer() ) );
   connect( mActionNewSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( newSpatialiteLayer() ) );
+  connect( mActionNewGeoPackageLayer, SIGNAL( triggered() ), this, SLOT( newGeoPackageLayer() ) );
   connect( mActionNewMemoryLayer, SIGNAL( triggered() ), this, SLOT( newMemoryLayer() ) );
   connect( mActionShowRasterCalculator, SIGNAL( triggered() ), this, SLOT( showRasterCalculator() ) );
   connect( mActionShowAlignRasterTool, SIGNAL( triggered() ), this, SLOT( showAlignRasterTool() ) );
@@ -1722,6 +1733,11 @@ void QgisApp::createMenus()
    * For Mac, About and Exit are also automatically moved by Qt to the Application menu.
    */
 
+  // Layer menu
+#ifndef SUPPORT_GEOPACKAGE
+  mNewLayerMenu->removeAction( mActionNewGeoPackageLayer );
+#endif
+
   // Panel and Toolbar Submenus
   mPanelMenu = new QMenu( tr( "Panels" ), this );
   mPanelMenu->setObjectName( "mPanelMenu" );
@@ -1977,6 +1993,9 @@ void QgisApp::createToolBars()
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionNewVectorLayer );
   bt->addAction( mActionNewSpatiaLiteLayer );
+#ifdef SUPPORT_GEOPACKAGE
+  bt->addAction( mActionNewGeoPackageLayer );
+#endif
   bt->addAction( mActionNewMemoryLayer );
 
   QAction* defNewLayerAction = mActionNewVectorLayer;
@@ -1991,6 +2010,11 @@ void QgisApp::createToolBars()
     case 2:
       defNewLayerAction = mActionNewMemoryLayer;
       break;
+#ifdef SUPPORT_GEOPACKAGE
+    case 3:
+      defNewLayerAction = mActionNewGeoPackageLayer;
+      break;
+#endif
   }
   bt->setDefaultAction( defNewLayerAction );
   QAction* newLayerAction = mLayerToolBar->addWidget( bt );
@@ -3665,10 +3689,10 @@ void QgisApp::loadOGRSublayers( const QString& layertype, const QString& uri, co
     }
 
     QString layerName = elements.value( 0 );
-    QString layerType = elements.value( 1 );
-    if ( layerType == "any" )
+    QString layerGeometryType = elements.value( 1 );
+    if ( layerGeometryType == "any" )
     {
-      layerType = "";
+      layerGeometryType = "";
       elements.removeAt( 1 );
     }
 
@@ -3681,16 +3705,17 @@ void QgisApp::loadOGRSublayers( const QString& layertype, const QString& uri, co
       composedURI = uri + "|layerindex=" + layerName;
     }
 
-    if ( !layerType.isEmpty() )
+    if ( !layerGeometryType.isEmpty() )
     {
-      composedURI += "|geometrytype=" + layerType;
+      composedURI += "|geometrytype=" + layerGeometryType;
     }
 
     // addVectorLayer( composedURI, list.at( i ), "ogr" );
 
     QgsDebugMsg( "Creating new vector layer using " + composedURI );
-    QString name = list.at( i );
-    name.replace( ':', ' ' );
+    QString name = layerName;
+    if ( !layerGeometryType.isEmpty() )
+      name += " " + layerGeometryType;
     QgsVectorLayer *layer = new QgsVectorLayer( composedURI, fileName + " " + name, "ogr", false );
     if ( layer && layer->isValid() )
     {
@@ -4361,6 +4386,12 @@ void QgisApp::newSpatialiteLayer()
 {
   QgsNewSpatialiteLayerDialog spatialiteDialog( this );
   spatialiteDialog.exec();
+}
+
+void QgisApp::newGeoPackageLayer()
+{
+  QgsNewGeoPackageLayerDialog dialog( this );
+  dialog.exec();
 }
 
 void QgisApp::showRasterCalculator()
@@ -5315,7 +5346,7 @@ void QgisApp::refreshFeatureActions()
   if ( !vlayer )
     return;
 
-  QgsAttributeAction *actions = vlayer->actions();
+  QgsActionManager *actions = vlayer->actions();
   for ( int i = 0; i < actions->size(); i++ )
   {
     QAction *action = mFeatureActionMenu->addAction( actions->at( i ).name() );
@@ -6519,6 +6550,45 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
   {
     mapCanvas()->refresh();
   }
+}
+
+void QgisApp::modifyAttributesOfSelectedFeatures()
+{
+  QgsMapLayer* activeMapLayer = activeLayer();
+  if ( !activeMapLayer )
+  {
+    messageBar()->pushMessage(
+      tr( "No active layer" ),
+      tr( "Please select a layer in the layer list" ),
+      QgsMessageBar::WARNING );
+    return;
+  }
+
+  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( activeMapLayer );
+  if ( !vl )
+  {
+    messageBar()->pushMessage(
+      tr( "Invalid layer" ),
+      tr( "The merge features tool only works on vector layers." ),
+      QgsMessageBar::WARNING );
+    return;
+  }
+  if ( !vl->isEditable() )
+  {
+    messageBar()->pushMessage(
+      tr( "Layer not editable" ),
+      tr( "Modifying features can only be done for layers in editing mode." ),
+      QgsMessageBar::WARNING );
+
+    return;
+  }
+
+  //dummy feature
+  QgsFeature f;
+  QgsAttributeDialog* dialog = new QgsAttributeDialog( vl, &f, false, this );
+  dialog->setMode( QgsAttributeForm::MultiEditMode );
+  dialog->exec();
+
 }
 
 void QgisApp::mergeSelectedFeatures()
@@ -9968,6 +10038,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionSplitParts->setEnabled( false );
     mActionMergeFeatures->setEnabled( false );
     mActionMergeFeatureAttributes->setEnabled( false );
+    mActionMultiEditAttributes->setEnabled( false );
     mActionRotatePointSymbols->setEnabled( false );
     mActionEnableTracing->setEnabled( false );
 
@@ -10079,11 +10150,13 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       {
         mActionMergeFeatures->setEnabled( layerHasSelection && canDeleteFeatures && canAddFeatures );
         mActionMergeFeatureAttributes->setEnabled( layerHasSelection );
+        mActionMultiEditAttributes->setEnabled( layerHasSelection );
       }
       else
       {
         mActionMergeFeatures->setEnabled( false );
         mActionMergeFeatureAttributes->setEnabled( false );
+        mActionMultiEditAttributes->setEnabled( false );
       }
 
       bool isMultiPart = QGis::isMultiType( vlayer->wkbType() ) || !dprovider->doesStrictFeatureTypeCheck();
@@ -11224,6 +11297,8 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( "/UI/defaultNewLayer", 1 );
   else if ( action == mActionNewMemoryLayer )
     settings.setValue( "/UI/defaultNewLayer", 2 );
+  else if ( action == mActionNewGeoPackageLayer )
+    settings.setValue( "/UI/defaultNewLayer", 3 );
   bt->setDefaultAction( action );
 }
 

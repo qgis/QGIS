@@ -537,8 +537,21 @@ void QgsCircularStringV2::segmentize( const QgsPointV2& p1, const QgsPointV2& p2
     if ( hasM )
       pointWkbType = QgsWKBTypes::addM( pointWkbType );
 
+    //make sure the curve point p2 is part of the segmentized vertices. But only if p1 != p3
+    bool addP2 = true;
+    if ( qgsDoubleNear( p1.x(), p3.x() ) && qgsDoubleNear( p1.y(), p3.y() ) )
+    {
+      addP2 = false;
+    }
+
     for ( double angle = a1 + increment; clockwise ? angle > a3 : angle < a3; angle += increment )
     {
+      if (( addP2 && clockwise && angle < a2 ) || ( addP2 && !clockwise && angle > a2 ) )
+      {
+        points.append( p2 );
+        addP2 = false;
+      }
+
       x = centerX + radius * cos( angle );
       y = centerY + radius * sin( angle );
 

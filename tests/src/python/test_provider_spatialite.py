@@ -24,7 +24,7 @@ from qgis.core import QgsVectorLayer, QgsPoint, QgsFeature
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
-from PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings
 
 try:
     from pyspatialite import dbapi2 as sqlite3

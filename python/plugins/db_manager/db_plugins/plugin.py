@@ -20,9 +20,9 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt.QtCore import Qt, QObject, QSettings, pyqtSignal
-from PyQt.QtWidgets import QApplication, QAction, QMenu, QInputDialog, QMessageBox
-from PyQt.QtGui import QKeySequence, QIcon
+from qgis.PyQt.QtCore import Qt, QObject, QSettings, pyqtSignal
+from qgis.PyQt.QtWidgets import QApplication, QAction, QMenu, QInputDialog, QMessageBox
+from qgis.PyQt.QtGui import QKeySequence, QIcon
 
 from qgis.gui import QgsMessageBar
 from ..db_plugins import createDbPlugin

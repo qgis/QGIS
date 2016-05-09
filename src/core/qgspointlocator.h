@@ -72,13 +72,16 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! @note added in QGIS 2.14
     void setExtent( const QgsRectangle* extent );
 
+    /**
+     * The type of a snap result or the filter type for a snap request.
+     */
     enum Type
     {
-      Invalid = 0,
-      Vertex = 1,
-      Edge = 2,
-      Area = 4,
-      All = Vertex | Edge | Area
+      Invalid = 0,   //!< Invalid
+      Vertex = 1,    //!< Snapped to a vertex. Can be a vertex of the geometry or an intersection.
+      Edge = 2,      //!< Snapped to an edge
+      Area = 4,      //!< Snapped to an area
+      All = Vertex | Edge | Area //!< Combination of vertex, edge and area
     };
 
     Q_DECLARE_FLAGS( Types, Type )
@@ -94,11 +97,23 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     struct Match
     {
-      //! consruct invalid match
-      Match() : mType( Invalid ), mDist( 0 ), mPoint(), mLayer( nullptr ), mFid( 0 ), mVertexIndex( 0 ) {}
+      //! construct invalid match
+      Match()
+          : mType( Invalid )
+          , mDist( 0 )
+          , mPoint()
+          , mLayer( nullptr )
+          , mFid( 0 )
+          , mVertexIndex( 0 )
+      {}
 
       Match( Type t, QgsVectorLayer* vl, QgsFeatureId fid, double dist, const QgsPoint& pt, int vertexIndex = 0, QgsPoint* edgePoints = nullptr )
-          : mType( t ), mDist( dist ), mPoint( pt ), mLayer( vl ), mFid( fid ), mVertexIndex( vertexIndex )
+          : mType( t )
+          , mDist( dist )
+          , mPoint( pt )
+          , mLayer( vl )
+          , mFid( fid )
+          , mVertexIndex( vertexIndex )
       {
         if ( edgePoints )
         {
@@ -125,9 +140,15 @@ class CORE_EXPORT QgsPointLocator : public QObject
       //! for vertex / edge match (first vertex of the edge)
       int vertexIndex() const { return mVertexIndex; }
 
-      //! reference vector layer
+      /**
+       * The vector layer where the snap occurred.
+       * Will be null if the snap happened on an intersection.
+       */
       QgsVectorLayer* layer() const { return mLayer; }
 
+      /**
+       * The id of the feature to which the snapped geometry belongs.
+       */
       QgsFeatureId featureId() const { return mFid; }
 
       //! Only for a valid edge match - obtain endpoints of the edge

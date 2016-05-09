@@ -18,8 +18,8 @@
 #include "qgsrendererv2.h"
 #include "qgsrendererv2registry.h"
 
-QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent ) :
-    QWidget( parent )
+QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent )
+    : QWidget( parent )
     , mMapCanvas( canvas )
     , mBlockAutoApply( false )
     , mCurrentLayer( nullptr )

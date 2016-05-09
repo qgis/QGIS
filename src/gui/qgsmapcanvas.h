@@ -75,7 +75,10 @@ class GUI_EXPORT QgsMapCanvasLayer
 {
   public:
     QgsMapCanvasLayer( QgsMapLayer* layer, bool visible = true, bool isInOverview = false )
-        : mLayer( layer ), mVisible( visible ), mInOverview( isInOverview ) {}
+        : mLayer( layer )
+        , mVisible( visible )
+        , mInOverview( isInOverview )
+    {}
 
     void setVisible( bool visible ) { mVisible = visible; }
     void setInOverview( bool isInOverview ) { mInOverview = isInOverview; }

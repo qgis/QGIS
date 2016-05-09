@@ -112,8 +112,9 @@ class TestSignalReceiver : public QObject
     Q_OBJECT
 
   public:
-    TestSignalReceiver() : QObject( nullptr ),
-        rendererChanged( false )
+    TestSignalReceiver()
+        : QObject( nullptr )
+        , rendererChanged( false )
     {}
     bool rendererChanged;
   public slots:

@@ -27,8 +27,9 @@
 #include <QSettings>
 #include <QStandardItemModel>
 
-QgsOSMExportDialog::QgsOSMExportDialog( QWidget *parent ) :
-    QDialog( parent ), mDatabase( new QgsOSMDatabase )
+QgsOSMExportDialog::QgsOSMExportDialog( QWidget *parent )
+    : QDialog( parent )
+    , mDatabase( new QgsOSMDatabase )
 {
   setupUi( this );
 

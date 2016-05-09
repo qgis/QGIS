@@ -507,7 +507,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         QgsFeature feature;
 
         mWithGeom = true;
-        //QgsAttributeList attrIndexes = provider->attributeIndexes();
+
+        //Using pending attributes and pending fields
         QgsAttributeList attrIndexes = layer->pendingAllAttributesList();
 
         QDomNodeList queryChildNodes = queryElem.childNodes();
@@ -515,8 +516,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         {
           QStringList::const_iterator alstIt;
           QList<int> idxList;
-          QMap<QString, int> fieldMap = provider->fieldNameMap();
-          QMap<QString, int>::const_iterator fieldIt;
+          QgsFields fields = layer->pendingFields();
           QString fieldName;
           QDomElement propertyElem;
           for ( int q = 0; q < queryChildNodes.size(); q++ )
@@ -529,10 +529,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               {
                 fieldName = fieldName.section( ":", 1, 1 );
               }
-              fieldIt = fieldMap.find( fieldName );
-              if ( fieldIt != fieldMap.end() )
+              int fieldNameIdx = fields.fieldNameIndex( fieldName );
+              if ( fieldNameIdx > -1 )
               {
-                idxList.append( fieldIt.value() );
+                idxList.append( fieldNameIdx );
               }
             }
           }
@@ -896,7 +896,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       //map extent
       searchRect = layer->extent();
 
-      //QgsAttributeList attrIndexes = provider->attributeIndexes();
+      //Using pending attributes and pending fields
       QgsAttributeList attrIndexes = layer->pendingAllAttributesList();
       if ( mPropertyName != "*" )
       {
@@ -905,16 +905,15 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         {
           QStringList::const_iterator alstIt;
           QList<int> idxList;
-          QMap<QString, int> fieldMap = provider->fieldNameMap();
-          QMap<QString, int>::const_iterator fieldIt;
+          QgsFields fields = layer->pendingFields();
           QString fieldName;
           for ( alstIt = attrList.begin(); alstIt != attrList.end(); ++alstIt )
           {
             fieldName = *alstIt;
-            fieldIt = fieldMap.find( fieldName );
-            if ( fieldIt != fieldMap.end() )
+            int fieldNameIdx = fields.fieldNameIndex( fieldName );
+            if ( fieldNameIdx > -1 )
             {
-              idxList.append( fieldIt.value() );
+              idxList.append( fieldNameIdx );
             }
           }
           if ( !idxList.isEmpty() )
@@ -1475,7 +1474,15 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
     mTypeName = typeNameElem.tagName();
 
     layerList = mConfigParser->mapLayerFromTypeName( mTypeName );
-    currentLayer = layerList.at( 0 );
+    // Could be empty!
+    if ( layerList.count() > 0 )
+    {
+      currentLayer = layerList.at( 0 );
+    }
+    else
+    {
+      throw QgsMapServiceException( "RequestNotWellFormed", QString( "Wrong TypeName: %1" ).arg( mTypeName ) );
+    }
 
     QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( currentLayer );
     // it's a vectorlayer and defined by the administrator as a WFS layer

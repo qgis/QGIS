@@ -181,7 +181,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     /** Label dialog. If apply is pressed, options are applied to vector's QgsLabel */
     QgsLabelDialog* labelDialog;
     /** Actions dialog. If apply is pressed, the actions are stored for later use */
-    QgsAttributeActionDialog* actionDialog;
+    QgsAttributeActionDialog* mActionDialog;
     /** Diagram dialog. If apply is pressed, options are applied to vector's diagrams*/
     QgsDiagramProperties* diagramPropertiesDialog;
     /** Fields dialog. If apply is pressed, options are applied to vector's diagrams*/

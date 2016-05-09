@@ -494,7 +494,8 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
 
   connect( mQuadrantBtnGrp, SIGNAL( buttonClicked( int ) ), this, SLOT( updatePreview() ) );
 
-  mOptionsTab->setCurrentIndex( 0 );
+  // set correct initial tab to match displayed setting page
+  whileBlocking( mOptionsTab )->setCurrentIndex( mLabelStackedWidget->currentIndex() );
 }
 
 void QgsLabelingGui::setDockMode( bool enabled )

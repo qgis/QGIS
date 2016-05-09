@@ -3311,6 +3311,12 @@ void TestQgsGeometry::exportToGeoJSON()
   obtained = geom->exportToGeoJSON();
   geojson = "{\"type\": \"MultiPolygon\", \"coordinates\": [[[ [0, 0], [10, 0], [10, 10], [0, 10], [0, 0]]], [[ [2, 2], [4, 2], [4, 4], [2, 4], [2, 2]]]] }";
   QCOMPARE( obtained, geojson );
+
+  // no geometry
+  QgsGeometry nullGeom( nullptr );
+  obtained = nullGeom.exportToGeoJSON();
+  geojson = "null";
+  QCOMPARE( obtained, geojson );
 }
 
 bool TestQgsGeometry::renderCheck( const QString& theTestName, const QString& theComment, int mismatchCount )
@@ -3403,6 +3409,14 @@ void TestQgsGeometry::wkbInOut()
   QString wkt = g14182.exportToWkt();
   QCOMPARE( wkt, QString() );
 
+  //WKB with a truncated header
+  const char *badHeaderHexwkb = "0102";
+  wkb = hex2bytes( badHeaderHexwkb, &size );
+  QgsGeometry badHeader;
+  // NOTE: wkb onwership transferred to QgsGeometry
+  badHeader.fromWkb( wkb, size );
+  QVERIFY( badHeader.isEmpty() );
+  QCOMPARE( badHeader.wkbType(), QGis::WKBUnknown );
 }
 
 QTEST_MAIN( TestQgsGeometry )

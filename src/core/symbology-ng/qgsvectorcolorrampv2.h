@@ -72,7 +72,10 @@ class CORE_EXPORT QgsGradientStop
      * @param o positional offset for stop, between 0 and 1.0
      * @param c color for stop
      */
-    QgsGradientStop( double o, const QColor& c ) : offset( o ), color( c ) { }
+    QgsGradientStop( double o, const QColor& c )
+        : offset( o )
+        , color( c )
+    { }
 
     //! Relative positional offset, between 0 and 1
     double offset;

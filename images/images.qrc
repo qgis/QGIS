@@ -259,6 +259,7 @@
         <file>themes/default/mActionNewComposer.svg</file>
         <file>themes/default/mActionNewFolder.png</file>
         <file>themes/default/mActionNewSpatiaLiteLayer.svg</file>
+        <file>themes/default/mActionNewGeoPackageLayer.svg</file>
         <file>themes/default/mActionNewVectorLayer.svg</file>
         <file>themes/default/mActionNodeTool.png</file>
         <file>themes/default/mActionOffsetCurve.png</file>
@@ -341,6 +342,7 @@
         <file>themes/default/mActionZoomOut.svg</file>
         <file>themes/default/mActionZoomToLayer.svg</file>
         <file>themes/default/mActionZoomToSelected.svg</file>
+        <file>themes/default/mActionFilterTableFields.svg</file>
         <file>themes/default/mIconAtlas.svg</file>
         <file>themes/default/mIconAutoPlacementSettings.svg</file>
         <file>themes/default/mIconCertificate.svg</file>

@@ -156,7 +156,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
     mOverviewFrameMapComboBox->setComposition( composerMap->composition() );
     mOverviewFrameMapComboBox->setItemType( QgsComposerItem::ComposerMap );
     mOverviewFrameMapComboBox->setExceptedItemList( QList< QgsComposerItem* >() << composerMap );
-    connect( mOverviewFrameMapComboBox, SIGNAL( itemChanged( const QgsComposerItem* ) ), this, SLOT( overviewMapChanged( const QgsComposerItem* ) ) );
+    connect( mOverviewFrameMapComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( overviewMapChanged( QgsComposerItem* ) ) );
   }
 
   //connections for data defined buttons
@@ -2458,7 +2458,7 @@ void QgsComposerMapWidget::on_mOverviewCheckBox_toggled( bool state )
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapWidget::overviewMapChanged( const QgsComposerItem* item )
+void QgsComposerMapWidget::overviewMapChanged( QgsComposerItem* item )
 {
   QgsComposerMapOverview* overview = currentOverview();
   if ( !overview )
@@ -2466,7 +2466,7 @@ void QgsComposerMapWidget::overviewMapChanged( const QgsComposerItem* item )
     return;
   }
 
-  const QgsComposerMap* map = dynamic_cast< const QgsComposerMap* >( item );
+  QgsComposerMap* map = dynamic_cast< QgsComposerMap* >( item );
   if ( !map )
     return;
 

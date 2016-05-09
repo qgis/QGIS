@@ -89,6 +89,10 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * Reload the data
      */
     void on_mReloadButton_clicked();
+    /**
+     * Filter the columns (open a dialog, ...)
+     */
+    void on_mFilterTableFields_clicked();
 
     /**
      * Inverts selection
@@ -223,6 +227,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     QgsRubberBand* mRubberBand;
     QgsSearchWidgetWrapper* mCurrentSearchWidgetWrapper;
+    QStringList mVisibleFields;
 
     void updateMultiEditButtonState();
 

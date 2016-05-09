@@ -21,7 +21,7 @@ import qgis  # NOQA
 import os
 import sys
 
-from PyQt.QtCore import QThreadPool, qDebug
+from qgis.PyQt.QtCore import QThreadPool, qDebug
 
 from qgis.core import QgsPalLayerSettings, QgsSingleSymbolRendererV2, QgsMarkerSymbolV2
 from utilities import getTempfilePath, renderMapToImage, mapSettingsString

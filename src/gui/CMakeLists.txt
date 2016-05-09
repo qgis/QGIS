@@ -62,6 +62,7 @@ SET(QGIS_GUI_SRCS
   attributetable/qgsfieldconditionalformatwidget.cpp
   attributetable/qgsgenericfeatureselectionmanager.cpp
   attributetable/qgsvectorlayerselectionmanager.cpp
+  attributetable/qgsorganizetablecolumnsdialog.cpp
 
   auth/qgsauthauthoritieseditor.cpp
   auth/qgsauthcertificateinfo.cpp
@@ -248,6 +249,7 @@ SET(QGIS_GUI_SRCS
   qgsnewmemorylayerdialog.cpp
   qgsnewnamedialog.cpp
   qgsnewvectorlayerdialog.cpp
+  qgsnewgeopackagelayerdialog.cpp
   qgsnumericsortlistviewitem.cpp
   qgsoptionsdialogbase.cpp
   qgsorderbydialog.cpp
@@ -387,6 +389,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsnewmemorylayerdialog.h
   qgsnewnamedialog.h
   qgsnewvectorlayerdialog.h
+  qgsnewgeopackagelayerdialog.h
   qgsoptionsdialogbase.h
   qgsorderbydialog.h
   qgsowssourceselect.h
@@ -470,6 +473,7 @@ SET(QGIS_GUI_MOC_HDRS
   attributetable/qgsgenericfeatureselectionmanager.h
   attributetable/qgsifeatureselectionmanager.h
   attributetable/qgsvectorlayerselectionmanager.h
+  attributetable/qgsorganizetablecolumnsdialog.h
 
   auth/qgsauthauthoritieseditor.h
   auth/qgsauthcertificateinfo.h

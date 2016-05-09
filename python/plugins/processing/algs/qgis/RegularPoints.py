@@ -29,8 +29,8 @@ import os
 from random import seed, uniform
 from math import sqrt
 
-from PyQt.QtGui import QIcon
-from PyQt.QtCore import QVariant
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QGis, QgsRectangle, QgsFields, QgsField, QgsFeature,
                        QgsGeometry, QgsPoint)
 from qgis.utils import iface

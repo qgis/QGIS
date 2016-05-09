@@ -26,10 +26,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt.QtGui import QIcon
-from PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsVectorFileWriter
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
+from processing.tools import dataobjects
 
 
 class AlgorithmProvider(object):
@@ -105,15 +106,7 @@ class AlgorithmProvider(object):
         return ['tif']
 
     def getSupportedOutputVectorLayerExtensions(self):
-        formats = QgsVectorFileWriter.supportedFiltersAndFormats()
-        extensions = ['shp']  # shp is the default, should be the first
-        for extension in formats.keys():
-            extension = unicode(extension)
-            extension = extension[extension.find('*.') + 2:]
-            extension = extension[:extension.find(' ')]
-            if extension.lower() != 'shp':
-                extensions.append(extension)
-        return extensions
+        return dataobjects.getSupportedOutputVectorLayerExtensions()
 
     def getSupportedOutputTableExtensions(self):
         return ['csv']

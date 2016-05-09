@@ -20,9 +20,9 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt.QtCore import Qt
-from PyQt.QtWidgets import QAction, QApplication
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QAction, QApplication
+from qgis.PyQt.QtGui import QIcon
 
 from . import resources_rc  # NOQA
 

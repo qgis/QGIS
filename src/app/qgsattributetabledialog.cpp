@@ -21,6 +21,7 @@
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetableview.h"
+#include "qgsorganizetablecolumnsdialog.h"
 
 #include <qgsapplication.h>
 #include <qgsvectordataprovider.h>
@@ -36,7 +37,7 @@
 #include "qgsproject.h"
 #include "qgsfieldcalculator.h"
 #include "qgsfeatureaction.h"
-#include "qgsattributeaction.h"
+#include "qgsactionmanager.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsmessagebar.h"
 #include "qgsexpressionselectiondialog.h"
@@ -80,6 +81,11 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 {
   setupUi( this );
 
+  Q_FOREACH ( const QgsField& field, mLayer->fields() )
+  {
+    mVisibleFields.append( field.name() );
+  }
+
   // Fix selection color on loosing focus (Windows)
   setStyleSheet( QgisApp::instance()->styleSheet() );
 
@@ -119,6 +125,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   // Initialize dual view
   mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, context );
+  mMainView->setAttributeTableConfig( mLayer->attributeTableConfig() );
 
   // Initialize filter gui elements
   mFilterActionMapper = new QSignalMapper( this );
@@ -760,6 +767,22 @@ void QgsAttributeTableDialog::on_mRemoveAttribute_clicked()
     // update model - a field has been added or updated
     masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
     columnBoxInit();
+  }
+}
+
+void QgsAttributeTableDialog::on_mFilterTableFields_clicked()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  QgsOrganizeTableColumnsDialog dialog( mLayer );
+  if ( dialog.exec() == QDialog::Accepted )
+  {
+    QgsAttributeTableConfig config = dialog.config();
+    mLayer->setAttributeTableConfig( config );
+    mMainView->setAttributeTableConfig( config );
   }
 }
 

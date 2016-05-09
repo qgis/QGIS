@@ -47,7 +47,6 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
 
   public:
     QgsAttributeTableView( QWidget* parent = nullptr );
-    virtual ~QgsAttributeTableView();
 
     virtual void setModel( QgsAttributeTableFilterModel* filterModel );
 
@@ -60,7 +59,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     /**
      * This event filter is installed on the verticalHeader to intercept mouse press and release
      * events. These are used to disable / enable live synchronisation with the map canvas selection
-     * which can be slow due to recurring canvas repaints. Updating the
+     * which can be slow due to recurring canvas repaints.
      *
      * @param object The object which is the target of the event.
      * @param event  The intercepted event
@@ -140,8 +139,13 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
   private slots:
     void modelDeleted();
     void showHorizontalSortIndicator();
+    void actionTriggered();
+    void columnSizeChanged( int index, int oldWidth, int newWidth );
 
   private:
+    void updateActionImage( QWidget* widget );
+    QWidget* createActionWidget( QgsFeatureId fid );
+
     void selectRow( int row, bool anchor );
     QgsAttributeTableModel* mMasterModel;
     QgsAttributeTableFilterModel* mFilterModel;
@@ -150,9 +154,9 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     QgsAttributeTableDelegate* mTableDelegate;
     QAbstractItemModel* mModel; // Most likely the filter model
     QMenu *mActionPopup;
-    QgsVectorLayerCache* mLayerCache;
     int mRowSectionAnchor;
     QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag;
+    QWidget* mActionWidget;
 };
 
 #endif

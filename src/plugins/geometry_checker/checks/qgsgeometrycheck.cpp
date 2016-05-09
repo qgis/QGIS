@@ -53,13 +53,13 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck* check,
     const QgsPointV2& errorLocation,
     QgsVertexId vidx,
     const QVariant& value , ValueType valueType )
-    : mCheck( check ),
-    mFeatureId( featureId ),
-    mErrorLocation( errorLocation ),
-    mVidx( vidx ),
-    mValue( value ),
-    mValueType( valueType ),
-    mStatus( StatusPending )
+    : mCheck( check )
+    , mFeatureId( featureId )
+    , mErrorLocation( errorLocation )
+    , mVidx( vidx )
+    , mValue( value )
+    , mValueType( valueType )
+    , mStatus( StatusPending )
 {}
 
 QgsGeometryCheckError::~QgsGeometryCheckError()

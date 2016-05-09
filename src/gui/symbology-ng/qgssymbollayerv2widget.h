@@ -31,7 +31,12 @@ class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
     Q_OBJECT
 
   public:
-    QgsSymbolLayerV2Widget( QWidget* parent, const QgsVectorLayer* vl = nullptr ) : QWidget( parent ), mVectorLayer( vl ), mPresetExpressionContext( nullptr ), mMapCanvas( nullptr ) {}
+    QgsSymbolLayerV2Widget( QWidget* parent, const QgsVectorLayer* vl = nullptr )
+        : QWidget( parent )
+        , mVectorLayer( vl )
+        , mPresetExpressionContext( nullptr )
+        , mMapCanvas( nullptr )
+    {}
     virtual ~QgsSymbolLayerV2Widget() {}
 
     virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) = 0;

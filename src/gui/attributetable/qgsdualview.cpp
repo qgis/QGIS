@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgsattributeaction.h"
+#include "qgsactionmanager.h"
 #include "qgsattributeform.h"
 #include "qgsattributetablemodel.h"
 #include "qgsdualview.h"
@@ -462,6 +462,11 @@ void QgsDualView::setFeatureSelectionManager( QgsIFeatureSelectionManager* featu
     delete mFeatureSelectionManager;
 
   mFeatureSelectionManager = featureSelectionManager;
+}
+
+void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig& config )
+{
+  mFilterModel->setAttributeTableConfig( config );
 }
 
 void QgsDualView::progress( int i, bool& cancel )

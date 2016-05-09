@@ -39,7 +39,8 @@
 
 
 QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface* iface , QWidget *parent )
-    : QWidget( parent ), mIface( iface )
+    : QWidget( parent )
+    , mIface( iface )
 
 {
   ui.setupUi( this );

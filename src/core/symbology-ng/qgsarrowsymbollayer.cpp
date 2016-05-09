@@ -25,6 +25,11 @@ QgsArrowSymbolLayer::QgsArrowSymbolLayer()
     , mHeadSizeUnit( QgsSymbolV2::MM )
     , mHeadType( HeadSingle )
     , mIsCurved( true )
+    , mScaledArrowWidth( 1.0 )
+    , mScaledArrowStartWidth( 1.0 )
+    , mScaledHeadSize( 1.5 )
+    , mScaledOffset( 0.0 )
+    , mComputedHeadType( HeadSingle )
 {
   /* default values */
   setOffset( 0.0 );
@@ -40,6 +45,7 @@ bool QgsArrowSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
     mSymbol.reset( static_cast<QgsFillSymbolV2*>( symbol ) );
     return true;
   }
+  delete symbol;
   return false;
 }
 
@@ -597,5 +603,18 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbolV2Re
     }
   }
   context.renderContext().expressionContext().popScope();
+}
+
+void QgsArrowSymbolLayer::setColor( const QColor& c )
+{
+  if ( mSymbol.data() )
+    mSymbol->setColor( c );
+
+  mColor = c;
+}
+
+QColor QgsArrowSymbolLayer::color() const
+{
+  return mSymbol.data() ? mSymbol->color() : mColor;
 }
 

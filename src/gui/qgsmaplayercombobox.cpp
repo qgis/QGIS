@@ -17,8 +17,8 @@
 #include "qgsmaplayermodel.h"
 
 
-QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent ) :
-    QComboBox( parent )
+QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent )
+    : QComboBox( parent )
 {
   mProxyModel = new QgsMapLayerProxyModel( this );
   setModel( mProxyModel );

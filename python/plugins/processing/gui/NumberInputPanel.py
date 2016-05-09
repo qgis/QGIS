@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt import uic
-from PyQt.QtCore import pyqtSignal
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import pyqtSignal
 
 from math import log10, floor
 from processing.gui.NumberInputDialog import NumberInputDialog

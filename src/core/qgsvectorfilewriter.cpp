@@ -982,6 +982,48 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          )
                        );
 
+  // GeoPackage
+  datasetOptions.clear();
+  layerOptions.clear();
+
+  layerOptions.insert( "IDENTIFIER", new StringOption(
+                         QObject::tr( "Human-readable identifier (e.g. short name) for the layer content" ),
+                         ""  // Default value
+                       ) );
+
+  layerOptions.insert( "DESCRIPTION", new StringOption(
+                         QObject::tr( "Human-readable description for the layer content" ),
+                         ""  // Default value
+                       ) );
+
+  layerOptions.insert( "FID", new StringOption(
+                         QObject::tr( "Name for the feature identifier column" ),
+                         "fid"  // Default value
+                       ) );
+
+  layerOptions.insert( "GEOMETRY_NAME", new StringOption(
+                         QObject::tr( "Name for the geometry column" ),
+                         "geometry"  // Default value
+                       ) );
+
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
+  layerOptions.insert( "SPATIAL_INDEX", new BoolOption(
+                         QObject::tr( "If a spatial index must be created." ),
+                         true  // Default value
+                       ) );
+#endif
+
+  driverMetadata.insert( "GPKG",
+                         MetaData(
+                           "GeoPackage",
+                           QObject::tr( "GeoPackage" ),
+                           "*.gpkg",
+                           "gpkg",
+                           datasetOptions,
+                           layerOptions
+                         )
+                       );
+
   // Generic Mapping Tools [GMT]
   datasetOptions.clear();
   layerOptions.clear();

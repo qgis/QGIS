@@ -23,9 +23,9 @@
  ***************************************************************************/
 """
 
-from PyQt.QtCore import pyqtSignal, QObject, QCoreApplication, QFile, QDir, QDirIterator, QSettings, QDate, QUrl, QFileInfo, QLocale, QByteArray
-from PyQt.QtXml import QDomDocument
-from PyQt.QtNetwork import QNetworkRequest, QNetworkReply
+from qgis.PyQt.QtCore import pyqtSignal, QObject, QCoreApplication, QFile, QDir, QDirIterator, QSettings, QDate, QUrl, QFileInfo, QLocale, QByteArray
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 import sys
 import os
 import codecs

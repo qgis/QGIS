@@ -970,7 +970,10 @@ class CORE_EXPORT QgsExpression
         static const int HOUR = 60 * 60;
         static const int MINUTE = 60;
       public:
-        Interval( double seconds = 0 ) : mSeconds( seconds ), mValid( true ) { }
+        Interval( double seconds = 0 )
+            : mSeconds( seconds )
+            , mValid( true )
+        { }
 
         //! interval length in years
         double years() { return mSeconds / YEARS;}
@@ -1005,7 +1008,10 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeUnaryOperator : public Node
     {
       public:
-        NodeUnaryOperator( UnaryOperator op, Node* operand ) : mOp( op ), mOperand( operand ) {}
+        NodeUnaryOperator( UnaryOperator op, Node* operand )
+            : mOp( op )
+            , mOperand( operand )
+        {}
         ~NodeUnaryOperator() { delete mOperand; }
 
         UnaryOperator op() const { return mOp; }
@@ -1029,7 +1035,11 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeBinaryOperator : public Node
     {
       public:
-        NodeBinaryOperator( BinaryOperator op, Node* opLeft, Node* opRight ) : mOp( op ), mOpLeft( opLeft ), mOpRight( opRight ) {}
+        NodeBinaryOperator( BinaryOperator op, Node* opLeft, Node* opRight )
+            : mOp( op )
+            , mOpLeft( opLeft )
+            , mOpRight( opRight )
+        {}
         ~NodeBinaryOperator() { delete mOpLeft; delete mOpRight; }
 
         BinaryOperator op() const { return mOp; }
@@ -1063,7 +1073,11 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeInOperator : public Node
     {
       public:
-        NodeInOperator( Node* node, NodeList* list, bool notin = false ) : mNode( node ), mList( list ), mNotIn( notin ) {}
+        NodeInOperator( Node* node, NodeList* list, bool notin = false )
+            : mNode( node )
+            , mList( list )
+            , mNotIn( notin )
+        {}
         virtual ~NodeInOperator() { delete mNode; delete mList; }
 
         Node* node() const { return mNode; }
@@ -1226,7 +1240,9 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeLiteral : public Node
     {
       public:
-        NodeLiteral( const QVariant& value ) : mValue( value ) {}
+        NodeLiteral( const QVariant& value )
+            : mValue( value )
+        {}
 
         /** The value of the literal. */
         inline QVariant value() const { return mValue; }
@@ -1248,7 +1264,10 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeColumnRef : public Node
     {
       public:
-        NodeColumnRef( const QString& name ) : mName( name ), mIndex( -1 ) {}
+        NodeColumnRef( const QString& name )
+            : mName( name )
+            , mIndex( -1 )
+        {}
 
         /** The name of the column. */
         QString name() const { return mName; }
@@ -1272,7 +1291,10 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT WhenThen
     {
       public:
-        WhenThen( Node* whenExp, Node* thenExp ) : mWhenExp( whenExp ), mThenExp( thenExp ) {}
+        WhenThen( Node* whenExp, Node* thenExp )
+            : mWhenExp( whenExp )
+            , mThenExp( thenExp )
+        {}
         ~WhenThen() { delete mWhenExp; delete mThenExp; }
 
         // protected:
@@ -1288,8 +1310,14 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeCondition : public Node
     {
       public:
-        NodeCondition( WhenThenList* conditions, Node* elseExp = nullptr ) : mConditions( *conditions ), mElseExp( elseExp ) { delete conditions; }
-        NodeCondition( const WhenThenList& conditions, Node* elseExp = nullptr ) : mConditions( conditions ), mElseExp( elseExp ) {}
+        NodeCondition( WhenThenList* conditions, Node* elseExp = nullptr )
+            : mConditions( *conditions )
+            , mElseExp( elseExp )
+        { delete conditions; }
+        NodeCondition( const WhenThenList& conditions, Node* elseExp = nullptr )
+            : mConditions( conditions )
+            , mElseExp( elseExp )
+        {}
         ~NodeCondition() { delete mElseExp; qDeleteAll( mConditions ); }
 
         virtual NodeType nodeType() const override { return ntCondition; }

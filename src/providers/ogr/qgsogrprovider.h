@@ -295,6 +295,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QString ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const;
     OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString& typeName ) const;
     QgsFields mAttributeFields;
+    bool mFirstFieldIsFid;
     OGRDataSourceH ogrDataSource;
     OGREnvelope* mExtent;
 
@@ -335,7 +336,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     bool mValid;
 
-    OGRwkbGeometryType geomType;
+    OGRwkbGeometryType mOGRGeomType;
     long mFeaturesCounted;
 
     mutable QStringList mSubLayerList;
@@ -356,13 +357,16 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool mWriteAccess;
 
     bool mShapefileMayBeCorrupted;
+
+    /** Converts the geometry to the layer type if necessary. Takes ownership of the passed geometry */
+    OGRGeometryH ConvertGeometryIfNecessary( OGRGeometryH );
 };
 
 
 class QgsOgrProviderUtils
 {
   public:
-    static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes );
+    static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes, bool firstAttrIsFid );
     static OGRLayerH setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTextCodec* encoding, const QString& subsetString );
     static QByteArray quotedIdentifier( QByteArray field, const QString& ogrDriverName );
 

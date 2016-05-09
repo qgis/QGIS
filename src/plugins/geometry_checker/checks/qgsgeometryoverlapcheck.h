@@ -18,7 +18,9 @@ class QgsGeometryOverlapCheckError : public QgsGeometryCheckError
                                   const QgsPointV2& errorLocation,
                                   const QVariant& value,
                                   QgsFeatureId otherId )
-        : QgsGeometryCheckError( check, featureId, errorLocation, QgsVertexId(), value, ValueArea ), mOtherId( otherId ) { }
+        : QgsGeometryCheckError( check, featureId, errorLocation, QgsVertexId(), value, ValueArea )
+        , mOtherId( otherId )
+    { }
     QgsFeatureId otherId() const { return mOtherId; }
 
     bool isEqual( QgsGeometryCheckError* other ) const override
@@ -49,7 +51,9 @@ class QgsGeometryOverlapCheck : public QgsGeometryCheck
 
   public:
     QgsGeometryOverlapCheck( QgsFeaturePool* featurePool, double threshold )
-        : QgsGeometryCheck( FeatureCheck, featurePool ), mThreshold( threshold ) {}
+        : QgsGeometryCheck( FeatureCheck, featurePool )
+        , mThreshold( threshold )
+    {}
     void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
     const QStringList& getResolutionMethods() const override;

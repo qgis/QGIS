@@ -24,7 +24,10 @@
 #include <QSettings>
 #include <QLineEdit>
 
-QgsScaleComboBox::QgsScaleComboBox( QWidget* parent ) : QComboBox( parent ), mScale( 1.0 ), mMinScale( 0.0 )
+QgsScaleComboBox::QgsScaleComboBox( QWidget* parent )
+    : QComboBox( parent )
+    , mScale( 1.0 )
+    , mMinScale( 0.0 )
 {
   updateScales();
 

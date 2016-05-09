@@ -77,6 +77,10 @@ CMAKE_OPTS := \
 	-DQT_TAG_FILE=/usr/share/qt4/doc/html/qt.tags \
 	-DQT_DOC_URL=/usr/share/qt4/doc/html/
 
+ifneq ($(SHA),)
+	CMAKE_OPTS += -DSHA=$(SHA)
+endif
+
 ifeq ($(GRASSVER),7)
 	CMAKE_OPTS += \
 		-DWITH_GRASS=TRUE \

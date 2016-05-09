@@ -16,7 +16,7 @@ import qgis  # NOQA
 
 from qgis.testing import unittest
 from qgis.core import QgsColorScheme
-from PyQt.QtGui import QColor
+from qgis.PyQt.QtGui import QColor
 
 # Make a dummy color scheme for testing
 

@@ -22,7 +22,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessageviewer.h"
-#include "qgsattributeaction.h"
+#include "qgsactionmanager.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"

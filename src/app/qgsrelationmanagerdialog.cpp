@@ -18,10 +18,10 @@
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 
-QgsRelationManagerDialog::QgsRelationManagerDialog( QgsRelationManager* relationMgr, QWidget *parent ) :
-    QWidget( parent ),
-    Ui::QgsRelationManagerDialogBase(),
-    mRelationManager( relationMgr )
+QgsRelationManagerDialog::QgsRelationManagerDialog( QgsRelationManager* relationMgr, QWidget *parent )
+    : QWidget( parent )
+    , Ui::QgsRelationManagerDialogBase()
+    , mRelationManager( relationMgr )
 {
   setupUi( this );
 }

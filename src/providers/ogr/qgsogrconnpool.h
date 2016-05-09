@@ -62,7 +62,10 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
     Q_OBJECT
 
   public:
-    explicit QgsOgrConnPoolGroup( QString name ) : QgsConnectionPoolGroup<QgsOgrConn*>( name ), mRefCount( 0 ) { initTimer( this ); }
+    explicit QgsOgrConnPoolGroup( QString name )
+        : QgsConnectionPoolGroup<QgsOgrConn*>( name )
+        , mRefCount( 0 )
+    { initTimer( this ); }
     void ref() { ++mRefCount; }
     bool unref()
     {

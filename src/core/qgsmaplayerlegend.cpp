@@ -26,8 +26,8 @@
 #include "qgsdiagramrendererv2.h"
 
 
-QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent ) :
-    QObject( parent )
+QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
+    : QObject( parent )
 {
 }
 

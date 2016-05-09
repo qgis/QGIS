@@ -51,7 +51,7 @@ from processing.tools.translation import updateTranslations
 updateTranslations()
 """
 
-from PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 
 def translationShadow():
 ''')

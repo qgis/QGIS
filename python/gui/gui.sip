@@ -121,6 +121,7 @@
 %Include qgsnewmemorylayerdialog.sip
 %Include qgsnewnamedialog.sip
 %Include qgsnewvectorlayerdialog.sip
+%Include qgsnewgeopackagelayerdialog.sip
 %Include qgsnumericsortlistviewitem.sip
 %Include qgsoptionsdialogbase.sip
 %Include qgsorderbydialog.sip
@@ -165,6 +166,7 @@
 %Include attributetable/qgsfeatureselectionmodel.sip
 %Include attributetable/qgsfieldconditionalformatwidget.sip
 %Include attributetable/qgsifeatureselectionmanager.sip
+%Include attributetable/qgsorganizetablecolumnsdialog.sip
 
 %Include auth/qgsauthauthoritieseditor.sip
 %Include auth/qgsauthcertificateinfo.sip

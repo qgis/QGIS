@@ -20,8 +20,8 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt.QtCore import Qt
-from PyQt.QtWidgets import QTextBrowser, QApplication
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QTextBrowser, QApplication
 
 from .db_plugins.plugin import BaseError, DbError, DBPlugin, Schema, Table
 from .dlg_db_error import DlgDbError

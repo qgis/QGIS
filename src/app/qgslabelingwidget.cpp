@@ -45,13 +45,13 @@ QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canva
 
 void QgsLabelingWidget::resetSettings()
 {
-  if ( mOldSettings )
+  if ( mOldSettings.data() )
   {
-    mLayer->setLabeling( mOldSettings );
     if ( mOldSettings->type() == "simple" )
     {
       mOldPalSettings.writeToLayer( mLayer );
     }
+    mLayer->setLabeling( mOldSettings.take() );
   }
   setLayer( mLayer );
 }
@@ -75,11 +75,11 @@ void QgsLabelingWidget::setLayer( QgsMapLayer* mapLayer )
   {
     QDomDocument doc;
     QDomElement oldSettings = mLayer->labeling()->save( doc );
-    mOldSettings = QgsAbstractVectorLayerLabeling::create( oldSettings );
+    mOldSettings.reset( QgsAbstractVectorLayerLabeling::create( oldSettings ) );
     mOldPalSettings.readFromLayer( mLayer );
   }
   else
-    mOldSettings = nullptr;
+    mOldSettings.reset();
 
   adaptToLayer();
 }

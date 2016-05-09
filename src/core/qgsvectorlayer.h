@@ -34,12 +34,13 @@
 #include "qgssnapper.h"
 #include "qgsvectorsimplifymethod.h"
 #include "qgseditformconfig.h"
+#include "qgsattributetableconfig.h"
 
 class QPainter;
 class QImage;
 
 class QgsAbstractGeometrySimplifier;
-class QgsAttributeAction;
+class QgsActionManager;
 class QgsConditionalLayerStyles;
 class QgsCoordinateTransform;
 class QgsCurveV2;
@@ -413,7 +414,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       Q_DECL_DEPRECATED RangeData() { mMin = QVariant( 0 ); mMax = QVariant( 5 ); mStep = QVariant( 1 );}
       //! @deprecated Use the editorWidgetV2() system instead
       Q_DECL_DEPRECATED RangeData( const QVariant& theMin, const QVariant& theMax, const QVariant& theStep )
-          : mMin( theMin ), mMax( theMax ), mStep( theStep ) {}
+          : mMin( theMin )
+          , mMax( theMax )
+          , mStep( theStep )
+      {}
 
       QVariant mMin;
       QVariant mMax;
@@ -422,7 +426,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     struct ValueRelationData
     {
-      ValueRelationData() : mAllowNull( false ), mOrderByValue( false ), mAllowMulti( false ) {}
+      ValueRelationData()
+          : mAllowNull( false )
+          , mOrderByValue( false )
+          , mAllowMulti( false )
+      {}
       ValueRelationData( const QString& layer, const QString& key, const QString& value, bool allowNull, bool orderByValue,
                          bool allowMulti = false,
                          const QString& filterExpression = QString::null )
@@ -625,7 +633,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     const QgsLabel *label() const;
 
-    QgsAttributeAction *actions() { return mActions; }
+    /**
+     * Get all layer actions defined on this layer.
+     *
+     * The pointer which is returned directly points to the actions object
+     * which is used by the layer, so any changes are immediately applied.
+     */
+    QgsActionManager* actions() { return mActions; }
 
     /**
      * The number of features that are selected in this layer
@@ -1330,7 +1344,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void clearAttributeEditorWidgets() { mEditFormConfig->clearTabs(); }
 
-    /** Returns the alias of an attribute name or an empty string if there is no alias */
+    /**
+     * Returns the alias of an attribute name or a null string if there is no alias.
+     *
+     * @see {attributeDisplayName( int attributeIndex )} which returns the field name
+     *      if no alias is defined.
+     */
     QString attributeAlias( int attributeIndex ) const;
 
     /** Convenience function that returns the attribute alias if defined or the field name else */
@@ -1695,6 +1714,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     QgsConditionalLayerStyles *conditionalStyles() const;
 
+    /**
+     * Get the attribute table configuration object.
+     * This defines the appearance of the attribute table.
+     */
+    QgsAttributeTableConfig attributeTableConfig() const;
+
+    /**
+     * Set the attribute table configuration object.
+     * This defines the appearance of the attribute table.
+     */
+    void setAttributeTableConfig( const QgsAttributeTableConfig& attributeTableConfig );
+
   public slots:
     /**
      * Select feature by its ID
@@ -2003,7 +2034,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QString mProviderKey;
 
     /** The user-defined actions that are accessed from the Identify Results dialog box */
-    QgsAttributeAction* mActions;
+    QgsActionManager* mActions;
 
     /** Flag indicating whether the layer is in read-only mode (editing disabled) or not */
     bool mReadOnly;
@@ -2096,6 +2127,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool mEditCommandActive;
 
     QgsFeatureIds mDeletedFids;
+
+    QgsAttributeTableConfig mAttributeTableConfig;
 
     friend class QgsVectorLayerFeatureSource;
 };

@@ -34,7 +34,7 @@
 #include <QVector>
 
 #include "qgsvectorlayer.h"
-#include "qgsattributeaction.h"
+#include "qgsactionmanager.h"
 #include "qgis.h" //for globals
 #include "qgsapplication.h"
 #include "qgsclipper.h"
@@ -150,7 +150,7 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
     , mEditCommandActive( false )
 
 {
-  mActions = new QgsAttributeAction( this );
+  mActions = new QgsActionManager( this );
   mConditionalStyles = new QgsConditionalLayerStyles();
 
   // if we're given a provider type, try to create and bind one to this layer
@@ -2001,7 +2001,7 @@ bool QgsVectorLayer::readStyle(const QDomNode &node, QString &errorMessage)
 
 bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
 {
-  writeStyle( node, doc, errorMessage );
+  return writeStyle( node, doc, errorMessage );
   // FIXME
   // edittypes are written to the layerNode
   // by slot QgsEditorWidgetRegistry::writeMapLayer()
@@ -2060,9 +2060,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
   // add attribute actions
   mActions->writeXML( node, doc );
-
   mEditFormConfig->writeXml( node );
-
   mConditionalStyles->writeXml( node, doc );
 
   return true;
@@ -2277,11 +2275,11 @@ void QgsVectorLayer::addAttributeAlias( int attIndex, const QString& aliasString
 QString QgsVectorLayer::attributeAlias( int attributeIndex ) const
 {
   if ( attributeIndex < 0 || attributeIndex >= fields().count() )
-    return "";
+    return QString();
 
   QString name = fields().at( attributeIndex ).name();
 
-  return mAttributeAliasMap.value( name, "" );
+  return mAttributeAliasMap.value( name, QString() );
 }
 
 QString QgsVectorLayer::attributeDisplayName( int attributeIndex ) const
@@ -3600,6 +3598,16 @@ void QgsVectorLayer::readSldLabeling( const QDomNode& node )
       }
     }
   }
+}
+
+QgsAttributeTableConfig QgsVectorLayer::attributeTableConfig() const
+{
+  return mAttributeTableConfig;
+}
+
+void QgsVectorLayer::setAttributeTableConfig( const QgsAttributeTableConfig& attributeTableConfig )
+{
+  mAttributeTableConfig = attributeTableConfig;
 }
 
 void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings& s )

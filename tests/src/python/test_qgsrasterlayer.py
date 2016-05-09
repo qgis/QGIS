@@ -16,8 +16,8 @@ import qgis  # NOQA
 
 import os
 
-from PyQt.QtCore import QFileInfo
-from PyQt.QtGui import QColor
+from qgis.PyQt.QtCore import QFileInfo
+from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (QgsRaster,
                        QgsRasterLayer,
@@ -73,7 +73,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         myValues = str(myIntValues)
         myExpectedValues = '[127, 141, 112, 72, 86, 126, 156, 211, 170]'
         myMessage = 'Expected: %s\nGot: %s' % (myValues, myExpectedValues)
-        self.assertEquals(myValues, myExpectedValues, myMessage)
+        self.assertEqual(myValues, myExpectedValues, myMessage)
 
     def testTransparency(self):
         myPath = os.path.join(unitTestDataPath('raster'),

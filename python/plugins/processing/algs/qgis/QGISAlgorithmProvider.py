@@ -41,7 +41,7 @@ try:
 except:
     hasShapely = False
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QGis
 

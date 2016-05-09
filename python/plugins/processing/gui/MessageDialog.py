@@ -27,9 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt import uic
-from PyQt.QtGui import QDesktopServices
-from PyQt.QtWidgets import QDockWidget
+from qgis.PyQt import uic
+from qgis.PyQt.QtGui import QDesktopServices
+from qgis.PyQt.QtWidgets import QDockWidget
 
 from qgis.utils import iface
 

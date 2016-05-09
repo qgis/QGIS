@@ -1317,7 +1317,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
 
 bool QgsRasterLayer::readStyle(const QDomNode &node, QString &errorMessage)
 {
-   readSymbology( node, errorMessage );
+   return readSymbology( node, errorMessage );
 } //readSymbology
 
 /**

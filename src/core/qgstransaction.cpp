@@ -72,7 +72,8 @@ QgsTransaction* QgsTransaction::create( const QStringList& layerIds )
 
 
 QgsTransaction::QgsTransaction( const QString& connString )
-    : mConnString( connString ), mTransactionActive( false )
+    : mConnString( connString )
+    , mTransactionActive( false )
 {
 }
 

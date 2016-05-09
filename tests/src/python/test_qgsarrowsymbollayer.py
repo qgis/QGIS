@@ -27,8 +27,8 @@ import qgis  # NOQA
 
 import os
 
-from PyQt.QtCore import QSize
-from PyQt.QtGui import QColor
+from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (
     QgsVectorLayer,
@@ -109,6 +109,19 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         renderchecker.setMapSettings(self.mapsettings)
         renderchecker.setControlName('expected_arrowsymbollayer_2')
         self.assertTrue(renderchecker.runTest('arrowsymbollayer_2'))
+
+    def testColors(self):
+        """
+        Test colors, need to make sure colors are passed/retrieved from subsymbol
+        """
+        sym_layer = QgsArrowSymbolLayer.create()
+        sym_layer.setColor(QColor(150, 50, 100))
+        self.assertEqual(sym_layer.color(), QColor(150, 50, 100))
+        self.assertEqual(sym_layer.subSymbol().color(), QColor(150, 50, 100))
+        sym_layer.subSymbol().setColor(QColor(250, 150, 200))
+        self.assertEqual(sym_layer.subSymbol().color(), QColor(250, 150, 200))
+        self.assertEqual(sym_layer.color(), QColor(250, 150, 200))
+
 
 if __name__ == '__main__':
     unittest.main()
