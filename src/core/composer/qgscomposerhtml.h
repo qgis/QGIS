@@ -20,7 +20,7 @@
 #include "qgsfeature.h"
 #include <QUrl>
 
-class QWebPage;
+class QgsWebPage;
 class QImage;
 class QgsVectorLayer;
 class QgsNetworkContentFetcher;
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
   private:
     ContentMode mContentMode;
     QUrl mUrl;
-    QWebPage* mWebPage;
+    QgsWebPage* mWebPage;
     QString mHtml;
     QString mFetchedHtml;
     QString mLastFetchedUrl;

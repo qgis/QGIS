@@ -51,7 +51,8 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands )
 {
   mDistanceArea = new QgsDistanceArea();
   mHtmlUnitsToMM = htmlUnitsToMM();
-  mWebPage = new QWebPage();
+  mWebPage = new QgsWebPage();
+  mWebPage->setIdentifier( tr( "Composer HTML item" ) );
   mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
   mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
 

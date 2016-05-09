@@ -80,7 +80,8 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
     connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshExpressionContext() ) );
   }
 
-  mWebPage = new QWebPage( this );
+  mWebPage = new QgsWebPage( this );
+  mWebPage->setIdentifier( tr( "Composer label item" ) );
   mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
 
   //This makes the background transparent. Found on http://blog.qt.digia.com/blog/2009/06/30/transparent-qwebview-or-qwebpage/

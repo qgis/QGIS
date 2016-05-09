@@ -484,6 +484,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsvectorlayer.h
   qgsvectorlayerjoinbuffer.h
   qgsvisibilitypresetcollection.h
+  qgswebpage.h
   qgswebview.h
 
   auth/qgsauthmanager.h
@@ -547,7 +548,6 @@ SET(QGIS_CORE_MOC_HDRS
 
 IF (NOT WITH_QTWEBKIT)
   SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
-    qgswebpage.h
     qgswebframe.h
   )
 ENDIF(NOT WITH_QTWEBKIT)
