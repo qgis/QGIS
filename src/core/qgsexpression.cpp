@@ -648,7 +648,7 @@ static QVariant fcnTitle( const QVariantList& values, const QgsExpressionContext
   for ( int i = 0; i < elems.size(); i++ )
   {
     if ( elems[i].size() > 1 )
-      elems[i] = elems[i].left( 1 ).toUpper() + elems[i].mid( 1 ).toLower();
+      elems[i] = elems[i].at( 0 ).toUpper() + elems[i].mid( 1 ).toLower();
   }
   return QVariant( elems.join( " " ) );
 }
