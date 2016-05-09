@@ -115,7 +115,8 @@ void QgsTextEditWrapper::initWidget( QWidget* editor )
     QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit*>( mLineEdit );
     if ( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date )
     {
-      mLineEdit->setPlaceholderText( defVal.toString() );
+      mPlaceholderText = defVal.toString();
+      mLineEdit->setPlaceholderText( mPlaceholderText );
     }
     else if ( fle )
     {
@@ -123,6 +124,7 @@ void QgsTextEditWrapper::initWidget( QWidget* editor )
     }
 
     connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
+    connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( textChanged( QString ) ) );
 
     mWritablePalette = mLineEdit->palette();
     mReadOnlyPalette = mLineEdit->palette();
@@ -143,7 +145,12 @@ void QgsTextEditWrapper::showIndeterminateState()
   if ( mPlainTextEdit )
     mPlainTextEdit->blockSignals( true );
   if ( mLineEdit )
+  {
     mLineEdit->blockSignals( true );
+    // for interdeminate state we need to clear the placeholder text - we want an empty line edit, not
+    // one showing the default value (eg "NULL")
+    mLineEdit->setPlaceholderText( QString() );
+  }
 
   setWidgetValue( QString( "" ) );
 
@@ -157,6 +164,11 @@ void QgsTextEditWrapper::showIndeterminateState()
 
 void QgsTextEditWrapper::setValue( const QVariant& val )
 {
+  if ( mLineEdit )
+  {
+    //restore placeholder text, which may have been removed by showIndeterminateState()
+    mLineEdit->setPlaceholderText( mPlaceholderText );
+  }
   setWidgetValue( val );
 }
 
@@ -175,6 +187,15 @@ void QgsTextEditWrapper::setEnabled( bool enabled )
       mLineEdit->setPalette( mWritablePalette );
     else
       mLineEdit->setPalette( mReadOnlyPalette );
+  }
+}
+
+void QgsTextEditWrapper::textChanged( const QString& )
+{
+  if ( mLineEdit )
+  {
+    //restore placeholder text, which may have been removed by showIndeterminateState()
+    mLineEdit->setPlaceholderText( mPlaceholderText );
   }
 }
 

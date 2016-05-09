@@ -53,12 +53,16 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
     void setValue( const QVariant& value ) override;
     void setEnabled( bool enabled ) override;
 
+  private slots:
+    void textChanged( const QString& text );
+
   private:
     QTextEdit* mTextEdit;
     QPlainTextEdit* mPlainTextEdit;
     QLineEdit* mLineEdit;
     QPalette mReadOnlyPalette;
     QPalette mWritablePalette;
+    QString mPlaceholderText;
 
     void setWidgetValue( const QVariant& value );
 };
