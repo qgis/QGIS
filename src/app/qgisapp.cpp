@@ -10128,7 +10128,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionToggleEditing->setEnabled( canSupportEditing && !vlayer->readOnly() );
       mActionToggleEditing->setChecked( canSupportEditing && isEditable );
       mActionSaveLayerEdits->setEnabled( canSupportEditing && isEditable && vlayer->isModified() );
-      mUndoWidget->dockContents()->setEnabled( canSupportEditing && isEditable );
+      mUndoDock->widget()->setEnabled( canSupportEditing && isEditable );
       mActionUndo->setEnabled( canSupportEditing );
       mActionRedo->setEnabled( canSupportEditing );
 
@@ -10234,7 +10234,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     }
     else
     {
-      mUndoWidget->dockContents()->setEnabled( false );
+      mUndoDock->widget()->setEnabled( false );
       mActionUndo->setEnabled( false );
       mActionRedo->setEnabled( false );
     }
@@ -10287,7 +10287,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionToggleEditing->setEnabled( false );
     mActionToggleEditing->setChecked( false );
     mActionSaveLayerEdits->setEnabled( false );
-    mUndoWidget->dockContents()->setEnabled( false );
+    mUndoDock->widget()->setEnabled( false );
     mActionUndo->setEnabled( false );
     mActionRedo->setEnabled( false );
     mActionSaveLayerDefinition->setEnabled( true );

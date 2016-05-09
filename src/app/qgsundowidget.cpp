@@ -25,7 +25,6 @@ QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
     : QWidget( parent )
 {
   setupUi( this );
-//  setWidget( dockWidgetContents );
 
   connect( undoButton, SIGNAL( clicked() ), this, SLOT( undo() ) );
   connect( redoButton, SIGNAL( clicked() ), this, SLOT( redo() ) );
@@ -201,8 +200,6 @@ void QgsUndoWidget::setupUi( QWidget *UndoWidget )
   gridLayout->addItem( spacerItem1, 0, 1, 1, 1 );
 
   UndoWidget->setLayout( gridLayout );
-
-//  UndoWidget->setWidget( dockWidgetContents );
 
   retranslateUi( UndoWidget );
 
