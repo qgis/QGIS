@@ -178,6 +178,41 @@ class QgsSimpleFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
 ///////////
 
+/** \ingroup gui
+ * \class QgsFilledMarkerSymbolLayerWidget
+ * \brief Widget for configuring QgsFilledMarkerSymbolLayer symbol layers.
+ * \note Added in version 2.16
+ */
+class QgsFilledMarkerSymbolLayerWidget : QgsSymbolLayerV2Widget
+{
+%TypeHeaderCode
+#include <qgssymbollayerv2widget.h>
+%End
+
+  public:
+
+    /** Constructor for QgsFilledMarkerSymbolLayerWidget.
+     * @param vl associated vector layer
+     * @param parent parent widget
+     */
+    QgsFilledMarkerSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = nullptr );
+
+    ~QgsFilledMarkerSymbolLayerWidget();
+
+    /** Creates a new QgsFilledMarkerSymbolLayerWidget.
+     * @param vl associated vector layer
+     */
+    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
+
+    // from base class
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
+    virtual QgsSymbolLayerV2* symbolLayer();
+
+};
+
+///////////
+
+
 class QgsGradientFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 {
 %TypeHeaderCode

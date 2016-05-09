@@ -140,8 +140,10 @@ static QgsSymbolV2* readOldSymbol( const QDomNode& synode, QGis::GeometryType ge
         // simple symbol marker
         QColor color = readSymbolColor( synode, true );
         QColor borderColor = readSymbolColor( synode, false );
-        QString name = symbolName.mid( 5 );
-        sl = new QgsSimpleMarkerSymbolLayerV2( name, color, borderColor, size, angle );
+        QgsSimpleMarkerSymbolLayerBase::Shape shape = QgsSimpleMarkerSymbolLayerBase::decodeShape( symbolName.mid( 5 ) );
+        sl = new QgsSimpleMarkerSymbolLayerV2( shape, size, angle );
+        sl->setColor( color );
+        sl->setOutlineColor( borderColor );
       }
       else
       {

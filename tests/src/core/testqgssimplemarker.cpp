@@ -140,7 +140,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbol()
 
   mSimpleMarkerLayer->setColor( Qt::blue );
   mSimpleMarkerLayer->setBorderColor( Qt::black );
-  mSimpleMarkerLayer->setName( "circle" );
+  mSimpleMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Circle );
   mSimpleMarkerLayer->setSize( 5 );
   mSimpleMarkerLayer->setOutlineWidth( 1 );
   QVERIFY( imageCheck( "simplemarker" ) );
@@ -152,7 +152,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolBevelJoin()
 
   mSimpleMarkerLayer->setColor( Qt::blue );
   mSimpleMarkerLayer->setBorderColor( Qt::black );
-  mSimpleMarkerLayer->setName( "triangle" );
+  mSimpleMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Triangle );
   mSimpleMarkerLayer->setSize( 25 );
   mSimpleMarkerLayer->setOutlineWidth( 3 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::BevelJoin );
@@ -165,7 +165,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolMiterJoin()
 
   mSimpleMarkerLayer->setColor( Qt::blue );
   mSimpleMarkerLayer->setBorderColor( Qt::black );
-  mSimpleMarkerLayer->setName( "triangle" );
+  mSimpleMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Triangle );
   mSimpleMarkerLayer->setSize( 25 );
   mSimpleMarkerLayer->setOutlineWidth( 3 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
@@ -178,7 +178,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolRoundJoin()
 
   mSimpleMarkerLayer->setColor( Qt::blue );
   mSimpleMarkerLayer->setBorderColor( Qt::black );
-  mSimpleMarkerLayer->setName( "triangle" );
+  mSimpleMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Triangle );
   mSimpleMarkerLayer->setSize( 25 );
   mSimpleMarkerLayer->setOutlineWidth( 3 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::RoundJoin );
@@ -189,7 +189,7 @@ void TestQgsSimpleMarkerSymbol::bounds()
 {
   mSimpleMarkerLayer->setColor( QColor( 200, 200, 200 ) );
   mSimpleMarkerLayer->setBorderColor( QColor( 0, 0, 0 ) );
-  mSimpleMarkerLayer->setName( "circle" );
+  mSimpleMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Circle );
   mSimpleMarkerLayer->setSize( 5 );
   mSimpleMarkerLayer->setDataDefinedProperty( "size", new QgsDataDefined( true, true, "min(\"importance\" * 2, 6)" ) );
   mSimpleMarkerLayer->setOutlineWidth( 0.5 );
@@ -205,7 +205,7 @@ void TestQgsSimpleMarkerSymbol::boundsWithOffset()
 {
   mSimpleMarkerLayer->setColor( QColor( 200, 200, 200 ) );
   mSimpleMarkerLayer->setBorderColor( QColor( 0, 0, 0 ) );
-  mSimpleMarkerLayer->setName( "circle" );
+  mSimpleMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Circle );
   mSimpleMarkerLayer->setSize( 5 );
   mSimpleMarkerLayer->setDataDefinedProperty( "offset", new QgsDataDefined( true, true, "if(importance > 2, '5,10', '10, 5')" ) );
   mSimpleMarkerLayer->setOutlineWidth( 0.5 );
@@ -221,7 +221,7 @@ void TestQgsSimpleMarkerSymbol::boundsWithRotation()
 {
   mSimpleMarkerLayer->setColor( QColor( 200, 200, 200 ) );
   mSimpleMarkerLayer->setBorderColor( QColor( 0, 0, 0 ) );
-  mSimpleMarkerLayer->setName( "square" );
+  mSimpleMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Square );
   mSimpleMarkerLayer->setSize( 5 );
   mSimpleMarkerLayer->setDataDefinedProperty( "angle", new QgsDataDefined( true, true, "importance * 20" ) );
   mSimpleMarkerLayer->setOutlineWidth( 0.5 );
@@ -237,7 +237,7 @@ void TestQgsSimpleMarkerSymbol::boundsWithRotationAndOffset()
 {
   mSimpleMarkerLayer->setColor( QColor( 200, 200, 200 ) );
   mSimpleMarkerLayer->setBorderColor( QColor( 0, 0, 0 ) );
-  mSimpleMarkerLayer->setName( "square" );
+  mSimpleMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Square );
   mSimpleMarkerLayer->setSize( 5 );
   mSimpleMarkerLayer->setDataDefinedProperty( "offset", new QgsDataDefined( true, true, "if(importance > 2, '5,10', '10, 5')" ) );
   mSimpleMarkerLayer->setDataDefinedProperty( "angle", new QgsDataDefined( true, false, QString(), "heading" ) );

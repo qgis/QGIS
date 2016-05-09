@@ -46,30 +46,673 @@ static void _fixQPictureDPI( QPainter* p )
             static_cast< double >( qt_defaultDpiY() ) / p->device()->logicalDpiY() );
 }
 
+
 //////
 
-QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( const QString& name, const QColor& color, const QColor& borderColor, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod,
-    Qt::PenJoinStyle penJoinStyle )
-    : mOutlineStyle( Qt::SolidLine )
-    , mOutlineWidth( 0 )
-    , mOutlineWidthUnit( QgsSymbolV2::MM )
-    , mPenJoinStyle( penJoinStyle )
+
+//
+// QgsSimpleMarkerSymbolLayerBase
+//
+
+QList<QgsSimpleMarkerSymbolLayerBase::Shape> QgsSimpleMarkerSymbolLayerBase::availableShapes()
 {
-  mName = name;
-  mColor = color;
-  mBorderColor = borderColor;
+  QList< Shape > shapes;
+  shapes << Square
+  << Diamond
+  << Pentagon
+  << Hexagon
+  << Triangle
+  << EquilateralTriangle
+  << Star
+  << Arrow
+  << Circle
+  << Cross
+  << CrossFill
+  << Cross2
+  << Line
+  << ArrowHead
+  << ArrowHeadFilled
+  << SemiCircle
+  << ThirdCircle
+  << QuarterCircle
+  << QuarterSquare
+  << HalfSquare
+  << DiagonalHalfSquare
+  << RightHalfTriangle
+  << LeftHalfTriangle;
+  return shapes;
+}
+
+QgsSimpleMarkerSymbolLayerBase::QgsSimpleMarkerSymbolLayerBase( QgsSimpleMarkerSymbolLayerBase::Shape shape, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod )
+    : mShape( shape )
+{
   mSize = size;
   mAngle = angle;
   mOffset = QPointF( 0, 0 );
   mScaleMethod = scaleMethod;
   mSizeUnit = QgsSymbolV2::MM;
   mOffsetUnit = QgsSymbolV2::MM;
-  mUsingCache = false;
+}
+
+bool QgsSimpleMarkerSymbolLayerBase::shapeIsFilled( QgsSimpleMarkerSymbolLayerBase::Shape shape )
+{
+  switch ( shape )
+  {
+    case Square:
+    case Diamond:
+    case Pentagon:
+    case Hexagon:
+    case Triangle:
+    case EquilateralTriangle:
+    case Star:
+    case Arrow:
+    case Circle:
+    case CrossFill:
+    case ArrowHeadFilled:
+    case SemiCircle:
+    case ThirdCircle:
+    case QuarterCircle:
+    case QuarterSquare:
+    case HalfSquare:
+    case DiagonalHalfSquare:
+    case RightHalfTriangle:
+    case LeftHalfTriangle:
+      return true;
+
+    case Cross:
+    case Cross2:
+    case Line:
+    case ArrowHead:
+      return false;
+  }
+  return true;
+}
+
+void QgsSimpleMarkerSymbolLayerBase::startRender( QgsSymbolV2RenderContext &context )
+{
+  bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE );
+  bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE );
+
+  // use either QPolygonF or QPainterPath for drawing
+  if ( !prepareMarkerShape( mShape ) ) // drawing as a polygon
+  {
+    prepareMarkerPath( mShape ); // drawing as a painter path
+  }
+
+  QTransform transform;
+
+  // scale the shape (if the size is not going to be modified)
+  if ( !hasDataDefinedSize )
+  {
+    double scaledSize = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), mSize, mSizeUnit, mSizeMapUnitScale );
+    double half = scaledSize / 2.0;
+    transform.scale( half, half );
+  }
+
+  // rotate if the rotation is not going to be changed during the rendering
+  if ( !hasDataDefinedRotation && !qgsDoubleNear( mAngle, 0.0 ) )
+  {
+    transform.rotate( mAngle );
+  }
+
+  if ( !mPolygon.isEmpty() )
+    mPolygon = transform.map( mPolygon );
+  else
+    mPath = transform.map( mPath );
+
+  prepareExpressions( context );
+
+  QgsMarkerSymbolLayerV2::startRender( context );
+}
+
+void QgsSimpleMarkerSymbolLayerBase::stopRender( QgsSymbolV2RenderContext &context )
+{
+  Q_UNUSED( context );
+}
+
+void QgsSimpleMarkerSymbolLayerBase::renderPoint( QPointF point, QgsSymbolV2RenderContext &context )
+{
+  //making changes here? Don't forget to also update ::bounds if the changes affect the bounding box
+  //of the rendered point!
+
+  QPainter *p = context.renderContext().painter();
+  if ( !p )
+  {
+    return;
+  }
+
+  bool hasDataDefinedSize = false;
+  double scaledSize = calculateSize( context, hasDataDefinedSize );
+
+  bool hasDataDefinedRotation = false;
+  QPointF offset;
+  double angle = 0;
+  calculateOffsetAndRotation( context, scaledSize, hasDataDefinedRotation, offset, angle );
+
+  //data defined shape?
+  bool createdNewPath = false;
+  bool ok = true;
+  Shape symbol = mShape;
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME ) )
+  {
+    context.setOriginalValueVariable( encodeShape( symbol ) );
+    QString name = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME, context, QVariant(), &ok ).toString();
+    if ( ok )
+    {
+      Shape decoded = decodeShape( name, &ok );
+      if ( ok )
+      {
+        symbol = decoded;
+
+        if ( !prepareMarkerShape( symbol ) ) // drawing as a polygon
+        {
+          prepareMarkerPath( symbol ); // drawing as a painter path
+        }
+        createdNewPath = true;
+      }
+    }
+    else
+    {
+      symbol = mShape;
+    }
+  }
+
+  QTransform transform;
+
+  // move to the desired position
+  transform.translate( point.x() + offset.x(), point.y() + offset.y() );
+
+  // resize if necessary
+  if ( hasDataDefinedSize || createdNewPath )
+  {
+    double s = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), scaledSize, mSizeUnit, mSizeMapUnitScale );
+    double half = s / 2.0;
+    transform.scale( half, half );
+  }
+
+  if ( !qgsDoubleNear( angle, 0.0 ) && ( hasDataDefinedRotation || createdNewPath ) )
+    transform.rotate( angle );
+
+  //need to pass: symbol, polygon, path
+
+  QPolygonF polygon;
+  QPainterPath path;
+  if ( !mPolygon.isEmpty() )
+  {
+    polygon = transform.map( mPolygon );
+  }
+  else
+  {
+    path = transform.map( mPath );
+  }
+  draw( context, symbol, polygon, path );
+}
+
+QRectF QgsSimpleMarkerSymbolLayerBase::bounds( QPointF point, QgsSymbolV2RenderContext &context )
+{
+  bool hasDataDefinedSize = false;
+  double scaledSize = calculateSize( context, hasDataDefinedSize );
+
+  bool hasDataDefinedRotation = false;
+  QPointF offset;
+  double angle = 0;
+  calculateOffsetAndRotation( context, scaledSize, hasDataDefinedRotation, offset, angle );
+
+  scaledSize = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), scaledSize, mSizeUnit, mSizeMapUnitScale );
+
+  QTransform transform;
+
+  // move to the desired position
+  transform.translate( point.x() + offset.x(), point.y() + offset.y() );
+
+  if ( !qgsDoubleNear( angle, 0.0 ) )
+    transform.rotate( angle );
+
+  return transform.mapRect( QRectF( -scaledSize / 2.0,
+                                    -scaledSize / 2.0,
+                                    scaledSize,
+                                    scaledSize ) );
+}
+
+QgsSimpleMarkerSymbolLayerBase::Shape QgsSimpleMarkerSymbolLayerBase::decodeShape( const QString &name, bool* ok )
+{
+  if ( ok )
+    *ok = true;
+  QString cleaned = name.toLower().trimmed();
+
+  if ( cleaned ==  "square" || cleaned ==  "rectangle" )
+    return Square;
+  else if ( cleaned ==  "diamond" )
+    return Diamond;
+  else if ( cleaned ==  "pentagon" )
+    return Pentagon;
+  else if ( cleaned ==  "hexagon" )
+    return Hexagon;
+  else if ( cleaned ==  "triangle" )
+    return Triangle;
+  else if ( cleaned ==  "equilateral_triangle" )
+    return EquilateralTriangle;
+  else if ( cleaned ==  "star" || cleaned == "regular_star" )
+    return Star;
+  else if ( cleaned ==  "arrow" )
+    return Arrow;
+  else if ( cleaned ==  "circle" )
+    return Circle;
+  else if ( cleaned ==  "cross" )
+    return Cross;
+  else if ( cleaned ==  "cross_fill" )
+    return CrossFill;
+  else if ( cleaned ==  "cross2" || cleaned == "x" )
+    return Cross2;
+  else if ( cleaned ==  "line" )
+    return Line;
+  else if ( cleaned ==  "arrowhead" )
+    return ArrowHead;
+  else if ( cleaned ==  "filled_arrowhead" )
+    return ArrowHeadFilled;
+  else if ( cleaned ==  "semi_circle" )
+    return SemiCircle;
+  else if ( cleaned ==  "third_circle" )
+    return ThirdCircle;
+  else if ( cleaned ==  "quarter_circle" )
+    return QuarterCircle;
+  else if ( cleaned ==  "quarter_square" )
+    return QuarterSquare;
+  else if ( cleaned ==  "half_square" )
+    return HalfSquare;
+  else if ( cleaned ==  "diagonal_half_square" )
+    return DiagonalHalfSquare;
+  else if ( cleaned ==  "right_half_triangle" )
+    return RightHalfTriangle;
+  else if ( cleaned ==  "left_half_triangle" )
+    return LeftHalfTriangle;
+
+  if ( ok )
+    *ok = false;
+  return Circle;
+}
+
+QString QgsSimpleMarkerSymbolLayerBase::encodeShape( QgsSimpleMarkerSymbolLayerBase::Shape shape )
+{
+  switch ( shape )
+  {
+    case Square:
+      return "square";
+    case QuarterSquare:
+      return "quarter_square";
+    case HalfSquare:
+      return "half_square";
+    case DiagonalHalfSquare:
+      return "diagonal_half_square";
+    case Diamond:
+      return "diamond";
+    case Pentagon:
+      return "pentagon";
+    case Hexagon:
+      return "hexagon";
+    case Triangle:
+      return "triangle";
+    case EquilateralTriangle:
+      return "equilateral_triangle";
+    case LeftHalfTriangle:
+      return "left_half_triangle";
+    case RightHalfTriangle:
+      return "right_half_triangle";
+    case Star:
+      return "star";
+    case Arrow:
+      return "arrow";
+    case ArrowHeadFilled:
+      return "filled_arrowhead";
+    case CrossFill:
+      return "cross_fill";
+    case Circle:
+      return "circle";
+    case Cross:
+      return "cross";
+    case Cross2:
+      return "cross2";
+    case Line:
+      return "line";
+    case ArrowHead:
+      return "arrowhead";
+    case SemiCircle:
+      return "semi_circle";
+    case ThirdCircle:
+      return "third_circle";
+    case QuarterCircle:
+      return "quarter_circle";
+  }
+  return QString();
+}
+
+bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerShape( QgsSimpleMarkerSymbolLayerBase::Shape shape )
+{
+  return shapeToPolygon( shape, mPolygon );
+}
+
+bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerBase::Shape shape, QPolygonF &polygon ) const
+{
+  polygon.clear();
+
+  switch ( shape )
+  {
+    case Square:
+      polygon = QPolygonF( QRectF( QPointF( -1, -1 ), QPointF( 1, 1 ) ) );
+      return true;
+
+    case QuarterSquare:
+      polygon = QPolygonF( QRectF( QPointF( -1, -1 ), QPointF( 0, 0 ) ) );
+      return true;
+
+    case HalfSquare:
+      polygon = QPolygonF( QRectF( QPointF( -1, -1 ), QPointF( 0, 1 ) ) );
+      return true;
+
+    case DiagonalHalfSquare:
+      polygon << QPointF( -1, -1 ) << QPointF( 1, 1 ) << QPointF( -1, 1 ) << QPointF( -1, -1 );
+      return true;
+
+    case Diamond:
+      polygon << QPointF( -1, 0 ) << QPointF( 0, 1 )
+      << QPointF( 1, 0 ) << QPointF( 0, -1 ) << QPointF( -1, 0 );
+      return true;
+
+    case Pentagon:
+      /* angular-representation of hardcoded values used
+      polygon << QPointF( sin( DEG2RAD( 288.0 ) ), - cos( DEG2RAD( 288.0 ) ) )
+      << QPointF( sin( DEG2RAD( 216.0 ) ), - cos( DEG2RAD( 216.0 ) ) )
+      << QPointF( sin( DEG2RAD( 144.0 ) ), - cos( DEG2RAD( 144.0 ) ) )
+      << QPointF( sin( DEG2RAD( 72.0 ) ), - cos( DEG2RAD( 72.0 ) ) )
+      << QPointF( 0, -1 ); */
+      polygon << QPointF( -0.9511, -0.3090 )
+      << QPointF( -0.5878, 0.8090 )
+      << QPointF( 0.5878, 0.8090 )
+      << QPointF( 0.9511, -0.3090 )
+      << QPointF( 0, -1 )
+      << QPointF( -0.9511, -0.3090 );
+      return true;
+
+    case Hexagon:
+      /* angular-representation of hardcoded values used
+      polygon << QPointF( sin( DEG2RAD( 300.0 ) ), - cos( DEG2RAD( 300.0 ) ) )
+      << QPointF( sin( DEG2RAD( 240.0 ) ), - cos( DEG2RAD( 240.0 ) ) )
+      << QPointF( sin( DEG2RAD( 180.0 ) ), - cos( DEG2RAD( 180.0 ) ) )
+      << QPointF( sin( DEG2RAD( 120.0 ) ), - cos( DEG2RAD( 120.0 ) ) )
+      << QPointF( sin( DEG2RAD( 60.0 ) ), - cos( DEG2RAD( 60.0 ) ) )
+      << QPointF( 0, -1 ); */
+      polygon << QPointF( -0.8660, -0.5 )
+      << QPointF( -0.8660, 0.5 )
+      << QPointF( 0, 1 )
+      << QPointF( 0.8660, 0.5 )
+      << QPointF( 0.8660, -0.5 )
+      << QPointF( 0, -1 )
+      << QPointF( -0.8660, -0.5 );
+      return true;
+
+    case Triangle:
+      polygon << QPointF( -1, 1 ) << QPointF( 1, 1 ) << QPointF( 0, -1 ) << QPointF( -1, 1 );
+      return true;
+
+    case EquilateralTriangle:
+      /* angular-representation of hardcoded values used
+      polygon << QPointF( sin( DEG2RAD( 240.0 ) ), - cos( DEG2RAD( 240.0 ) ) )
+      << QPointF( sin( DEG2RAD( 120.0 ) ), - cos( DEG2RAD( 120.0 ) ) )
+      << QPointF( 0, -1 ); */
+      polygon << QPointF( -0.8660, 0.5 )
+      << QPointF( 0.8660, 0.5 )
+      << QPointF( 0, -1 )
+      << QPointF( -0.8660, 0.5 );
+      return true;
+
+    case LeftHalfTriangle:
+      polygon << QPointF( 0, 1 ) << QPointF( 1, 1 ) << QPointF( 0, -1 ) << QPointF( 0, 1 );
+      return true;
+
+    case RightHalfTriangle:
+      polygon << QPointF( -1, 1 ) << QPointF( 0, 1 ) << QPointF( 0, -1 ) << QPointF( -1, 1 );
+      return true;
+
+    case Star:
+    {
+      double inner_r = cos( DEG2RAD( 72.0 ) ) / cos( DEG2RAD( 36.0 ) );
+
+      polygon << QPointF( inner_r * sin( DEG2RAD( 324.0 ) ), - inner_r * cos( DEG2RAD( 324.0 ) ) )  // 324
+      << QPointF( sin( DEG2RAD( 288.0 ) ), - cos( DEG2RAD( 288 ) ) )    // 288
+      << QPointF( inner_r * sin( DEG2RAD( 252.0 ) ), - inner_r * cos( DEG2RAD( 252.0 ) ) )   // 252
+      << QPointF( sin( DEG2RAD( 216.0 ) ), - cos( DEG2RAD( 216.0 ) ) )   // 216
+      << QPointF( 0, inner_r )         // 180
+      << QPointF( sin( DEG2RAD( 144.0 ) ), - cos( DEG2RAD( 144.0 ) ) )   // 144
+      << QPointF( inner_r * sin( DEG2RAD( 108.0 ) ), - inner_r * cos( DEG2RAD( 108.0 ) ) )   // 108
+      << QPointF( sin( DEG2RAD( 72.0 ) ), - cos( DEG2RAD( 72.0 ) ) )    //  72
+      << QPointF( inner_r * sin( DEG2RAD( 36.0 ) ), - inner_r * cos( DEG2RAD( 36.0 ) ) )   //  36
+      << QPointF( 0, -1 )
+      << QPointF( inner_r * sin( DEG2RAD( 324.0 ) ), - inner_r * cos( DEG2RAD( 324.0 ) ) );  // 324;          //   0
+      return true;
+    }
+
+    case Arrow:
+      polygon << QPointF( 0, -1 )
+      << QPointF( 0.5,  -0.5 )
+      << QPointF( 0.25, -0.5 )
+      << QPointF( 0.25,  1 )
+      << QPointF( -0.25,  1 )
+      << QPointF( -0.25, -0.5 )
+      << QPointF( -0.5,  -0.5 )
+      << QPointF( 0, -1 );
+      return true;
+
+    case ArrowHeadFilled:
+      polygon << QPointF( 0, 0 ) << QPointF( -1, 1 ) << QPointF( -1, -1 ) << QPointF( 0, 0 );
+      return true;
+
+    case CrossFill:
+      polygon << QPointF( -1, -0.2 )
+      << QPointF( -1, -0.2 )
+      << QPointF( -1, 0.2 )
+      << QPointF( -0.2, 0.2 )
+      << QPointF( -0.2, 1 )
+      << QPointF( 0.2, 1 )
+      << QPointF( 0.2, 0.2 )
+      << QPointF( 1, 0.2 )
+      << QPointF( 1, -0.2 )
+      << QPointF( 0.2, -0.2 )
+      << QPointF( 0.2, -1 )
+      << QPointF( -0.2, -1 )
+      << QPointF( -0.2, -0.2 )
+      << QPointF( -1, -0.2 );
+      return true;
+
+    case Circle:
+    case Cross:
+    case Cross2:
+    case Line:
+    case ArrowHead:
+    case SemiCircle:
+    case ThirdCircle:
+    case QuarterCircle:
+      return false;
+  }
+
+  return false;
+}
+
+bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerPath( QgsSimpleMarkerSymbolLayerBase::Shape symbol )
+{
+  mPath = QPainterPath();
+
+  switch ( symbol )
+  {
+    case Circle:
+
+      mPath.addEllipse( QRectF( -1, -1, 2, 2 ) ); // x,y,w,h
+      return true;
+
+    case SemiCircle:
+      mPath.arcTo( -1, -1, 2, 2, 0, 180 );
+      mPath.lineTo( 0, 0 );
+      return true;
+
+    case ThirdCircle:
+      mPath.arcTo( -1, -1, 2, 2, 90, 120 );
+      mPath.lineTo( 0, 0 );
+      return true;
+
+    case QuarterCircle:
+      mPath.arcTo( -1, -1, 2, 2, 90, 90 );
+      mPath.lineTo( 0, 0 );
+      return true;
+
+    case Cross:
+      mPath.moveTo( -1, 0 );
+      mPath.lineTo( 1, 0 ); // horizontal
+      mPath.moveTo( 0, -1 );
+      mPath.lineTo( 0, 1 ); // vertical
+      return true;
+
+    case Cross2:
+      mPath.moveTo( -1, -1 );
+      mPath.lineTo( 1, 1 );
+      mPath.moveTo( 1, -1 );
+      mPath.lineTo( -1, 1 );
+      return true;
+
+    case Line:
+      mPath.moveTo( 0, -1 );
+      mPath.lineTo( 0, 1 ); // vertical line
+      return true;
+
+    case ArrowHead:
+      mPath.moveTo( -1, -1 );
+      mPath.lineTo( 0, 0 );
+      mPath.lineTo( -1, 1 );
+      return true;
+
+    case Square:
+    case QuarterSquare:
+    case HalfSquare:
+    case DiagonalHalfSquare:
+    case Diamond:
+    case Pentagon:
+    case Hexagon:
+    case Triangle:
+    case EquilateralTriangle:
+    case LeftHalfTriangle:
+    case RightHalfTriangle:
+    case Star:
+    case Arrow:
+    case ArrowHeadFilled:
+    case CrossFill:
+      return false;
+  }
+  return false;
+}
+
+double QgsSimpleMarkerSymbolLayerBase::calculateSize( QgsSymbolV2RenderContext &context, bool &hasDataDefinedSize ) const
+{
+  double scaledSize = mSize;
+
+  hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE );
+  bool ok = true;
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE ) )
+  {
+    context.setOriginalValueVariable( mSize );
+    scaledSize = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE, context, mSize, &ok ).toDouble();
+  }
+
+  if ( hasDataDefinedSize && ok )
+  {
+    switch ( mScaleMethod )
+    {
+      case QgsSymbolV2::ScaleArea:
+        scaledSize = sqrt( scaledSize );
+        break;
+      case QgsSymbolV2::ScaleDiameter:
+        break;
+    }
+  }
+
+  return scaledSize;
+}
+
+void QgsSimpleMarkerSymbolLayerBase::calculateOffsetAndRotation( QgsSymbolV2RenderContext &context, double scaledSize, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const
+{
+  //offset
+  double offsetX = 0;
+  double offsetY = 0;
+  markerOffset( context, scaledSize, scaledSize, offsetX, offsetY );
+  offset = QPointF( offsetX, offsetY );
+
+  //angle
+  bool ok = true;
+  angle = mAngle + mLineAngle;
+  bool usingDataDefinedRotation = false;
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE ) )
+  {
+    context.setOriginalValueVariable( angle );
+    angle = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE, context, mAngle, &ok ).toDouble() + mLineAngle;
+    usingDataDefinedRotation = ok;
+  }
+
+  hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || usingDataDefinedRotation;
+  if ( hasDataDefinedRotation )
+  {
+    // For non-point markers, "dataDefinedRotation" means following the
+    // shape (shape-data defined). For them, "field-data defined" does
+    // not work at all. TODO: if "field-data defined" ever gets implemented
+    // we'll need a way to distinguish here between the two, possibly
+    // using another flag in renderHints()
+    const QgsFeature* f = context.feature();
+    if ( f )
+    {
+      const QgsGeometry *g = f->constGeometry();
+      if ( g && g->type() == QGis::Point )
+      {
+        const QgsMapToPixel& m2p = context.renderContext().mapToPixel();
+        angle += m2p.mapRotation();
+      }
+    }
+  }
+
+  if ( angle )
+    offset = _rotatedOffset( offset, angle );
+}
+
+
+//
+// QgsSimpleMarkerSymbolLayerV2
+//
+
+QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( const QString& name, const QColor& color, const QColor& borderColor, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod,
+    Qt::PenJoinStyle penJoinStyle )
+    : QgsSimpleMarkerSymbolLayerBase( decodeShape( name ), size, angle, scaleMethod )
+    , mBorderColor( borderColor )
+    , mOutlineStyle( Qt::SolidLine )
+    , mOutlineWidth( 0 )
+    , mOutlineWidthUnit( QgsSymbolV2::MM )
+    , mPenJoinStyle( penJoinStyle )
+    , mName( name )
+    , mUsingCache( false )
+{
+  mColor = color;
+}
+
+QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QgsSimpleMarkerSymbolLayerBase::Shape shape, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod, const QColor& color, const QColor& borderColor, Qt::PenJoinStyle penJoinStyle )
+    : QgsSimpleMarkerSymbolLayerBase( shape, size, angle, scaleMethod )
+    , mBorderColor( borderColor )
+    , mOutlineStyle( Qt::SolidLine )
+    , mOutlineWidth( 0 )
+    , mOutlineWidthUnit( QgsSymbolV2::MM )
+    , mPenJoinStyle( penJoinStyle )
+    , mName( encodeShape( shape ) )
+    , mUsingCache( false )
+{
+  mColor = color;
 }
 
 QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& props )
 {
-  QString name = DEFAULT_SIMPLEMARKER_NAME;
+  Shape shape = Circle;
   QColor color = DEFAULT_SIMPLEMARKER_COLOR;
   QColor borderColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR;
   Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE;
@@ -78,7 +721,9 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
   QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD;
 
   if ( props.contains( "name" ) )
-    name = props["name"];
+  {
+    shape = decodeShape( props["name"] );
+  }
   if ( props.contains( "color" ) )
     color = QgsSymbolLayerV2Utils::decodeColor( props["color"] );
   if ( props.contains( "color_border" ) )
@@ -105,7 +750,7 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
   if ( props.contains( "scale_method" ) )
     scaleMethod = QgsSymbolLayerV2Utils::decodeScaleMethod( props["scale_method"] );
 
-  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( name, color, borderColor, size, angle, scaleMethod, penJoinStyle );
+  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( shape, size, angle, scaleMethod, color, borderColor, penJoinStyle );
   if ( props.contains( "offset" ) )
     m->setOffset( QgsSymbolLayerV2Utils::decodePoint( props["offset"] ) );
   if ( props.contains( "offset_unit" ) )
@@ -168,6 +813,8 @@ QString QgsSimpleMarkerSymbolLayerV2::layerType() const
 
 void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
+  QgsSimpleMarkerSymbolLayerBase::startRender( context );
+
   QColor brushColor = mColor;
   QColor penColor = mBorderColor;
 
@@ -203,50 +850,26 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
                 && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_STYLE )
                 && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_JOIN_STYLE ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE );
 
-  // use either QPolygonF or QPainterPath for drawing
-  // TODO: find out whether drawing directly doesn't bring overhead - if not, use it for all shapes
-  if ( !prepareShape() ) // drawing as a polygon
+  if ( !shapeIsFilled( mShape ) )
   {
-    if ( preparePath() ) // drawing as a painter path
-    {
-      // some markers can't be drawn as a polygon (circle, cross)
-      // For these set the selected border color to the selected color
-
-      if ( mName != "circle" )
-        mSelPen.setColor( selBrushColor );
-    }
-    else
-    {
-      QgsDebugMsg( "unknown symbol" );
-      return;
-    }
+    // some markers can't be drawn as a polygon (circle, cross)
+    // For these set the selected border color to the selected color
+    mSelPen.setColor( selBrushColor );
   }
 
-  QMatrix transform;
-
-  // scale the shape (if the size is not going to be modified)
-  if ( !hasDataDefinedSize )
-  {
-    double scaledSize = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), mSize, mSizeUnit, mSizeMapUnitScale );
-    if ( mUsingCache )
-      scaledSize *= context.renderContext().rasterScaleFactor();
-    double half = scaledSize / 2.0;
-    transform.scale( half, half );
-  }
-
-  // rotate if the rotation is not going to be changed during the rendering
-  if ( !hasDataDefinedRotation && !qgsDoubleNear( mAngle, 0.0 ) )
-  {
-    transform.rotate( mAngle );
-  }
-
-  if ( !mPolygon.isEmpty() )
-    mPolygon = transform.map( mPolygon );
-  else
-    mPath = transform.map( mPath );
 
   if ( mUsingCache )
   {
+    if ( !qgsDoubleNear( context.renderContext().rasterScaleFactor(), 1.0 ) )
+    {
+      QTransform transform;
+      transform.scale( context.renderContext().rasterScaleFactor(), context.renderContext().rasterScaleFactor() );
+      if ( !mPolygon.isEmpty() )
+        mPolygon = transform.map( mPolygon );
+      else
+        mPath = transform.map( mPath );
+    }
+
     if ( !prepareCache( context ) )
     {
       mUsingCache = false;
@@ -257,10 +880,6 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
     mCache = QImage();
     mSelCache = QImage();
   }
-
-  prepareExpressions( context );
-
-  QgsMarkerSymbolLayerV2::startRender( context );
 }
 
 
@@ -281,7 +900,7 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareCache( QgsSymbolV2RenderContext& conte
   mCache = QImage( QSize( imageSize, imageSize ), QImage::Format_ARGB32_Premultiplied );
   mCache.fill( 0 );
 
-  bool needsBrush = symbolNeedsBrush( mName );
+  bool needsBrush = shapeIsFilled( mShape );
 
   QPainter p;
   p.begin( &mCache );
@@ -326,219 +945,95 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareCache( QgsSymbolV2RenderContext& conte
   return true;
 }
 
-void QgsSimpleMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
-{
-  Q_UNUSED( context );
-}
-
 bool QgsSimpleMarkerSymbolLayerV2::prepareShape( const QString& name )
 {
-  return prepareShape( name.isNull() ? mName : name, mPolygon );
+  return shapeToPolygon( name.isNull() ? mShape : decodeShape( name ), mPolygon );
 }
 
 bool QgsSimpleMarkerSymbolLayerV2::prepareShape( const QString& name, QPolygonF &polygon ) const
 {
-  polygon.clear();
-
-  if ( name == "square" || name == "rectangle" )
-  {
-    polygon = QPolygonF( QRectF( QPointF( -1, -1 ), QPointF( 1, 1 ) ) );
-    return true;
-  }
-  else if ( name == "quarter_square" )
-  {
-    polygon = QPolygonF( QRectF( QPointF( -1, -1 ), QPointF( 0, 0 ) ) );
-    return true;
-  }
-  else if ( name == "half_square" )
-  {
-    polygon = QPolygonF( QRectF( QPointF( -1, -1 ), QPointF( 0, 1 ) ) );
-    return true;
-  }
-  else if ( name == "diagonal_half_square" )
-  {
-    polygon << QPointF( -1, -1 ) << QPointF( 1, 1 ) << QPointF( -1, 1 );
-    return true;
-  }
-  else if ( name == "diamond" )
-  {
-    polygon << QPointF( -1, 0 ) << QPointF( 0, 1 )
-    << QPointF( 1, 0 ) << QPointF( 0, -1 );
-    return true;
-  }
-  else if ( name == "pentagon" )
-  {
-    /* angular-representation of hardcoded values used
-    polygon << QPointF( sin( DEG2RAD( 288.0 ) ), - cos( DEG2RAD( 288.0 ) ) )
-    << QPointF( sin( DEG2RAD( 216.0 ) ), - cos( DEG2RAD( 216.0 ) ) )
-    << QPointF( sin( DEG2RAD( 144.0 ) ), - cos( DEG2RAD( 144.0 ) ) )
-    << QPointF( sin( DEG2RAD( 72.0 ) ), - cos( DEG2RAD( 72.0 ) ) )
-    << QPointF( 0, -1 ); */
-    polygon << QPointF( -0.9511, -0.3090 )
-    << QPointF( -0.5878, 0.8090 )
-    << QPointF( 0.5878, 0.8090 )
-    << QPointF( 0.9511, -0.3090 )
-    << QPointF( 0, -1 );
-    return true;
-  }
-  else if ( name == "hexagon" )
-  {
-    /* angular-representation of hardcoded values used
-    polygon << QPointF( sin( DEG2RAD( 300.0 ) ), - cos( DEG2RAD( 300.0 ) ) )
-    << QPointF( sin( DEG2RAD( 240.0 ) ), - cos( DEG2RAD( 240.0 ) ) )
-    << QPointF( sin( DEG2RAD( 180.0 ) ), - cos( DEG2RAD( 180.0 ) ) )
-    << QPointF( sin( DEG2RAD( 120.0 ) ), - cos( DEG2RAD( 120.0 ) ) )
-    << QPointF( sin( DEG2RAD( 60.0 ) ), - cos( DEG2RAD( 60.0 ) ) )
-    << QPointF( 0, -1 ); */
-    polygon << QPointF( -0.8660, -0.5 )
-    << QPointF( -0.8660, 0.5 )
-    << QPointF( 0, 1 )
-    << QPointF( 0.8660, 0.5 )
-    << QPointF( 0.8660, -0.5 )
-    << QPointF( 0, -1 );
-    return true;
-  }
-  else if ( name == "triangle" )
-  {
-    polygon << QPointF( -1, 1 ) << QPointF( 1, 1 ) << QPointF( 0, -1 );
-    return true;
-  }
-  else if ( name == "equilateral_triangle" )
-  {
-    /* angular-representation of hardcoded values used
-    polygon << QPointF( sin( DEG2RAD( 240.0 ) ), - cos( DEG2RAD( 240.0 ) ) )
-    << QPointF( sin( DEG2RAD( 120.0 ) ), - cos( DEG2RAD( 120.0 ) ) )
-    << QPointF( 0, -1 ); */
-    polygon << QPointF( -0.8660, 0.5 )
-    << QPointF( 0.8660, 0.5 )
-    << QPointF( 0, -1 );
-    return true;
-  }
-  else if ( name == "left_half_triangle" )
-  {
-    polygon << QPointF( 0, 1 ) << QPointF( 1, 1 ) << QPointF( 0, -1 );
-    return true;
-  }
-  else if ( name == "right_half_triangle" )
-  {
-    polygon << QPointF( -1, 1 ) << QPointF( 0, 1 ) << QPointF( 0, -1 );
-    return true;
-  }
-  else if ( name == "star" || name == "regular_star" )
-  {
-    double inner_r = cos( DEG2RAD( 72.0 ) ) / cos( DEG2RAD( 36.0 ) );
-
-    polygon << QPointF( inner_r * sin( DEG2RAD( 324.0 ) ), - inner_r * cos( DEG2RAD( 324.0 ) ) )  // 324
-    << QPointF( sin( DEG2RAD( 288.0 ) ), - cos( DEG2RAD( 288 ) ) )    // 288
-    << QPointF( inner_r * sin( DEG2RAD( 252.0 ) ), - inner_r * cos( DEG2RAD( 252.0 ) ) )   // 252
-    << QPointF( sin( DEG2RAD( 216.0 ) ), - cos( DEG2RAD( 216.0 ) ) )   // 216
-    << QPointF( 0, inner_r )         // 180
-    << QPointF( sin( DEG2RAD( 144.0 ) ), - cos( DEG2RAD( 144.0 ) ) )   // 144
-    << QPointF( inner_r * sin( DEG2RAD( 108.0 ) ), - inner_r * cos( DEG2RAD( 108.0 ) ) )   // 108
-    << QPointF( sin( DEG2RAD( 72.0 ) ), - cos( DEG2RAD( 72.0 ) ) )    //  72
-    << QPointF( inner_r * sin( DEG2RAD( 36.0 ) ), - inner_r * cos( DEG2RAD( 36.0 ) ) )   //  36
-    << QPointF( 0, -1 );          //   0
-    return true;
-  }
-  else if ( name == "arrow" )
-  {
-    polygon << QPointF( 0, -1 )
-    << QPointF( 0.5,  -0.5 )
-    << QPointF( 0.25, -0.5 )
-    << QPointF( 0.25,  1 )
-    << QPointF( -0.25,  1 )
-    << QPointF( -0.25, -0.5 )
-    << QPointF( -0.5,  -0.5 );
-    return true;
-  }
-  else if ( name == "filled_arrowhead" )
-  {
-    polygon << QPointF( 0, 0 ) << QPointF( -1, 1 ) << QPointF( -1, -1 );
-    return true;
-  }
-
-  return false;
+  return shapeToPolygon( decodeShape( name ), polygon );
 }
 
 bool QgsSimpleMarkerSymbolLayerV2::preparePath( QString name )
 {
-  mPath = QPainterPath();
-  if ( name.isNull() )
+  return prepareMarkerPath( decodeShape( name ) );
+}
+
+void QgsSimpleMarkerSymbolLayerV2::draw( QgsSymbolV2RenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path )
+{
+  //making changes here? Don't forget to also update ::bounds if the changes affect the bounding box
+  //of the rendered point!
+
+  QPainter *p = context.renderContext().painter();
+  if ( !p )
   {
-    name = mName;
+    return;
   }
 
-  if ( name == "circle" )
+  bool ok = true;
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
   {
-    mPath.addEllipse( QRectF( -1, -1, 2, 2 ) ); // x,y,w,h
-    return true;
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( mColor ) );
+    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR, context, QVariant(), &ok ).toString();
+    if ( ok )
+      mBrush.setColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) );
   }
-  else if ( name == "semi_circle" )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR_BORDER ) )
   {
-    mPath.arcTo( -1, -1, 2, 2, 0, 180 );
-    mPath.lineTo( 0, 0 );
-    return true;
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( mBorderColor ) );
+    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR_BORDER, context, QVariant(), &ok ).toString();
+    if ( ok )
+    {
+      mPen.setColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) );
+      mSelPen.setColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) );
+    }
   }
-  else if ( name == "third_circle" )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH ) )
   {
-    mPath.arcTo( -1, -1, 2, 2, 90, 120 );
-    mPath.lineTo( 0, 0 );
-    return true;
+    context.setOriginalValueVariable( mOutlineWidth );
+    double outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH, context, QVariant(), &ok ).toDouble();
+    if ( ok )
+    {
+      mPen.setWidthF( QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
+      mSelPen.setWidthF( QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
+    }
   }
-  else if ( name == "quarter_circle" )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_STYLE ) )
   {
-    mPath.arcTo( -1, -1, 2, 2, 90, 90 );
-    mPath.lineTo( 0, 0 );
-    return true;
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenStyle( mOutlineStyle ) );
+    QString outlineStyle = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_STYLE, context, QVariant(), &ok ).toString();
+    if ( ok )
+    {
+      mPen.setStyle( QgsSymbolLayerV2Utils::decodePenStyle( outlineStyle ) );
+      mSelPen.setStyle( QgsSymbolLayerV2Utils::decodePenStyle( outlineStyle ) );
+    }
   }
-  else if ( name == "cross" )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_JOIN_STYLE ) )
   {
-    mPath.moveTo( -1, 0 );
-    mPath.lineTo( 1, 0 ); // horizontal
-    mPath.moveTo( 0, -1 );
-    mPath.lineTo( 0, 1 ); // vertical
-    return true;
-  }
-  else if ( name == "cross_fill" )
-  {
-    mPath.moveTo( -1, -0.2 );
-    mPath.lineTo( -1, 0.2 );
-    mPath.lineTo( -0.2, 0.2 );
-    mPath.lineTo( -0.2, 1 );
-    mPath.lineTo( 0.2, 1 );
-    mPath.lineTo( 0.2, 0.2 );
-    mPath.lineTo( 1, 0.2 );
-    mPath.lineTo( 1, -0.2 );
-    mPath.lineTo( 0.2, -0.2 );
-    mPath.lineTo( 0.2, -1 );
-    mPath.lineTo( -0.2, -1 );
-    mPath.lineTo( -0.2, -0.2 );
-    mPath.lineTo( -1, -0.2 );
-    return true;
-  }
-  else if ( name == "x" || name == "cross2" )
-  {
-    mPath.moveTo( -1, -1 );
-    mPath.lineTo( 1, 1 );
-    mPath.moveTo( 1, -1 );
-    mPath.lineTo( -1, 1 );
-    return true;
-  }
-  else if ( name == "line" )
-  {
-    mPath.moveTo( 0, -1 );
-    mPath.lineTo( 0, 1 ); // vertical line
-    return true;
-  }
-  else if ( name == "arrowhead" )
-  {
-    mPath.moveTo( -1, -1 );
-    mPath.lineTo( 0, 0 );
-    mPath.lineTo( -1, 1 );
-    return true;
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenJoinStyle( mPenJoinStyle ) );
+    QString style = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_JOIN_STYLE, context, QVariant(), &ok ).toString();
+    if ( ok )
+    {
+      mPen.setJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( style ) );
+      mSelPen.setJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( style ) );
+    }
   }
 
-  return false;
+  if ( shapeIsFilled( shape ) )
+  {
+    p->setBrush( context.selected() ? mSelBrush : mBrush );
+  }
+  else
+  {
+    p->setBrush( Qt::NoBrush );
+  }
+  p->setPen( context.selected() ? mSelPen : mPen );
+
+  if ( !polygon.isEmpty() )
+    p->drawPolygon( polygon );
+  else
+    p->drawPath( path );
 }
 
 void QgsSimpleMarkerSymbolLayerV2::renderPoint( QPointF point, QgsSymbolV2RenderContext& context )
@@ -552,213 +1047,33 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( QPointF point, QgsSymbolV2Render
     return;
   }
 
-  bool hasDataDefinedSize = false;
-  double scaledSize = calculateSize( context, hasDataDefinedSize );
-
-  bool hasDataDefinedRotation = false;
-  QPointF offset;
-  double angle = 0;
-  calculateOffsetAndRotation( context, scaledSize, hasDataDefinedRotation, offset, angle );
-
-  //data defined shape?
-  bool createdNewPath = false;
-  bool ok = true;
-  QString name = mName;
-  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME ) )
-  {
-    context.setOriginalValueVariable( mName );
-    name = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME, context, QVariant(), &ok ).toString();
-    if ( ok )
-    {
-      if ( !prepareShape( name ) ) // drawing as a polygon
-      {
-        preparePath( name ); // drawing as a painter path
-      }
-      createdNewPath = true;
-    }
-    else
-    {
-      name = mName;
-    }
-  }
-
   if ( mUsingCache )
   {
-    //QgsDebugMsg( QString("XXX using cache") );
-    // we will use cached image
     QImage &img = context.selected() ? mSelCache : mCache;
     double s = img.width() / context.renderContext().rasterScaleFactor();
+
+    bool hasDataDefinedSize = false;
+    double scaledSize = calculateSize( context, hasDataDefinedSize );
+
+    bool hasDataDefinedRotation = false;
+    QPointF offset;
+    double angle = 0;
+    calculateOffsetAndRotation( context, scaledSize, hasDataDefinedRotation, offset, angle );
+
     p->drawImage( QRectF( point.x() - s / 2.0 + offset.x(),
                           point.y() - s / 2.0 + offset.y(),
                           s, s ), img );
   }
   else
   {
-    QMatrix transform;
-
-    // move to the desired position
-    transform.translate( point.x() + offset.x(), point.y() + offset.y() );
-
-    // resize if necessary
-    if ( hasDataDefinedSize || createdNewPath )
-    {
-      double s = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), scaledSize, mSizeUnit, mSizeMapUnitScale );
-      double half = s / 2.0;
-      transform.scale( half, half );
-    }
-
-    if ( !qgsDoubleNear( angle, 0.0 ) && ( hasDataDefinedRotation || createdNewPath ) )
-      transform.rotate( angle );
-
-    if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
-    {
-      context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( mColor ) );
-      QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR, context, QVariant(), &ok ).toString();
-      if ( ok )
-        mBrush.setColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) );
-    }
-    if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR_BORDER ) )
-    {
-      context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( mBorderColor ) );
-      QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR_BORDER, context, QVariant(), &ok ).toString();
-      if ( ok )
-      {
-        mPen.setColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) );
-        mSelPen.setColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) );
-      }
-    }
-    if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH ) )
-    {
-      context.setOriginalValueVariable( mOutlineWidth );
-      double outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH, context, QVariant(), &ok ).toDouble();
-      if ( ok )
-      {
-        mPen.setWidthF( QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
-        mSelPen.setWidthF( QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
-      }
-    }
-    if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_STYLE ) )
-    {
-      context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenStyle( mOutlineStyle ) );
-      QString outlineStyle = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_STYLE, context, QVariant(), &ok ).toString();
-      if ( ok )
-      {
-        mPen.setStyle( QgsSymbolLayerV2Utils::decodePenStyle( outlineStyle ) );
-        mSelPen.setStyle( QgsSymbolLayerV2Utils::decodePenStyle( outlineStyle ) );
-      }
-    }
-    if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_JOIN_STYLE ) )
-    {
-      context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenJoinStyle( mPenJoinStyle ) );
-      QString style = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_JOIN_STYLE, context, QVariant(), &ok ).toString();
-      if ( ok )
-      {
-        mPen.setJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( style ) );
-        mSelPen.setJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( style ) );
-      }
-    }
-
-    if ( symbolNeedsBrush( name ) )
-    {
-      p->setBrush( context.selected() ? mSelBrush : mBrush );
-    }
-    else
-    {
-      p->setBrush( Qt::NoBrush );
-    }
-    p->setPen( context.selected() ? mSelPen : mPen );
-
-    if ( !mPolygon.isEmpty() )
-      p->drawPolygon( transform.map( mPolygon ) );
-    else
-      p->drawPath( transform.map( mPath ) );
+    QgsSimpleMarkerSymbolLayerBase::renderPoint( point, context );
   }
-}
-
-
-double QgsSimpleMarkerSymbolLayerV2::calculateSize( QgsSymbolV2RenderContext& context, bool& hasDataDefinedSize ) const
-{
-  double scaledSize = mSize;
-
-  hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE );
-  bool ok = true;
-  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE ) )
-  {
-    context.setOriginalValueVariable( mSize );
-    scaledSize = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE, context, mSize, &ok ).toDouble();
-  }
-
-  if ( hasDataDefinedSize && ok )
-  {
-    switch ( mScaleMethod )
-    {
-      case QgsSymbolV2::ScaleArea:
-        scaledSize = sqrt( scaledSize );
-        break;
-      case QgsSymbolV2::ScaleDiameter:
-        break;
-    }
-  }
-
-  return scaledSize;
-}
-
-void QgsSimpleMarkerSymbolLayerV2::calculateOffsetAndRotation( QgsSymbolV2RenderContext& context,
-    double scaledSize,
-    bool& hasDataDefinedRotation,
-    QPointF& offset,
-    double& angle ) const
-{
-  //offset
-  double offsetX = 0;
-  double offsetY = 0;
-  markerOffset( context, scaledSize, scaledSize, offsetX, offsetY );
-  offset = QPointF( offsetX, offsetY );
-
-  //angle
-  bool ok = true;
-  angle = mAngle + mLineAngle;
-  bool usingDataDefinedRotation = false;
-  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE ) )
-  {
-    context.setOriginalValueVariable( angle );
-    angle = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE, context, mAngle, &ok ).toDouble() + mLineAngle;
-    usingDataDefinedRotation = ok;
-  }
-
-  hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || usingDataDefinedRotation;
-  if ( hasDataDefinedRotation )
-  {
-    // For non-point markers, "dataDefinedRotation" means following the
-    // shape (shape-data defined). For them, "field-data defined" does
-    // not work at all. TODO: if "field-data defined" ever gets implemented
-    // we'll need a way to distinguish here between the two, possibly
-    // using another flag in renderHints()
-    const QgsFeature* f = context.feature();
-    if ( f )
-    {
-      const QgsGeometry *g = f->constGeometry();
-      if ( g && g->type() == QGis::Point )
-      {
-        const QgsMapToPixel& m2p = context.renderContext().mapToPixel();
-        angle += m2p.mapRotation();
-      }
-    }
-  }
-
-  if ( angle )
-    offset = _rotatedOffset( offset, angle );
-}
-
-bool QgsSimpleMarkerSymbolLayerV2::symbolNeedsBrush( const QString &symbolName ) const
-{
-  return symbolName != "arrowhead";
 }
 
 QgsStringMap QgsSimpleMarkerSymbolLayerV2::properties() const
 {
   QgsStringMap map;
-  map["name"] = mName;
+  map["name"] = encodeShape( mShape );
   map["color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
   map["outline_color"] = QgsSymbolLayerV2Utils::encodeColor( mBorderColor );
   map["size"] = QString::number( mSize );
@@ -785,7 +1100,7 @@ QgsStringMap QgsSimpleMarkerSymbolLayerV2::properties() const
 
 QgsSimpleMarkerSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::clone() const
 {
-  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( mName, mColor, mBorderColor, mSize, mAngle, mScaleMethod, mPenJoinStyle );
+  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( mShape, mSize, mAngle, mScaleMethod, mColor, mBorderColor, mPenJoinStyle );
   m->setOffset( mOffset );
   m->setSizeUnit( mSizeUnit );
   m->setSizeMapUnitScale( mSizeMapUnitScale );
@@ -808,7 +1123,7 @@ void QgsSimpleMarkerSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElemen
   QDomElement graphicElem = doc.createElement( "se:Graphic" );
   element.appendChild( graphicElem );
 
-  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, mName, mColor, mBorderColor, mOutlineStyle, mOutlineWidth, mSize );
+  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, encodeShape( mShape ), mColor, mBorderColor, mOutlineStyle, mOutlineWidth, mSize );
 
   // <Rotation>
   QString angleFunc;
@@ -919,7 +1234,11 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::createFromSld( QDomElement &elem
   QPointF offset;
   QgsSymbolLayerV2Utils::displacementFromSldElement( graphicElem, offset );
 
-  QgsSimpleMarkerSymbolLayerV2 *m = new QgsSimpleMarkerSymbolLayerV2( name, color, borderColor, size );
+  Shape shape = decodeShape( name );
+
+  QgsSimpleMarkerSymbolLayerV2 *m = new QgsSimpleMarkerSymbolLayerV2( shape, size );
+  m->setColor( color );
+  m->setBorderColor( borderColor );
   m->setAngle( angle );
   m->setOffset( offset );
   m->setOutlineStyle( borderStyle );
@@ -1023,11 +1342,17 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
     angle = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE, context, mAngle ).toDouble() + mLineAngle;
   }
 
-  QString name( mName );
+  Shape shape = mShape;
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME ) )
   {
-    context.setOriginalValueVariable( mName );
-    name = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME, context, QVariant(), &ok ).toString();
+    context.setOriginalValueVariable( encodeShape( shape ) );
+    QString shapeName = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME, context, QVariant(), &ok ).toString();
+    if ( ok )
+    {
+      shape = decodeShape( shapeName, &ok );
+      if ( !ok )
+        shape = mShape;
+    }
   }
 
   angle = -angle; //rotation in Qt is counterclockwise
@@ -1046,7 +1371,7 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
     t.rotate( angle );
 
   QPolygonF polygon;
-  if ( prepareShape( name, polygon ) )
+  if ( shapeToPolygon( shape, polygon ) )
   {
     t.scale( halfSize, -halfSize );
 
@@ -1062,14 +1387,14 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
     if ( mPen.style() != Qt::NoPen )
       e.writePolyline( p, layerName, "CONTINUOUS", pc, outlineWidth );
   }
-  else if ( name == "circle" )
+  else if ( shape == Circle )
   {
     if ( mBrush.style() != Qt::NoBrush )
       e.writeFilledCircle( layerName, bc, QgsPointV2( shift ), halfSize );
     if ( mPen.style() != Qt::NoPen )
       e.writeCircle( layerName, pc, QgsPointV2( shift ), halfSize, "CONTINUOUS", outlineWidth );
   }
-  else if ( name == "line" )
+  else if ( shape == Line )
   {
     QPointF pt1 = t.map( QPointF( 0, -halfSize ) );
     QPointF pt2 = t.map( QPointF( 0, halfSize ) );
@@ -1077,7 +1402,7 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
     if ( mPen.style() != Qt::NoPen )
       e.writeLine( QgsPointV2( pt1 ), QgsPointV2( pt2 ), layerName, "CONTINUOUS", pc, outlineWidth );
   }
-  else if ( name == "cross" )
+  else if ( shape == Cross )
   {
     if ( mPen.style() != Qt::NoPen )
     {
@@ -1090,7 +1415,7 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
       e.writeLine( QgsPointV2( pt3 ), QgsPointV2( pt4 ), layerName, "CONTINUOUS", pc, outlineWidth );
     }
   }
-  else if ( name == "x" || name == "cross2" )
+  else if ( shape == Cross2 )
   {
     if ( mPen.style() != Qt::NoPen )
     {
@@ -1103,7 +1428,7 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
       e.writeLine( QgsPointV2( pt3 ), QgsPointV2( pt4 ), layerName, "CONTINUOUS", pc, outlineWidth );
     }
   }
-  else if ( name == "arrowhead" )
+  else if ( shape == ArrowHead )
   {
     if ( mPen.style() != Qt::NoPen )
     {
@@ -1117,7 +1442,7 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
   }
   else
   {
-    QgsDebugMsg( QString( "Unsupported dxf marker name %1" ).arg( name ) );
+    QgsDebugMsg( QString( "Unsupported dxf marker name %1" ).arg( encodeShape( shape ) ) );
     return false;
   }
 
@@ -1157,25 +1482,10 @@ QgsMapUnitScale QgsSimpleMarkerSymbolLayerV2::mapUnitScale() const
 
 QRectF QgsSimpleMarkerSymbolLayerV2::bounds( QPointF point, QgsSymbolV2RenderContext& context )
 {
-  bool hasDataDefinedSize = false;
-  double scaledSize = calculateSize( context, hasDataDefinedSize );
+  QRectF symbolBounds = QgsSimpleMarkerSymbolLayerBase::bounds( point, context );
 
-  bool hasDataDefinedRotation = false;
-  QPointF offset;
-  double angle = 0;
-  calculateOffsetAndRotation( context, scaledSize, hasDataDefinedRotation, offset, angle );
-
-  scaledSize = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), scaledSize, mSizeUnit, mSizeMapUnitScale );
+  // need to account for outline width
   double pixelSize = 1.0 / context.renderContext().rasterScaleFactor();
-
-  QMatrix transform;
-
-  // move to the desired position
-  transform.translate( point.x() + offset.x(), point.y() + offset.y() );
-
-  if ( !qgsDoubleNear( angle, 0.0 ) )
-    transform.rotate( angle );
-
   double penWidth = 0.0;
   bool ok = true;
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH ) )
@@ -1199,17 +1509,205 @@ QRectF QgsSimpleMarkerSymbolLayerV2::bounds( QPointF point, QgsSymbolV2RenderCon
   //antialiasing
   penWidth += pixelSize;
 
-  QRectF symbolBounds = transform.mapRect( QRectF( -scaledSize / 2.0,
-                        -scaledSize / 2.0,
-                        scaledSize,
-                        scaledSize ) );
-
   //extend bounds by pen width / 2.0
   symbolBounds.adjust( -penWidth / 2.0, -penWidth / 2.0,
                        penWidth / 2.0, penWidth / 2.0 );
 
   return symbolBounds;
 }
+
+
+//
+// QgsFilledMarkerSymbolLayer
+//
+
+QgsFilledMarkerSymbolLayer::QgsFilledMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod )
+    : QgsSimpleMarkerSymbolLayerBase( shape, size, angle, scaleMethod )
+{
+  mFill.reset( static_cast<QgsFillSymbolV2*>( QgsFillSymbolV2::createSimple( QgsStringMap() ) ) );
+}
+
+QgsSymbolLayerV2 *QgsFilledMarkerSymbolLayer::create( const QgsStringMap &props )
+{
+  QString name = DEFAULT_SIMPLEMARKER_NAME;
+  double size = DEFAULT_SIMPLEMARKER_SIZE;
+  double angle = DEFAULT_SIMPLEMARKER_ANGLE;
+  QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD;
+
+  if ( props.contains( "name" ) )
+    name = props["name"];
+  if ( props.contains( "size" ) )
+    size = props["size"].toDouble();
+  if ( props.contains( "angle" ) )
+    angle = props["angle"].toDouble();
+  if ( props.contains( "scale_method" ) )
+    scaleMethod = QgsSymbolLayerV2Utils::decodeScaleMethod( props["scale_method"] );
+
+  QgsFilledMarkerSymbolLayer* m = new QgsFilledMarkerSymbolLayer( decodeShape( name ), size, angle, scaleMethod );
+  if ( props.contains( "offset" ) )
+    m->setOffset( QgsSymbolLayerV2Utils::decodePoint( props["offset"] ) );
+  if ( props.contains( "offset_unit" ) )
+    m->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit"] ) );
+  if ( props.contains( "offset_map_unit_scale" ) )
+    m->setOffsetMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( props["offset_map_unit_scale"] ) );
+  if ( props.contains( "size_unit" ) )
+    m->setSizeUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["size_unit"] ) );
+  if ( props.contains( "size_map_unit_scale" ) )
+    m->setSizeMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( props["size_map_unit_scale"] ) );
+  if ( props.contains( "horizontal_anchor_point" ) )
+  {
+    m->setHorizontalAnchorPoint( QgsMarkerSymbolLayerV2::HorizontalAnchorPoint( props[ "horizontal_anchor_point" ].toInt() ) );
+  }
+  if ( props.contains( "vertical_anchor_point" ) )
+  {
+    m->setVerticalAnchorPoint( QgsMarkerSymbolLayerV2::VerticalAnchorPoint( props[ "vertical_anchor_point" ].toInt() ) );
+  }
+
+  m->setSubSymbol( QgsFillSymbolV2::createSimple( props ) );
+
+  m->restoreDataDefinedProperties( props );
+
+  return m;
+}
+
+QString QgsFilledMarkerSymbolLayer::layerType() const
+{
+  return "FilledMarker";
+}
+
+void QgsFilledMarkerSymbolLayer::startRender( QgsSymbolV2RenderContext &context )
+{
+  if ( mFill.data() )
+  {
+    mFill->startRender( context.renderContext(), context.fields() );
+  }
+
+  QgsSimpleMarkerSymbolLayerBase::startRender( context );
+}
+
+void QgsFilledMarkerSymbolLayer::stopRender( QgsSymbolV2RenderContext& context )
+{
+  if ( mFill.data() )
+  {
+    mFill->stopRender( context.renderContext() );
+  }
+}
+
+QgsStringMap QgsFilledMarkerSymbolLayer::properties() const
+{
+  QgsStringMap map;
+  map["name"] = encodeShape( mShape );
+  map["size"] = QString::number( mSize );
+  map["size_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mSizeUnit );
+  map["size_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mSizeMapUnitScale );
+  map["angle"] = QString::number( mAngle );
+  map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
+  map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
+  map["offset_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale );
+  map["scale_method"] = QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod );
+  map["horizontal_anchor_point"] = QString::number( mHorizontalAnchorPoint );
+  map["vertical_anchor_point"] = QString::number( mVerticalAnchorPoint );
+
+  if ( mFill.data() )
+  {
+    map["color"] = QgsSymbolLayerV2Utils::encodeColor( mFill->color() );
+  }
+
+  //data define properties
+  saveDataDefinedProperties( map );
+  return map;
+}
+
+QgsFilledMarkerSymbolLayer *QgsFilledMarkerSymbolLayer::clone() const
+{
+  QgsFilledMarkerSymbolLayer* m = static_cast< QgsFilledMarkerSymbolLayer* >( QgsFilledMarkerSymbolLayer::create( properties() ) );
+  copyPaintEffect( m );
+  m->setSubSymbol( mFill->clone() );
+  return m;
+}
+
+QgsSymbolV2* QgsFilledMarkerSymbolLayer::subSymbol()
+{
+  return mFill.data();
+}
+
+bool QgsFilledMarkerSymbolLayer::setSubSymbol( QgsSymbolV2 *symbol )
+{
+  if ( symbol && symbol->type() == QgsSymbolV2::Fill )
+  {
+    mFill.reset( static_cast<QgsFillSymbolV2*>( symbol ) );
+    return true;
+  }
+  else
+  {
+    delete symbol;
+    return false;
+  }
+}
+
+double QgsFilledMarkerSymbolLayer::estimateMaxBleed() const
+{
+  if ( mFill.data() )
+  {
+    return QgsSymbolLayerV2Utils::estimateMaxSymbolBleed( mFill.data() );
+  }
+  return 0;
+}
+
+QSet<QString> QgsFilledMarkerSymbolLayer::usedAttributes() const
+{
+  QSet<QString> attr = QgsSimpleMarkerSymbolLayerBase::usedAttributes();
+  if ( mFill.data() )
+    attr.unite( mFill->usedAttributes() );
+  return attr;
+}
+
+void QgsFilledMarkerSymbolLayer::setColor( const QColor& c )
+{
+  mColor = c;
+  if ( mFill.data() )
+    mFill->setColor( c );
+}
+
+QColor QgsFilledMarkerSymbolLayer::color() const
+{
+  return mFill.data() ?  mFill->color() : mColor;
+}
+
+void QgsFilledMarkerSymbolLayer::draw( QgsSymbolV2RenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path )
+{
+  //making changes here? Don't forget to also update ::bounds if the changes affect the bounding box
+  //of the rendered point!
+
+  QPainter *p = context.renderContext().painter();
+  if ( !p )
+  {
+    return;
+  }
+
+  if ( shapeIsFilled( shape ) )
+  {
+    p->setBrush( Qt::red );
+  }
+  else
+  {
+    p->setBrush( Qt::NoBrush );
+  }
+  p->setPen( Qt::black );
+
+  if ( !polygon.isEmpty() )
+  {
+    mFill->renderPolygon( polygon, /* rings */ nullptr, context.feature(), context.renderContext() );
+  }
+  else
+  {
+    QPolygonF poly = path.toFillPolygon();
+    mFill->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext() );
+  }
+
+
+}
+
 
 //////////
 
@@ -2412,5 +2910,4 @@ QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::createFromSld( QDomElement &elemen
   m->setOffset( offset );
   return m;
 }
-
 

@@ -34,6 +34,8 @@ QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
 
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SimpleMarker", QObject::tr( "Simple marker" ), QgsSymbolV2::Marker,
                       QgsSimpleMarkerSymbolLayerV2::create, QgsSimpleMarkerSymbolLayerV2::createFromSld ) );
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "FilledMarker", QObject::tr( "Filled marker" ), QgsSymbolV2::Marker,
+                      QgsFilledMarkerSymbolLayer::create ) );
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SvgMarker", QObject::tr( "SVG marker" ), QgsSymbolV2::Marker,
                       QgsSvgMarkerSymbolLayerV2::create, QgsSvgMarkerSymbolLayerV2::createFromSld ) );
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "FontMarker", QObject::tr( "Font marker" ), QgsSymbolV2::Marker,
