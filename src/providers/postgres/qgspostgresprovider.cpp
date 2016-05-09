@@ -2372,7 +2372,7 @@ void QgsPostgresProvider::appendGeomParam( const QgsGeometry *geom, QStringList 
 
   QString param;
 
-  QgsGeometry* convertedGeom = convertToProviderType( geom );
+  QScopedPointer<QgsGeometry> convertedGeom( convertToProviderType( geom ) );
   const unsigned char *buf = convertedGeom ? convertedGeom->asWkb() : geom->asWkb();
   size_t wkbSize = convertedGeom ? convertedGeom->wkbSize() : geom->wkbSize();
 
@@ -2383,7 +2383,6 @@ void QgsPostgresProvider::appendGeomParam( const QgsGeometry *geom, QStringList 
     else
       param += QString( "\\%1" ).arg(( int ) buf[i], 3, 8, QChar( '0' ) );
   }
-  delete convertedGeom;
   params << param;
 }
 

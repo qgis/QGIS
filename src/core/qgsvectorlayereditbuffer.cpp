@@ -15,13 +15,7 @@
 #include "qgsvectorlayereditbuffer.h"
 
 #include "qgsgeometry.h"
-#include "qgscurvepolygonv2.h"
-#include "qgscurvev2.h"
-#include "qgsgeometrycollectionv2.h"
-#include "qgsgeometryfactory.h"
-#include "qgsgeometryutils.h"
 #include "qgslogger.h"
-#include "qgspolygonv2.h"
 #include "qgsvectorlayerundocommand.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
