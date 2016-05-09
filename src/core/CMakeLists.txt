@@ -194,6 +194,7 @@ SET(QGIS_CORE_SRCS
   qgssqlexpressioncompiler.cpp
   qgssqliteexpressioncompiler.cpp
   qgsstatisticalsummary.cpp
+  qgsstringstatisticalsummary.cpp
   qgsstringutils.cpp
   qgstextlabelfeature.cpp
   qgstolerance.cpp
@@ -689,6 +690,7 @@ SET(QGIS_CORE_HDRS
   qgsspatialindex.h
   qgssqlexpressioncompiler.h
   qgsstatisticalsummary.h
+  qgsstringstatisticalsummary.h
   qgsstringutils.h
   qgstextlabelfeature.h
   qgstolerance.h
