@@ -33,6 +33,9 @@ class QgsRasterTransparency;
   */
 class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 {
+
+    Q_DECLARE_TR_FUNCTIONS( QgsRasterRenderer );
+
   public:
     // Origin of min / max values
     enum MinMaxOrigin

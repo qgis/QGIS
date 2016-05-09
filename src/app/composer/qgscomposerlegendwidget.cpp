@@ -1006,7 +1006,7 @@ QgsComposerLegendMenuProvider::QgsComposerLegendMenuProvider( QgsLayerTreeView* 
     , mWidget( w )
 {}
 
-QMenu*QgsComposerLegendMenuProvider::createContextMenu()
+QMenu* QgsComposerLegendMenuProvider::createContextMenu()
 {
   if ( !mView->currentNode() )
     return nullptr;
@@ -1018,7 +1018,7 @@ QMenu*QgsComposerLegendMenuProvider::createContextMenu()
 
   if ( QgsLayerTree::isLayer( mView->currentNode() ) )
   {
-    menu->addAction( tr( "Reset to defaults" ), mWidget, SLOT( resetLayerNodeToDefaults() ) );
+    menu->addAction( QObject::tr( "Reset to defaults" ), mWidget, SLOT( resetLayerNodeToDefaults() ) );
     menu->addSeparator();
   }
 
