@@ -202,6 +202,9 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.filename = QFileDialog.getOpenFileName(
             self, self.tr('Save script'), scriptDir, filterName)
 
+        if self.filename == '':
+            return
+
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         with codecs.open(self.filename, 'r', encoding='utf-8') as f:
             txt = f.read()
