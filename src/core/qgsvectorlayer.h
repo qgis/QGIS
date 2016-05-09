@@ -1321,6 +1321,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * This is a writable configuration that can directly be changed in place.
      *
      * @return The configuration of this layers' form
+     *
+     * @note Added in QGIS 2.14
      */
     QgsEditFormConfig* editFormConfig() const { return mEditFormConfig; }
 
