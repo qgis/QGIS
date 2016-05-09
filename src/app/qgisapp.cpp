@@ -6657,18 +6657,6 @@ void QgisApp::mergeSelectedFeatures()
     return;
   }
 
-  //make a first geometry union and notify the user straight away if the union geometry type does not match the layer one
-  if ( providerChecksTypeStrictly && unionGeom->wkbType() != vl->wkbType() )
-  {
-    messageBar()->pushMessage(
-      tr( "Merge cancelled" ),
-      tr( "The union operation would result in a geometry type that is not compatible with the current layer." ),
-      QgsMessageBar::CRITICAL );
-
-    delete unionGeom;
-    return;
-  }
-
   //merge the attributes together
   QgsMergeAttributesDialog d( featureList, vl, mapCanvas() );
   if ( d.exec() == QDialog::Rejected )
@@ -6705,16 +6693,6 @@ void QgisApp::mergeSelectedFeatures()
           tr( "An error occurred during the merge operation" ),
           QgsMessageBar::CRITICAL );
       }
-      return;
-    }
-
-    if ( providerChecksTypeStrictly && unionGeom->wkbType() != vl->wkbType() )
-    {
-      messageBar()->pushMessage(
-        tr( "Merge cancelled" ),
-        tr( "The union operation would result in a geometry type that is not compatible with the current layer." ),
-        QgsMessageBar::CRITICAL );
-      delete unionGeom;
       return;
     }
   }
