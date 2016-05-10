@@ -1,6 +1,7 @@
 #ifndef QGSMAPSTYLESDOCK_H
 #define QGSMAPSTYLESDOCK_H
 
+#include <QToolButton>
 #include <QWidget>
 #include <QLabel>
 #include <QTabWidget>
@@ -67,7 +68,8 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget
     QgsRendererV2PropertiesDialog* mVectorStyleWidget;
     QDialogButtonBox* mButtonBox;
     QCheckBox* mLiveApplyCheck;
-
+    QToolButton* mUndoButton;
+    QToolButton* mRedoButton;
 };
 
 #endif // QGSMAPSTYLESDOCK_H

@@ -50,7 +50,17 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
   mLiveApplyCheck = new QCheckBox( "Live update" );
   mLiveApplyCheck->setChecked( true );
 
+  mUndoButton = new QToolButton( this );
+  mUndoButton->setIcon( QgsApplication::getThemeIcon( "mActionUndo.png" ) );
+  mRedoButton = new QToolButton( this );
+  mRedoButton->setIcon( QgsApplication::getThemeIcon( "mActionRedo.png" ) );
+
+  connect( mUndoButton, SIGNAL( pressed() ), mUndoWidget, SLOT( undo() ) );
+  connect( mRedoButton, SIGNAL( pressed() ), mUndoWidget, SLOT( redo() ) );
+
   QHBoxLayout* bottomLayout = new QHBoxLayout( );
+  bottomLayout->addWidget( mUndoButton );
+  bottomLayout->addWidget( mRedoButton );
   bottomLayout->addWidget( mButtonBox );
   bottomLayout->addWidget( mLiveApplyCheck );
   layout->addLayout( bottomLayout );
