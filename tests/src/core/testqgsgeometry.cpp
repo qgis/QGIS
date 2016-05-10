@@ -35,6 +35,7 @@
 #include "qgspolygonv2.h"
 #include "qgscircularstringv2.h"
 #include "qgsgeometrycollectionv2.h"
+#include "qgsgeometryfactory.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -93,6 +94,8 @@ class TestQgsGeometry : public QObject
     void exportToGeoJSON();
 
     void wkbInOut();
+
+    void segmentizeCircularString();
 
   private:
     /** A helper method to do a render check to see if the geometry op is as expected */
@@ -3417,6 +3420,23 @@ void TestQgsGeometry::wkbInOut()
   badHeader.fromWkb( wkb, size );
   QVERIFY( badHeader.isEmpty() );
   QCOMPARE( badHeader.wkbType(), QGis::WKBUnknown );
+}
+
+void TestQgsGeometry::segmentizeCircularString()
+{
+  QString wkt( "CIRCULARSTRING( 0 0, 0.5 0.5, 2 0 )" );
+  QgsCircularStringV2* circularString = dynamic_cast<QgsCircularStringV2*>( QgsGeometryFactory::geomFromWkt( wkt ) );
+  QVERIFY( circularString );
+  QgsLineStringV2* lineString = circularString->curveToLine();
+  QVERIFY( lineString );
+  QgsPointSequenceV2 points;
+  lineString->points( points );
+
+  delete circularString;
+  delete lineString;
+
+  //make sure the curve point is part of the segmentized result
+  QVERIFY( points.contains( QgsPointV2( 0.5, 0.5 ) ) );
 }
 
 QTEST_MAIN( TestQgsGeometry )
