@@ -98,9 +98,9 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
 
 void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
 {
-  if ( !layer )
+  if ( !layer || !layer->isSpatial() )
   {
-    mLayerTitleLabel->setText( "" );
+    mLayerTitleLabel->clear();
     mStackedWidget->setCurrentIndex( mNotSupportedPage );
     return;
   }
