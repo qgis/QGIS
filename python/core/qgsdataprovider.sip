@@ -223,6 +223,47 @@ class QgsDataProvider : QObject
      */
     virtual void invalidateConnections( const QString& connection );
 
+    /** Enter update mode.
+     *
+     * This is aimed at providers that can open differently the connection to
+     * the datasource, according it to be in update mode or in read-only mode.
+     * A call to this method shall be balanced with a call to leaveUpdateMode(),
+     * if this method returns true.
+     *
+     * Most providers will have an empty implementation for that method.
+     *
+     * For backward compatibility, providers that implement enterUpdateMode() should
+     * still make sure to allow editing operations to work even if enterUpdateMode()
+     * is not explicitly called.
+     *
+     * Several successive calls to enterUpdateMode() can be done. So there is
+     * a concept of stack of calls that must be handled by the provider. Only the first
+     * call to enterUpdateMode() will really turn update mode on.
+     *
+     * @return true in case of success (or no-op implementation), false in case of failure
+     *
+     * @note added in QGIS 2.16
+     */
+    virtual bool enterUpdateMode();
+
+    /** Leave update mode.
+     *
+     * This is aimed at providers that can open differently the connection to
+     * the datasource, according it to be in update mode or in read-only mode.
+     * This method shall be balanced with a succesful call to enterUpdateMode().
+     *
+     * Most providers will have an empty implementation for that method.
+     *
+     * Several successive calls to enterUpdateMode() can be done. So there is
+     * a concept of stack of calls that must be handled by the provider. Only the last
+     * call to leaveUpdateMode() will really turn update mode off.
+     *
+     * @return true in case of success (or no-op implementation), false in case of failure
+     *
+     * @note added in QGIS 2.16
+     */
+    virtual bool leaveUpdateMode();
+
   signals:
 
     /**
