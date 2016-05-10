@@ -967,8 +967,15 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         idx = layer.addExpressionField('5', QgsField('test', QVariant.LongLong))
 
-        self.assertEquals(layer.getFeatures().next()[idx], 5)
-        self.assertEquals(layer.pendingFields().count(), cnt + 1)
+        fet = next(layer.getFeatures())
+        self.assertEqual(fet[idx], 5)
+        # check fields
+        self.assertEqual(layer.fields().count(), cnt + 1)
+        self.assertEqual(fet.fields(), layer.fields())
+
+        # retrieve single feature and check fields
+        fet = next(layer.getFeatures(QgsFeatureRequest().setFilterFid(1)))
+        self.assertEqual(fet.fields(), layer.fields())
 
         layer.updateExpressionField(idx, '9')
 
