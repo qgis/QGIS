@@ -20,6 +20,8 @@
 #include "ui_qgsstatisticalsummarybase.h"
 
 #include "qgsstatisticalsummary.h"
+#include "qgsstringstatisticalsummary.h"
+#include "qgsdatetimestatisticalsummary.h"
 
 class QgsBrowserModel;
 class QModelIndex;
@@ -62,6 +64,13 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QDockWidget, private U
 
     QMap< int, QAction* > mStatsActions;
     static QList< QgsStatisticalSummary::Statistic > mDisplayStats;
+    static QList< QgsStringStatisticalSummary::Statistic > mDisplayStringStats;
+    static QList< QgsDateTimeStatisticalSummary::Statistic > mDisplayDateTimeStats;
+
+    void updateNumericStatistics( bool selectedOnly );
+    void updateStringStatistics( bool selectedOnly );
+    void updateDateTimeStatistics( bool selectedOnly );
+    void addRow( int row, const QString& name, const QString& value, bool showValue );
 };
 
 #endif // QGSSTATISTICALSUMMARYDOCKWIDGET_H
