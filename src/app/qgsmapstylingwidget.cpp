@@ -23,6 +23,7 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
     , mMapCanvas( canvas )
     , mBlockAutoApply( false )
     , mCurrentLayer( nullptr )
+    , mVectorStyleWidget( nullptr )
 {
   QBoxLayout* layout = new QVBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );

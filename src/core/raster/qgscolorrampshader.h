@@ -78,7 +78,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     /** \brief Get the maximum size the color cache can be
      * @deprecated will be removed in QGIS 3.0. Color cache is not used anymore.
      */
-    Q_DECL_DEPRECATED int maximumColorCacheSize() { return mMaximumColorCacheSize; }
+    Q_DECL_DEPRECATED int maximumColorCacheSize() { return 0; }
 
     /** \brief Set custom colormap */
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ); //TODO: sort on set
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     /** \brief Set the maximum size the color cache can be
      * @deprecated will be removed in QGIS 3.0. Color cache is not used anymore.
      */
-    Q_DECL_DEPRECATED void setMaximumColorCacheSize( int theSize ) { mMaximumColorCacheSize = theSize; }
+    Q_DECL_DEPRECATED void setMaximumColorCacheSize( int theSize ) { Q_UNUSED( theSize ); }
 
     /** \brief Generates and new RGB value based on one input value */
     bool shade( double, int*, int*, int*, int* ) override;
@@ -130,11 +130,6 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     double mLUTOffset;
     double mLUTFactor;
     bool mLUTInitialized;
-
-    /** Maximum size of the color cache. The color cache could eat a ton of
-     * memory if you have 32-bit data
-     * TODO QGIS 3: remove this */
-    int mMaximumColorCacheSize;
 
     /** Do not render values out of range */
     bool mClip;

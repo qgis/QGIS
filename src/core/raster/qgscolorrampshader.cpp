@@ -31,6 +31,8 @@ originally part of the larger QgsRasterLayer class
 QgsColorRampShader::QgsColorRampShader( double theMinimumValue, double theMaximumValue )
     : QgsRasterShaderFunction( theMinimumValue, theMaximumValue )
     , mColorRampType( INTERPOLATED )
+    , mLUTOffset( 0.0 )
+    , mLUTFactor( 1.0 )
     , mLUTInitialized( false )
     , mClip( false )
 {
