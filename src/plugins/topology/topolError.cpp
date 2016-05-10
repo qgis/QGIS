@@ -90,7 +90,8 @@ bool TopolError::fixSnap()
   const QgsGeometry* ge = f1.constGeometry();
 
   QgsPolyline line = ge->asPolyline();
-  line.last() = mConflict->asPolyline().last();
+  QgsPolyline conflictLine = mConflict->asPolyline();
+  line.last() = conflictLine.last();
 
   QgsGeometry* newG = QgsGeometry::fromPolyline( line );
   bool ret = fl.layer->changeGeometry( f1.id(), newG );

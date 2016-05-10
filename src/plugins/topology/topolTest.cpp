@@ -1256,8 +1256,9 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
         QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
         continue;
       }
-      QgsGeometry* startPoint = QgsGeometry::fromPoint( g2->asPolyline().at( 0 ) );
-      QgsGeometry* endPoint = QgsGeometry::fromPoint( g2->asPolyline().last() );
+      QgsPolyline g2Line = g2->asPolyline();
+      QgsGeometry* startPoint = QgsGeometry::fromPoint( g2Line.at( 0 ) );
+      QgsGeometry* endPoint = QgsGeometry::fromPoint( g2Line.last() );
       touched = g1->intersects( startPoint ) || g1->intersects( endPoint );
       delete startPoint;
       delete endPoint;
@@ -1322,8 +1323,9 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorL
       break;
     QgsGeometry* g1 = it->feature.geometry();
 
-    QgsGeometry* startPoint = QgsGeometry::fromPoint( g1->asPolyline().at( 0 ) );
-    QgsGeometry* endPoint = QgsGeometry::fromPoint( g1->asPolyline().last() );
+    QgsPolyline g1Polyline = g1->asPolyline();
+    QgsGeometry* startPoint = QgsGeometry::fromPoint( g1Polyline.at( 0 ) );
+    QgsGeometry* endPoint = QgsGeometry::fromPoint( g1Polyline.last() );
 
     QgsRectangle bb = g1->boundingBox();
     QList<QgsFeatureId> crossingIds;
@@ -1680,7 +1682,6 @@ ErrorList topolTest::runTest( const QString& testName, QgsVectorLayer* layer1, Q
     return errors;
   }
 
-  QString secondLayerId;
   mFeatureList1.clear();
   mFeatureMap2.clear();
 
@@ -1704,8 +1705,6 @@ ErrorList topolTest::runTest( const QString& testName, QgsVectorLayer* layer1, Q
 
     fillFeatureList( layer1, extent );
     //fillFeatureMap( layer1, extent );
-
-    QString secondLayerId = layer2->id();
 
     if ( !mLayerIndexes.contains( layer2->id() ) )
     {

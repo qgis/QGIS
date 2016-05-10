@@ -192,7 +192,7 @@ QWidget* QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
   }
 
   if ( toolButton && !toolButton->actions().isEmpty() && actions->defaultAction() == -1 )
-    toolButton->setDefaultAction( toolButton->actions().first() );
+    toolButton->setDefaultAction( toolButton->actions().at( 0 ) );
 
   return container;
 }

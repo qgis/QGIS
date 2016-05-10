@@ -484,7 +484,7 @@ QPolygonF curvedArrow( QPointF po, QPointF pm, QPointF pd, qreal startWidth, qre
     path.lineTo( circlePoint( circleCenter, circleRadius + direction * width / 2, angle_o + headAngle ) );
   }
 
-  return path.toSubpathPolygons()[0];
+  return path.toSubpathPolygons().at( 0 );
 }
 
 void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolV2RenderContext& context )

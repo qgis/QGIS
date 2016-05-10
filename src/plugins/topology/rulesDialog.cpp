@@ -94,7 +94,7 @@ void rulesDialog::readTest( int index, QgsMapLayerRegistry* layerRegistry )
   if ( !( QgsVectorLayer* )layerRegistry->mapLayers().contains( layer1Id ) )
     return;
 
-  l1 = ( QgsVectorLayer* )layerRegistry->mapLayers()[layer1Id];
+  l1 = ( QgsVectorLayer* )layerRegistry->mapLayer( layer1Id );
   if ( !l1 )
     return;
 
@@ -108,7 +108,7 @@ void rulesDialog::readTest( int index, QgsMapLayerRegistry* layerRegistry )
       return;
     else
     {
-      l2 = ( QgsVectorLayer* )layerRegistry->mapLayers()[layer2Id];
+      l2 = ( QgsVectorLayer* )layerRegistry->mapLayer( layer2Id );
       layer2Name = l2->name();
     }
   }
@@ -175,7 +175,7 @@ void rulesDialog::showControls( const QString& testName )
     mLayer2Box->setVisible( true );
     for ( int i = 0; i < layerList.count(); ++i )
     {
-      QgsVectorLayer* v1 = ( QgsVectorLayer* )layerRegistry->mapLayers()[layerList[i]];
+      QgsVectorLayer* v1 = ( QgsVectorLayer* )layerRegistry->mapLayer( layerList[i] );
 
       if ( !v1 )
       {
@@ -319,7 +319,7 @@ void rulesDialog::updateRuleItems( const QString &layerName )
   QString layerId = mLayer1Box->itemData( mLayer1Box->currentIndex() ).toString();
 
   QgsMapLayerRegistry* layerRegistry = QgsMapLayerRegistry::instance();
-  QgsVectorLayer* vlayer = ( QgsVectorLayer* )layerRegistry->mapLayers()[layerId];
+  QgsVectorLayer* vlayer = ( QgsVectorLayer* )layerRegistry->mapLayer( layerId );
 
   if ( !vlayer )
   {
@@ -353,7 +353,7 @@ void rulesDialog::initGui()
   mLayer1Box->blockSignals( true );
   for ( int i = 0; i < layerList.size(); ++i )
   {
-    QgsVectorLayer* v1 = ( QgsVectorLayer* )layerRegistry->mapLayers()[layerList[i]];
+    QgsVectorLayer* v1 = ( QgsVectorLayer* )layerRegistry->mapLayer( layerList[i] );
     qDebug() << "layerid = " + layerList[i];
 
     // add layer name to the layer combo boxes

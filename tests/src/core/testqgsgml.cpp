@@ -118,11 +118,13 @@ void TestQgsGML::testFromByteArray()
   QgsGml gmlParser( "mytypename", "mygeom", fields );
   QGis::WkbType wkbType;
   QCOMPARE( gmlParser.getFeatures( data1.toAscii(), &wkbType ), 0 );
-  QCOMPARE( gmlParser.featuresMap().size(), 1 );
-  QVERIFY( gmlParser.featuresMap().find( 0 ) != gmlParser.featuresMap().end() );
-  QCOMPARE( gmlParser.featuresMap()[0]->attributes().size(), 1 );
-  QVERIFY( gmlParser.idsMap().find( 0 ) != gmlParser.idsMap().end() );
-  QCOMPARE( gmlParser.idsMap()[0], QString( "mytypename.1" ) );
+  QMap<QgsFeatureId, QgsFeature* > featureMaps = gmlParser.featuresMap();
+  QCOMPARE( featureMaps.size(), 1 );
+  QVERIFY( featureMaps.constFind( 0 ) != featureMaps.constEnd() );
+  QCOMPARE( featureMaps[ 0 ]->attributes().size(), 1 );
+  QMap<QgsFeatureId, QString > idsMap = gmlParser.idsMap();
+  QVERIFY( idsMap.constFind( 0 ) != idsMap.constEnd() );
+  QCOMPARE( idsMap[ 0 ], QString( "mytypename.1" ) );
 }
 
 void TestQgsGML::testStreamingParser()

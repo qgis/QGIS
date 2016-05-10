@@ -189,7 +189,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   OGRSFDriverH poDriver;
   QgsApplication::registerOgrDrivers();
 
-  poDriver = OGRGetDriverByName( mOgrDriverName.toLocal8Bit().data() );
+  poDriver = OGRGetDriverByName( mOgrDriverName.toLocal8Bit().constData() );
 
   if ( !poDriver )
   {
@@ -284,7 +284,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     options = new char *[ datasourceOptions.size()+1 ];
     for ( int i = 0; i < datasourceOptions.size(); i++ )
     {
-      options[i] = CPLStrdup( datasourceOptions[i].toLocal8Bit().data() );
+      options[i] = CPLStrdup( datasourceOptions[i].toLocal8Bit().constData() );
     }
     options[ datasourceOptions.size()] = nullptr;
   }
@@ -332,7 +332,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   {
     QString srsWkt = srs->toWkt();
     QgsDebugMsg( "WKT to save as is " + srsWkt );
-    mOgrRef = OSRNewSpatialReference( srsWkt.toLocal8Bit().data() );
+    mOgrRef = OSRNewSpatialReference( srsWkt.toLocal8Bit().constData() );
   }
 
   // datasource created, now create the output layer
@@ -351,7 +351,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     options = new char *[ layerOptions.size()+1 ];
     for ( int i = 0; i < layerOptions.size(); i++ )
     {
-      options[i] = CPLStrdup( layerOptions[i].toLocal8Bit().data() );
+      options[i] = CPLStrdup( layerOptions[i].toLocal8Bit().constData() );
     }
     options[ layerOptions.size()] = nullptr;
   }
@@ -384,7 +384,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
       if ( prjFile.open( QIODevice::WriteOnly ) )
       {
         QTextStream prjStream( &prjFile );
-        prjStream << srs->toWkt().toLocal8Bit().data() << endl;
+        prjStream << srs->toWkt().toLocal8Bit().constData() << endl;
         prjFile.close();
       }
       else
@@ -1827,7 +1827,7 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2*
         }
         else if ( mSymbologyExport == SymbolLayerSymbology )
         {
-          OGR_F_SetStyleString( poFeature, currentStyle.toLocal8Bit().data() );
+          OGR_F_SetStyleString( poFeature, currentStyle.toLocal8Bit().constData() );
           if ( !writeFeature( mLayer, poFeature ) )
           {
             return false;
@@ -1835,7 +1835,7 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2*
         }
       }
     }
-    OGR_F_SetStyleString( poFeature, styleString.toLocal8Bit().data() );
+    OGR_F_SetStyleString( poFeature, styleString.toLocal8Bit().constData() );
   }
 
   if ( mSymbologyExport == NoSymbology || mSymbologyExport == FeatureSymbology )
@@ -1899,7 +1899,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
         OGR_F_SetFieldInteger64( poFeature, ogrField, attrValue.toLongLong() );
         break;
       case QVariant::String:
-        OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).data() );
+        OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).constData() );
         break;
 #else
       case QVariant::Int:
@@ -1909,7 +1909,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
       case QVariant::LongLong:
       case QVariant::UInt:
       case QVariant::ULongLong:
-        OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).data() );
+        OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).constData() );
         break;
 #endif
       case QVariant::Double:
@@ -1925,7 +1925,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
       case QVariant::DateTime:
         if ( mOgrDriverName == "ESRI Shapefile" )
         {
-          OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toDateTime().toString( "yyyy/MM/dd hh:mm:ss.zzz" ) ).data() );
+          OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toDateTime().toString( "yyyy/MM/dd hh:mm:ss.zzz" ) ).constData() );
         }
         else
         {
@@ -1942,7 +1942,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
       case QVariant::Time:
         if ( mOgrDriverName == "ESRI Shapefile" )
         {
-          OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).data() );
+          OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).constData() );
         }
         else
         {
@@ -2517,11 +2517,11 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
           // -> test if creation failes
           QString option = "SPATIALITE=YES";
           char **options =  new char *[2];
-          options[0] = CPLStrdup( option.toLocal8Bit().data() );
+          options[0] = CPLStrdup( option.toLocal8Bit().constData() );
           options[1] = nullptr;
           OGRSFDriverH poDriver;
           QgsApplication::registerOgrDrivers();
-          poDriver = OGRGetDriverByName( drvName.toLocal8Bit().data() );
+          poDriver = OGRGetDriverByName( drvName.toLocal8Bit().constData() );
           if ( poDriver )
           {
             OGRDataSourceH ds = OGR_Dr_CreateDataSource( poDriver, TO8F( QString( "/vsimem/spatialitetest.sqlite" ) ), options );
@@ -2972,7 +2972,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
         QString styleString = levelIt.key()->symbolLayer( llayer )->ogrFeatureStyle( mmsf, musf );
         if ( !styleString.isEmpty() )
         {
-          OGR_F_SetStyleString( ogrFeature, styleString.toLocal8Bit().data() );
+          OGR_F_SetStyleString( ogrFeature, styleString.toLocal8Bit().constData() );
           if ( !writeFeature( mLayer, ogrFeature ) )
           {
             ++nErrors;

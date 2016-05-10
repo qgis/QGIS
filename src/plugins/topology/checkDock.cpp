@@ -150,7 +150,7 @@ void checkDock::deleteErrors()
 
 void checkDock::parseErrorListByLayer( const QString& layerId )
 {
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mLayerRegistry->mapLayers()[layerId] );
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mLayerRegistry->mapLayer( layerId ) );
   QList<TopolError*>::Iterator it = mErrorList.begin();
 
   while ( it != mErrorList.end() )
@@ -334,11 +334,11 @@ void checkDock::runTests( ValidateType type )
       return;
     }
 
-    QgsVectorLayer* layer1 = ( QgsVectorLayer* )mLayerRegistry->mapLayers()[layer1Str];
+    QgsVectorLayer* layer1 = ( QgsVectorLayer* )mLayerRegistry->mapLayer( layer1Str );
     QgsVectorLayer* layer2 = nullptr;
 
     if (( QgsVectorLayer* )mLayerRegistry->mapLayers().contains( layer2Str ) )
-      layer2 = ( QgsVectorLayer* )mLayerRegistry->mapLayers()[layer2Str];
+      layer2 = ( QgsVectorLayer* )mLayerRegistry->mapLayer( layer2Str );
 
     QProgressDialog progress( testName, tr( "Abort" ), 0, layer1->featureCount(), this );
     progress.setWindowModality( Qt::WindowModal );
