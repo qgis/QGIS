@@ -806,6 +806,8 @@ bool QgsVectorLayerFeatureIterator::nextFeatureFid( QgsFeature& f )
   QgsFeatureIterator fi = mSource->mProviderFeatureSource->getFeatures( mProviderRequest );
   if ( fi.nextFeature( f ) )
   {
+    f.setFields( mSource->mFields );
+
     if ( mSource->mHasEditBuffer )
       updateChangedAttributes( f );
 
