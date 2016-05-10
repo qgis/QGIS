@@ -210,13 +210,13 @@ QgsMapLayerStyleCommand::QgsMapLayerStyleCommand( QgsMapLayer *layer, const QDom
 void QgsMapLayerStyleCommand::undo()
 {
   QString error;
-  mLayer->readSymbology( mLastState, error );
+  mLayer->readStyle( mLastState, error );
   mLayer->triggerRepaint();
 }
 
 void QgsMapLayerStyleCommand::redo()
 {
   QString error;
-  mLayer->readSymbology( mXml, error );
+  mLayer->readStyle( mXml, error );
   mLayer->triggerRepaint();
 }
