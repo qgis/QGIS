@@ -238,13 +238,14 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature& feature )
   {
     if ( !readFeature( fet, feature ) )
       continue;
+    else
+      OGR_F_Destroy( fet );
 
     if ( !mRequest.filterRect().isNull() && !feature.constGeometry() )
       continue;
 
     // we have a feature, end this cycle
     feature.setValid( true );
-    OGR_F_Destroy( fet );
     return true;
 
   } // while
