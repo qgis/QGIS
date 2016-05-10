@@ -149,6 +149,7 @@ void QgsHeatmapRendererWidget::applyColorRamp()
     return;
 
   mRenderer->setColorRamp( ramp );
+  emit widgetChanged();
 }
 
 void QgsHeatmapRendererWidget::on_mRadiusUnitWidget_changed()
@@ -160,6 +161,7 @@ void QgsHeatmapRendererWidget::on_mRadiusUnitWidget_changed()
 
   mRenderer->setRadiusUnit( mRadiusUnitWidget->unit() );
   mRenderer->setRadiusMapUnitScale( mRadiusUnitWidget->getMapUnitScale() );
+  emit widgetChanged();
 }
 
 void QgsHeatmapRendererWidget::on_mRadiusSpinBox_valueChanged( double d )
@@ -170,6 +172,7 @@ void QgsHeatmapRendererWidget::on_mRadiusSpinBox_valueChanged( double d )
   }
 
   mRenderer->setRadius( d );
+  emit widgetChanged();
 }
 
 void QgsHeatmapRendererWidget::on_mMaxSpinBox_valueChanged( double d )
@@ -180,6 +183,7 @@ void QgsHeatmapRendererWidget::on_mMaxSpinBox_valueChanged( double d )
   }
 
   mRenderer->setMaximumValue( d );
+  emit widgetChanged();
 }
 
 void QgsHeatmapRendererWidget::on_mQualitySlider_valueChanged( int v )
@@ -190,6 +194,7 @@ void QgsHeatmapRendererWidget::on_mQualitySlider_valueChanged( int v )
   }
 
   mRenderer->setRenderQuality( v );
+  emit widgetChanged();
 }
 
 void QgsHeatmapRendererWidget::on_mInvertCheckBox_toggled( bool v )
@@ -200,9 +205,11 @@ void QgsHeatmapRendererWidget::on_mInvertCheckBox_toggled( bool v )
   }
 
   mRenderer->setInvertRamp( v );
+  emit widgetChanged();
 }
 
 void QgsHeatmapRendererWidget::weightExpressionChanged( const QString& expression )
 {
   mRenderer->setWeightExpression( expression );
+  emit widgetChanged();
 }

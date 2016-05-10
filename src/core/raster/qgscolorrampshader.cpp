@@ -32,6 +32,7 @@ QgsColorRampShader::QgsColorRampShader( double theMinimumValue, double theMaximu
     : QgsRasterShaderFunction( theMinimumValue, theMaximumValue )
     , mColorRampType( INTERPOLATED )
     , mClip( false )
+    , mLUTInitialized( false )
 {
   QgsDebugMsgLevel( "called.", 4 );
 }

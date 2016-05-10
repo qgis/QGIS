@@ -47,6 +47,12 @@ class QgsRendererV2Widget : QWidget
      */
     void layerVariablesChanged();
 
+    /**
+     * Emmited when something on the widget has changed.
+     * All widgets will fire this event to notify of an internal change.
+     */
+    void widgetChanged();
+
   protected:
     /** Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
       and by connecting the slot contextMenuViewCategories(const QPoint&)*/

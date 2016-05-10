@@ -643,6 +643,7 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount 
   mHistogramWidget->refresh();
 
   connectUpdateHandlers();
+  emit widgetChanged();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::graduatedColumnChanged( const QString& field )
@@ -682,6 +683,7 @@ void QgsGraduatedSymbolRendererV2Widget::refreshRanges( bool reset )
     return;
 
   mModel->updateSymbology( reset );
+  emit widgetChanged();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
@@ -1099,6 +1101,7 @@ void QgsGraduatedSymbolRendererV2Widget::refreshSymbolView()
     mModel->updateSymbology();
   }
   mHistogramWidget->refresh();
+  emit widgetChanged();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::showSymbolLevels()
@@ -1113,10 +1116,12 @@ void QgsGraduatedSymbolRendererV2Widget::rowsMoved()
   {
     cbxLinkBoundaries->setChecked( false );
   }
+  emit widgetChanged();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::modelDataChanged()
 {
+  emit widgetChanged();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::keyPressEvent( QKeyEvent* event )
@@ -1138,5 +1143,6 @@ void QgsGraduatedSymbolRendererV2Widget::keyPressEvent( QKeyEvent* event )
     {
       mModel->addClass( *rIt );
     }
+    emit widgetChanged();
   }
 }

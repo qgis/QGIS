@@ -1617,6 +1617,11 @@ QUndoStack* QgsMapLayer::undoStack()
   return &mUndoStack;
 }
 
+QUndoStack* QgsMapLayer::undoStackStyles()
+{
+  return &mUndoStackStyles;
+}
+
 
 void QgsMapLayer::setCustomProperty( const QString& key, const QVariant& value )
 {

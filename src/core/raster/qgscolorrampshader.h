@@ -129,7 +129,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     QVector<int> mLUT;
     double mLUTOffset;
     double mLUTFactor;
-    bool mLUTInitialized = false;
+    bool mLUTInitialized;
 
     /** Maximum size of the color cache. The color cache could eat a ton of
      * memory if you have 32-bit data

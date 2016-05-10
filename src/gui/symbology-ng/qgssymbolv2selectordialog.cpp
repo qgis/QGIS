@@ -191,8 +191,8 @@ class SymbolLayerItem : public QStandardItem
           }
         }
       }
-      if ( role == Qt::SizeHintRole )
-        return QVariant( QSize( 32, 32 ) );
+//      if ( role == Qt::SizeHintRole )
+//        return QVariant( QSize( 32, 32 ) );
       if ( role == Qt::CheckStateRole )
         return QVariant(); // could be true/false
       return QStandardItem::data( role );

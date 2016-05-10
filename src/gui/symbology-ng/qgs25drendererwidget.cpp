@@ -82,6 +82,7 @@ void Qgs25DRendererWidget::updateRenderer()
   mRenderer->setShadowEnabled( mShadowEnabledWidget->isChecked() );
   mRenderer->setShadowSpread( mShadowSizeWidget->value() );
   mRenderer->setWallShadingEnabled( mWallExpositionShading->isChecked() );
+  emit widgetChanged();
 }
 
 void Qgs25DRendererWidget::apply()
