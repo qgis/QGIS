@@ -675,10 +675,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mLayerTreeView->setObjectName( "theLayerTreeView" ); // "theLayerTreeView" used to find this canonical instance later
 
   // create undo widget
-  mUndoWidget = new QgsUndoWidget( nullptr, mMapCanvas );
+  mUndoDock = new QDockWidget( tr( "Undo/Redo Panel" ), this );
+  mUndoWidget = new QgsUndoWidget( mUndoDock, mMapCanvas );
   mUndoWidget->setObjectName( "Undo" );
-
-  mUndoDock = new QDockWidget( tr( "Undo/Redo Panel" ), nullptr );
   mUndoDock->setWidget( mUndoWidget );
 
   // Advanced Digitizing dock

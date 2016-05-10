@@ -103,10 +103,10 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
 
   mCadPaintItem = new QgsAdvancedDigitizingCanvasItem( canvas, this ) ;
 
-  mAngleConstraint = new CadConstraint( mAngleLineEdit, mLockAngleButton, mRelativeAngleButton, mRepeatingLockAngleButton );
-  mDistanceConstraint = new CadConstraint( mDistanceLineEdit, mLockDistanceButton, nullptr, mRepeatingLockDistanceButton ) ;
-  mXConstraint = new CadConstraint( mXLineEdit, mLockXButton, mRelativeXButton, mRepeatingLockXButton );
-  mYConstraint = new CadConstraint( mYLineEdit, mLockYButton, mRelativeYButton, mRepeatingLockYButton ) ;
+  mAngleConstraint.reset( new CadConstraint( mAngleLineEdit, mLockAngleButton, mRelativeAngleButton, mRepeatingLockAngleButton ) );
+  mDistanceConstraint.reset( new CadConstraint( mDistanceLineEdit, mLockDistanceButton, nullptr, mRepeatingLockDistanceButton ) );
+  mXConstraint.reset( new CadConstraint( mXLineEdit, mLockXButton, mRelativeXButton, mRepeatingLockXButton ) );
+  mYConstraint.reset( new CadConstraint( mYLineEdit, mLockYButton, mRelativeYButton, mRepeatingLockYButton ) );
   mAdditionalConstraint = NoConstraint ;
 
   mMapCanvas->installEventFilter( this );
@@ -347,19 +347,19 @@ QgsAdvancedDigitizingDockWidget::CadConstraint* QgsAdvancedDigitizingDockWidget:
   CadConstraint* constraint = nullptr;
   if ( obj == mAngleLineEdit || obj == mLockAngleButton )
   {
-    constraint = mAngleConstraint;
+    constraint = mAngleConstraint.data();
   }
   else if ( obj == mDistanceLineEdit || obj == mLockDistanceButton )
   {
-    constraint = mDistanceConstraint;
+    constraint = mDistanceConstraint.data();
   }
   else if ( obj == mXLineEdit  || obj == mLockXButton )
   {
-    constraint = mXConstraint;
+    constraint = mXConstraint.data();
   }
   else if ( obj == mYLineEdit  || obj == mLockYButton )
   {
-    constraint = mYConstraint;
+    constraint = mYConstraint.data();
   }
   return constraint;
 }
@@ -439,7 +439,7 @@ void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default t
   if ( activate )
   {
     // deactivate perpendicular/parallel if angle has been activated
-    if ( constraint == mAngleConstraint )
+    if ( constraint == mAngleConstraint.data() )
     {
       lockAdditionalConstraint( NoConstraint );
     }

@@ -256,13 +256,13 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     //! Additional constraints are used to place perpendicular/parallel segments to snapped segments on the canvas
     AdditionalConstraint additionalConstraint() const  { return mAdditionalConstraint; }
     //! Constraint on the angle
-    const CadConstraint* constraintAngle() const  { return mAngleConstraint; }
+    const CadConstraint* constraintAngle() const  { return mAngleConstraint.data(); }
     //! Constraint on the distance
-    const CadConstraint* constraintDistance() const { return mDistanceConstraint; }
+    const CadConstraint* constraintDistance() const { return mDistanceConstraint.data(); }
     //! Constraint on the X coordinate
-    const CadConstraint* constraintX() const { return mXConstraint; }
+    const CadConstraint* constraintX() const { return mXConstraint.data(); }
     //! Constraint on the Y coordinate
-    const CadConstraint* constraintY() const { return mYConstraint; }
+    const CadConstraint* constraintY() const { return mYConstraint.data(); }
     //! Constraint on a common angle
     bool commonAngleConstraint() const { return mCommonAngleConstraint; }
 
@@ -439,10 +439,10 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     QgsMapMouseEvent::SnappingMode mSnappingMode;
 
     // constraints
-    CadConstraint* mAngleConstraint;
-    CadConstraint* mDistanceConstraint;
-    CadConstraint* mXConstraint;
-    CadConstraint* mYConstraint;
+    QScopedPointer< CadConstraint > mAngleConstraint;
+    QScopedPointer< CadConstraint > mDistanceConstraint;
+    QScopedPointer< CadConstraint > mXConstraint;
+    QScopedPointer< CadConstraint > mYConstraint;
     AdditionalConstraint mAdditionalConstraint;
     int mCommonAngleConstraint; // if 0: do not snap to common angles
 
