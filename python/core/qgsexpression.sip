@@ -671,33 +671,33 @@ class QgsExpression
         virtual QString dump() const;
     };
 
+    //TODO QGIS 3.0 - remove
+    //! @deprecated use QgsInterval instead
     class Interval
-    {
+   {
       public:
         Interval( int seconds = 0 );
 
         //! interval length in years
-        double years();
+        double years() const;
         //! interval length in months
-        double months();
+        double months() const;
         //! interval length in weeks
-        double weeks();
+        double weeks() const;
         //! interval length in days
-        double days();
+        double days() const;
         //! interval length in hours
-        double hours();
+        double hours() const;
         //! interval length in minutus
-        double minutes();
+        double minutes() const;
         //! interval length in seconds
-        double seconds();
+        double seconds() const;
         //! getter interval validity
-        bool isValid();
+        bool isValid() const;
         //! setter interval validity
         void setValid( bool valid );
         //! compare two intervals
         bool operator==( QgsExpression::Interval other ) const;
-        //! return an invalid interval
-        static QgsExpression::Interval invalidInterVal();
         //! convert a string to an interval
         static QgsExpression::Interval fromString( const QString& string );
     };
@@ -749,7 +749,12 @@ class QgsExpression
         bool compare( double diff );
         int computeInt( int x, int y );
         double computeDouble( double x, double y );
-        QDateTime computeDateTimeFromInterval( const QDateTime& d, QgsExpression::Interval *i );
+
+        /** Computes the result date time calculation from a start datetime and an interval
+         * @param d start datetime
+         * @param i interval to add or subtract (depending on mOp)
+         */
+        QDateTime computeDateTimeFromInterval( const QDateTime& d, QgsInterval *i );
     };
 
     class NodeInOperator : QgsExpression::Node

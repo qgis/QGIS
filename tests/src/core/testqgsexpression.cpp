@@ -734,15 +734,15 @@ class TestQgsExpression: public QObject
 
       // Datetime functions
       QTest::newRow( "to date" ) << "todate('2012-06-28')" << false << QVariant( QDate( 2012, 6, 28 ) );
-      QTest::newRow( "to interval" ) << "tointerval('1 Year 1 Month 1 Week 1 Hour 1 Minute')" << false << QVariant::fromValue( QgsExpression::Interval( 34758060 ) );
+      QTest::newRow( "to interval" ) << "tointerval('1 Year 1 Month 1 Week 1 Hour 1 Minute')" << false << QVariant::fromValue( QgsInterval( 34758060 ) );
       QTest::newRow( "day with date" ) << "day('2012-06-28')" << false << QVariant( 28 );
       QTest::newRow( "day with interval" ) << "day(tointerval('28 days'))" << false << QVariant( 28.0 );
       QTest::newRow( "month with date" ) << "month('2012-06-28')" << false << QVariant( 6 );
       QTest::newRow( "month with interval" ) << "month(tointerval('2 months'))" << false << QVariant( 2.0 );
       QTest::newRow( "year with date" ) << "year('2012-06-28')" << false << QVariant( 2012 );
       QTest::newRow( "year with interval" ) << "year(tointerval('2 years'))" << false << QVariant( 2.0 );
-      QTest::newRow( "age" ) << "age('2012-06-30','2012-06-28')" << false << QVariant::fromValue( QgsExpression::Interval( 172800 ) );
-      QTest::newRow( "negative age" ) << "age('2012-06-28','2012-06-30')" << false << QVariant::fromValue( QgsExpression::Interval( -172800 ) );
+      QTest::newRow( "age" ) << "age('2012-06-30','2012-06-28')" << false << QVariant::fromValue( QgsInterval( 172800 ) );
+      QTest::newRow( "negative age" ) << "age('2012-06-28','2012-06-30')" << false << QVariant::fromValue( QgsInterval( -172800 ) );
       QTest::newRow( "day of week date" ) << "day_of_week(todate('2015-09-21'))" << false << QVariant( 1 );
       QTest::newRow( "day of week datetime" ) << "day_of_week(to_datetime('2015-09-20 13:01:43'))" << false << QVariant( 0 );
       QTest::newRow( "hour datetime" ) << "hour(to_datetime('2015-09-20 13:01:43'))" << false << QVariant( 13 );
@@ -909,10 +909,10 @@ class TestQgsExpression: public QObject
           break;
         case QVariant::UserType:
         {
-          if ( result.userType() == qMetaTypeId<QgsExpression::Interval>() )
+          if ( result.userType() == qMetaTypeId<QgsInterval>() )
           {
-            QgsExpression::Interval inter = result.value<QgsExpression::Interval>();
-            QgsExpression::Interval gotinter = expected.value<QgsExpression::Interval>();
+            QgsInterval inter = result.value<QgsInterval>();
+            QgsInterval gotinter = expected.value<QgsInterval>();
             QCOMPARE( inter.seconds(), gotinter.seconds() );
           }
           else

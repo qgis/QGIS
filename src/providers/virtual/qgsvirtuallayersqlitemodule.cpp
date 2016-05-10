@@ -28,7 +28,7 @@ email                : hugo dot mercier at oslandia dot com
 #include <qgsgeometry.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsproviderregistry.h>
-
+#include "qgsinterval.h"
 #include <sqlite3.h>
 #include <spatialite.h>
 #include <stdio.h>
@@ -816,9 +816,9 @@ void qgisFunctionWrapper( sqlite3_context* ctxt, int nArgs, sqlite3_value** args
         qgsGeometryToSpatialiteBlob( ret.value<QgsGeometry>(), /*srid*/0, blob, size );
         sqlite3_result_blob( ctxt, blob, size, deleteGeometryBlob );
       }
-      else if ( ret.canConvert<QgsExpression::Interval>() )
+      else if ( ret.canConvert<QgsInterval>() )
       {
-        sqlite3_result_double( ctxt, ret.value<QgsExpression::Interval>().seconds() );
+        sqlite3_result_double( ctxt, ret.value<QgsInterval>().seconds() );
       }
       break;
     }

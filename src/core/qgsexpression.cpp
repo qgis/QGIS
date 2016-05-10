@@ -57,79 +57,6 @@
 // from parser
 extern QgsExpression::Node* parseExpression( const QString& str, QString& parserErrorMsg );
 
-QgsExpression::Interval QgsExpression::Interval::invalidInterVal()
-{
-  QgsExpression::Interval inter = QgsExpression::Interval();
-  inter.setValid( false );
-  return inter;
-}
-
-QgsExpression::Interval QgsExpression::Interval::fromString( const QString& string )
-{
-  int seconds = 0;
-  QRegExp rx( "([-+]?\\d?\\.?\\d+\\s+\\S+)", Qt::CaseInsensitive );
-  QStringList list;
-  int pos = 0;
-
-  while (( pos = rx.indexIn( string, pos ) ) != -1 )
-  {
-    list << rx.cap( 1 );
-    pos += rx.matchedLength();
-  }
-
-  QMap<int, QStringList> map;
-  map.insert( 1, QStringList() << "second" << "seconds" << tr( "second|seconds", "list of words separated by | which reference years" ).split( '|' ) );
-  map.insert( 0 + MINUTE, QStringList() << "minute" << "minutes" << tr( "minute|minutes", "list of words separated by | which reference minutes" ).split( '|' ) );
-  map.insert( 0 + HOUR, QStringList() << "hour" << "hours" << tr( "hour|hours", "list of words separated by | which reference minutes hours" ).split( '|' ) );
-  map.insert( 0 + DAY, QStringList() << "day" << "days" << tr( "day|days", "list of words separated by | which reference days" ).split( '|' ) );
-  map.insert( 0 + WEEKS, QStringList() << "week" << "weeks" << tr( "week|weeks", "wordlist separated by | which reference weeks" ).split( '|' ) );
-  map.insert( 0 + MONTHS, QStringList() << "month" << "months" << tr( "month|months", "list of words separated by | which reference months" ).split( '|' ) );
-  map.insert( 0 + YEARS, QStringList() << "year" << "years" << tr( "year|years", "list of words separated by | which reference years" ).split( '|' ) );
-
-  Q_FOREACH ( const QString& match, list )
-  {
-    QStringList split = match.split( QRegExp( "\\s+" ) );
-    bool ok;
-    double value = split.at( 0 ).toDouble( &ok );
-    if ( !ok )
-    {
-      continue;
-    }
-
-    bool matched = false;
-    QMap<int, QStringList>::const_iterator it = map.constBegin();
-    for ( ; it != map.constEnd(); ++it )
-    {
-      int duration = it.key();
-      Q_FOREACH ( const QString& name, it.value() )
-      {
-        if ( match.contains( name, Qt::CaseInsensitive ) )
-        {
-          matched = true;
-          break;
-        }
-      }
-
-      if ( matched )
-      {
-        seconds += value * duration;
-        break;
-      }
-    }
-  }
-
-  // If we can't parse the string at all then we just return invalid
-  if ( seconds == 0 )
-    return QgsExpression::Interval::invalidInterVal();
-
-  return QgsExpression::Interval( seconds );
-}
-
-bool QgsExpression::Interval::operator==( QgsExpression::Interval other ) const
-{
-  return qgsDoubleNear( mSeconds, other.mSeconds );
-}
-
 ///////////////////////////////////////////////
 // three-value logic
 
@@ -213,14 +140,14 @@ inline bool isDateTimeSafe( const QVariant& v )
 
 inline bool isIntervalSafe( const QVariant& v )
 {
-  if ( v.canConvert<QgsExpression::Interval>() )
+  if ( v.canConvert<QgsInterval>() )
   {
     return true;
   }
 
   if ( v.type() == QVariant::String )
   {
-    return QgsExpression::Interval::fromString( v.toString() ).isValid();
+    return QgsInterval::fromString( v.toString() ).isValid();
   }
   return false;
 }
@@ -335,12 +262,12 @@ static QTime getTimeValue( const QVariant& value, QgsExpression* parent )
   }
 }
 
-static QgsExpression::Interval getInterval( const QVariant& value, QgsExpression* parent, bool report_error = false )
+static QgsInterval getInterval( const QVariant& value, QgsExpression* parent, bool report_error = false )
 {
-  if ( value.canConvert<QgsExpression::Interval>() )
-    return value.value<QgsExpression::Interval>();
+  if ( value.canConvert<QgsInterval>() )
+    return value.value<QgsInterval>();
 
-  QgsExpression::Interval inter = QgsExpression::Interval::fromString( value.toString() );
+  QgsInterval inter = QgsInterval::fromString( value.toString() );
   if ( inter.isValid() )
   {
     return inter;
@@ -349,7 +276,7 @@ static QgsExpression::Interval getInterval( const QVariant& value, QgsExpression
   if ( report_error )
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Interval" ).arg( value.toString() ) );
 
-  return QgsExpression::Interval::invalidInterVal();
+  return QgsInterval();
 }
 
 static QgsGeometry getGeometry( const QVariant& value, QgsExpression* parent )
@@ -1116,7 +1043,7 @@ static QVariant fcnAge( const QVariantList& values, const QgsExpressionContext*,
   QDateTime d1 = getDateTimeValue( values.at( 0 ), parent );
   QDateTime d2 = getDateTimeValue( values.at( 1 ), parent );
   int seconds = d2.secsTo( d1 );
-  return QVariant::fromValue( QgsExpression::Interval( seconds ) );
+  return QVariant::fromValue( QgsInterval( seconds ) );
 }
 
 static QVariant fcnDayOfWeek( const QVariantList& values, const QgsExpressionContext*, QgsExpression *parent )
@@ -1136,7 +1063,7 @@ static QVariant fcnDayOfWeek( const QVariantList& values, const QgsExpressionCon
 static QVariant fcnDay( const QVariantList& values, const QgsExpressionContext*, QgsExpression *parent )
 {
   QVariant value = values.at( 0 );
-  QgsExpression::Interval inter = getInterval( value, parent, false );
+  QgsInterval inter = getInterval( value, parent, false );
   if ( inter.isValid() )
   {
     return QVariant( inter.days() );
@@ -1151,7 +1078,7 @@ static QVariant fcnDay( const QVariantList& values, const QgsExpressionContext*,
 static QVariant fcnYear( const QVariantList& values, const QgsExpressionContext*, QgsExpression *parent )
 {
   QVariant value = values.at( 0 );
-  QgsExpression::Interval inter = getInterval( value, parent, false );
+  QgsInterval inter = getInterval( value, parent, false );
   if ( inter.isValid() )
   {
     return QVariant( inter.years() );
@@ -1166,7 +1093,7 @@ static QVariant fcnYear( const QVariantList& values, const QgsExpressionContext*
 static QVariant fcnMonth( const QVariantList& values, const QgsExpressionContext*, QgsExpression *parent )
 {
   QVariant value = values.at( 0 );
-  QgsExpression::Interval inter = getInterval( value, parent, false );
+  QgsInterval inter = getInterval( value, parent, false );
   if ( inter.isValid() )
   {
     return QVariant( inter.months() );
@@ -1181,7 +1108,7 @@ static QVariant fcnMonth( const QVariantList& values, const QgsExpressionContext
 static QVariant fcnWeek( const QVariantList& values, const QgsExpressionContext*, QgsExpression *parent )
 {
   QVariant value = values.at( 0 );
-  QgsExpression::Interval inter = getInterval( value, parent, false );
+  QgsInterval inter = getInterval( value, parent, false );
   if ( inter.isValid() )
   {
     return QVariant( inter.weeks() );
@@ -1196,7 +1123,7 @@ static QVariant fcnWeek( const QVariantList& values, const QgsExpressionContext*
 static QVariant fcnHour( const QVariantList& values, const QgsExpressionContext*, QgsExpression *parent )
 {
   QVariant value = values.at( 0 );
-  QgsExpression::Interval inter = getInterval( value, parent, false );
+  QgsInterval inter = getInterval( value, parent, false );
   if ( inter.isValid() )
   {
     return QVariant( inter.hours() );
@@ -1211,7 +1138,7 @@ static QVariant fcnHour( const QVariantList& values, const QgsExpressionContext*
 static QVariant fcnMinute( const QVariantList& values, const QgsExpressionContext*, QgsExpression *parent )
 {
   QVariant value = values.at( 0 );
-  QgsExpression::Interval inter = getInterval( value, parent, false );
+  QgsInterval inter = getInterval( value, parent, false );
   if ( inter.isValid() )
   {
     return QVariant( inter.minutes() );
@@ -1226,7 +1153,7 @@ static QVariant fcnMinute( const QVariantList& values, const QgsExpressionContex
 static QVariant fcnSeconds( const QVariantList& values, const QgsExpressionContext*, QgsExpression *parent )
 {
   QVariant value = values.at( 0 );
-  QgsExpression::Interval inter = getInterval( value, parent, false );
+  QgsInterval inter = getInterval( value, parent, false );
   if ( inter.isValid() )
   {
     return QVariant( inter.seconds() );
@@ -3704,7 +3631,7 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression *parent, const Q
       {
         QDateTime dL = getDateTimeValue( vL, parent );
         ENSURE_NO_EVAL_ERROR;
-        QgsExpression::Interval iL = getInterval( vR, parent );
+        QgsInterval iL = getInterval( vR, parent );
         ENSURE_NO_EVAL_ERROR;
         if ( mOp == boDiv || mOp == boMul || mOp == boMod )
         {
@@ -3920,7 +3847,7 @@ int QgsExpression::NodeBinaryOperator::computeInt( int x, int y )
   }
 }
 
-QDateTime QgsExpression::NodeBinaryOperator::computeDateTimeFromInterval( const QDateTime& d, QgsExpression::Interval *i )
+QDateTime QgsExpression::NodeBinaryOperator::computeDateTimeFromInterval( const QDateTime& d, QgsInterval *i )
 {
   switch ( mOp )
   {
@@ -4685,10 +4612,10 @@ QString QgsExpression::formatPreviewString( const QVariant& value )
     QgsFeature feat = value.value<QgsFeature>();
     return tr( "<i>&lt;feature: %1&gt;</i>" ).arg( feat.id() );
   }
-  else if ( value.canConvert< QgsExpression::Interval >() )
+  else if ( value.canConvert< QgsInterval >() )
   {
     //result is a feature
-    QgsExpression::Interval interval = value.value<QgsExpression::Interval>();
+    QgsInterval interval = value.value<QgsInterval>();
     return tr( "<i>&lt;interval: %1 days&gt;</i>" ).arg( interval.days() );
   }
   else if ( value.type() == QVariant::Date )

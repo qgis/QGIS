@@ -26,6 +26,7 @@
 
 #include "qgis.h"
 #include "qgsunittypes.h"
+#include "qgsinterval.h"
 
 class QgsFeature;
 class QgsGeometry;
@@ -959,51 +960,9 @@ class CORE_EXPORT QgsExpression
         bool mHasNamedNodes;
     };
 
-    class CORE_EXPORT Interval
-    {
-        // YEAR const value taken from postgres query
-        // SELECT EXTRACT(EPOCH FROM interval '1 year')
-        static const int YEARS = 31557600;
-        static const int MONTHS = 60 * 60 * 24 * 30;
-        static const int WEEKS = 60 * 60 * 24 * 7;
-        static const int DAY = 60 * 60 * 24;
-        static const int HOUR = 60 * 60;
-        static const int MINUTE = 60;
-      public:
-        Interval( double seconds = 0 )
-            : mSeconds( seconds )
-            , mValid( true )
-        { }
-
-        //! interval length in years
-        double years() { return mSeconds / YEARS;}
-        //! interval length in months
-        double months() { return mSeconds / MONTHS; }
-        //! interval length in weeks
-        double weeks() { return mSeconds / WEEKS;}
-        //! interval length in days
-        double days() { return mSeconds / DAY;}
-        //! interval length in hours
-        double hours() { return mSeconds / HOUR;}
-        //! interval length in minutus
-        double minutes() { return mSeconds / MINUTE;}
-        //! interval length in seconds
-        double seconds() { return mSeconds; }
-        //! getter interval validity
-        bool isValid() { return mValid; }
-        //! setter interval validity
-        void setValid( bool valid ) { mValid = valid; }
-        //! compare two intervals
-        bool operator==( QgsExpression::Interval other ) const;
-        //! return an invalid interval
-        static QgsExpression::Interval invalidInterVal();
-        //! convert a string to an interval
-        static QgsExpression::Interval fromString( const QString& string );
-
-      private:
-        double mSeconds;
-        bool mValid;
-    };
+    //TODO QGIS 3.0 - remove
+    //! @deprecated use QgsInterval instead
+    typedef QgsInterval Interval;
 
     class CORE_EXPORT NodeUnaryOperator : public Node
     {
@@ -1063,7 +1022,12 @@ class CORE_EXPORT QgsExpression
         bool compare( double diff );
         int computeInt( int x, int y );
         double computeDouble( double x, double y );
-        QDateTime computeDateTimeFromInterval( const QDateTime& d, QgsExpression::Interval *i );
+
+        /** Computes the result date time calculation from a start datetime and an interval
+         * @param d start datetime
+         * @param i interval to add or subtract (depending on mOp)
+         */
+        QDateTime computeDateTimeFromInterval( const QDateTime& d, QgsInterval* i );
 
         BinaryOperator mOp;
         Node* mOpLeft;
@@ -1492,7 +1456,6 @@ class CORE_EXPORT QgsExpression
 
 Q_NOWARN_DEPRECATED_POP
 
-Q_DECLARE_METATYPE( QgsExpression::Interval )
 Q_DECLARE_METATYPE( QgsExpression::Node* )
 
 #endif // QGSEXPRESSION_H
