@@ -2004,7 +2004,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
 
 bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
 {
-  (void)writeStyle( node, doc, errorMessage );
+  ( void )writeStyle( node, doc, errorMessage );
 
   // FIXME
   // edittypes are written to the layerNode
