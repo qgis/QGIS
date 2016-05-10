@@ -690,12 +690,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesCached( Qg
 void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( QgsFeature& f, const QVariant& joinValue ) const
 {
   // no memory cache, query the joined values by setting substring
-  QString subsetString = joinLayer->dataProvider()->subsetString(); // provider might already have a subset string
-  QString bkSubsetString = subsetString;
-  if ( !subsetString.isEmpty() )
-  {
-    subsetString.prepend( '(' ).append( ") AND " );
-  }
+  QString subsetString;
 
   QString joinFieldName;
   if ( joinInfo->joinFieldName.isEmpty() && joinInfo->joinFieldIndex >= 0 && joinInfo->joinFieldIndex < joinLayer->fields().count() )
@@ -728,8 +723,6 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
     subsetString += '=' + v;
   }
 
-  joinLayer->dataProvider()->setSubsetString( subsetString, false );
-
   // maybe user requested just a subset of layer's attributes
   // so we do not have to cache everything
   bool hasSubset = joinInfo->joinFieldNamesSubset();
@@ -741,6 +734,8 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   QgsFeatureRequest request;
   request.setFlags( QgsFeatureRequest::NoGeometry );
   request.setSubsetOfAttributes( attributes );
+  request.setFilterExpression( subsetString );
+  request.setLimit( 1 );
   QgsFeatureIterator fi = joinLayer->getFeatures( request );
 
   // get first feature
@@ -770,8 +765,6 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   {
     // no suitable join feature found, keeping empty (null) attributes
   }
-
-  joinLayer->dataProvider()->setSubsetString( bkSubsetString, false );
 }
 
 
