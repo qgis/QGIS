@@ -79,14 +79,16 @@ class CORE_EXPORT QgsStringStatisticalSummary
 
     /** Calculates summary statistics for a list of strings.
      * @param values list of strings
+     * @see calculateFromVariants()
      */
     void calculate( const QStringList& values );
 
     /** Calculates summary statistics for a list of variants. Any non-string variants will be
      * ignored.
      * @param values list of variants
+     * @see calculate()
      */
-    void calculate( const QVariantList& values );
+    void calculateFromVariants( const QVariantList& values );
 
     /** Returns the value of a specified statistic
      * @param stat statistic to return

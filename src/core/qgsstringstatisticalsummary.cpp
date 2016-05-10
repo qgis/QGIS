@@ -54,7 +54,7 @@ void QgsStringStatisticalSummary::calculate( const QStringList& values )
   }
 }
 
-void QgsStringStatisticalSummary::calculate( const QVariantList& values )
+void QgsStringStatisticalSummary::calculateFromVariants( const QVariantList& values )
 {
   reset();
 
