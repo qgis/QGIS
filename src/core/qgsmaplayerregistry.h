@@ -66,9 +66,10 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
     QVector<T> layers() const
     {
       QVector<T> layers;
-      Q_FOREACH ( QgsMapLayer* layer, mMapLayers.values() )
+      QMap<QString, QgsMapLayer*>::const_iterator layerIt = mMapLayers.constBegin();
+      for ( ; layerIt != mMapLayers.constEnd(); ++layerIt )
       {
-        T tLayer = qobject_cast<T>( layer );
+        T tLayer = qobject_cast<T>( layerIt.value() );
         if ( tLayer )
         {
           layers << tLayer;
