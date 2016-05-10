@@ -23,6 +23,10 @@
 #include <QRegExp>
 #include <QMetaType>
 #include <QVariant>
+#include <QDateTime>
+#include <QDate>
+#include <QTime>
+#include <QHash>
 #include <stdlib.h>
 #include <cfloat>
 #include <cmath>
@@ -372,6 +376,32 @@ inline double qgsRound( double x )
 {
   return x < 0.0 ? std::ceil( x - 0.5 ) : std::floor( x + 0.5 );
 }
+
+// Add missing qHash implementation for QDate, QTime, QDateTime
+// implementations taken from upstream Qt5 versions
+#if QT_VERSION < 0x050000
+
+//! Hash implementation for QDateTime
+//! @note not available in Python bindings
+inline uint qHash( const QDateTime &key )
+{
+  return qHash( key.toMSecsSinceEpoch() );
+}
+
+//! Hash implementation for QDate
+//! @note not available in Python bindings
+inline uint qHash( const QDate &key )
+{
+  return qHash( key.toJulianDay() );
+}
+
+//! Hash implementation for QTime
+//! @note not available in Python bindings
+inline uint qHash( const QTime &key )
+{
+  return QTime( 0, 0, 0, 0 ).msecsTo( key );
+}
+#endif
 
 //! Compares two QVariant values and returns whether the first is less than the second.
 //! Useful for sorting lists of variants, correctly handling sorting of the various
