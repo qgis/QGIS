@@ -728,6 +728,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   mMapStylingDock = new QDockWidget( this );
   mMapStylingDock->setWindowTitle( tr( "Map Styling" ) );
+  mMapStylingDock->setObjectName( "MapStyling" );
   mMapStyleWidget = new QgsMapStylingWidget( mMapCanvas );
   mMapStylingDock->setWidget( mMapStyleWidget );
   connect( mMapStyleWidget, SIGNAL( styleChanged( QgsMapLayer* ) ), this, SLOT( updateLabelToolButtons() ) );
