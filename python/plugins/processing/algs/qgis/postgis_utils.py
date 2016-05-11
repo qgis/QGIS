@@ -93,12 +93,14 @@ class TableIndex:
 class DbError(Exception):
 
     def __init__(self, message, query=None):
-        # Save error. funny that the variables are in utf-8
-        self.message = unicode(message, 'utf-8')
-        self.query = (unicode(query, 'utf-8') if query is not None else None)
+        self.message = message
+        self.query = query
 
     def __str__(self):
-        return 'MESSAGE: %s\nQUERY: %s' % (self.message, self.query)
+        return unicode(self).encode('utf-8')
+
+    def __unicode__(self):
+        return u'MESSAGE: %s\nQUERY: %s' % (self.message, self.query)
 
 
 class TableField:
