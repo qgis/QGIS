@@ -223,6 +223,27 @@ class QgsComposerMap : QgsComposerItem
     /** Stores the current layer styles into style overrides. @note added in 2.8 */
     void storeCurrentLayerStyles();
 
+    /** Whether the map should follow a visibility preset. If true, the layers and layer styles
+     * will be used from given preset name (configured with setFollowVisibilityPresetName() method).
+     * This means when preset's settings are changed, the new settings are automatically
+     * picked up next time when rendering, without having to explicitly update them.
+     * At most one of the flags keepLayerSet() and followVisibilityPreset() should be enabled
+     * at any time since they are alternative approaches - if both are enabled,
+     * following visibility preset has higher priority. If neither is enabled (or if preset name is not set),
+     * map will use the same configuration as the map canvas uses.
+     * @note added in 2.16 */
+    bool followVisibilityPreset() const;
+    /** Sets whether the map should follow a visibility preset. See followVisibilityPreset() for more details.
+     * @note added in 2.16 */
+    void setFollowVisibilityPreset( bool follow );
+    /** Preset name that decides which layers and layer styles are used for map rendering. It is only
+     * used when followVisibilityPreset() returns true.
+     * @note added in 2.16 */
+    QString followVisibilityPresetName() const;
+    /** Sets preset name for map rendering. See followVisibilityPresetName() for more details.
+     * @note added in 2.16 */
+    void setFollowVisibilityPresetName( const QString& name );
+
     // Set cache outdated
     void setCacheUpdated( bool u = false );
 

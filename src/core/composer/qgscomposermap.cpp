@@ -53,6 +53,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
     , mEvaluatedMapRotation( 0 )
     , mKeepLayerSet( false )
     , mKeepLayerStyles( false )
+    , mFollowVisibilityPreset( false )
     , mUpdatesEnabled( true )
     , mMapCanvas( nullptr )
     , mDrawCanvasItems( true )
@@ -98,6 +99,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     , mEvaluatedMapRotation( 0 )
     , mKeepLayerSet( false )
     , mKeepLayerStyles( false )
+    , mFollowVisibilityPreset( false )
     , mUpdatesEnabled( true )
     , mMapCanvas( nullptr )
     , mDrawCanvasItems( true )
@@ -537,28 +539,32 @@ QStringList QgsComposerMap::layersToRender( const QgsExpressionContext* context 
 
   QStringList renderLayerSet;
 
-  QVariant exprVal;
-  if ( dataDefinedEvaluate( QgsComposerObject::MapStylePreset, exprVal, *evalContext ) )
+  if ( mFollowVisibilityPreset )
   {
-    QString presetName = exprVal.toString();
+    QString presetName = mFollowVisibilityPresetName;
+
+    // preset name can be overridden by data-defined one
+    QVariant exprVal;
+    if ( dataDefinedEvaluate( QgsComposerObject::MapStylePreset, exprVal, *evalContext ) )
+    {
+      presetName = exprVal.toString();
+    }
 
     if ( QgsProject::instance()->visibilityPresetCollection()->hasPreset( presetName ) )
       renderLayerSet = QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( presetName );
-  }
-
-  //use stored layer set or read current set from main canvas
-  if ( renderLayerSet.isEmpty() )
-  {
-    if ( mKeepLayerSet )
-    {
-      renderLayerSet = mLayerSet;
-    }
-    else
-    {
+    else  // fallback to using map canvas layers
       renderLayerSet = mComposition->mapSettings().layers();
-    }
+  }
+  else if ( mKeepLayerSet )
+  {
+    renderLayerSet = mLayerSet;
+  }
+  else
+  {
+    renderLayerSet = mComposition->mapSettings().layers();
   }
 
+  QVariant exprVal;
   if ( dataDefinedEvaluate( QgsComposerObject::MapLayers, exprVal, *evalContext ) )
   {
     renderLayerSet.clear();
@@ -595,16 +601,29 @@ QStringList QgsComposerMap::layersToRender( const QgsExpressionContext* context 
 
 QMap<QString, QString> QgsComposerMap::layerStyleOverridesToRender( const QgsExpressionContext& context ) const
 {
-  QVariant exprVal;
-  if ( dataDefinedEvaluate( QgsComposerObject::MapStylePreset, exprVal, context ) )
+  if ( mFollowVisibilityPreset )
   {
-    QString presetName = exprVal.toString();
+    QString presetName = mFollowVisibilityPresetName;
+
+    QVariant exprVal;
+    if ( dataDefinedEvaluate( QgsComposerObject::MapStylePreset, exprVal, context ) )
+    {
+      presetName = exprVal.toString();
+    }
 
     if ( QgsProject::instance()->visibilityPresetCollection()->hasPreset( presetName ) )
       return QgsProject::instance()->visibilityPresetCollection()->presetStyleOverrides( presetName );
-
+    else
+      return QMap<QString, QString>();
   }
-  return mLayerStyleOverrides;
+  else if ( mKeepLayerStyles )
+  {
+    return mLayerStyleOverrides;
+  }
+  else
+  {
+    return QMap<QString, QString>();
+  }
 }
 
 double QgsComposerMap::scale() const
@@ -1294,6 +1313,10 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   extentElem.setAttribute( "ymax", qgsDoubleToString( mExtent.yMaximum() ) );
   composerMapElem.appendChild( extentElem );
 
+  // follow visibility preset
+  composerMapElem.setAttribute( "followPreset", mFollowVisibilityPreset ? "true" : "false" );
+  composerMapElem.setAttribute( "followPresetName", mFollowVisibilityPresetName );
+
   //map rotation
   composerMapElem.setAttribute( "mapRotation", QString::number( mMapRotation ) );
 
@@ -1394,6 +1417,10 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   {
     mMapRotation = itemElem.attribute( "mapRotation", "0" ).toDouble();
   }
+
+  // follow visibility preset
+  mFollowVisibilityPreset = itemElem.attribute( "followPreset" ).compare( "true" ) == 0;
+  mFollowVisibilityPresetName = itemElem.attribute( "followPresetName" );
 
   //mKeepLayerSet flag
   QString keepLayerSetFlag = itemElem.attribute( "keepLayerSet" );
