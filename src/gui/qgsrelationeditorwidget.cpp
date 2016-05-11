@@ -56,7 +56,7 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget* parent )
   buttonLayout->addWidget( mSaveEditsButton );
   // add feature
   mAddFeatureButton = new QToolButton( this );
-  mAddFeatureButton->setIcon( QgsApplication::getThemeIcon( "/mActionAdd.svg" ) );
+  mAddFeatureButton->setIcon( QgsApplication::getThemeIcon( "/mActionNewTableRow.png" ) );
   mAddFeatureButton->setText( tr( "Add feature" ) );
   mAddFeatureButton->setObjectName( "mAddFeatureButton" );
   buttonLayout->addWidget( mAddFeatureButton );

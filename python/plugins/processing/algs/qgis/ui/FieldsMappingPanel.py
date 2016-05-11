@@ -311,9 +311,9 @@ class FieldsMappingPanel(BASE, WIDGET):
         self.setupUi(self)
 
         self.addButton.setIcon(
-            QIcon(':/images/themes/default/mActionAdd.svg'))
+            QIcon(':/images/themes/default/mActionNewAttribute.png'))
         self.deleteButton.setIcon(
-            QIcon(':/images/themes/default/mActionDeleteSelected.svg'))
+            QIcon(':/images/themes/default/mActionDeleteAttribute.svg'))
         self.upButton.setIcon(
             QIcon(':/images/themes/default/mActionArrowUp.png'))
         self.downButton.setIcon(
