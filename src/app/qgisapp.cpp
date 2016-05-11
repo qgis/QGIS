@@ -5532,11 +5532,11 @@ void QgisApp::setMapStyleDockLayer( QgsMapLayer* layer )
 {
   if ( !layer )
   {
-    mMapStylingDock->setEnabled( false );
+    mMapStyleWidget->setEnabled( false );
     return;
   }
 
-  mMapStylingDock->setEnabled( true );
+  mMapStyleWidget->setEnabled( true );
   // We don't set the layer if the dock isn't open mainly to save
   // the extra work if it's not needed
   if ( mMapStylingDock->isVisible() )
