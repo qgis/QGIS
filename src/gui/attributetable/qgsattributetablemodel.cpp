@@ -40,9 +40,8 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
     , mLayerCache( layerCache )
     , mFieldCount( 0 )
     , mCachedField( -1 )
+    , mExtraColumns( 0 )
 {
-  QgsDebugMsg( "entered." );
-
   mExpressionContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::layerScope( layerCache->layer() );
@@ -78,6 +77,17 @@ bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid ) const
   }
 
   return mLayerCache->featureAtId( fid, mFeat );
+}
+
+int QgsAttributeTableModel::extraColumns() const
+{
+  return mExtraColumns;
+}
+
+void QgsAttributeTableModel::setExtraColumns( int extraColumns )
+{
+  mExtraColumns = extraColumns;
+  loadAttributes();
 }
 
 void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds& fids )
@@ -212,7 +222,6 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
 
 void QgsAttributeTableModel::updatedFields()
 {
-  QgsDebugMsg( "entered." );
   loadAttributes();
   emit modelChanged();
 }
@@ -235,8 +244,6 @@ void QgsAttributeTableModel::attributeDeleted( int idx )
 
 void QgsAttributeTableModel::layerDeleted()
 {
-  QgsDebugMsg( "entered." );
-
   removeRows( 0, rowCount() );
 
   mAttributeWidgetCaches.clear();
@@ -317,15 +324,15 @@ void QgsAttributeTableModel::loadAttributes()
     }
   }
 
-  if ( mFieldCount < attributes.size() )
+  if ( mFieldCount + mExtraColumns < attributes.size() + mExtraColumns )
   {
     ins = true;
-    beginInsertColumns( QModelIndex(), mFieldCount, attributes.size() - 1 );
+    beginInsertColumns( QModelIndex(), mFieldCount + mExtraColumns, attributes.size() - 1 );
   }
-  else if ( attributes.size() < mFieldCount )
+  else if ( attributes.size() + mExtraColumns < mFieldCount + mExtraColumns )
   {
     rm = true;
-    beginRemoveColumns( QModelIndex(), attributes.size(), mFieldCount - 1 );
+    beginRemoveColumns( QModelIndex(), attributes.size(), mFieldCount + mExtraColumns - 1 );
   }
 
   mFieldCount = attributes.size();
@@ -343,8 +350,6 @@ void QgsAttributeTableModel::loadAttributes()
 
 void QgsAttributeTableModel::loadLayer()
 {
-  QgsDebugMsg( "entered." );
-
   // make sure attributes are properly updated before caching the data
   // (emit of progress() signal may enter event loop and thus attribute
   // table view may be updated with inconsistent model which may assume
@@ -493,7 +498,7 @@ int QgsAttributeTableModel::rowCount( const QModelIndex &parent ) const
 int QgsAttributeTableModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
-  return qMax( 1, mFieldCount );  // if there are zero columns all model indices will be considered invalid
+  return qMax( 1, mFieldCount + mExtraColumns );  // if there are zero columns all model indices will be considered invalid
 }
 
 QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -519,7 +524,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     }
     else
     {
-      return tr( "feature id" );
+      return tr( "extra column" );
     }
   }
   else
@@ -551,7 +556,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     return rowId;
 
   if ( index.column() >= mFieldCount )
-    return role == Qt::DisplayRole ? rowId : QVariant();
+    return QVariant();
 
   int fieldId = mAttributes[index.column()];
 
@@ -760,7 +765,7 @@ void QgsAttributeTableModel::setRequest( const QgsFeatureRequest& request )
     mFeatureRequest.setFlags( mFeatureRequest.flags() | QgsFeatureRequest::NoGeometry );
 }
 
-const QgsFeatureRequest &QgsAttributeTableModel::request() const
+const QgsFeatureRequest& QgsAttributeTableModel::request() const
 {
   return mFeatureRequest;
 }

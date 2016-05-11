@@ -178,6 +178,18 @@ class QgsAttributeTableModel : QAbstractTableModel
      */
     const QgsAttributeEditorContext& editorContext() const;
 
+    /**
+     * Empty extra columns to announce from this model.
+     * Any extra columns need to be implemented by proxy models in front of this model.
+     */
+    int extraColumns() const;
+
+    /**
+     * Empty extra columns to announce from this model.
+     * Any extra columns need to be implemented by proxy models in front of this model.
+     */
+    void setExtraColumns(int extraColumns);
+
   public slots:
 
     /**

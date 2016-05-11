@@ -244,6 +244,7 @@ void QgsDualView::initModels( QgsMapCanvas* mapCanvas, const QgsFeatureRequest& 
   mMasterModel = new QgsAttributeTableModel( mLayerCache, this );
   mMasterModel->setRequest( request );
   mMasterModel->setEditorContext( mEditorContext );
+  mMasterModel->setExtraColumns( 1 ); // Add one extra column which we can "abuse" as an action column
 
   connect( mMasterModel, SIGNAL( progress( int, bool & ) ), this, SLOT( progress( int, bool & ) ) );
   connect( mMasterModel, SIGNAL( finished() ), this, SLOT( finished() ) );

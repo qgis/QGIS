@@ -205,7 +205,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /**
      * Get the the feature request
      */
-    const QgsFeatureRequest &request() const;
+    const QgsFeatureRequest& request() const;
 
     /**
      * Sets the context in which this table is shown.
@@ -222,6 +222,18 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @return The context
      */
     const QgsAttributeEditorContext& editorContext() const { return mEditorContext; }
+
+    /**
+     * Empty extra columns to announce from this model.
+     * Any extra columns need to be implemented by proxy models in front of this model.
+     */
+    int extraColumns() const;
+
+    /**
+     * Empty extra columns to announce from this model.
+     * Any extra columns need to be implemented by proxy models in front of this model.
+     */
+    void setExtraColumns( int extraColumns );
 
   public slots:
     /**
@@ -337,6 +349,8 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     QRect mChangedCellBounds;
 
     QgsAttributeEditorContext mEditorContext;
+
+    int mExtraColumns;
 };
 
 
