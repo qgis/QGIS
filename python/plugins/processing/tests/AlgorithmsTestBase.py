@@ -84,7 +84,7 @@ class AlgorithmsTest:
 
         expectFailure = False
         if 'expectedFailure' in defs:
-            exec('\n'.join(defs['expectedFailure'][:-1])) in globals(), locals()
+            exec(('\n'.join(defs['expectedFailure'][:-1])), globals(), locals())
             expectFailure = eval(defs['expectedFailure'][-1])
 
         def doCheck():

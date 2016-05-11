@@ -157,7 +157,7 @@ def addAlgorithmEntry(alg, menuName, submenuName, actionText=None, icon=None, ad
     action = QAction(icon or alg.getIcon(), actionText or alg.name, iface.mainWindow())
     action.triggered.connect(lambda: _executeAlgorithm(alg))
     action.setObjectName("mProcessingUserMenu_%s" % alg.commandLineName())
-    
+
     if menuName:
         menu = getMenu(menuName, iface.mainWindow().menuBar())
         submenu = getMenu(submenuName, menu)
