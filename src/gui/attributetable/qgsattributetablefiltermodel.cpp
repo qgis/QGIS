@@ -214,7 +214,7 @@ void QgsAttributeTableFilterModel::setSourceModel( QgsAttributeTableModel* sourc
 {
   mTableModel = sourceModel;
 
-  for ( int i = 0; i < mTableModel->columnCount(); ++i )
+  for ( int i = 0; i < mTableModel->columnCount() - mTableModel->extraColumns(); ++i )
   {
     mColumnMapping.append( i );
   }
