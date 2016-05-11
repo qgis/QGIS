@@ -23,7 +23,7 @@ __copyright__ = '(C) 2014, Nathan Woodrow'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QCoreApplication, QPyNullVariant, NULL
+from qgis.PyQt.QtCore import QCoreApplication, NULL
 
 import inspect
 import string
