@@ -266,6 +266,10 @@ void TestQgsFieldExpressionWidget::testFilters()
   QCOMPARE( widget->mCombo->itemText( 0 ), QString( "datefld" ) );
   QCOMPARE( widget->mCombo->itemText( 1 ), QString( "datetimefld" ) );
 
+  widget->setFilters( QgsFieldProxyModel::Time );
+  QCOMPARE( widget->mCombo->count(), 1 );
+  QCOMPARE( widget->mCombo->itemText( 0 ), QString( "timefld" ) );
+
   QgsMapLayerRegistry::instance()->removeMapLayer( layer );
 }
 
