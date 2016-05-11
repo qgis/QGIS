@@ -314,7 +314,7 @@ void QgsAttributeTableModel::loadAttributes()
   {
     const QString widgetType = layer()->editFormConfig()->widgetType( idx );
     QgsEditorWidgetFactory* widgetFactory = QgsEditorWidgetRegistry::instance()->factory( widgetType );
-    if ( widgetFactory && widgetType != "Hidden" )
+    if ( widgetFactory )
     {
       mWidgetFactories.append( widgetFactory );
       mWidgetConfigs.append( layer()->editFormConfig()->widgetConfig( idx ) );

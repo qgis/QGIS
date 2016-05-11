@@ -146,12 +146,33 @@ void QgsAttributeTableConfig::readXml( const QDomNode& node )
 
       mColumns.append( column );
     }
-  }
 
-  if ( configNode.toElement().attribute( "actionWidgetStyle" ) == "buttonList" )
-    mActionWidgetStyle = ButtonList;
+    if ( configNode.toElement().attribute( "actionWidgetStyle" ) == "buttonList" )
+      mActionWidgetStyle = ButtonList;
+    else
+      mActionWidgetStyle = DropDown;
+  }
   else
-    mActionWidgetStyle = DropDown;
+  {
+    // Before QGIS 2.16 the attribute table would hide "Hidden" widgets.
+    // They are migrated to hidden columns here.
+    QDomNodeList editTypeNodes = node.namedItem( "edittypes" ).childNodes();
+
+    for ( int i = 0; i < editTypeNodes.size(); i++ )
+    {
+      QDomElement editTypeElement = editTypeNodes.at( i ).toElement();
+
+      if ( editTypeElement.attribute( "widgetv2type" ) == "Hidden" )
+      {
+        ColumnConfig column;
+
+        column.mName = editTypeElement.attribute( "name" );
+        column.mHidden = true;
+        column.mType = Field;
+        mColumns.append( column );
+      }
+    }
+  }
 }
 
 void QgsAttributeTableConfig::writeXml( QDomNode& node ) const
