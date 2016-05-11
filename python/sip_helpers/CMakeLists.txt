@@ -33,7 +33,6 @@ INCLUDE_DIRECTORIES(
   .
 )
 
-ADD_CUSTOM_TARGET(generate_sip_core_cpp_files DEPENDS ${SIP_CORE_CPP_FILES})
 ADD_LIBRARY(qgis_sip_helpers OBJECT ${QGIS_SIP_HELPER_SRCS} ${QGIS_SIP_HELPER_HDRS})
-ADD_DEPENDENCIES(qgis_sip_helpers generate_sip_core_cpp_files)
+ADD_DEPENDENCIES(qgis_sip_helpers generate_sip_qgis._core_cpp_files)
 SET_TARGET_PROPERTIES(qgis_sip_helpers PROPERTIES POSITION_INDEPENDENT_CODE TRUE)

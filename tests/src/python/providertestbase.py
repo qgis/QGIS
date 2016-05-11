@@ -6,6 +6,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+from __future__ import print_function
+from builtins import str
+from builtins import object
 __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-27'
 __copyright__ = 'Copyright 2015, The QGIS Project'
@@ -55,7 +58,7 @@ class ProviderTestCase(object):
                                3: None,
                                4: 'Point(-65.32 78.3)',
                                5: 'Point(-71.123 78.23)'}
-        for pk, geom in expected_geometries.iteritems():
+        for pk, geom in expected_geometries.items():
             if geom:
                 assert compareWkt(geom, geometries[pk]), "Geometry {} mismatch Expected:\n{}\nGot:\n{}\n".format(pk, geom, geometries[pk].exportToWkt())
             else:
@@ -500,7 +503,7 @@ class ProviderTestCase(object):
                  'cnt': set([-200, 300, 100, 200, 400]),
                  'name': set(['Pear', 'Orange', 'Apple', 'Honey', NULL]),
                  'name2': set(['NuLl', 'PEaR', 'oranGe', 'Apple', 'Honey'])}
-        for field, expected in tests.iteritems():
+        for field, expected in tests.items():
             result = set([f[field] for f in self.provider.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([field], self.provider.fields()))])
             self.assertEqual(result, expected, 'Expected {}, got {}'.format(expected, result))
 

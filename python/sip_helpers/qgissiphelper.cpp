@@ -24,22 +24,25 @@
 
 bool null_from_qvariant_convertor( const QVariant *varp, PyObject **objp )
 {
-  if ( varp->isNull() )
+  static bool watchdog = false;
+
+  if ( watchdog )
+    return false;
+
+  // If we deal with a NULL QVariant (and it's not a QByteArray which properly
+  // maps NULL values)
+  // If there are more cases like this, we should consider to using a whitelist
+  // instead of a blacklist.
+  if ( varp->isNull() && varp->type() != QVariant::ByteArray )
   {
-#if 0
-    PyObject *tobj = sipConvertFromType(( void * )varp, sipType_QVariant, sipTransferObj );
-    Py_INCREF( Py_None );
-    *objp = Py_None;
-#endif
-    static bool watchdog = false;
-
-    if ( watchdog )
-      return false;
-
     watchdog = true;
-    *objp = PyObject_Call(( PyObject * )sipTypeAsPyTypeObject( sipType_QVariant ), PyTuple_New( 0 ), nullptr );
+    PyObject* vartype = sipConvertFromEnum( varp->type(), sipType_QVariant_Type );
+    *objp = PyObject_Call(( PyObject * )sipTypeAsPyTypeObject( sipType_QVariant ), PyTuple_Pack( 1, vartype ), nullptr );
     watchdog = false;
     return true;
   }
-  return false;
+  else
+  {
+    return false;
+  }
 }

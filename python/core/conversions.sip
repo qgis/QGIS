@@ -19,12 +19,14 @@ which are not wrapped by PyQt:
 - QList< QPair< QString, QList<QString> > >
 - QVector<TYPE*>
 - QMap<qint64, QgsFeature*>
+- NULL QVariant which is missing in PyQt5 with sip.enableautoconversion
 */
 
 %Feature QSETINT_CONVERSION
 %Feature QSETTYPE_CONVERSION
 %Feature QLISTCONSTPTR_CONVERSION
 %Feature QVECTORINT_CONVERSION
+%Feature CHIMERA_NULL_VARIANT_CONVERSION
 
 %ModuleHeaderCode
 
@@ -1965,6 +1967,7 @@ template <TYPE>
 };
 %End
 
+%If (CHIMERA_NULL_VARIANT_CONVERSION)
 %ModuleHeaderCode
 #include "qgissiphelper.h"
 %End
@@ -1975,4 +1978,5 @@ template <TYPE>
 void (*register_from_qvariant_convertor)(FromQVariantConvertorFn);
 register_from_qvariant_convertor = (void (*)(FromQVariantConvertorFn))sipImportSymbol("pyqt5_register_from_qvariant_convertor");
 register_from_qvariant_convertor(null_from_qvariant_convertor);
+%End
 %End
