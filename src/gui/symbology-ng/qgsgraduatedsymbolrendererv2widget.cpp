@@ -918,6 +918,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeRangeSymbol( int rangeIdx )
 
   mRenderer->updateRangeSymbol( rangeIdx, newSymbol );
   mHistogramWidget->refresh();
+  emit widgetChanged();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )
@@ -954,6 +955,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )
     }
   }
   mHistogramWidget->refresh();
+  emit widgetChanged();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::addClass()
