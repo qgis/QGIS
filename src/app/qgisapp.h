@@ -45,6 +45,7 @@ class QgsComposer;
 class QgsComposerManager;
 class QgsComposerView;
 class QgsStatusBarCoordinatesWidget;
+class QgsStatusBarMagnifierWidget;
 class QgsContrastEnhancement;
 class QgsCustomLayerOrderWidget;
 class QgsDoubleSpinBox;
@@ -1590,6 +1591,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsScaleComboBox *mScaleEdit;
     //! The validator for the mScaleEdit
     QValidator * mScaleEditValidator;
+
+    //! zoom widget
+    QgsStatusBarMagnifierWidget *mMagnifierWidget;
 
     //! Widget that will live in the statusbar to display and edit coords
     QgsStatusBarCoordinatesWidget *mCoordsEdit;

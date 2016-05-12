@@ -119,6 +119,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Destructor
     ~QgsMapCanvas();
 
+    //! Sets the factor of magnification to apply to the map canvas. Indeed, we
+    //! increase/decrease the DPI of the map settings according to this factor
+    //! in order to render marker point, labels, ... bigger.
+    //! @note added in 2.16
+    void setMagnificationFactor( double level );
+
+    //! Returns the magnification factor
+    double magnificationFactor() const { return mMagnificationFactor; };
+
     void setLayerSet( QList<QgsMapCanvasLayer>& layers );
 
     void setCurrentLayer( QgsMapLayer* layer );
@@ -721,6 +730,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Timer that periodically fires while map rendering is in progress to update the visible map
     QTimer mMapUpdateTimer;
+
+    //! magnification factor
+    double mMagnificationFactor;
 
     //! Job that takes care of map rendering in background
     QgsMapRendererQImageJob* mJob;

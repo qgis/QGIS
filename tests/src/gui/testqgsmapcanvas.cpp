@@ -17,7 +17,10 @@
 
 #include <qgsapplication.h>
 #include <qgsmapcanvas.h>
+#include <qgsvectorlayer.h>
 #include <qgsmaprenderer.h>
+#include <qgsmaplayerregistry.h>
+#include <qgsrenderchecker.h>
 
 namespace QTest
 {
@@ -43,6 +46,7 @@ class TestQgsMapCanvas : public QObject
 
     void testMapRendererInteraction();
     void testPanByKeyboard();
+    void testMagnification();
 
   private:
     QgsMapCanvas* mCanvas;
@@ -53,6 +57,7 @@ class TestQgsMapCanvas : public QObject
 void TestQgsMapCanvas::initTestCase()
 {
   QgsApplication::init(); // init paths for CRS lookup
+  QgsApplication::initQgis();
 
   mCanvas = new QgsMapCanvas();
 }
@@ -154,6 +159,79 @@ void TestQgsMapCanvas::testPanByKeyboard()
   }
 }
 
+void TestQgsMapCanvas::testMagnification()
+{
+  // test directory
+  QString testDataDir = QString( TEST_DATA_DIR ) + '/';
+  QString controlImageDir = testDataDir + "control_images/expected_map_magnification/";
+
+  // prepare spy and unit testing stuff
+  QgsRenderChecker checker;
+  checker.setControlPathPrefix( "mapcanvas" );
+  checker.setColorTolerance( 5 );
+
+  QSignalSpy spy( mCanvas, SIGNAL( mapCanvasRefreshed() ) );
+
+  QEventLoop loop;
+  QObject::connect( mCanvas, SIGNAL( mapCanvasRefreshed() ), &loop, SLOT( quit() ) );
+
+  QTimer timer;
+  QObject::connect( &timer, SIGNAL( timeout() ), &loop, SLOT( quit() ) );
+
+  QTemporaryFile tmpFile;
+  tmpFile.setAutoRemove( false );
+  tmpFile.open(); // fileName is not available until open
+  QString tmpName = tmpFile.fileName();
+  tmpFile.close();
+
+  // build vector layer
+  QString myPointsFileName = testDataDir + "points.shp";
+  QFileInfo myPointFileInfo( myPointsFileName );
+  QgsVectorLayer *layer = new QgsVectorLayer( myPointFileInfo.filePath(),
+      myPointFileInfo.completeBaseName(), "ogr" );
+
+  // prepare map canvas
+  QList<QgsMapCanvasLayer> layers;
+  layers.append( layer );
+  mCanvas->setLayerSet( layers );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << layer );
+
+  mCanvas->setExtent( layer->extent() );
+
+  // refresh and wait for rendering
+  mCanvas->refresh();
+  timer.start( 3000 );
+  loop.exec();
+  QCOMPARE( spy.count(), 1 );
+  spy.clear();
+
+  // control image with magnification factor 1.0
+  mCanvas->saveAsImage( tmpName );
+
+  checker.setControlName( "expected_map_magnification" );
+  checker.setRenderedImage( tmpName );
+  checker.setSizeTolerance( 2, 2 );
+  QCOMPARE( checker.compareImages( "map_magnification", 100 ), true );
+
+  // set magnification factor (auto refresh)
+  mCanvas->setMagnificationFactor( 6.5 );
+  QCOMPARE( mCanvas->magnificationFactor(), 6.5 );
+
+  // wait for rendering
+  timer.start( 3000 );
+  loop.exec();
+  QCOMPARE( spy.count(), 1 );
+  spy.clear();
+
+  // control image with magnification factor 6.5
+  mCanvas->saveAsImage( tmpName );
+
+  checker.setRenderedImage( tmpName );
+  checker.setControlName( "expected_map_magnification_6_5" );
+  controlImageDir = testDataDir + "control_images/";
+  checker.setSizeTolerance( 2, 2 );
+  QCOMPARE( checker.compareImages( "map_magnification_6_5", 100 ), true );
+}
 
 QTEST_MAIN( TestQgsMapCanvas )
 #include "testqgsmapcanvas.moc"

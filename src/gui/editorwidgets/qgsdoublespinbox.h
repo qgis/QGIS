@@ -40,6 +40,12 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
 
     explicit QgsDoubleSpinBox( QWidget *parent = nullptr );
 
+    /** Sets background color of QLineEdit widget within spin box
+      * @param color the background color
+      * @note added in QGIS 2.16
+      */
+    void setBackgroundColor( const QColor *color = nullptr );
+
     //! determines if the widget will show a clear button
     //! @note the clear button will set the widget to its minimum value
     void setShowClearButton( const bool showClearButton );
@@ -80,10 +86,11 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     virtual double valueFromText( const QString & text ) const override;
     virtual QValidator::State validate( QString & input, int & pos ) const override;
 
+    void paintEvent( QPaintEvent* e ) override;
+
   protected:
     virtual void resizeEvent( QResizeEvent* event ) override;
     virtual void changeEvent( QEvent* event ) override;
-    virtual void paintEvent( QPaintEvent* event ) override;
 
   private slots:
     void changed( double value );
@@ -91,6 +98,8 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
   private:
     int frameWidth() const;
     bool shouldShowClearForValue( const double value ) const;
+
+    void updateStyleSheet( const QColor& backgroundColor = QColor() );
 
     bool mShowClearButton;
     ClearValueMode mClearValueMode;

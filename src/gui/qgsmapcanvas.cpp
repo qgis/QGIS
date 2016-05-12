@@ -189,6 +189,7 @@ void QgsMapCanvasRendererSync::onLayersC2R()
 QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     : QGraphicsView( parent )
     , mCanvasProperties( new CanvasProperties )
+    , mMagnificationFactor( 1.0 )
     , mJob( nullptr )
     , mJobCancelled( false )
     , mLabelingResults( nullptr )
@@ -309,6 +310,16 @@ QgsMapCanvas::~QgsMapCanvas()
   delete mLabelingResults;
 
 } // dtor
+
+void QgsMapCanvas::setMagnificationFactor( double level )
+{
+  QgsRectangle ext = extent();
+  ext.scale( mMagnificationFactor / level );
+
+  mMagnificationFactor = level;
+  mSettings.setExtent( ext );
+  refresh();
+}
 
 void QgsMapCanvas::enableAntiAliasing( bool theFlag )
 {
@@ -678,13 +689,17 @@ void QgsMapCanvas::refreshMap()
 
   mSettings.setExpressionContext( expressionContext );
 
+  // magnify level to use in renderers
+  QgsMapSettings settings = mSettings;
+  settings.setOutputDpi( settings.outputDpi() * mMagnificationFactor );
+
   // create the renderer job
   Q_ASSERT( !mJob );
   mJobCancelled = false;
   if ( mUseParallelRendering )
-    mJob = new QgsMapRendererParallelJob( mSettings );
+    mJob = new QgsMapRendererParallelJob( settings );
   else
-    mJob = new QgsMapRendererSequentialJob( mSettings );
+    mJob = new QgsMapRendererSequentialJob( settings );
   connect( mJob, SIGNAL( finished() ), SLOT( rendererJobFinished() ) );
   mJob->setCache( mCache );
 
@@ -757,7 +772,7 @@ void QgsMapCanvas::rendererJobFinished()
 
     p.end();
 
-    mMap->setContent( img, imageRect( img, mJob->mapSettings() ) );
+    mMap->setContent( img, imageRect( img, mSettings ) );
   }
 
   // now we are in a slot called from mJob - do not delete it immediately
@@ -782,7 +797,7 @@ QgsRectangle QgsMapCanvas::imageRect( const QImage& img, const QgsMapSettings& m
 void QgsMapCanvas::mapUpdateTimeout()
 {
   const QImage& img = mJob->renderedImage();
-  mMap->setContent( img, imageRect( img, mJob->mapSettings() ) );
+  mMap->setContent( img, imageRect( img, mSettings ) );
 }
 
 void QgsMapCanvas::stopRendering()

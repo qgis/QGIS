@@ -283,7 +283,6 @@ class CORE_EXPORT QgsMapSettings
     double mMapUnitsPerPixel;
     double mScale;
 
-
     // utiity stuff
     QgsScaleCalculator mScaleCalculator;
     QgsMapToPixel mMapToPixel;
