@@ -78,6 +78,8 @@ class QgsGradientStop
 
     //! Gradient color at stop
     QColor color;
+
+    bool operator==( const QgsGradientStop& other ) const;
 };
 
 //! List of gradient stops

@@ -26,6 +26,14 @@ from qgis.testing import unittest
 class PyQgsVectorColorRamp(unittest.TestCase):
 
     def testQgsVectorGradientRampV2(self):
+        # test QgsGradientStop
+        stop = QgsGradientStop(0.9, QColor(200, 150, 100))
+        self.assertEqual(stop.offset, 0.9)
+        self.assertEqual(stop.color, QColor(200, 150, 100))
+        self.assertEqual(QgsGradientStop(0.1, QColor(180, 20, 30)), QgsGradientStop(0.1, QColor(180, 20, 30)))
+        self.assertNotEqual(QgsGradientStop(0.1, QColor(180, 20, 30)), QgsGradientStop(0.2, QColor(180, 20, 30)))
+        self.assertNotEqual(QgsGradientStop(0.1, QColor(180, 20, 30)), QgsGradientStop(0.1, QColor(180, 40, 30)))
+
         # test gradient with only start/end color
         r = QgsVectorGradientColorRampV2(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
         self.assertEqual(r.type(), 'gradient')
@@ -134,6 +142,23 @@ class PyQgsVectorColorRamp(unittest.TestCase):
         self.assertEqual(g.stops()[1], (0.1, QColor(180, 20, 40, 127)))
         self.assertEqual(g.stops()[2], (0.9, QColor(40, 60, 100, 127)))
         self.assertEqual(g.stops()[3], (1.0, QColor(0, 200, 0, 127)))
+
+        # test that stops are ordered when setting them
+        # first add some out-of-order stops
+        r.setStops([QgsGradientStop(0.4, QColor(100, 100, 40)),
+                    QgsGradientStop(0.2, QColor(200, 200, 80)),
+                    QgsGradientStop(0.8, QColor(50, 20, 10)),
+                    QgsGradientStop(0.6, QColor(10, 10, 4))])
+        s = r.stops()
+        self.assertEqual(len(s), 4)
+        self.assertEqual(s[0].offset, 0.2)
+        self.assertEqual(s[0].color, QColor(200, 200, 80))
+        self.assertEqual(s[1].offset, 0.4)
+        self.assertEqual(s[1].color, QColor(100, 100, 40))
+        self.assertEqual(s[2].offset, 0.6)
+        self.assertEqual(s[2].color, QColor(10, 10, 4))
+        self.assertEqual(s[3].offset, 0.8)
+        self.assertEqual(s[3].color, QColor(50, 20, 10))
 
     def testQgsVectorRandomColorRampV2(self):
         # test random color ramp

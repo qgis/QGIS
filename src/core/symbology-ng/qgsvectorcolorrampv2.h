@@ -81,6 +81,11 @@ class CORE_EXPORT QgsGradientStop
     double offset;
     //! Gradient color at stop
     QColor color;
+
+    bool operator==( const QgsGradientStop& other ) const
+    {
+      return other.color == color && qgsDoubleNear( other.offset, offset );
+    }
 };
 
 //! List of gradient stops
@@ -170,10 +175,12 @@ class CORE_EXPORT QgsVectorGradientColorRampV2 : public QgsVectorColorRampV2
     void convertToDiscrete( bool discrete );
 
     /** Sets the list of intermediate gradient stops for the ramp.
-     * @param stops list of stops. Any existing color stops will be replaced
+     * @param stops list of stops. Any existing color stops will be replaced. The stop
+     * list will be automatically reordered so that stops are listed in ascending offset
+     * order.
      * @see stops()
      */
-    void setStops( const QgsGradientStopsList& stops ) { mStops = stops; }
+    void setStops( const QgsGradientStopsList& stops );
 
     /** Returns the list of intermediate gradient stops for the ramp.
      * @see setStops()
