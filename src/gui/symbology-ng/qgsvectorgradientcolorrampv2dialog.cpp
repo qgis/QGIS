@@ -97,7 +97,6 @@ QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVecto
   mLightnessCurve->setTitle( "Lightness" );
   mLightnessCurve->setPen( QPen( QColor( 70, 150, 255 ), 0.0 ) ),
   mLightnessCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-
   mLightnessCurve->attach( mPlot );
 
   mHueCurve = new QwtPlotCurve();
@@ -119,22 +118,9 @@ QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVecto
   mAlphaCurve->attach( mPlot );
 
   mPlotFilter = new QgsGradientPlotEventFilter( mPlot );
-
   connect( mPlotFilter, SIGNAL( mousePress( QPointF ) ), this, SLOT( plotMousePress( QPointF ) ) );
   connect( mPlotFilter, SIGNAL( mouseRelease( QPointF ) ), this, SLOT( plotMouseRelease( QPointF ) ) );
   connect( mPlotFilter, SIGNAL( mouseMove( QPointF ) ), this, SLOT( plotMouseMove( QPointF ) ) );
-#if 0
-  mPicker = new QwtPlotPicker( mPlot->canvas() );
-  mPicker->setTrackerMode( QwtPicker::ActiveOnly );
-  mPicker->setRubberBand( QwtPicker::NoRubberBand );
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-  mHistoPicker->setStateMachine( new QwtPickerDragPointMachine );
-#else
-  mPicker->setSelectionFlags( QwtPicker::PointSelection | QwtPicker::DragSelection );
-#endif
-
-  connect( mPicker, SIGNAL( moved( const QwtDoublePoint& ) ), this, SLOT( plotPickerMoved( const QwtDoublePoint & ) ) );
-#endif
 
   mPlotHueCheckbox->setChecked( settings.value( "/GradientEditor/plotHue", false ).toBool() );
   mPlotLightnessCheckbox->setChecked( settings.value( "/GradientEditor/plotLightness", true ).toBool() );
@@ -405,7 +391,6 @@ void QgsVectorGradientColorRampV2Dialog::plotMousePress( QPointF point )
     }
   }
 
-
   // watch out - selected stop index may differ if stops in editor are out of order!!!
   if ( mCurrentPlotMarkerIndex >= 0 )
     mStopEditor->selectStop( mCurrentPlotMarkerIndex );
@@ -561,10 +546,6 @@ void QgsVectorGradientColorRampV2Dialog::setColor2( const QColor& color )
   mStopEditor->setColor2( color );
   updateColorButtons();
 }
-
-
-
-
 
 
 /// @cond PRIVATE
