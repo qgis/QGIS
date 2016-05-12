@@ -546,6 +546,7 @@ void QgsVectorGradientColorRampV2Dialog::updateRampFromStopEditor()
   mColorWidget->setColor( mStopEditor->selectedStop().color );
   mColorWidget->blockSignals( false );
 
+  updateColorButtons();
   updatePlot();
 }
 

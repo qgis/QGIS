@@ -68,7 +68,7 @@ void QgsGradientStopEditor::setGradientRamp( const QgsVectorGradientColorRampV2 
 QSize QgsGradientStopEditor::sizeHint() const
 {
   //horizontal
-  return QSize( 200, 100 );
+  return QSize( 200, 80 );
 }
 
 void QgsGradientStopEditor::paintEvent( QPaintEvent *event )
