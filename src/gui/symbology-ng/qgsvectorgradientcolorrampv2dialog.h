@@ -21,6 +21,11 @@
 #include "ui_qgsvectorgradientcolorrampv2dialogbase.h"
 
 class QgsVectorGradientColorRampV2;
+class QwtPlot;
+class QwtPlotCurve;
+class QwtPlotMarker;
+class QwtPlotPicker;
+class QgsGradientPlotEventFilter;
 
 class GUI_EXPORT QgsVectorGradientColorRampV2Dialog : public QDialog, private Ui::QgsVectorGradientColorRampV2DialogBase
 {
@@ -28,34 +33,81 @@ class GUI_EXPORT QgsVectorGradientColorRampV2Dialog : public QDialog, private Ui
 
   public:
     QgsVectorGradientColorRampV2Dialog( QgsVectorGradientColorRampV2* ramp, QWidget* parent = nullptr );
+    ~QgsVectorGradientColorRampV2Dialog();
 
   public slots:
     void setColor1( const QColor& color );
     void setColor2( const QColor& color );
-
-    void toggledStops( bool on );
-    void addStop();
-    void removeStop();
-
-    void stopDoubleClicked( QTreeWidgetItem* item, int column );
-    void setItemStopColor( const QColor& newColor );
 
   protected slots:
     void on_cboType_currentIndexChanged( int index );
     void on_btnInformation_pressed();
 
   protected:
-
-    void updateStops();
-    void updatePreview();
-    void setStopColor( QTreeWidgetItem* item, const QColor& color );
-
     QgsVectorGradientColorRampV2* mRamp;
 
-    static const int StopColorRole = Qt::UserRole + 1;
-    static const int StopOffsetRole = Qt::UserRole + 2;
+  private slots:
 
-    QTreeWidgetItem* mCurrentItem;
+    void updateRampFromStopEditor();
+    void updateColorButtons();
+    void updateStopEditor();
+    void selectedStopChanged( const QgsGradientStop& stop );
+    void colorWidgetChanged( const QColor& color );
+    void on_mPositionSpinBox_valueChanged( double val );
+    void on_mPlotHueCheckbox_toggled( bool checked );
+    void on_mPlotLightnessCheckbox_toggled( bool checked );
+    void on_mPlotSaturationCheckbox_toggled( bool checked );
+    void on_mPlotAlphaCheckbox_toggled( bool checked );
+    void plotMousePress( QPointF point );
+    void plotMouseRelease( QPointF point );
+    void plotMouseMove( QPointF point );
+
+  private:
+
+    QwtPlotCurve* mLightnessCurve;
+    QwtPlotCurve* mSaturationCurve;
+    QwtPlotCurve* mHueCurve;
+    QwtPlotCurve* mAlphaCurve;
+    QList< QwtPlotMarker* > mMarkers;
+    QwtPlotPicker* mPicker;
+    QgsGradientPlotEventFilter* mPlotFilter;
+    int mCurrentPlotColorComponent;
+    int mCurrentPlotMarkerIndex;
+
+    void updatePlot();
+    void addPlotMarker( double x, double y, const QColor &color, bool isSelected = false );
+    void addMarkersForColor( double x, const QColor &color, bool isSelected = false );
 };
+
+
+//
+// NOTE:
+// For private only, not part of stable api or exposed to Python bindings
+//
+/// @cond PRIVATE
+class GUI_EXPORT QgsGradientPlotEventFilter: public QObject
+{
+    Q_OBJECT
+
+  public:
+
+    QgsGradientPlotEventFilter( QwtPlot *plot );
+
+    virtual ~QgsGradientPlotEventFilter() {}
+
+    virtual bool eventFilter( QObject* object, QEvent* event ) override;
+
+  signals:
+
+    void mousePress( QPointF );
+    void mouseRelease( QPointF );
+    void mouseMove( QPointF );
+
+  private:
+
+    QwtPlot* mPlot;
+    QPointF mapPoint( QPointF point ) const;
+};
+///@endcond
 
 #endif
