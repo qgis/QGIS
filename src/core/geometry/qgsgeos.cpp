@@ -1854,12 +1854,71 @@ QgsGeometry QgsGeos::shortestLine( const QgsGeometry& other, QString* errorMsg )
   return QgsGeometry( line );
 }
 
+
+/** Extract coordinates of linestring's endpoints. Returns false on error. */
+static bool _linestringEndpoints( const GEOSGeometry* linestring, double& x1, double& y1, double& x2, double& y2 )
+{
+  const GEOSCoordSequence* coordSeq = GEOSGeom_getCoordSeq_r( geosinit.ctxt, linestring );
+  if ( !coordSeq )
+    return false;
+
+  unsigned int coordSeqSize;
+  if ( GEOSCoordSeq_getSize_r( geosinit.ctxt, coordSeq, &coordSeqSize ) == 0 )
+    return false;
+
+  if ( coordSeqSize < 2 )
+    return false;
+
+  GEOSCoordSeq_getX_r( geosinit.ctxt, coordSeq, 0, &x1 );
+  GEOSCoordSeq_getY_r( geosinit.ctxt, coordSeq, 0, &y1 );
+  GEOSCoordSeq_getX_r( geosinit.ctxt, coordSeq, coordSeqSize - 1, &x2 );
+  GEOSCoordSeq_getY_r( geosinit.ctxt, coordSeq, coordSeqSize - 1, &y2 );
+  return true;
+}
+
+
+/** Merge two linestrings if they meet at the given intersection point, return new geometry or null on error. */
+static GEOSGeometry* _mergeLinestrings( const GEOSGeometry* line1, const GEOSGeometry* line2, const QgsPoint& interesectionPoint )
+{
+  double x1, y1, x2, y2;
+  if ( !_linestringEndpoints( line1, x1, y1, x2, y2 ) )
+    return nullptr;
+
+  double rx1, ry1, rx2, ry2;
+  if ( !_linestringEndpoints( line2, rx1, ry1, rx2, ry2 ) )
+    return nullptr;
+
+  bool interesectionAtOrigLineEndpoint =
+    ( interesectionPoint.x() == x1 && interesectionPoint.y() == y1 ) ||
+    ( interesectionPoint.x() == x2 && interesectionPoint.y() == y2 );
+  bool interesectionAtReshapeLineEndpoint =
+    ( interesectionPoint.x() == rx1 && interesectionPoint.y() == ry1 ) ||
+    ( interesectionPoint.x() == rx2 && interesectionPoint.y() == ry2 );
+
+  // the intersection must be at the begin/end of both lines
+  if ( interesectionAtOrigLineEndpoint && interesectionAtReshapeLineEndpoint )
+  {
+    GEOSGeometry* g1 = GEOSGeom_clone_r( geosinit.ctxt, line1 );
+    GEOSGeometry* g2 = GEOSGeom_clone_r( geosinit.ctxt, line2 );
+    GEOSGeometry* geoms[2] = { g1, g2 };
+    GEOSGeometry* multiGeom = GEOSGeom_createCollection_r( geosinit.ctxt, GEOS_MULTILINESTRING, geoms, 2 );
+    GEOSGeometry* res = GEOSLineMerge_r( geosinit.ctxt, multiGeom );
+    GEOSGeom_destroy_r( geosinit.ctxt, multiGeom );
+    return res;
+  }
+  else
+    return nullptr;
+}
+
+
 GEOSGeometry* QgsGeos::reshapeLine( const GEOSGeometry* line, const GEOSGeometry* reshapeLineGeos , double precision )
 {
   if ( !line || !reshapeLineGeos )
     return nullptr;
 
   bool atLeastTwoIntersections = false;
+  bool oneIntersection = false;
+  QgsPoint oneIntersectionPoint;
 
   try
   {
@@ -1869,6 +1928,16 @@ GEOSGeometry* QgsGeos::reshapeLine( const GEOSGeometry* line, const GEOSGeometry
     {
       atLeastTwoIntersections = ( GEOSGeomTypeId_r( geosinit.ctxt, intersectGeom ) == GEOS_MULTIPOINT
                                   && GEOSGetNumGeometries_r( geosinit.ctxt, intersectGeom ) > 1 );
+      // one point is enough when extending line at its endpoint
+      if ( GEOSGeomTypeId_r( geosinit.ctxt, intersectGeom ) == GEOS_POINT )
+      {
+        const GEOSCoordSequence* intersectionCoordSeq = GEOSGeom_getCoordSeq_r( geosinit.ctxt, intersectGeom );
+        double xi, yi;
+        GEOSCoordSeq_getX_r( geosinit.ctxt, intersectionCoordSeq, 0, &xi );
+        GEOSCoordSeq_getY_r( geosinit.ctxt, intersectionCoordSeq, 0, &yi );
+        oneIntersection = true;
+        oneIntersectionPoint = QgsPoint( xi, yi );
+      }
       GEOSGeom_destroy_r( geosinit.ctxt, intersectGeom );
     }
   }
@@ -1878,27 +1947,18 @@ GEOSGeometry* QgsGeos::reshapeLine( const GEOSGeometry* line, const GEOSGeometry
     atLeastTwoIntersections = false;
   }
 
+  // special case when extending line at its endpoint
+  if ( oneIntersection )
+    return _mergeLinestrings( line, reshapeLineGeos, oneIntersectionPoint );
+
   if ( !atLeastTwoIntersections )
     return nullptr;
 
   //begin and end point of original line
-  const GEOSCoordSequence* lineCoordSeq = GEOSGeom_getCoordSeq_r( geosinit.ctxt, line );
-  if ( !lineCoordSeq )
-    return nullptr;
-
-  unsigned int lineCoordSeqSize;
-  if ( GEOSCoordSeq_getSize_r( geosinit.ctxt, lineCoordSeq, &lineCoordSeqSize ) == 0 )
-    return nullptr;
-
-  if ( lineCoordSeqSize < 2 )
-    return nullptr;
-
-  //first and last vertex of line
   double x1, y1, x2, y2;
-  GEOSCoordSeq_getX_r( geosinit.ctxt, lineCoordSeq, 0, &x1 );
-  GEOSCoordSeq_getY_r( geosinit.ctxt, lineCoordSeq, 0, &y1 );
-  GEOSCoordSeq_getX_r( geosinit.ctxt, lineCoordSeq, lineCoordSeqSize - 1, &x2 );
-  GEOSCoordSeq_getY_r( geosinit.ctxt, lineCoordSeq, lineCoordSeqSize - 1, &y2 );
+  if ( !_linestringEndpoints( line, x1, y1, x2, y2 ) )
+    return nullptr;
+
   QgsPointV2 beginPoint( x1, y1 );
   GEOSGeometry* beginLineVertex = createGeosPoint( &beginPoint, 2, precision );
   QgsPointV2 endPoint( x2, y2 );
