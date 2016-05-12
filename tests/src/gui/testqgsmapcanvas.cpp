@@ -231,6 +231,24 @@ void TestQgsMapCanvas::testMagnification()
   controlImageDir = testDataDir + "control_images/";
   checker.setSizeTolerance( 2, 2 );
   QCOMPARE( checker.compareImages( "map_magnification_6_5", 100 ), true );
+
+  // set magnification factor (auto refresh)
+  mCanvas->setMagnificationFactor( 1.0 );
+  QCOMPARE( mCanvas->magnificationFactor(), 1.0 );
+
+  // wait for rendering
+  timer.start( 3000 );
+  loop.exec();
+  QCOMPARE( spy.count(), 1 );
+  spy.clear();
+
+  // control image with magnification factor 1.0
+  mCanvas->saveAsImage( tmpName );
+
+  checker.setControlName( "expected_map_magnification" );
+  checker.setRenderedImage( tmpName );
+  checker.setSizeTolerance( 2, 2 );
+  QCOMPARE( checker.compareImages( "map_magnification", 100 ), true );
 }
 
 QTEST_MAIN( TestQgsMapCanvas )
