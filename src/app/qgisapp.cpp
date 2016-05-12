@@ -2030,6 +2030,39 @@ void QgisApp::createToolBars()
   newLayerAction->setObjectName( "ActionNewLayer" );
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
 
+  // add db layer button
+  bt = new QToolButton();
+  bt->setPopupMode( QToolButton::MenuButtonPopup );
+  if ( mActionAddPgLayer )
+    bt->addAction( mActionAddPgLayer );
+  if ( mActionAddMssqlLayer )
+    bt->addAction( mActionAddMssqlLayer );
+  if ( mActionAddDb2Layer )
+    bt->addAction( mActionAddDb2Layer );
+  if ( mActionAddOracleLayer )
+    bt->addAction( mActionAddOracleLayer );
+  QAction* defAddDbLayerAction = mActionAddPgLayer;
+  switch ( settings.value( "/UI/defaultAddDbLayerAction", 0 ).toInt() )
+  {
+    case 0:
+      defAddDbLayerAction = mActionAddPgLayer;
+      break;
+    case 1:
+      defAddDbLayerAction = mActionAddMssqlLayer;
+      break;
+    case 2:
+      defAddDbLayerAction = mActionAddDb2Layer;
+      break;
+    case 3:
+      defAddDbLayerAction = mActionAddOracleLayer;
+      break;
+  }
+  if ( defAddDbLayerAction )
+    bt->setDefaultAction( defAddDbLayerAction );
+  QAction* addDbLayerAction = mLayerToolBar->insertWidget( mActionAddWmsLayer, bt );
+  addDbLayerAction->setObjectName( "ActionAddDbLayer" );
+  connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
+
   //circular string digitize tool button
   QToolButton* tbAddCircularString = new QToolButton( mDigitizeToolBar );
   tbAddCircularString->setPopupMode( QToolButton::MenuButtonPopup );
@@ -6651,13 +6684,6 @@ void QgisApp::mergeSelectedFeatures()
       QgsMessageBar::WARNING );
 
     return;
-  }
-
-  QgsVectorDataProvider* dp = vl->dataProvider();
-  bool providerChecksTypeStrictly = true;
-  if ( dp )
-  {
-    providerChecksTypeStrictly = dp->doesStrictFeatureTypeCheck();
   }
 
   //get selected feature ids (as a QSet<int> )
@@ -11324,6 +11350,14 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( "/UI/defaultPointSymbolAction", 0 );
   else if ( action == mActionOffsetPointSymbol )
     settings.setValue( "/UI/defaultPointSymbolAction", 1 );
+  else if ( mActionAddPgLayer && action == mActionAddPgLayer )
+    settings.setValue( "/UI/defaultAddDbLayerAction", 0 );
+  else if ( mActionAddMssqlLayer && action == mActionAddMssqlLayer )
+    settings.setValue( "/UI/defaultAddDbLayerAction", 1 );
+  else if ( mActionAddDb2Layer && action == mActionAddDb2Layer )
+    settings.setValue( "/UI/defaultAddDbLayerAction", 2 );
+  else if ( mActionAddOracleLayer && action == mActionAddOracleLayer )
+    settings.setValue( "/UI/defaultAddDbLayerAction", 3 );
 
   bt->setDefaultAction( action );
 }
