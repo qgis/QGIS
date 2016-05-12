@@ -293,6 +293,7 @@
 #include "qgsmaptoolmovefeature.h"
 #include "qgsmaptoolrotatefeature.h"
 #include "qgsmaptooloffsetcurve.h"
+#include "qgsmaptooloffsetpointsymbol.h"
 #include "qgsmaptoolpan.h"
 #include "qgsmaptoolselect.h"
 #include "qgsmaptoolselectrectangle.h"
@@ -1115,6 +1116,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mRotateFeature;
   delete mMapTools.mRotateLabel;
   delete mMapTools.mRotatePointSymbolsTool;
+  delete mMapTools.mOffsetPointSymbolTool;
   delete mMapTools.mSelectFreehand;
   delete mMapTools.mSelectPolygon;
   delete mMapTools.mSelectRadius;
@@ -1396,6 +1398,7 @@ void QgisApp::createActions()
   connect( mActionMultiEditAttributes, SIGNAL( triggered() ), this, SLOT( modifyAttributesOfSelectedFeatures() ) );
   connect( mActionNodeTool, SIGNAL( triggered() ), this, SLOT( nodeTool() ) );
   connect( mActionRotatePointSymbols, SIGNAL( triggered() ), this, SLOT( rotatePointSymbols() ) );
+  connect( mActionOffsetPointSymbol, SIGNAL( triggered() ), this, SLOT( offsetPointSymbol() ) );
   connect( mActionSnappingOptions, SIGNAL( triggered() ), this, SLOT( snappingOptions() ) );
   connect( mActionOffsetCurve, SIGNAL( triggered() ), this, SLOT( offsetCurve() ) );
 
@@ -1681,6 +1684,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionMergeFeatureAttributes );
   mMapToolGroup->addAction( mActionNodeTool );
   mMapToolGroup->addAction( mActionRotatePointSymbols );
+  mMapToolGroup->addAction( mActionOffsetPointSymbol );
 
   mMapToolGroup->addAction( mActionPinLabels );
   mMapToolGroup->addAction( mActionShowHideLabels );
@@ -2328,6 +2332,7 @@ void QgisApp::setTheme( const QString& theThemeName )
   mActionOffsetCurve->setIcon( QgsApplication::getThemeIcon( "/mActionOffsetCurve.png" ) );
   mActionMergeFeatureAttributes->setIcon( QgsApplication::getThemeIcon( "/mActionMergeFeatureAttributes.png" ) );
   mActionRotatePointSymbols->setIcon( QgsApplication::getThemeIcon( "mActionRotatePointSymbols.png" ) );
+  mActionOffsetPointSymbol->setIcon( QgsApplication::getThemeIcon( "mActionRotatePointSymbols.png" ) );
   mActionZoomIn->setIcon( QgsApplication::getThemeIcon( "/mActionZoomIn.svg" ) );
   mActionZoomOut->setIcon( QgsApplication::getThemeIcon( "/mActionZoomOut.svg" ) );
   mActionZoomFullExtent->setIcon( QgsApplication::getThemeIcon( "/mActionZoomFullExtent.svg" ) );
@@ -2591,6 +2596,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mNodeTool->setAction( mActionNodeTool );
   mMapTools.mRotatePointSymbolsTool = new QgsMapToolRotatePointSymbols( mMapCanvas );
   mMapTools.mRotatePointSymbolsTool->setAction( mActionRotatePointSymbols );
+  mMapTools.mOffsetPointSymbolTool = new QgsMapToolOffsetPointSymbol( mMapCanvas );
+  mMapTools.mOffsetPointSymbolTool->setAction( mActionOffsetPointSymbol );
 
   mMapTools.mPinLabels = new QgsMapToolPinLabels( mMapCanvas );
   mMapTools.mPinLabels->setAction( mActionPinLabels );
@@ -6754,6 +6761,11 @@ void QgisApp::rotatePointSymbols()
   mMapCanvas->setMapTool( mMapTools.mRotatePointSymbolsTool );
 }
 
+void QgisApp::offsetPointSymbol()
+{
+  mMapCanvas->setMapTool( mMapTools.mOffsetPointSymbolTool );
+}
+
 void QgisApp::snappingOptions()
 {
   mSnappingDialog->show();
@@ -10023,6 +10035,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionMergeFeatureAttributes->setEnabled( false );
     mActionMultiEditAttributes->setEnabled( false );
     mActionRotatePointSymbols->setEnabled( false );
+    mActionOffsetPointSymbol->setEnabled( false );
     mActionEnableTracing->setEnabled( false );
 
     mActionPinLabels->setEnabled( false );
@@ -10166,6 +10179,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionSimplifyFeature->setEnabled( false );
         mActionDeleteRing->setEnabled( false );
         mActionRotatePointSymbols->setEnabled( false );
+        mActionOffsetPointSymbol->setEnabled( false );
         mActionOffsetCurve->setEnabled( false );
 
         if ( isEditable && canChangeAttributes )
@@ -10173,6 +10187,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
           if ( QgsMapToolRotatePointSymbols::layerIsRotatable( vlayer ) )
           {
             mActionRotatePointSymbols->setEnabled( true );
+          }
+          if ( QgsMapToolOffsetPointSymbol::layerIsOffsetable( vlayer ) )
+          {
+            mActionOffsetPointSymbol->setEnabled( true );
           }
         }
       }
@@ -10287,6 +10305,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionCutFeatures->setEnabled( false );
     mActionPasteFeatures->setEnabled( false );
     mActionRotatePointSymbols->setEnabled( false );
+    mActionOffsetPointSymbol->setEnabled( false );
     mActionDeletePart->setEnabled( false );
     mActionDeleteRing->setEnabled( false );
     mActionSimplifyFeature->setEnabled( false );

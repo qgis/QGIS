@@ -1040,6 +1040,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void nodeTool();
     //! activates the rotate points tool
     void rotatePointSymbols();
+    //! activates the offset point symbol tool
+    void offsetPointSymbol();
     //! shows the snapping Options
     void snappingOptions();
 
@@ -1569,6 +1571,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mDeletePart;
         QgsMapTool *mNodeTool;
         QgsMapTool *mRotatePointSymbolsTool;
+        QgsMapTool *mOffsetPointSymbolTool;
         QgsMapTool *mAnnotation;
         QgsMapTool *mFormAnnotation;
         QgsMapTool *mHtmlAnnotation;
