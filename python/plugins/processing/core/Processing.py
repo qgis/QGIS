@@ -71,7 +71,7 @@ class Processing:
     contextMenuActions = []
 
     @staticmethod
-    def addProvider(provider):
+    def addProvider(provider, update=True):
         """Use this method to add algorithms from external providers.
         """
 
