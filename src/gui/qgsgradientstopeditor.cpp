@@ -391,7 +391,7 @@ void QgsGradientStopEditor::drawStopMarker( QPainter& painter, QPoint topMiddle,
   painter.setBrush( selected ?  QColor( 150, 150, 150 ) : Qt::white );
   painter.setPen( selected ? Qt::black : QColor( 150, 150, 150 ) );
   // 0.5 offsets to make edges pixel grid aligned
-  painter.translate( qRound( topMiddle.x() - MARKER_WIDTH / 2 ) + 0.5, topMiddle.y() + 0.5 );
+  painter.translate( qRound( topMiddle.x() - MARKER_WIDTH / 2.0 ) + 0.5, topMiddle.y() + 0.5 );
   painter.drawPolygon( sOuterTriangle );
 
   // draw the checkerboard background for marker

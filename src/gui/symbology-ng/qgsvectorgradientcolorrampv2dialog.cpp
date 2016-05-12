@@ -88,8 +88,16 @@ QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVecto
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/GradientEditor/geometry" ).toByteArray() );
 
+  // hide the ugly canvas frame
   mPlot->setFrameStyle( QFrame::NoFrame );
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+  QFrame* plotCanvasFrame = dynamic_cast<QFrame*>( mPlot->canvas() );
+  if ( plotCanvasFrame )
+    plotCanvasFrame->setFrameStyle( QFrame::NoFrame );
+#else
   mPlot->canvas()->setFrameStyle( QFrame::NoFrame );
+#endif
+
   mPlot->setAxisScale( QwtPlot::yLeft, 0.0, 1.0 );
   mPlot->enableAxis( QwtPlot::yLeft, false );
 
