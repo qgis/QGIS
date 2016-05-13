@@ -495,34 +495,25 @@ QgsMergedBookmarksTableModel::QgsMergedBookmarksTableModel( QAbstractTableModel&
     mProjectTableModel( projectTableModel ),
     mTreeView( treeView )
 {
-  QObject::connect(
+  connect(
     QgisApp::instance(), SIGNAL( projectRead() ),
     this, SLOT( projectRead() ) );
 
-  QObject::connect(
+  connect(
     &mQgisTableModel, SIGNAL( layoutChanged() ),
     this, SLOT( allLayoutChanged() ) );
-  QObject::connect(
+  connect(
     &mQgisTableModel, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ),
     this, SLOT( qgisDataChanged( const QModelIndex&, const QModelIndex& ) ) );
-  QObject::connect(
+  connect(
     &mQgisTableModel, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ),
     this, SLOT( allLayoutChanged() ) );
-  QObject::connect(
+  connect(
     &mQgisTableModel, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
     this, SLOT( allLayoutChanged() ) );
 
-  QObject::connect(
+  connect(
     &projectTableModel, SIGNAL( layoutChanged() ),
-    this, SLOT( allLayoutChanged() ) );
-  QObject::connect(
-    &projectTableModel, SIGNAL( projectDataChanged( const QModelIndex&, const QModelIndex& ) ),
-    this, SLOT( dataChanged( const QModelIndex&, const QModelIndex& ) ) );
-  QObject::connect(
-    &projectTableModel, SIGNAL( projectRowsInserted( const QModelIndex&, int, int ) ),
-    this, SLOT( allLayoutChanged() ) );
-  QObject::connect(
-    &projectTableModel, SIGNAL( ProjectRowsRemoved( const QModelIndex&, int, int ) ),
     this, SLOT( allLayoutChanged() ) );
 }
 
