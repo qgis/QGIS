@@ -118,7 +118,10 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 {
     Q_OBJECT
   public:
-    QgsExpressionBuilderWidget( QWidget *parent );
+    /**
+     * Create a new expression builder widget with an optional parent.
+     */
+    QgsExpressionBuilderWidget( QWidget* parent = nullptr );
     ~QgsExpressionBuilderWidget();
 
     /** Sets layer in order to get the fields and values

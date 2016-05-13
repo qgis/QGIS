@@ -79,7 +79,7 @@ class QgsExpressionBuilderWidget : QWidget
 %End
 
   public:
-    QgsExpressionBuilderWidget( QWidget *parent /TransferThis/ );
+    QgsExpressionBuilderWidget( QWidget *parent /TransferThis/ = nullptr );
     ~QgsExpressionBuilderWidget();
 
     /** Sets layer in order to get the fields and values
