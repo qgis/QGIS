@@ -29,7 +29,7 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QPushButton, QWidget, QVBoxLayout
 from qgis.PyQt.QtGui import QCursor, QColor, QPalette
 
-from qgis.core import QgsMapLayerRegistry
+from qgis.core import QgsMapLayerRegistry, QgsExpressionContext, QgsExpressionContextUtils, QgsExpression
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -102,8 +102,8 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 continue
             if not self.setParamValue(
                     param, self.mainWidget.valueItems[param.name]):
-                raise AlgorithmDialogBase.InvalidParameterValue(param,
-                                                                self.mainWidget.valueItems[param.name])
+                raise AlgorithmDialogBase.InvalidParameterValue(
+                    param, self.mainWidget.valueItems[param.name])
 
         for param in params:
             if isinstance(param, ParameterExtent):
@@ -120,6 +120,19 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 output.open = self.mainWidget.checkBoxes[output.name].isChecked()
 
         return True
+
+    def evaluateExpression(self, text):
+        context = QgsExpressionContext()
+        context.appendScope(QgsExpressionContextUtils.globalScope())
+        context.appendScope(QgsExpressionContextUtils.projectScope())
+        exp = QgsExpression(text)
+        if exp.hasParserError():
+            raise Exception(exp.parserErrorString())
+        result =  exp.evaluate(context)
+        if exp.hasEvalError():
+            raise ValueError(exp.evalErrorString())
+        return result
+
 
     def setParamValue(self, param, widget, alg=None):
         if isinstance(param, ParameterRaster):
@@ -159,7 +172,12 @@ class AlgorithmDialog(AlgorithmDialogBase):
             if param.multiline:
                 return param.setValue(unicode(widget.toPlainText()))
             else:
-                return param.setValue(unicode(widget.text()))
+                text = widget.text()
+                try:
+                    text = self.evaluateExpression(text)
+                except:
+                    return False
+                return param.setValue(text)
         elif isinstance(param, ParameterGeometryPredicate):
             return param.setValue(widget.value())
         else:
