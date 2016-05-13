@@ -33,6 +33,8 @@ const QString QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX( "retrictToReq
 const QString QgsWFSConstants::URI_PARAM_MAXNUMFEATURES( "maxNumFeatures" );
 const QString QgsWFSConstants::URI_PARAM_IGNOREAXISORIENTATION( "IgnoreAxisOrientation" );
 const QString QgsWFSConstants::URI_PARAM_INVERTAXISORIENTATION( "InvertAxisOrientation" );
+const QString QgsWFSConstants::URI_PARAM_VALIDATESQLFUNCTIONS( "validateSQLFunctions" );
+const QString QgsWFSConstants::URI_PARAM_HIDEDOWNLOADPROGRESSDIALOG( "hideDownloadProgressDialog" );
 
 const QString QgsWFSConstants::VERSION_AUTO( "auto" );
 
@@ -43,3 +45,4 @@ const QString QgsWFSConstants::SETTINGS_MAXNUMFEATURES( "maxnumfeatures" );
 const QString QgsWFSConstants::FIELD_GEN_COUNTER( "__qgis_gen_counter" );
 const QString QgsWFSConstants::FIELD_GMLID( "__qgis_gmlid" );
 const QString QgsWFSConstants::FIELD_HEXWKB_GEOM( "__qgis_hexwkb_geom" );
+const QString QgsWFSConstants::FIELD_MD5( "__qgis_md5" );

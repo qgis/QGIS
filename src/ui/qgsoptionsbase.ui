@@ -4894,7 +4894,7 @@
                     <item>
                      <widget class="QLabel" name="label_57">
                       <property name="text">
-                       <string>Max retry in case of tile request errors</string>
+                       <string>Max retry in case of tile or feature request errors</string>
                       </property>
                      </widget>
                     </item>

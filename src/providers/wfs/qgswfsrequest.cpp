@@ -30,8 +30,11 @@ QgsWFSRequest::QgsWFSRequest( const QString& theUri )
     , mErrorCode( QgsWFSRequest::NoError )
     , mIsAborted( false )
     , mForceRefresh( false )
+    , mTimedout( false )
+    , mGotNonEmptyResponse( false )
 {
   QgsDebugMsg( "theUri = " + theUri );
+  connect( QgsNetworkAccessManager::instance(), SIGNAL( requestTimedOut( QNetworkReply* ) ), this, SLOT( requestTimedOut( QNetworkReply* ) ) );
 }
 
 QgsWFSRequest::~QgsWFSRequest()
@@ -39,10 +42,18 @@ QgsWFSRequest::~QgsWFSRequest()
   abort();
 }
 
+void QgsWFSRequest::requestTimedOut( QNetworkReply* reply )
+{
+  if ( reply == mReply )
+    mTimedout = true;
+}
+
 bool QgsWFSRequest::sendGET( const QUrl& url, bool synchronous, bool forceRefresh, bool cache )
 {
   abort(); // cancel previous
   mIsAborted = false;
+  mTimedout = false;
+  mGotNonEmptyResponse = false;
 
   mErrorMessage.clear();
   mErrorCode = QgsWFSRequest::NoError;
@@ -54,6 +65,8 @@ bool QgsWFSRequest::sendGET( const QUrl& url, bool synchronous, bool forceRefres
   {
     // Just for testing with local files instead of http:// ressources
     QString modifiedUrlString = modifiedUrl.toString();
+    // Qt5 does URL encoding from some reason (of the FILTER parameter for example)
+    modifiedUrlString = QUrl::fromPercentEncoding( modifiedUrl.toString().toUtf8() );
     QgsDebugMsg( QString( "Get %1" ).arg( modifiedUrlString ) );
     modifiedUrlString = modifiedUrlString.mid( QString( "http://" ).size() );
     QString args = modifiedUrlString.mid( modifiedUrlString.indexOf( '?' ) );
@@ -120,6 +133,8 @@ bool QgsWFSRequest::sendPOST( const QUrl& url, const QString& contentTypeHeader,
 {
   abort(); // cancel previous
   mIsAborted = false;
+  mTimedout = false;
+  mGotNonEmptyResponse = false;
 
   mErrorMessage.clear();
   mErrorCode = QgsWFSRequest::NoError;
@@ -170,6 +185,9 @@ void QgsWFSRequest::replyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
   QString msg = tr( "%1 of %2 bytes downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) );
   QgsDebugMsg( msg );
+
+  if ( bytesReceived != 0 )
+    mGotNonEmptyResponse = true;
 
   if ( !mIsAborted && mReply )
   {
@@ -269,10 +287,11 @@ void QgsWFSRequest::replyFinished()
 
         mResponse = mReply->readAll();
 
-        if ( mResponse.isEmpty() )
+        if ( mResponse.isEmpty() && !mGotNonEmptyResponse )
         {
           mErrorMessage = tr( "empty response: %1" ).arg( mReply->errorString() );
           mErrorCode = QgsWFSRequest::ServerExceptionError;
+          QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
         }
       }
     }
@@ -284,6 +303,8 @@ void QgsWFSRequest::replyFinished()
       mResponse.clear();
     }
   }
+  if ( mTimedout )
+    mErrorCode = QgsWFSRequest::TimeoutError;
 
   if ( mReply )
   {

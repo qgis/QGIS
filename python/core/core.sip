@@ -127,6 +127,7 @@
 %Include qgssnapper.sip
 %Include qgssnappingutils.sip
 %Include qgsspatialindex.sip
+%Include qgssqlstatement.sip
 %Include qgsstatisticalsummary.sip
 %Include qgsstringstatisticalsummary.sip
 %Include qgsstringutils.sip

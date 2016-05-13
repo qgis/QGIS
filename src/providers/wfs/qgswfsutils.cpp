@@ -81,7 +81,7 @@ void QgsWFSUtils::releaseCacheDirectory()
   gmCounter --;
   if ( gmCounter == 0 )
   {
-    if ( gmThread != nullptr )
+    if ( gmThread )
     {
       gmThread->exit();
       gmThread->wait();
@@ -174,7 +174,7 @@ QSharedMemory* QgsWFSUtils::createAndAttachSHM()
 {
   QSharedMemory* sharedMemory = nullptr;
   // For debug purpose. To test in the case where shared memory mechanism doesn't work
-  if ( getenv( "QGIS_USE_SHARED_MEMORY_KEEP_ALIVE" ) == nullptr )
+  if ( !getenv( "QGIS_USE_SHARED_MEMORY_KEEP_ALIVE" ) )
   {
     sharedMemory = new QSharedMemory( QString( "qgis_wfs_pid_%1" ).arg( QCoreApplication::applicationPid() ) );
     if ( sharedMemory->create( sizeof( qint64 ) ) && sharedMemory->lock() && sharedMemory->unlock() )
@@ -289,4 +289,29 @@ void QgsWFSUtils::init()
       }
     }
   }
+}
+
+
+QString QgsWFSUtils::removeNamespacePrefix( const QString& tname )
+{
+  QString name( tname );
+  if ( name.contains( ':' ) )
+  {
+    QStringList splitList = name.split( ':' );
+    if ( splitList.size() > 1 )
+    {
+      name = splitList.at( 1 );
+    }
+  }
+  return name;
+}
+
+QString QgsWFSUtils::nameSpacePrefix( const QString& tname )
+{
+  QStringList splitList = tname.split( ':' );
+  if ( splitList.size() < 2 )
+  {
+    return QString();
+  }
+  return splitList.at( 0 );
 }

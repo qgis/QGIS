@@ -39,6 +39,8 @@ struct QgsWFSConstants
   static const QString URI_PARAM_MAXNUMFEATURES;
   static const QString URI_PARAM_IGNOREAXISORIENTATION;
   static const QString URI_PARAM_INVERTAXISORIENTATION;
+  static const QString URI_PARAM_VALIDATESQLFUNCTIONS;
+  static const QString URI_PARAM_HIDEDOWNLOADPROGRESSDIALOG;
 
   //
   static const QString VERSION_AUTO;
@@ -52,6 +54,7 @@ struct QgsWFSConstants
   static const QString FIELD_GEN_COUNTER;
   static const QString FIELD_GMLID;
   static const QString FIELD_HEXWKB_GEOM;
+  static const QString FIELD_MD5;
 };
 
 #endif // QGSWFSCONSTANTS_H

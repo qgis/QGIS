@@ -32,14 +32,15 @@
 
 #include <sqlite3.h>
 
+#include <QCryptographicHash>
+
 QgsWFSSharedData::QgsWFSSharedData( const QString& uri )
     : mURI( uri )
     , mSourceCRS( 0 )
     , mCacheDataProvider( nullptr )
     , mMaxFeatures( 0 )
-    , mMaxFeaturesServer( 0 )
-    , mSupportsHits( false )
-    , mSupportsPaging( false )
+    , mHideProgressDialog( mURI.hideDownloadProgressDialog() )
+    , mDistinctSelect( false )
     , mDownloader( nullptr )
     , mDownloadFinished( false )
     , mGenCounter( 0 )
@@ -78,58 +79,107 @@ QString QgsWFSSharedData::srsName() const
   return srsName;
 }
 
-void QgsWFSSharedData::computeFilter()
+bool QgsWFSSharedData::computeFilter( QString& errorMsg )
 {
-  QString filter( mURI.filter() );
-  mWFSFilter = QString();
-  if ( !filter.isEmpty() )
+  errorMsg.clear();
+  mWFSFilter.clear();
+  mSortBy.clear();
+
+  QgsOgcUtils::GMLVersion gmlVersion;
+  QgsOgcUtils::FilterVersion filterVersion;
+  bool honourAxisOrientation = false;
+  if ( mWFSVersion.startsWith( "1.0" ) )
   {
-    //test if filterString is already an OGC filter xml
-    QDomDocument filterDoc;
-    if ( filterDoc.setContent( filter ) )
+    gmlVersion = QgsOgcUtils::GML_2_1_2;
+    filterVersion = QgsOgcUtils::FILTER_OGC_1_0;
+  }
+  else if ( mWFSVersion.startsWith( "1.1" ) )
+  {
+    honourAxisOrientation = !mURI.ignoreAxisOrientation();
+    gmlVersion = QgsOgcUtils::GML_3_1_0;
+    filterVersion = QgsOgcUtils::FILTER_OGC_1_1;
+  }
+  else
+  {
+    honourAxisOrientation = !mURI.ignoreAxisOrientation();
+    gmlVersion = QgsOgcUtils::GML_3_2_1;
+    filterVersion = QgsOgcUtils::FILTER_FES_2_0;
+  }
+
+  if ( !mURI.sql().isEmpty() )
+  {
+    QgsSQLStatement sql( mURI.sql() );
+
+    const QgsSQLStatement::NodeSelect* select = dynamic_cast<const QgsSQLStatement::NodeSelect*>( sql.rootNode() );
+    Q_ASSERT( select );
+    QList<QgsSQLStatement::NodeColumnSorted*> orderBy = select->orderBy();
+    Q_FOREACH ( QgsSQLStatement::NodeColumnSorted* columnSorted, orderBy )
     {
-      mWFSFilter = filter;
-    }
-    else
-    {
-      //if not, if must be a QGIS expression
-      QgsExpression filterExpression( filter );
-      QString errorMsg;
-      QgsOgcUtils::GMLVersion gmlVersion;
-      QgsOgcUtils::FilterVersion filterVersion;
-      bool honourAxisOrientation = false;
-      if ( mWFSVersion.startsWith( "1.0" ) )
+      if ( !mSortBy.isEmpty() )
+        mSortBy += ",";
+      mSortBy += columnSorted->column()->name();
+      if ( !columnSorted->ascending() )
       {
-        gmlVersion = QgsOgcUtils::GML_2_1_2;
-        filterVersion = QgsOgcUtils::FILTER_OGC_1_0;
+        if ( mWFSVersion.startsWith( "2.0" ) )
+          mSortBy += " DESC";
+        else
+          mSortBy += " D";
       }
-      else if ( mWFSVersion.startsWith( "1.1" ) )
+    }
+
+    QDomDocument filterDoc;
+    QDomElement filterElem = QgsOgcUtils::SQLStatementToOgcFilter(
+                               sql, filterDoc, gmlVersion, filterVersion, mLayerPropertiesList,
+                               honourAxisOrientation, mURI.invertAxisOrientation(),
+                               mCaps.mapUnprefixedTypenameToPrefixedTypename,
+                               &errorMsg );
+    if ( !errorMsg.isEmpty() )
+    {
+      errorMsg = tr( "SQL statement to OGC Filter error: " ) + errorMsg;
+      return false;
+    }
+    if ( !filterElem.isNull() )
+    {
+      filterDoc.appendChild( filterElem );
+      mWFSFilter = filterDoc.toString();
+    }
+  }
+  else
+  {
+    QString filter( mURI.filter() );
+    if ( !filter.isEmpty() )
+    {
+      //test if filterString is already an OGC filter xml
+      QDomDocument filterDoc;
+      if ( filterDoc.setContent( filter ) )
       {
-        honourAxisOrientation = !mURI.ignoreAxisOrientation();
-        gmlVersion = QgsOgcUtils::GML_3_1_0;
-        filterVersion = QgsOgcUtils::FILTER_OGC_1_1;
+        mWFSFilter = filter;
       }
       else
       {
-        honourAxisOrientation = !mURI.ignoreAxisOrientation();
-        gmlVersion = QgsOgcUtils::GML_3_2_1;
-        filterVersion = QgsOgcUtils::FILTER_FES_2_0;
-      }
-      QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter(
-                                 filterExpression, filterDoc, gmlVersion, filterVersion, mGeometryAttribute,
-                                 srsName(), honourAxisOrientation, mURI.invertAxisOrientation(), &errorMsg );
+        //if not, if must be a QGIS expression
+        QgsExpression filterExpression( filter );
 
-      if ( !errorMsg.isEmpty() )
-      {
-        QgsMessageLog::logMessage( "Expression to OGC Filter error: " + errorMsg, "WFS" );
-      }
-      if ( !filterElem.isNull() )
-      {
-        filterDoc.appendChild( filterElem );
-        mWFSFilter = filterDoc.toString();
+        QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter(
+                                   filterExpression, filterDoc, gmlVersion, filterVersion, mGeometryAttribute,
+                                   srsName(), honourAxisOrientation, mURI.invertAxisOrientation(),
+                                   &errorMsg );
+
+        if ( !errorMsg.isEmpty() )
+        {
+          errorMsg = tr( "Expression to OGC Filter error: " ) + errorMsg;
+          return false;
+        }
+        if ( !filterElem.isNull() )
+        {
+          filterDoc.appendChild( filterElem );
+          mWFSFilter = filterDoc.toString();
+        }
       }
     }
   }
+
+  return true;
 }
 
 // We have an issue with GDAL 1.10 and older that is using spatialite_init() which is
@@ -159,11 +209,24 @@ bool QgsWFSSharedData::createCache()
   mCacheDbname =  QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QString( "wfs_cache_%1.sqlite" ).arg( tmpCounter ) );
 
   QgsFields cacheFields;
-  cacheFields.extend( mFields );
+  Q_FOREACH ( const QgsField& field, mFields )
+  {
+    QVariant::Type type = field.type();
+    // Map DateTime to int64 milliseconds from epoch
+    if ( type == QVariant::DateTime )
+    {
+      // Note: this is just a wish. If GDAL < 2, QgsVectorFileWriter will actually map
+      // it to a String
+      type = QVariant::LongLong;
+    }
+    cacheFields.append( QgsField( field.name(), type, field.typeName() ) );
+  }
   // Add some field for our internal use
   cacheFields.append( QgsField( QgsWFSConstants::FIELD_GEN_COUNTER, QVariant::Int, "int" ) );
   cacheFields.append( QgsField( QgsWFSConstants::FIELD_GMLID, QVariant::String, "string" ) );
   cacheFields.append( QgsField( QgsWFSConstants::FIELD_HEXWKB_GEOM, QVariant::String, "string" ) );
+  if ( mDistinctSelect )
+    cacheFields.append( QgsField( QgsWFSConstants::FIELD_MD5, QVariant::String, "string" ) );
 
   bool ogrWaySuccessfull = false;
   QString geometryFieldname( "__spatialite_geometry" );
@@ -201,7 +264,7 @@ bool QgsWFSSharedData::createCache()
       vsi_l_offset nLength = 0;
       GByte* pabyData = VSIGetMemFileBuffer( vsimemFilename.toStdString().c_str(), &nLength, TRUE );
       VSILFILE* fp = VSIFOpenL( mCacheDbname.toStdString().c_str(), "wb " );
-      if ( fp != nullptr )
+      if ( fp )
       {
         VSIFWriteL( pabyData, 1, nLength, fp );
         VSIFCloseL( fp );
@@ -292,7 +355,8 @@ bool QgsWFSSharedData::createCache()
     QString sql;
 
     ( void )sqlite3_exec( db, "PRAGMA synchronous=OFF", nullptr, nullptr, nullptr );
-    ( void )sqlite3_exec( db, "PRAGMA journal_mode=MEMORY", nullptr, nullptr, nullptr );
+    // WAL is needed to avoid reader to block writers
+    ( void )sqlite3_exec( db, "PRAGMA journal_mode=WAL", nullptr, nullptr, nullptr );
 
     ( void )sqlite3_exec( db, "BEGIN", nullptr, nullptr, nullptr );
 
@@ -329,10 +393,18 @@ bool QgsWFSSharedData::createCache()
 
     // We need an index on the gmlid, since we will check for duplicates, particularly
     // useful in the case we do overlapping BBOX requests
-    sql = QString( "CREATE INDEX idx_gmlid ON %1(__qgis_gmlid)" ).arg( mCacheTablename );
+    sql = QString( "CREATE INDEX idx_%2 ON %1(%2)" ).arg( mCacheTablename ).arg( QgsWFSConstants::FIELD_GMLID );
     rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
     if ( rc != SQLITE_OK )
       ret = false;
+
+    if ( mDistinctSelect )
+    {
+      sql = QString( "CREATE INDEX idx_%2 ON %1(%2)" ).arg( mCacheTablename ).arg( QgsWFSConstants::FIELD_MD5 );
+      rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
+      if ( rc != SQLITE_OK )
+        ret = false;
+    }
 
     ( void )sqlite3_exec( db, "COMMIT", nullptr, nullptr, nullptr );
 
@@ -355,16 +427,16 @@ bool QgsWFSSharedData::createCache()
   dsURI.setDataSource( "", mCacheTablename, geometryFieldname, "", "ogc_fid" );
   QStringList pragmas;
   pragmas << "synchronous=OFF";
-  pragmas << "journal_mode=MEMORY";
+  pragmas << "journal_mode=WAL"; // WAL is needed to avoid reader to block writers
   dsURI.setParam( "pragma", pragmas );
   mCacheDataProvider = ( QgsVectorDataProvider* )( QgsProviderRegistry::instance()->provider(
                          "spatialite", dsURI.uri() ) );
-  if ( mCacheDataProvider != nullptr && !mCacheDataProvider->isValid() )
+  if ( mCacheDataProvider && !mCacheDataProvider->isValid() )
   {
     delete mCacheDataProvider;
     mCacheDataProvider = nullptr;
   }
-  if ( mCacheDataProvider == nullptr )
+  if ( !mCacheDataProvider )
   {
     QgsMessageLog::logMessage( tr( "Cannot connect to temporary SpatiaLite cache" ), tr( "WFS" ) );
     return false;
@@ -394,7 +466,7 @@ int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator* iterator, QgsRecta
   }
 
   // In case the request has a spatial filter, which is not the one currently
-  // being downloaded, check f we have already downloaded an area of interest that includes it
+  // being downloaded, check if we have already downloaded an area of interest that includes it
   // before deciding to restart a new download with the provided area of interest.
   bool newDownloadNeeded = false;
   if ( !rect.isEmpty() && mRect != rect )
@@ -429,7 +501,7 @@ int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator* iterator, QgsRecta
     }
   }
 
-  if ( newDownloadNeeded || mDownloader == nullptr )
+  if ( newDownloadNeeded || !mDownloader )
   {
     mRect = rect;
     // to prevent deadlock when waiting the end of the downloader thread that will try to take the mutex in serializeFeatures()
@@ -460,47 +532,147 @@ int QgsWFSSharedData::getUpdatedCounter()
   return mGenCounter ++;
 }
 
+static QString getMD5( const QgsFeature& f )
+{
+  const QgsAttributes attrs = f.attributes();
+  QCryptographicHash hash( QCryptographicHash::Md5 );
+  for ( int i = 0;i < attrs.size();i++ )
+  {
+    const QVariant &v = attrs[i];
+    hash.addData( QByteArray(( const char * )&i, sizeof( i ) ) );
+    if ( v.isNull() )
+    {
+      hash.addData( "#&~NULL#&~", static_cast<int>( strlen( "#&~NULL#&~" ) ) );
+    }
+    else if ( v.type() == QVariant::DateTime )
+    {
+      qint64 val = v.toDateTime().toMSecsSinceEpoch();
+      hash.addData( QByteArray(( const char * )&val, sizeof( val ) ) );
+    }
+    else if ( v.type() == QVariant::Int )
+    {
+      int val = v.toInt();
+      hash.addData( QByteArray(( const char * )&val, sizeof( val ) ) );
+    }
+    else if ( v.type() == QVariant::LongLong )
+    {
+      qint64 val = v.toLongLong();
+      hash.addData( QByteArray(( const char * )&val, sizeof( val ) ) );
+    }
+    else  if ( v.type() == QVariant::String )
+    {
+      hash.addData( v.toByteArray() );
+    }
+  }
+  return hash.result().toHex();
+}
+
 QSet<QString> QgsWFSSharedData::getExistingCachedGmlIds( const QVector<QgsWFSFeatureGmlIdPair>& featureList )
 {
-  QgsFeatureRequest request;
-  QString expr( "__qgis_gmlid IN (" );
+  QString expr;
   bool first = true;
-  Q_FOREACH ( QgsWFSFeatureGmlIdPair featPair, featureList )
+  QSet<QString> setExistingGmlIds;
+
+  const QgsFields & dataProviderFields = mCacheDataProvider->fields();
+  const int gmlidIdx = dataProviderFields.indexFromName( QgsWFSConstants::FIELD_GMLID );
+
+  // To avoid excessive memory consumption in expression building, do not
+  // query more than 1000 ids at a time.
+  for ( int i = 0; i < featureList.size(); i ++ )
   {
     if ( !first )
       expr += ",";
     else
+    {
+      expr = QgsWFSConstants::FIELD_GMLID + " IN (";
       first = false;
+    }
     expr += "'";
-    expr += featPair.second;
+    expr += featureList[i].second;
     expr += "'";
-  }
-  expr += ")";
-  request.setFilterExpression( expr );
 
-  const QgsFields & dataProviderFields = mCacheDataProvider->fields();
-  int gmlidIdx = dataProviderFields.indexFromName( QgsWFSConstants::FIELD_GMLID );
+    if (( i > 0 && ( i % 1000 ) == 0 ) || i + 1 == featureList.size() )
+    {
+      expr += ")";
 
-  QgsAttributeList attList;
-  attList.append( gmlidIdx );
-  request.setSubsetOfAttributes( attList );
+      QgsFeatureRequest request;
+      request.setFilterExpression( expr );
 
-  QgsFeatureIterator iterGmlIds( mCacheDataProvider->getFeatures( request ) );
-  QgsFeature gmlidFeature;
-  QSet<QString> setExistingGmlIds;
-  while ( iterGmlIds.nextFeature( gmlidFeature ) )
-  {
-    const QVariant &v = gmlidFeature.attributes().value( gmlidIdx );
-    setExistingGmlIds.insert( v.toString() );
+      QgsAttributeList attList;
+      attList.append( gmlidIdx );
+      request.setSubsetOfAttributes( attList );
+
+      QgsFeatureIterator iterGmlIds( mCacheDataProvider->getFeatures( request ) );
+      QgsFeature gmlidFeature;
+      while ( iterGmlIds.nextFeature( gmlidFeature ) )
+      {
+        const QVariant &v = gmlidFeature.attributes().value( gmlidIdx );
+        setExistingGmlIds.insert( v.toString() );
+      }
+
+      first = true;
+    }
+
   }
 
   return setExistingGmlIds;
 }
 
+QSet<QString> QgsWFSSharedData::getExistingCachedMD5( const QVector<QgsWFSFeatureGmlIdPair>& featureList )
+{
+  QString expr;
+  bool first = true;
+  QSet<QString> setExistingMD5;
+
+  const QgsFields & dataProviderFields = mCacheDataProvider->fields();
+  const int md5Idx = dataProviderFields.indexFromName( QgsWFSConstants::FIELD_MD5 );
+
+  // To avoid excessive memory consumption in expression building, do not
+  // query more than 1000 ids at a time.
+  for ( int i = 0; i < featureList.size(); i ++ )
+  {
+    if ( !first )
+      expr += ",";
+    else
+    {
+      expr = QgsWFSConstants::FIELD_MD5 + " IN (";
+      first = false;
+    }
+    expr += "'";
+    expr += getMD5( featureList[i].first );
+    expr += "'";
+
+    if (( i > 0 && ( i % 1000 ) == 0 ) || i + 1 == featureList.size() )
+    {
+      expr += ")";
+
+      QgsFeatureRequest request;
+      request.setFilterExpression( expr );
+
+      QgsAttributeList attList;
+      attList.append( md5Idx );
+      request.setSubsetOfAttributes( attList );
+
+      QgsFeatureIterator iterMD5s( mCacheDataProvider->getFeatures( request ) );
+      QgsFeature gmlidFeature;
+      while ( iterMD5s.nextFeature( gmlidFeature ) )
+      {
+        const QVariant &v = gmlidFeature.attributes().value( md5Idx );
+        setExistingMD5.insert( v.toString() );
+      }
+
+      first = true;
+    }
+
+  }
+
+  return setExistingMD5;
+}
+
 // Used by WFS-T
 QString QgsWFSSharedData::findGmlId( QgsFeatureId fid )
 {
-  if ( mCacheDataProvider == nullptr )
+  if ( !mCacheDataProvider )
     return QString();
   QgsFeatureRequest request;
   request.setFilterFid( fid );
@@ -526,7 +698,7 @@ QString QgsWFSSharedData::findGmlId( QgsFeatureId fid )
 // Used by WFS-T
 bool QgsWFSSharedData::deleteFeatures( const QgsFeatureIds& fidlist )
 {
-  if ( mCacheDataProvider == nullptr )
+  if ( !mCacheDataProvider )
     return false;
 
   {
@@ -540,7 +712,7 @@ bool QgsWFSSharedData::deleteFeatures( const QgsFeatureIds& fidlist )
 // Used by WFS-T
 bool QgsWFSSharedData::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
-  if ( mCacheDataProvider == nullptr )
+  if ( !mCacheDataProvider )
     return false;
 
   // We need to replace the geometry by its bounding box and issue a attribute
@@ -582,7 +754,7 @@ bool QgsWFSSharedData::changeGeometryValues( const QgsGeometryMap &geometry_map 
 // Used by WFS-T
 bool QgsWFSSharedData::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
-  if ( mCacheDataProvider == nullptr )
+  if ( !mCacheDataProvider )
     return false;
 
   const QgsFields & dataProviderFields = mCacheDataProvider->fields();
@@ -598,7 +770,10 @@ bool QgsWFSSharedData::changeAttributeValues( const QgsChangedAttributesMap &att
     {
       int idx = dataProviderFields.indexFromName( mFields.at( siter.key() ).name() );
       Q_ASSERT( idx >= 0 );
-      newAttrMap[idx] = siter.value();
+      if ( siter.value().type() == QVariant::DateTime && !siter.value().isNull() )
+        newAttrMap[idx] = QVariant( siter.value().toDateTime().toMSecsSinceEpoch() );
+      else
+        newAttrMap[idx] = siter.value();
     }
     newMap[fid] = newAttrMap;
   }
@@ -620,7 +795,7 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
         return;
       }
     }
-    if ( mCacheDataProvider == nullptr )
+    if ( !mCacheDataProvider )
     {
       return;
     }
@@ -636,29 +811,47 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
   Q_ASSERT( genCounterIdx >= 0 );
   int hexwkbGeomIdx = dataProviderFields.indexFromName( QgsWFSConstants::FIELD_HEXWKB_GEOM );
   Q_ASSERT( hexwkbGeomIdx >= 0 );
+  int md5Idx = ( mDistinctSelect ) ? dataProviderFields.indexFromName( QgsWFSConstants::FIELD_MD5 ) : -1;
 
-  QSet<QString> existingGmlIds( getExistingCachedGmlIds( featureList ) );
+  QSet<QString> existingGmlIds;
+  QSet<QString> existingMD5s;
+  if ( mDistinctSelect )
+    existingMD5s = getExistingCachedMD5( featureList );
+  else
+    existingGmlIds = getExistingCachedGmlIds( featureList );
   QVector<QgsWFSFeatureGmlIdPair> updatedFeatureList;
 
   Q_FOREACH ( QgsWFSFeatureGmlIdPair featPair, featureList )
   {
-    QgsFeature& gmlFeature = featPair.first;
+    const QgsFeature& gmlFeature = featPair.first;
+
     const QString& gmlId = featPair.second;
-    if ( gmlId.isEmpty() )
+    QString md5;
+    if ( mDistinctSelect )
     {
-      // Shouldn't happen on sane datasets.
-    }
-    else if ( existingGmlIds.contains( gmlId ) )
-    {
-      if ( mRect.isEmpty() )
-      {
-        QgsDebugMsg( QString( "duplicate gmlId %1" ).arg( gmlId ) );
-      }
-      continue;
+      md5 = getMD5( gmlFeature );
+      if ( existingMD5s.contains( md5 ) )
+        continue;
+      existingMD5s.insert( md5 );
     }
     else
     {
-      existingGmlIds.insert( gmlId );
+      if ( gmlId.isEmpty() )
+      {
+        // Shouldn't happen on sane datasets.
+      }
+      else if ( existingGmlIds.contains( gmlId ) )
+      {
+        if ( mRect.isEmpty() )
+        {
+          QgsDebugMsg( QString( "duplicate gmlId %1" ).arg( gmlId ) );
+        }
+        continue;
+      }
+      else
+      {
+        existingGmlIds.insert( gmlId );
+      }
     }
 
     updatedFeatureList.push_back( featPair );
@@ -668,7 +861,7 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
 
     //copy the geometry
     const QgsGeometry* geometry = gmlFeature.constGeometry();
-    if ( geometry )
+    if ( !mGeometryAttribute.isEmpty() && geometry )
     {
       const unsigned char *geom = geometry->asWkb();
       int geomSize = geometry->wkbSize();
@@ -691,12 +884,17 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
       if ( idx >= 0 )
       {
         const QVariant &v = gmlFeature.attributes().value( i );
-        if ( v.type() !=  dataProviderFields.at( idx ).type() )
+        if ( v.type() == QVariant::DateTime && !v.isNull() )
+          cachedFeature.setAttribute( idx, QVariant( v.toDateTime().toMSecsSinceEpoch() ) );
+        else if ( v.type() !=  dataProviderFields.at( idx ).type() )
           cachedFeature.setAttribute( idx, QgsVectorDataProvider::convertValue( dataProviderFields.at( idx ).type(), v.toString() ) );
         else
           cachedFeature.setAttribute( idx, v );
       }
     }
+
+    if ( mDistinctSelect && md5Idx >= 0 )
+      cachedFeature.setAttribute( md5Idx, QVariant( md5 ) );
 
     cachedFeature.setAttribute( gmlidIdx, QVariant( gmlId ) );
 
@@ -742,12 +940,27 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
 
 }
 
+void QgsWFSSharedData::pushError( const QString& errorMsg )
+{
+  QgsMessageLog::logMessage( errorMsg, tr( "WFS" ) );
+  emit raiseError( errorMsg );
+}
+
 /** Called by QgsWFSFeatureDownloader::run() at the end of the download process. */
-void QgsWFSSharedData::endOfDownload( bool success, int featureCount )
+void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
+                                      bool truncatedResponse,
+                                      bool interrupted,
+                                      QString errorMsg )
 {
   QMutexLocker locker( &mMutex );
 
-  bool bDownloadLimit = ( !mSupportsPaging && featureCount == mMaxFeatures && mMaxFeatures > 0 );
+  if ( !success && !interrupted )
+  {
+    QString errorMsgOut( tr( "Download of features for layer %1 failed or partially failed: %2. You may attempt reloading the layer with F5" ).arg( mURI.typeName() ).arg( errorMsg ) );
+    pushError( errorMsgOut );
+  }
+
+  bool bDownloadLimit = truncatedResponse || ( !mCaps.supportsPaging && featureCount == mMaxFeatures && mMaxFeatures > 0 );
 
   mDownloadFinished = true;
   if ( success && !mRect.isEmpty() )
@@ -821,7 +1034,7 @@ void QgsWFSSharedData::invalidateCache()
   mFeatureCount = 0;
   mFeatureCountExact = false;
   mTotalFeaturesAttemptedToBeCached = 0;
-  if ( !mCacheDbname.isEmpty() && mCacheDataProvider != nullptr )
+  if ( !mCacheDbname.isEmpty() && mCacheDataProvider )
   {
     // We need to invalidate connections pointing to the cache, so as to
     // be able to delete the file.
@@ -833,6 +1046,8 @@ void QgsWFSSharedData::invalidateCache()
   if ( !mCacheDbname.isEmpty() )
   {
     QFile::remove( mCacheDbname );
+    QFile::remove( mCacheDbname + "-wal" );
+    QFile::remove( mCacheDbname + "-shm" );
     QgsWFSUtils::releaseCacheDirectory();
     mCacheDbname.clear();
   }
@@ -848,7 +1063,7 @@ void QgsWFSSharedData::setFeatureCount( int featureCount )
 
 int QgsWFSSharedData::getFeatureCount( bool issueRequestIfNeeded )
 {
-  if ( !mGetFeatureHitsIssued && !mFeatureCountExact && mSupportsHits && issueRequestIfNeeded )
+  if ( !mGetFeatureHitsIssued && !mFeatureCountExact && mCaps.supportsHits && issueRequestIfNeeded )
   {
     mGetFeatureHitsIssued = true;
     QgsWFSFeatureHitsRequest request( mURI );
@@ -863,12 +1078,12 @@ int QgsWFSSharedData::getFeatureCount( bool issueRequestIfNeeded )
       {
         // If the feature count is below or above than the server side limit, we know
         // that it is exact (some server implementation might saturate to the server side limit)
-        if ( mMaxFeaturesServer > 0 && featureCount != mMaxFeaturesServer )
+        if ( mCaps.maxFeatures > 0 && featureCount != mCaps.maxFeatures )
         {
           mFeatureCount = featureCount;
           mFeatureCountExact = true;
         }
-        else if ( mMaxFeaturesServer <= 0 )
+        else if ( mCaps.maxFeatures <= 0 )
         {
           mFeatureCount = featureCount;
           mFeatureCountExact = true;

@@ -45,17 +45,60 @@ class QgsWFSCapabilities : public QgsWFSRequest
       bool deleteCap;
     };
 
+    //! argument of a function
+    struct Argument
+    {
+      //! name
+      QString name;
+      //! type, or empty if unknown
+      QString type;
+
+      //! constructor
+      Argument( const QString& nameIn = QString(), const QString& typeIn = QString() ) : name( nameIn ), type( typeIn ) {}
+    };
+
+    //! description of server functions
+    struct Function
+    {
+      //! name
+      QString name;
+      //! return type, or empty if unknown
+      QString returnType;
+      //! minimum number of argument (or -1 if unknown)
+      int minArgs;
+      //! maximum number of argument (or -1 if unknown)
+      int maxArgs;
+      //! list of arguments. May be empty despite minArgs > 0
+      QList<Argument> argumentList;
+
+      //! constructor with name and fixed number of arguments
+      Function( const QString& nameIn, int args ) : name( nameIn ), minArgs( args ), maxArgs( args ) {}
+      //! constructor with name and min,max number of arguments
+      Function( const QString& nameIn, int minArgs, int maxArgsIn ) : name( nameIn ), minArgs( minArgs ), maxArgs( maxArgsIn ) {}
+      //! default constructor
+      Function() : minArgs( -1 ), maxArgs( -1 ) {}
+    };
+
     //! parsed get capabilities document
     struct Capabilities
     {
       Capabilities();
-      void clear();
 
       QString version;
       bool supportsHits;
       bool supportsPaging;
+      bool supportsJoins;
       int maxFeatures;
       QList<FeatureType> featureTypes;
+      QList<Function> spatialPredicatesList;
+      QList<Function> functionList;
+
+      QSet< QString > setAllTypenames;
+      QMap< QString, QString> mapUnprefixedTypenameToPrefixedTypename;
+      QSet< QString > setAmbiguousUnprefixedTypename;
+
+      void clear();
+      QString addPrefixIfNeeded( const QString& name ) const;
     };
 
     //! return parsed capabilities - requestCapabilities() must be called before
@@ -80,6 +123,8 @@ class QgsWFSCapabilities : public QgsWFSRequest
                                    bool& insertCap,
                                    bool& updateCap,
                                    bool& deleteCap );
+
+    void parseFilterCapabilities( const QDomElement& filterCapabilitiesElem );
 
     static QString NormalizeSRSName( QString crsName );
 };
