@@ -4,11 +4,12 @@ cd build
 ln -s ${HOME}/osgeo4travis/bin/ccache ${HOME}/osgeo4travis/bin/clang++-${LLVM_VERSION}
 ln -s ${HOME}/osgeo4travis/bin/ccache ${HOME}/osgeo4travis/bin/clang-${LLVM_VERSION}
 
-ccache -s
-
 export CXX="clang++-${LLVM_VERSION}"
 export CC="clang-${LLVM_VERSION}"
 export PATH=${HOME}/osgeo4travis/bin:${PATH}
+
+ccache -s
+ccache -z
 
 cmake --version
 ${CC} --version
