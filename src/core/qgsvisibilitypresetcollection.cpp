@@ -57,6 +57,7 @@ void QgsVisibilityPresetCollection::insert( const QString& name, const QgsVisibi
   mPresets.insert( name, state );
 
   reconnectToLayersStyleManager();
+  emit presetsChanged();
 }
 
 void QgsVisibilityPresetCollection::update( const QString& name, const PresetRecord& state )
@@ -67,6 +68,7 @@ void QgsVisibilityPresetCollection::update( const QString& name, const PresetRec
   mPresets[name] = state;
 
   reconnectToLayersStyleManager();
+  emit presetsChanged();
 }
 
 void QgsVisibilityPresetCollection::removePreset( const QString& name )
@@ -77,6 +79,7 @@ void QgsVisibilityPresetCollection::removePreset( const QString& name )
   mPresets.remove( name );
 
   reconnectToLayersStyleManager();
+  emit presetsChanged();
 }
 
 void QgsVisibilityPresetCollection::clear()
@@ -84,6 +87,7 @@ void QgsVisibilityPresetCollection::clear()
   mPresets.clear();
 
   reconnectToLayersStyleManager();
+  emit presetsChanged();
 }
 
 QStringList QgsVisibilityPresetCollection::presets() const
@@ -231,6 +235,7 @@ void QgsVisibilityPresetCollection::readXML( const QDomDocument& doc )
   }
 
   reconnectToLayersStyleManager();
+  emit presetsChanged();
 }
 
 void QgsVisibilityPresetCollection::writeXML( QDomDocument& doc )
@@ -286,6 +291,7 @@ void QgsVisibilityPresetCollection::registryLayersRemoved( const QStringList& la
       rec.mPerLayerCurrentStyle.remove( layerID );
     }
   }
+  emit presetsChanged();
 }
 
 void QgsVisibilityPresetCollection::layerStyleRenamed( const QString& oldName, const QString& newName )
@@ -308,4 +314,5 @@ void QgsVisibilityPresetCollection::layerStyleRenamed( const QString& oldName, c
         rec.mPerLayerCurrentStyle[layerID] = newName;
     }
   }
+  emit presetsChanged();
 }
