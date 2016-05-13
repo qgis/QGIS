@@ -10,6 +10,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
 
 __author__ = 'Larry Shaffer'
 __date__ = '07/09/2013'
@@ -24,7 +27,6 @@ import sys
 import datetime
 import glob
 import shutil
-import StringIO
 import tempfile
 
 from qgis.PyQt.QtCore import QSize, qDebug
@@ -463,19 +465,14 @@ def runSuite(module, tests):
         suite = loader.loadTestsFromModule(module)
     verb = 2 if 'PAL_VERBOSE' in os.environ else 0
 
-    out = StringIO.StringIO()
-    res = unittest.TextTestRunner(stream=out, verbosity=verb).run(suite)
-    if verb:
-        print('\nIndividual test summary:')
-    print('\n' + out.getvalue())
-    out.close()
+    res = unittest.TextTestRunner(verbosity=verb).run(suite)
 
     if PALREPORTS:
         teststamp = 'PAL Test Report: ' + \
                     datetime.datetime.now().strftime('%Y-%m-%d %X')
         report = '<html><head><title>{0}</title></head><body>'.format(teststamp)
         report += '\n<h2>Failed Tests: {0}</h2>'.format(len(PALREPORTS))
-        for k, v in PALREPORTS.iteritems():
+        for k, v in PALREPORTS.items():
             report += '\n<h3>{0}</h3>\n{1}'.format(k, v)
         report += '</body></html>'
 

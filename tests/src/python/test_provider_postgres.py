@@ -6,6 +6,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+from builtins import next
 __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-23'
 __copyright__ = 'Copyright 2015, The QGIS Project'
@@ -159,8 +160,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     def testSignedIdentifiers(self):
         def test_query_attribute(dbconn, query, att, val, fidval):
             ql = QgsVectorLayer('%s table="%s" (g) key=\'%s\' sql=' % (dbconn, query.replace('"', '\\"'), att), "testgeom", "postgres")
-            print(query, att)
-            assert(ql.isValid())
+            self.assertTrue(ql.isValid())
             features = ql.getFeatures()
             att_idx = ql.fieldNameIndex(att)
             count = 0
@@ -224,7 +224,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         expected['fld_text_domain'] = {'type': QVariant.String, 'typeName': 'qgis_test.text_domain', 'length': -1}
         expected['fld_numeric_domain'] = {'type': QVariant.Double, 'typeName': 'qgis_test.numeric_domain', 'length': 10, 'precision': 4}
 
-        for f, e in expected.iteritems():
+        for f, e in expected.items():
             self.assertEqual(fields.at(fields.indexFromName(f)).type(), e['type'])
             self.assertEqual(fields.at(fields.indexFromName(f)).typeName(), e['typeName'])
             self.assertEqual(fields.at(fields.indexFromName(f)).length(), e['length'])

@@ -6,6 +6,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+from builtins import chr
+from builtins import str
 __author__ = 'Matthias Kuhn'
 __date__ = '4/28/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
@@ -115,7 +117,7 @@ class TestQgsNetworkContentFetcher(unittest.TestCase):
         assert r.error() == QNetworkReply.NoError, r.error()
 
         html = fetcher.contentAsString()
-        assert unichr(6040) in html
+        assert chr(6040) in html
 
 if __name__ == "__main__":
     unittest.main()
