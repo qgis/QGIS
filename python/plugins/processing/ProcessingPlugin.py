@@ -43,19 +43,8 @@ from processing.gui.CommanderWindow import CommanderWindow
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempFolder
 from processing.gui.menus import removeMenus, initializeMenus, createMenus
-from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
-from processing.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
-from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider
-from processing.algs.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
-from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
-from processing.algs.lidar.LidarToolsAlgorithmProvider import LidarToolsAlgorithmProvider
-from processing.algs.gdal.GdalOgrAlgorithmProvider import GdalOgrAlgorithmProvider
-from processing.algs.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
-from processing.algs.r.RAlgorithmProvider import RAlgorithmProvider
-from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
-from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
-from processing.algs.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvider
-from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider
+from processing.core.defaultproviders import loadDefaultProviders
+
 
 
 cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
@@ -69,6 +58,7 @@ class ProcessingPlugin:
         self.iface = iface
 
     def initGui(self):
+        loadDefaultProviders()
         Processing.initialize()
 
         self.commander = None
