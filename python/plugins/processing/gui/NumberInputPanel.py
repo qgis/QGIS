@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal
-from qgis.PyQt.QtGui import QDialog
+from qgis.PyQt.QtWidgets import QDialog
 
 from math import log10, floor
 from qgis.core import (QgsDataSourceURI,
