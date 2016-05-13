@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import re
-from qgis.core import QgsExpressionContextUtils
+from qgis.core import QgsExpressionContextUtils, QgsExpressionContext
 from qgis.PyQt.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.Help2Html import getHtmlFromHelpFile
@@ -321,20 +321,19 @@ class ScriptAlgorithm(GeoAlgorithm):
         for out in self.outputs:
             ns[out.name] = out.value
 
-        variables = re.findall("@[a-zA-Z0-9_]*", self.script)
+        variables = re.findall('@[a-zA-Z0-9_]*', self.script)
         script = 'import processing\n'
         script += self.script
 
-        projectScope = QgsExpressionContextUtils.projectScope()
-        globalScope = QgsExpressionContextUtils.globalScope()
+        context = QgsExpressionContext()
+        context.appendScope(QgsExpressionContextUtils.globalScope())
+        context.appendScope(QgsExpressionContextUtils.projectScope())
         for var in variables:
             varname = var[1:]
-            if projectScope.hasVariable(varname):
-                script = script.replace(var, projectScope.variable(varname))
-            elif globalScope.hasVariable(varname):
-                script = script.replace(var, globalScope.variable(varname))
+            if context.hasVariable(varname):
+                script = script.replace(var, context.variable(varname))
             else:
-                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, "Cannot find variable: %s" % varname)
+                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, 'Cannot find variable: %s' % varname)
 
         exec((script), ns)
         for out in self.outputs:
