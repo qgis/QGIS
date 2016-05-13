@@ -905,6 +905,17 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
 
         parseStyle( e1, styleProperty );
 
+        for ( int i = 0; i < layerProperty.style.size(); ++i )
+        {
+          if ( layerProperty.style[i].name == styleProperty.name )
+          {
+            // override inherited parent's style if it has the same name
+            // according to the WMS spec, it should not happen, but Mapserver
+            // does it all the time.
+            layerProperty.style.remove( i );
+            break;
+          }
+        }
         layerProperty.style.push_back( styleProperty );
       }
       else if ( tagName == "MinScaleDenominator" )
