@@ -31,7 +31,7 @@ bool null_from_qvariant_convertor( const QVariant *varp, PyObject **objp )
 
   // If we deal with a NULL QVariant (and it's not a QByteArray which properly
   // maps NULL values)
-  // If there are more cases like this, we should consider to using a whitelist
+  // If there are more cases like QByteArray, we should consider using a whitelist
   // instead of a blacklist.
   if ( varp->isNull() && varp->type() != QVariant::ByteArray )
   {
