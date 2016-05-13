@@ -117,7 +117,7 @@ extern "C" {
 # define _NEW_TTY_CTRL
 #endif
 
-#if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__bsdi__) || defined(__APPLE__) || defined (__DragonFly__)
+#if defined (__FreeBSD__) || defined(__FreeBSD_kernel__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__bsdi__) || defined(__APPLE__) || defined (__DragonFly__)
 # define _tcgetattr(fd, ttmode) ioctl(fd, TIOCGETA, (char *)ttmode)
 #else
 # if defined(_HPUX_SOURCE) || defined(__Lynx__) || defined (__CYGWIN__)
@@ -127,7 +127,7 @@ extern "C" {
 # endif
 #endif
 
-#if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__bsdi__) || defined(__APPLE__) || defined (__DragonFly__)
+#if defined (__FreeBSD__) || defined(__FreeBSD_kernel__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__bsdi__) || defined(__APPLE__) || defined (__DragonFly__)
 # define _tcsetattr(fd, ttmode) ioctl(fd, TIOCSETA, (char *)ttmode)
 #else
 # if defined(_HPUX_SOURCE) || defined(__CYGWIN__)
