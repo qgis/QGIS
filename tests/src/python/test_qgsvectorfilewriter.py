@@ -6,6 +6,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+from builtins import next
+from builtins import str
 __author__ = 'Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
@@ -106,11 +108,11 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(f.attributes()[date_idx], QDate(2014, 3, 5))
         time_idx = created_layer.fieldNameIndex('time_f')
         #shapefiles do not support time types
-        assert isinstance(f.attributes()[time_idx], basestring)
+        assert isinstance(f.attributes()[time_idx], str)
         self.assertEqual(f.attributes()[time_idx], '13:45:22')
         #shapefiles do not support datetime types
         datetime_idx = created_layer.fieldNameIndex('dt_f')
-        assert isinstance(f.attributes()[datetime_idx], basestring)
+        assert isinstance(f.attributes()[datetime_idx], str)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22)).toString("yyyy/MM/dd hh:mm:ss.zzz"))
 
     def testDateTimeWriteTabfile(self):
