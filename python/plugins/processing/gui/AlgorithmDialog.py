@@ -128,11 +128,10 @@ class AlgorithmDialog(AlgorithmDialogBase):
         exp = QgsExpression(text)
         if exp.hasParserError():
             raise Exception(exp.parserErrorString())
-        result =  exp.evaluate(context)
+        result = exp.evaluate(context)
         if exp.hasEvalError():
             raise ValueError(exp.evalErrorString())
         return result
-
 
     def setParamValue(self, param, widget, alg=None):
         if isinstance(param, ParameterRaster):

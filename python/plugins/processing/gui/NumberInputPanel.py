@@ -32,9 +32,13 @@ from qgis.PyQt.QtCore import pyqtSignal
 from PyQt.QtGui import QDialog
 
 from math import log10, floor
-from qgis.core import (QgsDataSourceURI, QgsCredentials,  QgsExpressionContext,
-                        QgsExpressionContextUtils, QgsExpression, QgsRasterLayer,
-                        QgsExpressionContextScope)
+from qgis.core import (QgsDataSourceURI,
+                       QgsCredentials,
+                       QgsExpressionContext,
+                       QgsExpressionContextUtils,
+                       QgsExpression,
+                       QgsRasterLayer,
+                       QgsExpressionContextScope)
 from qgis.gui import QgsEncodingFileDialog, QgsExpressionBuilderDialog
 from qgis.utils import iface
 from processing.tools import dataobjects
@@ -89,12 +93,12 @@ class NumberInputPanel(BASE, WIDGET):
 
     def showExpressionsBuilder(self):
         context = self.expressionContext()
-        dlg = QgsExpressionBuilderDialog(None, self.spnValue.text(), self, "generic", context)
-        dlg.setWindowTitle(self.tr("Expression based input"));
+        dlg = QgsExpressionBuilderDialog(None, self.spnValue.text(), self, 'generic', context)
+        dlg.setWindowTitle(self.tr('Expression based input'))
         if dlg.exec_() == QDialog.Accepted:
             exp = QgsExpression(dlg.expressionText())
             if not exp.hasParserError():
-                result =  exp.evaluate(context)
+                result = exp.evaluate(context)
                 if not exp.hasEvalError():
                     try:
                         self.spnValue.setValue(float(result))
@@ -109,35 +113,35 @@ class NumberInputPanel(BASE, WIDGET):
         layers = dataobjects.getAllLayers()
         for layer in layers:
             name = layer.name()
-            processingScope.setVariable("%s_minx" % name, layer.extent().xMinimum())
-            processingScope.setVariable("%s_miny" % name, layer.extent().yMinimum())
-            processingScope.setVariable("%s_maxx" % name, layer.extent().xMaximum())
-            processingScope.setVariable("%s_maxy" % name, layer.extent().yMaximum())
+            processingScope.setVariable('%s_minx' % name, layer.extent().xMinimum())
+            processingScope.setVariable('%s_miny' % name, layer.extent().yMinimum())
+            processingScope.setVariable('%s_maxx' % name, layer.extent().xMaximum())
+            processingScope.setVariable('%s_maxy' % name, layer.extent().yMaximum())
             if isinstance(layer, QgsRasterLayer):
                 cellsize = (layer.extent().xMaximum()
                             - layer.extent().xMinimum()) / layer.width()
-                processingScope.setVariable("%s_cellsize" % name, cellsize)
+                processingScope.setVariable('%s_cellsize' % name, cellsize)
 
         layers = dataobjects.getRasterLayers()
         for layer in layers:
             for i in range(layer.bandCount()):
                 stats = layer.dataProvider().bandStatistics(i + 1)
-                processingScope.setVariable("%s_band%i_avg" % (name, i + 1), stats.mean)
-                processingScope.setVariable("%s_band%i_stddev" % (name, i + 1), stats.stdDev)
-                processingScope.setVariable("%s_band%i_min" % (name, i + 1), stats.minimumValue)
-                processingScope.setVariable("%s_band%i_max" % (name, i + 1), stats.maximumValue)
+                processingScope.setVariable('%s_band%i_avg' % (name, i + 1), stats.mean)
+                processingScope.setVariable('%s_band%i_stddev' % (name, i + 1), stats.stdDev)
+                processingScope.setVariable('%s_band%i_min' % (name, i + 1), stats.minimumValue)
+                processingScope.setVariable('%s_band%i_max' % (name, i + 1), stats.maximumValue)
 
         extent = iface.mapCanvas().extent()
-        processingScope.setVariable("canvasextent_minx", extent.xMinimum())
-        processingScope.setVariable("canvasextent_miny", extent.yMinimum())
-        processingScope.setVariable("canvasextent_maxx", extent.xMaximum())
-        processingScope.setVariable("canvasextent_maxy", extent.yMaximum())
+        processingScope.setVariable('canvasextent_minx', extent.xMinimum())
+        processingScope.setVariable('canvasextent_miny', extent.yMinimum())
+        processingScope.setVariable('canvasextent_maxx', extent.xMaximum())
+        processingScope.setVariable('canvasextent_maxy', extent.yMaximum())
 
         extent = iface.mapCanvas().fullExtent()
-        processingScope.setVariable("fullextent_minx", extent.xMinimum())
-        processingScope.setVariable("fullextent_miny", extent.yMinimum())
-        processingScope.setVariable("fullextent_maxx", extent.xMaximum())
-        processingScope.setVariable("fullextent_maxy", extent.yMaximum())
+        processingScope.setVariable('fullextent_minx', extent.xMinimum())
+        processingScope.setVariable('fullextent_miny', extent.yMinimum())
+        processingScope.setVariable('fullextent_maxx', extent.xMaximum())
+        processingScope.setVariable('fullextent_maxy', extent.yMaximum())
         context.appendScope(processingScope)
         return context
 
