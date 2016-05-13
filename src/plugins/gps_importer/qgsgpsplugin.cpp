@@ -124,8 +124,9 @@ void QgsGPSPlugin::run()
   std::vector<QgsVectorLayer*> gpxLayers;
   QMap<QString, QgsMapLayer*>::const_iterator iter;
   QgsMapLayerRegistry* registry = QgsMapLayerRegistry::instance();
-  for ( iter =  registry->mapLayers().begin();
-        iter != registry->mapLayers().end(); ++iter )
+  QMap<QString, QgsMapLayer*> layers = registry->mapLayers();
+  for ( iter = layers.constBegin();
+        iter != layers.constEnd(); ++iter )
   {
     if ( iter.value()->type() == QgsMapLayer::VectorLayer )
     {
