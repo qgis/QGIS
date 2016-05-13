@@ -379,7 +379,7 @@ QgsFeatureIterator QgsPostgresProvider::getFeatures( const QgsFeatureRequest& re
   }
 
   QgsPostgresFeatureSource* featureSrc = static_cast<QgsPostgresFeatureSource*>( featureSource() );
-  return QgsFeatureIterator( new QgsPostgresFeatureIterator( featureSrc, false, request ) );
+  return QgsFeatureIterator( new QgsPostgresFeatureIterator( featureSrc, true, request ) );
 }
 
 
