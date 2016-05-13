@@ -220,6 +220,7 @@ void TestQgsField::convertCompatible()
   QVariant doubleVar( 9.7 );
   QVERIFY( stringField.convertCompatible( doubleVar ) );
   QCOMPARE( doubleVar.type(), QVariant::String );
+  // Should be fixed in Qt 5.7: https://bugreports.qt.io/browse/QTBUG-47192
   QCOMPARE( doubleVar, QVariant( "9.7" ) );
   QVariant nullDouble = QVariant( QVariant::Double );
   QVERIFY( stringField.convertCompatible( nullDouble ) );
