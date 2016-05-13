@@ -125,6 +125,7 @@ class ProcessingPlugin:
 
     def unload(self):
         self.toolbox.setVisible(False)
+        self.iface.removeDockWidget(self.toolbox)
         self.menu.deleteLater()
 
         # delete temporary output files
