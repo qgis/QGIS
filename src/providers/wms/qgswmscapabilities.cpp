@@ -907,7 +907,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
 
         for ( int i = 0; i < layerProperty.style.size(); ++i )
         {
-          if ( layerProperty.style[i].name == styleProperty.name )
+          if ( layerProperty.style.at( i ).name == styleProperty.name )
           {
             // override inherited parent's style if it has the same name
             // according to the WMS spec, it should not happen, but Mapserver

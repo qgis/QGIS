@@ -89,6 +89,10 @@ ADD_QGIS_TEST(wmscapabilititestest
               testqgswmscapabilities.cpp)
 TARGET_LINK_LIBRARIES(qgis_wmscapabilititestest wmsprovider_a)
 
+ADD_QGIS_TEST(wmsprovidertest
+              testqgswmsprovider.cpp)
+TARGET_LINK_LIBRARIES(qgis_wmsprovidertest wmsprovider_a)
+
 #############################################################
 # WCS public servers test:
 # No need to test on all platforms
