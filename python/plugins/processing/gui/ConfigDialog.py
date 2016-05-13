@@ -29,8 +29,8 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import (Qt,
-                              QEvent,
-                              QPyNullVariant)
+                              QEvent
+                              )
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QDialog,
                                  QStyle,
@@ -45,8 +45,10 @@ from qgis.PyQt.QtGui import (QIcon,
                              QStandardItemModel,
                              QStandardItem)
 
-from qgis.gui import QgsDoubleSpinBox
-from qgis.gui import QgsSpinBox
+from qgis.gui import (QgsDoubleSpinBox,
+                      QgsSpinBox
+                      )
+from qgis.core import NULL
 
 from processing.core.ProcessingConfig import (ProcessingConfig,
                                               settingsWatcher,
@@ -340,7 +342,7 @@ class SettingDelegate(QStyledItemDelegate):
         return QStyledItemDelegate.eventFilter(self, editor, event)
 
     def convertValue(self, value):
-        if value is None or isinstance(value, QPyNullVariant):
+        if value is None or value == NULL:
             return ""
         try:
             return int(value)

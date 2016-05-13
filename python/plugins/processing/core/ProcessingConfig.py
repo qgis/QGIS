@@ -27,8 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.PyQt.QtCore import QPyNullVariant, QCoreApplication, QSettings, QObject, pyqtSignal
+from qgis.PyQt.QtCore import QCoreApplication, QSettings, QObject, pyqtSignal
 from qgis.PyQt.QtGui import QIcon
+from qgis.core import NULL
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
 
@@ -196,7 +197,7 @@ class ProcessingConfig:
         if name in ProcessingConfig.settings.keys():
             v = ProcessingConfig.settings[name].value
             try:
-                if isinstance(v, QPyNullVariant):
+                if v == NULL:
                     v = None
             except:
                 pass

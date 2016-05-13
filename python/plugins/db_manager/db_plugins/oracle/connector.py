@@ -23,14 +23,13 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import QPyNullVariant
 from qgis.PyQt.QtSql import QSqlDatabase
 
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
 
 import os
-from qgis.core import QGis, QgsApplication
+from qgis.core import QGis, QgsApplication, NULL
 from . import QtSqlDB
 import sqlite3
 
@@ -611,7 +610,7 @@ class OracleDBConnector(DBConnector):
         for i, tbl in enumerate(lst_tables):
             item = list(tbl)
             detectedSrid = item.pop()
-            if isinstance(detectedSrid, QPyNullVariant):
+            if detectedSrid == NULL:
                 detectedSrid = u"-1"
             else:
                 detectedSrid = int(detectedSrid)
@@ -779,7 +778,7 @@ class OracleDBConnector(DBConnector):
         geomtypes = []
         srids = []
         for row in rows:
-            if isinstance(row[1], QPyNullVariant):
+            if row[1] == NULL:
                 srids.append(-1)
             else:
                 srids.append(int(row[1]))
@@ -831,7 +830,7 @@ class OracleDBConnector(DBConnector):
         res = self._fetchone(c)
         c.close()
 
-        if not res or isinstance(res[0], QPyNullVariant):
+        if not res or res[0] == NULL:
             return 0
         else:
             return int(res[0])
@@ -1113,7 +1112,7 @@ class OracleDBConnector(DBConnector):
 
             if not res_d or len(res_d) < 2:
                 return None
-            elif isinstance(res_d[0], QPyNullVariant):
+            elif res_d[0] == NULL:
                 return None
             else:
                 res.extend(res_d)
