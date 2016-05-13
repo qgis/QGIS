@@ -1,4 +1,4 @@
-from PyQt.QtCore import QCoreApplication, QSettings
+from qgis.PyQt.QtCore import QCoreApplication, QSettings
 
 
 def chunks(l, n):
