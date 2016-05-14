@@ -5831,6 +5831,57 @@ void QgisApp::saveAsLayerDefinition()
   }
 }
 
+///@cond PRIVATE
+/** Field value converter for export as vecotr layer
+ * \note Not available in Python bindings
+ */
+class QgisAppFieldValueConverter : public QgsVectorFileWriter::FieldValueConverter
+{
+  public:
+    QgisAppFieldValueConverter( QgsVectorLayer* vl, QgsAttributeList attributesAsDisplayedValues );
+
+    virtual QgsField fieldDefinition( const QgsField& field ) override;
+
+    virtual QVariant convert( int idx, const QVariant& value ) override;
+
+  private:
+    QgsVectorLayer* mLayer;
+    QgsAttributeList mAttributesAsDisplayedValues;
+};
+
+QgisAppFieldValueConverter::QgisAppFieldValueConverter( QgsVectorLayer* vl, QgsAttributeList attributesAsDisplayedValues )
+    : mLayer( vl )
+    , mAttributesAsDisplayedValues( attributesAsDisplayedValues )
+{
+}
+
+QgsField QgisAppFieldValueConverter::fieldDefinition( const QgsField& field )
+{
+  int idx = mLayer->fields().indexFromName( field.name() );
+  if ( mAttributesAsDisplayedValues.contains( idx ) )
+  {
+    return QgsField( field.name(), QVariant::String );
+  }
+  return field;
+}
+
+QVariant QgisAppFieldValueConverter::convert( int idx, const QVariant& value )
+{
+  if ( !mAttributesAsDisplayedValues.contains( idx ) )
+  {
+    return value;
+  }
+  QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( mLayer->editFormConfig()->widgetType( idx ) );
+  if ( factory )
+  {
+    QgsEditorWidgetConfig cfg( mLayer->editFormConfig()->widgetConfig( idx ) );
+    return QVariant( factory->representValue( mLayer, idx, cfg, QVariant(), value ) );
+  }
+  return value;
+}
+
+///@endcond
+
 void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOption )
 {
   if ( !vlayer )
@@ -5899,6 +5950,11 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
     QString errorMessage;
     QString newFilename;
     QgsRectangle filterExtent = dialog->filterExtent();
+    QgisAppFieldValueConverter converter( vlayer, dialog->attributesAsDisplayedValues() );
+    QgisAppFieldValueConverter* converterPtr = nullptr;
+    // No need to use the converter if there is nothing to convert
+    if ( !dialog->attributesAsDisplayedValues().isEmpty() )
+      converterPtr = &converter;
     error = QgsVectorFileWriter::writeAsVectorFormat(
               vlayer, vectorFilename, encoding, ct, format,
               dialog->onlySelected(),
@@ -5912,7 +5968,8 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
               autoGeometryType ? QgsWKBTypes::Unknown : forcedGeometryType,
               dialog->forceMulti(),
               dialog->includeZ(),
-              dialog->selectedAttributes()
+              dialog->selectedAttributes(),
+              converterPtr
             );
 
     delete ct;

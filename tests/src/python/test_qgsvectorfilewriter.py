@@ -18,6 +18,7 @@ import qgis  # NOQA
 
 from qgis.core import (QgsVectorLayer,
                        QgsFeature,
+                       QgsField,
                        QgsGeometry,
                        QgsPoint,
                        QgsCoordinateReferenceSystem,
@@ -33,6 +34,31 @@ from qgis.testing import start_app, unittest
 from utilities import writeShape, compareWkt
 
 start_app()
+
+
+class TestFieldValueConverter(QgsVectorFileWriter.FieldValueConverter):
+
+    def __init__(self, layer):
+        QgsVectorFileWriter.FieldValueConverter.__init__(self)
+        self.layer = layer
+
+    def fieldDefinition(self, field):
+        idx = self.layer.fields().indexFromName(field.name())
+        if idx == 0:
+            return self.layer.fields()[idx]
+        elif idx == 2:
+            return QgsField('conv_attr', QVariant.String)
+        return QgsField('unexpected_idx')
+
+    def convert(self, idx, value):
+        if idx == 0:
+            return value
+        elif idx == 2:
+            if value == 3:
+                return 'converted_val'
+            else:
+                return 'unexpected_val!'
+        return 'unexpected_idx'
 
 
 class TestQgsVectorLayer(unittest.TestCase):
@@ -353,6 +379,43 @@ class TestQgsVectorLayer(unittest.TestCase):
         assert compareWkt(expWkt, wkt), "geometry not saved correctly when saving without attributes : mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
         self.assertEqual(f['FID'], 0)
 
+    def testValueConverter(self):
+        """Tests writing a layer with a field value converter."""
+        ml = QgsVectorLayer(
+            ('Point?field=nonconv:int&field=ignored:string&field=converted:int'),
+            'test',
+            'memory')
+
+        assert ml is not None, 'Provider not initialized'
+        assert ml.isValid(), 'Source layer not valid'
+        provider = ml.dataProvider()
+        assert provider is not None
+        self.assertEqual(ml.fields().count(), 3)
+
+        ft = QgsFeature()
+        ft.setAttributes([1, 'ignored', 3])
+        res, features = provider.addFeatures([ft])
+        assert res
+        assert len(features) > 0
+
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'value_converter.shp')
+        converter = TestFieldValueConverter(ml)
+        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+            ml,
+            dest_file_name,
+            'utf-8',
+            QgsCoordinateReferenceSystem(),
+            'ESRI Shapefile',
+            attributes=[0, 2],
+            fieldValueConverter=converter)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+
+        # Open result and check
+        created_layer = QgsVectorLayer(u'{}|layerid=0'.format(dest_file_name), u'test', u'ogr')
+        self.assertEqual(created_layer.fields().count(), 2)
+        f = next(created_layer.getFeatures(QgsFeatureRequest()))
+        self.assertEqual(f['nonconv'], 1)
+        self.assertEqual(f['conv_attr'], 'converted_val')
 
 if __name__ == '__main__':
     unittest.main()

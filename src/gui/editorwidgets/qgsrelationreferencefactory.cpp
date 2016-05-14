@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsproject.h"
 #include "qgsrelationreferencefactory.h"
 
 #include "qgsrelationreferencewidgetwrapper.h"
@@ -102,4 +103,65 @@ QMap<const char*, int> QgsRelationReferenceFactory::supportedWidgetTypes()
   QMap<const char*, int> map = QMap<const char*, int>();
   map.insert( QgsRelationReferenceWidget::staticMetaObject.className(), 10 );
   return map;
+}
+
+QString QgsRelationReferenceFactory::representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
+{
+  Q_UNUSED( cache );
+
+  // Some sanity checks
+  if ( !config.contains( "Relation" ) )
+  {
+    QgsDebugMsg( "Missing Relation in configuration" );
+    return value.toString();
+  }
+  QgsRelation relation = QgsProject::instance()->relationManager()->relation( config["Relation"].toString() );
+  if ( !relation.isValid() )
+  {
+    QgsDebugMsg( "Invalid relation" );
+    return value.toString();
+  }
+  QgsVectorLayer* referencingLayer = relation.referencingLayer();
+  if ( vl != referencingLayer )
+  {
+    QgsDebugMsg( "representValue() with inconsistant vl parameter w.r.t relation referencingLayer" );
+    return value.toString();
+  }
+  int referencingFieldIdx = referencingLayer->fieldNameIndex( relation.fieldPairs().at( 0 ).first );
+  if ( referencingFieldIdx != fieldIdx )
+  {
+    QgsDebugMsg( "representValue() with inconsistant fieldIdx parameter w.r.t relation referencingFieldIdx" );
+    return value.toString();
+  }
+  QgsVectorLayer* referencedLayer = relation.referencedLayer();
+  if ( !referencedLayer )
+  {
+    QgsDebugMsg( "Cannot find referenced layer" );
+    return value.toString();
+  }
+
+  // Attributes from the referencing layer
+  QgsAttributes attrs = QgsAttributes( vl->fields().count() );
+  // Set the value on the foreign key field of the referencing record
+  attrs[ referencingFieldIdx ] = value;
+
+  QgsFeatureRequest request = relation.getReferencedFeatureRequest( attrs );
+  QgsFeature feature;
+  referencedLayer->getFeatures( request ).nextFeature( feature );
+  if ( !feature.isValid() )
+    return value.toString();
+
+  QgsExpression expr( referencedLayer->displayExpression() );
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( referencedLayer );
+  context.setFeature( feature );
+  QString title = expr.evaluate( &context ).toString();
+  if ( expr.hasEvalError() )
+  {
+    int referencedFieldIdx = referencedLayer->fieldNameIndex( relation.fieldPairs().at( 0 ).second );
+    title = feature.attribute( referencedFieldIdx ).toString();
+  }
+  return title;
 }

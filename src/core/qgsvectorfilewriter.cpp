@@ -52,6 +52,23 @@
 #define TO8F(x)  QFile::encodeName( x ).constData()
 #endif
 
+QgsVectorFileWriter::FieldValueConverter::FieldValueConverter()
+{
+}
+
+QgsVectorFileWriter::FieldValueConverter::~FieldValueConverter()
+{
+}
+
+QgsField QgsVectorFileWriter::FieldValueConverter::fieldDefinition( const QgsField& field )
+{
+  return field;
+}
+
+QVariant QgsVectorFileWriter::FieldValueConverter::convert( int /*fieldIdxInLayer*/, const QVariant& value )
+{
+  return value;
+}
 
 QgsVectorFileWriter::QgsVectorFileWriter(
   const QString &theVectorFileName,
@@ -74,8 +91,10 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     , mWkbType( QGis::fromOldWkbType( geometryType ) )
     , mSymbologyExport( symbologyExport )
     , mSymbologyScaleDenominator( 1.0 )
+    , mFieldValueConverter( nullptr )
 {
-  init( theVectorFileName, theFileEncoding, fields, QGis::fromOldWkbType( geometryType ), srs, driverName, datasourceOptions, layerOptions, newFilename );
+  init( theVectorFileName, theFileEncoding, fields, QGis::fromOldWkbType( geometryType ),
+        srs, driverName, datasourceOptions, layerOptions, newFilename, nullptr );
 }
 
 QgsVectorFileWriter::QgsVectorFileWriter( const QString& vectorFileName, const QString& fileEncoding, const QgsFields& fields, QgsWKBTypes::Type geometryType, const QgsCoordinateReferenceSystem* srs, const QString& driverName, const QStringList& datasourceOptions, const QStringList& layerOptions, QString* newFilename, QgsVectorFileWriter::SymbologyExport symbologyExport )
@@ -88,11 +107,48 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& vectorFileName, const Q
     , mWkbType( geometryType )
     , mSymbologyExport( symbologyExport )
     , mSymbologyScaleDenominator( 1.0 )
+    , mFieldValueConverter( nullptr )
 {
-  init( vectorFileName, fileEncoding, fields, geometryType, srs, driverName, datasourceOptions, layerOptions, newFilename );
+  init( vectorFileName, fileEncoding, fields, geometryType, srs, driverName,
+        datasourceOptions, layerOptions, newFilename, nullptr );
 }
 
-void QgsVectorFileWriter::init( QString vectorFileName, QString fileEncoding, const QgsFields& fields, QgsWKBTypes::Type geometryType, const QgsCoordinateReferenceSystem* srs, const QString& driverName, QStringList datasourceOptions, QStringList layerOptions, QString* newFilename )
+QgsVectorFileWriter::QgsVectorFileWriter( const QString& vectorFileName,
+    const QString& fileEncoding,
+    const QgsFields& fields,
+    QgsWKBTypes::Type geometryType,
+    const QgsCoordinateReferenceSystem* srs,
+    const QString& driverName,
+    const QStringList& datasourceOptions,
+    const QStringList& layerOptions,
+    QString* newFilename,
+    QgsVectorFileWriter::SymbologyExport symbologyExport,
+    FieldValueConverter* fieldValueConverter )
+    : mDS( nullptr )
+    , mLayer( nullptr )
+    , mOgrRef( nullptr )
+    , mGeom( nullptr )
+    , mError( NoError )
+    , mCodec( nullptr )
+    , mWkbType( geometryType )
+    , mSymbologyExport( symbologyExport )
+    , mSymbologyScaleDenominator( 1.0 )
+    , mFieldValueConverter( nullptr )
+{
+  init( vectorFileName, fileEncoding, fields, geometryType, srs, driverName,
+        datasourceOptions, layerOptions, newFilename, fieldValueConverter );
+}
+
+void QgsVectorFileWriter::init( QString vectorFileName,
+                                QString fileEncoding,
+                                const QgsFields& fields,
+                                QgsWKBTypes::Type geometryType,
+                                const QgsCoordinateReferenceSystem* srs,
+                                const QString& driverName,
+                                QStringList datasourceOptions,
+                                QStringList layerOptions,
+                                QString* newFilename,
+                                FieldValueConverter* fieldValueConverter )
 {
   mRenderContext.setRendererScale( mSymbologyScaleDenominator );
 
@@ -357,11 +413,19 @@ void QgsVectorFileWriter::init( QString vectorFileName, QString fileEncoding, co
   mAttrIdxToOgrIdx.clear();
   QSet<int> existingIdxs;
 
+  mFieldValueConverter = fieldValueConverter;
+
   for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
   {
-    const QgsField& attrField = fields[fldIdx];
+    QgsField attrField = fields[fldIdx];
 
     OGRFieldType ogrType = OFTString; //default to string
+
+    if ( fieldValueConverter )
+    {
+      attrField = fieldValueConverter->fieldDefinition( fields[fldIdx] );
+    }
+
     int ogrWidth = attrField.length();
     int ogrPrecision = attrField.precision();
     if ( ogrPrecision > 0 )
@@ -1813,10 +1877,15 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
     int fldIdx = it.key();
     int ogrField = it.value();
 
-    const QVariant& attrValue = feature.attribute( fldIdx );
+    QVariant attrValue = feature.attribute( fldIdx );
 
     if ( !attrValue.isValid() || attrValue.isNull() )
       continue;
+
+    if ( mFieldValueConverter )
+    {
+      attrValue = mFieldValueConverter->convert( fldIdx, attrValue );
+    }
 
     switch ( attrValue.type() )
     {
@@ -2054,7 +2123,8 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     QgsWKBTypes::Type overrideGeometryType,
     bool forceMulti,
     bool includeZ,
-    QgsAttributeList attributes )
+    QgsAttributeList attributes,
+    FieldValueConverter* fieldValueConverter )
 {
   QgsCoordinateTransform* ct = nullptr;
   if ( destCRS && layer )
@@ -2063,7 +2133,10 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   }
 
   QgsVectorFileWriter::WriterError error = writeAsVectorFormat( layer, fileName, fileEncoding, ct, driverName, onlySelected,
-      errorMessage, datasourceOptions, layerOptions, skipAttributeCreation, newFilename, symbologyExport, symbologyScale, filterExtent, overrideGeometryType, forceMulti, includeZ, attributes );
+      errorMessage, datasourceOptions, layerOptions, skipAttributeCreation,
+      newFilename, symbologyExport, symbologyScale, filterExtent,
+      overrideGeometryType, forceMulti, includeZ, attributes,
+      fieldValueConverter );
   delete ct;
   return error;
 }
@@ -2085,7 +2158,8 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     QgsWKBTypes::Type overrideGeometryType,
     bool forceMulti,
     bool includeZ,
-    QgsAttributeList attributes )
+    QgsAttributeList attributes,
+    FieldValueConverter* fieldValueConverter )
 {
   if ( !layer )
   {
@@ -2190,9 +2264,11 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   }
 
   QgsVectorFileWriter* writer =
-    new QgsVectorFileWriter( fileName, fileEncoding, fields, QGis::fromNewWkbType( destWkbType ), outputCRS, driverName, datasourceOptions, layerOptions, newFilename, symbologyExport );
+    new QgsVectorFileWriter( fileName, fileEncoding, fields, destWkbType,
+                             outputCRS, driverName, datasourceOptions, layerOptions,
+                             newFilename, symbologyExport,
+                             fieldValueConverter );
   writer->setSymbologyScaleDenominator( symbologyScale );
-
 
   if ( newFilename )
   {
@@ -2268,6 +2344,8 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   }
 
   writer->resetMap( attributes );
+  // Reset mFields to layer fields, and not just exported fields
+  writer->mFields = layer->fields();
 
   // write all features
   while ( fit.nextFeature( fet ) )
