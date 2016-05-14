@@ -213,19 +213,14 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         self.assertIsNotNone(btnConnect)
         QTest.mouseClick(btnConnect, Qt.LeftButton)
 
-        # We need to show (and raise for Mac) the dialog so that the focus changes
-        self.loop = QEventLoop()
-        treeView = main_dialog.findChild(QTreeView, "treeView")
-        treeView.selectionModel().currentRowChanged.connect(main_dialog.hide)
-        treeView.selectionModel().currentRowChanged.connect(self.loop.quit)
-        main_dialog.show()
-        main_dialog.raise_()
-        self.loop.exec_()
-
-        # Add layer
         buttonAdd = self.get_button_add(main_dialog)
+        for i in range(10):
+            QApplication.processEvents()
+            if buttonAdd.isEnabled():
+                break
         self.assertTrue(buttonAdd.isEnabled())
 
+        # Add layer
         self.addWfsLayer_uri = None
         self.addWfsLayer_layer_name = None
         main_dialog.addWfsLayer.connect(self.slotAddWfsLayer)
