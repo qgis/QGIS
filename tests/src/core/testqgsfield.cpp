@@ -217,11 +217,10 @@ void TestQgsField::convertCompatible()
   QVERIFY( stringField.convertCompatible( nullInt ) );
   QCOMPARE( nullInt.type(), QVariant::String );
   QVERIFY( nullInt.isNull() );
-  QVariant doubleVar( 9.7 );
+  QVariant doubleVar( 1.25 );
   QVERIFY( stringField.convertCompatible( doubleVar ) );
   QCOMPARE( doubleVar.type(), QVariant::String );
-  // Should be fixed in Qt 5.7: https://bugreports.qt.io/browse/QTBUG-47192
-  QCOMPARE( doubleVar, QVariant( "9.7" ) );
+  QCOMPARE( doubleVar, QVariant( "1.25" ) );
   QVariant nullDouble = QVariant( QVariant::Double );
   QVERIFY( stringField.convertCompatible( nullDouble ) );
   QCOMPARE( nullDouble.type(), QVariant::String );
@@ -246,10 +245,10 @@ void TestQgsField::convertCompatible()
   QVERIFY( doubleField.convertCompatible( nullInt ) );
   QCOMPARE( nullInt.type(), QVariant::Double );
   QVERIFY( nullInt.isNull() );
-  doubleVar = QVariant( 9.7 );
+  doubleVar = QVariant( 1.25 );
   QVERIFY( doubleField.convertCompatible( doubleVar ) );
   QCOMPARE( doubleVar.type(), QVariant::Double );
-  QCOMPARE( doubleVar, QVariant( 9.7 ) );
+  QCOMPARE( doubleVar, QVariant( 1.25 ) );
   nullDouble = QVariant( QVariant::Double );
   QVERIFY( doubleField.convertCompatible( nullDouble ) );
   QCOMPARE( nullDouble.type(), QVariant::Double );

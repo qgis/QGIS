@@ -24,4 +24,3 @@ qgis_composermapgridtest
 qgis_composertabletest
 qgis_composertablev2test
 qgis_composerutils
-qgis_fieldtest
