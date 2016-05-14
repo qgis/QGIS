@@ -111,7 +111,12 @@ bool QgsWFSSharedData::computeFilter( QString& errorMsg )
     QgsSQLStatement sql( mURI.sql() );
 
     const QgsSQLStatement::NodeSelect* select = dynamic_cast<const QgsSQLStatement::NodeSelect*>( sql.rootNode() );
-    Q_ASSERT( select );
+    if ( !select )
+    {
+      // Makes Coverity happy, but cannot happen in practice
+      QgsDebugMsg( "should not happen" );
+      return false;
+    }
     QList<QgsSQLStatement::NodeColumnSorted*> orderBy = select->orderBy();
     Q_FOREACH ( QgsSQLStatement::NodeColumnSorted* columnSorted, orderBy )
     {

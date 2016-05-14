@@ -407,7 +407,7 @@ class QgsWFSValidatorCallback: public QObject, public QgsSQLComposerDialog::SQLV
 {
   public:
     QgsWFSValidatorCallback( QObject* parent,
-                             QgsWFSDataSourceURI uri, const QString& allSql,
+                             const QgsWFSDataSourceURI& uri, const QString& allSql,
                              const QgsWFSCapabilities::Capabilities& caps );
     bool isValid( const QString& sql, QString& errorReason ) override;
   private:
@@ -417,7 +417,7 @@ class QgsWFSValidatorCallback: public QObject, public QgsSQLComposerDialog::SQLV
 };
 
 QgsWFSValidatorCallback::QgsWFSValidatorCallback( QObject* parent,
-    QgsWFSDataSourceURI uri,
+    const QgsWFSDataSourceURI& uri,
     const QString& allSql,
     const QgsWFSCapabilities::Capabilities& caps )
     : QObject( parent )
@@ -449,7 +449,7 @@ class QgsWFSTableSelectedCallback: public QObject, public QgsSQLComposerDialog::
 {
   public:
     QgsWFSTableSelectedCallback( QgsSQLComposerDialog* dialog,
-                                 QgsWFSDataSourceURI uri,
+                                 const QgsWFSDataSourceURI& uri,
                                  const QgsWFSCapabilities::Capabilities& caps );
     void tableSelected( const QString& name ) override;
 
@@ -460,7 +460,7 @@ class QgsWFSTableSelectedCallback: public QObject, public QgsSQLComposerDialog::
 };
 
 QgsWFSTableSelectedCallback::QgsWFSTableSelectedCallback( QgsSQLComposerDialog* dialog,
-    QgsWFSDataSourceURI uri,
+    const QgsWFSDataSourceURI& uri,
     const QgsWFSCapabilities::Capabilities& caps )
     : QObject( dialog )
     , mDialog( dialog )

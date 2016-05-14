@@ -856,7 +856,13 @@ void QgsWFSFeatureIterator::featureReceivedSynchronous( QVector<QgsWFSFeatureGml
     mWriterFilename = QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QString( "iterator_%1_%2.bin" ).arg( thisStr ).arg( mCounter ) );
     QgsDebugMsg( QString( "Transfering feature iterator cache to %1" ).arg( mWriterFilename ) );
     mWriterFile = new QFile( mWriterFilename );
-    mWriterFile->open( QIODevice::WriteOnly );
+    if ( !mWriterFile->open( QIODevice::WriteOnly ) )
+    {
+      QgsDebugMsg( QString( "Cannot open %1 for writing" ).arg( mWriterFilename ) );
+      delete mWriterFile;
+      mWriterFile = nullptr;
+      return;
+    }
     mWriterFile->write( mWriterByteArray );
     mWriterByteArray.clear();
     mWriterStream->setDevice( mWriterFile );
@@ -975,7 +981,13 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
       else if ( !mReaderFilename.isEmpty() )
       {
         mReaderFile = new QFile( mReaderFilename );
-        mReaderFile->open( QIODevice::ReadOnly );
+        if ( !mReaderFile->open( QIODevice::ReadOnly ) )
+        {
+          QgsDebugMsg( QString( "Cannot open %1" ).arg( mReaderFilename ) );
+          delete mReaderFile;
+          mReaderFile = nullptr;
+          return false;
+        }
         mReaderStream = new QDataStream( mReaderFile );
       }
     }

@@ -290,7 +290,12 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg )
     return false;
   }
   const QgsSQLStatement::NodeSelect* select = dynamic_cast<const QgsSQLStatement::NodeSelect*>( sql.rootNode() );
-  Q_ASSERT( select );
+  if ( !select )
+  {
+    // Makes Coverity happy, but cannot happen in practice
+    QgsDebugMsg( "should not happen" );
+    return false;
+  }
   mShared->mDistinctSelect = select->distinct();
 
   QMap< QString, QString > mapTypenameAliasToTypename;

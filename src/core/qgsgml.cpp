@@ -473,7 +473,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
     }
   }
 
-  const bool isGMLNS = ( nsLen == mGMLNameSpaceURI.size() && memcmp( el, mGMLNameSpaceURIPtr, nsLen ) == 0 );
+  const bool isGMLNS = ( nsLen == mGMLNameSpaceURI.size() && mGMLNameSpaceURIPtr && memcmp( el, mGMLNameSpaceURIPtr, nsLen ) == 0 );
   bool isGeom = false;
   if ( isGMLNS && LOCALNAME_EQUALS( "coordinates" ) )
   {
@@ -776,7 +776,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
   const int localNameLen = ( pszSep ) ? ( int )( elLen - nsLen ) - 1 : elLen;
   ParseMode theParseMode( mParseModeStack.isEmpty() ? none : mParseModeStack.top() );
 
-  const bool isGMLNS = ( nsLen == mGMLNameSpaceURI.size() && memcmp( el, mGMLNameSpaceURIPtr, nsLen ) == 0 );
+  const bool isGMLNS = ( nsLen == mGMLNameSpaceURI.size() && mGMLNameSpaceURIPtr && memcmp( el, mGMLNameSpaceURIPtr, nsLen ) == 0 );
 
   if ( theParseMode == coordinate && isGMLNS && LOCALNAME_EQUALS( "coordinates" ) )
   {
