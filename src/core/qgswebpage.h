@@ -181,7 +181,7 @@ class CORE_EXPORT QWebPage : public QObject
 
   protected:
 
-    virtual void javaScriptConsoleMessage( const QString , int, const QString& ) {};
+    virtual void javaScriptConsoleMessage( const QString& , int, const QString& ) {}
 
   private:
     QWebSettings* mSettings;
