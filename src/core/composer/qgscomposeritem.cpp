@@ -1441,7 +1441,7 @@ QString QgsComposerItem::displayName() const
   switch ( type() )
   {
     case ComposerArrow:
-      return tr( "<arrow>" );
+      return tr( "<line>" );
     case ComposerItemGroup:
       return tr( "<group>" );
     case ComposerLabel:
