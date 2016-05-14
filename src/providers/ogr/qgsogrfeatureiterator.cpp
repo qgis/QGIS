@@ -38,13 +38,14 @@
 
 QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>( source, ownSource, request )
+    , mFeatureFetched( false )
+    , mConn( nullptr )
     , ogrLayer( nullptr )
     , mSubsetStringSet( false )
+    , mFetchGeometry( false )
     , mGeometrySimplifier( nullptr )
     , mExpressionCompiled( false )
 {
-  mFeatureFetched = false;
-
   mConn = QgsOgrConnPool::instance()->acquireConnection( mSource->mProvider->dataSourceUri() );
   if ( !mConn->ds )
   {
