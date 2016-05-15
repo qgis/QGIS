@@ -15,8 +15,6 @@ PyQgsSipCoverage
 PyQgsSpatialiteProvider
 PyQgsVirtualLayerDefinition
 PyQgsVirtualLayerProvider
-PyQgsWFSProvider
-PyQgsWFSProviderGUI
 qgis_composermapgridtest
 qgis_composertabletest
 qgis_composertablev2test

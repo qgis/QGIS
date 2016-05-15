@@ -32,6 +32,9 @@ class TestQgsOgcUtils : public QObject
 
     void initTestCase()
     {
+      // Needed on Qt 5 so that the serialization of XML is consistant among all executions
+      qputenv( "QT_HASH_SEED", "1" );
+
       //
       // Runs once before any tests are run
       //
@@ -57,10 +60,8 @@ class TestQgsOgcUtils : public QObject
     void testExpressionToOgcFilterWFS11();
     void testExpressionToOgcFilterWFS11_data();
 
-#if QT_VERSION < 0x050000
     void testExpressionToOgcFilterWFS20();
     void testExpressionToOgcFilterWFS20_data();
-#endif
 
     void testSQLStatementToOgcFilter();
     void testSQLStatementToOgcFilter_data();
@@ -428,8 +429,12 @@ void TestQgsOgcUtils::testExpressionToOgcFilterWFS11_data()
     "</ogc:Filter>" );
 }
 
-// There's an issue with QT 5 that appears to reverse the order of multiple attributes
-#if QT_VERSION < 0x050000
+static QString normalizeXML( const QString& xmlText )
+{
+  QDomDocument doc;
+  doc.setContent( xmlText, true );
+  return doc.toString( -1 );
+}
 
 void TestQgsOgcUtils::testExpressionToOgcFilterWFS20()
 {
@@ -456,7 +461,7 @@ void TestQgsOgcUtils::testExpressionToOgcFilterWFS20()
   qDebug( "SRSNAME: %s", srsName.toAscii().data() );
   qDebug( "OGC : %s", doc.toString( -1 ).toAscii().data() );
 
-  QCOMPARE( xmlText, doc.toString( -1 ) );
+  QCOMPARE( normalizeXML( xmlText ), normalizeXML( doc.toString( -1 ) ) );
 }
 
 void TestQgsOgcUtils::testExpressionToOgcFilterWFS20_data()
@@ -503,8 +508,6 @@ void TestQgsOgcUtils::testExpressionToOgcFilterWFS20_data()
     "</fes:Intersects>"
     "</fes:Filter>" );
 }
-
-#endif
 
 Q_DECLARE_METATYPE( QgsOgcUtils::GMLVersion )
 Q_DECLARE_METATYPE( QgsOgcUtils::FilterVersion )
@@ -558,7 +561,7 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter()
           filterVersion == QgsOgcUtils::FILTER_FES_2_0 ? "FES 2.0" : "unknown" );
   qDebug( "OGC :   %s", doc.toString( -1 ).toAscii().data() );
 
-  QCOMPARE( doc.toString( -1 ), xmlText );
+  QCOMPARE( normalizeXML( xmlText ), normalizeXML( doc.toString( -1 ) ) );
 }
 
 void TestQgsOgcUtils::testSQLStatementToOgcFilter_data()
@@ -742,9 +745,6 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter_data()
     "</ogc:BBOX>"
     "</ogc:Filter>" );
 
-// There's an issue with QT 5 that appears to reverse the order of multiple attributes
-#if QT_VERSION < 0x050000
-
   QTest::newRow( "intersects + wkt + explicit srs" ) << QString( "SELECT * FROM t WHERE ST_Intersects(geom, ST_GeometryFromText('POINT (5 6)', 'urn:ogc:def:crs:EPSG::4326'))" ) <<
   QgsOgcUtils::GML_3_2_1 << QgsOgcUtils::FILTER_FES_2_0 << layerProperties << QString(
     "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:gml=\"http://www.opengis.net/gml/3.2\">"
@@ -852,9 +852,7 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter_data()
     "</fes:PropertyIsEqualTo>"
     "</fes:And>"
     "</fes:Filter>" );
-#endif
 }
-
 
 QTEST_MAIN( TestQgsOgcUtils )
 #include "testqgsogcutils.moc"
