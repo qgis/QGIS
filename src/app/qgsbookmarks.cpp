@@ -34,7 +34,8 @@
 #include <QAbstractTableModel>
 
 
-QgsBookmarks::QgsBookmarks( QWidget *parent ) : QDockWidget( parent )
+QgsBookmarks::QgsBookmarks( QWidget *parent )
+    : QDockWidget( parent )
 {
   setupUi( this );
   restorePosition();
@@ -490,10 +491,11 @@ bool QgsProjectBookmarksTableModel::removeRows( int row, int count, const QModel
   return true;
 }
 
-QgsMergedBookmarksTableModel::QgsMergedBookmarksTableModel( QAbstractTableModel& qgisTableModel, QAbstractTableModel& projectTableModel, QTreeView* treeView ):
-    mQgisTableModel( qgisTableModel ),
-    mProjectTableModel( projectTableModel ),
-    mTreeView( treeView )
+QgsMergedBookmarksTableModel::QgsMergedBookmarksTableModel( QAbstractTableModel& qgisTableModel, QAbstractTableModel& projectTableModel, QTreeView* treeView )
+    : mQgisTableModel( qgisTableModel )
+    , mProjectTableModel( projectTableModel )
+    , mTreeView( treeView )
+    , mProjectOpen( false )
 {
   connect(
     QgisApp::instance(), SIGNAL( projectRead() ),
@@ -674,7 +676,12 @@ void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel& modelFrom,
     query.bindValue( ":ymax", modelFrom.data( modelFrom.index( row, 6 ) ).toDouble() );
     query.bindValue( ":projection_srid", modelFrom.data( modelFrom.index( row, 7 ) ).toInt() );
 
-    query.exec();
+    if ( !query.exec() )
+    {
+      QgsDebugMsg( QString( "Could not move bookmark: %1" )
+                   .arg( query.lastError().text() ) );
+      return;
+    }
     qgisModel->setSort( 0, Qt::AscendingOrder );
     qgisModel->select();
   }

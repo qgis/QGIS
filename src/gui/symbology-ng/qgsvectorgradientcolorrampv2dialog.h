@@ -24,7 +24,6 @@ class QgsVectorGradientColorRampV2;
 class QwtPlot;
 class QwtPlotCurve;
 class QwtPlotMarker;
-class QwtPlotPicker;
 class QgsGradientPlotEventFilter;
 
 class GUI_EXPORT QgsVectorGradientColorRampV2Dialog : public QDialog, private Ui::QgsVectorGradientColorRampV2DialogBase
@@ -69,7 +68,6 @@ class GUI_EXPORT QgsVectorGradientColorRampV2Dialog : public QDialog, private Ui
     QwtPlotCurve* mHueCurve;
     QwtPlotCurve* mAlphaCurve;
     QList< QwtPlotMarker* > mMarkers;
-    QwtPlotPicker* mPicker;
     QgsGradientPlotEventFilter* mPlotFilter;
     int mCurrentPlotColorComponent;
     int mCurrentPlotMarkerIndex;

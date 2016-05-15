@@ -69,6 +69,7 @@ QColor QgsColorDialog::getLiveColor( const QColor& initialColor, QObject* update
 QgsColorDialogV2::QgsColorDialogV2( QWidget *parent, const Qt::WindowFlags& fl, const QColor& color )
     : QDialog( parent, fl )
     , mPreviousColor( color )
+    , mAllowAlpha( true )
 {
   setupUi( this );
 

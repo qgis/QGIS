@@ -1523,6 +1523,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
             , mDeletePart( nullptr )
             , mNodeTool( nullptr )
             , mRotatePointSymbolsTool( nullptr )
+            , mOffsetPointSymbolTool( nullptr )
             , mAnnotation( nullptr )
             , mFormAnnotation( nullptr )
             , mHtmlAnnotation( nullptr )
