@@ -277,7 +277,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
       treeView->setColumnWidth( MODEL_IDX_ABSTRACT, 150 );
     }
     btnChangeSpatialRefSys->setEnabled( true );
-    treeView->selectionModel()->select( mModel->index( 0, 0 ), QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows );
+    treeView->selectionModel()->setCurrentIndex( mModelProxy->index( 0, 0 ), QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows );
     treeView->setFocus();
   }
   else
