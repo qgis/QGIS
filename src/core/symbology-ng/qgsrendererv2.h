@@ -425,8 +425,22 @@ class CORE_EXPORT QgsFeatureRendererV2
     //! render editing vertex marker for a polygon
     void renderVertexMarkerPolygon( QPolygonF& pts, QList<QPolygonF>* rings, QgsRenderContext& context );
 
+    /**
+     * Creates a point in screen coordinates from a wkb string in map
+     * coordinates
+     */
     static QgsConstWkbPtr _getPoint( QPointF& pt, QgsRenderContext& context, QgsConstWkbPtr& wkb );
+
+    /**
+     * Creates a line string in screen coordinates from a wkb string in map
+     * coordinates
+     */
     static QgsConstWkbPtr _getLineString( QPolygonF& pts, QgsRenderContext& context, QgsConstWkbPtr& wkb, bool clipToExtent = true );
+
+    /**
+     * Creates a polygon in screen coordinates from a wkb string in map
+     * coordinates
+     */
     static QgsConstWkbPtr _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, QgsConstWkbPtr& wkb, bool clipToExtent = true );
 
     void setScaleMethodToSymbol( QgsSymbolV2* symbol, int scaleMethod );

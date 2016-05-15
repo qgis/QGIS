@@ -26,7 +26,7 @@
 
 EFFECTIVE_AREAS* initiate_effectivearea( const POINTARRAY *inpts )
 {
-  LWDEBUG( 2, "Entered  initiate_effectivearea" );
+  //LWDEBUG( 2, "Entered  initiate_effectivearea" );
   EFFECTIVE_AREAS *ea;
   ea = ( EFFECTIVE_AREAS* )lwalloc( sizeof( EFFECTIVE_AREAS ) );
   ea->initial_arealist = ( areanode* )lwalloc( inpts->npoints * sizeof( areanode ) );
@@ -69,7 +69,7 @@ static double triarea2d( const double *P1, const double *P2, const double *P3 )
  */
 static double triarea3d( const double *P1, const double *P2, const double *P3 )
 {
-  LWDEBUG( 2, "Entered  triarea3d" );
+  //LWDEBUG( 2, "Entered  triarea3d" );
   double ax, bx, ay, by, az, bz, cx, cy, cz, area;
 
   ax = P1[0] - P2[0];
@@ -110,7 +110,7 @@ static int cmpfunc( const void * a, const void * b )
  */
 static void down( MINHEAP *tree, areanode *arealist, int parent )
 {
-  LWDEBUG( 2, "Entered  down" );
+  //LWDEBUG( 2, "Entered  down" );
   areanode **treearray = tree->key_array;
   int left = parent * 2 + 1;
   int right = left + 1;
@@ -149,8 +149,10 @@ static void down( MINHEAP *tree, areanode *arealist, int parent )
  */
 static void up( MINHEAP *tree, areanode *arealist, int c )
 {
-  LWDEBUG( 2, "Entered  up" );
+  //LWDEBUG( 2, "Entered  up" );
   areanode *tmp;
+
+  Q_UNUSED( arealist );
 
   areanode **treearray = tree->key_array;
   int parent = ( c - 1 ) / 2;
@@ -175,7 +177,7 @@ static void up( MINHEAP *tree, areanode *arealist, int c )
  */
 static areanode* minheap_pop( MINHEAP *tree, areanode *arealist )
 {
-  LWDEBUG( 2, "Entered  minheap_pop" );
+  //LWDEBUG( 2, "Entered  minheap_pop" );
   areanode *res = tree->key_array[0];
 
   // put last value first
@@ -206,7 +208,7 @@ static void minheap_update( MINHEAP *tree, areanode *arealist, int idx )
  */
 static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, double trshld )
 {
-  LWDEBUG( 2, "Entered  tune_areas" );
+  //LWDEBUG( 2, "Entered  tune_areas" );
   const double *P1;
   const double *P2;
   const double *P3;
@@ -226,7 +228,7 @@ static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
   for ( i = 0; i < npoints; i++ )
   {
     tree.key_array[i] = ea->initial_arealist + i;
-    LWDEBUGF( 2, "add nr %d, with area %lf, and %lf", i, ea->initial_arealist[i].area, tree.key_array[i]->area );
+    //LWDEBUGF( 2, "add nr %d, with area %lf, and %lf", i, ea->initial_arealist[i].area, tree.key_array[i]->area );
   }
   tree.usedSize = npoints;
 
@@ -237,7 +239,7 @@ static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
   for ( i = 0; i < npoints; i++ )
   {
     (( areanode* )tree.key_array[i] )->treeindex = i;
-    LWDEBUGF( 4, "Check ordering qsort gives, area=%lf and belong to point %d", (( areanode* )tree.key_array[i] )->area, tree.key_array[i] - ea->initial_arealist );
+    //LWDEBUGF( 4, "Check ordering qsort gives, area=%lf and belong to point %d", (( areanode* )tree.key_array[i] )->area, tree.key_array[i] - ea->initial_arealist );
   }
 
   // Ok, now we have a minHeap, just need to keep it
@@ -313,7 +315,7 @@ static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
  */
 void ptarray_calc_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, double trshld )
 {
-  LWDEBUG( 2, "Entered  ptarray_calc_areas" );
+  //LWDEBUG( 2, "Entered  ptarray_calc_areas" );
   int i;
   int npoints = ea->inpts->npoints;
   int is3d = FLAGS_GET_Z( ea->inpts->flags );
@@ -343,7 +345,7 @@ void ptarray_calc_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, d
     else
       area = triarea2d( P1, P2, P3 );
 
-    LWDEBUGF( 4, "Write area %lf to point %d on address %p", area, i, &( ea->initial_arealist[i].area ) );
+    //LWDEBUGF( 4, "Write area %lf to point %d on address %p", area, i, &( ea->initial_arealist[i].area ) );
     ea->initial_arealist[i].area = area;
     P1 = P2;
     P2 = P3;

@@ -12,7 +12,8 @@ class QgsMapToPixelSimplifier : QgsAbstractGeometrySimplifier
       Visvalingam = 2, //!< The simplification gives each point in a line an importance weighting, so that least important points are removed first
     };
 
-    QgsMapToPixelSimplifier( int simplifyFlags, double tolerance );
+    //! Constructor
+    QgsMapToPixelSimplifier( int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm = Distance );
     virtual ~QgsMapToPixelSimplifier();
 
     //! Applicable simplification flags
@@ -32,10 +33,14 @@ class QgsMapToPixelSimplifier : QgsAbstractGeometrySimplifier
     static bool equalSnapToGrid( double x1, double y1, double x2, double y2, double gridOriginX, double gridOriginY, float gridInverseSizeXY );
 
   public:
+    //! Gets the simplification hints of the vector layer managed
     int simplifyFlags() const;
+    //! Sets the simplification hints of the vector layer managed
     void setSimplifyFlags( int simplifyFlags );
 
+    //! Gets the local simplification algorithm of the vector layer managed
     SimplifyAlgorithm simplifyAlgorithm() const;
+    //! Sets the local simplification algorithm of the vector layer managed
     void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm );
 
     //! Returns a simplified version the specified geometry

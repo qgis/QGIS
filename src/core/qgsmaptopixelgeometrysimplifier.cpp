@@ -23,8 +23,8 @@
 
 QgsMapToPixelSimplifier::QgsMapToPixelSimplifier( int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm )
     : mSimplifyFlags( simplifyFlags )
-    , mTolerance( tolerance )
     , mSimplifyAlgorithm( simplifyAlgorithm )
+    , mTolerance( tolerance )
 {
 }
 

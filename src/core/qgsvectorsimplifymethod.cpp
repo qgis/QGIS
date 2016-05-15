@@ -20,8 +20,8 @@
 QgsVectorSimplifyMethod::QgsVectorSimplifyMethod()
     : mSimplifyHints( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD > 1 ? QgsVectorSimplifyMethod::FullSimplification : QgsVectorSimplifyMethod::GeometrySimplification )
     , mSimplifyAlgorithm( QgsVectorSimplifyMethod::Distance )
-    , mThreshold( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD )
     , mTolerance( 1 )
+    , mThreshold( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD )
     , mLocalOptimization( true )
     , mMaximumScale( 1 )
 {
