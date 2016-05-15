@@ -93,6 +93,7 @@ matrix:
     - os: osx
       env:
         - BUILD=osx
+        - IGNORE_BUILD_FAILURES=YES
 
 git:
   depth: 30
