@@ -160,7 +160,7 @@ class CORE_EXPORT QgsVectorFileWriter
     /** Interface to convert raw field values to their user-friendly value.
      * @note Added in QGIS 2.16
      */
-    class FieldValueConverter
+    class CORE_EXPORT FieldValueConverter
     {
       public:
         /** Constructor */

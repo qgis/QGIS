@@ -372,7 +372,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     return nullptr;
   }
 
-  QgsDebugMsgLevel( QString( "OGR Driver : %1 " ).arg( OGR_Dr_GetName( hDriver ) ), 2 );
+  QgsDebugMsgLevel( QString( "OGR Driver : %1" ).arg( OGR_Dr_GetName( hDriver ) ), 2 );
 
   int numLayers = OGR_DS_GetLayerCount( hDataSource );
 

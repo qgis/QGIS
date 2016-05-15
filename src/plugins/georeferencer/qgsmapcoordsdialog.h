@@ -32,6 +32,7 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
   public:
     explicit QgsGeorefMapToolEmitPoint( QgsMapCanvas *canvas )
         : QgsMapTool( canvas )
+        , mSnappingMarker( nullptr )
     {
     }
 
@@ -90,8 +91,9 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
   private:
     struct MappedPoint
     {
+      MappedPoint() : snapped( false ) {}
       QgsPoint point;
-      bool snapped = false;
+      bool snapped;
     };
 
     MappedPoint mapPoint( QMouseEvent *e )
@@ -106,7 +108,7 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
       return ret;
     }
 
-    QgsVertexMarker* mSnappingMarker = nullptr;
+    QgsVertexMarker* mSnappingMarker;
 };
 
 class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
