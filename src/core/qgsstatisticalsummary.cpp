@@ -51,6 +51,7 @@ void QgsStatisticalSummary::reset()
   mFirstQuartile = 0;
   mThirdQuartile = 0;
   mValueCount.clear();
+  mValues.clear();
 }
 
 /***************************************************************************
@@ -65,15 +66,30 @@ void QgsStatisticalSummary::calculate( const QList<double> &values )
 
   Q_FOREACH ( double value, values )
   {
-    mCount++;
-    mSum += value;
-    mMin = qMin( mMin, value );
-    mMax = qMax( mMax, value );
-
-    if ( mStatistics & QgsStatisticalSummary::Majority || mStatistics & QgsStatisticalSummary::Minority || mStatistics & QgsStatisticalSummary::Variety )
-      mValueCount.insert( value, mValueCount.value( value, 0 ) + 1 );
+    addValue( value );
   }
 
+  finalize();
+}
+
+void QgsStatisticalSummary::addValue( double value )
+{
+  mCount++;
+  mSum += value;
+  mMin = qMin( mMin, value );
+  mMax = qMax( mMax, value );
+
+  if ( mStatistics & QgsStatisticalSummary::Majority || mStatistics & QgsStatisticalSummary::Minority || mStatistics & QgsStatisticalSummary::Variety )
+    mValueCount.insert( value, mValueCount.value( value, 0 ) + 1 );
+
+  if ( mStatistics & QgsStatisticalSummary::StDev || mStatistics & QgsStatisticalSummary::StDevSample ||
+       mStatistics & QgsStatisticalSummary::Median || mStatistics & QgsStatisticalSummary::FirstQuartile ||
+       mStatistics & QgsStatisticalSummary::ThirdQuartile || mStatistics & QgsStatisticalSummary::InterQuartileRange )
+    mValues << value;
+}
+
+void QgsStatisticalSummary::finalize()
+{
   if ( mCount == 0 )
     return;
 
@@ -82,31 +98,29 @@ void QgsStatisticalSummary::calculate( const QList<double> &values )
   if ( mStatistics & QgsStatisticalSummary::StDev || mStatistics & QgsStatisticalSummary::StDevSample )
   {
     double sumSquared = 0;
-    Q_FOREACH ( double value, values )
+    Q_FOREACH ( double value, mValues )
     {
       double diff = value - mMean;
       sumSquared += diff * diff;
     }
-    mStdev = qPow( sumSquared / values.count(), 0.5 );
-    mSampleStdev = qPow( sumSquared / ( values.count() - 1 ), 0.5 );
+    mStdev = qPow( sumSquared / mValues.count(), 0.5 );
+    mSampleStdev = qPow( sumSquared / ( mValues.count() - 1 ), 0.5 );
   }
 
-  QList<double> sorted;
   if ( mStatistics & QgsStatisticalSummary::Median
        || mStatistics & QgsStatisticalSummary::FirstQuartile
        || mStatistics & QgsStatisticalSummary::ThirdQuartile
        || mStatistics & QgsStatisticalSummary::InterQuartileRange )
   {
-    sorted = values;
-    qSort( sorted.begin(), sorted.end() );
+    qSort( mValues.begin(), mValues.end() );
     bool even = ( mCount % 2 ) < 1;
     if ( even )
     {
-      mMedian = ( sorted[mCount / 2 - 1] + sorted[mCount / 2] ) / 2.0;
+      mMedian = ( mValues[mCount / 2 - 1] + mValues[mCount / 2] ) / 2.0;
     }
     else //odd
     {
-      mMedian = sorted[( mCount + 1 ) / 2 - 1];
+      mMedian = mValues[( mCount + 1 ) / 2 - 1];
     }
   }
 
@@ -119,11 +133,11 @@ void QgsStatisticalSummary::calculate( const QList<double> &values )
       bool even = ( halfCount % 2 ) < 1;
       if ( even )
       {
-        mFirstQuartile = ( sorted[halfCount / 2 - 1] + sorted[halfCount / 2] ) / 2.0;
+        mFirstQuartile = ( mValues[halfCount / 2 - 1] + mValues[halfCount / 2] ) / 2.0;
       }
       else //odd
       {
-        mFirstQuartile = sorted[( halfCount  + 1 ) / 2 - 1];
+        mFirstQuartile = mValues[( halfCount  + 1 ) / 2 - 1];
       }
     }
     else
@@ -132,11 +146,11 @@ void QgsStatisticalSummary::calculate( const QList<double> &values )
       bool even = ( halfCount % 2 ) < 1;
       if ( even )
       {
-        mFirstQuartile = ( sorted[halfCount / 2 - 1] + sorted[halfCount / 2] ) / 2.0;
+        mFirstQuartile = ( mValues[halfCount / 2 - 1] + mValues[halfCount / 2] ) / 2.0;
       }
       else //odd
       {
-        mFirstQuartile = sorted[( halfCount  + 1 ) / 2 - 1];
+        mFirstQuartile = mValues[( halfCount  + 1 ) / 2 - 1];
       }
     }
   }
@@ -150,11 +164,11 @@ void QgsStatisticalSummary::calculate( const QList<double> &values )
       bool even = ( halfCount % 2 ) < 1;
       if ( even )
       {
-        mThirdQuartile = ( sorted[ halfCount + halfCount / 2 - 1] + sorted[ halfCount + halfCount / 2] ) / 2.0;
+        mThirdQuartile = ( mValues[ halfCount + halfCount / 2 - 1] + mValues[ halfCount + halfCount / 2] ) / 2.0;
       }
       else //odd
       {
-        mThirdQuartile = sorted[( halfCount + 1 ) / 2 - 1 + halfCount ];
+        mThirdQuartile = mValues[( halfCount + 1 ) / 2 - 1 + halfCount ];
       }
     }
     else
@@ -163,11 +177,11 @@ void QgsStatisticalSummary::calculate( const QList<double> &values )
       bool even = ( halfCount % 2 ) < 1;
       if ( even )
       {
-        mThirdQuartile = ( sorted[ halfCount + halfCount / 2 - 2 ] + sorted[ halfCount + halfCount / 2 - 1 ] ) / 2.0;
+        mThirdQuartile = ( mValues[ halfCount + halfCount / 2 - 2 ] + mValues[ halfCount + halfCount / 2 - 1 ] ) / 2.0;
       }
       else //odd
       {
-        mThirdQuartile = sorted[( halfCount + 1 ) / 2 - 2 + halfCount ];
+        mThirdQuartile = mValues[( halfCount + 1 ) / 2 - 2 + halfCount ];
       }
     }
   }
