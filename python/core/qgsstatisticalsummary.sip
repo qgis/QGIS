@@ -69,6 +69,25 @@ class QgsStatisticalSummary
      */
     void calculate( const QList<double>& values );
 
+    /** Adds a single value to the statistics calculation. Calling this method
+     * allows values to be added to the calculation one at a time. For large
+     * quantities of values this may be more efficient then first adding all the
+     * values to a list and calling calculate().
+     * @param value value to add
+     * @note call reset() before adding the first value using this method
+     * to clear the results from any previous calculations
+     * @note finalize() must be called after adding the final value and before
+     * retrieving calculated statistics.
+     * @see calculate()
+     * @see finalize()
+     */
+    void addValue( double value );
+
+    /** Must be called after adding all values with addValues() and before retrieving
+     * any calculated statistics.
+     * @see addValue()
+     */
+    void finalize();
     /** Returns the value of a specified statistic
      * @param stat statistic to return
      * @returns calculated value of statistic
