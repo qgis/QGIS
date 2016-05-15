@@ -6,9 +6,6 @@ PyQgsGeometryTest
 PyQgsJSONUtils
 PyQgsLocalServer
 PyQgsMapUnitScale
-PyQgsPalLabelingCanvas
-PyQgsPalLabelingComposer
-PyQgsPalLabelingPlacement
 PyQgsPalLabelingServer
 PyQgsRelationEditWidget
 PyQgsServer
