@@ -628,14 +628,26 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex& index )
 
   d->setSql( sql );
 
-  d->setAttribute( Qt::WA_DeleteOnClose );
-  d->setModal( true );
-  // For testability, do not use exec()
-  if ( !property( "hideDialogs" ).toBool() )
-    d->open();
-  connect( d, SIGNAL( accepted() ), this, SLOT( updateSql() ) );
   mSQLIndex = index;
   mSQLComposerDialog = d;
+  // For testability, do not use exec()
+  if ( property( "hideDialogs" ).toBool() )
+  {
+    d->setAttribute( Qt::WA_DeleteOnClose );
+    d->setModal( true );
+    d->open();
+    connect( d, SIGNAL( accepted() ), this, SLOT( updateSql() ) );
+  }
+  else
+  {
+    // But we need to use exec() for real GUI, otherwise it does not look
+    // right on Mac
+    if ( d->exec() )
+    {
+      updateSql();
+    }
+    delete d;
+  }
 }
 
 void QgsWFSSourceSelect::updateSql()
