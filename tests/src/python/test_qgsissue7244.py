@@ -20,7 +20,11 @@ from qgis.core import QgsPoint, QgsVectorLayer
 
 from qgis.testing import start_app, unittest
 
-from pyspatialite import dbapi2 as sqlite3
+try:
+    from pysqlite2 import dbapi2 as sqlite
+except ImportError:
+    print("You should install pysqlite to run the tests")
+    raise ImportError
 
 # Convenience instances in case you may need them
 start_app()
@@ -38,8 +42,17 @@ class TestQgsSpatialiteProvider(unittest.TestCase):
         # create test db
         if os.path.exists("test.sqlite"):
             os.remove("test.sqlite")
-        con = sqlite3.connect("test.sqlite", isolation_level=None)
+        con = sqlite.connect("test.sqlite", isolation_level=None)
         cur = con.cursor()
+
+        # load spatialite extension
+        if os.name == 'nt':
+            sql = "SELECT load_extension('spatialite4.dll')"
+        else:
+            sql = "SELECT load_extension('libspatialite')"
+        cur.execute(sql)
+        con.enable_load_extension(False)
+
         cur.execute("BEGIN")
         sql = "SELECT InitSpatialMetadata()"
         cur.execute(sql)

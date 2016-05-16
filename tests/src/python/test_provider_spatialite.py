@@ -27,9 +27,9 @@ from providertestbase import ProviderTestCase
 from qgis.PyQt.QtCore import QSettings
 
 try:
-    from pyspatialite import dbapi2 as sqlite3
+    from pysqlite2 import dbapi2 as sqlite
 except ImportError:
-    print("You should install pyspatialite to run the tests")
+    print("You should install pysqlite to run the tests")
     raise ImportError
 
 # Pass no_exit=True: for some reason this crashes on exit on Travis MacOSX
@@ -55,8 +55,18 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         cls.dbname = os.path.join(tempfile.gettempdir(), "test.sqlite")
         if os.path.exists(cls.dbname):
             os.remove(cls.dbname)
-        con = sqlite3.connect(cls.dbname, isolation_level=None)
+        con = sqlite.connect(cls.dbname, isolation_level=None)
+        con.enable_load_extension(True)
         cur = con.cursor()
+
+        # load spatialite extension
+        if os.name == 'nt':
+            sql = "SELECT load_extension('spatialite4.dll')"
+        else:
+            sql = "SELECT load_extension('libspatialite')"
+        cur.execute(sql)
+        con.enable_load_extension(False)
+
         cur.execute("BEGIN")
         sql = "SELECT InitSpatialMetadata()"
         cur.execute(sql)
