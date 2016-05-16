@@ -97,12 +97,25 @@ void QgsAttributeDialog::show( bool autoDelete )
   activateWindow();
 }
 
-void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, const QgsAttributeEditorContext &context )
+void QgsAttributeDialog::reject()
 {
+  // Delete any actions on other layers that may have been triggered from this dialog
+  if ( mAttributeForm->mode() == QgsAttributeForm::AddFeatureMode )
+    mTrackedVectorLayerTools.rollback();
+
+  QDialog::reject();
+}
+
+void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, const QgsAttributeEditorContext& context )
+{
+  QgsAttributeEditorContext trackedContext = context;
   setWindowTitle( tr( "%1 - Feature Attributes" ).arg( layer->name() ) );
   setLayout( new QGridLayout() );
   layout()->setMargin( 0 );
-  mAttributeForm = new QgsAttributeForm( layer, *feature, context, this );
+  mTrackedVectorLayerTools.setVectorLayerTools( trackedContext.vectorLayerTools() );
+  trackedContext.setVectorLayerTools( &mTrackedVectorLayerTools );
+
+  mAttributeForm = new QgsAttributeForm( layer, *feature, trackedContext, this );
   mAttributeForm->disconnectButtonBox();
   layout()->addWidget( mAttributeForm );
   QDialogButtonBox* buttonBox = mAttributeForm->findChild<QDialogButtonBox*>();

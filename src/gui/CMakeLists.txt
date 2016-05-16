@@ -280,6 +280,7 @@ SET(QGIS_GUI_SRCS
   qgssvgannotationitem.cpp
   qgstablewidgetitem.cpp
   qgstextannotationitem.cpp
+  qgstrackedvectorlayertools.cpp
   qgsunitselectionwidget.cpp
   qgsuserinputdockwidget.cpp
   qgsvariableeditorwidget.cpp
@@ -601,6 +602,7 @@ SET(QGIS_GUI_HDRS
   qgssvgannotationitem.h
   qgstablewidgetitem.h
   qgstextannotationitem.h
+  qgstrackedvectorlayertools.h
   qgsuserinputdockwidget.h
   qgsvectorlayertools.h
   qgsvertexmarker.h

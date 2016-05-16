@@ -45,6 +45,8 @@ class GUI_EXPORT QgsVectorLayerTools
      * @param defaultGeometry A default geometry to add to the feature
      * @param feature         Updated feature after adding will be written back to this
      * @return                True in case of success, False if the operation failed/was aborted
+     *
+     * TODO QGIS 3: remove const qualifier
      */
     virtual bool addFeature( QgsVectorLayer* layer, const QgsAttributeMap& defaultValues = QgsAttributeMap(), const QgsGeometry& defaultGeometry = QgsGeometry(), QgsFeature* feature = nullptr ) const = 0;
 
@@ -56,6 +58,8 @@ class GUI_EXPORT QgsVectorLayerTools
      * @param layer  The layer on which to start an edit session
      *
      * @return       True, if the editing session was started
+     *
+     * TODO QGIS 3: remove const qualifier
      */
     virtual bool startEditing( QgsVectorLayer* layer ) const = 0;
 
@@ -66,6 +70,8 @@ class GUI_EXPORT QgsVectorLayerTools
      * @param layer       The layer to commit
      * @param allowCancel True if a cancel button should be offered
      * @return            True if successful
+     *
+     * TODO QGIS 3: remove const qualifier
      */
     virtual bool stopEditing( QgsVectorLayer* layer, bool allowCancel = true ) const = 0;
 
@@ -74,6 +80,8 @@ class GUI_EXPORT QgsVectorLayerTools
      *
      * @param layer       The layer to commit
      * @return            True if successful
+     *
+     * TODO QGIS 3: remove const qualifier
      */
     virtual bool saveEdits( QgsVectorLayer* layer ) const = 0;
 
