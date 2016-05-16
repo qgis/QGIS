@@ -712,6 +712,7 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource* source,
     , mWriterStream( nullptr )
     , mReaderFile( nullptr )
     , mReaderStream( nullptr )
+    , mFetchGeometry( false )
 {
   // Configurable for the purpose of unit tests
   QString threshold( getenv( "QGIS_WFS_ITERATOR_TRANSFER_THRESHOLD" ) );
@@ -744,6 +745,12 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource* source,
 
   requestCache.setFilterRect( mRequest.filterRect() );
 
+  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) ||
+       ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression()->needsGeometry() ) )
+  {
+    mFetchGeometry = true;
+  }
+
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
     const QgsFields & dataProviderFields = mShared->mCacheDataProvider->fields();
@@ -772,7 +779,7 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource* source,
       }
     }
 
-    if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+    if ( mFetchGeometry )
     {
       int hexwkbGeomIdx = dataProviderFields.indexFromName( QgsWFSConstants::FIELD_HEXWKB_GEOM );
       Q_ASSERT( hexwkbGeomIdx >= 0 );
@@ -906,7 +913,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
 
     //QgsDebugMsg(QString("QgsWFSSharedData::fetchFeature() : mCacheIterator.nextFeature(cachedFeature)") );
 
-    if ( !mShared->mGeometryAttribute.isEmpty() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+    if ( !mShared->mGeometryAttribute.isEmpty() && mFetchGeometry )
     {
       int idx = cachedFeature.fields()->indexFromName( QgsWFSConstants::FIELD_HEXWKB_GEOM );
       Q_ASSERT( idx >= 0 );

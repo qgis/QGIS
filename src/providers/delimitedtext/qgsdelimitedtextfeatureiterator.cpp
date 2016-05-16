@@ -129,6 +129,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
          !( mRequest.flags() & QgsFeatureRequest::NoGeometry )
          || mTestGeometry
          || ( mTestSubset && mSource->mSubsetExpression->needsGeometry() )
+         || ( request.filterType() == QgsFeatureRequest::FilterExpression && request.filterExpression()->needsGeometry() )
        )
      )
   {

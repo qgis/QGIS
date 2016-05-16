@@ -130,7 +130,8 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
 
     def uncompiledFilters(self):
         return set(['cnt = 10 ^ 2',
-                    '"name" ~ \'[OP]ra[gne]+\''])
+                    '"name" ~ \'[OP]ra[gne]+\'',
+                    'intersects($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))'])
 
     def partiallyCompiledFilters(self):
         return set(['"name" NOT LIKE \'Ap%\'',

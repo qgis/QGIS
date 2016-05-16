@@ -95,6 +95,10 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
       }
       mRequest.setSubsetOfAttributes( attrs );
     }
+    if ( request.filterExpression()->needsGeometry() )
+    {
+      mFetchGeometry = true;
+    }
 
     if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
     {

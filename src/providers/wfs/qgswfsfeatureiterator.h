@@ -241,6 +241,7 @@ class QgsWFSFeatureIterator : public QObject,
     QString mReaderFilename;
     QFile* mReaderFile;
     QDataStream* mReaderStream;
+    bool mFetchGeometry;
 };
 
 /** Feature source */

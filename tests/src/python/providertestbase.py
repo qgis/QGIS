@@ -75,7 +75,7 @@ class ProviderTestCase(object):
         return set()
 
     def assert_query(self, provider, expression, expected):
-        result = set([f['pk'] for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression(expression))])
+        result = set([f['pk'] for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression(expression).setFlags(QgsFeatureRequest.NoGeometry))])
         assert set(expected) == result, 'Expected {} and got {} when testing expression "{}"'.format(set(expected), result, expression)
 
         if self.compiled:
@@ -182,6 +182,9 @@ class ProviderTestCase(object):
         # type conversion - QGIS expressions do not mind that we are comparing a string
         # against numeric literals
         self.assert_query(provider, 'num_char IN (2, 4, 5)', [2, 4, 5])
+
+        # geometry
+        self.assert_query(provider, 'intersects($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))', [1, 2])
 
     def testGetFeaturesUncompiled(self):
         self.compiled = False

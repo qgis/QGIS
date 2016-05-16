@@ -60,7 +60,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         QSettings().setValue(u'/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
-        return set([])
+        return set(['intersects($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))'])
 
     def partiallyCompiledFilters(self):
         return set([])

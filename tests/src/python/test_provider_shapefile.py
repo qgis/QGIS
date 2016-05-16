@@ -111,7 +111,8 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
                        '-cnt < 0',
                        '-cnt - 1 = -101',
                        '-(-cnt) = 100',
-                       '-(cnt) = -(100)'])
+                       '-(cnt) = -(100)',
+                       'intersects($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))'])
         if int(osgeo.gdal.VersionInfo()[:1]) < 2:
             filters.insert('not null')
         return filters
