@@ -396,6 +396,46 @@ class QgsExpressionContext
      */
     void setOriginalValueVariable( const QVariant& value );
 
+    /** Sets a value to cache within the expression context. This can be used to cache the results
+     * of expensive expression sub-calculations, to speed up future evaluations using the same
+     * expression context.
+     * @param key unique key for retrieving cached value
+     * @param value value to cache
+     * @see hasCachedValue()
+     * @see cachedValue()
+     * @see clearCachedValues()
+     * @note added in QGIS 2.16
+     */
+    void setCachedValue( const QString& key, const QVariant& value ) const;
+
+    /** Returns true if the expression context contains a cached value with a matching key.
+     * @param key unique key used to store cached value
+     * @see setCachedValue()
+     * @see cachedValue()
+     * @see clearCachedValues()
+     * @note added in QGIS 2.16
+     */
+    bool hasCachedValue( const QString& key ) const;
+
+    /** Returns the matching cached value, if set. This can be used to retrieve the previously stored results
+     * of an expensive expression sub-calculation.
+     * @param key unique key used to store cached value
+     * @returns matching cached value, or invalid QVariant if not set
+     * @see setCachedValue()
+     * @see hasCachedValue()
+     * @see clearCachedValues()
+     * @note added in QGIS 2.16
+     */
+    QVariant cachedValue( const QString& key ) const;
+
+    /** Clears all cached values from the context.
+     * @see setCachedValue()
+     * @see hasCachedValue()
+     * @see cachedValue()
+     * @note added in QGIS 2.16
+     */
+    void clearCachedValues() const;
+
     //! Inbuilt variable name for fields storage
     static const QString EXPR_FIELDS;
     //! Inbuilt variable name for feature storage
