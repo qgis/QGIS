@@ -574,7 +574,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
     }
     else if ( mXConstraint->isLocked() )
     {
-      if ( cosa == 0 )
+      if ( qgsDoubleNear( cosa, 0.0 ) )
       {
         res = false;
       }
@@ -590,7 +590,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
     }
     else if ( mYConstraint->isLocked() )
     {
-      if ( sina == 0 )
+      if ( qgsDoubleNear( sina, 0.0 ) )
       {
         res = false;
       }
