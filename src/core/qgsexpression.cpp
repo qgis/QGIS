@@ -4262,11 +4262,23 @@ QgsExpression::Node*QgsExpression::NodeLiteral::clone() const
 QVariant QgsExpression::NodeColumnRef::eval( QgsExpression *parent, const QgsExpressionContext *context )
 {
   Q_UNUSED( parent );
+  int index = mIndex;
+
+  if ( index < 0 )
+  {
+    // have not yet found field index - first check explicitly set fields collection
+    if ( context && context->hasVariable( QgsExpressionContext::EXPR_FIELDS ) )
+    {
+      QgsFields fields = qvariant_cast<QgsFields>( context->variable( QgsExpressionContext::EXPR_FIELDS ) );
+      index = fields.fieldNameIndex( mName );
+    }
+  }
+
   if ( context && context->hasVariable( QgsExpressionContext::EXPR_FEATURE ) )
   {
     QgsFeature feature = qvariant_cast<QgsFeature>( context->variable( QgsExpressionContext::EXPR_FEATURE ) );
-    if ( mIndex >= 0 )
-      return feature.attribute( mIndex );
+    if ( index >= 0 )
+      return feature.attribute( index );
     else
       return feature.attribute( mName );
   }
