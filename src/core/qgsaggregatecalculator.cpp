@@ -105,6 +105,56 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   return calculate( aggregate, fit, resultType, attrNum, expression.data(), context, ok );
 }
 
+QgsAggregateCalculator::Aggregate QgsAggregateCalculator::stringToAggregate( const QString& string, bool* ok )
+{
+  QString normalized = string.trimmed().toLower();
+
+  if ( ok )
+    *ok = true;
+
+  if ( normalized == "count" )
+    return Count;
+  else if ( normalized == "count_distinct" )
+    return CountDistinct;
+  else if ( normalized == "count_missing" )
+    return CountMissing;
+  else if ( normalized == "min" )
+    return Min;
+  else if ( normalized == "max" )
+    return Max;
+  else if ( normalized == "sum" )
+    return Sum;
+  else if ( normalized == "mean" )
+    return Mean;
+  else if ( normalized == "median" )
+    return Median;
+  else if ( normalized == "stdev" )
+    return StDev;
+  else if ( normalized == "stdevsample" )
+    return StDevSample;
+  else if ( normalized == "range" )
+    return Range;
+  else if ( normalized == "minority" )
+    return Minority;
+  else if ( normalized == "majority" )
+    return Majority;
+  else if ( normalized == "q1" )
+    return FirstQuartile;
+  else if ( normalized == "q3" )
+    return ThirdQuartile;
+  else if ( normalized == "iqr" )
+    return InterQuartileRange;
+  else if ( normalized == "min_length" )
+    return StringMinimumLength;
+  else if ( normalized == "max_length" )
+    return StringMaximumLength;
+
+  if ( ok )
+    *ok = false;
+
+  return Count;
+}
+
 QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate aggregate, QgsFeatureIterator& fit, QVariant::Type resultType,
     int attr, QgsExpression* expression, QgsExpressionContext* context, bool* ok )
 {

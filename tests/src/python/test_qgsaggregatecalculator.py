@@ -334,6 +334,39 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         self.assertTrue(ok)
         self.assertEqual(val, 5)
 
+    def testStringToAggregate(self):
+        """ test converting strings to aggregate types """
+
+        tests = [[QgsAggregateCalculator.Count, ' cOUnT '],
+                 [QgsAggregateCalculator.CountDistinct, ' count_distinct   '],
+                 [QgsAggregateCalculator.CountMissing, 'COUNT_MISSING'],
+                 [QgsAggregateCalculator.Min, ' MiN'],
+                 [QgsAggregateCalculator.Max, 'mAX'],
+                 [QgsAggregateCalculator.Sum, 'sum'],
+                 [QgsAggregateCalculator.Mean, 'MEAn  '],
+                 [QgsAggregateCalculator.Median, 'median'],
+                 [QgsAggregateCalculator.StDev, 'stdev'],
+                 [QgsAggregateCalculator.StDevSample, 'stdevsample'],
+                 [QgsAggregateCalculator.Range, 'range'],
+                 [QgsAggregateCalculator.Minority, 'minority'],
+                 [QgsAggregateCalculator.Majority, 'majority'],
+                 [QgsAggregateCalculator.FirstQuartile, 'q1'],
+                 [QgsAggregateCalculator.ThirdQuartile, 'q3'],
+                 [QgsAggregateCalculator.InterQuartileRange, 'iqr'],
+                 [QgsAggregateCalculator.StringMinimumLength, 'min_length'],
+                 [QgsAggregateCalculator.StringMaximumLength, 'max_length']]
+
+        for t in tests:
+            agg, ok = QgsAggregateCalculator.stringToAggregate(t[1])
+            self.assertTrue(ok)
+            self.assertEqual(agg, t[0])
+
+        # test some bad values
+        agg, ok = QgsAggregateCalculator.stringToAggregate('')
+        self.assertFalse(ok)
+        agg, ok = QgsAggregateCalculator.stringToAggregate('bad')
+        self.assertFalse(ok)
+
 
 if __name__ == "__main__":
     unittest.main()
