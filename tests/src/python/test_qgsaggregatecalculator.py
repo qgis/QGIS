@@ -45,6 +45,16 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         a = QgsAggregateCalculator(layer)
         self.assertEqual(a.layer(), layer)
 
+    def testParameters(self):
+        """ Test setting parameters"""
+        a = QgsAggregateCalculator(None)
+        params = QgsAggregateCalculator.AggregateParameters()
+        params.filter = 'string filter'
+        params.delimiter = 'delim'
+        a.setParameters(params)
+        self.assertEqual(a.filter(), 'string filter')
+        self.assertEqual(a.delimiter(), 'delim')
+
     def testNumeric(self):
         """ Test calculation of aggregates on numeric fields"""
 
@@ -141,6 +151,13 @@ class TestQgsAggregateCalculator(unittest.TestCase):
             val, ok = agg.calculate(t[0], t[1])
             self.assertTrue(ok)
             self.assertEqual(val, t[2])
+
+        # test string concatenation
+        agg.setDelimiter(',')
+        self.assertEqual(agg.delimiter(), ',')
+        val, ok = agg.calculate(QgsAggregateCalculator.StringConcatenate, 'fldstring')
+        self.assertTrue(ok)
+        self.assertEqual(val, 'cc,aaaa,bbbbbbbb,aaaa,eeee,,eeee,,dddd')
 
         # bad tests - the following stats should not be calculatable for string fields
         for t in [QgsAggregateCalculator.Sum,
@@ -354,7 +371,8 @@ class TestQgsAggregateCalculator(unittest.TestCase):
                  [QgsAggregateCalculator.ThirdQuartile, 'q3'],
                  [QgsAggregateCalculator.InterQuartileRange, 'iqr'],
                  [QgsAggregateCalculator.StringMinimumLength, 'min_length'],
-                 [QgsAggregateCalculator.StringMaximumLength, 'max_length']]
+                 [QgsAggregateCalculator.StringMaximumLength, 'max_length'],
+                 [QgsAggregateCalculator.StringConcatenate, 'concatenate']]
 
         for t in tests:
             agg, ok = QgsAggregateCalculator.stringToAggregate(t[1])

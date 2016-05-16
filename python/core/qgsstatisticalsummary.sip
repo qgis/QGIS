@@ -120,6 +120,11 @@ class QgsStatisticalSummary
      */
     int count() const;
 
+    /** Returns the number of missing (null) values
+     * @note added in QGIS 2.16
+     */
+    int countMissing() const;
+
     /** Returns calculated sum of values
      */
     double sum() const;

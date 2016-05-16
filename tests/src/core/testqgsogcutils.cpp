@@ -274,7 +274,7 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
     "<ogc:Literal>New York</ogc:Literal>"
     "</ogc:PropertyIsEqualTo></ogc:Filter>" );
 
-  QTest::newRow( ">" ) << QString( "COUNT > 3" ) << QString(
+  QTest::newRow( ">" ) << QString( "\"COUNT\" > 3" ) << QString(
     "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
     "<ogc:PropertyIsGreaterThan>"
     "<ogc:PropertyName>COUNT</ogc:PropertyName>"

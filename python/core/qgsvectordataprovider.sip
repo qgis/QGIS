@@ -158,8 +158,7 @@ class QgsVectorDataProvider : QgsDataProvider
      * but subclasses can override this method to handoff calculation of aggregates to the provider.
      * @param aggregate aggregate to calculate
      * @param index the index of the attribute to calculate aggregate over
-     * @param filter optional filter for calculating aggregate over a subset of features, or an
-     * empty string to use all features
+     * @param parameters parameters controlling aggregate calculation
      * @param context expression context for filter
      * @param ok will be set to true if calculation was successfully performed by the data provider
      * @return calculated aggregate value
@@ -167,7 +166,7 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     virtual QVariant aggregate( QgsAggregateCalculator::Aggregate aggregate,
                                 int index,
-                                const QString& filter,
+                                const QgsAggregateCalculator::AggregateParameters& parameters,
                                 QgsExpressionContext* context,
                                 bool& ok );
 

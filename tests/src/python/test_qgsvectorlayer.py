@@ -1101,6 +1101,24 @@ class TestQgsVectorLayer(unittest.TestCase):
             else:
                 self.assertAlmostEqual(val, t[1], 3)
 
+        # test with parameters
+        layer = QgsVectorLayer("Point?field=fldstring:string", "layer", "memory")
+        pr = layer.dataProvider()
+
+        string_values = ['this', 'is', 'a', 'test']
+        features = []
+        for s in string_values:
+            f = QgsFeature()
+            f.setFields(layer.fields())
+            f.setAttributes([s])
+            features.append(f)
+        assert pr.addFeatures(features)
+        params = QgsAggregateCalculator.AggregateParameters()
+        params.delimiter = ' '
+        val, ok = layer.aggregate(QgsAggregateCalculator.StringConcatenate, 'fldstring', params)
+        self.assertTrue(ok)
+        self.assertEqual(val, 'this is a test')
+
     def onLayerTransparencyChanged(self, tr):
         self.transparencyTest = tr
 

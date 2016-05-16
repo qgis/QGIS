@@ -1660,8 +1660,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Calculates an aggregated value from the layer's features.
      * @param aggregate aggregate to calculate
      * @param fieldOrExpression source field or expression to use as basis for aggregated values.
-     * @param filter optional filter for calculating aggregate over a subset of features, or an
-     * empty string to use all features
+     * @param parameters parameters controlling aggregate calculation
      * @param context expression context for expressions and filters
      * @param ok if specified, will be set to true if aggregate calculation was successful
      * @return calculated aggregate value
@@ -1669,7 +1668,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     QVariant aggregate( QgsAggregateCalculator::Aggregate aggregate,
                         const QString& fieldOrExpression,
-                        const QString& filter = QString(),
+                        const QgsAggregateCalculator::AggregateParameters& parameters = QgsAggregateCalculator::AggregateParameters(),
                         QgsExpressionContext* context = nullptr,
                         bool* ok = nullptr );
 

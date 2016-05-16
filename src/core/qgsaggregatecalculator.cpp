@@ -34,6 +34,12 @@ QgsVectorLayer*QgsAggregateCalculator::layer() const
   return mLayer;
 }
 
+void QgsAggregateCalculator::setParameters( const AggregateParameters& parameters )
+{
+  mFilterExpression = parameters.filter;
+  mDelimiter = parameters.delimiter;
+}
+
 QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate aggregate,
     const QString& fieldOrExpression,
     QgsExpressionContext* context, bool* ok ) const
@@ -57,6 +63,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   if ( attrNum == -1 )
   {
     Q_ASSERT( context );
+    context->setFields( mLayer->fields() );
     // try to use expression
     expression.reset( new QgsExpression( fieldOrExpression ) );
 
@@ -79,6 +86,8 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
                               .setSubsetOfAttributes( lst, mLayer->fields() );
   if ( !mFilterExpression.isEmpty() )
     request.setFilterExpression( mFilterExpression );
+  if ( context )
+    request.setExpressionContext( *context );
 
   //determine result type
   QVariant::Type resultType = QVariant::Double;
@@ -90,7 +99,12 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     QgsFeature f;
     QgsFeatureIterator fit = mLayer->getFeatures( testRequest );
     if ( !fit.nextFeature( f ) )
+    {
+      //no matching features
+      if ( ok )
+        *ok = true;
       return QVariant();
+    }
 
     context->setFeature( f );
     QVariant v = expression->evaluate( context );
@@ -102,7 +116,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   }
 
   QgsFeatureIterator fit = mLayer->getFeatures( request );
-  return calculate( aggregate, fit, resultType, attrNum, expression.data(), context, ok );
+  return calculate( aggregate, fit, resultType, attrNum, expression.data(), mDelimiter, context, ok );
 }
 
 QgsAggregateCalculator::Aggregate QgsAggregateCalculator::stringToAggregate( const QString& string, bool* ok )
@@ -148,6 +162,8 @@ QgsAggregateCalculator::Aggregate QgsAggregateCalculator::stringToAggregate( con
     return StringMinimumLength;
   else if ( normalized == "max_length" )
     return StringMaximumLength;
+  else if ( normalized == "concatenate" )
+    return StringConcatenate;
 
   if ( ok )
     *ok = false;
@@ -156,7 +172,7 @@ QgsAggregateCalculator::Aggregate QgsAggregateCalculator::stringToAggregate( con
 }
 
 QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate aggregate, QgsFeatureIterator& fit, QVariant::Type resultType,
-    int attr, QgsExpression* expression, QgsExpressionContext* context, bool* ok )
+    int attr, QgsExpression* expression, const QString& delimiter, QgsExpressionContext* context, bool* ok )
 {
   if ( ok )
     *ok = false;
@@ -195,6 +211,14 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     default:
     {
       // treat as string
+      if ( aggregate == StringConcatenate )
+      {
+        //special case
+        if ( ok )
+          *ok = true;
+        return concatenateStrings( fit, attr, expression, context, delimiter );
+      }
+
       bool statOk = false;
       QgsStringStatisticalSummary::Statistic stat = stringStatFromAggregate( aggregate, &statOk );
       if ( !statOk )
@@ -250,6 +274,7 @@ QgsStatisticalSummary::Statistic QgsAggregateCalculator::numericStatFromAggregat
       return QgsStatisticalSummary::InterQuartileRange;
     case StringMinimumLength:
     case StringMaximumLength:
+    case StringConcatenate:
     {
       if ( ok )
         *ok = false;
@@ -295,6 +320,7 @@ QgsStringStatisticalSummary::Statistic QgsAggregateCalculator::stringStatFromAgg
     case FirstQuartile:
     case ThirdQuartile:
     case InterQuartileRange:
+    case StringConcatenate:
     {
       if ( ok )
         *ok = false;
@@ -339,6 +365,7 @@ QgsDateTimeStatisticalSummary::Statistic QgsAggregateCalculator::dateTimeStatFro
     case InterQuartileRange:
     case StringMinimumLength:
     case StringMaximumLength:
+    case StringConcatenate:
     {
       if ( ok )
         *ok = false;
@@ -401,6 +428,33 @@ QVariant QgsAggregateCalculator::calculateStringAggregate( QgsFeatureIterator& f
   }
   s.finalize();
   return s.statistic( stat );
+}
+
+QVariant QgsAggregateCalculator::concatenateStrings( QgsFeatureIterator& fit, int attr, QgsExpression* expression,
+    QgsExpressionContext* context, const QString& delimiter )
+{
+  Q_ASSERT( expression || attr >= 0 );
+
+  QgsFeature f;
+  QString result;
+  while ( fit.nextFeature( f ) )
+  {
+    if ( !result.isEmpty() )
+      result += delimiter;
+
+    if ( expression )
+    {
+      Q_ASSERT( context );
+      context->setFeature( f );
+      QVariant v = expression->evaluate( context );
+      result += v.toString();
+    }
+    else
+    {
+      result += f.attribute( attr ).toString();
+    }
+  }
+  return result;
 }
 
 QVariant QgsAggregateCalculator::calculateDateTimeAggregate( QgsFeatureIterator& fit, int attr, QgsExpression* expression,
