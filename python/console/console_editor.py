@@ -633,7 +633,8 @@ class Editor(QsciScintilla):
                 source = source.encode('utf-8')
             if isinstance(filename, type(u"")):
                 filename = filename.encode('utf-8')
-            compile(source, filename, 'exec')
+            if filename:
+                compile(source, filename, 'exec')
         except SyntaxError as detail:
             eline = detail.lineno and detail.lineno or 1
             ecolumn = detail.offset and detail.offset or 1
