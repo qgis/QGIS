@@ -809,6 +809,11 @@ void QgsMarkerLineSymbolLayerV2::setColor( const QColor& color )
   mColor = color;
 }
 
+QColor QgsMarkerLineSymbolLayerV2::color() const
+{
+  return mMarker ? mMarker->color() : mColor;
+}
+
 void QgsMarkerLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
   mMarker->setAlpha( context.alpha() );

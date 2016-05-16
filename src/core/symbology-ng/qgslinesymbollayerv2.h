@@ -194,6 +194,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     void setColor( const QColor& color ) override;
+    virtual QColor color() const override;
 
     QgsSymbolV2* subSymbol() override;
     bool setSubSymbol( QgsSymbolV2* symbol ) override;

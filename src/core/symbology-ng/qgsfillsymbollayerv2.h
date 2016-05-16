@@ -896,7 +896,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setLineWidth( double w );
     double lineWidth() const { return mLineWidth; }
     void setColor( const QColor& c ) override;
-    QColor color() const override { return mColor; }
+    QColor color() const override;
     void setOffset( double offset ) { mOffset = offset; }
     double offset() const { return mOffset; }
 
@@ -1026,6 +1026,8 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsMapUnitScale mapUnitScale() const override;
 
     virtual QSet<QString> usedAttributes() const override;
+    void setColor( const QColor& c ) override;
+    virtual QColor color() const override;
 
   protected:
     QgsMarkerSymbolV2* mMarkerSymbol;
@@ -1077,6 +1079,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     void setColor( const QColor& color ) override;
+    QColor color() const override;
 
     QgsSymbolV2* subSymbol() override;
     bool setSubSymbol( QgsSymbolV2* symbol ) override;

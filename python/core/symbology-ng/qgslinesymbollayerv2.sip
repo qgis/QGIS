@@ -145,6 +145,7 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     void setColor( const QColor& color );
+    virtual QColor color() const;
 
     QgsSymbolV2* subSymbol();
     bool setSubSymbol( QgsSymbolV2* symbol /Transfer/);
