@@ -521,7 +521,7 @@ void TestQgsFields::iterator()
   QgsFields::iterator it2( it );
   QVERIFY( it <= it2 );
   QVERIFY( it2 >= it );
-  it2++;
+  ++it2;
   QVERIFY( it < it2 );
   QVERIFY( it <= it2 );
   QVERIFY( it2 > it );
@@ -582,7 +582,7 @@ void TestQgsFields::constIterator()
   QgsFields::const_iterator it3( it );
   QVERIFY( it <= it3 );
   QVERIFY( it3 >= it );
-  it3++;
+  ++it3;
   QVERIFY( it < it3 );
   QVERIFY( it <= it3 );
   QVERIFY( it3 > it );

@@ -233,7 +233,7 @@ bool QgsWFSSharedData::createCache()
   if ( mDistinctSelect )
     cacheFields.append( QgsField( QgsWFSConstants::FIELD_MD5, QVariant::String, "string" ) );
 
-  bool ogrWaySuccessfull = false;
+  bool ogrWaySuccessful = false;
   QString geometryFieldname( "__spatialite_geometry" );
 #ifdef USE_OGR_FOR_DB_CREATION
   // Only GDAL >= 2.0 can use an alternate geometry field name
@@ -282,7 +282,7 @@ bool QgsWFSSharedData::createCache()
         return false;
       }
 
-      ogrWaySuccessfull = true;
+      ogrWaySuccessful = true;
     }
     else
     {
@@ -295,7 +295,7 @@ bool QgsWFSSharedData::createCache()
     }
   }
 #endif
-  if ( !ogrWaySuccessfull )
+  if ( !ogrWaySuccessful )
   {
     static QMutex mutexDBnameCreation;
     static QByteArray cachedDBTemplate;
@@ -365,7 +365,7 @@ bool QgsWFSSharedData::createCache()
 
     ( void )sqlite3_exec( db, "BEGIN", nullptr, nullptr, nullptr );
 
-    if ( !ogrWaySuccessfull )
+    if ( !ogrWaySuccessful )
     {
       mCacheTablename = "features";
       sql = QString( "CREATE TABLE %1 (ogc_fid INTEGER PRIMARY KEY" ).arg( mCacheTablename );

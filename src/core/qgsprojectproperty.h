@@ -245,7 +245,6 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
       return setValue( name(), value );
     }
 
-
     void dump( int tabs = 0 ) const override;
 
     bool readXML( QDomNode & keyNode ) override;

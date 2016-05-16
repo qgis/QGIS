@@ -47,6 +47,7 @@ class QgsExpressionPrivate
         : ref( 1 )
         , mRootNode( other.mRootNode ? other.mRootNode->clone() : nullptr )
         , mParserErrorString( other.mParserErrorString )
+        , mEvalErrorString( other.mEvalErrorString )
         , mRowNumber( 0 )
         , mScale( other.mScale )
         , mExp( other.mExp )

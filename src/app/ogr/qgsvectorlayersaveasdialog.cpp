@@ -248,9 +248,8 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
     bool foundFieldThatCanBeExportedAsDisplayedValue = false;
     for ( int i = 0; i < mLayer->fields().size(); ++i )
     {
-      QgsEditorWidgetFactory *factory;
       if ( mLayer->editFormConfig()->widgetType( i ) != "TextEdit" &&
-           ( factory = QgsEditorWidgetRegistry::instance()->factory( mLayer->editFormConfig()->widgetType( i ) ) ) )
+           QgsEditorWidgetRegistry::instance()->factory( mLayer->editFormConfig()->widgetType( i ) ) )
       {
         foundFieldThatCanBeExportedAsDisplayedValue = true;
         break;

@@ -188,7 +188,6 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
           mStatement += " WHERE (" + compiler.result() + ')';
         else
           mStatement += " AND (" + compiler.result() + ')';
-        filterAdded = true;
 
         //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
         mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );

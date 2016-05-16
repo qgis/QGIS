@@ -4758,7 +4758,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
       // add buffer to greatest dimension of label
       if ( labelWidth >= labelHeight )
         sizeOut = labelWidth;
-      else if ( labelHeight > labelWidth )
+      else
         sizeOut = labelHeight;
 
       // label size in map units, convert to shapeSizeUnits, if different

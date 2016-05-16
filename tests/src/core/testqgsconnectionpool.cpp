@@ -37,7 +37,7 @@ class TestQgsConnectionPool: public QObject
   private:
     struct ReadJob
     {
-      ReadJob( QgsVectorLayer* _layer ) : layer( _layer ) {}
+      explicit ReadJob( QgsVectorLayer* _layer ) : layer( _layer ) {}
       QgsVectorLayer* layer;
       QList<QgsFeature> features;
     };

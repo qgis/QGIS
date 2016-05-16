@@ -836,7 +836,7 @@ void QgsComposerMap::setNewAtlasFeatureExtent( const QgsRectangle& extent )
       newExtent.setYMinimum( extent.yMinimum() - deltaHeight / 2 );
       newExtent.setYMaximum( extent.yMaximum() + deltaHeight / 2 );
     }
-    else if ( currentWidthHeightRatio >= newWidthHeightRatio )
+    else
     {
       //enlarge width of new extent, ensuring the map center stays the same
       double newWidth = currentWidthHeightRatio * newExtent.height();

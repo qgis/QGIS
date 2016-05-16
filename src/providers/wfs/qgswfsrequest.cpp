@@ -66,7 +66,7 @@ bool QgsWFSRequest::sendGET( const QUrl& url, bool synchronous, bool forceRefres
     // Just for testing with local files instead of http:// ressources
     QString modifiedUrlString = modifiedUrl.toString();
     // Qt5 does URL encoding from some reason (of the FILTER parameter for example)
-    modifiedUrlString = QUrl::fromPercentEncoding( modifiedUrl.toString().toUtf8() );
+    modifiedUrlString = QUrl::fromPercentEncoding( modifiedUrlString.toUtf8() );
     QgsDebugMsg( QString( "Get %1" ).arg( modifiedUrlString ) );
     modifiedUrlString = modifiedUrlString.mid( QString( "http://" ).size() );
     QString args = modifiedUrlString.mid( modifiedUrlString.indexOf( '?' ) );

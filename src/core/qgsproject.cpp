@@ -326,7 +326,7 @@ struct QgsProject::Imp
   QFile file;                 // current physical project file
   QgsPropertyKey properties_; // property hierarchy
   QString title;              // project title
-  bool autoTransaction;  // transaction grouped editing
+  bool autoTransaction;       // transaction grouped editing
   bool dirty;                 // project has been modified since it has been read or saved
 
   Imp()

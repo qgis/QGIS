@@ -63,7 +63,7 @@ class QgsWFSDataSourceURI
 {
   public:
 
-    QgsWFSDataSourceURI( const QString& uri );
+    explicit QgsWFSDataSourceURI( const QString& uri );
 
     /** Return the URI */
     QString uri();

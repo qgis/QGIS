@@ -326,14 +326,17 @@ int main( int argc, char **argv )
 
   if ( isPolygon )
   {
-    double snapTreshold = 0;
     G_message( "Building partial topology" );
     Vect_build_partial( map, GV_BUILD_BASE );
 
-    if ( snapTreshold > 0 )
+#if 0
+    double snapThreshold = 0.0;
+    if ( snapThreshold > 0.0 )
     {
-      Vect_snap_lines( map, GV_BOUNDARY, snapTreshold, nullptr );
+      Vect_snap_lines( map, GV_BOUNDARY, snapThreshold, nullptr );
     }
+#endif
+
     G_message( "Breaking polygons" );
     Vect_break_polygons( map, GV_BOUNDARY, nullptr );
     G_message( "Removing duplicates" );

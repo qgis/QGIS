@@ -1073,7 +1073,7 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
       }
     }
   }
-  else if ( mComponent == QgsColorWidget::Alpha )
+  else
   {
     //alpha ramps are drawn differently
     //start with the checkboard pattern

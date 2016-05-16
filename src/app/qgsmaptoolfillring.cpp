@@ -141,7 +141,6 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterFid( modifiedFid ) );
 
       QgsFeature f;
-      bool res = false;
       if ( fit.nextFeature( f ) )
       {
         //create QgsFeature with wkb representation
@@ -150,6 +149,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
         ft->setGeometry( QgsGeometry::fromPolygon( QgsPolygon() << pointList.toVector() ) );
         ft->setAttributes( f.attributes() );
 
+        bool res = false;
         if ( QApplication::keyboardModifiers() == Qt::ControlModifier )
         {
           res = vlayer->addFeature( *ft );
@@ -170,7 +170,6 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
           delete ft;
           vlayer->destroyEditCommand();
         }
-        res = false;
       }
     }
     stopCapturing();

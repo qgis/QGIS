@@ -51,7 +51,7 @@ class QgsVectorLayerRendererInterruptionChecker: public QgsInterruptionChecker
 {
   public:
     /** Constructor */
-    QgsVectorLayerRendererInterruptionChecker( const QgsRenderContext& context );
+    explicit QgsVectorLayerRendererInterruptionChecker( const QgsRenderContext& context );
     bool mustStop() const override;
   private:
     const QgsRenderContext& mContext;

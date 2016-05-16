@@ -31,7 +31,7 @@ static const int ENV_LUW = 1, ENV_ZOS = 2;
 class QgsDb2GeometryColumns
 {
   public:
-    QgsDb2GeometryColumns( const QSqlDatabase db );
+    explicit QgsDb2GeometryColumns( const QSqlDatabase db );
 
     ~QgsDb2GeometryColumns();
 

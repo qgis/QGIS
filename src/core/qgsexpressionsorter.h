@@ -23,7 +23,7 @@
 class QgsExpressionSorter
 {
   public:
-    QgsExpressionSorter( const QList<QgsFeatureRequest::OrderByClause>& preparedOrderBys )
+    explicit QgsExpressionSorter( const QList<QgsFeatureRequest::OrderByClause>& preparedOrderBys )
         : mPreparedOrderBys( preparedOrderBys )
     {}
 

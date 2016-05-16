@@ -50,7 +50,7 @@
 static const QString TEXT_PROVIDER_KEY = "WFS";
 static const QString TEXT_PROVIDER_DESCRIPTION = "WFS data provider";
 
-QgsWFSProvider::QgsWFSProvider( const QString& uri, const QgsWFSCapabilities::Capabilities caps )
+QgsWFSProvider::QgsWFSProvider( const QString& uri, const QgsWFSCapabilities::Capabilities &caps )
     : QgsVectorDataProvider( uri )
     , mShared( new QgsWFSSharedData( uri ) )
     , mWKBType( QGis::WKBUnknown )

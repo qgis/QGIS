@@ -30,20 +30,15 @@ using namespace SpatialIndex;
 
 static SpatialIndex::Point point2point( const QgsPoint& point )
 {
-  double plow[2];
-  plow[0] = point.x();
-  plow[1] = point.y();
+  double plow[2] = { point.x(), point.y() };
   return Point( plow, 2 );
 }
 
 
 static SpatialIndex::Region rect2region( const QgsRectangle& rect )
 {
-  double pLow[2], pHigh[2];
-  pLow[0] = rect.xMinimum();
-  pLow[1] = rect.yMinimum();
-  pHigh[0] = rect.xMaximum();
-  pHigh[1] = rect.yMaximum();
+  double pLow[2] = { rect.xMinimum(), rect.yMinimum() };
+  double pHigh[2] = { rect.xMaximum(), rect.yMaximum() };
   return SpatialIndex::Region( pLow, pHigh, 2 );
 }
 
@@ -357,7 +352,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
       double prevx = 0.0, prevy = 0.0;
       for ( int index = 0; index < nPoints; ++index )
       {
-        double thisx, thisy;
+        double thisx = 0.0, thisy = 0.0;
         wkbPtr >> thisx >> thisy;
         if ( hasZValue )
           wkbPtr += sizeof( double );
@@ -396,7 +391,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
         double prevx = 0.0, prevy = 0.0;
         for ( int pointnr = 0; pointnr < nPoints; ++pointnr )
         {
-          double thisx, thisy;
+          double thisx = 0.0, thisy = 0.0;
           wkbPtr >> thisx >> thisy;
           if ( hasZValue )
             wkbPtr += sizeof( double );
@@ -437,7 +432,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
         double prevx = 0.0, prevy = 0.0;
         for ( int pointnr = 0; pointnr < nPoints; ++pointnr )//loop over points in a ring
         {
-          double thisx, thisy;
+          double thisx = 0.0, thisy = 0.0;
           wkbPtr >> thisx >> thisy;
           if ( hasZValue )
             wkbPtr += sizeof( double );
@@ -482,7 +477,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
           double prevx = 0.0, prevy = 0.0;
           for ( int pointnr = 0; pointnr < nPoints; ++pointnr )
           {
-            double thisx, thisy;
+            double thisx = 0.0, thisy = 0.0;
             wkbPtr >> thisx >> thisy;
             if ( hasZValue )
               wkbPtr += sizeof( double );

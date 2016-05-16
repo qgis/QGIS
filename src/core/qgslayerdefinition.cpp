@@ -284,7 +284,7 @@ void QgsLayerDefinition::DependencySorter::init( const QDomDocument& doc )
       }
       else
       {
-        it++;
+        ++it;
       }
     }
   }

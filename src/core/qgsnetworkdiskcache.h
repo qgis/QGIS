@@ -81,13 +81,13 @@ class QgsNetworkDiskCache : public QNetworkDiskCache
     virtual qint64 expire() override;
 
   private:
-    QgsNetworkDiskCache( QObject *parent );
+    explicit QgsNetworkDiskCache( QObject *parent );
     Q_DISABLE_COPY( QgsNetworkDiskCache )
 
     class ExpirableNetworkDiskCache : public QNetworkDiskCache
     {
       public:
-        ExpirableNetworkDiskCache( QObject *parent = 0 ) : QNetworkDiskCache( parent ) {}
+        explicit ExpirableNetworkDiskCache( QObject *parent = 0 ) : QNetworkDiskCache( parent ) {}
         qint64 runExpire() { return QNetworkDiskCache::expire(); }
     };
 

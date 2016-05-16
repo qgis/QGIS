@@ -462,12 +462,12 @@ int DualEdgeTriangulation::baseEdgeOfPoint( int point )
       return actedge;
     }
 
-    else if ( leftofnumber <= 0 )
+    else if ( leftofnumber <= 0.0 )
     {
       actedge = mHalfEdge[actedge]->getNext();
     }
 
-    else if ( leftofnumber > 0 )
+    else
     {
       actedge = mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[actedge]->getDual()]->getNext()]->getNext()]->getDual();
     }

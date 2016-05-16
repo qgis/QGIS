@@ -2137,11 +2137,6 @@ QString createFilters( QString type )
         myFileFilters += createFileFilter_( QObject::tr( "Arc/Info Generate" ), "*.gen" );
         myExtensions << "gen";
       }
-      else if ( driverName.startsWith( "SXF" ) )
-      {
-        myFileFilters += createFileFilter_( QObject::tr( "Storage and eXchange Format" ), "*.sxf" );
-        myExtensions << "sxf";
-      }
       else if ( driverName.startsWith( "PDF" ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "Geospatial PDF" ), "*.pdf" );

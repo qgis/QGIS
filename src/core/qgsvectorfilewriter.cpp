@@ -2516,9 +2516,7 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
           // http://lists.osgeo.org/pipermail/gdal-dev/2012-November/034580.html
           // -> test if creation failes
           QString option = "SPATIALITE=YES";
-          char **options =  new char *[2];
-          options[0] = CPLStrdup( option.toLocal8Bit().constData() );
-          options[1] = nullptr;
+          char *options[2] = { CPLStrdup( option.toLocal8Bit().constData() ), nullptr };
           OGRSFDriverH poDriver;
           QgsApplication::registerOgrDrivers();
           poDriver = OGRGetDriverByName( drvName.toLocal8Bit().constData() );
@@ -2533,7 +2531,6 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
             }
           }
           CPLFree( options[0] );
-          delete [] options;
         }
         else if ( drvName == "ESRI Shapefile" )
         {

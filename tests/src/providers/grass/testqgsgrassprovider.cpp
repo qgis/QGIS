@@ -53,7 +53,7 @@ class TestQgsGrassFeature : public QgsFeature
 {
   public:
     TestQgsGrassFeature() : grassType( 0 ) { setValid( true ); }
-    TestQgsGrassFeature( int type ) : grassType( type )  { setValid( true ); }
+    explicit TestQgsGrassFeature( int type ) : grassType( type ) { setValid( true ); }
 
     int grassType;
 };
@@ -84,7 +84,7 @@ class TestQgsGrassCommand
         , fid( 0 )
         , geometry( 0 )
     {}
-    TestQgsGrassCommand( Command c )
+    explicit TestQgsGrassCommand( Command c )
         : command( c )
         , verify( true )
         , fid( 0 )

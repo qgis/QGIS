@@ -296,7 +296,7 @@ template<class Object> class QgsSignalBlocker
     /** Constructor for QgsSignalBlocker
      * @param object QObject to block signals from
      */
-    QgsSignalBlocker( Object* object )
+    explicit QgsSignalBlocker( Object* object )
         : mObject( object )
         , mPreviousState( object->blockSignals( true ) )
     {}

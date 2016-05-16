@@ -256,7 +256,7 @@ struct VTableCursor
   QgsFeatureIterator mIterator;
   bool mEof;
 
-  VTableCursor( VTable *vtab )
+  explicit VTableCursor( VTable *vtab )
       : mVtab( vtab )
       , mEof( true )
   {}
@@ -874,7 +874,7 @@ void registerQgisFunctions( sqlite3* db )
         // is it because a function of the same name already exist (in Spatialite for instance ?)
         // we then try to recreate it with a prefix
         name = "qgis_" + name;
-        r = sqlite3_create_function( db, name.toUtf8().constData(), foo->params(), SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
+        sqlite3_create_function( db, name.toUtf8().constData(), foo->params(), SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
       }
     }
   }

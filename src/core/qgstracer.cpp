@@ -87,6 +87,8 @@ double closestSegment( const QgsPolyline& pl, const QgsPoint& pt, int& vertexAft
 /** Simple graph structure for shortest path search */
 struct QgsTracerGraph
 {
+  QgsTracerGraph() : joinedVertices(0) {}
+
   struct E  // bidirectional edge
   {
     //! vertices that the edge connects
@@ -120,7 +122,7 @@ struct QgsTracerGraph
 
 QgsTracerGraph* makeGraph( const QVector<QgsPolyline>& edges )
 {
-  QgsTracerGraph* g = new QgsTracerGraph;
+  QgsTracerGraph *g = new QgsTracerGraph();
   g->joinedVertices = 0;
   QHash<QgsPoint, int> point2vertex;
 

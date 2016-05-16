@@ -34,7 +34,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
      * Constructor of the vector provider
      * @param uri  uniform resource locator (URI) for a dataset
      */
-    QgsVirtualLayerProvider( QString const &uri = "" );
+    explicit QgsVirtualLayerProvider( QString const &uri = "" );
 
     /** Destructor */
     virtual ~QgsVirtualLayerProvider();

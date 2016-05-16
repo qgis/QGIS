@@ -37,7 +37,7 @@ class QgsLabelSorter
 {
   public:
 
-    QgsLabelSorter( const QgsMapSettings& mapSettings )
+    explicit QgsLabelSorter( const QgsMapSettings& mapSettings )
         : mMapSettings( mapSettings )
     {}
 
