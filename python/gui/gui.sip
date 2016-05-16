@@ -151,6 +151,7 @@
 %Include qgssvgannotationitem.sip
 %Include qgstablewidgetitem.sip
 %Include qgstextannotationitem.sip
+%Include qgstrackedvectorlayertools.sip
 %Include qgsunitselectionwidget.sip
 %Include qgsuserinputdockwidget.sip
 %Include qgsvariableeditorwidget.sip
