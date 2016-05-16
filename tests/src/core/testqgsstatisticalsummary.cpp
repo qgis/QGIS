@@ -35,6 +35,7 @@ class TestQgsStatisticSummary: public QObject
     void individualStatCalculations_data();
     void individualStatCalculations();
     void maxMin();
+    void countMissing();
 
   private:
 
@@ -225,6 +226,7 @@ void TestQgsStatisticSummary::individualStatCalculations_data()
   QTest::newRow( "first_quartile" ) << ( int )QgsStatisticalSummary::FirstQuartile << 3.0;
   QTest::newRow( "third_quartile" ) << ( int )QgsStatisticalSummary::ThirdQuartile << 5.0;
   QTest::newRow( "iqr" ) << ( int )QgsStatisticalSummary::InterQuartileRange << 2.0;
+  QTest::newRow( "missing" ) << ( int )QgsStatisticalSummary::CountMissing << 0.0;
 }
 
 void TestQgsStatisticSummary::individualStatCalculations()
@@ -279,6 +281,22 @@ void TestQgsStatisticSummary::maxMin()
 
   QCOMPARE( s.min(), -15.0 );
   QCOMPARE( s.max(), -5.0 );
+}
+
+void TestQgsStatisticSummary::countMissing()
+{
+  QgsStatisticalSummary s( QgsStatisticalSummary::All );
+  s.addVariant( 5 );
+  s.addVariant( 6 );
+  s.addVariant( QVariant() );
+  s.addVariant( 7 );
+  s.addVariant( QVariant( QVariant::Double ) );
+  s.addVariant( 9 );
+  s.addVariant( "Asdasdsad" );
+  s.finalize();
+
+  QCOMPARE( s.countMissing(), 3 );
+  QCOMPARE( s.statistic( QgsStatisticalSummary::CountMissing ),  3.0 );
 }
 
 QTEST_MAIN( TestQgsStatisticSummary )

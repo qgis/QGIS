@@ -39,6 +39,7 @@ QgsStatisticalSummary::~QgsStatisticalSummary()
 void QgsStatisticalSummary::reset()
 {
   mCount = 0;
+  mMissing = 0;
   mSum = 0;
   mMean = 0;
   mMedian = 0;
@@ -86,6 +87,21 @@ void QgsStatisticalSummary::addValue( double value )
        mStatistics & QgsStatisticalSummary::Median || mStatistics & QgsStatisticalSummary::FirstQuartile ||
        mStatistics & QgsStatisticalSummary::ThirdQuartile || mStatistics & QgsStatisticalSummary::InterQuartileRange )
     mValues << value;
+}
+
+void QgsStatisticalSummary::addVariant( const QVariant& value )
+{
+  bool convertOk = false;
+  if ( !value.isValid() || value.isNull() )
+    mMissing++;
+  else
+  {
+    double val = value.toDouble( &convertOk );
+    if ( convertOk )
+      addValue( val );
+    else
+      mMissing++;
+  }
 }
 
 void QgsStatisticalSummary::finalize()
@@ -214,6 +230,8 @@ double QgsStatisticalSummary::statistic( QgsStatisticalSummary::Statistic stat )
   {
     case Count:
       return mCount;
+    case CountMissing:
+      return mMissing;
     case Sum:
       return mSum;
     case Mean:
@@ -254,6 +272,8 @@ QString QgsStatisticalSummary::displayName( QgsStatisticalSummary::Statistic sta
   {
     case Count:
       return QObject::tr( "Count" );
+    case CountMissing:
+      return QObject::tr( "Count (missing)" );
     case Sum:
       return QObject::tr( "Sum" );
     case Mean:
