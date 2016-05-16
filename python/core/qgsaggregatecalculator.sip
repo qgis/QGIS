@@ -70,5 +70,11 @@ class QgsAggregateCalculator
     QVariant calculate( Aggregate aggregate, const QString& fieldOrExpression,
                         QgsExpressionContext* context = nullptr, bool* ok = nullptr ) const;
 
+    /** Converts a string to a aggregate type.
+     * @param string string to convert
+     * @param ok if specified, will be set to true if conversion was successful
+     * @returns aggregate type
+     */
+    static Aggregate stringToAggregate( const QString& string, bool* ok = nullptr );
 
 };
