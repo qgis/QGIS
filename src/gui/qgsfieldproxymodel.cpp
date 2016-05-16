@@ -28,6 +28,7 @@ QgsFieldProxyModel::QgsFieldProxyModel( QObject *parent )
 QgsFieldProxyModel *QgsFieldProxyModel::setFilters( const Filters& filters )
 {
   mFilters = filters;
+  invalidateFilter();
   return this;
 }
 
