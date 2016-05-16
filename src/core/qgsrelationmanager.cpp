@@ -52,7 +52,8 @@ void QgsRelationManager::addRelation( const QgsRelation& relation )
 
   mRelations.insert( relation.id(), relation );
 
-  mProject->setDirty( true );
+  if ( mProject )
+    mProject->setDirty( true );
   emit changed();
 }
 
@@ -71,6 +72,19 @@ void QgsRelationManager::removeRelation( const QgsRelation& relation )
 QgsRelation QgsRelationManager::relation( const QString& id ) const
 {
   return mRelations.value( id );
+}
+
+QList<QgsRelation> QgsRelationManager::relationsByName( const QString& name ) const
+{
+  QList<QgsRelation> relations;
+
+  Q_FOREACH ( const QgsRelation& rel, mRelations )
+  {
+    if ( QString::compare( rel.name(), name, Qt::CaseInsensitive ) == 0 )
+      relations << rel;
+  }
+
+  return relations;
 }
 
 void QgsRelationManager::clear()
