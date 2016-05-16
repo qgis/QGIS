@@ -120,10 +120,10 @@ class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
         self.assertEqual(s.count(), 7)
         self.assertEqual(set(s.distinctValues()), set([
             QDateTime(QDate(2015, 3, 4), QTime()),
-                      QDateTime(QDate(2019, 12, 28), QTime()),
-                      QDateTime(QDate(1998, 1, 2), QTime()),
-                      QDateTime(),
-                      QDateTime(QDate(2011, 1, 5), QTime())]))
+            QDateTime(QDate(2019, 12, 28), QTime()),
+            QDateTime(QDate(1998, 1, 2), QTime()),
+            QDateTime(),
+            QDateTime(QDate(2011, 1, 5), QTime())]))
         self.assertEqual(s.countMissing(), 2)
         self.assertEqual(s.min(), QDateTime(QDate(1998, 1, 2), QTime()))
         self.assertEqual(s.max(), QDateTime(QDate(2019, 12, 28), QTime()))
