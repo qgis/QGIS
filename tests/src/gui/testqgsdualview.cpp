@@ -50,6 +50,8 @@ class TestQgsDualView : public QObject
 
     void testSelectAll();
 
+    void testSort();
+
     void testAttributeFormSharedValueScanning();
 
   private:
@@ -139,6 +141,36 @@ void TestQgsDualView::testSelectAll()
   mCanvas->setExtent( QgsRectangle( -110, 40, -100, 48 ) );
   mDualView->mTableView->selectAll();
   QVERIFY( mPointsLayer->selectedFeatureCount() == 1 );
+}
+
+void TestQgsDualView::testSort()
+{
+  mDualView->setSortExpression( "Class" );
+
+  QStringList classes;
+  classes << "B52"
+  << "B52"
+  << "B52"
+  << "B52"
+  << "Biplane"
+  << "Biplane"
+  << "Biplane"
+  << "Biplane"
+  << "Biplane"
+  << "Jet"
+  << "Jet"
+  << "Jet"
+  << "Jet"
+  << "Jet"
+  << "Jet"
+  << "Jet"
+  << "Jet";
+
+  for ( int i = 0; i < classes.length(); ++i )
+  {
+    QModelIndex index = mDualView->tableView()->model()->index( i, 0 );
+    QCOMPARE( mDualView->tableView()->model()->data( index ).toString(), classes.at( i ) );
+  }
 }
 
 void TestQgsDualView::testAttributeFormSharedValueScanning()
