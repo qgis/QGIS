@@ -100,7 +100,7 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
     {
       QgsPoint pnt = toMapCoordinates( e->pos() );
       QgsSnappingUtils* snappingUtils = canvas()->snappingUtils();
-      auto match = snappingUtils->snapToMap( pnt );
+      QgsPointLocator::Match match = snappingUtils->snapToMap( pnt );
 
       MappedPoint ret;
       ret.snapped = match.isValid();
