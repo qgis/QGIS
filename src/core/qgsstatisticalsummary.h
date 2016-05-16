@@ -144,6 +144,7 @@ class CORE_EXPORT QgsStatisticalSummary
     int count() const { return mCount; }
 
     /** Returns the number of missing (null) values
+     * @note added in QGIS 2.16
      */
     int countMissing() const { return mMissing; }
 

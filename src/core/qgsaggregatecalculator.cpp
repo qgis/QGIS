@@ -101,8 +101,16 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     resultType = mLayer->fields().at( attrNum ).type();
   }
 
-
   QgsFeatureIterator fit = mLayer->getFeatures( request );
+  return calculate( aggregate, fit, resultType, attrNum, expression.data(), context, ok );
+}
+
+QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate aggregate, QgsFeatureIterator& fit, QVariant::Type resultType,
+    int attr, QgsExpression* expression, QgsExpressionContext* context, bool* ok )
+{
+  if ( ok )
+    *ok = false;
+
   switch ( resultType )
   {
     case QVariant::Int:
@@ -111,32 +119,40 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     case QVariant::ULongLong:
     case QVariant::Double:
     {
-      QgsStatisticalSummary::Statistic stat = numericStatFromAggregate( aggregate, ok );
-      if ( !ok )
+      bool statOk = false;
+      QgsStatisticalSummary::Statistic stat = numericStatFromAggregate( aggregate, &statOk );
+      if ( !statOk )
         return QVariant();
 
-
-      return calculateNumericAggregate( fit, attrNum, expression.data(), context, stat );
+      if ( ok )
+        *ok = true;
+      return calculateNumericAggregate( fit, attr, expression, context, stat );
     }
 
     case QVariant::Date:
     case QVariant::DateTime:
     {
-      QgsDateTimeStatisticalSummary::Statistic stat = dateTimeStatFromAggregate( aggregate, ok );
-      if ( !ok )
+      bool statOk = false;
+      QgsDateTimeStatisticalSummary::Statistic stat = dateTimeStatFromAggregate( aggregate, &statOk );
+      if ( !statOk )
         return QVariant();
 
-      return calculateDateTimeAggregate( fit, attrNum, expression.data(), context, stat );
+      if ( ok )
+        *ok = true;
+      return calculateDateTimeAggregate( fit, attr, expression, context, stat );
     }
 
     default:
     {
       // treat as string
-      QgsStringStatisticalSummary::Statistic stat = stringStatFromAggregate( aggregate, ok );
-      if ( !ok )
+      bool statOk = false;
+      QgsStringStatisticalSummary::Statistic stat = stringStatFromAggregate( aggregate, &statOk );
+      if ( !statOk )
         return QVariant();
 
-      return calculateStringAggregate( fit, attrNum, expression.data(), context, stat );
+      if ( ok )
+        *ok = true;
+      return calculateStringAggregate( fit, attr, expression, context, stat );
     }
   }
 

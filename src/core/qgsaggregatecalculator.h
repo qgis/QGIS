@@ -21,6 +21,8 @@
 #include "qgsstatisticalsummary.h"
 #include "qgsdatetimestatisticalsummary.h"
 #include "qgsstringstatisticalsummary.h"
+#include <QVariant>
+
 
 class QgsFeatureIterator;
 class QgsExpression;
@@ -30,7 +32,9 @@ class QgsExpressionContext;
 /** \ingroup core
  * \class QgsAggregateCalculator
  * \brief Utility class for calculating aggregates for a field (or expression) over the features
- * from a vector layer.
+ * from a vector layer. It is recommended that QgsVectorLayer::aggregate() is used rather then
+ * directly using this class, as the QgsVectorLayer method can handle delegating aggregate calculation
+ * to a data provider for remote calculation.
  * \note added in QGIS 2.16
  */
 class CORE_EXPORT QgsAggregateCalculator
@@ -114,6 +118,10 @@ class CORE_EXPORT QgsAggregateCalculator
         QgsExpressionContext* context, QgsDateTimeStatisticalSummary::Statistic stat );
 
     QgsExpressionContext* createContext() const;
+
+    static QVariant calculate( Aggregate aggregate, QgsFeatureIterator& fit, QVariant::Type resultType,
+                               int attr, QgsExpression* expression,
+                               QgsExpressionContext* context, bool* ok = nullptr );
 };
 
 #endif //QGSAGGREGATECALCULATOR_H
