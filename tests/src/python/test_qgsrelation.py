@@ -107,8 +107,9 @@ class TestQgsRelation(unittest.TestCase):
 
         feat = next(self.referencedLayer.getFeatures())
 
-        it = rel.getRelatedFeatures(feat)
+        self.assertEqual(rel.getRelatedFeaturesFilter(feat), '"foreignkey" = 123')
 
+        it = rel.getRelatedFeatures(feat)
         assert [a.attributes() for a in it] == [[u'test1', 123], [u'test2', 123]]
 
     def test_getReferencedFeature(self):

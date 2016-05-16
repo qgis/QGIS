@@ -63,6 +63,24 @@ class CORE_EXPORT QgsAggregateCalculator
       InterQuartileRange, //!< Inter quartile range (IQR) (numeric fields only)
       StringMinimumLength, //!< Minimum length of string (string fields only)
       StringMaximumLength, //!< Maximum length of string (string fields only)
+      StringConcatenate, //! Concatenate values with a joining string (string fields only). Specify the delimiter using setDelimiter().
+    };
+
+    //! A bundle of parameters controlling aggregate calculation
+    struct AggregateParameters
+    {
+      /** Optional filter for calculating aggregate over a subset of features, or an
+       * empty string to use all features.
+       * @see QgsAggregateCalculator::setFilter()
+       * @see QgsAggregateCalculator::filter()
+       */
+      QString filter;
+
+      /** Delimiter to use for joining values with the StringConcatenate aggregate.
+       * @see QgsAggregateCalculator::setDelimiter()
+       * @see QgsAggregateCalculator::delimiter()
+       */
+      QString delimiter;
     };
 
     /** Constructor for QgsAggregateCalculator.
@@ -74,6 +92,11 @@ class CORE_EXPORT QgsAggregateCalculator
      */
     QgsVectorLayer* layer() const;
 
+    /** Sets all aggregate parameters from a parameter bundle.
+     * @param parameters aggregate parameters
+     */
+    void setParameters( const AggregateParameters& parameters );
+
     /** Sets a filter to limit the features used during the aggregate calculation.
      * @param filterExpression expression for filtering features, or empty string to remove filter
      * @see filter()
@@ -84,6 +107,17 @@ class CORE_EXPORT QgsAggregateCalculator
      * @see setFilter()
      */
     QString filter() const { return mFilterExpression; }
+
+    /** Sets the delimiter to use for joining values with the StringConcatenate aggregate.
+     * @param delimiter string delimiter
+     * @see delimiter()
+     */
+    void setDelimiter( const QString& delimiter ) { mDelimiter = delimiter; }
+
+    /** Returns the delimiter used for joining values with the StringConcatenate aggregate.
+     * @see setDelimiter()
+     */
+    QString delimiter() const { return mDelimiter; }
 
     /** Calculates the value of an aggregate.
      * @param aggregate aggregate to calculate
@@ -111,6 +145,9 @@ class CORE_EXPORT QgsAggregateCalculator
     //! Filter expression, or empty for no filter
     QString mFilterExpression;
 
+    //! Delimiter to use for concatenate aggregate
+    QString mDelimiter;
+
     static QgsStatisticalSummary::Statistic numericStatFromAggregate( Aggregate aggregate, bool* ok = nullptr );
     static QgsStringStatisticalSummary::Statistic stringStatFromAggregate( Aggregate aggregate, bool* ok = nullptr );
     static QgsDateTimeStatisticalSummary::Statistic dateTimeStatFromAggregate( Aggregate aggregate, bool* ok = nullptr );
@@ -128,7 +165,10 @@ class CORE_EXPORT QgsAggregateCalculator
 
     static QVariant calculate( Aggregate aggregate, QgsFeatureIterator& fit, QVariant::Type resultType,
                                int attr, QgsExpression* expression,
+                               const QString& delimiter,
                                QgsExpressionContext* context, bool* ok = nullptr );
+    static QVariant concatenateStrings( QgsFeatureIterator& fit, int attr, QgsExpression* expression,
+                                        QgsExpressionContext* context, const QString& delimiter );
 };
 
 #endif //QGSAGGREGATECALCULATOR_H

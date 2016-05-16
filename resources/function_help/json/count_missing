@@ -1,0 +1,13 @@
+{
+  "name": "count_missing",
+  "type": "function",
+  "description": "Returns the count of missing (null) values.",
+  "arguments": [
+	{"arg":"expression", "description":"sub expression of field to aggregate"},
+	{"arg":"group_by", "optional":true, "description":"optional expression to use to group aggregate calculations"},
+	{"arg":"filter", "optional":true, "description":"optional expression to use to filter features used to calculate aggregate"}
+  ],
+  "examples": [
+	{ "expression":"count_missing(\"stations\",group_by:=\"state\")", "returns":"count of missing (null) station values, grouped by state field"}
+  ]
+}

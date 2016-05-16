@@ -37,6 +37,24 @@ class QgsAggregateCalculator
       InterQuartileRange, //!< Inter quartile range (IQR) (numeric fields only)
       StringMinimumLength, //!< Minimum length of string (string fields only)
       StringMaximumLength, //!< Maximum length of string (string fields only)
+      StringConcatenate, //! Concatenate values with a joining string (string fields only). Specify the delimiter using setDelimiter().
+    };
+
+    //! A bundle of parameters controlling aggregate calculation
+    struct AggregateParameters
+    {
+      /** Optional filter for calculating aggregate over a subset of features, or an
+       * empty string to use all features.
+       * @see QgsAggregateCalculator::setFilter()
+       * @see QgsAggregateCalculator::filter()
+       */
+      QString filter;
+
+      /** Delimiter to use for joining values with the StringConcatenate aggregate.
+       * @see QgsAggregateCalculator::setDelimiter()
+       * @see QgsAggregateCalculator::delimiter()
+       */
+      QString delimiter;
     };
 
     /** Constructor for QgsAggregateCalculator.
@@ -48,6 +66,11 @@ class QgsAggregateCalculator
      */
     QgsVectorLayer* layer() const;
 
+    /** Sets all aggregate parameters from a parameter bundle.
+     * @param parameters aggregate parameters
+     */
+    void setParameters( const AggregateParameters& parameters );
+
     /** Sets a filter to limit the features used during the aggregate calculation.
      * @param filterExpression expression for filtering features, or empty string to remove filter
      * @see filter()
@@ -58,6 +81,17 @@ class QgsAggregateCalculator
      * @see setFilter()
      */
     QString filter() const;
+
+    /** Sets the delimiter to use for joining values with the StringConcatenate aggregate.
+     * @param delimiter string delimiter
+     * @see delimiter()
+     */
+    void setDelimiter( const QString& delimiter );
+
+    /** Returns the delimiter used for joining values with the StringConcatenate aggregate.
+     * @see setDelimiter()
+     */
+    QString delimiter() const;
 
     /** Calculates the value of an aggregate.
      * @param aggregate aggregate to calculate

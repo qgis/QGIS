@@ -3255,7 +3255,7 @@ QVariant QgsVectorLayer::maximumValue( int index )
 }
 
 QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate, const QString& fieldOrExpression,
-                                    const QString& filter, QgsExpressionContext* context, bool* ok )
+                                    const QgsAggregateCalculator::AggregateParameters& parameters, QgsExpressionContext* context, bool* ok )
 {
   if ( ok )
     *ok = false;
@@ -3275,7 +3275,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
     if ( origin == QgsFields::OriginProvider )
     {
       bool providerOk = false;
-      QVariant val = mDataProvider->aggregate( aggregate, attrIndex, filter, context, providerOk );
+      QVariant val = mDataProvider->aggregate( aggregate, attrIndex, parameters, context, providerOk );
       if ( providerOk )
       {
         // provider handled calculation
@@ -3288,7 +3288,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
 
   // fallback to using aggregate calculator to determine aggregate
   QgsAggregateCalculator c( this );
-  c.setFilter( filter );
+  c.setParameters( parameters );
   return c.calculate( aggregate, fieldOrExpression, context, ok );
 }
 
