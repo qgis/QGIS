@@ -33,7 +33,8 @@ from qgis.core import (QGis,
                        QgsSingleSymbolRendererV2,
                        QgsCoordinateReferenceSystem,
                        QgsProject,
-                       QgsUnitTypes)
+                       QgsUnitTypes,
+                       QgsAggregateCalculator)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 start_app()
@@ -1061,6 +1062,62 @@ class TestQgsVectorLayer(unittest.TestCase):
         features = layer.getFeatures(QgsFeatureRequest().setFilterExpression('"test" = 5'))
 
         assert(len(list(features)) == 1)
+
+    def testAggregate(self):
+        """ Test aggregate calculation """
+        layer = QgsVectorLayer("Point?field=fldint:integer", "layer", "memory")
+        pr = layer.dataProvider()
+
+        int_values = [4, 2, 3, 2, 5, None, 8]
+        features = []
+        for i in int_values:
+            f = QgsFeature()
+            f.setFields(layer.fields())
+            f.setAttributes([i])
+            features.append(f)
+        assert pr.addFeatures(features)
+
+        tests = [[QgsAggregateCalculator.Count, 6],
+                 [QgsAggregateCalculator.Sum, 24],
+                 [QgsAggregateCalculator.Mean, 4],
+                 [QgsAggregateCalculator.StDev, 2.0816],
+                 [QgsAggregateCalculator.StDevSample, 2.2803],
+                 [QgsAggregateCalculator.Min, 2],
+                 [QgsAggregateCalculator.Max, 8],
+                 [QgsAggregateCalculator.Range, 6],
+                 [QgsAggregateCalculator.Median, 3.5],
+                 [QgsAggregateCalculator.CountDistinct, 5],
+                 [QgsAggregateCalculator.CountMissing, 1],
+                 [QgsAggregateCalculator.FirstQuartile, 2],
+                 [QgsAggregateCalculator.ThirdQuartile, 5.0],
+                 [QgsAggregateCalculator.InterQuartileRange, 3.0]
+                 ]
+
+        for t in tests:
+            val, ok = layer.aggregate(t[0], 'fldint')
+            self.assertTrue(ok)
+            if isinstance(t[1], int):
+                self.assertEqual(val, t[1])
+            else:
+                self.assertAlmostEqual(val, t[1], 3)
+
+        # test with parameters
+        layer = QgsVectorLayer("Point?field=fldstring:string", "layer", "memory")
+        pr = layer.dataProvider()
+
+        string_values = ['this', 'is', 'a', 'test']
+        features = []
+        for s in string_values:
+            f = QgsFeature()
+            f.setFields(layer.fields())
+            f.setAttributes([s])
+            features.append(f)
+        assert pr.addFeatures(features)
+        params = QgsAggregateCalculator.AggregateParameters()
+        params.delimiter = ' '
+        val, ok = layer.aggregate(QgsAggregateCalculator.StringConcatenate, 'fldstring', params)
+        self.assertTrue(ok)
+        self.assertEqual(val, 'this is a test')
 
     def onLayerTransparencyChanged(self, tr):
         self.transparencyTest = tr

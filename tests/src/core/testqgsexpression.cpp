@@ -30,6 +30,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsdistancearea.h"
+#include "qgsproject.h"
 
 static void _parseAndEvalExpr( int arg )
 {
@@ -48,14 +49,18 @@ class TestQgsExpression: public QObject
   public:
 
     TestQgsExpression()
-        : mPointsLayer( 0 )
-        , mMemoryLayer( 0 )
+        : mPointsLayer( nullptr )
+        , mMemoryLayer( nullptr )
+        , mAggregatesLayer( nullptr )
+        , mChildLayer( nullptr )
     {}
 
   private:
 
     QgsVectorLayer* mPointsLayer;
     QgsVectorLayer* mMemoryLayer;
+    QgsVectorLayer* mAggregatesLayer;
+    QgsVectorLayer* mChildLayer;
 
   private slots:
 
@@ -104,6 +109,70 @@ class TestQgsExpression: public QObject
       f4.setAttribute( "col2", "test4" );
       mMemoryLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
       QgsMapLayerRegistry::instance()->addMapLayer( mMemoryLayer );
+
+      // test layer for aggregates
+      mAggregatesLayer = new QgsVectorLayer( "Point?field=col1:integer&field=col2:string&field=col3:integer", "aggregate_layer", "memory" );
+      QVERIFY( mAggregatesLayer->isValid() );
+      QgsFeature af1( mAggregatesLayer->dataProvider()->fields(), 1 );
+      af1.setAttribute( "col1", 4 );
+      af1.setAttribute( "col2", "test" );
+      af1.setAttribute( "col3", 2 );
+      QgsFeature af2( mAggregatesLayer->dataProvider()->fields(), 2 );
+      af2.setAttribute( "col1", 2 );
+      af2.setAttribute( "col2", QVariant( QVariant::String ) );
+      af2.setAttribute( "col3", 1 );
+      QgsFeature af3( mAggregatesLayer->dataProvider()->fields(), 3 );
+      af3.setAttribute( "col1", 3 );
+      af3.setAttribute( "col2", "test333" );
+      af3.setAttribute( "col3", 2 );
+      QgsFeature af4( mAggregatesLayer->dataProvider()->fields(), 4 );
+      af4.setAttribute( "col1", 2 );
+      af4.setAttribute( "col2", "test4" );
+      af4.setAttribute( "col3", 2 );
+      QgsFeature af5( mAggregatesLayer->dataProvider()->fields(), 5 );
+      af5.setAttribute( "col1", 5 );
+      af5.setAttribute( "col2", QVariant( QVariant::String ) );
+      af5.setAttribute( "col3", 3 );
+      QgsFeature af6( mAggregatesLayer->dataProvider()->fields(), 6 );
+      af6.setAttribute( "col1", 8 );
+      af6.setAttribute( "col2", "test4" );
+      af6.setAttribute( "col3", 3 );
+      mAggregatesLayer->dataProvider()->addFeatures( QgsFeatureList() << af1 << af2 << af3 << af4 << af5 << af6 );
+      QgsMapLayerRegistry::instance()->addMapLayer( mAggregatesLayer );
+
+      mChildLayer = new QgsVectorLayer( "Point?field=parent:integer&field=col2:string&field=col3:integer", "child_layer", "memory" );
+      QVERIFY( mChildLayer->isValid() );
+      QgsFeature cf1( mChildLayer->dataProvider()->fields(), 1 );
+      cf1.setAttribute( "parent", 4 );
+      cf1.setAttribute( "col2", "test" );
+      cf1.setAttribute( "col3", 2 );
+      QgsFeature cf2( mChildLayer->dataProvider()->fields(), 2 );
+      cf2.setAttribute( "parent", 4 );
+      cf2.setAttribute( "col2", QVariant( QVariant::String ) );
+      cf2.setAttribute( "col3", 1 );
+      QgsFeature cf3( mChildLayer->dataProvider()->fields(), 3 );
+      cf3.setAttribute( "parent", 4 );
+      cf3.setAttribute( "col2", "test333" );
+      cf3.setAttribute( "col3", 2 );
+      QgsFeature cf4( mChildLayer->dataProvider()->fields(), 4 );
+      cf4.setAttribute( "parent", 3 );
+      cf4.setAttribute( "col2", "test4" );
+      cf4.setAttribute( "col3", 2 );
+      QgsFeature cf5( mChildLayer->dataProvider()->fields(), 5 );
+      cf5.setAttribute( "parent", 3 );
+      cf5.setAttribute( "col2", QVariant( QVariant::String ) );
+      cf5.setAttribute( "col3", 7 );
+      mChildLayer->dataProvider()->addFeatures( QgsFeatureList() << cf1 << cf2 << cf3 << cf4 << cf5 );
+      QgsMapLayerRegistry::instance()->addMapLayer( mChildLayer );
+
+      QgsRelation rel;
+      rel.setRelationId( "my_rel" );
+      rel.setRelationName( "relation name" );
+      rel.setReferencedLayer( mAggregatesLayer->id() );
+      rel.setReferencingLayer( mChildLayer->id() );
+      rel.addFieldPair( "parent", "col1" );
+      QVERIFY( rel.isValid() );
+      QgsProject::instance()->relationManager()->addRelation( rel );
     }
 
     void cleanupTestCase()
@@ -1115,6 +1184,209 @@ class TestQgsExpression: public QObject
         QgsFeature feat = res.value<QgsFeature>();
         QCOMPARE( feat.id(), ( long long )featureId );
       }
+    }
+
+    void aggregate_data()
+    {
+      QTest::addColumn<QString>( "string" );
+      QTest::addColumn<bool>( "evalError" );
+      QTest::addColumn<QVariant>( "result" );
+
+      QTest::newRow( "bad layer" ) << "aggregate('xxxtest','sum',\"col1\")" << true << QVariant();
+      QTest::newRow( "bad aggregate" ) << "aggregate('test','xxsum',\"col1\")" << true << QVariant();
+      QTest::newRow( "bad expression" ) << "aggregate('test','sum',\"xcvxcvcol1\")" << true << QVariant();
+
+      QTest::newRow( "int aggregate 1" ) << "aggregate('test','sum',\"col1\")" << false << QVariant( 65 );
+      QTest::newRow( "int aggregate 2" ) << "aggregate('test','max',\"col1\")" << false << QVariant( 41 );
+      QTest::newRow( "int aggregate named" ) << "aggregate(layer:='test',aggregate:='sum',expression:=\"col1\")" << false << QVariant( 65 );
+      QTest::newRow( "string aggregate on int" ) << "aggregate('test','max_length',\"col1\")" << true << QVariant();
+      QTest::newRow( "string aggregate 1" ) << "aggregate('test','min',\"col2\")" << false << QVariant( "test1" );
+      QTest::newRow( "string aggregate 2" ) << "aggregate('test','min_length',\"col2\")" << false << QVariant( 5 );
+      QTest::newRow( "string concatenate" ) << "aggregate('test','concatenate',\"col2\",concatenator:=' , ')" << false << QVariant( "test1 , test2 , test3 , test4" );
+
+      QTest::newRow( "sub expression" ) << "aggregate('test','sum',\"col1\" * 2)" << false << QVariant( 65 * 2 );
+      QTest::newRow( "bad sub expression" ) << "aggregate('test','sum',\"xcvxcv\" * 2)" << true << QVariant();
+
+      QTest::newRow( "filter" ) << "aggregate('test','sum',\"col1\", \"col1\" <= 10)" << false << QVariant( 13 );
+      QTest::newRow( "filter context" ) << "aggregate('test','sum',\"col1\", \"col1\" <= @test_var)" << false << QVariant( 13 );
+      QTest::newRow( "filter named" ) << "aggregate(layer:='test',aggregate:='sum',expression:=\"col1\", filter:=\"col1\" <= 10)" << false << QVariant( 13 );
+      QTest::newRow( "filter no matching" ) << "aggregate('test','sum',\"col1\", \"col1\" <= -10)" << false << QVariant( 0 );
+    }
+
+    void aggregate()
+    {
+      QgsExpressionContext context;
+      QgsExpressionContextScope* scope = new QgsExpressionContextScope();
+      scope->setVariable( "test_var", 10 );
+      context << scope;
+
+      QFETCH( QString, string );
+      QFETCH( bool, evalError );
+      QFETCH( QVariant, result );
+
+      QgsExpression exp( string );
+      QCOMPARE( exp.hasParserError(), false );
+      if ( exp.hasParserError() )
+        qDebug() << exp.parserErrorString();
+
+      QVariant res;
+
+      //try evaluating once without context (only if variables aren't required)
+      if ( !string.contains( "@" ) )
+      {
+        res = exp.evaluate();
+        if ( exp.hasEvalError() )
+          qDebug() << exp.evalErrorString();
+
+        QCOMPARE( exp.hasEvalError(), evalError );
+        QCOMPARE( res, result );
+      }
+
+      //try evaluating with context
+      res = exp.evaluate( &context );
+      if ( exp.hasEvalError() )
+        qDebug() << exp.evalErrorString();
+
+      QCOMPARE( exp.hasEvalError(), evalError );
+      QCOMPARE( res, result );
+
+      // check again - make sure value was correctly cached
+      res = exp.evaluate( &context );
+      QCOMPARE( res, result );
+    }
+
+    void layerAggregates_data()
+    {
+      QTest::addColumn<QString>( "string" );
+      QTest::addColumn<bool>( "evalError" );
+      QTest::addColumn<QVariant>( "result" );
+
+      QTest::newRow( "count" ) << "count(\"col1\")" << false << QVariant( 6.0 );
+      QTest::newRow( "count_distinct" ) << "count_distinct(\"col1\")" << false << QVariant( 5.0 );
+      QTest::newRow( "count_missing" ) << "count_missing(\"col2\")" << false << QVariant( 2 );
+      QTest::newRow( "sum" ) << "sum(\"col1\")" << false << QVariant( 24.0 );
+      QTest::newRow( "minimum" ) << "minimum(\"col1\")" << false << QVariant( 2.0 );
+      QTest::newRow( "maximum" ) << "maximum(\"col1\")" << false << QVariant( 8.0 );
+      QTest::newRow( "mean" ) << "mean(\"col1\")" << false << QVariant( 4.0 );
+      QTest::newRow( "median" ) << "median(\"col1\")" << false << QVariant( 3.5 );
+      QTest::newRow( "stdev" ) << "round(stdev(\"col1\")*10000)" << false << QVariant( 22804 );
+      QTest::newRow( "range" ) << "range(\"col1\")" << false << QVariant( 6.0 );
+      QTest::newRow( "minority" ) << "minority(\"col3\")" << false << QVariant( 1 );
+      QTest::newRow( "majority" ) << "majority(\"col3\")" << false << QVariant( 2 );
+      QTest::newRow( "q1" ) << "q1(\"col1\")" << false << QVariant( 2 );
+      QTest::newRow( "q3" ) << "q3(\"col1\")" << false << QVariant( 5 );
+      QTest::newRow( "iqr" ) << "iqr(\"col1\")" << false << QVariant( 3 );
+      QTest::newRow( "min_length" ) << "min_length(\"col2\")" << false << QVariant( 0 );
+      QTest::newRow( "max_length" ) << "max_length(\"col2\")" << false << QVariant( 7 );
+      QTest::newRow( "concatenate" ) << "concatenate(\"col2\",concatenator:=',')" << false << QVariant( "test,,test333,test4,,test4" );
+
+      QTest::newRow( "bad expression" ) << "sum(\"xcvxcvcol1\")" << true << QVariant();
+      QTest::newRow( "aggregate named" ) << "sum(expression:=\"col1\")" << false << QVariant( 24.0 );
+      QTest::newRow( "string aggregate on int" ) << "max_length(\"col1\")" << true << QVariant();
+
+      QTest::newRow( "sub expression" ) << "sum(\"col1\" * 2)" << false << QVariant( 48 );
+      QTest::newRow( "bad sub expression" ) << "sum(\"xcvxcv\" * 2)" << true << QVariant();
+
+      QTest::newRow( "filter" ) << "sum(\"col1\", NULL, \"col1\" >= 5)" << false << QVariant( 13 );
+      QTest::newRow( "filter named" ) << "sum(expression:=\"col1\", filter:=\"col1\" >= 5)" << false << QVariant( 13 );
+      QTest::newRow( "filter no matching" ) << "sum(expression:=\"col1\", filter:=\"col1\" <= -5)" << false << QVariant( 0 );
+
+      QTest::newRow( "group by" ) << "sum(\"col1\", \"col3\")" << false << QVariant( 9 );
+      QTest::newRow( "group by and filter" ) << "sum(\"col1\", \"col3\", \"col1\">=3)" << false << QVariant( 7 );
+      QTest::newRow( "group by and filter named" ) << "sum(expression:=\"col1\", group_by:=\"col3\", filter:=\"col1\">=3)" << false << QVariant( 7 );
+      QTest::newRow( "group by expression" ) << "sum(\"col1\", \"col1\" % 2)" << false << QVariant( 16 );
+    }
+
+    void layerAggregates()
+    {
+      QgsExpressionContext context;
+      context.appendScope( QgsExpressionContextUtils::layerScope( mAggregatesLayer ) );
+
+      QgsFeature af1( mAggregatesLayer->dataProvider()->fields(), 1 );
+      af1.setAttribute( "col1", 4 );
+      af1.setAttribute( "col2", "test" );
+      af1.setAttribute( "col3", 2 );
+      context.setFeature( af1 );
+
+      QFETCH( QString, string );
+      QFETCH( bool, evalError );
+      QFETCH( QVariant, result );
+
+      QgsExpression exp( string );
+      QCOMPARE( exp.hasParserError(), false );
+      if ( exp.hasParserError() )
+        qDebug() << exp.parserErrorString();
+
+      //try evaluating with context
+      QVariant res = exp.evaluate( &context );
+      if ( exp.hasEvalError() )
+        qDebug() << exp.evalErrorString();
+
+      QCOMPARE( exp.hasEvalError(), evalError );
+      QCOMPARE( res, result );
+
+      // check again - make sure value was correctly cached
+      res = exp.evaluate( &context );
+      QCOMPARE( res, result );
+    }
+
+    void relationAggregate_data()
+    {
+      QTest::addColumn<QString>( "string" );
+      QTest::addColumn<int>( "parentKey" );
+      QTest::addColumn<bool>( "evalError" );
+      QTest::addColumn<QVariant>( "result" );
+
+      QTest::newRow( "bad relation" ) << "relation_aggregate('xxxtest','sum',\"col3\")" << 0 << true << QVariant();
+      QTest::newRow( "bad aggregate" ) << "relation_aggregate('my_rel','xxsum',\"col3\")" << 0 << true << QVariant();
+      QTest::newRow( "bad expression" ) << "relation_aggregate('my_rel','sum',\"xcvxcvcol1\")" << 0 << true << QVariant();
+
+      QTest::newRow( "relation aggregate 1" ) << "relation_aggregate('my_rel','sum',\"col3\")" << 4 << false << QVariant( 5 );
+      QTest::newRow( "relation aggregate by name" ) << "relation_aggregate('relation name','sum',\"col3\")" << 4 << false << QVariant( 5 );
+      QTest::newRow( "relation aggregate 2" ) << "relation_aggregate('my_rel','sum',\"col3\")" << 3 << false << QVariant( 9 );
+      QTest::newRow( "relation aggregate 2" ) << "relation_aggregate('my_rel','sum',\"col3\")" << 6 << false << QVariant( 0 );
+      QTest::newRow( "relation aggregate count 1" ) << "relation_aggregate('my_rel','count',\"col3\")" << 4 << false << QVariant( 3 );
+      QTest::newRow( "relation aggregate count 2" ) << "relation_aggregate('my_rel','count',\"col3\")" << 3 << false << QVariant( 2 );
+      QTest::newRow( "relation aggregate count 2" ) << "relation_aggregate('my_rel','count',\"col3\")" << 6 << false << QVariant( 0 );
+      QTest::newRow( "relation aggregate concatenation" ) << "relation_aggregate('my_rel','concatenate',to_string(\"col3\"),concatenator:=',')" << 3 << false << QVariant( "2,7" );
+
+      QTest::newRow( "named relation aggregate 1" ) << "relation_aggregate(relation:='my_rel',aggregate:='sum',expression:=\"col3\")" << 4 << false << QVariant( 5 );
+      QTest::newRow( "relation aggregate sub expression 1" ) << "relation_aggregate('my_rel','sum',\"col3\" * 2)" << 4 << false << QVariant( 10 );
+      QTest::newRow( "relation aggregate bad sub expression" ) << "relation_aggregate('my_rel','sum',\"fsdfsddf\" * 2)" << 4 << true << QVariant();
+    }
+
+    void relationAggregate()
+    {
+      QFETCH( QString, string );
+      QFETCH( int, parentKey );
+      QFETCH( bool, evalError );
+      QFETCH( QVariant, result );
+
+      QgsExpressionContext context;
+      context.appendScope( QgsExpressionContextUtils::layerScope( mAggregatesLayer ) );
+
+      QgsFeature af1( mAggregatesLayer->dataProvider()->fields(), 1 );
+      af1.setAttribute( "col1", parentKey );
+      context.setFeature( af1 );
+
+      QgsExpression exp( string );
+      QCOMPARE( exp.hasParserError(), false );
+      if ( exp.hasParserError() )
+        qDebug() << exp.parserErrorString();
+
+      QVariant res;
+
+      //try evaluating with context
+      res = exp.evaluate( &context );
+      if ( exp.hasEvalError() )
+        qDebug() << exp.evalErrorString();
+
+      QCOMPARE( exp.hasEvalError(), evalError );
+      QCOMPARE( res, result );
+
+      // check again - make sure value was correctly cached
+      res = exp.evaluate( &context );
+      QCOMPARE( res, result );
     }
 
     void get_feature_geometry()

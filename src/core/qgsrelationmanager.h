@@ -34,7 +34,11 @@ class CORE_EXPORT QgsRelationManager : public QObject
     Q_OBJECT
 
   public:
-    explicit QgsRelationManager( QgsProject *project );
+
+    /** Constructor for QgsRelationManager.
+     * @param project associated project (used to notify project of changes)
+     */
+    explicit QgsRelationManager( QgsProject *project = nullptr );
 
     /**
      * Will set the specified relations and remove any relation currently set.
@@ -77,8 +81,17 @@ class CORE_EXPORT QgsRelationManager : public QObject
      * @param id The id to search for
      *
      * @return A relation. Invalid if not found.
+     * @see relationsByName()
      */
     QgsRelation relation( const QString& id ) const;
+
+    /** Returns a list of relations with matching names.
+     * @param name relation name to search for. Searching is case insensitive.
+     * @returns a list of matching relations
+     * @note added in QGIS 2.16
+     * @see relation()
+     */
+    QList<QgsRelation> relationsByName( const QString& name ) const;
 
     /**
      * Remove any relation managed by this class.

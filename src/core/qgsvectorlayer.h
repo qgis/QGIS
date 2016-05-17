@@ -35,6 +35,7 @@
 #include "qgsvectorsimplifymethod.h"
 #include "qgseditformconfig.h"
 #include "qgsattributetableconfig.h"
+#include "qgsaggregatecalculator.h"
 
 class QPainter;
 class QImage;
@@ -1655,6 +1656,21 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Returns maximum value for an attribute column or invalid variant in case of error */
     QVariant maximumValue( int index );
+
+    /** Calculates an aggregated value from the layer's features.
+     * @param aggregate aggregate to calculate
+     * @param fieldOrExpression source field or expression to use as basis for aggregated values.
+     * @param parameters parameters controlling aggregate calculation
+     * @param context expression context for expressions and filters
+     * @param ok if specified, will be set to true if aggregate calculation was successful
+     * @return calculated aggregate value
+     * @note added in QGIS 2.16
+     */
+    QVariant aggregate( QgsAggregateCalculator::Aggregate aggregate,
+                        const QString& fieldOrExpression,
+                        const QgsAggregateCalculator::AggregateParameters& parameters = QgsAggregateCalculator::AggregateParameters(),
+                        QgsExpressionContext* context = nullptr,
+                        bool* ok = nullptr );
 
     /** Fetches all values from a specified field name or expression.
      * @param fieldOrExpression field name or an expression string

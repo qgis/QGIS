@@ -17,6 +17,7 @@
 #define QGSSTATISTICALSUMMARY_H
 
 #include <QMap>
+#include <QVariant>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -44,6 +45,7 @@ class CORE_EXPORT QgsStatisticalSummary
     enum Statistic
     {
       Count = 1,  //!< Count
+      CountMissing = 32770, //!< Number of missing (null) values
       Sum = 2,  //!< Sum of values
       Mean = 4,  //!< Mean of values
       Median = 8, //!< Median of values
@@ -58,7 +60,7 @@ class CORE_EXPORT QgsStatisticalSummary
       FirstQuartile = 4096, //!< First quartile
       ThirdQuartile = 8192, //!< Third quartile
       InterQuartileRange = 16384, //!< Inter quartile range (IQR)
-      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | FirstQuartile | ThirdQuartile | InterQuartileRange
+      All = Count | CountMissing | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | FirstQuartile | ThirdQuartile | InterQuartileRange
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
@@ -91,6 +93,46 @@ class CORE_EXPORT QgsStatisticalSummary
      */
     void calculate( const QList<double>& values );
 
+    /** Adds a single value to the statistics calculation. Calling this method
+     * allows values to be added to the calculation one at a time. For large
+     * quantities of values this may be more efficient then first adding all the
+     * values to a list and calling calculate().
+     * @param value value to add
+     * @note call reset() before adding the first value using this method
+     * to clear the results from any previous calculations
+     * @note finalize() must be called after adding the final value and before
+     * retrieving calculated statistics.
+     * @see calculate()
+     * @see addVariant()
+     * @see finalize()
+     * @note added in QGIS 2.16
+     */
+    void addValue( double value );
+
+    /** Adds a single value to the statistics calculation. Calling this method
+     * allows values to be added to the calculation one at a time. For large
+     * quantities of values this may be more efficient then first adding all the
+     * values to a list and calling calculate().
+     * @param value variant containing to add. Non-numeric values are treated as null.
+     * @note call reset() before adding the first value using this method
+     * to clear the results from any previous calculations
+     * @note finalize() must be called after adding the final value and before
+     * retrieving calculated statistics.
+     * @see addValue()
+     * @see calculate()
+     * @see finalize()
+     * @note added in QGIS 2.16
+     */
+    void addVariant( const QVariant& value );
+
+    /** Must be called after adding all values with addValues() and before retrieving
+     * any calculated statistics.
+     * @see addValue()
+     * @see addVariant()
+     * @note added in QGIS 2.16
+     */
+    void finalize();
+
     /** Returns the value of a specified statistic
      * @param stat statistic to return
      * @returns calculated value of statistic
@@ -100,6 +142,11 @@ class CORE_EXPORT QgsStatisticalSummary
     /** Returns calculated count of values
      */
     int count() const { return mCount; }
+
+    /** Returns the number of missing (null) values
+     * @note added in QGIS 2.16
+     */
+    int countMissing() const { return mMissing; }
 
     /** Returns calculated sum of values
      */
@@ -189,6 +236,7 @@ class CORE_EXPORT QgsStatisticalSummary
     Statistics mStatistics;
 
     int mCount;
+    int mMissing;
     double mSum;
     double mMean;
     double mMedian;
@@ -201,6 +249,7 @@ class CORE_EXPORT QgsStatisticalSummary
     double mFirstQuartile;
     double mThirdQuartile;
     QMap< double, int > mValueCount;
+    QList< double > mValues;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsStatisticalSummary::Statistics )

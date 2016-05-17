@@ -52,6 +52,27 @@ void QgsStringStatisticalSummary::calculate( const QStringList& values )
   {
     testString( string );
   }
+  finalize();
+}
+
+void QgsStringStatisticalSummary::addString( const QString& string )
+{
+  testString( string );
+}
+
+void QgsStringStatisticalSummary::addValue( const QVariant& value )
+{
+  if ( value.type() == QVariant::String )
+  {
+    testString( value.toString() );
+  }
+  finalize();
+}
+
+void QgsStringStatisticalSummary::finalize()
+{
+  //nothing to do for now - this method has been added for forward compatibility
+  //if statistics are implemented which require a post-calculation step
 }
 
 void QgsStringStatisticalSummary::calculateFromVariants( const QVariantList& values )

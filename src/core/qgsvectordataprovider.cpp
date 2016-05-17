@@ -381,6 +381,19 @@ void QgsVectorDataProvider::uniqueValues( int index, QList<QVariant> &values, in
   }
 }
 
+QVariant QgsVectorDataProvider::aggregate( QgsAggregateCalculator::Aggregate aggregate, int index,
+    const QgsAggregateCalculator::AggregateParameters& parameters, QgsExpressionContext* context, bool& ok )
+{
+  //base implementation does nothing
+  Q_UNUSED( aggregate );
+  Q_UNUSED( index );
+  Q_UNUSED( parameters );
+  Q_UNUSED( context );
+
+  ok = false;
+  return QVariant();
+}
+
 void QgsVectorDataProvider::clearMinMaxCache()
 {
   mCacheMinMaxDirty = true;

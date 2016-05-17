@@ -49,18 +49,30 @@ void QgsDateTimeStatisticalSummary::calculate( const QVariantList& values )
 
   Q_FOREACH ( const QVariant& variant, values )
   {
-    if ( variant.type() == QVariant::DateTime )
-    {
-      testDateTime( variant.toDateTime() );
-    }
-    else if ( variant.type() == QVariant::Date )
-    {
-      QDate date = variant.toDate();
-      testDateTime( date.isValid() ? QDateTime( date, QTime( 0, 0, 0 ) )
-                    : QDateTime() );
-    }
-    // QTime?
+    addValue( variant );
   }
+  finalize();
+}
+
+void QgsDateTimeStatisticalSummary::addValue( const QVariant& value )
+{
+  if ( value.type() == QVariant::DateTime )
+  {
+    testDateTime( value.toDateTime() );
+  }
+  else if ( value.type() == QVariant::Date )
+  {
+    QDate date = value.toDate();
+    testDateTime( date.isValid() ? QDateTime( date, QTime( 0, 0, 0 ) )
+                  : QDateTime() );
+  }
+  // QTime?
+}
+
+void QgsDateTimeStatisticalSummary::finalize()
+{
+  //nothing to do for now - this method has been added for forward compatibility
+  //if statistics are implemented which require a post-calculation step
 }
 
 void QgsDateTimeStatisticalSummary::testDateTime( const QDateTime& dateTime )

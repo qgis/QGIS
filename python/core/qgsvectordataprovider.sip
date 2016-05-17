@@ -154,6 +154,22 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues /Out/, int limit = -1 );
 
+    /** Calculates an aggregated value from the layer's features. The base implementation does nothing,
+     * but subclasses can override this method to handoff calculation of aggregates to the provider.
+     * @param aggregate aggregate to calculate
+     * @param index the index of the attribute to calculate aggregate over
+     * @param parameters parameters controlling aggregate calculation
+     * @param context expression context for filter
+     * @param ok will be set to true if calculation was successfully performed by the data provider
+     * @return calculated aggregate value
+     * @note added in QGIS 2.16
+     */
+    virtual QVariant aggregate( QgsAggregateCalculator::Aggregate aggregate,
+                                int index,
+                                const QgsAggregateCalculator::AggregateParameters& parameters,
+                                QgsExpressionContext* context,
+                                bool& ok );
+
     /**
      * Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
      * or if the given attribute is not an enum type.

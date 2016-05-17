@@ -48,6 +48,8 @@ class TestQgsExpressionContext : public QObject
     void layerScope();
     void featureBasedContext();
 
+    void cache();
+
   private:
 
     class GetTestValueFunction : public QgsScopedExpressionFunction
@@ -639,6 +641,38 @@ void TestQgsExpressionContext::featureBasedContext()
   QgsFields evalFields = qvariant_cast<QgsFields>( context.variable( "_fields_" ) );
   QCOMPARE( evalFeature.attributes(), f.attributes() );
   QCOMPARE( evalFields, fields );
+}
+
+void TestQgsExpressionContext::cache()
+{
+  //test setting and retrieving cached values
+  QgsExpressionContext context;
+
+  //use a const reference to ensure that cache is usable from const QgsExpressionContexts
+  const QgsExpressionContext& c = context;
+
+  QVERIFY( !c.hasCachedValue( "test" ) );
+  QVERIFY( !c.cachedValue( "test" ).isValid() );
+
+  c.setCachedValue( "test", "my value" );
+  QVERIFY( c.hasCachedValue( "test" ) );
+  QCOMPARE( c.cachedValue( "test" ), QVariant( "my value" ) );
+
+  // copy should copy cache
+  QgsExpressionContext context2( c );
+  QVERIFY( context2.hasCachedValue( "test" ) );
+  QCOMPARE( context2.cachedValue( "test" ), QVariant( "my value" ) );
+
+  // assignment should copy cache
+  QgsExpressionContext context3;
+  context3 = c;
+  QVERIFY( context3.hasCachedValue( "test" ) );
+  QCOMPARE( context3.cachedValue( "test" ), QVariant( "my value" ) );
+
+  // clear cache
+  c.clearCachedValues();
+  QVERIFY( !c.hasCachedValue( "test" ) );
+  QVERIFY( !c.cachedValue( "test" ).isValid() );
 }
 
 QTEST_MAIN( TestQgsExpressionContext )
