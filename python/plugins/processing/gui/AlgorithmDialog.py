@@ -175,7 +175,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 try:
                     text = self.evaluateExpression(text)
                 except:
-                    return False
+                    pass
                 return param.setValue(text)
         elif isinstance(param, ParameterGeometryPredicate):
             return param.setValue(widget.value())
