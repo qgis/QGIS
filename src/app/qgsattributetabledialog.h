@@ -56,17 +56,17 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window );
     ~QgsAttributeTableDialog();
 
-    /**
-     * Sets the filter expression to filter visible features
-     * @param filterString filter query string. QgsExpression compatible.
-     */
-    void setFilterExpression( const QString& filterString );
-
   public slots:
     /**
      * Toggles editing mode
      */
     void editingToggled();
+
+    /**
+     * Sets the filter expression to filter visible features
+     * @param filterString filter query string. QgsExpression compatible.
+     */
+    void setFilterExpression( const QString& filterString, QgsAttributeForm::FilterType type = QgsAttributeForm::ReplaceFilter );
 
   private slots:
     /**
@@ -212,6 +212,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void runFieldCalculation( QgsVectorLayer* layer, const QString& fieldName, const QString& expression, const QgsFeatureIds& filteredIds = QgsFeatureIds() );
     void updateFieldFromExpression();
     void updateFieldFromExpressionSelected();
+    void viewModeChanged( QgsAttributeForm::Mode mode );
 
   private:
     QMenu* mMenuActions;

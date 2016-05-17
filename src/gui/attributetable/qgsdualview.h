@@ -25,6 +25,7 @@
 #include "qgsattributetablefiltermodel.h"
 #include "qgscachedfeatureiterator.h"
 #include "qgsdistancearea.h"
+#include "qgsattributeform.h"
 
 class QgsAttributeForm;
 class QgsFeatureRequest;
@@ -219,6 +220,12 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     void setMultiEditEnabled( bool enabled );
 
+    /** Toggles whether search mode should be enabled in the form.
+     * @param enabled set to true to switch on search mode
+     * @note added in QGIS 2.16
+     */
+    void toggleSearchMode( bool enabled );
+
   signals:
     /**
      * Is emitted, whenever the display expression is successfully changed
@@ -230,6 +237,18 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * Is emitted, whenever the filter changes
      */
     void filterChanged();
+
+    /** Is emitted when a filter expression is set using the view.
+     * @param expression filter expression
+     * @param type filter type
+     * @note added in QGIS 2.16
+     */
+    void filterExpressionSet( const QString& expression, QgsAttributeForm::FilterType type );
+
+    /** Emitted when the form changes mode.
+     * @param mode new mode
+     */
+    void formModeChanged( QgsAttributeForm::Mode mode );
 
   private slots:
 

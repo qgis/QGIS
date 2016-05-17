@@ -253,11 +253,15 @@
 %Include editorwidgets/core/qgssearchwidgetwrapper.sip
 %Include editorwidgets/core/qgswidgetwrapper.sip
 %Include editorwidgets/qgsdatetimeedit.sip
+%Include editorwidgets/qgsdefaultsearchwidgetwrapper.sip
 %Include editorwidgets/qgsdoublespinbox.sip
 %Include editorwidgets/qgsmultiedittoolbutton.sip
 %Include editorwidgets/qgsrelationreferencewidget.sip
 %Include editorwidgets/qgsrelationreferencewidgetwrapper.sip
 %Include editorwidgets/qgsrelationwidgetwrapper.sip
+%Include editorwidgets/qgssearchwidgettoolbutton.sip
 %Include editorwidgets/qgsspinbox.sip
+%Include editorwidgets/qgsvaluemapsearchwidgetwrapper.sip
+%Include editorwidgets/qgsvaluerelationsearchwidgetwrapper.sip
 
 %Include layertree/qgslayertreeview.sip
