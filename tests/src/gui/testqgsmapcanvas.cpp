@@ -21,6 +21,7 @@
 #include <qgsmaprenderer.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsrenderchecker.h>
+#include <qgsvectordataprovider.h>
 
 namespace QTest
 {
@@ -47,6 +48,7 @@ class TestQgsMapCanvas : public QObject
     void testMapRendererInteraction();
     void testPanByKeyboard();
     void testMagnification();
+    void testMagnificationExtent();
 
   private:
     QgsMapCanvas* mCanvas;
@@ -249,6 +251,97 @@ void TestQgsMapCanvas::testMagnification()
   checker.setRenderedImage( tmpName );
   checker.setSizeTolerance( 2, 2 );
   QCOMPARE( checker.compareImages( "map_magnification", 100 ), true );
+}
+
+void compareExtent( const QgsRectangle &initialExtent,
+                    const QgsRectangle &extent )
+{
+  QVERIFY( qgsDoubleNear( initialExtent.xMinimum(), extent.xMinimum(), 0.00000000001 ) );
+  QVERIFY( qgsDoubleNear( initialExtent.xMaximum(), extent.xMaximum(), 0.00000000001 ) );
+  QVERIFY( qgsDoubleNear( initialExtent.yMinimum(), extent.yMinimum(), 0.00000000001 ) );
+  QVERIFY( qgsDoubleNear( initialExtent.yMaximum(), extent.yMaximum(), 0.00000000001 ) );
+}
+
+void TestQgsMapCanvas::testMagnificationExtent()
+{
+  // build vector layer
+  QString testDataDir = QString( TEST_DATA_DIR ) + '/';
+  QString myPointsFileName = testDataDir + "points.shp";
+  QFileInfo myPointFileInfo( myPointsFileName );
+  QgsVectorLayer *layer = new QgsVectorLayer( myPointFileInfo.filePath(),
+      myPointFileInfo.completeBaseName(), "ogr" );
+
+  // prepare map canvas
+  QList<QgsMapCanvasLayer> layers;
+  layers.append( layer );
+  mCanvas->setLayerSet( layers );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << layer );
+
+  // zoomToFullExtent
+  mCanvas->zoomToFullExtent();
+  QgsRectangle initialExtent = mCanvas->extent();
+
+  mCanvas->setMagnificationFactor( 4.0 );
+  mCanvas->setMagnificationFactor( 1.0 );
+
+  compareExtent( mCanvas->extent(), initialExtent );
+
+  // setExtent with layer extent
+  mCanvas->setExtent( layer->extent() );
+  initialExtent = mCanvas->extent();
+
+  mCanvas->setMagnificationFactor( 4.0 );
+  mCanvas->setMagnificationFactor( 1.0 );
+
+  compareExtent( mCanvas->extent(), initialExtent );
+
+  // zoomToSelected
+  QgsFeature f1( layer->dataProvider()->fields(), 1 );
+  QgsFeature f2( layer->dataProvider()->fields(), 2 );
+  QgsFeatureIds ids;
+  ids << f1.id() << f2.id();
+  layer->setSelectedFeatures( ids );
+
+  mCanvas->zoomToSelected( layer );
+  initialExtent = mCanvas->extent();
+
+  mCanvas->setMagnificationFactor( 4.0 );
+  mCanvas->setMagnificationFactor( 1.0 );
+
+  compareExtent( mCanvas->extent(), initialExtent );
+
+  // zoomToFeatureIds
+  mCanvas->zoomToFeatureIds( layer, ids );
+  initialExtent = mCanvas->extent();
+
+  mCanvas->setMagnificationFactor( 4.0 );
+  mCanvas->setMagnificationFactor( 1.0 );
+
+  compareExtent( mCanvas->extent(), initialExtent );
+
+  // zoomIn / zoomOut
+  initialExtent = mCanvas->extent();
+  mCanvas->zoomIn();
+
+  mCanvas->setMagnificationFactor( 4.0 );
+  mCanvas->zoomIn();
+  mCanvas->zoomOut();
+  mCanvas->setMagnificationFactor( 1.0 );
+
+  mCanvas->zoomOut();
+
+  compareExtent( mCanvas->extent(), initialExtent );
+
+  // zoomScale
+  initialExtent = mCanvas->extent();
+  double scale = mCanvas->scale();
+  mCanvas->zoomScale( 6.052017*10e7 );
+
+  mCanvas->setMagnificationFactor( 4.0 );
+  mCanvas->setMagnificationFactor( 1.0 );
+
+  mCanvas->zoomScale( scale );
+  compareExtent( mCanvas->extent(), initialExtent );
 }
 
 QTEST_MAIN( TestQgsMapCanvas )
