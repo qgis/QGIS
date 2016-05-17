@@ -87,7 +87,7 @@ void QgsAbout::init()
     {
       line = stream.readLine(); // line of text excluding '\n'
       //ignore the line if it starts with a hash....
-      if ( line.at( 0 ) == '#' )
+      if ( !line.isEmpty() && line.at( 0 ) == '#' )
         continue;
       QStringList myTokens = line.split( '\t', QString::SkipEmptyParts );
       lines << myTokens[0];
@@ -119,7 +119,7 @@ void QgsAbout::init()
     {
       line = stream.readLine(); // line of text excluding '\n'
       //ignore the line if it starts with a hash....
-      if ( line.at( 0 ) == '#' )
+      if ( !line.isEmpty() && line.at( 0 ) == '#' )
         continue;
       lines += line;
     }
