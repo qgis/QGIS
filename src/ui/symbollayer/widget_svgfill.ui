@@ -7,50 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>270</width>
-    <height>620</height>
+    <height>459</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QFormLayout" name="formLayout">
+  <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QgsDoubleSpinBox" name="mTextureWidthSpinBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>6</number>
-       </property>
-       <property name="maximum">
-        <double>999999999.999999046325684</double>
-       </property>
-       <property name="singleStep">
-        <double>0.200000000000000</double>
-       </property>
-       <property name="showClearButton" stdset="0">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsDataDefinedButton" name="mTextureWidthDDBtn">
-       <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsUnitSelectionWidget" name="mTextureWidthUnitWidget" native="true"/>
-     </item>
-    </layout>
-   </item>
-   <item row="3" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
       <widget class="QgsDoubleSpinBox" name="mRotationSpinBox">
@@ -65,59 +29,9 @@
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QgsDataDefinedButton" name="mRotationDDBtn">
-       <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
-   <item row="5" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QgsColorButtonV2" name="mChangeColorButton">
-       <property name="minimumSize">
-        <size>
-         <width>120</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>120</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsDataDefinedButton" name="mFilColorDDBtn">
-       <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item row="6" column="0">
+   <item row="3" column="0">
     <widget class="QLabel" name="mBorderColorLabel">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -130,10 +44,16 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="1">
+   <item row="3" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_6">
      <item>
       <widget class="QgsColorButtonV2" name="mChangeBorderColorButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize">
         <size>
          <width>120</width>
@@ -142,7 +62,7 @@
        </property>
        <property name="maximumSize">
         <size>
-         <width>120</width>
+         <width>16777215</width>
          <height>16777215</height>
         </size>
        </property>
@@ -151,29 +71,30 @@
        </property>
       </widget>
      </item>
+    </layout>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="mBorderWidthLabel">
+     <property name="text">
+      <string>Outline width</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QgsDataDefinedButton" name="mBorderColorDDBtn">
+      <widget class="QLineEdit" name="mSVGLineEdit"/>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mBrowseToolButton">
        <property name="text">
         <string>...</string>
        </property>
       </widget>
      </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
     </layout>
    </item>
-   <item row="8" column="1">
+   <item row="4" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
       <widget class="QgsDoubleSpinBox" name="mBorderWidthSpinBox">
@@ -201,18 +122,131 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsDataDefinedButton" name="mBorderWidthDDBtn">
-       <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QgsUnitSelectionWidget" name="mSvgOutlineWidthUnitWidget" native="true"/>
      </item>
     </layout>
    </item>
-   <item row="9" column="0" colspan="2">
+   <item row="2" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QgsColorButtonV2" name="mChangeColorButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="mRotationLabel">
+     <property name="text">
+      <string>Rotation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QgsDoubleSpinBox" name="mTextureWidthSpinBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="maximum">
+        <double>999999999.999999046325684</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+       <property name="showClearButton" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mTextureWidthUnitWidget" native="true"/>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Fill</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="mTextureWidthLabel">
+     <property name="text">
+      <string>Texture width</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QgsDataDefinedButton" name="mTextureWidthDDBtn">
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QgsDataDefinedButton" name="mRotationDDBtn">
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QgsDataDefinedButton" name="mFilColorDDBtn">
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QgsDataDefinedButton" name="mBorderColorDDBtn">
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QgsDataDefinedButton" name="mBorderWidthDDBtn">
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="3">
     <layout class="QGridLayout" name="gridLayout_2">
      <item row="0" column="0">
       <widget class="QLabel" name="mSymbolGroupLabel">
@@ -262,58 +296,10 @@
      </item>
     </layout>
    </item>
-   <item row="11" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLineEdit" name="mSVGLineEdit"/>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mBrowseToolButton">
-       <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsDataDefinedButton" name="mSVGDDBtn">
-       <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="mTextureWidthLabel">
+   <item row="6" column="2">
+    <widget class="QgsDataDefinedButton" name="mSVGDDBtn">
      <property name="text">
-      <string>Texture width</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="mRotationLabel">
-     <property name="text">
-      <string>Rotation</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="label">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Fill</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="mBorderWidthLabel">
-     <property name="text">
-      <string>Outline width</string>
+      <string>...</string>
      </property>
     </widget>
    </item>
@@ -327,6 +313,11 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -337,28 +328,17 @@
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsDataDefinedButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mTextureWidthSpinBox</tabstop>
-  <tabstop>mTextureWidthDDBtn</tabstop>
   <tabstop>mRotationSpinBox</tabstop>
-  <tabstop>mRotationDDBtn</tabstop>
   <tabstop>mChangeColorButton</tabstop>
-  <tabstop>mFilColorDDBtn</tabstop>
   <tabstop>mChangeBorderColorButton</tabstop>
-  <tabstop>mBorderColorDDBtn</tabstop>
   <tabstop>mBorderWidthSpinBox</tabstop>
-  <tabstop>mBorderWidthDDBtn</tabstop>
   <tabstop>mSvgTreeView</tabstop>
   <tabstop>mSvgListView</tabstop>
   <tabstop>mSVGLineEdit</tabstop>
   <tabstop>mBrowseToolButton</tabstop>
-  <tabstop>mSVGDDBtn</tabstop>
  </tabstops>
  <resources/>
  <connections/>

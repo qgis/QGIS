@@ -13,13 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QFormLayout" name="formLayout">
-   <property name="fieldGrowthPolicy">
-    <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-   </property>
-   <property name="labelAlignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-   </property>
+  <layout class="QGridLayout" name="gridLayout_2">
    <property name="leftMargin">
     <number>1</number>
    </property>
@@ -35,6 +29,13 @@
       <string>Marker placement</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="4" column="1">
+       <widget class="QRadioButton" name="radCentralPoint">
+        <property name="text">
+         <string>on central point</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="1">
        <widget class="QRadioButton" name="radVertex">
         <property name="text">
@@ -42,55 +43,12 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Offset along line</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QgsDoubleSpinBox" name="mSpinOffsetAlongLine">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-            <horstretch>1</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="decimals">
-           <number>6</number>
-          </property>
-          <property name="maximum">
-           <double>10000000.000000000000000</double>
-          </property>
-          <property name="singleStep">
-           <double>0.200000000000000</double>
-          </property>
-          <property name="value">
-           <double>1.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QgsDataDefinedButton" name="mOffsetAlongLineDDBtn">
-          <property name="text">
-           <string>...</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QgsUnitSelectionWidget" name="mOffsetAlongLineUnitWidget" native="true">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-       </layout>
+      <item row="5" column="1">
+       <widget class="QRadioButton" name="radCurvePoint">
+        <property name="text">
+         <string>on every curve point</string>
+        </property>
+       </widget>
       </item>
       <item row="0" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -130,14 +88,57 @@
          </widget>
         </item>
         <item>
-         <widget class="QgsDataDefinedButton" name="mIntervalDDBtn">
+         <widget class="QgsUnitSelectionWidget" name="mIntervalUnitWidget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="1">
+       <widget class="QRadioButton" name="radVertexLast">
+        <property name="text">
+         <string>on last vertex only</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="label">
           <property name="text">
-           <string>...</string>
+           <string>Offset along line</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QgsUnitSelectionWidget" name="mIntervalUnitWidget" native="true">
+         <widget class="QgsDoubleSpinBox" name="mSpinOffsetAlongLine">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="decimals">
+           <number>6</number>
+          </property>
+          <property name="maximum">
+           <double>10000000.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.200000000000000</double>
+          </property>
+          <property name="value">
+           <double>1.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsUnitSelectionWidget" name="mOffsetAlongLineUnitWidget" native="true">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -162,24 +163,17 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QRadioButton" name="radVertexLast">
+      <item row="0" column="2">
+       <widget class="QgsDataDefinedButton" name="mIntervalDDBtn">
         <property name="text">
-         <string>on last vertex only</string>
+         <string>...</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QRadioButton" name="radCentralPoint">
+      <item row="6" column="2">
+       <widget class="QgsDataDefinedButton" name="mOffsetAlongLineDDBtn">
         <property name="text">
-         <string>on central point</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QRadioButton" name="radCurvePoint">
-        <property name="text">
-         <string>on every curve point</string>
+         <string>...</string>
         </property>
        </widget>
       </item>
@@ -193,14 +187,14 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="2" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
       <string>Line offset</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="2" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QgsDoubleSpinBox" name="spinOffset">
@@ -243,7 +237,7 @@
      </item>
     </layout>
    </item>
-   <item row="4" column="0">
+   <item row="3" column="0" colspan="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -280,17 +274,14 @@
   <tabstop>mPlacementDDBtn</tabstop>
   <tabstop>radInterval</tabstop>
   <tabstop>spinInterval</tabstop>
-  <tabstop>mIntervalDDBtn</tabstop>
   <tabstop>radVertex</tabstop>
   <tabstop>radVertexLast</tabstop>
   <tabstop>radVertexFirst</tabstop>
   <tabstop>radCentralPoint</tabstop>
   <tabstop>radCurvePoint</tabstop>
   <tabstop>mSpinOffsetAlongLine</tabstop>
-  <tabstop>mOffsetAlongLineDDBtn</tabstop>
   <tabstop>chkRotateMarker</tabstop>
   <tabstop>spinOffset</tabstop>
-  <tabstop>mLineOffsetDDBtn</tabstop>
  </tabstops>
  <resources/>
  <connections/>

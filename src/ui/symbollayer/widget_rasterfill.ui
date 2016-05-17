@@ -6,36 +6,25 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>256</width>
-    <height>516</height>
+    <width>290</width>
+    <height>417</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QFormLayout" name="formLayout">
-   <item row="1" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLineEdit" name="mImageLineEdit"/>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mBrowseToolButton">
-       <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsDataDefinedButton" name="mFilenameDDBtn">
-       <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Coord mode</string>
+     </property>
+     <property name="buddy">
+      <cstring>cboCoordinateMode</cstring>
+     </property>
+    </widget>
    </item>
-   <item row="6" column="1">
+   <item row="2" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QgsDoubleSpinBox" name="mWidthSpinBox">
@@ -60,13 +49,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsDataDefinedButton" name="mWidthDDBtn">
-       <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QgsUnitSelectionWidget" name="mWidthUnitWidget" native="true">
        <property name="minimumSize">
         <size>
@@ -78,7 +60,14 @@
      </item>
     </layout>
    </item>
-   <item row="8" column="1">
+   <item row="1" column="2">
+    <widget class="QgsDataDefinedButton" name="mFilenameDDBtn">
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_7">
      <item>
       <widget class="QgsDoubleSpinBox" name="mRotationSpinBox">
@@ -99,76 +88,77 @@
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QgsDataDefinedButton" name="mRotationDDBtn">
-       <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
-   <item row="10" column="1">
-    <widget class="QComboBox" name="cboCoordinateMode">
-     <item>
-      <property name="text">
-       <string>Object</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Viewport</string>
-      </property>
-     </item>
+   <item row="5" column="2">
+    <widget class="QgsDataDefinedButton" name="mOpacityDDBtn">
+     <property name="text">
+      <string>...</string>
+     </property>
     </widget>
    </item>
-   <item row="12" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,0,0">
+   <item row="3" column="0">
+    <widget class="QLabel" name="mRotationLabel">
+     <property name="text">
+      <string>Rotation</string>
+     </property>
+     <property name="buddy">
+      <cstring>mRotationSpinBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="3">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <property name="topMargin">
+      <number>0</number>
+     </property>
      <item>
-      <widget class="QSlider" name="mSliderTransparency">
+      <widget class="QLabel" name="mLabelImagePreview">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="maximum">
-        <number>100</number>
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>150</height>
+        </size>
        </property>
-       <property name="value">
-        <number>100</number>
+       <property name="frameShape">
+        <enum>QFrame::Panel</enum>
        </property>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
+       </property>
+       <property name="lineWidth">
+        <number>1</number>
+       </property>
+       <property name="midLineWidth">
+        <number>0</number>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QSpinBox" name="mSpinTransparency">
-       <property name="suffix">
-        <string>%</string>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
        </property>
-       <property name="minimum">
-        <number>0</number>
-       </property>
-       <property name="maximum">
-        <number>100</number>
-       </property>
-       <property name="value">
-        <number>100</number>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsDataDefinedButton" name="mOpacityDDBtn">
-       <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
+      </spacer>
      </item>
     </layout>
    </item>
-   <item row="13" column="0">
+   <item row="6" column="0">
     <widget class="QLabel" name="label_7">
      <property name="text">
       <string>Offset X,Y</string>
@@ -178,7 +168,7 @@
      </property>
     </widget>
    </item>
-   <item row="13" column="1">
+   <item row="6" column="1">
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
       <widget class="QgsDoubleSpinBox" name="mSpinOffsetX">
@@ -236,7 +226,7 @@
      </item>
     </layout>
    </item>
-   <item row="6" column="0">
+   <item row="2" column="0">
     <widget class="QLabel" name="mTextureWidthLabel">
      <property name="text">
       <string>Image width</string>
@@ -246,78 +236,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
-     <property name="topMargin">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="mLabelImagePreview">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>150</width>
-         <height>150</height>
-        </size>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::Panel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Sunken</enum>
-       </property>
-       <property name="lineWidth">
-        <number>1</number>
-       </property>
-       <property name="midLineWidth">
-        <number>0</number>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item row="10" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Coord mode</string>
-     </property>
-     <property name="buddy">
-      <cstring>cboCoordinateMode</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="mRotationLabel">
-     <property name="text">
-      <string>Rotation</string>
-     </property>
-     <property name="buddy">
-      <cstring>mRotationSpinBox</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="12" column="0">
+   <item row="5" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Opacity</string>
@@ -326,6 +245,100 @@
       <cstring>mSliderTransparency</cstring>
      </property>
     </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLineEdit" name="mImageLineEdit"/>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mBrowseToolButton">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="1">
+    <widget class="QComboBox" name="cboCoordinateMode">
+     <item>
+      <property name="text">
+       <string>Object</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Viewport</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QgsDataDefinedButton" name="mWidthDDBtn">
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QgsDataDefinedButton" name="mRotationDDBtn">
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,0">
+     <item>
+      <widget class="QSlider" name="mSliderTransparency">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>100</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="mSpinTransparency">
+       <property name="suffix">
+        <string>%</string>
+       </property>
+       <property name="minimum">
+        <number>0</number>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>100</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="7" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
@@ -350,15 +363,11 @@
  <tabstops>
   <tabstop>mImageLineEdit</tabstop>
   <tabstop>mBrowseToolButton</tabstop>
-  <tabstop>mFilenameDDBtn</tabstop>
   <tabstop>mWidthSpinBox</tabstop>
-  <tabstop>mWidthDDBtn</tabstop>
   <tabstop>mRotationSpinBox</tabstop>
-  <tabstop>mRotationDDBtn</tabstop>
   <tabstop>cboCoordinateMode</tabstop>
   <tabstop>mSliderTransparency</tabstop>
   <tabstop>mSpinTransparency</tabstop>
-  <tabstop>mOpacityDDBtn</tabstop>
   <tabstop>mSpinOffsetX</tabstop>
   <tabstop>mSpinOffsetY</tabstop>
  </tabstops>
