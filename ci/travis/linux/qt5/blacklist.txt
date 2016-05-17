@@ -1,7 +1,6 @@
 ProcessingGdalAlgorithmsTest
 ProcessingQgisAlgorithmsTest
 PyQgsComposerPicture
-PyQgsDelimitedTextProvider
 PyQgsGeometryTest
 PyQgsJSONUtils
 PyQgsLocalServer
