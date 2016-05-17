@@ -79,8 +79,8 @@ void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
 
   QgsVectorLayerSaveAsDialog d( tempLayer.data() );
 
-  QgsCollapsibleGroupBoxBasic* mAttributesSelection = d.findChild<QgsCollapsibleGroupBoxBasic*>( "mAttributesSelection" );
-  mAttributesSelection->setChecked( true );
+  QPushButton* mDeselectAllAttributes = d.findChild<QPushButton*>( "mDeselectAllAttributes" );
+  QTest::mouseClick( mDeselectAllAttributes, Qt::LeftButton );
 
   QTableWidget* mAttributeTable = d.findChild<QTableWidget*>( "mAttributeTable" );
   QCheckBox* mReplaceRawFieldValues = d.findChild<QCheckBox*>( "mReplaceRawFieldValues" );

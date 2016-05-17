@@ -122,10 +122,10 @@
        <item>
         <widget class="QgsCollapsibleGroupBox" name="mAttributesSelection">
          <property name="title">
-          <string>Limit attributes to export</string>
+          <string>Select fields to export and their export options</string>
          </property>
          <property name="checkable">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="checked">
           <bool>false</bool>

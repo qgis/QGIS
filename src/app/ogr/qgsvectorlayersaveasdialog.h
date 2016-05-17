@@ -48,6 +48,7 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QStringList datasourceOptions() const;
     QStringList layerOptions() const;
     long crs() const;
+    /** @deprecated since 2.16. Now always return true since there is no longer any checkbox */
     bool attributeSelection() const;
     QgsAttributeList selectedAttributes() const;
     /** Return selected attributes that must be exported with their displayed values instead of their raw values. Added in QGIS 2.16 */

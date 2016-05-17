@@ -223,22 +223,26 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
 
   browseFilename->setEnabled( true );
   leFilename->setEnabled( true );
+  bool selectAllFields = true;
+  bool fieldsAsDisplayedValues = false;
 
   if ( format() == "KML" )
   {
     mEncodingComboBox->setCurrentIndex( mEncodingComboBox->findText( "UTF-8" ) );
     mEncodingComboBox->setDisabled( true );
-    mAttributesSelection->setChecked( true );
+    mAttributesSelection->setEnabled( true );
+    selectAllFields = false;
   }
   else if ( format() == "DXF" )
   {
-    mAttributesSelection->setChecked( true );
-    mAttributesSelection->setDisabled( true );
+    mAttributesSelection->setEnabled( false );
+    selectAllFields = false;
   }
   else
   {
     mEncodingComboBox->setEnabled( true );
     mAttributesSelection->setEnabled( true );
+    fieldsAsDisplayedValues = ( format() == "CSV" || format() == "XLS" || format() == "XLSX" || format() == "ODS" );
   }
 
   if ( mLayer )
@@ -264,7 +268,6 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
     {
       mAttributeTable->setColumnCount( 2 );
       mAttributeTable->setHorizontalHeaderLabels( QStringList() << tr( "Name" ) << tr( "Type" ) );
-      mReplaceRawFieldValues->setVisible( false );
     }
 
     mAttributeTableItemChangedSlotEnabled = false;
@@ -276,7 +279,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
       QTableWidgetItem *item;
       item = new QTableWidgetItem( fld.name() );
       item->setFlags( flags | Qt::ItemIsUserCheckable );
-      item->setCheckState( Qt::Unchecked );
+      item->setCheckState(( selectAllFields ) ? Qt::Checked : Qt::Unchecked );
       mAttributeTable->setItem( i, COLUMN_IDX_NAME, item );
 
       item = new QTableWidgetItem( fld.typeName() );
@@ -286,12 +289,13 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
       if ( foundFieldThatCanBeExportedAsDisplayedValue )
       {
         QgsEditorWidgetFactory *factory;
-        if ( mLayer->editFormConfig()->widgetType( i ) != "TextEdit" &&
+        if ( flags == Qt::ItemIsEnabled &&
+             mLayer->editFormConfig()->widgetType( i ) != "TextEdit" &&
              ( factory = QgsEditorWidgetRegistry::instance()->factory( mLayer->editFormConfig()->widgetType( i ) ) ) )
         {
           item = new QTableWidgetItem( tr( "Use %1" ).arg( factory->name() ) );
-          item->setFlags( Qt::ItemIsUserCheckable );
-          item->setCheckState( Qt::Unchecked );
+          item->setFlags(( selectAllFields ) ? ( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable ) : Qt::ItemIsUserCheckable );
+          item->setCheckState(( selectAllFields && fieldsAsDisplayedValues ) ? Qt::Checked : Qt::Unchecked );
           mAttributeTable->setItem( i, COLUMN_IDX_EXPORT_AS_DISPLAYED_VALUE, item );
         }
         else
@@ -305,7 +309,11 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
 
     mAttributeTableItemChangedSlotEnabled = true;
 
-    mReplaceRawFieldValues->setEnabled( false );
+    mReplaceRawFieldValuesStateChangedSlotEnabled = false;
+    mReplaceRawFieldValues->setChecked( selectAllFields && fieldsAsDisplayedValues );
+    mReplaceRawFieldValuesStateChangedSlotEnabled = true;
+    mReplaceRawFieldValues->setEnabled( selectAllFields );
+    mReplaceRawFieldValues->setVisible( foundFieldThatCanBeExportedAsDisplayedValue );
 
     mAttributeTable->resizeColumnsToContents();
   }
@@ -602,7 +610,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
 
 bool QgsVectorLayerSaveAsDialog::attributeSelection() const
 {
-  return mAttributesSelection->isChecked();
+  return true;
 }
 
 QgsAttributeList QgsVectorLayerSaveAsDialog::selectedAttributes() const
