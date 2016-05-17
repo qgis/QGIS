@@ -265,6 +265,24 @@ unless(-d $unpacked ) {
 	chdir "..";
 }
 
+my($major, $minor, $patch);
+
+open F, "../../CMakeLists.txt";
+while(<F>) {
+	if(/SET\(CPACK_PACKAGE_VERSION_MAJOR "(\d+)"\)/) {
+		$major = $1;
+	} elsif(/SET\(CPACK_PACKAGE_VERSION_MINOR "(\d+)"\)/) {
+		$minor = $1;
+	} elsif(/SET\(CPACK_PACKAGE_VERSION_PATCH "(\d+)"\)/) {
+		$patch = $1;
+	} elsif(/SET\(RELEASE_NAME "(.+)"\)/) {
+		$releasename = $1 unless defined $releasename;
+	}
+}
+close F;
+
+$version = "$major.$minor.$patch" unless defined $version;
+
 #
 # Create postinstall.bat
 #
@@ -336,24 +354,6 @@ chdir "..";
 print F "ren preremove.bat preremove.bat.done$r";
 
 close F;
-
-my($major, $minor, $patch);
-
-open F, "../../CMakeLists.txt";
-while(<F>) {
-	if(/SET\(CPACK_PACKAGE_VERSION_MAJOR "(\d+)"\)/) {
-		$major = $1;
-	} elsif(/SET\(CPACK_PACKAGE_VERSION_MINOR "(\d+)"\)/) {
-		$minor = $1;
-	} elsif(/SET\(CPACK_PACKAGE_VERSION_PATCH "(\d+)"\)/) {
-		$patch = $1;
-	} elsif(/SET\(RELEASE_NAME "(.+)"\)/) {
-		$releasename = $1 unless defined $releasename;
-	}
-}
-close F;
-
-$version = "$major.$minor.$patch" unless defined $version;
 
 unless( defined $binary ) {
 	if( -f "binary$archpostfix-$version" ) {
