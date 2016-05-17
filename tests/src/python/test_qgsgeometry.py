@@ -1648,6 +1648,31 @@ class TestQgsGeometry(unittest.TestCase):
         wkt = g.exportToWkt()
         assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
+        # Test reshape a line from first/last vertex
+        g = QgsGeometry.fromWkt('LineString (0 0, 5 0, 5 1)')
+        # extend start
+        self.assertEqual(g.reshapeGeometry([QgsPoint(0, 0), QgsPoint(-1, 0)]), 0)
+        expWkt = 'LineString (-1 0, 0 0, 5 0, 5 1)'
+        wkt = g.exportToWkt()
+        assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+        # extend end
+        self.assertEqual(g.reshapeGeometry([QgsPoint(5, 1), QgsPoint(10, 1), QgsPoint(10, 2)]), 0)
+        expWkt = 'LineString (-1 0, 0 0, 5 0, 5 1, 10 1, 10 2)'
+        wkt = g.exportToWkt()
+        assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+        # test with reversed lines
+        g = QgsGeometry.fromWkt('LineString (0 0, 5 0, 5 1)')
+        # extend start
+        self.assertEqual(g.reshapeGeometry([QgsPoint(-1, 0), QgsPoint(0, 0)]), 0)
+        expWkt = 'LineString (-1 0, 0 0, 5 0, 5 1)'
+        wkt = g.exportToWkt()
+        assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+        # extend end
+        self.assertEqual(g.reshapeGeometry([QgsPoint(10, 2), QgsPoint(10, 1), QgsPoint(5, 1)]), 0)
+        expWkt = 'LineString (-1 0, 0 0, 5 0, 5 1, 10 1, 10 2)'
+        wkt = g.exportToWkt()
+        assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
     def testConvertToMultiType(self):
         """ Test converting geometries to multi type """
         point = QgsGeometry.fromWkt('Point (1 2)')
