@@ -27,7 +27,7 @@ class APP_EXPORT QgsSvgAnnotationDialog: public QDialog, private Ui::QgsFormAnno
 {
     Q_OBJECT
   public:
-    QgsSvgAnnotationDialog( QgsSvgAnnotationItem* item, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsSvgAnnotationDialog( QgsSvgAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
     ~QgsSvgAnnotationDialog();
 
   private slots:

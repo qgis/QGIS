@@ -25,7 +25,7 @@ class QgsWelcomePageItemDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
-    QgsWelcomePageItemDelegate( QObject * parent = 0 );
+    explicit QgsWelcomePageItemDelegate( QObject * parent = nullptr );
     void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
     QSize sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
 };
@@ -38,18 +38,20 @@ class QgsWelcomePageItemsModel : public QAbstractListModel
     enum Role
     {
       TitleRole = Qt::UserRole + 1,
-      PathRole = Qt::UserRole + 2
+      PathRole = Qt::UserRole + 2,
+      CrsRole = Qt::UserRole + 3
     };
 
     struct RecentProjectData
     {
-      bool operator==( const RecentProjectData& other ) { return other.path == this->path; }
+      bool operator==( const RecentProjectData& other ) const { return other.path == this->path; }
       QString path;
       QString title;
       QString previewImagePath;
+      QString crs;
     };
 
-    QgsWelcomePageItemsModel( QObject* parent = 0 );
+    explicit QgsWelcomePageItemsModel( QObject* parent = nullptr );
 
     void setRecentProjects( const QList<RecentProjectData>& recentProjects );
 

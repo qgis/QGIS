@@ -114,7 +114,7 @@ void CharacterWidget::updateColumns( int cols )
   update();
 }
 
-void CharacterWidget::setCharacter( const QChar& character )
+void CharacterWidget::setCharacter( QChar character )
 {
   lastKey = character.unicode();
   update();

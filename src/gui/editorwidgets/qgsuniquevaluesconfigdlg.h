@@ -20,12 +20,16 @@
 
 #include "qgseditorconfigwidget.h"
 
+/** \class QgsUniqueValuesConfigDlg
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsUniqueValuesConfigDlg : public QgsEditorConfigWidget, private Ui::QgsUniqueValuesConfigDlgBase
 {
     Q_OBJECT
 
   public:
-    explicit QgsUniqueValuesConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent = 0 );
+    explicit QgsUniqueValuesConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent = nullptr );
 
     // QgsEditorConfigWidget interface
   public:

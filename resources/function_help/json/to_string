@@ -1,5 +1,6 @@
 {
-  "function": "to_string",
+  "name": "to_string",
+  "type": "function",
   "description": "Converts a number to string.",
   "arguments": [ {"arg":"number","description":"Integer or real value. The number to convert to string."}],
   "examples": [ { "expression":"to_string(123)", "returns":"'123'"}

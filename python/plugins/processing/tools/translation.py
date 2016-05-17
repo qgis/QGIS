@@ -26,7 +26,7 @@ __revision__ = '$Format:%H$'
 import os
 from processing.core.Processing import Processing
 from processing.gui.AlgorithmClassification import (
-    loadClassification, loadDisplayNames, getClassificationEn, getDisplayNameEn)
+    loadClassification, getClassificationEn, getDisplayNameEn)
 
 
 def updateTranslations():
@@ -39,7 +39,6 @@ def updateTranslations():
     """
 
     loadClassification()
-    loadDisplayNames()
 
     f = open(os.path.join(os.path.dirname(__file__), '../algs/translations.py'), 'w')
     f.write('''# -*- coding: utf-8 -*-
@@ -52,7 +51,7 @@ from processing.tools.translation import updateTranslations
 updateTranslations()
 """
 
-from PyQt4.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 
 def translationShadow():
 ''')
@@ -66,12 +65,12 @@ def translationShadow():
             f.write("    QCoreApplication.translate(\"{}\", \"{}\")\n"
                     .format(alg.__class__.__name__,
                             display_name.replace('"', '\\"')))
-            if not alg.group in groups:
+            if alg.group not in groups:
                 groups[alg.group] = 'AlgorithmClassification'
             group, subgroup = getClassificationEn(alg)
-            if group is not None and not group in groups:
+            if group is not None and group not in groups:
                 groups[group] = 'AlgorithmClassification'
-            if subgroup is not None and not subgroup in groups:
+            if subgroup is not None and subgroup not in groups:
                 groups[subgroup] = 'AlgorithmClassification'
 
     f.write('''

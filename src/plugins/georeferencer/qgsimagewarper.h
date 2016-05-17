@@ -29,10 +29,10 @@ class QWidget;
 
 class QgsImageWarper
 {
-    Q_DECLARE_TR_FUNCTIONS( QgsImageWarper );
+    Q_DECLARE_TR_FUNCTIONS( QgsImageWarper )
 
   public:
-    QgsImageWarper( QWidget *theParent );
+    explicit QgsImageWarper( QWidget *theParent );
 
     enum ResamplingMethod
     {
@@ -83,8 +83,8 @@ class QgsImageWarper
     void *addGeoToPixelTransform( GDALTransformerFunc GDALTransformer, void *GDALTransformerArg, double *padfGeotransform ) const;
     void destroyGeoToPixelTransform( void *GeoToPixelTransfomArg ) const;
 
-    bool openSrcDSAndGetWarpOpt( const QString &input, const ResamplingMethod &resampling,
-                                 const GDALTransformerFunc &pfnTransform, GDALDatasetH &hSrcDS,
+    bool openSrcDSAndGetWarpOpt( const QString &input, ResamplingMethod resampling,
+                                 const GDALTransformerFunc& pfnTransform, GDALDatasetH &hSrcDS,
                                  GDALWarpOptions *&psWarpOptions );
 
     bool createDestinationDataset( const QString &outputName, GDALDatasetH hSrcDS, GDALDatasetH &hDstDS, uint resX, uint resY,

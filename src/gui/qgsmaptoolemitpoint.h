@@ -35,13 +35,13 @@ class GUI_EXPORT QgsMapToolEmitPoint : public QgsMapTool
     QgsMapToolEmitPoint( QgsMapCanvas* canvas );
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
     //! Overridden mouse press event - emits the signal
-    virtual void canvasPressEvent( QMouseEvent * e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
   signals:
     //! signal emitted on canvas click

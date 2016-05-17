@@ -12,23 +12,21 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
+
 import os
 
 from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsFeatureIterator(TestCase):
+class TestQgsFeatureIterator(unittest.TestCase):
 
     def __init__(self, methodName):
-        """Run once on class initialisation."""
+        """Run once on class initialization."""
         unittest.TestCase.__init__(self, methodName)
 
     def test_FilterExpression(self):
@@ -53,6 +51,22 @@ class TestQgsFeatureIterator(TestCase):
 
         ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterExpression('Staff > 3'))]
         expectedIds = [1, 5, 6, 7, 8]
+        myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
+        assert ids == expectedIds, myMessage
+
+    def test_FilterExpressionWithAccents(self):
+        myShpFile = os.path.join(TEST_DATA_DIR, 'france_parts.shp')
+        layer = QgsVectorLayer(myShpFile, 'poly', 'ogr')
+
+        layer.setProviderEncoding("ISO-8859-1")
+        ids = [feat.id() for feat in layer.getFeatures(QgsFeatureRequest().setFilterExpression(u"TYPE_1 = 'Région'"))]
+        expectedIds = [0, 1, 2, 3]
+        myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
+        assert ids == expectedIds, myMessage
+
+        layer.setProviderEncoding("UTF-8")
+        ids = [feat.id() for feat in layer.getFeatures(QgsFeatureRequest().setFilterExpression(u"TYPE_1 = 'Région'"))]
+        expectedIds = []
         myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
         assert ids == expectedIds, myMessage
 

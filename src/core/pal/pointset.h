@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _POINTSET_H
-#define _POINTSET_H
+#ifndef POINTSET_H
+#define POINTSET_H
 
 #include "qgsgeometry.h"
 #include "rtree.hpp"
@@ -40,7 +40,6 @@ namespace pal
 {
 
   class Pal;
-  class Feature;
   class Projection;
   class LabelPosition;
 
@@ -57,7 +56,10 @@ namespace pal
     double length;
   } CHullBox;
 
-
+  /**
+   * \class pal::PointSet
+   * \note not available in Python bindings
+   */
   class CORE_EXPORT PointSet
   {
       friend class FeaturePart;
@@ -96,7 +98,7 @@ namespace pal
        */
       static void splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
                                  QLinkedList<PointSet *> &shapes_final,
-                                 double xrm, double yrm, const QString &uid );
+                                 double xrm, double yrm );
 
       /** Returns the squared minimum distance between the point set geometry and the point (px,py)
        * Optionally, the nearest point is stored in (rx,ry).
@@ -106,7 +108,7 @@ namespace pal
        * @param ry pointer to y coorinates of the nearest point (can be NULL)
        * @returns minimum distance
        */
-      double minDistanceToPoint( double px, double py, double *rx = 0, double *ry = 0 ) const;
+      double minDistanceToPoint( double px, double py, double *rx = nullptr, double *ry = nullptr ) const;
 
       void getCentroid( double &px, double &py, bool forceInside = false ) const;
 
@@ -114,8 +116,10 @@ namespace pal
 
       void getBoundingBox( double min[2], double max[2] ) const
       {
-        min[0] = xmin; min[1] = ymin;
-        max[0] = xmax; max[1] = ymax;
+        min[0] = xmin;
+        min[1] = ymin;
+        max[0] = xmax;
+        max[1] = ymax;
       }
 
       /** Returns NULL if this isn't a hole. Otherwise returns pointer to parent pointset. */

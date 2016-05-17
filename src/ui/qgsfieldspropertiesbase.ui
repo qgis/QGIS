@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>613</width>
-    <height>634</height>
+    <width>638</width>
+    <height>423</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout_6">
-   <item row="1" column="0" colspan="7">
+   <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QLabel" name="label_2">
@@ -66,16 +66,21 @@
        <property name="toolTip">
         <string>QGIS forms can have a Python function that is called when the form is opened.
 Use this function to add extra logic to your forms.
+The function code of the function can be loaded from the source code entered 
+in this dialog,  from an external python file or from the environment (for example 
+from a plugin or from startup.py).
 
-An example is (in module MyForms.py):
+An example is:
 
-          def open(dialog, layer, feature):
+          from PyQt4.QtGui import QWidget
+
+          def my_form_open(dialog, layer, feature):
 	geom = feature.geometry()
 	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
 
-Reference in Python Init Function like so: MyForms.open
+Reference in function name: my_form_open
 
-MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.</string>
+</string>
        </property>
        <property name="text">
         <string>Python Init function</string>
@@ -83,40 +88,92 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="leEditFormInit">
+      <widget class="QComboBox" name="mInitCodeSourceComboBox">
        <property name="toolTip">
         <string>QGIS forms can have a Python function that is called when the form is opened.
 Use this function to add extra logic to your forms.
+The function code of the function can be loaded from the source code entered 
+in this dialog,  from an external python file or from the environment (for example 
+from a plugin or from startup.py).
 
-An example is (in module MyForms.py):
+An example is:
 
-          def open(dialog, layer, feature):
+          from PyQt4.QtGui import QWidget
+
+          def my_form_open(dialog, layer, feature):
 	geom = feature.geometry()
 	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
 
-Reference in Python Init Function like so: MyForms.open
+Reference in function name: my_form_open
 
-MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.</string>
+</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="mFormSuppressLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Maximum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Suppress attribute form pop-up after feature creation</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+      <widget class="QComboBox" name="mFormSuppressCmbBx">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
+       <item>
+        <property name="text">
+         <string>Default</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>On</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Off</string>
+        </property>
+       </item>
+      </widget>
      </item>
     </layout>
    </item>
-   <item row="2" column="0" colspan="7">
+   <item row="2" column="0">
     <widget class="QSplitter" name="mSplitter">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -127,10 +184,7 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <layout class="QGridLayout" name="gridLayout">
-       <property name="margin">
-        <number>0</number>
-       </property>
+      <layout class="QGridLayout" name="gridLayout_4">
        <item row="0" column="0">
         <widget class="QSplitter" name="splitter">
          <property name="orientation">
@@ -146,14 +200,14 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
              <item row="0" column="1">
               <widget class="QToolButton" name="mDeleteAttributeButton">
                <property name="toolTip">
-                <string>Delete column</string>
+                <string>Delete field</string>
                </property>
                <property name="text">
                 <string/>
                </property>
                <property name="icon">
                 <iconset>
-                 <normaloff>.designer/xpm/delete_attribute.png</normaloff>.designer/xpm/delete_attribute.png</iconset>
+                 <normaloff>../../../../.designer/backup/.designer/xpm/delete_attribute.png</normaloff>../../../../.designer/backup/.designer/xpm/delete_attribute.png</iconset>
                </property>
                <property name="shortcut">
                 <string>Ctrl+X</string>
@@ -201,14 +255,14 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
                 </sizepolicy>
                </property>
                <property name="toolTip">
-                <string>New column</string>
+                <string>New field</string>
                </property>
                <property name="text">
                 <string/>
                </property>
                <property name="icon">
                 <iconset>
-                 <normaloff>.designer/xpm/new_attribute.png</normaloff>.designer/xpm/new_attribute.png</iconset>
+                 <normaloff>../../../../.designer/backup/.designer/xpm/new_attribute.png</normaloff>../../../../.designer/backup/.designer/xpm/new_attribute.png</iconset>
                </property>
                <property name="shortcut">
                 <string>Ctrl+N</string>
@@ -244,6 +298,19 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
           </property>
           <layout class="QGridLayout" name="mRelationsFrameLayout"/>
          </widget>
+         <widget class="QgsCollapsibleGroupBox" name="mPythonInitCodeGroupBox">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="title">
+           <string>Python init code</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0">
+            <widget class="QgsCodeEditorPython" name="mInitCodeEditorPython" native="true"/>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -254,13 +321,22 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
       </property>
       <widget class="QWidget" name="page">
        <layout class="QGridLayout" name="gridLayout_2">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item row="0" column="1">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QLineEdit" name="leEditForm"/>
+           <widget class="QLineEdit" name="mEditFormLineEdit"/>
           </item>
           <item>
            <widget class="QToolButton" name="pbnSelectEditForm">
@@ -295,10 +371,19 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
       </widget>
       <widget class="QWidget" name="page_2">
        <layout class="QGridLayout" name="gridLayout_5">
-        <property name="horizontalSpacing">
+        <property name="leftMargin">
          <number>0</number>
         </property>
-        <property name="margin">
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <property name="horizontalSpacing">
          <number>0</number>
         </property>
         <item row="0" column="0">
@@ -319,7 +404,16 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
            <property name="spacing">
             <number>6</number>
            </property>
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -415,7 +509,16 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
            <bool>true</bool>
           </property>
           <layout class="QGridLayout" name="mDesignerListLayout">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
           </layout>
@@ -426,59 +529,73 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
      </widget>
     </widget>
    </item>
-   <item row="3" column="0" colspan="7">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="mFormSuppressLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Maximum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>150</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Suppress attribute form pop-up after feature creation</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="wordWrap">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="mFormSuppressCmbBx">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <item>
+   <item row="1" column="0">
+    <widget class="QWidget" name="mInitFunctionContainer" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="mInitFunctionLabel">
         <property name="text">
-         <string>Default</string>
+         <string>Function name</string>
         </property>
-       </item>
-       <item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="mInitFunctionLineEdit">
+        <property name="toolTip">
+         <string>Enter the name of the form init function.</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="mInitFilePathLabel">
         <property name="text">
-         <string>On</string>
+         <string>External file</string>
         </property>
-       </item>
-       <item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="mInitFilePathLineEdit"/>
+      </item>
+      <item>
+       <widget class="QToolButton" name="pbtnSelectInitFilePath">
         <property name="text">
-         <string>Off</string>
+         <string>...</string>
         </property>
-       </item>
-      </widget>
-     </item>
-    </layout>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -489,22 +606,31 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorPython</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorpython.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mEditorLayoutComboBox</tabstop>
-  <tabstop>leEditFormInit</tabstop>
+  <tabstop>mInitCodeSourceComboBox</tabstop>
+  <tabstop>mInitFunctionLineEdit</tabstop>
+  <tabstop>mInitFilePathLineEdit</tabstop>
+  <tabstop>pbtnSelectInitFilePath</tabstop>
   <tabstop>mAddAttributeButton</tabstop>
   <tabstop>mDeleteAttributeButton</tabstop>
   <tabstop>mToggleEditingButton</tabstop>
   <tabstop>mCalculateFieldButton</tabstop>
-  <tabstop>leEditForm</tabstop>
-  <tabstop>pbnSelectEditForm</tabstop>
   <tabstop>mAddTabOrGroupButton</tabstop>
   <tabstop>mRemoveTabGroupItemButton</tabstop>
   <tabstop>mAddItemButton</tabstop>
   <tabstop>mMoveUpItem</tabstop>
   <tabstop>mMoveDownItem</tabstop>
   <tabstop>mFormSuppressCmbBx</tabstop>
+  <tabstop>pbnSelectEditForm</tabstop>
+  <tabstop>mEditFormLineEdit</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

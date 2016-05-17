@@ -137,14 +137,14 @@ public:
     QString featureFilterErrorString() const;
 
     QString sortKeyAttributeName() const;
-    void setSortKeyAttributeName( QString fieldName );
+    void setSortKeyAttributeName( const QString& fieldName );
 
     /** Returns the current list of predefined scales for the atlas. This is used
      * for maps which are set to the predefined atlas scaling mode.
      * @returns a vector of doubles representing predefined scales
      * @see setPredefinedScales
      * @see QgsComposerMap::atlasScalingMode
-    */
+     */
     const QVector<qreal>& predefinedScales() const;
 
     /** Sets the list of predefined scales for the atlas. This is used
@@ -168,16 +168,16 @@ public:
      * @param i feature number
      * @param updateMaps set to true to redraw maps and recalculate their extent
      * @returns true if feature was successfully prepared
-    */
+     */
     bool prepareForFeature( const int i, const bool updateMaps = true );
 
     /** Prepare the atlas map for the given feature. Sets the extent and context variables
      * @returns true if feature was successfully prepared
-    */
+     */
     bool prepareForFeature( const QgsFeature * feat );
 
     /** Returns the current filename. Must be called after prepareForFeature() */
-    const QString& currentFilename() const;
+    QString currentFilename() const;
 
     void writeXML( QDomElement& elem, QDomDocument& doc ) const;
 
@@ -201,7 +201,8 @@ public:
     QgsComposition* composition();
 
     /** Requeries the current atlas coverage layer and applies filtering and sorting. Returns
-      number of matching features. Must be called before prepareForFeature() */
+     * number of matching features. Must be called after prepareForFeature()
+     */
     int updateFeatures();
 
     /** Returns the current atlas feature. Must be called after prepareForFeature().
@@ -222,7 +223,8 @@ public:
     /** Recalculates the bounds of an atlas driven map */
     void prepareMap( QgsComposerMap* map );
 
-    //Deprecated methods
+
+    //deprecated methods
 
     /** Returns the map used by the atlas
      * @deprecated Use QgsComposerMap::atlasDriven() instead
@@ -254,17 +256,24 @@ public:
      */
     void setMargin( float margin ) /Deprecated/;
 
+    //! @deprecated use sortKeyAttributeName instead
     int sortKeyAttributeIndex() const /Deprecated/;
+    //! @deprecated use setSortKeyAttributeName instead
     void setSortKeyAttributeIndex( int idx ) /Deprecated/;
 
-    /** Returns the current atlas feature. Must be called after prepareForFeature(). */
+    /** Returns the current atlas feature. Must be called after prepareForFeature( i ).
+     * @deprecated use feature() instead
+     */
     QgsFeature* currentFeature() /Deprecated/;
+
+    /** Returns the current atlas geometry in the given projection system (default to the coverage layer's CRS) */
+    QgsGeometry currentGeometry( const QgsCoordinateReferenceSystem& projectedTo = QgsCoordinateReferenceSystem() ) const;
 
   public slots:
 
     /** Refreshes the current atlas feature, by refetching its attributes from the vector layer provider
      * @note added in QGIS 2.5
-    */
+     */
     void refreshFeature();
 
     void nextFeature();
@@ -280,7 +289,7 @@ public:
     void toggled( bool );
 
     /** Is emitted when the atlas has an updated status bar message for the composer window*/
-    void statusMsgChanged( QString message );
+    void statusMsgChanged( const QString& message );
 
     /** Is emitted when the coverage layer for an atlas changes*/
     void coverageLayerChanged( QgsVectorLayer* layer );

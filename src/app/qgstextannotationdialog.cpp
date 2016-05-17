@@ -21,7 +21,7 @@
 #include <QColorDialog>
 #include <QGraphicsScene>
 
-QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsTextAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f ), mItem( item ), mTextDocument( 0 )
+QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsTextAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f ), mItem( item ), mTextDocument( nullptr )
 {
   setupUi( this );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
@@ -139,6 +139,6 @@ void QgsTextAnnotationDialog::deleteItem()
     scene->removeItem( mItem );
   }
   delete mItem;
-  mItem = 0;
+  mItem = nullptr;
 }
 

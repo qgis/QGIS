@@ -60,7 +60,7 @@ class TestQgsDiagram : public QObject
     QString mTestDataDir;
     QString mReport;
 
-    bool imageCheck( QString theTestType );
+    bool imageCheck( const QString& theTestType );
 
   private slots:
     // will be called before the first testfunction is executed.
@@ -79,7 +79,7 @@ class TestQgsDiagram : public QObject
       //create a non spatial layer that will be used in all tests...
       //
       QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-      mTestDataDir = myDataDir + "/";
+      mTestDataDir = myDataDir + '/';
 
       //
       //create a point layer that will be used in all tests...
@@ -144,7 +144,7 @@ class TestQgsDiagram : public QObject
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsDiagramSettings::MM;
+      ds.sizeType = QgsSymbolV2::MM;
       ds.size = QSizeF( 5, 5 );
       ds.angleOffset = 0;
 
@@ -159,8 +159,8 @@ class TestQgsDiagram : public QObject
       mPointsLayer->setDiagramRenderer( dr );
 
       QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
-      dls.placement = QgsDiagramLayerSettings::OverPoint;
-      dls.showAll = true;
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
       mPointsLayer->setDiagramLayerSettings( dls );
 
       QVERIFY( imageCheck( "piediagram" ) );
@@ -181,7 +181,7 @@ class TestQgsDiagram : public QObject
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsDiagramSettings::MM;
+      ds.sizeType = QgsSymbolV2::MM;
       ds.size = QSizeF( 5, 5 );
       ds.angleOffset = 0;
 
@@ -196,8 +196,8 @@ class TestQgsDiagram : public QObject
       dr->setDiagramSettings( ds );
 
       QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
-      dls.placement = QgsDiagramLayerSettings::OverPoint;
-      dls.showAll = true;
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
       // dls.setRenderer( dr );
 
       mPointsLayer->setDiagramRenderer( dr );
@@ -210,7 +210,7 @@ class TestQgsDiagram : public QObject
 
 };
 
-bool TestQgsDiagram::imageCheck( QString theTestType )
+bool TestQgsDiagram::imageCheck( const QString& theTestType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image

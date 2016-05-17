@@ -38,8 +38,8 @@
 
 QgsHtmlAnnotationItem::QgsHtmlAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer, bool hasFeature, int feature )
     : QgsAnnotationItem( canvas )
-    , mWidgetContainer( 0 )
-    , mWebView( 0 )
+    , mWidgetContainer( nullptr )
+    , mWebView( nullptr )
     , mVectorLayer( vlayer )
     , mHasAssociatedFeature( hasFeature )
     , mFeatureId( feature )
@@ -162,7 +162,7 @@ void QgsHtmlAnnotationItem::writeXML( QDomDocument& doc ) const
 
 void QgsHtmlAnnotationItem::readXML( const QDomDocument& doc, const QDomElement& itemElem )
 {
-  mVectorLayer = 0;
+  mVectorLayer = nullptr;
   if ( itemElem.hasAttribute( "vectorLayer" ) )
   {
     mVectorLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( itemElem.attribute( "vectorLayer", "" ) ) );

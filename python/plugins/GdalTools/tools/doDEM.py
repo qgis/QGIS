@@ -23,12 +23,11 @@ __copyright__ = '(C) 2011, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import SIGNAL
-from PyQt4.QtGui import QWidget
+from qgis.PyQt.QtWidgets import QWidget
 
-from ui_widgetDEM import Ui_GdalToolsWidget as Ui_Widget
-from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
-import GdalTools_utils as Utils
+from .ui_widgetDEM import Ui_GdalToolsWidget as Ui_Widget
+from .widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
+from . import GdalTools_utils as Utils
 
 
 class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
@@ -62,27 +61,27 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         self.creationOptionsWidget.setFormat(self.outputFormat)
 
         self.setParamsStatus([
-            (self.inSelector, SIGNAL("filenameChanged()")),
-            (self.outSelector, SIGNAL("filenameChanged()")),
-            (self.computeEdgesCheck, SIGNAL("stateChanged(int)"), None, 1800),
-            (self.bandSpin, SIGNAL("valueChanged(int)"), self.bandCheck),
-            (self.algorithmCheck, SIGNAL("stateChanged(int)"), None, 1800),
-            (self.creationOptionsWidget, SIGNAL("optionsChanged()")),
-            (self.creationOptionsGroupBox, SIGNAL("toggled(bool)")),
-            (self.modeCombo, SIGNAL("currentIndexChanged(int)")),
-            ([self.hillshadeZFactorSpin, self.hillshadeScaleSpin, self.hillshadeAltitudeSpin, self.hillshadeAzimuthSpin], SIGNAL("valueChanged(double)")),
-            (self.slopeScaleSpin, SIGNAL("valueChanged(double)")),
-            (self.slopePercentCheck, SIGNAL("stateChanged(int)")),
-            ([self.aspectTrigonometricCheck, self.aspectZeroForFlatCheck], SIGNAL("stateChanged(int)")),
-            (self.configSelector, SIGNAL("filenameChanged()")),
-            ([self.colorExactRadio, self.colorNearestRadio], SIGNAL("toggled(bool)"), self.colorMatchGroupBox),
-            (self.colorAlphaCheck, SIGNAL("stateChanged(int)"))
+            (self.inSelector, "filenameChanged"),
+            (self.outSelector, "filenameChanged"),
+            (self.computeEdgesCheck, "stateChanged", None, 1800),
+            (self.bandSpin, "valueChanged", self.bandCheck),
+            (self.algorithmCheck, "stateChanged", None, 1800),
+            (self.creationOptionsWidget, "optionsChanged"),
+            (self.creationOptionsGroupBox, "toggled"),
+            (self.modeCombo, "currentIndexChanged"),
+            ([self.hillshadeZFactorSpin, self.hillshadeScaleSpin, self.hillshadeAltitudeSpin, self.hillshadeAzimuthSpin], "valueChanged"),
+            (self.slopeScaleSpin, "valueChanged"),
+            (self.slopePercentCheck, "stateChanged"),
+            ([self.aspectTrigonometricCheck, self.aspectZeroForFlatCheck], "stateChanged"),
+            (self.configSelector, "filenameChanged"),
+            ([self.colorExactRadio, self.colorNearestRadio], "toggled", self.colorMatchGroupBox),
+            (self.colorAlphaCheck, "stateChanged")
         ])
 
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
-        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
-        self.connect(self.configSelector, SIGNAL("selectClicked()"), self.fillColorConfigFileEdit)
-        self.connect(self.modeCombo, SIGNAL("currentIndexChanged(int)"), self.showModeParams)
+        self.inSelector.selectClicked.connect(self.fillInputFileEdit)
+        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
+        self.configSelector.selectClicked.connect(self.fillColorConfigFileEdit)
+        self.modeCombo.currentIndexChanged.connect(self.showModeParams)
 
     def showModeParams(self, index):
         self.stackedWidget.setVisible(index < 4)

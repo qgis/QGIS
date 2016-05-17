@@ -24,8 +24,8 @@
 
 QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsMemoryFeatureSource>( source, ownSource, request )
-    , mSelectRectGeom( 0 )
-    , mSubsetExpression( 0 )
+    , mSelectRectGeom( nullptr )
+    , mSubsetExpression( nullptr )
 {
   if ( !mSource->mSubsetString.isEmpty() )
   {
@@ -49,8 +49,8 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource* sour
   else if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
   {
     mUsingFeatureIdList = true;
-    QgsFeatureMap::const_iterator it = mSource->mFeatures.find( mRequest.filterFid() );
-    if ( it != mSource->mFeatures.end() )
+    QgsFeatureMap::const_iterator it = mSource->mFeatures.constFind( mRequest.filterFid() );
+    if ( it != mSource->mFeatures.constEnd() )
       mFeatureIdList.append( mRequest.filterFid() );
   }
   else
@@ -93,7 +93,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
     if ( !mRequest.filterRect().isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
     {
       // do exact check in case we're doing intersection
-      if ( mSource->mFeatures[*mFeatureIdListIterator].geometry() && mSource->mFeatures[*mFeatureIdListIterator].geometry()->intersects( mSelectRectGeom ) )
+      if ( mSource->mFeatures.value( *mFeatureIdListIterator ).constGeometry() && mSource->mFeatures.value( *mFeatureIdListIterator ).constGeometry()->intersects( mSelectRectGeom ) )
         hasFeature = true;
     }
     else
@@ -101,7 +101,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
 
     if ( mSubsetExpression )
     {
-      mSource->mExpressionContext.setFeature( mSource->mFeatures[*mFeatureIdListIterator] );
+      mSource->mExpressionContext.setFeature( mSource->mFeatures.value( *mFeatureIdListIterator ) );
       if ( !mSubsetExpression->evaluate( &mSource->mExpressionContext ).toBool() )
         hasFeature = false;
     }
@@ -115,7 +115,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
   // copy feature
   if ( hasFeature )
   {
-    feature = mSource->mFeatures[*mFeatureIdListIterator];
+    feature = mSource->mFeatures.value( *mFeatureIdListIterator );
     ++mFeatureIdListIterator;
   }
   else
@@ -204,7 +204,7 @@ bool QgsMemoryFeatureIterator::close()
   iteratorClosed();
 
   delete mSelectRectGeom;
-  mSelectRectGeom = NULL;
+  mSelectRectGeom = nullptr;
 
   mClosed = true;
   return true;
@@ -215,7 +215,7 @@ bool QgsMemoryFeatureIterator::close()
 QgsMemoryFeatureSource::QgsMemoryFeatureSource( const QgsMemoryProvider* p )
     : mFields( p->mFields )
     , mFeatures( p->mFeatures )
-    , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : 0 )  // just shallow copy
+    , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : nullptr )  // just shallow copy
     , mSubsetString( p->mSubsetString )
 {
   mExpressionContext << QgsExpressionContextUtils::globalScope()

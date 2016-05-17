@@ -25,8 +25,8 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import QColor
-from PyQt4.Qsci import QsciLexerCustom
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.Qsci import QsciLexerCustom
 
 
 class LexerR(QsciLexerCustom):
@@ -90,7 +90,7 @@ class LexerR(QsciLexerCustom):
         # The line index will also be needed to implement folding
         index = editor.SendScintilla(editor.SCI_LINEFROMPOSITION, start)
         if index > 0:
-           # The previous state may be needed for multi-line styling
+            # The previous state may be needed for multi-line styling
             pos = editor.SendScintilla(editor.SCI_GETLINEENDPOSITION, index
                                        - 1)
             state = editor.SendScintilla(editor.SCI_GETSTYLEAT, pos)

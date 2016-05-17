@@ -76,5 +76,5 @@ void QgsAddRemoveItemCommand::switchState()
     emit itemAdded( mItem );
     mState = Added;
   }
-  QgsProject::instance()->dirty( true );
+  QgsProject::instance()->setDirty( true );
 }

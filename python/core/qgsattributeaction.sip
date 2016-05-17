@@ -1,53 +1,32 @@
-class QgsAction
-{
-%TypeHeaderCode
-#include "qgsattributeaction.h"
-%End
+/***************************************************************************
+                          qgsattributeaction.sip
 
-  public:
-    enum ActionType
-    {
-      Generic,
-      GenericPython,
-      Mac,
-      Windows,
-      Unix,
-      OpenUrl,
-    };
+ This is a legacy header to keep backwards compatibility until QGIS 3.
 
-    QgsAction( ActionType type, QString name, QString action, bool capture );
+                             -------------------
+    begin                : Oct 24 2004
+    copyright            : (C) 2004 by Gavin Macaulay
+    email                : gavin at macaulay dot co dot nz
+ ***************************************************************************/
 
-    //! The name of the action
-    QString name() const;
-
-    //! The path to the icon
-    const QString iconPath() const;
-
-    //! The icon
-    const QIcon icon() const;
-
-    //! The action
-    QString action() const;
-
-    //! The action type
-    ActionType type() const;
-
-    //! Whether to capture output for display when this action is run
-    bool capture() const;
-
-    //! Whether the action is runable on the current platform
-    bool runable() const;
-};
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 /** \class QgsAttributeAction
- * \brief Storage and management of actions associated with Qgis layer
- * attributes.
+ * QgsAttributeAction is deprecated and has been replaced with
+ * QgsActionManager. This legacy typedef will be removed with QGIS 3.
  */
 
 class QgsAttributeAction
 {
 %TypeHeaderCode
-#include "qgsattributeaction.h"
+#include <qgsattributeaction.h>
 %End
   public:
     //! Constructor
@@ -62,7 +41,7 @@ class QgsAttributeAction
      * any stdout from the process will be captured and displayed in a
      * dialog box.
      */
-    void addAction( QgsAction::ActionType type, QString name, QString action, bool capture = false );
+    void addAction( QgsAction::ActionType type, const QString& name, const QString& action, bool capture = false );
 
     /** Add an action with the given name and action details.
      * Will happily have duplicate names and actions. If
@@ -70,7 +49,7 @@ class QgsAttributeAction
      * any stdout from the process will be captured and displayed in a
      * dialog box.
      */
-    void addAction( QgsAction::ActionType type, QString name, QString action, const QString& icon, bool capture = false );
+    void addAction( QgsAction::ActionType type, const QString& name, const QString& action, const QString& icon, bool capture = false );
 
     //! Remove an action at given index
     void removeAction( int index );
@@ -97,10 +76,10 @@ class QgsAttributeAction
     void clearActions();
 
     //! List all actions
-    const QList<QgsAction>& listActions();
+    QList<QgsAction> listActions() const;
 
     //! Return the layer
-    QgsVectorLayer *layer();
+    QgsVectorLayer* layer() const;
 
     /** Expands the given action, replacing all %'s with the value as
      *  given.
@@ -115,7 +94,7 @@ class QgsAttributeAction
      *  Additional substitutions can be passed through the substitutionMap
      *  parameter
      */
-    QString expandAction( QString action,
+    QString expandAction( const QString& action,
                           QgsFeature &feat,
                           const QMap<QString, QVariant> *substitutionMap = 0 );
 
@@ -127,10 +106,26 @@ class QgsAttributeAction
     bool readXML( const QDomNode& layer_node );
 
     int size() const;
-    QgsAction &at( int idx );
-    QgsAction &operator[]( int idx );
+    /**
+     * Get the action at the specified index.
+     */
+    QgsAction at( int idx ) const;
+    /**
+     * Get the action at the specified index.
+     */
+    QgsAction operator[]( int idx ) const;
 
-    //! Whether the action is the default action
+    /** @deprecated Initialize QgsPythonRunner instead
+     * @note not available in Python bindings
+     */
+    // Q_DECL_DEPRECATED static void setPythonExecute( void ( * )( const QString & ) );
+
+    /**
+     * Get the index of the default action
+     */
     int defaultAction() const;
+    /**
+     * Set the index of the default action
+     */
     void setDefaultAction( int actionNumber );
 };

@@ -74,7 +74,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  @param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
      *  @param isPolygon true: draw as (multi-)polygon, false draw as (multi-)linestring
      */
-    QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon );
+    Q_DECL_DEPRECATED QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon );
     ~QgsRubberBand();
 
     /**
@@ -115,13 +115,13 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     void setIconSize( int iconSize );
 
     /**
-    * Set the style of the line
-    */
+     * Set the style of the line
+     */
     void setLineStyle( Qt::PenStyle penStyle );
 
     /**
-    * Set the style of the brush
-    */
+     * Set the style of the brush
+     */
     void setBrushStyle( Qt::BrushStyle brushStyle );
 
     /**
@@ -137,7 +137,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * Sets the representation type according to isPolygon.
      *  @param isPolygon true: draw as (multi-)polygon, false draw as (multi-)linestring
      */
-    void reset( bool isPolygon );
+    Q_DECL_DEPRECATED void reset( bool isPolygon );
 
     /**
      * Add a vertex to the rubberband and update canvas.
@@ -150,11 +150,11 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     void addPoint( const QgsPoint & p, bool doUpdate = true, int geometryIndex = 0 );
 
     /**
-    * Remove a vertex from the rubberband and (optionally) update canvas.
-    * @param index The index of the vertex/point to remove, negative indexes start at end
-    * @param doUpdate Should the map canvas be updated immediately?
-    * @param geometryIndex The index of the feature part (in case of multipart geometries)
-    */
+     * Remove a vertex from the rubberband and (optionally) update canvas.
+     * @param index The index of the vertex/point to remove, negative indexes start at end
+     * @param doUpdate Should the map canvas be updated immediately?
+     * @param geometryIndex The index of the feature part (in case of multipart geometries)
+     */
     void removePoint( int index = 0, bool doUpdate = true, int geometryIndex = 0 );
 
     /**
@@ -195,7 +195,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * Sets this rubber band to a map canvas rectangle
      *  @param rect rectangle in canvas coordinates
      */
-    void setToCanvasRectangle( const QRect& rect );
+    void setToCanvasRectangle( QRect rect );
 
     /**
      * Add the geometry of an existing feature to a rubberband

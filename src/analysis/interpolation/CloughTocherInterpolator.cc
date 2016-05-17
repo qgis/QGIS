@@ -20,7 +20,7 @@
 #include <qmath.h>
 
 CloughTocherInterpolator::CloughTocherInterpolator()
-    : mTIN( 0 )
+    : mTIN( nullptr )
     , mEdgeTolerance( 0.00001 )
     , der1X( 0.0 )
     , der1Y( 0.0 )

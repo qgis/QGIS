@@ -8,7 +8,7 @@
 #include <QSettings>
 
 
-QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent, Qt::WindowFlags f )
+QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent, const Qt::WindowFlags& f )
     : QDialog( parent, f )
     , mVectorLayer( vl )
 {
@@ -20,7 +20,6 @@ QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QList< DataDefined
     attributeFields = mVectorLayer->fields();
   }
 
-  int i = 0;
   QList< DataDefinedSymbolEntry >::const_iterator entryIt = entries.constBegin();
   for ( ; entryIt != entries.constEnd(); ++entryIt )
   {
@@ -44,7 +43,6 @@ QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QList< DataDefined
     item->setText( 2, entryIt->helpText );
 
     mTreeWidget->addTopLevelItem( item );
-    ++i;
   }
 
   for ( int c = 0; c != mTreeWidget->columnCount() - 1; c++ )

@@ -59,6 +59,6 @@ class QgsMapOverviewCanvas : QWidget
     void mouseReleaseEvent( QMouseEvent * e );
 
     //! called when panning to reflect mouse movement
-    void updatePanningWidget( const QPoint& pos );
+    void updatePanningWidget( QPoint pos );
 };
 

@@ -44,11 +44,11 @@ QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptio
 
   const QgsVectorLayerAndAttributeModel *m = qobject_cast< const QgsVectorLayerAndAttributeModel *>( index.model() );
   if ( !m )
-    return 0;
+    return nullptr;
 
   QgsVectorLayer *vl = m->vectorLayer( index );
   if ( !vl )
-    return 0;
+    return nullptr;
 
 
   QgsFieldComboBox *w = new QgsFieldComboBox( parent );
@@ -72,7 +72,7 @@ void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &i
 
   int idx = m->attributeIndex( vl );
   if ( vl->fields().exists( idx ) )
-    fcb->setField( vl->fields()[ idx ].name() );
+    fcb->setField( vl->fields().at( idx ).name() );
 }
 
 void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
@@ -123,7 +123,7 @@ QgsVectorLayer *QgsVectorLayerAndAttributeModel::vectorLayer( const QModelIndex 
 {
   QgsLayerTreeNode *n = index2node( idx );
   if ( !n || !QgsLayerTree::isLayer( n ) )
-    return 0;
+    return nullptr;
 
   return dynamic_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( n )->layer() );
 }
@@ -217,7 +217,7 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex& idx, int role
     if ( role == Qt::DisplayRole )
     {
       if ( vl->fields().exists( idx ) )
-        return vl->fields()[ idx ].name();
+        return vl->fields().at( idx ).name();
       else
         return vl->name();
     }
@@ -358,7 +358,7 @@ void QgsVectorLayerAndAttributeModel::applyVisibilityPreset( const QString &name
 
 void QgsVectorLayerAndAttributeModel::applyVisibility( QSet<QString> &visibleLayers, QgsLayerTreeNode *node )
 {
-  QgsLayerTreeGroup *group = QgsLayerTree::isGroup( node ) ? QgsLayerTree::toGroup( node ) : 0;
+  QgsLayerTreeGroup *group = QgsLayerTree::isGroup( node ) ? QgsLayerTree::toGroup( node ) : nullptr;
   if ( !group )
     return;
 
@@ -428,7 +428,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mTreeView->setItemDelegate( mFieldSelectorDelegate );
 
   QgsLayerTreeModel *model = new QgsVectorLayerAndAttributeModel( mLayerTreeGroup, this );
-  model->setFlags( 0 );
+  model->setFlags( nullptr );
   mTreeView->setModel( model );
   mTreeView->resizeColumnToContents( 0 );
   mTreeView->header()->show();
@@ -438,6 +438,8 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   connect( mSelectAllButton, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
   connect( mUnSelectAllButton, SIGNAL( clicked() ), this, SLOT( unSelectAll() ) );
 
+  mFileLineEdit->setFocus();
+
   //last dxf symbology mode
   QSettings s;
   mSymbologyModeComboBox->setCurrentIndex( QgsProject::instance()->readEntry( "dxf", "/lastDxfSymbologyMode", s.value( "qgis/lastDxfSymbologyMode", "2" ).toString() ).toInt() );
@@ -445,6 +447,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   //last symbol scale
   mScaleWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
   mScaleWidget->setScale( QgsProject::instance()->readEntry( "dxf", "/lastSymbologyExportScale", s.value( "qgis/lastSymbologyExportScale", "1/50000" ).toString() ).toDouble() );
+  mLayerTitleAsName->setChecked( QgsProject::instance()->readEntry( "dxf", "/lastDxfLayerTitleAsName", s.value( "qgis/lastDxfLayerTitleAsName", "false" ).toString() ) != "false" );
   mMapExtentCheckBox->setChecked( QgsProject::instance()->readEntry( "dxf", "/lastDxfMapRectangle", s.value( "qgis/lastDxfMapRectangle", "false" ).toString() ) != "false" );
 
   QStringList ids = QgsProject::instance()->visibilityPresetCollection()->presets();
@@ -476,7 +479,7 @@ void QgsDxfExportDialog::on_mVisibilityPresets_currentIndexChanged( int index )
 
 void QgsDxfExportDialog::cleanGroup( QgsLayerTreeNode *node )
 {
-  QgsLayerTreeGroup *group = QgsLayerTree::isGroup( node ) ? QgsLayerTree::toGroup( node ) : 0;
+  QgsLayerTreeGroup *group = QgsLayerTree::isGroup( node ) ? QgsLayerTree::toGroup( node ) : nullptr;
   if ( !group )
     return;
 
@@ -550,9 +553,9 @@ void QgsDxfExportDialog::on_mFileSelectionButton_clicked()
 {
   //get last dxf save directory
   QSettings s;
-  QString lastSavePath = s.value( "qgis/lastDxfDir" ).toString();
+  QString lastSavePath = s.value( "qgis/lastDxfDir", QDir::homePath() ).toString();
 
-  QString filePath = QFileDialog::getSaveFileName( 0, tr( "Export as DXF" ), lastSavePath, tr( "DXF files *.dxf *.DXF" ) );
+  QString filePath = QFileDialog::getSaveFileName( nullptr, tr( "Export as DXF" ), lastSavePath, tr( "DXF files *.dxf *.DXF" ) );
   if ( !filePath.isEmpty() )
   {
     mFileLineEdit->setText( filePath );
@@ -580,6 +583,10 @@ bool QgsDxfExportDialog::exportMapExtent() const
   return mMapExtentCheckBox->isChecked();
 }
 
+bool QgsDxfExportDialog::layerTitleAsName() const
+{
+  return mLayerTitleAsName->isChecked();
+}
 
 void QgsDxfExportDialog::saveSettings()
 {
@@ -589,10 +596,12 @@ void QgsDxfExportDialog::saveSettings()
   s.setValue( "qgis/lastDxfSymbologyMode", mSymbologyModeComboBox->currentIndex() );
   s.setValue( "qgis/lastSymbologyExportScale", mScaleWidget->scale() );
   s.setValue( "qgis/lastDxfMapRectangle", mMapExtentCheckBox->isChecked() );
+  s.setValue( "qgis/lastDxfLayerTitleAsName", mLayerTitleAsName->isChecked() );
   s.setValue( "qgis/lastDxfEncoding", mEncoding->currentText() );
 
   QgsProject::instance()->writeEntry( "dxf", "/lastDxfSymbologyMode", mSymbologyModeComboBox->currentIndex() );
   QgsProject::instance()->writeEntry( "dxf", "/lastSymbologyExportScale", mScaleWidget->scale() );
+  QgsProject::instance()->writeEntry( "dxf", "/lastDxfLayerTitleAsName", mLayerTitleAsName->isChecked() );
   QgsProject::instance()->writeEntry( "dxf", "/lastDxfMapRectangle", mMapExtentCheckBox->isChecked() );
   QgsProject::instance()->writeEntry( "dxf", "/lastDxfEncoding", mEncoding->currentText() );
   QgsProject::instance()->writeEntry( "dxf", "/lastVisibilityPreset", mVisibilityPresets->currentText() );

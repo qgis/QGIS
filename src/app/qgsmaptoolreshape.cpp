@@ -17,9 +17,12 @@
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
+#include "qgisapp.h"
+
 #include <QMouseEvent>
 
-QgsMapToolReshape::QgsMapToolReshape( QgsMapCanvas* canvas ): QgsMapToolCapture( canvas, QgsMapToolCapture::CaptureLine )
+QgsMapToolReshape::QgsMapToolReshape( QgsMapCanvas* canvas )
+    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )
 {
 }
 
@@ -27,7 +30,7 @@ QgsMapToolReshape::~QgsMapToolReshape()
 {
 }
 
-void QgsMapToolReshape::canvasMapReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
 {
   //check if we operate on a vector layer //todo: move this to a function in parent class to avoid duplication
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
@@ -47,7 +50,7 @@ void QgsMapToolReshape::canvasMapReleaseEvent( QgsMapMouseEvent * e )
   //add point to list and to rubber band
   if ( e->button() == Qt::LeftButton )
   {
-    int error = addVertex( e->mapPoint() );
+    int error = addVertex( e->mapPoint(), e->mapPointMatch() );
     if ( error == 1 )
     {
       //current layer is not a vector layer
@@ -97,6 +100,30 @@ void QgsMapToolReshape::canvasMapReleaseEvent( QgsMapMouseEvent * e )
         reshapeReturn = geom->reshapeGeometry( points() );
         if ( reshapeReturn == 0 )
         {
+          //avoid intersections on polygon layers
+          if ( vlayer->geometryType() == QGis::Polygon )
+          {
+            //ignore all current layer features as they should be reshaped too
+            QMap<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures;
+            ignoreFeatures.insert( vlayer, vlayer->allFeatureIds() );
+
+            if ( geom->avoidIntersections( ignoreFeatures ) != 0 )
+            {
+              emit messageEmitted( tr( "An error was reported during intersection removal" ), QgsMessageBar::CRITICAL );
+              vlayer->destroyEditCommand();
+              stopCapturing();
+              return;
+            }
+
+            if ( geom->isGeosEmpty() ) //intersection removal might have removed the whole geometry
+            {
+              emit messageEmitted( tr( "The feature cannot be reshaped because the resulting geometry is empty" ), QgsMessageBar::CRITICAL );
+              vlayer->destroyEditCommand();
+              stopCapturing();
+              return;
+            }
+          }
+
           vlayer->changeGeometry( f.id(), geom );
           reshapeDone = true;
         }

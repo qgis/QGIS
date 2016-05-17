@@ -78,7 +78,7 @@
       <widget objectName="label" class="QLabel" label="-"/>
       <widget objectName="label_2" class="QLabel" label="%"/>
       <widget objectName="mMinMaxRadioButton" class="QRadioButton" label="Min / max"/>
-      <widget objectName="mStdDevRadioButton" class="QRadioButton" label="Mean +/-&#xa;standard deviation ×"/>
+      <widget objectName="mStdDevRadioButton" class="QRadioButton" label="Mean +/-&#xa;standard deviation Ã—"/>
       <widget objectName="mExtentGroupBox" class="QGroupBox" label="">
         <widget objectName="mFullExtentRadioButton" class="QRadioButton" label="Full"/>
         <widget objectName="mCurrentExtentRadioButton" class="QRadioButton" label="Current"/>
@@ -1369,8 +1369,8 @@
                 <widget objectName="leDefaultLabel" class="QLineEdit" label=""/>
                 <widget objectName="textLabel5_2_2_3_2" class="QLabel" label="Font size"/>
                 <widget objectName="textLabel1_2_2_2_2_2" class="QLabel" label="Angle (deg)"/>
-                <widget objectName="spinAngle" class="QSpinBox" label="0°">
-                  <widget objectName="qt_spinbox_lineedit" class="QLineEdit" label="0°"/>
+                <widget objectName="spinAngle" class="QSpinBox" label="0Â°">
+                  <widget objectName="qt_spinbox_lineedit" class="QLineEdit" label="0Â°"/>
                 </widget>
                 <widget objectName="cboFontSizeUnits" class="QComboBox" label=""/>
                 <widget objectName="btnDefaultFont" class="QPushButton" label="Font"/>
@@ -1569,10 +1569,10 @@
         <widget objectName="leUncheckedState" class="QLineEdit" label=""/>
       </widget>
       <widget objectName="hiddenPage" class="QWidget" label="">
-        <widget objectName="hiddenLabel" class="QLabel" label="A hidden attribute will be invisible - the user is not able to see it's contents."/>
+        <widget objectName="hiddenLabel" class="QLabel" label="A hidden field will be invisible - the user is not able to see its contents."/>
       </widget>
       <widget objectName="immutablePage" class="QWidget" label="">
-        <widget objectName="immutableLabel" class="QLabel" label="An immutable attribute is read-only - the user is not able to modify the contents."/>
+        <widget objectName="immutableLabel" class="QLabel" label="An immutable field is read-only - the user is not able to modify the contents."/>
       </widget>
       <widget objectName="enumerationPage" class="QWidget" label="">
         <widget objectName="enumerationLabel" class="QLabel" label="Combo box with values that can be used within the column's type. Must be supported by the provider."/>
@@ -1588,7 +1588,7 @@
         <widget objectName="fileNameLabel" class="QLabel" label="Simplifies file selection by adding a file chooser dialog."/>
       </widget>
       <widget objectName="uniqueValuesPage" class="QWidget" label="">
-        <widget objectName="label" class="QLabel" label="The user can select one of the values already used in the attribute. If editable, a line edit is shown with autocompletion support, otherwise a combo box is used."/>
+        <widget objectName="label" class="QLabel" label="The user can select one of the values already used in the field. If editable, a line edit is shown with autocompletion support, otherwise a combo box is used."/>
         <widget objectName="editableUniqueValues" class="QCheckBox" label="Editable"/>
       </widget>
       <widget objectName="rangePage" class="QWidget" label="">
@@ -1617,7 +1617,7 @@
         <widget objectName="classificationLabel" class="QLabel" label="Displays combo box containing values of attribute used for classification."/>
       </widget>
       <widget objectName="lineEditPage" class="QWidget" label="">
-        <widget objectName="lineEditLabel" class="QLabel" label="Simple edit box. This is the default editation widget."/>
+        <widget objectName="lineEditLabel" class="QLabel" label="Simple edit box. This is the default edit widget."/>
       </widget>
       <widget objectName="calendarPage" class="QWidget" label="">
         <widget objectName="label_10" class="QLabel" label="Date format"/>

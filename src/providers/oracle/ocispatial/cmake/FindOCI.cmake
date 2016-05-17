@@ -13,7 +13,6 @@
 FIND_PATH(OCI_INCLUDE_DIR oci.h
   PATHS
   ${ORACLE_INCLUDEDIR}
-  /usr/include/oracle/11.2/client64
   $ENV{OSGEO4W_ROOT}/include
   $ENV{ORACLE_HOME}/rdbms/public
 )
@@ -21,7 +20,6 @@ FIND_PATH(OCI_INCLUDE_DIR oci.h
 FIND_LIBRARY(OCI_LIBRARY clntsh oci
   PATHS
   ${ORACLE_LIBDIR}
-  /usr/lib/oracle/11.2/client64/lib/
   $ENV{OSGEO4W_ROOT}/lib
   $ENV{ORACLE_HOME}/lib
 )

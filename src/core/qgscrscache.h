@@ -24,11 +24,12 @@
 class QgsCoordinateTransform;
 
 /** Cache coordinate transform by authid of source/dest transformation to avoid the
-overhead of initialisation for each redraw*/
+overhead of initialization for each redraw*/
 class CORE_EXPORT QgsCoordinateTransformCache
 {
   public:
     static QgsCoordinateTransformCache* instance();
+
     ~QgsCoordinateTransformCache();
     /** Returns coordinate transformation. Cache keeps ownership
         @param srcAuthId auth id string of source crs
@@ -41,15 +42,18 @@ class CORE_EXPORT QgsCoordinateTransformCache
     void invalidateCrs( const QString& crsAuthId );
 
   private:
-    static QgsCoordinateTransformCache* mInstance;
     QMultiHash< QPair< QString, QString >, QgsCoordinateTransform* > mTransforms; //same auth_id pairs might have different datum transformations
+
+    QgsCoordinateTransformCache();
+    QgsCoordinateTransformCache( const QgsCoordinateTransformCache& rh );
+    QgsCoordinateTransformCache& operator=( const QgsCoordinateTransformCache& rh );
 };
 
 class CORE_EXPORT QgsCRSCache
 {
   public:
     static QgsCRSCache* instance();
-    ~QgsCRSCache();
+
     /** Returns the CRS for authid, e.g. 'EPSG:4326' (or an invalid CRS in case of error)*/
     const QgsCoordinateReferenceSystem& crsByAuthId( const QString& authid );
     const QgsCoordinateReferenceSystem& crsByEpsgId( long epsg );
@@ -61,7 +65,7 @@ class CORE_EXPORT QgsCRSCache
 
   private:
     QHash< QString, QgsCoordinateReferenceSystem > mCRS;
-    /** CRS that is not initialised (returned in case of error)*/
+    /** CRS that is not initialized (returned in case of error)*/
     QgsCoordinateReferenceSystem mInvalidCRS;
 };
 

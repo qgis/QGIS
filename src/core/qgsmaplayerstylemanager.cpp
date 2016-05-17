@@ -23,7 +23,7 @@
 
 QgsMapLayerStyleManager::QgsMapLayerStyleManager( QgsMapLayer* layer )
     : mLayer( layer )
-    , mOverriddenOriginalStyle( 0 )
+    , mOverriddenOriginalStyle( nullptr )
 {
   reset();
 }
@@ -199,7 +199,7 @@ bool QgsMapLayerStyleManager::restoreOverrideStyle()
   mLayer->blockSignals( false );
 
   delete mOverriddenOriginalStyle;
-  mOverriddenOriginalStyle = 0;
+  mOverriddenOriginalStyle = nullptr;
   return true;
 }
 

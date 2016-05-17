@@ -32,13 +32,13 @@ class GUI_EXPORT QgsHtmlAnnotationItem: public QObject, public QgsAnnotationItem
 {
     Q_OBJECT
   public:
-    QgsHtmlAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer = 0, bool hasFeature = false, int feature = 0 );
+    QgsHtmlAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer = nullptr, bool hasFeature = false, int feature = 0 );
     ~QgsHtmlAnnotationItem();
 
     void paint( QPainter * painter ) override;
 
     //! paint function called by map canvas
-    void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 ) override;
+    void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr ) override;
 
     QSizeF minimumFrameSize() const override;
 

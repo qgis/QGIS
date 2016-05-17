@@ -27,6 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.PyQt.QtGui import QIcon
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -34,6 +36,8 @@ from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class GridDataMetrics(GdalAlgorithm):
@@ -53,6 +57,9 @@ class GridDataMetrics(GdalAlgorithm):
 
     DATA_METRICS = ['Minimum', 'Maximum', 'Range', 'Count', 'Average distance',
                     'Average distance between points']
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'grid.png'))
 
     def commandLineName(self):
         return "gdalogr:griddatametrics"

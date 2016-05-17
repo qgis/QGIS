@@ -20,8 +20,9 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import Qt, QObject, SIGNAL
-from PyQt4.QtGui import QTableView, QAbstractItemView, QApplication, QKeySequence, QAction, QCursor, QClipboard
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QTableView, QAbstractItemView, QApplication, QAction
+from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard
 
 from .db_plugins.plugin import DbError, Table
 from .dlg_db_error import DlgDbError
@@ -37,11 +38,11 @@ class TableViewer(QTableView):
         self.item = None
         self.dirty = False
 
-        # allow to copy results
+        # allow copying results
         copyAction = QAction(QApplication.translate("DBManagerPlugin", "Copy"), self)
         self.addAction(copyAction)
         copyAction.setShortcuts(QKeySequence.Copy)
-        QObject.connect(copyAction, SIGNAL("triggered()"), self.copySelectedResults)
+        copyAction.triggered.connect(self.copySelectedResults)
 
         self._clear()
 
@@ -62,7 +63,7 @@ class TableViewer(QTableView):
             return
 
         self.item = item
-        self.connect(self.item, SIGNAL('aboutToChange'), self.setDirty)
+        self.item.aboutToChange.connect(self.setDirty)
 
     def setDirty(self, val=True):
         self.dirty = val
@@ -70,7 +71,7 @@ class TableViewer(QTableView):
     def _clear(self):
         if self.item is not None:
             try:
-                self.disconnect(self.item, SIGNAL('aboutToChange'), self.setDirty)
+                self.item.aboutToChange.disconnect(self.setDirty)
             except:
                 # do not raise any error if self.item was deleted
                 pass

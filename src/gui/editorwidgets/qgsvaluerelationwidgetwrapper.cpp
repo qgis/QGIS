@@ -15,6 +15,7 @@
 
 #include "qgsvaluerelationwidgetwrapper.h"
 
+#include "qgis.h"
 #include "qgsfield.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvaluerelationwidgetfactory.h"
@@ -27,39 +28,26 @@
 bool QgsValueRelationWidgetWrapper::orderByKeyLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
     , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
 {
-  switch ( p1.first.type() )
-  {
-    case QVariant::String:
-      return p1.first.toString() < p2.first.toString();
-      break;
-
-    case QVariant::Double:
-      return p1.first.toDouble() < p2.first.toDouble();
-      break;
-
-    default:
-      return p1.first.toInt() < p2.first.toInt();
-      break;
-  }
+  return qgsVariantLessThan( p1.first, p2.first );
 }
 
 bool QgsValueRelationWidgetWrapper::orderByValueLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
     , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
 {
-  return p1.second < p2.second;
+  return qgsVariantLessThan( p1.second, p2.second );
 }
 
 QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mComboBox( 0 )
-    , mListWidget( 0 )
-    , mLineEdit( 0 )
-    , mLayer( 0 )
+    , mComboBox( nullptr )
+    , mListWidget( nullptr )
+    , mLineEdit( nullptr )
+    , mLayer( nullptr )
 {
 }
 
 
-QVariant QgsValueRelationWidgetWrapper::value()
+QVariant QgsValueRelationWidgetWrapper::value() const
 {
   QVariant v;
 
@@ -82,7 +70,7 @@ QVariant QgsValueRelationWidgetWrapper::value()
         selection << item->data( Qt::UserRole ).toString();
     }
 
-    v = selection.join( "," ).prepend( "{" ).append( "}" );
+    v = selection.join( "," ).prepend( '{' ).append( '}' );
   }
 
   if ( mLineEdit )
@@ -164,7 +152,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
-bool QgsValueRelationWidgetWrapper::valid()
+bool QgsValueRelationWidgetWrapper::valid() const
 {
   return mListWidget || mLineEdit || mComboBox;
 }
@@ -173,19 +161,12 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mListWidget )
   {
-    QStringList checkList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( "," );
+    QStringList checkList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
 
     for ( int i = 0; i < mListWidget->count(); ++i )
     {
       QListWidgetItem* item = mListWidget->item( i );
-      if ( config( "OrderByValue" ).toBool() )
-      {
-        item->setCheckState( checkList.contains( item->data( Qt::UserRole ).toString() ) ? Qt::Checked : Qt::Unchecked );
-      }
-      else
-      {
-        item->setCheckState( checkList.contains( item->data( Qt::UserRole ).toString() ) ? Qt::Checked : Qt::Unchecked );
-      }
+      item->setCheckState( checkList.contains( item->data( Qt::UserRole ).toString() ) ? Qt::Checked : Qt::Unchecked );
     }
   }
   else if ( mComboBox )
@@ -212,70 +193,27 @@ QgsValueRelationWidgetWrapper::ValueRelationCache QgsValueRelationWidgetWrapper:
 
   QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( config.value( "Layer" ).toString() ) );
 
-  if ( layer )
+  if ( !layer )
+    return cache;
+
+  int ki = layer->fieldNameIndex( config.value( "Key" ).toString() );
+  int vi = layer->fieldNameIndex( config.value( "Value" ).toString() );
+
+  QgsFeatureRequest request;
+
+  request.setFlags( QgsFeatureRequest::NoGeometry );
+  request.setSubsetOfAttributes( QgsAttributeList() << ki << vi );
+  if ( !config.value( "FilterExpression" ).toString().isEmpty() )
   {
-    int ki = layer->fieldNameIndex( config.value( "Key" ).toString() );
-    int vi = layer->fieldNameIndex( config.value( "Value" ).toString() );
+    request.setFilterExpression( config.value( "FilterExpression" ).toString() );
+  }
 
-    QgsExpressionContext context;
-    context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::layerScope( layer );
+  QgsFeatureIterator fit = layer->getFeatures( request );
 
-    QgsExpression *e = 0;
-    if ( !config.value( "FilterExpression" ).toString().isEmpty() )
-    {
-      e = new QgsExpression( config.value( "FilterExpression" ).toString() );
-      if ( e->hasParserError() || !e->prepare( &context ) )
-        ki = -1;
-    }
-
-    if ( ki >= 0 && vi >= 0 )
-    {
-      QSet<int> attributes;
-      attributes << ki << vi;
-
-      QgsFeatureRequest::Flags flags = QgsFeatureRequest::NoGeometry;
-
-      bool requiresAllAttributes = false;
-      if ( e )
-      {
-        if ( e->needsGeometry() )
-          flags = QgsFeatureRequest::NoFlags;
-
-        Q_FOREACH ( const QString& field, e->referencedColumns() )
-        {
-          if ( field == QgsFeatureRequest::AllAttributes )
-          {
-            requiresAllAttributes = true;
-            break;
-          }
-          int idx = layer->fieldNameIndex( field );
-          if ( idx < 0 )
-            continue;
-          attributes << idx;
-        }
-      }
-
-      QgsFeatureRequest fr = QgsFeatureRequest().setFlags( flags );
-      if ( !requiresAllAttributes )
-      {
-        fr.setSubsetOfAttributes( attributes.toList() );
-      }
-
-      QgsFeatureIterator fit = layer->getFeatures( fr );
-
-      QgsFeature f;
-      while ( fit.nextFeature( f ) )
-      {
-        context.setFeature( f );
-        if ( e && !e->evaluate( &context ).toBool() )
-          continue;
-
-        cache.append( ValueRelationItem( f.attribute( ki ), f.attribute( vi ).toString() ) );
-      }
-    }
-    delete e;
+  QgsFeature f;
+  while ( fit.nextFeature( f ) )
+  {
+    cache.append( ValueRelationItem( f.attribute( ki ), f.attribute( vi ).toString() ) );
   }
 
   if ( config.value( "OrderByValue" ).toBool() )
@@ -288,4 +226,25 @@ QgsValueRelationWidgetWrapper::ValueRelationCache QgsValueRelationWidgetWrapper:
   }
 
   return cache;
+}
+
+void QgsValueRelationWidgetWrapper::showIndeterminateState()
+{
+  if ( mListWidget )
+  {
+    mListWidget->blockSignals( true );
+    for ( int i = 0; i < mListWidget->count(); ++i )
+    {
+      mListWidget->item( i )->setCheckState( Qt::PartiallyChecked );
+    }
+    mListWidget->blockSignals( false );
+  }
+  else if ( mComboBox )
+  {
+    whileBlocking( mComboBox )->setCurrentIndex( -1 );
+  }
+  else if ( mLineEdit )
+  {
+    whileBlocking( mLineEdit )->clear();
+  }
 }

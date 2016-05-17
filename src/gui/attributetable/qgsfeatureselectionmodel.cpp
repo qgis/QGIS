@@ -55,9 +55,11 @@ bool QgsFeatureSelectionModel::isSelected( const QModelIndex &index )
   return isSelected( index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong() );
 }
 
-void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, QItemSelectionModel::SelectionFlags command )
+void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, const QItemSelectionModel::SelectionFlags& command )
 {
   QgsFeatureIds ids;
+
+  QgsDebugMsg( QString( "Index count: %1" ).arg( selection.indexes().size() ) );
 
   Q_FOREACH ( const QModelIndex& index, selection.indexes() )
   {
@@ -139,7 +141,7 @@ void QgsFeatureSelectionModel::setFeatureSelectionManager( QgsIFeatureSelectionM
   connect( mFeatureSelectionManager, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SLOT( layerSelectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ) );
 }
 
-void QgsFeatureSelectionModel::layerSelectionChanged( QgsFeatureIds selected, QgsFeatureIds deselected, bool clearAndSelect )
+void QgsFeatureSelectionModel::layerSelectionChanged( const QgsFeatureIds& selected, const QgsFeatureIds& deselected, bool clearAndSelect )
 {
   if ( clearAndSelect )
   {
@@ -171,7 +173,9 @@ QModelIndexList QgsFeatureSelectionModel::expandIndexToRow( const QModelIndex& i
   if ( !model )
     return indexes;
 
-  for ( int column = 0; column < model->columnCount(); ++column )
+  int columns = model->columnCount();
+  indexes.reserve( columns );
+  for ( int column = 0; column < columns; ++column )
   {
     indexes.append( model->index( row, column ) );
   }

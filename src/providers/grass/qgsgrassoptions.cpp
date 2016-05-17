@@ -22,6 +22,12 @@
 #include "qgsgrassoptions.h"
 #include "ui_qgsgrassoptionsbase.h"
 
+extern "C"
+{
+#include <grass/gis.h>
+#include <grass/version.h>
+}
+
 QgsGrassOptions::QgsGrassOptions( QWidget *parent )
     : QgsOptionsDialogBase( "GrassOptions", parent )
     , QgsGrassOptionsBase()
@@ -35,6 +41,23 @@ QgsGrassOptions::QgsGrassOptions( QWidget *parent )
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), SLOT( saveOptions() ) );
 
   QSettings settings;
+
+  // General
+  QString version = QString( GRASS_VERSION_STRING ).remove( "@(#)" ).trimmed();
+  QString revision = QString( GIS_H_VERSION ).remove( "$" ).trimmed();
+  mGrassVersionLabel->setText( tr( "GRASS version" ) + " : " + version + " " + revision );
+
+  bool customGisbase = settings.value( "/GRASS/gidbase/custom", false ).toBool();
+  QString customGisbaseDir = settings.value( "/GRASS/gidbase/customDir" ).toString();
+  mGisbaseDefaultRadioButton->setText( tr( "Default" ) + " (" + QgsGrass::defaultGisbase() + ")" );
+  mGisbaseDefaultRadioButton->setChecked( !customGisbase );
+  mGisbaseCustomRadioButton->setChecked( customGisbase );
+  mGisbaseLineEdit->setText( customGisbaseDir );
+  gisbaseChanged();
+  connect( mGisbaseDefaultRadioButton, SIGNAL( toggled( bool ) ), SLOT( gisbaseChanged() ) );
+  connect( mGisbaseLineEdit, SIGNAL( textChanged( const QString & ) ), SLOT( gisbaseChanged() ) );
+  connect( mGisbaseLineEdit, SIGNAL( textEdited( const QString & ) ), SLOT( gisbaseChanged() ) );
+  connect( mGisbaseGroupBox, SIGNAL( collapsedStateChanged( bool ) ), SLOT( gisbaseChanged() ) );
 
   // Modules
   bool customModules = settings.value( mModulesSettingsPath + "/custom", false ).toBool();
@@ -53,6 +76,8 @@ QgsGrassOptions::QgsGrassOptions( QWidget *parent )
 
   mImportExternalCheckBox->setChecked( settings.value( mImportSettingsPath + "/external", true ).toBool() );
 
+  mTopoLayersCheckBox->setChecked( settings.value( "/GRASS/showTopoLayers", false ).toBool() );
+
   // Region
   QPen regionPen = QgsGrass::regionPen();
   mRegionColorButton->setContext( "gui" );
@@ -65,6 +90,43 @@ QgsGrassOptions::QgsGrassOptions( QWidget *parent )
 
 QgsGrassOptions::~QgsGrassOptions()
 {
+}
+
+void QgsGrassOptions::on_mGisbaseBrowseButton_clicked()
+{
+  QString gisbase = mGisbaseLineEdit->text();
+  // For Mac, GISBASE folder may be inside GRASS bundle. Use Qt file dialog
+  // since Mac native dialog doesn't allow user to browse inside bundles.
+  gisbase = QFileDialog::getExistingDirectory(
+              0, QObject::tr( "Choose GRASS installation path (GISBASE)" ), gisbase,
+              QFileDialog::DontUseNativeDialog );
+  if ( !gisbase.isEmpty() )gisbaseChanged();
+  {
+    mGisbaseLineEdit->setText( gisbase );
+  }
+}
+
+void QgsGrassOptions::gisbaseChanged()
+{
+  QString gisbase;
+  if ( mGisbaseDefaultRadioButton->isChecked() )
+  {
+    gisbase = QgsGrass::defaultGisbase();
+  }
+  else
+  {
+    gisbase = mGisbaseLineEdit->text().trimmed();
+  }
+  QgsDebugMsg( "gisbase = " + gisbase );
+  if ( !QgsGrass::isValidGrassBaseDir( gisbase ) )
+  {
+    mGisbaseErrorLabel->setText( tr( "Currently selected GRASS installation is not valid" ) );
+    mGisbaseErrorLabel->show();
+  }
+  else
+  {
+    mGisbaseErrorLabel->hide();
+  }
 }
 
 void QgsGrassOptions::on_mModulesConfigBrowseButton_clicked()
@@ -83,9 +145,14 @@ void QgsGrassOptions::saveOptions()
 {
   QSettings settings;
 
+  // General
+  bool customGisbase = mGisbaseCustomRadioButton->isChecked();
+  QString customGisbaseDir = mGisbaseLineEdit->text().trimmed();
+  QgsGrass::instance()->setGisbase( customGisbase, customGisbaseDir );
+
   // Modules
   bool customModules = mModulesConfigCustomRadioButton->isChecked();
-  QString customModulesDir = mModulesConfigDirLineEdit->text();
+  QString customModulesDir = mModulesConfigDirLineEdit->text().trimmed();
   QgsGrass::instance()->setModulesConfig( customModules, customModulesDir );
   QgsGrass::instance()->setModulesDebug( mModulesDebugCheckBox->isChecked() );
 
@@ -94,6 +161,8 @@ void QgsGrassOptions::saveOptions()
                      mCrsTransformationComboBox->itemData( mCrsTransformationComboBox->currentIndex() ).toInt() );
 
   settings.setValue( mImportSettingsPath + "/external", mImportExternalCheckBox->isChecked() );
+
+  settings.setValue( "/GRASS/showTopoLayers", mTopoLayersCheckBox->isChecked() );
 
   // Region
   QPen regionPen = QgsGrass::regionPen();

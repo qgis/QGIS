@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _PRIORITYQUEUE_H
-#define _PRIORITYQUEUE_H
+#ifndef PAL_PRIORITYQUEUE_H
+#define PAL_PRIORITYQUEUE_H
 
 #include <iostream>
 
@@ -39,7 +39,10 @@
 
 namespace pal
 {
-
+  /**
+   * \class pal::PriorityQueue
+   * \note not available in Python bindings
+   */
   class PriorityQueue
   {
 

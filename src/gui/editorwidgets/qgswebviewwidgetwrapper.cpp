@@ -25,9 +25,9 @@
 
 QgsWebViewWidgetWrapper::QgsWebViewWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mWebView( NULL )
-    , mLineEdit( NULL )
-    , mButton( NULL )
+    , mWebView( nullptr )
+    , mLineEdit( nullptr )
+    , mButton( nullptr )
 {
 }
 
@@ -42,7 +42,7 @@ void QgsWebViewWidgetWrapper::loadUrl( const QString &url )
     mWebView->load( path );
 }
 
-QVariant QgsWebViewWidgetWrapper::value()
+QVariant QgsWebViewWidgetWrapper::value() const
 {
   QVariant v;
 
@@ -57,19 +57,32 @@ QVariant QgsWebViewWidgetWrapper::value()
   return v;
 }
 
+void QgsWebViewWidgetWrapper::showIndeterminateState()
+{
+  if ( mLineEdit )
+  {
+    whileBlocking( mLineEdit )->clear();
+  }
+
+  if ( mWebView )
+    mWebView->load( QString() );
+}
+
 QWidget* QgsWebViewWidgetWrapper::createWidget( QWidget* parent )
 {
   QWidget* container = new QWidget( parent );
-  QGridLayout* layout = new QGridLayout( container );
-  QgsFilterLineEdit* le = new QgsFilterLineEdit( container );
-  QWebView* webView = new QWebView( parent );
+  QGridLayout* layout = new QGridLayout();
+  QgsFilterLineEdit* le = new QgsFilterLineEdit();
+  QWebView* webView = new QWebView();
   webView->setObjectName( "EditorWebView" );
-  QPushButton* pb = new QPushButton( tr( "..." ), container );
+  QPushButton* pb = new QPushButton( tr( "..." ) );
   pb->setObjectName( "FileChooserButton" );
 
   layout->addWidget( webView, 0, 0, 1, 2 );
   layout->addWidget( le, 1, 0 );
   layout->addWidget( pb, 1, 1 );
+  layout->setMargin( 0 );
+  layout->setContentsMargins( 0, 0, 0, 0 );
 
   container->setLayout( layout );
 
@@ -127,7 +140,7 @@ void QgsWebViewWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
-bool QgsWebViewWidgetWrapper::valid()
+bool QgsWebViewWidgetWrapper::valid() const
 {
   return mWebView || mButton || mLineEdit;
 }

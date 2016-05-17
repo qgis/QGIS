@@ -32,7 +32,7 @@
 #include "qgscomposertablebackgroundcolorsdialog.h"
 
 QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame )
-    : QgsComposerItemBaseWidget( 0, table )
+    : QgsComposerItemBaseWidget( nullptr, table )
     , mComposerTable( table )
     , mFrame( frame )
 {
@@ -61,7 +61,9 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
   mLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
   connect( mLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( changeLayer( QgsMapLayer* ) ) );
 
-  refreshMapComboBox();
+  mComposerMapComboBox->setComposition( mComposerTable->composition() );
+  mComposerMapComboBox->setItemType( QgsComposerItem::ComposerMap );
+  connect( mComposerMapComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( composerMapChanged( const QgsComposerItem* ) ) );
 
   mHeaderFontColorButton->setColorDialogTitle( tr( "Select header font color" ) );
   mHeaderFontColorButton->setAllowAlpha( true );
@@ -80,7 +82,6 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
   mBackgroundColorButton->setNoColorString( tr( "No background" ) );
 
   updateGuiElements();
-  on_mComposerMapComboBox_activated( mComposerMapComboBox->currentIndex() );
 
   if ( mComposerTable )
   {
@@ -107,47 +108,6 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
 
 QgsComposerAttributeTableWidget::~QgsComposerAttributeTableWidget()
 {
-
-}
-
-void QgsComposerAttributeTableWidget::showEvent( QShowEvent* /* event */ )
-{
-  refreshMapComboBox();
-}
-
-void QgsComposerAttributeTableWidget::refreshMapComboBox()
-{
-  //save the current entry in case it is still present after refresh
-  QString saveCurrentComboText = mComposerMapComboBox->currentText();
-
-  mComposerMapComboBox->blockSignals( true );
-  mComposerMapComboBox->clear();
-  if ( mComposerTable )
-  {
-    const QgsComposition* tableComposition = mComposerTable->composition();
-    if ( tableComposition )
-    {
-      QList<const QgsComposerMap*> mapList = tableComposition->composerMapItems();
-      QList<const QgsComposerMap*>::const_iterator mapIt = mapList.constBegin();
-      for ( ; mapIt != mapList.constEnd(); ++mapIt )
-      {
-        int mapId = ( *mapIt )->id();
-        mComposerMapComboBox->addItem( tr( "Map %1" ).arg( mapId ), mapId );
-      }
-    }
-  }
-  mComposerMapComboBox->blockSignals( false );
-
-  if ( mComposerMapComboBox->findText( saveCurrentComboText ) == -1 )
-  {
-    //the former entry is no longer present. Inform the scalebar about the changed composer map
-    on_mComposerMapComboBox_activated( mComposerMapComboBox->currentIndex() );
-  }
-  else
-  {
-    //the former entry is still present. Make it the current entry again
-    mComposerMapComboBox->setCurrentIndex( mComposerMapComboBox->findText( saveCurrentComboText ) );
-  }
 }
 
 void QgsComposerAttributeTableWidget::on_mRefreshPushButton_clicked()
@@ -213,31 +173,24 @@ void QgsComposerAttributeTableWidget::on_mAttributesPushButton_clicked()
   }
 }
 
-void QgsComposerAttributeTableWidget::on_mComposerMapComboBox_activated( int index )
+void QgsComposerAttributeTableWidget::composerMapChanged( const QgsComposerItem* item )
 {
   if ( !mComposerTable )
   {
     return;
   }
 
-  QVariant itemData = mComposerMapComboBox->itemData( index );
-  if ( itemData.type() == QVariant::Invalid )
-  {
-    return;
-  }
-
-  int mapId = itemData.toInt();
   const QgsComposition* tableComposition = mComposerTable->composition();
   if ( tableComposition )
   {
     QgsComposition* composition = mComposerTable->composition();
-    if ( sender() && composition ) //only create command if called from GUI
+    if ( composition )
     {
       composition->beginMultiFrameCommand( mComposerTable, tr( "Table map changed" ) );
     }
-    mComposerTable->setComposerMap( tableComposition->getComposerMapById( mapId ) );
+    mComposerTable->setComposerMap( dynamic_cast< const QgsComposerMap* >( item ) );
     mComposerTable->update();
-    if ( sender() && composition )
+    if ( composition )
     {
       composition->endMultiFrameCommand();
     }
@@ -467,16 +420,7 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
     }
   }
 
-  //map combo box
-  const QgsComposerMap* cm = mComposerTable->composerMap();
-  if ( cm )
-  {
-    int mapIndex = mComposerMapComboBox->findText( tr( "Map %1" ).arg( cm->id() ) );
-    if ( mapIndex != -1 )
-    {
-      mComposerMapComboBox->setCurrentIndex( mapIndex );
-    }
-  }
+  mComposerMapComboBox->setItem( mComposerTable->composerMap() );
   mMaximumRowsSpinBox->setValue( mComposerTable->maximumNumberOfFeatures() );
   mMarginSpinBox->setValue( mComposerTable->cellMargin() );
   mGridStrokeWidthSpinBox->setValue( mComposerTable->gridStrokeWidth() );
@@ -545,9 +489,7 @@ void QgsComposerAttributeTableWidget::atlasToggled()
   if ( !mComposerTable )
     return;
 
-  mSourceComboBox->blockSignals( true );
-  mSourceComboBox->setCurrentIndex( mSourceComboBox->findData( mComposerTable->source() ) );
-  mSourceComboBox->blockSignals( false );
+  whileBlocking( mSourceComboBox )->setCurrentIndex( mSourceComboBox->findData( mComposerTable->source() ) );
 
   if ( !atlasEnabled && mComposerTable->filterToAtlasFeature() )
   {
@@ -646,9 +588,7 @@ void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
 
 void QgsComposerAttributeTableWidget::setMaximumNumberOfFeatures( int n )
 {
-  mMaximumRowsSpinBox->blockSignals( true );
-  mMaximumRowsSpinBox->setValue( n );
-  mMaximumRowsSpinBox->blockSignals( false );
+  whileBlocking( mMaximumRowsSpinBox )->setValue( n );
 }
 
 void QgsComposerAttributeTableWidget::on_mShowOnlyVisibleFeaturesCheckBox_stateChanged( int state )

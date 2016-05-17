@@ -27,9 +27,14 @@
 QgsMultiBandColorRenderer::QgsMultiBandColorRenderer( QgsRasterInterface* input, int redBand, int greenBand, int blueBand,
     QgsContrastEnhancement* redEnhancement,
     QgsContrastEnhancement* greenEnhancement,
-    QgsContrastEnhancement* blueEnhancement ):
-    QgsRasterRenderer( input, "multibandcolor" ), mRedBand( redBand ), mGreenBand( greenBand ), mBlueBand( blueBand ),
-    mRedContrastEnhancement( redEnhancement ), mGreenContrastEnhancement( greenEnhancement ), mBlueContrastEnhancement( blueEnhancement )
+    QgsContrastEnhancement* blueEnhancement )
+    : QgsRasterRenderer( input, "multibandcolor" )
+    , mRedBand( redBand )
+    , mGreenBand( greenBand )
+    , mBlueBand( blueBand )
+    , mRedContrastEnhancement( redEnhancement )
+    , mGreenContrastEnhancement( greenEnhancement )
+    , mBlueContrastEnhancement( blueEnhancement )
 {
 }
 
@@ -40,9 +45,9 @@ QgsMultiBandColorRenderer::~QgsMultiBandColorRenderer()
   delete mBlueContrastEnhancement;
 }
 
-QgsRasterInterface * QgsMultiBandColorRenderer::clone() const
+QgsMultiBandColorRenderer* QgsMultiBandColorRenderer::clone() const
 {
-  QgsMultiBandColorRenderer * renderer = new QgsMultiBandColorRenderer( 0, mRedBand, mGreenBand, mBlueBand );
+  QgsMultiBandColorRenderer * renderer = new QgsMultiBandColorRenderer( nullptr, mRedBand, mGreenBand, mBlueBand );
   if ( mRedContrastEnhancement )
   {
     renderer->setRedContrastEnhancement( new QgsContrastEnhancement( *mRedContrastEnhancement ) );
@@ -57,31 +62,34 @@ QgsRasterInterface * QgsMultiBandColorRenderer::clone() const
   }
   renderer->setOpacity( mOpacity );
   renderer->setAlphaBand( mAlphaBand );
-  renderer->setRasterTransparency( mRasterTransparency ? new QgsRasterTransparency( *mRasterTransparency ) : 0 );
+  renderer->setRasterTransparency( mRasterTransparency ? new QgsRasterTransparency( *mRasterTransparency ) : nullptr );
 
   return renderer;
 }
 
 void QgsMultiBandColorRenderer::setRedContrastEnhancement( QgsContrastEnhancement* ce )
 {
-  delete mRedContrastEnhancement; mRedContrastEnhancement = ce;
+  delete mRedContrastEnhancement;
+  mRedContrastEnhancement = ce;
 }
 
 void QgsMultiBandColorRenderer::setGreenContrastEnhancement( QgsContrastEnhancement* ce )
 {
-  delete mGreenContrastEnhancement; mGreenContrastEnhancement = ce;
+  delete mGreenContrastEnhancement;
+  mGreenContrastEnhancement = ce;
 }
 
 void QgsMultiBandColorRenderer::setBlueContrastEnhancement( QgsContrastEnhancement* ce )
 {
-  delete mBlueContrastEnhancement; mBlueContrastEnhancement = ce;
+  delete mBlueContrastEnhancement;
+  mBlueContrastEnhancement = ce;
 }
 
 QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem, QgsRasterInterface* input )
 {
   if ( elem.isNull() )
   {
-    return 0;
+    return nullptr;
   }
 
   //red band, green band, blue band
@@ -90,7 +98,7 @@ QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem, Q
   int blueBand = elem.attribute( "blueBand", "-1" ).toInt();
 
   //contrast enhancements
-  QgsContrastEnhancement* redContrastEnhancement = 0;
+  QgsContrastEnhancement* redContrastEnhancement = nullptr;
   QDomElement redContrastElem = elem.firstChildElement( "redContrastEnhancement" );
   if ( !redContrastElem.isNull() )
   {
@@ -99,7 +107,7 @@ QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem, Q
     redContrastEnhancement->readXML( redContrastElem );
   }
 
-  QgsContrastEnhancement* greenContrastEnhancement = 0;
+  QgsContrastEnhancement* greenContrastEnhancement = nullptr;
   QDomElement greenContrastElem = elem.firstChildElement( "greenContrastEnhancement" );
   if ( !greenContrastElem.isNull() )
   {
@@ -108,7 +116,7 @@ QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem, Q
     greenContrastEnhancement->readXML( greenContrastElem );
   }
 
-  QgsContrastEnhancement* blueContrastEnhancement = 0;
+  QgsContrastEnhancement* blueContrastEnhancement = nullptr;
   QDomElement blueContrastElem = elem.firstChildElement( "blueContrastEnhancement" );
   if ( !blueContrastElem.isNull() )
   {
@@ -163,17 +171,17 @@ QgsRasterBlock* QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
   }
 
   QMap<int, QgsRasterBlock*> bandBlocks;
-  QgsRasterBlock* defaultPointer = 0;
+  QgsRasterBlock* defaultPointer = nullptr;
   QSet<int>::const_iterator bandIt = bands.constBegin();
   for ( ; bandIt != bands.constEnd(); ++bandIt )
   {
     bandBlocks.insert( *bandIt, defaultPointer );
   }
 
-  QgsRasterBlock* redBlock = 0;
-  QgsRasterBlock* greenBlock = 0;
-  QgsRasterBlock* blueBlock = 0;
-  QgsRasterBlock* alphaBlock = 0;
+  QgsRasterBlock* redBlock = nullptr;
+  QgsRasterBlock* greenBlock = nullptr;
+  QgsRasterBlock* blueBlock = nullptr;
+  QgsRasterBlock* alphaBlock = nullptr;
 
   bandIt = bands.constBegin();
   for ( ; bandIt != bands.constEnd(); ++bandIt )

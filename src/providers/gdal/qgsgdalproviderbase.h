@@ -42,8 +42,6 @@ class QgsGdalProviderBase
   public:
     QgsGdalProviderBase();
 
-    ~QgsGdalProviderBase();
-
     /** \brief ensures that GDAL drivers are registered, but only once */
     static void registerGdalDrivers();
 

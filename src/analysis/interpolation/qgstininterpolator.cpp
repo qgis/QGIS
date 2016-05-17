@@ -29,8 +29,8 @@
 
 QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData>& inputData, TIN_INTERPOLATION interpolation, bool showProgressDialog )
     : QgsInterpolator( inputData )
-    , mTriangulation( 0 )
-    , mTriangleInterpolator( 0 )
+    , mTriangulation( nullptr )
+    , mTriangleInterpolator( nullptr )
     , mIsInitialized( false )
     , mShowProgressDialog( showProgressDialog )
     , mExportTriangulationToFile( false )
@@ -67,7 +67,7 @@ int QgsTINInterpolator::interpolatePoint( double x, double y, double& result )
 
 void QgsTINInterpolator::initialize()
 {
-  DualEdgeTriangulation* theDualEdgeTriangulation = new DualEdgeTriangulation( 100000, 0 );
+  DualEdgeTriangulation* theDualEdgeTriangulation = new DualEdgeTriangulation( 100000, nullptr );
   if ( mInterpolation == CloughTocher )
   {
     NormVecDecorator* dec = new NormVecDecorator();
@@ -84,37 +84,35 @@ void QgsTINInterpolator::initialize()
   int nProcessedFeatures = 0;
   if ( mShowProgressDialog )
   {
-    QList<LayerData>::iterator layerDataIt = mLayerData.begin();
-    for ( ; layerDataIt != mLayerData.end(); ++layerDataIt )
+    Q_FOREACH ( const LayerData& layer, mLayerData )
     {
-      if ( layerDataIt->vectorLayer )
+      if ( layer.vectorLayer )
       {
-        nFeatures += layerDataIt->vectorLayer->featureCount();
+        nFeatures += layer.vectorLayer->featureCount();
       }
     }
   }
 
-  QProgressDialog* theProgressDialog = 0;
+  QProgressDialog* theProgressDialog = nullptr;
   if ( mShowProgressDialog )
   {
-    theProgressDialog = new QProgressDialog( QObject::tr( "Building triangulation..." ), QObject::tr( "Abort" ), 0, nFeatures, 0 );
+    theProgressDialog = new QProgressDialog( QObject::tr( "Building triangulation..." ), QObject::tr( "Abort" ), 0, nFeatures, nullptr );
     theProgressDialog->setWindowModality( Qt::WindowModal );
   }
 
 
   QgsFeature f;
-  QList<LayerData>::iterator layerDataIt = mLayerData.begin();
-  for ( ; layerDataIt != mLayerData.end(); ++layerDataIt )
+  Q_FOREACH ( const LayerData& layer, mLayerData )
   {
-    if ( layerDataIt->vectorLayer )
+    if ( layer.vectorLayer )
     {
       QgsAttributeList attList;
-      if ( !layerDataIt->zCoordInterpolation )
+      if ( !layer.zCoordInterpolation )
       {
-        attList.push_back( layerDataIt->interpolationAttribute );
+        attList.push_back( layer.interpolationAttribute );
       }
 
-      QgsFeatureIterator fit = layerDataIt->vectorLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
+      QgsFeatureIterator fit = layer.vectorLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
 
       while ( fit.nextFeature( f ) )
       {
@@ -126,7 +124,7 @@ void QgsTINInterpolator::initialize()
           }
           theProgressDialog->setValue( nProcessedFeatures );
         }
-        insertData( &f, layerDataIt->zCoordInterpolation, layerDataIt->interpolationAttribute, layerDataIt->mInputType );
+        insertData( &f, layer.zCoordInterpolation, layer.interpolationAttribute, layer.mInputType );
         ++nProcessedFeatures;
       }
     }
@@ -140,7 +138,7 @@ void QgsTINInterpolator::initialize()
     NormVecDecorator* dec = dynamic_cast<NormVecDecorator*>( mTriangulation );
     if ( dec )
     {
-      QProgressDialog* progressDialog = 0;
+      QProgressDialog* progressDialog = nullptr;
       if ( mShowProgressDialog ) //show a progress dialog because it can take a long time...
       {
         progressDialog = new QProgressDialog();
@@ -201,15 +199,17 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
   //parse WKB. It is ugly, but we cannot use the methods with QgsPoint because they don't contain z-values for 25D types
   bool hasZValue = false;
   double x, y, z;
-  QgsConstWkbPtr currentWkbPtr( g->asWkb() + 1 + sizeof( int ) );
+  QgsConstWkbPtr currentWkbPtr( g->asWkb(), g->wkbSize() );
+  currentWkbPtr.readHeader();
   //maybe a structure or break line
-  Line3D* line = 0;
+  Line3D* line = nullptr;
 
   QGis::WkbType wkbType = g->wkbType();
   switch ( wkbType )
   {
     case QGis::WKBPoint25D:
       hasZValue = true;
+      FALLTHROUGH;
     case QGis::WKBPoint:
     {
       currentWkbPtr >> x >> y;
@@ -230,13 +230,14 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
     }
     case QGis::WKBMultiPoint25D:
       hasZValue = true;
+      FALLTHROUGH;
     case QGis::WKBMultiPoint:
     {
       int nPoints;
       currentWkbPtr >> nPoints;
       for ( int index = 0; index < nPoints; ++index )
       {
-        currentWkbPtr += 1 + sizeof( int );
+        currentWkbPtr.readHeader();
         currentWkbPtr >> x >> y;
         if ( hasZValue ) //skip z-coordinate for 25D geometries
         {
@@ -251,6 +252,7 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
     }
     case QGis::WKBLineString25D:
       hasZValue = true;
+      FALLTHROUGH;
     case QGis::WKBLineString:
     {
       if ( type != POINTS )
@@ -290,6 +292,7 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
     }
     case QGis::WKBMultiLineString25D:
       hasZValue = true;
+      FALLTHROUGH;
     case QGis::WKBMultiLineString:
     {
       int nLines;
@@ -333,6 +336,7 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
     }
     case QGis::WKBPolygon25D:
       hasZValue = true;
+      FALLTHROUGH;
     case QGis::WKBPolygon:
     {
       int nRings;
@@ -378,13 +382,14 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
 
     case QGis::WKBMultiPolygon25D:
       hasZValue = true;
+      FALLTHROUGH;
     case QGis::WKBMultiPolygon:
     {
       int nPolys;
       currentWkbPtr >> nPolys;
       for ( int index = 0; index < nPolys; ++index )
       {
-        currentWkbPtr += 1 + sizeof( int );
+        currentWkbPtr.readHeader();
         int nRings;
         currentWkbPtr >> nRings;
         for ( int index2 = 0; index2 < nRings; ++index2 )

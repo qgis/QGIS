@@ -75,6 +75,12 @@ class QgsFeatureListView : QListView
      */
     void setCurrentFeatureEdited( bool state );
 
+    /**
+     * @brief setFeatureSelectionManager
+     * @param featureSelectionManager We will take ownership
+     */
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
+
   protected:
     virtual void mouseMoveEvent( QMouseEvent *event );
     virtual void mousePressEvent( QMouseEvent *event );
@@ -94,7 +100,7 @@ class QgsFeatureListView : QListView
      * Is emitted, whenever the display expression is successfully changed
      * @param expression The expression that was applied
      */
-    void displayExpressionChanged( const QString expression );
+    void displayExpressionChanged( const QString& expression );
 
     //void aboutToChangeEditSelection( bool& ok );
 

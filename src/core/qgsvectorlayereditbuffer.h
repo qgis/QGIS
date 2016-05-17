@@ -53,6 +53,9 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     /** Delete a feature from the layer (but does not commit it) */
     virtual bool deleteFeature( QgsFeatureId fid );
 
+    /** Deletes a set of features from the layer (but does not commit it) */
+    virtual bool deleteFeatures( const QgsFeatureIds& fid );
+
     /** Change feature's geometry */
     virtual bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom );
 
@@ -131,7 +134,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
   protected:
 
-    QgsVectorLayerEditBuffer() : L( NULL ) {}
+    QgsVectorLayerEditBuffer() : L( nullptr ) {}
 
     void updateFields( QgsFields& fields );
 
@@ -185,7 +188,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
     /** Changed geometries which are not commited. */
     QgsGeometryMap mChangedGeometries;
-
 };
 
 #endif // QGSVECTORLAYEREDITBUFFER_H

@@ -11,14 +11,12 @@
 
 
 /**
- * \class  QgsRequestHandler
- * \brief This class is an interface hiding the details of reading input and
- * writing output from/to a wms request mechanism.
- *
+ * \ingroup server
+ * This class is an interface hiding the details of reading input and writing
+ * output from/to a wms request mechanism.
  * Examples of possible mechanisms are cgi Get, cgi Post, SOAP or the usage
  * as a standalone command line executable
  */
-
 class QgsRequestHandler
 {
 %TypeHeaderCode
@@ -36,11 +34,11 @@ class QgsRequestHandler
     /** Remove an HTTP header*/
     virtual int removeHeader( const QString &name ) = 0;
     /** Delete all HTTP headers*/
-    virtual void clearHeaders( ) = 0;
+    virtual void clearHeaders() = 0;
     /** Append the bytestream to response body*/
     virtual void appendBody( const QByteArray &body ) = 0;
     /** Clears the response body*/
-    virtual void clearBody( ) = 0;
+    virtual void clearBody() = 0;
     /** Return the response body*/
     virtual QByteArray body();
     /** Set the info format string such as "text/xml"*/
@@ -48,7 +46,7 @@ class QgsRequestHandler
     /** Check whether there is any header set or the body is not empty*/
     virtual bool responseReady() const = 0;
     /** Send out HTTP headers and flush output buffer*/
-    virtual void sendResponse( ) = 0;
+    virtual void sendResponse() = 0;
     /** Pointer to last raised exception*/
     virtual bool exceptionRaised() const = 0;
     /** Return a copy of the parsed parameters as a key-value pair, to modify
@@ -61,7 +59,7 @@ class QgsRequestHandler
     /** Remove a request parameter*/
     virtual int removeParameter( const QString &key ) = 0;
     /** Return a request parameter*/
-    virtual QString parameter( const QString &key) const = 0;
+    virtual QString parameter( const QString &key ) const = 0;
     /** Return the requested format string*/
     QString format() const;
     /** Return the mime type for the response*/

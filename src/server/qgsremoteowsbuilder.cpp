@@ -17,7 +17,9 @@
 
 #include "qgsdatasourceuri.h"
 #include "qgsremoteowsbuilder.h"
+#if QT_VERSION < 0x050000
 #include "qgshttptransaction.h"
+#endif
 #include "qgslogger.h"
 #include "qgsmslayercache.h"
 #include "qgsrasterlayer.h"
@@ -51,7 +53,7 @@ QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer(
 {
   if ( elem.isNull() )
   {
-    return 0;
+    return nullptr;
   }
 
   //parse service element
@@ -59,7 +61,7 @@ QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer(
   if ( serviceNode.isNull() )
   {
     QgsDebugMsg( "No <Service> node found, returning 0" );
-    return 0; //service node is necessary
+    return nullptr; //service node is necessary
   }
 
   //parse OnlineResource element
@@ -67,14 +69,14 @@ QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer(
   if ( onlineResourceNode.isNull() )
   {
     QgsDebugMsg( "No <OnlineResource> element, returning 0" );
-    return 0;
+    return nullptr;
   }
 
   //get uri
   QDomElement onlineResourceElement = onlineResourceNode.toElement();
   QString url = onlineResourceElement.attribute( "href" );
 
-  QgsMapLayer* result = 0;
+  QgsMapLayer* result = nullptr;
   QString serviceName = serviceNode.toElement().text();
 
   //append missing ? or & at the end of the url, but only for WFS and WMS
@@ -145,7 +147,7 @@ QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer(
     {
       delete result;
     }
-    return 0;
+    return nullptr;
   }
 
   return result;
@@ -154,7 +156,7 @@ QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer(
 QgsRasterLayer* QgsRemoteOWSBuilder::wmsLayerFromUrl( const QString& url, const QString& layerName, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
 {
   QgsDebugMsg( "Entering" );
-  QgsRasterLayer* result = 0;
+  QgsRasterLayer* result = nullptr;
   QString baseUrl, format, crs;
   QStringList layerList, styleList;
 
@@ -171,7 +173,7 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wmsLayerFromUrl( const QString& url, const 
   QStringList urlList = url.split( "?" );
   if ( urlList.size() < 2 )
   {
-    return 0;
+    return nullptr;
   }
   baseUrl = urlList.at( 0 );
   QStringList paramList = urlList.at( 1 ).split( "&" );
@@ -216,7 +218,7 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wmsLayerFromUrl( const QString& url, const 
   result = new QgsRasterLayer( uri.encodedUri(), "", QString( "wms" ) );
   if ( !result->isValid() )
   {
-    return 0;
+    return nullptr;
   }
 
   //insert into cache
@@ -239,13 +241,15 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString &url,
 {
   Q_UNUSED( layerName );
   Q_UNUSED( allowCaching );
+
+#if QT_VERSION < 0x050000
   QgsDebugMsg( "Entering" );
 
   //write server url and coverage name to a temporary file
   QString fileName = createTempFile();
   if ( fileName.isEmpty() )
   {
-    return 0;
+    return nullptr;
   }
 
   QFile tempFile( fileName );
@@ -254,7 +258,7 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString &url,
   if ( !tmpFile->open() )
   {
     delete tmpFile;
-    return 0;
+    return nullptr;
   }
 
   filesToRemove.push_back( tmpFile ); //make sure the temporary file gets deleted after each request
@@ -266,7 +270,7 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString &url,
   if ( serverSplit.size() < 2 )
   {
     QgsDebugMsg( "error, no '?' contained in url" );
-    return 0;
+    return nullptr;
   }
   QString serverUrl = serverSplit.at( 0 );
   QString request = serverSplit.at( 1 );
@@ -288,7 +292,7 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString &url,
   if ( coverageName.isEmpty() )
   {
     QgsDebugMsg( "coverage name is empty" );
-    return 0;
+    return nullptr;
   }
 
   if ( format.isEmpty() )
@@ -307,7 +311,7 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString &url,
   if ( crs.isEmpty() )
   {
     QgsDebugMsg( "No CRS or SRS parameter found for wcs layer, returning 0" );
-    return 0;
+    return nullptr;
   }
   wcsRequest += "&CRS=" + crs;
 
@@ -316,7 +320,7 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString &url,
   if ( width.isEmpty() )
   {
     QgsDebugMsg( "No WIDTH parameter found for wcs layer, returning 0" );
-    return 0;
+    return nullptr;
   }
   wcsRequest += "&WIDTH=" + width;
 
@@ -325,7 +329,7 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString &url,
   if ( height.isEmpty() )
   {
     QgsDebugMsg( "No HEIGHT parameter found for wcs layer, returning 0" );
-    return 0;
+    return nullptr;
   }
   wcsRequest += "&HEIGHT=" + height;
 
@@ -334,18 +338,17 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString &url,
   if ( bbox.isEmpty() )
   {
     QgsDebugMsg( "No BBOX parameter found for wcs layer, returning 0" );
-    return 0;
+    return nullptr;
   }
   wcsRequest += "&BBOX=" + bbox;
 
   QgsDebugMsg( "WCS request is: " + wcsRequest );
-
   //make request and store byte array into temporary file
   QgsHttpTransaction httpTransaction( wcsRequest );
   QByteArray result;
   if ( !httpTransaction.getSynchronously( result ) )
   {
-    return 0;
+    return nullptr;
   }
 
   QDataStream tempFileStream( &tempFile );
@@ -355,6 +358,14 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString &url,
   QgsRasterLayer* rl = new QgsRasterLayer( fileName, layerNameFromUri( fileName ) );
   layersToRemove.push_back( rl ); //make sure the layer gets deleted after each request
   return rl;
+#else
+  Q_UNUSED( url )
+  Q_UNUSED( filesToRemove )
+  Q_UNUSED( layersToRemove )
+  QgsDebugMsg( "remote http not supported with Qt5" );
+  return nullptr;
+#endif
+
 }
 
 QgsVectorLayer* QgsRemoteOWSBuilder::sosLayer( const QDomElement& remoteOWSElem, const QString& url, const QString& layerName, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
@@ -367,7 +378,7 @@ QgsVectorLayer* QgsRemoteOWSBuilder::sosLayer( const QDomElement& remoteOWSElem,
   QDomElement parentElem = remoteOWSElem.parentNode().toElement();
   if ( parentElem.isNull() )
   {
-    return 0;
+    return nullptr;
   }
 
 
@@ -375,14 +386,14 @@ QgsVectorLayer* QgsRemoteOWSBuilder::sosLayer( const QDomElement& remoteOWSElem,
   QDomElement requestRootElem;
 
   QDomNodeList getObservationNodeList = parentElem.elementsByTagName( "GetObservation" );
-  if ( getObservationNodeList.size() > 0 )
+  if ( !getObservationNodeList.isEmpty() )
   {
     requestRootElem = getObservationNodeList.at( 0 ).toElement();
   }
   else //GetObservationById?
   {
     QDomNodeList getObservationByIdNodeList = parentElem.elementsByTagName( "GetObservationById" );
-    if ( getObservationByIdNodeList.size() > 0 )
+    if ( !getObservationByIdNodeList.isEmpty() )
     {
       requestRootElem = getObservationByIdNodeList.at( 0 ).toElement();
     }
@@ -390,7 +401,7 @@ QgsVectorLayer* QgsRemoteOWSBuilder::sosLayer( const QDomElement& remoteOWSElem,
 
   if ( requestRootElem.isNull() )
   {
-    return 0;
+    return nullptr;
   }
 
   QDomDocument requestDoc;
@@ -400,7 +411,7 @@ QgsVectorLayer* QgsRemoteOWSBuilder::sosLayer( const QDomElement& remoteOWSElem,
   QString providerUrl = "url=" + url + " method=" + method + " xml=" + requestDoc.toString();
 
   //check if layer is already in cache
-  QgsVectorLayer* sosLayer = 0;
+  QgsVectorLayer* sosLayer = nullptr;
   if ( allowCaching )
   {
     sosLayer = dynamic_cast<QgsVectorLayer*>( QgsMSLayerCache::instance()->searchLayer( providerUrl, layerName ) );
@@ -415,7 +426,7 @@ QgsVectorLayer* QgsRemoteOWSBuilder::sosLayer( const QDomElement& remoteOWSElem,
   if ( !sosLayer->isValid() )
   {
     delete sosLayer;
-    return 0;
+    return nullptr;
   }
   else
   {

@@ -56,6 +56,7 @@ const string ASResource::AS_TRY = string("try");
 const string ASResource::AS_CATCH = string("catch");
 const string ASResource::AS_FINALLY = string("finally");
 const string ASResource::AS_THROWS = string("throws");
+const string ASResource::AS_NOEXCEPT = string("noexcept");
 const string ASResource::AS_CONST = string("const");
 const string ASResource::AS_OVERRIDE = string("override");
 
@@ -139,6 +140,7 @@ const string ASResource::AS_CONST_CAST = string("const_cast");
 const string ASResource::AS_DYNAMIC_CAST = string("dynamic_cast");
 const string ASResource::AS_REINTERPRET_CAST = string("reinterpret_cast");
 const string ASResource::AS_STATIC_CAST = string("static_cast");
+const string ASResource::AS_QOBJECT_CAST = string("qobject_cast");
 
 
 /**
@@ -185,6 +187,7 @@ void ASResource::buildCastOperators(vector<const string*> &castOperators)
 	castOperators.push_back(&AS_DYNAMIC_CAST);
 	castOperators.push_back(&AS_REINTERPRET_CAST);
 	castOperators.push_back(&AS_STATIC_CAST);
+	castOperators.push_back(&AS_QOBJECT_CAST); // Qt cast
 }
 
 /**
@@ -213,6 +216,7 @@ void ASResource::buildHeaders(vector<const string*> &headers, int fileType, bool
 		headers.push_back(&AS_EXTERN);
 		headers.push_back(&AS_TEMPLATE);
 		headers.push_back(&AS_OVERRIDE);
+		headers.push_back(&AS_NOEXCEPT);
 	}
 
 	if (fileType == JAVA_TYPE)
@@ -285,6 +289,7 @@ void ASResource::buildNonParenHeaders(vector<const string*> &nonParenHeaders, in
 		nonParenHeaders.push_back(&AS_EXTERN);
 		nonParenHeaders.push_back(&AS_TEMPLATE);
 		nonParenHeaders.push_back(&AS_OVERRIDE);
+		nonParenHeaders.push_back(&AS_NOEXCEPT);
 	}
 
 	if (fileType == JAVA_TYPE)

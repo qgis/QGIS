@@ -40,7 +40,7 @@ void QgsRasterChangeCoords::setRaster( const QString &fileRaster )
   GDALAllRegister();
   GDALDatasetH hDS = GDALOpen( TO8F( fileRaster ), GA_ReadOnly );
   double adfGeoTransform[6];
-  if ( GDALGetProjectionRef( hDS ) != NULL && GDALGetGeoTransform( hDS, adfGeoTransform ) == CE_None )
+  if ( GDALGetProjectionRef( hDS ) && GDALGetGeoTransform( hDS, adfGeoTransform ) == CE_None )
     //if ( false )
   {
     mHasCrs = true;
@@ -56,10 +56,10 @@ void QgsRasterChangeCoords::setRaster( const QString &fileRaster )
   GDALClose( hDS );
 }
 
-std::vector<QgsPoint> QgsRasterChangeCoords::getPixelCoords( const std::vector<QgsPoint> &mapCoords )
+QVector<QgsPoint> QgsRasterChangeCoords::getPixelCoords( const QVector<QgsPoint> &mapCoords )
 {
   const int size = mapCoords.size();
-  std::vector<QgsPoint> pixelCoords( size );
+  QVector<QgsPoint> pixelCoords( size );
   for ( int i = 0; i < size; i++ )
   {
     pixelCoords[i] = toColumnLine( mapCoords.at( i ) );

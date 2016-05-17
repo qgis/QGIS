@@ -79,7 +79,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     };
 
   public:
-    QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, QObject* parent = NULL );
+    QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, QObject* parent = nullptr );
     ~QgsVectorLayerCache();
 
     /**
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @param featureRequest  The feature request that was answered
      * @param fids            The feature ids that have been returned
      */
-    void requestCompleted( QgsFeatureRequest featureRequest, QgsFeatureIds fids );
+    void requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids );
 
     /**
      * @brief
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @brief Is emitted when an attribute is changed. Is re-emitted after the layer itself emits this signal.
      *        You should connect to this signal, to be sure, to not get a cached value if querying the cache.
      */
-    void attributeValueChanged( const QgsFeatureId& fid, const int& field, const QVariant &value );
+    void attributeValueChanged( QgsFeatureId fid, int field, const QVariant &value );
 
     /**
      * Is emitted, when a new feature has been added to the layer and this cache.

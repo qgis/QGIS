@@ -36,16 +36,18 @@ def initDbPluginList():
 
     current_dir = os.path.dirname(__file__)
     for name in os.listdir(current_dir):
+        if name == '__pycache__':
+            continue
         if not os.path.isdir(os.path.join(current_dir, name)):
             continue
 
         try:
-            exec (u"from .%s import plugin as mod" % name)
+            exec(u"from .%s import plugin as mod" % name, globals())
         except ImportError as e:
-            DBPLUGIN_ERRORS.append(u"%s: %s" % (name, e.message))
+            DBPLUGIN_ERRORS.append(u"%s: %s" % (name, unicode(e)))
             continue
 
-        pluginclass = mod.classFactory()
+        pluginclass = mod.classFactory()  # NOQA
         SUPPORTED_DBTYPES[pluginclass.typeName()] = pluginclass
 
     return len(SUPPORTED_DBTYPES) > 0

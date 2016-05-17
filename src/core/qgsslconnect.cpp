@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsslconnect.h"
+#include "qgslogger.h"
 
 #include <sqlite3.h>
 #include <spatialite.h>
@@ -52,6 +53,11 @@ int QgsSLConnect::sqlite3_close( sqlite3 *db )
     spatialite_cleanup_ex( mSLconns.take( db ) );
 #endif
 
+  if ( res != SQLITE_OK )
+  {
+    QgsDebugMsg( QString( "sqlite3_close() failed: %1" ).arg( res ) );
+  }
+
   return res;
 }
 
@@ -84,6 +90,11 @@ int QgsSLConnect::sqlite3_close_v2( sqlite3 *db )
   if ( mSLconns.contains( db ) )
     spatialite_cleanup_ex( mSLconns.take( db ) );
 #endif
+
+  if ( res != SQLITE_OK )
+  {
+    QgsDebugMsg( QString( "sqlite3_close() failed: %1" ).arg( res ) );
+  }
 
   return res;
 }

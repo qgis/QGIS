@@ -63,30 +63,27 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     //read printout resolution from composition
     mResolutionSpinBox->setValue( mComposition->printResolution() );
 
+    double topMargin = 0;
+    double rightMargin = 0;
+    double bottomMargin = 0;
+    double leftMargin = 0;
+    mComposition->resizeToContentsMargins( topMargin, rightMargin, bottomMargin, leftMargin );
+    mTopMarginSpinBox->setValue( topMargin );
+    mRightMarginSpinBox->setValue( rightMargin );
+    mBottomMarginSpinBox->setValue( bottomMargin );
+    mLeftMarginSpinBox->setValue( leftMargin );
+
     //print as raster
     mPrintAsRasterCheckBox->setChecked( mComposition->printAsRaster() );
 
     // world file generation
     mGenerateWorldFileCheckBox->setChecked( mComposition->generateWorldFile() );
+    mWorldFileMapComboBox->setEnabled( mComposition->generateWorldFile() );
 
     // populate the map list
-    mWorldFileMapComboBox->clear();
-    QList<const QgsComposerMap*> availableMaps = mComposition->composerMapItems();
-    QList<const QgsComposerMap*>::const_iterator mapItemIt = availableMaps.constBegin();
-    for ( ; mapItemIt != availableMaps.constEnd(); ++mapItemIt )
-    {
-      mWorldFileMapComboBox->addItem( tr( "Map %1" ).arg(( *mapItemIt )->id() ), qVariantFromValue(( void* )*mapItemIt ) );
-    }
-
-    int idx = mWorldFileMapComboBox->findData( qVariantFromValue(( void* )mComposition->worldFileMap() ) );
-    if ( idx != -1 )
-    {
-      mWorldFileMapComboBox->setCurrentIndex( idx );
-    }
-
-    // Connect to addition / removal of maps
-    connect( mComposition, SIGNAL( composerMapAdded( QgsComposerMap* ) ), this, SLOT( onComposerMapAdded( QgsComposerMap* ) ) );
-    connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( onItemRemoved( QgsComposerItem* ) ) );
+    mWorldFileMapComboBox->setComposition( mComposition );
+    mWorldFileMapComboBox->setItemType( QgsComposerItem::ComposerMap );
+    mWorldFileMapComboBox->setItem( mComposition->worldFileMap() );
 
     mSnapToleranceSpinBox->setValue( mComposition->snapTolerance() );
 
@@ -105,6 +102,11 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     }
   }
 
+  connect( mTopMarginSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resizeMarginsChanged() ) );
+  connect( mRightMarginSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resizeMarginsChanged() ) );
+  connect( mBottomMarginSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resizeMarginsChanged() ) );
+  connect( mLeftMarginSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resizeMarginsChanged() ) );
+
   connect( mPaperSizeDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
   connect( mPaperSizeDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
   connect( mPaperSizeDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mPaperSizeComboBox, SLOT( setDisabled( bool ) ) );
@@ -121,13 +123,15 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
   connect( mPaperOrientationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
   connect( mPaperOrientationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mPaperOrientationComboBox, SLOT( setDisabled( bool ) ) );
 
+  connect( mWorldFileMapComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( worldFileMapChanged( QgsComposerItem* ) ) );
+
   //initialize data defined buttons
   populateDataDefinedButtons();
 
   blockSignals( false );
 }
 
-QgsCompositionWidget::QgsCompositionWidget(): QWidget( 0 ), mComposition( 0 )
+QgsCompositionWidget::QgsCompositionWidget(): QWidget( nullptr ), mComposition( nullptr )
 {
   setupUi( this );
 }
@@ -156,7 +160,7 @@ void QgsCompositionWidget::populateDataDefinedButtons()
     return;
   }
 
-  QgsVectorLayer* vl = 0;
+  QgsVectorLayer* vl = nullptr;
   QgsAtlasComposition* atlas = &mComposition->atlasComposition();
 
   if ( atlas && atlas->enabled() )
@@ -193,6 +197,17 @@ void QgsCompositionWidget::populateDataDefinedButtons()
 void QgsCompositionWidget::variablesChanged()
 {
   QgsExpressionContextUtils::setCompositionVariables( mComposition, mVariableEditor->variablesInActiveScope() );
+}
+
+void QgsCompositionWidget::resizeMarginsChanged()
+{
+  if ( !mComposition )
+    return;
+
+  mComposition->setResizeToContentsMargins( mTopMarginSpinBox->value(),
+      mRightMarginSpinBox->value(),
+      mBottomMarginSpinBox->value(),
+      mLeftMarginSpinBox->value() );
 }
 
 void QgsCompositionWidget::setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, QgsComposerObject::DataDefinedProperty property )
@@ -434,8 +449,8 @@ void QgsCompositionWidget::applyCurrentPaperSettings()
   if ( mComposition )
   {
     //find entry in mPaper map to set width and height
-    QMap<QString, QgsCompositionPaper>::iterator it = mPaperMap.find( mPaperSizeComboBox->currentText() );
-    if ( it == mPaperMap.end() )
+    QMap<QString, QgsCompositionPaper>::const_iterator it = mPaperMap.constFind( mPaperSizeComboBox->currentText() );
+    if ( it == mPaperMap.constEnd() )
     {
       return;
     }
@@ -544,14 +559,14 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
     return;
   }
 
-  QgsVectorLayer* coverageLayer = 0;
+  QgsVectorLayer* coverageLayer = nullptr;
   // use the atlas coverage layer, if any
   if ( mComposition->atlasComposition().enabled() )
   {
     coverageLayer = mComposition->atlasComposition().coverageLayer();
   }
 
-  QgsFillSymbolV2* newSymbol = dynamic_cast<QgsFillSymbolV2*>( mComposition->pageStyleSymbol()->clone() );
+  QgsFillSymbolV2* newSymbol = mComposition->pageStyleSymbol()->clone();
   if ( !newSymbol )
   {
     newSymbol = new QgsFillSymbolV2();
@@ -565,6 +580,19 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
     updatePageStyle();
   }
   delete newSymbol;
+}
+
+void QgsCompositionWidget::on_mResizePageButton_clicked()
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+
+  mComposition->resizePageToContents( mTopMarginSpinBox->value(),
+                                      mRightMarginSpinBox->value(),
+                                      mBottomMarginSpinBox->value(),
+                                      mLeftMarginSpinBox->value() );
 }
 
 void QgsCompositionWidget::updatePageStyle()
@@ -633,57 +661,15 @@ void QgsCompositionWidget::on_mGenerateWorldFileCheckBox_toggled( bool state )
   mWorldFileMapComboBox->setEnabled( state );
 }
 
-void QgsCompositionWidget::onComposerMapAdded( QgsComposerMap* map )
+void QgsCompositionWidget::worldFileMapChanged( QgsComposerItem* item )
 {
   if ( !mComposition )
   {
     return;
   }
 
-  mWorldFileMapComboBox->addItem( tr( "Map %1" ).arg( map->id() ), qVariantFromValue(( void* )map ) );
-  if ( mWorldFileMapComboBox->count() == 1 )
-  {
-    mComposition->setWorldFileMap( map );
-  }
-}
-
-void QgsCompositionWidget::onItemRemoved( QgsComposerItem* item )
-{
-  if ( !mComposition )
-  {
-    return;
-  }
-
-  QgsComposerMap* map = dynamic_cast<QgsComposerMap*>( item );
-  if ( map )
-  {
-    int idx = mWorldFileMapComboBox->findData( qVariantFromValue(( void* )map ) );
-    if ( idx != -1 )
-    {
-      mWorldFileMapComboBox->removeItem( idx );
-    }
-  }
-  if ( mWorldFileMapComboBox->count() == 0 )
-  {
-    mComposition->setWorldFileMap( 0 );
-  }
-}
-
-void QgsCompositionWidget::on_mWorldFileMapComboBox_currentIndexChanged( int index )
-{
-  if ( !mComposition )
-  {
-    return;
-  }
-  if ( index == -1 )
-  {
-    mComposition->setWorldFileMap( 0 );
-  }
-  else
-  {
-    QgsComposerMap* map = reinterpret_cast<QgsComposerMap*>( mWorldFileMapComboBox->itemData( index ).value<void*>() );
-    mComposition->setWorldFileMap( map );
-  }
+  QgsComposerMap* map = dynamic_cast< QgsComposerMap* >( item );
+  mComposition->setWorldFileMap( map );
 }
 
 void QgsCompositionWidget::on_mGridResolutionSpinBox_valueChanged( double d )
@@ -733,5 +719,7 @@ void QgsCompositionWidget::blockSignals( bool block )
   mOffsetXSpinBox->blockSignals( block );
   mOffsetYSpinBox->blockSignals( block );
   mSnapToleranceSpinBox->blockSignals( block );
+  mGenerateWorldFileCheckBox->blockSignals( block );
+  mWorldFileMapComboBox->blockSignals( block );
 }
 

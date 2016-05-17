@@ -28,7 +28,7 @@ class QgsComposerMultiFrame;
 class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
 {
   public:
-    QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent = 0 );
+    QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent = nullptr );
     virtual ~QgsComposerItemCommand();
 
     /** Reverses the command*/
@@ -49,7 +49,7 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
 
     /** Returns the target item the command applies to.
      * @returns target composer item
-    */
+     */
     QgsComposerItem *item() const;
 
   protected:
@@ -102,6 +102,7 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       LegendIconSymbolSpace,
       LegendBoxSpace,
       LegendColumnSpace,
+      LegendRasterBorderWidth,
       //composer picture
       ComposerPictureRotation,
       // composer scalebar
@@ -136,7 +137,7 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
     ~QgsComposerMergeCommand();
 
     bool mergeWith( const QUndoCommand * command ) override;
-    int id() const override { return ( int )mContext; }
+    int id() const override { return static_cast< int >( mContext ); }
 
   private:
     Context mContext;

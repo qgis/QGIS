@@ -43,7 +43,7 @@ namespace osgEarth
       public:
         QgsOsgEarthTileSource( QgisInterface* theQgisInterface, const TileSourceOptions& options = TileSourceOptions() );
 
-        void initialize( const std::string& referenceURI, const Profile* overrideProfile = NULL );
+        void initialize( const std::string& referenceURI, const Profile* overrideProfile = nullptr );
 
         osg::Image* createImage( const TileKey& key, ProgressCallback* progress ) override;
 
@@ -53,7 +53,7 @@ namespace osgEarth
           Q_UNUSED( progress );
           //NI
           OE_WARN << "[QGIS] Driver does not support heightfields" << std::endl;
-          return NULL;
+          return nullptr;
         }
 
         virtual std::string getExtension() const override

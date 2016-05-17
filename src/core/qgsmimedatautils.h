@@ -40,7 +40,7 @@ class CORE_EXPORT QgsMimeDataUtils
     };
     typedef QList<Uri> UriList;
 
-    static QMimeData* encodeUriList( UriList layers );
+    static QMimeData* encodeUriList( const UriList& layers );
 
     static bool isUriList( const QMimeData* data );
 

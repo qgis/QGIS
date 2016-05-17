@@ -46,9 +46,34 @@ class QgsDiagramLayerSettings;
 class CORE_EXPORT QgsLabelPosition
 {
   public:
-    QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, const QString& labeltext, const QFont& labelfont, bool upside_down, bool diagram = false, bool pinned = false ):
-        featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), labelText( labeltext ), labelFont( labelfont ), upsideDown( upside_down ), isDiagram( diagram ), isPinned( pinned ) {}
-    QgsLabelPosition(): featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), labelText( "" ), labelFont( QFont() ), upsideDown( false ), isDiagram( false ), isPinned( false ) {}
+    QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, const QString& labeltext, const QFont& labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString& providerId = QString() )
+        : featureId( id )
+        , rotation( r )
+        , cornerPoints( corners )
+        , labelRect( rect )
+        , width( w )
+        , height( h )
+        , layerID( layer )
+        , labelText( labeltext )
+        , labelFont( labelfont )
+        , upsideDown( upside_down )
+        , isDiagram( diagram )
+        , isPinned( pinned )
+        , providerID( providerId )
+    {}
+    QgsLabelPosition()
+        : featureId( -1 )
+        , rotation( 0 )
+        , labelRect( QgsRectangle() )
+        , width( 0 )
+        , height( 0 )
+        , layerID( "" )
+        , labelText( "" )
+        , labelFont( QFont() )
+        , upsideDown( false )
+        , isDiagram( false )
+        , isPinned( false )
+    {}
     int featureId;
     double rotation;
     QVector< QgsPoint > cornerPoints;
@@ -61,6 +86,8 @@ class CORE_EXPORT QgsLabelPosition
     bool upsideDown;
     bool isDiagram;
     bool isPinned;
+    //! @note added in 2.14
+    QString providerID;
 };
 
 /** Labeling engine interface. */
@@ -72,7 +99,7 @@ class CORE_EXPORT QgsLabelingEngineInterface
 
     //! called when we're going to start with rendering
     //! @deprecated since 2.4 - use override with QgsMapSettings
-    Q_DECL_DEPRECATED virtual void init( QgsMapRenderer* mp ) = 0;
+    Q_DECL_DEPRECATED virtual void init( QgsMapRenderer *mp ) = 0;
     //! called when we're going to start with rendering
     virtual void init( const QgsMapSettings& mapSettings ) = 0;
     //! called to find out whether the layer is used for labeling
@@ -84,14 +111,20 @@ class CORE_EXPORT QgsLabelingEngineInterface
     //! called when starting rendering of a layer
     virtual int prepareLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx ) = 0;
     //! returns PAL layer settings for a registered layer
-    virtual QgsPalLayerSettings& layer( const QString& layerName ) = 0;
+    //! @deprecated since 2.12 - if direct access to QgsPalLayerSettings is necessary, use QgsPalLayerSettings::fromLayer()
+    Q_DECL_DEPRECATED virtual QgsPalLayerSettings &layer( const QString &layerName ) = 0;
     //! adds a diagram layer to the labeling engine
-    virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings* s )
+    //! @note added in QGIS 2.12
+    virtual int prepareDiagramLayer( QgsVectorLayer *layer, QStringList &attrNames, QgsRenderContext &ctx )
+    { Q_UNUSED( layer ); Q_UNUSED( attrNames ); Q_UNUSED( ctx ); return 0; }
+    //! adds a diagram layer to the labeling engine
+    //! @deprecated since 2.12 - use prepareDiagramLayer()
+    Q_DECL_DEPRECATED virtual int addDiagramLayer( QgsVectorLayer *layer, const QgsDiagramLayerSettings *s )
     { Q_UNUSED( layer ); Q_UNUSED( s ); return 0; }
     //! called for every feature
-    virtual void registerFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext(), QString dxfLayer = QString::null ) = 0;
+    virtual void registerFeature( const QString &layerID, QgsFeature &feat, QgsRenderContext &context ) = 0;
     //! called for every diagram feature
-    virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() )
+    virtual void registerDiagramFeature( const QString &layerID, QgsFeature &feat, QgsRenderContext &context )
     { Q_UNUSED( layerID ); Q_UNUSED( feat ); Q_UNUSED( context ); }
     //! called when the map is drawn and labels should be placed
     virtual void drawLabeling( QgsRenderContext& context ) = 0;
@@ -176,7 +209,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! starts rendering
     //! @param painter painter to render to
     //! @param forceWidthScale Force a specific scale factor for line widths and marker sizes. Automatically calculated from output device DPI if 0
-    void render( QPainter* painter, double* forceWidthScale = 0 );
+    void render( QPainter* painter, double* forceWidthScale = nullptr );
 
     //! sets extent and checks whether suitable (returns false if not)
     bool setExtent( const QgsRectangle& extent );
@@ -202,8 +235,8 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     void setScale( double scale ) {mScale = scale;}
     double mapUnitsPerPixel() const { return mMapUnitsPerPixel; }
 
-    int width() const { return ( int ) mSize.width(); }
-    int height() const { return ( int ) mSize.height(); }
+    int width() const { return static_cast< int >( mSize.width() ); }
+    int height() const { return static_cast< int >( mSize.height() ); }
 
     //! Recalculate the map scale
     void updateScale();
@@ -300,7 +333,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! Accessor for render context
     QgsRenderContext* rendererContext() {return &mRenderContext;}
 
-    //! Labeling engine (NULL if there's no custom engine)
+    //! Labeling engine (nullptr if there's no custom engine)
     QgsLabelingEngineInterface* labelingEngine() { return mLabelingEngine; }
 
     //! Set labeling engine. Previous engine (if any) is deleted.
@@ -308,9 +341,9 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     void setLabelingEngine( QgsLabelingEngineInterface* iface );
 
     //! Returns a QPainter::CompositionMode corresponding to a BlendMode
-    static QPainter::CompositionMode getCompositionMode( const QgsMapRenderer::BlendMode &blendMode );
+    static QPainter::CompositionMode getCompositionMode( BlendMode blendMode );
     //! Returns a BlendMode corresponding to a QPainter::CompositionMode
-    static QgsMapRenderer::BlendMode getBlendModeEnum( const QPainter::CompositionMode &blendMode );
+    static QgsMapRenderer::BlendMode getBlendModeEnum( QPainter::CompositionMode blendMode );
 
     void addLayerCoordinateTransform( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform = -1, int destDatumTransform = -1 );
     void clearLayerCoordinateTransforms();
@@ -328,6 +361,15 @@ class CORE_EXPORT QgsMapRenderer : public QObject
      * also sets the contents of the r2 parameter
      */
     bool splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent, QgsRectangle& r2 );
+
+    /** Set a feature filter provider to filter the features shown in the map.
+     * @param ffp the feature filter provider
+     * @note added in QGIS 2.14
+     */
+    void setFeatureFilterProvider( const QgsFeatureFilterProvider* ffp )
+    {
+      mRenderContext.setFeatureFilterProvider( ffp );
+    }
 
   signals:
 
@@ -367,6 +409,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     void rotationChanged( double );
 
     //! Notifies higher level components to show the datum transform dialog and add a QgsLayerCoordinateTransformInfo for that layer
+    //! @note not available in Python bindings
     void datumTransformInfoRequested( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId ) const;
 
 
@@ -430,7 +473,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //!Output units
     OutputUnits mOutputUnits;
 
-    //! Labeling engine (NULL by default)
+    //! Labeling engine (nullptr by default)
     QgsLabelingEngineInterface* mLabelingEngine;
 
     //! Locks rendering loop for concurrent draws
@@ -440,6 +483,11 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     QgsMapSettings mMapSettings;
 
     QHash< QString, QgsLayerCoordinateTransform > mLayerCoordinateTransformInfo;
+
+    QHash< QPair< QString, QString >, QPair< int, int > > mDefaultDatumTransformations;
+
+  private:
+    void readDefaultDatumTransformations();
 };
 
 #endif

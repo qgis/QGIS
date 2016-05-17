@@ -13,6 +13,7 @@
     <file>icons/user.xpm</file>
     <file>icons/users.xpm</file>
     <file>icons/view.png</file>
+    <file>icons/view_materialized.png</file>
     <file alias="warning">icons/warning-20px.png</file>
     <file>icons/plugged.png</file>
     <file>icons/unplugged.png</file>

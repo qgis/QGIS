@@ -5,6 +5,8 @@ INCLUDE_DIRECTORIES(
   .
   ../../core
   ../../core/geometry
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
 )
 

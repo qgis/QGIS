@@ -30,7 +30,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import re
-from PyQt4.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsApplication
 import subprocess
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -39,116 +39,147 @@ from processing.tools.system import isMac, isWindows
 import logging
 import xml.etree.ElementTree as ET
 import traceback
+from processing.core.SilentProgress import SilentProgress
 
 
-class OTBUtils:
+OTB_FOLDER = "OTB_FOLDER"
+OTB_LIB_FOLDER = "OTB_LIB_FOLDER"
+OTB_SRTM_FOLDER = "OTB_SRTM_FOLDER"
+OTB_GEOID_FILE = "OTB_GEOID_FILE"
 
-    OTB_FOLDER = "OTB_FOLDER"
-    OTB_LIB_FOLDER = "OTB_LIB_FOLDER"
-    OTB_SRTM_FOLDER = "OTB_SRTM_FOLDER"
-    OTB_GEOID_FILE = "OTB_GEOID_FILE"
 
-    @staticmethod
-    def findOtbPath():
-        folder = None
-        #try to configure the path automatically
-        if isMac():
-            testfolder = os.path.join(unicode(QgsApplication.prefixPath()), "bin")
+def findOtbPath():
+    folder = ""
+    #try to configure the path automatically
+    if isMac():
+        testfolder = os.path.join(unicode(QgsApplication.prefixPath()), "bin")
+        if os.path.exists(os.path.join(testfolder, "otbcli")):
+            folder = testfolder
+        else:
+            testfolder = "/usr/local/bin"
             if os.path.exists(os.path.join(testfolder, "otbcli")):
                 folder = testfolder
-            else:
-                testfolder = "/usr/local/bin"
-                if os.path.exists(os.path.join(testfolder, "otbcli")):
-                    folder = testfolder
-        elif isWindows():
-            testfolder = os.path.join(os.path.dirname(QgsApplication.prefixPath()),
-                                      os.pardir, "bin")
-            if os.path.exists(os.path.join(testfolder, "otbcli.bat")):
-                folder = testfolder
+    elif isWindows():
+        testfolder = os.path.join(os.path.dirname(QgsApplication.prefixPath()),
+                                  os.pardir, "bin")
+        if os.path.exists(os.path.join(testfolder, "otbcli.bat")):
+            folder = testfolder
+    else:
+        testfolder = "/usr/bin"
+        if os.path.exists(os.path.join(testfolder, "otbcli")):
+            folder = testfolder
+    return folder
+
+
+def otbPath():
+    folder = ProcessingConfig.getSetting(OTB_FOLDER)
+    if folder is None:
+        folder = ""
+    return folder
+
+
+def findOtbLibPath():
+    folder = ""
+    #try to configure the path automatically
+    if isMac():
+        testfolder = os.path.join(unicode(QgsApplication.prefixPath()), "lib/otb/applications")
+        if os.path.exists(testfolder):
+            folder = testfolder
         else:
-            testfolder = "/usr/bin"
-            if os.path.exists(os.path.join(testfolder, "otbcli")):
-                folder = testfolder
-        return folder
-
-    @staticmethod
-    def otbPath():
-        folder = OTBUtils.findOtbPath()
-        if folder is None:
-            folder = ProcessingConfig.getSetting(OTBUtils.OTB_FOLDER)
-        return folder
-
-    @staticmethod
-    def findOtbLibPath():
-        folder = None
-        #try to configure the path automatically
-        if isMac():
-            testfolder = os.path.join(unicode(QgsApplication.prefixPath()), "lib/otb/applications")
+            testfolder = "/usr/local/lib/otb/applications"
             if os.path.exists(testfolder):
                 folder = testfolder
-            else:
-                testfolder = "/usr/local/lib/otb/applications"
-                if os.path.exists(testfolder):
-                    folder = testfolder
-        elif isWindows():
-            testfolder = os.path.join(os.path.dirname(QgsApplication.prefixPath()), "orfeotoolbox", "applications")
-            if os.path.exists(testfolder):
-                folder = testfolder
+    elif isWindows():
+        testfolder = os.path.join(os.path.dirname(QgsApplication.prefixPath()), "orfeotoolbox", "applications")
+        if os.path.exists(testfolder):
+            folder = testfolder
+    else:
+        testfolder = "/usr/lib/otb/applications"
+        if os.path.exists(testfolder):
+            folder = testfolder
+    return folder
+
+
+def otbLibPath():
+    return ProcessingConfig.getSetting(OTB_LIB_FOLDER) or ''
+
+
+def otbSRTMPath():
+    return ProcessingConfig.getSetting(OTB_SRTM_FOLDER) or ''
+
+
+def otbGeoidPath():
+    return ProcessingConfig.getSetting(OTB_GEOID_FILE) or ''
+
+
+def otbDescriptionPath():
+    return os.path.join(os.path.dirname(__file__), "description")
+
+_installedVersion = None
+_installedVersionFound = False
+
+
+def getInstalledVersion(runOtb=False):
+    global _installedVersion
+    global _installedVersionFound
+
+    if _installedVersionFound and not runOtb:
+        return _installedVersion
+
+    if otbPath() is None or otbLibPath() is None:
+        _installedVersionFound = False
+        return None
+    commands = [os.path.join(otbPath(), "otbcli_Smoothing")]
+    progress = SilentProgress()
+    out = executeOtb(commands, progress, False)
+    for line in out:
+        if "version" in line:
+            _installedVersionFound = True
+            _installedVersion = line.split("version")[-1].strip()
+            break
+    return _installedVersion
+
+
+def compatibleDescriptionPath(version):
+    supportedVersions = {"5.0.0": "5.0.0"}
+    if version is None:
+        return None
+    if version not in supportedVersions:
+        lastVersion = sorted(supportedVersions.keys())[-1]
+        if version > lastVersion:
+            version = lastVersion
         else:
-            testfolder = "/usr/lib/otb/applications"
-            if os.path.exists(testfolder):
-                folder = testfolder
-        return folder
+            return None
 
-    @staticmethod
-    def otbLibPath():
-        folder = OTBUtils.findOtbLibPath()
-        if folder is None:
-            folder = ProcessingConfig.getSetting(OTBUtils.OTB_LIB_FOLDER)
-        return folder
+    return os.path.join(otbDescriptionPath(), supportedVersions[version])
 
-    @staticmethod
-    def otbSRTMPath():
-        folder = ProcessingConfig.getSetting(OTBUtils.OTB_SRTM_FOLDER)
-        if folder is None:
-            folder = ""
-        return folder
 
-    @staticmethod
-    def otbGeoidPath():
-        filepath = ProcessingConfig.getSetting(OTBUtils.OTB_GEOID_FILE)
-        if filepath is None:
-            filepath = ""
-        return filepath
+def executeOtb(commands, progress, addToLog=True):
+    loglines = []
+    loglines.append(tr("OTB execution console output"))
+    os.putenv('ITK_AUTOLOAD_PATH', otbLibPath())
+    fused_command = ''.join(['"%s" ' % re.sub(r'^"|"$', '', c) for c in commands])
+    proc = subprocess.Popen(fused_command, shell=True, stdout=subprocess.PIPE, stdin=open(os.devnull), stderr=subprocess.STDOUT, universal_newlines=True).stdout
+    for line in iter(proc.readline, ""):
+        if "[*" in line:
+            idx = line.find("[*")
+            perc = int(line[idx - 4:idx - 2].strip(" "))
+            if perc != 0:
+                progress.setPercentage(perc)
+        else:
+            loglines.append(line)
+            progress.setConsoleInfo(line)
 
-    @staticmethod
-    def otbDescriptionPath():
-        return os.path.join(os.path.dirname(__file__), "description")
-
-    @staticmethod
-    def executeOtb(commands, progress):
-        loglines = []
-        loglines.append(OTBUtils.tr("OTB execution console output"))
-        os.putenv('ITK_AUTOLOAD_PATH', OTBUtils.otbLibPath())
-        fused_command = ''.join(['"%s" ' % re.sub(r'^"|"$', '', c) for c in commands])
-        proc = subprocess.Popen(fused_command, shell=True, stdout=subprocess.PIPE, stdin=open(os.devnull), stderr=subprocess.STDOUT, universal_newlines=True).stdout
-        for line in iter(proc.readline, ""):
-            if "[*" in line:
-                idx = line.find("[*")
-                perc = int(line[idx - 4:idx - 2].strip(" "))
-                if perc != 0:
-                    progress.setPercentage(perc)
-            else:
-                loglines.append(line)
-                progress.setConsoleInfo(line)
-
+    if addToLog:
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
 
-    @staticmethod
-    def tr(string, context=''):
-        if context == '':
-            context = 'OTBUtils'
-        return QCoreApplication.translate(context, string)
+    return loglines
+
+
+def tr(string, context=''):
+    if context == '':
+        context = 'OTBUtils'
+    return QCoreApplication.translate(context, string)
 
 
 def get_choices_of(doc, parameter):
@@ -162,7 +193,7 @@ def get_choices_of(doc, parameter):
     return choices
 
 
-def remove_dependant_choices(doc, parameter, choice):
+def remove_dependent_choices(doc, parameter, choice):
     choices = get_choices_of(doc, parameter)
     choices.remove(choice)
     for a_choice in choices:
@@ -177,7 +208,7 @@ def renameValueField(doc, textitem, field, newValue):
         t5.find(field).text = newValue
 
 
-def remove_independant_choices(doc, parameter, choice):
+def remove_independent_choices(doc, parameter, choice):
     choices = []
     choices.append(choice)
     for a_choice in choices:
@@ -221,7 +252,7 @@ def split_by_choice(doc, parameter):
     for choice in choices:
         #creates a new copy of the document
         working_copy = copy.deepcopy(doc)
-        remove_dependant_choices(working_copy, parameter, choice)
+        remove_dependent_choices(working_copy, parameter, choice)
         #remove all other choices except the current one
         remove_other_choices(working_copy, parameter, choice)
         #set a new name according to the choice

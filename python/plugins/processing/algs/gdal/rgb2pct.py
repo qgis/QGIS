@@ -26,6 +26,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from qgis.PyQt.QtGui import QIcon
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
@@ -33,12 +37,17 @@ from processing.core.outputs import OutputRaster
 from processing.tools.system import isWindows
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class rgb2pct(GdalAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     NCOLORS = 'NCOLORS'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', '24-to-8-bits.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('RGB to PCT')

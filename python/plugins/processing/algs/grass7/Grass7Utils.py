@@ -30,7 +30,7 @@ import shutil
 import subprocess
 import os
 from qgis.core import QgsApplication
-from PyQt4.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import userFolder, isWindows, isMac, tempFolder, mkdir
@@ -45,7 +45,6 @@ class Grass7Utils:
     GRASS_REGION_YMAX = 'GRASS7_REGION_YMAX'
     GRASS_REGION_CELLSIZE = 'GRASS7_REGION_CELLSIZE'
     GRASS_FOLDER = 'GRASS7_FOLDER'
-    GRASS_WIN_SHELL = 'GRASS7_WIN_SHELL'
     GRASS_LOG_COMMANDS = 'GRASS7_LOG_COMMANDS'
     GRASS_LOG_CONSOLE = 'GRASS7_LOG_CONSOLE'
 
@@ -84,14 +83,19 @@ class Grass7Utils:
         if not isWindows() and not isMac():
             return ''
 
-        folder = ProcessingConfig.getSetting(Grass7Utils.GRASS_FOLDER)
+        folder = ProcessingConfig.getSetting(Grass7Utils.GRASS_FOLDER) or ''
+        if not os.path.exists(folder):
+            folder = None
         if folder is None:
             if isWindows():
-                testfolder = os.path.dirname(unicode(QgsApplication.prefixPath()))
-                testfolder = os.path.join(testfolder, 'grass7')
+                if "OSGEO4W_ROOT" in os.environ:
+                    testfolder = os.path.join(unicode(os.environ['OSGEO4W_ROOT']), "apps")
+                else:
+                    testfolder = unicode(QgsApplication.prefixPath())
+                testfolder = os.path.join(testfolder, 'grass')
                 if os.path.isdir(testfolder):
                     for subfolder in os.listdir(testfolder):
-                        if subfolder.startswith('grass7'):
+                        if subfolder.startswith('grass-7'):
                             folder = os.path.join(testfolder, subfolder)
                             break
             else:
@@ -99,15 +103,7 @@ class Grass7Utils:
                 if not os.path.isdir(folder):
                     folder = '/Applications/GRASS-7.0.app/Contents/MacOS'
 
-        return folder
-
-    @staticmethod
-    def grassWinShell():
-        folder = ProcessingConfig.getSetting(Grass7Utils.GRASS_WIN_SHELL)
-        if folder is None:
-            folder = os.path.dirname(unicode(QgsApplication.prefixPath()))
-            folder = os.path.join(folder, 'msys')
-        return folder
+        return folder or ''
 
     @staticmethod
     def grassDescriptionPath():
@@ -116,7 +112,6 @@ class Grass7Utils:
     @staticmethod
     def createGrass7Script(commands):
         folder = Grass7Utils.grassPath()
-        shell = Grass7Utils.grassWinShell()
 
         script = Grass7Utils.grassScriptFilename()
         gisrc = userFolder() + os.sep + 'processing.gisrc7'  # FIXME: use temporary file
@@ -135,9 +130,6 @@ class Grass7Utils:
         output = open(script, 'w')
         output.write('set HOME=' + os.path.expanduser('~') + '\n')
         output.write('set GISRC=' + gisrc + '\n')
-        output.write('set GRASS_SH=' + shell + '\\bin\\sh.exe\n')
-        output.write('set PATH=' + shell + os.sep + 'bin;' + shell + os.sep
-                     + 'lib;' + '%PATH%\n')
         output.write('set WINGISBASE=' + folder + '\n')
         output.write('set GISBASE=' + folder + '\n')
         output.write('set GRASS_PROJSHARE=' + folder + os.sep + 'share'
@@ -249,12 +241,13 @@ class Grass7Utils:
             env['GISRC'] = gisrc
             env['GRASS_MESSAGE_FORMAT'] = 'plain'
             env['GRASS_BATCH_JOB'] = Grass7Utils.grassBatchJobFilename()
-            del env['GISBASE']
+            if 'GISBASE' in env:
+                del env['GISBASE']
             Grass7Utils.createGrass7BatchJobFileFromGrass7Commands(commands)
             os.chmod(Grass7Utils.grassBatchJobFilename(), stat.S_IEXEC
                      | stat.S_IREAD | stat.S_IWRITE)
-            if isMac() and os.path.exists(Grass7Utils.grassPath() + os.sep + 'grass70.sh'):
-                command = Grass7Utils.grassPath() + os.sep + 'grass70.sh ' \
+            if isMac() and os.path.exists(Grass7Utils.grassPath() + os.sep + '*grass.sh*'):
+                command = Grass7Utils.grassPath() + os.sep + '*grass.sh* ' \
                     + Grass7Utils.grassMapsetFolder() + '/PERMANENT'
             else:
                 command = 'grass70 ' + Grass7Utils.grassMapsetFolder() \
@@ -362,10 +355,10 @@ class Grass7Utils:
             cmdpath = os.path.join(path, 'bin', 'r.out.gdal.exe')
             if not os.path.exists(cmdpath):
                 return Grass7Utils.tr(
-                    'The specified GRASS GIS 7 folder does not contain a valid '
-                    'set of GRASS GIS 7 modules.\nPlease, go to the Processing '
-                    'settings dialog, and check that the GRASS GIS 7\n'
-                    'folder is correctly configured')
+                    'The specified GRASS 7 folder "{}" does not contain '
+                    'a valid set of GRASS 7 modules.\nPlease, go to the '
+                    'Processing settings dialog, and check that the '
+                    'GRASS 7\nfolder is correctly configured'.format(os.path.join(path, 'bin')))
 
         if not ignorePreviousState:
             if Grass7Utils.isGrass7Installed:

@@ -22,9 +22,6 @@
 #include "qgsleastsquares.h"
 
 #include <cmath>
-using std::cos;
-using std::sin;
-using std::pow;
 
 #include <cassert>
 #include <limits>
@@ -40,8 +37,8 @@ class QgsLinearGeorefTransform : public QgsGeorefTransformInterface
 
     bool getOriginScale( QgsPoint &origin, double &scaleX, double &scaleY ) const;
 
-    bool updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords ) override;
-    uint getMinimumGCPCount() const override;
+    bool updateParametersFromGCPs( const QVector<QgsPoint> &mapCoords, const QVector<QgsPoint> &pixelCoords ) override;
+    int getMinimumGCPCount() const override;
 
     GDALTransformerFunc  GDALTransformer()     const override { return QgsLinearGeorefTransform::linear_transform; }
     void                *GDALTransformerArgs() const override { return ( void * )&mParameters; }
@@ -71,8 +68,8 @@ class QgsHelmertGeorefTransform : public QgsGeorefTransformInterface
     };
 
     bool getOriginScaleRotation( QgsPoint &origin, double& scale, double& rotation ) const;
-    bool updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords ) override;
-    uint getMinimumGCPCount() const override;
+    bool updateParametersFromGCPs( const QVector<QgsPoint> &mapCoords, const QVector<QgsPoint> &pixelCoords ) override;
+    int getMinimumGCPCount() const override;
 
     GDALTransformerFunc  GDALTransformer()     const override;
     void                *GDALTransformerArgs() const override;
@@ -92,8 +89,8 @@ class QgsGDALGeorefTransform : public QgsGeorefTransformInterface
     QgsGDALGeorefTransform( bool useTPS, unsigned int polynomialOrder );
     ~QgsGDALGeorefTransform();
 
-    bool updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords ) override;
-    uint getMinimumGCPCount() const override;
+    bool updateParametersFromGCPs( const QVector<QgsPoint> &mapCoords, const QVector<QgsPoint> &pixelCoords ) override;
+    int getMinimumGCPCount() const override;
 
     GDALTransformerFunc  GDALTransformer()     const override;
     void                *GDALTransformerArgs() const override;
@@ -118,8 +115,8 @@ class QgsProjectiveGeorefTransform : public QgsGeorefTransformInterface
     QgsProjectiveGeorefTransform() : mParameters() {}
     ~QgsProjectiveGeorefTransform() {}
 
-    bool updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords ) override;
-    uint getMinimumGCPCount() const override;
+    bool updateParametersFromGCPs( const QVector<QgsPoint> &mapCoords, const QVector<QgsPoint> &pixelCoords ) override;
+    int getMinimumGCPCount() const override;
 
     GDALTransformerFunc  GDALTransformer()     const override { return QgsProjectiveGeorefTransform::projective_transform; }
     void                *GDALTransformerArgs() const override { return ( void * )&mParameters; }
@@ -139,21 +136,21 @@ class QgsProjectiveGeorefTransform : public QgsGeorefTransformInterface
 QgsGeorefTransform::QgsGeorefTransform( const QgsGeorefTransform &other )
 {
   mTransformParametrisation = InvalidTransform;
-  mGeorefTransformImplementation = NULL;
+  mGeorefTransformImplementation = nullptr;
   selectTransformParametrisation( other.mTransformParametrisation );
 }
 
 QgsGeorefTransform::QgsGeorefTransform( TransformParametrisation parametrisation )
 {
   mTransformParametrisation = InvalidTransform;
-  mGeorefTransformImplementation = NULL;
+  mGeorefTransformImplementation = nullptr;
   selectTransformParametrisation( parametrisation );
 }
 
 QgsGeorefTransform::QgsGeorefTransform()
 {
   mTransformParametrisation = InvalidTransform;
-  mGeorefTransformImplementation = NULL;
+  mGeorefTransformImplementation = nullptr;
   mParametersInitialized = false;
 }
 
@@ -195,7 +192,7 @@ bool QgsGeorefTransform::parametersInitialized() const
   return mParametersInitialized;
 }
 
-bool QgsGeorefTransform::updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords )
+bool QgsGeorefTransform::updateParametersFromGCPs( const QVector<QgsPoint> &mapCoords, const QVector<QgsPoint> &pixelCoords )
 {
   if ( !mGeorefTransformImplementation )
   {
@@ -211,7 +208,7 @@ bool QgsGeorefTransform::updateParametersFromGCPs( const std::vector<QgsPoint> &
   }
   if ( mRasterChangeCoords.hasCrs() )
   {
-    std::vector<QgsPoint> pixelCoordsCorrect = mRasterChangeCoords.getPixelCoords( pixelCoords );
+    QVector<QgsPoint> pixelCoordsCorrect = mRasterChangeCoords.getPixelCoords( pixelCoords );
     mParametersInitialized = mGeorefTransformImplementation->updateParametersFromGCPs( mapCoords, pixelCoordsCorrect );
     pixelCoordsCorrect.clear();
   }
@@ -222,45 +219,41 @@ bool QgsGeorefTransform::updateParametersFromGCPs( const std::vector<QgsPoint> &
   return mParametersInitialized;
 }
 
-uint QgsGeorefTransform::getMinimumGCPCount() const
+int QgsGeorefTransform::getMinimumGCPCount() const
 {
-  if ( !mGeorefTransformImplementation )
-  {
-    return 0u;
-  }
-  return mGeorefTransformImplementation->getMinimumGCPCount();
+  return mGeorefTransformImplementation ? mGeorefTransformImplementation->getMinimumGCPCount() : 0;
 }
 
 GDALTransformerFunc QgsGeorefTransform::GDALTransformer() const
 {
-  if ( !mGeorefTransformImplementation )
-  {
-    return NULL;
-  }
-  return mGeorefTransformImplementation->GDALTransformer();
+  return mGeorefTransformImplementation ? mGeorefTransformImplementation->GDALTransformer() : nullptr;
 }
 
 void* QgsGeorefTransform::GDALTransformerArgs() const
 {
-  if ( !mGeorefTransformImplementation )
-  {
-    return NULL;
-  }
-  return mGeorefTransformImplementation->GDALTransformerArgs();
+  return mGeorefTransformImplementation ? mGeorefTransformImplementation->GDALTransformerArgs() : nullptr;
 }
 
 QgsGeorefTransformInterface *QgsGeorefTransform::createImplementation( TransformParametrisation parametrisation )
 {
   switch ( parametrisation )
   {
-    case Linear:           return new QgsLinearGeorefTransform;
-    case Helmert:          return new QgsHelmertGeorefTransform;
-    case PolynomialOrder1: return new QgsGDALGeorefTransform( false, 1 );
-    case PolynomialOrder2: return new QgsGDALGeorefTransform( false, 2 );
-    case PolynomialOrder3: return new QgsGDALGeorefTransform( false, 3 );
-    case ThinPlateSpline:  return new QgsGDALGeorefTransform( true, 0 );
-    case Projective:       return new QgsProjectiveGeorefTransform;
-    default:               return NULL;
+    case Linear:
+      return new QgsLinearGeorefTransform;
+    case Helmert:
+      return new QgsHelmertGeorefTransform;
+    case PolynomialOrder1:
+      return new QgsGDALGeorefTransform( false, 1 );
+    case PolynomialOrder2:
+      return new QgsGDALGeorefTransform( false, 2 );
+    case PolynomialOrder3:
+      return new QgsGDALGeorefTransform( false, 3 );
+    case ThinPlateSpline:
+      return new QgsGDALGeorefTransform( true, 0 );
+    case Projective:
+      return new QgsProjectiveGeorefTransform;
+    default:
+      return nullptr;
   }
 }
 
@@ -355,7 +348,7 @@ bool QgsLinearGeorefTransform::getOriginScale( QgsPoint &origin, double &scaleX,
   return true;
 }
 
-bool QgsLinearGeorefTransform::updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords )
+bool QgsLinearGeorefTransform::updateParametersFromGCPs( const QVector<QgsPoint> &mapCoords, const QVector<QgsPoint> &pixelCoords )
 {
   if ( mapCoords.size() < getMinimumGCPCount() )
     return false;
@@ -363,7 +356,7 @@ bool QgsLinearGeorefTransform::updateParametersFromGCPs( const std::vector<QgsPo
   return true;
 }
 
-uint QgsLinearGeorefTransform::getMinimumGCPCount() const
+int QgsLinearGeorefTransform::getMinimumGCPCount() const
 {
   return 2;
 }
@@ -373,10 +366,8 @@ int QgsLinearGeorefTransform::linear_transform( void *pTransformerArg, int bDstT
 {
   Q_UNUSED( z );
   LinearParameters* t = static_cast<LinearParameters*>( pTransformerArg );
-  if ( t == NULL )
-  {
+  if ( !t )
     return false;
-  }
 
   if ( !bDstToSrc )
   {
@@ -410,7 +401,7 @@ int QgsLinearGeorefTransform::linear_transform( void *pTransformerArg, int bDstT
   return true;
 }
 
-bool QgsHelmertGeorefTransform::updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords )
+bool QgsHelmertGeorefTransform::updateParametersFromGCPs( const QVector<QgsPoint> &mapCoords, const QVector<QgsPoint> &pixelCoords )
 {
   if ( mapCoords.size() < getMinimumGCPCount() )
     return false;
@@ -419,7 +410,7 @@ bool QgsHelmertGeorefTransform::updateParametersFromGCPs( const std::vector<QgsP
   return true;
 }
 
-uint QgsHelmertGeorefTransform::getMinimumGCPCount() const
+int QgsHelmertGeorefTransform::getMinimumGCPCount() const
 {
   return 2;
 }
@@ -448,10 +439,8 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
 {
   Q_UNUSED( z );
   HelmertParameters* t = static_cast<HelmertParameters*>( pTransformerArg );
-  if ( t == NULL )
-  {
+  if ( !t )
     return false;
-  }
 
   double a = cos( t->angle ), b = sin( t->angle ), x0 = t->origin.x(), y0 = t->origin.y(), s = t->scale;
   if ( !bDstToSrc )
@@ -498,10 +487,12 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
   return true;
 }
 
-QgsGDALGeorefTransform::QgsGDALGeorefTransform( bool useTPS, unsigned int polynomialOrder ) : mPolynomialOrder( qMin( 3u, polynomialOrder ) ), mIsTPSTransform( useTPS )
+QgsGDALGeorefTransform::QgsGDALGeorefTransform( bool useTPS, unsigned int polynomialOrder )
+    : mPolynomialOrder( qMin( 3u, polynomialOrder ) )
+    , mIsTPSTransform( useTPS )
 {
-  mGDALTransformer     = NULL;
-  mGDALTransformerArgs = NULL;
+  mGDALTransformer     = nullptr;
+  mGDALTransformerArgs = nullptr;
 }
 
 QgsGDALGeorefTransform::~QgsGDALGeorefTransform()
@@ -509,7 +500,7 @@ QgsGDALGeorefTransform::~QgsGDALGeorefTransform()
   destroy_gdal_args();
 }
 
-bool QgsGDALGeorefTransform::updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords )
+bool QgsGDALGeorefTransform::updateParametersFromGCPs( const QVector<QgsPoint> &mapCoords, const QVector<QgsPoint> &pixelCoords )
 {
   assert( mapCoords.size() == pixelCoords.size() );
   if ( mapCoords.size() != pixelCoords.size() )
@@ -521,7 +512,7 @@ bool QgsGDALGeorefTransform::updateParametersFromGCPs( const std::vector<QgsPoin
   {
     GCPList[i].pszId = new char[20];
     snprintf( GCPList[i].pszId, 19, "gcp%i", i );
-    GCPList[i].pszInfo = NULL;
+    GCPList[i].pszInfo = nullptr;
     GCPList[i].dfGCPPixel =  pixelCoords[i].x();
     GCPList[i].dfGCPLine  = -pixelCoords[i].y();
     GCPList[i].dfGCPX = mapCoords[i].x();
@@ -540,10 +531,11 @@ bool QgsGDALGeorefTransform::updateParametersFromGCPs( const std::vector<QgsPoin
     delete [] GCPList[i].pszId;
   }
   delete [] GCPList;
-  return NULL != mGDALTransformerArgs;
+
+  return nullptr != mGDALTransformerArgs;
 }
 
-uint QgsGDALGeorefTransform::getMinimumGCPCount() const
+int QgsGDALGeorefTransform::getMinimumGCPCount() const
 {
   if ( mIsTPSTransform )
     return 1;
@@ -555,7 +547,7 @@ GDALTransformerFunc QgsGDALGeorefTransform::GDALTransformer() const
 {
   // Fail if no arguments were calculated through updateParametersFromGCP
   if ( !mGDALTransformerArgs )
-    return NULL;
+    return nullptr;
 
   if ( mIsTPSTransform )
     return GDALTPSTransform;
@@ -579,17 +571,16 @@ void QgsGDALGeorefTransform::destroy_gdal_args()
   }
 }
 
-bool QgsProjectiveGeorefTransform::updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords )
+bool QgsProjectiveGeorefTransform::updateParametersFromGCPs( const QVector<QgsPoint> &mapCoords, const QVector<QgsPoint> &pixelCoords )
 {
   if ( mapCoords.size() < getMinimumGCPCount() )
     return false;
 
-
   // HACK: flip y coordinates, because georeferencer and gdal use different conventions
-  std::vector<QgsPoint> flippedPixelCoords( pixelCoords.size() );
-  for ( uint i = 0; i < pixelCoords.size(); i++ )
+  QVector<QgsPoint> flippedPixelCoords( pixelCoords.size() );
+  for ( int i = 0; i < pixelCoords.size(); i++ )
   {
-    flippedPixelCoords[i] = QgsPoint( pixelCoords[i].x(), -pixelCoords[i].y() );
+    flippedPixelCoords[i] = pixelCoords[i];
   }
 
   QgsLeastSquares::projective( mapCoords, flippedPixelCoords, mParameters.H );
@@ -628,7 +619,7 @@ bool QgsProjectiveGeorefTransform::updateParametersFromGCPs( const std::vector<Q
   return true;
 }
 
-uint QgsProjectiveGeorefTransform::getMinimumGCPCount() const
+int QgsProjectiveGeorefTransform::getMinimumGCPCount() const
 {
   return 4;
 }
@@ -638,10 +629,8 @@ int QgsProjectiveGeorefTransform::projective_transform( void *pTransformerArg, i
 {
   Q_UNUSED( z );
   ProjectiveParameters* t = static_cast<ProjectiveParameters*>( pTransformerArg );
-  if ( t == NULL )
-  {
+  if ( !t )
     return false;
-  }
 
   double *H;
   if ( !bDstToSrc )

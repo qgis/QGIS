@@ -23,6 +23,8 @@
 
 class QgisApp;
 class QgsComposerArrow;
+class QgsComposerPolygon;
+class QgsComposerPolyline;
 class QgsComposerFrame;
 class QgsComposerHtml;
 class QgsComposerLabel;
@@ -83,13 +85,13 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void zoomFull();
 
     //! Return pointer to map canvas
-    QgsMapCanvas *mapCanvas( void );
+    QgsMapCanvas* mapCanvas();
 
     //! Return pointer to composer view
-    QgsComposerView *view( void );
+    QgsComposerView* view();
 
     //! Return current composition
-    QgsComposition* composition( void ) { return mComposition; }
+    QgsComposition* composition() { return mComposition; }
 
     //! Restore the window and toolbar state
     void restoreWindowState();
@@ -187,6 +189,11 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void on_mActionAddTriangle_triggered();
 
     void on_mActionAddEllipse_triggered();
+
+    //! Nodes based shape
+    void on_mActionEditNodesItem_triggered();
+    void on_mActionAddPolygon_triggered();
+    void on_mActionAddPolyline_triggered();
 
     //! Add attribute table
     void on_mActionAddTable_triggered();
@@ -319,6 +326,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //!Show/hide bounding boxes
     void on_mActionShowBoxes_triggered( bool checked );
 
+    //!Show/hide pages
+    void on_mActionShowPage_triggered( bool checked );
+
     //!Show/hide rulers
     void toggleRulers( bool checked );
 
@@ -372,6 +382,12 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     /** Add a composer arrow to the item/widget map and creates a configuration widget for it*/
     void addComposerArrow( QgsComposerArrow* arrow );
+
+    /** Add a composer polygon to the item/widget map and creates a configuration widget for it*/
+    void addComposerPolygon( QgsComposerPolygon* polygon );
+
+    /** Add a composer polyline to the item/widget map and creates a configuration widget for it*/
+    void addComposerPolyline( QgsComposerPolyline* polyline );
 
     /** Add a composer map to the item/widget map and creates a configuration widget for it*/
     void addComposerMap( QgsComposerMap* map );
@@ -434,10 +450,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void statusZoomCombo_zoomEntered();
 
     //! Updates status bar composition message
-    void updateStatusCompositionMsg( QString message );
+    void updateStatusCompositionMsg( const QString& message );
 
     //! Updates status bar atlas message
-    void updateStatusAtlasMsg( QString message );
+    void updateStatusAtlasMsg( const QString& message );
 
   private:
 
@@ -485,7 +501,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void createComposerView();
 
     //! Write a world file
-    void writeWorldFile( QString fileName, double a, double b, double c, double d, double e, double f ) const;
+    void writeWorldFile( const QString& fileName, double a, double b, double c, double d, double e, double f ) const;
 
     //! Updates the grid/guide action status based on compositions grid/guide settings
     void restoreGridSettings();
@@ -504,9 +520,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Updates the "set as atlas feature" map layer action, removing it if atlas is disabled
     void updateAtlasMapLayerAction( bool atlasEnabled );
-
-    //! Set default settings for printer page settings based on composition paper size
-    void setPrinterPageDefaults();
 
     //! Load predefined scales from the project's properties
     void loadAtlasPredefinedScalesFromProject();
@@ -563,6 +576,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Page & Printer Setup
     QPrinter* mPrinter;
+    bool mSetPageOrientation;
 
     QUndoView* mUndoView;
 
@@ -602,7 +616,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     struct PanelStatus
     {
-      PanelStatus( bool visible = true, bool active = false ) : isVisible( visible ), isActive( active ) {}
+      PanelStatus( bool visible = true, bool active = false )
+          : isVisible( visible )
+          , isActive( active )
+      {}
       bool isVisible;
       bool isActive;
     };
@@ -641,7 +658,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void updateAtlasMapLayerAction( QgsVectorLayer* coverageLayer );
 
     //! Sets the printer page orientation when the page orientation changes
-    void setPrinterPageOrientation( QString orientation );
+    void pageOrientationChanged( const QString& orientation );
+
+    void setPrinterPageOrientation();
 
     void disablePreviewMode();
     void activateGrayscalePreview();

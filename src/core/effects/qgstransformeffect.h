@@ -40,7 +40,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
      * @param map encoded properties string map
      * @returns new QgsTransformEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& );
+    static QgsPaintEffect* create( const QgsStringMap& map );
 
     QgsTransformEffect();
     virtual ~QgsTransformEffect();
@@ -48,7 +48,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
     virtual QString type() const override { return QString( "transform" ); }
     virtual QgsStringMap properties() const override;
     virtual void readProperties( const QgsStringMap& props ) override;
-    virtual QgsPaintEffect* clone() const override;
+    virtual QgsTransformEffect* clone() const override;
 
     /** Sets the transform x translation.
      * @param translateX distance to translate along the x axis

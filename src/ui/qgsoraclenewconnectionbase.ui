@@ -235,6 +235,23 @@
         </property>
        </widget>
       </item>
+      <item row="7" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtWorkspace">
+        <property name="echoMode">
+         <enum>QLineEdit::Normal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="TextLabel3_4">
+        <property name="text">
+         <string>Workspace</string>
+        </property>
+        <property name="buddy">
+         <cstring>txtPassword</cstring>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -249,6 +266,7 @@
   <tabstop>txtUsername</tabstop>
   <tabstop>txtPassword</tabstop>
   <tabstop>txtOptions</tabstop>
+  <tabstop>txtWorkspace</tabstop>
   <tabstop>chkStoreUsername</tabstop>
   <tabstop>chkStorePassword</tabstop>
   <tabstop>btnConnect</tabstop>

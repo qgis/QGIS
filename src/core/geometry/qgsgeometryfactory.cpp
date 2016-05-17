@@ -28,31 +28,52 @@
 #include "qgsmultipolygonv2.h"
 #include "qgsmultisurfacev2.h"
 #include "qgswkbtypes.h"
+#include "qgslogger.h"
 
-QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkb( const unsigned char* wkb )
+QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr wkbPtr )
 {
-  if ( !wkb )
-  {
-    return 0;
-  }
+  if ( !wkbPtr )
+    return nullptr;
 
   //find out type (bytes 2-5)
-  int type;
-  memcpy( &type, wkb + 1, sizeof( int ) );
-  QgsAbstractGeometryV2* geom = 0;
+  QgsWKBTypes::Type type = QgsWKBTypes::Unknown;
+  try
+  {
+    type = wkbPtr.readHeader();
+  }
+  catch ( const QgsWkbException &e )
+  {
+    Q_UNUSED( e );
+    QgsDebugMsg( "WKB exception while reading header: " + e.what() );
+    return nullptr;
+  }
+  wkbPtr -= 1 + sizeof( int );
 
-  geom = geomFromWkbType( QgsWKBTypes::Type( type ) );
+  QgsAbstractGeometryV2* geom = nullptr;
+
+  geom = geomFromWkbType( type );
 
   if ( geom )
   {
-    geom->fromWkb( wkb );
+    try
+    {
+      geom->fromWkb( wkbPtr );
+    }
+    catch ( const QgsWkbException &e )
+    {
+      Q_UNUSED( e );
+      QgsDebugMsg( "WKB exception: " + e.what() );
+      delete geom;
+      geom = nullptr;
+    }
   }
+
   return geom;
 }
 
 QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkt( const QString& text )
 {
-  QgsAbstractGeometryV2* geom = 0;
+  QgsAbstractGeometryV2* geom = nullptr;
   if ( text.startsWith( "Point", Qt::CaseInsensitive ) )
   {
     geom = new QgsPointV2();
@@ -61,7 +82,7 @@ QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkt( const QString& text )
   {
     geom = new QgsLineStringV2();
   }
-  else if ( text .startsWith( "CircularString", Qt::CaseInsensitive ) )
+  else if ( text.startsWith( "CircularString", Qt::CaseInsensitive ) )
   {
     geom = new QgsCircularStringV2();
   }
@@ -106,7 +127,8 @@ QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkt( const QString& text )
   {
     if ( !geom->fromWkt( text ) )
     {
-      delete geom; return 0;
+      delete geom;
+      return nullptr;
     }
   }
   return geom;
@@ -196,7 +218,7 @@ QgsLineStringV2* QgsGeometryFactory::linestringFromPolyline( const QgsPolyline& 
 {
   QgsLineStringV2* line = new QgsLineStringV2();
 
-  QList<QgsPointV2> points;
+  QgsPointSequenceV2 points;
   QgsPolyline::const_iterator it = polyline.constBegin();
   for ( ; it != polyline.constEnd(); ++it )
   {
@@ -236,6 +258,6 @@ QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkbType( QgsWKBTypes::Type t 
     case QgsWKBTypes::GeometryCollection:
       return new QgsGeometryCollectionV2();
     default:
-      return 0;
+      return nullptr;
   }
 }

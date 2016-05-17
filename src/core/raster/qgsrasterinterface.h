@@ -34,7 +34,7 @@
  */
 class CORE_EXPORT QgsRasterInterface
 {
-    Q_DECLARE_TR_FUNCTIONS( QgsRasterInterface );
+    Q_DECLARE_TR_FUNCTIONS( QgsRasterInterface )
 
   public:
     //! If you add to this, please also add to capabilitiesString()
@@ -52,7 +52,7 @@ class CORE_EXPORT QgsRasterInterface
       IdentifyFeature  = 1 << 9, // WMS GML -> feature
     };
 
-    QgsRasterInterface( QgsRasterInterface * input = 0 );
+    QgsRasterInterface( QgsRasterInterface * input = nullptr );
 
     virtual ~QgsRasterInterface();
 
@@ -75,13 +75,13 @@ class CORE_EXPORT QgsRasterInterface
 
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType */
-    virtual QGis::DataType srcDataType( int bandNo ) const { if ( mInput ) return mInput->srcDataType( bandNo ); else return QGis::UnknownDataType; };
+    virtual QGis::DataType srcDataType( int bandNo ) const { return mInput ? mInput->srcDataType( bandNo ) : QGis::UnknownDataType; }
 
     /**
      * Get the extent of the interface.
      * @return QgsRectangle containing the extent of the layer
      */
-    virtual QgsRectangle extent() { if ( mInput ) return mInput->extent(); else return QgsRectangle(); }
+    virtual QgsRectangle extent() { return mInput ? mInput->extent() : QgsRectangle(); }
 
     int dataTypeSize( int bandNo ) { return QgsRasterBlock::typeSize( dataType( bandNo ) ); }
 
@@ -89,17 +89,17 @@ class CORE_EXPORT QgsRasterInterface
     virtual int bandCount() const = 0;
 
     /** Get block size */
-    virtual int xBlockSize() const { if ( mInput ) return mInput->xBlockSize(); else return 0; }
-    virtual int yBlockSize() const { if ( mInput ) return mInput->yBlockSize(); else return 0; }
+    virtual int xBlockSize() const { return mInput ? mInput->xBlockSize() : 0; }
+    virtual int yBlockSize() const { return mInput ? mInput->yBlockSize() : 0; }
 
     /** Get raster size */
-    virtual int xSize() const { if ( mInput ) return mInput->xSize(); else return 0; }
-    virtual int ySize() const { if ( mInput ) return mInput->ySize(); else return 0; }
+    virtual int xSize() const { return mInput ? mInput->xSize() : 0; }
+    virtual int ySize() const { return mInput ? mInput->ySize() : 0; }
 
     /** \brief helper function to create zero padded band names */
     virtual QString generateBandName( int theBandNumber ) const
     {
-      return tr( "Band" ) + QString( " %1" ) .arg( theBandNumber, 1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) );
+      return tr( "Band" ) + QString( " %1" ) .arg( theBandNumber, 1 + static_cast< int >( log10( static_cast< double >( bandCount() ) ) ), 10, QChar( '0' ) );
     }
 
     /** Read block of data using given extent and size.
@@ -131,12 +131,12 @@ class CORE_EXPORT QgsRasterInterface
      */
     virtual const QgsRasterInterface *srcInput() const
     {
-      QgsDebugMsg( "Entered" );
+      QgsDebugMsgLevel( "Entered", 4 );
       return mInput ? mInput->srcInput() : this;
     }
     virtual QgsRasterInterface * srcInput()
     {
-      QgsDebugMsg( "Entered" );
+      QgsDebugMsgLevel( "Entered", 4 );
       return mInput ? mInput->srcInput() : this;
     }
 

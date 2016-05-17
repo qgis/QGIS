@@ -38,7 +38,7 @@
 
 #define PI 3.14159265
 
-QgsAngleMagnetWidget::QgsAngleMagnetWidget( QString label , QWidget *parent )
+QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString& label , QWidget *parent )
     : QWidget( parent )
 {
   mLayout = new QHBoxLayout( this );
@@ -130,12 +130,12 @@ void QgsAngleMagnetWidget::angleSpinBoxValueChanged( double angle )
 
 QgsMapToolRotateFeature::QgsMapToolRotateFeature( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
-    , mRubberBand( 0 )
+    , mRubberBand( nullptr )
     , mRotation( 0 )
     , mRotationOffset( 0 )
-    , mAnchorPoint( 0 )
+    , mAnchorPoint( nullptr )
     , mRotationActive( false )
-    , mRotationWidget( 0 )
+    , mRotationWidget( nullptr )
 {
 }
 
@@ -146,7 +146,7 @@ QgsMapToolRotateFeature::~QgsMapToolRotateFeature()
   deleteRubberband();
 }
 
-void QgsMapToolRotateFeature::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolRotateFeature::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( mRotationActive )
   {
@@ -167,7 +167,7 @@ void QgsMapToolRotateFeature::canvasMoveEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolRotateFeature::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   deleteRotationWidget();
 
@@ -440,7 +440,7 @@ void QgsMapToolRotateFeature::activate()
 void QgsMapToolRotateFeature::deleteRubberband()
 {
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
 }
 
 void QgsMapToolRotateFeature::deactivate()
@@ -448,7 +448,7 @@ void QgsMapToolRotateFeature::deactivate()
   deleteRotationWidget();
   mRotationActive = false;
   delete mAnchorPoint;
-  mAnchorPoint = 0;
+  mAnchorPoint = nullptr;
   mRotationOffset = 0;
   deleteRubberband();
   QgsMapTool::deactivate();
@@ -480,7 +480,7 @@ void QgsMapToolRotateFeature::deleteRotationWidget()
     mRotationWidget->releaseKeyboard();
     mRotationWidget->deleteLater();
   }
-  mRotationWidget = 0;
+  mRotationWidget = nullptr;
 }
 
 

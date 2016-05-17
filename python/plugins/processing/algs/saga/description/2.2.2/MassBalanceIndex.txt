@@ -1,0 +1,8 @@
+Mass Balance Index
+ta_morphometry
+ParameterRaster|DEM|Elevation|False
+ParameterRaster|HREL|Vertical Distance to Channel Network|True
+ParameterNumber|TSLOPE|T Slope|None|None|15.0
+ParameterNumber|TCURVE|T Curvature|None|None|0.01
+ParameterNumber|THREL|T Vertical Distance to Channel Network|None|None|15.0
+OutputRaster|MBI|Mass Balance Index

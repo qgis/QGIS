@@ -34,7 +34,7 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     Q_OBJECT
 
   public:
-    QgsComposerLegendWidget( QgsComposerLegend* legend );
+    explicit QgsComposerLegendWidget( QgsComposerLegend* legend );
     ~QgsComposerLegendWidget();
 
     /** Updates the legend layers and groups*/
@@ -67,7 +67,11 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     void on_mBoxSpaceSpinBox_valueChanged( double d );
     void on_mColumnSpaceSpinBox_valueChanged( double d );
     void on_mCheckBoxAutoUpdate_stateChanged( int state );
-    void on_mMapComboBox_currentIndexChanged( int index );
+    void composerMapChanged( QgsComposerItem* item );
+
+    void on_mRasterBorderGroupBox_toggled( bool state );
+    void on_mRasterBorderWidthSpinBox_valueChanged( double d );
+    void on_mRasterBorderColorButton_colorChanged( const QColor& newColor );
 
     //item manipulation
     void on_mMoveDownToolButton_clicked();
@@ -76,30 +80,47 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     void on_mAddToolButton_clicked();
     void on_mEditPushButton_clicked();
     void on_mCountToolButton_clicked( bool checked );
-    void on_mFilterByMapToolButton_clicked( bool checked );
+    void on_mExpressionFilterButton_toggled( bool checked );
+    void on_mFilterByMapToolButton_toggled( bool checked );
     void resetLayerNodeToDefaults();
     void on_mUpdateAllPushButton_clicked();
     void on_mAddGroupToolButton_clicked();
+
+    void on_mFilterLegendByAtlasCheckBox_toggled( bool checked );
 
     void selectedChanged( const QModelIndex & current, const QModelIndex & previous );
 
     void setCurrentNodeStyleFromAction();
 
-  protected:
-    void showEvent( QShowEvent * event ) override;
-
   private slots:
     /** Sets GUI according to state of mLegend*/
     void setGuiElements();
 
+    /** Update the enabling state of the filter by atlas button */
+    void updateFilterLegendByAtlasButton();
+
   private:
     QgsComposerLegendWidget();
     void blockAllSignals( bool b );
-    void refreshMapComboBox();
-
 
     QgsComposerLegend* mLegend;
 };
+
+
+class QgsComposerLegendMenuProvider : public QObject, public QgsLayerTreeViewMenuProvider
+{
+    Q_OBJECT
+
+  public:
+    QgsComposerLegendMenuProvider( QgsLayerTreeView* view, QgsComposerLegendWidget* w );
+
+    virtual QMenu* createContextMenu() override;
+
+  protected:
+    QgsLayerTreeView* mView;
+    QgsComposerLegendWidget* mWidget;
+};
+
 
 #endif
 

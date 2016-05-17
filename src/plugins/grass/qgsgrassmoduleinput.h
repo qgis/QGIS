@@ -67,21 +67,27 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     /** Get singleton instance of this class. */
     static QgsGrassModuleInputModel* instance();
 
+    QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const override;
+
+
   public slots:
     /** Reload current mapset */
     void reload();
 
-    void onDirectoryChanged( const QString & path );
+    void onMapsetChanged();
 
-  signals:
+    void onDirectoryChanged( const QString & path );
+    void onFileChanged( const QString & path );
+    void onMapsetSearchPathChanged();
 
   private:
     void addMapset( const QString & mapset );
-    void refreshMapset( QStandardItem *mapsetItem, const QString & mapset );
+    void refreshMapset( QStandardItem *mapsetItem, const QString & mapset, const QList<QgsGrassObject::Type> & theTypes = QList<QgsGrassObject::Type>() );
     // Add to watched paths if exists and if not yet watched
     void watch( const QString & path );
+    QString mLocationPath;
     // mapset watched dirs
-    QStringList watchedDirs() { QStringList l; l << "cellhd" << "vector"; return l; }
+    QStringList watchedDirs() { QStringList l; l << "cellhd" << "vector" << "tgis"; return l; }
     // names of
     QStringList locationDirNames();
     QFileSystemWatcher *mWatcher;
@@ -94,21 +100,17 @@ class QgsGrassModuleInputProxy : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
-    explicit QgsGrassModuleInputProxy( QgsGrassObject::Type type, QObject *parent = 0 );
+    explicit QgsGrassModuleInputProxy( QgsGrassModuleInputModel *sourceModel, QgsGrassObject::Type type, QObject *parent = 0 );
     ~QgsGrassModuleInputProxy() {}
-
-  public slots:
-
-  signals:
 
   protected:
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    bool lessThan( const QModelIndex & left, const QModelIndex & right ) const override;
 
   private:
+    QgsGrassModuleInputModel *mSourceModel;
     QgsGrassObject::Type mType;
-
 };
-
 
 class QgsGrassModuleInputTreeView : public QTreeView
 {
@@ -170,6 +172,15 @@ class QgsGrassModuleInputComboBox : public QComboBox
     virtual bool eventFilter( QObject * watched, QEvent * event ) override;
     virtual void showPopup() override;
     virtual void hidePopup() override;
+
+    // set current index
+    void setCurrent( const QModelIndex & proxyIndex );
+
+    // set current item to map/mapset if exists
+    bool setCurrent( const QString &map, const QString &mapset = QString() );
+
+    // set to first map if exists
+    bool setFirst();
 
   protected:
     QgsGrassObject::Type mType;
@@ -264,6 +275,9 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
 
     void setGeometryTypeOption( const QString & optionName ) { mGeometryTypeOption = optionName; }
     QString geometryTypeOption() const { return mGeometryTypeOption; }
+
+    // list of selected layers in <field>_<type> form, used by QgsGrassModuleSelection
+    QStringList currentLayerCodes();
 
   public slots:
     void onActivated( const QString & text );

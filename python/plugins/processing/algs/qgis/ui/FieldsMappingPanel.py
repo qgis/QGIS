@@ -29,8 +29,11 @@ import os
 
 from collections import OrderedDict
 
-from PyQt4 import uic
-from PyQt4 import QtCore, QtGui
+from qgis.PyQt import uic
+from qgis.PyQt.QtGui import QBrush, QIcon
+from qgis.PyQt.QtWidgets import QComboBox, QHeaderView, QLineEdit, QMessageBox, QSpinBox, QStyledItemDelegate
+from qgis.PyQt.QtCore import QItemSelectionModel
+from qgis.PyQt.QtCore import QAbstractTableModel, QModelIndex, QVariant, Qt, pyqtSlot
 
 from qgis.core import QgsExpression
 from qgis.gui import QgsFieldExpressionWidget
@@ -42,22 +45,22 @@ WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'widgetFieldsMapping.ui'))
 
 
-class FieldsMappingModel(QtCore.QAbstractTableModel):
+class FieldsMappingModel(QAbstractTableModel):
 
     fieldTypes = OrderedDict([
-        (QtCore.QVariant.Int, "Integer"),
-        (QtCore.QVariant.Double, "Double"),
-        (QtCore.QVariant.String, "String"),
-        (QtCore.QVariant.DateTime, "Date"),
-        (QtCore.QVariant.LongLong, "Double"),
-        (QtCore.QVariant.Date, "Date")])
+        (QVariant.Int, "Integer"),
+        (QVariant.Double, "Double"),
+        (QVariant.String, "String"),
+        (QVariant.DateTime, "Date"),
+        (QVariant.LongLong, "Double"),
+        (QVariant.Date, "Date")])
 
     columns = [
-        {'name': 'name', 'type': QtCore.QVariant.String},
-        {'name': 'type', 'type': QtCore.QVariant.Type},
-        {'name': 'length', 'type': QtCore.QVariant.Int},
-        {'name': 'precision', 'type': QtCore.QVariant.Int},
-        # {'name': 'comment', 'type': QtCore.QVariant.String},
+        {'name': 'name', 'type': QVariant.String},
+        {'name': 'type', 'type': QVariant.Type},
+        {'name': 'length', 'type': QVariant.Int},
+        {'name': 'precision', 'type': QVariant.Int},
+        # {'name': 'comment', 'type': QVariant.String},
         {'name': 'expression', 'type': QgsExpression}]
 
     def __init__(self, parent=None):
@@ -76,8 +79,8 @@ class FieldsMappingModel(QtCore.QAbstractTableModel):
         self.endResetModel()
 
     def testAllExpressions(self):
-        self._errors = [None for i in xrange(0, len(self._mapping))]
-        for row in xrange(0, len(self._mapping)):
+        self._errors = [None for i in xrange(len(self._mapping))]
+        for row in xrange(len(self._mapping)):
             self.testExpression(row)
 
     def testExpression(self, row):
@@ -104,76 +107,76 @@ class FieldsMappingModel(QtCore.QAbstractTableModel):
         self._layer = layer
         self.testAllExpressions()
 
-    def columnCount(self, parent=QtCore.QModelIndex()):
+    def columnCount(self, parent=QModelIndex()):
         if parent.isValid():
             return 0
         return len(self.columns)
 
-    def rowCount(self, parent=QtCore.QModelIndex()):
+    def rowCount(self, parent=QModelIndex()):
         if parent.isValid():
             return 0
         return self._mapping.__len__()
 
-    def headerData(self, section, orientation, role=QtCore.Qt.DisplayRole):
-        if role == QtCore.Qt.DisplayRole:
-            if orientation == QtCore.Qt.Horizontal:
+    def headerData(self, section, orientation, role=Qt.DisplayRole):
+        if role == Qt.DisplayRole:
+            if orientation == Qt.Horizontal:
                 return self.columns[section]['name'].title()
-            if orientation == QtCore.Qt.Vertical:
+            if orientation == Qt.Vertical:
                 return section
 
     def flags(self, index):
-        flags = (QtCore.Qt.ItemIsSelectable
-                 + QtCore.Qt.ItemIsEditable
-                 + QtCore.Qt.ItemIsEnabled)
+        flags = (Qt.ItemIsSelectable
+                 + Qt.ItemIsEditable
+                 + Qt.ItemIsEnabled)
 
-        return QtCore.Qt.ItemFlags(flags)
+        return Qt.ItemFlags(flags)
 
-    def data(self, index, role=QtCore.Qt.DisplayRole):
+    def data(self, index, role=Qt.DisplayRole):
         column = index.column()
 
-        if role == QtCore.Qt.DisplayRole:
+        if role == Qt.DisplayRole:
             field = self._mapping[index.row()]
             column_def = self.columns[column]
             value = field[column_def['name']]
 
             fieldType = column_def['type']
-            if fieldType == QtCore.QVariant.Type:
-                if value == QtCore.QVariant.Invalid:
+            if fieldType == QVariant.Type:
+                if value == QVariant.Invalid:
                     return ''
                 return self.fieldTypes[value]
             return value
 
-        if role == QtCore.Qt.EditRole:
+        if role == Qt.EditRole:
             field = self._mapping[index.row()]
             column_def = self.columns[column]
             value = field[column_def['name']]
             return value
 
-        if role == QtCore.Qt.TextAlignmentRole:
+        if role == Qt.TextAlignmentRole:
             fieldType = self.columns[column]['type']
-            if fieldType in [QtCore.QVariant.Int]:
-                hAlign = QtCore.Qt.AlignRight
+            if fieldType in [QVariant.Int]:
+                hAlign = Qt.AlignRight
             else:
-                hAlign = QtCore.Qt.AlignLeft
-            return hAlign + QtCore.Qt.AlignVCenter
+                hAlign = Qt.AlignLeft
+            return hAlign + Qt.AlignVCenter
 
-        if role == QtCore.Qt.ForegroundRole:
+        if role == Qt.ForegroundRole:
             column_def = self.columns[column]
             if column_def['name'] == 'expression':
-                brush = QtGui.QBrush()
+                brush = QBrush()
                 if self._errors[index.row()]:
-                    brush.setColor(QtCore.Qt.red)
+                    brush.setColor(Qt.red)
                 else:
-                    brush.setColor(QtCore.Qt.black)
+                    brush.setColor(Qt.black)
                 return brush
 
-        if role == QtCore.Qt.ToolTipRole:
+        if role == Qt.ToolTipRole:
             column_def = self.columns[column]
             if column_def['name'] == 'expression':
                 return self._errors[index.row()]
 
-    def setData(self, index, value, role=QtCore.Qt.EditRole):
-        if role == QtCore.Qt.EditRole:
+    def setData(self, index, value, role=Qt.EditRole):
+        if role == Qt.EditRole:
             field = self._mapping[index.row()]
             column = index.column()
             column_def = self.columns[column]
@@ -183,10 +186,10 @@ class FieldsMappingModel(QtCore.QAbstractTableModel):
             self.dataChanged.emit(index, index)
         return True
 
-    def insertRows(self, row, count, index=QtCore.QModelIndex()):
+    def insertRows(self, row, count, index=QModelIndex()):
         self.beginInsertRows(index, row, row + count - 1)
 
-        for i in xrange(0, count):
+        for i in xrange(count):
             field = self.newField()
             self._mapping.insert(row + i, field)
             self._errors.insert(row + i, None)
@@ -195,7 +198,7 @@ class FieldsMappingModel(QtCore.QAbstractTableModel):
         self.endInsertRows()
         return True
 
-    def removeRows(self, row, count, index=QtCore.QModelIndex()):
+    def removeRows(self, row, count, index=QModelIndex()):
         self.beginRemoveRows(index, row, row + count - 1)
 
         for i in xrange(row + count - 1, row + 1):
@@ -208,7 +211,7 @@ class FieldsMappingModel(QtCore.QAbstractTableModel):
     def newField(self, field=None):
         if field is None:
             return {'name': '',
-                    'type': QtCore.QVariant.Invalid,
+                    'type': QVariant.Invalid,
                     'length': 0,
                     'precision': 0,
                     'expression': ''}
@@ -232,7 +235,7 @@ class FieldsMappingModel(QtCore.QAbstractTableModel):
         self.endResetModel()
 
 
-class FieldDelegate(QtGui.QStyledItemDelegate):
+class FieldDelegate(QStyledItemDelegate):
 
     def __init__(self, parent=None):
         super(FieldDelegate, self).__init__(parent)
@@ -241,8 +244,8 @@ class FieldDelegate(QtGui.QStyledItemDelegate):
         column = index.column()
 
         fieldType = FieldsMappingModel.columns[column]['type']
-        if fieldType == QtCore.QVariant.Type:
-            editor = QtGui.QComboBox(parent)
+        if fieldType == QVariant.Type:
+            editor = QComboBox(parent)
             for key, text in FieldsMappingModel.fieldTypes.iteritems():
                 editor.addItem(text, key)
 
@@ -252,7 +255,7 @@ class FieldDelegate(QtGui.QStyledItemDelegate):
             editor.fieldChanged.connect(self.on_expression_fieldChange)
 
         else:
-            editor = QtGui.QStyledItemDelegate.createEditor(self, parent, option, index)
+            editor = QStyledItemDelegate.createEditor(self, parent, option, index)
 
         editor.setAutoFillBackground(True)
         return editor
@@ -262,17 +265,17 @@ class FieldDelegate(QtGui.QStyledItemDelegate):
             return
 
         column = index.column()
-        value = index.model().data(index, QtCore.Qt.EditRole)
+        value = index.model().data(index, Qt.EditRole)
 
         fieldType = FieldsMappingModel.columns[column]['type']
-        if fieldType == QtCore.QVariant.Type:
+        if fieldType == QVariant.Type:
             editor.setCurrentIndex(editor.findData(value))
 
         elif fieldType == QgsExpression:
             editor.setField(value)
 
         else:
-            QtGui.QStyledItemDelegate.setEditorData(self, editor, index)
+            QStyledItemDelegate.setEditorData(self, editor, index)
 
     def setModelData(self, editor, model, index):
         if not editor:
@@ -281,10 +284,10 @@ class FieldDelegate(QtGui.QStyledItemDelegate):
         column = index.column()
 
         fieldType = FieldsMappingModel.columns[column]['type']
-        if fieldType == QtCore.QVariant.Type:
+        if fieldType == QVariant.Type:
             value = editor.itemData(editor.currentIndex())
             if value is None:
-                value = QtCore.QVariant.Invalid
+                value = QVariant.Invalid
             model.setData(index, value)
 
         elif fieldType == QgsExpression:
@@ -292,7 +295,7 @@ class FieldDelegate(QtGui.QStyledItemDelegate):
             model.setData(index, value)
 
         else:
-            QtGui.QStyledItemDelegate.setModelData(self, editor, model, index)
+            QStyledItemDelegate.setModelData(self, editor, model, index)
 
     def updateEditorGeometry(self, editor, option, index):
         editor.setGeometry(option.rect)
@@ -308,15 +311,15 @@ class FieldsMappingPanel(BASE, WIDGET):
         self.setupUi(self)
 
         self.addButton.setIcon(
-            QtGui.QIcon(':/images/themes/default/mActionAdd.svg'))
+            QIcon(':/images/themes/default/mActionNewAttribute.png'))
         self.deleteButton.setIcon(
-            QtGui.QIcon(':/images/themes/default/mActionRemove.svg'))
+            QIcon(':/images/themes/default/mActionDeleteAttribute.svg'))
         self.upButton.setIcon(
-            QtGui.QIcon(':/images/themes/default/mActionArrowUp.png'))
+            QIcon(':/images/themes/default/mActionArrowUp.png'))
         self.downButton.setIcon(
-            QtGui.QIcon(':/images/themes/default/mActionArrowDown.png'))
+            QIcon(':/images/themes/default/mActionArrowDown.png'))
         self.resetButton.setIcon(
-            QtGui.QIcon(':/images/themes/default/mIconClear.png'))
+            QIcon(':/images/themes/default/mIconClear.png'))
 
         self.model = FieldsMappingModel()
         self.fieldsView.setModel(self.model)
@@ -331,13 +334,13 @@ class FieldsMappingPanel(BASE, WIDGET):
         if self.model.rowCount() == 0:
             self.on_resetButton_clicked()
         else:
-            dlg = QtGui.QMessageBox(self)
+            dlg = QMessageBox(self)
             dlg.setText("Do you want to reset the field mapping?")
             dlg.setStandardButtons(
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes
-                                                  + QtGui.QMessageBox.No))
-            dlg.setDefaultButton(QtGui.QMessageBox.No)
-            if dlg.exec_() == QtGui.QMessageBox.Yes:
+                QMessageBox.StandardButtons(QMessageBox.Yes
+                                            + QMessageBox.No))
+            dlg.setDefaultButton(QMessageBox.No)
+            if dlg.exec_() == QMessageBox.Yes:
                 self.on_resetButton_clicked()
 
     def value(self):
@@ -346,20 +349,20 @@ class FieldsMappingPanel(BASE, WIDGET):
     def setValue(self, value):
         self.model.setMapping(value)
 
-    @QtCore.pyqtSlot(bool, name='on_addButton_clicked')
+    @pyqtSlot(bool, name='on_addButton_clicked')
     def on_addButton_clicked(self, checked=False):
         rowCount = self.model.rowCount()
         self.model.insertRows(rowCount, 1)
         index = self.model.index(rowCount, 0)
         self.fieldsView.selectionModel().select(index,
-                                                QtGui.QItemSelectionModel.SelectionFlags(QtGui.QItemSelectionModel.Clear
-                                                                                         + QtGui.QItemSelectionModel.Select
-                                                                                         + QtGui.QItemSelectionModel.Current
-                                                                                         + QtGui.QItemSelectionModel.Rows))
+                                                QItemSelectionModel.SelectionFlags(QItemSelectionModel.Clear
+                                                                                   + QItemSelectionModel.Select
+                                                                                   + QItemSelectionModel.Current
+                                                                                   + QItemSelectionModel.Rows))
         self.fieldsView.scrollTo(index)
         self.fieldsView.scrollTo(index)
 
-    @QtCore.pyqtSlot(bool, name='on_deleteButton_clicked')
+    @pyqtSlot(bool, name='on_deleteButton_clicked')
     def on_deleteButton_clicked(self, checked=False):
         sel = self.fieldsView.selectionModel()
         if not sel.hasSelection():
@@ -369,7 +372,7 @@ class FieldsMappingPanel(BASE, WIDGET):
         for index in indexes:
             self.model.removeRows(index.row(), 1)
 
-    @QtCore.pyqtSlot(bool, name='on_upButton_clicked')
+    @pyqtSlot(bool, name='on_upButton_clicked')
     def on_upButton_clicked(self, checked=False):
         sel = self.fieldsView.selectionModel()
         if not sel.hasSelection():
@@ -381,21 +384,21 @@ class FieldsMappingPanel(BASE, WIDGET):
 
         self.model.insertRows(row - 1, 1)
 
-        for column in xrange(0, self.model.columnCount()):
+        for column in xrange(self.model.columnCount()):
             srcIndex = self.model.index(row + 1, column)
             dstIndex = self.model.index(row - 1, column)
-            value = self.model.data(srcIndex, QtCore.Qt.EditRole)
-            self.model.setData(dstIndex, value, QtCore.Qt.EditRole)
+            value = self.model.data(srcIndex, Qt.EditRole)
+            self.model.setData(dstIndex, value, Qt.EditRole)
 
         self.model.removeRows(row + 1, 1)
 
         sel.select(self.model.index(row - 1, 0),
-                   QtGui.QItemSelectionModel.SelectionFlags(QtGui.QItemSelectionModel.Clear
-                                                            + QtGui.QItemSelectionModel.Select
-                                                            + QtGui.QItemSelectionModel.Current
-                                                            + QtGui.QItemSelectionModel.Rows))
+                   QItemSelectionModel.SelectionFlags(QItemSelectionModel.Clear
+                                                      + QItemSelectionModel.Select
+                                                      + QItemSelectionModel.Current
+                                                      + QItemSelectionModel.Rows))
 
-    @QtCore.pyqtSlot(bool, name='on_downButton_clicked')
+    @pyqtSlot(bool, name='on_downButton_clicked')
     def on_downButton_clicked(self, checked=False):
         sel = self.fieldsView.selectionModel()
         if not sel.hasSelection():
@@ -407,21 +410,21 @@ class FieldsMappingPanel(BASE, WIDGET):
 
         self.model.insertRows(row + 2, 1)
 
-        for column in xrange(0, self.model.columnCount()):
+        for column in xrange(self.model.columnCount()):
             srcIndex = self.model.index(row, column)
             dstIndex = self.model.index(row + 2, column)
-            value = self.model.data(srcIndex, QtCore.Qt.EditRole)
-            self.model.setData(dstIndex, value, QtCore.Qt.EditRole)
+            value = self.model.data(srcIndex, Qt.EditRole)
+            self.model.setData(dstIndex, value, Qt.EditRole)
 
         self.model.removeRows(row, 1)
 
         sel.select(self.model.index(row + 1, 0),
-                   QtGui.QItemSelectionModel.SelectionFlags(QtGui.QItemSelectionModel.Clear
-                                                            + QtGui.QItemSelectionModel.Select
-                                                            + QtGui.QItemSelectionModel.Current
-                                                            + QtGui.QItemSelectionModel.Rows))
+                   QItemSelectionModel.SelectionFlags(QItemSelectionModel.Clear
+                                                      + QItemSelectionModel.Select
+                                                      + QItemSelectionModel.Current
+                                                      + QItemSelectionModel.Rows))
 
-    @QtCore.pyqtSlot(bool, name='on_resetButton_clicked')
+    @pyqtSlot(bool, name='on_resetButton_clicked')
     def on_resetButton_clicked(self, checked=False):
         self.model.loadLayerFields(self.model.layer())
         self.openPersistentEditor(
@@ -432,8 +435,8 @@ class FieldsMappingPanel(BASE, WIDGET):
 
     def resizeColumns(self):
         header = self.fieldsView.horizontalHeader()
-        header.resizeSections(QtGui.QHeaderView.ResizeToContents)
-        for section in xrange(0, header.count()):
+        header.resizeSections(QHeaderView.ResizeToContents)
+        for section in xrange(header.count()):
             size = header.sectionSize(section)
             fieldType = FieldsMappingModel.columns[section]['type']
             if fieldType == QgsExpression:
@@ -447,11 +450,11 @@ class FieldsMappingPanel(BASE, WIDGET):
             for column in xrange(topLeft.column(), bottomRight.column() + 1):
                 self.fieldsView.openPersistentEditor(self.model.index(row, column))
                 editor = self.fieldsView.indexWidget(self.model.index(row, column))
-                if isinstance(editor, QtGui.QLineEdit):
+                if isinstance(editor, QLineEdit):
                     editor.deselect()
-                if isinstance(editor, QtGui.QSpinBox):
-                    lineEdit = editor.findChild(QtGui.QLineEdit)
-                    lineEdit.setAlignment(QtCore.Qt.AlignRight or QtCore.Qt.AlignVCenter)
+                if isinstance(editor, QSpinBox):
+                    lineEdit = editor.findChild(QLineEdit)
+                    lineEdit.setAlignment(Qt.AlignRight or Qt.AlignVCenter)
                     lineEdit.deselect()
 
     def on_model_rowsInserted(self, parent, start, end):
@@ -465,7 +468,7 @@ class FieldsMappingPanel(BASE, WIDGET):
         for layer in layers:
             self.layerCombo.addItem(layer.name(), layer)
 
-    @QtCore.pyqtSlot(bool, name='on_loadLayerFieldsButton_clicked')
+    @pyqtSlot(bool, name='on_loadLayerFieldsButton_clicked')
     def on_loadLayerFieldsButton_clicked(self, checked=False):
         layer = self.layerCombo.itemData(self.layerCombo.currentIndex())
         if layer is None:

@@ -65,6 +65,13 @@ class QgsEditorWidgetRegistry : QObject
                                     QWidget* parent /TransferThis/,
                                     const QgsAttributeEditorContext& context = QgsAttributeEditorContext() ) /Factory/;
 
+    QgsSearchWidgetWrapper* createSearchWidget( const QString& widgetId,
+        QgsVectorLayer* vl,
+        int fieldIdx,
+        const QgsEditorWidgetConfig& config,
+        QWidget* parent /TransferThis/,
+        const QgsAttributeEditorContext& context = QgsAttributeEditorContext() ) /Factory/;
+
     /**
      * Creates a configuration widget
      *

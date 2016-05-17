@@ -28,12 +28,12 @@
 
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
-    , mRubberBand( 0 )
-    , mOriginalGeometry( 0 )
+    , mRubberBand( nullptr )
+    , mOriginalGeometry( nullptr )
     , mModifiedFeature( -1 )
     , mGeometryModified( false )
-    , mDistanceWidget( 0 )
-    , mSnapVertexMarker( 0 )
+    , mDistanceWidget( nullptr )
+    , mSnapVertexMarker( nullptr )
     , mForceCopy( false )
     , mMultiPartGeometry( false )
 {
@@ -47,7 +47,7 @@ QgsMapToolOffsetCurve::~QgsMapToolOffsetCurve()
 }
 
 
-void QgsMapToolOffsetCurve::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   if ( !mCanvas )
   {
@@ -183,7 +183,8 @@ void QgsMapToolOffsetCurve::applyOffset()
 
   deleteRubberBandAndGeometry();
   deleteDistanceWidget();
-  delete mSnapVertexMarker; mSnapVertexMarker = 0;
+  delete mSnapVertexMarker;
+  mSnapVertexMarker = nullptr;
   mForceCopy = false;
   mCanvas->refresh();
 }
@@ -193,10 +194,10 @@ void QgsMapToolOffsetCurve::placeOffsetCurveToValue()
   setOffsetForRubberBand( mDistanceWidget->value() );
 }
 
-void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   delete mSnapVertexMarker;
-  mSnapVertexMarker = 0;
+  mSnapVertexMarker = nullptr;
 
   if ( !mOriginalGeometry || !mRubberBand )
   {
@@ -258,7 +259,7 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
 {
   if ( !vl )
   {
-    return 0;
+    return nullptr;
   }
 
   mMultiPartGeometry = false;
@@ -333,6 +334,7 @@ void QgsMapToolOffsetCurve::createDistanceWidget()
   mDistanceWidget->setMaximum( 99999999 );
   mDistanceWidget->setDecimals( 6 );
   mDistanceWidget->setPrefix( tr( "Offset: " ) );
+  mDistanceWidget->setClearValue( 0.0 );
   QgisApp::instance()->addUserInputWidget( mDistanceWidget );
 
   mDistanceWidget->setFocus( Qt::TabFocusReason );
@@ -350,15 +352,15 @@ void QgsMapToolOffsetCurve::deleteDistanceWidget()
     mDistanceWidget->releaseKeyboard();
     mDistanceWidget->deleteLater();
   }
-  mDistanceWidget = 0;
+  mDistanceWidget = nullptr;
 }
 
 void QgsMapToolOffsetCurve::deleteRubberBandAndGeometry()
 {
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   delete mOriginalGeometry;
-  mOriginalGeometry = 0;
+  mOriginalGeometry = nullptr;
 }
 
 void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
@@ -391,7 +393,8 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
     {
       deleteRubberBandAndGeometry();
       deleteDistanceWidget();
-      delete mSnapVertexMarker; mSnapVertexMarker = 0;
+      delete mSnapVertexMarker;
+      mSnapVertexMarker = nullptr;
       mForceCopy = false;
       mGeometryModified = false;
       deleteDistanceWidget();
@@ -414,7 +417,7 @@ QgsGeometry* QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry* fe
 {
   if ( !featureGeom )
   {
-    return 0;
+    return nullptr;
   }
 
   QGis::WkbType geomType = featureGeom->wkbType();
@@ -433,7 +436,7 @@ QgsGeometry* QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry* fe
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 
   QgsMultiPolygon::const_iterator multiPolyIt = multiPoly.constBegin();
@@ -451,7 +454,7 @@ QgsGeometry* QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry* fe
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 
@@ -459,7 +462,7 @@ QgsGeometry* QgsMapToolOffsetCurve::convertToSingleLine( QgsGeometry* geom, int 
 {
   if ( !geom )
   {
-    return 0;
+    return nullptr;
   }
 
   isMulti = false;
@@ -487,11 +490,11 @@ QgsGeometry* QgsMapToolOffsetCurve::convertToSingleLine( QgsGeometry* geom, int 
     }
   }
   delete geom;
-  return 0;
+  return nullptr;
 }
 
 QgsGeometry* QgsMapToolOffsetCurve::convertToMultiLine( QgsGeometry* geom )
 {
   Q_UNUSED( geom );
-  return 0;
+  return nullptr;
 }

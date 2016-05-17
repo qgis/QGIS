@@ -7,8 +7,8 @@
 	<flag key="d" />
 	<flag key="v" version_max="6"/>
 	<option key="coordinates" version_min="7"/>
-	<option key="input" />
-	<option key="output" />
+	<file key="input" />
+	<file key="output" />
 	<option key="fs" version_max="6"/>
 	<option key="separator" version_min="7"/>
 	<option key="proj_in" />

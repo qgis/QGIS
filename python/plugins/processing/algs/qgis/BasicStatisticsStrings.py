@@ -25,7 +25,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
 import codecs
+
+from qgis.PyQt.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -33,6 +36,8 @@ from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputNumber
 from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class BasicStatisticsStrings(GeoAlgorithm):
@@ -48,6 +53,9 @@ class BasicStatisticsStrings(GeoAlgorithm):
     EMPTY = 'EMPTY'
     FILLED = 'FILLED'
     UNIQUE = 'UNIQUE'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Basic statistics for text fields')
@@ -84,18 +92,24 @@ class BasicStatisticsStrings(GeoAlgorithm):
         minValue = 0
         maxValue = 0
         meanValue = 0
-        countEmpty = 0
-        countFilled = 0
+        nullValues = 0
+        filledValues = 0
 
         isFirst = True
         values = []
 
         features = vector.features(layer)
         count = len(features)
-        total = 100.0 / float(count)
-        current = 0
-        for ft in features:
-            length = float(len(ft.attributes()[index]))
+        total = 100.0 / count
+        for current, ft in enumerate(features):
+            value = ft[fieldName]
+            if value:
+                length = float(len(value))
+                filledValues += 1
+            else:
+                nullValues += 1
+                progress.setPercentage(int(current * total))
+                continue
 
             if isFirst:
                 minValue = length
@@ -107,15 +121,9 @@ class BasicStatisticsStrings(GeoAlgorithm):
                 if length > maxValue:
                     maxValue = length
 
-            if length != 0.00:
-                countFilled += 1
-            else:
-                countEmpty += 1
-
             values.append(length)
             sumValue += length
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         n = float(len(values))
@@ -125,30 +133,32 @@ class BasicStatisticsStrings(GeoAlgorithm):
         uniqueValues = vector.getUniqueValuesCount(layer, index)
 
         data = []
-        data.append('Minimum length: ' + unicode(minValue))
-        data.append('Maximum length: ' + unicode(maxValue))
-        data.append('Mean length: ' + unicode(meanValue))
-        data.append('Filled: ' + unicode(countFilled))
-        data.append('Empty: ' + unicode(countEmpty))
-        data.append('Count: ' + unicode(count))
-        data.append('Unique: ' + unicode(uniqueValues))
+        data.append(self.tr('Analyzed layer: {}').format(layer.name()))
+        data.append(self.tr('Analyzed field: {}').format(fieldName))
+        data.append(self.tr('Minimum length: {}').format(minValue))
+        data.append(self.tr('Maximum length: {}').format(maxValue))
+        data.append(self.tr('Mean length: {}').format(meanValue))
+        data.append(self.tr('Filled values: {}').format(filledValues))
+        data.append(self.tr('NULL (missing) values: {}').format(nullValues))
+        data.append(self.tr('Count: {}').format(count))
+        data.append(self.tr('Unique: {}').format(uniqueValues))
 
         self.createHTML(outputFile, data)
 
         self.setOutputValue(self.MIN_LEN, minValue)
         self.setOutputValue(self.MAX_LEN, maxValue)
         self.setOutputValue(self.MEAN_LEN, meanValue)
-        self.setOutputValue(self.FILLED, countFilled)
-        self.setOutputValue(self.EMPTY, countEmpty)
+        self.setOutputValue(self.FILLED, filledValues)
+        self.setOutputValue(self.EMPTY, nullValues)
         self.setOutputValue(self.COUNT, count)
         self.setOutputValue(self.UNIQUE, uniqueValues)
 
     def createHTML(self, outputFile, algData):
         f = codecs.open(outputFile, 'w', encoding='utf-8')
-        f.write('<html><head>')
+        f.write('<html><head>\n')
         f.write('<meta http-equiv="Content-Type" content="text/html; \
-                charset=utf-8" /></head><body>')
+                charset=utf-8" /></head><body>\n')
         for s in algData:
-            f.write('<p>' + unicode(s) + '</p>')
+            f.write('<p>' + unicode(s) + '</p>\n')
         f.write('</body></html>')
         f.close()

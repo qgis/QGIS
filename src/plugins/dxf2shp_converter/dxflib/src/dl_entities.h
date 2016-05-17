@@ -26,6 +26,7 @@
 #define DL_ENTITIES_H
 
 #include "dl_global.h"
+#include "qgis.h"
 
 #include <string>
 #include <vector>
@@ -97,7 +98,7 @@ struct DXFLIB_EXPORT DL_LinetypeData {
         int flags,
         int numberOfDashes,
         double patternLength,
-        double* pattern = NULL
+        double* pattern = nullptr
         )
         : name(name),
         description(description),
@@ -159,9 +160,9 @@ struct DXFLIB_EXPORT DL_StyleData {
         // ignore lastHeightUsed:
         return (name==other.name &&
             flags==other.flags &&
-            fixedTextHeight==other.fixedTextHeight &&
-            widthFactor==other.widthFactor &&
-            obliqueAngle==other.obliqueAngle &&
+            qgsDoubleNear( fixedTextHeight, other.fixedTextHeight ) &&
+            qgsDoubleNear( widthFactor, other.widthFactor ) &&
+            qgsDoubleNear( obliqueAngle, other.obliqueAngle ) &&
             textGenerationFlags==other.textGenerationFlags &&
             primaryFontFile==other.primaryFontFile &&
             bigFontFile==other.bigFontFile);
@@ -905,9 +906,9 @@ struct DXFLIB_EXPORT DL_AttributeData : public DL_TextData {
  */
 struct DXFLIB_EXPORT DL_DimensionData {
     /**
-    * Constructor.
-    * Parameters: see member variables.
-    */
+     * Constructor.
+     * Parameters: see member variables.
+     */
     DL_DimensionData(double dpx, double dpy, double dpz,
                      double mpx, double mpy, double mpz,
                      int type,

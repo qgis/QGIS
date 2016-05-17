@@ -17,13 +17,13 @@
 
 QgsCheckboxWidgetWrapper::QgsCheckboxWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mCheckBox( NULL )
-    , mGroupBox( NULL )
+    , mCheckBox( nullptr )
+    , mGroupBox( nullptr )
 {
 }
 
 
-QVariant QgsCheckboxWidgetWrapper::value()
+QVariant QgsCheckboxWidgetWrapper::value() const
 {
   QVariant v;
 
@@ -35,6 +35,14 @@ QVariant QgsCheckboxWidgetWrapper::value()
 
 
   return v;
+}
+
+void QgsCheckboxWidgetWrapper::showIndeterminateState()
+{
+  if ( mCheckBox )
+  {
+    whileBlocking( mCheckBox )->setCheckState( Qt::PartiallyChecked );
+  }
 }
 
 QWidget* QgsCheckboxWidgetWrapper::createWidget( QWidget* parent )
@@ -53,20 +61,21 @@ void QgsCheckboxWidgetWrapper::initWidget( QWidget* editor )
     connect( mGroupBox, SIGNAL( toggled( bool ) ), this, SLOT( valueChanged( bool ) ) );
 }
 
-bool QgsCheckboxWidgetWrapper::valid()
+bool QgsCheckboxWidgetWrapper::valid() const
 {
   return mCheckBox || mGroupBox;
 }
 
 void QgsCheckboxWidgetWrapper::setValue( const QVariant& value )
 {
+  bool state = ( value == config( "CheckedState" ) );
   if ( mGroupBox )
   {
-    mGroupBox->setChecked( value == config( "CheckedState" ) );
+    mGroupBox->setChecked( state );
   }
 
   if ( mCheckBox )
   {
-    mCheckBox->setChecked( value == config( "CheckedState" ) );
+    mCheckBox->setChecked( state );
   }
 }

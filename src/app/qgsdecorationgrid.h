@@ -34,7 +34,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     Q_OBJECT
   public:
     //! Constructor
-    QgsDecorationGrid( QObject* parent = NULL );
+    QgsDecorationGrid( QObject* parent = nullptr );
     //! Destructor
     virtual ~ QgsDecorationGrid();
 
@@ -200,13 +200,13 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     @param hLines horizontal coordinate lines in item coordinates
         @param vLines vertical coordinate lines in item coordinates*/
     void drawCoordinateAnnotations( QPainter* p, const QList< QPair< qreal, QLineF > >& hLines, const QList< QPair< qreal, QLineF > >& vLines );
-    void drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString );
+    void drawCoordinateAnnotation( QPainter* p, QPointF pos, const QString& annotationString );
     /** Draws a single annotation
         @param p drawing painter
         @param pos item coordinates where to draw
         @param rotation text rotation
         @param annotationText the text to draw*/
-    void drawAnnotation( QPainter* p, const QPointF& pos, int rotation, const QString& annotationText );
+    void drawAnnotation( QPainter* p, QPointF pos, int rotation, const QString& annotationText );
     /** Returns the grid lines with associated coordinate value
         @return 0 in case of success*/
     int xGridLines( QList< QPair< qreal, QLineF > >& lines ) const;
@@ -214,7 +214,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
         @return 0 in case of success*/
     int yGridLines( QList< QPair< qreal, QLineF > >& lines ) const;
     /** Returns the item border of a point (in item coordinates)*/
-    Border borderForLineCoord( const QPointF& point, QPainter* p ) const;
+    Border borderForLineCoord( QPointF point, QPainter* p ) const;
 
     /** Draws Text. Takes care about all the composer specific issues (calculation to pixel, scaling of font and painter
      to work around the Qt font bug)*/
@@ -224,7 +224,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     /** Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double textWidthMillimeters( const QFont& font, const QString& text ) const;
     /** Returns the font height of a character in millimeters. */
-    double fontHeightCharacterMM( const QFont& font, const QChar& c ) const;
+    double fontHeightCharacterMM( const QFont& font, QChar c ) const;
     /** Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double fontAscentMillimeters( const QFont& font ) const;
     /** Calculates font to from point size to pixel size*/

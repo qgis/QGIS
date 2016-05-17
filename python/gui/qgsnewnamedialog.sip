@@ -23,7 +23,7 @@ class QgsNewNameDialog : QgsDialog
     QgsNewNameDialog( const QString& source = QString::null, const QString& initial = QString::null,
                       const QStringList& extensions = QStringList(), const QStringList& existing = QStringList(),
                       const QRegExp& regexp = QRegExp(), Qt::CaseSensitivity cs = Qt::CaseSensitive,
-                      QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = QgisGui::ModalDialogFlags );
+                      QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags& flags = QgisGui::ModalDialogFlags );
 
     /** Sets the hint string for the dialog (the text shown above the name
      * input box).

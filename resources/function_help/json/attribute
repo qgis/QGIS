@@ -1,5 +1,6 @@
 {
-  "function": "attribute",
+  "name": "attribute",
+  "type": "function",
   "description": "Returns the value of a specified attribute from a feature.",
   "arguments": [ {"arg":"feature","description":"a feature"},
                  {"arg":"attribute_name","description":"name of attribute to be returned"}],

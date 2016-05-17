@@ -27,8 +27,9 @@ import types
 import os
 import imp
 
-from PyQt4.QtCore import Qt, QSize
-from PyQt4.QtGui import QDialog, QLabel, QSpacerItem, QHBoxLayout, QVBoxLayout, QSizePolicy, QComboBox, QCompleter, QSortFilterProxyModel
+from qgis.PyQt.QtCore import Qt, QSize
+from qgis.PyQt.QtWidgets import QDialog, QLabel, QSpacerItem, QHBoxLayout, QVBoxLayout, QSizePolicy, QComboBox, QCompleter
+from qgis.PyQt.QtCore import QSortFilterProxyModel
 from qgis.utils import iface
 from processing.core.Processing import Processing
 from processing.gui.MessageDialog import MessageDialog

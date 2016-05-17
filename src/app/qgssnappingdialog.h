@@ -19,9 +19,8 @@
 #define QGSSNAPPINGDIALOG_H
 
 #include "qgsmaplayer.h"
+#include <QDockWidget>
 #include "ui_qgssnappingdialogbase.h"
-
-class QDockWidget;
 
 class QgsMapCanvas;
 
@@ -48,10 +47,10 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
     //! add layer to tree
     void addLayer( QgsMapLayer* theMapLayer );
 
-    void addLayers( QList<QgsMapLayer * > layers );
+    void addLayers( const QList<QgsMapLayer*>& layers );
 
     //! layers removed
-    void layersWillBeRemoved( QStringList );
+    void layersWillBeRemoved( const QStringList& );
 
     void on_cbxEnableTopologicalEditingCheckBox_stateChanged( int );
 
@@ -65,8 +64,8 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
 
   protected:
     /** Constructor
-    @param canvas pointer to the map canvas (for detecting which vector layers are loaded
-    */
+     * @param canvas pointer to the map canvas (for detecting which vector layers are loaded
+     */
     //QgsSnappingDialog( QgsMapCanvas* canvas );
 
     /**
@@ -100,6 +99,18 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
     void setIntersectionSnappingState();
 
     void setSnappingMode();
+};
+
+
+class QgsSnappingDock : public QDockWidget
+{
+    Q_OBJECT
+
+  public:
+    QgsSnappingDock( const QString & title, QWidget * parent = nullptr, Qt::WindowFlags flags = nullptr );
+
+    virtual void closeEvent( QCloseEvent *e ) override;
+
 };
 
 #endif

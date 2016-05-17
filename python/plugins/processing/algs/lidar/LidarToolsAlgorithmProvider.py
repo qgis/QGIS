@@ -34,99 +34,106 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.tools.system import isWindows
 
-from lastools.LAStoolsUtils import LAStoolsUtils
-from lastools.lasground import lasground
-from lastools.lasheight import lasheight
-from lastools.lasclassify import lasclassify
-from lastools.laszip import laszip
-from lastools.lasindex import lasindex
-from lastools.lasclip import lasclip
-from lastools.lasquery import lasquery
-from lastools.lascolor import lascolor
-from lastools.lasthin import lasthin
-from lastools.lasnoise import lasnoise
-from lastools.lassort import lassort
-from lastools.lastile import lastile
-from lastools.lasgrid import lasgrid
-from lastools.lasview import lasview
-from lastools.lasboundary import lasboundary
-from lastools.lasinfo import lasinfo
-from lastools.las2dem import las2dem
-from lastools.blast2dem import blast2dem
-from lastools.las2iso import las2iso
-from lastools.las2tin import las2tin
-from lastools.las2las_filter import las2las_filter
-from lastools.las2las_project import las2las_project
-from lastools.las2las_transform import las2las_transform
-from lastools.blast2iso import blast2iso
-from lastools.lasprecision import lasprecision
-from lastools.lasvalidate import lasvalidate
-from lastools.lasduplicate import lasduplicate
-from lastools.las2txt import las2txt
-from lastools.txt2las import txt2las
-from lastools.las2shp import las2shp
-from lastools.shp2las import shp2las
-from lastools.lasmerge import lasmerge
-from lastools.lassplit import lassplit
-from lastools.lascanopy import lascanopy
-from lastools.lasoverage import lasoverage
-from lastools.lasoverlap import lasoverlap
+from .lastools.LAStoolsUtils import LAStoolsUtils
+from .lastools.lasground import lasground
+from .lastools.lasheight import lasheight
+from .lastools.lasclassify import lasclassify
+from .lastools.laszip import laszip
+from .lastools.lasindex import lasindex
+from .lastools.lasclip import lasclip
+from .lastools.lasquery import lasquery
+from .lastools.lascolor import lascolor
+from .lastools.lasthin import lasthin
+from .lastools.lasnoise import lasnoise
+from .lastools.lassort import lassort
+from .lastools.lastile import lastile
+from .lastools.lasgrid import lasgrid
+from .lastools.lasview import lasview
+from .lastools.lasboundary import lasboundary
+from .lastools.lasinfo import lasinfo
+from .lastools.las2dem import las2dem
+from .lastools.blast2dem import blast2dem
+from .lastools.las2iso import las2iso
+from .lastools.las2tin import las2tin
+from .lastools.las2las_filter import las2las_filter
+from .lastools.las2las_project import las2las_project
+from .lastools.las2las_transform import las2las_transform
+from .lastools.blast2iso import blast2iso
+from .lastools.lasprecision import lasprecision
+from .lastools.lasvalidate import lasvalidate
+from .lastools.lasduplicate import lasduplicate
+from .lastools.las2txt import las2txt
+from .lastools.txt2las import txt2las
+from .lastools.las2shp import las2shp
+from .lastools.shp2las import shp2las
+from .lastools.lasmerge import lasmerge
+from .lastools.lassplit import lassplit
+from .lastools.lascanopy import lascanopy
+from .lastools.lasoverage import lasoverage
+from .lastools.lasoverlap import lasoverlap
 
-from lastools.lastilePro import lastilePro
-from lastools.lasgroundPro import lasgroundPro
-from lastools.las2demPro import las2demPro
-from lastools.lasheightPro import lasheightPro
-from lastools.laszipPro import laszipPro
-from lastools.lasgridPro import lasgridPro
-from lastools.lasduplicatePro import lasduplicatePro
-from lastools.lassortPro import lassortPro
-from lastools.lasclassifyPro import lasclassifyPro
-from lastools.lasthinPro import lasthinPro
-from lastools.lasnoisePro import lasnoisePro
-from lastools.lasindexPro import lasindexPro
-from lastools.lascanopyPro import lascanopyPro
-from lastools.blast2demPro import blast2demPro
-from lastools.lasboundaryPro import lasboundaryPro
-from lastools.lasinfoPro import lasinfoPro
-from lastools.las2lasPro_filter import las2lasPro_filter
-from lastools.las2lasPro_project import las2lasPro_project
-from lastools.las2lasPro_transform import las2lasPro_transform
-from lastools.lasoveragePro import lasoveragePro
-from lastools.txt2lasPro import txt2lasPro
-from lastools.las2txtPro import las2txtPro
-from lastools.blast2isoPro import blast2isoPro
-from lastools.lasvalidatePro import lasvalidatePro
-from lastools.lasmergePro import lasmergePro
-from lastools.lasviewPro import lasviewPro
-from lastools.lasoverlapPro import lasoverlapPro
+from .lastools.lastilePro import lastilePro
+from .lastools.lasgroundPro import lasgroundPro
+from .lastools.las2demPro import las2demPro
+from .lastools.lasheightPro import lasheightPro
+from .lastools.laszipPro import laszipPro
+from .lastools.lasgridPro import lasgridPro
+from .lastools.lasduplicatePro import lasduplicatePro
+from .lastools.lassortPro import lassortPro
+from .lastools.lasclassifyPro import lasclassifyPro
+from .lastools.lasthinPro import lasthinPro
+from .lastools.lasnoisePro import lasnoisePro
+from .lastools.lasindexPro import lasindexPro
+from .lastools.lascanopyPro import lascanopyPro
+from .lastools.blast2demPro import blast2demPro
+from .lastools.lasboundaryPro import lasboundaryPro
+from .lastools.lasinfoPro import lasinfoPro
+from .lastools.las2lasPro_filter import las2lasPro_filter
+from .lastools.las2lasPro_project import las2lasPro_project
+from .lastools.las2lasPro_transform import las2lasPro_transform
+from .lastools.lasoveragePro import lasoveragePro
+from .lastools.txt2lasPro import txt2lasPro
+from .lastools.las2txtPro import las2txtPro
+from .lastools.blast2isoPro import blast2isoPro
+from .lastools.lasvalidatePro import lasvalidatePro
+from .lastools.lasmergePro import lasmergePro
+from .lastools.lasviewPro import lasviewPro
+from .lastools.lasoverlapPro import lasoverlapPro
 
-from lastools.flightlinesToDTMandDSM import flightlinesToDTMandDSM
-from lastools.flightlinesToCHM import flightlinesToCHM
-from lastools.flightlinesToSingleCHMpitFree import flightlinesToSingleCHMpitFree
-from lastools.hugeFileClassify import hugeFileClassify
-from lastools.hugeFileGroundClassify import hugeFileGroundClassify
-from lastools.hugeFileNormalize import hugeFileNormalize
+from .lastools.flightlinesToDTMandDSM import flightlinesToDTMandDSM
+from .lastools.flightlinesToCHM import flightlinesToCHM
+from .lastools.flightlinesToSingleCHMpitFree import flightlinesToSingleCHMpitFree
+from .lastools.hugeFileClassify import hugeFileClassify
+from .lastools.hugeFileGroundClassify import hugeFileGroundClassify
+from .lastools.hugeFileNormalize import hugeFileNormalize
 
-from fusion.OpenViewerAction import OpenViewerAction
-from fusion.CanopyMaxima import CanopyMaxima
-from fusion.CanopyModel import CanopyModel
-from fusion.Catalog import Catalog
-from fusion.ClipData import ClipData
-from fusion.CloudMetrics import CloudMetrics
-from fusion.Cover import Cover
-from fusion.GridMetrics import GridMetrics
-from fusion.GridSurfaceCreate import GridSurfaceCreate
-from fusion.TinSurfaceCreate import TinSurfaceCreate
-from fusion.Csv2Grid import Csv2Grid
-from fusion.GroundFilter import GroundFilter
-from fusion.MergeData import MergeData
-from fusion.FilterData import FilterData
-from fusion.FusionUtils import FusionUtils
+from .fusion.OpenViewerAction import OpenViewerAction
+from .fusion.ASCII2DTM import ASCII2DTM
+from .fusion.CanopyMaxima import CanopyMaxima
+from .fusion.CanopyModel import CanopyModel
+from .fusion.Catalog import Catalog
+from .fusion.ClipData import ClipData
+from .fusion.CloudMetrics import CloudMetrics
+from .fusion.Cover import Cover
+from .fusion.DTM2TIF import DTM2TIF
+from .fusion.DTM2ASCII import DTM2ASCII
+from .fusion.FirstLastReturn import FirstLastReturn
+from .fusion.GridMetrics import GridMetrics
+from .fusion.GridSurfaceCreate import GridSurfaceCreate
+from .fusion.TinSurfaceCreate import TinSurfaceCreate
+from .fusion.Csv2Grid import Csv2Grid
+from .fusion.GroundFilter import GroundFilter
+from .fusion.MergeData import MergeData
+from .fusion.FilterData import FilterData
+from .fusion.PolyClipData import PolyClipData
+from .fusion.ImageCreate import ImageCreate
+from .fusion.IntensityImage import IntensityImage
+from .fusion.FusionUtils import FusionUtils
 
 
 class LidarToolsAlgorithmProvider(AlgorithmProvider):
@@ -134,7 +141,9 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.activate = False
-        self.algsList = []
+
+    def _loadAlgorithms(self):
+        self.algs = []
 
         # LAStools for processing single files
 
@@ -155,9 +164,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
                 laszip(), lasindex(), lasmerge(), las2las_filter(), las2las_project(),
                 las2las_transform(), lasquery()
             ]
-        for alg in lastools:
-            alg.group = 'LAStools'
-        self.algsList.extend(lastools)
+        self.algs.extend(lastools)
 
         # LAStools Production for processing folders of files
 
@@ -175,9 +182,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
                 laszipPro(), lasindexPro(), lasinfoPro(), las2lasPro_filter(), las2lasPro_project(),
                 las2lasPro_transform(), txt2lasPro(), las2txtPro(), lasvalidatePro(), lasmergePro()
             ]
-        for alg in lastoolsPro:
-            alg.group = 'LAStools Production'
-        self.algsList.extend(lastoolsPro)
+        self.algs.extend(lastoolsPro)
 
         # some examples for LAStools Pipelines
 
@@ -188,9 +193,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
             ]
         else:
             lastoolsPipe = []
-        for alg in lastoolsPipe:
-            alg.group = 'LAStools Pipelines'
-        self.algsList.extend(lastoolsPipe)
+        self.algs.extend(lastoolsPipe)
 
         # FUSION
 
@@ -199,11 +202,13 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
             fusiontools = [
                 Catalog(), CloudMetrics(), CanopyMaxima(), CanopyModel(), ClipData(),
                 Csv2Grid(), Cover(), FilterData(), GridMetrics(), GroundFilter(),
-                GridSurfaceCreate(), MergeData(), TinSurfaceCreate()
+                GridSurfaceCreate(), MergeData(), TinSurfaceCreate(), PolyClipData(),
+                DTM2TIF(), DTM2ASCII(), FirstLastReturn(), ASCII2DTM(), ImageCreate(),
+                IntensityImage()
             ]
             for alg in fusiontools:
-                alg.group = 'Fusion'
-            self.algsList.extend(fusiontools)
+                alg.group, alg.i18n_group = alg.trAlgorithm('Fusion')
+            self.algs.extend(fusiontools)
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
@@ -217,10 +222,11 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
             FusionUtils.FUSION_FOLDER,
             self.tr('Fusion folder'), FusionUtils.FusionPath(),
             valuetype=Setting.FOLDER))
-        ProcessingConfig.addSetting(Setting(
-            self.getDescription(),
-            LAStoolsUtils.WINE_FOLDER,
-            self.tr('Wine folder'), '', valuetype=Setting.FOLDER))
+        if not isWindows():
+            ProcessingConfig.addSetting(Setting(
+                self.getDescription(),
+                LAStoolsUtils.WINE_FOLDER,
+                self.tr('Wine folder'), '', valuetype=Setting.FOLDER))
 
     def getName(self):
         return 'lidartools'
@@ -230,9 +236,6 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
 
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + '/../../images/tool.png')
-
-    def _loadAlgorithms(self):
-        self.algs = self.algsList
 
     def getSupportedOutputTableExtensions(self):
         return ['csv']

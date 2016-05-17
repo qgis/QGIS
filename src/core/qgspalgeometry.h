@@ -1,54 +1,48 @@
+/***************************************************************************
+    qgspalgeometry.h
+    ---------------------
+    begin                : May 2009
+    copyright            : (C) 2009 by Marco Hugentobler
+    email                : marco dot hugentobler at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSPALGEOMETRY_H
 #define QGSPALGEOMETRY_H
 
 #include "qgsgeometry.h"
 #include "qgspallabeling.h"
 #include <pal/feature.h>
-#include <pal/palgeometry.h>
 
-using namespace pal;
+#include "qgslabelingenginev2.h"
 
-class QgsPalGeometry : public PalGeometry
+/**
+ * Class that adds extra information to QgsLabelFeature for text labels
+ *
+ * @note not part of public API
+ * @note not available in Python bindings
+ */
+class QgsTextLabelFeature : public QgsLabelFeature
 {
   public:
-    QgsPalGeometry( QgsFeatureId id, QString text, GEOSGeometry* g,
-                    qreal ltrSpacing = 0.0, qreal wordSpacing = 0.0, bool curvedLabeling = false )
-        : mG( g )
-        , mText( text )
-        , mId( id )
-        , mInfo( NULL )
-        , mIsDiagram( false )
-        , mIsPinned( false )
-        , mFontMetrics( NULL )
-        , mLetterSpacing( ltrSpacing )
-        , mWordSpacing( wordSpacing )
-        , mCurvedLabeling( curvedLabeling )
+    //! Construct text label feature
+    QgsTextLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const QSizeF& size )
+        : QgsLabelFeature( id, geometry, size )
+        , mFontMetrics( nullptr )
     {
-      mStrId = FID_TO_STRING( mId );
       mDefinedFont = QFont();
     }
 
-    ~QgsPalGeometry()
+    //! Clean up
+    ~QgsTextLabelFeature()
     {
-      if ( mG )
-        GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), mG );
-      delete mInfo;
       delete mFontMetrics;
     }
-
-    // getGeosGeometry + releaseGeosGeometry is called twice: once when adding, second time when labeling
-
-    const GEOSGeometry* getGeosGeometry() override
-    {
-      return mG;
-    }
-    void releaseGeosGeometry( const GEOSGeometry* /*geom*/ ) override
-    {
-      // nothing here - we'll delete the geometry in destructor
-    }
-
-    QString strId() { return mStrId; }
-    QString text() { return mText; }
 
     /** Returns the text component corresponding to a specified label part
      * @param partId Set to -1 for labels which are not broken into parts (eg, non-curved labels), or the required
@@ -58,17 +52,21 @@ class QgsPalGeometry : public PalGeometry
     QString text( int partId ) const
     {
       if ( partId == -1 )
-        return mText;
+        return mLabelText;
       else
         return mClusters.at( partId );
     }
 
-    pal::LabelInfo* info( QFontMetricsF* fm, const QgsMapToPixel* xform, double fontScale, double maxinangle, double maxoutangle )
+    //! calculate data for info(). setDefinedFont() must have been called already.
+    void calculateInfo( bool curvedLabeling, QFontMetricsF* fm, const QgsMapToPixel* xform, double fontScale, double maxinangle, double maxoutangle )
     {
       if ( mInfo )
-        return mInfo;
+        return;
 
       mFontMetrics = new QFontMetricsF( *fm ); // duplicate metrics for when drawing label
+
+      qreal letterSpacing = mDefinedFont.letterSpacing();
+      qreal wordSpacing = mDefinedFont.wordSpacing();
 
       // max angle between curved label characters (20.0/-20.0 was default in QGIS <= 1.8)
       if ( maxinangle < 20.0 )
@@ -90,33 +88,30 @@ class QgsPalGeometry : public PalGeometry
       qreal wordSpaceFix;
 
       //split string by valid grapheme boundaries - required for certain scripts (see #6883)
-      mClusters = QgsPalLabeling::splitToGraphemes( mText );
+      mClusters = QgsPalLabeling::splitToGraphemes( mLabelText );
 
       mInfo = new pal::LabelInfo( mClusters.count(), labelHeight, maxinangle, maxoutangle );
       for ( int i = 0; i < mClusters.count(); i++ )
       {
-        //doesn't appear to be used anywhere:
-        //mInfo->char_info[i].chr = textClusters[i].unicode();
-
         // reconstruct how Qt creates word spacing, then adjust per individual stored character
         // this will allow PAL to create each candidate width = character width + correct spacing
         charWidth = fm->width( mClusters[i] );
-        if ( mCurvedLabeling )
+        if ( curvedLabeling )
         {
           wordSpaceFix = qreal( 0.0 );
-          if ( mClusters[i] == QString( " " ) )
+          if ( mClusters[i] == QLatin1String( " " ) )
           {
             // word spacing only gets added once at end of consecutive run of spaces, see QTextEngine::shapeText()
             int nxt = i + 1;
-            wordSpaceFix = ( nxt < mClusters.count() && mClusters[nxt] != QString( " " ) ) ? mWordSpacing : qreal( 0.0 );
+            wordSpaceFix = ( nxt < mClusters.count() && mClusters[nxt] != QLatin1String( " " ) ) ? wordSpacing : qreal( 0.0 );
           }
           // this workaround only works for clusters with a single character. Not sure how it should be handled
           // with multi-character clusters.
           if ( mClusters[i].length() == 1 &&
-               !qgsDoubleNear( fm->width( QString( mClusters[i].at( 0 ) ) ), fm->width( mClusters[i].at( 0 ) ) + mLetterSpacing ) )
+               !qgsDoubleNear( fm->width( QString( mClusters[i].at( 0 ) ) ), fm->width( mClusters[i].at( 0 ) ) + letterSpacing ) )
           {
             // word spacing applied when it shouldn't be
-            wordSpaceFix -= mWordSpacing;
+            wordSpaceFix -= wordSpacing;
           }
 
           charWidth = fm->width( QString( mClusters[i] ) ) + wordSpaceFix;
@@ -125,57 +120,31 @@ class QgsPalGeometry : public PalGeometry
         double labelWidth = mapScale * charWidth / fontScale;
         mInfo->char_info[i].width = labelWidth;
       }
-      return mInfo;
     }
 
+    //! Get data-defined values
     const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& dataDefinedValues() const { return mDataDefinedValues; }
-    void addDataDefinedValue( QgsPalLayerSettings::DataDefinedProperties p, QVariant v ) { mDataDefinedValues.insert( p, v ); }
+    //! Set data-defined values
+    void setDataDefinedValues( const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& values ) { mDataDefinedValues = values; }
 
-    void setIsDiagram( bool d ) { mIsDiagram = d; }
-    bool isDiagram() const { return mIsDiagram; }
-
-    void setIsPinned( bool f ) { mIsPinned = f; }
-    bool isPinned() const { return mIsPinned; }
-
-    void setDefinedFont( QFont f ) { mDefinedFont = QFont( f ); }
+    //! Set font to be used for rendering
+    void setDefinedFont( const QFont& f ) { mDefinedFont = f; }
+    //! Font to be used for rendering
     QFont definedFont() { return mDefinedFont; }
 
-    QFontMetricsF* getLabelFontMetrics() { return mFontMetrics; }
-
-    void setDiagramAttributes( const QgsAttributes& attrs ) { mDiagramAttributes = attrs; }
-    const QgsAttributes& diagramAttributes() { return mDiagramAttributes; }
-
-    void feature( QgsFeature& feature )
-    {
-      feature.setFeatureId( mId );
-      feature.setAttributes( mDiagramAttributes );
-      feature.setValid( true );
-    }
-
-    void setDxfLayer( QString dxfLayer ) { mDxfLayer = dxfLayer; }
-    QString dxfLayer() const { return mDxfLayer; }
+    //! Metrics of the font for rendering
+    QFontMetricsF* labelFontMetrics() { return mFontMetrics; }
 
   protected:
-    GEOSGeometry* mG;
-    QString mText;
+    //! List of graphemes (used for curved labels)
     QStringList mClusters;
-    QString mStrId;
-    QgsFeatureId mId;
-    LabelInfo* mInfo;
-    bool mIsDiagram;
-    bool mIsPinned;
+    //! Font for rendering
     QFont mDefinedFont;
+    //! Metrics of the font for rendering
     QFontMetricsF* mFontMetrics;
-    qreal mLetterSpacing; // for use with curved labels
-    qreal mWordSpacing; // for use with curved labels
-    bool mCurvedLabeling; // whether the geometry is to be used for curved labeling placement
     /** Stores attribute values for data defined properties*/
     QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant > mDataDefinedValues;
 
-    /** Stores attribute values for diagram rendering*/
-    QgsAttributes mDiagramAttributes;
-
-    QString mDxfLayer;
 };
 
 #endif //QGSPALGEOMETRY_H

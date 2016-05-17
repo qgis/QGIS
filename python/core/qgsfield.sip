@@ -13,25 +13,24 @@ class QgsField
 #include <qgsfield.h>
 %End
 
-public:
+  public:
     /** Constructor. Constructs a new QgsField object.
      * @param name Field name
      * @param type Field variant type, currently supported: String / Int / Double
      * @param typeName Field type (eg. char, varchar, text, int, serial, double).
-     Field types are usually unique to the source and are stored exactly
-     as returned from the data store.
+     * Field types are usually unique to the source and are stored exactly
+     * as returned from the data store.
      * @param len Field length
      * @param prec Field precision. Usually decimal places but may also be
      * used in conjunction with other fields types (eg. variable character fields)
      * @param comment Comment for the field
      */
-
-    QgsField( QString name = QString(),
+    QgsField( const QString& name = QString(),
               QVariant::Type type = QVariant::Invalid,
-              QString typeName = QString(),
+              const QString& typeName = QString(),
               int len = 0,
               int prec = 0,
-              QString comment = QString() );
+              const QString& comment = QString() );
 
     /** Copy constructor
      */
@@ -44,68 +43,68 @@ public:
     bool operator!=( const QgsField& other ) const;
 
     //! Gets the name of the field
-    const QString& name() const;
+    QString name() const;
 
     //! Gets variant type of the field as it will be retrieved from data source
     QVariant::Type type() const;
 
     /**
-      Gets the field type. Field types vary depending on the data source. Examples
-      are char, int, double, blob, geometry, etc. The type is stored exactly as
-      the data store reports it, with no attempt to standardize the value.
-      @return QString containing the field type
+     * Gets the field type. Field types vary depending on the data source. Examples
+     * are char, int, double, blob, geometry, etc. The type is stored exactly as
+     * the data store reports it, with no attempt to standardize the value.
+     * @return QString containing the field type
      */
-    const QString& typeName() const;
+    QString typeName() const;
 
     /**
-      Gets the length of the field.
-      @return int containing the length of the field
+     * Gets the length of the field.
+     * @return int containing the length of the field
      */
     int length() const;
 
     /**
-      Gets the precision of the field. Not all field types have a related precision.
-      @return int containing the precision or zero if not applicable to the field type.
+     * Gets the precision of the field. Not all field types have a related precision.
+     * @return int containing the precision or zero if not applicable to the field type.
      */
     int precision() const;
 
     /**
-    Returns the field comment
-    */
-    const QString& comment() const;
+     * Returns the field comment
+     */
+    QString comment() const;
 
     /**
-      Set the field name.
-      @param name Name of the field
+     * Set the field name.
+     * @param name Name of the field
      */
     void setName( const QString& name );
 
     /**
-      Set variant type.
+     * Set variant type.
      */
     void setType( QVariant::Type type );
 
     /**
-      Set the field type.
-      @param typeName Field type
+     * Set the field type.
+     * @param typeName Field type
      */
     void setTypeName( const QString& typeName );
 
     /**
-      Set the field length.
-      @param len Length of the field
+     * Set the field length.
+     * @param len Length of the field
      */
     void setLength( int len );
 
     /**
-      Set the field precision.
-      @param precision Precision of the field
+     * Set the field precision.
+     * @param precision Precision of the field
      */
     void setPrecision( int precision );
 
     /**
-      Set the field comment
-      */
+     * Set the field comment
+     */
     void setComment( const QString& comment );
 
     /** Formats string for display*/
@@ -155,7 +154,7 @@ public:
         if ( !sipRes )
         {
           PyErr_SetString(PyExc_ValueError,
-            QString( "Value %1 (%2) could not be converted to field type %3." ).arg( a0->toString() ).arg ( a0->typeName() ).arg( sipCpp->type() ).toUtf8().constData() );
+            QString( "Value %1 (%2) could not be converted to field type %3." ).arg( a0->toString(), a0->typeName() ).arg( sipCpp->type() ).toUtf8().constData() );
             sipError = sipErrorFail;
         }
 
@@ -177,7 +176,7 @@ public:
  *
  * In addition to storing a list of QgsField instances, it also:
  * - allows quick lookups of field names to index in the list
- *- keeps track of where the field definition comes from (vector data provider, joined layer or newly added from an editing operation)
+ * - keeps track of where the field definition comes from (vector data provider, joined layer or newly added from an editing operation)
  * \note QgsFields objects are implicitly shared.
  */
 
@@ -332,8 +331,8 @@ class QgsFields
     //! Look up field's index from name. Returns -1 on error
     int indexFromName( const QString& name ) const;
 
-    //! Look up field's index from name - case insensitive
-    //! TODO: sort out case sensitive (indexFromName()) vs insensitive (fieldNameIndex()) calls
+    //! Look up field's index from name
+    //! also looks up case-insensitive if there is no match otherwise
     //! @note added in 2.4
     int fieldNameIndex( const QString& fieldName ) const;
 
@@ -348,6 +347,22 @@ class QgsFields
     bool operator==( const QgsFields& other ) const;
     //! @note added in 2.6
     bool operator!=( const QgsFields& other ) const;
+
+    /** Returns an icon corresponding to a field index, based on the field's type and source
+     * @note added in QGIS 2.14
+     */
+    QIcon iconForField( int fieldIdx ) const /Factory/;
+    %MethodCode
+      if ( a0 < 0 || a0 >= sipCpp->count() )
+      {
+        PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
+        sipIsErr = 1;
+      }
+      else
+      {
+        sipRes = new QIcon( sipCpp->iconForField( a0 ) );
+      }
+    %End
 
 /*  SIP_PYOBJECT __getitem__(int key);
 %MethodCode

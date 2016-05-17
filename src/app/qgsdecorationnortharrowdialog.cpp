@@ -11,23 +11,27 @@
  ***************************************************************************/
 
 #include "qgsdecorationnortharrowdialog.h"
-
 #include "qgsdecorationnortharrow.h"
-
 #include "qgslogger.h"
 #include "qgscontexthelp.h"
 
 #include <QPainter>
 #include <QSettings>
 #include <cmath>
+#include <QDialogButtonBox>
+#include <QPushButton>
 
 QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow& deco, QWidget* parent )
-    : QDialog( parent ), mDeco( deco )
+    : QDialog( parent )
+    , mDeco( deco )
 {
   setupUi( this );
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/DecorationNorthArrow/geometry" ).toByteArray() );
+
+  QPushButton* applyButton = buttonBox->button( QDialogButtonBox::Apply );
+  connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
 
   // rotation
   rotatePixmap( mDeco.mRotationInt );
@@ -36,12 +40,18 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   spinAngle->setValue( mDeco.mRotationInt );
 
   // placement
-  cboPlacement->clear();
-  cboPlacement->addItems( mDeco.mPlacementLabels );
-  cboPlacement->setCurrentIndex( mDeco.mPlacementIndex );
+  cboPlacement->addItem( tr( "Top left" ), QgsDecorationItem::TopLeft );
+  cboPlacement->addItem( tr( "Top right" ), QgsDecorationItem::TopRight );
+  cboPlacement->addItem( tr( "Bottom left" ), QgsDecorationItem::BottomLeft );
+  cboPlacement->addItem( tr( "Bottom right" ), QgsDecorationItem::BottomRight );
+  cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
+  spinHorizontal->setValue( mDeco.mMarginHorizontal );
+  spinVertical->setValue( mDeco.mMarginVertical );
+  wgtUnitSelection->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::Percentage << QgsSymbolV2::Pixel );
+  wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
   // enabled
-  cboxShow->setChecked( mDeco.enabled() );
+  grpEnable->setChecked( mDeco.enabled() );
 
   // automatic
   cboxAutomatic->setChecked( mDeco.mAutomatic );
@@ -60,11 +70,7 @@ void QgsDecorationNorthArrowDialog::on_buttonBox_helpRequested()
 
 void QgsDecorationNorthArrowDialog::on_buttonBox_accepted()
 {
-  mDeco.mRotationInt = sliderRotation->value();
-  mDeco.mPlacementIndex = cboPlacement->currentIndex();
-  mDeco.setEnabled( cboxShow->isChecked() );
-  mDeco.mAutomatic = cboxAutomatic->isChecked();
-
+  apply();
   accept();
 }
 
@@ -82,6 +88,18 @@ void QgsDecorationNorthArrowDialog::on_spinAngle_valueChanged( int theInt )
 void QgsDecorationNorthArrowDialog::on_sliderRotation_valueChanged( int theInt )
 {
   rotatePixmap( theInt );
+}
+
+void QgsDecorationNorthArrowDialog::apply()
+{
+  mDeco.mRotationInt = sliderRotation->value();
+  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->itemData( cboPlacement->currentIndex() ).toInt() ) );
+  mDeco.mMarginUnit = wgtUnitSelection->unit();
+  mDeco.setEnabled( grpEnable->isChecked() );
+  mDeco.mAutomatic = cboxAutomatic->isChecked();
+  mDeco.mMarginHorizontal = spinHorizontal->value();
+  mDeco.mMarginVertical = spinVertical->value();
+  mDeco.update();
 }
 
 void QgsDecorationNorthArrowDialog::rotatePixmap( int theRotationInt )

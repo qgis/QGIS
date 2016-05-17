@@ -24,15 +24,18 @@ SET (VRP_MOC_HDRS
 )
 SET (VRP_RCCS  roadgraph.qrc)
 
+INCLUDE_DIRECTORIES(SYSTEM
+  ${GEOS_INCLUDE_DIR}
+)
+
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
-  ${GEOS_INCLUDE_DIR}
   ../../core
   ../../core/geometry
   ../../gui
   ../../analysis/network
   ..
-  )
+)
 
 ########################################################
 # Build

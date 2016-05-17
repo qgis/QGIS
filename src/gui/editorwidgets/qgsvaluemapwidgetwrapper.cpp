@@ -17,12 +17,12 @@
 
 QgsValueMapWidgetWrapper::QgsValueMapWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mComboBox( NULL )
+    , mComboBox( nullptr )
 {
 }
 
 
-QVariant QgsValueMapWidgetWrapper::value()
+QVariant QgsValueMapWidgetWrapper::value() const
 {
   QVariant v;
 
@@ -30,6 +30,14 @@ QVariant QgsValueMapWidgetWrapper::value()
     v = mComboBox->itemData( mComboBox->currentIndex() );
 
   return v;
+}
+
+void QgsValueMapWidgetWrapper::showIndeterminateState()
+{
+  if ( mComboBox )
+  {
+    whileBlocking( mComboBox )->setCurrentIndex( -1 );
+  }
 }
 
 QWidget* QgsValueMapWidgetWrapper::createWidget( QWidget* parent )
@@ -55,7 +63,7 @@ void QgsValueMapWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
-bool QgsValueMapWidgetWrapper::valid()
+bool QgsValueMapWidgetWrapper::valid() const
 {
   return mComboBox;
 }

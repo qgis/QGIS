@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -30,19 +31,26 @@ import time
 import sys
 import uuid
 
-from PyQt4.QtCore import QFileInfo, QDir
+from qgis.PyQt.QtCore import QDir
 from qgis.core import QgsApplication
 
 numExported = 1
 
 
 def userFolder():
-    userDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() \
-        + '/processing'
+    userDir = os.path.join(QgsApplication.qgisSettingsDirPath(), 'processing')
     if not QDir(userDir).exists():
         QDir().mkpath(userDir)
 
     return unicode(QDir.toNativeSeparators(userDir))
+
+
+def defaultOutputFolder():
+    folder = os.path.join(userFolder(), "outputs")
+    if not QDir(folder).exists():
+        QDir().mkpath(folder)
+
+    return unicode(QDir.toNativeSeparators(folder))
 
 
 def isWindows():
@@ -52,9 +60,11 @@ def isWindows():
 def isMac():
     return sys.platform == 'darwin'
 
+_tempFolderSuffix = unicode(uuid.uuid4()).replace('-', '')
+
 
 def tempFolder():
-    tempDir = os.path.join(unicode(QDir.tempPath()), 'processing')
+    tempDir = os.path.join(unicode(QDir.tempPath()), 'processing' + _tempFolderSuffix)
     if not QDir(tempDir).exists():
         QDir().mkpath(tempDir)
 

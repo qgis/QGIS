@@ -23,11 +23,11 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import SIGNAL, QFileInfo
-from PyQt4.QtGui import QWidget, QMessageBox, QAbstractButton, QGroupBox
+from qgis.PyQt.QtCore import QFileInfo
+from qgis.PyQt.QtWidgets import QWidget, QMessageBox, QAbstractButton, QGroupBox
 
-from dialogBase import GdalToolsBaseDialog as BaseDialog
-import GdalTools_utils as Utils
+from .dialogBase import GdalToolsBaseDialog as BaseDialog
+from . import GdalTools_utils as Utils
 
 
 class GdalToolsBasePluginWidget:
@@ -37,26 +37,26 @@ class GdalToolsBasePluginWidget:
         self.initialized = False
         self.base = BaseDialog(iface.mainWindow(), iface, self, self.windowTitle(), commandName)
 
-        self.connect(self.base, SIGNAL("processError(QProcess::ProcessError)"), self.onError)
-        self.connect(self.base, SIGNAL("processFinished(int, QProcess::ExitStatus)"), self.onFinished)
+        self.base.processError.connect(self.onError)
+        self.base.processFinished.connect(self.onFinished)
 
-        self.connect(self.base, SIGNAL("okClicked()"), self.onRun)
-        self.connect(self.base, SIGNAL("closeClicked()"), self.onClosing)
-        self.connect(self.base, SIGNAL("helpClicked()"), self.onHelp)
+        self.base.okClicked.connect(self.onRun)
+        self.base.closeClicked.connect(self.onClosing)
+        self.base.helpClicked.connect(self.onHelp)
 
-        self.connect(self.base, SIGNAL("finished(bool)"), self.finished)
-        self.connect(self.base, SIGNAL("refreshArgs()"), self.someValueChanged)
+        self.base.finished.connect(self.finished)
+        self.base.refreshArgs.connect(self.someValueChanged)
 
     def someValueChanged(self):
         if self.initialized:
-            self.emit(SIGNAL("valuesChanged(PyQt_PyObject)"), self.getArguments())
+            self.base.valuesChanged.emit(self.getArguments())
 
     def onLayersChanged(self):
         pass
 
     def initialize(self):
         if not self.initialized:
-            self.connect(Utils.LayerRegistry.instance(), SIGNAL("layersChanged"), self.onLayersChanged)
+            Utils.LayerRegistry.instance().layersChanged.connect(self.onLayersChanged)
             self.onLayersChanged()
             self.initialized = True
             self.someValueChanged()
@@ -77,7 +77,7 @@ class GdalToolsBasePluginWidget:
         self.base.onRun()
 
     def onClosing(self):
-        self.disconnect(Utils.LayerRegistry.instance(), SIGNAL("layersChanged"), self.onLayersChanged)
+        Utils.LayerRegistry.instance().layersChanged.disconnect(self.onLayersChanged)
         self.base.onClosing()
         self.initialized = False
 
@@ -182,7 +182,7 @@ class GdalToolsBasePluginWidget:
             if not isinstance(ver, Utils.Version):
                 ver = Utils.Version(ver)
             gdalVer = Utils.GdalConfig.version()
-            if ver < "0" or (gdalVer is not None and ver > gdalVer):
+            if ver < Utils.Version("0") or (gdalVer is not None and ver > gdalVer):
                 wdgt.setVisible(False)
                 if isinstance(chk, QWidget):
                     chk.setVisible(False)
@@ -198,13 +198,12 @@ class GdalToolsBasePluginWidget:
 
         sgnl = sgnls
         if sgnl is not None:
-            self.connect(wdgt, sgnl, self.someValueChanged)
+            getattr(wdgt, sgnl).connect(self.someValueChanged)
 
         # set the passed checkbox as widget enabler
         if isinstance(chk, bool):
             wdgt.setEnabled(chk)
-        if ( isinstance(chk, QAbstractButton) or isinstance(chk, QGroupBox) ) and \
-           chk.isCheckable():
+        if (isinstance(chk, QAbstractButton) or isinstance(chk, QGroupBox)) and chk.isCheckable():
             wdgt.setEnabled(chk.isChecked())
-            self.connect(chk, SIGNAL("toggled(bool)"), wdgt.setEnabled)
-            self.connect(chk, SIGNAL("toggled(bool)"), self.someValueChanged)
+            chk.toggled.connect(wdgt.setEnabled)
+            chk.toggled.connect(self.someValueChanged)

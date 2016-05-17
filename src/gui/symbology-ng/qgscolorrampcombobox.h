@@ -24,7 +24,7 @@ class GUI_EXPORT QgsColorRampComboBox : public QComboBox
 {
     Q_OBJECT
   public:
-    explicit QgsColorRampComboBox( QWidget *parent = 0 );
+    explicit QgsColorRampComboBox( QWidget *parent = nullptr );
 
     ~QgsColorRampComboBox();
 

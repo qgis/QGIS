@@ -8,8 +8,8 @@ class QgsDialog : QDialog
 %End
 
   public:
-    QgsDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
-               QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close,
+    QgsDialog( QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags,
+               const QDialogButtonBox::StandardButtons& buttons = QDialogButtonBox::Close,
                Qt::Orientation orientation = Qt::Horizontal );
     ~QgsDialog();
 

@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -39,7 +39,7 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 
-from TauDEMUtils import TauDEMUtils
+from .TauDEMUtils import TauDEMUtils
 
 
 class GridNet(GeoAlgorithm):
@@ -54,7 +54,7 @@ class GridNet(GeoAlgorithm):
     STRAHLER_GRID = 'STRAHLER_GRID'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.svg')
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Grid Network')

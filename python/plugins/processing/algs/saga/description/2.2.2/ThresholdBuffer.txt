@@ -1,0 +1,8 @@
+Threshold Buffer
+grid_tools
+ParameterRaster|FEATURES|Features Grid|False
+ParameterRaster|VALUE|Value Grid|False
+ParameterRaster|THRESHOLDGRID|Threshold Grid|True
+ParameterNumber|THRESHOLD|Threshold|None|None|0.0
+ParameterSelection|THRESHOLDTYPE|Threshold Type|[0] Absolute;[1] Relative from cell value
+OutputRaster|BUFFER|Buffer Grid

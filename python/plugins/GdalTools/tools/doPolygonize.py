@@ -23,12 +23,12 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import SIGNAL, QFileInfo
-from PyQt4.QtGui import QWidget
+from qgis.PyQt.QtCore import QFileInfo
+from qgis.PyQt.QtWidgets import QWidget
 
-from ui_widgetPolygonize import Ui_GdalToolsWidget as Ui_Widget
-from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
-import GdalTools_utils as Utils
+from .ui_widgetPolygonize import Ui_GdalToolsWidget as Ui_Widget
+from .widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
+from . import GdalTools_utils as Utils
 
 
 class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
@@ -45,15 +45,15 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         self.outputFormat = Utils.fillVectorOutputFormat()
 
         self.setParamsStatus([
-            (self.inSelector, SIGNAL("filenameChanged()")),
-            (self.outSelector, SIGNAL("filenameChanged()")),
-            (self.maskSelector, SIGNAL("filenameChanged()"), self.maskCheck),
-            (self.fieldEdit, SIGNAL("textChanged(const QString &)"), self.fieldCheck)
+            (self.inSelector, "filenameChanged"),
+            (self.outSelector, "filenameChanged"),
+            (self.maskSelector, "filenameChanged", self.maskCheck),
+            (self.fieldEdit, "textChanged", self.fieldCheck)
         ])
 
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
-        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
-        self.connect(self.maskSelector, SIGNAL("selectClicked()"), self.fillMaskFileEdit)
+        self.inSelector.selectClicked.connect(self.fillInputFileEdit)
+        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
+        self.maskSelector.selectClicked.connect(self.fillMaskFileEdit)
 
     def onLayersChanged(self):
         self.inSelector.setLayers(Utils.LayerRegistry.instance().getRasterLayers())

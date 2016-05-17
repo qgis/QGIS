@@ -25,21 +25,30 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from sets import Set
-from PyQt4.QtCore import QVariant
+import os
+
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QVariant
+
 from qgis.core import QGis, QgsField, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.tools import dataobjects, vector
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-import voronoi
+from . import voronoi
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class Delaunay(GeoAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'delaunay.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Delaunay triangulation')
@@ -67,7 +76,8 @@ class Delaunay(GeoAlgorithm):
         ptNdx = -1
         c = voronoi.Context()
         features = vector.features(layer)
-        for inFeat in features:
+        total = 100.0 / len(features)
+        for current, inFeat in enumerate(features):
             geom = QgsGeometry(inFeat.geometry())
             point = geom.asPoint()
             x = point.x()
@@ -75,13 +85,14 @@ class Delaunay(GeoAlgorithm):
             pts.append((x, y))
             ptNdx += 1
             ptDict[ptNdx] = inFeat.id()
+            progress.setPercentage(int(current * total))
 
         if len(pts) < 3:
             raise GeoAlgorithmExecutionException(
                 self.tr('Input file should contain at least 3 points. Choose '
                         'another file and try again.'))
 
-        uniqueSet = Set(item for item in pts)
+        uniqueSet = set(item for item in pts)
         ids = [pts.index(item) for item in uniqueSet]
         sl = voronoi.SiteList([voronoi.Site(*i) for i in uniqueSet])
         c.triangulate = True
@@ -89,10 +100,8 @@ class Delaunay(GeoAlgorithm):
         triangles = c.triangles
         feat = QgsFeature()
 
-        current = 0
-        total = 100.0 / float(len(triangles))
-
-        for triangle in triangles:
+        total = 100.0 / len(triangles)
+        for current, triangle in enumerate(triangles):
             indicies = list(triangle)
             indicies.append(indicies[0])
             polygon = []
@@ -111,7 +120,6 @@ class Delaunay(GeoAlgorithm):
             geometry = QgsGeometry().fromPolygon([polygon])
             feat.setGeometry(geometry)
             writer.addFeature(feat)
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

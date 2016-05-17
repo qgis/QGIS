@@ -25,8 +25,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from qgis.PyQt.QtGui import QIcon
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterNumber
@@ -34,6 +39,8 @@ from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class warp(GdalAlgorithm):
@@ -58,48 +65,62 @@ class warp(GdalAlgorithm):
     BIGTIFFTYPE = ['', 'YES', 'NO', 'IF_NEEDED', 'IF_SAFER']
     COMPRESSTYPE = ['NONE', 'JPEG', 'LZW', 'PACKBITS', 'DEFLATE']
     TFW = 'TFW'
+    RAST_EXT = 'RAST_EXT'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'warp.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Warp (reproject)')
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Projections')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterCrs(self.SOURCE_SRS,
-                                       self.tr('Source SRS'), ''))
+                                       self.tr('Source SRS'), '', optional=True))
         self.addParameter(ParameterCrs(self.DEST_SRS,
                                        self.tr('Destination SRS'), ''))
         self.addParameter(ParameterString(self.NO_DATA,
                                           self.tr("Nodata value, leave blank to take the nodata value from input"),
-                                          '-9999'))
+                                          '', optional=True))
         self.addParameter(ParameterNumber(self.TR,
                                           self.tr('Output file resolution in target georeferenced units (leave 0 for no change)'),
                                           0.0, None, 0.0))
         self.addParameter(ParameterSelection(self.METHOD,
                                              self.tr('Resampling method'), self.METHOD_OPTIONS))
-        self.addParameter(ParameterSelection(self.RTYPE,
-                                             self.tr('Output raster type'), self.TYPE, 5))
-        self.addParameter(ParameterSelection(self.COMPRESS,
-                                             self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
-        self.addParameter(ParameterNumber(self.JPEGCOMPRESSION,
-                                          self.tr('Set the JPEG compression level'),
-                                          1, 100, 75))
-        self.addParameter(ParameterNumber(self.ZLEVEL,
-                                          self.tr('Set the DEFLATE compression level'),
-                                          1, 9, 6))
-        self.addParameter(ParameterNumber(self.PREDICTOR,
-                                          self.tr('Set the predictor for LZW or DEFLATE compression'),
-                                          1, 3, 1))
-        self.addParameter(ParameterBoolean(self.TILED,
-                                           self.tr('Create tiled output (only used for the GTiff format)'), False))
-        self.addParameter(ParameterSelection(self.BIGTIFF,
-                                             self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
-        self.addParameter(ParameterBoolean(self.TFW,
-                                           self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
-        self.addParameter(ParameterString(self.EXTRA,
-                                          self.tr('Additional creation parameters'), '', optional=True))
+        self.addParameter(ParameterExtent(self.RAST_EXT, self.tr('Raster extent')))
+
+        params = []
+        params.append(ParameterSelection(self.RTYPE,
+                                         self.tr('Output raster type'), self.TYPE, 5))
+        params.append(ParameterSelection(self.COMPRESS,
+                                         self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
+        params.append(ParameterNumber(self.JPEGCOMPRESSION,
+                                      self.tr('Set the JPEG compression level'),
+                                      1, 100, 75))
+        params.append(ParameterNumber(self.ZLEVEL,
+                                      self.tr('Set the DEFLATE compression level'),
+                                      1, 9, 6))
+        params.append(ParameterNumber(self.PREDICTOR,
+                                      self.tr('Set the predictor for LZW or DEFLATE compression'),
+                                      1, 3, 1))
+        params.append(ParameterBoolean(self.TILED,
+                                       self.tr('Create tiled output (only used for the GTiff format)'), False))
+        params.append(ParameterSelection(self.BIGTIFF,
+                                         self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
+        params.append(ParameterBoolean(self.TFW,
+                                       self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
+        params.append(ParameterString(self.EXTRA,
+                                      self.tr('Additional creation parameters'), '', optional=True))
+
+        for param in params:
+            param.isAdvanced = True
+            self.addParameter(param)
+
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Reprojected')))
 
     def getConsoleCommands(self):
-        noData = unicode(self.getParameterValue(self.NO_DATA))
+        noData = self.getParameterValue(self.NO_DATA)
+        if noData is not None:
+            noData = unicode(noData)
         srccrs = self.getParameterValue(self.SOURCE_SRS)
         dstcrs = self.getParameterValue(self.DEST_SRS)
         jpegcompression = unicode(self.getParameterValue(self.JPEGCOMPRESSION))
@@ -109,6 +130,7 @@ class warp(GdalAlgorithm):
         compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
         tfw = unicode(self.getParameterValue(self.TFW))
+        rastext = unicode(self.getParameterValue(self.RAST_EXT))
 
         arguments = []
         arguments.append('-ot')
@@ -119,7 +141,7 @@ class warp(GdalAlgorithm):
         if len(dstcrs) > 0:
             arguments.append('-t_srs')
             arguments.append(dstcrs)
-        if len(noData) > 0:
+        if noData and len(noData) > 0:
             arguments.append('-dstnodata')
             arguments.append(noData)
         arguments.append('-r')
@@ -132,8 +154,22 @@ class warp(GdalAlgorithm):
             arguments.append('-tr')
             arguments.append(unicode(self.getParameterValue(self.TR)))
             arguments.append(unicode(self.getParameterValue(self.TR)))
-        extra = unicode(self.getParameterValue(self.EXTRA))
-        if len(extra) > 0:
+        extra = self.getParameterValue(self.EXTRA)
+        if extra is not None:
+            extra = unicode(extra)
+        regionCoords = rastext.split(',')
+        try:
+            rastext = []
+            rastext.append('-te')
+            rastext.append(regionCoords[0])
+            rastext.append(regionCoords[2])
+            rastext.append(regionCoords[1])
+            rastext.append(regionCoords[3])
+        except IndexError:
+            rastext = []
+        if rastext:
+            arguments.extend(rastext)
+        if extra and len(extra) > 0:
             arguments.append(extra)
         if GdalUtils.getFormatShortNameFromFilename(out) == "GTiff":
             arguments.append("-co COMPRESS=" + compress)
@@ -149,6 +185,9 @@ class warp(GdalAlgorithm):
                 arguments.append("-co TFW=YES")
             if len(bigtiff) > 0:
                 arguments.append("-co BIGTIFF=" + bigtiff)
+
+            arguments.append("-wo OPTIMIZE_SIZE=TRUE")
+
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(out)
 

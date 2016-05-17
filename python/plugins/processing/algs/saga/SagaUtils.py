@@ -29,7 +29,7 @@ import os
 import stat
 import subprocess
 
-from PyQt4.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
@@ -89,7 +89,7 @@ def createSagaBatchJobFileFromSagaCommands(commands):
         fout.write('set SAGA=' + sagaPath() + '\n')
         fout.write('set SAGA_MLB=' + sagaPath() + os.sep
                    + 'modules' + '\n')
-        fout.write('PATH=PATH;%SAGA%;%SAGA_MLB%\n')
+        fout.write('PATH=%PATH%;%SAGA%;%SAGA_MLB%\n')
     elif isMac():
         fout.write('export SAGA_MLB=' + sagaPath()
                    + '/../lib/saga\n')

@@ -22,11 +22,12 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgisapp.h"
 
 #include <QMouseEvent>
 
 QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas )
+    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
 {
   mToolName = tr( "Add part" );
 }
@@ -35,10 +36,22 @@ QgsMapToolAddPart::~QgsMapToolAddPart()
 {
 }
 
-void QgsMapToolAddPart::canvasMapReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent * e )
+{
+  if ( checkSelection() )
+  {
+    QgsMapToolAdvancedDigitizing::canvasReleaseEvent( e );
+  }
+  else
+  {
+    cadDockWidget()->clear();
+  }
+}
+
+void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
 {
   //check if we operate on a vector layer
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  QgsVectorLayer *vlayer = currentVectorLayer();
   if ( !vlayer )
   {
     notifyNotVectorLayer();
@@ -51,21 +64,8 @@ void QgsMapToolAddPart::canvasMapReleaseEvent( QgsMapMouseEvent * e )
     return;
   }
 
-  //inform user at the begin of the digitising action that the island tool only works if exactly one feature is selected
-  int nSelectedFeatures = vlayer->selectedFeatureCount();
-  QString selectionErrorMsg;
-  if ( nSelectedFeatures < 1 )
+  if ( !checkSelection() )
   {
-    selectionErrorMsg = tr( "No feature selected. Please select a feature with the selection tool or in the attribute table" );
-  }
-  else if ( nSelectedFeatures > 1 )
-  {
-    selectionErrorMsg = tr( "Several features are selected. Please select only one feature to which an part should be added." );
-  }
-
-  if ( !selectionErrorMsg.isEmpty() )
-  {
-    emit messageEmitted( tr( "Could not add part. %1" ).arg( selectionErrorMsg ), QgsMessageBar::WARNING );
     stopCapturing();
     return;
   }
@@ -75,17 +75,17 @@ void QgsMapToolAddPart::canvasMapReleaseEvent( QgsMapMouseEvent * e )
   {
     case CapturePoint:
     {
-      QgsPoint layerPoint;
+      QgsPointV2 layerPoint;
       QgsPoint mapPoint = e->mapPoint();
 
-      if ( nextPoint( mapPoint, layerPoint ) != 0 )
+      if ( nextPoint( QgsPointV2( mapPoint ), layerPoint ) != 0 )
       {
         QgsDebugMsg( "nextPoint failed" );
         return;
       }
 
       vlayer->beginEditCommand( tr( "Part added" ) );
-      errorCode = vlayer->addPart( QList<QgsPoint>() << layerPoint );
+      errorCode = vlayer->addPart( QgsPointSequenceV2() << layerPoint );
     }
     break;
 
@@ -95,7 +95,7 @@ void QgsMapToolAddPart::canvasMapReleaseEvent( QgsMapMouseEvent * e )
       //add point to list and to rubber band
       if ( e->button() == Qt::LeftButton )
       {
-        int error = addVertex( e->mapPoint() );
+        int error = addVertex( e->mapPoint(), e->mapPointMatch() );
         if ( error == 1 )
         {
           QgsDebugMsg( "current layer is not a vector layer" );
@@ -131,10 +131,10 @@ void QgsMapToolAddPart::canvasMapReleaseEvent( QgsMapMouseEvent * e )
       bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
       bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
-      QgsCurveV2* curveToAdd = 0;
+      QgsCurveV2* curveToAdd = nullptr;
       if ( hasCurvedSegments && providerSupportsCurvedSegments )
       {
-        curveToAdd = dynamic_cast<QgsCurveV2*>( captureCurve()->clone() );
+        curveToAdd = captureCurve()->clone();
       }
       else
       {
@@ -159,7 +159,7 @@ void QgsMapToolAddPart::canvasMapReleaseEvent( QgsMapMouseEvent * e )
           return;
         }
 
-        errorCode = vlayer->addPart( dynamic_cast<QgsCurveV2*>( cpGeom->exteriorRing()->clone() ) );
+        errorCode = vlayer->addPart( cpGeom->exteriorRing()->clone() );
         delete geom;
       }
       else
@@ -223,4 +223,40 @@ void QgsMapToolAddPart::canvasMapReleaseEvent( QgsMapMouseEvent * e )
 
   emit messageEmitted( errorMessage, QgsMessageBar::WARNING );
   vlayer->destroyEditCommand();
+}
+
+void QgsMapToolAddPart::activate()
+{
+  checkSelection();
+  QgsMapToolCapture::activate();
+}
+
+bool QgsMapToolAddPart::checkSelection()
+{
+  //check if we operate on a vector layer
+  QgsVectorLayer *vlayer = currentVectorLayer();
+  if ( !vlayer )
+  {
+    notifyNotVectorLayer();
+    return false;
+  }
+
+  //inform user at the begin of the digitising action that the island tool only works if exactly one feature is selected
+  int nSelectedFeatures = vlayer->selectedFeatureCount();
+  QString selectionErrorMsg;
+  if ( nSelectedFeatures < 1 )
+  {
+    selectionErrorMsg = tr( "No feature selected. Please select a feature with the selection tool or in the attribute table" );
+  }
+  else if ( nSelectedFeatures > 1 )
+  {
+    selectionErrorMsg = tr( "Several features are selected. Please select only one feature to which an part should be added." );
+  }
+
+  if ( !selectionErrorMsg.isEmpty() )
+  {
+    emit messageEmitted( tr( "Could not add part. %1" ).arg( selectionErrorMsg ), QgsMessageBar::WARNING );
+  }
+
+  return selectionErrorMsg.isEmpty();
 }

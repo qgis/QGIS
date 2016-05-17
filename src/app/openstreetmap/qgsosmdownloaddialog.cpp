@@ -30,7 +30,8 @@
 #include "qgsosmdownload.h"
 
 QgsOSMDownloadDialog::QgsOSMDownloadDialog( QWidget* parent )
-    : QDialog( parent ), mDownload( new QgsOSMDownload )
+    : QDialog( parent )
+    , mDownload( new QgsOSMDownload )
 {
   setupUi( this );
 
@@ -154,7 +155,7 @@ void QgsOSMDownloadDialog::onCurrentLayerChanged( int index )
 void QgsOSMDownloadDialog::onBrowseClicked()
 {
   QSettings settings;
-  QString lastDir = settings.value( "/osm/lastDir" ).toString();
+  QString lastDir = settings.value( "/osm/lastDir", QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getSaveFileName( this, QString(), lastDir, tr( "OpenStreetMap files (*.osm)" ) );
   if ( fileName.isNull() )

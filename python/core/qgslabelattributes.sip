@@ -11,8 +11,6 @@ public:
      */
     QgsLabelAttributes( bool def = true );
 
-    ~QgsLabelAttributes();
-
     /* Units type */
     enum Units
     {

@@ -4,4 +4,5 @@
 <qgisgrassmodule label="Create aspect raster from DEM (digital elevation model)" module="r.slope.aspect">
 	<option key="elevation" />
 	<option key="aspect" />
+	<flag key="a" answer="on" hidden="yes" />
 </qgisgrassmodule>

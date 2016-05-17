@@ -21,10 +21,10 @@ Based on PG_Manager by Martin Dobias <wonder.sk@gmail.com> (GPLv2 license)
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import Qt, SIGNAL
-from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox, QApplication
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox, QApplication
 
-from ui_DlgVersioning import Ui_DlgVersioning
+from .ui_DlgVersioning import Ui_DlgVersioning
 
 from .....dlg_db_error import DlgDbError
 from ....plugin import BaseError, Table
@@ -41,8 +41,8 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         self.schemas = self.db.schemas()
         self.hasSchemas = self.schemas is not None
 
-        self.connect(self.buttonBox, SIGNAL("accepted()"), self.onOK)
-        self.connect(self.buttonBox, SIGNAL("helpRequested()"), self.showHelp)
+        self.buttonBox.accepted.connect(self.onOK)
+        self.buttonBox.helpRequested.connect(self.showHelp)
 
         self.populateSchemas()
         self.populateTables()
@@ -52,15 +52,15 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
             if index >= 0:
                 self.cboTable.setCurrentIndex(index)
 
-        self.connect(self.cboSchema, SIGNAL("currentIndexChanged(int)"), self.populateTables)
+        self.cboSchema.currentIndexChanged.connect(self.populateTables)
 
         # updates of SQL window
-        self.connect(self.cboSchema, SIGNAL("currentIndexChanged(int)"), self.updateSql)
-        self.connect(self.cboTable, SIGNAL("currentIndexChanged(int)"), self.updateSql)
-        self.connect(self.chkCreateCurrent, SIGNAL("stateChanged(int)"), self.updateSql)
-        self.connect(self.editPkey, SIGNAL("textChanged(const QString &)"), self.updateSql)
-        self.connect(self.editStart, SIGNAL("textChanged(const QString &)"), self.updateSql)
-        self.connect(self.editEnd, SIGNAL("textChanged(const QString &)"), self.updateSql)
+        self.cboSchema.currentIndexChanged.connect(self.updateSql)
+        self.cboTable.currentIndexChanged.connect(self.updateSql)
+        self.chkCreateCurrent.stateChanged.connect(self.updateSql)
+        self.editPkey.textChanged.connect(self.updateSql)
+        self.editStart.textChanged.connect(self.updateSql)
+        self.editEnd.textChanged.connect(self.updateSql)
 
         self.updateSql()
 
@@ -86,7 +86,7 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         schemas = self.db.schemas()
         if schemas is not None:
             schema_name = self.cboSchema.currentText()
-            matching_schemas = filter(lambda x: x.name == schema_name, schemas)
+            matching_schemas = [x for x in schemas if x.name == schema_name]
             tables = matching_schemas[0].tables() if len(matching_schemas) > 0 else []
         else:
             tables = self.db.tables()
@@ -115,13 +115,13 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         self.colStart = self.db.connector.quoteId(self.editStart.text())
         self.colEnd = self.db.connector.quoteId(self.editEnd.text())
 
-        self.columns = map(lambda x: self.db.connector.quoteId(x.name), self.table.fields())
+        self.columns = [self.db.connector.quoteId(x.name) for x in self.table.fields()]
 
         self.colOrigPkey = None
         for constr in self.table.constraints():
             if constr.type == constr.TypePrimaryKey:
                 self.origPkeyName = self.db.connector.quoteId(constr.name)
-                self.colOrigPkey = map(lambda x_y: self.db.connector.quoteId(x_y[1].name), constr.fields().iteritems())
+                self.colOrigPkey = [self.db.connector.quoteId(x_y[1].name) for x_y in iter(list(constr.fields().items()))]
                 break
 
         if self.colOrigPkey is None:
@@ -188,7 +188,7 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
 
     def sql_functions(self):
         cols = ",".join(self.columns)
-        old_cols = ",".join(map(lambda x: u"OLD." + x, self.columns))
+        old_cols = ",".join([u"OLD." + x for x in self.columns])
 
         sql = u"""
 CREATE OR REPLACE FUNCTION %(func_at_time)s(timestamp)
@@ -247,8 +247,8 @@ FOR EACH ROW EXECUTE PROCEDURE %(func_insert)s();""" % \
 
     def sql_updatesView(self):
         cols = ",".join(self.columns)
-        new_cols = ",".join(map(lambda x: u"NEW." + x, self.columns))
-        assign_cols = ",".join(map(lambda x: u"%s = NEW.%s" % (x, x), self.columns))
+        new_cols = ",".join([u"NEW." + x for x in self.columns])
+        assign_cols = ",".join([u"%s = NEW.%s" % (x, x) for x in self.columns])
 
         return u"""
 CREATE OR REPLACE RULE "_DELETE" AS ON DELETE TO %(view)s DO INSTEAD

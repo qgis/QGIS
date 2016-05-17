@@ -27,10 +27,11 @@
  *
  */
 
-#ifndef _PAL_H
-#define _PAL_H
+#ifndef PAL_H
+#define PAL_H
 
 #include "qgsgeometry.h"
+#include "qgspallabeling.h"
 #include <QList>
 #include <iostream>
 #include <ctime>
@@ -39,13 +40,7 @@
 
 // TODO ${MAJOR} ${MINOR} etc instead of 0.2
 
-/**
- *
- * \section intro_sec Introduction
- *
- * Pal is a labelling library released under the GPLv3 license
- *
- */
+class QgsAbstractLabelProvider;
 
 namespace pal
 {
@@ -68,20 +63,6 @@ namespace pal
     FALP = 4 /** only initial solution */
   };
 
-  /** The way to arrange labels against spatial entities
-   *
-   * image html arrangement.png "Arrangement modes" width=7cm
-   * */
-  enum Arrangement
-  {
-    P_POINT = 0, /**< arranges candidates around a point (centroid for polygon)*/
-    P_POINT_OVER, /** arranges candidates over a point (centroid for polygon)*/
-    P_LINE, /**< Only for lines and polygons, arranges candidates over the line or the polygon perimeter */
-    P_CURVED, /** Only for lines, labels along the line */
-    P_HORIZ, /**< Only for polygon, arranges candidates horizontaly */
-    P_FREE /**< Only for polygon, arranges candidates with respect of polygon orientation */
-  };
-
   /** Enumeration line arrangement flags. Flags can be combined. */
   enum LineArrangementFlag
   {
@@ -92,19 +73,13 @@ namespace pal
   };
   Q_DECLARE_FLAGS( LineArrangementFlags, LineArrangementFlag )
 
-  enum ObstacleType
-  {
-    PolygonInterior,
-    PolygonBoundary
-  };
-
   /**
-   *  \brief Pal main class.
+   *  \brief Main Pal labelling class
    *
    *  A pal object will contains layers and global information such as which search method
    *  will be used.
-   *
-   *  \author Maxence Laurent (maxence _dot_ laurent _at_ heig-vd _dot_ ch)
+   *  \class pal::Pal
+   *  \note not available in Python bindings
    */
   class CORE_EXPORT Pal
   {
@@ -127,10 +102,10 @@ namespace pal
       /**
        * \brief add a new layer
        *
+       * @param provider Provider associated with the layer
        * @param layerName layer's name
        * @param arrangement Howto place candidates
        * @param defaultPriority layer's prioriry (0 is the best, 1 the worst)
-       * @param obstacle 'true' will discourage other label to be placed above features of this layer
        * @param active is the layer is active (currently displayed)
        * @param toLabel the layer will be labeled only if toLablel is true
        * @param displayAll if true, all features will be labelled even though overlaps occur
@@ -139,25 +114,7 @@ namespace pal
        *
        * @todo add symbolUnit
        */
-      Layer* addLayer( const QString& layerName, Arrangement arrangement, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll = false );
-
-      /**
-       * \brief Look for a layer
-       *
-       * @param layerName name of layer to search
-       *
-       * @throws PalException::UnkownLayer
-       *
-       * @return a pointer on layer or NULL if layer not exist
-       */
-      Layer *getLayer( const QString &layerName );
-
-      /**
-       * \brief get all layers
-       *
-       * @return a list of all layers
-       */
-      QList<Layer*> getLayers();
+      Layer* addLayer( QgsAbstractLabelProvider* provider, const QString& layerName, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll = false );
 
       /**
        * \brief remove a layer
@@ -176,25 +133,7 @@ namespace pal
        *
        * @return A list of label to display on map
        */
-      std::list<LabelPosition*> *labeller( double bbox[4], PalStat **stats, bool displayAll );
-
-      /**
-       * \brief the labeling machine
-       * Active layers are specifiend through layersName array
-       * @todo add obstacles and tolabel arrays
-       * @param layerNames names of layers to label
-       * @param bbox map extent
-       * @param stat will be filled with labelling process statistics, can be NULL
-       * @param displayAll if true, all feature will be labelled even though overlaps occur
-       *
-       * @todo UnknownLayer will be ignored ? should throw exception or not ???
-       *
-       * @return A list of label to display on map
-       */
-      std::list<LabelPosition*> *labeller( const QStringList& layerNames,
-                                           double bbox[4],
-                                           PalStat **stat,
-                                           bool displayAll );
+      QList<LabelPosition*> *labeller( double bbox[4], PalStat **stats, bool displayAll );
 
       typedef bool ( *FnIsCancelled )( void* ctx );
 
@@ -206,7 +145,7 @@ namespace pal
 
       Problem* extractProblem( double bbox[4] );
 
-      std::list<LabelPosition*>* solveProblem( Problem* prob, bool displayAll );
+      QList<LabelPosition*>* solveProblem( Problem* prob, bool displayAll );
 
       /**
        *\brief Set flag show partial label
@@ -280,7 +219,7 @@ namespace pal
 
     private:
 
-      QHash< QString, Layer* > mLayers;
+      QHash< QgsAbstractLabelProvider*, Layer* > mLayers;
 
       QMutex mMutex;
 
@@ -327,14 +266,12 @@ namespace pal
        * \brief Problem factory
        * Extract features to label and generates candidates for them,
        * respects to a bounding box
-       * @param layersName layers name to be extracted
        * @param lambda_min xMin bounding-box
        * @param phi_min yMin bounding-box
        * @param lambda_max xMax bounding-box
        * @param phi_max yMax bounding-box
        */
-      Problem* extract( const QStringList& layersName,
-                        double lambda_min, double phi_min,
+      Problem* extract( double lambda_min, double phi_min,
                         double lambda_max, double phi_max );
 
 

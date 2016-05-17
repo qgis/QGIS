@@ -23,14 +23,12 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtWidgets import QApplication
 from qgis.core import QGis
 
-from ..info_model import TableInfo, VectorTableInfo, DatabaseInfo, \
-    SchemaInfo
+from ..info_model import TableInfo, VectorTableInfo, DatabaseInfo
 from ..html_elems import HtmlContent, HtmlSection, HtmlParagraph, \
-    HtmlList, HtmlTable, HtmlTableHeader, HtmlTableCol
+    HtmlTable, HtmlTableHeader, HtmlTableCol
 
 # Syntax Highlight for VIEWS/MVIEWS
 from pygments import highlight
@@ -50,7 +48,7 @@ class ORDatabaseInfo(DatabaseInfo):
             tbl.append((QApplication.translate("DBManagerPlugin", "Host:"),
                         self.db.connector.host))
         tbl.append((QApplication.translate("DBManagerPlugin", "Database:"),
-                   self.db.connector.dbname))
+                    self.db.connector.dbname))
         tbl.append((QApplication.translate("DBManagerPlugin", "User:"),
                     self.db.connector.user))
         tbl.append((QApplication.translate("DBManagerPlugin",
@@ -221,7 +219,7 @@ class ORTableInfo(TableInfo):
         # primary key defined?
         if (not self.table.isView
                 and self.table.objectType != u"MATERIALIZED VIEW"):
-            pk = filter(lambda fld: fld.primaryKey, self.table.fields())
+            pk = [fld for fld in self.table.fields() if fld.primaryKey]
             if len(pk) <= 0:
                 ret.append(
                     HtmlParagraph(QApplication.translate(
@@ -650,7 +648,7 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
                         "DBManagerPlugin",
                         (u'<warning> Metadata extent is different from'
                          u'real extent. You should <a href="action:extent'
-                         u'/update">update it</a> !'))))
+                         u'/update">update it</a>!'))))
 
         # is there an entry in geometry_columns?
         if self.table.geomType.lower() == 'geometry':

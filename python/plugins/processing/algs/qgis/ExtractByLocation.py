@@ -25,10 +25,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QGis, QgsFeatureRequest, QgsGeometry
+from qgis.core import QgsFeatureRequest
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterGeometryPredicate
+from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
@@ -38,6 +39,7 @@ class ExtractByLocation(GeoAlgorithm):
     INPUT = 'INPUT'
     INTERSECT = 'INTERSECT'
     PREDICATE = 'PREDICATE'
+    PRECISION = 'PRECISION'
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
@@ -52,6 +54,9 @@ class ExtractByLocation(GeoAlgorithm):
         self.addParameter(ParameterGeometryPredicate(self.PREDICATE,
                                                      self.tr('Geometric predicate'),
                                                      left=self.INPUT, right=self.INTERSECT))
+        self.addParameter(ParameterNumber(self.PRECISION,
+                                          self.tr('Precision'),
+                                          0.0, None, 0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (location)')))
 
     def processAlgorithm(self, progress):
@@ -60,6 +65,7 @@ class ExtractByLocation(GeoAlgorithm):
         filename = self.getParameterValue(self.INTERSECT)
         selectLayer = dataobjects.getObjectFromUri(filename)
         predicates = self.getParameterValue(self.PREDICATE)
+        precision = self.getParameterValue(self.PRECISION)
 
         index = vector.spatialindex(layer)
 
@@ -72,19 +78,17 @@ class ExtractByLocation(GeoAlgorithm):
             for feat in vector.features(layer):
                 disjoinSet.append(feat.id())
 
-        geom = QgsGeometry()
         selectedSet = []
-        current = 0
         features = vector.features(selectLayer)
-        featureCount = len(features)
-        total = 100.0 / float(len(features))
+        total = 100.0 / len(features)
         for current, f in enumerate(features):
-            geom = QgsGeometry(f.geometry())
-            intersects = index.intersects(geom.boundingBox())
+            geom = vector.snapToPrecision(f.geometry(), precision)
+            bbox = vector.bufferedBoundingBox(geom.boundingBox(), 0.51 * precision)
+            intersects = index.intersects(bbox)
             for i in intersects:
                 request = QgsFeatureRequest().setFilterFid(i)
                 feat = layer.getFeatures(request).next()
-                tmpGeom = QgsGeometry(feat.geometry())
+                tmpGeom = vector.snapToPrecision(feat.geometry(), precision)
                 res = False
                 for predicate in predicates:
                     if predicate == 'disjoint':
@@ -117,8 +121,10 @@ class ExtractByLocation(GeoAlgorithm):
         if 'disjoint' in predicates:
             selectedSet = selectedSet + disjoinSet
 
-        for i, f in enumerate(vector.features(layer)):
+        features = vector.features(layer)
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
             if f.id() in selectedSet:
                 writer.addFeature(f)
-            progress.setPercentage(100 * i / float(featureCount))
+            progress.setPercentage(int(current * total))
         del writer

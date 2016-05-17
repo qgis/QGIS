@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _LABELPOSITION_H
-#define _LABELPOSITION_H
+#ifndef LABELPOSITION_H
+#define LABELPOSITION_H
 
 #include "pointset.h"
 #include "rtree.hpp"
@@ -44,6 +44,8 @@ namespace pal
 
   /**
    * \brief LabelPosition is a candidate feature label position
+   * \class pal::LabelPosition
+   * \note not available in Python bindings
    */
   class CORE_EXPORT LabelPosition : public PointSet
   {
@@ -138,6 +140,10 @@ namespace pal
        */
       int polygonIntersectionCost( PointSet* polygon ) const;
 
+      /** Returns true if if any intersection between polygon and position exists.
+      */
+      bool intersectsWithPolygon( PointSet* polygon ) const;
+
       /** Shift the label by specified offset */
       void offsetPosition( double xOffset, double yOffset );
 
@@ -152,7 +158,7 @@ namespace pal
        */
       FeaturePart * getFeaturePart();
 
-      double getNumOverlaps() const { return nbOverlap; }
+      int getNumOverlaps() const { return nbOverlap; }
       void resetNumOverlaps() { nbOverlap = 0; } // called from problem.cpp, pal.cpp
 
       int getProblemFeatureId() const { return probFeat; }
@@ -160,12 +166,10 @@ namespace pal
        *  called from pal.cpp during extraction */
       void setProblemIds( int probFid, int lpId )
       {
-        probFeat = probFid; id = lpId;
+        probFeat = probFid;
+        id = lpId;
         if ( nextPart ) nextPart->setProblemIds( probFid, lpId );
       }
-
-      /** Return pointer to layer's name. used for stats */
-      QString getLayerName() const;
 
       /** Returns the candidate label position's geographical cost.
        * @see setCost
@@ -216,9 +220,6 @@ namespace pal
       bool getUpsideDown() const { return upsideDown; }
 
       Quadrant getQuadrant() const { return quadrant; }
-
-      void print();
-
       LabelPosition* getNextPart() const { return nextPart; }
       void setNextPart( LabelPosition* next ) { nextPart = next; }
 
@@ -237,11 +238,7 @@ namespace pal
       } PruneCtx;
 
       /** Check whether the candidate in ctx overlap with obstacle feat */
-      static bool pruneCallback( LabelPosition *lp, void *ctx );
-
-      // for sorting
-      static bool costShrink( void *l, void *r );
-      static bool costGrow( void *l, void *r );
+      static bool pruneCallback( LabelPosition *candidatePosition, void *ctx );
 
       // for counting number of overlaps
       typedef struct

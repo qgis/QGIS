@@ -25,12 +25,19 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from qgis.PyQt.QtGui import QIcon
+
 from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class LinesIntersection(GeoAlgorithm):
@@ -41,6 +48,9 @@ class LinesIntersection(GeoAlgorithm):
     FIELD_B = 'FIELD_B'
 
     OUTPUT = 'OUTPUT'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'lines_intersection.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Line intersections')
@@ -80,19 +90,12 @@ class LinesIntersection(GeoAlgorithm):
 
         spatialIndex = vector.spatialindex(layerB)
 
-        inFeatA = QgsFeature()
-        inFeatB = QgsFeature()
         outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        tmpGeom = QgsGeometry()
-
         features = vector.features(layerA)
-
-        current = 0
-        total = 100.0 / float(len(features))
+        total = 100.0 / len(features)
         hasIntersections = False
 
-        for inFeatA in features:
+        for current, inFeatA in enumerate(features):
             inGeom = inFeatA.geometry()
             hasIntersections = False
             lines = spatialIndex.intersects(inGeom.boundingBox())
@@ -124,7 +127,6 @@ class LinesIntersection(GeoAlgorithm):
                                                        attrsB[idxB]])
                                 writer.addFeature(outFeat)
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

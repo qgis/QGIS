@@ -1,5 +1,6 @@
 {
-  "function": "substr",
+  "name": "substr",
+  "type": "function",
   "description": "Returns a part of a string.",
   "arguments": [ {"arg":"input_string","description":"the full input string"},
   {"arg":"startpos","description":"integer representing start position to extract from"},

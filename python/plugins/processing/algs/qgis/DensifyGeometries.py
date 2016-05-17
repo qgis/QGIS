@@ -25,6 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
 from qgis.core import QGis, QgsFeature, QgsGeometry, QgsPoint
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -32,6 +34,8 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class DensifyGeometries(GeoAlgorithm):
@@ -65,9 +69,8 @@ class DensifyGeometries(GeoAlgorithm):
                                          layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
-        current = 0
-        for f in features:
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
             featGeometry = QgsGeometry(f.geometry())
             attrs = f.attributes()
             newGeometry = self.densifyGeometry(featGeometry, int(vertices),
@@ -76,7 +79,6 @@ class DensifyGeometries(GeoAlgorithm):
             feature.setGeometry(newGeometry)
             feature.setAttributes(attrs)
             writer.addFeature(feature)
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

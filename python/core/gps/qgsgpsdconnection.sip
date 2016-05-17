@@ -5,6 +5,6 @@ class QgsGpsdConnection: QgsNMEAConnection
 #include "qgsgpsdconnection.h"
 %End
   public:
-    QgsGpsdConnection( QString host, qint16 port, QString device );
+    QgsGpsdConnection( const QString& host, qint16 port, const QString& device );
     ~QgsGpsdConnection();
 };

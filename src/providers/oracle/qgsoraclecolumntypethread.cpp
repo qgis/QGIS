@@ -17,6 +17,7 @@ email                : jef at norbit dot de
 
 #include "qgsoraclecolumntypethread.h"
 #include "qgslogger.h"
+#include "qgsoracleconnpool.h"
 
 #include <QMetaType>
 
@@ -39,11 +40,11 @@ void QgsOracleColumnTypeThread::run()
 {
   mStopped = false;
 
-  QgsDataSourceURI uri = QgsOracleConn::connUri( mName );
-  QgsOracleConn *conn = QgsOracleConn::connectDb( uri );
+  QString conninfo = QgsOracleConn::toPoolName( QgsOracleConn::connUri( mName ) );
+  QgsOracleConn *conn = QgsOracleConnPool::instance()->acquireConnection( conninfo );
   if ( !conn )
   {
-    QgsDebugMsg( "Connection failed - " + uri.connectionInfo() );
+    QgsDebugMsg( "Connection failed - " + conninfo );
     mStopped = true;
     return;
   }
@@ -92,5 +93,5 @@ void QgsOracleColumnTypeThread::run()
   emit progress( 0, 0 );
   emit progressMessage( tr( "Table retrieval finished." ) );
 
-  conn->disconnect();
+  QgsOracleConnPool::instance()->releaseConnection( conn );
 }

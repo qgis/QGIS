@@ -24,7 +24,7 @@ QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand( QgsComposerMultiFram
 {
 }
 
-QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand(): QUndoCommand( "", 0 ), mMultiFrame( 0 ), mFirstRun( false )
+QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand(): QUndoCommand( "", nullptr ), mMultiFrame( nullptr ), mFirstRun( false )
 {
 }
 
@@ -72,7 +72,7 @@ void QgsComposerMultiFrameCommand::restoreState( QDomDocument& stateDoc )
   if ( mMultiFrame )
   {
     mMultiFrame->readXML( stateDoc.documentElement().firstChild().toElement(), stateDoc );
-    QgsProject::instance()->dirty( true );
+    QgsProject::instance()->setDirty( true );
   }
 }
 

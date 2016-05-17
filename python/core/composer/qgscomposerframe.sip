@@ -14,7 +14,7 @@ class QgsComposerFrame: QgsComposerItem
      * this frame (relative to the total multiframe extent in mm).
      * @param section visible portion of content
      * @see extent
-    */
+     */
     void setContentSection( const QRectF& section );
 
     /** Returns the parent multiframe for the frame.
@@ -22,10 +22,10 @@ class QgsComposerFrame: QgsComposerItem
      */
     QgsComposerMultiFrame* multiFrame() const;
 
-    //Overriden to allow multiframe to set display name
+    //Overridden to allow multiframe to set display name
     virtual QString displayName() const;
 
-    //Overriden to handle fixed frame sizes set by multi frame
+    //Overridden to handle fixed frame sizes set by multi frame
     void setSceneRect( const QRectF& rectangle );
 
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
@@ -78,4 +78,5 @@ class QgsComposerFrame: QgsComposerItem
      */
     bool isEmpty() const;
 
+    virtual QgsExpressionContext* createExpressionContext() const;
 };

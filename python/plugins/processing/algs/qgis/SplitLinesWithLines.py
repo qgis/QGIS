@@ -5,6 +5,7 @@
     SplitLines.py
     ---------------------
     Date                 : November 2014
+    Revised              : February 2016
     Copyright            : (C) 2014 by Bernhard Ströbl
     Email                : bernhard dot stroebl at jena dot de
 ***************************************************************************
@@ -55,6 +56,7 @@ class SplitLinesWithLines(GeoAlgorithm):
         layerA = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_A))
         layerB = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_B))
 
+        sameLayer = self.getParameterValue(self.INPUT_A) == self.getParameterValue(self.INPUT_B)
         fieldList = layerA.pendingFields()
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
@@ -62,18 +64,12 @@ class SplitLinesWithLines(GeoAlgorithm):
 
         spatialIndex = vector.spatialindex(layerB)
 
-        inFeatA = QgsFeature()
-        inFeatB = QgsFeature()
         outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        splitGeom = QgsGeometry()
-
         features = vector.features(layerA)
-        current = 0
         total = 100.0 / float(len(features))
 
-        for inFeatA in features:
-            inGeom = inFeatA.geometry()
+        for current, inFeatA in enumerate(features):
+            inGeom = QgsGeometry(inFeatA.geometry())
             attrsA = inFeatA.attributes()
             outFeat.setAttributes(attrsA)
             inLines = [inGeom]
@@ -85,6 +81,11 @@ class SplitLinesWithLines(GeoAlgorithm):
                 for i in lines:
                     request = QgsFeatureRequest().setFilterFid(i)
                     inFeatB = layerB.getFeatures(request).next()
+                    # check if trying to self-intersect
+                    if sameLayer:
+                        if inFeatA.id() == inFeatB.id():
+                            continue
+
                     splitGeom = QgsGeometry(inFeatB.geometry())
 
                     if inGeom.intersects(splitGeom):
@@ -109,7 +110,7 @@ class SplitLinesWithLines(GeoAlgorithm):
 
                                 # splitGeometry: If there are several intersections
                                 # between geometry and splitLine, only the first one is considered.
-                                if result == 0:  # split occured
+                                if result == 0:  # split occurred
 
                                     if inPoints == vector.extractPoints(inGeom):
                                         # bug in splitGeometry: sometimes it returns 0 but
@@ -128,10 +129,13 @@ class SplitLinesWithLines(GeoAlgorithm):
                         inLines = outLines
 
             for aLine in inLines:
-                outFeat.setGeometry(aLine)
-                writer.addFeature(outFeat)
+                if len(aLine.asPolyline()) > 2 or \
+                        (len(aLine.asPolyline()) == 2 and
+                         aLine.asPolyline()[0] != aLine.asPolyline()[1]):
+                    # sometimes splitting results in lines of zero length
+                    outFeat.setGeometry(aLine)
+                    writer.addFeature(outFeat)
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

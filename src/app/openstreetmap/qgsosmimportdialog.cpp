@@ -23,7 +23,8 @@
 #include "qgsosmimport.h"
 
 QgsOSMImportDialog::QgsOSMImportDialog( QWidget* parent )
-    : QDialog( parent ), mImport( new QgsOSMXmlImport )
+    : QDialog( parent )
+    , mImport( new QgsOSMXmlImport )
 {
   setupUi( this );
 
@@ -46,7 +47,7 @@ QgsOSMImportDialog::~QgsOSMImportDialog()
 void QgsOSMImportDialog::onBrowseXml()
 {
   QSettings settings;
-  QString lastDir = settings.value( "/osm/lastDir" ).toString();
+  QString lastDir = settings.value( "/osm/lastDir", QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getOpenFileName( this, QString(), lastDir, tr( "OpenStreetMap files (*.osm)" ) );
   if ( fileName.isNull() )
@@ -59,7 +60,7 @@ void QgsOSMImportDialog::onBrowseXml()
 void QgsOSMImportDialog::onBrowseDb()
 {
   QSettings settings;
-  QString lastDir = settings.value( "/osm/lastDir" ).toString();
+  QString lastDir = settings.value( "/osm/lastDir", QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getSaveFileName( this, QString(), lastDir, tr( "SQLite databases (*.db)" ) );
   if ( fileName.isNull() )

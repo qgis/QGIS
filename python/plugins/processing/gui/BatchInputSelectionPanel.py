@@ -27,8 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtCore import QSettings
-from PyQt4.QtGui import QWidget, QHBoxLayout, QMenu, QPushButton, QLineEdit, QSizePolicy, QAction, QCursor, QFileDialog
+from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtWidgets import QWidget, QHBoxLayout, QMenu, QPushButton, QLineEdit, QSizePolicy, QAction, QFileDialog
+from qgis.PyQt.QtGui import QCursor
 
 from processing.gui.MultipleInputDialog import MultipleInputDialog
 

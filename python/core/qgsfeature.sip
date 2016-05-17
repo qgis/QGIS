@@ -110,7 +110,7 @@ class QgsFeature
 %TypeHeaderCode
 #include <qgsfeature.h>
 #if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01)
-#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#define sipType_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
 #endif
 %End
 
@@ -356,6 +356,7 @@ class QgsFeature
      * @returns pointer to feature's geometry
      * @see geometry
      * @see setGeometry
+     * @deprecated use constGeometry() instead
      */
     QgsGeometry *geometryAndOwnership() /Factory,Deprecated/;
 
@@ -377,7 +378,6 @@ class QgsFeature
      * @see constGeometry
      * @see geometryAndOwnership
      * @see setGeometryAndOwnership
-     * @deprecated will be removed in QGIS 3.0
      */
     // void setGeometry( QgsGeometry* geom /Transfer/ );
 
@@ -391,7 +391,7 @@ class QgsFeature
      * @see geometryAndOwnership
      * @deprecated will be removed in QGIS 3.0
      */
-    void setGeometryAndOwnership( unsigned char * geom /Transfer/, size_t length );
+    void setGeometryAndOwnership( unsigned char * geom /Transfer/, int length ) /Deprecated/;
 
     /** Assign a field map with the feature to allow attribute access by attribute name.
      *  @param fields The attribute fields which this feature holds
@@ -427,7 +427,7 @@ class QgsFeature
      *  @note For Python: raises a KeyError exception instead of returning false
      *  @see setFields
      */
-    void setAttribute( const QString& name, QVariant value /GetWrapper/ );
+    void setAttribute( const QString& name, const QVariant& value /GetWrapper/ );
 %MethodCode
   int fieldIdx = sipCpp->fieldNameIndex(*a0);
   if (fieldIdx == -1)
@@ -498,4 +498,4 @@ class QgsFeature
 
 }; // class QgsFeature
 
-typedef QSet<QgsFeatureId> QgsFeatureIds;
+typedef QSet<qint64> QgsFeatureIds;

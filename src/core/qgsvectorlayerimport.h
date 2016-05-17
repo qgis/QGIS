@@ -16,8 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _QGSVECTORLAYERIMPORT_H_
-#define _QGSVECTORLAYERIMPORT_H_
+#ifndef QGSVECTORLAYERIMPORT_H
+#define QGSVECTORLAYERIMPORT_H
 
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
@@ -29,9 +29,6 @@ class QProgressDialog;
  There are two possibilities how to use this class:
  1. static call to QgsVectorFileWriter::writeAsShapefile(...) which saves the whole vector layer
  2. create an instance of the class and issue calls to addFeature(...)
-
- Currently supports only writing to shapefiles, but shouldn't be a problem to add capability
- to support other OGR-writable formats.
  */
 class CORE_EXPORT QgsVectorLayerImport
 {
@@ -50,7 +47,8 @@ class CORE_EXPORT QgsVectorLayerImport
       ErrInvalidLayer,
       ErrInvalidProvider,
       ErrProviderUnsupportedFeature,
-      ErrConnectionFailed
+      ErrConnectionFailed,
+      ErrUserCancelled, /*!< User cancelled the import*/
     };
 
     /** Write contents of vector layer to a different datasource */
@@ -59,10 +57,10 @@ class CORE_EXPORT QgsVectorLayerImport
                                     const QString& providerKey,
                                     const QgsCoordinateReferenceSystem *destCRS,
                                     bool onlySelected = false,
-                                    QString *errorMessage = 0,
+                                    QString *errorMessage = nullptr,
                                     bool skipAttributeCreation = false,
-                                    QMap<QString, QVariant> *options = 0,
-                                    QProgressDialog *progress = 0
+                                    QMap<QString, QVariant> *options = nullptr,
+                                    QProgressDialog *progress = nullptr
                                   );
 
     /** Create a empty layer and add fields to it */
@@ -72,8 +70,8 @@ class CORE_EXPORT QgsVectorLayerImport
                           QGis::WkbType geometryType,
                           const QgsCoordinateReferenceSystem* crs,
                           bool overwrite = false,
-                          const QMap<QString, QVariant> *options = 0,
-                          QProgressDialog *progress = 0
+                          const QMap<QString, QVariant> *options = nullptr,
+                          QProgressDialog *progress = nullptr
                         );
 
     /** Checks whether there were any errors */
@@ -111,6 +109,11 @@ class CORE_EXPORT QgsVectorLayerImport
 
     QgsFeatureList mFeatureBuffer;
     QProgressDialog *mProgress;
+
+  private:
+
+    QgsVectorLayerImport( const QgsVectorLayerImport& rh );
+    QgsVectorLayerImport& operator=( const QgsVectorLayerImport& rh );
 };
 
 #endif

@@ -22,7 +22,7 @@ originally part of the larger QgsRasterLayer class
 #define QGSCOLORRAMPSHADER_H
 
 #include <QColor>
-#include <QMap>
+#include <QVector>
 
 #include "qgsrastershaderfunction.h"
 
@@ -44,7 +44,11 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
       //! default constructor
       ColorRampItem() : value( 0 ) {}
       //! convenience constructor
-      ColorRampItem( double val, QColor col, QString lbl = QString() ) : label( lbl ), value( val ), color( col ) {}
+      ColorRampItem( double val, const QColor& col, const QString& lbl = QString() )
+          : label( lbl )
+          , value( val )
+          , color( col )
+      {}
 
       QString label;
       double value;
@@ -54,15 +58,16 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
       bool operator<( const ColorRampItem& other ) const { return value < other.value; }
     };
 
+    /** Supported methods for color interpolation. */
     enum ColorRamp_TYPE
     {
-      INTERPOLATED,
-      DISCRETE,
-      EXACT
+      INTERPOLATED, //!< Interpolates the color between two class breaks linearly.
+      DISCRETE,     //!< Assigns the color of the higher class for every pixel between two class breaks.
+      EXACT         //!< Assigns the color of the exact matching value in the color ramp item list
     };
 
     /** \brief Get the custom colormap*/
-    QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const {return mColorRampItemList;}
+    QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const {return mColorRampItemList.toList();}
 
     /** \brief Get the color ramp type */
     QgsColorRampShader::ColorRamp_TYPE colorRampType() const {return mColorRampType;}
@@ -70,8 +75,10 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     /** \brief Get the color ramp type as a string */
     QString colorRampTypeAsQString();
 
-    /** \brief Get the maximum size the color cache can be*/
-    int maximumColorCacheSize() { return mMaximumColorCacheSize; }
+    /** \brief Get the maximum size the color cache can be
+     * @deprecated will be removed in QGIS 3.0. Color cache is not used anymore.
+     */
+    Q_DECL_DEPRECATED int maximumColorCacheSize() { return 0; }
 
     /** \brief Set custom colormap */
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ); //TODO: sort on set
@@ -80,10 +87,12 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     void setColorRampType( QgsColorRampShader::ColorRamp_TYPE theColorRampType );
 
     /** \brief Set the color ramp type*/
-    void setColorRampType( QString );
+    void setColorRampType( const QString& theType );
 
-    /** \brief Set the maximum size the color cache can be */
-    void setMaximumColorCacheSize( int theSize ) { mMaximumColorCacheSize = theSize; }
+    /** \brief Set the maximum size the color cache can be
+     * @deprecated will be removed in QGIS 3.0. Color cache is not used anymore.
+     */
+    Q_DECL_DEPRECATED void setMaximumColorCacheSize( int theSize ) { Q_UNUSED( theSize ); }
 
     /** \brief Generates and new RGB value based on one input value */
     bool shade( double, int*, int*, int*, int* ) override;
@@ -93,45 +102,34 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const override;
 
+    /** Sets whether the shader should not render values out of range.
+     * @param clip set to true to clip values which are out of range.
+     * @see clip()
+     */
     void setClip( bool clip ) { mClip = clip; }
+
+    /** Returns whether the shader will clip values which are out of range.
+     * @see setClip()
+     */
     bool clip() const { return mClip; }
 
   private:
-    /** Current index from which to start searching the color table*/
-    int mCurrentColorRampItemIndex;
-
-    //TODO: Consider pulling this out as a separate class and internally storing as a QMap rather than a QList
     /** This vector holds the information for classification based on values.
      * Each item holds a value, a label and a color. The member
      * mDiscreteClassification holds if one color is applied for all values
      * between two class breaks (true) or if the item values are (linearly)
      * interpolated for values between the item values (false)*/
-    QList<QgsColorRampShader::ColorRampItem> mColorRampItemList;
+    QVector<QgsColorRampShader::ColorRampItem> mColorRampItemList;
 
     /** \brief The color ramp type */
     QgsColorRampShader::ColorRamp_TYPE mColorRampType;
 
-    /** \brief Cache of values that have already been looked up */
-    QMap<double, QColor> mColorCache;
-
-    /** Maximum size of the color cache. The color cache could eat a ton of
-     * memory if you have 32-bit data */
-    int mMaximumColorCacheSize;
-
-    /** Gets the color for a pixel value from the classification vector
-     * mValueClassification. Assigns the color of the lower class for every
-     * pixel between two class breaks.*/
-    bool discreteColor( double, int*, int*, int*, int* );
-
-    /** Gets the color for a pixel value from the classification vector
-     * mValueClassification. Assigns the color of the exact matching value in
-     * the color ramp item list */
-    bool exactColor( double, int*, int*, int*, int* );
-
-    /** Gets the color for a pixel value from the classification vector
-     * mValueClassification. Interpolates the color between two class breaks
-     * linearly.*/
-    bool interpolatedColor( double, int*, int*, int*, int* );
+    /** Look up table to speed up finding the right color.
+      * It is initialized on the first call to shade(). */
+    QVector<int> mLUT;
+    double mLUTOffset;
+    double mLUTFactor;
+    bool mLUTInitialized;
 
     /** Do not render values out of range */
     bool mClip;

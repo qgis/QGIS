@@ -52,7 +52,7 @@ def baseHelpForAlgorithm(alg, folder):
         f.write('{}\n'.format(alg.name))
         f.write('{}\n\n'.format('=' * len(alg.name)))
         f.write('Description\n')
-        f.write('-----------\n\n<put algortithm description here>\n\n')
+        f.write('-----------\n\n<put algorithm description here>\n\n')
 
         # Algorithm parameters
         f.write('Parameters\n')

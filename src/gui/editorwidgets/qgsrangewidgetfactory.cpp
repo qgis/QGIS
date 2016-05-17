@@ -19,7 +19,7 @@
 #include "qgsvectorlayer.h"
 
 
-QgsRangeWidgetFactory::QgsRangeWidgetFactory( QString name )
+QgsRangeWidgetFactory::QgsRangeWidgetFactory( const QString& name )
     : QgsEditorWidgetFactory( name )
 {
 }
@@ -73,7 +73,7 @@ void QgsRangeWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QD
 
 bool QgsRangeWidgetFactory::isFieldSupported( QgsVectorLayer* vl, int fieldIdx )
 {
-  switch ( vl->fields()[fieldIdx].type() )
+  switch ( vl->fields().at( fieldIdx ).type() )
   {
     case QVariant::LongLong:
     case QVariant::Double:

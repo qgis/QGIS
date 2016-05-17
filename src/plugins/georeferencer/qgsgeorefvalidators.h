@@ -20,8 +20,10 @@
 
 class QgsDMSAndDDValidator : public QValidator
 {
+    Q_OBJECT
+
   public:
-    QgsDMSAndDDValidator( QObject *parent );
+    explicit QgsDMSAndDDValidator( QObject *parent );
     State validate( QString &input, int &pos ) const override;
 };
 

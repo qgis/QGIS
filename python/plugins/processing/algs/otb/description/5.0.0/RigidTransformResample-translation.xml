@@ -1,0 +1,101 @@
+<root>
+  <key>RigidTransformResample-translation</key>
+  <exec>otbcli_RigidTransformResample</exec>
+  <longname>RigidTransformResample (translation)</longname>
+  <group>Geometry</group>
+  <description>Resample an image with a rigid transform</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>Input image</name>
+    <description>The input image to translate.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>out</key>
+    <name>Output image</name>
+    <description>The transformed output image.</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>transform.type</key>
+    <name>Type of transformation</name>
+    <description>Type of transformation. Available transformations are spatial scaling, translation and rotation with scaling factor</description>
+    <options>
+      <choices>
+        <choice>translation</choice>
+        </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>transform.type.translation.tx</key>
+    <name>The X translation (in physical units)</name>
+    <description>The translation value along X axis (in physical units).</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>transform.type.translation.ty</key>
+    <name>The Y translation (in physical units)</name>
+    <description>The translation value along Y axis (in physical units)</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>transform.type.translation.scalex</key>
+    <name>X scaling</name>
+    <description>Scaling factor between the output X spacing and the input X spacing</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>transform.type.translation.scaley</key>
+    <name>Y scaling</name>
+    <description>Scaling factor between the output Y spacing and the input Y spacing</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>interpolator</key>
+    <name>Interpolation</name>
+    <description>This group of parameters allows defining how the input image will be interpolated during resampling.</description>
+    <options>
+      <choices>
+        <choice>nn</choice>
+        <choice>linear</choice>
+        <choice>bco</choice>
+      </choices>
+    </options>
+    <default>2</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Radius">ParameterNumber</parameter_type>
+    <key>interpolator.bco.radius</key>
+    <name>Radius for bicubic interpolation</name>
+    <description>This parameter allows controlling the size of the bicubic interpolation filter. If the target pixel size is higher than the input pixel size, increasing this parameter will reduce aliasing artifacts.</description>
+    <minValue />
+    <maxValue />
+    <default>2</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>This allows setting the maximum amount of RAM available for processing. As the writing task is time consuming, it is better to write large pieces of data, which can be achieved by increasing this parameter (pay attention to your system capabilities)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+</root>

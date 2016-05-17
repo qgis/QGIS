@@ -25,6 +25,7 @@
 #include <QVBoxLayout>
 
 #include "qgis.h"
+#include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgscoordinatereferencesystem.h"
 
@@ -188,7 +189,43 @@ class QgsGrassModuleGroupBoxItem : public QGroupBox, public QgsGrassModuleParam
   public slots:
     //! Adjust title size, called on resize
     void adjustTitle();
+};
 
+/****************** QgsGrassModuleMultiParam ************************/
+
+/** \class QgsGrassModuleMultiParam
+ *  \brief GRASS module multiple params box
+ */
+class QgsGrassModuleMultiParam : public QgsGrassModuleGroupBoxItem
+{
+    Q_OBJECT
+
+  public:
+    QgsGrassModuleMultiParam( QgsGrassModule *module, QString key,
+                              QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
+                              bool direct, QWidget * parent = 0 );
+
+    virtual ~QgsGrassModuleMultiParam();
+
+  public slots:
+    virtual void addRow() {}
+
+    virtual void removeRow() {}
+
+  protected:
+    QVBoxLayout *paramsLayout() { return mParamsLayout; }
+
+    void showAddRemoveButtons();
+
+  private:
+    // Parameters layout
+    QHBoxLayout *mLayout;
+
+    // Parameters layout
+    QVBoxLayout *mParamsLayout;
+
+    // Parameters layout
+    QVBoxLayout *mButtonsLayout;
 };
 
 /****************** QgsGrassModuleOption ************************/
@@ -196,7 +233,7 @@ class QgsGrassModuleGroupBoxItem : public QGroupBox, public QgsGrassModuleParam
 /** \class QgsGrassModuleOption
  *  \brief  GRASS option
  */
-class QgsGrassModuleOption : public QgsGrassModuleGroupBoxItem
+class QgsGrassModuleOption : public QgsGrassModuleMultiParam
 {
     Q_OBJECT
 
@@ -249,10 +286,10 @@ class QgsGrassModuleOption : public QgsGrassModuleGroupBoxItem
 
   public slots:
     // Add new line edit for multiple options
-    void addLineEdit();
+    virtual void addRow() override;
 
     // Remove one line edit for multiple options
-    void removeLineEdit();
+    virtual void removeRow() override;
 
     // Browse output
     void browse( bool checked );
@@ -292,9 +329,6 @@ class QgsGrassModuleOption : public QgsGrassModuleGroupBoxItem
 
     //! Line input validator
     QValidator *mValidator;
-
-    // Layout inside box
-    QVBoxLayout *mLayout;
 
     //! Uses region
     bool mUsesRegion;
@@ -414,7 +448,7 @@ class QgsGrassModuleField : public QgsGrassModuleOption
 /** \class QgsGrassModuleVectorField
  *  \brief GRASS vector attribute column.
  */
-class QgsGrassModuleVectorField : public QgsGrassModuleGroupBoxItem
+class QgsGrassModuleVectorField : public QgsGrassModuleMultiParam
 {
     Q_OBJECT
 
@@ -442,6 +476,12 @@ class QgsGrassModuleVectorField : public QgsGrassModuleGroupBoxItem
     //! Fill combobox with currently available maps in QGIS canvas
     void updateFields();
 
+    // Add new combo for multiple options
+    virtual void addRow() override;
+
+    // Remove one combo for multiple options
+    virtual void removeRow() override;
+
   private:
     // Module options
     QgsGrassModuleStandardOptions *mModuleStandardOptions;
@@ -455,8 +495,8 @@ class QgsGrassModuleVectorField : public QgsGrassModuleGroupBoxItem
     // ! Field type (integer,double,string,datetime)
     QString mType;
 
-    //! Combobox for QGIS layer fieldsnviz
-    QComboBox *mFieldComboBox;
+    //! List of ComboBoxes for QGIS layer fields
+    QList<QComboBox*> mComboBoxList;
 };
 
 /*********************** QgsGrassModuleSelection **********************/
@@ -469,6 +509,14 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
     Q_OBJECT
 
   public:
+    enum Mode
+    {
+      Manual, // manual entry
+      Layer, // current selection of select
+      AddLayer, // add current layer to canvas
+      Expression // expression builder - possible?
+    };
+
     /** \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
@@ -487,10 +535,22 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
     virtual QStringList options() override;
 
   public slots:
+    // selected input layer changed
+    void onLayerChanged();
+
+    void onModeChanged();
+
     //! Set selection list to currently selected features
-    void updateSelection();
+    void onLayerSelectionChanged();
+
 
   private:
+    // currently selected map canvas layer id or empty string
+    QString currentSelectionLayerId();
+
+    // currently selected map canvas layer or null
+    QgsVectorLayer * currentSelectionLayer();
+
     // Module options
     QgsGrassModuleStandardOptions *mModuleStandardOptions;
 
@@ -508,6 +568,9 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
 
     //! Line
     QLineEdit *mLineEdit;
+
+    // selection mode
+    QComboBox *mModeComboBox;
 };
 
 /*********************** QgsGrassModuleFile **********************/

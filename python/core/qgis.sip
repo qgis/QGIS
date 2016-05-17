@@ -18,6 +18,9 @@
 %End
 
 
+/** \ingroup core
+ * The QGis class provides global constants for use throughout the application.
+ */
 class QGis
 {
 %TypeHeaderCode
@@ -59,12 +62,41 @@ class QGis
       WKBMultiPolygon25D,
     };
 
+    //! Map multi to single type
+    // @deprecated use QgsWKBTypes::singleType
+    /* Q_DECL_DEPRECATED */
     static WkbType singleType( WkbType type );
+
+    //! Map single to multitype type
+    // @deprecated use QgsWKBTypes::multiType
+    /* Q_DECL_DEPRECATED */
     static WkbType multiType( WkbType type );
+
+    //! Map 2d+ to 2d type
+    // @deprecated use QgsWKBTypes::flatType
+    /* Q_DECL_DEPRECATED */
     static WkbType flatType( WkbType type );
+
+    //! Return if type is a single type
+    // @deprecated use QgsWKBTypes::isSingleType
+    /* Q_DECL_DEPRECATED */
     static bool isSingleType( WkbType type );
+
+    //! Return if type is a multi type
+    // @deprecated use QgsWKBTypes::isMultiType
+    /* Q_DECL_DEPRECATED */
     static bool isMultiType( WkbType type );
+
+    // get dimension of points
+    // @deprecated use QgsWKBTypes::coordDimensions()
+    /* Q_DECL_DEPRECATED */
     static int wkbDimensions( WkbType type );
+
+    //! Converts from old (pre 2.10) WKB type (OGR) to new WKB type
+    static QgsWKBTypes::Type fromOldWkbType(QGis::WkbType type);
+
+    //! Converts from new (post 2.10) WKB type (OGC) to old WKB type
+    static QGis::WkbType fromNewWkbType( QgsWKBTypes::Type type );
 
     enum GeometryType
     {
@@ -109,30 +141,44 @@ class QGis
      * @note that QGIS < 1.4 api had only Meters, Feet, Degrees and UnknownUnit
      * @note and QGIS >1.8 returns to that
      */
+    //TODO QGIS 3.0 - clean up and move to QgsUnitTypes and rename to DistanceUnit
     enum UnitType
     {
-      Meters,
-      Feet,
-      Degrees, //for 1.0 api backwards compatibility
-      UnknownUnit,
+      Meters, /*!< meters */
+      Feet, /*!< imperial feet */
+      Degrees, /*!< degrees, for planar geographic CRS distance measurements */ //for 1.0 api backwards compatibility
+      NauticalMiles, /*!< nautical miles */
+      Kilometers, /*!< kilometers */
+      Yards, /*!< imperial yards */
+      Miles, /*!< terrestial miles */
+
+      UnknownUnit, /*!< unknown distance unit */
 
       // for [1.4;1.8] api compatibility
       DecimalDegrees,         // was 2
       DegreesMinutesSeconds,  // was 4
       DegreesDecimalMinutes,  // was 5
-      NauticalMiles
     };
 
     //! Provides the canonical name of the type value
-    static QString toLiteral( QGis::UnitType unit );
+    //! @deprecated use QgsUnitTypes::encodeUnit() instead
+    static QString toLiteral( QGis::UnitType unit ) /Deprecated/;
+
     //! Converts from the canonical name to the type value
-    static UnitType fromLiteral( QString  literal, QGis::UnitType defaultType = UnknownUnit );
+    //! @deprecated use QgsUnitTypes::decodeDistanceUnit() instead
+    static UnitType fromLiteral( const QString& literal, QGis::UnitType defaultType = UnknownUnit ) /Deprecated/;
+
     //! Provides translated version of the type value
-    static QString tr( QGis::UnitType unit );
+    //! @deprecated use QgsUnitTypes::toString() instead
+    static QString tr( QGis::UnitType unit ) /Deprecated/;
+
     //! Provides type value from translated version
-    static UnitType fromTr( QString literal, QGis::UnitType defaultType = UnknownUnit );
+    //! @deprecated use QgsUnitTypes::stringToDistanceUnit() instead
+    static UnitType fromTr( const QString& literal, QGis::UnitType defaultType = UnknownUnit ) /Deprecated/;
+
     //! Returns the conversion factor between the specified units
-    static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
+    //! @deprecated use QgsUnitTyoes::fromUnitToUnitFactor() instead
+    static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit ) /Deprecated/;
 
     /** Converts a string to a double in a permissive way, eg allowing for incorrect
      * numbers of digits between thousand separators
@@ -189,8 +235,25 @@ class QGis
     /** Default highlight line/outline minimum width in mm.
      *  @note added in 2.3 */
     static double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
+
+    /** Fudge factor used to compare two scales. The code is often going from scale to scale
+     *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
+     *  To avoid that, use this factor instead of using <= or >=.
+     * @note added in 2.15*/
+    static double SCALE_PRECISION;
 };
 
+//! Compares two QVariant values and returns whether the first is less than the second.
+//! Useful for sorting lists of variants, correctly handling sorting of the various
+//! QVariant data types (such as strings, numeric values, dates and times)
+//! @see qgsVariantGreaterThan()
+bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
+
+//! Compares two QVariant values and returns whether the first is greater than the second.
+//! Useful for sorting lists of variants, correctly handling sorting of the various
+//! QVariant data types (such as strings, numeric values, dates and times)
+//! @see qgsVariantLessThan()
+bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
 
 /** Wkt string that represents a geographic coord sys
  * @note added to replace GEOWkt

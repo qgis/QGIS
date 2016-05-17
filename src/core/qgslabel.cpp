@@ -149,7 +149,7 @@ void QgsLabel::renderLabel( QgsRenderContext &renderContext,
   //and scale the painter down by rasterScaleFactor when drawing the label
   size *= renderContext.rasterScaleFactor();
 
-  if (( int )size <= 0 )
+  if ( static_cast< int >( size ) <= 0 )
     // skip too small labels
     return;
 
@@ -172,7 +172,7 @@ void QgsLabel::renderLabel( QgsRenderContext &renderContext,
   }
   else
   {
-    font.setBold(( bool ) value.toInt() );
+    font.setBold( static_cast< bool >( value.toInt() ) );
   }
 
   value = fieldValue( Italic, feature );
@@ -182,7 +182,7 @@ void QgsLabel::renderLabel( QgsRenderContext &renderContext,
   }
   else
   {
-    font.setItalic(( bool ) value.toInt() );
+    font.setItalic( static_cast< bool >( value.toInt() ) );
   }
 
   value = fieldValue( Underline, feature );
@@ -192,7 +192,7 @@ void QgsLabel::renderLabel( QgsRenderContext &renderContext,
   }
   else
   {
-    font.setUnderline(( bool ) value.toInt() );
+    font.setUnderline( static_cast< bool >( value.toInt() ) );
   }
 
   value = fieldValue( StrikeOut, feature );
@@ -202,7 +202,7 @@ void QgsLabel::renderLabel( QgsRenderContext &renderContext,
   }
   else
   {
-    font.setStrikeOut(( bool ) value.toInt() );
+    font.setStrikeOut( static_cast< bool >( value.toInt() ) );
   }
 
   //
@@ -228,7 +228,7 @@ void QgsLabel::renderLabel( QgsRenderContext &renderContext,
 
   if ( mLabelAttributes->multilineEnabled() )
   {
-    QStringList texts = text.split( "\n" );
+    QStringList texts = text.split( '\n' );
 
     width = 0;
     for ( int i = 0; i < texts.size(); i++ )
@@ -369,7 +369,7 @@ void QgsLabel::renderLabel( QgsRenderContext &renderContext,
 
 void QgsLabel::renderLabel( QgsRenderContext &renderContext,
                             QgsPoint point,
-                            QString text, QFont font, QPen pen,
+                            const QString& text, const QFont& font, const QPen& pen,
                             int dx, int dy,
                             double xoffset, double yoffset,
                             double ang,
@@ -483,7 +483,7 @@ void QgsLabel::setFields( const QgsFields & fields )
   mFields = fields;
 }
 
-QgsFields & QgsLabel::fields( void )
+QgsFields & QgsLabel::fields( )
 {
   return mFields;
 }
@@ -504,10 +504,10 @@ QString QgsLabel::labelField( int attr ) const
   int fieldIndex = mLabelFieldIdx[attr];
   if ( fieldIndex < 0 || fieldIndex >= mFields.count() )
     return QString();
-  return mFields[fieldIndex].name();
+  return mFields.at( fieldIndex ).name();
 }
 
-QgsLabelAttributes *QgsLabel::labelAttributes( void )
+QgsLabelAttributes *QgsLabel::labelAttributes()
 {
   return mLabelAttributes;
 }
@@ -544,7 +544,7 @@ void QgsLabel::labelPoint( std::vector<labelpoint>& points, QgsFeature & feature
     {
       Q_ASSERT( 1 + sizeof( wkbType ) + sizeof( int ) <= geomlen );
       geom += 1 + sizeof( wkbType );
-      int nFeatures = *( unsigned int * )geom;
+      int nFeatures = *( reinterpret_cast< const unsigned int * >( geom ) );
       geom += sizeof( int );
 
       const unsigned char *feature = geom;
@@ -567,19 +567,19 @@ const unsigned char* QgsLabel::labelPoint( labelpoint& point, const unsigned cha
   Q_ASSERT( sizeof( QGis::WkbType ) == 4 );
   Q_ASSERT( sizeof( double ) == 8 );
 
-  if ( geom == NULL )
+  if ( !geom )
   {
     QgsDebugMsg( "empty wkb" );
-    return NULL;
+    return nullptr;
   }
 
   QGis::WkbType wkbType;
 #ifndef QT_NO_DEBUG
   const unsigned char *geomend = geom + geomlen;
+  Q_ASSERT( geom + 1 + sizeof( wkbType ) <= geomend );
 #else
   Q_UNUSED( geomlen );
 #endif
-  Q_ASSERT( geom + 1 + sizeof( wkbType ) <= geomend );
 
   geom++; // skip endianness
   memcpy( &wkbType, geom, sizeof( wkbType ) );
@@ -592,8 +592,10 @@ const unsigned char* QgsLabel::labelPoint( labelpoint& point, const unsigned cha
     case QGis::WKBPoint25D:
     case QGis::WKBPoint:
     {
+#ifndef QT_NO_DEBUG
       Q_ASSERT( geom + 2*sizeof( double ) <= geomend );
-      double *pts = ( double * )geom;
+#endif
+      const double *pts = reinterpret_cast< const double * >( geom );
       point.p.set( pts[0], pts[1] );
       point.angle = 0.0;
       geom += 2 * sizeof( double );
@@ -603,16 +605,21 @@ const unsigned char* QgsLabel::labelPoint( labelpoint& point, const unsigned cha
     case QGis::WKBLineString25D:
       dims = 3;
       //intentional fall-through
+      FALLTHROUGH;
     case QGis::WKBLineString: // Line center
     {
+#ifndef QT_NO_DEBUG
       Q_ASSERT( geom + sizeof( int ) <= geomend );
-      int nPoints = *( unsigned int * )geom;
+#endif
+      int nPoints = *( reinterpret_cast< const unsigned int * >( geom ) );
       geom += sizeof( int );
 
+#ifndef QT_NO_DEBUG
       Q_ASSERT( geom + nPoints*sizeof( double )*dims <= geomend );
+#endif
 
       // get line center
-      double *pts = ( double * )geom;
+      const double *pts = reinterpret_cast< const double * >( geom );
       double tl = 0.0;
       for ( int i = 1; i < nPoints; i++ )
       {
@@ -650,24 +657,31 @@ const unsigned char* QgsLabel::labelPoint( labelpoint& point, const unsigned cha
     case QGis::WKBPolygon25D:
       dims = 3;
       //intentional fall-through
+      FALLTHROUGH;
     case QGis::WKBPolygon: // centroid of outer ring
     {
+#ifndef QT_NO_DEBUG
       Q_ASSERT( geom + sizeof( int ) <= geomend );
-      int nRings = *( unsigned int * )geom;
+#endif
+      int nRings = *( reinterpret_cast< const unsigned int * >( geom ) );
       geom += sizeof( int );
 
       for ( int i = 0; i < nRings; ++i )
       {
+#ifndef QT_NO_DEBUG
         Q_ASSERT( geom + sizeof( int ) <= geomend );
-        int nPoints = *( unsigned int * )geom;
+#endif
+        int nPoints = *( reinterpret_cast< const unsigned int * >( geom ) );
         geom += sizeof( int );
 
+#ifndef QT_NO_DEBUG
         Q_ASSERT( geom + nPoints*sizeof( double )*dims <= geomend );
+#endif
 
         if ( i == 0 )
         {
           double sx = 0.0, sy = 0.0;
-          double *pts = ( double* ) geom;
+          const double *pts = reinterpret_cast< const double* >( geom );
           for ( int j = 0; j < nPoints - 1; j++ )
           {
             sx += pts[dims*j];
@@ -687,13 +701,13 @@ const unsigned char* QgsLabel::labelPoint( labelpoint& point, const unsigned cha
       // To get here is a bug because our caller should be filtering
       // on wkb type.
       QgsDebugMsg( "unsupported wkb type" );
-      return NULL;
+      return nullptr;
   }
 
   return geom;
 }
 
-bool QgsLabel::readLabelField( QDomElement &el, int attr, QString prefix = "field" )
+bool QgsLabel::readLabelField( QDomElement &el, int attr, const QString& prefix = "field" )
 {
   QString name = prefix + "name";
 
@@ -704,7 +718,7 @@ bool QgsLabel::readLabelField( QDomElement &el, int attr, QString prefix = "fiel
     int idx = 0;
     for ( ; idx < mFields.count(); ++idx )
     {
-      if ( mFields[idx].name() == name )
+      if ( mFields.at( idx ).name() == name )
       {
         break;
       }
@@ -798,7 +812,7 @@ void QgsLabel::readXML( const QDomNode& node )
   else
   {
     el = scratchNode.toElement();
-    mLabelAttributes->setBold(( bool )el.attribute( "on", "0" ).toInt() );
+    mLabelAttributes->setBold( static_cast< bool >( el.attribute( "on", "0" ).toInt() ) );
     readLabelField( el, Bold );
   }
 
@@ -812,7 +826,7 @@ void QgsLabel::readXML( const QDomNode& node )
   else
   {
     el = scratchNode.toElement();
-    mLabelAttributes->setItalic(( bool )el.attribute( "on", "0" ).toInt() );
+    mLabelAttributes->setItalic( static_cast< bool >( el.attribute( "on", "0" ).toInt() ) );
     readLabelField( el, Italic );
   }
 
@@ -826,7 +840,7 @@ void QgsLabel::readXML( const QDomNode& node )
   else
   {
     el = scratchNode.toElement();
-    mLabelAttributes->setUnderline(( bool )el.attribute( "on", "0" ).toInt() );
+    mLabelAttributes->setUnderline( static_cast< bool >( el.attribute( "on", "0" ).toInt() ) );
     readLabelField( el, Underline );
   }
 
@@ -840,7 +854,7 @@ void QgsLabel::readXML( const QDomNode& node )
   else
   {
     el = scratchNode.toElement();
-    mLabelAttributes->setStrikeOut(( bool )el.attribute( "on", "0" ).toInt() );
+    mLabelAttributes->setStrikeOut( static_cast< bool >( el.attribute( "on", "0" ).toInt() ) );
     readLabelField( el, StrikeOut );
   }
 
@@ -987,7 +1001,7 @@ void QgsLabel::readXML( const QDomNode& node )
   {
     el = scratchNode.toElement();
 
-    mLabelAttributes->setBufferEnabled(( bool )el.attribute( "on", "0" ).toInt() );
+    mLabelAttributes->setBufferEnabled( static_cast< bool >( el.attribute( "on", "0" ).toInt() ) );
     readLabelField( el, BufferEnabled );
   }
 
@@ -1001,7 +1015,7 @@ void QgsLabel::readXML( const QDomNode& node )
   {
     el = scratchNode.toElement();
 
-    mLabelAttributes->setMultilineEnabled(( bool )el.attribute( "on", "0" ).toInt() );
+    mLabelAttributes->setMultilineEnabled( static_cast< bool >( el.attribute( "on", "0" ).toInt() ) );
     readLabelField( el, MultilineEnabled );
   }
 
@@ -1014,7 +1028,7 @@ void QgsLabel::readXML( const QDomNode& node )
   else
   {
     el = scratchNode.toElement();
-    mLabelAttributes->setSelectedOnly(( bool )el.attribute( "on", "0" ).toInt() );
+    mLabelAttributes->setSelectedOnly( static_cast< bool >( el.attribute( "on", "0" ).toInt() ) );
   }
 
 } // QgsLabel::readXML()
@@ -1399,4 +1413,10 @@ void QgsLabel::setMaxScale( float theMaxScale )
 float QgsLabel::maxScale() const
 {
   return mMaxScale;
+}
+
+bool QgsLabel::isInScaleRange( double scale ) const
+{
+  return !mScaleBasedVisibility ||
+         ( mMinScale * QGis::SCALE_PRECISION < scale && scale * QGis::SCALE_PRECISION < mMaxScale );
 }

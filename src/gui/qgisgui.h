@@ -17,6 +17,7 @@
 
 #include <Qt>
 #include <QPair>
+#include <QWidget>
 #include <QStringList>
 
 class QFont;
@@ -45,7 +46,7 @@ namespace QgisGui
    * Qt::WindowMaximizeButtonHint is included but will be ignored if
    * the dialog is a fixed size and does not have a size grip.
    */
-  static const Qt::WindowFlags ModalDialogFlags = 0;
+  static const Qt::WindowFlags ModalDialogFlags = nullptr;
 
   /**
     Open files, preferring to have the default file selector be the
@@ -82,7 +83,7 @@ namespace QgisGui
    * @return QPair<QString, QString> where first is the file name and second is
    * the file type
    */
-  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget * theParent, QString theMessage, QString defaultFilename = QString::null );
+  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget * theParent, const QString& theMessage, const QString& defaultFilename = QString::null );
 
   /**
     Convenience function for readily creating file filters.

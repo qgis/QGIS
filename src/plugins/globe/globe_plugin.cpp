@@ -57,7 +57,11 @@
 #include <osgEarth/Map>
 #include <osgEarth/MapNode>
 #include <osgEarth/TileSource>
+#if OSGEARTH_MIN_VERSION_REQUIRED(2,7,0)
+#include <osgEarthUtil/Sky>
+#else
 #include <osgEarthUtil/SkyNode>
+#endif
 #include <osgEarthUtil/AutoClipPlaneHandler>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarthDrivers/tms/TMSOptions>
@@ -216,7 +220,7 @@ private:
 
 struct HomeControlHandler : public NavigationControlHandler
 {
-  HomeControlHandler( osgEarth::Util::EarthManipulator* manip ) : _manip( manip ) { }
+  explicit HomeControlHandler( osgEarth::Util::EarthManipulator* manip ) : _manip( manip ) { }
   virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa ) override
   {
     _manip->home( ea, aa );
@@ -227,7 +231,7 @@ private:
 
 struct RefreshControlHandler : public ControlEventHandler
 {
-  RefreshControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
+  explicit RefreshControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
   virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/ ) override
   {
     mGlobe->imageLayersChanged();
@@ -238,7 +242,7 @@ private:
 
 struct SyncExtentControlHandler : public ControlEventHandler
 {
-  SyncExtentControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
+  explicit SyncExtentControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
   virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/ ) override
   {
     mGlobe->syncExtent();
@@ -394,9 +398,18 @@ void GlobePlugin::run()
     }
 
     // Set a home viewpoint
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 7, 0 )
+    osgEarth::Util::Viewpoint vp;
+    vp.focalPoint()->vec3d() = osg::Vec3d( -90, 0, 0 );
+    vp.heading() = 0.0;
+    vp.pitch() = -90.0;
+    vp.range() = 2e7;
+    manip->setHomeViewpoint( vp, 1.0 );
+#else
     manip->setHomeViewpoint(
       osgEarth::Util::Viewpoint( osg::Vec3d( -90, 0, 0 ), 0.0, -90.0, 2e7 ),
       1.0 );
+#endif
 
     setupControls();
 
@@ -454,12 +467,14 @@ void GlobePlugin::setupMap()
   //nodeOptions.proxySettings() =
   //nodeOptions.enableLighting() = false;
 
+#if OSGEARTH_VERSION_LESS_THAN( 2, 7, 0 )
   //LoadingPolicy loadingPolicy( LoadingPolicy::MODE_SEQUENTIAL );
   TerrainOptions terrainOptions;
   //terrainOptions.loadingPolicy() = loadingPolicy;
   terrainOptions.compositingTechnique() = TerrainOptions::COMPOSITING_MULTITEXTURE_FFP;
   //terrainOptions.lodFallOff() = 6.0;
   nodeOptions.setTerrainOptions( terrainOptions );
+#endif
 
   // The MapNode will render the Map object in the scene graph.
   mMapNode = new osgEarth::MapNode( map, nodeOptions );
@@ -605,7 +620,15 @@ void GlobePlugin::syncExtent()
 
   OE_NOTICE << "map extent: " << height << " camera distance: " << distance << std::endl;
 
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 7, 0 )
+  osgEarth::Util::Viewpoint viewpoint;
+  viewpoint.focalPoint()->vec3d() = osg::Vec3d( extent.center().x(), extent.center().y(), 0.0 );
+  viewpoint.heading() = 0.0;
+  viewpoint.pitch() = -90.0;
+  viewpoint.range() = distance;
+#else
   osgEarth::Util::Viewpoint viewpoint( osg::Vec3d( extent.center().x(), extent.center().y(), 0.0 ), 0.0, -90.0, distance );
+#endif
   manip->setViewpoint( viewpoint, 4.0 );
 }
 
@@ -803,7 +826,7 @@ void GlobePlugin::setupProxy()
 
 void GlobePlugin::extentsChanged()
 {
-  QgsDebugMsg( "extentsChanged: " + mQGisIface->mapCanvas()->extent().toString() );
+  QgsDebugMsg( "extentsChanged: " + qobject_cast<QgsMapCanvas *>( sender() )->extent().toString() );
 }
 
 void GlobePlugin::imageLayersChanged()
@@ -930,17 +953,28 @@ void GlobePlugin::setSkyParameters( bool enabled, const QDateTime& dateTime, boo
     {
       // Create if not yet done
       if ( !mSkyNode.get() )
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 7, 0 )
+        mSkyNode = SkyNode::create( mMapNode );
+#else
         mSkyNode = new SkyNode( mMapNode->getMap() );
+#endif
 
-#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 4, 0 )
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 4, 0 ) && OSGEARTH_VERSION_LESS_THAN( 2, 7, 0 )
       mSkyNode->setAutoAmbience( autoAmbience );
 #else
       Q_UNUSED( autoAmbience );
 #endif
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 7, 0 )
+      mSkyNode->setDateTime( DateTime( dateTime.date().year()
+                                       , dateTime.date().month()
+                                       , dateTime.date().day()
+                                       , dateTime.time().hour() + dateTime.time().minute() / 60.0 ) );
+#else
       mSkyNode->setDateTime( dateTime.date().year()
                              , dateTime.date().month()
                              , dateTime.date().day()
                              , dateTime.time().hour() + dateTime.time().minute() / 60.0 );
+#endif
       //sky->setSunPosition( osg::Vec3(0,-1,0) );
       mSkyNode->attach( mOsgViewer );
       mRootNode->addChild( mSkyNode );
@@ -980,6 +1014,21 @@ void GlobePlugin::unload()
   mQGisIface->removeToolBarIcon( mQActionPointer );
 
   delete mQActionPointer;
+  delete mQActionSettingsPointer;
+  delete mQActionUnload;
+
+  disconnect( mQGisIface->mapCanvas(), SIGNAL( extentsChanged() ),
+              this, SLOT( extentsChanged() ) );
+  disconnect( mQGisIface->mapCanvas(), SIGNAL( layersChanged() ),
+              this, SLOT( imageLayersChanged() ) );
+  disconnect( mSettingsDialog, SIGNAL( elevationDatasourcesChanged() ),
+              this, SLOT( elevationLayersChanged() ) );
+  disconnect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this,
+              SLOT( projectReady() ) );
+  disconnect( mQGisIface, SIGNAL( newProjectCreated() ), this,
+              SLOT( blankProjectReady() ) );
+  disconnect( this, SIGNAL( xyCoordinates( const QgsPoint & ) ),
+              mQGisIface->mapCanvas(), SIGNAL( xyCoordinates( const QgsPoint & ) ) );
 
 #if 0
   if ( mCoutRdBuf )
@@ -993,7 +1042,7 @@ void GlobePlugin::help()
 {
 }
 
-void GlobePlugin::placeNode( osg::Node* node, double lat, double lon, double alt /*= 0.0*/ )
+void GlobePlugin::placeNode( osg::Node* node, double lat, double lon, double alt )
 {
 #ifdef HAVE_OSGEARTH_ELEVATION_QUERY
   Q_UNUSED( node );
@@ -1004,7 +1053,7 @@ void GlobePlugin::placeNode( osg::Node* node, double lat, double lon, double alt
   // get elevation
   double elevation = 0.0;
   double resolution = 0.0;
-  mElevationManager->getElevation( lon, lat, 0, NULL, elevation, resolution );
+  mElevationManager->getElevation( lon, lat, 0, nullptr, elevation, resolution );
 
   // place model
   osg::Matrix mat;
@@ -1071,7 +1120,7 @@ bool NavigationControl::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActi
           handler->onClick( this, ea.getButtonMask(), ea, aa );
         }
       }
-      _mouse_down_event = NULL;
+      _mouse_down_event = nullptr;
       break;
     default:
       /* ignore */
@@ -1268,7 +1317,7 @@ osg::Vec3d QueryCoordinatesHandler::getCoords( float x, float y, osgViewer::View
       if ( _elevMan->getPlacementMatrix(
              lon_deg, lat_deg, 0,
              query_resolution, _mapSRS,
-             //query_resolution, NULL,
+             //query_resolution, nullptr,
              out_mat, elevation, out_resolution ) )
       {
         OE_NOTICE << "Elevation at " << lon_deg << ", " << lat_deg

@@ -23,7 +23,6 @@
 #include <qgsmaplayerregistry.h>
 
 #include "qgsdatadefinedbutton.h"
-#include "qgslabelengineconfigdialog.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpression.h"
 #include "qgsfontutils.h"
@@ -34,6 +33,7 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgscharacterselectdialog.h"
 #include "qgssvgselectorwidget.h"
+#include "qgsvectorlayerlabeling.h"
 
 #include <QCheckBox>
 #include <QSettings>
@@ -43,38 +43,47 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 )
+  << QgsExpressionContextUtils::atlasScope( nullptr )
   << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() );
 
   const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
   if ( layer )
     expContext << QgsExpressionContextUtils::layerScope( layer );
 
+  expContext << QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
+
+  //TODO - show actual value
+  expContext.setOriginalValueVariable( QVariant() );
+  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR );
+
   return expContext;
 }
 
-QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent )
+QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsPalLayerSettings* layerSettings, QWidget* parent )
     : QWidget( parent )
     , mLayer( layer )
     , mMapCanvas( mapCanvas )
-    , mCharDlg( 0 )
-    , mQuadrantBtnGrp( 0 )
-    , mDirectSymbBtnGrp( 0 )
-    , mUpsidedownBtnGrp( 0 )
-    , mPlacePointBtnGrp( 0 )
-    , mPlaceLineBtnGrp( 0 )
-    , mPlacePolygonBtnGrp( 0 )
+    , mSettings( layerSettings )
+    , mMode( NoLabels )
+    , mCharDlg( nullptr )
+    , mQuadrantBtnGrp( nullptr )
+    , mDirectSymbBtnGrp( nullptr )
+    , mUpsidedownBtnGrp( nullptr )
+    , mPlacePointBtnGrp( nullptr )
+    , mPlaceLineBtnGrp( nullptr )
+    , mPlacePolygonBtnGrp( nullptr )
     , mPreviewSize( 24 )
     , mMinPixelLimit( 0 )
     , mLoadSvgParams( false )
 {
-  if ( !layer )
-    return;
-
   setupUi( this );
 
   mFieldExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
 
+  Q_FOREACH ( QgsUnitSelectionWidget* unitWidget, findChildren<QgsUnitSelectionWidget*>() )
+  {
+    unitWidget->setMapCanvas( mMapCanvas );
+  }
   mFontSizeUnitWidget->setUnits( QStringList() << tr( "Points" ) << tr( "Map unit" ), 1 );
   mBufferUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit );
   mShapeSizeUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit );
@@ -96,9 +105,13 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   mPointAngleSpinBox->setClearValue( 0.0 );
   mFontLetterSpacingSpinBox->setClearValue( 0.0 );
   mFontWordSpacingSpinBox->setClearValue( 0.0 );
+  mZIndexSpinBox->setClearValue( 0.0 );
 
   mObstacleTypeComboBox->addItem( tr( "Over the feature's interior" ), QgsPalLayerSettings::PolygonInterior );
   mObstacleTypeComboBox->addItem( tr( "Over the feature's boundary" ), QgsPalLayerSettings::PolygonBoundary );
+
+  mOffsetTypeComboBox->addItem( tr( "From point" ), QgsPalLayerSettings::FromPoint );
+  mOffsetTypeComboBox->addItem( tr( "From symbol bounds" ), QgsPalLayerSettings::FromSymbolBounds );
 
   mCharDlg = new QgsCharacterSelectorDialog( this );
 
@@ -108,21 +121,10 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   connect( mBufferDrawChkBx, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
   connect( mShapeDrawChkBx, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
   connect( mShadowDrawChkBx, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
-
   connect( mDirectSymbChkBx, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
   connect( mFormatNumChkBx, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
   connect( mScaleBasedVisibilityChkBx, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
   connect( mFontLimitPixelChkBox, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
-
-  // preview and basic option connections
-  connect( btnTextColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( changeTextColor( const QColor& ) ) );
-  connect( mFontTranspSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( updatePreview() ) );
-  connect( mBufferDrawChkBx, SIGNAL( toggled( bool ) ), this, SLOT( updatePreview() ) );
-  connect( btnBufferColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( changeBufferColor( const QColor& ) ) );
-  connect( spinBufferSize, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
-  connect( mBufferTranspSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( updatePreview() ) );
-  connect( mBufferJoinStyleComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updatePreview() ) );
-  connect( mBufferTranspFillChbx, SIGNAL( toggled( bool ) ), this, SLOT( updatePreview() ) );
 
   // internal connections
   connect( mFontTranspSlider, SIGNAL( valueChanged( int ) ), mFontTranspSpinBox, SLOT( setValue( int ) ) );
@@ -141,47 +143,6 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   connect( chkLineAbove, SIGNAL( toggled( bool ) ), this, SLOT( updateLinePlacementOptions() ) );
   connect( chkLineBelow, SIGNAL( toggled( bool ) ), this, SLOT( updateLinePlacementOptions() ) );
   connect( chkLineOn, SIGNAL( toggled( bool ) ), this, SLOT( updateLinePlacementOptions() ) );
-
-  connect( btnEngineSettings, SIGNAL( clicked() ), this, SLOT( showEngineConfigDialog() ) );
-
-  // set placement methods page based on geometry type
-  switch ( layer->geometryType() )
-  {
-    case QGis::Point:
-      stackedPlacement->setCurrentWidget( pagePoint );
-      break;
-    case QGis::Line:
-      stackedPlacement->setCurrentWidget( pageLine );
-      break;
-    case QGis::Polygon:
-      stackedPlacement->setCurrentWidget( pagePolygon );
-      break;
-    case QGis::NoGeometry:
-      break;
-    case QGis::UnknownGeometry:
-      qFatal( "unknown geometry type unexpected" );
-  }
-
-  if ( layer->geometryType() == QGis::Point )
-  {
-    // follow placement alignment is only valid for point layers
-    mFontMultiLineAlignComboBox->addItem( tr( "Follow label placement" ) );
-  }
-
-  // show/hide options based upon geometry type
-  chkMergeLines->setVisible( layer->geometryType() == QGis::Line );
-  mDirectSymbolsFrame->setVisible( layer->geometryType() == QGis::Line );
-  mMinSizeFrame->setVisible( layer->geometryType() != QGis::Point );
-  mPolygonObstacleTypeFrame->setVisible( layer->geometryType() == QGis::Polygon );
-  mPolygonFeatureOptionsFrame->setVisible( layer->geometryType() == QGis::Polygon );
-
-  // field combo and expression button
-  mFieldExpressionWidget->setLayer( mLayer );
-  QgsDistanceArea myDa;
-  myDa.setSourceCrs( mLayer->crs().srsid() );
-  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
-  mFieldExpressionWidget->setGeomCalculator( myDa );
 
   populateFontCapitalsComboBox();
 
@@ -235,8 +196,9 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   connect( chkLineAbove, SIGNAL( toggled( bool ) ), this, SLOT( updatePlacementWidgets() ) );
   connect( chkLineBelow, SIGNAL( toggled( bool ) ), this, SLOT( updatePlacementWidgets() ) );
 
-  // setup point placement button group (assigned enum id currently unused)
+  // setup point placement button group
   mPlacePointBtnGrp = new QButtonGroup( this );
+  mPlacePointBtnGrp->addButton( radPredefinedOrder, ( int )QgsPalLayerSettings::OrderedPositionsAroundPoint );
   mPlacePointBtnGrp->addButton( radAroundPoint, ( int )QgsPalLayerSettings::AroundPoint );
   mPlacePointBtnGrp->addButton( radOverPoint, ( int )QgsPalLayerSettings::OverPoint );
   mPlacePointBtnGrp->setExclusive( true );
@@ -300,29 +262,366 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   mLabelingOptionsSplitter->restoreState( settings.value( QString( "/Windows/Labeling/OptionsSplitState" ) ).toByteArray() );
 
   mLabelingOptionsListWidget->setCurrentRow( settings.value( QString( "/Windows/Labeling/Tab" ), 0 ).toInt() );
+
+  setDockMode( false );
+
+
+  QList<QWidget*> widgets;
+  widgets << btnBufferColor
+  << btnTextColor
+  << chkLabelPerFeaturePart
+  << chkLineAbove
+  << chkLineBelow
+  << chkLineOn
+  << chkLineOrientationDependent
+  << chkMergeLines
+  << chkPreserveRotation
+  << comboBlendMode
+  << comboBufferBlendMode
+  << mAlwaysShowDDBtn
+  << mBufferBlendModeDDBtn
+  << mBufferColorDDBtn
+  << mBufferDrawChkBx
+  << mBufferDrawDDBtn
+  << mBufferJoinStyleComboBox
+  << mBufferJoinStyleDDBtn
+  << mBufferSizeDDBtn
+  << mBufferTranspDDBtn
+  << mBufferTranspFillChbx
+  << mBufferTranspSlider
+  << mBufferTranspSpinBox
+  << mBufferUnitsDDBtn
+  << mCentroidDDBtn
+  << mCentroidInsideCheckBox
+  << mChkNoObstacle
+  << mCoordAlignmentHDDBtn
+  << mCoordAlignmentVDDBtn
+  << mCoordRotationDDBtn
+  << mCoordXDDBtn
+  << mCoordYDDBtn
+  << mDirectSymbChkBx
+  << mDirectSymbDDBtn
+  << mDirectSymbLeftDDBtn
+  << mDirectSymbLeftLineEdit
+  << mDirectSymbLeftToolBtn
+  << mDirectSymbPlacementDDBtn
+  << mDirectSymbRevChkBx
+  << mDirectSymbRevDDBtn
+  << mDirectSymbRightDDBtn
+  << mDirectSymbRightLineEdit
+  << mDirectSymbRightToolBtn
+  << mFitInsidePolygonCheckBox
+  << mFontBlendModeDDBtn
+  << mFontBoldBtn
+  << mFontBoldDDBtn
+  << mFontCapitalsComboBox
+  << mFontCaseDDBtn
+  << mFontColorDDBtn
+  << mFontDDBtn
+  << mFontItalicBtn
+  << mFontItalicDDBtn
+  << mFontLetterSpacingDDBtn
+  << mFontLetterSpacingSpinBox
+  << mFontLimitPixelChkBox
+  << mFontLimitPixelDDBtn
+  << mFontLineHeightDDBtn
+  << mFontLineHeightSpinBox
+  << mFontMaxPixelDDBtn
+  << mFontMaxPixelSpinBox
+  << mFontMinPixelDDBtn
+  << mFontMinPixelSpinBox
+  << mFontMultiLineAlignComboBox
+  << mFontMultiLineAlignDDBtn
+  << mFontSizeDDBtn
+  << mFontSizeSpinBox
+  << mFontStrikeoutDDBtn
+  << mFontStrikethroughBtn
+  << mFontStyleComboBox
+  << mFontStyleDDBtn
+  << mFontTranspDDBtn
+  << mFontTranspSlider
+  << mFontTranspSpinBox
+  << mFontUnderlineBtn
+  << mFontUnderlineDDBtn
+  << mFontUnitsDDBtn
+  << mFontWordSpacingDDBtn
+  << mFontWordSpacingSpinBox
+  << mFormatNumChkBx
+  << mFormatNumDDBtn
+  << mFormatNumDecimalsDDBtn
+  << mFormatNumDecimalsSpnBx
+  << mFormatNumPlusSignChkBx
+  << mFormatNumPlusSignDDBtn
+  << mIsObstacleDDBtn
+  << mLimitLabelChkBox
+  << mLimitLabelSpinBox
+  << mLineDistanceDDBtn
+  << mLineDistanceSpnBx
+  << mLineDistanceUnitDDBtn
+  << mMaxCharAngleDDBtn
+  << mMaxCharAngleInDSpinBox
+  << mMaxCharAngleOutDSpinBox
+  << mMinSizeSpinBox
+  << mObstacleFactorDDBtn
+  << mObstacleFactorSlider
+  << mObstacleTypeComboBox
+  << mOffsetTypeComboBox
+  << mPalShowAllLabelsForLayerChkBx
+  << mPointAngleDDBtn
+  << mPointAngleSpinBox
+  << mPointOffsetAbove
+  << mPointOffsetAboveLeft
+  << mPointOffsetAboveRight
+  << mPointOffsetBelow
+  << mPointOffsetBelowLeft
+  << mPointOffsetBelowRight
+  << mPointOffsetDDBtn
+  << mPointOffsetLeft
+  << mPointOffsetOver
+  << mPointOffsetRight
+  << mPointOffsetUnitsDDBtn
+  << mPointOffsetXSpinBox
+  << mPointOffsetYSpinBox
+  << mPointPositionOrderDDBtn
+  << mPointQuadOffsetDDBtn
+  << mPreviewBackgroundBtn
+  << mPreviewSizeSlider
+  << mPreviewTextBtn
+  << mPreviewTextEdit
+  << mPriorityDDBtn
+  << mPrioritySlider
+  << mRepeatDistanceDDBtn
+  << mRepeatDistanceSpinBox
+  << mRepeatDistanceUnitDDBtn
+  << mScaleBasedVisibilityChkBx
+  << mScaleBasedVisibilityDDBtn
+  << mScaleBasedVisibilityMaxDDBtn
+  << mScaleBasedVisibilityMaxSpnBx
+  << mScaleBasedVisibilityMinDDBtn
+  << mScaleBasedVisibilityMinSpnBx
+  << mShadowBlendCmbBx
+  << mShadowBlendDDBtn
+  << mShadowColorBtn
+  << mShadowColorDDBtn
+  << mShadowDrawChkBx
+  << mShadowDrawDDBtn
+  << mShadowOffsetAngleDDBtn
+  << mShadowOffsetAngleSpnBx
+  << mShadowOffsetDDBtn
+  << mShadowOffsetGlobalChkBx
+  << mShadowOffsetSpnBx
+  << mShadowOffsetUnitsDDBtn
+  << mShadowRadiusAlphaChkBx
+  << mShadowRadiusDDBtn
+  << mShadowRadiusDblSpnBx
+  << mShadowRadiusUnitsDDBtn
+  << mShadowScaleDDBtn
+  << mShadowScaleSpnBx
+  << mShadowTranspDDBtn
+  << mShadowTranspSlider
+  << mShadowTranspSpnBx
+  << mShadowUnderCmbBx
+  << mShadowUnderDDBtn
+  << mShapeBlendCmbBx
+  << mShapeBlendModeDDBtn
+  << mShapeBorderColorBtn
+  << mShapeBorderColorDDBtn
+  << mShapeBorderUnitsDDBtn
+  << mShapeBorderWidthDDBtn
+  << mShapeBorderWidthSpnBx
+  << mShapeDrawChkBx
+  << mShapeDrawDDBtn
+  << mShapeFillColorBtn
+  << mShapeFillColorDDBtn
+  << mShapeOffsetDDBtn
+  << mShapeOffsetUnitsDDBtn
+  << mShapeOffsetXSpnBx
+  << mShapeOffsetYSpnBx
+  << mShapePenStyleCmbBx
+  << mShapePenStyleDDBtn
+  << mShapeRadiusDDBtn
+  << mShapeRadiusUnitsDDBtn
+  << mShapeRadiusXDbSpnBx
+  << mShapeRadiusYDbSpnBx
+  << mShapeRotationCmbBx
+  << mShapeRotationDDBtn
+  << mShapeRotationDblSpnBx
+  << mShapeRotationTypeDDBtn
+  << mShapeSVGParamsBtn
+  << mShapeSVGPathDDBtn
+  << mShapeSVGPathLineEdit
+  << mShapeSVGSelectorBtn
+  << mShapeSizeCmbBx
+  << mShapeSizeTypeDDBtn
+  << mShapeSizeUnitsDDBtn
+  << mShapeSizeXDDBtn
+  << mShapeSizeXSpnBx
+  << mShapeSizeYDDBtn
+  << mShapeSizeYSpnBx
+  << mShapeTranspDDBtn
+  << mShapeTranspSlider
+  << mShapeTranspSpinBox
+  << mShapeTypeCmbBx
+  << mShapeTypeDDBtn
+  << mShowLabelDDBtn
+  << mWrapCharDDBtn
+  << mZIndexDDBtn
+  << mZIndexSpinBox
+  << spinBufferSize
+  << wrapCharacterEdit
+  << stackedPlacement
+  << mCentroidRadioVisible
+  << mCentroidRadioWhole
+  << mDirectSymbRadioBtnAbove
+  << mDirectSymbRadioBtnBelow
+  << mDirectSymbRadioBtnLR
+  << mUpsidedownRadioAll
+  << mUpsidedownRadioDefined
+  << mUpsidedownRadioOff
+  << radAroundCentroid
+  << radAroundPoint
+  << radLineCurved
+  << radLineHorizontal
+  << radLineParallel
+  << radOverCentroid
+  << radOverPoint
+  << radPolygonFree
+  << radPolygonHorizontal
+  << radPolygonPerimeter
+  << radPredefinedOrder
+  << mFieldExpressionWidget;
+  connectValueChanged( widgets, SLOT( updatePreview() ) );
+
+  connect( mQuadrantBtnGrp, SIGNAL( buttonClicked( int ) ), this, SLOT( updatePreview() ) );
+
+  // set correct initial tab to match displayed setting page
+  whileBlocking( mOptionsTab )->setCurrentIndex( mLabelStackedWidget->currentIndex() );
+}
+
+void QgsLabelingGui::setDockMode( bool enabled )
+{
+  mOptionsTab->setVisible( enabled );
+  mLabelingOptionsListFrame->setVisible( !enabled );
+  groupBox_mPreview->setVisible( !enabled );
+  mDockMode = enabled;
+}
+
+void QgsLabelingGui::connectValueChanged( QList<QWidget *> widgets, const char *slot )
+{
+  Q_FOREACH ( QWidget* widget, widgets )
+  {
+    if ( QgsDataDefinedButton* w = qobject_cast<QgsDataDefinedButton*>( widget ) )
+    {
+      connect( w, SIGNAL( dataDefinedActivated( bool ) ), this, slot );
+      connect( w, SIGNAL( dataDefinedChanged( QString ) ), this, slot );
+    }
+    else if ( QgsFieldExpressionWidget* w = qobject_cast<QgsFieldExpressionWidget*>( widget ) )
+    {
+      connect( w, SIGNAL( fieldChanged( QString ) ), this,  slot );
+    }
+    else if ( QComboBox* w =  qobject_cast<QComboBox*>( widget ) )
+    {
+      connect( w, SIGNAL( currentIndexChanged( int ) ), this, slot );
+    }
+    else if ( QSpinBox* w =  qobject_cast<QSpinBox*>( widget ) )
+    {
+      connect( w, SIGNAL( valueChanged( int ) ), this, slot );
+    }
+    else if ( QDoubleSpinBox* w =  qobject_cast<QDoubleSpinBox*>( widget ) )
+    {
+      connect( w , SIGNAL( valueChanged( double ) ), this, slot );
+    }
+    else if ( QgsColorButtonV2* w =  qobject_cast<QgsColorButtonV2*>( widget ) )
+    {
+      connect( w, SIGNAL( colorChanged( QColor ) ), this, slot );
+    }
+    else if ( QCheckBox* w =  qobject_cast<QCheckBox*>( widget ) )
+    {
+      connect( w, SIGNAL( toggled( bool ) ), this, slot );
+    }
+    else if ( QRadioButton* w =  qobject_cast<QRadioButton*>( widget ) )
+    {
+      connect( w, SIGNAL( toggled( bool ) ), this, slot );
+    }
+    else if ( QLineEdit* w =  qobject_cast<QLineEdit*>( widget ) )
+    {
+      connect( w, SIGNAL( textEdited( QString ) ), this, slot );
+    }
+  }
+}
+
+void QgsLabelingGui::setLayer( QgsMapLayer* mapLayer )
+{
+  if ( !mapLayer || mapLayer->type() != QgsMapLayer::VectorLayer )
+  {
+    setEnabled( false );
+    return;
+  }
+  else
+  {
+    setEnabled( true );
+  }
+
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mapLayer );
+  mLayer = layer ;
+  init();
 }
 
 void QgsLabelingGui::init()
 {
+  // show/hide options based upon geometry type
+  chkMergeLines->setVisible( mLayer->geometryType() == QGis::Line );
+  mDirectSymbolsFrame->setVisible( mLayer->geometryType() == QGis::Line );
+  mMinSizeFrame->setVisible( mLayer->geometryType() != QGis::Point );
+  mPolygonObstacleTypeFrame->setVisible( mLayer->geometryType() == QGis::Polygon );
+  mPolygonFeatureOptionsFrame->setVisible( mLayer->geometryType() == QGis::Polygon );
+
+  // field combo and expression button
+  mFieldExpressionWidget->setLayer( mLayer );
+  QgsDistanceArea myDa;
+  myDa.setSourceCrs( mLayer->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  mFieldExpressionWidget->setGeomCalculator( myDa );
+
+  // set placement methods page based on geometry type
+  switch ( mLayer->geometryType() )
+  {
+    case QGis::Point:
+      stackedPlacement->setCurrentWidget( pagePoint );
+      break;
+    case QGis::Line:
+      stackedPlacement->setCurrentWidget( pageLine );
+      break;
+    case QGis::Polygon:
+      stackedPlacement->setCurrentWidget( pagePolygon );
+      break;
+    case QGis::NoGeometry:
+      break;
+    case QGis::UnknownGeometry:
+      qFatal( "unknown geometry type unexpected" );
+  }
+
+  if ( mLayer->geometryType() == QGis::Point )
+  {
+    // follow placement alignment is only valid for point layers
+    mFontMultiLineAlignComboBox->addItem( tr( "Follow label placement" ) );
+  }
+
   // load labeling settings from layer
   QgsPalLayerSettings lyr;
-  lyr.readFromLayer( mLayer );
+  if ( mSettings )
+    lyr = *mSettings;
+  else
+    lyr.readFromLayer( mLayer );
 
   blockInitSignals( true );
 
-  // enable/disable main options based upon whether layer is being labeled
-  if ( !lyr.enabled )
-  {
-    mLabelModeComboBox->setCurrentIndex( 0 );
-  }
-  else
-  {
-    mLabelModeComboBox->setCurrentIndex( lyr.drawLabels ? 1 : 2 );
-  }
-  mFieldExpressionWidget->setEnabled( mLabelModeComboBox->currentIndex() == 1 );
-  mLabelingFrame->setEnabled( mLabelModeComboBox->currentIndex() == 1 );
+  mFieldExpressionWidget->setEnabled( mMode == Labels );
+  mLabelingFrame->setEnabled( mMode == Labels );
 
   // set the current field or add the current expression to the bottom of the list
+  mFieldExpressionWidget->setRow( -1 );
   mFieldExpressionWidget->setField( lyr.fieldName );
 
   // populate placement options
@@ -332,6 +631,7 @@ void QgsLabelingGui::init()
   mLineDistanceSpnBx->setValue( lyr.dist );
   mLineDistanceUnitWidget->setUnit( lyr.distInMapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
   mLineDistanceUnitWidget->setMapUnitScale( lyr.distMapUnitScale );
+  mOffsetTypeComboBox->setCurrentIndex( mOffsetTypeComboBox->findData( lyr.offsetType ) );
   mQuadrantBtnGrp->button(( int )lyr.quadOffset )->setChecked( true );
   mPointOffsetXSpinBox->setValue( lyr.xOffset );
   mPointOffsetYSpinBox->setValue( lyr.yOffset );
@@ -354,6 +654,9 @@ void QgsLabelingGui::init()
     case QgsPalLayerSettings::OverPoint:
       radOverPoint->setChecked( true );
       radOverCentroid->setChecked( true );
+      break;
+    case QgsPalLayerSettings::OrderedPositionsAroundPoint:
+      radPredefinedOrder->setChecked( true );
       break;
     case QgsPalLayerSettings::Line:
       radLineParallel->setChecked( true );
@@ -439,6 +742,8 @@ void QgsLabelingGui::init()
   mFontMaxPixelSpinBox->setValue( lyr.fontMaxPixelSize );
   mFontSizeUnitWidget->setUnit( lyr.fontSizeInMapUnits ? 1 : 0 );
   mFontSizeUnitWidget->setMapUnitScale( lyr.fontSizeMapUnitScale );
+
+  mZIndexSpinBox->setValue( lyr.zIndex );
 
   mRefFont = lyr.textFont;
   mFontSizeSpinBox->setValue( lyr.textFont.pointSizeF() );
@@ -540,7 +845,6 @@ void QgsLabelingGui::init()
   updateUi(); // should come after data defined button setup
 }
 
-
 QgsLabelingGui::~QgsLabelingGui()
 {
   QSettings settings;
@@ -557,6 +861,7 @@ void QgsLabelingGui::blockInitSignals( bool block )
   mPlaceLineBtnGrp->blockSignals( block );
   mPlacePolygonBtnGrp->blockSignals( block );
 }
+
 
 void QgsLabelingGui::optionsStackedWidget_CurrentChanged( int indx )
 {
@@ -594,16 +899,27 @@ void QgsLabelingGui::apply()
 
 void QgsLabelingGui::writeSettingsToLayer()
 {
+  mLayer->setLabeling( new QgsVectorLayerSimpleLabeling );
+
+  // all configuration is still in layer's custom properties
   QgsPalLayerSettings settings = layerSettings();
   settings.writeToLayer( mLayer );
+}
+
+void QgsLabelingGui::setLabelMode( LabelMode mode )
+{
+  mMode = mode;
+
+  mFieldExpressionWidget->setEnabled( mMode == Labels );
+  mLabelingFrame->setEnabled( mMode == Labels );
 }
 
 QgsPalLayerSettings QgsLabelingGui::layerSettings()
 {
   QgsPalLayerSettings lyr;
 
-  lyr.enabled = mLabelModeComboBox->currentIndex() > 0;
-  lyr.drawLabels = mLabelModeComboBox->currentIndex() == 1;
+  lyr.enabled = ( mMode == Labels || mMode == ObstaclesOnly );
+  lyr.drawLabels = ( mMode == Labels );
 
   bool isExpression;
   lyr.fieldName = mFieldExpressionWidget->currentField( &isExpression );
@@ -619,6 +935,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.dist = mLineDistanceSpnBx->value();
   lyr.distInMapUnits = ( mLineDistanceUnitWidget->unit() == QgsSymbolV2::MapUnit );
   lyr.distMapUnitScale = mLineDistanceUnitWidget->getMapUnitScale();
+  lyr.offsetType = static_cast< QgsPalLayerSettings::OffsetType >( mOffsetTypeComboBox->itemData( mOffsetTypeComboBox->currentIndex() ).toInt() );
   lyr.quadOffset = ( QgsPalLayerSettings::QuadrantPosition )mQuadrantBtnGrp->checkedId();
   lyr.xOffset = mPointOffsetXSpinBox->value();
   lyr.yOffset = mPointOffsetYSpinBox->value();
@@ -642,6 +959,10 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
            || ( curPlacementWdgt == pagePolygon && radOverCentroid->isChecked() ) )
   {
     lyr.placement = QgsPalLayerSettings::OverPoint;
+  }
+  else if ( curPlacementWdgt == pagePoint && radPredefinedOrder->isChecked() )
+  {
+    lyr.placement = QgsPalLayerSettings::OrderedPositionsAroundPoint;
   }
   else if (( curPlacementWdgt == pageLine && radLineParallel->isChecked() )
            || ( curPlacementWdgt == pagePolygon && radPolygonPerimeter->isChecked() )
@@ -676,7 +997,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.previewBkgrdColor = mPreviewBackgroundBtn->color();
 
   lyr.priority = mPrioritySlider->value();
-  lyr.obstacle = mChkNoObstacle->isChecked() || mLabelModeComboBox->currentIndex() == 2;
+  lyr.obstacle = mChkNoObstacle->isChecked() || mMode == ObstaclesOnly;
   lyr.obstacleFactor = mObstacleFactorSlider->value() / 50.0;
   lyr.obstacleType = ( QgsPalLayerSettings::ObstacleType )mObstacleTypeComboBox->itemData( mObstacleTypeComboBox->currentIndex() ).toInt();
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
@@ -773,6 +1094,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.multilineAlign = ( QgsPalLayerSettings::MultiLineAlign ) mFontMultiLineAlignComboBox->currentIndex();
   lyr.preserveRotation = chkPreserveRotation->isChecked();
 
+  lyr.zIndex = mZIndexSpinBox->value();
+
   // data defined labeling
   // text style
   setDataDefinedProperty( mFontDDBtn, QgsPalLayerSettings::Family, lyr );
@@ -850,6 +1173,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   // placement
   setDataDefinedProperty( mCentroidDDBtn, QgsPalLayerSettings::CentroidWhole, lyr );
   setDataDefinedProperty( mPointQuadOffsetDDBtn, QgsPalLayerSettings::OffsetQuad, lyr );
+  setDataDefinedProperty( mPointPositionOrderDDBtn, QgsPalLayerSettings::PredefinedPositionOrder, lyr );
   setDataDefinedProperty( mPointOffsetDDBtn, QgsPalLayerSettings::OffsetXY, lyr );
   setDataDefinedProperty( mPointOffsetUnitsDDBtn, QgsPalLayerSettings::OffsetUnits, lyr );
   setDataDefinedProperty( mLineDistanceDDBtn, QgsPalLayerSettings::LabelDistance, lyr );
@@ -879,6 +1203,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   setDataDefinedProperty( mAlwaysShowDDBtn, QgsPalLayerSettings::AlwaysShow, lyr );
   setDataDefinedProperty( mIsObstacleDDBtn, QgsPalLayerSettings::IsObstacle, lyr );
   setDataDefinedProperty( mObstacleFactorDDBtn, QgsPalLayerSettings::ObstacleFactor, lyr );
+  setDataDefinedProperty( mZIndexDDBtn, QgsPalLayerSettings::ZIndex, lyr );
 
   return lyr;
 }
@@ -939,8 +1264,8 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
 
   mFontCaseDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::FontCase ),
                         QgsDataDefinedButton::String,
-                        trString + QString( "[<b>NoChange</b>|<b>Upper</b>|<br>"
-                                            "<b>Lower</b>|<b>Capitalize</b>]" ) );
+                        trString + QLatin1String( "[<b>NoChange</b>|<b>Upper</b>|<br>"
+                                                  "<b>Lower</b>|<b>Capitalize</b>]" ) );
 
   mFontLetterSpacingDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::FontLetterSpacing ),
                                  QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
@@ -1003,8 +1328,8 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
   mShapeDrawDDBtn->registerCheckedWidget( mShapeDrawChkBx );
   mShapeTypeDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ShapeKind ),
                          QgsDataDefinedButton::String,
-                         trString + QString( "[<b>Rectangle</b>|<b>Square</b>|<br>"
-                                             "<b>Ellipse</b>|<b>Circle</b>|<b>SVG</b>]" ) );
+                         trString + QLatin1String( "[<b>Rectangle</b>|<b>Square</b>|<br>"
+                                                   "<b>Ellipse</b>|<b>Circle</b>|<b>SVG</b>]" ) );
   mShapeSVGPathDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ShapeSVGFile ),
                             QgsDataDefinedButton::String, QgsDataDefinedButton::svgPathDesc() );
   mShapeSizeTypeDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ShapeSizeType ),
@@ -1050,8 +1375,8 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
   mShadowDrawDDBtn->registerCheckedWidget( mShadowDrawChkBx );
   mShadowUnderDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ShadowUnder ),
                            QgsDataDefinedButton::String,
-                           trString + QString( "[<b>Lowest</b>|<b>Text</b>|<br>"
-                                               "<b>Buffer</b>|<b>Background</b>]" ) );
+                           trString + QLatin1String( "[<b>Lowest</b>|<b>Text</b>|<br>"
+                                                     "<b>Buffer</b>|<b>Background</b>]" ) );
   mShadowOffsetAngleDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ShadowOffsetAngle ),
                                  QgsDataDefinedButton::AnyType, QgsDataDefinedButton::double180RotDesc() );
   mShadowOffsetDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ShadowOffsetDist ),
@@ -1077,9 +1402,17 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
                         trString + "[<b>Visible</b>|<b>Whole</b>]" );
   mPointQuadOffsetDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::OffsetQuad ),
                                QgsDataDefinedButton::AnyType,
-                               tr( "int<br>" ) + QString( "[<b>0</b>=Above Left|<b>1</b>=Above|<b>2</b>=Above Right|<br>"
-                                                          "<b>3</b>=Left|<b>4</b>=Over|<b>5</b>=Right|<br>"
-                                                          "<b>6</b>=Below Left|<b>7</b>=Below|<b>8</b>=Below Right]" ) );
+                               tr( "int<br>" ) + QLatin1String( "[<b>0</b>=Above Left|<b>1</b>=Above|<b>2</b>=Above Right|<br>"
+                                                                "<b>3</b>=Left|<b>4</b>=Over|<b>5</b>=Right|<br>"
+                                                                "<b>6</b>=Below Left|<b>7</b>=Below|<b>8</b>=Below Right]" ) );
+  mPointPositionOrderDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::PredefinedPositionOrder ),
+                                  QgsDataDefinedButton::String,
+                                  tr( "Comma separated list of placements in order of priority<br>" )
+                                  + QLatin1String( "[<b>TL</b>=Top left|<b>TSL</b>=Top, slightly left|<b>T</b>=Top middle|<br>"
+                                                   "<b>TSR</b>=Top, slightly right|<b>TR</b>=Top right|<br>"
+                                                   "<b>L</b>=Left|<b>R</b>=Right|<br>"
+                                                   "<b>BL</b>=Bottom left|<b>BSL</b>=Bottom, slightly left|<b>B</b>=Bottom middle|<br>"
+                                                   "<b>BSR</b>=Bottom, slightly right|<b>BR</b>=Bottom right]" ) );
   mPointOffsetDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::OffsetXY ),
                            QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleXYDesc() );
   mPointOffsetUnitsDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::OffsetUnits ),
@@ -1117,8 +1450,8 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
   mCoordAlignmentHDDBtn->setUsageInfo( ddPlaceInfo );
   mCoordAlignmentVDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::Vali ),
                                QgsDataDefinedButton::String,
-                               trString + QString( "[<b>Bottom</b>|<b>Base</b>|<br>"
-                                                   "<b>Half</b>|<b>Cap</b>|<b>Top</b>]" ) );
+                               trString + QLatin1String( "[<b>Bottom</b>|<b>Base</b>|<br>"
+                                                         "<b>Half</b>|<b>Cap</b>|<b>Top</b>]" ) );
   mCoordAlignmentVDDBtn->setUsageInfo( ddPlaceInfo );
   mCoordRotationDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::Rotation ),
                              QgsDataDefinedButton::AnyType, QgsDataDefinedButton::double180RotDesc() );
@@ -1155,6 +1488,8 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
                           QgsDataDefinedButton::AnyType, QgsDataDefinedButton::boolDesc() );
   mObstacleFactorDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ObstacleFactor ),
                               QgsDataDefinedButton::AnyType, tr( "double [0.0-10.0]" ) );
+  mZIndexDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ZIndex ),
+                      QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
 }
 
 void QgsLabelingGui::changeTextColor( const QColor &color )
@@ -1163,7 +1498,7 @@ void QgsLabelingGui::changeTextColor( const QColor &color )
   updatePreview();
 }
 
-void QgsLabelingGui::updateFont( QFont font )
+void QgsLabelingGui::updateFont( const QFont& font )
 {
   // update background reference font
   if ( font != mRefFont )
@@ -1206,6 +1541,15 @@ void QgsLabelingGui::blockFontChangeSignals( bool blk )
 
 void QgsLabelingGui::updatePreview()
 {
+  // In dock mode we don't have a preview we
+  // just let stuff know we have changed because
+  // there might be live updates connected.
+  if ( mLayer && mDockMode )
+  {
+    emit widgetChanged();
+    return;
+  }
+
   scrollPreview();
   lblFontPreview->setFont( mRefFont );
   QFont previewFont = lblFontPreview->font();
@@ -1285,17 +1629,11 @@ void QgsLabelingGui::scrollPreview()
   scrollArea_mPreview->ensureVisible( 0, 0, 0, 0 );
 }
 
-void QgsLabelingGui::setPreviewBackground( QColor color )
+void QgsLabelingGui::setPreviewBackground( const QColor& color )
 {
   scrollArea_mPreview->widget()->setStyleSheet( QString( "background: rgb(%1, %2, %3);" ).arg( QString::number( color.red() ),
       QString::number( color.green() ),
       QString::number( color.blue() ) ) );
-}
-
-void QgsLabelingGui::showEngineConfigDialog()
-{
-  QgsLabelEngineConfigDialog dlg( this );
-  dlg.exec();
 }
 
 void QgsLabelingGui::syncDefinedCheckboxFrame( QgsDataDefinedButton* ddBtn, QCheckBox* chkBx, QFrame* f )
@@ -1335,6 +1673,8 @@ void QgsLabelingGui::updatePlacementWidgets()
   bool showCentroidFrame = false;
   bool showQuadrantFrame = false;
   bool showFixedQuadrantFrame = false;
+  bool showPlacementPriorityFrame = false;
+  bool showOffsetTypeFrame = false;
   bool showOffsetFrame = false;
   bool showDistanceFrame = false;
   bool showRotationFrame = false;
@@ -1362,6 +1702,12 @@ void QgsLabelingGui::updatePlacementWidgets()
     showOffsetFrame = true;
     showRotationFrame = true;
   }
+  else if ( curWdgt == pagePoint && radPredefinedOrder->isChecked() )
+  {
+    showDistanceFrame = true;
+    showPlacementPriorityFrame = true;
+    showOffsetTypeFrame  = true;
+  }
   else if (( curWdgt == pageLine && radLineParallel->isChecked() )
            || ( curWdgt == pagePolygon && radPolygonPerimeter->isChecked() )
            || ( curWdgt == pageLine && radLineCurved->isChecked() ) )
@@ -1383,8 +1729,10 @@ void QgsLabelingGui::updatePlacementWidgets()
   mPlacementCentroidFrame->setVisible( showCentroidFrame );
   mPlacementQuadrantFrame->setVisible( showQuadrantFrame );
   mPlacementFixedQuadrantFrame->setVisible( showFixedQuadrantFrame );
+  mPlacementCartographicFrame->setVisible( showPlacementPriorityFrame );
   mPlacementOffsetFrame->setVisible( showOffsetFrame );
   mPlacementDistanceFrame->setVisible( showDistanceFrame );
+  mPlacementOffsetTypeFrame->setVisible( showOffsetTypeFrame );
   mPlacementRotationFrame->setVisible( showRotationFrame );
   mPlacementRepeatDistanceFrame->setVisible( curWdgt == pageLine || ( curWdgt == pagePolygon && radPolygonPerimeter->isChecked() ) );
   mPlacementMaxCharAngleFrame->setVisible( showMaxCharAngleFrame );
@@ -1664,16 +2012,10 @@ void QgsLabelingGui::updateSvgWidgets( const QString& svgPath )
   mShapeSVGUnitsLabel->setEnabled( validSVG && outlineWidthParam );
 }
 
-void QgsLabelingGui::on_mLabelModeComboBox_currentIndexChanged( int index )
-{
-  bool labelsEnabled = ( index == 1 );
-  mFieldExpressionWidget->setEnabled( labelsEnabled );
-  mLabelingFrame->setEnabled( labelsEnabled );
-}
-
 void QgsLabelingGui::on_mShapeSVGSelectorBtn_clicked()
 {
   QgsSvgSelectorDialog svgDlg( this );
+  svgDlg.setWindowTitle( tr( "Select SVG file" ) );
   svgDlg.svgSelector()->setSvgPath( mShapeSVGPathLineEdit->text().trimmed() );
 
   if ( svgDlg.exec() == QDialog::Accepted )

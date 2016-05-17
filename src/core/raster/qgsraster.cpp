@@ -23,20 +23,17 @@ QString QgsRaster::contrastEnhancementLimitsAsString( ContrastEnhancementLimits 
   {
     case QgsRaster::ContrastEnhancementMinMax:
       return "MinMax";
-      break;
     case QgsRaster::ContrastEnhancementStdDev:
       return "StdDev";
-      break;
     case QgsRaster::ContrastEnhancementCumulativeCut:
       return "CumulativeCut";
-      break;
     default:
       break;
   }
   return "None";
 }
 
-QgsRaster::ContrastEnhancementLimits QgsRaster::contrastEnhancementLimitsFromString( QString theLimits )
+QgsRaster::ContrastEnhancementLimits QgsRaster::contrastEnhancementLimitsFromString( const QString& theLimits )
 {
   if ( theLimits == "MinMax" )
   {

@@ -1,0 +1,107 @@
+Content-Length: 2781
+Content-Type: text/xml; charset=utf-8
+
+<WFS_Capabilities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ogc="http://www.opengis.net/ogc" version="1.0.0" xmlns="http://www.opengis.net/wfs" updateSequence="0" xmlns:xlink="http://www.w3.org/1999/xlink" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-capabilities.xsd" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows">
+ <Service>
+  <Name>WFS</Name>
+  <Title>QGIS TestProject</Title>
+  <Abstract>Some UTF8 text èòù</Abstract>
+  <OnlineResource></OnlineResource>
+  <Fees>conditions unknown</Fees>
+  <AccessConstraints>None</AccessConstraints>
+ </Service>
+ <Capability>
+  <Request>
+   <GetCapabilities>
+    <DCPType>
+     <HTTP>
+      <Get onlineResource="http:"/>
+     </HTTP>
+    </DCPType>
+    <DCPType>
+     <HTTP>
+      <Post onlineResource="http:"/>
+     </HTTP>
+    </DCPType>
+   </GetCapabilities>
+   <DescribeFeatureType>
+    <SchemaDescriptionLanguage>
+     <XMLSCHEMA/>
+    </SchemaDescriptionLanguage>
+    <DCPType>
+     <HTTP>
+      <Get onlineResource="http:"/>
+     </HTTP>
+    </DCPType>
+    <DCPType>
+     <HTTP>
+      <Post onlineResource="http:"/>
+     </HTTP>
+    </DCPType>
+   </DescribeFeatureType>
+   <GetFeature>
+    <ResultFormat>
+     <GML2/>
+     <GML3/>
+     <GeoJSON/>
+    </ResultFormat>
+    <DCPType>
+     <HTTP>
+      <Get onlineResource="http:"/>
+     </HTTP>
+    </DCPType>
+    <DCPType>
+     <HTTP>
+      <Post onlineResource="http:"/>
+     </HTTP>
+    </DCPType>
+   </GetFeature>
+   <Transaction>
+    <DCPType>
+     <HTTP>
+      <Post onlineResource="http:"/>
+     </HTTP>
+    </DCPType>
+   </Transaction>
+  </Request>
+ </Capability>
+ <FeatureTypeList>
+  <Operations>
+   <Query/>
+  </Operations>
+  <FeatureType>
+   <Name>testlayer</Name>
+   <Title>A test vector layer</Title>
+   <Abstract>A test vector layer with unicode òà</Abstract>
+   <SRS>EPSG:4326</SRS>
+   <Operations>
+    <Query/>
+    <Insert/>
+    <Update/>
+    <Delete/>
+   </Operations>
+   <LatLongBoundingBox maxx="8.20355" minx="8.20346" maxy="44.9015" miny="44.9014"/>
+  </FeatureType>
+ </FeatureTypeList>
+ <ogc:Filter_Capabilities>
+  <ogc:Spatial_Capabilities>
+   <ogc:Spatial_Operators>
+    <ogc:BBOX/>
+    <ogc:Disjoint/>
+    <ogc:Intersect/>
+    <ogc:Touches/>
+    <ogc:Crosses/>
+    <ogc:Contains/>
+    <ogc:Overlaps/>
+    <ogc:Within/>
+   </ogc:Spatial_Operators>
+  </ogc:Spatial_Capabilities>
+  <ogc:Scalar_Capabilities>
+   <ogc:Comparison_Operators>
+    <ogc:Simple_Comparisons/>
+    <ogc:Between/>
+    <ogc:Like/>
+   </ogc:Comparison_Operators>
+  </ogc:Scalar_Capabilities>
+ </ogc:Filter_Capabilities>
+</WFS_Capabilities>

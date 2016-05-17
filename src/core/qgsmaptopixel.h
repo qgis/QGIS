@@ -69,9 +69,6 @@ class CORE_EXPORT QgsMapToPixel
      */
     QgsMapToPixel();
 
-    //! destructor
-    ~QgsMapToPixel();
-
     /**
      * Transform the point from map (world) coordinates to device coordinates
      * @param p Point to transform
@@ -91,20 +88,14 @@ class CORE_EXPORT QgsMapToPixel
     QgsPoint transform( qreal x, qreal y ) const;
 
     /**
-     * Transform device coordinates to map (world) coordinates
-     * @param x x coordinate of point to be converted to map cooordinates
-     * @param y y coordinate of point to be converted to map cooordinates
-     * @return QgsPoint in map coordinates
-     */
-
-    /**
      * Transform device coordinates to map coordinates. Modifies the
      * given coordinates in place. Intended as a fast way to do the
      * transform.
      */
     void transformInPlace( double& x, double& y ) const;
-    void transformInPlace( float& x, float& y ) const;
 
+    // @note not available in python bindings
+    void transformInPlace( float& x, float& y ) const;
 
     /**
      * Transform device coordinates to map coordinates. Modifies the
@@ -176,7 +167,7 @@ class CORE_EXPORT QgsMapToPixel
      * @deprecated in 2.8, use setParameters
      * @note this really sets the viewport height, not ymax
      */
-    Q_DECL_DEPRECATED void setYMaximum( double yMax ) { mHeight = yMax; }
+    Q_DECL_DEPRECATED void setYMaximum( double yMax ) { mHeight = static_cast< int >( yMax ); }
 
     /**
      * Set minimum y value
@@ -197,6 +188,7 @@ class CORE_EXPORT QgsMapToPixel
      * @param ymin Minimum y value
      * @param height Map height, in pixels
      * @deprecated in 2.8, use the version with full parameters
+     * @note not available in python bindings
      */
     Q_DECL_DEPRECATED void setParameters( double mapUnitsPerPixel, double xmin, double ymin, double height );
 

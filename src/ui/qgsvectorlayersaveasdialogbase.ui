@@ -90,8 +90,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>555</width>
-        <height>523</height>
+        <width>550</width>
+        <height>953</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -120,13 +120,68 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="mSkipAttributeCreation">
-         <property name="toolTip">
-          <string>This allows one to surpress attribute creation as some OGR drivers (eg. DGN, DXF) don't support it.</string>
+        <widget class="QgsCollapsibleGroupBox" name="mAttributesSelection">
+         <property name="title">
+          <string>Limit attributes to export</string>
          </property>
-         <property name="text">
-          <string>Skip attribute creation</string>
+         <property name="checkable">
+          <bool>true</bool>
          </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>true</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QTableWidget" name="mAttributeTable">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>200</height>
+             </size>
+            </property>
+            <property name="rowCount">
+             <number>1</number>
+            </property>
+            <property name="columnCount">
+             <number>2</number>
+            </property>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <row/>
+            <column/>
+            <column/>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QPushButton" name="mSelectAllAttributes">
+              <property name="text">
+               <string>Select All</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="mDeselectAllAttributes">
+              <property name="text">
+               <string>Deselect All</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="mReplaceRawFieldValues">
+            <property name="text">
+             <string>Replace all selected raw field values by displayed values</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
@@ -176,6 +231,43 @@
           </widget>
          </item>
         </layout>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBox" name="mGeometryGroupBox">
+         <property name="title">
+          <string>Geometry</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QLabel" name="mSymbologyExportLabel_2">
+              <property name="text">
+               <string>Geometry type</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="mGeometryTypeComboBox"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="mForceMultiCheckBox">
+            <property name="text">
+             <string>Force multi-type</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="mIncludeZCheckBox">
+            <property name="text">
+             <string>Include z-dimension</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
        <item>
         <widget class="QgsExtentGroupBox" name="mExtentGroupBox"/>
@@ -326,15 +418,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsProjectionSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">qgsprojectionselectionwidget.h</header>
+   <class>QgsExtentGroupBox</class>
+   <extends>QgsCollapsibleGroupBox</extends>
+   <header>qgsextentgroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsExtentGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgsextentgroupbox.h</header>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -346,13 +438,18 @@
   <tabstop>scrollArea</tabstop>
   <tabstop>mEncodingComboBox</tabstop>
   <tabstop>mSelectedOnly</tabstop>
-  <tabstop>mSkipAttributeCreation</tabstop>
+  <tabstop>mAttributesSelection</tabstop>
+  <tabstop>mAttributeTable</tabstop>
+  <tabstop>mSelectAllAttributes</tabstop>
+  <tabstop>mDeselectAllAttributes</tabstop>
   <tabstop>mAddToCanvas</tabstop>
   <tabstop>mSymbologyExportComboBox</tabstop>
   <tabstop>mScaleSpinBox</tabstop>
+  <tabstop>mGeometryTypeComboBox</tabstop>
+  <tabstop>mForceMultiCheckBox</tabstop>
+  <tabstop>mIncludeZCheckBox</tabstop>
   <tabstop>mOgrDatasourceOptions</tabstop>
   <tabstop>mOgrLayerOptions</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

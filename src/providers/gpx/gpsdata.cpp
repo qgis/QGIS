@@ -33,11 +33,11 @@
 QString QgsGPSObject::xmlify( const QString& str )
 {
   QString tmp = str;
-  tmp.replace( "&", "&amp;" );
-  tmp.replace( "<", "&lt;" );
-  tmp.replace( ">", "&gt;" );
-  tmp.replace( "\"", "&quot;" );
-  tmp.replace( "\'", "&apos;" );
+  tmp.replace( '&', "&amp;" );
+  tmp.replace( '<', "&lt;" );
+  tmp.replace( '>', "&gt;" );
+  tmp.replace( '\"', "&quot;" );
+  tmp.replace( '\'', "&apos;" );
   return tmp;
 }
 
@@ -127,11 +127,11 @@ void QgsTrack::writeXML( QTextStream& stream )
   for ( int i = 0; i < segments.size(); ++i )
   {
     stream << "<trkseg>\n";
-    for ( int j = 0; j < segments[i].points.size(); ++j )
+    for ( int j = 0; j < segments.at( i ).points.size(); ++j )
     {
       stream << "<trkpt lat=\"" <<
-      QString::number( segments[i].points[j].lat, 'f', OUTPUT_PRECISION ) <<
-      "\" lon=\"" << QString::number( segments[i].points[j].lon, 'f', OUTPUT_PRECISION ) <<
+      QString::number( segments.at( i ).points.at( j ).lat, 'f', OUTPUT_PRECISION ) <<
+      "\" lon=\"" << QString::number( segments.at( i ).points.at( j ).lon, 'f', OUTPUT_PRECISION ) <<
       "\">\n";
       segments[i].points[j].writeXML( stream );
       stream << "</trkpt>\n";
@@ -225,7 +225,7 @@ QgsGPSData::TrackIterator QgsGPSData::tracksEnd()
 
 
 QgsGPSData::WaypointIterator QgsGPSData::addWaypoint( double lat, double lon,
-    QString name, double ele )
+    const QString& name, double ele )
 {
   QgsWaypoint wpt;
   wpt.lat = lat;
@@ -248,7 +248,7 @@ QgsGPSData::WaypointIterator QgsGPSData::addWaypoint( const QgsWaypoint& wpt )
 }
 
 
-QgsGPSData::RouteIterator QgsGPSData::addRoute( QString name )
+QgsGPSData::RouteIterator QgsGPSData::addRoute( const QString& name )
 {
   QgsRoute rte;
   rte.name = name;
@@ -268,7 +268,7 @@ QgsGPSData::RouteIterator QgsGPSData::addRoute( const QgsRoute& rte )
 }
 
 
-QgsGPSData::TrackIterator QgsGPSData::addTrack( QString name )
+QgsGPSData::TrackIterator QgsGPSData::addTrack( const QString& name )
 {
   QgsTrack trk;
   trk.name = name;
@@ -375,7 +375,7 @@ QgsGPSData* QgsGPSData::getData( const QString& fileName )
     if ( !file.open( QIODevice::ReadOnly ) )
     {
       QgsLogger::warning( QObject::tr( "Couldn't open the data source: %1" ).arg( fileName ) );
-      return 0;
+      return nullptr;
     }
     QgsGPSData* data = new QgsGPSData;
     QgsDebugMsg( "Loading file " + fileName );
@@ -383,7 +383,7 @@ QgsGPSData* QgsGPSData::getData( const QString& fileName )
     bool failed = false;
 
     // SAX parsing
-    XML_Parser p = XML_ParserCreate( NULL );
+    XML_Parser p = XML_ParserCreate( nullptr );
     XML_SetUserData( p, &handler );
     XML_SetElementHandler( p, QgsGPXHandler::start, QgsGPXHandler::end );
     XML_SetCharacterDataHandler( p, QgsGPXHandler::chars );
@@ -407,7 +407,7 @@ QgsGPSData* QgsGPSData::getData( const QString& fileName )
     delete [] buffer;
     XML_ParserFree( p );
     if ( failed )
-      return 0;
+      return nullptr;
 
     data->setNoDataExtent();
 
@@ -464,7 +464,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
   {
     parseModes.push( ParsingWaypoint );
     mWpt = QgsWaypoint();
-    for ( int i = 0; attr[2*i] != NULL; ++i )
+    for ( int i = 0; attr[2*i]; ++i )
     {
       if ( !std::strcmp( attr[2*i], "lat" ) )
         mWpt.lat = QString( attr[2*i+1] ).toDouble();
@@ -614,7 +614,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
     if ( parseModes.top() == ParsingRoute )
     {
       mRtept = QgsRoutepoint();
-      for ( int i = 0; attr[2*i] != NULL; ++i )
+      for ( int i = 0; attr[2*i]; ++i )
       {
         if ( !std::strcmp( attr[2*i], "lat" ) )
           mRtept.lat = QString( attr[2*i+1] ).toDouble();
@@ -643,7 +643,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
     if ( parseModes.top() == ParsingTrackSegment )
     {
       mTrkpt = QgsTrackpoint();
-      for ( int i = 0; attr[2*i] != NULL; ++i )
+      for ( int i = 0; attr[2*i]; ++i )
       {
         if ( !std::strcmp( attr[2*i], "lat" ) )
           mTrkpt.lat = QString( attr[2*i+1] ).toDouble();

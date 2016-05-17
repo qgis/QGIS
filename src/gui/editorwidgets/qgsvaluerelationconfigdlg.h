@@ -20,12 +20,16 @@
 
 #include "qgseditorconfigwidget.h"
 
+/** \class QgsValueRelationConfigDlg
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsValueRelationConfigDlg : public QgsEditorConfigWidget, private Ui::QgsValueRelationConfigDlgBase
 {
     Q_OBJECT
 
   public:
-    explicit QgsValueRelationConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent = 0 );
+    explicit QgsValueRelationConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent = nullptr );
 
   public slots:
     void editExpression();

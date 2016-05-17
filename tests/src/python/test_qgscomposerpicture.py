@@ -12,31 +12,27 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
+
 import os
-import sys
-import SocketServer
+import socketserver
 import threading
 import SimpleHTTPServer
-from PyQt4.QtGui import QPainter, QColor
-from PyQt4.QtCore import QRectF, QCoreApplication
+from qgis.PyQt.QtCore import QRectF
 
 from qgis.core import (QgsComposerPicture,
                        QgsComposition,
                        QgsMapSettings
                        )
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
+from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
 from qgscompositionchecker import QgsCompositionChecker
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsComposerPicture(TestCase):
+class TestQgsComposerPicture(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -44,7 +40,7 @@ class TestQgsComposerPicture(TestCase):
         os.chdir(unitTestDataPath() + '')
         handler = SimpleHTTPServer.SimpleHTTPRequestHandler
 
-        cls.httpd = SocketServer.TCPServer(('localhost', 0), handler)
+        cls.httpd = socketserver.TCPServer(('localhost', 0), handler)
         cls.port = cls.httpd.server_address[1]
 
         cls.httpd_thread = threading.Thread(target=cls.httpd.serve_forever)
@@ -52,7 +48,7 @@ class TestQgsComposerPicture(TestCase):
         cls.httpd_thread.start()
 
     def __init__(self, methodName):
-        """Run once on class initialisation."""
+        """Run once on class initialization."""
         unittest.TestCase.__init__(self, methodName)
 
         TEST_DATA_DIR = unitTestDataPath()

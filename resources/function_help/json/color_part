@@ -1,0 +1,10 @@
+{
+  "name": "color_part",
+  "type": "function",
+  "description": "Returns a specific component from a color string, eg the red component or alpha component.",
+  "arguments": [
+               {"arg":"color", "description":"a color string"},
+	{"arg":"component", "description":"a string corresponding to the color component to return. Valid options are:<br /><ul><li>red: RGB red component (0-255)</li><li>green: RGB green component (0-255)</li><li>blue: RGB blue component (0-255)</li><li>alpha: alpha (transparency) value (0-255)</li><li>hue: HSV hue (0-360)</li><li>saturation: HSV saturation (0-100)</li><li>value: HSV value (0-100)</li><li>hsl_hue: HSL hue (0-360)</li><li>hsl_saturation: HSL saturation (0-100)</li><li>lightness: HSL lightness (0-100)</li><li>cyan: CMYK cyan component (0-100)</li><li>magenta: CMYK magenta component (0-100)</li><li>yellow: CMYK yellow component (0-100)</li> <li>black: CMYK black component (0-100)</li></ul>"}
+	          ],
+  "examples": [ { "expression":"color_part('200,10,30','green')", "returns":"10"}]
+}

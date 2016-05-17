@@ -16,8 +16,15 @@
 #ifndef QGSRELATIONEDITORWIDGETPLUGIN_H
 #define QGSRELATIONEDITORWIDGETPLUGIN_H
 
+
+#include <QtGlobal>
+#if QT_VERSION < 0x050000
+#include <QDesignerCustomWidgetCollectionInterface>
 #include <QDesignerExportWidget>
-#include <QDesignerCustomWidgetInterface>
+#else
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerExportWidget>
+#endif
 
 
 class CUSTOMWIDGETS_EXPORT QgsRelationEditorWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface

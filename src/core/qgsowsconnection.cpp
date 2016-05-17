@@ -35,16 +35,16 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsOWSConnection::QgsOWSConnection( const QString & theService, const QString & theConnName ) :
-    mConnName( theConnName ),
-    mService( theService )
+QgsOWSConnection::QgsOWSConnection( const QString & theService, const QString & theConnName )
+    : mConnName( theConnName )
+    , mService( theService )
 {
   QgsDebugMsg( "theConnName = " + theConnName );
 
   QSettings settings;
 
-  QString key = "/Qgis/connections-" + mService.toLower() + "/" + mConnName;
-  QString credentialsKey = "/Qgis/" + mService + "/" + mConnName;
+  QString key = "/Qgis/connections-" + mService.toLower() + '/' + mConnName;
+  QString credentialsKey = "/Qgis/" + mService + '/' + mConnName;
 
   QStringList connStringParts;
 
@@ -60,6 +60,13 @@ QgsOWSConnection::QgsOWSConnection( const QString & theService, const QString & 
     mUri.setParam( "username", username );
     mUri.setParam( "password", password );
   }
+
+  QString authcfg = settings.value( credentialsKey + "/authcfg" ).toString();
+  if ( !authcfg.isEmpty() )
+  {
+    mUri.setParam( "authcfg", authcfg );
+  }
+  mConnectionInfo.append( ",authcfg=" + authcfg );
 
   bool ignoreGetMap = settings.value( key + "/ignoreGetMapURI", false ).toBool();
   bool ignoreGetFeatureInfo = settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool();
@@ -122,6 +129,6 @@ void QgsOWSConnection::setSelectedConnection( const QString & theService, const 
 void QgsOWSConnection::deleteConnection( const QString & theService, const QString & name )
 {
   QSettings settings;
-  settings.remove( "/Qgis/connections-" + theService.toLower() + "/" + name );
-  settings.remove( "/Qgis/" + theService + "/" + name );
+  settings.remove( "/Qgis/connections-" + theService.toLower() + '/' + name );
+  settings.remove( "/Qgis/" + theService + '/' + name );
 }

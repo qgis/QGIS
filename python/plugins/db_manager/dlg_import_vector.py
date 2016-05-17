@@ -22,8 +22,9 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import Qt, QObject, SIGNAL, QSettings, QFileInfo
-from PyQt4.QtGui import QDialog, QFileDialog, QMessageBox, QApplication, QCursor
+from qgis.PyQt.QtCore import Qt, QSettings, QFileInfo
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
+from qgis.PyQt.QtGui import QCursor
 
 import qgis.core
 from qgis.utils import iface
@@ -56,7 +57,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
         # updates of UI
         self.setupWorkingMode(self.mode)
-        self.connect(self.cboSchema, SIGNAL("currentIndexChanged(int)"), self.populateTables)
+        self.cboSchema.currentIndexChanged.connect(self.populateTables)
 
     def setupWorkingMode(self, mode):
         """ hide the widget to select a layer/file if the input layer is already set """
@@ -66,11 +67,11 @@ class DlgImportVector(QDialog, Ui_Dialog):
         self.cboTable.setEditText(self.outUri.table())
 
         if mode == self.ASK_FOR_INPUT_MODE:
-            QObject.connect(self.btnChooseInputFile, SIGNAL("clicked()"), self.chooseInputFile)
-            # QObject.connect( self.cboInputLayer.lineEdit(), SIGNAL("editingFinished()"), self.updateInputLayer )
-            QObject.connect(self.cboInputLayer, SIGNAL("editTextChanged(const QString &)"), self.inputPathChanged)
-            # QObject.connect( self.cboInputLayer, SIGNAL("currentIndexChanged(int)"), self.updateInputLayer )
-            QObject.connect(self.btnUpdateInputLayer, SIGNAL("clicked()"), self.updateInputLayer)
+            self.btnChooseInputFile.clicked.connect(self.chooseInputFile)
+            # self.cboInputLayer.lineEdit().editingFinished.connect(self.updateInputLayer)
+            self.cboInputLayer.editTextChanged.connect(self.inputPathChanged)
+            # self.cboInputLayer.currentIndexChanged.connect(self.updateInputLayer)
+            self.btnUpdateInputLayer.clicked.connect(self.updateInputLayer)
 
             self.editPrimaryKey.setText(self.default_pk)
             self.editGeomColumn.setText(self.default_geom)
@@ -225,7 +226,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
         schemas = self.db.schemas()
         if schemas is not None:
             schema_name = self.cboSchema.currentText()
-            matching_schemas = filter(lambda x: x.name == schema_name, schemas)
+            matching_schemas = [x for x in schemas if x.name == schema_name]
             tables = matching_schemas[0].tables() if len(matching_schemas) > 0 else []
         else:
             tables = self.db.tables()
@@ -300,7 +301,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
             # get output params, update output URI
             self.outUri.setDataSource(schema, table, geom, "", pk)
-            uri = self.outUri.uri()
+            uri = self.outUri.uri(False)
 
             providerName = self.db.dbplugin().providerName()
 

@@ -35,4 +35,8 @@ class QgsRelief
 
     /** Write frequency of elevation values to file for manual inspection*/
     bool exportFrequencyDistributionToCsv( const QString& file );
+
+  private:
+
+    QgsRelief( const QgsRelief& rh );
 };

@@ -22,7 +22,7 @@
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
 
-Q_DECLARE_METATYPE( QgsFeatureRequest );
+Q_DECLARE_METATYPE( QgsFeatureRequest )
 
 class TestQgsVectorDataProvider : public QObject
 {

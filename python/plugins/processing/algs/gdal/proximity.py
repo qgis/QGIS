@@ -25,6 +25,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from qgis.PyQt.QtGui import QIcon
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterString
@@ -33,6 +37,8 @@ from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.tools.system import isWindows
 from processing.algs.gdal.GdalUtils import GdalUtils
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class proximity(GdalAlgorithm):
@@ -49,6 +55,9 @@ class proximity(GdalAlgorithm):
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
 
     DISTUNITS = ['GEO', 'PIXEL']
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'proximity.png'))
 
     def commandLineName(self):
         return "gdalogr:proximity"

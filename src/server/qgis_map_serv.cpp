@@ -36,12 +36,11 @@ int fcgi_accept()
 
 int main( int argc, char * argv[] )
 {
-  QgsServer server;
-  server.init( argc, argv );
+  QgsServer server( argc, argv );
   // Starts FCGI loop
   while ( fcgi_accept() >= 0 )
   {
-    server.handleRequest( );
+    server.handleRequest();
   }
   return 0;
 }

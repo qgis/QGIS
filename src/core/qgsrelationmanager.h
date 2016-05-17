@@ -93,7 +93,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      *
      * @return A list of relations matching the given layer and fieldIdx.
      */
-    QList<QgsRelation> referencingRelations( QgsVectorLayer *layer = 0, int fieldIdx = -2 ) const;
+    QList<QgsRelation> referencingRelations( QgsVectorLayer *layer = nullptr, int fieldIdx = -2 ) const;
 
     /**
      * Get all relations where this layer is the referenced part (i.e. the parent table with the primary key being referenced from another layer).
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      *
      * @return A list of relations where the specified layer is the referenced part.
      */
-    QList<QgsRelation> referencedRelations( QgsVectorLayer *layer = 0 ) const;
+    QList<QgsRelation> referencedRelations( QgsVectorLayer *layer = nullptr ) const;
 
   signals:
     /** This signal is emitted when the relations were loaded after reading a project */

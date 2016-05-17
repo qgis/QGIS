@@ -20,10 +20,12 @@
 #include "qgsserverinterfaceimpl.h"
 
 
-QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache* capCache ) :
-    mCapabilitiesCache( capCache )
+/** Constructor */
+QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache* capCache )
+    : mCapabilitiesCache( capCache )
 {
-  mRequestHandler = NULL;
+  mRequestHandler = nullptr;
+  mAccessControls = new QgsAccessControl();
 }
 
 
@@ -36,12 +38,13 @@ QString QgsServerInterfaceImpl::getEnv( const QString& name ) const
 /** Destructor */
 QgsServerInterfaceImpl::~QgsServerInterfaceImpl()
 {
+  delete mAccessControls;
 }
 
 
-void QgsServerInterfaceImpl::clearRequestHandler( )
+void QgsServerInterfaceImpl::clearRequestHandler()
 {
-  mRequestHandler = NULL;
+  mRequestHandler = nullptr;
 }
 
 void QgsServerInterfaceImpl::setRequestHandler( QgsRequestHandler * requestHandler )
@@ -49,7 +52,7 @@ void QgsServerInterfaceImpl::setRequestHandler( QgsRequestHandler * requestHandl
   mRequestHandler = requestHandler;
 }
 
-void QgsServerInterfaceImpl::setConfigFilePath( QString configFilePath )
+void QgsServerInterfaceImpl::setConfigFilePath( const QString& configFilePath )
 {
   mConfigFilePath = configFilePath;
 }
@@ -62,4 +65,10 @@ void QgsServerInterfaceImpl::registerFilter( QgsServerFilter *filter, int priori
 void QgsServerInterfaceImpl::setFilters( QgsServerFiltersMap* filters )
 {
   mFilters = *filters;
+}
+
+/** Register a new access control filter */
+void QgsServerInterfaceImpl::registerAccessControl( QgsAccessControlFilter* accessControl, int priority )
+{
+  mAccessControls->registerAccessControl( accessControl, priority );
 }

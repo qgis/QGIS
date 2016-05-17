@@ -23,6 +23,7 @@ class QgsFeatureSelectionModel;
 class QPainter;
 class QgsVectorLayer;
 class QgsAttributeTableModel;
+class QToolButton;
 
 /** \ingroup app
  * A delegate item class for QgsAttributeTable (see Qt documentation for
@@ -37,24 +38,27 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
     static const QgsAttributeTableModel* masterModel( const QAbstractItemModel* model );
 
   public:
-    /** Constructor
+    /**
+     * Constructor
      * @param parent parent object
      */
-    QgsAttributeTableDelegate( QObject* parent = 0 ) :
-        QItemDelegate( parent ), mFeatureSelectionModel( NULL ) {}
+    QgsAttributeTableDelegate( QObject* parent = nullptr )
+        : QItemDelegate( parent )
+        , mLayer( nullptr )
+        , mFeatureSelectionModel( nullptr )
+    {
+    }
 
-    /** Used to create an editor for when the user tries to
-     * change the contents of a cell */
-    QWidget * createEditor(
-      QWidget *parent,
-      const QStyleOptionViewItem &option,
-      const QModelIndex &index ) const override;
+    /**
+     * Used to create an editor for when the user tries to
+     * change the contents of a cell
+     */
+    QWidget * createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const override;
 
-    /** Overloads the paint method form the QItemDelegate bas class */
-    void paint(
-      QPainter * painter,
-      const QStyleOptionViewItem & option,
-      const QModelIndex & index ) const override;
+    /**
+     * Overloads the paint method form the QItemDelegate base class
+     */
+    void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
 
     /**
      * Sets data from editor back to model. Overloads default method
@@ -73,8 +77,15 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
 
     void setFeatureSelectionModel( QgsFeatureSelectionModel* featureSelectionModel );
 
+    /**
+     * Set an image that represents an action widget
+     */
+    void setActionWidgetImage( const QImage& image );
+
   private:
+    QgsVectorLayer* mLayer;
     QgsFeatureSelectionModel* mFeatureSelectionModel;
+    QImage mActionWidgetImage;
 };
 
 #endif //QGSATTRIBUTETABLEDELEGATE_H

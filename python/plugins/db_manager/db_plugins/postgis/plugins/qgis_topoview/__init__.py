@@ -21,7 +21,8 @@ Based on qgis_pgis_topoview by Sandro Santilli <strk@keybit.net>
  ***************************************************************************/
 """
 
-from PyQt4.QtGui import QAction, QIcon
+from qgis.PyQt.QtWidgets import QAction
+from qgis.PyQt.QtGui import QIcon
 from qgis.core import QgsMapLayerRegistry, QgsVectorLayer, QGis
 from qgis.gui import QgsMessageBar
 
@@ -113,7 +114,7 @@ def run(item, action, mainwindow):
         uri.setDataSource(toponame, 'face', 'mbr', '', 'face_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QGis.WKBPolygon)
-        layer = QgsVectorLayer(uri.uri(), u'%s.face_mbr' % toponame, provider)
+        layer = QgsVectorLayer(uri.uri(False), u'%s.face_mbr' % toponame, provider)
         layer.loadNamedStyle(os.path.join(template_dir, 'face_mbr.qml'))
         registry.addMapLayers([layer])
         legend.moveLayer(layer, group)
@@ -122,12 +123,14 @@ def run(item, action, mainwindow):
         face_extent = layer.extent()
 
         # face geometry
-        sql = u'SELECT face_id, topology.ST_GetFaceGeometry(%s, face_id) as geom ' \
-              'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame))
+        sql = u'SELECT face_id, topology.ST_GetFaceGeometry(%s,' \
+              'face_id)::geometry(polygon, %s) as geom ' \
+              'FROM %s.face WHERE face_id > 0' % \
+              (quoteStr(toponame), toposrid, quoteId(toponame))
         uri.setDataSource('', u'(%s\n)' % sql, 'geom', '', 'face_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QGis.WKBPolygon)
-        layer = QgsVectorLayer(uri.uri(), u'%s.face' % toponame, provider)
+        layer = QgsVectorLayer(uri.uri(False), u'%s.face' % toponame, provider)
         layer.setExtent(face_extent)
         layer.loadNamedStyle(os.path.join(template_dir, 'face.qml'))
         registry.addMapLayers([layer])
@@ -136,12 +139,15 @@ def run(item, action, mainwindow):
         legend.setLayerExpanded(layer, False)
 
         # face_seed
-        sql = u'SELECT face_id, ST_PointOnSurface(topology.ST_GetFaceGeometry(%s, face_id)) as geom ' \
-              'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame))
+        sql = u'SELECT face_id, ST_PointOnSurface(' \
+              'topology.ST_GetFaceGeometry(%s,' \
+              'face_id))::geometry(point, %s) as geom ' \
+              'FROM %s.face WHERE face_id > 0' % \
+              (quoteStr(toponame), toposrid, quoteId(toponame))
         uri.setDataSource('', u'(%s)' % sql, 'geom', '', 'face_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QGis.WKBPoint)
-        layer = QgsVectorLayer(uri.uri(), u'%s.face_seed' % toponame, provider)
+        layer = QgsVectorLayer(uri.uri(False), u'%s.face_seed' % toponame, provider)
         layer.setExtent(face_extent)
         layer.loadNamedStyle(os.path.join(template_dir, 'face_seed.qml'))
         registry.addMapLayers([layer])
@@ -158,7 +164,7 @@ def run(item, action, mainwindow):
         uri.setDataSource(toponame, 'node', 'geom', '', 'node_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QGis.WKBPoint)
-        layer = QgsVectorLayer(uri.uri(), u'%s.node' % toponame, provider)
+        layer = QgsVectorLayer(uri.uri(False), u'%s.node' % toponame, provider)
         layer.loadNamedStyle(os.path.join(template_dir, 'node.qml'))
         registry.addMapLayers([layer])
         legend.moveLayer(layer, group)
@@ -170,7 +176,7 @@ def run(item, action, mainwindow):
         uri.setDataSource(toponame, 'node', 'geom', '', 'node_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QGis.WKBPoint)
-        layer = QgsVectorLayer(uri.uri(), u'%s.node_id' % toponame, provider)
+        layer = QgsVectorLayer(uri.uri(False), u'%s.node_id' % toponame, provider)
         layer.setExtent(node_extent)
         layer.loadNamedStyle(os.path.join(template_dir, 'node_label.qml'))
         registry.addMapLayers([layer])
@@ -185,7 +191,7 @@ def run(item, action, mainwindow):
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QGis.WKBLineString)
-        layer = QgsVectorLayer(uri.uri(), u'%s.edge' % toponame, provider)
+        layer = QgsVectorLayer(uri.uri(False), u'%s.edge' % toponame, provider)
         registry.addMapLayers([layer])
         legend.moveLayer(layer, group)
         legend.setLayerVisible(layer, False)
@@ -196,7 +202,7 @@ def run(item, action, mainwindow):
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QGis.WKBLineString)
-        layer = QgsVectorLayer(uri.uri(), u'%s.directed_edge' % toponame, provider)
+        layer = QgsVectorLayer(uri.uri(False), u'%s.directed_edge' % toponame, provider)
         layer.setExtent(edge_extent)
         layer.loadNamedStyle(os.path.join(template_dir, 'edge.qml'))
         registry.addMapLayers([layer])
@@ -208,7 +214,7 @@ def run(item, action, mainwindow):
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QGis.WKBLineString)
-        layer = QgsVectorLayer(uri.uri(), u'%s.edge_id' % toponame, provider)
+        layer = QgsVectorLayer(uri.uri(False), u'%s.edge_id' % toponame, provider)
         layer.setExtent(edge_extent)
         layer.loadNamedStyle(os.path.join(template_dir, 'edge_label.qml'))
         registry.addMapLayers([layer])
@@ -220,7 +226,7 @@ def run(item, action, mainwindow):
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QGis.WKBLineString)
-        layer = QgsVectorLayer(uri.uri(), u'%s.face_left' % toponame, provider)
+        layer = QgsVectorLayer(uri.uri(False), u'%s.face_left' % toponame, provider)
         layer.setExtent(edge_extent)
         layer.loadNamedStyle(os.path.join(template_dir, 'face_left.qml'))
         registry.addMapLayers([layer])
@@ -232,7 +238,7 @@ def run(item, action, mainwindow):
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QGis.WKBLineString)
-        layer = QgsVectorLayer(uri.uri(), u'%s.face_right' % toponame, provider)
+        layer = QgsVectorLayer(uri.uri(False), u'%s.face_right' % toponame, provider)
         layer.setExtent(edge_extent)
         layer.loadNamedStyle(os.path.join(template_dir, 'face_right.qml'))
         registry.addMapLayers([layer])
@@ -244,7 +250,7 @@ def run(item, action, mainwindow):
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QGis.WKBLineString)
-        layer = QgsVectorLayer(uri.uri(), u'%s.next_left' % toponame, provider)
+        layer = QgsVectorLayer(uri.uri(False), u'%s.next_left' % toponame, provider)
         layer.setExtent(edge_extent)
         layer.loadNamedStyle(os.path.join(template_dir, 'next_left.qml'))
         registry.addMapLayers([layer])
@@ -256,7 +262,7 @@ def run(item, action, mainwindow):
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QGis.WKBLineString)
-        layer = QgsVectorLayer(uri.uri(), u'%s.next_right' % toponame, provider)
+        layer = QgsVectorLayer(uri.uri(False), u'%s.next_right' % toponame, provider)
         layer.setExtent(edge_extent)
         layer.loadNamedStyle(os.path.join(template_dir, 'next_right.qml'))
         registry.addMapLayers([layer])

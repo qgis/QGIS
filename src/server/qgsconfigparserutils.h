@@ -18,6 +18,7 @@
 #ifndef QGSCONFIGPARSERUTILS_H
 #define QGSCONFIGPARSERUTILS_H
 
+#include <QMap>
 #include <QStringList>
 
 class QgsCoordinateReferenceSystem;
@@ -35,7 +36,10 @@ class QgsConfigParserUtils
     static void appendCRSElementToLayer( QDomElement& layerElement, const QDomElement& precedingElement,
                                          const QString& crsText, QDomDocument& doc );
     static void appendLayerBoundingBoxes( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent,
-                                          const QgsCoordinateReferenceSystem& layerCRS );
+                                          const QgsCoordinateReferenceSystem& layerCRS, const QStringList &crsList,
+                                          const QStringList& constrainedCrsList );
+    static void appendLayerBoundingBox( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent,
+                                        const QgsCoordinateReferenceSystem& layerCRS, const QString& crsText );
     /** Returns a list of supported EPSG coordinate system numbers from a layer*/
     static QStringList createCRSListForLayer( QgsMapLayer* theMapLayer );
 

@@ -22,10 +22,8 @@
 #include "qgsscalecalculator.h"
 
 QgsScaleCalculator::QgsScaleCalculator( double dpi, QGis::UnitType mapUnits )
-    : mDpi( dpi ), mMapUnits( mapUnits )
-{}
-
-QgsScaleCalculator::~QgsScaleCalculator()
+    : mDpi( dpi )
+    , mMapUnits( mapUnits )
 {}
 
 void QgsScaleCalculator::setDpi( double dpi )
@@ -79,12 +77,12 @@ double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, int canvasW
       delta = calculateGeographicDistance( mapExtent );
       break;
   }
-  if ( canvasWidth == 0 || mDpi == 0 )
+  if ( canvasWidth == 0 || qgsDoubleNear( mDpi, 0.0 ) )
   {
     QgsDebugMsg( "Can't calculate scale from the input values" );
     return 0;
   }
-  double scale = ( delta * conversionFactor ) / (( double )canvasWidth / mDpi );
+  double scale = ( delta * conversionFactor ) / ( static_cast< double >( canvasWidth ) / mDpi );
   QgsDebugMsg( QString( "scale = %1 conversionFactor = %2" ).arg( scale ).arg( conversionFactor ) );
   return scale;
 }

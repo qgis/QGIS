@@ -2,8 +2,8 @@
 
 """
 ***************************************************************************
-    OTBUtils.py
-    ---------------------
+    OTBSpecific_XMLLoading.py
+    -------------------------
     Date                 : 11-12-13
     Copyright            : (C) 2013 by CS Systemes d'information (CS SI)
     Email                : otb at c-s dot fr (CS SI)
@@ -38,20 +38,20 @@ __version__ = "3.8"
 import os
 
 try:
-    import processing
+    import processing  # NOQA
 except ImportError as e:
     raise Exception("Processing must be installed and available in PYTHONPATH")
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
-from OTBUtils import OTBUtils
+from . import OTBUtils
 
 
 def adaptBinaryMorphologicalOperation(commands_list):
     val = commands_list[commands_list.index("-filter") + 1]
 
     def replace_dilate(param, value):
-        if ".dilate" in unicode(param):
+        if ".dilate" in str(param):
             return param.replace("dilate", value)
         else:
             return param
@@ -171,7 +171,7 @@ def adaptColorMapping(commands_list):
     The output of this algorithm must be in uint8.
     """
     indexInput = commands_list.index("-out")
-    commands_list[indexInput + 1] = commands_list[indexInput + 1] + " uint8"
+    commands_list[indexInput + 1] = commands_list[indexInput + 1] + '" "uint8"'
     return commands_list
 
 
@@ -188,7 +188,6 @@ def adaptStereoFramework(commands_list):
             argumentToRemove = commands_list2[index - 1]
             commands_list2.remove(item)
             commands_list2.remove(argumentToRemove)
-        #commands_list2.append(item)
     return commands_list2
 
 
@@ -309,6 +308,40 @@ def adaptGeoidSrtm(commands_list):
         else:
             commands_list.append("-elev.geoid")
             commands_list.append(geoid)
+
+
+def adaptComputePolylineFeatureFromImage(commands_list):
+    """
+    Remove parameter and user value instead of giving None.
+    Check geoid file, srtm folder and given elevation and manage arguments.
+    """
+    commands_list2 = commands_list
+    adaptGeoidSrtm(commands_list2)
+    for item in commands_list:
+        if "None" in item:
+            index = commands_list2.index(item)
+            argumentToRemove = commands_list2[index - 1]
+            commands_list2.remove(item)
+            commands_list2.remove(argumentToRemove)
+        # commands_list2.append(item)
+    return commands_list2
+
+
+def adaptComputeOGRLayersFeaturesStatistics(commands_list):
+    """
+    Remove parameter and user value instead of giving None.
+    Check geoid file, srtm folder and given elevation and manage arguments.
+    """
+    commands_list2 = commands_list
+    adaptGeoidSrtm(commands_list2)
+    for item in commands_list:
+        if "None" in item:
+            index = commands_list2.index(item)
+            argumentToRemove = commands_list2[index - 1]
+            commands_list2.remove(item)
+            commands_list2.remove(argumentToRemove)
+        # commands_list2.append(item)
+    return commands_list2
 
 
 def ckeckGeoidSrtmSettings():

@@ -1,4 +1,10 @@
 /***************************************************************************
+    qgssavestyletodbdialog.cpp
+    ---------------------
+    begin                : April 2013
+    copyright            : (C) 2013 by Emilio Loi
+    email                : loi at faunalia dot it
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -68,7 +74,7 @@ void QgsSaveStyleToDbDialog::accept()
 void QgsSaveStyleToDbDialog::on_mFilePickButton_clicked()
 {
   QSettings myQSettings;  // where we keep last used filter in persistent state
-  QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
+  QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", QDir::homePath() ).toString();
 
   QString myFileName = QFileDialog::getOpenFileName( this, tr( "Attach Qt Designer UI file" ), myLastUsedDir, tr( "Qt Designer UI file .ui" ) + " (*.ui)" );
   if ( myFileName.isNull() )

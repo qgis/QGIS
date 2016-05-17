@@ -23,14 +23,16 @@
 
 class APP_EXPORT QgsMapToolAnnotation: public QgsMapTool
 {
+    Q_OBJECT
+
   public:
     QgsMapToolAnnotation( QgsMapCanvas* canvas );
     ~QgsMapToolAnnotation();
 
-    void canvasPressEvent( QMouseEvent * e ) override;
-    void canvasReleaseEvent( QMouseEvent * e ) override;
-    void canvasMoveEvent( QMouseEvent * e ) override;
-    void canvasDoubleClickEvent( QMouseEvent * e ) override;
+    void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    void canvasDoubleClickEvent( QgsMapMouseEvent* e ) override;
     void keyPressEvent( QKeyEvent* e ) override;
 
   protected:
@@ -41,7 +43,7 @@ class APP_EXPORT QgsMapToolAnnotation: public QgsMapTool
 
   private:
     /** Returns the topmost annotation item at the position (or 0 if none)*/
-    QgsAnnotationItem* itemAtPos( const QPointF& pos );
+    QgsAnnotationItem* itemAtPos( QPointF pos );
     QgsAnnotationItem* selectedItem();
     /** Returns a list of all annotationitems in the canvas*/
     QList<QgsAnnotationItem*> annotationItems();

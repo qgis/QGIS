@@ -25,8 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import QVariant
-from qgis.core import QgsField, QgsFeature, QgsGeometry
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import QgsField, QgsFeature
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -38,6 +38,13 @@ class AutoincrementalField(GeoAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
+    def defineCharacteristics(self):
+        self.name, self.i18n_name = self.trAlgorithm('Add autoincremental field')
+        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
+        self.addParameter(ParameterVector(self.INPUT,
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Incremented')))
+
     def processAlgorithm(self, progress):
         output = self.getOutputFromName(self.OUTPUT)
         vlayer = \
@@ -47,26 +54,15 @@ class AutoincrementalField(GeoAlgorithm):
         fields.append(QgsField('AUTO', QVariant.Int))
         writer = output.getVectorWriter(fields, vprovider.geometryType(),
                                         vlayer.crs())
-        inFeat = QgsFeature()
         outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        nElement = 0
         features = vector.features(vlayer)
-        nFeat = len(features)
-        for inFeat in features:
-            progress.setPercentage(int(100 * nElement / nFeat))
-            nElement += 1
-            inGeom = inFeat.geometry()
-            outFeat.setGeometry(inGeom)
-            attrs = inFeat.attributes()
-            attrs.append(nElement)
+        total = 100.0 / len(features)
+        for current, feat in enumerate(features):
+            progress.setPercentage(int(current * total))
+            geom = feat.geometry()
+            outFeat.setGeometry(geom)
+            attrs = feat.attributes()
+            attrs.append(current)
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
         del writer
-
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Add autoincremental field')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Incremented')))

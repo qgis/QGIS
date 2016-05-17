@@ -39,7 +39,8 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 {
   public:
     /** Precison defines if each pixel is reprojected or approximate reprojection based
-     *  on an approximation matrix of reprojected points is used. */
+     *  on an approximation matrix of reprojected points is used.
+     */
     enum Precision
     {
       Approximate = 0, //!< Approximate (default), fast but possibly inaccurate
@@ -51,31 +52,28 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
      * which are used to calculate affine transformation matrices.
      */
 
-    QgsRasterProjector(
-      QgsCoordinateReferenceSystem theSrcCRS,
-      QgsCoordinateReferenceSystem theDestCRS,
-      int theSrcDatumTransform,
-      int theDestDatumTransform,
-      QgsRectangle theDestExtent,
-      int theDestRows, int theDestCols,
-      double theMaxSrcXRes, double theMaxSrcYRes,
-      QgsRectangle theExtent
-    );
+    QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
+                        const QgsCoordinateReferenceSystem& theDestCRS,
+                        int theSrcDatumTransform,
+                        int theDestDatumTransform,
+                        const QgsRectangle& theDestExtent,
+                        int theDestRows, int theDestCols,
+                        double theMaxSrcXRes, double theMaxSrcYRes,
+                        const QgsRectangle& theExtent
+                      );
 
-    QgsRasterProjector(
-      QgsCoordinateReferenceSystem theSrcCRS,
-      QgsCoordinateReferenceSystem theDestCRS,
-      QgsRectangle theDestExtent,
-      int theDestRows, int theDestCols,
-      double theMaxSrcXRes, double theMaxSrcYRes,
-      QgsRectangle theExtent
-    );
-    QgsRasterProjector(
-      QgsCoordinateReferenceSystem theSrcCRS,
-      QgsCoordinateReferenceSystem theDestCRS,
-      double theMaxSrcXRes, double theMaxSrcYRes,
-      QgsRectangle theExtent
-    );
+    QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
+                        const QgsCoordinateReferenceSystem& theDestCRS,
+                        const QgsRectangle& theDestExtent,
+                        int theDestRows, int theDestCols,
+                        double theMaxSrcXRes, double theMaxSrcYRes,
+                        const QgsRectangle& theExtent
+                      );
+    QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
+                        const QgsCoordinateReferenceSystem& theDestCRS,
+                        double theMaxSrcXRes, double theMaxSrcYRes,
+                        const QgsRectangle& theExtent
+                      );
     QgsRasterProjector();
     /** \brief Copy constructor */
     // To avoid synthesized which fails on copy of QgsCoordinateTransform
@@ -87,7 +85,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 
     QgsRasterProjector & operator=( const QgsRasterProjector &projector );
 
-    QgsRasterInterface *clone() const override;
+    QgsRasterProjector *clone() const override;
 
     int bandCount() const override;
 
@@ -98,15 +96,16 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
                  int srcDatumTransform = -1, int destDatumTransform = -1 );
 
     /** \brief Get source CRS */
-    QgsCoordinateReferenceSystem srcCrs() const  { return mSrcCRS; }
+    QgsCoordinateReferenceSystem srcCrs() const { return mSrcCRS; }
 
     /** \brief Get destination CRS */
-    QgsCoordinateReferenceSystem destCrs() const  { return mDestCRS; }
+    QgsCoordinateReferenceSystem destCrs() const { return mDestCRS; }
 
     /** \brief set maximum source resolution */
     void setMaxSrcRes( double theMaxSrcXRes, double theMaxSrcYRes )
     {
-      mMaxSrcXRes = theMaxSrcXRes; mMaxSrcYRes = theMaxSrcYRes;
+      mMaxSrcXRes = theMaxSrcXRes;
+      mMaxSrcYRes = theMaxSrcYRes;
     }
 
     Precision precision() const { return mPrecision; }

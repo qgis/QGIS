@@ -25,8 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import QVariant
-from qgis.core import QgsExpression, QgsFeature, QgsField, QgsDistanceArea, QgsProject, GEO_NONE
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import QgsExpression, QgsExpressionContext, QgsExpressionContextUtils, QgsFeature, QgsField, QgsDistanceArea, QgsProject, GEO_NONE
 from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -38,7 +38,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector, system
 
-from ui.FieldsCalculatorDialog import FieldsCalculatorDialog
+from .ui.FieldsCalculatorDialog import FieldsCalculatorDialog
 
 
 class FieldsCalculator(GeoAlgorithm):
@@ -52,18 +52,23 @@ class FieldsCalculator(GeoAlgorithm):
     FORMULA = 'FORMULA'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    TYPE_NAMES = ['Float', 'Integer', 'String', 'Date']
     TYPES = [QVariant.Double, QVariant.Int, QVariant.String, QVariant.Date]
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Field calculator')
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
+
+        self.type_names = [self.tr('Float'),
+                           self.tr('Integer'),
+                           self.tr('String'),
+                           self.tr('Date')]
+
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterString(self.FIELD_NAME,
                                           self.tr('Result field name')))
         self.addParameter(ParameterSelection(self.FIELD_TYPE,
-                                             self.tr('Field type'), self.TYPE_NAMES))
+                                             self.tr('Field type'), self.type_names))
         self.addParameter(ParameterNumber(self.FIELD_LENGTH,
                                           self.tr('Field length'), 1, 255, 10))
         self.addParameter(ParameterNumber(self.FIELD_PRECISION,
@@ -106,8 +111,15 @@ class FieldsCalculator(GeoAlgorithm):
         da.setEllipsoid(QgsProject.instance().readEntry(
             'Measure', '/Ellipsoid', GEO_NONE)[0])
         exp.setGeomCalculator(da)
+        exp.setDistanceUnits(QgsProject.instance().distanceUnits())
+        exp.setAreaUnits(QgsProject.instance().areaUnits())
 
-        if not exp.prepare(layer.pendingFields()):
+        exp_context = QgsExpressionContext()
+        exp_context.appendScope(QgsExpressionContextUtils.globalScope())
+        exp_context.appendScope(QgsExpressionContextUtils.projectScope())
+        exp_context.appendScope(QgsExpressionContextUtils.layerScope(layer))
+
+        if not exp.prepare(exp_context):
             raise GeoAlgorithmExecutionException(
                 self.tr('Evaluation error: %s' % exp.evalErrorString()))
 
@@ -118,15 +130,15 @@ class FieldsCalculator(GeoAlgorithm):
         error = ''
         calculationSuccess = True
 
-        current = 0
         features = vector.features(layer)
         total = 100.0 / len(features)
 
         rownum = 1
         for current, f in enumerate(features):
             rownum = current + 1
-            exp.setCurrentRowNumber(rownum)
-            value = exp.evaluate(f)
+            exp_context.setFeature(f)
+            exp_context.lastScope().setVariable("row_number", rownum)
+            value = exp.evaluate(exp_context)
             if exp.hasEvalError():
                 calculationSuccess = False
                 error = exp.evalErrorString()
@@ -143,7 +155,7 @@ class FieldsCalculator(GeoAlgorithm):
 
         if not calculationSuccess:
             raise GeoAlgorithmExecutionException(
-                self.tr('An error occured while evaluating the calculation '
+                self.tr('An error occurred while evaluating the calculation '
                         'string:\n%s' % error))
 
     def checkParameterValuesBeforeExecuting(self):

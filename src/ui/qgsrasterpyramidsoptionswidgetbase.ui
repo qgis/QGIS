@@ -6,15 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>366</width>
-    <height>156</height>
+    <width>388</width>
+    <height>166</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>1</number>
+   </property>
+   <property name="topMargin">
+    <number>1</number>
+   </property>
+   <property name="rightMargin">
+    <number>1</number>
+   </property>
+   <property name="bottomMargin">
     <number>1</number>
    </property>
    <item row="4" column="2">
@@ -137,6 +146,12 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>cbxPyramidsFormat</tabstop>
+  <tabstop>cboResamplingMethod</tabstop>
+  <tabstop>cbxPyramidsLevelsCustom</tabstop>
+  <tabstop>lePyramidsLevels</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

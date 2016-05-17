@@ -30,10 +30,10 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
 {
   public:
     QgsMultiBandColorRenderer( QgsRasterInterface* input, int redBand, int greenBand, int blueBand,
-                               QgsContrastEnhancement* redEnhancement = 0, QgsContrastEnhancement* greenEnhancement = 0,
-                               QgsContrastEnhancement* blueEnhancement = 0 );
+                               QgsContrastEnhancement* redEnhancement = nullptr, QgsContrastEnhancement* greenEnhancement = nullptr,
+                               QgsContrastEnhancement* blueEnhancement = nullptr );
     ~QgsMultiBandColorRenderer();
-    QgsRasterInterface * clone() const override;
+    QgsMultiBandColorRenderer * clone() const override;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
@@ -70,6 +70,9 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     QgsContrastEnhancement* mRedContrastEnhancement;
     QgsContrastEnhancement* mGreenContrastEnhancement;
     QgsContrastEnhancement* mBlueContrastEnhancement;
+
+    QgsMultiBandColorRenderer( const QgsMultiBandColorRenderer& );
+    const QgsMultiBandColorRenderer& operator=( const QgsMultiBandColorRenderer& );
 };
 
 #endif // QGSMULTIBANDCOLORRENDERER_H

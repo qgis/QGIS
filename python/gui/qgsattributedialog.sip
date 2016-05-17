@@ -59,7 +59,7 @@ class QgsAttributeDialog : QDialog
 
     QgsAttributeForm *attributeForm();
 
-    const QgsFeature* feature();
+    const QgsFeature *feature();
 
     /**
      * Is this dialog editable?
@@ -74,8 +74,16 @@ class QgsAttributeDialog : QDialog
      * If set to true, the dialog will add a new feature when the form is accepted.
      *
      * @param isAddDialog If set to true, turn this dialog into an add feature dialog.
+     * @deprecated use setMode() instead
      */
-    void setIsAddDialog( bool isAddDialog );
+    void setIsAddDialog( bool isAddDialog ) /Deprecated/;
+
+    /**
+     * Toggles the form mode.
+     * @param mode form mode. Eg if set to QgsAttributeForm::AddFeatureMode, the dialog will be editable even with an invalid feature and
+     * will add a new feature when the form is accepted.
+     */
+    void setMode( QgsAttributeForm::Mode mode );
 
     /**
      * Sets the edit command message (Undo) that will be used when the dialog is accepted
@@ -84,11 +92,23 @@ class QgsAttributeDialog : QDialog
      */
     void setEditCommandMessage( const QString& message );
 
+    /**
+     * Intercept window activate/deactive events to show/hide the highlighted feature.
+     *
+     * @param e The event
+     *
+     * @return The same as the parent QDialog
+     */
+    virtual bool event( QEvent *e );
+
   public slots:
     void accept();
 
-    int exec();
+    //! Show the dialog non-blocking. Reparents this dialog to be a child of the dialog form and is deleted when
+    //! closed.
     void show();
+
+    int exec();
 
   protected:
     bool eventFilter( QObject *obj, QEvent *e );

@@ -26,20 +26,20 @@ QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx
 {
 }
 
-int QgsEditorWidgetWrapper::fieldIdx()
+int QgsEditorWidgetWrapper::fieldIdx() const
 {
   return mFieldIdx;
 }
 
-QgsField QgsEditorWidgetWrapper::field()
+QgsField QgsEditorWidgetWrapper::field() const
 {
   if ( mFieldIdx < layer()->fields().count() )
-    return layer()->fields()[mFieldIdx];
+    return layer()->fields().at( mFieldIdx );
   else
     return QgsField();
 }
 
-QVariant QgsEditorWidgetWrapper::defaultValue()
+QVariant QgsEditorWidgetWrapper::defaultValue() const
 {
   return layer()->dataProvider()->defaultValue( mFieldIdx );
 }

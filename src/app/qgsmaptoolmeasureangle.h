@@ -32,10 +32,10 @@ class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
     ~QgsMapToolMeasureAngle();
 
     //! Mouse move event for overridingqgs
-    void canvasMoveEvent( QMouseEvent * e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
     //! Mouse release event for overriding
-    void canvasReleaseEvent( QMouseEvent * e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
     //! called when set as currently active map tool
     void activate() override;
@@ -52,7 +52,7 @@ class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
     /** Creates a new rubber band and deletes the old one*/
     void createRubberBand();
     /** Snaps point to background layers*/
-    QgsPoint snapPoint( const QPoint& p );
+    QgsPoint snapPoint( QPoint p );
 
     /** Tool for measuring */
     QgsDistanceArea mDa;

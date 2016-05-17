@@ -68,11 +68,9 @@ class Gridify(GeoAlgorithm):
             layer.pendingFields(), layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
+        total = 100.0 / len(features)
 
-        count = len(features)
-        total = 100.0 / float(count)
-
-        for count, f in enumerate(features):
+        for current, f in enumerate(features):
             geom = f.geometry()
             geomType = geom.wkbType()
 
@@ -140,7 +138,7 @@ class Gridify(GeoAlgorithm):
                 feat.setAttributes(f.attributes())
                 writer.addFeature(feat)
 
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))
 
         del writer
 

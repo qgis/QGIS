@@ -19,8 +19,12 @@
 #include "qgscomposerhtml.h"
 #include "qgscomposerframe.h"
 #include "qgscomposition.h"
-#include "qgscompositionchecker.h"
+#include "qgsmultirenderchecker.h"
 #include "qgsfontutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsvectordataprovider.h"
+#include "qgsproject.h"
 #include <QObject>
 #include <QtTest/QtTest>
 
@@ -43,6 +47,8 @@ class TestQgsComposerHtml : public QObject
     void table(); //test if rendering a HTML url works
     void tableMultiFrame(); //tests multiframe capabilities of composer html
     void htmlMultiFrameSmartBreak(); //tests smart page breaks in html multi frame
+    void javascriptSetFeature(); //test that JavaScript setFeature() function is correctly called
+
   private:
     QgsComposition *mComposition;
     QgsMapSettings *mMapSettings;
@@ -241,6 +247,80 @@ void TestQgsComposerHtml::htmlMultiFrameSmartBreak()
   mComposition->removeMultiFrame( htmlItem );
   delete htmlItem;
   QVERIFY( result );
+}
+
+void TestQgsComposerHtml::javascriptSetFeature()
+{
+  //test that JavaScript setFeature() function is correctly called
+
+  // first need to setup some layers with a relation
+
+  //parent layer
+  QgsVectorLayer* parentLayer = new QgsVectorLayer( "Point?field=fldtxt:string&field=fldint:integer&field=foreignkey:integer", "parent", "memory" );
+  QgsVectorDataProvider* pr = parentLayer->dataProvider();
+  QgsFeature pf1;
+  pf1.setFields( parentLayer->fields() );
+  pf1.setAttributes( QgsAttributes() << "test1" << 67 <<  123 );
+  QgsFeature pf2;
+  pf2.setFields( parentLayer->fields() );
+  pf2.setAttributes( QgsAttributes() << "test2" << 68 << 124 );
+  QVERIFY( pr->addFeatures( QgsFeatureList() << pf1 << pf2 ) );
+
+  // child layer
+  QgsVectorLayer* childLayer = new QgsVectorLayer( "Point?field=x:string&field=y:integer&field=z:integer", "referencedlayer", "memory" );
+  pr = childLayer->dataProvider();
+  QgsFeature f1;
+  f1.setFields( childLayer->fields() );
+  f1.setAttributes( QgsAttributes() << "foo" << 123 << 321 );
+  QgsFeature f2;
+  f2.setFields( childLayer->fields() );
+  f2.setAttributes( QgsAttributes() << "bar" <<  123 <<  654 );
+  QgsFeature f3;
+  f3.setFields( childLayer->fields() );
+  f3.setAttributes( QgsAttributes() << "foobar" << 124 <<  554 );
+  QVERIFY( pr->addFeatures( QgsFeatureList() << f1 <<  f2 <<  f3 ) );
+
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << childLayer << parentLayer );
+
+  //atlas
+  mComposition->atlasComposition().setCoverageLayer( parentLayer );
+  mComposition->atlasComposition().setEnabled( true );
+
+  QgsRelation rel;
+  rel.setRelationId( "rel1" );
+  rel.setRelationName( "relation one" );
+  rel.setReferencingLayer( childLayer->id() );
+  rel.setReferencedLayer( parentLayer->id() );
+  rel.addFieldPair( "y", "foreignkey" );
+  QgsProject::instance()->relationManager()->addRelation( rel );
+
+  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  htmlFrame->setFrameEnabled( true );
+  htmlItem->addFrame( htmlFrame );
+  htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
+  htmlItem->setEvaluateExpressions( true );
+  // hopefully arial bold 40px is big enough to avoid cross-platform rendering issues
+  htmlItem->setHtml( QString( "<body style=\"margin: 10px; font-family: Arial; font-weight: bold; font-size: 40px;\">"
+                              "<div id=\"dest\"></div><script>setFeature=function(feature){"
+                              "document.getElementById('dest').innerHTML = feature.properties.foreignkey + ',' +"
+                              "  feature.properties['relation one'][0].z + ',' + feature.properties['relation one'][1].z;}"
+                              "</script></body>" ) );
+
+  mComposition->setAtlasMode( QgsComposition::ExportAtlas );
+  QVERIFY( mComposition->atlasComposition().beginRender() );
+  QVERIFY( mComposition->atlasComposition().prepareForFeature( 0 ) );
+
+  htmlItem->loadHtml();
+
+  QgsCompositionChecker checker( "composerhtml_setfeature", mComposition );
+  checker.setControlPathPrefix( "composer_html" );
+  bool result = checker.testComposition( mReport );
+  mComposition->removeMultiFrame( htmlItem );
+  delete htmlItem;
+  QVERIFY( result );
+
+  QgsMapLayerRegistry::instance()->removeMapLayers( QList<QgsMapLayer *>() << childLayer << parentLayer );
 }
 
 

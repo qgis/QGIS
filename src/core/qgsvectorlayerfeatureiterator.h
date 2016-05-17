@@ -30,11 +30,13 @@ class QgsExpressionContext;
 
 class QgsVectorLayerFeatureIterator;
 
-/** Partial snapshot of vector layer's state (only the members necessary for access to features) */
+/** Partial snapshot of vector layer's state (only the members necessary for access to features)
+ * @note not available in Python bindings
+*/
 class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsVectorLayerFeatureSource( QgsVectorLayer* layer );
+    explicit QgsVectorLayerFeatureSource( QgsVectorLayer* layer );
     ~QgsVectorLayerFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
@@ -42,8 +44,6 @@ class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     friend class QgsVectorLayerFeatureIterator;
 
   protected:
-
-    QgsVectorLayer* mLayer;
 
     QgsAbstractFeatureSource* mProviderFeatureSource;
 
@@ -66,6 +66,8 @@ class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     QList<QgsField> mAddedAttributes;
     QgsChangedAttributesMap mChangedAttributeValues;
     QgsAttributeList mDeletedAttributeIds;
+
+    long mCrsId;
 };
 
 
@@ -82,6 +84,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     //! end of iterating: free the resources / lock
     virtual bool close() override;
 
+    virtual void setInterruptionChecker( QgsInterruptionChecker* interruptionChecker ) override;
+
   protected:
     //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature ) override;
@@ -93,30 +97,27 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     //! Setup the simplification of geometries to fetch using the specified simplify method
     virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod ) override;
 
-
-    QgsFeatureRequest mProviderRequest;
-    QgsFeatureIterator mProviderIterator;
-    QgsFeatureRequest mChangedFeaturesRequest;
-    QgsFeatureIterator mChangedFeaturesIterator;
-
-
-    // only related to editing
-    QSet<QgsFeatureId> mFetchConsidered;
-    QgsGeometryMap::ConstIterator mFetchChangedGeomIt;
-    QgsFeatureMap::ConstIterator mFetchAddedFeaturesIt;
-
-    bool mFetchedFid; // when iterating by FID: indicator whether it has been fetched yet or not
-
+    //! @note not available in Python bindings
     void rewindEditBuffer();
+    //! @note not available in Python bindings
     void prepareJoins();
+    //! @note not available in Python bindings
     void prepareExpressions();
+    //! @note not available in Python bindings
     bool fetchNextAddedFeature( QgsFeature& f );
+    //! @note not available in Python bindings
     bool fetchNextChangedGeomFeature( QgsFeature& f );
+    //! @note not available in Python bindings
     bool fetchNextChangedAttributeFeature( QgsFeature& f );
+    //! @note not available in Python bindings
     void useAddedFeature( const QgsFeature& src, QgsFeature& f );
+    //! @note not available in Python bindings
     void useChangedAttributeFeature( QgsFeatureId fid, const QgsGeometry& geom, QgsFeature& f );
+    //! @note not available in Python bindings
     bool nextFeatureFid( QgsFeature& f );
+    //! @note not available in Python bindings
     void addJoinedAttributes( QgsFeature &f );
+
     /**
      * Adds attributes that don't source from the provider but are added inside QGIS
      * Includes
@@ -124,18 +125,23 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      *  - Expression fields
      *
      * @param f The feature will be modified
+     * @note not available in Python bindings
      */
     void addVirtualAttributes( QgsFeature &f );
 
-    /** Update feature with uncommited attribute updates */
+    /** Update feature with uncommited attribute updates.
+     * @note not available in Python bindings
+     */
     void updateChangedAttributes( QgsFeature& f );
 
-    /** Update feature with uncommited geometry updates */
+    /** Update feature with uncommited geometry updates.
+     * @note not available in Python bindings
+     */
     void updateFeatureGeometry( QgsFeature& f );
 
     /** Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
-      Created in the select() method of QgsVectorLayerJoinBuffer for the joins that contain fetched attributes
-    */
+     * Created in the select() method of QgsVectorLayerJoinBuffer for the joins that contain fetched attributes
+     */
     struct FetchJoinInfo
     {
       const QgsVectorJoinInfo* joinInfo;//!< cannonical source of information about the join
@@ -148,6 +154,18 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
       void addJoinedAttributesCached( QgsFeature& f, const QVariant& joinValue ) const;
       void addJoinedAttributesDirect( QgsFeature& f, const QVariant& joinValue ) const;
     };
+
+    QgsFeatureRequest mProviderRequest;
+    QgsFeatureIterator mProviderIterator;
+    QgsFeatureRequest mChangedFeaturesRequest;
+    QgsFeatureIterator mChangedFeaturesIterator;
+
+    // only related to editing
+    QSet<QgsFeatureId> mFetchConsidered;
+    QgsGeometryMap::ConstIterator mFetchChangedGeomIt;
+    QgsFeatureMap::ConstIterator mFetchAddedFeaturesIt;
+
+    bool mFetchedFid; // when iterating by FID: indicator whether it has been fetched yet or not
 
     /** Information about joins used in the current select() statement.
       Allows faster mapping of attribute ids compared to mVectorJoins */
@@ -162,6 +180,14 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     QgsAbstractGeometrySimplifier* mEditGeometrySimplifier;
 
     QScopedPointer<QgsExpressionContext> mExpressionContext;
+
+    QgsInterruptionChecker* mInterruptionChecker;
+
+    /**
+     * Will always return true. We assume that ordering has been done on provider level already.
+     *
+     */
+    bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
     //! returns whether the iterator supports simplify geometries on provider side
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;

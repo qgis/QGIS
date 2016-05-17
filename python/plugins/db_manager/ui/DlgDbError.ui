@@ -27,7 +27,7 @@
        <item>
         <widget class="QLabel" name="label_3">
          <property name="text">
-          <string>An error occured:</string>
+          <string>An error occurred:</string>
          </property>
         </widget>
        </item>
@@ -51,7 +51,7 @@
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>An error occured when executing a query:</string>
+          <string>An error occurred when executing a query:</string>
          </property>
         </widget>
        </item>

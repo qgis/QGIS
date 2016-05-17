@@ -32,7 +32,7 @@
 #include <QSettings>
 
 
-QgsInterpolationDialog::QgsInterpolationDialog( QWidget* parent, QgisInterface* iface ): QDialog( parent ), mIface( iface ), mInterpolatorDialog( 0 )
+QgsInterpolationDialog::QgsInterpolationDialog( QWidget* parent, QgisInterface* iface ): QDialog( parent ), mIface( iface ), mInterpolatorDialog( nullptr )
 {
   setupUi( this );
 
@@ -109,7 +109,7 @@ void QgsInterpolationDialog::on_buttonBox_accepted()
   //warn the user if there isn't any input layer
   if ( mLayersTreeWidget->topLevelItemCount() < 1 )
   {
-    QMessageBox::information( 0, tr( "No input data for interpolation" ), tr( "Please add one or more input layers" ) );
+    QMessageBox::information( nullptr, tr( "No input data for interpolation" ), tr( "Please add one or more input layers" ) );
     return;
   }
 
@@ -118,7 +118,7 @@ void QgsInterpolationDialog::on_buttonBox_accepted()
   QFileInfo theFileInfo( fileName );
   if ( fileName.isEmpty() || !theFileInfo.dir().exists() )
   {
-    QMessageBox::information( 0, tr( "Output file name invalid" ), tr( "Please enter a valid output file name" ) );
+    QMessageBox::information( nullptr, tr( "Output file name invalid" ), tr( "Please enter a valid output file name" ) );
     return;
   }
 
@@ -245,10 +245,8 @@ void QgsInterpolationDialog::on_mInputLayerComboBox_currentIndexChanged( const Q
   }
 
   //insert numeric attributes of layer into mInterpolationAttributesComboBox
-  const QgsFields& fields = provider->fields();
-  for ( int idx = 0; idx < fields.count(); ++idx )
+  Q_FOREACH ( const QgsField& currentField, provider->fields() )
   {
-    const QgsField& currentField = fields[idx];
     QVariant::Type currentType = currentField.type();
     if ( currentType == QVariant::Int || currentType == QVariant::Double )
     {
@@ -306,9 +304,9 @@ void QgsInterpolationDialog::on_mOutputFileButton_clicked()
 {
   //get last output file dir
   QSettings s;
-  QString lastOutputDir = s.value( "/Interpolation/lastOutputDir", "" ).toString();
+  QString lastOutputDir = s.value( "/Interpolation/lastOutputDir", QDir::homePath() ).toString();
 
-  QString rasterFileName = QFileDialog::getSaveFileName( 0, tr( "Save interpolated raster as..." ), lastOutputDir );
+  QString rasterFileName = QFileDialog::getSaveFileName( nullptr, tr( "Save interpolated raster as..." ), lastOutputDir );
   if ( !rasterFileName.isEmpty() )
   {
     mOutputFileLineEdit->setText( rasterFileName );
@@ -351,7 +349,7 @@ QgsVectorLayer* QgsInterpolationDialog::vectorLayerFromName( const QString& name
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 void QgsInterpolationDialog::on_mInterpolationMethodComboBox_currentIndexChanged( const QString &text )
@@ -435,7 +433,6 @@ void QgsInterpolationDialog::on_mBBoxToCurrentExtent_clicked()
 QgsRectangle QgsInterpolationDialog::boundingBoxOfLayers()
 {
   int nLayers = mLayersTreeWidget->topLevelItemCount();
-  QList< QgsInterpolator::LayerData > inputLayerList;
   QgsRectangle combinedLayerExtent;
 
   for ( int i = 0; i < nLayers; ++i )

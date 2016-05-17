@@ -21,7 +21,7 @@
 
 QgsScaleWidget::QgsScaleWidget( QWidget *parent )
     : QWidget( parent )
-    , mCanvas( NULL )
+    , mCanvas( nullptr )
     , mShowCurrentScaleButton( false )
 {
   QHBoxLayout* layout = new QHBoxLayout( this );
@@ -37,7 +37,7 @@ QgsScaleWidget::QgsScaleWidget( QWidget *parent )
   layout->addWidget( mCurrentScaleButton );
   mCurrentScaleButton->hide();
 
-  connect( mScaleComboBox, SIGNAL( scaleChanged() ), this, SIGNAL( scaleChanged() ) );
+  connect( mScaleComboBox, SIGNAL( scaleChanged( double ) ), this, SIGNAL( scaleChanged( double ) ) );
   connect( mCurrentScaleButton, SIGNAL( clicked() ), this, SLOT( setScaleFromCanvas() ) );
 }
 

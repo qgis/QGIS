@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtGui import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox
 from processing.gui.ContextAction import ContextAction
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 
@@ -37,7 +37,7 @@ class DeleteModelAction(ContextAction):
         self.name = self.tr('Delete model', 'DeleteModelAction')
 
     def isEnabled(self):
-        return isinstance(self.alg, ModelerAlgorithm)
+        return isinstance(self.itemData, ModelerAlgorithm)
 
     def execute(self):
         reply = QMessageBox.question(
@@ -47,5 +47,5 @@ class DeleteModelAction(ContextAction):
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.No)
         if reply == QMessageBox.Yes:
-            os.remove(self.alg.descriptionFile)
+            os.remove(self.itemData.descriptionFile)
             self.toolbox.updateProvider('model')

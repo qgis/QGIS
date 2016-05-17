@@ -66,9 +66,9 @@ QgsMimeDataUtils::Uri::Uri( QString& encData )
   }
 
   QgsDebugMsg( QString( "type:%1 key:%2 name:%3 uri:%4 supportedCRS:%5 supportedFormats:%6" )
-               .arg( layerType ).arg( providerKey ).arg( name ).arg( uri )
-               .arg( supportedCrs.join( ", " ) )
-               .arg( supportedFormats.join( ", " ) ) );
+               .arg( layerType, providerKey, name, uri,
+                     supportedCrs.join( ", " ),
+                     supportedFormats.join( ", " ) ) );
 }
 
 QString QgsMimeDataUtils::Uri::data() const
@@ -83,7 +83,7 @@ bool QgsMimeDataUtils::isUriList( const QMimeData* data )
   return data->hasFormat( QGIS_URILIST_MIMETYPE );
 }
 
-QMimeData* QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList layers )
+QMimeData* QgsMimeDataUtils::encodeUriList( const QgsMimeDataUtils::UriList& layers )
 {
   QMimeData *mimeData = new QMimeData();
   QByteArray encodedData;
@@ -120,9 +120,9 @@ QString QgsMimeDataUtils::encode( const QStringList& items )
   Q_FOREACH ( const QString& item, items )
   {
     QString str = item;
-    str.replace( "\\", "\\\\" );
-    str.replace( ":", "\\:" );
-    encoded += str + ":";
+    str.replace( '\\', "\\\\" );
+    str.replace( ':', "\\:" );
+    encoded += str + ':';
   }
   return encoded.left( encoded.length() - 1 );
 }
@@ -132,7 +132,7 @@ QStringList QgsMimeDataUtils::decode( const QString& encoded )
   QStringList items;
   QString item;
   bool inEscape = false;
-  Q_FOREACH ( const QChar& c, encoded )
+  Q_FOREACH ( QChar c, encoded )
   {
     if ( c == '\\' && inEscape )
     {

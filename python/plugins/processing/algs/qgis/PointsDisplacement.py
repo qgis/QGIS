@@ -68,18 +68,16 @@ class PointsDisplacement(GeoAlgorithm):
 
         features = vector.features(layer)
 
-        current = 0
         total = 100.0 / len(features)
 
         duplicates = dict()
-        for f in features:
+        for current, f in enumerate(features):
             wkt = f.geometry().exportToWkt()
             if wkt not in duplicates:
                 duplicates[wkt] = [f.id()]
             else:
                 duplicates[wkt].extend([f.id()])
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         current = 0

@@ -1,0 +1,7 @@
+Cell Balance
+ta_hydrology
+ParameterRaster|DEM|Elevation|False
+ParameterRaster|WEIGHTS|Parameter|True
+ParameterNumber|WEIGHTS_DEFAULT|Default Weight|0.0|None|1.0
+ParameterSelection|METHOD|Method|[0] Deterministic 8;[1] Multiple Flow Direction
+OutputRaster|BALANCE|Cell Balance

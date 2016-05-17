@@ -29,6 +29,11 @@ class TestQgsApplication: public QObject
     void checkGdalSkip();
     void initTestCase();
     void cleanupTestCase();
+
+    void accountName();
+    void osName();
+    void platformName();
+
   private:
     QString getQgisPath();
 };
@@ -43,11 +48,39 @@ void TestQgsApplication::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   qDebug( "%s", QgsApplication::showSettings().toUtf8().constData() );
-};
+}
 
 void TestQgsApplication::cleanupTestCase()
 {
   QgsApplication::exitQgis();
+}
+
+void TestQgsApplication::accountName()
+{
+  QString loginName = QgsApplication::userLoginName();
+  qDebug() << QString( "Got login name: '%1'" ).arg( loginName );
+  QVERIFY( !loginName.isEmpty() );
+  //test cached return works correctly
+  QCOMPARE( loginName, QgsApplication::userLoginName() );
+
+  //can't test contents, as it can be validly empty (eg on Travis). Just testing that we don't crash
+  QString fullName = QgsApplication::userFullName();
+  qDebug() << QString( "Got full name: '%1'" ).arg( fullName );
+  //test cached return works correctly
+  QCOMPARE( fullName, QgsApplication::userFullName() );
+}
+
+void TestQgsApplication::osName()
+{
+  // can't test expected result, so just check for non-empty result
+  qDebug() << QString( "Got OS name: '%1'" ).arg( QgsApplication::osName() );
+  QVERIFY( !QgsApplication::osName().isEmpty() );
+}
+
+void TestQgsApplication::platformName()
+{
+  // test will always be run under desktop platform
+  QCOMPARE( QgsApplication::platform(), QString( "desktop" ) );
 }
 
 void TestQgsApplication::checkPaths()
@@ -56,7 +89,7 @@ void TestQgsApplication::checkPaths()
   qDebug( "Checking authors file exists:" );
   qDebug( "%s", myPath.toLocal8Bit().constData() );
   QVERIFY( !myPath.isEmpty() );
-};
+}
 
 void TestQgsApplication::checkGdalSkip()
 {

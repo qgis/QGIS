@@ -15,8 +15,8 @@
 
 #include "qgscheckboxconfigdlg.h"
 
-QgsCheckBoxConfigDlg::QgsCheckBoxConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent ) :
-    QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsCheckBoxConfigDlg::QgsCheckBoxConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent )
+    : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 }

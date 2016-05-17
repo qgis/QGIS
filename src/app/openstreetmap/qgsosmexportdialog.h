@@ -28,7 +28,7 @@ class QgsOSMExportDialog : public QDialog, private Ui::QgsOSMExportDialog
 {
     Q_OBJECT
   public:
-    explicit QgsOSMExportDialog( QWidget *parent = 0 );
+    explicit QgsOSMExportDialog( QWidget *parent = nullptr );
     ~QgsOSMExportDialog();
 
   protected:

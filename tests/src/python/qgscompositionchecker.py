@@ -15,10 +15,10 @@ qgscompositionchecker.py - check rendering of Qgscomposition against an expected
  ***************************************************************************/
 '''
 
-import qgis
+import qgis  # NOQA
 
-from PyQt4.QtCore import QSize, QDir, QFileInfo
-from PyQt4.QtGui import QImage, QPainter
+from qgis.PyQt.QtCore import QSize, QDir, QFileInfo
+from qgis.PyQt.QtGui import QImage, QPainter
 from qgis.core import QgsMultiRenderChecker, QgsComposition
 
 
@@ -37,7 +37,7 @@ class QgsCompositionChecker(QgsMultiRenderChecker):
             myMessage = "Composition not valid"
             return False, myMessage
 
-        #load expected image
+        # load expected image
         self.setControlName("expected_" + self.mTestName)
 
         # get width/height, create image and render the composition to it

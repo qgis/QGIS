@@ -24,8 +24,10 @@
  as a proxy for QgsDbTableModel*/
 class CORE_EXPORT QgsDbFilterProxyModel: public QSortFilterProxyModel
 {
+    Q_OBJECT
+
   public:
-    QgsDbFilterProxyModel( QObject* parent = 0 );
+    QgsDbFilterProxyModel( QObject* parent = nullptr );
     ~QgsDbFilterProxyModel();
     /** Calls QSortFilterProxyModel::setFilterWildcard and triggers update*/
     void _setFilterWildcard( const QString& pattern );

@@ -27,6 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.PyQt.QtGui import QIcon
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -34,12 +36,17 @@ from processing.core.outputs import OutputDirectory
 from processing.tools import dataobjects, vector
 from processing.tools.system import mkdir
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class VectorSplit(GeoAlgorithm):
 
     INPUT = 'INPUT'
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'split_layer.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Split vector layer')
@@ -69,7 +76,7 @@ class VectorSplit(GeoAlgorithm):
 
         total = 100.0 / len(uniqueValues)
 
-        for count, i in enumerate(uniqueValues):
+        for current, i in enumerate(uniqueValues):
             fName = u'{0}_{1}.shp'.format(baseName, unicode(i).strip())
 
             writer = vector.VectorWriter(fName, None, fields, geomType, crs)
@@ -78,4 +85,4 @@ class VectorSplit(GeoAlgorithm):
                     writer.addFeature(f)
             del writer
 
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))

@@ -110,7 +110,7 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
   QgsDebugMsg( QString( "fontFamily: %1" ).arg( fontFamily ) );
   if ( fontFamily.isEmpty() ) { return; }
 
-  ss += QString( "* { font: %1pt \"%2\"} " ).arg( fontSize ).arg( fontFamily );
+  ss += QString( "* { font: %1pt \"%2\"} " ).arg( fontSize, fontFamily );
 
   // QGroupBox and QgsCollapsibleGroupBox, mostly for Ubuntu and Mac
   bool gbxCustom = opts.value( "groupBoxCustom" ).toBool();
@@ -172,8 +172,8 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
                  "selection-background-color: %1;"
                  "selection-color: %2;"
                  "}" )
-        .arg( palette.highlight().color().name() )
-        .arg( palette.highlightedText().color().name() );
+        .arg( palette.highlight().color().name(),
+              palette.highlightedText().color().name() );
 
   QgsDebugMsg( QString( "Stylesheet built: %1" ).arg( ss ) );
 

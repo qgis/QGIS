@@ -18,7 +18,7 @@
 #include "qgsmessageviewer.h"
 #include <QSettings>
 
-QgsMessageViewer::QgsMessageViewer( QWidget *parent, Qt::WindowFlags fl, bool deleteOnClose )
+QgsMessageViewer::QgsMessageViewer( QWidget *parent, const Qt::WindowFlags& fl, bool deleteOnClose )
     : QDialog( parent, fl )
 {
   setupUi( this );
@@ -105,7 +105,7 @@ Qt::CheckState QgsMessageViewer::checkBoxState()
   return checkBox->checkState();
 }
 
-void QgsMessageViewer::setCheckBoxQSettingsLabel( QString label )
+void QgsMessageViewer::setCheckBoxQSettingsLabel( const QString& label )
 {
   mCheckBoxQSettingsLabel = label;
 }

@@ -25,7 +25,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtCore
+import os
+
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QFileInfo
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterString
@@ -33,12 +37,17 @@ from processing.core.outputs import OutputVector
 from processing.tools.system import isWindows
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class polygonize(GdalAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'polygonize.png'))
 
     def commandLineName(self):
         return "gdalogr:polygonize"
@@ -59,7 +68,7 @@ class polygonize(GdalAlgorithm):
         arguments.append('ESRI Shapefile')
         output = self.getOutputValue(polygonize.OUTPUT)
         arguments.append(output)
-        arguments.append(QtCore.QFileInfo(output).baseName())
+        arguments.append(QFileInfo(output).baseName())
         arguments.append(self.getParameterValue(polygonize.FIELD))
 
         commands = []

@@ -33,25 +33,28 @@ class QgsClipper
     static const double MIN_Y;
 
 
-    // A handy way to refer to the four boundaries
+    //! A handy way to refer to the four boundaries
     enum Boundary {XMax, XMin, YMax, YMin};
 
 %If (!ARM)
-    // Trims the given feature to a rectangular box. Returns the trimmed
-    // feature in x and y. The shapeOpen parameter determines whether
-    // the function treats the points as a closed shape (polygon), or as
-    // an open shape (linestring).
-    //
-    // @note not available in python bindings on android
+    /**
+     * Trims the given feature to a rectangular box. Returns the trimmed
+     * feature in x and y. The shapeOpen parameter determines whether
+     * the function treats the points as a closed shape (polygon), or as
+     * an open shape (linestring).
+     *
+     * @note not available in python bindings on android
+     */
     static void trimFeature( QVector<double>& x,
                              QVector<double>& y,
                              bool shapeOpen );
 %End
+
     static void trimPolygon( QPolygonF& pts, const QgsRectangle& clipRect );
 
     /** Reads a polyline from WKB and clips it to clipExtent
       @param wkb pointer to the start of the line wkb
       @param clipExtent clipping bounds
       @param line out: clipped line coordinates*/
-    static const unsigned char* clippedLineWKB( const unsigned char* wkb, const QgsRectangle& clipExtent, QPolygonF& line );
+    static QgsConstWkbPtr clippedLineWKB( QgsConstWkbPtr wkb, const QgsRectangle& clipExtent, QPolygonF& line );
 };

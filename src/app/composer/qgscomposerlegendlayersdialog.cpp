@@ -28,7 +28,7 @@ QgsComposerLegendLayersDialog::QgsComposerLegendLayersDialog( QList<QgsMapLayer*
   }
 }
 
-QgsComposerLegendLayersDialog::QgsComposerLegendLayersDialog(): QDialog( 0 )
+QgsComposerLegendLayersDialog::QgsComposerLegendLayersDialog(): QDialog( nullptr )
 {
 
 }
@@ -43,11 +43,11 @@ QgsMapLayer* QgsComposerLegendLayersDialog::selectedLayer()
   QListWidgetItem* item = listMapLayers->currentItem();
   if ( !item )
   {
-    return 0;
+    return nullptr;
   }
 
-  QMap<QListWidgetItem*, QgsMapLayer*>::iterator it = mItemLayerMap.find( item );
-  QgsMapLayer* c = 0;
+  QMap<QListWidgetItem*, QgsMapLayer*>::const_iterator it = mItemLayerMap.constFind( item );
+  QgsMapLayer* c = nullptr;
   c = it.value();
   return c;
 }

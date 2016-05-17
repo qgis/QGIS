@@ -1,0 +1,11 @@
+v.generalize
+v.generalize.simplify - Vector based simplification generalization.
+Vector (v.*)
+ParameterVector|input|Input layer|-1|False
+ParameterSelection|method|method|douglas;douglas_reduction;lang;reduction;reumann
+ParameterNumber|threshold|Maximal tolerance value|None|None|1.0
+ParameterNumber|look_ahead|Look-ahead parameter|None|None|7
+ParameterNumber|reduction|Percentage of the points in the output of 'douglas_reduction' algorithm|0.0|100.0|50.0
+ParameterBoolean|-t|Do not copy attributes|False
+ParameterBoolean|-l|Disable loop support|True
+OutputVector|output|Simplified

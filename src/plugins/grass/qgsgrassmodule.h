@@ -31,7 +31,7 @@ class QDomElement;
  *  \brief Interface to GRASS modules.
  *
  */
-class QgsGrassModule : public QDialog, private  Ui::QgsGrassModuleBase
+class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
 {
     Q_OBJECT
 
@@ -72,18 +72,6 @@ class QgsGrassModule : public QDialog, private  Ui::QgsGrassModuleBase
 
     // ! Options widget
     QgsGrassModuleOptions *options() { return mOptions; }
-
-    // ! List of directories in PATH variable + current directory on Windows
-    //static QStringList mExecPath;
-    //static bool mExecPathInited;
-
-    // ! Find in exec path
-    //   returns full path or null string
-    //   appends automaticaly .exe on Windows
-    static QString findExec( QString file );
-
-    // ! Check if file is in mExecPath
-    static bool inExecPath( QString file );
 
     // ! Get executable + arguments. Executable is returned as first string.
     // On Window if the module is script the executable will be path to shell
@@ -137,6 +125,11 @@ class QgsGrassModule : public QDialog, private  Ui::QgsGrassModuleBase
     //void mapsetChanged();
 
   private:
+    /** Set progress bar or busy indicator if percent is 100
+     * @param percent progress to show in %
+     * @param force to set progress for 100% */
+    void setProgress( int percent, bool force = false );
+
     //! Pointer to the QGIS interface object
     QgisInterface *mIface;
 

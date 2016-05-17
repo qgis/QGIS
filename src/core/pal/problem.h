@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _PROBLEM_H
-#define _PROBLEM_H
+#ifndef PAL_PROBLEM_H
+#define PAL_PROBLEM_H
 
 #include "pal.h"
 #include "rtree.hpp"
@@ -41,6 +41,10 @@ namespace pal
   class LabelPosition;
   class Label;
 
+  /**
+   * \class pal::Sol
+   * \note not available in Python bindings
+   */
   class Sol
   {
     public:
@@ -88,7 +92,9 @@ namespace pal
   } Chain;
 
   /**
-   * \brief Represent a problem
+   * \brief Representation of a labeling problem
+   * \class pal::Problem
+   * \note not available in Python bindings
    */
   class CORE_EXPORT Problem
   {
@@ -130,7 +136,7 @@ namespace pal
        */
       void chain_search();
 
-      std::list<LabelPosition*> * getSolution( bool returnInactive );
+      QList<LabelPosition*> * getSolution( bool returnInactive );
 
       PalStat * getStats();
 

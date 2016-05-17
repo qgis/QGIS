@@ -31,22 +31,22 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     Q_OBJECT
   public:
     //! make out a widget containing a message to be displayed on the bar
-    QgsMessageBarItem( const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent = 0 );
+    QgsMessageBarItem( const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent = nullptr );
 
     //! make out a widget containing title and message to be displayed on the bar
-    QgsMessageBarItem( const QString &title, const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent = 0 );
+    QgsMessageBarItem( const QString &title, const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent = nullptr );
 
     //! make out a widget containing title, message and widget to be displayed on the bar
-    QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent = 0 );
+    QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent = nullptr );
 
     //! make out a widget containing a widget to be displayed on the bar
-    QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent = 0 );
+    QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent = nullptr );
 
     ~QgsMessageBarItem();
 
-    QgsMessageBarItem *setText( QString text );
+    QgsMessageBarItem *setText( const QString& text );
 
-    QgsMessageBarItem *setTitle( QString title );
+    QgsMessageBarItem *setTitle( const QString& title );
 
     QgsMessageBarItem *setLevel( QgsMessageBar::MessageLevel level );
 
@@ -67,7 +67,7 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
 
   signals:
     //! emitted when the message level has changed
-    void styleChanged( QString styleSheet );
+    void styleChanged( const QString& styleSheet );
 
 
   private:

@@ -19,7 +19,7 @@
 
 QgsGPSDeviceDialog::QgsGPSDeviceDialog( std::map < QString,
                                         QgsGPSDevice* > & devices )
-    : QDialog( 0, QgisGui::ModalDialogFlags )
+    : QDialog( nullptr, QgisGui::ModalDialogFlags )
     , mDevices( devices )
 {
   setupUi( this );
@@ -119,7 +119,7 @@ void QgsGPSDeviceDialog::slotUpdateDeviceList( const QString& selection )
     }
   }
 
-  if ( lbDeviceList->currentItem() == NULL && lbDeviceList->count() > 0 )
+  if ( !lbDeviceList->currentItem() && lbDeviceList->count() > 0 )
     lbDeviceList->setCurrentRow( 0 );
 
   // Update the display and reconnect the selection changed signal

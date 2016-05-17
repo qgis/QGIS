@@ -17,7 +17,6 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -28,14 +27,36 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4 import uic
-from PyQt4.QtCore import Qt, QEvent
-from PyQt4.QtGui import (QFileDialog, QDialog, QIcon, QStyle,
-                         QStandardItemModel, QStandardItem, QMessageBox, QStyledItemDelegate,
-                         QLineEdit, QSpinBox, QDoubleSpinBox, QWidget, QToolButton, QHBoxLayout)
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import (Qt,
+                              QEvent
+                              )
+from qgis.PyQt.QtWidgets import (QFileDialog,
+                                 QDialog,
+                                 QStyle,
+                                 QMessageBox,
+                                 QStyledItemDelegate,
+                                 QLineEdit,
+                                 QWidget,
+                                 QToolButton,
+                                 QHBoxLayout,
+                                 QComboBox)
+from qgis.PyQt.QtGui import (QIcon,
+                             QStandardItemModel,
+                             QStandardItem)
 
-from processing.core.ProcessingConfig import ProcessingConfig, Setting
+from qgis.gui import (QgsDoubleSpinBox,
+                      QgsSpinBox
+                      )
+from qgis.core import NULL
+
+from processing.core.ProcessingConfig import (ProcessingConfig,
+                                              settingsWatcher,
+                                              Setting)
 from processing.core.Processing import Processing
+from processing.gui.menus import updateMenus
+from processing.gui.menus import menusSettingsGroup
+
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -64,22 +85,51 @@ class ConfigDialog(BASE, WIDGET):
         self.delegate = SettingDelegate()
         self.tree.setItemDelegateForColumn(1, self.delegate)
 
-        self.searchBox.textChanged.connect(self.fillTree)
+        self.searchBox.textChanged.connect(self.textChanged)
 
         self.fillTree()
 
         self.tree.expanded.connect(self.adjustColumns)
 
+    def textChanged(self):
+        text = unicode(self.searchBox.text().lower())
+        self._filterItem(self.model.invisibleRootItem(), text)
+        if text:
+            self.tree.expandAll()
+        else:
+            self.tree.collapseAll()
+
+    def _filterItem(self, item, text):
+        if item.hasChildren():
+            show = False
+            for i in xrange(item.rowCount()):
+                child = item.child(i)
+                showChild = self._filterItem(child, text)
+                show = (showChild or show)
+            self.tree.setRowHidden(item.row(), item.index().parent(), not show)
+            return show
+
+        elif isinstance(item, QStandardItem):
+            hide = bool(text) and (text not in item.text().lower())
+            self.tree.setRowHidden(item.row(), item.index().parent(), hide)
+            return not hide
+
     def fillTree(self):
+        self.fillTreeUsingProviders()
+
+    def fillTreeUsingProviders(self):
         self.items = {}
         self.model.clear()
         self.model.setHorizontalHeaderLabels([self.tr('Setting'),
                                               self.tr('Value')])
 
-        text = unicode(self.searchBox.text())
         settings = ProcessingConfig.getSettings()
 
         rootItem = self.model.invisibleRootItem()
+
+        """
+        Filter 'General', 'Models' and 'Scripts' items
+        """
         priorityKeys = [self.tr('General'), self.tr('Models'), self.tr('Scripts')]
         for group in priorityKeys:
             groupItem = QStandardItem(group)
@@ -88,50 +138,103 @@ class ConfigDialog(BASE, WIDGET):
             groupItem.setEditable(False)
             emptyItem = QStandardItem()
             emptyItem.setEditable(False)
+
             rootItem.insertRow(0, [groupItem, emptyItem])
+            # add menu item only if it has any search matches
             for setting in settings[group]:
-                if setting.hidden:
+                if setting.hidden or setting.name.startswith("MENU_"):
                     continue
 
-                if text == '' or text.lower() in setting.description.lower():
-                    labelItem = QStandardItem(setting.description)
-                    labelItem.setIcon(icon)
-                    labelItem.setEditable(False)
-                    self.items[setting] = SettingItem(setting)
-                    groupItem.insertRow(0, [labelItem, self.items[setting]])
+                labelItem = QStandardItem(setting.description)
+                labelItem.setIcon(icon)
+                labelItem.setEditable(False)
+                self.items[setting] = SettingItem(setting)
+                groupItem.insertRow(0, [labelItem, self.items[setting]])
 
-            if text != '':
-                self.tree.expand(groupItem.index())
-
+        """
+        Filter 'Providers' items
+        """
         providersItem = QStandardItem(self.tr('Providers'))
         icon = QIcon(os.path.join(pluginPath, 'images', 'alg.png'))
         providersItem.setIcon(icon)
         providersItem.setEditable(False)
         emptyItem = QStandardItem()
         emptyItem.setEditable(False)
+
         rootItem.insertRow(0, [providersItem, emptyItem])
         for group in settings.keys():
-            if group in priorityKeys:
+            if group in priorityKeys or group == menusSettingsGroup:
                 continue
 
             groupItem = QStandardItem(group)
             icon = ProcessingConfig.getGroupIcon(group)
             groupItem.setIcon(icon)
             groupItem.setEditable(False)
+
             for setting in settings[group]:
                 if setting.hidden:
                     continue
 
-                if text == '' or text.lower() in setting.description.lower():
-                    labelItem = QStandardItem(setting.description)
-                    labelItem.setIcon(icon)
-                    labelItem.setEditable(False)
-                    self.items[setting] = SettingItem(setting)
-                    groupItem.insertRow(0, [labelItem, self.items[setting]])
+                labelItem = QStandardItem(setting.description)
+                labelItem.setIcon(icon)
+                labelItem.setEditable(False)
+                self.items[setting] = SettingItem(setting)
+                groupItem.insertRow(0, [labelItem, self.items[setting]])
 
             emptyItem = QStandardItem()
             emptyItem.setEditable(False)
             providersItem.appendRow([groupItem, emptyItem])
+
+        """
+        Filter 'Menus' items
+        """
+        menusItem = QStandardItem(self.tr('Menus (requires restart)'))
+        icon = QIcon(os.path.join(pluginPath, 'images', 'menu.png'))
+        menusItem.setIcon(icon)
+        menusItem.setEditable(False)
+        emptyItem = QStandardItem()
+        emptyItem.setEditable(False)
+
+        rootItem.insertRow(0, [menusItem, emptyItem])
+
+        providers = Processing.providers
+        for provider in providers:
+            providerDescription = provider.getDescription()
+            groupItem = QStandardItem(providerDescription)
+            icon = provider.getIcon()
+            groupItem.setIcon(icon)
+            groupItem.setEditable(False)
+
+            for alg in provider.algs:
+                algItem = QStandardItem(alg.name)
+                algItem.setIcon(icon)
+                algItem.setEditable(False)
+                try:
+                    settingMenu = ProcessingConfig.settings["MENU_" + alg.commandLineName()]
+                    settingButton = ProcessingConfig.settings["BUTTON_" + alg.commandLineName()]
+                    settingIcon = ProcessingConfig.settings["ICON_" + alg.commandLineName()]
+                except:
+                    continue
+                self.items[settingMenu] = SettingItem(settingMenu)
+                self.items[settingButton] = SettingItem(settingButton)
+                self.items[settingIcon] = SettingItem(settingIcon)
+                menuLabelItem = QStandardItem("Menu path")
+                menuLabelItem.setEditable(False)
+                buttonLabelItem = QStandardItem("Add button in toolbar")
+                buttonLabelItem.setEditable(False)
+                iconLabelItem = QStandardItem("Icon")
+                iconLabelItem.setEditable(False)
+                emptyItem = QStandardItem()
+                emptyItem.setEditable(False)
+                algItem.insertRow(0, [menuLabelItem, self.items[settingMenu]])
+                algItem.insertRow(0, [buttonLabelItem, self.items[settingButton]])
+                algItem.insertRow(0, [iconLabelItem, self.items[settingIcon]])
+                groupItem.insertRow(0, [algItem, emptyItem])
+
+            emptyItem = QStandardItem()
+            emptyItem.setEditable(False)
+
+            menusItem.appendRow([groupItem, emptyItem])
 
         self.tree.sortByColumn(0, Qt.AscendingOrder)
         self.adjustColumns()
@@ -139,20 +242,18 @@ class ConfigDialog(BASE, WIDGET):
     def accept(self):
         for setting in self.items.keys():
             if isinstance(setting.value, bool):
-                setting.value = self.items[setting].checkState() == Qt.Checked
-            elif isinstance(setting.value, (float, int, long)):
-                value = unicode(self.items[setting].text())
-                try:
-                    value = float(value)
-                    setting.value = value
-                except ValueError:
-                    QMessageBox.critical(self, self.tr('Wrong value'),
-                                         self.tr('Wrong parameter value:\n%1') % value)
-                    return
+                setting.setValue(self.items[setting].checkState() == Qt.Checked)
             else:
-                setting.value = unicode(self.items[setting].text())
+                try:
+                    setting.setValue(unicode(self.items[setting].text()))
+                except ValueError as e:
+                    QMessageBox.warning(self, self.tr('Wrong value'),
+                                        self.tr('Wrong value for parameter "%s":\n\n%s' % (setting.description, unicode(e))))
+                    return
             setting.save()
         Processing.updateAlgsList()
+        settingsWatcher.settingsChanged.emit()
+        updateMenus()
 
         QDialog.accept(self)
 
@@ -166,7 +267,7 @@ class SettingItem(QStandardItem):
     def __init__(self, setting):
         QStandardItem.__init__(self)
         self.setting = setting
-        self.setData(setting.valuetype, Qt.UserRole)
+        self.setData(setting, Qt.UserRole)
         if isinstance(setting.value, bool):
             self.setCheckable(True)
             self.setEditable(False)
@@ -189,43 +290,50 @@ class SettingDelegate(QStyledItemDelegate):
         options,
         index,
     ):
-        value = self.convertValue(index.model().data(index, Qt.EditRole))
-        if isinstance(value, (int, long)):
-            spnBox = QSpinBox(parent)
-            spnBox.setRange(-999999999, 999999999)
-            return spnBox
-        elif isinstance(value, float):
-            spnBox = QDoubleSpinBox(parent)
-            spnBox.setRange(-999999999.999999, 999999999.999999)
-            spnBox.setDecimals(6)
-            return spnBox
-        elif isinstance(value, (str, unicode)):
-            valuetype = self.convertValue(index.model().data(index, Qt.UserRole))
-            if valuetype == Setting.FOLDER:
-                return FileDirectorySelector(parent)
-            else:
-                return FileDirectorySelector(parent, True)
+        setting = index.model().data(index, Qt.UserRole)
+        if setting.valuetype == Setting.FOLDER:
+            return FileDirectorySelector(parent)
+        elif setting.valuetype == Setting.FILE:
+            return FileDirectorySelector(parent, True)
+        elif setting.valuetype == Setting.SELECTION:
+            combo = QComboBox(parent)
+            combo.addItems(setting.options)
+            return combo
+        else:
+            value = self.convertValue(index.model().data(index, Qt.EditRole))
+            if isinstance(value, (int, long)):
+                spnBox = QgsSpinBox(parent)
+                spnBox.setRange(-999999999, 999999999)
+                return spnBox
+            elif isinstance(value, float):
+                spnBox = QgsDoubleSpinBox(parent)
+                spnBox.setRange(-999999999.999999, 999999999.999999)
+                spnBox.setDecimals(6)
+                return spnBox
+            elif isinstance(value, (str, unicode)):
+                return QLineEdit(parent)
 
     def setEditorData(self, editor, index):
         value = self.convertValue(index.model().data(index, Qt.EditRole))
-        if isinstance(value, (int, long)):
-            editor.setValue(value)
-        elif isinstance(value, float):
-            editor.setValue(value)
-        elif isinstance(value, (str, unicode)):
+        setting = index.model().data(index, Qt.UserRole)
+        if setting.valuetype == Setting.SELECTION:
+            editor.setCurrentIndex(editor.findText(value))
+        else:
             editor.setText(value)
 
     def setModelData(self, editor, model, index):
         value = self.convertValue(index.model().data(index, Qt.EditRole))
-        if isinstance(value, (int, long)):
-            model.setData(index, editor.value(), Qt.EditRole)
-        elif isinstance(value, float):
-            model.setData(index, editor.value(), Qt.EditRole)
-        elif isinstance(value, (str, unicode)):
-            model.setData(index, editor.text(), Qt.EditRole)
+        setting = index.model().data(index, Qt.UserRole)
+        if setting.valuetype == Setting.SELECTION:
+            model.setData(index, editor.currentText(), Qt.EditRole)
+        else:
+            if isinstance(value, (str, basestring)):
+                model.setData(index, editor.text(), Qt.EditRole)
+            else:
+                model.setData(index, editor.value(), Qt.EditRole)
 
     def sizeHint(self, option, index):
-        return QSpinBox().sizeHint()
+        return QgsSpinBox().sizeHint()
 
     def eventFilter(self, editor, event):
         if event.type() == QEvent.FocusOut and hasattr(editor, 'canFocusOut'):
@@ -234,14 +342,14 @@ class SettingDelegate(QStyledItemDelegate):
         return QStyledItemDelegate.eventFilter(self, editor, event)
 
     def convertValue(self, value):
-        if value is None:
+        if value is None or value == NULL:
             return ""
         try:
             return int(value)
-        except ValueError:
+        except:
             try:
                 return float(value)
-            except ValueError:
+            except:
                 return unicode(value)
 
 

@@ -28,13 +28,14 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputFile
-from FusionAlgorithm import FusionAlgorithm
-from FusionUtils import FusionUtils
+from .FusionAlgorithm import FusionAlgorithm
+from .FusionUtils import FusionUtils
 
 
 class CanopyModel(FusionAlgorithm):
@@ -50,7 +51,7 @@ class CanopyModel(FusionAlgorithm):
     SMOOTH = 'SMOOTH'
     SLOPE = 'SLOPE'
     CLASS = 'CLASS'
-    ADVANCED_MODIFIERS = 'ADVANCED_MODIFIERS'
+    ASCII = 'ASCII'
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Canopy Model')
@@ -64,7 +65,7 @@ class CanopyModel(FusionAlgorithm):
         self.addParameter(ParameterSelection(
             self.ZUNITS, self.tr('Z Units'), self.UNITS))
         self.addOutput(OutputFile(
-            self.OUTPUT_DTM, self.tr('DTM Output Surface'), 'dtm'))
+            self.OUTPUT_DTM, self.tr('.dtm output surface'), 'dtm'))
         ground = ParameterFile(
             self.GROUND, self.tr('Input ground DTM layer'), False, True)
         ground.isAdvanced = True
@@ -77,18 +78,17 @@ class CanopyModel(FusionAlgorithm):
             self.SMOOTH, self.tr('Smooth'), '', False, True)
         smooth.isAdvanced = True
         self.addParameter(smooth)
-        slope = ParameterString(
-            self.SLOPE, self.tr('Slope'), '', False, True)
-        slope.isAdvanced = True
-        self.addParameter(slope)
         class_var = ParameterString(
             self.CLASS, self.tr('Class'), '', False, True)
         class_var.isAdvanced = True
         self.addParameter(class_var)
-        advance_modifiers = ParameterString(
-            self.ADVANCED_MODIFIERS, self.tr('Additional modifiers'), '', False, True)
-        advance_modifiers.isAdvanced = True
-        self.addParameter(advance_modifiers)
+        slope = ParameterBoolean(
+            self.SLOPE, self.tr('Calculate slope'), False)
+        slope.isAdvanced = True
+        self.addParameter(slope)
+        self.addParameter(ParameterBoolean(
+            self.ASCII, self.tr('Add an ASCII output'), False))
+        self.addAdvancedModifiers()
 
     def processAlgorithm(self, progress):
         commands = [os.path.join(FusionUtils.FusionPath(), 'CanopyModel.exe')]
@@ -103,14 +103,15 @@ class CanopyModel(FusionAlgorithm):
         if unicode(smooth).strip():
             commands.append('/smooth:' + unicode(smooth))
         slope = self.getParameterValue(self.SLOPE)
-        if unicode(slope).strip():
-            commands.append('/slope:' + unicode(slope))
+        if slope:
+            commands.append('/slope')
         class_var = self.getParameterValue(self.CLASS)
         if unicode(class_var).strip():
             commands.append('/class:' + unicode(class_var))
-        advance_modifiers = unicode(self.getParameterValue(self.ADVANCED_MODIFIERS)).strip()
-        if advance_modifiers:
-            commands.append(advance_modifiers)
+        ascii = self.getParameterValue(self.ASCII)
+        if ascii:
+            commands.append('/ascii')
+        self.addAdvancedModifiersToCommand(commands)
         commands.append(self.getOutputValue(self.OUTPUT_DTM))
         commands.append(unicode(self.getParameterValue(self.CELLSIZE)))
         commands.append(self.UNITS[self.getParameterValue(self.XYUNITS)][0])

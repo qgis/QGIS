@@ -34,7 +34,7 @@ class QgsComposerLegend : QgsComposerItem
     QgsComposerLegend( QgsComposition* composition /TransferThis/);
     ~QgsComposerLegend();
 
-    /** Return correct graphics item type. Added in v1.7 */
+    /** Return correct graphics item type. */
     virtual int type() const;
 
     /** \brief Reimplementation of QCanvasItem::paint*/
@@ -47,7 +47,7 @@ class QgsComposerLegend : QgsComposerItem
     void adjustBoxSize();
 
     /** Returns pointer to the legend model*/
-    //! @note deprecated in 2.6 - use modelV2()
+    //! @deprecated in 2.6 - use modelV2()
     QgsLegendModel* model() /Deprecated/;
 
     //! @note added in 2.6
@@ -65,6 +65,20 @@ class QgsComposerLegend : QgsComposerItem
     //! @note added in 2.6
     bool legendFilterByMapEnabled() const;
 
+    //! Update() overloading. Use it rather than update()
+    //! @note added in 2.12
+    virtual void updateItem();
+
+    //! When set to true, during an atlas rendering, it will filter out legend elements
+    //! where features are outside the current atlas feature.
+    //! @note added in 2.14
+    void setLegendFilterOutAtlas( bool doFilter );
+
+    //! Whether to filter out legend elements outside of the current atlas feature
+    //! @see setLegendFilterOutAtlas()
+    //! @note added in 2.14
+    bool legendFilterOutAtlas() const;
+
     //setters and getters
     void setTitle( const QString& t );
     QString title() const;
@@ -73,20 +87,20 @@ class QgsComposerLegend : QgsComposerItem
      * @returns Qt::AlignmentFlag for the legend title
      * @note added in 2.3
      * @see setTitleAlignment
-    */
+     */
     Qt::AlignmentFlag titleAlignment() const;
     /** Sets the alignment of the legend title
      * @param alignment Text alignment for drawing the legend title
      * @note added in 2.3
      * @see titleAlignment
-    */
+     */
     void setTitleAlignment( Qt::AlignmentFlag alignment );
 
     /** Returns reference to modifiable style */
     QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s );
     /** Returns style */
     QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const;
-    void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle style );
+    void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style );
 
     QFont styleFont( QgsComposerLegendStyle::Style s ) const;
     /** Set style font */
@@ -129,6 +143,61 @@ class QgsComposerLegend : QgsComposerItem
     int equalColumnWidth() const;
     void setEqualColumnWidth( bool s );
 
+    /** Returns whether a border will be drawn around raster symbol items.
+     * @see setDrawRasterBorder()
+     * @see rasterBorderColor()
+     * @see rasterBorderWidth()
+     * @note added in QGIS 2.12
+     */
+    bool drawRasterBorder() const;
+
+    /** Sets whether a border will be drawn around raster symbol items.
+     * @param enabled set to true to draw borders
+     * @see drawRasterBorder()
+     * @see setRasterBorderColor()
+     * @see setRasterBorderWidth()
+     * @note added in QGIS 2.12
+     */
+    void setDrawRasterBorder( bool enabled );
+
+    /** Returns the border color for the border drawn around raster symbol items. The border is
+     * only drawn if drawRasterBorder() is true.
+     * @see setRasterBorderColor()
+     * @see drawRasterBorder()
+     * @see rasterBorderWidth()
+     * @note added in QGIS 2.12
+     */
+    QColor rasterBorderColor() const;
+
+    /** Sets the border color for the border drawn around raster symbol items. The border is
+     * only drawn if drawRasterBorder() is true.
+     * @param color border color
+     * @see rasterBorderColor()
+     * @see setDrawRasterBorder()
+     * @see setRasterBorderWidth()
+     * @note added in QGIS 2.12
+     */
+    void setRasterBorderColor( const QColor& color );
+
+    /** Returns the border width (in millimeters) for the border drawn around raster symbol items. The border is
+     * only drawn if drawRasterBorder() is true.
+     * @see setRasterBorderWidth()
+     * @see drawRasterBorder()
+     * @see rasterBorderColor()
+     * @note added in QGIS 2.12
+     */
+    double rasterBorderWidth() const;
+
+    /** Sets the border width for the border drawn around raster symbol items. The border is
+     * only drawn if drawRasterBorder() is true.
+     * @param width border width in millimeters
+     * @see rasterBorderWidth()
+     * @see setDrawRasterBorder()
+     * @see setRasterBorderColor()
+     * @note added in QGIS 2.12
+     */
+    void setRasterBorderWidth( double width );
+
     void setComposerMap( const QgsComposerMap* map );
     const QgsComposerMap* composerMap() const;
 
@@ -146,6 +215,9 @@ class QgsComposerLegend : QgsComposerItem
        * @param doc is Dom document
        */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+
+    //Overridden to show legend title
+    virtual QString displayName() const;
 
   public slots:
     /** Data changed*/

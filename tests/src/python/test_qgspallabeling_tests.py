@@ -16,11 +16,12 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
+
 import os
 
-from PyQt4.QtCore import Qt, QPointF
-from PyQt4.QtGui import QFont
+from qgis.PyQt.QtCore import Qt, QPointF
+from qgis.PyQt.QtGui import QFont
 
 from qgis.core import QgsPalLayerSettings
 

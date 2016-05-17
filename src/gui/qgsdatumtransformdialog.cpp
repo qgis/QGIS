@@ -22,7 +22,7 @@
 #include <QDir>
 #include <QSettings>
 
-QgsDatumTransformDialog::QgsDatumTransformDialog( const QString& layerName, const QList< QList< int > > &dt, QWidget *parent, Qt::WindowFlags f )
+QgsDatumTransformDialog::QgsDatumTransformDialog( const QString& layerName, const QList< QList< int > > &dt, QWidget *parent, const Qt::WindowFlags& f )
     : QDialog( parent, f )
     , mDt( dt )
     , mLayerName( layerName )
@@ -92,7 +92,7 @@ void QgsDatumTransformDialog::load()
       if ( epsgNr > 0 )
         toolTipString.append( QString( "<p><b>EPSG Transformations Code:</b> %1</p>" ).arg( epsgNr ) );
 
-      toolTipString.append( QString( "<p><b>Source CRS:</b> %1</p><p><b>Destination CRS:</b> %2</p>" ).arg( srcGeoProj ).arg( destGeoProj ) );
+      toolTipString.append( QString( "<p><b>Source CRS:</b> %1</p><p><b>Destination CRS:</b> %2</p>" ).arg( srcGeoProj, destGeoProj ) );
 
       if ( !remarks.isEmpty() )
         toolTipString.append( QString( "<p><b>Remarks:</b> %1</p>" ).arg( remarks ) );
@@ -189,13 +189,13 @@ bool QgsDatumTransformDialog::testGridShiftFileAvailability( QTreeWidgetItem* it
     return true;
   }
 
-  QStringList itemEqualSplit = itemText.split( "=" );
+  QStringList itemEqualSplit = itemText.split( '=' );
   QString filename;
   for ( int i = 1; i < itemEqualSplit.size(); ++i )
   {
     if ( i > 1 )
     {
-      filename.append( "=" );
+      filename.append( '=' );
     }
     filename.append( itemEqualSplit.at( i ) );
   }
@@ -217,7 +217,7 @@ bool QgsDatumTransformDialog::testGridShiftFileAvailability( QTreeWidgetItem* it
         return true;
       }
     }
-    item->setToolTip( col, tr( "File '%1' not found in directory '%2'" ).arg( filename ).arg( projDir.absolutePath() ) );
+    item->setToolTip( col, tr( "File '%1' not found in directory '%2'" ).arg( filename, projDir.absolutePath() ) );
     return false; //not found in PROJ_LIB directory
   }
   return true;
@@ -242,7 +242,7 @@ void QgsDatumTransformDialog::updateTitle()
   mLabelLayer->setText( mLayerName );
   QgsCoordinateReferenceSystem crs;
   crs.createFromString( mSrcCRSauthId );
-  mLabelSrcCrs->setText( QString( "%1 - %2" ).arg( mSrcCRSauthId ).arg( crs.isValid() ? crs.description() : tr( "unknown" ) ) );
+  mLabelSrcCrs->setText( QString( "%1 - %2" ).arg( mSrcCRSauthId, crs.isValid() ? crs.description() : tr( "unknown" ) ) );
   crs.createFromString( mDestCRSauthId );
-  mLabelDstCrs->setText( QString( "%1 - %2" ).arg( mDestCRSauthId ).arg( crs.isValid() ? crs.description() : tr( "unknown" ) ) );
+  mLabelDstCrs->setText( QString( "%1 - %2" ).arg( mDestCRSauthId, crs.isValid() ? crs.description() : tr( "unknown" ) ) );
 }

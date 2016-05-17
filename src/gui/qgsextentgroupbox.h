@@ -26,7 +26,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     Q_PROPERTY( QString titleBase READ titleBase WRITE setTitleBase )
 
   public:
-    explicit QgsExtentGroupBox( QWidget* parent = 0 );
+    explicit QgsExtentGroupBox( QWidget* parent = nullptr );
 
     enum ExtentState
     {

@@ -22,7 +22,7 @@ class QgsComposerArrow: QgsComposerItem
      * @param stopPoint end point for line
      * @param c parent composition
      */
-    QgsComposerArrow( const QPointF& startPoint, const QPointF& stopPoint, QgsComposition* c /TransferThis/ );
+    QgsComposerArrow( QPointF startPoint, QPointF stopPoint, QgsComposition* c /TransferThis/ );
 
     ~QgsComposerArrow();
 
@@ -33,7 +33,7 @@ class QgsComposerArrow: QgsComposerItem
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 
     /** Modifies position of start and endpoint and calls QgsComposerItem::setSceneRect
-    */
+     */
     void setSceneRect( const QRectF& rectangle );
 
     /** Sets the width of the arrow head in mm
@@ -171,14 +171,14 @@ class QgsComposerArrow: QgsComposerItem
     void setMarkerMode( MarkerMode mode );
 
     /** Stores state in DOM element
-    * @param elem is DOM element corresponding to 'Composer' tag
-    * @param doc document
-    */
+     * @param elem is DOM element corresponding to 'Composer' tag
+     * @param doc document
+     */
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
 
     /** Sets state from DOM document
-    * @param itemElem is DOM node corresponding to item tag
-    * @param doc is the document to read
-    */
+     * @param itemElem is DOM node corresponding to item tag
+     * @param doc is the document to read
+     */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 };

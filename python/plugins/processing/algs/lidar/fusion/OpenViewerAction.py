@@ -27,27 +27,28 @@ __revision__ = '$Format:%H$'
 
 import os
 import subprocess
-from PyQt4 import QtGui
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QMessageBox
 from processing.gui.ToolboxAction import ToolboxAction
-from FusionUtils import FusionUtils
+from .FusionUtils import FusionUtils
 
 
 class OpenViewerAction(ToolboxAction):
 
     def __init__(self):
-        self.name = self.tr('Open Fusion LAS viewer')
-        self.group = self.tr('Visualization')
+        self.name, self.i18n_name = self.trAction('Open Fusion LAS viewer')
+        self.group, self.i18n_group = self.trAction('Visualization')
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + '/../../../images/tool.png')
+        return QIcon(os.path.dirname(__file__) + '/../../../images/tool.png')
 
     def execute(self):
         f = os.path.join(FusionUtils.FusionPath(), 'pdq.exe')
         if os.path.exists(f):
             subprocess.Popen(f)
         else:
-            QtGui.QMessageBox.critical(None,
-                                       self.tr('Unable to open viewer'),
-                                       self.tr('The current Fusion folder does not contain the '
-                                               'viewer executable.\nPlease check the configuration '
-                                               'in the Processing settings dialog.'))
+            QMessageBox.critical(None,
+                                 self.tr('Unable to open viewer'),
+                                 self.tr('The current Fusion folder does not contain the '
+                                         'viewer executable.\nPlease check the configuration '
+                                         'in the Processing settings dialog.'))

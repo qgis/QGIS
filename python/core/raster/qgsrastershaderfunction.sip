@@ -8,11 +8,11 @@ class QgsRasterShaderFunction
 
 %ConvertToSubClassCode
   if (dynamic_cast<QgsColorRampShader*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsColorRampShader;
+    sipType = sipType_QgsColorRampShader;
   else if (dynamic_cast<QgsPseudoColorShader*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsPseudoColorShader;
+    sipType = sipType_QgsPseudoColorShader;
   else
-    sipClass = 0;
+    sipType = 0;
 %End
 
 
@@ -26,7 +26,7 @@ class QgsRasterShaderFunction
     /** \brief Return the minimum value */
     virtual void setMinimumValue( double );
 
-    /** \brief generates and new RGB value based on one input value */
+    /** \brief generates and new RGBA value based on one input value */
     virtual bool shade( double, int* /Out/, int* /Out/, int* /Out/, int* /Out/ );
 
     /** \brief generates and new RGBA value based on original RGBA value */

@@ -21,16 +21,16 @@
 
 QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QgsMapCanvas* canvas, QgsMessageBar* messageBar, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mWidget( NULL )
+    , mWidget( nullptr )
     , mCanvas( canvas )
     , mMessageBar( messageBar )
+    , mIndeterminateState( false )
 {
 }
 
 QWidget* QgsRelationReferenceWidgetWrapper::createWidget( QWidget* parent )
 {
   QgsRelationReferenceWidget* w = new QgsRelationReferenceWidget( parent );
-  w->setSizePolicy( w->sizePolicy().horizontalPolicy(), QSizePolicy::Expanding );
   return w;
 }
 
@@ -60,6 +60,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget* editor )
     mWidget->setFilterFields( config( "FilterFields" ).toStringList() );
     mWidget->setChainFilters( config( "ChainFilters" ).toBool() );
   }
+  mWidget->setAllowAddFeatures( config( "AllowAddFeatures", false ).toBool() );
 
   QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( "Relation" ).toString() );
 
@@ -82,7 +83,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget* editor )
   connect( mWidget, SIGNAL( foreignKeyChanged( QVariant ) ), this,  SLOT( foreignKeyChanged( QVariant ) ) );
 }
 
-QVariant QgsRelationReferenceWidgetWrapper::value()
+QVariant QgsRelationReferenceWidgetWrapper::value() const
 {
   if ( !mWidget )
     return QVariant( field().type() );
@@ -99,16 +100,26 @@ QVariant QgsRelationReferenceWidgetWrapper::value()
   }
 }
 
-bool QgsRelationReferenceWidgetWrapper::valid()
+bool QgsRelationReferenceWidgetWrapper::valid() const
 {
   return mWidget;
 }
 
+void QgsRelationReferenceWidgetWrapper::showIndeterminateState()
+{
+  if ( mWidget )
+  {
+    mWidget->showIndeterminateState();
+  }
+  mIndeterminateState = true;
+}
+
 void QgsRelationReferenceWidgetWrapper::setValue( const QVariant& val )
 {
-  if ( !mWidget || val == value() )
+  if ( !mWidget || ( !mIndeterminateState && val == value() ) )
     return;
 
+  mIndeterminateState = false;
   mWidget->setForeignKey( val );
 }
 

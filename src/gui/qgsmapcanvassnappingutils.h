@@ -15,7 +15,7 @@ class GUI_EXPORT QgsMapCanvasSnappingUtils : public QgsSnappingUtils
 {
     Q_OBJECT
   public:
-    QgsMapCanvasSnappingUtils( QgsMapCanvas* canvas, QObject* parent = 0 );
+    QgsMapCanvasSnappingUtils( QgsMapCanvas* canvas, QObject* parent = nullptr );
 
   protected:
     virtual void prepareIndexStarting( int count ) override;

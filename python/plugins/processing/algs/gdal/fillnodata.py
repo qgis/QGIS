@@ -25,6 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
@@ -36,6 +37,8 @@ from processing.core.outputs import OutputRaster
 from processing.tools.system import isWindows
 
 from processing.algs.gdal.GdalUtils import GdalUtils
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class fillnodata(GdalAlgorithm):

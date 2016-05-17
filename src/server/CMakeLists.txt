@@ -25,12 +25,12 @@ SET ( qgis_mapserv_SRCS
   qgsgetrequesthandler.cpp
   qgspostrequesthandler.cpp
   qgssoaprequesthandler.cpp
+  qgsowsserver.cpp
   qgswmsserver.cpp
   qgswfsserver.cpp
   qgswcsserver.cpp
   qgsmapserviceexception.cpp
   qgsmslayercache.cpp
-  qgsftptransaction.cpp
   qgsmslayerbuilder.cpp
   qgshostedvdsbuilder.cpp
   qgsinterpolationlayerbuilder.cpp
@@ -49,19 +49,31 @@ SET ( qgis_mapserv_SRCS
   qgssldconfigparser.cpp
   qgsconfigparserutils.cpp
   qgsserver.cpp
+)
+IF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
+  SET (qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
+    qgsftptransaction.cpp
   )
+ENDIF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
+
 
 # SET (qgis_mapserv_UIS
 # none used
 # )
 
 SET (qgis_mapserv_MOC_HDRS
-  qgsftptransaction.h
   qgscapabilitiescache.h
   qgsconfigcache.h
   qgsmslayercache.h
   qgsserverlogger.h
+  qgsserverstreamingdevice.h
 )
+
+IF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
+  SET (qgis_mapserv_MOC_HDRS ${qgis_mapserv_MOC_HDRS}
+    qgsftptransaction.h
+  )
+ENDIF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
 
 SET (qgis_mapserv_RCCS
   # not used
@@ -82,6 +94,8 @@ SET(qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
     qgsserverplugins.cpp
     qgsserverinterface.cpp
     qgsserverfilter.cpp
+    qgsaccesscontrolfilter.cpp
+    qgsaccesscontrol.cpp
     qgsserverinterfaceimpl.cpp
 )
 ENDIF (WITH_SERVER_PLUGINS)
@@ -115,6 +129,7 @@ TARGET_LINK_LIBRARIES(qgis_server
   ${FCGI_LIBRARY}
   ${POSTGRES_LIBRARY}
   ${GDAL_LIBRARY}
+  ${QCA_LIBRARY}
 )
 
 IF (WITH_BINDINGS)
@@ -160,16 +175,24 @@ ADD_EXECUTABLE(qgis_mapserv.fcgi
   ${qgis_mapserv_TESTRCC_SRCS}
   )
 
-INCLUDE_DIRECTORIES(
+INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${FCGI_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
+)
+INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
   ${QGIS_INCLUDE_DIR}
+  ${QCA_INCLUDE_DIR}
+)
+INCLUDE_DIRECTORIES(
   ../core
+  ../core/auth
   ../core/dxf
   ../core/geometry
   ../core/raster
@@ -192,6 +215,7 @@ TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi
   ${FCGI_LIBRARY}
   ${POSTGRES_LIBRARY}
   ${GDAL_LIBRARY}
+  ${QCA_LIBRARY}
 )
 
 ########################################################

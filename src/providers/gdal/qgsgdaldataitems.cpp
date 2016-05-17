@@ -31,7 +31,7 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
   mToolTip = uri;
   // save sublayers for subsequent access
   // if there are sublayers, set populated=false so item can be populated on demand
-  if ( theSublayers && theSublayers->size() > 0 )
+  if ( theSublayers && !theSublayers->isEmpty() )
   {
     sublayers = *theSublayers;
     setState( NotPopulated );
@@ -53,10 +53,12 @@ QgsGdalLayerItem::~QgsGdalLayerItem()
 {
 }
 
+Q_NOWARN_DEPRECATED_PUSH
 QgsLayerItem::Capability QgsGdalLayerItem::capabilities()
 {
   return mCapabilities & SetCrs ? SetCrs : NoCapabilities;
 }
+Q_NOWARN_DEPRECATED_POP
 
 bool QgsGdalLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
 {
@@ -82,9 +84,9 @@ QVector<QgsDataItem*> QgsGdalLayerItem::createChildren()
   QVector<QgsDataItem*> children;
 
   // get children from sublayers
-  if ( sublayers.count() > 0 )
+  if ( !sublayers.isEmpty() )
   {
-    QgsDataItem * childItem = NULL;
+    QgsDataItem * childItem = nullptr;
     QgsDebugMsg( QString( "got %1 sublayers" ).arg( sublayers.count() ) );
     for ( int i = 0; i < sublayers.count(); i++ )
     {
@@ -97,14 +99,14 @@ QVector<QgsDataItem*> QgsGdalLayerItem::createChildren()
       else
       {
         // remove driver name and file name
-        name.replace( name.split( ":" )[0], "" );
-        name.replace( mPath, "" );
+        name.remove( name.split( ':' )[0] );
+        name.remove( mPath );
       }
       // remove any : or " left over
-      if ( name.startsWith( ":" ) ) name.remove( 0, 1 );
-      if ( name.startsWith( "\"" ) ) name.remove( 0, 1 );
-      if ( name.endsWith( ":" ) ) name.chop( 1 );
-      if ( name.endsWith( "\"" ) ) name.chop( 1 );
+      if ( name.startsWith( ':' ) ) name.remove( 0, 1 );
+      if ( name.startsWith( '\"' ) ) name.remove( 0, 1 );
+      if ( name.endsWith( ':' ) ) name.chop( 1 );
+      if ( name.endsWith( '\"' ) ) name.chop( 1 );
 
       childItem = new QgsGdalLayerItem( this, name, sublayers[i], sublayers[i] );
       if ( childItem )
@@ -139,7 +141,7 @@ QGISEXTERN int dataCapabilities()
 QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {
   if ( thePath.isEmpty() )
-    return 0;
+    return nullptr;
 
   QgsDebugMsgLevel( "thePath = " + thePath, 2 );
 
@@ -182,7 +184,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   // allow only normal files or VSIFILE items to continue
   if ( !info.isFile() && vsiPrefix == "" )
-    return 0;
+    return nullptr;
 
   // get supported extensions
   if ( extensions.isEmpty() )
@@ -203,13 +205,13 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   // unless that extension is in the list (*.xml might be though)
   if ( thePath.endsWith( ".aux.xml", Qt::CaseInsensitive ) &&
        !extensions.contains( "aux.xml" ) )
-    return 0;
+    return nullptr;
   if ( thePath.endsWith( ".shp.xml", Qt::CaseInsensitive ) &&
        !extensions.contains( "shp.xml" ) )
-    return 0;
+    return nullptr;
   if ( thePath.endsWith( ".tif.xml", Qt::CaseInsensitive ) &&
        !extensions.contains( "tif.xml" ) )
-    return 0;
+    return nullptr;
 
   // Filter files by extension
   if ( !extensions.contains( suffix ) )
@@ -225,7 +227,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       }
     }
     if ( !matches )
-      return 0;
+      return nullptr;
   }
 
   // fix vsifile path and name
@@ -236,13 +238,13 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       thePath = vsiPrefix + thePath;
     // if this is a /vsigzip/path_to_zip.zip/file_inside_zip remove the full path from the name
     // no need to change the name I believe
-    /*
+#if 0
     if (( is_vsizip || is_vsitar ) && ( thePath != vsiPrefix + parentItem->path() ) )
     {
       name = thePath;
-      name = name.replace( vsiPrefix + parentItem->path() + "/", "" );
+      name = name.replace( vsiPrefix + parentItem->path() + '/', "" );
     }
-    */
+#endif
   }
 
   // return item without testing if:
@@ -257,17 +259,17 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       // do not print errors, but write to debug
       CPLPushErrorHandler( CPLQuietErrorHandler );
       CPLErrorReset();
-      if ( ! GDALIdentifyDriver( TO8F( thePath ), 0 ) )
+      if ( ! GDALIdentifyDriver( TO8F( thePath ), nullptr ) )
       {
         QgsDebugMsgLevel( "Skipping VRT file because root is not a GDAL VRT", 2 );
         CPLPopErrorHandler();
-        return 0;
+        return nullptr;
       }
       CPLPopErrorHandler();
     }
     // add the item
     QStringList sublayers;
-    QgsDebugMsgLevel( QString( "adding item name=%1 thePath=%2" ).arg( name ).arg( thePath ), 2 );
+    QgsDebugMsgLevel( QString( "adding item name=%1 thePath=%2" ).arg( name, thePath ), 2 );
     QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath, &sublayers );
     if ( item )
       return item;
@@ -284,7 +286,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   if ( ! hDS )
   {
     QgsDebugMsg( QString( "GDALOpen error # %1 : %2 " ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
-    return 0;
+    return nullptr;
   }
 
   QStringList sublayers = QgsGdalProvider::subLayers( hDS );

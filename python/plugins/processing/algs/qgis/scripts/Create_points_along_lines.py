@@ -5,7 +5,7 @@
 ##Endpoint=number 0
 ##output=output vector
 
-from PyQt4.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import QGis, QgsFeature, QgsField
 from processing.tools.vector import VectorWriter
 

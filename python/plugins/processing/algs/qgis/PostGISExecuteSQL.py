@@ -25,7 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya, Carterix Geomatics'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -37,6 +37,12 @@ class PostGISExecuteSQL(GeoAlgorithm):
 
     DATABASE = 'DATABASE'
     SQL = 'SQL'
+
+    def defineCharacteristics(self):
+        self.name, self.i18n_name = self.trAlgorithm('PostGIS execute SQL')
+        self.group, self.i18n_group = self.trAlgorithm('Database')
+        self.addParameter(ParameterString(self.DATABASE, self.tr('Database')))
+        self.addParameter(ParameterString(self.SQL, self.tr('SQL query'), '', True))
 
     def processAlgorithm(self, progress):
         connection = self.getParameterValue(self.DATABASE)
@@ -56,17 +62,11 @@ class PostGISExecuteSQL(GeoAlgorithm):
                                           dbname=database, user=username, passwd=password)
         except postgis_utils.DbError as e:
             raise GeoAlgorithmExecutionException(
-                self.tr("Couldn't connect to database:\n%s" % e.message))
+                self.tr("Couldn't connect to database:\n%s") % unicode(e))
 
         sql = self.getParameterValue(self.SQL).replace('\n', ' ')
         try:
             self.db._exec_sql_and_commit(unicode(sql))
         except postgis_utils.DbError as e:
             raise GeoAlgorithmExecutionException(
-                self.tr('Error executing SQL:\n%s' % e.message))
-
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('PostGIS execute SQL')
-        self.group, self.i18n_group = self.trAlgorithm('Database')
-        self.addParameter(ParameterString(self.DATABASE, self.tr('Database')))
-        self.addParameter(ParameterString(self.SQL, self.tr('SQL query'), '', True))
+                self.tr('Error executing SQL:\n%s') % unicode(e))

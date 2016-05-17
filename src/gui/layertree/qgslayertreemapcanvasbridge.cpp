@@ -29,7 +29,7 @@ QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTreeGroup *roo
     , mHasCustomLayerOrder( false )
     , mAutoSetupOnFirstLayer( true )
     , mAutoEnableCrsTransform( true )
-    , mLastLayerCount( root->findLayers().count() )
+    , mLastLayerCount( !root->findLayers().isEmpty() )
 {
   connect( root, SIGNAL( addedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeAddedChildren( QgsLayerTreeNode*, int, int ) ) );
   connect( root, SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ), this, SLOT( nodeCustomPropertyChanged( QgsLayerTreeNode*, QString ) ) );
@@ -140,12 +140,10 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
     {
       Q_FOREACH ( QgsLayerTreeLayer* layerNode, layerNodes )
       {
-        if ( layerNode->layer() &&
-             (
-               qobject_cast<QgsVectorLayer *>( layerNode->layer() ) == 0 ||
-               qobject_cast<QgsVectorLayer *>( layerNode->layer() )->geometryType() != QGis::NoGeometry
-             )
-           )
+        if ( !layerNode->layer() )
+          continue;
+
+        if ( layerNode->layer()->isSpatial() )
         {
           mCanvas->setDestinationCrs( layerNode->layer()->crs() );
           mCanvas->setMapUnits( layerNode->layer()->crs().mapUnits() );
@@ -225,7 +223,7 @@ void QgsLayerTreeMapCanvasBridge::readProject( const QDomDocument& doc )
       itemElem = itemElem.nextSiblingElement( "item" );
     }
 
-    setHasCustomLayerOrder( customOrderElem.attribute( "enabled", 0 ).toInt() );
+    setHasCustomLayerOrder( customOrderElem.attribute( "enabled", nullptr ).toInt() );
     setCustomLayerOrder( order );
   }
 }
@@ -324,7 +322,7 @@ void QgsLayerTreeMapCanvasBridge::nodeVisibilityChanged()
   deferredSetCanvasLayers();
 }
 
-void QgsLayerTreeMapCanvasBridge::nodeCustomPropertyChanged( QgsLayerTreeNode* node, QString key )
+void QgsLayerTreeMapCanvasBridge::nodeCustomPropertyChanged( QgsLayerTreeNode* node, const QString& key )
 {
   Q_UNUSED( node );
   if ( key == "overview" )

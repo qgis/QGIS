@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsconditionalstyle.cpp
+    ---------------------
+    begin                : August 2015
+    copyright            : (C) 2015 by Nathan Woodrow
+    email                : woodrow dot nathan at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include <QPainter>
 
 #include "qgsconditionalstyle.h"
@@ -15,17 +29,17 @@ QList<QgsConditionalStyle> QgsConditionalLayerStyles::rowStyles()
   return mRowStyles;
 }
 
-void QgsConditionalLayerStyles::setRowStyles( QList<QgsConditionalStyle> styles )
+void QgsConditionalLayerStyles::setRowStyles( const QList<QgsConditionalStyle>& styles )
 {
   mRowStyles = styles;
 }
 
-void QgsConditionalLayerStyles::setFieldStyles( QString fieldName, QList<QgsConditionalStyle> styles )
+void QgsConditionalLayerStyles::setFieldStyles( const QString& fieldName, const QList<QgsConditionalStyle>& styles )
 {
   mFieldStyles.insert( fieldName, styles );
 }
 
-QList<QgsConditionalStyle> QgsConditionalLayerStyles::fieldStyles( QString fieldName )
+QList<QgsConditionalStyle> QgsConditionalLayerStyles::fieldStyles( const QString& fieldName )
 {
   if ( mFieldStyles.contains( fieldName ) )
   {
@@ -46,11 +60,12 @@ bool QgsConditionalLayerStyles::writeXml( QDomNode &node, QDomDocument &doc ) co
   stylesel.appendChild( rowel );
 
   QDomElement fieldsel = doc.createElement( "fieldstyles" );
-  Q_FOREACH ( const QString field, mFieldStyles.keys() )
+  QHash<QString, QgsConditionalStyles>::const_iterator it = mFieldStyles.constBegin();
+  for ( ; it != mFieldStyles.constEnd(); ++it )
   {
     QDomElement fieldel = doc.createElement( "fieldstyle" );
-    fieldel.setAttribute( "fieldname", field );
-    QgsConditionalStyles styles = mFieldStyles[field];
+    fieldel.setAttribute( "fieldname", it.key() );
+    QgsConditionalStyles styles = it.value();
     Q_FOREACH ( const QgsConditionalStyle& style, styles )
     {
       style.writeXml( fieldel, doc );
@@ -88,6 +103,7 @@ bool QgsConditionalLayerStyles::readXml( const QDomNode &node )
     QDomElement fieldel = nodelist.at( i ).toElement();
     QString fieldName = fieldel.attribute( "fieldname" );
     QDomNodeList stylenodelist = fieldel.toElement().elementsByTagName( "style" );
+    styles.reserve( stylenodelist.count() );
     for ( int i = 0;i < stylenodelist.count(); i++ )
     {
       QDomElement styleElm = stylenodelist.at( i ).toElement();
@@ -103,16 +119,16 @@ bool QgsConditionalLayerStyles::readXml( const QDomNode &node )
 
 QgsConditionalStyle::QgsConditionalStyle()
     : mValid( false )
-    , mSymbol( 0 )
+    , mSymbol( nullptr )
     , mBackColor( QColor( 0, 0, 0, 0 ) )
-    , mTextColor( Qt::black )
+    , mTextColor( QColor( 0, 0, 0, 0 ) )
 {}
 
-QgsConditionalStyle::QgsConditionalStyle( QString rule )
+QgsConditionalStyle::QgsConditionalStyle( const QString& rule )
     : mValid( false )
-    , mSymbol( 0 )
+    , mSymbol( nullptr )
     , mBackColor( QColor( 0, 0, 0, 0 ) )
-    , mTextColor( Qt::black )
+    , mTextColor( QColor( 0, 0, 0, 0 ) )
 {
   setRule( rule );
 }
@@ -159,7 +175,7 @@ QString QgsConditionalStyle::displayText() const
   if ( name().isEmpty() )
     return rule();
   else
-    return QString( "%1 \n%2" ).arg( name() ).arg( rule() );
+    return QString( "%1 \n%2" ).arg( name(), rule() );
 }
 
 void QgsConditionalStyle::setSymbol( QgsSymbolV2* value )
@@ -176,7 +192,7 @@ void QgsConditionalStyle::setSymbol( QgsSymbolV2* value )
   }
 }
 
-bool QgsConditionalStyle::matches( QVariant value, QgsExpressionContext& context ) const
+bool QgsConditionalStyle::matches( const QVariant& value, QgsExpressionContext& context ) const
 {
   QgsExpression exp( mRule );
   context.lastScope()->setVariable( "value", value );
@@ -222,7 +238,7 @@ bool QgsConditionalStyle::validTextColor() const
   return ( textColor().isValid() && textColor().alpha() != 0 );
 }
 
-QList<QgsConditionalStyle> QgsConditionalStyle::matchingConditionalStyles( QList<QgsConditionalStyle> styles, QVariant value,  QgsExpressionContext& context )
+QList<QgsConditionalStyle> QgsConditionalStyle::matchingConditionalStyles( const QList<QgsConditionalStyle>& styles, const QVariant& value, QgsExpressionContext& context )
 {
   QList<QgsConditionalStyle> matchingstyles;
   Q_FOREACH ( const QgsConditionalStyle& style, styles )
@@ -233,7 +249,7 @@ QList<QgsConditionalStyle> QgsConditionalStyle::matchingConditionalStyles( QList
   return matchingstyles;
 }
 
-QgsConditionalStyle QgsConditionalStyle::matchingConditionalStyle( QList<QgsConditionalStyle> styles, QVariant value,  QgsExpressionContext& context )
+QgsConditionalStyle QgsConditionalStyle::matchingConditionalStyle( const QList<QgsConditionalStyle>& styles, const QVariant& value,  QgsExpressionContext& context )
 {
   Q_FOREACH ( const QgsConditionalStyle& style, styles )
   {
@@ -243,7 +259,7 @@ QgsConditionalStyle QgsConditionalStyle::matchingConditionalStyle( QList<QgsCond
   return QgsConditionalStyle();
 }
 
-QgsConditionalStyle QgsConditionalStyle::compressStyles( QList<QgsConditionalStyle> styles )
+QgsConditionalStyle QgsConditionalStyle::compressStyles( const QList<QgsConditionalStyle>& styles )
 {
   QgsConditionalStyle style;
   Q_FOREACH ( const QgsConditionalStyle& s, styles )

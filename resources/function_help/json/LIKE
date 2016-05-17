@@ -1,0 +1,16 @@
+{
+  "name": "LIKE",
+  "type": "operator",
+  "description": "Returns 1 if the first parameter matches the supplied pattern. Works with numbers also.",
+  "arguments": [
+	{"arg":"string/number","description":"value"},
+	{"arg":"pattern","description":"pattern to compare value with"}
+  ],
+  "examples": [
+	{ "expression":"'A' LIKE 'A'", "returns":"1"},
+	{ "expression":"'A' LIKE 'a'", "returns":"0"},
+	{ "expression":"'A' LIKE 'B'", "returns":"0"},
+	{ "expression":"'ABC' LIKE 'B'", "returns":"0"},
+	{ "expression":"'ABC' LIKE '%B%'", "returns":"1"}
+  ]
+}

@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import \
@@ -35,7 +35,7 @@ from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 
-from TauDEMUtils import TauDEMUtils
+from .TauDEMUtils import TauDEMUtils
 
 
 class PeukerDouglas(GeoAlgorithm):
@@ -48,7 +48,7 @@ class PeukerDouglas(GeoAlgorithm):
     STREAM_SOURCE_GRID = 'STREAM_SOURCE_GRID'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.svg')
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Peuker Douglas')

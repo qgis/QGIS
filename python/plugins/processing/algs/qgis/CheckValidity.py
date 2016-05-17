@@ -25,7 +25,11 @@ __copyright__ = '(C) 2015, Arnaud Morvan'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtCore
+import os
+
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QSettings, QVariant
+
 from qgis.core import QGis, QgsGeometry, QgsFeature, QgsField
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -34,6 +38,7 @@ from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 settings_method_key = "/qgis/digitizing/validate_geometries"
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class CheckValidity(GeoAlgorithm):
@@ -44,13 +49,16 @@ class CheckValidity(GeoAlgorithm):
     INVALID_OUTPUT = 'INVALID_OUTPUT'
     ERROR_OUTPUT = 'ERROR_OUTPUT'
 
-    METHODS = ['The one selected in digitizing settings',
-               'QGIS',
-               'GEOS']
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'check_geometry.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Check validity')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+
+        self.methods = [self.tr('The one selected in digitizing settings'),
+                        'QGIS',
+                        'GEOS']
 
         self.addParameter(ParameterVector(
             self.INPUT_LAYER,
@@ -60,7 +68,7 @@ class CheckValidity(GeoAlgorithm):
         self.addParameter(ParameterSelection(
             self.METHOD,
             self.tr('Method'),
-            self.METHODS))
+            self.methods))
 
         self.addOutput(OutputVector(
             self.VALID_OUTPUT,
@@ -75,7 +83,7 @@ class CheckValidity(GeoAlgorithm):
             self.tr('Error output')))
 
     def processAlgorithm(self, progress):
-        settings = QtCore.QSettings()
+        settings = QSettings()
         initial_method_setting = settings.value(settings_method_key, 1)
 
         method = self.getParameterValue(self.METHOD)
@@ -91,7 +99,7 @@ class CheckValidity(GeoAlgorithm):
             self.getParameterValue(self.INPUT_LAYER))
         provider = layer.dataProvider()
 
-        settings = QtCore.QSettings()
+        settings = QSettings()
         method = int(settings.value(settings_method_key, 1))
 
         valid_ouput = self.getOutputFromName(self.VALID_OUTPUT)
@@ -105,7 +113,7 @@ class CheckValidity(GeoAlgorithm):
         invalid_ouput = self.getOutputFromName(self.INVALID_OUTPUT)
         invalid_fields = layer.pendingFields().toList() + [
             QgsField(name='_errors',
-                     type=QtCore.QVariant.String,
+                     type=QVariant.String,
                      len=255)]
         invalid_writer = invalid_ouput.getVectorWriter(
             invalid_fields,
@@ -116,7 +124,7 @@ class CheckValidity(GeoAlgorithm):
         error_ouput = self.getOutputFromName(self.ERROR_OUTPUT)
         error_fields = [
             QgsField(name='message',
-                     type=QtCore.QVariant.String,
+                     type=QVariant.String,
                      len=255)]
         error_writer = error_ouput.getVectorWriter(
             error_fields,
@@ -125,7 +133,7 @@ class CheckValidity(GeoAlgorithm):
         error_count = 0
 
         features = vector.features(layer)
-        count = len(features)
+        total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
             geom = QgsGeometry(inFeat.geometry())
             attrs = inFeat.attributes()
@@ -166,7 +174,7 @@ class CheckValidity(GeoAlgorithm):
                 invalid_writer.addFeature(outFeat)
                 invalid_count += 1
 
-            progress.setPercentage(100 * current / float(count))
+            progress.setPercentage(int(current * total))
 
         del valid_writer
         del invalid_writer

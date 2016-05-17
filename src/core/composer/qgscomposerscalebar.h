@@ -49,7 +49,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     };
 
     /** Modes for setting size for scale bar segments
-    */
+     */
     enum SegmentSizeMode
     {
       SegmentSizeFixed = 0, /*!< Scale bar segment size is fixed to a map unit*/
@@ -147,28 +147,28 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @returns font color for scalebar.
      * @see setFontColor
      * @see font
-    */
+     */
     QColor fontColor() const {return mFontColor;}
 
     /** Sets the color used for drawing text in the scalebar.
      * @param c font color for scalebar.
      * @see fontColor
      * @see setFont
-    */
+     */
     void setFontColor( const QColor& c ) {mFontColor = c;}
 
     /** Returns the pen used for drawing the scalebar.
      * @returns QPen used for drawing the scalebar outlines.
      * @see setPen
      * @see brush
-    */
+     */
     QPen pen() const {return mPen;}
 
     /** Sets the pen used for drawing the scalebar.
      * @param pen QPen to use for drawing the scalebar outlines.
      * @see pen
      * @see setBrush
-    */
+     */
     void setPen( const QPen& pen ) {mPen = pen;}
 
     /** Returns the primary brush for the scalebar.
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see setBrush
      * @see brush2
      * @see pen
-    */
+     */
     QBrush brush() const {return mBrush;}
 
     /** Sets primary brush for the scalebar.
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see brush
      * @see setBrush2
      * @see setPen
-    */
+     */
     void setBrush( const QBrush& brush ) {mBrush = brush;}
 
     /** Returns the secondary brush for the scalebar. This is used for alternating color style scalebars, such
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @returns QBrush used for secondary color areas
      * @see setBrush2
      * @see brush
-    */
+     */
     QBrush brush2() const {return mBrush2;}
 
     /** Sets secondary brush for the scalebar. This is used for alternating color style scalebars, such
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @param brush QBrush to use for secondary color areas
      * @see brush2
      * @see setBrush
-    */
+     */
     void setBrush2( const QBrush& brush ) {mBrush2 = brush;}
 
     double height() const {return mHeight;}
@@ -267,8 +267,8 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     QString style() const;
 
     /** Returns the x - positions of the segment borders (in item coordinates) and the width
-     of the segment
-     @note python bindings not available on android
+     * of the segment
+     * @note python bindings not available on android
      */
     void segmentPositions( QList<QPair<double, double> >& posWidthList ) const;
 
@@ -282,21 +282,21 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     QString firstLabelString() const;
 
     /** Stores state in Dom element
-       * @param elem is Dom element corresponding to 'Composer' tag
-       * @param doc Dom document
-       */
+     * @param elem is Dom element corresponding to 'Composer' tag
+     * @param doc Dom document
+     */
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** Sets state from Dom document
-       * @param itemElem is Dom node corresponding to item tag
-       * @param doc is Dom document
-       */
+     * @param itemElem is Dom node corresponding to item tag
+     * @param doc is Dom document
+     */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     /** Moves scalebar position to the left / right depending on alignment and change in item width*/
     void correctXPositionAlignment( double width, double widthAfter );
 
-    //overriden to apply minimum size
+    //overridden to apply minimum size
     void setSceneRect( const QRectF &rectangle ) override;
 
   public slots:

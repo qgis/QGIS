@@ -1,6 +1,4 @@
 usr/share/qgis/doc/AUTHORS
-usr/share/qgis/doc/CODING
-usr/share/qgis/doc/CODING.html
 usr/share/qgis/doc/CONTRIBUTORS
 usr/share/qgis/doc/DONORS
 usr/share/qgis/doc/INSTALL
@@ -18,3 +16,4 @@ usr/share/qgis/doc/style.css
 usr/share/qgis/i18n/*
 usr/share/qgis/images/*
 usr/share/qgis/resources/spatialite.db
+usr/share/qgis/resources/themes/*

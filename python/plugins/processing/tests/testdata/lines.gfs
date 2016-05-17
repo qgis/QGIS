@@ -1,0 +1,16 @@
+<GMLFeatureClassList>
+  <GMLFeatureClass>
+    <Name>lines</Name>
+    <ElementPath>lines</ElementPath>
+    <!--LINESTRING-->
+    <GeometryType>2</GeometryType>
+    <SRSName>EPSG:4326</SRSName>
+    <DatasetSpecificInfo>
+      <FeatureCount>6</FeatureCount>
+      <ExtentXMin>-1.00000</ExtentXMin>
+      <ExtentXMax>11.00000</ExtentXMax>
+      <ExtentYMin>-3.00000</ExtentYMin>
+      <ExtentYMax>5.00000</ExtentYMax>
+    </DatasetSpecificInfo>
+  </GMLFeatureClass>
+</GMLFeatureClassList>

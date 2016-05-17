@@ -64,8 +64,8 @@ class TestQgsRasterFill : public QObject
 
   private:
     bool mTestHasError;
-    bool setQml( QString theType );
-    bool imageCheck( QString theType );
+    bool setQml( const QString& theType );
+    bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPolysLayer;
     QgsRasterFillSymbolLayer* mRasterFill;
@@ -86,7 +86,7 @@ void TestQgsRasterFill::initTestCase()
 
   //create some objects that will be used in all tests...
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + "/";
+  mTestDataDir = myDataDir + '/';
 
   //
   //create a poly layer that will be used in all tests...
@@ -135,7 +135,7 @@ void TestQgsRasterFill::cleanupTestCase()
 
 void TestQgsRasterFill::init()
 {
-  mRasterFill->setImageFilePath( mTestDataDir + QString( "sample_image.png" ) );
+  mRasterFill->setImageFilePath( mTestDataDir + QLatin1String( "sample_image.png" ) );
   mRasterFill->setWidth( 30.0 );
   mRasterFill->setWidthUnit( QgsSymbolV2::Pixel );
   mRasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Feature );
@@ -174,7 +174,7 @@ void TestQgsRasterFill::alpha()
 void TestQgsRasterFill::offset()
 {
   mReport += "<h2>Raster fill offset</h2>\n";
-  mRasterFill->setOffset( QPointF( 5, 10 ) );;
+  mRasterFill->setOffset( QPointF( 5, 10 ) );
   bool result = imageCheck( "rasterfill_offset" );
   QVERIFY( result );
 }
@@ -192,7 +192,7 @@ void TestQgsRasterFill::width()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsRasterFill::setQml( QString theType )
+bool TestQgsRasterFill::setQml( const QString& theType )
 {
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
@@ -207,7 +207,7 @@ bool TestQgsRasterFill::setQml( QString theType )
   return myStyleFlag;
 }
 
-bool TestQgsRasterFill::imageCheck( QString theTestType )
+bool TestQgsRasterFill::imageCheck( const QString& theTestType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image

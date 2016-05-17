@@ -41,7 +41,7 @@ class QgsServerInterface
 
   public:
     /** Returns the current request handler*/
-    virtual QgsRequestHandler* requestHandler( ) = 0 /KeepReference/;
+    virtual QgsRequestHandler* requestHandler() = 0 /KeepReference/;
     /** Returns the capabilities cache*/
     virtual QgsCapabilitiesCache* capabiblitiesCache() = 0 /KeepReference/;
     // Tansfer ownership to avoid garbage collector to call dtor
@@ -50,20 +50,24 @@ class QgsServerInterface
     virtual void registerFilter( QgsServerFilter* filter /Transfer/, int priority = 0 ) = 0;
     /** Set the filters map */
     virtual void setFilters( QgsServerFiltersMap* filters /Transfer/) = 0;
+    /** Register a security module with the given priority.*/
+    virtual void registerAccessControl( QgsAccessControlFilter* accessControl /Transfer/, int priority = 0 ) = 0;
+    /** Gets the registred access control filters */
+    virtual const QgsAccessControl* accessControls() const = 0;
     /** Return an environment variable set by FCGI*/
     virtual QString getEnv(const QString& name ) const = 0;
     // Commented because of problems with typedef QgsServerFiltersMap, provided
     // methods to alter the filters map into QgsRequestHandler API
-    virtual QgsServerFiltersMap filters( ) = 0;
+    virtual QgsServerFiltersMap filters() = 0;
     /** Returns the configFilePath as seen by the server, this value is only
      * available after requestReady has been called.*/
-    virtual QString configFilePath( ) = 0;
+    virtual QString configFilePath() = 0;
     /** Set the config file path */
-    virtual void setConfigFilePath( QString configFilePath) = 0;
+    virtual void setConfigFilePath( const QString& configFilePath) = 0;
 
 private:
     /** Constructor */
-    QgsServerInterface( );
+    QgsServerInterface();
 
 };
 

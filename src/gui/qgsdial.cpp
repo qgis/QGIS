@@ -35,7 +35,7 @@ void QgsDial::paintEvent( QPaintEvent *event )
   QRect rect = geometry();
   painter.setPen( QPen( palette().color( QPalette::WindowText ) ) );
   painter.drawText( QRectF( 0, rect.height() * 0.65, rect.width(), rect.height() ),
-                    Qt::AlignHCenter, variantValue().toString(), 0 );
+                    Qt::AlignHCenter, variantValue().toString(), nullptr );
   painter.end();
 }
 
@@ -113,24 +113,20 @@ void QgsDial::valueChanged( int value )
   if ( mMin.isNull() || mMax.isNull() || mStep.isNull() )
   {
     mValue = QVariant();
-    return;
   }
-
-  if ( mMin.type() == QVariant::Int &&
-       mMax.type() == QVariant::Int &&
-       mStep.type() == QVariant::Int &&
-       mValue.type() == QVariant::Int )
+  else if ( mMin.type() == QVariant::Int &&
+            mMax.type() == QVariant::Int &&
+            mStep.type() == QVariant::Int &&
+            mValue.type() == QVariant::Int )
   {
     mValue = value;
-    return;
   }
-
-  if ( mMin.type() == QVariant::Double &&
-       mMax.type() == QVariant::Double &&
-       mStep.type() == QVariant::Double &&
-       mValue.type() == QVariant::Double )
+  else if ( mMin.type() == QVariant::Double &&
+            mMax.type() == QVariant::Double &&
+            mStep.type() == QVariant::Double &&
+            mValue.type() == QVariant::Double )
   {
     mValue = QVariant( mMin.toDouble() + value * mStep.toDouble() );
-    return;
   }
+  emit valueChanged( mValue );
 }

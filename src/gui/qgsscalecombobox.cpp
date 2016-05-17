@@ -24,13 +24,16 @@
 #include <QSettings>
 #include <QLineEdit>
 
-QgsScaleComboBox::QgsScaleComboBox( QWidget* parent ) : QComboBox( parent ), mScale( 1.0 )
+QgsScaleComboBox::QgsScaleComboBox( QWidget* parent )
+    : QComboBox( parent )
+    , mScale( 1.0 )
+    , mMinScale( 0.0 )
 {
   updateScales();
 
   setEditable( true );
   setInsertPolicy( QComboBox::NoInsert );
-  setCompleter( 0 );
+  setCompleter( nullptr );
   connect( this, SIGNAL( activated( const QString & ) ), this, SLOT( fixupScale() ) );
   connect( lineEdit(), SIGNAL( editingFinished() ), this, SLOT( fixupScale() ) );
   fixupScale();
@@ -51,7 +54,7 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
     QString myScales = settings.value( "Map/scales", PROJECT_SCALES ).toString();
     if ( !myScales.isEmpty() )
     {
-      myScalesList = myScales.split( "," );
+      myScalesList = myScales.split( ',' );
     }
   }
   else
@@ -122,10 +125,15 @@ QString QgsScaleComboBox::scaleString()
 }
 
 //! Function to set the selected scale from text
-bool QgsScaleComboBox::setScaleString( QString scaleTxt )
+bool QgsScaleComboBox::setScaleString( const QString& scaleTxt )
 {
   bool ok;
   double newScale = toDouble( scaleTxt, &ok );
+  double oldScale = mScale;
+  if ( newScale < mMinScale )
+  {
+    newScale = mMinScale;
+  }
   if ( ! ok )
   {
     return false;
@@ -135,12 +143,16 @@ bool QgsScaleComboBox::setScaleString( QString scaleTxt )
     mScale = newScale;
     setEditText( toString( mScale ) );
     clearFocus();
+    if ( mScale != oldScale )
+    {
+      emit scaleChanged( mScale );
+    }
     return true;
   }
 }
 
 //! Function to read the selected scale as double
-double QgsScaleComboBox::scale()
+double QgsScaleComboBox::scale() const
 {
   return mScale;
 }
@@ -154,34 +166,24 @@ void QgsScaleComboBox::setScale( double scale )
 //! Slot called when QComboBox has changed
 void QgsScaleComboBox::fixupScale()
 {
-  double newScale;
-  double oldScale = mScale;
-  bool ok, userSetScale;
   QStringList txtList = currentText().split( ':' );
-  userSetScale = txtList.size() != 2;
+  bool userSetScale = txtList.size() != 2;
 
-  // QgsDebugMsg( QString( "entered with oldScale: %1" ).arg( oldScale ) );
-  newScale = toDouble( currentText(), &ok );
+  bool ok;
+  double newScale = toDouble( currentText(), &ok );
 
   // Valid string representation
-  if ( ok && ( newScale != oldScale ) )
+  if ( ok )
   {
     // if a user types scale = 2345, we transform to 1:2345
     if ( userSetScale && newScale >= 1.0 )
     {
-      mScale = 1 / newScale;
+      newScale = 1 / newScale;
     }
-    else
-    {
-      mScale = newScale;
-    }
-    setScale( mScale );
-    emit scaleChanged();
+    setScale( newScale );
   }
   else
   {
-    // Invalid string representation or same scale
-    // Reset to the old
     setScale( mScale );
   }
 }
@@ -202,7 +204,7 @@ QString QgsScaleComboBox::toString( double scale )
   }
 }
 
-double QgsScaleComboBox::toDouble( QString scaleString, bool * returnOk )
+double QgsScaleComboBox::toDouble( const QString& scaleString, bool * returnOk )
 {
   bool ok = false;
   QString scaleTxt( scaleString );
@@ -241,4 +243,11 @@ double QgsScaleComboBox::toDouble( QString scaleString, bool * returnOk )
   return scale;
 }
 
-
+void QgsScaleComboBox::setMinScale( double scale )
+{
+  mMinScale = scale;
+  if ( mScale < scale )
+  {
+    setScale( scale );
+  }
+}

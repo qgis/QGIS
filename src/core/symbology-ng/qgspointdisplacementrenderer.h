@@ -31,10 +31,19 @@ class QgsSpatialIndex;
 class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
 {
   public:
+
+    /** Placement methods for dispersing points
+     */
+    enum Placement
+    {
+      Ring, /*!< Place points in a single ring around group*/
+      ConcentricRings /*!< Place points in concentric rings around group*/
+    };
+
     QgsPointDisplacementRenderer( const QString& labelAttributeName = "" );
     ~QgsPointDisplacementRenderer();
 
-    QgsFeatureRendererV2* clone() const override;
+    QgsPointDisplacementRenderer* clone() const override;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
 
@@ -45,17 +54,29 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     virtual QList<QString> usedAttributes() override;
     /** Proxy that will call this method on the embedded renderer. */
     virtual int capabilities() override;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python as symbols2
+     */
     virtual QgsSymbolV2List symbols( QgsRenderContext& context ) override;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python as symbolForFeature2
+     */
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python as originalSymbolForFeature2
+     */
     virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python as symbolsForFeature2
+     */
     virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python as originalSymbolsForFeature2
+     */
     virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python as willRenderFeature2
+     */
     virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) override;
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
@@ -69,7 +90,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
 
     //! @note not available in python bindings
-    QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = "" ) override;
+    QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" ) override;
 
     void setLabelAttributeName( const QString& name ) { mLabelAttributeName = name; }
     QString labelAttributeName() const { return mLabelAttributeName; }
@@ -100,13 +121,68 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     void setMaxLabelScaleDenominator( double d ) { mMaxLabelScaleDenominator = d; }
     double maxLabelScaleDenominator() const { return mMaxLabelScaleDenominator; }
 
+    /** Returns the placement method used for dispersing the points.
+     * @see setPlacement()
+     * @note added in QGIS 2.12
+     */
+    Placement placement() const { return mPlacement; }
+
+    /** Sets the placement method used for dispersing the points.
+     * @param placement placement method
+     * @see placement()
+     * @note added in QGIS 2.12
+     */
+    void setPlacement( Placement placement ) { mPlacement = placement; }
+
     /** Returns the symbol for the center of a displacement group (but _not_ ownership of the symbol)*/
     QgsMarkerSymbolV2* centerSymbol() { return mCenterSymbol;}
     /** Sets the center symbol (takes ownership)*/
     void setCenterSymbol( QgsMarkerSymbolV2* symbol );
 
+    /** Sets the tolerance distance for grouping points. Units are specified using
+     * setToleranceUnit().
+     * @param t tolerance distance
+     * @see tolerance()
+     * @see setToleranceUnit()
+     */
     void setTolerance( double t ) { mTolerance = t; }
+
+    /** Returns the tolerance distance for grouping points. Units are retrieved using
+     * toleranceUnit().
+     * @see setTolerance()
+     * @see toleranceUnit()
+     */
     double tolerance() const { return mTolerance; }
+
+    /** Sets the units for the tolerance distance.
+     * @param unit tolerance distance units
+     * @see setTolerance()
+     * @see toleranceUnit()
+     * @note added in QGIS 2.12
+     */
+    void setToleranceUnit( QgsSymbolV2::OutputUnit unit ) { mToleranceUnit = unit; }
+
+    /** Returns the units for the tolerance distance.
+     * @see tolerance()
+     * @see setToleranceUnit()
+     * @note added in QGIS 2.12
+     */
+    QgsSymbolV2::OutputUnit toleranceUnit() const { return mToleranceUnit; }
+
+    /** Sets the map unit scale object for the distance tolerance. This is only used if the
+     * toleranceUnit() is set to QgsSymbolV2::MapUnit.
+     * @param scale scale for distance tolerance
+     * @see toleranceMapUnitScale()
+     * @see setToleranceUnit()
+     */
+    void setToleranceMapUnitScale( const QgsMapUnitScale& scale ) { mToleranceMapUnitScale = scale; }
+
+    /** Returns the map unit scale object for the distance tolerance. This is only used if the
+     * toleranceUnit() is set to QgsSymbolV2::MapUnit.
+     * @see setToleranceMapUnitScale()
+     * @see toleranceUnit()
+     */
+    const QgsMapUnitScale& toleranceMapUnitScale() const { return mToleranceMapUnitScale; }
 
     //! creates a QgsPointDisplacementRenderer from an existing renderer.
     //! @note added in 2.5
@@ -128,6 +204,10 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
 
     /** Tolerance. Points that are closer together are considered as equal*/
     double mTolerance;
+    QgsSymbolV2::OutputUnit mToleranceUnit;
+    QgsMapUnitScale mToleranceMapUnitScale;
+
+    Placement mPlacement;
 
     /** Font that is passed to the renderer*/
     QFont mLabelFont;
@@ -153,8 +233,8 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     /** Keeps trask which features are selected */
     QSet<QgsFeatureId> mSelectedFeatures;
 
-    /** Creates a search rectangle with mTolerance*/
-    QgsRectangle searchRect( const QgsPoint& p ) const;
+    /** Creates a search rectangle with specified distance tolerance */
+    QgsRectangle searchRect( const QgsPoint& p, double distance ) const;
     /** This is a debugging function to check the entries in the displacement groups*/
     void printInfoDisplacementGroups();
 
@@ -166,11 +246,11 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
                       const QStringList& labels );
 
     //helper functions
-    void calculateSymbolAndLabelPositions( const QPointF& centerPoint, int nPosition, double radius, double symbolDiagonal, QList<QPointF>& symbolPositions, QList<QPointF>& labelShifts ) const;
+    void calculateSymbolAndLabelPositions( QgsSymbolV2RenderContext &symbolContext, QPointF centerPoint, int nPosition, double symbolDiagonal, QList<QPointF>& symbolPositions, QList<QPointF>& labelShifts , double &circleRadius ) const;
     void drawGroup( const DisplacementGroup& group, QgsRenderContext& context );
-    void drawCircle( double radiusPainterUnits, QgsSymbolV2RenderContext& context, const QPointF& centerPoint, int nSymbols );
+    void drawCircle( double radiusPainterUnits, QgsSymbolV2RenderContext& context, QPointF centerPoint, int nSymbols );
     void drawSymbols( const QgsFeature& f, QgsRenderContext& context, const QList<QgsMarkerSymbolV2*>& symbolList, const QList<QPointF>& symbolPositions, bool selected = false );
-    void drawLabels( const QPointF& centerPoint, QgsSymbolV2RenderContext& context, const QList<QPointF>& labelShifts, const QStringList& labelList );
+    void drawLabels( QPointF centerPoint, QgsSymbolV2RenderContext& context, const QList<QPointF>& labelShifts, const QStringList& labelList );
     /** Returns first symbol for feature or 0 if none*/
     QgsSymbolV2* firstSymbolForFeature( QgsFeatureRendererV2* r, QgsFeature& f, QgsRenderContext& context );
 };

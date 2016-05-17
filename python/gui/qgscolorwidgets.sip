@@ -94,6 +94,11 @@ class QgsColorWidget : QWidget
      */
     void colorChanged( const QColor &color );
 
+    /** Emitted when mouse hovers over widget.
+     * @note added in QGIS 2.14
+     */
+    void hovered();
+
   protected:
 
     /** Returns the range of valid values for the color widget's component
@@ -138,7 +143,65 @@ class QgsColorWidget : QWidget
 
     //Reimplemented to accept dropped colors
     void dropEvent( QDropEvent *e );
+
+    void mouseMoveEvent( QMouseEvent* e );
+    void mousePressEvent( QMouseEvent* e );
+    void mouseReleaseEvent( QMouseEvent* e );
 };
+
+
+/** \ingroup gui
+ * \class QgsColorWidgetAction
+ * An action containing a color widget, which can be embedded into a menu.
+ * @see QgsColorWidget
+ * @note introduced in QGIS 2.14
+ */
+
+class QgsColorWidgetAction: QWidgetAction
+{
+%TypeHeaderCode
+#include <qgscolorwidgets.h>
+%End
+
+  public:
+
+    /** Construct a new color widget action.
+     * @param colorWidget QgsColorWidget to show in action
+     * @param menu parent menu
+     * @param parent parent widget
+     */
+    QgsColorWidgetAction( QgsColorWidget* colorWidget, QMenu* menu = 0, QWidget *parent /TransferThis/ = 0 );
+
+    virtual ~QgsColorWidgetAction();
+
+    /** Returns the color widget contained in the widget action.
+     */
+    QgsColorWidget* colorWidget();
+
+    /** Sets whether the parent menu should be dismissed and closed when a color is selected
+     * from the action's color widget.
+     * @param dismiss set to true (default) to immediately close the menu when a color is selected
+     * from the widget. If set to false, the colorChanged signal will be emitted but the menu will
+     * stay open.
+     * @see dismissOnColorSelection()
+     */
+    void setDismissOnColorSelection( bool dismiss );
+
+    /** Returns whether the parent menu will be dismissed after a color is selected from the
+     * action's color widget.
+     * @see setDismissOnColorSelection
+     */
+    bool dismissOnColorSelection() const;
+
+  signals:
+
+    /** Emitted when a color has been selected from the widget
+     * @param color selected color
+     */
+    void colorChanged( const QColor &color );
+
+};
+
 
 
 /** \ingroup gui
@@ -163,6 +226,7 @@ class QgsColorWheel : QgsColorWidget
 
     virtual ~QgsColorWheel();
 
+    virtual QSize sizeHint() const;
     void paintEvent( QPaintEvent* event );
 
   public slots:
@@ -394,6 +458,7 @@ class QgsColorPreviewWidget : QgsColorWidget
 
     virtual ~QgsColorPreviewWidget();
 
+    virtual QSize sizeHint() const;
     void paintEvent( QPaintEvent* event );
 
     /** Returns the secondary color for the widget

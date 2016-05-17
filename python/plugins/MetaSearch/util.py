@@ -24,6 +24,10 @@
 #
 ###############################################################################
 
+#avoid PendingDeprecationWarning from PyQt4.uic
+import warnings
+warnings.filterwarnings("ignore", category=PendingDeprecationWarning)
+
 import ConfigParser
 from gettext import gettext, ngettext
 import logging
@@ -36,9 +40,9 @@ from jinja2 import Environment, FileSystemLoader
 from pygments import highlight
 from pygments.lexers import XmlLexer
 from pygments.formatters import HtmlFormatter
-from PyQt4.QtCore import QSettings
-from PyQt4.QtGui import QMessageBox
-from PyQt4.uic import loadUiType
+from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.uic import loadUiType
 
 from qgis.core import QGis
 
@@ -129,7 +133,7 @@ def get_help_url():
     """return QGIS MetaSearch help documentation link"""
 
     locale_name = QSettings().value('locale/userLocale')[0:2]
-    version = QGis.QGIS_VERSION[:3]
+    version = QGis.QGIS_VERSION.rsplit('.', 1)[0]
 
     path = '%s/%s/docs/user_manual/plugins/plugins_metasearch.html' % \
            (version, locale_name)

@@ -61,42 +61,47 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     enum Capability
     {
       /** Provider has no capabilities */
-      NoCapabilities =                     0,
+      NoCapabilities =                              0,
       /** Allows adding features */
-      AddFeatures =                        1,
+      AddFeatures =                                 1,
       /** Allows deletion of features */
-      DeleteFeatures =               1 <<  1,
+      DeleteFeatures =                              1 <<  1,
       /** Allows modification of attribute values */
-      ChangeAttributeValues =        1 <<  2,
+      ChangeAttributeValues =                       1 <<  2,
       /** Allows addition of new attributes (fields) */
-      AddAttributes =                1 <<  3,
+      AddAttributes =                               1 <<  3,
       /** Allows deletion of attributes (fields) */
-      DeleteAttributes =             1 <<  4,
+      DeleteAttributes =                            1 <<  4,
       /** DEPRECATED - do not use */
-      SaveAsShapefile =              1 <<  5,
+      SaveAsShapefile =                             1 <<  5,
       /** Allows creation of spatial index */
-      CreateSpatialIndex =           1 <<  6,
+      CreateSpatialIndex =                          1 <<  6,
       /** Fast access to features using their ID */
-      SelectAtId =                   1 <<  7,
+      SelectAtId =                                  1 <<  7,
       /** Allows modifications of geometries */
-      ChangeGeometries =             1 <<  8,
+      ChangeGeometries =                            1 <<  8,
       /** DEPRECATED - do not use */
-      SelectGeometryAtId =           1 <<  9,
+      SelectGeometryAtId =                          1 <<  9,
       /** DEPRECATED - do not use */
-      RandomSelectGeometryAtId =     1 << 10,
+      RandomSelectGeometryAtId =                    1 << 10,
       /** DEPRECATED - do not use */
-      SequentialSelectGeometryAtId = 1 << 11,
-      CreateAttributeIndex =         1 << 12,
+      SequentialSelectGeometryAtId =                1 << 11,
+      /** DEPRECATED - do not use */
+      CreateAttributeIndex =                        1 << 12,
       /** Allows user to select encoding */
-      SelectEncoding =               1 << 13,
+      SelectEncoding =                              1 << 13,
       /** Supports simplification of geometries on provider side according to a distance tolerance */
-      SimplifyGeometries =           1 << 14,
+      SimplifyGeometries =                          1 << 14,
       /** Supports topological simplification of geometries on provider side according to a distance tolerance */
       SimplifyGeometriesWithTopologicalValidation = 1 << 15,
       /** Supports transactions*/
-      TransactionSupport = 1 << 16,
+      TransactionSupport =                          1 << 16,
       /** Supports circular geometry types (circularstring, compoundcurve, curvepolygon)*/
-      CircularGeometries = 1 << 17
+      CircularGeometries =                          1 << 17,
+      /** Supports joint updates for attributes and geometry
+       * Providers supporting this should still define ChangeGeometries | ChangeAttributeValues
+       */
+      ChangeFeatures =                              1 << 18
     };
 
     /** Bitmask of all provider's editing capabilities */
@@ -107,7 +112,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Constructor of the vector provider
      * @param uri  uniform resource locator (URI) for a dataset
      */
-    QgsVectorDataProvider( QString uri = QString() );
+    QgsVectorDataProvider( const QString& uri = QString() );
 
     /**
      * Destructor
@@ -130,7 +135,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @note added in 2.4
      * @return new instance of QgsAbstractFeatureSource (caller is responsible for deleting it)
      */
-    virtual QgsAbstractFeatureSource* featureSource() const { Q_ASSERT( 0 && "All providers must support featureSource()" ); return 0; }
+    virtual QgsAbstractFeatureSource* featureSource() const { Q_ASSERT( 0 && "All providers must support featureSource()" ); return nullptr; }
 
     /**
      * Returns the permanent storage type for this layer as a friendly name.
@@ -240,6 +245,17 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map );
 
     /**
+     * Changes attribute values and geometries of existing features.
+     * @param attr_map a map containing changed attributes
+     * @param geometry_map   A QgsGeometryMap whose index contains the feature IDs
+     *                       that will have their geometries changed.
+     *                       The second map parameter being the new geometries themselves
+     * @return true in case of success and false in case of failure
+     */
+    virtual bool changeFeatures( const QgsChangedAttributesMap &attr_map,
+                                 const QgsGeometryMap &geometry_map );
+
+    /**
      * Returns the default value for field specified by @c fieldId
      */
     virtual QVariant defaultValue( int fieldId );
@@ -251,7 +267,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      *                       The second map parameter being the new geometries themselves
      * @return               True in case of success and false in case of failure
      */
-    virtual bool changeGeometryValues( QgsGeometryMap & geometry_map );
+    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map );
 
     /**
      * Creates a spatial index on the datasource (if supported by the provider type).
@@ -316,8 +332,15 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     struct NativeType
     {
-      NativeType( QString typeDesc, QString typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0 ) :
-          mTypeDesc( typeDesc ), mTypeName( typeName ), mType( type ), mMinLen( minLen ), mMaxLen( maxLen ), mMinPrec( minPrec ), mMaxPrec( maxPrec ) {};
+      NativeType( const QString& typeDesc, const QString& typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0 )
+          : mTypeDesc( typeDesc )
+          , mTypeName( typeName )
+          , mType( type )
+          , mMinLen( minLen )
+          , mMaxLen( maxLen )
+          , mMinPrec( minPrec )
+          , mMaxPrec( maxPrec )
+      {}
 
       QString mTypeDesc;
       QString mTypeName;
@@ -364,12 +387,12 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     virtual bool isSaveAndLoadStyleToDBSupported() { return false; }
 
-    static QVariant convertValue( QVariant::Type type, QString value );
+    static QVariant convertValue( QVariant::Type type, const QString& value );
 
     /**
      * Returns the transaction this data provider is included in, if any.
      */
-    virtual QgsTransaction* transaction() const { return 0; }
+    virtual QgsTransaction* transaction() const { return nullptr; }
 
     /**
      * Forces a reload of the underlying datasource if the provider implements this
@@ -378,7 +401,19 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * This forces QGIS to reopen a file or connection.
      * This can be required if the underlying file is replaced.
      */
-    virtual void forceReload() {}
+    virtual void forceReload()
+    {
+      emit dataChanged();
+    }
+
+    /**
+     * Get the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
+     */
+    virtual QSet<QString> layerDependencies() const;
+
+  signals:
+    /** Signals an error in this provider */
+    void raiseError( const QString& msg );
 
   protected:
     void clearMinMaxCache();
@@ -396,10 +431,14 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /** The names of the providers native types*/
     QList< NativeType > mNativeTypes;
 
-    void pushError( QString msg );
+    void pushError( const QString& msg );
 
     /** Old-style mapping of index to name for QgsPalLabeling fix */
     QgsAttrPalIndexNameHash mAttrPalIndexName;
+
+    /** Converts the geometry to the provider type if possible / necessary
+    @return the converted geometry or nullptr if no conversion was necessary or possible*/
+    QgsGeometry* convertToProviderType( const QgsGeometry* geom ) const;
 
   private:
     /** Old notation **/

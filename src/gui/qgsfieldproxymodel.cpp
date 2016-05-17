@@ -25,9 +25,10 @@ QgsFieldProxyModel::QgsFieldProxyModel( QObject *parent )
   setSourceModel( mModel );
 }
 
-QgsFieldProxyModel *QgsFieldProxyModel::setFilters( Filters filters )
+QgsFieldProxyModel *QgsFieldProxyModel::setFilters( const Filters& filters )
 {
   mFilters = filters;
+  invalidateFilter();
   return this;
 }
 
@@ -52,7 +53,9 @@ bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
       ( mFilters.testFlag( LongLong ) && type == QVariant::LongLong ) ||
       ( mFilters.testFlag( Int ) && type == QVariant::Int ) ||
       ( mFilters.testFlag( Double ) && type == QVariant::Double ) ||
-      ( mFilters.testFlag( Date ) && type == QVariant::Date ) )
+      ( mFilters.testFlag( Date ) && type == QVariant::Date ) ||
+      ( mFilters.testFlag( Date ) && type == QVariant::DateTime ) ||
+      ( mFilters.testFlag( Time ) && type == QVariant::Time ) )
     return true;
 
   return false;

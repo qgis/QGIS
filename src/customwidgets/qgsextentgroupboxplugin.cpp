@@ -1,5 +1,5 @@
 /***************************************************************************
-   qgsextentroupboxplugin.cpp
+   qgsextentgroupboxplugin.cpp
     --------------------------------------
    Date                 : 28.07.2015
    Copyright            : (C) 2015 Denis Rouzaud
@@ -37,12 +37,12 @@ QString QgsExtentGroupBoxPlugin::group() const
 
 QString QgsExtentGroupBoxPlugin::includeFile() const
 {
-  return "qgsextentroupbox.h";
+  return "qgsextentgroupbox.h";
 }
 
 QIcon QgsExtentGroupBoxPlugin::icon() const
 {
-  return QIcon();
+  return QIcon( ":/images/icons/qgis-icon-60x60.png" );
 }
 
 bool QgsExtentGroupBoxPlugin::isContainer() const

@@ -30,8 +30,9 @@ import inspect
 import os
 import sys
 
-from PyQt4.QtCore import Qt, QCoreApplication, QDir
-from PyQt4.QtGui import QMenu, QAction, QIcon
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QDir
+from qgis.PyQt.QtWidgets import QMenu, QAction
+from qgis.PyQt.QtGui import QIcon
 
 from processing.core.Processing import Processing
 from processing.gui.ProcessingToolbox import ProcessingToolbox
@@ -41,6 +42,7 @@ from processing.gui.ResultsDialog import ResultsDialog
 from processing.gui.CommanderWindow import CommanderWindow
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempFolder
+from processing.gui.menus import removeMenus, initializeMenus, createMenus
 
 
 cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
@@ -60,7 +62,6 @@ class ProcessingPlugin:
         self.toolbox = ProcessingToolbox()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
         self.toolbox.hide()
-        Processing.addAlgListListener(self.toolbox)
 
         self.menu = QMenu(self.iface.mainWindow().menuBar())
         self.menu.setObjectName('processing')
@@ -71,6 +72,7 @@ class ProcessingPlugin:
         self.toolboxAction.setIcon(
             QIcon(os.path.join(cmd_folder, 'images', 'alg.png')))
         self.toolboxAction.setText(self.tr('&Toolbox'))
+        self.iface.registerMainWindowAction(self.toolboxAction, 'Ctrl+Alt+T')
         self.menu.addAction(self.toolboxAction)
 
         self.modelerAction = QAction(
@@ -78,6 +80,7 @@ class ProcessingPlugin:
             self.tr('Graphical &Modeler...'), self.iface.mainWindow())
         self.modelerAction.setObjectName('modelerAction')
         self.modelerAction.triggered.connect(self.openModeler)
+        self.iface.registerMainWindowAction(self.modelerAction, 'Ctrl+Alt+M')
         self.menu.addAction(self.modelerAction)
 
         self.historyAction = QAction(
@@ -85,6 +88,7 @@ class ProcessingPlugin:
             self.tr('&History...'), self.iface.mainWindow())
         self.historyAction.setObjectName('historyAction')
         self.historyAction.triggered.connect(self.openHistory)
+        self.iface.registerMainWindowAction(self.historyAction, 'Ctrl+Alt+H')
         self.menu.addAction(self.historyAction)
 
         self.configAction = QAction(
@@ -92,6 +96,7 @@ class ProcessingPlugin:
             self.tr('&Options...'), self.iface.mainWindow())
         self.configAction.setObjectName('configAction')
         self.configAction.triggered.connect(self.openConfig)
+        self.iface.registerMainWindowAction(self.configAction, 'Ctrl+Alt+C')
         self.menu.addAction(self.configAction)
 
         self.resultsAction = QAction(
@@ -99,6 +104,7 @@ class ProcessingPlugin:
             self.tr('&Results Viewer...'), self.iface.mainWindow())
         self.resultsAction.setObjectName('resultsAction')
         self.resultsAction.triggered.connect(self.openResults)
+        self.iface.registerMainWindowAction(self.resultsAction, 'Ctrl+Alt+R')
         self.menu.addAction(self.resultsAction)
 
         menuBar = self.iface.mainWindow().menuBar()
@@ -114,8 +120,12 @@ class ProcessingPlugin:
         self.iface.registerMainWindowAction(self.commanderAction,
                                             self.tr('Ctrl+Alt+M'))
 
+        initializeMenus()
+        createMenus()
+
     def unload(self):
         self.toolbox.setVisible(False)
+        self.iface.removeDockWidget(self.toolbox)
         self.menu.deleteLater()
 
         # delete temporary output files
@@ -123,14 +133,20 @@ class ProcessingPlugin:
         if QDir(folder).exists():
             shutil.rmtree(folder, True)
 
+        self.iface.unregisterMainWindowAction(self.toolboxAction)
+        self.iface.unregisterMainWindowAction(self.modelerAction)
+        self.iface.unregisterMainWindowAction(self.historyAction)
+        self.iface.unregisterMainWindowAction(self.configAction)
+        self.iface.unregisterMainWindowAction(self.resultsAction)
         self.iface.unregisterMainWindowAction(self.commanderAction)
+
+        removeMenus()
 
     def openCommander(self):
         if self.commander is None:
             self.commander = CommanderWindow(
                 self.iface.mainWindow(),
                 self.iface.mapCanvas())
-            Processing.addAlgListListener(self.commander)
         self.commander.prepareGui()
         self.commander.show()
 
@@ -144,7 +160,6 @@ class ProcessingPlugin:
         dlg = ModelerDialog()
         dlg.exec_()
         if dlg.update:
-            Processing.updateAlgsList()
             self.toolbox.updateProvider('model')
 
     def openResults(self):

@@ -1,5 +1,6 @@
 {
-  "function": "intersects",
+  "name": "intersects",
+  "type": "function",
   "description": "Tests whether a geometry intersects another. Returns true if the geometries spatially intersect (share any portion of space) and false if they do not.",
   "arguments": [ {"arg":"geometry a","description":"a geometry"},
                  {"arg":"geometry b","description":"a geometry"}],

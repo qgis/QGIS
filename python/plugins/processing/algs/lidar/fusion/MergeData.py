@@ -28,8 +28,8 @@ __revision__ = '$Format:%H$'
 import os
 from processing.core.parameters import ParameterFile
 from processing.core.outputs import OutputFile
-from FusionAlgorithm import FusionAlgorithm
-from FusionUtils import FusionUtils
+from .FusionAlgorithm import FusionAlgorithm
+from .FusionUtils import FusionUtils
 
 
 class MergeData(FusionAlgorithm):

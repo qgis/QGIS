@@ -63,7 +63,7 @@ class CORE_EXPORT QgsDataDefined
      * @param string field reference or an expression, can be empty
      * @note added in QGIS 2.9
      */
-    explicit QgsDataDefined( const QString& string );
+    QgsDataDefined( const QString& string );
 
     /**
      * Copy constructor. Note that copies of data defined objects with expressions
@@ -140,12 +140,13 @@ class CORE_EXPORT QgsDataDefined
     //! @note not available in python bindings
     QMap<QString, QVariant> expressionParams() const;
     //! @note not available in python bindings
-    void setExpressionParams( QMap<QString, QVariant> params );
-    void insertExpressionParam( QString key, QVariant param );
+    void setExpressionParams( const QMap<QString, QVariant>& params );
+    void insertExpressionParam( const QString& key, const QVariant& param );
 
     /** Prepares the expression using a vector layer
      * @param layer vector layer
      * @returns true if expression was successfully prepared
+     * @deprecated use QgsExpressionContext variant instead
      */
     Q_DECL_DEPRECATED bool prepareExpression( QgsVectorLayer* layer );
 
@@ -153,6 +154,7 @@ class CORE_EXPORT QgsDataDefined
      * @param fields
      * @returns true if expression was successfully prepared
      * @note added in QGIS 2.9
+     * @deprecated use QgsExpressionContext variant instead
      */
     Q_DECL_DEPRECATED bool prepareExpression( const QgsFields &fields );
 
@@ -172,12 +174,14 @@ class CORE_EXPORT QgsDataDefined
 
     /** Returns the columns referenced by the QgsDataDefined
      * @param layer vector layer, used for preparing the expression if required
+     * @deprecated use QgsExpressionContext variant instead
      */
     Q_DECL_DEPRECATED QStringList referencedColumns( QgsVectorLayer* layer );
 
     /** Returns the columns referenced by the QgsDataDefined
      * @param fields vector layer, used for preparing the expression if required
      * @note added in QGIS 2.9
+     * @deprecated use QgsExpressionContext variant instead
      */
     Q_DECL_DEPRECATED QStringList referencedColumns( const QgsFields& fields );
 

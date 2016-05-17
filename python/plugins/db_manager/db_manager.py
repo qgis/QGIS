@@ -24,9 +24,9 @@ The content of this file is based on
 
 import functools
 
-from PyQt4.QtCore import QObject, Qt, QSettings, QByteArray, SIGNAL, QSize
-from PyQt4.QtGui import QMainWindow, QApplication, QMenu, QIcon, QTabWidget, QGridLayout, QSpacerItem, QSizePolicy, \
-    QDockWidget, QStatusBar, QMenuBar, QToolBar, QKeySequence, QTabBar
+from qgis.PyQt.QtCore import Qt, QSettings, QByteArray, QSize
+from qgis.PyQt.QtWidgets import QMainWindow, QApplication, QMenu, QTabWidget, QGridLayout, QSpacerItem, QSizePolicy, QDockWidget, QStatusBar, QMenuBar, QToolBar, QTabBar
+from qgis.PyQt.QtGui import QIcon, QKeySequence
 
 from qgis.gui import QgsMessageBar
 from .info_viewer import InfoViewer
@@ -52,8 +52,8 @@ class DBManager(QMainWindow):
         self.restoreGeometry(settings.value("/DB_Manager/mainWindow/geometry", QByteArray(), type=QByteArray))
         self.restoreState(settings.value("/DB_Manager/mainWindow/windowState", QByteArray(), type=QByteArray))
 
-        self.connect(self.tabs, SIGNAL("currentChanged(int)"), self.tabChanged)
-        self.connect(self.tree, SIGNAL("selectedItemChanged"), self.itemChanged)
+        self.tabs.currentChanged.connect(self.tabChanged)
+        self.tree.selectedItemChanged.connect(self.itemChanged)
         self.itemChanged(None)
 
     def closeEvent(self, e):
@@ -189,7 +189,7 @@ class DBManager(QMainWindow):
             self.tabs.setCurrentIndex(0)
             return
 
-        from dlg_sql_window import DlgSqlWindow
+        from .dlg_sql_window import DlgSqlWindow
 
         query = DlgSqlWindow(self.iface, db, self)
         dbname = db.connection().connectionName()
@@ -214,7 +214,8 @@ class DBManager(QMainWindow):
             self._registeredDbActions = {}
 
         if callback is not None:
-            invoke_callback = lambda x: self.invokeCallback(callback)
+            def invoke_callback(x):
+                return self.invokeCallback(callback)
 
         if menuName is None or menuName == "":
             self.addAction(action)
@@ -224,7 +225,7 @@ class DBManager(QMainWindow):
             self._registeredDbActions[menuName].append(action)
 
             if callback is not None:
-                QObject.connect(action, SIGNAL("triggered(bool)"), invoke_callback)
+                action.triggered.connect(invoke_callback)
             return True
 
         # search for the menu
@@ -270,7 +271,7 @@ class DBManager(QMainWindow):
         self._registeredDbActions[menuName].append(action)
 
         if callback is not None:
-            QObject.connect(action, SIGNAL("triggered(bool)"), invoke_callback)
+            action.triggered.connect(invoke_callback)
 
         return True
 

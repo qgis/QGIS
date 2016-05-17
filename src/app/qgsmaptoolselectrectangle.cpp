@@ -36,13 +36,13 @@ QgsMapToolSelectFeatures::QgsMapToolSelectFeatures( QgsMapCanvas* canvas )
   mToolName = tr( "Select features" );
   QPixmap mySelectQPixmap = QPixmap(( const char ** ) select_cursor );
   mCursor = QCursor( mySelectQPixmap, 1, 1 );
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   mFillColor = QColor( 254, 178, 76, 63 );
   mBorderColour = QColor( 254, 58, 29, 100 );
 }
 
 
-void QgsMapToolSelectFeatures::canvasPressEvent( QMouseEvent *e )
+void QgsMapToolSelectFeatures::canvasPressEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
   mSelectRect.setRect( 0, 0, 0, 0 );
@@ -53,7 +53,7 @@ void QgsMapToolSelectFeatures::canvasPressEvent( QMouseEvent *e )
 }
 
 
-void QgsMapToolSelectFeatures::canvasMoveEvent( QMouseEvent *e )
+void QgsMapToolSelectFeatures::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( e->buttons() != Qt::LeftButton )
     return;
@@ -68,13 +68,13 @@ void QgsMapToolSelectFeatures::canvasMoveEvent( QMouseEvent *e )
 }
 
 
-void QgsMapToolSelectFeatures::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapToolSelectFeatures::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
-  if ( vlayer == NULL )
+  if ( !vlayer )
   {
     delete mRubberBand;
-    mRubberBand = 0;
+    mRubberBand = nullptr;
     mDragging = false;
     return;
   }
@@ -106,7 +106,7 @@ void QgsMapToolSelectFeatures::canvasReleaseEvent( QMouseEvent *e )
     QgsGeometry* selectGeom = mRubberBand->asGeometry();
     if ( !mDragging )
     {
-      bool doDifference = e->modifiers() & Qt::ControlModifier ? true : false;
+      bool doDifference = e->modifiers() & Qt::ControlModifier;
       QgsMapToolSelectUtils::setSelectFeatures( mCanvas, selectGeom, false, doDifference, true );
     }
     else
@@ -115,7 +115,7 @@ void QgsMapToolSelectFeatures::canvasReleaseEvent( QMouseEvent *e )
     delete selectGeom;
 
     delete mRubberBand;
-    mRubberBand = 0;
+    mRubberBand = nullptr;
   }
 
   mDragging = false;

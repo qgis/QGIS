@@ -1,9 +1,34 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    user.py
+    ---------------------
+    Date                 : January 2015
+    Copyright            : (C) 2015 by Nathan Woodrow
+    Email                : woodrow dot nathan at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Nathan Woodrow'
+__date__ = 'January 2015'
+__copyright__ = '(C) 2015, Nathan Woodrow'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 import os
 import sys
 import glob
 import traceback
 
-from PyQt4.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsApplication, QgsMessageLog
 
 
@@ -68,5 +93,5 @@ try:
 except ImportError:
     # We get a import error and crash for some reason even if we make the expressions package
     # TODO Fix the crash on first load with no expressions folder
-    # But for now it's not the end of the world if it doesn't laod the first time
+    # But for now it's not the end of the world if it doesn't load the first time
     pass

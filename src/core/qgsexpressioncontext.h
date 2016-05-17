@@ -1,4 +1,4 @@
-﻿/***************************************************************************
+/***************************************************************************
      qgsexpressioncontext.h
      ----------------------
     Date                 : April 2015
@@ -28,6 +28,7 @@ class QgsComposition;
 class QgsComposerItem;
 class QgsAtlasComposition;
 class QgsMapSettings;
+class QgsSymbolV2;
 
 /** \ingroup core
  * \class QgsScopedExpressionFunction
@@ -40,12 +41,12 @@ class QgsMapSettings;
 class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
 {
   public:
-    QgsScopedExpressionFunction( QString fnname,
+    QgsScopedExpressionFunction( const QString& fnname,
                                  int params,
-                                 QString group,
-                                 QString helpText = QString(),
+                                 const QString& group,
+                                 const QString& helpText = QString(),
                                  bool usesGeometry = false,
-                                 QStringList referencedColumns = QStringList(),
+                                 const QStringList& referencedColumns = QStringList(),
                                  bool lazyEval = false,
                                  bool handlesNull = false,
                                  bool isContextual = true )
@@ -69,6 +70,9 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
  * Examples include a project's scope, which could contain information about the current project such as
  * the project file's location. QgsExpressionContextScope can encapsulate both variables (static values)
  * and functions(which are calculated only when an expression is evaluated).
+ *
+ * See QgsExpressionContextUtils for helper methods for working with QgsExpressionContextScope objects.
+ *
  * \note added in QGIS 2.12
  */
 
@@ -85,7 +89,11 @@ class CORE_EXPORT QgsExpressionContextScope
        * @param value intial variable value
        * @param readOnly true if variable should not be editable by users
        */
-      StaticVariable( const QString& name = QString(), const QVariant& value = QVariant(), bool readOnly = false ) : name( name ), value( value ), readOnly( readOnly ) {}
+      StaticVariable( const QString& name = QString(), const QVariant& value = QVariant(), bool readOnly = false )
+          : name( name )
+          , value( value )
+          , readOnly( readOnly )
+      {}
 
       /** Variable name */
       QString name;
@@ -155,8 +163,16 @@ class CORE_EXPORT QgsExpressionContextScope
 
     /** Returns a list of variable names contained within the scope.
      * @see functionNames()
+     * @see filteredVariableNames()
      */
     QStringList variableNames() const;
+
+    /** Returns a fitlered and sorted list of variable names contained within the scope.
+     * Hidden variable names will be excluded, and the list will be sorted so that
+     * read only variables are listed first.
+     * @see variableNames()
+     */
+    QStringList filteredVariableNames() const;
 
     /** Tests whether the specified variable is read only and should not be editable
      * by users.
@@ -216,6 +232,7 @@ class CORE_EXPORT QgsExpressionContextScope
     QHash<QString, StaticVariable> mVariables;
     QHash<QString, QgsScopedExpressionFunction* > mFunctions;
 
+    bool variableNameSort( const QString &a, const QString &b );
 };
 
 /** \ingroup core
@@ -225,13 +242,16 @@ class CORE_EXPORT QgsExpressionContextScope
  * their evaluated result. A QgsExpressionContext consists of a stack of QgsExpressionContextScope objects,
  * where scopes added later to the stack will override conflicting variables and functions from scopes
  * lower in the stack.
+ *
+ * See QgsExpressionContextUtils for helper methods for working with QgsExpressionContext objects.
+ *
  * \note added in QGIS 2.12
  */
 class CORE_EXPORT QgsExpressionContext
 {
   public:
 
-    QgsExpressionContext( ) {}
+    QgsExpressionContext() {}
 
     /** Copy constructor
      */
@@ -287,6 +307,7 @@ class CORE_EXPORT QgsExpressionContext
      * scope which contains a matching variable.
      * @param name variable name
      * @returns matching scope containing variable, or null if none found
+     * @note not available in python bindings
      */
     const QgsExpressionContextScope* activeScopeForVariable( const QString& name ) const;
 
@@ -369,6 +390,11 @@ class CORE_EXPORT QgsExpressionContext
      */
     void appendScope( QgsExpressionContextScope* scope );
 
+    /**
+     * Removes the last scope from the expression context and return it.
+     */
+    QgsExpressionContextScope* popScope();
+
     /** Appends a scope to the end of the context. This scope will override
      * any matching variables or functions provided by existing scopes within the
      * context. Ownership of the scope is transferred to the stack.
@@ -401,8 +427,31 @@ class CORE_EXPORT QgsExpressionContext
      */
     QgsFields fields() const;
 
+    /** Sets the original value variable value for the context.
+     * @param value value for original value variable. This usually represents the an original widget
+     * value before any data defined overrides have been applied.
+     * @note added in QGIS 2.12
+     */
+    void setOriginalValueVariable( const QVariant& value );
+
+    //! Inbuilt variable name for fields storage
     static const QString EXPR_FIELDS;
+    //! Inbuilt variable name for feature storage
     static const QString EXPR_FEATURE;
+    //! Inbuilt variable name for value original value variable
+    static const QString EXPR_ORIGINAL_VALUE;
+    //! Inbuilt variable name for symbol color variable
+    static const QString EXPR_SYMBOL_COLOR;
+    //! Inbuilt variable name for symbol angle variable
+    static const QString EXPR_SYMBOL_ANGLE;
+    //! Inbuilt variable name for geometry part count variable
+    static const QString EXPR_GEOMETRY_PART_COUNT;
+    //! Inbuilt variable name for geometry part number variable
+    static const QString EXPR_GEOMETRY_PART_NUM;
+    //! Inbuilt variable name for point count variable
+    static const QString EXPR_GEOMETRY_POINT_COUNT;
+    //! Inbuilt variable name for point number variable
+    static const QString EXPR_GEOMETRY_POINT_NUM;
 
   private:
 
@@ -490,12 +539,20 @@ class CORE_EXPORT QgsExpressionContextUtils
      * @see setLayerVariable()
      * @see layerScope()
      */
-    static void setLayerVariables( QgsMapLayer* layer, const QgsStringMap variables );
+    static void setLayerVariables( QgsMapLayer* layer, const QgsStringMap& variables );
 
     /** Creates a new scope which contains variables and functions relating to a QgsMapSettings object.
      * For instance, map scale and rotation.
      */
     static QgsExpressionContextScope* mapSettingsScope( const QgsMapSettings &mapSettings );
+
+    /**
+     * Updates a symbol scope related to a QgsSymbolV2 to an expression context.
+     * @param symbol symbol to extract properties from
+     * @param symbolScope pointer to an existing scope to update
+     * @note added in QGIS 2.14
+     */
+    static QgsExpressionContextScope* updateSymbolScope( const QgsSymbolV2* symbol, QgsExpressionContextScope* symbolScope = nullptr );
 
     /** Creates a new scope which contains variables and functions relating to a QgsComposition.
      * For instance, number of pages and page sizes.
@@ -520,7 +577,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * @see setCompositionVariable()
      * @see compositionScope()
      */
-    static void setCompositionVariables( QgsComposition* composition, const QgsStringMap variables );
+    static void setCompositionVariables( QgsComposition* composition, const QgsStringMap& variables );
 
     /** Creates a new scope which contains variables and functions relating to a QgsAtlasComposition.
      * For instance, current page name and number.
@@ -551,7 +608,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * @see setComposerItemVariable()
      * @see composerItemScope()
      */
-    static void setComposerItemVariables( QgsComposerItem* composerItem, const QgsStringMap variables );
+    static void setComposerItemVariables( QgsComposerItem* composerItem, const QgsStringMap& variables );
 
     /** Helper function for creating an expression context which contains just a feature and fields
      * collection. Generally this method should not be used as the created context does not include

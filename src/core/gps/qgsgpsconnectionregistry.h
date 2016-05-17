@@ -44,6 +44,11 @@ class CORE_EXPORT QgsGPSConnectionRegistry
     static QgsGPSConnectionRegistry* mInstance;
 
     QSet<QgsGPSConnection*> mConnections;
+
+  private:
+
+    QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry& rh );
+    QgsGPSConnectionRegistry& operator=( const QgsGPSConnectionRegistry& rh );
 };
 
 #endif // QGSGPSCONNECTIONREGISTRY_H

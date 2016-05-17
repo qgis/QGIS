@@ -23,13 +23,13 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import QObject, Qt, SIGNAL, QCoreApplication, QDir
-from PyQt4.QtGui import QWidget, QMessageBox
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QDir
+from qgis.PyQt.QtWidgets import QWidget, QMessageBox
 
-from ui_widgetTranslate import Ui_GdalToolsWidget as Ui_Widget
-from widgetBatchBase import GdalToolsBaseBatchWidget as BaseBatchWidget
-from dialogSRS import GdalToolsSRSDialog as SRSDialog
-import GdalTools_utils as Utils
+from .ui_widgetTranslate import Ui_GdalToolsWidget as Ui_Widget
+from .widgetBatchBase import GdalToolsBaseBatchWidget as BaseBatchWidget
+from .dialogSRS import GdalToolsSRSDialog as SRSDialog
+from . import GdalTools_utils as Utils
 
 import re
 
@@ -63,25 +63,25 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         self.outputFormat = Utils.fillRasterOutputFormat()
 
         self.setParamsStatus([
-            (self.inSelector, SIGNAL("filenameChanged()")),
-            (self.outSelector, SIGNAL("filenameChanged()")),
-            (self.targetSRSEdit, SIGNAL("textChanged(const QString &)"), self.targetSRSCheck),
+            (self.inSelector, "filenameChanged"),
+            (self.outSelector, "filenameChanged"),
+            (self.targetSRSEdit, "textChanged", self.targetSRSCheck),
             (self.selectTargetSRSButton, None, self.targetSRSCheck),
-            (self.creationOptionsWidget, SIGNAL("optionsChanged()")),
-            (self.outsizeSpin, SIGNAL("valueChanged(const QString &)"), self.outsizeCheck),
-            (self.nodataSpin, SIGNAL("valueChanged(int)"), self.nodataCheck),
-            (self.expandCombo, SIGNAL("currentIndexChanged(int)"), self.expandCheck, 1600),
-            (self.sdsCheck, SIGNAL("stateChanged(int)")),
-            (self.srcwinEdit, SIGNAL("textChanged(const QString &)"), self.srcwinCheck),
-            (self.prjwinEdit, SIGNAL("textChanged(const QString &)"), self.prjwinCheck)
+            (self.creationOptionsWidget, "optionsChanged"),
+            (self.outsizeSpin, "valueChanged", self.outsizeCheck),
+            (self.nodataSpin, "valueChanged", self.nodataCheck),
+            (self.expandCombo, "currentIndexChanged", self.expandCheck, 1600),
+            (self.sdsCheck, "stateChanged"),
+            (self.srcwinEdit, "textChanged", self.srcwinCheck),
+            (self.prjwinEdit, "textChanged", self.prjwinCheck)
         ])
 
-        #self.connect(self.canvas, SIGNAL("layersChanged()"), self.fillInputLayerCombo)
-        self.connect(self.inSelector, SIGNAL("layerChanged()"), self.fillTargetSRSEditDefault)
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
-        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
-        self.connect(self.selectTargetSRSButton, SIGNAL("clicked()"), self.fillTargetSRSEdit)
-        self.connect(self.batchCheck, SIGNAL("stateChanged( int )"), self.switchToolMode)
+        #self.canvas.layersChanged.connect(self.fillInputLayerCombo)
+        self.inSelector.layerChanged.connect(self.fillTargetSRSEditDefault)
+        self.inSelector.selectClicked.connect(self.fillInputFile)
+        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
+        self.selectTargetSRSButton.clicked.connect(self.fillTargetSRSEdit)
+        self.batchCheck.stateChanged.connect(self.switchToolMode)
 
         # add raster filters to combo
         self.formatCombo.addItems(Utils.FileFilter.allRastersFilter().split(";;"))
@@ -101,20 +101,20 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
             self.label_3.setText(QCoreApplication.translate("GdalTools", "&Input directory"))
             self.label_2.setText(QCoreApplication.translate("GdalTools", "&Output directory"))
 
-            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
-            QObject.disconnect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
+            self.inSelector.selectClicked.disconnect(self.fillInputFile)
+            self.outSelector.selectClicked.disconnect(self.fillOutputFileEdit)
 
-            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self. fillInputDir)
-            QObject.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputDir)
+            self.inSelector.selectClicked.connect(self. fillInputDir)
+            self.outSelector.selectClicked.connect(self.fillOutputDir)
         else:
             self.label_3.setText(self.inFileLabel)
             self.label_2.setText(self.outFileLabel)
 
-            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
-            QObject.disconnect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputDir)
+            self.inSelector.selectClicked.disconnect(self.fillInputDir)
+            self.outSelector.selectClicked.disconnect(self.fillOutputDir)
 
-            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
-            QObject.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
+            self.inSelector.selectClicked.connect(self.fillInputFile)
+            self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
 
     def onLayersChanged(self):
         self.inSelector.setLayers(Utils.LayerRegistry.instance().getRasterLayers())
@@ -201,7 +201,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         if self.sdsCheck.isChecked():
             arguments.append("-sds")
         if self.srcwinCheck.isChecked() and self.srcwinEdit.text():
-            coordList = self.srcwinEdit.text().split() # split the string on whitespace(s)
+            coordList = self.srcwinEdit.text().split()  # split the string on whitespace(s)
             if len(coordList) == 4 and coordList[3]:
                 try:
                     for x in coordList:
@@ -214,7 +214,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
                     for x in coordList:
                         arguments.append(x)
         if self.prjwinCheck.isChecked() and self.prjwinEdit.text():
-            coordList = self.prjwinEdit.text().split() # split the string on whitespace(s)
+            coordList = self.prjwinEdit.text().split()  # split the string on whitespace(s)
             if len(coordList) == 4 and coordList[3]:
                 try:
                     for x in coordList:

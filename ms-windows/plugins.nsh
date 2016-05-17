@@ -21,7 +21,6 @@ WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS2\Plugins" "offlineeditingplugi
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS2\Plugins" "oracleplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS2\Plugins" "rasterterrainplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS2\Plugins" "roadgraphplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS2\Plugins" "spitplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS2\Plugins" "spatialqueryplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS2\Plugins" "topolplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS2\Plugins" "zonalstatisticsplugin" "true"

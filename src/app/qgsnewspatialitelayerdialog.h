@@ -34,7 +34,7 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     Q_OBJECT
 
   public:
-    QgsNewSpatialiteLayerDialog( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsNewSpatialiteLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsNewSpatialiteLayerDialog();
 
   protected slots:
@@ -42,10 +42,10 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     void on_mRemoveAttributeButton_clicked();
     void on_mTypeBox_currentIndexChanged( int index );
     void on_pbnFindSRID_clicked();
-    void on_leLayerName_textChanged( QString text );
     void on_toolButtonNewDatabase_clicked();
-    void nameChanged( QString );
+    void nameChanged( const QString& );
     void selectionChanged();
+    void checkOk();
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     void on_buttonBox_accepted();

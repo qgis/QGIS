@@ -21,10 +21,12 @@
 /** \ingroup MapComposer
  * A dialog to add new layers to the legend.
  * */
-class QgsComposerLegendLayersDialog: private Ui::QgsComposerLegendLayersDialogBase, public QDialog
+class QgsComposerLegendLayersDialog: public QDialog, private Ui::QgsComposerLegendLayersDialogBase
 {
+    Q_OBJECT
+
   public:
-    QgsComposerLegendLayersDialog( QList<QgsMapLayer*> layers, QWidget* parent = 0 );
+    QgsComposerLegendLayersDialog( QList<QgsMapLayer*> layers, QWidget* parent = nullptr );
     ~QgsComposerLegendLayersDialog();
     QgsMapLayer* selectedLayer();
 

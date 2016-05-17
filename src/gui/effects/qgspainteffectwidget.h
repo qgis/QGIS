@@ -39,7 +39,7 @@ class GUI_EXPORT QgsPaintEffectWidget : public QWidget
     Q_OBJECT
 
   public:
-    QgsPaintEffectWidget( QWidget* parent = NULL ) : QWidget( parent ) {}
+    QgsPaintEffectWidget( QWidget* parent = nullptr ) : QWidget( parent ) {}
     virtual ~QgsPaintEffectWidget() {}
 
     /**
@@ -66,7 +66,7 @@ class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::
     Q_OBJECT
 
   public:
-    QgsDrawSourceWidget( QWidget* parent = NULL );
+    QgsDrawSourceWidget( QWidget* parent = nullptr );
 
     static QgsPaintEffectWidget* create() { return new QgsDrawSourceWidget(); }
 
@@ -96,7 +96,7 @@ class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::Widget
     Q_OBJECT
 
   public:
-    QgsBlurWidget( QWidget* parent = NULL );
+    QgsBlurWidget( QWidget* parent = nullptr );
 
     static QgsPaintEffectWidget* create() { return new QgsBlurWidget(); }
 
@@ -128,7 +128,7 @@ class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui
     Q_OBJECT
 
   public:
-    QgsShadowEffectWidget( QWidget* parent = NULL );
+    QgsShadowEffectWidget( QWidget* parent = nullptr );
 
     static QgsPaintEffectWidget* create() { return new QgsShadowEffectWidget(); }
 
@@ -161,7 +161,7 @@ class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::Widget
     Q_OBJECT
 
   public:
-    QgsGlowWidget( QWidget* parent = NULL );
+    QgsGlowWidget( QWidget* parent = nullptr );
 
     static QgsPaintEffectWidget* create() { return new QgsGlowWidget(); }
 
@@ -194,7 +194,7 @@ class GUI_EXPORT QgsTransformWidget : public QgsPaintEffectWidget, private Ui::W
     Q_OBJECT
 
   public:
-    QgsTransformWidget( QWidget* parent = NULL );
+    QgsTransformWidget( QWidget* parent = nullptr );
 
     static QgsPaintEffectWidget* create() { return new QgsTransformWidget(); }
 
@@ -230,7 +230,7 @@ class GUI_EXPORT QgsColorEffectWidget : public QgsPaintEffectWidget, private Ui:
     Q_OBJECT
 
   public:
-    QgsColorEffectWidget( QWidget* parent = NULL );
+    QgsColorEffectWidget( QWidget* parent = nullptr );
 
     static QgsPaintEffectWidget* create() { return new QgsColorEffectWidget(); }
 

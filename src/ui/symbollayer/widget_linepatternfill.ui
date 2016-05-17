@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>345</width>
+    <width>247</width>
     <height>176</height>
    </rect>
   </property>
@@ -23,22 +23,13 @@
    <property name="horizontalSpacing">
     <number>28</number>
    </property>
-   <property name="leftMargin">
-    <number>1</number>
-   </property>
-   <property name="topMargin">
-    <number>1</number>
-   </property>
-   <property name="rightMargin">
-    <number>1</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>1</number>
    </property>
    <item row="1" column="0">
-    <widget class="QLabel" name="mAngleLabel">
+    <widget class="QLabel" name="mRotationLabel">
      <property name="text">
-      <string>Angle</string>
+      <string>Rotation</string>
      </property>
     </widget>
    </item>

@@ -37,6 +37,8 @@ INCLUDE_DIRECTORIES(
      ../../core ../../core/geometry ../../core/raster
      ../../gui
      ..
+)
+INCLUDE_DIRECTORIES( SYSTEM
      ${GDAL_INCLUDE_DIR}
 )
 

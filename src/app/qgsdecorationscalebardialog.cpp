@@ -11,28 +11,33 @@
  ***************************************************************************/
 
 #include "qgsdecorationscalebardialog.h"
-
 #include "qgsdecorationscalebar.h"
-
 #include "qgslogger.h"
 #include "qgscontexthelp.h"
 
 #include <QColorDialog>
 #include <QSettings>
+#include <QDialogButtonBox>
+#include <QPushButton>
 
 QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar& deco, int units, QWidget* parent )
-    : QDialog( parent ), mDeco( deco )
+    : QDialog( parent )
+    , mDeco( deco )
 {
   setupUi( this );
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/DecorationScaleBar/geometry" ).toByteArray() );
 
+  QPushButton* applyButton = buttonBox->button( QDialogButtonBox::Apply );
+  connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
+
   // set the map units in the spin box
+  spnSize->setShowClearButton( false );
   switch ( units )
   {
     case 0:
-      spnSize->setSuffix( tr( " metres/km" ) );
+      spnSize->setSuffix( tr( " meters/km" ) );
       break;
     case 1:
       spnSize->setSuffix( tr( " feet/miles" ) );
@@ -47,12 +52,20 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar&
 
   chkSnapping->setChecked( mDeco.mSnapping );
 
-  cboPlacement->clear();
-  cboPlacement->addItems( mDeco.mPlacementLabels );
-  cboPlacement->setCurrentIndex( mDeco.mPlacementIndex );
+  // placement
+  cboPlacement->addItem( tr( "Top left" ), QgsDecorationItem::TopLeft );
+  cboPlacement->addItem( tr( "Top right" ), QgsDecorationItem::TopRight );
+  cboPlacement->addItem( tr( "Bottom left" ), QgsDecorationItem::BottomLeft );
+  cboPlacement->addItem( tr( "Bottom right" ), QgsDecorationItem::BottomRight );
+  cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
+  spnHorizontal->setValue( mDeco.mMarginHorizontal );
+  spnVertical->setValue( mDeco.mMarginVertical );
+  wgtUnitSelection->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::Percentage << QgsSymbolV2::Pixel );
+  wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
-  chkEnable->setChecked( mDeco.enabled() );
+  grpEnable->setChecked( mDeco.enabled() );
 
+  // style
   cboStyle->clear();
   cboStyle->addItems( mDeco.mStyleLabels );
 
@@ -74,15 +87,23 @@ void QgsDecorationScaleBarDialog::on_buttonBox_helpRequested()
   QgsContextHelp::run( metaObject()->className() );
 }
 
-void QgsDecorationScaleBarDialog::on_buttonBox_accepted()
+void QgsDecorationScaleBarDialog::apply()
 {
-  mDeco.mPlacementIndex = cboPlacement->currentIndex();
+  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->itemData( cboPlacement->currentIndex() ).toInt() ) );
+  mDeco.mMarginUnit = wgtUnitSelection->unit();
+  mDeco.mMarginHorizontal = spnHorizontal->value();
+  mDeco.mMarginVertical = spnVertical->value();
   mDeco.mPreferredSize = spnSize->value();
   mDeco.mSnapping = chkSnapping->isChecked();
-  mDeco.setEnabled( chkEnable->isChecked() );
+  mDeco.setEnabled( grpEnable->isChecked() );
   mDeco.mStyleIndex = cboStyle->currentIndex();
   mDeco.mColor = pbnChangeColor->color();
+  mDeco.update();
+}
 
+void QgsDecorationScaleBarDialog::on_buttonBox_accepted()
+{
+  apply();
   accept();
 }
 

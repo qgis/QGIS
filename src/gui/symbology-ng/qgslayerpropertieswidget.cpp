@@ -28,22 +28,23 @@
 #include "qgslogger.h"
 
 #include "qgssymbollayerv2widget.h"
+#include "qgsarrowsymbollayerwidget.h"
 #include "qgsellipsesymbollayerv2widget.h"
 #include "qgsvectorfieldsymbollayerwidget.h"
 #include "qgssymbolv2.h" //for the unit
 
-static bool _initWidgetFunction( QString name, QgsSymbolLayerV2WidgetFunc f )
+static bool _initWidgetFunction( const QString& name, QgsSymbolLayerV2WidgetFunc f )
 {
   QgsSymbolLayerV2Registry* reg = QgsSymbolLayerV2Registry::instance();
 
   QgsSymbolLayerV2AbstractMetadata* abstractMetadata = reg->symbolLayerMetadata( name );
-  if ( abstractMetadata == NULL )
+  if ( !abstractMetadata )
   {
     QgsDebugMsg( "Failed to find symbol layer's entry in registry: " + name );
     return false;
   }
   QgsSymbolLayerV2Metadata* metadata = dynamic_cast<QgsSymbolLayerV2Metadata*>( abstractMetadata );
-  if ( metadata == NULL )
+  if ( !metadata )
   {
     QgsDebugMsg( "Failed to cast symbol layer's metadata: " + name );
     return false;
@@ -60,8 +61,10 @@ static void _initWidgetFunctions()
 
   _initWidgetFunction( "SimpleLine", QgsSimpleLineSymbolLayerV2Widget::create );
   _initWidgetFunction( "MarkerLine", QgsMarkerLineSymbolLayerV2Widget::create );
+  _initWidgetFunction( "ArrowLine", QgsArrowSymbolLayerWidget::create );
 
   _initWidgetFunction( "SimpleMarker", QgsSimpleMarkerSymbolLayerV2Widget::create );
+  _initWidgetFunction( "FilledMarker", QgsFilledMarkerSymbolLayerWidget::create );
   _initWidgetFunction( "SvgMarker", QgsSvgMarkerSymbolLayerV2Widget::create );
   _initWidgetFunction( "FontMarker", QgsFontMarkerSymbolLayerV2Widget::create );
   _initWidgetFunction( "EllipseMarker", QgsEllipseSymbolLayerV2Widget::create );
@@ -76,13 +79,16 @@ static void _initWidgetFunctions()
   _initWidgetFunction( "LinePatternFill", QgsLinePatternFillSymbolLayerWidget::create );
   _initWidgetFunction( "PointPatternFill", QgsPointPatternFillSymbolLayerWidget::create );
 
+  _initWidgetFunction( "GeometryGenerator", QgsGeometryGeneratorSymbolLayerWidget::create );
+
   initialized = true;
 }
 
 
 QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayerV2* layer, const QgsSymbolV2* symbol, const QgsVectorLayer* vl, QWidget* parent )
     : QWidget( parent )
-    , mPresetExpressionContext( 0 )
+    , mPresetExpressionContext( nullptr )
+    , mMapCanvas( nullptr )
 {
 
   mLayer = layer;
@@ -116,6 +122,14 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayerV2* layer, con
   mEffectWidget->setPaintEffect( mLayer->paintEffect() );
 }
 
+void QgsLayerPropertiesWidget::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mMapCanvas = canvas;
+  QgsSymbolLayerV2Widget* w = dynamic_cast< QgsSymbolLayerV2Widget* >( stackedWidget->currentWidget() );
+  if ( w )
+    w->setMapCanvas( mMapCanvas );
+}
+
 void QgsLayerPropertiesWidget::setExpressionContext( QgsExpressionContext *context )
 {
   mPresetExpressionContext = context;
@@ -127,22 +141,25 @@ void QgsLayerPropertiesWidget::setExpressionContext( QgsExpressionContext *conte
 
 void QgsLayerPropertiesWidget::populateLayerTypes()
 {
-  QStringList types = QgsSymbolLayerV2Registry::instance()->symbolLayersForType( mSymbol->type() );
+  QStringList symbolLayerIds = QgsSymbolLayerV2Registry::instance()->symbolLayersForType( mSymbol->type() );
 
-  for ( int i = 0; i < types.count(); i++ )
-    cboLayerType->addItem( QgsSymbolLayerV2Registry::instance()->symbolLayerMetadata( types[i] )->visibleName(), types[i] );
+  Q_FOREACH ( const QString& symbolLayerId, symbolLayerIds )
+    cboLayerType->addItem( QgsSymbolLayerV2Registry::instance()->symbolLayerMetadata( symbolLayerId )->visibleName(), symbolLayerId );
 
   if ( mSymbol->type() == QgsSymbolV2::Fill )
   {
-    QStringList typesLine = QgsSymbolLayerV2Registry::instance()->symbolLayersForType( QgsSymbolV2::Line );
-    for ( int i = 0; i < typesLine.count(); i++ )
+    QStringList lineLayerIds = QgsSymbolLayerV2Registry::instance()->symbolLayersForType( QgsSymbolV2::Line );
+    Q_FOREACH ( const QString& lineLayerId, lineLayerIds )
     {
-      QString visibleName = QgsSymbolLayerV2Registry::instance()->symbolLayerMetadata( typesLine[i] )->visibleName();
-      QString name = QString( tr( "Outline: %1" ) ).arg( visibleName );
-      cboLayerType->addItem( name, typesLine[i] );
+      QgsSymbolLayerV2AbstractMetadata* layerInfo = QgsSymbolLayerV2Registry::instance()->symbolLayerMetadata( lineLayerId );
+      if ( layerInfo->type() != QgsSymbolV2::Hybrid )
+      {
+        QString visibleName = layerInfo->visibleName();
+        QString name = QString( tr( "Outline: %1" ) ).arg( visibleName );
+        cboLayerType->addItem( name, lineLayerId );
+      }
     }
   }
-
 }
 
 void QgsLayerPropertiesWidget::updateSymbolLayerWidget( QgsSymbolLayerV2* layer )
@@ -163,12 +180,15 @@ void QgsLayerPropertiesWidget::updateSymbolLayerWidget( QgsSymbolLayerV2* layer 
     QgsSymbolLayerV2Widget* w = am->createSymbolLayerWidget( mVectorLayer );
     if ( w )
     {
-      w->setSymbolLayer( layer );
       w->setExpressionContext( mPresetExpressionContext );
+      if ( mMapCanvas )
+        w->setMapCanvas( mMapCanvas );
+      w->setSymbolLayer( layer );
       stackedWidget->addWidget( w );
       stackedWidget->setCurrentWidget( w );
       // start receiving updates from widget
       connect( w, SIGNAL( changed() ), this, SLOT( emitSignalChanged() ) );
+      connect( w, SIGNAL( symbolChanged() ), this, SLOT( reloadLayer() ) );
       return;
     }
   }
@@ -188,13 +208,13 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
   // get creation function for new layer from registry
   QgsSymbolLayerV2Registry* pReg = QgsSymbolLayerV2Registry::instance();
   QgsSymbolLayerV2AbstractMetadata* am = pReg->symbolLayerMetadata( newLayerType );
-  if ( am == NULL ) // check whether the metadata is assigned
+  if ( !am ) // check whether the metadata is assigned
     return;
 
   // change layer to a new (with different type)
   // base new layer on existing layer's properties
   QgsSymbolLayerV2* newLayer = am->createSymbolLayer( layer->properties() );
-  if ( newLayer == NULL )
+  if ( !newLayer )
     return;
 
   updateSymbolLayerWidget( newLayer );
@@ -207,4 +227,9 @@ void QgsLayerPropertiesWidget::emitSignalChanged()
 
   // also update paint effect preview
   mEffectWidget->setPreviewPicture( QgsSymbolLayerV2Utils::symbolLayerPreviewPicture( mLayer, QgsSymbolV2::MM, QSize( 80, 80 ) ) );
+}
+
+void QgsLayerPropertiesWidget::reloadLayer()
+{
+  emit changeLayer( mLayer );
 }

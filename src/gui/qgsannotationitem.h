@@ -19,6 +19,7 @@
 #define QGSANNOTATIONITEM_H
 
 #include "qgsmapcanvasitem.h"
+#include "qgscoordinatereferencesystem.h"
 
 class QDomDocument;
 class QDomElement;
@@ -57,7 +58,7 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem
 
     /** Returns the mouse move behaviour for a given position
       @param pos the position in scene coordinates*/
-    QgsAnnotationItem::MouseMoveAction moveActionForPosition( const QPointF& pos ) const;
+    QgsAnnotationItem::MouseMoveAction moveActionForPosition( QPointF pos ) const;
     /** Returns suitable cursor shape for mouse move action*/
     Qt::CursorShape cursorShapeForAction( MouseMoveAction moveAction ) const;
 
@@ -68,10 +69,16 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem
     virtual void setMapPosition( const QgsPoint& pos );
     QgsPoint mapPosition() const { return mMapPosition; }
 
-    void setFrameSize( const QSizeF& size );
+    /** Sets the CRS of the map position.
+      @param crs the CRS to set */
+    virtual void setMapPositionCrs( const QgsCoordinateReferenceSystem& crs );
+    /** Returns the CRS of the map position.*/
+    QgsCoordinateReferenceSystem mapPositionCrs() const { return mMapPositionCrs; }
+
+    void setFrameSize( QSizeF size );
     QSizeF frameSize() const { return mFrameSize; }
 
-    void setOffsetFromReferencePoint( const QPointF& offset );
+    void setOffsetFromReferencePoint( QPointF offset );
     QPointF offsetFromReferencePoint() const { return mOffsetFromReferencePoint; }
 
     /** Set symbol that is drawn on map position. Takes ownership*/
@@ -98,6 +105,9 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem
     bool mMapPositionFixed;
     /** Map position (in case mMapPositionFixed is true)*/
     QgsPoint mMapPosition;
+    /** CRS of the map position */
+    QgsCoordinateReferenceSystem mMapPositionCrs;
+
     /** Describes the shift of the item content box to the reference point*/
     QPointF mOffsetFromReferencePoint;
 
@@ -133,7 +143,7 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem
     /** Gets the frame line (0 is the top line, 1 right, 2 bottom, 3 left)*/
     QLineF segment( int index );
     /** Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
-    QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const;
+    QPointF pointOnLineWithDistance( QPointF startPoint, QPointF directionPoint, double distance ) const;
     /** Returns the symbol size scaled in (mapcanvas) pixels. Used for the counding rect calculation*/
     double scaledSymbolSize() const;
 };

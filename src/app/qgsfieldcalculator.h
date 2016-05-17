@@ -26,7 +26,7 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
 {
     Q_OBJECT
   public:
-    QgsFieldCalculator( QgsVectorLayer* vl );
+    QgsFieldCalculator( QgsVectorLayer* vl, QWidget* parent = nullptr );
     ~QgsFieldCalculator();
 
     int changedAttributeId() const { return mAttributeId; }
@@ -45,6 +45,7 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
   private slots:
     /** Sets the ok button enabled / disabled*/
     void setOkButtonState();
+    void setPrecisionMinMax();
 
   private:
     //! default constructor forbidden
@@ -62,7 +63,7 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     inline QgsField fieldDefinition()
     {
       return QgsField( mOutputFieldNameLineEdit->text(),
-                       ( QVariant::Type ) mOutputFieldTypeComboBox->itemData( mOutputFieldTypeComboBox->currentIndex(), Qt::UserRole ).toInt(),
+                       static_cast< QVariant::Type >( mOutputFieldTypeComboBox->itemData( mOutputFieldTypeComboBox->currentIndex(), Qt::UserRole ).toInt() ),
                        mOutputFieldTypeComboBox->itemData( mOutputFieldTypeComboBox->currentIndex(), Qt::UserRole + 1 ).toString(),
                        mOutputFieldWidthSpinBox->value(),
                        mOutputFieldPrecisionSpinBox->value() );
@@ -70,6 +71,8 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
 
     /** Idx of changed attribute*/
     int mAttributeId;
+
+    friend class TestQgsFieldCalculator;
 };
 
 #endif // QGSFIELDCALCULATOR_H

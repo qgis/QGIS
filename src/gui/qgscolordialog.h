@@ -46,9 +46,9 @@ class GUI_EXPORT QgsColorDialog : public QObject
      * @return Selected color on accepted() or initialColor on rejected().
      */
     static QColor getLiveColor( const QColor& initialColor, QObject* updateObject, const char* updateSlot,
-                                QWidget* parent = 0,
+                                QWidget* parent = nullptr,
                                 const QString& title = "",
-                                QColorDialog::ColorDialogOptions options = 0 );
+                                const QColorDialog::ColorDialogOptions& options = nullptr );
 };
 
 
@@ -71,7 +71,7 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
      * @param fl window flags
      * @param color initial color for dialog
      */
-    QgsColorDialogV2( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
+    QgsColorDialogV2( QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags,
                       const QColor& color = QColor() );
 
     ~QgsColorDialogV2();
@@ -84,7 +84,7 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
     /** Sets the title for the color dialog
      * @param title title for dialog box
      */
-    void setTitle( const QString title );
+    void setTitle( const QString& title );
 
     /** Sets whether alpha modification (transparency) is permitted
      * for the color dialog. Defaults to true.
@@ -103,7 +103,7 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
      * @see getColor
      */
     static QColor getLiveColor( const QColor& initialColor, QObject* updateObject, const char* updateSlot,
-                                QWidget* parent = 0,
+                                QWidget* parent = nullptr,
                                 const QString& title = QString(),
                                 const bool allowAlpha = true );
 
@@ -136,41 +136,11 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
 
     void closeEvent( QCloseEvent* e ) override;
 
-    void mousePressEvent( QMouseEvent* e ) override;
-
-    void mouseMoveEvent( QMouseEvent *e ) override;
-
-    void mouseReleaseEvent( QMouseEvent *e ) override;
-
-    void keyPressEvent( QKeyEvent *e ) override;
-
   private slots:
-
-    void on_mHueRadio_toggled( bool checked );
-    void on_mSaturationRadio_toggled( bool checked );
-    void on_mValueRadio_toggled( bool checked );
-    void on_mRedRadio_toggled( bool checked );
-    void on_mGreenRadio_toggled( bool checked );
-    void on_mBlueRadio_toggled( bool checked );
 
     void on_mButtonBox_accepted();
     void on_mButtonBox_rejected();
     void on_mButtonBox_clicked( QAbstractButton * button );
-    void on_mAddColorToSchemeButton_clicked();
-
-    void exportColors();
-    void importColors();
-    void importPalette();
-    void removePalette();
-    void newPalette();
-
-    void schemeIndexChanged( int index );
-    void listSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
-
-    void on_mAddCustomColorButton_clicked();
-
-    void on_mSampleButton_clicked();
-    void on_mTabWidget_currentChanged( int index );
 
   private:
 
@@ -178,40 +148,10 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
 
     bool mAllowAlpha;
 
-    int mLastCustomColorIndex;
-
-    bool mPickingColor;
-
     /** Saves all dialog and widget settings
      */
     void saveSettings();
 
-    /** Ends a color picking operation
-     * @param eventPos global position of pixel to sample color from
-     * @param takeSample set to true to actually sample the color, false to just cancel
-     * the color picking operation
-     */
-    void stopPicking( const QPoint& eventPos, const bool takeSample = true );
-
-    /** Returns the average color from the pixels in an image
-     * @param image image to sample
-     * @returns average color from image
-     */
-    QColor averageColor( const QImage &image ) const;
-
-    /** Samples a color from the desktop
-     * @param point position of color to sample
-     * @returns average color from sampled position
-     */
-    QColor sampleColor( const QPoint &point ) const;
-
-    /** Repopulates the scheme combo box with current color schemes
-     */
-    void refreshSchemeComboBox();
-
-    /** Returns the path to the user's palette folder
-     */
-    QString gplFilePath();
 };
 
 #endif // #ifndef QGSCOLORDIALOG_H

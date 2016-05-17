@@ -23,13 +23,13 @@
 
 QgsTextEditWrapper::QgsTextEditWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mTextEdit( NULL )
-    , mPlainTextEdit( NULL )
-    , mLineEdit( NULL )
+    , mTextEdit( nullptr )
+    , mPlainTextEdit( nullptr )
+    , mLineEdit( nullptr )
 {
 }
 
-QVariant QgsTextEditWrapper::value()
+QVariant QgsTextEditWrapper::value() const
 {
   QString v;
 
@@ -59,7 +59,7 @@ QVariant QgsTextEditWrapper::value()
       v == QSettings().value( "qgis/nullValue", "NULL" ).toString() )
     return QVariant( field().type() );
 
-  if ( v == defaultValue().toString() )
+  if ( !defaultValue().isNull() && v == defaultValue().toString() )
   {
     return defaultValue();
   }
@@ -115,7 +115,8 @@ void QgsTextEditWrapper::initWidget( QWidget* editor )
     QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit*>( mLineEdit );
     if ( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date )
     {
-      mLineEdit->setPlaceholderText( defVal.toString() );
+      mPlaceholderText = defVal.toString();
+      mLineEdit->setPlaceholderText( mPlaceholderText );
     }
     else if ( fle )
     {
@@ -123,6 +124,7 @@ void QgsTextEditWrapper::initWidget( QWidget* editor )
     }
 
     connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
+    connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( textChanged( QString ) ) );
 
     mWritablePalette = mLineEdit->palette();
     mReadOnlyPalette = mLineEdit->palette();
@@ -130,12 +132,74 @@ void QgsTextEditWrapper::initWidget( QWidget* editor )
   }
 }
 
-bool QgsTextEditWrapper::valid()
+bool QgsTextEditWrapper::valid() const
 {
   return mLineEdit || mTextEdit || mPlainTextEdit;
 }
 
+void QgsTextEditWrapper::showIndeterminateState()
+{
+  //note - this is deliberately a zero length string, not a null string!
+  if ( mTextEdit )
+    mTextEdit->blockSignals( true );
+  if ( mPlainTextEdit )
+    mPlainTextEdit->blockSignals( true );
+  if ( mLineEdit )
+  {
+    mLineEdit->blockSignals( true );
+    // for interdeminate state we need to clear the placeholder text - we want an empty line edit, not
+    // one showing the default value (eg "NULL")
+    mLineEdit->setPlaceholderText( QString() );
+  }
+
+  setWidgetValue( QString( "" ) );
+
+  if ( mTextEdit )
+    mTextEdit->blockSignals( false );
+  if ( mPlainTextEdit )
+    mPlainTextEdit->blockSignals( false );
+  if ( mLineEdit )
+    mLineEdit->blockSignals( false );
+}
+
 void QgsTextEditWrapper::setValue( const QVariant& val )
+{
+  if ( mLineEdit )
+  {
+    //restore placeholder text, which may have been removed by showIndeterminateState()
+    mLineEdit->setPlaceholderText( mPlaceholderText );
+  }
+  setWidgetValue( val );
+}
+
+void QgsTextEditWrapper::setEnabled( bool enabled )
+{
+  if ( mTextEdit )
+    mTextEdit->setReadOnly( !enabled );
+
+  if ( mPlainTextEdit )
+    mPlainTextEdit->setReadOnly( !enabled );
+
+  if ( mLineEdit )
+  {
+    mLineEdit->setReadOnly( !enabled );
+    if ( enabled )
+      mLineEdit->setPalette( mWritablePalette );
+    else
+      mLineEdit->setPalette( mReadOnlyPalette );
+  }
+}
+
+void QgsTextEditWrapper::textChanged( const QString& )
+{
+  if ( mLineEdit )
+  {
+    //restore placeholder text, which may have been removed by showIndeterminateState()
+    mLineEdit->setPlaceholderText( mPlaceholderText );
+  }
+}
+
+void QgsTextEditWrapper::setWidgetValue( const QVariant& val )
 {
   QString v;
   if ( val.isNull() )
@@ -165,22 +229,4 @@ void QgsTextEditWrapper::setValue( const QVariant& val )
 
   if ( mLineEdit )
     mLineEdit->setText( v );
-}
-
-void QgsTextEditWrapper::setEnabled( bool enabled )
-{
-  if ( mTextEdit )
-    mTextEdit->setReadOnly( !enabled );
-
-  if ( mPlainTextEdit )
-    mPlainTextEdit->setReadOnly( !enabled );
-
-  if ( mLineEdit )
-  {
-    mLineEdit->setReadOnly( !enabled );
-    if ( enabled )
-      mLineEdit->setPalette( mWritablePalette );
-    else
-      mLineEdit->setPalette( mReadOnlyPalette );
-  }
 }

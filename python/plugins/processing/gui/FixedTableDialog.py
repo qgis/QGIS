@@ -27,8 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4 import uic
-from PyQt4.QtGui import QDialog, QPushButton, QAbstractItemView, QDialogButtonBox, QStandardItemModel, QStandardItem
+from qgis.PyQt import uic
+from qgis.PyQt.QtWidgets import QDialog, QPushButton, QAbstractItemView, QDialogButtonBox
+from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -62,7 +63,7 @@ class FixedTableDialog(BASE, WIDGET):
         self.btnRemove.clicked.connect(lambda: self.removeRows())
         self.btnRemoveAll.clicked.connect(lambda: self.removeRows(True))
 
-        if not self.param.fixedNumOfRows:
+        if self.param.fixedNumOfRows:
             self.btnAdd.setEnabled(False)
             self.btnRemove.setEnabled(False)
             self.btnRemoveAll.setEnabled(False)

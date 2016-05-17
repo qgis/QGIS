@@ -15,7 +15,7 @@
 ###########################################################################
 
 
-PATH=$PATH:$(git rev-parse --show-toplevel)/scripts
+PATH=$(git rev-parse --show-toplevel)/scripts:$PATH
 
 if ! type -p astyle.sh >/dev/null; then
 	echo astyle.sh not found
@@ -31,7 +31,7 @@ fi
 
 if [ "$1" = "-c" ]; then
 	echo "Cleaning..."
-	find . \( -name "*.prepare" -o -name "*.astyle" -o -name "*.nocopyright" -o -name "astyle.*.diff" -o -name "sha-*.diff" -o -name "*.sortinc" \) -print -delete
+	remove_temporary_files.sh
 fi
 
 set -e
@@ -64,7 +64,11 @@ ASTYLEDIFF=astyle.$REV.diff
 >$ASTYLEDIFF
 
 # reformat
+i=0
+N=$(echo $MODIFIED | wc -w)
 for f in $MODIFIED; do
+	(( i++ )) || true
+
 	case "$f" in
 	src/core/gps/qextserialport/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
 		echo $f skipped
@@ -82,7 +86,7 @@ for f in $MODIFIED; do
 	m=$f.$REV.prepare
 
 	cp $f $m
-	astyle.sh $f
+	ASTYLEPROGRESS=" [$i/$N]" astyle.sh $f
 	if diff -u $m $f >>$ASTYLEDIFF; then
 		# no difference found
 		rm $m

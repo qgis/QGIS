@@ -1,0 +1,12 @@
+r.null
+Manages NULL-values of given raster map.
+Raster (r.*)
+ParameterRaster|map|Name of raster map for which to edit null values|False
+ParameterString|setnull|List of cell values to be set to NULL|None|False|True
+ParameterString|null|The value to replace the null value by|None|False|True
+*ParameterBoolean|-f|Only do the work if the map is floating-point|False|True
+*ParameterBoolean|-i|Only do the work if the map is integer|False|True
+*ParameterBoolean|-n|Only do the work if the map doesn't have a NULL-value bitmap file|False|True
+*ParameterBoolean|-c|Create NULL-value bitmap file validating all data cells|False|True
+*ParameterBoolean|-r|Remove NULL-value bitmap file|False|True
+OutputRaster|output|NullRaster

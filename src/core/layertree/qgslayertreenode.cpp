@@ -24,7 +24,7 @@
 
 QgsLayerTreeNode::QgsLayerTreeNode( QgsLayerTreeNode::NodeType t )
     : mNodeType( t )
-    , mParent( 0 )
+    , mParent( nullptr )
     , mExpanded( true )
 {
 }
@@ -32,7 +32,7 @@ QgsLayerTreeNode::QgsLayerTreeNode( QgsLayerTreeNode::NodeType t )
 QgsLayerTreeNode::QgsLayerTreeNode( const QgsLayerTreeNode& other )
     : QObject()
     , mNodeType( other.mNodeType )
-    , mParent( 0 )
+    , mParent( nullptr )
     , mExpanded( other.mExpanded )
     , mProperties( other.mProperties )
 {
@@ -49,7 +49,7 @@ QgsLayerTreeNode::~QgsLayerTreeNode()
 
 QgsLayerTreeNode* QgsLayerTreeNode::readXML( QDomElement& element )
 {
-  QgsLayerTreeNode* node = 0;
+  QgsLayerTreeNode* node = nullptr;
   if ( element.tagName() == "layer-tree-group" )
     node = QgsLayerTreeGroup::readXML( element );
   else if ( element.tagName() == "layer-tree-layer" )
@@ -110,12 +110,12 @@ void QgsLayerTreeNode::writeCommonXML( QDomElement& element )
 
 void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode*> nodes )
 {
-  if ( nodes.count() == 0 )
+  if ( nodes.isEmpty() )
     return;
 
   Q_FOREACH ( QgsLayerTreeNode *node, nodes )
   {
-    Q_ASSERT( node->mParent == 0 );
+    Q_ASSERT( !node->mParent );
     node->mParent = this;
   }
 
@@ -152,7 +152,7 @@ void QgsLayerTreeNode::removeChildrenPrivate( int from, int count, bool destroy 
   while ( --count >= 0 )
   {
     QgsLayerTreeNode *node = mChildren.takeAt( from );
-    node->mParent = 0;
+    node->mParent = nullptr;
     if ( destroy )
       delete node;
   }

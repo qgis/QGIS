@@ -49,30 +49,30 @@ class QgsColorSchemeRegistry
      * @param scheme color scheme to add
      * @see populateFromInstance
      * @see removeColorScheme
-    */
+     */
     void addColorScheme( QgsColorScheme* scheme /Transfer/ );
 
     /** Removes all matching color schemes from the registry
      * @param scheme color scheme to remove
      * @returns true if scheme was found and removed
      * @see addColorScheme
-    */
+     */
     bool removeColorScheme( QgsColorScheme* scheme );
 
     /** Returns all color schemes in the registry
      * @returns list of color schemes
-    */
+     */
     QList<QgsColorScheme *> schemes() const;
 
     /** Returns all color schemes in the registry which have a specified flag set
      * @param flag flag to match
      * @returns list of color schemes with flag set
-    */
+     */
     QList<QgsColorScheme *> schemes( const QgsColorScheme::SchemeFlag flag ) const;
 
     /** Return color schemes of a specific type
      * @param schemeList destination list for matching schemes
      * @note not available in python bindings
-    */
+     */
     // template<class T> void schemes( QList<T*>& schemeList );
 };

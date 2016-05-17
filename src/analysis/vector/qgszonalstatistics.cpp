@@ -31,7 +31,7 @@
 #define TO8F(x) QFile::encodeName( x ).constData()
 #endif
 
-QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix, int rasterBand , Statistics stats )
+QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix, int rasterBand, const Statistics& stats )
     : mRasterFilePath( rasterFile )
     , mRasterBand( rasterBand )
     , mPolygonLayer( polygonLayer )
@@ -44,14 +44,9 @@ QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QStr
 
 QgsZonalStatistics::QgsZonalStatistics()
     : mRasterBand( 0 )
-    , mPolygonLayer( 0 )
+    , mPolygonLayer( nullptr )
     , mInputNodataValue( -1 )
     , mStatistics( QgsZonalStatistics::All )
-{
-
-}
-
-QgsZonalStatistics::~QgsZonalStatistics()
 {
 
 }
@@ -72,7 +67,7 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   //open the raster layer and the raster band
   GDALAllRegister();
   GDALDatasetH inputDataset = GDALOpen( TO8F( mRasterFilePath ), GA_ReadOnly );
-  if ( inputDataset == NULL )
+  if ( !inputDataset )
   {
     return 3;
   }
@@ -84,12 +79,12 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   }
 
   GDALRasterBandH rasterBand = GDALGetRasterBand( inputDataset, mRasterBand );
-  if ( rasterBand == NULL )
+  if ( !rasterBand )
   {
     GDALClose( inputDataset );
     return 5;
   }
-  mInputNodataValue = GDALGetRasterNoDataValue( rasterBand, NULL );
+  mInputNodataValue = GDALGetRasterNoDataValue( rasterBand, nullptr );
 
   //get geometry info about raster layer
   int nCellsXGDAL = GDALGetRasterXSize( inputDataset );
@@ -319,11 +314,11 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
         double medianValue;
         if ( even )
         {
-          medianValue = ( featureStats.values[size / 2 - 1] + featureStats.values[size / 2] ) / 2;
+          medianValue = ( featureStats.values.at( size / 2 - 1 ) + featureStats.values.at( size / 2 ) ) / 2;
         }
         else //odd
         {
-          medianValue = featureStats.values[( size + 1 ) / 2 - 1];
+          medianValue = featureStats.values.at(( size + 1 ) / 2 - 1 );
         }
         changeAttributeMap.insert( medianIndex, QVariant( medianValue ) );
       }
@@ -392,7 +387,10 @@ int QgsZonalStatistics::cellInfoForBBox( const QgsRectangle& rasterBBox, const Q
   QgsRectangle intersectBox = rasterBBox.intersect( &featureBBox );
   if ( intersectBox.isEmpty() )
   {
-    nCellsX = 0; nCellsY = 0; offsetX = 0; offsetY = 0;
+    nCellsX = 0;
+    nCellsY = 0;
+    offsetX = 0;
+    offsetY = 0;
     return 0;
   }
 
@@ -431,8 +429,8 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, const QgsGeo
     return;
   }
 
-  GEOSCoordSequence* cellCenterCoords = 0;
-  GEOSGeometry* currentCellCenter = 0;
+  GEOSCoordSequence* cellCenterCoords = nullptr;
+  GEOSGeometry* currentCellCenter = nullptr;
 
   for ( int i = 0; i < nCellsY; ++i )
   {
@@ -472,7 +470,7 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const Qg
 
   double currentY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
   float* pixelData = ( float * ) CPLMalloc( sizeof( float ) );
-  QgsGeometry* pixelRectGeometry = 0;
+  QgsGeometry* pixelRectGeometry = nullptr;
 
   double hCellSizeX = cellSizeX / 2.0;
   double hCellSizeY = cellSizeY / 2.0;
@@ -484,7 +482,11 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const Qg
     double currentX = rasterBBox.xMinimum() + cellSizeX / 2.0 + pixelOffsetX * cellSizeX;
     for ( int col = 0; col < nCellsX; ++col )
     {
-      GDALRasterIO( band, GF_Read, pixelOffsetX + col, pixelOffsetY + row, nCellsX, 1, pixelData, 1, 1, GDT_Float32, 0, 0 );
+      if ( GDALRasterIO( band, GF_Read, pixelOffsetX + col, pixelOffsetY + row, nCellsX, 1, pixelData, 1, 1, GDT_Float32, 0, 0 ) != CE_None )
+      {
+        QgsDebugMsg( "Raster IO Error" );
+      }
+
       if ( !validPixel( *pixelData ) )
         continue;
 
@@ -504,7 +506,7 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const Qg
           delete intersectGeometry;
         }
         delete pixelRectGeometry;
-        pixelRectGeometry = 0;
+        pixelRectGeometry = nullptr;
       }
       currentX += cellSizeX;
     }
@@ -522,7 +524,7 @@ bool QgsZonalStatistics::validPixel( float value ) const
   return true;
 }
 
-QString QgsZonalStatistics::getUniqueFieldName( QString fieldName )
+QString QgsZonalStatistics::getUniqueFieldName( const QString& fieldName )
 {
   QgsVectorDataProvider* dp = mPolygonLayer->dataProvider();
 

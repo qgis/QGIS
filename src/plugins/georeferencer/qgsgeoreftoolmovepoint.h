@@ -27,18 +27,18 @@ class QgsGeorefToolMovePoint : public QgsMapTool
     Q_OBJECT
 
   public:
-    QgsGeorefToolMovePoint( QgsMapCanvas *canvas );
+    explicit QgsGeorefToolMovePoint( QgsMapCanvas *canvas );
 
-    void canvasPressEvent( QMouseEvent *e ) override;
-    void canvasMoveEvent( QMouseEvent *e ) override;
-    void canvasReleaseEvent( QMouseEvent *e ) override;
+    void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
     bool isCanvas( QgsMapCanvas * );
 
   signals:
-    void pointPressed( const QPoint &p );
-    void pointMoved( const QPoint &p );
-    void pointReleased( const QPoint &p );
+    void pointPressed( QPoint p );
+    void pointMoved( QPoint p );
+    void pointReleased( QPoint p );
 
   private:
     /** Start point of the move in map coordinates*/

@@ -33,10 +33,10 @@ QgsBrightnessContrastFilter::~QgsBrightnessContrastFilter()
 {
 }
 
-QgsRasterInterface * QgsBrightnessContrastFilter::clone() const
+QgsBrightnessContrastFilter* QgsBrightnessContrastFilter::clone() const
 {
-  QgsDebugMsg( "Entered" );
-  QgsBrightnessContrastFilter * filter = new QgsBrightnessContrastFilter( 0 );
+  QgsDebugMsgLevel( "Entered", 4 );
+  QgsBrightnessContrastFilter * filter = new QgsBrightnessContrastFilter( nullptr );
   filter->setBrightness( mBrightness );
   filter->setContrast( mContrast );
   return filter;
@@ -74,19 +74,19 @@ QGis::DataType QgsBrightnessContrastFilter::dataType( int bandNo ) const
 
 bool QgsBrightnessContrastFilter::setInput( QgsRasterInterface* input )
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 4 );
 
   // Brightness filter can only work with single band ARGB32_Premultiplied
   if ( !input )
   {
-    QgsDebugMsg( "No input" );
+    QgsDebugMsgLevel( "No input", 4 );
     return false;
   }
 
   if ( !mOn )
   {
     // In off mode we can connect to anything
-    QgsDebugMsg( "OK" );
+    QgsDebugMsgLevel( "OK", 4 );
     mInput = input;
     return true;
   }
@@ -105,14 +105,14 @@ bool QgsBrightnessContrastFilter::setInput( QgsRasterInterface* input )
   }
 
   mInput = input;
-  QgsDebugMsg( "OK" );
+  QgsDebugMsgLevel( "OK", 4 );
   return true;
 }
 
 QgsRasterBlock * QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
   Q_UNUSED( bandNo );
-  QgsDebugMsg( QString( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ) );
+  QgsDebugMsgLevel( QString( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
 
   QgsRasterBlock *outputBlock = new QgsRasterBlock();
   if ( !mInput )
@@ -132,7 +132,7 @@ QgsRasterBlock * QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  c
 
   if ( mBrightness == 0 && mContrast == 0 )
   {
-    QgsDebugMsg( "No brightness changes." );
+    QgsDebugMsgLevel( "No brightness changes.", 4 );
     delete outputBlock;
     return inputBlock;
   }

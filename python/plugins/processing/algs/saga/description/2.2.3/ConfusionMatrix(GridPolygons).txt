@@ -1,0 +1,12 @@
+Confusion Matrix (Polygons / Grid)
+imagery_classification
+ParameterRaster|GRID|Classification|False
+ParameterTable|GRID_LUT|Look-up Table|True
+ParameterTableField|GRID_LUT_MIN|Value|GRID_LUT|-1|True
+ParameterTableField|GRID_LUT_MAX|Value (Maximum)|GRID_LUT|-1|True
+ParameterTableField|GRID_LUT_NAM|Name|GRID_LUT|-1|True
+ParameterVector|POLYGONS|Polygons|2|False
+ParameterTableField|FIELD|Classes|POLYGONS|-1|False
+OutputTable|CONFUSION|Confusion Matrix
+OutputTable|CLASSES|Class Values
+OutputTable|SUMMARY|Summary

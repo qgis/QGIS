@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import time
 
-from PyQt4 import QtGui
+from qgis.PyQt.QtGui import QIcon
 from qgis.core import QgsRasterLayer
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -36,7 +36,7 @@ from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterRaster
-from Grass7Utils import Grass7Utils
+from .Grass7Utils import Grass7Utils
 from processing.tools.system import getNumExportedLayers
 from processing.tools import dataobjects
 
@@ -52,8 +52,12 @@ class nviz7(GeoAlgorithm):
     GRASS_REGION_EXTENT_PARAMETER = 'GRASS_REGION_PARAMETER'
     GRASS_REGION_CELLSIZE_PARAMETER = 'GRASS_REGION_CELLSIZE_PARAMETER'
 
+    def __init__(self):
+        GeoAlgorithm.__init__(self)
+        self.showInModeler = False
+
     def getIcon(self):
-        return QtGui.QIcon(os.path.join(pluginPath, 'images', 'grass.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'grass.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('nviz7')
@@ -161,7 +165,7 @@ class nviz7(GeoAlgorithm):
                     else:
                         layer = dataobjects.getObjectFromUri(param.value)
                     cellsize = max(cellsize, (layer.extent().xMaximum()
-                                   - layer.extent().xMinimum())
+                                              - layer.extent().xMinimum())
                                    / layer.width())
                 elif isinstance(param, ParameterMultipleInput):
 

@@ -39,13 +39,13 @@ class QgsOwsProvider : public QgsDataProvider
 
   public:
     /**
-    * Constructor for the provider.
-    *
-    * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
-    *                otherwise we contact the host directly.
-    *
-    */
-    QgsOwsProvider( QString const & uri = 0 );
+     * Constructor for the provider.
+     *
+     * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
+     *                otherwise we contact the host directly.
+     *
+     */
+    explicit QgsOwsProvider( QString const & uri = nullptr );
 
     //! Destructor
     ~QgsOwsProvider();

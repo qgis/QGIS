@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import sys
 
-from PyQt4.QtCore import QSettings, QCoreApplication
+from qgis.PyQt.QtCore import QSettings, QCoreApplication
 from qgis.core import QgsFeature, QgsVectorFileWriter
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -35,7 +35,6 @@ from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
 from processing.tools.system import getTempFilename
 from processing.tools import vector
-from processing.gui.SilentProgress import SilentProgress
 
 
 def runalg(alg, progress=None):
@@ -45,8 +44,6 @@ def runalg(alg, progress=None):
     Return true if everything went OK, false if the algorithm
     could not be completed.
     """
-    if progress is None:
-        progress = SilentProgress()
     try:
         alg.execute(progress)
         return True

@@ -26,7 +26,7 @@ class QgsComposerScaleBar: QgsComposerItem
     };
 
     /** Modes for setting size for scale bar segments
-    */
+     */
     enum SegmentSizeMode
     {
       SegmentSizeFixed, /*!< Scale bar segment size is fixed to a map unit*/
@@ -103,7 +103,7 @@ class QgsComposerScaleBar: QgsComposerItem
     /** Sets the maximum size (in millimeters) for scale bar segments. This
      * property is only effective if the @link segmentSizeMode @endlink is set
      * to @link SegmentSizeFitWidth @endlink.
-     * @param minWidth maximum width in millimeters
+     * @param maxWidth maximum width in millimeters
      * @see minBarWidth
      * @see setMaxBarWidth
      * @see setSegmentSizeMode
@@ -124,28 +124,28 @@ class QgsComposerScaleBar: QgsComposerItem
      * @returns font color for scalebar.
      * @see setFontColor
      * @see font
-    */
+     */
     QColor fontColor() const;
 
     /** Sets the color used for drawing text in the scalebar.
      * @param c font color for scalebar.
      * @see fontColor
      * @see setFont
-    */
+     */
     void setFontColor( const QColor& c );
 
     /** Returns the pen used for drawing the scalebar.
      * @returns QPen used for drawing the scalebar outlines.
      * @see setPen
      * @see brush
-    */
+     */
     QPen pen() const;
 
     /** Sets the pen used for drawing the scalebar.
      * @param pen QPen to use for drawing the scalebar outlines.
      * @see pen
      * @see setBrush
-    */
+     */
     void setPen( const QPen& pen );
 
     /** Returns the primary brush for the scalebar.
@@ -153,7 +153,7 @@ class QgsComposerScaleBar: QgsComposerItem
      * @see setBrush
      * @see brush2
      * @see pen
-    */
+     */
     QBrush brush() const;
 
     /** Sets primary brush for the scalebar.
@@ -161,7 +161,7 @@ class QgsComposerScaleBar: QgsComposerItem
      * @see brush
      * @see setBrush2
      * @see setPen
-    */
+     */
     void setBrush( const QBrush& brush );
 
     /** Returns the secondary brush for the scalebar. This is used for alternating color style scalebars, such
@@ -169,7 +169,7 @@ class QgsComposerScaleBar: QgsComposerItem
      * @returns QBrush used for secondary color areas
      * @see setBrush2
      * @see brush
-    */
+     */
     QBrush brush2() const;
 
     /** Sets secondary brush for the scalebar. This is used for alternating color style scalebars, such
@@ -177,7 +177,7 @@ class QgsComposerScaleBar: QgsComposerItem
      * @param brush QBrush to use for secondary color areas
      * @see brush2
      * @see setBrush
-    */
+     */
     void setBrush2( const QBrush& brush );
 
     double height() const;
@@ -244,11 +244,13 @@ class QgsComposerScaleBar: QgsComposerItem
     QString style() const;
 
     /** Returns the x - positions of the segment borders (in item coordinates) and the width
-     of the segment
-     @note python bindings not available on android
+     * of the segment
+     * @note python bindings not available on android
      */
 %If (!ARM)
+%If (!QT5_SUPPORT)
     void segmentPositions( QList<QPair<double, double> >& posWidthList ) const;
+%End
 %End
 
     /** Sets box size suitable to content*/
@@ -261,21 +263,21 @@ class QgsComposerScaleBar: QgsComposerItem
     QString firstLabelString() const;
 
     /** Stores state in Dom element
-       * @param elem is Dom element corresponding to 'Composer' tag
-       * @param doc Dom document
-       */
+     * @param elem is Dom element corresponding to 'Composer' tag
+     * @param doc Dom document
+     */
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
 
     /** Sets state from Dom document
-       * @param itemElem is Dom node corresponding to item tag
-       * @param doc is Dom document
-       */
+     * @param itemElem is Dom node corresponding to item tag
+     * @param doc is Dom document
+     */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
     /** Moves scalebar position to the left / right depending on alignment and change in item width*/
     void correctXPositionAlignment( double width, double widthAfter );
 
-    //overriden to apply minimum size
+    //overridden to apply minimum size
     void setSceneRect( const QRectF &rectangle );
 
   public slots:

@@ -25,7 +25,7 @@
 class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider* p );
+    explicit QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider* p );
     ~QgsDelimitedTextFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
@@ -45,7 +45,6 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
     int mXFieldIndex;
     int mYFieldIndex;
     int mWktFieldIndex;
-    bool mWktHasZM;
     bool mWktHasPrefix;
     QGis::GeometryType mGeometryType;
     QString mDecimalPoint;

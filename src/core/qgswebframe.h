@@ -23,6 +23,7 @@
 #include <QObject>
 #include <QPainter>
 #include <QUrl>
+#include <QVariant>
 
 /**
  * @brief The QWebFrame class is a collection of stubs to mimic the API of a QWebFrame on systems
@@ -30,7 +31,7 @@
  */
 class CORE_EXPORT QWebFrame : public QObject
 {
-/// @cond
+/// @cond NOT_STABLE_API
     Q_OBJECT
 
   public:
@@ -70,6 +71,11 @@ class CORE_EXPORT QWebFrame : public QObject
     void addToJavaScriptWindowObject( const QString&, QObject* )
     {
 
+    }
+
+    QVariant evaluateJavaScript( const QString & )
+    {
+      return QVariant();
     }
 
   signals:

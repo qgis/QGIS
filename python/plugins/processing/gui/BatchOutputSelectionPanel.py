@@ -26,9 +26,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import re
 
-from PyQt4.QtGui import QWidget, QPushButton, QLineEdit, QHBoxLayout, QSizePolicy, QFileDialog
-from PyQt4.QtCore import QSettings
+from qgis.PyQt.QtWidgets import QWidget, QPushButton, QLineEdit, QHBoxLayout, QSizePolicy, QFileDialog
+from qgis.PyQt.QtCore import QSettings
 
 from processing.gui.AutofillDialog import AutofillDialog
 from processing.core.parameters import ParameterMultipleInput
@@ -77,10 +78,15 @@ class BatchOutputSelectionPanel(QWidget):
             path = unicode(settings.value('/Processing/LastBatchOutputPath'))
         else:
             path = ''
-        filename = QFileDialog.getSaveFileName(self, self.tr('Save file'), path,
-                                               filefilter)
+        filename, selectedFileFilter = QFileDialog.getSaveFileNameAndFilter(self,
+                                                                            self.tr('Save file'), path, filefilter)
+        print filename, selectedFileFilter
         if filename:
-            filename = unicode(filename)
+            if not filename.lower().endswith(
+                    tuple(re.findall("\*(\.[a-z]{1,10})", filefilter))):
+                ext = re.search("\*(\.[a-z]{1,10})", selectedFileFilter)
+                if ext:
+                    filename += ext.group(1)
             settings.setValue('/Processing/LastBatchOutputPath', os.path.dirname(filename))
             dlg = AutofillDialog(self.alg)
             dlg.exec_()

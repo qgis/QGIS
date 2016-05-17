@@ -17,19 +17,22 @@
 
 #include <QFtp>
 
-/** A class for synchronous ftp access (using QFtp in background)*/
+/** A class for synchronous ftp access (using QFtp in background)
+ *
+ * @deprecated because of QFtp removal in Qt5.
+ */
 class QgsFtpTransaction: public QObject
 {
     Q_OBJECT
   public:
-    QgsFtpTransaction();
+    Q_DECL_DEPRECATED QgsFtpTransaction();
     ~QgsFtpTransaction();
 
     /** Transfers the file with the given Url and stores it into ba
        @param ftpUrl url of the file to access
        @param pointer to buffer to store file contents
        @return 0 in case of success*/
-    int get( const QString& ftpUrl, QByteArray& ba );
+    Q_DECL_DEPRECATED int get( const QString& ftpUrl, QByteArray& ba );
 
   public slots:
     void setFinishedFlag( bool error );

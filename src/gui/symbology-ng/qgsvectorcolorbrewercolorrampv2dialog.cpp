@@ -32,7 +32,8 @@ static void updateColorButton( QAbstractButton* button, QColor color )
 
 
 QgsVectorColorBrewerColorRampV2Dialog::QgsVectorColorBrewerColorRampV2Dialog( QgsVectorColorBrewerColorRampV2* ramp, QWidget* parent )
-    : QDialog( parent ), mRamp( ramp )
+    : QDialog( parent )
+    , mRamp( ramp )
 {
 
   setupUi( this );

@@ -25,6 +25,9 @@ __copyright__ = '(C) 2015, Pedro Venancio'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.outputs import OutputVector
@@ -33,7 +36,7 @@ from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterString
 from processing.algs.gdal.GdalUtils import GdalUtils
 
-import os
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class gdaltindex(GdalAlgorithm):
@@ -42,6 +45,9 @@ class gdaltindex(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
     FIELD_NAME = 'FIELD_NAME'
     PROJ_DIFFERENCE = 'PROJ_DIFFERENCE'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'tiles.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Tile Index')

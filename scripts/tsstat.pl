@@ -48,8 +48,8 @@ my $translators= {
 	'et' => 'Veiko Viil',
 	'eu' => 'Asier Sarasua Garmendia, Irantzu Alvarez',
 	'fa' => 'Mola Pahnadayan, Masoud Pashotan , Masoud Erfanyan',
-	'fi' => 'Kari Salovaara, Marko Järvenpää',
-	'fr' => 'Arnaud Morvan, Augustin Roche, Jean-Roc Morreale, Loïc Buscoz, Marc-André Saia, Mathieu Bossaert, Mayeul Kauffmann, Médéric Ribreux, Michael Douchin, Nicolas Rochard, Robin Prest, DelazJ, Stéphane Possamai, Sylvain Badey, Sylvain_M, Sylvain Maillard, Xavier Tardieu, Marie Silvestre, Vincent Picavet',
+	'fi' => 'Kari Mikkonen, Matti Mäntynen',
+	'fr' => 'Arnaud Morvan, Augustin Roche, DelazJ, Didier Vanden Berghe, Dofabien, etrimaille, Jean-Roc Morreale, Jérémy Garniaux, Loïc Buscoz, Lsam, Marc-André Saia, Marie Silvestre, Mathieu Bossaert, Mathieu Lattes, Mayeul Kauffmann, Médéric Ribreux, Mehdi Semchaoui, Michael Douchin, Nicolas Boisteault, Nicolas Rochard, Pascal Obstetar, Robin Prest, Rod Bera, Stéphane Henriod, Stéphane Possamai, sylther, Sylvain Badey, Sylvain Maillard, Vincent Picavet, Xavier Tardieu, Yann Leveille-Menez, yoda89',
 	'gl' => 'Xan Vieiro',
 	'hi' => 'Harish Kumar Solanki',
 	'hu' => 'Zoltan Siki',
@@ -69,7 +69,7 @@ my $translators= {
 	'mr' => '',
 	'nb' => 'James Stott, Maléne Peterson',
 	'nl' => 'Richard Duivenvoorde, Raymond Nijssen, Carlo van Rijswijk, Diethard Jansen, Willem Hoffmans, Dick Groskamp',
-	'pl' => 'Robert Szczepanek, Milena Nowotarska, Borys Jurgiel, Mateusz Łoskot, Tomasz Paul, Andrzej Świąder, Radosław Pasiok',
+	'pl' => 'Robert Szczepanek, Milena Nowotarska, Borys Jurgiel, Mateusz Łoskot, Tomasz Paul, Andrzej Świąder, Radosław Pasiok, Michał Kułach, Ewelina Krawczak, Michał Smoczyk, Jakub Bobrowski',
 	'pt_BR' => 'Sidney Schaberle Goveia, Arthur Nanni, Marcelo Soares Souza, Narcélio de Sá Pereira Filho, Leônidas Descovi Filho, Felipe Sodré Barros ',
 	'pt_PT' => 'Giovanni Manghi, Joana Simões, Duarte Carreira, Alexandre Neto, Pedro Pereira, Pedro Palheiro, Nelson Silva, Ricardo Sena, Leandro Infantini, João Gaspar',
 	'ro' => 'Sorin Călinică, Tudor Bărăscu, Georgiana Ioanovici, Alex Bădescu, Lonut Losifescu-Enescu, Bogdan Pacurar',
@@ -88,9 +88,8 @@ my $translators= {
 	'tr' => 'Osman Yalçın YILMAZ, Omur Saygin',
 	'uk' => 'Alexander Bruy',
 	'vi' => 'Phùng Văn Doanh, Bùi Hữu Mạnh, Nguyễn Văn Thanh, Nguyễn Hữu Phúc, Cao Minh Tu',
-	'zh_CN' => 'Calvin Ngei, Zhang Jun, Richard Xie',
+	'zh-Hant' => 'Calvin Ngei, Zhang Jun, Richard Xie',
 	'zh-Hans' => 'Calvin Ngei, Lisashen',
-	'zh_TW' => 'Nung-yao Lin',
 };
 
 my $maxn;

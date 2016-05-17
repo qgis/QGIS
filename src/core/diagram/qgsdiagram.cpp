@@ -70,57 +70,82 @@ QgsExpression *QgsDiagram::getExpression( const QString &expression, const QgsEx
 
 void QgsDiagram::setPenWidth( QPen& pen, const QgsDiagramSettings& s, const QgsRenderContext& c )
 {
-  if ( s.sizeType == QgsDiagramSettings::MM )
-  {
-    pen.setWidthF( s.penWidth * c.scaleFactor() );
-  }
-  else
-  {
-    pen.setWidthF( s.penWidth / c.mapToPixel().mapUnitsPerPixel() );
-  }
+  pen.setWidthF( QgsSymbolLayerV2Utils::convertToPainterUnits( c, s.penWidth, s.lineSizeUnit, s.lineSizeScale ) );
 }
 
 
-QSizeF QgsDiagram::sizePainterUnits( const QSizeF& size, const QgsDiagramSettings& s, const QgsRenderContext& c )
+QSizeF QgsDiagram::sizePainterUnits( QSizeF size, const QgsDiagramSettings& s, const QgsRenderContext& c )
 {
-  if ( s.sizeType == QgsDiagramSettings::MM )
-  {
-    return QSizeF( size.width() * c.scaleFactor(), size.height() * c.scaleFactor() );
-  }
-  else
-  {
-    return QSizeF( size.width() / c.mapToPixel().mapUnitsPerPixel(), size.height() / c.mapToPixel().mapUnitsPerPixel() );
-  }
+  return QSizeF( QgsSymbolLayerV2Utils::convertToPainterUnits( c, size.width(), s.sizeType, s.sizeScale ), QgsSymbolLayerV2Utils::convertToPainterUnits( c, size.height(), s.sizeType, s.sizeScale ) );
 }
 
 float QgsDiagram::sizePainterUnits( float l, const QgsDiagramSettings& s, const QgsRenderContext& c )
 {
-  if ( s.sizeType == QgsDiagramSettings::MM )
-  {
-    return l * c.scaleFactor();
-  }
-  else
-  {
-    return l / c.mapToPixel().mapUnitsPerPixel();
-  }
+  return QgsSymbolLayerV2Utils::convertToPainterUnits( c, l, s.sizeType, s.sizeScale );
 }
 
 QFont QgsDiagram::scaledFont( const QgsDiagramSettings& s, const QgsRenderContext& c )
 {
   QFont f = s.font;
-  if ( s.sizeType == QgsDiagramSettings::MM )
+  if ( s.sizeType == QgsSymbolV2::MapUnit )
   {
-    f.setPixelSize( s.font.pointSizeF() * 0.376 * c.scaleFactor() );
+    int pixelsize = s.font.pointSizeF() / c.mapToPixel().mapUnitsPerPixel();
+    f.setPixelSize( pixelsize > 0 ? pixelsize : 1 );
   }
   else
   {
-    f.setPixelSize( s.font.pointSizeF() / c.mapToPixel().mapUnitsPerPixel() );
+    f.setPixelSize( s.font.pointSizeF() * 0.376 * c.scaleFactor() );
   }
 
   return f;
 }
 
-void QgsDiagram::renderDiagram( const QgsAttributes& attributes, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
+QSizeF QgsDiagram::sizeForValue( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const
+{
+  double scaledValue = value;
+  double scaledLowerValue = is.lowerValue;
+  double scaledUpperValue = is.upperValue;
+  double scaledLowerSizeWidth = is.lowerSize.width();
+  double scaledLowerSizeHeight = is.lowerSize.height();
+  double scaledUpperSizeWidth = is.upperSize.width();
+  double scaledUpperSizeHeight = is.upperSize.height();
+
+  // interpolate the squared value if scale by area
+  if ( s.scaleByArea )
+  {
+    scaledValue = sqrt( scaledValue );
+    scaledLowerValue = sqrt( scaledLowerValue );
+    scaledUpperValue = sqrt( scaledUpperValue );
+    scaledLowerSizeWidth = sqrt( scaledLowerSizeWidth );
+    scaledLowerSizeHeight = sqrt( scaledLowerSizeHeight );
+    scaledUpperSizeWidth = sqrt( scaledUpperSizeWidth );
+    scaledUpperSizeHeight = sqrt( scaledUpperSizeHeight );
+  }
+
+  //interpolate size
+  double scaledRatio = ( scaledValue - scaledLowerValue ) / ( scaledUpperValue - scaledLowerValue );
+
+  QSizeF size = QSizeF( is.upperSize.width() * scaledRatio + is.lowerSize.width() * ( 1 - scaledRatio ),
+                        is.upperSize.height() * scaledRatio + is.lowerSize.height() * ( 1 - scaledRatio ) );
+
+  // Scale, if extension is smaller than the specified minimum
+  if ( size.width() <= s.minimumSize && size.height() <= s.minimumSize )
+  {
+    bool p = false; // preserve height == width
+    if ( qgsDoubleNear( size.width(), size.height() ) )
+      p = true;
+
+    size.scale( s.minimumSize, s.minimumSize, Qt::KeepAspectRatio );
+
+    // If height == width, recover here (overwrite floating point errors)
+    if ( p )
+      size.setWidth( size.height() );
+  }
+
+  return size;
+}
+
+void QgsDiagram::renderDiagram( const QgsAttributes& attributes, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position )
 {
   QgsFeature feature;
   feature.setAttributes( attributes );

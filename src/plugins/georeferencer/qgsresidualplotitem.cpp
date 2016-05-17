@@ -224,7 +224,7 @@ bool QgsResidualPlotItem::readXML( const QDomElement& itemElem, const QDomDocume
   return false;
 }
 
-double QgsResidualPlotItem::dist( const QPointF& p1, const QPointF& p2 ) const
+double QgsResidualPlotItem::dist( QPointF p1, QPointF p2 ) const
 {
   double dx = p2.x() - p1.x();
   double dy = p2.y() - p1.y();

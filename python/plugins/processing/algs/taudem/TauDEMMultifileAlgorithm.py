@@ -26,7 +26,7 @@ __copyright__ = '(C) 2015, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -42,7 +42,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import getParameterFromString
 from processing.core.outputs import getOutputFromString
 
-from TauDEMUtils import TauDEMUtils
+from .TauDEMUtils import TauDEMUtils
 
 
 class TauDEMMultifileAlgorithm(GeoAlgorithm):

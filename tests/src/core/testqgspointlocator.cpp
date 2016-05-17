@@ -27,7 +27,7 @@
 
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
-  FilterExcludePoint( const QgsPoint& p ) : mPoint( p ) {}
+  explicit FilterExcludePoint( const QgsPoint& p ) : mPoint( p ) {}
 
   bool acceptMatch( const QgsPointLocator::Match& match ) { return match.point() != mPoint; }
 
@@ -36,7 +36,10 @@ struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 
 struct FilterExcludeEdge : public QgsPointLocator::MatchFilter
 {
-  FilterExcludeEdge( const QgsPoint& p1, const QgsPoint& p2 ) : mP1( p1 ), mP2( p2 ) {}
+  FilterExcludeEdge( const QgsPoint& p1, const QgsPoint& p2 )
+      : mP1( p1 )
+      , mP2( p2 )
+  {}
 
   bool acceptMatch( const QgsPointLocator::Match& match )
   {

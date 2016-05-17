@@ -20,23 +20,29 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import Qt, QObject, SIGNAL, qDebug, QByteArray, QMimeData, QDataStream, QIODevice, QFileInfo, \
-    QAbstractItemModel, QModelIndex, QSettings
-from PyQt4.QtGui import QApplication, QIcon, QMessageBox
+from functools import partial
+from qgis.PyQt.QtCore import Qt, QObject, qDebug, QByteArray, QMimeData, QDataStream, QIODevice, QFileInfo, QAbstractItemModel, QModelIndex, pyqtSignal, pyqtSlot
+from qgis.PyQt.QtWidgets import QApplication, QMessageBox
+from qgis.PyQt.QtGui import QIcon
 
 from .db_plugins import supportedDbTypes, createDbPlugin
-from .db_plugins.plugin import BaseError, Table
+from .db_plugins.plugin import BaseError, Table, Database
 from .dlg_db_error import DlgDbError
 
-import qgis.core
+from qgis.core import QgsDataSourceURI, QgsVectorLayer, QgsRasterLayer, QgsMimeDataUtils
+
+from . import resources_rc  # NOQA
 
 try:
-    from . import resources_rc
-except ImportError:
-    pass
+    from qgis.core import QgsVectorLayerImport  # NOQA
+    isImportVectorAvail = True
+except:
+    isImportVectorAvail = False
 
 
 class TreeItem(QObject):
+    itemRemoved = pyqtSignal()
+    itemChanged = pyqtSignal()
 
     def __init__(self, data, parent=None):
         QObject.__init__(self, parent)
@@ -46,14 +52,14 @@ class TreeItem(QObject):
         if parent:
             parent.appendChild(self)
 
-    def childRemoved(self, child):
-        self.itemChanged()
+    def childRemoved(self):
+        self.itemWasChanged()
 
-    def itemChanged(self):
-        self.emit(SIGNAL("itemChanged"), self)
+    def itemWasChanged(self):
+        self.itemChanged.emit()
 
-    def itemRemoved(self):
-        self.emit(SIGNAL("itemRemoved"), self)
+    def itemWasRemoved(self):
+        self.itemRemoved.emit()
 
     def populate(self):
         self.populated = True
@@ -64,7 +70,7 @@ class TreeItem(QObject):
 
     def appendChild(self, child):
         self.childItems.append(child)
-        self.connect(child, SIGNAL("itemRemoved"), self.childRemoved)
+        child.itemRemoved.connect(self.childRemoved)
 
     def child(self, row):
         return self.childItems[row]
@@ -72,7 +78,7 @@ class TreeItem(QObject):
     def removeChild(self, row):
         if row >= 0 and row < len(self.childItems):
             self.childItems[row].itemData.deleteLater()
-            self.disconnect(self.childItems[row], SIGNAL("itemRemoved"), self.childRemoved)
+            self.childItems[row].itemRemoved.disconnect(self.childRemoved)
             del self.childItems[row]
 
     def childCount(self):
@@ -134,8 +140,8 @@ class ConnectionItem(TreeItem):
 
     def __init__(self, connection, parent=None):
         TreeItem.__init__(self, connection, parent)
-        self.connect(connection, SIGNAL("changed"), self.itemChanged)
-        self.connect(connection, SIGNAL("deleted"), self.itemRemoved)
+        connection.changed.connect(self.itemChanged)
+        connection.deleted.connect(self.itemRemoved)
 
         # load (shared) icon with first instance of table item
         if not hasattr(ConnectionItem, 'connectedIcon'):
@@ -163,8 +169,8 @@ class ConnectionItem(TreeItem):
                 return False
 
         database = connection.database()
-        self.connect(database, SIGNAL("changed"), self.itemChanged)
-        self.connect(database, SIGNAL("deleted"), self.itemRemoved)
+        database.changed.connect(self.itemChanged)
+        database.deleted.connect(self.itemRemoved)
 
         schemas = database.schemas()
         if schemas is not None:
@@ -189,8 +195,8 @@ class SchemaItem(TreeItem):
 
     def __init__(self, schema, parent):
         TreeItem.__init__(self, schema, parent)
-        self.connect(schema, SIGNAL("changed"), self.itemChanged)
-        self.connect(schema, SIGNAL("deleted"), self.itemRemoved)
+        schema.changed.connect(self.itemChanged)
+        schema.deleted.connect(self.itemRemoved)
 
         # load (shared) icon with first instance of schema item
         if not hasattr(SchemaItem, 'schemaIcon'):
@@ -219,14 +225,15 @@ class TableItem(TreeItem):
 
     def __init__(self, table, parent):
         TreeItem.__init__(self, table, parent)
-        self.connect(table, SIGNAL("changed"), self.itemChanged)
-        self.connect(table, SIGNAL("deleted"), self.itemRemoved)
+        table.changed.connect(self.itemChanged)
+        table.deleted.connect(self.itemRemoved)
         self.populate()
 
         # load (shared) icon with first instance of table item
         if not hasattr(TableItem, 'tableIcon'):
             TableItem.tableIcon = QIcon(":/db_manager/icons/table.png")
             TableItem.viewIcon = QIcon(":/db_manager/icons/view.png")
+            TableItem.viewMaterializedIcon = QIcon(":/db_manager/icons/view_materialized.png")
             TableItem.layerPointIcon = QIcon(":/db_manager/icons/layer_point.png")
             TableItem.layerLineIcon = QIcon(":/db_manager/icons/layer_line.png")
             TableItem.layerPolygonIcon = QIcon(":/db_manager/icons/layer_polygon.png")
@@ -257,7 +264,10 @@ class TableItem(TreeItem):
             return self.layerRasterIcon
 
         if self.getItemData().isView:
-            return self.viewIcon
+            if hasattr(self.getItemData(), '_relationType') and self.getItemData()._relationType == 'm':
+                return self.viewMaterializedIcon
+            else:
+                return self.viewIcon
         return self.tableIcon
 
     def path(self):
@@ -274,15 +284,18 @@ class TableItem(TreeItem):
 
 
 class DBModel(QAbstractItemModel):
+    importVector = pyqtSignal(QgsVectorLayer, Database, QgsDataSourceURI, QModelIndex)
+    notPopulated = pyqtSignal(QModelIndex)
 
     def __init__(self, parent=None):
+        global isImportVectorAvail
+
         QAbstractItemModel.__init__(self, parent)
         self.treeView = parent
         self.header = [self.tr('Databases')]
 
-        self.isImportVectorAvail = hasattr(qgis.core, 'QgsVectorLayerImport')
-        if self.isImportVectorAvail:
-            self.connect(self, SIGNAL("importVector"), self.importVector)
+        if isImportVectorAvail:
+            self.importVector.connect(self.vectorImport)
 
         self.hasSpatialiteSupport = "spatialite" in supportedDbTypes()
 
@@ -290,7 +303,7 @@ class DBModel(QAbstractItemModel):
         for dbtype in supportedDbTypes():
             dbpluginclass = createDbPlugin(dbtype)
             item = PluginItem(dbpluginclass, self.rootItem)
-            self.connect(item, SIGNAL("itemChanged"), self.refreshItem)
+            item.itemChanged.connect(partial(self.refreshItem, item))
 
     def refreshItem(self, item):
         if isinstance(item, TreeItem):
@@ -361,6 +374,8 @@ class DBModel(QAbstractItemModel):
         return retval
 
     def flags(self, index):
+        global isImportVectorAvail
+
         if not index.isValid():
             return Qt.NoItemFlags
 
@@ -376,7 +391,7 @@ class DBModel(QAbstractItemModel):
                 flags |= Qt.ItemIsDragEnabled
 
             # vectors/tables can be dropped on connected databases to be imported
-            if self.isImportVectorAvail:
+            if isImportVectorAvail:
                 if isinstance(item, ConnectionItem) and item.populated:
                     flags |= Qt.ItemIsDropEnabled
 
@@ -472,12 +487,12 @@ class DBModel(QAbstractItemModel):
             if prevPopulated or force:
                 if item.populate():
                     for child in item.childItems:
-                        self.connect(child, SIGNAL("itemChanged"), self.refreshItem)
+                        child.itemChanged.connect(partial(self.refreshItem, item))
                     self._onDataChanged(index)
                 else:
-                    self.emit(SIGNAL("notPopulated"), index)
+                    self.notPopulated.emit(index)
 
-        except BaseError as e:
+        except BaseError:
             item.populated = False
             return
 
@@ -487,7 +502,7 @@ class DBModel(QAbstractItemModel):
     def _onDataChanged(self, indexFrom, indexTo=None):
         if indexTo is None:
             indexTo = indexFrom
-        self.emit(SIGNAL('dataChanged(const QModelIndex &, const QModelIndex &)'), indexFrom, indexTo)
+        self.dataChanged.emit(indexFrom, indexTo)
 
     QGIS_URI_MIME = "application/x-vnd.qgis.qgis.uri"
 
@@ -512,11 +527,13 @@ class DBModel(QAbstractItemModel):
         return mimeData
 
     def dropMimeData(self, data, action, row, column, parent):
+        global isImportVectorAvail
+
         if action == Qt.IgnoreAction:
             return True
 
         # vectors/tables to be imported must be dropped on connected db, schema or table
-        canImportLayer = self.isImportVectorAvail and parent.isValid() and \
+        canImportLayer = isImportVectorAvail and parent.isValid() and \
             (isinstance(parent.internalPointer(), (SchemaItem, TableItem)) or
              (isinstance(parent.internalPointer(), ConnectionItem) and parent.internalPointer().populated))
 
@@ -539,15 +556,15 @@ class DBModel(QAbstractItemModel):
                         item = index.internalPointer()
 
                         conn_name = QFileInfo(filename).fileName()
-                        uri = qgis.core.QgsDataSourceURI()
+                        uri = QgsDataSourceURI()
                         uri.setDatabase(filename)
                         item.getItemData().addConnection(conn_name, uri)
-                        item.emit(SIGNAL('itemChanged'), item)
+                        item.itemChanged.emit(item)
                         added += 1
                         continue
 
                 if canImportLayer:
-                    if qgis.core.QgsRasterLayer.isValidRasterFileName(filename):
+                    if QgsRasterLayer.isValidRasterFileName(filename):
                         layerType = 'raster'
                         providerKey = 'gdal'
                     else:
@@ -559,7 +576,7 @@ class DBModel(QAbstractItemModel):
                         added += 1
 
         if data.hasFormat(self.QGIS_URI_MIME):
-            for uri in qgis.core.QgsMimeDataUtils.decodeUriList(data):
+            for uri in QgsMimeDataUtils.decodeUriList(data):
                 if canImportLayer:
                     if self.importLayer(uri.layerType, uri.providerKey, uri.name, uri.uri, parent):
                         added += 1
@@ -567,14 +584,16 @@ class DBModel(QAbstractItemModel):
         return added > 0
 
     def importLayer(self, layerType, providerKey, layerName, uriString, parent):
-        if not self.isImportVectorAvail:
+        global isImportVectorAvail
+
+        if not isImportVectorAvail:
             return False
 
         if layerType == 'raster':
             return False  # not implemented yet
-            inLayer = qgis.core.QgsRasterLayer(uriString, layerName, providerKey)
+            inLayer = QgsRasterLayer(uriString, layerName, providerKey)
         else:
-            inLayer = qgis.core.QgsVectorLayer(uriString, layerName, providerKey)
+            inLayer = QgsVectorLayer(uriString, layerName, providerKey)
 
         if not inLayer.isValid():
             # invalid layer
@@ -603,24 +622,26 @@ class DBModel(QAbstractItemModel):
 
             # default pk and geom field name value
             if providerKey in ['postgres', 'spatialite']:
-                inUri = qgis.core.QgsDataSourceURI(inLayer.source())
+                inUri = QgsDataSourceURI(inLayer.source())
                 pkCol = inUri.keyColumn()
                 geomCol = inUri.geometryColumn()
 
             outUri = outDb.uri()
             outUri.setDataSource(schema, layerName, geomCol, "", pkCol)
 
-            self.emit(SIGNAL("importVector"), inLayer, outDb, outUri, toIndex)
+            self.importVector.emit(inLayer, outDb, outUri, toIndex)
             return True
 
         return False
 
-    def importVector(self, inLayer, outDb, outUri, parent):
-        if not self.isImportVectorAvail:
+    def vectorImport(self, inLayer, outDb, outUri, parent):
+        global isImportVectorAvail
+
+        if not isImportVectorAvail:
             return False
 
         try:
-            from dlg_import_vector import DlgImportVector
+            from .dlg_import_vector import DlgImportVector
 
             dlg = DlgImportVector(inLayer, outDb, outUri)
             QApplication.restoreOverrideCursor()

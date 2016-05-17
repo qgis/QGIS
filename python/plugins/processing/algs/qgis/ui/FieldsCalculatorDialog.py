@@ -28,9 +28,11 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
-from PyQt4 import uic
-from PyQt4.QtCore import Qt, QSettings
-from PyQt4.QtGui import QDialog, QFileDialog, QApplication, QCursor, QMessageBox
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt, QSettings
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QApplication, QMessageBox
+from qgis.PyQt.QtGui import QCursor
+from qgis.core import QgsExpressionContext, QgsExpressionContextUtils
 from qgis.gui import QgsEncodingFileDialog
 
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -75,7 +77,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
                 self.tr('[Save to temporary file]'))
 
         self.mOutputFieldTypeComboBox.blockSignals(True)
-        for t in self.alg.TYPE_NAMES:
+        for t in self.alg.type_names:
             self.mOutputFieldTypeComboBox.addItem(t)
         self.mOutputFieldTypeComboBox.blockSignals(False)
 
@@ -94,6 +96,14 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
         self.builder.setLayer(self.layer)
         self.builder.loadFieldNames()
+
+        exp_context = QgsExpressionContext()
+        exp_context.appendScope(QgsExpressionContextUtils.globalScope())
+        exp_context.appendScope(QgsExpressionContextUtils.projectScope())
+        exp_context.appendScope(QgsExpressionContextUtils.layerScope(self.layer))
+        exp_context.lastScope().setVariable("row_number", 1)
+        exp_context.setHighlightedVariables(["row_number"])
+        self.builder.setExpressionContext(exp_context)
 
         self.populateFields()
 

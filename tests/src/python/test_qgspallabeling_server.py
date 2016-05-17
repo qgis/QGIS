@@ -17,13 +17,14 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
+
 import sys
 import os
 import glob
 import shutil
 
-from PyQt4.QtCore import QSettings, qDebug
+from qgis.PyQt.QtCore import QSettings, qDebug
 
 from qgis.core import QgsProject, QgsApplication, QgsPalLabeling
 

@@ -40,7 +40,7 @@ static const QString version_ = QObject::tr( "Version 0.1" );
 static const QString icon_ = ":/raster/dem.png";
 static const QString category_ = QObject::tr( "Raster" );
 
-QgsRasterTerrainAnalysisPlugin::QgsRasterTerrainAnalysisPlugin( QgisInterface* iface ): mIface( iface ), mTerrainAnalysisMenu( 0 )
+QgsRasterTerrainAnalysisPlugin::QgsRasterTerrainAnalysisPlugin( QgisInterface* iface ): mIface( iface ), mTerrainAnalysisMenu( nullptr )
 {
 
 }
@@ -69,7 +69,7 @@ void QgsRasterTerrainAnalysisPlugin::initGui()
       return;
     }
 
-    QMenu* rasterMenu = 0;
+    QMenu* rasterMenu = nullptr;
     QList<QAction *> menuBarActions = menuBar->actions();
     QList<QAction *>::iterator menuActionIt =  menuBarActions.begin();
     for ( ; menuActionIt != menuBarActions.end(); ++menuActionIt )

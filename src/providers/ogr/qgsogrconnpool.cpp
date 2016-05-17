@@ -15,12 +15,20 @@
 
 #include "qgsogrconnpool.h"
 
-QgsOgrConnPool QgsOgrConnPool::sInstance;
-bool QgsOgrConnPool::sInstanceDestroyed = false;
+QgsOgrConnPool* QgsOgrConnPool::mInstance = nullptr;
 
+// static public
 QgsOgrConnPool* QgsOgrConnPool::instance()
 {
-  return sInstanceDestroyed ? 0 : &sInstance;
+  if ( ! mInstance ) mInstance = new QgsOgrConnPool();
+  return mInstance;
+}
+
+// static public
+void QgsOgrConnPool::cleanupInstance()
+{
+  delete mInstance;
+  mInstance = nullptr;
 }
 
 QgsOgrConnPool::QgsOgrConnPool() : QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup>()
@@ -31,5 +39,4 @@ QgsOgrConnPool::QgsOgrConnPool() : QgsConnectionPool<QgsOgrConn*, QgsOgrConnPool
 QgsOgrConnPool::~QgsOgrConnPool()
 {
   QgsDebugCall;
-  sInstanceDestroyed = true;
 }

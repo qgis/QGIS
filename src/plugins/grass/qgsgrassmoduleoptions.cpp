@@ -26,6 +26,7 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
@@ -199,8 +200,12 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
         {
           QString element = promptElem.attribute( "element" );
           QString age = promptElem.attribute( "age" );
+
           //QgsDebugMsg("element = " + element + " age = " + age);
-          if ( age == "old" && ( element == "vector" || element == "cell" ) )
+          if ( age == "old" && ( element == "vector" || element == "cell" ||
+                                 element == "strds" || element == "stvds" ||
+                                 element == "str3ds" || element == "stds" )
+               &&  confDomElement.attribute( "widget" ) != "text" )
           {
             QgsGrassModuleInput *mi = new QgsGrassModuleInput(
               mModule, this, key, confDomElement, descDocElem, gnode, mDirect, this );
@@ -298,6 +303,13 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
     confDomNode = confDomNode.nextSibling();
   }
 
+  if ( mParams.size() == 0 )
+  {
+    QLabel *label = new QLabel( this );
+    label->setText( tr( "This module has no options" ) );
+    mypSimpleLayout->addWidget( label );
+  }
+
   if ( mypAdvancedLayout->count() == 0 )
   {
     mypAdvancedPushButtonFrame->hide();
@@ -325,12 +337,12 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
 
 #if 0
   // This works, but it would mean to desable check if 'field' tag has 'layer' defined in qgm.
-  // It is probably better to require 'layer' attribute, so that it is always explicitely defined,
+  // It is probably better to require 'layer' attribute, so that it is always explicitly defined,
   // and we are sure it is set for modules with more inputs, where auto connection cannot be used
   // (guidependency missing in GRASS 6)
   // Add default inter param relations
   QList<QgsGrassModuleInput *>vectorInputs;
-  foreach ( QgsGrassModuleParam *param, mParams )
+  Q_FOREACH ( QgsGrassModuleParam *param, mParams )
   {
     QgsGrassModuleInput *vectorInput = dynamic_cast<QgsGrassModuleInput *>( param );
     if ( vectorInput )
@@ -342,7 +354,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   {
     QgsDebugMsg( "One input found, try to connect with column options" );
     QgsGrassModuleInput *vectorInput = vectorInputs[0];
-    foreach ( QgsGrassModuleParam *param, mParams )
+    Q_FOREACH ( QgsGrassModuleParam *param, mParams )
     {
       QgsGrassModuleField *moduleField = dynamic_cast<QgsGrassModuleField *>( param );
       if ( moduleField )
@@ -367,7 +379,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
     layout->addStretch();
   }
 
-  foreach ( QgsGrassModuleParam* item, mParams )
+  Q_FOREACH ( QgsGrassModuleParam* item, mParams )
   {
     mErrors << item->errors();
   }
@@ -464,154 +476,120 @@ QStringList QgsGrassModuleStandardOptions::checkOutput()
   return list;
 }
 
-void QgsGrassModuleStandardOptions::freezeOutput()
+QList<QgsGrassProvider *> QgsGrassModuleStandardOptions::grassProviders()
+{
+  QList<QgsGrassProvider *> providers;
+  Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  {
+    if ( layer->type() == QgsMapLayer::VectorLayer )
+    {
+      QgsVectorLayer *vector = qobject_cast<QgsVectorLayer*>( layer );
+      if ( vector  && vector->providerType() == "grass" )
+      {
+        QgsGrassProvider *provider = qobject_cast<QgsGrassProvider *>( vector->dataProvider() );
+        if ( provider )
+        {
+          providers << provider;
+        }
+      }
+    }
+  }
+  return providers;
+}
+
+QList<QgsGrassRasterProvider *> QgsGrassModuleStandardOptions::grassRasterProviders()
+{
+  QList<QgsGrassRasterProvider *> providers;
+  Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  {
+    if ( layer->type() == QgsMapLayer::RasterLayer )
+    {
+      QgsRasterLayer *raster = qobject_cast<QgsRasterLayer*>( layer );
+      if ( raster  && raster->providerType() == "grassraster" )
+      {
+        QgsGrassRasterProvider *provider = qobject_cast<QgsGrassRasterProvider *>( raster->dataProvider() );
+        if ( provider )
+        {
+          providers << provider;
+        }
+      }
+    }
+  }
+  return providers;
+}
+
+// freezeOutput/thawOutput is only necessary in Windows, where files cannot be overwritten
+// when open by another app. It is enabled on all platforms, so that it gets tested.
+void QgsGrassModuleStandardOptions::freezeOutput( bool freeze )
 {
   QgsDebugMsg( "called." );
 
-#if 0  // defined(Q_OS_WIN)
-  for ( int i = 0; i < mItems.size(); i++ )
+  for ( int i = 0; i < mParams.size(); i++ )
   {
-    QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mItems[i] );
-    if ( !opt )
+    QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mParams[i] );
+    if ( !opt || !opt->isOutput() )
+    {
       continue;
-
+    }
     QgsDebugMsg( "opt->key() = " + opt->key() );
 
-    if ( opt->isOutput()
-         && opt->outputType() == QgsGrassModuleOption::Vector )
+    if ( opt->outputType() == QgsGrassModuleOption::Vector )
     {
       QgsDebugMsg( "freeze vector layers" );
 
-      QChar sep = '/';
+      QgsGrassObject outputObject = QgsGrass::getDefaultMapsetObject();
+      outputObject.setName( opt->value() );
+      outputObject.setType( QgsGrassObject::Vector );
+      QgsDebugMsg( "outputObject = " + outputObject.toString() );
 
-      int nlayers = mCanvas->layerCount();
-      for ( int i = 0; i < nlayers; i++ )
+      Q_FOREACH ( QgsGrassProvider *provider, grassProviders() )
       {
-        QgsMapLayer *layer = mCanvas->layer( i );
-
-        if ( layer->type() != QgsMapLayer::VectorLayer )
-          continue;
-
-        QgsVectorLayer *vector = ( QgsVectorLayer* )layer;
-        if ( vector->providerType() != "grass" )
-          continue;
-
-        //TODO dynamic_cast ?
-        QgsGrassProvider *provider = ( QgsGrassProvider * ) vector->dataProvider();
-
-        // TODO add map() mapset() location() gisbase() to grass provider
-        QString source = QDir::cleanPath( provider->dataSourceUri() );
-
-        QgsDebugMsg( "source = " + source );
-
-        // Check GISDBASE and LOCATION
-        QStringList split = source.split( sep );
-
-        if ( split.size() < 4 )
-          continue;
-        split.pop_back(); // layer
-
-        QString map = split.last();
-        split.pop_back(); // map
-
-        QString mapset = split.last();
-        split.pop_back(); // mapset
-
-        QString loc =  source.remove( QRegExp( "/[^/]+/[^/]+/[^/]+$" ) );
-        loc = QDir( loc ).canonicalPath();
-
-        QDir curlocDir( QgsGrass::getDefaultGisdbase() + sep + QgsGrass::getDefaultLocation() );
-        QString curloc = curlocDir.canonicalPath();
-
-        if ( loc != curloc )
-          continue;
-
-        if ( mapset != QgsGrass::getDefaultMapset() )
-          continue;
-
-        if ( provider->isFrozen() )
-          continue;
-
-        provider->freeze();
+        QgsGrassObject layerObject;
+        layerObject.setFromUri( provider->dataSourceUri() );
+        if ( layerObject == outputObject )
+        {
+          if ( freeze )
+          {
+            QgsDebugMsg( "freeze map " + provider->dataSourceUri() );
+            provider->freeze();
+          }
+          else
+          {
+            QgsDebugMsg( "thaw map " + provider->dataSourceUri() );
+            provider->thaw();
+          }
+        }
       }
     }
-  }
-#endif
-}
-
-void QgsGrassModuleStandardOptions::thawOutput()
-{
-  QgsDebugMsg( "called." );
-
-#if 0 // defined(Q_OS_WIN)
-  for ( int i = 0; i < mItems.size(); i++ )
-  {
-    QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mItems[i] );
-    if ( !opt )
-      continue;
-
-    QgsDebugMsg( "opt->key() = " + opt->key() );
-
-    if ( opt->isOutput()
-         && opt->outputType() == QgsGrassModuleOption::Vector )
+    else if ( opt->outputType() == QgsGrassModuleOption::Raster )
     {
-      QgsDebugMsg( "thaw vector layers" );
+      QgsDebugMsg( "freeze raster layers" );
 
-      QChar sep = '/';
+      QgsGrassObject outputObject = QgsGrass::getDefaultMapsetObject();
+      outputObject.setName( opt->value() );
+      outputObject.setType( QgsGrassObject::Raster );
+      QgsDebugMsg( "outputObject = " + outputObject.toString() );
 
-      int nlayers = mCanvas->layerCount();
-      for ( int i = 0; i < nlayers; i++ )
+      Q_FOREACH ( QgsGrassRasterProvider *provider, grassRasterProviders() )
       {
-        QgsMapLayer *layer = mCanvas->layer( i );
-
-        if ( layer->type() != QgsMapLayer::VectorLayer )
-          continue;
-
-        QgsVectorLayer *vector = ( QgsVectorLayer* )layer;
-        if ( vector->providerType() != "grass" )
-          continue;
-
-        //TODO dynamic_cast ?
-        QgsGrassProvider *provider = ( QgsGrassProvider * ) vector->dataProvider();
-
-        // TODO add map() mapset() location() gisbase() to grass provider
-        QString source = QDir::cleanPath( provider->dataSourceUri() );
-
-        QgsDebugMsg( "source = " + source );
-
-        // Check GISDBASE and LOCATION
-        QStringList split = source.split( sep );
-
-        if ( split.size() < 4 )
-          continue;
-        split.pop_back(); // layer
-
-        QString map = split.last();
-        split.pop_back(); // map
-
-        QString mapset = split.last();
-        split.pop_back(); // mapset
-
-        QString loc =  source.remove( QRegExp( "/[^/]+/[^/]+/[^/]+$" ) );
-        loc = QDir( loc ).canonicalPath();
-
-        QDir curlocDir( QgsGrass::getDefaultGisdbase() + sep + QgsGrass::getDefaultLocation() );
-        QString curloc = curlocDir.canonicalPath();
-
-        if ( loc != curloc )
-          continue;
-
-        if ( mapset != QgsGrass::getDefaultMapset() )
-          continue;
-
-        if ( !provider->isFrozen() )
-          continue;
-
-        provider->thaw();
+        QgsGrassObject layerObject;
+        layerObject.setFromUri( provider->dataSourceUri() );
+        if ( layerObject == outputObject )
+        {
+          if ( freeze )
+          {
+            QgsDebugMsg( "freeze map " + provider->dataSourceUri() );
+            provider->freeze();
+          }
+          else
+          {
+            QgsDebugMsg( "thaw map " + provider->dataSourceUri() );
+            provider->thaw();
+          }
+        }
       }
     }
   }
-#endif
 }
 
 QStringList QgsGrassModuleStandardOptions::output( int type )
@@ -863,11 +841,9 @@ bool QgsGrassModuleStandardOptions::usesRegion()
   for ( int i = 0; i < mParams.size(); i++ )
   {
     QgsGrassModuleInput *input = dynamic_cast<QgsGrassModuleInput *>( mParams[i] );
-    if ( input && input->useRegion() )
+    if ( input && input->usesRegion() )
       return true;
 
-    /* It only make sense to check input, right?
-     * Output has no region yet */
     QgsGrassModuleOption *option = dynamic_cast<QgsGrassModuleOption *>( mParams[i] );
     if ( option && option->usesRegion() )
       return true;
@@ -957,9 +933,9 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
                   + "<br><br>PATH=" + environment.value( "PATH" )
                   + "<br><br>PYTHONPATH=" + environment.value( "PYTHONPATH" )
                   + "<br><br>" + tr( "command" ) + QString( ": %1 %2<br>%3<br>%4" )
-                  .arg( cmd ).arg( arguments.join( " " ) )
-                  .arg( process.readAllStandardOutput().constData() )
-                  .arg( process.readAllStandardError().constData() );
+                  .arg( cmd, arguments.join( " " ),
+                        process.readAllStandardOutput().constData(),
+                        process.readAllStandardError().constData() );
     QgsDebugMsg( msg );
     errors << msg;
     return gDoc;

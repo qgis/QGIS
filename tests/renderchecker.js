@@ -2,11 +2,13 @@ function addComparison(id,rendered,expected,w,h) {
 	var e = document.getElementById(id);
 
 	var div = document.createElement("DIV");
-	div.style = "margin: 0 auto; font-size: 0;";
+	div.style.margin = "0 auto";
+	div.style.fontSize = "0";
 	e.appendChild(div);
 
 	var div0 = document.createElement("DIV");
-	div0.style = "font-size: 0; position: relative;";
+	div0.style.fontSize = "0";
+	div0.style.position = "relative";
 	div.appendChild(div0);
 
 	var img = document.createElement("IMG");
@@ -17,6 +19,7 @@ function addComparison(id,rendered,expected,w,h) {
 	div0.appendChild(img);
 
 	var div1 = document.createElement("DIV");
+	div1.setAttribute("style", "pointer-events: none");
 	div1.style.backgroundImage = "url('" + expected + "')";
 	div1.style.backgroundSize = "cover";
 	div1.style.position = "absolute";

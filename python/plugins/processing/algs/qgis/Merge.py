@@ -25,86 +25,98 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import QgsFields, QgsVectorLayer
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterMultipleInput
 from processing.core.outputs import OutputVector
 
-from processing.tools import dataobjects, vector
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class Merge(GeoAlgorithm):
-    LAYER1 = 'LAYER1'
-    LAYER2 = 'LAYER2'
+    LAYERS = 'LAYERS'
     OUTPUT = 'OUTPUT'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'merge_shapes.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Merge vector layers')
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
-        self.addParameter(ParameterVector(self.LAYER1,
-                                          self.tr('Input layer 1'), [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterVector(self.LAYER2,
-                                          self.tr('Input layer 2'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterMultipleInput(self.LAYERS,
+                                                 self.tr('Layers to merge'), datatype=ParameterMultipleInput.TYPE_VECTOR_ANY))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Merged')))
 
     def processAlgorithm(self, progress):
-        layer1 = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.LAYER1))
-        layer2 = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.LAYER2))
+        inLayers = self.getParameterValue(self.LAYERS)
+        paths = inLayers.split(';')
 
-        if layer1.wkbType() != layer2.wkbType():
-            raise GeoAlgorithmExecutionException(
-                self.tr('Merged layers must have be same type of geometry'))
+        layers = []
+        fields = QgsFields()
+        totalFeatureCount = 0
+        for x in xrange(len(paths)):
+            layer = QgsVectorLayer(paths[x], unicode(x), 'ogr')
 
-        count = 0
-        fields = []
-        layers = [layer1, layer2]
-        for layer in layers:
-            count += layer.featureCount()
+            if (len(layers) > 0):
+                if (layer.dataProvider().geometryType() != layers[0].dataProvider().geometryType()):
+                    raise GeoAlgorithmExecutionException(
+                        self.tr('All layers must have same geometry type!'))
 
-            for sfield in layer.pendingFields():
+            layers.append(layer)
+            totalFeatureCount += layer.featureCount()
+
+            for sindex, sfield in enumerate(layer.dataProvider().fields()):
                 found = None
                 for dfield in fields:
-                    if dfield.name() == sfield.name() and \
-                       dfield.type() == sfield.type():
+                    if (dfield.name().upper() == sfield.name().upper()):
                         found = dfield
-                        break
+                        if (dfield.type() != sfield.type()):
+                            raise GeoAlgorithmExecutionException(
+                                self.tr('{} field in layer {} has different '
+                                        'data type than in other layers.'))
 
                 if not found:
                     fields.append(sfield)
 
+        total = 100.0 / totalFeatureCount
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, layer1.wkbType(), layer1.crs())
+            fields.toList(), layers[0].dataProvider().geometryType(),
+            layers[0].crs())
 
-        total = 100.0 / float(count)
-        count = 0
+        featureCount = 0
         for layer in layers:
-            idx = {}
-            for dfield in fields:
-                i = 0
-                for sfield in layer.pendingFields():
-                    if sfield.name() == dfield.name() and \
-                       sfield.type() == dfield.type():
-                        idx[dfield] = i
-                        break
-                    i += 1
-
-            features = vector.features(layer)
-            for f in features:
-                sAttributes = f.attributes()
-                dAttributes = []
-                for dfield in fields:
-                    if dfield in idx:
-                        dAttributes.append(sAttributes[idx[dfield]])
+            for feature in layer.dataProvider().getFeatures():
+                sattributes = feature.attributes()
+                dattributes = []
+                for dindex, dfield in enumerate(fields):
+                    if (dfield.type() == QVariant.Int):
+                        dattribute = 0
+                    elif (dfield.type() == QVariant.Double):
+                        dattribute = 0.0
                     else:
-                        dAttributes.append(dfield.type())
-                f.setAttributes(dAttributes)
-                writer.addFeature(f)
+                        dattribute = ''
 
-                count += 1
-                progress.setPercentage(int(count * total))
+                    for sindex, sfield in enumerate(layer.dataProvider().fields()):
+                        if (sfield.name().upper() == dfield.name().upper()):
+                            if (sfield.type() != dfield.type()):
+                                raise GeoAlgorithmExecutionException(
+                                    self.tr('Attribute type mismatch'))
+                            dattribute = sattributes[sindex]
+                            break
+
+                    dattributes.append(dattribute)
+
+                feature.setAttributes(dattributes)
+                writer.addFeature(feature)
+                featureCount += 1
+                progress.setPercentage(int(featureCount * total))
 
         del writer

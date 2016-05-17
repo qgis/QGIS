@@ -29,7 +29,7 @@
 #include "qgslonglongvalidator.h"
 #include "qgsfield.h"
 
-QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, QString defaultValue, QString dateFormat )
+QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, const QString& defaultValue, const QString& dateFormat )
     : QValidator( parent )
     , mField( field )
     , mDefaultValue( defaultValue )
@@ -80,7 +80,7 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, QS
       break;
 
     default:
-      mValidator = 0;
+      mValidator = nullptr;
   }
 
   QSettings settings;
@@ -117,12 +117,12 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
   }
   else if ( mField.type() == QVariant::String )
   {
-    // allow to enter the NULL representation, which might be
+    // allow entering the NULL representation, which might be
     // longer than the actual field
-    if ( mNullValue.size() > 0 && s.size() > 0 && s.size() < mNullValue.size() && s == mNullValue.left( s.size() ) )
+    if ( !mNullValue.isEmpty() && !s.isEmpty() && s.size() < mNullValue.size() && s == mNullValue.left( s.size() ) )
       return Intermediate;
 
-    if ( mDefaultValue.size() > 0 && s.size() > 0 && s.size() < mDefaultValue.size() && s == mDefaultValue.left( s.size() ) )
+    if ( !mDefaultValue.isEmpty() && !s.isEmpty() && s.size() < mDefaultValue.size() && s == mDefaultValue.left( s.size() ) )
       return Intermediate;
 
     if ( s == mNullValue )

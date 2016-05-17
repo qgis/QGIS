@@ -14,6 +14,12 @@
  ***************************************************************************/
 
 
+// This is required for the ConvertToSubClassCode to work properly
+// so RTTI for casting is available in the whole module.
+%ModuleCode
+#include "qgsrelationwidgetwrapper.h"
+%End
+
 /**
  * Manages an editor widget
  * Widget and wrapper share the same parent
@@ -32,9 +38,10 @@ class QgsWidgetWrapper : QObject
 %End
 
 %ConvertToSubClassCode
-  QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( sipCpp );
-  if ( eww )
+  if ( qobject_cast<QgsEditorWidgetWrapper*>( sipCpp ) )
     sipType = sipType_QgsEditorWidgetWrapper;
+  else if ( qobject_cast<QgsRelationWidgetWrapper*>( sipCpp ) )
+    sipType = sipType_QgsRelationWidgetWrapper;
   else
     sipType = 0;
 %End
@@ -72,28 +79,28 @@ class QgsWidgetWrapper : QObject
     void setContext( const QgsAttributeEditorContext& context );
 
     /**
-     * Use this inside your overriden classes to access the configuration.
+     * Use this inside your overridden classes to access the configuration.
      *
      * @param key         The configuration option you want to load
      * @param defaultVal  Default value
      *
      * @return the value assigned to this configuration option
      */
-    QVariant config( QString key, QVariant defaultVal = QVariant() );
+    QVariant config( const QString& key, const QVariant& defaultVal = QVariant() ) const;
 
     /**
      * Returns the whole config
      *
      * @return The configuration
      */
-    const QgsEditorWidgetConfig config();
+    QgsEditorWidgetConfig config() const;
 
     /**
      * Returns information about the context in which this widget is shown
      *
      * @return context information
      */
-    const QgsAttributeEditorContext& context();
+    const QgsAttributeEditorContext& context() const;
 
     /**
      * Access the QgsVectorLayer, you are working on
@@ -102,7 +109,7 @@ class QgsWidgetWrapper : QObject
      *
      * @see field()
      */
-    QgsVectorLayer* layer();
+    QgsVectorLayer* layer() const;
 
     /**
      * Will return a wrapper for a given widget
@@ -119,14 +126,16 @@ class QgsWidgetWrapper : QObject
      * another suitable widget type instead.
      *
      * @return Validity status of this widget.
+     *
+     * @note Added in 2.12
      */
-    virtual bool valid() = 0;
+    virtual bool valid() const = 0;
 
   protected:
     /**
      * This method should create a new widget with the provided parent. This will only be called
      * if the form did not already provide a widget, so it is not guaranteed to be called!
-     * You should not do initialisation stuff, which also has to be done for custom editor
+     * You should not do initialization stuff, which also has to be done for custom editor
      * widgets inside this method. Things like filling comboboxes and assigning other data which
      * will also be used to make widgets on forms created in the QtDesigner usable should be assigned
      * in {@link initWidget(QWidget*)}.

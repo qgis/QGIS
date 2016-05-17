@@ -27,13 +27,13 @@
 
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeature, bool featureOwner, const QgsDistanceArea &myDa, QWidget* parent, bool showDialogButtons )
     : QDialog( parent )
-    , mHighlight( 0 )
-    , mOwnedFeature( featureOwner ? thepFeature : 0 )
+    , mHighlight( nullptr )
+    , mOwnedFeature( featureOwner ? thepFeature : nullptr )
 {
   QgsAttributeEditorContext context;
   context.setDistanceArea( myDa );
 
-  init( vl, thepFeature, context, parent );
+  init( vl, thepFeature, context );
 
   if ( !showDialogButtons )
     mAttributeForm->hideButtonBox();
@@ -41,10 +41,10 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeat
 
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeature, bool featureOwner, QWidget* parent, bool showDialogButtons, const QgsAttributeEditorContext &context )
     : QDialog( parent )
-    , mHighlight( 0 )
-    , mOwnedFeature( featureOwner ? thepFeature : 0 )
+    , mHighlight( nullptr )
+    , mOwnedFeature( featureOwner ? thepFeature : nullptr )
 {
-  init( vl, thepFeature, context, parent );
+  init( vl, thepFeature, context );
 
   if ( !showDialogButtons )
     mAttributeForm->hideButtonBox();
@@ -97,12 +97,12 @@ void QgsAttributeDialog::show( bool autoDelete )
   activateWindow();
 }
 
-void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, const QgsAttributeEditorContext &context, QWidget* parent )
+void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, const QgsAttributeEditorContext &context )
 {
   setWindowTitle( tr( "%1 - Feature Attributes" ).arg( layer->name() ) );
   setLayout( new QGridLayout() );
   layout()->setMargin( 0 );
-  mAttributeForm = new QgsAttributeForm( layer, *feature, context, parent );
+  mAttributeForm = new QgsAttributeForm( layer, *feature, context, this );
   mAttributeForm->disconnectButtonBox();
   layout()->addWidget( mAttributeForm );
   QDialogButtonBox* buttonBox = mAttributeForm->findChild<QDialogButtonBox*>();
@@ -111,7 +111,7 @@ void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, const
   connect( layer, SIGNAL( layerDeleted() ), this, SLOT( close() ) );
 
   QgsActionMenu* menu = new QgsActionMenu( layer, &mAttributeForm->feature(), this );
-  if ( menu->actions().size() > 0 )
+  if ( !menu->actions().isEmpty() )
   {
     QMenuBar* menuBar = new QMenuBar( this );
     menuBar->addMenu( menu );
@@ -124,4 +124,14 @@ void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, const
 
   restoreGeometry();
   focusNextChild();
+}
+
+bool QgsAttributeDialog::event( QEvent* e )
+{
+  if ( e->type() == QEvent::WindowActivate && mHighlight )
+    mHighlight->show();
+  else if ( e->type() == QEvent::WindowDeactivate && mHighlight )
+    mHighlight->hide();
+
+  return QDialog::event( e );
 }

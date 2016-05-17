@@ -12,74 +12,76 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
-import os
+import qgis  # NOQA
 
-from qgis.core import QgsField, QgsVectorLayer, NULL
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
-from unittest import expectedFailure
+from qgis.core import QgsVectorLayer
+from qgis.testing import start_app, unittest
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 
 
-class TestQgsFields(TestCase):
+class TestQgsFields(unittest.TestCase):
 
-    def test_expections(self):
+    def test_exceptions(self):
         ml = QgsVectorLayer("Point?crs=epsg:4236&field=id:integer&field=value:double",
                             "test_data", "memory")
         assert ml.isValid()
         fields = ml.fields()
 
-        #check no error
+        # check no error
         fields.remove(1)
-        #check exceptions raised
+        # check exceptions raised
         with self.assertRaises(KeyError):
             fields.remove(-1)
         with self.assertRaises(KeyError):
             fields.remove(111)
 
         fields = ml.fields()
-        #check no error
+        # check no error
         fields.at(1)
-        #check exceptions raised
+        # check exceptions raised
         with self.assertRaises(KeyError):
             fields.at(-1)
         with self.assertRaises(KeyError):
             fields.at(111)
 
-        #check no error
+        # check no error
         fields.field(1)
-        #check exceptions raised
+        # check exceptions raised
         with self.assertRaises(KeyError):
             fields.field(-1)
         with self.assertRaises(KeyError):
             fields.field(111)
 
-        #check no error
+        # check no error
         fields.field('value')
-        #check exceptions raised
+        # check exceptions raised
         with self.assertRaises(KeyError):
             fields.field('bad')
 
-        #check no error
+        # check no error
         fields.fieldOrigin(1)
-        #check exceptions raised
+        # check exceptions raised
         with self.assertRaises(KeyError):
             fields.fieldOrigin(-1)
         with self.assertRaises(KeyError):
             fields.fieldOrigin(111)
 
-        #check no error
+        # check no error
         fields.fieldOriginIndex(1)
-        #check exceptions raised
+        # check exceptions raised
         with self.assertRaises(KeyError):
             fields.fieldOriginIndex(-1)
         with self.assertRaises(KeyError):
             fields.fieldOriginIndex(111)
+
+        # check no error
+        fields.iconForField(1)
+        # check exceptions raised
+        with self.assertRaises(KeyError):
+            fields.iconForField(-1)
+        with self.assertRaises(KeyError):
+            fields.iconForField(111)
 
 if __name__ == '__main__':
     unittest.main()

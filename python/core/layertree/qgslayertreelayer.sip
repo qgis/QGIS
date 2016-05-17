@@ -25,7 +25,7 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
   public:
     explicit QgsLayerTreeLayer( QgsMapLayer* layer );
 
-    explicit QgsLayerTreeLayer( QString layerId, QString name = QString() );
+    explicit QgsLayerTreeLayer( const QString& layerId, const QString& name = QString() );
 
     QString layerId() const;
 
@@ -42,11 +42,21 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
 
     virtual QString dump() const;
 
-    virtual QgsLayerTreeNode* clone() const /Factory/;
+    virtual QgsLayerTreeLayer* clone() const /Factory/;
+
+  protected slots:
+    void registryLayersAdded( const QList<QgsMapLayer*>& layers );
+    void registryLayersWillBeRemoved( const QStringList& layerIds );
 
   signals:
     //! emitted when a previously unavailable layer got loaded
     void layerLoaded();
+    //! emitted when a previously available layer got unloaded (from layer registry)
+    //! @note added in 2.6
+    void layerWillBeUnloaded();
+
+  protected:
+    void attachToLayer();
 
   private:
     QgsLayerTreeLayer( const QgsLayerTreeLayer& other );

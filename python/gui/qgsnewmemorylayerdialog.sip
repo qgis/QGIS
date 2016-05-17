@@ -12,7 +12,7 @@ class QgsNewMemoryLayerDialog : QDialog
      */
     static QgsVectorLayer* runAndCreateLayer( QWidget* parent = 0 );
 
-    QgsNewMemoryLayerDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsNewMemoryLayerDialog( QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
     ~QgsNewMemoryLayerDialog();
 
     /** Returns the selected geometry type*/

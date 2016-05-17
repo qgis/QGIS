@@ -26,12 +26,12 @@
 QgsNewNameDialog::QgsNewNameDialog( const QString& source, const QString& initial,
                                     const QStringList& extensions, const QStringList& existing,
                                     const QRegExp& regexp, Qt::CaseSensitivity cs,
-                                    QWidget *parent, Qt::WindowFlags flags )
+                                    QWidget *parent, const Qt::WindowFlags& flags )
     : QgsDialog( parent, flags, QDialogButtonBox::Ok | QDialogButtonBox::Cancel )
     , mExiting( existing )
     , mExtensions( extensions )
     , mCaseSensitivity( cs )
-    , mNamesLabel( 0 )
+    , mNamesLabel( nullptr )
     , mRegexp( regexp )
     , mOverwriteEnabled( true )
 {
@@ -48,7 +48,7 @@ QgsNewNameDialog::QgsNewNameDialog( const QString& source, const QString& initia
   }
   else
   {
-    hintString = tr( "Enter new %1 for %2" ).arg( nameDesc ).arg( source );
+    hintString = tr( "Enter new %1 for %2" ).arg( nameDesc, source );
   }
   mHintLabel = new QLabel( hintString, this );
   layout()->addWidget( mHintLabel );
@@ -75,6 +75,9 @@ QgsNewNameDialog::QgsNewNameDialog( const QString& source, const QString& initia
   mErrorLabel->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   mErrorLabel->setWordWrap( true );
   layout()->addWidget( mErrorLabel );
+
+  mLineEdit->setFocus();
+  mLineEdit->selectAll();
 
   nameChanged();
 }
@@ -132,7 +135,7 @@ void QgsNewNameDialog::nameChanged()
   QStringList newNames = fullNames( newName, mExtensions );
   if ( !mExtensions.isEmpty() )
   {
-    namesString += " " + newNames.join( ", " );
+    namesString += ' ' + newNames.join( ", " );
     mNamesLabel->setText( namesString );
   }
 
@@ -141,7 +144,7 @@ void QgsNewNameDialog::nameChanged()
   if ( !conflicts.isEmpty() )
   {
     QString warning = !mConflictingNameWarning.isEmpty() ? mConflictingNameWarning
-                      : tr( "%n Name(s) %1 exists", 0, conflicts.size() ).arg( conflicts.join( ", " ) );
+                      : tr( "%n Name(s) %1 exists", nullptr, conflicts.size() ).arg( conflicts.join( ", " ) );
     mErrorLabel->setText( highlightText( warning ) );
     if ( mOverwriteEnabled )
     {
@@ -198,5 +201,5 @@ bool QgsNewNameDialog::exists( const QString& name, const QStringList& extension
 {
   QStringList newNames = fullNames( name, extensions );
   QStringList conflicts = matching( newNames, existing, cs );
-  return conflicts.size() > 0;
+  return !conflicts.isEmpty();
 }

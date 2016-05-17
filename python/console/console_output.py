@@ -19,19 +19,20 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from PyQt4.QtCore import Qt, QCoreApplication, QSettings, SIGNAL
-from PyQt4.QtGui import QColor, QGridLayout, QSpacerItem, QSizePolicy, QFont, QShortcut, QKeySequence, QMenu, QApplication
-from PyQt4.Qsci import QsciScintilla, QsciLexerPython
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QSettings
+from qgis.PyQt.QtGui import QColor, QFont, QKeySequence
+from qgis.PyQt.QtWidgets import QGridLayout, QSpacerItem, QSizePolicy, QShortcut, QMenu, QApplication
+from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython
 from qgis.core import QgsApplication
 from qgis.gui import QgsMessageBar
 import sys
 
 
-class writeOut:
+class writeOut(object):
 
     def __init__(self, shellOut, out=None, style=None):
         """
-        This class allow to write stdout and stderr
+        This class allows writing to stdout and stderr
         """
         self.sO = shellOut
         self.out = None
@@ -221,19 +222,18 @@ class ShellOutputScintilla(QsciScintilla):
                                    self.enteredSelected,
                                    QKeySequence(Qt.CTRL + Qt.Key_E))
         clearAction = menu.addAction(iconClear,
-                                     QCoreApplication.translate("PythonConsole", "Clear console"),
+                                     QCoreApplication.translate("PythonConsole", "Clear Console"),
                                      self.clearConsole)
         menu.addSeparator()
         copyAction = menu.addAction(
             QCoreApplication.translate("PythonConsole", "Copy"),
             self.copy, QKeySequence.Copy)
-        menu.addSeparator()
         selectAllAction = menu.addAction(
             QCoreApplication.translate("PythonConsole", "Select All"),
             self.selectAll, QKeySequence.SelectAll)
         menu.addSeparator()
         menu.addAction(iconSettings,
-                       QCoreApplication.translate("PythonConsole", "Settings"),
+                       QCoreApplication.translate("PythonConsole", "Options..."),
                        self.parent.openSettings)
         runAction.setEnabled(False)
         clearAction.setEnabled(False)
@@ -265,11 +265,11 @@ class ShellOutputScintilla(QsciScintilla):
     def copy(self):
         """Copy text to clipboard... or keyboard interrupt"""
         if self.hasSelectedText():
-            text = unicode(self.selectedText())
-            text = text.replace('>>> ', '').replace('... ', '').strip() # removing prompts
+            text = self.selectedText()
+            text = text.replace('>>> ', '').replace('... ', '').strip()  # removing prompts
             QApplication.clipboard().setText(text)
         else:
-            self.emit(SIGNAL("keyboard_interrupt()"))
+            raise KeyboardInterrupt
 
     def enteredSelected(self):
         cmd = self.selectedText()

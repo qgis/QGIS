@@ -22,7 +22,6 @@ class QgsComposerLegendStyle
       Right,
     };
     QgsComposerLegendStyle();
-    ~QgsComposerLegendStyle();
 
     QFont font() const;
     QFont & rfont();
@@ -34,7 +33,7 @@ class QgsComposerLegendStyle
     // set all margins
     void setMargin( double margin );
 
-    void writeXML( QString name, QDomElement& elem, QDomDocument & doc ) const;
+    void writeXML( const QString& name, QDomElement& elem, QDomDocument & doc ) const;
 
     void readXML( const QDomElement& elem, const QDomDocument& doc );
 
@@ -42,7 +41,7 @@ class QgsComposerLegendStyle
     static QString styleName( Style s );
 
     /** Get style from name, used in project file */
-    static Style styleFromName( QString styleName );
+    static Style styleFromName( const QString& styleName );
 
     /** Get style label, translated, used in UI */
     static QString styleLabel( Style s );

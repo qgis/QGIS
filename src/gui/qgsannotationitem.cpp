@@ -26,6 +26,7 @@
 QgsAnnotationItem::QgsAnnotationItem( QgsMapCanvas* mapCanvas )
     : QgsMapCanvasItem( mapCanvas )
     , mMapPositionFixed( true )
+    , mMapPositionCrs( QgsCoordinateReferenceSystem() )
     , mOffsetFromReferencePoint( QPointF( 50, -50 ) )
     , mBalloonSegment( -1 )
 {
@@ -53,9 +54,15 @@ void QgsAnnotationItem::setMapPosition( const QgsPoint& pos )
 {
   mMapPosition = pos;
   setPos( toCanvasCoordinates( mMapPosition ) );
+  mMapPositionCrs = mMapCanvas->mapSettings().destinationCrs();
 }
 
-void QgsAnnotationItem::setOffsetFromReferencePoint( const QPointF& offset )
+void QgsAnnotationItem::setMapPositionCrs( const QgsCoordinateReferenceSystem& crs )
+{
+  mMapPositionCrs = crs;
+}
+
+void QgsAnnotationItem::setOffsetFromReferencePoint( QPointF offset )
 {
   mOffsetFromReferencePoint = offset;
   updateBoundingRect();
@@ -85,7 +92,8 @@ void QgsAnnotationItem::updatePosition()
 {
   if ( mMapPositionFixed )
   {
-    setPos( toCanvasCoordinates( mMapPosition ) );
+    QgsCoordinateTransform t( mMapPositionCrs, mMapCanvas->mapSettings().destinationCrs() );
+    setPos( toCanvasCoordinates( t.transform( mMapPosition ) ) );
   }
   else
   {
@@ -132,7 +140,10 @@ void QgsAnnotationItem::updateBalloon()
 
   //edge list
   QList<QLineF> segmentList;
-  segmentList << segment( 0 ); segmentList << segment( 1 ); segmentList << segment( 2 ); segmentList << segment( 3 );
+  segmentList << segment( 0 );
+  segmentList << segment( 1 );
+  segmentList << segment( 2 );
+  segmentList << segment( 3 );
 
   //find  closest edge / closest edge point
   double minEdgeDist = DBL_MAX;
@@ -200,7 +211,7 @@ void QgsAnnotationItem::drawFrame( QPainter* p )
   p->drawPolygon( poly );
 }
 
-void QgsAnnotationItem::setFrameSize( const QSizeF& size )
+void QgsAnnotationItem::setFrameSize( QSizeF size )
 {
   QSizeF frameSize = minimumFrameSize().expandedTo( size ); //don't allow frame sizes below minimum
   mFrameSize = frameSize;
@@ -224,7 +235,7 @@ void QgsAnnotationItem::drawMarkerSymbol( QPainter* p )
   if ( mMarkerSymbol )
   {
     mMarkerSymbol->startRender( renderContext );
-    mMarkerSymbol->renderPoint( QPointF( 0, 0 ), 0, renderContext );
+    mMarkerSymbol->renderPoint( QPointF( 0, 0 ), nullptr, renderContext );
     mMarkerSymbol->stopRender( renderContext );
   }
 }
@@ -272,7 +283,7 @@ QLineF QgsAnnotationItem::segment( int index )
   }
 }
 
-QPointF QgsAnnotationItem::pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const
+QPointF QgsAnnotationItem::pointOnLineWithDistance( QPointF startPoint, QPointF directionPoint, double distance ) const
 {
   double dx = directionPoint.x() - startPoint.x();
   double dy = directionPoint.y() - startPoint.y();
@@ -281,7 +292,7 @@ QPointF QgsAnnotationItem::pointOnLineWithDistance( const QPointF& startPoint, c
   return QPointF( startPoint.x() + dx * scaleFactor, startPoint.y() + dy * scaleFactor );
 }
 
-QgsAnnotationItem::MouseMoveAction QgsAnnotationItem::moveActionForPosition( const QPointF& pos ) const
+QgsAnnotationItem::MouseMoveAction QgsAnnotationItem::moveActionForPosition( QPointF pos ) const
 {
   QPointF itemPos = mapFromScene( pos );
 
@@ -392,6 +403,8 @@ void QgsAnnotationItem::_writeXML( QDomDocument& doc, QDomElement& itemElem ) co
   annotationElem.setAttribute( "mapPositionFixed", mMapPositionFixed );
   annotationElem.setAttribute( "mapPosX", qgsDoubleToString( mMapPosition.x() ) );
   annotationElem.setAttribute( "mapPosY", qgsDoubleToString( mMapPosition.y() ) );
+  if ( mMapPositionCrs.isValid() )
+    mMapPositionCrs.writeXML( annotationElem, doc );
   annotationElem.setAttribute( "offsetX", qgsDoubleToString( mOffsetFromReferencePoint.x() ) );
   annotationElem.setAttribute( "offsetY", qgsDoubleToString( mOffsetFromReferencePoint.y() ) );
   annotationElem.setAttribute( "frameWidth", QString::number( mFrameSize.width() ) );
@@ -431,6 +444,8 @@ void QgsAnnotationItem::_readXML( const QDomDocument& doc, const QDomElement& an
   mapPos.setX( annotationElem.attribute( "mapPosX", "0" ).toDouble() );
   mapPos.setY( annotationElem.attribute( "mapPosY", "0" ).toDouble() );
   mMapPosition = mapPos;
+  if ( !mMapPositionCrs.readXML( annotationElem ) )
+    mMapPositionCrs = mMapCanvas->mapSettings().destinationCrs();
   mFrameBorderWidth = annotationElem.attribute( "frameBorderWidth", "0.5" ).toDouble();
   mFrameColor.setNamedColor( annotationElem.attribute( "frameColor", "#000000" ) );
   mFrameColor.setAlpha( annotationElem.attribute( "frameColorAlpha", "255" ).toInt() );

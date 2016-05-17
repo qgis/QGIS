@@ -23,18 +23,16 @@ email                : brush.tyler@gmail.com
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import SpatiaLiteDBConnector
 
-from PyQt4.QtCore import Qt, SIGNAL, QSettings, QFileInfo
-from PyQt4.QtGui import QIcon, QApplication, QAction, QFileDialog
+from qgis.PyQt.QtCore import Qt, QSettings, QFileInfo
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QApplication, QAction, QFileDialog
 from qgis.core import QgsDataSourceURI
 from qgis.gui import QgsMessageBar
 
 from ..plugin import DBPlugin, Database, Table, VectorTable, RasterTable, TableField, TableIndex, TableTrigger, \
     InvalidDataException
 
-try:
-    from . import resources_rc
-except ImportError:
-    pass
+from . import resources_rc  # NOQA
 
 
 def classFactory():
@@ -101,7 +99,7 @@ class SpatiaLiteDBPlugin(DBPlugin):
         uri = QgsDataSourceURI()
         uri.setDatabase(filename)
         self.addConnection(conn_name, uri)
-        index.internalPointer().emit(SIGNAL('itemChanged'), index.internalPointer())
+        index.internalPointer().itemChanged.emit(index.internalPointer())
 
 
 class SLDatabase(Database):
@@ -150,7 +148,7 @@ class SLDatabase(Database):
         self.runVacuum()
 
     def runVacuum(self):
-        self.database().aboutToChange()
+        self.database().aboutToChange.emit()
         self.database().connector.runVacuum()
         self.database().refresh()
 
@@ -188,7 +186,7 @@ class SLTable(Table):
         if self.database().connector.isGpkg():
             # QGIS has no provider to load Geopackage vectors, let's use OGR
             return u"vector:ogr:%s:%s" % (self.name, self.ogrUri())
-        return VectorTable.mimeUri(self)
+        return Table.mimeUri(self)
 
     def toMapLayer(self):
         from qgis.core import QgsVectorLayer
@@ -238,14 +236,14 @@ class SLVectorTable(SLTable, VectorTable):
         return self.database().connector.hasSpatialIndex((self.schemaName(), self.name), geom_column)
 
     def createSpatialIndex(self, geom_column=None):
-        self.aboutToChange()
+        self.aboutToChange.emit()
         ret = VectorTable.createSpatialIndex(self, geom_column)
         if ret is not False:
             self.database().refresh()
         return ret
 
     def deleteSpatialIndex(self, geom_column=None):
-        self.aboutToChange()
+        self.aboutToChange.emit()
         ret = VectorTable.deleteSpatialIndex(self, geom_column)
         if ret is not False:
             self.database().refresh()
@@ -277,12 +275,8 @@ class SLRasterTable(SLTable, RasterTable):
         return gdalUri
 
     def mimeUri(self):
-        if self.database().connector.isGpkg():
-            # QGIS has no provider to load Geopackage rasters, let's use GDAL
-            uri = u"raster:gdal:%s:%s" % (self.name, self.uri().database())
-        else:
-            # QGIS has no provider to load Rasterlite rasters, let's use GDAL
-            uri = u"raster:gdal:%s:%s" % (self.name, self.rasterliteGdalUri())
+        # QGIS has no provider to load rasters, let's use GDAL
+        uri = u"raster:gdal:%s:%s" % (self.name, self.uri().database())
         return uri
 
     def toMapLayer(self):

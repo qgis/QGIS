@@ -38,14 +38,19 @@ class QgsRasterLayer : QgsMapLayer
      *
      * -
      * */
-    QgsRasterLayer( const QString & path,
-                    const QString &  baseName = QString::null,
+    QgsRasterLayer( const QString &path,
+                    const QString &baseName = QString::null,
                     bool loadDefaultStyleFlag = true );
 
+    //TODO - QGIS 3.0
+    //This constructor is confusing if used with string literals for providerKey,
+    //as the previous constructor will be called with the literal for providerKey
+    //implicitly converted to a bool.
+    //for QGIS 3.0, make either constructor explicit or alter the signatures
     /** \brief [ data provider interface ] Constructor in provider mode */
-    QgsRasterLayer( const QString & uri,
-                    const QString & baseName,
-                    const QString & providerKey,
+    QgsRasterLayer( const QString &uri,
+                    const QString &baseName,
+                    const QString &providerKey,
                     bool loadDefaultStyleFlag = true );
 
     /** \brief The destructor */
@@ -139,6 +144,8 @@ class QgsRasterLayer : QgsMapLayer
     /** Returns a list with classification items (Text and color) */
     QList< QPair< QString, QColor > > legendSymbologyItems() const;
 
+    virtual bool isSpatial() const;
+
     /** \brief Obtain GDAL Metadata for this layer */
     QString metadata();
 
@@ -162,14 +169,16 @@ class QgsRasterLayer : QgsMapLayer
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
                                  QgsRaster::ContrastEnhancementLimits theLimits = QgsRaster::ContrastEnhancementMinMax,
-                                 QgsRectangle theExtent = QgsRectangle(),
+                                 const QgsRectangle& theExtent = QgsRectangle(),
                                  int theSampleSize = QgsRasterLayer::SAMPLE_SIZE,
                                  bool theGenerateLookupTableFlag = true );
 
     /** \brief Set default contrast enhancement */
     void setDefaultContrastEnhancement();
 
-    /** \brief Overloaded version of the above function for convenience when restoring from xml */
+    /** \brief Overloaded version of the above function for convenience when restoring from xml
+     * @deprecated Deprecated since QGIS 2.10. Use setRendererForDrawingStyle() or directly setRenderer()
+     */
     void setDrawingStyle( const QString & theDrawingStyleQString ) /Deprecated/;
 
     /** \brief [ data provider interface ] A wrapper function to emit a progress update signal */
@@ -179,12 +188,12 @@ class QgsRasterLayer : QgsMapLayer
     virtual QStringList subLayers() const;
 
     /** \brief Draws a preview of the rasterlayer into a pixmap
-    @note - use previewAsImage() for rendering with QGIS>=2.4 */
-    QPixmap previewAsPixmap( QSize size, QColor bgColor = QColor( 255, 255, 255 ) ) /Deprecated/;
+    @deprecated use previewAsImage() for rendering with QGIS>=2.4 */
+    QPixmap previewAsPixmap( QSize size, const QColor& bgColor = QColor( 255, 255, 255 ) ) /Deprecated/;
 
     /** \brief Draws a preview of the rasterlayer into a QImage
      @note added in 2.4 */
-    QImage previewAsImage( QSize size, QColor bgColor = QColor( 255, 255, 255 ),
+    QImage previewAsImage( QSize size, const QColor& bgColor = QColor( 255, 255, 255 ),
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 
     /**
@@ -198,7 +207,7 @@ class QgsRasterLayer : QgsMapLayer
     /**
      * Set the visibility of the given sublayer name
      */
-    virtual void setSubLayerVisibility( QString name, bool vis );
+    virtual void setSubLayerVisibility( const QString& name, bool vis );
 
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
     virtual QDateTime timestamp() const;
@@ -210,7 +219,7 @@ class QgsRasterLayer : QgsMapLayer
     void updateProgress( int, int ) /Deprecated/;
 
     /** \brief receive progress signal from provider */
-    void onProgress( int, double, QString );
+    void onProgress( int, double, const QString& );
 
   signals:
     /** \brief Signal for notifying listeners of long running processes */
@@ -225,14 +234,19 @@ class QgsRasterLayer : QgsMapLayer
     /** \brief Read the symbology for the current layer from the Dom node supplied */
     bool readSymbology( const QDomNode& node, QString& errorMessage );
 
+    /** \brief Read the style information for the current layer from the Dom node supplied */
+    bool readStyle(const QDomNode &node, QString &errorMessage);
+
     /** \brief Reads layer specific state from project file Dom node */
     bool readXml( const QDomNode& layer_node );
 
     /** \brief Write the symbology for the layer into the docment provided */
     bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage ) const;
 
+    /** \brief Write the style for the layer into the docment provided */
+    bool writeStyle(QDomNode &node, QDomDocument &doc, QString &errorMessage) const;
+
     /** \brief Write layer specific state to project file Dom node */
     bool writeXml( QDomNode & layer_node, QDomDocument & doc );
-
 };
 

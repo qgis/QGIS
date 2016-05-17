@@ -28,8 +28,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean

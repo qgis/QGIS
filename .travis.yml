@@ -1,16 +1,102 @@
-language: cpp
-
-os:
-  - linux
-  - osx
-
-compiler:
-  - clang
+matrix:
+  fast_finish: true
+  allow_failures:
+    - os: osx
+  include:
+    # QT4 based build with Python 2.7 // using container based builds and prebuild binary dependencies in osgeo4travis
+    - os: linux
+      language: cpp
+      env:
+        - BUILD=qt4
+        - QT_VERSION=4
+        - LLVM_VERSION=3.8
+      sudo: false
+      cache:
+        apt: true
+        directories:
+          - $HOME/.ccache
+      compiler: clang
+      addons:
+        postgresql: "9.4"
+        apt:
+          sources:
+            - llvm-toolchain-precise-3.8
+            - ubuntu-toolchain-r-test
+            - george-edison55-precise-backports # doxygen 1.8.3
+          packages:
+            - bison
+            - clang-3.8
+            - doxygen
+            - flex
+            - flip
+            - libfcgi-dev
+            - libpq-dev
+            - libqscintilla2-dev
+            - libqt4-dev
+            - libqt4-opengl-dev
+            - libqt4-sql-sqlite
+            - libqtwebkit-dev
+            - libqwt-dev
+            - libspatialindex-dev
+            - libspatialite-dev
+            - libsqlite3-dev
+            - pkg-config
+            - poppler-utils
+            - pyqt4-dev-tools
+            - python
+            - python-dev
+            - python-numpy
+            - python-pip
+            - python-psycopg2
+            - python-qscintilla2
+            - python-qt4-dev
+            - python-qt4-sql
+            - python-sip
+            - python-sip-dev
+            - txt2tags
+            - xvfb
+    # QT5 based build with Python 3 // using container based builds and prebuild binary dependencies in osgeo4travis
+    - os: linux
+      language: python # This lets us use newer python versions from virtualenv
+      env:
+        - BUILD=qt5
+        - QT_VERSION=5
+        - LLVM_VERSION=3.8
+      sudo: false
+      cache:
+        apt: true
+        directories:
+          - $HOME/.ccache
+      compiler: clang
+      python: "3.3"
+      addons:
+        postgresql: "9.4"
+        apt:
+          sources:
+            - llvm-toolchain-precise-3.8
+            - ubuntu-toolchain-r-test
+            - george-edison55-precise-backports # doxygen 1.8.3
+          packages:
+            - doxygen
+            - bison
+            - flex
+            - graphviz
+            - libpq-dev
+            - libfcgi-dev
+            - pkg-config
+            - poppler-utils
+            - txt2tags
+            - xvfb
+            - flip
+            - clang-3.8
+    # OSX based build with QT4 and Python 2
+    - os: osx
+      env:
+        - BUILD=osx
+        - IGNORE_BUILD_FAILURES=YES
 
 git:
   depth: 30
-
-cache: apt
 
 notifications:
   irc: "chat.freenode.net#qgis-test"
@@ -26,9 +112,6 @@ notifications:
     on_failure: always # options: [always|never|change] default: always
     on_start: never # default: never
 
-addons:
-  postgresql: "9.1"
-
 before_install:
   - ./ci/travis/${TRAVIS_OS_NAME}/before_install.sh
 
@@ -41,3 +124,5 @@ before_script:
 script:
   - ./ci/travis/${TRAVIS_OS_NAME}/script.sh
 
+after_script:
+  - ./ci/travis/${TRAVIS_OS_NAME}/after_script.sh

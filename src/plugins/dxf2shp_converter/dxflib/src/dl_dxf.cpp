@@ -43,26 +43,26 @@
 DL_Dxf::DL_Dxf() {
     version = DL_VERSION_2000;
 
-    vertices = NULL;
+    vertices = nullptr;
     maxVertices = 0;
     vertexIndex = 0;
 
-    knots = NULL;
+    knots = nullptr;
     maxKnots = 0;
     knotIndex = 0;
 
-    weights = NULL;
+    weights = nullptr;
     weightIndex = 0;
 
-    controlPoints = NULL;
+    controlPoints = nullptr;
     maxControlPoints = 0;
     controlPointIndex = 0;
 
-    fitPoints = NULL;
+    fitPoints = nullptr;
     maxFitPoints = 0;
     fitPointIndex = 0;
 
-    leaderVertices = NULL;
+    leaderVertices = nullptr;
     maxLeaderVertices = 0;
     leaderVertexIndex = 0;
 }
@@ -73,22 +73,22 @@ DL_Dxf::DL_Dxf() {
  * Destructor.
  */
 DL_Dxf::~DL_Dxf() {
-    if (vertices!=NULL) {
+    if (vertices!=nullptr) {
         delete[] vertices;
     }
-    if (knots!=NULL) {
+    if (knots!=nullptr) {
         delete[] knots;
     }
-    if (controlPoints!=NULL) {
+    if (controlPoints!=nullptr) {
         delete[] controlPoints;
     }
-    if (fitPoints!=NULL) {
+    if (fitPoints!=nullptr) {
         delete[] fitPoints;
     }
-    if (weights!=NULL) {
+    if (weights!=nullptr) {
         delete[] weights;
     }
-    if (leaderVertices!=NULL) {
+    if (leaderVertices!=nullptr) {
         delete[] leaderVertices;
     }
 }
@@ -178,7 +178,7 @@ bool DL_Dxf::readDxfGroups(FILE *fp, DL_CreationInterface* creationInterface) {
     if (DL_Dxf::getStrippedLine(groupCodeTmp, DL_DXF_MAXLINE, fp) &&
             DL_Dxf::getStrippedLine(groupValue, DL_DXF_MAXLINE, fp) ) {
 
-        groupCode = (unsigned int)toInt(groupCodeTmp);
+        groupCode = static_cast<unsigned int>(toInt(groupCodeTmp));
 
         creationInterface->processCodeValuePair(groupCode, groupValue);
         line+=2;
@@ -202,7 +202,7 @@ bool DL_Dxf::readDxfGroups(std::stringstream& stream,
     if (DL_Dxf::getStrippedLine(groupCodeTmp, DL_DXF_MAXLINE, stream) &&
             DL_Dxf::getStrippedLine(groupValue, DL_DXF_MAXLINE, stream) ) {
 
-        groupCode = (unsigned int)toInt(groupCodeTmp);
+        groupCode = static_cast<unsigned int>(toInt(groupCodeTmp));
 
         line+=2;
         processDXFGroup(creationInterface, groupCode, groupValue);
@@ -238,7 +238,7 @@ bool DL_Dxf::getStrippedLine(std::string& s, unsigned int size, FILE *fp) {
 
         line = fgets(wholeLine, size, fp);
 
-        if (line!=NULL && line[0] != '\0') { // Evaluates to fgets() retval
+        if (line!=nullptr && line[0] != '\0') { // Evaluates to fgets() retval
             // line == wholeLine at this point.
             // Both guaranteed to be NULL terminated.
 
@@ -296,7 +296,7 @@ bool DL_Dxf::getStrippedLine(std::string &s, unsigned int size,
  */
 bool DL_Dxf::stripWhiteSpace(char** s) {
     // last non-NULL char:
-    int lastChar = strlen(*s) - 1;
+    int lastChar = static_cast<int>( strlen(*s) ) - 1;
 
     // Is last character CR or LF?
     while ( (lastChar >= 0) &&
@@ -386,7 +386,7 @@ bool DL_Dxf::processDXFGroup(DL_CreationInterface* creationInterface,
                                width,                   // width
                                linetype,                // linetype
                                handle);                 // handle
-        attrib.setInPaperSpace((bool)getIntValue(67, 0));
+        attrib.setInPaperSpace( static_cast<bool>(getIntValue(67, 0)));
         attrib.setLinetypeScale(getRealValue(48, 1.0));
         creationInterface->setAttributes(attrib);
 
@@ -1416,7 +1416,7 @@ bool DL_Dxf::handleLWPolylineData(DL_CreationInterface* /*creationInterface*/) {
     if (groupCode==90) {
         maxVertices = toInt(groupValue);
         if (maxVertices>0) {
-            if (vertices!=NULL) {
+            if (vertices!=nullptr) {
                 delete[] vertices;
             }
             vertices = new double[4*maxVertices];
@@ -1461,7 +1461,7 @@ bool DL_Dxf::handleSplineData(DL_CreationInterface* /*creationInterface*/) {
     if (groupCode==72) {
         maxKnots = toInt(groupValue);
         if (maxKnots>0) {
-            if (knots!=NULL) {
+            if (knots!=nullptr) {
                 delete[] knots;
             }
             knots = new double[maxKnots];
@@ -1477,10 +1477,10 @@ bool DL_Dxf::handleSplineData(DL_CreationInterface* /*creationInterface*/) {
     else if (groupCode==73) {
         maxControlPoints = toInt(groupValue);
         if (maxControlPoints>0) {
-            if (controlPoints!=NULL) {
+            if (controlPoints!=nullptr) {
                 delete[] controlPoints;
             }
-            if (weights!=NULL) {
+            if (weights!=nullptr) {
                 delete[] weights;
             }
             controlPoints = new double[3*maxControlPoints];
@@ -1501,7 +1501,7 @@ bool DL_Dxf::handleSplineData(DL_CreationInterface* /*creationInterface*/) {
     else if (groupCode==74) {
         maxFitPoints = toInt(groupValue);
         if (maxFitPoints>0) {
-            if (fitPoints!=NULL) {
+            if (fitPoints!=nullptr) {
                 delete[] fitPoints;
             }
             fitPoints = new double[3*maxFitPoints];
@@ -1575,7 +1575,7 @@ bool DL_Dxf::handleLeaderData(DL_CreationInterface* /*creationInterface*/) {
     if (groupCode==76) {
         maxLeaderVertices = toInt(groupValue);
         if (maxLeaderVertices>0) {
-            if (leaderVertices!=NULL) {
+            if (leaderVertices!=nullptr) {
                 delete[] leaderVertices;
             }
             leaderVertices = new double[3*maxLeaderVertices];
@@ -1923,7 +1923,7 @@ void DL_Dxf::addHatch(DL_CreationInterface* creationInterface) {
 
     creationInterface->addHatch(hd);
 
-    for (unsigned int i=0; i<hatchEdges.size(); i++) {
+    for (size_t i=0; i<hatchEdges.size(); i++) {
         creationInterface->addHatchLoop(DL_HatchLoopData(hatchEdges[i].size()));
         for (unsigned int k=0; k<hatchEdges[i].size(); k++) {
             creationInterface->addHatchEdge(DL_HatchEdgeData(hatchEdges[i][k]));
@@ -2044,7 +2044,7 @@ bool DL_Dxf::handleHatchData(DL_CreationInterface* creationInterface) {
                 hatchEdge.angle2 = toReal(groupValue)/360.0*2*M_PI;
                 return true;
             case 73:
-                hatchEdge.ccw = (bool)toInt(groupValue);
+                hatchEdge.ccw = static_cast<bool>(toInt(groupValue));
                 hatchEdge.defined = true;
                 return true;
             }
@@ -2075,7 +2075,7 @@ bool DL_Dxf::handleHatchData(DL_CreationInterface* creationInterface) {
                 hatchEdge.angle2 = toReal(groupValue)/360.0*2*M_PI;
                 return true;
             case 73:
-                hatchEdge.ccw = (bool)toInt(groupValue);
+                hatchEdge.ccw = static_cast<bool>(toInt(groupValue));
                 hatchEdge.defined = true;
                 return true;
             }
@@ -2272,7 +2272,7 @@ DL_WriterA* DL_Dxf::out(const char* file, DL_Codes::version version) {
     if (dw->openFailed()) {
         delete dw;
         delete[] f;
-        return NULL;
+        return nullptr;
     } else {
         delete[] f;
         return dw;
@@ -2421,7 +2421,7 @@ void DL_Dxf::writePolyline(DL_WriterA& dw,
         dw.entityAttributes(attrib);
         dw.dxfString(100, "AcDbEntity");
         dw.dxfString(100, "AcDbPolyline");
-        dw.dxfInt(90, (int)data.number);
+        dw.dxfInt(90, static_cast<int>(data.number));
         dw.dxfInt(70, data.flags);
     } else {
         dw.entity("POLYLINE");
@@ -2779,7 +2779,7 @@ void DL_Dxf::writeMText(DL_WriterA& dw,
     dw.dxfInt(72, data.drawingDirection);
 
     // Creare text chunks of 250 characters each:
-    int length = data.text.length();
+    int length = static_cast<int>( data.text.length() );
     char chunk[251];
     int i;
     for (i=250; i<length; i+=250) {
@@ -3407,7 +3407,7 @@ void DL_Dxf::writeHatch1(DL_WriterA& dw,
     } else {
         dw.dxfString(2, "SOLID");
     }
-    dw.dxfInt(70, (int)data.solid);
+    dw.dxfInt(70, static_cast<int>(data.solid));
     dw.dxfInt(71, 0);                // non-associative
     dw.dxfInt(91, data.numLoops);
 }
@@ -3516,7 +3516,7 @@ void DL_Dxf::writeHatchEdge(DL_WriterA& dw,
         dw.dxfReal(40, data.radius);
         dw.dxfReal(50, data.angle1/(2*M_PI)*360.0);
         dw.dxfReal(51, data.angle2/(2*M_PI)*360.0);
-        dw.dxfInt(73, (int)(data.ccw));
+        dw.dxfInt(73, static_cast<int>(data.ccw));
         break;
 
     // ellipse arc:
@@ -3528,7 +3528,7 @@ void DL_Dxf::writeHatchEdge(DL_WriterA& dw,
         dw.dxfReal(40, data.ratio);
         dw.dxfReal(50, data.angle1/(2*M_PI)*360.0);
         dw.dxfReal(51, data.angle2/(2*M_PI)*360.0);
-        dw.dxfInt(73, (int)(data.ccw));
+        dw.dxfInt(73, static_cast<int>(data.ccw));
         break;
 
     // spline:
@@ -5117,13 +5117,13 @@ bool DL_Dxf::checkVariable(const char* var, DL_Codes::version version) {
  * e.g. if str = "2.0.2.0" getLibVersion returns 0x02000200
  */
 int DL_Dxf::getLibVersion(const std::string& str) {
-    int d[4];
+    size_t d[4];
     int idx = 0;
     //char v[4][5];
     std::string v[4];
     int ret = 0;
 
-    for (unsigned int i=0; i<str.length() && idx<3; ++i) {
+    for (size_t i=0; i<str.length() && idx<3; ++i) {
         if (str[i]=='.') {
             d[idx] = i;
             idx++;

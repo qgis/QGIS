@@ -25,11 +25,13 @@ class QgsRendererCategoryV2;
 
 #include "ui_qgscategorizedsymbolrendererv2widget.h"
 
+///@cond PRIVATE
+
 class GUI_EXPORT QgsCategorizedSymbolRendererV2Model : public QAbstractItemModel
 {
     Q_OBJECT
   public:
-    QgsCategorizedSymbolRendererV2Model( QObject * parent = 0 );
+    QgsCategorizedSymbolRendererV2Model( QObject * parent = nullptr );
     Qt::ItemFlags flags( const QModelIndex & index ) const override;
     Qt::DropActions supportedDropActions() const override;
     QVariant data( const QModelIndex &index, int role ) const override;
@@ -63,11 +65,15 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Model : public QAbstractItemModel
 // View style which shows drop indicator line between items
 class QgsCategorizedSymbolRendererV2ViewStyle: public QProxyStyle
 {
-  public:
-    QgsCategorizedSymbolRendererV2ViewStyle( QStyle* style = 0 );
+    Q_OBJECT
 
-    void drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = 0 ) const override;
+  public:
+    explicit QgsCategorizedSymbolRendererV2ViewStyle( QStyle* style = nullptr );
+
+    void drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = nullptr ) const override;
 };
+
+///@endcond
 
 class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widget, private Ui::QgsCategorizedSymbolRendererV2Widget
 {
@@ -92,7 +98,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
 
   public slots:
     void changeCategorizedSymbol();
-    void categoryColumnChanged( QString field );
+    void categoryColumnChanged( const QString& field );
     void categoriesDoubleClicked( const QModelIndex & idx );
     void addCategory();
     void addCategories();
@@ -100,7 +106,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
     void deleteCategories();
     void deleteAllCategories();
 
-    void sizeScaleFieldChanged( QString fldName );
+    void sizeScaleFieldChanged( const QString& fldName );
     void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
 
     void showSymbolLevels();

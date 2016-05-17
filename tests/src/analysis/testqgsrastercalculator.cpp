@@ -21,7 +21,7 @@ Email                : nyall dot dawson at gmail dot com
 #include "qgsapplication.h"
 #include "qgsmaplayerregistry.h"
 
-Q_DECLARE_METATYPE( QgsRasterCalcNode::Operator );
+Q_DECLARE_METATYPE( QgsRasterCalcNode::Operator )
 
 
 class TestQgsRasterCalculator : public QObject
@@ -72,7 +72,7 @@ void  TestQgsRasterCalculator::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  QString testDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CmakeLists.txt
+  QString testDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
 
   QString landsatFileName = testDataDir + "landsat.tif";
   QFileInfo landsatRasterFileInfo( landsatFileName );

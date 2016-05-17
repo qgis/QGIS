@@ -53,4 +53,4 @@ Exec=/usr/bin/qbrowser %F
 Terminal=false
 StartupNotify=false
 Categories=Qt;Education;Science;Geography;
-Keywords=map;globe;postgis;wms;wfs;ogc;osgeo
+Keywords=map;globe;postgis;wms;wfs;ogc;osgeo;

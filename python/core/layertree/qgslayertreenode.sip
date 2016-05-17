@@ -116,13 +116,21 @@ class QgsLayerTreeNode : QObject
     //! Emitted when check state of a node within the tree has been changed
     void visibilityChanged( QgsLayerTreeNode *node, Qt::CheckState state );
     //! Emitted when a custom property of a node within the tree has been changed or removed
-    void customPropertyChanged( QgsLayerTreeNode *node, QString key );
+    void customPropertyChanged( QgsLayerTreeNode *node, const QString& key );
     //! Emitted when the collapsed/expanded state of a node within the tree has been changed
     void expandedChanged( QgsLayerTreeNode *node, bool expanded );
 
   protected:
 
     QgsLayerTreeNode( NodeType t );
+
+    void readCommonXML( QDomElement &element );
+    void writeCommonXML( QDomElement &element );
+
+    //! Low-level insertion of children to the node. The children must not have any parent yet!
+    void insertChildrenPrivate( int index, QList<QgsLayerTreeNode*> nodes );
+    //! Low-level removal of children from the node.
+    void removeChildrenPrivate( int from, int count, bool destroy = true );
 
   private:
     QgsLayerTreeNode( const QgsLayerTreeNode& other );

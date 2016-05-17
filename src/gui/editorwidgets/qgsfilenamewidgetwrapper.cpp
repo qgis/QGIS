@@ -24,13 +24,13 @@
 
 QgsFileNameWidgetWrapper::QgsFileNameWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mLineEdit( NULL )
-    , mPushButton( NULL )
-    , mLabel( NULL )
+    , mLineEdit( nullptr )
+    , mPushButton( nullptr )
+    , mLabel( nullptr )
 {
 }
 
-QVariant QgsFileNameWidgetWrapper::value()
+QVariant QgsFileNameWidgetWrapper::value() const
 {
   QVariant value;
 
@@ -48,9 +48,20 @@ QVariant QgsFileNameWidgetWrapper::value()
   return value;
 }
 
-bool QgsFileNameWidgetWrapper::valid()
+bool QgsFileNameWidgetWrapper::valid() const
 {
   return mLineEdit || mLabel;
+}
+
+void QgsFileNameWidgetWrapper::showIndeterminateState()
+{
+  if ( mLineEdit )
+  {
+    whileBlocking( mLineEdit )->clear();
+  }
+
+  if ( mLabel )
+    mLabel->clear();
 }
 
 QWidget* QgsFileNameWidgetWrapper::createWidget( QWidget* parent )
@@ -59,8 +70,8 @@ QWidget* QgsFileNameWidgetWrapper::createWidget( QWidget* parent )
   container->setBackgroundRole( QPalette::Window );
   container->setAutoFillBackground( true );
 
-  QLineEdit* le = new QgsFilterLineEdit( container );
-  QPushButton* pbn = new QPushButton( tr( "..." ), container );
+  QLineEdit* le = new QgsFilterLineEdit();
+  QPushButton* pbn = new QPushButton( tr( "..." ) );
   QGridLayout* layout = new QGridLayout();
 
   layout->setMargin( 0 );

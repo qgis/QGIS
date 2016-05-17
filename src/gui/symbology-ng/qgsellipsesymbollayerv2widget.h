@@ -25,7 +25,7 @@ class GUI_EXPORT QgsEllipseSymbolLayerV2Widget: public QgsSymbolLayerV2Widget, p
     Q_OBJECT
 
   public:
-    QgsEllipseSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = 0 );
+    QgsEllipseSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsEllipseSymbolLayerV2Widget( vl ); }
 
@@ -55,6 +55,8 @@ class GUI_EXPORT QgsEllipseSymbolLayerV2Widget: public QgsSymbolLayerV2Widget, p
     void on_mOffsetUnitWidget_changed();
     void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
+
+    void penJoinStyleChanged();
 
     void setOffset();
 };

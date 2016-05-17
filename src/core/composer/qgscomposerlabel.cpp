@@ -49,8 +49,8 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
     , mFontColor( QColor( 0, 0, 0 ) )
     , mHAlignment( Qt::AlignLeft )
     , mVAlignment( Qt::AlignTop )
-    , mExpressionLayer( 0 )
-    , mDistanceArea( 0 )
+    , mExpressionLayer( nullptr )
+    , mDistanceArea( nullptr )
 {
   mDistanceArea = new QgsDistanceArea();
   mHtmlUnitsToMM = htmlUnitsToMM();
@@ -79,11 +79,28 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
     //to update the expression context
     connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshExpressionContext() ) );
   }
+
+  mWebPage = new QgsWebPage( this );
+  mWebPage->setIdentifier( tr( "Composer label item" ) );
+  mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
+
+  //This makes the background transparent. Found on http://blog.qt.digia.com/blog/2009/06/30/transparent-qwebview-or-qwebpage/
+  QPalette palette = mWebPage->palette();
+  palette.setBrush( QPalette::Base, Qt::transparent );
+  mWebPage->setPalette( palette );
+  //webPage->setAttribute(Qt::WA_OpaquePaintEvent, false); //this does not compile, why ?
+
+  mWebPage->mainFrame()->setZoomFactor( 10.0 );
+  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
+  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
+
+  connect( mWebPage, SIGNAL( loadFinished( bool ) ), SLOT( loadingHtmlFinished( bool ) ) );
 }
 
 QgsComposerLabel::~QgsComposerLabel()
 {
   delete mDistanceArea;
+  delete mWebPage;
 }
 
 void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
@@ -110,65 +127,16 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   double yPenAdjust = mMarginY < 0 ? -penWidth : penWidth;
   QRectF painterRect( xPenAdjust + mMarginX, yPenAdjust + mMarginY, rect().width() - 2 * xPenAdjust - 2 * mMarginX, rect().height() - 2 * yPenAdjust - 2 * mMarginY );
 
-  QString textToDraw = displayText();
-
   if ( mHtmlState )
   {
     painter->scale( 1.0 / mHtmlUnitsToMM / 10.0, 1.0 / mHtmlUnitsToMM / 10.0 );
-    QWebPage *webPage = new QWebPage();
-    webPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
-
-    //Setup event loop and timeout for rendering html
-    QEventLoop loop;
-    QTimer timeoutTimer;
-    timeoutTimer.setSingleShot( true );
-
-    //This makes the background transparent. Found on http://blog.qt.digia.com/blog/2009/06/30/transparent-qwebview-or-qwebpage/
-    QPalette palette = webPage->palette();
-    palette.setBrush( QPalette::Base, Qt::transparent );
-    webPage->setPalette( palette );
-    //webPage->setAttribute(Qt::WA_OpaquePaintEvent, false); //this does not compile, why ?
-
-    webPage->setViewportSize( QSize( painterRect.width() * mHtmlUnitsToMM * 10.0, painterRect.height() * mHtmlUnitsToMM * 10.0 ) );
-    webPage->mainFrame()->setZoomFactor( 10.0 );
-    webPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
-    webPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
-
-    // QGIS segfaults when rendering web page while in composer if html
-    // contains images. So if we are not printing the composition, then
-    // disable image loading
-    if ( mComposition->plotStyle() != QgsComposition::Print &&
-         mComposition->plotStyle() != QgsComposition::Postscript )
-    {
-      webPage->settings()->setAttribute( QWebSettings::AutoLoadImages, false );
-    }
-
-    //Connect timeout and webpage loadFinished signals to loop
-    connect( &timeoutTimer, SIGNAL( timeout() ), &loop, SLOT( quit() ) );
-    connect( webPage, SIGNAL( loadFinished( bool ) ), &loop, SLOT( quit() ) );
-
-    //mHtmlLoaded tracks whether the QWebPage has completed loading
-    //its html contents, set it initially to false. The loadingHtmlFinished slot will
-    //set this to true after html is loaded.
-    mHtmlLoaded = false;
-    connect( webPage, SIGNAL( loadFinished( bool ) ), SLOT( loadingHtmlFinished( bool ) ) );
-
-    webPage->mainFrame()->setHtml( textToDraw );
-
-    //For very basic html labels with no external assets, the html load will already be
-    //complete before we even get a chance to start the QEventLoop. Make sure we check
-    //this before starting the loop
-    if ( !mHtmlLoaded )
-    {
-      // Start a 20 second timeout in case html loading will never complete
-      timeoutTimer.start( 20000 );
-      // Pause until html is loaded
-      loop.exec();
-    }
-    webPage->mainFrame()->render( painter );//DELETE WEBPAGE ?
+    mWebPage->setViewportSize( QSize( painterRect.width() * mHtmlUnitsToMM * 10.0, painterRect.height() * mHtmlUnitsToMM * 10.0 ) );
+    mWebPage->settings()->setUserStyleSheetUrl( createStylesheetUrl() );
+    mWebPage->mainFrame()->render( painter );
   }
   else
   {
+    const QString textToDraw = displayText();
     painter->setFont( mFont );
     //debug
     //painter->setPen( QColor( Qt::red ) );
@@ -182,6 +150,43 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   if ( isSelected() )
   {
     drawSelectionBoxes( painter );
+  }
+}
+
+void QgsComposerLabel::contentChanged()
+{
+  if ( mHtmlState )
+  {
+    const QString textToDraw = displayText();
+
+    //mHtmlLoaded tracks whether the QWebPage has completed loading
+    //its html contents, set it initially to false. The loadingHtmlFinished slot will
+    //set this to true after html is loaded.
+    mHtmlLoaded = false;
+
+    const QUrl baseUrl = QUrl::fromLocalFile( QgsProject::instance()->fileInfo().absoluteFilePath() );
+    mWebPage->mainFrame()->setHtml( textToDraw, baseUrl );
+
+    //For very basic html labels with no external assets, the html load will already be
+    //complete before we even get a chance to start the QEventLoop. Make sure we check
+    //this before starting the loop
+    if ( !mHtmlLoaded )
+    {
+      //Setup event loop and timeout for rendering html
+      QEventLoop loop;
+
+      //Connect timeout and webpage loadFinished signals to loop
+      connect( mWebPage, SIGNAL( loadFinished( bool ) ), &loop, SLOT( quit() ) );
+
+      // Start a 20 second timeout in case html loading will never complete
+      QTimer timeoutTimer;
+      timeoutTimer.setSingleShot( true );
+      connect( &timeoutTimer, SIGNAL( timeout() ), &loop, SLOT( quit() ) );
+      timeoutTimer.start( 20000 );
+
+      // Pause until html is loaded
+      loop.exec();
+    }
   }
 }
 
@@ -208,6 +213,8 @@ void QgsComposerLabel::setText( const QString& text )
   mText = text;
   emit itemChanged();
 
+  contentChanged();
+
   if ( mComposition && id().isEmpty() && !mHtmlState )
   {
     //notify the model that the display name has changed
@@ -223,6 +230,7 @@ void QgsComposerLabel::setHtmlState( int state )
   }
 
   mHtmlState = state;
+  contentChanged();
 
   if ( mComposition && id().isEmpty() )
   {
@@ -231,9 +239,9 @@ void QgsComposerLabel::setHtmlState( int state )
   }
 }
 
-void QgsComposerLabel::setExpressionContext( QgsFeature *feature, QgsVectorLayer* layer, QMap<QString, QVariant> substitutions )
+void QgsComposerLabel::setExpressionContext( QgsFeature *feature, QgsVectorLayer* layer, const QMap<QString, QVariant>& substitutions )
 {
-  mExpressionFeature.reset( feature ? new QgsFeature( *feature ) : 0 );
+  mExpressionFeature.reset( feature ? new QgsFeature( *feature ) : nullptr );
   mExpressionLayer = layer;
   mSubstitutions = substitutions;
 
@@ -252,25 +260,26 @@ void QgsComposerLabel::setExpressionContext( QgsFeature *feature, QgsVectorLayer
     mDistanceArea->setEllipsoidalMode( mComposition->mapSettings().hasCrsTransformEnabled() );
   }
   mDistanceArea->setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  contentChanged();
 
   // Force label to redraw -- fixes label printing for labels with blend modes when used with atlas
   update();
 }
 
-void QgsComposerLabel::setSubstitutions( QMap<QString, QVariant> substitutions )
+void QgsComposerLabel::setSubstitutions( const QMap<QString, QVariant>& substitutions )
 {
   mSubstitutions = substitutions;
 }
 
 void QgsComposerLabel::refreshExpressionContext()
 {
-  mExpressionLayer = 0;
+  mExpressionLayer = nullptr;
   mExpressionFeature.reset();
 
   if ( !mComposition )
     return;
 
-  QgsVectorLayer* layer = 0;
+  QgsVectorLayer* layer = nullptr;
   if ( mComposition->atlasComposition().enabled() )
   {
     layer = mComposition->atlasComposition().coverageLayer();
@@ -288,6 +297,7 @@ void QgsComposerLabel::refreshExpressionContext()
   }
   mDistanceArea->setEllipsoidalMode( mComposition->mapSettings().hasCrsTransformEnabled() );
   mDistanceArea->setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  contentChanged();
 
   update();
 }
@@ -317,8 +327,8 @@ void QgsComposerLabel::replaceDateText( QString& text ) const
   {
     //check if there is a bracket just after $CURRENT_DATE
     QString formatText;
-    int openingBracketPos = text.indexOf( "(", currentDatePos );
-    int closingBracketPos = text.indexOf( ")", openingBracketPos + 1 );
+    int openingBracketPos = text.indexOf( '(', currentDatePos );
+    int closingBracketPos = text.indexOf( ')', openingBracketPos + 1 );
     if ( openingBracketPos != -1 &&
          closingBracketPos != -1 &&
          ( closingBracketPos - openingBracketPos ) > 1 &&
@@ -385,8 +395,6 @@ QFont QgsComposerLabel::font() const
 
 bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc ) const
 {
-  QString alignment;
-
   if ( elem.isNull() )
   {
     return false;
@@ -419,8 +427,6 @@ bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc ) const
 
 bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument& doc )
 {
-  QString alignment;
-
   if ( itemElem.isNull() )
   {
     return false;
@@ -448,17 +454,17 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
   }
 
   //Horizontal alignment
-  mHAlignment = ( Qt::AlignmentFlag )( itemElem.attribute( "halign" ).toInt() );
+  mHAlignment = static_cast< Qt::AlignmentFlag >( itemElem.attribute( "halign" ).toInt() );
 
   //Vertical alignment
-  mVAlignment = ( Qt::AlignmentFlag )( itemElem.attribute( "valign" ).toInt() );
+  mVAlignment = static_cast< Qt::AlignmentFlag >( itemElem.attribute( "valign" ).toInt() );
 
   //font
   QgsFontUtils::setFromXmlChildNode( mFont, itemElem, "LabelFont" );
 
   //font color
   QDomNodeList fontColorList = itemElem.elementsByTagName( "FontColor" );
-  if ( fontColorList.size() > 0 )
+  if ( !fontColorList.isEmpty() )
   {
     QDomElement fontColorElem = fontColorList.at( 0 ).toElement();
     int red = fontColorElem.attribute( "red", "0" ).toInt();
@@ -473,12 +479,12 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
-  if ( composerItemList.size() > 0 )
+  if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
 
     //rotation
-    if ( composerItemElem.attribute( "rotation", "0" ).toDouble() != 0 )
+    if ( !qgsDoubleNear( composerItemElem.attribute( "rotation", "0" ).toDouble(), 0.0 ) )
     {
       //check for old (pre 2.1) rotation attribute
       setItemRotation( composerItemElem.attribute( "rotation", "0" ).toDouble() );
@@ -487,6 +493,7 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
     _readXML( composerItemElem, doc );
   }
   emit itemChanged();
+  contentChanged();
   return true;
 }
 
@@ -632,4 +639,19 @@ void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, d
       xShift = -( newWidth - currentWidth / 2.0 );
     }
   }
+}
+
+QUrl QgsComposerLabel::createStylesheetUrl() const
+{
+  QString stylesheet;
+  stylesheet += QString( "body { margin: %1 %2;" ).arg( qMax( mMarginX * mHtmlUnitsToMM, 0.0 ) ).arg( qMax( mMarginY * mHtmlUnitsToMM, 0.0 ) );
+  stylesheet += QgsFontUtils::asCSS( mFont, 0.352778 * mHtmlUnitsToMM );
+  stylesheet += QString( "color: %1;" ).arg( mFontColor.name() );
+  stylesheet += QString( "text-align: %1; }" ).arg( mHAlignment == Qt::AlignLeft ? "left" : mHAlignment == Qt::AlignRight ? "right" : "center" );
+
+  QByteArray ba;
+  ba.append( stylesheet.toUtf8() );
+  QUrl cssFileURL = QUrl( "data:text/css;charset=utf-8;base64," + ba.toBase64() );
+
+  return cssFileURL;
 }

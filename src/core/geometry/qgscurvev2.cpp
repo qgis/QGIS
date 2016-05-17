@@ -26,7 +26,15 @@ QgsCurveV2::~QgsCurveV2()
 
 bool QgsCurveV2::isClosed() const
 {
-  return ( numPoints() > 0 && ( startPoint() == endPoint() ) );
+  if ( numPoints() == 0 )
+    return false;
+
+  //don't consider M-coordinates when testing closedness
+  QgsPointV2 start = startPoint();
+  QgsPointV2 end = endPoint();
+  return ( qgsDoubleNear( start.x(), end.x(), 1E-8 ) &&
+           qgsDoubleNear( start.y(), end.y(), 1E-8 ) &&
+           qgsDoubleNear( start.z(), end.z(), 1E-8 ) );
 }
 
 bool QgsCurveV2::isRing() const
@@ -34,14 +42,16 @@ bool QgsCurveV2::isRing() const
   return ( isClosed() && numPoints() >= 4 );
 }
 
-void QgsCurveV2::coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const
+QgsCoordinateSequenceV2 QgsCurveV2::coordinateSequence() const
 {
-  coord.clear();
-  QList<QgsPointV2> pts;
-  points( pts );
-  QList< QList<QgsPointV2> > ptsList;
-  ptsList.append( pts );
-  coord.append( ptsList );
+  if ( !mCoordinateSequence.isEmpty() )
+    return mCoordinateSequence;
+
+  mCoordinateSequence.append( QgsRingSequenceV2() );
+  mCoordinateSequence.back().append( QgsPointSequenceV2() );
+  points( mCoordinateSequence.back().back() );
+
+  return mCoordinateSequence;
 }
 
 bool QgsCurveV2::nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const
@@ -69,19 +79,25 @@ bool QgsCurveV2::nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const
   return pointAt( id.vertex, vertex, id.type );
 }
 
-double QgsCurveV2::area() const
-{
-  if ( !isClosed() )
-  {
-    return 0.0;
-  }
-
-  double area = 0.0;
-  sumUpArea( area );
-  return qAbs( area );
-}
-
-QgsAbstractGeometryV2* QgsCurveV2::segmentize() const
+QgsCurveV2* QgsCurveV2::segmentize() const
 {
   return curveToLine();
 }
+
+QgsPointV2 QgsCurveV2::vertexAt( QgsVertexId id ) const
+{
+  QgsPointV2 v;
+  QgsVertexId::VertexType type;
+  pointAt( id.vertex, v, type );
+  return v;
+}
+
+QgsRectangle QgsCurveV2::boundingBox() const
+{
+  if ( mBoundingBox.isNull() )
+  {
+    mBoundingBox = calculateBoundingBox();
+  }
+  return mBoundingBox;
+}
+

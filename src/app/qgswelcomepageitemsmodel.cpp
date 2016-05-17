@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgswelcomepageitemsmodel.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsmessagelog.h"
 
 #include <QApplication>
@@ -35,23 +36,32 @@ void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionVie
   painter->save();
 
   QTextDocument doc;
+  QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
+
   QAbstractTextDocumentLayout::PaintContext ctx;
+  QStyleOptionViewItemV4 optionV4 = option;
 
   QColor color;
-  if ( option.state & QStyle::State_Selected )
+  if ( option.state & QStyle::State_Selected && option.state & QStyle::State_HasFocus )
   {
     color = QColor( 255, 255, 255, 60 );
+    ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Active, QPalette::HighlightedText ) );
+
     QStyle *style = QApplication::style();
-    style->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter, NULL );
+    style->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter, nullptr );
   }
   else if ( option.state & QStyle::State_Enabled )
   {
     color = QColor( 100, 100, 100, 30 );
+    ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Active, QPalette::Text ) );
+
+    QStyle *style = QApplication::style();
+    style->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter, nullptr );
   }
   else
   {
     color = QColor( 100, 100, 100, 30 );
-    ctx.palette.setColor( QPalette::Text, QColor( 150, 150, 150, 255 ) );
+    ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Disabled, QPalette::Text ) );
   }
 
   painter->setRenderHint( QPainter::Antialiasing );
@@ -59,10 +69,15 @@ void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionVie
   painter->setBrush( QBrush( color ) );
   painter->drawRoundedRect( option.rect.left() + 5, option.rect.top() + 5, option.rect.width() - 10, option.rect.height() - 10, 8, 8 );
 
-  doc.setHtml( QString( "<span style='font-size:18px;font-weight:bold;'>%1</span><br>%2" ).arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString() ).arg( index.data( QgsWelcomePageItemsModel::PathRole ).toString() ) );
-  doc.setTextWidth( 800 );
+  int titleSize = QApplication::fontMetrics().height() * 1.1;
+  int textSize = titleSize * 0.85;
 
-  QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
+  doc.setHtml( QString( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3</span><br>%4<br>%5</div>" ).arg( textSize ).arg( titleSize )
+               .arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString(),
+                     index.data( QgsWelcomePageItemsModel::PathRole ).toString(),
+                     index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
+  doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? icon.width() + 35 : 35 ) );
+
   if ( !icon.isNull() )
   {
     painter->drawPixmap( option.rect.left() + 10, option.rect.top()  + 10, icon );
@@ -78,13 +93,28 @@ void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionVie
 QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
   QTextDocument doc;
-
-  doc.setHtml( QString( "<span style='font-size:18px;font-weight:bold;'>%1</span><br>%2" ).arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString() ).arg( index.data( QgsWelcomePageItemsModel::PathRole ).toString() ) );
-  doc.setTextWidth( 800 );
-
   QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
 
-  return QSize( option.rect.width(), qMax( doc.size().height() + 10, ( double )icon.height() ) + 20 );
+  int width;
+  if ( option.rect.width() < 450 )
+  {
+    width = 450;
+  }
+  else
+  {
+    width = option.rect.width();
+  }
+
+  int titleSize = QApplication::fontMetrics().height() * 1.1;
+  int textSize = titleSize * 0.85;
+
+  doc.setHtml( QString( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3</span><br>%4<br>%5</div>" ).arg( textSize ).arg( titleSize )
+               .arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString(),
+                     index.data( QgsWelcomePageItemsModel::PathRole ).toString(),
+                     index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
+  doc.setTextWidth( width - ( !icon.isNull() ? icon.width() + 35 : 35 ) );
+
+  return QSize( width, qMax(( double ) doc.size().height() + 10, ( double )icon.height() ) + 20 );
 }
 
 QgsWelcomePageItemsModel::QgsWelcomePageItemsModel( QObject* parent )
@@ -114,13 +144,26 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex& index, int role ) co
     case Qt::DisplayRole:
     case TitleRole:
       return mRecentProjects.at( index.row() ).title != mRecentProjects.at( index.row() ).path ? mRecentProjects.at( index.row() ).title : QFileInfo( mRecentProjects.at( index.row() ).path ).baseName();
-      break;
     case PathRole:
       return mRecentProjects.at( index.row() ).path;
-      break;
+    case CrsRole:
+      if ( mRecentProjects.at( index.row() ).crs != "" )
+      {
+        QgsCoordinateReferenceSystem crs;
+        crs.createFromOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
+        return  QString( "%1 (%2)" ).arg( mRecentProjects.at( index.row() ).crs, crs.description() );
+      }
+      else
+      {
+        return QString();
+      }
     case Qt::DecorationRole:
     {
-      QImage thumbnail( mRecentProjects.at( index.row() ).previewImagePath );
+      QString filename( mRecentProjects.at( index.row() ).previewImagePath );
+      if ( filename.isEmpty() )
+        return QVariant();
+
+      QImage thumbnail( filename );
       if ( thumbnail.isNull() )
         return QVariant();
 

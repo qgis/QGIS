@@ -20,7 +20,6 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import SIGNAL
 
 from ..data_model import TableDataModel, SqlResultModel
 
@@ -36,7 +35,7 @@ class PGTableDataModel(TableDataModel):
             if self.table.rowCount is None:
                 return
 
-        self.connect(self.table, SIGNAL("aboutToChange"), self._deleteCursor)
+        self.table.aboutToChange.connect(self._deleteCursor)
         self._createCursor()
 
     def _createCursor(self):
@@ -62,7 +61,7 @@ class PGTableDataModel(TableDataModel):
         self.cursor = None
 
     def __del__(self):
-        self.disconnect(self.table, SIGNAL("aboutToChange"), self._deleteCursor)
+        self.table.aboutToChange.disconnect(self._deleteCursor)
         self._deleteCursor()
         pass  # print "PGTableModel.__del__"
 

@@ -28,7 +28,7 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
 
   public:
     QgsTransformSettingsDialog( const QString &raster, const QString &output,
-                                int countGCPpoints, QWidget *parent = 0 );
+                                int countGCPpoints, QWidget *parent = nullptr );
 
     ~QgsTransformSettingsDialog();
     void getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,

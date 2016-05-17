@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox
 
 from processing.gui.ContextAction import ContextAction
 
@@ -46,11 +46,11 @@ class DeleteScriptAction(ContextAction):
 
     def isEnabled(self):
         if self.scriptType == self.SCRIPT_PYTHON:
-            return isinstance(self.alg, ScriptAlgorithm) and self.alg.allowEdit
+            return isinstance(self.itemData, ScriptAlgorithm) and self.itemData.allowEdit
         elif self.scriptType == self.SCRIPT_R:
-            return isinstance(self.alg, RAlgorithm)
+            return isinstance(self.itemData, RAlgorithm)
 
-    def execute(self, alg):
+    def execute(self):
         reply = QMessageBox.question(None,
                                      self.tr('Confirmation', 'DeleteScriptAction'),
                                      self.tr('Are you sure you want to delete this script?',
@@ -58,7 +58,7 @@ class DeleteScriptAction(ContextAction):
                                      QMessageBox.Yes | QMessageBox.No,
                                      QMessageBox.No)
         if reply == QMessageBox.Yes:
-            os.remove(self.alg.descriptionFile)
+            os.remove(self.itemData.descriptionFile)
             if self.scriptType == self.SCRIPT_PYTHON:
                 self.toolbox.updateProvider('script')
             elif self.scriptType == self.SCRIPT_R:

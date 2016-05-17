@@ -18,7 +18,7 @@
 #include "qgsapplication.h" //for standard test font
 #include "qgscomposerutils.h"
 #include "qgscomposition.h"
-#include "qgscompositionchecker.h"
+#include "qgsmultirenderchecker.h"
 #include "qgsdatadefined.h"
 #include "qgsfontutils.h"
 #include <QObject>
@@ -62,7 +62,7 @@ class TestQgsComposerUtils : public QObject
     void drawTextRect(); //test drawing text in a rect
 
   private:
-    bool renderCheck( QString testName, QImage &image, int mismatchCount = 0 );
+    bool renderCheck( const QString& testName, QImage &image, int mismatchCount = 0 );
     QgsComposition* mComposition;
     QgsMapSettings *mMapSettings;
     QString mReport;
@@ -700,10 +700,10 @@ void TestQgsComposerUtils::drawTextRect()
   QVERIFY( renderCheck( "composerutils_drawtext_rectflag", testImage, 100 ) );
 }
 
-bool TestQgsComposerUtils::renderCheck( QString testName, QImage &image, int mismatchCount )
+bool TestQgsComposerUtils::renderCheck( const QString& testName, QImage &image, int mismatchCount )
 {
   mReport += "<h2>" + testName + "</h2>\n";
-  QString myTmpDir = QDir::tempPath() + "/";
+  QString myTmpDir = QDir::tempPath() + '/';
   QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );
   QgsRenderChecker myChecker;

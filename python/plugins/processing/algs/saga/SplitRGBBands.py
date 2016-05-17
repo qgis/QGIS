@@ -26,12 +26,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui
+from qgis.PyQt.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.outputs import OutputRaster
-from processing.tools.system import getTempFilename, isWindows
-import SagaUtils
+from processing.tools.system import getTempFilename
+from . import SagaUtils
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -45,11 +45,11 @@ class SplitRGBBands(GeoAlgorithm):
     B = 'B'
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Split RGB bands')
-        self.group, self.i18n_group = self.trAlgorithm('Grid - Tools')
+        self.group, self.i18n_group = self.trAlgorithm('Image tools')
         self.addParameter(ParameterRaster(SplitRGBBands.INPUT,
                                           self.tr('Input layer'), False))
         self.addOutput(OutputRaster(SplitRGBBands.R,
@@ -73,7 +73,7 @@ class SplitRGBBands(GeoAlgorithm):
         g = self.getOutputValue(SplitRGBBands.G)
         b = self.getOutputValue(SplitRGBBands.B)
         commands = []
-        version = SagaUtils.getSagaInstalledVersion(True)
+        version = SagaUtils.getSagaInstalledVersion(True)  # NOQA
         trailing = ""
         lib = ""
         commands.append('%sio_gdal 0 -GRIDS "%s" -FILES "%s"' % (lib, temp, input)

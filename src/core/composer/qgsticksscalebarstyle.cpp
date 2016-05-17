@@ -24,7 +24,7 @@ QgsTicksScaleBarStyle::QgsTicksScaleBarStyle( const QgsComposerScaleBar* bar ): 
   mTickPosition = TicksMiddle;
 }
 
-QgsTicksScaleBarStyle::QgsTicksScaleBarStyle(): QgsScaleBarStyle( 0 )
+QgsTicksScaleBarStyle::QgsTicksScaleBarStyle(): QgsScaleBarStyle( nullptr )
 {
   mTickPosition = TicksMiddle;
 }

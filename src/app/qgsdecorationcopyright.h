@@ -35,7 +35,7 @@ class APP_EXPORT QgsDecorationCopyright : public QgsDecorationItem
   public:
 
     //! Constructor
-    QgsDecorationCopyright( QObject* parent = NULL );
+    QgsDecorationCopyright( QObject* parent = nullptr );
     //! Destructor
     virtual ~QgsDecorationCopyright();
 
@@ -57,9 +57,9 @@ class APP_EXPORT QgsDecorationCopyright : public QgsDecorationItem
     QString mLabelQString;
     //! This is the color for the copyright label
     QColor mLabelQColor;
-    //! Placement of the copyright label - index and translated label names
-    int mPlacementIndex;
-    QStringList mPlacementLabels;
+    //! enable or disable use of position percentage for placement
+    int mMarginHorizontal;
+    int mMarginVertical;
 
     friend class QgsDecorationCopyrightDialog;
 };

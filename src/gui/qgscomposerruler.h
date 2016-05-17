@@ -24,7 +24,7 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     QSize minimumSizeHint() const override;
 
     void setSceneTransform( const QTransform& transform );
-    void updateMarker( const QPointF& pos ) { mMarkerPos = pos; repaint(); }
+    void updateMarker( QPointF pos ) { mMarkerPos = pos; repaint(); }
 
     void setComposition( QgsComposition* c ) { mComposition = c; }
     QgsComposition* composition() { return mComposition; }
@@ -58,7 +58,7 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     int mTextBaseline;
     int mMinSpacingVerticalLabels;
 
-    void setSnapLinePosition( const QPointF& pos );
+    void setSnapLinePosition( QPointF pos );
 
     //calculate optimum labeled units for ruler so that labels are a good distance apart
     int optimumScale( double minPixelDiff, int &magnitude, int &multiple );

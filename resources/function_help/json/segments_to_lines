@@ -1,0 +1,7 @@
+{
+  "name": "segments_to_lines",
+  "type": "function",
+  "description": "Returns a multi line geometry consisting of a line for every segment in the input geometry.",
+  "arguments": [ {"arg":"geometry","description":"geometry object"}],
+  "examples": [ { "expression":"geom_to_wkt(segments_to_lines(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)')))", "returns":"'MultiLineString ((0 0, 1 1),(1 1, 2 2))'"}]
+}

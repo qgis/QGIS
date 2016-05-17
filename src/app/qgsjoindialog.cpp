@@ -40,6 +40,7 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer* layer, QList<QgsMapLayer*> already
 
   mTargetFieldComboBox->setLayer( mLayer );
 
+  mJoinLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
   mJoinLayerComboBox->setExceptedLayerList( alreadyJoinedLayers );
   connect( mJoinLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), mJoinFieldComboBox, SLOT( setLayer( QgsMapLayer* ) ) );
   connect( mJoinLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( joinedLayerChanged( QgsMapLayer* ) ) );
@@ -75,7 +76,7 @@ void QgsJoinDialog::setJoinInfo( const QgsVectorJoinInfo& joinInfo )
   }
 
   QStringList* lst = joinInfo.joinFieldNamesSubset();
-  mUseJoinFieldsSubset->setChecked( lst && lst->count() > 0 );
+  mUseJoinFieldsSubset->setChecked( lst && !lst->isEmpty() );
   QAbstractItemModel* model = mJoinFieldsSubsetView->model();
   if ( model )
   {
@@ -145,10 +146,9 @@ void QgsJoinDialog::joinedLayerChanged( QgsMapLayer* layer )
 
   mUseJoinFieldsSubset->setChecked( false );
   QStandardItemModel* subsetModel = new QStandardItemModel( this );
-  const QgsFields& layerFields = vLayer->fields();
-  for ( int idx = 0; idx < layerFields.count(); ++idx )
+  Q_FOREACH ( const QgsField& field, vLayer->fields() )
   {
-    QStandardItem* subsetItem = new QStandardItem( layerFields[idx].name() );
+    QStandardItem* subsetItem = new QStandardItem( field.name() );
     subsetItem->setCheckable( true );
     //subsetItem->setFlags( subsetItem->flags() | Qt::ItemIsUserCheckable );
     subsetModel->appendRow( subsetItem );
@@ -169,6 +169,6 @@ void QgsJoinDialog::joinedLayerChanged( QgsMapLayer* layer )
 
   if ( !mUseCustomPrefix->isChecked() )
   {
-    mCustomPrefix->setText( layer->name() + "_" );
+    mCustomPrefix->setText( layer->name() + '_' );
   }
 }

@@ -263,7 +263,7 @@
       <item row="4" column="0" colspan="2">
        <widget class="QCheckBox" name="chkDropTable">
         <property name="text">
-         <string>Replace existing table</string>
+         <string>Replace destination table (if exists)</string>
         </property>
        </widget>
       </item>

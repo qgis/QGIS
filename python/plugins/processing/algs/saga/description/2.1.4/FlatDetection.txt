@@ -1,0 +1,6 @@
+Flat Detection
+ta_preprocessor
+ParameterRaster|DEM|DEM|False
+ParameterSelection|FLAT_OUTPUT|Flat Area Values|[0] elevation;[1] enumeration
+OutputRaster|NOFLATS|No Flats
+OutputRaster|FLATS|Flat Areas

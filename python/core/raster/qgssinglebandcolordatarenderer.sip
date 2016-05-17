@@ -6,7 +6,7 @@ class QgsSingleBandColorDataRenderer: QgsRasterRenderer
   public:
     QgsSingleBandColorDataRenderer( QgsRasterDataProvider* provider, int band );
     ~QgsSingleBandColorDataRenderer();
-    QgsRasterInterface * clone() const /Factory/;
+    virtual QgsSingleBandColorDataRenderer * clone() const /Factory/;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider ) /Factory/;
 
@@ -17,4 +17,9 @@ class QgsSingleBandColorDataRenderer: QgsRasterRenderer
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 
     QList<int> usesBands() const;
+
+  private:
+
+    QgsSingleBandColorDataRenderer( const QgsSingleBandColorDataRenderer& );
+    const QgsSingleBandColorDataRenderer& operator=( const QgsSingleBandColorDataRenderer& );
 };

@@ -19,7 +19,13 @@
 #include <QString>
 #include <QObject>
 
-QgsStatisticalSummary::QgsStatisticalSummary( Statistics stats )
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsstatisticalsummary.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
+QgsStatisticalSummary::QgsStatisticalSummary( const Statistics& stats )
     : mStatistics( stats )
 {
   reset();
@@ -47,6 +53,12 @@ void QgsStatisticalSummary::reset()
   mValueCount.clear();
 }
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsstatisticalsummary.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
 void QgsStatisticalSummary::calculate( const QList<double> &values )
 {
   reset();
@@ -67,7 +79,7 @@ void QgsStatisticalSummary::calculate( const QList<double> &values )
 
   mMean = mSum / mCount;
 
-  if ( mStatistics & QgsStatisticalSummary::StDev )
+  if ( mStatistics & QgsStatisticalSummary::StDev || mStatistics & QgsStatisticalSummary::StDevSample )
   {
     double sumSquared = 0;
     Q_FOREACH ( double value, values )
@@ -175,6 +187,12 @@ void QgsStatisticalSummary::calculate( const QList<double> &values )
   }
 
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsstatisticalsummary.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 double QgsStatisticalSummary::statistic( QgsStatisticalSummary::Statistic stat ) const
 {

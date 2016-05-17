@@ -32,10 +32,6 @@ QgsGdalProviderBase::QgsGdalProviderBase()
   QgsGdalProviderBase::registerGdalDrivers();
 }
 
-QgsGdalProviderBase::~QgsGdalProviderBase()
-{
-}
-
 /**
  * @param theBandNumber the number of the band for which you want a color table
  * @param theList a pointer the object that will hold the color table
@@ -75,11 +71,11 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
 
     int myEntryCount = GDALGetColorEntryCount( myGdalColorTable );
     GDALColorInterp myColorInterpretation =  GDALGetRasterColorInterpretation( myGdalBand );
-    QgsDebugMsg( "Color Interpretation: " + QString::number(( int )myColorInterpretation ) );
+    QgsDebugMsg( "Color Interpretation: " + QString::number( static_cast< int >( myColorInterpretation ) ) );
     GDALPaletteInterp myPaletteInterpretation  = GDALGetPaletteInterpretation( myGdalColorTable );
-    QgsDebugMsg( "Palette Interpretation: " + QString::number(( int )myPaletteInterpretation ) );
+    QgsDebugMsg( "Palette Interpretation: " + QString::number( static_cast< int >( myPaletteInterpretation ) ) );
 
-    const GDALColorEntry* myColorEntry = 0;
+    const GDALColorEntry* myColorEntry = nullptr;
     for ( int myIterator = 0; myIterator < myEntryCount; myIterator++ )
     {
       myColorEntry = GDALGetColorEntry( myGdalColorTable, myIterator );
@@ -99,7 +95,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
         if ( myColorInterpretation == GCI_GrayIndex )
         {
           QgsColorRampShader::ColorRampItem myColorRampItem;
-          myColorRampItem.value = ( double )myIterator;
+          myColorRampItem.value = static_cast< double >( myIterator );
           myColorRampItem.label = label;
           myColorRampItem.color = QColor::fromRgb( myColorEntry->c1, myColorEntry->c1, myColorEntry->c1, myColorEntry->c4 );
           ct.append( myColorRampItem );
@@ -107,7 +103,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
         else if ( myColorInterpretation == GCI_PaletteIndex )
         {
           QgsColorRampShader::ColorRampItem myColorRampItem;
-          myColorRampItem.value = ( double )myIterator;
+          myColorRampItem.value = static_cast< double >( myIterator );
           myColorRampItem.label = label;
           //Branch on palette interpretation
           if ( myPaletteInterpretation  == GPI_RGB )
@@ -150,17 +146,28 @@ QGis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType theGdal
 {
   switch ( theGdalDataType )
   {
-    case GDT_Byte: return QGis::Byte;
-    case GDT_UInt16: return QGis::UInt16;
-    case GDT_Int16: return QGis::Int16;
-    case GDT_UInt32: return QGis::UInt32;
-    case GDT_Int32: return QGis::Int32;
-    case GDT_Float32: return QGis::Float32;
-    case GDT_Float64: return QGis::Float64;
-    case GDT_CInt16: return QGis::CInt16;
-    case GDT_CInt32: return QGis::CInt32;
-    case GDT_CFloat32: return QGis::CFloat32;
-    case GDT_CFloat64: return QGis::CFloat64;
+    case GDT_Byte:
+      return QGis::Byte;
+    case GDT_UInt16:
+      return QGis::UInt16;
+    case GDT_Int16:
+      return QGis::Int16;
+    case GDT_UInt32:
+      return QGis::UInt32;
+    case GDT_Int32:
+      return QGis::Int32;
+    case GDT_Float32:
+      return QGis::Float32;
+    case GDT_Float64:
+      return QGis::Float64;
+    case GDT_CInt16:
+      return QGis::CInt16;
+    case GDT_CInt32:
+      return QGis::CInt32;
+    case GDT_CFloat32:
+      return QGis::CFloat32;
+    case GDT_CFloat64:
+      return QGis::CFloat64;
     case GDT_Unknown:
     case GDT_TypeCount:
       return QGis::UnknownDataType;
@@ -172,23 +179,40 @@ int QgsGdalProviderBase::colorInterpretationFromGdal( const GDALColorInterp gdal
 {
   switch ( gdalColorInterpretation )
   {
-    case GCI_GrayIndex: return QgsRaster::GrayIndex;
-    case GCI_PaletteIndex: return QgsRaster::PaletteIndex;
-    case GCI_RedBand: return QgsRaster::RedBand;
-    case GCI_GreenBand: return QgsRaster::GreenBand;
-    case GCI_BlueBand: return QgsRaster::BlueBand;
-    case GCI_AlphaBand: return QgsRaster::AlphaBand;
-    case GCI_HueBand: return QgsRaster::HueBand;
-    case GCI_SaturationBand: return QgsRaster::SaturationBand;
-    case GCI_LightnessBand: return QgsRaster::LightnessBand;
-    case GCI_CyanBand: return QgsRaster::CyanBand;
-    case GCI_MagentaBand: return QgsRaster::MagentaBand;
-    case GCI_YellowBand: return QgsRaster::YellowBand;
-    case GCI_BlackBand: return QgsRaster::BlackBand;
-    case GCI_YCbCr_YBand: return QgsRaster::YCbCr_YBand;
-    case GCI_YCbCr_CbBand: return QgsRaster::YCbCr_CbBand;
-    case GCI_YCbCr_CrBand: return QgsRaster::YCbCr_CrBand;
-    case GCI_Undefined: return QgsRaster::UndefinedColorInterpretation;
+    case GCI_GrayIndex:
+      return QgsRaster::GrayIndex;
+    case GCI_PaletteIndex:
+      return QgsRaster::PaletteIndex;
+    case GCI_RedBand:
+      return QgsRaster::RedBand;
+    case GCI_GreenBand:
+      return QgsRaster::GreenBand;
+    case GCI_BlueBand:
+      return QgsRaster::BlueBand;
+    case GCI_AlphaBand:
+      return QgsRaster::AlphaBand;
+    case GCI_HueBand:
+      return QgsRaster::HueBand;
+    case GCI_SaturationBand:
+      return QgsRaster::SaturationBand;
+    case GCI_LightnessBand:
+      return QgsRaster::LightnessBand;
+    case GCI_CyanBand:
+      return QgsRaster::CyanBand;
+    case GCI_MagentaBand:
+      return QgsRaster::MagentaBand;
+    case GCI_YellowBand:
+      return QgsRaster::YellowBand;
+    case GCI_BlackBand:
+      return QgsRaster::BlackBand;
+    case GCI_YCbCr_YBand:
+      return QgsRaster::YCbCr_YBand;
+    case GCI_YCbCr_CbBand:
+      return QgsRaster::YCbCr_CbBand;
+    case GCI_YCbCr_CrBand:
+      return QgsRaster::YCbCr_CrBand;
+    case GCI_Undefined:
+      return QgsRaster::UndefinedColorInterpretation;
   }
   return QgsRaster::UndefinedColorInterpretation;
 }
@@ -200,7 +224,7 @@ void QgsGdalProviderBase::registerGdalDrivers()
   QString myJoinedList = mySettings.value( "gdal/skipList", "" ).toString();
   if ( !myJoinedList.isEmpty() )
   {
-    QStringList myList = myJoinedList.split( " " );
+    QStringList myList = myJoinedList.split( ' ' );
     for ( int i = 0; i < myList.size(); ++i )
     {
       QgsApplication::skipGdalDriver( myList.at( i ) );

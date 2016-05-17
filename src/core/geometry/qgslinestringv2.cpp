@@ -17,13 +17,23 @@
 
 #include "qgslinestringv2.h"
 #include "qgsapplication.h"
+#include "qgscompoundcurvev2.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeometryutils.h"
 #include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
+
 #include <QPainter>
 #include <limits>
 #include <QDomDocument>
+#include <QtCore/qmath.h>
+
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 QgsLineStringV2::QgsLineStringV2(): QgsCurveV2()
 {
@@ -33,26 +43,61 @@ QgsLineStringV2::QgsLineStringV2(): QgsCurveV2()
 QgsLineStringV2::~QgsLineStringV2()
 {}
 
-QgsAbstractGeometryV2 *QgsLineStringV2::clone() const
+bool QgsLineStringV2::operator==( const QgsCurveV2& other ) const
+{
+  const QgsLineStringV2* otherLine = dynamic_cast< const QgsLineStringV2* >( &other );
+  if ( !otherLine )
+    return false;
+
+  if ( mWkbType != otherLine->mWkbType )
+    return false;
+
+  if ( mX.count() != otherLine->mX.count() )
+    return false;
+
+  for ( int i = 0; i < mX.count(); ++i )
+  {
+    if ( !qgsDoubleNear( mX.at( i ), otherLine->mX.at( i ) )
+         || !qgsDoubleNear( mY.at( i ), otherLine->mY.at( i ) ) )
+      return false;
+
+    if ( is3D() && !qgsDoubleNear( mZ.at( i ), otherLine->mZ.at( i ) ) )
+      return false;
+
+    if ( isMeasure() && !qgsDoubleNear( mM.at( i ), otherLine->mM.at( i ) ) )
+      return false;
+  }
+
+  return true;
+}
+
+bool QgsLineStringV2::operator!=( const QgsCurveV2& other ) const
+{
+  return !operator==( other );
+}
+
+QgsLineStringV2 *QgsLineStringV2::clone() const
 {
   return new QgsLineStringV2( *this );
 }
 
 void QgsLineStringV2::clear()
 {
-  mCoords.clear();
+  mX.clear();
+  mY.clear();
   mZ.clear();
   mM.clear();
   mWkbType = QgsWKBTypes::Unknown;
+  clearCache();
 }
 
-bool QgsLineStringV2::fromWkb( const unsigned char* wkb )
+bool QgsLineStringV2::fromWkb( QgsConstWkbPtr wkbPtr )
 {
-  if ( !wkb )
+  if ( !wkbPtr )
   {
     return false;
   }
-  QgsConstWkbPtr wkbPtr( wkb );
+
   QgsWKBTypes::Type type = wkbPtr.readHeader();
   if ( QgsWKBTypes::flatType( type ) != QgsWKBTypes::LineString )
   {
@@ -68,6 +113,36 @@ void QgsLineStringV2::fromWkbPoints( QgsWKBTypes::Type type, const QgsConstWkbPt
   mWkbType = type;
   importVerticesFromWkb( wkb );
 }
+
+QgsRectangle QgsLineStringV2::calculateBoundingBox() const
+{
+  double xmin = std::numeric_limits<double>::max();
+  double ymin = std::numeric_limits<double>::max();
+  double xmax = -std::numeric_limits<double>::max();
+  double ymax = -std::numeric_limits<double>::max();
+
+  Q_FOREACH ( double x, mX )
+  {
+    if ( x < xmin )
+      xmin = x;
+    if ( x > xmax )
+      xmax = x;
+  }
+  Q_FOREACH ( double y, mY )
+  {
+    if ( y < ymin )
+      ymin = y;
+    if ( y > ymax )
+      ymax = y;
+  }
+  return QgsRectangle( xmin, ymin, xmax, ymax );
+}
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 bool QgsLineStringV2::fromWkt( const QString& wkt )
 {
@@ -94,19 +169,25 @@ unsigned char* QgsLineStringV2::asWkb( int& binarySize ) const
 {
   binarySize = wkbSize();
   unsigned char* geomPtr = new unsigned char[binarySize];
-  QgsWkbPtr wkb( geomPtr );
+  QgsWkbPtr wkb( geomPtr, binarySize );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
-  QList<QgsPointV2> pts;
+  QgsPointSequenceV2 pts;
   points( pts );
   QgsGeometryUtils::pointsToWKB( wkb, pts, is3D(), isMeasure() );
   return geomPtr;
 }
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
 QString QgsLineStringV2::asWkt( int precision ) const
 {
-  QString wkt = wktTypeStr() + " ";
-  QList<QgsPointV2> pts;
+  QString wkt = wktTypeStr() + ' ';
+  QgsPointSequenceV2 pts;
   points( pts );
   wkt += QgsGeometryUtils::pointsToWKT( pts, precision, is3D(), isMeasure() );
   return wkt;
@@ -114,7 +195,7 @@ QString QgsLineStringV2::asWkt( int precision ) const
 
 QDomElement QgsLineStringV2::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
 {
-  QList<QgsPointV2> pts;
+  QgsPointSequenceV2 pts;
   points( pts );
 
   QDomElement elemLineString = doc.createElementNS( ns, "LineString" );
@@ -125,12 +206,12 @@ QDomElement QgsLineStringV2::asGML2( QDomDocument& doc, int precision, const QSt
 
 QDomElement QgsLineStringV2::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
-  QList<QgsPointV2> pts;
+  QgsPointSequenceV2 pts;
   points( pts );
 
   QDomElement elemCurve = doc.createElementNS( ns, "Curve" );
   QDomElement elemSegments = doc.createElementNS( ns, "segments" );
-  QDomElement elemArcString = doc.createElementNS( ns, "LineString" );
+  QDomElement elemArcString = doc.createElementNS( ns, "LineStringSegment" );
   elemArcString.appendChild( QgsGeometryUtils::pointsToGML3( pts, doc, precision, ns, is3D() ) );
   elemSegments.appendChild( elemArcString );
   elemCurve.appendChild( elemSegments );
@@ -140,21 +221,27 @@ QDomElement QgsLineStringV2::asGML3( QDomDocument& doc, int precision, const QSt
 
 QString QgsLineStringV2::asJSON( int precision ) const
 {
-  QList<QgsPointV2> pts;
+  QgsPointSequenceV2 pts;
   points( pts );
 
-  return "{\"type\": \"LineString\", \"coordinates\": " + QgsGeometryUtils::pointsToJSON( pts, precision ) + "}";
+  return "{\"type\": \"LineString\", \"coordinates\": " + QgsGeometryUtils::pointsToJSON( pts, precision ) + '}';
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 double QgsLineStringV2::length() const
 {
   double length = 0;
-  int size = mCoords.size();
+  int size = mX.size();
   double dx, dy;
   for ( int i = 1; i < size; ++i )
   {
-    dx = mCoords[i].x() - mCoords[ i - 1 ].x();
-    dy = mCoords[i].y() - mCoords[ i - 1 ].y();
+    dx = mX.at( i ) - mX.at( i - 1 );
+    dy = mY.at( i ) - mY.at( i - 1 );
     length += sqrt( dx * dx + dy * dy );
   }
   return length;
@@ -178,6 +265,12 @@ QgsPointV2 QgsLineStringV2::endPoint() const
   return pointN( numPoints() - 1 );
 }
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
 QgsLineStringV2* QgsLineStringV2::curveToLine() const
 {
   return static_cast<QgsLineStringV2*>( clone() );
@@ -185,17 +278,18 @@ QgsLineStringV2* QgsLineStringV2::curveToLine() const
 
 int QgsLineStringV2::numPoints() const
 {
-  return mCoords.size();
+  return mX.size();
 }
 
 QgsPointV2 QgsLineStringV2::pointN( int i ) const
 {
-  if ( mCoords.size() <= i )
+  if ( i < 0 || i >= mX.size() )
   {
     return QgsPointV2();
   }
 
-  const QPointF& pt = mCoords.at( i );
+  double x = mX.at( i );
+  double y = mY.at( i );
   double z = 0;
   double m = 0;
 
@@ -211,7 +305,11 @@ QgsPointV2 QgsLineStringV2::pointN( int i ) const
   }
 
   QgsWKBTypes::Type t = QgsWKBTypes::Point;
-  if ( hasZ && hasM )
+  if ( mWkbType == QgsWKBTypes::LineString25D )
+  {
+    t = QgsWKBTypes::Point25D;
+  }
+  else if ( hasZ && hasM )
   {
     t = QgsWKBTypes::PointZM;
   }
@@ -223,10 +321,80 @@ QgsPointV2 QgsLineStringV2::pointN( int i ) const
   {
     t = QgsWKBTypes::PointM;
   }
-  return QgsPointV2( t, pt.x(), pt.y(), z, m );
+  return QgsPointV2( t, x, y, z, m );
 }
 
-void QgsLineStringV2::points( QList<QgsPointV2>& pts ) const
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
+double QgsLineStringV2::xAt( int index ) const
+{
+  if ( index >= 0 && index < mX.size() )
+    return mX.at( index );
+  else
+    return 0.0;
+}
+
+double QgsLineStringV2::yAt( int index ) const
+{
+  if ( index >= 0 && index < mY.size() )
+    return mY.at( index );
+  else
+    return 0.0;
+}
+
+double QgsLineStringV2::zAt( int index ) const
+{
+  if ( index >= 0 && index < mZ.size() )
+    return mZ.at( index );
+  else
+    return 0.0;
+}
+
+double QgsLineStringV2::mAt( int index ) const
+{
+  if ( index >= 0 && index < mM.size() )
+    return mM.at( index );
+  else
+    return 0.0;
+}
+
+void QgsLineStringV2::setXAt( int index, double x )
+{
+  if ( index >= 0 && index < mX.size() )
+    mX[ index ] = x;
+  clearCache();
+}
+
+void QgsLineStringV2::setYAt( int index, double y )
+{
+  if ( index >= 0 && index < mY.size() )
+    mY[ index ] = y;
+  clearCache();
+}
+
+void QgsLineStringV2::setZAt( int index, double z )
+{
+  if ( index >= 0 && index < mZ.size() )
+    mZ[ index ] = z;
+}
+
+void QgsLineStringV2::setMAt( int index, double m )
+{
+  if ( index >= 0 && index < mM.size() )
+    mM[ index ] = m;
+}
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
+void QgsLineStringV2::points( QgsPointSequenceV2 &pts ) const
 {
   pts.clear();
   int nPoints = numPoints();
@@ -236,14 +404,13 @@ void QgsLineStringV2::points( QList<QgsPointV2>& pts ) const
   }
 }
 
-void QgsLineStringV2::setPoints( const QList<QgsPointV2>& points )
+void QgsLineStringV2::setPoints( const QgsPointSequenceV2 &points )
 {
-  if ( points.size() < 1 )
+  clearCache(); //set bounding box invalid
+
+  if ( points.isEmpty() )
   {
-    mWkbType = QgsWKBTypes::Unknown;
-    mCoords.clear();
-    mZ.clear();
-    mM.clear();
+    clear();
     return;
   }
 
@@ -254,7 +421,8 @@ void QgsLineStringV2::setPoints( const QList<QgsPointV2>& points )
 
   setZMTypeFromSubGeometry( &firstPt, QgsWKBTypes::LineString );
 
-  mCoords.resize( points.size() );
+  mX.resize( points.size() );
+  mY.resize( points.size() );
   if ( hasZ )
   {
     mZ.resize( points.size() );
@@ -274,18 +442,24 @@ void QgsLineStringV2::setPoints( const QList<QgsPointV2>& points )
 
   for ( int i = 0; i < points.size(); ++i )
   {
-    mCoords[i].rx() = points[i].x();
-    mCoords[i].ry() = points[i].y();
+    mX[i] = points.at( i ).x();
+    mY[i] = points.at( i ).y();
     if ( hasZ )
     {
-      mZ[i] = points[i].z();
+      mZ[i] = points.at( i ).z();
     }
     if ( hasM )
     {
-      mM[i] = points[i].m();
+      mM[i] = points.at( i ).m();
     }
   }
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 void QgsLineStringV2::append( const QgsLineStringV2* line )
 {
@@ -299,14 +473,81 @@ void QgsLineStringV2::append( const QgsLineStringV2* line )
     setZMTypeFromSubGeometry( line, QgsWKBTypes::LineString );
   }
 
-  mCoords += line->mCoords;
-  mZ += line->mZ;
-  mM += line->mM;
+  // do not store duplicit points
+  if ( numPoints() > 0 &&
+       line->numPoints() > 0 &&
+       endPoint() == line->startPoint() )
+  {
+    mX.pop_back();
+    mY.pop_back();
+
+    if ( is3D() )
+    {
+      mZ.pop_back();
+    }
+    if ( isMeasure() )
+    {
+      mM.pop_back();
+    }
+  }
+
+  mX += line->mX;
+  mY += line->mY;
+
+  if ( is3D() )
+  {
+    if ( line->is3D() )
+    {
+      mZ += line->mZ;
+    }
+    else
+    {
+      // if append line does not have z coordinates, fill with 0 to match number of points in final line
+      mZ.insert( mZ.count(), mX.size() - mZ.size(), 0 );
+    }
+  }
+
+  if ( isMeasure() )
+  {
+    if ( line->isMeasure() )
+    {
+      mM += line->mM;
+    }
+    else
+    {
+      // if append line does not have m values, fill with 0 to match number of points in final line
+      mM.insert( mM.count(), mX.size() - mM.size(), 0 );
+    }
+  }
+
+  clearCache(); //set bounding box invalid
 }
+
+QgsLineStringV2* QgsLineStringV2::reversed() const
+{
+  QgsLineStringV2* copy = clone();
+  std::reverse( copy->mX.begin(), copy->mX.end() );
+  std::reverse( copy->mY.begin(), copy->mY.end() );
+  if ( copy->is3D() )
+  {
+    std::reverse( copy->mZ.begin(), copy->mZ.end() );
+  }
+  if ( copy->isMeasure() )
+  {
+    std::reverse( copy->mM.begin(), copy->mM.end() );
+  }
+  return copy;
+}
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 void QgsLineStringV2::draw( QPainter& p ) const
 {
-  p.drawPolyline( mCoords );
+  p.drawPolyline( asQPolygonF() );
 }
 
 void QgsLineStringV2::addToPainterPath( QPainterPath& path ) const
@@ -317,39 +558,100 @@ void QgsLineStringV2::addToPainterPath( QPainterPath& path ) const
     return;
   }
 
-  if ( path.isEmpty() || path.currentPosition() != mCoords[0] )
+  if ( path.isEmpty() || path.currentPosition() != QPointF( mX.at( 0 ), mY.at( 0 ) ) )
   {
-    path.moveTo( mCoords[0] );
+    path.moveTo( mX.at( 0 ), mY.at( 0 ) );
   }
 
   for ( int i = 1; i < nPoints; ++i )
   {
-    path.lineTo( mCoords[i] );
+    path.lineTo( mX.at( i ), mY.at( i ) );
   }
 }
 
 void QgsLineStringV2::drawAsPolygon( QPainter& p ) const
 {
-  p.drawPolygon( mCoords );
+  p.drawPolygon( asQPolygonF() );
 }
+
+QPolygonF QgsLineStringV2::asQPolygonF() const
+{
+  QPolygonF points;
+  for ( int i = 0; i < mX.count(); ++i )
+  {
+    points << QPointF( mX.at( i ), mY.at( i ) );
+  }
+  return points;
+}
+
+QgsAbstractGeometryV2* QgsLineStringV2::toCurveType() const
+{
+  QgsCompoundCurveV2* compoundCurve = new QgsCompoundCurveV2();
+  compoundCurve->addCurve( clone() );
+  return compoundCurve;
+}
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 void QgsLineStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
 {
-  ct.transformPolygon( mCoords, d );
+  double* zArray = mZ.data();
+
+  bool hasZ = is3D();
+  int nPoints = numPoints();
+  if ( !hasZ )
+  {
+    zArray = new double[nPoints];
+    for ( int i = 0; i < nPoints; ++i )
+    {
+      zArray[i] = 0;
+    }
+  }
+  ct.transformCoords( nPoints, mX.data(), mY.data(), zArray, d );
+  if ( !hasZ )
+  {
+    delete[] zArray;
+  }
+  clearCache();
 }
 
 void QgsLineStringV2::transform( const QTransform& t )
 {
-  mCoords = t.map( mCoords );
+  int nPoints = numPoints();
+  for ( int i = 0; i < nPoints; ++i )
+  {
+    qreal x, y;
+    t.map( mX.at( i ), mY.at( i ), &x, &y );
+    mX[i] = x;
+    mY[i] = y;
+  }
+  clearCache();
 }
 
-bool QgsLineStringV2::insertVertex( const QgsVertexId& position, const QgsPointV2& vertex )
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
+bool QgsLineStringV2::insertVertex( QgsVertexId position, const QgsPointV2& vertex )
 {
-  if ( position.vertex < 0 || position.vertex > mCoords.size() )
+  if ( position.vertex < 0 || position.vertex > mX.size() )
   {
     return false;
   }
-  mCoords.insert( position.vertex, QPointF( vertex.x(), vertex.y() ) );
+
+  if ( mWkbType == QgsWKBTypes::Unknown || mX.isEmpty() )
+  {
+    setZMTypeFromSubGeometry( &vertex, QgsWKBTypes::LineString );
+  }
+
+  mX.insert( position.vertex, vertex.x() );
+  mY.insert( position.vertex, vertex.y() );
   if ( is3D() )
   {
     mZ.insert( position.vertex, vertex.z() );
@@ -358,18 +660,18 @@ bool QgsLineStringV2::insertVertex( const QgsVertexId& position, const QgsPointV
   {
     mM.insert( position.vertex, vertex.m() );
   }
-  mBoundingBox = QgsRectangle(); //set bounding box invalid
+  clearCache(); //set bounding box invalid
   return true;
 }
 
-bool QgsLineStringV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newPos )
+bool QgsLineStringV2::moveVertex( QgsVertexId position, const QgsPointV2& newPos )
 {
-  if ( position.vertex < 0 || position.vertex >= mCoords.size() )
+  if ( position.vertex < 0 || position.vertex >= mX.size() )
   {
     return false;
   }
-  mCoords[position.vertex].rx() = newPos.x();
-  mCoords[position.vertex].ry() = newPos.y();
+  mX[position.vertex] = newPos.x();
+  mY[position.vertex] = newPos.y();
   if ( is3D() && newPos.is3D() )
   {
     mZ[position.vertex] = newPos.z();
@@ -378,18 +680,19 @@ bool QgsLineStringV2::moveVertex( const QgsVertexId& position, const QgsPointV2&
   {
     mM[position.vertex] = newPos.m();
   }
-  mBoundingBox = QgsRectangle(); //set bounding box invalid
+  clearCache(); //set bounding box invalid
   return true;
 }
 
-bool QgsLineStringV2::deleteVertex( const QgsVertexId& position )
+bool QgsLineStringV2::deleteVertex( QgsVertexId position )
 {
-  if ( position.vertex >= mCoords.size() || position.vertex < 0 )
+  if ( position.vertex >= mX.size() || position.vertex < 0 )
   {
     return false;
   }
 
-  mCoords.remove( position.vertex );
+  mX.remove( position.vertex );
+  mY.remove( position.vertex );
   if ( is3D() )
   {
     mZ.remove( position.vertex );
@@ -398,18 +701,31 @@ bool QgsLineStringV2::deleteVertex( const QgsVertexId& position )
   {
     mM.remove( position.vertex );
   }
-  mBoundingBox = QgsRectangle(); //set bounding box invalid
+
+  if ( numPoints() == 1 )
+  {
+    clear();
+  }
+
+  clearCache(); //set bounding box invalid
   return true;
 }
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
 void QgsLineStringV2::addVertex( const QgsPointV2& pt )
 {
-  if ( mWkbType == QgsWKBTypes::Unknown )
+  if ( mWkbType == QgsWKBTypes::Unknown || mX.isEmpty() )
   {
     setZMTypeFromSubGeometry( &pt, QgsWKBTypes::LineString );
   }
 
-  mCoords.append( QPointF( pt.x(), pt.y() ) );
+  mX.append( pt.x() );
+  mY.append( pt.y() );
   if ( is3D() )
   {
     mZ.append( pt.z() );
@@ -418,7 +734,7 @@ void QgsLineStringV2::addVertex( const QgsPointV2& pt )
   {
     mM.append( pt.m() );
   }
-  mBoundingBox = QgsRectangle(); //set bounding box invalid
+  clearCache(); //set bounding box invalid
 }
 
 double QgsLineStringV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const
@@ -427,12 +743,25 @@ double QgsLineStringV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmen
   double testDist = 0;
   double segmentPtX, segmentPtY;
 
-  int size = mCoords.size();
+  int size = mX.size();
+  if ( size == 0 )
+  {
+    vertexAfter = QgsVertexId( 0, 0, 0 );
+    return sqrDist;
+  }
+  else if ( size == 1 )
+  {
+    segmentPt = pointN( 0 );
+    vertexAfter = QgsVertexId( 0, 0, 1 );
+    return QgsGeometryUtils::sqrDistance2D( pt, segmentPt );
+  }
   for ( int i = 1; i < size; ++i )
   {
-    const QPointF& prev = mCoords.at( i - 1 );
-    const QPointF& currentPt = mCoords.at( i );
-    testDist = QgsGeometryUtils::sqrDistToLine( pt.x(), pt.y(), prev.x(), prev.y(), currentPt.x(), currentPt.y(), segmentPtX, segmentPtY, epsilon );
+    double prevX = mX.at( i - 1 );
+    double prevY = mY.at( i - 1 );
+    double currentX = mX.at( i );
+    double currentY = mY.at( i );
+    testDist = QgsGeometryUtils::sqrDistToLine( pt.x(), pt.y(), prevX, prevY, currentX, currentY, segmentPtX, segmentPtY, epsilon );
     if ( testDist < sqrDist )
     {
       sqrDist = testDist;
@@ -440,31 +769,86 @@ double QgsLineStringV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmen
       segmentPt.setY( segmentPtY );
       if ( leftOf )
       {
-        *leftOf = ( QgsGeometryUtils::leftOfLine( segmentPtX, segmentPtY, prev.x(), prev.y(), pt.x(), pt.y() ) < 0 );
+        *leftOf = ( QgsGeometryUtils::leftOfLine( pt.x(), pt.y(), prevX, prevY, currentX, currentY ) < 0 );
       }
-      vertexAfter.part = 0; vertexAfter.ring = 0; vertexAfter.vertex = i;
+      vertexAfter.part = 0;
+      vertexAfter.ring = 0;
+      vertexAfter.vertex = i;
     }
   }
   return sqrDist;
 }
 
-bool QgsLineStringV2::pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
+bool QgsLineStringV2::pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const
 {
-  if ( i >= numPoints() )
+  if ( node < 0 || node >= numPoints() )
   {
     return false;
   }
-  vertex = pointN( i );
+  point = pointN( node );
   type = QgsVertexId::SegmentVertex;
   return true;
 }
 
+QgsPointV2 QgsLineStringV2::centroid() const
+{
+  if ( mX.isEmpty() )
+    return QgsPointV2();
+
+  int numPoints = mX.count();
+  if ( numPoints == 1 )
+    return QgsPointV2( mX.at( 0 ), mY.at( 0 ) );
+
+  double totalLineLength = 0.0;
+  double prevX = mX.at( 0 );
+  double prevY = mY.at( 0 );
+  double sumX = 0.0;
+  double sumY = 0.0;
+
+  for ( int i = 1; i < numPoints ; ++i )
+  {
+    double currentX = mX.at( i );
+    double currentY = mY.at( i );
+    double segmentLength = sqrt( qPow( currentX - prevX, 2.0 ) +
+                                 qPow( currentY - prevY, 2.0 ) );
+    if ( qgsDoubleNear( segmentLength, 0.0 ) )
+      continue;
+
+    totalLineLength += segmentLength;
+    sumX += segmentLength * 0.5 * ( currentX + prevX );
+    sumY += segmentLength * 0.5 * ( currentY + prevY );
+    prevX = currentX;
+    prevY = currentY;
+  }
+
+  if ( qgsDoubleNear( totalLineLength, 0.0 ) )
+    return QgsPointV2( mX.at( 0 ), mY.at( 0 ) );
+  else
+    return QgsPointV2( sumX / totalLineLength, sumY / totalLineLength );
+
+}
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
 void QgsLineStringV2::sumUpArea( double& sum ) const
 {
   int maxIndex = numPoints() - 1;
+  if ( maxIndex == 1 )
+    return; //no area, just a single line
+
   for ( int i = 0; i < maxIndex; ++i )
   {
-    sum += 0.5 * ( mCoords[i].x() * mCoords[i+1].y() - mCoords[i].y() * mCoords[i+1].x() );
+    sum += 0.5 * ( mX.at( i ) * mY.at( i + 1 ) - mY.at( i ) * mX.at( i + 1 ) );
   }
 }
 
@@ -474,13 +858,14 @@ void QgsLineStringV2::importVerticesFromWkb( const QgsConstWkbPtr& wkb )
   bool hasM = isMeasure();
   int nVertices = 0;
   wkb >> nVertices;
-  mCoords.resize( nVertices );
+  mX.resize( nVertices );
+  mY.resize( nVertices );
   hasZ ? mZ.resize( nVertices ) : mZ.clear();
   hasM ? mM.resize( nVertices ) : mM.clear();
   for ( int i = 0; i < nVertices; ++i )
   {
-    wkb >> mCoords[i].rx();
-    wkb >> mCoords[i].ry();
+    wkb >> mX[i];
+    wkb >> mY[i];
     if ( hasZ )
     {
       wkb >> mZ[i];
@@ -490,7 +875,14 @@ void QgsLineStringV2::importVerticesFromWkb( const QgsConstWkbPtr& wkb )
       wkb >> mM[i];
     }
   }
+  clearCache(); //set bounding box invalid
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 void QgsLineStringV2::close()
 {
@@ -501,33 +893,148 @@ void QgsLineStringV2::close()
   addVertex( startPoint() );
 }
 
-double QgsLineStringV2::vertexAngle( const QgsVertexId& vertex ) const
+double QgsLineStringV2::vertexAngle( QgsVertexId vertex ) const
 {
+  if ( mX.count() < 2 )
+  {
+    //undefined
+    return 0.0;
+  }
+
   if ( vertex.vertex == 0 || vertex.vertex >= ( numPoints() - 1 ) )
   {
     if ( isClosed() )
     {
-      QPointF previous = mCoords[numPoints() - 1 ];
-      QPointF current = mCoords[0];
-      QPointF after = mCoords[1];
-      return QgsGeometryUtils::averageAngle( previous.x(), previous.y(), current.x(), current.y(), after.x(), after.y() );
+      double previousX = mX.at( numPoints() - 2 );
+      double previousY = mY.at( numPoints() - 2 );
+      double currentX = mX.at( 0 );
+      double currentY = mY.at( 0 );
+      double afterX = mX.at( 1 );
+      double afterY = mY.at( 1 );
+      return QgsGeometryUtils::averageAngle( previousX, previousY, currentX, currentY, afterX, afterY );
     }
     else if ( vertex.vertex == 0 )
     {
-      return QgsGeometryUtils::linePerpendicularAngle( mCoords[0].x(), mCoords[0].y(), mCoords[1].x(), mCoords[1].y() );
+      return QgsGeometryUtils::lineAngle( mX.at( 0 ), mY.at( 0 ), mX.at( 1 ), mY.at( 1 ) );
     }
     else
     {
       int a = numPoints() - 2;
       int b = numPoints() - 1;
-      return QgsGeometryUtils::linePerpendicularAngle( mCoords[a].x(), mCoords[a].y(), mCoords[b].x(), mCoords[b].y() );
+      return QgsGeometryUtils::lineAngle( mX.at( a ), mY.at( a ), mX.at( b ), mY.at( b ) );
     }
   }
   else
   {
-    QPointF previous = mCoords[vertex.vertex - 1 ];
-    QPointF current = mCoords[vertex.vertex];
-    QPointF after = mCoords[vertex.vertex + 1];
-    return QgsGeometryUtils::averageAngle( previous.x(), previous.y(), current.x(), current.y(), after.x(), after.y() );
+    double previousX = mX.at( vertex.vertex - 1 );
+    double previousY = mY.at( vertex.vertex - 1 );
+    double currentX = mX.at( vertex.vertex );
+    double currentY = mY.at( vertex.vertex );
+    double afterX = mX.at( vertex.vertex + 1 );
+    double afterY = mY.at( vertex.vertex + 1 );
+    return QgsGeometryUtils::averageAngle( previousX, previousY, currentX, currentY, afterX, afterY );
+  }
+}
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
+bool QgsLineStringV2::addZValue( double zValue )
+{
+  if ( QgsWKBTypes::hasZ( mWkbType ) )
+    return false;
+
+  clearCache();
+  if ( mWkbType == QgsWKBTypes::Unknown )
+  {
+    mWkbType = QgsWKBTypes::LineStringZ;
+    return true;
+  }
+
+  mWkbType = QgsWKBTypes::addZ( mWkbType );
+
+  mZ.clear();
+  int nPoints = numPoints();
+  mZ.reserve( nPoints );
+  for ( int i = 0; i < nPoints; ++i )
+  {
+    mZ << zValue;
+  }
+  return true;
+}
+
+bool QgsLineStringV2::addMValue( double mValue )
+{
+  if ( QgsWKBTypes::hasM( mWkbType ) )
+    return false;
+
+  clearCache();
+  if ( mWkbType == QgsWKBTypes::Unknown )
+  {
+    mWkbType = QgsWKBTypes::LineStringM;
+    return true;
+  }
+
+  if ( mWkbType == QgsWKBTypes::LineString25D )
+  {
+    mWkbType = QgsWKBTypes::LineStringZM;
+  }
+  else
+  {
+    mWkbType = QgsWKBTypes::addM( mWkbType );
+  }
+
+  mM.clear();
+  int nPoints = numPoints();
+  mM.reserve( nPoints );
+  for ( int i = 0; i < nPoints; ++i )
+  {
+    mM << mValue;
+  }
+  return true;
+}
+
+bool QgsLineStringV2::dropZValue()
+{
+  if ( !is3D() )
+    return false;
+
+  clearCache();
+  mWkbType = QgsWKBTypes::dropZ( mWkbType );
+  mZ.clear();
+  return true;
+}
+
+bool QgsLineStringV2::dropMValue()
+{
+  if ( !isMeasure() )
+    return false;
+
+  clearCache();
+  mWkbType = QgsWKBTypes::dropM( mWkbType );
+  mM.clear();
+  return true;
+}
+
+bool QgsLineStringV2::convertTo( QgsWKBTypes::Type type )
+{
+  if ( type == mWkbType )
+    return true;
+
+  clearCache();
+  if ( type == QgsWKBTypes::LineString25D )
+  {
+    //special handling required for conversion to LineString25D
+    dropMValue();
+    addZValue();
+    mWkbType = QgsWKBTypes::LineString25D;
+    return true;
+  }
+  else
+  {
+    return QgsCurveV2::convertTo( type );
   }
 }

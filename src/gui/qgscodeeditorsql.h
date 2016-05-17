@@ -23,13 +23,14 @@
  * A SQL editor based on QScintilla2. Adds syntax highlighting and
  * code autocompletion.
  * \note added in 2.6
+ * \note may not be available in Python bindings, depending on platform support
  */
 class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
 {
     Q_OBJECT
 
   public:
-    QgsCodeEditorSQL( QWidget *parent = 0 );
+    QgsCodeEditorSQL( QWidget *parent = nullptr );
     ~QgsCodeEditorSQL();
 
   private:

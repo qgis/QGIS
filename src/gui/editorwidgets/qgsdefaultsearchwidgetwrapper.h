@@ -23,29 +23,31 @@
 
 /**
  * Wraps a search widget. Default form is just a QgsLineFilterEdit
- *
+ * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = 0 );
+    explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
 
     // QgsSearchWidgetWrapper interface
   public:
     QString expression() override;
     bool applyDirectly() override;
+
   protected slots:
     void setExpression( QString exp ) override;
 
   private slots:
-    void setCaseString( int );
+    void setCaseString( int caseSensitiveCheckState );
+    void filterChanged();
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
-    bool valid() override;
+    bool valid() const override;
 
   private:
     QgsFilterLineEdit* mLineEdit;

@@ -21,7 +21,7 @@
 #include <QWidget>
 
 QgsSearchWidgetWrapper::QgsSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsWidgetWrapper( vl, 0, parent )
+    : QgsWidgetWrapper( vl, nullptr, parent )
     , mExpression( QString() )
     , mFieldIdx( fieldIdx )
 {
@@ -31,5 +31,10 @@ QgsSearchWidgetWrapper::QgsSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx
 void QgsSearchWidgetWrapper::setFeature( const QgsFeature& feature )
 {
   Q_UNUSED( feature )
+}
+
+void QgsSearchWidgetWrapper::clearExpression()
+{
+  mExpression = QString( "TRUE" );
 }
 

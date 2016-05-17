@@ -14,9 +14,9 @@ SET(PY_PLUGININSTALLER_FILES
 )
 
 # FILE(GLOB UI_FILES *.ui)
-# PYQT4_WRAP_UI(PYUI_FILES ${UI_FILES})
+# PYQT_WRAP_UI(PYUI_FILES ${UI_FILES})
 
-PYQT4_WRAP_UI(PYUI_FILES
+PYQT_WRAP_UI(PYUI_FILES
     qgsplugininstallerfetchingbase.ui
     qgsplugininstallerinstallingbase.ui
     qgsplugininstallerpluginerrorbase.ui

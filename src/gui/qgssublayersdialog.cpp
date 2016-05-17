@@ -22,9 +22,10 @@
 #include <QPushButton>
 
 
-QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, QString name,
-                                        QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl ), mName( name )
+QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString& name,
+                                        QWidget* parent, const Qt::WindowFlags& fl )
+    : QDialog( parent, fl )
+    , mName( name )
 {
   setupUi( this );
 
@@ -84,7 +85,7 @@ QStringList QgsSublayersDialog::selectionNames()
 
     if ( count > 1 )
     {
-      name += ":" + layersTable->selectedItems().at( i )->text( 3 );
+      name += ':' + layersTable->selectedItems().at( i )->text( 3 );
     }
     else
     {
@@ -106,7 +107,7 @@ QList<int> QgsSublayersDialog::selectionIndexes()
   return list;
 }
 
-void QgsSublayersDialog::populateLayerTable( QStringList theList, QString delim )
+void QgsSublayersDialog::populateLayerTable( const QStringList& theList, const QString& delim )
 {
   Q_FOREACH ( const QString& item, theList )
   {
@@ -162,10 +163,13 @@ int QgsSublayersDialog::exec()
     return QDialog::Accepted;
   }
 
+  layersTable->sortByColumn( 1, Qt::AscendingOrder );
+  layersTable->setSortingEnabled( true );
+
   // if we got here, disable override cursor, open dialog and return result
   // TODO add override cursor where it is missing (e.g. when opening via "Add Raster")
   QCursor cursor;
-  bool overrideCursor = ( QApplication::overrideCursor() != 0 );
+  bool overrideCursor = nullptr != QApplication::overrideCursor();
   if ( overrideCursor )
   {
     cursor = QCursor( * QApplication::overrideCursor() );

@@ -38,7 +38,7 @@ class GUI_EXPORT QgsPaintEffectPropertiesWidget : public QWidget, private Ui::Ef
      * @param effect QgsPaintEffect to modify in the widget
      * @param parent parent widget
      */
-    QgsPaintEffectPropertiesWidget( QgsPaintEffect* effect, QWidget* parent = NULL );
+    QgsPaintEffectPropertiesWidget( QgsPaintEffect* effect, QWidget* parent = nullptr );
 
   public slots:
 

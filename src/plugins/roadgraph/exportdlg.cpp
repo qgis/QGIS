@@ -71,7 +71,7 @@ RgExportDlg::~RgExportDlg()
 
 QgsVectorLayer* RgExportDlg::mapLayer() const
 {
-  QgsVectorLayer* myLayer = NULL;
+  QgsVectorLayer* myLayer = nullptr;
   QString layerId = mcbLayers->itemData( mcbLayers->currentIndex() ).toString();
 
   if ( layerId == "-1" )
@@ -80,8 +80,8 @@ QgsVectorLayer* RgExportDlg::mapLayer() const
     myLayer = new QgsVectorLayer( QString( "LineString?crs=epsg:4326&memoryid=%1" ).arg( QUuid::createUuid().toString() ), "shortest path", "memory" );
 
     QgsVectorDataProvider *prov = myLayer->dataProvider();
-    if ( prov == NULL )
-      return NULL;
+    if ( !prov )
+      return nullptr;
 
     QList<QgsField> attrList;
     attrList.append( QgsField( "length", QVariant::Double, "", 20, 8 ) );

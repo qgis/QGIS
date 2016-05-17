@@ -11,7 +11,16 @@
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -64,7 +73,7 @@
      <item>
       <widget class="QPushButton" name="btnEditRule">
        <property name="toolTip">
-        <string>Edit rule</string>
+        <string>Edit current rule</string>
        </property>
        <property name="text">
         <string/>
@@ -78,7 +87,7 @@
      <item>
       <widget class="QPushButton" name="btnRemoveRule">
        <property name="toolTip">
-        <string>Remove rule</string>
+        <string>Remove selected rules</string>
        </property>
        <property name="text">
         <string/>
@@ -95,7 +104,7 @@
         <bool>true</bool>
        </property>
        <property name="text">
-        <string>Refine current rules</string>
+        <string>Refine selected rules</string>
        </property>
        <property name="checkable">
         <bool>false</bool>
@@ -134,7 +143,7 @@
      <item>
       <widget class="QPushButton" name="btnRenderingOrder">
        <property name="text">
-        <string>Rendering order...</string>
+        <string>Symbol levels...</string>
        </property>
       </widget>
      </item>

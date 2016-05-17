@@ -30,8 +30,9 @@ import shutil
 import codecs
 import subprocess
 import os
+import locale
 from qgis.core import QgsApplication
-from PyQt4.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import userFolder, isWindows, isMac, tempFolder, mkdir
@@ -85,14 +86,19 @@ class GrassUtils:
         if not isWindows() and not isMac():
             return ''
 
-        folder = ProcessingConfig.getSetting(GrassUtils.GRASS_FOLDER)
+        folder = ProcessingConfig.getSetting(GrassUtils.GRASS_FOLDER) or ''
+        if not os.path.exists(folder):
+            folder = None
         if folder is None:
             if isWindows():
-                testfolder = os.path.dirname(QgsApplication.prefixPath())
+                if "OSGEO4W_ROOT" in os.environ:
+                    testfolder = os.path.join(unicode(os.environ['OSGEO4W_ROOT']), "apps")
+                else:
+                    testfolder = unicode(QgsApplication.prefixPath())
                 testfolder = os.path.join(testfolder, 'grass')
                 if os.path.isdir(testfolder):
                     for subfolder in os.listdir(testfolder):
-                        if subfolder.startswith('grass'):
+                        if subfolder.startswith('grass-6'):
                             folder = os.path.join(testfolder, subfolder)
                             break
             else:
@@ -104,7 +110,9 @@ class GrassUtils:
 
     @staticmethod
     def grassWinShell():
-        folder = ProcessingConfig.getSetting(GrassUtils.GRASS_WIN_SHELL)
+        folder = ProcessingConfig.getSetting(GrassUtils.GRASS_WIN_SHELL) or ''
+        if not os.path.exists(folder):
+            folder = None
         if folder is None:
             folder = os.path.dirname(unicode(QgsApplication.prefixPath()))
             folder = os.path.join(folder, 'msys')
@@ -122,8 +130,9 @@ class GrassUtils:
         script = GrassUtils.grassScriptFilename()
         gisrc = userFolder() + os.sep + 'processing.gisrc'
 
+        encoding = locale.getpreferredencoding()
         # Temporary gisrc file
-        output = codecs.open(gisrc, 'w', encoding='utf-8')
+        output = codecs.open(gisrc, 'w', encoding=encoding)
         location = 'temp_location'
         gisdbase = GrassUtils.grassDataFolder()
 
@@ -133,7 +142,7 @@ class GrassUtils:
         output.write('GRASS_GUI: text\n')
         output.close()
 
-        output = codecs.open(script, 'w', encoding='utf-8')
+        output = codecs.open(script, 'w', encoding=encoding)
         output.write('set HOME=' + os.path.expanduser('~') + '\n')
         output.write('set GISRC=' + gisrc + '\n')
         output.write('set GRASS_SH=' + shell + '\\bin\\sh.exe\n')
@@ -163,7 +172,7 @@ class GrassUtils:
         output.write('g.gisenv.exe set="GISDBASE=' + gisdbase + '"\n')
         output.write('g.gisenv.exe set="GRASS_GUI=text"\n')
         for command in commands:
-            output.write(command.encode('utf8') + '\n')
+            output.write(command + u'\n')
         output.write('\n')
         output.write('exit\n')
         output.close()
@@ -172,7 +181,7 @@ class GrassUtils:
     def createGrassBatchJobFileFromGrassCommands(commands):
         fout = codecs.open(GrassUtils.grassBatchJobFilename(), 'w', encoding='utf-8')
         for command in commands:
-            fout.write(command.encode('utf8') + '\n')
+            fout.write(command + u'\n')
         fout.write('exit')
         fout.close()
 
@@ -216,27 +225,25 @@ class GrassUtils:
 
     @staticmethod
     def writeGrassWindow(filename):
-        out = codecs.open(filename, 'w', encoding='utf-8')
-        out.write('proj:       0\n')
-        out.write('zone:       0\n')
-        out.write('north:      1\n')
-        out.write('south:      0\n')
-        out.write('east:       1\n')
-        out.write('west:       0\n')
-        out.write('cols:       1\n')
-        out.write('rows:       1\n')
-        out.write('e-w resol:  1\n')
-        out.write('n-s resol:  1\n')
-        out.write('top:        1\n')
-        out.write('bottom:     0\n')
-        out.write('cols3:      1\n')
-        out.write('rows3:      1\n')
-        out.write('depths:     1\n')
-        out.write('e-w resol3: 1\n')
-        out.write('n-s resol3: 1\n')
-        out.write('t-b resol:  1\n')
-
-        out.close()
+        with open(filename, 'w') as out:
+            out.write('proj:       0\n')
+            out.write('zone:       0\n')
+            out.write('north:      1\n')
+            out.write('south:      0\n')
+            out.write('east:       1\n')
+            out.write('west:       0\n')
+            out.write('cols:       1\n')
+            out.write('rows:       1\n')
+            out.write('e-w resol:  1\n')
+            out.write('n-s resol:  1\n')
+            out.write('top:        1\n')
+            out.write('bottom:     0\n')
+            out.write('cols3:      1\n')
+            out.write('rows3:      1\n')
+            out.write('depths:     1\n')
+            out.write('e-w resol3: 1\n')
+            out.write('n-s resol3: 1\n')
+            out.write('t-b resol:  1\n')
 
     @staticmethod
     def prepareGrassExecution(commands):
@@ -250,7 +257,8 @@ class GrassUtils:
             env['GISRC'] = gisrc
             env['GRASS_MESSAGE_FORMAT'] = 'gui'
             env['GRASS_BATCH_JOB'] = GrassUtils.grassBatchJobFilename()
-            del env['GISBASE']
+            if 'GISBASE' in env:
+                del env['GISBASE']
             GrassUtils.createGrassBatchJobFileFromGrassCommands(commands)
             os.chmod(GrassUtils.grassBatchJobFilename(), stat.S_IEXEC
                      | stat.S_IREAD | stat.S_IWRITE)
@@ -364,10 +372,10 @@ class GrassUtils:
             cmdpath = os.path.join(path, 'bin', 'r.out.gdal.exe')
             if not os.path.exists(cmdpath):
                 return GrassUtils.tr(
-                    'The specified GRASS folder does not contain a valid '
+                    'The specified GRASS folder "{}" does not contain a valid '
                     'set of GRASS modules. Please, go to the Processing '
                     'settings dialog, and check that the GRASS folder is '
-                    'correctly configured')
+                    'correctly configured'.format(os.path.join(path, 'bin')))
 
         if not ignorePreviousState:
             if GrassUtils.isGrassInstalled:

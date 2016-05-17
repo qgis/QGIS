@@ -27,13 +27,13 @@ __revision__ = '$Format:%H$'
 
 import os
 import subprocess
-from PyQt4.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import userFolder
 
 
-class FusionUtils:
+class FusionUtils(object):
 
     FUSION_FOLDER = 'FUSION_FOLDER'
 

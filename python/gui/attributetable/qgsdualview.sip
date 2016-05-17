@@ -47,8 +47,16 @@ class QgsDualView : QStackedWidget
      * Change the current view mode.
      *
      * @param view The view mode to set
+     * @see view()
      */
     void setView( ViewMode view );
+
+    /**
+     * Returns the current view mode.
+     * @see setView()
+     * @note added in QGIS 2.16
+     */
+    ViewMode view() const;
 
     /**
      * Set the filter mode
@@ -57,6 +65,11 @@ class QgsDualView : QStackedWidget
      */
     void setFilterMode( QgsAttributeTableFilterModel::FilterMode filterMode );
 
+    /**
+     * Get the filter mode
+     *
+     * @return the filter mode
+     */
     QgsAttributeTableFilterModel::FilterMode filterMode();
 
     /**
@@ -88,8 +101,11 @@ class QgsDualView : QStackedWidget
      * @param filteredFeatures  A list of feature ids
      *
      */
-    void setFilteredFeatures( QgsFeatureIds filteredFeatures );
+    void setFilteredFeatures( const QgsFeatureIds& filteredFeatures );
 
+    /**
+     * Get a list of currently visible feature ids.
+     */
     QgsFeatureIds filteredFeatures();
 
     /**
@@ -99,9 +115,41 @@ class QgsDualView : QStackedWidget
      */
     QgsAttributeTableModel* masterModel() const;
 
+    /**
+     * Set the request
+     *
+     * @param request The request
+     */
     void setRequest( const QgsFeatureRequest& request );
 
+    /**
+     * Set the feature selection model
+     *
+     * @param featureSelectionManager the feature selection model
+     */
     void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
+
+    /**
+     * Returns the table view
+     *
+     * @return The table view
+     */
+    QgsAttributeTableView* tableView();
+    /**
+     * Set the attribute table config which should be used to control
+     * the appearance of the attribute table.
+     */
+    void setAttributeTableConfig( const QgsAttributeTableConfig& config );
+
+    /**
+     * Set the expression used for sorting the table and feature list.
+     */
+    void setSortExpression( const QString& sortExpression );
+
+    /**
+     * Get the expression used for sorting the table and feature list.
+     */
+    QString sortExpression() const;
 
   protected:
     /**
@@ -128,12 +176,19 @@ class QgsDualView : QStackedWidget
      */
     bool saveEditChanges();
 
+    void openConditionalStyles();
+
+    /** Sets whether multi edit mode is enabled.
+     * @note added in QGIS 2.16
+     */
+    void setMultiEditEnabled( bool enabled );
+
   signals:
     /**
      * Is emitted, whenever the display expression is successfully changed
      * @param expression The expression that was applied
      */
-    void displayExpressionChanged( const QString expression );
+    void displayExpressionChanged( const QString& expression );
 
     /**
      * Is emitted, whenever the filter changes

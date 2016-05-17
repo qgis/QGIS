@@ -57,7 +57,8 @@
     <g
        transform="translate(-1.438,30.744)"
        id="g6"
-       style="fill:none;stroke:#000000">
+       stroke="param(outline)" stroke-opacity="param(outline-opacity)"
+       style="fill:none;">
       <path
          d="M 61,35 C 61,51.02 48.016,64 32,64 15.98,64 3,51.016 3,35 3,18.98 15.984,6 32,6 48.02,6 61,18.984 61,35 z"
          id="path8"
@@ -79,16 +80,19 @@
        d="m 30.562,21.291 28.938,73.826 -29,-29 -29,29 z"
        id="path14"
        inkscape:connector-curvature="0"
-       style="fill:#ffffff;stroke:#ffffff;stroke-width:3" />
+       fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(fill)" stroke-opacity="param(fill-opacity)"
+       style="stroke-width:3" />
     <path
        d="m 30.562,21.291 29,73.45 -29,-29 -29,29 z"
        id="path16"
        inkscape:connector-curvature="0"
-       style="fill:none;stroke:#000000;stroke-linecap:square" />
+       stroke="param(outline)" stroke-opacity="param(outline-opacity)"
+       style="fill:none;stroke-linecap:square" />
     <g
        id="g22"
        transform="translate(0,-3.829)"
-       style="fill:none;stroke:#000000;stroke-width:0.25">
+       stroke="param(outline)" stroke-opacity="param(outline-opacity)"
+       style="fill:none;stroke-width:0.25">
       <path
          id="path24"
          d="m 4,92.82 6.74,-3.891"

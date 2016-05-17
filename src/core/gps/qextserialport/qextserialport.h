@@ -1,6 +1,6 @@
 
-#ifndef _QEXTSERIALPORT_H_
-#define _QEXTSERIALPORT_H_
+#ifndef QEXTSERIALPORT_H
+#define QEXTSERIALPORT_H
 
 
 /*if all warning messages are turned off, flag portability warnings to be turned off as well*/
@@ -189,7 +189,7 @@ class QextSerialPort: public QIODevice
             EventDriven
         };
 
-        QextSerialPort(QueryMode mode = EventDriven);
+        explicit QextSerialPort(QueryMode mode = EventDriven);
         QextSerialPort(const QString & name, QueryMode mode = EventDriven);
         QextSerialPort(PortSettings const& s, QueryMode mode = EventDriven);
         QextSerialPort(const QString & name, PortSettings const& s, QueryMode mode = EventDriven);

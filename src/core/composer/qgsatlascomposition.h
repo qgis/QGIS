@@ -18,6 +18,7 @@
 
 #include "qgscoordinatetransform.h"
 #include "qgsfeature.h"
+#include "qgsgeometry.h"
 
 #include <memory>
 #include <QString>
@@ -167,14 +168,14 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QString featureFilterErrorString() const { return mFilterParserError; }
 
     QString sortKeyAttributeName() const { return mSortKeyAttributeName; }
-    void setSortKeyAttributeName( QString fieldName ) { mSortKeyAttributeName = fieldName; }
+    void setSortKeyAttributeName( const QString& fieldName ) { mSortKeyAttributeName = fieldName; }
 
     /** Returns the current list of predefined scales for the atlas. This is used
      * for maps which are set to the predefined atlas scaling mode.
      * @returns a vector of doubles representing predefined scales
      * @see setPredefinedScales
      * @see QgsComposerMap::atlasScalingMode
-    */
+     */
     const QVector<qreal>& predefinedScales() const { return mPredefinedScales; }
 
     /** Sets the list of predefined scales for the atlas. This is used
@@ -198,16 +199,16 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @param i feature number
      * @param updateMaps set to true to redraw maps and recalculate their extent
      * @returns true if feature was successfully prepared
-    */
+     */
     bool prepareForFeature( const int i, const bool updateMaps = true );
 
     /** Prepare the atlas map for the given feature. Sets the extent and context variables
      * @returns true if feature was successfully prepared
-    */
+     */
     bool prepareForFeature( const QgsFeature *feat );
 
     /** Returns the current filename. Must be called after prepareForFeature() */
-    const QString& currentFilename() const;
+    QString currentFilename() const;
 
     void writeXML( QDomElement& elem, QDomDocument& doc ) const;
 
@@ -231,7 +232,8 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QgsComposition* composition() { return mComposition; }
 
     /** Requeries the current atlas coverage layer and applies filtering and sorting. Returns
-      number of matching features. Must be called after prepareForFeature() */
+     * number of matching features. Must be called after prepareForFeature()
+     */
     int updateFeatures();
 
     /** Returns the current atlas feature. Must be called after prepareForFeature().
@@ -285,17 +287,24 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      */
     Q_DECL_DEPRECATED void setMargin( float margin );
 
+    //! @deprecated use sortKeyAttributeName instead
     Q_DECL_DEPRECATED int sortKeyAttributeIndex() const;
+    //! @deprecated use setSortKeyAttributeName instead
     Q_DECL_DEPRECATED void setSortKeyAttributeIndex( int idx );
 
-    /** Returns the current atlas feature. Must be called after prepareForFeature( i ). */
+    /** Returns the current atlas feature. Must be called after prepareForFeature( i ).
+     * @deprecated use feature() instead
+     */
     Q_DECL_DEPRECATED QgsFeature* currentFeature() { return &mCurrentFeature; }
+
+    /** Returns the current atlas geometry in the given projection system (default to the coverage layer's CRS) */
+    QgsGeometry currentGeometry( const QgsCoordinateReferenceSystem& projectedTo = QgsCoordinateReferenceSystem() ) const;
 
   public slots:
 
     /** Refreshes the current atlas feature, by refetching its attributes from the vector layer provider
      * @note added in QGIS 2.5
-    */
+     */
     void refreshFeature();
 
     void nextFeature();
@@ -311,7 +320,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void toggled( bool );
 
     /** Is emitted when the atlas has an updated status bar message for the composer window*/
-    void statusMsgChanged( QString message );
+    void statusMsgChanged( const QString& message );
 
     /** Is emitted when the coverage layer for an atlas changes*/
     void coverageLayerChanged( QgsVectorLayer* layer );
@@ -338,7 +347,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     /** Evaluates filename for current feature
      * @returns true if feature filename was successfully evaluated
-    */
+     */
     bool evalFeatureFilename( const QgsExpressionContext &context );
 
     QgsComposition* mComposition;
@@ -349,7 +358,6 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QgsVectorLayer* mCoverageLayer;
     bool mSingleFile;
 
-    QgsCoordinateTransform mTransform;
     QString mCurrentFilename;
     // feature ordering
     bool mSortFeatures;
@@ -363,7 +371,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     typedef QMap< QgsFeatureId, QVariant > SorterKeys;
 
   private slots:
-    void removeLayers( QStringList layers );
+    void removeLayers( const QStringList& layers );
 
   private:
     // value of field that is used for ordering of features
@@ -401,6 +409,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     //list of predefined scales
     QVector<qreal> mPredefinedScales;
+
+    // projected geometry cache
+    mutable QMap<long, QgsGeometry> mGeometryCache;
 };
 
 #endif

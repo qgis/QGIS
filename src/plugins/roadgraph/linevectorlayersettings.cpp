@@ -109,7 +109,7 @@ QWidget* RgLineVectorLayerSettings::getGui( QWidget *parent )
 void RgLineVectorLayerSettings::setFromGui( QWidget *myGui )
 {
   RgLineVectorLayerSettingsWidget* w = dynamic_cast<RgLineVectorLayerSettingsWidget*>( myGui );
-  if ( w == NULL )
+  if ( !w )
     return;
 
   mFirstPointToLastPointDirectionVal  = w->mleFirstPointToLastPointDirection->text();

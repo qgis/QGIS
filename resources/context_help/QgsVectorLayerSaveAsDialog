@@ -10,4 +10,4 @@
 <li>OGR also has various options for the different formats it supports.  Use the <label>datasource</label> creation field to set the datasource options and the <label>layer</label> creation options. Enter one options per line (e.g. <code>SPATIALITE=yes</code> in the <label>datasource</label> to create a spatialite database using the SQLite driver).
 </ul>
 
-See <a href="http://gdal.org/ogr/ogr_formats.html">OGR Vector formats</a> for a list of supported formats and the available options.
+See <a href="http://gdal.org/ogr_formats.html">OGR Vector formats</a> for a list of supported formats and the available options.

@@ -23,8 +23,9 @@
 
 #include <QTreeWidgetItem>
 #include <QComboBox>
+#include <QRadioButton>
 
-QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, QList < TabPair > tabList, QWidget * parent )
+QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair >& tabList, QWidget * parent )
     : QDialog( parent )
     , mLayer( lyr )
     , mTabs( tabList )
@@ -33,7 +34,7 @@ QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, QList < TabPair > tabLi
 
   mTabButton->setChecked( true );
   mTabList->setEnabled( false );
-  if ( mTabs.size() > 0 )
+  if ( !mTabs.isEmpty() )
   {
     int i = 0;
     Q_FOREACH ( const TabPair& tab, mTabs )
@@ -49,6 +50,8 @@ QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, QList < TabPair > tabLi
 
   connect( mTabButton, SIGNAL( toggled( bool ) ), this, SLOT( on_mTabButton_toggled( bool ) ) );
   connect( mGroupButton, SIGNAL( toggled( bool ) ), this, SLOT( on_mGroupButton_toggled( bool ) ) );
+
+  mColumnCountSpinBox->setValue( QSettings().value( "/qgis/attributeForm/defaultTabColumnCount", 1 ).toInt() );
 
   setWindowTitle( tr( "Add tab or group for %1" ).arg( mLayer->name() ) );
 } // QgsVectorLayerProperties ctor
@@ -68,17 +71,46 @@ QTreeWidgetItem* QgsAddTabOrGroup::tab()
   return tab.second;
 }
 
+int QgsAddTabOrGroup::columnCount() const
+{
+  return mColumnCountSpinBox->value();
+}
+
 bool QgsAddTabOrGroup::tabButtonIsChecked()
 {
   return mTabButton->isChecked();
 }
 
+void QgsAddTabOrGroup::accept()
+{
+  if ( mColumnCountSpinBox->value() > 0 )
+  {
+    if ( mGroupButton->isChecked() )
+    {
+      QSettings().setValue( "/qgis/attributeForm/defaultGroupColumnCount", mColumnCountSpinBox->value() );
+    }
+    else
+    {
+      QSettings().setValue( "/qgis/attributeForm/defaultTabColumnCount", mColumnCountSpinBox->value() );
+    }
+  }
+
+  QDialog::accept();
+}
+
 void QgsAddTabOrGroup::on_mGroupButton_toggled( bool checked )
 {
   mTabList->setEnabled( checked );
+
+  if ( checked )
+  {
+    mColumnCountSpinBox->setValue( QSettings().value( "/qgis/attributeForm/defaultGroupColumnCount", 1 ).toInt() );
+  }
 }
 
 void QgsAddTabOrGroup::on_mTabButton_toggled( bool checked )
 {
   mTabList->setEnabled( !checked );
+  if ( checked )
+    mColumnCountSpinBox->setValue( QSettings().value( "/qgis/attributeForm/defaultTabColumnCount", 1 ).toInt() );
 }

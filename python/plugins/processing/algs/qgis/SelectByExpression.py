@@ -5,7 +5,7 @@
     SelectByExpression.py
     ---------------------
     Date                 : July 2014
-    Copyright            : (C) 2014 by Michaël Douchin
+    Copyright            : (C) 2014 by Michael Douchin
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -40,19 +40,21 @@ class SelectByExpression(GeoAlgorithm):
     EXPRESSION = 'EXPRESSION'
     RESULT = 'RESULT'
     METHOD = 'METHOD'
-    METHODS = ['creating new selection', 'adding to current selection',
-               'removing from current selection']
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Select by expression')
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
+
+        self.methods = [self.tr('creating new selection'),
+                        self.tr('adding to current selection'),
+                        self.tr('removing from current selection')]
 
         self.addParameter(ParameterVector(self.LAYERNAME,
                                           self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterString(self.EXPRESSION,
                                           self.tr("Expression")))
         self.addParameter(ParameterSelection(self.METHOD,
-                                             self.tr('Modify current selection by'), self.METHODS, 0))
+                                             self.tr('Modify current selection by'), self.methods, 0))
         self.addOutput(OutputVector(self.RESULT, self.tr('Selected (expression)'), True))
 
     def processAlgorithm(self, progress):
@@ -61,7 +63,6 @@ class SelectByExpression(GeoAlgorithm):
         oldSelection = set(layer.selectedFeaturesIds())
         method = self.getParameterValue(self.METHOD)
 
-        # Build QGIS request with expression
         expression = self.getParameterValue(self.EXPRESSION)
         qExp = QgsExpression(expression)
         if not qExp.hasParserError():
@@ -75,7 +76,5 @@ class SelectByExpression(GeoAlgorithm):
         elif method == 2:
             selected = list(oldSelection.difference(selected))
 
-        # Set the selection
         layer.setSelectedFeatures(selected)
-
         self.setOutputValue(self.RESULT, filename)

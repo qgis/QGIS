@@ -26,13 +26,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 
-from PyQt4 import QtCore
+from qgis.PyQt.QtCore import QCoreApplication
 
 
 class ContextAction:
 
-    def setData(self, alg, toolbox):
-        self.alg = alg
+    def setData(self, itemData, toolbox):
+        self.itemData = itemData
         self.toolbox = toolbox
 
     def updateToolbox(self):
@@ -46,4 +46,4 @@ class ContextAction:
     def tr(self, string, context=''):
         if context == '':
             context = 'ContextAction'
-        return QtCore.QCoreApplication.translate(context, string)
+        return QCoreApplication.translate(context, string)

@@ -87,7 +87,7 @@ class QgsShadowEffect : QgsPaintEffect
      */
     void setOffsetMapUnitScale( const QgsMapUnitScale& scale );
 
-    /** Returns the map unit scale used for the drop shadow offset distance.
+    /** Returns the map unit scale used for the shadow offset distance.
      * @returns map unit scale for offset distance
      * @see setOffsetMapUnitScale
      * @see offsetDistance
@@ -156,7 +156,6 @@ class QgsShadowEffect : QgsPaintEffect
  *
  * \note Added in version 2.9
  */
-
 class QgsDropShadowEffect : QgsShadowEffect
 {
 %TypeHeaderCode
@@ -175,14 +174,13 @@ class QgsDropShadowEffect : QgsShadowEffect
     virtual ~QgsDropShadowEffect();
 
     virtual QString type() const;
-    virtual QgsPaintEffect* clone() const /Factory/;
+    virtual QgsDropShadowEffect* clone() const /Factory/;
 
   protected:
 
     virtual bool exteriorShadow() const;
 
 };
-
 
 /** \ingroup core
  * \class QgsInnerShadowEffect
@@ -209,7 +207,7 @@ class QgsInnerShadowEffect : QgsShadowEffect
     virtual ~QgsInnerShadowEffect();
 
     virtual QString type() const;
-    virtual QgsPaintEffect* clone() const /Factory/;
+    virtual QgsInnerShadowEffect* clone() const /Factory/;
 
   protected:
 

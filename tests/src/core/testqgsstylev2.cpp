@@ -50,12 +50,7 @@ class TestStyleV2 : public QObject
     QgsStyleV2 *mStyle;
     QString mTestDataDir;
 
-    QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPointsLayer;
-    QgsVectorLayer * mpLinesLayer;
-    QgsVectorLayer * mpPolysLayer;
-
-    bool testValidColor( QgsVectorColorRampV2 *ramp, double value, QColor expected );
+    bool testValidColor( QgsVectorColorRampV2 *ramp, double value, const QColor& expected );
     bool imageCheck( QgsMapSettings &ms, const QString &testName );
 
   private slots:
@@ -67,21 +62,15 @@ class TestStyleV2 : public QObject
     void cleanup() {}// will be called after every testfunction.
     // void initStyles();
 
-    void testCanvasClip();
     void testCreateColorRamps();
     void testLoadColorRamps();
     void testSaveLoad();
-    void testParseColor();
-    void testParseColorList();
-
+    void testTags();
 
 };
 
 TestStyleV2::TestStyleV2()
-    : mStyle( NULL )
-    , mpPointsLayer( 0 )
-    , mpLinesLayer( 0 )
-    , mpPolysLayer( 0 )
+    : mStyle( nullptr )
 {
 
 }
@@ -93,7 +82,7 @@ void TestStyleV2::initTestCase()
   QgsApplication::init( QDir::tempPath() + "/dot-qgis" );
   QgsApplication::initQgis();
   QgsApplication::createDB();
-  mTestDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CmakeLists.txt
+  mTestDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
 
   // output test environment
   QgsApplication::showSettings();
@@ -115,42 +104,6 @@ void TestStyleV2::initTestCase()
 
   // cpt-city ramp, small selection available in <testdir>/cpt-city
   QgsCptCityArchive::initArchives();
-
-  //
-  //create a point layer that will be used in all tests...
-  //
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + "/";
-  QString myPointsFileName = mTestDataDir + "points.shp";
-  QFileInfo myPointFileInfo( myPointsFileName );
-  mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
-                                      myPointFileInfo.completeBaseName(), "ogr" );
-  // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer );
-
-  //
-  //create a poly layer that will be used in all tests...
-  //
-  QString myPolysFileName = mTestDataDir + "polys.shp";
-  QFileInfo myPolyFileInfo( myPolysFileName );
-  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), "ogr" );
-  // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
-
-
-  //
-  // Create a line layer that will be used in all tests...
-  //
-  QString myLinesFileName = mTestDataDir + "lines.shp";
-  QFileInfo myLineFileInfo( myLinesFileName );
-  mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
-                                     myLineFileInfo.completeBaseName(), "ogr" );
-  // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpLinesLayer );
 
   mReport += "<h1>StyleV2 Tests</h1>\n";
 }
@@ -185,63 +138,15 @@ bool TestStyleV2::imageCheck( QgsMapSettings& ms, const QString& testName )
   return result;
 }
 
-void TestStyleV2::testCanvasClip()
-{
-  //test rendering with and without clip to canvas enabled
-  QgsMapSettings ms;
-  QgsRectangle extent( -110.0, 25.0, -90, 40.0 );
-  ms.setExtent( extent );
-  ms.setFlag( QgsMapSettings::ForceVectorOutput );
-
-  //line
-  mReport += "<h2>Line canvas clip</h2>\n";
-  ms.setLayers( QStringList() << mpLinesLayer->id() );
-
-  QgsMarkerLineSymbolLayerV2* markerLine = new QgsMarkerLineSymbolLayerV2();
-  markerLine->setPlacement( QgsMarkerLineSymbolLayerV2:: CentralPoint );
-  QgsLineSymbolV2* lineSymbol = new QgsLineSymbolV2();
-  lineSymbol->changeSymbolLayer( 0, markerLine );
-  QgsSingleSymbolRendererV2* renderer = new QgsSingleSymbolRendererV2( lineSymbol );
-  mpLinesLayer->setRendererV2( renderer );
-  bool result;
-
-  lineSymbol->setClipFeaturesToExtent( true );
-  result = imageCheck( ms, "stylev2_linecanvasclip" );
-  QVERIFY( result );
-
-  lineSymbol->setClipFeaturesToExtent( false );
-  result = imageCheck( ms, "stylev2_linecanvasclip_off" );
-  QVERIFY( result );
-
-  //poly
-  mReport += "<h2>Polygon canvas clip</h2>\n";
-  ms.setLayers( QStringList() << mpPolysLayer->id() );
-
-  QgsCentroidFillSymbolLayerV2* centroidFill = new QgsCentroidFillSymbolLayerV2();
-  QgsFillSymbolV2* fillSymbol = new QgsFillSymbolV2();
-  fillSymbol->changeSymbolLayer( 0, centroidFill );
-  renderer = new QgsSingleSymbolRendererV2( fillSymbol );
-  mpPolysLayer->setRendererV2( renderer );
-
-  extent = QgsRectangle( -106.0, 29.0, -94, 36.0 );
-  ms.setExtent( extent );
-
-  fillSymbol->setClipFeaturesToExtent( true );
-  result = imageCheck( ms, "stylev2_polycanvasclip" );
-  QVERIFY( result );
-
-  fillSymbol->setClipFeaturesToExtent( false );
-  result = imageCheck( ms, "stylev2_polycanvasclip_off" );
-  QVERIFY( result );
-}
-
-bool TestStyleV2::testValidColor( QgsVectorColorRampV2 *ramp, double value, QColor expected )
+bool TestStyleV2::testValidColor( QgsVectorColorRampV2 *ramp, double value, const QColor& expected )
 {
   QColor result = ramp->color( value );
-  if ( result != expected )
+  //use int color components when testing (builds some fuzziness into test)
+  if ( result.red() != expected.red() || result.green() != expected.green() || result.blue() != expected.blue()
+       || result.alpha() != expected.alpha() )
   {
     QWARN( QString( "value = %1 result = %2 expected = %3" ).arg( value ).arg(
-             result.name() ).arg( expected.name() ).toLocal8Bit().data() );
+             result.name(), expected.name() ).toLocal8Bit().data() );
     return false;
   }
   return true;
@@ -286,8 +191,8 @@ void TestStyleV2::testLoadColorRamps()
 
   // values for color tests
   QMultiMap< QString, QPair< double, QColor> > colorTests;
-  colorTests.insert( "test_gradient", qMakePair( 0.25, QColor( "#ff7f7f" ) ) );
-  colorTests.insert( "test_gradient", qMakePair( 0.66, QColor( "#adadff" ) ) );
+  colorTests.insert( "test_gradient", qMakePair( 0.25, QColor( "#ff8080" ) ) );
+  colorTests.insert( "test_gradient", qMakePair( 0.66, QColor( "#aeaeff" ) ) );
   // cannot test random colors!
   colorTests.insert( "test_cb1", qMakePair( 0.25, QColor( "#fdae61" ) ) );
   colorTests.insert( "test_cb1", qMakePair( 0.66, QColor( "#abdda4" ) ) );
@@ -302,8 +207,8 @@ void TestStyleV2::testLoadColorRamps()
   colorTests.insert( "test_cc2", qMakePair( 0.25, QColor( "#de77ae" ) ) );
   colorTests.insert( "test_cc2", qMakePair( 0.66, QColor( "#b8e186" ) ) );
   colorRampsTest << "test_cc3";
-  colorTests.insert( "test_cc3", qMakePair( 0.25, QColor( "#7f7f7f" ) ) );
-  colorTests.insert( "test_cc3", qMakePair( 0.66, QColor( "#ffad00" ) ) );
+  colorTests.insert( "test_cc3", qMakePair( 0.25, QColor( "#808080" ) ) );
+  colorTests.insert( "test_cc3", qMakePair( 0.66, QColor( "#ffae00" ) ) );
 
   QgsDebugMsg( "loaded colorRamps: " + colorRamps.join( " " ) );
 
@@ -353,217 +258,114 @@ void TestStyleV2::testSaveLoad()
   testLoadColorRamps();
 }
 
-void TestStyleV2::testParseColor()
+void TestStyleV2::testTags()
 {
-  // values for color tests
-  QMap< QString, QPair< QColor, bool> > colorTests;
-  colorTests.insert( "bad color", qMakePair( QColor(), false ) );
-  colorTests.insert( "red", qMakePair( QColor( 255, 0, 0 ), false ) );
-  colorTests.insert( "#ff00ff", qMakePair( QColor( 255, 0, 255 ), false ) );
-  colorTests.insert( "#99AA00", qMakePair( QColor( 153, 170, 0 ), false ) );
-  colorTests.insert( "#GG0000", qMakePair( QColor(), false ) );
-  colorTests.insert( "000000", qMakePair( QColor( 0, 0, 0 ), false ) );
-  colorTests.insert( "00ff00", qMakePair( QColor( 0, 255, 0 ), false ) );
-  colorTests.insert( "00gg00", qMakePair( QColor(), false ) );
-  colorTests.insert( "00ff000", qMakePair( QColor(), false ) );
-  colorTests.insert( "fff", qMakePair( QColor( 255, 255, 255 ), false ) );
-  colorTests.insert( "fff0", qMakePair( QColor(), false ) );
+  mStyle->clear();
+  //add some tags
+  int id = mStyle->addTag( "red" );
+  QCOMPARE( id, mStyle->tagId( "red" ) );
+  id = mStyle->addTag( "starry" );
+  QCOMPARE( id, mStyle->tagId( "starry" ) );
+  id = mStyle->addTag( "circle" );
+  QCOMPARE( id, mStyle->tagId( "circle" ) );
+  id = mStyle->addTag( "blue" );
+  QCOMPARE( id, mStyle->tagId( "blue" ) );
+  id = mStyle->addTag( "purple" );
+  QCOMPARE( id, mStyle->tagId( "purple" ) );
 
-  // hex rrggbbaa colors
-  colorTests.insert( "#ff00ffaa", qMakePair( QColor( 255, 0, 255, 170 ), true ) );
-  colorTests.insert( "#99AA0099", qMakePair( QColor( 153, 170, 0, 153 ), true ) );
-  colorTests.insert( "#GG0000aa", qMakePair( QColor(), false ) );
-  colorTests.insert( "00000000", qMakePair( QColor( 0, 0, 0, 0 ), true ) );
-  colorTests.insert( "00ff0011", qMakePair( QColor( 0, 255, 0, 17 ), true ) );
-  colorTests.insert( "00gg0011", qMakePair( QColor(), false ) );
-  colorTests.insert( "00ff00000", qMakePair( QColor(), false ) );
+  QStringList tags = mStyle->tags();
+  QCOMPARE( tags.count(), 5 );
+  QVERIFY( tags.contains( "red" ) );
+  QVERIFY( tags.contains( "starry" ) );
+  QVERIFY( tags.contains( "circle" ) );
+  QVERIFY( tags.contains( "blue" ) );
+  QVERIFY( tags.contains( "purple" ) );
 
-  colorTests.insert( "0,0,0", qMakePair( QColor( 0, 0, 0 ), false ) );
-  colorTests.insert( "127,60,0", qMakePair( QColor( 127, 60, 0 ), false ) );
-  colorTests.insert( "255,255,255", qMakePair( QColor( 255, 255, 255 ), false ) );
-  colorTests.insert( "256,60,0", qMakePair( QColor(), false ) );
-  colorTests.insert( "rgb(127,60,0)", qMakePair( QColor( 127, 60, 0 ), false ) );
-  colorTests.insert( "rgb(255,255,255)", qMakePair( QColor( 255, 255, 255 ), false ) );
-  colorTests.insert( "rgb(256,60,0)", qMakePair( QColor(), false ) );
-  colorTests.insert( " rgb(  127, 60 ,  0 ) ", qMakePair( QColor( 127, 60, 0 ), false ) );
-  colorTests.insert( "rgb(127,60,0);", qMakePair( QColor( 127, 60, 0 ), false ) );
-  colorTests.insert( "(127,60,0);", qMakePair( QColor( 127, 60, 0 ), false ) );
-  colorTests.insert( "(127,60,0)", qMakePair( QColor( 127, 60, 0 ), false ) );
-  colorTests.insert( "127,060,000", qMakePair( QColor( 127, 60, 0 ), false ) );
-  colorTests.insert( "0,0,0,0", qMakePair( QColor( 0, 0, 0, 0 ), true ) );
-  colorTests.insert( "127,60,0,0.5", qMakePair( QColor( 127, 60, 0, 128 ), true ) );
-  colorTests.insert( "255,255,255,0.1", qMakePair( QColor( 255, 255, 255, 26 ), true ) );
-  colorTests.insert( "rgba(127,60,0,1.0)", qMakePair( QColor( 127, 60, 0, 255 ), true ) );
-  colorTests.insert( "rgba(255,255,255,0.0)", qMakePair( QColor( 255, 255, 255, 0 ), true ) );
-  colorTests.insert( " rgba(  127, 60 ,  0  , 0.2 ) ", qMakePair( QColor( 127, 60, 0, 51 ), true ) );
-  colorTests.insert( "rgba(127,60,0,0.1);", qMakePair( QColor( 127, 60, 0, 26 ), true ) );
-  colorTests.insert( "(127,60,0,1);", qMakePair( QColor( 127, 60, 0, 255 ), true ) );
-  colorTests.insert( "(127,60,0,1.0)", qMakePair( QColor( 127, 60, 0, 255 ), true ) );
-  colorTests.insert( "127,060,000,1", qMakePair( QColor( 127, 60, 0, 255 ), true ) );
-  colorTests.insert( "0%,0%,0%", qMakePair( QColor( 0, 0, 0 ), false ) );
-  colorTests.insert( "50 %,60 %,0 %", qMakePair( QColor( 127, 153, 0 ), false ) );
-  colorTests.insert( "100%, 100%, 100%", qMakePair( QColor( 255, 255, 255 ), false ) );
-  colorTests.insert( "rgb(50%,60%,0%)", qMakePair( QColor( 127, 153, 0 ), false ) );
-  colorTests.insert( "rgb(100%, 100%, 100%)", qMakePair( QColor( 255, 255, 255 ), false ) );
-  colorTests.insert( " rgb(  50 % , 60 % ,  0  % ) ", qMakePair( QColor( 127, 153, 0 ), false ) );
-  colorTests.insert( "rgb(50%,60%,0%);", qMakePair( QColor( 127, 153, 0 ), false ) );
-  colorTests.insert( "(50%,60%,0%);", qMakePair( QColor( 127, 153, 0 ), false ) );
-  colorTests.insert( "(50%,60%,0%)", qMakePair( QColor( 127, 153, 0 ), false ) );
-  colorTests.insert( "050%,060%,000%", qMakePair( QColor( 127, 153, 0 ), false ) );
-  colorTests.insert( "0%,0%,0%,0", qMakePair( QColor( 0, 0, 0, 0 ), true ) );
-  colorTests.insert( "50 %,60 %,0 %,0.5", qMakePair( QColor( 127, 153, 0, 128 ), true ) );
-  colorTests.insert( "100%, 100%, 100%, 1.0", qMakePair( QColor( 255, 255, 255, 255 ), true ) );
-  colorTests.insert( "rgba(50%,60%,0%, 1.0)", qMakePair( QColor( 127, 153, 0, 255 ), true ) );
-  colorTests.insert( "rgba(100%, 100%, 100%, 0.0)", qMakePair( QColor( 255, 255, 255, 0 ), true ) );
-  colorTests.insert( " rgba(  50 % , 60 % ,  0  %, 0.5 ) ", qMakePair( QColor( 127, 153, 0, 128 ), true ) );
-  colorTests.insert( "rgba(50%,60%,0%,0);", qMakePair( QColor( 127, 153, 0, 0 ), true ) );
-  colorTests.insert( "(50%,60%,0%,1);", qMakePair( QColor( 127, 153, 0, 255 ), true ) );
-  colorTests.insert( "(50%,60%,0%,1.0)", qMakePair( QColor( 127, 153, 0, 255 ), true ) );
-  colorTests.insert( "050%,060%,000%,0", qMakePair( QColor( 127, 153, 0, 0 ), true ) );
+  //remove tag
+  mStyle->remove( QgsStyleV2::TagEntity, mStyle->tagId( "purple" ) );
+  mStyle->remove( QgsStyleV2::TagEntity, -999 ); //bad id
+  tags = mStyle->tags();
+  QCOMPARE( tags.count(), 4 );
+  QVERIFY( !tags.contains( "purple" ) );
 
-  QMap<QString, QPair< QColor, bool> >::const_iterator i = colorTests.constBegin();
-  while ( i != colorTests.constEnd() )
-  {
-    QgsDebugMsg( "color string: " +  i.key() );
-    bool hasAlpha = false;
-    QColor result = QgsSymbolLayerV2Utils::parseColorWithAlpha( i.key(), hasAlpha );
-    QVERIFY( result == i.value().first );
-    QVERIFY( hasAlpha == i.value().second );
-    ++i;
-  }
+  //add some symbols
+  QVERIFY( mStyle->saveSymbol( "symbol1", QgsMarkerSymbolV2::createSimple( QgsStringMap() ), 0, QStringList() << "red" << "starry" ) );
+  mStyle->addSymbol( "blue starry", QgsMarkerSymbolV2::createSimple( QgsStringMap() ), true );
+  mStyle->addSymbol( "red circle", QgsMarkerSymbolV2::createSimple( QgsStringMap() ), true );
+
+  //tag them
+  QVERIFY( mStyle->tagSymbol( QgsStyleV2::SymbolEntity, "blue starry", QStringList() << "blue" << "starry" ) );
+  QVERIFY( mStyle->tagSymbol( QgsStyleV2::SymbolEntity, "red circle", QStringList() << "red" << "circle" ) );
+  //bad symbol name
+  QVERIFY( !mStyle->tagSymbol( QgsStyleV2::SymbolEntity, "no symbol", QStringList() << "red" << "circle" ) );
+  //tag which hasn't been added yet
+  QVERIFY( mStyle->tagSymbol( QgsStyleV2::SymbolEntity, "red circle", QStringList() << "round" ) );
+  tags = mStyle->tags();
+  QVERIFY( tags.contains( "round" ) );
+
+  //check that tags have been applied
+  tags = mStyle->tagsOfSymbol( QgsStyleV2::SymbolEntity, "blue starry" );
+  QCOMPARE( tags.count(), 2 );
+  QVERIFY( tags.contains( "blue" ) );
+  QVERIFY( tags.contains( "starry" ) );
+  tags = mStyle->tagsOfSymbol( QgsStyleV2::SymbolEntity, "red circle" );
+  QCOMPARE( tags.count(), 3 );
+  QVERIFY( tags.contains( "red" ) );
+  QVERIFY( tags.contains( "circle" ) );
+  QVERIFY( tags.contains( "round" ) );
+  tags = mStyle->tagsOfSymbol( QgsStyleV2::SymbolEntity, "symbol1" );
+  QCOMPARE( tags.count(), 2 );
+  QVERIFY( tags.contains( "red" ) );
+  QVERIFY( tags.contains( "starry" ) );
+
+  //remove a tag, including a non-present tag
+  QVERIFY( mStyle->detagSymbol( QgsStyleV2::SymbolEntity, "blue starry", QStringList() << "bad" << "blue" ) );
+  tags = mStyle->tagsOfSymbol( QgsStyleV2::SymbolEntity, "blue starry" );
+  QCOMPARE( tags.count(), 1 );
+  QVERIFY( tags.contains( "starry" ) );
+
+  //try to remove tag from non-existing symbol
+  QVERIFY( !mStyle->detagSymbol( QgsStyleV2::SymbolEntity, "no symbol!", QStringList() << "bad" << "blue" ) );
+
+  //check symbols with tag
+  QStringList symbols = mStyle->symbolsWithTag( QgsStyleV2::SymbolEntity, mStyle->tagId( "red" ) );
+  QCOMPARE( symbols.count(), 2 );
+  QVERIFY( symbols.contains( "symbol1" ) );
+  QVERIFY( symbols.contains( "red circle" ) );
+  symbols = mStyle->symbolsWithTag( QgsStyleV2::SymbolEntity, mStyle->tagId( "starry" ) );
+  QCOMPARE( symbols.count(), 2 );
+  QVERIFY( symbols.contains( "symbol1" ) );
+  QVERIFY( symbols.contains( "blue starry" ) );
+  symbols = mStyle->symbolsWithTag( QgsStyleV2::SymbolEntity, mStyle->tagId( "circle" ) );
+  QCOMPARE( symbols.count(), 1 );
+  QVERIFY( symbols.contains( "red circle" ) );
+  symbols = mStyle->symbolsWithTag( QgsStyleV2::SymbolEntity, mStyle->tagId( "round" ) );
+  QCOMPARE( symbols.count(), 1 );
+  QVERIFY( symbols.contains( "red circle" ) );
+  symbols = mStyle->symbolsWithTag( QgsStyleV2::SymbolEntity, mStyle->tagId( "blue" ) );
+  QVERIFY( symbols.isEmpty() );
+  symbols = mStyle->symbolsWithTag( QgsStyleV2::SymbolEntity, mStyle->tagId( "no tag" ) );
+  QVERIFY( symbols.isEmpty() );
+
+  //searching returns symbols with matching tags
+  symbols = mStyle->findSymbols( QgsStyleV2::SymbolEntity, "red" );
+  QCOMPARE( symbols.count(), 2 );
+  QVERIFY( symbols.contains( "symbol1" ) );
+  QVERIFY( symbols.contains( "red circle" ) );
+  symbols = mStyle->findSymbols( QgsStyleV2::SymbolEntity, "symbol1" );
+  QCOMPARE( symbols.count(), 1 );
+  QVERIFY( symbols.contains( "symbol1" ) );
+  symbols = mStyle->findSymbols( QgsStyleV2::SymbolEntity, "starry" );
+  QCOMPARE( symbols.count(), 2 );
+  QVERIFY( symbols.contains( "symbol1" ) );
+  QVERIFY( symbols.contains( "blue starry" ) );
+  symbols = mStyle->findSymbols( QgsStyleV2::SymbolEntity, "blue" );
+  QCOMPARE( symbols.count(), 1 );
+  QVERIFY( symbols.contains( "blue starry" ) );
+  symbols = mStyle->findSymbols( QgsStyleV2::SymbolEntity, "round" );
+  QCOMPARE( symbols.count(), 1 );
+  QVERIFY( symbols.contains( "red circle" ) );
 }
-
-void TestStyleV2::testParseColorList()
-{
-  //ensure that majority of single parseColor tests work for lists
-  //note that some are not possible, as the colors may be ambiguous when treated as a list
-  QMap< QString, QColor > colorTests;
-  colorTests.insert( "bad color", QColor() );
-  colorTests.insert( "red", QColor( 255, 0, 0 ) );
-  colorTests.insert( "#ff00ff", QColor( 255, 0, 255 ) );
-  colorTests.insert( "#99AA00", QColor( 153, 170, 0 ) );
-  colorTests.insert( "#GG0000", QColor() );
-  //colorTests.insert( "000000", QColor( 0, 0, 0 ) );
-  //colorTests.insert( "00ff00", QColor( 0, 255, 0 ) );
-  //colorTests.insert( "00gg00", QColor() );
-  colorTests.insert( "00ff000", QColor() );
-  //colorTests.insert( "fff", QColor( 255, 255, 255 ) );
-  colorTests.insert( "fff0", QColor() );
-
-  // hex rrggbbaa colors
-  colorTests.insert( "#ff00ffaa", QColor( 255, 0, 255, 170 ) );
-  colorTests.insert( "#99AA0099", QColor( 153, 170, 0, 153 ) );
-  colorTests.insert( "#GG0000aa", QColor() );
-  colorTests.insert( "00000000", QColor( 0, 0, 0, 0 ) );
-  colorTests.insert( "00ff0011", QColor( 0, 255, 0, 17 ) );
-  colorTests.insert( "00gg0011", QColor() );
-  colorTests.insert( "00ff00000",  QColor() );
-
-  colorTests.insert( "0,0,0", QColor( 0, 0, 0 ) );
-  colorTests.insert( "127,60,0", QColor( 127, 60, 0 ) );
-  colorTests.insert( "255,255,255", QColor( 255, 255, 255 ) );
-  //colorTests.insert( "256,60,0", QColor() );
-  colorTests.insert( "rgb(127,60,0)", QColor( 127, 60, 0 ) );
-  colorTests.insert( "rgb(255,255,255)", QColor( 255, 255, 255 ) );
-  colorTests.insert( "rgb(256,60,0)", QColor() );
-  colorTests.insert( " rgb(  127, 60 ,  0 ) ", QColor( 127, 60, 0 ) );
-  colorTests.insert( "rgb(127,60,0);", QColor( 127, 60, 0 ) );
-  colorTests.insert( "(127,60,0);", QColor( 127, 60, 0 ) );
-  colorTests.insert( "(127,60,0)", QColor( 127, 60, 0 ) );
-  colorTests.insert( "127,060,000", QColor( 127, 60, 0 ) );
-  colorTests.insert( "0,0,0,0", QColor( 0, 0, 0, 0 ) );
-  colorTests.insert( "127,60,0,0.5", QColor( 127, 60, 0, 128 ) );
-  colorTests.insert( "255,255,255,0.1", QColor( 255, 255, 255, 26 ) );
-  colorTests.insert( "rgba(127,60,0,1.0)", QColor( 127, 60, 0, 255 ) );
-  colorTests.insert( "rgba(255,255,255,0.0)", QColor( 255, 255, 255, 0 ) );
-  colorTests.insert( " rgba(  127, 60 ,  0  , 0.2 ) ", QColor( 127, 60, 0, 51 ) );
-  colorTests.insert( "rgba(127,60,0,0.1);", QColor( 127, 60, 0, 26 ) );
-  colorTests.insert( "(127,60,0,1);", QColor( 127, 60, 0, 255 ) );
-  colorTests.insert( "(127,60,0,1.0)", QColor( 127, 60, 0, 255 ) );
-  colorTests.insert( "127,060,000,1", QColor( 127, 60, 0, 255 ) );
-  colorTests.insert( "0%,0%,0%", QColor( 0, 0, 0 ) );
-  colorTests.insert( "50 %,60 %,0 %", QColor( 127, 153, 0 ) );
-  colorTests.insert( "100%, 100%, 100%", QColor( 255, 255, 255 ) );
-  colorTests.insert( "rgb(50%,60%,0%)", QColor( 127, 153, 0 ) );
-  colorTests.insert( "rgb(100%, 100%, 100%)", QColor( 255, 255, 255 ) );
-  colorTests.insert( " rgb(  50 % , 60 % ,  0  % ) ", QColor( 127, 153, 0 ) );
-  colorTests.insert( "rgb(50%,60%,0%);", QColor( 127, 153, 0 ) );
-  colorTests.insert( "(50%,60%,0%);", QColor( 127, 153, 0 ) );
-  colorTests.insert( "(50%,60%,0%)", QColor( 127, 153, 0 ) );
-  colorTests.insert( "050%,060%,000%", QColor( 127, 153, 0 ) );
-  colorTests.insert( "0%,0%,0%,0", QColor( 0, 0, 0, 0 ) );
-  colorTests.insert( "50 %,60 %,0 %,0.5", QColor( 127, 153, 0, 128 ) );
-  colorTests.insert( "100%, 100%, 100%, 1.0", QColor( 255, 255, 255, 255 ) );
-  colorTests.insert( "rgba(50%,60%,0%, 1.0)", QColor( 127, 153, 0, 255 ) );
-  colorTests.insert( "rgba(100%, 100%, 100%, 0.0)", QColor( 255, 255, 255, 0 ) );
-  colorTests.insert( " rgba(  50 % , 60 % ,  0  %, 0.5 ) ", QColor( 127, 153, 0, 128 ) );
-  colorTests.insert( "rgba(50%,60%,0%,0);", QColor( 127, 153, 0, 0 ) );
-  colorTests.insert( "(50%,60%,0%,1);", QColor( 127, 153, 0, 255 ) );
-  colorTests.insert( "(50%,60%,0%,1.0)", QColor( 127, 153, 0, 255 ) );
-  colorTests.insert( "050%,060%,000%,0", QColor( 127, 153, 0, 0 ) );
-
-  QMap<QString, QColor >::const_iterator i = colorTests.constBegin();
-  while ( i != colorTests.constEnd() )
-  {
-    QgsDebugMsg( "color list string: " +  i.key() );
-    QList< QColor > result = QgsSymbolLayerV2Utils::parseColorList( i.key() );
-    if ( i.value().isValid() )
-    {
-      QCOMPARE( result.length(), 1 );
-      QVERIFY( result.at( 0 ) == i.value() );
-    }
-    else
-    {
-      QCOMPARE( result.length(), 0 );
-    }
-    ++i;
-  }
-
-  QList< QPair< QString, QList<QColor> > > colorListTests;
-  QList<QColor> list1;
-  list1 << QColor( QString( "blue" ) ) << QColor( QString( "red" ) ) << QColor( QString( "green" ) );
-  colorListTests.append( qMakePair( QString( "blue red green" ), list1 ) );
-  colorListTests.append( qMakePair( QString( "blue,red,green" ), list1 ) );
-  colorListTests.append( qMakePair( QString( "blue\nred\ngreen" ), list1 ) );
-  colorListTests.append( qMakePair( QString( "blue\nred green" ), list1 ) );
-  colorListTests.append( qMakePair( QString( "blue\nred,green" ), list1 ) );
-  QList<QColor> list2;
-  list2 << QColor( QString( "#ff0000" ) ) << QColor( QString( "#00ff00" ) ) << QColor( QString( "#0000ff" ) );
-  colorListTests.append( qMakePair( QString( "#ff0000 #00ff00 #0000ff" ), list2 ) );
-  colorListTests.append( qMakePair( QString( "#ff0000,#00ff00,#0000ff" ), list2 ) );
-  colorListTests.append( qMakePair( QString( "#ff0000\n#00ff00\n#0000ff" ), list2 ) );
-  colorListTests.append( qMakePair( QString( "#ff0000\n#00ff00 #0000ff" ), list2 ) );
-  colorListTests.append( qMakePair( QString( "#ff0000\n#00ff00,#0000ff" ), list2 ) );
-  QList<QColor> list3;
-  list3 << QColor( QString( "#ff0000" ) ) << QColor( QString( "#00ff00" ) ) << QColor( QString( "#0000ff" ) );
-  colorListTests.append( qMakePair( QString( "rgb(255,0,0) rgb(0,255,0) rgb(0,0,255)" ), list3 ) );
-  colorListTests.append( qMakePair( QString( "rgb(255,0,0)\nrgb(0,255,0)\nrgb(0,0,255)" ), list3 ) );
-  colorListTests.append( qMakePair( QString( "rgb(255,0,0)\nrgb(0,255,0) rgb(0,0,255)" ), list3 ) );
-
-  QList< QPair< QString, QList<QColor> > >::const_iterator it = colorListTests.constBegin();
-  while ( it != colorListTests.constEnd() )
-  {
-    QgsDebugMsg( "color list string: " + ( *it ).first );
-    QList< QColor > result = QgsSymbolLayerV2Utils::parseColorList(( *it ).first );
-    if (( *it ).second.length() > 0 )
-    {
-      QCOMPARE( result.length(), ( *it ).second.length() );
-      int index = 0;
-      for ( QList<QColor>::const_iterator colorIt = ( *it ).second.constBegin();  colorIt != ( *it ).second.constEnd(); ++colorIt )
-      {
-        QVERIFY( result.at( index ) == ( *colorIt ) );
-        index++;
-      }
-    }
-    else
-    {
-      QCOMPARE( result.length(), 0 );
-    }
-    ++it;
-  }
-
-}
-
 
 QTEST_MAIN( TestStyleV2 )
 #include "testqgsstylev2.moc"

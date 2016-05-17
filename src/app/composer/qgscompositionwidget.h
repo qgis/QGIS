@@ -26,7 +26,7 @@ class QgsDataDefinedButton;
  */
 struct QgsCompositionPaper
 {
-  QgsCompositionPaper( QString name, double width, double height ) {mName = name; mWidth = width; mHeight = height;}
+  QgsCompositionPaper( const QString& name, double width, double height ) {mName = name; mWidth = width; mHeight = height;}
   QString mName;
   double mWidth;
   double mHeight;
@@ -50,10 +50,11 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void on_mPaperHeightDoubleSpinBox_editingFinished();
     void on_mNumPagesSpinBox_valueChanged( int value );
     void on_mPageStyleButton_clicked();
+    void on_mResizePageButton_clicked();
     void on_mResolutionSpinBox_valueChanged( const int value );
     void on_mPrintAsRasterCheckBox_toggled( bool state );
     void on_mGenerateWorldFileCheckBox_toggled( bool state );
-    void on_mWorldFileMapComboBox_currentIndexChanged( int index );
+    void worldFileMapChanged( QgsComposerItem* );
 
     void on_mGridResolutionSpinBox_valueChanged( double d );
     void on_mOffsetXSpinBox_valueChanged( double d );
@@ -69,13 +70,9 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
 
   signals:
     /** Is emitted when page orientation changes*/
-    void pageOrientationChanged( QString orientation );
+    void pageOrientationChanged( const QString& orientation );
 
   private slots:
-    /* when a new map is added */
-    void onComposerMapAdded( QgsComposerMap* );
-    /* when a map is deleted */
-    void onItemRemoved( QgsComposerItem* );
 
     /** Must be called when a data defined button changes*/
     void updateDataDefinedProperty();
@@ -84,6 +81,8 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void populateDataDefinedButtons();
 
     void variablesChanged();
+
+    void resizeMarginsChanged();
 
   private:
     QgsComposition* mComposition;

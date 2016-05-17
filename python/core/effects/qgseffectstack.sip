@@ -45,7 +45,7 @@ class QgsEffectStack : QgsPaintEffect
     virtual ~QgsEffectStack();
 
     virtual QString type() const;
-    virtual QgsPaintEffect* clone() const /Factory/;
+    virtual QgsEffectStack* clone() const /Factory/;
     virtual bool saveProperties( QDomDocument& doc, QDomElement& element ) const;
     virtual bool readProperties( const QDomElement& element );
 

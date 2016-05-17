@@ -405,12 +405,11 @@ bool QgsComposerAttributeTableColumnModelV2::moveColumnInSortRank( QgsComposerTa
 
   //find column before this one in sort order
   QList<QgsComposerTableColumn*> sortedColumns;
-  QList<QgsComposerTableColumn*>::iterator columnIt = mComposerTable->columns()->begin();
-  for ( ; columnIt != mComposerTable->columns()->end(); ++columnIt )
+  Q_FOREACH ( QgsComposerTableColumn* currentColumn, *mComposerTable->columns() )
   {
-    if (( *columnIt )->sortByRank() > 0 )
+    if ( currentColumn->sortByRank() > 0 )
     {
-      sortedColumns.append( *columnIt );
+      sortedColumns.append( currentColumn );
     }
   }
   qStableSort( sortedColumns.begin(), sortedColumns.end(), columnsBySortRank );
@@ -621,7 +620,7 @@ bool QgsComposerTableSortColumnsProxyModelV2::setData( const QModelIndex& index,
 
   if ( index.column() == 1 )
   {
-    column->setSortOrder(( Qt::SortOrder )value.toInt() );
+    column->setSortOrder( static_cast< Qt::SortOrder >( value.toInt() ) );
     emit dataChanged( index, index );
     return true;
   }

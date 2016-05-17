@@ -14,28 +14,17 @@ test_analysis.py
  *                                                                         *
  ***************************************************************************/
 '''
-import unittest
-import sys
-import qgis
 
-from utilities import unitTestDataPath, getQgisTestApp
+import qgis  # NOQA
 
-# support python < 2.7 via unittest2
-# needed for expected failure decorator
-if sys.version_info[0:2] < (2, 7):
-    try:
-        from unittest2 import TestCase, expectedFailure
-    except ImportError:
-        print "You should install unittest2 to run the salt tests"
-        sys.exit(0)
-else:
-    from unittest import TestCase, expectedFailure
+from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsZonalStatistics(TestCase):
+class TestQgsZonalStatistics(unittest.TestCase):
 
     def setUp(self):
         """Run before each test."""
@@ -45,12 +34,12 @@ class TestQgsZonalStatistics(TestCase):
         """Run after each test."""
         pass
 
-    #@expectedFailure
+    #@unittest.expectedFailure
     def testSubstitutionMap(self):
         """Test that we can import zonal statistics was failing as of d5f6543
         """
         try:
-            from qgis.analysis import QgsZonalStatistics
+            from qgis.analysis import QgsZonalStatistics  # NOQA
         except ImportError:
             self.fail('Failed to import zonal statistics python module')
 

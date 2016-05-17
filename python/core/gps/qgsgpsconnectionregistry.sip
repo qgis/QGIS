@@ -1,6 +1,7 @@
 /** A singleton class to register / unregister existing GPS connections such that the information
- is available to all classes and plugins*/
-class QgsGPSConnectionRegistry {
+  is available to all classes and plugins*/
+class QgsGPSConnectionRegistry
+{
 %TypeHeaderCode
 #include <qgsgpsconnectionregistry.h>
 %End
@@ -17,4 +18,8 @@ class QgsGPSConnectionRegistry {
 
   protected:
     QgsGPSConnectionRegistry();
+
+  private:
+
+    QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry& rh );
 };

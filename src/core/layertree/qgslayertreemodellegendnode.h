@@ -119,7 +119,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      * @param symbolSize  Real size of the associated symbol - used for correct positioning when rendering
      * @return Size of the label (may span multiple lines)
      */
-    virtual QSizeF drawSymbolText( const QgsLegendSettings& settings, ItemContext* ctx, const QSizeF& symbolSize ) const;
+    virtual QSizeF drawSymbolText( const QgsLegendSettings& settings, ItemContext* ctx, QSizeF symbolSize ) const;
 
   signals:
     //! Emitted on internal data change so the layer tree model can forward the signal to views
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 
   protected:
     /** Construct the node with pointer to its parent layer node */
-    explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer* nodeL, QObject* parent = 0 );
+    explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer* nodeL, QObject* parent = nullptr );
 
   protected:
     QgsLayerTreeLayer* mLayerNode;
@@ -145,8 +145,10 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
  */
 class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
 {
+    Q_OBJECT
+
   public:
-    QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItemV2& item, QObject* parent = 0 );
+    QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItemV2& item, QObject* parent = nullptr );
     ~QgsSymbolV2LegendNode();
 
     virtual Qt::ItemFlags flags() const override;
@@ -165,13 +167,41 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
 
     //! Set the icon size
     //! @note added in 2.10
-    void setIconSize( const QSize& sz ) { mIconSize = sz; }
+    void setIconSize( QSize sz ) { mIconSize = sz; }
     //! @note added in 2.10
     QSize iconSize() const { return mIconSize; }
 
     //! Get the minimum icon size to prevent cropping
     //! @note added in 2.10
     QSize minimumIconSize() const;
+
+    /** Returns the symbol used by the legend node.
+     * @see setSymbol()
+     * @note added in QGIS 2.14
+     */
+    const QgsSymbolV2* symbol() const;
+
+    /** Sets the symbol to be used by the legend node. The symbol change is also propagated
+     * to the associated vector layer's renderer.
+     * @param symbol new symbol for node. Ownership is transferred.
+     * @see symbol()
+     * @note added in QGIS 2.14
+     */
+    void setSymbol( QgsSymbolV2* symbol );
+
+  public slots:
+
+    /** Checks all items belonging to the same layer as this node.
+     * @note added in QGIS 2.14
+     * @see uncheckAllItems()
+     */
+    void checkAllItems();
+
+    /** Unchecks all items belonging to the same layer as this node.
+     * @note added in QGIS 2.14
+     * @see checkAllItems()
+     */
+    void uncheckAllItems();
 
   private:
     void updateLabel();
@@ -189,6 +219,10 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
     // return a temporary context or null if legendMapViewData are not valid
     QgsRenderContext * createTemporaryRenderContext() const;
 
+    /** Sets all items belonging to the same layer as this node to the same check state.
+     * @param state check state
+     */
+    void checkAll( bool state );
 };
 
 
@@ -199,8 +233,10 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
  */
 class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
 {
+    Q_OBJECT
+
   public:
-    QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QIcon& icon = QIcon(), QObject* parent = 0, const QString& key = QString() );
+    QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QIcon& icon = QIcon(), QObject* parent = nullptr, const QString& key = QString() );
 
     virtual QVariant data( int role ) const override;
 
@@ -219,8 +255,10 @@ class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
  */
 class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
 {
+    Q_OBJECT
+
   public:
-    QgsImageLegendNode( QgsLayerTreeLayer* nodeLayer, const QImage& img, QObject* parent = 0 );
+    QgsImageLegendNode( QgsLayerTreeLayer* nodeLayer, const QImage& img, QObject* parent = nullptr );
 
     virtual QVariant data( int role ) const override;
 
@@ -237,8 +275,10 @@ class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
  */
 class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
 {
+    Q_OBJECT
+
   public:
-    QgsRasterSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QColor& color, const QString& label, QObject* parent = 0 );
+    QgsRasterSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QColor& color, const QString& label, QObject* parent = nullptr );
 
     virtual QVariant data( int role ) const override;
 
@@ -261,7 +301,7 @@ class CORE_EXPORT QgsWMSLegendNode : public QgsLayerTreeModelLegendNode
     Q_OBJECT
 
   public:
-    QgsWMSLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent = 0 );
+    QgsWMSLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent = nullptr );
 
     virtual QVariant data( int role ) const override;
 

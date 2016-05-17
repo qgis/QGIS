@@ -39,8 +39,8 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
 
   public:
     //! Constructor - takes pointer to vector layer as a parameter
-    QgsSearchQueryBuilder( QgsVectorLayer* layer, QWidget *parent = 0,
-                           Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsSearchQueryBuilder( QgsVectorLayer* layer, QWidget *parent = nullptr,
+                           const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
 
     ~QgsSearchQueryBuilder();
 
@@ -48,7 +48,7 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
     QString searchString();
 
     //! change search string shown in text field
-    void setSearchString( QString searchString );
+    void setSearchString( const QString& searchString );
 
   public slots:
     void on_btnEqual_clicked();
@@ -97,18 +97,18 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
   private:
 
     /*!
-    * Populate the field list for the selected table
-    */
+     * Populate the field list for the selected table
+     */
     void populateFields();
     /*!
-       * Setup models for listviews
+     * Setup models for listviews
      */
     void setupListViews();
 
     /** Get the number of records that would be returned by the current SQL
      * @return Number of records or -1 if an error was encountered
      */
-    long countRecords( QString sql );
+    long countRecords( const QString& sql );
 
     /*!
      * populates list box with values of selected field

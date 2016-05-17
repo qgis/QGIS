@@ -23,7 +23,16 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -51,9 +60,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>314</width>
-        <height>554</height>
+        <y>-166</y>
+        <width>313</width>
+        <height>719</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -245,6 +254,12 @@
           </item>
           <item>
            <widget class="QListWidget" name="mPreviewListWidget">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>200</height>
+             </size>
+            </property>
             <property name="showDropIndicator" stdset="0">
              <bool>false</bool>
             </property>
@@ -313,6 +328,127 @@
         </widget>
        </item>
        <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+         <property name="title">
+          <string>SVG Parameters</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="2" column="1">
+           <widget class="QgsDoubleSpinBox" name="mOutlineWidthSpinBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>1</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+            <property name="decimals">
+             <number>2</number>
+            </property>
+            <property name="maximum">
+             <double>9999.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.200000000000000</double>
+            </property>
+            <property name="value">
+             <double>0.200000000000000</double>
+            </property>
+            <property name="showClearButton" stdset="0">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QgsColorButtonV2" name="mOutlineColorButton">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>120</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QgsColorButtonV2" name="mFillColorButton">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>120</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="mBorderColorLabel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Outline color</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mBorderWidthLabel">
+            <property name="text">
+             <string>Outline width</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Fill color</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mRotationGroupBox">
          <property name="focusPolicy">
           <enum>Qt::StrongFocus</enum>
@@ -335,7 +471,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QComboBox" name="mComposerMapComboBox"/>
+           <widget class="QgsComposerItemComboBox" name="mComposerMapComboBox"/>
           </item>
           <item row="0" column="0" colspan="2">
            <widget class="QgsDoubleSpinBox" name="mPictureRotationSpinBox">
@@ -365,14 +501,25 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
+   <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
+   <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsComposerItemComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgscomposeritemcombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -388,6 +535,9 @@
   <tabstop>mSearchDirectoriesComboBox</tabstop>
   <tabstop>mRemoveDirectoryButton</tabstop>
   <tabstop>mAddDirectoryButton</tabstop>
+  <tabstop>mFillColorButton</tabstop>
+  <tabstop>mOutlineColorButton</tabstop>
+  <tabstop>mOutlineWidthSpinBox</tabstop>
   <tabstop>mRotationGroupBox</tabstop>
   <tabstop>mPictureRotationSpinBox</tabstop>
   <tabstop>mRotationFromComposerMapCheckBox</tabstop>

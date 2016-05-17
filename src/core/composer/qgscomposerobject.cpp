@@ -22,14 +22,8 @@
 #include "qgscomposerobject.h"
 #include "qgsdatadefined.h"
 
-#define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
-
-#ifndef M_DEG2RAD
-#define M_DEG2RAD 0.0174532925
-#endif
-
 QgsComposerObject::QgsComposerObject( QgsComposition* composition )
-    : QObject( 0 )
+    : QObject( nullptr )
     , mComposition( composition )
 {
 
@@ -96,18 +90,18 @@ QgsDataDefined *QgsComposerObject::dataDefinedProperty( const QgsComposerObject:
   if ( property == QgsComposerObject::AllProperties || property == QgsComposerObject::NoProperty )
   {
     //bad property requested, don't return anything
-    return 0;
+    return nullptr;
   }
 
   //find corresponding QgsDataDefined and return it
-  QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.find( property );
+  QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.constFind( property );
   if ( it != mDataDefinedProperties.constEnd() )
   {
     return it.value();
   }
 
   //could not find matching QgsDataDefined
-  return 0;
+  return nullptr;
 }
 
 void QgsComposerObject::setDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const bool active, const bool useExpression, const QString &expression, const QString &field )
@@ -122,7 +116,7 @@ void QgsComposerObject::setDataDefinedProperty( const QgsComposerObject::DataDef
 
   if ( mDataDefinedProperties.contains( property ) )
   {
-    QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.find( property );
+    QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.constFind( property );
     if ( it != mDataDefinedProperties.constEnd() )
     {
       QgsDataDefined* dd = it.value();
@@ -195,7 +189,7 @@ QStringList QgsComposerObject::customProperties() const
 
 QgsExpressionContext* QgsComposerObject::createExpressionContext() const
 {
-  QgsExpressionContext* context = 0;
+  QgsExpressionContext* context = nullptr;
   if ( mComposition )
   {
     context = mComposition->createExpressionContext();

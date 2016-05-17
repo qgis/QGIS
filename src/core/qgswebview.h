@@ -16,20 +16,29 @@
 #ifndef QGSWEBVIEW_H
 #define QGSWEBVIEW_H
 
+
 #include <QWidget>
 #include <QPrinter>
 
 #ifdef WITH_QTWEBKIT
 #include <QWebView>
+#include <QDesktopWidget>
 
 class CORE_EXPORT QgsWebView : public QWebView
 {
     Q_OBJECT
 
   public:
-    explicit QgsWebView( QWidget* parent = 0 )
+    explicit QgsWebView( QWidget* parent = nullptr )
         : QWebView( parent )
-    {}
+    {
+      QDesktopWidget desktop;
+      // Apply zoom factor for HiDPI screens
+      if ( desktop.physicalDpiX() > 96 )
+      {
+        setZoomFactor( desktop.physicalDpiX() / 96 );
+      }
+    }
 };
 #else
 #include "qgswebpage.h"
@@ -45,7 +54,7 @@ class CORE_EXPORT QgsWebView : public QWebView
 class CORE_EXPORT QgsWebView : public QWidget
 {
 
-/// @cond
+/// @cond NOT_STABLE_API
     Q_OBJECT
   public:
     explicit QgsWebView( QWidget *parent = 0 )

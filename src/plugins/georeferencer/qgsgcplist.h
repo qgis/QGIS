@@ -17,7 +17,7 @@
 #define QGS_GCP_LIST_H
 
 #include <QList>
-#include <vector>
+#include <QVector>
 
 class QgsGeorefDataPoint;
 class QgsPoint;
@@ -29,14 +29,11 @@ class QgsGCPList : public QList<QgsGeorefDataPoint *>
     QgsGCPList();
     QgsGCPList( const QgsGCPList &list );
 
-    void createGCPVectors( std::vector<QgsPoint> &mapCoords,
-                           std::vector<QgsPoint> &pixelCoords );
+    void createGCPVectors( QVector<QgsPoint> &mapCoords, QVector<QgsPoint> &pixelCoords );
     int size() const;
     int sizeAll() const;
 
     QgsGCPList &operator =( const QgsGCPList &list );
 };
-
-//typedef std::vector<QgsGeorefDataPoint *> QgsGCPList;
 
 #endif

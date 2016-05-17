@@ -29,13 +29,14 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputVector
 
-from processing.tools.system import isWindows
-
-from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+from processing.tools.system import isWindows
+from processing.tools.vector import ogrConnectionString, ogrLayerName
 
-class Ogr2OgrClip(OgrAlgorithm):
+
+class Ogr2OgrClip(GdalAlgorithm):
 
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
@@ -57,27 +58,27 @@ class Ogr2OgrClip(OgrAlgorithm):
 
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
+        ogrLayer = ogrConnectionString(inLayer)[1:-1]
         clipLayer = self.getParameterValue(self.CLIP_LAYER)
-        ogrClipLayer = self.ogrConnectionString(clipLayer)[1:-1]
+        ogrClipLayer = ogrConnectionString(clipLayer)[1:-1]
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
 
-        output = self.ogrConnectionString(outFile)
+        output = ogrConnectionString(outFile)
         options = unicode(self.getParameterValue(self.OPTIONS))
 
         arguments = []
         arguments.append('-clipsrc')
         arguments.append(ogrClipLayer)
         arguments.append("-clipsrclayer")
-        arguments.append(self.ogrLayerName(clipLayer))
+        arguments.append(ogrLayerName(clipLayer))
         if len(options) > 0:
             arguments.append(options)
 
         arguments.append(output)
         arguments.append(ogrLayer)
-        arguments.append(self.ogrLayerName(inLayer))
+        arguments.append(ogrLayerName(inLayer))
 
         commands = []
         if isWindows():

@@ -25,6 +25,7 @@
 
 class QgsVectorLayer;
 class QgsDataDefined;
+class QgsMapCanvas;
 
 /** \ingroup gui
  * \class QgsDataDefinedAssistant
@@ -35,8 +36,30 @@ class QgsDataDefined;
  */
 class GUI_EXPORT QgsDataDefinedAssistant: public QDialog
 {
+    Q_OBJECT
+
   public:
+    QgsDataDefinedAssistant() : mMapCanvas( nullptr ) {}
+
     virtual QgsDataDefined dataDefined() const = 0;
+
+    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @see mapCanvas()
+     * @note added in QGIS 2.12
+     */
+    virtual void setMapCanvas( QgsMapCanvas* canvas ) { mMapCanvas = canvas; }
+
+    /** Returns the map canvas associated with the widget.
+     * @see setMapCanvas
+     * @note added in QGIS 2.12
+     */
+    const QgsMapCanvas* mapCanvas() const { return mMapCanvas; }
+
+  protected:
+
+    QgsMapCanvas* mMapCanvas;
 };
 
 /** \ingroup gui
@@ -68,11 +91,11 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
      * @param datatypes The expected data types to be compared against the variant type of the QgsField from data source and expression result
      * @param description The description of expected input data
      */
-    QgsDataDefinedButton( QWidget* parent = 0,
-                          const QgsVectorLayer* vl = 0,
-                          const QgsDataDefined* datadefined = 0,
-                          DataTypes datatypes = AnyType,
-                          QString description = QString() );
+    QgsDataDefinedButton( QWidget* parent = nullptr,
+                          const QgsVectorLayer* vl = nullptr,
+                          const QgsDataDefined* datadefined = nullptr,
+                          const QgsDataDefinedButton::DataTypes& datatypes = AnyType,
+                          const QString& description = QString() );
     ~QgsDataDefinedButton();
 
     /**
@@ -84,9 +107,9 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
      * @param description The description of expected input data
      */
     void init( const QgsVectorLayer* vl,
-               const QgsDataDefined* datadefined = 0,
-               DataTypes datatypes = AnyType,
-               QString description = QString() );
+               const QgsDataDefined* datadefined = nullptr,
+               const QgsDataDefinedButton::DataTypes& datatypes = AnyType,
+               const QString& description = QString() );
 
     QMap< QString, QString > definedProperty() const { return mProperty; }
 
@@ -154,7 +177,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     /**
      * Register list of sibling widgets that get disabled/enabled when data definition or expression is set/unset
      */
-    void registerEnabledWidgets( QList<QWidget*> wdgts );
+    void registerEnabledWidgets( const QList<QWidget*>& wdgts );
 
     /**
      * Register a sibling widget that gets disabled/enabled when data definition or expression is set/unset
@@ -176,7 +199,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     /**
      * Register list of sibling widgets that get checked when data definition or expression is active
      */
-    void registerCheckedWidgets( QList<QWidget*> wdgts );
+    void registerCheckedWidgets( const QList<QWidget*>& wdgts );
 
     /**
      * Register a sibling widget that get checked when data definition or expression is active
@@ -214,8 +237,15 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
      * @param assistant data defined assistant. Set to null to remove the assistant
      * option from the button.
      * @note added in 2.10
+     * @see assistant()
      */
     void setAssistant( const QString& title, QgsDataDefinedAssistant * assistant );
+
+    /** Returns the assistant used to defined the data defined object properties, if set.
+     * @see setAssistant()
+     * @note added in QGIS 2.12
+     */
+    QgsDataDefinedAssistant* assistant();
 
     /**
      * Common descriptions for expected input values
@@ -296,12 +326,12 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     /**
      * Set the current defined expression
      */
-    void setExpression( QString exp ) { mProperty.insert( "expression", exp ); }
+    void setExpression( const QString& exp ) { mProperty.insert( "expression", exp ); }
 
     /**
      * Set the current defined field
      */
-    void setField( QString field ) { mProperty.insert( "field", field ); }
+    void setField( const QString& field ) { mProperty.insert( "field", field ); }
 
   private:
     void showDescriptionDialog();
@@ -340,12 +370,12 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
 
     QScopedPointer<QgsDataDefinedAssistant> mAssistant;
 
-    static QIcon mIconDataDefine;
-    static QIcon mIconDataDefineOn;
-    static QIcon mIconDataDefineError;
-    static QIcon mIconDataDefineExpression;
-    static QIcon mIconDataDefineExpressionOn;
-    static QIcon mIconDataDefineExpressionError;
+    QIcon mIconDataDefine;
+    QIcon mIconDataDefineOn;
+    QIcon mIconDataDefineError;
+    QIcon mIconDataDefineExpression;
+    QIcon mIconDataDefineExpressionOn;
+    QIcon mIconDataDefineExpressionError;
 
     ExpressionContextCallback mExpressionContextCallback;
     const void* mExpressionContextCallbackContext;

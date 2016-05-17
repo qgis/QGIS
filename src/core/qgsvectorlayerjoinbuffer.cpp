@@ -85,33 +85,40 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorJoinInfo& joinInfo )
   // but then QgsProject makes sure to call createJoinCaches() which will do the connection.
   // Unique connection makes sure we do not respond to one layer's update more times (in case of multiple join)
   if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinInfo.joinLayerId ) ) )
+  {
     connect( vl, SIGNAL( updatedFields() ), this, SLOT( joinedLayerUpdatedFields() ), Qt::UniqueConnection );
+  }
 
   emit joinedFieldsChanged();
   return true;
 }
 
 
-void QgsVectorLayerJoinBuffer::removeJoin( const QString& joinLayerId )
+bool QgsVectorLayerJoinBuffer::removeJoin( const QString& joinLayerId )
 {
+  bool res = false;
   for ( int i = 0; i < mVectorJoins.size(); ++i )
   {
     if ( mVectorJoins.at( i ).joinLayerId == joinLayerId )
     {
       mVectorJoins.removeAt( i );
+      res = true;
     }
   }
 
   if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinLayerId ) ) )
+  {
     disconnect( vl, SIGNAL( updatedFields() ), this, SLOT( joinedLayerUpdatedFields() ) );
+  }
 
   emit joinedFieldsChanged();
+  return res;
 }
 
 void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorJoinInfo& joinInfo )
 {
   //memory cache not required or already done
-  if ( !joinInfo.memoryCache || joinInfo.cachedAttributes.size() > 0 )
+  if ( !joinInfo.memoryCache || !joinInfo.cachedAttributes.isEmpty() )
   {
     return;
   }
@@ -153,12 +160,12 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorJoinInfo& joinInfo )
     while ( fit.nextFeature( f ) )
     {
       QgsAttributes attrs = f.attributes();
-      QString key = attrs[joinFieldIndex].toString();
+      QString key = attrs.at( joinFieldIndex ).toString();
       if ( hasSubset )
       {
         QgsAttributes subsetAttrs( subsetIndices.count() );
         for ( int i = 0; i < subsetIndices.count(); ++i )
-          subsetAttrs[i] = attrs[ subsetIndices[i] ];
+          subsetAttrs[i] = attrs.at( subsetIndices.at( i ) );
         joinInfo.cachedAttributes.insert( key, subsetAttrs );
       }
       else
@@ -223,7 +230,7 @@ void QgsVectorLayerJoinBuffer::updateFields( QgsFields& fields )
 
     if ( joinIt->prefix.isNull() )
     {
-      prefix = joinLayer->name() + "_";
+      prefix = joinLayer->name() + '_';
     }
     else
     {
@@ -233,14 +240,14 @@ void QgsVectorLayerJoinBuffer::updateFields( QgsFields& fields )
     for ( int idx = 0; idx < joinFields.count(); ++idx )
     {
       // if using just a subset of fields, filter some of them out
-      if ( hasSubset && !subset.contains( joinFields[idx].name() ) )
+      if ( hasSubset && !subset.contains( joinFields.at( idx ).name() ) )
         continue;
 
       //skip the join field to avoid double field names (fields often have the same name)
       // when using subset of field, use all the selected fields
-      if ( hasSubset || joinFields[idx].name() != joinFieldName )
+      if ( hasSubset || joinFields.at( idx ).name() != joinFieldName )
       {
-        QgsField f = joinFields[idx];
+        QgsField f = joinFields.at( idx );
         f.setName( prefix + f.name() );
         fields.append( f, QgsFields::OriginJoin, idx + ( joinIdx*1000 ) );
       }
@@ -369,14 +376,14 @@ int QgsVectorLayerJoinBuffer::joinedFieldsOffset( const QgsVectorJoinInfo* info,
 const QgsVectorJoinInfo* QgsVectorLayerJoinBuffer::joinForFieldIndex( int index, const QgsFields& fields, int& sourceFieldIndex ) const
 {
   if ( fields.fieldOrigin( index ) != QgsFields::OriginJoin )
-    return 0;
+    return nullptr;
 
   int originIndex = fields.fieldOriginIndex( index );
   int sourceJoinIndex = originIndex / 1000;
   sourceFieldIndex = originIndex % 1000;
 
   if ( sourceJoinIndex < 0 || sourceJoinIndex >= mVectorJoins.count() )
-    return 0;
+    return nullptr;
 
   return &( mVectorJoins[sourceJoinIndex] );
 }

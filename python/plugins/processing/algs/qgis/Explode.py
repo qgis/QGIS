@@ -37,6 +37,13 @@ class Explode(GeoAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
+    def defineCharacteristics(self):
+        self.name, self.i18n_name = self.trAlgorithm('Explode lines')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+        self.addParameter(ParameterVector(self.INPUT,
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Exploded')))
+
     def processAlgorithm(self, progress):
         vlayer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
@@ -46,13 +53,10 @@ class Explode(GeoAlgorithm):
         writer = output.getVectorWriter(fields, QGis.WKBLineString,
                                         vlayer.crs())
         outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        nElement = 0
         features = vector.features(vlayer)
-        nFeat = len(features)
-        for feature in features:
-            nElement += 1
-            progress.setPercentage(nElement * 100 / nFeat)
+        total = 100.0 / len(features)
+        for current, feature in enumerate(features):
+            progress.setPercentage(int(current * total))
             inGeom = feature.geometry()
             atMap = feature.attributes()
             segments = self.extractAsSingleSegments(inGeom)
@@ -81,10 +85,3 @@ class Explode(GeoAlgorithm):
             segment = QgsGeometry.fromPolyline([ptA, ptB])
             segments.append(segment)
         return segments
-
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Explode lines')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Exploded')))

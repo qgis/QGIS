@@ -27,7 +27,6 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
     Q_OBJECT
 
   public:
-
     QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf, qreal x, qreal y, qreal width, qreal height );
 
     ~QgsComposerFrame();
@@ -36,7 +35,7 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
      * this frame (relative to the total multiframe extent in mm).
      * @param section visible portion of content
      * @see extent
-    */
+     */
     void setContentSection( const QRectF& section ) { mSection = section; }
 
     /** Returns the parent multiframe for the frame.
@@ -44,10 +43,10 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
      */
     QgsComposerMultiFrame* multiFrame() const { return mMultiFrame; }
 
-    //Overriden to allow multiframe to set display name
+    //Overridden to allow multiframe to set display name
     virtual QString displayName() const override;
 
-    //Overriden to handle fixed frame sizes set by multi frame
+    //Overridden to handle fixed frame sizes set by multi frame
     void setSceneRect( const QRectF& rectangle ) override;
 
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;

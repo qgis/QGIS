@@ -20,6 +20,15 @@ class QgsAttributeForm : QWidget
 %End
 
   public:
+
+    //! Form modes
+    enum Mode
+    {
+      SingleEditMode, /*!< Single edit mode, for editing a single feature */
+      MultiEditMode, /*!< Multi edit mode, for editing fields of multiple features at once */
+      // TODO: SearchMode, /*!< Form values are used for searching/filtering the layer */
+    };
+
     explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature& feature = QgsFeature(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext(), QWidget *parent /TransferThis/ = 0 );
     ~QgsAttributeForm();
 
@@ -61,6 +70,19 @@ class QgsAttributeForm : QWidget
      */
     bool editable();
 
+    /** Returns the current mode of the form.
+     * @note added in QGIS 2.16
+     * @see setMode()
+     */
+    Mode mode() const;
+
+    /** Sets the current mode of the form.
+     * @param mode form mode
+     * @note added in QGIS 2.16
+     * @see mode()
+     */
+    void setMode( Mode mode );
+
     /**
      * Toggles the form mode between edit feature and add feature.
      * If set to true, the dialog will be editable even with an invalid feature.
@@ -87,6 +109,12 @@ class QgsAttributeForm : QWidget
      */
     bool eventFilter( QObject* object, QEvent* event );
 
+    /** Sets all feature IDs which are to be edited if the form is in multiedit mode
+     * @param fids feature ID list
+     * @note added in QGIS 2.16
+     */
+    void setMultiEditFeatureIds( const QgsFeatureIds& fids );
+
   signals:
     /**
      * Notifies about changes of attributes
@@ -94,7 +122,7 @@ class QgsAttributeForm : QWidget
      * @param attribute The name of the attribute that changed.
      * @param value     The new value of the attribute.
      */
-    void attributeChanged( QString attribute, const QVariant& value );
+    void attributeChanged( const QString& attribute, const QVariant& value );
 
     /**
      * Will be emitted before the feature is saved. Use this signal to perform sanity checks.
@@ -152,4 +180,9 @@ class QgsAttributeForm : QWidget
      * Sets all values to the values of the current feature
      */
     void resetValues();
+
+    /**
+     * reload current feature
+     */
+    void refreshFeature();
 };

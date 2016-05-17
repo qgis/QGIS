@@ -26,6 +26,7 @@ class QgsComposerLegend;
 class QgsComposerMap;
 class QgsComposition;
 class QgsMapLayer;
+class QgsLegendModelV2;
 
 
 class SERVER_EXPORT QgsWMSConfigParser
@@ -105,10 +106,18 @@ class SERVER_EXPORT QgsWMSConfigParser
     // WMS GetFeatureInfo precision (decimal places)
     virtual int WMSPrecision() const = 0;
 
+    // WMS inspire capabilities
+    virtual bool WMSInspireActivated() const = 0;
+    /** Adds inspire capabilities to xml document. ParentElem usually is the <Capabilities> element*/
+    virtual void inspireCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
+
     //printing
 
     /** Creates a print composition, usually for a GetPrint request. Replaces map and label parameters*/
     QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const;
+
+    /** Creates a print composition, usually for a GetPrint request. Replaces map and label parameters*/
+    QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const;
 
     /** Creates a composition from the project file (probably delegated to the fallback parser)*/
     virtual QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const = 0;
@@ -127,10 +136,27 @@ class SERVER_EXPORT QgsWMSConfigParser
 
     virtual bool useLayerIDs() const = 0;
 
+    /** Adds highlight layers to the layer registry and to the layer set. Returns the ids of the newly created layers (for later removal)*/
+    static QStringList addHighlightLayers( const QMap<QString, QString>& parameterMap, QStringList& layerSet, const QString& parameterPrefix = QString() );
+    static void removeHighlightLayers( const QStringList& layerIds );
+
 #if 0
     /** List of GML datasets passed outside SLD (e.g. in a SOAP request). Key of the map is the layer name*/
     QMap<QString, QDomDocument*> mExternalGMLDatasets;
 #endif //0
+
+  private:
+
+    //helper methods for 'addHighlightLayers'
+    static void highlightParameters( const QMap<QString, QString>& parameterMap, const QString &parameterPrefix, QStringList& geom, QStringList& symbol, QStringList& label,
+                                     QStringList& labelFont, QStringList& labelSize, QStringList& labelWeight, QStringList& labelColor,
+                                     QStringList& labelBufferColor, QStringList &labelBufferSize );
+
+    static QgsVectorLayer* createHighlightLayer( int i, const QString& crsString, QgsGeometry* geom, const QString& labelString, const QStringList& labelSizeSplit, const QStringList& labelColorSplit,
+        const QStringList& labelWeightSplit, const QStringList& labelFontSplit, const QStringList& labelBufferSizeSplit,
+        const QStringList& labelBufferColorSplit );
+
+    static void setLayerIdsToLegendModel( QgsLegendModelV2* model, const QStringList& layerIds, double scale );
 };
 
 #endif // QGSWMSCONFIGPARSER_H

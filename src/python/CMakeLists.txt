@@ -10,8 +10,11 @@ SET(QGISPYTHON_SRCS qgispython.cpp qgspythonutilsimpl.cpp)
 
 INCLUDE_DIRECTORIES(
   ../core
+  ../core/geometry
   ../core/raster
   ../gui
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${PYTHON_INCLUDE_PATH}
 )
 

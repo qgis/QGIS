@@ -117,20 +117,20 @@ extern "C" {
 # define _NEW_TTY_CTRL
 #endif
 
-#if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__bsdi__) || defined(__APPLE__) || defined (__DragonFly__)
+#if defined (__FreeBSD__) || defined(__FreeBSD_kernel__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__bsdi__) || defined(__APPLE__) || defined (__DragonFly__)
 # define _tcgetattr(fd, ttmode) ioctl(fd, TIOCGETA, (char *)ttmode)
 #else
-# if defined(_HPUX_SOURCE) || defined(__Lynx__) || defined (__CYGWIN__)
+# if defined(_HPUX_SOURCE) || defined(__Lynx__) || defined (__CYGWIN__) || defined(__GNU__)
 #  define _tcgetattr(fd, ttmode) tcgetattr(fd, ttmode)
 # else
 #  define _tcgetattr(fd, ttmode) ioctl(fd, TCGETS, (char *)ttmode)
 # endif
 #endif
 
-#if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__bsdi__) || defined(__APPLE__) || defined (__DragonFly__)
+#if defined (__FreeBSD__) || defined(__FreeBSD_kernel__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__bsdi__) || defined(__APPLE__) || defined (__DragonFly__)
 # define _tcsetattr(fd, ttmode) ioctl(fd, TIOCSETA, (char *)ttmode)
 #else
-# if defined(_HPUX_SOURCE) || defined(__CYGWIN__)
+# if defined(_HPUX_SOURCE) || defined(__CYGWIN__) || defined(__GNU__)
 #  define _tcsetattr(fd, ttmode) tcsetattr(fd, TCSANOW, ttmode)
 # else
 #  define _tcsetattr(fd, ttmode) ioctl(fd, TCSETS, (char *)ttmode)
@@ -447,8 +447,8 @@ void KPty::close()
         if (!geteuid()) {
             struct stat st;
             if (!stat(d->ttyName.data(), &st)) {
-                chown(d->ttyName.data(), 0, st.st_gid == getgid() ? 0 : -1);
-                chmod(d->ttyName.data(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
+                (void) chown(d->ttyName.data(), 0, st.st_gid == getgid() ? 0 : -1);
+                (void) chmod(d->ttyName.data(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
             }
         } else {
             fcntl(d->masterFd, F_SETFD, 0);

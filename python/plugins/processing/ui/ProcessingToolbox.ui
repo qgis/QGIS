@@ -16,7 +16,7 @@
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="spacing">
-     <number>3</number>
+     <number>0</number>
     </property>
     <property name="margin">
      <number>0</number>
@@ -44,7 +44,52 @@
      </widget>
     </item>
     <item>
-     <widget class="QComboBox" name="modeComboBox"/>
+     <widget class="QLabel" name="txtDisabled">
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 127);</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <property name="text">
+       <string>There are disabled providers that contain algorithms including your text string. Click &lt;a href=&quot;view&quot;&gt;to view them.&lt;/a&gt;</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+      <property name="margin">
+       <number>5</number>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="txtTip">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(85, 170, 255);
+color: rgb(255, 255, 255);</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You can add more algorithms to the toolbox, &lt;a href=&quot;enable&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;enable additional providers.&lt;/span&gt;&lt;/a&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;a href=&quot;close&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;[close]&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+      <property name="margin">
+       <number>5</number>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

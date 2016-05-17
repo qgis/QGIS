@@ -23,8 +23,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-# -*- coding: utf-8 -*-
-
 #############################################################################
 #
 # Voronoi diagram calculator/ Delaunay triangulator
@@ -208,9 +206,7 @@ class Context(object):
             if self.plot:
                 self.clip_line(edge)
             elif(self.doPrint):
-                print "e %d" % edge.edgenum,
-                print " %d " % sitenumL,
-                print "%d" % sitenumR
+                print "e %d %d %d" % (edge.edgenum, sitenumL, sitenumR)
 
 #------------------------------------------------------------------
 
@@ -424,7 +420,7 @@ class Edge(object):
     @staticmethod
     def bisect(s1, s2):
         newedge = Edge()
-        newedge.reg[0] = s1 # store the sites that this edge is bisecting
+        newedge.reg[0] = s1  # store the sites that this edge is bisecting
         newedge.reg[1] = s2
 
         # to begin with, there are no endpoints on the bisector - it goes to infinity
@@ -472,7 +468,7 @@ class Halfedge(object):
         print "right: ", self.right
         print "edge: ", self.edge
         print "pm: ", self.pm
-        print "vertex: ",
+        print "vertex:"
         if self.vertex:
             self.vertex.dump()
         else:
@@ -759,9 +755,11 @@ class SiteList(object):
 
     class Iterator(object):
 
-        def __init__(this, lst): this.generator = (s for s in lst)
+        def __init__(this, lst):
+            this.generator = (s for s in lst)
 
-        def __iter__(this): return this
+        def __iter__(this):
+            return this
 
         def next(this):
             try:
@@ -778,13 +776,17 @@ class SiteList(object):
     def __len__(self):
         return len(self.__sites)
 
-    def _getxmin(self): return self.__xmin
+    def _getxmin(self):
+        return self.__xmin
 
-    def _getymin(self): return self.__ymin
+    def _getymin(self):
+        return self.__ymin
 
-    def _getxmax(self): return self.__xmax
+    def _getxmax(self):
+        return self.__xmax
 
-    def _getymax(self): return self.__ymax
+    def _getymax(self):
+        return self.__ymax
 
     xmin = property(_getxmin)
     ymin = property(_getymin)

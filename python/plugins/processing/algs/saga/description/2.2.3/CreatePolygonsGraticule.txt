@@ -1,0 +1,9 @@
+Create Polygons Graticule|Create Graticule
+shapes_tools
+Hardcoded|-TYPE 1
+ParameterVector|EXTENT|Extent|-1|True
+Extent EXTENT_X_MIN EXTENT_X_MAX EXTENT_Y_MIN EXTENT_Y_MAX
+ParameterNumber|DIVISION_X|Division Width|None|None|1.0
+ParameterNumber|DIVISION_Y|Division Height|None|None|1.0
+ParameterSelection|ALIGNMENT|Alignment|[0] Bottom left;[1] Top left;[2] Bottom right;[3] Top right;[4] Centered|0
+OutputVector|GRATICULE_RECT|Rectangle Graticule

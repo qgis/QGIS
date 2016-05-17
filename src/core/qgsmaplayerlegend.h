@@ -35,7 +35,7 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsMapLayerLegend( QObject *parent = 0 );
+    explicit QgsMapLayerLegend( QObject *parent = nullptr );
 
     // TODO: type, load/save settings
 

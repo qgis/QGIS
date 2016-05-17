@@ -35,7 +35,7 @@ class QgsComposerAttributeTable : QgsComposerTable
     QgsComposerAttributeTable( QgsComposition* composition /TransferThis/ );
     ~QgsComposerAttributeTable();
 
-    /** Return correct graphics item type. Added in v1.7 */
+    /** Return correct graphics item type. */
     virtual int type() const;
 
     /** \brief Reimplementation of QCanvasItem::paint*/
@@ -215,7 +215,7 @@ class QgsComposerAttributeTable : QgsComposerTable
      * @deprecated use QgsComposerTable::columns() instead
      * @note not available in python bindings
      */
-    // void setSortAttributes( const QList<QPair<int, bool> > att ) /Deprecated/;
+    // void setSortAttributes( const QList<QPair<int, bool> >& att ) /Deprecated/;
 
     /** Returns the attributes used to sort the table's features.
      * @returns a QList of integer/bool pairs, where the integer refers to the attribute index and

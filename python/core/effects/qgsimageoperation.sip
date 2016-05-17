@@ -21,16 +21,17 @@ class QgsImageOperation
   public:
 
     /** Modes for converting a QImage to grayscale
-    */
+     */
     enum GrayscaleMode
     {
       GrayscaleLightness, /*!< keep the lightness of the color, drops the saturation */
       GrayscaleLuminosity, /*!< grayscale by perceptual luminosity (weighted sum of color RGB components) */
-      GrayscaleAverage /*!< grayscale by taking average of color RGB components */
+      GrayscaleAverage, /*!< grayscale by taking average of color RGB components */
+      GrayscaleOff /*!< no change */
     };
 
     /** Flip operation types
-    */
+     */
     enum FlipType
     {
       FlipHorizontal, /*!< flip the image horizontally */
@@ -40,7 +41,7 @@ class QgsImageOperation
     /** Convert a QImage to a grayscale image. Alpha channel is preserved.
      * @param image QImage to convert
      * @param mode mode to use during grayscale conversion
-    */
+     */
     static void convertToGrayscale( QImage &image, const GrayscaleMode mode = GrayscaleLuminosity );
 
     /** Alter the brightness or contrast of a QImage.
@@ -140,7 +141,7 @@ class QgsImageOperation
      * @note added in QGIS 2.9
      * @see cropTransparent
      */
-    static QRect nonTransparentImageRect( const QImage & image, const QSize& minSize = QSize(), bool center = false );
+    static QRect nonTransparentImageRect( const QImage & image, QSize minSize = QSize(), bool center = false );
 
     /** Crop any transparent border from around an image.
      * @param image source image
@@ -150,6 +151,6 @@ class QgsImageOperation
      * @param center cropped image will be centered on the center of the original image if set to true
      * @note added in QGIS 2.9
      */
-    static QImage cropTransparent( const QImage & image, const QSize& minSize = QSize(), bool center = false );
+    static QImage cropTransparent( const QImage & image, QSize minSize = QSize(), bool center = false );
 
 };

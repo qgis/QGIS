@@ -215,25 +215,19 @@ void QgsHistogramWidget::drawHistogram()
 
   //draw histogram
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-  QwtPlotHistogram * plotHistogram = 0;
-  plotHistogram = createPlotHistogram( mRanges.count() > 0 ? mRanges.at( 0 ).label() : QString(),
-                                       mRanges.count() > 0 ? QBrush( mHistoColors.at( 0 ) ) : mBrush,
-                                       mRanges.count() > 0 ? Qt::NoPen : mPen );
-#else
-  HistogramItem *plotHistogramItem = 0;
-  plotHistogramItem = createHistoItem( mRanges.count() > 0 ? mRanges.at( 0 ).label() : QString(),
-                                       mRanges.count() > 0 ? QBrush( mHistoColors.at( 0 ) ) : mBrush,
-                                       mRanges.count() > 0 ? Qt::NoPen : mPen );
-#endif
-
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+  QwtPlotHistogram *plotHistogram = nullptr;
+  plotHistogram = createPlotHistogram( !mRanges.isEmpty() ? mRanges.at( 0 ).label() : QString(),
+                                       !mRanges.isEmpty() ? QBrush( mHistoColors.at( 0 ) ) : mBrush,
+                                       !mRanges.isEmpty() ? Qt::NoPen : mPen );
   QVector<QwtIntervalSample> dataHisto;
 #else
-
+  HistogramItem *plotHistogramItem = nullptr;
+  plotHistogramItem = createHistoItem( !mRanges.isEmpty() ? mRanges.at( 0 ).label() : QString(),
+                                       !mRanges.isEmpty() ? QBrush( mHistoColors.at( 0 ) ) : mBrush,
+                                       !mRanges.isEmpty() ? Qt::NoPen : mPen );
   // we safely assume that QT>=4.0 (min version is 4.7), therefore QwtArray is a QVector, so don't set size here
   QwtArray<QwtDoubleInterval> intervalsHisto;
   QwtArray<double> valuesHisto;
-
 #endif
 
   int bins = mBinsSpinBox->value();
@@ -269,7 +263,7 @@ void QgsHistogramWidget::drawHistogram()
 #endif
     }
 
-    double upperEdge = mRanges.count() > 0 ? qMin( edges.at( bin + 1 ), mRanges.at( rangeIndex ).upperValue() )
+    double upperEdge = !mRanges.isEmpty() ? qMin( edges.at( bin + 1 ), mRanges.at( rangeIndex ).upperValue() )
                        : edges.at( bin + 1 );
 
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000

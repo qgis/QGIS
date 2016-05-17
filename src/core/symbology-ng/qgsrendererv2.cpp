@@ -42,149 +42,19 @@
 
 
 
-const unsigned char* QgsFeatureRendererV2::_getPoint( QPointF& pt, QgsRenderContext& context, const unsigned char* wkb )
+QgsConstWkbPtr QgsFeatureRendererV2::_getPoint( QPointF& pt, QgsRenderContext& context, QgsConstWkbPtr wkbPtr )
 {
-  QgsConstWkbPtr wkbPtr( wkb + 1 );
-  unsigned int wkbType;
-  wkbPtr >> wkbType >> pt.rx() >> pt.ry();
-
-  if (( QgsWKBTypes::Type )wkbType == QgsWKBTypes::Point25D || ( QgsWKBTypes::Type )wkbType == QgsWKBTypes::PointZ )
-    wkbPtr += sizeof( double );
-
-  if ( context.coordinateTransform() )
-  {
-    double z = 0; // dummy variable for coordiante transform
-    context.coordinateTransform()->transformInPlace( pt.rx(), pt.ry(), z );
-  }
-
-  context.mapToPixel().transformInPlace( pt.rx(), pt.ry() );
-
-  return wkbPtr;
+  return QgsSymbolV2::_getPoint( pt, context, wkbPtr );
 }
 
-const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent )
+QgsConstWkbPtr QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderContext& context, QgsConstWkbPtr wkbPtr, bool clipToExtent )
 {
-  QgsConstWkbPtr wkbPtr( wkb + 1 );
-  unsigned int wkbType, nPoints;
-  wkbPtr >> wkbType >> nPoints;
-
-  bool hasZValue = QgsWKBTypes::hasZ(( QgsWKBTypes::Type )wkbType );
-  bool hasMValue = QgsWKBTypes::hasM(( QgsWKBTypes::Type )wkbType );
-
-  double x = 0.0;
-  double y = 0.0;
-  const QgsCoordinateTransform* ct = context.coordinateTransform();
-  const QgsMapToPixel& mtp = context.mapToPixel();
-
-  //apply clipping for large lines to achieve a better rendering performance
-  if ( clipToExtent && nPoints > 1 )
-  {
-    const QgsRectangle& e = context.extent();
-    double cw = e.width() / 10; double ch = e.height() / 10;
-    QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
-    wkbPtr = QgsConstWkbPtr( QgsClipper::clippedLineWKB( wkb, clipRect, pts ) );
-  }
-  else
-  {
-    pts.resize( nPoints );
-
-    QPointF* ptr = pts.data();
-    for ( unsigned int i = 0; i < nPoints; ++i, ++ptr )
-    {
-      wkbPtr >> x >> y;
-      if ( hasZValue )
-        wkbPtr += sizeof( double );
-      if ( hasMValue )
-        wkbPtr += sizeof( double );
-
-      *ptr = QPointF( x, y );
-    }
-  }
-
-  //transform the QPolygonF to screen coordinates
-  if ( ct )
-  {
-    ct->transformPolygon( pts );
-  }
-
-  QPointF* ptr = pts.data();
-  for ( int i = 0; i < pts.size(); ++i, ++ptr )
-  {
-    mtp.transformInPlace( ptr->rx(), ptr->ry() );
-  }
-
-  return wkbPtr;
+  return QgsSymbolV2::_getLineString( pts, context, wkbPtr, clipToExtent );
 }
 
-const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent )
+QgsConstWkbPtr QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, QgsConstWkbPtr wkbPtr, bool clipToExtent )
 {
-  QgsConstWkbPtr wkbPtr( wkb + 1 );
-
-  unsigned int wkbType, numRings;
-  wkbPtr >> wkbType >> numRings;
-
-  if ( numRings == 0 )  // sanity check for zero rings in polygon
-    return wkbPtr;
-
-  bool hasZValue = QgsWKBTypes::hasZ(( QgsWKBTypes::Type )wkbType );
-  bool hasMValue = QgsWKBTypes::hasM(( QgsWKBTypes::Type )wkbType );
-
-  double x, y;
-  holes.clear();
-
-  const QgsCoordinateTransform* ct = context.coordinateTransform();
-  const QgsMapToPixel& mtp = context.mapToPixel();
-  const QgsRectangle& e = context.extent();
-  double cw = e.width() / 10; double ch = e.height() / 10;
-  QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
-
-  for ( unsigned int idx = 0; idx < numRings; idx++ )
-  {
-    unsigned int nPoints;
-    wkbPtr >> nPoints;
-
-    QPolygonF poly( nPoints );
-
-    // Extract the points from the WKB and store in a pair of vectors.
-    QPointF* ptr = poly.data();
-    for ( unsigned int jdx = 0; jdx < nPoints; ++jdx, ++ptr )
-    {
-      wkbPtr >> x >> y;
-      if ( hasZValue )
-        wkbPtr += sizeof( double );
-      if ( hasMValue )
-        wkbPtr += sizeof( double );
-
-      *ptr = QPointF( x, y );
-    }
-
-    if ( nPoints < 1 )
-      continue;
-
-    //clip close to view extent, if needed
-    QRectF ptsRect = poly.boundingRect();
-    if ( clipToExtent && !context.extent().contains( ptsRect ) ) QgsClipper::trimPolygon( poly, clipRect );
-
-    //transform the QPolygonF to screen coordinates
-    if ( ct )
-    {
-      ct->transformPolygon( poly );
-    }
-
-
-    ptr = poly.data();
-    for ( int i = 0; i < poly.size(); ++i, ++ptr )
-    {
-      mtp.transformInPlace( ptr->rx(), ptr->ry() );
-    }
-
-    if ( idx == 0 )
-      pts = poly;
-    else
-      holes.append( poly );
-  }
-
-  return wkbPtr;
+  return QgsSymbolV2::_getPolygon( pts, holes, context, wkbPtr, clipToExtent );
 }
 
 void QgsFeatureRendererV2::setScaleMethodToSymbol( QgsSymbolV2* symbol, int scaleMethod )
@@ -196,10 +66,20 @@ void QgsFeatureRendererV2::setScaleMethodToSymbol( QgsSymbolV2* symbol, int scal
       QgsMarkerSymbolV2* ms = static_cast<QgsMarkerSymbolV2*>( symbol );
       if ( ms )
       {
-        ms->setScaleMethod(( QgsSymbolV2::ScaleMethod )scaleMethod );
+        ms->setScaleMethod( static_cast< QgsSymbolV2::ScaleMethod >( scaleMethod ) );
       }
     }
   }
+}
+
+void QgsFeatureRendererV2::copyRendererData( QgsFeatureRendererV2* destRenderer ) const
+{
+  if ( !destRenderer || !mPaintEffect )
+    return;
+
+  destRenderer->setPaintEffect( mPaintEffect->clone() );
+  destRenderer->mOrderBy = mOrderBy;
+  destRenderer->mOrderByEnabled = mOrderByEnabled;
 }
 
 void QgsFeatureRendererV2::copyPaintEffect( QgsFeatureRendererV2 *destRenderer ) const
@@ -210,15 +90,14 @@ void QgsFeatureRendererV2::copyPaintEffect( QgsFeatureRendererV2 *destRenderer )
   destRenderer->setPaintEffect( mPaintEffect->clone() );
 }
 
-
-QgsFeatureRendererV2::QgsFeatureRendererV2( QString type )
+QgsFeatureRendererV2::QgsFeatureRendererV2( const QString& type )
     : mType( type )
     , mUsingSymbolLevels( false )
     , mCurrentVertexMarkerType( QgsVectorLayer::Cross )
     , mCurrentVertexMarkerSize( 3 )
-    , mPaintEffect( 0 )
+    , mPaintEffect( nullptr )
     , mForceRaster( false )
-    , mRenderResult( QgsRenderResult( true ) )
+    , mOrderByEnabled( false )
 {
   mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );
@@ -262,6 +141,13 @@ QgsSymbolV2 *QgsFeatureRendererV2::originalSymbolForFeature( QgsFeature &feature
   return symbolForFeature( feature, context );
 }
 
+QSet< QString > QgsFeatureRendererV2::legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context )
+{
+  Q_UNUSED( feature );
+  Q_UNUSED( context );
+  return QSet< QString >();
+}
+
 void QgsFeatureRendererV2::startRender( QgsRenderContext& context, const QgsVectorLayer* vlayer )
 {
   startRender( context, vlayer->fields() );
@@ -270,204 +156,16 @@ void QgsFeatureRendererV2::startRender( QgsRenderContext& context, const QgsVect
 bool QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {
   QgsSymbolV2* symbol = symbolForFeature( feature, context );
-  if ( symbol == NULL )
-  {
-    setRenderResult( QgsRenderResult( false ) );
+  if ( !symbol )
     return false;
-  }
 
   renderFeatureWithSymbol( feature, symbol, context, layer, selected, drawVertexMarker );
-  setRenderResult( symbol->renderResult() );
   return true;
 }
 
 void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymbolV2* symbol, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {
-  QgsSymbolV2::SymbolType symbolType = symbol->type();
-
-
-  const QgsGeometry* geom = feature.constGeometry();
-  if ( !geom || !geom->geometry() )
-  {
-    return;
-  }
-
-  const QgsGeometry* segmentizedGeometry = geom;
-  bool deleteSegmentizedGeometry = false;
-  context.setGeometry( geom->geometry() );
-
-  //convert curve types to normal point/line/polygon ones
-  switch ( QgsWKBTypes::flatType( geom->geometry()->wkbType() ) )
-  {
-    case QgsWKBTypes::CurvePolygon:
-    case QgsWKBTypes::CircularString:
-    case QgsWKBTypes::CompoundCurve:
-    case QgsWKBTypes::MultiSurface:
-    case QgsWKBTypes::MultiCurve:
-    {
-      QgsAbstractGeometryV2* g = geom->geometry()->segmentize();
-      if ( !g )
-      {
-        return;
-      }
-      segmentizedGeometry = new QgsGeometry( g );
-      deleteSegmentizedGeometry = true;
-    }
-    default:
-      break;
-  }
-
-  switch ( QgsWKBTypes::flatType( segmentizedGeometry->geometry()->wkbType() ) )
-  {
-    case QgsWKBTypes::Point:
-    {
-      if ( symbolType != QgsSymbolV2::Marker )
-      {
-        QgsDebugMsg( "point can be drawn only with marker symbol!" );
-        break;
-      }
-      QPointF pt;
-      _getPoint( pt, context, segmentizedGeometry->asWkb() );
-      (( QgsMarkerSymbolV2* )symbol )->renderPoint( pt, &feature, context, layer, selected );
-    }
-    break;
-    case QgsWKBTypes::LineString:
-    {
-      if ( symbolType != QgsSymbolV2::Line )
-      {
-        QgsDebugMsg( "linestring can be drawn only with line symbol!" );
-        break;
-      }
-      QPolygonF pts;
-      _getLineString( pts, context, segmentizedGeometry->asWkb(), symbol->clipFeaturesToExtent() );
-      (( QgsLineSymbolV2* )symbol )->renderPolyline( pts, &feature, context, layer, selected );
-    }
-    break;
-    case QgsWKBTypes::Polygon:
-    {
-      if ( symbolType != QgsSymbolV2::Fill )
-      {
-        QgsDebugMsg( "polygon can be drawn only with fill symbol!" );
-        break;
-      }
-      QPolygonF pts;
-      QList<QPolygonF> holes;
-      _getPolygon( pts, holes, context, segmentizedGeometry->asWkb(), symbol->clipFeaturesToExtent() );
-      (( QgsFillSymbolV2* )symbol )->renderPolygon( pts, ( holes.count() ? &holes : NULL ), &feature, context, layer, selected );
-    }
-    break;
-
-    case QgsWKBTypes::MultiPoint:
-    {
-      if ( symbolType != QgsSymbolV2::Marker )
-      {
-        QgsDebugMsg( "multi-point can be drawn only with marker symbol!" );
-        break;
-      }
-
-      QgsConstWkbPtr wkbPtr( segmentizedGeometry->asWkb() + 1 + sizeof( int ) );
-      unsigned int num;
-      wkbPtr >> num;
-      const unsigned char* ptr = wkbPtr;
-      QPointF pt;
-
-      for ( unsigned int i = 0; i < num; ++i )
-      {
-        ptr = QgsConstWkbPtr( _getPoint( pt, context, ptr ) );
-        (( QgsMarkerSymbolV2* )symbol )->renderPoint( pt, &feature, context, layer, selected );
-      }
-    }
-    break;
-
-    case QgsWKBTypes::MultiCurve:
-    case QgsWKBTypes::MultiLineString:
-    {
-      if ( symbolType != QgsSymbolV2::Line )
-      {
-        QgsDebugMsg( "multi-linestring can be drawn only with line symbol!" );
-        break;
-      }
-
-      QgsConstWkbPtr wkbPtr( segmentizedGeometry->asWkb() + 1 + sizeof( int ) );
-      unsigned int num;
-      wkbPtr >> num;
-      const unsigned char* ptr = wkbPtr;
-      QPolygonF pts;
-
-      const QgsGeometryCollectionV2* geomCollection = dynamic_cast<const QgsGeometryCollectionV2*>( geom->geometry() );
-
-      for ( unsigned int i = 0; i < num; ++i )
-      {
-        if ( geomCollection )
-        {
-          context.setGeometry( geomCollection->geometryN( i ) );
-        }
-        ptr = QgsConstWkbPtr( _getLineString( pts, context, ptr, symbol->clipFeaturesToExtent() ) );
-        (( QgsLineSymbolV2* )symbol )->renderPolyline( pts, &feature, context, layer, selected );
-      }
-    }
-    break;
-
-    case QgsWKBTypes::MultiSurface:
-    case QgsWKBTypes::MultiPolygon:
-    {
-      if ( symbolType != QgsSymbolV2::Fill )
-      {
-        QgsDebugMsg( "multi-polygon can be drawn only with fill symbol!" );
-        break;
-      }
-
-      QgsConstWkbPtr wkbPtr( segmentizedGeometry->asWkb() + 1 + sizeof( int ) );
-      unsigned int num;
-      wkbPtr >> num;
-      const unsigned char* ptr = wkbPtr;
-      QPolygonF pts;
-      QList<QPolygonF> holes;
-
-      const QgsGeometryCollectionV2* geomCollection = dynamic_cast<const QgsGeometryCollectionV2*>( geom->geometry() );
-
-      for ( unsigned int i = 0; i < num; ++i )
-      {
-        if ( geomCollection )
-        {
-          context.setGeometry( geomCollection->geometryN( i ) );
-        }
-        ptr = _getPolygon( pts, holes, context, ptr, symbol->clipFeaturesToExtent() );
-        (( QgsFillSymbolV2* )symbol )->renderPolygon( pts, ( holes.count() ? &holes : NULL ), &feature, context, layer, selected );
-      }
-      break;
-    }
-    default:
-      QgsDebugMsg( QString( "feature %1: unsupported wkb type 0x%2 for rendering" ).arg( feature.id() ).arg( geom->wkbType(), 0, 16 ) );
-  }
-
-  if ( drawVertexMarker )
-  {
-    const QgsCoordinateTransform* ct = context.coordinateTransform();
-    const QgsMapToPixel& mtp = context.mapToPixel();
-
-    QgsPointV2 vertexPoint;
-    QgsVertexId vertexId;
-    double x, y, z;
-    QPointF mapPoint;
-    while ( geom->geometry()->nextVertex( vertexId, vertexPoint ) )
-    {
-      //transform
-      x = vertexPoint.x(); y = vertexPoint.y(); z = vertexPoint.z();
-      if ( ct )
-      {
-        ct->transformInPlace( x, y, z );
-      }
-      mapPoint.setX( x ); mapPoint.setY( y );
-      mtp.transformInPlace( mapPoint.rx(), mapPoint.ry() );
-      renderVertexMarker( mapPoint, context );
-    }
-  }
-
-  if ( deleteSegmentizedGeometry )
-  {
-    delete segmentizedGeometry;
-  }
+  symbol->renderFeature( feature, context, layer, selected, drawVertexMarker, mCurrentVertexMarkerType, mCurrentVertexMarkerSize );
 }
 
 QString QgsFeatureRendererV2::dump() const
@@ -497,14 +195,14 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::load( QDomElement& element )
   // <renderer-v2 type=""> ... </renderer-v2>
 
   if ( element.isNull() )
-    return NULL;
+    return nullptr;
 
   // load renderer
   QString rendererType = element.attribute( "type" );
 
   QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( rendererType );
-  if ( m == NULL )
-    return NULL;
+  if ( !m )
+    return nullptr;
 
   QgsFeatureRendererV2* r = m->createRenderer( element );
   if ( r )
@@ -518,6 +216,11 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::load( QDomElement& element )
     {
       r->setPaintEffect( QgsPaintEffectRegistry::instance()->createEffect( effectElem ) );
     }
+
+    // restore order by
+    QDomElement orderByElem = element.firstChildElement( "orderby" );
+    r->mOrderBy.load( orderByElem );
+    r->setOrderByEnabled( element.attribute( "enableorderby", "0" ).toInt() );
   }
   return r;
 }
@@ -528,9 +231,16 @@ QDomElement QgsFeatureRendererV2::save( QDomDocument& doc )
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( "forceraster", ( mForceRaster ? "1" : "0" ) );
 
-  if ( mPaintEffect )
+  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
 
+  if ( !mOrderBy.isEmpty() )
+  {
+    QDomElement orderBy = doc.createElement( "orderby" );
+    mOrderBy.save( orderBy );
+    rendererElem.appendChild( orderBy );
+  }
+  rendererElem.setAttribute( "enableorderby", ( mOrderByEnabled ? "1" : "0" ) );
   return rendererElem;
 }
 
@@ -538,7 +248,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, QGis:
 {
   QDomElement element = node.toElement();
   if ( element.isNull() )
-    return NULL;
+    return nullptr;
 
   // get the UserStyle element
   QDomElement userStyleElem = element.firstChildElement( "UserStyle" );
@@ -546,7 +256,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, QGis:
   {
     // UserStyle element not found, nothing will be rendered
     errorMessage = "Info: UserStyle element not found.";
-    return NULL;
+    return nullptr;
   }
 
   // get the FeatureTypeStyle element
@@ -554,7 +264,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, QGis:
   if ( featTypeStyleElem.isNull() )
   {
     errorMessage = "Info: FeatureTypeStyle element not found.";
-    return NULL;
+    return nullptr;
   }
 
   // use the RuleRenderer when more rules are present or the rule
@@ -613,10 +323,10 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, QGis:
 
   // create the renderer and return it
   QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( rendererType );
-  if ( m == NULL )
+  if ( !m )
   {
     errorMessage = QString( "Error: Unable to get metadata for '%1' renderer." ).arg( rendererType );
-    return NULL;
+    return nullptr;
   }
 
   QgsFeatureRendererV2* r = m->createRendererFromSld( featTypeStyleElem, geomType );
@@ -655,19 +365,25 @@ bool QgsFeatureRendererV2::legendSymbolItemsCheckable() const
   return false;
 }
 
-bool QgsFeatureRendererV2::legendSymbolItemChecked( QString key )
+bool QgsFeatureRendererV2::legendSymbolItemChecked( const QString& key )
 {
   Q_UNUSED( key );
   return false;
 }
 
-void QgsFeatureRendererV2::checkLegendSymbolItem( QString key, bool state )
+void QgsFeatureRendererV2::checkLegendSymbolItem( const QString& key, bool state )
 {
   Q_UNUSED( key );
   Q_UNUSED( state );
 }
 
-QgsLegendSymbolList QgsFeatureRendererV2::legendSymbolItems( double scaleDenominator, QString rule )
+void QgsFeatureRendererV2::setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol )
+{
+  Q_UNUSED( key );
+  delete symbol;
+}
+
+QgsLegendSymbolList QgsFeatureRendererV2::legendSymbolItems( double scaleDenominator, const QString& rule )
 {
   Q_UNUSED( scaleDenominator );
   Q_UNUSED( rule );
@@ -695,19 +411,19 @@ void QgsFeatureRendererV2::setVertexMarkerAppearance( int type, int size )
 bool QgsFeatureRendererV2::willRenderFeature( QgsFeature &feat )
 {
   Q_NOWARN_DEPRECATED_PUSH
-  return symbolForFeature( feat ) != NULL;
+  return nullptr != symbolForFeature( feat );
   Q_NOWARN_DEPRECATED_POP
 }
 
 bool QgsFeatureRendererV2::willRenderFeature( QgsFeature &feat, QgsRenderContext &context )
 {
-  return symbolForFeature( feat, context ) != NULL;
+  return nullptr != symbolForFeature( feat, context );
 }
 
-void QgsFeatureRendererV2::renderVertexMarker( QPointF& pt, QgsRenderContext& context )
+void QgsFeatureRendererV2::renderVertexMarker( QPointF pt, QgsRenderContext& context )
 {
   QgsVectorLayer::drawVertexMarker( pt.x(), pt.y(), *context.painter(),
-                                    ( QgsVectorLayer::VertexMarkerType ) mCurrentVertexMarkerType,
+                                    static_cast< QgsVectorLayer::VertexMarkerType >( mCurrentVertexMarkerType ),
                                     mCurrentVertexMarkerSize );
 }
 
@@ -724,7 +440,7 @@ void QgsFeatureRendererV2::renderVertexMarkerPolygon( QPolygonF& pts, QList<QPol
 
   if ( rings )
   {
-    Q_FOREACH ( QPolygonF ring, *rings )
+    Q_FOREACH ( const QPolygonF& ring, *rings )
     {
       Q_FOREACH ( QPointF pt, ring )
         renderVertexMarker( pt, context );
@@ -779,6 +495,26 @@ void QgsFeatureRendererV2::setPaintEffect( QgsPaintEffect *effect )
   mPaintEffect = effect;
 }
 
+QgsFeatureRequest::OrderBy QgsFeatureRendererV2::orderBy() const
+{
+  return mOrderBy;
+}
+
+void QgsFeatureRendererV2::setOrderBy( const QgsFeatureRequest::OrderBy& orderBy )
+{
+  mOrderBy = orderBy;
+}
+
+bool QgsFeatureRendererV2::orderByEnabled() const
+{
+  return mOrderByEnabled;
+}
+
+void QgsFeatureRendererV2::setOrderByEnabled( bool enabled )
+{
+  mOrderByEnabled = enabled;
+}
+
 void QgsFeatureRendererV2::convertSymbolSizeScale( QgsSymbolV2 * symbol, QgsSymbolV2::ScaleMethod method, const QString & field )
 {
   if ( symbol->type() == QgsSymbolV2::Marker )
@@ -814,9 +550,4 @@ void QgsFeatureRendererV2::convertSymbolRotation( QgsSymbolV2 * symbol, const QS
                               : QString() ) + field );
     s->setDataDefinedAngle( dd );
   }
-}
-
-void QgsFeatureRendererV2::setRenderResult( const QgsRenderResult& result )
-{
-  mRenderResult = result;
 }

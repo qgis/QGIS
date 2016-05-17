@@ -60,18 +60,18 @@ class CORE_EXPORT QgsLogger
     @param file file name where the message comes from
     @param function function where the message comes from
     @param line place in file where the message comes from*/
-    static void debug( const QString& msg, int debuglevel = 1, const char* file = NULL, const char* function = NULL, int line = -1 );
+    static void debug( const QString& msg, int debuglevel = 1, const char* file = nullptr, const char* function = nullptr, int line = -1 );
 
     /** Similar to the previous method, but prints a variable int-value pair*/
-    static void debug( const QString& var, int val, int debuglevel = 1, const char* file = NULL, const char* function = NULL, int line = -1 );
+    static void debug( const QString& var, int val, int debuglevel = 1, const char* file = nullptr, const char* function = nullptr, int line = -1 );
 
     /** Similar to the previous method, but prints a variable double-value pair*/
     // @note not available in python bindings
-    static void debug( const QString& var, double val, int debuglevel = 1, const char* file = NULL, const char* function = NULL, int line = -1 );
+    static void debug( const QString& var, double val, int debuglevel = 1, const char* file = nullptr, const char* function = nullptr, int line = -1 );
 
     /** Prints out a variable/value pair for types with overloaded operator<<*/
     // @note not available in python bindings
-    template <typename T> static void debug( const QString& var, T val, const char* file = 0, const char* function = 0,
+    template <typename T> static void debug( const QString& var, T val, const char* file = nullptr, const char* function = nullptr,
         int line = -1, int debuglevel = 1 )
     {
       std::ostringstream os;
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsLogger
     static int debugLevel() { init(); return sDebugLevel; }
 
     /** Logs the message passed in to the logfile defined in QGIS_LOG_FILE if any. **/
-    static void logMessageToFile( QString theMessage );
+    static void logMessageToFile( const QString& theMessage );
 
     /** Reads the environment variable QGIS_LOG_FILE. Returns NULL if the variable is not set,
      * otherwise returns a file name for writing log messages to.*/
@@ -114,7 +114,9 @@ class QgsScopeLogger
 {
   public:
     QgsScopeLogger( const char* file, const char* func, int line )
-        : _file( file ), _func( func ), _line( line )
+        : _file( file )
+        , _func( func )
+        , _line( line )
     {
       QgsLogger::debug( "Entering.", 1, _file, _func, _line );
     }

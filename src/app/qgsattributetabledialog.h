@@ -30,15 +30,14 @@
 #include "qgsvectorlayer.h" //QgsFeatureIds
 #include "qgsfieldmodel.h"
 #include "qgssearchwidgetwrapper.h"
+#include <QDockWidget>
 
 class QDialogButtonBox;
 class QPushButton;
 class QLineEdit;
 class QComboBox;
 class QMenu;
-class QDockWidget;
 class QSignalMapper;
-
 class QgsAttributeTableModel;
 class QgsAttributeTableFilterModel;
 class QgsRubberBand;
@@ -54,14 +53,14 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * @param parent parent object
      * @param flags window flags
      */
-    QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWidget *parent = 0, Qt::WindowFlags flags = Qt::Window );
+    QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window );
     ~QgsAttributeTableDialog();
 
     /**
      * Sets the filter expression to filter visible features
      * @param filterString filter query string. QgsExpression compatible.
      */
-    void setFilterExpression( QString filterString );
+    void setFilterExpression( const QString& filterString );
 
   public slots:
     /**
@@ -86,6 +85,14 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * Saves edits
      */
     void on_mSaveEditsButton_clicked();
+    /**
+     * Reload the data
+     */
+    void on_mReloadButton_clicked();
+    /**
+     * Filter the columns (open a dialog, ...)
+     */
+    void on_mFilterTableFields_clicked();
 
     /**
      * Inverts selection
@@ -95,6 +102,10 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * Clears selection
      */
     void on_mRemoveSelectionButton_clicked();
+    /**
+     * Select all
+     */
+    void on_mSelectAllButton_clicked();
     /**
      * Zooms to selected features
      */
@@ -143,6 +154,8 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     void on_mHelpButton_clicked() { QgsContextHelp::run( metaObject()->className() ); }
 
+    void on_mSortButton_clicked();
+
     void on_mExpressionSelectButton_clicked();
     void filterColumnChanged( QObject* filterAction );
     void filterExpressionBuilder();
@@ -159,7 +172,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      */
     void updateTitle();
 
-    void updateButtonStatus( QString fieldName, bool isValid );
+    void updateButtonStatus( const QString& fieldName, bool isValid );
 
     /* replace the search widget with a new one */
     void replaceSearchWidget( QWidget* oldw, QWidget* neww );
@@ -196,7 +209,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      */
     void columnBoxInit();
 
-    void runFieldCalculation( QgsVectorLayer* layer, QString fieldName, QString expression, QgsFeatureIds filteredIds = QgsFeatureIds() );
+    void runFieldCalculation( QgsVectorLayer* layer, const QString& fieldName, const QString& expression, const QgsFeatureIds& filteredIds = QgsFeatureIds() );
     void updateFieldFromExpression();
     void updateFieldFromExpressionSelected();
 
@@ -216,6 +229,23 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     QgsRubberBand* mRubberBand;
     QgsSearchWidgetWrapper* mCurrentSearchWidgetWrapper;
+    QStringList mVisibleFields;
+
+    void updateMultiEditButtonState();
+
+    friend class TestQgsAttributeTable;
 };
+
+
+class QgsAttributeTableDock : public QDockWidget
+{
+    Q_OBJECT
+
+  public:
+    QgsAttributeTableDock( const QString & title, QWidget * parent = nullptr, Qt::WindowFlags flags = nullptr );
+
+    virtual void closeEvent( QCloseEvent * ev ) override;
+};
+
 
 #endif

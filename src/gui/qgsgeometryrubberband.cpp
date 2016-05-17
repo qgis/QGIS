@@ -22,7 +22,7 @@
 #include <QPainter>
 
 QgsGeometryRubberBand::QgsGeometryRubberBand( QgsMapCanvas* mapCanvas, QGis::GeometryType geomType ): QgsMapCanvasItem( mapCanvas ),
-    mGeometry( 0 ), mIconSize( 5 ), mIconType( ICON_BOX ), mGeometryType( geomType )
+    mGeometry( nullptr ), mIconSize( 5 ), mIconType( ICON_BOX ), mGeometryType( geomType )
 {
   mPen = QPen( QColor( 255, 0, 0 ) );
   mBrush = QBrush( QColor( 255, 0, 0 ) );
@@ -118,7 +118,7 @@ void QgsGeometryRubberBand::setGeometry( QgsAbstractGeometryV2* geom )
   }
 }
 
-void QgsGeometryRubberBand::moveVertex( const QgsVertexId& id, const QgsPointV2& newPos )
+void QgsGeometryRubberBand::moveVertex( QgsVertexId id, const QgsPointV2& newPos )
 {
   if ( mGeometry )
   {

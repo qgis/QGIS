@@ -21,12 +21,15 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgstolerance.h"
+#include "qgisapp.h"
+
 #include <QMouseEvent>
 #include <QSettings>
 #include <limits>
+
 QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
-    , mRubberBand( 0 )
+    , mRubberBand( nullptr )
 {
   mToolName = tr( "Move feature" );
 }
@@ -36,7 +39,7 @@ QgsMapToolMoveFeature::~QgsMapToolMoveFeature()
   delete mRubberBand;
 }
 
-void QgsMapToolMoveFeature::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolMoveFeature::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( mRubberBand )
   {
@@ -49,10 +52,10 @@ void QgsMapToolMoveFeature::canvasMoveEvent( QMouseEvent * e )
   }
 }
 
-void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolMoveFeature::canvasPressEvent( QgsMapMouseEvent* e )
 {
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
 
   QgsVectorLayer* vlayer = currentVectorLayer();
   if ( !vlayer )
@@ -137,7 +140,7 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
 
 }
 
-void QgsMapToolMoveFeature::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolMoveFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   //QgsDebugMsg("entering.");
   if ( !mRubberBand )
@@ -162,7 +165,7 @@ void QgsMapToolMoveFeature::canvasReleaseEvent( QMouseEvent * e )
     vlayer->translateFeature( id, dx, dy );
   }
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   mCanvas->refresh();
   vlayer->endEditCommand();
 }
@@ -172,7 +175,7 @@ void QgsMapToolMoveFeature::deactivate()
 {
   //delete rubber band
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
 
   QgsMapTool::deactivate();
 }

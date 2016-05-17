@@ -78,7 +78,7 @@ QString QgsRasterCalcDialog::outputFile() const
     return outputFileName;
   }
 
-  return outputFileName + "." + it.value();
+  return outputFileName + '.' + it.value();
 }
 
 QString QgsRasterCalcDialog::outputFormat() const
@@ -146,7 +146,7 @@ void QgsRasterCalcDialog::insertAvailableRasterBands()
         QgsRasterCalculatorEntry entry;
         entry.raster = rlayer;
         entry.bandNumber = i + 1;
-        entry.ref = rlayer->name() + "@" + QString::number( i + 1 );
+        entry.ref = rlayer->name() + '@' + QString::number( i + 1 );
         mAvailableRasterBands.push_back( entry );
         mRasterBandsListWidget->addItem( entry.ref );
       }
@@ -164,7 +164,7 @@ void QgsRasterCalcDialog::insertAvailableOutputFormats()
     GDALDriverH driver = GDALGetDriver( i );
     if ( driver )
     {
-      char** driverMetadata = GDALGetMetadata( driver, NULL );
+      char** driverMetadata = GDALGetMetadata( driver, nullptr );
       if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) )
       {
         QString driverShortName = GDALGetDriverShortName( driver );
@@ -181,7 +181,7 @@ void QgsRasterCalcDialog::insertAvailableOutputFormats()
 
         //store the driver shortnames and the corresponding extensions
         //(just in case the user does not give an extension for the output file name)
-        QString driverExtension = GDALGetMetadataItem( driver, GDAL_DMD_EXTENSION, NULL );
+        QString driverExtension = GDALGetMetadataItem( driver, GDAL_DMD_EXTENSION, nullptr );
         mDriverExtensionMap.insert( driverShortName, driverExtension );
       }
     }
@@ -225,7 +225,7 @@ void QgsRasterCalcDialog::on_mButtonBox_accepted()
 void QgsRasterCalcDialog::on_mOutputLayerPushButton_clicked()
 {
   QSettings s;
-  QString saveFileName = QFileDialog::getSaveFileName( 0, tr( "Enter result file" ), s.value( "/RasterCalculator/lastOutputDir" ).toString() );
+  QString saveFileName = QFileDialog::getSaveFileName( nullptr, tr( "Enter result file" ), s.value( "/RasterCalculator/lastOutputDir", QDir::homePath() ).toString() );
   if ( !saveFileName.isNull() )
   {
     mOutputLayerLineEdit->setText( saveFileName );
@@ -237,7 +237,7 @@ void QgsRasterCalcDialog::on_mCurrentLayerExtentButton_clicked()
   QListWidgetItem* currentLayerItem = mRasterBandsListWidget->currentItem();
   if ( currentLayerItem )
   {
-    QgsRasterLayer* rlayer = 0;
+    QgsRasterLayer* rlayer = nullptr;
     QList<QgsRasterCalculatorEntry>::const_iterator rasterIt = mAvailableRasterBands.constBegin();
     for ( ; rasterIt != mAvailableRasterBands.constEnd(); ++rasterIt )
     {
@@ -450,8 +450,8 @@ QString QgsRasterCalcDialog::quoteBandEntry( const QString& layerName )
 {
   // '"' -> '\\"'
   QString quotedName = layerName;
-  quotedName.replace( "\"", "\\\"" );
-  quotedName.append( "\"" );
-  quotedName.prepend( "\"" );
+  quotedName.replace( '\"', "\\\"" );
+  quotedName.append( '\"' );
+  quotedName.prepend( '\"' );
   return quotedName;
 }

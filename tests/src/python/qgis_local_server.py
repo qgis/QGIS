@@ -495,12 +495,12 @@ class QgisLocalServer(object):
             except urllib2.URLError as resp:
                 raise ServerProcessError(
                     'Web/FCGI Process Request URLError',
-                    'Cound not connect to process: ' + str(resp.code),
+                    'Cound not connect to process',
                     resp.reason
                 )
             else:
                 delta = time.time() - start_time
-                print 'Seconds elapsed for server GetMap: ' + str(delta)
+                print('Seconds elapsed for server GetMap: ' + str(delta))
                 break
 
         if resp is not None:
@@ -776,7 +776,7 @@ if __name__ == '__main__':
 
     fcgi = os.path.realpath(args.fcgi)
     if not os.path.isabs(fcgi) or not os.path.exists(fcgi):
-        print 'qgis_mapserv.fcgi not resolved to existing absolute path.'
+        print('qgis_mapserv.fcgi not resolved to existing absolute path.')
         sys.exit(1)
 
     local_srv = QgisLocalServer(fcgi)

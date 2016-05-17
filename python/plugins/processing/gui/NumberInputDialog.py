@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4 import uic
-from PyQt4.QtGui import QDialog, QTreeWidgetItem, QMessageBox
+from qgis.PyQt import uic
+from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem, QMessageBox
 from qgis.core import QgsRasterLayer
 
 from qgis.utils import iface
@@ -68,13 +68,13 @@ class NumberInputDialog(BASE, WIDGET):
             layerItem = QTreeWidgetItem()
             layerItem.setText(0, unicode(layer.name()))
             layerItem.addChild(TreeValueItem(self.tr('Min X'),
-                               layer.extent().xMinimum()))
+                                             layer.extent().xMinimum()))
             layerItem.addChild(TreeValueItem(self.tr('Max X'),
-                               layer.extent().xMaximum()))
+                                             layer.extent().xMaximum()))
             layerItem.addChild(TreeValueItem(self.tr('Min Y'),
-                               layer.extent().yMinimum()))
+                                             layer.extent().yMinimum()))
             layerItem.addChild(TreeValueItem(self.tr('Max Y'),
-                               layer.extent().yMaximum()))
+                                             layer.extent().yMaximum()))
             if isinstance(layer, QgsRasterLayer):
                 cellsize = (layer.extent().xMaximum()
                             - layer.extent().xMinimum()) / layer.width()
@@ -93,11 +93,11 @@ class NumberInputDialog(BASE, WIDGET):
                 layerItem.setText(0, unicode(layer.name()))
                 layerItem.addChild(TreeValueItem(self.tr('Mean'), stats.mean))
                 layerItem.addChild(TreeValueItem(self.tr('Std. deviation'),
-                                   stats.stdDev))
+                                                 stats.stdDev))
                 layerItem.addChild(TreeValueItem(self.tr('Max value'),
-                                   stats.maximumValue))
+                                                 stats.maximumValue))
                 layerItem.addChild(TreeValueItem(self.tr('Min value'),
-                                   stats.minimumValue))
+                                                 stats.minimumValue))
                 layersItem.addChild(layerItem)
 
         canvasItem = QTreeWidgetItem()

@@ -136,14 +136,14 @@ bool QgsVectorLayerCache::featureAtId( QgsFeatureId featureId, QgsFeature& featu
 {
   bool featureFound = false;
 
-  QgsCachedFeature* cachedFeature = NULL;
+  QgsCachedFeature* cachedFeature = nullptr;
 
   if ( !skipCache )
   {
     cachedFeature = mCache[ featureId ];
   }
 
-  if ( cachedFeature != NULL )
+  if ( cachedFeature )
   {
     feature = QgsFeature( *cachedFeature->feature() );
     featureFound = true;
@@ -151,7 +151,7 @@ bool QgsVectorLayerCache::featureAtId( QgsFeatureId featureId, QgsFeature& featu
   else if ( mLayer->getFeatures( QgsFeatureRequest()
                                  .setFilterFid( featureId )
                                  .setSubsetOfAttributes( mCachedAttributes )
-                                 .setFlags( !mCacheGeometry ? QgsFeatureRequest::NoGeometry : QgsFeatureRequest::Flags( 0 ) ) )
+                                 .setFlags( !mCacheGeometry ? QgsFeatureRequest::NoGeometry : QgsFeatureRequest::Flags( nullptr ) ) )
             .nextFeature( feature ) )
   {
     cacheFeature( feature );
@@ -171,7 +171,7 @@ QgsVectorLayer* QgsVectorLayerCache::layer()
   return mLayer;
 }
 
-void QgsVectorLayerCache::requestCompleted( QgsFeatureRequest featureRequest, QgsFeatureIds fids )
+void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids )
 {
   // If a request is too large for the cache don't notify to prevent from indexing incomplete requests
   if ( fids.count() < mCache.size() )
@@ -195,7 +195,7 @@ void QgsVectorLayerCache::onAttributeValueChanged( QgsFeatureId fid, int field, 
 {
   QgsCachedFeature* cachedFeat = mCache[ fid ];
 
-  if ( NULL != cachedFeat )
+  if ( cachedFeat )
   {
     cachedFeat->mFeature->setAttribute( field, value );
   }
@@ -248,7 +248,7 @@ void QgsVectorLayerCache::geometryChanged( QgsFeatureId fid, QgsGeometry& geom )
 {
   QgsCachedFeature* cachedFeat = mCache[ fid ];
 
-  if ( cachedFeat != NULL )
+  if ( cachedFeat )
   {
     cachedFeat->mFeature->setGeometry( geom );
   }
@@ -257,7 +257,7 @@ void QgsVectorLayerCache::geometryChanged( QgsFeatureId fid, QgsGeometry& geom )
 void QgsVectorLayerCache::layerDeleted()
 {
   emit cachedLayerDeleted();
-  mLayer = NULL;
+  mLayer = nullptr;
 }
 
 void QgsVectorLayerCache::invalidate()

@@ -19,7 +19,7 @@ class QgsAttributeTableView : QTableView
     /**
      * This event filter is installed on the verticalHeader to intercept mouse press and release
      * events. These are used to disable / enable live synchronisation with the map canvas selection
-     * which can be slow due to recurring canvas repaints. Updating the
+     * which can be slow due to recurring canvas repaints.
      *
      * @param object The object which is the target of the event.
      * @param event  The intercepted event
@@ -85,12 +85,12 @@ class QgsAttributeTableView : QTableView
      * @param atIndex  The QModelIndex, to which the context menu belongs. Relative to the source model.
      *                 In most cases, this will be a @link QgsAttributeTableFilterModel @endlink
      */
-    void willShowContextMenu( QMenu* menu, QModelIndex atIndex );
+    void willShowContextMenu( QMenu* menu, const QModelIndex& atIndex );
 
     void finished();
 
   public slots:
-    void repaintRequested( QModelIndexList indexes );
+    void repaintRequested( const QModelIndexList& indexes );
     void repaintRequested();
     virtual void selectAll();
     virtual void selectRow( int row );

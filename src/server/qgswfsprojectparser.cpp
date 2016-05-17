@@ -20,8 +20,19 @@
 #include "qgsconfigparserutils.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectordataprovider.h"
+#include "qgsmapserviceexception.h"
+#include "qgsaccesscontrol.h"
 
-QgsWFSProjectParser::QgsWFSProjectParser( const QString& filePath )
+QgsWFSProjectParser::QgsWFSProjectParser(
+  const QString& filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  , const QgsAccessControl* ac
+#endif
+)
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    :
+    mAccessControl( ac )
+#endif
 {
   mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
 }
@@ -76,6 +87,12 @@ void QgsWFSProjectParser::featureTypeList( QDomElement& parentElement, QDomDocum
       {
         continue;
       }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      if ( !mAccessControl->layerReadPermission( layer ) )
+      {
+        continue;
+      }
+#endif
       QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
       layerMap.insert( layer->id(), layer );
 
@@ -84,6 +101,8 @@ void QgsWFSProjectParser::featureTypeList( QDomElement& parentElement, QDomDocum
       //We use the layer name even though it might not be unique.
       //Because the id sometimes contains user/pw information and the name is more descriptive
       QString typeName = layer->name();
+      if ( !layer->shortName().isEmpty() )
+        typeName = layer->shortName();
       typeName = typeName.replace( " ", "_" );
       QDomText nameText = doc.createTextNode( typeName );
       nameElem.appendChild( nameText );
@@ -331,7 +350,16 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
       if ( !layer )
         continue;
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      if ( !mAccessControl->layerReadPermission( layer ) )
+      {
+        continue;
+      }
+#endif
+
       QString typeName = layer->name();
+      if ( !layer->shortName().isEmpty() )
+        typeName = layer->shortName();
       typeName = typeName.replace( " ", "_" );
 
       if ( wfsLayersId.contains( layer->id() ) && ( aTypeName == "" || typeNameList.contains( typeName ) ) )
@@ -372,40 +400,50 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
         extensionElem.appendChild( sequenceElem );
 
         //xsd:element
-        QDomElement geomElem = doc.createElement( "element"/*xsd:element*/ );
-        geomElem.setAttribute( "name", "geometry" );
-        QGis::WkbType wkbType = layer->wkbType();
-        if ( wkbType != QGis::WKBNoGeometry )
+        if ( layer->hasGeometryType() )
         {
-          switch ( wkbType )
+          QDomElement geomElem = doc.createElement( "element"/*xsd:element*/ );
+          geomElem.setAttribute( "name", "geometry" );
+          if ( provider->name() == "ogr" )
           {
-            case QGis::WKBPoint25D:
-            case QGis::WKBPoint:
-              geomElem.setAttribute( "type", "gml:PointPropertyType" );
-              break;
-            case QGis::WKBLineString25D:
-            case QGis::WKBLineString:
-              geomElem.setAttribute( "type", "gml:LineStringPropertyType" );
-              break;
-            case QGis::WKBPolygon25D:
-            case QGis::WKBPolygon:
-              geomElem.setAttribute( "type", "gml:PolygonPropertyType" );
-              break;
-            case QGis::WKBMultiPoint25D:
-            case QGis::WKBMultiPoint:
-              geomElem.setAttribute( "type", "gml:MultiPointPropertyType" );
-              break;
-            case QGis::WKBMultiLineString25D:
-            case QGis::WKBMultiLineString:
-              geomElem.setAttribute( "type", "gml:MultiLineStringPropertyType" );
-              break;
-            case QGis::WKBMultiPolygon25D:
-            case QGis::WKBMultiPolygon:
-              geomElem.setAttribute( "type", "gml:MultiPolygonPropertyType" );
-              break;
-            default:
-              geomElem.setAttribute( "type", "gml:GeometryPropertyType" );
-              break;
+            // because some ogr drivers (e.g. ESRI ShapeFile, GML)
+            // are not able to determine the geometry type of a layer.
+            // we set to GeometryType
+            geomElem.setAttribute( "type", "gml:GeometryPropertyType" );
+          }
+          else
+          {
+            QGis::WkbType wkbType = layer->wkbType();
+            switch ( wkbType )
+            {
+              case QGis::WKBPoint25D:
+              case QGis::WKBPoint:
+                geomElem.setAttribute( "type", "gml:PointPropertyType" );
+                break;
+              case QGis::WKBLineString25D:
+              case QGis::WKBLineString:
+                geomElem.setAttribute( "type", "gml:LineStringPropertyType" );
+                break;
+              case QGis::WKBPolygon25D:
+              case QGis::WKBPolygon:
+                geomElem.setAttribute( "type", "gml:PolygonPropertyType" );
+                break;
+              case QGis::WKBMultiPoint25D:
+              case QGis::WKBMultiPoint:
+                geomElem.setAttribute( "type", "gml:MultiPointPropertyType" );
+                break;
+              case QGis::WKBMultiLineString25D:
+              case QGis::WKBMultiLineString:
+                geomElem.setAttribute( "type", "gml:MultiLineStringPropertyType" );
+                break;
+              case QGis::WKBMultiPolygon25D:
+              case QGis::WKBMultiPolygon:
+                geomElem.setAttribute( "type", "gml:MultiPolygonPropertyType" );
+                break;
+              default:
+                geomElem.setAttribute( "type", "gml:GeometryPropertyType" );
+                break;
+            }
           }
           geomElem.setAttribute( "minOccurs", "0" );
           geomElem.setAttribute( "maxOccurs", "1" );
@@ -417,7 +455,7 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
         for ( int idx = 0; idx < fields.count(); ++idx )
         {
 
-          QString attributeName = fields[idx].name();
+          QString attributeName = fields.at( idx ).name();
           //skip attribute if excluded from WFS publication
           if ( layerExcludedAttributes.contains( attributeName ) )
           {
@@ -425,22 +463,32 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
           }
 
           //xsd:element
-          QDomElement geomElem = doc.createElement( "element"/*xsd:element*/ );
-          geomElem.setAttribute( "name", attributeName );
+          QDomElement attElem = doc.createElement( "element"/*xsd:element*/ );
+          attElem.setAttribute( "name", attributeName );
           QVariant::Type attributeType = fields[idx].type();
           if ( attributeType == QVariant::Int )
-            geomElem.setAttribute( "type", "integer" );
+            attElem.setAttribute( "type", "integer" );
+          else if ( attributeType == QVariant::LongLong )
+            attElem.setAttribute( "type", "long" );
           else if ( attributeType == QVariant::Double )
-            geomElem.setAttribute( "type", "double" );
+            attElem.setAttribute( "type", "double" );
+          else if ( attributeType == QVariant::Bool )
+            attElem.setAttribute( "type", "boolean" );
+          else if ( attributeType == QVariant::Date )
+            attElem.setAttribute( "type", "date" );
+          else if ( attributeType == QVariant::Time )
+            attElem.setAttribute( "type", "time" );
+          else if ( attributeType == QVariant::DateTime )
+            attElem.setAttribute( "type", "dateTime" );
           else
-            geomElem.setAttribute( "type", "string" );
+            attElem.setAttribute( "type", "string" );
 
-          sequenceElem.appendChild( geomElem );
+          sequenceElem.appendChild( attElem );
 
           QString alias = layer->attributeAlias( idx );
           if ( !alias.isEmpty() )
           {
-            geomElem.setAttribute( "alias", alias );
+            attElem.setAttribute( "alias", alias );
           }
         }
       }
@@ -522,6 +570,8 @@ QList<QgsMapLayer*> QgsWFSProjectParser::mapLayerFromTypeName( const QString& aT
         continue;
 
       QString typeName = layer->name();
+      if ( !layer->shortName().isEmpty() )
+        typeName = layer->shortName();
       typeName = typeName.replace( " ", "_" );
 
       if ( wfsLayersId.contains( layer->id() ) && ( aTypeName == "" || typeNameList.contains( typeName ) ) )

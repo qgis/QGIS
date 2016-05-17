@@ -41,7 +41,7 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
        layer->wkbType() != QGis::WKBMultiPolygon25D )
   {
     //setup blank dialog
-    mRenderer.reset( 0 );
+    mRenderer.reset( nullptr );
     QGridLayout* layout = new QGridLayout( this );
     QLabel* label = new QLabel( tr( "The inverted polygon renderer only applies to polygon and multipolygon layers. \n"
                                     "'%1' is not a polygon layer and then cannot be displayed" )
@@ -111,6 +111,13 @@ QgsFeatureRendererV2* QgsInvertedPolygonRendererWidget::renderer()
   return mRenderer.data();
 }
 
+void QgsInvertedPolygonRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
+{
+  QgsRendererV2Widget::setMapCanvas( canvas );
+  if ( mEmbeddedRendererWidget )
+    mEmbeddedRendererWidget->setMapCanvas( canvas );
+}
+
 void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged( int index )
 {
   QString rendererId = mRendererComboBox->itemData( index ).toString();
@@ -118,6 +125,7 @@ void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged(
   if ( m )
   {
     mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, const_cast<QgsFeatureRendererV2*>( mRenderer->embeddedRenderer() )->clone() ) );
+    mEmbeddedRendererWidget->setMapCanvas( mMapCanvas );
 
     if ( mLayout->count() > 2 )
     {

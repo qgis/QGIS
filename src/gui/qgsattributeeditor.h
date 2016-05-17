@@ -40,7 +40,7 @@ class GUI_EXPORT QgsAttributeEditor : public QObject
     Q_OBJECT
 
   public:
-    QgsAttributeEditor( QObject* parent, QgsVectorLayer* vl = 0, int idx = -1 )
+    QgsAttributeEditor( QObject* parent, QgsVectorLayer* vl = nullptr, int idx = -1 )
         : QObject( parent )
     {
       Q_UNUSED( vl )

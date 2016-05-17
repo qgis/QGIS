@@ -23,8 +23,10 @@
 
 QgsMSLayerCache* QgsMSLayerCache::instance()
 {
-  static QgsMSLayerCache mInstance;
-  return &mInstance;
+  static QgsMSLayerCache *mInstance = 0;
+  if ( !mInstance )
+    mInstance = new QgsMSLayerCache();
+  return mInstance;
 }
 
 QgsMSLayerCache::QgsMSLayerCache()
@@ -52,12 +54,13 @@ QgsMSLayerCache::~QgsMSLayerCache()
   {
     delete entry.layerPointer;
   }
+  mEntries.clear();
 }
 
 void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName, QgsMapLayer* layer, const QString& configFile, const QList<QString>& tempFiles )
 {
   QgsMessageLog::logMessage( "Layer cache: insert Layer '" + layerName + "' configFile: " + configFile, "Server", QgsMessageLog::INFO );
-  if ( mEntries.size() > std::max( mDefaultMaxLayers, mProjectMaxLayers ) ) //force cache layer examination after 10 inserted layers
+  if ( mEntries.size() > qMax( mDefaultMaxLayers, mProjectMaxLayers ) ) //force cache layer examination after 10 inserted layers
   {
     updateEntries();
   }
@@ -67,8 +70,8 @@ void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName,
   QgsMSLayerCacheEntry newEntry;
   newEntry.layerPointer = layer;
   newEntry.url = url;
-  newEntry.creationTime = time( NULL );
-  newEntry.lastUsedTime = time( NULL );
+  newEntry.creationTime = time( nullptr );
+  newEntry.lastUsedTime = time( nullptr );
   newEntry.temporaryFiles = tempFiles;
   newEntry.configFile = configFile;
 
@@ -77,8 +80,8 @@ void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName,
   //update config file map
   if ( !configFile.isEmpty() )
   {
-    QHash< QString, int >::iterator configIt = mConfigFiles.find( configFile );
-    if ( configIt == mConfigFiles.end() )
+    QHash< QString, int >::const_iterator configIt = mConfigFiles.constFind( configFile );
+    if ( configIt == mConfigFiles.constEnd() )
     {
       mConfigFiles.insert( configFile, 1 );
       mFileSystemWatcher.addPath( configFile );
@@ -96,7 +99,7 @@ QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& la
   if ( !mEntries.contains( urlNamePair ) )
   {
     QgsMessageLog::logMessage( "Layer '" + layerName + "' configFile: " + configFile + " not found in layer cache'", "Server", QgsMessageLog::INFO );
-    return 0;
+    return nullptr;
   }
   else
   {
@@ -106,21 +109,21 @@ QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& la
     {
       if ( configFile.isEmpty() || layerIt->configFile == configFile )
       {
-        layerIt->lastUsedTime = time( NULL );
+        layerIt->lastUsedTime = time( nullptr );
         QgsMessageLog::logMessage( "Layer '" + layerName + "' configFile: " + configFile + " found in layer cache", "Server", QgsMessageLog::INFO );
         return layerIt->layerPointer;
       }
     }
     QgsMessageLog::logMessage( "Layer '" + layerName + "' configFile: " + configFile + " not found in layer cache'", "Server", QgsMessageLog::INFO );
-    return 0;
+    return nullptr;
   }
 }
 
 void QgsMSLayerCache::removeProjectFileLayers( const QString& project )
 {
   QgsMessageLog::logMessage( "Removing cache entries for project file: " + project, "Server", QgsMessageLog::INFO );
-  QList< QPair< QString, QString > > removeEntries;
-  QList< QgsMSLayerCacheEntry > removeEntriesValues;
+  QVector< QPair< QString, QString > > removeEntries;
+  QVector< QgsMSLayerCacheEntry > removeEntriesValues;
 
   QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator entryIt = mEntries.begin();
   for ( ; entryIt != mEntries.end(); ++entryIt )
@@ -145,7 +148,7 @@ void QgsMSLayerCache::removeProjectFileLayers( const QString& project )
 void QgsMSLayerCache::updateEntries()
 {
   QgsDebugMsg( "updateEntries" );
-  int entriesToDelete = mEntries.size() - std::max( mDefaultMaxLayers, mProjectMaxLayers );
+  int entriesToDelete = mEntries.size() - qMax( mDefaultMaxLayers, mProjectMaxLayers );
   if ( entriesToDelete < 1 )
   {
     return;

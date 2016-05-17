@@ -23,18 +23,17 @@ class ANALYSIS_EXPORT QgsTransectSample
       StrataUnits //units are the same as stratum layer
     };
 
-    QgsTransectSample( QgsVectorLayer* strataLayer, QString strataIdAttribute, QString minDistanceAttribute, QString nPointsAttribute,
+    QgsTransectSample( QgsVectorLayer* strataLayer, const QString& strataIdAttribute, const QString& minDistanceAttribute, const QString& nPointsAttribute,
                        DistanceUnits minDistUnits, QgsVectorLayer* baselineLayer, bool shareBaseline,
-                       QString baselineStrataId, const QString& outputPointLayer, const QString& outputLineLayer, const QString& usedBaselineLayer, double minTransectLength = 0.0,
+                       const QString& baselineStrataId, const QString& outputPointLayer, const QString& outputLineLayer, const QString& usedBaselineLayer, double minTransectLength = 0.0,
                        double baselineBufferDistance = -1.0, double baselineSimplificationTolerance = -1.0 );
-    ~QgsTransectSample();
 
     int createSample( QProgressDialog* pd );
 
   private:
     QgsTransectSample(); //default constructor forbidden
 
-    QgsGeometry* findBaselineGeometry( QVariant strataId );
+    QgsGeometry* findBaselineGeometry( const QVariant& strataId );
 
     /** Returns true if another transect is within the specified minimum distance*/
     static bool otherTransectWithinDistance( QgsGeometry* geom, double minDistLayerUnit, double minDistance, QgsSpatialIndex& sIndex, const QMap< QgsFeatureId, QgsGeometry* >&

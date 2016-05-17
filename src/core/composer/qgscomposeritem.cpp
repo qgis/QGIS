@@ -44,19 +44,13 @@
 
 #include <cmath>
 
-#define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
-
-#ifndef M_DEG2RAD
-#define M_DEG2RAD 0.0174532925
-#endif
-
 QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue )
     : QgsComposerObject( composition )
-    , QGraphicsRectItem( 0 )
+    , QGraphicsRectItem( nullptr )
     , mRemovedFromComposition( false )
-    , mBoundingResizeRectangle( 0 )
-    , mHAlignSnapItem( 0 )
-    , mVAlignSnapItem( 0 )
+    , mBoundingResizeRectangle( nullptr )
+    , mHAlignSnapItem( nullptr )
+    , mVAlignSnapItem( nullptr )
     , mFrame( false )
     , mBackground( true )
     , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
@@ -81,11 +75,11 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
 
 QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue )
     : QgsComposerObject( composition )
-    , QGraphicsRectItem( 0, 0, width, height, 0 )
+    , QGraphicsRectItem( 0, 0, width, height, nullptr )
     , mRemovedFromComposition( false )
-    , mBoundingResizeRectangle( 0 )
-    , mHAlignSnapItem( 0 )
-    , mVAlignSnapItem( 0 )
+    , mBoundingResizeRectangle( nullptr )
+    , mHAlignSnapItem( nullptr )
+    , mVAlignSnapItem( nullptr )
     , mFrame( false )
     , mBackground( true )
     , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
@@ -208,7 +202,7 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   composerItemElem.setAttribute( "pagey", QString::number( pagepos.y() ) );
   composerItemElem.setAttribute( "width", QString::number( rect().width() ) );
   composerItemElem.setAttribute( "height", QString::number( rect().height() ) );
-  composerItemElem.setAttribute( "positionMode", QString::number(( int ) mLastUsedPositionMode ) );
+  composerItemElem.setAttribute( "positionMode", QString::number( static_cast< int >( mLastUsedPositionMode ) ) );
   composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
   composerItemElem.setAttribute( "outlineWidth", QString::number( pen().widthF() ) );
   composerItemElem.setAttribute( "frameJoinStyle", QgsSymbolLayerV2Utils::encodePenJoinStyle( mFrameJoinStyle ) );
@@ -331,7 +325,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   pagey = itemElem.attribute( "pagey" ).toDouble( &pageyOk );
   width = itemElem.attribute( "width" ).toDouble( &widthOk );
   height = itemElem.attribute( "height" ).toDouble( &heightOk );
-  mLastUsedPositionMode = ( ItemPositionMode )itemElem.attribute( "positionMode" ).toInt( &positionModeOK );
+  mLastUsedPositionMode = static_cast< ItemPositionMode >( itemElem.attribute( "positionMode" ).toInt( &positionModeOK ) );
   if ( !positionModeOK )
   {
     mLastUsedPositionMode = UpperLeft;
@@ -355,7 +349,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
 
   //pen
   QDomNodeList frameColorList = itemElem.elementsByTagName( "FrameColor" );
-  if ( frameColorList.size() > 0 )
+  if ( !frameColorList.isEmpty() )
   {
     QDomElement frameColorElem = frameColorList.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk, widthOk;
@@ -380,7 +374,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
 
   //brush
   QDomNodeList bgColorList = itemElem.elementsByTagName( "BackgroundColor" );
-  if ( bgColorList.size() > 0 )
+  if ( !bgColorList.isEmpty() )
   {
     QDomElement bgColorElem = bgColorList.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk;
@@ -397,7 +391,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   }
 
   //blend mode
-  setBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) itemElem.attribute( "blendMode", "0" ).toUInt() ) );
+  setBlendMode( QgsMapRenderer::getCompositionMode( static_cast< QgsMapRenderer::BlendMode >( itemElem.attribute( "blendMode", "0" ).toUInt() ) ) );
 
   //transparency
   setTransparency( itemElem.attribute( "transparency", "0" ).toInt() );
@@ -439,7 +433,7 @@ void QgsComposerItem::setFrameOutlineColor( const QColor &color )
 void QgsComposerItem::setFrameOutlineWidth( const double outlineWidth )
 {
   QPen itemPen = pen();
-  if ( itemPen.widthF() == outlineWidth )
+  if ( qgsDoubleNear( itemPen.widthF(), outlineWidth ) )
   {
     //no change
     return;
@@ -658,7 +652,7 @@ void QgsComposerItem::setItemPosition( double x, double y, double width, double 
   {
     //adjust position to account for frame size
 
-    if ( mEvaluatedItemRotation == 0 )
+    if ( qgsDoubleNear( mEvaluatedItemRotation, 0.0 ) )
     {
       upperLeftX += estimatedFrameBleed();
       upperLeftY += estimatedFrameBleed();
@@ -882,7 +876,7 @@ void QgsComposerItem::drawArrowHead( QPainter *p, double x, double y, double ang
   QgsComposerUtils::drawArrowHead( p, x, y, angle, arrowHeadWidth );
 }
 
-double QgsComposerItem::angle( const QPointF &p1, const QPointF &p2 ) const
+double QgsComposerItem::angle( QPointF p1, QPointF p2 ) const
 {
   return QgsComposerUtils::angle( p1, p2 );
 }
@@ -974,7 +968,7 @@ double QgsComposerItem::textWidthMillimeters( const QFont& font, const QString& 
   return QgsComposerUtils::textWidthMM( font, text );
 }
 
-double QgsComposerItem::fontHeightCharacterMM( const QFont& font, const QChar& c ) const
+double QgsComposerItem::fontHeightCharacterMM( const QFont& font, QChar c ) const
 {
   return QgsComposerUtils::fontHeightCharacterMM( font, c );
 }
@@ -1010,7 +1004,7 @@ double QgsComposerItem::horizontalViewScaleFactor() const
   if ( scene() )
   {
     QList<QGraphicsView*> viewList = scene()->views();
-    if ( viewList.size() > 0 ) //if not, probably this function was called from non-gui code
+    if ( !viewList.isEmpty() ) //if not, probably this function was called from non-gui code
     {
       QGraphicsView* currentView = viewList.at( 0 );
       if ( currentView->isVisible() )
@@ -1067,7 +1061,7 @@ void QgsComposerItem::setItemRotation( const double r, const bool adjustPosition
 {
   if ( r >= 360 )
   {
-    mItemRotation = (( int )r ) % 360;
+    mItemRotation = ( static_cast< int >( r ) ) % 360;
   }
   else
   {
@@ -1095,7 +1089,7 @@ void QgsComposerItem::refreshRotation( const bool updateItem, const bool adjustP
     }
   }
 
-  if ( rotation == mEvaluatedItemRotation )
+  if ( qgsDoubleNear( rotation, mEvaluatedItemRotation ) )
   {
     return;
   }
@@ -1203,7 +1197,7 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
   return true;
 }
 
-QRectF QgsComposerItem::largestRotatedRectWithinBounds( QRectF originalRect, QRectF boundsRect, double rotation ) const
+QRectF QgsComposerItem::largestRotatedRectWithinBounds( const QRectF& originalRect, const QRectF& boundsRect, double rotation ) const
 {
   return QgsComposerUtils::largestRotatedRectWithinBounds( originalRect, boundsRect, rotation );
 }
@@ -1307,7 +1301,7 @@ QGraphicsLineItem* QgsComposerItem::hAlignSnapItem()
 {
   if ( !mHAlignSnapItem )
   {
-    mHAlignSnapItem = new QGraphicsLineItem( 0 );
+    mHAlignSnapItem = new QGraphicsLineItem( nullptr );
     mHAlignSnapItem->setPen( QPen( QColor( Qt::red ) ) );
     scene()->addItem( mHAlignSnapItem );
     mHAlignSnapItem->setZValue( 90 );
@@ -1319,7 +1313,7 @@ QGraphicsLineItem* QgsComposerItem::vAlignSnapItem()
 {
   if ( !mVAlignSnapItem )
   {
-    mVAlignSnapItem = new QGraphicsLineItem( 0 );
+    mVAlignSnapItem = new QGraphicsLineItem( nullptr );
     mVAlignSnapItem->setPen( QPen( QColor( Qt::red ) ) );
     scene()->addItem( mVAlignSnapItem );
     mVAlignSnapItem->setZValue( 90 );
@@ -1333,7 +1327,7 @@ void QgsComposerItem::deleteHAlignSnapItem()
   {
     scene()->removeItem( mHAlignSnapItem );
     delete mHAlignSnapItem;
-    mHAlignSnapItem = 0;
+    mHAlignSnapItem = nullptr;
   }
 }
 
@@ -1343,7 +1337,7 @@ void QgsComposerItem::deleteVAlignSnapItem()
   {
     scene()->removeItem( mVAlignSnapItem );
     delete mVAlignSnapItem;
-    mVAlignSnapItem = 0;
+    mVAlignSnapItem = nullptr;
   }
 }
 

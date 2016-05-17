@@ -40,7 +40,7 @@ class RgLineVectorLayerSettingsWidget : public QWidget
 {
     Q_OBJECT
   public:
-    RgLineVectorLayerSettingsWidget( RgLineVectorLayerSettings *s, QWidget* parent = 0 );
+    RgLineVectorLayerSettingsWidget( RgLineVectorLayerSettings *s, QWidget* parent = nullptr );
 
   private slots:
     void on_mcbLayers_selectItem();

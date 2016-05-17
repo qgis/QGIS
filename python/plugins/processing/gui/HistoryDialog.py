@@ -27,9 +27,10 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4 import uic
-from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QAction, QPushButton, QDialogButtonBox, QIcon, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QAction, QPushButton, QDialogButtonBox, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem
+from qgis.PyQt.QtGui import QIcon
 from processing.gui import TestTools
 from processing.core.ProcessingLog import ProcessingLog
 
@@ -128,7 +129,6 @@ class HistoryDialog(BASE, WIDGET):
                 TestTools.createTest(item.entry.text)
 
     def showPopupMenu(self, point):
-        return
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
             if item.isAlg:

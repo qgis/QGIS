@@ -131,7 +131,7 @@ static QgsSymbolV2* readOldSymbol( const QDomNode& synode, QGis::GeometryType ge
   {
     case QGis::Point:
     {
-      QgsMarkerSymbolLayerV2* sl = NULL;
+      QgsMarkerSymbolLayerV2* sl = nullptr;
       double size = readMarkerSymbolSize( synode );
       double angle = 0; // rotation only from classification field
       QString symbolName = readMarkerSymbolName( synode );
@@ -140,8 +140,10 @@ static QgsSymbolV2* readOldSymbol( const QDomNode& synode, QGis::GeometryType ge
         // simple symbol marker
         QColor color = readSymbolColor( synode, true );
         QColor borderColor = readSymbolColor( synode, false );
-        QString name = symbolName.mid( 5 );
-        sl = new QgsSimpleMarkerSymbolLayerV2( name, color, borderColor, size, angle );
+        QgsSimpleMarkerSymbolLayerBase::Shape shape = QgsSimpleMarkerSymbolLayerBase::decodeShape( symbolName.mid( 5 ) );
+        sl = new QgsSimpleMarkerSymbolLayerV2( shape, size, angle );
+        sl->setColor( color );
+        sl->setOutlineColor( borderColor );
       }
       else
       {
@@ -181,7 +183,7 @@ static QgsSymbolV2* readOldSymbol( const QDomNode& synode, QGis::GeometryType ge
     }
 
     default:
-      return NULL;
+      return nullptr;
   }
 }
 
@@ -191,7 +193,7 @@ static QgsFeatureRendererV2* readOldSingleSymbolRenderer( const QDomNode& rnode,
 {
   QDomNode synode = rnode.namedItem( "symbol" );
   if ( synode.isNull() )
-    return 0;
+    return nullptr;
 
   QgsSymbolV2* sy2 = readOldSymbol( synode, geomType );
   QgsSingleSymbolRendererV2* r = new QgsSingleSymbolRendererV2( sy2 );
@@ -297,14 +299,14 @@ QgsFeatureRendererV2* QgsSymbologyV2Conversion::readOldRenderer( const QDomNode&
   }
   else if ( !continuousnode.isNull() )
   {
-    return 0;
+    return nullptr;
   }
   else if ( !uniquevaluenode.isNull() )
   {
     return readOldUniqueValueRenderer( uniquevaluenode, geomType );
   }
 
-  return 0;
+  return nullptr;
 }
 
 
@@ -386,7 +388,7 @@ QString QgsSymbologyV2Conversion::penStyle2QString( Qt::PenStyle penstyle )
   }
 }
 
-Qt::PenStyle QgsSymbologyV2Conversion::qString2PenStyle( QString penString )
+Qt::PenStyle QgsSymbologyV2Conversion::qString2PenStyle( const QString& penString )
 {
   if ( penString == "NoPen" )
   {
@@ -495,7 +497,7 @@ QString QgsSymbologyV2Conversion::brushStyle2QString( Qt::BrushStyle brushstyle 
   }
 }
 
-Qt::BrushStyle QgsSymbologyV2Conversion::qString2BrushStyle( QString brushString )
+Qt::BrushStyle QgsSymbologyV2Conversion::qString2BrushStyle( const QString& brushString )
 {
   if ( brushString == "NoBrush" )
   {

@@ -42,7 +42,7 @@ QgsImageWarper::QgsImageWarper( QWidget *theParent )
 {
 }
 
-bool QgsImageWarper::openSrcDSAndGetWarpOpt( const QString &input, const ResamplingMethod &resampling,
+bool QgsImageWarper::openSrcDSAndGetWarpOpt( const QString &input, ResamplingMethod resampling,
     const GDALTransformerFunc &pfnTransform,
     GDALDatasetH &hSrcDS, GDALWarpOptions *&psWarpOptions )
 {
@@ -82,7 +82,7 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
   {
     return false;
   }
-  char **papszOptions = NULL;
+  char **papszOptions = nullptr;
   papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", compression.toAscii() );
   hDstDS = GDALCreate( driver,
                        TO8F( outputName ), resX, resY,
@@ -104,7 +104,7 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
     OGRSpatialReference oTargetSRS;
     oTargetSRS.importFromProj4( crs.toProj4().toLatin1().data() );
 
-    char *wkt = NULL;
+    char *wkt = nullptr;
     OGRErr err = oTargetSRS.exportToWkt( &wkt );
     if ( err != CE_None || GDALSetProjection( hDstDS, wkt ) != CE_None )
     {
@@ -274,7 +274,7 @@ void *QgsImageWarper::addGeoToPixelTransform( GDALTransformerFunc GDALTransforme
   {
     // Error handling if inversion fails - although the inverse transform is not needed for warp operation
     delete chain;
-    return 0;
+    return nullptr;
   }
   return ( void* )chain;
 }

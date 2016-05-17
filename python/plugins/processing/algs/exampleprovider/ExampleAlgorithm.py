@@ -25,7 +25,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings
 from qgis.core import QgsVectorFileWriter
 
 from processing.core.GeoAlgorithm import GeoAlgorithm

@@ -16,6 +16,7 @@
 #include <QApplication>
 #include <QStyle>
 #include <QtConcurrentMap>
+#include <QUrl>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -48,8 +49,8 @@ static bool cmpByDataItemName_( QgsDataItem* a, QgsDataItem* b )
 
 QgsBrowserModel::QgsBrowserModel( QObject *parent )
     : QAbstractItemModel( parent )
-    , mFavourites( 0 )
-    , mProjectHome( 0 )
+    , mFavourites( nullptr )
+    , mProjectHome( nullptr )
 {
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
@@ -77,7 +78,7 @@ void QgsBrowserModel::updateProjectHome()
     endRemoveRows();
   }
   delete mProjectHome;
-  mProjectHome = home.isNull() ? 0 : new QgsDirectoryItem( NULL, tr( "Project home" ), home, "project:" + home );
+  mProjectHome = home.isNull() ? nullptr : new QgsDirectoryItem( nullptr, tr( "Project home" ), home, "project:" + home );
   if ( mProjectHome )
   {
     connectItem( mProjectHome );
@@ -93,7 +94,7 @@ void QgsBrowserModel::addRootItems()
   updateProjectHome();
 
   // give the home directory a prominent second place
-  QgsDirectoryItem *item = new QgsDirectoryItem( NULL, tr( "Home" ), QDir::homePath(), "home:" + QDir::homePath() );
+  QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, tr( "Home" ), QDir::homePath(), "home:" + QDir::homePath() );
   QStyle *style = QApplication::style();
   QIcon homeIcon( style->standardPixmap( QStyle::SP_DirHomeIcon ) );
   item->setIcon( homeIcon );
@@ -101,7 +102,7 @@ void QgsBrowserModel::addRootItems()
   mRootItems << item;
 
   // add favourite directories
-  mFavourites = new QgsFavouritesItem( NULL, tr( "Favourites" ) );
+  mFavourites = new QgsFavouritesItem( nullptr, tr( "Favourites" ) );
   if ( mFavourites )
   {
     connectItem( mFavourites );
@@ -112,7 +113,11 @@ void QgsBrowserModel::addRootItems()
   Q_FOREACH ( const QFileInfo& drive, QDir::drives() )
   {
     QString path = drive.absolutePath();
-    QgsDirectoryItem *item = new QgsDirectoryItem( NULL, path, path );
+
+    if ( QgsDirectoryItem::hiddenPath( path ) )
+      continue;
+
+    QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, path, path );
 
     connectItem( item );
     mRootItems << item;
@@ -120,7 +125,7 @@ void QgsBrowserModel::addRootItems()
 
 #ifdef Q_OS_MAC
   QString path = QString( "/Volumes" );
-  QgsDirectoryItem *vols = new QgsDirectoryItem( NULL, path, path );
+  QgsDirectoryItem *vols = new QgsDirectoryItem( nullptr, path, path );
   connectItem( vols );
   mRootItems << vols;
 #endif
@@ -137,7 +142,7 @@ void QgsBrowserModel::addRootItems()
       continue;
     }
 
-    QgsDataItem *item = pr->createDataItem( "", NULL );  // empty path -> top level
+    QgsDataItem *item = pr->createDataItem( "", nullptr );  // empty path -> top level
     if ( item )
     {
       QgsDebugMsg( "Add new top level item : " + item->name() );
@@ -176,12 +181,12 @@ void QgsBrowserModel::removeRootItems()
 Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex & index ) const
 {
   if ( !index.isValid() )
-    return 0;
+    return nullptr;
 
   Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
-  QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
-  if ( ptr->type() == QgsDataItem::Layer )
+  QgsDataItem* ptr = reinterpret_cast< QgsDataItem* >( index.internalPointer() );
+  if ( ptr->type() == QgsDataItem::Layer || ptr->type() == QgsDataItem::Project )
   {
     flags |= Qt::ItemIsDragEnabled;
   }
@@ -215,6 +220,15 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   else if ( role == QgsBrowserModel::PathRole )
   {
     return item->path();
+  }
+  else if ( role == QgsBrowserModel::CommentRole )
+  {
+    if ( item->type() == QgsDataItem::Layer )
+    {
+      QgsLayerItem* lyrItem = qobject_cast<QgsLayerItem*>( item );
+      return lyrItem->comments();
+    }
+    return QVariant();
   }
   else
   {
@@ -267,12 +281,12 @@ int QgsBrowserModel::columnCount( const QModelIndex &parent ) const
   return 1;
 }
 
-QModelIndex QgsBrowserModel::findPath( QString path, Qt::MatchFlag matchFlag )
+QModelIndex QgsBrowserModel::findPath( const QString& path, Qt::MatchFlag matchFlag )
 {
   return findPath( this, path, matchFlag );
 }
 
-QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, QString path, Qt::MatchFlag matchFlag )
+QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString& path, Qt::MatchFlag matchFlag )
 {
   if ( !model )
     return QModelIndex();
@@ -296,7 +310,7 @@ QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, QString path, 
       }
 
       // paths are slash separated identifier
-      if ( path.startsWith( itemPath + "/" ) )
+      if ( path.startsWith( itemPath + '/' ) )
       {
         foundChild = true;
         theIndex = idx;
@@ -323,9 +337,12 @@ void QgsBrowserModel::reload()
 
 QModelIndex QgsBrowserModel::index( int row, int column, const QModelIndex &parent ) const
 {
+  if ( column < 0 || column >= columnCount() || row < 0 )
+    return QModelIndex();
+
   QgsDataItem *p = dataItem( parent );
   const QVector<QgsDataItem*> &items = p ? p->children() : mRootItems;
-  QgsDataItem *item = items.value( row, 0 );
+  QgsDataItem *item = items.value( row, nullptr );
   return item ? createIndex( row, column, item ) : QModelIndex();
 }
 
@@ -434,9 +451,19 @@ QMimeData * QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
   {
     if ( index.isValid() )
     {
-      QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
+      QgsDataItem* ptr = reinterpret_cast< QgsDataItem* >( index.internalPointer() );
+      if ( ptr->type() == QgsDataItem::Project )
+      {
+        QMimeData *mimeData = new QMimeData();
+        QUrl url = QUrl::fromLocalFile( ptr->path() );
+        QList<QUrl> urls;
+        urls << url;
+        mimeData->setUrls( urls );
+        return mimeData;
+      }
+
       if ( ptr->type() != QgsDataItem::Layer ) continue;
-      QgsLayerItem *layer = ( QgsLayerItem* ) ptr;
+      QgsLayerItem *layer = static_cast< QgsLayerItem* >( ptr );
       lst.append( QgsMimeDataUtils::Uri( layer ) );
     }
   }
@@ -488,7 +515,7 @@ void QgsBrowserModel::fetchMore( const QModelIndex & parent )
 }
 
 /* Refresh dir path */
-void QgsBrowserModel::refresh( QString path )
+void QgsBrowserModel::refresh( const QString& path )
 {
   QModelIndex index = findPath( path );
   refresh( index );
@@ -506,7 +533,7 @@ void QgsBrowserModel::refresh( const QModelIndex& theIndex )
   item->refresh();
 }
 
-void QgsBrowserModel::addFavouriteDirectory( QString favDir )
+void QgsBrowserModel::addFavouriteDirectory( const QString& favDir )
 {
   Q_ASSERT( mFavourites );
   mFavourites->addDirectory( favDir );
@@ -519,4 +546,33 @@ void QgsBrowserModel::removeFavourite( const QModelIndex &index )
     return;
 
   mFavourites->removeDirectory( item );
+}
+
+void QgsBrowserModel::hidePath( QgsDataItem *item )
+{
+  QSettings settings;
+  QStringList hiddenItems = settings.value( "/browser/hiddenPaths",
+                            QStringList() ).toStringList();
+  int idx = hiddenItems.indexOf( item->path() );
+  if ( idx != -1 )
+  {
+    hiddenItems.removeAt( idx );
+  }
+  else
+  {
+    hiddenItems << item->path();
+  }
+  settings.setValue( "/browser/hiddenPaths", hiddenItems );
+  if ( item->parent() )
+  {
+    item->parent()->deleteChildItem( item );
+  }
+  else
+  {
+    int i = mRootItems.indexOf( item );
+    emit beginRemoveRows( QModelIndex(), i, i );
+    mRootItems.remove( i );
+    item->deleteLater();
+    emit endRemoveRows();
+  }
 }

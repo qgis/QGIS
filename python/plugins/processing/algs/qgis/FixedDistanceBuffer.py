@@ -25,14 +25,21 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from qgis.PyQt.QtGui import QIcon
+
 from qgis.core import QGis
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
-import Buffer as buff
+from . import Buffer as buff
 from processing.tools import dataobjects
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class FixedDistanceBuffer(GeoAlgorithm):
@@ -43,6 +50,9 @@ class FixedDistanceBuffer(GeoAlgorithm):
     DISTANCE = 'DISTANCE'
     SEGMENTS = 'SEGMENTS'
     DISSOLVE = 'DISSOLVE'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'buffer.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Fixed distance buffer')

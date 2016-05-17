@@ -54,7 +54,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     ~QgsRelationReferenceWidget();
 
-    void setRelation( QgsRelation relation, bool allowNullValue );
+    void setRelation( const QgsRelation& relation, bool allowNullValue );
 
     void setRelationEditable( bool editable );
 
@@ -67,15 +67,15 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void setEditorContext( const QgsAttributeEditorContext& context, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
 
     //! determines if the form of the related feature will be shown
-    bool embedForm() {return mEmbedForm;}
+    bool embedForm() { return mEmbedForm; }
     void setEmbedForm( bool display );
 
     //! determines if the foreign key is shown in a combox box or a read-only line edit
-    bool readOnlySelector() {return mReadOnlySelector;}
+    bool readOnlySelector() { return mReadOnlySelector; }
     void setReadOnlySelector( bool readOnly );
 
     //! determines if the widge offers the possibility to select the related feature on the map (using a dedicated map tool)
-    bool allowMapIdentification() {return mAllowMapIdentification;}
+    bool allowMapIdentification() { return mAllowMapIdentification; }
     void setAllowMapIdentification( bool allowMapIdentification );
 
     //! If the widget will order the combobox entries by value
@@ -83,10 +83,10 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     //! Set if the widget will order the combobox entries by value
     void setOrderByValue( bool orderByValue );
     //! Set the fields for which filter comboboxes will be created
-    void setFilterFields( QStringList filterFields );
+    void setFilterFields( const QStringList& filterFields );
 
     //! determines the open form button is visible in the widget
-    bool openFormButtonVisible() {return mOpenFormButtonVisible;}
+    bool openFormButtonVisible() { return mOpenFormButtonVisible; }
     void setOpenFormButtonVisible( bool openFormButtonVisible );
 
     /**
@@ -94,8 +94,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      *
      * @return True if filters are chained
      */
-    bool chainFilters() { return mChainFilters; }
-
+    bool chainFilters() const { return mChainFilters; }
 
     /**
      * Set if filters are chained.
@@ -108,6 +107,25 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     //! return the related feature (from the referenced layer)
     //! if no feature is related, it returns an invalid feature
     QgsFeature referencedFeature();
+
+    /** Sets the widget to display in an indeterminate "mixed value" state.
+     * @note added in QGIS 2.16
+     */
+    void showIndeterminateState();
+
+    /**
+     * Determines if a button for adding new features should be shown.
+     *
+     * @note added in QGIS 2.16
+     */
+    bool allowAddFeatures() const;
+
+    /**
+     * Determines if a button for adding new features should be shown.
+     *
+     * @note added in QGIS 2.16
+     */
+    void setAllowAddFeatures( bool allowAddFeatures );
 
   public slots:
     //! open the form of the related feature in a new dialog
@@ -125,7 +143,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void init();
 
   signals:
-    void foreignKeyChanged( QVariant );
+    void foreignKeyChanged( const QVariant& );
 
   private slots:
     void highlightActionTriggered( QAction* action );
@@ -135,10 +153,12 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void unsetMapTool();
     void mapToolDeactivated();
     void filterChanged();
+    void addEntry();
+    void updateAddEntryButton();
 
   private:
     void highlightFeature( QgsFeature f = QgsFeature(), CanvasExtent canvasExtent = Fixed );
-    void updateAttributeEditorFrame( const QgsFeature feature );
+    void updateAttributeEditorFrame( const QgsFeature& feature );
 
     // initialized
     QgsAttributeEditorContext mEditorContext;
@@ -146,7 +166,9 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QgsMessageBar* mMessageBar;
     QVariant mForeignKey;
     QgsFeature mFeature;
-    int mFkeyFieldIdx;
+    // Index of the referenced layer key
+    int mReferencedFieldIdx;
+    int mReferencingFieldIdx;
     bool mAllowNull;
     QgsHighlight* mHighlight;
     QgsMapToolIdentifyFeature* mMapTool;
@@ -173,6 +195,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     bool mOrderByValue;
     bool mOpenFormButtonVisible;
     bool mChainFilters;
+    bool mAllowAddFeatures;
 
     // UI
     QVBoxLayout* mTopLayout;
@@ -180,6 +203,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QToolButton* mRemoveFKButton;
     QToolButton* mOpenFormButton;
     QToolButton* mHighlightFeatureButton;
+    QToolButton* mAddEntryButton;
     QAction* mHighlightFeatureAction;
     QAction* mScaleHighlightFeatureAction;
     QAction* mPanHighlightFeatureAction;

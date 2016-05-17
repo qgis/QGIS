@@ -12,22 +12,18 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
 
 from qgis.core import (QgsRectangle,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform
                        )
-from utilities import (getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
-# Convenience instances in case you may need them
-# not used in this test
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+from qgis.testing import start_app, unittest
+
+start_app()
 
 
-class TestQgsCoordinateTransform(TestCase):
+class TestQgsCoordinateTransform(unittest.TestCase):
 
     def testTransformBoundingBox(self):
         """Test that we can transform a rectangular bbox from utm56s to LonLat"""

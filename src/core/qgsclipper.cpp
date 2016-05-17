@@ -19,12 +19,13 @@
 #include "qgsclipper.h"
 #include "qgsgeometry.h"
 #include "qgswkbptr.h"
+#include "qgslogger.h"
 
 // Where has all the code gone?
 
 // It's been inlined, so its in the qgsclipper.h file.
 
-// But the static members must be initialised outside the class! (or GCC 4 dies)
+// But the static members must be initialized outside the class! (or GCC 4 dies)
 
 // Qt also does clipping when the coordinates go over +/- 32767
 // moreover from Qt 4.6, Qt clips also when the width/height of a painter path
@@ -37,17 +38,20 @@ const double QgsClipper::MIN_Y = -16000;
 
 const double QgsClipper::SMALL_NUM = 1e-12;
 
-const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const QgsRectangle& clipExtent, QPolygonF& line )
+QgsConstWkbPtr QgsClipper::clippedLineWKB( QgsConstWkbPtr wkbPtr, const QgsRectangle& clipExtent, QPolygonF& line )
 {
-  QgsConstWkbPtr wkbPtr( wkb + 1 );
+  QgsWKBTypes::Type wkbType = wkbPtr.readHeader();
 
-  unsigned int wkbType, nPoints;
+  int nPoints;
+  wkbPtr >> nPoints;
 
-  wkbPtr >> wkbType >> nPoints;
+  int skipZM = ( QgsWKBTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
 
-  bool hasZValue = QgsWKBTypes::hasZ(( QgsWKBTypes::Type )wkbType );
-  bool hasMValue = QgsWKBTypes::hasM(( QgsWKBTypes::Type )wkbType );
-
+  if ( static_cast<int>( nPoints * ( 2 * sizeof( double ) + skipZM ) ) > wkbPtr.remaining() )
+  {
+    QgsDebugMsg( QString( "%1 points exceed wkb length (%2>%3)" ).arg( nPoints ).arg( nPoints * ( 2 * sizeof( double ) + skipZM ) ).arg( wkbPtr.remaining() ) );
+    return QgsConstWkbPtr( nullptr, 0 );
+  }
 
   double p0x, p0y, p1x = 0.0, p1y = 0.0; //original coordinates
   double p1x_c, p1y_c; //clipped end coordinates
@@ -56,16 +60,12 @@ const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const
   line.clear();
   line.reserve( nPoints + 1 );
 
-  for ( unsigned int i = 0; i < nPoints; ++i )
+  for ( int i = 0; i < nPoints; ++i )
   {
     if ( i == 0 )
     {
       wkbPtr >> p1x >> p1y;
-      if ( hasZValue )
-        wkbPtr += sizeof( double );
-      if ( hasMValue )
-        wkbPtr += sizeof( double );
-
+      wkbPtr += skipZM;
       continue;
     }
     else
@@ -74,16 +74,14 @@ const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const
       p0y = p1y;
 
       wkbPtr >> p1x >> p1y;
-      if ( hasZValue )
-        wkbPtr += sizeof( double );
-      if ( hasMValue )
-        wkbPtr += sizeof( double );
+      wkbPtr += skipZM;
 
-      p1x_c = p1x; p1y_c = p1y;
+      p1x_c = p1x;
+      p1y_c = p1y;
       if ( clipLineSegment( clipExtent.xMinimum(), clipExtent.xMaximum(), clipExtent.yMinimum(), clipExtent.yMaximum(),
                             p0x, p0y, p1x_c,  p1y_c ) )
       {
-        bool newLine = line.size() > 0 && ( p0x != lastClipX || p0y != lastClipY );
+        bool newLine = !line.isEmpty() && ( !qgsDoubleNear( p0x, lastClipX ) || !qgsDoubleNear( p0y, lastClipY ) );
         if ( newLine )
         {
           //add edge points to connect old and new line
@@ -96,7 +94,8 @@ const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const
         }
 
         //add second point
-        lastClipX = p1x_c; lastClipY = p1y_c;
+        lastClipX = p1x_c;
+        lastClipY = p1y_c;
         line << QPointF( p1x_c,  p1y_c );
       }
     }

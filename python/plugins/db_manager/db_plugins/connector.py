@@ -38,10 +38,10 @@ class DBConnector:
         self.connection = None
 
     def uri(self):
-        return QgsDataSourceURI(self._uri.uri())
+        return QgsDataSourceURI(self._uri.uri(False))
 
     def publicUri(self):
-        publicUri = QgsDataSourceURI.removePassword(self._uri.uri())
+        publicUri = QgsDataSourceURI.removePassword(self._uri.uri(False))
         return QgsDataSourceURI(publicUri)
 
     def hasSpatialSupport(self):
@@ -112,7 +112,7 @@ class DBConnector:
             if c and not c.closed:
                 c.close()
 
-        except self.error_types() as e:
+        except self.error_types():
             pass
 
         return
@@ -168,9 +168,9 @@ class DBConnector:
     def _get_cursor_columns(self, c):
         try:
             if c.description:
-                return map(lambda x: x[0], c.description)
+                return [x[0] for x in c.description]
 
-        except self.connection_error_types() + self.execution_error_types() as e:
+        except self.connection_error_types() + self.execution_error_types():
             return []
 
     @classmethod

@@ -36,8 +36,8 @@ class ANALYSIS_EXPORT Point3D
     Point3D( const Point3D& p );
     ~Point3D();
     Point3D& operator=( const Point3D& p );
-    bool operator==( const Point3D& p );
-    bool operator!=( const Point3D& p );
+    bool operator==( const Point3D& p ) const;
+    bool operator!=( const Point3D& p ) const;
     /** Calculates the three-dimensional distance to another point*/
     double dist3D( Point3D* p ) const;
     /** Returns the x-coordinate of the point*/
@@ -54,12 +54,18 @@ class ANALYSIS_EXPORT Point3D
     void setZ( double z );
 };
 
-inline Point3D::Point3D() : mX( 0 ), mY( 0 ), mZ( 0 )
+inline Point3D::Point3D()
+    : mX( 0 )
+    , mY( 0 )
+    , mZ( 0 )
 {
 
 }
 
-inline Point3D::Point3D( double x, double y, double z ) : mX( x ), mY( y ), mZ( z )
+inline Point3D::Point3D( double x, double y, double z )
+    : mX( x )
+    , mY( y )
+    , mZ( z )
 {
 
 }

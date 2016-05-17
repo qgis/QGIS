@@ -83,5 +83,8 @@ class CORE_EXPORT QgsRasterShader
 
     /** \brief Pointer to the shader function */
     QgsRasterShaderFunction* mRasterShaderFunction;
+
+    QgsRasterShader( const QgsRasterShader& rh );
+    QgsRasterShader& operator=( const QgsRasterShader& rh );
 };
 #endif

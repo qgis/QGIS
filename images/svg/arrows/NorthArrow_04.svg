@@ -52,19 +52,20 @@
      id="g4">
     <path
        d="m32-9.453l28.938 73.826-29-29-29 29z"
-       fill="#fff"
-       stroke="#fff"
+       fill="param(fill)"  fill-opacity="param(fill-opacity)"
+       stroke="param(fill)"  stroke-opacity="param(fill-opacity)"
        stroke-width="3"
        id="path14" />
     <path
        d="m32-9.453l29 73.45-29-29-29 29z"
        fill="none"
-       stroke="#000"
+       stroke="param(outline)" stroke-opacity="param(outline-opacity)"
        stroke-linecap="square"
        id="path16" />
     <text
        x="22.71"
        y="-10.854"
+       fill="param(outline)"  fill-opacity="param(outline-opacity)"
        font-family="OPEN SANS"
        word-spacing="0"
        line-height="125%"
@@ -82,7 +83,7 @@
   <g
      transform="translate(0-3.829)"
      fill="none"
-     stroke="#000"
+     stroke="param(outline)" stroke-opacity="param(outline-opacity)"
      stroke-width=".25"
      id="g22">
     <path

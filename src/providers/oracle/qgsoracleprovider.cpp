@@ -33,6 +33,7 @@
 #include "qgsoraclesourceselect.h"
 #include "qgsoracledataitems.h"
 #include "qgsoraclefeatureiterator.h"
+#include "qgsoracleconnpool.h"
 
 #include <QSqlRecord>
 #include <QSqlField>
@@ -171,7 +172,7 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
       Q_ASSERT( mPrimaryKeyType != pktInt || mPrimaryKeyAttrs.size() == 1 );
 
       QString delim;
-      foreach ( int idx, mPrimaryKeyAttrs )
+      Q_FOREACH ( int idx, mPrimaryKeyAttrs )
       {
         Q_ASSERT( idx >= 0 && idx < mAttributeFields.size() );
         key += delim + mAttributeFields[ idx ].name();
@@ -236,6 +237,7 @@ QString QgsOracleProvider::storageType() const
   return "Oracle database with locator/spatial extension";
 }
 
+#if QT_VERSION < 0x050000
 static bool operator<( const QVariant &a, const QVariant &b )
 {
   if ( a.isNull() || b.isNull() )
@@ -312,6 +314,7 @@ static bool operator<( const QVariant &a, const QVariant &b )
 
   return a.canConvert( QVariant::String ) && b.canConvert( QVariant::String ) && a.toString() < b.toString();
 }
+#endif
 
 
 QString QgsOracleProvider::pkParamWhereClause() const
@@ -373,7 +376,7 @@ void QgsOracleProvider::appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const
       QVariant pkValsVariant = mShared->lookupKey( fid );
       if ( !pkValsVariant.isNull() )
       {
-        foreach ( const QVariant &v, pkValsVariant.toList() )
+        Q_FOREACH ( const QVariant &v, pkValsVariant.toList() )
         {
           QgsDebugMsgLevel( QString( "addBindValue pk %1" ).arg( FID_TO_STRING( fid ) ), 4 );
           qry.addBindValue( v );
@@ -457,7 +460,7 @@ QString QgsOracleUtils::whereClause( QgsFeatureId featureId, const QgsFields& fi
 QString QgsOracleUtils::whereClause( QgsFeatureIds featureIds, const QgsFields &fields, QgsOraclePrimaryKeyType primaryKeyType, const QList<int> &primaryKeyAttrs, QSharedPointer<QgsOracleSharedData> sharedData )
 {
   QStringList whereClauses;
-  foreach ( const QgsFeatureId featureId, featureIds )
+  Q_FOREACH ( const QgsFeatureId featureId, featureIds )
   {
     whereClauses << whereClause( featureId, fields, primaryKeyType, primaryKeyAttrs, sharedData );
   }
@@ -637,14 +640,6 @@ bool QgsOracleProvider::loadFields()
             types.insert( name, QString( "%1(%2,%3)" ).arg( type ).arg( prec ).arg( scale ) );
           }
         }
-        else if ( type == "MDSYS.SDO_GEOMETRY" )
-        {
-          if ( !mConnection->hasSpatial() )
-          {
-            QgsMessageLog::logMessage( tr( "Other spatial field %1.%2.%3 ignored" ).arg( mOwnerName ).arg( mTableName ).arg( name ), tr( "Oracle" ) );
-            continue;
-          }
-        }
         else
         {
           types.insert( name, type );
@@ -700,28 +695,30 @@ bool QgsOracleProvider::loadFields()
                                    .arg( qry.lastError().text() ),
                                    tr( "Oracle" ) );
       }
-
-      if ( !mHasSpatialIndex )
-      {
-        mHasSpatialIndex = qry.exec( QString( "SELECT %2 FROM %1 WHERE sdo_filter(%2,mdsys.sdo_geometry(2003,%3,NULL,mdsys.sdo_elem_info_array(1,1003,3),mdsys.sdo_ordinate_array(1,1,-1,-1)))='TRUE'" )
-                                     .arg( mQuery )
-                                     .arg( quotedIdentifier( mGeometryColumn ) )
-                                     .arg( mSrid < 1 ? "NULL" : QString::number( mSrid ) ) );
-        if ( !mHasSpatialIndex )
-        {
-          QgsMessageLog::logMessage( tr( "No spatial index on column %1.%2.%3 found - expect poor performance." )
-                                     .arg( mOwnerName )
-                                     .arg( mTableName )
-                                     .arg( mGeometryColumn ),
-                                     tr( "Oracle" ) );
-        }
-      }
     }
-
-    qry.finish();
 
     mEnabledCapabilities |= QgsVectorDataProvider::CreateSpatialIndex;
   }
+
+  if ( !mGeometryColumn.isEmpty() )
+  {
+    if ( !mHasSpatialIndex )
+    {
+      mHasSpatialIndex = qry.exec( QString( "SELECT %2 FROM %1 WHERE sdo_filter(%2,mdsys.sdo_geometry(2003,%3,NULL,mdsys.sdo_elem_info_array(1,1003,3),mdsys.sdo_ordinate_array(-1,-1,1,1)))='TRUE'" )
+                                   .arg( mQuery )
+                                   .arg( quotedIdentifier( mGeometryColumn ) )
+                                   .arg( mSrid < 1 ? "NULL" : QString::number( mSrid ) ) );
+    }
+
+    if ( !mHasSpatialIndex )
+    {
+      QgsMessageLog::logMessage( tr( "No spatial index on column %1 found - expect poor performance." )
+                                 .arg( mGeometryColumn ),
+                                 tr( "Oracle" ) );
+    }
+  }
+
+  qry.finish();
 
   if ( !exec( qry, QString( "SELECT * FROM %1 WHERE 1=0" ).arg( mQuery ) ) )
   {
@@ -823,7 +820,6 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
                                  .arg( qry.lastQuery() ),
                                  tr( "Oracle" ) );
     }
-
   }
   else
   {
@@ -1204,7 +1200,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
     {
       QString keys, kdelim = "";
 
-      foreach ( int idx, mPrimaryKeyAttrs )
+      Q_FOREACH ( int idx, mPrimaryKeyAttrs )
       {
         const QgsField &fld = field( idx );
         insert += delim + quotedIdentifier( fld.name() );
@@ -1272,7 +1268,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
             values += delim + defVal;
           }
         }
-        else if ( fld.typeName() == "MDSYS.SDO_GEOMETRY" )
+        else if ( fld.typeName().endsWith( ".SDO_GEOMETRY" ) )
         {
           values += delim + "?";
         }
@@ -1352,7 +1348,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
           throw OracleException( tr( "Could not retrieve feature id %1" ).arg( features->id() ), getfid );
 
         int col = 0;
-        foreach ( int idx, mPrimaryKeyAttrs )
+        Q_FOREACH ( int idx, mPrimaryKeyAttrs )
         {
           const QgsField &fld = field( idx );
 
@@ -1386,7 +1382,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
         {
           QList<QVariant> primaryKeyVals;
 
-          foreach ( int idx, mPrimaryKeyAttrs )
+          Q_FOREACH ( int idx, mPrimaryKeyAttrs )
           {
             primaryKeyVals << attributevec[ idx ];
           }
@@ -1567,7 +1563,7 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds& ids )
     QList<int> idsList = ids.values();
     qSort( idsList.begin(), idsList.end(), qGreater<int>() );
 
-    foreach ( int id, idsList )
+    Q_FOREACH ( int id, idsList )
     {
       const QgsField &fld = mAttributeFields.at( id );
 
@@ -1644,6 +1640,7 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
       QString sql = QString( "UPDATE %1 SET " ).arg( mQuery );
 
       bool pkChanged = false;
+      QList<int> geometryParams;
 
       // cycle through the changed attributes of the feature
       QString delim;
@@ -1658,9 +1655,15 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
           sql += delim + QString( "%1=" ).arg( quotedIdentifier( fld.name() ) );
           delim = ",";
 
-          if ( fld.typeName() == "MDSYS.SDO_GEOMETRY" )
+          if ( fld.typeName().endsWith( ".SDO_GEOMETRY" ) )
           {
-            sql += QString( "SDO_UTIL.FROM_WKTGEOMETRY(%1)" ).arg( quotedValue( siter->toString() ) );
+            if ( mConnection->hasSpatial() )
+              sql += QString( "SDO_UTIL.FROM_WKTGEOMETRY(%1)" ).arg( quotedValue( siter->toString() ) );
+            else
+            {
+              geometryParams << siter.key();
+              sql += "?";
+            }
           }
           else
           {
@@ -1675,10 +1678,32 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
 
       sql += QString( " WHERE %1" ).arg( whereClause( fid ) );
 
-      if ( !exec( qry, sql ) )
+      if ( !qry.prepare( sql ) )
       {
-        throw OracleException( tr( "Update of feature %1 failed" ).arg( fid ), qry );
+        throw OracleException( tr( "Could not prepare update statement." ), qry );
       }
+
+      Q_FOREACH ( int idx, geometryParams )
+      {
+        QgsGeometry *g;
+        if ( !attrs[idx].isNull() )
+        {
+          g = QgsGeometry::fromWkt( attrs[ idx ].toString() );
+        }
+        else
+        {
+          g = new QgsGeometry();
+        }
+
+        appendGeomParam( g, qry );
+
+        delete g;
+      }
+
+      if ( !qry.exec() )
+        throw OracleException( tr( "Update of feature %1 failed" ).arg( iter.key() ), qry );
+
+      qry.finish();
 
       // update feature id map if key was changed
       if ( pkChanged && mPrimaryKeyType == pktFidMap )
@@ -1867,7 +1892,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry *geom, QSqlQuery &qry
   qry.addBindValue( QVariant::fromValue( g ) );
 }
 
-bool QgsOracleProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
+bool QgsOracleProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
   QgsDebugMsg( "entering." );
 
@@ -1897,8 +1922,8 @@ bool QgsOracleProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
       throw OracleException( tr( "Could not prepare update statement." ), qry );
     }
 
-    for ( QgsGeometryMap::iterator iter  = geometry_map.begin();
-          iter != geometry_map.end();
+    for ( QgsGeometryMap::const_iterator iter = geometry_map.constBegin();
+          iter != geometry_map.constEnd();
           ++iter )
     {
       appendGeomParam( &iter.value(), qry );
@@ -1935,7 +1960,7 @@ int QgsOracleProvider::capabilities() const
   return mEnabledCapabilities;
 }
 
-bool QgsOracleProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
+bool QgsOracleProvider::setSubsetString( const QString& theSQL, bool updateFeatureCount )
 {
   QString prevWhere = mSqlWhereClause;
 
@@ -1977,6 +2002,8 @@ bool QgsOracleProvider::setSubsetString( QString theSQL, bool updateFeatureCount
     mFeaturesCounted = -1;
   }
   mLayerExtent.setMinimal();
+
+  emit dataChanged();
 
   return true;
 }
@@ -2032,38 +2059,40 @@ QgsRectangle QgsOracleProvider::extent()
   {
     QString sql;
     QSqlQuery qry( *mConnection );
-
-    if ( mUseEstimatedMetadata )
-    {
-      if ( exec( qry, QString( "SELECT sdo_lb,sdo_ub FROM mdsys.all_sdo_geom_metadata m, table(m.diminfo) WHERE owner=%1 AND table_name=%2 AND column_name=%3 AND sdo_dimname='X'" )
-                 .arg( quotedValue( mOwnerName ) )
-                 .arg( quotedValue( mTableName ) )
-                 .arg( quotedValue( mGeometryColumn ) ) ) && qry.next() )
-      {
-        mLayerExtent.setXMinimum( qry.value( 0 ).toDouble() );
-        mLayerExtent.setXMaximum( qry.value( 1 ).toDouble() );
-
-        if ( exec( qry, QString( "SELECT sdo_lb,sdo_ub FROM mdsys.all_sdo_geom_metadata m, table(m.diminfo) WHERE owner=%1 AND table_name=%2 AND column_name=%3 AND sdo_dimname='Y'" )
-                   .arg( quotedValue( mOwnerName ) )
-                   .arg( quotedValue( mTableName ) )
-                   .arg( quotedValue( mGeometryColumn ) ) )  && qry.next() )
-        {
-          mLayerExtent.setYMinimum( qry.value( 0 ).toDouble() );
-          mLayerExtent.setYMaximum( qry.value( 1 ).toDouble() );
-          return mLayerExtent;
-        }
-      }
-    }
-
     bool ok = false;
 
-    if ( mHasSpatialIndex && ( mUseEstimatedMetadata || mSqlWhereClause.isEmpty() ) )
+    if ( !mIsQuery )
     {
-      sql = QString( "SELECT SDO_TUNE.EXTENT_OF(%1,%2) FROM dual" )
-            .arg( quotedValue( QString( "%1.%2" ).arg( mOwnerName ).arg( mTableName ) ) )
-            .arg( quotedValue( mGeometryColumn ) );
+      if ( mUseEstimatedMetadata )
+      {
+        if ( exec( qry, QString( "SELECT sdo_lb,sdo_ub FROM mdsys.all_sdo_geom_metadata m, table(m.diminfo) WHERE owner=%1 AND table_name=%2 AND column_name=%3 AND sdo_dimname='X'" )
+                   .arg( quotedValue( mOwnerName ) )
+                   .arg( quotedValue( mTableName ) )
+                   .arg( quotedValue( mGeometryColumn ) ) ) && qry.next() )
+        {
+          mLayerExtent.setXMinimum( qry.value( 0 ).toDouble() );
+          mLayerExtent.setXMaximum( qry.value( 1 ).toDouble() );
 
-      ok = exec( qry, sql );
+          if ( exec( qry, QString( "SELECT sdo_lb,sdo_ub FROM mdsys.all_sdo_geom_metadata m, table(m.diminfo) WHERE owner=%1 AND table_name=%2 AND column_name=%3 AND sdo_dimname='Y'" )
+                     .arg( quotedValue( mOwnerName ) )
+                     .arg( quotedValue( mTableName ) )
+                     .arg( quotedValue( mGeometryColumn ) ) )  && qry.next() )
+          {
+            mLayerExtent.setYMinimum( qry.value( 0 ).toDouble() );
+            mLayerExtent.setYMaximum( qry.value( 1 ).toDouble() );
+            return mLayerExtent;
+          }
+        }
+      }
+
+      if ( mHasSpatialIndex && ( mUseEstimatedMetadata || mSqlWhereClause.isEmpty() ) )
+      {
+        sql = QString( "SELECT SDO_TUNE.EXTENT_OF(%1,%2) FROM dual" )
+              .arg( quotedValue( QString( "%1.%2" ).arg( mOwnerName ).arg( mTableName ) ) )
+              .arg( quotedValue( mGeometryColumn ) );
+
+        ok = exec( qry, sql );
+      }
     }
 
     if ( !ok )
@@ -2198,23 +2227,27 @@ bool QgsOracleProvider::getGeometryDetails()
   if ( detectedType == QGis::WKBUnknown || detectedSrid <= 0 )
   {
     QgsOracleLayerProperty layerProperty;
-    layerProperty.ownerName = ownerName;
-    layerProperty.tableName = tableName;
-    layerProperty.geometryColName = mGeometryColumn;
-    layerProperty.types << detectedType;
-    layerProperty.srids << detectedSrid;
 
-    QString delim = "";
-
-    if ( !mSqlWhereClause.isEmpty() )
+    if ( !mIsQuery )
     {
-      layerProperty.sql += delim + "(" + mSqlWhereClause + ")";
-      delim = " AND ";
+      layerProperty.ownerName = ownerName;
+      layerProperty.tableName = tableName;
+      layerProperty.geometryColName = mGeometryColumn;
+      layerProperty.types << detectedType;
+      layerProperty.srids << detectedSrid;
+
+      QString delim = "";
+
+      if ( !mSqlWhereClause.isEmpty() )
+      {
+        layerProperty.sql += delim + "(" + mSqlWhereClause + ")";
+        delim = " AND ";
+      }
+
+      mConnection->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata, false );
+
+      Q_ASSERT( layerProperty.types.size() == layerProperty.srids.size() );
     }
-
-    mConnection->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata, false );
-
-    Q_ASSERT( layerProperty.types.size() == layerProperty.srids.size() );
 
     if ( layerProperty.types.isEmpty() )
     {
@@ -2946,7 +2979,6 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause )
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
-    conn->disconnect();
     return false;
   }
 

@@ -86,6 +86,23 @@
     {
       "type": "Feature",
       "properties": {
+        "Name": "Tisham Dhar",
+        "Committer": "Yes",
+        "First Commit Message": "MINGW/MSYS based intial windows builds/installers",
+        "First Commit Date": "05-02-2008",
+        "GIT Nickname": "whatnick"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          138.6010,
+          -34.9290
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "Name": "Nathan Woodrow",
         "Committer": "Yes",
         "First Commit Message": "Added expression based labels, simple dialog for entering expressions.",
@@ -216,6 +233,23 @@
         "coordinates": [
           1.444251537322998,
           43.58023541434867
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Giuseppe Sucameli",
+        "Committer": "Yes",
+        "First Commit Message": "save file instead of open it in select output file dialog",
+        "First Commit Date": "10-05-2010",
+        "GIT Nickname": "brushtyler"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.399920546093,
+          43.716183974789
         ]
       }
     },
@@ -683,6 +717,40 @@
         "coordinates": [
           6.66946,
           46.50825
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Alvaro Huarte",
+        "Committer": "No",
+        "First Commit Message": "Feature #8725: Fast rendering of geometries",
+        "First Commit Date": "07-10-2013",
+        "GIT Nickname": "ahuarte47"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.6588156567,
+          42.810529897
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Sebastian Dietrich",
+        "Committer": "No",
+        "First Commit Message": "Moved the code to determine the primary key for a view using the URI keyColumn to a separate function.",
+        "First Commit Date": "17-10-2015",
+        "GIT Nickname": "SebDieBln"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.409402,
+          52.520804
         ]
       }
     }

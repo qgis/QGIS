@@ -29,24 +29,24 @@ class QgsReaderFeatures
 {
   public:
     /**
-    * \brief Constructor for a Reader Features.
-    * \param layer Pointer to the layer.
-    * \param useSelection Use or not use the features selected
-    */
+     * \brief Constructor for a Reader Features.
+     * \param layer Pointer to the layer.
+     * \param useSelection Use or not use the features selected
+     */
     QgsReaderFeatures( QgsVectorLayer *layer, bool useSelection );
 
     /**
-    * \brief Next feature
-    * \param feature reference to next Feature.
-    * \returns True if has next feature.
-    */
+     * \brief Next feature
+     * \param feature reference to next Feature.
+     * \returns True if has next feature.
+     */
     bool nextFeature( QgsFeature & feature );
 
   private:
     /**
-    * \brief init Reader
-    * \param useSelection Use or not use the features selected
-    */
+     * \brief init Reader
+     * \param useSelection Use or not use the features selected
+     */
     void initReader( bool useSelection );
 
     QgsVectorLayer * mLayer;

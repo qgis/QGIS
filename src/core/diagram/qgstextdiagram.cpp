@@ -31,7 +31,7 @@ QgsTextDiagram::~QgsTextDiagram()
 {
 }
 
-QgsDiagram* QgsTextDiagram::clone() const
+QgsTextDiagram* QgsTextDiagram::clone() const
 {
   return new QgsTextDiagram( *this );
 }
@@ -51,47 +51,23 @@ QSizeF QgsTextDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCo
   }
   else
   {
-    attrVal = feature.attributes()[is.classificationAttribute];
+    attrVal = feature.attributes().at( is.classificationAttribute );
   }
 
-  if ( !attrVal.isValid() )
+  bool ok = false;
+  double val = attrVal.toDouble( &ok );
+  if ( !ok )
   {
     return QSizeF(); //zero size if attribute is missing
   }
 
-  double scaledValue = attrVal.toDouble();
-  double scaledLowerValue = is.lowerValue;
-  double scaledUpperValue = is.upperValue;
-  double scaledLowerSizeWidth = is.lowerSize.width();
-  double scaledLowerSizeHeight = is.lowerSize.height();
-  double scaledUpperSizeWidth = is.upperSize.width();
-  double scaledUpperSizeHeight = is.upperSize.height();
+  return sizeForValue( val, s, is );
+}
 
-  // interpolate the squared value if scale by area
-  if ( s.scaleByArea )
-  {
-    scaledValue = sqrt( scaledValue );
-    scaledLowerValue = sqrt( scaledLowerValue );
-    scaledUpperValue = sqrt( scaledUpperValue );
-    scaledLowerSizeWidth = sqrt( scaledLowerSizeWidth );
-    scaledLowerSizeHeight = sqrt( scaledLowerSizeHeight );
-    scaledUpperSizeWidth = sqrt( scaledUpperSizeWidth );
-    scaledUpperSizeHeight = sqrt( scaledUpperSizeHeight );
-  }
-
-  //interpolate size
-  double scaledRatio = ( scaledValue - scaledLowerValue ) / ( scaledUpperValue - scaledLowerValue );
-
-  QSizeF size = QSizeF( is.upperSize.width() * scaledRatio + is.lowerSize.width() * ( 1 - scaledRatio ),
-                        is.upperSize.height() * scaledRatio + is.lowerSize.height() * ( 1 - scaledRatio ) );
-
-  // Scale, if extension is smaller than the specified minimum
-  if ( size.width() <= s.minimumSize && size.height() <= s.minimumSize )
-  {
-    size.scale( s.minimumSize, s.minimumSize, Qt::KeepAspectRatio );
-  }
-
-  return size;
+double QgsTextDiagram::legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const
+{
+  QSizeF size = sizeForValue( value, s, is );
+  return qMax( size.width(), size.height() );
 }
 
 QSizeF QgsTextDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
@@ -102,7 +78,7 @@ QSizeF QgsTextDiagram::diagramSize( const QgsAttributes& attributes, const QgsRe
   return s.size;
 }
 
-void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
+void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position )
 {
   QPainter* p = c.painter();
   if ( !p )
@@ -118,7 +94,7 @@ void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext&
   double baseX = position.x();
   double baseY = position.y() - h;
 
-  QList<QPointF> textPositions; //midpoints for text placement
+  QVector<QPointF> textPositions; //midpoints for text placement
   int nCategories = s.categoryAttributes.size();
   for ( int i = 0; i < nCategories; ++i )
   {
@@ -146,7 +122,8 @@ void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext&
     //draw separator lines
     QList<QPointF> intersect; //intersections between shape and separation lines
     QPointF center( baseX + w / 2.0, baseY + h / 2.0 );
-    double r1 = w / 2.0; double r2 = h / 2.0;
+    double r1 = w / 2.0;
+    double r2 = h / 2.0;
 
     for ( int i = 1; i < nCategories; ++i )
     {
@@ -254,7 +231,7 @@ void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext&
   }
 }
 
-void QgsTextDiagram::lineEllipseIntersection( const QPointF& lineStart, const QPointF& lineEnd, const QPointF& ellipseMid, double r1, double r2, QList<QPointF>& result ) const
+void QgsTextDiagram::lineEllipseIntersection( QPointF lineStart, QPointF lineEnd, QPointF ellipseMid, double r1, double r2, QList<QPointF>& result ) const
 {
   result.clear();
 

@@ -25,22 +25,23 @@
 
 /**
  * Wraps a file name widget. Will offer a file browser to choose files.
- *
+ * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsFileNameWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsFileNameWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
+    explicit QgsFileNameWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
 
   private slots:
     void selectFileName();
 
     // QgsEditorWidgetWrapper interface
   public:
-    QVariant value() override;
-    bool valid() override;
+    QVariant value() const override;
+    bool valid() const override;
+    void showIndeterminateState() override;
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;

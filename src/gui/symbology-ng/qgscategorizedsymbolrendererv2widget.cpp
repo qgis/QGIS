@@ -29,6 +29,7 @@
 
 #include "qgsproject.h"
 #include "qgsexpression.h"
+#include "qgsmapcanvas.h"
 
 #include <QKeyEvent>
 #include <QMenu>
@@ -39,8 +40,10 @@
 #include <QPainter>
 #include <QFileDialog>
 
+///@cond PRIVATE
+
 QgsCategorizedSymbolRendererV2Model::QgsCategorizedSymbolRendererV2Model( QObject * parent ) : QAbstractItemModel( parent )
-    , mRenderer( 0 )
+    , mRenderer( nullptr )
     , mMimeFormat( "application/x-qgscategorizedsymbolrendererv2model" )
 {
 }
@@ -50,7 +53,7 @@ void QgsCategorizedSymbolRendererV2Model::setRenderer( QgsCategorizedSymbolRende
   if ( mRenderer )
   {
     beginRemoveRows( QModelIndex(), 0, mRenderer->categories().size() - 1 );
-    mRenderer = 0;
+    mRenderer = nullptr;
     endRemoveRows();
   }
   if ( renderer )
@@ -121,9 +124,12 @@ QVariant QgsCategorizedSymbolRendererV2Model::data( const QModelIndex &index, in
   {
     switch ( index.column() )
     {
-      case 1: return category.value().toString();
-      case 2: return category.label();
-      default: return QVariant();
+      case 1:
+        return category.value().toString();
+      case 2:
+        return category.label();
+      default:
+        return QVariant();
     }
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 && category.symbol() )
@@ -138,9 +144,12 @@ QVariant QgsCategorizedSymbolRendererV2Model::data( const QModelIndex &index, in
   {
     switch ( index.column() )
     {
-      case 1: return category.value();
-      case 2: return category.label();
-      default: return QVariant();
+      case 1:
+        return category.value();
+      case 2:
+        return category.label();
+      default:
+        return QVariant();
     }
   }
 
@@ -198,7 +207,8 @@ QVariant QgsCategorizedSymbolRendererV2Model::headerData( int section, Qt::Orien
 {
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 3 )
   {
-    QStringList lst; lst << tr( "Symbol" ) << tr( "Value" ) << tr( "Legend" );
+    QStringList lst;
+    lst << tr( "Symbol" ) << tr( "Value" ) << tr( "Legend" );
     return lst.value( section );
   }
   return QVariant();
@@ -305,6 +315,7 @@ bool QgsCategorizedSymbolRendererV2Model::dropMimeData( const QMimeData *data, Q
 
 void QgsCategorizedSymbolRendererV2Model::deleteRows( QList<int> rows )
 {
+  qSort( rows ); // list might be unsorted, depending on how the user selected the rows
   for ( int i = rows.size() - 1; i >= 0; i-- )
   {
     beginRemoveRows( QModelIndex(), rows[i], rows[i] );
@@ -364,6 +375,8 @@ void QgsCategorizedSymbolRendererV2ViewStyle::drawPrimitive( PrimitiveElement el
   QProxyStyle::drawPrimitive( element, option, painter, widget );
 }
 
+///@endcond
+
 // ------------------------------ Widget ------------------------------------
 QgsRendererV2Widget* QgsCategorizedSymbolRendererV2Widget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
 {
@@ -372,24 +385,33 @@ QgsRendererV2Widget* QgsCategorizedSymbolRendererV2Widget::create( QgsVectorLaye
 
 static QgsExpressionContext _getExpressionContext( const void* context )
 {
+  const QgsCategorizedSymbolRendererV2Widget* widget = ( const QgsCategorizedSymbolRendererV2Widget* ) context;
+
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 )
-  //TODO - use actual map canvas settings
-  << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  << QgsExpressionContextUtils::atlasScope( nullptr );
 
-  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
-  if ( layer )
-    expContext << QgsExpressionContextUtils::layerScope( layer );
+  if ( widget->mapCanvas() )
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( widget->mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( widget->mapCanvas()->expressionContextScope() );
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+
+  if ( widget->vectorLayer() )
+    expContext << QgsExpressionContextUtils::layerScope( widget->vectorLayer() );
 
   return expContext;
 }
 
 QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
-    , mRenderer( 0 )
-    , mModel( 0 )
+    , mRenderer( nullptr )
+    , mModel( nullptr )
 {
 
   // try to recognize the previous renderer
@@ -443,6 +465,7 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   viewCategories->setStyle( new QgsCategorizedSymbolRendererV2ViewStyle( viewCategories->style() ) );
 
   connect( mModel, SIGNAL( rowsMoved() ), this, SLOT( rowsMoved() ) );
+  connect( mModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ), this, SIGNAL( widgetChanged() ) );
 
   connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( categoryColumnChanged( QString ) ) );
 
@@ -468,13 +491,13 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
 
   btnAdvanced->setMenu( advMenu );
 
-  mExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, layer );
+  mExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );
 }
 
 QgsCategorizedSymbolRendererV2Widget::~QgsCategorizedSymbolRendererV2Widget()
 {
-  if ( mRenderer ) delete mRenderer;
-  if ( mModel ) delete mModel;
+  delete mRenderer;
+  delete mModel;
   delete mCategorizedSymbol;
 }
 
@@ -518,10 +541,11 @@ void QgsCategorizedSymbolRendererV2Widget::changeSelectedSymbols()
 {
   QList<int> selectedCats = selectedCategories();
 
-  if ( selectedCats.size() > 0 )
+  if ( !selectedCats.isEmpty() )
   {
     QgsSymbolV2* newSymbol = mCategorizedSymbol->clone();
     QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
+    dlg.setMapCanvas( mMapCanvas );
     if ( !dlg.exec() )
     {
       delete newSymbol;
@@ -545,7 +569,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
   QItemSelectionModel* m = viewCategories->selectionModel();
   QModelIndexList i = m->selectedRows();
 
-  if ( m && i.size() > 0 )
+  if ( m && !i.isEmpty() )
   {
     changeSelectedSymbols();
     return;
@@ -555,7 +579,8 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
   QgsSymbolV2* newSymbol = mCategorizedSymbol->clone();
 
   QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
-  if ( !dlg.exec() )
+  dlg.setMapCanvas( mMapCanvas );
+  if ( !dlg.exec() || !newSymbol )
   {
     delete newSymbol;
     return;
@@ -566,6 +591,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
   updateCategorizedSymbolIcon();
 
   mRenderer->updateSymbols( mCategorizedSymbol );
+  emit widgetChanged();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::updateCategorizedSymbolIcon()
@@ -578,9 +604,10 @@ void QgsCategorizedSymbolRendererV2Widget::populateCategories()
 {
 }
 
-void QgsCategorizedSymbolRendererV2Widget::categoryColumnChanged( QString field )
+void QgsCategorizedSymbolRendererV2Widget::categoryColumnChanged( const QString& field )
 {
   mRenderer->setClassAttribute( field );
+  emit widgetChanged();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::categoriesDoubleClicked( const QModelIndex & idx )
@@ -605,6 +632,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorySymbol()
   }
 
   QgsSymbolV2SelectorDialog dlg( symbol, mStyle, mLayer, this );
+  dlg.setMapCanvas( mMapCanvas );
   if ( !dlg.exec() )
   {
     delete symbol;
@@ -612,6 +640,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorySymbol()
   }
 
   mRenderer->updateCategorySymbol( catIdx, symbol );
+  emit widgetChanged();
 }
 
 static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, QgsSymbolV2* symbol )
@@ -646,7 +675,7 @@ static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, Q
 QgsVectorColorRampV2* QgsCategorizedSymbolRendererV2Widget::getColorRamp()
 {
   QgsVectorColorRampV2* ramp = cboCategorizedColorRamp->currentColorRamp();
-  if ( ramp == NULL )
+  if ( !ramp )
   {
     if ( cboCategorizedColorRamp->count() == 0 )
       QMessageBox::critical( this, tr( "Error" ), tr( "There are no available color ramps. You can add them in Style Manager." ) );
@@ -669,7 +698,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()
     << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::atlasScope( 0 )
+    << QgsExpressionContextUtils::atlasScope( nullptr )
     << QgsExpressionContextUtils::layerScope( mLayer );
 
     expression->prepare( &context );
@@ -692,7 +721,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   // ask to abort if too many classes
   if ( unique_vals.size() >= 1000 )
   {
-    int res = QMessageBox::warning( 0, tr( "High number of classes!" ),
+    int res = QMessageBox::warning( nullptr, tr( "High number of classes!" ),
                                     tr( "Classification would yield %1 entries which might not be expected. Continue?" ).arg( unique_vals.size() ),
                                     QMessageBox::Ok | QMessageBox::Cancel,
                                     QMessageBox::Cancel );
@@ -714,13 +743,13 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
 
   if ( !mOldClassificationAttribute.isEmpty() &&
        attrName != mOldClassificationAttribute &&
-       mRenderer->categories().count() > 0 )
+       !mRenderer->categories().isEmpty() )
   {
     int res = QMessageBox::question( this,
                                      tr( "Confirm Delete" ),
                                      tr( "The classification field was changed from '%1' to '%2'.\n"
                                          "Should the existing classes be deleted before classification?" )
-                                     .arg( mOldClassificationAttribute ).arg( attrName ),
+                                     .arg( mOldClassificationAttribute, attrName ),
                                      QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
     if ( res == QMessageBox::Cancel )
     {
@@ -735,7 +764,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   if ( !deleteExisting )
   {
     QgsCategoryList prevCats = mRenderer->categories();
-    keepExistingColors = prevCats.size() > 0;
+    keepExistingColors = !prevCats.isEmpty();
     for ( int i = 0; i < cats.size(); ++i )
     {
       bool contains = false;
@@ -788,6 +817,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   mRenderer = r;
   if ( ! keepExistingColors && ramp ) applyColorRamp();
   delete ramp;
+  emit widgetChanged();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::applyColorRamp()
@@ -827,11 +857,13 @@ void QgsCategorizedSymbolRendererV2Widget::deleteCategories()
 {
   QList<int> categoryIndexes = selectedCategories();
   mModel->deleteRows( categoryIndexes );
+  emit widgetChanged();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::deleteAllCategories()
 {
   mModel->removeAllRows();
+  emit widgetChanged();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::addCategory()
@@ -840,16 +872,19 @@ void QgsCategorizedSymbolRendererV2Widget::addCategory()
   QgsSymbolV2 *symbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
   QgsRendererCategoryV2 cat( QString(), symbol, QString(), true );
   mModel->addCategory( cat );
+  emit widgetChanged();
 }
 
-void QgsCategorizedSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )
+void QgsCategorizedSymbolRendererV2Widget::sizeScaleFieldChanged( const QString& fldName )
 {
   mRenderer->setSizeScaleField( fldName );
+  emit widgetChanged();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod )
 {
   mRenderer->setScaleMethod( scaleMethod );
+  emit widgetChanged();
 }
 
 QList<QgsSymbolV2*> QgsCategorizedSymbolRendererV2Widget::selectedSymbols()
@@ -859,7 +894,7 @@ QList<QgsSymbolV2*> QgsCategorizedSymbolRendererV2Widget::selectedSymbols()
   QItemSelectionModel* m = viewCategories->selectionModel();
   QModelIndexList selectedIndexes = m->selectedRows( 1 );
 
-  if ( m && selectedIndexes.size() > 0 )
+  if ( m && !selectedIndexes.isEmpty() )
   {
     const QgsCategoryList& categories = mRenderer->categories();
     QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
@@ -883,7 +918,7 @@ QgsCategoryList QgsCategorizedSymbolRendererV2Widget::selectedCategoryList()
   QItemSelectionModel* m = viewCategories->selectionModel();
   QModelIndexList selectedIndexes = m->selectedRows( 1 );
 
-  if ( m && selectedIndexes.size() > 0 )
+  if ( m && !selectedIndexes.isEmpty() )
   {
     QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
     for ( ; indexIt != selectedIndexes.constEnd(); ++indexIt )
@@ -945,7 +980,7 @@ int QgsCategorizedSymbolRendererV2Widget::matchToSymbols( QgsStyleV2* style )
 void QgsCategorizedSymbolRendererV2Widget::matchToSymbolsFromXml()
 {
   QSettings settings;
-  QString openFileDir = settings.value( "UI/lastMatchToSymbolsDir", "" ).toString();
+  QString openFileDir = settings.value( "UI/lastMatchToSymbolsDir", QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Match to symbols from file" ), openFileDir,
                      tr( "XML files (*.xml *XML)" ) );
@@ -961,7 +996,7 @@ void QgsCategorizedSymbolRendererV2Widget::matchToSymbolsFromXml()
   if ( !importedStyle.importXML( fileName ) )
   {
     QMessageBox::warning( this, tr( "Matching error" ),
-                          tr( "An error occured reading file:\n%1" ).arg( importedStyle.errorString() ) );
+                          tr( "An error occurred reading file:\n%1" ).arg( importedStyle.errorString() ) );
     return;
   }
 

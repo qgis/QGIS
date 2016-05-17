@@ -20,6 +20,7 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgstolerance.h"
+#include "qgisapp.h"
 
 #include <QMouseEvent>
 
@@ -57,7 +58,7 @@ void QgsSimplifyDialog::enableOkButton( bool enabled )
 
 QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
-    , mSelectionRubberBand( 0 )
+    , mSelectionRubberBand( nullptr )
     , mDragging( false )
     , mOriginalVertexCount( 0 )
     , mReducedVertexCount( 0 )
@@ -112,7 +113,7 @@ void QgsMapToolSimplify::updateSimplificationPreview()
     if ( QgsGeometry* g = fSel.constGeometry()->simplify( layerTolerance ) )
     {
       mReducedVertexCount += vertexCount( g );
-      mRubberBands[i]->setToGeometry( g, vl );
+      mRubberBands.at( i )->setToGeometry( g, vl );
       delete g;
     }
     else
@@ -186,7 +187,7 @@ void QgsMapToolSimplify::storeSimplified()
 
 
 
-void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolSimplify::canvasPressEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
@@ -204,7 +205,7 @@ void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolSimplify::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolSimplify::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( !( e->buttons() & Qt::LeftButton ) )
     return;
@@ -228,7 +229,7 @@ void QgsMapToolSimplify::canvasMoveEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolSimplify::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolSimplify::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
@@ -237,7 +238,7 @@ void QgsMapToolSimplify::canvasReleaseEvent( QMouseEvent * e )
     return;
 
   delete mSelectionRubberBand;
-  mSelectionRubberBand = 0;
+  mSelectionRubberBand = nullptr;
 
   if ( mDragging && ( mSelectionRect.topLeft() != mSelectionRect.bottomRight() ) )
   {
@@ -275,7 +276,7 @@ void QgsMapToolSimplify::canvasReleaseEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolSimplify::selectOneFeature( const QPoint& canvasPoint )
+void QgsMapToolSimplify::selectOneFeature( QPoint canvasPoint )
 {
   QgsVectorLayer * vlayer = currentVectorLayer();
   QgsPoint layerCoords = toLayerCoordinates( vlayer, canvasPoint );
@@ -336,7 +337,7 @@ void QgsMapToolSimplify::clearSelection()
 void QgsMapToolSimplify::deactivate()
 {
   delete mSelectionRubberBand;
-  mSelectionRubberBand = 0;
+  mSelectionRubberBand = nullptr;
 
   if ( mSimplifyDialog->isVisible() )
     mSimplifyDialog->close();
@@ -350,6 +351,6 @@ QString QgsMapToolSimplify::statusText() const
   QString txt = tr( "%1 feature(s): %2 to %3 vertices (%4%)" )
                 .arg( mSelectedFeatures.count() ).arg( mOriginalVertexCount ).arg( mReducedVertexCount ).arg( percent );
   if ( mReducedHasErrors )
-    txt += "\n" + tr( "Simplification failed!" );
+    txt += '\n' + tr( "Simplification failed!" );
   return txt;
 }

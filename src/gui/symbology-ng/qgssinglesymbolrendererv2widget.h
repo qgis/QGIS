@@ -34,10 +34,12 @@ class GUI_EXPORT QgsSingleSymbolRendererV2Widget : public QgsRendererV2Widget
 
     virtual QgsFeatureRendererV2* renderer() override;
 
+    virtual void setMapCanvas( QgsMapCanvas* canvas ) override;
+
   public slots:
     void changeSingleSymbol();
 
-    void sizeScaleFieldChanged( QString fldName );
+    void sizeScaleFieldChanged( const QString& fldName );
     void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
 
     void showSymbolLevels();

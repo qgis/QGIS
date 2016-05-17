@@ -31,7 +31,7 @@ QgsRendererV2Widget* QgsSingleSymbolRendererV2Widget::create( QgsVectorLayer* la
 
 QgsSingleSymbolRendererV2Widget::QgsSingleSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
-    , mRenderer( NULL )
+    , mRenderer( nullptr )
 {
   // try to recognize the previous renderer
   // (null renderer means "no previous renderer")
@@ -51,7 +51,7 @@ QgsSingleSymbolRendererV2Widget::QgsSingleSymbolRendererV2Widget( QgsVectorLayer
   mSingleSymbol = mRenderer->symbol()->clone();
 
   // setup ui
-  mSelector = new QgsSymbolV2SelectorDialog( mSingleSymbol, mStyle, mLayer, NULL, true );
+  mSelector = new QgsSymbolV2SelectorDialog( mSingleSymbol, mStyle, mLayer, nullptr, true );
   connect( mSelector, SIGNAL( symbolModified() ), this, SLOT( changeSingleSymbol() ) );
 
   QVBoxLayout* layout = new QVBoxLayout;
@@ -80,13 +80,21 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2Widget::renderer()
   return mRenderer;
 }
 
+void QgsSingleSymbolRendererV2Widget::setMapCanvas( QgsMapCanvas* canvas )
+{
+  QgsRendererV2Widget::setMapCanvas( canvas );
+  if ( mSelector )
+    mSelector->setMapCanvas( canvas );
+}
+
 void QgsSingleSymbolRendererV2Widget::changeSingleSymbol()
 {
   // update symbol from the GUI
   mRenderer->setSymbol( mSingleSymbol->clone() );
+  emit widgetChanged();
 }
 
-void QgsSingleSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )
+void QgsSingleSymbolRendererV2Widget::sizeScaleFieldChanged( const QString& fldName )
 {
   mRenderer->setSizeScaleField( fldName );
 }

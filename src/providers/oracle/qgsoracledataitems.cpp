@@ -57,12 +57,12 @@ void QgsOracleConnectionItem::refresh()
 
   stop();
 
-  foreach ( QgsDataItem *child, mChildren )
+  Q_FOREACH ( QgsDataItem *child, mChildren )
   {
     deleteChildItem( child );
   }
 
-  foreach ( QgsDataItem *item, createChildren() )
+  Q_FOREACH ( QgsDataItem *item, createChildren() )
   {
     addChildItem( item, true );
   }
@@ -215,7 +215,7 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction
   QStringList importResults;
   bool hasError = false;
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  foreach ( const QgsMimeDataUtils::Uri& u, lst )
+  Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
   {
     if ( u.layerType != "vector" )
     {
@@ -415,7 +415,7 @@ QgsOracleRootItem::~QgsOracleRootItem()
 QVector<QgsDataItem*> QgsOracleRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
-  foreach ( QString connName, QgsOracleConn::connectionList() )
+  Q_FOREACH ( QString connName, QgsOracleConn::connectionList() )
   {
     connections << new QgsOracleConnectionItem( this, connName, mPath + "/" + connName );
   }

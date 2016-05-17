@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -44,6 +44,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterFile
+from processing.core.parameters import ParameterPoint
 from processing.core.outputs import OutputTable
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputRaster
@@ -51,7 +52,7 @@ from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputFile
 from processing.tools.system import isWindows
 from processing.script.WrongScriptException import WrongScriptException
-from RUtils import RUtils
+from .RUtils import RUtils
 
 
 class RAlgorithm(GeoAlgorithm):
@@ -74,7 +75,7 @@ class RAlgorithm(GeoAlgorithm):
             self.defineCharacteristicsFromFile()
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/r.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/r.svg')
 
     def defineCharacteristicsFromScript(self):
         lines = self.script.split('\n')
@@ -199,6 +200,8 @@ class RAlgorithm(GeoAlgorithm):
                 param = ParameterTableField(tokens[0], tokens[0], field)
         elif tokens[1].lower().strip() == 'extent':
             param = ParameterExtent(tokens[0], desc)
+        elif tokens[1].lower().strip() == 'point':
+            param = ParameterPoint(tokens[0], desc)
         elif tokens[1].lower().strip() == 'file':
             param = ParameterFile(tokens[0], desc, False)
         elif tokens[1].lower().strip() == 'folder':
@@ -342,7 +345,7 @@ class RAlgorithm(GeoAlgorithm):
                     commands.append(param.name + ' <- read.csv("' + value
                                     + '", head=TRUE, sep=",")')
             elif isinstance(param, (ParameterTableField, ParameterString,
-                            ParameterFile)):
+                                    ParameterFile)):
                 commands.append(param.name + '="' + param.value + '"')
             elif isinstance(param, (ParameterNumber, ParameterSelection)):
                 commands.append(param.name + '=' + unicode(param.value))

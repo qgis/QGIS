@@ -52,7 +52,7 @@ void QgsWidgetWrapper::setContext( const QgsAttributeEditorContext &context )
   mContext = context;
 }
 
-QVariant QgsWidgetWrapper::config( QString key, QVariant defaultVal )
+QVariant QgsWidgetWrapper::config( const QString& key, const QVariant& defaultVal ) const
 {
   if ( mConfig.contains( key ) )
   {
@@ -61,17 +61,17 @@ QVariant QgsWidgetWrapper::config( QString key, QVariant defaultVal )
   return defaultVal;
 }
 
-const QgsEditorWidgetConfig QgsWidgetWrapper::config()
+QgsEditorWidgetConfig QgsWidgetWrapper::config() const
 {
   return mConfig;
 }
 
-const QgsAttributeEditorContext& QgsWidgetWrapper::context()
+const QgsAttributeEditorContext& QgsWidgetWrapper::context() const
 {
   return mContext;
 }
 
-QgsVectorLayer* QgsWidgetWrapper::layer()
+QgsVectorLayer* QgsWidgetWrapper::layer() const
 {
   return mLayer;
 }

@@ -22,10 +22,14 @@
 class QgsMapCanvas;
 class QgsMessageBar;
 
+/** \class QgsRelationReferenceFactory
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
 {
   public:
-    QgsRelationReferenceFactory( QString name, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
+    QgsRelationReferenceFactory( const QString& name, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
 
     /**
      * Override this in your implementation.
@@ -74,6 +78,8 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
      * @param fieldIdx      The field on the layer for which this configuration applies
      */
     virtual void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx ) override;
+
+    QString representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const override;
 
     virtual QMap<const char*, int> supportedWidgetTypes() override;
 

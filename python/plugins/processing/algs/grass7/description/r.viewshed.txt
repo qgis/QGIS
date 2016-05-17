@@ -4,6 +4,7 @@ Raster (r.*)
 ParameterRaster|input|Elevation|False
 ParameterString|coordinates|Coordinate identifying the viewing position|0,0
 ParameterString|observer_elevation|Viewing position height above the ground|1.75
+ParameterString|target_elevation|Offset for target elevation above the ground|0.0
 ParameterString|max_distance|Maximum distance from the viewing point (meters)|10000
 ParameterBoolean|-c|Consider earth curvature (current ellipsoid)|False
 OutputRaster|output|Intervisibility

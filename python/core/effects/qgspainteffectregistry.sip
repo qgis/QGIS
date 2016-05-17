@@ -10,7 +10,6 @@ class QgsPaintEffectWidget /External/;
  *
  * \note Added in version 2.9
  */
-
 class QgsPaintEffectAbstractMetadata
 {
 %TypeHeaderCode
@@ -42,13 +41,13 @@ class QgsPaintEffectAbstractMetadata
     /** Create a paint effect of this class given an encoded map of properties.
      * @param map properties string map
      * @returns new paint effect
-    */
+     */
     virtual QgsPaintEffect* createPaintEffect( const QgsStringMap& map ) = 0 /Factory/;
 
-    /** Create configuration widget for paint effect of this class. Can return NULL
+    /** Create configuration widget for paint effect of this class. Can return nullptr
      * if there's no GUI for the paint effect class.
      * @returns configuration widget
-    */
+     */
     virtual QgsPaintEffectWidget* createWidget() /Factory/;
 
 };
@@ -60,7 +59,6 @@ class QgsPaintEffectAbstractMetadata
  *
  * \note Added in version 2.9
  */
-
 class QgsPaintEffectRegistry
 {
 %TypeHeaderCode
@@ -69,9 +67,13 @@ class QgsPaintEffectRegistry
 
   public:
 
+    /** Returns a reference to the singleton instance of the paint effect registry.
+     */
+    static QgsPaintEffectRegistry* instance();
+
     /** Returns the metadata for a specific effect.
      * @param name unique string name for paint effect class
-     * @returns paint effect metadata if found, otherwise NULL
+     * @returns paint effect metadata if found, otherwise nullptr
      */
     QgsPaintEffectAbstractMetadata* effectMetadata( const QString& name ) const;
 
@@ -84,7 +86,7 @@ class QgsPaintEffectRegistry
     /** Creates a new paint effect given the effect name and properties map.
      * @param name unique name representing paint effect class
      * @param properties encoded string map of effect properties
-     * @returns new paint effect of specified class, or NULL if matching
+     * @returns new paint effect of specified class, or nullptrif matching
      * paint effect could not be created
      */
     QgsPaintEffect* createEffect( const QString& name, const QgsStringMap& properties = QgsStringMap() ) const /Factory/;
@@ -92,7 +94,7 @@ class QgsPaintEffectRegistry
     /** Creates a new paint effect given a DOM element storing paint effect
      * properties.
      * @param element encoded DOM element of effect properties
-     * @returns new paint effect, or NULL if matching
+     * @returns new paint effect, or nullptr if matching
      * paint effect could not be created
      */
     QgsPaintEffect* createEffect( const QDomElement& element ) const /Factory/;
@@ -106,13 +108,23 @@ class QgsPaintEffectRegistry
      * effects. All effects except the standard draw source effect are disabled,
      * but are included so that they can be easily drawn just by enabling the effect.
      * @returns default effects stack
+     * @see isDefaultStack()
      */
     static QgsPaintEffect* defaultStack() /Factory/;
+
+    /** Tests whether a paint effect matches the default effects stack.
+     * @param effect paint effect to test
+     * @returns true if effect is default stack
+     * @note added in QGIS 2.12
+     * @see defaultStack()
+     */
+    static bool isDefaultStack( QgsPaintEffect* effect );
 
   protected:
     QgsPaintEffectRegistry();
     ~QgsPaintEffectRegistry();
 
-
+  private:
+    QgsPaintEffectRegistry( const QgsPaintEffectRegistry& rh );
 };
 

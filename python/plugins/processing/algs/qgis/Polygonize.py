@@ -25,7 +25,11 @@ __copyright__ = '(C) 2013, Piotr Pociask'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import QVariant
+from shapely.ops import polygonize
+from shapely.ops import unary_union
+from shapely.geometry import MultiLineString
+
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import QGis, QgsFields, QgsField, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -42,13 +46,18 @@ class Polygonize(GeoAlgorithm):
     FIELDS = 'FIELDS'
     GEOMETRY = 'GEOMETRY'
 
+    def defineCharacteristics(self):
+        self.name, self.i18n_name = self.trAlgorithm('Polygonize')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+        self.addParameter(ParameterVector(self.INPUT,
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+        self.addParameter(ParameterBoolean(self.FIELDS,
+                                           self.tr('Keep table structure of line layer'), False))
+        self.addParameter(ParameterBoolean(self.GEOMETRY,
+                                           self.tr('Create geometry columns'), True))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Polygons from lines')))
+
     def processAlgorithm(self, progress):
-        try:
-            from shapely.ops import polygonize
-            from shapely.geometry import Point, MultiLineString
-        except ImportError:
-            raise GeoAlgorithmExecutionException(
-                self.tr('Polygonize algorithm requires shapely module!'))
         vlayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)
         vprovider = vlayer.dataProvider()
@@ -63,54 +72,38 @@ class Polygonize(GeoAlgorithm):
                                    'double', 16, 2))
         allLinesList = []
         features = vector.features(vlayer)
-        current = 0
         progress.setInfo(self.tr('Processing lines...'))
-        total = 40.0 / float(len(features))
-        for inFeat in features:
+        total = 40.0 / len(features)
+        for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()
             if inGeom.isMultipart():
                 allLinesList.extend(inGeom.asMultiPolyline())
             else:
                 allLinesList.append(inGeom.asPolyline())
-            current += 1
             progress.setPercentage(int(current * total))
+
         progress.setPercentage(40)
         allLines = MultiLineString(allLinesList)
+
         progress.setInfo(self.tr('Noding lines...'))
-        try:
-            from shapely.ops import unary_union
-            allLines = unary_union(allLines)
-        except ImportError:
-            allLines = allLines.union(Point(0, 0))
+        allLines = unary_union(allLines)
+
         progress.setPercentage(45)
         progress.setInfo(self.tr('Polygonizing...'))
         polygons = list(polygonize([allLines]))
         if not polygons:
             raise GeoAlgorithmExecutionException(self.tr('No polygons were created!'))
         progress.setPercentage(50)
+
         progress.setInfo('Saving polygons...')
         writer = output.getVectorWriter(fields, QGis.WKBPolygon, vlayer.crs())
         outFeat = QgsFeature()
-        current = 0
-        total = 50.0 / float(len(polygons))
-        for polygon in polygons:
+        total = 50.0 / len(polygons)
+        for current, polygon in enumerate(polygons):
             outFeat.setGeometry(QgsGeometry.fromWkt(polygon.wkt))
             if self.getParameterValue(self.GEOMETRY):
                 outFeat.setAttributes([None] * fieldsCount + [polygon.area,
-                                      polygon.length])
+                                                              polygon.length])
             writer.addFeature(outFeat)
-            current += 1
             progress.setPercentage(50 + int(current * total))
-        progress.setInfo(self.tr('Finished'))
         del writer
-
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Polygonize')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addParameter(ParameterBoolean(self.FIELDS,
-                                           self.tr('Keep table structure of line layer'), False))
-        self.addParameter(ParameterBoolean(self.GEOMETRY,
-                                           self.tr('Create geometry columns'), True))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Polygons from lines')))

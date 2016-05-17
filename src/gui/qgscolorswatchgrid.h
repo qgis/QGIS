@@ -37,7 +37,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
      * @param context context string provided to color scheme
      * @param parent parent widget
      */
-    QgsColorSwatchGrid( QgsColorScheme* scheme, QString context = QString(), QWidget *parent = 0 );
+    QgsColorSwatchGrid( QgsColorScheme* scheme, const QString& context = QString(), QWidget *parent = nullptr );
 
     virtual ~QgsColorSwatchGrid();
 
@@ -134,7 +134,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
      * @param position position
      * @returns swatch number (starting at 0), or -1 if position is outside a swatch
      */
-    int swatchForPosition( const QPoint &position ) const;
+    int swatchForPosition( QPoint position ) const;
 
     /** Updates the widget's tooltip for a given color index
      * @param colorIdx color index to use for calculating tooltip
@@ -167,7 +167,7 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
      * @param context context string provided to color scheme
      * @param parent parent widget
      */
-    QgsColorSwatchGridAction( QgsColorScheme* scheme, QMenu* menu = 0, QString context = QString(), QWidget *parent = 0 );
+    QgsColorSwatchGridAction( QgsColorScheme* scheme, QMenu* menu = nullptr, const QString& context = QString(), QWidget *parent = nullptr );
 
     virtual ~QgsColorSwatchGridAction();
 
@@ -195,6 +195,23 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
      */
     void setContext( const QString &context );
 
+    /** Sets whether the parent menu should be dismissed and closed when a color is selected
+     * from the action's color widget.
+     * @param dismiss set to true (default) to immediately close the menu when a color is selected
+     * from the widget. If set to false, the colorChanged signal will be emitted but the menu will
+     * stay open.
+     * @see dismissOnColorSelection()
+     * @note added in QGIS 2.14
+     */
+    void setDismissOnColorSelection( bool dismiss ) { mDismissOnColorSelection = dismiss; }
+
+    /** Returns whether the parent menu will be dismissed after a color is selected from the
+     * action's color widget.
+     * @see setDismissOnColorSelection
+     * @note added in QGIS 2.14
+     */
+    bool dismissOnColorSelection() const { return mDismissOnColorSelection; }
+
   public slots:
 
     /** Reload colors from scheme and redraws the widget
@@ -212,8 +229,9 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
     QMenu* mMenu;
     QgsColorSwatchGrid* mColorSwatchGrid;
 
-    //used to supress recursion with hover events
+    //used to suppress recursion with hover events
     bool mSuppressRecurse;
+    bool mDismissOnColorSelection;
 
   private slots:
 

@@ -56,6 +56,8 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
       ComposerPicture,
       ComposerScaleBar,
       ComposerShape,
+      ComposerPolygon,
+      ComposerPolyline,
       ComposerTable,
       ComposerAttributeTable,
       ComposerTextTable,
@@ -156,7 +158,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @param x x-position of mouse cursor (in item coordinates)
      * @param y y-position of mouse cursor (in item coordinates)
      * @deprecated use zoomContent( double, QPointF, ZoomMode ) instead
-    */
+     */
     Q_DECL_DEPRECATED virtual void zoomContent( int delta, double x, double y ) { Q_UNUSED( delta ); Q_UNUSED( x ); Q_UNUSED( y ); }
 
     /** Zoom content of item. Does nothing per default (but implemented in composer map)
@@ -164,7 +166,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @param point item point for zoom center
      * @param mode zoom mode
      * @note added in QGIS 2.5
-    */
+     */
     virtual void zoomContent( const double factor, const QPointF point, const ZoomMode mode = QgsComposerItem::Zoom ) { Q_UNUSED( factor ); Q_UNUSED( point ); Q_UNUSED( mode ); }
 
     /** Gets the page the item is currently on.
@@ -172,7 +174,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @see pagePos
      * @see updatePagePos
      * @note this method was added in version 2.4
-    */
+     */
     int page() const;
 
     /** Returns the item's position relative to its current page.
@@ -180,7 +182,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @see page
      * @see updatePagePos
      * @note this method was added in version 2.4
-    */
+     */
     QPointF pagePos() const;
 
     /** Moves the item so that it retains its relative position on the page
@@ -190,7 +192,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @see page
      * @see pagePos
      * @note this method was added in version 2.4
-    */
+     */
     void updatePagePos( double newPageWidth, double newPageHeight );
 
     /** Moves the item to a new position (in canvas coordinates)
@@ -384,7 +386,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @see setEffectsEnabled
      * @see transparency
      * @see blendMode
-    */
+     */
     bool effectsEnabled() const { return mEffectsEnabled; }
 
     /** Sets whether effects (eg blend modes) are enabled for the item
@@ -392,7 +394,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @see effectsEnabled
      * @see setTransparency
      * @see setBlendMode
-    */
+     */
     void setEffectsEnabled( const bool effectsEnabled );
 
     /** Composite operations for item groups do nothing per default*/
@@ -417,7 +419,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     /** Draws Text. Takes care about all the composer specific issues (calculation to pixel, scaling of font and painter
      * to work around the Qt font bug)
      * @deprecated use QgsComposerUtils::drawText instead
-    */
+     */
     Q_DECL_DEPRECATED void drawText( QPainter* p, double x, double y, const QString& text, const QFont& font, const QColor& c = QColor() ) const;
 
     /** Like the above, but with a rectangle for multiline text
@@ -429,18 +431,18 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @param valignment optional vertical alignment
      * @param flags allows for passing Qt::TextFlags to control appearance of rendered text
      * @deprecated use QgsComposerUtils::drawText instead
-    */
+     */
     Q_DECL_DEPRECATED void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;
 
     /** Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
      * @deprecated use QgsComposerUtils::textWidthMM instead
-    */
+     */
     Q_DECL_DEPRECATED double textWidthMillimeters( const QFont& font, const QString& text ) const;
 
     /** Returns the font height of a character in millimeters
      * @deprecated use QgsComposerUtils::fontHeightCharacterMM instead
      */
-    Q_DECL_DEPRECATED double fontHeightCharacterMM( const QFont& font, const QChar& c ) const;
+    Q_DECL_DEPRECATED double fontHeightCharacterMM( const QFont& font, QChar c ) const;
 
     /** Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
      * @deprecated use QgsComposerUtils::fontAscentMM instead
@@ -456,7 +458,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * Font height equals the font ascent+descent+1 (for baseline).
      * @note Added in version 2.4
      * @deprecated use QgsComposerUtils::fontHeightMM instead
-    */
+     */
     Q_DECL_DEPRECATED double fontHeightMillimeters( const QFont& font ) const;
 
     /** Calculates font size in mm from a font point size
@@ -478,7 +480,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     /** Returns whether position lock for mouse drags is enabled
      * returns true if item is locked for mouse movement and resizing
      * @see setPositionLock
-    */
+     */
     bool positionLock() const { return mItemPositionLocked; }
 
     /** Returns the current rotation for the composer item.
@@ -492,8 +494,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     double itemRotation( const QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
 
     /** Returns the rotation for the composer item
-     * @deprecated Use itemRotation()
-     *             instead
+     * @deprecated Use itemRotation() instead
      */
     Q_DECL_DEPRECATED double rotation() const { return mEvaluatedItemRotation; }
 
@@ -517,7 +518,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @note there is not setter since one can't manually set the id
      * @see id
      * @see setId
-    */
+     */
     QString uuid() const { return mUuid; }
 
     /** Get item display name. This is the item's id if set, and if
@@ -526,7 +527,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @see id
      * @see setId
      * @note added in version 2.5
-    */
+     */
     virtual QString displayName() const;
 
     /** Sets visibility for item.
@@ -535,7 +536,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * on a QgsComposerItem, as some item types (eg groups) need to override
      * the visibility toggle.
      * @note added in version 2.5
-    */
+     */
     virtual void setVisibility( const bool visible );
 
     /** Returns whether the item should be excluded from composer exports and prints
@@ -558,14 +559,14 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @returns true if item is in a group
      * @note added in version 2.5
      * @see setIsGroupMember
-    */
+     */
     bool isGroupMember() const { return mIsGroupMember; }
 
     /** Sets whether this item is part of a group
      * @param isGroupMember set to true if item is in a group
      * @note added in version 2.5
      * @see isGroupMember
-    */
+     */
     void setIsGroupMember( const bool isGroupMember );
 
     /** Get the number of layers that this item requires for exporting as layers
@@ -573,16 +574,20 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
      * @note this method was added in version 2.4
      * @see setCurrentExportLayer
-    */
+     */
     virtual int numberExportLayers() const { return 0; }
 
     /** Sets the current layer to draw for exporting
      * @param layerIdx can be set to -1 to draw all item layers, and must be less than numberExportLayers()
      * @note this method was added in version 2.4
      * @see numberExportLayers
-    */
+     */
     virtual void setCurrentExportLayer( const int layerIdx = -1 ) { mCurrentExportLayer = layerIdx; }
 
+    /** Creates an expression context relating to the item's current state. The context includes
+     * scopes for global, project, composition, atlas and item properties.
+     * @note added in QGIS 2.12
+     */
     virtual QgsExpressionContext* createExpressionContext() const override;
 
   public slots:
@@ -597,7 +602,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * around item center. If false, rotation occurs around item origin
      * @note this method was added in version 2.1
      * @see itemRotation
-    */
+     */
     virtual void setItemRotation( const double r, const bool adjustPosition = false );
 
     void repaint() override;
@@ -609,8 +614,8 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * refreshed.
      * @param context expression context for evaluating data defined expressions
      * @note this method was added in version 2.5
-    */
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = 0 ) override;
+     */
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr ) override;
 
   protected:
     /** True if item has been removed from the composition*/
@@ -637,7 +642,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     Qt::PenJoinStyle mFrameJoinStyle;
 
     /** True if item position  and size cannot be changed with mouse move
-    */
+     */
     bool mItemPositionLocked;
 
     /** Backup to restore item appearance if no view scale factor is available*/
@@ -647,7 +652,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     double mItemRotation;
     /** Temporary evaluated item rotation in degrees, clockwise. Data defined rotation may mean
      * this value differs from mItemRotation.
-    */
+     */
     double mEvaluatedItemRotation;
 
     /** Composition blend mode for item*/
@@ -662,7 +667,8 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     bool mExcludeFromExports;
 
     /** Temporary evaluated item exclusion. Data defined properties may mean
-     * this value differs from mExcludeFromExports.*/
+     * this value differs from mExcludeFromExports.
+     */
     bool mEvaluatedExcludeFromExports;
 
     /** The item's position mode */
@@ -672,13 +678,14 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     bool mIsGroupMember;
 
     /** The layer that needs to be exported
-    @note: if -1, all layers are to be exported
-    @note: this member was added in version 2.4*/
+     * @note: if -1, all layers are to be exported
+     * @note: this member was added in version 2.4
+     */
     int mCurrentExportLayer;
 
     /** Draws additional graphics on selected items. The base implementation has
      * no effect.
-    */
+     */
     virtual void drawSelectionBoxes( QPainter* p );
 
     /** Draw black frame around item*/
@@ -692,28 +699,30 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      */
     Q_DECL_DEPRECATED void drawArrowHead( QPainter* p, double x, double y, double angle, double arrowHeadWidth ) const;
 
-    /** Returns angle of the line from p1 to p2 (clockwise, starting at N)*/
-    Q_DECL_DEPRECATED double angle( const QPointF& p1, const QPointF& p2 ) const;
+    /** Returns angle of the line from p1 to p2 (clockwise, starting at N)
+     * @deprecated will be removed in QGIS 3.0
+     */
+    Q_DECL_DEPRECATED double angle( QPointF p1, QPointF p2 ) const;
 
     /** Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
     item border for resizing*/
     double rectHandlerBorderTolerance() const;
 
     /** Returns the size of the lock symbol depending on the composer zoom level and the item size
-    * @deprecated will be removed in QGIS 3.0
-    */
+     * @deprecated will be removed in QGIS 3.0
+     */
     Q_DECL_DEPRECATED double lockSymbolSize() const;
 
     /** Returns the zoom factor of the graphics view.
-      @return the factor or -1 in case of error (e.g. graphic view does not exist)
-    */
+     * @return the factor or -1 in case of error (e.g. graphic view does not exist)
+     */
     double horizontalViewScaleFactor() const;
 
     //some utility functions
 
     /** Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation.
      * @deprecated will be removed in QGIS 3.0
-    */
+     */
     Q_DECL_DEPRECATED bool imageSizeConsideringRotation( double& width, double& height, double rotation ) const;
 
     /** Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
@@ -722,32 +731,32 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     Q_DECL_DEPRECATED bool imageSizeConsideringRotation( double& width, double& height ) const;
 
     /** Calculates the largest scaled version of originalRect which fits within boundsRect, when it is rotated by
-      * a specified amount
-      * @param originalRect QRectF to be rotated and scaled
-      * @param boundsRect QRectF specifying the bounds which the rotated and scaled rectangle must fit within
-      * @param rotation the rotation in degrees to be applied to the rectangle
-      * @deprecated use QgsComposerUtils::largestRotatedRectWithinBounds instead
-      */
-    Q_DECL_DEPRECATED QRectF largestRotatedRectWithinBounds( QRectF originalRect, QRectF boundsRect, double rotation ) const;
+     * a specified amount
+     * @param originalRect QRectF to be rotated and scaled
+     * @param boundsRect QRectF specifying the bounds which the rotated and scaled rectangle must fit within
+     * @param rotation the rotation in degrees to be applied to the rectangle
+     * @deprecated use QgsComposerUtils::largestRotatedRectWithinBounds instead
+     */
+    Q_DECL_DEPRECATED QRectF largestRotatedRectWithinBounds( const QRectF& originalRect, const QRectF& boundsRect, double rotation ) const;
 
     /** Calculates corner point after rotation and scaling
      * @deprecated will be removed in QGIS 3.0
-    */
+     */
     Q_DECL_DEPRECATED bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const;
 
     /** Calculates corner point after rotation and scaling
      * @deprecated will be removed in QGIS 3.0
-    */
+     */
     Q_DECL_DEPRECATED bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
 
     /** Calculates width / height of the bounding box of a rotated rectangle
      * @deprecated will be removed in QGIS 3.0
-    */
+     */
     Q_DECL_DEPRECATED void sizeChangedByRotation( double& width, double& height, double rotation );
 
     /** Calculates width / height of the bounding box of a rotated rectangle
-    * @deprecated will be removed in QGIS 3.0
-    */
+     * @deprecated will be removed in QGIS 3.0
+     */
     Q_DECL_DEPRECATED void sizeChangedByRotation( double& width, double& height );
 
     /** Rotates a point / vector
@@ -755,7 +764,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @param x in/out: x coordinate before / after the rotation
      * @param y in/out: y cooreinate before / after the rotation
      * @deprecated use QgsComposerUtils:rotate instead
-    */
+     */
     Q_DECL_DEPRECATED void rotate( double angle, double& x, double& y ) const;
 
     /** Return horizontal align snap item. Creates a new graphics line if 0*/
@@ -776,13 +785,13 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @returns bounding box rectangle for item after data defined size and position have been
      * set and position mode has been accounted for
      * @note added in QGIS 2.5
-    */
-    QRectF evalItemRect( const QRectF &newRect, const bool resizeOnly = false, const QgsExpressionContext* context = 0 );
+     */
+    QRectF evalItemRect( const QRectF &newRect, const bool resizeOnly = false, const QgsExpressionContext* context = nullptr );
 
     /** Returns whether the item should be drawn in the current context
      * @returns true if item should be drawn
      * @note added in QGIS 2.5
-    */
+     */
     bool shouldDrawItem() const;
 
   signals:
@@ -792,11 +801,11 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     void sizeChanged();
     /** Emitted if the item's frame style changes
      * @note: this function was introduced in version 2.2
-    */
+     */
     void frameChanged();
     /** Emitted if the item's lock status changes
      * @note: this function was introduced in version 2.5
-    */
+     */
     void lockChanged();
 
   private:

@@ -32,7 +32,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     /** Note: takes ownership of QgsRasterShader*/
     QgsSingleBandPseudoColorRenderer( QgsRasterInterface* input, int band, QgsRasterShader* shader );
     ~QgsSingleBandPseudoColorRenderer();
-    QgsRasterInterface * clone() const override;
+    QgsSingleBandPseudoColorRenderer * clone() const override;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
@@ -41,6 +41,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     /** Takes ownership of the shader*/
     void setShader( QgsRasterShader* shader );
     QgsRasterShader* shader() { return mShader; }
+    //! @note available in python as constShader
     const QgsRasterShader* shader() const { return mShader; }
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;
@@ -55,9 +56,9 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     int band() const { return mBand; }
 
     /** Sets the band used by the renderer.
-    * @see band
-    * @note added in QGIS 2.10
-    */
+     * @see band
+     * @note added in QGIS 2.10
+     */
     void setBand( int bandNo );
 
     double classificationMin() const { return mClassificationMin; }
@@ -77,6 +78,9 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     double mClassificationMax;
 
     int mClassificationMinMaxOrigin;
+
+    QgsSingleBandPseudoColorRenderer( const QgsSingleBandPseudoColorRenderer& );
+    const QgsSingleBandPseudoColorRenderer& operator=( const QgsSingleBandPseudoColorRenderer& );
 };
 
 #endif // QGSSINGLEBANDPSEUDOCOLORRENDERER_H

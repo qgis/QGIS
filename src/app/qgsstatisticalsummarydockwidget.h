@@ -20,6 +20,8 @@
 #include "ui_qgsstatisticalsummarybase.h"
 
 #include "qgsstatisticalsummary.h"
+#include "qgsstringstatisticalsummary.h"
+#include "qgsdatetimestatisticalsummary.h"
 
 class QgsBrowserModel;
 class QModelIndex;
@@ -35,7 +37,7 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QDockWidget, private U
     Q_OBJECT
 
   public:
-    QgsStatisticalSummaryDockWidget( QWidget *parent = 0 );
+    QgsStatisticalSummaryDockWidget( QWidget *parent = nullptr );
     ~QgsStatisticalSummaryDockWidget();
 
     /** Returns the currently active layer for the widget
@@ -53,7 +55,7 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QDockWidget, private U
 
     void layerChanged( QgsMapLayer* layer );
     void statActionTriggered( bool checked );
-    void layersRemoved( QStringList layers );
+    void layersRemoved( const QStringList& layers );
     void layerSelectionChanged();
 
   private:
@@ -62,6 +64,13 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QDockWidget, private U
 
     QMap< int, QAction* > mStatsActions;
     static QList< QgsStatisticalSummary::Statistic > mDisplayStats;
+    static QList< QgsStringStatisticalSummary::Statistic > mDisplayStringStats;
+    static QList< QgsDateTimeStatisticalSummary::Statistic > mDisplayDateTimeStats;
+
+    void updateNumericStatistics( bool selectedOnly );
+    void updateStringStatistics( bool selectedOnly );
+    void updateDateTimeStatistics( bool selectedOnly );
+    void addRow( int row, const QString& name, const QString& value, bool showValue );
 };
 
 #endif // QGSSTATISTICALSUMMARYDOCKWIDGET_H

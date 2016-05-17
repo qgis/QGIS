@@ -48,7 +48,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
       RecentCrs /*!< recently used CRS */
     };
 
-    explicit QgsProjectionSelectionWidget( QWidget *parent = 0 );
+    explicit QgsProjectionSelectionWidget( QWidget *parent = nullptr );
 
     /** Returns a pointer to the projection selector dialog used by the widget.
      * Can be used to modify how the projection selector dialog behaves.
@@ -71,7 +71,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 
     /** Emitted when the selected CRS is changed
      */
-    void crsChanged( QgsCoordinateReferenceSystem );
+    void crsChanged( const QgsCoordinateReferenceSystem& );
 
   public slots:
 

@@ -66,7 +66,7 @@ class Heatmap: public QObject, public QgisPlugin
     * QGIS when it attempts to instantiate the plugin.
     * @param theInterface Pointer to the QgisInterface object.
      */
-    Heatmap( QgisInterface * theInterface );
+    explicit Heatmap( QgisInterface * theInterface );
     //! Destructor
     virtual ~Heatmap();
 
@@ -102,8 +102,8 @@ class Heatmap: public QObject, public QgisPlugin
   private:
     double mDecay;
 
-    //! Worker to convert meters to map units
-    double mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs );
+    //! Worker to convert layer to map units
+    double mapUnitsOf( double dist, const QgsCoordinateReferenceSystem& layerCrs );
     //! Worker to calculate buffer size in pixels
     int bufferSize( double radius, double cellsize );
     //! Calculate the value given to a point width a given distance for a specified kernel shape

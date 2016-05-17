@@ -34,14 +34,15 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
     QgsCompoundCurveV2& operator=( const QgsCompoundCurveV2& curve );
     ~QgsCompoundCurveV2();
 
+    virtual bool operator==( const QgsCurveV2& other ) const override;
+    virtual bool operator!=( const QgsCurveV2& other ) const override;
+
     virtual QString geometryType() const override { return "CompoundCurve"; }
     virtual int dimension() const override { return 1; }
-    virtual QgsAbstractGeometryV2* clone() const override;
+    virtual QgsCompoundCurveV2* clone() const override;
     virtual void clear() override;
 
-    virtual QgsRectangle calculateBoundingBox() const override;
-
-    virtual bool fromWkb( const unsigned char* wkb ) override;
+    virtual bool fromWkb( QgsConstWkbPtr wkb ) override;
     virtual bool fromWkt( const QString& wkt ) override;
 
     int wkbSize() const override;
@@ -55,7 +56,7 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
     virtual double length() const override;
     virtual QgsPointV2 startPoint() const override;
     virtual QgsPointV2 endPoint() const override;
-    virtual void points( QList<QgsPointV2>& pts ) const override;
+    virtual void points( QgsPointSequenceV2 &pts ) const override;
     virtual int numPoints() const override;
     virtual QgsLineStringV2* curveToLine() const override;
 
@@ -90,12 +91,12 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
     void addToPainterPath( QPainterPath& path ) const override;
     void drawAsPolygon( QPainter& p ) const override;
 
-    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex ) override;
-    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos ) override;
-    virtual bool deleteVertex( const QgsVertexId& position ) override;
+    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex ) override;
+    virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos ) override;
+    virtual bool deleteVertex( QgsVertexId position ) override;
 
     virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
-    bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const override;
+    bool pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const override;
 
     void sumUpArea( double& sum ) const override;
 
@@ -107,13 +108,26 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
         @param vertex the vertex id
         @return rotation in radians, clockwise from north*/
-    double vertexAngle( const QgsVertexId& vertex ) const override;
+    double vertexAngle( QgsVertexId vertex ) const override;
+
+    virtual QgsCompoundCurveV2* reversed() const override;
+
+    virtual bool addZValue( double zValue = 0 ) override;
+    virtual bool addMValue( double mValue = 0 ) override;
+
+    virtual bool dropZValue() override;
+    virtual bool dropMValue() override;
+
+  protected:
+
+    virtual QgsRectangle calculateBoundingBox() const override;
 
   private:
     QList< QgsCurveV2* > mCurves;
     /** Turns a vertex id for the compound curve into one or more ids for the subcurves
         @return the index of the subcurve or -1 in case of error*/
-    QList< QPair<int, QgsVertexId> > curveVertexId( const QgsVertexId& id ) const;
+    QList< QPair<int, QgsVertexId> > curveVertexId( QgsVertexId id ) const;
+
 };
 
 #endif // QGSCOMPOUNDCURVEV2_H

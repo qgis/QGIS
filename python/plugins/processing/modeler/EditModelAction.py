@@ -36,10 +36,10 @@ class EditModelAction(ContextAction):
         self.name = self.tr('Edit model', 'EditModelAction')
 
     def isEnabled(self):
-        return isinstance(self.alg, ModelerAlgorithm)
+        return isinstance(self.itemData, ModelerAlgorithm)
 
     def execute(self):
-        dlg = ModelerDialog(self.alg.getCopy())
+        dlg = ModelerDialog(self.itemData.getCopy())
         dlg.exec_()
         if dlg.update:
             self.toolbox.updateProvider('model')

@@ -26,14 +26,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import webbrowser
 
-from PyQt4 import uic
-from PyQt4.QtCore import QCoreApplication, QUrl
-from PyQt4.QtGui import QApplication, QDialogButtonBox
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QCoreApplication, QSettings, QByteArray, QUrl
+from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox, QDesktopWidget
 
 from qgis.utils import iface
+from qgis.core import QgsNetworkAccessManager
 
 from processing.core.ProcessingConfig import ProcessingConfig
+from processing.gui import AlgorithmClassification
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -42,14 +45,12 @@ WIDGET, BASE = uic.loadUiType(
 
 class AlgorithmDialogBase(BASE, WIDGET):
 
-    class InvalidParameterValue(Exception):
-
-        def __init__(self, param, widget):
-            (self.parameter, self.widget) = (param, widget)
-
     def __init__(self, alg):
         super(AlgorithmDialogBase, self).__init__(iface.mainWindow())
         self.setupUi(self)
+
+        self.settings = QSettings()
+        self.restoreGeometry(self.settings.value("/Processing/dialogBase", QByteArray()))
 
         self.executed = False
         self.mainWidget = None
@@ -61,26 +62,52 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         self.btnClose = self.buttonBox.button(QDialogButtonBox.Close)
 
-        self.setWindowTitle(self.alg.name)
+        self.setWindowTitle(AlgorithmClassification.getDisplayName(self.alg))
 
-        # load algorithm help if available
+        desktop = QDesktopWidget()
+        if desktop.physicalDpiX() > 96:
+            self.textHelp.setZoomFactor(desktop.physicalDpiX() / 96)
+
+        algHelp = self.alg.shortHelp()
+        if algHelp is None:
+            self.textShortHelp.setVisible(False)
+        else:
+            self.textShortHelp.document().setDefaultStyleSheet('''.summary { margin-left: 10px; margin-right: 10px; }
+                                                    h2 { color: #555555; padding-bottom: 15px; }
+                                                    a { text-decoration: none; color: #3498db; font-weight: bold; }
+                                                    p { color: #666666; }
+                                                    b { color: #333333; }
+                                                    dl dd { margin-bottom: 5px; }''')
+            self.textShortHelp.setHtml(algHelp)
+
+        self.textShortHelp.setOpenLinks(False)
+
+        def linkClicked(url):
+            webbrowser.open(url.toString())
+        self.textShortHelp.anchorClicked.connect(linkClicked)
+
+        self.textHelp.page().setNetworkAccessManager(QgsNetworkAccessManager.instance())
+
         isText, algHelp = self.alg.help()
         if algHelp is not None:
             algHelp = algHelp if isText else QUrl(algHelp)
+            try:
+                if isText:
+                    self.textHelp.setHtml(algHelp)
+                else:
+                    self.textHelp.settings().clearMemoryCaches()
+                    self.textHelp.load(algHelp)
+            except:
+                self.tabWidget.removeTab(2)
         else:
-            algHelp = self.tr('<h2>Sorry, no help is available for this '
-                              'algorithm.</h2>')
-        try:
-            if isText:
-                self.txtHelp.setHtml(algHelp)
-            else:
-                self.txtHelp.load(algHelp)
-        except:
-            self.txtHelp.setHtml(
-                self.tr('<h2>Could not open help file :-( </h2>'))
+            self.tabWidget.removeTab(2)
 
         self.showDebug = ProcessingConfig.getSetting(
             ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
+
+    def closeEvent(self, evt):
+        self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
+        super(AlgorithmDialogBase, self).closeEvent(evt)
 
     def setMainWidget(self):
         self.tabWidget.widget(0).layout().addWidget(self.mainWidget)
@@ -101,7 +128,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
     def setInfo(self, msg, error=False):
         if error:
-            self.txtLog.append('<span style="color:red">%s</span>' % msg)
+            self.txtLog.append('<span style="color:red"><br>%s<br></span>' % msg)
         else:
             self.txtLog.append(msg)
         QCoreApplication.processEvents()
@@ -143,3 +170,8 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
     def finish(self):
         pass
+
+    class InvalidParameterValue(Exception):
+
+        def __init__(self, param, widget):
+            (self.parameter, self.widget) = (param, widget)

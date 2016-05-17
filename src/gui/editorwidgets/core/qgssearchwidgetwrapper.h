@@ -36,7 +36,6 @@ class QgsField;
  * by a field of a vector layer, or return the value it currently holds. Every time it is changed
  * it has to emit a valueChanged signal. If it fails to do so, there is no guarantee that the
  * changed status of the widget will be saved.
- *
  */
 class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 {
@@ -49,7 +48,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * @param fieldIdx  The field which will be controlled
      * @param parent    A parent widget for this widget wrapper and the created widget.
      */
-    explicit QgsSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = 0 );
+    explicit QgsSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
 
     /**
      * Will be used to access the widget's value. Read the value from the widget and
@@ -69,7 +68,11 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 
   signals:
 
-    void expressionChanged( QString exp );
+    /**
+     * Emitted whenever the expression changes
+     * @param exp The new search expression
+     */
+    void expressionChanged( const QString& exp );
 
   protected slots:
 
@@ -77,6 +80,9 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     void setFeature( const QgsFeature& feature ) override;
 
   protected:
+    //! clears the expression to search for all features
+    void clearExpression();
+
     QString mExpression;
     int mFieldIdx;
 

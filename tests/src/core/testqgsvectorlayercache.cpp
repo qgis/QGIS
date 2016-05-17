@@ -52,7 +52,7 @@ class TestVectorLayerCache : public QObject
     void testFeatureActions();   // Test adding/removing features works
     void testSubsetRequest();
 
-    void onCommittedFeaturesAdded( QString, QgsFeatureList );
+    void onCommittedFeaturesAdded( const QString&, const QgsFeatureList& );
 
   private:
     QgsVectorLayerCache*           mVectorLayerCache;
@@ -74,14 +74,14 @@ void TestVectorLayerCache::initTestCase()
   backupFiles << "points.shp" << "points.shx" << "points.dbf" << "points.prj";
 
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myTestDataDir = myDataDir + "/";
+  QString myTestDataDir = myDataDir + '/';
 
   Q_FOREACH ( const QString& f, backupFiles )
   {
     QString origFileName = myTestDataDir + f;
     QFileInfo origFileInfo( origFileName );
 
-    QString tmpFileName = QDir::tempPath() + "/" + origFileInfo.baseName() + "_" + QString::number( qApp->applicationPid() ) + "." + origFileInfo.completeSuffix();
+    QString tmpFileName = QDir::tempPath() + '/' + origFileInfo.baseName() + '_' + QString::number( qApp->applicationPid() ) + '.' + origFileInfo.completeSuffix();
 
     qDebug() << "Copy " << origFileName << " " << tmpFileName;
 
@@ -218,7 +218,7 @@ void TestVectorLayerCache::testSubsetRequest()
   QVERIFY( a == f.attribute( 3 ) );
 }
 
-void TestVectorLayerCache::onCommittedFeaturesAdded( QString layerId, QgsFeatureList features )
+void TestVectorLayerCache::onCommittedFeaturesAdded( const QString& layerId, const QgsFeatureList& features )
 {
   Q_UNUSED( layerId )
   mAddedFeatures.append( features );

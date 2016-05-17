@@ -27,32 +27,30 @@
  *
  */
 
-#ifndef _LAYER_H_
-#define _LAYER_H_
+#ifndef PAL_LAYER_H_
+#define PAL_LAYER_H_
 
 #include "pal.h"
-#include "palgeometry.h"
 #include <QMutex>
 #include <QLinkedList>
 #include <QHash>
 #include <fstream>
+
+class QgsLabelFeature;
 
 namespace pal
 {
 
   template<class DATATYPE, class ELEMTYPE, int NUMDIMS, class ELEMTYPEREAL, int TMAXNODES, int TMINNODES> class RTree;
 
-  class Feature;
   class FeaturePart;
   class Pal;
   class LabelInfo;
 
   /**
-   * \brief A layer of spacial entites
-   *
-   * a layer is a bog of feature with some data which influence the labelling process
-   *
-   *  \author Maxence Laurent (maxence _dot_ laurent _at_ heig-vd _dot_ ch)
+   * \brief A set of features which influence the labelling process
+   * \class pal::Layer
+   * \note not available in Python bindings
    */
   class CORE_EXPORT Layer
   {
@@ -62,7 +60,6 @@ namespace pal
       friend class Problem;
 
       friend class LabelPosition;
-      friend bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx );
 
     public:
       enum LabelMode { LabelPerFeature, LabelPerFeaturePart };
@@ -79,7 +76,10 @@ namespace pal
 
       /** Returns the number of features in layer.
        */
-      int featureCount() { return features.size(); }
+      int featureCount() { return mHashtable.size(); }
+
+      /** Returns pointer to the associated provider */
+      QgsAbstractLabelProvider* provider() const { return mProvider; }
 
       /** Returns the layer's name.
        */
@@ -88,13 +88,13 @@ namespace pal
       /** Returns the layer's arrangement policy.
        * @see setArrangement
        */
-      Arrangement arrangement() const { return mArrangement; }
+      QgsPalLayerSettings::Placement arrangement() const { return mArrangement; }
 
       /** Sets the layer's arrangement policy.
        * @param arrangement arrangement policy
        * @see arrangement
        */
-      void setArrangement( Arrangement arrangement ) { mArrangement = arrangement; }
+      void setArrangement( QgsPalLayerSettings::Placement arrangement ) { mArrangement = arrangement; }
 
       /** Returns the layer's arrangement flags.
        * @see setArrangementFlags
@@ -105,7 +105,7 @@ namespace pal
        * @param flags arrangement flags
        * @see arrangementFlags
        */
-      void setArrangementFlags( LineArrangementFlags flags ) { mArrangementFlags = flags; }
+      void setArrangementFlags( const LineArrangementFlags& flags ) { mArrangementFlags = flags; }
 
       /**
        * \brief Sets whether the layer is currently active.
@@ -137,31 +137,18 @@ namespace pal
        */
       bool labelLayer() const { return mLabelLayer; }
 
-      /** Sets whether features within the layer will act as obstacles for labels.
-       * @note this property is only effective if the layer is active
-       * @param obstacle set to true if features will act as obstacles
-       * @see setActive
-       * @see obstacle
-       */
-      void setObstacle( bool obstacle ) { mObstacle = obstacle; }
-
-      /** Returns whether features within the layer act as obstacles for labels.
-       * @see setObstacle
-       */
-      bool obstacle() const { return mObstacle; }
-
       /** Returns the obstacle type, which controls how features within the layer
        * act as obstacles for labels.
        * @see setObstacleType
        */
-      ObstacleType obstacleType() const { return mObstacleType; }
+      QgsPalLayerSettings::ObstacleType obstacleType() const { return mObstacleType; }
 
       /** Sets the obstacle type, which controls how features within the layer
        * act as obstacles for labels.
        * @param obstacleType new obstacle type
        * @see obstacleType
        */
-      void setObstacleType( ObstacleType obstacleType ) { mObstacleType = obstacleType; }
+      void setObstacleType( QgsPalLayerSettings::ObstacleType obstacleType ) { mObstacleType = obstacleType; }
 
       /** Sets the layer's priority.
        * @param priority layer priority, between 0 and 1. 0 corresponds to highest priority,
@@ -239,57 +226,42 @@ namespace pal
       bool fitInPolygonOnly() const { return mFitInPolygon; }
 
       /** Register a feature in the layer.
-       * @param geom_id unique identifier
-       * @param userGeom user's geometry that implements the PalGeometry interface
-       * @param label_x label width
-       * @param label_y label height
-       * @param labelText label text
-       * @param labelPosX x position of the label (in case of fixed label position)
-       * @param labelPosY y position of the label (in case of fixed label position)
-       * @param fixedPos true if a single fixed position for this label is needed
-       * @param angle fixed angle (in radians) to rotate the label
-       * @param fixedAngle whether to use provided fixed angle
-       * @param xQuadOffset move label to quadrant: left, don't move, right (-1, 0, 1)
-       * @param yQuadOffset move label to quadrant: down, don't move, up (-1, 0, 1)
-       * @param xOffset map unit (+/-) to x-offset the label
-       * @param yOffset map unit (+/-) to y-offset the label
-       * @param alwaysShow whether to skip priority and always show the label (causes overlapping)
-       * @param repeatDistance distance for repeating the label
+       *
+       * Does not take ownership of the label feature (it is owned by its provider).
        *
        * @throws PalException::FeatureExists
        *
        * @return true on success (i.e. valid geometry)
        */
-      bool registerFeature( const QString &geom_id, PalGeometry *userGeom, double label_x = -1, double label_y = -1,
-                            const QString& labelText = QString(), double labelPosX = 0.0, double labelPosY = 0.0,
-                            bool fixedPos = false, double angle = 0.0, bool fixedAngle = false,
-                            int xQuadOffset = 0, int yQuadOffset = 0, double xOffset = 0.0, double yOffset = 0.0,
-                            bool alwaysShow = false, double repeatDistance = 0 );
-
-      /** Return pointer to feature or NULL if doesn't exist */
-      Feature* getFeature( const QString &geom_id );
+      bool registerFeature( QgsLabelFeature* label );
 
       /** Join connected features with the same label text */
       void joinConnectedFeatures();
+
+      /** Returns the connected feature ID for a label feature ID, which is unique for all features
+       * which have been joined as a result of joinConnectedFeatures()
+       * @returns connected feature ID, or -1 if feature was not joined
+       */
+      int connectedFeatureId( QgsFeatureId featureId ) const;
 
       /** Chop layer features at the repeat distance **/
       void chopFeaturesAtRepeatDistance();
 
     protected:
-      QString mName; /* unique */
+      QgsAbstractLabelProvider* mProvider; // not owned
+      QString mName;
 
       /** List of feature parts */
       QLinkedList<FeaturePart*> mFeatureParts;
 
-      /** List of features - for deletion */
-      QList<Feature*> features;
+      /** List of obstacle parts */
+      QList<FeaturePart*> mObstacleParts;
 
       Pal *pal;
 
       double mDefaultPriority;
 
-      bool mObstacle;
-      ObstacleType mObstacleType;
+      QgsPalLayerSettings::ObstacleType mObstacleType;
       bool mActive;
       bool mLabelLayer;
       bool mDisplayAll;
@@ -297,7 +269,7 @@ namespace pal
       bool mFitInPolygon;
 
       /** Optional flags used for some placement methods */
-      Arrangement mArrangement;
+      QgsPalLayerSettings::Placement mArrangement;
       LineArrangementFlags mArrangementFlags;
       LabelMode mMode;
       bool mMergeLines;
@@ -305,31 +277,39 @@ namespace pal
       UpsideDownLabels mUpsidedownLabels;
 
       // indexes (spatial and id)
-      RTree<FeaturePart*, double, 2, double, 8, 4> *rtree;
-      QHash< QString, Feature*> mHashtable;
+      RTree<FeaturePart*, double, 2, double, 8, 4> *mFeatureIndex;
+      //! Lookup table of label features (owned by the label feature provider that created them)
+      QHash< QgsFeatureId, QgsLabelFeature*> mHashtable;
+
+      //obstacle r-tree
+      RTree<FeaturePart*, double, 2, double, 8, 4> *mObstacleIndex;
 
       QHash< QString, QLinkedList<FeaturePart*>* > mConnectedHashtable;
       QStringList mConnectedTexts;
+      QHash< QgsFeatureId, int > mConnectedFeaturesIds;
 
       QMutex mMutex;
 
       /**
        * \brief Create a new layer
        *
-       * @param lyrName layer's name
+       * @param provider Associated provider
+       * @param name Name of the layer (for stats, debugging - does not need to be unique)
        * @param arrangement Arrangement mode : how to place candidates
        * @param defaultPriority layer's prioriry (0 is the best, 1 the worst)
-       * @param obstacle 'true' will discourage other label to be placed above features of this layer
        * @param active is the layer is active (currently displayed)
        * @param toLabel the layer will be labeled whether toLablel is true
        * @param pal pointer to the pal object
        * @param displayAll if true, all features will be labelled even though overlaps occur
        *
        */
-      Layer( const QString& lyrName, Arrangement arrangement, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll = false );
+      Layer( QgsAbstractLabelProvider* provider, const QString& name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );
 
       /** Add newly created feature part into r tree and to the list */
       void addFeaturePart( FeaturePart* fpart, const QString &labelText = QString() );
+
+      /** Add newly created obstacle part into r tree and to the list */
+      void addObstaclePart( FeaturePart* fpart );
 
   };
 

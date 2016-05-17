@@ -26,13 +26,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-import subprocess
+from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputFile
-from FusionAlgorithm import FusionAlgorithm
-from FusionUtils import FusionUtils
+from .FusionAlgorithm import FusionAlgorithm
+from .FusionUtils import FusionUtils
 
 
 class ClipData(FusionAlgorithm):
@@ -41,6 +41,8 @@ class ClipData(FusionAlgorithm):
     OUTPUT = 'OUTPUT'
     EXTENT = 'EXTENT'
     SHAPE = 'SHAPE'
+    DTM = 'DTM'
+    HEIGHT = 'HEIGHT'
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Clip Data')
@@ -52,20 +54,34 @@ class ClipData(FusionAlgorithm):
             self.SHAPE, self.tr('Shape'), ['Rectangle', 'Circle']))
         self.addOutput(OutputFile(
             self.OUTPUT, self.tr('Output clipped LAS file')))
+        dtm = ParameterFile(
+            self.DTM, self.tr('Ground file for height normalization'))
+        dtm.isAdvanced = True
+        self.addParameter(dtm)
+        height = ParameterBoolean(
+            self.HEIGHT, self.tr("Convert point elevations into heights above ground (used with the above command)"), False)
+        height.isAdvanced = True
+        self.addParameter(height)
         self.addAdvancedModifiers()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(FusionUtils.FusionPath(), 'FilterData.exe')]
+        commands = [os.path.join(FusionUtils.FusionPath(), 'ClipData.exe')]
         commands.append('/verbose')
         self.addAdvancedModifiersToCommand(commands)
         commands.append('/shape:' + unicode(self.getParameterValue(self.SHAPE)))
+        dtm = self.getParameterValue(self.DTM)
+        if dtm:
+            commands.append('/dtm:' + unicode(dtm))
+        height = self.getParameterValue(self.HEIGHT)
+        if height:
+            commands.append('/height')
         files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:
             commands.append(self.getParameterValue(self.INPUT))
         else:
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
-        outFile = self.getOutputValue(self.OUTPUT) + '.lda'
+        outFile = self.getOutputValue(self.OUTPUT)
         commands.append(outFile)
         extent = unicode(self.getParameterValue(self.EXTENT)).split(',')
         commands.append(extent[0])
@@ -73,8 +89,3 @@ class ClipData(FusionAlgorithm):
         commands.append(extent[1])
         commands.append(extent[3])
         FusionUtils.runFusion(commands, progress)
-        commands = [os.path.join(FusionUtils.FusionPath(), 'LDA2LAS.exe')]
-        commands.append(outFile)
-        commands.append(self.getOutputValue(self.OUTPUT))
-        p = subprocess.Popen(commands, shell=True)
-        p.wait()

@@ -33,11 +33,7 @@
 #include "labelposition.h"
 #include "feature.h"
 #include "geomfunction.h"
-#include <iostream>
 #include <cfloat>
-//#include <cfloat>
-#include <cstdarg>
-#include <ctime>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -47,113 +43,98 @@
 #define M_PI_2 1.57079632679489661923
 #endif
 
-#ifndef M_SQRT_2
-#define M_SQRT_2 0.707106781186547524401
-#endif
-
 #ifndef M_SQRT2
 #define M_SQRT2 1.41421356237309504880
 #endif
 
-namespace pal
+void pal::Util::sort( void** items, int N, bool ( *greater )( void *l, void *r ) )
 {
 
-  void sort( void** items, int N, bool ( *greater )( void *l, void *r ) )
+  if ( N <= 0 )
+    return;
+
+  unsigned int n = static_cast< unsigned int >( N ), i = n / 2, parent, child;
+
+  void *t = nullptr;
+
+  for ( ;; )
   {
-
-    if ( N <= 0 )
-      return;
-
-    unsigned int n = ( unsigned int ) N, i = n / 2, parent, child;
-
-    void *t = NULL;
-
-    for ( ;; )
+    if ( i > 0 )
     {
-      if ( i > 0 )
+      i--;
+      t = items[i];
+    }
+    else
+    {
+      n--;
+      if ( n == 0 ) return;
+      t = items[n];
+      items[n] = items[0];
+    }
+    parent = i;
+    child = i * 2 + 1;
+    while ( child < n )
+    {
+      if ( child + 1 < n  &&  greater( items[child + 1], items[child] ) )
       {
-        i--;
-        t = items[i];
+        child++;
+      }
+      if ( greater( items[child], t ) )
+      {
+        items[parent] = items[child];
+        parent = child;
+        child = parent * 2 + 1;
       }
       else
       {
-        n--;
-        if ( n == 0 ) return;
-        t = items[n];
-        items[n] = items[0];
+        break;
       }
-      parent = i;
-      child = i * 2 + 1;
-      while ( child < n )
-      {
-        if ( child + 1 < n  &&  greater( items[child + 1], items[child] ) )
-        {
-          child++;
-        }
-        if ( greater( items[child], t ) )
-        {
-          items[parent] = items[child];
-          parent = child;
-          child = parent * 2 + 1;
-        }
-        else
-        {
-          break;
-        }
-      }
-      items[parent] = t;
     }
+    items[parent] = t;
   }
+}
 
-  inline bool ptrGeomEq( const GEOSGeometry *l, const GEOSGeometry *r )
+QLinkedList<const GEOSGeometry *>* pal::Util::unmulti( const GEOSGeometry *the_geom )
+{
+  QLinkedList<const GEOSGeometry*> *queue = new QLinkedList<const GEOSGeometry*>;
+  QLinkedList<const GEOSGeometry*> *final_queue = new QLinkedList<const GEOSGeometry*>;
+
+  const GEOSGeometry *geom;
+
+  queue->append( the_geom );
+  int nGeom;
+  int i;
+
+  while ( !queue->isEmpty() )
   {
-    return l == r;
-  }
-
-  QLinkedList<const GEOSGeometry *> *unmulti( const GEOSGeometry *the_geom )
-  {
-    QLinkedList<const GEOSGeometry*> *queue = new QLinkedList<const GEOSGeometry*>;
-    QLinkedList<const GEOSGeometry*> *final_queue = new QLinkedList<const GEOSGeometry*>;
-
-    const GEOSGeometry *geom;
-
-    queue->append( the_geom );
-    int nGeom;
-    int i;
-
-    while ( queue->size() > 0 )
+    geom = queue->takeFirst();
+    GEOSContextHandle_t geosctxt = geosContext();
+    switch ( GEOSGeomTypeId_r( geosctxt, geom ) )
     {
-      geom = queue->takeFirst();
-      GEOSContextHandle_t geosctxt = geosContext();
-      switch ( GEOSGeomTypeId_r( geosctxt, geom ) )
-      {
-        case GEOS_MULTIPOINT:
-        case GEOS_MULTILINESTRING:
-        case GEOS_MULTIPOLYGON:
-          nGeom = GEOSGetNumGeometries_r( geosctxt, geom );
-          for ( i = 0; i < nGeom; i++ )
-          {
-            queue->append( GEOSGetGeometryN_r( geosctxt, geom, i ) );
-          }
-          break;
-        case GEOS_POINT:
-        case GEOS_LINESTRING:
-        case GEOS_POLYGON:
-          final_queue->append( geom );
-          break;
-        default:
-          delete final_queue;
-          delete queue;
-          return NULL;
-      }
+      case GEOS_MULTIPOINT:
+      case GEOS_MULTILINESTRING:
+      case GEOS_MULTIPOLYGON:
+        nGeom = GEOSGetNumGeometries_r( geosctxt, geom );
+        for ( i = 0; i < nGeom; i++ )
+        {
+          queue->append( GEOSGetGeometryN_r( geosctxt, geom, i ) );
+        }
+        break;
+      case GEOS_POINT:
+      case GEOS_LINESTRING:
+      case GEOS_POLYGON:
+        final_queue->append( geom );
+        break;
+      default:
+        delete final_queue;
+        delete queue;
+        return nullptr;
     }
-    delete queue;
-
-    return final_queue;
   }
+  delete queue;
 
-
-} // namespace
+  return final_queue;
+}
 
 
 

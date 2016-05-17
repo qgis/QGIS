@@ -52,7 +52,7 @@ struct CORE_EXPORT QgsSnappingResult
   int afterVertexNr;
   /** Index of the snapped geometry*/
   QgsFeatureId snappedAtGeometry;
-  /** Layer where the snap occured*/
+  /** Layer where the snap occurred*/
   const QgsVectorLayer* layer;
 };
 
@@ -94,28 +94,26 @@ class CORE_EXPORT QgsSnapper
       QgsTolerance::UnitType mUnitType;
     };
 
-    //!@ deprecated since 2.4 - use constructor with QgsMapSettings
+    //!@deprecated since 2.4 - use constructor with QgsMapSettings
     Q_DECL_DEPRECATED QgsSnapper( QgsMapRenderer *mapRender );
 
     explicit QgsSnapper( const QgsMapSettings& mapSettings );
 
-    ~QgsSnapper();
-
     /** Does the snapping operation
-     @param startPoint the start point for snapping (in pixel coordinates)
-     @param snappingResult the list where the results are inserted (everything in map coordinate system)
-     @param excludePoints a list with (map coordinate) points that should be excluded in the snapping result. Useful e.g. for vertex moves where a vertex should not be snapped to its original position
-     @return 0 in case of success
-     @deprecated
+     * @param startPoint the start point for snapping (in pixel coordinates)
+     * @param snappingResult the list where the results are inserted (everything in map coordinate system)
+     * @param excludePoints a list with (map coordinate) points that should be excluded in the snapping result. Useful e.g. for vertex moves where a vertex should not be snapped to its original position
+     * @return 0 in case of success
+     * @deprecated
      */
-    Q_DECL_DEPRECATED int snapPoint( const QPoint &startPoint, QList<QgsSnappingResult> &snappingResult, const QList<QgsPoint> &excludePoints = QList<QgsPoint>() );
+    Q_DECL_DEPRECATED int snapPoint( QPoint startPoint, QList<QgsSnappingResult> &snappingResult, const QList<QgsPoint> &excludePoints = QList<QgsPoint>() );
 
     /** Does the snapping operation
-     @param mapCoordPoint the start point for snapping (in map coordinates)
-     @param snappingResult the list where the results are inserted (everything in map coordinate system)
-     @param excludePoints a list with (map coordinate) points that should be excluded in the snapping result. Useful e.g. for vertex moves where a vertex should not be snapped to its original position
-     @return 0 in case of success
-    */
+     * @param mapCoordPoint the start point for snapping (in map coordinates)
+     * @param snappingResult the list where the results are inserted (everything in map coordinate system)
+     * @param excludePoints a list with (map coordinate) points that should be excluded in the snapping result. Useful e.g. for vertex moves where a vertex should not be snapped to its original position
+     * @return 0 in case of success
+     */
     int snapMapPoint( const QgsPoint &mapCoordPoint, QList<QgsSnappingResult> &snappingResult, const QList<QgsPoint> &excludePoints = QList<QgsPoint>() );
 
     //setters
@@ -128,7 +126,8 @@ class CORE_EXPORT QgsSnapper
     void cleanResultList( QMultiMap<double, QgsSnappingResult>& list, const QList<QgsPoint>& excludeList ) const;
 
     /** The map settings object contains information about the output coordinate system
-     of the map and about the relationship between pixel space and map space*/
+     * of the map and about the relationship between pixel space and map space
+     */
     const QgsMapSettings& mMapSettings;
     /** Snap mode to apply*/
     QgsSnapper::SnappingMode mSnapMode;

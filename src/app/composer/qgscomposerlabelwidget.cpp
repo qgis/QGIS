@@ -25,7 +25,7 @@
 #include <QFontDialog>
 #include <QWidget>
 
-QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QgsComposerItemBaseWidget( 0, label ), mComposerLabel( label )
+QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QgsComposerItemBaseWidget( nullptr, label ), mComposerLabel( label )
 {
   setupUi( this );
 
@@ -50,18 +50,10 @@ void QgsComposerLabelWidget::on_mHtmlCheckBox_stateChanged( int state )
 {
   if ( mComposerLabel )
   {
-    if ( state )
-    {
-      mFontButton->setEnabled( false );
-      mFontColorButton->setEnabled( false );
-      mAppearanceGroup->setEnabled( false );
-    }
-    else
-    {
-      mFontButton->setEnabled( true );
-      mFontColorButton->setEnabled( true );
-      mAppearanceGroup->setEnabled( true );
-    }
+    mVerticalAlignementLabel->setDisabled( state );
+    mTopRadioButton->setDisabled( state );
+    mMiddleRadioButton->setDisabled( state );
+    mBottomRadioButton->setDisabled( state );
 
     mComposerLabel->beginCommand( tr( "Label text HTML state changed" ), QgsComposerMergeCommand::ComposerLabelSetText );
     mComposerLabel->blockSignals( true );
@@ -249,6 +241,13 @@ void QgsComposerLabelWidget::setGuiElementValues()
   mCenterRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignHCenter );
   mRightRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignRight );
   mFontColorButton->setColor( mComposerLabel->fontColor() );
+
+
+  mVerticalAlignementLabel->setDisabled( mComposerLabel->htmlState() );
+  mTopRadioButton->setDisabled( mComposerLabel->htmlState() );
+  mMiddleRadioButton->setDisabled( mComposerLabel->htmlState() );
+  mBottomRadioButton->setDisabled( mComposerLabel->htmlState() );
+
   blockAllSignals( false );
 }
 

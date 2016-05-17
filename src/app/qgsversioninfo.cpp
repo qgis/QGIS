@@ -28,7 +28,7 @@ QgsVersionInfo::QgsVersionInfo( QObject *parent )
 
 void QgsVersionInfo::checkVersion()
 {
-  QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( QUrl( "https://qgis.org/version.txt" ) ) );
+  QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( QUrl( "https://ubuntu.qgis.org/version.txt" ) ) );
   connect( reply, SIGNAL( finished() ), this, SLOT( versionReplyFinished() ) );
 }
 
@@ -63,7 +63,7 @@ void QgsVersionInfo::versionReplyFinished()
       pos += contentFlag.length();
 
       versionMessage = versionMessage.mid( pos );
-      QStringList parts = versionMessage.split( "|", QString::SkipEmptyParts );
+      QStringList parts = versionMessage.split( '|', QString::SkipEmptyParts );
       // check the version from the  server against our version
       mLatestVersion = parts[0].toInt();
       mDownloadInfo = parts.value( 1 );
@@ -78,7 +78,7 @@ void QgsVersionInfo::versionReplyFinished()
       mErrorString = tr( "Connection refused - server may be down" );
       break;
     case QNetworkReply::HostNotFoundError:
-      mErrorString = tr( "The host name qgis.org could not be resolved. Check your DNS settings or contact your system administrator." );
+      mErrorString = tr( "The host name %1 could not be resolved. Check your DNS settings or contact your system administrator." ).arg( reply->request().url().host() );
       break;
     case QNetworkReply::NoError:
       mErrorString = "";

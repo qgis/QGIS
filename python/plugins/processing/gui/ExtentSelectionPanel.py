@@ -27,9 +27,11 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4 import uic
-from PyQt4.QtGui import QMenu, QAction, QCursor, QInputDialog
+from qgis.PyQt import uic
+from qgis.PyQt.QtWidgets import QMenu, QAction, QInputDialog
+from qgis.PyQt.QtGui import QCursor
 
+from qgis.gui import QgsMessageBar
 from qgis.core import QgsRasterLayer, QgsVectorLayer
 from qgis.utils import iface
 
@@ -37,6 +39,7 @@ from processing.gui.RectangleMapTool import RectangleMapTool
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterMultipleInput
+from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -46,7 +49,7 @@ WIDGET, BASE = uic.loadUiType(
 
 class ExtentSelectionPanel(BASE, WIDGET):
 
-    def __init__(self, dialog, alg, default):
+    def __init__(self, dialog, alg, default=None):
         super(ExtentSelectionPanel, self).__init__(None)
         self.setupUi(self)
 
@@ -63,6 +66,18 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.prevMapTool = canvas.mapTool()
         self.tool = RectangleMapTool(canvas)
         self.tool.rectangleCreated.connect(self.updateExtent)
+
+        if default:
+            tokens = unicode(default).split(',')
+            if len(tokens) == 4:
+                try:
+                    float(tokens[0])
+                    float(tokens[1])
+                    float(tokens[2])
+                    float(tokens[3])
+                    self.leText.setText(unicode(default))
+                except:
+                    pass
 
     def canUseAutoExtent(self):
         for param in self.params:
@@ -106,10 +121,10 @@ class ExtentSelectionPanel(BASE, WIDGET):
             if param.value:
                 if isinstance(param, (ParameterRaster, ParameterVector)):
                     if isinstance(param.value, (QgsRasterLayer,
-                                  QgsVectorLayer)):
+                                                QgsVectorLayer)):
                         layer = param.value
                     else:
-                        layer = dataobjects.getObjectFromUri(param.value)
+                        layer = dataobjects.getObject(param.value)
                     if layer:
                         found = True
                         self.addToRegion(layer, first)
@@ -117,7 +132,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
                 elif isinstance(param, ParameterMultipleInput):
                     layers = param.value.split(';')
                     for layername in layers:
-                        layer = dataobjects.getObjectFromUri(layername, first)
+                        layer = dataobjects.getObject(layername)
                         if layer:
                             found = True
                             self.addToRegion(layer, first)
@@ -146,16 +161,27 @@ class ExtentSelectionPanel(BASE, WIDGET):
     def useLayerExtent(self):
         CANVAS_KEY = 'Use canvas extent'
         extentsDict = {}
-        extentsDict[CANVAS_KEY] = iface.mapCanvas().extent()
+        extentsDict[CANVAS_KEY] = {"extent": iface.mapCanvas().extent(),
+                                   "authid": iface.mapCanvas().mapSettings().destinationCrs().authid()}
         extents = [CANVAS_KEY]
         layers = dataobjects.getAllLayers()
         for layer in layers:
-            extents.append(layer.name())
-            extentsDict[layer.name()] = layer.extent()
+            authid = layer.crs().authid()
+            if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF) \
+                    and authid is not None:
+                layerName = u'{} [{}]'.format(layer.name(), authid)
+            else:
+                layerName = layer.name()
+            extents.append(layerName)
+            extentsDict[layerName] = {"extent": layer.extent(), "authid": authid}
         (item, ok) = QInputDialog.getItem(self, self.tr('Select extent'),
                                           self.tr('Use extent from'), extents, False)
         if ok:
-            self.setValueFromRect(extentsDict[item])
+            self.setValueFromRect(extentsDict[item]["extent"])
+            if extentsDict[item]["authid"] != iface.mapCanvas().mapSettings().destinationCrs().authid():
+                iface.messageBar().pushMessage(self.tr("Warning"),
+                                               self.tr("The projection of the chosen layer is not the same as canvas projection! The selected extent might not be what was intended."),
+                                               QgsMessageBar.WARNING, 8)
 
     def selectOnCanvas(self):
         canvas = iface.mapCanvas()

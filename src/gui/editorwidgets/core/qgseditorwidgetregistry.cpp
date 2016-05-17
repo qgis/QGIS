@@ -24,23 +24,25 @@
 
 // Editors
 #include "qgsclassificationwidgetwrapperfactory.h"
-#include "qgsrangewidgetfactory.h"
-#include "qgsuniquevaluewidgetfactory.h"
-#include "qgsfilenamewidgetfactory.h"
-#include "qgsvaluemapwidgetfactory.h"
-#include "qgsenumerationwidgetfactory.h"
-#include "qgshiddenwidgetfactory.h"
 #include "qgscheckboxwidgetfactory.h"
-#include "qgstexteditwidgetfactory.h"
-#include "qgsvaluerelationwidgetfactory.h"
-#include "qgsuuidwidgetfactory.h"
+#include "qgscolorwidgetfactory.h"
+#include "qgsdatetimeeditfactory.h"
+#include "qgsenumerationwidgetfactory.h"
+#include "qgsexternalresourcewidgetfactory.h"
+#include "qgsfilenamewidgetfactory.h"
+#include "qgshiddenwidgetfactory.h"
 #include "qgsphotowidgetfactory.h"
+#include "qgsrangewidgetfactory.h"
+#include "qgsrelationreferencefactory.h"
+#include "qgstexteditwidgetfactory.h"
+#include "qgsuniquevaluewidgetfactory.h"
+#include "qgsuuidwidgetfactory.h"
+#include "qgsvaluemapwidgetfactory.h"
+#include "qgsvaluerelationwidgetfactory.h"
 #ifdef WITH_QTWEBKIT
 #include "qgswebviewwidgetfactory.h"
 #endif
-#include "qgscolorwidgetfactory.h"
-#include "qgsrelationreferencefactory.h"
-#include "qgsdatetimeeditfactory.h"
+
 
 QgsEditorWidgetRegistry* QgsEditorWidgetRegistry::instance()
 {
@@ -69,19 +71,20 @@ void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBa
   reg->registerWidget( "Color", new QgsColorWidgetFactory( tr( "Color" ) ) );
   reg->registerWidget( "RelationReference", new QgsRelationReferenceFactory( tr( "Relation Reference" ), mapCanvas, messageBar ) );
   reg->registerWidget( "DateTime", new QgsDateTimeEditFactory( tr( "Date/Time" ) ) );
+  reg->registerWidget( "ExternalResource", new QgsExternalResourceWidgetFactory( tr( "External Resource" ) ) );
 }
 
 QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
 {
   connect( QgsProject::instance(), SIGNAL( readMapLayer( QgsMapLayer*, const QDomElement& ) ), this, SLOT( readMapLayer( QgsMapLayer*, const QDomElement& ) ) );
-  connect( QgsProject::instance(), SIGNAL( writeMapLayer( QgsMapLayer*, QDomElement&, QDomDocument& ) ), this, SLOT( writeMapLayer( QgsMapLayer*, QDomElement&, QDomDocument& ) ) );
+  // connect( QgsProject::instance(), SIGNAL( writeMapLayer( QgsMapLayer*, QDomElement&, QDomDocument& ) ), this, SLOT( writeMapLayer( QgsMapLayer*, QDomElement&, QDomDocument& ) ) );
 
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( mapLayerAdded( QgsMapLayer* ) ) );
 }
 
 QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()
 {
-  qDeleteAll( mWidgetFactories.values() );
+  qDeleteAll( mWidgetFactories );
 }
 
 QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, QWidget* editor, QWidget* parent, const QgsAttributeEditorContext &context )
@@ -112,7 +115,7 @@ QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( const QString& widgetId
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 QgsSearchWidgetWrapper* QgsEditorWidgetRegistry::createSearchWidget( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, QWidget* parent, const QgsAttributeEditorContext &context )
@@ -131,7 +134,7 @@ QgsSearchWidgetWrapper* QgsEditorWidgetRegistry::createSearchWidget( const QStri
       return ww;
     }
   }
-  return 0;
+  return nullptr;
 }
 
 QgsEditorConfigWidget* QgsEditorWidgetRegistry::createConfigWidget( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
@@ -140,7 +143,7 @@ QgsEditorConfigWidget* QgsEditorWidgetRegistry::createConfigWidget( const QStrin
   {
     return mWidgetFactories[widgetId]->configWidget( vl, fieldIdx, parent );
   }
-  return 0;
+  return nullptr;
 }
 
 QString QgsEditorWidgetRegistry::name( const QString& widgetId )
@@ -237,7 +240,7 @@ void QgsEditorWidgetRegistry::readMapLayer( QgsMapLayer* mapLayer, const QDomEle
 
     if ( mWidgetFactories.contains( ewv2Type ) )
     {
-      vectorLayer->setEditorWidgetV2( idx, ewv2Type );
+      vectorLayer->editFormConfig()->setWidgetType( idx, ewv2Type );
       QDomElement ewv2CfgElem = editTypeElement.namedItem( "widgetv2config" ).toElement();
 
       if ( !ewv2CfgElem.isNull() )
@@ -245,9 +248,9 @@ void QgsEditorWidgetRegistry::readMapLayer( QgsMapLayer* mapLayer, const QDomEle
         cfg = mWidgetFactories[ewv2Type]->readEditorConfig( ewv2CfgElem, vectorLayer, idx );
       }
 
-      vectorLayer->setFieldEditable( idx, ewv2CfgElem.attribute( "fieldEditable", "1" ) == "1" );
-      vectorLayer->setLabelOnTop( idx, ewv2CfgElem.attribute( "labelOnTop", "0" ) == "1" );
-      vectorLayer->setEditorWidgetV2Config( idx, cfg );
+      vectorLayer->editFormConfig()->setReadOnly( idx, ewv2CfgElem.attribute( "fieldEditable", "1" ) != "1" );
+      vectorLayer->editFormConfig()->setLabelOnTop( idx, ewv2CfgElem.attribute( "labelOnTop", "0" ) == "1" );
+      vectorLayer->editFormConfig()->setWidgetConfig( idx, cfg );
     }
     else
     {
@@ -285,8 +288,8 @@ void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement&
   QgsFields fields = vectorLayer->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    const QgsField &field = fields[ idx ];
-    const QString& widgetType = vectorLayer->editorWidgetV2( idx );
+    const QgsField &field = fields.at( idx );
+    const QString& widgetType = vectorLayer->editFormConfig()->widgetType( idx );
     if ( !mWidgetFactories.contains( widgetType ) )
     {
       QgsMessageLog::logMessage( tr( "Could not save unknown editor widget type '%1'." ).arg( widgetType ) );
@@ -301,10 +304,10 @@ void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement&
     if ( mWidgetFactories.contains( widgetType ) )
     {
       QDomElement ewv2CfgElem = doc.createElement( "widgetv2config" );
-      ewv2CfgElem.setAttribute( "fieldEditable", vectorLayer->fieldEditable( idx ) );
-      ewv2CfgElem.setAttribute( "labelOnTop", vectorLayer->labelOnTop( idx ) );
+      ewv2CfgElem.setAttribute( "fieldEditable", !vectorLayer->editFormConfig()->readOnly( idx ) );
+      ewv2CfgElem.setAttribute( "labelOnTop", vectorLayer->editFormConfig()->labelOnTop( idx ) );
 
-      mWidgetFactories[widgetType]->writeConfig( vectorLayer->editorWidgetV2Config( idx ), ewv2CfgElem, doc, vectorLayer, idx );
+      mWidgetFactories[widgetType]->writeConfig( vectorLayer->editFormConfig()->widgetConfig( idx ), ewv2CfgElem, doc, vectorLayer, idx );
 
       editTypeElement.appendChild( ewv2CfgElem );
     }
@@ -351,23 +354,28 @@ QString QgsEditorWidgetRegistry::findSuitableWrapper( QWidget* editor, const QSt
   QMap<const char*, QPair<int, QString> >::ConstIterator it;
 
   QString widgetid;
-  int weight = 0;
 
-  it = mFactoriesByType.constBegin();
-  for ( ; it != mFactoriesByType.constEnd(); ++it )
+  // Editor can be null
+  if ( editor )
   {
-    if ( editor->staticMetaObject.className() == it.key() )
+    int weight = 0;
+
+    it = mFactoriesByType.constBegin();
+    for ( ; it != mFactoriesByType.constEnd(); ++it )
     {
-      // if it's a perfect match: return it directly
-      return it.value().second;
-    }
-    else if ( editor->inherits( it.key() ) )
-    {
-      // if it's a subclass, continue evaluating, maybe we find a more-specific or one with more weight
-      if ( it.value().first > weight )
+      if ( editor->staticMetaObject.className() == it.key() )
       {
-        weight = it.value().first;
-        widgetid = it.value().second;
+        // if it's a perfect match: return it directly
+        return it.value().second;
+      }
+      else if ( editor->inherits( it.key() ) )
+      {
+        // if it's a subclass, continue evaluating, maybe we find a more-specific or one with more weight
+        if ( it.value().first > weight )
+        {
+          weight = it.value().first;
+          widgetid = it.value().second;
+        }
       }
     }
   }

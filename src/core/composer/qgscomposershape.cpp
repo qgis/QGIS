@@ -22,12 +22,13 @@
 #include "qgscomposermodel.h"
 #include <QPainter>
 
-QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerItem( composition ),
-    mShape( Ellipse ),
-    mCornerRadius( 0 ),
-    mUseSymbolV2( false ), //default to not using SymbolV2 for shapes, to preserve 2.0 api
-    mShapeStyleSymbol( 0 ),
-    mMaxSymbolBleed( 0 )
+QgsComposerShape::QgsComposerShape( QgsComposition* composition )
+    : QgsComposerItem( composition )
+    , mShape( Ellipse )
+    , mCornerRadius( 0 )
+    , mUseSymbolV2( false ) //default to not using SymbolV2 for shapes, to preserve 2.0 api
+    , mShapeStyleSymbol( nullptr )
+    , mMaxSymbolBleed( 0 )
 {
   setFrameEnabled( true );
   createDefaultShapeStyleSymbol();
@@ -40,13 +41,13 @@ QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerIt
   }
 }
 
-QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ):
-    QgsComposerItem( x, y, width, height, composition ),
-    mShape( Ellipse ),
-    mCornerRadius( 0 ),
-    mUseSymbolV2( false ), //default to not using SymbolV2 for shapes, to preserve 2.0 api
-    mShapeStyleSymbol( 0 ),
-    mMaxSymbolBleed( 0 )
+QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition )
+    : QgsComposerItem( x, y, width, height, composition )
+    , mShape( Ellipse )
+    , mCornerRadius( 0 )
+    , mUseSymbolV2( false ) //default to not using SymbolV2 for shapes, to preserve 2.0 api
+    , mShapeStyleSymbol( nullptr )
+    , mMaxSymbolBleed( 0 )
 {
   setSceneRect( QRectF( x, y, width, height ) );
   setFrameEnabled( true );
@@ -236,7 +237,7 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
   }
 
   mShapeStyleSymbol->startRender( context );
-  mShapeStyleSymbol->renderPolygon( shapePolygon, &rings, 0, context );
+  mShapeStyleSymbol->renderPolygon( shapePolygon, &rings, nullptr, context );
   mShapeStyleSymbol->stopRender( context );
 
   p->restore();
@@ -290,12 +291,12 @@ bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument&
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
-  if ( composerItemList.size() > 0 )
+  if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
 
     //rotation
-    if ( composerItemElem.attribute( "rotation", "0" ).toDouble() != 0 )
+    if ( !qgsDoubleNear( composerItemElem.attribute( "rotation", "0" ).toDouble(), 0.0 ) )
     {
       //check for old (pre 2.1) rotation attribute
       setItemRotation( composerItemElem.attribute( "rotation", "0" ).toDouble() );
@@ -337,7 +338,7 @@ bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument&
 
     //for pre 2.0 projects, shape color and outline were specified in a different element...
     QDomNodeList outlineColorList = itemElem.elementsByTagName( "OutlineColor" );
-    if ( outlineColorList.size() > 0 )
+    if ( !outlineColorList.isEmpty() )
     {
       QDomElement frameColorElem = outlineColorList.at( 0 ).toElement();
       bool redOk, greenOk, blueOk, alphaOk, widthOk;
@@ -357,7 +358,7 @@ bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument&
       }
     }
     QDomNodeList fillColorList = itemElem.elementsByTagName( "FillColor" );
-    if ( fillColorList.size() > 0 )
+    if ( !fillColorList.isEmpty() )
     {
       QDomElement fillColorElem = fillColorList.at( 0 ).toElement();
       bool redOk, greenOk, blueOk, alphaOk;
@@ -450,13 +451,10 @@ QString QgsComposerShape::displayName() const
   {
     case Ellipse:
       return tr( "<ellipse>" );
-      break;
     case Rectangle:
       return tr( "<rectangle>" );
-      break;
     case Triangle:
       return tr( "<triangle>" );
-      break;
   }
 
   return tr( "<shape>" );

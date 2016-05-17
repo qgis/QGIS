@@ -18,8 +18,8 @@
 #include "qgsfilenamewidgetwrapper.h"
 #include "qgsdummyconfigdlg.h"
 
-QgsFileNameWidgetFactory::QgsFileNameWidgetFactory( const QString& name ) :
-    QgsEditorWidgetFactory( name )
+QgsFileNameWidgetFactory::QgsFileNameWidgetFactory( const QString& name )
+    : QgsEditorWidgetFactory( name )
 {
 }
 

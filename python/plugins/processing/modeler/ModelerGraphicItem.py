@@ -27,8 +27,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtCore import Qt, QPointF, QRectF
-from PyQt4.QtGui import QIcon, QGraphicsItem, QFont, QFontMetricsF, QMessageBox, QMenu, QPen, QBrush, QColor, QPolygonF
+from qgis.PyQt.QtCore import Qt, QPointF, QRectF
+from qgis.PyQt.QtGui import QIcon, QFont, QFontMetricsF, QPen, QBrush, QColor, QPolygonF
+from qgis.PyQt.QtWidgets import QGraphicsItem, QMessageBox, QMenu
 from processing.modeler.ModelerAlgorithm import ModelerParameter, Algorithm, ModelerOutput
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
@@ -263,12 +264,12 @@ class ModelerGraphicItem(QGraphicsItem):
             painter.drawText(pt, 'Out')
             if not self.element.outputsFolded:
                 for i, out in enumerate(self.element.algorithm.outputs):
-                        text = self.getAdjustedText(out.description)
-                        h = fm.height() * 1.2 * (i + 2)
-                        h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
-                        pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2
-                                     + 33, h)
-                        painter.drawText(pt, text)
+                    text = self.getAdjustedText(out.description)
+                    h = fm.height() * 1.2 * (i + 2)
+                    h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
+                    pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2
+                                 + 33, h)
+                    painter.drawText(pt, text)
         if self.pixmap:
             painter.drawPixmap(-(ModelerGraphicItem.BOX_WIDTH / 2.0) + 3, -8,
                                self.pixmap)
@@ -288,7 +289,7 @@ class ModelerGraphicItem(QGraphicsItem):
         return QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + offsetX, h)
 
     def getLinkPointForOutput(self, outputIndex):
-        if isinstance(self.element, Algorithm):
+        if isinstance(self.element, Algorithm) and self.element.algorithm.outputs:
             outputIndex = (outputIndex if not self.element.outputsFolded else -1)
             text = self.getAdjustedText(self.element.algorithm.outputs[outputIndex].description)
             font = QFont('Verdana', 8)
@@ -354,11 +355,11 @@ class FlatButtonGraphicItem(QGraphicsItem):
         if self.isIn:
             painter.setPen(QPen(Qt.transparent, 1))
             painter.setBrush(QBrush(Qt.lightGray,
-                             Qt.SolidPattern))
+                                    Qt.SolidPattern))
         else:
             painter.setPen(QPen(Qt.transparent, 1))
             painter.setBrush(QBrush(Qt.transparent,
-                             Qt.SolidPattern))
+                                    Qt.SolidPattern))
         painter.drawRect(rect)
         painter.drawPixmap(pt.x(), pt.y(), self.pixmap)
 
@@ -383,10 +384,10 @@ class FoldButtonGraphicItem(FlatButtonGraphicItem):
     WIDTH = 11
     HEIGHT = 11
 
-    icons = {True: QIcon(os.path.join(pluginPath, 'images', 'plus.png')),
-             False: QIcon(os.path.join(pluginPath, 'images', 'minus.png'))}
-
     def __init__(self, position, action, folded):
+        self.icons = {True: QIcon(os.path.join(pluginPath, 'images', 'plus.png')),
+                      False: QIcon(os.path.join(pluginPath, 'images', 'minus.png'))}
+
         self.folded = folded
         icon = self.icons[self.folded]
         super(FoldButtonGraphicItem, self).__init__(icon, position, action)

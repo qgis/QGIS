@@ -43,8 +43,8 @@ class ANALYSIS_EXPORT Vector3D
     /** Destructor*/
     ~Vector3D();
     Vector3D& operator=( const Vector3D& v );
-    bool operator==( const Vector3D& v );
-    bool operator!=( const Vector3D& v );
+    bool operator==( const Vector3D& v ) const;
+    bool operator!=( const Vector3D& v ) const;
     /** Returns the x-component of the vector*/
     double getX() const;
     /** Returns the y-component of the vector*/
@@ -65,12 +65,18 @@ class ANALYSIS_EXPORT Vector3D
 
 //------------------------------------------constructors------------------------------------
 
-inline Vector3D::Vector3D( double x, double y, double z ) : mX( x ), mY( y ), mZ( z )
+inline Vector3D::Vector3D( double x, double y, double z )
+    : mX( x )
+    , mY( y )
+    , mZ( z )
 {
 
 }
 
-inline Vector3D::Vector3D() : mX( 0 ), mY( 0 ), mZ( 0 )//using a list
+inline Vector3D::Vector3D()
+    : mX( 0 )
+    , mY( 0 )
+    , mZ( 0 )//using a list
 {
 
 }

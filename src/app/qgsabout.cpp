@@ -17,6 +17,7 @@
 
 #include "qgsabout.h"
 #include "qgsapplication.h"
+#include "qgsauthmethodregistry.h"
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
 #include <QDesktopServices>
@@ -26,10 +27,6 @@
 #include <QSqlDatabase>
 #include <QTcpSocket>
 
-/* Uncomment this block to use preloaded images
-#include <map>
-std::map<QString, QPixmap> mugs;
-*/
 #ifdef Q_OS_MACX
 QgsAbout::QgsAbout( QWidget *parent )
     : QgsOptionsDialogBase( "about", parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
@@ -71,8 +68,7 @@ void QgsAbout::init()
   connect( developersMapView, SIGNAL( linkClicked( const QUrl & ) ), this, SLOT( openUrl( const QUrl & ) ) );
 
   // set the 60x60 icon pixmap
-  QPixmap icon( QgsApplication::iconsPath() + "qgis-icon-60x60.png" );
-  qgisIcon->setPixmap( icon );
+  qgisIcon->setPixmap( QPixmap( QgsApplication::appIconPath() ) );
 
   //read the authors file to populate the svn committers list
   QStringList lines;
@@ -91,9 +87,9 @@ void QgsAbout::init()
     {
       line = stream.readLine(); // line of text excluding '\n'
       //ignore the line if it starts with a hash....
-      if ( line.left( 1 ) == "#" )
+      if ( line.at( 0 ) == '#' )
         continue;
-      QStringList myTokens = line.split( "\t", QString::SkipEmptyParts );
+      QStringList myTokens = line.split( '\t', QString::SkipEmptyParts );
       lines << myTokens[0];
     }
     file.close();
@@ -123,7 +119,7 @@ void QgsAbout::init()
     {
       line = stream.readLine(); // line of text excluding '\n'
       //ignore the line if it starts with a hash....
-      if ( line.left( 1 ) == "#" )
+      if ( line.at( 0 ) == '#' )
         continue;
       lines += line;
     }
@@ -163,7 +159,7 @@ void QgsAbout::init()
       //ignore the line if it starts with a hash....
       if ( sline.left( 1 ) == "#" )
         continue;
-      QStringList myTokens = sline.split( "|", QString::SkipEmptyParts );
+      QStringList myTokens = sline.split( '|', QString::SkipEmptyParts );
       if ( myTokens.size() > 1 )
       {
         website = "<a href=\"" + myTokens[1].remove( ' ' ) + "\">" + myTokens[1] + "</a>";
@@ -225,7 +221,7 @@ void QgsAbout::setLicence()
   }
 }
 
-void QgsAbout::setVersion( QString v )
+void QgsAbout::setVersion( const QString& v )
 {
   txtVersion->setBackgroundRole( QPalette::NoRole );
   txtVersion->setAutoFillBackground( true );
@@ -245,6 +241,8 @@ void QgsAbout::setPluginInfo()
   //provide info about the plugins available
   myString += "<b>" + tr( "Available QGIS Data Provider Plugins" ) + "</b><br>";
   myString += QgsProviderRegistry::instance()->pluginList( true );
+  myString += "<b>" + tr( "Available QGIS Authentication Method Plugins" ) + "</b><br>";
+  myString += QgsAuthMethodRegistry::instance()->pluginList( true );
   //qt database plugins
   myString += "<b>" + tr( "Available Qt Database Plugins" ) + "</b><br>";
   myString += "<ol>\n<li>\n";
@@ -294,7 +292,7 @@ void QgsAbout::openUrl( const QUrl &url )
  * Step 2: Replace all bytes of the UTF-8 above 0x7f with the hexcode in lower case.
  * Step 2: Replace all non [a-z][a-Z][0-9] with underscore (backward compatibility)
  */
-QString QgsAbout::fileSystemSafe( QString fileName )
+QString QgsAbout::fileSystemSafe( const QString& fileName )
 {
   QString result;
   QByteArray utf8 = fileName.toUtf8();

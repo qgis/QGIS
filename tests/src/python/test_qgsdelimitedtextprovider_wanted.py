@@ -1,8 +1,34 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    test_qgsdelimitedtextprovider_wanted.py
+    ---------------------
+    Date                 : May 2013
+    Copyright            : (C) 2013 by Chris Crook
+    Email                : ccrook at linz dot govt dot nz
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Chris Crook'
+__date__ = 'May 2013'
+__copyright__ = '(C) 2013, Chris Crook'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 
 def test_002_load_csv_file():
     wanted = {}
     wanted['uri'] = u'file://test.csv?geomType=none&type=csv'
     wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -67,6 +93,7 @@ def test_003_field_naming():
     wanted = {}
     wanted['uri'] = u'file://testfields.csv?geomType=none&type=csv'
     wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -93,6 +120,7 @@ def test_004_max_fields():
     wanted = {}
     wanted['uri'] = u'file://testfields.csv?geomType=none&maxFields=7&type=csv'
     wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -114,6 +142,7 @@ def test_005_load_whitespace():
     wanted = {}
     wanted['uri'] = u'file://test.space?geomType=none&type=whitespace'
     wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -184,6 +213,7 @@ def test_006_quote_escape():
     wanted = {}
     wanted['uri'] = u'file://test.pipe?geomType=none&quote="&delimiter=|&escape=\\'
     wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -274,6 +304,7 @@ def test_007_multiple_quote():
     wanted = {}
     wanted['uri'] = u'file://test.quote?geomType=none&quote=\'"&type=csv&escape="\''
     wanted['fieldTypes'] = ['integer', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -339,6 +370,7 @@ def test_008_badly_formed_quotes():
     wanted = {}
     wanted['uri'] = u'file://test.badquote?geomType=none&quote="&type=csv&escape="'
     wanted['fieldTypes'] = ['integer', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         4: {
             'id': u'3',
@@ -363,6 +395,7 @@ def test_009_skip_lines():
     wanted = {}
     wanted['uri'] = u'file://test2.csv?geomType=none&skipLines=2&type=csv&useHeader=no'
     wanted['fieldTypes'] = ['integer', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         3: {
             'id': u'3',
@@ -382,6 +415,7 @@ def test_010_read_coordinates():
     wanted = {}
     wanted['uri'] = u'file://testpt.csv?yField=geom_y&xField=geom_x&type=csv'
     wanted['fieldTypes'] = ['integer', 'text', 'double', 'double']
+    wanted['geometryType'] = 0
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -421,6 +455,7 @@ def test_011_read_wkt():
     wanted = {}
     wanted['uri'] = u'file://testwkt.csv?delimiter=|&type=csv&wktField=geom_wkt'
     wanted['fieldTypes'] = ['integer', 'text']
+    wanted['geometryType'] = 0
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -450,13 +485,13 @@ def test_011_read_wkt():
             'id': u'10',
             'description': u'Measure in point',
             '#fid': 11,
-            '#geometry': 'Point (10 20)',
+            '#geometry': 'PointM (10 20 30)',
         },
     }
     wanted['log'] = [
         u'Errors in file testwkt.csv',
         u'1 records discarded due to invalid geometry definitions',
-        u'7 records discarded due to incompatible geometry types',
+        u'10 records discarded due to incompatible geometry types',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid WKT at line 8',
     ]
@@ -467,6 +502,7 @@ def test_012_read_wkt_point():
     wanted = {}
     wanted['uri'] = u'file://testwkt.csv?geomType=point&delimiter=|&type=csv&wktField=geom_wkt'
     wanted['fieldTypes'] = ['integer', 'text']
+    wanted['geometryType'] = 0
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -496,13 +532,13 @@ def test_012_read_wkt_point():
             'id': u'10',
             'description': u'Measure in point',
             '#fid': 11,
-            '#geometry': 'Point (10 20)',
+            '#geometry': 'PointM (10 20 30)',
         },
     }
     wanted['log'] = [
         u'Errors in file testwkt.csv',
         u'1 records discarded due to invalid geometry definitions',
-        u'7 records discarded due to incompatible geometry types',
+        u'10 records discarded due to incompatible geometry types',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid WKT at line 8',
     ]
@@ -513,6 +549,7 @@ def test_013_read_wkt_line():
     wanted = {}
     wanted['uri'] = u'file://testwkt.csv?geomType=line&delimiter=|&type=csv&wktField=geom_wkt'
     wanted['fieldTypes'] = ['integer', 'text']
+    wanted['geometryType'] = 1
     wanted['data'] = {
         4: {
             'id': u'3',
@@ -530,25 +567,37 @@ def test_013_read_wkt_line():
             'id': u'11',
             'description': u'Measure in line',
             '#fid': 12,
-            '#geometry': 'LineString (10 20, 11 21)',
+            '#geometry': 'LineStringM (10 20 30, 11 21 31)',
         },
         13: {
             'id': u'12',
             'description': u'Z in line',
             '#fid': 13,
-            '#geometry': 'LineString (10 20, 11 21)',
+            '#geometry': 'LineStringZ (10 20 30, 11 21 31)',
         },
         14: {
             'id': u'13',
             'description': u'Measure and Z in line',
             '#fid': 14,
-            '#geometry': 'LineString (10 20, 11 21)',
+            '#geometry': 'LineStringZM (10 20 30 40, 11 21 31 41)',
+        },
+        15: {
+            'id': u'14',
+            'description': u'CircularString',
+            '#fid': 15,
+            '#geometry': 'CircularString (268 415, 227 505, 227 406)',
+        },
+        17: {
+            'id': u'16',
+            'description': u'CompoundCurve',
+            '#fid': 17,
+            '#geometry': 'CompoundCurve ((5 3, 5 13), CircularString(5 13, 7 15, 9 13), (9 13, 9 3), CircularString(9 3, 7 1, 5 3))',
         },
     }
     wanted['log'] = [
         u'Errors in file testwkt.csv',
         u'1 records discarded due to invalid geometry definitions',
-        u'7 records discarded due to incompatible geometry types',
+        u'8 records discarded due to incompatible geometry types',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid WKT at line 8',
     ]
@@ -559,6 +608,7 @@ def test_014_read_wkt_polygon():
     wanted = {}
     wanted['uri'] = u'file://testwkt.csv?geomType=polygon&delimiter=|&type=csv&wktField=geom_wkt'
     wanted['fieldTypes'] = ['integer', 'text']
+    wanted['geometryType'] = 2
     wanted['data'] = {
         6: {
             'id': u'5',
@@ -572,11 +622,17 @@ def test_014_read_wkt_polygon():
             '#fid': 7,
             '#geometry': 'MultiPolygon (((10 10,10 20,20 20,20 10,10 10),(14 14,14 16,16 16,14 14)),((30 30,30 35,35 35,30 30)))',
         },
+        16: {
+            'id': u'15',
+            'description': u'CurvePolygon',
+            '#fid': 16,
+            '#geometry': 'CurvePolygon (CircularString (1 3, 3 5, 4 7, 7 3, 1 3))',
+        },
     }
     wanted['log'] = [
         u'Errors in file testwkt.csv',
         u'1 records discarded due to invalid geometry definitions',
-        u'10 records discarded due to incompatible geometry types',
+        u'12 records discarded due to incompatible geometry types',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid WKT at line 8',
     ]
@@ -587,6 +643,7 @@ def test_015_read_dms_xy():
     wanted = {}
     wanted['uri'] = u'file://testdms.csv?yField=lat&xField=lon&type=csv&xyDms=yes'
     wanted['fieldTypes'] = ['integer', 'text', 'text', 'text']
+    wanted['geometryType'] = 0
     wanted['data'] = {
         3: {
             'id': u'1',
@@ -758,6 +815,7 @@ def test_016_decimal_point():
     wanted = {}
     wanted['uri'] = u'file://testdp.csv?yField=geom_y&xField=geom_x&type=csv&delimiter=;&decimalPoint=,'
     wanted['fieldTypes'] = ['integer', 'text', 'double', 'double', 'double', 'text']
+    wanted['geometryType'] = 0
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -788,6 +846,7 @@ def test_017_regular_expression_1():
     wanted = {}
     wanted['uri'] = u'file://testre.txt?geomType=none&trimFields=Y&delimiter=RE(?:GEXP)?&type=regexp'
     wanted['fieldTypes'] = ['integer', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -814,6 +873,7 @@ def test_018_regular_expression_2():
     wanted = {}
     wanted['uri'] = u'file://testre.txt?geomType=none&trimFields=Y&delimiter=(RE)(GEXP)?&type=regexp'
     wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -852,6 +912,7 @@ def test_019_regular_expression_3():
     wanted = {}
     wanted['uri'] = u'file://testre2.txt?geomType=none&trimFields=Y&delimiter=^(.{5})(.{30})(.{5,})&type=regexp'
     wanted['fieldTypes'] = ['integer', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -881,6 +942,7 @@ def test_020_regular_expression_4():
     wanted = {}
     wanted['uri'] = u'file://testre3.txt?geomType=none&delimiter=x?&type=regexp'
     wanted['fieldTypes'] = ['text', 'text', 'text', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
             'id': u'f',
@@ -904,6 +966,7 @@ def test_021_regular_expression_5():
     wanted = {}
     wanted['uri'] = u'file://testre3.txt?geomType=none&delimiter=\\b&type=regexp'
     wanted['fieldTypes'] = ['text', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
             'id': u'fi',
@@ -923,6 +986,7 @@ def test_022_utf8_encoded_file():
     wanted = {}
     wanted['uri'] = u'file://testutf8.csv?geomType=none&delimiter=|&type=csv&encoding=utf-8'
     wanted['fieldTypes'] = ['integer', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -940,6 +1004,7 @@ def test_023_latin1_encoded_file():
     wanted = {}
     wanted['uri'] = u'file://testlatin1.csv?geomType=none&delimiter=|&type=csv&encoding=latin1'
     wanted['fieldTypes'] = ['integer', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -957,6 +1022,7 @@ def test_024_filter_rect_xy():
     wanted = {}
     wanted['uri'] = u'file://testextpt.txt?yField=y&delimiter=|&type=csv&xField=x'
     wanted['fieldTypes'] = ['integer', 'text', 'integer', 'integer']
+    wanted['geometryType'] = 0
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -1001,6 +1067,7 @@ def test_025_filter_rect_wkt():
     wanted = {}
     wanted['uri'] = u'file://testextw.txt?delimiter=|&type=csv&wktField=wkt'
     wanted['fieldTypes'] = ['integer', 'text']
+    wanted['geometryType'] = 1
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -1061,6 +1128,7 @@ def test_026_filter_fid():
     wanted = {}
     wanted['uri'] = u'file://test.csv?geomType=none&type=csv'
     wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         3: {
             'id': u'2',
@@ -1100,6 +1168,7 @@ def test_027_filter_attributes():
     wanted = {}
     wanted['uri'] = u'file://test.csv?geomType=none&type=csv'
     wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
             'id': u'None',
@@ -1209,6 +1278,7 @@ def test_028_substring_test():
     wanted = {}
     wanted['uri'] = u'file://test.csv?geomType=none&type=csv&subset=id%20%25%202%20%3D%201'
     wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -1246,6 +1316,7 @@ def test_029_file_watcher():
     wanted = {}
     wanted['uri'] = u'file://file?geomType=none&type=csv&watchFile=yes'
     wanted['fieldTypes'] = ['integer', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         3: {
             'id': u'2',
@@ -1359,6 +1430,7 @@ def test_030_filter_rect_xy_spatial_index():
     wanted = {}
     wanted['uri'] = u'file://testextpt.txt?spatialIndex=Y&yField=y&delimiter=|&type=csv&xField=x'
     wanted['fieldTypes'] = ['integer', 'text', 'integer', 'integer']
+    wanted['geometryType'] = 0
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -1547,6 +1619,7 @@ def test_031_filter_rect_wkt_spatial_index():
     wanted = {}
     wanted['uri'] = u'file://testextw.txt?spatialIndex=Y&delimiter=|&type=csv&wktField=wkt'
     wanted['fieldTypes'] = ['integer', 'text']
+    wanted['geometryType'] = 1
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -1679,6 +1752,7 @@ def test_032_filter_rect_wkt_create_spatial_index():
     wanted = {}
     wanted['uri'] = u'file://testextw.txt?delimiter=|&type=csv&wktField=wkt'
     wanted['fieldTypes'] = ['integer', 'text']
+    wanted['geometryType'] = 1
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -1877,6 +1951,7 @@ def test_033_reset_subset_string():
     wanted = {}
     wanted['uri'] = u'file://test.csv?geomType=none&type=csv'
     wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -2040,6 +2115,7 @@ def test_034_csvt_file():
     wanted = {}
     wanted['uri'] = u'file://testcsvt.csv?geomType=none&type=csv'
     wanted['fieldTypes'] = ['integer', 'text', 'integer', 'double', 'text', 'text', 'text', 'text', 'text', 'text', 'longlong', 'longlong']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -2082,6 +2158,7 @@ def test_035_csvt_file2():
     wanted = {}
     wanted['uri'] = u'file://testcsvt2.txt?geomType=none&delimiter=|&type=csv'
     wanted['fieldTypes'] = ['integer', 'text', 'integer', 'double', 'integer', 'text', 'integer']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -2114,6 +2191,7 @@ def test_036_csvt_file_invalid_types():
     wanted = {}
     wanted['uri'] = u'file://testcsvt3.csv?geomType=none&type=csv'
     wanted['fieldTypes'] = ['integer', 'text', 'integer', 'double', 'integer', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -2149,6 +2227,7 @@ def test_037_csvt_file_invalid_file():
     wanted = {}
     wanted['uri'] = u'file://testcsvt4.csv?geomType=none&type=csv'
     wanted['fieldTypes'] = ['integer', 'text', 'integer', 'double', 'integer', 'text', 'text']
+    wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
             'id': u'1',
@@ -2181,6 +2260,7 @@ def test_038_type_inference():
     wanted = {}
     wanted['uri'] = u'file://testtypes.csv?yField=lat&xField=lon&type=csv'
     wanted['fieldTypes'] = ['text', 'double', 'double', 'text', 'text', 'integer', 'longlong', 'double', 'text']
+    wanted['geometryType'] = 0
     wanted['data'] = {
         2: {
             'id': u'line1',
@@ -2268,4 +2348,104 @@ def test_038_type_inference():
         },
     }
     wanted['log'] = []
+    return wanted
+
+
+def test_039_issue_13749():
+    wanted = {}
+    wanted['uri'] = u'file://test13749.csv?yField=geom_y&xField=geom_x&type=csv'
+    wanted['fieldTypes'] = ['integer', 'text', 'double', 'double']
+    wanted['geometryType'] = 0
+    wanted['data'] = {
+        2: {
+            'id': u'1',
+            'description': u'No geom',
+            'geom_x': u'NULL',
+            'geom_y': u'NULL',
+            '#fid': 2,
+            '#geometry': 'None',
+        },
+        3: {
+            'id': u'2',
+            'description': u'Point1',
+            'geom_x': u'11.0',
+            'geom_y': u'22.0',
+            '#fid': 3,
+            '#geometry': 'Point (11 22)',
+        },
+        4: {
+            'id': u'3',
+            'description': u'Point2',
+            'geom_x': u'15.0',
+            'geom_y': u'23.0',
+            '#fid': 4,
+            '#geometry': 'Point (15 23)',
+        },
+        5: {
+            'id': u'4',
+            'description': u'Point3',
+            'geom_x': u'13.0',
+            'geom_y': u'23.0',
+            '#fid': 5,
+            '#geometry': 'Point (13 23)',
+        },
+    }
+    wanted['log'] = [
+        u'Errors in file test13749.csv',
+        u'1 records have missing geometry definitions',
+    ]
+    return wanted
+
+
+def test_040_issue_14666():
+    wanted = {}
+    wanted['uri'] = u'file://test14666.csv?yField=y&xField=x&type=csv&delimiter=\\t'
+    wanted['fieldTypes'] = ['integer', 'double', 'double']
+    wanted['geometryType'] = 0
+    wanted['data'] = {
+        2: {
+            'id': u'1',
+            'description': u'7.15417',
+            'x': u'7.15417',
+            'y': u'50.680622',
+            '#fid': 2,
+            '#geometry': 'Point (7.1541699999999997 50.68062199999999962)',
+        },
+        3: {
+            'id': u'2',
+            'description': u'7.119219',
+            'x': u'7.119219',
+            'y': u'50.739814',
+            '#fid': 3,
+            '#geometry': 'Point (7.11921900000000019 50.73981400000000264)',
+        },
+        4: {
+            'id': u'3',
+            'description': u'NULL',
+            'x': u'NULL',
+            'y': u'NULL',
+            '#fid': 4,
+            '#geometry': 'None',
+        },
+        5: {
+            'id': u'4',
+            'description': u'NULL',
+            'x': u'NULL',
+            'y': u'NULL',
+            '#fid': 5,
+            '#geometry': 'None',
+        },
+        6: {
+            'id': u'5',
+            'description': u'7.129229',
+            'x': u'7.129229',
+            'y': u'50.703692',
+            '#fid': 6,
+            '#geometry': 'Point (7.12922899999999959 50.70369199999999665)',
+        },
+    }
+    wanted['log'] = [
+        u'Errors in file test14666.csv',
+        u'2 records have missing geometry definitions',
+    ]
     return wanted

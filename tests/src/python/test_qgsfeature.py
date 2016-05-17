@@ -12,21 +12,17 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
+
 import os
-
 from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsVectorLayer, NULL
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
-from unittest import expectedFailure
+from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 
 
-class TestQgsFeature(TestCase):
+class TestQgsFeature(unittest.TestCase):
 
     def test_CreateFeature(self):
         feat = QgsFeature()

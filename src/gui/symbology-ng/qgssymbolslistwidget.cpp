@@ -25,7 +25,7 @@
 #include "qgsstylev2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsmarkersymbollayerv2.h"
-
+#include "qgsmapcanvas.h"
 #include "qgsapplication.h"
 
 #include <QString>
@@ -44,14 +44,15 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
     : QWidget( parent )
     , mSymbol( symbol )
     , mStyle( style )
-    , mAdvancedMenu( 0 )
-    , mClipFeaturesAction( 0 )
+    , mAdvancedMenu( nullptr )
+    , mClipFeaturesAction( nullptr )
     , mLayer( layer )
-    , mPresetExpressionContext( 0 )
+    , mMapCanvas( nullptr )
+    , mPresetExpressionContext( nullptr )
 {
   setupUi( this );
 
-  mSymbolUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit );
+  mSymbolUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
 
   btnAdvanced->hide(); // advanced button is hidden by default
   if ( menu ) // show it if there is a menu pointer
@@ -108,13 +109,43 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   connect( mWidthDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedLineWidth() ) );
 
   if ( mSymbol->type() == QgsSymbolV2::Marker && mLayer )
-    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mLayer, static_cast<const QgsMarkerSymbolV2*>( mSymbol ) ) );
+    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mLayer, mSymbol ) );
+  else if ( mSymbol->type() == QgsSymbolV2::Line && mLayer )
+    mWidthDDBtn->setAssistant( tr( "Width Assistant..." ), new QgsSizeScaleWidget( mLayer, mSymbol ) );
 
   // Live color updates are not undoable to child symbol layers
   btnColor->setAcceptLiveUpdates( false );
   btnColor->setAllowAlpha( true );
   btnColor->setColorDialogTitle( tr( "Select color" ) );
   btnColor->setContext( "symbology" );
+
+  connect( btnSaveSymbol, SIGNAL( clicked() ), this, SLOT( saveSymbol() ) );
+}
+
+QgsSymbolsListWidget::~QgsSymbolsListWidget()
+{
+  // This action was added to the menu by this widget, clean it up
+  // The menu can be passed in the constructor, so may live longer than this widget
+  btnAdvanced->menu()->removeAction( mClipFeaturesAction );
+}
+
+void QgsSymbolsListWidget::setMapCanvas( QgsMapCanvas* canvas )
+{
+  mMapCanvas = canvas;
+  Q_FOREACH ( QgsUnitSelectionWidget* unitWidget, findChildren<QgsUnitSelectionWidget*>() )
+  {
+    unitWidget->setMapCanvas( canvas );
+  }
+  Q_FOREACH ( QgsDataDefinedButton* ddButton, findChildren<QgsDataDefinedButton*>() )
+  {
+    if ( ddButton->assistant() )
+      ddButton->assistant()->setMapCanvas( mMapCanvas );
+  }
+}
+
+const QgsMapCanvas*QgsSymbolsListWidget::mapCanvas() const
+{
+  return mMapCanvas;
 }
 
 void QgsSymbolsListWidget::setExpressionContext( QgsExpressionContext *context )
@@ -122,7 +153,7 @@ void QgsSymbolsListWidget::setExpressionContext( QgsExpressionContext *context )
   mPresetExpressionContext = context;
 }
 
-void QgsSymbolsListWidget::populateGroups( QString parent, QString prepend )
+void QgsSymbolsListWidget::populateGroups( const QString& parent, const QString& prepend )
 {
   QgsSymbolGroupMap groups = mStyle->childGroupNames( parent );
   QgsSymbolGroupMap::const_iterator i = groups.constBegin();
@@ -131,7 +162,7 @@ void QgsSymbolsListWidget::populateGroups( QString parent, QString prepend )
     QString text;
     if ( !prepend.isEmpty() )
     {
-      text = prepend + "/" + i.value();
+      text = prepend + '/' + i.value();
     }
     else
     {
@@ -148,11 +179,9 @@ void QgsSymbolsListWidget::populateSymbolView()
   populateSymbols( mStyle->symbolNames() );
 }
 
-void QgsSymbolsListWidget::populateSymbols( QStringList names )
+void QgsSymbolsListWidget::populateSymbols( const QStringList& names )
 {
   QSize previewSize = viewSymbols->iconSize();
-  QPixmap p( previewSize );
-  QPainter painter;
 
   QStandardItemModel* model = qobject_cast<QStandardItemModel*>( viewSymbols->model() );
   if ( !model )
@@ -262,6 +291,7 @@ void QgsSymbolsListWidget::updateDataDefinedMarkerSize()
     || !isDefault )
   {
     markerSymbol->setDataDefinedSize( dd );
+    markerSymbol->setScaleMethod( QgsSymbolV2::ScaleDiameter );
     emit changed();
   }
 }
@@ -294,7 +324,7 @@ void QgsSymbolsListWidget::updateDataDefinedLineWidth()
   }
 }
 
-void QgsSymbolsListWidget::symbolAddedToStyle( QString name, QgsSymbolV2* symbol )
+void QgsSymbolsListWidget::symbolAddedToStyle( const QString& name, QgsSymbolV2* symbol )
 {
   Q_UNUSED( name );
   Q_UNUSED( symbol );
@@ -328,6 +358,34 @@ void QgsSymbolsListWidget::addSymbolToStyle()
   // make sure the symbol is stored
   mStyle->saveSymbol( name, mSymbol->clone(), 0, QStringList() );
   populateSymbolView();
+}
+
+void QgsSymbolsListWidget::saveSymbol()
+{
+  bool ok;
+  QString name = QInputDialog::getText( this, tr( "Symbol name" ),
+                                        tr( "Please enter name for the symbol:" ), QLineEdit::Normal, tr( "New symbol" ), &ok );
+  if ( !ok || name.isEmpty() )
+    return;
+
+  // check if there is no symbol with same name
+  if ( mStyle->symbolNames().contains( name ) )
+  {
+    int res = QMessageBox::warning( this, tr( "Save symbol" ),
+                                    tr( "Symbol with name '%1' already exists. Overwrite?" )
+                                    .arg( name ),
+                                    QMessageBox::Yes | QMessageBox::No );
+    if ( res != QMessageBox::Yes )
+    {
+      return;
+    }
+  }
+
+  // add new symbol to style and re-populate the list
+  mStyle->addSymbol( name, mSymbol->clone() );
+
+  // make sure the symbol is stored
+  mStyle->saveSymbol( name, mSymbol->clone(), 0, QStringList() );
 }
 
 void QgsSymbolsListWidget::on_mSymbolUnitWidget_changed()
@@ -377,9 +435,17 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 )
-  //TODO - use actual map canvas settings
-  << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  << QgsExpressionContextUtils::atlasScope( nullptr );
+
+  if ( widget->mapCanvas() )
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( widget->mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( widget->mapCanvas()->expressionContextScope() );
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
 
   const QgsVectorLayer* layer = widget->layer();
   if ( layer )

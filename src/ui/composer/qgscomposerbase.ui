@@ -21,16 +21,7 @@
     <bool>true</bool>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <property name="leftMargin">
-     <number>0</number>
-    </property>
-    <property name="topMargin">
-     <number>0</number>
-    </property>
-    <property name="rightMargin">
-     <number>0</number>
-    </property>
-    <property name="bottomMargin">
+    <property name="margin">
      <number>0</number>
     </property>
     <item row="0" column="0">
@@ -61,8 +52,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>118</width>
-          <height>78</height>
+          <width>116</width>
+          <height>76</height>
          </rect>
         </property>
        </widget>
@@ -99,7 +90,7 @@
   </widget>
   <widget class="QToolBar" name="mPaperNavToolbar">
    <property name="windowTitle">
-    <string>Paper Navigation</string>
+    <string>Navigation</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -115,7 +106,7 @@
   </widget>
   <widget class="QToolBar" name="mItemActionToolbar">
    <property name="windowTitle">
-    <string>Composer Item Actions</string>
+    <string>Actions</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -130,7 +121,7 @@
   </widget>
   <widget class="QToolBar" name="mItemToolbar">
    <property name="windowTitle">
-    <string>Composer Items</string>
+    <string>Toolbox</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -142,6 +133,7 @@
    <addaction name="mActionMouseZoom"/>
    <addaction name="mActionSelectMoveItem"/>
    <addaction name="mActionMoveItemContent"/>
+   <addaction name="mActionEditNodesItem"/>
    <addaction name="separator"/>
    <addaction name="mActionAddNewMap"/>
    <addaction name="mActionAddImage"/>
@@ -263,7 +255,7 @@
   <action name="mActionAddNewMap">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddMap.png</normaloff>:/images/themes/default/mActionAddMap.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddMap.svg</normaloff>:/images/themes/default/mActionAddMap.svg</iconset>
    </property>
    <property name="text">
     <string>Add &amp;Map</string>
@@ -275,7 +267,7 @@
   <action name="mActionAddNewLabel">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionLabel.png</normaloff>:/images/themes/default/mActionLabel.png</iconset>
+     <normaloff>:/images/themes/default/mActionLabel.svg</normaloff>:/images/themes/default/mActionLabel.svg</iconset>
    </property>
    <property name="text">
     <string>Add Lab&amp;el</string>
@@ -287,7 +279,7 @@
   <action name="mActionAddNewLegend">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddLegend.png</normaloff>:/images/themes/default/mActionAddLegend.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddLegend.svg</normaloff>:/images/themes/default/mActionAddLegend.svg</iconset>
    </property>
    <property name="text">
     <string>Add Legen&amp;d</string>
@@ -344,7 +336,7 @@
   <action name="mActionAddNewScalebar">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionScaleBar.png</normaloff>:/images/themes/default/mActionScaleBar.png</iconset>
+     <normaloff>:/images/themes/default/mActionScaleBar.svg</normaloff>:/images/themes/default/mActionScaleBar.svg</iconset>
    </property>
    <property name="text">
     <string>Add &amp;Scalebar</string>
@@ -370,8 +362,8 @@
   </action>
   <action name="mActionShowGrid">
    <property name="icon">
-    <iconset resource="../../../python/plugins/fTools/resources.qrc">
-     <normaloff>:/icons/default/vector_grid.png</normaloff>:/icons/default/vector_grid.png</iconset>
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/vector_grid.png</normaloff>:/images/themes/default/vector_grid.png</iconset>
    </property>
    <property name="text">
     <string>Show &amp;Grid</string>
@@ -438,7 +430,7 @@
   <action name="mActionAddImage">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddImage.png</normaloff>:/images/themes/default/mActionAddImage.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddImage.svg</normaloff>:/images/themes/default/mActionAddImage.svg</iconset>
    </property>
    <property name="text">
     <string>Add Im&amp;age</string>
@@ -825,6 +817,10 @@
    </property>
   </action>
   <action name="mActionSelectAll">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectAll.svg</normaloff>:/images/themes/default/mActionSelectAll.svg</iconset>
+   </property>
    <property name="text">
     <string>&amp;Select All</string>
    </property>
@@ -838,7 +834,7 @@
   <action name="mActionInvertSelection">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionInvertSelection.png</normaloff>:/images/themes/default/mActionInvertSelection.png</iconset>
+     <normaloff>:/images/themes/default/mActionInvertSelection.svg</normaloff>:/images/themes/default/mActionInvertSelection.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Invert Selection</string>
@@ -1051,10 +1047,61 @@
     <string>F10</string>
    </property>
   </action>
+  <action name="mActionShowPage">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Pages</string>
+   </property>
+   <property name="toolTip">
+    <string>Show pages</string>
+   </property>
+  </action>
+  <action name="mActionAddPolygon">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Polygon</string>
+   </property>
+   <property name="toolTip">
+    <string>Add polygon</string>
+   </property>
+  </action>
+  <action name="mActionNodesItem">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Nodes item</string>
+   </property>
+   <property name="toolTip">
+    <string>Nodes item</string>
+   </property>
+  </action>
+  <action name="mActionAddPolyline">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Polyline</string>
+   </property>
+   <property name="toolTip">
+    <string>Add polyline</string>
+   </property>
+  </action>
+  <action name="mActionEditNodesItem">
+   <property name="text">
+    <string>Edit Nodes Item</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit Nodes Item</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../../../images/images.qrc"/>
-  <include location="../../../python/plugins/fTools/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

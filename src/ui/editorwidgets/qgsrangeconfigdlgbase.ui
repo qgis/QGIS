@@ -76,7 +76,7 @@
    <item row="2" column="0">
     <widget class="QStackedWidget" name="rangeStackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="intPage">
       <layout class="QFormLayout" name="formLayout">
@@ -219,6 +219,17 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>rangeWidget</tabstop>
+  <tabstop>minimumDoubleSpinBox</tabstop>
+  <tabstop>maximumDoubleSpinBox</tabstop>
+  <tabstop>stepDoubleSpinBox</tabstop>
+  <tabstop>minimumSpinBox</tabstop>
+  <tabstop>maximumSpinBox</tabstop>
+  <tabstop>stepSpinBox</tabstop>
+  <tabstop>allowNullCheckBox</tabstop>
+  <tabstop>suffixLineEdit</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

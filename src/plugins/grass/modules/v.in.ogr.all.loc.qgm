@@ -2,8 +2,8 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Import all OGR/PostGIS vectors in a given data source and create a fitted location" module="v.in.ogr">
-	<option key="dsn" label="Path to the OGR data source" version_max="6.4"/>
-	<option key="input" label="Path to the OGR data source" version_min="7.0"/>
+	<file key="dsn" type="directory" label="Path to the OGR data source" version_max="6.4"/>
+	<file key="input" type="directory" label="Path to the OGR data source" version_min="7.0"/>
 	<option key="output" />
 	<option key="location" />
         <option key="type" advanced="yes"/>

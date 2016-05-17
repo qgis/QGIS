@@ -46,7 +46,7 @@ class TestQgsMapRotation : public QObject
         , mLinesLayer( 0 )
         , mMapSettings( 0 )
     {
-      mTestDataDir = QString( TEST_DATA_DIR ) + "/";
+      mTestDataDir = QString( TEST_DATA_DIR ) + '/';
     }
 
     ~TestQgsMapRotation();
@@ -63,7 +63,7 @@ class TestQgsMapRotation : public QObject
     // TODO: polygonsLayer
 
   private:
-    bool render( QString theFileName );
+    bool render( const QString& theFileName );
 
     QString mTestDataDir;
     QgsRasterLayer * mRasterLayer;
@@ -223,7 +223,7 @@ void TestQgsMapRotation::linesLayer()
   // TODO: curved labels
 }
 
-bool TestQgsMapRotation::render( QString theTestType )
+bool TestQgsMapRotation::render( const QString& theTestType )
 {
   mReport += "<h2>" + theTestType + "</h2>\n";
   mMapSettings->setOutputDpi( 96 );

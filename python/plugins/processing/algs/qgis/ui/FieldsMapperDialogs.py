@@ -26,7 +26,7 @@ __copyright__ = '(C) 2014, Arnaud Morvan'
 __revision__ = '$Format:%H$'
 
 
-from PyQt4.QtGui import QComboBox, QSpacerItem
+from qgis.PyQt.QtWidgets import QComboBox, QSpacerItem
 
 from processing.core.parameters import ParameterVector
 from processing.tools import dataobjects

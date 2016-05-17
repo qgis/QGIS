@@ -23,7 +23,7 @@ class QgsOWSSourceSelect : QDialog
     };
 
     //! Constructor
-    QgsOWSSourceSelect( QString service, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsOWSSourceSelect( const QString& service, QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsOWSSourceSelect();
 
@@ -41,8 +41,8 @@ class QgsOWSSourceSelect : QDialog
     void on_mLoadButton_clicked();
 
     /** Connects to the database using the stored connection parameters.
-    * Once connected, available layers are displayed.
-    */
+     * Once connected, available layers are displayed.
+     */
     void on_mConnectButton_clicked();
 
     //! Determines the layers the user selected
@@ -146,7 +146,7 @@ class QgsOWSSourceSelect : QDialog
     */
 
     //! Returns a textual description for the authority id
-    QString descriptionForAuthId( QString authId );
+    QString descriptionForAuthId( const QString& authId );
 
     void addWMSListRow( const QDomElement& item, int row );
     void addWMSListItem( const QDomElement& el, int row, int column );

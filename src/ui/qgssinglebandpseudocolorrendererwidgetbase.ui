@@ -177,8 +177,11 @@
      </item>
      <item>
       <widget class="QCheckBox" name="mClipCheckBox">
+       <property name="toolTip">
+        <string>If checked, any pixels with a value out of range will not be rendered</string>
+       </property>
        <property name="text">
-        <string>Clip</string>
+        <string>Clip raster values which are out of range</string>
        </property>
       </widget>
      </item>

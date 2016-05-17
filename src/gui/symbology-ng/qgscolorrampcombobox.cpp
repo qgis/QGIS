@@ -26,8 +26,11 @@
 
 QSize QgsColorRampComboBox::rampIconSize( 50, 16 );
 
-QgsColorRampComboBox::QgsColorRampComboBox( QWidget *parent ) :
-    QComboBox( parent ), mStyle( NULL ), mSourceColorRamp( NULL ), mShowGradientOnly( false )
+QgsColorRampComboBox::QgsColorRampComboBox( QWidget *parent )
+    : QComboBox( parent )
+    , mStyle( nullptr )
+    , mSourceColorRamp( nullptr )
+    , mShowGradientOnly( false )
 {
 }
 

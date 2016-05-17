@@ -68,7 +68,7 @@ class TestQgsRasterSubLayer : public QObject
 };
 
 TestQgsRasterSubLayer::TestQgsRasterSubLayer()
-    : mpRasterLayer( NULL )
+    : mpRasterLayer( nullptr )
     , mHasNetCDF( false )
 {
 
@@ -83,8 +83,8 @@ void TestQgsRasterSubLayer::initTestCase()
   // disable any PAM stuff to make sure stats are consistent
   CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
   QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( "\n", "<br />" );
-  mTestDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CmakeLists.txt
+  mySettings = mySettings.replace( '\n', "<br />" );
+  mTestDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
 
   GDALAllRegister();
   QString format = "netCDF";
@@ -103,8 +103,6 @@ void TestQgsRasterSubLayer::initTestCase()
                                         myRasterFileInfo.completeBaseName() );
     qDebug() << "raster metadata: " << mpRasterLayer->dataProvider()->metadata();
     mReport += "raster metadata: " + mpRasterLayer->dataProvider()->metadata();
-
-    QgsMapLayerRegistry::instance()->addMapLayer( mpRasterLayer );
   }
   else
   {
@@ -115,6 +113,7 @@ void TestQgsRasterSubLayer::initTestCase()
 //runs after all tests
 void TestQgsRasterSubLayer::cleanupTestCase()
 {
+  delete mpRasterLayer;
   QgsApplication::exitQgis();
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );

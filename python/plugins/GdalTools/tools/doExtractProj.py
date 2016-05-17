@@ -23,11 +23,12 @@ __copyright__ = '(C) 2011, Alexander Bruy'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import Qt, SIGNAL, QCoreApplication, QObject, QThread, QMutex
-from PyQt4.QtGui import QDialog, QDialogButtonBox, QApplication, QCursor, QMessageBox
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QThread, QMutex
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QApplication, QMessageBox
+from qgis.PyQt.QtGui import QCursor
 
-from ui_dialogExtractProjection import Ui_GdalToolsDialog as Ui_Dialog
-import GdalTools_utils as Utils
+from .ui_dialogExtractProjection import Ui_GdalToolsDialog as Ui_Dialog
+from . import GdalTools_utils as Utils
 
 import os.path
 
@@ -57,8 +58,8 @@ class GdalToolsDialog(QDialog, Ui_Dialog):
         self.okButton = self.buttonBox.button(QDialogButtonBox.Ok)
         self.cancelButton = self.buttonBox.button(QDialogButtonBox.Cancel)
 
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
-        self.connect(self.batchCheck, SIGNAL("stateChanged( int )"), self.switchToolMode)
+        self.inSelector.selectClicked.connect(self.fillInputFileEdit)
+        self.batchCheck.stateChanged.connect(self.switchToolMode)
 
     def switchToolMode(self):
         self.recurseCheck.setVisible(self.batchCheck.isChecked())
@@ -69,13 +70,13 @@ class GdalToolsDialog(QDialog, Ui_Dialog):
             self.inFileLabel = self.label.text()
             self.label.setText(QCoreApplication.translate("GdalTools", "&Input directory"))
 
-            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
-            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
+            self.inSelector.selectClicked.disconnect(self.fillInputFileEdit)
+            self.inSelector.selectClicked.connect(self.fillInputDir)
         else:
             self.label.setText(self.inFileLabel)
 
-            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
-            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
+            self.inSelector.selectClicked.connect(self.fillInputFileEdit)
+            self.inSelector.selectClicked.disconnect(self.fillInputDir)
 
     def fillInputFileEdit(self):
         lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -107,12 +108,12 @@ class GdalToolsDialog(QDialog, Ui_Dialog):
         self.okButton.setEnabled(False)
 
         self.extractor = ExtractThread(self.inFiles, self.prjCheck.isChecked())
-        QObject.connect(self.extractor, SIGNAL("fileProcessed()"), self.updateProgress)
-        QObject.connect(self.extractor, SIGNAL("processFinished()"), self.processingFinished)
-        QObject.connect(self.extractor, SIGNAL("processInterrupted()"), self.processingInterrupted)
+        self.extractor.fileProcessed.connect(self.updateProgress)
+        self.extractor.processFinished.connect(self.processingFinished)
+        self.extractor.processInterrupted.connect(self.processingInterrupted)
 
-        QObject.disconnect(self.buttonBox, SIGNAL("rejected()"), self.reject)
-        QObject.connect(self.buttonBox, SIGNAL("rejected()"), self.stopProcessing)
+        self.buttonBox.rejected.disconnect(self.reject)
+        self.buttonBox.rejected.connect(self.stopProcessing)
 
         self.extractor.start()
 
@@ -139,8 +140,8 @@ class GdalToolsDialog(QDialog, Ui_Dialog):
 
         QApplication.restoreOverrideCursor()
 
-        QObject.disconnect(self.buttonBox, SIGNAL("rejected()"), self.stopProcessing)
-        QObject.connect(self.buttonBox, SIGNAL("rejected()"), self.reject)
+        self.buttonBox.rejected.disconnect(self.stopProcessing)
+        self.buttonBox.rejected.connect(self.reject)
 
         self.okButton.setEnabled(True)
 
@@ -200,7 +201,7 @@ class ExtractThread(QThread):
 
         for f in self.inFiles:
             extractProjection(f, self.needPrj)
-            self.emit(SIGNAL("fileProcessed()"))
+            self.fileProcessed.emit()
 
             self.mutex.lock()
             s = self.stopMe
@@ -210,9 +211,9 @@ class ExtractThread(QThread):
                 break
 
         if not interrupted:
-            self.emit(SIGNAL("processFinished()"))
+            self.processFinished.emit()
         else:
-            self.emit(SIGNAL("processIterrupted()"))
+            self.processIterrupted.emit()
 
     def stop(self):
         self.mutex.lock()

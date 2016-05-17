@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.gui.ScriptEditorDialog import ScriptEditorDialog
@@ -41,15 +41,16 @@ class CreateNewScriptAction(ToolboxAction):
     SCRIPT_R = 1
 
     def __init__(self, actionName, scriptType):
-        self.name = actionName
-        self.group = self.tr('Tools', 'CreateNewScriptAction')
+        self.name, self.i18n_name = self.trAction(actionName)
+        self.group, self.i18n_group = self.trAction('Tools')
+
         self.scriptType = scriptType
 
     def getIcon(self):
         if self.scriptType == self.SCRIPT_PYTHON:
             return QIcon(os.path.join(pluginPath, 'images', 'script.png'))
         elif self.scriptType == self.SCRIPT_R:
-            return QIcon(os.path.join(pluginPath, 'images', 'r.png'))
+            return QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
 
     def execute(self):
         dlg = None

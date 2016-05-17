@@ -26,6 +26,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import math
+import codecs
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
@@ -47,6 +48,21 @@ class RasterLayerStatistics(GeoAlgorithm):
     NO_DATA_COUNT = 'NO_DATA_COUNT'
     STD_DEV = 'STD_DEV'
     OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
+
+    def defineCharacteristics(self):
+        self.name, self.i18n_name = self.trAlgorithm('Raster layer statistics')
+        self.group, self.i18n_group = self.trAlgorithm('Raster tools')
+
+        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
+
+        self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE, self.tr('Statistics')))
+        self.addOutput(OutputNumber(self.MIN, self.tr('Minimum value')))
+        self.addOutput(OutputNumber(self.MAX, self.tr('Maximum value')))
+        self.addOutput(OutputNumber(self.SUM, self.tr('Sum')))
+        self.addOutput(OutputNumber(self.MEAN, self.tr('Mean value')))
+        self.addOutput(OutputNumber(self.COUNT, self.tr('valid cells count')))
+        self.addOutput(OutputNumber(self.COUNT, self.tr('No-data cells count')))
+        self.addOutput(OutputNumber(self.STD_DEV, self.tr('Standard deviation')))
 
     def processAlgorithm(self, progress):
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
@@ -100,21 +116,12 @@ class RasterLayerStatistics(GeoAlgorithm):
         self.setOutputValue(self.MEAN, mean)
         self.setOutputValue(self.STD_DEV, stddev)
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Raster layer statistics')
-        self.group, self.i18n_group = self.trAlgorithm('Raster tools')
-        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
-        self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE, self.tr('Statistics')))
-        self.addOutput(OutputNumber(self.MIN, self.tr('Minimum value')))
-        self.addOutput(OutputNumber(self.MAX, self.tr('Maximum value')))
-        self.addOutput(OutputNumber(self.SUM, self.tr('Sum')))
-        self.addOutput(OutputNumber(self.MEAN, self.tr('Mean value')))
-        self.addOutput(OutputNumber(self.COUNT, self.tr('valid cells count')))
-        self.addOutput(OutputNumber(self.COUNT, self.tr('No-data cells count')))
-        self.addOutput(OutputNumber(self.STD_DEV, self.tr('Standard deviation')))
-
     def createHTML(self, outputFile, algData):
-        f = open(outputFile, 'w')
+        f = codecs.open(outputFile, 'w', encoding='utf-8')
+        f.write('<html><head>')
+        f.write('<meta http-equiv="Content-Type" content="text/html; \
+                charset=utf-8" /></head><body>')
         for s in algData:
             f.write('<p>' + unicode(s) + '</p>')
+        f.write('</body></html>')
         f.close()

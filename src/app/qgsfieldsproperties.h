@@ -21,10 +21,14 @@
 #include <QTableWidget>
 #include <QTreeWidget>
 #include <QWidget>
+#include <QSpinBox>
 
 
 #include "qgsvectorlayer.h"
 #include "ui_qgsfieldspropertiesbase.h"
+
+class DesignerTree;
+class DragList;
 
 class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
 {
@@ -50,70 +54,30 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
 
         DesignerTreeItemData()
             : mType( Field )
+            , mColumnCount( 1 )
         {}
 
         DesignerTreeItemData( Type type, const QString& name )
             : mType( type )
             , mName( name )
+            , mColumnCount( 1 )
         {}
 
         QString name() const { return mName; }
         void setName( const QString& name ) { mName = name; }
 
         Type type() const { return mType; }
-        void setType( const Type& type ) { mType = type; }
+        void setType( Type type ) { mType = type; }
 
         QVariant asQVariant() { return QVariant::fromValue<DesignerTreeItemData>( *this ); }
 
-      protected:
+        int columnCount() const { return mColumnCount; }
+        void setColumnCount( int count ) { mColumnCount = count; }
+
+      private:
         Type mType;
         QString mName;
-    };
-
-    /**
-     * This class overrides mime type handling to be able to work with
-     * the drag and drop attribute editor.
-     *
-     * The mime type is application/x-qgsattributetablefield
-     */
-
-    class DragList : public QTableWidget
-    {
-      public:
-        DragList( QWidget* parent = 0 )
-            : QTableWidget( parent )
-        {}
-
-        // QTreeWidget interface
-      protected:
-        virtual QStringList mimeTypes() const override;
-
-        virtual QMimeData* mimeData( const QList<QTableWidgetItem*> items ) const override;
-    };
-
-
-    /**
-     * Graphical representation for the attribute editor drag and drop editor
-     */
-    class DesignerTree : public QTreeWidget
-    {
-      public:
-        DesignerTree( QWidget* parent = 0 )
-            : QTreeWidget( parent )
-        {}
-        QTreeWidgetItem* addItem( QTreeWidgetItem* parent, DesignerTreeItemData data );
-        QTreeWidgetItem* addContainer( QTreeWidgetItem* parent, QString title );
-
-      protected:
-        virtual void dragMoveEvent( QDragMoveEvent *event ) override;
-        virtual void dropEvent( QDropEvent *event ) override;
-        virtual bool dropMimeData( QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action ) override;
-        /* Qt::DropActions supportedDropActions() const;*/
-
-        // QTreeWidget interface
-      protected:
-        virtual QStringList mimeTypes() const override;
-        virtual QMimeData* mimeData( const QList<QTreeWidgetItem*> items ) const override;
+        int mColumnCount;
     };
 
     /**
@@ -134,7 +98,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     };
 
   public:
-    QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent = 0 );
+    QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent = nullptr );
 
     ~QgsFieldsProperties();
 
@@ -160,6 +124,20 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     void loadAttributeEditorTree();
     QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement* const widgetDef, QTreeWidgetItem* parent );
 
+    /**
+     * @brief setEditFormInit set the private ui fields
+     * @param editForm
+     * @param initFunction
+     * @param initCode
+     * @param initFilePath
+     * @param codeSource
+     */
+    void setEditFormInit( const QString &editForm,
+                          const QString &initFunction,
+                          const QString &initCode,
+                          const QString &initFilePath,
+                          QgsEditFormConfig::PythonInitCodeSource codeSource );
+
   signals:
     void toggleEditing();
 
@@ -168,9 +146,10 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     void on_mDeleteAttributeButton_clicked();
     void on_mCalculateFieldButton_clicked();
     void onAttributeSelectionChanged();
+    void on_pbtnSelectInitFilePath_clicked();
     void on_pbnSelectEditForm_clicked();
     void on_mEditorLayoutComboBox_currentIndexChanged( int index );
-
+    void on_mInitCodeSourceComboBox_currentIndexChanged( int codeSource );
     void attributeAdded( int idx );
     void attributeDeleted( int idx );
     void attributeTypeDialog();
@@ -192,7 +171,9 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     void updateButtons();
 
     FieldConfig configForRow( int row );
-    void setConfigForRow( int row, FieldConfig cfg );
+    void setConfigForRow( int row, const FieldConfig& cfg );
+
+    QList<QgsRelation> mRelations;
 
     QgsVectorLayer* mLayer;
     DesignerTree* mDesignerTree;
@@ -226,6 +207,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
       RelLayerCol,
       RelFieldCol,
       RelIdCol,
+      RelNmCol,
       RelColCount
     };
 
@@ -237,7 +219,59 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
 QDataStream& operator<< ( QDataStream& stream, const QgsFieldsProperties::DesignerTreeItemData& data );
 QDataStream& operator>> ( QDataStream& stream, QgsFieldsProperties::DesignerTreeItemData& data );
 
+
+/**
+ * This class overrides mime type handling to be able to work with
+ * the drag and drop attribute editor.
+ *
+ * The mime type is application/x-qgsattributetablefield
+ */
+
+class DragList : public QTableWidget
+{
+    Q_OBJECT
+
+  public:
+    explicit DragList( QWidget* parent = nullptr )
+        : QTableWidget( parent )
+    {}
+
+    // QTreeWidget interface
+  protected:
+    virtual QStringList mimeTypes() const override;
+
+    virtual QMimeData* mimeData( const QList<QTableWidgetItem*> items ) const override;
+};
+
+/**
+ * Graphical representation for the attribute editor drag and drop editor
+ */
+class DesignerTree : public QTreeWidget
+{
+    Q_OBJECT
+
+  public:
+    explicit DesignerTree( QWidget* parent = nullptr );
+    QTreeWidgetItem* addItem( QTreeWidgetItem* parent, QgsFieldsProperties::DesignerTreeItemData data );
+    QTreeWidgetItem* addContainer( QTreeWidgetItem* parent, const QString& title , int columnCount );
+
+  protected:
+    virtual void dragMoveEvent( QDragMoveEvent *event ) override;
+    virtual void dropEvent( QDropEvent *event ) override;
+    virtual bool dropMimeData( QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action ) override;
+    /* Qt::DropActions supportedDropActions() const;*/
+
+    // QTreeWidget interface
+  protected:
+    virtual QStringList mimeTypes() const override;
+    virtual QMimeData* mimeData( const QList<QTreeWidgetItem*> items ) const override;
+
+  private slots:
+    void onItemDoubleClicked( QTreeWidgetItem* item, int column );
+};
+
 Q_DECLARE_METATYPE( QgsFieldsProperties::FieldConfig )
 Q_DECLARE_METATYPE( QgsFieldsProperties::DesignerTreeItemData )
 
 #endif // QGSFIELDSPROPERTIES_H
+

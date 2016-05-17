@@ -11,11 +11,11 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
-from utilities import getQgisTestApp, unittest, expectedFailure
+import qgis  # NOQA
+from qgis.testing import start_app, unittest
 
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+QGISAPP = start_app()
 
 
 class TestPyQgsApplication(unittest.TestCase):

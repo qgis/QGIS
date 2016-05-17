@@ -28,10 +28,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui
+from qgis.PyQt import QtGui
 from processing.core.GeoAlgorithm import GeoAlgorithm
 
-from LAStoolsUtils import LAStoolsUtils
+from .LAStoolsUtils import LAStoolsUtils
 
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterBoolean

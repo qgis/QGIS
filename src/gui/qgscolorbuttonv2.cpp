@@ -38,7 +38,7 @@
 #include <QGridLayout>
 #include <QPushButton>
 
-QgsColorButtonV2::QgsColorButtonV2( QWidget *parent, QString cdt, QgsColorSchemeRegistry* registry )
+QgsColorButtonV2::QgsColorButtonV2( QWidget *parent, const QString& cdt, QgsColorSchemeRegistry* registry )
     : QToolButton( parent )
     , mBehaviour( QgsColorButtonV2::ShowDialog )
     , mColorDialogTitle( cdt.isEmpty() ? tr( "Select Color" ) : cdt )
@@ -50,7 +50,7 @@ QgsColorButtonV2::QgsColorButtonV2( QWidget *parent, QString cdt, QgsColorScheme
     , mShowNoColorOption( false )
     , mNoColorString( tr( "No color" ) )
     , mPickingColor( false )
-    , mMenu( 0 )
+    , mMenu( nullptr )
 
 {
   //if a color scheme registry was specified, use it, otherwise use the global instance
@@ -124,7 +124,7 @@ void QgsColorButtonV2::showColorDialog()
     }
     else
     {
-      QgsColorDialogV2 dialog( this, 0, color() );
+      QgsColorDialogV2 dialog( this, nullptr, color() );
       dialog.setTitle( mColorDialogTitle );
       dialog.setAllowAlpha( mAllowAlpha );
 
@@ -513,38 +513,7 @@ void QgsColorButtonV2::setColor( const QColor &color )
 
 void QgsColorButtonV2::addRecentColor( const QColor& color )
 {
-  if ( !color.isValid() )
-  {
-    return;
-  }
-
-  //strip alpha from color
-  QColor opaqueColor = color;
-  opaqueColor.setAlpha( 255 );
-
-  QSettings settings;
-  QList< QVariant > recentColorVariants = settings.value( QString( "/colors/recent" ) ).toList();
-
-  //remove colors by name
-  for ( int colorIdx = recentColorVariants.length() - 1; colorIdx >= 0; --colorIdx )
-  {
-    if (( recentColorVariants.at( colorIdx ).value<QColor>() ).name() == opaqueColor.name() )
-    {
-      recentColorVariants.removeAt( colorIdx );
-    }
-  }
-
-  //add color
-  QVariant colorVariant = QVariant( opaqueColor );
-  recentColorVariants.prepend( colorVariant );
-
-  //trim to 20 colors
-  while ( recentColorVariants.count() > 20 )
-  {
-    recentColorVariants.pop_back();
-  }
-
-  settings.setValue( QString( "/colors/recent" ), recentColorVariants );
+  QgsRecentColorScheme::addRecentColor( color );
 }
 
 void QgsColorButtonV2::setButtonBackground( const QColor &color )
@@ -657,7 +626,7 @@ void QgsColorButtonV2::setAllowAlpha( const bool allowAlpha )
   mAllowAlpha = allowAlpha;
 }
 
-void QgsColorButtonV2::setColorDialogTitle( const QString title )
+void QgsColorButtonV2::setColorDialogTitle( const QString& title )
 {
   mColorDialogTitle = title;
 }
@@ -669,7 +638,7 @@ QString QgsColorButtonV2::colorDialogTitle() const
 
 void QgsColorButtonV2::setShowMenu( const bool showMenu )
 {
-  setMenu( showMenu ? mMenu : 0 );
+  setMenu( showMenu ? mMenu : nullptr );
   setPopupMode( showMenu ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup );
   //force recalculation of icon size
   mIconSize = QSize();
@@ -681,7 +650,7 @@ void QgsColorButtonV2::setBehaviour( const QgsColorButtonV2::Behaviour behaviour
   mBehaviour = behaviour;
 }
 
-void QgsColorButtonV2::setDefaultColor( const QColor color )
+void QgsColorButtonV2::setDefaultColor( const QColor& color )
 {
   mDefaultColor = color;
 }

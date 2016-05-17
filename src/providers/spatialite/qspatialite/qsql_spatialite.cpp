@@ -60,6 +60,10 @@
 #include <sqlite3.h>
 #include <qgsslconnect.h>
 
+#if QT_VERSION >= 0x050000
+Q_DECLARE_OPAQUE_POINTER(sqlite3*)
+Q_DECLARE_OPAQUE_POINTER(sqlite3_stmt*)
+#endif
 Q_DECLARE_METATYPE(sqlite3*)
 Q_DECLARE_METATYPE(sqlite3_stmt*)
 
@@ -68,7 +72,7 @@ QT_BEGIN_NAMESPACE
 static QString _q_escapeIdentifier(const QString &identifier)
 {
     QString res = identifier;
-    if(!identifier.isEmpty() && identifier.left(1) != QString(QLatin1Char('"')) && identifier.right(1) != QString(QLatin1Char('"')) ) {
+    if(!identifier.isEmpty() && identifier.at(0) != '"' && identifier.right(1) != QString(QLatin1Char('"')) ) {
         res.replace(QLatin1Char('"'), QLatin1String("\"\""));
         res.prepend(QLatin1Char('"')).append(QLatin1Char('"'));
         res.replace(QLatin1Char('.'), QLatin1String("\".\""));
@@ -113,7 +117,7 @@ public:
 class QSpatiaLiteResultPrivate
 {
 public:
-    QSpatiaLiteResultPrivate(QSpatiaLiteResult *res);
+    explicit QSpatiaLiteResultPrivate(QSpatiaLiteResult *res);
     void cleanup();
     bool fetchNext(QSqlCachedResult::ValueCache &values, int idx, bool initialFetch);
     // initializes the recordInfo and the cache
@@ -325,10 +329,12 @@ QSpatiaLiteResult::~QSpatiaLiteResult()
 void QSpatiaLiteResult::virtual_hook(int id, void *data)
 {
     switch (id) {
+#if QT_VERSION < 0x050000
     case QSqlResult::DetachFromResultSet:
         if (d->stmt)
             sqlite3_reset(d->stmt);
         break;
+#endif
     default:
         QSqlCachedResult::virtual_hook(id, data);
     }
@@ -350,7 +356,7 @@ bool QSpatiaLiteResult::prepare(const QString &query)
 
     setSelect(false);
 
-    const void *pzTail = NULL;
+    const void *pzTail = nullptr;
 
 #if (SQLITE_VERSION_NUMBER >= 3003011)
     int res = sqlite3_prepare16_v2(d->access, query.constData(), (query.size() + 1) * sizeof(QChar),
@@ -485,6 +491,14 @@ QSqlRecord QSpatiaLiteResult::record() const
     return d->rInf;
 }
 
+#if QT_VERSION >= 0x050000
+void QSpatiaLiteResult::detachFromResultSet()
+{
+    if (d->stmt)
+        sqlite3_reset(d->stmt);
+}
+#endif
+
 QVariant QSpatiaLiteResult::handle() const
 {
     return QVariant::fromValue(d->stmt);
@@ -531,6 +545,9 @@ bool QSpatiaLiteDriver::hasFeature(DriverFeature f) const
     case BatchOperations:
     case EventNotifications:
     case MultipleResultSets:
+#if QT_VERSION >= 0x050000
+    case CancelQuery:
+#endif
         return false;
     }
     return false;
@@ -566,7 +583,7 @@ bool QSpatiaLiteDriver::open(const QString & db, const QString &, const QString 
 
     sqlite3_enable_shared_cache(sharedCache);
 
-    if (QgsSLConnect::sqlite3_open_v2(db.toUtf8().constData(), &d->access, openMode, NULL) == SQLITE_OK) {
+    if (QgsSLConnect::sqlite3_open_v2(db.toUtf8().constData(), &d->access, openMode, nullptr ) == SQLITE_OK) {
         sqlite3_busy_timeout(d->access, timeOut);
         setOpen(true);
         setOpenError(false);

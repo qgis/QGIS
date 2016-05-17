@@ -26,12 +26,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-import subprocess
+from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputFile
-from FusionUtils import FusionUtils
-from FusionAlgorithm import FusionAlgorithm
+from .FusionUtils import FusionUtils
+from .FusionAlgorithm import FusionAlgorithm
 
 
 class GroundFilter(FusionAlgorithm):
@@ -39,6 +39,7 @@ class GroundFilter(FusionAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     CELLSIZE = 'CELLSIZE'
+    SURFACE = 'SURFACE'
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Ground Filter')
@@ -49,15 +50,20 @@ class GroundFilter(FusionAlgorithm):
                                           self.tr('Cellsize for intermediate surfaces'), 0, None, 10))
         self.addOutput(OutputFile(
             self.OUTPUT, self.tr('Output ground LAS file')))
+        self.addParameter(ParameterBoolean(
+            self.SURFACE, self.tr('Create .dtm surface'), False))
         self.addAdvancedModifiers()
 
     def processAlgorithm(self, progress):
         commands = [os.path.join(FusionUtils.FusionPath(), 'GroundFilter.exe')]
         commands.append('/verbose')
         self.addAdvancedModifiersToCommand(commands)
-        outFile = self.getOutputValue(self.OUTPUT) + '.lda'
-        commands.append(unicode(self.getParameterValue(self.CELLSIZE)))
+        surface = self.getParameterValue(self.SURFACE)
+        if surface:
+            commands.append('/surface')
+        outFile = self.getOutputValue(self.OUTPUT)
         commands.append(outFile)
+        commands.append(unicode(self.getParameterValue(self.CELLSIZE)))
         files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:
             commands.append(self.getParameterValue(self.INPUT))
@@ -65,8 +71,3 @@ class GroundFilter(FusionAlgorithm):
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
         FusionUtils.runFusion(commands, progress)
-        commands = [os.path.join(FusionUtils.FusionPath(), 'LDA2LAS.exe')]
-        commands.append(outFile)
-        commands.append(self.getOutputValue(self.OUTPUT))
-        p = subprocess.Popen(commands, shell=True)
-        p.wait()

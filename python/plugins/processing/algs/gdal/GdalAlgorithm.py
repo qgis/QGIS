@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing.tools import dataobjects
 
 
 __author__ = 'Victor Olaya'
@@ -27,8 +28,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtGui import QIcon
-from processing.script.ScriptAlgorithm import ScriptAlgorithm
+
+from qgis.PyQt.QtGui import QIcon
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -40,19 +42,27 @@ pluginPath = os.path.normpath(os.path.join(
 class GdalAlgorithm(GeoAlgorithm):
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'gdal.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'gdal.svg'))
 
     def getCustomParametersDialog(self):
         return GdalAlgorithmDialog(self)
 
     def processAlgorithm(self, progress):
-        GdalUtils.runGdal(self.getConsoleCommands(), progress)
+        commands = self.getConsoleCommands()
+        layers = dataobjects.getVectorLayers()
+        for i, c in enumerate(commands):
+            for layer in layers:
+                if layer.source() in c:
+                    c = c.replace(layer.source(), dataobjects.exportVectorLayer(layer))
 
-    def help(self):
-        try:
-            return False, "http://www.gdal.org/%s.html" % self.commandName()
-        except:
-            return False, None
+            commands[i] = c
+        GdalUtils.runGdal(commands, progress)
+
+    def shortHelp(self):
+        return self._formatHelp('''This algorithm is based on the GDAL %s module.
+
+                For more info, see the <a href = 'http://www.gdal.org/%s.html'> module help</a>
+                ''' % (self.commandName(), self.commandName()))
 
     def commandName(self):
         alg = self.getCopy()
@@ -64,12 +74,3 @@ class GdalAlgorithm(GeoAlgorithm):
         if name.endswith(".py"):
             name = name[:-3]
         return name
-
-
-class GdalScriptAlgorithm(ScriptAlgorithm):
-
-    def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'gdal.png'))
-
-    def getCustomParametersDialog(self):
-        return GdalAlgorithmDialog(self)

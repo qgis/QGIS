@@ -26,7 +26,8 @@ __copyright__ = '(C) 2014, Arnaud Morvan'
 __revision__ = '$Format:%H$'
 
 
-from qgis.core import QgsField, QgsExpression, QgsFeature
+from qgis.core import QgsField, QgsExpression, QgsExpressionContext, QgsExpressionContextUtils, QgsDistanceArea, QgsProject, QgsFeature, GEO_NONE
+from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -59,12 +60,6 @@ class FieldsMapper(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Refactored')))
 
-    def getCustomParametersDialog(self):
-        return FieldsMapperParametersDialog(self)
-
-    def getCustomModelerParametersDialog(self, modelAlg, algIndex=None):
-        return FieldsMapperModelerParametersDialog(self, modelAlg, algIndex)
-
     def processAlgorithm(self, progress):
         layer = self.getParameterValue(self.INPUT_LAYER)
         mapping = self.getParameterValue(self.FIELDS_MAPPING)
@@ -74,6 +69,19 @@ class FieldsMapper(GeoAlgorithm):
         provider = layer.dataProvider()
         fields = []
         expressions = []
+
+        da = QgsDistanceArea()
+        da.setSourceCrs(layer.crs().srsid())
+        da.setEllipsoidalMode(
+            iface.mapCanvas().mapSettings().hasCrsTransformEnabled())
+        da.setEllipsoid(QgsProject.instance().readEntry(
+            'Measure', '/Ellipsoid', GEO_NONE)[0])
+
+        exp_context = QgsExpressionContext()
+        exp_context.appendScope(QgsExpressionContextUtils.globalScope())
+        exp_context.appendScope(QgsExpressionContextUtils.projectScope())
+        exp_context.appendScope(QgsExpressionContextUtils.layerScope(layer))
+
         for field_def in mapping:
             fields.append(QgsField(name=field_def['name'],
                                    type=field_def['type'],
@@ -81,12 +89,16 @@ class FieldsMapper(GeoAlgorithm):
                                    prec=field_def['precision']))
 
             expression = QgsExpression(field_def['expression'])
+            expression.setGeomCalculator(da)
+            expression.setDistanceUnits(QgsProject.instance().distanceUnits())
+            expression.setAreaUnits(QgsProject.instance().areaUnits())
+
             if expression.hasParserError():
                 raise GeoAlgorithmExecutionException(
                     self.tr(u'Parser error in expression "{}": {}')
                     .format(unicode(field_def['expression']),
                             unicode(expression.parserErrorString())))
-            expression.prepare(provider.fields())
+            expression.prepare(exp_context)
             if expression.hasEvalError():
                 raise GeoAlgorithmExecutionException(
                     self.tr(u'Evaluation error in expression "{}": {}')
@@ -104,7 +116,7 @@ class FieldsMapper(GeoAlgorithm):
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         features = vector.features(layer)
-        count = len(features)
+        total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
             rownum = current + 1
 
@@ -114,8 +126,9 @@ class FieldsMapper(GeoAlgorithm):
             for i in xrange(0, len(mapping)):
                 field_def = mapping[i]
                 expression = expressions[i]
-                expression.setCurrentRowNumber(rownum)
-                value = expression.evaluate(inFeat)
+                exp_context.setFeature(inFeat)
+                exp_context.lastScope().setVariable("row_number", rownum)
+                value = expression.evaluate(exp_context)
                 if expression.hasEvalError():
                     calculationSuccess = False
                     error = expression.evalErrorString()
@@ -126,8 +139,7 @@ class FieldsMapper(GeoAlgorithm):
 
             writer.addFeature(outFeat)
 
-            current += 1
-            progress.setPercentage(100 * current / float(count))
+            progress.setPercentage(int(current * total))
 
         del writer
 
@@ -135,3 +147,9 @@ class FieldsMapper(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('An error occurred while evaluating the calculation'
                         ' string:\n') + error)
+
+    def getCustomParametersDialog(self):
+        return FieldsMapperParametersDialog(self)
+
+    def getCustomModelerParametersDialog(self, modelAlg, algName=None):
+        return FieldsMapperModelerParametersDialog(self, modelAlg, algName)

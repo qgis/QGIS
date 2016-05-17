@@ -1,11 +1,16 @@
 
+/**
+ * This singleton class keeps a list of data item providers that may add items to the browser tree.
+ * When created, it automatically adds providers from provider plugins (e.g. PostGIS, WMS, ...)
+ *
+ * @note added in 2.10
+ */
 class QgsDataItemProviderRegistry
 {
 %TypeHeaderCode
 #include <qgsdataitemproviderregistry.h>
 %End
   public:
-    //! Returns the instance pointer, creating the object on the first call
     static QgsDataItemProviderRegistry * instance();
 
     ~QgsDataItemProviderRegistry();
@@ -21,5 +26,6 @@ class QgsDataItemProviderRegistry
 
   private:
     QgsDataItemProviderRegistry();
+    QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry& rh );
 
 };

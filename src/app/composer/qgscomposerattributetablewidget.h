@@ -31,16 +31,12 @@ class QgsComposerAttributeTableWidget: public QgsComposerItemBaseWidget, private
     QgsComposerAttributeTableWidget( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame );
     ~QgsComposerAttributeTableWidget();
 
-  protected:
-    void showEvent( QShowEvent * event ) override;
-
   private:
     QgsComposerAttributeTableV2* mComposerTable;
     QgsComposerFrame* mFrame;
 
     /** Blocks / unblocks the signals of all GUI elements*/
     void blockAllSignals( bool b );
-    void refreshMapComboBox();
 
     void toggleSourceControls();
 
@@ -49,7 +45,7 @@ class QgsComposerAttributeTableWidget: public QgsComposerItemBaseWidget, private
   private slots:
     void on_mRefreshPushButton_clicked();
     void on_mAttributesPushButton_clicked();
-    void on_mComposerMapComboBox_activated( int index );
+    void composerMapChanged( const QgsComposerItem* item );
     void on_mMaximumRowsSpinBox_valueChanged( int i );
     void on_mMarginSpinBox_valueChanged( double d );
     void on_mGridStrokeWidthSpinBox_valueChanged( double d );

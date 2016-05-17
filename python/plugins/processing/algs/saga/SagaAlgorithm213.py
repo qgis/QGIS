@@ -27,13 +27,22 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from SagaAlgorithm212 import SagaAlgorithm212
+from .SagaAlgorithm212 import SagaAlgorithm212
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterRaster, ParameterVector, ParameterTable, ParameterMultipleInput, ParameterBoolean, ParameterFixedTable, ParameterExtent, ParameterNumber, ParameterSelection
-from processing.core.outputs import OutputRaster, OutputVector, OutputTable
-import SagaUtils
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTable
+from processing.core.parameters import ParameterMultipleInput
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterFixedTable
+from processing.core.parameters import ParameterExtent
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterSelection
+from processing.core.outputs import OutputRaster
+from processing.core.outputs import OutputVector
+from . import SagaUtils
 from processing.tools import dataobjects
 from processing.tools.system import getTempFilename
 
@@ -103,7 +112,10 @@ class SagaAlgorithm213(SagaAlgorithm212):
                             if exportCommand is not None:
                                 commands.append(exportCommand)
                         param.value = ";".join(layers)
-                elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+                elif param.datatype in [ParameterMultipleInput.TYPE_VECTOR_ANY,
+                                        ParameterMultipleInput.TYPE_VECTOR_LINE,
+                                        ParameterMultipleInput.TYPE_VECTOR_POLYGON,
+                                        ParameterMultipleInput.TYPE_VECTOR_POINT]:
                     for layerfile in layers:
                         layer = dataobjects.getObjectFromUri(layerfile, False)
                         if layer:
@@ -115,15 +127,13 @@ class SagaAlgorithm213(SagaAlgorithm212):
 
         # 2: Set parameters and outputs
         command = self.undecoratedGroup + ' "' + self.cmdname + '"'
-        if self.hardcodedStrings:
-            for s in self.hardcodedStrings:
-                command += ' ' + s
+        command += ' ' + ' '.join(self.hardcodedStrings)
 
         for param in self.parameters:
             if param.value is None:
                 continue
             if isinstance(param, (ParameterRaster, ParameterVector,
-                          ParameterTable)):
+                                  ParameterTable)):
                 value = param.value
                 if value in self.exportedLayers.keys():
                     command += ' -' + param.name + ' "' \
@@ -197,5 +207,5 @@ class SagaAlgorithm213(SagaAlgorithm212):
             for out in self.outputs:
                 if isinstance(out, (OutputVector, OutputRaster)):
                     prjFile = os.path.splitext(out.getCompatibleFileName(self))[0] + ".prj"
-                with open(prjFile, "w") as f:
-                    f.write(self.crs.toWkt())
+                    with open(prjFile, "w") as f:
+                        f.write(self.crs.toWkt())

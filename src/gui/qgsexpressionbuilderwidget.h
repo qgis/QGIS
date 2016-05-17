@@ -25,6 +25,7 @@
 #include "QStandardItemModel"
 #include "QStandardItem"
 #include "QSortFilterProxyModel"
+#include "QStringListModel"
 
 /** An expression item that can be used in the QgsExpressionBuilderWidget tree.
   */
@@ -38,9 +39,9 @@ class QgsExpressionItem : public QStandardItem
       ExpressionNode
     };
 
-    QgsExpressionItem( QString label,
-                       QString expressionText,
-                       QString helpText,
+    QgsExpressionItem( const QString& label,
+                       const QString& expressionText,
+                       const QString& helpText,
                        QgsExpressionItem::ItemType itemType = ExpressionNode )
         : QStandardItem( label )
     {
@@ -50,8 +51,8 @@ class QgsExpressionItem : public QStandardItem
       setData( itemType, ItemTypeRole );
     }
 
-    QgsExpressionItem( QString label,
-                       QString expressionText,
+    QgsExpressionItem( const QString& label,
+                       const QString& expressionText,
                        QgsExpressionItem::ItemType itemType = ExpressionNode )
         : QStandardItem( label )
     {
@@ -71,7 +72,7 @@ class QgsExpressionItem : public QStandardItem
       *
       * @note The help text can be set as a html string.
       */
-    void setHelpText( QString helpText ) { mHelpText = helpText; }
+    void setHelpText( const QString& helpText ) { mHelpText = helpText; }
 
     /** Get the type of expression item eg header, field, ExpressionNode.
       *
@@ -95,46 +96,20 @@ class QgsExpressionItem : public QStandardItem
   * The default search for a tree model only searches top level this will handle one
   * level down
   */
-class QgsExpressionItemSearchProxy : public QSortFilterProxyModel
+class GUI_EXPORT QgsExpressionItemSearchProxy : public QSortFilterProxyModel
 {
+    Q_OBJECT
+
   public:
-    QgsExpressionItemSearchProxy()
-    {
-      setFilterCaseSensitivity( Qt::CaseInsensitive );
-    }
+    QgsExpressionItemSearchProxy();
 
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override
-    {
-      QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
-      QgsExpressionItem::ItemType itemType = QgsExpressionItem::ItemType( sourceModel()->data( index, QgsExpressionItem::ItemTypeRole ).toInt() );
-
-      if ( itemType == QgsExpressionItem::Header )
-        return true;
-
-      return QSortFilterProxyModel::filterAcceptsRow( source_row, source_parent );
-    }
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   protected:
 
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override
-    {
-      int leftSort = sourceModel()->data( left, QgsExpressionItem::CustomSortRole ).toInt();
-      int rightSort = sourceModel()->data( right,  QgsExpressionItem::CustomSortRole ).toInt();
-      if ( leftSort != rightSort )
-        return leftSort < rightSort;
-
-      QString leftString = sourceModel()->data( left, Qt::DisplayRole ).toString();
-      QString rightString = sourceModel()->data( right, Qt::DisplayRole ).toString();
-
-      //ignore $ prefixes when sorting
-      if ( leftString.startsWith( "$" ) )
-        leftString = leftString.mid( 1 );
-      if ( rightString.startsWith( "$" ) )
-        rightString = rightString.mid( 1 );
-
-      return QString::localeAwareCompare( leftString, rightString ) < 0;
-    }
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 };
+
 
 /** A reusable widget that can be used to build a expression string.
   * See QgsExpressionBuilderDialog for exmaple of usage.
@@ -143,7 +118,10 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 {
     Q_OBJECT
   public:
-    QgsExpressionBuilderWidget( QWidget *parent );
+    /**
+     * Create a new expression builder widget with an optional parent.
+     */
+    QgsExpressionBuilderWidget( QWidget* parent = nullptr );
     ~QgsExpressionBuilderWidget();
 
     /** Sets layer in order to get the fields and values
@@ -198,20 +176,20 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
       * @param highlightedItem set to true to make the item highlighted, which inserts a bold copy of the item at the top level
       * @param sortOrder sort ranking for item
       */
-    void registerItem( QString group, QString label, QString expressionText,
-                       QString helpText = "",
+    void registerItem( const QString& group, const QString& label, const QString& expressionText,
+                       const QString& helpText = "",
                        QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
                        bool highlightedItem = false, int sortOrder = 1 );
 
     bool isExpressionValid();
 
-    void saveToRecent( QString key );
+    void saveToRecent( const QString& key );
 
-    void loadRecent( QString key );
+    void loadRecent( const QString& key );
 
     /** Create a new file in the function editor
      */
-    void newFunctionFile( QString fileName = "scratch" );
+    void newFunctionFile( const QString& fileName = "scratch" );
 
     /** Save the current function editor text to the given file.
      */
@@ -223,30 +201,51 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     /** Load code into the function editor
      */
-    void loadFunctionCode( QString code );
+    void loadFunctionCode( const QString& code );
 
     /** Update the list of function files found at the given path
      */
-    void updateFunctionFileList( QString path );
+    void updateFunctionFileList( const QString& path );
 
   public slots:
+
+    /**
+     * Load sample values into the sample value area
+     */
+    void loadSampleValues();
+
+    /**
+     * Load all unique values from the set layer into the sample area
+     */
+    void loadAllValues();
+
+    /**
+     * Auto save the current Python function code.
+     */
+    void autosave();
+
+    /**
+     * Enabled or disable auto saving. When enabled Python scripts will be auto saved
+     * when text changes.
+     * @param enabled True to enable auto saving.
+     */
+    void setAutoSave( bool enabled ) { mAutoSave = enabled; }
+
+  private slots:
+    void showContextMenu( QPoint );
+    void setExpressionState( bool state );
     void currentChanged( const QModelIndex &index, const QModelIndex & );
+    void operatorButtonClicked();
     void on_btnRun_pressed();
     void on_btnNewFile_pressed();
-    void on_cmbFileNames_currentIndexChanged( int index );
-    void on_btnSaveFile_pressed();
+    void on_cmbFileNames_currentItemChanged( QListWidgetItem* item, QListWidgetItem* lastitem );
     void on_expressionTree_doubleClicked( const QModelIndex &index );
     void on_txtExpressionString_textChanged();
     void on_txtSearchEdit_textChanged();
-    void on_lblPreview_linkActivated( QString link );
-    void on_mValueListWidget_itemDoubleClicked( QListWidgetItem* item );
-    void operatorButtonClicked();
-    void showContextMenu( const QPoint & );
-    void loadSampleValues();
-    void loadAllValues();
-
-  private slots:
-    void setExpressionState( bool state );
+    void on_txtSearchEditValues_textChanged();
+    void on_lblPreview_linkActivated( const QString& link );
+    void on_mValuesListView_doubleClicked( const QModelIndex &index );
+    void on_txtPython_textChanged();
 
   signals:
     /** Emitted when the user changes the expression in the widget.
@@ -256,24 +255,24 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
       */
     void expressionParsed( bool isValid );
 
+  protected:
+    void showEvent( QShowEvent *e );
+
   private:
-    void runPythonCode( QString code );
+    void runPythonCode( const QString& code );
     void updateFunctionTree();
     void fillFieldValues( const QString &fieldName, int countLimit );
     QString loadFunctionHelp( QgsExpressionItem* functionName );
     QString helpStylesheet() const;
 
-    /** Formats an expression preview result for display in the widget
-     * by truncating the string
-     * @param previewString expression preview result to format
-     */
-    QString formatPreviewString( const QString &previewString ) const;
-
     void loadExpressionContext();
 
+    bool mAutoSave;
     QString mFunctionsPath;
     QgsVectorLayer *mLayer;
     QStandardItemModel *mModel;
+    QStringListModel *mValuesModel;
+    QSortFilterProxyModel *mProxyValues;
     QgsExpressionItemSearchProxy *mProxyModel;
     QMap<QString, QgsExpressionItem*> mExpressionGroups;
     QgsFeature mFeature;
@@ -283,7 +282,6 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QString mRecentKey;
     QMap<QString, QStringList> mFieldValues;
     QgsExpressionContext mExpressionContext;
-
 };
 
 #endif // QGSEXPRESSIONBUILDER_H

@@ -1,0 +1,7 @@
+v.in.mapgen
+Imports Mapgen or Matlab-ASCII vector maps into GRASS.
+Vector (v.*)
+ParameterFile|input|Name of input file in Mapgen/Matlab format|False|False
+*ParameterBoolean|-z|Create 3D vector map|False
+*ParameterBoolean|-f|Input map is in Matlab format|False
+OutputVector|output|Mapgen

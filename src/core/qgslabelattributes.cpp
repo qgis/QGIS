@@ -86,9 +86,6 @@ QgsLabelAttributes::QgsLabelAttributes( bool def )
   }
 }
 
-QgsLabelAttributes::~QgsLabelAttributes()
-{
-}
 /* Text */
 void QgsLabelAttributes::setText( const QString & text )
 {
@@ -96,12 +93,12 @@ void QgsLabelAttributes::setText( const QString & text )
   mTextIsSet = true;
 }
 
-bool QgsLabelAttributes::textIsSet( void ) const
+bool QgsLabelAttributes::textIsSet() const
 {
   return mTextIsSet;
 }
 
-const QString QgsLabelAttributes::text( void ) const
+const QString QgsLabelAttributes::text() const
 {
   return mText;
 }
@@ -116,22 +113,22 @@ void QgsLabelAttributes::setOffset( double x, double y, int type )
   mOffsetIsSet = true;
 }
 
-bool QgsLabelAttributes::offsetIsSet( void ) const
+bool QgsLabelAttributes::offsetIsSet() const
 {
   return mOffsetIsSet;
 }
 
-int QgsLabelAttributes::offsetType( void ) const
+int QgsLabelAttributes::offsetType() const
 {
   return mOffsetType;
 }
 
-double QgsLabelAttributes::xOffset( void ) const
+double QgsLabelAttributes::xOffset() const
 {
   return mXOffset;
 }
 
-double QgsLabelAttributes::yOffset( void ) const
+double QgsLabelAttributes::yOffset() const
 {
   return mYOffset;
 }
@@ -143,12 +140,12 @@ void QgsLabelAttributes::setAngle( double angle )
   mAngleIsSet = true;
 }
 
-bool QgsLabelAttributes::angleIsSet( void ) const
+bool QgsLabelAttributes::angleIsSet() const
 {
   return mAngleIsSet;
 }
 
-double QgsLabelAttributes::angle( void ) const
+double QgsLabelAttributes::angle() const
 {
   return mAngle;
 }
@@ -170,12 +167,12 @@ void QgsLabelAttributes::setAlignment( int alignment )
   mAlignmentIsSet = true;
 }
 
-bool QgsLabelAttributes::alignmentIsSet( void ) const
+bool QgsLabelAttributes::alignmentIsSet() const
 {
   return mAlignmentIsSet;
 }
 
-int QgsLabelAttributes::alignment( void ) const
+int QgsLabelAttributes::alignment() const
 {
   return mAlignment;
 }
@@ -187,12 +184,12 @@ void QgsLabelAttributes::setFamily( const QString & family )
   mFamilyIsSet = true;
 }
 
-bool QgsLabelAttributes::familyIsSet( void ) const
+bool QgsLabelAttributes::familyIsSet() const
 {
   return mFamilyIsSet;
 }
 
-const QString QgsLabelAttributes::family( void ) const
+const QString QgsLabelAttributes::family() const
 {
   return mFont.family();
 }
@@ -204,12 +201,12 @@ void QgsLabelAttributes::setBold( bool enable )
   mBoldIsSet = true;
 }
 
-bool QgsLabelAttributes::boldIsSet( void ) const
+bool QgsLabelAttributes::boldIsSet() const
 {
   return mBoldIsSet;
 }
 
-bool QgsLabelAttributes::bold( void ) const
+bool QgsLabelAttributes::bold() const
 {
   return mFont.bold();
 }
@@ -221,12 +218,12 @@ void QgsLabelAttributes::setItalic( bool enable )
   mItalicIsSet = true;
 }
 
-bool QgsLabelAttributes::italicIsSet( void ) const
+bool QgsLabelAttributes::italicIsSet() const
 {
   return mItalicIsSet;
 }
 
-bool QgsLabelAttributes::italic( void ) const
+bool QgsLabelAttributes::italic() const
 {
   return mFont.italic();
 }
@@ -238,12 +235,12 @@ void QgsLabelAttributes::setUnderline( bool enable )
   mUnderlineIsSet = true;
 }
 
-bool QgsLabelAttributes::underlineIsSet( void ) const
+bool QgsLabelAttributes::underlineIsSet() const
 {
   return mUnderlineIsSet;
 }
 
-bool QgsLabelAttributes::underline( void ) const
+bool QgsLabelAttributes::underline() const
 {
   return mFont.underline();
 }
@@ -254,12 +251,12 @@ void QgsLabelAttributes::setStrikeOut( bool enable )
   mStrikeOutIsSet = true;
 }
 
-bool QgsLabelAttributes::strikeOutIsSet( void ) const
+bool QgsLabelAttributes::strikeOutIsSet() const
 {
   return mStrikeOutIsSet;
 }
 
-bool QgsLabelAttributes::strikeOut( void ) const
+bool QgsLabelAttributes::strikeOut() const
 {
   return mFont.strikeOut();
 }
@@ -272,17 +269,17 @@ void QgsLabelAttributes::setSize( double size, int type )
   mSizeIsSet = true;
 }
 
-bool QgsLabelAttributes::sizeIsSet( void ) const
+bool QgsLabelAttributes::sizeIsSet() const
 {
   return mSizeIsSet;
 }
 
-int QgsLabelAttributes::sizeType( void ) const
+int QgsLabelAttributes::sizeType() const
 {
   return mSizeType;
 }
 
-double QgsLabelAttributes::size( void ) const
+double QgsLabelAttributes::size() const
 {
   return mSize;
 }
@@ -294,12 +291,12 @@ void QgsLabelAttributes::setColor( const QColor &color )
   mColorIsSet = true;
 }
 
-bool QgsLabelAttributes::colorIsSet( void ) const
+bool QgsLabelAttributes::colorIsSet() const
 {
   return mColorIsSet;
 }
 
-const QColor & QgsLabelAttributes::color( void ) const
+const QColor & QgsLabelAttributes::color() const
 {
   return mColor;
 }
@@ -320,17 +317,17 @@ void QgsLabelAttributes::setBufferSize( double size, int type )
   mBufferSizeIsSet = true;
 }
 
-bool QgsLabelAttributes::bufferSizeIsSet( void ) const
+bool QgsLabelAttributes::bufferSizeIsSet() const
 {
   return mBufferSizeIsSet;
 }
 
-int QgsLabelAttributes::bufferSizeType( void ) const
+int QgsLabelAttributes::bufferSizeType() const
 {
   return mBufferSizeType;
 }
 
-double QgsLabelAttributes::bufferSize( void ) const
+double QgsLabelAttributes::bufferSize() const
 {
   return mBufferSize;
 }
@@ -342,12 +339,12 @@ void QgsLabelAttributes::setBufferColor( const QColor &color )
   mBufferColorIsSet = true;
 }
 
-bool QgsLabelAttributes::bufferColorIsSet( void ) const
+bool QgsLabelAttributes::bufferColorIsSet() const
 {
   return mColorIsSet;
 }
 
-QColor QgsLabelAttributes::bufferColor( void ) const
+QColor QgsLabelAttributes::bufferColor() const
 {
   return mBufferBrush.color();
 }
@@ -359,12 +356,12 @@ void QgsLabelAttributes::setBufferStyle( Qt::BrushStyle style )
   mBufferStyleIsSet = true;
 }
 
-bool QgsLabelAttributes::bufferStyleIsSet( void ) const
+bool QgsLabelAttributes::bufferStyleIsSet() const
 {
   return mBufferStyleIsSet;
 }
 
-Qt::BrushStyle QgsLabelAttributes::bufferStyle( void ) const
+Qt::BrushStyle QgsLabelAttributes::bufferStyle() const
 {
   return mBufferBrush.style();
 }
@@ -376,12 +373,12 @@ void QgsLabelAttributes::setBorderColor( const QColor &color )
   mBorderColorIsSet = true;
 }
 
-bool QgsLabelAttributes::borderColorIsSet( void ) const
+bool QgsLabelAttributes::borderColorIsSet() const
 {
   return mBorderColorIsSet;
 }
 
-QColor QgsLabelAttributes::borderColor( void ) const
+QColor QgsLabelAttributes::borderColor() const
 {
   return mBorderPen.color();
 }
@@ -392,12 +389,12 @@ void QgsLabelAttributes::setBorderWidth( int width )
   mBorderWidthIsSet = true;
 }
 
-bool QgsLabelAttributes::borderWidthIsSet( void ) const
+bool QgsLabelAttributes::borderWidthIsSet() const
 {
   return mBorderWidthIsSet;
 }
 
-int QgsLabelAttributes::borderWidth( void ) const
+int QgsLabelAttributes::borderWidth() const
 {
   return mBorderPen.width();
 }
@@ -409,12 +406,12 @@ void QgsLabelAttributes::setBorderStyle( Qt::PenStyle style )
   mBorderStyleIsSet = true;
 }
 
-bool QgsLabelAttributes::borderStyleIsSet( void ) const
+bool QgsLabelAttributes::borderStyleIsSet() const
 {
   return mBorderStyleIsSet;
 }
 
-Qt::PenStyle QgsLabelAttributes::borderStyle( void ) const
+Qt::PenStyle QgsLabelAttributes::borderStyle() const
 {
   return mBorderPen.style();
 }

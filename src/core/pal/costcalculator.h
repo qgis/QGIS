@@ -18,6 +18,11 @@
 #include <QList>
 #include "rtree.hpp"
 
+/**
+ * \class pal::CostCalculator
+ * \note not available in Python bindings
+ */
+
 namespace pal
 {
   class Feats;
@@ -28,7 +33,7 @@ namespace pal
       /** Increase candidate's cost according to its collision with passed feature */
       static void addObstacleCostPenalty( LabelPosition* lp, pal::FeaturePart *obstacle );
 
-      static void setPolygonCandidatesCost( int nblp, QList< LabelPosition* >& lPos, int max_p, RTree<pal::FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] );
+      static void setPolygonCandidatesCost( int nblp, QList< LabelPosition* >& lPos, RTree<pal::FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] );
 
       /** Set cost to the smallest distance between lPos's centroid and a polygon stored in geoetry field */
       static void setCandidateCostFromPolygon( LabelPosition* lp, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
@@ -48,15 +53,17 @@ namespace pal
   /**
    * \brief Data structure to compute polygon's candidates costs
    *
-   *  eight segment from center of candidat to (rpx,rpy) points (0°, 45°, 90°, ..., 315°)
+   *  Eight segments from center of candidate to (rpx,rpy) points (0°, 45°, 90°, ..., 315°)
    *  dist store the shortest square distance from the center to an object
    *  ok[i] is the to true whether the corresponding dist[i] is set
+   *
+   * \note not available in Python bindings
    */
   class PolygonCostCalculator
   {
 
     public:
-      PolygonCostCalculator( LabelPosition *lp );
+      explicit PolygonCostCalculator( LabelPosition *lp );
 
       void update( pal::PointSet *pset );
 

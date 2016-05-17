@@ -22,8 +22,8 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import Qt, SIGNAL
-from PyQt4.QtGui import QDialog, QMessageBox, QApplication
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QApplication
 
 from .db_plugins.plugin import DbError
 from .dlg_db_error import DlgDbError
@@ -41,7 +41,7 @@ class DlgAddGeometryColumn(QDialog, Ui_Dialog):
         self.db = self.table.database() if self.table and self.table.database() else db
         self.setupUi(self)
 
-        self.connect(self.buttonBox, SIGNAL("accepted()"), self.createGeomColumn)
+        self.buttonBox.accepted.connect(self.createGeomColumn)
 
     def createGeomColumn(self):
         """ first check whether everything's fine """

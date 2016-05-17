@@ -14,13 +14,13 @@ class QgsExpressionItem : QStandardItem
       ExpressionNode
     };
 
-    QgsExpressionItem( QString label,
-                       QString expressionText,
-                       QString helpText,
+    QgsExpressionItem( const QString& label,
+                       const QString& expressionText,
+                       const QString& helpText,
                        QgsExpressionItem::ItemType itemType = ExpressionNode );
 
-    QgsExpressionItem( QString label,
-                       QString expressionText,
+    QgsExpressionItem( const QString& label,
+                       const QString& expressionText,
                        QgsExpressionItem::ItemType itemType = ExpressionNode );
 
     QString getExpressionText() const;
@@ -34,7 +34,7 @@ class QgsExpressionItem : QStandardItem
       *
       * @note The help text can be set as a html string.
       */
-    void setHelpText( QString helpText );
+    void setHelpText( const QString& helpText );
 
     /** Get the type of expression item eg header, field, ExpressionNode.
       *
@@ -68,6 +68,7 @@ class QgsExpressionItemSearchProxy : QSortFilterProxyModel
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 };
 
+
 /** A reusable widget that can be used to build a expression string.
   * See QgsExpressionBuilderDialog for exmaple of usage.
   */
@@ -78,7 +79,7 @@ class QgsExpressionBuilderWidget : QWidget
 %End
 
   public:
-    QgsExpressionBuilderWidget( QWidget *parent /TransferThis/ );
+    QgsExpressionBuilderWidget( QWidget *parent /TransferThis/ = nullptr );
     ~QgsExpressionBuilderWidget();
 
     /** Sets layer in order to get the fields and values
@@ -97,7 +98,7 @@ class QgsExpressionBuilderWidget : QWidget
      *  @note The field values must be quoted appropriately if they are strings.
      *  @note added in QGIS 2.12
      */
-    void loadFieldsAndValues(const QMap<QString, QStringList>& fieldValues );
+    void loadFieldsAndValues( const QMap<QString, QStringList>& fieldValues );
 
     /** Sets geometry calculator used in distance/area calculations. */
     void setGeomCalculator( const QgsDistanceArea & da );
@@ -133,20 +134,20 @@ class QgsExpressionBuilderWidget : QWidget
       * @param highlightedItem set to true to make the item highlighted, which inserts a bold copy of the item at the top level
       * @param sortOrder sort ranking for item
       */
-    void registerItem( QString group, QString label, QString expressionText,
-                       QString helpText = "",
+    void registerItem( const QString& group, const QString& label, const QString& expressionText,
+                       const QString& helpText = "",
                        QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
                        bool highlightedItem = false, int sortOrder = 1 );
 
     bool isExpressionValid();
 
-    void saveToRecent( QString key );
+    void saveToRecent( const QString& key );
 
-    void loadRecent( QString key );
+    void loadRecent( const QString& key );
 
     /** Create a new file in the function editor
      */
-    void newFunctionFile( QString fileName = "scratch" );
+    void newFunctionFile( const QString& fileName = "scratch" );
 
     /** Save the current function editor text to the given file.
      */
@@ -158,27 +159,35 @@ class QgsExpressionBuilderWidget : QWidget
 
     /** Load code into the function editor
      */
-    void loadFunctionCode( QString code );
+    void loadFunctionCode( const QString& code );
 
     /** Update the list of function files found at the given path
      */
-    void updateFunctionFileList( QString path );
+    void updateFunctionFileList( const QString& path );
 
   public slots:
-    void currentChanged( const QModelIndex &index, const QModelIndex & );
-    void on_btnRun_pressed();
-    void on_btnNewFile_pressed();
-    void on_cmbFileNames_currentIndexChanged( int index );
-    void on_btnSaveFile_pressed();
-    void on_expressionTree_doubleClicked( const QModelIndex &index );
-    void on_txtExpressionString_textChanged();
-    void on_txtSearchEdit_textChanged();
-    void on_lblPreview_linkActivated( QString link );
-    void on_mValueListWidget_itemDoubleClicked( QListWidgetItem* item );
-    void operatorButtonClicked();
-    void showContextMenu( const QPoint & );
+
+    /**
+     * Load sample values into the sample value area
+     */
     void loadSampleValues();
+
+    /**
+     * Load all unique values from the set layer into the sample area
+     */
     void loadAllValues();
+
+    /**
+     * Auto save the current Python function code.
+     */
+    void autosave();
+
+    /**
+     * Enabled or disable auto saving. When enabled Python scripts will be auto saved
+     * when text changes.
+     * @param enabled True to enable auto saving.
+     */
+    void setAutoSave( bool enabled );
 
   signals:
     /** Emitted when the user changes the expression in the widget.

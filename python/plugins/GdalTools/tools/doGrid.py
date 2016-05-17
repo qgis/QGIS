@@ -23,12 +23,12 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import SIGNAL, QFileInfo, QTextCodec
-from PyQt4.QtGui import QWidget, QErrorMessage
+from qgis.PyQt.QtCore import QFileInfo, QTextCodec
+from qgis.PyQt.QtWidgets import QWidget, QErrorMessage
 
-from ui_widgetGrid import Ui_GdalToolsWidget as Ui_Widget
-from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
-import GdalTools_utils as Utils
+from .ui_widgetGrid import Ui_GdalToolsWidget as Ui_Widget
+from .widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
+from . import GdalTools_utils as Utils
 
 
 class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
@@ -56,27 +56,27 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         self.lastEncoding = Utils.getLastUsedEncoding()
 
         self.setParamsStatus([
-            (self.inSelector, SIGNAL("filenameChanged()")),
-            (self.outSelector, SIGNAL("filenameChanged()")),
-            (self.zfieldCombo, SIGNAL("currentIndexChanged(int)"), self.zfieldCheck),
-            (self.algorithmCombo, SIGNAL("currentIndexChanged(int)"), self.algorithmCheck),
+            (self.inSelector, "filenameChanged"),
+            (self.outSelector, "filenameChanged"),
+            (self.zfieldCombo, "currentIndexChanged", self.zfieldCheck),
+            (self.algorithmCombo, "currentIndexChanged", self.algorithmCheck),
             (self.stackedWidget, None, self.algorithmCheck),
-            ([self.invdistPowerSpin, self.invdistSmothingSpin, self.invdistRadius1Spin, self.invdistRadius2Spin, self.invdistAngleSpin, self.invdistNoDataSpin], SIGNAL("valueChanged(double)")),
-            ([self.invdistMaxPointsSpin, self.invdistMinPointsSpin], SIGNAL("valueChanged(int)")),
-            ([self.averageRadius1Spin, self.averageRadius2Spin, self.averageAngleSpin, self.averageNoDataSpin], SIGNAL("valueChanged(double)")),
-            (self.averageMinPointsSpin, SIGNAL("valueChanged(int)")),
-            ([self.nearestRadius1Spin, self.nearestRadius2Spin, self.nearestAngleSpin, self.nearestNoDataSpin], SIGNAL("valueChanged(double)")),
-            (self.datametricsCombo, SIGNAL("currentIndexChanged(int)")),
-            ([self.datametricsRadius1Spin, self.datametricsRadius2Spin, self.datametricsAngleSpin, self.datametricsNoDataSpin], SIGNAL("valueChanged(double)")),
-            (self.datametricsMinPointsSpin, SIGNAL("valueChanged(int)")),
-            (self.extentSelector, [SIGNAL("selectionStarted()"), SIGNAL("newExtentDefined()")], self.extentGroup),
-            ([self.widthSpin, self.heightSpin], SIGNAL("valueChanged(int)"), self.resizeGroupBox)
+            ([self.invdistPowerSpin, self.invdistSmothingSpin, self.invdistRadius1Spin, self.invdistRadius2Spin, self.invdistAngleSpin, self.invdistNoDataSpin], "valueChanged"),
+            ([self.invdistMaxPointsSpin, self.invdistMinPointsSpin], "valueChanged"),
+            ([self.averageRadius1Spin, self.averageRadius2Spin, self.averageAngleSpin, self.averageNoDataSpin], "valueChanged"),
+            (self.averageMinPointsSpin, "valueChanged"),
+            ([self.nearestRadius1Spin, self.nearestRadius2Spin, self.nearestAngleSpin, self.nearestNoDataSpin], "valueChanged"),
+            (self.datametricsCombo, "currentIndexChanged"),
+            ([self.datametricsRadius1Spin, self.datametricsRadius2Spin, self.datametricsAngleSpin, self.datametricsNoDataSpin], "valueChanged"),
+            (self.datametricsMinPointsSpin, "valueChanged"),
+            (self.extentSelector, ["selectionStarted", "newExtentDefined"], self.extentGroup),
+            ([self.widthSpin, self.heightSpin], "valueChanged", self.resizeGroupBox)
         ])
 
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
-        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
-        self.connect(self.inSelector, SIGNAL("layerChanged()"), self.fillFieldsCombo)
-        self.connect(self.extentGroup, SIGNAL("toggled(bool)"), self.onExtentCheckedChanged)
+        self.inSelector.selectClicked.connect(self.fillInputFileEdit)
+        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
+        self.inSelector.layerChanged.connect(self.fillFieldsCombo)
+        self.extentGroup.toggled.connect(self.onExtentCheckedChanged)
 
     def onClosing(self):
         self.extentSelector.stop()

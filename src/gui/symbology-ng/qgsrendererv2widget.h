@@ -24,7 +24,7 @@ class QgsVectorLayer;
 class QgsStyleV2;
 class QgsFeatureRendererV2;
 class QgsSymbolV2SelectorDialog;
-
+class QgsMapCanvas;
 
 /**
   Base class for renderer settings widgets
@@ -50,12 +50,51 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
     //! show a dialog with renderer's symbol level settings
     void showSymbolLevelsDialog( QgsFeatureRendererV2* r );
 
+    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @see mapCanvas()
+     * @note added in QGIS 2.12
+     */
+    virtual void setMapCanvas( QgsMapCanvas* canvas );
+
+    /** Returns the map canvas associated with the widget.
+     * @see setMapCanvas
+     * @note added in QGIS 2.12
+     */
+    const QgsMapCanvas* mapCanvas() const;
+
+    /** Returns the vector layer associated with the widget.
+     * @note added in QGIS 2.12
+     */
+    const QgsVectorLayer* vectorLayer() const { return mLayer; }
+
+    /**
+     * This method should be called whenever the renderer is actually set on the layer.
+     */
+    void applyChanges();
+
+  signals:
+    /**
+     * Emitted when expression context variables on the associated
+     * vector layers have been changed. Will request the parent dialog
+     * to re-synchronize with the variables.
+     */
+    void layerVariablesChanged();
+
+    /**
+     * Emmited when something on the widget has changed.
+     * All widgets will fire this event to notify of an internal change.
+     */
+    void widgetChanged();
+
   protected:
     QgsVectorLayer* mLayer;
     QgsStyleV2* mStyle;
     QMenu* contextMenu;
     QAction* mCopyAction;
     QAction* mPasteAction;
+    QgsMapCanvas* mMapCanvas;
 
     /** Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
       and by connecting the slot contextMenuViewCategories(const QPoint&)*/
@@ -63,7 +102,7 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
     virtual void refreshSymbolView() {}
 
   protected slots:
-    void  contextMenuViewCategories( const QPoint& p );
+    void  contextMenuViewCategories( QPoint p );
     /** Change color of selected symbols*/
     void changeSymbolColor();
     /** Change opacity of selected symbols*/
@@ -80,6 +119,13 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
     virtual void copy() {}
     virtual void paste() {}
 
+  private:
+    /**
+     * This will be called whenever the renderer is set on a layer.
+     * This can be overwritten in subclasses.
+     */
+    virtual void apply();
+
 };
 
 
@@ -95,6 +141,7 @@ class QgsFields;
 /**
 Utility class for providing GUI for data-defined rendering.
 @deprecated unused, will be removed in QGIS 3.0
+@note not available in Python bindings
 */
 class QgsRendererV2DataDefinedMenus : public QObject
 {
@@ -102,10 +149,11 @@ class QgsRendererV2DataDefinedMenus : public QObject
 
   public:
 
-    Q_DECL_DEPRECATED QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVectorLayer* layer, QString rotationField, QString sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod );
+    //! @deprecated will be removed in QGIS 3.0
+    Q_DECL_DEPRECATED QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVectorLayer* layer, const QString& rotationField, const QString& sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod );
     ~QgsRendererV2DataDefinedMenus();
 
-    void populateMenu( QMenu* menu, QString fieldName, QActionGroup *actionGroup );
+    void populateMenu( QMenu* menu, const QString& fieldName, QActionGroup *actionGroup );
 #if 0
     void updateMenu( QActionGroup* actionGroup, QString fieldName );
 #endif
@@ -117,8 +165,8 @@ class QgsRendererV2DataDefinedMenus : public QObject
 
   signals:
 
-    void rotationFieldChanged( QString fldName );
-    void sizeScaleFieldChanged( QString fldName );
+    void rotationFieldChanged( const QString& fldName );
+    void sizeScaleFieldChanged( const QString& fldName );
     void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
 
   protected:
@@ -151,6 +199,25 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     QgsDataDefinedValueDialog( const QList<QgsSymbolV2*>& symbolList, QgsVectorLayer * layer, const QString & label );
     virtual ~QgsDataDefinedValueDialog() {}
 
+    /** Sets the map canvas associated with the dialog. This allows the dialog to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @see mapCanvas()
+     * @note added in QGIS 2.12
+     */
+    virtual void setMapCanvas( QgsMapCanvas* canvas );
+
+    /** Returns the map canvas associated with the widget.
+     * @see setMapCanvas
+     * @note added in QGIS 2.12
+     */
+    const QgsMapCanvas* mapCanvas() const;
+
+    /** Returns the vector layer associated with the widget.
+     * @note added in QGIS 2.12
+     */
+    const QgsVectorLayer* vectorLayer() const { return mLayer; }
+
   public slots:
     void dataDefinedChanged();
 
@@ -164,6 +231,7 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
 
     QList<QgsSymbolV2*> mSymbolList;
     QgsVectorLayer* mLayer;
+    QgsMapCanvas* mMapCanvas;
 };
 
 class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
@@ -174,8 +242,8 @@ class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
         : QgsDataDefinedValueDialog( symbolList, layer, tr( "Size" ) )
     {
       init( tr( "Symbol size" ) );
-      if ( symbolList.length() && mLayer )
-        mDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mLayer, static_cast<const QgsMarkerSymbolV2*>( symbolList[0] ) ) );
+      if ( !symbolList.isEmpty() && symbolList.at( 0 ) && mLayer )
+        mDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mLayer, static_cast<const QgsMarkerSymbolV2*>( symbolList.at( 0 ) ) ) );
     }
 
   protected:

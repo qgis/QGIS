@@ -18,18 +18,21 @@ class QgsSimplifyMethod
 
     //! construct a default method
     QgsSimplifyMethod();
-    //! copy constructor
-    QgsSimplifyMethod( const QgsSimplifyMethod& rh );
 
     //! Sets the simplification type
     void setMethodType( MethodType methodType );
     //! Gets the simplification type
     MethodType methodType() const;
 
-    //! Sets the tolerance of simplification. Represents the maximum distance between two coordinates which can be considered equal
+    //! Sets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal.
     void setTolerance( double tolerance );
-    //! Gets the tolerance of simplification
+    //! Gets the tolerance of simplification in map units . Represents the maximum distance in map units between two coordinates which can be considered equal.
     double tolerance() const;
+
+    //! Sets the simplification threshold in pixels. Represents the maximum distance in pixels between two coordinates which can be considered equal.
+    void setThreshold( float threshold );
+    //! Gets the simplification threshold in pixels. Represents the maximum distance in pixels between two coordinates which can be considered equal.
+    float threshold() const;
 
     //! Sets whether the simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries
     void setForceLocalOptimization( bool localOptimization );

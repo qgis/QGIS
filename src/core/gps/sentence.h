@@ -10,8 +10,8 @@
 
 /** \file */
 
-#ifndef __NMEA_SENTENCE_H__
-#define __NMEA_SENTENCE_H__
+#ifndef NMEA_SENTENCE_H
+#define NMEA_SENTENCE_H
 
 #include "info.h"
 
@@ -126,4 +126,4 @@ extern "C"
 }
 #endif
 
-#endif /* __NMEA_SENTENCE_H__ */
+#endif /* NMEA_SENTENCE_H */

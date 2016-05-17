@@ -27,6 +27,7 @@
  *
  * Ideally the provider plugins should directly provide implementation of QgsDataItemProvider, for the time being
  * this is a wrapper for the legacy interface.
+ * \note not available in Python bindings
  */
 class QgsDataItemProviderFromPlugin : public QgsDataItemProvider
 {
@@ -61,14 +62,14 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
     if ( !library )
       continue;
 
-    dataCapabilities_t * dataCapabilities = ( dataCapabilities_t * ) cast_to_fptr( library->resolve( "dataCapabilities" ) );
+    dataCapabilities_t * dataCapabilities = reinterpret_cast< dataCapabilities_t * >( cast_to_fptr( library->resolve( "dataCapabilities" ) ) );
     if ( !dataCapabilities )
     {
       QgsDebugMsg( library->fileName() + " does not have dataCapabilities" );
       continue;
     }
 
-    dataItem_t *dataItem = ( dataItem_t * ) cast_to_fptr( library->resolve( "dataItem" ) );
+    dataItem_t *dataItem = reinterpret_cast< dataItem_t * >( cast_to_fptr( library->resolve( "dataItem" ) ) );
     if ( !dataItem )
     {
       QgsDebugMsg( library->fileName() + " does not have dataItem" );

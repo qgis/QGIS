@@ -21,7 +21,7 @@
 #include "qgslogger.h"
 #include "qgsprojectversion.h"
 
-QgsProjectVersion::QgsProjectVersion( int major, int minor, int sub, QString name )
+QgsProjectVersion::QgsProjectVersion( int major, int minor, int sub, const QString& name )
 {
   mMajor = major;
   mMinor = minor;
@@ -29,11 +29,11 @@ QgsProjectVersion::QgsProjectVersion( int major, int minor, int sub, QString nam
   mName  = name;
 }
 
-QgsProjectVersion::QgsProjectVersion( QString string )
+QgsProjectVersion::QgsProjectVersion( const QString& string )
 {
   QString pre = string.section( '-', 0, 0 );
 
-  QStringList fileVersionParts = pre.section( "-", 0 ).split( "." );
+  QStringList fileVersionParts = pre.section( '-', 0 ).split( '.' );
 
   mMinor = 0;
   mSub   = 0;
@@ -55,7 +55,7 @@ QgsProjectVersion::QgsProjectVersion( QString string )
 
 /** Boolean equal operator
  */
-bool QgsProjectVersion::operator==( const QgsProjectVersion &other )
+bool QgsProjectVersion::operator==( const QgsProjectVersion &other ) const
 {
   return (( mMajor == other.mMajor ) &&
           ( mMinor == other.mMinor ) &&
@@ -64,7 +64,7 @@ bool QgsProjectVersion::operator==( const QgsProjectVersion &other )
 
 /** Boolean >= operator
  */
-bool QgsProjectVersion::operator>=( const QgsProjectVersion &other )
+bool QgsProjectVersion::operator>=( const QgsProjectVersion &other ) const
 {
   return (( mMajor >= other.mMajor ) ||
           (( mMajor == other.mMajor ) && ( mMinor >= other.mMinor ) ) ||
@@ -73,7 +73,7 @@ bool QgsProjectVersion::operator>=( const QgsProjectVersion &other )
 
 /** Boolean > operator
  */
-bool QgsProjectVersion::operator>( const QgsProjectVersion &other )
+bool QgsProjectVersion::operator>( const QgsProjectVersion &other ) const
 {
   return (( mMajor > other.mMajor ) ||
           (( mMajor == other.mMajor ) && ( mMinor > other.mMinor ) ) ||

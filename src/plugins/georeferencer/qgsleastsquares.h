@@ -15,7 +15,7 @@
 #ifndef QGSLEASTSQUARES_H
 #define QGSLEASTSQUARES_H
 
-#include <vector>
+#include <QVector>
 #include <cstdarg>
 #include <stdexcept>
 
@@ -25,19 +25,19 @@
 class QgsLeastSquares
 {
   public:
-    static void linear( std::vector<QgsPoint> mapCoords,
-                        std::vector<QgsPoint> pixelCoords,
+    static void linear( QVector<QgsPoint> mapCoords,
+                        QVector<QgsPoint> pixelCoords,
                         QgsPoint& origin, double& pixelXSize, double& pixelYSize );
 
-    static void helmert( std::vector<QgsPoint> mapCoords,
-                         std::vector<QgsPoint> pixelCoords,
+    static void helmert( QVector<QgsPoint> mapCoords,
+                         QVector<QgsPoint> pixelCoords,
                          QgsPoint& origin, double& pixelSize, double& rotation );
 
-    static void affine( std::vector<QgsPoint> mapCoords,
-                        std::vector<QgsPoint> pixelCoords );
+    static void affine( QVector<QgsPoint> mapCoords,
+                        QVector<QgsPoint> pixelCoords );
 
-    static void projective( std::vector<QgsPoint> mapCoords,
-                            std::vector<QgsPoint> pixelCoords,
+    static void projective( QVector<QgsPoint> mapCoords,
+                            QVector<QgsPoint> pixelCoords,
                             double H[9] );
 };
 

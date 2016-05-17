@@ -25,13 +25,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import QVariant
+import os
+
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QVariant
+
 from qgis.core import QGis, QgsField, QgsFeature, QgsGeometry, QgsPoint
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class MeanCoords(GeoAlgorithm):
@@ -41,6 +48,9 @@ class MeanCoords(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     UID = 'UID'
     WEIGHT = 'WEIGHT'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'mean.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Mean coordinate(s)')
@@ -80,14 +90,11 @@ class MeanCoords(GeoAlgorithm):
             fieldList, QGis.WKBPoint, layer.crs()
         )
 
-        current = 0
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
-
+        total = 100.0 / len(features)
         means = {}
-        for feat in features:
-            current += 1
-            progress.setPercentage(current * total)
+        for current, feat in enumerate(features):
+            progress.setPercentage(int(current * total))
             if uniqueIndex == -1:
                 clazz = "Single class"
             else:
@@ -111,6 +118,8 @@ class MeanCoords(GeoAlgorithm):
                 totalweight += weight
             means[clazz] = (cx, cy, totalweight)
 
+        current = 0
+        total = 100.0 / len(means)
         for (clazz, values) in means.iteritems():
             outFeat = QgsFeature()
             cx = values[0] / values[2]
@@ -120,5 +129,7 @@ class MeanCoords(GeoAlgorithm):
             outFeat.setGeometry(QgsGeometry.fromPoint(meanPoint))
             outFeat.setAttributes([cx, cy, clazz])
             writer.addFeature(outFeat)
+            current += 1
+            progress.setPercentage(int(current * total))
 
         del writer

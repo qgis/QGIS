@@ -50,17 +50,17 @@ extern "C"
 
 static struct line_pnts *line = Vect_new_line_struct();
 
-void writePoint( struct Map_info* map, int type, QgsPoint point, struct line_cats *cats )
+void writePoint( struct Map_info* map, int type, const QgsPoint& point, struct line_cats *cats )
 {
   Vect_reset_line( line );
   Vect_append_point( line, point.x(), point.y(), 0 );
   Vect_write_line( map, type, line, cats );
 }
 
-void writePolyline( struct Map_info* map, int type, QgsPolyline polyline, struct line_cats *cats )
+void writePolyline( struct Map_info* map, int type, const QgsPolyline& polyline, struct line_cats *cats )
 {
   Vect_reset_line( line );
-  foreach ( QgsPoint point, polyline )
+  Q_FOREACH ( const QgsPoint& point, polyline )
   {
     Vect_append_point( line, point.x(), point.y(), 0 );
   }
@@ -149,7 +149,7 @@ int main( int argc, char **argv )
   // global finalName, tmpName are used by checkStream()
   finalName = QString( mapOption->answer );
   QDateTime now = QDateTime::currentDateTime();
-  tmpName = QString( "qgis_import_tmp_%1_%2" ).arg( mapOption->answer ).arg( now.toString( "yyyyMMddhhmmss" ) );
+  tmpName = QString( "qgis_import_tmp_%1_%2" ).arg( mapOption->answer, now.toString( "yyyyMMddhhmmss" ) );
 
   qint32 typeQint32;
   stdinStream >> typeQint32;
@@ -190,8 +190,8 @@ int main( int argc, char **argv )
   fields.append( QgsField( key, QVariant::Int ) );
   fields.extend( srcFields );
 
-  struct field_info *fieldInfo = Vect_default_field_info( finalMap, 1, NULL, GV_1TABLE );
-  if ( Vect_map_add_dblink( finalMap, 1, NULL, fieldInfo->table, key.toLatin1().data(),
+  struct field_info *fieldInfo = Vect_default_field_info( finalMap, 1, nullptr, GV_1TABLE );
+  if ( Vect_map_add_dblink( finalMap, 1, nullptr, fieldInfo->table, key.toLatin1().data(),
                             fieldInfo->database, fieldInfo->driver ) != 0 )
   {
     G_fatal_error( "Cannot add link" );
@@ -221,7 +221,13 @@ int main( int argc, char **argv )
   QgsFeature feature;
   struct line_cats *cats = Vect_new_cats_struct();
 
-  qint32 featureCount = 0;
+  qint32 fidToCatPlus;
+  stdinStream >> fidToCatPlus;
+
+  qint32 featureCount;
+  stdinStream >> featureCount;
+
+  qint32 count = 0;
   while ( true )
   {
     exitIfCanceled( stdinStream );
@@ -229,15 +235,17 @@ int main( int argc, char **argv )
     checkStream( stdinStream );
 #ifndef Q_OS_WIN
     // cannot be used on Windows, see notes in qgis.r.in
+//#if 0
     stdoutStream << true; // feature received
     stdoutFile.flush();
+//#endif
 #endif
     if ( !feature.isValid() )
     {
       break;
     }
 
-    QgsGeometry* geometry = feature.geometry();
+    const QgsGeometry* geometry = feature.constGeometry();
     if ( geometry )
     {
       // geometry type may be probably different from provider type (e.g. multi x single)
@@ -245,7 +253,7 @@ int main( int argc, char **argv )
       if ( !isPolygon )
       {
         Vect_reset_cats( cats );
-        Vect_cat_set( cats, 1, ( int )feature.id() );
+        Vect_cat_set( cats, 1, ( int )feature.id() + fidToCatPlus );
       }
 
       if ( geometryType == QGis::WKBPoint )
@@ -256,7 +264,7 @@ int main( int argc, char **argv )
       else if ( geometryType == QGis::WKBMultiPoint )
       {
         QgsMultiPoint multiPoint = geometry->asMultiPoint();
-        foreach ( QgsPoint point, multiPoint )
+        Q_FOREACH ( const QgsPoint& point, multiPoint )
         {
           writePoint( map, GV_POINT, point, cats );
         }
@@ -269,7 +277,7 @@ int main( int argc, char **argv )
       else if ( geometryType == QGis::WKBMultiLineString )
       {
         QgsMultiPolyline multiPolyline = geometry->asMultiPolyline();
-        foreach ( QgsPolyline polyline, multiPolyline )
+        Q_FOREACH ( const QgsPolyline& polyline, multiPolyline )
         {
           writePolyline( map, GV_LINE, polyline, cats );
         }
@@ -277,7 +285,7 @@ int main( int argc, char **argv )
       else if ( geometryType == QGis::WKBPolygon )
       {
         QgsPolygon polygon = geometry->asPolygon();
-        foreach ( QgsPolyline polyline, polygon )
+        Q_FOREACH ( const QgsPolyline& polyline, polygon )
         {
           writePolyline( map, GV_BOUNDARY, polyline, cats );
         }
@@ -285,9 +293,9 @@ int main( int argc, char **argv )
       else if ( geometryType == QGis::WKBMultiPolygon )
       {
         QgsMultiPolygon multiPolygon = geometry->asMultiPolygon();
-        foreach ( QgsPolygon polygon, multiPolygon )
+        Q_FOREACH ( const QgsPolygon& polygon, multiPolygon )
         {
-          foreach ( QgsPolyline polyline, polygon )
+          Q_FOREACH ( const QgsPolyline& polyline, polygon )
           {
             writePolyline( map, GV_BOUNDARY, polyline, cats );
           }
@@ -299,7 +307,7 @@ int main( int argc, char **argv )
       }
 
       QgsAttributes attributes = feature.attributes();
-      attributes.insert( 0, QVariant( feature.id() ) );
+      attributes.insert( 0, QVariant( feature.id() + fidToCatPlus ) );
       try
       {
         // TODO: inserting row is extremely slow on Windows (at least with SQLite), v.in.ogr is fast
@@ -310,27 +318,37 @@ int main( int argc, char **argv )
         G_fatal_error( "Cannot insert: %s", e.what() );
       }
     }
-    featureCount++;
+    count++;
+    G_percent( count, featureCount, 1 );
   }
   db_commit_transaction( driver );
   db_close_database_shutdown_driver( driver );
 
   if ( isPolygon )
   {
-    double snapTreshold = 0;
+    G_message( "Building partial topology" );
     Vect_build_partial( map, GV_BUILD_BASE );
 
-    if ( snapTreshold > 0 )
+#if 0
+    double snapThreshold = 0.0;
+    if ( snapThreshold > 0.0 )
     {
-      Vect_snap_lines( map, GV_BOUNDARY, snapTreshold, NULL );
+      Vect_snap_lines( map, GV_BOUNDARY, snapThreshold, nullptr );
     }
-    Vect_break_polygons( map, GV_BOUNDARY, NULL );
-    Vect_remove_duplicates( map, GV_BOUNDARY | GV_CENTROID, NULL );
-    while ( true )
+#endif
+
+    G_message( "Breaking polygons" );
+    Vect_break_polygons( map, GV_BOUNDARY, nullptr );
+    G_message( "Removing duplicates" );
+    Vect_remove_duplicates( map, GV_BOUNDARY | GV_CENTROID, nullptr );
+    for ( int i = 0; i < 3; i++ )
     {
-      Vect_break_lines( map, GV_BOUNDARY, NULL );
-      Vect_remove_duplicates( map, GV_BOUNDARY, NULL );
-      if ( Vect_clean_small_angles_at_nodes( map, GV_BOUNDARY, NULL ) == 0 )
+      G_message( "Breaking lines" );
+      Vect_break_lines( map, GV_BOUNDARY, nullptr );
+      G_message( "Removing duplicates" );
+      Vect_remove_duplicates( map, GV_BOUNDARY, nullptr );
+      G_message( "Cleaning small dangles at nodes" );
+      if ( Vect_clean_small_angles_at_nodes( map, GV_BOUNDARY, nullptr ) == 0 )
       {
         break;
       }
@@ -346,7 +364,7 @@ int main( int argc, char **argv )
         continue;
       }
 
-      int type = Vect_read_line( map, line, NULL, i );
+      int type = Vect_read_line( map, line, nullptr, i );
       if ( !( type & GV_BOUNDARY ) )
       {
         continue;
@@ -358,15 +376,19 @@ int main( int argc, char **argv )
       }
     }
 
-    Vect_merge_lines( map, GV_BOUNDARY, NULL, NULL );
+    G_message( "Merging lines" );
+    Vect_merge_lines( map, GV_BOUNDARY, nullptr, nullptr );
+    G_message( "Removing bridges" );
 #if GRASS_VERSION_MAJOR < 7
-    Vect_remove_bridges( map, NULL );
+    Vect_remove_bridges( map, nullptr );
 #else
     int linesRemoved, bridgesRemoved;
-    Vect_remove_bridges( map, NULL, &linesRemoved, &bridgesRemoved );
+    Vect_remove_bridges( map, nullptr, &linesRemoved, &bridgesRemoved );
 #endif
+    G_message( "Attaching islands" );
     Vect_build_partial( map, GV_BUILD_ATTACH_ISLES );
 
+    G_message( "Creating centroids" );
     QMap<QgsFeatureId, QgsFeature> centroids;
     QgsSpatialIndex spatialIndex;
     int nAreas = Vect_get_num_areas( map );
@@ -385,60 +407,74 @@ int main( int argc, char **argv )
       centroids.insert( area, feature );
       spatialIndex.insertFeature( feature );
     }
+
+    G_message( "Attaching input polygons to cleaned areas" );
     // read once more to assign centroids to polygons
+    count = 0;
     while ( true )
     {
       exitIfCanceled( stdinStream );
       stdinStream >> feature;
       checkStream( stdinStream );
 #ifndef Q_OS_WIN
+#if 0
       stdoutStream << true; // feature received
       stdoutFile.flush();
+#endif
 #endif
       if ( !feature.isValid() )
       {
         break;
       }
-      if ( !feature.geometry() )
+      if ( !feature.constGeometry() )
       {
         continue;
       }
 
-      QList<QgsFeatureId> idList = spatialIndex.intersects( feature.geometry()->boundingBox() );
-      foreach ( QgsFeatureId id, idList )
+      QList<QgsFeatureId> idList = spatialIndex.intersects( feature.constGeometry()->boundingBox() );
+      Q_FOREACH ( QgsFeatureId id, idList )
       {
         QgsFeature& centroid = centroids[id];
-        if ( feature.geometry()->contains( centroid.geometry() ) )
+        if ( feature.constGeometry()->contains( centroid.constGeometry() ) )
         {
           QgsAttributes attr = centroid.attributes();
-          attr.append( feature.id() );
+          attr.append(( int )feature.id() + fidToCatPlus );
           centroid.setAttributes( attr );
         }
       }
+      count++;
+      G_percent( count, featureCount, 1 );
     }
 
+    G_message( "Copying lines from temporary map" );
     Vect_copy_map_lines( tmpMap, finalMap );
     Vect_close( tmpMap );
     Vect_delete( tmpName.toUtf8().data() );
 
-    foreach ( QgsFeature centroid, centroids.values() )
+    int centroidsCount = centroids.size();
+    count = 0;
+    Q_FOREACH ( const QgsFeature& centroid, centroids.values() )
     {
-      QgsPoint point = centroid.geometry()->asPoint();
+      QgsPoint point = centroid.constGeometry()->asPoint();
 
       if ( centroid.attributes().size() > 0 )
       {
         Vect_reset_cats( cats );
-        foreach ( QVariant attribute, centroid.attributes() )
+        Q_FOREACH ( const QVariant& attribute, centroid.attributes() )
         {
           Vect_cat_set( cats, 1, attribute.toInt() );
         }
         writePoint( finalMap, GV_CENTROID, point, cats );
       }
+      G_percent( count, centroidsCount, 1 );
     }
   }
 
+  G_message( "Building final map topology" );
   Vect_build( finalMap );
   Vect_close( finalMap );
+
+  G_message( "Done" );
 
   stdoutStream << true; // to keep caller waiting until finished
   stdoutFile.flush();

@@ -51,8 +51,11 @@ SET (GEOREF_MOC_HDRS
      qgsgeoreftooladdpoint.h
      qgsgeoreftooldeletepoint.h
      qgsgeoreftoolmovepoint.h
+     qgsgeorefvalidators.h
      qgsmapcoordsdialog.h
+     qgsresidualplotitem.h
      qgstransformsettingsdialog.h
+     qgsvalidateddoublespinbox.h
      
      qgsgcplistmodel.h
      qgsgcplistwidget.h
@@ -77,6 +80,8 @@ INCLUDE_DIRECTORIES(
      ../../core ../../core/geometry ../../core/raster ../../core/composer
      ../../gui  ../../gui/editorwidgets
      ..
+)
+INCLUDE_DIRECTORIES(SYSTEM
      ${GSL_INCLUDE_DIR}
      ${QGIS_INCLUDE_DIR}
      ${GDAL_INCLUDE_DIR}

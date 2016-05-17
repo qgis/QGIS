@@ -44,7 +44,7 @@ class QgsGeorefDockWidget : public QDockWidget
 {
     Q_OBJECT
   public:
-    QgsGeorefDockWidget( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 );
+    QgsGeorefDockWidget( const QString & title, QWidget * parent = nullptr, Qt::WindowFlags flags = nullptr );
 };
 
 class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBase
@@ -52,7 +52,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     Q_OBJECT
 
   public:
-    QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget* parent = 0, Qt::WindowFlags fl = 0 );
+    QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
     ~QgsGeorefPluginGui();
 
   protected:
@@ -84,13 +84,13 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     // gcps
     void addPoint( const QgsPoint& pixelCoords, const QgsPoint& mapCoords,
                    bool enable = true, bool refreshCanvas = true/*, bool verbose = true*/ );
-    void deleteDataPoint( const QPoint &pixelCoords );
+    void deleteDataPoint( QPoint pixelCoords );
     void deleteDataPoint( int index );
     void showCoordDialog( const QgsPoint &pixelCoords );
 
-    void selectPoint( const QPoint & );
-    void movePoint( const QPoint & );
-    void releasePoint( const QPoint & );
+    void selectPoint( QPoint );
+    void movePoint( QPoint );
+    void releasePoint( QPoint );
 
     void loadGCPsDialog();
     void saveGCPsDialog();
@@ -117,12 +117,12 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
 
 
     // when one Layer is removed
-    void layerWillBeRemoved( QString theLayerId );
+    void layerWillBeRemoved( const QString& theLayerId );
     void extentsChanged(); // Use for need add again Raster (case above)
 
     bool updateGeorefTransform();
 
-    void updateIconTheme( QString theme );
+    void updateIconTheme( const QString& theme );
 
   private:
     enum SaveGCPs
@@ -145,7 +145,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void removeOldLayer();
 
     // Mapcanvas Plugin
-    void addRaster( QString file );
+    void addRaster( const QString& file );
 
     // settings
     void readSettings();
@@ -158,7 +158,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
 
     // georeference
     bool georeference();
-    bool writeWorldFile( QgsPoint origin, double pixelXSize, double pixelYSize, double rotation );
+    bool writeWorldFile( const QgsPoint& origin, double pixelXSize, double pixelYSize, double rotation );
     bool writePDFReportFile( const QString& fileName, const QgsGeorefTransform& transform );
     bool writePDFMapFile( const QString& fileName, const QgsGeorefTransform& transform );
     void updateTransformParamLabel();
@@ -169,7 +169,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     /* Generate command-line for gdalwarp based on current GCPs and given parameters.
      * For values in the range 1 to 3, the parameter "order" prescribes the degree of the interpolating polynomials to use,
      * a value of -1 indicates that thin plate spline interpolation should be used for warping.*/
-    QString generateGDALwarpCommand( QString resampling, QString compress, bool useZeroForTrans, int order,
+    QString generateGDALwarpCommand( const QString& resampling, const QString& compress, bool useZeroForTrans, int order,
                                      double targetResX, double targetResY );
 
     // utils
@@ -181,7 +181,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     int polynomialOrder( QgsGeorefTransform::TransformParametrisation transform );
     QString guessWorldFileName( const QString &rasterFileName );
     QIcon getThemeIcon( const QString &theName );
-    bool checkFileExisting( QString fileName, QString title, QString question );
+    bool checkFileExisting( const QString& fileName, const QString& title, const QString& question );
     bool equalGCPlists( const QgsGCPList &list1, const QgsGCPList &list2 );
     void logTransformOptions();
     void logRequaredGCPs();

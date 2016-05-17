@@ -27,7 +27,7 @@ class QgsComposerItemCommand: QUndoCommand
 
     /** Returns the target item the command applies to.
      * @returns target composer item
-    */
+     */
     QgsComposerItem *item() const;
 
   protected:
@@ -68,6 +68,7 @@ class QgsComposerMergeCommand : QgsComposerItemCommand
       LegendIconSymbolSpace,
       LegendBoxSpace,
       LegendColumnSpace,
+      LegendRasterBorderWidth,
       //composer picture
       ComposerPictureRotation,
       // composer scalebar

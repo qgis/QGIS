@@ -15,11 +15,11 @@
 	<key>CFBundleSignature</key>
 	<string>QGIS</string>
 	<key>CFBundleGetInfoString</key>
-	<string>${QGIS_APP_NAME} ${COMPLETE_VERSION}-${RELEASE_NAME} (${REVISION}), © 2002-2015 QGIS Development Team</string>
+	<string>${QGIS_APP_NAME} ${COMPLETE_VERSION}-${RELEASE_NAME} (${SHA}), © 2002-2016 QGIS Development Team</string>
 	<key>CFBundleShortVersionString</key>
 	<string>${COMPLETE_VERSION}</string>
 	<key>CFBundleVersion</key>
-	<string>${COMPLETE_VERSION} (${REVISION})</string>
+	<string>${COMPLETE_VERSION} (${SHA})</string>
 	<key>CFBundleIconFile</key>
 	<string>qgis.icns</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -205,6 +205,54 @@
 				<string>mldata</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>QGIS composer template</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>qpt.icns</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>qpt</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>QGIS layer definition document</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>qlr.icns</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>qlr</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>DXF document</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>dxf.icns</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>dxf</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>SQLite database</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>sqlite.icns</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>sqlite</string>
+			</array>
+		</dict>		
 	</array>
 	<key>CFBundleLocalizations</key>
 	<array>

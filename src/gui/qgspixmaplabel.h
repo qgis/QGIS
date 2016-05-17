@@ -22,30 +22,30 @@
  * @brief The QgsPixmapLabel class shows a pixmap and adjusts its size to the space given
  * to the widget by the layout and keeping its aspect ratio.
  */
-class QgsPixmapLabel : public QLabel
+class GUI_EXPORT QgsPixmapLabel : public QLabel
 {
     Q_OBJECT
 
   public:
-    explicit QgsPixmapLabel( QWidget *parent = 0 );
+    explicit QgsPixmapLabel( QWidget *parent = nullptr );
     /**
      * Calculates the height for the given width.
      *
      * @param width The width for the widget
      * @return An appropriate height
      */
-    virtual int heightForWidth( int width ) const;
+    virtual int heightForWidth( int width ) const override;
 
     /**
      * An optimal size for the widget. Effectively using the height
      * determined from the width with the given aspect ratio.
      * @return A size hint
      */
-    virtual QSize sizeHint() const;
+    virtual QSize sizeHint() const override;
 
   public slots:
     void setPixmap( const QPixmap & );
-    void resizeEvent( QResizeEvent * );
+    void resizeEvent( QResizeEvent * ) override;
   private:
     QPixmap mPixmap;
 };

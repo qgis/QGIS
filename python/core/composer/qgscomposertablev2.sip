@@ -52,7 +52,6 @@ class QgsComposerTableStyle
 
 };
 
-
 /** A class to display a table in the print composer, and allow
  * the table to span over multiple frames
  * \ingroup MapComposer
@@ -154,7 +153,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      * @see emptyTableMessage
      * @see setEmptyTableBehaviour
      */
-    void setEmptyTableMessage( const QString message );
+    void setEmptyTableMessage( const QString& message );
 
     /** Returns the message for empty tables with no content rows. This message
      * is displayed in the table body if the empty table behaviour is
@@ -348,10 +347,11 @@ class QgsComposerTableV2: QgsComposerMultiFrame
     QgsComposerTableColumns* columns();
 
     /** Replaces the columns in the table with a specified list of QgsComposerTableColumns.
-     * @param columns list of QgsComposerTableColumns to show in table
+     * @param columns list of QgsComposerTableColumns to show in table. Ownership of columns
+     * is transferred to the table.
      * @see columns
      */
-    void setColumns( QgsComposerTableColumns columns );
+    void setColumns( const QgsComposerTableColumns& columns /Transfer/ );
 
     /** Sets the cell style for a cell group.
      * @param group group to set style for
@@ -404,7 +404,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      * This also causes the column widths and size of the table to change to accommodate the
      * new data.
      * @see adjustFrameToSize
-    */
+     */
     virtual void refreshAttributes();
 
     void recalculateFrameSizes();
@@ -509,6 +509,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
     /** Calculates how many content rows are visible within a given frame
      * @param frameIndex index number for frame
      * @returns number of visible content rows (excludes header rows)
+     * @deprecated will be removed in QGIS 3.0
      */
     int rowsVisible( const int frameIndex ) const /Deprecated/;
 
@@ -517,6 +518,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      * @param frameHeight height of frame
      * @param includeHeader set to true if frame would include a header row
      * @returns number of visible content rows (excluding header row)
+     * @deprecated will be removed in QGIS 3.0
      */
     int rowsVisible( const double frameHeight, const bool includeHeader ) const /Deprecated/;
 
@@ -525,6 +527,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      * @param extent visible extent
      * @param frameIndex index number for frame
      * @returns row range
+     * @deprecated will be removed in QGIS 3.0
      */
     QPair<int, int> rowRange( const QRectF &extent, const int frameIndex ) const /Deprecated/;
 
@@ -533,6 +536,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      * @param rows number of rows shown in table
      * @param drawHeaderLines set to true to include for the table header
      * @see drawVerticalGridLines
+     * @deprecated will be removed in QGIS 3.0
      */
     void drawHorizontalGridLines( QPainter* painter, const int rows, const bool drawHeaderLines ) const /Deprecated/;
 
@@ -547,6 +551,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      * @see drawVerticalGridLines
      * @see calculateMaxColumnWidths
      * @note not available in python bindings
+     * @deprecated will be removed in QGIS 3.0
      */
    // void drawVerticalGridLines( QPainter* painter, const QMap<int, double>& maxWidthMap, const int numberRows, const bool hasHeader, const bool mergeCells = false ) const /Deprecated/;
 

@@ -822,13 +822,13 @@
   <customwidget>
    <class>GdalToolsInOutSelector</class>
    <extends>QWidget</extends>
-   <header>inOutSelector</header>
+   <header>.inOutSelector</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>GdalToolsExtentSelector</class>
    <extends>QWidget</extends>
-   <header>extentSelector</header>
+   <header>.extentSelector</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

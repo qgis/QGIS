@@ -17,7 +17,7 @@
 
 #include "qgsdxfpaintdevice.h"
 
-QgsDxfPaintDevice::QgsDxfPaintDevice( QgsDxfExport* dxf ): QPaintDevice(), mPaintEngine( 0 )
+QgsDxfPaintDevice::QgsDxfPaintDevice( QgsDxfExport* dxf ): QPaintDevice(), mPaintEngine( nullptr )
 {
   mPaintEngine = new QgsDxfPaintEngine( this, dxf );
 }
@@ -53,6 +53,10 @@ int QgsDxfPaintDevice::metric( PaintDeviceMetric metric ) const
     case QPaintDevice::PdmPhysicalDpiX:
     case QPaintDevice::PdmPhysicalDpiY:
       return 96;
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    case QPaintDevice::PdmDevicePixelRatio:
+      return 1;
+#endif
   }
   return 0;
 }
@@ -69,7 +73,7 @@ double QgsDxfPaintDevice::widthScaleFactor() const
   return ( widthFactor + heightFactor ) / 2.0;
 }
 
-QPointF QgsDxfPaintDevice::dxfCoordinates( const QPointF& pt ) const
+QPointF QgsDxfPaintDevice::dxfCoordinates( QPointF pt ) const
 {
   if ( !mDrawingSize.isValid() || mRectangle.isEmpty() )
   {
@@ -89,7 +93,7 @@ void QgsDxfPaintDevice::setLayer( const QString& layer )
   }
 }
 
-void QgsDxfPaintDevice::setShift( const QPointF& shift )
+void QgsDxfPaintDevice::setShift( QPointF shift )
 {
   if ( mPaintEngine )
   {

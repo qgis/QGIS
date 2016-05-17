@@ -25,7 +25,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import math
+import os
+import codecs
+
+from qgis.PyQt.QtGui import QIcon
+
+from qgis.core import QgsStatisticalSummary
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -33,6 +38,9 @@ from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputNumber
 from processing.tools import dataobjects, vector
+
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class BasicStatisticsNumbers(GeoAlgorithm):
@@ -51,6 +59,15 @@ class BasicStatisticsNumbers(GeoAlgorithm):
     RANGE = 'RANGE'
     MEDIAN = 'MEDIAN'
     UNIQUE = 'UNIQUE'
+    MINORITY = 'MINORITY'
+    MAJORITY = 'MAJORITY'
+    FIRSTQUARTILE = 'FIRSTQUARTILE'
+    THIRDQUARTILE = 'THIRDQUARTILE'
+    NULLVALUES = 'NULLVALUES'
+    IQR = 'IQR'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Basic statistics for numeric fields')
@@ -70,11 +87,17 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         self.addOutput(OutputNumber(self.MAX, self.tr('Maximum value')))
         self.addOutput(OutputNumber(self.SUM, self.tr('Sum')))
         self.addOutput(OutputNumber(self.MEAN, self.tr('Mean value')))
+        self.addOutput(OutputNumber(self.STD_DEV, self.tr('Standard deviation')))
         self.addOutput(OutputNumber(self.COUNT, self.tr('Count')))
         self.addOutput(OutputNumber(self.RANGE, self.tr('Range')))
         self.addOutput(OutputNumber(self.MEDIAN, self.tr('Median')))
         self.addOutput(OutputNumber(self.UNIQUE, self.tr('Number of unique values')))
-        self.addOutput(OutputNumber(self.STD_DEV, self.tr('Standard deviation')))
+        self.addOutput(OutputNumber(self.MINORITY, self.tr('Minority (rarest occurring value)')))
+        self.addOutput(OutputNumber(self.MAJORITY, self.tr('Majority (most frequently occurring value)')))
+        self.addOutput(OutputNumber(self.FIRSTQUARTILE, self.tr('First quartile')))
+        self.addOutput(OutputNumber(self.THIRDQUARTILE, self.tr('Third quartile')))
+        self.addOutput(OutputNumber(self.NULLVALUES, self.tr('NULL (missed) values')))
+        self.addOutput(OutputNumber(self.IQR, self.tr('Interquartile Range (IQR)')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -83,8 +106,6 @@ class BasicStatisticsNumbers(GeoAlgorithm):
 
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
 
-        index = layer.fieldNameIndex(fieldName)
-
         cvValue = 0
         minValue = 0
         maxValue = 0
@@ -92,65 +113,66 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         meanValue = 0
         medianValue = 0
         stdDevValue = 0
+        minority = 0
+        majority = 0
+        firstQuartile = 0
+        thirdQuartile = 0
+        nullValues = 0
+        iqr = 0
 
-        isFirst = True
         values = []
 
         features = vector.features(layer)
         count = len(features)
         total = 100.0 / float(count)
-        current = 0
-        for ft in features:
-            if ft.attributes()[index]:
-                value = float(ft.attributes()[index])
-                if isFirst:
-                    minValue = value
-                    maxValue = value
-                    isFirst = False
-                else:
-                    if value < minValue:
-                        minValue = value
-                    if value > maxValue:
-                        maxValue = value
+        for current, ft in enumerate(features):
+            value = ft[fieldName]
+            if value or value == 0:
+                values.append(float(value))
+            else:
+                nullValues += 1
 
-                values.append(value)
-                sumValue += value
-
-            current += 1
             progress.setPercentage(int(current * total))
 
-        # Calculate additional values
-        rValue = maxValue - minValue
-        uniqueValue = vector.getUniqueValuesCount(layer, index)
+        stat = QgsStatisticalSummary()
+        stat.calculate(values)
 
-        if count > 0:
-            meanValue = sumValue / count
-            if meanValue != 0.00:
-                for v in values:
-                    stdDevValue += (v - meanValue) * (v - meanValue)
-                stdDevValue = math.sqrt(stdDevValue / count)
-                cvValue = stdDevValue / meanValue
-
-        if count > 1:
-            tmp = sorted(values)
-
-            # Calculate median
-            if count % 2 == 0:
-                medianValue = 0.5 * (tmp[(count - 1) / 2] + tmp[count / 2])
-            else:
-                medianValue = tmp[(count + 1) / 2 - 1]
+        count = stat.count()
+        uniqueValue = stat.variety()
+        minValue = stat.min()
+        maxValue = stat.max()
+        rValue = stat.range()
+        sumValue = stat.sum()
+        meanValue = stat.mean()
+        medianValue = stat.median()
+        stdDevValue = stat.stDev()
+        if meanValue != 0.00:
+            cvValue = stdDevValue / meanValue
+        minority = stat.minority()
+        majority = stat.majority()
+        firstQuartile = stat.firstQuartile()
+        thirdQuartile = stat.thirdQuartile()
+        iqr = stat.interQuartileRange()
 
         data = []
-        data.append('Count: ' + unicode(count))
-        data.append('Unique values: ' + unicode(uniqueValue))
-        data.append('Minimum value: ' + unicode(minValue))
-        data.append('Maximum value: ' + unicode(maxValue))
-        data.append('Range: ' + unicode(rValue))
-        data.append('Sum: ' + unicode(sumValue))
-        data.append('Mean value: ' + unicode(meanValue))
-        data.append('Median value: ' + unicode(medianValue))
-        data.append('Standard deviation: ' + unicode(stdDevValue))
-        data.append('Coefficient of Variation: ' + unicode(cvValue))
+        data.append(self.tr('Analyzed layer: {}').format(layer.name()))
+        data.append(self.tr('Analyzed field: {}').format(fieldName))
+        data.append(self.tr('Count: {}').format(count))
+        data.append(self.tr('Unique values: {}').format(uniqueValue))
+        data.append(self.tr('Minimum value: {}').format(minValue))
+        data.append(self.tr('Maximum value: {}').format(maxValue))
+        data.append(self.tr('Range: {}').format(rValue))
+        data.append(self.tr('Sum: {}').format(sumValue))
+        data.append(self.tr('Mean value: {}').format(meanValue))
+        data.append(self.tr('Median value: {}').format(medianValue))
+        data.append(self.tr('Standard deviation: {}').format(stdDevValue))
+        data.append(self.tr('Coefficient of Variation: {}').format(cvValue))
+        data.append(self.tr('Minority (rarest occurring value): {}').format(minority))
+        data.append(self.tr('Majority (most frequently occurring value): {}').format(majority))
+        data.append(self.tr('First quartile: {}').format(firstQuartile))
+        data.append(self.tr('Third quartile: {}').format(thirdQuartile))
+        data.append(self.tr('NULL (missing) values: {}').format(nullValues))
+        data.append(self.tr('Interquartile Range (IQR): {}').format(iqr))
 
         self.createHTML(outputFile, data)
 
@@ -163,10 +185,19 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         self.setOutputValue(self.MEAN, meanValue)
         self.setOutputValue(self.MEDIAN, medianValue)
         self.setOutputValue(self.STD_DEV, stdDevValue)
-        self.setOutputValue(self.CV, cvValue)
+        self.setOutputValue(self.MINORITY, minority)
+        self.setOutputValue(self.MAJORITY, majority)
+        self.setOutputValue(self.FIRSTQUARTILE, firstQuartile)
+        self.setOutputValue(self.THIRDQUARTILE, thirdQuartile)
+        self.setOutputValue(self.NULLVALUES, nullValues)
+        self.setOutputValue(self.IQR, iqr)
 
     def createHTML(self, outputFile, algData):
-        f = open(outputFile, 'w')
+        f = codecs.open(outputFile, 'w', encoding='utf-8')
+        f.write('<html><head>\n')
+        f.write('<meta http-equiv="Content-Type" content="text/html; \
+                charset=utf-8" /></head><body>\n')
         for s in algData:
-            f.write('<p>' + unicode(s) + '</p>')
+            f.write('<p>' + unicode(s) + '</p>\n')
+        f.write('</body></html>\n')
         f.close()

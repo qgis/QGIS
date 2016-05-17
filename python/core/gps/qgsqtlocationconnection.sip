@@ -1,6 +1,10 @@
 %Feature MOBILITY_LOCATION
 
 %If (MOBILITY_LOCATION)
+/**
+ * \class QgsQtLocationConnection
+ * \note may not be available in Python bindings on all platforms
+*/
 class QgsQtLocationConnection: QgsGPSConnection
 {
 %TypeHeaderCode

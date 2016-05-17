@@ -16,13 +16,12 @@
  ***************************************************************************/
 #include <stdlib.h>
 #include "qgspostrequesthandler.h"
-#include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include <QDomDocument>
 
-QgsPostRequestHandler::QgsPostRequestHandler( const bool captureOutput /*= FALSE*/ )
+QgsPostRequestHandler::QgsPostRequestHandler( const bool captureOutput )
     : QgsHttpRequestHandler( captureOutput )
 {
-
 }
 
 QgsPostRequestHandler::~QgsPostRequestHandler()
@@ -31,9 +30,10 @@ QgsPostRequestHandler::~QgsPostRequestHandler()
 
 void QgsPostRequestHandler::parseInput()
 {
-  QgsDebugMsg( "QgsPostRequestHandler::parseInput" );
+  QgsMessageLog::logMessage( "QgsPostRequestHandler::parseInput" );
+
   QString inputString = readPostBody();
-  QgsDebugMsg( inputString );
+  QgsMessageLog::logMessage( inputString );
 
   //Map parameter in QUERY_STRING?
   const char* qs = getenv( "QUERY_STRING" );
@@ -47,11 +47,17 @@ void QgsPostRequestHandler::parseInput()
     mapParameter = getParameters.value( "MAP" );
   }
 
-
   QDomDocument doc;
   QString errorMsg;
-  if ( !doc.setContent( inputString, true, &errorMsg ) )
+  int line;
+  int column;
+  if ( !doc.setContent( inputString, true, &errorMsg, &line, &column ) )
   {
+    char* requestMethod = getenv( "REQUEST_METHOD" );
+    if ( requestMethod && strcmp( requestMethod, "POST" ) == 0 )
+    {
+      QgsMessageLog::logMessage( QString( "Error at line %1, column %2: %3." ).arg( line ).arg( column ).arg( errorMsg ) );
+    }
     requestStringToParameterMap( inputString, mParameterMap );
   }
   else
@@ -61,11 +67,11 @@ void QgsPostRequestHandler::parseInput()
     if ( qs )
     {
       queryString = QString( qs );
-      QgsDebugMsg( "query string is: " + queryString );
+      QgsMessageLog::logMessage( "query string is: " + queryString );
     }
     else
     {
-      QgsDebugMsg( "error, no query string found but a QDomDocument" );
+      QgsMessageLog::logMessage( "error, no query string found but a QDomDocument" );
       return; //no query string? something must be wrong...
     }
 

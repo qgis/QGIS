@@ -178,7 +178,7 @@ class QgsRasterBlock
 
     /** \brief Set the whole block to no data except specified rectangle
      *  @return true on success */
-    bool setIsNoDataExcept( const QRect & theExceptRect );
+    bool setIsNoDataExcept( QRect theExceptRect );
 
     /** \brief Remove no data flag on pixel. If the raster block does not have an explicit
      * no data value set then an internal map of no data pixels is maintained for the block.
@@ -206,7 +206,7 @@ class QgsRasterBlock
     // char * bits( int row, int column );
 
     /** \brief Get pointer to data
-     *  @param index data matrix index
+     *  @param index data matrix index (long type in Python)
      *  @return pointer to data
      *  @note not available in python bindings
      */
@@ -255,6 +255,8 @@ class QgsRasterBlock
 
     /** \brief Set error */
     void setError( const QgsError & theError );
+
+    QString toString() const;
 
     /** \brief For theExtent and theWidht, theHeight find rectangle covered by subextent.
      * The output rect has x oriented from left to right and y from top to bottom

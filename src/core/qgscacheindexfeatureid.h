@@ -46,7 +46,7 @@ class CORE_EXPORT QgsCacheIndexFeatureId : public QgsAbstractCacheIndex
      * @param featureRequest  The feature request that was answered
      * @param fids            The feature ids that have been returned
      */
-    virtual void requestCompleted( QgsFeatureRequest featureRequest, QgsFeatureIds fids ) override;
+    virtual void requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids ) override;
 
     /**
      * Is called, when a feature request is issued on a cached layer.

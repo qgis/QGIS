@@ -22,7 +22,8 @@ QString QgsOSMDownload::queryFromRect( const QgsRectangle& rect )
 
 
 QgsOSMDownload::QgsOSMDownload()
-    : mServiceUrl( defaultServiceUrl() ), mReply( 0 )
+    : mServiceUrl( defaultServiceUrl() )
+    , mReply( nullptr )
 {
 }
 
@@ -32,7 +33,7 @@ QgsOSMDownload::~QgsOSMDownload()
   {
     mReply->abort();
     mReply->deleteLater();
-    mReply = 0;
+    mReply = nullptr;
   }
 }
 
@@ -103,7 +104,7 @@ void QgsOSMDownload::onFinished()
   Q_ASSERT( mReply );
 
   mReply->deleteLater();
-  mReply = 0;
+  mReply = nullptr;
 
   mFile.close();
 

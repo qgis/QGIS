@@ -13,19 +13,23 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsConditionalStyle, QgsFeature, QgsFields, QgsField, QgsExpressionContextUtils
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       unittest,
-                       TestCase,
-                       compareWkt)
-from PyQt4.QtCore import QVariant
+from qgis.core import (QgsConditionalStyle,
+                       QgsFeature,
+                       QgsFields,
+                       QgsField,
+                       QgsExpressionContextUtils
+                       )
+from qgis.testing import (start_app,
+                          unittest,
+                          )
+from utilities import unitTestDataPath
+from qgis.PyQt.QtCore import QVariant
 #
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsConditionalStyle(TestCase):
+class TestPyQgsConditionalStyle(unittest.TestCase):
 
     def new_context(self):
         feature = QgsFeature()

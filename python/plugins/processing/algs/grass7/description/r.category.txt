@@ -1,0 +1,11 @@
+r.category
+Manages category values and labels associated with user-specified raster map layers.
+Raster (r.*)
+ParameterRaster|map|Name of raster map|False
+ParameterString|separator|Field separator (Special characters: pipe, comma, space, tab, newline)|tab|False|True
+ParameterFile|rules|File containing category label rules|False|True
+ParameterString|txtrules|Inline category label rules|None|True|True
+ParameterRaster|raster|Raster map from which to copy category table|True
+*ParameterString|format|Default label or format string for dynamic labeling. Used when no explicit label exists for the category|None|False|True
+*ParameterString|coefficients|Dynamic label coefficients. Two pairs of category multiplier and offsets, for $1 and $2|None|False|True
+OutputRaster|output|Category

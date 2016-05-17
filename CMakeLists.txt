@@ -1,5 +1,5 @@
 SET(CPACK_PACKAGE_VERSION_MAJOR "2")
-SET(CPACK_PACKAGE_VERSION_MINOR "11")
+SET(CPACK_PACKAGE_VERSION_MINOR "15")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 SET(RELEASE_NAME "Master")
@@ -209,10 +209,10 @@ ENDIF (NOT SQLITE3_FOUND)
 
 # optional
 IF (WITH_POSTGRESQL)
-  FIND_PACKAGE(Postgres) # PostgreSQL provider, SPIT plugin
+  FIND_PACKAGE(Postgres) # PostgreSQL provider
 ENDIF (WITH_POSTGRESQL)
 
-FIND_PACKAGE(SPATIALITE REQUIRED)
+FIND_PACKAGE(SpatiaLite REQUIRED)
 
 IF(SPATIALITE_VERSION_GE_4_0_0)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSPATIALITE_VERSION_GE_4_0_0")
@@ -225,19 +225,13 @@ IF(SPATIALITE_HAS_INIT_EX)
 ENDIF(SPATIALITE_HAS_INIT_EX)
 
 IF (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
-  MESSAGE (SEND_ERROR "Some dependencies were not found!")
+  MESSAGE (SEND_ERROR "Some dependencies were not found! Proj: ${PROJ_FOUND}, Geos: ${GEOS_FOUND}, GDAL: ${GDAL_FOUND}")
 ENDIF (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
 
 IF (POSTGRES_FOUND)
   # following variable is used in qgsconfig.h
   SET (HAVE_POSTGRESQL TRUE)
 ENDIF (POSTGRES_FOUND)
-
-# following variable is used in qgsconfig.h
-SET (HAVE_SPATIALITE TRUE)
-
-# following variable is used in qgsconfig.h
-SET (HAVE_MSSQL TRUE)
 
 SET (WITH_QTWEBKIT TRUE CACHE INTERNAL "Enable QtWebkit support")
 IF (WITH_QTWEBKIT)
@@ -308,11 +302,21 @@ ENDIF (WITH_TOUCH)
 # search for QScintilla2 (C++ lib)
 FIND_PACKAGE(QScintilla REQUIRED)
 
+# Master password hash and authentication encryption
+FIND_PACKAGE(QCA REQUIRED)
+# Check for runtime dependency of qca-ossl plugin
+# REQUIRED if unit tests are to be run from build directory
+IF(NOT MSVC)
+include(QCAMacros)
+FIND_QCAOSSL_PLUGIN_CPP(ENABLE_TESTS)
+ENDIF(NOT MSVC)
+
 # ModelTest
 SET(ENABLE_MODELTEST FALSE CACHE BOOL "Enable QT ModelTest (not for production)")
 
 IF (ENABLE_TESTS)
   SET( QT_USE_QTTEST  TRUE )
+  ADD_DEFINITIONS(-DENABLE_TESTS)
   ENABLE_TESTING()
   # Adds some testing specific build targets e.g. make Experimental
   INCLUDE(Dart)
@@ -373,6 +377,8 @@ ENDIF()
 #allow override keyword if available
 IF (NOT USE_CXX_11)
   ADD_DEFINITIONS("-Doverride=")
+  ADD_DEFINITIONS("-Dnoexcept=")
+  ADD_DEFINITIONS("-Dnullptr=0")
 ENDIF()
 
 
@@ -580,6 +586,7 @@ ENDIF (WIN32)
 IF (ANDROID)
     SET (DEFAULT_PLUGIN_SUBDIR  lib)
     SET (DEFAULT_DATA_SUBDIR    files/share)
+    string(REPLACE "<CMAKE_SHARED_LIBRARY_SONAME_CXX_FLAG><TARGET_SONAME>" "" CMAKE_CXX_CREATE_SHARED_MODULE "${CMAKE_CXX_CREATE_SHARED_MODULE}")
 ENDIF (ANDROID)
 
 #assume we have escaped compiler directives
@@ -661,34 +668,63 @@ IF (UNIX AND NOT APPLE)
   SET (QGIS_MANUAL_DIR  ${CMAKE_INSTALL_PREFIX}/${QGIS_MANUAL_SUBDIR})
 ENDIF (UNIX AND NOT APPLE)
 
+SET (DISABLE_DEPRECATED ${ENABLE_QT5} CACHE BOOL "If set to true, it will disable deprecated functionality to prepare for the next generation of QGIS")
+IF (DISABLE_DEPRECATED)
+  ADD_DEFINITIONS(-DQGIS_DISABLE_DEPRECATED)
+ENDIF (DISABLE_DEPRECATED)
+
+
+#############################################################
+# Python build dependency
+
+SET (ENABLE_PYTHON3 ${ENABLE_QT5} CACHE BOOL "If enabled will try to find Python 3 before looking for Python 2")
+IF(ENABLE_PYTHON3)
+  SET(PYTHON_VER 3 CACHE STRING "Python version")
+ELSE(ENABLE_PYTHON3)
+  SET(PYTHON_VER 2.7 CACHE STRING "Python version")
+ENDIF(ENABLE_PYTHON3)
+
+FIND_PACKAGE(PythonInterp ${PYTHON_VER} REQUIRED)
 
 #############################################################
 # Python bindings
 
 IF (WITH_BINDINGS)
 
-  # python support: check for interpreter, sip, pyqt4
-  FIND_PACKAGE(PythonInterp REQUIRED)
   FIND_PACKAGE(PythonLibrary REQUIRED)
+
+  # python support: check for interpreter, sip, pyqt4
+  IF(ENABLE_QT5)
+    FIND_PACKAGE(PyQt5 REQUIRED)
+    SET(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
+    SET(PYQT_SIP_DIR ${PYQT5_SIP_DIR})
+  ELSE(ENABLE_QT5)
+    FIND_PACKAGE(PyQt4 REQUIRED)
+    # setup SIP variables
+    SET(PYQT_SIP_FLAGS ${PYQT4_SIP_FLAGS})
+    SET(PYQT_SIP_DIR ${PYQT4_SIP_DIR})
+  ENDIF(ENABLE_QT5)
+  SEPARATE_ARGUMENTS(PYQT_SIP_FLAGS) # convert space separated values to a list
+
   FIND_PACKAGE(SIP REQUIRED)
-  FIND_PACKAGE(PyQt4 REQUIRED)
   FIND_PACKAGE(Qsci REQUIRED)
   INCLUDE(PythonMacros)
+  INCLUDE(PyQtMacros)
   INCLUDE(SIPMacros)
-  INCLUDE(PyQt4Macros)
 
-  # setup SIP variables
-  SEPARATE_ARGUMENTS(PYQT4_SIP_FLAGS) # convert space separated values to a list
-  SET(SIP_INCLUDES ${PYQT4_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
+  SET(SIP_INCLUDES ${PYQT_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
   SET(SIP_CONCAT_PARTS 4)
-  SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS})
 
   IF (NOT BINDINGS_GLOBAL_INSTALL)
     SET(PYTHON_SITE_PACKAGES_DIR ${QGIS_DATA_DIR}/python)
   ENDIF (NOT BINDINGS_GLOBAL_INSTALL)
 
   IF (WITH_CUSTOM_WIDGETS)
-    SET(PYUIC_WIDGET_PLUGIN_DIRECTORY ${PYQT4_MOD_DIR}/uic/widget-plugins/)
+    IF(ENABLE_QT5)
+      SET(PYUIC_WIDGET_PLUGIN_DIRECTORY ${PYQT5_MOD_DIR}/uic/widget-plugins/)
+    ELSE(ENABLE_QT5)
+      SET(PYUIC_WIDGET_PLUGIN_DIRECTORY ${PYQT4_MOD_DIR}/uic/widget-plugins/)
+    ENDIF(ENABLE_QT5)
   ENDIF (WITH_CUSTOM_WIDGETS)
 
 ENDIF (WITH_BINDINGS)
@@ -706,37 +742,44 @@ LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/src/core ${CMAKE_BINARY_DIR}/src/gui)
 
 #############################################################
 # create qgsversion.h
-FIND_FILE(GIT_MARKER index PATHS ${CMAKE_SOURCE_DIR}/.git)
-IF (GIT_MARKER)
+IF (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
   FIND_PROGRAM(GITCOMMAND git PATHS c:/cygwin/bin)
   IF(GITCOMMAND)
     IF(WIN32)
       ADD_CUSTOM_COMMAND(
-        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.inc
         COMMAND for /f \"usebackq tokens=1\" %%a in "(`\"${GITCOMMAND}\" log -n1 --oneline`)" do echo \#define QGSVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
+        COMMAND for /f \"usebackq tokens=1\" %%a in "(`\"${GITCOMMAND}\" log -n1 --oneline`)" do echo PROJECT_NUMBER = \"${COMPLETE_VERSION}-${RELEASE_NAME} \(%%a\)\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.inc
         COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
-        MAIN_DEPENDENCY ${GIT_MARKER}
+        MAIN_DEPENDENCY ${CMAKE_SOURCE_DIR}/.git/index
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       )
     ELSE(WIN32)
       ADD_CUSTOM_COMMAND(
-        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.inc
         COMMAND ${GITCOMMAND} log -n1 --pretty=\#define\\ QGSVERSION\\ \\"%h\\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
+        COMMAND ${GITCOMMAND} log -n1 --pretty='PROJECT_NUMBER = \"${COMPLETE_VERSION}-${RELEASE_NAME} \(%h\)\"' >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.inc
         COMMAND ${GITCOMMAND} config remote.$$\(${GITCOMMAND} config branch.$$\(${GITCOMMAND} name-rev --name-only HEAD\).remote\).url | sed -e 's/^/\#define QGS_GIT_REMOTE_URL \"/' -e 's/$$/\"/' >>${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
         COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
-        MAIN_DEPENDENCY ${GIT_MARKER}
+        MAIN_DEPENDENCY ${CMAKE_SOURCE_DIR}/.git/index
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       )
     ENDIF(WIN32)
   ELSE(GITCOMMAND)
     MESSAGE(STATUS "git marker, but no git found - version will be unknown")
-    SET(REVISION "unknown")
-    FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h "#define QGSVERSION \"unknown\"")
+    IF(NOT SHA)
+      SET(SHA "unknown")
+    ENDIF(NOT SHA)
+    FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h "#define QGSVERSION \"${SHA}\"\n")
+    FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.inc "PROJECT_NUMBER = \"${COMPLETE_VERSION}-${RELEASE_NAME} (${SHA})\"\n")
   ENDIF(GITCOMMAND)
-ELSE (GIT_MARKER)
-  SET(REVISION "exported")
-  FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h "#define QGSVERSION \"exported\"")
-ENDIF (GIT_MARKER)
+ELSE (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
+  IF(NOT SHA)
+    SET(SHA "exported")
+  ENDIF(NOT SHA)
+  FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h "#define QGSVERSION \"${SHA}\"\n")
+  FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.inc "PROJECT_NUMBER = \"${COMPLETE_VERSION}-${RELEASE_NAME} (${SHA})\"\n")
+ENDIF (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
 
 ADD_CUSTOM_TARGET(version ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h)
 
@@ -762,7 +805,7 @@ ENDIF (WITH_BINDINGS)
 IF (ENABLE_TESTS)
   ADD_SUBDIRECTORY(tests)
   SET (CTEST_BINARY_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/output/bin" )
-  MESSAGE (STATUS "Ctest Binary Directory  set to: ${CTEST_BINARY_DIRECTORY}")
+  MESSAGE (STATUS "Ctest Binary Directory set to: ${CTEST_BINARY_DIRECTORY}")
 ENDIF (ENABLE_TESTS)
 
 IF (APPLE)

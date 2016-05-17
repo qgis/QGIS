@@ -28,6 +28,7 @@ QgsPgTableModel::QgsPgTableModel()
   QStringList headerLabels;
   headerLabels << tr( "Schema" );
   headerLabels << tr( "Table" );
+  headerLabels << tr( "Comment" );
   headerLabels << tr( "Column" );
   headerLabels << tr( "Data Type" );
   headerLabels << tr( "Spatial Type" );
@@ -47,7 +48,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
   QgsDebugMsg( layerProperty.toString() );
 
   // is there already a root item with the given scheme Name?
-  QStandardItem *schemaItem = 0;
+  QStandardItem *schemaItem = nullptr;
 
   for ( int i = 0; i < layerProperty.size(); i++ )
   {
@@ -68,7 +69,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
     {
       tip = tr( "Enter a SRID into the '%1' column" ).arg( tr( "SRID" ) );
     }
-    else if ( layerProperty.pkCols.size() > 0 )
+    else if ( !layerProperty.pkCols.isEmpty() )
     {
       tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
     }
@@ -83,6 +84,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
     QStandardItem *geomTypeItem = new QStandardItem( QgsPostgresConn::displayStringForGeomType( layerProperty.geometryColType ) );
 
     QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
+    QStandardItem *commentItem = new QStandardItem( layerProperty.tableComment );
     QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
     QStandardItem *sridItem  = new QStandardItem( wkbType != QGis::WKBNoGeometry ? QString::number( srid ) : "" );
     sridItem->setEditable( wkbType != QGis::WKBNoGeometry && srid == INT_MIN );
@@ -93,7 +95,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
     }
 
     QStandardItem *pkItem = new QStandardItem( "" );
-    if ( layerProperty.pkCols.size() > 0 )
+    if ( !layerProperty.pkCols.isEmpty() )
     {
       pkItem->setText( tr( "Select..." ) );
       pkItem->setFlags( pkItem->flags() | Qt::ItemIsEditable );
@@ -115,6 +117,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
 
     childItemList << schemaNameItem;
     childItemList << tableItem;
+    childItemList << commentItem;
     childItemList << geomItem;
     childItemList << geomTypeItem;
     childItemList << typeItem;
@@ -149,7 +152,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
       QList<QStandardItem*> schemaItems = findItems( layerProperty.schemaName, Qt::MatchExactly, dbtmSchema );
 
       // there is already an item for this schema
-      if ( schemaItems.size() > 0 )
+      if ( !schemaItems.isEmpty() )
       {
         schemaItem = schemaItems.at( dbtmSchema );
       }
@@ -232,26 +235,16 @@ void QgsPgTableModel::setSql( const QModelIndex &index, const QString &sql )
 
 QIcon QgsPgTableModel::iconForWkbType( QGis::WkbType type )
 {
-  switch ( type )
+  QgsWKBTypes::GeometryType geomType = QgsWKBTypes::geometryType( QgsWKBTypes::Type( type ) );
+  switch ( geomType )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
+    case QgsWKBTypes::PointGeometry:
       return QgsApplication::getThemeIcon( "/mIconPointLayer.svg" );
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
+    case QgsWKBTypes::LineGeometry:
       return QgsApplication::getThemeIcon( "/mIconLineLayer.svg" );
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
+    case QgsWKBTypes::PolygonGeometry:
       return QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" );
-    case QGis::WKBNoGeometry:
-      return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
-    case QGis::WKBUnknown:
+    default:
       break;
   }
   return QgsApplication::getThemeIcon( "/mIconLayer.png" );
@@ -281,7 +274,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
     }
 
     QStringList pkCols = idx.sibling( idx.row(), dbtmPkCol ).data( Qt::UserRole + 1 ).toStringList();
-    if ( tip.isEmpty() && pkCols.size() > 0 )
+    if ( tip.isEmpty() && !pkCols.isEmpty() )
     {
       QSet<QString> s0( idx.sibling( idx.row(), dbtmPkCol ).data( Qt::UserRole + 2 ).toStringList().toSet() );
       QSet<QString> s1( pkCols.toSet() );
@@ -379,10 +372,10 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString& conn
 
   uri.setDataSource( schemaName, tableName, geomColumnName, sql, cols.join( "," ) );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
-  uri.setWkbType( wkbType );
+  uri.setWkbType( QGis::fromOldWkbType( wkbType ) );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
 
-  QgsDebugMsg( QString( "returning uri %1" ).arg( uri.uri() ) );
-  return uri.uri();
+  QgsDebugMsg( QString( "returning uri %1" ).arg( uri.uri( false ) ) );
+  return uri.uri( false );
 }

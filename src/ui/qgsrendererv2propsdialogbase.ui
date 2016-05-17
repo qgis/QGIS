@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>534</width>
-    <height>320</height>
+    <width>554</width>
+    <height>395</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -50,16 +50,7 @@
        </sizepolicy>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
+       <property name="margin">
         <number>0</number>
        </property>
        <item>
@@ -78,10 +69,10 @@
      <property name="title">
       <string>Layer rendering</string>
      </property>
-     <property name="collapsed" stdset="0">
+     <property name="collapsed">
       <bool>false</bool>
      </property>
-     <property name="saveCollapsedState" stdset="0">
+     <property name="saveCollapsedState">
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
@@ -106,20 +97,20 @@
         </item>
        </layout>
       </item>
+      <item row="3" column="0" colspan="4">
+       <widget class="QgsEffectStackCompactWidget" name="mEffectWidget" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="lblTransparency">
         <property name="text">
          <string>Layer transparency</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QgsBlendModeComboBox" name="mFeatureBlendComboBox"/>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="lblFeatureBlend">
-        <property name="text">
-         <string>Feature blending mode</string>
         </property>
        </widget>
       </item>
@@ -133,15 +124,47 @@
       <item row="1" column="1">
        <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox"/>
       </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QgsEffectStackCompactWidget" name="mEffectWidget" native="true">
-        <property name="minimumSize">
-         <size>
-          <width>16</width>
-          <height>16</height>
-         </size>
+      <item row="4" column="0" colspan="4">
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <widget class="QCheckBox" name="checkboxEnableOrderBy">
+          <property name="text">
+           <string>Control feature rendering order</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLineEdit" name="lineEditOrderBy">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="btnOrderBy">
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="lblFeatureBlend">
+        <property name="text">
+         <string>Feature blending mode</string>
         </property>
        </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QgsBlendModeComboBox" name="mFeatureBlendComboBox"/>
       </item>
      </layout>
     </widget>
@@ -157,6 +180,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsEffectStackCompactWidget</class>
    <extends>QWidget</extends>
    <header>effects/qgseffectstackpropertieswidget.h</header>
@@ -167,19 +196,12 @@
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
   </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>cboRenderers</tabstop>
   <tabstop>mLayerTransparencySlider</tabstop>
   <tabstop>mLayerTransparencySpnBx</tabstop>
   <tabstop>mBlendModeComboBox</tabstop>
-  <tabstop>mFeatureBlendComboBox</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

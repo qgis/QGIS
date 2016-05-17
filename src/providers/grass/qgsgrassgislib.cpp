@@ -408,7 +408,7 @@ char GRASS_LIB_EXPORT *G__file_name( char *path, const char *element, const char
   Q_UNUSED( element );
   Q_UNUSED( name );
   Q_UNUSED( mapset );
-  return NULL;
+  return nullptr;
 }
 
 char *G__file_name_misc( char *path, const char *dir, const char *element, const char *name, const char *mapset )
@@ -418,7 +418,7 @@ char *G__file_name_misc( char *path, const char *dir, const char *element, const
   Q_UNUSED( element );
   Q_UNUSED( name );
   Q_UNUSED( mapset );
-  return NULL;
+  return nullptr;
 }
 
 char GRASS_LIB_EXPORT *G_find_cell2( const char* name, const char *mapset )
@@ -437,7 +437,7 @@ char GRASS_LIB_EXPORT *G_find_file( const char *element, char *name, const char 
   Q_UNUSED( element );
   Q_UNUSED( name );
   Q_UNUSED( mapset );
-  return NULL;
+  return nullptr;
 }
 
 char GRASS_LIB_EXPORT *G_find_file2( const char *element, const char *name, const char *mapset )
@@ -445,7 +445,7 @@ char GRASS_LIB_EXPORT *G_find_file2( const char *element, const char *name, cons
   Q_UNUSED( element );
   Q_UNUSED( name );
   Q_UNUSED( mapset );
-  return NULL;
+  return nullptr;
 }
 
 char GRASS_LIB_EXPORT *G_find_file_misc( const char *dir, const char *element, char *name, const char *mapset )
@@ -454,7 +454,7 @@ char GRASS_LIB_EXPORT *G_find_file_misc( const char *dir, const char *element, c
   Q_UNUSED( element );
   Q_UNUSED( name );
   Q_UNUSED( mapset );
-  return NULL;
+  return nullptr;
 }
 
 char GRASS_LIB_EXPORT *G_find_file2_misc( const char *dir, const char *element, const char *name, const char *mapset )
@@ -463,7 +463,7 @@ char GRASS_LIB_EXPORT *G_find_file2_misc( const char *dir, const char *element, 
   Q_UNUSED( element );
   Q_UNUSED( name );
   Q_UNUSED( mapset );
-  return NULL;
+  return nullptr;
 }
 
 QgsGrassGisLib::Raster QgsGrassGisLib::raster( QString name )
@@ -1480,14 +1480,14 @@ char GRASS_LIB_EXPORT *G_ask_cell_new( const char *prompt, char *name )
 {
   Q_UNUSED( prompt );
   Q_UNUSED( name );
-  return NULL;
+  return nullptr;
 }
 
 char GRASS_LIB_EXPORT *G_ask_cell_old( const char *prompt, char *name )
 {
   Q_UNUSED( prompt );
   Q_UNUSED( name );
-  return NULL;
+  return nullptr;
 }
 
 int GRASS_LIB_EXPORT G_remove( const char *element, const char *name )
@@ -1553,7 +1553,7 @@ FILE GRASS_LIB_EXPORT *G_fopen_modify( const char *element, const char *name )
 {
   Q_UNUSED( element );
   Q_UNUSED( name );
-  return NULL;
+  return nullptr;
 }
 
 FILE GRASS_LIB_EXPORT *G_fopen_old( const char *element, const char *name, const char *mapset )
@@ -1561,12 +1561,12 @@ FILE GRASS_LIB_EXPORT *G_fopen_old( const char *element, const char *name, const
   Q_UNUSED( element );
   Q_UNUSED( name );
   Q_UNUSED( mapset );
-  return NULL;
+  return nullptr;
 }
 
 char GRASS_LIB_EXPORT *G_gisdbase( void )
 {
-  return NULL;
+  return nullptr;
 }
 
 int GRASS_LIB_EXPORT G__name_is_fully_qualified( const char *fullname, char *name, char *mapset )
@@ -1586,12 +1586,12 @@ int GRASS_LIB_EXPORT G_open_new( const char *element, const char *name )
 
 struct Key_Value GRASS_LIB_EXPORT *G_get_projinfo( void )
 {
-  return NULL;
+  return nullptr;
 }
 
 struct Key_Value GRASS_LIB_EXPORT *G_get_projunits( void )
 {
-  return NULL;
+  return nullptr;
 }
 
 int GRASS_LIB_EXPORT G_get_reclass( const char *name, const char *mapset, struct Reclass *reclass )
@@ -1601,7 +1601,7 @@ int GRASS_LIB_EXPORT G_get_reclass( const char *name, const char *mapset, struct
   reclass->min = 0;
   reclass->max = 0;
   reclass->num = 0;
-  reclass->table = NULL;
+  reclass->table = nullptr;
   return 1; // OK
 }
 

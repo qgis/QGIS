@@ -25,67 +25,16 @@
 //QgsComposerAttributeTableCompare
 
 QgsComposerAttributeTableCompare::QgsComposerAttributeTableCompare()
-    : mCurrentSortColumn( 0 ), mAscending( true )
+    : mCurrentSortColumn( 0 )
+    , mAscending( true )
 {
 }
 
 
 bool QgsComposerAttributeTableCompare::operator()( const QgsAttributeMap& m1, const QgsAttributeMap& m2 )
 {
-  QVariant v1 = m1[mCurrentSortColumn];
-  QVariant v2 = m2[mCurrentSortColumn];
-
-  bool less = false;
-
-  //sort null values first
-  if ( v1.isNull() && v2.isNull() )
-  {
-    less = false;
-  }
-  else if ( v1.isNull() )
-  {
-    less = true;
-  }
-  else if ( v2.isNull() )
-  {
-    less = false;
-  }
-  else
-  {
-    //otherwise sort by converting to corresponding type and comparing
-    switch ( v1.type() )
-    {
-      case QVariant::Int:
-      case QVariant::UInt:
-      case QVariant::LongLong:
-      case QVariant::ULongLong:
-        less = v1.toLongLong() < v2.toLongLong();
-        break;
-
-      case QVariant::Double:
-        less = v1.toDouble() < v2.toDouble();
-        break;
-
-      case QVariant::Date:
-        less = v1.toDate() < v2.toDate();
-        break;
-
-      case QVariant::DateTime:
-        less = v1.toDateTime() < v2.toDateTime();
-        break;
-
-      case QVariant::Time:
-        less = v1.toTime() < v2.toTime();
-        break;
-
-      default:
-        //use locale aware compare for strings
-        less = v1.toString().localeAwareCompare( v2.toString() ) < 0;
-        break;
-    }
-  }
-
-  return ( mAscending ? less : !less );
+  return ( mAscending ? qgsVariantLessThan( m1[mCurrentSortColumn], m2[mCurrentSortColumn] )
+           : qgsVariantGreaterThan( m1[mCurrentSortColumn], m2[mCurrentSortColumn] ) );
 }
 
 
@@ -93,8 +42,8 @@ bool QgsComposerAttributeTableCompare::operator()( const QgsAttributeMap& m1, co
 
 QgsComposerAttributeTable::QgsComposerAttributeTable( QgsComposition* composition )
     : QgsComposerTable( composition )
-    , mVectorLayer( 0 )
-    , mComposerMap( 0 )
+    , mVectorLayer( nullptr )
+    , mComposerMap( nullptr )
     , mMaximumNumberOfFeatures( 5 )
     , mShowOnlyVisibleFeatures( false )
     , mFilterFeatures( false )
@@ -181,14 +130,15 @@ void QgsComposerAttributeTable::resetColumns()
   mColumns.clear();
 
   //rebuild columns list from vector layer fields
-  const QgsFields& fields = mVectorLayer->fields();
-  for ( int idx = 0; idx < fields.count(); ++idx )
+  int idx = 0;
+  Q_FOREACH ( const QgsField& field, mVectorLayer->fields() )
   {
     QString currentAlias = mVectorLayer->attributeDisplayName( idx );
     QgsComposerTableColumn* col = new QgsComposerTableColumn;
-    col->setAttribute( fields[idx].name() );
+    col->setAttribute( field.name() );
     col->setHeading( currentAlias );
     mColumns.append( col );
+    idx++;
   }
 }
 
@@ -296,13 +246,15 @@ void QgsComposerAttributeTable::setDisplayAttributes( const QSet<int>& attr, boo
   else
   {
     //resetting, so add all attributes to columns
-    for ( int idx = 0; idx < fields.count(); ++idx )
+    int idx = 0;
+    Q_FOREACH ( const QgsField& field, fields )
     {
       QString currentAlias = mVectorLayer->attributeDisplayName( idx );
       QgsComposerTableColumn* col = new QgsComposerTableColumn;
-      col->setAttribute( fields[idx].name() );
+      col->setAttribute( field.name() );
       col->setHeading( currentAlias );
       mColumns.append( col );
+      idx++;
     }
   }
 
@@ -445,7 +397,7 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
       int idx = mVectorLayer->fieldNameIndex(( *columnIt )->attribute() );
       if ( idx != -1 )
       {
-        attributeMaps.last().insert( i, f.attributes()[idx] );
+        attributeMaps.last().insert( i, f.attributes().at( idx ) );
       }
       else
       {
@@ -476,13 +428,13 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
   return true;
 }
 
-void QgsComposerAttributeTable::removeLayer( QString layerId )
+void QgsComposerAttributeTable::removeLayer( const QString& layerId )
 {
   if ( mVectorLayer )
   {
     if ( layerId == mVectorLayer->id() )
     {
-      mVectorLayer = 0;
+      mVectorLayer = nullptr;
       //remove existing columns
       qDeleteAll( mColumns );
       mColumns.clear();
@@ -501,13 +453,12 @@ void QgsComposerAttributeTable::setSceneRect( const QRectF& rectangle )
   refreshAttributes();
 }
 
-void QgsComposerAttributeTable::setSortAttributes( const QList<QPair<int, bool> > att )
+void QgsComposerAttributeTable::setSortAttributes( const QList<QPair<int, bool> >& att )
 {
   //first, clear existing sort by ranks
-  QList<QgsComposerTableColumn*>::iterator columnIt = mColumns.begin();
-  for ( ; columnIt != mColumns.end(); ++columnIt )
+  Q_FOREACH ( QgsComposerTableColumn* column, mColumns )
   {
-    ( *columnIt )->setSortByRank( 0 );
+    column->setSortByRank( 0 );
   }
 
   //now, update sort rank of specified columns
@@ -519,8 +470,8 @@ void QgsComposerAttributeTable::setSortAttributes( const QList<QPair<int, bool> 
     {
       continue;
     }
-    mColumns[( *sortedColumnIt ).first ]->setSortByRank( rank );
-    mColumns[( *sortedColumnIt ).first ]->setSortOrder(( *sortedColumnIt ).second ? Qt::AscendingOrder : Qt::DescendingOrder );
+    mColumns.at(( *sortedColumnIt ).first )->setSortByRank( rank );
+    mColumns.at(( *sortedColumnIt ).first )->setSortOrder(( *sortedColumnIt ).second ? Qt::AscendingOrder : Qt::DescendingOrder );
     rank++;
   }
 
@@ -535,7 +486,7 @@ static bool columnsBySortRank( QPair<int, QgsComposerTableColumn* > a, QPair<int
 QList<QPair<int, bool> > QgsComposerAttributeTable::sortAttributes() const
 {
   //generate list of all sorted columns
-  QList< QPair<int, QgsComposerTableColumn* > > sortedColumns;
+  QVector< QPair<int, QgsComposerTableColumn* > > sortedColumns;
   QList<QgsComposerTableColumn*>::const_iterator columnIt = mColumns.constBegin();
   int idx = 0;
   for ( ; columnIt != mColumns.constEnd(); ++columnIt )
@@ -552,7 +503,7 @@ QList<QPair<int, bool> > QgsComposerAttributeTable::sortAttributes() const
 
   //generate list of column index, bool for sort direction (to match 2.0 api)
   QList<QPair<int, bool> > attributesBySortRank;
-  QList< QPair<int, QgsComposerTableColumn* > >::const_iterator sortedColumnIt = sortedColumns.constBegin();
+  QVector< QPair<int, QgsComposerTableColumn* > >::const_iterator sortedColumnIt = sortedColumns.constBegin();
   for ( ; sortedColumnIt != sortedColumns.constEnd(); ++sortedColumnIt )
   {
 
@@ -609,7 +560,7 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
   int composerMapId = itemElem.attribute( "composerMap", "-1" ).toInt();
   if ( composerMapId == -1 )
   {
-    mComposerMap = 0;
+    mComposerMap = nullptr;
   }
 
   if ( composition() )
@@ -618,7 +569,7 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
   }
   else
   {
-    mComposerMap = 0;
+    mComposerMap = nullptr;
   }
 
   if ( mComposerMap )
@@ -631,7 +582,7 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
   QString layerId = itemElem.attribute( "vectorLayer", "not_existing" );
   if ( layerId == "not_existing" )
   {
-    mVectorLayer = 0;
+    mVectorLayer = nullptr;
   }
   else
   {
@@ -650,7 +601,7 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
   //restore display attribute map. This is required to upgrade pre 2.4 projects.
   QSet<int> displayAttributes;
   QDomNodeList displayAttributeList = itemElem.elementsByTagName( "displayAttributes" );
-  if ( displayAttributeList.size() > 0 )
+  if ( !displayAttributeList.isEmpty() )
   {
     QDomElement displayAttributesElem =  displayAttributeList.at( 0 ).toElement();
     QDomNodeList attributeEntryList = displayAttributesElem.elementsByTagName( "attributeEntry" );
@@ -669,7 +620,7 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
   //restore alias map. This is required to upgrade pre 2.4 projects.
   QMap<int, QString> fieldAliasMap;
   QDomNodeList aliasMapNodeList = itemElem.elementsByTagName( "attributeAliasMap" );
-  if ( aliasMapNodeList.size() > 0 )
+  if ( !aliasMapNodeList.isEmpty() )
   {
     QDomElement attributeAliasMapElem = aliasMapNodeList.at( 0 ).toElement();
     QDomNodeList aliasMepEntryList = attributeAliasMapElem.elementsByTagName( "aliasEntry" );
@@ -696,13 +647,12 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
       int attribute = columnElem.attribute( "index" ).toInt();
       Qt::SortOrder order = columnElem.attribute( "ascending" ) == "true" ? Qt::AscendingOrder : Qt::DescendingOrder;
       //find corresponding column
-      QList<QgsComposerTableColumn*>::iterator columnIt = mColumns.begin();
-      for ( ; columnIt != mColumns.end(); ++columnIt )
+      Q_FOREACH ( QgsComposerTableColumn* column, mColumns )
       {
-        if (( *columnIt )->attribute() == fields[attribute].name() )
+        if ( column->attribute() == fields[attribute].name() )
         {
-          ( *columnIt )->setSortByRank( i + 1 );
-          ( *columnIt )->setSortOrder( order );
+          column->setSortByRank( i + 1 );
+          column->setSortOrder( order );
           break;
         }
       }

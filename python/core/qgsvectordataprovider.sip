@@ -39,6 +39,7 @@ class QgsVectorDataProvider : QgsDataProvider
       RandomSelectGeometryAtId,
       /** DEPRECATED - do not use */
       SequentialSelectGeometryAtId,
+      /** DEPRECATED - do not use */
       CreateAttributeIndex,
       /** Allows user to select encoding */
       SelectEncoding,
@@ -47,7 +48,13 @@ class QgsVectorDataProvider : QgsDataProvider
       /** Supports topological simplification of geometries on provider side according to a distance tolerance */
       SimplifyGeometriesWithTopologicalValidation,
       /** Supports transactions*/
-      TransactionSupport
+      TransactionSupport,
+      /** Supports circular geometry types (circularstring, compoundcurve, curvepolygon)*/
+      CircularGeometries,
+      /** Supports joint updates for attributes and geometry
+       * Providers supporting this should still define ChangeGeometries | ChangeAttributeValues
+       */
+      ChangeFeatures
     };
 
     /** Bitmask of all provider's editing capabilities */
@@ -57,7 +64,7 @@ class QgsVectorDataProvider : QgsDataProvider
      * Constructor of the vector provider
      * @param uri  uniform resource locator (URI) for a dataset
      */
-    QgsVectorDataProvider( QString uri = QString() );
+    QgsVectorDataProvider( const QString& uri = QString() );
 
     /**
      * Destructor
@@ -190,6 +197,17 @@ class QgsVectorDataProvider : QgsDataProvider
     virtual bool changeAttributeValues( const QMap<qint64, QMap<int, QVariant> > &attr_map );
 
     /**
+     * Changes attribute values and geometries of existing features.
+     * @param attr_map a map containing changed attributes
+     * @param geometry_map   A QgsGeometryMap whose index contains the feature IDs
+     *                       that will have their geometries changed.
+     *                       The second map parameter being the new geometries themselves
+     * @return true in case of success and false in case of failure
+     */
+    virtual bool changeFeatures( const QMap<qint64, QMap<int, QVariant> > &attr_map,
+                                 const QMap<qint64, QgsGeometry> &geometry_map );
+
+    /**
      * Returns the default value for field specified by @c fieldId
      */
     virtual QVariant defaultValue( int fieldId );
@@ -201,7 +219,7 @@ class QgsVectorDataProvider : QgsDataProvider
      *                       The second map parameter being the new geometries themselves
      * @return               True in case of success and false in case of failure
      */
-    virtual bool changeGeometryValues( QMap<qint64, QgsGeometry> & geometry_map );
+    virtual bool changeGeometryValues( const QMap<qint64, QgsGeometry> &geometry_map );
 
     /**
      * Creates a spatial index on the datasource (if supported by the provider type).
@@ -266,7 +284,7 @@ class QgsVectorDataProvider : QgsDataProvider
 
     struct NativeType
     {
-      NativeType( QString typeDesc, QString typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0 );
+      NativeType( const QString& typeDesc, const QString& typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0 );
 
       QString mTypeDesc;
       QString mTypeName;
@@ -313,18 +331,38 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     virtual bool isSaveAndLoadStyleToDBSupported();
 
-    static QVariant convertValue( QVariant::Type type, QString value );
+    static QVariant convertValue( QVariant::Type type, const QString& value );
 
     /**
      * Returns the transaction this data provider is included in, if any.
      */
     virtual QgsTransaction* transaction() const;
 
+    /**
+     * Forces a reload of the underlying datasource if the provider implements this
+     * method.
+     * In particular on the OGR provider, a pooled connection will be invalidated.
+     * This forces QGIS to reopen a file or connection.
+     * This can be required if the underlying file is replaced.
+     */
     virtual void forceReload();
+
+    /**
+     * Get the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
+     */
+    virtual QSet<QString> layerDependencies() const;
+
+  signals:
+    /** Signals an error in this provider */
+    void raiseError( const QString& msg );
 
   protected:
     void clearMinMaxCache();
     void fillMinMaxCache();
 
-    void pushError( QString msg );
+    void pushError( const QString& msg );
+
+    /** Converts the geometry to the provider type if possible / necessary
+    @return the converted geometry or nullptr if no conversion was necessary or possible*/
+    QgsGeometry* convertToProviderType( const QgsGeometry* geom ) const /Factory/;
 };

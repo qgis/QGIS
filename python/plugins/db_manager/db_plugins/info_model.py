@@ -20,7 +20,7 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtGui import QApplication
+from qgis.PyQt.QtWidgets import QApplication
 
 from .html_elems import HtmlContent, HtmlSection, HtmlParagraph, HtmlList, HtmlTable, HtmlTableHeader, HtmlTableCol
 
@@ -241,7 +241,7 @@ class TableInfo:
         # add table contents
         for con in self.table.constraints():
             # get the fields the constraint is defined on
-            cols = map(lambda p: p[1].name if p[1] is not None else u"??? (#%d)" % p[0], con.fields().iteritems())
+            cols = map(lambda p: p[1].name if p[1] is not None else u"??? (#%d)" % p[0], iter(con.fields().items()))
             tbl.append((con.name, con.type2String(), u'\n'.join(cols)))
 
         return HtmlTable(tbl, {"class": "header"})
@@ -260,7 +260,7 @@ class TableInfo:
         # add table contents
         for idx in self.table.indexes():
             # get the fields the index is defined on
-            cols = map(lambda p: p[1].name if p[1] is not None else u"??? (#%d)" % p[0], idx.fields().iteritems())
+            cols = map(lambda p: p[1].name if p[1] is not None else u"??? (#%d)" % p[0], iter(idx.fields().items()))
             tbl.append((idx.name, u'\n'.join(cols)))
 
         return HtmlTable(tbl, {"class": "header"})

@@ -23,7 +23,7 @@
 **
 **********************************************************************/
 
-#if _MSC_VER > 1000
+#if defined(_MSC_VER) && _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
 
@@ -76,7 +76,7 @@ void DL_WriterA::dxfReal(int gc, double value) const {
             end = i+1;
         }
     }
-    if (end>0 && end<(int)strlen(str)) {
+    if (end>0 && end<static_cast<int>(strlen(str))) {
         str[end] = '\0';
     }
 

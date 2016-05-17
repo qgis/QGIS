@@ -102,7 +102,7 @@ class ZonalStatistics(GeoAlgorithm):
         rasterGeom = QgsGeometry.fromRect(rasterBBox)
 
         crs = osr.SpatialReference()
-        crs.ImportFromProj4(unicode(layer.crs().toProj4()))
+        crs.ImportFromProj4(str(layer.crs().toProj4()))
 
         if useGlobalExtent:
             xMin = rasterBBox.xMinimum()
@@ -118,6 +118,7 @@ class ZonalStatistics(GeoAlgorithm):
 
             srcOffset = (startColumn, startRow, width, height)
             srcArray = rasterBand.ReadAsArray(*srcOffset)
+            srcArray = srcArray * rasterBand.GetScale() + rasterBand.GetOffset()
 
             newGeoTransform = (
                 geoTransform[0] + srcOffset[0] * geoTransform[1],
@@ -164,10 +165,9 @@ class ZonalStatistics(GeoAlgorithm):
         outFeat.initAttributes(len(fields))
         outFeat.setFields(fields)
 
-        current = 0
         features = vector.features(layer)
         total = 100.0 / len(features)
-        for f in features:
+        for current, f in enumerate(features):
             geom = f.geometry()
 
             intersectedGeom = rasterGeom.intersection(geom)
@@ -192,6 +192,7 @@ class ZonalStatistics(GeoAlgorithm):
 
                 srcOffset = (startColumn, startRow, width, height)
                 srcArray = rasterBand.ReadAsArray(*srcOffset)
+                srcArray = srcArray * rasterBand.GetScale() + rasterBand.GetOffset()
 
                 newGeoTransform = (
                     geoTransform[0] + srcOffset[0] * geoTransform[1],
@@ -226,16 +227,24 @@ class ZonalStatistics(GeoAlgorithm):
             outFeat.setGeometry(geom)
 
             attrs = f.attributes()
-            attrs.insert(idxMin, float(masked.min()))
-            attrs.insert(idxMax, float(masked.max()))
-            attrs.insert(idxSum, float(masked.sum()))
+            v = float(masked.min())
+            attrs.insert(idxMin, None if numpy.isnan(v) else v)
+            v = float(masked.max())
+            attrs.insert(idxMax, None if numpy.isnan(v) else v)
+            v = float(masked.sum())
+            attrs.insert(idxSum, None if numpy.isnan(v) else v)
             attrs.insert(idxCount, int(masked.count()))
-            attrs.insert(idxMean, float(masked.mean()))
-            attrs.insert(idxStd, float(masked.std()))
+            v = float(masked.mean())
+            attrs.insert(idxMean, None if numpy.isnan(v) else v)
+            v = float(masked.std())
+            attrs.insert(idxStd, None if numpy.isnan(v) else v)
             attrs.insert(idxUnique, numpy.unique(masked.compressed()).size)
-            attrs.insert(idxRange, float(masked.max()) - float(masked.min()))
-            attrs.insert(idxVar, float(masked.var()))
-            attrs.insert(idxMedian, float(numpy.ma.median(masked)))
+            v = float(masked.max()) - float(masked.min())
+            attrs.insert(idxRange, None if numpy.isnan(v) else v)
+            v = float(masked.var())
+            attrs.insert(idxVar, None if numpy.isnan(v) else v)
+            v = float(numpy.ma.median(masked))
+            attrs.insert(idxMedian, None if numpy.isnan(v) else v)
             if hasSciPy:
                 attrs.insert(idxMode, float(mode(masked, axis=None)[0][0]))
 
@@ -245,7 +254,6 @@ class ZonalStatistics(GeoAlgorithm):
             memVDS = None
             rasterizedDS = None
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         rasterDS = None

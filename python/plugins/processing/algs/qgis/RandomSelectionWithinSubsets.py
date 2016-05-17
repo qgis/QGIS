@@ -25,8 +25,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
 import random
+
+from qgis.PyQt.QtGui import QIcon
+
 from qgis.core import QgsFeature
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterSelection
@@ -35,6 +40,8 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class RandomSelectionWithinSubsets(GeoAlgorithm):
@@ -45,20 +52,23 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
 
-    METHODS = ['Number of selected features',
-               'Percentage of selected features']
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sub_selection.png'))
 
     def defineCharacteristics(self):
         self.allowOnlyOpenedLayers = True
         self.name, self.i18n_name = self.trAlgorithm('Random selection within subsets')
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
 
+        self.methods = [self.tr('Number of selected features'),
+                        self.tr('Percentage of selected features')]
+
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('ID Field'), self.INPUT))
         self.addParameter(ParameterSelection(self.METHOD,
-                                             self.tr('Method'), self.METHODS, 0))
+                                             self.tr('Method'), self.methods, 0))
         self.addParameter(ParameterNumber(self.NUMBER,
                                           self.tr('Number/percentage of selected features'), 1, None, 10))
 
@@ -94,7 +104,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
         inFeat = QgsFeature()
 
         current = 0
-        total = 100.0 / float(featureCount * len(unique))
+        total = 100.0 / (featureCount * len(unique))
 
         if not len(unique) == featureCount:
             for i in unique:
@@ -120,6 +130,6 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
                 selran.extend(selFeat)
             layer.setSelectedFeatures(selran)
         else:
-            layer.setSelectedFeatures(range(0, featureCount))
+            layer.setSelectedFeatures(range(featureCount))
 
         self.setOutputValue(self.OUTPUT, filename)

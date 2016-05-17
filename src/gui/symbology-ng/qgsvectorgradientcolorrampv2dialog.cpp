@@ -27,14 +27,31 @@
 #include <QTableWidget>
 #include <QTextEdit>
 
+// QWT Charting widget
+#include <qwt_global.h>
+#include <qwt_plot_canvas.h>
+#include <qwt_plot.h>
+#include <qwt_plot_curve.h>
+#include <qwt_plot_grid.h>
+#include <qwt_plot_marker.h>
+#include <qwt_plot_picker.h>
+#include <qwt_picker_machine.h>
+#include <qwt_plot_layout.h>
+#include <qwt_symbol.h>
+#include <qwt_legend.h>
+
 QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVectorGradientColorRampV2* ramp, QWidget* parent )
-    : QDialog( parent ), mRamp( ramp ), mCurrentItem( 0 )
+    : QDialog( parent )
+    , mRamp( ramp )
+    , mCurrentPlotColorComponent( -1 )
+    , mCurrentPlotMarkerIndex( 0 )
 {
   setupUi( this );
 #ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
 #endif
 
+  mPositionSpinBox->setShowClearButton( false );
   btnColor1->setAllowAlpha( true );
   btnColor1->setColorDialogTitle( tr( "Select ramp color" ) );
   btnColor1->setContext( "symbology" );
@@ -45,15 +62,9 @@ QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVecto
   btnColor2->setContext( "symbology" );
   btnColor2->setShowNoColor( true );
   btnColor2->setNoColorString( tr( "Transparent" ) );
+  updateColorButtons();
   connect( btnColor1, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor1( const QColor& ) ) );
   connect( btnColor2, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor2( const QColor& ) ) );
-
-  // handle stops
-  updateStops();
-  connect( groupStops, SIGNAL( toggled( bool ) ), this, SLOT( toggledStops( bool ) ) );
-  connect( btnAddStop, SIGNAL( clicked() ), this, SLOT( addStop() ) );
-  connect( btnRemoveStop, SIGNAL( clicked() ), this, SLOT( removeStop() ) );
-  connect( treeStops, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( stopDoubleClicked( QTreeWidgetItem*, int ) ) );
 
   // fill type combobox
   cboType->blockSignals( true );
@@ -65,14 +76,83 @@ QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVecto
     cboType->setCurrentIndex( 1 );
   cboType->blockSignals( false );
 
-  // information button if needed
-  // QPushButton* button = buttonBox->addButton( tr( "Information" ), QDialogButtonBox::ActionRole );
   if ( mRamp->info().isEmpty() )
     btnInformation->setEnabled( false );
-  // else
-  //   connect( button, SIGNAL( pressed() ), this, SLOT( showInformation() ) );
 
-  updatePreview();
+  mStopEditor->setGradientRamp( *mRamp );
+  connect( mStopEditor, SIGNAL( changed() ), this, SLOT( updateRampFromStopEditor() ) );
+
+  connect( mColorWidget, SIGNAL( currentColorChanged( QColor ) ), this, SLOT( colorWidgetChanged( QColor ) ) );
+  connect( mDeleteStopButton, SIGNAL( clicked() ), mStopEditor, SLOT( deleteSelectedStop() ) );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/GradientEditor/geometry" ).toByteArray() );
+
+  // hide the ugly canvas frame
+  mPlot->setFrameStyle( QFrame::NoFrame );
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+  QFrame* plotCanvasFrame = dynamic_cast<QFrame*>( mPlot->canvas() );
+  if ( plotCanvasFrame )
+    plotCanvasFrame->setFrameStyle( QFrame::NoFrame );
+#else
+  mPlot->canvas()->setFrameStyle( QFrame::NoFrame );
+#endif
+
+  mPlot->setAxisScale( QwtPlot::yLeft, 0.0, 1.0 );
+  mPlot->enableAxis( QwtPlot::yLeft, false );
+
+  mLightnessCurve = new QwtPlotCurve();
+  mLightnessCurve->setTitle( "Lightness" );
+  mLightnessCurve->setPen( QPen( QColor( 70, 150, 255 ), 0.0 ) ),
+  mLightnessCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+  mLightnessCurve->attach( mPlot );
+
+  mHueCurve = new QwtPlotCurve();
+  mHueCurve->setTitle( "Hue" );
+  mHueCurve->setPen( QPen( QColor( 255, 215, 70 ), 0.0 ) ),
+  mHueCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+  mHueCurve->attach( mPlot );
+
+  mSaturationCurve = new QwtPlotCurve();
+  mSaturationCurve->setTitle( "Saturation" );
+  mSaturationCurve->setPen( QPen( QColor( 255, 70, 150 ), 0.0 ) ),
+  mSaturationCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+  mSaturationCurve->attach( mPlot );
+
+  mAlphaCurve = new QwtPlotCurve();
+  mAlphaCurve->setTitle( "Alpha" );
+  mAlphaCurve->setPen( QPen( QColor( 50, 50, 50 ), 0.0 ) ),
+  mAlphaCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+  mAlphaCurve->attach( mPlot );
+
+  mPlotFilter = new QgsGradientPlotEventFilter( mPlot );
+  connect( mPlotFilter, SIGNAL( mousePress( QPointF ) ), this, SLOT( plotMousePress( QPointF ) ) );
+  connect( mPlotFilter, SIGNAL( mouseRelease( QPointF ) ), this, SLOT( plotMouseRelease( QPointF ) ) );
+  connect( mPlotFilter, SIGNAL( mouseMove( QPointF ) ), this, SLOT( plotMouseMove( QPointF ) ) );
+
+  mPlotHueCheckbox->setChecked( settings.value( "/GradientEditor/plotHue", false ).toBool() );
+  mPlotLightnessCheckbox->setChecked( settings.value( "/GradientEditor/plotLightness", true ).toBool() );
+  mPlotSaturationCheckbox->setChecked( settings.value( "/GradientEditor/plotSaturation", false ).toBool() );
+  mPlotAlphaCheckbox->setChecked( settings.value( "/GradientEditor/plotAlpha", false ).toBool() );
+
+  mHueCurve->setVisible( mPlotHueCheckbox->isChecked() );
+  mLightnessCurve->setVisible( mPlotLightnessCheckbox->isChecked() );
+  mSaturationCurve->setVisible( mPlotSaturationCheckbox->isChecked() );
+  mAlphaCurve->setVisible( mPlotAlphaCheckbox->isChecked() );
+
+  connect( mStopEditor, SIGNAL( selectedStopChanged( QgsGradientStop ) ), this, SLOT( selectedStopChanged( QgsGradientStop ) ) );
+  mStopEditor->selectStop( 0 );
+}
+
+QgsVectorGradientColorRampV2Dialog::~QgsVectorGradientColorRampV2Dialog()
+{
+  QSettings settings;
+  settings.setValue( "/Windows/GradientEditor/geometry", saveGeometry() );
+  settings.setValue( "/GradientEditor/plotHue", mPlotHueCheckbox->isChecked() );
+  settings.setValue( "/GradientEditor/plotLightness", mPlotLightnessCheckbox->isChecked() );
+  settings.setValue( "/GradientEditor/plotSaturation", mPlotSaturationCheckbox->isChecked() );
+  settings.setValue( "/GradientEditor/plotAlpha", mPlotAlphaCheckbox->isChecked() );
+
 }
 
 void QgsVectorGradientColorRampV2Dialog::on_cboType_currentIndexChanged( int index )
@@ -81,8 +161,9 @@ void QgsVectorGradientColorRampV2Dialog::on_cboType_currentIndexChanged( int ind
       ( index == 1 && !mRamp->isDiscrete() ) )
     return;
   mRamp->convertToDiscrete( index == 0 );
-  updateStops();
-  updatePreview();
+  updateColorButtons();
+  updateStopEditor();
+  updatePlot();
 }
 
 void QgsVectorGradientColorRampV2Dialog::on_btnInformation_pressed()
@@ -91,7 +172,7 @@ void QgsVectorGradientColorRampV2Dialog::on_btnInformation_pressed()
     return;
 
   QgsDialog *dlg = new QgsDialog( this );
-  QLabel *label = 0;
+  QLabel *label = nullptr;
 
   // information table
   QTableWidget *tableInfo = new QTableWidget( dlg );
@@ -100,8 +181,9 @@ void QgsVectorGradientColorRampV2Dialog::on_btnInformation_pressed()
   tableInfo->setRowCount( mRamp->info().count() );
   tableInfo->setColumnCount( 2 );
   int i = 0;
-  for ( QgsStringMap::const_iterator it = mRamp->info().constBegin();
-        it != mRamp->info().constEnd(); ++it )
+  QgsStringMap rampInfo = mRamp->info();
+  for ( QgsStringMap::const_iterator it = rampInfo.constBegin();
+        it != rampInfo.constEnd(); ++it )
   {
     if ( it.key().startsWith( "cpt-city" ) )
       continue;
@@ -170,54 +252,8 @@ void QgsVectorGradientColorRampV2Dialog::on_btnInformation_pressed()
   dlg->show(); //non modal
 }
 
-void QgsVectorGradientColorRampV2Dialog::updateStops()
+void QgsVectorGradientColorRampV2Dialog::updateColorButtons()
 {
-  QgsGradientStopsList stops = mRamp->stops();
-  groupStops->setChecked( !stops.isEmpty() );
-
-  QList<QTreeWidgetItem *> items;
-  for ( QgsGradientStopsList::iterator it = stops.begin();
-        it != stops.end(); ++it )
-  {
-    double val = it->offset * 100.0;
-    QStringList lst;
-    lst << "." << QString(( val < 10 ) ? '0' + QString::number( val ) : QString::number( val ) );
-    QTreeWidgetItem* item = new QTreeWidgetItem( lst );
-
-    setStopColor( item, it->color );
-    item->setData( 0, StopOffsetRole, it->offset );
-
-    items.append( item );
-  }
-  treeStops->clear();
-  treeStops->insertTopLevelItems( 0, items );
-  treeStops->resizeColumnToContents( 0 );
-  treeStops->setColumnWidth( 0, treeStops->columnWidth( 0 ) + 20 );
-  treeStops->sortByColumn( 1, Qt::AscendingOrder );
-  treeStops->setSortingEnabled( true );
-}
-
-void QgsVectorGradientColorRampV2Dialog::updatePreview()
-{
-  // update ramp stops from the tree widget
-  QgsGradientStopsList stops;
-  if ( groupStops->isChecked() )
-  {
-    int count = treeStops->topLevelItemCount();
-    for ( int i = 0; i < count; i++ )
-    {
-      QTreeWidgetItem* item = treeStops->topLevelItem( i );
-      double offset = item->data( 0, StopOffsetRole ).toDouble();
-      QColor color = item->data( 0, StopColorRole ).value<QColor>();
-      stops.append( QgsGradientStop( offset, color ) );
-    }
-  }
-  mRamp->setStops( stops );
-
-  // generate the preview
-  QSize size( 300, 40 );
-  lblPreview->setPixmap( QgsSymbolLayerV2Utils::colorRampPreviewPixmap( mRamp, size ) );
-
   btnColor1->blockSignals( true );
   btnColor1->setColor( mRamp->color1() );
   btnColor1->blockSignals( false );
@@ -226,168 +262,358 @@ void QgsVectorGradientColorRampV2Dialog::updatePreview()
   btnColor2->blockSignals( false );
 }
 
+void QgsVectorGradientColorRampV2Dialog::updateStopEditor()
+{
+  mStopEditor->blockSignals( true );
+  mStopEditor->setGradientRamp( *mRamp );
+  mStopEditor->blockSignals( false );
+}
+
+void QgsVectorGradientColorRampV2Dialog::selectedStopChanged( const QgsGradientStop& stop )
+{
+  mColorWidget->blockSignals( true );
+  mColorWidget->setColor( stop.color );
+  mColorWidget->blockSignals( false );
+  mPositionSpinBox->blockSignals( true );
+  mPositionSpinBox->setValue( stop.offset * 100 );
+  mPositionSpinBox->blockSignals( false );
+
+  if (( stop.offset == 0 && stop.color == mRamp->color1() ) || ( stop.offset == 1.0 && stop.color == mRamp->color2() ) )
+  {
+    //first/last stop can't be repositioned
+    mPositionSpinBox->setDisabled( true );
+    mDeleteStopButton->setDisabled( true );
+  }
+  else
+  {
+    mPositionSpinBox->setDisabled( false );
+    mDeleteStopButton->setDisabled( false );
+  }
+
+  updatePlot();
+}
+
+void QgsVectorGradientColorRampV2Dialog::colorWidgetChanged( const QColor &color )
+{
+  mStopEditor->setSelectedStopColor( color );
+}
+
+void QgsVectorGradientColorRampV2Dialog::on_mPositionSpinBox_valueChanged( double val )
+{
+  mStopEditor->setSelectedStopOffset( val / 100.0 );
+}
+
+void QgsVectorGradientColorRampV2Dialog::on_mPlotHueCheckbox_toggled( bool checked )
+{
+  mHueCurve->setVisible( checked );
+  updatePlot();
+}
+
+void QgsVectorGradientColorRampV2Dialog::on_mPlotLightnessCheckbox_toggled( bool checked )
+{
+  mLightnessCurve->setVisible( checked );
+  updatePlot();
+}
+
+void QgsVectorGradientColorRampV2Dialog::on_mPlotSaturationCheckbox_toggled( bool checked )
+{
+  mSaturationCurve->setVisible( checked );
+  updatePlot();
+}
+
+void QgsVectorGradientColorRampV2Dialog::on_mPlotAlphaCheckbox_toggled( bool checked )
+{
+  mAlphaCurve->setVisible( checked );
+  updatePlot();
+}
+
+void QgsVectorGradientColorRampV2Dialog::plotMousePress( QPointF point )
+{
+  //find closest part
+
+  double minDist = 1;
+  mCurrentPlotColorComponent = -1;
+  mCurrentPlotMarkerIndex = -1;
+  // first color
+
+  for ( int i = 0; i < mRamp->count(); ++i )
+  {
+    QColor currentCol;
+    double currentOff = 0.0;
+    if ( i == 0 )
+    {
+      currentOff = 0.0;
+      currentCol = mRamp->color1();
+    }
+    else if ( i == mRamp->count() - 1 )
+    {
+      currentOff = 1.0;
+      currentCol = mRamp->color2();
+    }
+    else
+    {
+      currentOff = mRamp->stops().at( i - 1 ).offset;
+      currentCol = mRamp->stops().at( i - 1 ).color;
+    }
+
+    double currentDist;
+    if ( mPlotHueCheckbox->isChecked() )
+    {
+      currentDist = qPow( point.x() - currentOff, 2.0 ) + qPow( point.y() - currentCol.hslHueF(), 2.0 );
+      if ( currentDist < minDist )
+      {
+        minDist = currentDist;
+        mCurrentPlotColorComponent = 0;
+        mCurrentPlotMarkerIndex = i;
+      }
+    }
+    if ( mPlotLightnessCheckbox->isChecked() )
+    {
+      currentDist = qPow( point.x() - currentOff, 2.0 ) + qPow( point.y() - currentCol.lightnessF(), 2.0 );
+      if ( currentDist < minDist )
+      {
+        minDist = currentDist;
+        mCurrentPlotColorComponent = 1;
+        mCurrentPlotMarkerIndex = i;
+      }
+    }
+    if ( mPlotSaturationCheckbox->isChecked() )
+    {
+      currentDist = qPow( point.x() - currentOff, 2.0 ) + qPow( point.y() - currentCol.hslSaturationF(), 2.0 );
+      if ( currentDist < minDist )
+      {
+        minDist = currentDist;
+        mCurrentPlotColorComponent = 2;
+        mCurrentPlotMarkerIndex = i;
+      }
+    }
+    if ( mPlotAlphaCheckbox->isChecked() )
+    {
+      currentDist = qPow( point.x() - currentOff, 2.0 ) + qPow( point.y() - currentCol.alphaF(), 2.0 );
+      if ( currentDist < minDist )
+      {
+        minDist = currentDist;;
+        mCurrentPlotColorComponent = 3;
+        mCurrentPlotMarkerIndex = i;
+      }
+    }
+  }
+
+  // watch out - selected stop index may differ if stops in editor are out of order!!!
+  if ( mCurrentPlotMarkerIndex >= 0 )
+    mStopEditor->selectStop( mCurrentPlotMarkerIndex );
+}
+
+void QgsVectorGradientColorRampV2Dialog::plotMouseRelease( QPointF )
+{
+  mCurrentPlotColorComponent = -1;
+}
+
+void QgsVectorGradientColorRampV2Dialog::plotMouseMove( QPointF point )
+{
+  QColor newColor = mStopEditor->selectedStop().color;
+
+  if ( mCurrentPlotColorComponent == 0 )
+    newColor = QColor::fromHslF( qBound( 0.0, point.y(), 1.0 ), newColor.hslSaturationF(), newColor.lightnessF(), newColor.alphaF() );
+  else if ( mCurrentPlotColorComponent == 1 )
+    newColor = QColor::fromHslF( newColor.hslHueF(), newColor.hslSaturationF(), qBound( 0.0, point.y(), 1.0 ), newColor.alphaF() );
+  else if ( mCurrentPlotColorComponent == 2 )
+    newColor = QColor::fromHslF( newColor.hslHueF(), qBound( 0.0, point.y(), 1.0 ), newColor.lightnessF(), newColor.alphaF() );
+  else if ( mCurrentPlotColorComponent == 3 )
+    newColor = QColor::fromHslF( newColor.hslHueF(), newColor.hslSaturationF(), newColor.lightnessF(), qBound( 0.0, point.y(), 1.0 ) );
+
+  mStopEditor->setSelectedStopDetails( newColor, qBound( 0.0, point.x(), 1.0 ) );
+}
+
+bool byX( QPointF p1, QPointF p2 )
+{
+  return p1.x() < p2.x();
+}
+
+void QgsVectorGradientColorRampV2Dialog::addPlotMarker( double x, double y, const QColor& color, bool isSelected )
+{
+  QColor borderColor = color.darker( 200 );
+  borderColor.setAlpha( 255 );
+
+  QColor brushColor = color;
+  brushColor.setAlpha( 255 );
+
+  QwtPlotMarker *marker = new QwtPlotMarker();
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+  marker->setSymbol( new QwtSymbol( QwtSymbol::Ellipse,  QBrush( brushColor ), QPen( borderColor, isSelected ? 2 : 1 ), QSize( 10, 10 ) ) );
+#else
+  marker->setSymbol( QwtSymbol( QwtSymbol::Ellipse,  QBrush( brushColor ), QPen( borderColor, isSelected ? 2 : 1 ), QSize( 10, 10 ) ) );
+#endif
+  marker->setValue( x, y );
+  marker->attach( mPlot );
+  marker->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+  mMarkers << marker;
+}
+
+void QgsVectorGradientColorRampV2Dialog::addMarkersForColor( double x, const QColor& color, bool isSelected )
+{
+  if ( mPlotHueCheckbox->isChecked() )
+    addPlotMarker( x, color.hslHueF(), color, isSelected && mCurrentPlotColorComponent == 0 );
+  if ( mPlotLightnessCheckbox->isChecked() )
+    addPlotMarker( x, color.lightnessF(), color, isSelected && mCurrentPlotColorComponent == 1 );
+  if ( mPlotSaturationCheckbox->isChecked() )
+    addPlotMarker( x, color.hslSaturationF(), color, isSelected && mCurrentPlotColorComponent == 2 );
+  if ( mPlotAlphaCheckbox->isChecked() )
+    addPlotMarker( x, color.alphaF(), color, isSelected && mCurrentPlotColorComponent == 3 );
+}
+
+void QgsVectorGradientColorRampV2Dialog::updatePlot()
+{
+  // remove existing markers
+  Q_FOREACH ( QwtPlotMarker* marker, mMarkers )
+  {
+    marker->detach();
+    delete marker;
+  }
+  mMarkers.clear();
+
+  QPolygonF lightnessPoints;
+  QPolygonF huePoints;
+  QPolygonF saturationPoints;
+  QPolygonF alphaPoints;
+  lightnessPoints << QPointF( 0.0, mRamp->color1().lightnessF() );
+  huePoints << QPointF( 0.0, mRamp->color1().hslHueF() );
+  saturationPoints << QPointF( 0.0, mRamp->color1().hslSaturationF() );
+  alphaPoints << QPointF( 0.0, mRamp->color1().alphaF() );
+  addMarkersForColor( 0, mRamp->color1(), mCurrentPlotMarkerIndex == 0 );
+
+  int i = 1;
+  Q_FOREACH ( const QgsGradientStop& stop, mRamp->stops() )
+  {
+    lightnessPoints << QPointF( stop.offset, stop.color.lightnessF() );
+    huePoints << QPointF( stop.offset, stop.color.hslHueF() );
+    saturationPoints << QPointF( stop.offset, stop.color.hslSaturationF() );
+    alphaPoints << QPointF( stop.offset, stop.color.alphaF() );
+
+    addMarkersForColor( stop.offset, stop.color, mCurrentPlotMarkerIndex == i );
+    i++;
+  }
+
+  //add extra intermediate points
+  for ( double p = 0.001; p < 1.0; p += 0.001 )
+  {
+    QColor c = mRamp->color( p );
+    lightnessPoints << QPointF( p, c.lightnessF() );
+    huePoints << QPointF( p, c.hslHueF() );
+    saturationPoints << QPointF( p, c.hslSaturationF() );
+    alphaPoints << QPointF( p, c.alphaF() );
+  }
+
+  lightnessPoints << QPointF( 1.0, mRamp->color2().lightnessF() );
+  huePoints << QPointF( 1.0, mRamp->color2().hslHueF() );
+  saturationPoints << QPointF( 1.0, mRamp->color2().hslSaturationF() );
+  alphaPoints << QPointF( 1.0, mRamp->color2().alphaF() );
+  addMarkersForColor( 1.0, mRamp->color2(), mCurrentPlotMarkerIndex == i );
+
+  qSort( lightnessPoints.begin(), lightnessPoints.end(), byX );
+  qSort( huePoints.begin(), huePoints.end(), byX );
+  qSort( saturationPoints.begin(), saturationPoints.end(), byX );
+  qSort( alphaPoints.begin(), alphaPoints.end(), byX );
+
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+  mLightnessCurve->setSamples( lightnessPoints );
+  mHueCurve->setSamples( huePoints );
+  mSaturationCurve->setSamples( saturationPoints );
+  mAlphaCurve->setSamples( alphaPoints );
+#else
+  mLightnessCurve->setData( lightnessPoints );
+  mHueCurve->setData( huePoints );
+  mSaturationCurve->setData( saturationPoints );
+  mAlphaCurve->setData( alphaPoints );
+#endif
+  mPlot->replot();
+}
+
+void QgsVectorGradientColorRampV2Dialog::updateRampFromStopEditor()
+{
+  *mRamp = mStopEditor->gradientRamp();
+  mPositionSpinBox->blockSignals( true );
+  mPositionSpinBox->setValue( mStopEditor->selectedStop().offset * 100 );
+  mPositionSpinBox->blockSignals( false );
+  mColorWidget->blockSignals( true );
+  mColorWidget->setColor( mStopEditor->selectedStop().color );
+  mColorWidget->blockSignals( false );
+
+  updateColorButtons();
+  updatePlot();
+}
+
 void QgsVectorGradientColorRampV2Dialog::setColor1( const QColor& color )
 {
-  mRamp->setColor1( color );
-  updatePreview();
+  mStopEditor->setColor1( color );
+  updateColorButtons();
 }
 
 void QgsVectorGradientColorRampV2Dialog::setColor2( const QColor& color )
 {
-  mRamp->setColor2( color );
-  updatePreview();
+  mStopEditor->setColor2( color );
+  updateColorButtons();
 }
 
-void QgsVectorGradientColorRampV2Dialog::setStopColor( QTreeWidgetItem* item, QColor color )
+
+/// @cond PRIVATE
+
+QgsGradientPlotEventFilter::QgsGradientPlotEventFilter( QwtPlot *plot )
+    : QObject( plot )
+    , mPlot( plot )
 {
-  QSize iconSize( 16, 16 );
-  QPixmap pixmap( iconSize );
-  pixmap.fill( QColor( 0, 0, 0, 0 ) );
-  QRect rect( 1, 1, iconSize.width() - 2, iconSize.height() - 2 );
-
-  // draw a slightly rounded rectangle
-  QPainter p;
-  p.begin( &pixmap );
-  p.setPen( Qt::NoPen );
-  p.setRenderHint( QPainter::Antialiasing );
-  p.setBrush( color );
-  p.drawRoundedRect( rect, 2, 2 );
-  p.end();
-
-  item->setIcon( 0, QIcon( pixmap ) );
-  item->setData( 0, StopColorRole, color );
-  item->setText( 0, color.name() );
+  mPlot->canvas()->installEventFilter( this );
 }
 
-void QgsVectorGradientColorRampV2Dialog::setItemStopColor( const QColor& newColor )
+bool QgsGradientPlotEventFilter::eventFilter( QObject *object, QEvent *event )
 {
-  if ( mCurrentItem )
+  if ( !mPlot->isEnabled() )
+    return QObject::eventFilter( object, event );
+
+  switch ( event->type() )
   {
-    setStopColor( mCurrentItem, newColor );
-    updatePreview();
-  }
-}
-
-void QgsVectorGradientColorRampV2Dialog::stopDoubleClicked( QTreeWidgetItem* item, int column )
-{
-  if ( column == 0 )
-  {
-    QColor color;
-
-    QSettings settings;
-    //using native color dialogs?
-    bool useNative = settings.value( "/qgis/native_color_dialogs", false ).toBool();
-    if ( settings.value( "/qgis/live_color_dialogs", false ).toBool() )
+    case QEvent::MouseButtonPress:
     {
-      mCurrentItem = item;
-      if ( useNative )
+      const QMouseEvent* mouseEvent = static_cast<QMouseEvent* >( event );
+      if ( mouseEvent->button() == Qt::LeftButton )
       {
-        color = QgsColorDialog::getLiveColor(
-                  item->data( 0, StopColorRole ).value<QColor>(),
-                  this, SLOT( setItemStopColor( const QColor& ) ),
-                  this, tr( "Edit Stop Color" ), QColorDialog::ShowAlphaChannel );
+        emit mousePress( mapPoint( mouseEvent->pos() ) );
       }
-      else
-      {
-        color = QgsColorDialogV2::getLiveColor(
-                  item->data( 0, StopColorRole ).value<QColor>(), this, SLOT( setItemStopColor( const QColor& ) ),
-                  this, tr( "Edit Stop Color" ), true );
-      }
-      mCurrentItem = 0;
+      break;
     }
-    else
+    case QEvent::MouseMove:
     {
-      color = QgsColorDialogV2::getColor( item->data( 0, StopColorRole ).value<QColor>(), this, tr( "Edit Stop Color" ), true );
+      const QMouseEvent* mouseEvent = static_cast<QMouseEvent* >( event );
+      if ( mouseEvent->buttons() & Qt::LeftButton )
+      {
+        // only emit when button pressed
+        emit mouseMove( mapPoint( mouseEvent->pos() ) );
+      }
+      break;
     }
-    if ( !color.isValid() )
-      return;
-    setStopColor( item, color );
-
-    updatePreview();
+    case QEvent::MouseButtonRelease:
+    {
+      const QMouseEvent* mouseEvent = static_cast<QMouseEvent* >( event );
+      if ( mouseEvent->button() == Qt::LeftButton )
+      {
+        emit mouseRelease( mapPoint( mouseEvent->pos() ) );
+      }
+      break;
+    }
+    default:
+      break;
   }
-  else
-  {
-    bool ok;
-    double key = item->data( 0, StopOffsetRole ).toDouble();
-    // allow for floating-point values
-    double val = key * 100;
-    val = QInputDialog::getDouble( this, tr( "Offset of the stop" ),
-                                   tr( "Please enter offset in percents (%) of the new stop" ),
-                                   val, 0, 100, 2, &ok );
-    if ( !ok )
-      return;
 
-    double newkey = val / 100.0;
-    item->setText( 1, ( val < 10 ) ? '0' + QString::number( val ) : QString::number( val ) );
-    item->setData( 0, StopOffsetRole, newkey );
-
-    updatePreview();
-  }
+  return QObject::eventFilter( object, event );
 }
 
-void QgsVectorGradientColorRampV2Dialog::addStop()
+QPointF QgsGradientPlotEventFilter::mapPoint( QPointF point ) const
 {
-// Native Mac dialog works only for Qt Carbon
-// Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
-// Qt 4.7 Mac Cocoa bug: calling QInputDialog::getInt after QColorDialog::getColor will freeze app
-// workaround: call QColorDialog::getColor below instead of here,
-// but not needed at this time because of the other Qt bug
-// FIXME need to also check max QT_VERSION when Qt bug(s) fixed
-#ifndef Q_OS_MAC
-  QColor color = QgsColorDialogV2::getColor( QColor(), this, tr( "Add Color Stop" ), true );
+  if ( !mPlot )
+    return QPointF();
 
-  if ( !color.isValid() )
-    return;
-  activateWindow();
-#endif
-
-  bool ok;
-  double val = 50.0;
-  val = QInputDialog::getDouble( this, tr( "Offset of the stop" ),
-                                 tr( "Please enter offset in percents (%) of the new stop" ),
-                                 val, 0, 100, 2, &ok );
-  if ( !ok )
-    return;
-  activateWindow();
-
-  double key = val / 100.0;
-  QStringList lst;
-  lst << "." << QString(( val < 10 ) ? '0' + QString::number( val ) : QString::number( val ) );
-
-#ifdef Q_OS_MAC
-  QColor color = QgsColorDialogV2::getColor( QColor(), this, tr( "Add Color Stop" ), true );
-
-  if ( !color.isValid() )
-    return;
-  activateWindow();
-#endif
-
-  QTreeWidgetItem* item = new QTreeWidgetItem( lst );
-
-  setStopColor( item, color );
-  item->setData( 0, StopOffsetRole, key );
-
-  treeStops->addTopLevelItem( item );
-
-  treeStops->resizeColumnToContents( 0 );
-  treeStops->setColumnWidth( 0, treeStops->columnWidth( 0 ) + 20 );
-
-  updatePreview();
+  return QPointF( mPlot->canvasMap( QwtPlot::xBottom ).invTransform( point.x() ),
+                  mPlot->canvasMap( QwtPlot::yLeft ).invTransform( point.y() ) );
 }
 
-void QgsVectorGradientColorRampV2Dialog::removeStop()
-{
-  QTreeWidgetItem* item = treeStops->currentItem();
-  if ( !item )
-    return;
-  int index = treeStops->indexOfTopLevelItem( item );
-  treeStops->takeTopLevelItem( index );
-
-  updatePreview();
-}
-
-void QgsVectorGradientColorRampV2Dialog::toggledStops( bool on )
-{
-  Q_UNUSED( on );
-  updatePreview();
-}
+///@endcond

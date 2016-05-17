@@ -11,7 +11,7 @@ class QgsRasterResampleFilter : QgsRasterInterface
     QgsRasterResampleFilter( QgsRasterInterface *input = 0 );
     ~QgsRasterResampleFilter();
 
-    QgsRasterInterface * clone() const /Factory/;
+    virtual QgsRasterResampleFilter * clone() const /Factory/;
 
     int bandCount() const;
 

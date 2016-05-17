@@ -22,8 +22,8 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import QRegExp
-from qgis.core import QgsCredentials
+from qgis.PyQt.QtCore import QRegExp
+from qgis.core import QgsCredentials, QgsDataSourceURI
 
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
@@ -48,15 +48,23 @@ class PostGisDBConnector(DBConnector):
         self.host = uri.host() or os.environ.get('PGHOST')
         self.port = uri.port() or os.environ.get('PGPORT')
 
-        username = uri.username() or os.environ.get('PGUSER') or os.environ.get('USER')
+        username = uri.username() or os.environ.get('PGUSER')
         password = uri.password() or os.environ.get('PGPASSWORD')
 
+        # Do not get db and user names from the env if service is used
+        if uri.service() is None:
+            if username is None:
+                username = os.environ.get('USER')
+            self.dbname = uri.database() or os.environ.get('PGDATABASE') or username
+            uri.setDatabase(self.dbname)
+
+        expandedConnInfo = self._connectionInfo()
         try:
-            self.connection = psycopg2.connect(self._connectionInfo().encode('utf-8'))
+            self.connection = psycopg2.connect(expandedConnInfo.encode('utf-8'))
         except self.connection_error_types() as e:
             err = unicode(e)
             uri = self.uri()
-            conninfo = uri.connectionInfo()
+            conninfo = uri.connectionInfo(False)
 
             for i in range(3):
                 (ok, username, password) = QgsCredentials.instance().get(conninfo, username, password, err)
@@ -69,14 +77,51 @@ class PostGisDBConnector(DBConnector):
                 if password:
                     uri.setPassword(password)
 
+                newExpandedConnInfo = uri.connectionInfo(True)
                 try:
-                    self.connection = psycopg2.connect(uri.connectionInfo().encode('utf-8'))
+                    self.connection = psycopg2.connect(newExpandedConnInfo.encode('utf-8'))
                     QgsCredentials.instance().put(conninfo, username, password)
                 except self.connection_error_types() as e:
                     if i == 2:
                         raise ConnectionError(e)
 
                     err = unicode(e)
+                finally:
+                    # remove certs (if any) of the expanded connectionInfo
+                    expandedUri = QgsDataSourceURI(newExpandedConnInfo)
+
+                    sslCertFile = expandedUri.param("sslcert")
+                    if sslCertFile:
+                        sslCertFile = sslCertFile.replace("'", "")
+                        os.remove(sslCertFile)
+
+                    sslKeyFile = expandedUri.param("sslkey")
+                    if sslKeyFile:
+                        sslKeyFile = sslKeyFile.replace("'", "")
+                        os.remove(sslKeyFile)
+
+                    sslCAFile = expandedUri.param("sslrootcert")
+                    if sslCAFile:
+                        sslCAFile = sslCAFile.replace("'", "")
+                        os.remove(sslCAFile)
+        finally:
+            # remove certs (if any) of the expanded connectionInfo
+            expandedUri = QgsDataSourceURI(expandedConnInfo)
+
+            sslCertFile = expandedUri.param("sslcert")
+            if sslCertFile:
+                sslCertFile = sslCertFile.replace("'", "")
+                os.remove(sslCertFile)
+
+            sslKeyFile = expandedUri.param("sslkey")
+            if sslKeyFile:
+                sslKeyFile = sslKeyFile.replace("'", "")
+                os.remove(sslKeyFile)
+
+            sslCAFile = expandedUri.param("sslrootcert")
+            if sslCAFile:
+                sslCAFile = sslCAFile.replace("'", "")
+                os.remove(sslCAFile)
 
         self.connection.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
@@ -90,7 +135,7 @@ class PostGisDBConnector(DBConnector):
         self._checkRasterColumnsTable()
 
     def _connectionInfo(self):
-        return unicode(self.uri().connectionInfo())
+        return unicode(self.uri().connectionInfo(True))
 
     def _checkSpatial(self):
         """ check whether postgis_version is present in catalog """
@@ -270,7 +315,7 @@ class PostGisDBConnector(DBConnector):
 
         # get all tables and views
         sql = u"""SELECT
-                                                cla.relname, nsp.nspname, cla.relkind = 'v' OR cla.relkind = 'm',
+                                                cla.relname, nsp.nspname, cla.relkind,
                                                 pg_get_userbyid(relowner), reltuples, relpages,
                                                 pg_catalog.obj_description(cla.oid)
                                         FROM pg_class AS cla
@@ -326,7 +371,7 @@ class PostGisDBConnector(DBConnector):
 
         # discovery of all tables and whether they contain a geometry column
         sql = u"""SELECT
-                                                cla.relname, nsp.nspname, cla.relkind = 'v' OR cla.relkind = 'm',
+                                                cla.relname, nsp.nspname, cla.relkind,
                                                 pg_get_userbyid(relowner), cla.reltuples, cla.relpages,
                                                 pg_catalog.obj_description(cla.oid),
                                                 """ + geometry_fields_select + """
@@ -398,7 +443,7 @@ class PostGisDBConnector(DBConnector):
 
         # discovery of all tables and whether they contain a raster column
         sql = u"""SELECT
-                                                cla.relname, nsp.nspname, cla.relkind = 'v' OR cla.relkind = 'm',
+                                                cla.relname, nsp.nspname, cla.relkind,
                                                 pg_get_userbyid(relowner), cla.reltuples, cla.relpages,
                                                 pg_catalog.obj_description(cla.oid),
                                                 """ + raster_fields_select + """
@@ -571,7 +616,7 @@ class PostGisDBConnector(DBConnector):
 
         try:
             c = self._execute(None, sql)
-        except DbError as e:  # no statistics for the current table
+        except DbError:  # No statistics for the current table
             return
         res = self._fetchone(c)
         self._close_cursor(c)
@@ -599,7 +644,7 @@ class PostGisDBConnector(DBConnector):
 
         try:
             c = self._execute(None, "SELECT srtext FROM spatial_ref_sys WHERE srid = '%d'" % srid)
-        except DbError as e:
+        except DbError:
             return
         sr = self._fetchone(c)
         self._close_cursor(c)
@@ -753,8 +798,8 @@ class PostGisDBConnector(DBConnector):
     def createSpatialView(self, view, query):
         self.createView(view, query)
 
-    def deleteView(self, view):
-        sql = u"DROP VIEW %s" % self.quoteId(view)
+    def deleteView(self, view, isMaterialized=False):
+        sql = u"DROP %s VIEW %s" % ('MATERIALIZED' if isMaterialized else '', self.quoteId(view))
         self._execute_and_commit(sql)
 
     def renameView(self, view, new_name):
@@ -783,6 +828,12 @@ class PostGisDBConnector(DBConnector):
     def runVacuumAnalyze(self, table):
         """ run vacuum analyze on a table """
         sql = u"VACUUM ANALYZE %s" % self.quoteId(table)
+        self._execute(None, sql)
+        self._commit()
+
+    def runRefreshMaterializedView(self, table):
+        """ run refresh materialized view on a table """
+        sql = u"REFRESH MATERIALIZED VIEW %s" % self.quoteId(table)
         self._execute(None, sql)
         self._commit()
 

@@ -17,7 +17,7 @@
 #include "qgsapplication.h"
 #include <QFile>
 
-QString iconPath( QString iconFile )
+QString iconPath( const QString& iconFile )
 {
   // try active theme
   QString path = QgsApplication::activeThemePath();
@@ -28,7 +28,7 @@ QString iconPath( QString iconFile )
   return QgsApplication::defaultThemePath() + iconFile;
 }
 
-QgsDashSpaceDialog::QgsDashSpaceDialog( const QVector<qreal>& v, QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f )
+QgsDashSpaceDialog::QgsDashSpaceDialog( const QVector<qreal>& v, QWidget* parent, const Qt::WindowFlags& f ): QDialog( parent, f )
 {
   setupUi( this );
 

@@ -69,7 +69,7 @@ void QgsSpinBox::paintEvent( QPaintEvent *event )
   QSpinBox::paintEvent( event );
 }
 
-void QgsSpinBox::changed( const int& value )
+void QgsSpinBox::changed( int value )
 {
   mClearButton->setVisible( shouldShowClearForValue( value ) );
 }
@@ -79,7 +79,7 @@ void QgsSpinBox::clear()
   setValue( clearValue() );
 }
 
-void QgsSpinBox::setClearValue( int customValue, QString specialValueText )
+void QgsSpinBox::setClearValue( int customValue, const QString& specialValueText )
 {
   mClearValueMode = CustomValue;
   mCustomClearValue = customValue;
@@ -93,7 +93,7 @@ void QgsSpinBox::setClearValue( int customValue, QString specialValueText )
   }
 }
 
-void QgsSpinBox::setClearValueMode( QgsSpinBox::ClearValueMode mode, QString specialValueText )
+void QgsSpinBox::setClearValueMode( QgsSpinBox::ClearValueMode mode, const QString& specialValueText )
 {
   mClearValueMode = mode;
   mCustomClearValue = 0;
@@ -163,18 +163,18 @@ QString QgsSpinBox::stripped( const QString &originalText ) const
   //adapted from QAbstractSpinBoxPrivate::stripped
   //trims whitespace, prefix and suffix from spin box text
   QString text = originalText;
-  if ( specialValueText().size() == 0 || text != specialValueText() )
+  if ( specialValueText().isEmpty() || text != specialValueText() )
   {
     int from = 0;
     int size = text.size();
     bool changed = false;
-    if ( prefix().size() && text.startsWith( prefix() ) )
+    if ( !prefix().isEmpty() && text.startsWith( prefix() ) )
     {
       from += prefix().size();
       size -= from;
       changed = true;
     }
-    if ( suffix().size() && text.endsWith( suffix() ) )
+    if ( !suffix().isEmpty() && text.endsWith( suffix() ) )
     {
       size -= suffix().size();
       changed = true;

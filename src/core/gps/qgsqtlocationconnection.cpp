@@ -84,13 +84,13 @@ void QgsQtLocationConnection::parseData()
       //http://developer.android.com/reference/android/location/GpsStatus.NmeaListener.html
       //http://doc.qt.nokia.com/qtmobility-1.1/qnmeapositioninfosource.html
       //into QtLocation and subclass QgsNMEAConnection directly?
-      mLastGPSInformation.pdop;     //< Dilution of precision
-      mLastGPSInformation.hdop;     //< Horizontal dilution of precision
-      mLastGPSInformation.vdop;     //< Vertical dilution of precision
+      //mLastGPSInformation.pdop;     //< Dilution of precision
+      //mLastGPSInformation.hdop;     //< Horizontal dilution of precision
+      //mLastGPSInformation.vdop;     //< Vertical dilution of precision
 
-      mLastGPSInformation.fixMode;  //< Mode (M = Manual, forced to operate in 2D or 3D; A = Automatic, 3D/2D)
-      mLastGPSInformation.quality;  //< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive)
-      mLastGPSInformation.status;   //< Status (A = active or V = void)
+      //mLastGPSInformation.fixMode;  //< Mode (M = Manual, forced to operate in 2D or 3D; A = Automatic, 3D/2D)
+      //mLastGPSInformation.quality;  //< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive)
+      //mLastGPSInformation.status;   //< Status (A = active or V = void)
 
       emit stateChanged( mLastGPSInformation );
       QgsDebugMsg( "Valid QGeoPositionInfo, positionUpdated" );

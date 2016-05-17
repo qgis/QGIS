@@ -26,9 +26,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 
-displayNames = {}
 classification = {}
 
 
@@ -49,28 +48,8 @@ def loadClassification():
     lines.close()
 
 
-def loadDisplayNames():
-    global displayNames
-    if not os.path.isfile(displayNamesFile()):
-        return
-    lines = open(displayNamesFile())
-    line = lines.readline().strip('\n')
-    while line != '':
-        tokens = line.split(',')
-        try:
-            displayNames[tokens[0]] = tokens[1]
-        except:
-            raise Exception(line)
-        line = lines.readline().strip('\n')
-    lines.close()
-
-
 def classificationFile():
     return os.path.join(os.path.dirname(__file__), 'algclasssification.txt')
-
-
-def displayNamesFile():
-    return os.path.join(os.path.dirname(__file__), 'algnames.txt')
 
 
 def getClassificationEn(alg):
@@ -94,4 +73,8 @@ def getDisplayNameEn(alg):
 
 
 def getDisplayName(alg):
-    return alg.i18n_name if alg.i18n_name else "[" + alg.name + "]"
+    return alg.i18n_name or alg.name
+
+
+def getDisplayNames(alg):
+    return alg.name, alg.i18n_name

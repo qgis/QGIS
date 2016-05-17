@@ -26,8 +26,8 @@
 
 QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
     : QTreeView( parent )
-    , mDefaultActions( 0 )
-    , mMenuProvider( 0 )
+    , mDefaultActions( nullptr )
+    , mMenuProvider( nullptr )
 {
   setHeaderHidden( true );
 
@@ -38,6 +38,7 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   setExpandsOnDoubleClick( false ); // normally used for other actions
 
   setSelectionMode( ExtendedSelection );
+  setDefaultDropAction( Qt::MoveAction );
 
   connect( this, SIGNAL( collapsed( QModelIndex ) ), this, SLOT( updateExpandedStateToNode( QModelIndex ) ) );
   connect( this, SIGNAL( expanded( QModelIndex ) ), this, SLOT( updateExpandedStateToNode( QModelIndex ) ) );
@@ -122,7 +123,7 @@ void QgsLayerTreeView::contextMenuEvent( QContextMenuEvent *event )
 }
 
 
-void QgsLayerTreeView::modelRowsInserted( QModelIndex index, int start, int end )
+void QgsLayerTreeView::modelRowsInserted( const QModelIndex& index, int start, int end )
 {
   QgsLayerTreeNode* parentNode = layerTreeModel()->index2node( index );
   if ( !parentNode )
@@ -160,7 +161,7 @@ void QgsLayerTreeView::modelRowsRemoved()
   onCurrentChanged();
 }
 
-void QgsLayerTreeView::updateExpandedStateToNode( QModelIndex index )
+void QgsLayerTreeView::updateExpandedStateToNode( const QModelIndex& index )
 {
   if ( QgsLayerTreeNode* node = layerTreeModel()->index2node( index ) )
   {
@@ -243,7 +244,7 @@ QgsMapLayer* QgsLayerTreeView::layerForIndex( const QModelIndex& index ) const
       return legendNode->layerNode()->layer();
   }
 
-  return 0;
+  return nullptr;
 }
 
 QgsLayerTreeNode* QgsLayerTreeView::currentNode() const
@@ -270,7 +271,12 @@ QgsLayerTreeGroup* QgsLayerTreeView::currentGroupNode() const
       return QgsLayerTree::toGroup( parent->parent() );
   }
 
-  return 0;
+  return nullptr;
+}
+
+QgsLayerTreeModelLegendNode* QgsLayerTreeView::currentLegendNode() const
+{
+  return layerTreeModel()->index2legendNode( selectionModel()->currentIndex() );
 }
 
 QList<QgsLayerTreeNode*> QgsLayerTreeView::selectedNodes( bool skipInternal ) const

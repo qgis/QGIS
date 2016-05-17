@@ -182,7 +182,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * @see colorType
      * @see setColor
      * @see setRamp
-    */
+     */
     void setColorType( GlowColorType colorType ) { mColorType = colorType; }
 
     /** Returns the color mode used for the glow. The glow can either be drawn using a QgsVectorColorRampV2
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * @see setColorType
      * @see color
      * @see ramp
-    */
+     */
     GlowColorType colorType() const { return mColorType; }
 
     QgsGlowEffect& operator=( const QgsGlowEffect& rhs );
@@ -243,7 +243,7 @@ class CORE_EXPORT QgsOuterGlowEffect : public QgsGlowEffect
     virtual ~QgsOuterGlowEffect();
 
     virtual QString type() const override { return QString( "outerGlow" ); }
-    virtual QgsPaintEffect* clone() const override;
+    virtual QgsOuterGlowEffect* clone() const override;
 
   protected:
 
@@ -274,7 +274,7 @@ class CORE_EXPORT QgsInnerGlowEffect : public QgsGlowEffect
     virtual ~QgsInnerGlowEffect();
 
     virtual QString type() const override { return QString( "innerGlow" ); }
-    virtual QgsPaintEffect* clone() const override;
+    virtual QgsInnerGlowEffect* clone() const override;
 
   protected:
 

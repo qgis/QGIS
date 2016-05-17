@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4 import uic
-from PyQt4.QtGui import QCheckBox
+from qgis.PyQt import uic
+from qgis.PyQt.QtWidgets import QCheckBox
 from qgis.core import QGis, QgsVectorLayer
 
 from processing.core.parameters import ParameterGeometryPredicate
@@ -82,7 +82,7 @@ class GeometryPredicateSelectionPanel(BASE, WIDGET):
 
     def updatePredicates(self):
         if (isinstance(self.leftLayer, QgsVectorLayer)
-           and isinstance(self.rightLayer, QgsVectorLayer)):
+                and isinstance(self.rightLayer, QgsVectorLayer)):
             leftType = self.leftLayer.geometryType()
             rightType = self.rightLayer.geometryType()
             unusablePredicates = self.unusablePredicates[leftType][rightType]
@@ -115,7 +115,8 @@ class GeometryPredicateSelectionPanel(BASE, WIDGET):
         return values
 
     def setValue(self, values):
-        for predicate in ParameterGeometryPredicate.predicates:
-            widget = self.getWidget(predicate)
-            widget.setChecked(predicate in values)
+        if values:
+            for predicate in ParameterGeometryPredicate.predicates:
+                widget = self.getWidget(predicate)
+                widget.setChecked(predicate in values)
         return True

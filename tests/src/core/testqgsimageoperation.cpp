@@ -87,7 +87,7 @@ class TestQgsImageOperation : public QObject
     QString mSampleImage;
     QString mTransparentSampleImage;
 
-    bool imageCheck( QString testName, QImage &image, int mismatchCount );
+    bool imageCheck( const QString& testName, QImage &image, int mismatchCount );
 };
 
 void TestQgsImageOperation::initTestCase()
@@ -335,7 +335,7 @@ void TestQgsImageOperation::distanceTransformMisc()
   QImage image( mSampleImage );
   QgsImageOperation::DistanceTransformProperties props;
   props.useMaxDistance = true;
-  props.ramp = NULL;
+  props.ramp = nullptr;
   props.shadeExterior = false;
   QgsImageOperation::distanceTransform( image, props );
   bool result = imageCheck( QString( "imageop_nochange" ), image, 0 );
@@ -450,7 +450,7 @@ void TestQgsImageOperation::flipVertical()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsImageOperation::imageCheck( QString testName, QImage &image, int mismatchCount )
+bool TestQgsImageOperation::imageCheck( const QString& testName, QImage &image, int mismatchCount )
 {
   //draw background
   QImage imageWithBackground( image.width(), image.height(), QImage::Format_RGB32 );
@@ -460,7 +460,7 @@ bool TestQgsImageOperation::imageCheck( QString testName, QImage &image, int mis
   painter.end();
 
   mReport += "<h2>" + testName + "</h2>\n";
-  QString tempDir = QDir::tempPath() + "/";
+  QString tempDir = QDir::tempPath() + '/';
   QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );
   QgsRenderChecker checker;

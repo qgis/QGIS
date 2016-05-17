@@ -23,7 +23,7 @@ class QgsVersionInfo : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsVersionInfo( QObject *parent = 0 );
+    explicit QgsVersionInfo( QObject *parent = nullptr );
 
   public slots:
     /**

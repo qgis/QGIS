@@ -14,18 +14,22 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtCore
 import sys
 import os
 import glob
 import re
 import time
-# import locale
 import shutil
 import subprocess
 import tempfile
+import errno
+import locale
 
-from utilities import unittest, unitTestDataPath
+from qgis.testing import unittest
+from utilities import unitTestDataPath
+from builtins import str
+
+print('CTEST_FULL_OUTPUT')
 
 TEST_DATA_DIR = unitTestDataPath()
 
@@ -37,7 +41,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.TMP_DIR = tempfile.mkdtemp()
-        # print 'TMP_DIR: ' + cls.TMP_DIR
+        # print('TMP_DIR: ' + cls.TMP_DIR)
         # subprocess.call(['open', cls.TMP_DIR])
 
     @classmethod
@@ -47,7 +51,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
     # TODO: refactor parameters to **kwargs to handle all startup combinations
     def doTestStartup(self, option='', testDir='', testFile='',
                       loadPlugins=False, customization=False,
-                      timeOut=15, env=None):
+                      timeOut=270, env=None, additionalArguments=[]):
         """Run QGIS with the given option. Wait for testFile to be created.
         If time runs out, fail.
         """
@@ -55,7 +59,6 @@ class TestPyQgsAppStartup(unittest.TestCase):
 
         # from unicode to local
         if testDir:
-            testDir = str(QtCore.QString(testDir).toLocal8Bit())
             if not os.path.exists(testDir):
                 os.mkdir(testDir)
             myTestFile = os.path.join(testDir, testFile)
@@ -74,21 +77,25 @@ class TestPyQgsAppStartup(unittest.TestCase):
         if env is not None:
             myenv.update(env)
 
-        p = subprocess.Popen(
-            [QGIS_BIN, "--nologo", plugins, customize, option, testDir],
-            env=myenv)
+        call = [QGIS_BIN, "--nologo", plugins, customize, option, testDir] + additionalArguments
+        p = subprocess.Popen(call, env=myenv)
 
         s = 0
         ok = True
         while not os.path.exists(myTestFile):
+            p.poll()
+            if p.returncode is not None:
+                raise Exception('Return code: {}, Call: "{}", Env: {}'.format(p.returncode, ' '.join(call), env))
             time.sleep(1)
             s += 1
             if s > timeOut:
-                ok = False
-                break
+                raise Exception('Timed out waiting for application start, Call: "{}", Env: {}'.format(' '.join(call), env))
 
-        p.terminate()
-        return ok
+        try:
+            p.terminate()
+        except OSError as e:
+            if e.errno != errno.ESRCH:
+                raise e
 
     def testOptionsPath(self):
         subdir = 'QGIS'  # Linux
@@ -96,23 +103,24 @@ class TestPyQgsAppStartup(unittest.TestCase):
             subdir = 'qgis.org'
         ini = os.path.join(subdir, 'QGIS2.ini')
         for p in ['test_opts', 'test opts', u'test_optsé€']:
-            assert self.doTestStartup(option="--optionspath",
-                                      testDir=os.path.join(self.TMP_DIR, p),
-                                      testFile=ini,
-                                      timeOut=5), "options path %s" % p
+            self.doTestStartup(option="--optionspath",
+                               testDir=os.path.join(self.TMP_DIR, p),
+                               testFile=ini,
+                               timeOut=270)
 
     def testConfigPath(self):
         for p in ['test_config', 'test config', u'test_configé€']:
-            assert self.doTestStartup(option="--configpath",
-                                      testDir=os.path.join(self.TMP_DIR, p),
-                                      testFile="qgis.db",
-                                      timeOut=15), "config path %s" % p
+            self.doTestStartup(option="--configpath",
+                               testDir=os.path.join(self.TMP_DIR, p),
+                               testFile="qgis.db",
+                               timeOut=270)
 
-    @unittest.expectedFailure
     def testPluginPath(self):
         for t in ['test_plugins', 'test plugins', u'test_pluginsé€']:
 
             # get a unicode test dir
+            if sys.version_info.major == 2:
+                t = t.encode(locale.getpreferredencoding())
             testDir = os.path.join(self.TMP_DIR, t)
 
             # copy from testdata
@@ -126,34 +134,48 @@ class TestPyQgsAppStartup(unittest.TestCase):
             # we use here a minimal plugin that writes to 'plugin_started.txt'
             # when it is started. if QGIS_PLUGINPATH is correctly parsed, this
             # plugin is executed and the file is created
-            assert self.doTestStartup(
+            self.doTestStartup(
                 option="--optionspath",
                 testDir=testDir,
                 testFile="plugin_started.txt",
-                timeOut=15,
+                timeOut=270,
                 loadPlugins=True,
-                env={'QGIS_PLUGINPATH':
-                         str(QtCore.QString(testDir).toLocal8Bit())})
+                env={'QGIS_PLUGINPATH': testDir})
 
     def testPyQgisStartupEnvVar(self):
         # verify PYQGIS_STARTUP env variable file is run by embedded interpreter
         # create a temp python module that writes out test file
         testfile = 'pyqgis_startup.txt'
-        testfilepath = os.path.join(self.TMP_DIR, testfile)
+        testfilepath = os.path.join(self.TMP_DIR, testfile).replace('\\', '/')
         testcode = [
-            "f = open('{0}', 'w')\n".format(testfilepath.replace('\\', '\\\\')),
+            "f = open('{0}', 'w')\n".format(testfilepath),
             "f.write('This is a test')\n",
             "f.close()\n"
         ]
-        testmod = os.path.join(self.TMP_DIR, 'pyqgis_startup.py')
+        testmod = os.path.join(self.TMP_DIR, 'pyqgis_startup.py').replace('\\', '/')
         f = open(testmod, 'w')
         f.writelines(testcode)
         f.close()
-        msg = 'Failed to create test file from executing PYQGIS_STARTUP file'
-        assert self.doTestStartup(
+        self.doTestStartup(
             testFile=testfilepath,
-            timeOut=15,
-            env={'PYQGIS_STARTUP': testmod}), msg
+            timeOut=270,
+            env={'PYQGIS_STARTUP': testmod})
+
+    def testOptionsAsFiles(self):
+        # verify QGIS accepts filenames that match options after the special option '--'
+        # '--help' should return immediatly (after displaying the usage hints)
+        # '-- --help' should not exit but try (and probably fail) to load a layer called '--help'
+        with self.assertRaises(Exception):
+            self.doTestStartup(option="--configpath",
+                               testDir=os.path.join(self.TMP_DIR, 'test_optionsAsFiles'),
+                               testFile="qgis.db",
+                               timeOut=270,
+                               additionalArguments=['--help'])
+        self.doTestStartup(option="--configpath",
+                           testDir=os.path.join(self.TMP_DIR, 'test_optionsAsFiles'),
+                           testFile="qgis.db",
+                           timeOut=270,
+                           additionalArguments=['--', '--help'])
 
 
 if __name__ == '__main__':
@@ -184,6 +206,6 @@ if __name__ == '__main__':
             if found:
                 break
 
-    print '\nQGIS_BIN: ', QGIS_BIN
+    print('\nQGIS_BIN: {}'.format(QGIS_BIN))
     assert QGIS_BIN, 'QGIS binary not found, skipping test suite'
     unittest.main()

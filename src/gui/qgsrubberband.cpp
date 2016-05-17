@@ -61,7 +61,7 @@ QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon )
 }
 
 QgsRubberBand::QgsRubberBand()
-    : QgsMapCanvasItem( 0 )
+    : QgsMapCanvasItem( nullptr )
     , mIconSize( 5 )
     , mIconType( ICON_CIRCLE )
     , mGeometryType( QGis::Polygon )
@@ -169,8 +169,8 @@ void QgsRubberBand::addPoint( const QgsPoint & p, bool doUpdate /* = true */, in
     mPoints.push_back( QList<QgsPoint>() << p );
   }
 
-  if ( mPoints[geometryIndex].size() == 2 &&
-       mPoints[geometryIndex][0] == mPoints[geometryIndex][1] )
+  if ( mPoints.at( geometryIndex ).size() == 2 &&
+       mPoints.at( geometryIndex ).at( 0 ) == mPoints.at( geometryIndex ).at( 1 ) )
   {
     mPoints[geometryIndex].last() = p;
   }
@@ -198,12 +198,12 @@ void QgsRubberBand::removePoint( int index, bool doUpdate/* = true*/, int geomet
   }
 
 
-  if ( mPoints[geometryIndex].size() > 0 )
+  if ( !mPoints[geometryIndex].isEmpty() )
   {
     // negative index removes from end, eg -1 removes last one
     if ( index < 0 )
     {
-      index = mPoints[geometryIndex].size() + index;
+      index = mPoints.at( geometryIndex ).size() + index;
     }
     mPoints[geometryIndex].removeAt( index );
   }
@@ -351,7 +351,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer 
       {
         QgsPolyline line = mline[i];
 
-        if ( line.size() == 0 )
+        if ( line.isEmpty() )
         {
           --idx;
         }
@@ -424,7 +424,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer 
   update();
 }
 
-void QgsRubberBand::setToCanvasRectangle( const QRect& rect )
+void QgsRubberBand::setToCanvasRectangle( QRect rect )
 {
   if ( !mMapCanvas )
   {
@@ -449,7 +449,7 @@ void QgsRubberBand::setToCanvasRectangle( const QRect& rect )
   */
 void QgsRubberBand::paint( QPainter* p )
 {
-  if ( mPoints.size() > 0 )
+  if ( !mPoints.isEmpty() )
   {
     p->setBrush( mBrush );
     p->setPen( mPen );
@@ -474,7 +474,7 @@ void QgsRubberBand::paint( QPainter* p )
 
         case QGis::Point:
         {
-          Q_FOREACH ( const QPointF& pt, pts )
+          Q_FOREACH ( QPointF pt, pts )
           {
             double x = pt.x();
             double y = pt.y();
@@ -571,7 +571,7 @@ void QgsRubberBand::updateRect()
   setRect( rect );
 }
 
-void QgsRubberBand::updatePosition( )
+void QgsRubberBand::updatePosition()
 {
   // re-compute rectangle
   // See http://hub.qgis.org/issues/12392
@@ -619,12 +619,12 @@ const QgsPoint *QgsRubberBand::getPoint( int i, int j ) const
   if ( i < mPoints.size() && j < mPoints[i].size() )
     return &mPoints[i][j];
   else
-    return 0;
+    return nullptr;
 }
 
 QgsGeometry *QgsRubberBand::asGeometry()
 {
-  QgsGeometry *geom = NULL;
+  QgsGeometry *geom = nullptr;
 
   switch ( mGeometryType )
   {
@@ -656,7 +656,7 @@ QgsGeometry *QgsRubberBand::asGeometry()
     case QGis::Line:
     default:
     {
-      if ( mPoints.size() > 0 )
+      if ( !mPoints.isEmpty() )
       {
         if ( mPoints.size() > 1 )
         {
@@ -670,7 +670,7 @@ QgsGeometry *QgsRubberBand::asGeometry()
         }
         else
         {
-          geom = QgsGeometry::fromPolyline( getPolyline( mPoints[0] ) );
+          geom = QgsGeometry::fromPolyline( getPolyline( mPoints.at( 0 ) ) );
         }
       }
       break;

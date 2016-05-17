@@ -16,11 +16,15 @@
 #include <QtTest/QtTest>
 #include <QObject>
 #include "qgsgeometryutils.h"
+#include "qgslinestringv2.h"
+#include "qgspolygonv2.h"
+#include "qgsmultipolygonv2.h"
 
 class TestQgsGeometryUtils: public QObject
 {
     Q_OBJECT
   private slots:
+    void testExtractLinestrings();
     void testCircleClockwise_data();
     void testCircleClockwise();
     void testAngleOnCircle_data();
@@ -31,13 +35,42 @@ class TestQgsGeometryUtils: public QObject
     void testSegmentMidPoint();
     void testCircleLength_data();
     void testCircleLength();
+    void testNormalizedAngle_data();
+    void testNormalizedAngle();
     void testLineAngle_data();
     void testLineAngle();
     void testLinePerpendicularAngle_data();
     void testLinePerpendicularAngle();
     void testAverageAngle_data();
     void testAverageAngle();
+    void testDistanceToVertex();
 };
+
+
+void TestQgsGeometryUtils::testExtractLinestrings()
+{
+  QgsLineStringV2* outerRing1 = new QgsLineStringV2();
+  outerRing1->setPoints( QList<QgsPointV2>() << QgsPointV2( 1, 1 ) << QgsPointV2( 1, 2 ) << QgsPointV2( 2, 2 ) << QgsPointV2( 2, 1 ) << QgsPointV2( 1, 1 ) );
+  QgsPolygonV2* polygon1 = new QgsPolygonV2();
+  polygon1->setExteriorRing( outerRing1 );
+
+  QgsLineStringV2* outerRing2 = new QgsLineStringV2();
+  outerRing2->setPoints( QList<QgsPointV2>() << QgsPointV2( 10, 10 ) << QgsPointV2( 10, 20 ) << QgsPointV2( 20, 20 ) << QgsPointV2( 20, 10 ) << QgsPointV2( 10, 10 ) );
+  QgsPolygonV2* polygon2 = new QgsPolygonV2();
+  polygon2->setExteriorRing( outerRing2 );
+
+  QgsLineStringV2* innerRing2 = new QgsLineStringV2();
+  innerRing2->setPoints( QList<QgsPointV2>() << QgsPointV2( 14, 14 ) << QgsPointV2( 14, 16 ) << QgsPointV2( 16, 16 ) << QgsPointV2( 16, 14 ) << QgsPointV2( 14, 14 ) );
+  polygon2->setInteriorRings( QList<QgsCurveV2*>() << innerRing2 );
+
+  QgsMultiPolygonV2 mpg;
+  mpg.addGeometry( polygon1 );
+  mpg.addGeometry( polygon2 );
+
+  QList<QgsLineStringV2*> linestrings = QgsGeometryUtils::extractLineStrings( &mpg );
+  QCOMPARE( linestrings.count(), 3 );
+  qDeleteAll( linestrings );
+}
 
 void TestQgsGeometryUtils::testLeftOfLine_data()
 {
@@ -176,6 +209,31 @@ void TestQgsGeometryUtils::testCircleLength()
   QVERIFY( qgsDoubleNear( expected, QgsGeometryUtils::circleLength( x1, y1, x2, y2, x3, y3 ) ) );
 }
 
+void TestQgsGeometryUtils::testNormalizedAngle_data()
+{
+  QTest::addColumn<double>( "input" );
+  QTest::addColumn<double>( "expected" );
+  QTest::newRow( "normalizedAngle 0" ) << 0.0 << 0.0;
+  QTest::newRow( "normalizedAngle 1.5708" ) << 1.5708 << 1.5708;
+  QTest::newRow( "normalizedAngle 3.1416" ) << 3.1416 << 3.1416;
+  QTest::newRow( "normalizedAngle 4.7124" ) << 4.7124 << 4.7124;
+  QTest::newRow( "normalizedAngle 2 * M_PI" ) << 2 * M_PI << 0.0;
+  QTest::newRow( "normalizedAngle 6.80678" ) << 6.80678 << 0.5236;
+  QTest::newRow( "normalizedAngle 12.5664" ) << 12.5664 << 0.0;
+  QTest::newRow( "normalizedAngle 12.7409" ) << 12.7409 << 0.174533;
+  QTest::newRow( "normalizedAngle -0.174533" ) << -0.174533 << 6.10865;
+  QTest::newRow( "normalizedAngle -6.28318" ) << -6.28318 << 0.0;
+  QTest::newRow( "normalizedAngle -6.45772" ) << -6.45772 << 6.10865;
+  QTest::newRow( "normalizedAngle -13.2645" ) << -13.2645 << 5.58505;
+}
+
+void TestQgsGeometryUtils::testNormalizedAngle()
+{
+  QFETCH( double, input );
+  QFETCH( double, expected );
+  QVERIFY( qgsDoubleNear( expected, QgsGeometryUtils::normalizedAngle( input ), 0.0001 ) );
+}
+
 void TestQgsGeometryUtils::testLineAngle_data()
 {
   QTest::addColumn<double>( "x1" );
@@ -184,6 +242,7 @@ void TestQgsGeometryUtils::testLineAngle_data()
   QTest::addColumn<double>( "y2" );
   QTest::addColumn<double>( "expected" );
 
+  QTest::newRow( "lineAngle undefined" ) << 0.0 << 0.0 << 0.0 << 0.0 << -99999.0; //value is unimportant, we just don't want a crash
   QTest::newRow( "lineAngle1" ) << 0.0 << 0.0 << 10.0 << 10.0 << 45.0;
   QTest::newRow( "lineAngle2" ) << 0.0 << 0.0 << 10.0 << 0.0 << 90.0;
   QTest::newRow( "lineAngle3" ) << 0.0 << 0.0 << 10.0 << -10.0 << 135.0;
@@ -203,7 +262,8 @@ void TestQgsGeometryUtils::testLineAngle()
   QFETCH( double, expected );
 
   double lineAngle = QgsGeometryUtils::lineAngle( x1, y1, x2, y2 ) * 180 / M_PI;
-  QVERIFY( qgsDoubleNear( lineAngle, expected ) );
+  if ( expected > -99999 )
+    QVERIFY( qgsDoubleNear( lineAngle, expected ) );
 }
 
 void TestQgsGeometryUtils::testLinePerpendicularAngle_data()
@@ -214,14 +274,15 @@ void TestQgsGeometryUtils::testLinePerpendicularAngle_data()
   QTest::addColumn<double>( "y2" );
   QTest::addColumn<double>( "expected" );
 
-  QTest::newRow( "lineAngle1" ) << 0.0 << 0.0 << 10.0 << 10.0 << 135.0;
-  QTest::newRow( "lineAngle2" ) << 0.0 << 0.0 << 10.0 << 0.0 << 180.0;
-  QTest::newRow( "lineAngle3" ) << 0.0 << 0.0 << 10.0 << -10.0 << 225.0;
-  QTest::newRow( "lineAngle4" ) << 0.0 << 0.0 << 0.0 << -10.0 << 270.0;
-  QTest::newRow( "lineAngle5" ) << 0.0 << 0.0 << -10.0 << -10.0 << 315.0;
-  QTest::newRow( "lineAngle6" ) << 0.0 << 0.0 << -10.0 << 0.0 << 0.0;
-  QTest::newRow( "lineAngle7" ) << 0.0 << 0.0 << -10.0 << 10.0 << 45.0;
-  QTest::newRow( "lineAngle8" ) << 0.0 << 0.0 << 0.0 << 10.0 << 90.0;
+  QTest::newRow( "linePerpendicularAngle undefined" ) << 0.0 << 0.0 << 0.0 << 0.0 << -99999.0; //value is unimportant, we just don't want a crash
+  QTest::newRow( "linePerpendicularAngle1" ) << 0.0 << 0.0 << 10.0 << 10.0 << 135.0;
+  QTest::newRow( "linePerpendicularAngle2" ) << 0.0 << 0.0 << 10.0 << 0.0 << 180.0;
+  QTest::newRow( "linePerpendicularAngle3" ) << 0.0 << 0.0 << 10.0 << -10.0 << 225.0;
+  QTest::newRow( "linePerpendicularAngle4" ) << 0.0 << 0.0 << 0.0 << -10.0 << 270.0;
+  QTest::newRow( "linePerpendicularAngle5" ) << 0.0 << 0.0 << -10.0 << -10.0 << 315.0;
+  QTest::newRow( "linePerpendicularAngle6" ) << 0.0 << 0.0 << -10.0 << 0.0 << 0.0;
+  QTest::newRow( "linePerpendicularAngle7" ) << 0.0 << 0.0 << -10.0 << 10.0 << 45.0;
+  QTest::newRow( "linePerpendicularAngle8" ) << 0.0 << 0.0 << 0.0 << 10.0 << 90.0;
 }
 
 void TestQgsGeometryUtils::testLinePerpendicularAngle()
@@ -233,7 +294,8 @@ void TestQgsGeometryUtils::testLinePerpendicularAngle()
   QFETCH( double, expected );
 
   double pAngle = QgsGeometryUtils::linePerpendicularAngle( x1, y1, x2, y2 ) * 180 / M_PI;
-  QVERIFY( qgsDoubleNear( pAngle, expected ) );
+  if ( expected > -99999 )
+    QVERIFY( qgsDoubleNear( pAngle, expected, 0.01 ) );
 }
 
 void TestQgsGeometryUtils::testAverageAngle_data()
@@ -242,12 +304,21 @@ void TestQgsGeometryUtils::testAverageAngle_data()
   QTest::addColumn<double>( "angle2" );
   QTest::addColumn<double>( "expected" );
 
-  QTest::newRow( "testAverage1" ) << 45.0 << 135.0 << 90.0;
-  QTest::newRow( "testAverage2" ) << 315.0 << 45.0 << 0.0;
-  QTest::newRow( "testAverage3" ) << 45.0 << 315.0 << 0.0;
-  QTest::newRow( "testAverage4" ) << 315.0 << 270.0 << 292.5;
-  QTest::newRow( "testAverage5" ) << 140.0 << 240.0 << 190.0;
-  QTest::newRow( "testAverage6" ) << 240.0 << 140.0 << 190.0;
+  QTest::newRow( "testAverageAngle1" ) << 0.0 << 0.0 << 0.0;
+  QTest::newRow( "testAverageAngle2" ) << 0.0 << 360.0 << 0.0;
+  QTest::newRow( "testAverageAngle3" ) << 0.0 << 720.0 << 0.0;
+  QTest::newRow( "testAverageAngle4" ) << 360.0 << 0.0 << 0.0;
+  QTest::newRow( "testAverageAngle5" ) << -360.0 << 0.0 << 0.0;
+  QTest::newRow( "testAverageAngle6" ) << -360.0 << -360.0 << 0.0;
+  QTest::newRow( "testAverageAngle7" ) << 0.0 << 180.0 << 90.0;
+  QTest::newRow( "testAverageAngle8" ) << 0.0 << -179.999999999999 << 270.0;
+  QTest::newRow( "testAverageAngle9" ) << 315.0 << 270.0 << 292.5;
+  QTest::newRow( "testAverageAngle10" ) << 45.0 << 135.0 << 90.0;
+  QTest::newRow( "testAverageAngle11" ) << 315.0 << 45.0 << 0.0;
+  QTest::newRow( "testAverageAngle12" ) << 45.0 << 315.0 << 0.0;
+  QTest::newRow( "testAverageAngle13" ) << 315.0 << 270.0 << 292.5;
+  QTest::newRow( "testAverageAngle14" ) << 140.0 << 240.0 << 190.0;
+  QTest::newRow( "testAverageAngle15" ) << 240.0 << 140.0 << 190.0;
 }
 
 void TestQgsGeometryUtils::testAverageAngle()
@@ -258,6 +329,36 @@ void TestQgsGeometryUtils::testAverageAngle()
 
   double averageAngle = QgsGeometryUtils::averageAngle( angle1 * M_PI / 180.0, angle2 * M_PI / 180.0 ) * 180.0 / M_PI;
   QVERIFY( qgsDoubleNear( averageAngle, expected, 0.0000000001 ) );
+}
+
+void TestQgsGeometryUtils::testDistanceToVertex()
+{
+  //test with linestring
+  QgsLineStringV2* outerRing1 = new QgsLineStringV2();
+  outerRing1->setPoints( QList<QgsPointV2>() << QgsPointV2( 1, 1 ) << QgsPointV2( 1, 2 ) << QgsPointV2( 2, 2 ) << QgsPointV2( 2, 1 ) << QgsPointV2( 1, 1 ) );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 0, 0 ) ), 0.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 0, 1 ) ), 1.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 0, 2 ) ), 2.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 0, 3 ) ), 3.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 0, 4 ) ), 4.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 0, 5 ) ), -1.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 1, 1 ) ), -1.0 );
+
+  //test with polygon
+  QgsPolygonV2 polygon1;
+  polygon1.setExteriorRing( outerRing1 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( polygon1, QgsVertexId( 0, 0, 0 ) ), 0.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( polygon1, QgsVertexId( 0, 0, 1 ) ), 1.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( polygon1, QgsVertexId( 0, 0, 2 ) ), 2.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( polygon1, QgsVertexId( 0, 0, 3 ) ), 3.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( polygon1, QgsVertexId( 0, 0, 4 ) ), 4.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( polygon1, QgsVertexId( 0, 0, 5 ) ), -1.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( polygon1, QgsVertexId( 0, 1, 1 ) ), -1.0 );
+
+  //test with point
+  QgsPointV2 point( 1, 2 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( point, QgsVertexId( 0, 0, 0 ) ), 0.0 );
+  QCOMPARE( QgsGeometryUtils::distanceToVertex( point, QgsVertexId( 0, 0, 1 ) ), -1.0 );
 }
 
 

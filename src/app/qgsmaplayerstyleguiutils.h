@@ -30,10 +30,10 @@ class QgsMapLayerStyleGuiUtils : public QObject
 
   public:
     static QgsMapLayerStyleGuiUtils* instance();
-    QAction* actionAddStyle( QgsMapLayer* layer, QObject* parent = 0 );
-    QAction* actionRemoveStyle( QgsMapLayer* layer, QObject* parent = 0 );
-    QAction* actionRenameStyle( QgsMapLayer* layer, QObject* parent = 0 );
-    QList<QAction*> actionsUseStyle( QgsMapLayer* layer, QObject* parent = 0 );
+    QAction* actionAddStyle( QgsMapLayer* layer, QObject* parent = nullptr );
+    QAction* actionRemoveStyle( QgsMapLayer* layer, QObject* parent = nullptr );
+    QAction* actionRenameStyle( QgsMapLayer* layer, QObject* parent = nullptr );
+    QList<QAction*> actionsUseStyle( QgsMapLayer* layer, QObject* parent = nullptr );
 
     //! Add actions for the given map layer to the menu
     void addStyleManagerActions( QMenu* m, QgsMapLayer* layer );

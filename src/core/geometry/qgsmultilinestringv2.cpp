@@ -20,8 +20,9 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgscompoundcurvev2.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestringv2.h"
+#include "qgsmulticurvev2.h"
 
-QgsAbstractGeometryV2* QgsMultiLineStringV2::clone() const
+QgsMultiLineStringV2* QgsMultiLineStringV2::clone() const
 {
   return new QgsMultiLineStringV2( *this );
 }
@@ -77,7 +78,7 @@ QString QgsMultiLineStringV2::asJSON( int precision ) const
     if ( dynamic_cast<const QgsCurveV2*>( geom ) )
     {
       const QgsLineStringV2* lineString = static_cast<const QgsLineStringV2*>( geom );
-      QList<QgsPointV2> pts;
+      QgsPointSequenceV2 pts;
       lineString->points( pts );
       json += QgsGeometryUtils::pointsToJSON( pts, precision ) + ", ";
     }
@@ -100,4 +101,14 @@ bool QgsMultiLineStringV2::addGeometry( QgsAbstractGeometryV2* g )
 
   setZMTypeFromSubGeometry( g, QgsWKBTypes::MultiLineString );
   return QgsGeometryCollectionV2::addGeometry( g );
+}
+
+QgsAbstractGeometryV2* QgsMultiLineStringV2::toCurveType() const
+{
+  QgsMultiCurveV2* multiCurve = new QgsMultiCurveV2();
+  for ( int i = 0; i < mGeometries.size(); ++i )
+  {
+    multiCurve->addGeometry( mGeometries.at( i )->clone() );
+  }
+  return multiCurve;
 }

@@ -1,5 +1,4 @@
-mkdir build
-cd build
-cmake -DWITH_SERVER=ON -DWITH_STAGED_PLUGINS=OFF -DWITH_GRASS=OFF \
-          -DSUPPRESS_QT_WARNINGS=ON -DENABLE_MODELTEST=ON -DENABLE_PGTEST=ON \
-          -DWITH_QWTPOLAR=OFF -DWITH_APIDOC=ON -DWITH_PYSPATIALITE=ON ..
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+${DIR}/qt${QT_VERSION}/install.sh

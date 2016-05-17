@@ -22,16 +22,11 @@ QgsUserInputDockWidget::QgsUserInputDockWidget( QWidget *parent )
     : QDockWidget( tr( "User Input Panel" ), parent )
     , mLayoutHorizontal( true )
 {
-  QWidget* w = new QWidget( 0 );
+  QWidget* w = new QWidget( nullptr );
   mLayout = new QBoxLayout( QBoxLayout::LeftToRight );
   mLayout->setAlignment( Qt::AlignLeft | Qt::AlignTop );
   w->setLayout( mLayout );
   setWidget( w );
-
-  QPalette pal = palette();
-  pal.setColor( QPalette::Background, QColor( 231, 245, 254 ) );
-  setPalette( pal );
-  setAutoFillBackground( true );
 
   connect( this, SIGNAL( dockLocationChanged( Qt::DockWidgetArea ) ), this, SLOT( areaChanged( Qt::DockWidgetArea ) ) );
   connect( this, SIGNAL( topLevelChanged( bool ) ), this, SLOT( floatingChanged( bool ) ) );
@@ -44,7 +39,7 @@ QgsUserInputDockWidget::~QgsUserInputDockWidget()
 
 void QgsUserInputDockWidget::addUserInputWidget( QWidget *widget )
 {
-  QFrame* line = 0;
+  QFrame* line = nullptr;
   if ( mWidgetList.count() > 0 )
   {
     line = new QFrame( this );
@@ -108,8 +103,8 @@ void QgsUserInputDockWidget::updateLayoutDirection()
 {
   mLayout->setDirection( mLayoutHorizontal ? QBoxLayout::LeftToRight : QBoxLayout::TopToBottom );
 
-  QMap<QWidget*, QFrame*>::iterator i = mWidgetList.begin();
-  while ( i != mWidgetList.end() )
+  QMap<QWidget*, QFrame*>::const_iterator i = mWidgetList.constBegin();
+  while ( i != mWidgetList.constEnd() )
   {
     if ( i.value() )
     {

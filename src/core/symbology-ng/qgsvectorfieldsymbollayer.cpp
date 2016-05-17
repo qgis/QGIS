@@ -17,6 +17,7 @@
 
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorlayer.h"
+#include "qgsunittypes.h"
 
 QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer()
     : mXAttribute( "" )
@@ -26,7 +27,7 @@ QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer()
     , mVectorFieldType( Cartesian )
     , mAngleOrientation( ClockwiseFromNorth )
     , mAngleUnits( Degrees )
-    , mLineSymbol( 0 )
+    , mLineSymbol( nullptr )
     , mXIndex( -1 )
     , mYIndex( -1 )
 {
@@ -93,15 +94,15 @@ QgsSymbolLayerV2* QgsVectorFieldSymbolLayer::create( const QgsStringMap& propert
   }
   if ( properties.contains( "vector_field_type" ) )
   {
-    symbolLayer->setVectorFieldType(( VectorFieldType )( properties["vector_field_type"].toInt() ) );
+    symbolLayer->setVectorFieldType( static_cast< VectorFieldType >( properties["vector_field_type"].toInt() ) );
   }
   if ( properties.contains( "angle_orientation" ) )
   {
-    symbolLayer->setAngleOrientation(( AngleOrientation )( properties["angle_orientation"].toInt() ) );
+    symbolLayer->setAngleOrientation( static_cast< AngleOrientation >( properties["angle_orientation"].toInt() ) );
   }
   if ( properties.contains( "angle_units" ) )
   {
-    symbolLayer->setAngleUnits(( AngleUnits )( properties["angle_units"].toInt() ) );
+    symbolLayer->setAngleUnits( static_cast< AngleUnits >( properties["angle_units"].toInt() ) );
   }
   if ( properties.contains( "size" ) )
   {
@@ -141,7 +142,7 @@ bool QgsVectorFieldSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
   return false;
 }
 
-void QgsVectorFieldSymbolLayer::renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context )
+void QgsVectorFieldSymbolLayer::renderPoint( QPointF point, QgsSymbolV2RenderContext& context )
 {
   if ( !mLineSymbol )
   {
@@ -157,7 +158,7 @@ void QgsVectorFieldSymbolLayer::renderPoint( const QPointF& point, QgsSymbolV2Re
     QPolygonF line;
     line << QPointF( 0, 50 );
     line << QPointF( 100, 50 );
-    mLineSymbol->renderPolyline( line, 0, context.renderContext() );
+    mLineSymbol->renderPolyline( line, nullptr, context.renderContext() );
   }
 
   double xComponent = 0;
@@ -177,17 +178,17 @@ void QgsVectorFieldSymbolLayer::renderPoint( const QPointF& point, QgsSymbolV2Re
   switch ( mVectorFieldType )
   {
     case Cartesian:
-      xComponent = xVal * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDistanceUnit, mDistanceMapUnitScale );
-      yComponent = yVal * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDistanceUnit, mDistanceMapUnitScale );
+      xComponent = QgsSymbolLayerV2Utils::convertToPainterUnits( ctx, xVal, mDistanceUnit, mDistanceMapUnitScale );
+      yComponent = QgsSymbolLayerV2Utils::convertToPainterUnits( ctx, yVal, mDistanceUnit, mDistanceMapUnitScale );
       break;
     case Polar:
       convertPolarToCartesian( xVal, yVal, xComponent, yComponent );
-      xComponent = xComponent * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDistanceUnit, mDistanceMapUnitScale );
-      yComponent = yComponent * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDistanceUnit, mDistanceMapUnitScale );
+      xComponent = QgsSymbolLayerV2Utils::convertToPainterUnits( ctx, xComponent, mDistanceUnit, mDistanceMapUnitScale );
+      yComponent = QgsSymbolLayerV2Utils::convertToPainterUnits( ctx, yComponent, mDistanceUnit, mDistanceMapUnitScale );
       break;
     case Height:
       xComponent = 0;
-      yComponent = yVal * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDistanceUnit, mDistanceMapUnitScale );
+      yComponent = QgsSymbolLayerV2Utils::convertToPainterUnits( ctx, yVal, mDistanceUnit, mDistanceMapUnitScale );
       break;
     default:
       break;
@@ -230,14 +231,14 @@ void QgsVectorFieldSymbolLayer::stopRender( QgsSymbolV2RenderContext& context )
   }
 }
 
-QgsSymbolLayerV2* QgsVectorFieldSymbolLayer::clone() const
+QgsVectorFieldSymbolLayer* QgsVectorFieldSymbolLayer::clone() const
 {
   QgsSymbolLayerV2* clonedLayer = QgsVectorFieldSymbolLayer::create( properties() );
   if ( mLineSymbol )
   {
     clonedLayer->setSubSymbol( mLineSymbol->clone() );
   }
-  return clonedLayer;
+  return static_cast< QgsVectorFieldSymbolLayer* >( clonedLayer );
 }
 
 QgsStringMap QgsVectorFieldSymbolLayer::properties() const
@@ -260,7 +261,7 @@ QgsStringMap QgsVectorFieldSymbolLayer::properties() const
   return properties;
 }
 
-void QgsVectorFieldSymbolLayer::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const
+void QgsVectorFieldSymbolLayer::toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const
 {
   element.appendChild( doc.createComment( "VectorField not implemented yet..." ) );
   mLineSymbol->toSld( doc, element, props );
@@ -269,7 +270,7 @@ void QgsVectorFieldSymbolLayer::toSld( QDomDocument& doc, QDomElement &element, 
 QgsSymbolLayerV2* QgsVectorFieldSymbolLayer::createFromSld( QDomElement &element )
 {
   Q_UNUSED( element );
-  return NULL;
+  return nullptr;
 }
 
 void QgsVectorFieldSymbolLayer::drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size )

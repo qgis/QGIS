@@ -24,13 +24,13 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget 
 
   QString text;
 
-  switch ( vl->fields()[fieldIdx].type() )
+  switch ( vl->fields().at( fieldIdx ).type() )
   {
     case QVariant::Int:
     case QVariant::LongLong:
     case QVariant::Double:
     {
-      rangeStackedWidget->setCurrentIndex( vl->fields()[fieldIdx].type() == QVariant::Double ? 1 : 0 );
+      rangeStackedWidget->setCurrentIndex( vl->fields().at( fieldIdx ).type() == QVariant::Double ? 1 : 0 );
 
       rangeWidget->clear();
       rangeWidget->addItem( tr( "Editable" ), "SpinBox" );
@@ -40,7 +40,7 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget 
       QVariant min = vl->minimumValue( fieldIdx );
       QVariant max = vl->maximumValue( fieldIdx );
 
-      text = tr( "Current minimum for this value is %1 and current maximum is %2." ).arg( min.toString() ).arg( max.toString() );
+      text = tr( "Current minimum for this value is %1 and current maximum is %2." ).arg( min.toString(), max.toString() );
       break;
     }
 
@@ -58,7 +58,7 @@ QgsEditorWidgetConfig QgsRangeConfigDlg::config()
 {
   QgsEditorWidgetConfig cfg;
 
-  switch ( layer()->fields()[field()].type() )
+  switch ( layer()->fields().at( field() ).type() )
   {
     case QVariant::Int:
     case QVariant::LongLong:

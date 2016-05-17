@@ -34,16 +34,15 @@ QgsComposerItemGroup::QgsComposerItemGroup( QgsComposition* c )
 QgsComposerItemGroup::~QgsComposerItemGroup()
 {
   //loop through group members and remove them from the scene
-  QSet<QgsComposerItem*>::iterator itemIt = mItems.begin();
-  for ( ; itemIt != mItems.end(); ++itemIt )
+  Q_FOREACH ( QgsComposerItem* item, mItems )
   {
-    if ( *itemIt )
-    {
-      //inform model that we are about to remove an item from the scene
-      mComposition->itemsModel()->setItemRemoved( *itemIt );
-      mComposition->removeItem( *itemIt );
-      ( *itemIt )->setIsGroupMember( false );
-    }
+    if ( !item )
+      continue;
+
+    //inform model that we are about to remove an item from the scene
+    mComposition->itemsModel()->setItemRemoved( item );
+    mComposition->removeItem( item );
+    item->setIsGroupMember( false );
   }
 }
 
@@ -72,14 +71,14 @@ void QgsComposerItemGroup::addItem( QgsComposerItem* item )
     //call method of superclass to avoid repositioning of items
     QgsComposerItem::setSceneRect( QRectF( item->pos().x(), item->pos().y(), item->rect().width(), item->rect().height() ) );
 
-    if ( item->itemRotation() != 0 )
+    if ( !qgsDoubleNear( item->itemRotation(), 0.0 ) )
     {
       setItemRotation( item->itemRotation() );
     }
   }
   else
   {
-    if ( item->itemRotation() != itemRotation() )
+    if ( !qgsDoubleNear( item->itemRotation(), itemRotation() ) )
     {
       //items have mixed rotation, so reset rotation of group
       mBoundingRectangle = mapRectToScene( mBoundingRectangle );
@@ -102,11 +101,10 @@ void QgsComposerItemGroup::addItem( QgsComposerItem* item )
 
 void QgsComposerItemGroup::removeItems()
 {
-  QSet<QgsComposerItem*>::iterator item_it = mItems.begin();
-  for ( ; item_it != mItems.end(); ++item_it )
+  Q_FOREACH ( QgsComposerItem* item, mItems )
   {
-    ( *item_it )->setIsGroupMember( false );
-    ( *item_it )->setSelected( true );
+    item->setIsGroupMember( false );
+    item->setSelected( true );
   }
   mItems.clear();
 }
@@ -134,15 +132,14 @@ void QgsComposerItemGroup::setSceneRect( const QRectF& rectangle )
   QPointF newOrigin = mapFromScene( rectangle.topLeft() );
   QRectF newRect = QRectF( newOrigin.x(), newOrigin.y(), rectangle.width(), rectangle.height() );
 
-  QSet<QgsComposerItem*>::iterator item_it = mItems.begin();
-  for ( ; item_it != mItems.end(); ++item_it )
+  Q_FOREACH ( QgsComposerItem* item, mItems )
   {
     //each item needs to be scaled relatively to the final size of the group
-    QRectF itemRect = mapRectFromItem(( *item_it ), ( *item_it )->rect() );
+    QRectF itemRect = mapRectFromItem( item, item->rect() );
     QgsComposerUtils::relativeResizeRect( itemRect, rect(), newRect );
 
     QPointF newPos = mapToScene( itemRect.topLeft() );
-    ( *item_it )->setSceneRect( QRectF( newPos.x(), newPos.y(), itemRect.width(), itemRect.height() ) );
+    item->setSceneRect( QRectF( newPos.x(), newPos.y(), itemRect.width(), itemRect.height() ) );
   }
   //lastly, set new rect for group
   QgsComposerItem::setSceneRect( rectangle );
@@ -151,10 +148,9 @@ void QgsComposerItemGroup::setSceneRect( const QRectF& rectangle )
 void QgsComposerItemGroup::setVisibility( const bool visible )
 {
   //also set visibility for all items within the group
-  QSet<QgsComposerItem*>::iterator item_it = mItems.begin();
-  for ( ; item_it != mItems.end(); ++item_it )
+  Q_FOREACH ( QgsComposerItem* item, mItems )
   {
-    ( *item_it )->setVisibility( visible );
+    item->setVisibility( visible );
   }
   //lastly set visibility for group item itself
   QgsComposerItem::setVisibility( visible );
@@ -199,7 +195,7 @@ bool QgsComposerItemGroup::readXML( const QDomElement& itemElem, const QDomDocum
 {
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
-  if ( composerItemList.size() > 0 )
+  if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
     _readXML( composerItemElem, doc );

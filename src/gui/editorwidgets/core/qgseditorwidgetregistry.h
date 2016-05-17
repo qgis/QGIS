@@ -52,7 +52,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * @note Added in QGIS 2.8
      * @note Not required for plugins, the QGIS application does that already
      */
-    static void initEditors( QgsMapCanvas* mapCanvas = 0, QgsMessageBar* messageBar = 0 );
+    static void initEditors( QgsMapCanvas* mapCanvas = nullptr, QgsMessageBar* messageBar = nullptr );
 
     /**
      * Destructor

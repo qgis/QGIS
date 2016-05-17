@@ -22,7 +22,7 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt4.QtGui import QDialog
+from qgis.PyQt.QtWidgets import QDialog
 
 from .ui.ui_DlgDbError import Ui_DbManagerDlgDbError as Ui_Dialog
 from .db_plugins.plugin import DbError

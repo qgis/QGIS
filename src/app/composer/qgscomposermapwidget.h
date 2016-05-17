@@ -33,8 +33,7 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     Q_OBJECT
 
   public:
-
-    QgsComposerMapWidget( QgsComposerMap* composerMap );
+    explicit QgsComposerMapWidget( QgsComposerMap* composerMap );
     virtual ~QgsComposerMapWidget();
 
   public slots:
@@ -47,7 +46,7 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void on_mKeepLayerListCheckBox_stateChanged( int state );
     void on_mKeepLayerStylesCheckBox_stateChanged( int state );
     void on_mDrawCanvasItemsCheckBox_stateChanged( int state );
-    void on_mOverviewFrameMapComboBox_currentIndexChanged( const QString& text );
+    void overviewMapChanged( QgsComposerItem* item );
     void on_mOverviewFrameStyleButton_clicked();
     void on_mOverviewBlendModeComboBox_currentIndexChanged( int index );
     void on_mOverviewInvertCheckbox_toggled( bool state );
@@ -146,7 +145,6 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void blockOverviewItemsSignals( bool block );
 
   protected:
-    void showEvent( QShowEvent * event ) override;
 
     void addPageToToolbox( QWidget * widget, const QString& name );
 
@@ -186,7 +184,7 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void handleChangedFrameDisplay( QgsComposerMapGrid::BorderSide border, const QgsComposerMapGrid::DisplayMode mode );
     void handleChangedAnnotationDisplay( QgsComposerMapGrid::BorderSide border, const QString& text );
     void handleChangedAnnotationPosition( QgsComposerMapGrid::BorderSide border, const QString& text );
-    void handleChangedAnnotationDirection( QgsComposerMapGrid::BorderSide border, const QgsComposerMapGrid::AnnotationDirection &direction );
+    void handleChangedAnnotationDirection( QgsComposerMapGrid::BorderSide border, QgsComposerMapGrid::AnnotationDirection direction );
 
     void insertFrameDisplayEntries( QComboBox* c );
     void insertAnnotationDisplayEntries( QComboBox* c );
@@ -200,9 +198,6 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
 
     void updateGridLineSymbolMarker( const QgsComposerMapGrid* grid );
     void updateGridMarkerSymbolMarker( const QgsComposerMapGrid* grid );
-
-    /** Updates the map combo box with the current composer map ids*/
-    void refreshMapComboBox();
 
     /** Enables/disables grid frame related controls*/
     void toggleFrameControls( bool frameEnabled, bool frameFillEnabled, bool frameSizeEnabled );

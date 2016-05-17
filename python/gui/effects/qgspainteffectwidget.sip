@@ -106,4 +106,19 @@ class QgsTransformWidget : QgsPaintEffectWidget
 
 };
 
+class QgsColorEffectWidget : QgsPaintEffectWidget
+{
+%TypeHeaderCode
+#include <qgspainteffectwidget.h>
+%End
+
+  public:
+    QgsColorEffectWidget( QWidget* parent /TransferThis/ = NULL );
+
+    static QgsPaintEffectWidget* create() /Factory/;
+
+    virtual void setPaintEffect( QgsPaintEffect* effect );
+
+};
+
 

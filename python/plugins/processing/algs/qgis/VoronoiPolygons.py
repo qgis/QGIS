@@ -25,7 +25,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from sets import Set
+import os
+
+from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint
 
@@ -34,8 +36,11 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
-import voronoi
 from processing.tools import dataobjects, vector
+
+from . import voronoi
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class VoronoiPolygons(GeoAlgorithm):
@@ -43,6 +48,9 @@ class VoronoiPolygons(GeoAlgorithm):
     INPUT = 'INPUT'
     BUFFER = 'BUFFER'
     OUTPUT = 'OUTPUT'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'voronoi.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Voronoi polygons')
@@ -63,7 +71,6 @@ class VoronoiPolygons(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layer.pendingFields().toList(), QGis.WKBPolygon, layer.crs())
 
-        inFeat = QgsFeature()
         outFeat = QgsFeature()
         extent = layer.extent()
         extraX = extent.height() * (buf / 100.0)
@@ -76,7 +83,8 @@ class VoronoiPolygons(GeoAlgorithm):
         ptNdx = -1
 
         features = vector.features(layer)
-        for inFeat in features:
+        total = 100.0 / len(features)
+        for current, inFeat in enumerate(features):
             geom = QgsGeometry(inFeat.geometry())
             point = geom.asPoint()
             x = point.x() - extent.xMinimum()
@@ -84,21 +92,22 @@ class VoronoiPolygons(GeoAlgorithm):
             pts.append((x, y))
             ptNdx += 1
             ptDict[ptNdx] = inFeat.id()
+            progress.setPercentage(int(current * total))
 
         if len(pts) < 3:
             raise GeoAlgorithmExecutionException(
                 self.tr('Input file should contain at least 3 points. Choose '
                         'another file and try again.'))
 
-        uniqueSet = Set(item for item in pts)
+        uniqueSet = set(item for item in pts)
         ids = [pts.index(item) for item in uniqueSet]
         sl = voronoi.SiteList([voronoi.Site(i[0], i[1], sitenum=j) for (j,
-                              i) in enumerate(uniqueSet)])
+                                                                        i) in enumerate(uniqueSet)])
         voronoi.voronoi(sl, c)
         inFeat = QgsFeature()
 
         current = 0
-        total = 100.0 / float(len(c.polygons))
+        total = 100.0 / len(c.polygons)
 
         for (site, edges) in c.polygons.iteritems():
             request = QgsFeatureRequest().setFilterFid(ptDict[ids[site]])
@@ -223,9 +232,9 @@ class VoronoiPolygons(GeoAlgorithm):
                 )
             if x1 or x2 or y1 or y2:
                 lines.append(QgsPoint(x1 + extent.xMinimum(), y1
-                             + extent.yMinimum()))
+                                      + extent.yMinimum()))
                 lines.append(QgsPoint(x2 + extent.xMinimum(), y2
-                             + extent.yMinimum()))
+                                      + extent.yMinimum()))
                 if 0 - exX in (x1, x2):
                     hasXMin = True
                 if 0 - exY in (y1, y2):
@@ -237,15 +246,15 @@ class VoronoiPolygons(GeoAlgorithm):
         if hasXMin:
             if hasYMax:
                 lines.append(QgsPoint(extent.xMinimum() - exX, height
-                             + extent.yMinimum() + exY))
+                                      + extent.yMinimum() + exY))
             if hasYMin:
                 lines.append(QgsPoint(extent.xMinimum() - exX,
-                             extent.yMinimum() - exY))
+                                      extent.yMinimum() - exY))
         if hasXMax:
             if hasYMax:
                 lines.append(QgsPoint(width + extent.xMinimum() + exX, height
-                             + extent.yMinimum() + exY))
+                                      + extent.yMinimum() + exY))
             if hasYMin:
                 lines.append(QgsPoint(width + extent.xMinimum() + exX,
-                             extent.yMinimum() - exY))
+                                      extent.yMinimum() - exY))
         return lines

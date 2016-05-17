@@ -21,11 +21,11 @@ class APP_EXPORT QgsLoadStyleFromDBDialog : public QDialog, private Ui::QgsLoadS
     QString qmlStyle;
     Q_OBJECT
   public:
-    explicit QgsLoadStyleFromDBDialog( QWidget *parent = 0 );
+    explicit QgsLoadStyleFromDBDialog( QWidget *parent = nullptr );
 
     ~QgsLoadStyleFromDBDialog();
 
-    void initializeLists( QStringList ids, QStringList names, QStringList descriptions, int sectionLimit );
+    void initializeLists( const QStringList& ids, const QStringList& names, const QStringList& descriptions, int sectionLimit );
     QString getSelectedStyleId();
 
   public slots:

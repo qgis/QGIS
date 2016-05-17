@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -39,7 +39,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputDirectory
 
-from TauDEMUtils import TauDEMUtils
+from .TauDEMUtils import TauDEMUtils
 
 
 class DinfDistDownMulti(GeoAlgorithm):
@@ -66,7 +66,7 @@ class DinfDistDownMulti(GeoAlgorithm):
     }
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.svg')
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('D-Infinity Distance Down (multifile)')

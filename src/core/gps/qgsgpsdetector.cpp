@@ -95,9 +95,9 @@ QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
   return devs;
 }
 
-QgsGPSDetector::QgsGPSDetector( QString portName )
+QgsGPSDetector::QgsGPSDetector( const QString& portName )
 {
-  mConn = 0;
+  mConn = nullptr;
   mBaudList << BAUD4800 << BAUD9600 << BAUD38400 << BAUD57600 << BAUD115200;  //add 57600 for SXBlueII GPS unit
 
   if ( portName.isEmpty() )
@@ -126,7 +126,7 @@ void QgsGPSDetector::advance()
     delete mConn;
   }
 
-  mConn = 0;
+  mConn = nullptr;
 
   while ( !mConn )
   {
@@ -144,17 +144,17 @@ void QgsGPSDetector::advance()
       return;
     }
 
-    if ( mPortList[ mPortIndex ].first.contains( ":" ) )
+    if ( mPortList.at( mPortIndex ).first.contains( ':' ) )
     {
       mBaudIndex = mBaudList.size() - 1;
 
-      QStringList gpsParams = mPortList[ mPortIndex ].first.split( ":" );
+      QStringList gpsParams = mPortList.at( mPortIndex ).first.split( ':' );
 
       Q_ASSERT( gpsParams.size() >= 3 );
 
       mConn = new QgsGpsdConnection( gpsParams[0], gpsParams[1].toShort(), gpsParams[2] );
     }
-    else if ( mPortList[ mPortIndex ].first.contains( "internalGPS" ) )
+    else if ( mPortList.at( mPortIndex ).first.contains( "internalGPS" ) )
     {
 #if defined(HAVE_QT_MOBILITY_LOCATION ) || defined(QT_POSITIONING_LIB)
       mConn = new QgsQtLocationConnection();
@@ -164,7 +164,7 @@ void QgsGPSDetector::advance()
     }
     else
     {
-      QextSerialPort *serial = new QextSerialPort( mPortList[ mPortIndex ].first, QextSerialPort::EventDriven );
+      QextSerialPort *serial = new QextSerialPort( mPortList.at( mPortIndex ).first, QextSerialPort::EventDriven );
 
       serial->setBaudRate( mBaudList[ mBaudIndex ] );
       serial->setFlowControl( FLOW_OFF );
@@ -203,7 +203,7 @@ void QgsGPSDetector::detected( const QgsGPSInformation& info )
   {
     // signal detection
     QgsGPSConnection *conn = mConn;
-    mConn = 0;
+    mConn = nullptr;
     emit detected( conn );
     deleteLater();
   }
@@ -213,6 +213,6 @@ void QgsGPSDetector::connDestroyed( QObject *obj )
 {
   if ( obj == mConn )
   {
-    mConn = 0;
+    mConn = nullptr;
   }
 }

@@ -35,10 +35,10 @@ class CORE_EXPORT QgsPythonRunner
     static bool isValid();
 
     /** Execute a python statement */
-    static bool run( QString command, QString messageOnError = QString() );
+    static bool run( const QString& command, const QString& messageOnError = QString() );
 
     /** Eval a python statement */
-    static bool eval( QString command, QString& result );
+    static bool eval( const QString& command, QString& result );
 
     /** Assign an instance of python runner so that run() can be used.
       This method should be called during app initialization.

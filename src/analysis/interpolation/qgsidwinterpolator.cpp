@@ -47,18 +47,16 @@ int QgsIDWInterpolator::interpolatePoint( double x, double y, double& result )
   double sumCounter = 0;
   double sumDenominator = 0;
 
-  QVector<vertexData>::iterator vertex_it = mCachedBaseData.begin();
-
-  for ( ; vertex_it != mCachedBaseData.end(); ++vertex_it )
+  Q_FOREACH ( const vertexData& vertex_it, mCachedBaseData )
   {
-    distance = sqrt(( vertex_it->x - x ) * ( vertex_it->x - x ) + ( vertex_it->y - y ) * ( vertex_it->y - y ) );
+    distance = sqrt(( vertex_it.x - x ) * ( vertex_it.x - x ) + ( vertex_it.y - y ) * ( vertex_it.y - y ) );
     if (( distance - 0 ) < std::numeric_limits<double>::min() )
     {
-      result = vertex_it->z;
+      result = vertex_it.z;
       return 0;
     }
     currentWeight = 1 / ( pow( distance, mDistanceCoefficient ) );
-    sumCounter += ( currentWeight * vertex_it->z );
+    sumCounter += ( currentWeight * vertex_it.z );
     sumDenominator += currentWeight;
   }
 

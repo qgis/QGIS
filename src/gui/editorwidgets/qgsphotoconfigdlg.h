@@ -20,12 +20,16 @@
 
 #include "qgseditorconfigwidget.h"
 
+/** \class QgsPhotoConfigDlg
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsPhotoConfigDlg : public QgsEditorConfigWidget, private Ui::QgsPhotoConfigDlgBase
 {
     Q_OBJECT
 
   public:
-    explicit QgsPhotoConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent = 0 );
+    explicit QgsPhotoConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent = nullptr );
 
     // QgsEditorConfigWidget interface
   public:

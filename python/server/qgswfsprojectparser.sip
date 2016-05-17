@@ -24,7 +24,7 @@ class QgsWFSProjectParser
 %End
 
   public:
-    QgsWFSProjectParser( const QString& filePath );
+    QgsWFSProjectParser( const QString& filePath, const QgsAccessControl* ac );
     ~QgsWFSProjectParser();
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
@@ -43,5 +43,9 @@ class QgsWFSProjectParser
     QSet<QString> wfstUpdateLayers() const;
     QSet<QString> wfstInsertLayers() const;
     QSet<QString> wfstDeleteLayers() const;
+
+  private:
+
+    QgsWFSProjectParser( const QgsWFSProjectParser& rh );
 
 };

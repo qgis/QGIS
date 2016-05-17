@@ -18,47 +18,76 @@
 #include "qgsgeometrysimplifier.h"
 #include "qgssimplifymethod.h"
 
+#include "qgsexpressionsorter.h"
+
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest& request )
     : mRequest( request )
     , mClosed( false )
+    , mZombie( false )
     , refs( 0 )
-    , mGeometrySimplifier( NULL )
+    , mFetchedCount( 0 )
+    , mCompileStatus( NoCompilation )
+    , mGeometrySimplifier( nullptr )
     , mLocalSimplification( false )
+    , mUseCachedFeatures( false )
 {
 }
 
 QgsAbstractFeatureIterator::~QgsAbstractFeatureIterator()
 {
   delete mGeometrySimplifier;
-  mGeometrySimplifier = NULL;
 }
 
 bool QgsAbstractFeatureIterator::nextFeature( QgsFeature& f )
 {
   bool dataOk = false;
-
-  switch ( mRequest.filterType() )
+  if ( mRequest.limit() >= 0 && mFetchedCount >= mRequest.limit() )
   {
-    case QgsFeatureRequest::FilterExpression:
-      dataOk = nextFeatureFilterExpression( f );
-      break;
+    return false;
+  }
 
-    case QgsFeatureRequest::FilterFids:
-      dataOk = nextFeatureFilterFids( f );
-      break;
+  if ( mUseCachedFeatures )
+  {
+    if ( mFeatureIterator != mCachedFeatures.constEnd() )
+    {
+      f = mFeatureIterator->mFeature;
+      ++mFeatureIterator;
+      dataOk = true;
+    }
+    else
+    {
+      dataOk = false;
+      // even the zombie dies at this point...
+      mZombie = false;
+    }
+  }
+  else
+  {
+    switch ( mRequest.filterType() )
+    {
+      case QgsFeatureRequest::FilterExpression:
+        dataOk = nextFeatureFilterExpression( f );
+        break;
 
-    default:
-      dataOk = fetchFeature( f );
-      break;
+      case QgsFeatureRequest::FilterFids:
+        dataOk = nextFeatureFilterFids( f );
+        break;
+
+      default:
+        dataOk = fetchFeature( f );
+        break;
+    }
   }
 
   // simplify the geometry using the simplifier configured
   if ( dataOk && mLocalSimplification )
   {
-    const QgsGeometry* geometry = f.constGeometry();
-    if ( geometry )
+    if ( f.constGeometry() )
       simplify( f );
   }
+  if ( dataOk )
+    mFetchedCount++;
+
   return dataOk;
 }
 
@@ -93,6 +122,9 @@ void QgsAbstractFeatureIterator::ref()
   if ( refs == 0 )
   {
     prepareSimplification( mRequest.simplifyMethod() );
+
+    // Should be called as last preparation step since it possibly will already fetch all features
+    setupOrderBy( mRequest.orderBy() );
   }
   refs++;
 }
@@ -109,16 +141,62 @@ bool QgsAbstractFeatureIterator::prepareSimplification( const QgsSimplifyMethod&
   mLocalSimplification = false;
 
   delete mGeometrySimplifier;
-  mGeometrySimplifier = NULL;
+  mGeometrySimplifier = nullptr;
 
   // setup the simplification of geometries to fetch
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && ( simplifyMethod.forceLocalOptimization() || !providerCanSimplify( simplifyMethod.methodType() ) ) )
   {
     mGeometrySimplifier = QgsSimplifyMethod::createGeometrySimplifier( simplifyMethod );
-    mLocalSimplification = mGeometrySimplifier != NULL;
+    mLocalSimplification = nullptr != mGeometrySimplifier;
     return mLocalSimplification;
   }
   return false;
+}
+
+void QgsAbstractFeatureIterator::setupOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys )
+{
+  // Let the provider try using an efficient order by strategy first
+  if ( !orderBys.isEmpty() && !prepareOrderBy( orderBys ) )
+  {
+    // No success from the provider
+
+    // Prepare the expressions
+    QList<QgsFeatureRequest::OrderByClause> preparedOrderBys( orderBys );
+    QList<QgsFeatureRequest::OrderByClause>::iterator orderByIt( preparedOrderBys.begin() );
+
+    QgsExpressionContext* expressionContext( mRequest.expressionContext() );
+    do
+    {
+      orderByIt->expression().prepare( expressionContext );
+    }
+    while ( ++orderByIt != preparedOrderBys.end() );
+
+    // Fetch all features
+    QgsIndexedFeature indexedFeature;
+    indexedFeature.mIndexes.resize( preparedOrderBys.size() );
+
+    while ( nextFeature( indexedFeature.mFeature ) )
+    {
+      expressionContext->setFeature( indexedFeature.mFeature );
+      int i = 0;
+      Q_FOREACH ( const QgsFeatureRequest::OrderByClause& orderBy, preparedOrderBys )
+      {
+        indexedFeature.mIndexes.replace( i++, orderBy.expression().evaluate( expressionContext ) );
+      }
+
+      // We need all features, to ignore the limit for this pre-fetch
+      // keep the fetched count at 0.
+      mFetchedCount = 0;
+      mCachedFeatures.append( indexedFeature );
+    }
+
+    qSort( mCachedFeatures.begin(), mCachedFeatures.end(), QgsExpressionSorter( preparedOrderBys ) );
+
+    mFeatureIterator = mCachedFeatures.constBegin();
+    mUseCachedFeatures = true;
+    // The real iterator is closed, we are only serving cached features
+    mZombie = true;
+  }
 }
 
 bool QgsAbstractFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
@@ -139,6 +217,16 @@ bool QgsAbstractFeatureIterator::simplify( QgsFeature& feature )
       return mGeometrySimplifier->simplifyGeometry( geometry );
   }
   return false;
+}
+
+bool QgsAbstractFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys )
+{
+  Q_UNUSED( orderBys )
+  return false;
+}
+
+void QgsAbstractFeatureIterator::setInterruptionChecker( QgsInterruptionChecker* )
+{
 }
 
 ///////

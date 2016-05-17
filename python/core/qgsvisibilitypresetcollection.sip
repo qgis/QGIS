@@ -22,14 +22,14 @@ class QgsVisibilityPresetCollection : QObject
         bool operator==( const QgsVisibilityPresetCollection::PresetRecord& other ) const;
         bool operator!=( const QgsVisibilityPresetCollection::PresetRecord& other ) const;
 
-      //! List of layers that are visible
-      QSet<QString> mVisibleLayerIDs;
-      /** For layers that have checkable legend symbols and not all symbols are checked - list which ones are
-       * @note not available in Python bindings
-       */
-      //QMap<QString, QSet<QString> > mPerLayerCheckedLegendSymbols;
-      //! For layers that use multiple styles - which one is currently selected
-      QMap<QString, QString> mPerLayerCurrentStyle;
+        //! Ordered list of layers that are visible
+        QStringList mVisibleLayerIDs;
+        /** For layers that have checkable legend symbols and not all symbols are checked - list which ones are
+         * @note not available in Python bindings
+         */
+        //QMap<QString, QSet<QString> > mPerLayerCheckedLegendSymbols;
+        //! For layers that use multiple styles - which one is currently selected
+        QMap<QString, QString> mPerLayerCurrentStyle;
     };
 
     QgsVisibilityPresetCollection();
@@ -117,7 +117,7 @@ class QgsVisibilityPresetCollection : QObject
 
     /** Handles updates of the preset collection when layers are removed from the registry
      */
-    void registryLayersRemoved( QStringList layerIDs );
+    void registryLayersRemoved( const QStringList& layerIDs );
 
     //! Update style name if a stored style gets renamed
     void layerStyleRenamed( const QString& oldName, const QString& newName );

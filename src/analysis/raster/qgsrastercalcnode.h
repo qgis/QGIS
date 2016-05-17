@@ -103,6 +103,9 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QString mRasterName;
     QgsRasterMatrix* mMatrix;
     Operator mOperator;
+
+    QgsRasterCalcNode( const QgsRasterCalcNode& rh );
+    QgsRasterCalcNode& operator=( const QgsRasterCalcNode& rh );
 };
 
 

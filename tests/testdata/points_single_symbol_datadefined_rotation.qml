@@ -32,7 +32,7 @@
           <prop k="offset_map_unit_scale" v="0,0"/>
           <prop k="offset_unit" v="MM"/>
           <prop k="outline_color" v="#000000"/>
-          <prop k="outline_width" v="1"/>
+          <prop k="outline_width" v="0.1"/>
           <prop k="outline_width_map_unit_scale" v="0,0"/>
           <prop k="outline_width_unit" v="MM"/>
           <prop k="scale_method" v="area"/>

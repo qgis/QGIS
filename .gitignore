@@ -1,6 +1,7 @@
 *.*~
 *.autosave
 *.aux
+*.bak
 *.diff
 *.log*
 *.orig
@@ -25,7 +26,6 @@ build*
 debian/*.debhelper
 debian/*.substvars
 desktop.ini
-doc/CODING.tex
 doc/INSTALL.tex
 i18n/*.qm
 Makefile
@@ -51,8 +51,7 @@ scripts/astyle.exe
 scripts/Debug
 scripts/qgisstyle*
 scripts/RelWithDebInfo
-src/core/qgscontexthelp_texts.cpp
-src/core/qgsexpression_texts.cpp
+tests/testdata/cache/
 tests/testdata/checker360by180.asc.aux.xml
 tests/testdata/grass/wgs84/test/.gislock
 tests/testdata/grass/wgs84/test6/.gislock

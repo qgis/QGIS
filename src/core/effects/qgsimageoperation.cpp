@@ -30,6 +30,8 @@
 
 #define INF 1E20
 
+/// @cond PRIVATE
+
 template <typename PixelOperation>
 void QgsImageOperation::runPixelOperation( QImage &image, PixelOperation& operation )
 {
@@ -54,7 +56,7 @@ void QgsImageOperation::runPixelOperationOnWholeImage( QImage &image, PixelOpera
   int width = image.width();
   for ( int y = 0; y < height; ++y )
   {
-    QRgb* ref = ( QRgb* )image.scanLine( y );
+    QRgb* ref = reinterpret_cast< QRgb* >( image.scanLine( y ) );
     for ( int x = 0; x < width; ++x )
     {
       operation( ref[x], x, y );
@@ -125,7 +127,7 @@ void QgsImageOperation::runLineOperationOnWholeImage( QImage &image, LineOperati
   {
     for ( int y = 0; y < height; ++y )
     {
-      QRgb* ref = ( QRgb* )image.scanLine( y );
+      QRgb* ref = reinterpret_cast< QRgb* >( image.scanLine( y ) );
       operation( ref, width, bpl );
     }
   }
@@ -135,7 +137,7 @@ void QgsImageOperation::runLineOperationOnWholeImage( QImage &image, LineOperati
     unsigned char* ref = image.scanLine( 0 );
     for ( int x = 0; x < width; ++x, ref += 4 )
     {
-      operation(( QRgb* )ref, height, bpl );
+      operation( reinterpret_cast< QRgb* >( ref ), height, bpl );
     }
   }
 }
@@ -172,6 +174,8 @@ void QgsImageOperation::runBlockOperationInThreads( QImage &image, BlockOperatio
   QtConcurrent::blockingMap( blocks, operation );
 }
 
+
+///@endcond
 
 //
 //operation specific code
@@ -257,7 +261,7 @@ void QgsImageOperation::BrightnessContrastPixelOperation::operator()( QRgb &rgb,
 
 int QgsImageOperation::adjustColorComponent( int colorComponent, int brightness, double contrastFactor )
 {
-  return qBound( 0, ( int )(((((( colorComponent / 255.0 ) - 0.5 ) * contrastFactor ) + 0.5 ) * 255 ) + brightness ), 255 );
+  return qBound( 0, static_cast< int >(((((( colorComponent / 255.0 ) - 0.5 ) * contrastFactor ) + 0.5 ) * 255 ) + brightness ), 255 );
 }
 
 //hue/saturation
@@ -280,13 +284,13 @@ void QgsImageOperation::HueSaturationPixelOperation::operator()( QRgb &rgb, cons
   if ( mSaturation < 1.0 )
   {
     // Lowering the saturation. Use a simple linear relationship
-    s = qMin(( int )( s * mSaturation ), 255 );
+    s = qMin( static_cast< int >( s * mSaturation ), 255 );
   }
   else if ( mSaturation > 1.0 )
   {
     // Raising the saturation. Use a saturation curve to prevent
     // clipping at maximum saturation with ugly results.
-    s = qMin(( int )( 255. * ( 1 - qPow( 1 - ( s / 255. ), qPow( mSaturation, 2 ) ) ) ), 255 );
+    s = qMin( static_cast< int >( 255. * ( 1 - qPow( 1 - ( s / 255. ), qPow( mSaturation, 2 ) ) ) ), 255 );
   }
 
   if ( mColorize )
@@ -521,7 +525,7 @@ void QgsImageOperation::ShadeFromArrayOperation::operator()( QRgb &rgb, const in
   if ( ! mProperties.ramp )
     return;
 
-  if ( mSpread == 0 )
+  if ( qgsDoubleNear( mSpread, 0.0 ) )
   {
     rgb = mProperties.ramp->color( 1.0 ).rgba();
     return;
@@ -597,7 +601,7 @@ void QgsImageOperation::stackBlur( QImage &image, const int radius, const bool a
 
 void QgsImageOperation::StackBlurLineOperation::operator()( QRgb* startRef, const int lineLength, const int bytesPerLine )
 {
-  unsigned char* p = ( unsigned char* )startRef;
+  unsigned char* p = reinterpret_cast< unsigned char* >( startRef );
   int rgba[4];
   int increment = ( mDirection == QgsImageOperation::ByRow ) ? 4 : bytesPerLine;
   if ( !mForwardDirection )
@@ -675,7 +679,7 @@ void QgsImageOperation::GaussianBlurOperation::operator()( QgsImageOperation::Im
   int sourceBpl = block.image->bytesPerLine();
 
   unsigned char* outputLineRef = mDestImage->scanLine( block.beginLine );
-  QRgb* destRef = 0;
+  QRgb* destRef = nullptr;
   if ( mDirection == ByRow )
   {
     unsigned char* sourceFirstLine = block.image->scanLine( 0 );
@@ -685,7 +689,7 @@ void QgsImageOperation::GaussianBlurOperation::operator()( QgsImageOperation::Im
     for ( unsigned int y = block.beginLine; y < block.endLine; ++y, outputLineRef += mDestImageBpl )
     {
       sourceRef = sourceFirstLine;
-      destRef = ( QRgb* )outputLineRef;
+      destRef = reinterpret_cast< QRgb* >( outputLineRef );
       for ( int x = 0; x < width; ++x, ++destRef, sourceRef += 4 )
       {
         *destRef = gaussianBlurVertical( y, sourceRef, sourceBpl, height );
@@ -697,7 +701,7 @@ void QgsImageOperation::GaussianBlurOperation::operator()( QgsImageOperation::Im
     unsigned char* sourceRef = block.image->scanLine( block.beginLine );
     for ( unsigned int y = block.beginLine; y < block.endLine; ++y, outputLineRef += mDestImageBpl, sourceRef += sourceBpl )
     {
-      destRef = ( QRgb* )outputLineRef;
+      destRef = reinterpret_cast< QRgb* >( outputLineRef );
       for ( int x = 0; x < width; ++x, ++destRef )
       {
         *destRef = gaussianBlurHorizontal( x, sourceRef, width );
@@ -720,7 +724,7 @@ inline QRgb QgsImageOperation::GaussianBlurOperation::gaussianBlurVertical( cons
     y = qBound( 0, posy + ( i - mRadius ), height - 1 );
     ref = sourceFirstLine + sourceBpl * y;
 
-    QRgb* refRgb = ( QRgb* )ref;
+    QRgb* refRgb = reinterpret_cast< QRgb* >( ref );
     r += mKernel[i] * qRed( *refRgb );
     g += mKernel[i] * qGreen( *refRgb );
     b += mKernel[i] * qBlue( *refRgb );
@@ -744,7 +748,7 @@ inline QRgb QgsImageOperation::GaussianBlurOperation::gaussianBlurHorizontal( co
     x = qBound( 0, posx + ( i - mRadius ), width - 1 );
     ref = sourceFirstLine + x * 4;
 
-    QRgb* refRgb = ( QRgb* )ref;
+    QRgb* refRgb = reinterpret_cast< QRgb* >( ref );
     r += mKernel[i] * qRed( *refRgb );
     g += mKernel[i] * qGreen( *refRgb );
     b += mKernel[i] * qBlue( *refRgb );
@@ -793,7 +797,7 @@ void QgsImageOperation::flipImage( QImage &image, QgsImageOperation::FlipType ty
   runLineOperation( image, flipOperation );
 }
 
-QRect QgsImageOperation::nonTransparentImageRect( const QImage &image, const QSize &minSize, bool center )
+QRect QgsImageOperation::nonTransparentImageRect( const QImage &image, QSize minSize, bool center )
 {
   int width = image.width();
   int height = image.height();
@@ -842,7 +846,7 @@ QRect QgsImageOperation::nonTransparentImageRect( const QImage &image, const QSi
   return QRect( xmin, ymin, xmax - xmin, ymax - ymin );
 }
 
-QImage QgsImageOperation::cropTransparent( const QImage &image, const QSize &minSize, bool center )
+QImage QgsImageOperation::cropTransparent( const QImage &image, QSize minSize, bool center )
 {
   return image.copy( QgsImageOperation::nonTransparentImageRect( image, minSize, center ) );
 }
@@ -852,7 +856,7 @@ void QgsImageOperation::FlipLineOperation::operator()( QRgb *startRef, const int
   int increment = ( mDirection == QgsImageOperation::ByRow ) ? 4 : bytesPerLine;
 
   //store temporary line
-  unsigned char* p = ( unsigned char* )startRef;
+  unsigned char* p = reinterpret_cast< unsigned char* >( startRef );
   unsigned char* tempLine = new unsigned char[ lineLength * 4 ];
   for ( int i = 0; i < lineLength * 4; ++i, p += increment )
   {
@@ -864,7 +868,7 @@ void QgsImageOperation::FlipLineOperation::operator()( QRgb *startRef, const int
   }
 
   //write values back in reverse order
-  p = ( unsigned char* )startRef;
+  p = reinterpret_cast< unsigned char* >( startRef );
   for ( int i = ( lineLength - 1 ) * 4; i >= 0; i -= 7, p += increment )
   {
     *( p++ ) = tempLine[i++];

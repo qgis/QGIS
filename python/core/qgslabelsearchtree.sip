@@ -28,4 +28,8 @@ class QgsLabelSearchTree
      * @note not available in python bindings
      */
     // bool insertLabel( LabelPosition* labelPos, int featureId, const QString& layerName, bool diagram = false, bool pinned = false );
+
+  private:
+
+    QgsLabelSearchTree( const QgsLabelSearchTree& rh );
 };

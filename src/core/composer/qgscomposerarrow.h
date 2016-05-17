@@ -27,6 +27,8 @@ class QgsLineSymbolV2;
 /** An item that draws an arrow between to points*/
 class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
 {
+    Q_OBJECT
+
   public:
 
     enum MarkerMode
@@ -46,7 +48,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      * @param stopPoint end point for line
      * @param c parent composition
      */
-    QgsComposerArrow( const QPointF& startPoint, const QPointF& stopPoint, QgsComposition* c );
+    QgsComposerArrow( QPointF startPoint, QPointF stopPoint, QgsComposition* c );
 
     ~QgsComposerArrow();
 
@@ -57,7 +59,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
     /** Modifies position of start and endpoint and calls QgsComposerItem::setSceneRect
-    */
+     */
     void setSceneRect( const QRectF& rectangle ) override;
 
     /** Sets the width of the arrow head in mm
@@ -195,15 +197,15 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     void setMarkerMode( MarkerMode mode );
 
     /** Stores state in DOM element
-    * @param elem is DOM element corresponding to 'Composer' tag
-    * @param doc document
-    */
+     * @param elem is DOM element corresponding to 'Composer' tag
+     * @param doc document
+     */
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** Sets state from DOM document
-    * @param itemElem is DOM node corresponding to item tag
-    * @param doc is the document to read
-    */
+     * @param itemElem is DOM node corresponding to item tag
+     * @param doc is the document to read
+     */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
   private:
@@ -244,13 +246,14 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     QColor mArrowHeadFillColor;
     /** Indicates QGIS version to mimic bounding box behaviour for. The line placement changed in version 2.4, so a value
      * of 22 is used to indicate that the line should be drawn using the older placement routine.
-    */
+     */
     int mBoundsBehaviour;
 
     QgsLineSymbolV2* mLineSymbol;
 
     /** Adapts the item scene rect to contain the start point, the stop point including the arrow marker and the outline.
-        Needs to be called whenever the arrow width/height, the outline with or the endpoints are changed*/
+     *  Needs to be called whenever the arrow width/height, the outline with or the endpoints are changed
+     */
     void adaptItemSceneRect();
     /** Computes the margin around the line necessary to include the markers */
     double computeMarkerMargin() const;
@@ -262,11 +265,11 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     void init();
     /** Creates the default line symbol
      * @note added in QGIS 2.5
-    */
+     */
     void createDefaultLineSymbol();
     /** Draws the arrow line
      * @note added in QGIS 2.5
-    */
+     */
     void drawLine( QPainter *painter );
 };
 

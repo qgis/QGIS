@@ -27,7 +27,7 @@ class QgsLegendModel : QStandardItemModel
      * @deprecated in 2.6
      */
     void setLayerSetAndGroups( const QStringList& layerIds, const QList<  QPair< QString, QList<QString> > >& groupInfo ) /Deprecated/;
-    void setLayerSet( const QStringList& layerIds, double scaleDenominator = -1, QString rule = "" );
+    void setLayerSet( const QStringList& layerIds, double scaleDenominator = -1, const QString& rule = "" );
     /** Adds a group
       @param text name of group (defaults to translation of "Group")
       @param position insertion position (toplevel position (or -1 if it should be placed at the end of the legend).
@@ -41,7 +41,7 @@ class QgsLegendModel : QStandardItemModel
     /** Updates the whole symbology of a layer*/
     void updateLayer( QStandardItem* layerItem );
     /** Tries to update a single classification item*/
-    void updateVectorV2ClassificationItem( QStandardItem* classificationItem, QgsSymbolV2* symbol, QString itemText );
+    void updateVectorV2ClassificationItem( QStandardItem* classificationItem, QgsSymbolV2* symbol, const QString& itemText );
 
     void updateRasterClassificationItem( QStandardItem* classificationItem );
 
@@ -70,7 +70,7 @@ class QgsLegendModel : QStandardItemModel
 
   public slots:
     void removeLayer( const QString& layerId );
-    void addLayer( QgsMapLayer* theMapLayer, double scaleDenominator = -1, QString rule = "", QStandardItem* parentItem = 0 );
+    void addLayer( QgsMapLayer* theMapLayer, double scaleDenominator = -1, const QString& rule = "", QStandardItem* parentItem = 0 );
 
   signals:
     void layersChanged();

@@ -117,7 +117,7 @@ static CPLErr rescalePostWarpChunkProcessor( void* pKern, void* pArg )
 
 
 QgsAlignRaster::QgsAlignRaster()
-    : mProgressHandler( 0 )
+    : mProgressHandler( nullptr )
 {
   // parameters
   mCellSizeX = mCellSizeY = 0;
@@ -193,7 +193,7 @@ bool QgsAlignRaster::setParametersFromRaster( const RasterInfo& rasterInfo, cons
     else
     {
       mGridOffsetX = customGridOffset.x();
-      mGridOffsetY = customGridOffset.x();
+      mGridOffsetY = customGridOffset.y();
     }
   }
   else
@@ -253,8 +253,7 @@ bool QgsAlignRaster::checkInputParameters()
   }
 
   mXSize = mYSize = 0;
-  for ( int i = 0; i < 6; ++i )
-    mGeoTransform[i] = 0;
+  std::fill_n( mGeoTransform, 6, 0 );
 
   double finalExtent[4] = { 0, 0, 0, 0 };
 
@@ -267,14 +266,14 @@ bool QgsAlignRaster::checkInputParameters()
 
     QSizeF cs;
     QgsRectangle extent;
-    if ( !suggestedWarpOutput( info, mCrsWkt, &cs, 0, &extent ) )
+    if ( !suggestedWarpOutput( info, mCrsWkt, &cs, nullptr, &extent ) )
     {
       mErrorMessage = QString( "Failed to get suggested warp output.\n\n"
                                "File:\n%1\n\n"
                                "Source WKT:\n%2\n\nDestination WKT:\n%3" )
-                      .arg( r.inputFilename )
-                      .arg( info.mCrsWkt )
-                      .arg( mCrsWkt );
+                      .arg( r.inputFilename,
+                            info.mCrsWkt,
+                            mCrsWkt );
       return false;
     }
 
@@ -319,7 +318,7 @@ bool QgsAlignRaster::checkInputParameters()
   // output raster grid configuration (with no rotation/shear)
   // ... and raster width/height
 
-  double originX = ceil_with_tolerance(( finalExtent[0] - mGridOffsetX ) / mCellSizeX ) * mCellSizeX + mGridOffsetX;;
+  double originX = ceil_with_tolerance(( finalExtent[0] - mGridOffsetX ) / mCellSizeX ) * mCellSizeX + mGridOffsetX;
   double originY = ceil_with_tolerance(( finalExtent[1] - mGridOffsetY ) / mCellSizeY ) * mCellSizeY + mGridOffsetY;
   int xSize = floor_with_tolerance(( finalExtent[2] - originX ) / mCellSizeX );
   int ySize = floor_with_tolerance(( finalExtent[3] - originY ) / mCellSizeY );
@@ -432,7 +431,7 @@ bool QgsAlignRaster::createAndWarp( const Item& raster )
   GDALDatasetH hSrcDS = GDALOpen( raster.inputFilename.toLocal8Bit().constData(), GA_ReadOnly );
   if ( !hSrcDS )
   {
-    mErrorMessage = QObject::tr( "Unable to open input file: " ) + raster.inputFilename;
+    mErrorMessage = QObject::tr( "Unable to open input file: %1" ).arg( raster.inputFilename );
     return false;
   }
 
@@ -444,21 +443,21 @@ bool QgsAlignRaster::createAndWarp( const Item& raster )
   // Create the output file.
   GDALDatasetH hDstDS;
   hDstDS = GDALCreate( hDriver, raster.outputFilename.toLocal8Bit().constData(), mXSize, mYSize,
-                       bandCount, eDT, NULL );
+                       bandCount, eDT, nullptr );
   if ( !hDstDS )
   {
     GDALClose( hSrcDS );
-    mErrorMessage = QObject::tr( "Unable to create output file: " ) + raster.outputFilename;
+    mErrorMessage = QObject::tr( "Unable to create output file: %1" ).arg( raster.outputFilename );
     return false;
   }
 
   // Write out the projection definition.
   GDALSetProjection( hDstDS, mCrsWkt.toAscii().constData() );
-  GDALSetGeoTransform( hDstDS, ( double* )mGeoTransform );
+  GDALSetGeoTransform( hDstDS, mGeoTransform );
 
   // Copy the color table, if required.
   GDALColorTableH hCT = GDALGetRasterColorTable( GDALGetRasterBand( hSrcDS, 1 ) );
-  if ( hCT != NULL )
+  if ( hCT )
     GDALSetRasterColorTable( GDALGetRasterBand( hDstDS, 1 ), hCT );
 
   // -----------------------------------------------------------------------
@@ -477,7 +476,7 @@ bool QgsAlignRaster::createAndWarp( const Item& raster )
     psWarpOptions->panDstBands[i] = i + 1;
   }
 
-  psWarpOptions->eResampleAlg = ( GDALResampleAlg ) raster.resampleMethod;
+  psWarpOptions->eResampleAlg = static_cast< GDALResampleAlg >( raster.resampleMethod );
 
   // our progress function
   psWarpOptions->pfnProgress = _progress;
@@ -521,8 +520,8 @@ bool QgsAlignRaster::suggestedWarpOutput( const QgsAlignRaster::RasterInfo& info
   // Create a transformer that maps from source pixel/line coordinates
   // to destination georeferenced coordinates (not destination
   // pixel line).  We do that by omitting the destination dataset
-  // handle (setting it to NULL).
-  void* hTransformArg = GDALCreateGenImgProjTransformer( info.mDataset, info.mCrsWkt.toAscii().constData(), NULL, destWkt.toAscii().constData(), FALSE, 0, 1 );
+  // handle (setting it to nullptr).
+  void* hTransformArg = GDALCreateGenImgProjTransformer( info.mDataset, info.mCrsWkt.toAscii().constData(), nullptr, destWkt.toAscii().constData(), FALSE, 0, 1 );
   if ( !hTransformArg )
     return false;
 

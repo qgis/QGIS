@@ -30,8 +30,10 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual ~QgsSingleSymbolRendererV2();
 
+    //! @note available in python as symbolForFeature2
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
 
+    //! @note available in python as originalSymbolForFeature2
     virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
@@ -43,10 +45,10 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     QgsSymbolV2* symbol() const;
     void setSymbol( QgsSymbolV2* s );
 
-    Q_DECL_DEPRECATED void setRotationField( QString fieldOrExpression ) override;
+    Q_DECL_DEPRECATED void setRotationField( const QString& fieldOrExpression ) override;
     Q_DECL_DEPRECATED QString rotationField() const override;
 
-    void setSizeScaleField( QString fieldOrExpression );
+    void setSizeScaleField( const QString& fieldOrExpression );
     QString sizeScaleField() const;
 
     void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
@@ -54,7 +56,7 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual QString dump() const override;
 
-    virtual QgsFeatureRendererV2* clone() const override;
+    virtual QgsSingleSymbolRendererV2* clone() const override;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
     static QgsFeatureRendererV2* createFromSld( QDomElement& element, QGis::GeometryType geomType );
@@ -62,6 +64,7 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities() override { return SymbolLevels | RotationField; }
 
+    //! @note available in python as symbol2
     virtual QgsSymbolV2List symbols( QgsRenderContext& context ) override;
 
     //! create renderer from XML element
@@ -75,11 +78,15 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
 
     //! return a list of item text / symbol
     //! @note not available in python bindings
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = QString() ) override;
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = QString() ) override;
 
     //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
     //! @note added in 2.6
     virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
+
+    virtual QSet< QString > legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
+
+    virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol ) override;
 
     //! creates a QgsSingleSymbolRendererV2 from an existing renderer.
     //! @note added in 2.5

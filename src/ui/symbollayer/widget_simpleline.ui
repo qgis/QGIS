@@ -114,6 +114,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="specialValueText">
+        <string>Hairline</string>
+       </property>
        <property name="decimals">
         <number>6</number>
        </property>
@@ -127,7 +130,7 @@
         <double>1.000000000000000</double>
        </property>
        <property name="showClearButton" stdset="0">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -310,6 +313,11 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -321,17 +329,12 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsPenStyleComboBox</class>
+   <class>QgsPenJoinStyleComboBox</class>
    <extends>QComboBox</extends>
    <header>qgspenstylecombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsPenJoinStyleComboBox</class>
+   <class>QgsPenStyleComboBox</class>
    <extends>QComboBox</extends>
    <header>qgspenstylecombobox.h</header>
   </customwidget>

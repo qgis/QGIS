@@ -45,7 +45,7 @@ class QgsComposerPicture: QgsComposerItem
      * @see usePictureExpression
      * @see pictureFile
      * @deprecated use setPicturePath instead
-    */
+     */
     void setPictureFile( const QString& path ) /Deprecated/;
 
     /** Returns the path of the source image file. Data defined picture source may override
@@ -54,7 +54,7 @@ class QgsComposerPicture: QgsComposerItem
      * @see usePictureExpression
      * @see setPictureFile
      * @deprecated use picturePath instead
-    */
+     */
     QString pictureFile() const /Deprecated/;
 
     /** Sets the source path of the image (may be svg or a raster format). Data defined
@@ -64,7 +64,7 @@ class QgsComposerPicture: QgsComposerItem
      * @see usePictureExpression
      * @see picturePath
      * @note added in QGIS 2.5
-    */
+     */
     void setPicturePath( const QString& path );
 
     /** Returns the path of the source image. Data defined picture source may override
@@ -73,12 +73,12 @@ class QgsComposerPicture: QgsComposerItem
      * @see usePictureExpression
      * @see setPicturePath
      * @note added in QGIS 2.5
-    */
+     */
     QString picturePath() const;
 
     /** Sets this items bound in scene coordinates such that 1 item size units
      * corresponds to 1 scene size unit and resizes the svg symbol / image
-    */
+     */
     void setSceneRect( const QRectF& rectangle );
 
     /** Stores state in Dom element
@@ -103,7 +103,7 @@ class QgsComposerPicture: QgsComposerItem
      * @note added in 2.2
      * @see setPictureRotation
      * @see rotationMap
-    */
+     */
     double pictureRotation() const;
 
     /** Sets the map object for rotation (by id). A value of -1 disables the map
@@ -155,6 +155,57 @@ class QgsComposerPicture: QgsComposerItem
      * @see setPictureAnchor
      */
     ItemPositionMode pictureAnchor() const;
+
+    /** Returns the fill color used for parameterized SVG files.
+     * @see setSvgFillColor()
+     * @see svgBorderColor()
+     * @note added in QGIS 2.14.1
+     */
+    QColor svgFillColor() const;
+
+    /** Sets the fill color used for parameterized SVG files.
+     * @param color fill color.
+     * @note this setting only has an effect on parameterized SVG files, and is ignored for
+     * non-parameterized SVG files.
+     * @see svgFillColor()
+     * @see setSvgBorderColor()
+     * @note added in QGIS 2.14.1
+     */
+    void setSvgFillColor( const QColor& color );
+
+    /** Returns the border color used for parameterized SVG files.
+     * @see setSvgBorderColor()
+     * @see svgFillColor()
+     * @note added in QGIS 2.14.1
+     */
+    QColor svgBorderColor() const;
+
+    /** Sets the border color used for parameterized SVG files.
+     * @param color border color.
+     * @note this setting only has an effect on parameterized SVG files, and is ignored for
+     * non-parameterized SVG files.
+     * @see svgBorderlColor()
+     * @see setSvgFillColor()
+     * @note added in QGIS 2.14.1
+     */
+    void setSvgBorderColor( const QColor& color );
+
+    /** Returns the border width (in mm) used for parameterized SVG files.
+     * @see setSvgBorderWidth()
+     * @see svgBorderColor()
+     * @note added in QGIS 2.14.1
+     */
+    double svgBorderWidth() const;
+
+    /** Sets the border width used for parameterized SVG files.
+     * @param width border width in mm
+     * @note this setting only has an effect on parameterized SVG files, and is ignored for
+     * non-parameterized SVG files.
+     * @see svgBorderWidth()
+     * @see setSvgBorderColor()
+     * @note added in QGIS 2.14.1
+     */
+    void setSvgBorderWidth( double width );
 
     /** Returns whether the picture item is using an expression for the image source.
      * @returns true if the picture is using an expression for the source, false if
@@ -242,7 +293,7 @@ class QgsComposerPicture: QgsComposerItem
      * @see pictureExpression
      * @deprecated use QgsComposerObject::dataDefinedProperty( QgsComposerObject::PictureSource ) instead
      */
-    virtual void setPictureExpression( QString expression ) /Deprecated/;
+    virtual void setPictureExpression( const QString& expression ) /Deprecated/;
 
     /** Recalculates the source image (if using an expression for picture's source)
      * and reloads and redraws the picture.

@@ -93,12 +93,14 @@ class TableIndex:
 class DbError(Exception):
 
     def __init__(self, message, query=None):
-        # Save error. funny that the variables are in utf-8
-        self.message = unicode(message, 'utf-8')
-        self.query = (unicode(query, 'utf-8') if query is not None else None)
+        self.message = message
+        self.query = query
 
     def __str__(self):
-        return 'MESSAGE: %s\nQUERY: %s' % (self.message, self.query)
+        return unicode(self).encode('utf-8')
+
+    def __unicode__(self):
+        return u'MESSAGE: %s\nQUERY: %s' % (self.message, self.query)
 
 
 class TableField:
@@ -153,7 +155,7 @@ class GeoDB:
         try:
             self.con = psycopg2.connect(self.con_info())
         except psycopg2.OperationalError as e:
-            raise DbError(e.message)
+            raise DbError(unicode(e))
 
         self.has_postgis = self.check_postgis()
 
@@ -295,7 +297,7 @@ class GeoDB:
     def get_table_rows(self, table, schema=None):
         c = self.con.cursor()
         self._exec_sql(c, 'SELECT COUNT(*) FROM %s' % self._table_name(schema,
-                       table))
+                                                                       table))
         return c.fetchone()[0]
 
     def get_table_fields(self, table, schema=None):
@@ -724,7 +726,7 @@ class GeoDB:
             if x is not None:
                 srtext = x.group()
             return srtext
-        except DbError as e:
+        except DbError:
             return 'Unknown'
 
     def insert_table_row(self, table, values, schema=None, cursor=None):
@@ -751,7 +753,7 @@ class GeoDB:
         try:
             cursor.execute(sql)
         except psycopg2.Error as e:
-            raise DbError(e.message, e.cursor.query)
+            raise DbError(unicode(e), e.cursor.query)
 
     def _exec_sql_and_commit(self, sql):
         """Tries to execute and commit some action, on error it rolls
@@ -762,7 +764,7 @@ class GeoDB:
             c = self.con.cursor()
             self._exec_sql(c, sql)
             self.con.commit()
-        except DbError as e:
+        except DbError:
             self.con.rollback()
             raise
 
@@ -820,4 +822,4 @@ if __name__ == '__main__':
     # try:
     # ....db.create_table('trrrr', [('id','serial'), ('test','text')])
     # except DbError, e:
-    # ....print e.message, e.query
+    # ....print unicode(e), e.query

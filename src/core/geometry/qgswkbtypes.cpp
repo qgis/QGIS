@@ -17,98 +17,37 @@
 
 #include "qgswkbtypes.h"
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
 QMap<QgsWKBTypes::Type, QgsWKBTypes::wkbEntry>* QgsWKBTypes::entries()
 {
   static QMap<QgsWKBTypes::Type, QgsWKBTypes::wkbEntry> entries = registerTypes();
   return &entries;
 }
 
-QgsWKBTypes::Type QgsWKBTypes::singleType( Type type )
-{
-  QMap< Type, wkbEntry >::const_iterator it = entries()->find( type );
-  if ( it == entries()->constEnd() || it.key() == Unknown )
-  {
-    return Unknown;
-  }
-  return ( it->mSingleType );
-}
-
-QgsWKBTypes::Type QgsWKBTypes::multiType( Type type )
-{
-  QMap< Type, wkbEntry >::const_iterator it = entries()->find( type );
-  if ( it == entries()->constEnd() || it.key() == Unknown )
-  {
-    return Unknown;
-  }
-  return it->mMultiType;
-}
-
-QgsWKBTypes::Type QgsWKBTypes::flatType( Type type )
-{
-  QMap< Type, wkbEntry >::const_iterator it = entries()->find( type );
-  if ( it == entries()->constEnd() || it.key() == Unknown )
-  {
-    return Unknown;
-  }
-  return it->mFlatType;
-}
-
 QgsWKBTypes::Type QgsWKBTypes::parseType( const QString &wktStr )
 {
-  QString typestr = wktStr.left( wktStr.indexOf( '(' ) ).simplified().replace( " ", "" );
-  Q_FOREACH ( const Type& type, entries()->keys() )
+  QString typestr = wktStr.left( wktStr.indexOf( '(' ) ).simplified().remove( ' ' );
+
+  QMap<QgsWKBTypes::Type, QgsWKBTypes::wkbEntry>* knownTypes = entries();
+  QMap<QgsWKBTypes::Type, QgsWKBTypes::wkbEntry>::const_iterator it = knownTypes->constBegin();
+  for ( ; it != knownTypes->constEnd(); ++it )
   {
-    QMap< Type, wkbEntry >::const_iterator it = entries()->find( type );
-    if ( it != entries()->constEnd() && it.value().mName.compare( typestr, Qt::CaseInsensitive ) == 0 )
+    if ( it.value().mName.compare( typestr, Qt::CaseInsensitive ) == 0 )
     {
-      return type;
+      return it.key();
     }
   }
   return Unknown;
 }
 
-bool QgsWKBTypes::isSingleType( Type type )
-{
-  return ( type != Unknown && !isMultiType( type ) );
-}
-
-bool QgsWKBTypes::isMultiType( Type type )
-{
-  QMap< Type, wkbEntry >::const_iterator it = entries()->find( type );
-  if ( it == entries()->constEnd() )
-  {
-    return Unknown;
-  }
-  return it->mIsMultiType;
-}
-
-int QgsWKBTypes::wkbDimensions( Type type )
-{
-  GeometryType gtype = geometryType( type );
-  switch ( gtype )
-  {
-    case LineGeometry:
-      return 1;
-    case PolygonGeometry:
-      return 2;
-    default: //point, no geometry, unknown geometry
-      return 0;
-  }
-}
-
-QgsWKBTypes::GeometryType QgsWKBTypes::geometryType( Type type )
-{
-  QMap< Type, wkbEntry >::const_iterator it = entries()->find( type );
-  if ( it == entries()->constEnd() )
-  {
-    return UnknownGeometry;
-  }
-  return it->mGeometryType;
-}
-
 QString QgsWKBTypes::displayString( Type type )
 {
-  QMap< Type, wkbEntry >::const_iterator it = entries()->find( type );
+  QMap< Type, wkbEntry >::const_iterator it = entries()->constFind( type );
   if ( it == entries()->constEnd() )
   {
     return QString::null;
@@ -116,25 +55,11 @@ QString QgsWKBTypes::displayString( Type type )
   return it->mName;
 }
 
-bool QgsWKBTypes::hasZ( Type type )
-{
-  QMap< Type, wkbEntry >::const_iterator it = entries()->find( type );
-  if ( it == entries()->constEnd() )
-  {
-    return false;
-  }
-  return it->mHasZ;
-}
-
-bool QgsWKBTypes::hasM( Type type )
-{
-  QMap< Type, wkbEntry >::const_iterator it = entries()->find( type );
-  if ( it == entries()->constEnd() )
-  {
-    return false;
-  }
-  return it->mHasM;
-}
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 QMap<QgsWKBTypes::Type, QgsWKBTypes::wkbEntry> QgsWKBTypes::registerTypes()
 {

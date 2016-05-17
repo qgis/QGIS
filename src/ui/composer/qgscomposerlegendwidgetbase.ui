@@ -64,8 +64,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>375</width>
-        <height>1291</height>
+        <width>374</width>
+        <height>1293</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -95,9 +95,6 @@
             <property name="text">
              <string>&amp;Title</string>
             </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
             <property name="buddy">
              <cstring>mTitleLineEdit</cstring>
             </property>
@@ -111,21 +108,15 @@
             <property name="text">
              <string>Map</string>
             </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QComboBox" name="mMapComboBox"/>
+           <widget class="QgsComposerItemComboBox" name="mMapComboBox"/>
           </item>
           <item row="3" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
              <string>Wrap text on</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -219,14 +210,17 @@
           </item>
           <item>
            <widget class="QgsLayerTreeView" name="mItemTreeView">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>250</height>
+             </size>
+            </property>
             <property name="selectionMode">
              <enum>QAbstractItemView::ContiguousSelection</enum>
             </property>
-            <property name="wordWrap">
-             <bool>false</bool>
-            </property>
             <property name="headerHidden">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <attribute name="headerVisible">
              <bool>false</bool>
@@ -396,6 +390,23 @@
              </widget>
             </item>
             <item>
+             <widget class="QgsLegendFilterButton" name="mExpressionFilterButton">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../../../images/images.qrc">
+                <normaloff>:/images/themes/default/mIconExpressionFilter.svg</normaloff>:/images/themes/default/mIconExpressionFilter.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
              <spacer name="horizontalSpacer_4">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -409,6 +420,16 @@
              </spacer>
             </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="mFilterLegendByAtlasCheckBox">
+            <property name="toolTip">
+             <string>Filter out legend elements that lie outside the current atlas feature.</string>
+            </property>
+            <property name="text">
+             <string>Only show items inside current atlas feature</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -595,9 +616,6 @@
             <property name="text">
              <string>Symbol width</string>
             </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
            </widget>
           </item>
           <item row="0" column="1">
@@ -618,9 +636,6 @@
             <property name="text">
              <string>Symbol height</string>
             </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
            </widget>
           </item>
           <item row="1" column="1">
@@ -634,6 +649,105 @@
             <property name="showClearButton" stdset="0">
              <bool>false</bool>
             </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QgsCollapsibleGroupBoxBasic" name="mRasterBorderGroupBox">
+            <property name="title">
+             <string>Draw border for raster symbols</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="syncGroup" stdset="0">
+             <string notr="true">composeritem</string>
+            </property>
+            <property name="collapsed" stdset="0">
+             <bool>true</bool>
+            </property>
+            <layout class="QGridLayout" name="gridLayout">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_17">
+               <property name="text">
+                <string>Border color</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <layout class="QHBoxLayout" name="horizontalLayout_6">
+               <item>
+                <widget class="QgsColorButtonV2" name="mRasterBorderColorButton">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>120</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="mOutlineWidthLabel">
+               <property name="text">
+                <string>Thickness</string>
+               </property>
+               <property name="buddy">
+                <cstring>mRasterBorderWidthSpinBox</cstring>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QgsDoubleSpinBox" name="mRasterBorderWidthSpinBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="specialValueText">
+                <string>Hairline</string>
+               </property>
+               <property name="suffix">
+                <string> mm</string>
+               </property>
+               <property name="singleStep">
+                <double>0.100000000000000</double>
+               </property>
+               <property name="showClearButton" stdset="0">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>
@@ -665,9 +779,6 @@
             <property name="text">
              <string>Legend width</string>
             </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
            </widget>
           </item>
           <item row="0" column="1">
@@ -690,9 +801,6 @@
            <widget class="QLabel" name="label_14">
             <property name="text">
              <string>Legend height</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -744,9 +852,6 @@
             <property name="text">
              <string>Group Space</string>
             </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
            </widget>
           </item>
           <item row="1" column="1">
@@ -766,9 +871,6 @@
             </property>
             <property name="text">
              <string>Subgroup space</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -790,9 +892,6 @@
             <property name="text">
              <string>Symbol space</string>
             </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
            </widget>
           </item>
           <item row="3" column="1">
@@ -813,9 +912,6 @@
             <property name="text">
              <string>Icon label space</string>
             </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
            </widget>
           </item>
           <item row="4" column="1">
@@ -832,9 +928,6 @@
            <widget class="QLabel" name="label_9">
             <property name="text">
              <string>Box space</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -899,7 +992,7 @@
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -919,9 +1012,19 @@
    <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsComposerItemComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgscomposeritemcombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsLayerTreeView</class>
    <extends>QTreeView</extends>
    <header>qgslayertreeview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsLegendFilterButton</class>
+   <extends>QToolButton</extends>
+   <header location="global">qgslegendfilterbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -943,6 +1046,8 @@
   <tabstop>mEditPushButton</tabstop>
   <tabstop>mCountToolButton</tabstop>
   <tabstop>mFilterByMapToolButton</tabstop>
+  <tabstop>mExpressionFilterButton</tabstop>
+  <tabstop>mFilterLegendByAtlasCheckBox</tabstop>
   <tabstop>mFontsColGroupBox</tabstop>
   <tabstop>mTitleFontButton</tabstop>
   <tabstop>mLayerFontButton</tabstop>
@@ -956,6 +1061,9 @@
   <tabstop>mSymbolsColGroupBox</tabstop>
   <tabstop>mSymbolWidthSpinBox</tabstop>
   <tabstop>mSymbolHeightSpinBox</tabstop>
+  <tabstop>mRasterBorderGroupBox</tabstop>
+  <tabstop>mRasterBorderColorButton</tabstop>
+  <tabstop>mRasterBorderWidthSpinBox</tabstop>
   <tabstop>mSymbolsColGroupBox_2</tabstop>
   <tabstop>mWmsLegendWidthSpinBox</tabstop>
   <tabstop>mWmsLegendHeightSpinBox</tabstop>

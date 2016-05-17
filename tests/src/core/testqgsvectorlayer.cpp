@@ -104,6 +104,7 @@ class TestQgsVectorLayer : public QObject
     void uniqueValues();
     void minimumValue();
     void maximumValue();
+    void isSpatial();
 };
 
 void TestQgsVectorLayer::initTestCase()
@@ -119,7 +120,7 @@ void TestQgsVectorLayer::initTestCase()
   //create a non spatial layer that will be used in all tests...
   //
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + "/";
+  mTestDataDir = myDataDir + '/';
   QString myDbfFileName = mTestDataDir + "nonspatial.dbf";
   QFileInfo myDbfFileInfo( myDbfFileName );
   mpNonSpatialLayer = new QgsVectorLayer( myDbfFileInfo.filePath(),
@@ -339,6 +340,14 @@ void TestQgsVectorLayer::maximumValue()
 
   //test with invalid field
   QCOMPARE( vLayer->maximumValue( 1000 ), QVariant() );
+}
+
+void TestQgsVectorLayer::isSpatial()
+{
+  QVERIFY( mpPointsLayer->isSpatial() );
+  QVERIFY( mpPolysLayer->isSpatial() );
+  QVERIFY( mpLinesLayer->isSpatial() );
+  QVERIFY( !mpNonSpatialLayer->isSpatial() );
 }
 
 QTEST_MAIN( TestQgsVectorLayer )

@@ -28,10 +28,6 @@
 #include <QString>
 #include <QtAlgorithms>
 
-//standard includes
-#include <limits>
-#include <algorithm>
-
 class QgsPointCompare
 {
   public:
@@ -130,7 +126,7 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
 {
   QgsVectorLayer *vl = mVectorLayer;
 
-  if ( vl == NULL )
+  if ( !vl )
     return;
 
   int featureCount = ( int ) vl->featureCount() * 2;
@@ -318,7 +314,7 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
 
         if ( !isFirstPoint )
         {
-          std::map< double, QgsPoint > pointsOnArc;
+          QMap< double, QgsPoint > pointsOnArc;
           pointsOnArc[ 0.0 ] = pt1;
           pointsOnArc[ pt1.sqrDist( pt2 )] = pt2;
 
@@ -347,14 +343,14 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
             }
           }
 
-          std::map< double, QgsPoint >::iterator pointsIt;
+          QMap< double, QgsPoint >::iterator pointsIt;
           QgsPoint pt1;
           QgsPoint pt2;
           int pt1idx = -1, pt2idx = -1;
           bool isFirstPoint = true;
           for ( pointsIt = pointsOnArc.begin(); pointsIt != pointsOnArc.end(); ++pointsIt )
           {
-            pt2 = pointsIt->second;
+            pt2 = *pointsIt;
             tmp = my_binary_search( points.begin(), points.end(), pt2, pointCompare );
             pt2 = *tmp;
             pt2idx = tmp - points.begin();

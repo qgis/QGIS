@@ -30,7 +30,7 @@ QgsHistogramDiagram::~QgsHistogramDiagram()
 {
 }
 
-QgsDiagram* QgsHistogramDiagram::clone() const
+QgsHistogramDiagram* QgsHistogramDiagram::clone() const
 {
   return new QgsHistogramDiagram( *this );
 }
@@ -38,12 +38,12 @@ QgsDiagram* QgsHistogramDiagram::clone() const
 QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
 {
   QSizeF size;
-  if ( feature.attributes().count() == 0 )
+  if ( feature.attributes().isEmpty() )
   {
     return size; //zero size if no attributes
   }
 
-  if ( is.upperValue - is.lowerValue == 0 )
+  if ( qgsDoubleNear( is.upperValue, is.lowerValue ) )
     return size; // invalid value range => zero size
 
   double maxValue = 0;
@@ -83,21 +83,36 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature& feature, const QgsRen
   return size;
 }
 
+double QgsHistogramDiagram::legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const
+{
+  if ( qgsDoubleNear( is.upperValue, is.lowerValue ) )
+    return s.minimumSize; // invalid value range => zero size
+
+  // Scale, if extension is smaller than the specified minimum
+  if ( value < s.minimumSize )
+  {
+    value = s.minimumSize;
+  }
+
+  double scaleFactor = (( is.upperSize.width() - is.lowerSize.width() ) / ( is.upperValue - is.lowerValue ) );
+  return value * scaleFactor;
+}
+
 QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
 {
   Q_UNUSED( c );
   QSizeF size;
 
-  if ( attributes.count() == 0 )
+  if ( attributes.isEmpty() )
   {
     return QSizeF(); //zero size if no attributes
   }
 
-  double maxValue = attributes[0].toDouble();
+  double maxValue = attributes.at( 0 ).toDouble();
 
   for ( int i = 0; i < attributes.count(); ++i )
   {
-    maxValue = qMax( attributes[i].toDouble(), maxValue );
+    maxValue = qMax( attributes.at( i ).toDouble(), maxValue );
   }
 
   switch ( s.diagramOrientation )
@@ -119,7 +134,7 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes& attributes, const 
   return size;
 }
 
-void QgsHistogramDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
+void QgsHistogramDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position )
 {
   QPainter* p = c.painter();
   if ( !p )

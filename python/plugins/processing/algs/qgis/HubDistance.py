@@ -25,7 +25,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import QGis, QgsField, QgsGeometry, QgsDistanceArea, QgsFeature
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -62,6 +62,12 @@ class HubDistance(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Distance to nearest hub')
         self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
+        self.units = [self.tr('Meters'),
+                      self.tr('Feet'),
+                      self.tr('Miles'),
+                      self.tr('Kilometers'),
+                      self.tr('Layer units')]
+
         self.addParameter(ParameterVector(self.POINTS,
                                           self.tr('Source points layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(self.HUBS,
@@ -71,7 +77,7 @@ class HubDistance(GeoAlgorithm):
         self.addParameter(ParameterSelection(self.GEOMETRY,
                                              self.tr('Output shape type'), self.GEOMETRIES))
         self.addParameter(ParameterSelection(self.UNIT,
-                                             self.tr('Measurement unit'), self.UNITS))
+                                             self.tr('Measurement unit'), self.units))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance')))
 
@@ -113,9 +119,8 @@ class HubDistance(GeoAlgorithm):
 
         # Scan source points, find nearest hub, and write to output file
         features = vector.features(layerPoints)
-        count = len(features)
-        total = 100.0 / float(count)
-        for count, f in enumerate(features):
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
             src = f.geometry().boundingBox().center()
 
             closest = hubs[0]
@@ -151,7 +156,7 @@ class HubDistance(GeoAlgorithm):
                 feat.setGeometry(QgsGeometry.fromPolyline([src, closest.point]))
 
             writer.addFeature(feat)
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))
 
         del writer
 

@@ -44,7 +44,7 @@ void QgsLayerTreeRegistryBridge::setLayerInsertionPoint( QgsLayerTreeGroup* pare
   mInsertionPointIndex = index;
 }
 
-void QgsLayerTreeRegistryBridge::layersAdded( QList<QgsMapLayer*> layers )
+void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer*>& layers )
 {
   if ( !mEnabled )
     return;
@@ -73,7 +73,7 @@ void QgsLayerTreeRegistryBridge::layersAdded( QList<QgsMapLayer*> layers )
   emit addedLayersToLayerTree( layers );
 }
 
-void QgsLayerTreeRegistryBridge::layersWillBeRemoved( QStringList layerIds )
+void QgsLayerTreeRegistryBridge::layersWillBeRemoved( const QStringList& layerIds )
 {
   QgsDebugMsg( QString( "%1 layers will be removed, enabled:%2" ).arg( layerIds.count() ).arg( mEnabled ) );
 
@@ -99,7 +99,7 @@ static void _collectLayerIdsInGroup( QgsLayerTreeGroup* group, int indexFrom, in
 {
   for ( int i = indexFrom; i <= indexTo; ++i )
   {
-    QgsLayerTreeNode* child = group->children()[i];
+    QgsLayerTreeNode* child = group->children().at( i );
     if ( QgsLayerTree::isLayer( child ) )
     {
       lst << QgsLayerTree::toLayer( child )->layerId();
@@ -145,7 +145,7 @@ void QgsLayerTreeRegistryBridge::groupRemovedChildren()
   QMetaObject::invokeMethod( this, "removeLayersFromRegistry", Qt::QueuedConnection, Q_ARG( QStringList, toRemove ) );
 }
 
-void QgsLayerTreeRegistryBridge::removeLayersFromRegistry( QStringList layerIds )
+void QgsLayerTreeRegistryBridge::removeLayersFromRegistry( const QStringList& layerIds )
 {
   QgsMapLayerRegistry::instance()->removeMapLayers( layerIds );
 }

@@ -31,12 +31,11 @@ class QFont;
  * and detail sections.
  * @see also QgsDetailedItemData
  */
-class GUI_EXPORT QgsDetailedItemDelegate :
-      public QAbstractItemDelegate
+class GUI_EXPORT QgsDetailedItemDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
   public:
-    QgsDetailedItemDelegate( QObject * parent = 0 );
+    QgsDetailedItemDelegate( QObject * parent = nullptr );
     ~QgsDetailedItemDelegate();
     /** Reimplement for parent class */
     void paint( QPainter * thePainter,
@@ -62,8 +61,8 @@ class GUI_EXPORT QgsDetailedItemDelegate :
                         QPainter * thepPainter,
                         int theHeight ) const;
 
-    QStringList wordWrap( QString theString,
-                          QFontMetrics theMetrics,
+    QStringList wordWrap( const QString& theString,
+                          const QFontMetrics& theMetrics,
                           int theWidth ) const;
     void paintManually( QPainter *thePainter,
                         const QStyleOptionViewItem &theOption,

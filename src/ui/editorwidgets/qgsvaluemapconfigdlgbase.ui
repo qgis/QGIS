@@ -27,14 +27,14 @@
    <item row="1" column="0">
     <widget class="QPushButton" name="loadFromLayerButton">
      <property name="text">
-      <string>Load Data from layer</string>
+      <string>Load Data from Layer</string>
      </property>
     </widget>
    </item>
    <item row="1" column="1">
     <widget class="QPushButton" name="loadFromCSVButton">
      <property name="text">
-      <string>Load Data from CSV file</string>
+      <string>Load Data from CSV File</string>
      </property>
     </widget>
    </item>

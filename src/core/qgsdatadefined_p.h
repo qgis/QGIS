@@ -15,7 +15,7 @@
 #ifndef QGSDATADEFINED_PRIVATE_H
 #define QGSDATADEFINED_PRIVATE_H
 
-/// @cond
+/// @cond PRIVATE
 
 //
 //  W A R N I N G
@@ -39,8 +39,8 @@ class QgsDataDefinedPrivate : public QSharedData
     QgsDataDefinedPrivate( bool active = false,
                            bool useExpression = false,
                            const QString& expressionString = QString(),
-                           QString field = QString() )
-        : expression( 0 )
+                           const QString& field = QString() )
+        : expression( nullptr )
         , active( active )
         , useExpression( useExpression )
         , expressionString( expressionString )
@@ -51,7 +51,7 @@ class QgsDataDefinedPrivate : public QSharedData
 
     QgsDataDefinedPrivate( const QgsDataDefinedPrivate& other )
         : QSharedData( other )
-        , expression( 0 )
+        , expression( nullptr )
         , active( other.active )
         , useExpression( other.useExpression )
         , expressionString( other.expressionString )

@@ -25,9 +25,11 @@
 #include <QMouseEvent>
 #include <cmath>
 
-QgsMapToolCircularStringRadius::QgsMapToolCircularStringRadius( QgsMapToolCapture* parentTool, QgsMapCanvas* canvas, CaptureMode mode ) :
-    QgsMapToolAddCircularString( parentTool, canvas, mode ), mTemporaryEndPointX( 0.0 ), mTemporaryEndPointY( 0.0 ), mRadiusMode( false ), mRadius( 0.0 ),
-    mRadiusSpinBox( 0 )
+QgsMapToolCircularStringRadius::QgsMapToolCircularStringRadius( QgsMapToolCapture* parentTool, QgsMapCanvas* canvas, CaptureMode mode )
+    : QgsMapToolAddCircularString( parentTool, canvas, mode )
+    , mTemporaryEndPoint( QgsPointV2() )
+    , mRadius( 0.0 )
+    , mRadiusSpinBox( nullptr )
 {
 
 }
@@ -37,72 +39,56 @@ QgsMapToolCircularStringRadius::~QgsMapToolCircularStringRadius()
 
 }
 
-void QgsMapToolCircularStringRadius::canvasMapReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolCircularStringRadius::deactivate()
 {
-  QgsPointV2 mapPoint( e->mapPoint().x(), e->mapPoint().y() );
+  deleteRadiusSpinBox();
+  QgsMapToolAddCircularString::deactivate();
+}
+
+void QgsMapToolCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
+{
+  QgsPointV2 mapPoint( e->mapPoint() );
 
   if ( e->button() == Qt::LeftButton )
   {
-    if ( mPoints.size() == 0 )
+    if ( mPoints.isEmpty() )
     {
-      //get first point from parent tool if there. Todo: move to upper class
-      const QgsCompoundCurveV2* compoundCurve = mParentTool->captureCurve();
-      if ( compoundCurve && compoundCurve->nCurves() > 0 )
-      {
-        const QgsCurveV2* curve = compoundCurve->curveAt( compoundCurve->nCurves() - 1 );
-        if ( curve )
-        {
-          //mParentTool->captureCurve() is in layer coordinates, but we need map coordinates
-          QgsPointV2 endPointLayerCoord = curve->endPoint();
-          QgsPoint mapPoint = toMapCoordinates( mCanvas->currentLayer(), QgsPoint( endPointLayerCoord.x(), endPointLayerCoord.y() ) );
-          mPoints.append( QgsPointV2( mapPoint.x(), mapPoint.y() ) );
-        }
-      }
-      else
-      {
-        mPoints.append( mapPoint );
-        return;
-      }
-    }
-
-    if ( mPoints.size() % 2 == 1 )
-    {
-      if ( !mRadiusMode )
-      {
-        delete mRubberBand; mRubberBand = 0;
-        mTemporaryEndPointX = mapPoint.x();
-        mTemporaryEndPointY = mapPoint.y();
-        mRadiusMode = true;
-
-        //initial radius is distance( tempPoint - mPoints.last ) / 2.0
-        double minRadius = sqrt( QgsGeometryUtils::sqrDistance2D( mPoints.last(), QgsPointV2( mTemporaryEndPointX, mTemporaryEndPointY ) ) ) / 2.0;
-        mRadius = minRadius + minRadius / 10.0;
-        recalculateCircularString();
-        createRadiusSpinBox();
-        if ( mRadiusSpinBox )
-        {
-          mRadiusSpinBox->setMinimum( minRadius );
-        }
-      }
-      else
-      {
-        QgsPointV2 result;
-        if ( QgsGeometryUtils::segmentMidPoint( mPoints.last(), QgsPointV2( mTemporaryEndPointX, mTemporaryEndPointY ), result, mRadius, QgsPointV2( mapPoint.x(), mapPoint.y() ) ) )
-        {
-          mPoints.append( result );
-          mPoints.append( QgsPointV2( mTemporaryEndPointX, mTemporaryEndPointY ) );
-        }
-        mRadiusMode = false;
-        deleteRadiusSpinBox();
-      }
+      mPoints.append( mapPoint );
     }
     else
     {
-      //can we get there?
+      if ( mPoints.size() % 2 )
+      {
+        mTemporaryEndPoint = mapPoint;
+
+        //initial radius is distance( tempPoint - mPoints.last ) / 2.0
+        double minRadius = sqrt( QgsGeometryUtils::sqrDistance2D( mPoints.last(), mTemporaryEndPoint ) ) / 2.0;
+        mRadius = minRadius + minRadius / 10.0;
+
+        QgsPointV2 result;
+        if ( QgsGeometryUtils::segmentMidPoint( mPoints.last(), mTemporaryEndPoint, result, mRadius, QgsPointV2( mapPoint.x(), mapPoint.y() ) ) )
+        {
+          mPoints.append( result );
+          createRadiusSpinBox();
+          if ( mRadiusSpinBox )
+          {
+            mRadiusSpinBox->setMinimum( minRadius );
+          }
+        }
+      }
+      else
+      {
+        mPoints.append( mTemporaryEndPoint );
+        deleteRadiusSpinBox();
+      }
+      recalculateRubberBand();
+      recalculateTempRubberBand( e->mapPoint() );
     }
   }
   else if ( e->button() == Qt::RightButton )
   {
+    if ( !( mPoints.size() % 2 ) )
+      mPoints.removeLast();
     deactivate();
     if ( mParentTool )
     {
@@ -111,33 +97,57 @@ void QgsMapToolCircularStringRadius::canvasMapReleaseEvent( QgsMapMouseEvent* e 
   }
 }
 
-void QgsMapToolCircularStringRadius::canvasMapMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolCircularStringRadius::cadCanvasMoveEvent( QgsMapMouseEvent* e )
 {
-  if ( mPoints.size() > 0 && mRadiusMode )
+  if ( !mPoints.isEmpty() )
   {
-    mLastMouseMapPos.setX( e->mapPoint().x() );
-    mLastMouseMapPos.setY( e->mapPoint().y() );
-    recalculateCircularString();
+    recalculateTempRubberBand( e->mapPoint() );
+    updateCenterPointRubberBand( mTemporaryEndPoint );
   }
 }
 
-void QgsMapToolCircularStringRadius::recalculateCircularString()
+void QgsMapToolCircularStringRadius::recalculateRubberBand()
 {
-  //new midpoint on circle segment
-  QgsPointV2 midPoint;
-  if ( !QgsGeometryUtils::segmentMidPoint( mPoints.last(), QgsPointV2( mTemporaryEndPointX, mTemporaryEndPointY ), midPoint, mRadius,
-       mLastMouseMapPos ) )
+  if ( mPoints.size() >= 3 )
   {
-    return;
+    QgsCircularStringV2* cString = new QgsCircularStringV2();
+    int rubberBandSize = mPoints.size() - ( mPoints.size() + 1 ) % 2;
+    cString->setPoints( mPoints.mid( 0, rubberBandSize ) );
+    delete mRubberBand;
+    mRubberBand = createGeometryRubberBand(( mode() == CapturePolygon ) ? QGis::Polygon : QGis::Line );
+    mRubberBand->setGeometry( cString );
+    mRubberBand->show();
   }
+}
 
-  QList<QgsPointV2> rubberBandPoints = mPoints; rubberBandPoints.append( midPoint ); rubberBandPoints.append( QgsPointV2( mTemporaryEndPointX, mTemporaryEndPointY ) );
+void QgsMapToolCircularStringRadius::recalculateTempRubberBand( const QgsPoint& mousePosition )
+{
+  QgsPointSequenceV2 rubberBandPoints;
+  if ( !( mPoints.size() % 2 ) )
+  {
+    //recalculate midpoint on circle segment
+    QgsPointV2 midPoint;
+    if ( !QgsGeometryUtils::segmentMidPoint( mPoints.at( mPoints.size() - 2 ), mTemporaryEndPoint, midPoint, mRadius,
+         QgsPointV2( mousePosition ) ) )
+    {
+      return;
+    }
+    mPoints.replace( mPoints.size() - 1, midPoint );
+    rubberBandPoints.append( mPoints.at( mPoints.size() - 2 ) );
+    rubberBandPoints.append( mPoints.last() );
+    rubberBandPoints.append( mTemporaryEndPoint );
+  }
+  else
+  {
+    rubberBandPoints.append( mPoints.last() );
+    rubberBandPoints.append( QgsPointV2( mousePosition ) );
+  }
   QgsCircularStringV2* cString = new QgsCircularStringV2();
   cString->setPoints( rubberBandPoints );
-  delete mRubberBand;
-  mRubberBand = createGeometryRubberBand(( mCaptureMode == CapturePolygon ) ? QGis::Polygon : QGis::Line );
-  mRubberBand->setGeometry( cString );
-  mRubberBand->show();
+  delete mTempRubberBand;
+  mTempRubberBand = createGeometryRubberBand(( mode() == CapturePolygon ) ? QGis::Polygon : QGis::Line, true );
+  mTempRubberBand->setGeometry( cString );
+  mTempRubberBand->show();
 }
 
 void QgsMapToolCircularStringRadius::createRadiusSpinBox()
@@ -155,16 +165,16 @@ void QgsMapToolCircularStringRadius::createRadiusSpinBox()
 
 void QgsMapToolCircularStringRadius::deleteRadiusSpinBox()
 {
-  if ( !mRadiusSpinBox )
+  if ( mRadiusSpinBox )
   {
-    return;
+    QgisApp::instance()->statusBar()->removeWidget( mRadiusSpinBox );
+    delete mRadiusSpinBox;
+    mRadiusSpinBox = nullptr;
   }
-  QgisApp::instance()->statusBar()->removeWidget( mRadiusSpinBox );
-  delete mRadiusSpinBox; mRadiusSpinBox = 0;
 }
 
 void QgsMapToolCircularStringRadius::updateRadiusFromSpinBox( double radius )
 {
   mRadius = radius;
-  recalculateCircularString();
+  recalculateTempRubberBand( toMapCoordinates( mCanvas->mouseLastXY() ).toQPointF() );
 }

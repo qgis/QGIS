@@ -24,6 +24,7 @@
 #include "qgssymbollayerv2.h"
 #include "qgsogcutils.h"
 #include "qgspainteffect.h"
+#include "qgspainteffectregistry.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -54,7 +55,7 @@ void QgsInvertedPolygonRenderer::setEmbeddedRenderer( const QgsFeatureRendererV2
   }
   else
   {
-    mSubRenderer.reset( 0 );
+    mSubRenderer.reset( nullptr );
   }
 }
 
@@ -110,7 +111,7 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const Q
   if ( context.coordinateTransform() )
   {
     // disable projection
-    mContext.setCoordinateTransform( 0 );
+    mContext.setCoordinateTransform( nullptr );
     // recompute extent so that polygon clipping is correct
     QRect v( context.painter()->viewport() );
     mContext.setExtent( QgsRectangle( mtp.toMapCoordinates( v.topLeft() ), mtp.toMapCoordinates( v.bottomRight() ) ) );
@@ -226,13 +227,13 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
     return;
   }
 
-  for ( FeatureCategoryVector::iterator cit = mFeaturesCategories.begin(); cit != mFeaturesCategories.end(); ++cit )
+  Q_FOREACH ( const CombinedFeature& cit, mFeaturesCategories )
   {
-    QgsFeature feat = cit->feature; // just a copy, so that we do not accumulate geometries again
+    QgsFeature feat = cit.feature; // just a copy, so that we do not accumulate geometries again
     if ( mPreprocessingEnabled )
     {
       // compute the unary union on the polygons
-      QScopedPointer<QgsGeometry> unioned( QgsGeometry::unaryUnion( cit->geometries ) );
+      QScopedPointer<QgsGeometry> unioned( QgsGeometry::unaryUnion( cit.geometries ) );
       // compute the difference with the extent
       QScopedPointer<QgsGeometry> rect( QgsGeometry::fromPolygon( mExtentPolygon ) );
       QgsGeometry *final = rect->difference( const_cast<QgsGeometry*>( unioned.data() ) );
@@ -252,7 +253,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       // operations do not need geometries to be valid
       QgsMultiPolygon finalMulti;
       finalMulti.append( mExtentPolygon );
-      Q_FOREACH ( QgsGeometry* geom, cit->geometries )
+      Q_FOREACH ( QgsGeometry* geom, cit.geometries )
       {
         QgsMultiPolygon multi;
         if (( geom->wkbType() == QGis::WKBPolygon ) ||
@@ -293,9 +294,9 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       mSubRenderer->renderFeature( feat, mContext );
     }
   }
-  for ( FeatureCategoryVector::iterator cit = mFeaturesCategories.begin(); cit != mFeaturesCategories.end(); ++cit )
+  Q_FOREACH ( const CombinedFeature& cit, mFeaturesCategories )
   {
-    Q_FOREACH ( QgsGeometry* g, cit->geometries )
+    Q_FOREACH ( QgsGeometry* g, cit.geometries )
     {
       delete g;
     }
@@ -328,22 +329,22 @@ QString QgsInvertedPolygonRenderer::dump() const
   {
     return "INVERTED: NULL";
   }
-  return "INVERTED [" + mSubRenderer->dump() + "]";
+  return "INVERTED [" + mSubRenderer->dump() + ']';
 }
 
-QgsFeatureRendererV2* QgsInvertedPolygonRenderer::clone() const
+QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::clone() const
 {
   QgsInvertedPolygonRenderer* newRenderer;
   if ( mSubRenderer.isNull() )
   {
-    newRenderer = new QgsInvertedPolygonRenderer( 0 );
+    newRenderer = new QgsInvertedPolygonRenderer( nullptr );
   }
   else
   {
     newRenderer = new QgsInvertedPolygonRenderer( mSubRenderer.data() );
   }
   newRenderer->setPreprocessingEnabled( preprocessingEnabled() );
-  copyPaintEffect( newRenderer );
+  copyRendererData( newRenderer );
   return newRenderer;
 }
 
@@ -375,8 +376,16 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument& doc )
     rendererElem.appendChild( embeddedRendererElem );
   }
 
-  if ( mPaintEffect )
+  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
+
+  if ( !mOrderBy.isEmpty() )
+  {
+    QDomElement orderBy = doc.createElement( "orderby" );
+    mOrderBy.save( orderBy );
+    rendererElem.appendChild( orderBy );
+  }
+  rendererElem.setAttribute( "enableorderby", ( mOrderByEnabled ? "1" : "0" ) );
 
   return rendererElem;
 }
@@ -385,7 +394,7 @@ QgsSymbolV2* QgsInvertedPolygonRenderer::symbolForFeature( QgsFeature& feature, 
 {
   if ( !mSubRenderer )
   {
-    return 0;
+    return nullptr;
   }
   return mSubRenderer->symbolForFeature( feature, context );
 }
@@ -393,7 +402,7 @@ QgsSymbolV2* QgsInvertedPolygonRenderer::symbolForFeature( QgsFeature& feature, 
 QgsSymbolV2* QgsInvertedPolygonRenderer::originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   if ( !mSubRenderer )
-    return 0;
+    return nullptr;
   return mSubRenderer->originalSymbolForFeature( feat, context );
 }
 
@@ -449,7 +458,7 @@ QgsLegendSymbologyList QgsInvertedPolygonRenderer::legendSymbologyItems( QSize i
   return mSubRenderer->legendSymbologyItems( iconSize );
 }
 
-QgsLegendSymbolList QgsInvertedPolygonRenderer::legendSymbolItems( double scaleDenominator, QString rule )
+QgsLegendSymbolList QgsInvertedPolygonRenderer::legendSymbolItems( double scaleDenominator, const QString& rule )
 {
   if ( !mSubRenderer )
   {
@@ -481,6 +490,6 @@ QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::convertFromRenderer( con
   {
     return new QgsInvertedPolygonRenderer( renderer->clone() );
   }
-  return 0;
+  return nullptr;
 }
 

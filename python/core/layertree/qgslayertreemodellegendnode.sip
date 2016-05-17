@@ -90,7 +90,7 @@ class QgsLayerTreeModelLegendNode : QObject
      * @param symbolSize  Real size of the associated symbol - used for correct positioning when rendering
      * @return Size of the label (may span multiple lines)
      */
-    virtual QSizeF drawSymbolText( const QgsLegendSettings& settings, ItemContext* ctx, const QSizeF& symbolSize ) const;
+    virtual QSizeF drawSymbolText( const QgsLegendSettings& settings, ItemContext* ctx, QSizeF symbolSize ) const;
 
   signals:
     //! Emitted on internal data change so the layer tree model can forward the signal to views
@@ -137,13 +137,42 @@ class QgsSymbolV2LegendNode : QgsLayerTreeModelLegendNode
 
     //! Set the icon size
     //! @note added in 2.10
-    void setIconSize( const QSize& sz );
+    void setIconSize( QSize sz );
     //! @note added in 2.10
     QSize iconSize() const;
 
     //! Get the minimum icon size to prevent cropping
     //! @note added in 2.10
     QSize minimumIconSize() const;
+
+    /** Returns the symbol used by the legend node.
+     * @see setSymbol()
+     * @note added in QGIS 2.14
+     */
+    const QgsSymbolV2* symbol() const;
+
+    /** Sets the symbol to be used by the legend node. The symbol change is also propagated
+     * to the associated vector layer's renderer.
+     * @param symbol new symbol for node. Ownership is transferred.
+     * @see symbol()
+     * @note added in QGIS 2.14
+     */
+    void setSymbol( QgsSymbolV2* symbol /Transfer/ );
+
+  public slots:
+
+    /** Checks all items belonging to the same layer as this node.
+     * @note added in QGIS 2.14
+     * @see uncheckAllItems()
+     */
+    void checkAllItems();
+
+    /** Unchecks all items belonging to the same layer as this node.
+     * @note added in QGIS 2.14
+     * @see checkAllItems()
+     */
+    void uncheckAllItems();
+
 };
 
 
@@ -199,4 +228,25 @@ class QgsRasterSymbolLegendNode : QgsLayerTreeModelLegendNode
     virtual QVariant data( int role ) const;
 
     QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+};
+
+/**
+ * Implementation of legend node interface for displaying WMS legend entries
+ *
+ * @note added in 2.8
+ */
+class QgsWMSLegendNode : QgsLayerTreeModelLegendNode
+{
+%TypeHeaderCode
+#include <qgslayertreemodellegendnode.h>
+%End
+  public:
+    QgsWMSLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent /TransferThis/ = nullptr );
+
+    virtual QVariant data( int role ) const;
+
+    virtual QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+
+    virtual void invalidateMapBasedData();
+
 };

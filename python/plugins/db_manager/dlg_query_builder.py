@@ -21,8 +21,8 @@ email                : hugo dot mercier at oslandia dot com
 Query builder dialog, based on the QSpatialite plugin (GPLv2+) by Romain Riviere
 """
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from qgis.PyQt.QtCore import QObject, QEvent
+from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QTextEdit
 
 from .ui.ui_DlgQueryBuilder import Ui_DbManagerQueryBuilderDlg as Ui_Dialog
 from .db_plugins.plugin import VectorTable
@@ -100,20 +100,20 @@ class QueryBuilderDlg(QDialog):
         self.show_tables()
 
         #Signal/slot
-        QObject.connect(self.ui.aggregates, SIGNAL("currentIndexChanged(const QString&)"), self.add_aggregate)
-        QObject.connect(self.ui.stringfct, SIGNAL("currentIndexChanged(const QString&)"), self.add_stringfct)
-        QObject.connect(self.ui.operators, SIGNAL("currentIndexChanged(const QString&)"), self.add_operators)
-        QObject.connect(self.ui.functions, SIGNAL("currentIndexChanged(const QString&)"), self.add_functions)
-        QObject.connect(self.ui.math, SIGNAL("currentIndexChanged(const QString&)"), self.add_math)
-        QObject.connect(self.ui.tables, SIGNAL("currentIndexChanged(const QString&)"), self.add_tables)
-        QObject.connect(self.ui.tables, SIGNAL("currentIndexChanged(const QString&)"), self.list_cols)
-        QObject.connect(self.ui.columns, SIGNAL("currentIndexChanged(const QString&)"), self.add_columns)
-        QObject.connect(self.ui.columns_2, SIGNAL("currentIndexChanged(const QString&)"), self.list_values)
-        QObject.connect(self.ui.reset, SIGNAL("clicked(bool)"), self.reset)
-        QObject.connect(self.ui.extract, SIGNAL("stateChanged(int)"), self.list_values)
-        QObject.connect(self.ui.values, SIGNAL("doubleClicked(const QModelIndex &)"), self.query_item)
-        QObject.connect(self.ui.buttonBox, SIGNAL("accepted()"), self.validate)
-        QObject.connect(self.ui.checkBox, SIGNAL("stateChanged(int)"), self.show_tables)
+        self.ui.aggregates.currentIndexChanged.connect(self.add_aggregate)
+        self.ui.stringfct.currentIndexChanged.connect(self.add_stringfct)
+        self.ui.operators.currentIndexChanged.connect(self.add_operators)
+        self.ui.functions.currentIndexChanged.connect(self.add_functions)
+        self.ui.math.currentIndexChanged.connect(self.add_math)
+        self.ui.tables.currentIndexChanged.connect(self.add_tables)
+        self.ui.tables.currentIndexChanged.connect(self.list_cols)
+        self.ui.columns.currentIndexChanged.connect(self.add_columns)
+        self.ui.columns_2.currentIndexChanged.connect(self.list_values)
+        self.ui.reset.clicked.connect(self.reset)
+        self.ui.extract.stateChanged.connect(self.list_values)
+        self.ui.values.doubleClicked.connect(self.query_item)
+        self.ui.buttonBox.accepted.connect(self.validate)
+        self.ui.checkBox.stateChanged.connect(self.show_tables)
 
         if self.db.explicitSpatialIndex():
             self.tablesGeo = [table for table in self.tables if isinstance(table, VectorTable)]
@@ -123,7 +123,7 @@ class QueryBuilderDlg(QDialog):
             idxTables = ['"%s"."%s"' % (table.name, table.geomColumn) for table in self.idxTables]
             self.ui.table_idx.insertItems(1, idxTables)
 
-            QObject.connect(self.ui.usertree, SIGNAL("clicked(bool)"), self.use_rtree)
+            self.ui.usertree.clicked.connect(self.use_rtree)
         else:
             self.ui.toolBox.setItemEnabled(2, False)
 
@@ -184,7 +184,7 @@ class QueryBuilderDlg(QDialog):
             return
         ag = self.ui.operators.currentText()
 
-        if self.evt.focus == "where": # in where section
+        if self.evt.focus == "where":  # in where section
             self.ui.where.insertPlainText(ag)
         else:
             self.ui.col.insertPlainText(ag)
@@ -200,8 +200,8 @@ class QueryBuilderDlg(QDialog):
             return  # No object with this name
         self.table = tableObj[0]
         if (ag in self.coltables):  # table already use
-            reponse = QMessageBox.question(self, "Table already used", "Do you want to add table %s again ?" % ag, QMessageBox.Yes | QMessageBox.No)
-            if reponse == QMessageBox.No:
+            response = QMessageBox.question(self, "Table already used", "Do you want to add table %s again?" % ag, QMessageBox.Yes | QMessageBox.No)
+            if response == QMessageBox.No:
                 return
         ag = self.table.quotedName()
         txt = self.ui.tab.text()
@@ -215,18 +215,18 @@ class QueryBuilderDlg(QDialog):
         if self.ui.columns.currentIndex() <= 0:
             return
         ag = self.ui.columns.currentText()
-        if self.evt.focus == "where": # in where section
-            if ag in self.col_where: # column already called in where section
-                reponse = QMessageBox.question(self, "Column already used in WHERE clause", "Do you want to add column %s again ?" % ag, QMessageBox.Yes | QMessageBox.No)
-                if reponse == QMessageBox.No:
+        if self.evt.focus == "where":  # in where section
+            if ag in self.col_where:  # column already called in where section
+                response = QMessageBox.question(self, "Column already used in WHERE clause", "Do you want to add column %s again?" % ag, QMessageBox.Yes | QMessageBox.No)
+                if response == QMessageBox.No:
                     self.ui.columns.setCurrentIndex(0)
                     return
             self.ui.where.insertPlainText(ag)
             self.col_where.append(ag)
         elif self.evt.focus == "col":
-            if ag in self.col_col: # column already called in col section
-                reponse = QMessageBox.question(self, "Column already used in COLUMNS section", "Do you want to add column %s again ?" % ag, QMessageBox.Yes | QMessageBox.No)
-                if reponse == QMessageBox.No:
+            if ag in self.col_col:  # column already called in col section
+                response = QMessageBox.question(self, "Column already used in COLUMNS section", "Do you want to add column %s again?" % ag, QMessageBox.Yes | QMessageBox.No)
+                if response == QMessageBox.No:
                     self.ui.columns.setCurrentIndex(0)
                     return
             if len(self.ui.col.toPlainText().strip()) > 0:
@@ -301,7 +301,7 @@ class QueryBuilderDlg(QDialog):
             tab_idx = idx.split(".")[0][1:-1]  # remove "
             col_idx = idx.split(".")[1][1:-1]  # remove '
         except:
-            pop_up_error("All fields are necessary", self)
+            QMessageBox.warning(self, "Use R-Tree", "All fields are necessary", QMessageBox.Cancel)
         tgt = self.ui.table_target.currentText()
         if tgt in (None, "", " ", "Table (Target)"):
             return

@@ -31,13 +31,9 @@ QgsRasterRange::QgsRasterRange( double theMin, double theMax )
 {
 }
 
-QgsRasterRange::~QgsRasterRange()
-{
-}
-
 bool QgsRasterRange::contains( double value, const QgsRasterRangeList &rangeList )
 {
-  Q_FOREACH ( const QgsRasterRange& range, rangeList )
+  Q_FOREACH ( QgsRasterRange range, rangeList )
   {
     if (( value >= range.mMin && value <= range.mMax ) ||
         qgsDoubleNear( value, range.mMin ) ||

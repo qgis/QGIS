@@ -29,7 +29,7 @@ class QgsSlopeFilter;
 class QgsHillshadeFilter;
 class QProgressDialog;
 
-/** Produces coloured relief rasters from DEM*/
+/** Produces colored relief rasters from DEM*/
 class ANALYSIS_EXPORT QgsRelief
 {
   public:
@@ -94,10 +94,10 @@ class ANALYSIS_EXPORT QgsRelief
     /** Opens the input file and returns the dataset handle and the number of pixels in x-/y- direction*/
     GDALDatasetH openInputFile( int& nCellsX, int& nCellsY );
     /** Opens the output driver and tests if it supports the creation of a new dataset
-      @return NULL on error and the driver handle on success*/
+      @return nullptr on error and the driver handle on success*/
     GDALDriverH openOutputDriver();
     /** Opens the output file and sets the same geotransform and CRS as the input data
-      @return the output dataset or NULL in case of error*/
+      @return the output dataset or nullptr in case of error*/
     GDALDatasetH openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver );
 
     /** Set elevation color*/
@@ -116,6 +116,9 @@ class ANALYSIS_EXPORT QgsRelief
       @param b y value for x=0
      */
     bool calculateRegression( const QList< QPair < int, double > >& input, double& a, double& b );
+
+    QgsRelief( const QgsRelief& rh );
+    QgsRelief& operator=( const QgsRelief& rh );
 };
 
 #endif // QGSRELIEF_H

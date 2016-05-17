@@ -33,9 +33,9 @@
 class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 {
   public:
-    QgsSimpleFillSymbolLayerV2( QColor color = DEFAULT_SIMPLEFILL_COLOR,
+    QgsSimpleFillSymbolLayerV2( const QColor& color = DEFAULT_SIMPLEFILL_COLOR,
                                 Qt::BrushStyle style = DEFAULT_SIMPLEFILL_STYLE,
-                                QColor borderColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
+                                const QColor& borderColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
                                 Qt::PenStyle borderStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE,
                                 double borderWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH,
                                 Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEFILL_JOINSTYLE
@@ -58,9 +58,9 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     QgsStringMap properties() const override;
 
-    QgsSymbolLayerV2* clone() const override;
+    QgsSimpleFillSymbolLayerV2* clone() const override;
 
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const override;
 
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     void setBrushStyle( Qt::BrushStyle style ) { mBrushStyle = style; }
 
     QColor borderColor() const { return mBorderColor; }
-    void setBorderColor( QColor borderColor ) { mBorderColor = borderColor; }
+    void setBorderColor( const QColor& borderColor ) { mBorderColor = borderColor; }
 
     /** Get outline color.
      * @note added in 2.1 */
@@ -116,10 +116,12 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     double estimateMaxBleed() const override;
 
-    double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const override;
-    QColor dxfColor( const QgsSymbolV2RenderContext& context ) const override;
+    double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const override;
+    QColor dxfColor( QgsSymbolV2RenderContext& context ) const override;
+    double dxfAngle( QgsSymbolV2RenderContext& context ) const override;
+
     Qt::PenStyle dxfPenStyle() const override;
-    QColor dxfBrushColor( const QgsSymbolV2RenderContext& context ) const override;
+    QColor dxfBrushColor( QgsSymbolV2RenderContext &context ) const override;
     Qt::BrushStyle dxfBrushStyle() const override;
 
   protected:
@@ -176,8 +178,8 @@ class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
       Repeat
     };
 
-    QgsGradientFillSymbolLayerV2( QColor color = DEFAULT_SIMPLEFILL_COLOR,
-                                  QColor color2 = Qt::white,
+    QgsGradientFillSymbolLayerV2( const QColor& color = DEFAULT_SIMPLEFILL_COLOR,
+                                  const QColor& color2 = Qt::white,
                                   GradientColorType gradientColorType = SimpleTwoColor,
                                   GradientType gradientType = Linear,
                                   GradientCoordinateMode coordinateMode = Feature,
@@ -202,7 +204,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     QgsStringMap properties() const override;
 
-    QgsSymbolLayerV2* clone() const override;
+    QgsGradientFillSymbolLayerV2* clone() const override;
 
     double estimateMaxBleed() const override;
 
@@ -220,7 +222,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     /** Color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor*/
     QColor color2() const { return mColor2; }
-    void setColor2( QColor color2 ) { mColor2 = color2; }
+    void setColor2( const QColor& color2 ) { mColor2 = color2; }
 
     /** Coordinate mode for gradient. Controls how the gradient stops are positioned.*/
     GradientCoordinateMode coordinateMode() const { return mCoordinateMode; }
@@ -290,12 +292,12 @@ class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     /** Applies the gradient to a brush*/
     void applyGradient( const QgsSymbolV2RenderContext& context, QBrush& brush, const QColor& color, const QColor& color2,
-                        const GradientColorType &gradientColorType, QgsVectorColorRampV2 *gradientRamp, const GradientType &gradientType,
-                        const GradientCoordinateMode &coordinateMode, const GradientSpread &gradientSpread,
-                        const QPointF &referencePoint1, const QPointF &referencePoint2, const double angle );
+                        GradientColorType gradientColorType, QgsVectorColorRampV2 *gradientRamp, GradientType gradientType,
+                        GradientCoordinateMode coordinateMode, GradientSpread gradientSpread,
+                        QPointF referencePoint1, QPointF referencePoint2, const double angle );
 
     /** Rotates a reference point by a specified angle around the point (0.5, 0.5)*/
-    QPointF rotateReferencePoint( const QPointF & refPoint, double angle );
+    QPointF rotateReferencePoint( QPointF refPoint, double angle );
 };
 
 class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
@@ -308,7 +310,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
       ColorRamp
     };
 
-    QgsShapeburstFillSymbolLayerV2( QColor color = DEFAULT_SIMPLEFILL_COLOR, QColor color2 = Qt::white,
+    QgsShapeburstFillSymbolLayerV2( const QColor& color = DEFAULT_SIMPLEFILL_COLOR, const QColor& color2 = Qt::white,
                                     ShapeburstColorType colorType = SimpleTwoColor,
                                     int blurRadius = 0, bool useWholeShape = true, double maxDistance = 5 );
 
@@ -330,7 +332,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     QgsStringMap properties() const override;
 
-    QgsSymbolLayerV2* clone() const override;
+    QgsShapeburstFillSymbolLayerV2* clone() const override;
 
     double estimateMaxBleed() const override;
 
@@ -338,13 +340,13 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
      * @param blurRadius Radius for fill blur. Values between 0 - 17 are valid, where higher values results in a stronger blur. Set to 0 to disable blur.
      * @note added in 2.3
      * @see blurRadius
-    */
+     */
     void setBlurRadius( int blurRadius ) { mBlurRadius = blurRadius; }
     /** Returns the blur radius, which controls the amount of blurring applied to the fill.
      * @returns Integer representing the radius for fill blur. Higher values indicate a stronger blur. A 0 value indicates that blurring is disabled.
      * @note added in 2.3
      * @see setBlurRadius
-    */
+     */
     int blurRadius() const { return mBlurRadius; }
 
     /** Sets whether the shapeburst fill should be drawn using the entire shape.
@@ -353,14 +355,14 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
      * @note added in 2.3
      * @see useWholeShape
      * @see setMaxDistance
-    */
+     */
     void setUseWholeShape( bool useWholeShape ) { mUseWholeShape = useWholeShape; }
     /** Returns whether the shapeburst fill is set to cover the entire shape.
      * @returns True if shapeburst fill will cover the entire shape. If false, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
      * @note added in 2.3
      * @see setUseWholeShape
      * @see maxDistance
-    */
+     */
     bool useWholeShape() const { return mUseWholeShape; }
 
     /** Sets the maximum distance to shape inside of the shape from the polygon's boundary.
@@ -369,7 +371,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
      * @see maxDistance
      * @see setUseWholeShape
      * @see setDistanceUnit
-    */
+     */
     void setMaxDistance( double maxDistance ) { mMaxDistance = maxDistance; }
     /** Returns the maximum distance from the shape's boundary which is shaded. This parameter is only effective if useWholeShape is false.
      * @returns the maximum distance from the polygon's boundary which is shaded. Distance units are indicated by distanceUnit.
@@ -377,7 +379,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
      * @see useWholeShape
      * @see setMaxDistance
      * @see distanceUnit
-    */
+     */
     double maxDistance() const { return mMaxDistance; }
 
     /** Sets the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
@@ -385,14 +387,14 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
      * @note added in 2.3
      * @see setMaxDistance
      * @see distanceUnit
-    */
+     */
     void setDistanceUnit( QgsSymbolV2::OutputUnit unit ) { mDistanceUnit = unit; }
     /** Returns the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
      * @returns distance unit for the maximum distance
      * @note added in 2.3
      * @see maxDistance
      * @see setDistanceUnit
-    */
+     */
     QgsSymbolV2::OutputUnit distanceUnit() const { return mDistanceUnit; }
 
     void setDistanceMapUnitScale( const QgsMapUnitScale& scale ) { mDistanceMapUnitScale = scale; }
@@ -406,7 +408,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
      * @see setColor
      * @see setColor2
      * @see setColorRamp
-    */
+     */
     void setColorType( ShapeburstColorType colorType ) { mColorType = colorType; }
     /** Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a QgsVectorColorRampV2 color ramp
      * or by simply specificing a start and end color.
@@ -416,7 +418,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
      * @see color
      * @see color2
      * @see colorRamp
-    */
+     */
     ShapeburstColorType colorType() const { return mColorType; }
 
     /** Sets the color ramp used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType::ColorRamp.
@@ -424,14 +426,14 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
      * @note added in 2.3
      * @see setColorType
      * @see colorRamp
-    */
+     */
     void setColorRamp( QgsVectorColorRampV2* ramp );
     /** Returns the color ramp used for the shapeburst fill. The color ramp is only used if the colorType is set to ShapeburstColorType::ColorRamp
      * @returns a QgsVectorColorRampV2 color ramp
      * @note added in 2.3
      * @see setColorRamp
      * @see colorType
-    */
+     */
     QgsVectorColorRampV2* colorRamp() { return mGradientRamp; }
 
     /** Sets the color for the endpoint of the shapeburst fill. This color is only used if setColorType is set ShapeburstColorType::SimpleTwoColor.
@@ -439,14 +441,14 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
      * @note added in 2.3
      * @see setColorType
      * @see color2
-    */
-    void setColor2( QColor color2 ) { mColor2 = color2; }
+     */
+    void setColor2( const QColor& color2 ) { mColor2 = color2; }
     /** Returns the color used for the endpoint of the shapeburst fill. This color is only used if the colorType is set to ShapeburstColorType::SimpleTwoColor
      * @returns a QColor indicating the color of the endpoint of the gradient
      * @note added in 2.3
      * @see setColor2
      * @see colorType
-    */
+     */
     QColor color2() const { return mColor2; }
 
     /** Sets whether the shapeburst fill should ignore polygon rings when calculating
@@ -454,13 +456,13 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
      * @param ignoreRings Set to true if buffers should ignore interior rings for polygons.
      * @note added in 2.3
      * @see ignoreRings
-    */
+     */
     void setIgnoreRings( bool ignoreRings ) { mIgnoreRings = ignoreRings; }
     /** Returns whether the shapeburst fill is set to ignore polygon interior rings.
      * @returns True if the shapeburst fill will ignore interior rings when calculating buffered shading.
      * @note added in 2.3
      * @see setIgnoreRings
-    */
+     */
     bool ignoreRings() const { return mIgnoreRings; }
 
     /** Sets the offset for the shapeburst fill.
@@ -468,14 +470,14 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
      * @note added in 2.3
      * @see offset
      * @see setOffsetUnit
-    */
+     */
     void setOffset( QPointF offset ) { mOffset = offset; }
     /** Returns the offset for the shapeburst fill.
      * @returns a QPointF indicating the horizontal/vertical offset amount
      * @note added in 2.3
      * @see setOffset
      * @see offsetUnit
-    */
+     */
     QPointF offset() const { return mOffset; }
 
     /** Sets the units used for the offset for the shapeburst fill.
@@ -483,14 +485,14 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
      * @note added in 2.3
      * @see setOffset
      * @see offsetUnit
-    */
+     */
     void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
     /** Returns the units used for the offset of the shapeburst fill.
      * @returns units used for the fill offset
      * @note added in 2.3
      * @see offset
      * @see setOffsetUnit
-    */
+     */
     QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
 
     void setOffsetMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetMapUnitScale = scale; }
@@ -562,14 +564,17 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
     void setOutputUnit( QgsSymbolV2::OutputUnit unit ) override;
     QgsSymbolV2::OutputUnit outputUnit() const override;
 
-    void setMapUnitScale( const QgsMapUnitScale& scale ) override;
+    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
     virtual double estimateMaxBleed() const override;
 
-    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const override;
-    virtual QColor dxfColor( const QgsSymbolV2RenderContext& context ) const override;
-    virtual Qt::PenStyle dxfPenStyle() const override;
+    double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const override;
+    QColor dxfColor( QgsSymbolV2RenderContext& context ) const override;
+
+    Qt::PenStyle dxfPenStyle() const override;
+
+    QSet<QString> usedAttributes() const override;
 
   protected:
     QBrush mBrush;
@@ -583,7 +588,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
     /** Custom outline*/
     QgsLineSymbolV2* mOutline;
 
-    virtual void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context ) { Q_UNUSED( context ); }
+    virtual void applyDataDefinedSettings( QgsSymbolV2RenderContext& context ) { Q_UNUSED( context ); }
 };
 
 /** \ingroup core
@@ -612,46 +617,46 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     void startRender( QgsSymbolV2RenderContext& context ) override;
     void stopRender( QgsSymbolV2RenderContext& context ) override;
     QgsStringMap properties() const override;
-    QgsSymbolLayerV2* clone() const override;
+    QgsRasterFillSymbolLayer* clone() const override;
     virtual double estimateMaxBleed() const override;
 
     //override QgsImageFillSymbolLayer's support for sub symbols
-    virtual QgsSymbolV2* subSymbol() override { return 0; }
+    virtual QgsSymbolV2* subSymbol() override { return nullptr; }
     virtual bool setSubSymbol( QgsSymbolV2* symbol ) override;
 
     /** Sets the path to the raster image used for the fill.
      * @param imagePath path to image file
      * @see imageFilePath
-    */
+     */
     void setImageFilePath( const QString& imagePath );
     /** The path to the raster image used for the fill.
      * @returns path to image file
      * @see setImageFilePath
-    */
+     */
     QString imageFilePath() const { return mImageFilePath; }
 
     /** Set the coordinate mode for fill. Controls how the top left corner of the image
      * fill is positioned relative to the feature.
      * @param mode coordinate mode
      * @see coordinateMode
-    */
+     */
     void setCoordinateMode( const FillCoordinateMode mode );
     /** Coordinate mode for fill. Controls how the top left corner of the image
      * fill is positioned relative to the feature.
      * @returns coordinate mode
      * @see setCoordinateMode
-    */
+     */
     FillCoordinateMode coordinateMode() const { return mCoordinateMode; }
 
     /** Sets the opacity for the raster image used in the fill.
      * @param alpha opacity value between 0 (fully transparent) and 1 (fully opaque)
      * @see alpha
-    */
+     */
     void setAlpha( const double alpha );
     /** The opacity for the raster image used in the fill.
      * @returns opacity value between 0 (fully transparent) and 1 (fully opaque)
      * @see setAlpha
-    */
+     */
     double alpha() const { return mAlpha; }
 
     /** Sets the offset for the fill.
@@ -659,14 +664,14 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * @see offset
      * @see setOffsetUnit
      * @see setOffsetMapUnitScale
-    */
-    void setOffset( const QPointF& offset ) { mOffset = offset; }
+     */
+    void setOffset( QPointF offset ) { mOffset = offset; }
     /** Returns the offset for the fill.
      * @returns offset for fill
      * @see setOffset
      * @see offsetUnit
      * @see offsetMapUnitScale
-    */
+     */
     QPointF offset() const { return mOffset; }
 
     /** Sets the units for the fill's offset.
@@ -674,14 +679,14 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * @see offsetUnit
      * @see setOffset
      * @see setOffsetMapUnitScale
-    */
+     */
     void setOffsetUnit( const QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
     /** Returns the units for the fill's offset.
      * @returns units for offset
      * @see setOffsetUnit
      * @see offset
      * @see offsetMapUnitScale
-    */
+     */
     QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
 
     /** Sets the map unit scale for the fill's offset.
@@ -689,14 +694,14 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * @see offsetMapUnitScale
      * @see setOffset
      * @see setOffsetUnit
-    */
+     */
     void setOffsetMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetMapUnitScale = scale; }
     /** Returns the map unit scale for the fill's offset.
      * @returns map unit scale for offset
      * @see setOffsetMapUnitScale
      * @see offset
      * @see offsetUnit
-    */
+     */
     const QgsMapUnitScale& offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
     /** Sets the width for scaling the image used in the fill. The image's height will also be
@@ -705,7 +710,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * @see width
      * @see setWidthUnit
      * @see setWidthMapUnitScale
-    */
+     */
     void setWidth( const double width ) { mWidth = width; }
     /** Returns the width used for scaling the image used in the fill. The image's height is
      * scaled to maintain the image's aspect ratio.
@@ -713,7 +718,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * @see setWidth
      * @see widthUnit
      * @see widthMapUnitScale
-    */
+     */
     double width() const { return mWidth; }
 
     /** Sets the units for the image's width.
@@ -721,14 +726,14 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * @see widthUnit
      * @see setWidth
      * @see setWidthMapUnitScale
-    */
+     */
     void setWidthUnit( const QgsSymbolV2::OutputUnit unit ) { mWidthUnit = unit; }
     /** Returns the units for the image's width.
      * @returns units for width
      * @see setWidthUnit
      * @see width
      * @see widthMapUnitScale
-    */
+     */
     QgsSymbolV2::OutputUnit widthUnit() const { return mWidthUnit; }
 
     /** Sets the map unit scale for the image's width.
@@ -736,14 +741,14 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * @see widthMapUnitScale
      * @see setWidth
      * @see setWidthUnit
-    */
+     */
     void setWidthMapUnitScale( const QgsMapUnitScale& scale ) { mWidthMapUnitScale = scale; }
     /** Returns the map unit scale for the image's width.
      * @returns map unit scale for width
      * @see setWidthMapUnitScale
      * @see width
      * @see widthUnit
-    */
+     */
     const QgsMapUnitScale& widthMapUnitScale() const { return mWidthMapUnitScale; }
 
   protected:
@@ -761,7 +766,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsSymbolV2::OutputUnit mWidthUnit;
     QgsMapUnitScale mWidthMapUnitScale;
 
-    void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context ) override;
+    void applyDataDefinedSettings( QgsSymbolV2RenderContext& context ) override;
 
   private:
 
@@ -791,9 +796,9 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 
     QgsStringMap properties() const override;
 
-    QgsSymbolLayerV2* clone() const override;
+    QgsSVGFillSymbolLayer* clone() const override;
 
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     //getters and setters
     void setSvgFilePath( const QString& svgPath );
@@ -801,8 +806,9 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     void setPatternWidth( double width ) { mPatternWidth = width;}
     double patternWidth() const { return mPatternWidth; }
 
-    void setSvgFillColor( const QColor& c ) { mSvgFillColor = c; }
-    QColor svgFillColor() const { return mSvgFillColor; }
+    void setSvgFillColor( const QColor& c ) { setColor( c );  }
+    QColor svgFillColor() const { return color(); }
+
     void setSvgOutlineColor( const QColor& c ) { mSvgOutlineColor = c; }
     QColor svgOutlineColor() const { return mSvgOutlineColor; }
     void setSvgOutlineWidth( double w ) { mSvgOutlineWidth = w; }
@@ -843,13 +849,12 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 
     //param(fill), param(outline), param(outline-width) are going
     //to be replaced in memory
-    QColor mSvgFillColor;
     QColor mSvgOutlineColor;
     double mSvgOutlineWidth;
     QgsSymbolV2::OutputUnit mSvgOutlineWidthUnit;
     QgsMapUnitScale mSvgOutlineWidthMapUnitScale;
 
-    void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context ) override;
+    void applyDataDefinedSettings( QgsSymbolV2RenderContext& context ) override;
 
   private:
     /** Helper function that gets the view box from the byte array*/
@@ -878,9 +883,9 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     QgsStringMap properties() const override;
 
-    QgsSymbolLayerV2* clone() const override;
+    QgsLinePatternFillSymbolLayer* clone() const override;
 
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     double estimateMaxBleed() const override;
 
@@ -894,7 +899,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setLineWidth( double w );
     double lineWidth() const { return mLineWidth; }
     void setColor( const QColor& c ) override;
-    QColor color() const override { return mColor; }
+    QColor color() const override;
     void setOffset( double offset ) { mOffset = offset; }
     double offset() const { return mOffset; }
 
@@ -944,7 +949,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsSymbolV2::OutputUnit mOffsetUnit;
     QgsMapUnitScale mOffsetMapUnitScale;
 
-    void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context ) override;
+    void applyDataDefinedSettings( QgsSymbolV2RenderContext& context ) override;
 
   private:
     /** Applies the svg pattern to the brush*/
@@ -971,9 +976,9 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     QgsStringMap properties() const override;
 
-    QgsSymbolLayerV2* clone() const override;
+    QgsPointPatternFillSymbolLayer* clone() const override;
 
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     double estimateMaxBleed() const override;
 
@@ -1024,6 +1029,8 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsMapUnitScale mapUnitScale() const override;
 
     virtual QSet<QString> usedAttributes() const override;
+    void setColor( const QColor& c ) override;
+    virtual QColor color() const override;
 
   protected:
     QgsMarkerSymbolV2* mMarkerSymbol;
@@ -1040,7 +1047,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsSymbolV2::OutputUnit mDisplacementYUnit;
     QgsMapUnitScale mDisplacementYMapUnitScale;
 
-    void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context ) override;
+    void applyDataDefinedSettings( QgsSymbolV2RenderContext& context ) override;
 
   private:
     void applyPattern( const QgsSymbolV2RenderContext& context, QBrush& brush, double distanceX, double distanceY,
@@ -1070,11 +1077,12 @@ class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     QgsStringMap properties() const override;
 
-    QgsSymbolLayerV2* clone() const override;
+    QgsCentroidFillSymbolLayerV2* clone() const override;
 
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     void setColor( const QColor& color ) override;
+    QColor color() const override;
 
     QgsSymbolV2* subSymbol() override;
     bool setSubSymbol( QgsSymbolV2* symbol ) override;
@@ -1090,9 +1098,20 @@ class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     void setPointOnSurface( bool pointOnSurface ) { mPointOnSurface = pointOnSurface; }
     bool pointOnSurface() const { return mPointOnSurface; }
 
+    /** Sets whether a point is drawn for all parts or only on the biggest part of multi-part features.
+     * @note added in 2.16 */
+    void setPointOnAllParts( bool pointOnAllParts ) { mPointOnAllParts = pointOnAllParts; }
+    /** Returns whether a point is drawn for all parts or only on the biggest part of multi-part features.
+     * @note added in 2.16 */
+    bool pointOnAllParts() const { return mPointOnAllParts; }
+
   protected:
     QgsMarkerSymbolV2* mMarker;
     bool mPointOnSurface;
+    bool mPointOnAllParts;
+
+    QgsFeatureId mCurrentFeatureId;
+    int mBiggestPartIndex;
 };
 
 #endif

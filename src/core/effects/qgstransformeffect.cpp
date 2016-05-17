@@ -17,6 +17,7 @@
 
 #include "qgstransformeffect.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsunittypes.h"
 #include <QPicture>
 #include <QTransform>
 
@@ -87,7 +88,7 @@ QgsStringMap QgsTransformEffect::properties() const
 void QgsTransformEffect::readProperties( const QgsStringMap &props )
 {
   mEnabled = props.value( "enabled", "1" ).toInt();
-  mDrawMode = ( QgsPaintEffect::DrawMode )props.value( "draw_mode", "2" ).toInt();
+  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( "draw_mode", "2" ).toInt() );
   mReflectX = props.value( "reflect_x", "0" ).toInt();
   mReflectY = props.value( "reflect_y", "0" ).toInt();
   mScaleX = props.value( "scale_x", "1.0" ).toDouble();
@@ -99,7 +100,7 @@ void QgsTransformEffect::readProperties( const QgsStringMap &props )
   mTranslateMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( props.value( "translate_unit_scale" ) );
 }
 
-QgsPaintEffect *QgsTransformEffect::clone() const
+QgsTransformEffect* QgsTransformEffect::clone() const
 {
   QgsTransformEffect* newEffect = new QgsTransformEffect( *this );
   return newEffect;

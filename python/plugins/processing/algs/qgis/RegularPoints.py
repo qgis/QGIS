@@ -25,11 +25,14 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
 from random import seed, uniform
 from math import sqrt
 
-from PyQt4.QtCore import QVariant
-from qgis.core import QGis, QgsRectangle, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsPoint
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import (QGis, QgsRectangle, QgsFields, QgsField, QgsFeature,
+                       QgsGeometry, QgsPoint)
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -37,6 +40,8 @@ from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputVector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class RegularPoints(GeoAlgorithm):
@@ -47,6 +52,9 @@ class RegularPoints(GeoAlgorithm):
     RANDOMIZE = 'RANDOMIZE'
     IS_SPACING = 'IS_SPACING'
     OUTPUT = 'OUTPUT'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'regular_points.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Regular points')
@@ -96,7 +104,7 @@ class RegularPoints(GeoAlgorithm):
         f.setFields(fields)
 
         count = 0
-        total = 100.00 / (area / pSpacing)
+        total = 100.0 / (area / pSpacing)
         y = extent.yMaximum() - inset
         while y >= extent.yMinimum():
             x = extent.xMinimum() + inset

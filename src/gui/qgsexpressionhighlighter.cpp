@@ -44,7 +44,7 @@ QgsExpressionHighlighter::QgsExpressionHighlighter( QTextDocument *parent )
   highlightingRules.append( rule );
 }
 
-void QgsExpressionHighlighter::addFields( QStringList fieldList )
+void QgsExpressionHighlighter::addFields( const QStringList& fieldList )
 {
   columnNameFormat.setForeground( Qt::darkRed );
   HighlightingRule rule;

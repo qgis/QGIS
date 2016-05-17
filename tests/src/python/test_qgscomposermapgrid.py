@@ -12,9 +12,9 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
 
-from PyQt4.QtGui import QPainter, QColor
+from qgis.PyQt.QtGui import QPainter, QColor
 
 from qgis.core import (QgsComposerMap,
                        QgsComposerMapGrid,
@@ -24,21 +24,18 @@ from qgis.core import (QgsComposerMap,
                        QgsCoordinateReferenceSystem,
                        QgsFontUtils
                        )
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
+from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
 from qgscompositionchecker import QgsCompositionChecker
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsComposerMap(TestCase):
+class TestQgsComposerMap(unittest.TestCase):
 
     def __init__(self, methodName):
-        """Run once on class initialisation."""
+        """Run once on class initialization."""
         unittest.TestCase.__init__(self, methodName)
 
         # create composition with composer map

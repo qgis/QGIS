@@ -27,18 +27,18 @@ __revision__ = '$Format:%H$'
 
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 
-from processing.tools.system import isWindows
-
-from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+from processing.tools.system import isWindows
+from processing.tools.vector import ogrConnectionString, ogrLayerName
 
-class Ogr2OgrDissolve(OgrAlgorithm):
+
+class Ogr2OgrDissolve(GdalAlgorithm):
 
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
@@ -74,7 +74,7 @@ class Ogr2OgrDissolve(OgrAlgorithm):
         self.addParameter(ParameterBoolean(self.STATS,
                                            self.tr('Compute min/max/sum/mean for the following numeric attribute'), False))
         self.addParameter(ParameterTableField(self.STATSATT,
-                                              self.tr('Numeric attribute to compute dissolved features stats'), self.INPUT_LAYER))
+                                              self.tr('Numeric attribute to compute dissolved features stats'), self.INPUT_LAYER, optional=True))
         self.addParameter(ParameterString(self.OPTIONS,
                                           self.tr('Additional creation options (see ogr2ogr manual)'),
                                           '', optional=True))
@@ -83,8 +83,8 @@ class Ogr2OgrDissolve(OgrAlgorithm):
 
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
-        layername = "'" + self.ogrLayerName(inLayer) + "'"
+        ogrLayer = ogrConnectionString(inLayer)[1:-1]
+        layername = "'" + ogrLayerName(inLayer) + "'"
         geometry = unicode(self.getParameterValue(self.GEOMETRY))
         field = unicode(self.getParameterValue(self.FIELD))
         statsatt = unicode(self.getParameterValue(self.STATSATT))
@@ -116,13 +116,13 @@ class Ogr2OgrDissolve(OgrAlgorithm):
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
 
-        output = self.ogrConnectionString(outFile)
+        output = ogrConnectionString(outFile)
         options = unicode(self.getParameterValue(self.OPTIONS))
 
         arguments = []
         arguments.append(output)
         arguments.append(ogrLayer)
-        arguments.append(self.ogrLayerName(inLayer))
+        arguments.append(ogrLayerName(inLayer))
         arguments.append(query)
 
         if not multi:

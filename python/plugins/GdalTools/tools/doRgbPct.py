@@ -23,12 +23,12 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import SIGNAL, QObject, QCoreApplication
-from PyQt4.QtGui import QWidget
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtWidgets import QWidget
 
-from ui_widgetConvert import Ui_GdalToolsWidget as Ui_Widget
-from widgetBatchBase import GdalToolsBaseBatchWidget as BaseBatchWidget
-import GdalTools_utils as Utils
+from .ui_widgetConvert import Ui_GdalToolsWidget as Ui_Widget
+from .widgetBatchBase import GdalToolsBaseBatchWidget as BaseBatchWidget
+from . import GdalTools_utils as Utils
 
 
 class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
@@ -50,15 +50,15 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         self.outputFormat = Utils.fillRasterOutputFormat()
 
         self.setParamsStatus([
-            (self.inSelector, SIGNAL("filenameChanged()")),
-            (self.outSelector, SIGNAL("filenameChanged()")),
-            (self.colorsSpin, SIGNAL("valueChanged(int)"), self.colorsCheck),
-            (self.bandSpin, SIGNAL("valueChanged(int)"), self.bandCheck, "-1")   # hide this option
+            (self.inSelector, "filenameChanged"),
+            (self.outSelector, "filenameChanged"),
+            (self.colorsSpin, "valueChanged", self.colorsCheck),
+            (self.bandSpin, "valueChanged", self.bandCheck, "-1")   # hide this option
         ])
 
-        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
-        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
-        self.connect(self.batchCheck, SIGNAL("stateChanged( int )"), self.switchToolMode)
+        self.inSelector.selectClicked.connect(self.fillInputFile)
+        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
+        self.batchCheck.stateChanged.connect(self.switchToolMode)
 
     # switch to batch or normal mode
     def switchToolMode(self):
@@ -74,20 +74,20 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
             self.label.setText(QCoreApplication.translate("GdalTools", "&Input directory"))
             self.label_2.setText(QCoreApplication.translate("GdalTools", "&Output directory"))
 
-            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
-            QObject.disconnect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
+            self.inSelector.selectClicked.disconnect(self.fillInputFile)
+            self.outSelector.selectClicked.disconnect(self.fillOutputFileEdit)
 
-            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
-            QObject.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputDir)
+            self.inSelector.selectClicked.connect(self.fillInputDir)
+            self.outSelector.selectClicked.connect(self.fillOutputDir)
         else:
             self.label.setText(self.inFileLabel)
             self.label_2.setText(self.outFileLabel)
 
-            QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
-            QObject.disconnect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputDir)
+            self.inSelector.selectClicked.disconnect(self.fillInputDir)
+            self.outSelector.selectClicked.disconnect(self.fillOutputDir)
 
-            QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
-            QObject.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
+            self.inSelector.selectClicked.connect(self.fillInputFile)
+            self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
 
     def onLayersChanged(self):
         self.inSelector.setLayers(Utils.LayerRegistry.instance().getRasterLayers())

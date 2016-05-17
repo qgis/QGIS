@@ -20,12 +20,6 @@ QgsGraph::QgsGraph()
 {
 }
 
-
-QgsGraph::~QgsGraph()
-{
-
-}
-
 int QgsGraph::addVertex( const QgsPoint& pt )
 {
   mGraphVertexes.append( QgsGraphVertex( pt ) );

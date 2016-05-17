@@ -27,12 +27,12 @@ QgsPaintEffect::QgsPaintEffect()
     : mEnabled( true )
     , mDrawMode( ModifyAndRender )
     , requiresQPainterDpiFix( true )
-    , mPicture( 0 )
-    , mSourceImage( 0 )
+    , mPicture( nullptr )
+    , mSourceImage( nullptr )
     , mOwnsImage( false )
-    , mPrevPainter( 0 )
-    , mEffectPainter( 0 )
-    , mTempPicture( 0 )
+    , mPrevPainter( nullptr )
+    , mEffectPainter( nullptr )
+    , mTempPicture( nullptr )
 {
 
 }
@@ -41,12 +41,12 @@ QgsPaintEffect::QgsPaintEffect( const QgsPaintEffect &other )
     : mEnabled( other.enabled() )
     , mDrawMode( other.drawMode() )
     , requiresQPainterDpiFix( true )
-    , mPicture( 0 )
-    , mSourceImage( 0 )
+    , mPicture( nullptr )
+    , mSourceImage( nullptr )
     , mOwnsImage( false )
-    , mPrevPainter( 0 )
-    , mEffectPainter( 0 )
-    , mTempPicture( 0 )
+    , mPrevPainter( nullptr )
+    , mEffectPainter( nullptr )
+    , mTempPicture( nullptr )
 {
 
 }
@@ -129,7 +129,7 @@ void QgsPaintEffect::render( QPicture &picture, QgsRenderContext &context )
   //set source picture
   mPicture = &picture;
   delete mSourceImage;
-  mSourceImage = 0;
+  mSourceImage = nullptr;
 
   draw( context );
 }
@@ -156,18 +156,18 @@ void QgsPaintEffect::end( QgsRenderContext &context )
 
   mEffectPainter->end();
   delete mEffectPainter;
-  mEffectPainter = 0;
+  mEffectPainter = nullptr;
 
   //restore previous painter for context
   context.setPainter( mPrevPainter );
-  mPrevPainter = 0;
+  mPrevPainter = nullptr;
 
   //draw using effect
   render( *mTempPicture, context );
 
   //clean up
   delete mTempPicture;
-  mTempPicture = 0;
+  mTempPicture = nullptr;
 }
 
 void QgsPaintEffect::drawSource( QPainter &painter )
@@ -194,7 +194,7 @@ QImage* QgsPaintEffect::sourceAsImage( QgsRenderContext &context )
   }
 
   if ( !mPicture )
-    return 0;
+    return nullptr;
 
   //else create it
   //TODO - test with premultiplied image for speed
@@ -227,8 +227,8 @@ void QgsPaintEffect::fixQPictureDpi( QPainter *painter ) const
   // Then when being drawn, it scales the painter. The following call
   // negates the effect. There is no way of setting QPicture's DPI.
   // See QTBUG-20361
-  painter->scale(( double )qt_defaultDpiX() / painter->device()->logicalDpiX(),
-                 ( double )qt_defaultDpiY() / painter->device()->logicalDpiY() );
+  painter->scale( static_cast< double >( qt_defaultDpiX() ) / painter->device()->logicalDpiX(),
+                  static_cast< double >( qt_defaultDpiY() ) / painter->device()->logicalDpiY() );
 }
 
 QRectF QgsPaintEffect::imageBoundingRect( const QgsRenderContext &context ) const
@@ -285,7 +285,7 @@ void QgsDrawSourceEffect::draw( QgsRenderContext &context )
   }
 }
 
-QgsPaintEffect *QgsDrawSourceEffect::clone() const
+QgsDrawSourceEffect* QgsDrawSourceEffect::clone() const
 {
   return new QgsDrawSourceEffect( *this );
 }
@@ -303,7 +303,7 @@ QgsStringMap QgsDrawSourceEffect::properties() const
 void QgsDrawSourceEffect::readProperties( const QgsStringMap &props )
 {
   bool ok;
-  QPainter::CompositionMode mode = ( QPainter::CompositionMode )props.value( "blend_mode" ).toInt( &ok );
+  QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( "blend_mode" ).toInt( &ok ) );
   if ( ok )
   {
     mBlendMode = mode;
@@ -314,5 +314,5 @@ void QgsDrawSourceEffect::readProperties( const QgsStringMap &props )
     mTransparency = transparency;
   }
   mEnabled = props.value( "enabled", "1" ).toInt();
-  mDrawMode = ( QgsPaintEffect::DrawMode )props.value( "draw_mode", "2" ).toInt();
+  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( "draw_mode", "2" ).toInt() );
 }

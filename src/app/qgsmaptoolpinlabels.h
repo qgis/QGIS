@@ -35,13 +35,13 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
     ~QgsMapToolPinLabels();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
     bool isShowingPinned() const { return mShowPinned; }
     void setShowingPinned( bool showing ) { mShowPinned = showing; }
@@ -86,10 +86,14 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
     //! Select valid labels to pin or unpin
     void pinUnpinLabels( const QgsRectangle& ext, QMouseEvent * e );
 
-    //! Pin or unpin label relative to whether its editable
-    bool pinUnpinLabel( QgsVectorLayer* vlayer,
-                        const QgsLabelPosition& labelpos,
-                        bool pin );
+    //! Pin or unpin current label relative to whether its editable
+    bool pinUnpinCurrentLabel( bool pin );
+
+    //! Pin or unpin diagram relative to whether its editable
+    bool pinUnpinCurrentDiagram( bool pin );
+
+    //! Pin or unpin current feature (diagram or label)
+    bool pinUnpinCurrentFeature( bool pin );
 };
 
 #endif // QGSMAPTOOLPINLABELS_H

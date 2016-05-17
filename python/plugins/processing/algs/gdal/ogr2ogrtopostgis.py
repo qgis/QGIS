@@ -33,13 +33,14 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterTableField
 
-from processing.tools.system import isWindows
-
-from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+from processing.tools.system import isWindows
+from processing.tools.vector import ogrConnectionString, ogrLayerName
 
-class Ogr2OgrToPostGis(OgrAlgorithm):
+
+class Ogr2OgrToPostGis(GdalAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     GTYPE = 'GTYPE'
@@ -83,11 +84,11 @@ class Ogr2OgrToPostGis(OgrAlgorithm):
         self.addParameter(ParameterSelection(self.GTYPE,
                                              self.tr('Output geometry type'), self.GEOMTYPE, 0))
         self.addParameter(ParameterCrs(self.A_SRS,
-                                       self.tr('Assign an output CRS'), ''))
+                                       self.tr('Assign an output CRS'), '', optional=True))
         self.addParameter(ParameterCrs(self.T_SRS,
-                                       self.tr('Reproject to this CRS on output '), ''))
+                                       self.tr('Reproject to this CRS on output '), '', optional=True))
         self.addParameter(ParameterCrs(self.S_SRS,
-                                       self.tr('Override source CRS'), ''))
+                                       self.tr('Override source CRS'), '', optional=True))
         self.addParameter(ParameterString(self.HOST,
                                           self.tr('Host'), 'localhost', optional=False))
         self.addParameter(ParameterString(self.PORT,
@@ -151,7 +152,7 @@ class Ogr2OgrToPostGis(OgrAlgorithm):
 
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
+        ogrLayer = ogrConnectionString(inLayer)[1:-1]
         ssrs = unicode(self.getParameterValue(self.S_SRS))
         tsrs = unicode(self.getParameterValue(self.T_SRS))
         asrs = unicode(self.getParameterValue(self.A_SRS))
@@ -161,7 +162,6 @@ class Ogr2OgrToPostGis(OgrAlgorithm):
         dbname = unicode(self.getParameterValue(self.DBNAME))
         password = unicode(self.getParameterValue(self.PASSWORD))
         schema = unicode(self.getParameterValue(self.SCHEMA))
-        schemastring = "-lco SCHEMA=" + schema
         table = unicode(self.getParameterValue(self.TABLE))
         pk = unicode(self.getParameterValue(self.PK))
         pkstring = "-lco FID=" + pk
@@ -173,7 +173,6 @@ class Ogr2OgrToPostGis(OgrAlgorithm):
         simplify = unicode(self.getParameterValue(self.SIMPLIFY))
         segmentize = unicode(self.getParameterValue(self.SEGMENTIZE))
         spat = self.getParameterValue(self.SPAT)
-        ogrspat = self.ogrConnectionString(spat)
         clip = self.getParameterValue(self.CLIP)
         where = unicode(self.getParameterValue(self.WHERE))
         wherestring = '-where "' + where + '"'
@@ -201,10 +200,14 @@ class Ogr2OgrToPostGis(OgrAlgorithm):
             arguments.append('dbname=' + dbname)
         if len(password) > 0:
             arguments.append('password=' + password)
+        if len(schema) > 0:
+            arguments.append('active_schema=' + schema)
+        else:
+            arguments.append('active_schema=public')
         arguments.append('user=' + user + '"')
         arguments.append(dimstring)
         arguments.append(ogrLayer)
-        arguments.append(self.ogrLayerName(inLayer))
+        arguments.append(ogrLayerName(inLayer))
         if index:
             arguments.append(indexstring)
         if launder:
@@ -218,8 +221,6 @@ class Ogr2OgrToPostGis(OgrAlgorithm):
         if len(self.GEOMTYPE[self.getParameterValue(self.GTYPE)]) > 0:
             arguments.append('-nlt')
             arguments.append(self.GEOMTYPE[self.getParameterValue(self.GTYPE)])
-        if len(schema) > 0:
-            arguments.append(schemastring)
         if len(geocolumn) > 0:
             arguments.append(geocolumnstring)
         if len(pk) > 0:
@@ -239,7 +240,7 @@ class Ogr2OgrToPostGis(OgrAlgorithm):
             arguments.append('-a_srs')
             arguments.append(asrs)
         if len(spat) > 0:
-            regionCoords = ogrspat.split(',')
+            regionCoords = spat.split(',')
             arguments.append('-spat')
             arguments.append(regionCoords[0])
             arguments.append(regionCoords[2])

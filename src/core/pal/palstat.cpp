@@ -28,67 +28,58 @@
  */
 
 #include "palstat.h"
-#include <iostream>
 
-namespace pal
+pal::PalStat::PalStat()
 {
+  nbLayers = 0;
+  nbObjects = 0;
+  nbLabelledObjects = 0;
+  layersNbObjects = nullptr;
+  layersNbLabelledObjects = nullptr;
+}
 
-  PalStat::PalStat()
-  {
-    nbLayers = 0;
-    nbObjects = 0;
-    nbLabelledObjects = 0;
-    layersNbObjects = NULL;
-    layersNbLabelledObjects = NULL;
-  }
+pal::PalStat::~PalStat()
+{
+  delete[] layersNbObjects;
+  delete[] layersNbLabelledObjects;
+}
 
-  PalStat::~PalStat()
-  {
-    delete[] layersNbObjects;
-    delete[] layersNbLabelledObjects;
-  }
+int pal::PalStat::getNbObjects()
+{
+  return nbObjects;
+}
 
-  int PalStat::getNbObjects()
-  {
-    return nbObjects;
-  }
+int pal::PalStat::getNbLabelledObjects()
+{
+  return nbLabelledObjects;
+}
 
-  int PalStat::getNbLabelledObjects()
-  {
-    return nbLabelledObjects;
-  }
+int pal::PalStat::getNbLayers()
+{
+  return nbLayers;
+}
 
-  int PalStat::getNbLayers()
-  {
-    return nbLayers;
-  }
+QString pal::PalStat::getLayerName( int layerId )
+{
+  if ( layerId >= 0 && layerId < nbLayers )
+    return layersName.at( layerId );
+  else
+    return QString();
+}
 
-  QString PalStat::getLayerName( int layerId )
-  {
-    if ( layerId >= 0 && layerId < nbLayers )
-      return layersName.at( layerId );
-    else
-      return QString();
-  }
+int pal::PalStat::getLayerNbObjects( int layerId )
+{
+  if ( layerId >= 0 && layerId < nbLayers )
+    return layersNbObjects[layerId];
+  else
+    return -1;
+}
 
-
-  int PalStat::getLayerNbObjects( int layerId )
-  {
-    if ( layerId >= 0 && layerId < nbLayers )
-      return layersNbObjects[layerId];
-    else
-      return -1;
-  }
-
-
-  int PalStat::getLayerNbLabelledObjects( int layerId )
-  {
-    if ( layerId >= 0 && layerId < nbLayers )
-      return layersNbLabelledObjects[layerId];
-    else
-      return -1;
-  }
-
-
-} // namespace
+int pal::PalStat::getLayerNbLabelledObjects( int layerId )
+{
+  if ( layerId >= 0 && layerId < nbLayers )
+    return layersNbLabelledObjects[layerId];
+  else
+    return -1;
+}
 

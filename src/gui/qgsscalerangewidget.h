@@ -30,7 +30,7 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
     Q_OBJECT
 
   public:
-    explicit QgsScaleRangeWidget( QWidget *parent = 0 );
+    explicit QgsScaleRangeWidget( QWidget *parent = nullptr );
     ~QgsScaleRangeWidget();
 
     //! set the map canvas which will be used for the current scale buttons

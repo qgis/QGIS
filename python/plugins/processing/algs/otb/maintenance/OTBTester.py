@@ -117,7 +117,7 @@ class MakefileParser(object):
                 return provided
         except Exception as e:
             traceback.print_exc()
-            self.fail(e.message)
+            self.fail(unicode(e))
 
     def add_make(self, previous_context, new_file):
         input = open(new_file).read()
@@ -215,8 +215,8 @@ class MakefileParser(object):
                 try:
                     the_string = Template(the_string).substitute(neo_dict)
                 except KeyError as e:
-                    self.logger.warning("Key %s is not found in makefiles" % e.message)
-                    neo_dict[e.message] = ""
+                    self.logger.warning("Key %s is not found in makefiles" % unicode(e))
+                    neo_dict[unicode(e)] = ""
 
         if 'string.Template' in the_string:
             raise Exception("Unexpected toString call in %s" % the_string)
@@ -236,7 +236,7 @@ class MakefileParser(object):
         result.extend(["otbcli_%s" % each for each in itemz[1]])
 
         if len(result[0]) == 7:
-            raise Exception("App name is empty !")
+            raise Exception("App name is empty!")
 
         result.extend(itemz[2])
         result.append("-testenv")
@@ -250,8 +250,8 @@ class MakefileParser(object):
                 try:
                     the_string = Template(the_string).substitute(neo_dict)
                 except KeyError as e:
-                    self.logger.warning("Key %s is not found in makefiles" % e.message)
-                    neo_dict[e.message] = ""
+                    self.logger.warning("Key %s is not found in makefiles" % unicode(e))
+                    neo_dict[unicode(e)] = ""
 
         if 'string.Template' in the_string:
             raise Exception("Unexpected toString call in %s" % the_string)
@@ -282,8 +282,8 @@ class MakefileParser(object):
                 try:
                     the_string = Template(the_string).substitute(neo_dict)
                 except KeyError as e:
-                    self.logger.warning("Key %s is not found in makefiles" % e.message)
-                    neo_dict[e.message] = ""
+                    self.logger.warning("Key %s is not found in makefiles" % unicode(e))
+                    neo_dict[unicode(e)] = ""
 
         if 'string.Template' in the_string:
             raise Exception("Unexpected toString call in %s" % the_string)

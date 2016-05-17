@@ -19,8 +19,23 @@
 #include "qgsconfigcache.h"
 #include "qgsconfigparserutils.h"
 #include "qgsrasterlayer.h"
+#include "qgsmapserviceexception.h"
+#include "qgsmessagelog.h"
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+#include "qgsaccesscontrol.h"
+#endif
 
-QgsWCSProjectParser::QgsWCSProjectParser( const QString& filePath )
+
+QgsWCSProjectParser::QgsWCSProjectParser(
+  const QString& filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  , const QgsAccessControl* as
+#endif
+)
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    :
+    mAccessControl( as )
+#endif
 {
   mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
 }
@@ -81,6 +96,12 @@ void QgsWCSProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDo
       QgsMapLayer *layer = mProjectParser->createLayerFromElement( elem );
       if ( layer && wcsLayersId.contains( layer->id() ) )
       {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+        if ( !mAccessControl->layerReadPermission( layer ) )
+        {
+          continue;
+        }
+#endif
         QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
         layerMap.insert( layer->id(), layer );
 
@@ -89,6 +110,8 @@ void QgsWCSProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDo
         //We use the layer name even though it might not be unique.
         //Because the id sometimes contains user/pw information and the name is more descriptive
         QString typeName = layer->name();
+        if ( !layer->shortName().isEmpty() )
+          typeName = layer->shortName();
         typeName = typeName.replace( " ", "_" );
         QDomText nameText = doc.createTextNode( typeName );
         nameElem.appendChild( nameText );
@@ -201,7 +224,17 @@ void QgsWCSProjectParser::describeCoverage( const QString& aCoveName, QDomElemen
       QgsRasterLayer *rLayer = dynamic_cast<QgsRasterLayer *>( mProjectParser->createLayerFromElement( elem ) );
       if ( !rLayer )
         continue;
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      if ( !mAccessControl->layerReadPermission( rLayer ) )
+      {
+        continue;
+      }
+#endif
+
       QString coveName = rLayer->name();
+      if ( !rLayer->shortName().isEmpty() )
+        coveName = rLayer->shortName();
       coveName = coveName.replace( " ", "_" );
       if ( wcsLayersId.contains( rLayer->id() ) && ( aCoveName == "" || coveNameList.contains( coveName ) ) )
       {
@@ -213,6 +246,8 @@ void QgsWCSProjectParser::describeCoverage( const QString& aCoveName, QDomElemen
         //We use the layer name even though it might not be unique.
         //Because the id sometimes contains user/pw information and the name is more descriptive
         QString typeName = rLayer->name();
+        if ( !rLayer->shortName().isEmpty() )
+          typeName = rLayer->shortName();
         typeName = typeName.replace( " ", "_" );
         QDomText nameText = doc.createTextNode( typeName );
         nameElem.appendChild( nameText );
@@ -406,6 +441,8 @@ QList<QgsMapLayer*> QgsWCSProjectParser::mapLayerFromCoverage( const QString& cN
         return layerList;
 
       QString coveName = layer->name();
+      if ( !layer->shortName().isEmpty() )
+        coveName = layer->shortName();
       coveName = coveName.replace( " ", "_" );
       if ( cName == coveName )
       {

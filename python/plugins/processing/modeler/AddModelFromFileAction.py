@@ -27,8 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 import shutil
-from PyQt4.QtGui import QIcon, QFileDialog, QMessageBox
-from PyQt4.QtCore import QSettings, QFileInfo
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
+from qgis.PyQt.QtCore import QSettings, QFileInfo
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
@@ -40,8 +41,8 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class AddModelFromFileAction(ToolboxAction):
 
     def __init__(self):
-        self.name = self.tr('Add model from file', 'AddModelFromFileAction')
-        self.group = self.tr('Tools', 'AddModelFromFileAction')
+        self.name, self.i18n_name = self.trAction('Add model from file')
+        self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'model.png'))

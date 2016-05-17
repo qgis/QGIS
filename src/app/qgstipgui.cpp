@@ -24,11 +24,11 @@
 #include <qgstipfactory.h>
 
 #ifdef Q_OS_MACX
-QgsTipGui::QgsTipGui()
-    : QDialog( NULL, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
+QgsTipGui::QgsTipGui( QWidget *parent )
+    : QDialog( parent, Qt::WindowSystemMenuHint )  // Dialog with close button only
 #else
-QgsTipGui::QgsTipGui()
-    : QDialog( NULL )  // Normal dialog in non Mac-OS
+QgsTipGui::QgsTipGui( QWidget *parent )
+    : QDialog( parent )  // Normal dialog in non Mac-OS
 #endif
 {
   setupUi( this );
@@ -64,8 +64,7 @@ void QgsTipGui::showTip( QgsTip myTip )
   //        once Qt 4.6 is the minimum required version for building QGIS.
   //
   QString content = "<img src='"
-                    + QgsApplication::iconsPath()
-                    + "qgis-icon-60x60.png"
+                    + QgsApplication::appIconPath()
                     + "' style='float:left;'>"
                     + "<h2>"
                     + myTip.title()

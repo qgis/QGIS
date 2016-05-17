@@ -6,7 +6,7 @@ class QgsMessageViewer: QDialog, QgsMessageOutput //, Ui::QgsMessageViewer
 %End
 
   public:
-    QgsMessageViewer( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsMessageViewer( QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
     ~QgsMessageViewer();
 
     virtual void setMessage( const QString& message, MessageType msgType );
@@ -36,6 +36,6 @@ class QgsMessageViewer: QDialog, QgsMessageOutput //, Ui::QgsMessageViewer
     Qt::CheckState checkBoxState();
     // Specifies a QSettings tag to store/retrieve the checkbox
     // state to/from. Use an empty QString to disable this feature.
-    void setCheckBoxQSettingsLabel( QString label );
+    void setCheckBoxQSettingsLabel( const QString& label );
 };
 

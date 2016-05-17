@@ -21,7 +21,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeometryutils.h"
 #include "qgslinestringv2.h"
 
-QgsAbstractGeometryV2 *QgsMultiCurveV2::clone() const
+QgsMultiCurveV2 *QgsMultiCurveV2::clone() const
 {
   return new QgsMultiCurveV2( *this );
 }
@@ -81,7 +81,7 @@ QString QgsMultiCurveV2::asJSON( int precision ) const
     if ( dynamic_cast<const QgsCurveV2*>( geom ) )
     {
       QgsLineStringV2* lineString = static_cast<const QgsCurveV2*>( geom )->curveToLine();
-      QList<QgsPointV2> pts;
+      QgsPointSequenceV2 pts;
       lineString->points( pts );
       json += QgsGeometryUtils::pointsToJSON( pts, precision ) + ", ";
       delete lineString;
@@ -105,4 +105,17 @@ bool QgsMultiCurveV2::addGeometry( QgsAbstractGeometryV2* g )
 
   setZMTypeFromSubGeometry( g, QgsWKBTypes::MultiCurve );
   return QgsGeometryCollectionV2::addGeometry( g );
+}
+
+QgsMultiCurveV2* QgsMultiCurveV2::reversed() const
+{
+  QgsMultiCurveV2* reversedMultiCurve = new QgsMultiCurveV2();
+  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  {
+    if ( dynamic_cast<const QgsCurveV2*>( geom ) )
+    {
+      reversedMultiCurve->addGeometry( static_cast<const QgsCurveV2*>( geom )->reversed() );
+    }
+  }
+  return reversedMultiCurve;
 }

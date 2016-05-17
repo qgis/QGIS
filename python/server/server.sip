@@ -14,6 +14,8 @@
 %If (HAVE_SERVER_PYTHON_PLUGINS)
 %Include qgsserverfilter.sip
 %Include qgsserverinterface.sip
+%Include qgsaccesscontrolfilter.sip
+%Include qgsaccesscontrol.sip
 %End
 
 %Include qgsmapserviceexception.sip

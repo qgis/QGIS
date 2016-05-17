@@ -27,7 +27,7 @@
 #include <time.h>
 #include <fcgi_stdio.h>
 
-QgsSOAPRequestHandler::QgsSOAPRequestHandler( const bool captureOutput /*= FALSE*/ )
+QgsSOAPRequestHandler::QgsSOAPRequestHandler( const bool captureOutput )
     : QgsHttpRequestHandler( captureOutput )
 {
 }
@@ -188,7 +188,7 @@ void QgsSOAPRequestHandler::setGetCapabilitiesResponse( const QDomDocument& doc 
   if ( !DocCapabilitiesElement.isNull() )
   {
     QDomNodeList capabilitiesNodes =  DocCapabilitiesElement.elementsByTagName( "Capability" );
-    if ( capabilitiesNodes.size() > 0 )
+    if ( !capabilitiesNodes.isEmpty() )
     {
 
       //create response document
@@ -251,7 +251,7 @@ void QgsSOAPRequestHandler::setGetCapabilitiesResponse( const QDomDocument& doc 
 
           // to do supportedOperations
           QDomNodeList requestNodes = capabilitiesElement.elementsByTagName( "Request" );
-          if ( requestNodes.size() > 0 )
+          if ( !requestNodes.isEmpty() )
           {
             QDomElement requestElement = requestNodes.item( 0 ).toElement();
             QDomNodeList requestChildNodes = requestElement.childNodes();
@@ -454,12 +454,12 @@ void QgsSOAPRequestHandler::setServiceException( const QgsMapServiceException& e
 int QgsSOAPRequestHandler::parseGetMapElement( QMap<QString, QString>& parameterMap, const QDomElement& getMapElement ) const
 {
   QDomNodeList boundingBoxList = getMapElement.elementsByTagName( "BoundingBox" );
-  if ( boundingBoxList.size() > 0 )
+  if ( !boundingBoxList.isEmpty() )
   {
     parseBoundingBoxElement( parameterMap, boundingBoxList.item( 0 ).toElement() );
   }
   QDomNodeList CRSList = getMapElement.elementsByTagName( "coordinateReferenceSystem" );
-  if ( CRSList.size() > 0 )
+  if ( !CRSList.isEmpty() )
   {
     QString crsText = CRSList.item( 0 ).toElement().text();
     QString epsgNumber;
@@ -474,7 +474,7 @@ int QgsSOAPRequestHandler::parseGetMapElement( QMap<QString, QString>& parameter
     parameterMap.insert( "CRS", epsgNumber );
   }
   QDomNodeList GMLList = getMapElement.elementsByTagNameNS( "http://www.eu-orchestra.org/services/ms", "GML" );
-  if ( GMLList.size() > 0 )
+  if ( !GMLList.isEmpty() )
   {
     QString gmlText;
     QTextStream gmlStream( &gmlText );
@@ -484,14 +484,14 @@ int QgsSOAPRequestHandler::parseGetMapElement( QMap<QString, QString>& parameter
 
   //outputAttributes
   QDomNodeList imageDocumentAttributesList = getMapElement.elementsByTagName( "Output" );
-  if ( imageDocumentAttributesList.size() > 0 )
+  if ( !imageDocumentAttributesList.isEmpty() )
   {
     parseOutputAttributesElement( parameterMap, imageDocumentAttributesList.item( 0 ).toElement() );
   }
 
   //SLD
   QDomNodeList sldList = getMapElement.elementsByTagName( "StyledLayerDescriptor" );
-  if ( sldList.size() > 0 )
+  if ( !sldList.isEmpty() )
   {
     QString sldString;
     QTextStream sldStream( &sldString );
@@ -552,7 +552,7 @@ int QgsSOAPRequestHandler::parseGetFeatureInfoElement( QMap<QString, QString>& p
 
   //find <FeatureCount>
   QDomNodeList featureCountList = queryElem.elementsByTagName( "FeatureCount" );
-  if ( featureCountList.size() > 0 ) //optional
+  if ( !featureCountList.isEmpty() ) //optional
   {
     int featureCount = featureCountList.at( 0 ).toElement().text().toInt( &conversionSuccess );
     if ( conversionSuccess )
@@ -582,28 +582,28 @@ int QgsSOAPRequestHandler::parseBoundingBoxElement( QMap<QString, QString>& para
 
   //leftBound
   QDomNodeList leftBoundList = boundingBoxElement.elementsByTagName( "leftBound" );
-  if ( leftBoundList.size() > 0 )
+  if ( !leftBoundList.isEmpty() )
   {
     minx = leftBoundList.item( 0 ).toElement().text();
   }
 
   //rightBound
   QDomNodeList rightBoundList = boundingBoxElement.elementsByTagName( "rightBound" );
-  if ( rightBoundList.size() > 0 )
+  if ( !rightBoundList.isEmpty() )
   {
     maxx = rightBoundList.item( 0 ).toElement().text();
   }
 
   //lowerBound
   QDomNodeList lowerBoundList = boundingBoxElement.elementsByTagName( "lowerBound" );
-  if ( lowerBoundList.size() > 0 )
+  if ( !lowerBoundList.isEmpty() )
   {
     miny = lowerBoundList.item( 0 ).toElement().text();
   }
 
   //upperBound
   QDomNodeList upperBoundList = boundingBoxElement.elementsByTagName( "upperBound" );
-  if ( upperBoundList.size() > 0 )
+  if ( !upperBoundList.isEmpty() )
   {
     maxy = upperBoundList.item( 0 ).toElement().text();
   }
@@ -615,7 +615,7 @@ int QgsSOAPRequestHandler::parseOutputAttributesElement( QMap<QString, QString>&
 {
   //height
   QDomNodeList heightList = outputAttributesElement.elementsByTagName( "Height" );
-  if ( heightList.size() > 0 )
+  if ( !heightList.isEmpty() )
   {
     QString heightString = heightList.item( 0 ).toElement().text();
     parameterMap.insert( "HEIGHT", heightString );
@@ -623,7 +623,7 @@ int QgsSOAPRequestHandler::parseOutputAttributesElement( QMap<QString, QString>&
 
   //width
   QDomNodeList widthList = outputAttributesElement.elementsByTagName( "Width" );
-  if ( widthList.size() > 0 )
+  if ( !widthList.isEmpty() )
   {
     QString widthString = widthList.item( 0 ).toElement().text();
     parameterMap.insert( "WIDTH", widthString );
@@ -631,7 +631,7 @@ int QgsSOAPRequestHandler::parseOutputAttributesElement( QMap<QString, QString>&
 
   //format
   QDomNodeList formatList = outputAttributesElement.elementsByTagName( "Format" );
-  if ( formatList.size() > 0 )
+  if ( !formatList.isEmpty() )
   {
     QString formatString = formatList.item( 0 ).toElement().text();
     parameterMap.insert( "FORMAT", formatString );
@@ -639,7 +639,7 @@ int QgsSOAPRequestHandler::parseOutputAttributesElement( QMap<QString, QString>&
 
   //background transparendy
   QDomNodeList bgTransparencyList = outputAttributesElement.elementsByTagName/*NS*/( /*"http://www.eu-orchestra.org/services/ms",*/ "Transparent" );
-  if ( bgTransparencyList.size() > 0 )
+  if ( !bgTransparencyList.isEmpty() )
   {
     QString bgTransparencyString = bgTransparencyList.item( 0 ).toElement().text();
     if ( bgTransparencyString.compare( "true", Qt::CaseInsensitive ) == 0
@@ -738,7 +738,7 @@ int QgsSOAPRequestHandler::setUrlToFile( QImage* img )
 
   //create a random folder under /tmp with map.jpg/png in it
   //and return the link to the client
-  srand( time( NULL ) );
+  srand( time( nullptr ) );
   int randomNumber = rand();
   QString folderName = QString::number( randomNumber );
   if ( !QFile::exists( tmpDir.absolutePath() + "/mas_tmp" ) )

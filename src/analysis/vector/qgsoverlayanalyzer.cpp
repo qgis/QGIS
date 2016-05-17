@@ -148,7 +148,7 @@ void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* v
   }
 
   const QgsGeometry* featureGeometry = f.constGeometry();
-  QgsGeometry* intersectGeometry = 0;
+  QgsGeometry* intersectGeometry = nullptr;
   QgsFeature overlayFeature;
 
   QList<QgsFeatureId> intersects;
@@ -184,8 +184,8 @@ void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* v
 void QgsOverlayAnalyzer::combineFieldLists( QgsFields& fieldListA, const QgsFields& fieldListB )
 {
   QList<QString> names;
-  for ( int idx = 0; idx < fieldListA.count(); ++idx )
-    names.append( fieldListA[idx].name() );
+  Q_FOREACH ( const QgsField& field, fieldListA )
+    names.append( field.name() );
 
   for ( int idx = 0; idx < fieldListB.count(); ++idx )
   {

@@ -25,7 +25,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsField
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -63,9 +63,8 @@ class TextToFloat(GeoAlgorithm):
 
         features = vector.features(layer)
 
-        count = len(features)
-        total = 100.0 / float(count)
-        for count, f in enumerate(features):
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
             value = f[idx]
             try:
                 if '%' in value:
@@ -76,6 +75,6 @@ class TextToFloat(GeoAlgorithm):
                 f[idx] = None
 
             writer.addFeature(f)
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))
 
         del writer

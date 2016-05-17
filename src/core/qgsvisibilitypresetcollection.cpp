@@ -57,6 +57,7 @@ void QgsVisibilityPresetCollection::insert( const QString& name, const QgsVisibi
   mPresets.insert( name, state );
 
   reconnectToLayersStyleManager();
+  emit presetsChanged();
 }
 
 void QgsVisibilityPresetCollection::update( const QString& name, const PresetRecord& state )
@@ -67,6 +68,7 @@ void QgsVisibilityPresetCollection::update( const QString& name, const PresetRec
   mPresets[name] = state;
 
   reconnectToLayersStyleManager();
+  emit presetsChanged();
 }
 
 void QgsVisibilityPresetCollection::removePreset( const QString& name )
@@ -77,6 +79,7 @@ void QgsVisibilityPresetCollection::removePreset( const QString& name )
   mPresets.remove( name );
 
   reconnectToLayersStyleManager();
+  emit presetsChanged();
 }
 
 void QgsVisibilityPresetCollection::clear()
@@ -84,6 +87,7 @@ void QgsVisibilityPresetCollection::clear()
   mPresets.clear();
 
   reconnectToLayersStyleManager();
+  emit presetsChanged();
 }
 
 QStringList QgsVisibilityPresetCollection::presets() const
@@ -93,8 +97,7 @@ QStringList QgsVisibilityPresetCollection::presets() const
 
 QStringList QgsVisibilityPresetCollection::presetVisibleLayers( const QString& name ) const
 {
-  QSet<QString> visibleIds = mPresets.value( name ).mVisibleLayerIDs;
-  return visibleIds.toList();
+  return mPresets.value( name ).mVisibleLayerIDs;
 }
 
 
@@ -166,11 +169,13 @@ void QgsVisibilityPresetCollection::reconnectToLayersStyleManager()
   // disconnect( 0, 0, this, SLOT( layerStyleRenamed( QString, QString ) ) );
 
   QSet<QString> layerIDs;
-  Q_FOREACH ( const QString& grpName, mPresets.keys() )
+  PresetRecordMap::const_iterator it = mPresets.constBegin();
+  for ( ; it != mPresets.constEnd(); ++it )
   {
-    const PresetRecord& rec = mPresets[grpName];
-    Q_FOREACH ( const QString& layerID, rec.mPerLayerCurrentStyle.keys() )
-      layerIDs << layerID;
+    const PresetRecord& rec = it.value();
+    QMap<QString, QString>::const_iterator layerIt = rec.mPerLayerCurrentStyle.constBegin();
+    for ( ; layerIt != rec.mPerLayerCurrentStyle.constEnd(); ++layerIt )
+      layerIDs << layerIt.key();
   }
 
   Q_FOREACH ( const QString& layerID, layerIDs )
@@ -230,14 +235,17 @@ void QgsVisibilityPresetCollection::readXML( const QDomDocument& doc )
   }
 
   reconnectToLayersStyleManager();
+  emit presetsChanged();
 }
 
 void QgsVisibilityPresetCollection::writeXML( QDomDocument& doc )
 {
   QDomElement visPresetsElem = doc.createElement( "visibility-presets" );
-  Q_FOREACH ( const QString& grpName, mPresets.keys() )
+  PresetRecordMap::const_iterator it = mPresets.constBegin();
+  for ( ; it != mPresets.constEnd(); ++ it )
   {
-    const PresetRecord& rec = mPresets[grpName];
+    QString grpName = it.key();
+    const PresetRecord& rec = it.value();
     QDomElement visPresetElem = doc.createElement( "visibility-preset" );
     visPresetElem.setAttribute( "name", grpName );
     Q_FOREACH ( const QString& layerID, rec.mVisibleLayerIDs )
@@ -249,11 +257,13 @@ void QgsVisibilityPresetCollection::writeXML( QDomDocument& doc )
       visPresetElem.appendChild( layerElem );
     }
 
-    Q_FOREACH ( const QString& layerID, rec.mPerLayerCheckedLegendSymbols.keys() )
+    QMap<QString, QSet<QString> >::const_iterator layerIt = rec.mPerLayerCheckedLegendSymbols.constBegin();
+    for ( ; layerIt != rec.mPerLayerCheckedLegendSymbols.constEnd(); ++layerIt )
     {
+      QString layerID = layerIt.key();
       QDomElement checkedLegendNodesElem = doc.createElement( "checked-legend-nodes" );
       checkedLegendNodesElem.setAttribute( "id", layerID );
-      Q_FOREACH ( const QString& checkedLegendNode, rec.mPerLayerCheckedLegendSymbols[layerID] )
+      Q_FOREACH ( const QString& checkedLegendNode, layerIt.value() )
       {
         QDomElement checkedLegendNodeElem = doc.createElement( "checked-legend-node" );
         checkedLegendNodeElem.setAttribute( "id", checkedLegendNode );
@@ -268,18 +278,20 @@ void QgsVisibilityPresetCollection::writeXML( QDomDocument& doc )
   doc.firstChildElement( "qgis" ).appendChild( visPresetsElem );
 }
 
-void QgsVisibilityPresetCollection::registryLayersRemoved( QStringList layerIDs )
+void QgsVisibilityPresetCollection::registryLayersRemoved( const QStringList& layerIDs )
 {
   Q_FOREACH ( const QString& layerID, layerIDs )
   {
-    Q_FOREACH ( const QString& presetName, mPresets.keys() )
+    PresetRecordMap::iterator it = mPresets.begin();
+    for ( ; it != mPresets.end(); ++it )
     {
-      PresetRecord& rec = mPresets[presetName];
-      rec.mVisibleLayerIDs.remove( layerID );
+      PresetRecord& rec = it.value();
+      rec.mVisibleLayerIDs.removeAll( layerID );
       rec.mPerLayerCheckedLegendSymbols.remove( layerID );
       rec.mPerLayerCurrentStyle.remove( layerID );
     }
   }
+  emit presetsChanged();
 }
 
 void QgsVisibilityPresetCollection::layerStyleRenamed( const QString& oldName, const QString& newName )
@@ -290,9 +302,10 @@ void QgsVisibilityPresetCollection::layerStyleRenamed( const QString& oldName, c
 
   QString layerID = styleMgr->layer()->id();
 
-  Q_FOREACH ( const QString& presetName, mPresets.keys() )
+  PresetRecordMap::iterator it = mPresets.begin();
+  for ( ; it != mPresets.end(); ++it )
   {
-    PresetRecord& rec = mPresets[presetName];
+    PresetRecord& rec = it.value();
 
     if ( rec.mPerLayerCurrentStyle.contains( layerID ) )
     {
@@ -301,4 +314,5 @@ void QgsVisibilityPresetCollection::layerStyleRenamed( const QString& oldName, c
         rec.mPerLayerCurrentStyle[layerID] = newName;
     }
   }
+  emit presetsChanged();
 }

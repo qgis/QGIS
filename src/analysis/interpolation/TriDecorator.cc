@@ -93,7 +93,7 @@ Point3D* TriDecorator::getPoint( unsigned int i ) const
   else
   {
     QgsDebugMsg( "warning, null pointer" );
-    return 0;
+    return nullptr;
   }
 }
 
@@ -162,7 +162,7 @@ QList<int>* TriDecorator::getSurroundingTriangles( int pointno )
   else
   {
     QgsDebugMsg( "warning, null pointer" );
-    return 0;
+    return nullptr;
   }
 }
 
@@ -342,6 +342,6 @@ QList<int>* TriDecorator::getPointsAroundEdge( double x, double y )
   else
   {
     QgsDebugMsg( "warning, null pointer" );
-    return 0;
+    return nullptr;
   }
 }

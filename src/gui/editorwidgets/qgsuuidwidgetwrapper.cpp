@@ -19,12 +19,12 @@
 
 QgsUuidWidgetWrapper::QgsUuidWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mLabel( NULL )
-    , mLineEdit( NULL )
+    , mLabel( nullptr )
+    , mLineEdit( nullptr )
 {
 }
 
-QVariant QgsUuidWidgetWrapper::value()
+QVariant QgsUuidWidgetWrapper::value() const
 {
   QVariant v;
 
@@ -49,7 +49,7 @@ void QgsUuidWidgetWrapper::initWidget( QWidget* editor )
     mLineEdit->setEnabled( false );
 }
 
-bool QgsUuidWidgetWrapper::valid()
+bool QgsUuidWidgetWrapper::valid() const
 {
   return mLineEdit || mLabel;
 }

@@ -7,7 +7,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
  public:
 
     /** Source modes for the HTML content to render in the item
-    */
+     */
     enum ContentMode
     {
       Url, /*!< Using this mode item fetches its content via a url*/
@@ -63,7 +63,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @see loadHtml
      * @note added in 2.5
      */
-    void setHtml( const QString html );
+    void setHtml( const QString& html );
 
     /** Returns the HTML source displayed in the item if the item is using
      * the QgsComposerHtml::ManualHtml mode.
@@ -144,7 +144,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @see loadHtml
      * @note added in 2.5
      */
-    void setUserStylesheet( const QString stylesheet );
+    void setUserStylesheet( const QString& stylesheet );
 
     /** Returns the user stylesheet CSS rules used while rendering the HTML content. These
      * overriding the styles specified within the HTML source.
@@ -177,7 +177,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
     bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const;
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
     void addFrame( QgsComposerFrame* frame /Transfer/, bool recalcFrameSizes = true );
-    //overriden to break frames without dividing lines of text
+    //overridden to break frames without dividing lines of text
     double findNearbyPageBreak( double yPos );
 
   public slots:

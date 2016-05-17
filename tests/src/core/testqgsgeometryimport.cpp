@@ -99,7 +99,7 @@ void TestQgsGeometryImport::pointWkb()
   //create wkb
   char byteOrder = QgsApplication::endian();
   unsigned char* geomPtr = new unsigned char[21];
-  QgsWkbPtr wkb( geomPtr );
+  QgsWkbPtr wkb( geomPtr, 21 );
   wkb << byteOrder << QGis::WKBPoint << x << y;
 
   QgsGeometry geom;
@@ -178,7 +178,7 @@ void TestQgsGeometryImport::linestringWkb()
   char byteOrder = QgsApplication::endian();
   int wkbSize = 1 + 2 * sizeof( int ) + line.size() * 2 * sizeof( double );
   unsigned char* geomPtr = new unsigned char[wkbSize];
-  QgsWkbPtr wkb( geomPtr );
+  QgsWkbPtr wkb( geomPtr, wkbSize );
   wkb << byteOrder << QGis::WKBLineString << line.size();
 
   for ( int i = 0; i < line.size(); ++i )

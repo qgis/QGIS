@@ -24,10 +24,10 @@
 //
 // Static calls to enforce singleton behaviour
 //
-QgsColorSchemeRegistry *QgsColorSchemeRegistry::mInstance = 0;
+QgsColorSchemeRegistry *QgsColorSchemeRegistry::mInstance = nullptr;
 QgsColorSchemeRegistry *QgsColorSchemeRegistry::instance()
 {
-  if ( mInstance == 0 )
+  if ( !mInstance )
   {
     mInstance = new QgsColorSchemeRegistry();
 

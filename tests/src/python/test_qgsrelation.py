@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
 
 from qgis.core import (QgsVectorLayer,
                        QgsFeature,
@@ -21,12 +21,9 @@ from qgis.core import (QgsVectorLayer,
                        QgsPoint,
                        QgsMapLayerRegistry
                        )
-from utilities import (getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
+from qgis.testing import start_app, unittest
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 
 
 def createReferencingLayer():
@@ -70,7 +67,7 @@ def formatAttributes(attrs):
     return repr([unicode(a) for a in attrs])
 
 
-class TestQgsRelation(TestCase):
+class TestQgsRelation(unittest.TestCase):
 
     def setUp(self):
         self.referencedLayer = createReferencedLayer()
@@ -108,7 +105,7 @@ class TestQgsRelation(TestCase):
         rel.setReferencedLayer(self.referencedLayer.id())
         rel.addFieldPair('foreignkey', 'y')
 
-        feat = self.referencedLayer.getFeatures().next()
+        feat = next(self.referencedLayer.getFeatures())
 
         it = rel.getRelatedFeatures(feat)
 
@@ -122,7 +119,7 @@ class TestQgsRelation(TestCase):
         rel.setReferencedLayer(self.referencedLayer.id())
         rel.addFieldPair('foreignkey', 'y')
 
-        feat = self.referencingLayer.getFeatures().next()
+        feat = next(self.referencingLayer.getFeatures())
 
         f = rel.getReferencedFeature(feat)
 

@@ -17,7 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgscomposition.h"
-#include "qgscompositionchecker.h"
+#include "qgsmultirenderchecker.h"
 #include "qgscomposermap.h"
 #include "qgscomposerscalebar.h"
 #include "qgsmaplayerregistry.h"
@@ -25,6 +25,8 @@
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsfontutils.h"
+
+#include <QLocale>
 #include <QObject>
 #include <QtTest/QtTest>
 
@@ -67,6 +69,12 @@ void TestQgsComposerScaleBar::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  // the scale denominator is formatted in a locale aware manner
+  // so 10000 is rendered as "10,000" in C (or en_US) locale, however
+  // other locales may render the number differently (e.g. "10 000" in cs_CZ)
+  // so we enforce C locale to make sure we get expected result
+  QLocale::setDefault( QLocale::c() );
+
   mMapSettings = new QgsMapSettings();
 
   //create maplayers from testdata and add to layer registry
@@ -104,7 +112,9 @@ void TestQgsComposerScaleBar::initTestCase()
   mComposerScaleBar->setNumSegmentsLeft( 0 );
   mComposerScaleBar->setNumSegments( 2 );
   mComposerScaleBar->setHeight( 5 );
-
+  QPen scalePen = mComposerScaleBar->pen();
+  scalePen.setWidthF( 1.0 );
+  mComposerScaleBar->setPen( scalePen );
 
   qWarning() << "scalebar font: " << mComposerScaleBar->font().toString() << " exactMatch:" << mComposerScaleBar->font().exactMatch();
 

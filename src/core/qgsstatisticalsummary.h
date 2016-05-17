@@ -18,6 +18,12 @@
 
 #include <QMap>
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsstatisticalsummary.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
 /** \ingroup core
  * \class QgsStatisticalSummary
  * \brief Calculator for summary statistics for a list of doubles.
@@ -59,7 +65,7 @@ class CORE_EXPORT QgsStatisticalSummary
     /** Constructor for QgsStatisticalSummary
      * @param stats flags for statistics to calculate
      */
-    QgsStatisticalSummary( Statistics stats = Statistics( 0 ) );
+    QgsStatisticalSummary( const QgsStatisticalSummary::Statistics& stats = All );
 
     virtual ~QgsStatisticalSummary();
 
@@ -74,7 +80,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * @param stats flags for statistics to calculate
      * @see statistics
      */
-    void setStatistics( Statistics stats ) { mStatistics = stats; }
+    void setStatistics( const Statistics& stats ) { mStatistics = stats; }
 
     /** Resets the calculated values
      */

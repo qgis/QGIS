@@ -31,9 +31,10 @@ import sys
 import json
 import os
 
-from PyQt4 import uic
-from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QIcon, QMenu, QAction, QCursor, QMessageBox, QFileDialog, QApplication
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QIcon, QCursor
+from qgis.PyQt.QtWidgets import QMenu, QAction, QMessageBox, QFileDialog, QApplication
 
 from qgis.core import QgsApplication
 from qgis.utils import iface
@@ -202,6 +203,9 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.filename = QFileDialog.getOpenFileName(
             self, self.tr('Save script'), scriptDir, filterName)
 
+        if self.filename == '':
+            return
+
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         with codecs.open(self.filename, 'r', encoding='utf-8') as f:
             txt = f.read()
@@ -228,8 +232,8 @@ class ScriptEditorDialog(BASE, WIDGET):
                 filterName = self.tr('Processing R script (*.rsx)')
 
             self.filename = unicode(QFileDialog.getSaveFileName(self,
-                                    self.tr('Save script'), scriptDir,
-                                    filterName))
+                                                                self.tr('Save script'), scriptDir,
+                                                                filterName))
 
         if self.filename:
             if self.algType == self.SCRIPT_PYTHON and \

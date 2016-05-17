@@ -22,6 +22,7 @@ class QgsSymbolV2;
 class QgsSymbolLayerV2;
 class QgsSymbolLayerV2Widget;
 class QgsVectorLayer;
+class QgsMapCanvas;
 
 class SymbolLayerItem;
 
@@ -34,7 +35,7 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QWidget, private Ui::LayerPro
     Q_OBJECT
 
   public:
-    QgsLayerPropertiesWidget( QgsSymbolLayerV2* layer, const QgsSymbolV2* symbol, const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsLayerPropertiesWidget( QgsSymbolLayerV2* layer, const QgsSymbolV2* symbol, const QgsVectorLayer* vl, QWidget* parent = nullptr );
 
     /** Returns the expression context used for the widget, if set. This expression context is used for
      * evaluating data defined symbol properties and for populating based expression widgets in
@@ -43,6 +44,13 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QWidget, private Ui::LayerPro
      * @see setExpressionContext()
      */
     QgsExpressionContext* expressionContext() const { return mPresetExpressionContext; }
+
+    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @note added in QGIS 2.12
+     */
+    virtual void setMapCanvas( QgsMapCanvas* canvas );
 
   public slots:
     void layerTypeChanged();
@@ -72,8 +80,13 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QWidget, private Ui::LayerPro
     const QgsSymbolV2* mSymbol;
     const QgsVectorLayer* mVectorLayer;
 
+  private slots:
+    void reloadLayer();
+
   private:
     QgsExpressionContext* mPresetExpressionContext;
+    QgsMapCanvas* mMapCanvas;
+
 };
 
 #endif //QGSLAYERPROPERTIESWIDGET_H

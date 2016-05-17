@@ -29,11 +29,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from OTBUtils import OTBUtils
-from OTBAlgorithm import OTBAlgorithm
+from . import OTBUtils
+from .OTBAlgorithm import OTBAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 
 pluginPath = os.path.normpath(os.path.join(
@@ -45,7 +45,6 @@ class OTBAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.activate = True
-        self.createAlgsList()
 
     def getDescription(self):
         return self.tr("Orfeo Toolbox (Image analysis)")
@@ -57,37 +56,44 @@ class OTBAlgorithmProvider(AlgorithmProvider):
         return QIcon(os.path.join(pluginPath, 'images', 'otb.png'))
 
     def _loadAlgorithms(self):
-        self.algs = self.preloadedAlgs
+        self.algs = []
 
-    def createAlgsList(self):
-        self.preloadedAlgs = []
-        folder = OTBUtils.otbDescriptionPath()
+        version = OTBUtils.getInstalledVersion(True)
+        if version is None:
+            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                   self.tr('Problem with OTB installation: OTB was not found or is not correctly installed'))
+            return
+
+        folder = OTBUtils.compatibleDescriptionPath(version)
+        if folder is None:
+            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                   self.tr('Problem with OTB installation: installed OTB version (%s) is not supported') % version)
+            return
+
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith("xml"):
                 try:
                     alg = OTBAlgorithm(os.path.join(folder, descriptionFile))
 
                     if alg.name.strip() != "":
-                        self.preloadedAlgs.append(alg)
+                        self.algs.append(alg)
                     else:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr("Could not open OTB algorithm: %s" % descriptionFile))
+                                               self.tr("Could not open OTB algorithm: %s") % descriptionFile)
                 except Exception as e:
                     ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                           self.tr("Could not open OTB algorithm: %s" % descriptionFile))
+                                           self.tr("Could not open OTB algorithm: %s\n%s") % (descriptionFile, unicode(e)))
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        if OTBUtils.findOtbPath() is None:
-            ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                                OTBUtils.OTB_FOLDER,
-                                                self.tr("OTB command line tools folder"), OTBUtils.otbPath(),
-                                                valuetype=Setting.FOLDER))
-        if OTBUtils.findOtbLibPath() is None:
-            ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                                OTBUtils.OTB_LIB_FOLDER,
-                                                self.tr("OTB applications folder"), OTBUtils.otbLibPath(),
-                                                valuetype=Setting.FOLDER))
+        ProcessingConfig.addSetting(Setting(self.getDescription(),
+                                            OTBUtils.OTB_FOLDER,
+                                            self.tr("OTB command line tools folder"), OTBUtils.findOtbPath(),
+                                            valuetype=Setting.FOLDER))
+        ProcessingConfig.addSetting(Setting(self.getDescription(),
+                                            OTBUtils.OTB_LIB_FOLDER,
+                                            self.tr("OTB applications folder"), OTBUtils.findOtbLibPath(),
+                                            valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
                                             OTBUtils.OTB_SRTM_FOLDER,
                                             self.tr("SRTM tiles folder"), OTBUtils.otbSRTMPath(),

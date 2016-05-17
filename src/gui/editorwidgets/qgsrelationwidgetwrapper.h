@@ -20,17 +20,21 @@
 
 class QgsRelationEditorWidget;
 
+/** \class QgsRelationWidgetWrapper
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
 {
     Q_OBJECT
 
   public:
-    explicit QgsRelationWidgetWrapper( QgsVectorLayer* vl, const QgsRelation& relation, QWidget* editor = 0, QWidget* parent = 0 );
+    explicit QgsRelationWidgetWrapper( QgsVectorLayer* vl, const QgsRelation& relation, QWidget* editor = nullptr, QWidget* parent = nullptr );
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
-    bool valid() override;
+    bool valid() const override;
 
   public slots:
     void setFeature( const QgsFeature& feature ) override;

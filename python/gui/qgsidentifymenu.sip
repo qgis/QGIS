@@ -47,7 +47,7 @@ class QgsIdentifyMenu : QMenu
     /**
      * @brief define if attribute actions(1) and map layer actions(2) can be listed and run from the menu
      * @note custom actions will be shown in any case if they exist.
-     * @note (1) attribute actions are defined by the user in the layer properties @see QgsAttributeAction
+     * @note (1) attribute actions are defined by the user in the layer properties @see QgsActionManager
      * @note (2) map layer actions are built-in c++ actions or actions which are defined by a python plugin @see QgsMapLayerActionRegistry
      */
     void setShowFeatureActions( bool showFeatureActions );
@@ -81,7 +81,7 @@ class QgsIdentifyMenu : QMenu
      * @param idResults the list of identify results to choose within
      * @param pos the position where the menu will be executed
      */
-    QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult> idResults, QPoint pos );
+    QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult>& idResults, QPoint pos );
 
   protected:
     virtual void closeEvent( QCloseEvent *e );

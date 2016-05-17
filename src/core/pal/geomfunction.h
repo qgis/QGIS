@@ -27,58 +27,78 @@
  *
  */
 
-#ifndef _GEOM_FUNCTION_
-#define _GEOM_FUNCTION_
+#ifndef PAL_GEOM_FUNCTION
+#define PAL_GEOM_FUNCTION
 
 #include "util.h"
 
 namespace pal
 {
-
-  /*
-   *           o(x2,y2)
-   *          /
-   * cp > 0  /
-   *        /    cp < 0
-   *       /
-   *      /
-   *     o (x1, y1)
+  /**
+   * \class pal::GeomFunction
+   * \note not available in Python bindings
    */
-  inline double cross_product( double x1, double y1, double x2, double y2, double x3, double y3 )
+  class CORE_EXPORT GeomFunction
   {
-    return ( x2 - x1 ) *( y3 - y1 ) - ( x3 - x1 ) *( y2 - y1 );
-  }
+    public:
 
-  inline double dist_euc2d( double x1, double y1, double x2, double y2 )
-  {
-    return sqrt(( x2 - x1 ) *( x2 - x1 ) + ( y2 - y1 ) *( y2 - y1 ) );
-  }
+      /*
+       *           o(x2,y2)
+       *          /
+       * cp > 0  /
+       *        /    cp < 0
+       *       /
+       *      /
+       *     o (x1, y1)
+       */
+      static inline double cross_product( double x1, double y1, double x2, double y2, double x3, double y3 )
+      {
+        return ( x2 - x1 ) *( y3 - y1 ) - ( x3 - x1 ) *( y2 - y1 );
+      }
 
-  inline double dist_euc2d_sq( double x1, double y1, double x2, double y2 )
-  {
-    return ( x2 - x1 ) *( x2 - x1 ) + ( y2 - y1 ) *( y2 - y1 );
-  }
+      static inline double dist_euc2d( double x1, double y1, double x2, double y2 )
+      {
+        return sqrt(( x2 - x1 ) *( x2 - x1 ) + ( y2 - y1 ) *( y2 - y1 ) );
+      }
 
-  void findLineCircleIntersection( double cx, double cy, double radius,
-                                   double x1, double y1, double x2, double y2,
-                                   double& xRes, double& yRes );
+      static inline double dist_euc2d_sq( double x1, double y1, double x2, double y2 )
+      {
+        return ( x2 - x1 ) *( x2 - x1 ) + ( y2 - y1 ) *( y2 - y1 );
+      }
 
+      static void findLineCircleIntersection( double cx, double cy, double radius,
+                                              double x1, double y1, double x2, double y2,
+                                              double& xRes, double& yRes );
 
-  int convexHullId( int *id, const double* const x, const double* const y, int n, int *&cHull );
+      /**
+       * \brief Compute the convex hull in O(n·log(n))
+       * \param id set of point (i.e. point no 0 is (x,y) = x[id[0]],y[id[0]])
+       * \param x x coordinates
+       * \param y y coordinates
+       * \param n Size of subset (vector id)
+       * \param cHull returns the point id (id of id's vector...) whom are parts of the convex hull
+       * \return convexHull's size
+       */
+      static int convexHullId( int *id, const double* const x, const double* const y, int n, int *&cHull );
 
-  bool isSegIntersects( double x1, double y1, double x2, double y2,  // 1st segment
-                        double x3, double y3, double x4, double y4 ); // 2nd segment
+      /**
+       * Returns true if the two segments intersect.
+       */
+      static bool isSegIntersects( double x1, double y1, double x2, double y2,  // 1st segment
+                                   double x3, double y3, double x4, double y4 ); // 2nd segment
 
-  /*
-   * \brief compute the point wherre two lines intersects
-   * \return true if the ok false if line are parallel
-   */
-  bool computeLineIntersection( double x1, double y1, double x2, double y2,  // 1st line (segment)
-                                double x3, double y3, double x4, double y4,  // 2nd line segment
-                                double *x, double *y );
+      /**
+       * Compute the point where two lines intersect.
+       * \returns true if the lines intersect, or false if the lines are parallel
+       */
+      static bool computeLineIntersection( double x1, double y1, double x2, double y2,  // 1st line (segment)
+                                           double x3, double y3, double x4, double y4,  // 2nd line segment
+                                           double *x, double *y );
 
-  int reorderPolygon( int nbPoints, double *x, double *y );
+      //! Reorder points to have cross prod ((x,y)[i], (x,y)[i+1), point) > 0 when point is outside
+      static int reorderPolygon( int nbPoints, double *x, double *y );
 
-} // end namespace
+  };
+} //namespace
 
 #endif

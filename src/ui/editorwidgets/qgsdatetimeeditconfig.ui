@@ -82,22 +82,22 @@
         </property>
         <item>
          <property name="text">
-          <string>date</string>
+          <string>Date</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>time</string>
+          <string>Time</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>date &amp; time</string>
+          <string>Date &amp; time</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>custom format</string>
+          <string>Custom format</string>
          </property>
         </item>
        </widget>
@@ -181,12 +181,12 @@
         </property>
         <item>
          <property name="text">
-          <string>default</string>
+          <string>Default</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>custom</string>
+          <string>Custom</string>
          </property>
         </item>
        </widget>
@@ -214,14 +214,14 @@
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="text">
-         <string>calendar popup</string>
+         <string>Calendar popup</string>
         </property>
        </widget>
       </item>
       <item row="2" column="0" colspan="2">
        <widget class="QCheckBox" name="mAllowNullCheckBox">
         <property name="text">
-         <string>allow NULL values</string>
+         <string>Allow NULL values</string>
         </property>
        </widget>
       </item>
@@ -233,7 +233,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>preview</string>
+        <string>Preview</string>
        </property>
       </widget>
      </item>

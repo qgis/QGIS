@@ -38,14 +38,15 @@ class CORE_EXPORT QgsApplication : public QApplication
     static const char* QGIS_ORGANIZATION_NAME;
     static const char* QGIS_ORGANIZATION_DOMAIN;
     static const char* QGIS_APPLICATION_NAME;
-    QgsApplication( int & argc, char ** argv, bool GUIenabled, QString customConfigPath = QString() );
+    QgsApplication( int & argc, char ** argv, bool GUIenabled, const QString& customConfigPath = QString(), const QString& platformName = "desktop" );
     virtual ~QgsApplication();
 
     /** This method initialises paths etc for QGIS. Called by the ctor or call it manually
         when your app does not extend the QApplication class.
         @note you will probably want to call initQgis too to load the providers in
         the above case.
-        */
+        @note not available in Python bindings
+      */
     static void init( QString customConfigPath = QString() );
 
     //! Watch for QFileOpenEvent.
@@ -107,10 +108,6 @@ class CORE_EXPORT QgsApplication : public QApplication
      * @note this function was added in version 2.7 */
     static QString developersMapFilePath();
 
-    /** Returns the path to the whats new html page
-     * @note this function was added in version 2.11 */
-    static QString whatsNewFilePath();
-
     /** Returns the path to the sponsors file. */
     static QString sponsorsFilePath();
 
@@ -124,7 +121,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /*!
       Returns the path to the licence file.
-    */
+     */
     static QString licenceFilePath();
 
     //! Returns the path to the help application.
@@ -142,6 +139,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the path to the user qgis.db file.
     static QString qgisUserDbFilePath();
 
+    //! Returns the path to the user authentication database file: qgis-auth.db.
+    static QString qgisAuthDbFilePath();
+
     //! Returns the path to the splash screen image directory.
     static QString splashPath();
 
@@ -153,6 +153,9 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     //! Returns the pathes to svg directories.
     static QStringList svgPaths();
+
+    //! Returns the pathes to composer template directories
+    static QStringList composerTemplatePaths();
 
     //! Returns the system environment variables passed to application.
     static QMap<QString, QString> systemEnvVars() { return ABISYM( mSystemEnvVars ); }
@@ -174,7 +177,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     //! Returns path to the desired icon file.
     //! First it tries to use the active theme path, then default theme path
-    static QString iconPath( QString iconFile );
+    static QString iconPath( const QString& iconFile );
 
     //! Helper to get a theme icon. It will fall back to the
     //! default theme if the active theme does not have the required icon.
@@ -186,6 +189,33 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     //! Returns the path to user's style.
     static QString userStyleV2Path();
+
+    //! Returns the short name regular expression for line edit validator
+    static QRegExp shortNameRegExp();
+
+    /** Returns the user's operating system login account name.
+     * @note added in QGIS 2.14
+     * @see userFullName()
+     */
+    static QString userLoginName();
+
+    /** Returns the user's operating system login account full display name.
+     * @note added in QGIS 2.14
+     * @see userLoginName()
+     */
+    static QString userFullName();
+
+    /** Returns a string name of the operating system QGIS is running on.
+     * @note added in QGIS 2.14
+     * @see platform()
+     */
+    static QString osName();
+
+    /** Returns the QGIS platform name, eg "desktop" or "server".
+     * @note added in QGIS 2.14
+     * @see osName()
+     */
+    static QString platform();
 
     //! Returns the path to user's themes folder
     static QString userThemesFolder();
@@ -214,30 +244,37 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Alters default svg paths - used by 3rd party apps.
     static void setDefaultSvgPaths( const QStringList& pathList );
 
+    //! Alters authentication data base directory path - used by 3rd party apps
+    static void setAuthDbDirPath( const QString& theAuthDbDirPath );
+
     //! loads providers
     static void initQgis();
 
     //! initialise qgis.db
-    static bool createDB( QString* errorMessage = 0 );
+    static bool createDB( QString* errorMessage = nullptr );
 
     //! Create the users theme folder
-    static bool createThemeFolder( );
+    static bool createThemeFolder();
 
     //! deletes provider registry and map layer registry
     static void exitQgis();
 
+    //! get application icon
+    static QString appIconPath();
+
     /** Constants for endian-ness */
-    typedef enum ENDIAN
+    enum endian_t
     {
       XDR = 0,  // network, or big-endian, byte order
       NDR = 1   // little-endian byte order
-    }
-    endian_t;
+    };
 
     //! Returns whether this machine uses big or little endian
     static endian_t endian();
 
-    //! Swap the endianness of the specified value
+    /** Swap the endianness of the specified value.
+     * @note not available in Python bindings
+     */
     template<typename T>
     static void endian_swap( T& value )
     {
@@ -272,9 +309,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void registerOgrDrivers();
 
     /** Converts absolute path to path relative to target */
-    static QString absolutePathToRelativePath( QString apath, QString targetPath );
+    static QString absolutePathToRelativePath( const QString& apath, const QString& targetPath );
     /** Converts path relative to target to an absolute path */
-    static QString relativePathToAbsolutePath( QString rpath, QString targetPath );
+    static QString relativePathToAbsolutePath( const QString& rpath, const QString& targetPath );
 
     /** Indicates whether running from build directory (not installed) */
     static bool isRunningFromBuildDir() { return ABISYM( mRunningFromBuildDir ); }
@@ -290,13 +327,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
      */
-    static void skipGdalDriver( QString theDriver );
+    static void skipGdalDriver( const QString& theDriver );
 
     /** Sets the GDAL_SKIP environment variable to exclude the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
      */
-    static void restoreGdalDriver( QString theDriver );
+    static void restoreGdalDriver( const QString& theDriver );
 
     /** Returns the list of gdal drivers that should be skipped (based on
      * GDAL_SKIP environment variable)
@@ -312,6 +349,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     /** Get maximum concurrent thread count
      * @note added in 2.4 */
     static int maxThreads() { return ABISYM( mMaxThreads ); }
+
     /** Set maximum concurrent thread count
      * @note must be between 1 and \#cores, -1 means use all available cores
      * @note added in 2.4 */
@@ -321,6 +359,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     //dummy method to workaround sip generation issue issue
     bool x11EventFilter( XEvent * event )
     {
+      Q_UNUSED( event );
       return 0;
     }
 #endif
@@ -330,7 +369,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     void preNotify( QObject * receiver, QEvent * event, bool * done );
 
   private:
-    static void copyPath( QString src, QString dst );
+    static void copyPath( const QString& src, const QString& dst );
     static QObject* ABISYM( mFileOpenEventReceiver );
     static QStringList ABISYM( mFileOpenEventList );
 
@@ -362,6 +401,15 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * @note added in 2.4 */
     static int ABISYM( mMaxThreads );
+    /**
+     * @note added in 2.12 */
+    static QString ABISYM( mAuthDbDirPath );
+
+    static QString sUserName;
+    static QString sUserFullName;
+    static QString sPlatformName;
+
+    QMap<QString, QIcon> mIconCache;
 };
 
 #endif

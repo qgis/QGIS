@@ -17,7 +17,7 @@ SET (evis_SRCS
 
 )
 
-SET (evis_UIS 
+SET (evis_UIS
      ui/evisdatabaseconnectionguibase.ui
      ui/evisdatabaselayerfieldselectionguibase.ui
      ui/evisgenericeventbrowserguibase.ui
@@ -31,6 +31,8 @@ SET (evis_MOC_HDRS
 
      eventbrowser/evisgenericeventbrowsergui.h
      eventbrowser/evisimagedisplaywidget.h
+
+     idtool/eviseventidtool.h
 )
 
 SET (evis_RCCS resources/evis.qrc)
@@ -46,10 +48,12 @@ QT4_ADD_RESOURCES(evis_RCC_SRCS ${evis_RCCS})
 
 ADD_LIBRARY (evis MODULE ${evis_SRCS} ${evis_MOC_SRCS} ${evis_RCC_SRCS} ${evis_UIS_H})
 
-INCLUDE_DIRECTORIES(
+INCLUDE_DIRECTORIES(SYSTEM
      ${GDAL_INCLUDE_DIR}
      ${GEOS_INCLUDE_DIR}
      ${QT_INCLUDE_DIR}
+)
+INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}
      ${CMAKE_CURRENT_BINARY_DIR}
      ${CMAKE_CURRENT_SOURCE_DIR}/databaseconnection

@@ -1,0 +1,167 @@
+<root>
+  <key>OpticalCalibration</key>
+  <exec>otbcli_OpticalCalibration</exec>
+  <longname>Optical calibration</longname>
+  <group>Calibration</group>
+  <description>Perform optical calibration TOA/TOC (Top Of Atmosphere/Top Of Canopy). Supported sensors: QuickBird, Ikonos, WorldView2, Formosat, Spot5, Pleiades, Spot6. For other sensors the application also allows to provide calibration parameters manually.</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>Input</name>
+    <description>Input image filename (values in DN)</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>out</key>
+    <name>Output</name>
+    <description>Output calibrated image filename</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>Available memory for processing (in MB)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>level</key>
+    <name>Calibration Level</name>
+    <description />
+    <options>
+      <choices>
+        <choice>toa</choice>
+        <choice>toatoim</choice>
+        </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>acqui.minute</key>
+    <name>Minute</name>
+    <description>Minute (0-59)</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>acqui.hour</key>
+    <name>Hour</name>
+    <description>Hour (0-23)</description>
+    <minValue />
+    <maxValue />
+    <default>12</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>acqui.day</key>
+    <name>Day</name>
+    <description>Day (1-31)</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>acqui.month</key>
+    <name>Month</name>
+    <description>Month (1-12)</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>acqui.year</key>
+    <name>Year</name>
+    <description>Year</description>
+    <minValue />
+    <maxValue />
+    <default>2000</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>acqui.sun.elev</key>
+    <name>Sun elevation angle (deg)</name>
+    <description>Sun elevation angle (in degrees)</description>
+    <minValue />
+    <maxValue />
+    <default>90</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>acqui.sun.azim</key>
+    <name>Sun azimuth angle (deg)</name>
+    <description>Sun azimuth angle (in degrees)</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>acqui.view.elev</key>
+    <name>Viewing elevation angle (deg)</name>
+    <description>Viewing elevation angle (in degrees)</description>
+    <minValue />
+    <maxValue />
+    <default>90</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>acqui.view.azim</key>
+    <name>Viewing azimuth angle (deg)</name>
+    <description>Viewing azimuth angle (in degrees)</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputFilename">ParameterFile</parameter_type>
+    <key>acqui.gainbias</key>
+    <name>Gains | biases</name>
+    <description>Gains | biases</description>
+    <isFolder />
+    <optional>True</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputFilename">ParameterFile</parameter_type>
+    <key>acqui.solarilluminations</key>
+    <name>Solar illuminations</name>
+    <description>Solar illuminations (one value per band)</description>
+    <isFolder />
+    <optional>True</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputFilename">ParameterFile</parameter_type>
+    <key>atmo.rsr</key>
+    <name>Relative Spectral Response File</name>
+    <description>Sensor relative spectral response file
+By default the application gets this information in the metadata</description>
+    <isFolder />
+    <optional>True</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>atmo.radius</key>
+    <name>Window radius (adjacency effects)</name>
+    <description>Window radius for adjacency effects correctionsSetting this parameters will enable the correction ofadjacency effects</description>
+    <minValue />
+    <maxValue />
+    <default>2</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>atmo.pixsize</key>
+    <name>Pixel size (in km)</name>
+    <description>Pixel size (in km )used tocompute adjacency effects, it doesn't have tomatch the image spacing</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+</root>

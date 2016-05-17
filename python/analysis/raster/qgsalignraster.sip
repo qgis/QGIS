@@ -3,6 +3,7 @@ class QgsAlignRaster
 {
 %TypeHeaderCode
 #include <qgsalignraster.h>
+#include <gdal_version.h>
 %End
 
   public:
@@ -39,19 +40,29 @@ class QgsAlignRaster
 
       //! Get raster value at the given coordinates (from the first band)
       double identify( double mx, double my );
+
+      private:
+        RasterInfo( const QgsAlignRaster::RasterInfo& rh );
+
     };
 
 
     //! Resampling algorithm to be used (equivalent to GDAL's enum GDALResampleAlg)
+    //! @note RA_Max, RA_Min, RA_Median, RA_Q1 and RA_Q3 are available on GDAL >= 2.0 builds only
     enum ResampleAlg
     {
-      RA_NearestNeighbour = 0, //!< Nearest neighbour (select on one input pixel)
-      RA_Bilinear = 1,       //!< Bilinear (2x2 kernel)
-      RA_Cubic = 2,          //!< Cubic Convolution Approximation (4x4 kernel)
-      RA_CubicSpline = 3,    //!< Cubic B-Spline Approximation (4x4 kernel)
-      RA_Lanczos = 4,        //!< Lanczos windowed sinc interpolation (6x6 kernel)
-      RA_Average = 5,        //!< Average (computes the average of all non-NODATA contributing pixels)
-      RA_Mode = 6            //!< Mode (selects the value which appears most often of all the sampled points)
+      RA_NearestNeighbour, //!< Nearest neighbour (select on one input pixel)
+      RA_Bilinear,       //!< Bilinear (2x2 kernel)
+      RA_Cubic,          //!< Cubic Convolution Approximation (4x4 kernel)
+      RA_CubicSpline,    //!< Cubic B-Spline Approximation (4x4 kernel)
+      RA_Lanczos,        //!< Lanczos windowed sinc interpolation (6x6 kernel)
+      RA_Average,        //!< Average (computes the average of all non-NODATA contributing pixels)
+      RA_Mode,            //!< Mode (selects the value which appears most often of all the sampled points)
+      RA_Max, //!< Maximum (selects the maximum of all non-NODATA contributing pixels)
+      RA_Min, //!< Minimum (selects the minimum of all non-NODATA contributing pixels)
+      RA_Median, //!< Median (selects the median of all non-NODATA contributing pixels)
+      RA_Q1, //!< First quartile (selects the first quartile of all non-NODATA contributing pixels)
+      RA_Q3, //!< Third quartile (selects the third quartile of all non-NODATA contributing pixels)
     };
 
     //! Definition of one raster layer for alignment
@@ -96,13 +107,13 @@ class QgsAlignRaster
     //! Get list of rasters that will be aligned
     List rasters() const;
 
-    void setGridOffset( const QPointF& offset );
+    void setGridOffset( QPointF offset );
     QPointF gridOffset() const;
 
     //! Set output cell size
     void setCellSize( double x, double y );
     //! Set output cell size
-    void setCellSize( const QSizeF& size );
+    void setCellSize( QSizeF size );
     //! Get output cell size
     QSizeF cellSize() const;
 
@@ -159,6 +170,14 @@ class QgsAlignRaster
 
     //! Return index of the layer which has smallest cell size (returns -1 on error)
     int suggestedReferenceLayer() const;
+
+  protected:
+
+    //! Internal function for processing of one raster (1. create output, 2. do the alignment)
+    bool createAndWarp( const Item& raster );
+
+    //! Determine suggested output of raster warp to a different CRS. Returns true on success
+    static bool suggestedWarpOutput( const RasterInfo& info, const QString& destWkt, QSizeF* cellSize = 0, QPointF* gridOffset = 0, QgsRectangle* rect = 0 );
 
 };
 

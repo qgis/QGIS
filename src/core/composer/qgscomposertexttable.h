@@ -24,6 +24,7 @@
 /** A text table item that reads text from string lists*/
 class CORE_EXPORT QgsComposerTextTable: public QgsComposerTable
 {
+    Q_OBJECT
   public:
     QgsComposerTextTable( QgsComposition* c );
     ~QgsComposerTextTable();
@@ -34,7 +35,7 @@ class CORE_EXPORT QgsComposerTextTable: public QgsComposerTable
     /** Sets the text to use for the header row for the table
      * @param labels list of strings to use for each column's header row
      * @see headerLabels
-    */
+     */
     void setHeaderLabels( const QStringList& labels );
 
     /** Adds a row to the table
@@ -42,7 +43,7 @@ class CORE_EXPORT QgsComposerTextTable: public QgsComposerTable
      * @note If row is shorter than the number of columns in the table than blank cells
      * will be inserted at the end of the row. If row contains more strings then the number
      * of columns in the table then these extra strings will be ignored.
-    */
+     */
     void addRow( const QStringList& row ) { mRowText.append( row ); }
 
     /** Writes properties specific to text tables
@@ -89,7 +90,7 @@ class CORE_EXPORT QgsComposerTextTableV2 : public QgsComposerTableV2
      * will be inserted at the end of the row. If row contains more strings then the number
      * of columns in the table then these extra strings will be ignored.
      * @note if adding many rows, @link setContents @endlink is much faster
-    */
+     */
     void addRow( const QStringList& row );
 
     /** Sets the contents of the text table.

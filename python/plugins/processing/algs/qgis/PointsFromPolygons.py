@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 from osgeo import gdal
 from qgis.core import QGis, QgsFields, QgsField, QgsFeature, QgsPoint, QgsGeometry
-from PyQt4.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
@@ -77,10 +77,9 @@ class PointsFromPolygons(GeoAlgorithm):
         polyId = 0
         pointId = 0
 
-        current = 0
         features = vector.features(layer)
         total = 100.0 / len(features)
-        for f in features:
+        for current, f in enumerate(features):
             geom = f.geometry()
             bbox = geom.boundingBox()
 
@@ -112,7 +111,6 @@ class PointsFromPolygons(GeoAlgorithm):
             pointId = 0
             polyId += 1
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

@@ -26,8 +26,8 @@ __copyright__ = '(C) 2012, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtCore import QCoreApplication
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -43,7 +43,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import getParameterFromString
 from processing.core.outputs import getOutputFromString
 
-from TauDEMUtils import TauDEMUtils
+from .TauDEMUtils import TauDEMUtils
 
 
 class TauDEMAlgorithm(GeoAlgorithm):
@@ -59,7 +59,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.svg')
 
     def defineCharacteristicsFromFile(self):
         lines = open(self.descriptionFile)

@@ -52,7 +52,7 @@ void QgsRelationManager::addRelation( const QgsRelation& relation )
 
   mRelations.insert( relation.id(), relation );
 
-  mProject->dirty( true );
+  mProject->setDirty( true );
   emit changed();
 }
 

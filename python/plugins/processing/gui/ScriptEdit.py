@@ -27,11 +27,12 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtCore import Qt, QSettings
-from PyQt4.QtGui import QFont, QColor, QShortcut, QKeySequence
+from qgis.PyQt.QtCore import Qt, QSettings
+from qgis.PyQt.QtGui import QFont, QColor, QKeySequence
+from qgis.PyQt.QtWidgets import QShortcut
 from qgis.core import QgsApplication
 
-from PyQt4.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
+from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
 
 from processing.gui.LexerR import LexerR
 
@@ -192,7 +193,7 @@ class ScriptEdit(QsciScintilla):
 
             settings = QSettings()
             useDefaultAPI = bool(settings.value('pythonConsole/preloadAPI',
-                                 True))
+                                                True))
             if useDefaultAPI:
                 # Load QGIS API shipped with Python console
                 self.api.loadPrepared(

@@ -38,6 +38,136 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= What's new in Version 2.14 'Essen'? =
+
+This release has following new features:
+
+- Analysis tools : More statistics available in merge attributes tool
+- Analysis tools : z/m values are shown when using the identify tool
+- Browser : Browser Improvements
+- Data Providers : Use ST_RemoveRepeatedPoints for simplification on PostGIS 2.2 or newer
+- Data Providers : Cache WMS capabililies
+- Data Providers : Better handling of time and datetime fields
+- Data Providers : Z/M support in delimited text provider
+- Data Providers : Curved geometry support expanded
+- Data Providers : Transaction groups for postgres editing
+- Data Providers : Postgres provider PKI authentication.
+- Data Providers : Virtual layers
+- Data Providers : More file extensions for GDAL and OGR providers file selectors
+- Data management : dxf export: option to use title instead of name as dxf layer name in application and server
+- Data management : Removal of SPIT plugin
+- Data management : Geometry type can be overridden in the vector save as dialog
+- Data management : Vector joins are now saved within QLR layer-definition-files
+- Data management : N:M relation editing
+- Data management : External Resource widget
+- Digitising : Configurable rubber band color
+- Digitising : Autotrace
+- Digitising : Trace digitising tool
+- General : Changed behaviour of strpos function
+- General : Field calculator can be used to update feature's geometry
+- General : Virtual layers
+- General : Zoom to feature with right-click in attribute table
+- General : Speed improvements
+- General : More expression variables
+- General : New expression functions in 2.14
+- General : Better control over placement of map elements
+- General : Paid bugfixing programme
+- Labelling : Actual rendered symbol is now considered as an obstacle for point feature labels
+- Labelling : "Cartographic" placement mode for point labels
+- Labelling : Applying label distance from symbol bounds
+- Labelling : Control over label rendering order
+- Layer Legend : applying the same style to selected layers or to legend group
+- Layer Legend : New options for filtering legend elements
+- Layer Legend : Filter legend by expression
+- Map Composer : Additional paths for composer templates
+- Map Composer : Multiple selection of compositions in manager
+- Plugins : Authentication system support for plugin manager
+- Processing : New algorithms in 2.14
+- Processing : Unit Tests Q/A
+- Processing : Improved toolbox.
+- Processing : More informative algorithm dialog.
+- Processing : Batch processes can be saved and later recovered from the batch processing interface
+- Processing : GRASS7 v.net modules
+- Programmability : Redesign expression function editor
+- Programmability : Store python init code into the project
+- Programmability : New filtering and sorting options for QgsFeatureRequest
+- Programmability : Custom feature form Python code options
+- Programmability : New PyQGIS classes in 2.14
+- QGIS Server : STARTINDEX param in WFS GetFeature Request
+- QGIS Server : showFeatureCount in GetLegendGraphic
+- QGIS Server : Enhance store project keyword list
+- QGIS Server : Option to avoid rendering artefacts at edges of tiles
+- QGIS Server : WMS INSPIRE Capabilities
+- QGIS Server : Configuration checker in project properties
+- QGIS Server : Add short name to layers, groups and project
+- Symbology : Size assistant for varying line width
+- Symbology : Support for transparency in SVG color parameters
+- Symbology : Easy duplication of symbol layers
+- Symbology : 2.5D Renderer
+- Symbology : Geometry generator symbols
+- Symbology : Allow definition of rendering order for features
+- User Interface : Attribute table can be refreshed
+- User Interface : Edit legend symbols directly from layer tree
+- User Interface : Directly set renderer and class symbol colors from context menu in legend
+- User Interface : Improved and more powerful file picker widget for forms
+- User Interface : Show/hide all legend items via the the context menu
+-
+
+
+= What's new in Version 2.12 'Lyon'? =
+
+This release has following new features:
+
+- Analysis tools : Added number of vertices to derived fields in identify tool
+- Analysis tools : Raster alignment tool
+- Analysis tools : Geometry Checker and Geometry Snapper plugins
+- Application and Project Options : Encrypted password management
+- Browser : Improvements to PostGIS connections in browser
+- Data Providers : PostGIS provider improvements
+- Data management : DBManager Improvements
+- Data management : Conditional formatting for attribute table cells
+- Data management : Support for relative paths in widgets
+- Digitising : Digitising improvements
+- General : New welcome screen
+- General : Ongoing improvements to code quality
+- General : Advanced settings editor
+- General : Mutually exclusive layer tree groups
+- General : Filtering for field values in expression widget
+- General : User Interface Theme support
+- General : New expression functions in 2.12
+- General : Variables in expressions
+- Labelling : Data defined quadrant when in "around point" mode
+- Labelling : Draw only labels which fit inside polygons
+- Labelling : Control priority of labeling obstacles
+- Labelling : New options to control how polygon layers act as obstacles
+- Labelling : Data defined control over label priority
+- Labelling : Option for obstacle-only layers
+- Labelling : Rule-based labeling
+- Map Composer : Atlas navigation improvements
+- Map Composer : Custom format for grid annotations
+- Map Composer : Multiline text handling and automatic text wrapping in composer attribute tables
+- Map Composer : Advanced customisation of cell background color
+- Map Composer : Add fit page to contents option and options for cropping exports to contents
+- Map Composer : Force vector layers to render as a raster images
+- Map Composer : Data defined control over map layers and style presets
+- Map Composer : Option to hide pages from view/export
+- Plugins : Update of the GRASS plugin
+- Programmability : Open scripts in external editor
+- Programmability : Maptools moved from app->gui
+- Programmability : Editing layers via `with edit(layer):`
+- Programmability : New API for labeling engine (QgsLabelingEngineV2)
+- Programmability : New classes for PyQGIS programs
+- QGIS Server : QGIS Server Python API
+- QGIS Server : getMap in dxf format
+- Symbology : Export thumbnails from style manager
+- Symbology : New option for limiting size in mm when using map unit sizes
+- Symbology : Improvements to displacement renderer
+- Symbology : All color ramps can now be edited
+- Symbology : Improved handling of SVG marker outlines
+- Symbology : Add pixels as option for all symbology size unit choices
+-
+
+
 = What's new in Version 2.10 'Pisa'? =
 
 This is a minor release increment with the following new features:
@@ -64,7 +194,7 @@ This is a minor release increment with the following new features:
 - Tweaks to label properties dialog.
 - Support for non-latin scripts for curved labels.
 - "Follow point" alignment for multiline labels.
-- Support overriden layer styles also in the composer legend.
+- Support overridden layer styles also in the composer legend.
 - Add scalebar sizing mode to fit a desired scalebar width.
 - Plugins can now create their own entries in the browser.
 - More uniform and predictable names for processing outputs.

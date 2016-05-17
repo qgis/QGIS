@@ -50,7 +50,7 @@ void QgsReaderThread::run()
   }
 }
 
-QgsHelpViewer::QgsHelpViewer( QWidget *parent, Qt::WindowFlags fl )
+QgsHelpViewer::QgsHelpViewer( QWidget *parent, const Qt::WindowFlags& fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
@@ -67,7 +67,7 @@ QgsHelpViewer::~QgsHelpViewer()
   mThread->terminate();
 }
 
-void QgsHelpViewer::showHelp( QString help )
+void QgsHelpViewer::showHelp( const QString& help )
 {
   // Set the browser text to the help contents
   QString myStyle = QgsApplication::reportStyleSheet();

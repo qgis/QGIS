@@ -58,7 +58,7 @@ void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
     mResolutions << r.toDouble();
   }
 
-  if ( mResolutions.size() == 0 )
+  if ( mResolutions.isEmpty() )
     return;
 
   mSlider->setRange( 0, mResolutions.size() - 1 );
@@ -77,24 +77,24 @@ void QgsTileScaleWidget::scaleChanged( double scale )
 {
   Q_UNUSED( scale );
 
-  if ( mResolutions.size() == 0 )
+  if ( mResolutions.isEmpty() )
     return;
 
   double mupp = mMapCanvas->mapUnitsPerPixel();
   QgsDebugMsg( QString( "resolution changed to %1" ).arg( mupp ) );
 
   int i;
-  for ( i = 0; i < mResolutions.size() && mResolutions[i] < mupp; i++ )
-    QgsDebugMsg( QString( "test resolution %1: %2 d:%3" ).arg( i ).arg( mResolutions[i] ).arg( mupp - mResolutions[i] ) );
+  for ( i = 0; i < mResolutions.size() && mResolutions.at( i ) < mupp; i++ )
+    QgsDebugMsg( QString( "test resolution %1: %2 d:%3" ).arg( i ).arg( mResolutions.at( i ) ).arg( mupp - mResolutions.at( i ) ) );
 
   if ( i == mResolutions.size() ||
-       ( i > 0 && mResolutions[i] - mupp > mupp - mResolutions[i-1] ) )
+       ( i > 0 && mResolutions.at( i ) - mupp > mupp - mResolutions.at( i - 1 ) ) )
   {
     QgsDebugMsg( "previous resolution" );
     i--;
   }
 
-  QgsDebugMsg( QString( "selected resolution %1: %2" ).arg( i ).arg( mResolutions[i] ) );
+  QgsDebugMsg( QString( "selected resolution %1: %2" ).arg( i ).arg( mResolutions.at( i ) ) );
   mSlider->blockSignals( true );
   mSlider->setValue( i );
   mSlider->blockSignals( false );
@@ -103,8 +103,8 @@ void QgsTileScaleWidget::scaleChanged( double scale )
 void QgsTileScaleWidget::on_mSlider_valueChanged( int value )
 {
   Q_UNUSED( value );
-  QgsDebugMsg( QString( "slider released at %1: %2" ).arg( mSlider->value() ).arg( mResolutions[mSlider->value()] ) );
-  mMapCanvas->zoomByFactor( mResolutions[mSlider->value()] / mMapCanvas->mapUnitsPerPixel() );
+  QgsDebugMsg( QString( "slider released at %1: %2" ).arg( mSlider->value() ).arg( mResolutions.at( mSlider->value() ) ) );
+  mMapCanvas->zoomByFactor( mResolutions.at( mSlider->value() ) / mMapCanvas->mapUnitsPerPixel() );
 }
 
 void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )

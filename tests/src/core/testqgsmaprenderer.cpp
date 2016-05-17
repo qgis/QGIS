@@ -32,6 +32,7 @@
 #include <qgsfield.h>
 #include <qgis.h> //defines GEOWkt
 #include <qgsmaprenderer.h>
+#include "qgsmaprenderersequentialjob.h"
 #include <qgsmaplayer.h>
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
@@ -72,6 +73,12 @@ class TestQgsMapRenderer : public QObject
     /** This method tests render perfomance */
     void performanceTest();
 
+    /** This unit test checks if rendering of adjacent tiles (e.g. to render images for tile caches)
+     * does not result in border effects
+     */
+    void testFourAdjacentTiles_data();
+    void testFourAdjacentTiles();
+
   private:
     QString mEncoding;
     QgsVectorFileWriter::WriterError mError;
@@ -103,8 +110,8 @@ void TestQgsMapRenderer::initTestCase()
   // Create the test dataset if it doesnt exist
   //
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myTestDataDir = myDataDir + "/";
-  QString myTmpDir = QDir::tempPath() + "/";
+  QString myTestDataDir = myDataDir + '/';
+  QString myTmpDir = QDir::tempPath() + '/';
   QString myFileName = myTmpDir +  "maprender_testdata.shp";
   //copy over the default qml for our generated layer
   QString myQmlFileName = myTestDataDir +  "maprender_testdata.qml";
@@ -210,6 +217,121 @@ void TestQgsMapRenderer::performanceTest()
   mReport += myChecker.report();
   QVERIFY( myResultFlag );
 }
+
+void TestQgsMapRenderer::testFourAdjacentTiles_data()
+{
+  QTest::addColumn<QStringList>( "bboxList" );
+  QTest::addColumn<QString>( "controlName" );
+  QTest::addColumn<QString>( "shapeFile" );
+  QTest::addColumn<QString>( "qmlFile" );
+
+  QString shapeFile = TEST_DATA_DIR + QString( "/france_parts.shp" );
+  QString qmlFile = TEST_DATA_DIR + QString( "/adjacent_tiles/line_pattern_30_degree.qml" );
+  QString controlName = "expected_adjacent_line_fill";
+
+  QStringList bboxList1;
+  bboxList1 << "-1.5,48,-0.5,49";
+  bboxList1 << "-0.5,48,0.5,49";
+  bboxList1 << "-1.5,47,-0.5,48";
+  bboxList1 << "-0.5,47,0.5,48";
+
+  QTest::newRow( "adjacent_line_fill" ) << bboxList1 << controlName << shapeFile << qmlFile;
+
+  qmlFile = TEST_DATA_DIR + QString( "/adjacent_tiles/point_pattern_simple_marker.qml" );
+  controlName = "expected_adjacent_marker_fill";
+
+  QTest::newRow( "adjacent_marker_fill" ) << bboxList1 << controlName << shapeFile << qmlFile;
+
+  shapeFile = TEST_DATA_DIR + QString( "/lines.shp" );
+  qmlFile = TEST_DATA_DIR + QString( "/adjacent_tiles/simple_line_dashed.qml" );
+  controlName = "expected_adjacent_dashed_line";
+
+  QStringList bboxList2;
+  bboxList2 << "-105,35,-95,45";
+  bboxList2 << "-95,35,-85,45";
+  bboxList2 << "-105,25,-95,35";
+  bboxList2 << "-95,25,-85,35";
+
+  QTest::newRow( "adjacent_dashed_line" ) << bboxList2 << controlName << shapeFile << qmlFile;
+}
+
+void TestQgsMapRenderer::testFourAdjacentTiles()
+{
+  QFETCH( QStringList, bboxList );
+  QFETCH( QString, controlName );
+  QFETCH( QString, shapeFile );
+  QFETCH( QString, qmlFile );
+
+  QVERIFY( bboxList.size() == 4 );
+
+  //create maplayer, set QML and add to maplayer registry
+  QgsVectorLayer* vectorLayer = new QgsVectorLayer( shapeFile, "testshape", "ogr" );
+
+  //todo: read QML
+  QFile symbologyFile( qmlFile );
+  if ( !symbologyFile.open( QIODevice::ReadOnly ) )
+  {
+    QFAIL( "Open symbology file failed" );
+  }
+
+  QDomDocument qmlDoc;
+  if ( !qmlDoc.setContent( &symbologyFile ) )
+  {
+    QFAIL( "QML file not valid" );
+  }
+
+  QString errorMsg;
+  if ( !vectorLayer->readSymbology( qmlDoc.documentElement(), errorMsg ) )
+  {
+    QFAIL( errorMsg.toLocal8Bit().data() );
+  }
+
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << vectorLayer );
+
+  QImage globalImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  globalImage.fill( Qt::white );
+  QPainter globalPainter( &globalImage );
+
+  for ( int i = 0; i < 4; ++i )
+  {
+    QgsMapSettings mapSettings;
+
+    //extent
+    QStringList rectCoords = bboxList.at( i ).split( "," );
+    if ( rectCoords.size() != 4 )
+    {
+      QFAIL( "bbox string invalid" );
+    }
+    QgsRectangle rect( rectCoords[0].toDouble(), rectCoords[1].toDouble(), rectCoords[2].toDouble(), rectCoords[3].toDouble() );
+    mapSettings.setExtent( rect );
+    mapSettings.setOutputSize( QSize( 256, 256 ) );
+    mapSettings.setLayers( QStringList() << vectorLayer->id() );
+    mapSettings.setFlags( QgsMapSettings::RenderMapTile );
+    mapSettings.setOutputDpi( 96 );
+
+    QgsMapRendererSequentialJob renderJob( mapSettings );
+    renderJob.start();
+    renderJob.waitForFinished();
+    QImage img = renderJob.renderedImage();
+    int globalImageX = ( i % 2 ) * 256;
+    int globalImageY = ( i < 2 ) ? 0 : 256;
+    globalPainter.drawImage( globalImageX, globalImageY, img );
+  }
+
+  QgsMapLayerRegistry::instance()->removeMapLayers( QStringList() << vectorLayer->id() );
+
+  QString renderedImagePath = QDir::tempPath() + "/" + QTest::currentDataTag() + QString( ".png" );
+  globalImage.save( renderedImagePath );
+
+  QgsRenderChecker checker;
+
+  checker.setControlPathPrefix( "adjacent_tiles" );
+  checker.setControlName( controlName );
+  bool result = checker.compareImages( QTest::currentDataTag(), 100, renderedImagePath );
+  mReport += checker.report();
+  QVERIFY( result );
+}
+
 
 QTEST_MAIN( TestQgsMapRenderer )
 #include "testqgsmaprenderer.moc"

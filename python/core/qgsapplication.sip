@@ -25,10 +25,15 @@ static char **qtgui_ArgvToC(PyObject *argvlist, int &argc)
         char *arg;
 
         // Get the argument and allocate memory for it.
+#if PYTHON2
         if ((arg = PyString_AsString(PyList_GET_ITEM(argvlist, a))) == NULL ||
             (argv[a] = (char *)sipMalloc(strlen(arg) + 1)) == NULL)
             return NULL;
-
+#else
+        if ((arg = PyBytes_AsString(PyList_GET_ITEM(argvlist, a))) == NULL ||
+            (argv[a] = (char *)sipMalloc(strlen(arg) + 1)) == NULL)
+            return NULL;
+#endif
         // Copy the argument and save a pointer to it.
         strcpy(argv[a], arg);
         argv[a + argc + 1] = argv[a];
@@ -58,8 +63,12 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
 
 
   public:
+    static const char* QGIS_ORGANIZATION_NAME;
+    static const char* QGIS_ORGANIZATION_DOMAIN;
+    static const char* QGIS_APPLICATION_NAME;
+
     //QgsApplication(int argc, char ** argv, bool GUIenabled);
-    QgsApplication(SIP_PYLIST argv, bool GUIenabled, QString customConfigPath = QString() ) /PostHook=__pyQtQAppHook__/ [(int &argc, char **argv, bool GUIenabled, QString customConfigPath = QString() )];
+    QgsApplication(SIP_PYLIST argv, bool GUIenabled, QString customConfigPath = QString() ) /PostHook=__pyQtQAppHook__/ [(int &argc, char **argv, bool GUIenabled, const QString& customConfigPath = QString() )];
 %MethodCode
         // The Python interface is a list of argument strings that is modified.
 
@@ -83,6 +92,9 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
 
     virtual ~QgsApplication();
 
+    //! Set the FileOpen event receiver
+    static void setFileOpenEventReceiver( QObject * receiver );
+
     /** Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
      * The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
@@ -102,11 +114,18 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      */
     static QString themeName();
 
+    /**
+     * @brief Set the current UI theme used to style the interface.  Use uiThemes() to
+     * find valid themes to use. Variabels found in variables.qss will be added to the stylesheet
+     * on load.
+     * @param themeName The name of the theme.
+     * @note using an invalid theme name will reset to default
+     */
     static void setUITheme( const QString &themeName );
 
     /**
-     * @brief All themes found in the application resources folder
-     * and ~/.qgis2/themes folder. The path is to the root folder for the theme
+     * @brief All themes found in ~/.qgis2/themes folder.
+     * The path is to the root folder for the theme
      * @note Valid theme folders must contain a style.qss file.
      * @return A hash of theme name and theme path. Valid theme folders contain style.qss
      */
@@ -126,10 +145,6 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * @note this function was added in version 2.7 */
     static QString developersMapFilePath();
 
-    /** Returns the path to the whats new html page
-     * @note this function was added in version 2.11 */
-    static QString whatsNewFilePath();
-
     /** Returns the path to the sponsors file. */
     static QString sponsorsFilePath();
 
@@ -143,7 +158,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
 
     /*!
       Returns the path to the licence file.
-    */
+     */
     static QString licenceFilePath();
 
     //! Returns the path to the help application.
@@ -161,6 +176,9 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! Returns the path to the user qgis.db file.
     static QString qgisUserDbFilePath();
 
+    //! Returns the path to the user authentication database file: qgis-auth.db.
+    static QString qgisAuthDbFilePath();
+
     //! Returns the path to the splash screen image directory.
     static QString splashPath();
 
@@ -172,6 +190,9 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
 
     //! Returns the pathes to svg directories.
     static QStringList svgPaths();
+
+    //! Returns the pathes to composer template directories
+    static QStringList composerTemplatePaths();
 
     //! Returns the system environment variables passed to application.
     static QMap<QString, QString> systemEnvVars();
@@ -193,7 +214,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
 
     //! Returns path to the desired icon file.
     //! First it tries to use the active theme path, then default theme path
-    static QString iconPath( QString iconFile );
+    static QString iconPath( const QString& iconFile );
 
     //! Helper to get a theme icon. It will fall back to the
     //! default theme if the active theme does not have the required icon.
@@ -203,12 +224,44 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! default theme if the active theme does not have the required icon.
     static QPixmap getThemePixmap( const QString &theName );
 
-
     //! Returns the path to user's style.
     static QString userStyleV2Path();
 
+    //! Returns the short name regular expression for line edit validator
+    static QRegExp shortNameRegExp();
+
+    /** Returns the user's operating system login account name.
+     * @note added in QGIS 2.14
+     * @see userFullName()
+     */
+    static QString userLoginName();
+
+    /** Returns the user's operating system login account full display name.
+     * @note added in QGIS 2.14
+     * @see userLoginName()
+     */
+    static QString userFullName();
+
+    /** Returns a string name of the operating system QGIS is running on.
+     * @note added in QGIS 2.14
+     * @see platform()
+     */
+    static QString osName();
+
+    /** Returns the QGIS platform name, eg "desktop" or "server".
+     * @note added in QGIS 2.14
+     * @see osName()
+     */
+    static QString platform();
+
+    //! Returns the path to user's themes folder
+    static QString userThemesFolder();
+
     //! Returns the path to default style (works as a starting point).
     static QString defaultStyleV2Path();
+
+    //! Returns the path to default themes folder from install (works as a starting point).
+    static QString defaultThemesFolder();
 
     //! Returns the path containing qgis_core, qgis_gui, qgispython (and other) libraries
     static QString libraryPath();
@@ -228,14 +281,23 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! Alters default svg paths - used by 3rd party apps.
     static void setDefaultSvgPaths( const QStringList& pathList );
 
+    //! Alters authentication data base directory path - used by 3rd party apps
+    static void setAuthDbDirPath( const QString& theAuthDbDirPath );
+
     //! loads providers
     static void initQgis();
 
     //! initialise qgis.db
     static bool createDB( QString* errorMessage = 0 );
 
+    //! Create the users theme folder
+    static bool createThemeFolder();
+
     //! deletes provider registry and map layer registry
     static void exitQgis();
+
+    //! get application icon
+    static QString appIconPath();
 
     /** Constants for endian-ness */
     enum endian_t
@@ -270,9 +332,9 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static void registerOgrDrivers();
 
     /** Converts absolute path to path relative to target */
-    static QString absolutePathToRelativePath( QString apath, QString targetPath );
+    static QString absolutePathToRelativePath( const QString& apath, const QString& targetPath );
     /** Converts path relative to target to an absolute path */
-    static QString relativePathToAbsolutePath( QString rpath, QString targetPath );
+    static QString relativePathToAbsolutePath( const QString& rpath, const QString& targetPath );
 
     /** Indicates whether running from build directory (not installed) */
     static bool isRunningFromBuildDir();
@@ -285,13 +347,13 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
      */
-    static void skipGdalDriver( QString theDriver );
+    static void skipGdalDriver( const QString& theDriver );
 
     /** Sets the GDAL_SKIP environment variable to exclude the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
      */
-    static void restoreGdalDriver( QString theDriver );
+    static void restoreGdalDriver( const QString& theDriver );
 
     /** Returns the list of gdal drivers that should be skipped (based on
      * GDAL_SKIP environment variable)

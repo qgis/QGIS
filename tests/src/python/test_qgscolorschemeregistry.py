@@ -12,12 +12,13 @@ __copyright__ = 'Copyright 2014, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
-from utilities import unittest, TestCase
+import qgis  # NOQA
+
+from qgis.testing import unittest
 from qgis.core import QgsColorSchemeRegistry, QgsRecentColorScheme
 
 
-class TestQgsColorSchemeRegistry(TestCase):
+class TestQgsColorSchemeRegistry(unittest.TestCase):
 
     def testCreateInstance(self):
         """Test creating global color scheme registry instance"""
@@ -63,12 +64,12 @@ class TestQgsColorSchemeRegistry(TestCase):
         recentScheme = QgsRecentColorScheme()
         registry.addColorScheme(recentScheme)
         self.assertTrue(len(registry.schemes()) == 1)
-        #remove the scheme
+        # remove the scheme
         registry.removeColorScheme(recentScheme)
         self.assertTrue(len(registry.schemes()) == 0)
-        #try removing a scheme not in the registry
+        # try removing a scheme not in the registry
         self.assertFalse(registry.removeColorScheme(recentScheme))
 
 
 if __name__ == "__main__":
-        unittest.main()
+    unittest.main()

@@ -102,7 +102,7 @@ class TestQgsSpatialIndex : public QObject
       QVERIFY( indexCopy.refs() == 2 );
 
       // do a modification
-      QgsFeature f2( _pointFeatures()[1] );
+      QgsFeature f2( _pointFeatures().at( 1 ) );
       indexCopy.deleteFeature( f2 );
 
       // check that the index is not shared anymore

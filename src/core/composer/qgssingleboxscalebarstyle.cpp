@@ -25,7 +25,7 @@ QgsSingleBoxScaleBarStyle::QgsSingleBoxScaleBarStyle( const QgsComposerScaleBar*
 
 }
 
-QgsSingleBoxScaleBarStyle::QgsSingleBoxScaleBarStyle(): QgsScaleBarStyle( 0 )
+QgsSingleBoxScaleBarStyle::QgsSingleBoxScaleBarStyle(): QgsScaleBarStyle( nullptr )
 {
 
 }

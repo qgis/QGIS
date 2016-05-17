@@ -5,8 +5,8 @@ class QgsNumericSortTreeWidgetItem : QTreeWidgetItem
 %End
   public:
     /**
-    * Constructor.
-    */
+     * Constructor.
+     */
     QgsNumericSortTreeWidgetItem( QTreeWidget * parent );
     QgsNumericSortTreeWidgetItem( QTreeWidgetItem * parent );
 

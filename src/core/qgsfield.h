@@ -27,7 +27,11 @@ class QgsExpression;
 class QgsFieldPrivate;
 class QgsFieldsPrivate;
 
-
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfield.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 /** \class QgsField
   * \ingroup core
@@ -44,20 +48,19 @@ class CORE_EXPORT QgsField
      * @param name Field name
      * @param type Field variant type, currently supported: String / Int / Double
      * @param typeName Field type (eg. char, varchar, text, int, serial, double).
-     Field types are usually unique to the source and are stored exactly
-     as returned from the data store.
+     * Field types are usually unique to the source and are stored exactly
+     * as returned from the data store.
      * @param len Field length
      * @param prec Field precision. Usually decimal places but may also be
      * used in conjunction with other fields types (eg. variable character fields)
      * @param comment Comment for the field
      */
-
-    QgsField( QString name = QString(),
+    QgsField( const QString& name = QString(),
               QVariant::Type type = QVariant::Invalid,
-              QString typeName = QString(),
+              const QString& typeName = QString(),
               int len = 0,
               int prec = 0,
-              QString comment = QString() );
+              const QString& comment = QString() );
 
     /** Copy constructor
      */
@@ -74,68 +77,68 @@ class CORE_EXPORT QgsField
     bool operator!=( const QgsField& other ) const;
 
     //! Gets the name of the field
-    const QString& name() const;
+    QString name() const;
 
     //! Gets variant type of the field as it will be retrieved from data source
     QVariant::Type type() const;
 
     /**
-      Gets the field type. Field types vary depending on the data source. Examples
-      are char, int, double, blob, geometry, etc. The type is stored exactly as
-      the data store reports it, with no attempt to standardize the value.
-      @return QString containing the field type
+     * Gets the field type. Field types vary depending on the data source. Examples
+     * are char, int, double, blob, geometry, etc. The type is stored exactly as
+     * the data store reports it, with no attempt to standardize the value.
+     * @return QString containing the field type
      */
-    const QString& typeName() const;
+    QString typeName() const;
 
     /**
-      Gets the length of the field.
-      @return int containing the length of the field
+     * Gets the length of the field.
+     * @return int containing the length of the field
      */
     int length() const;
 
     /**
-      Gets the precision of the field. Not all field types have a related precision.
-      @return int containing the precision or zero if not applicable to the field type.
+     * Gets the precision of the field. Not all field types have a related precision.
+     * @return int containing the precision or zero if not applicable to the field type.
      */
     int precision() const;
 
     /**
-    Returns the field comment
-    */
-    const QString& comment() const;
+     * Returns the field comment
+     */
+    QString comment() const;
 
     /**
-      Set the field name.
-      @param name Name of the field
+     * Set the field name.
+     * @param name Name of the field
      */
     void setName( const QString& name );
 
     /**
-      Set variant type.
+     * Set variant type.
      */
     void setType( QVariant::Type type );
 
     /**
-      Set the field type.
-      @param typeName Field type
+     * Set the field type.
+     * @param typeName Field type
      */
     void setTypeName( const QString& typeName );
 
     /**
-      Set the field length.
-      @param len Length of the field
+     * Set the field length.
+     * @param len Length of the field
      */
     void setLength( int len );
 
     /**
-      Set the field precision.
-      @param precision Precision of the field
+     * Set the field precision.
+     * @param precision Precision of the field
      */
     void setPrecision( int precision );
 
     /**
-      Set the field comment
-      */
+     * Set the field comment
+     */
     void setComment( const QString& comment );
 
     /** Formats string for display*/
@@ -150,7 +153,6 @@ class CORE_EXPORT QgsField
      */
     bool convertCompatible( QVariant& v ) const;
 
-
   private:
 
     QSharedDataPointer<QgsFieldPrivate> d;
@@ -158,12 +160,20 @@ class CORE_EXPORT QgsField
 
 }; // class QgsField
 
-Q_DECLARE_METATYPE( QgsField );
+Q_DECLARE_METATYPE( QgsField )
 
 /** Writes the field to stream out. QGIS version compatibility is not guaranteed. */
 CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsField& field );
 /** Reads a field from stream in into field. QGIS version compatibility is not guaranteed. */
 CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsField& field );
+
+
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfields.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 /** \class QgsFields
  * \ingroup core
@@ -257,8 +267,8 @@ class CORE_EXPORT QgsFields
     //! Look up field's index from name. Returns -1 on error
     int indexFromName( const QString& name ) const;
 
-    //! Look up field's index from name - case insensitive
-    //! TODO: sort out case sensitive (indexFromName()) vs insensitive (fieldNameIndex()) calls
+    //! Look up field's index from name
+    //! also looks up case-insensitive if there is no match otherwise
     //! @note added in 2.4
     int fieldNameIndex( const QString& fieldName ) const;
 
@@ -273,6 +283,138 @@ class CORE_EXPORT QgsFields
     bool operator==( const QgsFields& other ) const;
     //! @note added in 2.6
     bool operator!=( const QgsFields& other ) const { return !( *this == other ); }
+    /** Returns an icon corresponding to a field index, based on the field's type and source
+     * @note added in QGIS 2.14
+     */
+    QIcon iconForField( int fieldIdx ) const;
+
+    ///@cond PRIVATE
+
+    class const_iterator;
+
+    class iterator
+    {
+      public:
+        QgsFields::Field* d;
+        typedef std::random_access_iterator_tag  iterator_category;
+        typedef qptrdiff difference_type;
+
+        inline iterator()
+            : d( nullptr )
+        {}
+        inline iterator( QgsFields::Field *n )
+            : d( n )
+        {}
+
+        inline QgsField& operator*() const { return d->field; }
+        inline QgsField* operator->() const { return &d->field; }
+        inline QgsField& operator[]( difference_type j ) const { return d[j].field; }
+        inline bool operator==( const iterator &o ) const noexcept { return d == o.d; }
+        inline bool operator!=( const iterator &o ) const noexcept { return d != o.d; }
+        inline bool operator<( const iterator& other ) const noexcept { return d < other.d; }
+        inline bool operator<=( const iterator& other ) const noexcept { return d <= other.d; }
+        inline bool operator>( const iterator& other ) const noexcept { return d > other.d; }
+        inline bool operator>=( const iterator& other ) const noexcept { return d >= other.d; }
+
+        inline iterator& operator++() { ++d; return *this; }
+        inline iterator operator++( int ) { QgsFields::Field* n = d; ++d; return n; }
+        inline iterator& operator--() { d--; return *this; }
+        inline iterator operator--( int ) { QgsFields::Field* n = d; d--; return n; }
+        inline iterator& operator+=( difference_type j ) { d += j; return *this; }
+        inline iterator& operator-=( difference_type j ) { d -= j; return *this; }
+        inline iterator operator+( difference_type j ) const { return iterator( d + j ); }
+        inline iterator operator-( difference_type j ) const { return iterator( d -j ); }
+        inline int operator-( iterator j ) const { return int( d - j.d ); }
+    };
+    friend class iterator;
+
+    class const_iterator
+    {
+      public:
+        const QgsFields::Field* d;
+
+        typedef std::random_access_iterator_tag  iterator_category;
+        typedef qptrdiff difference_type;
+
+        inline const_iterator()
+            : d( nullptr ) {}
+        inline const_iterator( const QgsFields::Field* f )
+            : d( f ) {}
+        inline const_iterator( const const_iterator &o )
+            : d( o.d ) {}
+        inline explicit const_iterator( const iterator &o )
+            : d( o.d ) {}
+        inline const QgsField& operator*() const { return d->field; }
+        inline const QgsField* operator->() const { return &d->field; }
+        inline const QgsField& operator[]( difference_type j ) const noexcept { return d[j].field; }
+        inline bool operator==( const const_iterator &o ) const noexcept { return d == o.d; }
+        inline bool operator!=( const const_iterator &o ) const noexcept { return d != o.d; }
+        inline bool operator<( const const_iterator& other ) const noexcept { return d < other.d; }
+        inline bool operator<=( const const_iterator& other ) const noexcept { return d <= other.d; }
+        inline bool operator>( const const_iterator& other ) const noexcept { return d > other.d; }
+        inline bool operator>=( const const_iterator& other ) const noexcept { return d >= other.d; }
+        inline const_iterator& operator++() { ++d; return *this; }
+        inline const_iterator operator++( int ) { const QgsFields::Field* n = d; ++d; return n; }
+        inline const_iterator& operator--() { d--; return *this; }
+        inline const_iterator operator--( int ) { const QgsFields::Field* n = d; --d; return n; }
+        inline const_iterator& operator+=( difference_type j ) { d += j; return *this; }
+        inline const_iterator& operator-=( difference_type j ) { d -= j; return *this; }
+        inline const_iterator operator+( difference_type j ) const { return const_iterator( d + j ); }
+        inline const_iterator operator-( difference_type j ) const { return const_iterator( d -j ); }
+        inline int operator-( const_iterator j ) const { return int( d - j.d ); }
+    };
+    friend class const_iterator;
+    ///@endcond
+
+
+    /**
+     * Returns a const STL-style iterator pointing to the first item in the list.
+     *
+     * @note added in 2.16
+     * @note not available in Python bindings
+     */
+    const_iterator constBegin() const noexcept;
+
+    /**
+     * Returns a const STL-style iterator pointing to the imaginary item after the last item in the list.
+     *
+     * @note added in 2.16
+     * @note not available in Python bindings
+     */
+    const_iterator constEnd() const noexcept;
+
+    /**
+     * Returns a const STL-style iterator pointing to the first item in the list.
+     *
+     * @note added in 2.16
+     * @note not available in Python bindings
+     */
+    const_iterator begin() const noexcept;
+
+    /**
+     * Returns a const STL-style iterator pointing to the imaginary item after the last item in the list.
+     *
+     * @note added in 2.16
+     * @note not available in Python bindings
+     */
+    const_iterator end() const noexcept;
+
+    /**
+     * Returns an STL-style iterator pointing to the first item in the list.
+     *
+     * @note added in 2.16
+     * @note not available in Python bindings
+     */
+    iterator begin();
+
+
+    /**
+     * Returns an STL-style iterator pointing to the imaginary item after the last item in the list.
+     *
+     * @note added in 2.16
+     * @note not available in Python bindings
+     */
+    iterator end();
 
   private:
 
@@ -280,7 +422,7 @@ class CORE_EXPORT QgsFields
 
 };
 
-Q_DECLARE_METATYPE( QgsFields );
+Q_DECLARE_METATYPE( QgsFields )
 
 /** Writes the fields to stream out. QGIS version compatibility is not guaranteed. */
 CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsFields& fields );

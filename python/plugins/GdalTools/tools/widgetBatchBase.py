@@ -23,11 +23,11 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import Qt, QFile, QFileInfo
-from PyQt4.QtGui import QMessageBox, QErrorMessage
+from qgis.PyQt.QtCore import Qt, QFile, QFileInfo
+from qgis.PyQt.QtWidgets import QMessageBox, QErrorMessage
 
-from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
-import GdalTools_utils as Utils
+from .widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
+from . import GdalTools_utils as Utils
 
 
 class GdalToolsBaseBatchWidget(BasePluginWidget):
@@ -104,7 +104,7 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
             outFile = self.outFiles[index]
 
         args = self.getBatchArguments(self.inFiles[index], outFile)
-        self.base.refreshArgs(args)
+        self.base.refreshArgs.emit(args)
         BasePluginWidget.onRun(self)
 
     def onFinished(self, exitCode, status):

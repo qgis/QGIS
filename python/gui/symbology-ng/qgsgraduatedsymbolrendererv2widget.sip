@@ -13,7 +13,7 @@ class QgsGraduatedSymbolRendererV2Widget : QgsRendererV2Widget
 
   public slots:
     void changeGraduatedSymbol();
-    void graduatedColumnChanged( QString field );
+    void graduatedColumnChanged( const QString& field );
     void classifyGraduated();
     void reapplyColorRamp();
     void reapplySizes();
@@ -30,7 +30,7 @@ class QgsGraduatedSymbolRendererV2Widget : QgsRendererV2Widget
     /** Toggle the link between classes boundaries */
     void toggleBoundariesLink( bool linked );
 
-    void sizeScaleFieldChanged( QString fldName );
+    void sizeScaleFieldChanged( const QString& fldName );
     void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
     void labelFormatChanged();
 
@@ -38,6 +38,10 @@ class QgsGraduatedSymbolRendererV2Widget : QgsRendererV2Widget
 
     void rowsMoved();
     void modelDataChanged();
+
+    void on_mSizeUnitWidget_changed();
+    void on_methodComboBox_currentIndexChanged( int );
+    void refreshRanges( bool reset = false );
 
   protected:
     void updateUiFromRenderer( bool updateCount = true );

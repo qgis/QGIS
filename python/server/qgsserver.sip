@@ -1,11 +1,11 @@
 /***************************************************************************
-                          qgsserver.sip
- Qgis Mapserver
-                          -------------------
+                         qgsserver.sip
+  QGIS Server main class.
+                        -------------------
   begin                : 2015-05-21
   copyright            : (C) 2015 by Alessandro Pasotti
   email                : a dot pasotti at itopen dot it
- ***************************************************************************/
+  ***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -152,6 +152,9 @@ return sipGetState(sipTransferObj);
 %End
 };
 
+/** \ingroup server
+ * The QgsServer class provides OGC web services.
+ */
 class QgsServer
 {
 %TypeHeaderCode
@@ -161,20 +164,44 @@ class QgsServer
   public:
     QgsServer();
     ~QgsServer();
-    // Original init for the fcgi application:
-    //void init( int argc, char* argv[] );
-    // init for python bindings:
-    void init( );
-    QPair<QByteArray, QByteArray> handleRequest( const QString queryString = QString( ) );
-    /* The following code was used to test type conversion in python bindings
+    /** Server initialization: intialise QGIS ang QT core application.
+     * This method is automatically called by handleRequest if it wasn't
+     * explicitly called before
+     * @note Not available in Python bindings
+     */
+    //void init( int argc, char ** argv );
+    //! The following is mainly for python bindings, that do not pass argc/argv
+    void init();
+
+    /** Set environment variable
+     * @param var environment variable name
+     * @param val value
+     * @note added in 2.14
+     */
+    void putenv( const QString &var, const QString &val );
+
+    /** Handles the request. The output is normally printed trough FCGI printf
+     * by the request handler or, in case the server has been invoked from python
+     * bindings, a flag is set that captures all the output headers and body, instead
+     * of printing it returns the output as a QPair of QByteArray.
+     * The query string is normally read from environment
+     * but can be also passed in args and in this case overrides the environment
+     * variable
+     *
+     * @param queryString optional QString containing the query string
+     * @return the response headers and body QPair of QByteArray if called from python bindings, empty otherwise
+     */
+    QPair<QByteArray, QByteArray> handleRequest( const QString& queryString = QString() );
+    /*
+    // The following code was used to test type conversion in python bindings
     QPair<QByteArray, QByteArray> testQPair( QPair<QByteArray, QByteArray> pair );
     */
+
+    /** Returns a pointer to the server interface */
 %If (HAVE_SERVER_PYTHON_PLUGINS)
-     QgsServerInterface* serverInterface( );
+     QgsServerInterface* serverInterface();
 %End
 
-  // The following is needed because otherwise SIP fails trying to create copy
-  // ctor
   private:
     QgsServer( const QgsServer& );
     QgsServer & operator=( const QgsServer& );

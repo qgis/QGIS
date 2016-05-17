@@ -12,7 +12,7 @@ class QgsSingleBandGrayRenderer: QgsRasterRenderer
 
     QgsSingleBandGrayRenderer( QgsRasterDataProvider* provider, int grayBand );
     ~QgsSingleBandGrayRenderer();
-    QgsRasterInterface * clone() const /Factory/;
+    virtual QgsSingleBandGrayRenderer * clone() const /Factory/;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider ) /Factory/;
 
@@ -32,4 +32,9 @@ class QgsSingleBandGrayRenderer: QgsRasterRenderer
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 
     QList<int> usesBands() const;
+
+  private:
+
+    QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer& );
+    const QgsSingleBandGrayRenderer& operator=( const QgsSingleBandGrayRenderer& );
 };

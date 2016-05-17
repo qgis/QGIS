@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os.path
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.modeler.CalculatorModelerAlgorithm import CalculatorModelerAlgorithm
 from processing.modeler.RasterLayerBoundsAlgorithm import RasterLayerBoundsAlgorithm

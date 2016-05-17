@@ -23,7 +23,7 @@ QgsHiddenWidgetWrapper::QgsHiddenWidgetWrapper( QgsVectorLayer* vl, int fieldIdx
 }
 
 
-QVariant QgsHiddenWidgetWrapper::value()
+QVariant QgsHiddenWidgetWrapper::value() const
 {
   return mValue;
 }
@@ -40,7 +40,7 @@ void QgsHiddenWidgetWrapper::initWidget( QWidget* editor )
   editor->setVisible( false );
 }
 
-bool QgsHiddenWidgetWrapper::valid()
+bool QgsHiddenWidgetWrapper::valid() const
 {
   return true;
 }

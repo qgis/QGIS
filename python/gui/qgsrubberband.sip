@@ -5,6 +5,7 @@ class QgsRubberBand: QgsMapCanvasItem
 %End
 
   public:
+
     /** Icons */
     enum IconType
     {
@@ -87,13 +88,13 @@ class QgsRubberBand: QgsMapCanvasItem
     void setIconSize( int iconSize );
 
     /**
-    * Set the style of the line
-    */
+     * Set the style of the line
+     */
     void setLineStyle( Qt::PenStyle penStyle );
 
     /**
-    * Set the style of the brush
-    */
+     * Set the style of the brush
+     */
     void setBrushStyle( Qt::BrushStyle brushStyle );
 
     /**
@@ -109,7 +110,7 @@ class QgsRubberBand: QgsMapCanvasItem
      * Sets the representation type according to isPolygon.
      *  @param isPolygon true: draw as (multi-)polygon, false draw as (multi-)linestring
      */
-    void reset( bool isPolygon );
+    void reset( bool isPolygon ) /Deprecated/;
 
     /**
      * Add a vertex to the rubberband and update canvas.
@@ -122,11 +123,11 @@ class QgsRubberBand: QgsMapCanvasItem
     void addPoint( const QgsPoint & p, bool doUpdate = true, int geometryIndex = 0 );
 
     /**
-    * Remove a vertex from the rubberband and (optionally) update canvas.
-    * @param index The index of the vertex/point to remove, negative indexes start at end
-    * @param doUpdate Should the map canvas be updated immediately?
-    * @param geometryIndex The index of the feature part (in case of multipart geometries)
-    */
+     * Remove a vertex from the rubberband and (optionally) update canvas.
+     * @param index The index of the vertex/point to remove, negative indexes start at end
+     * @param doUpdate Should the map canvas be updated immediately?
+     * @param geometryIndex The index of the feature part (in case of multipart geometries)
+     */
     void removePoint( int index = 0, bool doUpdate = true, int geometryIndex = 0 );
 
     /**
@@ -161,13 +162,13 @@ class QgsRubberBand: QgsMapCanvasItem
      *  @param layer the layer containing the feature, used for coord transformation to map
      *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
      */
-    void setToGeometry( const QgsGeometry* geom, QgsVectorLayer* layer );
+    void setToGeometry( const QgsGeometry *geom, QgsVectorLayer* layer );
 
     /**
      * Sets this rubber band to a map canvas rectangle
      *  @param rect rectangle in canvas coordinates
      */
-    void setToCanvasRectangle( const QRect& rect );
+    void setToCanvasRectangle( QRect rect );
 
     /**
      * Add the geometry of an existing feature to a rubberband
@@ -180,7 +181,7 @@ class QgsRubberBand: QgsMapCanvasItem
      *  @param layer the layer containing the feature, used for coord transformation to map
      *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
      */
-    void addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer );
+    void addGeometry( const QgsGeometry *geom, QgsVectorLayer* layer );
 
     /**
      * Adds translation to original coordinates (all in map coordinates)

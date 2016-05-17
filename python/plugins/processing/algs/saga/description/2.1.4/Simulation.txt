@@ -1,0 +1,16 @@
+Simulation
+sim_fire_spreading
+ParameterRaster|DEM|DEM|False
+ParameterRaster|FUEL|Fuel Model|False
+ParameterRaster|WINDSPD|Wind Speed|False
+ParameterRaster|WINDDIR|Wind Direction|False
+ParameterRaster|M1H|Dead Fuel Moisture 1H|False
+ParameterRaster|M10H|Dead Fuel Moisture 10H|False
+ParameterRaster|M100H|Dead Fuel Moisture 100H|False
+ParameterRaster|MHERB|Herbaceous Fuel Moisture|False
+ParameterRaster|MWOOD|Wood Fuel Moisture|False
+ParameterRaster|IGNITION|Ignition Points|False
+ParameterBoolean|UPDATEVIEW     |Update View|True
+OutputRaster|TIME|Time
+OutputRaster|FLAME|Flame Length
+OutputRaster|INTENSITY|Intensity

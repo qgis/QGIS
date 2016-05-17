@@ -42,13 +42,7 @@
 
 #cmakedefine HAVE_POSTGRESQL
 
-#cmakedefine HAVE_SPATIALITE
-
-#cmakedefine HAVE_MSSQL
-
 #cmakedefine HAVE_ORACLE
-
-#cmakedefine HAVE_PYTHON
 
 #cmakedefine HAVE_TOUCH
 

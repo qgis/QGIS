@@ -12,29 +12,25 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
+
 import os
 import glob
 
-from PyQt4.QtCore import (QTemporaryFile,
-                          QDir)
+from qgis.PyQt.QtCore import QTemporaryFile, QDir
 from qgis.core import (QgsRasterLayer,
                        QgsRasterChecker,
                        QgsRasterPipe,
                        QgsRasterFileWriter,
                        QgsRasterProjector)
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       #expectedFailure
-                       )
-# Convenience instances in case you may need them
-# not used in this test
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+
+from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
+
+start_app()
 
 
-class TestQgsRasterFileWriter(TestCase):
+class TestQgsRasterFileWriter(unittest.TestCase):
 
     def __init__(self, methodName):
         unittest.TestCase.__init__(self, methodName)
@@ -42,7 +38,7 @@ class TestQgsRasterFileWriter(TestCase):
         self.report = "<h1>Python Raster File Writer Tests</h1>\n"
 
     def write(self, theRasterName):
-        print theRasterName
+        print(theRasterName)
 
         path = "%s/%s" % (self.testDataDir, theRasterName)
         rasterLayer = QgsRasterLayer(path, "test")
@@ -51,7 +47,7 @@ class TestQgsRasterFileWriter(TestCase):
         provider = rasterLayer.dataProvider()
 
         tmpFile = QTemporaryFile()
-        tmpFile.open() # fileName is no avialable until open
+        tmpFile.open()  # fileName is no avialable until open
         tmpName = tmpFile.fileName()
         tmpFile.close()
         # do not remove when class is destroyed so that we can read
@@ -61,13 +57,13 @@ class TestQgsRasterFileWriter(TestCase):
         fileWriter = QgsRasterFileWriter(tmpName)
         pipe = QgsRasterPipe()
         if not pipe.set(provider.clone()):
-            print "Cannot set pipe provider"
+            print("Cannot set pipe provider")
             return False
 
         projector = QgsRasterProjector()
         projector.setCRS(provider.crs(), provider.crs())
         if not pipe.insert(2, projector):
-            print "Cannot set pipe projector"
+            print("Cannot set pipe projector")
             return False
 
         fileWriter.writeRaster(

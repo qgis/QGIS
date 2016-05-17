@@ -20,6 +20,7 @@
 #include <QPointF>
 #include <QSizeF>
 #include <QString>
+#include <gdal_version.h>
 
 class QgsRectangle;
 
@@ -49,7 +50,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
       ~RasterInfo();
 
       //! Check whether the given path is a valid raster
-      bool isValid() const { return mDataset != 0; }
+      bool isValid() const { return nullptr != mDataset; }
 
       //! Return CRS in WKT format
       QString crs() const { return mCrsWkt; }
@@ -84,11 +85,17 @@ class ANALYSIS_EXPORT QgsAlignRaster
       //! number of raster's bands
       int mBandCnt;
 
+    private:
+
+      RasterInfo( const RasterInfo& rh );
+      RasterInfo& operator=( const RasterInfo& rh );
+
       friend class QgsAlignRaster;
     };
 
 
     //! Resampling algorithm to be used (equivalent to GDAL's enum GDALResampleAlg)
+    //! @note RA_Max, RA_Min, RA_Median, RA_Q1 and RA_Q3 are available on GDAL >= 2.0 builds only
     enum ResampleAlg
     {
       RA_NearestNeighbour = 0, //!< Nearest neighbour (select on one input pixel)
@@ -97,7 +104,12 @@ class ANALYSIS_EXPORT QgsAlignRaster
       RA_CubicSpline = 3,    //!< Cubic B-Spline Approximation (4x4 kernel)
       RA_Lanczos = 4,        //!< Lanczos windowed sinc interpolation (6x6 kernel)
       RA_Average = 5,        //!< Average (computes the average of all non-NODATA contributing pixels)
-      RA_Mode = 6            //!< Mode (selects the value which appears most often of all the sampled points)
+      RA_Mode = 6,            //!< Mode (selects the value which appears most often of all the sampled points)
+      RA_Max = 8, //!< Maximum (selects the maximum of all non-NODATA contributing pixels)
+      RA_Min = 9, //!< Minimum (selects the minimum of all non-NODATA contributing pixels)
+      RA_Median = 10, //!< Median (selects the median of all non-NODATA contributing pixels)
+      RA_Q1 = 11, //!< First quartile (selects the first quartile of all non-NODATA contributing pixels)
+      RA_Q3 = 12, //!< Third quartile (selects the third quartile of all non-NODATA contributing pixels)
     };
 
     //! Definition of one raster layer for alignment
@@ -138,9 +150,9 @@ class ANALYSIS_EXPORT QgsAlignRaster
       virtual ~ProgressHandler() {}
     };
 
-    //! Assign a progress handler instance. Does not take ownership. NULL can be passed.
+    //! Assign a progress handler instance. Does not take ownership. nullptr can be passed.
     void setProgressHandler( ProgressHandler* progressHandler ) { mProgressHandler = progressHandler; }
-    //! Get associated progress handler. May be NULL (default)
+    //! Get associated progress handler. May be nullptr (default)
     ProgressHandler* progressHandler() const { return mProgressHandler; }
 
     //! Set list of rasters that will be aligned
@@ -148,13 +160,13 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! Get list of rasters that will be aligned
     List rasters() const { return mRasters; }
 
-    void setGridOffset( const QPointF& offset ) { mGridOffsetX = offset.x(); mGridOffsetY = offset.y(); }
+    void setGridOffset( QPointF offset ) { mGridOffsetX = offset.x(); mGridOffsetY = offset.y(); }
     QPointF gridOffset() const { return QPointF( mGridOffsetX, mGridOffsetY ); }
 
     //! Set output cell size
     void setCellSize( double x, double y ) { return setCellSize( QSizeF( x, y ) ); }
     //! Set output cell size
-    void setCellSize( const QSizeF& size ) { mCellSizeX = size.width(); mCellSizeY = size.height(); }
+    void setCellSize( QSizeF size ) { mCellSizeX = size.width(); mCellSizeY = size.height(); }
     //! Get output cell size
     QSizeF cellSize() const { return QSizeF( mCellSizeX, mCellSizeY ); }
 
@@ -218,7 +230,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
     bool createAndWarp( const Item& raster );
 
     //! Determine suggested output of raster warp to a different CRS. Returns true on success
-    static bool suggestedWarpOutput( const RasterInfo& info, const QString& destWkt, QSizeF* cellSize = 0, QPointF* gridOffset = 0, QgsRectangle* rect = 0 );
+    static bool suggestedWarpOutput( const RasterInfo& info, const QString& destWkt, QSizeF* cellSize = nullptr, QPointF* gridOffset = nullptr, QgsRectangle* rect = nullptr );
 
   protected:
 

@@ -25,8 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import pyqtSignal
-from PyQt4.QtGui import QColor
+from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtGui import QColor
 from qgis.core import QGis, QgsPoint, QgsRectangle
 from qgis.gui import QgsMapTool, QgsMapToolEmitPoint, QgsRubberBand
 

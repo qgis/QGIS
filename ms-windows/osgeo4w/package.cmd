@@ -56,7 +56,7 @@ if "%ARCH%"=="x86" goto devenv_x86
 goto devenv_x86_64
 
 :devenv_x86
-set GRASS_VERSIONS=6.4.4 7.0.1
+set GRASS6_VERSION=6.4.4
 call "%PF86%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" x86
 if exist "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" call "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" /x86 /Release
 path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
@@ -64,15 +64,11 @@ path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
 set CMAKE_OPT=^
 	-G "Visual Studio 10" ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe ^
-	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt.lib ^
-	-D WITH_GRASS=TRUE ^
-	-D WITH_GRASS7=TRUE ^
-	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-6.4.4 ^
-	-D GRASS_PREFIX7=%O4W_ROOT%/apps/grass/grass-7.0.1
+	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt.lib
 goto devenv
 
 :devenv_x86_64
-set GRASS_VERSIONS=6.4.3
+set GRASS6_VERSION=6.4.3
 call "%PF86%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" amd64
 if exist "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" call "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" /x64 /Release
 path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
@@ -84,15 +80,17 @@ if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 set CMAKE_OPT=^
 	-G "Visual Studio 10 Win64" ^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
-	-D WITH_GRASS=TRUE ^
-	-D WITH_GRASS7=FALSE ^
-	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-6.4.3 ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/bin/sip.exe ^
 	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt5.lib ^
 	-D SETUPAPI_LIBRARY="%SETUPAPI_LIBRARY%" ^
 	-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
 
 :devenv
+for /f "usebackq tokens=1" %%a in (`%OSGEO4W_ROOT%\bin\grass70 --config path`) do set GRASS70_PATH=%%a
+for %%i in ("%GRASS70_PATH%") do set GRASS70_VERSION=%%~nxi
+set GRASS70_VERSION=%GRASS70_VERSION:grass-=%
+set GRASS_VERSIONS=%GRASS6_VERSION% %GRASS70_VERSION%
+
 set PYTHONPATH=
 path %PF86%\CMake\bin;%PATH%;c:\cygwin\bin
 
@@ -158,6 +156,11 @@ cmake %CMAKE_OPT% ^
 	-D WITH_QSPATIALITE=TRUE ^
 	-D WITH_SERVER=TRUE ^
 	-D SERVER_SKIP_ECW=TRUE ^
+	-D WITH_GRASS=TRUE ^
+	-D WITH_GRASS6=TRUE ^
+	-D WITH_GRASS7=TRUE ^
+	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-%GRASS6_VERSION% ^
+	-D GRASS_PREFIX7=%GRASS70_PATH:\=/% ^
 	-D WITH_GLOBE=TRUE ^
 	-D WITH_TOUCH=TRUE ^
 	-D WITH_ORACLE=TRUE ^
@@ -184,6 +187,7 @@ cmake %CMAKE_OPT% ^
 	-D WITH_INTERNAL_DATEUTIL=FALSE ^
 	-D WITH_INTERNAL_PYTZ=FALSE ^
 	-D WITH_INTERNAL_SIX=FALSE ^
+	-D WITH_INTERNAL_FUTURE=FALSE ^
 	%SRCDIR%
 if errorlevel 1 (echo cmake failed & goto error)
 
@@ -298,15 +302,21 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-common/%PACKAGENAME
 	"apps/%PACKAGENAME%/bin/qgis_core.dll" ^
 	"apps/%PACKAGENAME%/bin/qgis_gui.dll" ^
 	"apps/%PACKAGENAME%/doc/" ^
+	"apps/%PACKAGENAME%/plugins/basicauthmethod.dll" ^
 	"apps/%PACKAGENAME%/plugins/delimitedtextprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/gdalprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/gpxprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/identcertauthmethod.dll" ^
 	"apps/%PACKAGENAME%/plugins/memoryprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/mssqlprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/db2provider.dll" ^
 	"apps/%PACKAGENAME%/plugins/ogrprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/owsprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/pkcs12authmethod.dll" ^
+	"apps/%PACKAGENAME%/plugins/pkipathsauthmethod.dll" ^
 	"apps/%PACKAGENAME%/plugins/postgresprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/spatialiteprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/virtuallayerprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wcsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wfsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wmsprovider.dll" ^
@@ -365,6 +375,7 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	"bin/%PACKAGENAME%-browser-bin.exe" ^
 	"bin/%PACKAGENAME%-bin.exe" ^
 	"bin/python-%PACKAGENAME%.bat.tmpl" ^
+	"apps/%PACKAGENAME%/bin/qgis_app.dll" ^
 	"apps/%PACKAGENAME%/bin/qgis.reg.tmpl" ^
 	"apps/%PACKAGENAME%/i18n/" ^
 	"apps/%PACKAGENAME%/icons/" ^
@@ -381,14 +392,16 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	"apps/%PACKAGENAME%/plugins/rasterterrainplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/roadgraphplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/spatialqueryplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/spitplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/topolplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/zonalstatisticsplugin.dll" ^
+	"apps/%PACKAGENAME%/plugins/geometrycheckerplugin.dll" ^
+	"apps/%PACKAGENAME%/plugins/geometrysnapperplugin.dll" ^
 	"apps/%PACKAGENAME%/qgis_help.exe" ^
 	"apps/%PACKAGENAME%/qtplugins/sqldrivers/qsqlspatialite.dll" ^
 	"apps/%PACKAGENAME%/qtplugins/designer/" ^
 	"apps/%PACKAGENAME%/python/" ^
 	"apps/%PACKAGENAME%/resources/customization.xml" ^
+	"apps/%PACKAGENAME%/resources/themes/" ^
 	"bin/%PACKAGENAME%.bat.tmpl" ^
 	"bin/%PACKAGENAME%-browser.bat.tmpl" ^
 	"bin/%PACKAGENAME%-designer.bat.tmpl" ^
@@ -417,24 +430,20 @@ for %%g IN (%GRASS_VERSIONS%) do (
 	set w=!v!
 	if !v!==6 set w=
 
-	set files="apps/%PACKAGENAME%/bin/qgisgrass!v!.dll" ^
+	tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-grass-plugin!w!/%PACKAGENAME%-grass-plugin!w!-%VERSION%-%PACKAGE%.tar.bz2 ^
+		"apps/%PACKAGENAME%/bin/qgisgrass!v!.dll" ^
+		"apps/%PACKAGENAME%/grass/bin/qgis.g.browser!v!.exe" ^
 		"apps/%PACKAGENAME%/grass/modules/qgis.d.rast!v!.exe" ^
 		"apps/%PACKAGENAME%/grass/modules/qgis.g.info!v!.exe" ^
 		"apps/%PACKAGENAME%/grass/modules/qgis.r.in!v!.exe" ^
 		"apps/%PACKAGENAME%/grass/modules/qgis.v.in!v!.exe" ^
-		"apps/%PACKAGENAME%/plugins/grassrasterprovider!v!.dll" ^
+		"apps/%PACKAGENAME%/plugins/grassplugin!v!.dll" ^
 		"apps/%PACKAGENAME%/plugins/grassprovider!v!.dll" ^
-		"bin/%PACKAGENAME%-grass!v!.bat.tmpl" ^
+		"apps/%PACKAGENAME%/plugins/grassrasterprovider!v!.dll" ^
 		"bin/%PACKAGENAME%-browser-grass!v!.bat.tmpl" ^
+		"bin/%PACKAGENAME%-grass!v!.bat.tmpl" ^
 		"etc/postinstall/%PACKAGENAME%-grass-plugin!w!.bat" ^
 		"etc/preremove/%PACKAGENAME%-grass-plugin!w!.bat"
-
-	if !v!==6 set files=!files! ^
-		"apps/%PACKAGENAME%/plugins/grassplugin!v!.dll" ^
-		"apps/%PACKAGENAME%/grass/bin/qgis.g.browser!v!.exe"
-
-	tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-grass-plugin!w!/%PACKAGENAME%-grass-plugin!w!-%VERSION%-%PACKAGE%.tar.bz2 ^
-		!files!
 	if errorlevel 1 (echo tar grass-plugin!w! failed & goto error)
 )
 

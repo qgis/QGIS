@@ -29,10 +29,10 @@ class QDomElement;
 class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
 {
   public:
-    QgsBrightnessContrastFilter( QgsRasterInterface *input = 0 );
+    QgsBrightnessContrastFilter( QgsRasterInterface *input = nullptr );
     ~QgsBrightnessContrastFilter();
 
-    QgsRasterInterface * clone() const override;
+    QgsBrightnessContrastFilter* clone() const override;
 
     int bandCount() const override;
 

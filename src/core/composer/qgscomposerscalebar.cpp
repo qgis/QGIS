@@ -29,6 +29,7 @@
 #include "qgsproject.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsfontutils.h"
+#include "qgsunittypes.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFontMetricsF>
@@ -38,13 +39,13 @@
 
 QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition )
     : QgsComposerItem( composition )
-    , mComposerMap( 0 )
+    , mComposerMap( nullptr )
     , mNumUnitsPerSegment( 0 )
     , mSegmentSizeMode( SegmentSizeFixed )
     , mMinBarWidth( 50 )
     , mMaxBarWidth( 150 )
     , mFontColor( QColor( 0, 0, 0 ) )
-    , mStyle( 0 )
+    , mStyle( nullptr )
     , mSegmentMillimeters( 0.0 )
     , mAlignment( Left )
     , mUnits( MapUnits )
@@ -221,7 +222,7 @@ void QgsComposerScaleBar::invalidateCurrentMap()
 
   disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
   disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
-  mComposerMap = 0;
+  mComposerMap = nullptr;
 }
 
 // nextNiceNumber(4573.23, d) = 5000 (d=1) -> 4600 (d=10) -> 4580 (d=100) -> 4574 (d=1000) -> etc
@@ -305,14 +306,24 @@ double QgsComposerScaleBar::mapWidth() const
     da.setSourceCrs( mComposition->mapSettings().destinationCrs().srsid() );
     da.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", "WGS84" ) );
 
-    double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMinimum() ), QgsPoint( composerMapRect.xMaximum(), composerMapRect.yMinimum() ) );
-    if ( mUnits == QgsComposerScaleBar::Feet )
+    QGis::UnitType units = QGis::Meters;
+    double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMinimum() ),
+                                     QgsPoint( composerMapRect.xMaximum(), composerMapRect.yMinimum() ),
+                                     units );
+    switch ( mUnits )
     {
-      measure /= QGis::fromUnitToUnitFactor( QGis::Feet, QGis::Meters );
-    }
-    else if ( mUnits == QgsComposerScaleBar::NauticalMiles )
-    {
-      measure /= QGis::fromUnitToUnitFactor( QGis::NauticalMiles, QGis::Meters );
+      case QgsComposerScaleBar::Feet:
+        measure /= QgsUnitTypes::fromUnitToUnitFactor( QGis::Feet, units );
+        break;
+      case QgsComposerScaleBar::NauticalMiles:
+        measure /= QgsUnitTypes::fromUnitToUnitFactor( QGis::NauticalMiles, units );
+        break;
+      case QgsComposerScaleBar::Meters:
+        measure /= QgsUnitTypes::fromUnitToUnitFactor( QGis::Meters, units );
+        break;
+      case QgsComposerScaleBar::MapUnits:
+        //avoid warning
+        break;
     }
     return measure;
   }
@@ -377,7 +388,7 @@ void QgsComposerScaleBar::applyDefaultSettings()
   mPen = QPen( Qt::black );
   mPen.setJoinStyle( mLineJoinStyle );
   mPen.setCapStyle( mLineCapStyle );
-  mPen.setWidthF( 1.0 );
+  mPen.setWidthF( 0.3 );
 
   mBrush.setColor( Qt::black );
   mBrush.setStyle( Qt::SolidPattern );
@@ -579,7 +590,7 @@ void QgsComposerScaleBar::segmentPositions( QList<QPair<double, double> >& posWi
 void QgsComposerScaleBar::setStyle( const QString& styleName )
 {
   delete mStyle;
-  mStyle = 0;
+  mStyle = nullptr;
 
   //switch depending on style name
   if ( styleName == "Single Box" )
@@ -726,7 +737,7 @@ bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc ) cons
   composerScaleBarElem.appendChild( fontColorElem );
 
   //alignment
-  composerScaleBarElem.setAttribute( "alignment", QString::number(( int ) mAlignment ) );
+  composerScaleBarElem.setAttribute( "alignment", QString::number( static_cast< int >( mAlignment ) ) );
 
   elem.appendChild( composerScaleBarElem );
   return _writeXML( composerScaleBarElem, doc );
@@ -750,7 +761,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
   mMaxBarWidth = itemElem.attribute( "maxBarWidth", "150" ).toInt();
   mSegmentMillimeters = itemElem.attribute( "segmentMillimeters", "0.0" ).toDouble();
   mNumMapUnitsPerScaleBarUnit = itemElem.attribute( "numMapUnitsPerScaleBarUnit", "1.0" ).toDouble();
-  mPen.setWidthF( itemElem.attribute( "outlineWidth", "1.0" ).toDouble() );
+  mPen.setWidthF( itemElem.attribute( "outlineWidth", "0.3" ).toDouble() );
   mUnitLabeling = itemElem.attribute( "unitLabel" );
   mLineJoinStyle = QgsSymbolLayerV2Utils::decodePenJoinStyle( itemElem.attribute( "lineJoinStyle", "miter" ) );
   mPen.setJoinStyle( mLineJoinStyle );
@@ -764,7 +775,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
   //colors
   //fill color
   QDomNodeList fillColorList = itemElem.elementsByTagName( "fillColor" );
-  if ( fillColorList.size() > 0 )
+  if ( !fillColorList.isEmpty() )
   {
     QDomElement fillColorElem = fillColorList.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk;
@@ -787,7 +798,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
 
   //fill color 2
   QDomNodeList fillColor2List = itemElem.elementsByTagName( "fillColor2" );
-  if ( fillColor2List.size() > 0 )
+  if ( !fillColor2List.isEmpty() )
   {
     QDomElement fillColor2Elem = fillColor2List.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk;
@@ -810,7 +821,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
 
   //stroke color
   QDomNodeList strokeColorList = itemElem.elementsByTagName( "strokeColor" );
-  if ( strokeColorList.size() > 0 )
+  if ( !strokeColorList.isEmpty() )
   {
     QDomElement strokeColorElem = strokeColorList.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk;
@@ -833,7 +844,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
 
   //font color
   QDomNodeList textColorList = itemElem.elementsByTagName( "textColor" );
-  if ( textColorList.size() > 0 )
+  if ( !textColorList.isEmpty() )
   {
     QDomElement textColorElem = textColorList.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk;
@@ -856,12 +867,12 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
 
   //style
   delete mStyle;
-  mStyle = 0;
+  mStyle = nullptr;
   QString styleString = itemElem.attribute( "style", "" );
   setStyle( tr( styleString.toLocal8Bit().data() ) );
 
-  mUnits = ( ScaleBarUnits )itemElem.attribute( "units" ).toInt();
-  mAlignment = ( Alignment )( itemElem.attribute( "alignment", "0" ).toInt() );
+  mUnits = static_cast< ScaleBarUnits >( itemElem.attribute( "units" ).toInt() );
+  mAlignment = static_cast< Alignment >( itemElem.attribute( "alignment", "0" ).toInt() );
 
   //map
   int mapId = itemElem.attribute( "mapId", "-1" ).toInt();
@@ -880,7 +891,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
-  if ( composerItemList.size() > 0 )
+  if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
     _readXML( composerItemElem, doc );

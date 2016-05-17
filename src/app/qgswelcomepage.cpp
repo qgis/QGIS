@@ -23,11 +23,12 @@
 #include <QVBoxLayout>
 #include <QListView>
 #include <QSettings>
-#include <QDesktopServices>
 
-QgsWelcomePage::QgsWelcomePage( QWidget* parent )
-    : QTabWidget( parent )
+QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget* parent )
+    : QWidget( parent )
 {
+  QSettings settings;
+
   QVBoxLayout* mainLayout = new QVBoxLayout;
   mainLayout->setMargin( 0 );
   setLayout( mainLayout );
@@ -39,45 +40,31 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
 
   QWidget* recentProjctsContainer = new QWidget;
   recentProjctsContainer->setLayout( new QVBoxLayout );
+  recentProjctsContainer->layout()->setContentsMargins( 3, 3, 3, 0 );
   QLabel* recentProjectsTitle = new QLabel( QString( "<h1>%1</h1>" ).arg( tr( "Recent Projects" ) ) );
   recentProjctsContainer->layout()->addWidget( recentProjectsTitle );
 
   QListView* recentProjectsListView = new QListView();
+  recentProjectsListView->setResizeMode( QListView::Adjust );
+
   mModel = new QgsWelcomePageItemsModel( recentProjectsListView );
   recentProjectsListView->setModel( mModel );
   recentProjectsListView->setItemDelegate( new QgsWelcomePageItemDelegate( recentProjectsListView ) );
 
   recentProjctsContainer->layout()->addWidget( recentProjectsListView );
 
-  addTab( recentProjctsContainer, "Recent Projects" );
-
-  QWidget* whatsNewContainer = new QWidget;
-  whatsNewContainer->setLayout( new QVBoxLayout );
-  QLabel* whatsNewTitle = new QLabel( QString( "<h1>%1</h1>" ).arg( tr( "QGIS News" ) ) );
-  whatsNewContainer->layout()->addWidget( whatsNewTitle );
-
-  QgsWebView* whatsNewPage = new QgsWebView();
-  whatsNewPage->setUrl( QUrl::fromLocalFile( QgsApplication::whatsNewFilePath() ) );
-  whatsNewPage->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
-  whatsNewPage->setContextMenuPolicy( Qt::NoContextMenu );
-  whatsNewPage->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-  whatsNewPage->setStyleSheet( "background:transparent" );
-  whatsNewPage->setAttribute( Qt::WA_TranslucentBackground );
-
-  whatsNewContainer->layout()->addWidget( whatsNewPage );
-//  whatsNewContainer->setMaximumWidth( 250 );
-//  whatsNewContainer->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Preferred );
-  addTab( whatsNewContainer, "News" );
-
-  connect( whatsNewPage, SIGNAL( linkClicked( QUrl ) ), this, SLOT( whatsNewLinkClicked( QUrl ) ) );
+  layout->addWidget( recentProjctsContainer );
 
   mVersionInformation = new QLabel;
   mainLayout->addWidget( mVersionInformation );
   mVersionInformation->setVisible( false );
 
   mVersionInfo = new QgsVersionInfo();
-  connect( mVersionInfo, SIGNAL( versionInfoAvailable() ), this, SLOT( versionInfoReceived() ) );
-  mVersionInfo->checkVersion();
+  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( "/qgis/checkVersion", true ).toBool() && !skipVersionCheck )
+  {
+    connect( mVersionInfo, SIGNAL( versionInfoAvailable() ), this, SLOT( versionInfoReceived() ) );
+    mVersionInfo->checkVersion();
+  }
 
   connect( recentProjectsListView, SIGNAL( activated( QModelIndex ) ), this, SLOT( itemActivated( QModelIndex ) ) );
 }
@@ -106,16 +93,11 @@ void QgsWelcomePage::versionInfoReceived()
   {
     mVersionInformation->setVisible( true );
     mVersionInformation->setText( QString( "<b>%1</b>: %2" )
-                                  .arg( tr( "There is a new QGIS version available" ) )
-                                  .arg( versionInfo->downloadInfo() ) );
+                                  .arg( tr( "There is a new QGIS version available" ),
+                                        versionInfo->downloadInfo() ) );
     mVersionInformation->setStyleSheet( "QLabel{"
                                         "  background-color: #dddd00;"
                                         "  padding: 5px;"
                                         "}" );
   }
-}
-
-void QgsWelcomePage::whatsNewLinkClicked( const QUrl& url )
-{
-  QDesktopServices::openUrl( url );
 }

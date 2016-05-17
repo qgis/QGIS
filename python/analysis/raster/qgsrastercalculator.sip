@@ -18,6 +18,17 @@ class QgsRasterCalculator
 
   public:
 
+    //! Result of the calculation
+    enum Result
+    {
+      Success, /*!< Calculation sucessful */
+      CreateOutputError, /*!< Error creating output data file */
+      InputLayerError, /*!< Error reading input layer */
+      Cancelled, /*!< User cancelled calculation */
+      ParserError, /*!< Error parsing formula */
+      MemoryError, /*!< Error allocating memory for result */
+    };
+
     /** QgsRasterCalculator constructor.
      * @param formulaString formula for raster calculation
      * @param outputFile output file path
@@ -43,8 +54,6 @@ class QgsRasterCalculator
      */
     QgsRasterCalculator( const QString& formulaString, const QString& outputFile, const QString& outputFormat,
                          const QgsRectangle& outputExtent, const QgsCoordinateReferenceSystem& outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry>& rasterEntries );
-
-    ~QgsRasterCalculator();
 
     /** Starts the calculation and writes new raster
       @param p progress bar (or 0 if called from non-gui code)

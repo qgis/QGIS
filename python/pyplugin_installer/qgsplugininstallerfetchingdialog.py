@@ -24,10 +24,10 @@
  ***************************************************************************/
 """
 
-from PyQt4.QtGui import QDialog, QTreeWidgetItem
+from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 
-from ui_qgsplugininstallerfetchingbase import Ui_QgsPluginInstallerFetchingDialogBase
-from installer_data import repositories
+from .ui_qgsplugininstallerfetchingbase import Ui_QgsPluginInstallerFetchingDialogBase
+from .installer_data import repositories
 
 
 class QgsPluginInstallerFetchingDialog(QDialog, Ui_QgsPluginInstallerFetchingDialogBase):

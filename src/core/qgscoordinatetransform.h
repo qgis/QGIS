@@ -53,13 +53,13 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
 {
     Q_OBJECT
   public:
-    /** Default constructor. Make sure you use initialised() manually if you use this one! */
+    /** Default constructor. Make sure you use initialized() manually if you use this one! */
     QgsCoordinateTransform();
 
     /** Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
-    * @param theSource CRS, typically of the layer's coordinate system
-    * @param theDest CRS, typically of the map canvas coordinate system
-    */
+     * @param theSource CRS, typically of the layer's coordinate system
+     * @param theDest CRS, typically of the map canvas coordinate system
+     */
     QgsCoordinateTransform( const QgsCoordinateReferenceSystem& theSource,
                             const QgsCoordinateReferenceSystem& theDest );
 
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
      * @param theSourceWkt Wkt, typically of the layer's coordinate system
      * @param theDestWkt Wkt, typically of the map canvas coordinate system
      */
-    QgsCoordinateTransform( QString theSourceWkt, QString theDestWkt );
+    QgsCoordinateTransform( const QString& theSourceWkt, const QString& theDestWkt );
 
     /*!
      * Constructs a QgsCoordinateTransform using a Spatial Reference Id
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
      * @param theSourceCRSType On of the enum members defined in QgsCoordinateReferenceSystem::CrsType
      */
     QgsCoordinateTransform( long theSourceSrid,
-                            QString theDestWkt,
+                            const QString& theDestWkt,
                             QgsCoordinateReferenceSystem::CrsType theSourceCRSType = QgsCoordinateReferenceSystem::PostgisCrsId );
 
     //! destructor
@@ -158,12 +158,14 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     // and y variables in place. The second one works with good old-fashioned
     // C style arrays.
     void transformInPlace( double& x, double& y, double &z, TransformDirection direction = ForwardTransform ) const;
-    void transformInPlace( float& x, float& y, double &z, TransformDirection direction = ForwardTransform ) const;
-    void transformInPlace( float& x, float& y, float& z, TransformDirection direction = ForwardTransform ) const;
 
+    // @note not available in python bindings
+    void transformInPlace( float& x, float& y, double &z, TransformDirection direction = ForwardTransform ) const;
+    // @note not available in python bindings
+    void transformInPlace( float& x, float& y, float& z, TransformDirection direction = ForwardTransform ) const;
+    // @note not available in python bindings
     void transformInPlace( QVector<float>& x, QVector<float>& y, QVector<float>& z,
                            TransformDirection direction = ForwardTransform ) const;
-
 
     //! @note not available in python bindings
     void transformInPlace( QVector<double>& x, QVector<double>& y, QVector<double>& z,
@@ -190,18 +192,18 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
      * @param direction TransformDirection (defaults to ForwardTransform)
      * @return QgsRectangle in Destination Coordinate System
      */
-    void transformCoords( const int &numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const;
+    void transformCoords( int numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const;
 
     /*!
-     * Flag to indicate whether the coordinate systems have been initialised
-     * @return true if initialised, otherwise false
+     * Flag to indicate whether the coordinate systems have been initialized
+     * @return true if initialized, otherwise false
      */
-    bool isInitialised() const {return mInitialisedFlag;}
+    bool isInitialised() const { return mInitialisedFlag; }
 
     /** See if the transform short circuits because src and dest are equivalent
      * @return bool True if it short circuits
      */
-    bool isShortCircuited() {return mShortCircuit;}
+    bool isShortCircuited() const { return mShortCircuit; }
 
     /** Change the destination coordinate system by passing it a qgis srsid
     * A QGIS srsid is a unique key value to an entry on the tbl_srs in the
@@ -209,7 +211,7 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     * @note This slot will usually be called if the
     * project properties change and a different coordinate system is
     * selected.
-    * @note This coord transform will be reinitialised when this slot is called
+    * @note This coord transform will be reinitialized when this slot is called
     * to check if short circuiting is needed or not etc.
     * @param theCRSID -  A long representing the srsid of the srs to be used */
     void setDestCRSID( long theCRSID );
@@ -229,25 +231,25 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     void setDestinationDatumTransform( int dt ) { mDestinationDatumTransform = dt; }
 
   public slots:
-    //!initialise is used to actually create the Transformer instance
+    //!initialize is used to actually create the Transformer instance
     void initialise();
 
     /** Restores state from the given Dom node.
-    * @param theNode The node from which state will be restored
-    * @return bool True on success, False on failure
-    */
+     * @param theNode The node from which state will be restored
+     * @return bool True on success, False on failure
+     */
     bool readXML( QDomNode & theNode );
 
     /** Stores state to the given Dom node in the given document
-    * @param theNode The node in which state will be restored
-    * @param theDoc The document in which state will be stored
-    * @return bool True on success, False on failure
-    */
+     * @param theNode The node in which state will be restored
+     * @param theDoc The document in which state will be stored
+     * @return bool True on success, False on failure
+     */
     bool writeXML( QDomNode & theNode, QDomDocument & theDoc );
 
   signals:
-    /** Signal when an invalid pj_transform() has occured */
-    void  invalidTransformInput() const;
+    /** Signal when an invalid pj_transform() has occurred */
+    void invalidTransformInput() const;
 
   private:
 
@@ -258,7 +260,7 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     bool mShortCircuit;
 
     /*!
-     * flag to show whether the transform is properly initialised or not
+     * flag to show whether the transform is properly initialized or not
      */
     bool mInitialisedFlag;
 

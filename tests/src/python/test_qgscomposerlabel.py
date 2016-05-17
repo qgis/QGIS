@@ -14,13 +14,14 @@ test_qgscomposerlabel.py
  *                                                                         *
  ***************************************************************************/
 '''
-import qgis
-import unittest
-from utilities import getQgisTestApp, unitTestDataPath
-from PyQt4.QtCore import QFileInfo, QDate, QDateTime
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsMapRenderer, QgsComposition, QgsComposerLabel, QgsFeatureRequest, QgsFeature, QgsExpression
+import qgis  # NOQA
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+from qgis.testing import start_app, unittest
+from qgis.PyQt.QtCore import QFileInfo, QDate, QDateTime
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsMapRenderer, QgsComposition, QgsComposerLabel, QgsFeatureRequest, QgsFeature, QgsExpression
+from utilities import unitTestDataPath
+
+start_app()
 
 
 class TestQgsComposerLabel(unittest.TestCase):

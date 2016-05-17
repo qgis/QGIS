@@ -15,14 +15,14 @@
 
 QgsFeatureListViewDelegate::QgsFeatureListViewDelegate( QgsFeatureListModel *listModel, QObject *parent )
     : QItemDelegate( parent )
-    , mFeatureSelectionModel( NULL )
-    , mEditSelectionModel( NULL )
+    , mFeatureSelectionModel( nullptr )
+    , mEditSelectionModel( nullptr )
     , mListModel( listModel )
     , mCurrentFeatureEdited( false )
 {
 }
 
-QgsFeatureListViewDelegate::Element QgsFeatureListViewDelegate::positionToElement( const QPoint &pos )
+QgsFeatureListViewDelegate::Element QgsFeatureListViewDelegate::positionToElement( QPoint pos )
 {
   if ( pos.x() > sIconSize )
   {
@@ -52,11 +52,19 @@ void QgsFeatureListViewDelegate::setEditSelectionModel( QItemSelectionModel* edi
 QSize QgsFeatureListViewDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   Q_UNUSED( index )
-  return QSize( option.rect.width(), sIconSize );
+  int height = sIconSize;
+  return QSize( option.rect.width(), qMax( height, option.fontMetrics.height() ) );
 }
 
 void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
+  static QPixmap selectedIcon;
+  if ( selectedIcon.isNull() )
+    selectedIcon = QgsApplication::getThemePixmap( "/mIconSelected.svg" );
+  static QPixmap deselectedIcon;
+  if ( deselectedIcon.isNull() )
+    deselectedIcon = QgsApplication::getThemePixmap( "/mIconDeselected.svg" );
+
   QString text = index.model()->data( index, Qt::EditRole ).toString();
   QgsFeatureListModel::FeatureInfo featInfo = index.model()->data( index, Qt::UserRole ).value<QgsFeatureListModel::FeatureInfo>();
 
@@ -67,16 +75,12 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
 
   QRect iconLayoutBounds( option.rect.x(), option.rect.y(), option.rect.height(), option.rect.height() );
 
-  QPixmap icon;
+  QPixmap icon = mFeatureSelectionModel->isSelected( index ) ? selectedIcon : deselectedIcon;
 
-  if ( mFeatureSelectionModel->isSelected( index ) )
+  // Scale up the icon if needed
+  if ( option.rect.height() > sIconSize )
   {
-    // Item is selected
-    icon = QgsApplication::getThemePixmap( "/mIconSelected.svg" );
-  }
-  else
-  {
-    icon = QgsApplication::getThemePixmap( "/mIconDeselected.svg" );
+    icon = icon.scaledToHeight( option.rect.height(), Qt::SmoothTransformation );
   }
 
   // Text layout options

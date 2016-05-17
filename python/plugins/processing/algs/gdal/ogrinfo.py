@@ -27,15 +27,20 @@ __revision__ = '$Format:%H$'
 
 
 from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterBoolean
+
 from processing.core.outputs import OutputHTML
 
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
+
+from processing.tools.vector import ogrConnectionString
 
 
-class OgrInfo(OgrAlgorithm):
+class OgrInfo(GdalAlgorithm):
 
     INPUT = 'INPUT'
+    SUMMARY_ONLY = 'SUMMARY_ONLY'
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
@@ -43,25 +48,28 @@ class OgrInfo(OgrAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('[OGR] Miscellaneous')
 
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer'),
-                          [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterBoolean(self.SUMMARY_ONLY,
+                                           self.tr('Summary output only'),
+                                           True))
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Layer information')))
 
     def getConsoleCommands(self):
         arguments = ["ogrinfo"]
         arguments.append('-al')
-        arguments.append('-so')
+        if self.getParameterValue(self.SUMMARY_ONLY):
+            arguments.append('-so')
         layer = self.getParameterValue(self.INPUT)
-        conn = self.ogrConnectionString(layer)
+        conn = ogrConnectionString(layer)
         arguments.append(conn)
         return arguments
 
     def processAlgorithm(self, progress):
         GdalUtils.runGdal(self.getConsoleCommands(), progress)
         output = self.getOutputValue(self.OUTPUT)
-        f = open(output, 'w')
-        f.write('<pre>')
-        for s in GdalUtils.getConsoleOutput()[1:]:
-            f.write(unicode(s))
-        f.write('</pre>')
-        f.close()
+        with open(output, 'w') as f:
+            f.write('<pre>')
+            for s in GdalUtils.getConsoleOutput()[1:]:
+                f.write(s)
+            f.write('</pre>')

@@ -22,7 +22,11 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QLineEdit>
-#include "qgswebview.h"
+
+#ifdef WITH_QTWEBKIT
+#include <QWebView>
+#endif
+
 
 /**
  * Wraps a photo widget. Will show a picture and a file chooser to change the picture.
@@ -33,23 +37,24 @@
  * <li><b>Width</b> <i>The width of the picture widget. If 0 and "Height" &gt; 0 will be determined automatically.</i></li>
  * <li><b>Height</b> <i>The height of the picture widget. If 0 and "Width" &gt; 0 will be determined automatically.</i></li>
  * </ul>
- *
+ * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsPhotoWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsPhotoWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
+    explicit QgsPhotoWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
 
     // QgsEditorWidgetWrapper interface
   public:
-    QVariant value() override;
+    QVariant value() const override;
+    void showIndeterminateState() override;
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
-    bool valid() override;
+    bool valid() const override;
 
   public slots:
     void setValue( const QVariant& value ) override;
@@ -73,6 +78,8 @@ class GUI_EXPORT QgsPhotoWidgetWrapper : public QgsEditorWidgetWrapper
     QLineEdit* mLineEdit;
     //! The button to open the file chooser dialog
     QPushButton* mButton;
+
+    void clearPicture();
 };
 
 #endif // QGSPHOTOWIDGETWRAPPER_H

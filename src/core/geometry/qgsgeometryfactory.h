@@ -20,6 +20,8 @@
 
 #include "qgsrectangle.h"
 #include "qgswkbtypes.h"
+#include "qgswkbptr.h"
+
 #include <QString>
 
 class QgsAbstractGeometryV2;
@@ -38,13 +40,14 @@ typedef QVector<QgsPolygon> QgsMultiPolygon;
  * \brief Contains geometry creation routines.
  * \note added in QGIS 2.10
  * \note this API is not considered stable and may change for 2.12
+ * \note not available in Python bindings
  */
 class CORE_EXPORT QgsGeometryFactory
 {
   public:
     /** Construct geometry from a WKB string.
      */
-    static QgsAbstractGeometryV2* geomFromWkb( const unsigned char* wkb );
+    static QgsAbstractGeometryV2* geomFromWkb( QgsConstWkbPtr wkb );
 
     /** Construct geometry from a WKT string.
      */

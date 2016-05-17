@@ -22,12 +22,13 @@
 #include "qgswfsprojectparser.h"
 #include "qgswmsprojectparser.h"
 #include "qgssldconfigparser.h"
+#include "qgsaccesscontrol.h"
 
 #include <QFile>
 
 QgsConfigCache* QgsConfigCache::instance()
 {
-  static QgsConfigCache *instance = 0;
+  static QgsConfigCache *instance = nullptr;
 
   if ( !instance )
     instance = new QgsConfigCache();
@@ -49,12 +50,17 @@ QgsServerProjectParser* QgsConfigCache::serverConfiguration( const QString& file
   QDomDocument* doc = xmlDocument( filePath );
   if ( !doc )
   {
-    return 0;
+    return nullptr;
   }
   return new QgsServerProjectParser( doc, filePath );
 }
 
-QgsWCSProjectParser *QgsConfigCache::wcsConfiguration( const QString& filePath )
+QgsWCSProjectParser *QgsConfigCache::wcsConfiguration(
+  const QString& filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  , const QgsAccessControl* accessControl
+#endif
+)
 {
   QgsWCSProjectParser *p = mWCSConfigCache.object( filePath );
   if ( !p )
@@ -62,9 +68,14 @@ QgsWCSProjectParser *QgsConfigCache::wcsConfiguration( const QString& filePath )
     QDomDocument* doc = xmlDocument( filePath );
     if ( !doc )
     {
-      return 0;
+      return nullptr;
     }
-    p = new QgsWCSProjectParser( filePath );
+    p = new QgsWCSProjectParser(
+      filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      , accessControl
+#endif
+    );
     mWCSConfigCache.insert( filePath, p );
     p = mWCSConfigCache.object( filePath );
     Q_ASSERT( p );
@@ -74,7 +85,12 @@ QgsWCSProjectParser *QgsConfigCache::wcsConfiguration( const QString& filePath )
   return p;
 }
 
-QgsWFSProjectParser *QgsConfigCache::wfsConfiguration( const QString& filePath )
+QgsWFSProjectParser *QgsConfigCache::wfsConfiguration(
+  const QString& filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  , const QgsAccessControl* accessControl
+#endif
+)
 {
   QgsWFSProjectParser *p = mWFSConfigCache.object( filePath );
   if ( !p )
@@ -82,9 +98,14 @@ QgsWFSProjectParser *QgsConfigCache::wfsConfiguration( const QString& filePath )
     QDomDocument* doc = xmlDocument( filePath );
     if ( !doc )
     {
-      return 0;
+      return nullptr;
     }
-    p = new QgsWFSProjectParser( filePath );
+    p = new QgsWFSProjectParser(
+      filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      , accessControl
+#endif
+    );
     mWFSConfigCache.insert( filePath, p );
     p = mWFSConfigCache.object( filePath );
     Q_ASSERT( p );
@@ -94,7 +115,13 @@ QgsWFSProjectParser *QgsConfigCache::wfsConfiguration( const QString& filePath )
   return p;
 }
 
-QgsWMSConfigParser *QgsConfigCache::wmsConfiguration( const QString& filePath, const QMap<QString, QString>& parameterMap )
+QgsWMSConfigParser *QgsConfigCache::wmsConfiguration(
+  const QString& filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  , const QgsAccessControl* accessControl
+#endif
+  , const QMap<QString, QString>& parameterMap
+)
 {
   QgsWMSConfigParser *p = mWMSConfigCache.object( filePath );
   if ( !p )
@@ -102,7 +129,7 @@ QgsWMSConfigParser *QgsConfigCache::wmsConfiguration( const QString& filePath, c
     QDomDocument* doc = xmlDocument( filePath );
     if ( !doc )
     {
-      return 0;
+      return nullptr;
     }
 
     //sld or QGIS project file?
@@ -114,7 +141,12 @@ QgsWMSConfigParser *QgsConfigCache::wmsConfiguration( const QString& filePath, c
     }
     else
     {
-      p = new QgsWMSProjectParser( filePath );
+      p = new QgsWMSProjectParser(
+        filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+        , accessControl
+#endif
+      );
     }
     mWMSConfigCache.insert( filePath, p );
     p = mWMSConfigCache.object( filePath );
@@ -132,13 +164,13 @@ QDomDocument* QgsConfigCache::xmlDocument( const QString& filePath )
   if ( !configFile.exists() )
   {
     QgsMessageLog::logMessage( "Error, configuration file '" + filePath + "' does not exist", "Server", QgsMessageLog::CRITICAL );
-    return 0;
+    return nullptr;
   }
 
   if ( !configFile.open( QIODevice::ReadOnly ) )
   {
     QgsMessageLog::logMessage( "Error, cannot open configuration file '" + filePath + "'", "Server", QgsMessageLog::CRITICAL );
-    return 0;
+    return nullptr;
   }
 
   // first get cache
@@ -154,7 +186,7 @@ QDomDocument* QgsConfigCache::xmlDocument( const QString& filePath )
       QgsMessageLog::logMessage( "Error parsing file '" + filePath +
                                  QString( "': parse error %1 at row %2, column %3" ).arg( errorMsg ).arg( line ).arg( column ), "Server", QgsMessageLog::CRITICAL );
       delete xmlDoc;
-      return 0;
+      return nullptr;
     }
     mXmlDocumentCache.insert( filePath, xmlDoc );
     mFileSystemWatcher.addPath( filePath );

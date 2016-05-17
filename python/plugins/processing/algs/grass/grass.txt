@@ -105,6 +105,4 @@ In some cases, it might be interesting to take the console output from GRASS and
 extract a part of it for saving or formatting.
 
 To do this, just add an output of type OutputHTML. Processing will take care of
-turning that into 2 output, one of type OutputHTML and another one of type OutputFile.
-The second one will contain the raw output of the algorithm, while the first one
-will have some HTML formatting
+sending the console output to that output file

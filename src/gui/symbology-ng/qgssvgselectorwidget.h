@@ -43,7 +43,7 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
     QgsSvgSelectorListModel( QObject* parent );
 
     // Constructor to create model for icons in a specific path
-    QgsSvgSelectorListModel( QObject* parent, QString path );
+    QgsSvgSelectorListModel( QObject* parent, const QString& path );
 
     int rowCount( const QModelIndex & parent = QModelIndex() ) const override;
 
@@ -70,10 +70,10 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     Q_OBJECT
 
   public:
-    QgsSvgSelectorWidget( QWidget* parent = 0 );
+    QgsSvgSelectorWidget( QWidget* parent = nullptr );
     ~QgsSvgSelectorWidget();
 
-    static QgsSvgSelectorWidget* create( QWidget* parent = 0 ) { return new QgsSvgSelectorWidget( parent ); }
+    static QgsSvgSelectorWidget* create( QWidget* parent = nullptr ) { return new QgsSvgSelectorWidget( parent ); }
 
     QString currentSvgPath() const;
     QString currentSvgPathToName() const;
@@ -101,7 +101,7 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     void updateCurrentSvgPath( const QString& svgPath );
 
     void on_mFilePushButton_clicked();
-    void updateLineEditFeedback( bool ok, QString tip = QString() );
+    void updateLineEditFeedback( bool ok, const QString& tip = QString() );
     void on_mFileLineEdit_textChanged( const QString& text );
 
   private:
@@ -112,8 +112,8 @@ class GUI_EXPORT QgsSvgSelectorDialog : public QDialog
 {
     Q_OBJECT
   public:
-    QgsSvgSelectorDialog( QWidget* parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
-                          QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
+    QgsSvgSelectorDialog( QWidget* parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags,
+                          const QDialogButtonBox::StandardButtons& buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
                           Qt::Orientation orientation = Qt::Horizontal );
     ~QgsSvgSelectorDialog();
 

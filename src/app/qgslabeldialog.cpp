@@ -61,6 +61,7 @@ void QgsLabelDialog::init()
   const QgsFields& myFields = mLabel->fields();
   QStringList myFieldStringList;
   myFieldStringList.append( "" );
+  myFieldStringList.reserve( 1 + myFields.count() );
   for ( int i = 0; i < myFields.count(); ++i )
   {
     myFieldStringList.append( myFields[i].name() );
@@ -271,13 +272,14 @@ void QgsLabelDialog::init()
 
 
 
-void QgsLabelDialog::changeFont( void )
+void QgsLabelDialog::changeFont()
 {
   QgsDebugMsg( "entering." );
 
   qreal fontSize = mFont.pointSizeF();
   bool resultFlag;
   QFont newFont = QgisGui::getFont( resultFlag, mFont );
+  Q_UNUSED( newFont );
   if ( !resultFlag )
     return;
 
@@ -289,7 +291,7 @@ void QgsLabelDialog::changeFont( void )
   lblSample->setFont( mFont );
 }
 
-void QgsLabelDialog::changeFontColor( void )
+void QgsLabelDialog::changeFontColor()
 {
   QgsDebugMsg( "entering." );
 
@@ -303,7 +305,7 @@ void QgsLabelDialog::changeFontColor( void )
   lblSample->setPalette( palette );
 }
 
-void QgsLabelDialog::changeBufferColor( void )
+void QgsLabelDialog::changeBufferColor()
 {
   QgsDebugMsg( "entering." );
 
@@ -318,7 +320,7 @@ void QgsLabelDialog::changeBufferColor( void )
 }
 
 
-int QgsLabelDialog::itemNoForField( QString theFieldName, QStringList theFieldList )
+int QgsLabelDialog::itemNoForField( const QString& theFieldName, const QStringList& theFieldList )
 {
   //if no matches assume first item in list is blank and return that
   return qMax( 0, theFieldList.indexOf( theFieldName ) );
@@ -396,7 +398,7 @@ void QgsLabelDialog::apply()
   mLabel->setMaxScale( leMaximumScale->text().toFloat() );
 }
 
-int QgsLabelDialog::fieldIndexFromName( QString name )
+int QgsLabelDialog::fieldIndexFromName( const QString& name )
 {
   const QgsFields& fields = mLabel->fields();
   for ( int i = 0; i < fields.count(); ++i )

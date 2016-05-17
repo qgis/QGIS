@@ -19,7 +19,7 @@
  *
  * Edits on features can get rejected if another conflicting transaction is active.
  */
-class QgsTransaction /Abstract/
+class QgsTransaction : QObject /Abstract/
 {
 %TypeHeaderCode
 #include <qgstransaction.h>
@@ -34,8 +34,11 @@ class QgsTransaction /Abstract/
 
     virtual ~QgsTransaction();
 
-    /** Add layer to the transaction. The layer must not be in edit mode. The transaction must not be active. */
+    /** Add layer to the transaction. The layer must not be in edit mode.*/
     bool addLayer( const QString& layerId );
+
+    /** Add layer to the transaction. The layer must not be in edit mode.*/
+    bool addLayer( QgsVectorLayer* layer );
 
     /** Begin transaction
      *  The statement timeout, in seconds, specifies how long an sql statement
@@ -55,4 +58,15 @@ class QgsTransaction /Abstract/
 
     /** Executes sql */
     virtual bool executeSql( const QString& sql, QString& error /Out/ ) = 0;
+
+    /**
+     * Checks if a the provider of a give layer supports transactions.
+     */
+    static bool supportsTransaction( const QgsVectorLayer* layer );
+
+  signals:
+    /**
+     * Emitted after a rollback
+     */
+    void afterRollback();
 };

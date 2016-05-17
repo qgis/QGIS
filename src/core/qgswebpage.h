@@ -16,6 +16,7 @@
 #ifndef QGSWEBPAGE_H
 #define QGSWEBPAGE_H
 
+#include "qgsmessagelog.h"
 #include <QObject>
 
 #ifdef WITH_QTWEBKIT
@@ -35,7 +36,7 @@
  */
 class CORE_EXPORT QWebSettings : public QObject
 {
-/// @cond
+/// @cond NOT_STABLE_API
     Q_OBJECT
 
   public:
@@ -98,7 +99,7 @@ class CORE_EXPORT QWebSettings : public QObject
  */
 class CORE_EXPORT QWebPage : public QObject
 {
-/// @cond
+/// @cond NOT_STABLE_API
     Q_OBJECT
 
   public:
@@ -178,6 +179,10 @@ class CORE_EXPORT QWebPage : public QObject
 
   public slots:
 
+  protected:
+
+    virtual void javaScriptConsoleMessage( const QString& , int, const QString& ) {}
+
   private:
     QWebSettings* mSettings;
     QWebFrame* mFrame;
@@ -185,4 +190,54 @@ class CORE_EXPORT QWebPage : public QObject
 };
 #endif
 
+/** \ingroup core
+ * \class QgsWebPage
+ * \brief QWebPage subclass which redirects JavaScript errors and console output to the QGIS message log.
+ * \note Added in version 2.16
+ * \note Not available in Python bindings
+ */
+class CORE_EXPORT QgsWebPage : public QWebPage
+{
+    Q_OBJECT
+
+  public:
+
+    /** Constructor for QgsWebPage.
+     * @param parent parent object
+     */
+    explicit QgsWebPage( QObject* parent = 0 )
+        : QWebPage( parent )
+    {}
+
+    /** Sets an identifier for the QgsWebPage. The page's identifier is included in messages written to the
+     * log, and should be set to a user-friendly string so that users can identify which QgsWebPage has
+     * logged the message.
+     * @param identifier identifier string
+     * @see identifier()
+     */
+    void setIdentifier( const QString& identifier ) { mIdentifier = identifier; }
+
+    /** Returns the QgsWebPage's identifier. The page's identifier is included in messages written to the
+     * log so that users can identify which QgsWebPage has logged the message.
+     * @see setIdentifier()
+     */
+    QString identifier() const { return mIdentifier; }
+
+  protected:
+
+    virtual void javaScriptConsoleMessage( const QString& message, int lineNumber, const QString& ) override
+    {
+      if ( mIdentifier.isEmpty() )
+        QgsMessageLog::logMessage( tr( "Line %1: %2" ).arg( lineNumber ).arg( message ), tr( "Javascript" ) );
+      else
+        QgsMessageLog::logMessage( tr( "%1 (line %2): %3" ).arg( mIdentifier ).arg( lineNumber ).arg( message ), tr( "Javascript" ) );
+    }
+
+  private:
+
+    QString mIdentifier;
+
+};
+
 #endif // QGSWEBPAGE_H
+

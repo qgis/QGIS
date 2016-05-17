@@ -22,7 +22,7 @@
 #include <QFileInfo>
 #include <QProgressDialog>
 
-QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator* i, QString outputPath, QgsRectangle extent, int nCols, int nRows, double cellSizeX, double cellSizeY )
+QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator* i, const QString& outputPath, const QgsRectangle& extent, int nCols, int nRows, double cellSizeX, double cellSizeY )
     : mInterpolator( i )
     , mOutputFilePath( outputPath )
     , mInterpolationExtent( extent )
@@ -35,16 +35,11 @@ QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator* i, QString outputPath, Qg
 }
 
 QgsGridFileWriter::QgsGridFileWriter()
-    : mInterpolator( 0 )
+    : mInterpolator( nullptr )
     , mNumColumns( 0 )
     , mNumRows( 0 )
     , mCellSizeX( 0 )
     , mCellSizeY( 0 )
-{
-
-}
-
-QgsGridFileWriter::~QgsGridFileWriter()
 {
 
 }
@@ -72,10 +67,10 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
   double currentXValue;
   double interpolatedValue;
 
-  QProgressDialog* progressDialog = 0;
+  QProgressDialog* progressDialog = nullptr;
   if ( showProgressDialog )
   {
-    progressDialog = new QProgressDialog( QObject::tr( "Interpolating..." ), QObject::tr( "Abort" ), 0, mNumRows, 0 );
+    progressDialog = new QProgressDialog( QObject::tr( "Interpolating..." ), QObject::tr( "Abort" ), 0, mNumRows, nullptr );
     progressDialog->setWindowModality( Qt::WindowModal );
   }
 
@@ -86,7 +81,7 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
     {
       if ( mInterpolator->interpolatePoint( currentXValue, currentYValue, interpolatedValue ) == 0 )
       {
-        outStream << interpolatedValue << " ";
+        outStream << interpolatedValue << ' ';
       }
       else
       {
@@ -114,7 +109,7 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
   QgsVectorLayer* vl = ld.vectorLayer;
   QString crs = vl->crs().toWkt();
   QFileInfo fi( mOutputFilePath );
-  QString fileName = fi.absolutePath() + "/" + fi.completeBaseName() + ".prj";
+  QString fileName = fi.absolutePath() + '/' + fi.completeBaseName() + ".prj";
   QFile prjFile( fileName );
   if ( !prjFile.open( QFile::WriteOnly ) )
   {

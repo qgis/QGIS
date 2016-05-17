@@ -26,7 +26,7 @@ class QgsComposerMultiFrame;
 class CORE_EXPORT QgsComposerMultiFrameCommand: public QUndoCommand
 {
   public:
-    QgsComposerMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, QUndoCommand* parent = 0 );
+    QgsComposerMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, QUndoCommand* parent = nullptr );
     ~QgsComposerMultiFrameCommand();
 
     void undo() override;
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsComposerMultiFrameMergeCommand: public QgsComposerMultiFram
     ~QgsComposerMultiFrameMergeCommand();
 
     bool mergeWith( const QUndoCommand * command ) override;
-    int id() const override { return ( int )mContext; }
+    int id() const override { return static_cast< int >( mContext ); }
 
   private:
     Context mContext;

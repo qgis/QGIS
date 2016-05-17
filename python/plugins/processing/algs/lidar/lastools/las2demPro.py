@@ -29,8 +29,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterBoolean
@@ -46,7 +46,7 @@ class las2demPro(LAStoolsAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('las2demPro')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParametersStepGUI()

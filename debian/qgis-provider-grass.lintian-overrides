@@ -1,2 +1,2 @@
-qgis-plugin-grass: package-name-doesnt-match-sonames
-qgis-plugin-grass: no-symbols-control-file
+qgis-provider-grass: package-name-doesnt-match-sonames
+qgis-provider-grass: no-symbols-control-file

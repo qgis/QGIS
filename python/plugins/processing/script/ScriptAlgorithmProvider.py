@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.AlgorithmProvider import AlgorithmProvider
@@ -45,10 +45,10 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.actions.extend([CreateNewScriptAction(self.tr('Create new script', 'ScriptAlgorithmProvider'),
-                            CreateNewScriptAction.SCRIPT_PYTHON),
-                            AddScriptFromFileAction(),
-                            GetScriptsAction()])
+        self.actions.extend([CreateNewScriptAction('Create new script',
+                                                   CreateNewScriptAction.SCRIPT_PYTHON),
+                             AddScriptFromFileAction(),
+                             GetScriptsAction()])
         self.contextMenuActions = \
             [EditScriptAction(EditScriptAction.SCRIPT_PYTHON),
              DeleteScriptAction(DeleteScriptAction.SCRIPT_PYTHON)]
@@ -56,9 +56,9 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    ScriptUtils.SCRIPTS_FOLDER,
-                                    self.tr('Scripts folder', 'ScriptAlgorithmProvider'),
-                                    ScriptUtils.scriptsFolder(), valuetype=Setting.FOLDER))
+                                            ScriptUtils.SCRIPTS_FOLDER,
+                                            self.tr('Scripts folder', 'ScriptAlgorithmProvider'),
+                                            ScriptUtils.scriptsFolder(), valuetype=Setting.FOLDER))
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -76,3 +76,6 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
     def _loadAlgorithms(self):
         folder = ScriptUtils.scriptsFolder()
         self.algs = ScriptUtils.loadFromFolder(folder)
+
+    def addAlgorithmsFromFolder(self, folder):
+        self.algs.extend(ScriptUtils.loadFromFolder(folder))

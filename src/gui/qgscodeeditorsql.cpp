@@ -39,10 +39,32 @@ QgsCodeEditorSQL::~QgsCodeEditorSQL()
 {
 }
 
+/** Internal use.
+
+   setAutoCompletionCaseSensitivity( false ) is not sufficient when installing
+   a lexer, since its caseSensitive() method is actually used, and defaults
+   to true.
+   @note not available in Python bindings
+*/
+class QgsCaseInsensitiveLexerSQL: public QsciLexerSQL
+{
+  public:
+    //! constructor
+    explicit QgsCaseInsensitiveLexerSQL( QObject *parent = 0 ) : QsciLexerSQL( parent ) {}
+
+    bool caseSensitive() const override { return false; }
+};
+
 void QgsCodeEditorSQL::setSciLexerSQL()
 {
-  QsciLexerSQL* sqlLexer = new QsciLexerSQL( this );
-  sqlLexer->setDefaultFont( QFont( "Sans", 10 ) );
+  QFont font = getMonospaceFont();
+
+  QsciLexerSQL* sqlLexer = new QgsCaseInsensitiveLexerSQL( this );
+  sqlLexer->setDefaultFont( font );
+  sqlLexer->setFont( font, -1 );
+  font.setBold( true );
+  sqlLexer->setFont( font, QsciLexerSQL::Keyword );
+  sqlLexer->setColor( Qt::darkYellow, QsciLexerSQL::DoubleQuotedString ); // fields
 
   setLexer( sqlLexer );
 }

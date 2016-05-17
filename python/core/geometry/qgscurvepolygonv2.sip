@@ -12,12 +12,10 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
 
     virtual QString geometryType() const;
     virtual int dimension() const;
-    virtual QgsAbstractGeometryV2* clone() const;
+    virtual QgsCurvePolygonV2* clone() const;
     void clear();
 
-
-    virtual QgsRectangle calculateBoundingBox() const;
-    virtual bool fromWkb( const unsigned char* wkb );
+    virtual bool fromWkb( QgsConstWkbPtr wkb );
     virtual bool fromWkt( const QString& wkt );
 
     int wkbSize() const;
@@ -29,9 +27,7 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
 
     //surface interface
     virtual double area() const;
-    virtual double length() const;
-    QgsPointV2 centroid() const;
-    QgsPointV2 pointOnSurface() const;
+    virtual double perimeter() const;
     QgsPolygonV2* surfaceToPolygon() const;
 
     //curve polygon interface
@@ -40,23 +36,35 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
     const QgsCurveV2* interiorRing( int i ) const;
     virtual QgsPolygonV2* toPolygon() const;
 
-    /** Sets exterior ring (takes ownership)*/
-    void setExteriorRing( QgsCurveV2* ring /Transfer/ );
-    /** Sets interior rings (takes ownership)*/
-    void setInteriorRings( QList<QgsCurveV2*> rings );
-    void addInteriorRing( QgsCurveV2* ring /Transfer/ );
+    /** Sets the exterior ring of the polygon. The CurvePolygon type will be updated to match the dimensionality
+     * of the exterior ring. For instance, setting a 2D exterior ring on a 3D CurvePolygon will drop the z dimension
+     * from the CurvePolygon and all interior rings.
+     * @param ring new exterior ring. Ownership is transferred to the CurvePolygon.
+     * @see setInteriorRings()
+     * @see exteriorRing()
+     */
+    virtual void setExteriorRing( QgsCurveV2* ring /Transfer/ );
+
+    /** Sets all interior rings (takes ownership)*/
+    void setInteriorRings( const QList<QgsCurveV2*>& rings );
+    /** Adds an interior ring to the geometry (takes ownership)*/
+    virtual void addInteriorRing( QgsCurveV2* ring /Transfer/ );
     /** Removes ring. Exterior ring is 0, first interior ring 1, ...*/
     bool removeInteriorRing( int nr );
 
     virtual void draw( QPainter& p ) const;
+    /** Transforms the geometry using a coordinate transform
+     * @param ct coordinate transform
+     * @param d transformation direction
+     */
     void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform );
     void transform( const QTransform& t );
 
-    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex );
-    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos );
-    virtual bool deleteVertex( const QgsVertexId& position );
+    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex );
+    virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos );
+    virtual bool deleteVertex( QgsVertexId position );
 
-    virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord /Out/ ) const;
+    virtual QList< QList< QList< QgsPointV2 > > > coordinateSequence() const;
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const;
 
@@ -64,7 +72,22 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
     QgsAbstractGeometryV2* segmentize() const /Factory/;
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-        @param vertex the vertex id
-        @return rotation in radians, clockwise from north*/
-    double vertexAngle( const QgsVertexId& vertex ) const;
+     *  @param vertex the vertex id
+     *  @return rotation in radians, clockwise from north
+     */
+    double vertexAngle( QgsVertexId vertex ) const;
+
+    virtual int vertexCount( int /*part*/ = 0, int ring = 0 ) const;
+    virtual int ringCount( int /*part*/ = 0 ) const;
+    virtual int partCount() const;
+    virtual QgsPointV2 vertexAt( QgsVertexId id ) const;
+
+    virtual bool addZValue( double zValue = 0 );
+    virtual bool addMValue( double mValue = 0 );
+    virtual bool dropZValue();
+    virtual bool dropMValue();
+
+  protected:
+
+    virtual QgsRectangle calculateBoundingBox() const;
 };

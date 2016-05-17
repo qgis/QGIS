@@ -28,13 +28,9 @@ QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator* iterator ): mIterator( iter
 {
 }
 
-QgsRasterDrawer::~QgsRasterDrawer()
-{
-}
-
 void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 4 );
   if ( !p || !mIterator || !viewPort || !theQgsMapToPixel )
   {
     return;
@@ -72,7 +68,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
     QPrinter *printer = dynamic_cast<QPrinter *>( p->device() );
     if ( printer && printer->outputFormat() == QPrinter::PdfFormat )
     {
-      QgsDebugMsg( "PdfFormat" );
+      QgsDebugMsgLevel( "PdfFormat", 4 );
 
       img = img.convertToFormat( QImage::Format_ARGB32 );
       QRgb transparentBlack = qRgba( 0, 0, 0, 0 );
@@ -140,11 +136,13 @@ void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const
   p->drawLine( QLineF( br.x(), br.y(), br.x() + br.width(), br.y() + br.height() ) );
   p->drawLine( QLineF( br.x() + br.width(), br.y(), br.x(), br.y() + br.height() ) );
 
-  double nw = br.width() * 0.5; double nh = br.height() * 0.5;
+  double nw = br.width() * 0.5;
+  double nh = br.height() * 0.5;
   br = QRectF( c - QPointF( nw / 2, nh / 2 ), QSize( nw, nh ) );
   p->drawRoundedRect( br, rad, rad );
 
-  nw = br.width() * 0.5; nh = br.height() * 0.5;
+  nw = br.width() * 0.5;
+  nh = br.height() * 0.5;
   br = QRectF( c - QPointF( nw / 2, nh / 2 ), QSize( nw, nh ) );
   p->drawRoundedRect( br, rad, rad );
 #endif

@@ -21,7 +21,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspolygonv2.h"
 #include "qgscurvepolygonv2.h"
 
-QgsAbstractGeometryV2 *QgsMultiPolygonV2::clone() const
+QgsMultiPolygonV2 *QgsMultiPolygonV2::clone() const
 {
   return new QgsMultiPolygonV2( *this );
 }
@@ -72,12 +72,12 @@ QString QgsMultiPolygonV2::asJSON( int precision ) const
   {
     if ( dynamic_cast<const QgsPolygonV2*>( geom ) )
     {
-      json += "[";
+      json += '[';
 
       const QgsPolygonV2* polygon = static_cast<const QgsPolygonV2*>( geom );
 
       QgsLineStringV2* exteriorLineString = polygon->exteriorRing()->curveToLine();
-      QList<QgsPointV2> exteriorPts;
+      QgsPointSequenceV2 exteriorPts;
       exteriorLineString->points( exteriorPts );
       json += QgsGeometryUtils::pointsToJSON( exteriorPts, precision ) + ", ";
       delete exteriorLineString;
@@ -85,7 +85,7 @@ QString QgsMultiPolygonV2::asJSON( int precision ) const
       for ( int i = 0, n = polygon->numInteriorRings(); i < n; ++i )
       {
         QgsLineStringV2* interiorLineString = polygon->interiorRing( i )->curveToLine();
-        QList<QgsPointV2> interiorPts;
+        QgsPointSequenceV2 interiorPts;
         interiorLineString->points( interiorPts );
         json += QgsGeometryUtils::pointsToJSON( interiorPts, precision ) + ", ";
         delete interiorLineString;
@@ -116,4 +116,14 @@ bool QgsMultiPolygonV2::addGeometry( QgsAbstractGeometryV2* g )
 
   setZMTypeFromSubGeometry( g, QgsWKBTypes::MultiPolygon );
   return QgsGeometryCollectionV2::addGeometry( g );
+}
+
+QgsAbstractGeometryV2* QgsMultiPolygonV2::toCurveType() const
+{
+  QgsMultiSurfaceV2* multiSurface = new QgsMultiSurfaceV2();
+  for ( int i = 0; i < mGeometries.size(); ++i )
+  {
+    multiSurface->addGeometry( mGeometries.at( i )->clone() );
+  }
+  return multiSurface;
 }

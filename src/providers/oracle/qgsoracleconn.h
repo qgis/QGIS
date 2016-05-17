@@ -76,14 +76,14 @@ struct QgsOracleLayerProperty
   QString toString() const
   {
     QString typeString;
-    foreach ( QGis::WkbType type, types )
+    Q_FOREACH ( QGis::WkbType type, types )
     {
       if ( !typeString.isEmpty() )
         typeString += "|";
       typeString += QString::number( type );
     }
     QString sridString;
-    foreach ( int srid, srids )
+    Q_FOREACH ( int srid, srids )
     {
       if ( !sridString.isEmpty() )
         sridString += "|";
@@ -105,7 +105,7 @@ struct QgsOracleLayerProperty
 
 class QgsOracleConn : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   public:
     static QgsOracleConn *connectDb( QgsDataSourceURI uri );
     void disconnect();
@@ -160,11 +160,12 @@ class QgsOracleConn : public QObject
     static bool onlyExistingTypes( QString theConnName );
     static void deleteConnection( QString theConnName );
     static QString databaseName( QString database, QString host, QString port );
+    static QString toPoolName( QgsDataSourceURI uri );
 
     operator QSqlDatabase() { return mDatabase; }
 
   private:
-    QgsOracleConn( QgsDataSourceURI uri );
+    explicit QgsOracleConn( QgsDataSourceURI uri );
     ~QgsOracleConn();
 
     bool exec( QSqlQuery &qry, QString sql );

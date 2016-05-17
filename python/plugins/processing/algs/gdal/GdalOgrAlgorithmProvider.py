@@ -26,63 +26,60 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
-from processing.core.ProcessingLog import ProcessingLog
-from processing.script.WrongScriptException import WrongScriptException
-from processing.algs.gdal.GdalAlgorithm import GdalScriptAlgorithm
-from GdalUtils import GdalUtils
+from .GdalUtils import GdalUtils
 
-from nearblack import nearblack
-from information import information
-from warp import warp
-from rgb2pct import rgb2pct
-from translate import translate
-from pct2rgb import pct2rgb
-from merge import merge
-from buildvrt import buildvrt
-from polygonize import polygonize
-from gdaladdo import gdaladdo
-from ClipByExtent import ClipByExtent
-from ClipByMask import ClipByMask
-from contour import contour
-from rasterize import rasterize
-from proximity import proximity
-from sieve import sieve
-from fillnodata import fillnodata
-from extractprojection import ExtractProjection
-from gdal2xyz import gdal2xyz
-from hillshade import hillshade
-from slope import slope
-from aspect import aspect
-from tri import tri
-from tpi import tpi
-from roughness import roughness
-from ColorRelief import ColorRelief
-from GridInvDist import GridInvDist
-from GridAverage import GridAverage
-from GridNearest import GridNearest
-from GridDataMetrics import GridDataMetrics
-from gdaltindex import gdaltindex
-from gdalcalc import gdalcalc
-from rasterize_over import rasterize_over
+from .nearblack import nearblack
+from .information import information
+from .warp import warp
+from .rgb2pct import rgb2pct
+from .translate import translate
+from .pct2rgb import pct2rgb
+from .merge import merge
+from .buildvrt import buildvrt
+from .polygonize import polygonize
+from .gdaladdo import gdaladdo
+from .ClipByExtent import ClipByExtent
+from .ClipByMask import ClipByMask
+from .contour import contour
+from .rasterize import rasterize
+from .proximity import proximity
+from .sieve import sieve
+from .fillnodata import fillnodata
+from .extractprojection import ExtractProjection
+from .gdal2xyz import gdal2xyz
+from .hillshade import hillshade
+from .slope import slope
+from .aspect import aspect
+from .tri import tri
+from .tpi import tpi
+from .roughness import roughness
+from .ColorRelief import ColorRelief
+from .GridInvDist import GridInvDist
+from .GridAverage import GridAverage
+from .GridNearest import GridNearest
+from .GridDataMetrics import GridDataMetrics
+from .gdaltindex import gdaltindex
+from .gdalcalc import gdalcalc
+from .rasterize_over import rasterize_over
+from .retile import retile
+from .gdal2tiles import gdal2tiles
+from .AssignProjection import AssignProjection
 
-from ogr2ogr import Ogr2Ogr
-from ogr2ogrclip import Ogr2OgrClip
-from ogr2ogrclipextent import Ogr2OgrClipExtent
-from ogr2ogrtopostgis import Ogr2OgrToPostGis
-from ogr2ogrtopostgislist import Ogr2OgrToPostGisList
-from ogr2ogrpointsonlines import Ogr2OgrPointsOnLines
-from ogr2ogrbuffer import Ogr2OgrBuffer
-from ogr2ogrdissolve import Ogr2OgrDissolve
-from ogr2ogronesidebuffer import Ogr2OgrOneSideBuffer
-from ogr2ogrtabletopostgislist import Ogr2OgrTableToPostGisList
-from ogr2ogrbuffer import Ogr2OgrBuffer
-from ogr2ogrdissolve import Ogr2OgrDissolve
-from ogr2ogronesidebuffer import Ogr2OgrOneSideBuffer
-from ogrinfo import OgrInfo
-from ogrsql import OgrSql
+from .ogr2ogr import Ogr2Ogr
+from .ogr2ogrclip import Ogr2OgrClip
+from .ogr2ogrclipextent import Ogr2OgrClipExtent
+from .ogr2ogrtopostgis import Ogr2OgrToPostGis
+from .ogr2ogrtopostgislist import Ogr2OgrToPostGisList
+from .ogr2ogrpointsonlines import Ogr2OgrPointsOnLines
+from .ogr2ogrbuffer import Ogr2OgrBuffer
+from .ogr2ogrdissolve import Ogr2OgrDissolve
+from .ogr2ogronesidebuffer import Ogr2OgrOneSideBuffer
+from .ogr2ogrtabletopostgislist import Ogr2OgrTableToPostGisList
+from .ogrinfo import OgrInfo
+from .ogrsql import OgrSql
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -93,26 +90,13 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
     """This provider incorporates GDAL-based algorithms into the
     Processing framework.
 
-    Algorithms have been implemented using two different mechanisms,
-    which should serve as an example of different ways of extending
-    the processing capabilities of QGIS:
-      1. when a python script exist for a given process, it has been
-         adapted as a Processing python script and loaded using the
-         ScriptAlgorithm class. This algorithms call GDAL using its
-         Python bindings.
-      2. Other algorithms are called directly using the command line
-         interface. These have been implemented individually extending
-         the GeoAlgorithm class.
+    Algorithms are called directly using the command line interface.
+    They implemented individually extending GeoAlgorithm class.
     """
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.createAlgsList()
-
-    def scriptsFolder(self):
-        """The folder where script algorithms are stored.
-        """
-        return os.path.dirname(__file__) + '/scripts'
 
     def getDescription(self):
         return self.tr('GDAL/OGR')
@@ -121,7 +105,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
         return 'gdalogr'
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'gdal.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'gdal.svg'))
 
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs
@@ -137,25 +121,13 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
                               hillshade(), slope(), aspect(), tri(), tpi(), roughness(),
                               ColorRelief(), GridInvDist(), GridAverage(), GridNearest(),
                               GridDataMetrics(), gdaltindex(), gdalcalc(), rasterize_over(),
+                              retile(), gdal2tiles(), AssignProjection(),
                               # ----- OGR tools -----
                               OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(),
                               Ogr2OgrToPostGis(), Ogr2OgrToPostGisList(), Ogr2OgrPointsOnLines(),
                               Ogr2OgrBuffer(), Ogr2OgrDissolve(), Ogr2OgrOneSideBuffer(),
                               Ogr2OgrTableToPostGisList(), OgrSql(),
                               ]
-
-        # And then we add those that are created as python scripts
-        folder = self.scriptsFolder()
-        if os.path.exists(folder):
-            for descriptionFile in os.listdir(folder):
-                if descriptionFile.endswith('py'):
-                    try:
-                        fullpath = os.path.join(self.scriptsFolder(),
-                                                descriptionFile)
-                        alg = GdalScriptAlgorithm(fullpath)
-                        self.preloadedAlgs.append(alg)
-                    except WrongScriptException as e:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
 
     def getSupportedOutputRasterLayerExtensions(self):
         return GdalUtils.getSupportedRasterExtensions()

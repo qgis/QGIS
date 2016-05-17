@@ -18,15 +18,14 @@
 #include "qgis.h"
 #include "qgsgeorefdatapoint.h"
 #include "qgsgeoreftransform.h"
-#include <QSettings>
 
+#include <QSettings>
 #include <cmath>
-using namespace std;
 
 class QgsStandardItem : public QStandardItem
 {
   public:
-    QgsStandardItem( QString text ) : QStandardItem( text )
+    explicit QgsStandardItem( const QString& text ) : QStandardItem( text )
     {
       // In addition to the DisplayRole, also set the user role, which is used for sorting.
       // This is needed for numerical sorting to work correctly (otherwise sorting is lexicographic).
@@ -34,13 +33,13 @@ class QgsStandardItem : public QStandardItem
       setTextAlignment( Qt::AlignRight );
     }
 
-    QgsStandardItem( int value ) : QStandardItem( QString::number( value ) )
+    explicit QgsStandardItem( int value ) : QStandardItem( QString::number( value ) )
     {
       setData( QVariant( value ), Qt::UserRole );
       setTextAlignment( Qt::AlignCenter );
     }
 
-    QgsStandardItem( double value ) : QStandardItem( QString::number( value, 'f', 4 ) )
+    explicit QgsStandardItem( double value ) : QStandardItem( QString::number( value, 'f', 4 ) )
     {
       setData( QVariant( value ), Qt::UserRole );
       //show the full precision when editing points
@@ -52,8 +51,8 @@ class QgsStandardItem : public QStandardItem
 
 QgsGCPListModel::QgsGCPListModel( QObject *parent )
     : QStandardItemModel( parent )
-    , mGCPList( 0 )
-    , mGeorefTransform( 0 )
+    , mGCPList( nullptr )
+    , mGeorefTransform( nullptr )
 {
   // Use data provided by Qt::UserRole as sorting key (needed for numerical sorting).
   setSortRole( Qt::UserRole );
@@ -80,7 +79,7 @@ void QgsGCPListModel::updateModel()
 
   bool bTransformUpdated = false;
 
-  vector<QgsPoint> mapCoords, pixelCoords;
+  QVector<QgsPoint> mapCoords, pixelCoords;
   mGCPList->createGCPVectors( mapCoords, pixelCoords );
 
   //  // Setup table header

@@ -23,20 +23,29 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import Qt, SIGNAL, QProcess, QUrl, QIODevice, QCoreApplication
-from PyQt4.QtGui import QDialog, QIcon, QDialogButtonBox, QMessageBox, QDesktopServices, QErrorMessage, QApplication
+from qgis.PyQt.QtCore import Qt, QProcess, QUrl, QIODevice, QCoreApplication, pyqtSignal
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox, QErrorMessage, QApplication
+from qgis.PyQt.QtGui import QIcon, QDesktopServices
 
 # to know the os
 import platform
 
-from ui_dialogBase import Ui_GdalToolsDialog as Ui_Dialog
-import GdalTools_utils as Utils
-#from .. import resources_rc
+from .ui_dialogBase import Ui_GdalToolsDialog as Ui_Dialog
+from . import GdalTools_utils as Utils
+from .. import resources_rc  # NOQA
 
 import string
 
 
 class GdalToolsBaseDialog(QDialog, Ui_Dialog):
+    refreshArgs = pyqtSignal()
+    okClicked = pyqtSignal()
+    closeClicked = pyqtSignal()
+    helpClicked = pyqtSignal()
+    processError = pyqtSignal(QProcess.ProcessError)
+    processFinished = pyqtSignal(int, QProcess.ExitStatus)
+    finished = pyqtSignal(bool)
+    valuesChanged = pyqtSignal(list)
 
     def __init__(self, parent, iface, pluginBase, pluginName, pluginCommand):
         QDialog.__init__(self, parent)
@@ -45,26 +54,26 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
 
         self.process = QProcess(self)
         Utils.setProcessEnvironment(self.process)
-        self.connect(self.process, SIGNAL("error(QProcess::ProcessError)"), self.processError)
-        self.connect(self.process, SIGNAL("finished(int, QProcess::ExitStatus)"), self.processFinished)
+        self.process.error.connect(self.processError)
+        self.process.finished.connect(self.processFinished)
 
         self.setupUi(self)
         self.arguments = []
 
         self.editCmdBtn.setIcon(QIcon(":/icons/edit.png"))
-        self.connect(self.editCmdBtn, SIGNAL("toggled(bool)"), self.editCommand)
+        self.editCmdBtn.toggled.connect(self.editCommand)
         self.resetCmdBtn.setIcon(QIcon(":/icons/reset.png"))
-        self.connect(self.resetCmdBtn, SIGNAL("clicked()"), self.resetCommand)
+        self.resetCmdBtn.clicked.connect(self.resetCommand)
         self.editCommand(False)
 
-        self.connect(self.buttonBox, SIGNAL("rejected()"), self.reject)
-        self.connect(self.buttonBox, SIGNAL("accepted()"), self.accept)
-        self.connect(self.buttonBox, SIGNAL("helpRequested()"), self.help)
+        self.buttonBox.rejected.connect(self.reject)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.helpRequested.connect(self.help)
 
         self.buttonBox.button(QDialogButtonBox.Ok).setDefault(True)
 
         self.plugin = pluginBase
-        self.connect(self.plugin, SIGNAL("valuesChanged(PyQt_PyObject)"), self.refreshArgs)
+        self.valuesChanged.connect(self.handleRefreshArgs)
 
         self.pluginLayout.addWidget(self.plugin)
         self.plugin.setFocus()
@@ -91,12 +100,12 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
         self.resetCmdBtn.setEnabled(enabled)
         self.textEditCommand.setReadOnly(not enabled)
         self.controlsWidget.setEnabled(not enabled)
-        self.emit(SIGNAL("refreshArgs()"))
+        self.refreshArgs.emit()
 
     def resetCommand(self):
         if not self.commandIsEditable():
             return
-        self.emit(SIGNAL("refreshArgs()"))
+        self.refreshArgs.emit()
 
     def commandIsEditable(self):
         return self.commandIsEnabled() and self.editCmdBtn.isChecked()
@@ -115,22 +124,16 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
             if ret == QMessageBox.No:
                 return
 
-            self.disconnect(self.process, SIGNAL("error(QProcess::ProcessError)"), self.processError)
-            self.disconnect(self.process, SIGNAL("finished(int, QProcess::ExitStatus)"), self.processFinished)
+            self.process.error.disconnect(self.processError)
+            self.process.finished.disconnect(self.processFinished)
 
-        self.emit(SIGNAL("closeClicked()"))
+        self.closeClicked.emit()
 
     def accept(self):
-        self.emit(SIGNAL("okClicked()"))
+        self.okClicked.emit()
 
     def help(self):
-        self.emit(SIGNAL("helpClicked()"))
-
-    def processError(self, error):
-        self.emit(SIGNAL("processError(QProcess::ProcessError)"), error)
-
-    def processFinished(self, exitCode, status):
-        self.emit(SIGNAL("processFinished(int, QProcess::ExitStatus)"), exitCode, status)
+        self.helpClicked.emit()
 
     # show the online tool documentation in the default browser
     def onHelp(self):
@@ -142,7 +145,7 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
         QDesktopServices.openUrl(url)
 
     # called when a value in the plugin widget interface changed
-    def refreshArgs(self, args):
+    def handleRefreshArgs(self, args):
         self.arguments = [unicode(a) for a in args]
 
         if not self.commandIsEnabled():
@@ -185,7 +188,7 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
             msg = QCoreApplication.translate("GdalTools", "An unknown error occurred.")
 
         QErrorMessage(self).showMessage(msg)
-        QApplication.processEvents() # give the user chance to see the message
+        QApplication.processEvents()  # give the user chance to see the message
 
         self.stop()
 
@@ -197,7 +200,7 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
             return
 
         if self.command.find("gdalinfo") != -1 and exitCode == 0:
-            self.emit(SIGNAL("finished(bool)"), self.loadCheckBox.isChecked())
+            self.finished.emit(self.loadCheckBox.isChecked())
             self.stop()
             return
 
@@ -226,6 +229,6 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
         QErrorMessage(self).showMessage(msg.replace("\n", "<br>"))
 
         if exitCode == 0:
-            self.emit(SIGNAL("finished(bool)"), self.loadCheckBox.isChecked())
+            self.finished.emit(self.loadCheckBox.isChecked())
 
         self.stop()

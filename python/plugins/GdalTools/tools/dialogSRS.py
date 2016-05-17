@@ -23,8 +23,7 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import SIGNAL
-from PyQt4.QtGui import QDialog, QVBoxLayout, QDialogButtonBox
+from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QDialogButtonBox
 from qgis.gui import QgsProjectionSelector
 
 
@@ -42,8 +41,8 @@ class GdalToolsSRSDialog(QDialog):
         layout.addWidget(buttonBox)
         self.setLayout(layout)
 
-        self.connect(buttonBox, SIGNAL("accepted()"), self.accept)
-        self.connect(buttonBox, SIGNAL("rejected()"), self.reject)
+        buttonBox.accepted.connect(self.accept)
+        buttonBox.rejected.connect(self.reject)
 
     def authid(self):
         return unicode(self.selector.selectedAuthId())

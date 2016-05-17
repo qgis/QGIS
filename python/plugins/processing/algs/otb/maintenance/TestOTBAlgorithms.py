@@ -28,7 +28,7 @@ import subprocess
 import shelve
 
 try:
-    import processing
+    import processing  # NOQA
 except ImportError as e:
     raise Exception("Processing must be installed and available in PYTHONPATH")
 
@@ -94,7 +94,7 @@ def ut_generator(test_name, a_tuple):
             self.assertTrue(ut_command_validation != "")
 
             if ut_command.split(" ")[0] in black_list:
-                raise Exception("Blacklisted test !")
+                raise Exception("Blacklisted test!")
 
             args = shlex.split(ut_command)
             failed = False

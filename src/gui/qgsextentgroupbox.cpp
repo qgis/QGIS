@@ -98,7 +98,7 @@ void QgsExtentGroupBox::updateTitle()
   }
   if ( isCheckable() && !isChecked() )
     msg = tr( "none" );
-  msg = tr( "%1 (current: %2)" ).arg( mTitleBase ).arg( msg );
+  msg = tr( "%1 (current: %2)" ).arg( mTitleBase, msg );
 
   setTitle( msg );
 }

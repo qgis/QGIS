@@ -23,10 +23,16 @@
 #include <QRegExp>
 #include <QMetaType>
 #include <QVariant>
+#include <QDateTime>
+#include <QDate>
+#include <QTime>
+#include <QHash>
 #include <stdlib.h>
 #include <cfloat>
 #include <cmath>
 #include <qnumeric.h>
+
+#include <qgswkbtypes.h>
 
 /** \ingroup core
  * The QGis class provides global constants for use throughout the application.
@@ -50,6 +56,8 @@ class CORE_EXPORT QGis
 
     //! Used for symbology operations
     // Feature types
+    // @deprecated use QgsWKBTypes::Type
+    /* Q_DECL_DEPRECATED */
     enum WkbType
     {
       WKBUnknown = 0,
@@ -68,89 +76,41 @@ class CORE_EXPORT QGis
       WKBMultiPolygon25D,
     };
 
-    static WkbType singleType( WkbType type )
-    {
-      switch ( type )
-      {
-        case WKBMultiPoint:         return WKBPoint;
-        case WKBMultiLineString:    return WKBLineString;
-        case WKBMultiPolygon:       return WKBPolygon;
-        case WKBMultiPoint25D:      return WKBPoint25D;
-        case WKBMultiLineString25D: return WKBLineString25D;
-        case WKBMultiPolygon25D:    return WKBPolygon25D;
-        default:                    return type;
-      }
-    }
+    //! Map multi to single type
+    // @deprecated use QgsWKBTypes::singleType
+    /* Q_DECL_DEPRECATED */
+    static WkbType singleType( WkbType type );
 
-    static WkbType multiType( WkbType type )
-    {
-      switch ( type )
-      {
-        case WKBPoint:         return WKBMultiPoint;
-        case WKBLineString:    return WKBMultiLineString;
-        case WKBPolygon:       return WKBMultiPolygon;
-        case WKBPoint25D:      return WKBMultiPoint25D;
-        case WKBLineString25D: return WKBMultiLineString25D;
-        case WKBPolygon25D:    return WKBMultiPolygon25D;
-        default:               return type;
-      }
-    }
+    //! Map single to multitype type
+    // @deprecated use QgsWKBTypes::multiType
+    /* Q_DECL_DEPRECATED */
+    static WkbType multiType( WkbType type );
 
-    static WkbType flatType( WkbType type )
-    {
-      switch ( type )
-      {
-        case WKBPoint25D:           return WKBPoint;
-        case WKBLineString25D:      return WKBLineString;
-        case WKBPolygon25D:         return WKBPolygon;
-        case WKBMultiPoint25D:      return WKBMultiPoint;
-        case WKBMultiLineString25D: return WKBMultiLineString;
-        case WKBMultiPolygon25D:    return WKBMultiPolygon;
-        default:                    return type;
-      }
-    }
+    //! Map 2d+ to 2d type
+    // @deprecated use QgsWKBTypes::flatType
+    /* Q_DECL_DEPRECATED */
+    static WkbType flatType( WkbType type );
 
-    static bool isSingleType( WkbType type )
-    {
-      switch ( flatType( type ) )
-      {
-        case WKBPoint:
-        case WKBLineString:
-        case WKBPolygon:
-          return true;
-        default:
-          return false;
-      }
-    }
+    //! Return if type is a single type
+    // @deprecated use QgsWKBTypes::isSingleType
+    /* Q_DECL_DEPRECATED */
+    static bool isSingleType( WkbType type );
 
-    static bool isMultiType( WkbType type )
-    {
-      switch ( flatType( type ) )
-      {
-        case WKBMultiPoint:
-        case WKBMultiLineString:
-        case WKBMultiPolygon:
-          return true;
-        default:
-          return false;
-      }
-    }
+    //! Return if type is a multi type
+    // @deprecated use QgsWKBTypes::isMultiType
+    /* Q_DECL_DEPRECATED */
+    static bool isMultiType( WkbType type );
 
-    static int wkbDimensions( WkbType type )
-    {
-      switch ( type )
-      {
-        case WKBUnknown:            return 0;
-        case WKBNoGeometry:         return 0;
-        case WKBPoint25D:           return 3;
-        case WKBLineString25D:      return 3;
-        case WKBPolygon25D:         return 3;
-        case WKBMultiPoint25D:      return 3;
-        case WKBMultiLineString25D: return 3;
-        case WKBMultiPolygon25D:    return 3;
-        default:                    return 2;
-      }
-    }
+    // get dimension of points
+    // @deprecated use QgsWKBTypes::coordDimensions()
+    /* Q_DECL_DEPRECATED */
+    static int wkbDimensions( WkbType type );
+
+    //! Converts from old (pre 2.10) WKB type (OGR) to new WKB type
+    static QgsWKBTypes::Type fromOldWkbType( QGis::WkbType type );
+
+    //! Converts from new (post 2.10) WKB type (OGC) to old WKB type
+    static QGis::WkbType fromNewWkbType( QgsWKBTypes::Type type );
 
     enum GeometryType
     {
@@ -162,41 +122,10 @@ class CORE_EXPORT QGis
     };
 
     //! description strings for geometry types
-    static const char *vectorGeometryType( GeometryType type )
-    {
-      switch ( type )
-      {
-        case Point:           return "Point";
-        case Line:            return "Line";
-        case Polygon:         return "Polygon";
-        case UnknownGeometry: return "Unknown geometry";
-        case NoGeometry:      return "No geometry";
-        default:              return "Invalid type";
-      }
-    }
+    static const char *vectorGeometryType( GeometryType type );
 
     //! description strings for feature types
-    static const char *featureType( WkbType type )
-    {
-      switch ( type )
-      {
-        case WKBUnknown:            return "WKBUnknown";
-        case WKBPoint:              return "WKBPoint";
-        case WKBLineString:         return "WKBLineString";
-        case WKBPolygon:            return "WKBPolygon";
-        case WKBMultiPoint:         return "WKBMultiPoint";
-        case WKBMultiLineString:    return "WKBMultiLineString";
-        case WKBMultiPolygon:       return "WKBMultiPolygon";
-        case WKBNoGeometry:         return "WKBNoGeometry";
-        case WKBPoint25D:           return "WKBPoint25D";
-        case WKBLineString25D:      return "WKBLineString25D";
-        case WKBPolygon25D:         return "WKBPolygon25D";
-        case WKBMultiPoint25D:      return "WKBMultiPoint25D";
-        case WKBMultiLineString25D: return "WKBMultiLineString25D";
-        case WKBMultiPolygon25D:    return "WKBMultiPolygon25D";
-        default:                    return "invalid wkbtype";
-      }
-    }
+    static const char *featureType( WkbType type );
 
     /** Raster data types.
      *  This is modified and extended copy of GDALDataType.
@@ -226,30 +155,44 @@ class CORE_EXPORT QGis
      * @note that QGIS < 1.4 api had only Meters, Feet, Degrees and UnknownUnit
      * @note and QGIS >1.8 returns to that
      */
+    //TODO QGIS 3.0 - clean up and move to QgsUnitTypes and rename to DistanceUnit
     enum UnitType
     {
-      Meters = 0,
-      Feet = 1,
-      Degrees = 2, //for 1.0 api backwards compatibility
-      UnknownUnit = 3,
+      Meters = 0, /*!< meters */
+      Feet = 1, /*!< imperial feet */
+      Degrees = 2, /*!< degrees, for planar geographic CRS distance measurements */ //for 1.0 api backwards compatibility
+      NauticalMiles = 7, /*!< nautical miles */
+      Kilometers = 8, /*!< kilometers */
+      Yards = 9, /*!< imperial yards */
+      Miles = 10, /*!< terrestial miles */
+
+      UnknownUnit = 3, /*!< unknown distance unit */
 
       // for [1.4;1.8] api compatibility
       DecimalDegrees = 2,         // was 2
       DegreesMinutesSeconds = 2,  // was 4
       DegreesDecimalMinutes = 2,  // was 5
-      NauticalMiles = 7
     };
 
     //! Provides the canonical name of the type value
-    static QString toLiteral( QGis::UnitType unit );
+    //! @deprecated use QgsUnitTypes::encodeUnit() instead
+    Q_DECL_DEPRECATED static QString toLiteral( QGis::UnitType unit );
+
     //! Converts from the canonical name to the type value
-    static UnitType fromLiteral( QString  literal, QGis::UnitType defaultType = UnknownUnit );
+    //! @deprecated use QgsUnitTypes::decodeDistanceUnit() instead
+    Q_DECL_DEPRECATED static UnitType fromLiteral( const QString& literal, QGis::UnitType defaultType = UnknownUnit );
+
     //! Provides translated version of the type value
-    static QString tr( QGis::UnitType unit );
+    //! @deprecated use QgsUnitTypes::toString() instead
+    Q_DECL_DEPRECATED static QString tr( QGis::UnitType unit );
+
     //! Provides type value from translated version
-    static UnitType fromTr( QString literal, QGis::UnitType defaultType = UnknownUnit );
+    //! @deprecated use QgsUnitTypes::stringToDistanceUnit() instead
+    Q_DECL_DEPRECATED static UnitType fromTr( const QString& literal, QGis::UnitType defaultType = UnknownUnit );
+
     //! Returns the conversion factor between the specified units
-    static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
+    //! @deprecated use QgsUnitTyoes::fromUnitToUnitFactor() instead
+    Q_DECL_DEPRECATED static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
 
     /** Converts a string to a double in a permissive way, eg allowing for incorrect
      * numbers of digits between thousand separators
@@ -285,7 +228,7 @@ class CORE_EXPORT QGis
 
     /** Old search radius in % of canvas width
      *  @deprecated since 2.3, use DEFAULT_SEARCH_RADIUS_MM */
-    static const double DEFAULT_IDENTIFY_RADIUS;
+    Q_DECL_DEPRECATED static const double DEFAULT_IDENTIFY_RADIUS;
 
     /** Identify search radius in mm
      *  @note added in 2.3 */
@@ -306,6 +249,12 @@ class CORE_EXPORT QGis
     /** Default highlight line/outline minimum width in mm.
      *  @note added in 2.3 */
     static double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
+
+    /** Fudge factor used to compare two scales. The code is often going from scale to scale
+     *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
+     *  To avoid that, use this factor instead of using <= or >=.
+     * @note added in 2.15*/
+    static double SCALE_PRECISION;
 
   private:
     // String representation of unit types (set in qgis.cpp)
@@ -333,10 +282,62 @@ inline void ( *cast_to_fptr( void *p ) )()
 }
 #endif
 
-//
-// return a string representation of a double
-//
-inline QString qgsDoubleToString( const double &a, const int &precision = 17 )
+/** RAII signal blocking class. Used for temporarily blocking signals from a QObject
+ * for the lifetime of QgsSignalBlocker object.
+ * @see whileBlocking()
+ * @note added in QGIS 2.16
+ * @note not available in Python bindings
+ */
+// based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
+template<class Object> class QgsSignalBlocker
+{
+  public:
+
+    /** Constructor for QgsSignalBlocker
+     * @param object QObject to block signals from
+     */
+    explicit QgsSignalBlocker( Object* object )
+        : mObject( object )
+        , mPreviousState( object->blockSignals( true ) )
+    {}
+
+    ~QgsSignalBlocker()
+    {
+      mObject->blockSignals( mPreviousState );
+    }
+
+    //! Returns pointer to blocked QObject
+    Object* operator->() { return mObject; }
+
+  private:
+
+    Object* mObject;
+    bool mPreviousState;
+
+};
+
+/** Temporarily blocks signals from a QObject while calling a single method from the object.
+ *
+ * Usage:
+ *   whileBlocking( checkBox )->setChecked( true );
+ *   whileBlocking( spinBox )->setValue( 50 );
+ *
+ * No signals will be emitted when calling these methods.
+ *
+ * @note added in QGIS 2.16
+ * @see QgsSignalBlocker
+ * @note not available in Python bindings
+ */
+// based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
+template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object* object )
+{
+  return QgsSignalBlocker<Object>( object );
+}
+
+//! Returns a string representation of a double
+//! @param a double value
+//! @param precision number of decimal places to retain
+inline QString qgsDoubleToString( double a, int precision = 17 )
 {
   if ( precision )
     return QString::number( a, 'f', precision ).remove( QRegExp( "\\.?0+$" ) );
@@ -344,18 +345,17 @@ inline QString qgsDoubleToString( const double &a, const int &precision = 17 )
     return QString::number( a, 'f', precision );
 }
 
-//
-// compare two doubles (but allow some difference)
-//
+//! Compare two doubles (but allow some difference)
+//! @param a first double
+//! @param b second double
+//! @param epsilon maximum difference allowable between doubles
 inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON )
 {
   const double diff = a - b;
   return diff > -epsilon && diff <= epsilon;
 }
 
-//
-// compare two doubles using specified number of significant digits
-//
+//! Compare two doubles using specified number of significant digits
 inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
 {
   // The most simple would be to print numbers as %.xe and compare as strings
@@ -371,11 +371,51 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
          qRound( ar * pow( 10.0, significantDigits ) ) == qRound( br * pow( 10.0, significantDigits ) );
 }
 
-bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
+//! A round function which returns a double to guard against overflows
+inline double qgsRound( double x )
+{
+  return x < 0.0 ? std::ceil( x - 0.5 ) : std::floor( x + 0.5 );
+}
 
-bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
+// Add missing qHash implementation for QDate, QTime, QDateTime
+// implementations taken from upstream Qt5 versions
+#if QT_VERSION < 0x050000
 
-CORE_EXPORT QString qgsVsiPrefix( QString path );
+//! Hash implementation for QDateTime
+//! @note not available in Python bindings
+inline uint qHash( const QDateTime &key )
+{
+  return qHash( key.toMSecsSinceEpoch() );
+}
+
+//! Hash implementation for QDate
+//! @note not available in Python bindings
+inline uint qHash( const QDate &key )
+{
+  return qHash( key.toJulianDay() );
+}
+
+//! Hash implementation for QTime
+//! @note not available in Python bindings
+inline uint qHash( const QTime &key )
+{
+  return QTime( 0, 0, 0, 0 ).msecsTo( key );
+}
+#endif
+
+//! Compares two QVariant values and returns whether the first is less than the second.
+//! Useful for sorting lists of variants, correctly handling sorting of the various
+//! QVariant data types (such as strings, numeric values, dates and times)
+//! @see qgsVariantGreaterThan()
+CORE_EXPORT bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
+
+//! Compares two QVariant values and returns whether the first is greater than the second.
+//! Useful for sorting lists of variants, correctly handling sorting of the various
+//! QVariant data types (such as strings, numeric values, dates and times)
+//! @see qgsVariantLessThan()
+CORE_EXPORT bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
+
+CORE_EXPORT QString qgsVsiPrefix( const QString& path );
 
 /** Allocates size bytes and returns a pointer to the allocated  memory.
     Works like C malloc() but prints debug message by QgsLogger if allocation fails.
@@ -480,4 +520,10 @@ typedef unsigned long long qgssize;
 #  endif
 #endif
 #endif
+#endif
+
+#if defined(__clang__)
+#define FALLTHROUGH [[clang::fallthrough]]
+#else
+#define FALLTHROUGH
 #endif

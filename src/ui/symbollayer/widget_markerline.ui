@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>377</width>
+    <width>324</width>
     <height>327</height>
    </rect>
   </property>
@@ -260,6 +260,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -269,11 +274,6 @@
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDataDefinedButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -285,6 +285,7 @@
   <tabstop>radVertexLast</tabstop>
   <tabstop>radVertexFirst</tabstop>
   <tabstop>radCentralPoint</tabstop>
+  <tabstop>radCurvePoint</tabstop>
   <tabstop>mSpinOffsetAlongLine</tabstop>
   <tabstop>mOffsetAlongLineDDBtn</tabstop>
   <tabstop>chkRotateMarker</tabstop>

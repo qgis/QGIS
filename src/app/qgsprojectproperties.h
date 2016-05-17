@@ -27,6 +27,7 @@ class QgsMapCanvas;
 class QgsRelationManagerDialog;
 class QgsStyleV2;
 class QgsExpressionContext;
+class QgsLayerTreeGroup;
 
 /** Dialog to set project level properties
 
@@ -39,7 +40,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
   public:
     //! Constructor
-    QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     //! Destructor
     ~QgsProjectProperties();
@@ -55,7 +56,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     /*!
        Every project has a title
-    */
+     */
     QString title() const;
     void title( QString const & title );
 
@@ -90,6 +91,9 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     /** Let the user load scales from file */
     void on_pbnExportScales_clicked();
 
+    /** A scale in the list of project scales changed */
+    void scaleItemChanged( QListWidgetItem* changedScaleItem );
+
     /*!
      * Slots for WMS project settings
      */
@@ -101,18 +105,25 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void on_mRemoveWMSComposerButton_clicked();
     void on_mAddLayerRestrictionButton_clicked();
     void on_mRemoveLayerRestrictionButton_clicked();
+    void on_mWMSInspireScenario1_toggled( bool on );
+    void on_mWMSInspireScenario2_toggled( bool on );
 
     /*!
-     * Slots to select/unselect all the WFS layers
+     * Slots to select/deselect all the WFS layers
      */
     void on_pbnWFSLayersSelectAll_clicked();
     void on_pbnWFSLayersUnselectAll_clicked();
 
     /*!
-     * Slots to select/unselect all the WCS layers
+     * Slots to select/deselect all the WCS layers
      */
     void on_pbnWCSLayersSelectAll_clicked();
     void on_pbnWCSLayersUnselectAll_clicked();
+
+    /*!
+     * Slots to launch OWS test
+     */
+    void on_pbnLaunchOWSChecker_clicked();
 
     /*!
      * Slots for Styles
@@ -145,7 +156,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     /*!
       * If user changes the CRS, set the corresponding map units
       */
-    void setMapUnitsToCurrentProjection();
+    void srIdUpdated();
 
     /* Update ComboBox accorindg to the selected new index
      * Also sets the new selected Ellipsoid. */
@@ -169,6 +180,16 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void refresh();
 
   private:
+
+    //! Formats for displaying coordinates
+    enum CoordinateFormat
+    {
+      DecimalDegrees, /*!< Decimal degrees */
+      DegreesMinutes, /*!< Degrees, decimal minutes */
+      DegreesMinutesSeconds, /*!< Degrees, minutes, seconds */
+      MapUnits, /*! Show coordinates in map units */
+    };
+
     QgsRelationManagerDialog *mRelationManagerDlg;
     QgsMapCanvas* mMapCanvas;
     QgsStyleV2* mStyle;
@@ -205,9 +226,19 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QList<EllipsoidDefs> mEllipsoidList;
     int mEllipsoidIndex;
 
+    //! Check OWS configuration
+    void checkOWS( QgsLayerTreeGroup* treeGroup, QStringList& owsNames, QStringList& encodingMessages );
+
     //! Populates list with ellipsoids from Sqlite3 db
     void populateEllipsoidList();
 
+    //! Create a new scale item and add it to the list of scales
+    QListWidgetItem* addScaleToScaleList( const QString &newScale );
+
+    //! Add a scale item to the list of scales
+    void addScaleToScaleList( QListWidgetItem* newItem );
+
     static const char * GEO_NONE_DESC;
 
+    void updateGuiForMapUnits( QGis::UnitType units );
 };

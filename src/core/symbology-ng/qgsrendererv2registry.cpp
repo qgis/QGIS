@@ -22,12 +22,18 @@
 #include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgsheatmaprenderer.h"
+#include "qgs25drenderer.h"
+#include "qgsnullsymbolrenderer.h"
 
 QgsRendererV2Registry::QgsRendererV2Registry()
 {
   // add default renderers
+  addRenderer( new QgsRendererV2Metadata( "nullSymbol",
+                                          QObject::tr( "No symbols" ),
+                                          QgsNullSymbolRenderer::create ) );
+
   addRenderer( new QgsRendererV2Metadata( "singleSymbol",
-                                          QObject::tr( "Single Symbol" ),
+                                          QObject::tr( "Single symbol" ),
                                           QgsSingleSymbolRendererV2::create,
                                           QgsSingleSymbolRendererV2::createFromSld ) );
 
@@ -55,15 +61,16 @@ QgsRendererV2Registry::QgsRendererV2Registry()
   addRenderer( new QgsRendererV2Metadata( "heatmapRenderer",
                                           QObject::tr( "Heatmap" ),
                                           QgsHeatmapRenderer::create ) );
+
+
+  addRenderer( new QgsRendererV2Metadata( "25dRenderer",
+                                          QObject::tr( "2.5 D" ),
+                                          Qgs25DRenderer::create ) );
 }
 
 QgsRendererV2Registry::~QgsRendererV2Registry()
 {
-  Q_FOREACH ( const QString& name, mRenderers.keys() )
-  {
-    delete mRenderers[name];
-  }
-  mRenderers.clear();
+  qDeleteAll( mRenderers );
 }
 
 QgsRendererV2Registry* QgsRendererV2Registry::instance()
@@ -75,7 +82,7 @@ QgsRendererV2Registry* QgsRendererV2Registry::instance()
 
 bool QgsRendererV2Registry::addRenderer( QgsRendererV2AbstractMetadata* metadata )
 {
-  if ( metadata == NULL || mRenderers.contains( metadata->name() ) )
+  if ( !metadata || mRenderers.contains( metadata->name() ) )
     return false;
 
   mRenderers[metadata->name()] = metadata;
@@ -83,7 +90,7 @@ bool QgsRendererV2Registry::addRenderer( QgsRendererV2AbstractMetadata* metadata
   return true;
 }
 
-bool QgsRendererV2Registry::removeRenderer( QString rendererName )
+bool QgsRendererV2Registry::removeRenderer( const QString& rendererName )
 {
   if ( !mRenderers.contains( rendererName ) )
     return false;
@@ -94,7 +101,7 @@ bool QgsRendererV2Registry::removeRenderer( QString rendererName )
   return true;
 }
 
-QgsRendererV2AbstractMetadata* QgsRendererV2Registry::rendererMetadata( QString rendererName )
+QgsRendererV2AbstractMetadata* QgsRendererV2Registry::rendererMetadata( const QString& rendererName )
 {
   return mRenderers.value( rendererName );
 }

@@ -14,16 +14,18 @@
 ***************************************************************************/
 
 #include <QFont>
+#include <QIcon>
 
 #include "qgsfieldmodel.h"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayerproxymodel.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 QgsFieldModel::QgsFieldModel( QObject *parent )
     : QAbstractItemModel( parent )
-    , mLayer( NULL )
+    , mLayer( nullptr )
     , mAllowExpression( false )
 {
 }
@@ -88,7 +90,7 @@ void QgsFieldModel::setLayer( QgsVectorLayer *layer )
 
 void QgsFieldModel::layerDeleted()
 {
-  mLayer = 0;
+  mLayer = nullptr;
   updateModel();
 }
 
@@ -302,7 +304,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       if ( exprIdx < 0 )
       {
         QgsField field = mFields[index.row()];
-        return ( int )field.type();
+        return static_cast< int >( field.type() );
       }
       return QVariant();
     }
@@ -355,6 +357,15 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
         return font;
       }
       return QVariant();
+    }
+
+    case Qt::DecorationRole:
+    {
+      if ( exprIdx < 0 )
+      {
+        return mFields.iconForField( index.row() );
+      }
+      return QIcon();
     }
 
     default:

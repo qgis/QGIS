@@ -21,7 +21,7 @@ class QgsColorButton: QPushButton
      * @param cdo Options for the color chooser dialog
      * @note changed in 1.9
      */
-    QgsColorButton( QWidget *parent /TransferThis/ = 0, QString cdt = "", QColorDialog::ColorDialogOptions cdo = 0 );
+    QgsColorButton( QWidget *parent /TransferThis/ = 0, const QString& cdt = "", const QColorDialog::ColorDialogOptions& cdo = 0 );
     ~QgsColorButton();
 
     /**
@@ -42,7 +42,7 @@ class QgsColorButton: QPushButton
      *
      * @param cdo Options for the color chooser dialog
      */
-    void setColorDialogOptions( QColorDialog::ColorDialogOptions cdo );
+    void setColorDialogOptions( const QColorDialog::ColorDialogOptions& cdo );
 
     /**
      * Returns the options for the color chooser dialog.
@@ -56,7 +56,7 @@ class QgsColorButton: QPushButton
      *
      * @param cdt Title for the color chooser dialog
      */
-    void setColorDialogTitle( QString cdt );
+    void setColorDialogTitle( const QString& cdt );
 
     /**
      * Returns the title, which the color chooser dialog shows.

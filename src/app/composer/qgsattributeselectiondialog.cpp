@@ -273,18 +273,18 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
     QWidget* parent, Qt::WindowFlags f )
     : QDialog( parent, f )
     , mComposerTable( table )
-    , mComposerTableV1( NULL )
+    , mComposerTableV1( nullptr )
     , mVectorLayer( vLayer )
-    , mColumnModel( NULL )
-    , mColumnModelV1( NULL )
-    , mSortedProxyModel( NULL )
-    , mSortedProxyModelV1( NULL )
-    , mAvailableSortProxyModel( NULL )
-    , mAvailableSortProxyModelV1( NULL )
-    , mColumnAlignmentDelegate( NULL )
-    , mColumnSourceDelegate( NULL )
-    , mColumnSortOrderDelegate( NULL )
-    , mColumnWidthDelegate( NULL )
+    , mColumnModel( nullptr )
+    , mColumnModelV1( nullptr )
+    , mSortedProxyModel( nullptr )
+    , mSortedProxyModelV1( nullptr )
+    , mAvailableSortProxyModel( nullptr )
+    , mAvailableSortProxyModelV1( nullptr )
+    , mColumnAlignmentDelegate( nullptr )
+    , mColumnSourceDelegate( nullptr )
+    , mColumnSortOrderDelegate( nullptr )
+    , mColumnWidthDelegate( nullptr )
 {
   setupUi( this );
 
@@ -327,19 +327,19 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
 
 QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTable *table, QgsVectorLayer *vLayer, QWidget *parent, Qt::WindowFlags f )
     : QDialog( parent, f )
-    , mComposerTable( NULL )
+    , mComposerTable( nullptr )
     , mComposerTableV1( table )
     , mVectorLayer( vLayer )
-    , mColumnModel( NULL )
-    , mColumnModelV1( NULL )
-    , mSortedProxyModel( NULL )
-    , mSortedProxyModelV1( NULL )
-    , mAvailableSortProxyModel( NULL )
-    , mAvailableSortProxyModelV1( NULL )
-    , mColumnAlignmentDelegate( NULL )
-    , mColumnSourceDelegate( NULL )
-    , mColumnSortOrderDelegate( NULL )
-    , mColumnWidthDelegate( NULL )
+    , mColumnModel( nullptr )
+    , mColumnModelV1( nullptr )
+    , mSortedProxyModel( nullptr )
+    , mSortedProxyModelV1( nullptr )
+    , mAvailableSortProxyModel( nullptr )
+    , mAvailableSortProxyModelV1( nullptr )
+    , mColumnAlignmentDelegate( nullptr )
+    , mColumnSourceDelegate( nullptr )
+    , mColumnSortOrderDelegate( nullptr )
+    , mColumnWidthDelegate( nullptr )
 {
   setupUi( this );
 
@@ -532,7 +532,7 @@ void QgsAttributeSelectionDialog::on_mRemoveSortColumnPushButton_clicked()
   int rowToRemove = selectedIndex.row();
 
   //find corresponding column
-  QgsComposerTableColumn * column = 0;
+  QgsComposerTableColumn * column = nullptr;
   if ( mComposerTable )
   {
     column = mSortedProxyModel->columnFromIndex( selectedIndex );

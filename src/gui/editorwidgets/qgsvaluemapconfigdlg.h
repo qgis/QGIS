@@ -20,6 +20,10 @@
 
 #include "qgseditorconfigwidget.h"
 
+/** \class QgsValueMapConfigDlg
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget, private Ui::QgsValueMapWidget
 {
     Q_OBJECT

@@ -15,7 +15,7 @@
 
 #include "qgsdartmeasurement.h"
 
-#include <QDebug>
+#include <QTextStream>
 
 QgsDartMeasurement::QgsDartMeasurement( const QString& name, Type type, const QString& value )
     : mName( name )
@@ -33,16 +33,17 @@ const QString QgsDartMeasurement::toString() const
   }
 
   QString dashMessage = QString( "<%1 name=\"%2\" type=\"%3\">%4</%1>" )
-                        .arg( elementName )
-                        .arg( mName )
-                        .arg( typeToString( mType ) )
-                        .arg( mValue );
+                        .arg( elementName,
+                              mName,
+                              typeToString( mType ),
+                              mValue );
   return dashMessage;
 }
 
 void QgsDartMeasurement::send() const
 {
-  qDebug() << toString() + "\n";
+  QTextStream out( stdout );
+  out << toString() << endl;
 }
 
 const QString QgsDartMeasurement::typeToString( QgsDartMeasurement::Type type )

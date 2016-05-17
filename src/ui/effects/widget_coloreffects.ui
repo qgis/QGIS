@@ -324,9 +324,20 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsBlendModeComboBox</class>
@@ -338,18 +349,24 @@
    <extends>QComboBox</extends>
    <header>qgseffectdrawmodecombobox.h</header>
   </customwidget>
-  <customwidget>
-   <class>QgsColorButtonV2</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mSliderBrightness</tabstop>
+  <tabstop>mBrightnessSpinBox</tabstop>
+  <tabstop>mSliderContrast</tabstop>
+  <tabstop>mContrastSpinBox</tabstop>
+  <tabstop>mSliderSaturation</tabstop>
+  <tabstop>mSaturationSpinBox</tabstop>
+  <tabstop>mColorizeCheck</tabstop>
+  <tabstop>mSliderColorizeStrength</tabstop>
+  <tabstop>mColorizeStrengthSpinBox</tabstop>
+  <tabstop>mColorizeColorButton</tabstop>
+  <tabstop>mGrayscaleCombo</tabstop>
+  <tabstop>mTranspSlider</tabstop>
+  <tabstop>mTranspSpnBx</tabstop>
+  <tabstop>mBlendCmbBx</tabstop>
+  <tabstop>mDrawModeComboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

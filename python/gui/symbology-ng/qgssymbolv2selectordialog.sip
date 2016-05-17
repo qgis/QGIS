@@ -27,6 +27,13 @@ class QgsSymbolV2SelectorDialog : QDialog
      */
     QgsExpressionContext* expressionContext() const;
 
+    /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @note added in QGIS 2.12
+     */
+    void setMapCanvas( QgsMapCanvas* canvas );
+
   protected:
     //! Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent * event );
@@ -57,8 +64,13 @@ class QgsSymbolV2SelectorDialog : QDialog
     void addLayer();
     void removeLayer();
 
-    void saveSymbol();
     void lockLayer();
+
+    void saveSymbol() /Deprecated/;
+
+    //! Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
+    //! @note added in QGIS 2.14
+    void duplicateLayer();
 
     void layerChanged();
 

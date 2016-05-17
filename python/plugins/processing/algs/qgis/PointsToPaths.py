@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 from datetime import datetime
 
-from PyQt4.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import QGis, QgsFeature, QgsFields, QgsField, QgsGeometry, QgsDistanceArea
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -86,7 +86,7 @@ class PointsToPaths(GeoAlgorithm):
         points = dict()
         features = vector.features(layer)
         total = 100.0 / len(features)
-        for count, f in enumerate(features):
+        for current, f in enumerate(features):
             point = f.geometry().asPoint()
             group = f[groupField]
             order = f[orderField]
@@ -97,13 +97,13 @@ class PointsToPaths(GeoAlgorithm):
             else:
                 points[group] = [(order, point)]
 
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))
 
         progress.setPercentage(0)
 
         da = QgsDistanceArea()
 
-        count = 0
+        current = 0
         total = 100.0 / len(points)
         for group, vertices in points.iteritems():
             vertices.sort()
@@ -139,8 +139,8 @@ class PointsToPaths(GeoAlgorithm):
 
             f.setGeometry(QgsGeometry.fromPolyline(line))
             writer.addFeature(f)
-            count += 1
-            progress.setPercentage(int(count * total))
+            current += 1
+            progress.setPercentage(int(current * total))
 
         del writer
         fl.close()

@@ -8,10 +8,10 @@
 
 QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *parent )
     : QWidget( parent )
-    , mLayer( 0 )
+    , mLayer( nullptr )
     , mEditIndex( 0 )
     , mEditing( false )
-    , mSymbol( 0 )
+    , mSymbol( nullptr )
 {
   setupUi( this );
   mDeleteButton->hide();
@@ -47,7 +47,7 @@ void QgsFieldConditionalFormatWidget::updateIcon()
 {
   mSymbol = QgsSymbolV2::defaultSymbol( QGis::Point );
 
-  QgsSymbolV2SelectorDialog dlg( mSymbol, QgsStyleV2::defaultStyle(), 0, this );
+  QgsSymbolV2SelectorDialog dlg( mSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
   if ( !dlg.exec() )
   {
     return;
@@ -78,7 +78,7 @@ void QgsFieldConditionalFormatWidget::setExpression()
 
 void QgsFieldConditionalFormatWidget::presetSet( int index )
 {
-  if ( index == -1 || mPresets.count() == 0 )
+  if ( index == -1 || mPresets.isEmpty() )
     return;
 
   QgsConditionalStyle style = mPresets.at( index );
@@ -92,14 +92,14 @@ void QgsFieldConditionalFormatWidget::setLayer( QgsVectorLayer *theLayer )
   mFieldCombo->setCurrentIndex( 0 );
 }
 
-void QgsFieldConditionalFormatWidget::ruleClicked( QModelIndex index )
+void QgsFieldConditionalFormatWidget::ruleClicked( const QModelIndex& index )
 {
   QList<QgsConditionalStyle> styles = getStyles();
   QgsConditionalStyle style = styles.at( index.row() );
   editStyle( index.row(), style );
 }
 
-void QgsFieldConditionalFormatWidget::editStyle( int editIndex, QgsConditionalStyle style )
+void QgsFieldConditionalFormatWidget::editStyle( int editIndex, const QgsConditionalStyle& style )
 {
   pages->setCurrentIndex( 1 );
   mEditIndex = editIndex;
@@ -108,13 +108,13 @@ void QgsFieldConditionalFormatWidget::editStyle( int editIndex, QgsConditionalSt
   loadStyle( style );
 }
 
-void QgsFieldConditionalFormatWidget::loadStyle( QgsConditionalStyle style )
+void QgsFieldConditionalFormatWidget::loadStyle( const QgsConditionalStyle& style )
 {
   mRuleEdit->setText( style.rule() );
   mNameEdit->setText( style.name() );
   setFormattingFromStyle( style );
 }
-void QgsFieldConditionalFormatWidget::setFormattingFromStyle( QgsConditionalStyle style )
+void QgsFieldConditionalFormatWidget::setFormattingFromStyle( const QgsConditionalStyle& style )
 {
   btnBackgroundColor->setColor( style.backgroundColor() );
   btnTextColor->setColor( style.textColor() );
@@ -135,7 +135,7 @@ void QgsFieldConditionalFormatWidget::setFormattingFromStyle( QgsConditionalStyl
   }
   else
   {
-    mSymbol = 0;
+    mSymbol = nullptr;
   }
   QFont font = style.font();
   mFontBoldBtn->setChecked( font.bold() );
@@ -194,7 +194,7 @@ void QgsFieldConditionalFormatWidget::addNewRule()
 
 void QgsFieldConditionalFormatWidget::reset()
 {
-  mSymbol = 0;
+  mSymbol = nullptr;
   mNameEdit->clear();
   mRuleEdit->clear();
   if ( fieldRadio->isChecked() )
@@ -218,7 +218,7 @@ void QgsFieldConditionalFormatWidget::reset()
 }
 
 
-void QgsFieldConditionalFormatWidget::setPresets( QList<QgsConditionalStyle> styles )
+void QgsFieldConditionalFormatWidget::setPresets( const QList<QgsConditionalStyle>& styles )
 {
   mPresets.clear();
   mPresetsModel->clear();
@@ -291,7 +291,7 @@ void QgsFieldConditionalFormatWidget::saveRule()
   }
   else
   {
-    style.setSymbol( 0 );
+    style.setSymbol( nullptr );
   }
   if ( mEditing )
   {
@@ -330,7 +330,7 @@ void QgsFieldConditionalFormatWidget::reloadStyles()
   }
 }
 
-void QgsFieldConditionalFormatWidget::fieldChanged( QString fieldName )
+void QgsFieldConditionalFormatWidget::fieldChanged( const QString& fieldName )
 {
   Q_UNUSED( fieldName );
   reloadStyles();

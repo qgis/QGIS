@@ -96,7 +96,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
       QgsDebugMsg( QString( "part %1 - %2" ).arg( from ).arg( to ) );
       QByteArray part = data.mid( from, to - from );
       // Remove possible new line from beginning
-      while ( part.size() > 0 && ( part.at( 0 ) == '\r' || part.at( 0 ) == '\n' ) )
+      while ( !part.isEmpty() && ( part.at( 0 ) == '\r' || part.at( 0 ) == '\n' ) )
       {
         part.remove( 0, 1 );
       }

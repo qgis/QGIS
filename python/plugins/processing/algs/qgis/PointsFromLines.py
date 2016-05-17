@@ -26,7 +26,7 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 from osgeo import gdal
-from PyQt4.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import QGis, QgsFeature, QgsFields, QgsField, QgsGeometry, QgsPoint
 from processing.tools import vector, raster, dataobjects
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -76,10 +76,9 @@ class PointsFromLines(GeoAlgorithm):
         self.lineId = 0
         self.pointId = 0
 
-        current = 0
         features = vector.features(layer)
         total = 100.0 / len(features)
-        for f in features:
+        for current, f in enumerate(features):
             geom = f.geometry()
             if geom.isMultipart():
                 lines = geom.asMultiPolyline()
@@ -110,7 +109,6 @@ class PointsFromLines(GeoAlgorithm):
             self.pointId = 0
             self.lineId += 1
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

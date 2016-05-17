@@ -67,7 +67,7 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     /** Returns a pointer to the geometry*/
     const QgsAbstractGeometryV2* geometry() { return mGeometry; }
     /** Moves vertex to new position (in map coordinates)*/
-    void moveVertex( const QgsVertexId& id, const QgsPointV2& newPos );
+    void moveVertex( QgsVertexId id, const QgsPointV2& newPos );
     /** Sets fill color for vertex markers*/
     void setFillColor( const QColor& c );
     /** Sets outline color for vertex markes*/

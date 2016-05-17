@@ -20,7 +20,7 @@
 
 QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
     : QWidget( parent )
-    , mCanvas( 0 )
+    , mCanvas( nullptr )
 {
   mLayout = new QGridLayout( this );
   mLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -43,6 +43,7 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
 
   mMinimumScaleWidget = new QgsScaleWidget( this );
   mMaximumScaleWidget = new QgsScaleWidget( this );
+  connect( mMinimumScaleWidget, SIGNAL( scaleChanged( double ) ), mMaximumScaleWidget, SLOT( setMinScale( double ) ) );
   mMinimumScaleWidget->setShowCurrentScaleButton( true );
   mMaximumScaleWidget->setShowCurrentScaleButton( true );
   reloadProjectScales();

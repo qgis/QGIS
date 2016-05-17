@@ -76,9 +76,45 @@ QgsNamedColorList QgsRecentColorScheme::fetchColors( const QString &context, con
   return colorList;
 }
 
-QgsColorScheme *QgsRecentColorScheme::clone() const
+QgsRecentColorScheme* QgsRecentColorScheme::clone() const
 {
   return new QgsRecentColorScheme();
+}
+
+void QgsRecentColorScheme::addRecentColor( const QColor& color )
+{
+  if ( !color.isValid() )
+  {
+    return;
+  }
+
+  //strip alpha from color
+  QColor opaqueColor = color;
+  opaqueColor.setAlpha( 255 );
+
+  QSettings settings;
+  QList< QVariant > recentColorVariants = settings.value( QString( "/colors/recent" ) ).toList();
+
+  //remove colors by name
+  for ( int colorIdx = recentColorVariants.length() - 1; colorIdx >= 0; --colorIdx )
+  {
+    if (( recentColorVariants.at( colorIdx ).value<QColor>() ).name() == opaqueColor.name() )
+    {
+      recentColorVariants.removeAt( colorIdx );
+    }
+  }
+
+  //add color
+  QVariant colorVariant = QVariant( opaqueColor );
+  recentColorVariants.prepend( colorVariant );
+
+  //trim to 20 colors
+  while ( recentColorVariants.count() > 20 )
+  {
+    recentColorVariants.pop_back();
+  }
+
+  settings.setValue( QString( "/colors/recent" ), recentColorVariants );
 }
 
 
@@ -164,7 +200,7 @@ bool QgsCustomColorScheme::setColors( const QgsNamedColorList &colors, const QSt
   return true;
 }
 
-QgsColorScheme *QgsCustomColorScheme::clone() const
+QgsCustomColorScheme* QgsCustomColorScheme::clone() const
 {
   return new QgsCustomColorScheme();
 }
@@ -231,7 +267,7 @@ bool QgsProjectColorScheme::setColors( const QgsNamedColorList &colors, const QS
   return true;
 }
 
-QgsColorScheme *QgsProjectColorScheme::clone() const
+QgsProjectColorScheme* QgsProjectColorScheme::clone() const
 {
   return new QgsProjectColorScheme();
 }
@@ -332,7 +368,7 @@ QString QgsUserColorScheme::schemeName() const
   return mName;
 }
 
-QgsColorScheme *QgsUserColorScheme::clone() const
+QgsUserColorScheme* QgsUserColorScheme::clone() const
 {
   return new QgsUserColorScheme( mFilename );
 }

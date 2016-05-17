@@ -1,5 +1,6 @@
 {
-  "function": "overlaps",
+  "name": "overlaps",
+  "type": "function",
   "description": "Tests whether a geometry overlaps another. Returns true if the geometries share space, are of the same dimension, but are not completely contained by each other.",
   "arguments": [ {"arg":"geometry a","description":"a geometry"},
                  {"arg":"geometry b","description":"a geometry"}],

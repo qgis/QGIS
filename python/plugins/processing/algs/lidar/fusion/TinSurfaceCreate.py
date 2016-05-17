@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    Catalog.py
+    TINSurfaceCreate.py
     ---------------------
     Date                 : June 2014
     Copyright            : (C) 2014 by Agresta S. Coop
@@ -24,24 +24,26 @@ __copyright__ = '(C) 2014, Agresta S. Coop'
 __revision__ = '$Format:%H$'
 
 import os
+import subprocess
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
-from processing.core.outputs import OutputFile
-from FusionAlgorithm import FusionAlgorithm
-from FusionUtils import FusionUtils
 from processing.core.parameters import ParameterString
+from processing.core.outputs import OutputFile
+from .FusionAlgorithm import FusionAlgorithm
+from .FusionUtils import FusionUtils
 
 
 class TinSurfaceCreate(FusionAlgorithm):
 
     INPUT = 'INPUT'
-    OUTPUT_DTM = 'OUTPUT_DTM'
+    OUTPUT = 'OUTPUT'
     CELLSIZE = 'CELLSIZE'
     XYUNITS = 'XYUNITS'
     ZUNITS = 'ZUNITS'
     UNITS = ['Meter', 'Feet']
     CLASS = 'CLASS'
+    RETURN = 'RETURN'
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Tin Surface Create')
@@ -54,20 +56,28 @@ class TinSurfaceCreate(FusionAlgorithm):
                                              self.tr('XY Units'), self.UNITS))
         self.addParameter(ParameterSelection(self.ZUNITS,
                                              self.tr('Z Units'), self.UNITS))
-        self.addOutput(OutputFile(self.OUTPUT_DTM,
-                                  self.tr('DTM Output Surface'), 'dtm'))
+        self.addOutput(OutputFile(self.OUTPUT,
+                                  self.tr('.dtm output surface'), 'dtm'))
         class_var = ParameterString(self.CLASS,
-                                    self.tr('Class'), 2, False, True)
+                                    self.tr('Class'), '', False, True)
         class_var.isAdvanced = True
         self.addParameter(class_var)
+        return_sel = ParameterString(self.RETURN,
+                                     self.tr('Select specific return'), '', False, True)
+        return_sel.isAdvanced = True
+        self.addParameter(return_sel)
 
     def processAlgorithm(self, progress):
         commands = [os.path.join(FusionUtils.FusionPath(), 'TINSurfaceCreate.exe')]
         commands.append('/verbose')
         class_var = self.getParameterValue(self.CLASS)
-        if unicode(class_var).strip() != '':
+        if unicode(class_var).strip():
             commands.append('/class:' + unicode(class_var))
-        commands.append(self.getOutputValue(self.OUTPUT_DTM))
+            return_sel = self.getParameterValue(self.RETURN)
+        if unicode(return_sel).strip():
+            commands.append('/return:' + unicode(return_sel))
+        outFile = self.getOutputValue(self.OUTPUT)
+        commands.append(outFile)
         commands.append(unicode(self.getParameterValue(self.CELLSIZE)))
         commands.append(self.UNITS[self.getParameterValue(self.XYUNITS)][0])
         commands.append(self.UNITS[self.getParameterValue(self.ZUNITS)][0])
@@ -81,3 +91,9 @@ class TinSurfaceCreate(FusionAlgorithm):
         else:
             commands.extend(files)
         FusionUtils.runFusion(commands, progress)
+        commands = [os.path.join(FusionUtils.FusionPath(), 'DTM2ASCII.exe')]
+        commands.append('/raster')
+        commands.append(outFile)
+        commands.append(self.getOutputValue(self.OUTPUT))
+        p = subprocess.Popen(commands, shell=True)
+        p.wait()

@@ -113,7 +113,7 @@ class ASResource
 		static const string AS_DO, AS_WHILE;
 		static const string AS_FOR;
 		static const string AS_SWITCH, AS_CASE, AS_DEFAULT;
-		static const string AS_TRY, AS_CATCH, AS_THROWS, AS_FINALLY;
+		static const string AS_TRY, AS_CATCH, AS_THROWS, AS_NOEXCEPT, AS_FINALLY;
 		static const string AS_PUBLIC, AS_PROTECTED, AS_PRIVATE;
 		static const string AS_CLASS, AS_STRUCT, AS_UNION, AS_INTERFACE, AS_NAMESPACE, AS_EXTERN;
 		static const string AS_STATIC;
@@ -138,7 +138,7 @@ class ASResource
 		static const string AS_ASM;
 		static const string AS_FOREACH, AS_LOCK, AS_UNSAFE, AS_FIXED, AS_Q_FOREACH;
 		static const string AS_GET, AS_SET, AS_ADD, AS_REMOVE;
-		static const string AS_CONST_CAST, AS_DYNAMIC_CAST, AS_REINTERPRET_CAST, AS_STATIC_CAST;
+		static const string AS_CONST_CAST, AS_DYNAMIC_CAST, AS_REINTERPRET_CAST, AS_STATIC_CAST, AS_QOBJECT_CAST;
 };
 
 class ASBeautifier : protected ASResource

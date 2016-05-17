@@ -26,6 +26,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.core import QgsFeature, QgsGeometry
+
+from processing.core.ProcessingLog import ProcessingLog
 from processing.tools import vector
 
 
@@ -55,6 +57,9 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve,
                 value = distance
 
             inGeom = QgsGeometry(inFeat.geometry())
+            if inGeom.isGeosEmpty() or not inGeom.isGeosValid():
+                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, 'Feature {} has empty or invalid geometry. Skipping...'.format(inFeat.id()))
+                continue
             outGeom = inGeom.buffer(float(value), segments)
             if first:
                 tempGeom = QgsGeometry(outGeom)
@@ -77,6 +82,10 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve,
             else:
                 value = distance
             inGeom = QgsGeometry(inFeat.geometry())
+            if inGeom.isGeosEmpty() or not inGeom.isGeosValid():
+                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, 'Feature {} has empty or invalid geometry. Skipping...'.format(inFeat.id()))
+                continue
+
             outGeom = inGeom.buffer(float(value), segments)
             outFeat.setGeometry(outGeom)
             outFeat.setAttributes(attrs)

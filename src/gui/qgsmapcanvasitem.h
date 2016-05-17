@@ -42,7 +42,7 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //! paint function called by map canvas
     virtual void paint( QPainter * painter,
                         const QStyleOptionGraphicsItem * option,
-                        QWidget * widget = 0 ) override;
+                        QWidget * widget = nullptr ) override;
 
     //! schedules map canvas for repaint
     void updateCanvas();
@@ -63,7 +63,7 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
 
     //! sets current offset, to be called from QgsMapCanvas
     //! @deprecated since v2.4 - not called by QgsMapCanvas anymore
-    Q_DECL_DEPRECATED void setPanningOffset( const QPoint& point );
+    Q_DECL_DEPRECATED void setPanningOffset( QPoint point );
 
     //! returns canvas item rectangle in map units
     QgsRectangle rect() const;
@@ -72,7 +72,7 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     void setRect( const QgsRectangle& r, bool resetRotation = true );
 
     //! transformation from screen coordinates to map coordinates
-    QgsPoint toMapCoordinates( const QPoint& point ) const;
+    QgsPoint toMapCoordinates( QPoint point ) const;
 
     //! transformation from map coordinates to screen coordinates
     QPointF toCanvasCoordinates( const QgsPoint& point ) const;

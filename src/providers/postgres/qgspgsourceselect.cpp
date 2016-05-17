@@ -45,7 +45,7 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
 
   QString tableName = index.sibling( index.row(), QgsPgTableModel::dbtmTable ).data( Qt::DisplayRole ).toString();
   if ( tableName.isEmpty() )
-    return 0;
+    return nullptr;
 
   if ( index.column() == QgsPgTableModel::dbtmSql )
   {
@@ -74,7 +74,7 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
   {
     QStringList values = index.data( Qt::UserRole + 1 ).toStringList();
 
-    if ( values.size() > 0 )
+    if ( !values.isEmpty() )
     {
       QComboBox *cb = new QComboBox( parent );
       cb->setItemDelegate( new QStyledItemDelegate( parent ) );
@@ -104,7 +104,7 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
     return le;
   }
 
-  return 0;
+  return nullptr;
 }
 
 void QgsPgSourceSelectDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
@@ -197,7 +197,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool 
     : QDialog( parent, fl )
     , mManagerMode( managerMode )
     , mEmbeddedMode( embeddedMode )
-    , mColumnTypeThread( 0 )
+    , mColumnTypeThread( nullptr )
     , mUseEstimatedMetadata( false )
 {
   setupUi( this );
@@ -235,6 +235,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool 
   mSearchColumnComboBox->addItem( tr( "All" ) );
   mSearchColumnComboBox->addItem( tr( "Schema" ) );
   mSearchColumnComboBox->addItem( tr( "Table" ) );
+  mSearchColumnComboBox->addItem( tr( "Comment" ) );
   mSearchColumnComboBox->addItem( tr( "Type" ) );
   mSearchColumnComboBox->addItem( tr( "Geometry column" ) );
   mSearchColumnComboBox->addItem( tr( "Feature id" ) );
@@ -312,7 +313,7 @@ void QgsPgSourceSelect::on_btnSave_clicked()
 
 void QgsPgSourceSelect::on_btnLoad_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), ".",
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), QDir::homePath(),
                      tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
   {
@@ -411,6 +412,10 @@ void QgsPgSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QStr
   {
     mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmTable );
   }
+  else if ( text == tr( "Comment" ) )
+  {
+    mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmComment );
+  }
   else if ( text == tr( "Type" ) )
   {
     mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmType );
@@ -489,7 +494,7 @@ void QgsPgSourceSelect::addTables()
     if ( idx.column() != QgsPgTableModel::dbtmTable )
       continue;
 
-    QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), mConnInfo, mUseEstimatedMetadata );
+    QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), connectionInfo( false ), mUseEstimatedMetadata );
     if ( uri.isNull() )
       continue;
 
@@ -526,9 +531,9 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
   // populate the table list
   QgsDataSourceURI uri = QgsPostgresConn::connUri( cmbConnections->currentText() );
 
-  QgsDebugMsg( "Connection info: " + uri.connectionInfo() );
+  QgsDebugMsg( "Connection info: " + uri.connectionInfo( false ) );
 
-  mConnInfo = uri.connectionInfo();
+  mDataSrcUri = uri;
   mUseEstimatedMetadata = uri.useEstimatedMetadata();
 
   QApplication::setOverrideCursor( Qt::BusyCursor );
@@ -567,7 +572,7 @@ void QgsPgSourceSelect::finishList()
 void QgsPgSourceSelect::columnThreadFinished()
 {
   delete mColumnTypeThread;
-  mColumnTypeThread = 0;
+  mColumnTypeThread = nullptr;
   btnConnect->setText( tr( "Connect" ) );
 
   finishList();
@@ -578,9 +583,14 @@ QStringList QgsPgSourceSelect::selectedTables()
   return mSelectedTables;
 }
 
-QString QgsPgSourceSelect::connectionInfo()
+QString QgsPgSourceSelect::connectionInfo( bool expandAuthCfg )
 {
-  return mConnInfo;
+  return mDataSrcUri.connectionInfo( expandAuthCfg );
+}
+
+QgsDataSourceURI QgsPgSourceSelect::dataSourceUri()
+{
+  return mDataSrcUri;
 }
 
 void QgsPgSourceSelect::setSql( const QModelIndex &index )
@@ -594,7 +604,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
   QModelIndex idx = mProxyModel.mapToSource( index );
   QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsPgTableModel::dbtmTable ) )->text();
 
-  QString uri = mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata );
+  QString uri = mTableModel.layerURI( idx, connectionInfo( false ), mUseEstimatedMetadata );
   if ( uri.isNull() )
   {
     QgsDebugMsg( "no uri" );
@@ -623,7 +633,7 @@ QString QgsPgSourceSelect::fullDescription( const QString& schema, const QString
 {
   QString full_desc = "";
   if ( !schema.isEmpty() )
-    full_desc = QgsPostgresConn::quotedIdentifier( schema ) + ".";
+    full_desc = QgsPostgresConn::quotedIdentifier( schema ) + '.';
   full_desc += QgsPostgresConn::quotedIdentifier( table ) + " (" + column + ") " + type;
   return full_desc;
 }
