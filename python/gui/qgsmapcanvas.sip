@@ -393,6 +393,13 @@ class QgsMapCanvas : QGraphicsView
      */
     // const QgsExpressionContextScope& expressionContextScope() const;
 
+     /** Sets the segmentation tolerance applied when rendering curved geometries
+    @param tolerance the segmentation tolerance*/
+    void setSegmentationTolerance( double tolerance );
+    /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+    @param type the segmentation tolerance typename*/
+    void setSegmentationToleranceType( QgsAbstractGeometryV2::SegmentationToleranceType type );
+
   public slots:
 
     /** Repaints the canvas map*/

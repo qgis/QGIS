@@ -357,14 +357,14 @@ int QgsCompoundCurveV2::numPoints() const
   return nPoints;
 }
 
-QgsLineStringV2* QgsCompoundCurveV2::curveToLine() const
+QgsLineStringV2* QgsCompoundCurveV2::curveToLine( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   QList< QgsCurveV2* >::const_iterator curveIt = mCurves.constBegin();
   QgsLineStringV2* line = new QgsLineStringV2();
   QgsLineStringV2* currentLine = nullptr;
   for ( ; curveIt != mCurves.constEnd(); ++curveIt )
   {
-    currentLine = ( *curveIt )->curveToLine();
+    currentLine = ( *curveIt )->curveToLine( tolerance, toleranceType );
     line->append( currentLine );
     delete currentLine;
   }

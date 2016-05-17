@@ -20,6 +20,7 @@
 
 #include <QColor>
 
+#include "qgsabstractgeometryv2.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmaptopixel.h"
 #include "qgsrectangle.h"
@@ -219,6 +220,18 @@ class CORE_EXPORT QgsRenderContext
      */
     const QgsFeatureFilterProvider* featureFilterProvider() const { return mFeatureFilterProvider; }
 
+    /** Sets the segmentation tolerance applied when rendering curved geometries
+    @param tolerance the segmentation tolerance*/
+    void setSegmentationTolerance( double tolerance ) { mSegmentationTolerance = tolerance; }
+    /** Gets the segmentation tolerance applied when rendering curved geometries*/
+    double segmentationTolerance() const { return mSegmentationTolerance; }
+
+    /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+    @param type the segmentation tolerance typename*/
+    void setSegmentationToleranceType( QgsAbstractGeometryV2::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
+    /** Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)*/
+    QgsAbstractGeometryV2::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
+
   private:
 
     Flags mFlags;
@@ -266,6 +279,9 @@ class CORE_EXPORT QgsRenderContext
     /** The feature filter provider */
     const QgsFeatureFilterProvider* mFeatureFilterProvider;
 
+    double mSegmentationTolerance;
+
+    QgsAbstractGeometryV2::SegmentationToleranceType mSegmentationToleranceType;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRenderContext::Flags )

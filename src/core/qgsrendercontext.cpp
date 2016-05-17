@@ -35,6 +35,8 @@ QgsRenderContext::QgsRenderContext()
     , mLabelingEngine2( nullptr )
     , mGeometry( nullptr )
     , mFeatureFilterProvider( nullptr )
+    , mSegmentationTolerance( M_PI_2 / 90 )
+    , mSegmentationToleranceType( QgsAbstractGeometryV2::MaximumAngle )
 {
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 }
@@ -56,6 +58,8 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext& rh )
     , mExpressionContext( rh.mExpressionContext )
     , mGeometry( rh.mGeometry )
     , mFeatureFilterProvider( rh.mFeatureFilterProvider ? rh.mFeatureFilterProvider->clone() : nullptr )
+    , mSegmentationTolerance( rh.mSegmentationTolerance )
+    , mSegmentationToleranceType( rh.mSegmentationToleranceType )
 {
 }
 
@@ -77,6 +81,8 @@ QgsRenderContext&QgsRenderContext::operator=( const QgsRenderContext & rh )
   mExpressionContext = rh.mExpressionContext;
   mGeometry = rh.mGeometry;
   mFeatureFilterProvider = rh.mFeatureFilterProvider ? rh.mFeatureFilterProvider->clone() : nullptr;
+  mSegmentationTolerance = rh.mSegmentationTolerance;
+  mSegmentationToleranceType = rh.mSegmentationToleranceType;
   return *this;
 }
 
@@ -127,6 +133,8 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings& mapSet
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setRendererScale( mapSettings.scale() );
   ctx.setExpressionContext( mapSettings.expressionContext() );
+  ctx.setSegmentationTolerance( mapSettings.segmentationTolerance() );
+  ctx.setSegmentationToleranceType( mapSettings.segmentationToleranceType() );
 
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation

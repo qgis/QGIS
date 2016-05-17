@@ -8641,6 +8641,9 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString& currentPage )
 
     bool otfTransformAutoEnable = mySettings.value( "/Projections/otfTransformAutoEnable", true ).toBool();
     mLayerTreeCanvasBridge->setAutoEnableCrsTransform( otfTransformAutoEnable );
+
+    mMapCanvas->setSegmentationTolerance( mySettings.value( "/qgis/segmentationTolerance", "0.01745" ).toDouble() );
+    mMapCanvas->setSegmentationToleranceType( QgsAbstractGeometryV2::SegmentationToleranceType( mySettings.value( "/qgis/segmentationToleranceType", "0" ).toInt() ) );
   }
 
   delete optionsDialog;

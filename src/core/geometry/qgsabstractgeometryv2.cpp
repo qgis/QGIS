@@ -244,3 +244,12 @@ bool QgsAbstractGeometryV2::isEmpty() const
   QgsPointV2 vertex;
   return !nextVertex( vId, vertex );
 }
+
+
+QgsAbstractGeometryV2* QgsAbstractGeometryV2::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
+{
+  Q_UNUSED( tolerance );
+  Q_UNUSED( toleranceType );
+  return clone();
+}
+

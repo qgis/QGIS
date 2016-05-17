@@ -417,7 +417,7 @@ QgsPolygonV2* QgsCurvePolygonV2::surfaceToPolygon() const
   return polygon;
 }
 
-QgsPolygonV2* QgsCurvePolygonV2::toPolygon() const
+QgsPolygonV2* QgsCurvePolygonV2::toPolygon( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   if ( !mExteriorRing )
   {
@@ -425,13 +425,13 @@ QgsPolygonV2* QgsCurvePolygonV2::toPolygon() const
   }
 
   QgsPolygonV2* poly = new QgsPolygonV2();
-  poly->setExteriorRing( mExteriorRing->curveToLine() );
+  poly->setExteriorRing( mExteriorRing->curveToLine( tolerance, toleranceType ) );
 
   QList<QgsCurveV2*> rings;
   QList<QgsCurveV2*>::const_iterator it = mInteriorRings.constBegin();
   for ( ; it != mInteriorRings.constEnd(); ++it )
   {
-    rings.push_back(( *it )->curveToLine() );
+    rings.push_back(( *it )->curveToLine( tolerance, toleranceType ) );
   }
   poly->setInteriorRings( rings );
   return poly;
@@ -765,9 +765,9 @@ bool QgsCurvePolygonV2::hasCurvedSegments() const
   return false;
 }
 
-QgsAbstractGeometryV2* QgsCurvePolygonV2::segmentize() const
+QgsAbstractGeometryV2* QgsCurvePolygonV2::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
-  return toPolygon();
+  return toPolygon( tolerance, toleranceType );
 }
 
 double QgsCurvePolygonV2::vertexAngle( QgsVertexId vertex ) const
