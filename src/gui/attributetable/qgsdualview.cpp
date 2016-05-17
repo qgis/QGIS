@@ -15,7 +15,6 @@
 
 #include "qgsapplication.h"
 #include "qgsactionmanager.h"
-#include "qgsattributeform.h"
 #include "qgsattributetablemodel.h"
 #include "qgsdualview.h"
 #include "qgsexpressionbuilderdialog.h"
@@ -84,8 +83,9 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const Qg
   mAttributeForm->hideButtonBox();
 
   connect( mAttributeForm, SIGNAL( attributeChanged( QString, QVariant ) ), this, SLOT( featureFormAttributeChanged() ) );
+  connect( mAttributeForm, SIGNAL( modeChanged( QgsAttributeForm::Mode ) ), this, SIGNAL( formModeChanged( QgsAttributeForm::Mode ) ) );
   connect( mMasterModel, SIGNAL( modelChanged() ), mAttributeForm, SLOT( refreshFeature() ) );
-
+  connect( mAttributeForm, SIGNAL( filterExpressionSet( QString, QgsAttributeForm::FilterType ) ), this, SIGNAL( filterExpressionSet( QString, QgsAttributeForm::FilterType ) ) );
   if ( mFeatureListPreviewButton->defaultAction() )
     mFeatureList->setDisplayExpression( mDisplayExpression );
   else
@@ -306,6 +306,19 @@ void QgsDualView::setMultiEditEnabled( bool enabled )
     setView( AttributeEditor );
 
   mAttributeForm->setMode( enabled ? QgsAttributeForm::MultiEditMode : QgsAttributeForm::SingleEditMode );
+}
+
+void QgsDualView::toggleSearchMode( bool enabled )
+{
+  if ( enabled )
+  {
+    setView( AttributeEditor );
+    mAttributeForm->setMode( QgsAttributeForm::SearchMode );
+  }
+  else
+  {
+    mAttributeForm->setMode( QgsAttributeForm::SingleEditMode );
+  }
 }
 
 void QgsDualView::previewExpressionBuilder()

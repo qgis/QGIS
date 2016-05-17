@@ -123,6 +123,7 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsrangeconfigdlg.cpp
   editorwidgets/qgsrangewidgetwrapper.cpp
   editorwidgets/qgsrangewidgetfactory.cpp
+  editorwidgets/qgssearchwidgettoolbutton.cpp
   editorwidgets/qgsspinbox.cpp
   editorwidgets/qgsrelationwidgetwrapper.cpp
   editorwidgets/qgsrelationreferenceconfigdlg.cpp
@@ -545,6 +546,7 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/qgsrelationreferencewidget.h
   editorwidgets/qgsrelationreferencewidgetwrapper.h
   editorwidgets/qgsrelationwidgetwrapper.h
+  editorwidgets/qgssearchwidgettoolbutton.h
   editorwidgets/qgsspinbox.h
   editorwidgets/qgstexteditconfigdlg.h
   editorwidgets/qgstexteditwrapper.h

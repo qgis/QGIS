@@ -25,8 +25,18 @@ class QgsAttributeForm : QWidget
     enum Mode
     {
       SingleEditMode, /*!< Single edit mode, for editing a single feature */
+      AddFeatureMode, /*!< Add feature mode, for setting attributes for a new feature. In this mode the dialog will be editable even with an invalid feature and
+      will add a new feature when the form is accepted. */
       MultiEditMode, /*!< Multi edit mode, for editing fields of multiple features at once */
-      // TODO: SearchMode, /*!< Form values are used for searching/filtering the layer */
+      SearchMode, /*!< Form values are used for searching/filtering the layer */
+    };
+
+    //! Filter types
+    enum FilterType
+    {
+      ReplaceFilter, /*!< Filter should replace any existing filter */
+      FilterAnd, /*!< Filter should be combined using "AND" */
+      FilterOr, /*!< Filter should be combined using "OR" */
     };
 
     explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature& feature = QgsFeature(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext(), QWidget *parent /TransferThis/ = 0 );
@@ -139,6 +149,18 @@ class QgsAttributeForm : QWidget
      */
     void featureSaved( const QgsFeature& feature );
 
+    /** Is emitted when a filter expression is set using the form.
+     * @param expression filter expression
+     * @param type filter type
+     * @note added in QGIS 2.16
+     */
+    void filterExpressionSet( const QString& expression, QgsAttributeForm::FilterType type );
+
+    /** Emitted when the form changes mode.
+     * @param mode new mode
+     */
+    void modeChanged( QgsAttributeForm::Mode mode );
+
   public slots:
     /**
      * Call this to change the content of a given attribute. Will update the editor(s) related to this field.
@@ -180,6 +202,11 @@ class QgsAttributeForm : QWidget
      * Sets all values to the values of the current feature
      */
     void resetValues();
+
+    /** Resets the search/filter form values.
+     * @note added in QGIS 2.16
+     */
+    void resetSearch();
 
     /**
      * reload current feature
