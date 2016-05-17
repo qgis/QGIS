@@ -635,14 +635,14 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate )
   if ( estimate )
   {
     if ( mGeometryColType == "geometry" )
-      statement = QString( "select min([%1].STPointN(1).STX), min([%1].STPointN(1).STY), max([%1].STPointN(1).STX), max([%1].STPointN(1).STY)" ).arg( mGeometryColName );
+      statement = QString( "select min([%1].MakeValid().STPointN(1).STX), min([%1].MakeValid().STPointN(1).STY), max([%1].MakeValid().STPointN(1).STX), max([%1].MakeValid().STPointN(1).STY)" ).arg( mGeometryColName );
     else
-      statement = QString( "select min([%1].STPointN(1).Long), min([%1].STPointN(1).Lat), max([%1].STPointN(1).Long), max([%1].STPointN(1).Lat)" ).arg( mGeometryColName );
+      statement = QString( "select min([%1].MakeValid().STPointN(1).Long), min([%1].MakeValid().STPointN(1).Lat), max([%1].MakeValid().STPointN(1).Long), max([%1].MakeValid().STPointN(1).Lat)" ).arg( mGeometryColName );
   }
   else
   {
     if ( mGeometryColType == "geometry" )
-      statement = QString( "select min([%1].STEnvelope().STPointN(1).STX), min([%1].STEnvelope().STPointN(1).STY), max([%1].STEnvelope().STPointN(3).STX), max([%1].STEnvelope().STPointN(3).STY)" ).arg( mGeometryColName );
+      statement = QString( "select min([%1].MakeValid().STEnvelope().STPointN(1).STX), min([%1].MakeValid().STEnvelope().STPointN(1).STY), max([%1].MakeValid().STEnvelope().STPointN(3).STX), max([%1].MakeValid().STEnvelope().STPointN(3).STY)" ).arg( mGeometryColName );
     else
     {
       statement = QString( "select [%1]" ).arg( mGeometryColName );

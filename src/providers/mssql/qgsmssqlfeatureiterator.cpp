@@ -127,7 +127,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     <<  qgsDoubleToString( request.filterRect().xMinimum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMaximum() ) << ", "
     <<  qgsDoubleToString( request.filterRect().xMinimum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMinimum() );
 
-    mStatement += QString( " where [%1].STIntersects([%2]::STGeomFromText('POLYGON((%3))',%4)) = 1" ).arg(
+    mStatement += QString( " where [%1].STIsValid() = 1 AND [%1].STIntersects([%2]::STGeomFromText('POLYGON((%3))',%4)) = 1" ).arg(
                     mSource->mGeometryColName, mSource->mGeometryColType, r, QString::number( mSource->mSRId ) );
     filterAdded = true;
   }
