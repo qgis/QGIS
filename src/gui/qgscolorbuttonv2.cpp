@@ -408,6 +408,15 @@ void QgsColorButtonV2::prepareMenu()
     connect( noColorAction, SIGNAL( triggered() ), this, SLOT( setToNoColor() ) );
   }
 
+  mMenu->addSeparator();
+  QgsColorWheel* colorWheel = new QgsColorWheel( mMenu );
+  colorWheel->setColor( color() );
+  QgsColorWidgetAction* colorAction = new QgsColorWidgetAction( colorWheel, mMenu, mMenu );
+  colorAction->setDismissOnColorSelection( false );
+  connect( colorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
+  mMenu->addAction( colorAction );
+
+
   if ( mColorSchemeRegistry )
   {
     //get schemes with ShowInColorButtonMenu flag set
