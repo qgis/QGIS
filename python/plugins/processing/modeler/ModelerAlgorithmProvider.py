@@ -77,6 +77,7 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
         self.loadFromFolder(folder)
 
     def loadFromFolder(self, folder):
+        self.algs = []
         if not os.path.exists(folder):
             return
         for path, subdirs, files in os.walk(folder):
