@@ -250,15 +250,34 @@ class OutputVector(Output):
     encoding = None
     compatible = None
 
-    def getFileFilter(self, alg):
+    def __init__(self, name='', description='', hidden=False, base_input=None):
+        Output.__init__(self, name, description, hidden)
+        self.base_input = base_input
+        self.base_layer = None
+
+    def hasGeometry(self):
+        if self.base_layer is None:
+            return True
+        return dataobjects.canUseVectorLayer(self.base_layer, [-1])
+
+    def getSupportedOutputVectorLayerExtensions(self):
         exts = dataobjects.getSupportedOutputVectorLayerExtensions()
+        if not self.hasGeometry():
+            exts = ['dbf'] + [ext for ext in exts if ext in VectorWriter.nogeometry_extensions]
+        return exts
+
+    def getFileFilter(self, alg):
+        exts = self.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
             exts[i] = self.tr('%s files (*.%s)', 'OutputVector') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
     def getDefaultFileExtension(self, alg):
-        supported = alg.provider.getSupportedOutputVectorLayerExtensions()
-        default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT)
+        supported = self.getSupportedOutputVectorLayerExtensions()
+        if self.hasGeometry():
+            default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT)
+        else:
+            default = 'dbf'
         ext = default if default in supported else supported[0]
         return ext
 
@@ -271,9 +290,8 @@ class OutputVector(Output):
         temporary file with a supported file format, to be used to
         generate the output result.
         """
-
         ext = self.value[self.value.rfind('.') + 1:]
-        if ext in alg.provider.getSupportedOutputVectorLayerExtensions():
+        if ext in self.getSupportedOutputVectorLayerExtensions():
             return self.value
         else:
             if self.compatible is None:
@@ -307,4 +325,5 @@ class OutputVector(Output):
         w = VectorWriter(self.value, self.encoding, fields, geomType,
                          crs, options)
         self.layer = w.layer
+        self.value = w.destination
         return w
