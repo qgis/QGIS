@@ -1063,6 +1063,38 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         assert(len(list(features)) == 1)
 
+    def testSelectByExpression(self):
+        """ Test selecting by expression """
+        layer = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'Points', 'ogr')
+
+        # SetSelection
+        layer.selectByExpression('"Class"=\'B52\' and "Heading" > 10 and "Heading" <70', QgsVectorLayer.SetSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([10, 11]))
+        # check that existing selection is cleared
+        layer.selectByExpression('"Class"=\'Biplane\'', QgsVectorLayer.SetSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([1, 5, 6, 7, 8]))
+        # SelSelection no matching
+        layer.selectByExpression('"Class"=\'A380\'', QgsVectorLayer.SetSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([]))
+
+        # AddToSelection
+        layer.selectByExpression('"Importance"=3', QgsVectorLayer.AddToSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([0, 2, 3, 4, 14]))
+        layer.selectByExpression('"Importance"=4', QgsVectorLayer.AddToSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([0, 2, 3, 4, 13, 14]))
+
+        # IntersectSelection
+        layer.selectByExpression('"Heading"<100', QgsVectorLayer.IntersectSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([0, 2, 3, 4]))
+        layer.selectByExpression('"Cabin Crew"=1', QgsVectorLayer.IntersectSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([2, 3]))
+
+        # RemoveFromSelection
+        layer.selectByExpression('"Heading"=85', QgsVectorLayer.RemoveFromSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([3]))
+        layer.selectByExpression('"Heading"=95', QgsVectorLayer.RemoveFromSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([]))
+
     def testAggregate(self):
         """ Test aggregate calculation """
         layer = QgsVectorLayer("Point?field=fldint:integer", "layer", "memory")

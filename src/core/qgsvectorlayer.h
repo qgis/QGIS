@@ -504,6 +504,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       InvalidLayer = 4, /**< Edit failed due to invalid layer */
     };
 
+    //! Selection behaviour
+    enum SelectBehaviour
+    {
+      SetSelection, /**< Set selection, removing any existing selection */
+      AddToSelection, /**< Add selection to current selection */
+      IntersectSelection, /**< Modify current selection to include only select features which match */
+      RemoveFromSelection, /**<  Remove from current selection */
+    };
+
     /** Constructor - creates a vector layer
      *
      * The QgsVectorLayer is constructed by instantiating a data provider.  The provider
@@ -657,8 +666,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param addToSelection  If set to true will not clear before selecting
      *
      * @see   invertSelectionInRectangle(QgsRectangle & rect)
+     * @see selectByExpression()
      */
     void select( QgsRectangle & rect, bool addToSelection );
+
+    /** Select matching features using an expression.
+     * @param expression expression to evaluate to select features
+     * @param behaviour selection type, allows adding to current selection, removing
+     * from selection, etc.
+     * @note added in QGIS 2.16
+     * @see select()
+     * @see modifySelection()
+     */
+    void selectByExpression( const QString& expression, SelectBehaviour behaviour = SetSelection );
 
     /**
      * Modifies the current selection on this layer
@@ -670,6 +690,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @see   select(QgsFeatureId)
      * @see   deselect(QgsFeatureIds)
      * @see   deselect(QgsFeatureId)
+     * @see selectByExpression()
      */
     void modifySelection( QgsFeatureIds selectIds, QgsFeatureIds deselectIds );
 

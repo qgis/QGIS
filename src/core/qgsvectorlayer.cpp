@@ -465,6 +465,71 @@ void QgsVectorLayer::select( QgsRectangle & rect, bool addToSelection )
   }
 }
 
+void QgsVectorLayer::selectByExpression( const QString& expression, QgsVectorLayer::SelectBehaviour behaviour )
+{
+  QgsFeatureIds newSelection;
+
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( this );
+
+  if ( behaviour == SetSelection || behaviour == AddToSelection )
+  {
+    QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( expression )
+                                .setExpressionContext( context )
+                                .setFlags( QgsFeatureRequest::NoGeometry );
+    //TODO - investigate whether removing all attributes is possible
+    //for now, just set the first attribute
+    request.setSubsetOfAttributes( QgsAttributeList() << 0 );
+
+    QgsFeatureIterator features = getFeatures( request );
+
+    if ( behaviour == AddToSelection )
+    {
+      newSelection = selectedFeaturesIds();
+    }
+    QgsFeature feat;
+    while ( features.nextFeature( feat ) )
+    {
+      newSelection << feat.id();
+    }
+    features.close();
+  }
+  else if ( behaviour == IntersectSelection || behaviour == RemoveFromSelection )
+  {
+    QgsExpression exp( expression );
+    exp.prepare( &context );
+
+    QgsFeatureIds oldSelection = selectedFeaturesIds();
+    QgsFeatureRequest request = QgsFeatureRequest().setFilterFids( oldSelection );
+
+    //refine request
+    if ( !exp.needsGeometry() )
+      request.setFlags( QgsFeatureRequest::NoGeometry );
+    request.setSubsetOfAttributes( exp.referencedColumns(), fields() );
+
+    QgsFeatureIterator features = getFeatures( request );
+    QgsFeature feat;
+    while ( features.nextFeature( feat ) )
+    {
+      context.setFeature( feat );
+      bool matches = exp.evaluate( &context ).toBool();
+
+      if ( matches && behaviour == IntersectSelection )
+      {
+        newSelection << feat.id();
+      }
+      else if ( !matches && behaviour == RemoveFromSelection )
+      {
+        newSelection << feat.id();
+      }
+    }
+  }
+
+  setSelectedFeatures( newSelection );
+}
+
 void QgsVectorLayer::modifySelection( QgsFeatureIds selectIds, QgsFeatureIds deselectIds )
 {
   QgsFeatureIds intersectingIds = selectIds & deselectIds;

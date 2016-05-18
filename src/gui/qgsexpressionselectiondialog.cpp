@@ -76,138 +76,29 @@ void QgsExpressionSelectionDialog::setGeomCalculator( const QgsDistanceArea & da
 
 void QgsExpressionSelectionDialog::on_mActionSelect_triggered()
 {
-  QgsFeatureIds newSelection;
-  QgsExpression* expression = new QgsExpression( mExpressionBuilder->expressionText() );
-
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayer );
-
-  QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( mExpressionBuilder->expressionText() ).setExpressionContext( context );
-  QgsFeatureIterator features = mLayer->getFeatures( request );
-
-  QgsFeature feat;
-  while ( features.nextFeature( feat ) )
-  {
-    newSelection << feat.id();
-  }
-
-  features.close();
-
-  mLayer->setSelectedFeatures( newSelection );
-
-  delete expression;
+  mLayer->selectByExpression( mExpressionBuilder->expressionText(),
+                              QgsVectorLayer::SetSelection );
   saveRecent();
 }
 
 void QgsExpressionSelectionDialog::on_mActionAddToSelection_triggered()
 {
-  QgsFeatureIds newSelection = mLayer->selectedFeaturesIds();
-  QgsExpression* expression = new QgsExpression( mExpressionBuilder->expressionText() );
-
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayer );
-
-  QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( mExpressionBuilder->expressionText() ).setExpressionContext( context );
-  QgsFeatureIterator features = mLayer->getFeatures( request );
-
-  QgsFeature feat;
-  while ( features.nextFeature( feat ) )
-  {
-    newSelection << feat.id();
-  }
-
-  features.close();
-
-  mLayer->setSelectedFeatures( newSelection );
-
-  delete expression;
+  mLayer->selectByExpression( mExpressionBuilder->expressionText(),
+                              QgsVectorLayer::AddToSelection );
   saveRecent();
 }
 
 void QgsExpressionSelectionDialog::on_mActionSelectIntersect_triggered()
 {
-  const QgsFeatureIds &oldSelection = mLayer->selectedFeaturesIds();
-  QgsFeatureIds newSelection;
-
-  QgsExpression* expression = new QgsExpression( mExpressionBuilder->expressionText() );
-
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayer );
-
-  expression->prepare( &context );
-
-  QgsFeature feat;
-  Q_FOREACH ( const QgsFeatureId fid, oldSelection )
-  {
-    QgsFeatureIterator features = mLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) );
-
-    if ( features.nextFeature( feat ) )
-    {
-      context.setFeature( feat );
-      if ( expression->evaluate( &context ).toBool() )
-      {
-        newSelection << feat.id();
-      }
-    }
-    else
-    {
-      Q_ASSERT( false );
-    }
-
-    features.close();
-  }
-
-  mLayer->setSelectedFeatures( newSelection );
-
-  delete expression;
+  mLayer->selectByExpression( mExpressionBuilder->expressionText(),
+                              QgsVectorLayer::IntersectSelection );
   saveRecent();
 }
 
 void QgsExpressionSelectionDialog::on_mActionRemoveFromSelection_triggered()
 {
-  const QgsFeatureIds &oldSelection = mLayer->selectedFeaturesIds();
-  QgsFeatureIds newSelection = mLayer->selectedFeaturesIds();
-
-  QgsExpression* expression = new QgsExpression( mExpressionBuilder->expressionText() );
-
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayer );
-
-  expression->prepare( &context );
-
-  QgsFeature feat;
-  Q_FOREACH ( const QgsFeatureId fid, oldSelection )
-  {
-    QgsFeatureIterator features = mLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) );
-
-    if ( features.nextFeature( feat ) )
-    {
-      context.setFeature( feat );
-      if ( expression->evaluate( &context ).toBool() )
-      {
-        newSelection.remove( feat.id() );
-      }
-    }
-    else
-    {
-      Q_ASSERT( false );
-    }
-
-    features.close();
-  }
-
-  mLayer->setSelectedFeatures( newSelection );
-
-  delete expression;
-
+  mLayer->selectByExpression( mExpressionBuilder->expressionText(),
+                              QgsVectorLayer::RemoveFromSelection );
   saveRecent();
 }
 
