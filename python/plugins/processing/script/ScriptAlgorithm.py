@@ -94,7 +94,6 @@ class ScriptAlgorithm(GeoAlgorithm):
     def defineCharacteristicsFromFile(self):
         self.error = None
         self.script = ''
-        self.silentOutputs = []
         filename = os.path.basename(self.descriptionFile)
         self.name = filename[:filename.rfind('.')].replace('_', ' ')
         self.group = self.tr('User scripts', 'ScriptAlgorithm')
@@ -116,7 +115,6 @@ class ScriptAlgorithm(GeoAlgorithm):
 
     def defineCharacteristicsFromScript(self):
         lines = self.script.split('\n')
-        self.silentOutputs = []
         self.name, self.i18n_name = self.trAlgorithm('[Unnamed algorithm]', 'ScriptAlgorithm')
         self.group, self.i18n_group = self.trAlgorithm('User scripts', 'ScriptAlgorithm')
         for line in lines:
