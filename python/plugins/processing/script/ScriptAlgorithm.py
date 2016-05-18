@@ -92,6 +92,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         return self._icon
 
     def defineCharacteristicsFromFile(self):
+        self.error = None
         self.script = ''
         self.silentOutputs = []
         filename = os.path.basename(self.descriptionFile)
@@ -104,9 +105,8 @@ class ScriptAlgorithm(GeoAlgorithm):
                 try:
                     self.processParameterLine(line.strip('\n'))
                 except:
-                    raise WrongScriptException(
-                        self.tr('Could not load script: %s\n'
-                                'Problem with line: %s', 'ScriptAlgorithm') % (self.descriptionFile, line))
+                    self.error = self.tr('This script has a syntax errors.\n'
+                                'Problem with line: %s', 'ScriptAlgorithm') % line
             self.script += line
             line = lines.readline()
         lines.close()
@@ -125,6 +125,10 @@ class ScriptAlgorithm(GeoAlgorithm):
                     self.processParameterLine(line.strip('\n'))
                 except:
                     pass
+
+
+    def checkBeforeOpeningParametersDialog(self):
+        return self.error
 
     def checkInputCRS(self):
         if self.noCRSWarning:
