@@ -32,7 +32,7 @@ from processing.preconfigured.PreconfiguredUtils import algAsDict
 from processing.preconfigured.PreconfiguredUtils import preconfiguredAlgorithmsFolder
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.AlgorithmDialog import AlgorithmDialog
-from PyQt4.QtGui import QMessageBox, QPalette, QColor, QVBoxLayout, QLabel,\
+from PyQt4.QtGui import QMessageBox, QPalette, QColor, QVBoxLayout, QLabel, \
     QLineEdit, QWidget
 
 
@@ -59,7 +59,7 @@ class PreconfiguredAlgorithmDialog(AlgorithmDialog):
             description["name"] = self.settingsPanel.txtName.text().strip()
             description["group"] = self.settingsPanel.txtGroup.text().strip()
             if not (description["name"] and description["group"]):
-                self.tabWidget.setCurrentIndex(1)
+                self.tabWidget.setCurrentIndex(self.tabWidget.count() - 1)
                 return
             validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
             filename = ''.join(c for c in description["name"] if c in validChars).lower() + ".json"
