@@ -316,11 +316,13 @@ void QgsMapCanvas::setMagnificationFactor( double level )
   QgsMapSettings settings = mSettings;
   settings.setRotation( 0.0 );
 
-  QgsRectangle ext = settings.visibleExtent();
-  ext.scale( mMagnificationFactor / level );
-
+  double ratio = mMagnificationFactor / level;
   mMagnificationFactor = level;
 
+  QgsRectangle ext = settings.visibleExtent();
+  ext.scale( ratio );
+
+  mSettings.setOutputDpi( mSettings.outputDpi() / ratio );
   setExtent( ext, true );
 
   refresh();
@@ -694,17 +696,13 @@ void QgsMapCanvas::refreshMap()
 
   mSettings.setExpressionContext( expressionContext );
 
-  // magnify level to use in renderers
-  QgsMapSettings settings = mSettings;
-  settings.setOutputDpi( settings.outputDpi() * mMagnificationFactor );
-
   // create the renderer job
   Q_ASSERT( !mJob );
   mJobCancelled = false;
   if ( mUseParallelRendering )
-    mJob = new QgsMapRendererParallelJob( settings );
+    mJob = new QgsMapRendererParallelJob( mSettings );
   else
-    mJob = new QgsMapRendererSequentialJob( settings );
+    mJob = new QgsMapRendererSequentialJob( mSettings );
   connect( mJob, SIGNAL( finished() ), SLOT( rendererJobFinished() ) );
   mJob->setCache( mCache );
 
