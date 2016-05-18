@@ -69,6 +69,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   layout->setContentsMargins( 0, 0, 0, 0 );
   mMinMaxContainerWidget->setLayout( layout );
   layout->addWidget( mMinMaxWidget );
+  mMinMaxWidget->hide();
   connect( mMinMaxWidget, SIGNAL( load( int, double, double, int ) ),
            this, SLOT( loadMinMax( int, double, double, int ) ) );
 
@@ -343,6 +344,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
     newItem->setText( 2, QString::number( *value_it, 'f' ) );
     newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
   }
+  emit widgetChanged();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::on_mClassificationModeComboBox_currentIndexChanged( int index )
@@ -366,6 +368,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mColorRampComboBox_currentIndexC
   {
     mClassificationModeComboBox->setCurrentIndex( mClassificationModeComboBox->findData( EqualInterval ) );
   }
+  on_mClassifyButton_clicked();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem>& colorRampItems )

@@ -733,7 +733,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mMapStyleWidget = new QgsMapStylingWidget( mMapCanvas );
   mMapStylingDock->setWidget( mMapStyleWidget );
   connect( mMapStyleWidget, SIGNAL( styleChanged( QgsMapLayer* ) ), this, SLOT( updateLabelToolButtons() ) );
-  connect( mMapStylingDock, SIGNAL( visibilityChanged( bool ) ), mActionStyleDock, SLOT( setChecked( bool ) ) );
+//  connect( mMapStylingDock, SIGNAL( visibilityChanged( bool ) ), mActionStyleDock, SLOT( setChecked( bool ) ) );
 
   addDockWidget( Qt::RightDockWidgetArea, mMapStylingDock );
   mMapStylingDock->hide();

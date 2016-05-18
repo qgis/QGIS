@@ -16,6 +16,7 @@ class QgsLabelingWidget;
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRendererV2PropertiesDialog;
+class QgsRendererRasterPropertiesWidget;
 class QgsUndoWidget;
 
 class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
@@ -48,14 +49,16 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget
     void autoApply();
 
   private slots:
-    void updateCurrentWidgetLayer( int currentPage );
+    void updateCurrentWidgetLayer();
     void layerAboutToBeRemoved( QgsMapLayer* layer );
 
   private:
     int mNotSupportedPage;
     int mVectorPage;
-    int mStyleTabIndex;
-    int mLabelTabIndex;
+    int mRasterPage;
+    int mVectorStyleTabIndex;
+    int mVectorLabelTabIndex;
+    int mRasterStyleTabIndex;
     QTimer* mAutoApplyTimer;
     QDomNode mLastStyleXml;
     QgsMapCanvas* mMapCanvas;
@@ -64,9 +67,11 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget
     QLabel* mLayerTitleLabel;
     QgsMapLayer* mCurrentLayer;
     QStackedWidget* mStackedWidget;
-    QTabWidget *mMapStyleTabs;
+    QTabWidget *mVectorLayerTabs;
+    QTabWidget *mRasterLayerTabs;
     QgsLabelingWidget *mLabelingWidget;
     QgsRendererV2PropertiesDialog* mVectorStyleWidget;
+    QgsRendererRasterPropertiesWidget* mRasterStyleWidget;
     QDialogButtonBox* mButtonBox;
     QCheckBox* mLiveApplyCheck;
     QToolButton* mUndoButton;
