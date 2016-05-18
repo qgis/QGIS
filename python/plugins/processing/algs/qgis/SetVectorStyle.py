@@ -41,7 +41,7 @@ class SetVectorStyle(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        #self.allowOnlyOpenedLayers = True
+        # self.allowOnlyOpenedLayers = True
         self.name, self.i18n_name = self.trAlgorithm('Set style for vector layer')
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
         self.addParameter(ParameterVector(self.INPUT,
@@ -52,7 +52,6 @@ class SetVectorStyle(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(filename)
 
         style = self.getParameterValue(self.STYLE)
         layer = dataobjects.getObjectFromUri(filename, False)
@@ -63,3 +62,4 @@ class SetVectorStyle(GeoAlgorithm):
             layer.loadNamedStyle(style)
             iface.mapCanvas().refresh()
             iface.legendInterface().refreshLayerSymbology(layer)
+            layer.triggerRepaint()
