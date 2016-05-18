@@ -76,6 +76,7 @@ int QgsGrassVectorMap::userCount() const
   {
     count += layer->userCount();
   }
+  QgsDebugMsg( QString( "count = %1" ).arg( count ) );
   return count;
 }
 
@@ -443,9 +444,9 @@ void QgsGrassVectorMap::closeLayer( QgsGrassVectorMapLayer * layer )
   QgsDebugMsg( QString( "%1 map users" ).arg( userCount() ) );
   if ( userCount() == 0 )
   {
-    // TODO: attention about dead lock, probably move to QgsGrassVectorMapStore
-    //QgsDebugMsg( "No more map users -> close" );
-    //close();
+    QgsDebugMsg( "No more map users -> close" );
+    // Once was probably causing dead lock; move to QgsGrassVectorMapStore?
+    close();
   }
 
   QgsDebugMsg( "layer closed" );
