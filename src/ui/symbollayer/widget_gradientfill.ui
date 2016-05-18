@@ -536,7 +536,6 @@
   <zorder>mRefPoint1XDDBtn</zorder>
   <zorder>mRefPoint1YDDBtn</zorder>
   <zorder>mRefPoint2CentroidDDBtn</zorder>
-  <zorder>verticalSpacer</zorder>
  </widget>
  <customwidgets>
   <customwidget>

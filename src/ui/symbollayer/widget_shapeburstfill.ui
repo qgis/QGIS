@@ -389,21 +389,16 @@
   <zorder>label_6</zorder>
   <zorder>label_2</zorder>
   <zorder>radioTwoColor</zorder>
-  <zorder></zorder>
   <zorder>radioColorRamp</zorder>
   <zorder>label_3</zorder>
   <zorder>mRadioUseWholeShape</zorder>
   <zorder>mRadioUseMaxDistance</zorder>
   <zorder>mIgnoreRingsCheckBox</zorder>
   <zorder>mRadioUseWholeShape</zorder>
-  <zorder></zorder>
-  <zorder></zorder>
-  <zorder></zorder>
   <zorder>mStartColorDDBtn</zorder>
   <zorder>mEndColorDDBtn</zorder>
   <zorder>btnChangeColor</zorder>
   <zorder>btnChangeColor2</zorder>
-  <zorder>verticalSpacer</zorder>
   <zorder>mShadeWholeShapeDDBtn</zorder>
   <zorder>mShadeDistanceDDBtn</zorder>
   <zorder>mIgnoreRingsDDBtn</zorder>
