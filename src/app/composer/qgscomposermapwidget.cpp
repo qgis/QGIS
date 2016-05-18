@@ -332,6 +332,9 @@ void QgsComposerMapWidget::followVisibilityPresetSelected( int currentIndex )
   if ( !mComposerMap )
     return;
 
+  if ( currentIndex == -1 )
+    return;  // doing combo box model reset
+
   QString presetName;
   if ( currentIndex != 0 )
   {
@@ -378,6 +381,12 @@ void QgsComposerMapWidget::onPresetsChanged()
     lst.append( tr( "(none)" ) );
     lst += QgsProject::instance()->visibilityPresetCollection()->presets();
     model->setStringList( lst );
+
+    // select the previously selected item again
+    int presetModelIndex = mFollowVisibilityPresetCombo->findText( mComposerMap->followVisibilityPresetName() );
+    mFollowVisibilityPresetCombo->blockSignals( true );
+    mFollowVisibilityPresetCombo->setCurrentIndex( presetModelIndex != -1 ? presetModelIndex : 0 ); // 0 == none
+    mFollowVisibilityPresetCombo->blockSignals( false );
   }
 }
 
@@ -840,6 +849,8 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mAtlasMarginSpinBox->blockSignals( b );
   mAtlasFixedScaleRadio->blockSignals( b );
   mAtlasMarginRadio->blockSignals( b );
+  mFollowVisibilityPresetCheckBox->blockSignals( b );
+  mFollowVisibilityPresetCombo->blockSignals( b );
   mKeepLayerListCheckBox->blockSignals( b );
   mKeepLayerStylesCheckBox->blockSignals( b );
   mSetToMapCanvasExtentButton->blockSignals( b );
