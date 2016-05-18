@@ -262,6 +262,27 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Stores the current layer styles into style overrides. @note added in 2.8 */
     void storeCurrentLayerStyles();
 
+    /** Whether the map should follow a visibility preset. If true, the layers and layer styles
+     * will be used from given preset name (configured with setFollowVisibilityPresetName() method).
+     * This means when preset's settings are changed, the new settings are automatically
+     * picked up next time when rendering, without having to explicitly update them.
+     * At most one of the flags keepLayerSet() and followVisibilityPreset() should be enabled
+     * at any time since they are alternative approaches - if both are enabled,
+     * following visibility preset has higher priority. If neither is enabled (or if preset name is not set),
+     * map will use the same configuration as the map canvas uses.
+     * @note added in 2.16 */
+    bool followVisibilityPreset() const { return mFollowVisibilityPreset; }
+    /** Sets whether the map should follow a visibility preset. See followVisibilityPreset() for more details.
+     * @note added in 2.16 */
+    void setFollowVisibilityPreset( bool follow ) { mFollowVisibilityPreset = follow; }
+    /** Preset name that decides which layers and layer styles are used for map rendering. It is only
+     * used when followVisibilityPreset() returns true.
+     * @note added in 2.16 */
+    QString followVisibilityPresetName() const { return mFollowVisibilityPresetName; }
+    /** Sets preset name for map rendering. See followVisibilityPresetName() for more details.
+     * @note added in 2.16 */
+    void setFollowVisibilityPresetName( const QString& name ) { mFollowVisibilityPresetName = name; }
+
     // Set cache outdated
     void setCacheUpdated( bool u = false );
 
@@ -887,6 +908,14 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     bool mKeepLayerStyles;
     /** Stored style names (value) to be used with particular layer IDs (key) instead of default style */
     QMap<QString, QString> mLayerStyleOverrides;
+
+    /** Whether layers and styles should be used from a preset (preset name is stored
+     * in mVisibilityPresetName and may be overridden by data-defined expression).
+     * This flag has higher priority than mKeepLayerSet. */
+    bool mFollowVisibilityPreset;
+    /** Visibility preset name to be used for map's layers and styles in case mFollowVisibilityPreset
+     *  is true. May be overridden by data-defined expression. */
+    QString mFollowVisibilityPresetName;
 
     /** Whether updates to the map are enabled */
     bool mUpdatesEnabled;
