@@ -201,6 +201,8 @@
 %Include raster/qgsrasterrendererwidget.sip
 %Include raster/qgssinglebandgrayrendererwidget.sip
 %Include raster/qgssinglebandpseudocolorrendererwidget.sip
+%Include raster/qgsrendererrasterpropertieswidget.sip
+%Include raster/qgsrastertransparencywidget.sip
 
 %Include symbology-ng/characterwidget.sip
 %Include symbology-ng/qgs25drendererwidget.sip

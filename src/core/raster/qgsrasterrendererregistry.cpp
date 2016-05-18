@@ -21,7 +21,10 @@
 #include "qgssinglebandcolordatarenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssinglebandpseudocolorrenderer.h"
+#include "qgsapplication.h"
+
 #include <QSettings>
+#include <QIcon>
 
 QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry( const QString& theName, const QString& theVisibleName,
     QgsRasterRendererCreateFunc rendererFunction,
@@ -33,6 +36,11 @@ QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry( const QString& t
 
 QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry(): rendererCreateFunction( nullptr ), widgetCreateFunction( nullptr )
 {
+}
+
+QIcon QgsRasterRendererRegistryEntry::icon()
+{
+  return QgsApplication::getThemeIcon( QString( "styleicons/%1.svg" ).arg( name ) );
 }
 
 QgsRasterRendererRegistry* QgsRasterRendererRegistry::instance()

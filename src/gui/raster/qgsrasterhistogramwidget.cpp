@@ -981,7 +981,7 @@ void QgsRasterHistogramWidget::applyHistoMin()
     rect.setLeft( min.toDouble() );
     mHistoZoomer->zoom( rect );
   }
-
+  emit widgetChanged();
 }
 
 void QgsRasterHistogramWidget::applyHistoMax()
@@ -1010,6 +1010,7 @@ void QgsRasterHistogramWidget::applyHistoMax()
     rect.setRight( max.toDouble() );
     mHistoZoomer->zoom( rect );
   }
+  emit widgetChanged();
 }
 
 void QgsRasterHistogramWidget::on_btnHistoMin_toggled()

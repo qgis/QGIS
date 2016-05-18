@@ -64,6 +64,11 @@ QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer
     mContrastEnhancementComboBox->addItem( tr( "Clip to MinMax" ), 3 );
 
     setFromRenderer( layer->renderer() );
+
+    connect( mGradientComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
+    connect( mContrastEnhancementComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
+    connect( mMaxLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
+    connect( mMinLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
   }
 }
 
@@ -130,6 +135,7 @@ void QgsSingleBandGrayRendererWidget::on_mGrayBandComboBox_currentIndexChanged( 
   QList<int> myBands;
   myBands.append( mGrayBandComboBox->itemData( index ).toInt() );
   mMinMaxWidget->setBands( myBands );
+  emit widgetChanged();
 }
 
 void QgsSingleBandGrayRendererWidget::setFromRenderer( const QgsRasterRenderer* r )
