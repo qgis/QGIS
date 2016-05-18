@@ -51,11 +51,13 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
   private slots:
     void on_mAddEntryButton_clicked();
     void on_mDeleteEntryButton_clicked();
+    void on_mNumberOfEntriesSpinBox_valueChanged();
     void on_mSortButton_clicked();
     void on_mClassifyButton_clicked();
     void on_mLoadFromBandButton_clicked();
     void on_mLoadFromFileButton_clicked();
     void on_mExportToFileButton_clicked();
+    void on_mColorInterpolationComboBox_currentIndexChanged();
     void on_mColormapTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column );
     void on_mBandComboBox_currentIndexChanged( int index );
     void on_mMinLineEdit_textChanged( const QString & text ) { Q_UNUSED( text ); resetClassifyButton(); }

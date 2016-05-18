@@ -47,6 +47,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   QgsDebugMsg( "defaultPalette = " + defaultPalette );
   mColorRampComboBox->setCurrentIndex( mColorRampComboBox->findText( defaultPalette ) );
   connect( mButtonEditRamp, SIGNAL( clicked() ), mColorRampComboBox, SLOT( editSourceRamp() ) );
+  connect( mColorRampComboBox, SIGNAL( sourceRampEdited() ), this, SLOT( on_mClassifyButton_clicked() ) );
 
   if ( !mRasterLayer )
   {
@@ -164,6 +165,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mAddEntryButton_clicked()
   newItem->setText( 0, "0.0" );
   newItem->setBackground( 1, QBrush( QColor( Qt::magenta ) ) );
   newItem->setText( 2, tr( "Custom color map entry" ) );
+  emit widgetChanged();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::on_mDeleteEntryButton_clicked()
@@ -173,6 +175,12 @@ void QgsSingleBandPseudoColorRendererWidget::on_mDeleteEntryButton_clicked()
   {
     delete currentItem;
   }
+  emit widgetChanged();
+}
+
+void QgsSingleBandPseudoColorRendererWidget::on_mNumberOfEntriesSpinBox_valueChanged()
+{
+  on_mClassifyButton_clicked();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::on_mSortButton_clicked()
@@ -226,6 +234,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mSortButton_clicked()
     }
   }
   populateColormapTreeWidget( myColorRampItems );
+  emit widgetChanged();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
@@ -350,6 +359,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
 void QgsSingleBandPseudoColorRendererWidget::on_mClassificationModeComboBox_currentIndexChanged( int index )
 {
   mNumberOfEntriesSpinBox->setEnabled( mClassificationModeComboBox->itemData( index ).toInt() == EqualInterval );
+  on_mClassifyButton_clicked();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::on_mColorRampComboBox_currentIndexChanged( int index )
@@ -404,6 +414,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromBandButton_clicked()
   {
     QMessageBox::warning( this, tr( "Load Color Map" ), tr( "The color map for band %1 has no entries" ).arg( bandIndex ) );
   }
+  emit widgetChanged();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromFileButton_clicked()
@@ -493,6 +504,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromFileButton_clicked()
   {
     QMessageBox::warning( this, tr( "Read access denied" ), tr( "Read access denied. Adjust the file permissions and try again.\n\n" ) );
   }
+  emit widgetChanged();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::on_mExportToFileButton_clicked()
@@ -561,6 +573,11 @@ void QgsSingleBandPseudoColorRendererWidget::on_mExportToFileButton_clicked()
   }
 }
 
+void QgsSingleBandPseudoColorRendererWidget::on_mColorInterpolationComboBox_currentIndexChanged()
+{
+  on_mClassifyButton_clicked();
+}
+
 void QgsSingleBandPseudoColorRendererWidget::on_mColormapTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column )
 {
   if ( !item )
@@ -575,6 +592,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mColormapTreeWidget_itemDoubleCl
     if ( newColor.isValid() )
     {
       item->setBackground( 1, QBrush( newColor ) );
+      emit widgetChanged();
     }
   }
   else
@@ -633,6 +651,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mBandComboBox_currentIndexChange
   QList<int> myBands;
   myBands.append( mBandComboBox->itemData( index ).toInt() );
   mMinMaxWidget->setBands( myBands );
+  on_mClassifyButton_clicked();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin )
