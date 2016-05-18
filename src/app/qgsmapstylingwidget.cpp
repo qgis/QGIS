@@ -17,6 +17,7 @@
 #include "qgsundowidget.h"
 #include "qgsrendererv2.h"
 #include "qgsrendererv2registry.h"
+#include "qgsmaplayerregistry.h"
 
 QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent )
     : QWidget( parent )
@@ -28,6 +29,8 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
   QBoxLayout* layout = new QVBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
   this->setLayout( layout );
+
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QgsMapLayer* ) ), this, SLOT( layerAboutToBeRemoved( QgsMapLayer* ) ) );
 
   mAutoApplyTimer = new QTimer( this );
   mAutoApplyTimer->setSingleShot( true );
@@ -197,6 +200,16 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer( int currentPage )
   }
 
   mBlockAutoApply = false;
+}
+
+void QgsMapStylingWidget::layerAboutToBeRemoved( QgsMapLayer* layer )
+{
+  if ( layer == mCurrentLayer )
+  {
+    mAutoApplyTimer->stop();
+    mStackedWidget->setCurrentIndex( mNotSupportedPage );
+    mCurrentLayer = nullptr;
+  }
 }
 
 

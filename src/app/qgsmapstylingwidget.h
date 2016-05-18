@@ -49,6 +49,7 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget
 
   private slots:
     void updateCurrentWidgetLayer( int currentPage );
+    void layerAboutToBeRemoved( QgsMapLayer* layer );
 
   private:
     int mNotSupportedPage;
