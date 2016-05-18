@@ -313,19 +313,13 @@ QgsMapCanvas::~QgsMapCanvas()
 
 void QgsMapCanvas::setMagnificationFactor( double level )
 {
-  QgsMapSettings settings = mSettings;
-  settings.setRotation( 0.0 );
-
-  double ratio = mMagnificationFactor / level;
-  mMagnificationFactor = level;
-
-  QgsRectangle ext = settings.visibleExtent();
-  ext.scale( ratio );
-
-  mSettings.setOutputDpi( mSettings.outputDpi() / ratio );
-  setExtent( ext, true );
-
+  mSettings.setMagnificationFactor( level );
   refresh();
+}
+
+double QgsMapCanvas::magnificationFactor() const
+{
+  return mSettings.magnificationFactor();
 }
 
 void QgsMapCanvas::enableAntiAliasing( bool theFlag )
@@ -905,11 +899,7 @@ void QgsMapCanvas::setExtent( QgsRectangle const & r, bool magnified )
   }
   else
   {
-    QgsRectangle magnifiedExtent = r;
-    if ( ! magnified )
-      magnifiedExtent.scale( 1 / mMagnificationFactor );
-
-    mSettings.setExtent( magnifiedExtent );
+    mSettings.setExtent( r, magnified );
   }
   emit extentsChanged();
   updateScale();

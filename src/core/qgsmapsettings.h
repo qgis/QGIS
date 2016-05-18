@@ -64,7 +64,7 @@ class CORE_EXPORT QgsMapSettings
     //! The actual visible extent used for rendering could be slightly different
     //! since the given extent may be expanded in order to fit the aspect ratio
     //! of output size. Use visibleExtent() to get the resulting extent.
-    void setExtent( const QgsRectangle& rect );
+    void setExtent( const QgsRectangle& rect, bool magnified = true );
 
     //! Return the size of the resulting map image
     QSize outputSize() const;
@@ -85,6 +85,13 @@ class CORE_EXPORT QgsMapSettings
     int outputDpi() const;
     //! Set DPI used for conversion between real world units (e.g. mm) and pixels
     void setOutputDpi( int dpi );
+
+    //! Set the magnification factor.
+    //! @note added in 2.16
+    void setMagnificationFactor( double factor );
+    //! Return the magnification factor.
+    //! @note added in 2.16
+    double magnificationFactor() const;
 
     //! Get list of layer IDs for map rendering
     //! The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
@@ -261,6 +268,7 @@ class CORE_EXPORT QgsMapSettings
     QgsRectangle mExtent;
 
     double mRotation;
+    double mMagnificationFactor;
 
     QStringList mLayers;
     QMap<QString, QString> mLayerStyleOverrides;

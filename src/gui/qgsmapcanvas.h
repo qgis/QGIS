@@ -126,7 +126,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setMagnificationFactor( double level );
 
     //! Returns the magnification factor
-    double magnificationFactor() const { return mMagnificationFactor; };
+    //! @note added in 2.16
+    double magnificationFactor() const;
 
     void setLayerSet( QList<QgsMapCanvasLayer>& layers );
 
