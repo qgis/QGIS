@@ -48,6 +48,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   mColorRampComboBox->setCurrentIndex( mColorRampComboBox->findText( defaultPalette ) );
   connect( mButtonEditRamp, SIGNAL( clicked() ), mColorRampComboBox, SLOT( editSourceRamp() ) );
   connect( mColorRampComboBox, SIGNAL( sourceRampEdited() ), this, SLOT( on_mClassifyButton_clicked() ) );
+  connect( mInvertCheckBox, SIGNAL( stateChanged(int)), this, SLOT( on_mClassifyButton_clicked() ) );
 
   if ( !mRasterLayer )
   {
