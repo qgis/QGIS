@@ -40,12 +40,6 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
 
     explicit QgsDoubleSpinBox( QWidget *parent = nullptr );
 
-    /** Sets background color of QLineEdit widget within spin box
-      * @param color the background color
-      * @note added in QGIS 2.16
-      */
-    void setBackgroundColor( const QColor *color = nullptr );
-
     //! determines if the widget will show a clear button
     //! @note the clear button will set the widget to its minimum value
     void setShowClearButton( const bool showClearButton );

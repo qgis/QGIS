@@ -46,19 +46,6 @@ QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
   connect( this, SIGNAL( valueChanged( double ) ), this, SLOT( changed( double ) ) );
 }
 
-void QgsDoubleSpinBox::setBackgroundColor( const QColor *c )
-{
-  if ( c )
-  {
-    QString rgb = QString( "rgb(%1, %2, %3)" ).arg( c->red() ).arg( c->green() ).arg( c->blue() );
-    this->lineEdit()->setStyleSheet( QString( "background-color: %1" ).arg( rgb ) );
-  }
-  else
-    this->lineEdit()->setStyleSheet( "" );
-
-  this->setStyleSheet( "" );
-}
-
 void QgsDoubleSpinBox::setShowClearButton( const bool showClearButton )
 {
   mShowClearButton = showClearButton;

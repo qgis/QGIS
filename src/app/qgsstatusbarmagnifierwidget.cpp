@@ -100,15 +100,6 @@ void QgsStatusBarMagnifierWidget::updateMagnifier()
   // get current data
   mMagnifier = mSpinBox->value();
 
-  // update background color
-  QSettings mySettings;
-  int value = mySettings.value( "/qgis/magnifier_level", 100 ).toInt();
-
-  if ( mMagnifier == value )
-    mSpinBox->setBackgroundColor();
-  else
-    mSpinBox->setBackgroundColor( new QColor( 200, 200, 255 ) );
-
   // update map canvas
   mCanvas->setMagnificationFactor( mMagnifier / double( mMagnifierMin ) );
 }
