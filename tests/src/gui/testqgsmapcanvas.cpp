@@ -49,6 +49,7 @@ class TestQgsMapCanvas : public QObject
     void testPanByKeyboard();
     void testMagnification();
     void testMagnificationExtent();
+    void testMagnificationScale();
 
   private:
     QgsMapCanvas* mCanvas;
@@ -342,6 +343,21 @@ void TestQgsMapCanvas::testMagnificationExtent()
 
   mCanvas->zoomScale( scale );
   compareExtent( mCanvas->extent(), initialExtent );
+}
+
+void TestQgsMapCanvas::testMagnificationScale()
+{
+  mCanvas->setMagnificationFactor( 1.0 );
+  double initialScale = mCanvas->scale();
+
+  mCanvas->setMagnificationFactor( 4.0 );
+  QCOMPARE( initialScale, mCanvas->scale() );
+
+  mCanvas->setMagnificationFactor( 7.5 );
+  QCOMPARE( initialScale, mCanvas->scale() );
+
+  mCanvas->setMagnificationFactor( 1.0 );
+  QCOMPARE( initialScale, mCanvas->scale() );
 }
 
 QTEST_MAIN( TestQgsMapCanvas )
