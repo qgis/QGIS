@@ -426,10 +426,6 @@ class CORE_EXPORT QgsVectorFileWriter
     QgsRenderContext mRenderContext;
 
     static QMap<QString, MetaData> initMetaData();
-    /**
-     * @deprecated
-     */
-    static bool driverMetadata( const QString& driverName, QString &longName, QString &trLongName, QString &glob, QString &ext );
     void createSymbolLayerTable( QgsVectorLayer* vl,  const QgsCoordinateTransform* ct, OGRDataSourceH ds );
     OGRFeatureH createFeature( QgsFeature& feature );
     bool writeFeature( OGRLayerH layer, OGRFeatureH feature );
