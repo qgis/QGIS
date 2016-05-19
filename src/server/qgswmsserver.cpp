@@ -2194,6 +2194,10 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   {
     fReq.setFilterRect( searchRect );
   }
+  else
+  {
+    fReq.setFlags( fReq.flags() & ~ QgsFeatureRequest::ExactIntersect );
+  }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   mAccessControl->filterFeatures( layer, fReq );
