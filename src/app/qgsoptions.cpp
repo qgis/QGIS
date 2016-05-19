@@ -589,6 +589,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
   mSimplifyMaximumScaleComboBox->setScale( 1.0 / mSettings->value( "/qgis/simplifyMaxScale", 1 ).toFloat() );
 
+  // Magnifier
+  doubleSpinBoxMagnifierDefault->setRange( 100, 1000 );
+  doubleSpinBoxMagnifierDefault->setSingleStep( 50 );
+  doubleSpinBoxMagnifierDefault->setDecimals( 0 );
+  doubleSpinBoxMagnifierDefault->setSuffix( "%" );
+  doubleSpinBoxMagnifierDefault->setValue( mSettings->value( "/qgis/magnifier_level", 100 ).toInt() );
+
   // Slightly awkard here at the settings value is true to use QImage,
   // but the checkbox is true to use QPixmap
   chkAddedVisibility->setChecked( mSettings->value( "/qgis/new_layers_visible", true ).toBool() );
@@ -1191,6 +1198,9 @@ void QgsOptions::saveOptions()
   mSettings->setValue( "/qgis/simplifyDrawingTol", mSimplifyDrawingSpinBox->value() );
   mSettings->setValue( "/qgis/simplifyLocal", !mSimplifyDrawingAtProvider->isChecked() );
   mSettings->setValue( "/qgis/simplifyMaxScale", 1.0 / mSimplifyMaximumScaleComboBox->scale() );
+
+  // magnification
+  mSettings->setValue( "/qgis/magnifier_level", doubleSpinBoxMagnifierDefault->value() );
 
   // project
   mSettings->setValue( "/qgis/projOpenAtLaunch", mProjectOnLaunchCmbBx->currentIndex() );

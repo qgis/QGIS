@@ -80,10 +80,11 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     virtual double valueFromText( const QString & text ) const override;
     virtual QValidator::State validate( QString & input, int & pos ) const override;
 
+    void paintEvent( QPaintEvent* e ) override;
+
   protected:
     virtual void resizeEvent( QResizeEvent* event ) override;
     virtual void changeEvent( QEvent* event ) override;
-    virtual void paintEvent( QPaintEvent* event ) override;
 
   private slots:
     void changed( double value );
@@ -91,6 +92,8 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
   private:
     int frameWidth() const;
     bool shouldShowClearForValue( const double value ) const;
+
+    void updateStyleSheet( const QColor& backgroundColor = QColor() );
 
     bool mShowClearButton;
     ClearValueMode mClearValueMode;
