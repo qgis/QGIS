@@ -106,7 +106,7 @@ void QgsEditorWidgetWrapper::updateConstraintWidgetStatus()
 void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
 {
   bool toEmit( false );
-  QString errStr( "predicate is True" );
+  QString errStr( tr( "predicate is True" ) );
   QString expression = layer()->editFormConfig()->expression( mFieldIdx );
   QVariant value = ft.attribute( mFieldIdx );
 
@@ -125,7 +125,7 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
     else if ( expr.hasEvalError() )
       errStr = expr.evalErrorString();
     else if ( ! mValidConstraint )
-      errStr = "predicate is False";
+      errStr = tr( "predicate is False" );
 
     toEmit = true;
   }
@@ -145,7 +145,7 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
     mValidConstraint = mValidConstraint && !value.isNull();
 
     if ( value.isNull() )
-      errStr = "predicate is False";
+      errStr = tr( "predicate is False" );
 
     toEmit = true;
   }

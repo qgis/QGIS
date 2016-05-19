@@ -892,7 +892,7 @@ void QgsAttributeForm::onConstraintStatusChanged( const QString& constraint,
 
   if ( buddy )
   {
-    QString tooltip = "Expression: " + constraint + "\n" + "Constraint: " + err;
+    QString tooltip = tr( "Expression: " ) + constraint + "\n" + tr( "Constraint: " ) + err;
     buddy->setToolTip( tooltip );
 
     if ( !buddy->property( "originalText" ).isValid() )
