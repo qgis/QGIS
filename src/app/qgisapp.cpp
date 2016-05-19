@@ -1574,14 +1574,19 @@ void QgisApp::showStyleManagerV2()
 void QgisApp::writeAnnotationItemsToProject( QDomDocument& doc )
 {
   QList<QgsAnnotationItem*> items = annotationItems();
-  QList<QgsAnnotationItem*>::const_iterator itemIt = items.constBegin();
-  for ( ; itemIt != items.constEnd(); ++itemIt )
+  QgsAnnotationItem* item;
+  QListIterator<QgsAnnotationItem*> i( items );
+  // save lowermost annotation (at end of list) first
+  i.toBack();
+  while ( i.hasPrevious() )
   {
-    if ( ! *itemIt )
+    item = i.previous();
+
+    if ( ! item )
     {
       continue;
     }
-    ( *itemIt )->writeXML( doc );
+    item->writeXML( doc );
   }
 }
 
