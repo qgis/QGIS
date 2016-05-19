@@ -129,6 +129,7 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
     bool mExpressionCompiled;
     bool mOrderByCompiled;
     bool mLastFetch;
+    bool mFilterRequiresGeometry;
 };
 
 #endif // QGSPOSTGRESFEATUREITERATOR_H

@@ -68,6 +68,10 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
   {
     // fetch geometry if requested
     mFetchGeometry = ( mRequest.flags() & QgsFeatureRequest::NoGeometry ) == 0;
+    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression()->needsGeometry() )
+    {
+      mFetchGeometry = true;
+    }
 
     if ( !mRequest.filterRect().isNull() )
     {

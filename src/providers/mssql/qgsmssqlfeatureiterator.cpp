@@ -102,7 +102,10 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   }
 
   // get geometry col
-  if ( !( request.flags() & QgsFeatureRequest::NoGeometry ) && mSource->isSpatial() )
+  if (( !( request.flags() & QgsFeatureRequest::NoGeometry )
+        || ( request.filterType() == QgsFeatureRequest::FilterExpression && request.filterExpression()->needsGeometry() )
+      )
+      && mSource->isSpatial() )
   {
     mStatement += QString( ",[%1]" ).arg( mSource->mGeometryColName );
   }

@@ -121,7 +121,9 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       }
     }
     // the last column is the geometry, if any
-    if ( !( request.flags() & QgsFeatureRequest::NoGeometry ) && !mDefinition.geometryField().isNull() && mDefinition.geometryField() != "*no*" )
+    if (( !( request.flags() & QgsFeatureRequest::NoGeometry )
+          || ( request.filterType() == QgsFeatureRequest::FilterExpression && request.filterExpression()->needsGeometry() ) )
+        && !mDefinition.geometryField().isNull() && mDefinition.geometryField() != "*no*" )
     {
       columns += "," + quotedColumn( mDefinition.geometryField() );
     }
