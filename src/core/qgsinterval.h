@@ -155,6 +155,12 @@ class CORE_EXPORT QgsInterval
      */
     static QgsInterval fromString( const QString& string );
 
+    //! Allows direct construction of QVariants from intervals.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
+
   private:
 
     //! Duration of interval in seconds

@@ -774,5 +774,8 @@ class QgsGeometry
      */
     static void convertPointList( const QList<QgsPointV2>& input, QList<QgsPoint>& output );
 
+    //! Allows direct construction of QVariants from geometry.
+    operator QVariant() const;
+
 }; // class QgsGeometry
 

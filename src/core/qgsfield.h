@@ -153,6 +153,12 @@ class CORE_EXPORT QgsField
      */
     bool convertCompatible( QVariant& v ) const;
 
+    //! Allows direct construction of QVariants from fields.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
+
   private:
 
     QSharedDataPointer<QgsFieldPrivate> d;
@@ -287,6 +293,12 @@ class CORE_EXPORT QgsFields
      * @note added in QGIS 2.14
      */
     QIcon iconForField( int fieldIdx ) const;
+
+    //! Allows direct construction of QVariants from fields.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
 
     ///@cond PRIVATE
 

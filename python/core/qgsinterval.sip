@@ -132,5 +132,8 @@ class QgsInterval
      */
     static QgsInterval fromString( const QString& string );
 
+    //! Allows direct construction of QVariants from intervals.
+    operator QVariant() const;
+
 };
 

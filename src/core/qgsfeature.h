@@ -413,6 +413,12 @@ class CORE_EXPORT QgsFeature
      */
     int fieldNameIndex( const QString& fieldName ) const;
 
+    //! Allows direct construction of QVariants from features.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
+
   private:
 
     QExplicitlySharedDataPointer<QgsFeaturePrivate> d;

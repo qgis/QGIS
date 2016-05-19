@@ -819,6 +819,12 @@ class CORE_EXPORT QgsGeometry
      */
     static void convertPointList( const QgsPointSequenceV2 &input, QList<QgsPoint> &output );
 
+    //! Allows direct construction of QVariants from geometry.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
+
   private:
 
     QgsGeometryPrivate* d; //implicitely shared data pointer

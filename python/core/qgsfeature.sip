@@ -496,6 +496,9 @@ class QgsFeature
      */
     int fieldNameIndex( const QString& fieldName ) const;
 
+    //! Allows direct construction of QVariants from features.
+    operator QVariant() const;
+
 }; // class QgsFeature
 
 typedef QSet<qint64> QgsFeatureIds;
