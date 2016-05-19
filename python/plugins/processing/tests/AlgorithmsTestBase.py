@@ -102,20 +102,17 @@ class AlgorithmsTest:
             exec('\n'.join(defs['expectedFailure'][:-1]), globals(), locals())
             expectFailure = eval(defs['expectedFailure'][-1])
 
-        def doCheck():
-            alg.execute()
-
-            self.check_results(alg.getOutputValuesAsDictionary(), defs['results'])
-
         if expectFailure:
             try:
-                doCheck()
+                alg.execute()
+                self.check_results(alg.getOutputValuesAsDictionary(), defs['results'])
             except Exception:
                 pass
             else:
                 raise _UnexpectedSuccess
         else:
-            doCheck()
+            alg.execute()
+            self.check_results(alg.getOutputValuesAsDictionary(), defs['results'])
 
     def load_params(self, params):
         """
