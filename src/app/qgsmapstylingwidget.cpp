@@ -129,9 +129,9 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
 
 void QgsMapStylingWidget::apply()
 {
+  QString undoName = "Style Change";
   if ( mStackedWidget->currentIndex() == mVectorPage )
   {
-    QString undoName = "Style Change";
     int currentPage = mVectorLayerTabs->currentIndex();
     if ( currentPage == mVectorLabelTabIndex )
     {
@@ -171,8 +171,18 @@ void QgsMapStylingWidget::apply()
       QgsProject::instance()->setDirty( true );
       mMapCanvas->clearCache();
       mMapCanvas->refresh();
+      undoName = QString( "Style Change - %1" ).arg( m->visibleName() );
     }
-
+    QString errorMsg;
+    QDomDocument doc( "style" );
+    QDomElement rootNode = doc.createElement( "qgis" );
+    doc.appendChild( rootNode );
+    mCurrentLayer->writeStyle( rootNode, doc, errorMsg );
+    mCurrentLayer->undoStackStyles()->beginMacro( undoName );
+    mCurrentLayer->undoStackStyles()->push( new QgsMapLayerStyleCommand( mCurrentLayer, rootNode, mLastStyleXml ) );
+    mCurrentLayer->undoStackStyles()->endMacro();
+    // Override the last style on the stack
+    mLastStyleXml = rootNode.cloneNode();
   }
 }
 
@@ -229,6 +239,11 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
       connect( mRasterStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
       area->setWidget( mRasterStyleWidget );
     }
+    QString errorMsg;
+    QDomDocument doc( "style" );
+    mLastStyleXml = doc.createElement( "style" );
+    doc.appendChild( mLastStyleXml );
+    mCurrentLayer->writeSymbology( mLastStyleXml, doc, errorMsg );
   }
   else if ( layer->type() == QgsMapLayer::PluginLayer )
   {
