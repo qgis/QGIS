@@ -74,7 +74,7 @@ class QgsVectorFileWriter
     {
       MetaData();
 
-      MetaData( const QString& longName, const QString& trLongName, const QString& glob, const QString& ext, const QMap<QString, QgsVectorFileWriter::Option*>& driverOptions, const QMap<QString, QgsVectorFileWriter::Option*>& layerOptions );
+      MetaData( const QString& longName, const QString& trLongName, const QString& glob, const QString& ext, const QMap<QString, QgsVectorFileWriter::Option*>& driverOptions, const QMap<QString, QgsVectorFileWriter::Option*>& layerOptions, const QString& compulsoryEncoding = QString() );
 
       QString longName;
       QString trLongName;
@@ -82,6 +82,8 @@ class QgsVectorFileWriter
       QString ext;
       QMap<QString, QgsVectorFileWriter::Option*> driverOptions;
       QMap<QString, QgsVectorFileWriter::Option*> layerOptions;
+      /** Some formats require a compulsory encoding, typically UTF-8. If no compulsory encoding, empty string */
+      QString compulsoryEncoding;
     };
 
     enum WriterError

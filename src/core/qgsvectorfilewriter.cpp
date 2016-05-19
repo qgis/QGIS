@@ -200,6 +200,9 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     return;
   }
 
+  MetaData metadata;
+  bool metadataFound = driverMetadata( driverName, metadata );
+
   if ( mOgrDriverName == "ESRI Shapefile" )
   {
     if ( layerOptions.join( "" ).toUpper().indexOf( "ENCODING=" ) == -1 )
@@ -235,30 +238,11 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
     deleteShapeFile( vectorFileName );
   }
-  else if ( driverName == "KML" )
-  {
-    if ( !vectorFileName.endsWith( ".kml", Qt::CaseInsensitive ) )
-    {
-      vectorFileName += ".kml";
-    }
-
-    if ( fileEncoding.compare( "UTF-8", Qt::CaseInsensitive ) != 0 )
-    {
-      QgsDebugMsg( "forced UTF-8 encoding for KML" );
-      fileEncoding = "UTF-8";
-    }
-
-    QFile::remove( vectorFileName );
-  }
   else
   {
-    QString longName;
-    QString trLongName;
-    QString glob;
-    QString exts;
-    if ( QgsVectorFileWriter::driverMetadata( driverName, longName, trLongName, glob, exts ) )
+    if ( metadataFound )
     {
-      QStringList allExts = exts.split( ' ', QString::SkipEmptyParts );
+      QStringList allExts = metadata.ext.split( ' ', QString::SkipEmptyParts );
       bool found = false;
       Q_FOREACH ( const QString& ext, allExts )
       {
@@ -276,6 +260,16 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     }
 
     QFile::remove( vectorFileName );
+  }
+
+  if ( metadataFound && !metadata.compulsoryEncoding.isEmpty() )
+  {
+    if ( fileEncoding.compare( metadata.compulsoryEncoding, Qt::CaseInsensitive ) != 0 )
+    {
+      QgsDebugMsg( QString( "forced %1 encoding for %2" ).arg( metadata.compulsoryEncoding ).arg( driverName ) );
+      fileEncoding = metadata.compulsoryEncoding;
+    }
+
   }
 
   char **options = nullptr;
@@ -866,7 +860,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.geojson",
                            "geojson",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
 
@@ -960,7 +955,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.xml",
                            "xml",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
 
@@ -1049,7 +1045,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.gml",
                            "gml",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
 
@@ -1091,7 +1088,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.gpkg",
                            "gpkg",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
 
@@ -1169,7 +1167,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.gpx",
                            "gpx",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
 
@@ -1234,7 +1233,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.kml",
                            "kml",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
 
@@ -1330,21 +1330,6 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                                         "By default the origin from the seed file is used." ),
                            ""  // Default value
                          ) );
-
-  driverMetadata.insert( "DGN",
-                         MetaData(
-                           "Microstation DGN",
-                           QObject::tr( "Microstation DGN" ),
-                           "*.dgn",
-                           "dgn",
-                           datasetOptions,
-                           layerOptions
-                         )
-                       );
-
-  // Microstation DGN
-  datasetOptions.clear();
-  layerOptions.clear();
 
   driverMetadata.insert( "DGN",
                          MetaData(
@@ -1514,7 +1499,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.sqlite",
                            "sqlite",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
 
@@ -1595,7 +1581,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.sqlite",
                            "sqlite",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
   // AutoCAD DXF
@@ -1685,7 +1672,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.gdb",
                            "gdb",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
 
@@ -1710,7 +1698,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.xlsx",
                            "xlsx",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
 
@@ -1735,7 +1724,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.ods",
                            "ods",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
 
@@ -2543,13 +2533,10 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
 
   Q_FOREACH ( const QString& drvName, writableDrivers )
   {
-    QString longName;
-    QString trLongName;
-    QString glob;
-    QString exts;
-    if ( QgsVectorFileWriter::driverMetadata( drvName, longName, trLongName, glob, exts ) && !trLongName.isEmpty() )
+    MetaData metadata;
+    if ( driverMetadata( drvName, metadata ) && !metadata.trLongName.isEmpty() )
     {
-      resultMap.insert( trLongName, drvName );
+      resultMap.insert( metadata.trLongName, drvName );
     }
   }
 
@@ -2573,14 +2560,11 @@ QString QgsVectorFileWriter::fileFilterString()
 
 QString QgsVectorFileWriter::filterForDriver( const QString& driverName )
 {
-  QString longName;
-  QString trLongName;
-  QString glob;
-  QString exts;
-  if ( !driverMetadata( driverName, longName, trLongName, glob, exts ) || trLongName.isEmpty() || glob.isEmpty() )
+  MetaData metadata;
+  if ( !driverMetadata( driverName, metadata ) || metadata.trLongName.isEmpty() || metadata.glob.isEmpty() )
     return "";
 
-  return trLongName + " [OGR] (" + glob.toLower() + ' ' + glob.toUpper() + ')';
+  return metadata.trLongName + " [OGR] (" + metadata.glob.toLower() + ' ' + metadata.glob.toUpper() + ')';
 }
 
 QString QgsVectorFileWriter::convertCodecNameForEncodingOption( const QString &codecName )
@@ -2598,207 +2582,6 @@ QString QgsVectorFileWriter::convertCodecNameForEncodingOption( const QString &c
       return c;
   }
   return codecName;
-}
-
-bool QgsVectorFileWriter::driverMetadata( const QString& driverName, QString &longName, QString &trLongName, QString &glob, QString &ext )
-{
-  if ( driverName.startsWith( "AVCE00" ) )
-  {
-    longName = "Arc/Info ASCII Coverage";
-    trLongName = QObject::tr( "Arc/Info ASCII Coverage" );
-    glob = "*.e00";
-    ext = "e00";
-  }
-  else if ( driverName.startsWith( "BNA" ) )
-  {
-    longName = "Atlas BNA";
-    trLongName = QObject::tr( "Atlas BNA" );
-    glob = "*.bna";
-    ext = "bna";
-  }
-  else if ( driverName.startsWith( "CSV" ) )
-  {
-    longName = "Comma Separated Value [CSV]";
-    trLongName = QObject::tr( "Comma Separated Value [CSV]" );
-    glob = "*.csv";
-    ext = "csv";
-  }
-  else if ( driverName.startsWith( "ESRI" ) )
-  {
-    longName = "ESRI Shapefile";
-    trLongName = QObject::tr( "ESRI Shapefile" );
-    glob = "*.shp";
-    ext = "shp";
-  }
-  else if ( driverName.startsWith( "DBF file" ) )
-  {
-    longName = "DBF File";
-    trLongName = QObject::tr( "DBF file" );
-    glob = "*.dbf";
-    ext = "dbf";
-  }
-  else if ( driverName.startsWith( "FMEObjects Gateway" ) )
-  {
-    longName = "FMEObjects Gateway";
-    trLongName = QObject::tr( "FMEObjects Gateway" );
-    glob = "*.fdd";
-    ext = "fdd";
-  }
-  else if ( driverName.startsWith( "GeoJSON" ) )
-  {
-    longName = "GeoJSON";
-    trLongName = QObject::tr( "GeoJSON" );
-    glob = "*.geojson";
-    ext = "geojson";
-  }
-  else if ( driverName.startsWith( "GPKG" ) )
-  {
-    longName = "GeoPackage";
-    trLongName = QObject::tr( "GeoPackage" );
-    glob = "*.gpkg";
-    ext = "gpkg";
-  }
-  else if ( driverName.startsWith( "GeoRSS" ) )
-  {
-    longName = "GeoRSS";
-    trLongName = QObject::tr( "GeoRSS" );
-    glob = "*.xml";
-    ext = "xml";
-  }
-  else if ( driverName.startsWith( "GML" ) )
-  {
-    longName = "Geography Markup Language [GML]";
-    trLongName = QObject::tr( "Geography Markup Language [GML]" );
-    glob = "*.gml";
-    ext = "gml";
-  }
-  else if ( driverName.startsWith( "GMT" ) )
-  {
-    longName = "Generic Mapping Tools [GMT]";
-    trLongName = QObject::tr( "Generic Mapping Tools [GMT]" );
-    glob = "*.gmt";
-    ext = "gmt";
-  }
-  else if ( driverName.startsWith( "GPX" ) )
-  {
-    longName = "GPS eXchange Format [GPX]";
-    trLongName = QObject::tr( "GPS eXchange Format [GPX]" );
-    glob = "*.gpx";
-    ext = "gpx";
-  }
-  else if ( driverName.startsWith( "Interlis 1" ) )
-  {
-    longName = "INTERLIS 1";
-    trLongName = QObject::tr( "INTERLIS 1" );
-    glob = "*.itf *.xml *.ili";
-    ext = "ili";
-  }
-  else if ( driverName.startsWith( "Interlis 2" ) )
-  {
-    longName = "INTERLIS 2";
-    trLongName = QObject::tr( "INTERLIS 2" );
-    glob = "*.itf *.xml *.ili";
-    ext = "ili";
-  }
-  else if ( driverName.startsWith( "KML" ) )
-  {
-    longName = "Keyhole Markup Language [KML]";
-    trLongName = QObject::tr( "Keyhole Markup Language [KML]" );
-    glob = "*.kml";
-    ext = "kml";
-  }
-  else if ( driverName.startsWith( "MapInfo File" ) )
-  {
-    longName = "Mapinfo TAB";
-    trLongName = QObject::tr( "Mapinfo TAB" );
-    glob = "*.tab";
-    ext = "tab";
-  }
-  // 'MapInfo MIF' is internal QGIS addition to distinguish between MITAB and MIF
-  else if ( driverName.startsWith( "MapInfo MIF" ) )
-  {
-    longName = "Mapinfo MIF";
-    trLongName = QObject::tr( "Mapinfo MIF" );
-    glob = "*.mif";
-    ext = "mif";
-  }
-  else if ( driverName.startsWith( "DGN" ) )
-  {
-    longName = "Microstation DGN";
-    trLongName = QObject::tr( "Microstation DGN" );
-    glob = "*.dgn";
-    ext = "dgn";
-  }
-  else if ( driverName.startsWith( "S57" ) )
-  {
-    longName = "S-57 Base file";
-    trLongName = QObject::tr( "S-57 Base file" );
-    glob = "*.000";
-    ext = "000";
-  }
-  else if ( driverName.startsWith( "SDTS" ) )
-  {
-    longName = "Spatial Data Transfer Standard [SDTS]";
-    trLongName = QObject::tr( "Spatial Data Transfer Standard [SDTS]" );
-    glob = "*catd.ddf";
-    ext = "ddf";
-  }
-  else if ( driverName.startsWith( "SQLite" ) )
-  {
-    longName = "SQLite";
-    trLongName = QObject::tr( "SQLite" );
-    glob = "*.sqlite";
-    ext = "sqlite";
-  }
-  // QGIS internal addition for SpatialLite
-  else if ( driverName.startsWith( "SpatiaLite" ) )
-  {
-    longName = "SpatiaLite";
-    trLongName = QObject::tr( "SpatiaLite" );
-    glob = "*.sqlite";
-    ext = "sqlite";
-  }
-  else if ( driverName.startsWith( "DXF" ) )
-  {
-    longName = "AutoCAD DXF";
-    trLongName = QObject::tr( "AutoCAD DXF" );
-    glob = "*.dxf";
-    ext = "dxf";
-  }
-  else if ( driverName.startsWith( "Geoconcept" ) )
-  {
-    longName = "Geoconcept";
-    trLongName = QObject::tr( "Geoconcept" );
-    glob = "*.gxt *.txt";
-    ext = "gxt";
-  }
-  else if ( driverName.startsWith( "FileGDB" ) )
-  {
-    longName = "ESRI FileGDB";
-    trLongName = QObject::tr( "ESRI FileGDB" );
-    glob = "*.gdb";
-    ext = "gdb";
-  }
-  else if ( driverName.startsWith( "XLSX" ) )
-  {
-    longName = "MS Office Open XML spreadsheet [XLSX]";
-    trLongName = QObject::tr( "MS Office Open XML spreadsheet [XLSX]" );
-    glob = "*.xlsx";
-    ext = "xlsx";
-  }
-  else if ( driverName.startsWith( "ODS" ) )
-  {
-    longName = "Open Document Spreadsheet";
-    trLongName = QObject::tr( "Open Document Spreadsheet [ODS]" );
-    glob = "*.ods";
-    ext = "ods";
-  }
-  else
-  {
-    return false;
-  }
-
-  return true;
 }
 
 void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const QgsCoordinateTransform* ct, OGRDataSourceH ds )

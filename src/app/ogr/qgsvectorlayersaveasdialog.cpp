@@ -228,8 +228,6 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
 
   if ( format() == "KML" )
   {
-    mEncodingComboBox->setCurrentIndex( mEncodingComboBox->findText( "UTF-8" ) );
-    mEncodingComboBox->setDisabled( true );
     mAttributesSelection->setEnabled( true );
     selectAllFields = false;
   }
@@ -240,7 +238,6 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
   }
   else
   {
-    mEncodingComboBox->setEnabled( true );
     mAttributesSelection->setEnabled( true );
     fieldsAsDisplayedValues = ( format() == "CSV" || format() == "XLS" || format() == "XLSX" || format() == "ODS" );
   }
@@ -372,6 +369,29 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
     {
       mLayerOptionsGroupBox->setVisible( false );
     }
+
+    if ( driverMetaData.compulsoryEncoding.isEmpty() )
+    {
+      mEncodingComboBox->setEnabled( true );
+    }
+    else
+    {
+      int idx = mEncodingComboBox->findText( driverMetaData.compulsoryEncoding );
+      if ( idx >= 0 )
+      {
+        mEncodingComboBox->setCurrentIndex( idx );
+        mEncodingComboBox->setDisabled( true );
+      }
+      else
+      {
+        mEncodingComboBox->setEnabled( true );
+      }
+    }
+
+  }
+  else
+  {
+    mEncodingComboBox->setEnabled( true );
   }
 }
 
