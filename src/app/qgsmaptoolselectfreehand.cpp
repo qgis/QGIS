@@ -85,9 +85,10 @@ void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent* e )
   if ( mRubberBand->numberOfVertices() > 2 )
   {
     QgsGeometry* shapeGeom = mRubberBand->asGeometry();
-    QgsMapToolSelectUtils::setSelectFeatures( mCanvas, shapeGeom,
-        e->modifiers() & Qt::ShiftModifier,
-        e->modifiers() & Qt::ControlModifier, singleSelect );
+    if ( singleSelect )
+      QgsMapToolSelectUtils::selectSingleFeature( mCanvas, shapeGeom, e );
+    else
+      QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, shapeGeom, e );
     delete shapeGeom;
   }
 

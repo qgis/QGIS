@@ -16,6 +16,7 @@ email                : jpalmer at linz dot govt dot nz
 #ifndef QGSMAPTOOLSELECTUTILS_H
 #define QGSMAPTOOLSELECTUTILS_H
 
+#include "qgsvectorlayer.h"
 #include <Qt>
 #include <QRect>
 #include <QPoint>
@@ -31,34 +32,61 @@ class QgsRubberBand;
  */
 namespace QgsMapToolSelectUtils
 {
-  /**
-    Selects the features within currently selected layer.
-    @param canvas The map canvas used to get the current selected vector layer and
+  /** Calculates a list of features matching a selection geometry and flags.
+   * @param canvas the map canvas used to get the current selected vector layer and
     for any required geometry transformations
-    @param selectGeometry The geometry to select the layers features. This geometry
+   * @param selectGeometry the geometry to select the layers features. This geometry
     must be in terms of the canvas coordinate system.
-    @param doContains Features will only be selected if fully contained within
+   * @param doContains features will only be selected if fully contained within
     the selection rubber band (otherwise intersection is enough).
-    @param doDifference Take the symmetric difference of the current selected
-    features and the new features found within the provided selectGeometry.
-    @param singleSelect Only selects the closest feature to the selectGeometry.
-  */
-  void setSelectFeatures( QgsMapCanvas* canvas,
-                          QgsGeometry* selectGeometry,
-                          bool doContains = true,
-                          bool doDifference = false,
-                          bool singleSelect = false );
+   * @param singleSelect only selects the closest feature to the selectGeometry.
+   * @returns list of features which match search geometry and parameters
+   * @note added in QGIS 2.16
+   */
+  QgsFeatureIds getMatchingFeatures( QgsMapCanvas* canvas, QgsGeometry* selectGeometry, bool doContains, bool singleSelect );
 
   /**
-    Select the features within currently selected layer.
-    @param canvas The map canvas used to get the current selected vector layer and
+    Selects the features within currently selected layer.
+    @param canvas the map canvas used to get the current selected vector layer and
     for any required geometry transformations
-    @param selectGeometry The geometry to select the layers features. This geometry
+    @param selectGeometry the geometry to select the layers features. This geometry
+    must be in terms of the canvas coordinate system.
+    @param selectBehaviour behaviour of select (ie replace selection, add to selection)
+    @param doContains features will only be selected if fully contained within
+    the selection rubber band (otherwise intersection is enough).
+    @param singleSelect only selects the closest feature to the selectGeometry.
+    @note added in QGIS 2.16
+  */
+  void setSelectedFeatures( QgsMapCanvas* canvas,
+                            QgsGeometry* selectGeometry,
+                            QgsVectorLayer::SelectBehaviour selectBehaviour = QgsVectorLayer::SetSelection,
+                            bool doContains = true,
+                            bool singleSelect = false );
+
+  /**
+    Selects multiple matching features from within currently selected layer.
+    @param canvas the map canvas used to get the current selected vector layer and
+    for any required geometry transformations
+    @param selectGeometry the geometry to select the layers features. This geometry
     must be in terms of the canvas coordinate system.
     @param e MouseEvents are used to determine the current selection
     operations (add, subtract, contains)
+    @note added in QGIS 2.16
+    @see selectSingleFeature()
   */
-  void setSelectFeatures( QgsMapCanvas* canvas, QgsGeometry* selectGeometry, QMouseEvent * e );
+  void selectMultipleFeatures( QgsMapCanvas* canvas, QgsGeometry* selectGeometry, QMouseEvent * e );
+
+  /**
+    Selects a single feature from within currently selected layer.
+    @param canvas the map canvas used to get the current selected vector layer and
+    for any required geometry transformations
+    @param selectGeometry the geometry to select the layers features. This geometry
+    must be in terms of the canvas coordinate system.
+    @param e MouseEvents are used to determine the current selection
+    operations (add, subtract, contains)
+    @see selectMultipleFeatures()
+  */
+  void selectSingleFeature( QgsMapCanvas* canvas, QgsGeometry* selectGeometry, QMouseEvent * e );
 
   /**
     Get the current selected canvas map layer. Returns nullptr if it is not a vector layer

@@ -92,7 +92,7 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent* e )
     setRadiusRubberBand( radiusEdge );
   }
   QgsGeometry* radiusGeometry = mRubberBand->asGeometry();
-  QgsMapToolSelectUtils::setSelectFeatures( mCanvas, radiusGeometry, e );
+  QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, radiusGeometry, e );
   delete radiusGeometry;
   mRubberBand->reset( QGis::Polygon );
   delete mRubberBand;
