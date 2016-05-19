@@ -170,9 +170,9 @@ bool QgsAttributeTypeDialog::fieldEditable() const
   return isFieldEditableCheckBox->isChecked();
 }
 
-void QgsAttributeTypeDialog::setNotNull( bool notnull )
+void QgsAttributeTypeDialog::setNotNull( bool notNull )
 {
-  notNullCheckBox->setChecked( notnull );
+  notNullCheckBox->setChecked( notNull );
 }
 
 bool QgsAttributeTypeDialog::labelOnTop() const

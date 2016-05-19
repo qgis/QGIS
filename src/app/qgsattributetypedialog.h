@@ -87,7 +87,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     /**
      * Getter for checkbox for not null
      */
-    void setNotNull( bool notnull );
+    void setNotNull( bool notNull );
 
     /**
      * Getter for checkbox for not null
