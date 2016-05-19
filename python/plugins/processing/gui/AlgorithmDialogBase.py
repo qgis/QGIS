@@ -36,7 +36,6 @@ from qgis.utils import iface
 from qgis.core import QgsNetworkAccessManager
 
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.gui import AlgorithmClassification
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -62,7 +61,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         self.btnClose = self.buttonBox.button(QDialogButtonBox.Close)
 
-        self.setWindowTitle(AlgorithmClassification.getDisplayName(self.alg))
+        self.setWindowTitle(self.alg.displayName())
 
         desktop = QDesktopWidget()
         if desktop.physicalDpiX() > 96:

@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    EditModelAction.py
+    defaultproviders.py
     ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
+    Date                 : May 2016
+    Copyright            : (C) 2016 by Victor Olaya
     Email                : volayaf at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -18,28 +18,16 @@
 """
 
 __author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__date__ = 'May 2016'
+__copyright__ = '(C) 2016, Victor Olaya'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
 __revision__ = '$Format:%H$'
 
-from processing.gui.ContextAction import ContextAction
-from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
-from processing.modeler.ModelerDialog import ModelerDialog
-from processing.core.alglist import algList
 
-class EditModelAction(ContextAction):
 
-    def __init__(self):
-        self.name = self.tr('Edit model', 'EditModelAction')
-
-    def isEnabled(self):
-        return isinstance(self.itemData, ModelerAlgorithm)
-
-    def execute(self):
-        dlg = ModelerDialog(self.itemData.getCopy())
-        dlg.exec_()
-        if dlg.update:
-            algList.reloadProvider('model')
+def loadDefaultProviders():
+    # this is here just to "trigger" the above imports so providers are loaded
+    # and can be found by the Processing.initialize() method
+    pass

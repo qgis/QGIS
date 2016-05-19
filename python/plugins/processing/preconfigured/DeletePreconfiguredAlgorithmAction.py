@@ -29,7 +29,7 @@ import os
 from PyQt4.QtGui import QMessageBox
 from processing.gui.ContextAction import ContextAction
 from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorithm
-
+from processing.core.alglist import algList
 
 class DeletePreconfiguredAlgorithmAction(ContextAction):
 
@@ -48,4 +48,4 @@ class DeletePreconfiguredAlgorithmAction(ContextAction):
                                      QMessageBox.No)
         if reply == QMessageBox.Yes:
             os.remove(self.itemData.descriptionFile)
-            self.toolbox.updateProvider('preconfigured')
+            algList.reloadProvider('preconfigured')

@@ -31,6 +31,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.gui.ScriptEditorDialog import ScriptEditorDialog
+from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -62,6 +63,6 @@ class CreateNewScriptAction(ToolboxAction):
         dlg.exec_()
         if dlg.update:
             if self.scriptType == self.SCRIPT_PYTHON:
-                self.toolbox.updateProvider('script')
+                algList.reloadProvider('script')
             elif self.scriptType == self.SCRIPT_R:
-                self.toolbox.updateProvider('r')
+                algList.reloadProvider('r')
