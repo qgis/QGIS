@@ -301,7 +301,7 @@ void TestQgsMapCanvas::testMagnificationExtent()
   QgsFeature f2( layer->dataProvider()->fields(), 2 );
   QgsFeatureIds ids;
   ids << f1.id() << f2.id();
-  layer->setSelectedFeatures( ids );
+  layer->selectByIds( ids );
 
   mCanvas->zoomToSelected( layer );
   initialExtent = mCanvas->extent();
