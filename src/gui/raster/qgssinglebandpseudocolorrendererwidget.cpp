@@ -48,7 +48,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   mColorRampComboBox->setCurrentIndex( mColorRampComboBox->findText( defaultPalette ) );
   connect( mButtonEditRamp, SIGNAL( clicked() ), mColorRampComboBox, SLOT( editSourceRamp() ) );
   connect( mColorRampComboBox, SIGNAL( sourceRampEdited() ), this, SLOT( on_mClassifyButton_clicked() ) );
-  connect( mInvertCheckBox, SIGNAL( stateChanged(int)), this, SLOT( on_mClassifyButton_clicked() ) );
+  connect( mInvertCheckBox, SIGNAL( stateChanged( int ) ), this, SLOT( on_mClassifyButton_clicked() ) );
 
   if ( !mRasterLayer )
   {
@@ -71,7 +71,6 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   layout->setContentsMargins( 0, 0, 0, 0 );
   mMinMaxContainerWidget->setLayout( layout );
   layout->addWidget( mMinMaxWidget );
-  mMinMaxWidget->hide();
   connect( mMinMaxWidget, SIGNAL( load( int, double, double, int ) ),
            this, SLOT( loadMinMax( int, double, double, int ) ) );
 
@@ -104,6 +103,9 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   on_mClassificationModeComboBox_currentIndexChanged( 0 );
 
   resetClassifyButton();
+
+  connect( mMinLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( on_mClassifyButton_clicked() ) );
+  connect( mMaxLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( on_mClassifyButton_clicked() ) );
 }
 
 QgsSingleBandPseudoColorRendererWidget::~QgsSingleBandPseudoColorRendererWidget()

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>QgsRendererRasterPropsWidgetBase</class>
+ <widget class="QWidget" name="QgsRendererRasterPropsWidgetBase">
   <property name="geometry">
    <rect>
     <x>0</x>

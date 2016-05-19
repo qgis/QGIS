@@ -82,7 +82,6 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
   stylescroll->setWidgetResizable( true );
   stylescroll->setFrameStyle( QFrame::NoFrame );
 
-
   QScrollArea* labelscroll = new QScrollArea;
   labelscroll->setWidgetResizable( true );
   labelscroll->setFrameStyle( QFrame::NoFrame );

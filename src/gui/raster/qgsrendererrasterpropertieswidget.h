@@ -4,18 +4,18 @@
 #include <QObject>
 #include <QDialog>
 
-#include "ui_qgsrendererrasterpropsdialogbase.h"
+#include "ui_qgsrendererrasterpropswidgetbase.h"
 
 class QgsRasterLayer;
 class QgsMapCanvas;
 class QgsRasterRendererWidget;
 
-class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QDialog, private Ui::QgsRendererRasterPropsDialogBase
+class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QDialog, private Ui::QgsRendererRasterPropsWidgetBase
 {
     Q_OBJECT
 
-public:
-    QgsRendererRasterPropertiesWidget(QgsRasterLayer* layer, QgsMapCanvas *canvas, QObject *parent = 0);
+  public:
+    QgsRendererRasterPropertiesWidget( QgsRasterLayer* layer, QgsMapCanvas *canvas, QObject *parent = 0 );
     ~QgsRendererRasterPropertiesWidget();
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
@@ -25,7 +25,7 @@ public:
      */
     void setMapCanvas( QgsMapCanvas* canvas );
 
-signals:
+  signals:
 
     /**
      * Emmited when something on the widget has changed.
@@ -33,14 +33,14 @@ signals:
      */
     void widgetChanged();
 
-public slots:
+  public slots:
     //! called when user changes renderer type
     void rendererChanged();
 
     //! Apply the changes from the dialog to the layer.
     void apply();
 
-private:
+  private:
     void setRendererWidget( const QString& rendererName );
 
     QgsRasterLayer* mRasterLayer;

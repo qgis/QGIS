@@ -27,7 +27,7 @@ static void _initRendererWidgetFunctions()
 
 
 
-QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget(QgsRasterLayer *layer, QgsMapCanvas* canvas, QObject *parent)
+QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsRasterLayer *layer, QgsMapCanvas* canvas, QObject *parent )
     : mRasterLayer( layer )
     , mMapCanvas( canvas )
     , mRendererWidget( nullptr )
@@ -64,7 +64,7 @@ QgsRendererRasterPropertiesWidget::~QgsRendererRasterPropertiesWidget()
 
 }
 
-void QgsRendererRasterPropertiesWidget::setMapCanvas(QgsMapCanvas *canvas)
+void QgsRendererRasterPropertiesWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
   mMapCanvas = canvas;
 }
@@ -73,6 +73,7 @@ void QgsRendererRasterPropertiesWidget::rendererChanged()
 {
   QString rendererName = cboRenderers->itemData( cboRenderers->currentIndex() ).toString();
   setRendererWidget( rendererName );
+  emit widgetChanged();
 }
 
 void QgsRendererRasterPropertiesWidget::apply()
@@ -84,7 +85,7 @@ void QgsRendererRasterPropertiesWidget::apply()
   }
 }
 
-void QgsRendererRasterPropertiesWidget::setRendererWidget(const QString &rendererName)
+void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &rendererName )
 {
   QgsDebugMsg( "rendererName = " + rendererName );
   QgsRasterRendererWidget* oldWidget = mRendererWidget;
@@ -98,7 +99,7 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget(const QString &rendere
       // Current canvas extent (used to calc min/max) in layer CRS
       QgsRectangle myExtent = mMapCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
       mRendererWidget = rendererEntry.widgetCreateFunction( mRasterLayer, myExtent );
-      connect( mRendererWidget, SIGNAL( widgetChanged()), this, SIGNAL( widgetChanged()));
+      connect( mRendererWidget, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
       int page = stackedWidget->addWidget( mRendererWidget );
       stackedWidget->setCurrentWidget( mRendererWidget );
       if ( oldWidget )
@@ -121,10 +122,10 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget(const QString &rendere
   if ( mRendererWidget != oldWidget )
     delete oldWidget;
 
-    int widgetIndex = cboRenderers->findData( rendererName );
-    if ( widgetIndex != -1 )
-    {
-      whileBlocking(cboRenderers)->setCurrentIndex( widgetIndex );
-    }
+  int widgetIndex = cboRenderers->findData( rendererName );
+  if ( widgetIndex != -1 )
+  {
+    whileBlocking( cboRenderers )->setCurrentIndex( widgetIndex );
+  }
 
 }
