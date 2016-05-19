@@ -114,6 +114,7 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
   {
     QgsExpressionContext context =
       QgsExpressionContextUtils::createFeatureBasedContext( ft, *ft.fields() );
+    context << QgsExpressionContextUtils::layerScope( layer() );
 
     context.setFeature( ft );
     QgsExpression expr( expression );
