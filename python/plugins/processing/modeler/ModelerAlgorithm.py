@@ -42,7 +42,6 @@ from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.modeler.ModelerUtils import ModelerUtils
 from processing.core.parameters import (getParameterFromString,
                                         ParameterRaster,
                                         ParameterVector,
@@ -56,7 +55,7 @@ from processing.core.parameters import (getParameterFromString,
                                         ParameterMultipleInput)
 from processing.tools import dataobjects
 from processing.gui.Help2Html import getHtmlFromDescriptionsDict
-from processing.core.Processing import Processing
+from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -119,7 +118,7 @@ class Algorithm():
     @property
     def algorithm(self):
         if self._algInstance is None:
-            self._algInstance = Processing.getAlgorithm(self.consoleName).getCopy()
+            self._algInstance = algList.getAlgorithm(self.consoleName).getCopy()
         return self._algInstance
 
     def setName(self, model):
@@ -528,7 +527,7 @@ class ModelerAlgorithm(GeoAlgorithm):
 
     def checkBeforeOpeningParametersDialog(self):
         for alg in self.algs.values():
-            algInstance = Processing.getAlgorithm(alg.consoleName)
+            algInstance = algList.getAlgorithm(alg.consoleName)
             if algInstance is None:
                 return "The model you are trying to run contains an algorithm that is not available: <i>%s</i>" % alg.consoleName
 
@@ -653,7 +652,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                     model.group = line[len('GROUP:'):]
                 elif line.startswith('ALGORITHM:'):
                     algLine = line[len('ALGORITHM:'):]
-                    alg = Processing.getAlgorithm(algLine)
+                    alg = algList.getAlgorithm(algLine)
                     if alg is not None:
                         modelAlg = Algorithm(alg.commandLineName())
                         modelAlg.description = alg.name

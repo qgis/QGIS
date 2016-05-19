@@ -34,7 +34,6 @@ from qgis.PyQt.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings, 
 from qgis.PyQt.QtWidgets import QGraphicsView, QTreeWidget, QMessageBox, QFileDialog, QTreeWidgetItem
 from qgis.PyQt.QtGui import QIcon, QImage, QPainter
 from qgis.core import QgsApplication
-from processing.core.Processing import Processing
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
@@ -45,6 +44,7 @@ from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
 from processing.modeler.WrongModelException import WrongModelException
+from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -226,7 +226,7 @@ class ModelerDialog(BASE, WIDGET):
     def editHelp(self):
         if self.alg.provider is None:
             # Might happen if model is opened from modeler dialog
-            self.alg.provider = Processing.getProviderFromName('model')
+            self.alg.provider = algList.getProviderFromName('model')
         alg = self.alg.getCopy()
         dlg = HelpEditionDialog(alg)
         dlg.exec_()
@@ -243,7 +243,7 @@ class ModelerDialog(BASE, WIDGET):
 
         if self.alg.provider is None:
             # Might happen if model is opened from modeler dialog
-            self.alg.provider = Processing.getProviderFromName('model')
+            self.alg.provider = algList.getProviderFromName('model')
         alg = self.alg.getCopy()
         dlg = AlgorithmDialog(alg)
         dlg.exec_()
@@ -469,7 +469,7 @@ class ModelerDialog(BASE, WIDGET):
     def fillAlgorithmTreeUsingProviders(self):
         self.algorithmTree.clear()
         text = unicode(self.searchBox.text())
-        allAlgs = Processing.algs
+        allAlgs = algList.algs
         for providerName in allAlgs.keys():
             name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
             if not ProcessingConfig.getSetting(name):
@@ -497,7 +497,7 @@ class ModelerDialog(BASE, WIDGET):
 
             if len(groups) > 0:
                 providerItem = QTreeWidgetItem()
-                provider = Processing.getProviderFromName(providerName)
+                provider = algList.getProviderFromName(providerName)
                 providerItem.setText(0, provider.getDescription())
                 providerItem.setToolTip(0, provider.getDescription())
                 providerItem.setIcon(0, provider.getIcon())

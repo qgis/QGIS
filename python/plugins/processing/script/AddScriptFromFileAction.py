@@ -35,6 +35,7 @@ from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.script.WrongScriptException import WrongScriptException
 from processing.script.ScriptUtils import ScriptUtils
+from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -67,4 +68,4 @@ class AddScriptFromFileAction(ToolboxAction):
             destFilename = os.path.join(ScriptUtils.scriptsFolder(), os.path.basename(filename))
             with open(destFilename, 'w') as f:
                 f.write(script.script)
-            self.toolbox.updateProvider('script')
+            algList.reloadProvider('script')

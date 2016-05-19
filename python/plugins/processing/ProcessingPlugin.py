@@ -43,8 +43,7 @@ from processing.gui.CommanderWindow import CommanderWindow
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempFolder
 from processing.gui.menus import removeMenus, initializeMenus, createMenus
-from processing.core.defaultproviders import loadDefaultProviders
-
+from processing.core.alglist import algList
 
 
 cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
@@ -58,7 +57,7 @@ class ProcessingPlugin:
         self.iface = iface
 
     def initGui(self):
-        loadDefaultProviders()
+
         Processing.initialize()
 
         self.commander = None
@@ -162,7 +161,7 @@ class ProcessingPlugin:
         dlg = ModelerDialog()
         dlg.exec_()
         if dlg.update:
-            self.toolbox.updateProvider('model')
+            algList.reloadProvider('model')
 
     def openResults(self):
         dlg = ResultsDialog()

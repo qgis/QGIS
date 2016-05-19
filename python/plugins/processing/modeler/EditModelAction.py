@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 from processing.gui.ContextAction import ContextAction
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.ModelerDialog import ModelerDialog
-
+from processing.core.alglist import algList
 
 class EditModelAction(ContextAction):
 
@@ -42,4 +42,4 @@ class EditModelAction(ContextAction):
         dlg = ModelerDialog(self.itemData.getCopy())
         dlg.exec_()
         if dlg.update:
-            self.toolbox.updateProvider('model')
+            algList.reloadProvider('model')
