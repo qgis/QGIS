@@ -189,6 +189,7 @@ void QgsMapCanvasRendererSync::onLayersC2R()
 QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     : QGraphicsView( parent )
     , mCanvasProperties( new CanvasProperties )
+    , mMagnificationFactor( 1.0 )
     , mJob( nullptr )
     , mJobCancelled( false )
     , mLabelingResults( nullptr )
@@ -309,6 +310,17 @@ QgsMapCanvas::~QgsMapCanvas()
   delete mLabelingResults;
 
 } // dtor
+
+void QgsMapCanvas::setMagnificationFactor( double level )
+{
+  mSettings.setMagnificationFactor( level );
+  refresh();
+}
+
+double QgsMapCanvas::magnificationFactor() const
+{
+  return mSettings.magnificationFactor();
+}
 
 void QgsMapCanvas::enableAntiAliasing( bool theFlag )
 {
@@ -757,7 +769,7 @@ void QgsMapCanvas::rendererJobFinished()
 
     p.end();
 
-    mMap->setContent( img, imageRect( img, mJob->mapSettings() ) );
+    mMap->setContent( img, imageRect( img, mSettings ) );
   }
 
   // now we are in a slot called from mJob - do not delete it immediately
@@ -782,7 +794,7 @@ QgsRectangle QgsMapCanvas::imageRect( const QImage& img, const QgsMapSettings& m
 void QgsMapCanvas::mapUpdateTimeout()
 {
   const QImage& img = mJob->renderedImage();
-  mMap->setContent( img, imageRect( img, mJob->mapSettings() ) );
+  mMap->setContent( img, imageRect( img, mSettings ) );
 }
 
 void QgsMapCanvas::stopRendering()
@@ -896,11 +908,11 @@ QgsRectangle QgsMapCanvas::fullExtent() const
 } // extent
 
 
-void QgsMapCanvas::setExtent( QgsRectangle const & r )
+void QgsMapCanvas::setExtent( QgsRectangle const & r, bool magnified )
 {
   QgsRectangle current = extent();
 
-  if ( r == current )
+  if (( r == current ) && magnified )
     return;
 
   if ( r.isEmpty() )
@@ -918,7 +930,7 @@ void QgsMapCanvas::setExtent( QgsRectangle const & r )
   }
   else
   {
-    mSettings.setExtent( r );
+    mSettings.setExtent( r, magnified );
   }
   emit extentsChanged();
   updateScale();
@@ -959,7 +971,8 @@ void QgsMapCanvas::setCenter( const QgsPoint& center )
     QgsRectangle(
       x - r.width() / 2.0, y - r.height() / 2.0,
       x + r.width() / 2.0, y + r.height() / 2.0
-    )
+    ),
+    true
   );
 } // setCenter
 
@@ -1527,7 +1540,7 @@ void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
   QgsPoint center  = getCoordinateTransform()->toMapPoint( x, y );
   QgsRectangle r = mapSettings().visibleExtent();
   r.scale( scaleFactor, &center );
-  setExtent( r );
+  setExtent( r, true );
   refresh();
 }
 
@@ -2007,7 +2020,7 @@ void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPoint* center )
 {
   QgsRectangle r = mapSettings().extent();
   r.scale( scaleFactor, center );
-  setExtent( r );
+  setExtent( r, true );
   refresh();
 }
 

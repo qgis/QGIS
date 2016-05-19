@@ -137,7 +137,7 @@ void TestQgsDualView::testSelectAll()
   mDualView->mTableView->selectAll();
   QVERIFY( mPointsLayer->selectedFeatureCount() == 10 );
 
-  mPointsLayer->setSelectedFeatures( QgsFeatureIds() );
+  mPointsLayer->selectByIds( QgsFeatureIds() );
   mCanvas->setExtent( QgsRectangle( -110, 40, -100, 48 ) );
   mDualView->mTableView->selectAll();
   QVERIFY( mPointsLayer->selectedFeatureCount() == 1 );

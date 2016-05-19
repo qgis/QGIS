@@ -438,31 +438,121 @@ void QgsVectorLayer::deselect( const QgsFeatureIds& featureIds )
 
 void QgsVectorLayer::select( QgsRectangle & rect, bool addToSelection )
 {
+  selectByRect( rect, addToSelection ? AddToSelection : SetSelection );
+}
+
+void QgsVectorLayer::selectByRect( QgsRectangle& rect, QgsVectorLayer::SelectBehaviour behaviour )
+{
   // normalize the rectangle
   rect.normalize();
 
-  //select all the elements
-  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                        .setFilterRect( rect )
-                                        .setFlags( QgsFeatureRequest::ExactIntersect | QgsFeatureRequest::NoGeometry )
-                                        .setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIds newSelection;
 
-  QgsFeatureIds ids;
+  QgsFeatureIterator features = getFeatures( QgsFeatureRequest()
+                                .setFilterRect( rect )
+                                .setFlags( QgsFeatureRequest::ExactIntersect | QgsFeatureRequest::NoGeometry )
+                                .setSubsetOfAttributes( QgsAttributeList() ) );
 
-  QgsFeature f;
-  while ( fit.nextFeature( f ) )
+  QgsFeature feat;
+  while ( features.nextFeature( feat ) )
   {
-    ids << f.id();
+    newSelection << feat.id();
+  }
+  features.close();
+
+  selectByIds( newSelection, behaviour );
+}
+
+void QgsVectorLayer::selectByExpression( const QString& expression, QgsVectorLayer::SelectBehaviour behaviour )
+{
+  QgsFeatureIds newSelection;
+
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( this );
+
+  if ( behaviour == SetSelection || behaviour == AddToSelection )
+  {
+    QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( expression )
+                                .setExpressionContext( context )
+                                .setFlags( QgsFeatureRequest::NoGeometry )
+                                .setSubsetOfAttributes( QgsAttributeList() );
+
+    QgsFeatureIterator features = getFeatures( request );
+
+    if ( behaviour == AddToSelection )
+    {
+      newSelection = selectedFeaturesIds();
+    }
+    QgsFeature feat;
+    while ( features.nextFeature( feat ) )
+    {
+      newSelection << feat.id();
+    }
+    features.close();
+  }
+  else if ( behaviour == IntersectSelection || behaviour == RemoveFromSelection )
+  {
+    QgsExpression exp( expression );
+    exp.prepare( &context );
+
+    QgsFeatureIds oldSelection = selectedFeaturesIds();
+    QgsFeatureRequest request = QgsFeatureRequest().setFilterFids( oldSelection );
+
+    //refine request
+    if ( !exp.needsGeometry() )
+      request.setFlags( QgsFeatureRequest::NoGeometry );
+    request.setSubsetOfAttributes( exp.referencedColumns(), fields() );
+
+    QgsFeatureIterator features = getFeatures( request );
+    QgsFeature feat;
+    while ( features.nextFeature( feat ) )
+    {
+      context.setFeature( feat );
+      bool matches = exp.evaluate( &context ).toBool();
+
+      if ( matches && behaviour == IntersectSelection )
+      {
+        newSelection << feat.id();
+      }
+      else if ( !matches && behaviour == RemoveFromSelection )
+      {
+        newSelection << feat.id();
+      }
+    }
   }
 
-  if ( !addToSelection )
+  selectByIds( newSelection );
+}
+
+void QgsVectorLayer::selectByIds( const QgsFeatureIds& ids, QgsVectorLayer::SelectBehaviour behaviour )
+{
+  QgsFeatureIds newSelection;
+
+  switch ( behaviour )
   {
-    setSelectedFeatures( mSelectedFeatureIds + ids );
+    case SetSelection:
+      newSelection = ids;
+      break;
+
+    case AddToSelection:
+      newSelection = mSelectedFeatureIds + ids;
+      break;
+
+    case RemoveFromSelection:
+      newSelection = mSelectedFeatureIds - ids;
+      break;
+
+    case IntersectSelection:
+      newSelection = mSelectedFeatureIds.intersect( ids );
+      break;
   }
-  else
-  {
-    select( ids );
-  }
+
+  QgsFeatureIds deselectedFeatures = mSelectedFeatureIds - newSelection;
+  mSelectedFeatureIds = newSelection;
+
+  emit selectionChanged( newSelection, deselectedFeatures, true );
 }
 
 void QgsVectorLayer::modifySelection( QgsFeatureIds selectIds, QgsFeatureIds deselectIds )
@@ -483,12 +573,12 @@ void QgsVectorLayer::invertSelection()
 {
   QgsFeatureIds ids = allFeatureIds();
   ids.subtract( mSelectedFeatureIds );
-  setSelectedFeatures( ids );
+  selectByIds( ids );
 }
 
 void QgsVectorLayer::selectAll()
 {
-  setSelectedFeatures( allFeatureIds() );
+  selectByIds( allFeatureIds() );
 }
 
 QgsFeatureIds QgsVectorLayer::allFeatureIds()
@@ -542,7 +632,7 @@ void QgsVectorLayer::removeSelection()
   if ( mSelectedFeatureIds.isEmpty() )
     return;
 
-  setSelectedFeatures( QgsFeatureIds() );
+  selectByIds( QgsFeatureIds() );
 }
 
 QgsVectorDataProvider* QgsVectorLayer::dataProvider()
@@ -2490,11 +2580,7 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
 
 void QgsVectorLayer::setSelectedFeatures( const QgsFeatureIds& ids )
 {
-  QgsFeatureIds deselectedFeatures = mSelectedFeatureIds - ids;
-
-  mSelectedFeatureIds = ids;
-
-  emit selectionChanged( ids, deselectedFeatures, true );
+  selectByIds( ids, SetSelection );
 }
 
 int QgsVectorLayer::selectedFeatureCount()
@@ -2565,7 +2651,7 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList features, bool makeSelected )
     for ( QgsFeatureList::iterator iter = features.begin(); iter != features.end(); ++iter )
       ids << iter->id();
 
-    setSelectedFeatures( ids );
+    selectByIds( ids );
   }
 
   updateExtents();

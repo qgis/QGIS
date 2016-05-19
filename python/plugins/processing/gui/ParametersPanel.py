@@ -259,6 +259,22 @@ class ParametersPanel(BASE, WIDGET):
                 self.checkBoxes[output.name] = check
             self.valueItems[output.name] = widget
 
+            if isinstance(output, OutputVector):
+                if output.base_input in self.dependentItems:
+                    items = self.dependentItems[output.base_input]
+                else:
+                    items = []
+                    self.dependentItems[output.base_input] = items
+                items.append(output)
+
+                base_input = self.alg.getParameterFromName(output.base_input)
+                if isinstance(base_input, ParameterVector):
+                    layers = dataobjects.getVectorLayers(base_input.shapetype)
+                else:
+                    layers = dataobjects.getTables()
+                if len(layers) > 0:
+                    output.base_layer = layers[0]
+
     def buttonToggled(self, value):
         if value:
             sender = self.sender()
@@ -343,7 +359,7 @@ class ParametersPanel(BASE, WIDGET):
             else:
                 items = []
                 self.dependentItems[param.parent] = items
-            items.append(param.name)
+            items.append(param)
             parent = self.alg.getParameterFromName(param.parent)
             if isinstance(parent, ParameterVector):
                 layers = dataobjects.getVectorLayers(parent.shapetype)
@@ -434,12 +450,15 @@ class ParametersPanel(BASE, WIDGET):
             return
         children = self.dependentItems[sender.name]
         for child in children:
-            widget = self.valueItems[child]
-            widget.clear()
-            if self.alg.getParameterFromName(child).optional:
-                widget.addItem(self.tr('[not set]'))
-            widget.addItems(self.getFields(layer,
-                                           self.alg.getParameterFromName(child).datatype))
+            if isinstance(child, ParameterTableField):
+                widget = self.valueItems[child.name]
+                widget.clear()
+                if self.alg.getParameterFromName(child).optional:
+                    widget.addItem(self.tr('[not set]'))
+                widget.addItems(self.getFields(layer,
+                                               self.alg.getParameterFromName(child).datatype))
+            if isinstance(child, OutputVector):
+                child.base_layer = layer
 
     def getFields(self, layer, datatype):
         fieldTypes = []
@@ -459,5 +478,9 @@ class ParametersPanel(BASE, WIDGET):
         for param in self.alg.parameters:
             if isinstance(param, ParameterTableField):
                 if param.parent == parent.name:
+                    return True
+        for output in self.alg.outputs:
+            if isinstance(output, OutputVector):
+                if output.base_layer == parent.name:
                     return True
         return False

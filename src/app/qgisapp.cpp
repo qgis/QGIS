@@ -123,6 +123,7 @@
 #include "qgscomposermanager.h"
 #include "qgscomposerview.h"
 #include "qgsstatusbarcoordinateswidget.h"
+#include "qgsstatusbarmagnifierwidget.h"
 #include "qgsconfigureshortcutsdialog.h"
 #include "qgscoordinatetransform.h"
 #include "qgscoordinateutils.h"
@@ -545,6 +546,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     , mScaleLabel( nullptr )
     , mScaleEdit( nullptr )
     , mScaleEditValidator( nullptr )
+    , mMagnifierWidget( nullptr )
     , mCoordsEdit( nullptr )
     , mRotationLabel( nullptr )
     , mRotationEdit( nullptr )
@@ -1001,6 +1003,7 @@ QgisApp::QgisApp()
     , mScaleLabel( nullptr )
     , mScaleEdit( nullptr )
     , mScaleEditValidator( nullptr )
+    , mMagnifierWidget( nullptr )
     , mCoordsEdit( nullptr )
     , mRotationLabel( nullptr )
     , mRotationEdit( nullptr )
@@ -2160,6 +2163,13 @@ void QgisApp::createStatusBar()
 
   statusBar()->addPermanentWidget( mScaleEdit, 0 );
   connect( mScaleEdit, SIGNAL( scaleChanged( double ) ), this, SLOT( userScale() ) );
+
+  // zoom widget
+  QSettings mySettings;
+  mMagnifierWidget = new QgsStatusBarMagnifierWidget( statusBar(), mMapCanvas );
+  mMagnifierWidget->setFont( myFont );
+  mMagnifierWidget->setMagnificationLevel( mySettings.value( "/qgis/magnifier_level", 100 ).toInt() );
+  statusBar()->addPermanentWidget( mMagnifierWidget, 0 );
 
   if ( QgsMapCanvas::rotationEnabled() )
   {
@@ -8601,6 +8611,8 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString& currentPage )
       Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
         layer->setLayerName( layer->originalName() );
     }
+
+    mMagnifierWidget->setMagnificationLevel( mySettings.value( "/qgis/magnifier_level" ).toInt() );
 
     //update any open compositions so they reflect new composer settings
     //we have to push the changes to the compositions here, because compositions

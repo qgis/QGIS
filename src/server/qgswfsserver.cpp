@@ -1673,7 +1673,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
           }
 #endif
 
-          layer->setSelectedFeatures( fids );
+          layer->selectByIds( fids );
           layer->deleteSelectedFeatures();
         }
       }

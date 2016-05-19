@@ -117,7 +117,7 @@ void eVisEventIdTool::select( const QgsPoint& thePoint )
     newSelectedFeatures.insert( f.id() );
   }
 
-  myLayer->setSelectedFeatures( newSelectedFeatures );
+  myLayer->selectByIds( newSelectedFeatures );
 
   //Launch a new event browser to view selected features
   mBrowser = new eVisGenericEventBrowserGui( mCanvas, mCanvas, nullptr );

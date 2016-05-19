@@ -30,7 +30,7 @@ from qgis.core import QgsField, QgsExpression, QgsExpressionContext, QgsExpressi
 from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTable
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
@@ -52,13 +52,15 @@ class FieldsMapper(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Refactor fields')
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'),
-                                          [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterTable(self.INPUT_LAYER,
+                                         self.tr('Input layer'),
+                                         False))
         self.addParameter(ParameterFieldsMapping(self.FIELDS_MAPPING,
-                                                 self.tr('Fields mapping'), self.INPUT_LAYER))
+                                                 self.tr('Fields mapping'),
+                                                 self.INPUT_LAYER))
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
-                                    self.tr('Refactored')))
+                                    self.tr('Refactored'),
+                                    base_input=self.INPUT_LAYER))
 
     def processAlgorithm(self, progress):
         layer = self.getParameterValue(self.INPUT_LAYER)
@@ -120,7 +122,9 @@ class FieldsMapper(GeoAlgorithm):
         for current, inFeat in enumerate(features):
             rownum = current + 1
 
-            outFeat.setGeometry(inFeat.geometry())
+            geometry = inFeat.geometry()
+            if geometry is not None:
+                outFeat.setGeometry(geometry)
 
             attrs = []
             for i in xrange(0, len(mapping)):

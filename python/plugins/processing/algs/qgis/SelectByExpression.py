@@ -25,7 +25,7 @@ __copyright__ = '(C) 2014, Michael Douchin'
 __revision__ = '$Format:%H$'
 
 import processing
-from qgis.core import QgsExpression, QgsFeatureRequest
+from qgis.core import QgsExpression, QgsVectorLayer
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
@@ -47,7 +47,8 @@ class SelectByExpression(GeoAlgorithm):
 
         self.methods = [self.tr('creating new selection'),
                         self.tr('adding to current selection'),
-                        self.tr('removing from current selection')]
+                        self.tr('removing from current selection'),
+                        self.tr('selecting within current selection')]
 
         self.addParameter(ParameterVector(self.LAYERNAME,
                                           self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))
@@ -63,18 +64,19 @@ class SelectByExpression(GeoAlgorithm):
         oldSelection = set(layer.selectedFeaturesIds())
         method = self.getParameterValue(self.METHOD)
 
+        if method == 0:
+            behaviour = QgsVectorLayer.SetSelection
+        elif method == 1:
+            behaviour = QgsVectorLayer.AddToSelection
+        elif method == 2:
+            behavior = QgsVectorLayer.RemoveFromSelection
+        elif method == 3:
+            behaviour = QgsVectorLayer.IntersectSelection
+
         expression = self.getParameterValue(self.EXPRESSION)
         qExp = QgsExpression(expression)
-        if not qExp.hasParserError():
-            qReq = QgsFeatureRequest(qExp)
-        else:
+        if qExp.hasParserError():
             raise GeoAlgorithmExecutionException(qExp.parserErrorString())
-        selected = [f.id() for f in layer.getFeatures(qReq)]
 
-        if method == 1:
-            selected = list(oldSelection.union(selected))
-        elif method == 2:
-            selected = list(oldSelection.difference(selected))
-
-        layer.setSelectedFeatures(selected)
+        layer.selectByExpression(expression, behaviour)
         self.setOutputValue(self.RESULT, filename)

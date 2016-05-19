@@ -62,6 +62,7 @@ Build-Depends:
  xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable,
 #oracle# oracle-instantclient12.1-devel,
  spawn-fcgi, lighttpd, poppler-utils, locales, qt4-doc-html,
+ qt4-dev-tools,
  libqt4-sql-sqlite, python-psycopg2
 Build-Conflicts: libqgis-dev, qgis-dev
 #sid stretch xenial#Standards-Version: 3.9.7

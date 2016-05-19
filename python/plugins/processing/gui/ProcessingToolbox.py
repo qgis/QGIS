@@ -135,7 +135,7 @@ class ProcessingToolbox(BASE, WIDGET):
             item.setHidden(not show)
             return show
         elif isinstance(item, (TreeAlgorithmItem, TreeActionItem)):
-            #hide = bool(text) and (text not in item.text(0).lower())
+            # hide = bool(text) and (text not in item.text(0).lower())
             hide = bool(text) and not any(text in t for t in [item.text(0).lower(), item.data(0, Qt.UserRole).lower()])
             if isinstance(item, TreeAlgorithmItem):
                 hide = hide and (text not in item.alg.commandLineName())
@@ -377,6 +377,7 @@ class TreeProviderItem(QTreeWidgetItem):
 
     def refresh(self):
         self.takeChildren()
+        Processing.updateAlgsList()
         self.populate()
 
     def populate(self):

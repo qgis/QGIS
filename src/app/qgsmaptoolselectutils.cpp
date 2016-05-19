@@ -221,7 +221,7 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   }
   else
   {
-    vlayer->setSelectedFeatures( newSelectedFeatures );
+    vlayer->selectByIds( newSelectedFeatures );
   }
 
   QApplication::restoreOverrideCursor();

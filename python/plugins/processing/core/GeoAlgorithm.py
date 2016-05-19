@@ -354,7 +354,7 @@ class GeoAlgorithm:
                     out.value = out.value + '.' + exts[0]
                 else:
                     ext = out.value[idx + 1:]
-                    if ext not in exts:
+                    if ext not in exts + ['dbf']:
                         out.value = out.value + '.' + exts[0]
 
     def resolveTemporaryOutputs(self):

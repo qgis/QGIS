@@ -86,7 +86,7 @@ void QgsFeaturePool::addFeature( QgsFeature& feature )
   {
     QgsFeatureIds selectedFeatureIds = mLayer->selectedFeaturesIds();
     selectedFeatureIds.insert( feature.id() );
-    mLayer->setSelectedFeatures( selectedFeatureIds );
+    mLayer->selectByIds( selectedFeatureIds );
   }
   mLayerMutex.unlock();
   mIndexMutex.lock();

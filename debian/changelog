@@ -5,6 +5,7 @@ qgis (2.15.0) UNRELEASED; urgency=medium
   * drop ubuntu utopic and vivid
   * refine GSL build dependency
   * limit python-future to stretch, sid, wily and xenial
+  * include qgis.qch in qgis-api-doc
 
   [ Matthias Kuhn ]
   * Add dependency to python-future

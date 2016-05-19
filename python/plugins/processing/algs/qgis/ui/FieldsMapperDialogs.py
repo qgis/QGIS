@@ -56,7 +56,8 @@ class FieldsMapperParametersPanel(ParametersPanel):
             else:
                 items = []
                 self.dependentItems[param.parent] = items
-            items.append(param.name)
+            items.append(param)
+
             parent = self.alg.getParameterFromName(param.parent)
             if isinstance(parent, ParameterVector):
                 layers = dataobjects.getVectorLayers(parent.shapetype)
@@ -76,16 +77,17 @@ class FieldsMapperParametersPanel(ParametersPanel):
         layer = sender.itemData(sender.currentIndex())
         children = self.dependentItems[sender.name]
         for child in children:
-            widget = self.valueItems[child]
+            widget = self.valueItems[child.name]
             if isinstance(widget, FieldsMappingPanel):
                 widget.setLayer(layer)
+        ParametersPanel.updateDependentFields(self)
 
     def somethingDependsOnThisParameter(self, parent):
         for param in self.alg.parameters:
             if isinstance(param, ParameterFieldsMapping):
                 if param.parent == parent.name:
                     return True
-        return False
+        return ParametersPanel.somethingDependsOnThisParameter(self, parent)
 
 
 class FieldsMapperParametersDialog(AlgorithmDialog):
