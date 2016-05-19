@@ -28,10 +28,13 @@ __revision__ = '$Format:%H$'
 
 import os
 import json
+
 from processing.preconfigured.PreconfiguredUtils import algAsDict
 from processing.preconfigured.PreconfiguredUtils import preconfiguredAlgorithmsFolder
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.AlgorithmDialog import AlgorithmDialog
+from processing.core.alglist import algList
+
 from PyQt4.QtGui import QMessageBox, QPalette, QColor, QVBoxLayout, QLabel, \
     QLineEdit, QWidget
 
@@ -66,7 +69,7 @@ class PreconfiguredAlgorithmDialog(AlgorithmDialog):
             filepath = os.path.join(preconfiguredAlgorithmsFolder(), filename)
             with open(filepath, "w") as f:
                 json.dump(description, f)
-            self.toolbox.updateProvider('preconfigured')
+            algList.reloadProvider('preconfigured')
         except AlgorithmDialogBase.InvalidParameterValue as e:
             try:
                 self.buttonBox.accepted.connect(lambda:

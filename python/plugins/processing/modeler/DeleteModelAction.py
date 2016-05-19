@@ -29,7 +29,7 @@ import os
 from qgis.PyQt.QtWidgets import QMessageBox
 from processing.gui.ContextAction import ContextAction
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
-
+from processing.core.alglist import algList
 
 class DeleteModelAction(ContextAction):
 
@@ -48,4 +48,4 @@ class DeleteModelAction(ContextAction):
             QMessageBox.No)
         if reply == QMessageBox.Yes:
             os.remove(self.itemData.descriptionFile)
-            self.toolbox.updateProvider('model')
+            algList.reloadProvider('model')

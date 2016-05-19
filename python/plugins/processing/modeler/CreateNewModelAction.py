@@ -29,6 +29,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerDialog import ModelerDialog
+from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -46,4 +47,4 @@ class CreateNewModelAction(ToolboxAction):
         dlg = ModelerDialog()
         dlg.exec_()
         if dlg.update:
-            self.toolbox.updateProvider('model')
+            algList.reloadProvider('model')

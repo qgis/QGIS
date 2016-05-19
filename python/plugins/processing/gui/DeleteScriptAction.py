@@ -33,7 +33,7 @@ from processing.gui.ContextAction import ContextAction
 
 from processing.algs.r.RAlgorithm import RAlgorithm
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
-
+from processing.core.alglist import algList
 
 class DeleteScriptAction(ContextAction):
 
@@ -60,6 +60,6 @@ class DeleteScriptAction(ContextAction):
         if reply == QMessageBox.Yes:
             os.remove(self.itemData.descriptionFile)
             if self.scriptType == self.SCRIPT_PYTHON:
-                self.toolbox.updateProvider('script')
+                algList.reloadProvider('script')
             elif self.scriptType == self.SCRIPT_R:
-                self.toolbox.updateProvider('r')
+                algList.reloadProvider('r')

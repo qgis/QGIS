@@ -45,26 +45,28 @@ from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.AlgorithmExecutor import runalg
 from processing.tools import dataobjects
+from processing.core.alglist import algList
 
-
-class AlgListWatcher(QObject):
-
-    providerAdded = pyqtSignal(str)
-    providerRemoved = pyqtSignal(str)
-
-algListWatcher = AlgListWatcher()
-
+from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
+from processing.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
+from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider
+from processing.algs.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
+from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
+from processing.algs.lidar.LidarToolsAlgorithmProvider import LidarToolsAlgorithmProvider
+from processing.algs.gdal.GdalOgrAlgorithmProvider import GdalOgrAlgorithmProvider
+from processing.algs.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
+from processing.algs.r.RAlgorithmProvider import RAlgorithmProvider
+from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
+from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
+from processing.algs.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvider
+from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider
 
 class Processing:
 
-    listeners = []
     providers = []
 
-    # A dictionary of algorithms. Keys are names of providers
-    # and values are list with all algorithms from that provider
-    algs = {}
 
-    # Same structure as algs
+    # Same structure as algs in algList
     actions = {}
 
     # All the registered context menu actions for the toolbox
@@ -75,17 +77,16 @@ class Processing:
         """Use this method to add algorithms from external providers.
         """
 
-        if provider.getName() in [p.getName for p in Processing.providers]:
+        if provider.getName() in [p.getName for p in algList.providers]:
             return
         try:
             provider.initializeSettings()
             Processing.providers.append(provider)
             ProcessingConfig.readSettings()
             provider.loadAlgorithms()
-            Processing.algs[provider.getName()] = {a.commandLineName(): a for a in provider.algs}
             Processing.actions[provider.getName()] = provider.actions
             Processing.contextMenuActions.extend(provider.contextMenuActions)
-            algListWatcher.providerAdded.emit(provider.getName())
+            algList.addProvider(provider)
         except:
             ProcessingLog.addToLog(
                 ProcessingLog.LOG_ERROR,
@@ -103,8 +104,10 @@ class Processing:
         try:
             provider.unload()
             Processing.providers.remove(provider)
-            del Processing.algs[provider.getName()]
-            algListWatcher.providerRemoved.emit(provider.getName())
+            algList.remove(provider.getName())
+            del Processing.actions[provider.getName()]
+            for act in provider.contextMenuActions:
+                Processing.contextMenuActions.remove(act)
         except:
             # This try catch block is here to avoid problems if the
             # plugin with a provider is unloaded after the Processing
@@ -115,10 +118,7 @@ class Processing:
     @staticmethod
     def getProviderFromName(name):
         """Returns the provider with the given name."""
-        for provider in Processing.providers:
-            if provider.getName() == name:
-                return provider
-        return Processing.modeler
+        return algList.getProviderFromName(name)
 
     @staticmethod
     def initialize():
@@ -143,27 +143,15 @@ class Processing:
 
     @staticmethod
     def reloadProvider(providerName):
-        for p in Processing.providers:
-            if p.getName() == providerName:
-                p.loadAlgorithms()
-                Processing.algs[
-                    p.getName()] = {a.commandLineName(): a for a in p.algs}
-
+        algList.reloadProvider(providerName)
 
     @staticmethod
     def getAlgorithm(name):
-        for provider in Processing.algs.values():
-            if name in provider:
-                return provider[name]
-        return None
+        return algList.getAlgorithm(name)
 
     @staticmethod
     def getAlgorithmFromFullName(name):
-        for provider in Processing.algs.values():
-            for alg in provider.values():
-                if alg.name == name:
-                    return alg
-        return None
+        return algList.getAlgorithmFromFullName(name)
 
     @staticmethod
     def getObject(uri):

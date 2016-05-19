@@ -1,7 +1,7 @@
 import os
 from qgis.PyQt.QtWidgets import QAction, QMenu
 from PyQt4.QtGui import QIcon
-from processing.core.Processing import Processing
+from processing.core.alglist import algList
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -9,6 +9,7 @@ from qgis.utils import iface
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmExecutor import runalg
 from processing.gui.Postprocessing import handleAlgorithmResults
+from processing.core.Processing import Processing
 
 algorithmsToolbar = None
 menusSettingsGroup = 'Menus'
@@ -108,7 +109,7 @@ defaultMenuEntries.update({'gdalogr:buildvirtualraster':miscMenu,
 
 
 def initializeMenus():
-    for provider in Processing.providers:
+    for provider in algList.providers:
         for alg in provider.algs:
             d = defaultMenuEntries.get(alg.commandLineName(), "")
             setting = Setting(menusSettingsGroup, "MENU_" + alg.commandLineName(),
@@ -130,7 +131,7 @@ def updateMenus():
 
 
 def createMenus():
-    for provider in list(Processing.algs.values()):
+    for provider in list(algList.algs.values()):
         for alg in list(provider.values()):
             menuPath = ProcessingConfig.getSetting("MENU_" + alg.commandLineName())
             addButton = ProcessingConfig.getSetting("BUTTON_" + alg.commandLineName())
@@ -145,7 +146,7 @@ def createMenus():
 
 
 def removeMenus():
-    for provider in list(Processing.algs.values()):
+    for provider in list(algList.algs.values()):
         for alg in list(provider.values()):
             menuPath = ProcessingConfig.getSetting("MENU_" + alg.commandLineName())
             if menuPath:
