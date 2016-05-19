@@ -238,21 +238,6 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
     deleteShapeFile( vectorFileName );
   }
-  else if ( driverName == "KML" )
-  {
-    if ( !vectorFileName.endsWith( ".kml", Qt::CaseInsensitive ) )
-    {
-      vectorFileName += ".kml";
-    }
-
-    if ( fileEncoding.compare( "UTF-8", Qt::CaseInsensitive ) != 0 )
-    {
-      QgsDebugMsg( "forced UTF-8 encoding for KML" );
-      fileEncoding = "UTF-8";
-    }
-
-    QFile::remove( vectorFileName );
-  }
   else
   {
     if ( metadataFound )
@@ -275,6 +260,16 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     }
 
     QFile::remove( vectorFileName );
+  }
+
+  if ( metadataFound && !metadata.compulsoryEncoding.isEmpty() )
+  {
+    if ( fileEncoding.compare( metadata.compulsoryEncoding, Qt::CaseInsensitive ) != 0 )
+    {
+      QgsDebugMsg( QString( "forced %1 encoding for %2" ).arg( metadata.compulsoryEncoding ).arg( driverName ) );
+      fileEncoding = metadata.compulsoryEncoding;
+    }
+
   }
 
   char **options = nullptr;
@@ -865,7 +860,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.geojson",
                            "geojson",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
 
@@ -959,7 +955,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.xml",
                            "xml",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
 
@@ -1048,7 +1045,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.gml",
                            "gml",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
 
@@ -1090,7 +1088,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.gpkg",
                            "gpkg",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
 
@@ -1168,7 +1167,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.gpx",
                            "gpx",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
 
@@ -1233,7 +1233,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.kml",
                            "kml",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
 
@@ -1498,7 +1499,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.sqlite",
                            "sqlite",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
 
@@ -1579,7 +1581,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.sqlite",
                            "sqlite",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
   // AutoCAD DXF
@@ -1669,7 +1672,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.gdb",
                            "gdb",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
 
@@ -1694,7 +1698,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.xlsx",
                            "xlsx",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
 
@@ -1719,7 +1724,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            "*.ods",
                            "ods",
                            datasetOptions,
-                           layerOptions
+                           layerOptions,
+                           "UTF-8"
                          )
                        );
 
