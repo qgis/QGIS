@@ -185,12 +185,12 @@ bool QgsAttributeTypeDialog::notNull() const
   return notNullCheckBox->isChecked();
 }
 
-void QgsAttributeTypeDialog::setConstraint( const QString &str )
+void QgsAttributeTypeDialog::setExpression( const QString &str )
 {
   constraintExpression->setField( str );
 }
 
-QString QgsAttributeTypeDialog::constraint() const
+QString QgsAttributeTypeDialog::expression() const
 {
   return constraintExpression->asExpression();
 }

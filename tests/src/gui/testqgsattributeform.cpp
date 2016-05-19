@@ -81,7 +81,7 @@ void TestQgsAttributeForm::testFieldConstraint()
   QString invalidLabel = "col0<font color=\"red\">*</font>";
 
   // set constraint
-  layer->editFormConfig()->setConstraint( 0, "" );
+  layer->editFormConfig()->setExpression( 0, "" );
 
   // get wrapper
   QgsEditorWidgetWrapper *ww;
@@ -92,7 +92,7 @@ void TestQgsAttributeForm::testFieldConstraint()
   QCOMPARE( label->text(), QString( "col0" ) );
 
   // set a not null constraint
-  layer->editFormConfig()->setConstraint( 0, "col0 is not null" );
+  layer->editFormConfig()->setExpression( 0, "col0 is not null" );
 
   // set value to 1
   ww->setValue( 1 );
@@ -126,10 +126,10 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   ft.setAttribute( "col3", 3 );
 
   // set constraints for each field
-  layer->editFormConfig()->setConstraint( 0, "" );
-  layer->editFormConfig()->setConstraint( 1, "" );
-  layer->editFormConfig()->setConstraint( 2, "" );
-  layer->editFormConfig()->setConstraint( 3, "" );
+  layer->editFormConfig()->setExpression( 0, "" );
+  layer->editFormConfig()->setExpression( 1, "" );
+  layer->editFormConfig()->setExpression( 2, "" );
+  layer->editFormConfig()->setExpression( 3, "" );
 
   // build a form for this feature
   QgsAttributeForm form( layer );
@@ -160,10 +160,10 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   QCOMPARE( label3->text(), QString( "col3" ) );
 
   // update constraint
-  layer->editFormConfig()->setConstraint( 0, "col0 < (col1 * col2)" );
-  layer->editFormConfig()->setConstraint( 1, "" );
-  layer->editFormConfig()->setConstraint( 2, "" );
-  layer->editFormConfig()->setConstraint( 3, "col0 = 2" );
+  layer->editFormConfig()->setExpression( 0, "col0 < (col1 * col2)" );
+  layer->editFormConfig()->setExpression( 1, "" );
+  layer->editFormConfig()->setExpression( 2, "" );
+  layer->editFormConfig()->setExpression( 3, "col0 = 2" );
 
   // change value
   ww0->setValue( 2 ); // update col0
@@ -212,7 +212,7 @@ void TestQgsAttributeForm::testOKButtonStatus()
   QSignalSpy spy3( layer, SIGNAL( editingStopped() ) );
 
   // set constraint
-  layer->editFormConfig()->setConstraint( 0, "" );
+  layer->editFormConfig()->setExpression( 0, "" );
 
   // no constraint but layer not editable : OK button disabled
   QCOMPARE( layer->isEditable(), false );
@@ -225,12 +225,12 @@ void TestQgsAttributeForm::testOKButtonStatus()
   QCOMPARE( okButton->isEnabled(), true );
 
   // invalid constraint and editable layer : OK button disabled
-  layer->editFormConfig()->setConstraint( 0, "col0 = 0" );
+  layer->editFormConfig()->setExpression( 0, "col0 = 0" );
   ww->setValue( 1 );
   QCOMPARE( okButton->isEnabled(), false );
 
   // valid constraint and editable layer : OK button enabled
-  layer->editFormConfig()->setConstraint( 0, "col0 = 2" );
+  layer->editFormConfig()->setExpression( 0, "col0 = 2" );
   ww->setValue( 2 );
   QCOMPARE( okButton->isEnabled(), true );
 

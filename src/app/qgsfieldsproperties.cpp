@@ -528,7 +528,7 @@ void QgsFieldsProperties::attributeTypeDialog()
   attributeTypeDialog.setFieldEditable( cfg.mEditable );
   attributeTypeDialog.setLabelOnTop( cfg.mLabelOnTop );
   attributeTypeDialog.setNotNull( cfg.mNotNull );
-  attributeTypeDialog.setConstraint( cfg.mConstraint );
+  attributeTypeDialog.setExpression( cfg.mConstraint );
 
   attributeTypeDialog.setWidgetV2Config( cfg.mEditorWidgetV2Config );
   attributeTypeDialog.setWidgetV2Type( cfg.mEditorWidgetV2Type );
@@ -539,7 +539,7 @@ void QgsFieldsProperties::attributeTypeDialog()
   cfg.mEditable = attributeTypeDialog.fieldEditable();
   cfg.mLabelOnTop = attributeTypeDialog.labelOnTop();
   cfg.mNotNull = attributeTypeDialog.notNull();
-  cfg.mConstraint = attributeTypeDialog.constraint();
+  cfg.mConstraint = attributeTypeDialog.expression();
 
   cfg.mEditorWidgetV2Type = attributeTypeDialog.editorWidgetV2Type();
   cfg.mEditorWidgetV2Config = attributeTypeDialog.editorWidgetV2Config();
@@ -913,7 +913,7 @@ void QgsFieldsProperties::apply()
     mLayer->editFormConfig()->setReadOnly( i, !cfg.mEditable );
     mLayer->editFormConfig()->setLabelOnTop( i, cfg.mLabelOnTop );
     mLayer->editFormConfig()->setNotNull( i, cfg.mNotNull );
-    mLayer->editFormConfig()->setConstraint( i, cfg.mConstraint );
+    mLayer->editFormConfig()->setExpression( i, cfg.mConstraint );
 
     mLayer->editFormConfig()->setWidgetType( idx, cfg.mEditorWidgetV2Type );
     mLayer->editFormConfig()->setWidgetConfig( idx, cfg.mEditorWidgetV2Config );
@@ -993,7 +993,7 @@ QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
                      && layer->fields().fieldOrigin( idx ) != QgsFields::OriginExpression;
   mLabelOnTop = layer->editFormConfig()->labelOnTop( idx );
   mNotNull = layer->editFormConfig()->notNull( idx );
-  mConstraint = layer->editFormConfig()->constraint( idx );
+  mConstraint = layer->editFormConfig()->expression( idx );
   mEditorWidgetV2Type = layer->editFormConfig()->widgetType( idx );
   mEditorWidgetV2Config = layer->editFormConfig()->widgetConfig( idx );
 

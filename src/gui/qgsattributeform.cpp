@@ -930,7 +930,7 @@ void QgsAttributeForm::constraintDependencies( QgsEditorWidgetWrapper *w,
       if ( name != ewwName )
       {
         // get expression and referencedColumns
-        QgsExpression expr = eww->layer()->editFormConfig()->constraint( eww->fieldIdx() );
+        QgsExpression expr = eww->layer()->editFormConfig()->expression( eww->fieldIdx() );
 
         Q_FOREACH ( const QString& colName, expr.referencedColumns() )
         {

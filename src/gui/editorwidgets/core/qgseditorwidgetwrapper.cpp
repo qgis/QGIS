@@ -107,7 +107,7 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
 {
   bool toEmit( false );
   QString errStr( "predicate is True" );
-  QString expression = layer()->editFormConfig()->constraint( mFieldIdx );
+  QString expression = layer()->editFormConfig()->expression( mFieldIdx );
   QVariant value = ft.attribute( mFieldIdx );
 
   if ( ! expression.isEmpty() )

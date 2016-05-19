@@ -98,13 +98,13 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
      * Getter for the constraint expression
      * @note added in QGIS 2.16
      */
-    QString constraint() const;
+    QString expression() const;
 
     /**
      * Setter for the constraint expression
      * @note added in QGIS 2.16
      */
-    void setConstraint( const QString &str );
+    void setExpression( const QString &str );
 
   private slots:
     /**

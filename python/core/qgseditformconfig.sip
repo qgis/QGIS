@@ -482,7 +482,7 @@ class QgsEditFormConfig : QObject
      * @return the expression
      * @note added in QGIS 2.16
      */
-    QString constraint( int idx ) const;
+    QString expression( int idx ) const;
 
     /**
      * Set the constraint expression for a specific field
@@ -490,7 +490,7 @@ class QgsEditFormConfig : QObject
      * @param str the constraint expression
      * @note added in QGIS 2.16
      */
-    void setConstraint( int idx, const QString& str );
+    void setExpression( int idx, const QString& str );
 
     /**
      * Returns if the field at fieldidx should be treated as NOT NULL value

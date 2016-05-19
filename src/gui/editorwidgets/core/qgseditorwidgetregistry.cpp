@@ -252,7 +252,7 @@ void QgsEditorWidgetRegistry::readMapLayer( QgsMapLayer* mapLayer, const QDomEle
       vectorLayer->editFormConfig()->setReadOnly( idx, ewv2CfgElem.attribute( "fieldEditable", "1" ) != "1" );
       vectorLayer->editFormConfig()->setLabelOnTop( idx, ewv2CfgElem.attribute( "labelOnTop", "0" ) == "1" );
       vectorLayer->editFormConfig()->setNotNull( idx, ewv2CfgElem.attribute( "notNull", "0" ) == "1" );
-      vectorLayer->editFormConfig()->setConstraint( idx, ewv2CfgElem.attribute( "constraint", "" ) );
+      vectorLayer->editFormConfig()->setExpression( idx, ewv2CfgElem.attribute( "constraint", "" ) );
 
       vectorLayer->editFormConfig()->setWidgetConfig( idx, cfg );
     }
@@ -311,7 +311,7 @@ void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement&
       ewv2CfgElem.setAttribute( "fieldEditable", !vectorLayer->editFormConfig()->readOnly( idx ) );
       ewv2CfgElem.setAttribute( "labelOnTop", vectorLayer->editFormConfig()->labelOnTop( idx ) );
       ewv2CfgElem.setAttribute( "notNull", vectorLayer->editFormConfig()->notNull( idx ) );
-      ewv2CfgElem.setAttribute( "constraint", vectorLayer->editFormConfig()->constraint( idx ) );
+      ewv2CfgElem.setAttribute( "constraint", vectorLayer->editFormConfig()->expression( idx ) );
 
       mWidgetFactories[widgetType]->writeConfig( vectorLayer->editFormConfig()->widgetConfig( idx ), ewv2CfgElem, doc, vectorLayer, idx );
 
