@@ -1,9 +1,9 @@
 /***************************************************************************
-    testqgsdualview.cpp
+    testqgsattributeform.cpp
      --------------------------------------
     Date                 : 13 05 2016
     Copyright            : (C) 2016 Paul Blottiere
-    Email                : paul.blottiere@oslandia.com
+    Email                : paul dot blottiere at oslandia dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
