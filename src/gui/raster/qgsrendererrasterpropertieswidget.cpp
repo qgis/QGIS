@@ -57,6 +57,37 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsRasterL
   {
     setRendererWidget( renderer->type() );
   }
+
+  connect( mSliderBrightness, SIGNAL( valueChanged( int ) ), mBrightnessSpinBox, SLOT( setValue( int ) ) );
+  connect( mBrightnessSpinBox, SIGNAL( valueChanged( int ) ), mSliderBrightness, SLOT( setValue( int ) ) );
+
+  // Just connect the spin box because the slidder updates the spinner
+  connect( mBrightnessSpinBox, SIGNAL( valueChanged( int ) ), this, SIGNAL( widgetChanged() ) );
+
+  connect( mSliderContrast, SIGNAL( valueChanged( int ) ), mContrastSpinBox, SLOT( setValue( int ) ) );
+  connect( mContrastSpinBox, SIGNAL( valueChanged( int ) ), mSliderContrast, SLOT( setValue( int ) ) );
+
+  // Just connect the spin box because the slidder updates the spinner
+  connect( mContrastSpinBox, SIGNAL( valueChanged( int ) ), this, SIGNAL( widgetChanged() ) );
+
+  // Connect saturation slider and spin box
+  connect( sliderSaturation, SIGNAL( valueChanged( int ) ), spinBoxSaturation, SLOT( setValue( int ) ) );
+  connect( spinBoxSaturation, SIGNAL( valueChanged( int ) ), sliderSaturation, SLOT( setValue( int ) ) );
+
+  // Just connect the spin box because the slidder updates the spinner
+  connect( spinBoxSaturation, SIGNAL( valueChanged( int ) ), this, SIGNAL( widgetChanged() ) );
+
+  // Connect colorize strength slider and spin box
+  connect( sliderColorizeStrength, SIGNAL( valueChanged( int ) ), spinColorizeStrength, SLOT( setValue( int ) ) );
+  connect( spinColorizeStrength, SIGNAL( valueChanged( int ) ), sliderColorizeStrength, SLOT( setValue( int ) ) );
+
+  // Connect colorize strength slider and spin box
+  connect( spinColorizeStrength, SIGNAL( valueChanged( int ) ), this, SIGNAL( widgetChanged() ) );
+
+  // enable or disable saturation slider and spin box depending on grayscale combo choice
+  connect( comboGrayscale, SIGNAL( currentIndexChanged( int ) ), this, SLOT( toggleSaturationControls( int ) ) );
+
+  connect( mBlendModeComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
 }
 
 QgsRendererRasterPropertiesWidget::~QgsRendererRasterPropertiesWidget()
@@ -78,11 +109,54 @@ void QgsRendererRasterPropertiesWidget::rendererChanged()
 
 void QgsRendererRasterPropertiesWidget::apply()
 {
+  mRasterLayer->brightnessFilter()->setBrightness( mSliderBrightness->value() );
+  mRasterLayer->brightnessFilter()->setContrast( mSliderContrast->value() );
+
   QgsRasterRendererWidget* rendererWidget = dynamic_cast<QgsRasterRendererWidget*>( stackedWidget->currentWidget() );
   if ( rendererWidget )
   {
     mRasterLayer->setRenderer( rendererWidget->renderer() );
   }
+
+  // Hue and saturation controls
+  QgsHueSaturationFilter *hueSaturationFilter = mRasterLayer->hueSaturationFilter();
+  if ( hueSaturationFilter )
+  {
+    hueSaturationFilter->setSaturation( sliderSaturation->value() );
+    hueSaturationFilter->setGrayscaleMode(( QgsHueSaturationFilter::GrayscaleMode ) comboGrayscale->currentIndex() );
+    hueSaturationFilter->setColorizeOn( mColorizeCheck->checkState() );
+    hueSaturationFilter->setColorizeColor( btnColorizeColor->color() );
+    hueSaturationFilter->setColorizeStrength( sliderColorizeStrength->value() );
+  }
+
+  mRasterLayer->setBlendMode( mBlendModeComboBox->blendMode() );
+}
+
+void QgsRendererRasterPropertiesWidget::on_mResetColorRenderingBtn_clicked()
+{
+  mBlendModeComboBox->setBlendMode( QPainter::CompositionMode_SourceOver );
+  mSliderBrightness->setValue( 0 );
+  mSliderContrast->setValue( 0 );
+  sliderSaturation->setValue( 0 );
+  comboGrayscale->setCurrentIndex(( int ) QgsHueSaturationFilter::GrayscaleOff );
+  mColorizeCheck->setChecked( false );
+  sliderColorizeStrength->setValue( 100 );
+}
+
+void QgsRendererRasterPropertiesWidget::toggleSaturationControls( int grayscaleMode )
+{
+  // Enable or disable saturation controls based on choice of grayscale mode
+  if ( grayscaleMode == 0 )
+  {
+    sliderSaturation->setEnabled( true );
+    spinBoxSaturation->setEnabled( true );
+  }
+  else
+  {
+    sliderSaturation->setEnabled( false );
+    spinBoxSaturation->setEnabled( false );
+  }
+  emit widgetChanged();
 }
 
 void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &rendererName )

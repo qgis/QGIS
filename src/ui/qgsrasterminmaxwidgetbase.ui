@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>308</width>
-    <height>334</height>
+    <width>273</width>
+    <height>388</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,6 +21,9 @@
     <widget class="QGroupBox" name="mLoadMinMaxValuesGroupBox">
      <property name="title">
       <string>Load min/max values</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <property name="margin">
@@ -154,36 +157,10 @@ standard deviation ×</string>
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <layout class="QVBoxLayout" name="verticalLayout_5">
         <property name="spacing">
          <number>3</number>
         </property>
-        <item>
-         <widget class="QGroupBox" name="mExtentGroupBox">
-          <property name="title">
-           <string>Extent</string>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
-           <item>
-            <widget class="QRadioButton" name="mFullExtentRadioButton">
-             <property name="text">
-              <string>Full</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QRadioButton" name="mCurrentExtentRadioButton">
-             <property name="text">
-              <string>Current</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
         <item>
          <widget class="QGroupBox" name="mAccuracyGroupBox">
           <property name="title">
@@ -204,6 +181,32 @@ standard deviation ×</string>
             <widget class="QRadioButton" name="mActualRadioButton">
              <property name="text">
               <string>Actual (slower)</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="mExtentGroupBox">
+          <property name="title">
+           <string>Extent</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <widget class="QRadioButton" name="mFullExtentRadioButton">
+             <property name="text">
+              <string>Full</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="mCurrentExtentRadioButton">
+             <property name="text">
+              <string>Current</string>
              </property>
             </widget>
            </item>
