@@ -26,7 +26,9 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
     , mMapCanvas( canvas )
     , mBlockAutoApply( false )
     , mCurrentLayer( nullptr )
+    , mLabelingWidget( nullptr )
     , mVectorStyleWidget( nullptr )
+    , mRasterStyleWidget( nullptr )
 {
   QBoxLayout* layout = new QVBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -39,16 +41,14 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
   connect( mAutoApplyTimer, SIGNAL( timeout() ), this, SLOT( apply() ) );
 
   mStackedWidget = new QStackedWidget( this );
-  mVectorLayerTabs = new QTabWidget( this );
-  mVectorLayerTabs->setDocumentMode( true );
-  mRasterLayerTabs = new QTabWidget( this );
-  mRasterLayerTabs->setDocumentMode( true );
+  mStyleTabs = new QTabWidget( this );
+  mStyleTabs->setDocumentMode( true );
+
   mNotSupportedPage = mStackedWidget->addWidget( new QLabel( "Not supported currently" ) );
-  mVectorPage = mStackedWidget->addWidget( mVectorLayerTabs );
-  mRasterPage = mStackedWidget->addWidget( mRasterLayerTabs );
+  mLayerPage = mStackedWidget->addWidget( mStyleTabs );
 
   // create undo widget
-  mUndoWidget = new QgsUndoWidget( this->mVectorLayerTabs, mMapCanvas );
+  mUndoWidget = new QgsUndoWidget( this->mStyleTabs, mMapCanvas );
   mUndoWidget->setObjectName( "Undo Styles" );
 
   mLayerTitleLabel = new QLabel();
@@ -74,42 +74,13 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
   bottomLayout->addWidget( mLiveApplyCheck );
   layout->addLayout( bottomLayout );
 
-  mLabelingWidget = new QgsLabelingWidget( 0, mMapCanvas, this );
-  mLabelingWidget->setDockMode( true );
-  connect( mLabelingWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
-
-  QScrollArea* stylescroll = new QScrollArea;
-  stylescroll->setWidgetResizable( true );
-  stylescroll->setFrameStyle( QFrame::NoFrame );
-
-  QScrollArea* labelscroll = new QScrollArea;
-  labelscroll->setWidgetResizable( true );
-  labelscroll->setFrameStyle( QFrame::NoFrame );
-  labelscroll->setWidget( mLabelingWidget );
-
-  mVectorStyleTabIndex = mVectorLayerTabs->addTab( stylescroll, QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "Style" );
-  mVectorLabelTabIndex = mVectorLayerTabs->addTab( labelscroll, QgsApplication::getThemeIcon( "labelingSingle.svg" ), "Labeling" );
-  mVectorLayerTabs->addTab( mUndoWidget, QgsApplication::getThemeIcon( "labelingSingle.svg" ), "History" );
-//  int diagramTabIndex = mMapStyleTabs->addTab( new QWidget(), QgsApplication::getThemeIcon( "propertyicons/diagram.png" ), "Diagrams" );
-//  mMapStyleTabs->setTabEnabled( styleTabIndex, false );
-//  mMapStyleTabs->setTabEnabled( diagramTabIndex, false );
-  mVectorLayerTabs->setCurrentIndex( mVectorStyleTabIndex );
-
-  QScrollArea* rasterstylescroll = new QScrollArea;
-  rasterstylescroll->setWidgetResizable( true );
-  rasterstylescroll->setFrameStyle( QFrame::NoFrame );
-
-  mRasterStyleTabIndex = mRasterLayerTabs->addTab( rasterstylescroll, QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "Style" );
-
-  connect( mVectorLayerTabs, SIGNAL( currentChanged( int ) ), this, SLOT( updateCurrentWidgetLayer( int ) ) );
-  connect( mRasterLayerTabs, SIGNAL( currentChanged( int ) ), this, SLOT( updateCurrentWidgetLayer( int ) ) );
+  connect( mStyleTabs, SIGNAL( currentChanged( int ) ), this, SLOT( updateCurrentWidgetLayer() ) );
 
   connect( mLiveApplyCheck, SIGNAL( toggled( bool ) ), mButtonBox->button( QDialogButtonBox::Apply ), SLOT( setDisabled( bool ) ) );
 
   connect( mButtonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
 
   mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( false );
-
 }
 
 void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
@@ -121,18 +92,50 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
     return;
   }
 
+  // TODO Don't clear and reload tabs if the layer type is the same
   mCurrentLayer = layer;
 
-  // TODO Adjust for raster
+  whileBlocking(mStyleTabs)->clear();
+
+  if ( layer->type() == QgsMapLayer::VectorLayer )
+  {
+    QScrollArea* stylescroll = new QScrollArea;
+    stylescroll->setWidgetResizable( true );
+    stylescroll->setFrameStyle( QFrame::NoFrame );
+
+    QScrollArea* labelscroll = new QScrollArea;
+    labelscroll->setWidgetResizable( true );
+    labelscroll->setFrameStyle( QFrame::NoFrame );
+
+    mVectorStyleTabIndex = mStyleTabs->addTab( stylescroll, QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "Style" );
+    mVectorLabelTabIndex = mStyleTabs->addTab( labelscroll, QgsApplication::getThemeIcon( "labelingSingle.svg" ), "Labeling" );
+    mStyleTabs->addTab( mUndoWidget, QgsApplication::getThemeIcon( "labelingSingle.svg" ), "History" );
+//  int diagramTabIndex = mMapStyleTabs->addTab( new QWidget(), QgsApplication::getThemeIcon( "propertyicons/diagram.png" ), "Diagrams" );
+
+    whileBlocking( mStyleTabs )->setCurrentIndex( 0 );
+  }
+  else if ( layer->type() == QgsMapLayer::RasterLayer )
+  {
+    QScrollArea* rasterstylescroll = new QScrollArea;
+    rasterstylescroll->setWidgetResizable( true );
+    rasterstylescroll->setFrameStyle( QFrame::NoFrame );
+
+    mRasterStyleTabIndex = mStyleTabs->addTab( rasterstylescroll, QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "Style" );
+
+    whileBlocking( mStyleTabs )->setCurrentIndex( 0 );
+  }
+
+  mStyleTabs->addTab( mUndoWidget, QgsApplication::getThemeIcon( "labelingSingle.svg" ), "History" );
+
   updateCurrentWidgetLayer();
 }
 
 void QgsMapStylingWidget::apply()
 {
   QString undoName = "Style Change";
-  if ( mStackedWidget->currentIndex() == mVectorPage )
+  if ( mCurrentLayer->type() == QgsMapLayer::VectorLayer )
   {
-    int currentPage = mVectorLayerTabs->currentIndex();
+    int currentPage = mStyleTabs->currentIndex();
     if ( currentPage == mVectorLabelTabIndex )
     {
       mLabelingWidget->apply();
@@ -150,20 +153,11 @@ void QgsMapStylingWidget::apply()
       QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( layer->rendererV2()->type() );
       undoName = QString( "Style Change - %1" ).arg( m->visibleName() );
     }
-    QString errorMsg;
-    QDomDocument doc( "style" );
-    QDomElement rootNode = doc.createElement( "qgis" );
-    doc.appendChild( rootNode );
-    mCurrentLayer->writeStyle( rootNode, doc, errorMsg );
-    mCurrentLayer->undoStackStyles()->beginMacro( undoName );
-    mCurrentLayer->undoStackStyles()->push( new QgsMapLayerStyleCommand( mCurrentLayer, rootNode, mLastStyleXml ) );
-    mCurrentLayer->undoStackStyles()->endMacro();
-    // Override the last style on the stack
-    mLastStyleXml = rootNode.cloneNode();
+    pushUndoItem( undoName );
   }
-  else if ( mStackedWidget->currentIndex() == mRasterPage )
+  else if ( mCurrentLayer->type() == QgsMapLayer::RasterLayer )
   {
-    int currentPage = mRasterLayerTabs->currentIndex();
+    int currentPage = mStyleTabs->currentIndex();
     if ( currentPage == mRasterStyleTabIndex )
     {
       mRasterStyleWidget->apply();
@@ -171,18 +165,8 @@ void QgsMapStylingWidget::apply()
       QgsProject::instance()->setDirty( true );
       mMapCanvas->clearCache();
       mMapCanvas->refresh();
-      undoName = QString( "Style Change - %1" ).arg( m->visibleName() );
     }
-    QString errorMsg;
-    QDomDocument doc( "style" );
-    QDomElement rootNode = doc.createElement( "qgis" );
-    doc.appendChild( rootNode );
-    mCurrentLayer->writeStyle( rootNode, doc, errorMsg );
-    mCurrentLayer->undoStackStyles()->beginMacro( undoName );
-    mCurrentLayer->undoStackStyles()->push( new QgsMapLayerStyleCommand( mCurrentLayer, rootNode, mLastStyleXml ) );
-    mCurrentLayer->undoStackStyles()->endMacro();
-    // Override the last style on the stack
-    mLastStyleXml = rootNode.cloneNode();
+    pushUndoItem( undoName );
   }
 }
 
@@ -203,19 +187,29 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
 
   mLayerTitleLabel->setText( layer->name() );
 
+
   if ( layer->type() == QgsMapLayer::VectorLayer )
   {
-    mStackedWidget->setCurrentIndex( mVectorPage );
-    int currentPage = mVectorLayerTabs->currentIndex();
+    mStackedWidget->setCurrentIndex( mLayerPage );
+
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( layer );
+    QScrollArea* area = qobject_cast<QScrollArea*>( mStyleTabs->currentWidget() );
+
+    int currentPage = mStyleTabs->currentIndex();
     if ( currentPage == mVectorLabelTabIndex )
     {
-      mLabelingWidget->setLayer( layer );
+      // The label widget is super heavy so we only do it once for now.
+      if ( !mLabelingWidget )
+      {
+        mLabelingWidget = new QgsLabelingWidget( 0, mMapCanvas, this );
+        mLabelingWidget->setDockMode( true );
+        connect( mLabelingWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
+        area->setWidget( mLabelingWidget );
+      }
+      mLabelingWidget->setLayer( vlayer );
     }
     if ( currentPage == mVectorStyleTabIndex )
     {
-      // TODO Refactor props dialog so we don't have to do this
-      QScrollArea* area = qobject_cast<QScrollArea*>( mVectorLayerTabs->widget( mVectorStyleTabIndex ) );
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( layer );
       mVectorStyleWidget = new QgsRendererV2PropertiesDialog( vlayer, QgsStyleV2::defaultStyle(), true );
       connect( mVectorStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
       area->setWidget( mVectorStyleWidget );
@@ -228,13 +222,14 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
   }
   else if ( layer->type() == QgsMapLayer::RasterLayer )
   {
-    mStackedWidget->setCurrentIndex( mRasterPage );
-    int currentPage = mRasterLayerTabs->currentIndex();
+    mStackedWidget->setCurrentIndex( mLayerPage );
+
+    QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer*>( layer );
+    QScrollArea* area = qobject_cast<QScrollArea*>( mStyleTabs->currentWidget() );
+
+    int currentPage = mStyleTabs->currentIndex();
     if ( currentPage == mRasterStyleTabIndex )
     {
-      // TODO Refactor props dialog so we don't have to do this
-      QScrollArea* area = qobject_cast<QScrollArea*>( mRasterLayerTabs->widget( mRasterStyleTabIndex ) );
-      QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer*>( layer );
       mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, area );
       connect( mRasterStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
       area->setWidget( mRasterStyleWidget );
@@ -245,7 +240,7 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
     doc.appendChild( mLastStyleXml );
     mCurrentLayer->writeSymbology( mLastStyleXml, doc, errorMsg );
   }
-  else if ( layer->type() == QgsMapLayer::PluginLayer )
+  else
   {
     mStackedWidget->setCurrentIndex( mNotSupportedPage );
   }
@@ -261,6 +256,20 @@ void QgsMapStylingWidget::layerAboutToBeRemoved( QgsMapLayer* layer )
     mStackedWidget->setCurrentIndex( mNotSupportedPage );
     mCurrentLayer = nullptr;
   }
+}
+
+void QgsMapStylingWidget::pushUndoItem(const QString &name)
+{
+    QString errorMsg;
+    QDomDocument doc( "style" );
+    QDomElement rootNode = doc.createElement( "qgis" );
+    doc.appendChild( rootNode );
+    mCurrentLayer->writeStyle( rootNode, doc, errorMsg );
+    mCurrentLayer->undoStackStyles()->beginMacro( name );
+    mCurrentLayer->undoStackStyles()->push( new QgsMapLayerStyleCommand( mCurrentLayer, rootNode, mLastStyleXml ) );
+    mCurrentLayer->undoStackStyles()->endMacro();
+    // Override the last style on the stack
+    mLastStyleXml = rootNode.cloneNode();
 }
 
 

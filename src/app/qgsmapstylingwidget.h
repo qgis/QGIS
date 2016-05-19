@@ -53,8 +53,9 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget
     void layerAboutToBeRemoved( QgsMapLayer* layer );
 
   private:
+    void pushUndoItem(const QString& name);
     int mNotSupportedPage;
-    int mVectorPage;
+    int mLayerPage;
     int mRasterPage;
     int mVectorStyleTabIndex;
     int mVectorLabelTabIndex;
@@ -67,8 +68,7 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget
     QLabel* mLayerTitleLabel;
     QgsMapLayer* mCurrentLayer;
     QStackedWidget* mStackedWidget;
-    QTabWidget *mVectorLayerTabs;
-    QTabWidget *mRasterLayerTabs;
+    QTabWidget *mStyleTabs;
     QgsLabelingWidget *mLabelingWidget;
     QgsRendererV2PropertiesDialog* mVectorStyleWidget;
     QgsRendererRasterPropertiesWidget* mRasterStyleWidget;
