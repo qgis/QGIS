@@ -21,6 +21,7 @@
 #include <QSize>
 #include <QStringList>
 
+#include "qgsabstractgeometryv2.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatumtransformstore.h"
 #include "qgsmaptopixel.h"
@@ -259,6 +260,17 @@ class CORE_EXPORT QgsMapSettings
 
     void writeXML( QDomNode& theNode, QDomDocument& theDoc );
 
+    /** Sets the segmentation tolerance applied when rendering curved geometries
+    @param tolerance the segmentation tolerance*/
+    void setSegmentationTolerance( double tolerance ) { mSegmentationTolerance = tolerance; }
+    /** Gets the segmentation tolerance applied when rendering curved geometries*/
+    double segmentationTolerance() const { return mSegmentationTolerance; }
+    /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+    @param type the segmentation tolerance typename*/
+    void setSegmentationToleranceType( QgsAbstractGeometryV2::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
+    /** Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)*/
+    QgsAbstractGeometryV2::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
+
   protected:
 
     int mDpi;
@@ -284,6 +296,10 @@ class CORE_EXPORT QgsMapSettings
     Flags mFlags;
 
     QImage::Format mImageFormat;
+
+    double mSegmentationTolerance;
+    QgsAbstractGeometryV2::SegmentationToleranceType mSegmentationToleranceType;
+
 
     // derived properties
     bool mValid; //!< whether the actual settings are valid (set in updateDerived())

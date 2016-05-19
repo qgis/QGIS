@@ -584,6 +584,23 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   mSimplifyDrawingSpinBox->setValue( mSettings->value( "/qgis/simplifyDrawingTol", QGis::DEFAULT_MAPTOPIXEL_THRESHOLD ).toFloat() );
   mSimplifyDrawingAtProvider->setChecked( !mSettings->value( "/qgis/simplifyLocal", true ).toBool() );
 
+  //segmentation tolerance type
+  mToleranceTypeComboBox->addItem( tr( "Maximum angle" ), 0 );
+  mToleranceTypeComboBox->addItem( tr( "Maximum difference" ), 1 );
+  int toleranceType = mSettings->value( "/qgis/segmentationToleranceType", "0" ).toInt();
+  int toleranceTypeIndex = mToleranceTypeComboBox->findData( toleranceType );
+  if ( toleranceTypeIndex != -1 )
+  {
+    mToleranceTypeComboBox->setCurrentIndex( toleranceTypeIndex );
+  }
+
+  double tolerance = mSettings->value( "/qgis/segmentationTolerance", "0.01745" ).toDouble();
+  if ( toleranceType == 0 )
+  {
+    tolerance = tolerance * 180.0 / M_PI; //value shown to the user is degree, not rad
+  }
+  mSegmentationToleranceSpinBox->setValue( tolerance );
+
   QStringList myScalesList = PROJECT_SCALES.split( ',' );
   myScalesList.append( "1:1" );
   mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
@@ -1201,6 +1218,16 @@ void QgsOptions::saveOptions()
 
   // magnification
   mSettings->setValue( "/qgis/magnifier_level", doubleSpinBoxMagnifierDefault->value() );
+
+  //curve segmentation
+  int segmentationType = mToleranceTypeComboBox->itemData( mToleranceTypeComboBox->currentIndex() ).toInt();
+  mSettings->setValue( "/qgis/segmentationToleranceType", segmentationType );
+  double segmentationTolerance = mSegmentationToleranceSpinBox->value();
+  if ( segmentationType == 0 )
+  {
+    segmentationTolerance = segmentationTolerance / 180.0 * M_PI; //user sets angle tolerance in degrees, internal classes need value in rad
+  }
+  mSettings->setValue( "/qgis/segmentationTolerance", segmentationTolerance );
 
   // project
   mSettings->setValue( "/qgis/projOpenAtLaunch", mProjectOnLaunchCmbBx->currentIndex() );

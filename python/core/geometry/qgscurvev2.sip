@@ -32,8 +32,10 @@ class QgsCurveV2: public QgsAbstractGeometryV2
 
     /** Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
+     * @param tolerance segmentation tolerance
+     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve
      */
-    virtual QgsLineStringV2* curveToLine() const = 0;
+    virtual QgsLineStringV2* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const = 0;
 
     /** Adds a curve to a painter path.
      */
@@ -73,8 +75,10 @@ class QgsCurveV2: public QgsAbstractGeometryV2
      */
     virtual QgsCurveV2* reversed() const = 0 /Factory/;
 
-    /** Returns a geometry without curves. Caller takes ownership*/
-    virtual QgsCurveV2* segmentize() const /Factory/;
+    /** Returns a geometry without curves. Caller takes ownership
+    * @param tolerance segmentation tolerance
+    * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+    virtual QgsCurveV2* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const;
     virtual int ringCount( int part = 0 ) const;

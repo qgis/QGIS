@@ -271,8 +271,10 @@ QgsPointV2 QgsLineStringV2::endPoint() const
  * See details in QEP #17
  ****************************************************************************/
 
-QgsLineStringV2* QgsLineStringV2::curveToLine() const
+QgsLineStringV2* QgsLineStringV2::curveToLine( double tolerance, SegmentationToleranceType toleranceType ) const
 {
+  Q_UNUSED( tolerance );
+  Q_UNUSED( toleranceType );
   return static_cast<QgsLineStringV2*>( clone() );
 }
 

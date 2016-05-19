@@ -240,6 +240,13 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
   mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
 
+  //segmentation parameters
+  QSettings settings;
+  double segmentationTolerance = settings.value( "/qgis/segmentationTolerance", "0.01745" ).toDouble();
+  QgsAbstractGeometryV2::SegmentationToleranceType toleranceType = QgsAbstractGeometryV2::SegmentationToleranceType( settings.value( "/qgis/segmentationToleranceType", 0 ).toInt() );
+  mSettings.setSegmentationTolerance( segmentationTolerance );
+  mSettings.setSegmentationToleranceType( toleranceType );
+
   // class that will sync most of the changes between canvas and (legacy) map renderer
   // it is parented to map canvas, will be deleted automatically
   new QgsMapCanvasRendererSync( this, mMapRenderer );
@@ -2092,4 +2099,14 @@ void QgsMapCanvas::refreshAllLayers()
 
   // and then refresh
   refresh();
+}
+
+void QgsMapCanvas::setSegmentationTolerance( double tolerance )
+{
+  mSettings.setSegmentationTolerance( tolerance );
+}
+
+void QgsMapCanvas::setSegmentationToleranceType( QgsAbstractGeometryV2::SegmentationToleranceType type )
+{
+  mSettings.setSegmentationToleranceType( type );
 }

@@ -79,9 +79,9 @@ bool QgsCurveV2::nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const
   return pointAt( id.vertex, vertex, id.type );
 }
 
-QgsCurveV2* QgsCurveV2::segmentize() const
+QgsCurveV2* QgsCurveV2::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
-  return curveToLine();
+  return curveToLine( tolerance, toleranceType );
 }
 
 QgsPointV2 QgsCurveV2::vertexAt( QgsVertexId id ) const

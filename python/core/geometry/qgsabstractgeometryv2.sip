@@ -70,6 +70,14 @@ class QgsAbstractGeometryV2
 
     public:
 
+    /** Segmentation tolerance as maximum angle or maximum difference between approximation and circle*/
+    enum SegmentationToleranceType
+    {
+        MaximumAngle = 0,
+        MaximumDifference
+    };
+
+
     QgsAbstractGeometryV2();
     virtual ~QgsAbstractGeometryV2();
     QgsAbstractGeometryV2( const QgsAbstractGeometryV2& geom );
@@ -303,8 +311,10 @@ class QgsAbstractGeometryV2
 
     /** Returns a version of the geometry without curves. Caller takes ownership of
      * the returned geometry.
+     * @param tolerance segmentation tolerance
+     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve
      */
-    virtual QgsAbstractGeometryV2* segmentize() const /Factory/;
+    virtual QgsAbstractGeometryV2* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
     /** Returns the geometry converted to the more generic curve type.
         E.g. QgsLineStringV2 -> QgsCompoundCurveV2, QgsPolygonV2 -> QgsCurvePolygonV2,

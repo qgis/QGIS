@@ -351,7 +351,7 @@ QgsPointV2 QgsCircularStringV2::endPoint() const
   return pointN( numPoints() - 1 );
 }
 
-QgsLineStringV2* QgsCircularStringV2::curveToLine() const
+QgsLineStringV2* QgsCircularStringV2::curveToLine( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   QgsLineStringV2* line = new QgsLineStringV2();
   QgsPointSequenceV2 points;
@@ -359,7 +359,7 @@ QgsLineStringV2* QgsCircularStringV2::curveToLine() const
 
   for ( int i = 0; i < ( nPoints - 2 ) ; i += 2 )
   {
-    segmentize( pointN( i ), pointN( i + 1 ), pointN( i + 2 ), points );
+    segmentize( pointN( i ), pointN( i + 1 ), pointN( i + 2 ), points, tolerance, toleranceType );
   }
 
   line->setPoints( points );
@@ -473,7 +473,7 @@ void QgsCircularStringV2::setPoints( const QgsPointSequenceV2 &points )
   }
 }
 
-void QgsCircularStringV2::segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QgsPointSequenceV2 &points ) const
+void QgsCircularStringV2::segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QgsPointSequenceV2 &points, double tolerance, SegmentationToleranceType toleranceType ) const
 {
   //adapted code from postgis
   double radius = 0;
@@ -496,7 +496,12 @@ void QgsCircularStringV2::segmentize( const QgsPointV2& p1, const QgsPointV2& p2
     clockwise = true;
   }
 
-  double increment = fabs( M_PI_2 / 90 ); //one segment per degree
+  double increment = tolerance; //one segment per degree
+  if ( toleranceType == QgsAbstractGeometryV2::MaximumDifference )
+  {
+    double halfAngle = acos( -tolerance / radius + 1 );
+    increment = 2 * halfAngle;
+  }
 
   //angles of pt1, pt2, pt3
   double a1 = atan2( p1.y() - centerY, p1.x() - centerX );

@@ -555,7 +555,7 @@ bool QgsGeometryCollectionV2::hasCurvedSegments() const
   return false;
 }
 
-QgsAbstractGeometryV2* QgsGeometryCollectionV2::segmentize() const
+QgsAbstractGeometryV2* QgsGeometryCollectionV2::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   QgsAbstractGeometryV2* geom = QgsGeometryFactory::geomFromWkbType( mWkbType );
   QgsGeometryCollectionV2* geomCollection = dynamic_cast<QgsGeometryCollectionV2*>( geom );
@@ -568,7 +568,7 @@ QgsAbstractGeometryV2* QgsGeometryCollectionV2::segmentize() const
   QVector< QgsAbstractGeometryV2* >::const_iterator geomIt = mGeometries.constBegin();
   for ( ; geomIt != mGeometries.constEnd(); ++geomIt )
   {
-    geomCollection->addGeometry(( *geomIt )->segmentize() );
+    geomCollection->addGeometry(( *geomIt )->segmentize( tolerance, toleranceType ) );
   }
   return geomCollection;
 }

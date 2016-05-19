@@ -34,7 +34,11 @@ class QgsCompoundCurveV2: public QgsCurveV2
     virtual QgsPointV2 endPoint() const;
     virtual void points( QList<QgsPointV2>& pts ) const;
     virtual int numPoints() const;
-    virtual QgsLineStringV2* curveToLine() const;
+    /** Returns a new line string geometry corresponding to a segmentized approximation
+     * of the curve.
+     * @param tolerance segmentation tolerance
+     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+    virtual QgsLineStringV2* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
 
     /** Returns the number of curves in the geometry.
      */

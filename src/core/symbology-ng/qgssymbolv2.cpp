@@ -724,7 +724,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
   //convert curve types to normal point/line/polygon ones
   if ( QgsWKBTypes::isCurvedType( geom->geometry()->wkbType() ) )
   {
-    QgsAbstractGeometryV2 *g = geom->geometry()->segmentize();
+    QgsAbstractGeometryV2 *g = geom->geometry()->segmentize( context.segmentationTolerance(), context.segmentationToleranceType() );
     if ( !g )
     {
       return;
