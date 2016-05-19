@@ -40,6 +40,9 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QDialog, private Ui:
     //! Apply the changes from the dialog to the layer.
     void apply();
 
+    //! Sync the widget the current layer properties
+    void syncToLayer();
+
   private slots:
     /** Slot to reset all color rendering options to default */
     void on_mResetColorRenderingBtn_clicked();
@@ -47,6 +50,8 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QDialog, private Ui:
     /** Enable or disable saturation controls depending on choice of grayscale mode */
     void toggleSaturationControls( int grayscaleMode );
 
+    /** Enable or disable colorize controls depending on checkbox */
+    void toggleColorizeControls( bool colorizeEnabled );
   private:
     void setRendererWidget( const QString& rendererName );
 

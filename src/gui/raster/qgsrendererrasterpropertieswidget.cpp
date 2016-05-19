@@ -88,6 +88,11 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsRasterL
   connect( comboGrayscale, SIGNAL( currentIndexChanged( int ) ), this, SLOT( toggleSaturationControls( int ) ) );
 
   connect( mBlendModeComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
+
+  // enable or disable colorize colorbutton with colorize checkbox
+  connect( mColorizeCheck, SIGNAL( toggled( bool ) ), this, SLOT( toggleColorizeControls( bool ) ) );
+
+  syncToLayer();
 }
 
 QgsRendererRasterPropertiesWidget::~QgsRendererRasterPropertiesWidget()
@@ -132,6 +137,40 @@ void QgsRendererRasterPropertiesWidget::apply()
   mRasterLayer->setBlendMode( mBlendModeComboBox->blendMode() );
 }
 
+void QgsRendererRasterPropertiesWidget::syncToLayer()
+{
+  QgsBrightnessContrastFilter* brightnessFilter = mRasterLayer->brightnessFilter();
+  if ( brightnessFilter )
+  {
+    mSliderBrightness->setValue( brightnessFilter->brightness() );
+    mSliderContrast->setValue( brightnessFilter->contrast() );
+  }
+
+  btnColorizeColor->setColorDialogTitle( tr( "Select color" ) );
+  btnColorizeColor->setContext( "symbology" );
+
+  // Hue and saturation color control
+  const QgsHueSaturationFilter* hueSaturationFilter = mRasterLayer->hueSaturationFilter();
+  //set hue and saturation controls to current values
+  if ( hueSaturationFilter )
+  {
+    sliderSaturation->setValue( hueSaturationFilter->saturation() );
+    comboGrayscale->setCurrentIndex(( int ) hueSaturationFilter->grayscaleMode() );
+
+    // Set initial state of saturation controls based on grayscale mode choice
+    toggleSaturationControls(( int )hueSaturationFilter->grayscaleMode() );
+
+    // Set initial state of colorize controls
+    mColorizeCheck->setChecked( hueSaturationFilter->colorizeOn() );
+    btnColorizeColor->setColor( hueSaturationFilter->colorizeColor() );
+    toggleColorizeControls( hueSaturationFilter->colorizeOn() );
+    sliderColorizeStrength->setValue( hueSaturationFilter->colorizeStrength() );
+  }
+
+  //blend mode
+  mBlendModeComboBox->setBlendMode( mRasterLayer->blendMode() );
+}
+
 void QgsRendererRasterPropertiesWidget::on_mResetColorRenderingBtn_clicked()
 {
   mBlendModeComboBox->setBlendMode( QPainter::CompositionMode_SourceOver );
@@ -156,6 +195,15 @@ void QgsRendererRasterPropertiesWidget::toggleSaturationControls( int grayscaleM
     sliderSaturation->setEnabled( false );
     spinBoxSaturation->setEnabled( false );
   }
+  emit widgetChanged();
+}
+
+void QgsRendererRasterPropertiesWidget::toggleColorizeControls( bool colorizeEnabled )
+{
+  // Enable or disable colorize controls based on checkbox
+  btnColorizeColor->setEnabled( colorizeEnabled );
+  sliderColorizeStrength->setEnabled( colorizeEnabled );
+  spinColorizeStrength->setEnabled( colorizeEnabled );
   emit widgetChanged();
 }
 
