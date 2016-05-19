@@ -112,8 +112,10 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
     void valueChanged( const QVariant& value );
 
     /**
+     * Emit this signal when the constraint status changed.
      * @brief constraintStatusChanged
-     * @param constraint
+     * @param constraint represented as a string
+     * @param err the error represented as a string. Empty if none.
      * @param status
      */
     void constraintStatusChanged( const QString& constraint, const QString& err, bool status );
