@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>273</width>
-    <height>388</height>
+    <width>276</width>
+    <height>275</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -157,36 +157,10 @@ standard deviation ×</string>
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_5">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
         <property name="spacing">
          <number>3</number>
         </property>
-        <item>
-         <widget class="QGroupBox" name="mAccuracyGroupBox">
-          <property name="title">
-           <string>Accuracy</string>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout">
-           <item>
-            <widget class="QRadioButton" name="mEstimateRadioButton">
-             <property name="text">
-              <string>Estimate (faster)</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QRadioButton" name="mActualRadioButton">
-             <property name="text">
-              <string>Actual (slower)</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
         <item>
          <widget class="QGroupBox" name="mExtentGroupBox">
           <property name="title">
@@ -207,6 +181,32 @@ standard deviation ×</string>
             <widget class="QRadioButton" name="mCurrentExtentRadioButton">
              <property name="text">
               <string>Current</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="mAccuracyGroupBox">
+          <property name="title">
+           <string>Accuracy</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QRadioButton" name="mEstimateRadioButton">
+             <property name="text">
+              <string>Estimate (faster)</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="mActualRadioButton">
+             <property name="text">
+              <string>Actual (slower)</string>
              </property>
             </widget>
            </item>
@@ -241,19 +241,6 @@ standard deviation ×</string>
       </item>
      </layout>
     </widget>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>0</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>
