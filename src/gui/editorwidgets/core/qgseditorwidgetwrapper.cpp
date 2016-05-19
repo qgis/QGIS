@@ -98,7 +98,7 @@ void QgsEditorWidgetWrapper::valueChanged()
 void QgsEditorWidgetWrapper::updateConstraintWidgetStatus()
 {
   if ( mValidConstraint )
-    widget()->setStyleSheet( "" );
+    widget()->setStyleSheet( QString() );
   else
     widget()->setStyleSheet( "background-color: #dd7777;" );
 }

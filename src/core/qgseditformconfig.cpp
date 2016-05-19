@@ -121,10 +121,10 @@ bool QgsEditFormConfig::labelOnTop( int idx ) const
 
 QString QgsEditFormConfig::expression( int idx ) const
 {
-  QString expr = "";
+  QString expr;
 
   if ( idx >= 0 && idx < mFields.count() )
-    expr = mConstraints.value( mFields.at( idx ).name(), "" );
+    expr = mConstraints.value( mFields.at( idx ).name(), QString() );
 
   return expr;
 }

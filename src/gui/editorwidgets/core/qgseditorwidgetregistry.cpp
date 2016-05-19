@@ -252,7 +252,7 @@ void QgsEditorWidgetRegistry::readMapLayer( QgsMapLayer* mapLayer, const QDomEle
       vectorLayer->editFormConfig()->setReadOnly( idx, ewv2CfgElem.attribute( "fieldEditable", "1" ) != "1" );
       vectorLayer->editFormConfig()->setLabelOnTop( idx, ewv2CfgElem.attribute( "labelOnTop", "0" ) == "1" );
       vectorLayer->editFormConfig()->setNotNull( idx, ewv2CfgElem.attribute( "notNull", "0" ) == "1" );
-      vectorLayer->editFormConfig()->setExpression( idx, ewv2CfgElem.attribute( "constraint", "" ) );
+      vectorLayer->editFormConfig()->setExpression( idx, ewv2CfgElem.attribute( "constraint", QString() ) );
 
       vectorLayer->editFormConfig()->setWidgetConfig( idx, cfg );
     }

@@ -272,7 +272,7 @@ void QgsPhotoWidgetWrapper::updateConstraintWidgetStatus()
   if ( mLineEdit )
   {
     if ( mValidConstraint )
-      mLineEdit->setStyleSheet( "" );
+      mLineEdit->setStyleSheet( QString() );
     else
     {
       mLineEdit->setStyleSheet( "QgsFilterLineEdit { background-color: #dd7777; }" );

@@ -145,7 +145,7 @@ void QgsRelationReferenceWidgetWrapper::updateConstraintWidgetStatus()
   if ( mWidget )
   {
     if ( mValidConstraint )
-      mWidget->setStyleSheet( "" );
+      mWidget->setStyleSheet( QString() );
     else
       mWidget->setStyleSheet( ".QComboBox { background-color: #dd7777; }" );
   }
