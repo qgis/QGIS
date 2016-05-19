@@ -213,7 +213,7 @@ void TestQgsMapCanvas::testMagnification()
 
   checker.setControlName( "expected_map_magnification" );
   checker.setRenderedImage( tmpName );
-  checker.setSizeTolerance( 2, 2 );
+  checker.setSizeTolerance( 10, 10 );
   QCOMPARE( checker.compareImages( "map_magnification", 100 ), true );
 
   // set magnification factor (auto refresh)
@@ -232,7 +232,7 @@ void TestQgsMapCanvas::testMagnification()
   checker.setRenderedImage( tmpName );
   checker.setControlName( "expected_map_magnification_6_5" );
   controlImageDir = testDataDir + "control_images/";
-  checker.setSizeTolerance( 2, 2 );
+  checker.setSizeTolerance( 10, 10 );
   QCOMPARE( checker.compareImages( "map_magnification_6_5", 100 ), true );
 
   // set magnification factor (auto refresh)
@@ -250,7 +250,7 @@ void TestQgsMapCanvas::testMagnification()
 
   checker.setControlName( "expected_map_magnification" );
   checker.setRenderedImage( tmpName );
-  checker.setSizeTolerance( 2, 2 );
+  checker.setSizeTolerance( 10, 10 );
   QCOMPARE( checker.compareImages( "map_magnification", 100 ), true );
 }
 
