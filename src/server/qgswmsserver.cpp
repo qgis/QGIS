@@ -2802,7 +2802,7 @@ QStringList QgsWMSServer::applyFeatureSelections( const QStringList& layerList )
       selectedIds.insert( STRING_TO_FID( id ) );
     }
 
-    vLayer->setSelectedFeatures( selectedIds );
+    vLayer->selectByIds( selectedIds );
   }
 
 
@@ -2819,7 +2819,7 @@ void QgsWMSServer::clearFeatureSelections( const QStringList& layerIds ) const
     if ( !layer )
       continue;
 
-    layer->setSelectedFeatures( QgsFeatureIds() );
+    layer->selectByIds( QgsFeatureIds() );
   }
 
   return;

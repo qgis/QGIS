@@ -238,13 +238,13 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
     switch ( typeResultFor )
     {
       case selectedNew:
-        mLayerTarget->setSelectedFeatures( mFeatureResult );
+        mLayerTarget->selectByIds( mFeatureResult );
         break;
       case selectedAdd:
-        mLayerTarget->setSelectedFeatures( mLayerTarget->selectedFeaturesIds() + mFeatureResult );
+        mLayerTarget->selectByIds( mLayerTarget->selectedFeaturesIds() + mFeatureResult );
         break;
       case selectedRemove:
-        mLayerTarget->setSelectedFeatures( mLayerTarget->selectedFeaturesIds() - mFeatureResult );
+        mLayerTarget->selectByIds( mLayerTarget->selectedFeaturesIds() - mFeatureResult );
         break;
       default:
         return;

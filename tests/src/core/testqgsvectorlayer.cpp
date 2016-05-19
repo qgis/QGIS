@@ -222,7 +222,7 @@ void TestQgsVectorLayer::QgsVectorLayerGetValues()
   //make a selection
   QgsFeatureIds ids;
   ids << f2.id() << f3.id();
-  layer->setSelectedFeatures( ids );
+  layer->selectByIds( ids );
 
   bool ok;
   QList<QVariant> varList = layer->getValues( "col1", ok );

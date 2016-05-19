@@ -21,6 +21,7 @@ from qgis.PyQt.QtGui import QPainter
 
 from qgis.core import (QGis,
                        QgsVectorLayer,
+                       QgsRectangle,
                        QgsFeature,
                        QgsFeatureRequest,
                        QgsGeometry,
@@ -1063,6 +1064,35 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         assert(len(list(features)) == 1)
 
+    def testSelectByIds(self):
+        """ Test selecting by ID"""
+        layer = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'Points', 'ogr')
+
+        # SetSelection
+        layer.selectByIds([1, 3, 5, 7], QgsVectorLayer.SetSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([1, 3, 5, 7]))
+        # check that existing selection is cleared
+        layer.selectByIds([2, 4, 6], QgsVectorLayer.SetSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([2, 4, 6]))
+
+        # AddToSelection
+        layer.selectByIds([3, 5], QgsVectorLayer.AddToSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([2, 3, 4, 5, 6]))
+        layer.selectByIds([1], QgsVectorLayer.AddToSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([1, 2, 3, 4, 5, 6]))
+
+        # IntersectSelection
+        layer.selectByIds([1, 3, 5, 6], QgsVectorLayer.IntersectSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([1, 3, 5, 6]))
+        layer.selectByIds([1, 2, 5, 6], QgsVectorLayer.IntersectSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([1, 5, 6]))
+
+        # RemoveFromSelection
+        layer.selectByIds([2, 6, 7], QgsVectorLayer.RemoveFromSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([1, 5]))
+        layer.selectByIds([1, 5], QgsVectorLayer.RemoveFromSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([]))
+
     def testSelectByExpression(self):
         """ Test selecting by expression """
         layer = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'Points', 'ogr')
@@ -1073,7 +1103,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         # check that existing selection is cleared
         layer.selectByExpression('"Class"=\'Biplane\'', QgsVectorLayer.SetSelection)
         self.assertEqual(set(layer.selectedFeaturesIds()), set([1, 5, 6, 7, 8]))
-        # SelSelection no matching
+        # SetSelection no matching
         layer.selectByExpression('"Class"=\'A380\'', QgsVectorLayer.SetSelection)
         self.assertEqual(set(layer.selectedFeaturesIds()), set([]))
 
@@ -1093,6 +1123,40 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer.selectByExpression('"Heading"=85', QgsVectorLayer.RemoveFromSelection)
         self.assertEqual(set(layer.selectedFeaturesIds()), set([3]))
         layer.selectByExpression('"Heading"=95', QgsVectorLayer.RemoveFromSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([]))
+
+    def testSelectByRect(self):
+        """ Test selecting by rectangle """
+        layer = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'Points', 'ogr')
+
+        # SetSelection
+        layer.selectByRect(QgsRectangle(-112, 30, -94, 45), QgsVectorLayer.SetSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([2, 3, 7, 10, 11, 15]))
+        # check that existing selection is cleared
+        layer.selectByRect(QgsRectangle(-112, 30, -94, 37), QgsVectorLayer.SetSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([2, 3, 10, 15]))
+        # SetSelection no matching
+        layer.selectByRect(QgsRectangle(112, 30, 115, 45), QgsVectorLayer.SetSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([]))
+
+        # AddToSelection
+        layer.selectByRect(QgsRectangle(-112, 30, -94, 37), QgsVectorLayer.AddToSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([2, 3, 10, 15]))
+        layer.selectByRect(QgsRectangle(-112, 37, -94, 45), QgsVectorLayer.AddToSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([2, 3, 7, 10, 11, 15]))
+
+        # IntersectSelection
+        layer.selectByRect(QgsRectangle(-112, 30, -94, 37), QgsVectorLayer.IntersectSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([2, 3, 10, 15]))
+        layer.selectByIds([2, 10, 13])
+        layer.selectByRect(QgsRectangle(-112, 30, -94, 37), QgsVectorLayer.IntersectSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([2, 10]))
+
+        # RemoveFromSelection
+        layer.selectByRect(QgsRectangle(-112, 30, -94, 45), QgsVectorLayer.SetSelection)
+        layer.selectByRect(QgsRectangle(-112, 30, -94, 37), QgsVectorLayer.RemoveFromSelection)
+        self.assertEqual(set(layer.selectedFeaturesIds()), set([7, 11]))
+        layer.selectByRect(QgsRectangle(-112, 30, -94, 45), QgsVectorLayer.RemoveFromSelection)
         self.assertEqual(set(layer.selectedFeaturesIds()), set([]))
 
     def testAggregate(self):

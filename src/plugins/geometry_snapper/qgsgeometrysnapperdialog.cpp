@@ -249,7 +249,7 @@ void QgsGeometrySnapperDialog::run()
       newlayer->dataProvider()->addFeatures( features );
 
       // Set selected features
-      newlayer->setSelectedFeatures( selectedFeatures );
+      newlayer->selectByIds( selectedFeatures );
     }
     layer = newlayer;
   }
