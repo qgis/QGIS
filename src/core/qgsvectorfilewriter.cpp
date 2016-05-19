@@ -1341,21 +1341,6 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          )
                        );
 
-  // Microstation DGN
-  datasetOptions.clear();
-  layerOptions.clear();
-
-  driverMetadata.insert( "DGN",
-                         MetaData(
-                           "Microstation DGN",
-                           QObject::tr( "Microstation DGN" ),
-                           "*.dgn",
-                           "dgn",
-                           datasetOptions,
-                           layerOptions
-                         )
-                       );
-
   // S-57 Base file
   datasetOptions.clear();
   layerOptions.clear();
