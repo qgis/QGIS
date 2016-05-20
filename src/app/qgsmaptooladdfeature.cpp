@@ -274,32 +274,9 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
         {
           //not a polygon type. Impossible to get there
         }
-#if 0
-        else if ( avoidIntersectionsReturn == 2 ) //MH120131: disable this error message until there is a better way to cope with the single type / multi type problem
+        if ( f->constGeometry()->isGeosEmpty() ) //avoid intersection might have removed the whole geometry
         {
-          //bail out...
-          emit messageEmitted( tr( "The feature could not be added because removing the polygon intersections would change the geometry type" ), QgsMessageBar::CRITICAL );
-          stopCapturing();
-          return;
-        }
-#endif
-        else if ( avoidIntersectionsReturn == 3 )
-        {
-          emit messageEmitted( tr( "An error was reported during intersection removal" ), QgsMessageBar::CRITICAL );
-        }
-
-        if ( !f->constGeometry()->asWkb() ) //avoid intersection might have removed the whole geometry
-        {
-          QString reason;
-          if ( avoidIntersectionsReturn != 2 )
-          {
-            reason = tr( "The feature cannot be added because it's geometry is empty" );
-          }
-          else
-          {
-            reason = tr( "The feature cannot be added because it's geometry collapsed due to intersection avoidance" );
-          }
-          emit messageEmitted( reason, QgsMessageBar::CRITICAL );
+          emit messageEmitted( tr( "The feature cannot be added because it's geometry collapsed due to intersection avoidance" ), QgsMessageBar::CRITICAL );
           stopCapturing();
           return;
         }
