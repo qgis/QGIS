@@ -979,7 +979,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
         @param alsoUpdateExtent If True, will also go to the effort of e.g. updating the extents.
         @return                    True in case of success and False in case of error
      */
-    bool addFeature( QgsFeature& f, bool alsoUpdateExtent = true );
+    bool addFeature( QgsFeature& feature, bool alsoUpdateExtent = true );
 
     /** Updates an existing feature. This method needs to query the datasource
         on every call. Consider using {@link changeAttributeValue()} or

@@ -223,6 +223,9 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     virtual void updateConstraintWidgetStatus();
 
+    /**
+     * Boolean storing the current validity of the constraint for this widget.
+     */
     bool mValidConstraint;
 
   private:
