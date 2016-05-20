@@ -5,6 +5,7 @@
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
+
 """
 __author__ = 'Alessandro Pasotti'
 __date__ = '25/05/2015'
@@ -201,16 +202,15 @@ class TestQgsServer(unittest.TestCase):
                                  'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
                                  'wms_getfeatureinfo-text-plain')
 
-
         # Regression for #8656
         # Mind the gap! (the space in the FILTER expression)
         self.wms_request_compare('GetFeatureInfo',
-                                '&layers=testlayer%20%C3%A8%C3%A9&' +
-                                'INFO_FORMAT=text%2Fxml&' +
-                                'width=600&height=400&srs=EPSG%3A3857&' +
-                                'query_layers=testlayer%20%C3%A8%C3%A9&' +
-                                'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.quote(':"NAME" = \'two\''),
-                                'wms_getfeatureinfo_filter')
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=text%2Fxml&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.quote(':"NAME" = \'two\''),
+                                 'wms_getfeatureinfo_filter')
 
     def wms_inspire_request_compare(self, request):
         """WMS INSPIRE tests"""
