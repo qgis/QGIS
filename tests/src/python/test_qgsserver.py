@@ -155,6 +155,7 @@ class TestQgsServer(unittest.TestCase):
         query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (urllib.quote(project), request)
         if extra is not None:
             query_string += extra
+        print query_string
         header, body = [str(_v) for _v in self.server.handleRequest(query_string)]
         response = header + body
         f = open(self.testdata_path + (request.lower() if not reference_file else reference_file) + '.txt')
@@ -168,7 +169,7 @@ class TestQgsServer(unittest.TestCase):
         f = open(os.path.dirname(__file__) + '/response.txt', 'w+')
         f.write(response)
         f.close()
-        """
+        #"""
         response = re.sub(RE_STRIP_PATH, '', response)
         expected = re.sub(RE_STRIP_PATH, '', expected)
 
@@ -200,6 +201,17 @@ class TestQgsServer(unittest.TestCase):
                                  '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
                                  'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
                                  'wms_getfeatureinfo-text-plain')
+
+
+        # Regression for #8656
+        # Mind the gap! (the space in the FILTER expression)
+        self.wms_request_compare('GetFeatureInfo',
+                                '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                'INFO_FORMAT=text%2Fxml&' +
+                                'width=600&height=400&srs=EPSG%3A3857&' +
+                                'query_layers=testlayer%20%C3%A8%C3%A9&' +
+                                'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.quote(':"NAME" = \'two\''),
+                                'wms_getfeatureinfo_filter')
 
     def wms_inspire_request_compare(self, request):
         """WMS INSPIRE tests"""
@@ -306,7 +318,7 @@ class TestQgsServer(unittest.TestCase):
         parms = {
             'MAP': self.testdata_path + "test%2Bproject.qgs",
             'SERVICE': 'WMS',
-            'VERSIONE': '1.0.0',
+            'VERSION': '1.0.0',
             'REQUEST': 'GetLegendGraphic',
             'FORMAT': 'image/png',
             #'WIDTH': '20', # optional
