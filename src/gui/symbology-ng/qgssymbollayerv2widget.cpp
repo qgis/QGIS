@@ -1360,6 +1360,12 @@ QgsShapeburstFillSymbolLayerV2Widget::QgsShapeburstFillSymbolLayerV2Widget( cons
   mDistanceUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
   mOffsetUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
 
+  QButtonGroup* group1 = new QButtonGroup( this );
+  group1->addButton( radioColorRamp );
+  group1->addButton( radioTwoColor );
+  QButtonGroup* group2 = new QButtonGroup( this );
+  group2->addButton( mRadioUseMaxDistance );
+  group2->addButton( mRadioUseWholeShape );
   btnChangeColor->setAllowAlpha( true );
   btnChangeColor->setColorDialogTitle( tr( "Select gradient color" ) );
   btnChangeColor->setContext( "symbology" );

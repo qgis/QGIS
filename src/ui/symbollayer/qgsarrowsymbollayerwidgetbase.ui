@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>306</width>
+    <width>418</width>
     <height>267</height>
    </rect>
   </property>
@@ -16,7 +16,7 @@
   <property name="toolTip">
    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Symbols clip the geometry to the current canvas extent by default. This could result in undesired renderings for this kind of symbol layer. Make sure to check the corresponding &amp;quot;Clip features to canvas extent&amp;quot; advanced option of the symbol.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0">
    <item row="2" column="0">
     <widget class="QLabel" name="label">
      <property name="text">

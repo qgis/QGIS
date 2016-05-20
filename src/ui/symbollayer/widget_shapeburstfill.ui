@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>374</width>
+    <width>418</width>
     <height>429</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0,0,0">
    <item row="9" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
@@ -188,19 +188,6 @@
      </property>
     </widget>
    </item>
-   <item row="11" column="1">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
    <item row="1" column="4">
     <widget class="QgsDataDefinedButton" name="mStartColorDDBtn">
      <property name="text">
@@ -296,19 +283,6 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Shading style</string>
-     </property>
-    </widget>
-   </item>
    <item row="10" column="1" colspan="3">
     <layout class="QGridLayout" name="gridLayout_2">
      <item row="0" column="0">
@@ -384,6 +358,32 @@
      </item>
     </layout>
    </item>
+   <item row="4" column="0" colspan="4">
+    <widget class="QLabel" name="label_3">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Shading style</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
   </layout>
   <zorder>label</zorder>
   <zorder>label_6</zorder>
@@ -391,10 +391,6 @@
   <zorder>radioTwoColor</zorder>
   <zorder>radioColorRamp</zorder>
   <zorder>label_3</zorder>
-  <zorder>mRadioUseWholeShape</zorder>
-  <zorder>mRadioUseMaxDistance</zorder>
-  <zorder>mIgnoreRingsCheckBox</zorder>
-  <zorder>mRadioUseWholeShape</zorder>
   <zorder>mStartColorDDBtn</zorder>
   <zorder>mEndColorDDBtn</zorder>
   <zorder>btnChangeColor</zorder>
@@ -405,12 +401,6 @@
   <zorder>mBlurRadiusDDBtn</zorder>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>QgsColorButtonV2</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>QgsDataDefinedButton</class>
    <extends>QToolButton</extends>
@@ -425,6 +415,12 @@
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

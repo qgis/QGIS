@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>331</width>
-    <height>198</height>
+    <width>401</width>
+    <height>206</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0">
    <item row="0" column="0">
     <widget class="QLabel" name="mHorizontalDistanceLabel">
      <property name="text">

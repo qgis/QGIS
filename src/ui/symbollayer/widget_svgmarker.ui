@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>275</width>
+    <width>445</width>
     <height>663</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
+  <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1,0">
    <item row="1" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
@@ -520,12 +520,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsDataDefinedButton</class>
    <extends>QToolButton</extends>
    <header>qgsdatadefinedbutton.h</header>
@@ -539,6 +533,12 @@
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
