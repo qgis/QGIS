@@ -21,7 +21,7 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QWidget, private Ui:
      * @param canvas The canvas object used to calculate the max and min values from the extent.
      * @param parent Parent object
      */
-    QgsRendererRasterPropertiesWidget(QgsRasterLayer* layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
+    QgsRendererRasterPropertiesWidget( QgsRasterLayer* layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
     ~QgsRendererRasterPropertiesWidget();
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
@@ -30,6 +30,11 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QWidget, private Ui:
      * @note added in QGIS 2.12
      */
     void setMapCanvas( QgsMapCanvas* canvas );
+
+    /**
+     * Return the active render widget. Can be null.
+     */
+    QgsRasterRendererWidget* currentRenderWidget() { return mRendererWidget; }
 
   signals:
 

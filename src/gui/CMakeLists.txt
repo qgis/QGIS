@@ -7,6 +7,7 @@ SET(QGIS_GUI_SRCS
   raster/qgssinglebandgrayrendererwidget.cpp
   raster/qgssinglebandpseudocolorrendererwidget.cpp
   raster/qgsrendererrasterpropertieswidget.cpp
+  raster/qgsrastertransparencywidget.cpp
   raster/qwt5_histogram_item.cpp
 
   symbology-ng/qgs25drendererwidget.cpp
@@ -433,6 +434,7 @@ SET(QGIS_GUI_MOC_HDRS
   raster/qgssinglebandgrayrendererwidget.h
   raster/qgssinglebandpseudocolorrendererwidget.h
   raster/qgsrendererrasterpropertieswidget.h
+  raster/qgsrastertransparencywidget.h
 
   symbology-ng/qgs25drendererwidget.h
   symbology-ng/characterwidget.h

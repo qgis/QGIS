@@ -53,13 +53,15 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget
     void layerAboutToBeRemoved( QgsMapLayer* layer );
 
   private:
-    void pushUndoItem(const QString& name);
+    void pushUndoItem( const QString& name );
     int mNotSupportedPage;
     int mLayerPage;
     int mRasterPage;
     int mVectorStyleTabIndex;
     int mVectorLabelTabIndex;
     int mRasterStyleTabIndex;
+    int mRasterTransTabIndex;
+    int mRasterHistogramTabIndex;
     QTimer* mAutoApplyTimer;
     QDomNode mLastStyleXml;
     QgsMapCanvas* mMapCanvas;

@@ -8,8 +8,11 @@
 #include "qgsapplication.h"
 #include "qgslabelingwidget.h"
 #include "qgsmapstylingwidget.h"
+#include "qgsrastertransparencywidget.h"
 #include "qgsrendererv2propertiesdialog.h"
 #include "qgsrendererrasterpropertieswidget.h"
+#include "qgsrasterhistogramwidget.h"
+#include "qgsrasterrendererwidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsstylev2.h"
@@ -139,6 +142,18 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
 
       mRasterStyleTabIndex = mStyleTabs->addTab( rasterstylescroll, QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "Style" );
 
+      QScrollArea* rastertransscroll = new QScrollArea;
+      rastertransscroll->setWidgetResizable( true );
+      rastertransscroll->setFrameStyle( QFrame::NoFrame );
+
+      mRasterTransTabIndex = mStyleTabs->addTab( rastertransscroll, QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "Transparency" );
+
+      QScrollArea* rasterhistsscroll = new QScrollArea;
+      rasterhistsscroll->setWidgetResizable( true );
+      rasterhistsscroll->setFrameStyle( QFrame::NoFrame );
+
+      mRasterHistogramTabIndex = mStyleTabs->addTab( rasterhistsscroll, QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "Histrogram" );
+
       whileBlocking( mStyleTabs )->setCurrentIndex( 0 );
     }
 
@@ -177,9 +192,21 @@ void QgsMapStylingWidget::apply()
   else if ( mCurrentLayer->type() == QgsMapLayer::RasterLayer )
   {
     int currentPage = mStyleTabs->currentIndex();
-    if ( currentPage == mRasterStyleTabIndex )
+
+    // Note: Histogram set the values on the renderer so we need to update that
+    if ( currentPage == mRasterStyleTabIndex || currentPage == mRasterHistogramTabIndex )
     {
       mRasterStyleWidget->apply();
+      emit styleChanged( mCurrentLayer );
+      QgsProject::instance()->setDirty( true );
+      mMapCanvas->clearCache();
+      mMapCanvas->refresh();
+    }
+    else if ( currentPage == mRasterTransTabIndex )
+    {
+      QScrollArea* area = qobject_cast<QScrollArea*>( mStyleTabs->currentWidget() );
+      QgsRasterTransparencyWidget* widget = qobject_cast<QgsRasterTransparencyWidget*>( area->widget() );
+      widget->apply();
       emit styleChanged( mCurrentLayer );
       QgsProject::instance()->setDirty( true );
       mMapCanvas->clearCache();
@@ -252,6 +279,21 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
       mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, area );
       connect( mRasterStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
       area->setWidget( mRasterStyleWidget );
+    }
+    else if ( currentPage == mRasterTransTabIndex )
+    {
+      QgsRasterTransparencyWidget* widget = new QgsRasterTransparencyWidget( rlayer, mMapCanvas, area );
+      connect( widget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
+      area->setWidget( widget );
+    }
+    else if ( currentPage == mRasterHistogramTabIndex )
+    {
+      QgsRasterHistogramWidget* widget = new QgsRasterHistogramWidget( rlayer, area );
+      connect( widget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
+
+      // Wat?! This is a bit gross just because we need the render name
+      widget->setRendererWidget( mRasterStyleWidget->currentRenderWidget()->renderer()->type(), mRasterStyleWidget->currentRenderWidget() );
+      area->setWidget( widget );
     }
     QString errorMsg;
     QDomDocument doc( "style" );
