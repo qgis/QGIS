@@ -21,7 +21,7 @@ email                : hugo dot mercier at oslandia dot com
 Query builder dialog, based on the QSpatialite plugin (GPLv2+) by Romain Riviere
 """
 
-from qgis.PyQt.QtCore import QObject, QEvent
+from qgis.PyQt.QtCore import Qt, QObject, QEvent
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QTextEdit
 
 from .ui.ui_DlgQueryBuilder import Ui_DbManagerQueryBuilderDlg as Ui_Dialog
@@ -287,10 +287,17 @@ class QueryBuilderDlg(QDialog):
         self.ui.values.setModel(model)
 
     def query_item(self, index):
-        queryWord = index.data()
-        queryWord = ' "%s"' % queryWord
-        if queryWord != '':
-            self.ui.where.insertPlainText(queryWord)
+        value = index.data(Qt.EditRole)
+
+        if value is None:
+            queryWord = u'NULL'
+        elif isinstance(value, (int, float)):
+            queryWord = unicode(value)
+        else:
+            queryWord = self.db.connector.quoteString(value)
+
+        if queryWord.strip() != '':
+            self.ui.where.insertPlainText(u' ' + queryWord)
             self.ui.where.setFocus()
 
     def use_rtree(self):
