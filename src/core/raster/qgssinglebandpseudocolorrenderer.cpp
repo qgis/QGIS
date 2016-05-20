@@ -63,7 +63,7 @@ QgsSingleBandPseudoColorRenderer* QgsSingleBandPseudoColorRenderer::clone() cons
       QgsColorRampShader * colorRampShader = new QgsColorRampShader( mShader->minimumValue(), mShader->maximumValue() );
 
       colorRampShader->setColorRampType( origColorRampShader->colorRampType() );
-
+      colorRampShader->setClip( origColorRampShader->clip() );
       colorRampShader->setColorRampItemList( origColorRampShader->colorRampItemList() );
       shader->setRasterShaderFunction( colorRampShader );
     }
