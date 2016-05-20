@@ -155,7 +155,6 @@ class TestQgsServer(unittest.TestCase):
         query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (urllib.quote(project), request)
         if extra is not None:
             query_string += extra
-        print query_string
         header, body = [str(_v) for _v in self.server.handleRequest(query_string)]
         response = header + body
         f = open(self.testdata_path + (request.lower() if not reference_file else reference_file) + '.txt')
