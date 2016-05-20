@@ -59,6 +59,11 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
     virtual int selectedBand( int index = 0 ) { Q_UNUSED( index ); return -1; }
 
   signals:
+
+    /**
+     * Emmited when something on the widget has changed.
+     * All widgets will fire this event to notify of an internal change.
+     */
     void widgetChanged();
 
   protected:

@@ -51,13 +51,22 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
   mUndoWidget = new QgsUndoWidget( this->mStyleTabs, mMapCanvas );
   mUndoWidget->setObjectName( "Undo Styles" );
 
-  mLayerTitleLabel = new QLabel();
-  mLayerTitleLabel->setAlignment( Qt::AlignHCenter );
-  layout->addWidget( mLayerTitleLabel );
-  layout->addWidget( mStackedWidget );
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Apply );
+
+  QHBoxLayout* titleLayout = new QHBoxLayout( );
+  mLayerTitleLabel = new QLabel();
+  mLayerTitleLabel->setAlignment( Qt::AlignLeft );
+  QWidget* spacer = new QWidget();
+  spacer->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+  titleLayout->addWidget( mLayerTitleLabel );
+  titleLayout->addWidget( spacer );
+
+  layout->addLayout( titleLayout );
+  layout->addWidget( mStackedWidget );
+
   mLiveApplyCheck = new QCheckBox( "Live update" );
   mLiveApplyCheck->setChecked( true );
+  titleLayout->addWidget( mLiveApplyCheck );
 
   mUndoButton = new QToolButton( this );
   mUndoButton->setIcon( QgsApplication::getThemeIcon( "mActionUndo.png" ) );
@@ -71,7 +80,6 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
   bottomLayout->addWidget( mUndoButton );
   bottomLayout->addWidget( mRedoButton );
   bottomLayout->addWidget( mButtonBox );
-  bottomLayout->addWidget( mLiveApplyCheck );
   layout->addLayout( bottomLayout );
 
   connect( mStyleTabs, SIGNAL( currentChanged( int ) ), this, SLOT( updateCurrentWidgetLayer() ) );
@@ -89,43 +97,54 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
   {
     mLayerTitleLabel->clear();
     mStackedWidget->setCurrentIndex( mNotSupportedPage );
+    whileBlocking( mStyleTabs )->clear();
     return;
   }
 
   // TODO Don't clear and reload tabs if the layer type is the same
+  bool clearTabs = true;
+  if ( mCurrentLayer )
+  {
+    clearTabs = mCurrentLayer->type() != layer->type();
+  }
+
   mCurrentLayer = layer;
 
-  whileBlocking(mStyleTabs)->clear();
-
-  if ( layer->type() == QgsMapLayer::VectorLayer )
+  if ( clearTabs )
   {
-    QScrollArea* stylescroll = new QScrollArea;
-    stylescroll->setWidgetResizable( true );
-    stylescroll->setFrameStyle( QFrame::NoFrame );
+    whileBlocking( mStyleTabs )->clear();
 
-    QScrollArea* labelscroll = new QScrollArea;
-    labelscroll->setWidgetResizable( true );
-    labelscroll->setFrameStyle( QFrame::NoFrame );
+    if ( layer->type() == QgsMapLayer::VectorLayer )
+    {
+      QScrollArea* stylescroll = new QScrollArea;
+      stylescroll->setWidgetResizable( true );
+      stylescroll->setFrameStyle( QFrame::NoFrame );
 
-    mVectorStyleTabIndex = mStyleTabs->addTab( stylescroll, QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "Style" );
-    mVectorLabelTabIndex = mStyleTabs->addTab( labelscroll, QgsApplication::getThemeIcon( "labelingSingle.svg" ), "Labeling" );
-    mStyleTabs->addTab( mUndoWidget, QgsApplication::getThemeIcon( "labelingSingle.svg" ), "History" );
+      QScrollArea* labelscroll = new QScrollArea;
+      labelscroll->setWidgetResizable( true );
+      labelscroll->setFrameStyle( QFrame::NoFrame );
+
+      mVectorStyleTabIndex = mStyleTabs->addTab( stylescroll, QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "Style" );
+      mVectorLabelTabIndex = mStyleTabs->addTab( labelscroll, QgsApplication::getThemeIcon( "labelingSingle.svg" ), "Labeling" );
+      mStyleTabs->addTab( mUndoWidget, QgsApplication::getThemeIcon( "labelingSingle.svg" ), "History" );
 //  int diagramTabIndex = mMapStyleTabs->addTab( new QWidget(), QgsApplication::getThemeIcon( "propertyicons/diagram.png" ), "Diagrams" );
 
-    whileBlocking( mStyleTabs )->setCurrentIndex( 0 );
+      whileBlocking( mStyleTabs )->setCurrentIndex( 0 );
+    }
+    else if ( layer->type() == QgsMapLayer::RasterLayer )
+    {
+      QScrollArea* rasterstylescroll = new QScrollArea;
+      rasterstylescroll->setWidgetResizable( true );
+      rasterstylescroll->setFrameStyle( QFrame::NoFrame );
+
+      mRasterStyleTabIndex = mStyleTabs->addTab( rasterstylescroll, QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "Style" );
+
+      whileBlocking( mStyleTabs )->setCurrentIndex( 0 );
+    }
+
+    mStyleTabs->addTab( mUndoWidget, QgsApplication::getThemeIcon( "labelingSingle.svg" ), "History" );
+
   }
-  else if ( layer->type() == QgsMapLayer::RasterLayer )
-  {
-    QScrollArea* rasterstylescroll = new QScrollArea;
-    rasterstylescroll->setWidgetResizable( true );
-    rasterstylescroll->setFrameStyle( QFrame::NoFrame );
-
-    mRasterStyleTabIndex = mStyleTabs->addTab( rasterstylescroll, QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "Style" );
-
-    whileBlocking( mStyleTabs )->setCurrentIndex( 0 );
-  }
-
-  mStyleTabs->addTab( mUndoWidget, QgsApplication::getThemeIcon( "labelingSingle.svg" ), "History" );
 
   updateCurrentWidgetLayer();
 }
@@ -258,18 +277,18 @@ void QgsMapStylingWidget::layerAboutToBeRemoved( QgsMapLayer* layer )
   }
 }
 
-void QgsMapStylingWidget::pushUndoItem(const QString &name)
+void QgsMapStylingWidget::pushUndoItem( const QString &name )
 {
-    QString errorMsg;
-    QDomDocument doc( "style" );
-    QDomElement rootNode = doc.createElement( "qgis" );
-    doc.appendChild( rootNode );
-    mCurrentLayer->writeStyle( rootNode, doc, errorMsg );
-    mCurrentLayer->undoStackStyles()->beginMacro( name );
-    mCurrentLayer->undoStackStyles()->push( new QgsMapLayerStyleCommand( mCurrentLayer, rootNode, mLastStyleXml ) );
-    mCurrentLayer->undoStackStyles()->endMacro();
-    // Override the last style on the stack
-    mLastStyleXml = rootNode.cloneNode();
+  QString errorMsg;
+  QDomDocument doc( "style" );
+  QDomElement rootNode = doc.createElement( "qgis" );
+  doc.appendChild( rootNode );
+  mCurrentLayer->writeStyle( rootNode, doc, errorMsg );
+  mCurrentLayer->undoStackStyles()->beginMacro( name );
+  mCurrentLayer->undoStackStyles()->push( new QgsMapLayerStyleCommand( mCurrentLayer, rootNode, mLastStyleXml ) );
+  mCurrentLayer->undoStackStyles()->endMacro();
+  // Override the last style on the stack
+  mLastStyleXml = rootNode.cloneNode();
 }
 
 

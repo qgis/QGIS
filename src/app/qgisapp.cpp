@@ -682,6 +682,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mUndoWidget = new QgsUndoWidget( mUndoDock, mMapCanvas );
   mUndoWidget->setObjectName( "Undo" );
   mUndoDock->setWidget( mUndoWidget );
+  mUndoDock->setObjectName( "undo/redo dock");
 
   // Advanced Digitizing dock
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this );

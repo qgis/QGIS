@@ -10,12 +10,18 @@ class QgsRasterLayer;
 class QgsMapCanvas;
 class QgsRasterRendererWidget;
 
-class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QDialog, private Ui::QgsRendererRasterPropsWidgetBase
+class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QWidget, private Ui::QgsRendererRasterPropsWidgetBase
 {
     Q_OBJECT
 
   public:
-    QgsRendererRasterPropertiesWidget( QgsRasterLayer* layer, QgsMapCanvas *canvas, QObject *parent = 0 );
+    /**
+     * A widget to hold the renderer properties for a raster layer.
+     * @param layer The acitve layer for the widget.  Can't be null
+     * @param canvas The canvas object used to calculate the max and min values from the extent.
+     * @param parent Parent object
+     */
+    QgsRendererRasterPropertiesWidget(QgsRasterLayer* layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
     ~QgsRendererRasterPropertiesWidget();
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current

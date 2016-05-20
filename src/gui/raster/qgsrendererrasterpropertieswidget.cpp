@@ -27,8 +27,9 @@ static void _initRendererWidgetFunctions()
 
 
 
-QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsRasterLayer *layer, QgsMapCanvas* canvas, QObject *parent )
-    : mRasterLayer( layer )
+QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsRasterLayer *layer, QgsMapCanvas* canvas, QWidget *parent )
+    : QWidget( parent )
+    , mRasterLayer( layer )
     , mMapCanvas( canvas )
     , mRendererWidget( nullptr )
 {
@@ -222,7 +223,7 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
       QgsRectangle myExtent = mMapCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
       mRendererWidget = rendererEntry.widgetCreateFunction( mRasterLayer, myExtent );
       connect( mRendererWidget, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
-      int page = stackedWidget->addWidget( mRendererWidget );
+      stackedWidget->addWidget( mRendererWidget );
       stackedWidget->setCurrentWidget( mRendererWidget );
       if ( oldWidget )
       {
