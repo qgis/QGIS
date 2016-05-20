@@ -162,7 +162,7 @@ void QgsSQLComposerDialog::accept()
     if ( !mSQLValidatorCallback->isValid( sql(), errorMsg ) )
     {
       if ( errorMsg.isEmpty() )
-        errorMsg = tr( "An error occured during eveluation of the SQL statement" );
+        errorMsg = tr( "An error occured during evaluation of the SQL statement" );
       QMessageBox::critical( this, tr( "SQL error" ), errorMsg );
       return;
     }

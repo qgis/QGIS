@@ -277,7 +277,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
     QMessageBox msgBox;
     msgBox.setIcon( QMessageBox::Question );
     msgBox.setWindowTitle( tr( "The file already exists." ) );
-    msgBox.setText( tr( "Do you want to overwrite the existing file with a new database or add a new layer to it ?" ) );
+    msgBox.setText( tr( "Do you want to overwrite the existing file with a new database or add a new layer to it?" ) );
     QPushButton *overwriteButton = msgBox.addButton( tr( "Overwrite" ), QMessageBox::ActionRole );
     QPushButton *addNewLayerButton = msgBox.addButton( tr( "Add new layer" ), QMessageBox::ActionRole );
     msgBox.setStandardButtons( QMessageBox::Cancel );
@@ -365,7 +365,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
       overwriteTable = property( "question_existing_layer_answer_overwrite" ).toBool();
     }
     else if ( QMessageBox::question( this, tr( "Existing layer" ),
-                                     tr( "A table with the same name already exists. Do you want to overwrite it ?" ),
+                                     tr( "A table with the same name already exists. Do you want to overwrite it?" ),
                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
     {
       overwriteTable = true;
