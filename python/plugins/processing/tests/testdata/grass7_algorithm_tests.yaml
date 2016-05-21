@@ -612,7 +612,7 @@ tests:
         type: raster
       parameters:
         type: file
-        name: /home/medspx/projects/QGIS/python/plugins/processing/tests/testdata/custom/grass7/i.atcorr.txt
+        name: custom/grass7/i.atcorr.txt
     results:
       output:
         hash: fc3dbc04793ecba0a24400d489f3ebd0660400232602487e6861306c
