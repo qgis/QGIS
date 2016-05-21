@@ -12,6 +12,8 @@
 #include <QDomNode>
 #include <QTimer>
 
+#include "ui_qgsmapstylingwidgetbase.h"
+
 class QgsLabelingWidget;
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -33,11 +35,11 @@ class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
     QDomNode mLastState;
 };
 
-class APP_EXPORT QgsMapStylingWidget : public QWidget
+class APP_EXPORT QgsMapStylingWidget : public QWidget, private Ui::QgsMapStylingWidget
 {
     Q_OBJECT
   public:
-    explicit QgsMapStylingWidget( QgsMapCanvas *canvas, QWidget *parent = 0 );
+    QgsMapStylingWidget( QgsMapCanvas *canvas, QWidget *parent = 0 );
     QgsMapLayer* layer() { return mCurrentLayer; }
 
   signals:
@@ -56,7 +58,6 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget
     void pushUndoItem( const QString& name );
     int mNotSupportedPage;
     int mLayerPage;
-    int mRasterPage;
     int mVectorStyleTabIndex;
     int mVectorLabelTabIndex;
     int mRasterStyleTabIndex;
@@ -67,17 +68,10 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget
     QgsMapCanvas* mMapCanvas;
     bool mBlockAutoApply;
     QgsUndoWidget* mUndoWidget;
-    QLabel* mLayerTitleLabel;
     QgsMapLayer* mCurrentLayer;
-    QStackedWidget* mStackedWidget;
-    QTabWidget *mStyleTabs;
     QgsLabelingWidget *mLabelingWidget;
     QgsRendererV2PropertiesDialog* mVectorStyleWidget;
     QgsRendererRasterPropertiesWidget* mRasterStyleWidget;
-    QDialogButtonBox* mButtonBox;
-    QCheckBox* mLiveApplyCheck;
-    QToolButton* mUndoButton;
-    QToolButton* mRedoButton;
 };
 
 #endif // QGSMAPSTYLESDOCK_H

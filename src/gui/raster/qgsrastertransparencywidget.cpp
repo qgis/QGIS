@@ -618,7 +618,7 @@ void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, doub
         break;
     }
     lineEdit->setText( valueString );
-    connect( lineEdit, SIGNAL( textEdited(QString)), this, SIGNAL( widgetChanged()));
+    connect( lineEdit, SIGNAL( textEdited( QString ) ), this, SIGNAL( widgetChanged() ) );
   }
   tableTransparency->setCellWidget( row, column, lineEdit );
   adjustTransparencyCellWidth( row, column );

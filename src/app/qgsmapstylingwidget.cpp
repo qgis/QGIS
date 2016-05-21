@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QSizePolicy>
 #include <QUndoStack>
+#include <QListWidget>
 
 #include "qgsapplication.h"
 #include "qgslabelingwidget.h"
@@ -26,6 +27,8 @@
 
 QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent )
     : QWidget( parent )
+    , mNotSupportedPage( 0 )
+    , mLayerPage( 1 )
     , mMapCanvas( canvas )
     , mBlockAutoApply( false )
     , mCurrentLayer( nullptr )
@@ -33,9 +36,7 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
     , mVectorStyleWidget( nullptr )
     , mRasterStyleWidget( nullptr )
 {
-  QBoxLayout* layout = new QVBoxLayout();
-  layout->setContentsMargins( 0, 0, 0, 0 );
-  this->setLayout( layout );
+  setupUi( this );
 
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QgsMapLayer* ) ), this, SLOT( layerAboutToBeRemoved( QgsMapLayer* ) ) );
 
@@ -43,55 +44,23 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
   mAutoApplyTimer->setSingleShot( true );
   connect( mAutoApplyTimer, SIGNAL( timeout() ), this, SLOT( apply() ) );
 
-  mStackedWidget = new QStackedWidget( this );
-  mStyleTabs = new QTabWidget( this );
-  mStyleTabs->setDocumentMode( true );
 
-  mNotSupportedPage = mStackedWidget->addWidget( new QLabel( "Not supported currently" ) );
-  mLayerPage = mStackedWidget->addWidget( mStyleTabs );
+  mStackedWidget = new QStackedWidget( this );
 
   // create undo widget
-  mUndoWidget = new QgsUndoWidget( this->mStyleTabs, mMapCanvas );
+  mUndoWidget = new QgsUndoWidget( mStyleTabs, mMapCanvas );
   mUndoWidget->setObjectName( "Undo Styles" );
-
-  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Apply );
-
-  QHBoxLayout* titleLayout = new QHBoxLayout( );
-  mLayerTitleLabel = new QLabel();
-  mLayerTitleLabel->setAlignment( Qt::AlignLeft );
-  QWidget* spacer = new QWidget();
-  spacer->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-  titleLayout->addWidget( mLayerTitleLabel );
-  titleLayout->addWidget( spacer );
-
-  layout->addLayout( titleLayout );
-  layout->addWidget( mStackedWidget );
-
-  mLiveApplyCheck = new QCheckBox( "Live update" );
-  mLiveApplyCheck->setChecked( true );
-  titleLayout->addWidget( mLiveApplyCheck );
-
-  mUndoButton = new QToolButton( this );
-  mUndoButton->setIcon( QgsApplication::getThemeIcon( "mActionUndo.png" ) );
-  mRedoButton = new QToolButton( this );
-  mRedoButton->setIcon( QgsApplication::getThemeIcon( "mActionRedo.png" ) );
+  mUndoWidget->hide();
 
   connect( mUndoButton, SIGNAL( pressed() ), mUndoWidget, SLOT( undo() ) );
   connect( mRedoButton, SIGNAL( pressed() ), mUndoWidget, SLOT( redo() ) );
-
-  QHBoxLayout* bottomLayout = new QHBoxLayout( );
-  bottomLayout->addWidget( mUndoButton );
-  bottomLayout->addWidget( mRedoButton );
-  bottomLayout->addWidget( mButtonBox );
-  layout->addLayout( bottomLayout );
-
   connect( mStyleTabs, SIGNAL( currentChanged( int ) ), this, SLOT( updateCurrentWidgetLayer() ) );
-
   connect( mLiveApplyCheck, SIGNAL( toggled( bool ) ), mButtonBox->button( QDialogButtonBox::Apply ), SLOT( setDisabled( bool ) ) );
-
   connect( mButtonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
 
   mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( false );
+
+  mStackedWidget->setCurrentIndex( 1 );
 }
 
 void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
@@ -100,7 +69,6 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
   {
     mLayerTitleLabel->clear();
     mStackedWidget->setCurrentIndex( mNotSupportedPage );
-    whileBlocking( mStyleTabs )->clear();
     return;
   }
 
@@ -115,7 +83,7 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
 
   if ( clearTabs )
   {
-    whileBlocking( mStyleTabs )->clear();
+    mOptionsListWidget->clear();
 
     if ( layer->type() == QgsMapLayer::VectorLayer )
     {
@@ -127,10 +95,12 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
       labelscroll->setWidgetResizable( true );
       labelscroll->setFrameStyle( QFrame::NoFrame );
 
-      mVectorStyleTabIndex = mStyleTabs->addTab( stylescroll, QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "Style" );
-      mVectorLabelTabIndex = mStyleTabs->addTab( labelscroll, QgsApplication::getThemeIcon( "labelingSingle.svg" ), "Labeling" );
-      mStyleTabs->addTab( mUndoWidget, QgsApplication::getThemeIcon( "labelingSingle.svg" ), "History" );
+      mVectorStyleTabIndex = mStyleTabs->addWidget( stylescroll );
+      mVectorStyleTabIndex = mStyleTabs->addWidget( labelscroll );
 //  int diagramTabIndex = mMapStyleTabs->addTab( new QWidget(), QgsApplication::getThemeIcon( "propertyicons/diagram.png" ), "Diagrams" );
+
+      mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "" ) );
+      mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "labelingSingle.svg" ), "" ) );
 
       whileBlocking( mStyleTabs )->setCurrentIndex( 0 );
     }
@@ -140,24 +110,32 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
       rasterstylescroll->setWidgetResizable( true );
       rasterstylescroll->setFrameStyle( QFrame::NoFrame );
 
-      mRasterStyleTabIndex = mStyleTabs->addTab( rasterstylescroll, QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "Style" );
+      mVectorStyleTabIndex = mStyleTabs->addWidget( rasterstylescroll );
 
       QScrollArea* rastertransscroll = new QScrollArea;
       rastertransscroll->setWidgetResizable( true );
       rastertransscroll->setFrameStyle( QFrame::NoFrame );
 
-      mRasterTransTabIndex = mStyleTabs->addTab( rastertransscroll, QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "Transparency" );
+      mVectorStyleTabIndex = mStyleTabs->addWidget( rastertransscroll );
 
       QScrollArea* rasterhistsscroll = new QScrollArea;
       rasterhistsscroll->setWidgetResizable( true );
       rasterhistsscroll->setFrameStyle( QFrame::NoFrame );
 
-      mRasterHistogramTabIndex = mStyleTabs->addTab( rasterhistsscroll, QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "Histrogram" );
+      mVectorStyleTabIndex = mStyleTabs->addWidget( rasterhistsscroll );
+
+      mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "" ) );
+      mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "" ) );
+      mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "" ) );
 
       whileBlocking( mStyleTabs )->setCurrentIndex( 0 );
     }
 
-    mStyleTabs->addTab( mUndoWidget, QgsApplication::getThemeIcon( "labelingSingle.svg" ), "History" );
+    mVectorStyleTabIndex = mStyleTabs->addWidget( mUndoWidget );
+
+    mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "mIconTreeView.png" ), "" ) );
+
+    mUndoWidget->show();
 
   }
 
@@ -232,7 +210,6 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
   mUndoWidget->setUndoStack( layer->undoStackStyles() );
 
   mLayerTitleLabel->setText( layer->name() );
-
 
   if ( layer->type() == QgsMapLayer::VectorLayer )
   {
