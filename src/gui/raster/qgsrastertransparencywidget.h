@@ -41,9 +41,25 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QWidget, private Ui::QgsRa
     /** \brief slot executed when user presses "Add Values From Display" button on the transparency page */
     void on_pbnAddValuesFromDisplay_clicked();
 
+    /** \brief slot executed when user presses "Add Values Manually" button on the transparency page */
+    void on_pbnAddValuesManually_clicked();
+
+    /** \brief slot executed when user wishes to reset noNoDataValue and transparencyTable to default value */
+    void on_pbnDefaultValues_clicked();
+
+    /** \brief slot executed when user wishes to export transparency values */
+    void on_pbnExportTransparentPixelValues_clicked();
+
+    /** \brief slow executed when user wishes to import transparency values */
+    void on_pbnImportTransparentPixelValues_clicked();
+    /** \brief slot executed when user presses "Remove Selected Row" button on the transparency page */
+    void on_pbnRemoveSelectedRow_clicked();
+
   private:
     /** \brief  A constant that signals property not used */
     const QString TRSTRING_NOT_SET;
+
+    bool rasterIsMultiBandColor();
 
     /** \brief Clear the current transparency table and populate the table with the correct types for current drawing mode and data type*/
     void populateTransparencyTable( QgsRasterRenderer* renderer );

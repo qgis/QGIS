@@ -1,6 +1,11 @@
 #include <QWidget>
 #include <QDoubleValidator>
 #include <QIntValidator>
+#include <QSettings>
+#include <QFile>
+#include <QTextStream>
+#include <QMessageBox>
+#include <QFileDialog>
 
 #include "qgsrastertransparencywidget.h"
 
@@ -14,6 +19,7 @@
 #include "qgsrectangle.h"
 #include "qgsmapcanvas.h"
 #include "qgsrasteridentifyresult.h"
+#include "qgsmultibandcolorrenderer.h"
 
 
 QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas* canvas, QWidget *parent )
@@ -152,7 +158,7 @@ void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &tex
       setTransparencyToEdited( row );
     }
   }
-
+  emit widgetChanged();
 }
 
 void QgsRasterTransparencyWidget::sliderTransparency_valueChanged( int theValue )
@@ -168,6 +174,206 @@ void QgsRasterTransparencyWidget::on_pbnAddValuesFromDisplay_clicked()
   {
     mMapCanvas->setMapTool( mPixelSelectorTool );
   }
+}
+
+void QgsRasterTransparencyWidget::on_pbnAddValuesManually_clicked()
+{
+  QgsRasterRenderer* renderer = mRasterLayer->renderer();
+  if ( !renderer )
+  {
+    return;
+  }
+
+  tableTransparency->insertRow( tableTransparency->rowCount() );
+
+  int n = renderer->usesBands().size();
+  if ( n == 1 ) n++;
+
+  for ( int i = 0; i < n; i++ )
+  {
+    setTransparencyCell( tableTransparency->rowCount() - 1, i, std::numeric_limits<double>::quiet_NaN() );
+  }
+
+  setTransparencyCell( tableTransparency->rowCount() - 1, n, 100 );
+
+  tableTransparency->resizeColumnsToContents();
+  tableTransparency->resizeRowsToContents();
+}
+
+void QgsRasterTransparencyWidget::on_pbnDefaultValues_clicked()
+{
+  QgsRasterRenderer* r = mRasterLayer->renderer();
+  if ( !r )
+  {
+    return;
+  }
+
+  int nBands = r->usesBands().size();
+
+  setupTransparencyTable( nBands );
+
+  tableTransparency->resizeColumnsToContents(); // works only with values
+  tableTransparency->resizeRowsToContents();
+
+}
+
+void QgsRasterTransparencyWidget::on_pbnExportTransparentPixelValues_clicked()
+{
+  QSettings myQSettings;
+  QString myLastDir = myQSettings.value( "lastRasterFileFilterDir", QDir::homePath() ).toString();
+  QString myFileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), myLastDir, tr( "Textfile" ) + " (*.txt)" );
+  if ( !myFileName.isEmpty() )
+  {
+    if ( !myFileName.endsWith( ".txt", Qt::CaseInsensitive ) )
+    {
+      myFileName = myFileName + ".txt";
+    }
+
+    QFile myOutputFile( myFileName );
+    if ( myOutputFile.open( QFile::WriteOnly ) )
+    {
+      QTextStream myOutputStream( &myOutputFile );
+      myOutputStream << "# " << tr( "QGIS Generated Transparent Pixel Value Export File" ) << '\n';
+      if ( rasterIsMultiBandColor() )
+      {
+        myOutputStream << "#\n#\n# " << tr( "Red" ) << "\t" << tr( "Green" ) << "\t" << tr( "Blue" ) << "\t" << tr( "Percent Transparent" );
+        for ( int myTableRunner = 0; myTableRunner < tableTransparency->rowCount(); myTableRunner++ )
+        {
+          myOutputStream << '\n' << QString::number( transparencyCellValue( myTableRunner, 0 ) ) << "\t"
+          << QString::number( transparencyCellValue( myTableRunner, 1 ) ) << "\t"
+          << QString::number( transparencyCellValue( myTableRunner, 2 ) ) << "\t"
+          << QString::number( transparencyCellValue( myTableRunner, 3 ) );
+        }
+      }
+      else
+      {
+        myOutputStream << "#\n#\n# " << tr( "Value" ) << "\t" << tr( "Percent Transparent" );
+
+        for ( int myTableRunner = 0; myTableRunner < tableTransparency->rowCount(); myTableRunner++ )
+        {
+          myOutputStream << '\n' << QString::number( transparencyCellValue( myTableRunner, 0 ) ) << "\t"
+          << QString::number( transparencyCellValue( myTableRunner, 1 ) ) << "\t"
+          << QString::number( transparencyCellValue( myTableRunner, 2 ) );
+        }
+      }
+    }
+    else
+    {
+      QMessageBox::warning( this, tr( "Write access denied" ), tr( "Write access denied. Adjust the file permissions and try again.\n\n" ) );
+    }
+  }
+}
+
+void QgsRasterTransparencyWidget::on_pbnImportTransparentPixelValues_clicked()
+{
+  int myLineCounter = 0;
+  bool myImportError = false;
+  QString myBadLines;
+  QSettings myQSettings;
+  QString myLastDir = myQSettings.value( "lastRasterFileFilterDir", QDir::homePath() ).toString();
+  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), myLastDir, tr( "Textfile" ) + " (*.txt)" );
+  QFile myInputFile( myFileName );
+  if ( myInputFile.open( QFile::ReadOnly ) )
+  {
+    QTextStream myInputStream( &myInputFile );
+    QString myInputLine;
+    if ( rasterIsMultiBandColor() )
+    {
+      for ( int myTableRunner = tableTransparency->rowCount() - 1; myTableRunner >= 0; myTableRunner-- )
+      {
+        tableTransparency->removeRow( myTableRunner );
+      }
+
+      while ( !myInputStream.atEnd() )
+      {
+        myLineCounter++;
+        myInputLine = myInputStream.readLine();
+        if ( !myInputLine.isEmpty() )
+        {
+          if ( !myInputLine.simplified().startsWith( '#' ) )
+          {
+            QStringList myTokens = myInputLine.split( QRegExp( "\\s+" ), QString::SkipEmptyParts );
+            if ( myTokens.count() != 4 )
+            {
+              myImportError = true;
+              myBadLines = myBadLines + QString::number( myLineCounter ) + ":\t[" + myInputLine + "]\n";
+            }
+            else
+            {
+              tableTransparency->insertRow( tableTransparency->rowCount() );
+              for ( int col = 0; col < 4; col++ )
+              {
+                setTransparencyCell( tableTransparency->rowCount() - 1, col, myTokens[col].toDouble() );
+              }
+            }
+          }
+        }
+      }
+    }
+    else
+    {
+      for ( int myTableRunner = tableTransparency->rowCount() - 1; myTableRunner >= 0; myTableRunner-- )
+      {
+        tableTransparency->removeRow( myTableRunner );
+      }
+
+      while ( !myInputStream.atEnd() )
+      {
+        myLineCounter++;
+        myInputLine = myInputStream.readLine();
+        if ( !myInputLine.isEmpty() )
+        {
+          if ( !myInputLine.simplified().startsWith( '#' ) )
+          {
+            QStringList myTokens = myInputLine.split( QRegExp( "\\s+" ), QString::SkipEmptyParts );
+            if ( myTokens.count() != 3 && myTokens.count() != 2 ) // 2 for QGIS < 1.9 compatibility
+            {
+              myImportError = true;
+              myBadLines = myBadLines + QString::number( myLineCounter ) + ":\t[" + myInputLine + "]\n";
+            }
+            else
+            {
+              if ( myTokens.count() == 2 )
+              {
+                myTokens.insert( 1, myTokens[0] ); // add 'to' value, QGIS < 1.9 compatibility
+              }
+              tableTransparency->insertRow( tableTransparency->rowCount() );
+              for ( int col = 0; col < 3; col++ )
+              {
+                setTransparencyCell( tableTransparency->rowCount() - 1, col, myTokens[col].toDouble() );
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if ( myImportError )
+    {
+      QMessageBox::warning( this, tr( "Import Error" ), tr( "The following lines contained errors\n\n%1" ).arg( myBadLines ) );
+    }
+  }
+  else if ( !myFileName.isEmpty() )
+  {
+    QMessageBox::warning( this, tr( "Read access denied" ), tr( "Read access denied. Adjust the file permissions and try again.\n\n" ) );
+  }
+  tableTransparency->resizeColumnsToContents();
+  tableTransparency->resizeRowsToContents();
+  emit widgetChanged();
+}
+
+void QgsRasterTransparencyWidget::on_pbnRemoveSelectedRow_clicked()
+{
+  if ( 0 < tableTransparency->rowCount() )
+  {
+    tableTransparency->removeRow( tableTransparency->currentRow() );
+  }
+  emit widgetChanged();
+}
+
+bool QgsRasterTransparencyWidget::rasterIsMultiBandColor()
+{
+  return mRasterLayer && nullptr != dynamic_cast<QgsMultiBandColorRenderer*>( mRasterLayer->renderer() );
 }
 
 void QgsRasterTransparencyWidget::apply()
@@ -412,6 +618,7 @@ void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, doub
         break;
     }
     lineEdit->setText( valueString );
+    connect( lineEdit, SIGNAL( textEdited(QString)), this, SIGNAL( widgetChanged()));
   }
   tableTransparency->setCellWidget( row, column, lineEdit );
   adjustTransparencyCellWidth( row, column );

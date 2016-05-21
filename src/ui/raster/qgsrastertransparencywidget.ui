@@ -22,6 +22,9 @@
      <property name="title">
       <string>No data value</string>
      </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
      <property name="syncGroup" stdset="0">
       <string notr="true">rastertransp</string>
      </property>
@@ -87,6 +90,9 @@
     <widget class="QgsCollapsibleGroupBox" name="gboxGlobalTransp">
      <property name="title">
       <string>Global transparency</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
      </property>
      <property name="syncGroup" stdset="0">
       <string notr="true">rastertransp</string>
@@ -177,6 +183,9 @@
      </property>
      <property name="title">
       <string>Custom transparency options</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
      </property>
      <property name="syncGroup" stdset="0">
       <string notr="true">rastertransp</string>
