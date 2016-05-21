@@ -45,7 +45,7 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsRasterL
       if (( mRasterLayer->rasterType() != QgsRasterLayer::ColorLayer && entry.name != "singlebandcolordata" ) ||
           ( mRasterLayer->rasterType() == QgsRasterLayer::ColorLayer && entry.name == "singlebandcolordata" ) )
       {
-        cboRenderers->addItem( entry.visibleName, entry.name );
+        cboRenderers->addItem( entry.icon(), entry.visibleName, entry.name );
       }
     }
   }
