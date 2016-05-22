@@ -6,6 +6,11 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import object
 
 __author__ = 'Larry Shaffer'
 __date__ = '2014/02/11'
@@ -19,8 +24,9 @@ import shutil
 import platform
 import subprocess
 import time
-import urllib
-import urllib2
+import urllib.request
+import urllib.parse
+import urllib.error
 import tempfile
 
 from utilities import (
@@ -419,7 +425,7 @@ class QgisLocalServer(object):
 
         url = self._fcgi_url + '?' + self.process_params(params)
 
-        res = urllib.urlopen(url)
+        res = urllib.request.urlopen(url)
         xml = res.read()
         if browser:
             tmp = tempfile.NamedTemporaryFile(suffix=".html", delete=False)
@@ -482,8 +488,8 @@ class QgisLocalServer(object):
         while time.time() - start_time < 20:
             resp = None
             try:
-                tmp_png = urllib2.urlopen(url)
-            except urllib2.HTTPError as resp:
+                tmp_png = urllib.request.urlopen(url)
+            except urllib.error.HTTPError as resp:
                 if resp.code == 503 or resp.code == 500:
                     time.sleep(1)
                 else:
@@ -492,7 +498,7 @@ class QgisLocalServer(object):
                         'Cound not connect to process: ' + str(resp.code),
                         resp.message
                     )
-            except urllib2.URLError as resp:
+            except urllib.error.URLError as resp:
                 raise ServerProcessError(
                     'Web/FCGI Process Request URLError',
                     'Cound not connect to process',
@@ -532,7 +538,7 @@ class QgisLocalServer(object):
         # convert all convenience objects to compatible strings
         self._convert_instances(params)
         # encode params
-        return urllib.urlencode(params, True)
+        return urllib.parse.urlencode(params, True)
 
     @staticmethod
     def _params_to_upper(params):
@@ -719,10 +725,10 @@ def getLocalServer():
             while time.time() - start_time < 30:
                 time.sleep(1)
                 try:
-                    res = urllib2.urlopen(srv.web_url())
+                    res = urllib.request.urlopen(srv.web_url())
                     if res.getcode() == 200:
                         break
-                except urllib2.URLError:
+                except urllib.error.URLError:
                     pass
             msg = 'Web server basic access to root index.html failed'
             # print repr(res)

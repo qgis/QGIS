@@ -6,6 +6,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 __author__ = '(C) 2015 by Nyall Dawson'
 __date__ = '02/07/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
@@ -17,7 +20,7 @@ import qgis  # NOQA
 import os
 import socketserver
 import threading
-import SimpleHTTPServer
+import http.server
 from qgis.PyQt.QtCore import QRectF
 
 from qgis.core import (QgsComposerPicture,
@@ -38,7 +41,7 @@ class TestQgsComposerPicture(unittest.TestCase):
     def setUpClass(cls):
         # Bring up a simple HTTP server, for remote picture tests
         os.chdir(unitTestDataPath() + '')
-        handler = SimpleHTTPServer.SimpleHTTPRequestHandler
+        handler = http.server.SimpleHTTPRequestHandler
 
         cls.httpd = socketserver.TCPServer(('localhost', 0), handler)
         cls.port = cls.httpd.server_address[1]
