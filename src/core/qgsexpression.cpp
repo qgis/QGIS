@@ -4051,6 +4051,21 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression *parent, const Q
         }
         return QVariant( computeDateTimeFromInterval( dL, &iL ) );
       }
+      else if (( vL.type() == QVariant::Date && vR.type() == QVariant::Time ) ||
+               ( vR.type() == QVariant::Date && vL.type() == QVariant::Time ) )
+      {
+        QDate date = getDateValue( vL.type() == QVariant::Date ? vL : vR, parent );
+        ENSURE_NO_EVAL_ERROR;
+        QTime time = getTimeValue( vR.type() == QVariant::Time ? vR : vL, parent );
+        ENSURE_NO_EVAL_ERROR;
+        if ( mOp == boMinus || mOp == boDiv || mOp == boMul || mOp == boMod )
+        {
+          parent->setEvalErrorString( tr( "Can't preform -, /, *, or % on Date and Time" ) );
+          return QVariant();
+        }
+        QDateTime dt = QDateTime( date, time );
+        return QVariant( dt );
+      }
       else
       {
         // general floating point arithmetic
