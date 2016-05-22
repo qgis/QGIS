@@ -125,6 +125,8 @@ void QgsAttributeFormEditorWidget::changesCommitted()
 void QgsAttributeFormEditorWidget::resetSearch()
 {
   mSearchWidgetToolButton->setInactive();
+  if ( mSearchWidget )
+    mSearchWidget->clearWidget();
 }
 
 void QgsAttributeFormEditorWidget::initialize( const QVariant& initialValue, bool mixedValues )
