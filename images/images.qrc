@@ -584,6 +584,10 @@
         <file>themes/default/multieditSameValues.svg</file>
         <file>themes/default/locked_repeating.svg</file>
         <file>themes/default/sort.svg</file>
+        <file>themes/default/styleicons/multibandcolor.svg</file>
+        <file>themes/default/styleicons/paletted.svg</file>
+        <file>themes/default/styleicons/singlebandgray.svg</file>
+        <file>themes/default/styleicons/singlebandpseudocolor.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

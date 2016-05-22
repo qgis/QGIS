@@ -25,6 +25,13 @@ class QgsRasterHistogramWidget : QWidget
     /** Apply a histoActionTriggered() event. */
     void setSelectedBand( int index );
 
+  signals:
+    /**
+     * Emmited when something on the widget has changed.
+     * All widgets will fire this event to notify of an internal change.
+     */
+    void widgetChanged();
+
   public slots:
     /** \brief slot executed when user wishes to refresh raster histogramwidget */
     void refreshHistogram();

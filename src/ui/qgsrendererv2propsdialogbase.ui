@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>554</width>
-    <height>395</height>
+    <width>326</width>
+    <height>345</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,19 +18,6 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QComboBox" name="cboRenderers"/>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
      </item>
     </layout>
    </item>
@@ -69,13 +56,25 @@
      <property name="title">
       <string>Layer rendering</string>
      </property>
-     <property name="collapsed">
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <property name="checkable">
       <bool>false</bool>
      </property>
-     <property name="saveCollapsedState">
+     <property name="collapsed" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="saveCollapsedState" stdset="0">
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>3</number>
+      </property>
       <item row="0" column="1" colspan="3">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
@@ -186,15 +185,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsblendmodecombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsEffectStackCompactWidget</class>
    <extends>QWidget</extends>
    <header>effects/qgseffectstackpropertieswidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsBlendModeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsblendmodecombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
