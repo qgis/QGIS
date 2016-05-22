@@ -97,6 +97,9 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
 void QgsMapStylingWidget::apply()
 {
   QString undoName = "Style Change";
+  if ( !mCurrentLayer )
+    return;
+
   if ( mCurrentLayer->type() == QgsMapLayer::VectorLayer )
   {
     QWidget* current = mWidgetArea->widget();
