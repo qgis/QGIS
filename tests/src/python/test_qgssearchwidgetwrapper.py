@@ -18,11 +18,13 @@ from qgis.gui import (QgsSearchWidgetWrapper,
                       QgsDefaultSearchWidgetWrapper,
                       QgsValueMapSearchWidgetWrapper,
                       QgsValueRelationSearchWidgetWrapper,
-                      QgsCheckboxSearchWidgetWrapper)
+                      QgsCheckboxSearchWidgetWrapper,
+                      QgsDateTimeSearchWidgetWrapper)
 from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsMapLayerRegistry,
                        )
+from qgis.PyQt.QtCore import QDateTime, QDate, QTime
 from qgis.PyQt.QtWidgets import QWidget
 
 from qgis.testing import start_app, unittest
@@ -258,6 +260,62 @@ class PyQgsCheckboxSearchWidgetWrapper(unittest.TestCase):
         c.setChecked(False)
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldint" IS NULL')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldint"=9')
+
+
+class PyQgsDateTimeSearchWidgetWrapper(unittest.TestCase):
+
+    def testCreateExpression(self):
+        """ Test creating an expression using the widget"""
+        layer = QgsVectorLayer("Point?field=date:date&field=time:time&field=datetime:datetime", "test", "memory")
+
+        w = QgsDateTimeSearchWidgetWrapper(layer, 0)
+        config = {"field_format": 'yyyy-MM-dd',
+                  "display_format": 'yyyy-MM-dd'}
+        w.setConfig(config)
+        c = w.widget()
+
+        # first check with date field type
+        c.setDateTime(QDateTime(QDate(2013, 4, 5), QTime()))
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"date" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"date"=\'2013-04-05\'')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"date"<>\'2013-04-05\'')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.GreaterThan), '"date">\'2013-04-05\'')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.LessThan), '"date"<\'2013-04-05\'')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.GreaterThanOrEqualTo), '"date">=\'2013-04-05\'')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.LessThanOrEqualTo), '"date"<=\'2013-04-05\'')
+
+        # time field type
+        w = QgsDateTimeSearchWidgetWrapper(layer, 1)
+        config = {"field_format": 'HH:mm:ss',
+                  "display_format": 'HH:mm:ss'}
+        w.setConfig(config)
+        c = w.widget()
+
+        c.setDateTime(QDateTime(QDate(2013, 4, 5), QTime(13, 14, 15)))
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"time" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"time"=\'13:14:15\'')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"time"<>\'13:14:15\'')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.GreaterThan), '"time">\'13:14:15\'')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.LessThan), '"time"<\'13:14:15\'')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.GreaterThanOrEqualTo), '"time">=\'13:14:15\'')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.LessThanOrEqualTo), '"time"<=\'13:14:15\'')
+
+        # datetime field type
+        w = QgsDateTimeSearchWidgetWrapper(layer, 2)
+        config = {"field_format": 'yyyy-MM-dd HH:mm:ss',
+                  "display_format": 'yyyy-MM-dd HH:mm:ss'}
+        w.setConfig(config)
+        c = w.widget()
+
+        c.setDateTime(QDateTime(QDate(2013, 4, 5), QTime(13, 14, 15)))
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"datetime" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"datetime"=\'2013-04-05 13:14:15\'')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"datetime"<>\'2013-04-05 13:14:15\'')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.GreaterThan), '"datetime">\'2013-04-05 13:14:15\'')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.LessThan), '"datetime"<\'2013-04-05 13:14:15\'')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.GreaterThanOrEqualTo), '"datetime">=\'2013-04-05 13:14:15\'')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.LessThanOrEqualTo), '"datetime"<=\'2013-04-05 13:14:15\'')
+
 
 if __name__ == '__main__':
     unittest.main()

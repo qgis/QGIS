@@ -254,6 +254,7 @@
 %Include editorwidgets/core/qgswidgetwrapper.sip
 %Include editorwidgets/qgscheckboxsearchwidgetwrapper.sip
 %Include editorwidgets/qgsdatetimeedit.sip
+%Include editorwidgets/qgsdatetimesearchwidgetwrapper.sip
 %Include editorwidgets/qgsdefaultsearchwidgetwrapper.sip
 %Include editorwidgets/qgsdoublespinbox.sip
 %Include editorwidgets/qgsmultiedittoolbutton.sip

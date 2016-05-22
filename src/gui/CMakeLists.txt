@@ -105,6 +105,7 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsdatetimeeditfactory.cpp
   editorwidgets/qgsdatetimeeditconfig.cpp
   editorwidgets/qgsdatetimeeditwrapper.cpp
+  editorwidgets/qgsdatetimesearchwidgetwrapper.cpp
   editorwidgets/qgsdefaultsearchwidgetwrapper.cpp
   editorwidgets/qgsdoublespinbox.cpp
   editorwidgets/qgsdummyconfigdlg.cpp
@@ -530,6 +531,7 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/qgscolorwidgetwrapper.h
   editorwidgets/qgsdatetimeedit.h
   editorwidgets/qgsdatetimeeditconfig.h
+  editorwidgets/qgsdatetimesearchwidgetwrapper.h
   editorwidgets/qgsdatetimeeditwrapper.h
   editorwidgets/qgsdefaultsearchwidgetwrapper.h
   editorwidgets/qgsdoublespinbox.h
