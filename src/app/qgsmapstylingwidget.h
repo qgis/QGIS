@@ -20,6 +20,7 @@ class QgsMapCanvas;
 class QgsRendererV2PropertiesDialog;
 class QgsRendererRasterPropertiesWidget;
 class QgsUndoWidget;
+class QgsRasterHistogramWidget;
 
 class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
 {

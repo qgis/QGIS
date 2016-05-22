@@ -751,6 +751,11 @@ void QgsRasterHistogramWidget::setSelectedBand( int theBandNo )
   cboHistoBand->setCurrentIndex( theBandNo - 1 );
 }
 
+void QgsRasterHistogramWidget::apply()
+{
+  mRasterLayer->setRenderer( mRendererWidget->renderer() );
+}
+
 void QgsRasterHistogramWidget::on_cboHistoBand_currentIndexChanged( int index )
 {
   if ( mHistoShowBands == ShowSelected )

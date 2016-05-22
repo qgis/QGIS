@@ -27,9 +27,9 @@ static void _initRendererWidgetFunctions()
 
 
 
-QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsRasterLayer *layer, QgsMapCanvas* canvas, QWidget *parent )
+QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapCanvas* canvas, QWidget *parent )
     : QWidget( parent )
-    , mRasterLayer( layer )
+    , mRasterLayer( nullptr )
     , mMapCanvas( canvas )
     , mRendererWidget( nullptr )
 {
@@ -37,27 +37,7 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsRasterL
 
   _initRendererWidgetFunctions();
 
-  QgsRasterRendererRegistryEntry entry;
-  Q_FOREACH ( const QString& name, QgsRasterRendererRegistry::instance()->renderersList() )
-  {
-    if ( QgsRasterRendererRegistry::instance()->rendererData( name, entry ) )
-    {
-      if (( mRasterLayer->rasterType() != QgsRasterLayer::ColorLayer && entry.name != "singlebandcolordata" ) ||
-          ( mRasterLayer->rasterType() == QgsRasterLayer::ColorLayer && entry.name == "singlebandcolordata" ) )
-      {
-        cboRenderers->addItem( entry.icon(), entry.visibleName, entry.name );
-      }
-    }
-  }
-  cboRenderers->setCurrentIndex( -1 );
-
   connect( cboRenderers, SIGNAL( currentIndexChanged( int ) ), this, SLOT( rendererChanged() ) );
-
-  QgsRasterRenderer* renderer = mRasterLayer->renderer();
-  if ( renderer )
-  {
-    setRendererWidget( renderer->type() );
-  }
 
   connect( mSliderBrightness, SIGNAL( valueChanged( int ) ), mBrightnessSpinBox, SLOT( setValue( int ) ) );
   connect( mBrightnessSpinBox, SIGNAL( valueChanged( int ) ), mSliderBrightness, SLOT( setValue( int ) ) );
@@ -92,8 +72,6 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsRasterL
 
   // enable or disable colorize colorbutton with colorize checkbox
   connect( mColorizeCheck, SIGNAL( toggled( bool ) ), this, SLOT( toggleColorizeControls( bool ) ) );
-
-  syncToLayer();
 }
 
 QgsRendererRasterPropertiesWidget::~QgsRendererRasterPropertiesWidget()
@@ -138,8 +116,33 @@ void QgsRendererRasterPropertiesWidget::apply()
   mRasterLayer->setBlendMode( mBlendModeComboBox->blendMode() );
 }
 
-void QgsRendererRasterPropertiesWidget::syncToLayer()
+void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer* layer )
 {
+  mRasterLayer = layer;
+
+  cboRenderers->blockSignals( true );
+  cboRenderers->clear();
+  QgsRasterRendererRegistryEntry entry;
+  Q_FOREACH ( const QString& name, QgsRasterRendererRegistry::instance()->renderersList() )
+  {
+    if ( QgsRasterRendererRegistry::instance()->rendererData( name, entry ) )
+    {
+      if (( mRasterLayer->rasterType() != QgsRasterLayer::ColorLayer && entry.name != "singlebandcolordata" ) ||
+          ( mRasterLayer->rasterType() == QgsRasterLayer::ColorLayer && entry.name == "singlebandcolordata" ) )
+      {
+        cboRenderers->addItem( entry.icon(), entry.visibleName, entry.name );
+      }
+    }
+  }
+  cboRenderers->setCurrentIndex( -1 );
+  cboRenderers->blockSignals( false );
+
+  QgsRasterRenderer* renderer = mRasterLayer->renderer();
+  if ( renderer )
+  {
+    setRendererWidget( renderer->type() );
+  }
+
   QgsBrightnessContrastFilter* brightnessFilter = mRasterLayer->brightnessFilter();
   if ( brightnessFilter )
   {

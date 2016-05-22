@@ -44,15 +44,11 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
   mAutoApplyTimer->setSingleShot( true );
   connect( mAutoApplyTimer, SIGNAL( timeout() ), this, SLOT( apply() ) );
 
-  mStackedWidget = new QStackedWidget( this );
-
   connect( mOptionsListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( updateCurrentWidgetLayer() ) );
   connect( mLiveApplyCheck, SIGNAL( toggled( bool ) ), mButtonBox->button( QDialogButtonBox::Apply ), SLOT( setDisabled( bool ) ) );
   connect( mButtonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
 
   mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( false );
-
-  mStackedWidget->setCurrentIndex( 1 );
 }
 
 void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
@@ -64,24 +60,38 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
     return;
   }
 
+  bool clearOptions = true;
+  if ( mCurrentLayer )
+  {
+    clearOptions =  mCurrentLayer->type() != layer->type();
+  }
+
   mCurrentLayer = layer;
-  mOptionsListWidget->clear();
 
-  if ( layer->type() == QgsMapLayer::VectorLayer )
+  if ( clearOptions )
   {
-    mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "" ) );
-    mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "labelingSingle.svg" ), "" ) );
+    mOptionsListWidget->clear();
+    if ( layer->type() == QgsMapLayer::VectorLayer )
+    {
+      mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "" ) );
+      mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "labelingSingle.svg" ), "" ) );
+    }
+    else if ( layer->type() == QgsMapLayer::RasterLayer )
+    {
+      mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "" ) );
+      mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/transparency.png" ), "" ) );
+      mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/histogram.png" ), "" ) );
+    }
+
+    mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "mIconTreeView.png" ), "" ) );
+    mOptionsListWidget->setCurrentRow( 0 );
   }
-  else if ( layer->type() == QgsMapLayer::RasterLayer )
+  else
   {
-    mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/symbology.png" ), "" ) );
-    mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/transparency.png" ), "" ) );
-    mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/histogram.png" ), "" ) );
+    updateCurrentWidgetLayer();
   }
 
-  mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "mIconTreeView.png" ), "" ) );
-
-  mOptionsListWidget->setCurrentRow( 0 );
+  mStackedWidget->setCurrentIndex( 1 );
 }
 
 void QgsMapStylingWidget::apply()
@@ -113,17 +123,25 @@ void QgsMapStylingWidget::apply()
   {
     QWidget* current = mWidgetArea->widget();
 
-    if ( QgsRendererRasterPropertiesWidget* rasterproperties = qobject_cast<QgsRendererRasterPropertiesWidget*>( current ) )
+    if ( QgsRendererRasterPropertiesWidget* widget = qobject_cast<QgsRendererRasterPropertiesWidget*>( current ) )
     {
-      rasterproperties->apply();
+      widget->apply();
       emit styleChanged( mCurrentLayer );
       QgsProject::instance()->setDirty( true );
       mMapCanvas->clearCache();
       mMapCanvas->refresh();
     }
-    else if ( QgsRasterTransparencyWidget* transwidget = qobject_cast<QgsRasterTransparencyWidget*>( current ) )
+    else if ( QgsRasterTransparencyWidget* widget = qobject_cast<QgsRasterTransparencyWidget*>( current ) )
     {
-      transwidget->apply();
+      widget->apply();
+      emit styleChanged( mCurrentLayer );
+      QgsProject::instance()->setDirty( true );
+      mMapCanvas->clearCache();
+      mMapCanvas->refresh();
+    }
+    else if ( QgsRasterHistogramWidget* widget = qobject_cast<QgsRasterHistogramWidget*>( current ) )
+    {
+      mRasterStyleWidget->apply();
       emit styleChanged( mCurrentLayer );
       QgsProject::instance()->setDirty( true );
       mMapCanvas->clearCache();
@@ -149,22 +167,20 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
 
   mLayerTitleLabel->setText( layer->name() );
 
-  QScrollArea* area = mWidgetArea;
-
   if ( layer->type() == QgsMapLayer::VectorLayer )
   {
     mStackedWidget->setCurrentIndex( mLayerPage );
 
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( layer );
-    QWidget* current = area->takeWidget();
+    QWidget* current = mWidgetArea->takeWidget();
 
-    if ( QgsLabelingWidget* labelWidget = qobject_cast<QgsLabelingWidget*>( current ) )
+    if ( QgsLabelingWidget* widget = qobject_cast<QgsLabelingWidget*>( current ) )
     {
-      mLabelingWidget = labelWidget;
+      mLabelingWidget = widget;
     }
-    else if ( QgsRendererRasterPropertiesWidget* rasterproperties = qobject_cast<QgsRendererRasterPropertiesWidget*>( current ) )
+    else
     {
-      mRasterStyleWidget = rasterproperties;
+      current->deleteLater();
     }
 
     switch ( mOptionsListWidget->currentIndex().row() )
@@ -173,7 +189,7 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
       {
         mVectorStyleWidget = new QgsRendererV2PropertiesDialog( vlayer, QgsStyleV2::defaultStyle(), true );
         connect( mVectorStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
-        area->setWidget( mVectorStyleWidget );
+        mWidgetArea->setWidget( mVectorStyleWidget );
         break;
       }
       case 1: // Labels
@@ -185,7 +201,7 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
           mLabelingWidget->setLayer( vlayer );
           connect( mLabelingWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
         }
-        area->setWidget( mLabelingWidget );
+        mWidgetArea->setWidget( mLabelingWidget );
         break;
       }
       case 2: // History
@@ -194,7 +210,7 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
         mUndoWidget->setUndoStack( layer->undoStackStyles() );
         connect( mUndoButton, SIGNAL( pressed() ), mUndoWidget, SLOT( undo() ) );
         connect( mRedoButton, SIGNAL( pressed() ), mUndoWidget, SLOT( redo() ) );
-        area->setWidget( mUndoWidget );
+        mWidgetArea->setWidget( mUndoWidget );
         break;
       default:
         break;
@@ -208,31 +224,47 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
   else if ( layer->type() == QgsMapLayer::RasterLayer )
   {
     mStackedWidget->setCurrentIndex( mLayerPage );
+    QWidget* current = mWidgetArea->takeWidget();
 
     QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer*>( layer );
+
+    if ( QgsRendererRasterPropertiesWidget* widget = qobject_cast<QgsRendererRasterPropertiesWidget*>( current ) )
+    {
+      mRasterStyleWidget = widget;
+    }
+    else
+    {
+      current->deleteLater();
+    }
 
     switch ( mOptionsListWidget->currentIndex().row() )
     {
       case 0: // Style
-        mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, area );
+        mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( mMapCanvas, mWidgetArea );
+        mRasterStyleWidget->syncToLayer( rlayer );
         connect( mRasterStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
-        area->setWidget( mRasterStyleWidget );
+
+        mWidgetArea->setWidget( mRasterStyleWidget );
         break;
       case 1: // Transparency
       {
-        QgsRasterTransparencyWidget* transwidget = new QgsRasterTransparencyWidget( rlayer, mMapCanvas, area );
+        QgsRasterTransparencyWidget* transwidget = new QgsRasterTransparencyWidget( rlayer, mMapCanvas, mWidgetArea );
         connect( transwidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
-        area->setWidget( transwidget );
+        mWidgetArea->setWidget( transwidget );
         break;
       }
       case 2: // Transparency
       {
-        QgsRasterHistogramWidget* histowidget = new QgsRasterHistogramWidget( rlayer, area );
-        connect( histowidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
+        mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( mMapCanvas, mWidgetArea );
+        mRasterStyleWidget->syncToLayer( rlayer );
+        connect( mRasterStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
 
-        // Wat?! This is a bit gross just because we need the render name
-//        histowidget->setRendererWidget( mRasterStyleWidget->currentRenderWidget()->renderer()->type(), mRasterStyleWidget->currentRenderWidget() );
-        area->setWidget( histowidget );
+        QgsRasterHistogramWidget* widget = new QgsRasterHistogramWidget( rlayer, mWidgetArea );
+        connect( widget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
+        QString name = mRasterStyleWidget->currentRenderWidget()->renderer()->type();
+        widget->setRendererWidget( name, mRasterStyleWidget->currentRenderWidget() );
+
+        mWidgetArea->setWidget( widget );
         break;
       }
       case 3: // History
@@ -242,7 +274,7 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
 
         connect( mUndoButton, SIGNAL( pressed() ), mUndoWidget, SLOT( undo() ) );
         connect( mRedoButton, SIGNAL( pressed() ), mUndoWidget, SLOT( redo() ) );
-        area->setWidget( mUndoWidget );
+        mWidgetArea->setWidget( mUndoWidget );
         break;
       default:
         break;

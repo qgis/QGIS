@@ -5,7 +5,7 @@ class QgsRendererRasterPropertiesWidget : QWidget
 %End
 
   public:
-    QgsRendererRasterPropertiesWidget( QgsRasterLayer* layer, QgsMapCanvas* canvas, QWidget* parent );
+    QgsRendererRasterPropertiesWidget( QgsMapCanvas* canvas, QWidget* parent );
     ~QgsRendererRasterPropertiesWidget();
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
@@ -31,5 +31,5 @@ class QgsRendererRasterPropertiesWidget : QWidget
     void apply();
 
     //! Sync the widget the current layer properties
-    void syncToLayer();
+    void syncToLayer( QgsRasterLayer* layer );
 };

@@ -69,6 +69,7 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QWidget, private Ui::QgsRaste
     void widgetChanged();
 
   public slots:
+    void apply();
     /** \brief slot executed when user wishes to refresh raster histogramwidget */
     void refreshHistogram();
     /** This slot lets you save the histogram as an image to disk */
