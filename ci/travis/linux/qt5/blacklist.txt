@@ -1,5 +1,3 @@
-ProcessingGdalAlgorithmsTest
-ProcessingQgisAlgorithmsTest
 PyQgsComposerPicture
 PyQgsGeometryTest
 PyQgsJSONUtils
