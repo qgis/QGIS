@@ -33,4 +33,10 @@ class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolCapture
     /** Check if CaptureMode match layer type. Default is true.
      * @note Added in 2.12 */
     bool mCheckGeometryType;
+
+    /** Converts curve to the appropriate output type, considering captured curve type, layer geometry type and provider capabilities
+    @param c the captures curve
+    @param v the vector layer
+    @return the new geometry to be inserted*/
+    QgsAbstractGeometryV2* outputGeometry( const QgsCurveV2* c, const QgsVectorLayer* v ) const;
 };
