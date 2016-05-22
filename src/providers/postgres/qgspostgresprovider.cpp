@@ -1416,7 +1416,7 @@ void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
     }
     else
     {
-      QgsMessageLog::logMessage( tr( "Keys for view/query undefined." ).arg( primaryKey ), tr( "PostGIS" ) );
+      QgsMessageLog::logMessage( tr( "Keys for view/query undefined." ), tr( "PostGIS" ) );
     }
   }
   else
