@@ -8,11 +8,8 @@ _QVariant__ne__ = QVariant.__ne__
 _QVariant__hash__ = QVariant.__hash__
 
 
-def __nonzero__(self):
-    if self.isNull():
-        return False
-    else:
-        return True
+def __bool__(self):
+    return not self.isNull()
 
 
 def __repr__(self):
@@ -42,7 +39,7 @@ def __hash__(self):
     else:
         return _QVariant__hash__(self)
 
-QVariant.__nonzero__ = __nonzero__
+QVariant.__bool__ = __bool__
 QVariant.__repr__ = __repr__
 QVariant.__eq__ = __eq__
 QVariant.__ne__ = __ne__
