@@ -383,7 +383,6 @@ class Grass7Algorithm(GeoAlgorithm):
             unicode(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
         regionCoords = region.split(',')
         command = 'g.region'
-        command += ' -a'
         command += ' n=' + unicode(regionCoords[3])
         command += ' s=' + unicode(regionCoords[2])
         command += ' e=' + unicode(regionCoords[1])
