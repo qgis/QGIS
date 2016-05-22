@@ -17,7 +17,8 @@ import qgis  # NOQA
 from qgis.gui import (QgsSearchWidgetWrapper,
                       QgsDefaultSearchWidgetWrapper,
                       QgsValueMapSearchWidgetWrapper,
-                      QgsValueRelationSearchWidgetWrapper)
+                      QgsValueRelationSearchWidgetWrapper,
+                      QgsCheckboxSearchWidgetWrapper)
 from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsMapLayerRegistry,
@@ -225,6 +226,38 @@ class PyQgsValueRelationSearchWidgetWrapper(unittest.TestCase):
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldint" IS NULL')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldint"=2')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"fldint"<>2')
+
+
+class PyQgsCheckboxSearchWidgetWrapper(unittest.TestCase):
+
+    def testCreateExpression(self):
+        """ Test creating an expression using the widget"""
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer", "test", "memory")
+
+        w = QgsCheckboxSearchWidgetWrapper(layer, 0)
+        config = {"CheckedState": 5,
+                  "UncheckedState": 9}
+        w.setConfig(config)
+        c = w.widget()
+
+        # first check with string field type
+        c.setChecked(True)
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldtxt" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldtxt"=\'5\'')
+        c.setChecked(False)
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldtxt" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldtxt"=\'9\'')
+
+        # try with numeric field
+        w = QgsCheckboxSearchWidgetWrapper(layer, 1)
+        w.setConfig(config)
+        c = w.widget()
+        c.setChecked(True)
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldint" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldint"=5')
+        c.setChecked(False)
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldint" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldint"=9')
 
 if __name__ == '__main__':
     unittest.main()
