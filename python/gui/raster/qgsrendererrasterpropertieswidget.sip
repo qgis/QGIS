@@ -15,6 +15,11 @@ class QgsRendererRasterPropertiesWidget : QWidget
      */
     void setMapCanvas( QgsMapCanvas* canvas );
 
+    /**
+     * Return the active render widget. Can be null.
+     */
+    QgsRasterRendererWidget* currentRenderWidget();
+
   signals:
 
     /**
@@ -30,6 +35,9 @@ class QgsRendererRasterPropertiesWidget : QWidget
     //! Apply the changes from the dialog to the layer.
     void apply();
 
-    //! Sync the widget the current layer properties
+    /**
+     * @brief Sync the widget to the given layer.
+     * @param layer The layer to use for the widget
+     */
     void syncToLayer( QgsRasterLayer* layer );
 };

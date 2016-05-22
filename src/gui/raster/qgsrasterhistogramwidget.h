@@ -61,7 +61,6 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QWidget, private Ui::QgsRaste
     void setSelectedBand( int index );
 
   signals:
-
     /**
      * Emmited when something on the widget has changed.
      * All widgets will fire this event to notify of an internal change.
@@ -69,7 +68,6 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QWidget, private Ui::QgsRaste
     void widgetChanged();
 
   public slots:
-    void apply();
     /** \brief slot executed when user wishes to refresh raster histogramwidget */
     void refreshHistogram();
     /** This slot lets you save the histogram as an image to disk */

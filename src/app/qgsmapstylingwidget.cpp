@@ -139,7 +139,7 @@ void QgsMapStylingWidget::apply()
       mMapCanvas->clearCache();
       mMapCanvas->refresh();
     }
-    else if ( QgsRasterHistogramWidget* widget = qobject_cast<QgsRasterHistogramWidget*>( current ) )
+    else if ( qobject_cast<QgsRasterHistogramWidget*>( current ) )
     {
       mRasterStyleWidget->apply();
       emit styleChanged( mCurrentLayer );
@@ -255,6 +255,11 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
       }
       case 2: // Transparency
       {
+        if ( mRasterStyleWidget )
+        {
+          mRasterStyleWidget->deleteLater();
+          delete mRasterStyleWidget;
+        }
         mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( mMapCanvas, mWidgetArea );
         mRasterStyleWidget->syncToLayer( rlayer );
         connect( mRasterStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );

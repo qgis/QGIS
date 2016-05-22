@@ -51,7 +51,10 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QWidget, private Ui:
     //! Apply the changes from the dialog to the layer.
     void apply();
 
-    //! Sync the widget the current layer properties
+    /**
+     * @brief Sync the widget to the given layer.
+     * @param layer The layer to use for the widget
+     */
     void syncToLayer( QgsRasterLayer *layer );
 
   private slots:
