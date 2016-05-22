@@ -57,6 +57,8 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   mTableDelegate = new QgsAttributeTableDelegate( this );
   setItemDelegate( mTableDelegate );
 
+  setEditTriggers( QAbstractItemView::AllEditTriggers );
+
   setSelectionBehavior( QAbstractItemView::SelectRows );
   setSelectionMode( QAbstractItemView::ExtendedSelection );
   setSortingEnabled( true ); // At this point no data is in the model yet, so actually nothing is sorted.
