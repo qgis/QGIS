@@ -5,5 +5,5 @@ export CTEST_PARALLEL_LEVEL=1
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-xvfb-run ctest -V -E "$(cat ${DIR}/blacklist.txt | paste -sd '|' -)" -S ./qgis-test-travis.ctest --output-on-failure
-# xvfb-run ctest -V -S ./qgis-test-travis.ctest --output-on-failure
+xvfb-run ctest -V -E "qgis_openstreetmaptest|qgis_wcsprovidertest|$(cat ${DIR}/blacklist.txt | paste -sd '|' -)" -S ./qgis-test-travis.ctest --output-on-failure
+# xvfb-run ctest -V -E "qgis_openstreetmaptest|qgis_wcsprovidertest" -S ./qgis-test-travis.ctest --output-on-failure
