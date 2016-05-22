@@ -325,7 +325,7 @@
      <item>
       <widget class="QToolButton" name="mSearchFormButton">
        <property name="toolTip">
-        <string>Select/filter features using form</string>
+        <string>Select/filter features using form (Ctrl+F)</string>
        </property>
        <property name="text">
         <string>...</string>
@@ -339,6 +339,9 @@
          <width>18</width>
          <height>18</height>
         </size>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+F</string>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -883,9 +886,6 @@
    </property>
    <property name="toolTip">
     <string>Use the Expression Builder to define the filter</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+F</string>
    </property>
   </action>
   <action name="mActionShowAllFilter">
