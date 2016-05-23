@@ -106,6 +106,8 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
       {
         QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerIds.at( i ) );
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
+        if ( !vl )
+          continue;
         QgsVectorJoinList joins = vl->vectorJoins();
 
         // Layer names will be appended an _offline suffix
