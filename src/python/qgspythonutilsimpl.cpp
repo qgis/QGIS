@@ -577,13 +577,11 @@ bool QgsPythonUtilsImpl::evalString( const QString& command, QString& result )
   bool success = nullptr != res;
 
   // TODO: error handling
-  if ( res )
-  {
-    if ( success )
-      result = PyObjectToQString( res );
 
-    Py_XDECREF( res );
-  }
+  if ( success )
+    result = PyObjectToQString( res );
+
+  Py_XDECREF( res );
 
   // we are done calling python API, release global interpreter lock
   PyGILState_Release( gstate );
