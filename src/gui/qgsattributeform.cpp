@@ -903,9 +903,7 @@ void QgsAttributeForm::init()
         QgsAttributeFormEditorWidget* formWidget = new QgsAttributeFormEditorWidget( eww, this );
         w = formWidget;
         mFormEditorWidgets.insert( idx, formWidget );
-        QgsSearchWidgetWrapper* sww = QgsEditorWidgetRegistry::instance()->createSearchWidget( widgetType, mLayer, idx, widgetConfig,
-                                      formWidget->searchWidgetFrame(), mContext );
-        formWidget->setSearchWidgetWrapper( sww );
+        formWidget->createSearchWidgetWrappers( widgetType, idx, widgetConfig, mContext );
       }
       else
       {
@@ -1162,8 +1160,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         QgsAttributeFormEditorWidget* w = new QgsAttributeFormEditorWidget( eww, this );
         mFormEditorWidgets.insert( fldIdx, w );
 
-        QgsSearchWidgetWrapper* sww = QgsEditorWidgetRegistry::instance()->createSearchWidget( widgetType, mLayer, fldIdx, widgetConfig, w->searchWidgetFrame(), mContext );
-        w->setSearchWidgetWrapper( sww );
+        w->createSearchWidgetWrappers( widgetType, fldIdx, widgetConfig, mContext );
 
         newWidgetInfo.widget = w;
         addWidgetWrapper( eww );

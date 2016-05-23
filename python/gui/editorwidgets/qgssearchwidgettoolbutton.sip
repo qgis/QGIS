@@ -17,22 +17,22 @@ class QgsSearchWidgetToolButton : QToolButton
      */
     explicit QgsSearchWidgetToolButton( QWidget *parent /TransferThis/ = nullptr );
 
-    /** Sets the search widget wrapper associated with this button.
-     * Calling this will automatically set the available flags to match those
-     * supported by the wrapper and reset the active flags to match the wrapper's
-     * default flags.
-     * @param wrapper search wrapper. Ownership is not transferred.
-     */
-    void setSearchWidgetWrapper( QgsSearchWidgetWrapper* wrapper );
-
     /** Sets the available filter flags to show in the widget. Any active flags
      * (see activeFlags()) which are not present in the new available filter
      * flags will be cleared;
      * @param flags available flags to show in widget
      * @see availableFlags()
      * @see setActiveFlags()
+     * @see setDefaultFlags()
      */
     void setAvailableFlags( QgsSearchWidgetWrapper::FilterFlags flags );
+
+    /** Sets the default filter flags to show in the widget.
+     * @param flags default flags to show in widget
+     * @see setAvailableFlags()
+     * @see setActiveFlags()
+     */
+    void setDefaultFlags( QgsSearchWidgetWrapper::FilterFlags flags );
 
     /** Returns the available filter flags shown in the widget.
      * @see setAvailableFlags()
@@ -86,5 +86,12 @@ class QgsSearchWidgetToolButton : QToolButton
      * @see setInactive()
      */
     void setActive();
+
+  signals:
+
+    /** Emitted when the active flags selected in the widget is changed
+     * @param flags active flags
+     */
+    void activeFlagsChanged( QgsSearchWidgetWrapper::FilterFlags flags );
 
 };

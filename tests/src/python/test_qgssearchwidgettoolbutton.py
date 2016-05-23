@@ -146,12 +146,13 @@ class TestQgsSearchWidgetToolButton(unittest.TestCase):
         self.assertFalse(w.isActive())
 
     def testSetActive(self):
-        """ Test setting the search as active """
+        """ Test setting the search as active should adopt default flags"""
         w = QgsSearchWidgetToolButton()
         w.setAvailableFlags(QgsSearchWidgetWrapper.Between |
                             QgsSearchWidgetWrapper.NotEqualTo |
                             QgsSearchWidgetWrapper.CaseInsensitive)
         w.setActiveFlags(QgsSearchWidgetWrapper.CaseInsensitive)
+        w.setDefaultFlags(QgsSearchWidgetWrapper.NotEqualTo)
         self.assertFalse(w.isActive())
         w.setActive()
         flags = w.activeFlags()
