@@ -21,12 +21,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgswkbtypes.h"
 #include "qgswkbptr.h"
 
-#ifdef _MSC_VER
-// for M_PI_2
-#define _USE_MATH_DEFINES
-#include <math.h>
-#endif
-
 #include <QString>
 
 class QgsMapToPixel;
@@ -305,7 +299,7 @@ class CORE_EXPORT QgsAbstractGeometryV2
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve
      */
-    virtual QgsAbstractGeometryV2* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
+    virtual QgsAbstractGeometryV2* segmentize( double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const;
 
     /** Returns the geometry converted to the more generic curve type.
         E.g. QgsLineStringV2 -> QgsCompoundCurveV2, QgsPolygonV2 -> QgsCurvePolygonV2,
