@@ -201,7 +201,6 @@
   <zorder>mRedoButton</zorder>
   <zorder>mUndoButton</zorder>
   <zorder>mButtonBox</zorder>
-  <zorder>horizontalSpacer_2</zorder>
  </widget>
  <resources>
   <include location="../../images/images.qrc"/>
