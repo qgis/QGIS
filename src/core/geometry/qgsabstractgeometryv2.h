@@ -21,6 +21,12 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgswkbtypes.h"
 #include "qgswkbptr.h"
 
+#ifdef _MSC_VER
+// for M_PI_2
+#define _USE_MATH_DEFINES
+#include <math.h>
+#endif
+
 #include <QString>
 
 class QgsMapToPixel;
