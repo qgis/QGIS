@@ -19,6 +19,9 @@
 #include "qgssearchwidgettoolbutton.h"
 #include "qgseditorwidgetwrapper.h"
 #include "qgssearchwidgetwrapper.h"
+#include "qgseditorwidgetconfig.h"
+#include "qgsattributeeditorcontext.h"
+#include "qgseditorwidgetregistry.h"
 #include <QLayout>
 #include <QLabel>
 #include <QStackedWidget>
@@ -27,7 +30,6 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
     QgsAttributeForm* form )
     : QWidget( form )
     , mWidget( editorWidget )
-    , mSearchWidget( nullptr )
     , mForm( form )
     , mMode( DefaultMode )
     , mMultiEditButton( new QgsMultiEditToolButton() )
@@ -54,6 +56,8 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
   mSearchPage->setLayout( l );
   l->addWidget( mSearchFrame, 1 );
   mSearchWidgetToolButton = new QgsSearchWidgetToolButton();
+  connect( mSearchWidgetToolButton, SIGNAL( activeFlagsChanged( QgsSearchWidgetWrapper::FilterFlags ) ),
+           this, SLOT( searchWidgetFlagsChanged( QgsSearchWidgetWrapper::FilterFlags ) ) );
   l->addWidget( mSearchWidgetToolButton, 0 );
 
 
@@ -91,11 +95,42 @@ QgsAttributeFormEditorWidget::~QgsAttributeFormEditorWidget()
   delete mMultiEditButton;
 }
 
+void QgsAttributeFormEditorWidget::createSearchWidgetWrappers( const QString& widgetId, int fieldIdx, const QgsEditorWidgetConfig& config,  const QgsAttributeEditorContext& context )
+{
+  QgsSearchWidgetWrapper* sww = QgsEditorWidgetRegistry::instance()->createSearchWidget( widgetId, layer(), fieldIdx, config,
+                                mSearchFrame, context );
+  setSearchWidgetWrapper( sww );
+  if ( sww->supportedFlags() & QgsSearchWidgetWrapper::Between )
+  {
+    // create secondary widget for between type searches
+    QgsSearchWidgetWrapper* sww2 = QgsEditorWidgetRegistry::instance()->createSearchWidget( widgetId, layer(), fieldIdx, config,
+                                   mSearchFrame, context );
+    mSearchWidgets << sww2;
+    mSearchFrame->layout()->addWidget( sww2->widget() );
+    sww2->widget()->hide();
+  }
+}
+
 void QgsAttributeFormEditorWidget::setSearchWidgetWrapper( QgsSearchWidgetWrapper* wrapper )
 {
-  mSearchWidget = wrapper;
+  mSearchWidgets.clear();
+  mSearchWidgets << wrapper;
   mSearchFrame->layout()->addWidget( wrapper->widget() );
-  mSearchWidgetToolButton->setSearchWidgetWrapper( wrapper );
+  mSearchWidgetToolButton->setAvailableFlags( wrapper->supportedFlags() );
+  mSearchWidgetToolButton->setActiveFlags( QgsSearchWidgetWrapper::FilterFlags() );
+  mSearchWidgetToolButton->setDefaultFlags( wrapper->defaultFlags() );
+  connect( wrapper, SIGNAL( valueChanged() ), mSearchWidgetToolButton, SLOT( searchWidgetValueChanged() ) );
+  connect( wrapper, SIGNAL( valueCleared() ), mSearchWidgetToolButton, SLOT( setInactive() ) );
+}
+
+QWidget*QgsAttributeFormEditorWidget::searchWidgetFrame()
+{
+  return mSearchFrame;
+}
+
+QList< QgsSearchWidgetWrapper* > QgsAttributeFormEditorWidget::searchWidgetWrappers()
+{
+  return mSearchWidgets;
 }
 
 void QgsAttributeFormEditorWidget::setMode( QgsAttributeFormEditorWidget::Mode mode )
@@ -125,8 +160,10 @@ void QgsAttributeFormEditorWidget::changesCommitted()
 void QgsAttributeFormEditorWidget::resetSearch()
 {
   mSearchWidgetToolButton->setInactive();
-  if ( mSearchWidget )
-    mSearchWidget->clearWidget();
+  Q_FOREACH ( QgsSearchWidgetWrapper* widget, mSearchWidgets )
+  {
+    widget->clearWidget();
+  }
 }
 
 void QgsAttributeFormEditorWidget::initialize( const QVariant& initialValue, bool mixedValues )
@@ -150,15 +187,21 @@ QVariant QgsAttributeFormEditorWidget::currentValue() const
 
 QString QgsAttributeFormEditorWidget::currentFilterExpression() const
 {
+  if ( mSearchWidgets.isEmpty() )
+    return QString();
+
   if ( !mSearchWidgetToolButton->isActive() )
     return QString();
 
-  return mSearchWidget->createExpression( mSearchWidgetToolButton->activeFlags() );
-}
+  if ( mSearchWidgetToolButton->activeFlags() & QgsSearchWidgetWrapper::Between )
+  {
+    // special case: Between search
+    QString filter1 = mSearchWidgets.at( 0 )->createExpression( QgsSearchWidgetWrapper::GreaterThanOrEqualTo );
+    QString filter2 = mSearchWidgets.at( 1 )->createExpression( QgsSearchWidgetWrapper::LessThanOrEqualTo );
+    return QString( "%1 AND %2" ).arg( filter1, filter2 );
+  }
 
-QWidget* QgsAttributeFormEditorWidget::searchWidgetFrame()
-{
-  return mSearchFrame;
+  return mSearchWidgets.at( 0 )->createExpression( mSearchWidgetToolButton->activeFlags() );
 }
 
 void QgsAttributeFormEditorWidget::editorWidgetChanged( const QVariant& value )
@@ -206,6 +249,23 @@ void QgsAttributeFormEditorWidget::resetValue()
 void QgsAttributeFormEditorWidget::setFieldTriggered()
 {
   mIsChanged = true;
+}
+
+void QgsAttributeFormEditorWidget::searchWidgetFlagsChanged( QgsSearchWidgetWrapper::FilterFlags flags )
+{
+  Q_FOREACH ( QgsSearchWidgetWrapper* widget, mSearchWidgets )
+  {
+    widget->setEnabled( !( flags & QgsSearchWidgetWrapper::IsNull ) );
+    if ( !mSearchWidgetToolButton->isActive() )
+    {
+      widget->clearWidget();
+    }
+  }
+
+  if ( mSearchWidgets.count() >= 2 )
+  {
+    mSearchWidgets.at( 1 )->widget()->setVisible( flags & QgsSearchWidgetWrapper::Between );
+  }
 }
 
 QgsSearchWidgetToolButton* QgsAttributeFormEditorWidget::searchWidgetToolButton()

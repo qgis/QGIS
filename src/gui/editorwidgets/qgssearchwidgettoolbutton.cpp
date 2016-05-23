@@ -20,8 +20,8 @@
 QgsSearchWidgetToolButton::QgsSearchWidgetToolButton( QWidget* parent )
     : QToolButton( parent )
     , mAvailableFilterFlags( QgsSearchWidgetWrapper::EqualTo | QgsSearchWidgetWrapper::NotEqualTo | QgsSearchWidgetWrapper::CaseInsensitive )
+    , mDefaultFilterFlags( QgsSearchWidgetWrapper::EqualTo )
     , mFilterFlags( QgsSearchWidgetWrapper::EqualTo )
-    , mSearchWrapper( nullptr )
     , mMenu( nullptr )
 {
   setFocusPolicy( Qt::StrongFocus );
@@ -35,20 +35,17 @@ QgsSearchWidgetToolButton::QgsSearchWidgetToolButton( QWidget* parent )
   updateState();
 }
 
-void QgsSearchWidgetToolButton::setSearchWidgetWrapper( QgsSearchWidgetWrapper* wrapper )
-{
-  mSearchWrapper = wrapper;
-  setAvailableFlags( mSearchWrapper->supportedFlags() );
-  setActiveFlags( QgsSearchWidgetWrapper::FilterFlags() );
-  connect( mSearchWrapper, SIGNAL( valueChanged() ), this, SLOT( searchWidgetValueChanged() ) );
-  connect( mSearchWrapper, SIGNAL( valueCleared() ), this, SLOT( setInactive() ) );
-}
-
 void QgsSearchWidgetToolButton::setAvailableFlags( QgsSearchWidgetWrapper::FilterFlags flags )
 {
   mFilterFlags &= flags;
   mAvailableFilterFlags = flags;
+  mDefaultFilterFlags = mDefaultFilterFlags & flags;
   updateState();
+}
+
+void QgsSearchWidgetToolButton::setDefaultFlags( QgsSearchWidgetWrapper::FilterFlags flags )
+{
+  mDefaultFilterFlags = flags & mAvailableFilterFlags;
 }
 
 void QgsSearchWidgetToolButton::setActiveFlags( QgsSearchWidgetWrapper::FilterFlags flags )
@@ -194,9 +191,6 @@ void QgsSearchWidgetToolButton::setInactive()
   if ( !isActive() )
     return;
 
-  if ( mSearchWrapper )
-    mSearchWrapper->clearWidget();
-
   QgsSearchWidgetWrapper::FilterFlags newFlags;
   Q_FOREACH ( QgsSearchWidgetWrapper::FilterFlag flag, QgsSearchWidgetWrapper::nonExclusiveFilterFlags() )
   {
@@ -215,12 +209,7 @@ void QgsSearchWidgetToolButton::setActive()
 
   Q_FOREACH ( QgsSearchWidgetWrapper::FilterFlag flag, QgsSearchWidgetWrapper::exclusiveFilterFlags() )
   {
-    if ( mSearchWrapper && mSearchWrapper->defaultFlags() & flag )
-    {
-      toggleFlag( flag );
-      return;
-    }
-    else if ( !mSearchWrapper && mAvailableFilterFlags & flag )
+    if ( mDefaultFilterFlags & flag )
     {
       toggleFlag( flag );
       return;
@@ -230,9 +219,6 @@ void QgsSearchWidgetToolButton::setActive()
 
 void QgsSearchWidgetToolButton::updateState()
 {
-  if ( mSearchWrapper )
-    mSearchWrapper->setEnabled( !( mFilterFlags & QgsSearchWidgetWrapper::IsNull ) );
-
   bool active = false;
   QStringList toolTips;
   Q_FOREACH ( QgsSearchWidgetWrapper::FilterFlag flag, QgsSearchWidgetWrapper::exclusiveFilterFlags() )
@@ -262,4 +248,6 @@ void QgsSearchWidgetToolButton::updateState()
     setText( tr( "Exclude field" ) );
     setToolTip( QString() );
   }
+
+  emit activeFlagsChanged( mFilterFlags );
 }

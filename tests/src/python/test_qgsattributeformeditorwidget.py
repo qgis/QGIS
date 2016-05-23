@@ -17,12 +17,17 @@ import qgis  # NOQA
 from qgis.gui import (QgsSearchWidgetWrapper,
                       QgsAttributeFormEditorWidget,
                       QgsSearchWidgetToolButton,
-                      QgsDefaultSearchWidgetWrapper)
+                      QgsDefaultSearchWidgetWrapper,
+                      QgsAttributeForm,
+                      QgsEditorWidgetRegistry
+                      )
 from qgis.core import (QgsVectorLayer)
-from qgis.PyQt.QtWidgets import QWidget
+from qgis.PyQt.QtWidgets import QWidget, QDateTimeEdit
+from qgis.PyQt.QtCore import QDateTime, QDate, QTime
 from qgis.testing import start_app, unittest
 
 start_app()
+QgsEditorWidgetRegistry.instance().initEditors()
 
 
 class PyQgsAttributeFormEditorWidget(unittest.TestCase):
@@ -69,6 +74,22 @@ class PyQgsAttributeFormEditorWidget(unittest.TestCase):
         sb.setActive()
         # check that correct default flag was taken from search widget wrapper
         self.assertTrue(sb.activeFlags() & QgsSearchWidgetWrapper.EqualTo)
+
+    def testBetweenFilter(self):
+        """ Test creating a between type filter """
+        layer = QgsVectorLayer("Point?field=fldtext:string&field=fldint:integer", "test", "memory")
+        form = QgsAttributeForm(layer)
+        af = QgsAttributeFormEditorWidget(None, form)
+        af.createSearchWidgetWrappers("DateTime", 0, {})
+
+        d1 = af.findChildren(QDateTimeEdit)[0]
+        d2 = af.findChildren(QDateTimeEdit)[1]
+        d1.setDateTime(QDateTime(QDate(2013, 5, 6), QTime()))
+        d2.setDateTime(QDateTime(QDate(2013, 5, 16), QTime()))
+
+        af.searchWidgetToolButton().setActiveFlags(QgsSearchWidgetWrapper.Between)
+        self.assertEquals(af.currentFilterExpression(), '"fldtext">=\'2013-05-06\' AND "fldtext"<=\'2013-05-16\'')
+
 
 if __name__ == '__main__':
     unittest.main()
