@@ -950,7 +950,7 @@ QgsSymbolV2RenderContext* QgsSymbolV2::symbolRenderContext()
   return mSymbolRenderContext;
 }
 
-void QgsSymbolV2::renderVertexMarker( QPointF& pt, QgsRenderContext& context, int currentVertexMarkerType, int currentVertexMarkerSize )
+void QgsSymbolV2::renderVertexMarker( QPointF pt, QgsRenderContext& context, int currentVertexMarkerType, int currentVertexMarkerSize )
 {
   QgsVectorLayer::drawVertexMarker( pt.x(), pt.y(), *context.painter(), static_cast< QgsVectorLayer::VertexMarkerType >( currentVertexMarkerType ), currentVertexMarkerSize );
 }
