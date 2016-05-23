@@ -89,6 +89,8 @@ class PyQgsAttributeFormEditorWidget(unittest.TestCase):
 
         af.searchWidgetToolButton().setActiveFlags(QgsSearchWidgetWrapper.Between)
         self.assertEquals(af.currentFilterExpression(), '"fldtext">=\'2013-05-06\' AND "fldtext"<=\'2013-05-16\'')
+        af.searchWidgetToolButton().setActiveFlags(QgsSearchWidgetWrapper.IsNotBetween)
+        self.assertEquals(af.currentFilterExpression(), '"fldtext"<\'2013-05-06\' OR "fldtext">\'2013-05-16\'')
 
 
 if __name__ == '__main__':

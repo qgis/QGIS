@@ -91,7 +91,7 @@ QVariant QgsValueRelationSearchWidgetWrapper::value() const
 
 QgsSearchWidgetWrapper::FilterFlags QgsValueRelationSearchWidgetWrapper::supportedFlags() const
 {
-  return EqualTo | NotEqualTo | IsNull;
+  return EqualTo | NotEqualTo | IsNull | IsNotNull;
 }
 
 QgsSearchWidgetWrapper::FilterFlags QgsValueRelationSearchWidgetWrapper::defaultFlags() const
@@ -107,6 +107,8 @@ QString QgsValueRelationSearchWidgetWrapper::createExpression( QgsSearchWidgetWr
   flags &= supportedFlags();
   if ( flags & IsNull )
     return fieldName + " IS NULL";
+  if ( flags & IsNotNull )
+    return fieldName + " IS NOT NULL";
 
   QVariant v = value();
   if ( !v.isValid() )

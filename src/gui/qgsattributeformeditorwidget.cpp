@@ -100,7 +100,8 @@ void QgsAttributeFormEditorWidget::createSearchWidgetWrappers( const QString& wi
   QgsSearchWidgetWrapper* sww = QgsEditorWidgetRegistry::instance()->createSearchWidget( widgetId, layer(), fieldIdx, config,
                                 mSearchFrame, context );
   setSearchWidgetWrapper( sww );
-  if ( sww->supportedFlags() & QgsSearchWidgetWrapper::Between )
+  if ( sww->supportedFlags() & QgsSearchWidgetWrapper::Between ||
+       sww->supportedFlags() & QgsSearchWidgetWrapper::IsNotBetween )
   {
     // create secondary widget for between type searches
     QgsSearchWidgetWrapper* sww2 = QgsEditorWidgetRegistry::instance()->createSearchWidget( widgetId, layer(), fieldIdx, config,
@@ -200,6 +201,13 @@ QString QgsAttributeFormEditorWidget::currentFilterExpression() const
     QString filter2 = mSearchWidgets.at( 1 )->createExpression( QgsSearchWidgetWrapper::LessThanOrEqualTo );
     return QString( "%1 AND %2" ).arg( filter1, filter2 );
   }
+  else if ( mSearchWidgetToolButton->activeFlags() & QgsSearchWidgetWrapper::IsNotBetween )
+  {
+    // special case: Is Not Between search
+    QString filter1 = mSearchWidgets.at( 0 )->createExpression( QgsSearchWidgetWrapper::LessThan );
+    QString filter2 = mSearchWidgets.at( 1 )->createExpression( QgsSearchWidgetWrapper::GreaterThan );
+    return QString( "%1 OR %2" ).arg( filter1, filter2 );
+  }
 
   return mSearchWidgets.at( 0 )->createExpression( mSearchWidgetToolButton->activeFlags() );
 }
@@ -255,7 +263,8 @@ void QgsAttributeFormEditorWidget::searchWidgetFlagsChanged( QgsSearchWidgetWrap
 {
   Q_FOREACH ( QgsSearchWidgetWrapper* widget, mSearchWidgets )
   {
-    widget->setEnabled( !( flags & QgsSearchWidgetWrapper::IsNull ) );
+    widget->setEnabled( !( flags & QgsSearchWidgetWrapper::IsNull )
+                        && !( flags & QgsSearchWidgetWrapper::IsNotNull ) );
     if ( !mSearchWidgetToolButton->isActive() )
     {
       widget->clearWidget();
@@ -264,7 +273,8 @@ void QgsAttributeFormEditorWidget::searchWidgetFlagsChanged( QgsSearchWidgetWrap
 
   if ( mSearchWidgets.count() >= 2 )
   {
-    mSearchWidgets.at( 1 )->widget()->setVisible( flags & QgsSearchWidgetWrapper::Between );
+    mSearchWidgets.at( 1 )->widget()->setVisible( flags & QgsSearchWidgetWrapper::Between ||
+        flags & QgsSearchWidgetWrapper::IsNotBetween );
   }
 }
 

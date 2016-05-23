@@ -90,7 +90,7 @@ bool QgsDefaultSearchWidgetWrapper::applyDirectly()
 
 QgsSearchWidgetWrapper::FilterFlags QgsDefaultSearchWidgetWrapper::supportedFlags() const
 {
-  FilterFlags flags = EqualTo | NotEqualTo | IsNull;
+  FilterFlags flags = EqualTo | NotEqualTo | IsNull | IsNotNull;
 
   QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
   switch ( fldType )
@@ -107,7 +107,7 @@ QgsSearchWidgetWrapper::FilterFlags QgsDefaultSearchWidgetWrapper::supportedFlag
     case QVariant::Date:
     case QVariant::DateTime:
     case QVariant::Time:
-      flags |= GreaterThan | LessThan | GreaterThanOrEqualTo | LessThanOrEqualTo | Between;
+      flags |= GreaterThan | LessThan | GreaterThanOrEqualTo | LessThanOrEqualTo | Between | IsNotBetween;
       break;
 
     case QVariant::String:
@@ -157,6 +157,8 @@ QString QgsDefaultSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper:
 
   if ( flags & IsNull )
     return fieldName + " IS NULL";
+  if ( flags & IsNotNull )
+    return fieldName + " IS NOT NULL";
 
   switch ( fldType )
   {

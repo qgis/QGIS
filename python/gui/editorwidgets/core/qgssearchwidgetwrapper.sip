@@ -77,6 +77,8 @@ class QgsSearchWidgetWrapper : QgsWidgetWrapper
       Contains, /*!< Supports value "contains" searching */
       DoesNotContain, /*!< Supports value does not contain searching */
       IsNull, /*!< Supports searching for null values */
+      IsNotBetween, /*!< Supports searching for values outside of a set range */
+      IsNotNull, /*!< Supports searching for non-null values */
     };
     typedef QFlags<QgsSearchWidgetWrapper::FilterFlag> FilterFlags;
 

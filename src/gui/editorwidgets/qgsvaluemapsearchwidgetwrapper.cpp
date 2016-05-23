@@ -68,7 +68,7 @@ bool QgsValueMapSearchWidgetWrapper::valid() const
 
 QgsSearchWidgetWrapper::FilterFlags QgsValueMapSearchWidgetWrapper::supportedFlags() const
 {
-  return EqualTo | NotEqualTo | IsNull;
+  return EqualTo | NotEqualTo | IsNull | IsNotNull;
 }
 
 QgsSearchWidgetWrapper::FilterFlags QgsValueMapSearchWidgetWrapper::defaultFlags() const
@@ -90,6 +90,8 @@ QString QgsValueMapSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper
 
   if ( flags & IsNull )
     return fieldName + " IS NULL";
+  if ( flags & IsNotNull )
+    return fieldName + " IS NOT NULL";
 
   QString currentKey = mComboBox->itemData( mComboBox->currentIndex() ).toString();
 

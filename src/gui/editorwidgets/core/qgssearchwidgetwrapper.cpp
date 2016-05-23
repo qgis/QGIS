@@ -32,7 +32,9 @@ QList<QgsSearchWidgetWrapper::FilterFlag> QgsSearchWidgetWrapper::exclusiveFilte
          << Between
          << Contains
          << DoesNotContain
-         << IsNull;
+         << IsNull
+         << IsNotBetween
+         << IsNotNull;
 }
 
 QList<QgsSearchWidgetWrapper::FilterFlag> QgsSearchWidgetWrapper::nonExclusiveFilterFlags()
@@ -67,6 +69,11 @@ QString QgsSearchWidgetWrapper::toString( QgsSearchWidgetWrapper::FilterFlag fla
       return QObject::tr( "Does not contain" );
     case IsNull:
       return QObject::tr( "Is missing (null)" );
+    case IsNotNull:
+      return QObject::tr( "Is not missing (null)" );
+    case IsNotBetween:
+      return QObject::tr( "Is not between (inclusive)" );
+
   }
   return QString();
 }

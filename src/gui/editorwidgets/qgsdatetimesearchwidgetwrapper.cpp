@@ -51,7 +51,7 @@ QVariant QgsDateTimeSearchWidgetWrapper::value() const
 
 QgsSearchWidgetWrapper::FilterFlags QgsDateTimeSearchWidgetWrapper::supportedFlags() const
 {
-  return EqualTo | NotEqualTo | GreaterThan | LessThan | GreaterThanOrEqualTo | LessThanOrEqualTo | IsNull | Between;
+  return EqualTo | NotEqualTo | GreaterThan | LessThan | GreaterThanOrEqualTo | LessThanOrEqualTo | IsNull | Between | IsNotNull | IsNotBetween;
 }
 
 QgsSearchWidgetWrapper::FilterFlags QgsDateTimeSearchWidgetWrapper::defaultFlags() const
@@ -67,6 +67,8 @@ QString QgsDateTimeSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper
   flags &= supportedFlags();
   if ( flags & IsNull )
     return fieldName + " IS NULL";
+  if ( flags & IsNotNull )
+    return fieldName + " IS NOT NULL";
 
   QVariant v = value();
   if ( !v.isValid() )

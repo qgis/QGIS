@@ -51,7 +51,7 @@ QVariant QgsCheckboxSearchWidgetWrapper::value() const
 
 QgsSearchWidgetWrapper::FilterFlags QgsCheckboxSearchWidgetWrapper::supportedFlags() const
 {
-  return EqualTo | IsNull;
+  return EqualTo | IsNull | IsNotNull;
 }
 
 QgsSearchWidgetWrapper::FilterFlags QgsCheckboxSearchWidgetWrapper::defaultFlags() const
@@ -68,6 +68,9 @@ QString QgsCheckboxSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper
   flags &= supportedFlags();
   if ( flags & IsNull )
     return fieldName + " IS NULL";
+
+  if ( flags & IsNotNull )
+    return fieldName + " IS NOT NULL";
 
   QVariant v = value();
   if ( !v.isValid() )

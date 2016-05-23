@@ -46,7 +46,9 @@ class PyQgsSearchWidgetWrapper(unittest.TestCase):
                  QgsSearchWidgetWrapper.CaseInsensitive,
                  QgsSearchWidgetWrapper.Contains,
                  QgsSearchWidgetWrapper.DoesNotContain,
-                 QgsSearchWidgetWrapper.IsNull
+                 QgsSearchWidgetWrapper.IsNull,
+                 QgsSearchWidgetWrapper.IsNotNull,
+                 QgsSearchWidgetWrapper.IsNotBetween
                  ]
         for t in tests:
             self.assertTrue(len(QgsSearchWidgetWrapper.toString(t)) > 0)
@@ -76,6 +78,7 @@ class PyQgsDefaultSearchWidgetWrapper(unittest.TestCase):
 
         case_sensitive.setChecked(False)
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldtxt" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldtxt" IS NOT NULL')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), 'lower("fldtxt")=lower(\'test\')')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), 'lower("fldtxt")<>lower(\'test\')')
         case_sensitive.setChecked(True)
@@ -136,15 +139,18 @@ class PyQgsValueMapSearchWidgetWrapper(unittest.TestCase):
         c.setCurrentIndex(0)
 
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '')
 
         c.setCurrentIndex(1)
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldtxt" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldtxt" IS NOT NULL')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldtxt"=\'1\'')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"fldtxt"<>\'1\'')
         c.setCurrentIndex(2)
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldtxt" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldtxt" IS NOT NULL')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldtxt"=\'200\'')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"fldtxt"<>\'200\'')
 
@@ -154,6 +160,7 @@ class PyQgsValueMapSearchWidgetWrapper(unittest.TestCase):
         c = w.widget()
         c.setCurrentIndex(1)
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldint" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldint" IS NOT NULL')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldint"=1')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"fldint"<>1')
 
@@ -186,15 +193,18 @@ class PyQgsValueRelationSearchWidgetWrapper(unittest.TestCase):
         c.setCurrentIndex(0)
 
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldtxt" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldtxt" IS NOT NULL')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '')
 
         c.setCurrentIndex(1)
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldtxt" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldtxt" IS NOT NULL')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldtxt"=\'a\'')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"fldtxt"<>\'a\'')
         c.setCurrentIndex(2)
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldtxt" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldtxt" IS NOT NULL')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldtxt"=\'b\'')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"fldtxt"<>\'b\'')
 
@@ -206,6 +216,7 @@ class PyQgsValueRelationSearchWidgetWrapper(unittest.TestCase):
         c.setCurrentIndex(c.findText('value c'))
         self.assertEqual(c.currentIndex(), 3)
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldint" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldint" IS NOT NULL')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldint"=3')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"fldint"<>3')
 
@@ -216,6 +227,7 @@ class PyQgsValueRelationSearchWidgetWrapper(unittest.TestCase):
         c = w.widget()
         c.setCurrentIndex(c.findText('value c'))
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldint" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldint" IS NOT NULL')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldint"=3')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"fldint"<>3')
 
@@ -226,6 +238,7 @@ class PyQgsValueRelationSearchWidgetWrapper(unittest.TestCase):
         l = w.widget()
         l.setText('value b')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldint" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldint" IS NOT NULL')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldint"=2')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"fldint"<>2')
 
@@ -245,9 +258,11 @@ class PyQgsCheckboxSearchWidgetWrapper(unittest.TestCase):
         # first check with string field type
         c.setChecked(True)
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldtxt" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldtxt" IS NOT NULL')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldtxt"=\'5\'')
         c.setChecked(False)
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldtxt" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldtxt" IS NOT NULL')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldtxt"=\'9\'')
 
         # try with numeric field
@@ -256,9 +271,11 @@ class PyQgsCheckboxSearchWidgetWrapper(unittest.TestCase):
         c = w.widget()
         c.setChecked(True)
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldint" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldint" IS NOT NULL')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldint"=5')
         c.setChecked(False)
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldint" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldint" IS NOT NULL')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldint"=9')
 
 
@@ -277,6 +294,7 @@ class PyQgsDateTimeSearchWidgetWrapper(unittest.TestCase):
         # first check with date field type
         c.setDateTime(QDateTime(QDate(2013, 4, 5), QTime()))
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"date" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"date" IS NOT NULL')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"date"=\'2013-04-05\'')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"date"<>\'2013-04-05\'')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.GreaterThan), '"date">\'2013-04-05\'')
@@ -293,6 +311,7 @@ class PyQgsDateTimeSearchWidgetWrapper(unittest.TestCase):
 
         c.setDateTime(QDateTime(QDate(2013, 4, 5), QTime(13, 14, 15)))
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"time" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"time" IS NOT NULL')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"time"=\'13:14:15\'')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"time"<>\'13:14:15\'')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.GreaterThan), '"time">\'13:14:15\'')
@@ -309,6 +328,7 @@ class PyQgsDateTimeSearchWidgetWrapper(unittest.TestCase):
 
         c.setDateTime(QDateTime(QDate(2013, 4, 5), QTime(13, 14, 15)))
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"datetime" IS NULL')
+        self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"datetime" IS NOT NULL')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"datetime"=\'2013-04-05 13:14:15\'')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"datetime"<>\'2013-04-05 13:14:15\'')
         self.assertEquals(w.createExpression(QgsSearchWidgetWrapper.GreaterThan), '"datetime">\'2013-04-05 13:14:15\'')

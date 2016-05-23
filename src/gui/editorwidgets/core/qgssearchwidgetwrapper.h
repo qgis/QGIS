@@ -57,6 +57,8 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
       Contains = 1 << 9, /*!< Supports value "contains" searching */
       DoesNotContain = 1 << 10, /*!< Supports value does not contain searching */
       IsNull = 1 << 11, /*!< Supports searching for null values */
+      IsNotBetween = 1 << 12, /*!< Supports searching for values outside of a set range */
+      IsNotNull = 1 << 13, /*!< Supports searching for non-null values */
     };
     Q_DECLARE_FLAGS( FilterFlags, FilterFlag )
 
