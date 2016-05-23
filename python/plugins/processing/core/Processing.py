@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -26,6 +27,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import sys
+import os
 import traceback
 
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QObject, pyqtSignal
@@ -37,6 +39,9 @@ from qgis.core import QgsMessageLog
 
 import processing
 from processing.core.AlgorithmProvider import AlgorithmProvider
+from processing.script.ScriptUtils import ScriptUtils
+from processing.gui import AlgorithmClassification
+from processing.modeler.ModelerUtils import ModelerUtils
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -73,7 +78,7 @@ class Processing:
     contextMenuActions = []
 
     @staticmethod
-    def addProvider(provider, update=True):
+    def addProvider(provider, updateList=True):
         """Use this method to add algorithms from external providers.
         """
 
@@ -122,6 +127,8 @@ class Processing:
 
     @staticmethod
     def initialize():
+        if Processing.providers:
+            return
         # Add the basic providers
         for c in AlgorithmProvider.__subclasses__():
             Processing.addProvider(c())
@@ -129,6 +136,23 @@ class Processing:
         ProcessingConfig.initialize()
         ProcessingConfig.readSettings()
         RenderingStyles.loadStyles()
+        
+    @staticmethod        
+    def addScripts(folder):
+        Processing.initialize()
+        provider = Processing.getProviderFromName("qgis")
+        scripts = ScriptUtils.loadFromFolder(folder)
+        print scripts
+        for script in scripts:
+            script.allowEdit = False
+            script._icon = provider._icon
+            script.provider = provider
+        provider.externalAlgs.extend(scripts)     
+        Processing.reloadProvider("qgis")
+        
+    @staticmethod 
+    def removeScripts(folder):
+        pass
 
     @staticmethod
     def updateAlgsList():
