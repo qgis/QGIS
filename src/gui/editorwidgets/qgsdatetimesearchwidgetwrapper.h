@@ -25,19 +25,33 @@
 
 class QgsDateTimeEditFactory;
 
-/**
- * Wraps a date time search widget.
+/** \ingroup gui
+ * \class QgsDateTimeSearchWidgetWrapper
+ * Wraps a date/time edit widget for searching.
+ * \note Added in version 2.16
  */
+
 class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
 
   public:
+
+    /** Constructor for QgsDateTimeSearchWidgetWrapper.
+     * @param vl associated vector layer
+     * @param fieldIdx index of associated field
+     * @param parent parent widget
+     */
     explicit QgsDateTimeSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
+
+    /** Returns a variant representing the current state of the widget, respecting
+     * the editor widget's configured field format for date/time values.
+     */
+    QVariant value() const;
+
     bool applyDirectly() override;
     QString expression() override;
     bool valid() const override;
-    QVariant value() const;
     FilterFlags supportedFlags() const override;
     FilterFlags defaultFlags() const override;
     virtual QString createExpression( FilterFlags flags ) const override;

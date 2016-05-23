@@ -25,19 +25,35 @@
 
 class QgsCheckboxWidgetFactory;
 
-/**
- * Wraps a checkbox search widget.
+/** \ingroup gui
+ * \class QgsCheckboxSearchWidgetWrapper
+ * Wraps a checkbox edit widget for searching.
+ * \note Added in version 2.16
  */
+
 class GUI_EXPORT QgsCheckboxSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
 
   public:
+
+    /** Constructor for QgsCheckboxSearchWidgetWrapper.
+     * @param vl associated vector layer
+     * @param fieldIdx index of associated field
+     * @param parent parent widget
+     */
     explicit QgsCheckboxSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
+
+    /** Returns a variant representing the current state of the widget.
+     * @note this will not be a boolean true or false value, it will instead
+     * be the values configured to represent checked and unchecked states in
+     * the editor widget configuration.
+     */
+    QVariant value() const;
+
     bool applyDirectly() override;
     QString expression() override;
     bool valid() const override;
-    QVariant value() const;
     FilterFlags supportedFlags() const override;
     FilterFlags defaultFlags() const override;
     virtual QString createExpression( FilterFlags flags ) const override;
