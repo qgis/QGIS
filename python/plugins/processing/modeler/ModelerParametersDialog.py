@@ -314,7 +314,7 @@ class ModelerParametersDialog(QDialog):
         elif isinstance(param, ParameterSelection):
             item = QComboBox()
             item.addItems(param.options)
-            item.setCurrentIndex(param.default or 1)
+            item.setCurrentIndex(param.default or 0)
         elif isinstance(param, ParameterFixedTable):
             item = FixedTablePanel(param)
         elif isinstance(param, ParameterRange):
