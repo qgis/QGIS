@@ -169,14 +169,16 @@ class AlgorithmDialog(AlgorithmDialogBase):
             return param.setValue(widget.getValue())
         elif isinstance(param, ParameterString):
             if param.multiline:
-                return param.setValue(unicode(widget.toPlainText()))
+                text = unicode(widget.toPlainText())
             else:
                 text = widget.text()
+
+            if param.evaluateExpressions:
                 try:
                     text = self.evaluateExpression(text)
                 except:
                     pass
-                return param.setValue(text)
+            return param.setValue(text)
         elif isinstance(param, ParameterGeometryPredicate):
             return param.setValue(widget.value())
         else:

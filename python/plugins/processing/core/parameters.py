@@ -709,9 +709,10 @@ class ParameterString(Parameter):
     ESCAPED_NEWLINE = '\\n'
 
     def __init__(self, name='', description='', default=None, multiline=False,
-                 optional=False):
+                 optional=False, evaluateExpressions=False):
         Parameter.__init__(self, name, description, default, optional)
         self.multiline = parseBool(multiline)
+        self.evaluateExpressions = parseBool(evaluateExpressions)
 
     def setValue(self, obj):
         if obj is None:
