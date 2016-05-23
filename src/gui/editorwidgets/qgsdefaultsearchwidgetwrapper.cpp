@@ -207,7 +207,7 @@ QString QgsDefaultSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper:
       // case insensitive!
       if ( flags & EqualTo || flags & NotEqualTo )
       {
-        if ( mCheckbox->isChecked() )
+        if ( mCheckbox && mCheckbox->isChecked() )
           return fieldName + ( flags & EqualTo ? "=" : "<>" )
                  + QgsExpression::quotedString( mLineEdit->text() );
         else
@@ -217,7 +217,7 @@ QString QgsDefaultSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper:
       }
       else if ( flags & Contains || flags & DoesNotContain )
       {
-        QString exp = fieldName + ( mCheckbox->isChecked() ? " LIKE " : " ILIKE " );
+        QString exp = fieldName + ( mCheckbox && mCheckbox->isChecked() ? " LIKE " : " ILIKE " );
         QString value = QgsExpression::quotedString( mLineEdit->text() );
         value.chop( 1 );
         value = value.remove( 0, 1 );
@@ -245,7 +245,8 @@ void QgsDefaultSearchWidgetWrapper::clearWidget()
 void QgsDefaultSearchWidgetWrapper::setEnabled( bool enabled )
 {
   mLineEdit->setEnabled( enabled );
-  mCheckbox->setEnabled( enabled );
+  if ( mCheckbox )
+    mCheckbox->setEnabled( enabled );
 }
 
 void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )
@@ -255,14 +256,21 @@ void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )
   mContainer->layout()->setMargin( 0 );
   mContainer->layout()->setContentsMargins( 0, 0, 0, 0 );
   mLineEdit = new QgsFilterLineEdit();
-  mCheckbox = new QCheckBox( "Case sensitive" );
   mContainer->layout()->addWidget( mLineEdit );
-  mContainer->layout()->addWidget( mCheckbox );
+
+  QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
+  if ( fldType == QVariant::String )
+  {
+    mCheckbox = new QCheckBox( "Case sensitive" );
+    mContainer->layout()->addWidget( mCheckbox );
+    connect( mCheckbox, SIGNAL( stateChanged( int ) ), this, SLOT( setCaseString( int ) ) );
+    mCheckbox->setChecked( Qt::Unchecked );
+  }
+
   connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( textChanged( QString ) ) );
   connect( mLineEdit, SIGNAL( returnPressed() ), this, SLOT( filterChanged() ) );
-  connect( mCheckbox, SIGNAL( stateChanged( int ) ), this, SLOT( setCaseString( int ) ) );
   connect( mLineEdit, SIGNAL( textEdited( QString ) ), this, SIGNAL( valueChanged() ) );
-  mCheckbox->setChecked( Qt::Unchecked );
+
   mCaseString = "ILIKE";
 }
 
