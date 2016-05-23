@@ -25,6 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+from osgeo import gdal
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
@@ -46,7 +48,8 @@ class CreateConstantRaster(GeoAlgorithm):
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Reference layer')))
         self.addParameter(ParameterNumber(self.NUMBER,
-                                          self.tr('Constant value'), default=1.0))
+                                          self.tr('Constant value'),
+                                          default=1.0))
 
         self.addOutput(OutputRaster(self.OUTPUT,
                                     self.tr('Constant')))
@@ -54,9 +57,12 @@ class CreateConstantRaster(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
-        value = self.getOutputValue(self.NUMBER)
+        value = self.getParameterValue(self.NUMBER)
 
         output = self.getOutputFromName(self.OUTPUT)
+
+        raster = gdal.Open(layer.source(), gdal.GA_ReadOnly)
+        geoTransform = raster.GetGeoTransform()
 
         cellsize = (layer.extent().xMaximum() - layer.extent().xMinimum()) \
             / layer.width()
@@ -68,7 +74,8 @@ class CreateConstantRaster(GeoAlgorithm):
                          layer.extent().yMaximum(),
                          cellsize,
                          1,
-                         self.crs,
+                         layer.crs(),
+                         geoTransform
                          )
-        w.matrix[:] = value
+        w.matrix.fill(value)
         w.close()
