@@ -47,6 +47,9 @@ void QgsDefaultSearchWidgetWrapper::setCaseString( int caseSensitiveCheckState )
   }
   // need to update also the line edit
   setExpression( mLineEdit->text() );
+
+  if ( applyDirectly() )
+    emit expressionChanged( mExpression );
 }
 
 void QgsDefaultSearchWidgetWrapper::setExpression( QString exp )

@@ -17,6 +17,7 @@
 
 #include "qgstexteditwrapper.h"
 #include "qgstexteditconfigdlg.h"
+#include "qgstexteditsearchwidgetwrapper.h"
 
 QgsTextEditWidgetFactory::QgsTextEditWidgetFactory( const QString& name )
     : QgsEditorWidgetFactory( name )
@@ -26,6 +27,11 @@ QgsTextEditWidgetFactory::QgsTextEditWidgetFactory( const QString& name )
 QgsEditorWidgetWrapper* QgsTextEditWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
   return new QgsTextEditWrapper( vl, fieldIdx, editor, parent );
+}
+
+QgsSearchWidgetWrapper*QgsTextEditWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+{
+  return new QgsTextEditSearchWidgetWrapper( vl, fieldIdx, parent );
 }
 
 QgsEditorConfigWidget* QgsTextEditWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const

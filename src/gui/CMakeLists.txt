@@ -133,6 +133,7 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsrelationreferencewidget.cpp
   editorwidgets/qgsrelationreferencewidgetwrapper.cpp
   editorwidgets/qgstexteditconfigdlg.cpp
+  editorwidgets/qgstexteditsearchwidgetwrapper.cpp
   editorwidgets/qgstexteditwrapper.cpp
   editorwidgets/qgstexteditwidgetfactory.cpp
   editorwidgets/qgsuniquevaluesconfigdlg.cpp
@@ -554,6 +555,7 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/qgsspinbox.h
   editorwidgets/qgstexteditconfigdlg.h
   editorwidgets/qgstexteditwrapper.h
+  editorwidgets/qgstexteditsearchwidgetwrapper.h
   editorwidgets/qgsuniquevaluesconfigdlg.h
   editorwidgets/qgsuniquevaluewidgetwrapper.h
   editorwidgets/qgsuuidwidgetwrapper.h

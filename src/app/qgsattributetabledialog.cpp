@@ -166,7 +166,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   // connect table info to window
   connect( mMainView, SIGNAL( filterChanged() ), this, SLOT( updateTitle() ) );
-  connect( mMainView, SIGNAL( filterExpressionSet( QString, QgsAttributeForm::FilterType ) ), this, SLOT( setFilterExpression( QString, QgsAttributeForm::FilterType ) ) );
+  connect( mMainView, SIGNAL( filterExpressionSet( QString, QgsAttributeForm::FilterType ) ), this, SLOT( formFilterSet( QString, QgsAttributeForm::FilterType ) ) );
   connect( mMainView, SIGNAL( formModeChanged( QgsAttributeForm::Mode ) ), this, SLOT( viewModeChanged( QgsAttributeForm::Mode ) ) );
 
   // info from table to application
@@ -388,6 +388,11 @@ void QgsAttributeTableDialog::viewModeChanged( QgsAttributeForm::Mode mode )
     mSearchFormButton->setChecked( false );
 }
 
+void QgsAttributeTableDialog::formFilterSet( const QString& filter, QgsAttributeForm::FilterType type )
+{
+  setFilterExpression( filter, type, true );
+}
+
 void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, const QString& fieldName, const QString& expression, const QgsFeatureIds& filteredIds )
 {
   QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -524,7 +529,7 @@ void QgsAttributeTableDialog::filterExpressionBuilder()
 
   if ( dlg.exec() == QDialog::Accepted )
   {
-    setFilterExpression( dlg.expressionText() );
+    setFilterExpression( dlg.expressionText(), QgsAttributeForm::ReplaceFilter, true );
   }
 }
 
@@ -883,7 +888,8 @@ void QgsAttributeTableDialog::openConditionalStyles()
   mMainView->openConditionalStyles();
 }
 
-void QgsAttributeTableDialog::setFilterExpression( const QString& filterString, QgsAttributeForm::FilterType type )
+void QgsAttributeTableDialog::setFilterExpression( const QString& filterString, QgsAttributeForm::FilterType type,
+    bool alwaysShowFilter )
 {
   QString filter;
   if ( !mFilterQuery->text().isEmpty() && !filterString.isEmpty() )
@@ -913,9 +919,11 @@ void QgsAttributeTableDialog::setFilterExpression( const QString& filterString, 
     return;
   }
 
-  if ( !mCurrentSearchWidgetWrapper || !mCurrentSearchWidgetWrapper->applyDirectly() )
+  mFilterQuery->setText( filter );
+
+  if ( alwaysShowFilter || !mCurrentSearchWidgetWrapper || !mCurrentSearchWidgetWrapper->applyDirectly() )
   {
-    mFilterQuery->setText( filter );
+
     mFilterButton->setDefaultAction( mActionAdvancedFilter );
     mFilterButton->setPopupMode( QToolButton::MenuButtonPopup );
     mFilterQuery->setVisible( true );
