@@ -297,14 +297,10 @@ void TestQgsComposerTable::attributeTableSetAttributes()
 
   //get header labels and compare
   QMap<int, QString> headerMap = mComposerAttributeTable->headerLabels();
-  QMap<int, QString>::const_iterator headerIt = headerMap.constBegin();
-  QString expected;
-  QString evaluated;
-  for ( ; headerIt != headerMap.constEnd(); ++headerIt )
+
+  Q_FOREACH ( const QString& expected, expectedHeaders )
   {
-    evaluated = headerIt.value();
-    expected = expectedHeaders.at( headerIt.key() );
-    QCOMPARE( evaluated, expected );
+    QVERIFY( headerMap.values().contains( expected ) );
   }
 
   QList<QStringList> expectedRows;
