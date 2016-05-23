@@ -21,6 +21,7 @@ CLANG_WARNINGS="-Wimplicit-fallthrough"
 #      -DCMAKE_BUILD_TYPE=RelWithDebInfo \
 #
 cmake \
+      -GNinja \
       -DCMAKE_PREFIX_PATH=/home/travis/osgeo4travis \
       -DWITH_STAGED_PLUGINS=ON \
       -DWITH_GRASS=ON \

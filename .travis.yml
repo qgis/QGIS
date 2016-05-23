@@ -26,6 +26,7 @@ matrix:
           packages:
             - bison
             - clang-3.8
+            - ninja-build
             - doxygen
             - flex
             - flip
@@ -89,6 +90,7 @@ matrix:
             - xvfb
             - flip
             - clang-3.8
+            - ninja-build
     # OSX based build with QT4 and Python 2
     - os: osx
       env:
