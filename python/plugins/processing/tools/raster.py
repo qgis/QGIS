@@ -85,17 +85,18 @@ class RasterWriter:
     NODATA = -99999.0
 
     def __init__(self, fileName, minx, miny, maxx, maxy, cellsize,
-                 nbands, crs):
+                 nbands, crs, geotransform=None):
         self.fileName = fileName
         self.nx = int((maxx - minx) / float(cellsize))
         self.ny = int((maxy - miny) / float(cellsize))
         self.nbands = nbands
-        self.matrix = numpy.ones(shape=(self.ny, self.nx), dtype=numpy.float32)
-        self.matrix[:] = self.NODATA
+        self.matrix = numpy.empty(shape=(self.ny, self.nx), dtype=numpy.float32)
+        self.matrix.fill(self.NODATA)
         self.cellsize = cellsize
         self.crs = crs
         self.minx = minx
         self.maxy = maxy
+        self.geotransform = geotransform
 
     def setValue(self, value, x, y, band=0):
         try:
@@ -115,7 +116,10 @@ class RasterWriter:
         dst_ds = driver.Create(self.fileName, self.nx, self.ny, 1,
                                gdal.GDT_Float32)
         dst_ds.SetProjection(str(self.crs.toWkt()))
-        dst_ds.SetGeoTransform([self.minx, self.cellsize, 0,
-                                self.maxy, self.cellsize, 0])
+        if self.geotransform is None:
+            dst_ds.SetGeoTransform([self.minx, self.cellsize, 0,
+                                    self.maxy, self.cellsize, 0])
+        else:
+            dst_ds.SetGeoTransform(self.geotransform)
         dst_ds.GetRasterBand(1).WriteArray(self.matrix)
         dst_ds = None
