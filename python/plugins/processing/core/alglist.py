@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    Processing.py
+    alglist.py
     ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
+    Date                 : May 2016
+    Copyright            : (C) 2016 by Victor Olaya
     Email                : volayaf at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__date__ = 'May 2016'
+__copyright__ = '(C) 2016, Victor Olaya'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
