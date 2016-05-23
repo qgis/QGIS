@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgsvaluerelationwidgetwrapper.h
-     --------------------------------------
-    Date                 : 19.6.2015
-    Copyright            : (C) 2015 Karolina Alexiou
-    Email                : carolinegr at gmail dot com
+    qgscheckboxsearchwidgetwrapper.h
+     -------------------------------
+    Date                 : 2016-05-23
+    Copyright            : (C) 2016 Nyall Dawson
+    Email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,38 +13,47 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSVALUERELATIONSEARCHWIDGETWRAPPER_H
-#define QGSVALUERELATIONSEARCHWIDGETWRAPPER_H
+#ifndef QGSCHECKBOXSEARCHWIDGETWRAPPER_H
+#define QGSCHECKBOXSEARCHWIDGETWRAPPER_H
 
 #include "qgssearchwidgetwrapper.h"
-#include "qgsvaluerelationwidgetwrapper.h"
+#include "qgscheckboxwidgetwrapper.h"
 
 #include <QComboBox>
 #include <QListWidget>
 #include <QLineEdit>
 
-class QgsValueRelationWidgetFactory;
+class QgsCheckboxWidgetFactory;
 
-/**
- * Wraps a value relation search  widget. This widget will offer a combobox with values from another layer
- * referenced by a foreign key (a constraint may be set but is not required on data level).
- * It will be used as a search widget and produces expression to look for in the layer.
+/** \ingroup gui
+ * \class QgsCheckboxSearchWidgetWrapper
+ * Wraps a checkbox edit widget for searching.
+ * \note Added in version 2.16
  */
 
-class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWrapper
+class GUI_EXPORT QgsCheckboxSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
 
   public:
-    typedef QPair < QVariant, QString > ValueRelationItem;
-    typedef QVector < ValueRelationItem > ValueRelationCache;
 
-  public:
-    explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
+    /** Constructor for QgsCheckboxSearchWidgetWrapper.
+     * @param vl associated vector layer
+     * @param fieldIdx index of associated field
+     * @param parent parent widget
+     */
+    explicit QgsCheckboxSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
+
+    /** Returns a variant representing the current state of the widget.
+     * @note this will not be a boolean true or false value, it will instead
+     * be the values configured to represent checked and unchecked states in
+     * the editor widget configuration.
+     */
+    QVariant value() const;
+
     bool applyDirectly() override;
     QString expression() override;
     bool valid() const override;
-    QVariant value() const;
     FilterFlags supportedFlags() const override;
     FilterFlags defaultFlags() const override;
     virtual QString createExpression( FilterFlags flags ) const override;
@@ -58,23 +67,17 @@ class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWra
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
 
-  public slots:
-
-    //! Called when current value of search widget changes
-    void onValueChanged();
-
   protected slots:
     void setExpression( QString exp ) override;
 
-  private:
-    QComboBox* mComboBox;
-    QListWidget* mListWidget;
-    QLineEdit* mLineEdit;
+  private slots:
+    void stateChanged( int state );
 
-    ValueRelationCache mCache;
+  private:
+    QCheckBox* mCheckBox;
     QgsVectorLayer* mLayer;
 
-    friend class QgsValueRelationWidgetFactory;
+    friend class QgsCheckboxWidgetFactory;
 };
 
-#endif // QGSVALUERELATIONSEARCHWIDGETWRAPPER_H
+#endif // QGSCHECKBOXSEARCHWIDGETWRAPPER_H

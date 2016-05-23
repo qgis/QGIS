@@ -323,6 +323,35 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="mSearchFormButton">
+       <property name="toolTip">
+        <string>Select/filter features using form (Ctrl+F)</string>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionFilter2.svg</normaloff>:/images/themes/default/mActionFilter2.svg</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+F</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="mSelectedToTopButton">
        <property name="toolTip">
         <string>Move selection to top (Ctrl+T)</string>
@@ -857,9 +886,6 @@
    </property>
    <property name="toolTip">
     <string>Use the Expression Builder to define the filter</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+F</string>
    </property>
   </action>
   <action name="mActionShowAllFilter">

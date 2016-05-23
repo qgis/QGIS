@@ -52,6 +52,10 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     //! @note if the widget is not configured to accept NULL dates, this will have no effect
     virtual void clear() override;
 
+    /** Resets the widget to show no value (ie, an "unknown" state).
+     * @note added in QGIS 2.16
+     */
+    void setEmpty();
 
   protected:
     virtual void resizeEvent( QResizeEvent* event ) override;
@@ -69,6 +73,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
 
     bool mAllowNull;
     bool mIsNull;
+    bool mIsEmpty;
 
     QLineEdit* mNullLabel;
     QToolButton* mClearButton;

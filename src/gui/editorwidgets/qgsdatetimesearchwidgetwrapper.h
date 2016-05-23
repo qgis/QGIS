@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgsvaluerelationwidgetwrapper.h
-     --------------------------------------
-    Date                 : 19.6.2015
-    Copyright            : (C) 2015 Karolina Alexiou
-    Email                : carolinegr at gmail dot com
+    qgsdatetimesearchwidgetwrapper.h
+     -------------------------------
+    Date                 : 2016-05-23
+    Copyright            : (C) 2016 Nyall Dawson
+    Email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,38 +13,45 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSVALUERELATIONSEARCHWIDGETWRAPPER_H
-#define QGSVALUERELATIONSEARCHWIDGETWRAPPER_H
+#ifndef QGSDATETIMESEARCHWIDGETWRAPPER_H
+#define QGSDATETIMESEARCHWIDGETWRAPPER_H
 
 #include "qgssearchwidgetwrapper.h"
-#include "qgsvaluerelationwidgetwrapper.h"
+#include "qgsdatetimeeditwrapper.h"
 
 #include <QComboBox>
 #include <QListWidget>
 #include <QLineEdit>
 
-class QgsValueRelationWidgetFactory;
+class QgsDateTimeEditFactory;
 
-/**
- * Wraps a value relation search  widget. This widget will offer a combobox with values from another layer
- * referenced by a foreign key (a constraint may be set but is not required on data level).
- * It will be used as a search widget and produces expression to look for in the layer.
+/** \ingroup gui
+ * \class QgsDateTimeSearchWidgetWrapper
+ * Wraps a date/time edit widget for searching.
+ * \note Added in version 2.16
  */
 
-class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWrapper
+class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
 
   public:
-    typedef QPair < QVariant, QString > ValueRelationItem;
-    typedef QVector < ValueRelationItem > ValueRelationCache;
 
-  public:
-    explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
+    /** Constructor for QgsDateTimeSearchWidgetWrapper.
+     * @param vl associated vector layer
+     * @param fieldIdx index of associated field
+     * @param parent parent widget
+     */
+    explicit QgsDateTimeSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
+
+    /** Returns a variant representing the current state of the widget, respecting
+     * the editor widget's configured field format for date/time values.
+     */
+    QVariant value() const;
+
     bool applyDirectly() override;
     QString expression() override;
     bool valid() const override;
-    QVariant value() const;
     FilterFlags supportedFlags() const override;
     FilterFlags defaultFlags() const override;
     virtual QString createExpression( FilterFlags flags ) const override;
@@ -58,23 +65,17 @@ class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWra
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
 
-  public slots:
-
-    //! Called when current value of search widget changes
-    void onValueChanged();
-
   protected slots:
     void setExpression( QString exp ) override;
 
-  private:
-    QComboBox* mComboBox;
-    QListWidget* mListWidget;
-    QLineEdit* mLineEdit;
+  private slots:
+    void dateTimeChanged( const QDateTime &date );
 
-    ValueRelationCache mCache;
+  private:
+    QgsDateTimeEdit* mDateTimeEdit;
     QgsVectorLayer* mLayer;
 
-    friend class QgsValueRelationWidgetFactory;
+    friend class QgsDateTimeEditFactory;
 };
 
-#endif // QGSVALUERELATIONSEARCHWIDGETWRAPPER_H
+#endif // QGSDATETIMESEARCHWIDGETWRAPPER_H

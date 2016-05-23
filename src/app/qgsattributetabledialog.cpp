@@ -166,6 +166,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   // connect table info to window
   connect( mMainView, SIGNAL( filterChanged() ), this, SLOT( updateTitle() ) );
+  connect( mMainView, SIGNAL( filterExpressionSet( QString, QgsAttributeForm::FilterType ) ), this, SLOT( formFilterSet( QString, QgsAttributeForm::FilterType ) ) );
+  connect( mMainView, SIGNAL( formModeChanged( QgsAttributeForm::Mode ) ), this, SLOT( viewModeChanged( QgsAttributeForm::Mode ) ) );
 
   // info from table to application
   connect( this, SIGNAL( saveEdits( QgsMapLayer * ) ), QgisApp::instance(), SLOT( saveEdits( QgsMapLayer * ) ) );
@@ -265,6 +267,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mMainViewButtonGroup->button( initialView )->setChecked( true );
 
   connect( mToggleMultiEditButton, SIGNAL( toggled( bool ) ), mMainView, SLOT( setMultiEditEnabled( bool ) ) );
+  connect( mSearchFormButton, SIGNAL( toggled( bool ) ), mMainView, SLOT( toggleSearchMode( bool ) ) );
   updateMultiEditButtonState();
 
   editingToggled();
@@ -377,6 +380,17 @@ void QgsAttributeTableDialog::updateFieldFromExpressionSelected()
 {
   QgsFeatureIds filteredIds = mLayer->selectedFeaturesIds();
   runFieldCalculation( mLayer, mFieldCombo->currentText(), mUpdateExpressionText->asExpression(), filteredIds );
+}
+
+void QgsAttributeTableDialog::viewModeChanged( QgsAttributeForm::Mode mode )
+{
+  if ( mode != QgsAttributeForm::SearchMode )
+    mSearchFormButton->setChecked( false );
+}
+
+void QgsAttributeTableDialog::formFilterSet( const QString& filter, QgsAttributeForm::FilterType type )
+{
+  setFilterExpression( filter, type, true );
 }
 
 void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, const QString& fieldName, const QString& expression, const QgsFeatureIds& filteredIds )
@@ -515,7 +529,7 @@ void QgsAttributeTableDialog::filterExpressionBuilder()
 
   if ( dlg.exec() == QDialog::Accepted )
   {
-    setFilterExpression( dlg.expressionText() );
+    setFilterExpression( dlg.expressionText(), QgsAttributeForm::ReplaceFilter, true );
   }
 }
 
@@ -524,6 +538,7 @@ void QgsAttributeTableDialog::filterShowAll()
   mFilterButton->setDefaultAction( mActionShowAllFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
   mFilterQuery->setVisible( false );
+  mFilterQuery->setText( QString() );
   if ( mCurrentSearchWidgetWrapper )
   {
     mCurrentSearchWidgetWrapper->widget()->setVisible( false );
@@ -717,6 +732,9 @@ void QgsAttributeTableDialog::on_mMainView_currentChanged( int viewMode )
   mMainViewButtonGroup->button( viewMode )->click();
   updateMultiEditButtonState();
 
+  if ( viewMode == 0 )
+    mSearchFormButton->setChecked( false );
+
   QSettings s;
   s.setValue( "/qgis/attributeTableLastView", static_cast< int >( viewMode ) );
 }
@@ -739,6 +757,10 @@ void QgsAttributeTableDialog::editingToggled()
   mSaveEditsButton->setEnabled( mLayer->isEditable() );
   mReloadButton->setEnabled( ! mLayer->isEditable() );
   updateMultiEditButtonState();
+  if ( mLayer->isEditable() )
+  {
+    mSearchFormButton->setChecked( false );
+  }
   mToggleEditingButton->blockSignals( false );
 
   bool canChangeAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
@@ -866,11 +888,42 @@ void QgsAttributeTableDialog::openConditionalStyles()
   mMainView->openConditionalStyles();
 }
 
-void QgsAttributeTableDialog::setFilterExpression( const QString& filterString )
+void QgsAttributeTableDialog::setFilterExpression( const QString& filterString, QgsAttributeForm::FilterType type,
+    bool alwaysShowFilter )
 {
-  if ( !mCurrentSearchWidgetWrapper || !mCurrentSearchWidgetWrapper->applyDirectly() )
+  QString filter;
+  if ( !mFilterQuery->text().isEmpty() && !filterString.isEmpty() )
   {
-    mFilterQuery->setText( filterString );
+    switch ( type )
+    {
+      case QgsAttributeForm::ReplaceFilter:
+        filter = filterString;
+        break;
+
+      case QgsAttributeForm::FilterAnd:
+        filter = QString( "(%1) AND (%2)" ).arg( mFilterQuery->text(), filterString );
+        break;
+
+      case QgsAttributeForm::FilterOr:
+        filter = QString( "(%1) OR (%2)" ).arg( mFilterQuery->text(), filterString );
+        break;
+    }
+  }
+  else if ( !filterString.isEmpty() )
+  {
+    filter = filterString;
+  }
+  else
+  {
+    filterShowAll();
+    return;
+  }
+
+  mFilterQuery->setText( filter );
+
+  if ( alwaysShowFilter || !mCurrentSearchWidgetWrapper || !mCurrentSearchWidgetWrapper->applyDirectly() )
+  {
+
     mFilterButton->setDefaultAction( mActionAdvancedFilter );
     mFilterButton->setPopupMode( QToolButton::MenuButtonPopup );
     mFilterQuery->setVisible( true );
@@ -890,7 +943,7 @@ void QgsAttributeTableDialog::setFilterExpression( const QString& filterString )
   myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
 
   // parse search string and build parsed tree
-  QgsExpression filterExpression( filterString );
+  QgsExpression filterExpression( filter );
   if ( filterExpression.hasParserError() )
   {
     QgisApp::instance()->messageBar()->pushMessage( tr( "Parsing error" ), filterExpression.parserErrorString(), QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );

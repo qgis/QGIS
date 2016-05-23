@@ -42,6 +42,8 @@
 #include <QUiLoader>
 #include <QMessageBox>
 #include <QSettings>
+#include <QToolButton>
+#include <QMenu>
 
 int QgsAttributeForm::sFormCounter = 0;
 
@@ -53,6 +55,7 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &featur
     , mMultiEditMessageBarItem( nullptr )
     , mContext( context )
     , mButtonBox( nullptr )
+    , mSearchButtonBox( nullptr )
     , mFormNr( sFormCounter++ )
     , mIsSaving( false )
     , mPreventFeatureRefresh( false )
@@ -166,11 +169,9 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
         w->setMode( QgsAttributeFormEditorWidget::MultiEditMode );
         break;
 
-#if 0
       case QgsAttributeForm::SearchMode:
         w->setMode( QgsAttributeFormEditorWidget::SearchMode );
         break;
-#endif
     }
   }
 
@@ -178,18 +179,26 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
   {
     case QgsAttributeForm::SingleEditMode:
       setFeature( mFeature );
+      mSearchButtonBox->setVisible( false );
       break;
 
     case QgsAttributeForm::AddFeatureMode:
       synchronizeEnabledState();
+      mSearchButtonBox->setVisible( false );
       break;
 
     case QgsAttributeForm::MultiEditMode:
       resetMultiEdit( false );
       synchronizeEnabledState();
+      mSearchButtonBox->setVisible( false );
+      break;
+
+    case QgsAttributeForm::SearchMode:
+      mSearchButtonBox->setVisible( true );
       break;
   }
 
+  emit modeChanged( mMode );
 }
 
 void QgsAttributeForm::setIsAddDialog( bool isAddDialog )
@@ -230,6 +239,7 @@ void QgsAttributeForm::setFeature( const QgsFeature& feature )
       break;
     }
     case MultiEditMode:
+    case SearchMode:
     {
       //ignore setFeature
       break;
@@ -368,6 +378,84 @@ void QgsAttributeForm::multiEditMessageClicked( const QString& link )
   resetMultiEdit( link == "#apply" );
 }
 
+void QgsAttributeForm::filterTriggered()
+{
+  QString filter = createFilterExpression();
+  emit filterExpressionSet( filter, ReplaceFilter );
+  setMode( SingleEditMode );
+}
+
+void QgsAttributeForm::filterAndTriggered()
+{
+  QString filter = createFilterExpression();
+  if ( filter.isEmpty() )
+    return;
+
+  setMode( SingleEditMode );
+  emit filterExpressionSet( filter, FilterAnd );
+}
+
+void QgsAttributeForm::filterOrTriggered()
+{
+  QString filter = createFilterExpression();
+  if ( filter.isEmpty() )
+    return;
+
+  setMode( SingleEditMode );
+  emit filterExpressionSet( filter, FilterOr );
+}
+
+void QgsAttributeForm::pushSelectedFeaturesMessage()
+{
+  int count = mLayer->selectedFeatureCount();
+  if ( count > 0 )
+  {
+    mMessageBar->pushMessage( QString(),
+                              tr( "%1 matching %2 selected" ).arg( count )
+                              .arg( count == 1 ? tr( "feature" ) : tr( "features" ) ),
+                              QgsMessageBar::INFO,
+                              messageTimeout() );
+  }
+  else
+  {
+    mMessageBar->pushMessage( QString(),
+                              tr( "No matching features found" ),
+                              QgsMessageBar::WARNING,
+                              messageTimeout() );
+  }
+}
+
+void QgsAttributeForm::runSearchSelect( QgsVectorLayer::SelectBehaviour behaviour )
+{
+  QString filter = createFilterExpression();
+  if ( filter.isEmpty() )
+    return;
+
+  mLayer->selectByExpression( filter, behaviour );
+  pushSelectedFeaturesMessage();
+  setMode( SingleEditMode );
+}
+
+void QgsAttributeForm::searchSetSelection()
+{
+  runSearchSelect( QgsVectorLayer::SetSelection );
+}
+
+void QgsAttributeForm::searchAddToSelection()
+{
+  runSearchSelect( QgsVectorLayer::AddToSelection );
+}
+
+void QgsAttributeForm::searchRemoveFromSelection()
+{
+  runSearchSelect( QgsVectorLayer::RemoveFromSelection );
+}
+
+void QgsAttributeForm::searchIntersectSelection()
+{
+  runSearchSelect( QgsVectorLayer::IntersectSelection );
+}
+
 bool QgsAttributeForm::saveMultiEdits()
 {
   //find changed attributes
@@ -458,6 +546,7 @@ bool QgsAttributeForm::save()
   {
     case SingleEditMode:
     case AddFeatureMode:
+    case SearchMode:
       success = saveEdits();
       break;
 
@@ -480,6 +569,14 @@ void QgsAttributeForm::resetValues()
   }
 }
 
+void QgsAttributeForm::resetSearch()
+{
+  Q_FOREACH ( QgsAttributeFormEditorWidget* w, findChildren<  QgsAttributeFormEditorWidget* >() )
+  {
+    w->resetSearch();
+  }
+}
+
 void QgsAttributeForm::clearMultiEditMessages()
 {
   if ( mMultiEditUnsavedMessageBarItem )
@@ -494,6 +591,23 @@ void QgsAttributeForm::clearMultiEditMessages()
       mMessageBar->popWidget( mMultiEditMessageBarItem );
     mMultiEditMessageBarItem = nullptr;
   }
+}
+
+QString QgsAttributeForm::createFilterExpression() const
+{
+  QStringList filters;
+  Q_FOREACH ( QgsAttributeFormEditorWidget* w, findChildren<  QgsAttributeFormEditorWidget* >() )
+  {
+    QString filter = w->currentFilterExpression();
+    if ( !filter.isEmpty() )
+      filters << filter;
+  }
+
+  if ( filters.isEmpty() )
+    return QString();
+
+  QString filter = filters.join( ") AND (" ).prepend( '(' ).append( ')' );
+  return filter;
 }
 
 void QgsAttributeForm::onAttributeChanged( const QVariant& value )
@@ -532,6 +646,9 @@ void QgsAttributeForm::onAttributeChanged( const QVariant& value )
       }
       break;
     }
+    case SearchMode:
+      //nothing to do
+      break;
   }
 }
 
@@ -651,6 +768,12 @@ void QgsAttributeForm::init()
     mButtonBox = nullptr;
   }
 
+  if ( mSearchButtonBox )
+  {
+    delete mSearchButtonBox;
+    mSearchButtonBox = nullptr;
+  }
+
   qDeleteAll( mWidgets );
   mWidgets.clear();
 
@@ -660,17 +783,24 @@ void QgsAttributeForm::init()
   }
   delete layout();
 
+  QVBoxLayout* vl = new QVBoxLayout();
+  vl->setMargin( 0 );
+  vl->setContentsMargins( 0, 0, 0, 0 );
+  mMessageBar = new QgsMessageBar( this );
+  mMessageBar->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
+  vl->addWidget( mMessageBar );
+  setLayout( vl );
+
   // Get a layout
   QGridLayout* layout = new QGridLayout();
-  setLayout( layout );
+  QWidget* container = new QWidget();
+  container->setLayout( layout );
+  vl->addWidget( container );
 
   mFormEditorWidgets.clear();
 
   // a bar to warn the user with non-blocking messages
   setContentsMargins( 0, 0, 0, 0 );
-  mMessageBar = new QgsMessageBar( this );
-  mMessageBar->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
-  layout->addWidget( mMessageBar, 0, 0, 1, 1 );
 
   // Try to load Ui-File for layout
   if ( mLayer->editFormConfig()->layout() == QgsEditFormConfig::UiFileLayout && !mLayer->editFormConfig()->uiForm().isEmpty() )
@@ -770,8 +900,10 @@ void QgsAttributeForm::init()
       QWidget* w = nullptr;
       if ( eww )
       {
-        w = new QgsAttributeFormEditorWidget( eww, this );
-        mFormEditorWidgets.insert( idx, static_cast< QgsAttributeFormEditorWidget* >( w ) );
+        QgsAttributeFormEditorWidget* formWidget = new QgsAttributeFormEditorWidget( eww, this );
+        w = formWidget;
+        mFormEditorWidgets.insert( idx, formWidget );
+        formWidget->createSearchWidgetWrappers( widgetType, idx, widgetConfig, mContext );
       }
       else
       {
@@ -806,7 +938,9 @@ void QgsAttributeForm::init()
     if ( QgsProject::instance()->relationManager()->referencedRelations( mLayer ).isEmpty() )
     {
       QSpacerItem *spacerItem = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
-      gridLayout->addItem( spacerItem, row++, 0 );
+      gridLayout->addItem( spacerItem, row, 0 );
+      gridLayout->setRowStretch( row, 1 );
+      row++;
     }
   }
 
@@ -816,8 +950,61 @@ void QgsAttributeForm::init()
     mButtonBox->setObjectName( "buttonBox" );
     layout->addWidget( mButtonBox );
   }
-
   mButtonBox->setVisible( buttonBoxVisible );
+
+  if ( !mSearchButtonBox )
+  {
+    mSearchButtonBox = new QWidget();
+    QHBoxLayout* boxLayout = new QHBoxLayout();
+    boxLayout->setMargin( 0 );
+    boxLayout->setContentsMargins( 0, 0, 0, 0 );
+    mSearchButtonBox->setLayout( boxLayout );
+    mSearchButtonBox->setObjectName( "searchButtonBox" );
+
+    QPushButton* clearButton = new QPushButton( tr( "Reset form" ), mSearchButtonBox );
+    connect( clearButton, SIGNAL( clicked( bool ) ), this, SLOT( resetSearch() ) );
+    boxLayout->addWidget( clearButton );
+    boxLayout->addStretch( 1 );
+
+    QToolButton* selectButton = new QToolButton();
+    selectButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+    selectButton->setText( tr( "Select features" ) );
+    selectButton->setPopupMode( QToolButton::MenuButtonPopup );
+    connect( selectButton, SIGNAL( clicked( bool ) ), this, SLOT( searchSetSelection() ) );
+    QMenu* selectMenu = new QMenu( selectButton );
+    QAction* selectAction = new QAction( tr( "Select features" ), selectMenu );
+    connect( selectAction, SIGNAL( triggered( bool ) ), this, SLOT( searchSetSelection() ) );
+    selectMenu->addAction( selectAction );
+    QAction* addSelectAction = new QAction( tr( "Add to current selection" ), selectMenu );
+    connect( addSelectAction, SIGNAL( triggered( bool ) ), this, SLOT( searchAddToSelection() ) );
+    selectMenu->addAction( addSelectAction );
+    QAction* filterSelectAction = new QAction( tr( "Filter current selection" ), selectMenu );
+    connect( filterSelectAction, SIGNAL( triggered( bool ) ), this, SLOT( searchIntersectSelection() ) );
+    selectMenu->addAction( filterSelectAction );
+    QAction* deselectAction = new QAction( tr( "Remove from current selection" ), selectMenu );
+    connect( deselectAction, SIGNAL( triggered( bool ) ), this, SLOT( searchRemoveFromSelection() ) );
+    selectMenu->addAction( deselectAction );
+    selectButton->setMenu( selectMenu );
+    boxLayout->addWidget( selectButton );
+
+    QToolButton* filterButton = new QToolButton();
+    filterButton->setText( tr( "Filter features" ) );
+    filterButton->setPopupMode( QToolButton::MenuButtonPopup );
+    filterButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+    connect( filterButton, SIGNAL( clicked( bool ) ), this, SLOT( filterTriggered() ) );
+    QMenu* filterMenu = new QMenu( filterButton );
+    QAction* filterAndAction = new QAction( tr( "Filter within (\"AND\")" ), filterMenu );
+    connect( filterAndAction, SIGNAL( triggered( bool ) ), this, SLOT( filterAndTriggered() ) );
+    filterMenu->addAction( filterAndAction );
+    QAction* filterOrAction = new QAction( tr( "Extend filter (\"OR\")" ), filterMenu );
+    connect( filterOrAction, SIGNAL( triggered( bool ) ), this, SLOT( filterOrTriggered() ) );
+    filterMenu->addAction( filterOrAction );
+    filterButton->setMenu( filterMenu );
+    boxLayout->addWidget( filterButton );
+
+    layout->addWidget( mSearchButtonBox );
+  }
+  mSearchButtonBox->setVisible( mMode == SearchMode );
 
   connectWrappers();
 
@@ -970,9 +1157,10 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig()->widgetConfig( fldIdx );
 
         QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, fldIdx, widgetConfig, nullptr, this, mContext );
+        QgsAttributeFormEditorWidget* w = new QgsAttributeFormEditorWidget( eww, this );
+        mFormEditorWidgets.insert( fldIdx, w );
 
-        QWidget* w = new QgsAttributeFormEditorWidget( eww, this );
-        mFormEditorWidgets.insert( fldIdx, static_cast< QgsAttributeFormEditorWidget* >( w ) );
+        w->createSearchWidgetWrappers( widgetType, fldIdx, widgetConfig, mContext );
 
         newWidgetInfo.widget = w;
         addWidgetWrapper( eww );
@@ -1083,6 +1271,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       QWidget* spacer = new QWidget();
       spacer->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
       gbLayout->addWidget( spacer, ++row, 0 );
+      gbLayout->setRowStretch( row, 1 );
 
       newWidgetInfo.labelText = QString::null;
       newWidgetInfo.labelOnTop = true;
@@ -1240,6 +1429,7 @@ void QgsAttributeForm::layerSelectionChanged()
   {
     case SingleEditMode:
     case AddFeatureMode:
+    case SearchMode:
       break;
 
     case MultiEditMode:
