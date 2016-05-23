@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import stat
 import subprocess
+import time
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsApplication
@@ -133,6 +134,8 @@ def getSagaInstalledVersion(runSaga=False):
             stderr=subprocess.STDOUT,
             universal_newlines=True,
         ).stdout
+        if isMac(): #This trick avoids having an uninterrupted system call exception if SAGA is not installed
+            time.sleep(1)
         try:
             lines = proc.readlines()
             for line in lines:
