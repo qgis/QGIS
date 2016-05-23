@@ -1,6 +1,9 @@
-/**
- * Wraps a date time search widget.
+/** \ingroup gui
+ * \class QgsDateTimeSearchWidgetWrapper
+ * Wraps a date/time edit widget for searching.
+ * \note Added in version 2.16
  */
+
 class QgsDateTimeSearchWidgetWrapper : QgsSearchWidgetWrapper
 {
 %TypeHeaderCode
@@ -9,10 +12,21 @@ class QgsDateTimeSearchWidgetWrapper : QgsSearchWidgetWrapper
   public:
 
   public:
+
+    /** Constructor for QgsDateTimeSearchWidgetWrapper.
+     * @param vl associated vector layer
+     * @param fieldIdx index of associated field
+     * @param parent parent widget
+     */
     explicit QgsDateTimeSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent /TransferThis/ = nullptr );
+
+    /** Returns a variant representing the current state of the widget, respecting
+     * the editor widget's configured field format for date/time values.
+     */
+    bool valid() const;
+
     bool applyDirectly();
     QString expression();
-    bool valid() const;
     QVariant value() const;
     FilterFlags supportedFlags() const;
     FilterFlags defaultFlags() const;
