@@ -21,7 +21,10 @@
 #include "qgscomposertable.h"
 #include "qgscomposertablev2.h"
 
-/** A text table item that reads text from string lists*/
+/** A text table item that reads text from string lists
+ * @deprecated use QgsComposerTextTableV2 intead
+*/
+//TODO QGIS 3.0 - remove
 class CORE_EXPORT QgsComposerTextTable: public QgsComposerTable
 {
     Q_OBJECT

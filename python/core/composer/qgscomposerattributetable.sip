@@ -24,7 +24,9 @@ class QgsComposerAttributeTableCompare
     void setAscending( bool asc );
 };
 
-/** A table class that displays a vector attribute table*/
+/** A table class that displays a vector attribute table
+ * @deprecated use QgsComposerAttributeTableV2 instead
+*/
 class QgsComposerAttributeTable : QgsComposerTable
 {
 %TypeHeaderCode
@@ -32,7 +34,7 @@ class QgsComposerAttributeTable : QgsComposerTable
 %End
 
   public:
-    QgsComposerAttributeTable( QgsComposition* composition /TransferThis/ );
+    QgsComposerAttributeTable( QgsComposition* composition /TransferThis/ ) /Deprecated/;
     ~QgsComposerAttributeTable();
 
     /** Return correct graphics item type. */

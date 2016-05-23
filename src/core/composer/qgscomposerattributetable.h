@@ -45,7 +45,10 @@ class CORE_EXPORT QgsComposerAttributeTableCompare
     bool mAscending;
 };
 
-/** A table class that displays a vector attribute table*/
+/** A table class that displays a vector attribute table
+ * @deprecated use QgsComposerAttributeTableV2 instead
+*/
+// TODO QGIS 3.0 - remove
 class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
 {
     Q_OBJECT
