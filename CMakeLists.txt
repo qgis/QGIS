@@ -150,10 +150,10 @@ IF (MSVC AND CMAKE_GENERATOR MATCHES "NMake")
   SET (USING_NMAKE TRUE)
 ENDIF (MSVC AND CMAKE_GENERATOR MATCHES "NMake")
 
-IF (MSVC AND CMAKE_GENERATOR MATCHES "Ninja")
+IF (CMAKE_GENERATOR MATCHES "Ninja")
   # following variable is also used in qgsconfig.h
   SET (USING_NINJA TRUE)
-ENDIF (MSVC AND CMAKE_GENERATOR MATCHES "Ninja")
+ENDIF (CMAKE_GENERATOR MATCHES "Ninja")
 
 #############################################################
 # check if lexer and parser are not missing
