@@ -64,6 +64,7 @@ void QgsColorWidgetWrapper::initWidget( QWidget* editor )
     mColorButton = editor->findChild<QgsColorButtonV2*>();
   }
 
+  mColorButton->setShowNull( true );
   connect( mColorButton, SIGNAL( colorChanged( QColor ) ), this, SLOT( valueChanged() ) );
 }
 
