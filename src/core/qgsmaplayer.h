@@ -367,6 +367,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Returns layer's spatial reference system
     @note This was introduced in QGIS 1.4
      */
+    //TODO QGIS 3.0 - return QgsCoordinateReferenceSystem object, not reference (since they are implicitly shared)
     const QgsCoordinateReferenceSystem& crs() const;
 
     /** Sets layer's spatial reference system */
@@ -764,7 +765,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Layer's spatial reference system.
         private to make sure setCrs must be used and layerCrsChanged() is emitted */
-    QgsCoordinateReferenceSystem* mCRS;
+    QgsCoordinateReferenceSystem mCRS;
 
     /** Private copy constructor - QgsMapLayer not copyable */
     QgsMapLayer( QgsMapLayer const & );

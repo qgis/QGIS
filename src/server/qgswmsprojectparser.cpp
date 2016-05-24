@@ -1696,7 +1696,7 @@ void QgsWMSProjectParser::addOWSLayers( QDomDocument &doc,
       appendLayerBoundingBoxes( layerElem, doc, currentLayer->extent(), currentLayer->crs() );
       */
       //get project crs
-      const QgsCoordinateReferenceSystem& layerCrs = currentLayer->crs();
+      QgsCoordinateReferenceSystem layerCrs = currentLayer->crs();
       QgsCoordinateTransform t( layerCrs, projectCrs );
 
       //transform

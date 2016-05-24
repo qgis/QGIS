@@ -456,6 +456,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     bool mProjectionsEnabled;
 
     //! destination spatial reference system of the projection
+    // TODO QGIS 3.0 - make object, not pointer
     QgsCoordinateReferenceSystem* mDestCRS;
 
     //! stores array of layers to be rendered (identified by string)
