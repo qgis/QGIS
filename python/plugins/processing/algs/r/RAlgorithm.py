@@ -323,7 +323,7 @@ class RAlgorithm(GeoAlgorithm):
                 else:
                     commands.append(param.name + ' = ' + 'readGDAL("' + value
                                     + '")')
-            if isinstance(param, ParameterVector):
+            elif isinstance(param, ParameterVector):
                 value = param.getSafeExportedLayer()
                 value = value.replace('\\', '/')
                 filename = os.path.basename(value)
@@ -334,7 +334,7 @@ class RAlgorithm(GeoAlgorithm):
                 else:
                     commands.append(param.name + ' = readOGR("' + folder
                                     + '",layer="' + filename + '")')
-            if isinstance(param, ParameterTable):
+            elif isinstance(param, ParameterTable):
                 value = param.value
                 if not value.lower().endswith('csv'):
                     raise GeoAlgorithmExecutionException(
@@ -344,6 +344,12 @@ class RAlgorithm(GeoAlgorithm):
                 else:
                     commands.append(param.name + ' <- read.csv("' + value
                                     + '", head=TRUE, sep=",")')
+            elif isinstance(param, ParameterExtent):
+                if param.value:
+                    tokens = unicode(param.value).split(',')
+                    commands.append(param.name + ' = extent(' + tokens[0] + ',' + tokens[2] + ',' + tokens[1] + ',' + tokens[3] + ')')
+                else:
+                    commands.append(param.name + ' = NULL')
             elif isinstance(param, (ParameterTableField, ParameterString,
                                     ParameterFile)):
                 commands.append(param.name + '="' + param.value + '"')
