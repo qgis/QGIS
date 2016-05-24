@@ -612,7 +612,8 @@ SET(QGIS_CORE_HDRS
   qgsconnectionpool.h
   qgscontexthelp.h
   qgsconditionalstyle.h
-  qgscoordinatereferencesystem.h
+  qgscoordinatereferencesystem.h  
+  qgscoordinatereferencesystem_p.h
   qgscoordinateutils.h
   qgscrscache.h
   qgscsexception.h

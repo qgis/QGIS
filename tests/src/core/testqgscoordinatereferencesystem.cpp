@@ -126,7 +126,16 @@ void TestQgsCoordinateReferenceSystem::copyCtor()
   QgsCoordinateReferenceSystem myCrs2( myCrs );
   debugPrint( myCrs2 );
   QVERIFY( myCrs2.isValid() );
+  QCOMPARE( myCrs2.authid(), QString( "EPSG:4326" ) );
+
+  //test implicit sharing detachment - modify original
+  myCrs.createFromId( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QVERIFY( myCrs.isValid() );
+  QCOMPARE( myCrs.authid(), QString( "EPSG:3111" ) );
+  QVERIFY( myCrs2.isValid() );
+  QCOMPARE( myCrs2.authid(), QString( "EPSG:4326" ) );
 }
+
 void TestQgsCoordinateReferenceSystem::assignmentCtor()
 {
   QgsCoordinateReferenceSystem myCrs( GEOSRID,
@@ -134,7 +143,16 @@ void TestQgsCoordinateReferenceSystem::assignmentCtor()
   QgsCoordinateReferenceSystem myCrs2 = myCrs;
   debugPrint( myCrs2 );
   QVERIFY( myCrs2.isValid() );
+  QCOMPARE( myCrs2.authid(), QString( "EPSG:4326" ) );
+
+  //test implicit sharing detachment - modify original
+  myCrs.createFromId( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QVERIFY( myCrs.isValid() );
+  QCOMPARE( myCrs.authid(), QString( "EPSG:3111" ) );
+  QVERIFY( myCrs2.isValid() );
+  QCOMPARE( myCrs2.authid(), QString( "EPSG:4326" ) );
 }
+
 void TestQgsCoordinateReferenceSystem::createFromId()
 {
   QgsCoordinateReferenceSystem myCrs;
