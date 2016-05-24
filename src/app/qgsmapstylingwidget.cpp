@@ -201,9 +201,9 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
         {
           mLabelingWidget = new QgsLabelingWidget( 0, mMapCanvas, this );
           mLabelingWidget->setDockMode( true );
-          mLabelingWidget->setLayer( vlayer );
           connect( mLabelingWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
         }
+        mLabelingWidget->setLayer( vlayer );
         mWidgetArea->setWidget( mLabelingWidget );
         break;
       }
