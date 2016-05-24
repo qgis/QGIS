@@ -261,6 +261,7 @@ class Grass7Utils:
         loglines.append(Grass7Utils.tr('GRASS GIS 7 execution console output'))
         grassOutDone = False
         command, grassenv = Grass7Utils.prepareGrass7Execution(commands)
+        print('Debug: executeGrass7\n---------------\ncommands: {}\n\ncommand: {}\n\nenv: {}'.format(commands, command, grassenv))
         proc = subprocess.Popen(
             command,
             shell=True,
@@ -271,6 +272,7 @@ class Grass7Utils:
             env=grassenv
         ).stdout
         for line in iter(proc.readline, ''):
+            print(line)
             if 'GRASS_INFO_PERCENT' in line:
                 try:
                     progress.setPercentage(int(line[len('GRASS_INFO_PERCENT') + 2:]))
@@ -290,6 +292,8 @@ class Grass7Utils:
 
         if not grassOutDone and outputCommands:
             command, grassenv = Grass7Utils.prepareGrass7Execution(outputCommands)
+            print('Debug: executeGrass7 outputCommands\n=============\ncommands: {}\n\ncommand: {}\n\nenv: {}'.format(commands, command, grassenv))
+
             proc = subprocess.Popen(
                 command,
                 shell=True,
@@ -300,6 +304,7 @@ class Grass7Utils:
                 env=grassenv
             ).stdout
             for line in iter(proc.readline, ''):
+                print(line)
                 if 'GRASS_INFO_PERCENT' in line:
                     try:
                         progress.setPercentage(int(

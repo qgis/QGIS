@@ -83,8 +83,7 @@ class AlgorithmsTest:
         :param defs: A python dict containing a test algorithm definition
         """
         QgsMapLayerRegistry.instance().removeAllMapLayers()
-        print('DEBUG on {}'.format(name))
-        print('Params = {}'.format(defs))
+
         params = self.load_params(defs['params'])
         alg = processing.Processing.getAlgorithm(defs['algorithm']).getCopy()
 
@@ -185,14 +184,14 @@ class AlgorithmsTest:
         prefix = processingTestDataPath()
         if 'location' in param and param['location'] == 'qgs':
             prefix = unitTestDataPath()
-        print('DEBUG filepath_from_param: {} -> {}'.format(param['name'], os.path.join(prefix, param['name'])))
+
         return os.path.join(prefix, param['name'])
 
     def check_results(self, results, expected):
         """
         Checks if result produced by an algorithm matches with the expected specification.
         """
-        print('DEBUG check_results: results {}\n\texpected {}'.format(results, expected))
+
         for id, expected_result in expected.items():
             if 'vector' == expected_result['type']:
                 expected_lyr = self.load_layer(expected_result)
