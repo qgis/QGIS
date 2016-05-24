@@ -334,6 +334,7 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList & flist )
     mFeatures[mNextFeatureId] = *it;
     QgsFeature& newfeat = mFeatures[mNextFeatureId];
     newfeat.setFeatureId( mNextFeatureId );
+    newfeat.setValid( true );
     it->setFeatureId( mNextFeatureId );
 
     // update spatial index

@@ -24,6 +24,17 @@ from utilities import(
 
 class ProviderTestCase(object):
 
+    '''
+        This is a collection of tests for vector data providers and kept generic.
+        To make use of it, subclass it and set self.provider to a provider you want to test.
+        Make sure that your provider uses the default dataset by converting one of the provided datasets from the folder
+        tests/testdata/provider to a dataset your provider is able to handle.
+
+        To test expression compilation, add the methods `enableCompiler()` and `disableCompiler()` to your subclass.
+        If these methods are present, the tests will ensure that the result of server side and client side expression
+        evaluation are equal.
+    '''
+
     def testGetFeatures(self):
         """ Test that expected results are returned when fetching all features """
 
@@ -36,6 +47,8 @@ class ProviderTestCase(object):
         attributes = {}
         geometries = {}
         while it.nextFeature(f):
+            # expect feature to be valid
+            self.assertTrue(f.isValid())
             # split off the first 5 attributes only - some provider test datasets will include
             # additional attributes which we ignore
             attrs = f.attributes()[0:5]
@@ -75,8 +88,10 @@ class ProviderTestCase(object):
         return set()
 
     def assert_query(self, provider, expression, expected):
-        result = set([f['pk'] for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression(expression).setFlags(QgsFeatureRequest.NoGeometry))])
+        request = QgsFeatureRequest().setFilterExpression(expression).setFlags(QgsFeatureRequest.NoGeometry)
+        result = set([f['pk'] for f in provider.getFeatures(request)])
         assert set(expected) == result, 'Expected {} and got {} when testing expression "{}"'.format(set(expected), result, expression)
+        self.assertTrue(all(f.isValid() for f in provider.getFeatures(request)))
 
         if self.compiled:
             # Check compilation status
@@ -92,17 +107,6 @@ class ProviderTestCase(object):
         # Also check that filter works when referenced fields are not being retrieved by request
         result = set([f['pk'] for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression(expression).setSubsetOfAttributes([0]))])
         assert set(expected) == result, 'Expected {} and got {} when testing expression "{}" using empty attribute subset'.format(set(expected), result, expression)
-
-    '''
-        This is a collection of tests for vector data providers and kept generic.
-        To make use of it, subclass it and set self.provider to a provider you want to test.
-        Make sure that your provider uses the default dataset by converting one of the provided datasets from the folder
-        tests/testdata/provider to a dataset your provider is able to handle.
-
-        To test expression compilation, add the methods `enableCompiler()` and `disableCompiler()` to your subclass.
-        If these methods are present, the tests will ensure that the result of server side and client side expression
-        evaluation are equal.
-    '''
 
     def runGetFeatureTests(self, provider):
         assert len([f for f in provider.getFeatures()]) == 5
@@ -211,18 +215,23 @@ class ProviderTestCase(object):
         self.provider.setSubsetString(subset)
         self.assertEqual(self.provider.subsetString(), subset)
         result = set([f['pk'] for f in self.provider.getFeatures()])
+        all_valid = (all(f.isValid() for f in self.provider.getFeatures()))
         self.provider.setSubsetString(None)
 
         expected = set([2, 3, 4])
         assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected), result, subset)
+        self.assertTrue(all_valid)
 
         # Subset string AND filter rect
         self.provider.setSubsetString(subset)
         extent = QgsRectangle(-70, 70, -60, 75)
-        result = set([f['pk'] for f in self.provider.getFeatures(QgsFeatureRequest().setFilterRect(extent))])
+        request = QgsFeatureRequest().setFilterRect(extent)
+        result = set([f['pk'] for f in self.provider.getFeatures(request)])
+        all_valid = (all(f.isValid() for f in self.provider.getFeatures(request)))
         self.provider.setSubsetString(None)
         expected = set([2])
         assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected), result, subset)
+        self.assertTrue(all_valid)
 
         # Subset string AND filter rect, version 2
         self.provider.setSubsetString(subset)
@@ -234,10 +243,13 @@ class ProviderTestCase(object):
 
         # Subset string AND expression
         self.provider.setSubsetString(subset)
-        result = set([f['pk'] for f in self.provider.getFeatures(QgsFeatureRequest().setFilterExpression('length("name")=5'))])
+        request = QgsFeatureRequest().setFilterExpression('length("name")=5')
+        result = set([f['pk'] for f in self.provider.getFeatures(request)])
+        all_valid = (all(f.isValid() for f in self.provider.getFeatures(request)))
         self.provider.setSubsetString(None)
         expected = set([2, 4])
         assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected), result, subset)
+        self.assertTrue(all_valid)
 
     def getSubsetString(self):
         """Individual providers may need to override this depending on their subset string formats"""
@@ -340,16 +352,31 @@ class ProviderTestCase(object):
         fids = [f.id() for f in self.provider.getFeatures()]
         assert len(fids) == 5, 'Expected 5 features, got {} instead'.format(len(fids))
         for id in fids:
-            result = [f.id() for f in self.provider.getFeatures(QgsFeatureRequest().setFilterFid(id))]
+            features = [f for f in self.provider.getFeatures(QgsFeatureRequest().setFilterFid(id))]
+            self.assertEqual(len(features), 1)
+            feature = features[0]
+            self.assertTrue(feature.isValid())
+
+            result = [feature.id()]
             expected = [id]
             assert result == expected, 'Expected {} and got {} when testing for feature ID filter'.format(expected, result)
+
+        # bad features
+        it = self.provider.getFeatures(QgsFeatureRequest().setFilterFid(-99999999))
+        feature = QgsFeature(5)
+        feature.setValid(False)
+        self.assertFalse(it.nextFeature(feature))
+        self.assertFalse(feature.isValid())
 
     def testGetFeaturesFidsTests(self):
         fids = [f.id() for f in self.provider.getFeatures()]
 
-        result = set([f.id() for f in self.provider.getFeatures(QgsFeatureRequest().setFilterFids([fids[0], fids[2]]))])
+        request = QgsFeatureRequest().setFilterFids([fids[0], fids[2]])
+        result = set([f.id() for f in self.provider.getFeatures(request)])
+        all_valid = (all(f.isValid() for f in self.provider.getFeatures(request)))
         expected = set([fids[0], fids[2]])
         assert result == expected, 'Expected {} and got {} when testing for feature IDs filter'.format(expected, result)
+        self.assertTrue(all_valid)
 
         result = set([f.id() for f in self.provider.getFeatures(QgsFeatureRequest().setFilterFids([fids[1], fids[3], fids[4]]))])
         expected = set([fids[1], fids[3], fids[4]])
@@ -361,13 +388,19 @@ class ProviderTestCase(object):
 
     def testGetFeaturesFilterRectTests(self):
         extent = QgsRectangle(-70, 67, -60, 80)
-        features = [f['pk'] for f in self.provider.getFeatures(QgsFeatureRequest().setFilterRect(extent))]
+        request = QgsFeatureRequest().setFilterRect(extent)
+        features = [f['pk'] for f in self.provider.getFeatures(request)]
+        all_valid = (all(f.isValid() for f in self.provider.getFeatures(request)))
         assert set(features) == set([2, 4]), 'Got {} instead'.format(features)
+        self.assertTrue(all_valid)
 
         # test with an empty rectangle
         extent = QgsRectangle()
-        features = [f['pk'] for f in self.provider.getFeatures(QgsFeatureRequest().setFilterRect(extent))]
+        request = QgsFeatureRequest().setFilterRect(extent)
+        features = [f['pk'] for f in self.provider.getFeatures(request)]
+        all_valid = (all(f.isValid() for f in self.provider.getFeatures(request)))
         assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
+        self.assertTrue(all_valid)
 
     def testGetFeaturesPolyFilterRectTests(self):
         """ Test fetching features from a polygon layer with filter rect"""
@@ -378,13 +411,19 @@ class ProviderTestCase(object):
             return
 
         extent = QgsRectangle(-73, 70, -63, 80)
-        features = [f['pk'] for f in self.poly_provider.getFeatures(QgsFeatureRequest().setFilterRect(extent))]
+        request = QgsFeatureRequest().setFilterRect(extent)
+        features = [f['pk'] for f in self.poly_provider.getFeatures(request)]
+        all_valid = (all(f.isValid() for f in self.provider.getFeatures(request)))
         # Some providers may return the exact intersection matches (2, 3) even without the ExactIntersect flag, so we accept that too
         assert set(features) == set([2, 3]) or set(features) == set([1, 2, 3]), 'Got {} instead'.format(features)
+        self.assertTrue(all_valid)
 
         # Test with exact intersection
-        features = [f['pk'] for f in self.poly_provider.getFeatures(QgsFeatureRequest().setFilterRect(extent).setFlags(QgsFeatureRequest.ExactIntersect))]
+        request = QgsFeatureRequest().setFilterRect(extent).setFlags(QgsFeatureRequest.ExactIntersect)
+        features = [f['pk'] for f in self.poly_provider.getFeatures(request)]
+        all_valid = (all(f.isValid() for f in self.provider.getFeatures(request)))
         assert set(features) == set([2, 3]), 'Got {} instead'.format(features)
+        self.assertTrue(all_valid)
 
         # test with an empty rectangle
         extent = QgsRectangle()
@@ -393,10 +432,12 @@ class ProviderTestCase(object):
 
     def testRectAndExpression(self):
         extent = QgsRectangle(-70, 67, -60, 80)
-        result = set([f['pk'] for f in self.provider.getFeatures(
-            QgsFeatureRequest().setFilterExpression('"cnt">200').setFilterRect(extent))])
+        request = QgsFeatureRequest().setFilterExpression('"cnt">200').setFilterRect(extent)
+        result = set([f['pk'] for f in self.provider.getFeatures(request)])
+        all_valid = (all(f.isValid() for f in self.provider.getFeatures(request)))
         expected = [4]
         assert set(expected) == result, 'Expected {} and got {} when testing for combination of filterRect and expression'.format(set(expected), result)
+        self.assertTrue(all_valid)
 
     def testGetFeaturesLimit(self):
         it = self.provider.getFeatures(QgsFeatureRequest().setLimit(2))
@@ -507,8 +548,11 @@ class ProviderTestCase(object):
                  'name': set(['Pear', 'Orange', 'Apple', 'Honey', NULL]),
                  'name2': set(['NuLl', 'PEaR', 'oranGe', 'Apple', 'Honey'])}
         for field, expected in tests.items():
-            result = set([f[field] for f in self.provider.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([field], self.provider.fields()))])
+            request = QgsFeatureRequest().setSubsetOfAttributes([field], self.provider.fields())
+            result = set([f[field] for f in self.provider.getFeatures(request)])
+            all_valid = (all(f.isValid() for f in self.provider.getFeatures(request)))
             self.assertEqual(result, expected, 'Expected {}, got {}'.format(expected, result))
+            self.assertTrue(all_valid)
 
     def testGetFeaturesSubsetAttributes2(self):
         """ Test that other fields are NULL when fetching subsets of attributes """
@@ -527,6 +571,7 @@ class ProviderTestCase(object):
 
         for f in self.provider.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)):
             self.assertFalse(f.constGeometry(), 'Expected no geometry, got one')
+            self.assertTrue(f.isValid())
 
     def testGetFeaturesWithGeometry(self):
         """ Test that geometry is present when fetching features without setting NoGeometry flag"""
@@ -536,3 +581,4 @@ class ProviderTestCase(object):
                 continue
 
             assert f.constGeometry(), 'Expected geometry, got none'
+            self.assertTrue(f.isValid())
