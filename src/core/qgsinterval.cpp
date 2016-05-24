@@ -129,3 +129,15 @@ QDateTime operator+( const QDateTime& start, const QgsInterval& interval )
 {
   return start.addMSecs( static_cast<qint64>( interval.seconds() * 1000.0 ) );
 }
+
+QgsInterval operator-( const QDate& date1, const QDate& date2 )
+{
+  qint64 seconds = date2.daysTo( date1 ) * 24 * 60 * 60;
+  return QgsInterval( seconds );
+}
+
+QgsInterval operator-( const QTime& time1, const QTime& time2 )
+{
+  qint64 mSeconds = time2.msecsTo( time1 );
+  return QgsInterval( mSeconds / 1000.0 );
+}

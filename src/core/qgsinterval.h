@@ -172,13 +172,29 @@ class CORE_EXPORT QgsInterval
 
 Q_DECLARE_METATYPE( QgsInterval )
 
-/** Returns the interval between two datetimes
- * @param dt1 start datetime
- * @param dt2 datetime to subtract, ie subtract dt2 from dt1
+/** Returns the interval between two datetimes.
+ * @param datetime1 start datetime
+ * @param datetime2 datetime to subtract, ie subtract datetime2 from datetime1
  * @note added in QGIS 2.16
  * @note not available in Python bindings
  */
-QgsInterval CORE_EXPORT operator-( const QDateTime& dt1, const QDateTime& dt2 );
+QgsInterval CORE_EXPORT operator-( const QDateTime& datetime1, const QDateTime& datetime2 );
+
+/** Returns the interval between two dates.
+ * @param date1 start date
+ * @param date2 date to subtract, ie subtract date2 from date1
+ * @note added in QGIS 2.16
+ * @note not available in Python bindings
+ */
+QgsInterval CORE_EXPORT operator-( const QDate& date1, const QDate& date2 );
+
+/** Returns the interval between two times.
+ * @param time1 start time
+ * @param time2 time to subtract, ie subtract time2 from time1
+ * @note added in QGIS 2.16
+ * @note not available in Python bindings
+ */
+QgsInterval CORE_EXPORT operator-( const QTime& time1, const QTime& time2 );
 
 /** Adds an interval to a datetime
  * @param start initial datetime
