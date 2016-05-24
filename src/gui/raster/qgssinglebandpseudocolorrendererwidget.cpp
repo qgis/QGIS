@@ -106,10 +106,10 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   connect( mMinLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( on_mClassifyButton_clicked() ) );
   connect( mMaxLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( on_mClassifyButton_clicked() ) );
   connect( mColorRampComboBox, SIGNAL( sourceRampEdited() ), this, SLOT( on_mClassifyButton_clicked() ) );
-  connect( mColorRampComboBox, SIGNAL( currentIndexChanged( int) ), this, SLOT( on_mClassifyButton_clicked() ) );
+  connect( mColorRampComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( on_mClassifyButton_clicked() ) );
   connect( mInvertCheckBox, SIGNAL( stateChanged( int ) ), this, SLOT( on_mClassifyButton_clicked() ) );
   connect( mNumberOfEntriesSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( on_mClassifyButton_clicked() ) );
-  connect( mBandComboBox, SIGNAL( currentIndexChanged( int) ), this, SLOT( on_mClassifyButton_clicked() ) );
+  connect( mBandComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( on_mClassifyButton_clicked() ) );
 }
 
 QgsSingleBandPseudoColorRendererWidget::~QgsSingleBandPseudoColorRendererWidget()
