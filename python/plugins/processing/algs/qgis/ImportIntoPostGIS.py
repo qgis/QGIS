@@ -51,6 +51,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
     LOWERCASE_NAMES = 'LOWERCASE_NAMES'
     DROP_STRING_LENGTH = 'DROP_STRING_LENGTH'
     PRIMARY_KEY = 'PRIMARY_KEY'
+    ENCODING = 'ENCODING'
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Import into PostGIS')
@@ -69,6 +70,9 @@ class ImportIntoPostGIS(GeoAlgorithm):
                                               self.tr('Primary key field'), self.INPUT, optional=True))
         self.addParameter(ParameterString(self.GEOMETRY_COLUMN,
                                           self.tr('Geometry column'), 'geom'))
+        self.addParameter(ParameterString(self.ENCODING,
+                                          self.tr('Encoding'), 'UTF-8',
+                                          optional=True))
         self.addParameter(ParameterBoolean(self.OVERWRITE,
                                            self.tr('Overwrite'), True))
         self.addParameter(ParameterBoolean(self.CREATEINDEX,
@@ -86,6 +90,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         convertLowerCase = self.getParameterValue(self.LOWERCASE_NAMES)
         dropStringLength = self.getParameterValue(self.DROP_STRING_LENGTH)
         primaryKeyField = self.getParameterValue(self.PRIMARY_KEY)
+        encoding = self..getParameterValue(self.ENCODING)
         settings = QSettings()
         mySettings = '/PostgreSQL/connections/' + connection
         try:
@@ -137,6 +142,9 @@ class ImportIntoPostGIS(GeoAlgorithm):
             uri.setDataSource(schema, table, geomColumn, '', primaryKeyField)
         else:
             uri.setDataSource(schema, table, geomColumn, '')
+
+        if encoding:
+            layer.setProviderEncoding(encoding)
 
         (ret, errMsg) = QgsVectorLayerImport.importLayer(
             layer,
