@@ -28,6 +28,7 @@
 
 class QDomNode;
 class QDomDocument;
+class QgsCoordinateReferenceSystemPrivate;
 
 // forward declaration for sqlite3
 typedef struct sqlite3 sqlite3;
@@ -46,6 +47,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem& );
 
 /** \ingroup core
  * Class for storing a coordinate reference system (CRS)
+ * \note Since QGIS 2.16 QgsCoordinateReferenceSystem objects are implicitly shared.
  */
 class CORE_EXPORT QgsCoordinateReferenceSystem
 {
@@ -58,7 +60,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
       EpsgCrsId     // deprecated
     };
 
-    //! Default constructor
     QgsCoordinateReferenceSystem();
 
     ~QgsCoordinateReferenceSystem();
@@ -79,7 +80,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     QgsCoordinateReferenceSystem( const long theId, CrsType theType = PostgisCrsId );
 
-    //! copy constructor
+    //! Copy constructor
     QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem& srs );
 
     //! Assignment operator
@@ -96,7 +97,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \retval false if not given an valid label
      */
-    bool createFromOgcWmsCrs( QString theCrs );
+    bool createFromOgcWmsCrs( const QString& theCrs );
 
     /** Set up this CRS by fetching the appropriate information from the
      * sqlite backend. First the system level read only srs.db will be checked
@@ -443,25 +444,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     // returns the same code as sqlite3_open
     static int openDb( const QString& path, sqlite3 **db, bool readonly = true );
 
-    //!The internal sqlite3 srs.db primary key for this CRS
-    long    mSrsId;
-    //!A textual description of the CRS.
-    QString mDescription;
-    //!The official proj4 acronym for the projection family
-    QString mProjectionAcronym;
-    //!The official proj4 acronym for the ellipoid
-    QString mEllipsoidAcronym;
-    //!Whether this is a geographic or projected coordinate system
-    bool    mGeoFlag;
-    //! The map units
-    QGis::UnitType mMapUnits;
-    //!If available, the Postgis spatial_ref_sys identifier for this CRS (defaults to 0)
-    long    mSRID;
-    //!If available the authority identifier for this CRS
-    QString mAuthId;
-    //! Whether this CRS is properly defined and valid
-    bool mIsValidFlag;
-
     //! Work out the projection units and set the appropriate local variable
     void setMapUnits();
 
@@ -471,20 +453,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! Helper for sql-safe value quoting
     static QString quotedValue( QString value );
 
-    OGRSpatialReferenceH mCRS;
-
     bool loadFromDb( const QString& db, const QString& expression, const QString& value );
-
-    QString mValidationHint;
-    mutable QString mWkt;
-    mutable QString mProj4;
 
     static bool loadIDs( QHash<int, QString> &wkts );
     static bool loadWkts( QHash<int, QString> &wkts, const char *filename );
     static bool syncDatumTransform( const QString& dbPath );
 
-    //!Whether this is a coordinate system has inverted axis
-    mutable int mAxisInverted;
+    QExplicitlySharedDataPointer<QgsCoordinateReferenceSystemPrivate> d;
 
     static CUSTOM_CRS_VALIDATION mCustomSrsValidation;
 };
