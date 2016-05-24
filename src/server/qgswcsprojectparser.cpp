@@ -138,7 +138,7 @@ void QgsWCSProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDo
         layerElem.appendChild( descriptionElem );
 
         //lonLatEnvelope
-        const QgsCoordinateReferenceSystem& layerCrs = layer->crs();
+        QgsCoordinateReferenceSystem layerCrs = layer->crs();
         QgsCoordinateTransform t( layerCrs, QgsCoordinateReferenceSystem( 4326 ) );
         //transform
         QgsRectangle BBox;
@@ -274,7 +274,7 @@ void QgsWCSProjectParser::describeCoverage( const QString& aCoveName, QDomElemen
         layerElem.appendChild( descriptionElem );
 
         //lonLatEnvelope
-        const QgsCoordinateReferenceSystem& layerCrs = rLayer->crs();
+        QgsCoordinateReferenceSystem layerCrs = rLayer->crs();
         QgsCoordinateTransform t( layerCrs, QgsCoordinateReferenceSystem( 4326 ) );
         //transform
         QgsRectangle BBox = rLayer->extent();

@@ -47,7 +47,7 @@ bool QgsGeometryAnalyzer::simplify( QgsVectorLayer* layer,
   }
 
   QGis::WkbType outputType = dp->geometryType();
-  const QgsCoordinateReferenceSystem crs = layer->crs();
+  QgsCoordinateReferenceSystem crs = layer->crs();
 
   QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->fields(), outputType, &crs );
   QgsFeature currentFeature;
@@ -163,7 +163,7 @@ bool QgsGeometryAnalyzer::centroids( QgsVectorLayer* layer, const QString& shape
   }
 
   QGis::WkbType outputType = QGis::WKBPoint;
-  const QgsCoordinateReferenceSystem crs = layer->crs();
+  QgsCoordinateReferenceSystem crs = layer->crs();
 
   QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->fields(), outputType, &crs );
   QgsFeature currentFeature;
@@ -279,7 +279,7 @@ bool QgsGeometryAnalyzer::extent( QgsVectorLayer* layer,
   }
 
   QGis::WkbType outputType = QGis::WKBPolygon;
-  const QgsCoordinateReferenceSystem crs = layer->crs();
+  QgsCoordinateReferenceSystem crs = layer->crs();
 
   QgsFields fields;
   fields.append( QgsField( QString( "MINX" ), QVariant::Double ) );
@@ -389,7 +389,7 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
   fields.append( QgsField( QString( "PERIM" ), QVariant::Double ) );
 
   QGis::WkbType outputType = QGis::WKBPolygon;
-  const QgsCoordinateReferenceSystem crs = layer->crs();
+  QgsCoordinateReferenceSystem crs = layer->crs();
 
   QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), fields, outputType, &crs );
   QgsFeature currentFeature;
@@ -595,7 +595,7 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
   }
 
   QGis::WkbType outputType = dp->geometryType();
-  const QgsCoordinateReferenceSystem crs = layer->crs();
+  QgsCoordinateReferenceSystem crs = layer->crs();
 
   QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->fields(), outputType, &crs );
   QgsFeature currentFeature;
@@ -748,7 +748,7 @@ bool QgsGeometryAnalyzer::buffer( QgsVectorLayer* layer, const QString& shapefil
   {
     outputType = QGis::WKBMultiPolygon;
   }
-  const QgsCoordinateReferenceSystem crs = layer->crs();
+  QgsCoordinateReferenceSystem crs = layer->crs();
 
   QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->fields(), outputType, &crs );
   QgsFeature currentFeature;
