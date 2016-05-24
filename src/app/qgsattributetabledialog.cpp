@@ -98,16 +98,14 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   // Initialize the window geometry
   restoreGeometry( settings.value( "/Windows/BetterAttributeTable/geometry" ).toByteArray() );
 
-  QgsAttributeEditorContext context;
-
   myDa = new QgsDistanceArea();
 
   myDa->setSourceCrs( mLayer->crs() );
   myDa->setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
   myDa->setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
 
-  context.setDistanceArea( *myDa );
-  context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
+  mEditorContext.setDistanceArea( *myDa );
+  mEditorContext.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
 
   QgsFeatureRequest r;
   if ( mLayer->geometryType() != QGis::NoGeometry &&
@@ -126,7 +124,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   }
 
   // Initialize dual view
-  mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, context );
+  mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, mEditorContext );
   mMainView->setAttributeTableConfig( mLayer->attributeTableConfig() );
 
   // Initialize filter gui elements
@@ -494,7 +492,7 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
   const QString widgetType = mLayer->editFormConfig()->widgetType( fldIdx );
   const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig()->widgetConfig( fldIdx );
   mCurrentSearchWidgetWrapper = QgsEditorWidgetRegistry::instance()->
-                                createSearchWidget( widgetType, mLayer, fldIdx, widgetConfig, mFilterContainer );
+                                createSearchWidget( widgetType, mLayer, fldIdx, widgetConfig, mFilterContainer, mEditorContext );
   if ( mCurrentSearchWidgetWrapper->applyDirectly() )
   {
     connect( mCurrentSearchWidgetWrapper, SIGNAL( expressionChanged( QString ) ), SLOT( filterQueryChanged( QString ) ) );

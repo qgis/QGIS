@@ -234,6 +234,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QgsRubberBand* mRubberBand;
     QgsSearchWidgetWrapper* mCurrentSearchWidgetWrapper;
     QStringList mVisibleFields;
+    QgsAttributeEditorContext mEditorContext;
 
     void updateMultiEditButtonState();
 
