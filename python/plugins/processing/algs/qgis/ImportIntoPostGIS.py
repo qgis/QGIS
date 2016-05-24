@@ -90,7 +90,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         convertLowerCase = self.getParameterValue(self.LOWERCASE_NAMES)
         dropStringLength = self.getParameterValue(self.DROP_STRING_LENGTH)
         primaryKeyField = self.getParameterValue(self.PRIMARY_KEY)
-        encoding = self..getParameterValue(self.ENCODING)
+        encoding = self.getParameterValue(self.ENCODING)
         settings = QSettings()
         mySettings = '/PostgreSQL/connections/' + connection
         try:
