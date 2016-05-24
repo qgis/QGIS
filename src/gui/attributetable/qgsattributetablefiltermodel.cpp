@@ -69,7 +69,7 @@ void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )
 
 QVariant QgsAttributeTableFilterModel::data( const QModelIndex& index, int role ) const
 {
-  if ( mColumnMapping.at( index.column() ) == -1 ) // actions
+  if ( mapColumnToSource( index.column() ) == -1 ) // actions
   {
     if ( role == TypeRole )
       return ColumnTypeActionButton;
@@ -355,6 +355,14 @@ void QgsAttributeTableFilterModel::onColumnsChanged()
   setAttributeTableConfig( mConfig );
 }
 
+int QgsAttributeTableFilterModel::mapColumnToSource( int column ) const
+{
+  if ( mColumnMapping.isEmpty() )
+    return 0;
+  else
+    return mColumnMapping.at( column );
+}
+
 void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
 {
   if ( !layer() )
@@ -466,26 +474,29 @@ QModelIndex QgsAttributeTableFilterModel::mapToSource( const QModelIndex& proxyI
   if ( !proxyIndex.isValid() )
     return QModelIndex();
 
-  int sourceColumn = mColumnMapping.at( proxyIndex.column() );
+  int sourceColumn = mapColumnToSource( proxyIndex.column() );
 
   // For the action column there is no matching column in the source model: invalid
   if ( sourceColumn == -1 )
     return QModelIndex();
 
-  return QSortFilterProxyModel::mapToSource( index( proxyIndex.row(), mColumnMapping.at( proxyIndex.column() ), proxyIndex.parent() ) );
+  return QSortFilterProxyModel::mapToSource( index( proxyIndex.row(), sourceColumn, proxyIndex.parent() ) );
 }
 
 QModelIndex QgsAttributeTableFilterModel::mapFromSource( const QModelIndex& sourceIndex ) const
 {
   QModelIndex proxyIndex = QSortFilterProxyModel::mapFromSource( sourceIndex );
 
-  return index( proxyIndex.row(), mColumnMapping.indexOf( proxyIndex.column() ), proxyIndex.parent() );
+  if ( proxyIndex.column() < 0 )
+    return QModelIndex();
+
+  return index( proxyIndex.row(), mapColumnToSource( proxyIndex.column() ), proxyIndex.parent() );
 }
 
 Qt::ItemFlags QgsAttributeTableFilterModel::flags( const QModelIndex& index ) const
 {
   // Handle the action column flags here, the master model doesn't know it
-  if ( mColumnMapping.at( index.column() ) == -1 )
+  if ( mapColumnToSource( index.column() ) == -1 )
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
   QModelIndex source_index = mapToSource( index );
