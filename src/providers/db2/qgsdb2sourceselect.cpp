@@ -176,6 +176,8 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
   mTablesTreeView->setItemDelegate( new QgsDb2SourceSelectDelegate( this ) );
 
+  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection&, const QItemSelection& ) ) );
+
   QSettings settings;
   mTablesTreeView->setSelectionMode( settings.value( "/qgis/addDb2DC", false ).toBool() ?
                                      QAbstractItemView::ExtendedSelection :
@@ -558,9 +560,6 @@ void QgsDb2SourceSelect::finishList()
 {
   QApplication::restoreOverrideCursor();
 
-  if ( cmbConnections->count() > 0 )
-    mAddButton->setEnabled( true );
-
   mTablesTreeView->sortByColumn( QgsDb2TableModel::dbtmTable, Qt::AscendingOrder );
   mTablesTreeView->sortByColumn( QgsDb2TableModel::dbtmSchema, Qt::AscendingOrder );
 }
@@ -661,6 +660,12 @@ void QgsDb2SourceSelect::setConnectionListPosition()
 void QgsDb2SourceSelect::setSearchExpression( const QString& regexp )
 {
   Q_UNUSED( regexp );
+}
+
+void QgsDb2SourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+{
+  Q_UNUSED( deselected )
+  mAddButton->setEnabled( !selected.isEmpty() );
 }
 
 

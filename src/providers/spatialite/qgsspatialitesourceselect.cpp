@@ -96,6 +96,8 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::Wind
   mTablesTreeView->setModel( &mProxyModel );
   mTablesTreeView->setSortingEnabled( true );
 
+  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection&, const QItemSelection& ) ) );
+
   //for Qt < 4.3.2, passing -1 to include all model columns
   //in search does not seem to work
   mSearchColumnComboBox->setCurrentIndex( 1 );
@@ -484,7 +486,6 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
 
   if ( cmbConnections->count() > 0 )
   {
-    mAddButton->setEnabled( true );
     mStatsButton->setEnabled( true );
   }
 
@@ -572,4 +573,10 @@ void QgsSpatiaLiteSourceSelect::setConnectionListPosition()
 void QgsSpatiaLiteSourceSelect::setSearchExpression( const QString & regexp )
 {
   Q_UNUSED( regexp );
+}
+
+void QgsSpatiaLiteSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+{
+  Q_UNUSED( deselected )
+  mAddButton->setEnabled( !selected.isEmpty() );
 }
