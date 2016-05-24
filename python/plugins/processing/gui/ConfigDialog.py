@@ -54,6 +54,7 @@ from processing.core.ProcessingConfig import (ProcessingConfig,
                                               settingsWatcher,
                                               Setting)
 from processing.core.Processing import Processing
+from processing.gui.DirectorySelectorDialog import DirectorySelectorDialog
 from processing.gui.menus import updateMenus
 from processing.gui.menus import menusSettingsGroup
 
@@ -284,12 +285,7 @@ class SettingDelegate(QStyledItemDelegate):
     def __init__(self, parent=None):
         QStyledItemDelegate.__init__(self, parent)
 
-    def createEditor(
-        self,
-        parent,
-        options,
-        index,
-    ):
+    def createEditor(self, parent, options, index):
         setting = index.model().data(index, Qt.UserRole)
         if setting.valuetype == Setting.FOLDER:
             return FileDirectorySelector(parent)
@@ -299,6 +295,8 @@ class SettingDelegate(QStyledItemDelegate):
             combo = QComboBox(parent)
             combo.addItems(setting.options)
             return combo
+        elif setting.valuetype == Setting.MULTIPLE_FOLDERS:
+            return MultipleDirectorySelector(parent)
         else:
             value = self.convertValue(index.model().data(index, Qt.EditRole))
             if isinstance(value, (int, long)):
@@ -391,6 +389,47 @@ class FileDirectorySelector(QWidget):
             return
 
         self.lineEdit.setText(selectedPath)
+        self.canFocusOut = True
+
+    def text(self):
+        return self.lineEdit.text()
+
+    def setText(self, value):
+        self.lineEdit.setText(value)
+
+
+class MultipleDirectorySelector(QWidget):
+
+    def __init__(self, parent=None):
+        QWidget.__init__(self, parent)
+
+        # create gui
+        self.btnSelect = QToolButton()
+        self.btnSelect.setText(self.tr('...'))
+        self.lineEdit = QLineEdit()
+        self.hbl = QHBoxLayout()
+        self.hbl.setMargin(0)
+        self.hbl.setSpacing(0)
+        self.hbl.addWidget(self.lineEdit)
+        self.hbl.addWidget(self.btnSelect)
+
+        self.setLayout(self.hbl)
+
+        self.canFocusOut = False
+
+        self.setFocusPolicy(Qt.StrongFocus)
+        self.btnSelect.clicked.connect(self.select)
+
+    def select(self):
+        text = self.lineEdit.text()
+        if text != '':
+            items = text.split(';')
+
+        dlg = DirectorySelectorDialog(None, items)
+        if dlg.exec_():
+            text = dlg.value()
+            self.lineEdit.setText(text)
+
         self.canFocusOut = True
 
     def text(self):

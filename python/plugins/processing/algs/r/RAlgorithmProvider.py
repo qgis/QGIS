@@ -62,8 +62,8 @@ class RAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.initializeSettings(self)
         ProcessingConfig.addSetting(Setting(
             self.getDescription(), RUtils.RSCRIPTS_FOLDER,
-            self.tr('R Scripts folder'), RUtils.RScriptsFolder(),
-            valuetype=Setting.FOLDER))
+            self.tr('R Scripts folder'), RUtils.defaultRScriptsFolder(),
+            valuetype=Setting.MULTIPLE_FOLDERS))
         if isWindows():
             ProcessingConfig.addSetting(Setting(
                 self.getDescription(),
@@ -95,8 +95,11 @@ class RAlgorithmProvider(AlgorithmProvider):
         return 'r'
 
     def _loadAlgorithms(self):
-        folder = RUtils.RScriptsFolder()
-        self.loadFromFolder(folder)
+        folders = RUtils.RScriptsFolders()
+        self.algs = []
+        for f in folders:
+            self.loadFromFolder(f)
+
         folder = os.path.join(os.path.dirname(__file__), 'scripts')
         self.loadFromFolder(folder)
 

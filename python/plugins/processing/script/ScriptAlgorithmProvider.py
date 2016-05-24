@@ -58,7 +58,7 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.addSetting(Setting(self.getDescription(),
                                             ScriptUtils.SCRIPTS_FOLDER,
                                             self.tr('Scripts folder', 'ScriptAlgorithmProvider'),
-                                            ScriptUtils.scriptsFolder(), valuetype=Setting.FOLDER))
+                                            ScriptUtils.defaultScriptsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -74,8 +74,10 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
         return self.tr('Scripts', 'ScriptAlgorithmProvider')
 
     def _loadAlgorithms(self):
-        folder = ScriptUtils.scriptsFolder()
-        self.algs = ScriptUtils.loadFromFolder(folder)
+        folders = ScriptUtils.scriptsFolders()
+        self.algs = []
+        for f in folders:
+            self.algs.extend(ScriptUtils.loadFromFolder(f))
 
     def addAlgorithmsFromFolder(self, folder):
         self.algs.extend(ScriptUtils.loadFromFolder(folder))
