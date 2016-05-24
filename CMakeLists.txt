@@ -398,9 +398,9 @@ IF (PEDANTIC)
   MESSAGE (STATUS "Pedantic compiler settings enabled")
   IF(MSVC)
     SET(_warnings "")
-    IF (NOT USING_NMAKE)
+    IF (NOT USING_NMAKE AND NOT USING_NINJA)
       SET(_warnings "${_warnings} /W4" )
-    ENDIF (NOT USING_NMAKE)
+    ENDIF (NOT USING_NMAKE AND NOT USING_NINJA)
 
     # disable warnings
     SET(_warnings "${_warnings} /wd4100 ")  # unused formal parameters
@@ -507,10 +507,10 @@ IF (WIN32)
     ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_WARNINGS)
 
     IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
-      IF (NOT USING_NMAKE)
+      IF (NOT USING_NMAKE AND NOT USING_NINJA)
         MESSAGE (STATUS "Generating browse files")
         ADD_DEFINITIONS( /FR )
-      ENDIF (NOT USING_NMAKE)
+      ENDIF (NOT USING_NMAKE AND NOT USING_NINJA)
     ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
 
     IF (INSTALL_DEPS)
