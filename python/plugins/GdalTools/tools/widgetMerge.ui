@@ -84,7 +84,7 @@
    <item>
     <widget class="QCheckBox" name="separateCheck">
      <property name="text">
-      <string>Layer stack</string>
+      <string>Place each input file into a separate band</string>
      </property>
     </widget>
    </item>
