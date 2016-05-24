@@ -171,7 +171,7 @@ def splitVersion(s):
     return l
 
 
-def isCompatible(curVer, minVer, maxVer, supportPython3=False):
+def isCompatible(curVer, minVer, maxVer, supportPython2=True, supportPython3=False):
     """ Compare current QGIS version with qgisMinVersion and qgisMaxVersion """
 
     if not minVer or not curVer or not maxVer:
@@ -196,5 +196,11 @@ def isCompatible(curVer, minVer, maxVer, supportPython3=False):
     minVer = "%04d%04d%04d" % (int(minVer[0]), int(minVer[1]), int(minVer[2]))
     maxVer = "%04d%04d%04d" % (int(maxVer[0]), int(maxVer[1]), int(maxVer[2]))
     curVer = "%04d%04d%04d" % (int(curVer[0]), int(curVer[1]), int(curVer[2]))
+    
+    if ( sys.version_info[0] < 3 and not supportPython2 )
+		return False
+		
+    if ( sys.version_info[0] == 3 and not supportPython3 )
+		return False
 
-    return (minVer <= curVer and maxVer >= curVer and (supportPython3 or sys.version_info[0] < 3))
+    return minVer <= curVer and maxVer >= curVer

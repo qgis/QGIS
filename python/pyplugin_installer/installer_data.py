@@ -450,9 +450,19 @@ class Repositories(QObject):
                         "library": "",
                         "readonly": False
                     }
-                    supportPython3 = pluginNodes.item(i).firstChildElement("support_python3").text().strip()
-                    if not supportPython3:
-                        supportPython3 = False
+
+					supportPython2 = pluginNodes.item(i).firstChildElement("supportPython2").text().strip()
+					supportPython3 = pluginNodes.item(i).firstChildElement("supportPython3").text().strip()
+					# python3 support is False by default
+					# python2 support is True by default, but False by default if python3 is supported
+					if not supportPython3:
+						supportPython3 = False
+					else:
+						if not supportPython2:
+							supportPython2 = False
+					if not supportPython2:
+						supportPython2 = True
+
                     qgisMinimumVersion = pluginNodes.item(i).firstChildElement("qgis_minimum_version").text().strip()
                     if not qgisMinimumVersion:
                         qgisMinimumVersion = "2"
@@ -461,7 +471,7 @@ class Repositories(QObject):
                         qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
                     #if compatible, add the plugin to the list
                     if not pluginNodes.item(i).firstChildElement("disabled").text().strip().upper() in ["TRUE", "YES"]:
-                        if isCompatible(QGis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion, supportPython3):
+                        if isCompatible(QGis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion, supportPython2, supportPython3):
                             #add the plugin to the cache
                             plugins.addFromRepository(plugin)
                 self.mRepositories[reposName]["state"] = 2
@@ -602,9 +612,18 @@ class Plugins(QObject):
             version = normalizeVersion(pluginMetadata("version"))
 
         if version:
+            supportPython2 = pluginMetadata("supportPython2").strip()
             supportPython3 = pluginMetadata("supportPython3").strip()
+            # python3 support is False by default
+            # python2 support is True by default, but False by default if python3 is supported
             if not supportPython3:
                 supportPython3 = False
+            else:
+				if not supportPython2:
+					supportPython2 = False
+			if not supportPython2:
+				supportPython2 = True
+
             qgisMinimumVersion = pluginMetadata("qgisMinimumVersion").strip()
             if not qgisMinimumVersion:
                 qgisMinimumVersion = "0"
@@ -612,7 +631,7 @@ class Plugins(QObject):
             if not qgisMaximumVersion:
                 qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
             #if compatible, add the plugin to the list
-            if not isCompatible(QGis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion, supportPython3):
+            if not isCompatible(QGis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion, supportPython2, supportPython3):
                 error = "incompatible"
                 errorDetails = "%s - %s" % (qgisMinimumVersion, qgisMaximumVersion)
             elif testLoad:
