@@ -1,5 +1,4 @@
 PyQgsComposerPicture
-PyQgsGeometryTest
 PyQgsJSONUtils
 PyQgsLocalServer
 PyQgsMapUnitScale

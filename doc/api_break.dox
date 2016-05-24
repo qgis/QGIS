@@ -495,6 +495,11 @@ None will need to be modified, as the method will return an empty geometry if th
 value instead of a pointer. The biggest impact with this change is that PyQGIS code should not compare a geometry
 result to None, but instead either use a boolean test (`if g.buffer(10):`) or explicitly use the isEmpty()
 method to determine if a geometry is valid.</li>
+<li>int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType ) has been renamed to addPoints</li>
+<li>int addPart( const QList<QgsPointV2> &points, QgsWkbTypes::GeometryType geomType ) has been renamed to addPointsV2</li>
+<li>static bool compare( const QgsPolyline& p1, const QgsPolyline& p2, double epsilon ) has been renamed to comparePolylines</li>
+<li>static bool compare( const QgsPolygon& p1, const QgsPolygon& p2, double epsilon ) has been renamed to comparePolygons</li>
+<li>static bool compare( const QgsMultiPolygon& p1, const QgsMultiPolygon& p2, double epsilon ) has been renamed to compareMultiPolygons</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsGeometryAnalyzer QgsGeometryAnalyzer
