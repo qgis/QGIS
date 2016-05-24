@@ -18,7 +18,6 @@
 
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
-#include "qgseditorwidgetwrapper.h"
 #include "qgsattributeeditorcontext.h"
 
 #include <QWidget>
@@ -28,6 +27,7 @@ class QgsAttributeFormInterface;
 class QgsAttributeFormEditorWidget;
 class QgsMessageBar;
 class QgsMessageBarItem;
+class QgsWidgetWrapper;
 
 class GUI_EXPORT QgsAttributeForm : public QWidget
 {
