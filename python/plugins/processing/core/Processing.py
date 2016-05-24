@@ -150,9 +150,16 @@ class Processing:
         provider.externalAlgs.extend(scripts)     
         Processing.reloadProvider("qgis")
         
-    @staticmethod 
+    
+    @staticmethod
     def removeScripts(folder):
-        pass
+        provider = Processing.getProviderFromName("qgis")
+        for alg in provider.externalAlgs[::-1]:
+            path = os.path.dirname(alg.descriptionFile)
+            if path == folder:
+                provider.externalAlgs.remove(alg)   
+        Processing.reloadProvider("qgis")
+        
 
     @staticmethod
     def updateAlgsList():

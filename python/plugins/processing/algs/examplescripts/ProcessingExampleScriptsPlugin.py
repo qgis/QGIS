@@ -32,7 +32,7 @@ from processing.core.Processing import Processing
 class ProcessingExampleScriptsPlugin:
 
     def initGui(self):
-        Processing.addScripts(self, os.path.dirname(__file__))
+        Processing.addScripts(os.path.join(os.path.dirname(__file__), "scripts"))
             
     def unload(self):
-        pass
+        Processing.removeScripts(os.path.join(os.path.dirname(__file__), "scripts"))
