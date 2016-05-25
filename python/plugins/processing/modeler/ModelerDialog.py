@@ -89,7 +89,7 @@ class ModelerDialog(BASE, WIDGET):
                 if text in ModelerParameterDefinitionDialog.paramTypes:
                     self.addInputOfType(text, event.pos())
                 else:
-                    alg = Processing.getAlgorithm(text)
+                    alg = algList.getAlgorithm(text)
                     if alg is not None:
                         self._addAlgorithm(alg.getCopy(), event.pos())
                 event.accept()
@@ -420,7 +420,7 @@ class ModelerDialog(BASE, WIDGET):
     def addAlgorithm(self):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
-            alg = ModelerUtils.getAlgorithm(item.alg.commandLineName())
+            alg = algList.getAlgorithm(item.alg.commandLineName())
             self._addAlgorithm(alg.getCopy())
 
     def _addAlgorithm(self, alg, pos=None):
