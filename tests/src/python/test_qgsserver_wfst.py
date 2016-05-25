@@ -150,7 +150,7 @@ class TestWFST(unittest.TestCase):
                                                     cls.project_path),
             'version': 'auto',
             'table': '',
-            'sql': '',
+            #'sql': '',
         }
         uri = ' '.join([("%s='%s'" % (k, v)) for k, v in parms.iteritems()])
         wfs_layer = QgsVectorLayer(uri, layer_name, 'WFS')
