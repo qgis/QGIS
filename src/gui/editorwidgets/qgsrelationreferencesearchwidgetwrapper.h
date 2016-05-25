@@ -37,6 +37,13 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
     Q_OBJECT
 
   public:
+
+    /** Constructor for QgsRelationReferenceSearchWidgetWrapper
+     * @param vl associated vector layer
+     * @param fieldIdx associated field index
+     * @param canvas optional map canvas
+     * @param parent parent widget
+     */
     explicit QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QgsMapCanvas* canvas, QWidget* parent = nullptr );
     bool applyDirectly() override;
     QString expression() override;
