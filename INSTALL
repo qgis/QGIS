@@ -325,8 +325,8 @@ Install them using dpkg.  E.g.:
   ==============================
 
 /!\ Warning: Qt 5 is not officially supported. Building against Qt 5
-libraries seems to work quiet well alrady but be prepared that you are one
-of very few with this setup. We strongly recommend using QGIS with Qt 4.
+libraries seems to work quite well already but be prepared that you are one
+of very few with this setup. We strongly recommend using QGIS with Qt 4 fro production work.
 
 Python bindings in particular are not expected to be compatible. When Qt 5
 is enabled, the build system automatically activates Python 3 and PyQt5 as well.
