@@ -45,10 +45,14 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
      * @param parent parent widget
      */
     explicit QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QgsMapCanvas* canvas, QWidget* parent = nullptr );
+
+    /** Returns a variant representing the current state of the widget.
+     */
+    QVariant value() const;
+
     bool applyDirectly() override;
     QString expression() override;
     bool valid() const override;
-    QVariant value() const;
     FilterFlags supportedFlags() const override;
     FilterFlags defaultFlags() const override;
     virtual QString createExpression( FilterFlags flags ) const override;
