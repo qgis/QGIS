@@ -237,6 +237,8 @@ class OutputSelectionPanel(BASE, WIDGET):
             result = exp.evaluate(context)
             if not exp.hasEvalError():
                 fileName = result
+                if fileName.startswith("[") and fileName.endswith("]"):
+                    fileName = fileName[1:-1]
         if fileName.strip() in ['', self.SAVE_TO_TEMP_FILE]:
             value = None
         elif fileName.startswith('memory:'):
