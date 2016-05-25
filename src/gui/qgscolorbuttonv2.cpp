@@ -165,7 +165,9 @@ void QgsColorButtonV2::setToNoColor()
 {
   if ( mAllowAlpha )
   {
-    setColor( QColor( 0, 0, 0, 0 ) );
+    QColor noColor = QColor( mColor );
+    noColor.setAlpha( 0 );
+    setColor( noColor );
   }
 }
 
