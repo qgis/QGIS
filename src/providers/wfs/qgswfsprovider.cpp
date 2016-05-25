@@ -271,6 +271,7 @@ void QgsWFSProviderSQLColumnRefValidator::visit( const QgsSQLStatement::NodeColu
 
 bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg )
 {
+  QgsDebugMsg( QString( "Processing SQL: %1" ).arg( sqlString ) );
   errorMsg.clear();
   QgsSQLStatement sql( sqlString );
   if ( sql.hasParserError() )
