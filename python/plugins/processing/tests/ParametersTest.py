@@ -36,7 +36,8 @@ from processing.core.parameters import (Parameter,
                                         ParameterFixedTable,
                                         ParameterMultipleInput,
                                         ParameterNumber,
-                                        ParameterPoint)
+                                        ParameterPoint,
+                                        ParameterString)
 
 from qgis.core import (QgsRasterLayer,
                        QgsVectorLayer)
@@ -392,6 +393,29 @@ class ParameterNumberTest(unittest.TestCase):
         self.assertEqual(requiredParameter.value, 5)
         self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, 5)
+
+
+class ParameterStringTest(unittest.TestCase):
+
+    def testSetValue(self):
+        parameter = ParameterString('myName', 'myDescription')
+        self.assertTrue(parameter.setValue('test'))
+        self.assertEqual(parameter.value, 'test')
+
+    def testOptional(self):
+        optionalParameter = ParameterString('myName', 'myDesc', default='test', optional=True)
+        self.assertEqual(optionalParameter.value, 'test')
+        optionalParameter.setValue('check')
+        self.assertEqual(optionalParameter.value, 'check')
+        self.assertTrue(optionalParameter.setValue(None))
+        self.assertEqual(optionalParameter.value, None)
+
+        requiredParameter = ParameterCrs('myName', 'myDesc', default='test', optional=False)
+        self.assertEqual(requiredParameter.value, 'test')
+        requiredParameter.setValue('check')
+        self.assertEqual(requiredParameter.value, 'check')
+        self.assertFalse(requiredParameter.setValue(None))
+        self.assertEqual(requiredParameter.value, 'check')
 
 
 if __name__ == '__main__':

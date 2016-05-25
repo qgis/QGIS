@@ -28,6 +28,7 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
     : QDateTimeEdit( parent )
     , mAllowNull( true )
     , mIsNull( true )
+    , mIsEmpty( false )
 {
   mClearButton = new QToolButton( this );
   mClearButton->setIcon( QgsApplication::getThemeIcon( "/mIconClear.svg" ) );
@@ -41,7 +42,7 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
   mNullLabel->setStyleSheet( "position: absolute; border: none; font-style: italic; color: grey;" );
   mNullLabel->hide();
 
-  setStyleSheet( QString( "padding-right: %1px;" ).arg( mClearButton->sizeHint().width() + spinButtonWidth() + frameWidth() + 1 ) );
+  setStyleSheet( QString( ".QWidget, QLineEdit, QToolButton { padding-right: %1px; }" ).arg( mClearButton->sizeHint().width() + spinButtonWidth() + frameWidth() + 1 ) );
 
   QSize msz = minimumSizeHint();
   setMinimumSize( qMax( msz.width(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ),
@@ -57,9 +58,9 @@ void QgsDateTimeEdit::setAllowNull( bool allowNull )
 {
   mAllowNull = allowNull;
 
-  mNullLabel->setVisible( mAllowNull && mIsNull );
-  mClearButton->setVisible( mAllowNull && !mIsNull );
-  lineEdit()->setVisible( !mAllowNull || !mIsNull );
+  mNullLabel->setVisible(( mAllowNull && mIsNull ) && !mIsEmpty );
+  mClearButton->setVisible( mAllowNull && ( !mIsNull || mIsEmpty ) );
+  lineEdit()->setVisible(( !mAllowNull || !mIsNull ) && !mIsEmpty );
 }
 
 
@@ -67,6 +68,13 @@ void QgsDateTimeEdit::clear()
 {
   changed( QDateTime() );
   emit dateTimeChanged( QDateTime() );
+}
+
+void QgsDateTimeEdit::setEmpty()
+{
+  mNullLabel->setVisible( false );
+  lineEdit()->setVisible( false );
+  mClearButton->setVisible( mAllowNull );
 }
 
 void QgsDateTimeEdit::mousePressEvent( QMouseEvent* event )
@@ -80,6 +88,7 @@ void QgsDateTimeEdit::mousePressEvent( QMouseEvent* event )
 
 void QgsDateTimeEdit::changed( const QDateTime & dateTime )
 {
+  mIsEmpty = false;
   mIsNull = dateTime.isNull();
   mNullLabel->setVisible( mAllowNull && mIsNull );
   mClearButton->setVisible( mAllowNull && !mIsNull );
@@ -98,6 +107,8 @@ int QgsDateTimeEdit::frameWidth() const
 
 void QgsDateTimeEdit::setDateTime( const QDateTime& dateTime )
 {
+  mIsEmpty = false;
+
   // set an undefined date
   if ( !dateTime.isValid() || dateTime.isNull() )
   {
@@ -107,6 +118,7 @@ void QgsDateTimeEdit::setDateTime( const QDateTime& dateTime )
   {
     QDateTimeEdit::setDateTime( dateTime );
     mIsNull = false;
+    changed( dateTime );
   }
 }
 

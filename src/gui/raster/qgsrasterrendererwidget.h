@@ -58,6 +58,14 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
     virtual void setStdDev( const QString& value ) { Q_UNUSED( value ); }
     virtual int selectedBand( int index = 0 ) { Q_UNUSED( index ); return -1; }
 
+  signals:
+
+    /**
+     * Emmited when something on the widget has changed.
+     * All widgets will fire this event to notify of an internal change.
+     */
+    void widgetChanged();
+
   protected:
     QgsRasterLayer* mRasterLayer;
     /** Returns a band name for display. First choice is color name, otherwise band number*/

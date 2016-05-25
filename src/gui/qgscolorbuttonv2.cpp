@@ -49,6 +49,7 @@ QgsColorButtonV2::QgsColorButtonV2( QWidget *parent, const QString& cdt, QgsColo
     , mColorSet( false )
     , mShowNoColorOption( false )
     , mNoColorString( tr( "No color" ) )
+    , mShowNull( false )
     , mPickingColor( false )
     , mMenu( nullptr )
 
@@ -155,11 +156,18 @@ void QgsColorButtonV2::setToDefaultColor()
   setColor( mDefaultColor );
 }
 
+void QgsColorButtonV2::setToNull()
+{
+  setColor( QColor() );
+}
+
 void QgsColorButtonV2::setToNoColor()
 {
   if ( mAllowAlpha )
   {
-    setColor( QColor( 0, 0, 0, 0 ) );
+    QColor noColor = QColor( mColor );
+    noColor.setAlpha( 0 );
+    setColor( noColor );
   }
 }
 
@@ -390,6 +398,14 @@ void QgsColorButtonV2::prepareMenu()
   //for the number of colors shown in the grid. Note that we MUST refresh color swatch grids every time this
   //menu is opened, otherwise color schemes like the recent color scheme grid are meaningless
   mMenu->clear();
+
+  if ( mShowNull )
+  {
+    QAction* nullAction = new QAction( tr( "Clear color" ), this );
+    nullAction->setIcon( createMenuIcon( Qt::transparent, false ) );
+    mMenu->addAction( nullAction );
+    connect( nullAction, SIGNAL( triggered() ), this, SLOT( setToNull() ) );
+  }
 
   //show default color option if set
   if ( mDefaultColor.isValid() )
@@ -662,5 +678,20 @@ void QgsColorButtonV2::setBehaviour( const QgsColorButtonV2::Behaviour behaviour
 void QgsColorButtonV2::setDefaultColor( const QColor& color )
 {
   mDefaultColor = color;
+}
+
+void QgsColorButtonV2::setShowNull( bool showNull )
+{
+  mShowNull = showNull;
+}
+
+bool QgsColorButtonV2::showNull() const
+{
+  return mShowNull;
+}
+
+bool QgsColorButtonV2::isNull() const
+{
+  return !mColor.isValid();
 }
 

@@ -131,6 +131,7 @@ QgsSearchWidgetWrapper* QgsEditorWidgetRegistry::createSearchWidget( const QStri
       // Make sure that there is a widget created at this point
       // so setValue() et al won't crash
       ww->widget();
+      ww->clearWidget();
       return ww;
     }
   }

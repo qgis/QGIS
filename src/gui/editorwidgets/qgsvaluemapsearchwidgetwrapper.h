@@ -23,7 +23,6 @@
  * Wraps a value map search widget. This widget will offer a combobox with values from another layer
  * referenced by a foreign key (a constraint may be set but is not required on data level).
  * It will be used as a search widget and produces expression to look for in the layer.
- * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsValueMapSearchWidgetWrapper : public QgsSearchWidgetWrapper
@@ -34,6 +33,14 @@ class GUI_EXPORT QgsValueMapSearchWidgetWrapper : public QgsSearchWidgetWrapper
     bool applyDirectly() override;
     QString expression() override;
     bool valid() const override;
+    FilterFlags supportedFlags() const override;
+    FilterFlags defaultFlags() const override;
+    virtual QString createExpression( FilterFlags flags ) const override;
+
+  public slots:
+
+    virtual void clearWidget() override;
+    virtual void setEnabled( bool enabled ) override;
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;

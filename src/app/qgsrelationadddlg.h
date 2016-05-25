@@ -40,6 +40,8 @@ class APP_EXPORT QgsRelationAddDlg : public QDialog, private Ui::QgsRelationAddD
     void on_mCbxReferencingLayer_currentIndexChanged( int index );
     void on_mCbxReferencedLayer_currentIndexChanged( int index );
 
+    void checkDefinitionValid();
+
   private:
     void loadLayerAttributes( QComboBox* cbx, QgsVectorLayer* layer );
 

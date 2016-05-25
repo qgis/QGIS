@@ -69,6 +69,14 @@ QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer
 
     setFromRenderer( mRasterLayer->renderer() );
     onBandChanged( 0 ); // reset mMinMaxWidget bands
+
+    connect( mRedMinLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
+    connect( mRedMaxLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
+    connect( mGreenMaxLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
+    connect( mGreenMinLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
+    connect( mBlueMaxLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
+    connect( mBlueMinLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
+
   }
 }
 
@@ -191,6 +199,7 @@ void QgsMultiBandColorRendererWidget::onBandChanged( int index )
   myBands.append( mGreenBandComboBox->itemData( mGreenBandComboBox->currentIndex() ).toInt() );
   myBands.append( mBlueBandComboBox->itemData( mBlueBandComboBox->currentIndex() ).toInt() );
   mMinMaxWidget->setBands( myBands );
+  emit widgetChanged();
 }
 
 void QgsMultiBandColorRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin )

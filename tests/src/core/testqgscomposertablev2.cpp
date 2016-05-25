@@ -255,9 +255,9 @@ void TestQgsComposerTableV2::attributeTableFilterFeatures()
 void TestQgsComposerTableV2::attributeTableSetAttributes()
 {
   //test subset of attributes in table
-  QSet<int> attributes;
-  attributes << 0 << 3 << 4;
-  mComposerAttributeTable->setDisplayAttributes( attributes );
+  QStringList attributes;
+  attributes << "Class" << "Pilots" << "Cabin Crew";
+  mComposerAttributeTable->setDisplayedFields( attributes );
   mComposerAttributeTable->setMaximumNumberOfFeatures( 3 );
 
   //check headers
@@ -291,7 +291,7 @@ void TestQgsComposerTableV2::attributeTableSetAttributes()
   compareTable( expectedRows );
 
   attributes.clear();
-  mComposerAttributeTable->setDisplayAttributes( attributes );
+  mComposerAttributeTable->setDisplayedFields( attributes );
 }
 
 void TestQgsComposerTableV2::attributeTableVisibleOnly()

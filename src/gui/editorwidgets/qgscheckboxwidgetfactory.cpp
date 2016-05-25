@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgscheckboxwidgetfactory.h"
-
+#include "qgscheckboxsearchwidgetwrapper.h"
 #include "qgscheckboxwidgetwrapper.h"
 #include "qgscheckboxconfigdlg.h"
 
@@ -26,6 +26,11 @@ QgsCheckboxWidgetFactory::QgsCheckboxWidgetFactory( const QString& name )
 QgsEditorWidgetWrapper* QgsCheckboxWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
   return new QgsCheckboxWidgetWrapper( vl, fieldIdx, editor, parent );
+}
+
+QgsSearchWidgetWrapper*QgsCheckboxWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+{
+  return new QgsCheckboxSearchWidgetWrapper( vl, fieldIdx, parent );
 }
 
 QgsEditorConfigWidget* QgsCheckboxWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const

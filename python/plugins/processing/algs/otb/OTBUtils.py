@@ -30,6 +30,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import re
+import time
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsApplication
 import subprocess
@@ -160,6 +161,8 @@ def executeOtb(commands, progress, addToLog=True):
     os.putenv('ITK_AUTOLOAD_PATH', otbLibPath())
     fused_command = ''.join(['"%s" ' % re.sub(r'^"|"$', '', c) for c in commands])
     proc = subprocess.Popen(fused_command, shell=True, stdout=subprocess.PIPE, stdin=open(os.devnull), stderr=subprocess.STDOUT, universal_newlines=True).stdout
+    if isMac(): #This trick avoids having an uninterrupted system call exception if OTB is not installed
+        time.sleep(1)
     for line in iter(proc.readline, ""):
         if "[*" in line:
             idx = line.find("[*")

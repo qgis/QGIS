@@ -1,4 +1,6 @@
-/** A class to display feature attributes in the print composer*/
+/** A class to display feature attributes in the print composer
+ * @deprecated use QgsComposerTableV2 instead
+*/
 class QgsComposerTable: QgsComposerItem
 {
 %TypeHeaderCode
@@ -17,7 +19,7 @@ class QgsComposerTable: QgsComposerItem
       HeaderRight /*!< align headers right */
     };
 
-    QgsComposerTable( QgsComposition* composition /TransferThis/ );
+    QgsComposerTable( QgsComposition* composition /TransferThis/ ) /Deprecated/;
     virtual ~QgsComposerTable();
 
     /** Return correct graphics item type. */

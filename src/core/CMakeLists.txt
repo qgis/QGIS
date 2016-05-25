@@ -359,7 +359,9 @@ SET(QGIS_CORE_SRCS
 
 
 FILE(GLOB JSON_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/function_help/json/*")
-STRING(REPLACE "$" "$$" JSON_HELP_FILES "${JSON_HELP_FILES}")
+IF(NOT USING_NINJA)
+  STRING(REPLACE "$" "$$" JSON_HELP_FILES "${JSON_HELP_FILES}")
+ENDIF(NOT USING_NINJA)
 STRING(REPLACE "\(" "\\(" JSON_HELP_FILES "${JSON_HELP_FILES}")
 STRING(REPLACE "\)" "\\)" JSON_HELP_FILES "${JSON_HELP_FILES}")
 ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
@@ -610,7 +612,8 @@ SET(QGIS_CORE_HDRS
   qgsconnectionpool.h
   qgscontexthelp.h
   qgsconditionalstyle.h
-  qgscoordinatereferencesystem.h
+  qgscoordinatereferencesystem.h  
+  qgscoordinatereferencesystem_p.h
   qgscoordinateutils.h
   qgscrscache.h
   qgscsexception.h

@@ -201,6 +201,8 @@
 %Include raster/qgsrasterrendererwidget.sip
 %Include raster/qgssinglebandgrayrendererwidget.sip
 %Include raster/qgssinglebandpseudocolorrendererwidget.sip
+%Include raster/qgsrendererrasterpropertieswidget.sip
+%Include raster/qgsrastertransparencywidget.sip
 
 %Include symbology-ng/characterwidget.sip
 %Include symbology-ng/qgs25drendererwidget.sip
@@ -250,12 +252,19 @@
 %Include editorwidgets/core/qgseditorwidgetwrapper.sip
 %Include editorwidgets/core/qgssearchwidgetwrapper.sip
 %Include editorwidgets/core/qgswidgetwrapper.sip
+%Include editorwidgets/qgscheckboxsearchwidgetwrapper.sip
 %Include editorwidgets/qgsdatetimeedit.sip
+%Include editorwidgets/qgsdatetimesearchwidgetwrapper.sip
+%Include editorwidgets/qgsdefaultsearchwidgetwrapper.sip
 %Include editorwidgets/qgsdoublespinbox.sip
 %Include editorwidgets/qgsmultiedittoolbutton.sip
+%Include editorwidgets/qgsrelationreferencesearchwidgetwrapper.sip
 %Include editorwidgets/qgsrelationreferencewidget.sip
 %Include editorwidgets/qgsrelationreferencewidgetwrapper.sip
 %Include editorwidgets/qgsrelationwidgetwrapper.sip
+%Include editorwidgets/qgssearchwidgettoolbutton.sip
 %Include editorwidgets/qgsspinbox.sip
+%Include editorwidgets/qgsvaluemapsearchwidgetwrapper.sip
+%Include editorwidgets/qgsvaluerelationsearchwidgetwrapper.sip
 
 %Include layertree/qgslayertreeview.sip

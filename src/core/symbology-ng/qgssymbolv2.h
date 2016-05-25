@@ -315,6 +315,10 @@ class CORE_EXPORT QgsSymbolV2
     //! @deprecated since 2.14, use QgsSymbolLayerV2::isCompatibleWithSymbol instead
     Q_DECL_DEPRECATED bool isSymbolLayerCompatible( SymbolType layerType );
 
+    //! Render editing vertex marker at specified point
+    //! @note added in QGIS 2.16
+    void renderVertexMarker( QPointF pt, QgsRenderContext& context, int currentVertexMarkerType, int currentVertexMarkerSize );
+
     SymbolType mType;
     QgsSymbolLayerV2List mLayers;
 

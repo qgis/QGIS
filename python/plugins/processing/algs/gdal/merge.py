@@ -61,7 +61,7 @@ class merge(GdalAlgorithm):
         self.addParameter(ParameterBoolean(merge.PCT,
                                            self.tr('Grab pseudocolor table from first layer'), False))
         self.addParameter(ParameterBoolean(merge.SEPARATE,
-                                           self.tr('Layer stack'), False))
+                                           self.tr('Place each input file into a separate band'), False))
         self.addParameter(ParameterSelection(self.RTYPE,
                                              self.tr('Output raster type'), self.TYPE, 5))
 

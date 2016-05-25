@@ -68,6 +68,8 @@ class AlgorithmsTest:
         :param name: The identifier name used in the test output heading
         :param defs: A python dict containing a test algorithm definition
         """
+        QgsMapLayerRegistry.instance().removeAllMapLayers()
+
         params = self.load_params(defs['params'])
 
         alg = processing.Processing.getAlgorithm(defs['algorithm']).getCopy()

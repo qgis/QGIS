@@ -1,11 +1,14 @@
-/** A text table item that reads text from string lists*/
+/** A text table item that reads text from string lists
+ * @deprecated use QgsComposerTextTableV2 instead
+*/
+
 class QgsComposerTextTable: QgsComposerTable
 {
 %TypeHeaderCode
 #include <qgscomposertexttable.h>
 %End
   public:
-    QgsComposerTextTable( QgsComposition* c /TransferThis/ );
+    QgsComposerTextTable( QgsComposition* c /TransferThis/ ) /Deprecated/;
     ~QgsComposerTextTable();
 
     /** Return correct graphics item type. */

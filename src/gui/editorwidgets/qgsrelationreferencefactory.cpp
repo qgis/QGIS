@@ -18,6 +18,7 @@
 
 #include "qgsrelationreferencewidgetwrapper.h"
 #include "qgsrelationreferenceconfigdlg.h"
+#include "qgsrelationreferencesearchwidgetwrapper.h"
 
 QgsRelationReferenceFactory::QgsRelationReferenceFactory( const QString& name, QgsMapCanvas* canvas, QgsMessageBar* messageBar )
     : QgsEditorWidgetFactory( name )
@@ -29,6 +30,11 @@ QgsRelationReferenceFactory::QgsRelationReferenceFactory( const QString& name, Q
 QgsEditorWidgetWrapper* QgsRelationReferenceFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
   return new QgsRelationReferenceWidgetWrapper( vl, fieldIdx, editor, mCanvas, mMessageBar, parent );
+}
+
+QgsSearchWidgetWrapper*QgsRelationReferenceFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+{
+  return new QgsRelationReferenceSearchWidgetWrapper( vl, fieldIdx, mCanvas, parent );
 }
 
 QgsEditorConfigWidget* QgsRelationReferenceFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const

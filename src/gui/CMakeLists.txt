@@ -6,6 +6,8 @@ SET(QGIS_GUI_SRCS
   raster/qgsrasterrendererwidget.cpp
   raster/qgssinglebandgrayrendererwidget.cpp
   raster/qgssinglebandpseudocolorrendererwidget.cpp
+  raster/qgsrendererrasterpropertieswidget.cpp
+  raster/qgsrastertransparencywidget.cpp
   raster/qwt5_histogram_item.cpp
 
   symbology-ng/qgs25drendererwidget.cpp
@@ -92,6 +94,7 @@ SET(QGIS_GUI_SRCS
   editorwidgets/core/qgswidgetwrapper.cpp
 
   editorwidgets/qgscheckboxconfigdlg.cpp
+  editorwidgets/qgscheckboxsearchwidgetwrapper.cpp
   editorwidgets/qgscheckboxwidgetwrapper.cpp
   editorwidgets/qgscheckboxwidgetfactory.cpp
   editorwidgets/qgsclassificationwidgetwrapper.cpp
@@ -102,6 +105,7 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsdatetimeeditfactory.cpp
   editorwidgets/qgsdatetimeeditconfig.cpp
   editorwidgets/qgsdatetimeeditwrapper.cpp
+  editorwidgets/qgsdatetimesearchwidgetwrapper.cpp
   editorwidgets/qgsdefaultsearchwidgetwrapper.cpp
   editorwidgets/qgsdoublespinbox.cpp
   editorwidgets/qgsdummyconfigdlg.cpp
@@ -121,13 +125,16 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsrangeconfigdlg.cpp
   editorwidgets/qgsrangewidgetwrapper.cpp
   editorwidgets/qgsrangewidgetfactory.cpp
+  editorwidgets/qgssearchwidgettoolbutton.cpp
   editorwidgets/qgsspinbox.cpp
   editorwidgets/qgsrelationwidgetwrapper.cpp
   editorwidgets/qgsrelationreferenceconfigdlg.cpp
   editorwidgets/qgsrelationreferencefactory.cpp
+  editorwidgets/qgsrelationreferencesearchwidgetwrapper.cpp
   editorwidgets/qgsrelationreferencewidget.cpp
   editorwidgets/qgsrelationreferencewidgetwrapper.cpp
   editorwidgets/qgstexteditconfigdlg.cpp
+  editorwidgets/qgstexteditsearchwidgetwrapper.cpp
   editorwidgets/qgstexteditwrapper.cpp
   editorwidgets/qgstexteditwidgetfactory.cpp
   editorwidgets/qgsuniquevaluesconfigdlg.cpp
@@ -431,6 +438,8 @@ SET(QGIS_GUI_MOC_HDRS
   raster/qgsrasterrendererwidget.h
   raster/qgssinglebandgrayrendererwidget.h
   raster/qgssinglebandpseudocolorrendererwidget.h
+  raster/qgsrendererrasterpropertieswidget.h
+  raster/qgsrastertransparencywidget.h
 
   symbology-ng/qgs25drendererwidget.h
   symbology-ng/characterwidget.h
@@ -518,11 +527,13 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/core/qgswidgetwrapper.h
 
   editorwidgets/qgscheckboxconfigdlg.h
+  editorwidgets/qgscheckboxsearchwidgetwrapper.h
   editorwidgets/qgscheckboxwidgetwrapper.h
   editorwidgets/qgsclassificationwidgetwrapper.h
   editorwidgets/qgscolorwidgetwrapper.h
   editorwidgets/qgsdatetimeedit.h
   editorwidgets/qgsdatetimeeditconfig.h
+  editorwidgets/qgsdatetimesearchwidgetwrapper.h
   editorwidgets/qgsdatetimeeditwrapper.h
   editorwidgets/qgsdefaultsearchwidgetwrapper.h
   editorwidgets/qgsdoublespinbox.h
@@ -538,12 +549,15 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/qgsrangeconfigdlg.h
   editorwidgets/qgsrangewidgetwrapper.h
   editorwidgets/qgsrelationreferenceconfigdlg.h
+  editorwidgets/qgsrelationreferencesearchwidgetwrapper.h
   editorwidgets/qgsrelationreferencewidget.h
   editorwidgets/qgsrelationreferencewidgetwrapper.h
   editorwidgets/qgsrelationwidgetwrapper.h
+  editorwidgets/qgssearchwidgettoolbutton.h
   editorwidgets/qgsspinbox.h
   editorwidgets/qgstexteditconfigdlg.h
   editorwidgets/qgstexteditwrapper.h
+  editorwidgets/qgstexteditsearchwidgetwrapper.h
   editorwidgets/qgsuniquevaluesconfigdlg.h
   editorwidgets/qgsuniquevaluewidgetwrapper.h
   editorwidgets/qgsuuidwidgetwrapper.h

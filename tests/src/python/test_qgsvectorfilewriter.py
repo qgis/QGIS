@@ -73,16 +73,16 @@ class TestQgsVectorLayer(unittest.TestCase):
             'test',
             'memory')
 
-        assert self.mMemoryLayer is not None, 'Provider not initialized'
+        self.assertIsNotNone(self.mMemoryLayer, 'Provider not initialized')
         myProvider = self.mMemoryLayer.dataProvider()
-        assert myProvider is not None
+        self.assertIsNotNone(myProvider)
 
         ft = QgsFeature()
         ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
         ft.setAttributes(['Johny', 20, 0.3])
         myResult, myFeatures = myProvider.addFeatures([ft])
-        assert myResult
-        assert len(myFeatures) > 0
+        self.assertTrue(myResult)
+        self.assertTrue(myFeatures)
 
         writeShape(self.mMemoryLayer, 'writetest.shp')
 
@@ -94,17 +94,16 @@ class TestQgsVectorLayer(unittest.TestCase):
             'test',
             'memory')
 
-        assert ml is not None, 'Provider not initialized'
-        assert ml.isValid(), 'Source layer not valid'
+        self.assertTrue(ml.isValid())
         provider = ml.dataProvider()
-        assert provider is not None
+        self.assertIsNotNone(provider)
 
         ft = QgsFeature()
         ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
         ft.setAttributes([1, QDate(2014, 3, 5), QTime(13, 45, 22), QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22))])
         res, features = provider.addFeatures([ft])
-        assert res
-        assert len(features) > 0
+        self.assertTrue(res)
+        self.assertTrue(features)
 
         dest_file_name = os.path.join(str(QDir.tempPath()), 'datetime.shp')
         crs = QgsCoordinateReferenceSystem()
@@ -130,15 +129,15 @@ class TestQgsVectorLayer(unittest.TestCase):
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
 
         date_idx = created_layer.fieldNameIndex('date_f')
-        assert isinstance(f.attributes()[date_idx], QDate)
+        self.assertIsInstance(f.attributes()[date_idx], QDate)
         self.assertEqual(f.attributes()[date_idx], QDate(2014, 3, 5))
         time_idx = created_layer.fieldNameIndex('time_f')
         #shapefiles do not support time types
-        assert isinstance(f.attributes()[time_idx], str)
+        self.assertIsInstance(f.attributes()[time_idx], str)
         self.assertEqual(f.attributes()[time_idx], '13:45:22')
         #shapefiles do not support datetime types
         datetime_idx = created_layer.fieldNameIndex('dt_f')
-        assert isinstance(f.attributes()[datetime_idx], str)
+        self.assertIsInstance(f.attributes()[datetime_idx], str)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22)).toString("yyyy/MM/dd hh:mm:ss.zzz"))
 
     def testDateTimeWriteTabfile(self):
@@ -149,17 +148,17 @@ class TestQgsVectorLayer(unittest.TestCase):
             'test',
             'memory')
 
-        assert ml is not None, 'Provider not initialized'
-        assert ml.isValid(), 'Source layer not valid'
+        self.assertIsNotNone(ml, 'Provider not initialized')
+        self.assertTrue(ml.isValid(), 'Source layer not valid')
         provider = ml.dataProvider()
-        assert provider is not None
+        self.assertIsNotNone(provider)
 
         ft = QgsFeature()
         ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
         ft.setAttributes([1, QDate(2014, 3, 5), QTime(13, 45, 22), QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22))])
         res, features = provider.addFeatures([ft])
-        assert res
-        assert len(features) > 0
+        self.assertTrue(res)
+        self.assertTrue(features)
 
         dest_file_name = os.path.join(str(QDir.tempPath()), 'datetime.tab')
         crs = QgsCoordinateReferenceSystem()
@@ -183,13 +182,13 @@ class TestQgsVectorLayer(unittest.TestCase):
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
 
         date_idx = created_layer.fieldNameIndex('date_f')
-        assert isinstance(f.attributes()[date_idx], QDate)
+        self.assertIsInstance(f.attributes()[date_idx], QDate)
         self.assertEqual(f.attributes()[date_idx], QDate(2014, 3, 5))
         time_idx = created_layer.fieldNameIndex('time_f')
-        assert isinstance(f.attributes()[time_idx], QTime)
+        self.assertIsInstance(f.attributes()[time_idx], QTime)
         self.assertEqual(f.attributes()[time_idx], QTime(13, 45, 22))
         datetime_idx = created_layer.fieldNameIndex('dt_f')
-        assert isinstance(f.attributes()[datetime_idx], QDateTime)
+        self.assertIsInstance(f.attributes()[datetime_idx], QDateTime)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22)))
 
     def testWriteShapefileWithZ(self):
@@ -201,17 +200,17 @@ class TestQgsVectorLayer(unittest.TestCase):
             'test',
             'memory')
 
-        assert ml is not None, 'Provider not initialized'
-        assert ml.isValid(), 'Source layer not valid'
+        self.assertIsNotNone(ml, 'Provider not initialized')
+        self.assertTrue(ml.isValid(), 'Source layer not valid')
         provider = ml.dataProvider()
-        assert provider is not None
+        self.assertIsNotNone(provider)
 
         ft = QgsFeature()
         ft.setGeometry(QgsGeometry.fromWkt('PointZ (1 2 3)'))
         ft.setAttributes([1])
         res, features = provider.addFeatures([ft])
-        assert res
-        assert len(features) > 0
+        self.assertTrue(res)
+        self.assertTrue(features)
 
         # check with both a standard PointZ and 25d style Point25D type
         for t in [QgsWKBTypes.PointZ, QgsWKBTypes.Point25D]:
@@ -233,7 +232,7 @@ class TestQgsVectorLayer(unittest.TestCase):
             g = f.geometry()
             wkt = g.exportToWkt()
             expWkt = 'PointZ (1 2 3)'
-            assert compareWkt(expWkt, wkt), "saving geometry with Z failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+            self.assertTrue(compareWkt(expWkt, wkt), "saving geometry with Z failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
             #also try saving out the shapefile version again, as an extra test
             #this tests that saving a layer with z WITHOUT explicitly telling the writer to keep z values,
@@ -254,7 +253,7 @@ class TestQgsVectorLayer(unittest.TestCase):
             f = next(created_layer_from_shp.getFeatures(QgsFeatureRequest()))
             g = f.geometry()
             wkt = g.exportToWkt()
-            assert compareWkt(expWkt, wkt), "saving geometry with Z failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+            self.assertTrue(compareWkt(expWkt, wkt), "saving geometry with Z failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
     def testWriteShapefileWithMultiConversion(self):
         """Check writing geometries to an ESRI shapefile with conversion to multi."""
@@ -263,17 +262,17 @@ class TestQgsVectorLayer(unittest.TestCase):
             'test',
             'memory')
 
-        assert ml is not None, 'Provider not initialized'
-        assert ml.isValid(), 'Source layer not valid'
+        self.assertIsNotNone(ml, 'Provider not initialized')
+        self.assertTrue(ml.isValid(), 'Source layer not valid')
         provider = ml.dataProvider()
-        assert provider is not None
+        self.assertIsNotNone(provider)
 
         ft = QgsFeature()
         ft.setGeometry(QgsGeometry.fromWkt('Point (1 2)'))
         ft.setAttributes([1])
         res, features = provider.addFeatures([ft])
-        assert res
-        assert len(features) > 0
+        self.assertTrue(res)
+        self.assertTrue(features)
 
         dest_file_name = os.path.join(str(QDir.tempPath()), 'to_multi.shp')
         crs = QgsCoordinateReferenceSystem()
@@ -293,7 +292,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         g = f.geometry()
         wkt = g.exportToWkt()
         expWkt = 'MultiPoint ((1 2))'
-        assert compareWkt(expWkt, wkt), "saving geometry with multi conversion failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+        self.assertTrue(compareWkt(expWkt, wkt), "saving geometry with multi conversion failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
     def testWriteShapefileWithAttributeSubsets(self):
         """Tests writing subsets of attributes to files."""
@@ -302,17 +301,17 @@ class TestQgsVectorLayer(unittest.TestCase):
             'test',
             'memory')
 
-        assert ml is not None, 'Provider not initialized'
-        assert ml.isValid(), 'Source layer not valid'
+        self.assertIsNotNone(ml, 'Provider not initialized')
+        self.assertTrue(ml.isValid(), 'Source layer not valid')
         provider = ml.dataProvider()
-        assert provider is not None
+        self.assertIsNotNone(provider)
 
         ft = QgsFeature()
         ft.setGeometry(QgsGeometry.fromWkt('Point (1 2)'))
         ft.setAttributes([1, 11, 12, 13])
         res, features = provider.addFeatures([ft])
-        assert res
-        assert len(features) > 0
+        self.assertTrue(res)
+        self.assertTrue(features)
 
         #first write out with all attributes
         dest_file_name = os.path.join(str(QDir.tempPath()), 'all_attributes.shp')
@@ -376,7 +375,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         g = f.geometry()
         wkt = g.exportToWkt()
         expWkt = 'Point (1 2)'
-        assert compareWkt(expWkt, wkt), "geometry not saved correctly when saving without attributes : mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+        self.assertTrue(compareWkt(expWkt, wkt), "geometry not saved correctly when saving without attributes : mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
         self.assertEqual(f['FID'], 0)
 
     def testValueConverter(self):
@@ -386,17 +385,17 @@ class TestQgsVectorLayer(unittest.TestCase):
             'test',
             'memory')
 
-        assert ml is not None, 'Provider not initialized'
-        assert ml.isValid(), 'Source layer not valid'
+        self.assertIsNotNone(ml, 'Provider not initialized')
+        self.assertTrue(ml.isValid(), 'Source layer not valid')
         provider = ml.dataProvider()
-        assert provider is not None
+        self.assertIsNotNone(provider)
         self.assertEqual(ml.fields().count(), 3)
 
         ft = QgsFeature()
         ft.setAttributes([1, 'ignored', 3])
         res, features = provider.addFeatures([ft])
-        assert res
-        assert len(features) > 0
+        self.assertTrue(res)
+        self.assertTrue(features)
 
         dest_file_name = os.path.join(str(QDir.tempPath()), 'value_converter.shp')
         converter = TestFieldValueConverter(ml)

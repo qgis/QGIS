@@ -63,8 +63,6 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
     , mLegend( nullptr )
     , mStyleManager( new QgsMapLayerStyleManager( this ) )
 {
-  mCRS = new QgsCoordinateReferenceSystem();
-
   // Set the display name = internal name
   QgsDebugMsg( "original name: '" + mLayerOrigName + '\'' );
   mLayerName = capitaliseLayerName( mLayerOrigName );
@@ -92,7 +90,6 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
 
 QgsMapLayer::~QgsMapLayer()
 {
-  delete mCRS;
   delete mLegend;
   delete mStyleManager;
 }
@@ -171,8 +168,6 @@ void QgsMapLayer::drawLabels( QgsRenderContext& rendererContext )
 
 bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
 {
-  QgsCoordinateReferenceSystem savedCRS;
-  CUSTOM_CRS_VALIDATION savedValidation;
   bool layerError;
 
   QDomNode mnl;
@@ -380,11 +375,14 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
   mnl = layerElement.namedItem( "layername" );
   mne = mnl.toElement();
 
+  QgsCoordinateReferenceSystem savedCRS;
+  CUSTOM_CRS_VALIDATION savedValidation;
+
   QDomNode srsNode = layerElement.namedItem( "srs" );
-  mCRS->readXML( srsNode );
-  mCRS->setValidationHint( tr( "Specify CRS for layer %1" ).arg( mne.text() ) );
-  mCRS->validate();
-  savedCRS = *mCRS;
+  mCRS.readXML( srsNode );
+  mCRS.setValidationHint( tr( "Specify CRS for layer %1" ).arg( mne.text() ) );
+  mCRS.validate();
+  savedCRS = mCRS;
 
   // Do not validate any projections in children, they will be overwritten anyway.
   // No need to ask the user for a projections when it is overwritten, is there?
@@ -398,7 +396,7 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
   // file readnig functions changed it. They will if projections is specfied in the file.
   // FIXME: is this necessary?
   QgsCoordinateReferenceSystem::setCustomSrsValidation( savedValidation );
-  *mCRS = savedCRS;
+  mCRS = savedCRS;
 
   // Abort if any error in layer, such as not found.
   if ( layerError )
@@ -768,7 +766,7 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
 
   // spatial reference system id
   QDomElement mySrsElement = document.createElement( "srs" );
-  mCRS->writeXML( mySrsElement, document );
+  mCRS.writeXML( mySrsElement, document );
   layerElement.appendChild( mySrsElement );
 
 #if 0
@@ -1000,17 +998,17 @@ void QgsMapLayer::setSubLayerVisibility( const QString& name, bool vis )
 
 const QgsCoordinateReferenceSystem& QgsMapLayer::crs() const
 {
-  return *mCRS;
+  return mCRS;
 }
 
 void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal )
 {
-  *mCRS = srs;
+  mCRS = srs;
 
-  if ( !mCRS->isValid() )
+  if ( !mCRS.isValid() )
   {
-    mCRS->setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
-    mCRS->validate();
+    mCRS.setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
+    mCRS.validate();
   }
 
   if ( emitSignal )

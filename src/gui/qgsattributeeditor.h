@@ -35,6 +35,7 @@ class QgsVectorLayer;
  *
  * @deprecated
  */
+// TODO QGIS 3.0 - remove
 class GUI_EXPORT QgsAttributeEditor : public QObject
 {
     Q_OBJECT

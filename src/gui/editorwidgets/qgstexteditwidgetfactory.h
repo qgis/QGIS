@@ -30,6 +30,7 @@ class GUI_EXPORT QgsTextEditWidgetFactory : public QgsEditorWidgetFactory
     // QgsEditorWidgetFactory interface
   public:
     QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const override;
+    QgsSearchWidgetWrapper* createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
     QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
 
     // QgsEditorWidgetFactory interface

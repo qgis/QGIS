@@ -101,6 +101,7 @@ ENDMACRO (ADD_QGIS_TEST)
 #############################################################
 # Tests:
 
+ADD_QGIS_TEST(apppythontest testqgisapppython.cpp)
 ADD_QGIS_TEST(qgisappclipboard testqgisappclipboard.cpp)
 ADD_QGIS_TEST(attributetabletest testqgsattributetable.cpp)
 ADD_QGIS_TEST(fieldcalculatortest testqgsfieldcalculator.cpp)

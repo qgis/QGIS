@@ -101,6 +101,12 @@ bool QgsDateTimeEditWrapper::valid() const
   return mQgsDateTimeEdit || mQDateTimeEdit;
 }
 
+void QgsDateTimeEditWrapper::showIndeterminateState()
+{
+  if ( mQgsDateTimeEdit )
+    mQgsDateTimeEdit->setEmpty();
+}
+
 void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime& dateTime )
 {
   const QString fieldFormat = config( "field_format", QGSDATETIMEEDIT_DATEFORMAT ).toString();

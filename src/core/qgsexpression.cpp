@@ -4051,6 +4051,40 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression *parent, const Q
         }
         return QVariant( computeDateTimeFromInterval( dL, &iL ) );
       }
+      else if ( mOp == boPlus && (( vL.type() == QVariant::Date && vR.type() == QVariant::Time ) ||
+                                  ( vR.type() == QVariant::Date && vL.type() == QVariant::Time ) ) )
+      {
+        QDate date = getDateValue( vL.type() == QVariant::Date ? vL : vR, parent );
+        ENSURE_NO_EVAL_ERROR;
+        QTime time = getTimeValue( vR.type() == QVariant::Time ? vR : vL, parent );
+        ENSURE_NO_EVAL_ERROR;
+        QDateTime dt = QDateTime( date, time );
+        return QVariant( dt );
+      }
+      else if ( mOp == boMinus && vL.type() == QVariant::Date && vR.type() == QVariant::Date )
+      {
+        QDate date1 = getDateValue( vL, parent );
+        ENSURE_NO_EVAL_ERROR;
+        QDate date2 = getDateValue( vR, parent );
+        ENSURE_NO_EVAL_ERROR;
+        return date1 - date2;
+      }
+      else if ( mOp == boMinus && vL.type() == QVariant::Time && vR.type() == QVariant::Time )
+      {
+        QTime time1 = getTimeValue( vL, parent );
+        ENSURE_NO_EVAL_ERROR;
+        QTime time2 = getTimeValue( vR, parent );
+        ENSURE_NO_EVAL_ERROR;
+        return time1 - time2;
+      }
+      else if ( mOp == boMinus && vL.type() == QVariant::DateTime && vR.type() == QVariant::DateTime )
+      {
+        QDateTime datetime1 = getDateTimeValue( vL, parent );
+        ENSURE_NO_EVAL_ERROR;
+        QDateTime datetime2 = getDateTimeValue( vR, parent );
+        ENSURE_NO_EVAL_ERROR;
+        return datetime1 - datetime2;
+      }
       else
       {
         // general floating point arithmetic

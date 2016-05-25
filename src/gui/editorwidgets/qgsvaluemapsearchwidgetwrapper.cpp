@@ -40,10 +40,12 @@ void QgsValueMapSearchWidgetWrapper::comboBoxIndexChanged( int idx )
     if ( idx == 0 )
     {
       clearExpression();
+      emit valueCleared();
     }
     else
     {
       setExpression( mComboBox->itemData( idx ).toString() );
+      emit valueChanged();
     }
     emit expressionChanged( mExpression );
   }
@@ -62,6 +64,73 @@ QString QgsValueMapSearchWidgetWrapper::expression()
 bool QgsValueMapSearchWidgetWrapper::valid() const
 {
   return true;
+}
+
+QgsSearchWidgetWrapper::FilterFlags QgsValueMapSearchWidgetWrapper::supportedFlags() const
+{
+  return EqualTo | NotEqualTo | IsNull | IsNotNull;
+}
+
+QgsSearchWidgetWrapper::FilterFlags QgsValueMapSearchWidgetWrapper::defaultFlags() const
+{
+  return EqualTo;
+}
+
+QString QgsValueMapSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const
+{
+  //if unselect value, always pass
+  if ( mComboBox->currentIndex() == 0 )
+    return QString();
+
+  //clear any unsupported flags
+  flags &= supportedFlags();
+
+  QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
+  QString fieldName = QgsExpression::quotedColumnRef( layer()->fields().at( mFieldIdx ).name() );
+
+  if ( flags & IsNull )
+    return fieldName + " IS NULL";
+  if ( flags & IsNotNull )
+    return fieldName + " IS NOT NULL";
+
+  QString currentKey = mComboBox->itemData( mComboBox->currentIndex() ).toString();
+
+  switch ( fldType )
+  {
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::Double:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+    {
+      if ( flags & EqualTo )
+        return fieldName + '=' + currentKey;
+      else if ( flags & NotEqualTo )
+        return fieldName + "<>" + currentKey;
+      break;
+    }
+
+    default:
+    {
+      if ( flags & EqualTo )
+        return fieldName + "='" + currentKey + '\'';
+      else if ( flags & NotEqualTo )
+        return fieldName + "<>'" + currentKey + '\'';
+      break;
+    }
+  }
+
+  return QString();
+}
+
+void QgsValueMapSearchWidgetWrapper::clearWidget()
+{
+  mComboBox->setCurrentIndex( 0 );
+}
+
+void QgsValueMapSearchWidgetWrapper::setEnabled( bool enabled )
+{
+  mComboBox->setEnabled( enabled );
 }
 
 void QgsValueMapSearchWidgetWrapper::initWidget( QWidget* editor )

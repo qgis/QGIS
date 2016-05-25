@@ -1,5 +1,3 @@
-ProcessingGdalAlgorithmsTest
-ProcessingQgisAlgorithmsTest
 PyQgsComposerPicture
 PyQgsGeometryTest
 PyQgsJSONUtils
@@ -9,12 +7,9 @@ PyQgsPalLabelingServer
 PyQgsRelationEditWidget
 PyQgsServer
 PyQgsServerAccessControl
-PyQgsShapefileProvider
 PyQgsSipCoverage
 PyQgsSpatialiteProvider
 PyQgsVirtualLayerDefinition
 PyQgsVirtualLayerProvider
 qgis_composermapgridtest
-qgis_composertabletest
-qgis_composertablev2test
 qgis_composerutils

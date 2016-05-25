@@ -25,12 +25,11 @@ QgsColorWidgetWrapper::QgsColorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, 
 
 QVariant QgsColorWidgetWrapper::value() const
 {
-  QVariant v;
-
+  QColor c;
   if ( mColorButton )
-    v = mColorButton->color();
+    c = mColorButton->color();
 
-  return v;
+  return c.isValid() ? QVariant( c ) : QVariant( QVariant::Color );
 }
 
 void QgsColorWidgetWrapper::showIndeterminateState()
@@ -64,6 +63,7 @@ void QgsColorWidgetWrapper::initWidget( QWidget* editor )
     mColorButton = editor->findChild<QgsColorButtonV2*>();
   }
 
+  mColorButton->setShowNull( true );
   connect( mColorButton, SIGNAL( colorChanged( QColor ) ), this, SLOT( valueChanged() ) );
 }
 
@@ -75,5 +75,5 @@ bool QgsColorWidgetWrapper::valid() const
 void QgsColorWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mColorButton )
-    mColorButton->setColor( QColor( value.toString() ) );
+    mColorButton->setColor( !value.isNull() ? QColor( value.toString() ) : QColor() );
 }

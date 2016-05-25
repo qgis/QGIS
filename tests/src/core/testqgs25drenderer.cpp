@@ -120,6 +120,7 @@ void TestQgs25DRenderer::render()
   Qgs25DRenderer* renderer = new Qgs25DRenderer( );
   renderer->setShadowEnabled( false );
   renderer->setWallShadingEnabled( false );
+  renderer->setRoofColor( QColor( "#fdbf6f" ) );
   mpPolysLayer->setRendererV2( renderer );
 
   QVERIFY( imageCheck( "25d_render" ) );

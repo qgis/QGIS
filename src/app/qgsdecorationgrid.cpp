@@ -832,7 +832,7 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double* values )
     QMessageBox::warning( nullptr, tr( "Error" ), tr( "Invalid raster layer" ) );
     return false;
   }
-  const QgsCoordinateReferenceSystem& layerCRS = layer->crs();
+  QgsCoordinateReferenceSystem layerCRS = layer->crs();
   const QgsCoordinateReferenceSystem& mapCRS =
     QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs();
   // is this the best way to compare CRS? should we also make sure map has OTF enabled?

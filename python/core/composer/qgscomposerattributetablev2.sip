@@ -236,9 +236,19 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @param refresh set to true to force the table to refetch features from its vector layer
      * and immediately update the display of the table. This may result in the table changing size
      * to accommodate the new displayed feature attributes.
-     * @see displayAttributes
+     * @deprecated use setDisplayedFields() instead
      */
-    void setDisplayAttributes( const QSet<int>& attr, bool refresh = true );
+    void setDisplayAttributes( const QSet<int>& attr, bool refresh = true ) /Deprecated/;
+
+    /** Sets the attributes to display in the table.
+     * @param fields list of fields names from the vector layer to show.
+     * Set to an empty list to show all feature attributes.
+     * @param refresh set to true to force the table to refetch features from its vector layer
+     * and immediately update the display of the table. This may result in the table changing size
+     * to accommodate the new displayed feature attributes.
+     * @note added in QGIS 2.16
+     */
+    void setDisplayedFields( const QStringList& fields, bool refresh = true );
 
     /** Returns the attributes used to sort the table's features.
      * @returns a QList of integer/bool pairs, where the integer refers to the attribute index and
