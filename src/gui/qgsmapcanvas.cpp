@@ -891,8 +891,10 @@ void QgsMapCanvas::saveAsImage( const QString& theFileName, QPixmap * theQPixmap
   //Origin Y (center of top left cell)
   myHeader += qgsDoubleToString( myRect.yMaximum() - ( mapUnitsPerPixel() / 2 ) ) + "\r\n";
   QFileInfo myInfo  = QFileInfo( theFileName );
-  // allow dotted names
-  QString myWorldFileName = myInfo.absolutePath() + '/' + myInfo.completeBaseName() + '.' + theFormat + 'w';
+  // build the world file name
+  QString outputSuffix = myInfo.suffix();
+  QString myWorldFileName = myInfo.absolutePath() + '/' + myInfo.baseName() + '.'
+                            + outputSuffix.at( 0 ) + outputSuffix.at( myInfo.suffix().size() - 1 ) + 'w';
   QFile myWorldFile( myWorldFileName );
   if ( !myWorldFile.open( QIODevice::WriteOnly ) ) //don't use QIODevice::Text
   {
