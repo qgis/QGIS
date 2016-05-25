@@ -201,22 +201,20 @@ class QgsRasterBlock
      *  @param row row index
      *  @param column column index
      *  @return pointer to data
-     *  @note not available in python bindings
      */
-    // char * bits( int row, int column );
+     void *bits( int row, int column ) /PyName=bitsByRowCol/ [char * ()];
 
     /** \brief Get pointer to data
      *  @param index data matrix index (long type in Python)
      *  @return pointer to data
-     *  @note not available in python bindings
      */
-    // char * bits( qgssize index );
+     void *bits( qgssize index ) /PyName=bitsByIndex/ [char * ()];
 
     /** \brief Get pointer to data
      *  @return pointer to data
      *  @note not available in python bindings
      */
-    // char * bits();
+     void *bits() [char * ()];
 
     /** \brief Print double value with all necessary significant digits.
      *         It is ensured that conversion back to double gives the same number.
