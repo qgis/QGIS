@@ -176,9 +176,14 @@ bool QgsAttributeForm::save()
       {
         QVariant dstVar = dst.at( eww->fieldIdx() );
         QVariant srcVar = eww->value();
+
         // need to check dstVar.isNull() != srcVar.isNull()
         // otherwise if dstVar=NULL and scrVar=0, then dstVar = srcVar
-        if (( dstVar != srcVar || dstVar.isNull() != srcVar.isNull() ) && srcVar.isValid() && !mLayer->editFormConfig()->readOnly( eww->fieldIdx() ) )
+        // be careful- sometimes two null qvariants will be reported as not equal!! (eg different types)
+        bool changed = ( dstVar != srcVar && !dstVar.isNull() && !srcVar.isNull() )
+                       || ( dstVar.isNull() != srcVar.isNull() );
+        if ( changed && srcVar.isValid()
+             && !mLayer->editFormConfig()->readOnly( eww->fieldIdx() ) )
         {
           dst[eww->fieldIdx()] = srcVar;
 
