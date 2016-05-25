@@ -53,7 +53,8 @@ class GrassAlgorithmProvider(AlgorithmProvider):
             ProcessingConfig.addSetting(Setting(self.getDescription(),
                                                 GrassUtils.GRASS_FOLDER, self.tr('GRASS folder'),
                                                 GrassUtils.grassPath(), valuetype=Setting.FOLDER))
-            ProcessingConfig.addSetting(Setting(self.getDescription(),
+            if isWindows():
+                ProcessingConfig.addSetting(Setting(self.getDescription(),
                                                 GrassUtils.GRASS_WIN_SHELL, self.tr('Msys folder'),
                                                 GrassUtils.grassWinShell(), valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
