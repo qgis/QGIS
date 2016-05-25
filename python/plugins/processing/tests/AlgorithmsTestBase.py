@@ -36,6 +36,20 @@ import tempfile
 from osgeo.gdalconst import GA_ReadOnly
 
 import processing
+from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
+from processing.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
+from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider
+from processing.algs.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
+from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
+from processing.algs.lidar.LidarToolsAlgorithmProvider import LidarToolsAlgorithmProvider
+from processing.algs.gdal.GdalOgrAlgorithmProvider import GdalOgrAlgorithmProvider
+from processing.algs.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
+from processing.algs.r.RAlgorithmProvider import RAlgorithmProvider
+from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
+from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
+from processing.algs.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvider
+from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider
+
 
 from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsMapLayerRegistry
 

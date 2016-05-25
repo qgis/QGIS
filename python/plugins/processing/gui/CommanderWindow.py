@@ -32,6 +32,7 @@ from qgis.PyQt.QtWidgets import QDialog, QLabel, QSpacerItem, QHBoxLayout, QVBox
 from qgis.PyQt.QtCore import QSortFilterProxyModel
 from qgis.utils import iface
 from processing.core.Processing import Processing
+from processing.core.alglist import algList
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.tools.system import userFolder, mkdir
@@ -99,9 +100,7 @@ class CommanderWindow(QDialog):
         self.combo.clear()
 
         # Add algorithms
-        for providerName in Processing.algs.keys():
-            provider = Processing.algs[providerName]
-            algs = provider.values()
+        for algs in algList.algs.values():
             for alg in algs:
                 self.combo.addItem('Processing algorithm: ' + alg.name)
 
@@ -111,7 +110,7 @@ class CommanderWindow(QDialog):
                           types.FunctionType):
                 self.combo.addItem('Command: ' + command)
 
-        #Add menu entries
+        # Add menu entries
         menuActions = []
         actions = iface.mainWindow().menuBar().actions()
         for action in actions:

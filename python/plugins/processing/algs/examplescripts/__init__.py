@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    EditModelAction.py
+    __init__.py
     ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
+    Date                 : July 2013
+    Copyright            : (C) 2013 by Victor Olaya
     Email                : volayaf at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -16,30 +16,16 @@
 *                                                                         *
 ***************************************************************************
 """
+from .ProcessingExampleScriptsPlugin import ProcessingExampleScriptsPlugin
 
 __author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__date__ = 'July 2013'
+__copyright__ = '(C) 2013, Victor Olaya'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
 __revision__ = '$Format:%H$'
 
-from processing.gui.ContextAction import ContextAction
-from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
-from processing.modeler.ModelerDialog import ModelerDialog
-from processing.core.alglist import algList
 
-class EditModelAction(ContextAction):
-
-    def __init__(self):
-        self.name = self.tr('Edit model', 'EditModelAction')
-
-    def isEnabled(self):
-        return isinstance(self.itemData, ModelerAlgorithm)
-
-    def execute(self):
-        dlg = ModelerDialog(self.itemData.getCopy())
-        dlg.exec_()
-        if dlg.update:
-            algList.reloadProvider('model')
+def classFactory(iface):
+    return ProcessingExampleScriptsPlugin()

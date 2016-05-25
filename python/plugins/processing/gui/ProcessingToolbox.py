@@ -34,17 +34,17 @@ from qgis.PyQt.QtWidgets import QMenu, QAction, QTreeWidgetItem, QLabel, QMessag
 from qgis.utils import iface
 
 from processing.gui.Postprocessing import handleAlgorithmResults
-from processing.core.Processing import Processing, algListWatcher
+from processing.core.Processing import Processing
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig, settingsWatcher
 from processing.gui.MessageDialog import MessageDialog
-from processing.gui import AlgorithmClassification
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
 from processing.gui.ConfigDialog import ConfigDialog
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmExecutor import runalg
+from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -81,8 +81,9 @@ class ProcessingToolbox(BASE, WIDGET):
 
         self.fillTree()
 
-        algListWatcher.providerRemoved.connect(self.removeProvider)
-        algListWatcher.providerAdded.connect(self.addProvider)
+        algList.providerRemoved.connect(self.removeProvider)
+        algList.providerAdded.connect(self.addProvider)
+        algList.providerUpdated.connect(self.updateProvider)
         settingsWatcher.settingsChanged.connect(self.fillTree)
 
     def showDisabled(self):
@@ -96,7 +97,7 @@ class ProcessingToolbox(BASE, WIDGET):
         if not showTip or self.tipWasClosed:
             return False
 
-        for providerName in Processing.algs.keys():
+        for providerName in algList.algs.keys():
             name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
             if not ProcessingConfig.getSetting(name):
                 return True
@@ -110,7 +111,7 @@ class ProcessingToolbox(BASE, WIDGET):
         if text:
             self.algorithmTree.expandAll()
             self.disabledWithMatchingAlgs = []
-            for providerName, provider in Processing.algs.iteritems():
+            for providerName, provider in algList.algs.iteritems():
                 name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
                 if not ProcessingConfig.getSetting(name):
                     for alg in provider.values():
@@ -308,9 +309,7 @@ class ProcessingToolbox(BASE, WIDGET):
     def addProvider(self, providerName):
         name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
         providerItem = TreeProviderItem(providerName, None, self)
-        if ProcessingConfig.getSetting(name):
-            providerItem.setHidden(providerItem.childCount() == 0)
-        else:
+        if not ProcessingConfig.getSetting(name):
             providerItem = TreeProviderItem(providerName, None, self)
             providerItem.setHidden(True)
             self.disabledProviderItems[providerName] = providerItem
@@ -326,11 +325,10 @@ class ProcessingToolbox(BASE, WIDGET):
         self.algorithmTree.clear()
         self.disabledProviderItems = {}
         disabled = []
-        for providerName in Processing.algs.keys():
+        for providerName in algList.algs.keys():
             name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
             if ProcessingConfig.getSetting(name):
                 providerItem = TreeProviderItem(providerName, self.algorithmTree, self)
-                providerItem.setHidden(providerItem.childCount() == 0)
             else:
                 disabled.append(providerName)
         self.algorithmTree.sortItems(0, Qt.AscendingOrder)
@@ -346,7 +344,7 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         QTreeWidgetItem.__init__(self)
         self.alg = alg
         icon = alg.getIcon()
-        nameEn, name = AlgorithmClassification.getDisplayNames(alg)
+        nameEn, name = alg.displayNames()
         name = name if name != '' else nameEn
         self.setIcon(0, icon)
         self.setToolTip(0, name)
@@ -383,7 +381,7 @@ class TreeProviderItem(QTreeWidgetItem):
     def populate(self):
         groups = {}
         count = 0
-        provider = Processing.algs[self.providerName]
+        provider = algList.algs[self.providerName]
         algs = provider.values()
 
         name = 'ACTIVATE_' + self.providerName.upper().replace(' ', '_')
@@ -436,3 +434,5 @@ class TreeProviderItem(QTreeWidgetItem):
         self.setToolTip(0, self.text(0))
         for groupItem in groups.values():
             self.addChild(groupItem)
+
+        self.setHidden(self.childCount() == 0)

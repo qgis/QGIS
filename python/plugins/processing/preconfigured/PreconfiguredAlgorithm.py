@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 
 import os
-from processing.modeler.ModelerUtils import ModelerUtils
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.alglist import algList
 import json
 
 
@@ -58,7 +58,7 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
         self.showInModeler = False
 
     def execute(self, progress):
-        self.alg = ModelerUtils.getAlgorithm(self.description["algname"]).getCopy()
+        self.alg = algList.getAlgorithm(self.description["algname"]).getCopy()
         for name, value in self.description["parameters"].iteritems():
             self.alg.setParameterValue(name, value)
         for name, value in self.description["outputs"].iteritems():

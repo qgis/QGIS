@@ -26,7 +26,7 @@ __revision__ = '$Format:%H$'
 import os
 from processing.core.Processing import Processing
 from processing.gui.AlgorithmClassification import (
-    loadClassification, getClassificationEn, getDisplayNameEn)
+    loadClassification, getClassificationEn)
 
 
 def updateTranslations():
@@ -61,7 +61,7 @@ def translationShadow():
     """{}"""
 '''.format(provider.__class__.__name__))
         for alg in provider.algs:
-            display_name = getDisplayNameEn(alg)
+            display_name = alg.name
             f.write("    QCoreApplication.translate(\"{}\", \"{}\")\n"
                     .format(alg.__class__.__name__,
                             display_name.replace('"', '\\"')))

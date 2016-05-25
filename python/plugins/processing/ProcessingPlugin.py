@@ -43,6 +43,7 @@ from processing.gui.CommanderWindow import CommanderWindow
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempFolder
 from processing.gui.menus import removeMenus, initializeMenus, createMenus
+from processing.core.alglist import algList
 
 
 cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
@@ -54,10 +55,9 @@ class ProcessingPlugin:
 
     def __init__(self, iface):
         self.iface = iface
-
-    def initGui(self):
         Processing.initialize()
 
+    def initGui(self):
         self.commander = None
         self.toolbox = ProcessingToolbox()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
@@ -160,7 +160,7 @@ class ProcessingPlugin:
         dlg = ModelerDialog()
         dlg.exec_()
         if dlg.update:
-            self.toolbox.updateProvider('model')
+            algList.reloadProvider('model')
 
     def openResults(self):
         dlg = ResultsDialog()

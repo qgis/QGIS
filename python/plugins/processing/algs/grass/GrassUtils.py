@@ -106,6 +106,8 @@ class GrassUtils:
                 if not os.path.isdir(folder):
                     folder = '/Applications/GRASS-6.4.app/Contents/MacOS'
 
+        if folder:
+            ProcessingConfig.setSettingValue(GrassUtils.GRASS_FOLDER, folder)
         return folder or ''
 
     @staticmethod

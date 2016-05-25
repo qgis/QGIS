@@ -64,8 +64,8 @@ class GetScriptsAction(ToolboxAction):
     def execute(self):
         dlg = GetScriptsAndModelsDialog(GetScriptsAndModelsDialog.SCRIPTS)
         dlg.exec_()
-        if dlg.updateToolbox:
-            self.toolbox.updateProvider('script')
+        if dlg.updateProvider:
+            algList.reloadProvider('script')
 
 
 class GetRScriptsAction(ToolboxAction):
@@ -80,7 +80,7 @@ class GetRScriptsAction(ToolboxAction):
     def execute(self):
         dlg = GetScriptsAndModelsDialog(GetScriptsAndModelsDialog.RSCRIPTS)
         dlg.exec_()
-        if dlg.updateToolbox:
+        if dlg.updateProvider:
             self.toolbox.updateProvider('r')
 
 
@@ -96,8 +96,8 @@ class GetModelsAction(ToolboxAction):
     def execute(self):
         dlg = GetScriptsAndModelsDialog(GetScriptsAndModelsDialog.MODELS)
         dlg.exec_()
-        if dlg.updateToolbox:
-            self.toolbox.updateProvider('model')
+        if dlg.updateProvider:
+            algList.reloadProvider('model')
 
 
 class GetScriptsAndModelsDialog(BASE, WIDGET):
@@ -141,7 +141,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
             self.icon = QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
 
         self.lastSelectedItem = None
-        self.updateToolbox = False
+        self.updateProvider = False
         self.populateTree()
         self.buttonBox.accepted.connect(self.okPressed)
         self.buttonBox.rejected.connect(self.cancelPressed)
@@ -305,7 +305,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
                 if os.path.exists(path):
                     os.remove(path)
 
-        self.updateToolbox = len(toDownload) + len(toDelete) > 0
+        self.updateProvider = len(toDownload) + len(toDelete) > 0
         super(GetScriptsAndModelsDialog, self).accept()
 
 
