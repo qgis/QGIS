@@ -40,8 +40,6 @@ from qgis.core import QgsMessageLog
 import processing
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.script.ScriptUtils import ScriptUtils
-from processing.gui import AlgorithmClassification
-from processing.modeler.ModelerUtils import ModelerUtils
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
