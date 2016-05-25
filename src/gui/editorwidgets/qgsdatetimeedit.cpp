@@ -41,7 +41,7 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
   mNullLabel->setStyleSheet( "position: absolute; border: none; font-style: italic; color: grey;" );
   mNullLabel->hide();
 
-  setStyleSheet( QString( "padding-right: %1px;" ).arg( mClearButton->sizeHint().width() + spinButtonWidth() + frameWidth() + 1 ) );
+  setStyleSheet( QString( ".QWidget, QLineEdit, QToolButton { padding-right: %1px; }" ).arg( mClearButton->sizeHint().width() + spinButtonWidth() + frameWidth() + 1 ) );
 
   QSize msz = minimumSizeHint();
   setMinimumSize( qMax( msz.width(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ),
