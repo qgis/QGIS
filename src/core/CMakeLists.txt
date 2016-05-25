@@ -329,6 +329,7 @@ SET(QGIS_CORE_SRCS
   raster/qgssinglebandcolordatarenderer.cpp
   raster/qgssinglebandgrayrenderer.cpp
   raster/qgssinglebandpseudocolorrenderer.cpp
+  raster/qgshillshaderenderer.cpp
 
   geometry/qgsabstractgeometryv2.cpp
   geometry/qgscircularstringv2.cpp
@@ -801,6 +802,7 @@ SET(QGIS_CORE_HDRS
   raster/qgssinglebandcolordatarenderer.h
   raster/qgssinglebandgrayrenderer.h
   raster/qgssinglebandpseudocolorrenderer.h
+  raster/qgshillshaderenderer.h
 
   symbology-ng/qgs25drenderer.h
   symbology-ng/qgscategorizedsymbolrendererv2.h
