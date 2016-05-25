@@ -281,7 +281,7 @@ class RAlgorithm(GeoAlgorithm):
                         value = value + '.tif'
                     commands.append('writeGDAL(' + out.name + ',"' + value
                                     + '")')
-            if isinstance(out, OutputVector):
+            elif isinstance(out, OutputVector):
                 value = out.value
                 if not value.endswith('shp'):
                     value = value + '.shp'
@@ -290,6 +290,10 @@ class RAlgorithm(GeoAlgorithm):
                 filename = filename[:-4]
                 commands.append('writeOGR(' + out.name + ',"' + value + '","'
                                 + filename + '", driver="ESRI Shapefile")')
+            elif isinstance(out, OutputTable):
+                value = out.value
+                value = value.replace('\\', '/')
+                commands.append('write.csv(' + out.name + ',"' + value + '"')
 
         if self.showPlots:
             commands.append('dev.off()')
