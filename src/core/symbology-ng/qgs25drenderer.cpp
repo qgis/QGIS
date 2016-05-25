@@ -92,7 +92,7 @@ Qgs25DRenderer::Qgs25DRenderer()
 
   // These methods must only be used after the above initialization!
 
-  setRoofColor( QColor( "#fdbf6f" ) );
+  setRoofColor( QColor( "#b1a97c" ) );
   setWallColor( QColor( "#777777" ) );
 
   wallLayer()->setDataDefinedProperty( "color", new QgsDataDefined( QString( WALL_SHADING_EXPRESSION ) ) );
