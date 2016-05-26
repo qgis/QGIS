@@ -105,7 +105,7 @@ class ScriptAlgorithm(GeoAlgorithm):
                     self.processParameterLine(line.strip('\n'))
                 except:
                     self.error = self.tr('This script has a syntax errors.\n'
-                                'Problem with line: %s', 'ScriptAlgorithm') % line
+                                         'Problem with line: %s', 'ScriptAlgorithm') % line
             self.script += line
             line = lines.readline()
         lines.close()
@@ -123,7 +123,6 @@ class ScriptAlgorithm(GeoAlgorithm):
                     self.processParameterLine(line.strip('\n'))
                 except:
                     pass
-
 
     def checkBeforeOpeningParametersDialog(self):
         return self.error
@@ -349,3 +348,14 @@ class ScriptAlgorithm(GeoAlgorithm):
             return True, getHtmlFromHelpFile(self, helpfile)
         else:
             return False, None
+
+    def getParameterDescriptions(self):
+        descs = {}
+        helpfile = unicode(self.descriptionFile) + '.help'
+        if os.path.exists(helpfile):
+            with open(helpFile) as f:
+                descriptions = json.load(f)
+                for param in self.parameters:
+                    if param.name in descriptions:
+                        descs[param.name] = unicode(descriptions[param.name])
+        return descs
