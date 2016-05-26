@@ -282,9 +282,19 @@ class TestQgsServer(unittest.TestCase):
 
         query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.quote(project), request)
         header, body = [str(_v) for _v in self.server.handleRequest(query_string)]
+        self.result_compare(
+            'wfs_getfeature_' + requestid + '.txt',
+            u"request %s failed.\n Query: %s" % (
+                query_string,
+                request,
+            ),
+            header, body
+        )
+
+    def result_compare(self, file_name, error_msg_header, header, body):
         self.assert_headers(header, body)
         response = header + body
-        f = open(self.testdata_path + 'wfs_getfeature_' + requestid + '.txt')
+        f = open(self.testdata_path + file_name)
         expected = f.read()
         f.close()
         # Store the output for debug or to regenerate the reference documents:
@@ -298,9 +308,8 @@ class TestQgsServer(unittest.TestCase):
         """
         response = re.sub(RE_STRIP_PATH, '', response)
         expected = re.sub(RE_STRIP_PATH, '', expected)
-        self.assertEqual(response, expected, msg=u"request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s"
-                                                 % (query_string,
-                                                    request,
+        self.assertEqual(response, expected, msg=u"%s\n Expected:\n%s\n\n Response:\n%s"
+                                                 % (error_msg_header,
                                                     unicode(expected, errors='replace'),
                                                     unicode(response, errors='replace')))
 
@@ -308,9 +317,54 @@ class TestQgsServer(unittest.TestCase):
         tests = []
         tests.append(('nobbox', u'GetFeature&TYPENAME=testlayer'))
         tests.append(('startindex2', u'GetFeature&TYPENAME=testlayer&STARTINDEX=2'))
+        tests.append(('limit2', u'GetFeature&TYPENAME=testlayer&MAXFEATURES=2'))
+        tests.append(('start1_limit1', u'GetFeature&TYPENAME=testlayer&MAXFEATURES=1&STARTINDEX=1'))
 
         for id, req in tests:
             self.wfs_getfeature_compare(id, req)
+
+    def wfs_getfeature_post_compare(self, requestid, request):
+        project = self.testdata_path + "test+project_wfs.qgs"
+        assert os.path.exists(project), "Project file not found: " + project
+
+        query_string = 'MAP={}'.format(urllib.quote(project))
+        self.server.putenv("REQUEST_METHOD", "POST")
+        self.server.putenv("REQUEST_BODY", request)
+        header, body = self.server.handleRequest(query_string)
+        self.server.putenv("REQUEST_METHOD", '')
+        self.server.putenv("REQUEST_BODY", '')
+
+        self.result_compare(
+            'wfs_getfeature_{}.txt'.format(requestid),
+            "GetFeature in POST for '{}' failed.".format(requestid),
+            header, body,
+        )
+
+    def test_getfeature_post(self):
+        template = """<?xml version="1.0" encoding="UTF-8"?>
+<wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+  <wfs:Query typeName="testlayer" xmlns:feature="http://www.qgis.org/gml">
+    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+      <ogc:BBOX>
+        <ogc:PropertyName>geometry</ogc:PropertyName>
+        <gml:Envelope xmlns:gml="http://www.opengis.net/gml">
+          <gml:lowerCorner>8 44</gml:lowerCorner>
+          <gml:upperCorner>9 45</gml:upperCorner>
+        </gml:Envelope>
+      </ogc:BBOX>
+    </ogc:Filter>
+  </wfs:Query>
+</wfs:GetFeature>
+"""
+
+        tests = []
+        tests.append(('nobbox', template.format("")))
+        tests.append(('startindex2', template.format('startIndex="2"')))
+        tests.append(('limit2', template.format('maxFeatures="2"')))
+        tests.append(('start1_limit1', template.format('startIndex="1" maxFeatures="1"')))
+
+        for id, req in tests:
+            self.wfs_getfeature_post_compare(id, req)
 
     def test_getLegendGraphics(self):
         """Test that does not return an exception but an image"""
