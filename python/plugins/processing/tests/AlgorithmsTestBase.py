@@ -85,6 +85,7 @@ class AlgorithmsTest:
         QgsMapLayerRegistry.instance().removeAllMapLayers()
 
         params = self.load_params(defs['params'])
+
         alg = processing.Processing.getAlgorithm(defs['algorithm']).getCopy()
 
         if isinstance(params, list):
@@ -99,20 +100,23 @@ class AlgorithmsTest:
 
         expectFailure = False
         if 'expectedFailure' in defs:
-            exec('\n'.join(defs['expectedFailure'][:-1]), globals(), locals())
+            exec '\n'.join(defs['expectedFailure'][:-1]) in globals(), locals()
             expectFailure = eval(defs['expectedFailure'][-1])
+
+        def doCheck():
+            alg.execute()
+
+            self.check_results(alg.getOutputValuesAsDictionary(), defs['results'])
 
         if expectFailure:
             try:
-                alg.execute()
-                self.check_results(alg.getOutputValuesAsDictionary(), defs['results'])
+                doCheck()
             except Exception:
                 pass
             else:
                 raise _UnexpectedSuccess
         else:
-            alg.execute()
-            self.check_results(alg.getOutputValuesAsDictionary(), defs['results'])
+            doCheck()
 
     def load_params(self, params):
         """
@@ -168,6 +172,7 @@ class AlgorithmsTest:
         Loads a layer which was specified as parameter.
         """
         filepath = self.filepath_from_param(param)
+
         if param['type'] == 'vector':
             lyr = QgsVectorLayer(filepath, param['name'], 'ogr')
         elif param['type'] == 'raster':
@@ -191,7 +196,6 @@ class AlgorithmsTest:
         """
         Checks if result produced by an algorithm matches with the expected specification.
         """
-
         for id, expected_result in expected.items():
             if 'vector' == expected_result['type']:
                 expected_lyr = self.load_layer(expected_result)
