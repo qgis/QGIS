@@ -2269,7 +2269,7 @@ QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& e
     QString msg = query.lastError().text();
     QgsDebugMsg( msg );
     errCause = query.lastError().text();
-    return QString( "" );
+    return QString( );
   }
   while(query.next())
   {
