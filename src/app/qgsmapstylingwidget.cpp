@@ -42,6 +42,13 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QWidget *parent 
 
   mAutoApplyTimer = new QTimer( this );
   mAutoApplyTimer->setSingleShot( true );
+
+  mUndoWidget = new QgsUndoWidget( this, mMapCanvas );
+  mUndoWidget->setObjectName( "Undo Styles" );
+  mUndoWidget->hide();
+  connect( mUndoButton, SIGNAL( pressed() ), mUndoWidget, SLOT( undo() ) );
+  connect( mRedoButton, SIGNAL( pressed() ), mUndoWidget, SLOT( redo() ) );
+
   connect( mAutoApplyTimer, SIGNAL( timeout() ), this, SLOT( apply() ) );
 
   connect( mOptionsListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( updateCurrentWidgetLayer() ) );
@@ -168,6 +175,8 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
 
   QgsMapLayer* layer = mCurrentLayer;
 
+  mUndoWidget->setUndoStack( layer->undoStackStyles() );
+
   mLayerTitleLabel->setText( layer->name() );
 
   if ( layer->type() == QgsMapLayer::VectorLayer )
@@ -180,6 +189,10 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
     if ( QgsLabelingWidget* widget = qobject_cast<QgsLabelingWidget*>( current ) )
     {
       mLabelingWidget = widget;
+    }
+    else if ( QgsUndoWidget* widget = qobject_cast<QgsUndoWidget*>( current ) )
+    {
+      mUndoWidget = widget;
     }
     else
     {
@@ -208,11 +221,6 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
         break;
       }
       case 2: // History
-        mUndoWidget = new QgsUndoWidget( mOptionsListWidget, mMapCanvas );
-        mUndoWidget->setObjectName( "Undo Styles" );
-        mUndoWidget->setUndoStack( layer->undoStackStyles() );
-        connect( mUndoButton, SIGNAL( pressed() ), mUndoWidget, SLOT( undo() ) );
-        connect( mRedoButton, SIGNAL( pressed() ), mUndoWidget, SLOT( redo() ) );
         mWidgetArea->setWidget( mUndoWidget );
         break;
       default:
@@ -234,6 +242,10 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
     if ( QgsRendererRasterPropertiesWidget* widget = qobject_cast<QgsRendererRasterPropertiesWidget*>( current ) )
     {
       mRasterStyleWidget = widget;
+    }
+    else if ( QgsUndoWidget* widget = qobject_cast<QgsUndoWidget*>( current ) )
+    {
+      mUndoWidget = widget;
     }
     else
     {
@@ -276,12 +288,6 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
         break;
       }
       case 3: // History
-        mUndoWidget = new QgsUndoWidget( mOptionsListWidget, mMapCanvas );
-        mUndoWidget->setObjectName( "Undo Styles" );
-        mUndoWidget->setUndoStack( layer->undoStackStyles() );
-
-        connect( mUndoButton, SIGNAL( pressed() ), mUndoWidget, SLOT( undo() ) );
-        connect( mRedoButton, SIGNAL( pressed() ), mUndoWidget, SLOT( redo() ) );
         mWidgetArea->setWidget( mUndoWidget );
         break;
       default:
