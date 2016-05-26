@@ -795,7 +795,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
     }
     if ( ! metadata->value( "tracker" ).isEmpty() )
     {
-      html += QString( "<a href='%1'>%2</a> &nbsp; " ).arg( metadata->value( "tracker" ), tr( "tracker" ) );
+      html += QString( "<a href='%1'>%2</a> &nbsp; " ).arg( metadata->value( "tracker" ), tr( "bug_tracker" ) );
     }
     if ( ! metadata->value( "code_repository" ).isEmpty() )
     {
