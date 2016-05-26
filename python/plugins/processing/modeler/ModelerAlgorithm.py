@@ -544,6 +544,14 @@ class ModelerAlgorithm(GeoAlgorithm):
         except:
             return False, None
 
+    def getParameterDescriptions(self):
+        descs = {}
+        descriptions = self.helpContent
+        for param in self.parameters:
+            if param.name in descriptions:
+                descs[param.name] = unicode(descriptions[param.name])
+        return descs
+
     def todict(self):
         keys = ["inputs", "group", "name", "algs", "helpContent"]
         return {k: v for k, v in self.__dict__.iteritems() if k in keys}
