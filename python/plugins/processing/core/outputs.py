@@ -273,7 +273,7 @@ class OutputVector(Output):
         return ';;'.join(exts)
 
     def getDefaultFileExtension(self, alg):
-        supported = self.getSupportedOutputVectorLayerExtensions()
+        supported = alg.provider.getSupportedOutputVectorLayerExtensions()
         if self.hasGeometry():
             default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT)
         else:
@@ -291,7 +291,7 @@ class OutputVector(Output):
         generate the output result.
         """
         ext = self.value[self.value.rfind('.') + 1:]
-        if ext in self.getSupportedOutputVectorLayerExtensions():
+        if ext in alg.provider.getSupportedOutputVectorLayerExtensions():
             return self.value
         else:
             if self.compatible is None:
