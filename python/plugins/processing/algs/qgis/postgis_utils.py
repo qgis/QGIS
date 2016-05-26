@@ -649,7 +649,7 @@ class GeoDB:
 
     def create_spatial_index(self, table, schema=None, geom_column='the_geom'):
         table_name = self._table_name(schema, table)
-        idx_name = self._quote('sidx_' + table)
+        idx_name = self._quote(u"sidx_%s_%s" % (table, geom_column))
         sql = 'CREATE INDEX %s ON %s USING GIST(%s)' % (idx_name, table_name,
                                                         self._quote(geom_column))
         self._exec_sql_and_commit(sql)

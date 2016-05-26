@@ -61,8 +61,8 @@ class ModelerDialog(BASE, WIDGET):
 
         self.zoom = 1
 
-        self.setWindowFlags(Qt.WindowMinimizeButtonHint | 
-                            Qt.WindowMaximizeButtonHint | 
+        self.setWindowFlags(Qt.WindowMinimizeButtonHint |
+                            Qt.WindowMaximizeButtonHint |
                             Qt.WindowCloseButtonHint)
 
         settings = QSettings()
@@ -310,7 +310,7 @@ class ModelerDialog(BASE, WIDGET):
         else:
             filename = unicode(QFileDialog.getSaveFileName(self,
                                                            self.tr('Save Model'),
-                                                           ModelerUtils.modelsFolder(),
+                                                           ModelerUtils.defaultModelsFolder(),
                                                            self.tr('Processing models (*.model)')))
             if filename:
                 if not filename.endswith('.model'):
@@ -341,7 +341,7 @@ class ModelerDialog(BASE, WIDGET):
 
     def openModel(self):
         filename = unicode(QFileDialog.getOpenFileName(self,
-                                                       self.tr('Open Model'), ModelerUtils.modelsFolder(),
+                                                       self.tr('Open Model'), ModelerUtils.defaultModelsFolder(),
                                                        self.tr('Processing models (*.model *.MODEL)')))
         if filename:
             try:

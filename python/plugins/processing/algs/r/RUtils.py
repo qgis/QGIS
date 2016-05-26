@@ -84,17 +84,18 @@ class RUtils:
         return os.path.abspath(unicode(folder))
 
     @staticmethod
-    def RScriptsFolder():
-        folder = ProcessingConfig.getSetting(RUtils.RSCRIPTS_FOLDER)
-        if folder is None:
-            folder = unicode(os.path.join(userFolder(), 'rscripts'))
-        try:
-            mkdir(folder)
-        except:
-            folder = unicode(os.path.join(userFolder(), 'rscripts'))
-            mkdir(folder)
-
+    def defaultRScriptsFolder():
+        folder = unicode(os.path.join(userFolder(), 'rscripts'))
+        mkdir(folder)
         return os.path.abspath(folder)
+
+    @staticmethod
+    def RScriptsFolders():
+        folder = ProcessingConfig.getSetting(RUtils.RSCRIPTS_FOLDER)
+        if folder is not None:
+            return folder.split(';')
+        else:
+            return [RUtils.defaultRScriptsFolder()]
 
     @staticmethod
     def createRScriptFromRCommands(commands):

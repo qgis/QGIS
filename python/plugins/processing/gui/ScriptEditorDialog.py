@@ -62,8 +62,8 @@ class ScriptEditorDialog(BASE, WIDGET):
         super(ScriptEditorDialog, self).__init__(None)
         self.setupUi(self)
 
-        self.setWindowFlags(Qt.WindowMinimizeButtonHint | 
-                            Qt.WindowMaximizeButtonHint | 
+        self.setWindowFlags(Qt.WindowMinimizeButtonHint |
+                            Qt.WindowMaximizeButtonHint |
                             Qt.WindowCloseButtonHint)
         # Set icons
         self.btnOpen.setIcon(
@@ -193,10 +193,10 @@ class ScriptEditorDialog(BASE, WIDGET):
                 return
 
         if self.algType == self.SCRIPT_PYTHON:
-            scriptDir = ScriptUtils.scriptsFolder()
+            scriptDir = ScriptUtils.defaultScriptsFolder()
             filterName = self.tr('Python scripts (*.py)')
         elif self.algType == self.SCRIPT_R:
-            scriptDir = RUtils.RScriptsFolder()
+            scriptDir = RUtils.defaultRScriptsFolder()
             filterName = self.tr('Processing R script (*.rsx)')
 
         self.filename = QFileDialog.getOpenFileName(
@@ -224,10 +224,10 @@ class ScriptEditorDialog(BASE, WIDGET):
     def saveScript(self, saveAs):
         if self.filename is None or saveAs:
             if self.algType == self.SCRIPT_PYTHON:
-                scriptDir = ScriptUtils.scriptsFolder()
+                scriptDir = ScriptUtils.defaultScriptsFolder()
                 filterName = self.tr('Python scripts (*.py)')
             elif self.algType == self.SCRIPT_R:
-                scriptDir = RUtils.RScriptsFolder()
+                scriptDir = RUtils.defaultRScriptsFolder()
                 filterName = self.tr('Processing R script (*.rsx)')
 
             self.filename = unicode(QFileDialog.getSaveFileName(self,
