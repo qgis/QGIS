@@ -330,3 +330,14 @@ class ScriptAlgorithm(GeoAlgorithm):
             return True, getHtmlFromHelpFile(self, helpfile)
         else:
             return False, None
+
+    def getParameterDescriptions(self):
+        descs = {}
+        helpfile = unicode(self.descriptionFile) + '.help'
+        if os.path.exists(helpfile):
+            with open(helpFile) as f:
+                descriptions = json.load(f)
+                for param in self.parameters:
+                    if param.name in descriptions:
+                        descs[param.name] = unicode(descriptions[param.name])
+        return descs
