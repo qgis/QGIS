@@ -186,6 +186,11 @@ class QgsMssqlProvider : public QgsVectorDataProvider
      */
     bool isValid() override;
 
+    /**
+     * It returns true. Saving style to db is supported by this provider
+     */
+    virtual bool isSaveAndLoadStyleToDBSupported() override { return true; }
+
     /** Writes a list of features to the database*/
     virtual bool addFeatures( QgsFeatureList & flist ) override;
 
@@ -222,6 +227,9 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     /** Convert a QgsField to work with MSSQL */
     static bool convertField( QgsField &field );
+
+    /** Convert values to quoted values for database work **/
+    static QString quotedValue( const QVariant& value );
 
     /** Returns the default value for field specified by @c fieldId */
     QVariant defaultValue( int fieldId ) override;

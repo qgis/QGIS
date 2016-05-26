@@ -175,7 +175,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     bool isValid() override;
 
-
     /**
      * It returns true. Saving style to db is supported by this provider
      */
