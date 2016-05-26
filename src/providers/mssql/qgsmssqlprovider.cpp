@@ -2155,7 +2155,7 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
    {
      QgsDebugMsg( query.lastError().text() );
      QgsDebugMsg("Load of Style failed");
-     return "";
+     return QString();
    }
    if ( query.isActive() && query.next())
    {
