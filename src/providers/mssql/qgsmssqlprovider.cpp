@@ -2056,8 +2056,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
 
   if ( !query.exec( checkQuery ) )
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( query.lastError().text() );
     QgsDebugMsg("Check Query failed");
     return false;
   }
@@ -2125,7 +2124,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
 
 QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
 {
-  QString style = "";
+  QString style;
   QgsDataSourceURI dsUri( uri );
   // connect to database
   QSqlDatabase mDatabase = QgsMssqlProvider::GetDatabase( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
@@ -2134,7 +2133,7 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
   {
     QgsDebugMsg( "Error connecting to database" );
     QgsDebugMsg( mDatabase.lastError().text() );
-    return "";
+    return QString();
   }
 
   QSqlQuery query = QSqlQuery( mDatabase );
@@ -2154,8 +2153,7 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
 
    if ( !query.exec( selectQmlQuery ) )
    {
-     errCause = query.lastError().text();
-     QgsDebugMsg( errCause );
+     QgsDebugMsg( query.lastError().text() );
      QgsDebugMsg("Load of Style failed");
      return "";
    }
@@ -2193,8 +2191,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   }
   if ( query.isActive() && query.next() && query.value( 0 ).toInt() == 0 )
   {
-    errCause = QObject::tr( "No styles available on DB, or there is an error connecting to the database." );
-    QgsDebugMsg(errCause);
+    QgsDebugMsg( QObject::tr( "No styles available on DB, or there is an error connecting to the database." ) );
     return -1;
   }
 
@@ -2211,8 +2208,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   bool queryOk = query.exec(selectRelatedQuery);
   if(!queryOk)
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( msg = query.lastError().text() );
     return -1;
   }
   int numberOfRelatedStyles = 0;
@@ -2259,7 +2255,7 @@ QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& e
   {
     QgsDebugMsg( "Error connecting to database" );
     QgsDebugMsg( mDatabase.lastError().text() );
-    return "";
+    return QString();
   }
 
   QSqlQuery query = QSqlQuery( mDatabase );
