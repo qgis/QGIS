@@ -62,7 +62,7 @@ class AutoincrementalField(GeoAlgorithm):
             geom = feat.geometry()
             outFeat.setGeometry(geom)
             attrs = feat.attributes()
-            attrs.append(count)
+            attrs.append(current)
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
         del writer
