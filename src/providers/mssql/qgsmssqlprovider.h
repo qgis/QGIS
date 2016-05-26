@@ -223,6 +223,9 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     /** Convert a QgsField to work with MSSQL */
     static bool convertField( QgsField &field );
 
+    /** Convert values to quoted values for database work **/
+    static QString quotedValue( const QVariant& value );
+
     /** Returns the default value for field specified by @c fieldId */
     QVariant defaultValue( int fieldId ) override;
 
