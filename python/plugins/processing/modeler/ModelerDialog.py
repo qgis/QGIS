@@ -61,8 +61,8 @@ class ModelerDialog(BASE, WIDGET):
 
         self.zoom = 1
 
-        self.setWindowFlags(Qt.WindowMinimizeButtonHint | 
-                            Qt.WindowMaximizeButtonHint | 
+        self.setWindowFlags(Qt.WindowMinimizeButtonHint |
+                            Qt.WindowMaximizeButtonHint |
                             Qt.WindowCloseButtonHint)
 
         settings = QSettings()

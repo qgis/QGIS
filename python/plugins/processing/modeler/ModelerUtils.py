@@ -48,4 +48,3 @@ class ModelerUtils:
             return folder.split(';')
         else:
             return [ModelerUtils.defaultModelsFolder()]
-

@@ -62,8 +62,8 @@ class ScriptEditorDialog(BASE, WIDGET):
         super(ScriptEditorDialog, self).__init__(None)
         self.setupUi(self)
 
-        self.setWindowFlags(Qt.WindowMinimizeButtonHint | 
-                            Qt.WindowMaximizeButtonHint | 
+        self.setWindowFlags(Qt.WindowMinimizeButtonHint |
+                            Qt.WindowMaximizeButtonHint |
                             Qt.WindowCloseButtonHint)
         # Set icons
         self.btnOpen.setIcon(
