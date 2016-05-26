@@ -453,10 +453,10 @@ class ParametersPanel(BASE, WIDGET):
             if isinstance(child, ParameterTableField):
                 widget = self.valueItems[child.name]
                 widget.clear()
-                if self.alg.getParameterFromName(child).optional:
+                if self.alg.getParameterFromName(child.name).optional:
                     widget.addItem(self.tr('[not set]'))
                 widget.addItems(self.getFields(layer,
-                                               self.alg.getParameterFromName(child).datatype))
+                                               self.alg.getParameterFromName(child.name).datatype))
             if isinstance(child, OutputVector):
                 child.base_layer = layer
 
