@@ -167,6 +167,7 @@ SET(QGIS_CORE_SRCS
   qgspallabeling.cpp
   qgspluginlayer.cpp
   qgspluginlayerregistry.cpp
+  qgsplugininterface.cpp
   qgspoint.cpp
   qgspointlocator.cpp
   qgsproject.cpp
@@ -477,6 +478,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsofflineediting.h
   qgsowsconnection.h
   qgspluginlayer.h
+  qgsplugininterface.h
   qgspointlocator.h
   qgsproject.h
   qgsrelationmanager.h

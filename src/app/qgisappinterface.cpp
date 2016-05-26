@@ -475,6 +475,16 @@ bool QgisAppInterface::unregisterMainWindowAction( QAction* action )
   return QgsShortcutsManager::instance()->unregisterAction( action );
 }
 
+void QgisAppInterface::registerMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory* factory )
+{
+  qgis->registerMapLayerPropertiesFactory( factory );
+}
+
+void QgisAppInterface::unregisterMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory* factory )
+{
+  qgis->unregisterMapLayerPropertiesFactory( factory );
+}
+
 //! Menus
 Q_DECL_DEPRECATED QMenu *QgisAppInterface::fileMenu() { return qgis->projectMenu(); }
 QMenu *QgisAppInterface::projectMenu() { return qgis->projectMenu(); }

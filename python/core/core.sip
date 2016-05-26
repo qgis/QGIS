@@ -103,6 +103,7 @@
 %Include qgsowsconnection.sip
 %Include qgspaintenginehack.sip
 %Include qgspallabeling.sip
+%Include qgsplugininterface.sip
 %Include qgspluginlayer.sip
 %Include qgspluginlayerregistry.sip
 %Include qgspoint.sip

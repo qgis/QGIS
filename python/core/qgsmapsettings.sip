@@ -60,6 +60,11 @@ class QgsMapSettings
     //! @note added in 2.8
     void setLayerStyleOverrides( const QMap<QString, QString>& overrides );
 
+    //! Get custom rendering flags, separated by ';'. Layers might honour these to alter their rendering.
+    const QString& customRenderFlags() const;
+    //! Set custom rendering flags, separated by ';'. Layers might honour these to alter their rendering.
+    void setCustomRenderFlags( const QString& customRenderFlags );
+
     //! sets whether to use projections for this layer set
     void setCrsTransformEnabled( bool enabled );
     //! returns true if projections are enabled for this layer set

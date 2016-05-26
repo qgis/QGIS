@@ -169,6 +169,7 @@ SET(QGIS_GUI_SRCS
   qgsattributeforminterface.cpp
   qgsattributeformlegacyinterface.cpp
   qgsattributetypeloaddialog.cpp
+  qgsbillboardregistry.cpp
   qgsblendmodecombobox.cpp
   qgsbrowsertreeview.cpp
   qgsbusyindicatordialog.cpp
@@ -238,6 +239,7 @@ SET(QGIS_GUI_SRCS
   qgsmaplayeractionregistry.cpp
   qgsmaplayercombobox.cpp
   qgsmaplayermodel.cpp
+  qgsmaplayerpropertiesfactory.cpp
   qgsmaplayerproxymodel.cpp
   qgsmapmouseevent.cpp
   qgsmapoverviewcanvas.cpp
@@ -291,6 +293,7 @@ SET(QGIS_GUI_SRCS
   qgsunitselectionwidget.cpp
   qgsuserinputdockwidget.cpp
   qgsvariableeditorwidget.cpp
+  qgsvectorlayerpropertiespage.cpp
   qgsvertexmarker.cpp
 )
 
@@ -320,6 +323,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsattributeform.h
   qgsattributeformeditorwidget.h
   qgsattributetypeloaddialog.h
+  qgsbillboardregistry.h
   qgsblendmodecombobox.h
   qgsbrowsertreeview.h
   qgsbusyindicatordialog.h
@@ -430,6 +434,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsunitselectionwidget.h
   qgsuserinputdockwidget.h
   qgsvariableeditorwidget.h
+  qgsvectorlayerpropertiespage.h
 
   raster/qgsmultibandcolorrendererwidget.h
   raster/qgspalettedrendererwidget.h
