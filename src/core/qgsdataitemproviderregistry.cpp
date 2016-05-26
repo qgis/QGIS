@@ -58,7 +58,7 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
 
   Q_FOREACH ( const QString& key, providersList )
   {
-    QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
+    QScopedPointer<QLibrary> library( QgsProviderRegistry::instance()->providerLibrary( key ) );
     if ( !library )
       continue;
 

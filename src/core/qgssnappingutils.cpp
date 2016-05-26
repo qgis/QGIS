@@ -615,7 +615,7 @@ void QgsSnappingUtils::readConfigFromProject()
        layerIdList.size() != snapToList.size() )
     return;
 
-  if ( !snappingDefinedInProject )
+  if ( layerIdList.isEmpty() || !snappingDefinedInProject || !ok )
     return; // nothing defined in project - use current layer
 
   // Use snapping information from the project

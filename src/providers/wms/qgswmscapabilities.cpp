@@ -1976,6 +1976,9 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
         }
         else
         {
+          mCapabilitiesReply->deleteLater();
+          mCapabilitiesReply = nullptr;
+
           QNetworkRequest request( toUrl );
           if ( !mAuth.setAuthorization( request ) )
           {
@@ -1987,9 +1990,6 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
           }
           request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );
           request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-
-          mCapabilitiesReply->deleteLater();
-          mCapabilitiesReply = nullptr;
 
           QgsDebugMsg( QString( "redirected getcapabilities: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ) );
           mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
