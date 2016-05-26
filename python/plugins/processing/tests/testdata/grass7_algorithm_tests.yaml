@@ -12,7 +12,7 @@ tests:
     results:
       output:
         type: rasterhash
-        hash: 0850127d19d5098ff7cc7bb5991b7881d792e4a64aed42b811cb031b
+        hash: 80fe9e022cff3d4cad57fbad40aa7f547b3621a4eec94629d69e16ed
 
   - algorithm: grass7:i.biomass
     name: GRASS7 i.biomass
@@ -38,7 +38,7 @@ tests:
         type: raster
     results:
       output:
-        hash: 2359a7d0db659ea48272248e663ead0b9cb11e6e97b3fcb14db8bd95
+        hash: edbbf2a0866a2fdfa01996d5bef5a06862df2a54c020fc8b1e4aa51a
         type: rasterhash
         
   - algorithm: grass7:i.eb.eta
@@ -56,7 +56,7 @@ tests:
         type: raster
     results:
       output:
-        hash: ea1b463ce6d426eb3b6d40dbd5b475a010bede837f5a3e3faf3dfb40
+        hash: 5143d76a4d32395f4cfaf22aab33c5ae47f2c219eebbb888663a4e85
         type: rasterhash
         
   - algorithm: grass7:i.eb.netrad
@@ -92,7 +92,7 @@ tests:
         type: raster
     results:
       output:
-        hash: d6fc0efa1ebff447b8b04a1bd222acd9e37b1aa3a655ad5b1d69a49f
+        hash: b38052d5d446aad62dfe46c84d0fb949b9ba0b6f43aa7c95e3de2c92
         type: rasterhash
 
   - algorithm: grass7:i.eb.soilheatflux
@@ -117,7 +117,7 @@ tests:
         type: raster
     results:
       output:
-        hash: b8a09be667e73465a3d06e3c1a1d99a8663f21be1918f498e7b49eca
+        hash: aa195846f7a93d4141c01170751afad055ab6d1caa74cc888c4ad398
         type: rasterhash
         
   - algorithm: grass7:i.evapo.mh
@@ -139,7 +139,7 @@ tests:
         type: raster
     results:
       output:
-        hash: 182223a6c8da7b51118794de826c0bc53f288f377351d62aecc63837
+        hash: 9bdbd441804b613f0fdb2449572b69fdc3431113810330693c45b87f
         type: rasterhash
 
   - algorithm: grass7:i.evapo.pm
@@ -166,7 +166,7 @@ tests:
         type: raster
     results:
       output:
-        hash: 53ad3d55bb9593decb21a6ee10802dd79a42cb17f067ce38ac286ab2
+        hash: 7d649cefbf6b0d5581c9cafb285c0598827198fd6f313909325979d7
         type: rasterhash
 
   - algorithm: grass7:i.evapo.pt
@@ -188,7 +188,7 @@ tests:
         type: raster
     results:
       output:
-        hash: 182223a6c8da7b51118794de826c0bc53f288f377351d62aecc63837
+        hash: 9bdbd441804b613f0fdb2449572b69fdc3431113810330693c45b87f
         type: rasterhash
 
   - algorithm: grass7:i.topo.coor.ill
@@ -202,7 +202,7 @@ tests:
       zenith: 50
     results:
       output:
-        hash: d3da5e4b9d088760d01d70de956d2cd35433c96d175ca68394d4dee8
+        hash: d1eb7882b3d68f2bc5785dc052b1c870d84e9a232b72607ca4d7da45
         type: rasterhash
         
   - algorithm: grass7:i.vi
@@ -219,7 +219,7 @@ tests:
       viname: 10
     results:
       output:
-        hash: 182223a6c8da7b51118794de826c0bc53f288f377351d62aecc63837
+        hash: 9bdbd441804b613f0fdb2449572b69fdc3431113810330693c45b87f
         type: rasterhash
 
   - algorithm: grass7:i.zc
@@ -323,7 +323,7 @@ tests:
         type: raster
     results:
       imaginary:
-        hash: 94249384dd8b6019f0024501bc9a093cba9dd025c183d3fb46d77027
+        hash: 0a64ae8d6ba603cbedeee7706df0942f4d7221e394bc76939f33a3dc
         type: rasterhash
       real:
         hash: 09ab93c65aa2dde4da422b62a5ed3e38208e2da072cec2b0eb837a47
@@ -350,7 +350,7 @@ tests:
       threshold: 0.5
     results:
       goodness:
-        hash: 5cb3cc31a68c03ea76578559b04ffa5f81331a4232abb38d09b29ea4
+        hash: 597d8962276c360ef1efc0b8647c3bd773b5e98898d4e56a2d82928f
         type: rasterhash
       output:
         hash: b65992a5d48b867d4a32a533f38e7a72cb1ba18f1e261c6be132baca
@@ -434,13 +434,13 @@ tests:
         type: raster
     results:
       blueoutput:
-        hash: b8f6f6d11751ec26eb93daed87611e473efe6146ad3e84bce13c3393
+        hash: 75bac89afee968cd5d7027de1acfff3b02a7517eb136f3b73e49b2fa
         type: rasterhash
       greenoutput:
-        hash: 522356ef99242f7be6ad65c23af9148f5a807deca89c1efec1db38c1
+        hash: e11274dddcd5f169f03957f41ece1fde7625b8ace342de258ba2873b
         type: rasterhash
       redoutput:
-        hash: c6b99e12c2eab3016bbf8d15888c353c3fdb1b84674deac78e3e2bfc
+        hash: 9fc943dcf4fcead4f2c662bb6e3f0455caed5df1d9f46ae763955001
         type: rasterhash
 
   - algorithm: grass7:i.smap
@@ -538,7 +538,7 @@ tests:
       vapourpressureactual: 1.511
     results:
       output:
-        hash: 2706c64a65a6a603857937554a5e8787a1429e1ca6b8551b0dea7b8f
+        hash: 10a7144d393e716f721265057d1d1603baa627ceb7c6b29e30865a58
         type: rasterhash
         
   - algorithm: grass7:i.modis.qc
@@ -597,7 +597,7 @@ tests:
       vapourpressureactual: 1.511
     results:
       output:
-        hash: f564acd642f6f0ea76cbe55d3565d083e055d2e81dde97365f786bad
+        hash: 77e31601b511602b998168f715756a87a3735b07131a99b27e2de241
         type: rasterhash
 
   - algorithm: grass7:i.atcorr
@@ -615,5 +615,5 @@ tests:
         name: custom/grass7/i.atcorr.txt
     results:
       output:
-        hash: fc3dbc04793ecba0a24400d489f3ebd0660400232602487e6861306c
+        hash: 46dea0dc5e5a3fed82aed98aa1cb6fe82deb8f1ac0347e930d4bbbeb
         type: rasterhash
