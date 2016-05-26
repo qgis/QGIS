@@ -171,8 +171,6 @@ class ParametersPanel(BASE, WIDGET):
                 widget.updateForOptions(opts)
 
     def initWidgets(self):
-        #tooltips = self.alg.getParameterDescriptions()
-
         # If there are advanced parameters — show corresponding groupbox
         for param in self.alg.parameters:
             if param.isAdvanced:
@@ -215,11 +213,8 @@ class ParametersPanel(BASE, WIDGET):
                 widget = QWidget()
                 widget.setLayout(layout)
 
-            #~ if param.name in tooltips.keys():
-                #~ tooltip = tooltips[param.name]
-            #~ else:
-                #~ tooltip = param.description
-            #~ widget.setToolTip(tooltip)
+            tooltips = self.alg.getParameterDescriptions()
+            widget.setToolTip(tooltips.get(param.name, param.description))
 
             if isinstance(param, ParameterBoolean):
                 widget.setText(desc)
