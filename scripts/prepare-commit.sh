@@ -14,8 +14,11 @@
 #                                                                         #
 ###########################################################################
 
+TOPLEVEL=$(git rev-parse --show-toplevel)
 
-PATH=$(git rev-parse --show-toplevel)/scripts:$PATH
+PATH=$TOPLEVEL/scripts:$PATH
+
+cd $TOPLEVEL
 
 if ! type -p astyle.sh >/dev/null; then
 	echo astyle.sh not found
@@ -37,14 +40,7 @@ fi
 set -e
 
 # determine changed files
-if [ -d .svn ]; then
-	MODIFIED=$(svn status | sed -ne "s/^[MA] *//p")
-elif [ -d .git ]; then
-	MODIFIED=$(git status --porcelain| sed -ne "s/^ *[MA]  *//p" | sort -u)
-else
-	echo No working copy
-	exit 1
-fi
+MODIFIED=$(git status --porcelain| sed -ne "s/^ *[MA]  *//p" | sort -u)
 
 if [ -z "$MODIFIED" ]; then
 	echo nothing was modified
@@ -52,13 +48,8 @@ if [ -z "$MODIFIED" ]; then
 fi
 
 # save original changes
-if [ -d .svn ]; then
-	REV=r$(svn info | sed -ne "s/Revision: //p")
-	svn diff >rev-$REV.diff
-elif [ -d .git ]; then
-	REV=$(git log -n1 --pretty=%H)
-	git diff >sha-$REV.diff
-fi
+REV=$(git log -n1 --pretty=%H)
+git diff >sha-$REV.diff
 
 ASTYLEDIFF=astyle.$REV.diff
 >$ASTYLEDIFF
