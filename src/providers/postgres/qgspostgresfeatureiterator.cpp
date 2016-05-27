@@ -486,11 +486,13 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause, long
                    geom );
     }
 
+    QGis::WkbType usedGeomType = mSource->mRequestedGeomType != QGis::WKBUnknown
+                                 ? mSource->mRequestedGeomType : mSource->mDetectedGeomType;
+
     if ( !mRequest.simplifyMethod().forceLocalOptimization() &&
          mRequest.simplifyMethod().methodType() != QgsSimplifyMethod::NoSimplification &&
-         QGis::flatType( QGis::singleType( mSource->mRequestedGeomType != QGis::WKBUnknown
-                                           ? mSource->mRequestedGeomType
-                                           : mSource->mDetectedGeomType ) ) != QGis::WKBPoint )
+         QGis::flatType( QGis::singleType( usedGeomType ) ) != QGis::WKBPoint &&
+         !QgsWKBTypes::isCurvedType( QGis::fromOldWkbType( usedGeomType ) ) )
     {
       // PostGIS simplification method to use
       QString simplifyPostgisMethod;
