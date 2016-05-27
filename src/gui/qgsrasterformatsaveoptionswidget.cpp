@@ -154,10 +154,15 @@ void QgsRasterFormatSaveOptionsWidget::setType( QgsRasterFormatSaveOptionsWidget
   }
 }
 
+QString QgsRasterFormatSaveOptionsWidget::pseudoFormat() const
+{
+  return mPyramids ? "_pyramids" : mFormat;
+}
+
 void QgsRasterFormatSaveOptionsWidget::updateProfiles()
 {
   // build profiles list = user + builtin(last)
-  QString format = mPyramids ? "_pyramids" : mFormat;
+  QString format = pseudoFormat();
   QStringList profileKeys = profiles();
   QMapIterator<QString, QStringList> it( mBuiltinProfiles );
   while ( it.hasNext() )
@@ -498,7 +503,7 @@ QString QgsRasterFormatSaveOptionsWidget::settingsKey( QString profileName ) con
     profileName = "/profile_" + profileName;
   else
     profileName = "/profile_default" + profileName;
-  return mProvider + "/driverOptions/" + mFormat.toLower() + profileName + "/create";
+  return mProvider + "/driverOptions/" + pseudoFormat().toLower() + profileName + "/create";
 }
 
 QString QgsRasterFormatSaveOptionsWidget::currentProfileKey() const
@@ -534,9 +539,9 @@ void QgsRasterFormatSaveOptionsWidget::setCreateOptions()
     myProfiles += i.key() + QLatin1String( " " );
     ++i;
   }
-  mySettings.setValue( mProvider + "/driverOptions/" + mFormat.toLower() + "/profiles",
+  mySettings.setValue( mProvider + "/driverOptions/" + pseudoFormat().toLower() + "/profiles",
                        myProfiles.trimmed() );
-  mySettings.setValue( mProvider + "/driverOptions/" + mFormat.toLower() + "/defaultProfile",
+  mySettings.setValue( mProvider + "/driverOptions/" + pseudoFormat().toLower() + "/defaultProfile",
                        currentProfileKey().trimmed() );
 }
 
@@ -554,7 +559,7 @@ void QgsRasterFormatSaveOptionsWidget::setCreateOptions( const QString& profileN
 QStringList QgsRasterFormatSaveOptionsWidget::profiles() const
 {
   QSettings mySettings;
-  return mySettings.value( mProvider + "/driverOptions/" + mFormat.toLower() + "/profiles", "" ).toString().trimmed().split( ' ', QString::SkipEmptyParts );
+  return mySettings.value( mProvider + "/driverOptions/" + pseudoFormat().toLower() + "/profiles", "" ).toString().trimmed().split( ' ', QString::SkipEmptyParts );
 }
 
 void QgsRasterFormatSaveOptionsWidget::swapOptionsUI( int newIndex )
