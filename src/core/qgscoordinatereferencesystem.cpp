@@ -1325,7 +1325,7 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int theSrsId )
     if ( !myFileInfo.exists() ) //its unlikely that this condition will ever be reached
     {
       QgsDebugMsg( "users qgis.db not found" );
-      return nullptr;
+      return QString();
     }
   }
   else //must be  a system projection then

@@ -423,11 +423,11 @@ QgsLegendSymbolListV2 QgsSingleSymbolRendererV2::legendSymbolItemsV2() const
       QgsScaleExpression scaleExp( sizeDD.expressionString() );
       if ( scaleExp.type() != QgsScaleExpression::Unknown )
       {
-        QgsLegendSymbolItemV2 title( nullptr, scaleExp.baseExpression(), nullptr );
+        QgsLegendSymbolItemV2 title( nullptr, scaleExp.baseExpression(), QString() );
         lst << title;
         Q_FOREACH ( double v, QgsSymbolLayerV2Utils::prettyBreaks( scaleExp.minValue(), scaleExp.maxValue(), 4 ) )
         {
-          QgsLegendSymbolItemV2 si( mSymbol.data(), QString::number( v ), nullptr );
+          QgsLegendSymbolItemV2 si( mSymbol.data(), QString::number( v ), QString() );
           QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( si.symbol() );
           s->setDataDefinedSize( 0 );
           s->setSize( scaleExp.size( v ) );
@@ -438,7 +438,7 @@ QgsLegendSymbolListV2 QgsSingleSymbolRendererV2::legendSymbolItemsV2() const
     }
   }
 
-  lst << QgsLegendSymbolItemV2( mSymbol.data(), QString(), nullptr );
+  lst << QgsLegendSymbolItemV2( mSymbol.data(), QString(), QString() );
   return lst;
 }
 

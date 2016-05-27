@@ -309,7 +309,7 @@ Qt::ItemFlags QgsLayerTreeModel::flags( const QModelIndex& index ) const
 {
   if ( !index.isValid() )
   {
-    Qt::ItemFlags rootFlags = nullptr;
+    Qt::ItemFlags rootFlags = Qt::ItemFlags();
     if ( testFlag( AllowNodeReorder ) )
       rootFlags |= Qt::ItemIsDropEnabled;
     return rootFlags;
