@@ -85,15 +85,29 @@ class CORE_EXPORT QgsActionManager
                    const QgsFeature &feat,
                    int defaultValueIndex = 0 );
 
+    /** Does the action using the expression engine to replace any embedded expressions
+     * in the action definition.
+     * @param index action index
+     * @param feature feature to run action for
+     * @param context expression context to evalute expressions under
+     * @param substitutionMap deprecated - kept for compatibilty with projects, will be removed for 3.0
+     */
+    // TODO QGIS 3.0 remove substition map - force use of expression variables
+    void doAction( int index,
+                   const QgsFeature& feature,
+                   const QgsExpressionContext& context,
+                   const QMap<QString, QVariant> *substitutionMap = nullptr );
+
     /** Does the action using the expression builder to expand it
      *  and getting values from the passed feature attribute map.
      *  substitutionMap is used to pass custom substitutions, to replace
      *  each key in the map with the associated value
      *  @note available in python bindings as doActionFeatureWithSubstitution
+     *  @deprecated use QgsExpressionContext variant instead
      */
-    void doAction( int index,
-                   const QgsFeature &feat,
-                   const QMap<QString, QVariant> *substitutionMap );
+    Q_DECL_DEPRECATED void doAction( int index,
+                                     const QgsFeature &feat,
+                                     const QMap<QString, QVariant> *substitutionMap );
 
     //! Removes all actions
     void clearActions();

@@ -65,15 +65,34 @@ void QgsActionManager::removeAction( int index )
 
 void QgsActionManager::doAction( int index, const QgsFeature& feat, int defaultValueIndex )
 {
-  QMap<QString, QVariant> substitutionMap;
-  if ( defaultValueIndex >= 0 )
-  {
-    QVariant defaultValue = feat.attribute( defaultValueIndex );
-    if ( defaultValue.isValid() )
-      substitutionMap.insert( "$currfield", defaultValue );
-  }
+  QgsExpressionContext context = createExpressionContext();
+  QgsExpressionContextScope* actionScope = new QgsExpressionContextScope();
+  actionScope->setVariable( "current_field", feat.attribute( defaultValueIndex ) );
+  context << actionScope;
+  doAction( index, feat, context );
+}
 
-  doAction( index, feat, &substitutionMap );
+void QgsActionManager::doAction( int index, const QgsFeature& feat, const QgsExpressionContext& context, const QMap<QString, QVariant> *substitutionMap )
+{
+  if ( index < 0 || index >= size() )
+    return;
+
+  const QgsAction &action = at( index );
+  if ( !action.runable() )
+    return;
+
+  QgsExpressionContext actionContext( context );
+
+  if ( mLayer )
+    actionContext << QgsExpressionContextUtils::layerScope( mLayer );
+  actionContext.setFeature( feat );
+
+  QString expandedAction = QgsExpression::replaceExpressionText( action.action(), &actionContext, substitutionMap );
+  if ( expandedAction.isEmpty() )
+    return;
+
+  QgsAction newAction( action.type(), action.name(), expandedAction, action.capture() );
+  runAction( newAction );
 }
 
 void QgsActionManager::doAction( int index, const QgsFeature &feat, const QMap<QString, QVariant> *substitutionMap )
