@@ -78,7 +78,6 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
 
     // world file generation
     mGenerateWorldFileCheckBox->setChecked( mComposition->generateWorldFile() );
-    mWorldFileMapComboBox->setEnabled( mComposition->generateWorldFile() );
 
     // populate the map list
     mWorldFileMapComboBox->setComposition( mComposition );
@@ -658,7 +657,6 @@ void QgsCompositionWidget::on_mGenerateWorldFileCheckBox_toggled( bool state )
   }
 
   mComposition->setGenerateWorldFile( state );
-  mWorldFileMapComboBox->setEnabled( state );
 }
 
 void QgsCompositionWidget::worldFileMapChanged( QgsComposerItem* item )

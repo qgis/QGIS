@@ -57,6 +57,8 @@
 #include <QDir>
 
 #include <limits>
+#include "gdal.h"
+#include "cpl_conv.h"
 
 QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     : QGraphicsScene( nullptr )
@@ -2886,6 +2888,34 @@ bool QgsComposition::exportAsPDF( const QString& file )
   return print( printer );
 }
 
+void QgsComposition::georeferenceOutput( const QString& file, QgsComposerMap* map,
+    const QRectF& exportRegion, double dpi ) const
+{
+  if ( dpi < 0 )
+    dpi = printResolution();
+
+  double* t = computeGeoTransform( map, exportRegion, dpi );
+  if ( !t )
+    return;
+
+  // important - we need to manually specify the DPI in advance, as GDAL will otherwise
+  // assume a DPI of 150
+  CPLSetConfigOption( "GDAL_PDF_DPI", QString::number( dpi ).toLocal8Bit().constData() );
+  GDALDatasetH outputDS = GDALOpen( file.toLocal8Bit().constData(), GA_Update );
+  if ( outputDS )
+  {
+    GDALSetGeoTransform( outputDS, t );
+#if 0
+    //TODO - metadata can be set here, eg:
+    GDALSetMetadataItem( outputDS, "AUTHOR", "me", nullptr );
+#endif
+    GDALSetProjection( outputDS, mMapSettings.destinationCrs().toWkt().toLocal8Bit().constData() );
+    GDALClose( outputDS );
+  }
+  CPLSetConfigOption( "GDAL_PDF_DPI", nullptr );
+  delete[] t;
+}
+
 void QgsComposition::doPrint( QPrinter& printer, QPainter& p, bool startNewPage )
 {
   if ( ddPageSizeActive() )
@@ -3084,6 +3114,87 @@ void QgsComposition::renderRect( QPainter* p, const QRectF& rect )
   setSnapLinesVisible( true );
 
   mPlotStyle = savedPlotStyle;
+}
+
+double* QgsComposition::computeGeoTransform( const QgsComposerMap* map, const QRectF& region , double dpi ) const
+{
+  if ( !map )
+    map = worldFileMap();
+
+  if ( !map )
+    return nullptr;
+
+  if ( dpi < 0 )
+    dpi = printResolution();
+
+  // calculate region of composition to export (in mm)
+  QRectF exportRegion = region;
+  if ( !exportRegion.isValid() )
+  {
+    int pageNumber = map->page() - 1;
+    double pageY = pageNumber * ( mPageHeight + mSpaceBetweenPages );
+    exportRegion = QRectF( 0, pageY, mPageWidth, mPageHeight );
+  }
+
+  // map rectangle (in mm)
+  QRectF mapItemSceneRect = map->mapRectToScene( map->rect() );
+
+  // destination width/height in mm
+  double outputHeightMM = exportRegion.height();
+  double outputWidthMM = exportRegion.width();
+
+  // map properties
+  QgsRectangle mapExtent = *map->currentMapExtent();
+  double mapXCenter = mapExtent.center().x();
+  double mapYCenter = mapExtent.center().y();
+  double alpha = - map->mapRotation() / 180 * M_PI;
+  double sinAlpha = sin( alpha );
+  double cosAlpha = cos( alpha );
+
+  // get the extent (in map units) for the exported region
+  QPointF mapItemPos = map->pos();
+  //adjust item position so it is relative to export region
+  mapItemPos.rx() -= exportRegion.left();
+  mapItemPos.ry() -= exportRegion.top();
+
+  // calculate extent of entire page in map units
+  double xRatio = mapExtent.width() / mapItemSceneRect.width();
+  double yRatio = mapExtent.height() / mapItemSceneRect.height();
+  double xmin = mapExtent.xMinimum() - mapItemPos.x() * xRatio;
+  double ymax = mapExtent.yMaximum() + mapItemPos.y() * yRatio;
+  QgsRectangle paperExtent( xmin, ymax - outputHeightMM * yRatio, xmin + outputWidthMM * xRatio, ymax );
+
+  // calculate origin of page
+  double X0 = paperExtent.xMinimum();
+  double Y0 = paperExtent.yMaximum();
+
+  if ( !qgsDoubleNear( alpha, 0.0 ) )
+  {
+    // translate origin to account for map rotation
+    double X1 = X0 - mapXCenter;
+    double Y1 = Y0 - mapYCenter;
+    double X2 = X1 * cosAlpha + Y1 * sinAlpha;
+    double Y2 = -X1 * sinAlpha + Y1 * cosAlpha;
+    X0 = X2 + mapXCenter;
+    Y0 = Y2 + mapYCenter;
+  }
+
+  // calculate scaling of pixels
+  int pageWidthPixels = static_cast< int >( dpi * outputWidthMM / 25.4 );
+  int pageHeightPixels = static_cast< int >( dpi * outputHeightMM / 25.4 );
+  double pixelWidthScale = paperExtent.width() / pageWidthPixels;
+  double pixelHeightScale = paperExtent.height() / pageHeightPixels;
+
+  // transform matrix
+  double* t = new double[6];
+  t[0] = X0;
+  t[1] = cosAlpha * pixelWidthScale;
+  t[2] = -sinAlpha * pixelWidthScale;
+  t[3] = Y0;
+  t[4] = -sinAlpha * pixelHeightScale;
+  t[5] = -cosAlpha * pixelHeightScale;
+
+  return t;
 }
 
 QString QgsComposition::encodeStringForXML( const QString& str )

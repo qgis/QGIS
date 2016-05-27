@@ -678,6 +678,18 @@ class QgsComposition : QGraphicsScene
      */
     void renderRect( QPainter* p, const QRectF& rect );
 
+    /** Georeferences a file (image of PDF) exported from the composition.
+     * @param file filename of exported file
+     * @param referenceMap map item to use for georeferencing, or leave as nullptr to use the
+     * currently defined worldFileMap().
+     * @param exportRegion set to a valid rectangle to indicate that only part of the composition was
+     * exported
+     * @param dpi set to DPI of exported file, or leave as -1 to use composition's DPI.
+     * @note added in QGIS 2.16
+     */
+    void georeferenceOutput( const QString& file, QgsComposerMap* referenceMap = nullptr,
+                             const QRectF& exportRegion = QRectF(), double dpi = -1 ) const;
+
     /** Compute world file parameters. Assumes the whole page containing the associated map item
      * will be exported.
      */
