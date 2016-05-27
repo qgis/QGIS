@@ -42,7 +42,7 @@ class CORE_EXPORT QgsSimplifyMethod
 
     //! Sets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal.
     void setTolerance( double tolerance );
-    //! Gets the tolerance of simplification in map units . Represents the maximum distance in map units between two coordinates which can be considered equal.
+    //! Gets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal.
     inline double tolerance() const { return mTolerance; }
 
     //! Sets the simplification threshold in pixels. Represents the maximum distance in pixels between two coordinates which can be considered equal.
@@ -61,9 +61,9 @@ class CORE_EXPORT QgsSimplifyMethod
   protected:
     //! Simplification method
     MethodType mMethodType;
-    //! Tolerance of simplification, it represents the maximum distance between two coordinates which can be considered equal
+    //! Simplification tolerance, it represents the maximum distance between two coordinates which can be considered equal
     double mTolerance;
-    /** Simplification threshold */
+    //! Simplification threshold
     float mThreshold;
     //! Simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries
     bool mForceLocalOptimization;

@@ -352,6 +352,7 @@ SET(QGIS_CORE_SRCS
   geometry/qgspolygonv2.cpp
   geometry/qgswkbptr.cpp
   geometry/qgswkbtypes.cpp
+  geometry/qgswkbsimplifierptr.cpp
 
   ${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
@@ -836,6 +837,7 @@ SET(QGIS_CORE_HDRS
   geometry/qgspointv2.h
   geometry/qgswkbptr.h
   geometry/qgswkbtypes.h
+  geometry/qgswkbsimplifierptr.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)

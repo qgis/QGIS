@@ -21,8 +21,9 @@
 #include "qgslogger.h"
 
 
-QgsMapToPixelSimplifier::QgsMapToPixelSimplifier( int simplifyFlags, double tolerance )
+QgsMapToPixelSimplifier::QgsMapToPixelSimplifier( int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm )
     : mSimplifyFlags( simplifyFlags )
+    , mSimplifyAlgorithm( simplifyAlgorithm )
     , mTolerance( tolerance )
 {
 }
@@ -40,7 +41,21 @@ float QgsMapToPixelSimplifier::calculateLengthSquared2D( double x1, double y1, d
   float vx = static_cast< float >( x2 - x1 );
   float vy = static_cast< float >( y2 - y1 );
 
-  return vx*vx + vy*vy;
+  return ( vx * vx ) + ( vy * vy );
+}
+
+//! Returns whether the points belong to the same grid
+bool QgsMapToPixelSimplifier::equalSnapToGrid( double x1, double y1, double x2, double y2, double gridOriginX, double gridOriginY, float gridInverseSizeXY )
+{
+  int grid_x1 = qRound(( x1 - gridOriginX ) * gridInverseSizeXY );
+  int grid_x2 = qRound(( x2 - gridOriginX ) * gridInverseSizeXY );
+  if ( grid_x1 != grid_x2 ) return false;
+
+  int grid_y1 = qRound(( y1 - gridOriginY ) * gridInverseSizeXY );
+  int grid_y2 = qRound(( y2 - gridOriginY ) * gridInverseSizeXY );
+  if ( grid_y1 != grid_y2 ) return false;
+
+  return true;
 }
 
 //! Returns the BBOX of the specified WKB-point stream
@@ -62,6 +77,32 @@ inline static QgsRectangle calculateBoundingBox( QGis::WkbType wkbType, QgsConst
 
   return r;
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Helper simplification methods for Visvalingam method
+
+// It uses a refactored code of the liblwgeom implementation:
+// https://github.com/postgis/postgis/blob/svn-trunk/liblwgeom/effectivearea.h
+// https://github.com/postgis/postgis/blob/svn-trunk/liblwgeom/effectivearea.c
+
+#define LWDEBUG //
+#define LWDEBUGF //
+#define FP_MAX qMax
+#define FLAGS_GET_Z( flags ) ( ( flags ) & 0x01 )
+#define LW_MSG_MAXLEN 256
+#define lwalloc qgsMalloc
+#define lwfree qgsFree
+#define lwerror qWarning
+
+#include "simplify/effectivearea.h"
+#include "simplify/effectivearea.c"
+
+double* getPoint_internal( const POINTARRAY* inpts, int pointIndex )
+{
+  return inpts->pointlist + ( pointIndex * inpts->dimension );
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 //! Generalize the WKB-geometry using the BBOX of the original geometry
 static bool generalizeWkbGeometryByBoundingBox(
@@ -122,7 +163,9 @@ static bool generalizeWkbGeometryByBoundingBox(
 
 //! Simplify the WKB-geometry using the specified tolerance
 bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
-  int simplifyFlags, QGis::WkbType wkbType,
+  int simplifyFlags,
+  SimplifyAlgorithm simplifyAlgorithm,
+  QGis::WkbType wkbType,
   QgsConstWkbPtr sourceWkbPtr,
   QgsWkbPtr targetWkbPtr,
   int &targetWkbSize,
@@ -184,10 +227,9 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
     targetWkbPtr << numTargetPoints;
     targetWkbSize += 4;
 
-    map2pixelTol *= map2pixelTol; //-> Use mappixelTol for 'LengthSquare' calculations.
-
     bool isLongSegment;
     bool hasLongSegments = false; //-> To avoid replace the simplified geometry by its BBOX when there are 'long' segments.
+    bool badLuck = false;
 
     // Check whether the LinearRing is really closed.
     if ( isaLinearRing )
@@ -204,27 +246,93 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
     }
 
     // Process each vertex...
-    for ( int i = 0; i < numPoints; ++i )
+    if ( simplifyAlgorithm == SnapToGrid )
     {
-      sourceWkbPtr >> x >> y;
-      sourceWkbPtr += skipZM;
+      double gridOriginX = envelope.xMinimum();
+      double gridOriginY = envelope.yMinimum();
 
-      isLongSegment = false;
+      // Use a factor for the maximum displacement distance for simplification, similar as GeoServer does
+      float gridInverseSizeXY = map2pixelTol != 0 ? ( float )( 1.0f / ( 0.8 * map2pixelTol ) ) : 0.0f;
 
-      if ( i == 0 ||
-           !isGeneralizable ||
-           ( isLongSegment = ( calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol ) ) ||
-           ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
+      for ( int i = 0; i < numPoints; ++i )
       {
-        targetWkbPtr << x << y;
-        lastX = x;
-        lastY = y;
-        numTargetPoints++;
+        sourceWkbPtr >> x >> y;
+        sourceWkbPtr += skipZM;
 
-        hasLongSegments |= isLongSegment;
+        if ( i == 0 ||
+             !isGeneralizable ||
+             !equalSnapToGrid( x, y, lastX, lastY, gridOriginX, gridOriginY, gridInverseSizeXY ) ||
+             ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
+        {
+          targetWkbPtr << x << y;
+          lastX = x;
+          lastY = y;
+          numTargetPoints++;
+        }
+
+        r.combineExtentWith( x, y );
       }
+    }
+    else if ( simplifyAlgorithm == Visvalingam )
+    {
+      map2pixelTol *= map2pixelTol; //-> Use mappixelTol for 'Area' calculations.
 
-      r.combineExtentWith( x, y );
+      POINTARRAY inpts;
+      inpts.pointlist = ( double* )( const unsigned char* )sourceWkbPtr;
+      inpts.dimension = QGis::wkbDimensions( wkbType );
+      inpts.npoints = numPoints;
+      inpts.flags = 0;
+
+      EFFECTIVE_AREAS* ea;
+      ea = initiate_effectivearea( &inpts );
+
+      int set_area = 0;
+      ptarray_calc_areas( ea, isaLinearRing ? 4 : 2, set_area, map2pixelTol );
+
+      for ( int i = 0; i < numPoints; ++i )
+      {
+        if ( ea->res_arealist[ i ] > map2pixelTol )
+        {
+          double* coord = getPoint_internal( &inpts, i );
+          x = coord[ 0 ];
+          y = coord[ 1 ];
+
+          targetWkbPtr << x << y;
+          lastX = x;
+          lastY = y;
+          numTargetPoints++;
+        }
+      }
+      destroy_effectivearea( ea );
+
+      sourceWkbPtr += numPoints * ( inpts.dimension * sizeof( double ) );
+    }
+    else
+    {
+      map2pixelTol *= map2pixelTol; //-> Use mappixelTol for 'LengthSquare' calculations.
+
+      for ( int i = 0; i < numPoints; ++i )
+      {
+        sourceWkbPtr >> x >> y;
+        sourceWkbPtr += skipZM;
+
+        isLongSegment = false;
+
+        if ( i == 0 ||
+             !isGeneralizable ||
+             ( isLongSegment = ( calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol ) ) ||
+             ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
+        {
+          targetWkbPtr << x << y;
+          lastX = x;
+          lastY = y;
+          numTargetPoints++;
+
+          hasLongSegments |= isLongSegment;
+        }
+
+        r.combineExtentWith( x, y );
+      }
     }
 
     QgsWkbPtr nextPointPtr( targetWkbPtr );
@@ -254,11 +362,10 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
       else
       {
         // Bad luck! The simplified geometry is invalid and approximation by bounding box
-        // would create artifacts due to long segments. Worst of all, we may have overwritten
-        // the original coordinates by the simplified ones (source and target WKB ptr can be the same)
-        // so we cannot even undo the changes here. We will return invalid geometry and hope that
-        // other pieces of QGIS will survive that :-/
+        // would create artifacts due to long segments.
+        // We will return invalid geometry and hope that other pieces of QGIS will survive that :-/
       }
+      badLuck = true;
     }
 
     if ( isaLinearRing )
@@ -275,7 +382,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
     numPtr << numTargetPoints;
     targetWkbSize += numTargetPoints * sizeof( double ) * 2;
 
-    result = numPoints != numTargetPoints;
+    result = !badLuck && numTargetPoints > 0;
   }
   else if ( flatType == QGis::WKBPolygon )
   {
@@ -296,7 +403,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
       int sourceWkbSize_i = sizeof( int ) + numPoints_i * QGis::wkbDimensions( wkbType ) * sizeof( double );
       int targetWkbSize_i = 0;
 
-      result |= simplifyWkbGeometry( simplifyFlags, wkbType, sourceWkbPtr, targetWkbPtr, targetWkbSize_i, envelope_i, map2pixelTol, false, true );
+      result |= simplifyWkbGeometry( simplifyFlags, simplifyAlgorithm, wkbType, sourceWkbPtr, targetWkbPtr, targetWkbSize_i, envelope_i, map2pixelTol, false, true );
       sourceWkbPtr += sourceWkbSize_i;
       targetWkbPtr += targetWkbSize_i;
 
@@ -347,7 +454,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
           sourceWkbPtr2 += wkbSize_i;
         }
       }
-      result |= simplifyWkbGeometry( simplifyFlags, QGis::singleType( wkbType ), sourceWkbPtr, targetWkbPtr, targetWkbSize_i, envelope, map2pixelTol, true, false );
+      result |= simplifyWkbGeometry( simplifyFlags, simplifyAlgorithm, QGis::singleType( wkbType ), sourceWkbPtr, targetWkbPtr, targetWkbSize_i, envelope, map2pixelTol, true, false );
       sourceWkbPtr += sourceWkbSize_i;
       targetWkbPtr += targetWkbSize_i;
 
@@ -376,13 +483,13 @@ QgsGeometry* QgsMapToPixelSimplifier::simplify( QgsGeometry* geometry ) const
   unsigned char* wkb = new unsigned char[ wkbSize ];
   memcpy( wkb, geometry->asWkb(), wkbSize );
   g->fromWkb( wkb, wkbSize );
-  simplifyGeometry( g, mSimplifyFlags, mTolerance );
+  simplifyGeometry( g, mSimplifyFlags, mTolerance, mSimplifyAlgorithm );
 
   return g;
 }
 
 //! Simplifies the geometry (Removing duplicated points) when is applied the specified map2pixel context
-bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry *geometry, int simplifyFlags, double tolerance )
+bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry *geometry, int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm )
 {
   int finalWkbSize = 0;
 
@@ -402,7 +509,7 @@ bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry *geometry, int simpl
 
   try
   {
-    if ( simplifyWkbGeometry( simplifyFlags, wkbType, wkbPtr, targetWkbPtr, finalWkbSize, envelope, tolerance ) )
+    if ( simplifyWkbGeometry( simplifyFlags, simplifyAlgorithm, wkbType, wkbPtr, targetWkbPtr, finalWkbSize, envelope, tolerance ) )
     {
       unsigned char *finalWkb = new unsigned char[finalWkbSize];
       memcpy( finalWkb, targetWkb, finalWkbSize );
@@ -423,5 +530,63 @@ bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry *geometry, int simpl
 //! Simplifies the geometry (Removing duplicated points) when is applied the specified map2pixel context
 bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry* geometry ) const
 {
-  return simplifyGeometry( geometry, mSimplifyFlags, mTolerance );
+  return simplifyGeometry( geometry, mSimplifyFlags, mTolerance, mSimplifyAlgorithm );
+}
+
+//! Simplifies the WKB-point array (Removing duplicated points) when is applied the specified map2pixel context
+bool QgsMapToPixelSimplifier::simplifyPoints( QgsWKBTypes::Type wkbType, QgsConstWkbPtr& sourceWkbPtr, QPolygonF& targetPoints, int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm )
+{
+  QgsWKBTypes::Type singleType = QgsWKBTypes::singleType( wkbType );
+  QgsWKBTypes::Type flatType = QgsWKBTypes::flatType( singleType );
+
+  // Check whether the geometry can be simplified using the map2pixel context
+  if ( flatType == QgsWKBTypes::Point )
+    return false;
+
+  bool isaLinearRing = flatType == QgsWKBTypes::Polygon;
+  int numPoints;
+  sourceWkbPtr >> numPoints;
+
+  // No simplify simple geometries
+  if ( numPoints <= ( isaLinearRing ? 6 : 3 ) )
+    return false;
+
+  QgsRectangle envelope = calculateBoundingBox( QGis::fromNewWkbType( singleType ), QgsConstWkbPtr( sourceWkbPtr ), numPoints );
+  sourceWkbPtr -= sizeof( int );
+
+  int targetWkbSize = 5 + sizeof( int ) + numPoints * ( 2 * sizeof( double ) );
+  unsigned char* targetWkb = new unsigned char[ targetWkbSize ];
+
+  //! Simplify the WKB-geometry using the specified tolerance
+  try
+  {
+    QgsWkbPtr targetWkbPtr( targetWkb, targetWkbSize );
+    targetWkbPtr << ( char ) QgsApplication::endian() << flatType;
+    targetWkbSize = 5;
+
+    if ( simplifyWkbGeometry( simplifyFlags, simplifyAlgorithm, QGis::fromNewWkbType( singleType ), sourceWkbPtr, targetWkbPtr, targetWkbSize, envelope, tolerance, false, isaLinearRing ) )
+    {
+      QgsConstWkbPtr finalWkbPtr( targetWkb, targetWkbSize );
+      finalWkbPtr.readHeader();
+      finalWkbPtr >> targetPoints;
+
+      int skipZM = ( QGis::wkbDimensions( QGis::fromNewWkbType( wkbType ) ) - 2 ) * sizeof( double );
+      sourceWkbPtr += sizeof( int ) + numPoints * ( 2 * sizeof( double ) + skipZM );
+
+      delete [] targetWkb;
+      return true;
+    }
+  }
+  catch ( const QgsWkbException &e )
+  {
+    QgsDebugMsg( QString( "Exception thrown by simplifier: %1" ) .arg( e.what() ) );
+  }
+  delete [] targetWkb;
+  return false;
+}
+
+//! Simplifies the specified WKB-point array
+bool QgsMapToPixelSimplifier::simplifyPoints( QgsWKBTypes::Type wkbType, QgsConstWkbPtr& sourceWkbPtr, QPolygonF& targetPoints ) const
+{
+  return simplifyPoints( wkbType, sourceWkbPtr, targetPoints, mSimplifyFlags, mTolerance, mSimplifyAlgorithm );
 }

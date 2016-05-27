@@ -58,6 +58,7 @@
 #include <qgsproject.h>
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsmaptopixelgeometrysimplifier.h"
 #include <QMessageBox>
 
 
@@ -2422,6 +2423,26 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     return;
   }
 
+  // simplify?
+  const QgsVectorSimplifyMethod &simplifyMethod = context.vectorSimplifyMethod();
+  QScopedPointer<QgsGeometry> scopedClonedGeom;
+  if ( simplifyMethod.simplifyHints() != QgsVectorSimplifyMethod::NoSimplification && simplifyMethod.forceLocalOptimization() )
+  {
+    int simplifyHints = simplifyMethod.simplifyHints() | QgsMapToPixelSimplifier::SimplifyEnvelope;
+    QgsMapToPixelSimplifier::SimplifyAlgorithm simplifyAlgorithm = static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( simplifyMethod.simplifyAlgorithm() );
+    QgsGeometry* g = new QgsGeometry( *geom );
+
+    if ( QgsMapToPixelSimplifier::simplifyGeometry( g, simplifyHints, simplifyMethod.tolerance(), simplifyAlgorithm ) )
+    {
+      geom = g;
+      scopedClonedGeom.reset( g );
+    }
+    else
+    {
+      delete g;
+    }
+  }
+
   // whether we're going to create a centroid for polygon
   bool centroidPoly = (( placement == QgsPalLayerSettings::AroundPoint
                          || placement == QgsPalLayerSettings::OverPoint )
@@ -2980,6 +3001,26 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderConte
   if ( !geom )
   {
     return;
+  }
+
+  // simplify?
+  const QgsVectorSimplifyMethod &simplifyMethod = context.vectorSimplifyMethod();
+  QScopedPointer<QgsGeometry> scopedClonedGeom;
+  if ( simplifyMethod.simplifyHints() != QgsVectorSimplifyMethod::NoSimplification && simplifyMethod.forceLocalOptimization() )
+  {
+    int simplifyHints = simplifyMethod.simplifyHints() | QgsMapToPixelSimplifier::SimplifyEnvelope;
+    QgsMapToPixelSimplifier::SimplifyAlgorithm simplifyAlgorithm = static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( simplifyMethod.simplifyAlgorithm() );
+    QgsGeometry* g = new QgsGeometry( *geom );
+
+    if ( QgsMapToPixelSimplifier::simplifyGeometry( g, simplifyHints, simplifyMethod.tolerance(), simplifyAlgorithm ) )
+    {
+      geom = g;
+      scopedClonedGeom.reset( g );
+    }
+    else
+    {
+      delete g;
+    }
   }
 
   const GEOSGeometry* geos_geom = nullptr;

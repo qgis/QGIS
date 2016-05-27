@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgis.h"
 #include "qgsexception.h"
+#include "qpolygon.h"
 
 /** \ingroup core
  *  * Custom exception class for Wkb related exceptions.
@@ -89,12 +90,16 @@ class CORE_EXPORT QgsWkbPtr
 
 class CORE_EXPORT QgsConstWkbPtr
 {
+  protected:
     mutable unsigned char *mP;
     unsigned char *mEnd;
     mutable bool mEndianSwap;
+    mutable QgsWKBTypes::Type mWkbType;
 
+    //! Verify bounds
     void verifyBound( int size ) const;
 
+    //! Read a value
     template<typename T> void read( T& v ) const
     {
       verifyBound( sizeof v );
@@ -113,6 +118,11 @@ class CORE_EXPORT QgsConstWkbPtr
     inline const QgsConstWkbPtr &operator>>( int &v ) const { read( v ); return *this; }
     inline const QgsConstWkbPtr &operator>>( unsigned int &v ) const { read( v ); return *this; }
     inline const QgsConstWkbPtr &operator>>( char &v ) const { read( v ); return *this; }
+
+    //! Read a point
+    virtual const QgsConstWkbPtr &operator>>( QPointF &point ) const;
+    //! Read a point array
+    virtual const QgsConstWkbPtr &operator>>( QPolygonF &points ) const;
 
     inline void operator+=( int n ) { verifyBound( n ); mP += n; }
     inline void operator-=( int n ) { mP -= n; }

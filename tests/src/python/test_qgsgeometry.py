@@ -162,7 +162,7 @@ class TestQgsGeometry(unittest.TestCase):
                 # test geometry centroid
                 exp = row['centroid']
                 result = geom.centroid().exportToWkt()
-                assert compareWkt(result, exp), "Centroid {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
+                assert compareWkt(result, exp, 0.00001), "Centroid {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
 
                 # test bounding box limits
                 bbox = geom.geometry().boundingBox()

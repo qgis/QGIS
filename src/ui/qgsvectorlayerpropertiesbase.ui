@@ -802,14 +802,30 @@
                     </property>
                    </spacer>
                   </item>
-                  <item row="2" column="1" colspan="4">
+                  <item row="2" column="1">
+                   <widget class="QLabel" name="mSimplifyAlgorithmLabel">
+                    <property name="text">
+                     <string>Simplification algorithm: </string>
+                    </property>
+                    <property name="toolTip">
+                     <string>This algorithm only is applied to simplify on local side</string>
+                    </property>                          
+                    <property name="margin">
+                     <number>2</number>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="2">
+                   <widget class="QComboBox" name="mSimplifyAlgorithmComboBox"/>
+                  </item>
+                  <item row="3" column="1" colspan="4">
                    <widget class="QCheckBox" name="mSimplifyDrawingAtProvider">
                     <property name="text">
                      <string>Simplify on provider side if possible</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="3" column="1">
+                  <item row="4" column="1">
                    <widget class="QLabel" name="mSimplifyMaxScaleLabel">
                     <property name="text">
                      <string>Maximum scale at which the layer should be simplified (1:1 always simplifies): </string>
@@ -819,7 +835,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="3" column="2">
+                  <item row="4" column="2">
                    <widget class="QgsScaleComboBox" name="mSimplifyMaximumScaleComboBox">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -1745,6 +1761,7 @@
   <tabstop>scrollArea_19</tabstop>
   <tabstop>mSimplifyDrawingGroupBox</tabstop>
   <tabstop>mSimplifyDrawingSpinBox</tabstop>
+  <tabstop>mSimplifyAlgorithmComboBox</tabstop>
   <tabstop>mSimplifyDrawingAtProvider</tabstop>
   <tabstop>mSimplifyMaximumScaleComboBox</tabstop>
   <tabstop>mForceRasterCheckBox</tabstop>

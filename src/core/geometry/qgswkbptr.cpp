@@ -32,6 +32,7 @@ QgsConstWkbPtr::QgsConstWkbPtr( const unsigned char *p, int size )
   mP = const_cast< unsigned char * >( p );
   mEnd = mP + size;
   mEndianSwap = false;
+  mWkbType = QgsWKBTypes::Unknown;
 }
 
 QgsWKBTypes::Type QgsConstWkbPtr::readHeader() const
@@ -45,12 +46,40 @@ QgsWKBTypes::Type QgsConstWkbPtr::readHeader() const
 
   int wkbType;
   *this >> wkbType;
+  mWkbType = static_cast<QgsWKBTypes::Type>( wkbType );
 
-  return static_cast<QgsWKBTypes::Type>( wkbType );
+  return mWkbType;
 }
 
 void QgsConstWkbPtr::verifyBound( int size ) const
 {
   if ( !mP || mP + size > mEnd )
     throw QgsWkbException( "wkb access out of bounds" );
+}
+
+const QgsConstWkbPtr &QgsConstWkbPtr::operator>>( QPointF &point ) const
+{
+  read( point.rx() );
+  read( point.ry() );
+  return *this;
+}
+
+const QgsConstWkbPtr &QgsConstWkbPtr::operator>>( QPolygonF &points ) const
+{
+  int skipZM = ( QgsWKBTypes::coordDimensions( mWkbType ) - 2 ) * sizeof( double );
+  Q_ASSERT( skipZM >= 0 );
+
+  unsigned int nPoints;
+  read( nPoints );
+
+  points.resize( nPoints );
+  QPointF* ptr = points.data();
+
+  for ( unsigned int i = 0; i < nPoints; ++i, ++ptr )
+  {
+    read( ptr->rx() );
+    read( ptr->ry() );
+    mP += skipZM;
+  }
+  return *this;
 }

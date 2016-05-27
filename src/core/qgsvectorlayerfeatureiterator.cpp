@@ -35,8 +35,6 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( QgsVectorLayer *layer 
   mExpressionFieldBuffer = new QgsExpressionFieldBuffer( *layer->mExpressionFieldBuffer );
   mCrsId = layer->crs().srsid();
 
-  mCanBeSimplified = layer->hasGeometryType() && layer->geometryType() != QGis::Point;
-
   mHasEditBuffer = layer->editBuffer();
   if ( mHasEditBuffer )
   {
@@ -93,7 +91,6 @@ QgsFeatureIterator QgsVectorLayerFeatureSource::getFeatures( const QgsFeatureReq
 QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>( source, ownSource, request )
     , mFetchedFid( false )
-    , mEditGeometrySimplifier( nullptr )
     , mInterruptionChecker( nullptr )
 {
   prepareExpressions();
@@ -191,9 +188,6 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
 
 QgsVectorLayerFeatureIterator::~QgsVectorLayerFeatureIterator()
 {
-  delete mEditGeometrySimplifier;
-  mEditGeometrySimplifier = nullptr;
-
   qDeleteAll( mExpressionFieldInfo );
 
   close();
@@ -357,14 +351,6 @@ void QgsVectorLayerFeatureIterator::useAddedFeature( const QgsFeature& src, QgsF
   if ( src.constGeometry() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
     f.setGeometry( new QgsGeometry( *src.constGeometry() ) );
-
-    // simplify the edited geometry using its simplifier configured
-    if ( mEditGeometrySimplifier )
-    {
-      QgsGeometry* geometry = f.geometry();
-      QGis::GeometryType geometryType = geometry->type();
-      if ( geometryType == QGis::Line || geometryType == QGis::Polygon ) mEditGeometrySimplifier->simplifyGeometry( geometry );
-    }
   }
 
   // TODO[MD]: if subset set just some attributes
@@ -439,14 +425,6 @@ void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
     f.setGeometry( geom );
-
-    // simplify the edited geometry using its simplifier configured
-    if ( mEditGeometrySimplifier )
-    {
-      QgsGeometry* geometry = f.geometry();
-      QGis::GeometryType geometryType = geometry->type();
-      if ( geometryType == QGis::Line || geometryType == QGis::Polygon ) mEditGeometrySimplifier->simplifyGeometry( geometry );
-    }
   }
 
   bool subsetAttrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes );
@@ -638,39 +616,13 @@ void QgsVectorLayerFeatureIterator::addVirtualAttributes( QgsFeature& f )
 
 bool QgsVectorLayerFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
 {
-  delete mEditGeometrySimplifier;
-  mEditGeometrySimplifier = nullptr;
-
-  // setup simplification for edited geometries to fetch
-  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && mSource->mCanBeSimplified )
-  {
-    mEditGeometrySimplifier = QgsSimplifyMethod::createGeometrySimplifier( simplifyMethod );
-    return nullptr != mEditGeometrySimplifier;
-  }
+  Q_UNUSED( simplifyMethod );
   return false;
 }
 
 bool QgsVectorLayerFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
 {
   Q_UNUSED( methodType );
-#if 0
-  // TODO[MD]: after merge
-  QgsVectorDataProvider* provider = L->dataProvider();
-
-  if ( provider && methodType != QgsSimplifyMethod::NoSimplification )
-  {
-    int capabilities = provider->capabilities();
-
-    if ( methodType == QgsSimplifyMethod::OptimizeForRendering )
-    {
-      return ( capabilities & QgsVectorDataProvider::SimplifyGeometries );
-    }
-    else if ( methodType == QgsSimplifyMethod::PreserveTopology )
-    {
-      return ( capabilities & QgsVectorDataProvider::SimplifyGeometriesWithTopologicalValidation );
-    }
-  }
-#endif
   return false;
 }
 

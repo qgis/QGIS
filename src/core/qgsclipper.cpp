@@ -38,7 +38,7 @@ const double QgsClipper::MIN_Y = -16000;
 
 const double QgsClipper::SMALL_NUM = 1e-12;
 
-QgsConstWkbPtr QgsClipper::clippedLineWKB( QgsConstWkbPtr wkbPtr, const QgsRectangle& clipExtent, QPolygonF& line )
+QgsConstWkbPtr QgsClipper::clippedLineWKB( QgsConstWkbPtr& wkbPtr, const QgsRectangle& clipExtent, QPolygonF& line )
 {
   QgsWKBTypes::Type wkbType = wkbPtr.readHeader();
 
@@ -57,15 +57,22 @@ QgsConstWkbPtr QgsClipper::clippedLineWKB( QgsConstWkbPtr wkbPtr, const QgsRecta
   double p1x_c, p1y_c; //clipped end coordinates
   double lastClipX = 0.0, lastClipY = 0.0; //last successfully clipped coords
 
+  QPolygonF pts;
+  wkbPtr -= sizeof( unsigned int );
+  wkbPtr >> pts;
+  nPoints = pts.size();
+
   line.clear();
   line.reserve( nPoints + 1 );
 
-  for ( int i = 0; i < nPoints; ++i )
+  QPointF *ptr = pts.data();
+
+  for ( int i = 0; i < nPoints; ++i, ++ptr )
   {
     if ( i == 0 )
     {
-      wkbPtr >> p1x >> p1y;
-      wkbPtr += skipZM;
+      p1x = ptr->rx();
+      p1y = ptr->ry();
       continue;
     }
     else
@@ -73,8 +80,8 @@ QgsConstWkbPtr QgsClipper::clippedLineWKB( QgsConstWkbPtr wkbPtr, const QgsRecta
       p0x = p1x;
       p0y = p1y;
 
-      wkbPtr >> p1x >> p1y;
-      wkbPtr += skipZM;
+      p1x = ptr->rx();
+      p1y = ptr->ry();
 
       p1x_c = p1x;
       p1y_c = p1y;
