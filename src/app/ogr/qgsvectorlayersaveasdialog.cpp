@@ -524,108 +524,79 @@ long QgsVectorLayerSaveAsDialog::crs() const
   return mCRS;
 }
 
-QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
+static QStringList getOptions( const QgsVectorFileWriter::OptionMap optionMap, const QgsCollapsibleGroupBox& groupBox, const QTextEdit& textOptions )
 {
   QStringList options;
 
-  QgsVectorFileWriter::MetaData driverMetaData;
+  QMap<QString, QgsVectorFileWriter::Option*>::ConstIterator it;
 
-  if ( QgsVectorFileWriter::driverMetadata( format(), driverMetaData ) )
+  for ( it = optionMap.constBegin(); it != optionMap.constEnd(); ++it )
   {
-    QMap<QString, QgsVectorFileWriter::Option*>::ConstIterator it;
-
-    for ( it = driverMetaData.driverOptions.constBegin(); it != driverMetaData.driverOptions.constEnd(); ++it )
+    switch ( it.value()->type )
     {
-      switch ( it.value()->type )
+      case QgsVectorFileWriter::Int:
       {
-        case QgsVectorFileWriter::Int:
-        {
-          QSpinBox* sb = mDatasourceOptionsGroupBox->findChild<QSpinBox*>( it.key() );
-          if ( sb )
-            options << QString( "%1=%2" ).arg( it.key() ).arg( sb->value() );
-          break;
-        }
+        const QSpinBox* sb = groupBox.findChild<QSpinBox*>( it.key() );
+        if ( sb )
+          options << QString( "%1=%2" ).arg( it.key() ).arg( sb->value() );
+        break;
+      }
 
-        case QgsVectorFileWriter::Set:
-        {
-          QComboBox* cb = mDatasourceOptionsGroupBox->findChild<QComboBox*>( it.key() );
-          if ( cb && !cb->itemData( cb->currentIndex() ).isNull() )
-            options << QString( "%1=%2" ).arg( it.key(), cb->currentText() );
-          break;
-        }
+      case QgsVectorFileWriter::Set:
+      {
+        const QComboBox* cb = groupBox.findChild<QComboBox*>( it.key() );
+        if ( cb && !cb->itemData( cb->currentIndex() ).isNull() )
+          options << QString( "%1=%2" ).arg( it.key(), cb->currentText() );
+        break;
+      }
 
-        case QgsVectorFileWriter::String:
-        {
-          QLineEdit* le = mDatasourceOptionsGroupBox->findChild<QLineEdit*>( it.key() );
-          if ( le )
-            options << QString( "%1=%2" ).arg( it.key(), le->text() );
-          break;
-        }
+      case QgsVectorFileWriter::String:
+      {
+        const QLineEdit* le = groupBox.findChild<QLineEdit*>( it.key() );
+        if ( le )
+          options << QString( "%1=%2" ).arg( it.key(), le->text() );
+        break;
+      }
 
-        case QgsVectorFileWriter::Hidden:
-        {
-          QgsVectorFileWriter::HiddenOption *opt =
-            dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
-          options << QString( "%1=%2" ).arg( it.key(), opt->mValue );
-          break;
-        }
+      case QgsVectorFileWriter::Hidden:
+      {
+        QgsVectorFileWriter::HiddenOption *opt =
+          dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
+        options << QString( "%1=%2" ).arg( it.key(), opt->mValue );
+        break;
       }
     }
   }
 
-  return options + mOgrDatasourceOptions->toPlainText().split( '\n' );
+  return options + textOptions.toPlainText().split( '\n' );
+}
+
+QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
+{
+  QStringList options;
+  QgsVectorFileWriter::MetaData driverMetaData;
+  if ( QgsVectorFileWriter::driverMetadata( format(), driverMetaData ) )
+  {
+    return getOptions( driverMetaData.driverOptions, *mDatasourceOptionsGroupBox, *mOgrDatasourceOptions );
+  }
+  else
+  {
+    return QStringList();
+  }
 }
 
 QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
 {
   QStringList options;
-
   QgsVectorFileWriter::MetaData driverMetaData;
-
   if ( QgsVectorFileWriter::driverMetadata( format(), driverMetaData ) )
   {
-    QMap<QString, QgsVectorFileWriter::Option*>::ConstIterator it;
-
-    for ( it = driverMetaData.layerOptions.constBegin(); it != driverMetaData.layerOptions.constEnd(); ++it )
-    {
-      switch ( it.value()->type )
-      {
-        case QgsVectorFileWriter::Int:
-        {
-          QSpinBox* sb = mLayerOptionsGroupBox->findChild<QSpinBox*>( it.key() );
-          if ( sb )
-            options << QString( "%1=%2" ).arg( it.key() ).arg( sb->value() );
-          break;
-        }
-
-        case QgsVectorFileWriter::Set:
-        {
-          QComboBox* cb = mLayerOptionsGroupBox->findChild<QComboBox*>( it.key() );
-          if ( cb && !cb->itemData( cb->currentIndex() ).isNull() )
-            options << QString( "%1=%2" ).arg( it.key(), cb->currentText() );
-          break;
-        }
-
-        case QgsVectorFileWriter::String:
-        {
-          QLineEdit* le = mLayerOptionsGroupBox->findChild<QLineEdit*>( it.key() );
-          if ( le )
-            options << QString( "%1=%2" ).arg( it.key(), le->text() );
-          break;
-        }
-
-        case QgsVectorFileWriter::Hidden:
-        {
-          QgsVectorFileWriter::HiddenOption *opt =
-            dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
-          options << QString( "%1=%2" ).arg( it.key(), opt->mValue );
-          break;
-        }
-      }
-    }
+    return getOptions( driverMetaData.layerOptions, *mLayerOptionsGroupBox, *mOgrLayerOptions );
   }
-
-  return options + mOgrLayerOptions->toPlainText().split( '\n' );
+  else
+  {
+    return QStringList();
+  }
 }
 
 bool QgsVectorLayerSaveAsDialog::attributeSelection() const

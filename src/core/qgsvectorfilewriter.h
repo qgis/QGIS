@@ -115,6 +115,8 @@ class CORE_EXPORT QgsVectorFileWriter
         QString mValue;
     };
 
+    typedef QMap<QString, Option*> OptionMap;
+
     struct MetaData
     {
       MetaData()
@@ -130,12 +132,19 @@ class CORE_EXPORT QgsVectorFileWriter
           , compulsoryEncoding( compulsoryEncoding )
       {}
 
+      MetaData( const char* longName, const QString& ext )
+          : longName( longName )
+          , trLongName( QObject::tr( longName ) )
+          , glob( "*." + ext )
+          , ext( ext )
+      {}
+
       QString longName;
       QString trLongName;
       QString glob;
       QString ext;
-      QMap<QString, Option*> driverOptions;
-      QMap<QString, Option*> layerOptions;
+      OptionMap driverOptions;
+      OptionMap layerOptions;
       /** Some formats require a compulsory encoding, typically UTF-8. If no compulsory encoding, empty string */
       QString compulsoryEncoding;
     };
@@ -428,7 +437,7 @@ class CORE_EXPORT QgsVectorFileWriter
 
     QgsRenderContext mRenderContext;
 
-    static QMap<QString, MetaData> initMetaData();
+    static const QMap<QString, MetaData> initMetaData();
     void createSymbolLayerTable( QgsVectorLayer* vl,  const QgsCoordinateTransform* ct, OGRDataSourceH ds );
     OGRFeatureH createFeature( QgsFeature& feature );
     bool writeFeature( OGRLayerH layer, OGRFeatureH feature );
