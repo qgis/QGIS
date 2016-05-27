@@ -17,7 +17,7 @@
 
   <mime-type type="application/x-qgis-layer-settings">
     <comment>QGIS layer settings</comment>
-    <comment xml:lang="de">QGIS Layer Einstellungen</comment>
+    <comment xml:lang="de">QGIS-Layereinstellungen</comment>
     <sub-class-of type="application/xml"/>
     <icon name="qgis-qml"/>
     <magic priority="50">
@@ -30,7 +30,7 @@
   
   <mime-type type="application/x-qgis-layer-definition">
     <comment>QGIS layer definition</comment>
-    <comment xml:lang="de">QGIS Layer definition</comment>
+    <comment xml:lang="de">QGIS-Layerdefinition</comment>
     <sub-class-of type="application/xml"/>
     <icon name="qgis-qlr"/>
     <magic priority="50">
@@ -43,7 +43,7 @@
 
   <mime-type type="application/x-qgis-composer-template">
     <comment>QGIS composer template</comment>
-    <comment xml:lang="de">QGIS Komponist Vorlage</comment>
+    <comment xml:lang="de">QGIS-Druckzusammenstellungsvorlage</comment>
     <sub-class-of type="application/xml"/>
     <icon name="qgis-qpt"/>
     <magic priority="50">
