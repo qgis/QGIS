@@ -3,6 +3,6 @@ Type=MimeType
 MimeType=application/x-qgis-layer-definition
 Hidden=false
 Comment=QGIS layer definition
-Icon=qgis-mime
+Icon=qgis-qlr-mime
 Patterns=*.qlr;
 Name[en_US]=x-qgis-layer-definition.desktop
