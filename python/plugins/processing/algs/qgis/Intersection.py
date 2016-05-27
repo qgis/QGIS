@@ -112,7 +112,6 @@ class Intersection(GeoAlgorithm):
                                                self.tr('GEOS geoprocessing error: One or '
                                                        'more input features have invalid '
                                                        'geometry.'))
-                        break
                     try:
                         if int_geom.wkbType() in wkbTypeGroups[wkbTypeGroups[int_geom.wkbType()]]:
                             outFeat.setGeometry(int_geom)
