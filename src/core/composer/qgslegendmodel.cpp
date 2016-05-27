@@ -259,7 +259,7 @@ int QgsLegendModel::addRasterLayerItems( QStandardItem* layerItem, QgsMapLayer* 
   }
 
   QgsDebugMsg( QString( "layer providertype:: %1" ).arg( rasterLayer->providerType() ) );
-  if ( rasterLayer->providerType() == "wms" )
+  if ( rasterLayer->dataProvider()->supportsLegendGraphic() )
   {
     QgsComposerRasterSymbolItem* currentSymbolItem = new QgsComposerRasterSymbolItem( "" );
     // GetLegendGraphics in case of WMS service... image can return null if GetLegendGraphics

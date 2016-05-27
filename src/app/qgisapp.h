@@ -360,6 +360,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionAddWmsLayer() { return mActionAddWmsLayer; }
     QAction *actionAddWcsLayer() { return mActionAddWcsLayer; }
     QAction *actionAddWfsLayer() { return mActionAddWfsLayer; }
+    QAction* actionAddAfsLayer() { return mActionAddAfsLayer; }
+    QAction* actionAddAmsLayer() { return mActionAddAmsLayer; }
     QAction *actionCopyLayerStyle() { return mActionCopyStyle; }
     QAction *actionPasteLayerStyle() { return mActionPasteStyle; }
     QAction *actionOpenTable() { return mActionOpenTable; }
@@ -667,6 +669,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsPluginLayer* addPluginLayer( const QString& uri, const QString& baseName, const QString& providerKey );
 
     void addWfsLayer( const QString& uri, const QString& typeName );
+
+    void addAfsLayer( const QString& uri, const QString& typeName );
+
+    void addAmsLayer( const QString& uri, const QString& typeName );
 
     void versionReplyFinished();
 
@@ -1135,6 +1141,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void addWcsLayer();
     //! Add a WFS layer to the map
     void addWfsLayer();
+    //! Add a ArcGIS FeatureServer layer to the map
+    void addAfsLayer();
+    //! Add a ArcGIS MapServer layer to the map
+    void addAmsLayer();
     //! Set map tool to Zoom out
     void zoomOut();
     //! Set map tool to Zoom in

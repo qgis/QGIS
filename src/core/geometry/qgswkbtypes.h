@@ -455,6 +455,17 @@ class CORE_EXPORT QgsWKBTypes
       return Unknown;
     }
 
+    /** Returns the modified input geometry type according to hasZ / hasM */
+    static Type zmType( Type type, bool hasZ, bool hasM )
+    {
+      type = flatType( type );
+      if ( hasZ )
+        type = static_cast<QgsWKBTypes::Type>( static_cast<quint32>( type ) + 1000 );
+      if ( hasM )
+        type = static_cast<QgsWKBTypes::Type>( static_cast<quint32>( type ) + 2000 );
+      return type;
+    }
+
     /** Attempts to extract the WKB type from a WKT string.
      * @param wktStr a valid WKT string
      */
