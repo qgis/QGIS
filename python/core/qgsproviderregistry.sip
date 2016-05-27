@@ -48,6 +48,8 @@ class QgsProviderRegistry
      */
     int providerCapabilities( const QString& providerKey ) const;
 
+    /** Returns a widget for selecting layers from a provider.
+     */
     QWidget *selectWidget( const QString & providerKey,
                            QWidget * parent = 0, const Qt::WindowFlags& fl = 0 );
 

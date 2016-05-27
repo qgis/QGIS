@@ -79,6 +79,8 @@ class CORE_EXPORT QgsProviderRegistry
      */
     int providerCapabilities( const QString& providerKey ) const;
 
+    /** Returns a widget for selecting layers from a provider.
+     */
     QWidget *selectWidget( const QString & providerKey,
                            QWidget * parent = nullptr, const Qt::WindowFlags& fl = Qt::WindowFlags() );
 
