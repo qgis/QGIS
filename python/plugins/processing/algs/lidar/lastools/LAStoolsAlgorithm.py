@@ -303,7 +303,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
             commands.append(idir + '\\' + files)
 
     def addParametersAdditionalGUI(self):
-        self.addParameter(ParameterString(LAStoolsAlgorithm.ADDITIONAL_OPTIONS, self.tr("additional command line parameter(s)")))
+        self.addParameter(ParameterString(LAStoolsAlgorithm.ADDITIONAL_OPTIONS, self.tr("additional command line parameter(s)")), optional=True)
 
     def addParametersAdditionalCommands(self, commands):
         additional_options = self.getParameterValue(LAStoolsAlgorithm.ADDITIONAL_OPTIONS).split()
