@@ -1469,7 +1469,8 @@ QImage* QgsWMSServer::getMap( HitTest* hitTest )
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     renderJob.setFeatureFilterProvider( mAccessControl );
 #endif
-    renderJob.renderSynchronously();
+    renderJob.start();
+    renderJob.waitForFinished();
   }
 
   if ( mConfigParser )
