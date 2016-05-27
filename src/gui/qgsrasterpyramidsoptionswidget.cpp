@@ -52,8 +52,8 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
   QString prefix = mProvider + "/driverOptions/_pyramids/";
   QString tmpStr;
 
-  // cbxPyramidsInternal->setChecked( mySettings.value( prefix + "internal", false ).toBool() );
-  tmpStr = mySettings.value( prefix + "format", "gtiff" ).toString();
+  // keep it in sync with qgsrasterlayerproperties.cpp
+  tmpStr = mySettings.value( prefix + "format", "external" ).toString();
   if ( tmpStr == "internal" )
     cbxPyramidsFormat->setCurrentIndex( 1 );
   else if ( tmpStr == "external_erdas" )
@@ -68,8 +68,9 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
   {
     cboResamplingMethod->addItem( method.second, method.first );
   }
-  cboResamplingMethod->setCurrentIndex( cboResamplingMethod->findData(
-                                          mySettings.value( prefix + "resampling", "AVERAGE" ).toString() ) );
+  QString defaultMethod = mySettings.value( prefix + "resampling", "AVERAGE" ).toString();
+  int idx = cboResamplingMethod->findData( defaultMethod );
+  cboResamplingMethod->setCurrentIndex( idx );
 
   // validate string, only space-separated positive integers are allowed
   lePyramidsLevels->setEnabled( cbxPyramidsLevelsCustom->isChecked() );

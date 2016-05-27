@@ -183,6 +183,16 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     {
       cboResamplingMethod->addItem( method.second, method.first );
     }
+
+    // keep it in sync with qgsrasterpyramidsoptionwidget.cpp
+    QString prefix = provider->name() + "/driverOptions/_pyramids/";
+    QSettings mySettings;
+    QString defaultMethod = mySettings.value( prefix + "resampling", "AVERAGE" ).toString();
+    int idx = cboResamplingMethod->findData( defaultMethod );
+    if ( idx >= 0 )
+      cboResamplingMethod->setCurrentIndex( idx );
+
+
     // build pyramid list
     QList< QgsRasterPyramid > myPyramidList = provider->buildPyramidList();
     QList< QgsRasterPyramid >::iterator myRasterPyramidIterator;
@@ -988,6 +998,13 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
     //mark to be pyramided
     myPyramidList[myCounterInt].build = myItem->isSelected() || myPyramidList[myCounterInt].exists;
   }
+
+  // keep it in sync with qgsrasterpyramidsoptionwidget.cpp
+  QString prefix = provider->name() + "/driverOptions/_pyramids/";
+  QSettings mySettings;
+  QString resamplingMethod( cboResamplingMethod->itemData( cboResamplingMethod->currentIndex() ).toString() );
+  mySettings.setValue( prefix + "resampling", resamplingMethod );
+
   //
   // Ask raster layer to build the pyramids
   //
@@ -996,7 +1013,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QString res = provider->buildPyramids(
                   myPyramidList,
-                  cboResamplingMethod->itemData( cboResamplingMethod->currentIndex() ).toString(),
+                  resamplingMethod,
                   ( QgsRaster::RasterPyramidsFormat ) cbxPyramidsFormat->currentIndex() );
   QApplication::restoreOverrideCursor();
   mPyramidProgress->setValue( 0 );
