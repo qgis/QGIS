@@ -136,14 +136,25 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
     if ( layer->actions()->defaultAction() >= 0 )
     {
       // define custom substitutions: layer id and clicked coords
+
+      // TODO QGIS 3.0 - remove these deprecated global expression variables!
       QMap<QString, QVariant> substitutionMap;
       substitutionMap.insert( "$layerid", layer->id() );
       point = toLayerCoordinates( layer, point );
       substitutionMap.insert( "$clickx", point.x() );
       substitutionMap.insert( "$clicky", point.y() );
 
+      QgsExpressionContext context;
+      context << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope()
+      << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() );
+      QgsExpressionContextScope* actionScope = new QgsExpressionContextScope();
+      actionScope->setVariable( "click_x", point.x() );
+      actionScope->setVariable( "click_y", point.y() );
+      context << actionScope;
+
       int actionIdx = layer->actions()->defaultAction();
-      layer->actions()->doAction( actionIdx, feat, &substitutionMap );
+      layer->actions()->doAction( actionIdx, feat, context, &substitutionMap );
     }
     else
     {
