@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Thursday May 26, 2016
+Friday May 27, 2016
 
 
-Last Updated: Thursday May 26, 2016
-Last Change : Thursday May 26, 2016
+Last Updated: Friday May 27, 2016
+Last Change : Friday May 27, 2016
 
 
   1. Introduction
@@ -19,7 +19,8 @@ Last Change : Thursday May 26, 2016
     3.7. Starting the compile
     3.8. Building Debian packages
     3.9. Building QGIS with Qt 5.x
-    3.10. On Fedora Linux
+    3.10. On Debian Linux
+    3.11. On Fedora Linux
   4. Building on Windows
     4.1. Building with Microsoft Visual Studio
     4.2. Building using MinGW
@@ -336,35 +337,31 @@ code is compatible with PyQt5.
 
 You have been warned.
 
+
   3.10. On Debian Linux
   =====================
 
-We assume that you have the source code of QGIS ready and created a
-new subdirectory called `build` or `build-qt5` in it.
+We assume that you have the source code of QGIS ready and created a new
+subdirectory called `build` or `build-qt5` in it.
+
 
     3.10.1. Install build dependencies
     ==================================
 
-  apt-egt install git build-essential cmake flex bison pyqt5-dev qttools5-dev
-  qtpositioning5-dev libqt5svg5-dev libqt5webkit5-dev  libqt5gui5 libqt5scripttools5
-  qtscript5-dev libqca-qt5-2-dev grass-dev libgeos-dev libgdal-dev libqt5xmlpatterns5-dev
-  libqt5scintilla2-dev pyqt5.qsci-dev python3-pyqt5.qsci libgsl-dev txt2tags libproj-dev
-  libqwt-qt5-dev libspatialindex-dev pyqt5-dev-tools qttools5-dev-tools qt5-default
-  python3-future python3-pyqt5.qtsql python3-psycopg2
+  apt-get install git build-essential cmake flex bison pyqt5-dev qttools5-dev qtpositioning5-dev libqt5svg5-dev libqt5webkit5-dev  libqt5gui5 libqt5scripttools5 qtscript5-dev libqca-qt5-2-dev grass-dev libgeos-dev libgdal-dev libqt5xmlpatterns5-dev libqt5scintilla2-dev pyqt5.qsci-dev python3-pyqt5.qsci libgsl-dev txt2tags libproj-dev libqwt-qt5-dev libspatialindex-dev pyqt5-dev-tools qttools5-dev-tools qt5-default python3-future python3-pyqt5.qtsql python3-psycopg2
 
 Make sure that your build directory is completely empty when you enter the
 following command. Do never try to "re-use" an existing Qt4 build directory.
 If you want to use `ccmake` or other interactive tools, run the following
-command in the empty build directory once before starting to use the interactive
-tools.
+command in the empty build directory once before starting to use the
+interactive tools.
 
   cmake -DENABLE_QT5=ON -DPORT_PLUGINS=ON
 
-If everything went ok you can finally start to compile. (As usual append a -jX
-where X is the number of available cores option to make to speed up your build
-process)
+If everything went ok you can finally start to compile. (As usual append a -jX where X is the number of available cores option to make to speed up your build process)
 
   make
+
 
   3.11. On Fedora Linux
   =====================

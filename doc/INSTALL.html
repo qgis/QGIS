@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Thursday May 26, 2016</H3>
+<H3>Friday May 27, 2016</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Thursday May 26, 2016
-Last Change : Thursday May 26, 2016
+Last Updated: Friday May 27, 2016
+Last Change : Friday May 27, 2016
 </P>
 <DIV CLASS="toc">
 
@@ -101,37 +101,38 @@ Last Change : Thursday May 26, 2016
     <LI><A HREF="#toc10">3.7. Starting the compile</A>
     <LI><A HREF="#toc11">3.8. Building Debian packages</A>
     <LI><A HREF="#toc12">3.9. Building QGIS with Qt 5.x</A>
-    <LI><A HREF="#toc13">3.10. On Fedora Linux</A>
+    <LI><A HREF="#toc13">3.10. On Debian Linux</A>
+    <LI><A HREF="#toc14">3.11. On Fedora Linux</A>
     </UL>
-  <LI><A HREF="#toc14">Building on Windows</A>
+  <LI><A HREF="#toc15">Building on Windows</A>
     <UL>
-    <LI><A HREF="#toc15">4.1. Building with Microsoft Visual Studio</A>
-    <LI><A HREF="#toc16">4.2. Building using MinGW</A>
-    <LI><A HREF="#toc17">4.3. Creation of MSYS environment for compilation of QGIS</A>
+    <LI><A HREF="#toc16">4.1. Building with Microsoft Visual Studio</A>
+    <LI><A HREF="#toc17">4.2. Building using MinGW</A>
+    <LI><A HREF="#toc18">4.3. Creation of MSYS environment for compilation of QGIS</A>
     </UL>
-  <LI><A HREF="#toc18">Building on MacOS X</A>
+  <LI><A HREF="#toc19">Building on MacOS X</A>
     <UL>
-    <LI><A HREF="#toc19">5.1. Install Developer Tools</A>
-    <LI><A HREF="#toc20">5.2. Install Qt4 from disk image</A>
-    <LI><A HREF="#toc21">5.3. Install CMake for OSX</A>
-    <LI><A HREF="#toc22">5.4. Install development frameworks for QGIS dependencies</A>
-    <LI><A HREF="#toc23">5.5. API documentation</A>
-    <LI><A HREF="#toc24">5.6. QGIS source</A>
-    <LI><A HREF="#toc25">5.7. Configure the build</A>
-    <LI><A HREF="#toc26">5.8. Building</A>
-    <LI><A HREF="#toc27">5.9. Post-Install</A>
+    <LI><A HREF="#toc20">5.1. Install Developer Tools</A>
+    <LI><A HREF="#toc21">5.2. Install Qt4 from disk image</A>
+    <LI><A HREF="#toc22">5.3. Install CMake for OSX</A>
+    <LI><A HREF="#toc23">5.4. Install development frameworks for QGIS dependencies</A>
+    <LI><A HREF="#toc24">5.5. API documentation</A>
+    <LI><A HREF="#toc25">5.6. QGIS source</A>
+    <LI><A HREF="#toc26">5.7. Configure the build</A>
+    <LI><A HREF="#toc27">5.8. Building</A>
+    <LI><A HREF="#toc28">5.9. Post-Install</A>
     </UL>
-  <LI><A HREF="#toc28">Setting up the WCS test server on GNU/Linux</A>
+  <LI><A HREF="#toc29">Setting up the WCS test server on GNU/Linux</A>
     <UL>
-    <LI><A HREF="#toc29">6.1. Preparation</A>
-    <LI><A HREF="#toc30">6.2. Setup mapserver</A>
-    <LI><A HREF="#toc31">6.3. Create a home page</A>
-    <LI><A HREF="#toc32">6.4. Now deploy it</A>
-    <LI><A HREF="#toc33">6.5. Debugging</A>
+    <LI><A HREF="#toc30">6.1. Preparation</A>
+    <LI><A HREF="#toc31">6.2. Setup mapserver</A>
+    <LI><A HREF="#toc32">6.3. Create a home page</A>
+    <LI><A HREF="#toc33">6.4. Now deploy it</A>
+    <LI><A HREF="#toc34">6.5. Debugging</A>
     </UL>
-  <LI><A HREF="#toc34">Setting up a Jenkins Build Server</A>
-  <LI><A HREF="#toc35">Debug output and running tests</A>
-  <LI><A HREF="#toc36">Authors and Acknowledgments</A>
+  <LI><A HREF="#toc35">Setting up a Jenkins Build Server</A>
+  <LI><A HREF="#toc36">Debug output and running tests</A>
+  <LI><A HREF="#toc37">Authors and Acknowledgments</A>
   </OL>
 
 </DIV>
@@ -554,14 +555,48 @@ You have been warned.
 </P>
 
 <A NAME="toc13"></A>
-<H2>3.10. On Fedora Linux</H2>
+<H2>3.10. On Debian Linux</H2>
+
+<P>
+We assume that you have the source code of QGIS ready and created a new
+subdirectory called `build` or `build-qt5` in it.
+</P>
+
+<H3>3.10.1. Install build dependencies</H3>
+
+<div class="code"><PRE>
+apt-get install git build-essential cmake flex bison pyqt5-dev qttools5-dev qtpositioning5-dev libqt5svg5-dev libqt5webkit5-dev  libqt5gui5 libqt5scripttools5 qtscript5-dev libqca-qt5-2-dev grass-dev libgeos-dev libgdal-dev libqt5xmlpatterns5-dev libqt5scintilla2-dev pyqt5.qsci-dev python3-pyqt5.qsci libgsl-dev txt2tags libproj-dev libqwt-qt5-dev libspatialindex-dev pyqt5-dev-tools qttools5-dev-tools qt5-default python3-future python3-pyqt5.qtsql python3-psycopg2
+</PRE></div>
+
+<P>
+Make sure that your build directory is completely empty when you enter the
+following command. Do never try to "re-use" an existing Qt4 build directory.
+If you want to use `ccmake` or other interactive tools, run the following
+command in the empty build directory once before starting to use the
+interactive tools.
+</P>
+
+<div class="code"><PRE>
+cmake -DENABLE_QT5=ON -DPORT_PLUGINS=ON
+</PRE></div>
+
+<P>
+If everything went ok you can finally start to compile. (As usual append a -jX where X is the number of available cores option to make to speed up your build process)
+</P>
+
+<div class="code"><PRE>
+make
+</PRE></div>
+
+<A NAME="toc14"></A>
+<H2>3.11. On Fedora Linux</H2>
 
 <P>
 We assume that you have the source code of QGIS ready and created a
 new subdirectory called `build` or `build-qt5` in it.
 </P>
 
-<H3>3.10.1. Install build dependencies</H3>
+<H3>3.11.1. Install build dependencies</H3>
 
 <div class="code"><PRE>
 dnf install qt5-qtwebkit-devel qt5-qtlocation-devel qt5-qttools-static
@@ -610,10 +645,10 @@ Or install to your system
 make install
 </PRE></div>
 
-<A NAME="toc14"></A>
+<A NAME="toc15"></A>
 <H1>4. Building on Windows</H1>
 
-<A NAME="toc15"></A>
+<A NAME="toc16"></A>
 <H2>4.1. Building with Microsoft Visual Studio</H2>
 
 <P>
@@ -871,7 +906,7 @@ look at:
 <I>ms-windows/osgeo4w/package.cmd</I>
 </P>
 
-<A NAME="toc16"></A>
+<A NAME="toc17"></A>
 <H2>4.2. Building using MinGW</H2>
 
 <P>
@@ -1140,7 +1175,7 @@ tree. Read the READMEfile there and follow the instructions. Next right click
 on qgis.nsi and choose the option 'Compile NSIS Script'. 
 </P>
 
-<A NAME="toc17"></A>
+<A NAME="toc18"></A>
 <H2>4.3. Creation of MSYS environment for compilation of QGIS</H2>
 
 <H3>4.3.1. Initial setup</H3>
@@ -1397,7 +1432,7 @@ We're done with preparation of MSYS environment. Now you can delete all stuff in
 of space and it's not necessary at all.
 </P>
 
-<A NAME="toc18"></A>
+<A NAME="toc19"></A>
 <H1>5. Building on MacOS X</H1>
 
 <P>
@@ -1464,7 +1499,7 @@ so it's just 'make', or using a smaller number.  Sometimes make can hiccup on to
 many threads.
 </P>
 
-<A NAME="toc19"></A>
+<A NAME="toc20"></A>
 <H2>5.1. Install Developer Tools</H2>
 
 <P>
@@ -1521,7 +1556,7 @@ If you have trouble building some of the dependencies listed below with clang
 (e.g. OSG &amp; osgEarth), try using only the LLVM compilers.
 </P>
 
-<A NAME="toc20"></A>
+<A NAME="toc21"></A>
 <H2>5.2. Install Qt4 from disk image</H2>
 
 <P>
@@ -1581,7 +1616,7 @@ may need some help by adding '-L/usr/local/lib' to CMAKE_SHARED_LINKER_FLAGS,
 CMAKE_MODULE_LINKER_FLAGS and CMAKE_EXE_LINKER_FLAGS in the cmake build.
 </P>
 
-<A NAME="toc21"></A>
+<A NAME="toc22"></A>
 <H2>5.3. Install CMake for OSX</H2>
 
 <P>
@@ -1663,7 +1698,7 @@ If you have trouble building some of the dependencies listed below (e.g. OSG &am
 osgEarth), try bypassing ccache.
 </P>
 
-<A NAME="toc22"></A>
+<A NAME="toc23"></A>
 <H2>5.4. Install development frameworks for QGIS dependencies</H2>
 
 <P>
@@ -2336,7 +2371,7 @@ folder in the include/ folder to /Library/Application Support/OpenSceneGraph/Hea
 And as for OSG, you can leave the bin/ executables where they are.
 </P>
 
-<A NAME="toc23"></A>
+<A NAME="toc24"></A>
 <H2>5.5. API documentation</H2>
 
 <P>
@@ -2372,7 +2407,7 @@ QGIS.app bundling on install, inside the app in:
 QGIS.app/Contents/Resources/doc
 </P>
 
-<A NAME="toc24"></A>
+<A NAME="toc25"></A>
 <H2>5.6. QGIS source</H2>
 
 <P>
@@ -2407,7 +2442,7 @@ git merge qgisupstream
 
 </PRE></div>
 
-<A NAME="toc25"></A>
+<A NAME="toc26"></A>
 <H2>5.7. Configure the build</H2>
 
 <P>
@@ -2548,7 +2583,7 @@ non-standard, libs (ie postgres' libpq) set the bundle value to 2:
 -D QGIS_MACAPP_BUNDLE=2 \
 </PRE></div>
 
-<A NAME="toc26"></A>
+<A NAME="toc27"></A>
 <H2>5.8. Building</H2>
 
 <P>
@@ -2576,7 +2611,7 @@ or, for an /Applications build:
 sudo make install
 </PRE></div>
 
-<A NAME="toc27"></A>
+<A NAME="toc28"></A>
 <H2>5.9. Post-Install</H2>
 
 <P>
@@ -2612,7 +2647,7 @@ for instructions on setting up Apache fastcgi and testing Mapserver, including
 installing the mod-fastcgi that is missing on Lion.
 </P>
 
-<A NAME="toc28"></A>
+<A NAME="toc29"></A>
 <H1>6. Setting up the WCS test server on GNU/Linux</H1>
 
 <P>
@@ -2623,7 +2658,7 @@ These notes are for Ubuntu - other versions and Debian derived distros may
 require slight variations in package names.
 </P>
 
-<A NAME="toc29"></A>
+<A NAME="toc30"></A>
 <H2>6.1. Preparation</H2>
 
 <P>
@@ -2643,7 +2678,7 @@ is integrated into master.
   cd cgi-bin/
 </P>
 
-<A NAME="toc30"></A>
+<A NAME="toc31"></A>
 <H2>6.2. Setup mapserver</H2>
 
 <P>
@@ -2709,7 +2744,7 @@ Then create /var/www/wcs/7-wcs.qgis.org.conf setting the contents to this:
   &lt;/VirtualHost&gt;
 </PRE></div>
 
-<A NAME="toc31"></A>
+<A NAME="toc32"></A>
 <H2>6.3. Create a home page</H2>
 
 <div class="code"><PRE>
@@ -2727,7 +2762,7 @@ Set the contents to:
   http://wcs.qgis.org/1.9.0/wcs
 </PRE></div>
 
-<A NAME="toc32"></A>
+<A NAME="toc33"></A>
 <H2>6.4. Now deploy it</H2>
 
 <div class="code"><PRE>
@@ -2740,14 +2775,14 @@ Set the contents to:
   sudo /etc/init.d/apache2 reload
 </PRE></div>
 
-<A NAME="toc33"></A>
+<A NAME="toc34"></A>
 <H2>6.5. Debugging</H2>
 
 <div class="code"><PRE>
   sudo tail -f /var/log/apache2/wcs_qgis.org/error.log
 </PRE></div>
 
-<A NAME="toc34"></A>
+<A NAME="toc35"></A>
 <H1>7. Setting up a Jenkins Build Server</H1>
 
 <P>
@@ -2849,7 +2884,7 @@ I based some of the set up from this nice blog article here:
 <A HREF="http://alexott.blogspot.com/2012/03/jenkins-cmakectest.html">http://alexott.blogspot.com/2012/03/jenkins-cmakectest.html</A>
 </UL>
 
-<A NAME="toc35"></A>
+<A NAME="toc36"></A>
 <H1>8. Debug output and running tests</H1>
 
 <P>
@@ -2915,7 +2950,7 @@ ctest --show-only
 ctest --verbose --tests-regex SomeTestName
 </PRE></div>
 
-<A NAME="toc36"></A>
+<A NAME="toc37"></A>
 <H1>9. Authors and Acknowledgments</H1>
 
 <P>
