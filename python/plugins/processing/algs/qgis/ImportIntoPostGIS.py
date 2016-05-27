@@ -50,6 +50,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
     GEOMETRY_COLUMN = 'GEOMETRY_COLUMN'
     LOWERCASE_NAMES = 'LOWERCASE_NAMES'
     DROP_STRING_LENGTH = 'DROP_STRING_LENGTH'
+    FORCE_SINGLEPART = 'FORCE_SINGLEPART'
     PRIMARY_KEY = 'PRIMARY_KEY'
     ENCODING = 'ENCODING'
 
@@ -81,6 +82,8 @@ class ImportIntoPostGIS(GeoAlgorithm):
                                            self.tr('Convert field names to lowercase'), True))
         self.addParameter(ParameterBoolean(self.DROP_STRING_LENGTH,
                                            self.tr('Drop length constraints on character fields'), False))
+        self.addParameter(ParameterBoolean(self.FORCE_SINGLEPART,
+                                           self.tr('Create single-part geometries instead of multi-part'), False))
 
     def processAlgorithm(self, progress):
         connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
@@ -89,6 +92,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         createIndex = self.getParameterValue(self.CREATEINDEX)
         convertLowerCase = self.getParameterValue(self.LOWERCASE_NAMES)
         dropStringLength = self.getParameterValue(self.DROP_STRING_LENGTH)
+        forceSinglePart = self.getParameterValue(self.FORCE_SINGLEPART)
         primaryKeyField = self.getParameterValue(self.PRIMARY_KEY)
         encoding = self.getParameterValue(self.ENCODING)
         settings = QSettings()
@@ -131,6 +135,8 @@ class ImportIntoPostGIS(GeoAlgorithm):
             geomColumn = geomColumn.lower()
         if dropStringLength:
             options['dropStringConstraints'] = True
+        if forceSinglePart:
+            options['forceSinglePartGeometryType'] = True
 
         # Clear geometry column for non-geometry tables
         if not layer.hasGeometryType():
