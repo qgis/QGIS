@@ -128,15 +128,15 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
 
         self.resourceType = resourceType
         if self.resourceType == self.MODELS:
-            self.folder = ModelerUtils.modelsFolder()
+            self.folder = ModelerUtils.defaultModelsFolder()
             self.urlBase = 'https://raw.githubusercontent.com/qgis/QGIS-Processing/master/models/'
             self.icon = QIcon(os.path.join(pluginPath, 'images', 'model.png'))
         elif self.resourceType == self.SCRIPTS:
-            self.folder = ScriptUtils.scriptsFolder()
+            self.folder = ScriptUtils.defaultScriptsFolder()
             self.urlBase = 'https://raw.githubusercontent.com/qgis/QGIS-Processing/master/scripts/'
             self.icon = QIcon(os.path.join(pluginPath, 'images', 'script.png'))
         else:
-            self.folder = RUtils.RScriptsFolder()
+            self.folder = RUtils.defaultRScriptsFolder()
             self.urlBase = 'https://raw.githubusercontent.com/qgis/QGIS-Processing/master/rscripts/'
             self.icon = QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
 
