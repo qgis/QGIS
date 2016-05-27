@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
-
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -34,6 +32,7 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 
 from processing.core.ProcessingLog import ProcessingLog
+from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -138,7 +137,7 @@ class HelpEditionDialog(BASE, WIDGET):
                 self.updateHtmlView()
 
     def updateHtmlView(self):
-        self.webView.setHtml(self.getHtml())
+        self.txtPreview.setHtml(self.getHtml())
 
     def getDescription(self, name):
         if name in self.descriptions:

@@ -31,6 +31,7 @@ from processing.algs.r.RAlgorithm import RAlgorithm
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.core.alglist import algList
 
+
 class EditScriptAction(ContextAction):
 
     SCRIPT_PYTHON = 0

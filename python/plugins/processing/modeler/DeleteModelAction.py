@@ -31,6 +31,7 @@ from processing.gui.ContextAction import ContextAction
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.core.alglist import algList
 
+
 class DeleteModelAction(ContextAction):
 
     def __init__(self):

@@ -26,8 +26,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import Qt, QUrl, QMetaObject
-from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QLabel, QLineEdit, QFrame, QPushButton, QSizePolicy, QVBoxLayout, QHBoxLayout, QTabWidget, QWidget, QScrollArea, QComboBox, QTableWidgetItem, QMessageBox
-from qgis.core import QgsWebView
+from qgis.PyQt.QtWidgets import (QDialog, QDialogButtonBox, QLabel, QLineEdit,
+                                 QFrame, QPushButton, QSizePolicy, QVBoxLayout,
+                                 QHBoxLayout, QTabWidget, QWidget, QScrollArea,
+                                 QComboBox, QTableWidgetItem, QMessageBox)
+from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
+
+from qgis.core import QgsNetworkAccessManager
 
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
@@ -194,33 +199,43 @@ class ModelerParametersDialog(QDialog):
         self.scrollArea.setWidget(self.paramPanel)
         self.scrollArea.setWidgetResizable(True)
         self.tabWidget.addTab(self.scrollArea, self.tr('Parameters'))
-        self.webView = QgsWebView()
+
+        self.txtHelp = QTextBrowser()
 
         html = None
         url = None
-        isText, help = self._alg.help()
-        if help is not None:
-            if isText:
-                html = help
-            else:
-                url = QUrl(help)
-        else:
-            html = self.tr('<h2>Sorry, no help is available for this '
-                           'algorithm.</h2>')
-        try:
-            if html:
-                self.webView.setHtml(html)
-            elif url:
-                self.webView.load(url)
-        except:
-            self.webView.setHtml(self.tr('<h2>Could not open help file :-( </h2>'))
-        self.tabWidget.addTab(self.webView, 'Help')
+        isText, algHelp = self._alg.help()
+        if algHelp is not None:
+            algHelp = algHelp if isText else QUrl(algHelp)
+            try:
+                if isText:
+                    self.txtHelp.setHtml(algHelp)
+                else:
+                    html = self.tr('<p>Downloading algorithm help... Please wait.</p>')
+                    self.txtHelp.setHtml(html)
+                    self.reply = QgsNetworkAccessManager.instance().get(QNetworkRequest(algHelp))
+                    self.reply.finished.connect(self.requestFinished)
+            except:
+                self.txtHelp.setHtml(self.tr('<h2>No help available for this algorithm</h2>'))
+
+        self.tabWidget.addTab(self.txtHelp, 'Help')
+
         self.verticalLayout2.addWidget(self.tabWidget)
         self.verticalLayout2.addWidget(self.buttonBox)
         self.setLayout(self.verticalLayout2)
         self.buttonBox.accepted.connect(self.okPressed)
         self.buttonBox.rejected.connect(self.cancelPressed)
         QMetaObject.connectSlotsByName(self)
+
+    def requestFinished(self):
+        """Change the webview HTML content"""
+        reply = self.sender()
+        if reply.error() != QNetworkReply.NoError:
+            html = self.tr('<h2>No help available for this algorithm</h2><p>{}</p>'.format(reply.errorString()))
+        else:
+            html = unicode(reply.readAll())
+        reply.deleteLater()
+        self.txtHelp.setHtml(html)
 
     def getAvailableDependencies(self):
         if self._algName is None:

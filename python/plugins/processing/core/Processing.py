@@ -64,10 +64,10 @@ from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
 from processing.algs.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvider
 from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider
 
+
 class Processing:
 
     providers = []
-
 
     # Same structure as algs in algList
     actions = {}
@@ -134,8 +134,8 @@ class Processing:
         ProcessingConfig.initialize()
         ProcessingConfig.readSettings()
         RenderingStyles.loadStyles()
-        
-    @staticmethod        
+
+    @staticmethod
     def addScripts(folder):
         Processing.initialize()
         provider = Processing.getProviderFromName("qgis")
@@ -145,19 +145,17 @@ class Processing:
             script.allowEdit = False
             script._icon = provider._icon
             script.provider = provider
-        provider.externalAlgs.extend(scripts)     
+        provider.externalAlgs.extend(scripts)
         Processing.reloadProvider("qgis")
-        
-    
+
     @staticmethod
     def removeScripts(folder):
         provider = Processing.getProviderFromName("qgis")
         for alg in provider.externalAlgs[::-1]:
             path = os.path.dirname(alg.descriptionFile)
             if path == folder:
-                provider.externalAlgs.remove(alg)   
+                provider.externalAlgs.remove(alg)
         Processing.reloadProvider("qgis")
-        
 
     @staticmethod
     def updateAlgsList():

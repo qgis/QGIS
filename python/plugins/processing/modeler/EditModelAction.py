@@ -30,6 +30,7 @@ from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.core.alglist import algList
 
+
 class EditModelAction(ContextAction):
 
     def __init__(self):

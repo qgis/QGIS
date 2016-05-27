@@ -31,6 +31,7 @@ from processing.gui.ContextAction import ContextAction
 from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorithm
 from processing.core.alglist import algList
 
+
 class DeletePreconfiguredAlgorithmAction(ContextAction):
 
     def __init__(self):

@@ -222,8 +222,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
             from .ExecuteSQL import ExecuteSQL
             self.alglist.extend([ExecuteSQL()])
 
-        self.externalAlgs = [] #to store algs added by 3rd party plugins as scripts
-        
+        self.externalAlgs = []  # to store algs added by 3rd party plugins as scripts
+
         folder = os.path.join(os.path.dirname(__file__), 'scripts')
         scripts = ScriptUtils.loadFromFolder(folder)
         for script in scripts:

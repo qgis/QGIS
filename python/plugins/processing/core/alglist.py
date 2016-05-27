@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QObject, pyqtSignal
 
+
 class AlgorithmList(QObject):
 
     providerAdded = pyqtSignal(str)
