@@ -54,6 +54,23 @@ The above translates to
       name: expected/polys_densify.gml
 ```
 
+For GRASS 7 raster outputs
+--------------------------
+
+If you want to create a test for a GRASS 7 module which exports a raster output, you will need extra steps. There isa great chance that your GRASS 7 installation will be different from the Travis-Ci environment (for the moment, it is provided by [osgeo4travis archive]( and it is based on GRASS 7.0.2). It means that your raster hashes will be different from the ones produced in Travis-Ci (GRASS adds a metadata which contains the GRASS version in the GTiff).
+
+Here are a few instructions (for Debian based GNU/Linux distributions) to assure you use the same version of GRASS than in Travis-Ci:
+
+* Install osgeo4travis binaries into your home directory:
+  `curl -L https://github.com/opengisch/osgeo4travis/archive/qt4bin.tar.gz | tar -xzC ${HOME} --strip-components=1`
+* Modify the grass70 script which incorporates a hardlink to /home/travis:
+  `sed -i 's#/home/travis#'${HOME}'#g' ${HOME}/osgeo4travis/bin/grass70`
+* Launch QGIS with the following command:
+  `PATH=${HOME}/osgeo4travis/bin:$PATH LD_LIBRARY_PATH=${HOME}/osgeo4travis/lib:$LD_LIBRARY_PATH qgis`
+
+From now, you will be using osgeo4travis GRASS 7 installation in QGIS Processing and you can proceed with the above method to easily produce unit tests.
+
+
 Params and results
 ------------------
 

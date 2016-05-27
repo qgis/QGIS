@@ -84,6 +84,7 @@ matrix:
             - graphviz
             - libpq-dev
             - libfcgi-dev
+            - libfftw3-3	    
             - pkg-config
             - poppler-utils
             - txt2tags
