@@ -37,6 +37,7 @@ from processing.gui.CreateNewScriptAction import CreateNewScriptAction
 from processing.script.ScriptUtils import ScriptUtils
 from processing.script.AddScriptFromFileAction import AddScriptFromFileAction
 from processing.gui.GetScriptsAndModels import GetScriptsAction
+from processing.script.CreateScriptCollectionPluginAction import CreateScriptCollectionPluginAction
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -48,7 +49,8 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
         self.actions.extend([CreateNewScriptAction('Create new script',
                                                    CreateNewScriptAction.SCRIPT_PYTHON),
                              AddScriptFromFileAction(),
-                             GetScriptsAction()])
+                             GetScriptsAction(),
+                             CreateScriptCollectionPluginAction(),])
         self.contextMenuActions = \
             [EditScriptAction(EditScriptAction.SCRIPT_PYTHON),
              DeleteScriptAction(DeleteScriptAction.SCRIPT_PYTHON)]
