@@ -244,8 +244,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     bool remove() override;
 
     QString validateCreationOptions( const QStringList& createOptions, const QString& format ) override;
-    QString validatePyramidsCreationOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
-        const QStringList & theConfigOptions, const QString & fileFormat );
+    QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
+                                           const QStringList & theConfigOptions, const QString & fileFormat ) override;
 
   private:
     // update mode
