@@ -57,7 +57,7 @@ class CORE_EXPORT QgsWebView : public QWidget
 /// @cond NOT_STABLE_API
     Q_OBJECT
   public:
-    explicit QgsWebView( QWidget *parent = nullptr )
+    explicit QgsWebView( QWidget *parent = 0 )
         : QWidget( parent )
         , mSettings( new QWebSettings() )
         , mPage( new QWebPage() )
@@ -110,6 +110,10 @@ class CORE_EXPORT QgsWebView : public QWidget
     {
 
     }
+
+  signals:
+
+  public slots:
 
   private:
     QWebSettings* mSettings;
