@@ -27,7 +27,6 @@
 #include <QMenu>
 #include <QCheckBox>
 
-
 QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget* parent, const QString& provider )
     : QWidget( parent )
     , mProvider( provider )
@@ -55,11 +54,11 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
   // keep it in sync with qgsrasterlayerproperties.cpp
   tmpStr = mySettings.value( prefix + "format", "external" ).toString();
   if ( tmpStr == "internal" )
-    cbxPyramidsFormat->setCurrentIndex( 1 );
+    cbxPyramidsFormat->setCurrentIndex( Format::INTERNAL );
   else if ( tmpStr == "external_erdas" )
-    cbxPyramidsFormat->setCurrentIndex( 2 );
+    cbxPyramidsFormat->setCurrentIndex( Format::ERDAS );
   else
-    cbxPyramidsFormat->setCurrentIndex( 0 );
+    cbxPyramidsFormat->setCurrentIndex( Format::GTIFF );
 
   // initialize resampling methods
   cboResamplingMethod->clear();
@@ -127,9 +126,9 @@ void QgsRasterPyramidsOptionsWidget::apply()
   QString tmpStr;
 
   // mySettings.setValue( prefix + "internal", cbxPyramidsInternal->isChecked() );
-  if ( cbxPyramidsFormat->currentIndex() == 1 )
+  if ( cbxPyramidsFormat->currentIndex() == Format::INTERNAL )
     tmpStr = "internal";
-  else if ( cbxPyramidsFormat->currentIndex() == 2 )
+  else if ( cbxPyramidsFormat->currentIndex() == Format::ERDAS )
     tmpStr = "external_erdas";
   else
     tmpStr = "external";
@@ -166,8 +165,25 @@ void QgsRasterPyramidsOptionsWidget::on_cbxPyramidsLevelsCustom_toggled( bool to
 
 void QgsRasterPyramidsOptionsWidget::on_cbxPyramidsFormat_currentIndexChanged( int index )
 {
-  mSaveOptionsWidget->setEnabled( index != 2 );
-  mSaveOptionsWidget->setPyramidsFormat(( QgsRaster::RasterPyramidsFormat ) index );
+  mSaveOptionsWidget->setEnabled( index != Format::ERDAS );
+  QgsRaster::RasterPyramidsFormat format;
+  switch ( index )
+  {
+    case Format::GTIFF:
+      format = QgsRaster::PyramidsGTiff;
+      break;
+    case Format::INTERNAL:
+      format = QgsRaster::PyramidsInternal;
+      break;
+    case Format::ERDAS:
+      format = QgsRaster::PyramidsErdas;
+      break;
+    default:
+      QgsDebugMsg( "Should not happen !" );
+      format = QgsRaster::PyramidsGTiff;
+      break;
+  }
+  mSaveOptionsWidget->setPyramidsFormat( format );
 }
 
 void QgsRasterPyramidsOptionsWidget::setOverviewList()
