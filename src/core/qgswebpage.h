@@ -75,7 +75,7 @@ class CORE_EXPORT QWebSettings : public QObject
       CaretBrowsingEnabled,
       NotificationsEnabled
     };
-    explicit QWebSettings( QObject* parent = 0 )
+    explicit QWebSettings( QObject* parent = nullptr )
         : QObject( parent )
     {
 
@@ -117,7 +117,7 @@ class CORE_EXPORT QWebPage : public QObject
       WebModalDialog
     };
 
-    explicit QWebPage( QObject* parent = 0 )
+    explicit QWebPage( QObject* parent = nullptr )
         : QObject( parent )
         , mSettings( new QWebSettings() )
         , mFrame( new QWebFrame() )
@@ -175,12 +175,7 @@ class CORE_EXPORT QWebPage : public QObject
       return new QMenu();
     }
 
-  signals:
-
-  public slots:
-
   protected:
-
     virtual void javaScriptConsoleMessage( const QString& , int, const QString& ) {}
 
   private:
@@ -205,7 +200,7 @@ class CORE_EXPORT QgsWebPage : public QWebPage
     /** Constructor for QgsWebPage.
      * @param parent parent object
      */
-    explicit QgsWebPage( QObject* parent = 0 )
+    explicit QgsWebPage( QObject* parent = nullptr )
         : QWebPage( parent )
     {}
 
@@ -224,7 +219,6 @@ class CORE_EXPORT QgsWebPage : public QWebPage
     QString identifier() const { return mIdentifier; }
 
   protected:
-
     virtual void javaScriptConsoleMessage( const QString& message, int lineNumber, const QString& ) override
     {
       if ( mIdentifier.isEmpty() )

@@ -3,6 +3,7 @@
         keyword_arguments="Optional")
 
 %Feature QT5_SUPPORT
+%Feature WebKit
 
 %Import QtXml/QtXmlmod.sip
 %Import QtNetwork/QtNetworkmod.sip
@@ -159,6 +160,9 @@
 %Include qgsvirtuallayerdefinitionutils.sip
 %Include qgsvisibilitypresetcollection.sip
 %Include qgsxmlutils.sip
+
+%Include qgswebview.sip
+%Include qgswebpage.sip
 
 %Include auth/qgsauthcertutils.sip
 %Include auth/qgsauthconfig.sip
