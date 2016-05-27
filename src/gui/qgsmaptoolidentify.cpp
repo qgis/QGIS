@@ -310,6 +310,18 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometryV2& g
     str = QLocale::system().toString( closestPoint.m(), 'g', 10 );
     derivedAttributes.insert( "Closest vertex M", str );
   }
+
+  if ( vId.type == QgsVertexId::CurveVertex )
+  {
+    double radius, centerX, centerY;
+    QgsVertexId vIdBefore = vId;
+    --vIdBefore.vertex;
+    QgsVertexId vIdAfter = vId;
+    ++vIdAfter.vertex;
+    QgsGeometryUtils::circleCenterRadius( geometry.vertexAt( vIdBefore ), geometry.vertexAt( vId ),
+                                          geometry.vertexAt( vIdAfter ), radius, centerX, centerY );
+    derivedAttributes.insert( "Closest vertex radius", QLocale::system().toString( radius ) );
+  }
 }
 
 QString QgsMapToolIdentify::formatCoordinate( const QgsPoint& canvasPoint ) const

@@ -83,6 +83,7 @@ QgsPointV2 QgsGeometryUtils::closestVertex( const QgsAbstractGeometryV2& geom, c
       id.part = vertexId.part;
       id.ring = vertexId.ring;
       id.vertex = vertexId.vertex;
+      id.type = vertexId.type;
     }
   }
 
