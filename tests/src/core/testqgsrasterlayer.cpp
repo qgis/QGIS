@@ -24,6 +24,7 @@
 #include <QDesktopServices>
 
 #include "cpl_conv.h"
+#include "gdal.h"
 
 //qgis includes...
 #include <qgsrasterlayer.h>
@@ -512,6 +513,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
   QString myResult =
     mypLayer->dataProvider()->buildPyramids( myPyramidList, "NEAREST", myFormatFlag );
   qDebug( "%s", myResult.toLocal8Bit().constData() );
+  QVERIFY( myResult.isEmpty() );
   //
   // Lets verify we have pyramids now...
   //
@@ -526,8 +528,42 @@ void TestQgsRasterLayer::buildExternalOverviews()
   // And that they were indeed in an external file...
   //
   QVERIFY( QFile::exists( myTempPath + "landsat.tif.ovr" ) );
+
   //cleanup
   delete mypLayer;
+
+  QFile::remove( myTempPath + "landsat.tif.ovr" );
+  mypLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
+                                 myRasterFileInfo.completeBaseName() );
+  myPyramidList = mypLayer->dataProvider()->buildPyramidList();
+  for ( int myCounterInt = 0; myCounterInt < myPyramidList.count(); myCounterInt++ )
+  {
+    //mark to be pyramided
+    myPyramidList[myCounterInt].build = true;
+  }
+
+  // Test with options
+  QStringList optionList;
+  optionList << "COMPRESS_OVERVIEW=DEFLATE";
+  optionList << "invalid";
+
+  myResult =
+    mypLayer->dataProvider()->buildPyramids( myPyramidList, "NEAREST", myFormatFlag, optionList );
+  qDebug( "%s", myResult.toLocal8Bit().constData() );
+  QVERIFY( myResult.isEmpty() );
+  QVERIFY( QFile::exists( myTempPath + "landsat.tif.ovr" ) );
+
+  //cleanup
+  delete mypLayer;
+
+  // Check that the overview is Deflate compressed
+  QString ovrFilename( myTempPath + "landsat.tif.ovr" );
+  GDALDatasetH hDS = GDALOpen( ovrFilename.toLocal8Bit().constData(), GA_ReadOnly );
+  QVERIFY( hDS );
+  const char* pszCompression = GDALGetMetadataItem( hDS, "COMPRESSION", "IMAGE_STRUCTURE" );
+  QVERIFY( pszCompression && EQUAL( pszCompression, "DEFLATE" ) );
+  GDALClose( hDS );
+
   mReport += "<h2>Check Overviews</h2>\n";
   mReport += "<p>Passed</p>";
 }

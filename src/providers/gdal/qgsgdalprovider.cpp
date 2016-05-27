@@ -1598,13 +1598,20 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
     Q_FOREACH ( const QString& option, theConfigOptions )
     {
       QStringList opt = option.split( '=' );
-      QByteArray key = opt[0].toLocal8Bit();
-      QByteArray value = opt[1].toLocal8Bit();
-      // save previous value
-      myConfigOptionsOld[ opt[0] ] = QString( CPLGetConfigOption( key.data(), nullptr ) );
-      // set temp. value
-      CPLSetConfigOption( key.data(), value.data() );
-      QgsDebugMsg( QString( "set option %1=%2" ).arg( key.data(), value.data() ) );
+      if ( opt.size() == 2 )
+      {
+        QByteArray key = opt[0].toLocal8Bit();
+        QByteArray value = opt[1].toLocal8Bit();
+        // save previous value
+        myConfigOptionsOld[ opt[0] ] = QString( CPLGetConfigOption( key.data(), nullptr ) );
+        // set temp. value
+        CPLSetConfigOption( key.data(), value.data() );
+        QgsDebugMsg( QString( "set option %1=%2" ).arg( key.data(), value.data() ) );
+      }
+      else
+      {
+        QgsDebugMsg( QString( "invalid pyramid option: %1" ).arg( option ) );
+      }
     }
   }
 
