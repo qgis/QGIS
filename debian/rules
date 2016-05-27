@@ -16,7 +16,6 @@ DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 DEB_BUILD_ARCH      ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
 DEB_BUILD_MULTIARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
-QT_PLUGIN_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt4/plugins
 
 DEB_TEST_TARGET ?= Experimental
 QGIS_BUILDDIR ?= debian/build
@@ -34,7 +33,14 @@ ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
 	WITH_ORACLE=1
 endif
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"wheezy jessie stretch precise trusty wily xenial"))
+ifneq (,$(findstring -server,$(DISTRIBUTION)))
+	DISTRIBUTION := $(subst -oracle,,$(DISTRIBUTION))
+	WITH_SERVER=1
+endif
+
+QT_PLUGINS_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
+
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"jessie stretch trusty xenial"))
 	DISTRIBUTION := sid
 endif
 
@@ -53,18 +59,14 @@ QGIS_ABI=$(QGIS_MAJOR).$(QGIS_MINOR).$(QGIS_PATCH)
 GRASS=grass$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2))
 GRASSVER=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1))
 
-WITH_GLOBE=$(shell dpkg --compare-versions "$$(dpkg-query -W --showformat='$${Version}' libosgearth-dev)" ge 2.7 && echo 1)
-
 CMAKE_OPTS := \
 	-DBUILDNAME=$(DEB_BUILD_NAME) \
 	-DCMAKE_VERBOSE_MAKEFILE=1 \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DBINDINGS_GLOBAL_INSTALL=TRUE \
 	-DPEDANTIC=TRUE \
-	-DWITH_QSPATIALITE=TRUE \
-	-DWITH_SERVER=TRUE \
-	-DWITH_SERVER_PLUGINS=TRUE \
 	-DSERVER_SKIP_ECW=TRUE \
+        -DSUPPRESS_SIP_WARNINGS=TRUE \
 	-DQGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
 	-DWITH_APIDOC=TRUE \
 	-DGENERATE_QHP=TRUE \
@@ -77,8 +79,18 @@ CMAKE_OPTS := \
 	-DWITH_INTERNAL_DATEUTIL=FALSE \
 	-DWITH_INTERNAL_PYTZ=FALSE \
 	-DWITH_INTERNAL_YAML=FALSE \
-	-DQT_TAG_FILE=/usr/share/qt4/doc/html/qt.tags \
-	-DQT_DOC_URL=/usr/share/qt4/doc/html/
+	-DWITH_INTERNAL_NOSE2=FALSE \
+        -DWITH_INTERNAL_SIX=FALSE \
+	-DQT_TAG_FILE=/usr/share/qt5/doc/html/qt.tags \
+	-DQT_DOC_URL=/usr/share/qt5/doc/qtdoc/ \
+	-DWITH_GLOBE=FALSE \
+	-DWITH_SERVER=FALSE \
+	-DWITH_SERVER_PLUGINS=FALSE \
+	-DWITH_QWTPOLAR=FALSE \
+	-DWITH_QSPATIALITE=TRUE \
+	-DWITH_PYSPATIALITE=TRUE \
+	-DQT_PLUGINS_DIR=$(QT_PLUGINS_DIR) \
+	-DPYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's\#-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$\#\1/lib\2.so\#')
 
 ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
@@ -101,13 +113,8 @@ ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	MAKEFLAGS += -j$(NUMJOBS)
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"precise"))
-	CMAKE_OPTS += -DWITH_INTERNAL_NOSE2=TRUE -DWITH_INTERNAL_SIX=TRUE
-else
-	CMAKE_OPTS += -DWITH_INTERNAL_NOSE2=FALSE -DWITH_INTERNAL_SIX=FALSE
-endif
 
-ifeq (,$(findstring $(DISTRIBUTION),"stretch sid wily xenial"))
+ifeq (,$(findstring $(DISTRIBUTION),"stretch sid xenial"))
 	CMAKE_OPTS += -DWITH_INTERNAL_FUTURE=TRUE
 else
 	CMAKE_OPTS += -DWITH_INTERNAL_FUTURE=FALSE
@@ -117,25 +124,14 @@ ifneq (,$(WITH_GLOBE))
 	CMAKE_OPTS += -DWITH_GLOBE=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"wheezy precise"))
-	CMAKE_OPTS += -DWITH_PYSPATIALITE=TRUE
-endif
-
 ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
-endif
-
-ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
-	CMAKE_OPTS += -DWITH_QTWEBKIT=FALSE
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"sid"))
 	CMAKE_OPTS += -DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty wily xenial sid"))
-	CMAKE_OPTS += -DPYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
-endif
 
 ifneq (,$(WITH_ORACLE))
 ifeq ($(DEB_BUILD_ARCH),amd64)
@@ -146,7 +142,6 @@ ifeq ($(DEB_BUILD_ARCH),i386)
 	ORACLE_INCLUDEDIR=/usr/include/oracle/12.1/client/
 	ORACLE_LIBDIR=/usr/lib/oracle/12.1/client/lib/
 endif
-
 	CMAKE_OPTS += \
 		-DWITH_ORACLE=TRUE \
 		-DORACLE_LIBDIR=$(ORACLE_LIBDIR) \
@@ -171,7 +166,7 @@ else
 	CMAKE_OPTS += -DENABLE_TESTS=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie stretch trusty sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty sid"))
 CPPFLAGS := $(shell dpkg-buildflags --get CPPFLAGS)
 CFLAGS   := $(shell dpkg-buildflags --get CFLAGS) $(CPPFLAGS)
 CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS) $(CPPFLAGS)
@@ -213,6 +208,10 @@ ifneq (,$(WITH_ORACLE))
 	CONTROL_EXPRESSIONS += oracle
 endif
 
+ifneq (,$(WITH_SERVER))
+	CONTROL_EXPRESSIONS += server
+endif
+
 define gentemplate
 $(2): $(1)
 	sed -r \
@@ -221,7 +220,7 @@ $(2): $(1)
 		-e 's/#([^#]+ |)![^#]+( [^#]*|)#//g' \
 		-e '/^#/d' \
 		-e "s/\{DEB_BUILD_GNU_TYPE\}/$(DEB_BUILD_GNU_TYPE)/g" \
-		-e "s#\{QT_PLUGIN_DIR\}#$(QT_PLUGIN_DIR)#g" \
+		-e "s#\{QT_PLUGINS_DIR\}#$(QT_PLUGINS_DIR)#g" \
 		-e "s/\{QGIS_ABI\}/$(QGIS_ABI)/g" \
 		-e "s/\{GRASS\}/$(GRASS)/g" \
 		-e "s/\{GRASSVER\}/$(GRASSVER)/g" \
@@ -243,7 +242,7 @@ cleantemplates:
 	$(MAKE) -f debian/rules debian/control debian/compat
 
 binary binary-arch binary-indep build build-arch build-indep clean install install-arch install-indep: templates
-	dh $@ --with python2 --parallel --builddirectory=$(QGIS_BUILDDIR)
+	dh $@ --with python3 --parallel --builddirectory=$(QGIS_BUILDDIR)
 
 override_dh_clean: cleantemplates
 	dh_clean qgis.bin.1 qbrowser.bin.1
@@ -381,9 +380,10 @@ override_dh_installman:
 override_dh_installmime:
 	dh_installmime -pqgis
 
-override_dh_python2:
-	dh_python2 --no-guessing-versions
-	dh_python2 --no-guessing-versions usr/share/qgis/grass/scripts
+
+override_dh_python3:
+	dh_python3
+	dh_python3 usr/share/qgis/grass/scripts
 	dh_sip -ppython-qgis
 
 override_dh_compress:

@@ -1,6 +1,7 @@
-qgis (2.999.0) UNRELEASED; urgency=medium
+qgis (2.99.0) UNRELEASED; urgency=medium
 
   * New development version 2.999 after branch of 2.16
+  * move to qt5/python3
 
  -- Jürgen E. Fischer <jef@norbit.de>  Fri, 08 Jul 2016 14:12:36 +0200
 
