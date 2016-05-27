@@ -1634,7 +1634,8 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
     }
   }
   /* From : http://www.gdal.org/classGDALDataset.html#a2aa6f88b3bbc840a5696236af11dde15
-   * pszResampling : one of "NEAREST", "GAUSS", "CUBIC", "AVERAGE", "MODE", "AVERAGE_MAGPHASE" or "NONE" controlling the downsampling method applied.
+   * pszResampling : one of "NEAREST", "GAUSS", "CUBIC", "CUBICSPLINE" (GDAL >= 2.0),
+   * "LANCZOS" ( GDAL >= 2.0), "AVERAGE", "MODE" or "NONE" controlling the downsampling method applied.
    * nOverviews : number of overviews to build.
    * panOverviewList : the list of overview decimation factors to build.
    * nListBands : number of bands to build overviews for in panBandList. Build for all bands if this is 0.
@@ -3022,6 +3023,10 @@ QGISEXTERN QList<QPair<QString, QString> > *pyramidResamplingMethods()
     methods.append( QPair<QString, QString>( "AVERAGE", QObject::tr( "Average" ) ) );
     methods.append( QPair<QString, QString>( "GAUSS", QObject::tr( "Gauss" ) ) );
     methods.append( QPair<QString, QString>( "CUBIC", QObject::tr( "Cubic" ) ) );
+#if GDAL_VERSION_MAJOR >= 2
+    methods.append( QPair<QString, QString>( "CUBICSPLINE", QObject::tr( "Cubic Spline" ) ) );
+    methods.append( QPair<QString, QString>( "LANCZOS", QObject::tr( "Lanczos" ) ) );
+#endif
     methods.append( QPair<QString, QString>( "MODE", QObject::tr( "Mode" ) ) );
     methods.append( QPair<QString, QString>( "NONE", QObject::tr( "None" ) ) );
   }
