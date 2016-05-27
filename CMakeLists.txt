@@ -238,9 +238,12 @@ IF (POSTGRES_FOUND)
   SET (HAVE_POSTGRESQL TRUE)
 ENDIF (POSTGRES_FOUND)
 
-SET (WITH_QTWEBKIT TRUE CACHE INTERNAL "Enable QtWebkit support")
+SET (WITH_QTWEBKIT TRUE CACHE BOOL "Enable QtWebkit support")
 IF (WITH_QTWEBKIT)
   ADD_DEFINITIONS(-DWITH_QTWEBKIT)
+  MESSAGE(STATUS "Qt WebKit support enabled")
+ELSE (WITH_QTWEBKIT)
+  MESSAGE(STATUS "Qt WebKit support DISABLED.")
 ENDIF(WITH_QTWEBKIT)
 #############################################################
 # search for Qt4

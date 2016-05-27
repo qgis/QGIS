@@ -117,7 +117,9 @@ ifneq (,$(findstring $(DISTRIBUTION),"wheezy precise"))
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
-	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
+	CMAKE_OPTS += \
+		-DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so \
+		-DWITH_QTWEBKIT=FALSE
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"sid"))

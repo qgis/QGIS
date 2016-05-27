@@ -25,7 +25,7 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="QWebView" name="webView">
+     <widget class="QgsWebView" name="webView">
       <property name="url">
        <url>
         <string>about:blank</string>
@@ -112,9 +112,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QWebView</class>
+   <class>QgsWebView</class>
    <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
+   <header>qgis.core</header>
   </customwidget>
  </customwidgets>
  <resources/>

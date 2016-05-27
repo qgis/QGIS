@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import Qt, QUrl, QMetaObject
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QLabel, QLineEdit, QFrame, QPushButton, QSizePolicy, QVBoxLayout, QHBoxLayout, QTabWidget, QWidget, QScrollArea, QComboBox, QTableWidgetItem, QMessageBox
-from qgis.PyQt.QtWebKitWidgets import QWebView
+from qgis.core import QgsWebView
 
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
@@ -194,7 +194,7 @@ class ModelerParametersDialog(QDialog):
         self.scrollArea.setWidget(self.paramPanel)
         self.scrollArea.setWidgetResizable(True)
         self.tabWidget.addTab(self.scrollArea, self.tr('Parameters'))
-        self.webView = QWebView()
+        self.webView = QgsWebView()
 
         html = None
         url = None

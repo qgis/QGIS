@@ -28,7 +28,7 @@ Build-Depends:
  libqt4-opengl-dev,
  libqca2-dev,
  libqca2-plugin-ossl,
- libqtwebkit-dev,
+#wheezy jessie precise trusty utopic vivid wily# libqtwebkit-dev,
 #stretch jessie wheezy# libqwt-dev,
 #precise trusty wily xenial sid# libqwt5-qt4-dev,
  libspatialite-dev,

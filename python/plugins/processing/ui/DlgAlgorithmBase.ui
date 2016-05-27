@@ -69,7 +69,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QWebView" name="textHelp">
+          <widget class="QgsWebView" name="textHelp">
            <property name="url">
             <url>
              <string>about:blank</string>
@@ -133,9 +133,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QWebView</class>
+   <class>QgsWebView</class>
    <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
+   <header>qgis.core</header>
   </customwidget>
  </customwidgets>
  <resources/>
