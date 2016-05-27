@@ -1,10 +1,32 @@
-/** An annotation item can be either placed either on screen corrdinates or on map coordinates.
-  It may reference a feature and displays that associatiation with a balloon like appearance*/
+/** An annotation item can be either placed either on screen coordinates or on map coordinates.
+  It may reference a feature and displays that association with a balloon like appearance*/
+
+%ModuleCode
+#include "qgsformannotationitem.h"
+#include "qgshtmlannotationitem.h"
+#include "qgssvgannotationitem.h"
+#include "qgstextannotationitem.h"
+%End
+
 class QgsAnnotationItem: QgsMapCanvasItem
 {
 %TypeHeaderCode
 #include <qgsannotationitem.h>
 %End
+
+%ConvertToSubClassCode
+  if (dynamic_cast<QgsFormAnnotationItem*>(sipCpp) )
+    sipType = sipType_QgsFormAnnotationItem;
+  else if (dynamic_cast<QgsHtmlAnnotationItem*>(sipCpp) )
+    sipType = sipType_QgsHtmlAnnotationItem;
+  else if (dynamic_cast<QgsSvgAnnotationItem*>(sipCpp) )
+    sipType = sipType_QgsSvgAnnotationItem;
+  else if (dynamic_cast<QgsTextAnnotationItem*>(sipCpp) )
+    sipType = sipType_QgsTextAnnotationItem;
+  else
+    sipType = 0;
+%End
+
 
   public:
     enum MouseMoveAction
