@@ -39,6 +39,7 @@ from processing.core.parameters import ParameterTableField
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+from processing.tools.postgis import uri_from_name, GeoDB
 from processing.tools.system import isWindows
 from processing.tools.vector import ogrConnectionString, ogrLayerName
 
@@ -79,6 +80,10 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
     PRECISION = 'PRECISION'
     PROMOTETOMULTI = 'PROMOTETOMULTI'
     OPTIONS = 'OPTIONS'
+
+    def __init__(self):
+        GdalAlgorithm.__init__(self)
+        self.processing = False
 
     def dbConnectionNames(self):
         settings = QSettings()
@@ -153,15 +158,18 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         self.addParameter(ParameterString(self.OPTIONS,
                                           self.tr('Additional creation options'), '', optional=True))
 
+    def processAlgorithm(self, progress):
+        self.processing = True
+        GdalAlgorithm.processAlgorithm(self, progress)
+        self.processing = False
+
     def getConsoleCommands(self):
         connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
-        settings = QSettings()
-        mySettings = '/PostgreSQL/connections/' + connection
-        dbname = settings.value(mySettings + '/database')
-        user = settings.value(mySettings + '/username')
-        host = settings.value(mySettings + '/host')
-        port = settings.value(mySettings + '/port')
-        password = settings.value(mySettings + '/password')
+        uri = uri_from_name(connection)
+        if self.processing:
+            # to get credentials input when needed
+            uri = GeoDB(uri=uri).uri
+
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
         ssrs = unicode(self.getParameterValue(self.S_SRS))
@@ -200,17 +208,11 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         arguments.append('--config PG_USE_COPY YES')
         arguments.append('-f')
         arguments.append('PostgreSQL')
-        arguments.append('PG:"host=' + host)
-        arguments.append('port=' + port)
-        if len(dbname) > 0:
-            arguments.append('dbname=' + dbname)
-        if len(password) > 0:
-            arguments.append('password=' + password)
-        if len(schema) > 0:
-            arguments.append('active_schema=' + schema)
-        else:
-            arguments.append('active_schema=public')
-        arguments.append('user=' + user + '"')
+        arguments.append('PG:"')
+        for token in uri.connectionInfo(self.processing).split(' '):
+            arguments.append(token)
+        arguments.append('active_schema={}'.format(schema or 'public'))
+        arguments.append('"')
         arguments.append(dimstring)
         arguments.append(ogrLayer)
         arguments.append(ogrLayerName(inLayer))

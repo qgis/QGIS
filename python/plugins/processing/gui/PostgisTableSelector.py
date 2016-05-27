@@ -100,23 +100,10 @@ class ConnectionItem(QTreeWidgetItem):
     def populateSchemas(self):
         if self.childCount() != 0:
             return
-        settings = QSettings()
-        connSettings = '/PostgreSQL/connections/' + self.connection
-        database = settings.value(connSettings + '/database')
-        user = settings.value(connSettings + '/username')
-        host = settings.value(connSettings + '/host')
-        port = settings.value(connSettings + '/port')
-        passwd = settings.value(connSettings + '/password')
-        uri = QgsDataSourceURI()
-        uri.setConnection(host, str(port), database, user, passwd)
-        connInfo = uri.connectionInfo()
-        (success, user, passwd) = QgsCredentials.instance().get(connInfo, None, None)
-        if success:
-            QgsCredentials.instance().put(connInfo, user, passwd)
-            geodb = GeoDB(host, int(port), database, user, passwd)
-            schemas = geodb.list_schemas()
-            for oid, name, owner, perms in schemas:
-                item = QTreeWidgetItem()
-                item.setText(0, name)
-                item.setIcon(0, self.schemaIcon)
-                self.addChild(item)
+        geodb = GeoDB.from_name(self.connection)
+        schemas = geodb.list_schemas()
+        for oid, name, owner, perms in schemas:
+            item = QTreeWidgetItem()
+            item.setText(0, name)
+            item.setIcon(0, self.schemaIcon)
+            self.addChild(item)

@@ -29,8 +29,39 @@ import psycopg2
 import psycopg2.extensions  # For isolation levels
 import re
 
+from qgis.PyQt.QtCore import QSettings
+from qgis.core import QgsDataSourceURI, QgsCredentials
+
+
 # Use unicode!
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
+
+
+def uri_from_name(conn_name):
+    settings = QSettings()
+    settings.beginGroup(u"/PostgreSQL/connections/%s" % conn_name)
+
+    if not settings.contains("database"):  # non-existent entry?
+        raise DbError('There is no defined database connection "%s".' % conn_name)
+
+    uri = QgsDataSourceURI()
+
+    settingsList = ["service", "host", "port", "database", "username", "password", "authcfg"]
+    service, host, port, database, username, password, authcfg = [settings.value(x, "", type=str) for x in settingsList]
+
+    useEstimatedMetadata = settings.value("estimatedMetadata", False, type=bool)
+    sslmode = settings.value("sslmode", QgsDataSourceURI.SSLprefer, type=int)
+
+    settings.endGroup()
+
+    if service:
+        uri.setConnection(service, database, username, password, sslmode, authcfg)
+    else:
+        uri.setConnection(host, port, database, username, password, sslmode, authcfg)
+
+    uri.setUseEstimatedMetadata(useEstimatedMetadata)
+
+    return uri
 
 
 class TableAttribute:
@@ -100,7 +131,10 @@ class DbError(Exception):
         return unicode(self).encode('utf-8')
 
     def __unicode__(self):
-        return u'MESSAGE: %s\nQUERY: %s' % (self.message, self.query)
+        text = u'MESSAGE: %s' % self.message
+        if self.query:
+            text += u'\nQUERY: %s' % self.query
+        return text
 
 
 class TableField:
@@ -138,40 +172,73 @@ class TableField:
 
 class GeoDB:
 
+    @classmethod
+    def from_name(cls, conn_name):
+        uri = uri_from_name(conn_name)
+        return cls(uri=uri)
+
     def __init__(self, host=None, port=None, dbname=None, user=None,
-                 passwd=None):
+                 passwd=None, service=None, uri=None):
         # Regular expression for identifiers without need to quote them
         self.re_ident_ok = re.compile(r"^\w+$")
 
-        self.host = host
-        self.port = port
-        self.dbname = dbname
-        self.user = user
-        self.passwd = passwd
+        if uri:
+            self.uri = uri
+        else:
+            self.uri = QgsDataSourceURI()
+            if service:
+                self.uri.setConnection(service, dbname, user, passwd)
+            else:
+                self.uri.setConnection(host, port, dbname, user, passwd)
 
-        if self.dbname == '' or self.dbname is None:
-            self.dbname = self.user
+        conninfo = self.uri.connectionInfo(False)
+        err = None
+        for i in range(4):
+            expandedConnInfo = uri.connectionInfo(True)
+            try:
+                self.con = psycopg2.connect(expandedConnInfo.encode('utf-8'))
+                if err is not None:
+                    QgsCredentials.instance().put(conninfo,
+                                                  self.uri.username(),
+                                                  self.uri.password())
+                break
+            except psycopg2.OperationalError as e:
+                if i == 3:
+                    raise DbError(unicode(e))
 
-        try:
-            self.con = psycopg2.connect(self.con_info())
-        except psycopg2.OperationalError as e:
-            raise DbError(unicode(e))
+                err = unicode(e)
+                user = self.uri.username()
+                password = self.uri.password()
+                (ok, user, password) = QgsCredentials.instance().get(conninfo,
+                                                                     user,
+                                                                     password,
+                                                                     err)
+                if not ok:
+                    raise DbError(u'Action cancelled by user')
+                if user:
+                    self.uri.setUsername(user)
+                if password:
+                    self.uri.setPassword(password)
+            finally:
+                # remove certs (if any) of the expanded connectionInfo
+                expandedUri = QgsDataSourceURI(expandedConnInfo)
+
+                sslCertFile = expandedUri.param("sslcert")
+                if sslCertFile:
+                    sslCertFile = sslCertFile.replace("'", "")
+                    os.remove(sslCertFile)
+
+                sslKeyFile = expandedUri.param("sslkey")
+                if sslKeyFile:
+                    sslKeyFile = sslKeyFile.replace("'", "")
+                    os.remove(sslKeyFile)
+
+                sslCAFile = expandedUri.param("sslrootcert")
+                if sslCAFile:
+                    sslCAFile = sslCAFile.replace("'", "")
+                    os.remove(sslCAFile)
 
         self.has_postgis = self.check_postgis()
-
-    def con_info(self):
-        con_str = ''
-        if self.host:
-            con_str += "host='%s' " % self.host
-        if self.port:
-            con_str += 'port=%d ' % self.port
-        if self.dbname:
-            con_str += "dbname='%s' " % self.dbname
-        if self.user:
-            con_str += "user='%s' " % self.user
-        if self.passwd:
-            con_str += "password='%s' " % self.passwd
-        return con_str
 
     def get_info(self):
         c = self.con.cursor()

@@ -86,6 +86,8 @@ class ImportIntoPostGIS(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
+        db = postgis.GeoDB.from_name(connection)
+
         schema = self.getParameterValue(self.SCHEMA)
         overwrite = self.getParameterValue(self.OVERWRITE)
         createIndex = self.getParameterValue(self.CREATEINDEX)
@@ -94,17 +96,6 @@ class ImportIntoPostGIS(GeoAlgorithm):
         forceSinglePart = self.getParameterValue(self.FORCE_SINGLEPART)
         primaryKeyField = self.getParameterValue(self.PRIMARY_KEY)
         encoding = self.getParameterValue(self.ENCODING)
-        settings = QSettings()
-        mySettings = '/PostgreSQL/connections/' + connection
-        try:
-            database = settings.value(mySettings + '/database')
-            username = settings.value(mySettings + '/username')
-            host = settings.value(mySettings + '/host')
-            port = settings.value(mySettings + '/port', type=int)
-            password = settings.value(mySettings + '/password')
-        except Exception as e:
-            raise GeoAlgorithmExecutionException(
-                self.tr('Wrong database connection name: %s' % connection))
 
         layerUri = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(layerUri)
@@ -114,13 +105,6 @@ class ImportIntoPostGIS(GeoAlgorithm):
             table = layer.name()
         table = table.replace(' ', '').lower()[0:62]
         providerName = 'postgres'
-
-        try:
-            db = postgis.GeoDB(host=host, port=port, dbname=database,
-                               user=username, passwd=password)
-        except postgis.DbError as e:
-            raise GeoAlgorithmExecutionException(
-                self.tr("Couldn't connect to database:\n%s") % unicode(e))
 
         geomColumn = self.getParameterValue(self.GEOMETRY_COLUMN)
         if not geomColumn:
@@ -141,8 +125,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         if not layer.hasGeometryType():
             geomColumn = None
 
-        uri = QgsDataSourceURI()
-        uri.setConnection(host, unicode(port), database, username, password)
+        uri = db.uri
         if primaryKeyField:
             uri.setDataSource(schema, table, geomColumn, '', primaryKeyField)
         else:
