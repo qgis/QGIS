@@ -511,4 +511,6 @@ class CORE_EXPORT QgsProjectBadLayerDefaultHandler : public QgsProjectBadLayerHa
 
 };
 
+CORE_EXPORT QgsProjectVersion getVersion( QDomDocument const &doc );
+
 #endif

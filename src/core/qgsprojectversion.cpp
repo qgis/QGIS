@@ -62,6 +62,15 @@ bool QgsProjectVersion::operator==( const QgsProjectVersion &other ) const
           ( mSub == other.mSub ) );
 }
 
+/** Boolean equal operator
+ */
+bool QgsProjectVersion::operator!=( const QgsProjectVersion &other ) const
+{
+  return (( mMajor != other.mMajor ) ||
+          ( mMinor != other.mMinor ) ||
+          ( mSub != other.mSub ) );
+}
+
 /** Boolean >= operator
  */
 bool QgsProjectVersion::operator>=( const QgsProjectVersion &other ) const

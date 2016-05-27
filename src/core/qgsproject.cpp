@@ -587,7 +587,7 @@ static void _getTitle( QDomDocument const &doc, QString &title )
 
    @returns the version string or an empty string if none found
  */
-static QgsProjectVersion _getVersion( QDomDocument const &doc )
+QgsProjectVersion getVersion( QDomDocument const &doc )
 {
   QDomNodeList nl = doc.elementsByTagName( "qgis" );
 
@@ -602,7 +602,7 @@ static QgsProjectVersion _getVersion( QDomDocument const &doc )
   QDomElement qgisElement = qgisNode.toElement(); // qgis node should be element
   QgsProjectVersion projectVersion( qgisElement.attribute( "version" ) );
   return projectVersion;
-} // _getVersion
+} // getVersion
 
 
 
@@ -857,7 +857,7 @@ bool QgsProject::read()
   QgsDebugMsg( "Project title: " + imp_->title );
 
   // get project version string, if any
-  QgsProjectVersion fileVersion =  _getVersion( *doc );
+  QgsProjectVersion fileVersion =  getVersion( *doc );
   QgsProjectVersion thisVersion( QGis::QGIS_VERSION );
 
   if ( thisVersion > fileVersion )
