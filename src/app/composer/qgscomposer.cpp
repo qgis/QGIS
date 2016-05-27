@@ -1785,6 +1785,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
         }
         mComposition->doPrint( multiFilePrinter, painter );
         painter.end();
+        mComposition->georeferenceOutput( outputFileName );
       }
       else
       {
@@ -1801,6 +1802,8 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
   else
   {
     bool exportOk = mComposition->exportAsPDF( outputFileName );
+    mComposition->georeferenceOutput( outputFileName );
+
     if ( !exportOk )
     {
       QMessageBox::warning( this, tr( "Atlas processing error" ),
@@ -2049,7 +2052,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     mView->setPaintingEnabled( false );
 
     int worldFilePageNo = -1;
-    if ( mComposition->generateWorldFile() && mComposition->worldFileMap() )
+    if ( mComposition->worldFileMap() )
     {
       worldFilePageNo = mComposition->worldFileMap()->page() - 1;
     }
@@ -2129,20 +2132,25 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
       if ( i == worldFilePageNo )
       {
-        // should generate world file for this page
-        double a, b, c, d, e, f;
-        if ( bounds.isValid() )
-          mComposition->computeWorldFileParameters( bounds, a, b, c, d, e, f );
-        else
-          mComposition->computeWorldFileParameters( a, b, c, d, e, f );
+        mComposition->georeferenceOutput( outputFilePath, nullptr, bounds, imageDlg.resolution() );
 
-        QFileInfo fi( outputFilePath );
-        // build the world file name
-        QString outputSuffix = fi.suffix();
-        QString worldFileName = fi.absolutePath() + '/' + fi.baseName() + '.'
-                                + outputSuffix.at( 0 ) + outputSuffix.at( fi.suffix().size() - 1 ) + 'w';
+        if ( mComposition->generateWorldFile() )
+        {
+          // should generate world file for this page
+          double a, b, c, d, e, f;
+          if ( bounds.isValid() )
+            mComposition->computeWorldFileParameters( bounds, a, b, c, d, e, f );
+          else
+            mComposition->computeWorldFileParameters( a, b, c, d, e, f );
 
-        writeWorldFile( worldFileName, a, b, c, d, e, f );
+          QFileInfo fi( outputFilePath );
+          // build the world file name
+          QString outputSuffix = fi.suffix();
+          QString worldFileName = fi.absolutePath() + '/' + fi.baseName() + '.'
+                                  + outputSuffix.at( 0 ) + outputSuffix.at( fi.suffix().size() - 1 ) + 'w';
+
+          writeWorldFile( worldFileName, a, b, c, d, e, f );
+        }
       }
     }
 
@@ -2282,7 +2290,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       QString filename = QDir( dir ).filePath( atlasMap->currentFilename() ) + fileExt;
 
       int worldFilePageNo = -1;
-      if ( mComposition->generateWorldFile() && mComposition->worldFileMap() )
+      if ( mComposition->worldFileMap() )
       {
         worldFilePageNo = mComposition->worldFileMap()->page() - 1;
       }
@@ -2350,20 +2358,25 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
         if ( i == worldFilePageNo )
         {
-          // should generate world file for this page
-          double a, b, c, d, e, f;
-          if ( bounds.isValid() )
-            mComposition->computeWorldFileParameters( bounds, a, b, c, d, e, f );
-          else
-            mComposition->computeWorldFileParameters( a, b, c, d, e, f );
+          mComposition->georeferenceOutput( imageFilename, nullptr, bounds, imageDlg.resolution() );
 
-          QFileInfo fi( imageFilename );
-          // build the world file name
-          QString outputSuffix = fi.suffix();
-          QString worldFileName = fi.absolutePath() + '/' + fi.baseName() + '.'
-                                  + outputSuffix.at( 0 ) + outputSuffix.at( fi.suffix().size() - 1 ) + 'w';
+          if ( mComposition->generateWorldFile() )
+          {
+            // should generate world file for this page
+            double a, b, c, d, e, f;
+            if ( bounds.isValid() )
+              mComposition->computeWorldFileParameters( bounds, a, b, c, d, e, f );
+            else
+              mComposition->computeWorldFileParameters( a, b, c, d, e, f );
 
-          writeWorldFile( worldFileName, a, b, c, d, e, f );
+            QFileInfo fi( imageFilename );
+            // build the world file name
+            QString outputSuffix = fi.suffix();
+            QString worldFileName = fi.absolutePath() + '/' + fi.baseName() + '.'
+                                    + outputSuffix.at( 0 ) + outputSuffix.at( fi.suffix().size() - 1 ) + 'w';
+
+            writeWorldFile( worldFileName, a, b, c, d, e, f );
+          }
         }
       }
     }

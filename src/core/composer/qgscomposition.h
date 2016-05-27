@@ -743,6 +743,18 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      */
     void renderRect( QPainter* p, const QRectF& rect );
 
+    /** Georeferences a file (image of PDF) exported from the composition.
+     * @param file filename of exported file
+     * @param referenceMap map item to use for georeferencing, or leave as nullptr to use the
+     * currently defined worldFileMap().
+     * @param exportRegion set to a valid rectangle to indicate that only part of the composition was
+     * exported
+     * @param dpi set to DPI of exported file, or leave as -1 to use composition's DPI.
+     * @note added in QGIS 2.16
+     */
+    void georeferenceOutput( const QString& file, QgsComposerMap* referenceMap = nullptr,
+                             const QRectF& exportRegion = QRectF(), double dpi = -1 ) const;
+
     /** Compute world file parameters. Assumes the whole page containing the associated map item
      * will be exported.
      */
@@ -1075,6 +1087,17 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      */
     bool ddPageSizeActive() const;
 
+    /** Computes a GDAL style geotransform for georeferencing a composition.
+     * @param referenceMap map item to use for georeferencing, or leave as nullptr to use the
+     * currently defined worldFileMap().
+     * @param exportRegion set to a valid rectangle to indicate that only part of the composition is
+     * being exported
+     * @param dpi allows overriding the default composition DPI, or leave as -1 to use composition's DPI.
+     * @note added in QGIS 2.16
+     */
+    double* computeGeoTransform( const QgsComposerMap* referenceMap = nullptr, const QRectF& exportRegion = QRectF(), double dpi = -1 ) const;
+
+
   private slots:
     /*Prepares all data defined expressions*/
     void prepareAllDataDefinedExpressions();
@@ -1123,6 +1146,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     friend class QgsComposerObject; //for accessing dataDefinedEvaluate, readDataDefinedPropertyMap and writeDataDefinedPropertyMap
     friend class QgsComposerModel; //for accessing updateZValues (should not be public)
+    friend class TestQgsComposition;
 };
 
 template<class T> void QgsComposition::composerItems( QList<T*>& itemList )

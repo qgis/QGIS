@@ -22,6 +22,7 @@
 #include "qgscomposerarrow.h"
 #include "qgscomposerhtml.h"
 #include "qgscomposerframe.h"
+#include "qgscomposermap.h"
 #include "qgsmapsettings.h"
 #include "qgsmultirenderchecker.h"
 #include "qgsfillsymbollayerv2.h"
@@ -51,6 +52,7 @@ class TestQgsComposition : public QObject
     void resizeToContents();
     void resizeToContentsMargin();
     void resizeToContentsMultiPage();
+    void georeference();
 
   private:
     QgsComposition *mComposition;
@@ -507,6 +509,71 @@ void TestQgsComposition::resizeToContentsMultiPage()
   checker.setSize( QSize( 394, 996 ) );
   checker.setControlPathPrefix( "composition" );
   QVERIFY( checker.testComposition( mReport ) );
+
+  delete composition;
+}
+
+void TestQgsComposition::georeference()
+{
+  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  QgsMapSettings ms;
+  ms.setExtent( extent );
+  QgsComposition* composition = new QgsComposition( ms );
+
+  // no map
+  double* t = composition->computeGeoTransform( nullptr );
+  QVERIFY( !t );
+
+  QgsComposerMap* map = new QgsComposerMap( composition );
+  map->setNewExtent( extent );
+  map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
+  composition->addComposerMap( map );
+
+  t = composition->computeGeoTransform( map );
+  QVERIFY( qgsDoubleNear( t[0], 1925.0, 1.0 ) );
+  QVERIFY( qgsDoubleNear( t[1], 0.211719, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( t[2], 0.0 ) );
+  QVERIFY( qgsDoubleNear( t[3], 3200, 1 ) );
+  QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
+  QVERIFY( qgsDoubleNear( t[5], -0.211694, 0.0001 ) );
+
+  // don't specify map
+  composition->setWorldFileMap( map );
+  t = composition->computeGeoTransform();
+  QVERIFY( qgsDoubleNear( t[0], 1925.0, 1.0 ) );
+  QVERIFY( qgsDoubleNear( t[1], 0.211719, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( t[2], 0.0 ) );
+  QVERIFY( qgsDoubleNear( t[3], 3200, 1 ) );
+  QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
+  QVERIFY( qgsDoubleNear( t[5], -0.211694, 0.0001 ) );
+
+  // specify extent
+  t = composition->computeGeoTransform( map, QRectF( 70, 100, 50, 60 ) );
+  QVERIFY( qgsDoubleNear( t[0], 2100.0, 1.0 ) );
+  QVERIFY( qgsDoubleNear( t[1], 0.211864, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( t[2], 0.0 ) );
+  QVERIFY( qgsDoubleNear( t[3], 2950, 1 ) );
+  QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
+  QVERIFY( qgsDoubleNear( t[5], -0.211864, 0.0001 ) );
+
+  // specify dpi
+  t = composition->computeGeoTransform( map, QRectF(), 75 );
+  QVERIFY( qgsDoubleNear( t[0], 1925.0, 1 ) );
+  QVERIFY( qgsDoubleNear( t[1], 0.847603, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( t[2], 0.0 ) );
+  QVERIFY( qgsDoubleNear( t[3], 3200.0, 1 ) );
+  QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
+  QVERIFY( qgsDoubleNear( t[5], -0.846774, 0.0001 ) );
+
+  // rotation
+  map->setMapRotation( 45 );
+  t = composition->computeGeoTransform( map );
+  QVERIFY( qgsDoubleNear( t[0], 1825.7, 1 ) );
+  QVERIFY( qgsDoubleNear( t[1], 0.149708, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( t[2], 0.149708, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( t[3], 2889.64, 1 ) );
+  QVERIFY( qgsDoubleNear( t[4], 0.14969, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( t[5], -0.14969, 0.0001 ) );
 
   delete composition;
 }
