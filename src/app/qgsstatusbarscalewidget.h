@@ -20,6 +20,7 @@
 class QFont;
 class QHBoxLayout;
 class QLabel;
+class QToolButton;
 class QValidator;
 
 class QgsMapCanvas;
@@ -35,8 +36,8 @@ class QgsScaleComboBox;
 class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
 {
     Q_OBJECT
-public:
-    explicit QgsStatusBarScaleWidget(QgsMapCanvas* canvas, QWidget *parent = 0);
+  public:
+    explicit QgsStatusBarScaleWidget( QgsMapCanvas* canvas, QWidget *parent = 0 );
 
     /** Destructor */
     virtual ~QgsStatusBarScaleWidget();
@@ -47,19 +48,30 @@ public:
      */
     void setScale( double scale );
 
+    /**
+     * @brief isLocked check if the scale should be locked to use magnifier instead of scale to zoom in/out
+     * @return True if the scale shall be locked
+     */
+    bool isLocked();
+
     /** Set the font of the text
       * @param font the font to use
       */
     void setFont( const QFont& font );
 
-public slots:
-  void updateScales( const QStringList &scales = QStringList() );
+  public slots:
+    void updateScales( const QStringList &scales = QStringList() );
 
-private slots:
+  private slots:
     void userScale();
-private:
+
+  signals:
+    void scaleLockChanged( bool );
+
+  private:
     QgsMapCanvas* mMapCanvas;
     QHBoxLayout *mLayout;
+    QToolButton* mLockButton;
 
     //! Widget that will live on the statusbar to display "scale 1:"
     QLabel* mLabel;

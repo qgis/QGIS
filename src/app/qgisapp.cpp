@@ -2136,13 +2136,15 @@ void QgisApp::createStatusBar()
 
   mScaleWidget = new QgsStatusBarScaleWidget( mMapCanvas, statusBar() );
   mScaleWidget->setFont( myFont );
+  connect( mScaleWidget, SIGNAL( scaleLockChanged( bool ) ), mMapCanvas, SLOT( setScaleLocked( bool ) ) );
   statusBar()->addPermanentWidget( mScaleWidget, 0 );
 
   // zoom widget
-  QSettings mySettings;
-  mMagnifierWidget = new QgsStatusBarMagnifierWidget( mMapCanvas, statusBar() );
+  mMagnifierWidget = new QgsStatusBarMagnifierWidget( statusBar() );
   mMagnifierWidget->setFont( myFont );
-  mMagnifierWidget->setMagnificationLevel( mySettings.value( "/qgis/magnifier_level", 100 ).toInt() );
+  connect( mMapCanvas, SIGNAL( magnificationChanged( double ) ), mMagnifierWidget, SLOT( updateMagnification( double ) ) );
+  connect( mMagnifierWidget, SIGNAL( magnificationChanged( double ) ), mMapCanvas, SLOT( setMagnificationFactor( double ) ) );
+  mMagnifierWidget->updateMagnification( QSettings().value( "/qgis/magnifier_factor_default", 1.0 ).toDouble() );
   statusBar()->addPermanentWidget( mMagnifierWidget, 0 );
 
   if ( QgsMapCanvas::rotationEnabled() )
@@ -2689,9 +2691,8 @@ void QgisApp::createOverview()
   // Anti Aliasing enabled by default as of QGIS 1.7
   mMapCanvas->enableAntiAliasing( mySettings.value( "/qgis/enable_anti_aliasing", true ).toBool() );
 
-  int action = mySettings.value( "/qgis/wheel_action", 2 ).toInt();
   double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
-  mMapCanvas->setWheelAction( static_cast< QgsMapCanvas::WheelAction >( action ), zoomFactor );
+  mMapCanvas->setWheelFactor( zoomFactor );
 
   mMapCanvas->setCachingEnabled( mySettings.value( "/qgis/enable_render_caching", true ).toBool() );
 
@@ -8563,9 +8564,8 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString& currentPage )
 
     mMapCanvas->enableAntiAliasing( mySettings.value( "/qgis/enable_anti_aliasing" ).toBool() );
 
-    int action = mySettings.value( "/qgis/wheel_action", 2 ).toInt();
     double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
-    mMapCanvas->setWheelAction( static_cast< QgsMapCanvas::WheelAction >( action ), zoomFactor );
+    mMapCanvas->setWheelFactor( zoomFactor );
 
     mMapCanvas->setCachingEnabled( mySettings.value( "/qgis/enable_render_caching", true ).toBool() );
 
@@ -8579,8 +8579,6 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString& currentPage )
       Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
         layer->setLayerName( layer->originalName() );
     }
-
-    mMagnifierWidget->setMagnificationLevel( mySettings.value( "/qgis/magnifier_level" ).toInt() );
 
     //update any open compositions so they reflect new composer settings
     //we have to push the changes to the compositions here, because compositions
@@ -8612,6 +8610,10 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString& currentPage )
 
     mMapCanvas->setSegmentationTolerance( mySettings.value( "/qgis/segmentationTolerance", "0.01745" ).toDouble() );
     mMapCanvas->setSegmentationToleranceType( QgsAbstractGeometryV2::SegmentationToleranceType( mySettings.value( "/qgis/segmentationToleranceType", "0" ).toInt() ) );
+
+    double factor = mySettings.value( "/qgis/magnifier_factor_default", 1.0 ).toDouble();
+    mMagnifierWidget->setDefaultFactor( factor );
+    mMagnifierWidget->updateMagnification( factor );
   }
 
   delete optionsDialog;

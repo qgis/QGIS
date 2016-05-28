@@ -993,9 +993,8 @@ void QgsGeorefPluginGui::createMapCanvas()
            this, SLOT( releasePoint( const QPoint & ) ) );
 
   QSettings s;
-  int action = s.value( "/qgis/wheel_action", 2 ).toInt();
   double zoomFactor = s.value( "/qgis/zoom_factor", 2 ).toDouble();
-  mCanvas->setWheelAction(( QgsMapCanvas::WheelAction ) action, zoomFactor );
+  mCanvas->setWheelFactor( zoomFactor );
 
   mExtentsChangedRecursionGuard = false;
 

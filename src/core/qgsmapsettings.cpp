@@ -59,6 +59,7 @@ QgsMapSettings::QgsMapSettings()
 void QgsMapSettings::setMagnificationFactor( double factor )
 {
   double ratio = mMagnificationFactor / factor;
+
   mMagnificationFactor = factor;
 
   double rot = rotation();
@@ -69,7 +70,9 @@ void QgsMapSettings::setMagnificationFactor( double factor )
 
   mRotation = rot;
   mExtent = ext;
-  mDpi = outputDpi() / ratio;
+  mDpi = mDpi / ratio;
+
+  QgsDebugMsg( QString( "Magnification factor: %1  dpi: %2  ratio: %3" ).arg( factor ).arg( mDpi ).arg( ratio ) );
 
   updateDerived();
 }
@@ -240,7 +243,7 @@ void QgsMapSettings::setOutputSize( QSize size )
 
 int QgsMapSettings::outputDpi() const
 {
-  return mDpi;
+  return ( int )mDpi;
 }
 
 void QgsMapSettings::setOutputDpi( int dpi )

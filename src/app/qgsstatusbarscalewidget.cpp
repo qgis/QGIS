@@ -17,6 +17,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QToolButton>
 #include <QValidator>
 
 #include "qgsstatusbarscalewidget.h"
@@ -24,61 +25,75 @@
 #include "qgsmapcanvas.h"
 #include "qgsscalecombobox.h"
 
-QgsStatusBarScaleWidget::QgsStatusBarScaleWidget(QgsMapCanvas *canvas, QWidget *parent)
-    : QWidget(parent)
+QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget *parent )
+    : QWidget( parent )
     , mMapCanvas( canvas )
 {
-    // add a label to show current scale
-    mLabel = new QLabel( QString(), this );
-    mLabel->setObjectName( "mScaleLable" );
-    mLabel->setMinimumWidth( 10 );
-    //mScaleLabel->setMaximumHeight( 20 );
-    mLabel->setMargin( 3 );
-    mLabel->setAlignment( Qt::AlignCenter );
-    mLabel->setFrameStyle( QFrame::NoFrame );
-    mLabel->setText( tr( "Scale" ) );
-    mLabel->setToolTip( tr( "Current map scale" ) );
+  // add a label to show current scale
+  mLabel = new QLabel( QString(), this );
+  mLabel->setObjectName( "mScaleLable" );
+  mLabel->setMinimumWidth( 10 );
+  //mScaleLabel->setMaximumHeight( 20 );
+  mLabel->setMargin( 3 );
+  mLabel->setAlignment( Qt::AlignCenter );
+  mLabel->setFrameStyle( QFrame::NoFrame );
+  mLabel->setText( tr( "Scale" ) );
+  mLabel->setToolTip( tr( "Current map scale" ) );
 
-    mScale = new QgsScaleComboBox( this );
-    mScale->setObjectName( "mScaleEdit" );
-    // seems setFont() change font only for popup not for line edit,
-    // so we need to set font for it separately
-    mScale->setMinimumWidth( 10 );
-    mScale->setContentsMargins( 0, 0, 0, 0 );
-    mScale->setWhatsThis( tr( "Displays the current map scale" ) );
-    mScale->setToolTip( tr( "Current map scale (formatted as x:y)" ) );
+  mScale = new QgsScaleComboBox( this );
+  mScale->setObjectName( "mScaleEdit" );
+  // seems setFont() change font only for popup not for line edit,
+  // so we need to set font for it separately
+  mScale->setMinimumWidth( 10 );
+  mScale->setContentsMargins( 0, 0, 0, 0 );
+  mScale->setWhatsThis( tr( "Displays the current map scale" ) );
+  mScale->setToolTip( tr( "Current map scale (formatted as x:y)" ) );
 
-    // layout
-    mLayout = new QHBoxLayout( this );
-    mLayout->addWidget( mLabel );
-    mLayout->addWidget( mScale );
-    mLayout->setContentsMargins( 0, 0, 0, 0 );
-    mLayout->setAlignment( Qt::AlignRight );
-    mLayout->setSpacing( 0 );
+  mLockButton = new QToolButton( this );
+  mLockButton->setIcon( QIcon( QgsApplication::getThemeIcon( "/locked.svg" ) ) );
+  mLockButton->setToolTip( tr( "Lock the scale to use magnifier to zoom in or out." ) );
+  mLockButton->setCheckable( true );
+  mLockButton->setChecked( false );
 
-    setLayout( mLayout );
+  // layout
+  mLayout = new QHBoxLayout( this );
+  mLayout->addWidget( mLabel );
+  mLayout->addWidget( mScale );
+  mLayout->addWidget( mLockButton );
+  mLayout->setContentsMargins( 0, 0, 0, 0 );
+  mLayout->setAlignment( Qt::AlignRight );
+  mLayout->setSpacing( 0 );
 
-    connect( mScale, SIGNAL( scaleChanged( double ) ), this, SLOT( userScale() ) );
+  setLayout( mLayout );
+
+  connect( mScale, SIGNAL( scaleChanged( double ) ), this, SLOT( userScale() ) );
+
+  connect( mLockButton, SIGNAL( toggled( bool ) ), this, SIGNAL( scaleLockChanged( bool ) ) );
 }
 
 QgsStatusBarScaleWidget::~QgsStatusBarScaleWidget()
 {
 }
 
-void QgsStatusBarScaleWidget::setScale(double scale)
+void QgsStatusBarScaleWidget::setScale( double scale )
 {
-    mScale->setScale(scale);
+  mScale->setScale( scale );
 }
 
-void QgsStatusBarScaleWidget::setFont(const QFont &font)
+bool QgsStatusBarScaleWidget::isLocked()
 {
-    mLabel->setFont( font );
-    mScale->lineEdit()->setFont( font );
+  return mLockButton->isChecked();
 }
 
-void QgsStatusBarScaleWidget::updateScales(const QStringList &scales)
+void QgsStatusBarScaleWidget::setFont( const QFont &font )
 {
-    mScale->updateScales(scales);
+  mLabel->setFont( font );
+  mScale->lineEdit()->setFont( font );
+}
+
+void QgsStatusBarScaleWidget::updateScales( const QStringList &scales )
+{
+  mScale->updateScales( scales );
 }
 
 void QgsStatusBarScaleWidget::userScale()
