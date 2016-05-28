@@ -1,13 +1,13 @@
 /***************************************************************************
-                          qgsactionmanager.h
+                        qgsactionmanager.h
 
- This is a legacy header to keep backwards compatibility until QGIS 3.
+This is a legacy header to keep backwards compatibility until QGIS 3.
 
-                             -------------------
-    begin                : Oct 24 2004
-    copyright            : (C) 2004 by Gavin Macaulay
-    email                : gavin at macaulay dot co dot nz
- ***************************************************************************/
+                           -------------------
+  begin                : Oct 24 2004
+  copyright            : (C) 2004 by Gavin Macaulay
+  email                : gavin at macaulay dot co dot nz
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
