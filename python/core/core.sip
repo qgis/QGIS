@@ -284,6 +284,7 @@
 %Include raster/qgssinglebandcolordatarenderer.sip
 %Include raster/qgssinglebandgrayrenderer.sip
 %Include raster/qgssinglebandpseudocolorrenderer.sip
+%Include raster/qgshillshaderenderer.sip
 
 %Include symbology-ng/qgscolorbrewerpalette.sip
 %Include symbology-ng/qgscptcityarchive.sip
