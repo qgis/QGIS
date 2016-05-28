@@ -50,6 +50,29 @@ QgsRaster::ContrastEnhancementLimits QgsRaster::contrastEnhancementLimitsFromStr
   return ContrastEnhancementNone;
 }
 
+bool QgsRaster::isRepresentableValue( double value, QGis::DataType dataType )
+{
+  switch ( dataType )
+  {
+    case QGis::Byte:
+      return value >= std::numeric_limits<quint8>::min() && value <= std::numeric_limits<quint8>::max();
+    case QGis::UInt16:
+      return value >= std::numeric_limits<quint16>::min() && value <= std::numeric_limits<quint16>::max();
+    case QGis::Int16:
+      return value >= std::numeric_limits<qint16>::min() && value <= std::numeric_limits<qint16>::max();
+    case QGis::UInt32:
+      return value >= std::numeric_limits<quint32>::min() && value <= std::numeric_limits<quint32>::max();
+    case QGis::Int32:
+      return value >= std::numeric_limits<qint32>::min() && value <= std::numeric_limits<qint32>::max();
+    case QGis::Float32:
+      return qIsNaN( value ) || qIsInf( value ) ||
+             ( value >= -std::numeric_limits<float>::max() && value <= std::numeric_limits<float>::max() );
+    default:
+      return true;
+      break;
+  }
+}
+
 double QgsRaster::representableValue( double value, QGis::DataType dataType )
 {
   switch ( dataType )
