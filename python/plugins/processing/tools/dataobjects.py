@@ -271,7 +271,7 @@ def getObjectFromUri(uri, forceLoad=True):
         return None
 
 
-def exportVectorLayer(layer):
+def exportVectorLayer(layer, supported=None):
     """Takes a QgsVectorLayer and returns the filename to refer to it,
     which allows external apps which support only file-based layers to
     use it. It performs the necessary export in case the input layer
@@ -285,6 +285,7 @@ def exportVectorLayer(layer):
     a new file if the original one contains non-ascii characters.
     """
 
+    supported = supported or ["shp"]
     settings = QSettings()
     systemEncoding = settings.value('/UI/encoding', 'System')
 
@@ -317,7 +318,7 @@ def exportVectorLayer(layer):
             unicode(layer.source()).decode('ascii')
         except UnicodeEncodeError:
             isASCII = False
-        if not unicode(layer.source()).endswith('shp') or not isASCII:
+        if not os.path.splitext()[1] in supported or not isASCII:
             writer = QgsVectorFileWriter(
                 output, systemEncoding,
                 layer.pendingFields(), provider.geometryType(),
