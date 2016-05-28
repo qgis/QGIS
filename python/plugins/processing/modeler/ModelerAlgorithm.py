@@ -544,6 +544,11 @@ class ModelerAlgorithm(GeoAlgorithm):
         except:
             return False, None
 
+    def shortHelp(self):
+        if 'ALG_DESC' in self.helpContent:
+            return self._formatHelp(unicode(self.helpContent['ALG_DESC']))
+        return None
+
     def getParameterDescriptions(self):
         descs = {}
         descriptions = self.helpContent
