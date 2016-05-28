@@ -41,6 +41,7 @@ class QDomDocument;
 class QDomElement;
 class QDomNode;
 
+class QgsBillBoardRegistry;
 class QgsLayerTreeGroup;
 class QgsLayerTreeRegistryBridge;
 class QgsMapLayer;
@@ -323,6 +324,11 @@ class CORE_EXPORT QgsProject : public QObject
 
     QgsRelationManager* relationManager() const;
 
+    /** Return the project's billboard manager instance pointer
+     * @note added in QGIS 2.16
+     */
+    QgsBillBoardRegistry* billboardRegistry() const { return mBillboardRegistry; }
+
     /** Return pointer to the root (invisible) node of the project's layer tree
      * @note added in 2.4
      */
@@ -486,6 +492,8 @@ class CORE_EXPORT QgsProject : public QObject
     QgsLayerTreeGroup* mRootGroup;
 
     QgsLayerTreeRegistryBridge* mLayerTreeRegistryBridge;
+
+    QgsBillBoardRegistry* mBillboardRegistry;
 
     //! map of transaction group: QPair( providerKey, connString ) -> transactionGroup
     QMap< QPair< QString, QString>, QgsTransactionGroup*> mTransactionGroups;

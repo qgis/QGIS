@@ -39,6 +39,7 @@
 #include <qgsmaplayerregistry.h>
 #include <qgsfeature.h>
 #include <qgsgeometry.h>
+#include <qgsproject.h>
 #include <qgspoint.h>
 #include <qgsdistancearea.h>
 #include <symbology-ng/qgsrendererv2.h>
@@ -281,8 +282,8 @@ void GlobePlugin::initGui()
 
   connect( mActionToggleGlobe, SIGNAL( triggered( bool ) ), this, SLOT( setGlobeEnabled( bool ) ) );
 //  connect( mQGisIface->mapCanvas(), SIGNAL( annotationItemChanged( QgsAnnotationItem* ) ), this, SLOT( updateAnnotationItem( QgsAnnotationItem* ) ) );
-  connect( QgsBillBoardRegistry::instance(), SIGNAL( itemAdded( QgsBillBoardItem* ) ), this, SLOT( addBillboard( QgsBillBoardItem* ) ) );
-  connect( QgsBillBoardRegistry::instance(), SIGNAL( itemRemoved( QgsBillBoardItem* ) ), this, SLOT( removeBillboard( QgsBillBoardItem* ) ) );
+  connect( QgsProject::instance()->billboardRegistry(), SIGNAL( itemAdded( QgsBillBoardItem* ) ), this, SLOT( addBillboard( QgsBillBoardItem* ) ) );
+  connect( QgsProject::instance()->billboardRegistry(), SIGNAL( itemRemoved( QgsBillBoardItem* ) ), this, SLOT( removeBillboard( QgsBillBoardItem* ) ) );
   connect( mLayerPropertiesFactory, SIGNAL( layerSettingsChanged( QgsMapLayer* ) ), this, SLOT( layerChanged( QgsMapLayer* ) ) );
   connect( this, SIGNAL( xyCoordinates( const QgsPoint & ) ), mQGisIface->mapCanvas(), SIGNAL( xyCoordinates( const QgsPoint & ) ) );
   connect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
@@ -391,7 +392,7 @@ void GlobePlugin::run()
 
   mAnnotationsGroup = new osg::Group();
   mRootNode->addChild( mAnnotationsGroup );
-  foreach ( QgsBillBoardItem* item, QgsBillBoardRegistry::instance()->items() )
+  foreach ( QgsBillBoardItem* item, QgsProject::instance()->billboardRegistry()->items() )
   {
     addBillboard( item );
   }

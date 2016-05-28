@@ -169,7 +169,6 @@ SET(QGIS_GUI_SRCS
   qgsattributeforminterface.cpp
   qgsattributeformlegacyinterface.cpp
   qgsattributetypeloaddialog.cpp
-  qgsbillboardregistry.cpp
   qgsblendmodecombobox.cpp
   qgsbrowsertreeview.cpp
   qgsbusyindicatordialog.cpp
@@ -323,7 +322,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgsattributeform.h
   qgsattributeformeditorwidget.h
   qgsattributetypeloaddialog.h
-  qgsbillboardregistry.h
   qgsblendmodecombobox.h
   qgsbrowsertreeview.h
   qgsbusyindicatordialog.h
