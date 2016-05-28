@@ -247,7 +247,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! sets whether map image will be for overview
     void enableOverviewMode( bool isOverview = true ) { mOverview = isOverview; }
 
-    void setOutputSize( QSize size, int dpi );
+    void setOutputSize( QSize size, double dpi );
     void setOutputSize( QSizeF size, double dpi );
 
     //!accessor for output dpi

@@ -241,12 +241,12 @@ void QgsMapSettings::setOutputSize( QSize size )
   updateDerived();
 }
 
-int QgsMapSettings::outputDpi() const
+double QgsMapSettings::outputDpi() const
 {
-  return ( int )mDpi;
+  return mDpi;
 }
 
-void QgsMapSettings::setOutputDpi( int dpi )
+void QgsMapSettings::setOutputDpi( double dpi )
 {
   mDpi = dpi;
 

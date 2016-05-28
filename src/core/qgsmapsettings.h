@@ -83,10 +83,9 @@ class CORE_EXPORT QgsMapSettings
 
     //! Return DPI used for conversion between real world units (e.g. mm) and pixels
     //! Default value is 96
-    //! TODO QGIS 3 return double ?
-    int outputDpi() const;
+    double outputDpi() const;
     //! Set DPI used for conversion between real world units (e.g. mm) and pixels
-    void setOutputDpi( int dpi );
+    void setOutputDpi( double dpi );
 
     /**
      * @brief setMagnificationFactor set the magnification factor
