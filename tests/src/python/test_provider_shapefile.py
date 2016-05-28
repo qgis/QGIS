@@ -106,8 +106,6 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(caps & QgsVectorDataProvider.CreateSpatialIndex)
         self.assertTrue(caps & QgsVectorDataProvider.SelectAtId)
         self.assertTrue(caps & QgsVectorDataProvider.ChangeGeometries)
-        self.assertTrue(caps & QgsVectorDataProvider.SimplifyGeometries)
-        self.assertTrue(caps & QgsVectorDataProvider.SimplifyGeometriesWithTopologicalValidation)
         #self.assertTrue(caps & QgsVectorDataProvider.ChangeFeatures)
 
         # We should be really opened in read-only mode even if write capabilities are declared
