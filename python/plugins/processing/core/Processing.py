@@ -76,6 +76,12 @@ class Processing:
     contextMenuActions = []
 
     @staticmethod
+    def algs():
+        """Use this method to get algorithms for wps4server.
+        """
+        return algList.algs
+
+    @staticmethod
     def addProvider(provider, updateList=True):
         """Use this method to add algorithms from external providers.
         """
