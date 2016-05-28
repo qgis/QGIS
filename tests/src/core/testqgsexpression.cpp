@@ -1547,6 +1547,31 @@ class TestQgsExpression: public QObject
       QCOMPARE( out.toDouble(), result );
     }
 
+    void implicit_feature_to_geometry()
+    {
+      // test implicit feature to geometry cast
+      QgsPolyline polyline;
+      polyline << QgsPoint( 0, 0 ) << QgsPoint( 10, 0 );
+      QgsFeature feat;
+      feat.setGeometry( QgsGeometry::fromPolyline( polyline ) );
+
+      QgsExpressionContext context;
+      context.setFeature( feat );
+      QgsExpression exp1( "length($currentfeature)" );
+      QVariant result = exp1.evaluate( &context );
+      QCOMPARE( result.toDouble(), 10. );
+
+      QgsExpression exp2( "x(end_point($currentfeature))" );
+      result = exp2.evaluate( &context );
+      QCOMPARE( result.toDouble(), 10. );
+
+      // feature without geometry
+      QgsFeature feat2;
+      context.setFeature( feat2 );
+      result = exp2.evaluate( &context );
+      QVERIFY( !result.isValid() );
+    }
+
     void eval_geometry_calc()
     {
       QgsPolyline polyline, polygon_ring;
