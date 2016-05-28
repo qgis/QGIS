@@ -25,7 +25,6 @@
 #include <qgscoordinatereferencesystem.h>
 
 #include <QMessageBox>
-#include <QSettings>
 
 #include "qgsvectorlayerimport.h"
 #include "qgsprovidercountcalcevent.h"
@@ -1655,11 +1654,9 @@ bool QgsPostgresProvider::isValid()
 
 QVariant QgsPostgresProvider::defaultValue( int fieldId )
 {
-  QSettings settings;
-
   QVariant defVal = mDefaultValues.value( fieldId, QString::null );
 
-  if ( settings.value( "/qgis/evaluateDefaultValues", false ).toBool() && !defVal.isNull() )
+  if ( providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isNull() )
   {
     const QgsField& fld = field( fieldId );
 

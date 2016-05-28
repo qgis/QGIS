@@ -389,6 +389,21 @@ class CORE_EXPORT QgsProject : public QObject
      */
     QMap< QPair< QString, QString>, QgsTransactionGroup*> transactionGroups();
 
+    /**
+     * Should default values be evaluated on provider side when requested and not when committed.
+     *
+     * @note added in 2.16
+     */
+    bool evaluateDefaultValues() const;
+
+
+    /**
+     * Defines if default values should be evaluated on provider side when requested and not when committed.
+     *
+     * @note added in 2.16
+     */
+    void setEvaluateDefaultValues( bool evaluateDefaultValues );
+
   protected:
     /** Set error message from read/write operation
      * @note not available in Python bindings
@@ -456,7 +471,7 @@ class CORE_EXPORT QgsProject : public QObject
     void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 
   private slots:
-    void addToTransactionGroups( const QList<QgsMapLayer*> layers );
+    void onMapLayersAdded( const QList<QgsMapLayer*>& layers );
     void cleanTransactionGroups( bool force = false );
 
   private:

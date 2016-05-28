@@ -308,7 +308,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>13</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -337,7 +337,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1230</width>
+                <width>662</width>
                 <height>682</height>
                </rect>
               </property>
@@ -1468,7 +1468,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>610</width>
-                <height>705</height>
+                <height>684</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1720,16 +1720,6 @@
                     </property>
                    </widget>
                   </item>
-                  <item>
-                   <widget class="QCheckBox" name="cbxEvaluateDefaultValues">
-                    <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When digitizing a new feature, default values are retrieved from the database. With this option turned on, the default values will be evaluated at the time of digitizing. With this option turned off, the default values will be evaluated at the time of saving.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                    </property>
-                    <property name="text">
-                     <string>Evaluate default values</string>
-                    </property>
-                   </widget>
-                  </item>
                  </layout>
                 </widget>
                </item>
@@ -1836,7 +1826,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>722</width>
-                <height>1013</height>
+                <height>983</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -3119,7 +3109,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>635</width>
-                <height>663</height>
+                <height>693</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3549,7 +3539,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1061</width>
+                <width>610</width>
                 <height>605</height>
                </rect>
               </property>
@@ -5384,12 +5374,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsProjectionSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsprojectionselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorSchemeList</class>
    <extends>QWidget</extends>
    <header location="global">qgscolorschemelist.h</header>
@@ -5399,6 +5383,12 @@
    <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
    <header location="global">qgsvariableeditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -5610,7 +5600,6 @@
   <tabstop>mRemoveUrlPushButton</tabstop>
   <tabstop>mAdvancedSettingsEnableButton</tabstop>
   <tabstop>cbxCheckVersion</tabstop>
-  <tabstop>cbxEvaluateDefaultValues</tabstop>
   <tabstop>mOptionsScrollArea_10</tabstop>
   <tabstop>mAddUrlPushButton</tabstop>
   <tabstop>mExcludeUrlListWidget</tabstop>

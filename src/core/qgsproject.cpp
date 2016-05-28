@@ -40,6 +40,7 @@
 #include "qgsunittypes.h"
 #include "qgstransaction.h"
 #include "qgstransactiongroup.h"
+#include "qgsvectordataprovider.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -328,11 +329,13 @@ struct QgsProject::Imp
   QgsPropertyKey properties_; // property hierarchy
   QString title;              // project title
   bool autoTransaction;       // transaction grouped editing
+  bool evaluateDefaultValues; // evaluate default values immediately
   bool dirty;                 // project has been modified since it has been read or saved
 
   Imp()
       : title()
       , autoTransaction( false )
+      , evaluateDefaultValues( false )
       , dirty( false )
   {                             // top property node is the root
     // "properties" that contains all plug-in
@@ -350,6 +353,7 @@ struct QgsProject::Imp
     properties_.clearKeys();
     title.clear();
     autoTransaction = false;
+    evaluateDefaultValues = false;
     dirty = false;
   }
 
@@ -370,7 +374,7 @@ QgsProject::QgsProject()
   // whenever layers are added to or removed from the registry,
   // layer tree will be updated
   mLayerTreeRegistryBridge = new QgsLayerTreeRegistryBridge( mRootGroup, this );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( addToTransactionGroups( QList<QgsMapLayer*> ) ) );
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( onMapLayersAdded( QList<QgsMapLayer*> ) ) );
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersRemoved( QStringList ) ), this, SLOT( cleanTransactionGroups() ) );
 } // QgsProject ctor
 
@@ -902,6 +906,14 @@ bool QgsProject::read()
       imp_->autoTransaction = true;
   }
 
+  nl = doc->elementsByTagName( "evaluateDefaultValues" );
+  if ( nl.count() )
+  {
+    QDomElement evaluateDefaultValuesElement = nl.at( 0 ).toElement();
+    if ( evaluateDefaultValuesElement.attribute( "active", "0" ).toInt() == 1 )
+      imp_->evaluateDefaultValues = true;
+  }
+
   // read the layer tree from project file
 
   mRootGroup->setCustomProperty( "loading", 1 );
@@ -1010,14 +1022,14 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
   }
 }
 
-void QgsProject::addToTransactionGroups( const QList<QgsMapLayer*> layers )
+void QgsProject::onMapLayersAdded( const QList<QgsMapLayer*>& layers )
 {
-  if ( autoTransaction() )
+  Q_FOREACH ( QgsMapLayer* layer, layers )
   {
-    Q_FOREACH ( QgsMapLayer* layer, layers )
+    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
+    if ( vlayer )
     {
-      QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
-      if ( vlayer )
+      if ( autoTransaction() )
       {
         if ( QgsTransaction::supportsTransaction( vlayer ) )
         {
@@ -1036,6 +1048,7 @@ void QgsProject::addToTransactionGroups( const QList<QgsMapLayer*> layers )
           tg->addLayer( vlayer );
         }
       }
+      vlayer->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, evaluateDefaultValues() );
     }
   }
 }
@@ -1109,6 +1122,10 @@ bool QgsProject::write()
   QDomElement transactionNode = doc->createElement( "autotransaction" );
   transactionNode.setAttribute( "active", imp_->autoTransaction ? "1" : "0" );
   qgisNode.appendChild( transactionNode );
+
+  QDomElement evaluateDefaultValuesNode = doc->createElement( "evaluateDefaultValues" );
+  evaluateDefaultValuesNode.setAttribute( "active", imp_->evaluateDefaultValues ? "1" : "0" );
+  qgisNode.appendChild( evaluateDefaultValuesNode );
 
   QDomText titleText = doc->createTextNode( title() );  // XXX why have title TWICE?
   titleNode.appendChild( titleText );
@@ -2119,6 +2136,25 @@ void QgsProject::snapSettings( QStringList &layerIdList, QStringList &enabledLis
   avoidIntersectionList = readListEntry( "Digitizing", "/AvoidIntersectionsList" );
 }
 
+bool QgsProject::evaluateDefaultValues() const
+{
+  return imp_->evaluateDefaultValues;
+}
+
+void QgsProject::setEvaluateDefaultValues( bool evaluateDefaultValues )
+{
+  Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  {
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
+    if ( vl )
+    {
+      vl->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, evaluateDefaultValues );
+    }
+  }
+
+  imp_->evaluateDefaultValues = evaluateDefaultValues;
+}
+
 void QgsProject::setTopologicalEditing( bool enabled )
 {
   QgsProject::instance()->writeEntry( "Digitizing", "/TopologicalEditing", ( enabled ? 1 : 0 ) );
@@ -2232,7 +2268,7 @@ void QgsProject::setAutoTransaction( bool autoTransaction )
     imp_->autoTransaction = autoTransaction;
 
     if ( autoTransaction )
-      addToTransactionGroups( QgsMapLayerRegistry::instance()->mapLayers().values() );
+      onMapLayersAdded( QgsMapLayerRegistry::instance()->mapLayers().values() );
     else
       cleanTransactionGroups( true );
   }

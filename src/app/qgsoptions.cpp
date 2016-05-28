@@ -635,7 +635,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   cbxSnappingOptionsDocked->setChecked( mSettings->value( "/qgis/dockSnapping", false ).toBool() );
   cbxAddPostgisDC->setChecked( mSettings->value( "/qgis/addPostgisDC", false ).toBool() );
   cbxAddOracleDC->setChecked( mSettings->value( "/qgis/addOracleDC", false ).toBool() );
-  cbxEvaluateDefaultValues->setChecked( mSettings->value( "/qgis/evaluateDefaultValues", false ).toBool() );
   cbxCompileExpressions->setChecked( mSettings->value( "/qgis/compileExpressions", true ).toBool() );
   cbxCreateRasterLegendIcons->setChecked( mSettings->value( "/qgis/createRasterLegendIcons", false ).toBool() );
 
@@ -1192,7 +1191,6 @@ void QgsOptions::saveOptions()
   mSettings->setValue( "/qgis/addPostgisDC", cbxAddPostgisDC->isChecked() );
   mSettings->setValue( "/qgis/addOracleDC", cbxAddOracleDC->isChecked() );
   mSettings->setValue( "/qgis/compileExpressions", cbxCompileExpressions->isChecked() );
-  mSettings->setValue( "/qgis/evaluateDefaultValues", cbxEvaluateDefaultValues->isChecked() );
   mSettings->setValue( "/qgis/defaultLegendGraphicResolution", mLegendGraphicResolutionSpinBox->value() );
   bool createRasterLegendIcons = mSettings->value( "/qgis/createRasterLegendIcons", false ).toBool();
   mSettings->setValue( "/qgis/createRasterLegendIcons", cbxCreateRasterLegendIcons->isChecked() );
