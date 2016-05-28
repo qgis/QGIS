@@ -108,10 +108,13 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
   bool toEmit( false );
   QString errStr( tr( "predicate is True" ) );
   QString expression = layer()->editFormConfig()->expression( mFieldIdx );
+  QString description;
   QVariant value = ft.attribute( mFieldIdx );
 
   if ( ! expression.isEmpty() )
   {
+    description = layer()->editFormConfig()->expressionDescription( mFieldIdx );
+
     QgsExpressionContext context =
       QgsExpressionContextUtils::createFeatureBasedContext( ft, *ft.fields() );
     context << QgsExpressionContextUtils::layerScope( layer() );
@@ -139,9 +142,13 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
     {
       QString fieldName = ft.fields()->field( mFieldIdx ).name();
       expression = "( " + expression + " ) AND ( " + fieldName + " IS NOT NULL)";
+      description = "( " + description + " ) AND NotNull";
     }
     else
+    {
+      description = "NotNull";
       expression = "NotNull";
+    }
 
     mValidConstraint = mValidConstraint && !value.isNull();
 
@@ -154,7 +161,7 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
   if ( toEmit )
   {
     updateConstraintWidgetStatus();
-    emit constraintStatusChanged( expression, errStr, mValidConstraint );
+    emit constraintStatusChanged( expression, description, errStr, mValidConstraint );
   }
 }
 

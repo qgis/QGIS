@@ -135,6 +135,22 @@ void QgsEditFormConfig::setExpression( int idx, const QString& str )
     mConstraints[ mFields.at( idx ).name()] = str;
 }
 
+QString QgsEditFormConfig::expressionDescription( int idx ) const
+{
+  QString description;
+
+  if ( idx >= 0 && idx < mFields.count() )
+    description = mConstraintsDescription[ mFields.at( idx ).name()];
+
+  return description;
+}
+
+void QgsEditFormConfig::setExpressionDescription( int idx, const QString &descr )
+{
+  if ( idx >= 0 && idx < mFields.count() )
+    mConstraintsDescription[ mFields.at( idx ).name()] = descr;
+}
+
 bool QgsEditFormConfig::notNull( int idx ) const
 {
   if ( idx >= 0 && idx < mFields.count() )

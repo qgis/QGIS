@@ -137,10 +137,11 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * Emit this signal when the constraint status changed.
      * @brief constraintStatusChanged
      * @param constraint represented as a string
+     * @param desc is the constraint description
      * @param err the error represented as a string. Empty if none.
      * @param status
      */
-    void constraintStatusChanged( const QString& constraint, const QString& err, bool status );
+    void constraintStatusChanged( const QString& constraint, const QString &desc, const QString& err, bool status );
 
   public slots:
     /**

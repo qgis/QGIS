@@ -180,6 +180,16 @@ bool QgsAttributeTypeDialog::labelOnTop() const
   return labelOnTopCheckBox->isChecked();
 }
 
+void QgsAttributeTypeDialog::setExpressionDescription( const QString &desc )
+{
+  constraintExpressionDescription->setText( desc );
+}
+
+QString QgsAttributeTypeDialog::expressionDescription()
+{
+  return constraintExpressionDescription->text();
+}
+
 bool QgsAttributeTypeDialog::notNull() const
 {
   return notNullCheckBox->isChecked();

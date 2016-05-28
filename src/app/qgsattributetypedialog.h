@@ -85,7 +85,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     bool fieldEditable() const;
 
     /**
-     * Getter for checkbox for not null
+     * Setter for checkbox for not null
      */
     void setNotNull( bool notNull );
 
@@ -93,6 +93,20 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
      * Getter for checkbox for not null
      */
     bool notNull() const;
+
+    /*
+     * Setter for constraint expression description
+     * @param desc the expression description
+     * @note added in QGIS 2.16
+     **/
+    void setExpressionDescription( const QString &desc );
+
+    /*
+     * Getter for constraint expression description
+     * @return the expression description
+     * @note added in QGIS 2.16
+     **/
+    QString expressionDescription();
 
     /**
      * Getter for the constraint expression

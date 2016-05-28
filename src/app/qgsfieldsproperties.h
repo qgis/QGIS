@@ -94,6 +94,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         bool mLabelOnTop;
         bool mNotNull;
         QString mConstraint;
+        QString mConstraintDescription;
         QPushButton* mButton;
         QString mEditorWidgetV2Type;
         QMap<QString, QVariant> mEditorWidgetV2Config;

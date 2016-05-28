@@ -484,12 +484,12 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     QgsEditorWidgetConfig widgetConfig( const QString& widgetName ) const;
 
     /**
-     * Remove the configuration for the editor widget used to represent the field at the given index
-     *
-     * @param fieldIdx  The index of the field
-     *
-     * @return true if successful, false if the field does not exist
-     */
+    * Remove the configuration for the editor widget used to represent the field at the given index
+    *
+    * @param fieldIdx  The index of the field
+    *
+    * @return true if successful, false if the field does not exist
+    */
     bool removeWidgetConfig( int fieldIdx );
 
     /**
@@ -527,6 +527,22 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
      * @note added in QGIS 2.16
      */
     void setExpression( int idx, const QString& str );
+
+    /**
+     * Returns the constraint expression description of a specific filed.
+     * @param idx The index of the field
+     * @return the expression description
+     * @note added in QGIS 2.16
+     */
+    QString expressionDescription( int idx ) const;
+
+    /**
+     * Set the constraint expression description for a specific field.
+     * @param idx The index of the field
+     * @param descr The description of the expression
+     * @note added in QGIS 2.16
+     */
+    void setExpressionDescription( int idx, const QString &descr );
 
     /**
      * Returns if the field at fieldidx should be treated as NOT NULL value
@@ -657,6 +673,7 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     QList< TabData > mTabs;
 
     QMap< QString, QString> mConstraints;
+    QMap< QString, QString> mConstraintsDescription;
     QMap< QString, bool> mFieldEditables;
     QMap< QString, bool> mLabelOnTop;
     QMap< QString, bool> mNotNull;

@@ -493,6 +493,22 @@ class QgsEditFormConfig : QObject
     void setExpression( int idx, const QString& str );
 
     /**
+     * Returns the constraint expression description of a specific filed.
+     * @param idx The index of the field
+     * @return the expression description
+     * @note added in QGIS 2.16
+     */
+    QString expressionDescription( int idx ) const;
+
+    /**
+     * Set the constraint expression description for a specific field.
+     * @param idx The index of the field
+     * @param descr The description of the expression
+     * @note added in QGIS 2.16
+     */
+    void setExpressionDescription( int idx, const QString &descr );
+
+    /**
      * Returns if the field at fieldidx should be treated as NOT NULL value
      */
     bool notNull( int fieldidx) const;

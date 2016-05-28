@@ -529,6 +529,7 @@ void QgsFieldsProperties::attributeTypeDialog()
   attributeTypeDialog.setLabelOnTop( cfg.mLabelOnTop );
   attributeTypeDialog.setNotNull( cfg.mNotNull );
   attributeTypeDialog.setExpression( cfg.mConstraint );
+  attributeTypeDialog.setExpressionDescription( cfg.mConstraintDescription );
 
   attributeTypeDialog.setWidgetV2Config( cfg.mEditorWidgetV2Config );
   attributeTypeDialog.setWidgetV2Type( cfg.mEditorWidgetV2Type );
@@ -539,6 +540,7 @@ void QgsFieldsProperties::attributeTypeDialog()
   cfg.mEditable = attributeTypeDialog.fieldEditable();
   cfg.mLabelOnTop = attributeTypeDialog.labelOnTop();
   cfg.mNotNull = attributeTypeDialog.notNull();
+  cfg.mConstraintDescription = attributeTypeDialog.expressionDescription();
   cfg.mConstraint = attributeTypeDialog.expression();
 
   cfg.mEditorWidgetV2Type = attributeTypeDialog.editorWidgetV2Type();
@@ -913,6 +915,7 @@ void QgsFieldsProperties::apply()
     mLayer->editFormConfig()->setReadOnly( i, !cfg.mEditable );
     mLayer->editFormConfig()->setLabelOnTop( i, cfg.mLabelOnTop );
     mLayer->editFormConfig()->setNotNull( i, cfg.mNotNull );
+    mLayer->editFormConfig()->setExpressionDescription( i, cfg.mConstraintDescription );
     mLayer->editFormConfig()->setExpression( i, cfg.mConstraint );
 
     mLayer->editFormConfig()->setWidgetType( idx, cfg.mEditorWidgetV2Type );
@@ -981,6 +984,7 @@ QgsFieldsProperties::FieldConfig::FieldConfig()
     , mEditableEnabled( true )
     , mLabelOnTop( false )
     , mNotNull( false )
+    , mConstraintDescription( QString() )
     , mButton( nullptr )
 {
 }
@@ -994,6 +998,7 @@ QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
   mLabelOnTop = layer->editFormConfig()->labelOnTop( idx );
   mNotNull = layer->editFormConfig()->notNull( idx );
   mConstraint = layer->editFormConfig()->expression( idx );
+  mConstraintDescription = layer->editFormConfig()->expressionDescription( idx );
   mEditorWidgetV2Type = layer->editFormConfig()->widgetType( idx );
   mEditorWidgetV2Config = layer->editFormConfig()->widgetConfig( idx );
 

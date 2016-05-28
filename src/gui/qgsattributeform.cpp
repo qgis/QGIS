@@ -795,17 +795,26 @@ void QgsAttributeForm::clearInvalidConstraintsMessage()
   }
 }
 
-void QgsAttributeForm::displayInvalidConstraintMessage( const QStringList &f )
+void QgsAttributeForm::displayInvalidConstraintMessage( const QStringList &f,
+    const QStringList &d )
 {
   clearInvalidConstraintsMessage();
 
+  // show only the third first error
+  int max = 3;
+  int size = f.size() > max ? max : f.size();
+  QString descriptions;
+  for ( int i = 0; i < size; i++ )
+    descriptions += "<br />- " + f[i] + ": " + d[i];
+
   mInvalidConstraintMessageBarItem =
-    new QgsMessageBarItem( tr( "Invalid fields:" ),
-                           f.join( ", " ), QgsMessageBar::WARNING );
+    new QgsMessageBarItem( tr( "Invalid fields: " ),
+                           descriptions, QgsMessageBar::WARNING );
   mMessageBar->pushItem( mInvalidConstraintMessageBarItem );
 }
 
-bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields )
+bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields,
+    QStringList &descriptions )
 {
   bool valid( true );
 
@@ -817,6 +826,10 @@ bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields )
       if ( ! eww->isValidConstraint() )
       {
         invalidFields.append( eww->field().name() );
+
+        QString desc = eww->layer()->editFormConfig()->expressionDescription( eww->fieldIdx() );
+        descriptions.append( desc );
+
         valid = false; // continue to get all invalif fields
       }
     }
@@ -883,7 +896,7 @@ void QgsAttributeForm::onUpdatedFields()
 }
 
 void QgsAttributeForm::onConstraintStatusChanged( const QString& constraint,
-    const QString& err, bool ok )
+    const QString &description, const QString& err, bool ok )
 {
   QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( sender() );
   Q_ASSERT( eww );
@@ -892,7 +905,8 @@ void QgsAttributeForm::onConstraintStatusChanged( const QString& constraint,
 
   if ( buddy )
   {
-    QString tooltip = tr( "Expression: " ) + constraint + "\n" + tr( "Constraint: " ) + err;
+    QString tooltip = tr( "Description: " ) + description + "\n" +
+                      tr( "Raw expression: " ) + constraint + "\n" + tr( "Constraint: " ) + err;
     buddy->setToolTip( tooltip );
 
     if ( !buddy->property( "originalText" ).isValid() )
@@ -986,11 +1000,11 @@ void QgsAttributeForm::synchronizeEnabledState()
   // push a message and disable the OK button if constraints are invalid
   clearInvalidConstraintsMessage();
 
-  QStringList invalidFields;
-  bool validConstraint = currentFormValidConstraints( invalidFields );
+  QStringList invalidFields, descriptions;
+  bool validConstraint = currentFormValidConstraints( invalidFields, descriptions );
 
   if ( ! validConstraint )
-    displayInvalidConstraintMessage( invalidFields );
+    displayInvalidConstraintMessage( invalidFields, descriptions );
 
   isEditable = isEditable & validConstraint;
 
@@ -1205,7 +1219,6 @@ void QgsAttributeForm::init()
   }
   mButtonBox->setVisible( buttonBoxVisible );
 
-<<<<<<< HEAD
   if ( !mSearchButtonBox )
   {
     mSearchButtonBox = new QWidget();
@@ -1618,7 +1631,8 @@ void QgsAttributeForm::afterWidgetInit()
       }
 
       connect( eww, SIGNAL( valueChanged( const QVariant& ) ), this, SLOT( onAttributeChanged( const QVariant& ) ) );
-      connect( eww, SIGNAL( constraintStatusChanged( QString, QString, bool ) ), this, SLOT( onConstraintStatusChanged( QString, QString, bool ) ) );
+      connect( eww, SIGNAL( constraintStatusChanged( QString, QString, QString, bool ) ),
+               this, SLOT( onConstraintStatusChanged( QString, QString, QString, bool ) ) );
     }
   }
 
