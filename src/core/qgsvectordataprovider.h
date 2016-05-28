@@ -168,6 +168,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @return map of fields
      * @see QgsFields
      */
+    // TODO QGIS 3: return by value
     virtual const QgsFields &fields() const = 0;
 
     /**
