@@ -184,7 +184,20 @@ bool QgsTaskManager::deleteTask( QgsTask *task )
   return result;
 }
 
-QgsTask*QgsTaskManager::task( long id ) const
+void QgsTaskManager::deleteAllTasks()
+{
+  //first tell all tasks to cancel
+  cancelAll();
+
+  QMutexLocker ml( mTaskMutex );
+  Q_FOREACH ( QgsTask* task, tasks() )
+  {
+    deleteTask( task );
+  }
+  emit allTasksFinished();
+}
+
+QgsTask* QgsTaskManager::task( long id ) const
 {
   QMutexLocker ml( mTaskMutex );
   return mTasks.value( id ).task;

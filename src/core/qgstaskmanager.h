@@ -218,6 +218,11 @@ class CORE_EXPORT QgsTaskManager : public QObject
      */
     bool deleteTask( QgsTask* task );
 
+    /** Deletes all tasks in the manager, first terminating them if they are currently
+     * running.
+     */
+    void deleteAllTasks();
+
     /** Returns the task with matching ID.
      * @param id task ID
      * @returns task if found, or nullptr
