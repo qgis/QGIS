@@ -23,8 +23,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsdoublespinbox.h"
 
-QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget* parent,
-    QgsMapCanvas *canvas ) :
+QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget(QgsMapCanvas *canvas, QWidget* parent) :
     QWidget( parent ),
     mCanvas( canvas ),
     mMagnifier( 100 ),

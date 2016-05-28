@@ -122,8 +122,6 @@
 #include "qgscomposer.h"
 #include "qgscomposermanager.h"
 #include "qgscomposerview.h"
-#include "qgsstatusbarcoordinateswidget.h"
-#include "qgsstatusbarmagnifierwidget.h"
 #include "qgsconfigureshortcutsdialog.h"
 #include "qgscoordinatetransform.h"
 #include "qgscoordinateutils.h"
@@ -207,7 +205,6 @@
 #include "qgsrasterrenderer.h"
 #include "qgsrasterlayersaveasdialog.h"
 #include "qgsrectangle.h"
-#include "qgsscalecombobox.h"
 #include "qgsscalevisibilitydialog.h"
 #include "qgsgroupwmsdatadialog.h"
 #include "qgsshortcutsmanager.h"
@@ -215,9 +212,12 @@
 #include "qgssnappingdialog.h"
 #include "qgssponsors.h"
 #include "qgsstatisticalsummarydockwidget.h"
-#include "qgssymbolv2selectordialog.h"
+#include "qgsstatusbarcoordinateswidget.h"
+#include "qgsstatusbarmagnifierwidget.h"
+#include "qgsstatusbarscalewidget.h"
 #include "qgsstylev2.h"
 #include "qgssvgannotationitem.h"
+#include "qgssymbolv2selectordialog.h"
 #include "qgstextannotationitem.h"
 #include "qgstipgui.h"
 #include "qgsundowidget.h"
@@ -543,9 +543,7 @@ QgisApp *QgisApp::smInstance = nullptr;
 QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, QWidget * parent, Qt::WindowFlags fl )
     : QMainWindow( parent, fl )
     , mNonEditMapTool( nullptr )
-    , mScaleLabel( nullptr )
-    , mScaleEdit( nullptr )
-    , mScaleEditValidator( nullptr )
+    , mScaleWidget( nullptr )
     , mMagnifierWidget( nullptr )
     , mCoordsEdit( nullptr )
     , mRotationLabel( nullptr )
@@ -1001,9 +999,7 @@ QgisApp::QgisApp()
     , mpGpsDock( nullptr )
     , mLogDock( nullptr )
     , mNonEditMapTool( nullptr )
-    , mScaleLabel( nullptr )
-    , mScaleEdit( nullptr )
-    , mScaleEditValidator( nullptr )
+    , mScaleWidget( nullptr )
     , mMagnifierWidget( nullptr )
     , mCoordsEdit( nullptr )
     , mRotationLabel( nullptr )
@@ -2138,36 +2134,13 @@ void QgisApp::createStatusBar()
   mCoordsEdit->setFont( myFont );
   statusBar()->addPermanentWidget( mCoordsEdit, 0 );
 
-  // add a label to show current scale
-  mScaleLabel = new QLabel( QString(), statusBar() );
-  mScaleLabel->setObjectName( "mScaleLable" );
-  mScaleLabel->setFont( myFont );
-  mScaleLabel->setMinimumWidth( 10 );
-  //mScaleLabel->setMaximumHeight( 20 );
-  mScaleLabel->setMargin( 3 );
-  mScaleLabel->setAlignment( Qt::AlignCenter );
-  mScaleLabel->setFrameStyle( QFrame::NoFrame );
-  mScaleLabel->setText( tr( "Scale" ) );
-  mScaleLabel->setToolTip( tr( "Current map scale" ) );
-  statusBar()->addPermanentWidget( mScaleLabel, 0 );
-
-  mScaleEdit = new QgsScaleComboBox( statusBar() );
-  mScaleEdit->setObjectName( "mScaleEdit" );
-  mScaleEdit->setFont( myFont );
-  // seems setFont() change font only for popup not for line edit,
-  // so we need to set font for it separately
-  mScaleEdit->lineEdit()->setFont( myFont );
-  mScaleEdit->setMinimumWidth( 10 );
-  mScaleEdit->setContentsMargins( 0, 0, 0, 0 );
-  mScaleEdit->setWhatsThis( tr( "Displays the current map scale" ) );
-  mScaleEdit->setToolTip( tr( "Current map scale (formatted as x:y)" ) );
-
-  statusBar()->addPermanentWidget( mScaleEdit, 0 );
-  connect( mScaleEdit, SIGNAL( scaleChanged( double ) ), this, SLOT( userScale() ) );
+  mScaleWidget = new QgsStatusBarScaleWidget( mMapCanvas, statusBar() );
+  mScaleWidget->setFont( myFont );
+  statusBar()->addPermanentWidget( mScaleWidget, 0 );
 
   // zoom widget
   QSettings mySettings;
-  mMagnifierWidget = new QgsStatusBarMagnifierWidget( statusBar(), mMapCanvas );
+  mMagnifierWidget = new QgsStatusBarMagnifierWidget( mMapCanvas, statusBar() );
   mMagnifierWidget->setFont( myFont );
   mMagnifierWidget->setMagnificationLevel( mySettings.value( "/qgis/magnifier_level", 100 ).toInt() );
   statusBar()->addPermanentWidget( mMagnifierWidget, 0 );
@@ -2227,7 +2200,7 @@ void QgisApp::createStatusBar()
   mOnTheFlyProjectionStatusButton->setObjectName( "mOntheFlyProjectionStatusButton" );
   // Maintain uniform widget height in status bar by setting button height same as labels
   // For Qt/Mac 3.3, the default toolbutton height is 30 and labels were expanding to match
-  mOnTheFlyProjectionStatusButton->setMaximumHeight( mScaleLabel->height() );
+  mOnTheFlyProjectionStatusButton->setMaximumHeight( mScaleWidget->height() );
   mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( "mIconProjectionEnabled.png" ) );
   mOnTheFlyProjectionStatusButton->setWhatsThis( tr( "This icon shows whether "
       "on the fly coordinate reference system transformation is enabled or not. "
@@ -2247,7 +2220,7 @@ void QgisApp::createStatusBar()
   mMessageButton->setWhatsThis( tr( "Messages" ) );
   mMessageButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
   mMessageButton->setObjectName( "mMessageLogViewerButton" );
-  mMessageButton->setMaximumHeight( mScaleLabel->height() );
+  mMessageButton->setMaximumHeight( mScaleWidget->height() );
   mMessageButton->setCheckable( true );
   statusBar()->addPermanentWidget( mMessageButton, 0 );
 }
@@ -4198,7 +4171,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   mMapCanvas->refresh();
   mMapCanvas->clearExtentHistory();
   mMapCanvas->setRotation( 0.0 );
-  mScaleEdit->updateScales();
+  mScaleWidget->updateScales();
 
   // set project CRS
   QString defCrs = settings.value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
@@ -4648,7 +4621,7 @@ bool QgisApp::addProject( const QString& projectFile )
   bool projectScales = QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" );
   if ( projectScales )
   {
-    mScaleEdit->updateScales( QgsProject::instance()->readListEntry( "Scales", "/ScalesList" ) );
+    mScaleWidget->updateScales( QgsProject::instance()->readListEntry( "Scales", "/ScalesList" ) );
   }
 
   mMapCanvas->updateScale();
@@ -7906,19 +7879,13 @@ void QgisApp::saveLastMousePosition( const QgsPoint & p )
 void QgisApp::showScale( double theScale )
 {
   // Why has MapCanvas the scale inverted?
-  mScaleEdit->setScale( 1.0 / theScale );
+  mScaleWidget->setScale( 1.0 / theScale );
 
   // Not sure if the lines below do anything meaningful /Homann
-  if ( mScaleEdit->width() > mScaleEdit->minimumWidth() )
+  if ( mScaleWidget->width() > mScaleWidget->minimumWidth() )
   {
-    mScaleEdit->setMinimumWidth( mScaleEdit->width() );
+    mScaleWidget->setMinimumWidth( mScaleWidget->width() );
   }
-}
-
-void QgisApp::userScale()
-{
-  // Why has MapCanvas the scale inverted?
-  mMapCanvas->zoomScale( 1.0 / mScaleEdit->scale() );
 }
 
 
@@ -8633,7 +8600,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString& currentPage )
 
     if ( oldScales != mySettings.value( "Map/scales", PROJECT_SCALES ).toString() )
     {
-      mScaleEdit->updateScales();
+      mScaleWidget->updateScales();
     }
 
     qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureDist )->updateSettings();
@@ -9964,7 +9931,7 @@ void QgisApp::projectProperties()
   connect( pp, SIGNAL( displayPrecisionChanged() ), this,
            SLOT( updateMouseCoordinatePrecision() ) );
 
-  connect( pp, SIGNAL( scalesChanged( const QStringList & ) ), mScaleEdit,
+  connect( pp, SIGNAL( scalesChanged( const QStringList & ) ), mScaleWidget,
            SLOT( updateScales( const QStringList & ) ) );
   QApplication::restoreOverrideCursor();
 

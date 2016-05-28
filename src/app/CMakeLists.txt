@@ -52,6 +52,7 @@ SET(QGIS_APP_SRCS
   qgssavestyletodbdialog.cpp
   qgsstatusbarcoordinateswidget.cpp
   qgsstatusbarmagnifierwidget.cpp
+  qgsstatusbarscalewidget.cpp
   qgsversioninfo.cpp
   qgswelcomepageitemsmodel.cpp
   qgswelcomepage.cpp
@@ -231,6 +232,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsshortcutsmanager.h
   qgsstatusbarcoordinateswidget.h
   qgsstatusbarmagnifierwidget.h
+  qgsstatusbarscalewidget.h
   qgsversioninfo.h
   qgswelcomepageitemsmodel.h
   qgswelcomepage.h
