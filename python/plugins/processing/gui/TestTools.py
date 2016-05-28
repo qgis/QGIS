@@ -32,6 +32,8 @@ import hashlib
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
 
+from numpy import nan_to_num
+
 from qgis.PyQt.QtCore import QCoreApplication, QMetaObject
 from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QTextEdit
 
@@ -195,7 +197,8 @@ def createTest(text):
         elif isinstance(out, OutputRaster):
             filename = token[1:-1]
             dataset = gdal.Open(filename, GA_ReadOnly)
-            strhash = hashlib.sha224(dataset.ReadAsArray(0).data).hexdigest()
+            dataArray = nan_to_num(dataset.ReadAsArray(0))
+            strhash = hashlib.sha224(dataArray.data).hexdigest()
 
             results[out.name] = {
                 'type': 'rasterhash',

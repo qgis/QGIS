@@ -34,6 +34,7 @@ import hashlib
 import tempfile
 
 from osgeo.gdalconst import GA_ReadOnly
+from numpy import nan_to_num
 
 import processing
 from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
@@ -100,7 +101,7 @@ class AlgorithmsTest:
 
         expectFailure = False
         if 'expectedFailure' in defs:
-            exec('\n'.join(defs['expectedFailure'][:-1])) in globals(), locals()
+            exec('\n'.join(defs['expectedFailure'][:-1]) in globals(), locals()
             expectFailure = eval(defs['expectedFailure'][-1])
 
         if expectFailure:
@@ -114,7 +115,6 @@ class AlgorithmsTest:
         else:
             alg.execute()
             self.check_results(alg.getOutputValuesAsDictionary(), defs['results'])
-            
 
     def load_params(self, params):
         """
@@ -210,7 +210,8 @@ class AlgorithmsTest:
 
             elif 'rasterhash' == expected_result['type']:
                 dataset = gdal.Open(results[id], GA_ReadOnly)
-                strhash = hashlib.sha224(dataset.ReadAsArray(0).data).hexdigest()
+                dataArray = nan_to_num(dataset.ReadAsArray(0))
+                strhash = hashlib.sha224(dataArray.data).hexdigest()
 
                 self.assertEqual(strhash, expected_result['hash'])
             elif 'file' == expected_result['type']:
