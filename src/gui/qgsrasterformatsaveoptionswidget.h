@@ -104,6 +104,7 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
     void setCreateOptions( const QString& profile, const QStringList& list );
     QStringList profiles() const;
     bool eventFilter( QObject *obj, QEvent *event ) override;
+    QString pseudoFormat() const;
 
 };
 

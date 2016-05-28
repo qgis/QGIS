@@ -21,6 +21,8 @@
 #include "qgsrasterformatsaveoptionswidget.h"
 #include "qgsgenericprojectionselector.h"
 
+#include "gdal.h"
+
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSettings>

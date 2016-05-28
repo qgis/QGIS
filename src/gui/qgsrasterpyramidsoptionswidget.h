@@ -63,6 +63,15 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget,
 
   private:
 
+    // Must be in the same order as in the .ui file
+    typedef enum
+    {
+      GTIFF = 0,
+      INTERNAL = 1,
+      ERDAS = 2
+    } Format;
+
+
     QString mProvider;
     QList< int > mOverviewList;
     QMap< int, QCheckBox* > mOverviewCheckBoxes;

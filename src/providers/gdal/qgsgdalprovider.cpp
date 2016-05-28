@@ -1598,13 +1598,20 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
     Q_FOREACH ( const QString& option, theConfigOptions )
     {
       QStringList opt = option.split( '=' );
-      QByteArray key = opt[0].toLocal8Bit();
-      QByteArray value = opt[1].toLocal8Bit();
-      // save previous value
-      myConfigOptionsOld[ opt[0] ] = QString( CPLGetConfigOption( key.data(), nullptr ) );
-      // set temp. value
-      CPLSetConfigOption( key.data(), value.data() );
-      QgsDebugMsg( QString( "set option %1=%2" ).arg( key.data(), value.data() ) );
+      if ( opt.size() == 2 )
+      {
+        QByteArray key = opt[0].toLocal8Bit();
+        QByteArray value = opt[1].toLocal8Bit();
+        // save previous value
+        myConfigOptionsOld[ opt[0] ] = QString( CPLGetConfigOption( key.data(), nullptr ) );
+        // set temp. value
+        CPLSetConfigOption( key.data(), value.data() );
+        QgsDebugMsg( QString( "set option %1=%2" ).arg( key.data(), value.data() ) );
+      }
+      else
+      {
+        QgsDebugMsg( QString( "invalid pyramid option: %1" ).arg( option ) );
+      }
     }
   }
 
@@ -1634,7 +1641,8 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
     }
   }
   /* From : http://www.gdal.org/classGDALDataset.html#a2aa6f88b3bbc840a5696236af11dde15
-   * pszResampling : one of "NEAREST", "GAUSS", "CUBIC", "AVERAGE", "MODE", "AVERAGE_MAGPHASE" or "NONE" controlling the downsampling method applied.
+   * pszResampling : one of "NEAREST", "GAUSS", "CUBIC", "CUBICSPLINE" (GDAL >= 2.0),
+   * "LANCZOS" ( GDAL >= 2.0), "AVERAGE", "MODE" or "NONE" controlling the downsampling method applied.
    * nOverviews : number of overviews to build.
    * panOverviewList : the list of overview decimation factors to build.
    * nListBands : number of bands to build overviews for in panBandList. Build for all bands if this is 0.
@@ -2962,7 +2970,7 @@ QString QgsGdalProvider::validateCreationOptions( const QStringList& createOptio
   return message;
 }
 
-QString QgsGdalProvider::validatePyramidsCreationOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
+QString QgsGdalProvider::validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
     const QStringList & theConfigOptions, const QString & fileFormat )
 {
   // Erdas Imagine format does not support config options
@@ -2977,21 +2985,19 @@ QString QgsGdalProvider::validatePyramidsCreationOptions( QgsRaster::RasterPyram
   else if ( pyramidsFormat == QgsRaster::PyramidsInternal )
   {
     QStringList supportedFormats;
-    supportedFormats << "gtiff" << "georaster" << "hfa" << "jp2kak" << "mrsid" << "nitf";
+    supportedFormats << "gtiff" << "georaster" << "hfa" << "gpkg" << "rasterlite" << "nitf";
     if ( ! supportedFormats.contains( fileFormat.toLower() ) )
-      return QString( "Internal pyramids format only supported for gtiff/georaster/hfa/jp2kak/mrsid/nitf files (using %1)" ).arg( fileFormat );
-    // TODO - check arguments for georaster hfa jp2kak mrsid nitf
-    // for now, only test gtiff
-    else if ( fileFormat.toLower() != "gtiff" )
-      return QString();
+      return QString( "Internal pyramids format only supported for gtiff/georaster/gpkg/rasterlite/nitf files (using %1)" ).arg( fileFormat );
   }
-
-  // for gtiff external or internal pyramids, validate gtiff-specific values
-  // PHOTOMETRIC_OVERVIEW=YCBCR requires a source raster with only 3 bands (RGB)
-  if ( theConfigOptions.contains( "PHOTOMETRIC_OVERVIEW=YCBCR" ) )
+  else
   {
-    if ( GDALGetRasterCount( mGdalDataset ) != 3 )
-      return "PHOTOMETRIC_OVERVIEW=YCBCR requires a source raster with only 3 bands (RGB)";
+    // for gtiff external pyramids, validate gtiff-specific values
+    // PHOTOMETRIC_OVERVIEW=YCBCR requires a source raster with only 3 bands (RGB)
+    if ( theConfigOptions.contains( "PHOTOMETRIC_OVERVIEW=YCBCR" ) )
+    {
+      if ( GDALGetRasterCount( mGdalDataset ) != 3 )
+        return "PHOTOMETRIC_OVERVIEW=YCBCR requires a source raster with only 3 bands (RGB)";
+    }
   }
 
   return QString();
@@ -3022,6 +3028,10 @@ QGISEXTERN QList<QPair<QString, QString> > *pyramidResamplingMethods()
     methods.append( QPair<QString, QString>( "AVERAGE", QObject::tr( "Average" ) ) );
     methods.append( QPair<QString, QString>( "GAUSS", QObject::tr( "Gauss" ) ) );
     methods.append( QPair<QString, QString>( "CUBIC", QObject::tr( "Cubic" ) ) );
+#if GDAL_VERSION_MAJOR >= 2
+    methods.append( QPair<QString, QString>( "CUBICSPLINE", QObject::tr( "Cubic Spline" ) ) );
+    methods.append( QPair<QString, QString>( "LANCZOS", QObject::tr( "Lanczos" ) ) );
+#endif
     methods.append( QPair<QString, QString>( "MODE", QObject::tr( "Mode" ) ) );
     methods.append( QPair<QString, QString>( "NONE", QObject::tr( "None" ) ) );
   }
