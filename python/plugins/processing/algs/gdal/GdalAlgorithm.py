@@ -50,10 +50,11 @@ class GdalAlgorithm(GeoAlgorithm):
     def processAlgorithm(self, progress):
         commands = self.getConsoleCommands()
         layers = dataobjects.getVectorLayers()
+        supported = dataobjects.getSupportedOutputVectorLayerExtensions()
         for i, c in enumerate(commands):
             for layer in layers:
                 if layer.source() in c:
-                    c = c.replace(layer.source(), dataobjects.exportVectorLayer(layer))
+                    c = c.replace(layer.source(), dataobjects.exportVectorLayer(layer, supported))
 
             commands[i] = c
         GdalUtils.runGdal(commands, progress)
