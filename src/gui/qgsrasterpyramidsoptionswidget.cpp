@@ -54,11 +54,11 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
   // keep it in sync with qgsrasterlayerproperties.cpp
   tmpStr = mySettings.value( prefix + "format", "external" ).toString();
   if ( tmpStr == "internal" )
-    cbxPyramidsFormat->setCurrentIndex( Format::INTERNAL );
+    cbxPyramidsFormat->setCurrentIndex( INTERNAL );
   else if ( tmpStr == "external_erdas" )
-    cbxPyramidsFormat->setCurrentIndex( Format::ERDAS );
+    cbxPyramidsFormat->setCurrentIndex( ERDAS );
   else
-    cbxPyramidsFormat->setCurrentIndex( Format::GTIFF );
+    cbxPyramidsFormat->setCurrentIndex( GTIFF );
 
   // initialize resampling methods
   cboResamplingMethod->clear();
@@ -126,9 +126,9 @@ void QgsRasterPyramidsOptionsWidget::apply()
   QString tmpStr;
 
   // mySettings.setValue( prefix + "internal", cbxPyramidsInternal->isChecked() );
-  if ( cbxPyramidsFormat->currentIndex() == Format::INTERNAL )
+  if ( cbxPyramidsFormat->currentIndex() == INTERNAL )
     tmpStr = "internal";
-  else if ( cbxPyramidsFormat->currentIndex() == Format::ERDAS )
+  else if ( cbxPyramidsFormat->currentIndex() == ERDAS )
     tmpStr = "external_erdas";
   else
     tmpStr = "external";
@@ -165,17 +165,17 @@ void QgsRasterPyramidsOptionsWidget::on_cbxPyramidsLevelsCustom_toggled( bool to
 
 void QgsRasterPyramidsOptionsWidget::on_cbxPyramidsFormat_currentIndexChanged( int index )
 {
-  mSaveOptionsWidget->setEnabled( index != Format::ERDAS );
+  mSaveOptionsWidget->setEnabled( index != ERDAS );
   QgsRaster::RasterPyramidsFormat format;
   switch ( index )
   {
-    case Format::GTIFF:
+    case GTIFF:
       format = QgsRaster::PyramidsGTiff;
       break;
-    case Format::INTERNAL:
+    case INTERNAL:
       format = QgsRaster::PyramidsInternal;
       break;
-    case Format::ERDAS:
+    case ERDAS:
       format = QgsRaster::PyramidsErdas;
       break;
     default:
