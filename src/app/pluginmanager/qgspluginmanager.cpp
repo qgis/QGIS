@@ -744,7 +744,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
     {
       iconPath = "file://" + iconPath;
     }
-    html += QString( "<img src=\"%1\" style=\"float:right;\">" ).arg( iconPath );
+    html += QString( "<img src=\"%1\" style=\"float:right;max-width:64px;max-height:64px;\">" ).arg( iconPath );
   }
 
   html += QString( "<h1>%1</h1>" ).arg( metadata->value( "name" ) );
