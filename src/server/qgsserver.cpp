@@ -62,7 +62,6 @@
 
 QString* QgsServer::sConfigFilePath = nullptr;
 QgsCapabilitiesCache* QgsServer::sCapabilitiesCache = nullptr;
-QgsMapRenderer* QgsServer::sMapRenderer = nullptr;
 QgsMapSettings* QgsServer::sMapSettings = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 QgsServerInterfaceImpl*QgsServer::sServerInterface = nullptr;
@@ -413,9 +412,7 @@ bool QgsServer::init( int & argc, char ** argv )
 
   //create cache for capabilities XML
   sCapabilitiesCache = new QgsCapabilitiesCache();
-  sMapRenderer =  new QgsMapRenderer;
   sMapSettings = new QgsMapSettings();
-  sMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
 #ifdef ENABLE_MS_TESTS
   QgsFontUtils::loadStandardTestFonts( QStringList() << "Roman" << "Bold" );
