@@ -1,5 +1,3 @@
-FIND_PACKAGE(QJSON REQUIRED)
-
 INCLUDE_DIRECTORIES(
   ../../core
   ../../core/auth
