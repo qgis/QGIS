@@ -112,6 +112,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void setLayerType( const QgsPostgresLayerProperty& layerProperty );
     void on_mTablesTreeView_clicked( const QModelIndex &index );
     void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
+    void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString& regexp );
 

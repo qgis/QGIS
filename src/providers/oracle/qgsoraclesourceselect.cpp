@@ -224,6 +224,8 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
   mTablesTreeView->setItemDelegate( mTablesTreeDelegate );
 
+  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection&, const QItemSelection& ) ) );
+
   QSettings settings;
   mTablesTreeView->setSelectionMode( settings.value( "/qgis/addOracleDC", false ).toBool() ?
                                      QAbstractItemView::ExtendedSelection :
@@ -541,9 +543,6 @@ void QgsOracleSourceSelect::finishList()
 {
   QApplication::restoreOverrideCursor();
 
-  if ( cmbConnections->count() > 0 )
-    mAddButton->setEnabled( true );
-
 #if 0
   for ( int i = 0; i < QgsOracleTableModel::dbtmColumns; i++ )
     mTablesTreeView->resizeColumnToContents( i );
@@ -677,4 +676,10 @@ void QgsOracleSourceSelect::loadTableFromCache()
   mTablesTreeDelegate->setConnectionInfo( uri );
 
   finishList();
+}
+
+void QgsOracleSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+{
+  Q_UNUSED( deselected )
+  mAddButton->setEnabled( !selected.isEmpty() );
 }
