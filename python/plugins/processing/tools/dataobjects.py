@@ -317,7 +317,7 @@ def exportVectorLayer(layer):
             unicode(layer.source()).decode('ascii')
         except UnicodeEncodeError:
             isASCII = False
-        if not unicode(layer.source()).endswith('shp') or not isASCII:
+        if not unicode(layer.source()).lower().endswith('shp') or not isASCII:
             writer = QgsVectorFileWriter(
                 output, systemEncoding,
                 layer.pendingFields(), provider.geometryType(),
