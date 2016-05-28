@@ -336,7 +336,7 @@ QgsRectangle QgsGeometryCollectionV2::calculateBoundingBox() const
   for ( int i = 1; i < mGeometries.size(); ++i )
   {
     QgsRectangle geomBox = mGeometries.at( i )->boundingBox();
-    bbox.combineExtentWith( &geomBox );
+    bbox.combineExtentWith( geomBox );
   }
   return bbox;
 }

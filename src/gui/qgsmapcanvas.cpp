@@ -1166,7 +1166,7 @@ void QgsMapCanvas::zoomToFeatureIds( QgsVectorLayer* layer, const QgsFeatureIds&
       return;
     }
     QgsRectangle r = mapSettings().layerExtentToOutputExtent( layer, geom->boundingBox() );
-    rect.combineExtentWith( &r );
+    rect.combineExtentWith( r );
     featureCount++;
   }
 

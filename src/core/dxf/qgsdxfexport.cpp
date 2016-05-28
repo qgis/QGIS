@@ -3706,7 +3706,7 @@ QgsRectangle QgsDxfExport::dxfExtent() const
       else
       {
         QgsRectangle layerExtent = layerIt->first->extent();
-        extent.combineExtentWith( &layerExtent );
+        extent.combineExtentWith( layerExtent );
       }
     }
   }

@@ -458,7 +458,7 @@ QgsRectangle QgsInterpolationDialog::boundingBoxOfLayers()
     }
     else
     {
-      combinedLayerExtent.combineExtentWith( &currentLayerExtent );
+      combinedLayerExtent.combineExtentWith( currentLayerExtent );
     }
   }
   return combinedLayerExtent;

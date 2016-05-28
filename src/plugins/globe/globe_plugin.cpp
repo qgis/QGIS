@@ -772,7 +772,7 @@ void GlobePlugin::refreshQGISMapLayer( QgsRectangle rect )
       rect = mLayerExtents.values().front();
       foreach ( const QgsRectangle& extent, mLayerExtents.values() )
       {
-        rect.combineExtentWith( &extent );
+        rect.combineExtentWith( extent );
       }
     }
     mOsgViewer->getDatabasePager()->clear();
@@ -903,7 +903,7 @@ void GlobePlugin::updateLayers()
     QgsRectangle fullExtent = mLayerExtents.isEmpty() ? QgsRectangle() : mLayerExtents.values().front();
     foreach ( const QgsRectangle& rect, mLayerExtents.values() )
     {
-      fullExtent.combineExtentWith( &rect );
+      fullExtent.combineExtentWith( rect );
     }
     mLayerExtents.clear();
 
@@ -958,7 +958,7 @@ void GlobePlugin::updateLayers()
         }
         else
         {
-          fullExtent.combineExtentWith( &extent );
+          fullExtent.combineExtentWith( extent );
         }
       }
     }
@@ -1034,7 +1034,7 @@ void GlobePlugin::layerChanged( QgsMapLayer* mapLayer )
       QgsRectangle updateExtent = layerExtent;
       if ( mLayerExtents.contains( mapLayer->id() ) )
       {
-        updateExtent.combineExtentWith( &mLayerExtents[mapLayer->id()] );
+        updateExtent.combineExtentWith( mLayerExtents[mapLayer->id()] );
       }
       mLayerExtents[mapLayer->id()] = layerExtent;
       refreshQGISMapLayer( updateExtent );

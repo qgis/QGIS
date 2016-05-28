@@ -1707,7 +1707,7 @@ void QgsWMSProjectParser::addOWSLayers( QDomDocument &doc,
       }
       else
       {
-        combinedBBox.combineExtentWith( &BBox );
+        combinedBBox.combineExtentWith( BBox );
       }
 
       addOWSLayerStyles( currentLayer, doc, layerElem );
