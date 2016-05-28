@@ -122,8 +122,9 @@ class CORE_EXPORT QgsActionManager
 
     /** Expands the given action, replacing all %'s with the value as
      *  given.
+     * @deprecated use QgsExpression::replaceExpressionText() instead
      */
-    QString expandAction( QString action, const QgsAttributeMap &attributes, uint defaultValueIndex );
+    Q_DECL_DEPRECATED QString expandAction( QString action, const QgsAttributeMap &attributes, uint defaultValueIndex );
 
     /** Expands the given action using the expression builder
      *  This function currently replaces each expression between [% and %]
@@ -132,10 +133,11 @@ class CORE_EXPORT QgsActionManager
      *
      *  Additional substitutions can be passed through the substitutionMap
      *  parameter
+     *  @deprecated use QgsExpression::replaceExpressionText() instead
      */
-    QString expandAction( const QString& action,
-                          QgsFeature &feat,
-                          const QMap<QString, QVariant> *substitutionMap = nullptr );
+    Q_DECL_DEPRECATED QString expandAction( const QString& action,
+                                            QgsFeature &feat,
+                                            const QMap<QString, QVariant> *substitutionMap = nullptr );
 
 
     //! Writes the actions out in XML format
@@ -165,11 +167,15 @@ class CORE_EXPORT QgsActionManager
     Q_DECL_DEPRECATED static void setPythonExecute( void ( * )( const QString & ) );
 
     /**
-     * Get the index of the default action
+     * Returns the index of the default action, or -1 if no default action is available.
+     * @see setDefaultAction()
      */
     int defaultAction() const { return mDefaultAction < 0 || mDefaultAction >= size() ? -1 : mDefaultAction; }
+
     /**
-     * Set the index of the default action
+     * Set the index of the default action.
+     * @param actionNumber index of action which should be made the default for the layer
+     * @see defaultAction()
      */
     void setDefaultAction( int actionNumber ) { mDefaultAction = actionNumber ; }
 
