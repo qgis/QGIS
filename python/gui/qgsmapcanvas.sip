@@ -279,7 +279,11 @@ class QgsMapCanvas : QGraphicsView
     QgsMapLayer* currentLayer();
 
     //! set wheel action and zoom factor (should be greater than 1)
+    //! @deprecated
     void setWheelAction( WheelAction action, double factor = 2 );
+
+    //! set the wheel zoom factor
+    void setWheelFactor( double factor );
 
     //! Zoom in with fixed factor
     void zoomIn();

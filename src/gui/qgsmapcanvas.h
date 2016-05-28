@@ -111,6 +111,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
   public:
 
+    //TODO QGIS 3 remove this
     enum WheelAction { WheelZoom, WheelZoomAndRecenter, WheelZoomToMouseCursor, WheelNothing };
 
     //! Constructor
@@ -118,12 +119,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Destructor
     ~QgsMapCanvas();
-
-    //! Sets the factor of magnification to apply to the map canvas. Indeed, we
-    //! increase/decrease the DPI of the map settings according to this factor
-    //! in order to render marker point, labels, ... bigger.
-    //! @note added in 2.16
-    void setMagnificationFactor( double level );
 
     //! Returns the magnification factor
     //! @note added in 2.16
@@ -348,7 +343,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsMapLayer* currentLayer();
 
     //! set wheel action and zoom factor (should be greater than 1)
+    //! @deprecated No more options for wheel action
     void setWheelAction( WheelAction action, double factor = 2 );
+
+    //! set wheel zoom factor (should be greater than 1)
+    void setWheelFactor( double factor );
 
     //! Zoom in with fixed factor
     void zoomIn();
@@ -365,6 +364,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Zooms in/out with a given center
     void zoomWithCenter( int x, int y, bool zoomIn );
+
+    bool scaleLocked() { return mScaleLocked;}
 
     //! used to determine if anti-aliasing is enabled or not
     void enableAntiAliasing( bool theFlag );
@@ -521,6 +522,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.8
     static void enableRotation( bool enabled );
 
+    //! Sets the factor of magnification to apply to the map canvas. Indeed, we
+    //! increase/decrease the DPI of the map settings according to this factor
+    //! in order to render marker point, labels, ... bigger.
+    //! @note added in 2.16
+    void setMagnificationFactor( double factor );
+
+    //! lock the scale, so zooming can be performed using magnication
+    //! @note added in 2.16
+    void setScaleLocked( bool isLocked );
 
   private slots:
     //! called when current maptool is destroyed
@@ -551,6 +561,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emitted when the rotation of the map changes
     //! @note added in 2.8
     void rotationChanged( double );
+
+    //! Emitted when the scale of the map changes
+    //! @note added in 2.16
+    void magnificationChanged( double );
 
     /** Emitted when the canvas has rendered.
      * Passes a pointer to the painter on which the map was drawn. This is
@@ -733,14 +747,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Scale factor multiple for default zoom in/out
     double mWheelZoomFactor;
 
-    //! Mouse wheel action
-    WheelAction mWheelAction;
-
     //! Timer that periodically fires while map rendering is in progress to update the visible map
     QTimer mMapUpdateTimer;
-
-    //! magnification factor
-    double mMagnificationFactor;
 
     //! Job that takes care of map rendering in background
     QgsMapRendererQImageJob* mJob;
@@ -767,6 +775,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsRectangle imageRect( const QImage& img, const QgsMapSettings& mapSettings );
 
     QgsSnappingUtils* mSnappingUtils;
+
+    //! lock the scale, so zooming can be performed using magnication
+    bool mScaleLocked;
 
     QgsExpressionContextScope mExpressionContextScope;
 

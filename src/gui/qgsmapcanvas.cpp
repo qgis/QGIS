@@ -189,7 +189,6 @@ void QgsMapCanvasRendererSync::onLayersC2R()
 QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     : QGraphicsView( parent )
     , mCanvasProperties( new CanvasProperties )
-    , mMagnificationFactor( 1.0 )
     , mJob( nullptr )
     , mJobCancelled( false )
     , mLabelingResults( nullptr )
@@ -198,6 +197,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mCache( nullptr )
     , mPreviewEffect( nullptr )
     , mSnappingUtils( nullptr )
+    , mScaleLocked( false )
     , mExpressionContextScope( tr( "Map Canvas" ) )
 {
   setObjectName( name );
@@ -213,8 +213,6 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
 
   mFrozen = false;
   mRefreshScheduled = false;
-
-  setWheelAction( WheelZoom );
 
   // by default, the canvas is rendered
   mRenderFlag = true;
@@ -318,10 +316,22 @@ QgsMapCanvas::~QgsMapCanvas()
 
 } // dtor
 
-void QgsMapCanvas::setMagnificationFactor( double level )
+void QgsMapCanvas::setMagnificationFactor( double factor )
 {
-  mSettings.setMagnificationFactor( level );
-  refresh();
+  // do not go higher or lower than min max magnification ratio
+  QSettings settings;
+  double magnifierMin = settings.value( "/qgis/magnifier_factor_min", 0.1 ).toDouble();
+  double magnifierMax = settings.value( "/qgis/magnifier_factor_max", 10 ).toDouble();
+  factor = factor > magnifierMax ? magnifierMax : factor;
+  factor = factor < magnifierMin ? magnifierMin : factor;
+
+  // the magnifier widget is in integer percent
+  if ( qAbs( factor - mSettings.magnificationFactor() ) >= 0.01 )
+  {
+    mSettings.setMagnificationFactor( factor );
+    refresh();
+    emit magnificationChanged( factor );
+  }
 }
 
 double QgsMapCanvas::magnificationFactor() const
@@ -1029,7 +1039,6 @@ void QgsMapCanvas::clear()
 } // clear
 
 
-
 void QgsMapCanvas::zoomToFullExtent()
 {
   QgsRectangle extent = fullExtent();
@@ -1485,54 +1494,37 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
     return;
   }
 
-  switch ( mWheelAction )
-  {
-    case WheelZoom:
-      // zoom without changing extent
-      if ( e->delta() > 0 )
-        zoomIn();
-      else
-        zoomOut();
-      break;
+  double signedWheelFactor = e->delta() > 0 ? 1 / mWheelZoomFactor : mWheelZoomFactor;
 
-    case WheelZoomAndRecenter:
-      // zoom and don't change extent
-      zoomWithCenter( e->x(), e->y(), e->delta() > 0 );
-      break;
+  // zoom map to mouse cursor by scaling
+  QgsPoint oldCenter = center();
+  QgsPoint mousePos( getCoordinateTransform()->toMapPoint( e->x(), e->y() ) );
+  QgsPoint newCenter( mousePos.x() + (( oldCenter.x() - mousePos.x() ) * signedWheelFactor ),
+                      mousePos.y() + (( oldCenter.y() - mousePos.y() ) * signedWheelFactor ) );
 
-    case WheelZoomToMouseCursor:
-    {
-      // zoom map to mouse cursor
-      double scaleFactor = e->delta() > 0 ? 1 / mWheelZoomFactor : mWheelZoomFactor;
-
-      QgsPoint oldCenter = center();
-      QgsPoint mousePos( getCoordinateTransform()->toMapPoint( e->x(), e->y() ) );
-      QgsPoint newCenter( mousePos.x() + (( oldCenter.x() - mousePos.x() ) * scaleFactor ),
-                          mousePos.y() + (( oldCenter.y() - mousePos.y() ) * scaleFactor ) );
-
-      zoomByFactor( scaleFactor, &newCenter );
-      break;
-    }
-
-    case WheelNothing:
-      // well, nothing!
-      break;
-  }
+  zoomByFactor( signedWheelFactor, &newCenter );
 }
 
 void QgsMapCanvas::setWheelAction( WheelAction action, double factor )
 {
-  mWheelAction = action;
+  Q_UNUSED( action );
+  setWheelFactor( factor );
+}
+
+void QgsMapCanvas::setWheelFactor( double factor )
+{
   mWheelZoomFactor = factor;
 }
 
 void QgsMapCanvas::zoomIn()
 {
+  // magnification is alreday handled in zoomByFactor
   zoomByFactor( 1 / mWheelZoomFactor );
 }
 
 void QgsMapCanvas::zoomOut()
 {
+  // magnification is alreday handled in zoomByFactor
   zoomByFactor( mWheelZoomFactor );
 }
 
@@ -1545,12 +1537,24 @@ void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
 {
   double scaleFactor = ( zoomIn ? 1 / mWheelZoomFactor : mWheelZoomFactor );
 
-  // transform the mouse pos to map coordinates
-  QgsPoint center  = getCoordinateTransform()->toMapPoint( x, y );
-  QgsRectangle r = mapSettings().visibleExtent();
-  r.scale( scaleFactor, &center );
-  setExtent( r, true );
-  refresh();
+  if ( mScaleLocked )
+  {
+    setMagnificationFactor( mapSettings().magnificationFactor() / scaleFactor );
+  }
+  else
+  {
+    // transform the mouse pos to map coordinates
+    QgsPoint center  = getCoordinateTransform()->toMapPoint( x, y );
+    QgsRectangle r = mapSettings().visibleExtent();
+    r.scale( scaleFactor, &center );
+    setExtent( r, true );
+    refresh();
+  }
+}
+
+void QgsMapCanvas::setScaleLocked( bool isLocked )
+{
+  mScaleLocked = isLocked;
 }
 
 void QgsMapCanvas::mouseMoveEvent( QMouseEvent * e )
@@ -2027,10 +2031,18 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
 
 void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPoint* center )
 {
-  QgsRectangle r = mapSettings().extent();
-  r.scale( scaleFactor, center );
-  setExtent( r, true );
-  refresh();
+  if ( mScaleLocked )
+  {
+    // zoom map to mouse cursor by magnifying
+    setMagnificationFactor( mapSettings().magnificationFactor() / scaleFactor );
+  }
+  else
+  {
+    QgsRectangle r = mapSettings().extent();
+    r.scale( scaleFactor, center );
+    setExtent( r, true );
+    refresh();
+  }
 }
 
 void QgsMapCanvas::selectionChangedSlot()

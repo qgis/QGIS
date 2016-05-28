@@ -138,7 +138,7 @@ double QgsMapRenderer::rotation() const
 }
 
 
-void QgsMapRenderer::setOutputSize( QSize size, int dpi )
+void QgsMapRenderer::setOutputSize( QSize size, double dpi )
 {
   mSize = QSizeF( size.width(), size.height() );
   mScaleCalculator->setDpi( dpi );

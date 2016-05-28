@@ -46,6 +46,7 @@ class QgsComposerManager;
 class QgsComposerView;
 class QgsStatusBarCoordinatesWidget;
 class QgsStatusBarMagnifierWidget;
+class QgsStatusBarScaleWidget;
 class QgsContrastEnhancement;
 class QgsCustomLayerOrderWidget;
 class QgsDoubleSpinBox;
@@ -89,8 +90,6 @@ class QgsDecorationItem;
 
 class QgsMessageLogViewer;
 class QgsMessageBar;
-
-class QgsScaleComboBox;
 
 class QgsDataItem;
 class QgsTileScaleWidget;
@@ -736,8 +735,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void saveLastMousePosition( const QgsPoint & );
     //! Slot to show current map scale;
     void showScale( double theScale );
-    //! Slot to handle user scale input;
-    void userScale();
     //! Slot to handle user rotation input;
     //! @note added in 2.8
     void userRotation();
@@ -1589,12 +1586,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsMapTool *mNonEditMapTool;
 
-    //! Widget that will live on the statusbar to display "scale 1:"
-    QLabel *mScaleLabel;
-    //! Widget that will live on the statusbar to display scale value
-    QgsScaleComboBox *mScaleEdit;
-    //! The validator for the mScaleEdit
-    QValidator * mScaleEditValidator;
+    QgsStatusBarScaleWidget* mScaleWidget;
 
     //! zoom widget
     QgsStatusBarMagnifierWidget *mMagnifierWidget;

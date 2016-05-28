@@ -607,11 +607,14 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   mSimplifyMaximumScaleComboBox->setScale( 1.0 / mSettings->value( "/qgis/simplifyMaxScale", 1 ).toFloat() );
 
   // Magnifier
-  doubleSpinBoxMagnifierDefault->setRange( 100, 1000 );
+  double magnifierMin = 100 * mSettings->value( "/qgis/magnifier_factor_min", 0.1 ).toDouble();
+  double magnifierMax = 100 * mSettings->value( "/qgis/magnifier_factor_max", 10 ).toDouble();
+  double magnifierVal = 100 * mSettings->value( "/qgis/magnifier_factor_default", 1.0 ).toDouble();
+  doubleSpinBoxMagnifierDefault->setRange( magnifierMin, magnifierMax );
   doubleSpinBoxMagnifierDefault->setSingleStep( 50 );
   doubleSpinBoxMagnifierDefault->setDecimals( 0 );
   doubleSpinBoxMagnifierDefault->setSuffix( "%" );
-  doubleSpinBoxMagnifierDefault->setValue( mSettings->value( "/qgis/magnifier_level", 100 ).toInt() );
+  doubleSpinBoxMagnifierDefault->setValue( magnifierVal );
 
   // Default local simplification algorithm
   mSimplifyAlgorithmComboBox->addItem( tr( "Distance" ), ( int )QgsVectorSimplifyMethod::Distance );
@@ -731,7 +734,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   }
   leTemplateFolder->setText( templateDirName );
 
-  cmbWheelAction->setCurrentIndex( mSettings->value( "/qgis/wheel_action", 2 ).toInt() );
   spinZoomFactor->setValue( mSettings->value( "/qgis/zoom_factor", 2 ).toDouble() );
 
   // predefined scales for scale combobox
@@ -1224,7 +1226,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( "/qgis/simplifyMaxScale", 1.0 / mSimplifyMaximumScaleComboBox->scale() );
 
   // magnification
-  mSettings->setValue( "/qgis/magnifier_level", doubleSpinBoxMagnifierDefault->value() );
+  mSettings->setValue( "/qgis/magnifier_factor_default", doubleSpinBoxMagnifierDefault->value() / 100 );
 
   //curve segmentation
   int segmentationType = mToleranceTypeComboBox->itemData( mToleranceTypeComboBox->currentIndex() ).toInt();
@@ -1341,7 +1343,6 @@ void QgsOptions::saveOptions()
   mSettings->setValue( "/qgis/default_measure_color_green", myColor.green() );
   mSettings->setValue( "/qgis/default_measure_color_blue", myColor.blue() );
 
-  mSettings->setValue( "/qgis/wheel_action", cmbWheelAction->currentIndex() );
   mSettings->setValue( "/qgis/zoom_factor", spinZoomFactor->value() );
 
   //digitizing

@@ -20,7 +20,6 @@
 class QLabel;
 class QFont;
 class QHBoxLayout;
-class QgsMapCanvas;
 class QgsDoubleSpinBox;
 
 #include <QWidget>
@@ -40,39 +39,36 @@ class APP_EXPORT QgsStatusBarMagnifierWidget : public QWidget
       * @param parent is the parent widget
       * @param canvas the map canvas
       */
-    QgsStatusBarMagnifierWidget( QWidget* parent, QgsMapCanvas *canvas );
+    QgsStatusBarMagnifierWidget( QWidget* parent = 0 );
 
     /** Destructor */
     virtual ~QgsStatusBarMagnifierWidget();
+
+    void setDefaultFactor( double factor );
 
     /** Set the font of the text
       * @param font the font to use
       */
     void setFont( const QFont& font );
 
-    /** Returns the current magnification level
-      * @return magnification level
-      */
-    double magnificationLevel();
 
-    /** Set the magnification level
-      * @param level the magnification level
-      * @return true if the level is valid, false otherwise
-      */
-    bool setMagnificationLevel( int level );
+  public slots:
+    //! will be triggered from map canvas changes (from mouse wheel, zoom)
+    void updateMagnification( double factor );
+
 
   private slots:
+    //! will be triggered form user input in spin box
+    void setMagnification( double value );
 
-    void updateMagnifier();
+  signals:
+    void magnificationChanged( double factor );
+
 
   private:
-    QgsMapCanvas *mCanvas;
     QHBoxLayout *mLayout;
     QLabel *mLabel;
     QgsDoubleSpinBox *mSpinBox;
-    int mMagnifier;
-    int mMagnifierMin;
-    int mMagnifierMax;
 };
 
 #endif

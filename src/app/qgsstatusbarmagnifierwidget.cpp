@@ -17,20 +17,20 @@
 #include <QFont>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QSettings>
 
 #include <qgsapplication.h>
 #include "qgsstatusbarmagnifierwidget.h"
-#include "qgsmapcanvas.h"
 #include "qgsdoublespinbox.h"
 
-QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget* parent,
-    QgsMapCanvas *canvas ) :
-    QWidget( parent ),
-    mCanvas( canvas ),
-    mMagnifier( 100 ),
-    mMagnifierMin( 100 ),
-    mMagnifierMax( 1000 )
+QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget* parent ) :
+    QWidget( parent )
 {
+  QSettings settings;
+  int minimumFactor = ( int ) 100 * settings.value( "/qgis/magnifier_factor_min", 0.1 ).toDouble();
+  int maximumFactor = ( int ) 100 * settings.value( "/qgis/magnifier_factor_max", 10 ).toDouble();
+  int defaultFactor = ( int ) 100 * settings.value( "/qgis/magnifier_factor_default", 1.0 ).toDouble();
+
   // label
   mLabel = new QLabel( this );
   mLabel->setMinimumWidth( 10 );
@@ -42,17 +42,17 @@ QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget* parent,
 
   mSpinBox = new QgsDoubleSpinBox( this );
   mSpinBox->setSuffix( "%" );
-  mSpinBox->setClearValue( mMagnifierMin );
   mSpinBox->setKeyboardTracking( false );
   mSpinBox->setMaximumWidth( 120 );
   mSpinBox->setDecimals( 0 );
-  mSpinBox->setRange( mMagnifierMin, mMagnifierMax );
+  mSpinBox->setRange( minimumFactor, maximumFactor );
   mSpinBox->setWrapping( false );
   mSpinBox->setSingleStep( 50 );
   mSpinBox->setToolTip( tr( "Magnifier level" ) );
+  mSpinBox->setClearValueMode( QgsDoubleSpinBox::CustomValue );
+  mSpinBox->setClearValue( defaultFactor );
 
-  connect( mSpinBox, SIGNAL( valueChanged( double ) ), this,
-           SLOT( updateMagnifier() ) );
+  connect( mSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( setMagnification( double ) ) );
 
   // layout
   mLayout = new QHBoxLayout( this );
@@ -63,17 +63,15 @@ QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget* parent,
   mLayout->setSpacing( 0 );
 
   setLayout( mLayout );
-
-  updateMagnifier();
 }
 
 QgsStatusBarMagnifierWidget::~QgsStatusBarMagnifierWidget()
 {
 }
 
-double QgsStatusBarMagnifierWidget::magnificationLevel()
+void QgsStatusBarMagnifierWidget::setDefaultFactor( double factor )
 {
-  return mMagnifier;
+  mSpinBox->setClearValue(( int )100*factor );
 }
 
 void QgsStatusBarMagnifierWidget::setFont( const QFont& myFont )
@@ -82,24 +80,12 @@ void QgsStatusBarMagnifierWidget::setFont( const QFont& myFont )
   mSpinBox->setFont( myFont );
 }
 
-bool QgsStatusBarMagnifierWidget::setMagnificationLevel( int level )
+void QgsStatusBarMagnifierWidget::updateMagnification( double factor )
 {
-  bool rc = false;
-
-  if ( level >= mMagnifierMin && level <= mMagnifierMax )
-  {
-    mSpinBox->setValue( level );
-    rc = true;
-  }
-
-  return rc;
+  mSpinBox->setValue( factor * 100 );
 }
 
-void QgsStatusBarMagnifierWidget::updateMagnifier()
+void QgsStatusBarMagnifierWidget::setMagnification( double value )
 {
-  // get current data
-  mMagnifier = mSpinBox->value();
-
-  // update map canvas
-  mCanvas->setMagnificationFactor( mMagnifier / double( mMagnifierMin ) );
+  emit magnificationChanged( value / 100 );
 }
