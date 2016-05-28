@@ -344,7 +344,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! set wheel action and zoom factor (should be greater than 1)
     //! @deprecated No more options for wheel action
-    void setWheelAction( WheelAction action, double factor = 2 );
+    Q_DECL_DEPRECATED void setWheelAction( WheelAction action, double factor = 2 );
 
     //! set wheel zoom factor (should be greater than 1)
     void setWheelFactor( double factor );
