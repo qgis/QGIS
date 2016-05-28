@@ -70,7 +70,7 @@ void QgsGeometryCheckerDialog::onCheckerFinished( bool successful )
   {
     mTabWidget->setTabEnabled( 1, true );
     mTabWidget->setCurrentIndex( 1 );
-    static_cast<QgsGeometryCheckerResultTab*>( mTabWidget->widget( 1 ) )->showCheckMessages();
+    static_cast<QgsGeometryCheckerResultTab*>( mTabWidget->widget( 1 ) )->finalize();
   }
 }
 

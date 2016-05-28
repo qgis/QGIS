@@ -76,7 +76,9 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface* iface, 
 
   ui.progressBarFixErrors->setVisible( false );
   ui.tableWidgetErrors->horizontalHeader()->setSortIndicator( 0, Qt::AscendingOrder );
+  // Not sure why, but this is needed...
   ui.tableWidgetErrors->setSortingEnabled( true );
+  ui.tableWidgetErrors->setSortingEnabled( false );
 }
 
 QgsGeometryCheckerResultTab::~QgsGeometryCheckerResultTab()
@@ -88,8 +90,9 @@ QgsGeometryCheckerResultTab::~QgsGeometryCheckerResultTab()
   qDeleteAll( mCurrentRubberBands );
 }
 
-void QgsGeometryCheckerResultTab::showCheckMessages()
+void QgsGeometryCheckerResultTab::finalize()
 {
+  ui.tableWidgetErrors->setSortingEnabled( true );
   if ( !mChecker->getMessages().isEmpty() )
   {
     QDialog dialog;
@@ -107,11 +110,6 @@ void QgsGeometryCheckerResultTab::showCheckMessages()
 
 void QgsGeometryCheckerResultTab::addError( QgsGeometryCheckError *error )
 {
-  // Disable sorting to prevent crashes: if i.e. sorting by col 0, as soon as the item(row, 0)
-  // is set, the row is potentially moved due to sorting, and subsequent item(row, col) reference wrong
-  // item
-  ui.tableWidgetErrors->setSortingEnabled( false );
-
   int row = ui.tableWidgetErrors->rowCount();
   int prec = 7 - std::floor( qMax( 0., std::log10( qMax( error->location().x(), error->location().y() ) ) ) );
   QString posStr = QString( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
@@ -144,8 +142,6 @@ void QgsGeometryCheckerResultTab::addError( QgsGeometryCheckError *error )
   ui.labelErrorCount->setText( tr( "Total errors: %1, fixed errors: %2" ).arg( mErrorCount ).arg( mFixedCount ) );
   mStatistics.newErrors.insert( error );
   mErrorMap.insert( error, QPersistentModelIndex( ui.tableWidgetErrors->model()->index( row, 0 ) ) );
-
-  ui.tableWidgetErrors->setSortingEnabled( true );
 }
 
 void QgsGeometryCheckerResultTab::updateError( QgsGeometryCheckError *error, bool statusChanged )
