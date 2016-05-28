@@ -47,6 +47,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
 
     DATABASE = 'DATABASE'
     INPUT_LAYER = 'INPUT_LAYER'
+    SHAPE_ENCODING = 'SHAPE_ENCODING'
     GTYPE = 'GTYPE'
     GEOMTYPE = ['', 'NONE', 'GEOMETRY', 'POINT', 'LINESTRING', 'POLYGON', 'GEOMETRYCOLLECTION', 'MULTIPOINT', 'MULTIPOLYGON', 'MULTILINESTRING']
     S_SRS = 'S_SRS'
@@ -93,6 +94,8 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
                                              self.tr('Database (connection name)'), self.DB_CONNECTIONS))
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterString(self.SHAPE_ENCODING,
+                                          self.tr('Shape encoding'), "", optional=True))
         self.addParameter(ParameterSelection(self.GTYPE,
                                              self.tr('Output geometry type'), self.GEOMTYPE, 0))
         self.addParameter(ParameterCrs(self.A_SRS,
@@ -164,6 +167,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         password = settings.value(mySettings + '/password')
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
+        shapeEncoding = self.getParameterValue(self.SHAPE_ENCODING)
         ssrs = unicode(self.getParameterValue(self.S_SRS))
         tsrs = unicode(self.getParameterValue(self.T_SRS))
         asrs = unicode(self.getParameterValue(self.A_SRS))
@@ -198,6 +202,10 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         arguments = []
         arguments.append('-progress')
         arguments.append('--config PG_USE_COPY YES')
+        if len(shapeEncoding) > 0:
+            arguments.append('--config')
+            arguments.append('SHAPE_ENCODING')
+            arguments.append('"' + shapeEncoding + '"')
         arguments.append('-f')
         arguments.append('PostgreSQL')
         arguments.append('PG:"host=' + host)
