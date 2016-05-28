@@ -24,6 +24,7 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmapserviceexception.h"
 #include "qgspallabeling.h"
+#include "qgsproject.h"
 #include "qgsrendererv2.h"
 #include "qgsvectorlayer.h"
 
@@ -2200,77 +2201,110 @@ void QgsWMSProjectParser::drawOverlays( QPainter* p, int dpi, int width, int hei
   }
 }
 
+void QgsWMSProjectParser::loadLabelSettings() const
+{
+  int searchMethod, nCandPoint, nCandLine, nCandPoly;
+  bool showingCandidates, drawRectOnly, showingShadowRects, showingAllLabels, showingPartialsLabels, drawOutlineLabels;
+  readLabelSettings( searchMethod, nCandPoint, nCandLine, nCandPoly, showingCandidates, drawRectOnly, showingShadowRects,
+                     showingAllLabels, showingPartialsLabels, drawOutlineLabels );
+  QgsProject::instance()->writeEntry( "PAL", "/SearchMethod", searchMethod );
+  QgsProject::instance()->writeEntry( "PAL", "/CandidatesPoint", nCandPoint );
+  QgsProject::instance()->writeEntry( "PAL", "/CandidatesLine", nCandLine );
+  QgsProject::instance()->writeEntry( "PAL", "/CandidatesPolygon", nCandPoly );
+
+  QgsProject::instance()->writeEntry( "PAL", "/ShowingCandidates", showingCandidates );
+  QgsProject::instance()->writeEntry( "PAL", "/DrawRectOnly", drawRectOnly );
+  QgsProject::instance()->writeEntry( "PAL", "/ShowingShadowRects", showingShadowRects );
+  QgsProject::instance()->writeEntry( "PAL", "/ShowingAllLabels", showingAllLabels );
+  QgsProject::instance()->writeEntry( "PAL", "/ShowingPartialsLabels", showingPartialsLabels );
+  QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", drawOutlineLabels );
+}
+
 void QgsWMSProjectParser::loadLabelSettings( QgsLabelingEngineInterface* lbl ) const
 {
   QgsPalLabeling* pal = dynamic_cast<QgsPalLabeling*>( lbl );
-  if ( pal )
+  if ( !pal )
   {
-    QDomElement propertiesElem = mProjectParser->propertiesElem();
-    if ( propertiesElem.isNull() )
-    {
-      return;
-    }
+    return;
+  }
 
-    QDomElement palElem = propertiesElem.firstChildElement( "PAL" );
-    if ( palElem.isNull() )
-    {
-      return;
-    }
+  int searchMethod, nCandPoint, nCandLine, nCandPoly;
+  bool showingCandidates, drawRectOnly, showingShadowRects, showingAllLabels, showingPartialsLabels, drawOutlineLabels;
+  readLabelSettings( searchMethod, nCandPoint, nCandLine, nCandPoly, showingCandidates, drawRectOnly, showingShadowRects,
+                     showingAllLabels, showingPartialsLabels, drawOutlineLabels );
 
-    //pal::Pal default positions for candidates;
-    int candPoint, candLine, candPoly;
-    pal->numCandidatePositions( candPoint, candLine, candPoly );
+  pal->setNumCandidatePositions( nCandPoint, nCandLine, nCandPoly );
+  pal->setShowingCandidates( showingCandidates );
+  pal->setShowingAllLabels( showingAllLabels );
+  pal->setShowingPartialsLabels( showingPartialsLabels );
+  pal->saveEngineSettings();
+}
 
-    //mCandPoint
-    QDomElement candPointElem = palElem.firstChildElement( "CandidatesPoint" );
-    if ( !candPointElem.isNull() )
-    {
-      candPoint = candPointElem.text().toInt();
-    }
+void QgsWMSProjectParser::readLabelSettings( int& searchMethod, int& nCandPoint, int& nCandLine, int& nCandPoly, bool& showingCandidates,
+    bool& drawRectOnly, bool& showingShadowRects, bool& showingAllLabels,
+    bool& showingPartialsLabels, bool& drawOutlineLabels ) const
+{
+  searchMethod = static_cast< int >( QgsPalLabeling::Chain );
+  nCandPoint = 8;
+  nCandLine = 8;
+  nCandPoly = 8;
+  showingCandidates = false;
+  drawRectOnly = false;
+  showingShadowRects = false;
+  showingAllLabels = false;
+  showingPartialsLabels = true;
+  drawOutlineLabels = true;
 
-    //mCandLine
-    QDomElement candLineElem = palElem.firstChildElement( "CandidatesLine" );
-    if ( !candLineElem.isNull() )
-    {
-      candLine = candLineElem.text().toInt();
-    }
+  QDomElement propertiesElem = mProjectParser->propertiesElem();
+  if ( propertiesElem.isNull() )
+  {
+    return;
+  }
 
-    //mCandPolygon
-    QDomElement candPolyElem = palElem.firstChildElement( "CandidatesPolygon" );
-    if ( !candPolyElem.isNull() )
-    {
-      candPoly = candPolyElem.text().toInt();
-    }
+  QDomElement palElem = propertiesElem.firstChildElement( "PAL" );
+  if ( palElem.isNull() )
+  {
+    return;
+  }
 
-    pal->setNumCandidatePositions( candPoint, candLine, candPoly );
+  QDomElement candPointElem = palElem.firstChildElement( "CandidatesPoint" );
+  if ( !candPointElem.isNull() )
+  {
+    nCandPoint = candPointElem.text().toInt();
+  }
+  QDomElement candLineElem = palElem.firstChildElement( "CandidatesLine" );
+  if ( !candLineElem.isNull() )
+  {
+    nCandLine = candLineElem.text().toInt();
+  }
+  QDomElement candPolyElem = palElem.firstChildElement( "CandidatesPolygon" );
+  if ( !candPolyElem.isNull() )
+  {
+    nCandPoly = candPolyElem.text().toInt();
+  }
 
-    //mShowingCandidates
-    QDomElement showCandElem = palElem.firstChildElement( "ShowingCandidates" );
-    if ( !showCandElem.isNull() )
-    {
-      pal->setShowingCandidates( showCandElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
-    }
+  QDomElement showCandElem = palElem.firstChildElement( "ShowingCandidates" );
+  if ( !showCandElem.isNull() )
+  {
+    showingCandidates = showCandElem.text().compare( "true", Qt::CaseInsensitive ) == 0;
+  }
 
-    //mShowingAllLabels
-    QDomElement showAllLabelsElem = palElem.firstChildElement( "ShowingAllLabels" );
-    if ( !showAllLabelsElem.isNull() )
-    {
-      pal->setShowingAllLabels( showAllLabelsElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
-    }
+  QDomElement showAllLabelsElem = palElem.firstChildElement( "ShowingAllLabels" );
+  if ( !showAllLabelsElem.isNull() )
+  {
+    showingAllLabels = showAllLabelsElem.text().compare( "true", Qt::CaseInsensitive ) == 0;
+  }
 
-    //mShowingPartialsLabels
-    QDomElement showPartialsLabelsElem = palElem.firstChildElement( "ShowingPartialsLabels" );
-    if ( !showPartialsLabelsElem.isNull() )
-    {
-      pal->setShowingPartialsLabels( showPartialsLabelsElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
-    }
+  QDomElement showPartialsLabelsElem = palElem.firstChildElement( "ShowingPartialsLabels" );
+  if ( !showPartialsLabelsElem.isNull() )
+  {
+    showingPartialsLabels = showPartialsLabelsElem.text().compare( "true", Qt::CaseInsensitive ) == 0;
+  }
 
-    //mDrawOutlineLabels
-    // TODO: This should probably always be true (already default) for WMS, regardless of any project setting.
-    //       Not much sense to output text-as-text, when text-as-outlines gives better results.
-
-    //save settings into global project instance (QgsMapRendererCustomPainterJob reads label settings from there)
-    pal->saveEngineSettings();
+  QDomElement drawOutlineLabelsElem = palElem.firstChildElement( "DrawOutlineLabels" );
+  if ( !drawOutlineLabelsElem.isNull() )
+  {
+    drawOutlineLabels = drawOutlineLabelsElem.text().compare( "true", Qt::CaseInsensitive ) == 0;
   }
 }
 

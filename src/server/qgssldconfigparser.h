@@ -81,6 +81,8 @@ class QgsSLDConfigParser : public QgsWMSConfigParser
 
     /** Load PAL engine settings from projectfile*/
     void loadLabelSettings( QgsLabelingEngineInterface* lbl ) const override;
+    /** Load PAL engine settings into global project instance*/
+    void loadLabelSettings() const override;
 
     QString serviceUrl() const override;
 

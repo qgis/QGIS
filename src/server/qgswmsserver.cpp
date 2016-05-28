@@ -1961,7 +1961,7 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
   QgsMessageLog::logMessage( QString( "Number of layers to be rendered. %1" ).arg( layerIdList.count() ) );
 #endif
   mMapSettings->setLayers( layerIdList );
-
+  mConfigParser->loadLabelSettings(); //read label properties into QgsProject::instance()
   return theImage;
 }
 

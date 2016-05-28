@@ -81,6 +81,8 @@ class SERVER_EXPORT QgsWMSConfigParser
 
     /** Load PAL engine settings from the QGIS projectfile*/
     virtual void loadLabelSettings( QgsLabelingEngineInterface* lbl ) const = 0;
+    /** Load PAL engine settings into global project instance*/
+    virtual void loadLabelSettings() const = 0;
 
     virtual QString serviceUrl() const = 0;
 
