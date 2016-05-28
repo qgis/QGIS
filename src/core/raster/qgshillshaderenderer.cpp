@@ -208,10 +208,6 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
         {
           aspectRad = 2 * M_PI - M_PI_2;
         }
-        else
-        {
-          aspectRad = aspectRad;
-        }
       }
 
       double colorvalue = qBound( 0.0, 255.0 * (( cosZenithRad * cos( slope_rad ) ) +
