@@ -293,6 +293,8 @@ class ScriptAlgorithm(GeoAlgorithm):
             out = OutputNumber()
         elif token.lower().strip().startswith('string'):
             out = OutputString()
+        elif token.lower().strip().startswith('extent'):
+            out = OutputExtent()
 
         return out
 
