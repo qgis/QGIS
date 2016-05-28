@@ -39,17 +39,18 @@ class QgsMapSettings
     //! Set DPI used for conversion between real world units (e.g. mm) and pixels
     void setOutputDpi( double dpi );
 
-
     /**
-     * @brief setMagnificationFactor set the magnification factor
+     * Set the magnification factor.
      * @param factor the factor of magnification
      * @note added in 2.16
+     * @see magnificationFactor()
      */
-   void setMagnificationFactor( double factor );
+    void setMagnificationFactor( double factor );
 
-   //! Return the magnification factor.
+    //! Return the magnification factor.
     //! @note added in 2.16
-   double magnificationFactor() const;
+    //! @see setMagnificationFactor()
+    double magnificationFactor() const;
 
     //! Get list of layer IDs for map rendering
     //! The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)

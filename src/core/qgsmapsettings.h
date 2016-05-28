@@ -88,14 +88,16 @@ class CORE_EXPORT QgsMapSettings
     void setOutputDpi( double dpi );
 
     /**
-     * @brief setMagnificationFactor set the magnification factor
+     * Set the magnification factor.
      * @param factor the factor of magnification
-     * @param factorChanged defines if it actually changed in the map settings
      * @note added in 2.16
+     * @see magnificationFactor()
      */
     void setMagnificationFactor( double factor );
+
     //! Return the magnification factor.
     //! @note added in 2.16
+    //! @see setMagnificationFactor()
     double magnificationFactor() const;
 
     //! Get list of layer IDs for map rendering
