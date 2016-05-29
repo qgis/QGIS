@@ -307,9 +307,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void clearInvalidConstraintsMessage();
     void displayInvalidConstraintMessage( const QStringList &invalidFields,
                                           const QStringList &description );
-    void displayNullFieldsMessage();
     QgsMessageBarItem *mInvalidConstraintMessageBarItem;
-    QgsMessageBarItem *mFieldNotInitializedMessageBarItem;
 
     QgsVectorLayer* mLayer;
     QgsFeature mFeature;

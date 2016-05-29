@@ -50,7 +50,6 @@ int QgsAttributeForm::sFormCounter = 0;
 QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature, const QgsAttributeEditorContext &context, QWidget* parent )
     : QWidget( parent )
     , mInvalidConstraintMessageBarItem( nullptr )
-    , mFieldNotInitializedMessageBarItem( nullptr )
     , mLayer( vl )
     , mMessageBar( nullptr )
     , mMultiEditUnsavedMessageBarItem( nullptr )
@@ -83,7 +82,6 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &featur
   connect( vl, SIGNAL( selectionChanged() ), this, SLOT( layerSelectionChanged() ) );
 
   // constraints management
-  displayNullFieldsMessage();
   updateAllConstaints();
 }
 
@@ -760,30 +758,6 @@ bool QgsAttributeForm::currentFormFeature( QgsFeature &feature )
   feature.setAttributes( dst );
 
   return rc;
-}
-
-void QgsAttributeForm::displayNullFieldsMessage()
-{
-  QStringList notInitializedFields;
-  Q_FOREACH ( QgsWidgetWrapper* ww, mWidgets )
-  {
-    QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
-    if ( eww )
-    {
-      if ( mFeature.attribute( eww->fieldIdx() ).isNull() )
-        notInitializedFields.append( eww->field().name() );
-    }
-  }
-
-  if ( ! notInitializedFields.isEmpty() )
-  {
-    mFieldNotInitializedMessageBarItem =
-      new QgsMessageBarItem( tr( "Some fields are NULL: " ),
-                             notInitializedFields.join( ", " ),
-                             QgsMessageBar::INFO );
-    mMessageBar->pushItem( mFieldNotInitializedMessageBarItem );
-  }
-
 }
 
 void QgsAttributeForm::clearInvalidConstraintsMessage()
