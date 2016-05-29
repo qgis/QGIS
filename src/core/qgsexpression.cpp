@@ -1077,6 +1077,12 @@ static QVariant fcnSoundex( const QVariantList& values, const QgsExpressionConte
   return QVariant( QgsStringUtils::soundex( string ) );
 }
 
+static QVariant fcnChar( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QChar character = QChar( getIntValue( values.at( 0 ), parent ) );
+  return QVariant( QString( character ) );
+}
+
 static QVariant fcnWordwrap( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   if ( values.length() == 2 || values.length() == 3 )
@@ -3281,6 +3287,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "longest_common_substring", 2, fcnLCS, "Fuzzy Matching" )
     << new StaticFunction( "hamming_distance", 2, fcnHamming, "Fuzzy Matching" )
     << new StaticFunction( "soundex", 1, fcnSoundex, "Fuzzy Matching" )
+    << new StaticFunction( "char", 1, fcnChar, "String" )
     << new StaticFunction( "wordwrap", ParameterList() << Parameter( "text" ) << Parameter( "length" ) << Parameter( "delimiter", true, " " ), fcnWordwrap, "String" )
     << new StaticFunction( "length", 1, fcnLength, "String" )
     << new StaticFunction( "replace", 3, fcnReplace, "String" )
