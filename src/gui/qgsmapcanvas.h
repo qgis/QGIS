@@ -365,7 +365,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Zooms in/out with a given center
     void zoomWithCenter( int x, int y, bool zoomIn );
 
-    bool scaleLocked() { return mScaleLocked;}
+    //! Returns whether the scale is locked, so zooming can be performed using magnication.
+    //! @note added in 2.16
+    //! @see setScaleLocked()
+    bool scaleLocked() const { return mScaleLocked;}
 
     //! used to determine if anti-aliasing is enabled or not
     void enableAntiAliasing( bool theFlag );
@@ -528,8 +531,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.16
     void setMagnificationFactor( double factor );
 
-    //! lock the scale, so zooming can be performed using magnication
+    //! Lock the scale, so zooming can be performed using magnication
     //! @note added in 2.16
+    //! @see scaleLocked()
     void setScaleLocked( bool isLocked );
 
   private slots:

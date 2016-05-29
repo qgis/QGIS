@@ -157,12 +157,12 @@ double QgsMapRenderer::outputDpi()
   return mScaleCalculator->dpi();
 }
 
-QSize QgsMapRenderer::outputSize()
+QSize QgsMapRenderer::outputSize() const
 {
   return mSize.toSize();
 }
 
-QSizeF QgsMapRenderer::outputSizeF()
+QSizeF QgsMapRenderer::outputSizeF() const
 {
   return mSize;
 }

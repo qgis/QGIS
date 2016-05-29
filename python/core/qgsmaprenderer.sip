@@ -184,14 +184,34 @@ class QgsMapRenderer : QObject
     //! sets whether map image will be for overview
     void enableOverviewMode( bool isOverview = true );
 
+    /** Sets the desired size of the rendered map image.
+     * @param size size in pixels
+     * @param dpi resolution to render map using
+     * @see outputSize()
+     */
     void setOutputSize( QSize size, double dpi );
+
+    /** Sets the desired size of the rendered map image.
+     * @param size size in pixels
+     * @param dpi resolution to render map using
+     * @see outputSizeF()
+     */
     void setOutputSize( QSizeF size, double dpi );
 
     //!accessor for output dpi
     double outputDpi();
-    //!accessor for output size
-    QSize outputSize();
-    QSizeF outputSizeF();
+
+    /** Returns the size which the map will be rendered at.
+     * @see setOutputSize()
+     * @see outputSizeF()
+     */
+    QSize outputSize() const;
+
+    /** Returns the size which the map will be rendered at.
+     * @see setOutputSize()
+     * @see outputSize()
+     */
+    QSizeF outputSizeF() const;
 
     /**
      * @brief transform bounding box from layer's CRS to output CRS

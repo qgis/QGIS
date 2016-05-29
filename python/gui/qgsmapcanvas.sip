@@ -50,12 +50,6 @@ class QgsMapCanvas : QGraphicsView
     //! Destructor
     ~QgsMapCanvas();
 
-    //! Sets the factor of magnification to apply to the map canvas. Indeed, we
-    //! increase/decrease the DPI of the map settings according to this factor
-    //! in order to render marker point, labels, ... bigger.
-    //! @note added in 2.16
-    void setMagnificationFactor( double level );
-
     //! Returns the magnification factor
     //! @note added in 2.16
     double magnificationFactor() const;
@@ -301,6 +295,11 @@ class QgsMapCanvas : QGraphicsView
     //! Zooms in/out with a given center
     void zoomWithCenter( int x, int y, bool zoomIn );
 
+    //! Returns whether the scale is locked, so zooming can be performed using magnication.
+    //! @note added in 2.16
+    //! @see setScaleLocked()
+    bool scaleLocked() const;
+
     //! used to determine if anti-aliasing is enabled or not
     void enableAntiAliasing( bool theFlag );
 
@@ -456,6 +455,17 @@ class QgsMapCanvas : QGraphicsView
     //! @note added in 2.8
     static void enableRotation( bool enabled );
 
+    //! Sets the factor of magnification to apply to the map canvas. Indeed, we
+    //! increase/decrease the DPI of the map settings according to this factor
+    //! in order to render marker point, labels, ... bigger.
+    //! @note added in 2.16
+    void setMagnificationFactor( double factor );
+
+    //! Lock the scale, so zooming can be performed using magnication
+    //! @note added in 2.16
+    //! @see scaleLocked()
+    void setScaleLocked( bool isLocked );
+
   signals:
     /** Let the owner know how far we are with render operations */
     //! @deprecated since 2.4 - already unused in 2.0 anyway
@@ -474,6 +484,10 @@ class QgsMapCanvas : QGraphicsView
     //! Emitted when the rotation of the map changes
     //! @note added in 2.8
     void rotationChanged( double );
+
+    //! Emitted when the scale of the map changes
+    //! @note added in 2.16
+    void magnificationChanged( double );
 
     /** Emitted when the canvas has rendered.
      * Passes a pointer to the painter on which the map was drawn. This is
