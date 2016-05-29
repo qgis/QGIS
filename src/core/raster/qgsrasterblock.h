@@ -289,7 +289,10 @@ class CORE_EXPORT QgsRasterBlock
     /** \brief Print float value with all necessary significant digits.
      *         It is ensured that conversion back to float gives the same number.
      *  @param value the value to be printed
-     *  @return string representing the value*/
+     *  @return string representing the value
+     * @note added in QGIS 2.16
+     * @note not available in python bindings
+     */
     static QString printValue( float value );
 
     /** \brief Convert data to different type.
