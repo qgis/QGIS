@@ -2032,13 +2032,7 @@ void QgsComposerView::wheelZoom( QWheelEvent * event )
 {
   //get mouse wheel zoom behaviour settings
   QSettings mySettings;
-  int wheelAction = mySettings.value( "/qgis/wheel_action", 2 ).toInt();
   double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
-
-  if (( QgsMapCanvas::WheelAction )wheelAction == QgsMapCanvas::WheelNothing )
-  {
-    return;
-  }
 
   if ( event->modifiers() & Qt::ControlModifier )
   {
@@ -2057,27 +2051,11 @@ void QgsComposerView::wheelZoom( QWheelEvent * event )
   //transform the mouse pos to scene coordinates
   QPointF scenePoint = mapToScene( event->pos() );
 
-  //adjust view center according to wheel action setting
-  switch (( QgsMapCanvas::WheelAction )wheelAction )
-  {
-    case QgsMapCanvas::WheelZoomAndRecenter:
-    {
-      centerOn( scenePoint.x(), scenePoint.y() );
-      break;
-    }
-
-    case QgsMapCanvas::WheelZoomToMouseCursor:
-    {
-      QgsPoint oldCenter( visibleRect.center() );
-      QgsPoint newCenter( scenePoint.x() + (( oldCenter.x() - scenePoint.x() ) * scaleFactor ),
-                          scenePoint.y() + (( oldCenter.y() - scenePoint.y() ) * scaleFactor ) );
-      centerOn( newCenter.x(), newCenter.y() );
-      break;
-    }
-
-    default:
-      break;
-  }
+  //adjust view center
+  QgsPoint oldCenter( visibleRect.center() );
+  QgsPoint newCenter( scenePoint.x() + (( oldCenter.x() - scenePoint.x() ) * scaleFactor ),
+                      scenePoint.y() + (( oldCenter.y() - scenePoint.y() ) * scaleFactor ) );
+  centerOn( newCenter.x(), newCenter.y() );
 
   //zoom composition
   if ( zoomIn )
