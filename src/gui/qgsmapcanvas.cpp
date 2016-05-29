@@ -62,6 +62,7 @@ email                : sherman at mrcc.com
 #include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
+#include "qgscursors.h"
 #include <math.h>
 
 
@@ -212,6 +213,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mSnappingUtils( nullptr )
     , mScaleLocked( false )
     , mExpressionContextScope( tr( "Map Canvas" ) )
+    , mZoomDragging( false )
 {
   setObjectName( name );
   mScene = new QGraphicsScene();
@@ -272,6 +274,9 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
 
   mPreviewEffect = new QgsPreviewEffect( this );
   viewport()->setGraphicsEffect( mPreviewEffect );
+
+  QPixmap zoomPixmap = QPixmap(( const char ** )( zoom_in ) );
+  mZoomCursor = QCursor( zoomPixmap, 7, 7 );
 
   setInteractive( false );
 
@@ -1342,6 +1347,47 @@ void QgsMapCanvas::mouseDoubleClickEvent( QMouseEvent* e )
 }// mouseDoubleClickEvent
 
 
+void QgsMapCanvas::beginZoomRect( QPoint pos )
+{
+  mZoomRect.setRect( 0, 0, 0, 0 );
+  QApplication::setOverrideCursor( mZoomCursor );
+  mZoomDragging = true;
+  mZoomRubberBand.reset( new QgsRubberBand( this, QGis::Polygon ) );
+  QColor color( Qt::blue );
+  color.setAlpha( 63 );
+  mZoomRubberBand->setColor( color );
+  mZoomRect.setTopLeft( pos );
+}
+
+void QgsMapCanvas::endZoomRect( QPoint pos )
+{
+  mZoomDragging = false;
+  mZoomRubberBand.reset( nullptr );
+  QApplication::restoreOverrideCursor();
+
+  if ( mZoomRect.topLeft() == mZoomRect.bottomRight() )
+    return;
+
+  // store the rectangle
+  mZoomRect.setRight( pos.x() );
+  mZoomRect.setBottom( pos.y() );
+
+  //account for bottom right -> top left dragging
+  mZoomRect = mZoomRect.normalized();
+
+  // set center and zoom
+  const QSize& zoomRectSize = mZoomRect.size();
+  const QSize& canvasSize = mSettings.outputSize();
+  double sfx = ( double )zoomRectSize.width() / canvasSize.width();
+  double sfy = ( double )zoomRectSize.height() / canvasSize.height();
+  double sf = qMax( sfx, sfy );
+
+  QgsPoint c = mSettings.mapToPixel().toMapCoordinates( mZoomRect.center() );
+
+  zoomByFactor( sf, &c );
+  refresh();
+}
+
 void QgsMapCanvas::mousePressEvent( QMouseEvent* e )
 {
   //use middle mouse button for panning, map tools won't receive any events in that case
@@ -1352,12 +1398,20 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent* e )
   }
   else
   {
-
     // call handler of current map tool
     if ( mMapTool )
     {
-      QScopedPointer<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
-      mMapTool->canvasPressEvent( me.data() );
+      if ( mMapTool->flags() & QgsMapTool::AllowZoomRect && e->button() == Qt::LeftButton
+           && e->modifiers() & Qt::ShiftModifier )
+      {
+        beginZoomRect( e->pos() );
+        return;
+      }
+      else
+      {
+        QScopedPointer<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
+        mMapTool->canvasPressEvent( me.data() );
+      }
     }
   }
 
@@ -1382,6 +1436,12 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent* e )
   }
   else
   {
+    if ( mZoomDragging && e->button() == Qt::LeftButton )
+    {
+      endZoomRect( e->pos() );
+      return;
+    }
+
     // call handler of current map tool
     if ( mMapTool )
     {
@@ -1571,6 +1631,12 @@ void QgsMapCanvas::mouseMoveEvent( QMouseEvent * e )
   if ( mCanvasProperties->panSelectorDown )
   {
     panAction( e );
+  }
+  else if ( mZoomDragging )
+  {
+    mZoomRect.setBottomRight( e->pos() );
+    mZoomRubberBand->setToCanvasRectangle( mZoomRect );
+    mZoomRubberBand->show();
   }
   else
   {

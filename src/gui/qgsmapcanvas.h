@@ -65,6 +65,7 @@ class QgsMapCanvasMap;
 class QgsMapOverviewCanvas;
 class QgsMapTool;
 class QgsSnappingUtils;
+class QgsRubberBand;
 
 /** \ingroup gui
   * A class that stores visibility and presence in overview flags together
@@ -785,9 +786,32 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     QgsExpressionContextScope mExpressionContextScope;
 
+    //! Stores zoom rect
+    QRect mZoomRect;
+
+    //! Flag to indicate a zoom by rectangle operation is taking place
+    bool mZoomDragging;
+
+    //! Zoom by rectangle rubber band
+    QScopedPointer< QgsRubberBand > mZoomRubberBand;
+
+    QCursor mZoomCursor;
+
     //! Force a resize of the map canvas item
     //! @note added in 2.16
     void updateMapSize();
+
+    /** Starts zooming via rectangle
+     * @param pos start position for rectangle
+     * @node added in QGIS 2.16
+     */
+    void beginZoomRect( QPoint pos );
+
+    /** Ends zooming via rectangle
+     * @param pos end position for rectangle
+     * @node added in QGIS 2.16
+     */
+    void endZoomRect( QPoint pos );
 
     friend class TestQgsMapCanvas;
 
