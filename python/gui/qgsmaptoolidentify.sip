@@ -47,6 +47,8 @@ class QgsMapToolIdentify : QgsMapTool
 
     virtual ~QgsMapToolIdentify();
 
+    virtual Flags flags() const;
+
     //! Overridden mouse move event
     virtual void canvasMoveEvent( QgsMapMouseEvent * e );
 

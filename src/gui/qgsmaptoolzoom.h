@@ -35,7 +35,7 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
 
     ~QgsMapToolZoom();
 
-    virtual Flags flags() const { return QgsMapTool::Transient; }
+    virtual Flags flags() const override { return QgsMapTool::Transient; }
 
     //! Overridden mouse move event
     virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;

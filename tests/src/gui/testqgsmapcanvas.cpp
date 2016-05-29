@@ -22,6 +22,7 @@
 #include <qgsmaplayerregistry.h>
 #include <qgsrenderchecker.h>
 #include <qgsvectordataprovider.h>
+#include <qgsmaptoolpan.h>
 
 namespace QTest
 {
@@ -32,6 +33,24 @@ namespace QTest
     return qstrdup( ba.data() );
   }
 }
+
+inline bool qgsDoubleNearDebug( double a, double b, double epsilon = 4 * DBL_EPSILON )
+{
+  if ( !qgsDoubleNear( a, b, epsilon ) )
+  {
+    qDebug( "Expecting %f got %f (diff %f > %f)", a, b, qAbs( a - b ), epsilon );
+    return false;
+  }
+  return true;
+}
+
+
+class QgsMapToolTest : public QgsMapTool
+{
+  public:
+    QgsMapToolTest( QgsMapCanvas* canvas ) : QgsMapTool( canvas ) {}
+
+};
 
 class TestQgsMapCanvas : public QObject
 {
@@ -51,6 +70,7 @@ class TestQgsMapCanvas : public QObject
     void testMagnificationExtent();
     void testMagnificationScale();
     void testZoomByWheel();
+    void testShiftZoom();
 
   private:
     QgsMapCanvas* mCanvas;
@@ -393,6 +413,72 @@ void TestQgsMapCanvas::testZoomByWheel()
   mCanvas->wheelEvent( &e );
   QVERIFY( qgsDoubleNear( mCanvas->extent().width(), originalWidth, 0.1 ) );
   QVERIFY( qgsDoubleNear( mCanvas->extent().height(), originalHeight, 0.1 ) );
+}
+
+void TestQgsMapCanvas::testShiftZoom()
+{
+  mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  QgsRectangle initialExtent = mCanvas->extent();
+  double originalWidth = initialExtent.width();
+  double originalHeight = initialExtent.height();
+
+  QPoint startPos = QPoint( mCanvas->width() / 4, mCanvas->height() / 4 );
+  QPoint endPos = QPoint( mCanvas->width() * 3 / 4.0, mCanvas->height() * 3 / 4.0 );
+
+  QgsMapToolPan panTool( mCanvas );
+
+  // start by testing a tool with shift-zoom enabled
+  mCanvas->setMapTool( &panTool );
+
+  QMouseEvent e( QMouseEvent::MouseButtonPress, startPos,
+                 Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mousePressEvent( &e );
+  e = QMouseEvent( QMouseEvent::MouseMove, endPos,
+                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseMoveEvent( &e );
+  e = QMouseEvent( QMouseEvent::MouseButtonRelease, endPos,
+                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseReleaseEvent( &e );
+
+  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().width(), originalWidth / 2.0, 0.2 ) );
+  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().height(), originalHeight / 2.0, 0.2 ) );
+
+  //reset
+  mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+
+  //test that a shift-click (no movement) will not zoom
+  e = QMouseEvent( QMouseEvent::MouseButtonPress, startPos,
+                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mousePressEvent( &e );
+  e = QMouseEvent( QMouseEvent::MouseMove, startPos,
+                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseMoveEvent( &e );
+  e = QMouseEvent( QMouseEvent::MouseButtonRelease, startPos,
+                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseReleaseEvent( &e );
+
+  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().width(), originalWidth, 0.0001 ) );
+  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().height(), originalHeight, 0.0001 ) );
+
+  //reset
+  mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+
+  //test with map tool which does not have shift-zoom enabled
+  QgsMapToolTest mapTool( mCanvas );
+  mCanvas->setMapTool( &mapTool );
+
+  e = QMouseEvent( QMouseEvent::MouseButtonPress, startPos,
+                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mousePressEvent( &e );
+  e = QMouseEvent( QMouseEvent::MouseMove, endPos,
+                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseMoveEvent( &e );
+  e = QMouseEvent( QMouseEvent::MouseButtonRelease, endPos,
+                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseReleaseEvent( &e );
+
+  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().width(), originalWidth, 0.00001 ) );
+  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().height(), originalHeight, 0.00001 ) );
 }
 
 QTEST_MAIN( TestQgsMapCanvas )

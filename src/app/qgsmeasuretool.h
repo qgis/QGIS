@@ -36,6 +36,8 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
     ~QgsMeasureTool();
 
+    virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+
     //! returns whether measuring distance or area
     bool measureArea() { return mMeasureArea; }
 

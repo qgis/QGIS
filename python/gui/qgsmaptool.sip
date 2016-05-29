@@ -38,6 +38,7 @@ class QgsMapTool : QObject
                                If it does, the tool can be operated once and then a previous map
                                tool automatically restored. */
       EditTool, /*!< Map tool is an edit tool, which can only be used when layer is editable*/
+      AllowZoomRect, /*!< Allow zooming by rectangle (by holding shift and dragging) while the tool is active*/
     };
     typedef QFlags<QgsMapTool::Flag> Flags;
 
@@ -183,3 +184,6 @@ class QgsMapTool : QObject
 
 
 };
+
+
+QFlags<QgsMapTool::Flag> operator|(QgsMapTool::Flag f1, QFlags<QgsMapTool::Flag> f2);

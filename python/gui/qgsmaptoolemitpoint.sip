@@ -9,6 +9,8 @@ class QgsMapToolEmitPoint : QgsMapTool
     //! constructor
     QgsMapToolEmitPoint( QgsMapCanvas* canvas );
 
+    virtual Flags flags() const;
+
     //! Overridden mouse move event
     virtual void canvasMoveEvent( QgsMapMouseEvent * e );
 
