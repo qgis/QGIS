@@ -49,11 +49,11 @@ int QgsAttributeForm::sFormCounter = 0;
 
 QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature, const QgsAttributeEditorContext &context, QWidget* parent )
     : QWidget( parent )
-    , mInvalidConstraintMessageBarItem( nullptr )
     , mLayer( vl )
     , mMessageBar( nullptr )
     , mMultiEditUnsavedMessageBarItem( nullptr )
     , mMultiEditMessageBarItem( nullptr )
+    , mInvalidConstraintMessage( nullptr )
     , mContext( context )
     , mButtonBox( nullptr )
     , mSearchButtonBox( nullptr )
@@ -762,11 +762,8 @@ bool QgsAttributeForm::currentFormFeature( QgsFeature &feature )
 
 void QgsAttributeForm::clearInvalidConstraintsMessage()
 {
-  if ( mInvalidConstraintMessageBarItem != nullptr )
-  {
-    mMessageBar->popWidget( mInvalidConstraintMessageBarItem );
-    mInvalidConstraintMessageBarItem = nullptr;
-  }
+  mInvalidConstraintMessage->clear();
+  mInvalidConstraintMessage->setStyleSheet( "" );
 }
 
 void QgsAttributeForm::displayInvalidConstraintMessage( const QStringList &f,
@@ -774,17 +771,20 @@ void QgsAttributeForm::displayInvalidConstraintMessage( const QStringList &f,
 {
   clearInvalidConstraintsMessage();
 
-  // show only the third first error
+  // show only the third first errors (to avoid a too long label)
   int max = 3;
   int size = f.size() > max ? max : f.size();
   QString descriptions;
   for ( int i = 0; i < size; i++ )
-    descriptions += "<br />- " + f[i] + ": " + d[i];
+    descriptions += QString( "<li>%1: <i>%2</i></li>" ).arg( f[i] ).arg( d[i] );
 
-  mInvalidConstraintMessageBarItem =
-    new QgsMessageBarItem( tr( "Invalid fields: " ),
-                           descriptions, QgsMessageBar::WARNING );
-  mMessageBar->pushItem( mInvalidConstraintMessageBarItem );
+  QString icPath = QgsApplication::iconPath( "/mIconWarn.png" );
+
+  QString title = QString( "<img src=\"%1\">     <b>%2:" ).arg( icPath ).arg( tr( "Invalid fields" ) );
+  QString msg = QString( "%1</b><ul>%2</ul>" ).arg( title ).arg( descriptions ) ;
+
+  mInvalidConstraintMessage->setText( msg );
+  mInvalidConstraintMessage->setStyleSheet( "QLabel { background-color : #ffc800; }" );
 }
 
 bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields,
@@ -1025,6 +1025,10 @@ void QgsAttributeForm::init()
   mMessageBar = new QgsMessageBar( this );
   mMessageBar->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
   vl->addWidget( mMessageBar );
+
+  mInvalidConstraintMessage = new QLabel( this );
+  vl->addWidget( mInvalidConstraintMessage );
+
   setLayout( vl );
 
   // Get a layout
