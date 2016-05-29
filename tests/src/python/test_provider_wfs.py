@@ -397,8 +397,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
         self.assertEqual(len(vl.fields()), 5)
         self.assertEqual(vl.featureCount(), 0)
-        reference = QgsGeometry.fromRect(
-            QgsRectangle(-71.123, 66.33, -65.32, 78.3))
+        reference = QgsGeometry.fromRect(QgsRectangle(-71.123, 66.33, -65.32, 78.3))
         vl_extent = QgsGeometry.fromRect(vl.extent())
         assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
 
@@ -1750,6 +1749,112 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         values = [(f['intfield']) for f in vl.getFeatures()]
         self.assertEqual(values, [(1), (2)])
+
+    def testWrongCapabilityExtent(self):
+        """Test behaviour when capability extent is wrong."""
+
+        # Note the logic that is tested is purely heuristic, trying to recover from wrong server behaviour,
+        # so it might be legitimate to change that at a later point.
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_wrong_capability_extent'
+
+        with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?VERSION=2.0.0'), 'wb') as f:
+            f.write("""
+<wfs:WFS_Capabilities version="2.0.0" xmlns="http://www.opengis.net/wfs/2.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:gml="http://schemas.opengis.net/gml/3.2" xmlns:fes="http://www.opengis.net/fes/2.0">
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>my:typename</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::4326</DefaultCRS>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>0 0</ows:LowerCorner>
+        <ows:UpperCorner>1 1</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+    </FeatureType>
+  </FeatureTypeList>
+</wfs:WFS_Capabilities>""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename'), 'wb') as f:
+            f.write("""
+<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml"/>
+  <xsd:complexType name="typenameType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="intfield" nillable="true" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="geometryProperty" nillable="true" type="gml:PolygonPropertyType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
+</xsd:schema>
+""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326"""), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my">
+  <wfs:member>
+    <my:typename gml:id="typename.0">
+      <my:intfield>1</my:intfield>
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="typename.geom.0"><gml:pos>49 2</gml:pos></gml:Point></my:geometryProperty>
+    </my:typename>
+  </wfs:member>
+</wfs:FeatureCollection>""".encode('UTF-8'))
+
+        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0'", u'test', u'WFS')
+        assert vl.isValid()
+
+        # Download all features
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+
+        reference = QgsGeometry.fromRect(QgsRectangle(2, 49, 2, 49))
+        vl_extent = QgsGeometry.fromRect(vl.extent())
+        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
+
+        # Same with retrictToRequestBBOX=1
+        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' retrictToRequestBBOX=1", u'test', u'WFS')
+        assert vl.isValid()
+
+        # First request that will be attempted
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&BBOX=-0.125,-0.125,1.125,1.125"""), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my">
+</wfs:FeatureCollection>""".encode('UTF-8'))
+
+        # And fallback
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&COUNT=1"""), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my">
+  <wfs:member>
+    <my:typename gml:id="typename.0">
+      <my:intfield>1</my:intfield>
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="typename.geom.0"><gml:pos>49 2</gml:pos></gml:Point></my:geometryProperty>
+    </my:typename>
+  </wfs:member>
+</wfs:FeatureCollection>""".encode('UTF-8'))
+
+        # Download all features in a BBOX that encloses the extent reported by capabilities
+        extent = QgsRectangle(-0.125, -0.125, 1.125, 1.125)
+        request = QgsFeatureRequest().setFilterRect(extent)
+        features = [f for f in vl.getFeatures(request)]
+        self.assertEqual(len(features), 0)
+
+        # Check that the approx extent contains the geometry
+        assert vl.extent().contains(QgsPoint(2, 49))
+
 
 if __name__ == '__main__':
     unittest.main()

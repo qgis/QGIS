@@ -389,12 +389,6 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
     connect( &mFeatureHitsAsyncRequest, SIGNAL( downloadFinished() ), &loop, SLOT( quit() ) );
   }
 
-  QgsGmlStreamingParser::AxisOrientationLogic axisOrientationLogic( QgsGmlStreamingParser::Honour_EPSG_if_urn );
-  if ( mShared->mURI.ignoreAxisOrientation() )
-  {
-    axisOrientationLogic = QgsGmlStreamingParser::Ignore_EPSG;
-  }
-
   bool interrupted = false;
   bool truncatedResponse = false;
   QSettings s;
@@ -404,32 +398,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
   while ( true )
   {
     success = true;
-    QgsGmlStreamingParser* parser;
-    if ( mShared->mLayerPropertiesList.size() )
-    {
-      QList< QgsGmlStreamingParser::LayerProperties > layerPropertiesList;
-      Q_FOREACH ( QgsOgcUtils::LayerProperties layerProperties, mShared->mLayerPropertiesList )
-      {
-        QgsGmlStreamingParser::LayerProperties layerPropertiesOut;
-        layerPropertiesOut.mName = layerProperties.mName;
-        layerPropertiesOut.mGeometryAttribute = layerProperties.mGeometryAttribute;
-        layerPropertiesList << layerPropertiesOut;
-      }
-
-      parser = new QgsGmlStreamingParser( layerPropertiesList,
-                                          mShared->mFields,
-                                          mShared->mMapFieldNameToSrcLayerNameFieldName,
-                                          axisOrientationLogic,
-                                          mShared->mURI.invertAxisOrientation() );
-    }
-    else
-    {
-      parser = new QgsGmlStreamingParser( mShared->mURI.typeName(),
-                                          mShared->mGeometryAttribute,
-                                          mShared->mFields,
-                                          axisOrientationLogic,
-                                          mShared->mURI.invertAxisOrientation() );
-    }
+    QgsGmlStreamingParser* parser = mShared->createParser();
 
     QUrl url( buildURL( mTotalDownloadedFeatureCount,
                         maxFeatures ? maxFeatures : mShared->mMaxFeatures, false ) );
