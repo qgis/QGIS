@@ -33,7 +33,7 @@ class QgsGlobeInterface : QObject
 
 
   public:
-        osgViewer::Viewer* osgViewer();
+//        osgViewer::Viewer* osgViewer();
 //        osgEarth::MapNode* mapNode();
         void syncExtent();
         void enableFrustumHighlight( bool status );
