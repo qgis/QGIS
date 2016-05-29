@@ -242,7 +242,7 @@ class QgsDataProvider : QObject
      *
      * @return true in case of success (or no-op implementation), false in case of failure
      *
-     * @note added in QGIS 2.16
+     * @note added in QGIS 2.14.4
      */
     virtual bool enterUpdateMode();
 
@@ -260,7 +260,7 @@ class QgsDataProvider : QObject
      *
      * @return true in case of success (or no-op implementation), false in case of failure
      *
-     * @note added in QGIS 2.16
+     * @note added in QGIS 2.14.4
      */
     virtual bool leaveUpdateMode();
 
