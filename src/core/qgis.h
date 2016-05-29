@@ -355,6 +355,16 @@ inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON 
   return diff > -epsilon && diff <= epsilon;
 }
 
+//! Compare two floats (but allow some difference)
+//! @param a first float
+//! @param b second float
+//! @param epsilon maximum difference allowable between floats
+inline bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON )
+{
+  const float diff = a - b;
+  return diff > -epsilon && diff <= epsilon;
+}
+
 //! Compare two doubles using specified number of significant digits
 inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
 {

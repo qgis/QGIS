@@ -139,9 +139,12 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
 
   QgsGdalProviderBase::registerGdalDrivers();
 
-  // GDAL tends to open AAIGrid as Float32 which results in lost precision
-  // and confusing values shown to users, force Float64
-  CPLSetConfigOption( "AAIGRID_DATATYPE", "Float64" );
+  if ( !CPLGetConfigOption( "AAIGRID_DATATYPE", nullptr ) )
+  {
+    // GDAL tends to open AAIGrid as Float32 which results in lost precision
+    // and confusing values shown to users, force Float64
+    CPLSetConfigOption( "AAIGRID_DATATYPE", "Float64" );
+  }
 
   // To get buildSupportedRasterFileFilter the provider is called with empty uri
   if ( uri.isEmpty() )
@@ -1068,7 +1071,14 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPoint & thePoint, Qg
     }
     else
     {
-      results.insert( i, value );
+      if ( srcDataType( i ) == QGis::Float32 )
+      {
+        // Insert a float QVariant so that QgsMapToolIdentify::identifyRasterLayer()
+        // can print a string without an excessive precision
+        results.insert( i, static_cast<float>( value ) );
+      }
+      else
+        results.insert( i, value );
     }
     delete myBlock;
   }

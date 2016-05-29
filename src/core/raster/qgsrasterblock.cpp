@@ -831,6 +831,27 @@ QString QgsRasterBlock::printValue( double value )
   return s;
 }
 
+QString QgsRasterBlock::printValue( float value )
+{
+  /*
+   *  IEEE 754 double has 6-9 significant digits. See printValue(double)
+   */
+
+  QString s;
+
+  for ( int i = 6; i <= 9; i++ )
+  {
+    s.setNum( value, 'g', i );
+    if ( qgsFloatNear( s.toFloat(), value ) )
+    {
+      return s;
+    }
+  }
+  // Should not happen
+  QgsDebugMsg( "Cannot correctly parse printed value" );
+  return s;
+}
+
 void * QgsRasterBlock::convert( void *srcData, QGis::DataType srcDataType, QGis::DataType destDataType, qgssize size )
 {
   int destDataTypeSize = typeSize( destDataType );

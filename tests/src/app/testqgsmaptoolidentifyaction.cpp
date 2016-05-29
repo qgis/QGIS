@@ -16,6 +16,7 @@
 #include <QtTest/QtTest>
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsvectordataprovider.h"
@@ -23,6 +24,8 @@
 #include "qgsmapcanvas.h"
 #include "qgsunittypes.h"
 #include "qgsmaptoolidentifyaction.h"
+
+#include "cpl_conv.h"
 
 class TestQgsMapToolIdentifyAction : public QObject
 {
@@ -40,9 +43,13 @@ class TestQgsMapToolIdentifyAction : public QObject
     void lengthCalculation(); //test calculation of derived length attributes
     void perimeterCalculation(); //test calculation of derived perimeter attribute
     void areaCalculation(); //test calculation of derived area attribute
+    void identifyRasterFloat32(); // test pixel identification and decimal precision
+    void identifyRasterFloat64(); // test pixel identification and decimal precision
 
   private:
     QgsMapCanvas* canvas;
+
+    QString testIdentifyRaster( QgsRasterLayer* layer, double xGeoref, double yGeoref );
 };
 
 void TestQgsMapToolIdentifyAction::initTestCase()
@@ -239,6 +246,73 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area" )];
   area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QVERIFY( qgsDoubleNear( area, 389.6117, 0.001 ) );
+}
+
+QString TestQgsMapToolIdentifyAction::testIdentifyRaster( QgsRasterLayer* layer, double xGeoref, double yGeoref )
+{
+  QScopedPointer< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
+  QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << layer );
+  if ( result.length() != 1 )
+    return "";
+  return result[0].mAttributes["Band 1"];
+}
+
+void TestQgsMapToolIdentifyAction::identifyRasterFloat32()
+{
+  //create a temporary layer
+  QString raster = QString( TEST_DATA_DIR ) + "/raster/test.asc";
+
+  // By default the QgsRasterLayer forces AAIGRID_DATATYPE=Float64
+  CPLSetConfigOption( "AAIGRID_DATATYPE", "Float32" );
+  QScopedPointer< QgsRasterLayer> tempLayer( new QgsRasterLayer( raster ) );
+  CPLSetConfigOption( "AAIGRID_DATATYPE", nullptr );
+
+  QVERIFY( tempLayer->isValid() );
+
+  canvas->setExtent( QgsRectangle( 0, 0, 7, 1 ) );
+
+  QCOMPARE( testIdentifyRaster( tempLayer.data(), 0.5, 0.5 ), QString( "-999.9" ) );
+
+  QCOMPARE( testIdentifyRaster( tempLayer.data(), 1.5, 0.5 ), QString( "-999.987" ) );
+
+  // More than 6 significant digits : precision loss in Float32
+  QCOMPARE( testIdentifyRaster( tempLayer.data(), 2.5, 0.5 ), QString( "1.234568" ) ); // in .asc file : 1.2345678
+
+  QCOMPARE( testIdentifyRaster( tempLayer.data(), 3.5, 0.5 ), QString( "123456" ) );
+
+  // More than 6 significant digits: no precision loss here for that particular value
+  QCOMPARE( testIdentifyRaster( tempLayer.data(), 4.5, 0.5 ), QString( "1234567" ) );
+
+  // More than 6 significant digits: no precision loss here for that particular value
+  QCOMPARE( testIdentifyRaster( tempLayer.data(), 5.5, 0.5 ), QString( "-999.9876" ) );
+
+  // More than 6 significant digits: no precision loss here
+  QCOMPARE( testIdentifyRaster( tempLayer.data(), 6.5, 0.5 ), QString( "1.234568" ) ); // in .asc file : 1.2345678901234
+}
+
+void TestQgsMapToolIdentifyAction::identifyRasterFloat64()
+{
+  //create a temporary layer
+  QString raster = QString( TEST_DATA_DIR ) + "/raster/test.asc";
+  QScopedPointer< QgsRasterLayer> tempLayer( new QgsRasterLayer( raster ) );
+  QVERIFY( tempLayer->isValid() );
+
+  canvas->setExtent( QgsRectangle( 0, 0, 7, 1 ) );
+
+  QCOMPARE( testIdentifyRaster( tempLayer.data(), 0.5, 0.5 ), QString( "-999.9" ) );
+
+  QCOMPARE( testIdentifyRaster( tempLayer.data(), 1.5, 0.5 ), QString( "-999.987" ) );
+
+  QCOMPARE( testIdentifyRaster( tempLayer.data(), 2.5, 0.5 ), QString( "1.2345678" ) );
+
+  QCOMPARE( testIdentifyRaster( tempLayer.data(), 3.5, 0.5 ), QString( "123456" ) );
+
+  QCOMPARE( testIdentifyRaster( tempLayer.data(), 4.5, 0.5 ), QString( "1234567" ) );
+
+  QCOMPARE( testIdentifyRaster( tempLayer.data(), 5.5, 0.5 ), QString( "-999.9876" ) );
+
+  QCOMPARE( testIdentifyRaster( tempLayer.data(), 6.5, 0.5 ), QString( "1.2345678901234" ) );
 }
 
 

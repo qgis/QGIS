@@ -286,6 +286,12 @@ class CORE_EXPORT QgsRasterBlock
      *  @return string representing the value*/
     static QString printValue( double value );
 
+    /** \brief Print float value with all necessary significant digits.
+     *         It is ensured that conversion back to float gives the same number.
+     *  @param value the value to be printed
+     *  @return string representing the value*/
+    static QString printValue( float value );
+
     /** \brief Convert data to different type.
      *  @param destDataType dest data type
      *  @return true on success */
