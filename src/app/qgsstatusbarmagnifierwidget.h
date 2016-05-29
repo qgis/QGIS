@@ -37,9 +37,8 @@ class APP_EXPORT QgsStatusBarMagnifierWidget : public QWidget
 
     /** Constructor
       * @param parent is the parent widget
-      * @param canvas the map canvas
       */
-    QgsStatusBarMagnifierWidget( QWidget* parent = 0 );
+    QgsStatusBarMagnifierWidget( QWidget* parent = nullptr );
 
     /** Destructor */
     virtual ~QgsStatusBarMagnifierWidget();

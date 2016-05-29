@@ -52,7 +52,7 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
      * @brief isLocked check if the scale should be locked to use magnifier instead of scale to zoom in/out
      * @return True if the scale shall be locked
      */
-    bool isLocked();
+    bool isLocked() const;
 
     /** Set the font of the text
       * @param font the font to use
@@ -63,7 +63,7 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
     void updateScales( const QStringList &scales = QStringList() );
 
   private slots:
-    void userScale();
+    void userScale() const;
 
   signals:
     void scaleLockChanged( bool );

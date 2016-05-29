@@ -30,8 +30,8 @@ QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget 
     , mMapCanvas( canvas )
 {
   // add a label to show current scale
-  mLabel = new QLabel( QString(), this );
-  mLabel->setObjectName( "mScaleLable" );
+  mLabel = new QLabel();
+  mLabel->setObjectName( "mScaleLabel" );
   mLabel->setMinimumWidth( 10 );
   //mScaleLabel->setMaximumHeight( 20 );
   mLabel->setMargin( 3 );
@@ -40,7 +40,7 @@ QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget 
   mLabel->setText( tr( "Scale" ) );
   mLabel->setToolTip( tr( "Current map scale" ) );
 
-  mScale = new QgsScaleComboBox( this );
+  mScale = new QgsScaleComboBox();
   mScale->setObjectName( "mScaleEdit" );
   // seems setFont() change font only for popup not for line edit,
   // so we need to set font for it separately
@@ -49,7 +49,7 @@ QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget 
   mScale->setWhatsThis( tr( "Displays the current map scale" ) );
   mScale->setToolTip( tr( "Current map scale (formatted as x:y)" ) );
 
-  mLockButton = new QToolButton( this );
+  mLockButton = new QToolButton();
   mLockButton->setIcon( QIcon( QgsApplication::getThemeIcon( "/locked.svg" ) ) );
   mLockButton->setToolTip( tr( "Lock the scale to use magnifier to zoom in or out." ) );
   mLockButton->setCheckable( true );
@@ -80,7 +80,7 @@ void QgsStatusBarScaleWidget::setScale( double scale )
   mScale->setScale( scale );
 }
 
-bool QgsStatusBarScaleWidget::isLocked()
+bool QgsStatusBarScaleWidget::isLocked() const
 {
   return mLockButton->isChecked();
 }
@@ -96,7 +96,7 @@ void QgsStatusBarScaleWidget::updateScales( const QStringList &scales )
   mScale->updateScales( scales );
 }
 
-void QgsStatusBarScaleWidget::userScale()
+void QgsStatusBarScaleWidget::userScale() const
 {
   // Why has MapCanvas the scale inverted?
   mMapCanvas->zoomScale( 1.0 / mScale->scale() );

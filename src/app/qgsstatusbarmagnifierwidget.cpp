@@ -23,8 +23,8 @@
 #include "qgsstatusbarmagnifierwidget.h"
 #include "qgsdoublespinbox.h"
 
-QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget* parent ) :
-    QWidget( parent )
+QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget* parent )
+    : QWidget( parent )
 {
   QSettings settings;
   int minimumFactor = ( int ) 100 * settings.value( "/qgis/magnifier_factor_min", 0.1 ).toDouble();
@@ -32,7 +32,7 @@ QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget* parent ) :
   int defaultFactor = ( int ) 100 * settings.value( "/qgis/magnifier_factor_default", 1.0 ).toDouble();
 
   // label
-  mLabel = new QLabel( this );
+  mLabel = new QLabel();
   mLabel->setMinimumWidth( 10 );
   mLabel->setMargin( 3 );
   mLabel->setAlignment( Qt::AlignCenter );
@@ -40,7 +40,7 @@ QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget* parent ) :
   mLabel->setText( tr( "Magnifier" ) );
   mLabel->setToolTip( tr( "Magnifier" ) );
 
-  mSpinBox = new QgsDoubleSpinBox( this );
+  mSpinBox = new QgsDoubleSpinBox();
   mSpinBox->setSuffix( "%" );
   mSpinBox->setKeyboardTracking( false );
   mSpinBox->setMaximumWidth( 120 );

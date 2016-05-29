@@ -74,7 +74,7 @@ void QgsMapRendererCustomPainterJob::start()
 #ifndef QT_NO_DEBUG
   QPaintDevice* thePaintDevice = mPainter->device();
   QString errMsg = QString( "pre-set DPI not equal to painter's DPI (%1 vs %2)" ).arg( thePaintDevice->logicalDpiX() ).arg( mSettings.outputDpi() );
-  Q_ASSERT_X( thePaintDevice->logicalDpiX() == mSettings.outputDpi(), "Job::startRender()", errMsg.toAscii().data() );
+  Q_ASSERT_X( qgsDoubleNear( thePaintDevice->logicalDpiX(), mSettings.outputDpi() ), "Job::startRender()", errMsg.toAscii().data() );
 #endif
 
   delete mLabelingEngine;
