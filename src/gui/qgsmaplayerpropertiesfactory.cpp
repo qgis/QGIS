@@ -18,3 +18,7 @@
 QgsMapLayerPropertiesFactory::QgsMapLayerPropertiesFactory()
 {
 }
+
+QgsMapLayerPropertiesFactory::~QgsMapLayerPropertiesFactory()
+{
+}

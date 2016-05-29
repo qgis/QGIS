@@ -38,6 +38,11 @@ class QgsBillBoardRegistry : public QObject
      * @param parent The parent
      */
     void removeItem( void* parent );
+
+    /**
+     * @brief Retreive all registered billboard items
+     * @return List of registered billboard items
+     */
     QList<QgsBillBoardItem*> items() const;
 
   signals:

@@ -13,13 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
+/**
+ * @brief Trivial base class for plugin interfaces
+ */
 class QgsPluginInterface : QObject
 {
 %TypeHeaderCode
 #include "qgsplugininterface.h"
 %End
 
-  // Should only be instantiated from subclasses
-  private:
+  protected:
+    /** Should only be instantiated from subclasses */
     QgsPluginInterface( QObject* parent = 0 );
 };

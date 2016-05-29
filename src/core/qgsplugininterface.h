@@ -18,11 +18,15 @@
 
 #include <QObject>
 
+/**
+ * @brief Trivial base class for plugin interfaces
+ */
 class CORE_EXPORT QgsPluginInterface : public QObject
 {
     Q_OBJECT
 
-  public:
+  protected:
+    /** Should only be instantiated from subclasses */
     QgsPluginInterface( QObject* parent = 0 ) : QObject( parent ) {}
 };
 
