@@ -48,6 +48,9 @@
 #include "qgscursors.h"
 #include "qgscomposerutils.h"
 
+#define MIN_VIEW_SCALE 0.05
+#define MAX_VIEW_SCALE 1000.0
+
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, const Qt::WindowFlags& f )
     : QGraphicsView( parent )
     , mCurrentTool( Select )
@@ -2060,11 +2063,11 @@ void QgsComposerView::wheelZoom( QWheelEvent * event )
   //zoom composition
   if ( zoomIn )
   {
-    scale( zoomFactor, zoomFactor );
+    scaleSafe( zoomFactor );
   }
   else
   {
-    scale( 1 / zoomFactor, 1 / zoomFactor );
+    scaleSafe( 1 / zoomFactor );
   }
 
   //update composition for new zoom
@@ -2092,12 +2095,20 @@ void QgsComposerView::setZoomLevel( double zoomLevel )
     dpi = 72;
 
   //desired pixel width for 1mm on screen
-  double scale = zoomLevel * dpi / 25.4;
+  double scale = qBound( MIN_VIEW_SCALE, zoomLevel * dpi / 25.4, MAX_VIEW_SCALE );
   setTransform( QTransform::fromScale( scale, scale ) );
 
   updateRulers();
   update();
   emit zoomLevelChanged();
+}
+
+void QgsComposerView::scaleSafe( double scale )
+{
+  double currentScale = transform().m11();
+  scale *= currentScale;
+  scale = qBound( MIN_VIEW_SCALE, scale, MAX_VIEW_SCALE );
+  setTransform( QTransform::fromScale( scale, scale ) );
 }
 
 void QgsComposerView::setPreviewModeEnabled( bool enabled )
