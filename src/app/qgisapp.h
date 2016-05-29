@@ -116,6 +116,7 @@ class QgsDiagramProperties;
 #include "qgsmessagebar.h"
 #include "qgsbookmarks.h"
 #include "qgswelcomepageitemsmodel.h"
+#include "qgsruntimeprofiler.h"
 
 
 #include "ui_qgisapp.h"
@@ -1350,6 +1351,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void layerSavedAs( QgsMapLayer* l, const QString& path );
 
   private:
+    void startProfile(const QString &name);
+    void endProfile();
+    void functionProfile(void (QgisApp::*fnc)(), QgisApp *instance, QString name);
+
+    QgsRuntimeProfiler* profiler;
+
     /** This method will open a dialog so the user can select GDAL sublayers to load
      * @returns true if any items were loaded
      */
