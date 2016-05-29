@@ -164,7 +164,7 @@ void QgsMapTool::canvasReleaseEvent( QgsMapMouseEvent* e )
 
 void QgsMapTool::wheelEvent( QWheelEvent *e )
 {
-  Q_UNUSED( e );
+  e->ignore();
 }
 
 void QgsMapTool::keyPressEvent( QKeyEvent *e )
