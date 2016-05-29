@@ -81,6 +81,7 @@ SET(QGIS_CORE_SRCS
   qgsactionmanager.cpp
   qgsaggregatecalculator.cpp
   qgsattributetableconfig.cpp
+  qgsbillboardregistry.cpp
   qgsbrowsermodel.cpp
   qgscachedfeatureiterator.cpp
   qgscacheindex.cpp
@@ -167,6 +168,7 @@ SET(QGIS_CORE_SRCS
   qgspallabeling.cpp
   qgspluginlayer.cpp
   qgspluginlayerregistry.cpp
+  qgsplugininterface.cpp
   qgspoint.cpp
   qgspointlocator.cpp
   qgsproject.cpp
@@ -449,6 +451,7 @@ ENDIF(NOT MSVC)
 
 SET(QGIS_CORE_MOC_HDRS
   qgsapplication.h
+  qgsbillboardregistry.h
   qgsbrowsermodel.h
   qgscontexthelp.h
   qgscoordinatetransform.h
@@ -479,6 +482,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsofflineediting.h
   qgsowsconnection.h
   qgspluginlayer.h
+  qgsplugininterface.h
   qgspointlocator.h
   qgsproject.h
   qgsrelationmanager.h

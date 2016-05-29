@@ -95,7 +95,7 @@ QgsRectangle QgsCompoundCurveV2::calculateBoundingBox() const
   for ( int i = 1; i < mCurves.size(); ++i )
   {
     QgsRectangle curveBox = mCurves.at( i )->boundingBox();
-    bbox.combineExtentWith( &curveBox );
+    bbox.combineExtentWith( curveBox );
   }
   return bbox;
 }

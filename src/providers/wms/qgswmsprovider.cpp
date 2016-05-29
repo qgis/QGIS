@@ -1256,7 +1256,7 @@ bool QgsWmsProvider::calculateExtent()
       }
       else
       {
-        mLayerExtent.combineExtentWith( &extent );
+        mLayerExtent.combineExtentWith( extent );
       }
 
       firstLayer = false;

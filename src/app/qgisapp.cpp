@@ -8810,6 +8810,16 @@ void QgisApp::openURL( QString url, bool useQgisDocDirectory )
 #endif
 }
 
+void QgisApp::registerMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory* factory )
+{
+  mMapLayerPropertiesFactories << factory;
+}
+
+void QgisApp::unregisterMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory* factory )
+{
+  mMapLayerPropertiesFactories.removeAll( factory );
+}
+
 /** Get a pointer to the currently selected map layer */
 QgsMapLayer *QgisApp::activeLayer()
 {
@@ -11021,6 +11031,10 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
 #else
     QgsVectorLayerProperties *vlp = new QgsVectorLayerProperties( vlayer, this );
 #endif
+    foreach ( QgsMapLayerPropertiesFactory* factory, mMapLayerPropertiesFactories )
+    {
+      vlp->addPropertiesPageFactory( factory );
+    }
 
     if ( vlp->exec() )
     {

@@ -42,6 +42,8 @@ class QgsLabelingWidget;
 class QgsDiagramProperties;
 class QgsFieldsProperties;
 class QgsRendererV2PropertiesDialog;
+class QgsMapLayerPropertiesFactory;
+class QgsVectorLayerPropertiesPage;
 
 class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase
 {
@@ -73,6 +75,9 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
       @param name attribute name
       @return false in case of a non-existing attribute.*/
     bool deleteAttribute( int attr );
+
+    /** Adds a properties page factory to the vector layer properties dialog. */
+    void addPropertiesPageFactory( QgsMapLayerPropertiesFactory *factory );
 
   public slots:
 
@@ -189,6 +194,9 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     //! List of joins of a layer at the time of creation of the dialog. Used to return joins to previous state if dialog is cancelled
     QList< QgsVectorJoinInfo > mOldJoins;
+
+    //! A list of additional pages provided by plugins
+    QList<QgsVectorLayerPropertiesPage*> mLayerPropertiesPages;
 
     /** Previous layer style. Used to reset style to previous state if new style
      * was loaded but dialog is cancelled */

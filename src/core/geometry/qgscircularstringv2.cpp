@@ -78,7 +78,7 @@ QgsRectangle QgsCircularStringV2::calculateBoundingBox() const
     else
     {
       QgsRectangle segmentBox = segmentBoundingBox( QgsPointV2( mX[i], mY[i] ), QgsPointV2( mX[i + 1], mY[i + 1] ), QgsPointV2( mX[i + 2], mY[i + 2] ) );
-      bbox.combineExtentWith( &segmentBox );
+      bbox.combineExtentWith( segmentBox );
     }
   }
 

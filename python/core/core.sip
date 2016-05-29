@@ -24,6 +24,7 @@
 %Include qgsaggregatecalculator.sip
 %Include qgsattributeaction.sip
 %Include qgsattributetableconfig.sip
+%Include qgsbillboardregistry.sip
 %Include qgsbrowsermodel.sip
 %Include qgsclipper.sip
 %Include qgscolorscheme.sip
@@ -103,6 +104,7 @@
 %Include qgsowsconnection.sip
 %Include qgspaintenginehack.sip
 %Include qgspallabeling.sip
+%Include qgsplugininterface.sip
 %Include qgspluginlayer.sip
 %Include qgspluginlayerregistry.sip
 %Include qgspoint.sip

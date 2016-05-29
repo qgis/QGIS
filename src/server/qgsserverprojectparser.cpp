@@ -725,7 +725,7 @@ void QgsServerProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& gr
       }
       else
       {
-        combinedBBox.combineExtentWith( &bbox );
+        combinedBBox.combineExtentWith( bbox );
       }
     }
 

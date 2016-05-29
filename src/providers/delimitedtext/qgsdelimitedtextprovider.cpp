@@ -474,7 +474,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
                 mNumberFeatures++;
                 if ( geom->isMultipart() ) mWkbType = type;
                 QgsRectangle bbox( geom->boundingBox() );
-                mExtent.combineExtentWith( &bbox );
+                mExtent.combineExtentWith( bbox );
               }
               if ( buildSpatialIndex )
               {
@@ -797,7 +797,7 @@ void QgsDelimitedTextProvider::rescanFile()
       else
       {
         QgsRectangle bbox( f.constGeometry()->boundingBox() );
-        mExtent.combineExtentWith( &bbox );
+        mExtent.combineExtentWith( bbox );
       }
       if ( buildSpatialIndex ) mSpatialIndex->insertFeature( f );
     }

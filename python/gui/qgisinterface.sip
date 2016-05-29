@@ -279,6 +279,12 @@ class QgisInterface : QObject
     /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded) */
     virtual bool unregisterMainWindowAction( QAction* action ) = 0;
 
+    /** Register a new tab in the vector layer properties dialog */
+    virtual void registerMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory* factory ) = 0;
+
+    /** Unregister a previously registered tab in the layer properties dialog */
+    virtual void unregisterMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory* factory ) = 0;
+
     // @todo is this deprecated in favour of QgsContextHelp?
     /** Open a url in the users browser. By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed

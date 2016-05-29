@@ -17,6 +17,7 @@
 
 #include "qgsproject.h"
 
+#include "qgsbillboardregistry.h"
 #include "qgsdatasourceuri.h"
 #include "qgsexception.h"
 #include "qgslayertree.h"
@@ -361,6 +362,7 @@ QgsProject::QgsProject()
     , mBadLayerHandler( new QgsProjectBadLayerDefaultHandler() )
     , mRelationManager( new QgsRelationManager( this ) )
     , mRootGroup( new QgsLayerTreeGroup )
+    , mBillboardRegistry( new QgsBillBoardRegistry( this ) )
 {
   clear();
 

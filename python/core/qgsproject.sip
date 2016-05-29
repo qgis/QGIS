@@ -275,6 +275,11 @@ class QgsProject : QObject
 
     QgsRelationManager* relationManager() const;
 
+    /** Return the project's billboard manager instance pointer
+     * @note added in QGIS 2.16
+     */
+    QgsBillBoardRegistry* billboardRegistry() const;
+
     /** Return pointer to the root (invisible) node of the project's layer tree
      * @note added in 2.4
      */

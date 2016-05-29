@@ -1171,7 +1171,7 @@ ErrorList topolTest::checkOverlapWithLayer( double tolerance, QgsVectorLayer* la
       {
         QgsRectangle r = bb;
         QgsRectangle r2 = g2->boundingBox();
-        r.combineExtentWith( &r2 );
+        r.combineExtentWith( r2 );
 
         QScopedPointer<QgsGeometry> conflictGeom( g1->intersection( g2 ) );
         // could this for some reason return NULL?

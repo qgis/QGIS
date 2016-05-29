@@ -35,6 +35,7 @@
 #include "qgslabel.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
+#include "qgsmaplayerpropertiesfactory.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgspluginmetadata.h"
@@ -44,6 +45,7 @@
 #include "qgsloadstylefromdbdialog.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerproperties.h"
+#include "qgsvectorlayerpropertiespage.h"
 #include "qgsconfig.h"
 #include "qgsvectordataprovider.h"
 #include "qgsquerybuilder.h"
@@ -321,6 +323,19 @@ void QgsVectorLayerProperties::toggleEditing()
 void QgsVectorLayerProperties::setLabelCheckBox()
 {
   labelCheckBox->setCheckState( Qt::Checked );
+}
+
+void QgsVectorLayerProperties::addPropertiesPageFactory( QgsMapLayerPropertiesFactory* factory )
+{
+  QListWidgetItem* item = factory->createVectorLayerPropertiesItem( mLayer, mOptionsListWidget );
+  if ( item )
+  {
+    mOptionsListWidget->addItem( item );
+
+    QgsVectorLayerPropertiesPage* page = factory->createVectorLayerPropertiesPage( mLayer, this );
+    mLayerPropertiesPages << page;
+    mOptionsStackedWidget->addWidget( page );
+  }
 }
 
 void QgsVectorLayerProperties::insertField()
@@ -605,6 +620,12 @@ void QgsVectorLayerProperties::apply()
 
   //apply diagram settings
   diagramPropertiesDialog->apply();
+
+  // apply all plugin dialogs
+  foreach ( QgsVectorLayerPropertiesPage* page, mLayerPropertiesPages )
+  {
+    page->apply();
+  }
 
   //layer title and abstract
   mLayer->setShortName( mLayerShortNameLineEdit->text() );

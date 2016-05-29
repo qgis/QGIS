@@ -617,7 +617,7 @@ void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent ca
     QgsRectangle extent = mCanvas->extent();
     if ( !extent.contains( featBBox ) )
     {
-      extent.combineExtentWith( &featBBox );
+      extent.combineExtentWith( featBBox );
       extent.scale( 1.1 );
       mCanvas->setExtent( extent );
       mCanvas->refresh();

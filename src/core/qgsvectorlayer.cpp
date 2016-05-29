@@ -717,7 +717,7 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
       if ( !fet.constGeometry() || fet.constGeometry()->isEmpty() )
         continue;
       r = fet.constGeometry()->boundingBox();
-      retval.combineExtentWith( &r );
+      retval.combineExtentWith( r );
     }
   }
   else
@@ -732,7 +732,7 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
         if ( fet.constGeometry() )
         {
           r = fet.constGeometry()->boundingBox();
-          retval.combineExtentWith( &r );
+          retval.combineExtentWith( r );
         }
       }
     }
@@ -1000,7 +1000,7 @@ QgsRectangle QgsVectorLayer::extent()
     if ( mDataProvider->featureCount() != 0 )
     {
       QgsRectangle r = mDataProvider->extent();
-      rect.combineExtentWith( &r );
+      rect.combineExtentWith( r );
     }
 
     if ( mEditBuffer )
@@ -1010,7 +1010,7 @@ QgsRectangle QgsVectorLayer::extent()
         if ( it->constGeometry() )
         {
           QgsRectangle r = it->constGeometry()->boundingBox();
-          rect.combineExtentWith( &r );
+          rect.combineExtentWith( r );
         }
       }
     }
@@ -1026,7 +1026,7 @@ QgsRectangle QgsVectorLayer::extent()
       if ( fet.constGeometry() && fet.constGeometry()->type() != QGis::UnknownGeometry )
       {
         QgsRectangle bb = fet.constGeometry()->boundingBox();
-        rect.combineExtentWith( &bb );
+        rect.combineExtentWith( bb );
       }
     }
   }

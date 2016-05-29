@@ -2260,7 +2260,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
         }
         else
         {
-          featureBBox->combineExtentWith( &box );
+          featureBBox->combineExtentWith( box );
         }
       }
     }
@@ -2600,7 +2600,7 @@ void QgsWMSServer::applyRequestedLayerFilters( const QStringList& layerList , QH
         }
         else
         {
-          filterExtent.combineExtentWith( &layerExtent );
+          filterExtent.combineExtentWith( layerExtent );
         }
       }
       mMapRenderer->setExtent( filterExtent );
