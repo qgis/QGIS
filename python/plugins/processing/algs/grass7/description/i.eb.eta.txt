@@ -1,0 +1,7 @@
+i.eb.eta
+Actual evapotranspiration for diurnal period (Bastiaanssen, 1995). 
+Imagery (i.*)
+ParameterRaster|netradiationdiurnal|Name of the diurnal net radiation map [W/m2]|False
+ParameterRaster|evaporativefraction|Name of the evaporative fraction map|False
+ParameterRaster|temperature|Name of the surface skin temperature [K]|False
+OutputRaster|output|Evapotranspiration

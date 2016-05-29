@@ -30,6 +30,7 @@ matrix:
             - flex
             - flip
             - libfcgi-dev
+            - libfftw3-3
             - libpq-dev
             - libqscintilla2-dev
             - libqt4-dev
@@ -83,6 +84,7 @@ matrix:
             - graphviz
             - libpq-dev
             - libfcgi-dev
+            - libfftw3-3	    
             - pkg-config
             - poppler-utils
             - txt2tags

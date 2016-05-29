@@ -34,6 +34,7 @@ import hashlib
 import tempfile
 
 from osgeo.gdalconst import GA_ReadOnly
+from numpy import nan_to_num
 
 import processing
 from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
@@ -103,20 +104,17 @@ class AlgorithmsTest:
             exec('\n'.join(defs['expectedFailure'][:-1])) in globals(), locals()
             expectFailure = eval(defs['expectedFailure'][-1])
 
-        def doCheck():
-            alg.execute()
-
-            self.check_results(alg.getOutputValuesAsDictionary(), defs['results'])
-
         if expectFailure:
             try:
-                doCheck()
+                alg.execute()
+                self.check_results(alg.getOutputValuesAsDictionary(), defs['results'])
             except Exception:
                 pass
             else:
                 raise _UnexpectedSuccess
         else:
-            doCheck()
+            alg.execute()
+            self.check_results(alg.getOutputValuesAsDictionary(), defs['results'])
 
     def load_params(self, params):
         """
@@ -137,8 +135,10 @@ class AlgorithmsTest:
         try:
             if param['type'] == 'vector' or param['type'] == 'raster':
                 return self.load_layer(param)
-            if param['type'] == 'multi':
+            elif param['type'] == 'multi':
                 return [self.load_param(p) for p in param['params']]
+            elif param['type'] == 'file':
+                return self.filepath_from_param(param)
         except TypeError:
             # No type specified, use whatever is there
             return param
@@ -174,7 +174,7 @@ class AlgorithmsTest:
         if param['type'] == 'vector':
             lyr = QgsVectorLayer(filepath, param['name'], 'ogr')
         elif param['type'] == 'raster':
-            lyr = QgsRasterLayer(filepath, param['name'], 'ogr')
+            lyr = QgsRasterLayer(filepath, param['name'], 'gdal')
 
         self.assertTrue(lyr.isValid(), 'Could not load layer "{}"'.format(filepath))
         QgsMapLayerRegistry.instance().addMapLayer(lyr)
@@ -210,7 +210,8 @@ class AlgorithmsTest:
 
             elif 'rasterhash' == expected_result['type']:
                 dataset = gdal.Open(results[id], GA_ReadOnly)
-                strhash = hashlib.sha224(dataset.ReadAsArray(0).data).hexdigest()
+                dataArray = nan_to_num(dataset.ReadAsArray(0))
+                strhash = hashlib.sha224(dataArray.data).hexdigest()
 
                 self.assertEqual(strhash, expected_result['hash'])
             elif 'file' == expected_result['type']:

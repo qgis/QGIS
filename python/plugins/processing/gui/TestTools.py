@@ -32,6 +32,8 @@ import hashlib
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
 
+from numpy import nan_to_num
+
 from qgis.PyQt.QtCore import QCoreApplication, QMetaObject
 from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QTextEdit
 
@@ -47,7 +49,8 @@ from processing.core.outputs import (
 from processing.core.parameters import (
     ParameterRaster,
     ParameterVector,
-    ParameterMultipleInput
+    ParameterMultipleInput,
+    ParameterFile
 )
 
 
@@ -138,15 +141,34 @@ def createTest(text):
         elif isinstance(param, ParameterMultipleInput):
             multiparams = token[1:-1].split(';')
             newparam = []
+
+            # Handle datatype detection
+            dataType = param.dataType()
+            if dataType in ['points', 'lines', 'polygons', 'any vectors']:
+                dataType = 'vector'
+            else:
+                dataType = 'raster'
+
             for mp in multiparams:
                 schema, filepath = extractSchemaPath(mp)
                 newparam.append({
-                    'type': 'vector',
+                    'type': dataType,
                     'name': filepath
                 })
             p = {
                 'type': 'multi',
                 'params': newparam
+            }
+            if not schema:
+                p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
+
+            params[param.name] = p
+        elif isinstance(param, ParameterFile):
+            filename = token[1:-1]
+            schema, filepath = extractSchemaPath(filename)
+            p = {
+                'type': 'file',
+                'name': filepath
             }
             if not schema:
                 p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
@@ -175,7 +197,8 @@ def createTest(text):
         elif isinstance(out, OutputRaster):
             filename = token[1:-1]
             dataset = gdal.Open(filename, GA_ReadOnly)
-            strhash = hashlib.sha224(dataset.ReadAsArray(0).data).hexdigest()
+            dataArray = nan_to_num(dataset.ReadAsArray(0))
+            strhash = hashlib.sha224(dataArray.data).hexdigest()
 
             results[out.name] = {
                 'type': 'rasterhash',
