@@ -33,11 +33,7 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     QgsMapToolEdit( QgsMapCanvas* canvas );
     virtual ~QgsMapToolEdit();
 
-    /**
-     * Is this an edit tool?
-     * @return  Of course it is or you would not be inheriting from it.
-     */
-    virtual bool isEditTool() override { return true; }
+    virtual Flags flags() const { return QgsMapTool::EditTool; }
 
   protected:
 

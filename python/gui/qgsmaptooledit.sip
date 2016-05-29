@@ -25,11 +25,7 @@ class QgsMapToolEdit: QgsMapTool
     QgsMapToolEdit( QgsMapCanvas* canvas );
     virtual ~QgsMapToolEdit();
 
-    /**
-     * Is this an edit tool?
-     * @return  Of course it is or you would not be inheriting from it.
-     */
-    virtual bool isEditTool();
+    virtual Flags flags() const;
 
   protected:
 

@@ -32,6 +32,8 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
     //! constructor
     QgsMapToolPan( QgsMapCanvas* canvas );
 
+    virtual Flags flags() const { return QgsMapTool::Transient; }
+
     //! Mouse press event
     virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
@@ -40,8 +42,6 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
 
     //! Overridden mouse release event
     virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
-
-    virtual bool isTransient() override { return true; }
 
   private:
 

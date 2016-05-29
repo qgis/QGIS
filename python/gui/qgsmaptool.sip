@@ -30,6 +30,22 @@ class QgsMapTool : QObject
 
   public:
 
+    //! Enumeration of flags that adjust the way the map tool operates
+    //! @note added in QGIS 2.16
+    enum Flag
+    {
+      Transient, /*!< Indicates that this map tool performs a transient (one-off) operation.
+                               If it does, the tool can be operated once and then a previous map
+                               tool automatically restored. */
+      EditTool, /*!< Map tool is an edit tool, which can only be used when layer is editable*/
+    };
+    typedef QFlags<QgsMapTool::Flag> Flags;
+
+    /** Returns the flags for the map tool.
+     * @note added in QGIS 2.16
+     */
+    virtual Flags flags() const;
+
     //! virtual destructor
     virtual ~QgsMapTool();
 
@@ -85,13 +101,16 @@ class QgsMapTool : QObject
 
     /** Check whether this MapTool performs a zoom or pan operation.
      * If it does, we will be able to perform the zoom  and then
-     * resume operations with the original / previously used tool.*/
-    virtual bool isTransient();
+     * resume operations with the original / previously used tool.
+     * @deprecated use flags() instead
+    */
+    virtual bool isTransient() const /Deprecated/;
 
     /** Check whether this MapTool performs an edit operation.
-     * If it does, we will deactivate it when editing is turned off
+     * If it does, we will deactivate it when editing is turned off.
+     * @deprecated use flags() instead
      */
-    virtual bool isEditTool();
+    virtual bool isEditTool() const /Deprecated/;
 
     //! called when set as currently active map tool
     virtual void activate();

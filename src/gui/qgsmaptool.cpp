@@ -189,14 +189,14 @@ void QgsMapTool::renderComplete()
 {
 }
 
-bool QgsMapTool::isTransient()
+bool QgsMapTool::isTransient() const
 {
-  return false;
+  return flags() & Transient;
 }
 
-bool QgsMapTool::isEditTool()
+bool QgsMapTool::isEditTool() const
 {
-  return false;
+  return flags() & EditTool;
 }
 
 QgsMapCanvas* QgsMapTool::canvas()

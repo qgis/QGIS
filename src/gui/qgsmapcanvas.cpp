@@ -1386,7 +1386,7 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent* e )
     if ( mMapTool )
     {
       // right button was pressed in zoom tool? return to previous non zoom tool
-      if ( e->button() == Qt::RightButton && mMapTool->isTransient() )
+      if ( e->button() == Qt::RightButton && mMapTool->flags() & QgsMapTool::Transient )
       {
         QgsDebugMsg( "Right click in map tool zoom or pan, last tool is " +
                      QString( mLastNonZoomMapTool ? "not null." : "null." ) );
@@ -1395,7 +1395,8 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent* e )
 
         // change to older non-zoom tool
         if ( mLastNonZoomMapTool
-             && ( !mLastNonZoomMapTool->isEditTool() || ( vlayer && vlayer->isEditable() ) ) )
+             && ( !( mLastNonZoomMapTool->flags() & QgsMapTool::EditTool )
+                  || ( vlayer && vlayer->isEditable() ) ) )
         {
           QgsMapTool* t = mLastNonZoomMapTool;
           mLastNonZoomMapTool = nullptr;
@@ -1601,7 +1602,8 @@ void QgsMapCanvas::setMapTool( QgsMapTool* tool )
     mMapTool->deactivate();
   }
 
-  if ( tool->isTransient() && mMapTool && !mMapTool->isTransient() )
+  if (( tool->flags() & QgsMapTool::Transient )
+      && mMapTool && !( mMapTool->flags() & QgsMapTool::Transient ) )
   {
     // if zoom or pan tool will be active, save old tool
     // to bring it back on right click

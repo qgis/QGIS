@@ -54,6 +54,22 @@ class GUI_EXPORT QgsMapTool : public QObject
 
   public:
 
+    //! Enumeration of flags that adjust the way the map tool operates
+    //! @note added in QGIS 2.16
+    enum Flag
+    {
+      Transient = 1 << 1, /*!< Indicates that this map tool performs a transient (one-off) operation.
+                               If it does, the tool can be operated once and then a previous map
+                               tool automatically restored. */
+      EditTool = 1 << 2, /*!< Map tool is an edit tool, which can only be used when layer is editable*/
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
+    /** Returns the flags for the map tool.
+     * @note added in QGIS 2.16
+     */
+    virtual Flags flags() const { return Flags(); }
+
     //! virtual destructor
     virtual ~QgsMapTool();
 
@@ -87,7 +103,6 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! @deprecated since 2.4 - not called anymore - map tools must not directly depend on rendering progress
     Q_DECL_DEPRECATED virtual void renderComplete();
 
-
     /** Use this to associate a QAction to this maptool. Then when the setMapTool
      * method of mapcanvas is called the action state will be set to on.
      * Usually this will cause e.g. a toolbutton to appear pressed in and
@@ -109,13 +124,16 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     /** Check whether this MapTool performs a zoom or pan operation.
      * If it does, we will be able to perform the zoom  and then
-     * resume operations with the original / previously used tool.*/
-    virtual bool isTransient();
+     * resume operations with the original / previously used tool.
+     * @deprecated use flags() instead
+    */
+    Q_DECL_DEPRECATED virtual bool isTransient() const;
 
     /** Check whether this MapTool performs an edit operation.
-     * If it does, we will deactivate it when editing is turned off
+     * If it does, we will deactivate it when editing is turned off.
+     * @deprecated use flags() instead
      */
-    virtual bool isEditTool();
+    Q_DECL_DEPRECATED virtual bool isEditTool() const;
 
     //! called when set as currently active map tool
     virtual void activate();
