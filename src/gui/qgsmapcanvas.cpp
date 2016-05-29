@@ -1255,6 +1255,7 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
         //mCanvasProperties->dragging = true;
         if ( ! e->isAutoRepeat() )
         {
+          QApplication::setOverrideCursor( Qt::ClosedHandCursor );
           mCanvasProperties->panSelectorDown = true;
           mCanvasProperties->rubberStartPoint = mCanvasProperties->mouseLastXY;
         }
@@ -1308,7 +1309,7 @@ void QgsMapCanvas::keyReleaseEvent( QKeyEvent * e )
       if ( !e->isAutoRepeat() && mCanvasProperties->panSelectorDown )
       {
         QgsDebugMsg( "Releasing pan selector" );
-
+        QApplication::restoreOverrideCursor();
         mCanvasProperties->panSelectorDown = false;
         panActionEnd( mCanvasProperties->mouseLastXY );
       }
