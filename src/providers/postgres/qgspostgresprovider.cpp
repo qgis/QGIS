@@ -3336,16 +3336,16 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
       break;
 
     case QVariant::Double:
-      if ( fieldSize > 18 )
+      if ( fieldPrec > 0 )
       {
         fieldType = "numeric";
-        fieldSize = -1;
       }
       else
       {
         fieldType = "float8";
+        fieldSize = -1;
+        fieldPrec = -1;
       }
-      fieldPrec = -1;
       break;
 
     default:
