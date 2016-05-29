@@ -9763,7 +9763,7 @@ void QgisApp::mapToolChanged( QgsMapTool *newTool, QgsMapTool *oldTool )
 
   if ( newTool )
   {
-    if ( !newTool->isEditTool() )
+    if ( !( newTool->flags() & QgsMapTool::EditTool ) )
     {
       mNonEditMapTool = newTool;
     }
@@ -10205,7 +10205,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionFeatureAction->setEnabled( layerHasActions );
 
     if ( !isEditable && mMapCanvas && mMapCanvas->mapTool()
-         && mMapCanvas->mapTool()->isEditTool() && !mSaveRollbackInProgress )
+         && ( mMapCanvas->mapTool()->flags() & QgsMapTool::EditTool ) && !mSaveRollbackInProgress )
     {
       mMapCanvas->setMapTool( mNonEditMapTool );
     }
