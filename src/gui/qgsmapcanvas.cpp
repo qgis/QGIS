@@ -1365,12 +1365,15 @@ void QgsMapCanvas::endZoomRect( QPoint pos )
   mZoomRubberBand.reset( nullptr );
   QApplication::restoreOverrideCursor();
 
-  if ( mZoomRect.topLeft() == mZoomRect.bottomRight() )
-    return;
-
   // store the rectangle
   mZoomRect.setRight( pos.x() );
   mZoomRect.setBottom( pos.y() );
+
+  if ( mZoomRect.width() < 5 && mZoomRect.height() < 5 )
+  {
+    //probably a mistake - would result in huge zoom!
+    return;
+  }
 
   //account for bottom right -> top left dragging
   mZoomRect = mZoomRect.normalized();

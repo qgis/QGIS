@@ -803,13 +803,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /** Starts zooming via rectangle
      * @param pos start position for rectangle
-     * @node added in QGIS 2.16
+     * @note added in QGIS 2.16
      */
     void beginZoomRect( QPoint pos );
 
     /** Ends zooming via rectangle
      * @param pos end position for rectangle
-     * @node added in QGIS 2.16
+     * @note added in QGIS 2.16
      */
     void endZoomRect( QPoint pos );
 
