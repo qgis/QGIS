@@ -689,7 +689,11 @@ QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition& p )
   if ( layer && layer->labeling() )
   {
     settings = layer->labeling()->settings( layer, pos.providerID );
-    valid = settings.enabled;
+
+    if ( p.isDiagram )
+      valid = layer->diagramsEnabled();
+    else
+      valid = settings.enabled;
   }
 
   if ( !valid )
