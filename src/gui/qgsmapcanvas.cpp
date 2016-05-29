@@ -1488,15 +1488,18 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
   if ( mMapTool )
   {
     mMapTool->wheelEvent( e );
+    if ( e->isAccepted() )
+      return;
   }
 
-  if ( QgsApplication::keyboardModifiers() )
+  double zoomFactor = mWheelZoomFactor;
+  if ( e->modifiers() & Qt::ControlModifier )
   {
-    // leave the wheel for map tools if any modifier pressed
-    return;
+    //holding ctrl while wheel zooming results in a finer zoom
+    zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 20.0;
   }
 
-  double signedWheelFactor = e->delta() > 0 ? 1 / mWheelZoomFactor : mWheelZoomFactor;
+  double signedWheelFactor = e->delta() > 0 ? 1 / zoomFactor : zoomFactor;
 
   // zoom map to mouse cursor by scaling
   QgsPoint oldCenter = center();

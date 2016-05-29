@@ -38,7 +38,7 @@ class TestQgsMapCanvas : public QObject
     Q_OBJECT
   public:
     TestQgsMapCanvas()
-        : mCanvas( 0 )
+        : mCanvas( nullptr )
     {}
 
   private slots:
@@ -50,6 +50,7 @@ class TestQgsMapCanvas : public QObject
     void testMagnification();
     void testMagnificationExtent();
     void testMagnificationScale();
+    void testZoomByWheel();
 
   private:
     QgsMapCanvas* mCanvas;
@@ -358,6 +359,40 @@ void TestQgsMapCanvas::testMagnificationScale()
 
   mCanvas->setMagnificationFactor( 1.0 );
   QCOMPARE( initialScale, mCanvas->scale() );
+}
+
+void TestQgsMapCanvas::testZoomByWheel()
+{
+  mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  QgsRectangle initialExtent = mCanvas->extent();
+  double originalWidth = initialExtent.width();
+  double originalHeight = initialExtent.height();
+
+  mCanvas->setWheelFactor( 2 );
+
+  //test zoom out
+  QWheelEvent e( QPoint( 0, 0 ), -1, Qt::NoButton, Qt::NoModifier );
+  mCanvas->wheelEvent( &e );
+  QVERIFY( qgsDoubleNear( mCanvas->extent().width(), originalWidth * 2.0, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( mCanvas->extent().height(), originalHeight * 2.0, 0.0001 ) );
+
+  //test zoom in
+  e = QWheelEvent( QPoint( 0, 0 ), 1, Qt::NoButton, Qt::NoModifier );
+  mCanvas->wheelEvent( &e );
+  QVERIFY( qgsDoubleNear( mCanvas->extent().width(), originalWidth, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( mCanvas->extent().height(), originalHeight, 0.0001 ) );
+
+  // test zoom out with ctrl
+  e = QWheelEvent( QPoint( 0, 0 ), -1, Qt::NoButton, Qt::ControlModifier );
+  mCanvas->wheelEvent( &e );
+  QVERIFY( qgsDoubleNear( mCanvas->extent().width(), 17.3870380, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( mCanvas->extent().height(), 16.1005889, 0.0001 ) );
+
+  //test zoom in with ctrl
+  e = QWheelEvent( QPoint( 0, 0 ), 1, Qt::NoButton, Qt::ControlModifier );
+  mCanvas->wheelEvent( &e );
+  QVERIFY( qgsDoubleNear( mCanvas->extent().width(), originalWidth, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( mCanvas->extent().height(), originalHeight, 0.0001 ) );
 }
 
 QTEST_MAIN( TestQgsMapCanvas )

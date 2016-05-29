@@ -789,6 +789,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.16
     void updateMapSize();
 
+    friend class TestQgsMapCanvas;
+
 }; // class QgsMapCanvas
 Q_NOWARN_DEPRECATED_POP
 
