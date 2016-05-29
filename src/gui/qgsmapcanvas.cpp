@@ -189,12 +189,25 @@ void QgsMapCanvasRendererSync::onLayersC2R()
 QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     : QGraphicsView( parent )
     , mCanvasProperties( new CanvasProperties )
+    , mMapRenderer( nullptr )
+    , mMap( nullptr )
+    , mMapOverview( nullptr )
+    , mFrozen( false )
+    , mRefreshScheduled( false )
+    , mRenderFlag( true ) // by default, the canvas is rendered
+    , mCurrentLayer( nullptr )
+    , mScene( nullptr )
+    , mMapTool( nullptr )
+    , mLastNonZoomMapTool( nullptr )
+    , mLastExtentIndex( -1 )
+    , mWheelZoomFactor( 2.0 )
     , mJob( nullptr )
     , mJobCancelled( false )
     , mLabelingResults( nullptr )
     , mUseParallelRendering( false )
     , mDrawRenderingStats( false )
     , mCache( nullptr )
+    , mResizeTimer( nullptr )
     , mPreviewEffect( nullptr )
     , mSnappingUtils( nullptr )
     , mScaleLocked( false )
@@ -205,18 +218,6 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   setScene( mScene );
   setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-  mLastExtentIndex = -1;
-  mCurrentLayer = nullptr;
-  mMapOverview = nullptr;
-  mMapTool = nullptr;
-  mLastNonZoomMapTool = nullptr;
-
-  mFrozen = false;
-  mRefreshScheduled = false;
-
-  // by default, the canvas is rendered
-  mRenderFlag = true;
-
   setMouseTracking( true );
   setFocusPolicy( Qt::StrongFocus );
 
@@ -244,6 +245,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   QgsAbstractGeometryV2::SegmentationToleranceType toleranceType = QgsAbstractGeometryV2::SegmentationToleranceType( settings.value( "/qgis/segmentationToleranceType", 0 ).toInt() );
   mSettings.setSegmentationTolerance( segmentationTolerance );
   mSettings.setSegmentationToleranceType( toleranceType );
+
+  mWheelZoomFactor = settings.value( "/qgis/zoom_factor", 2 ).toDouble();
 
   // class that will sync most of the changes between canvas and (legacy) map renderer
   // it is parented to map canvas, will be deleted automatically
@@ -322,11 +325,10 @@ void QgsMapCanvas::setMagnificationFactor( double factor )
   QSettings settings;
   double magnifierMin = settings.value( "/qgis/magnifier_factor_min", 0.1 ).toDouble();
   double magnifierMax = settings.value( "/qgis/magnifier_factor_max", 10 ).toDouble();
-  factor = factor > magnifierMax ? magnifierMax : factor;
-  factor = factor < magnifierMin ? magnifierMin : factor;
+  factor = qBound( magnifierMin, factor, magnifierMax );
 
   // the magnifier widget is in integer percent
-  if ( qAbs( factor - mSettings.magnificationFactor() ) >= 0.01 )
+  if ( !qgsDoubleNear( factor, mSettings.magnificationFactor(), 0.01 ) )
   {
     mSettings.setMagnificationFactor( factor );
     refresh();
