@@ -31,6 +31,7 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ui', 'DlgConfig.ui'))
 
+
 class ScriptSelector(BASE, WIDGET):
 
     def __init__(self):
@@ -47,11 +48,11 @@ class ScriptSelector(BASE, WIDGET):
         for group, groupScripts in allScripts.iteritems():
             groupItem = QtGui.QTreeWidgetItem()
             groupItem.setText(0, group)
-            groupItem.setFlags(groupItem.flags() | QtCore.Qt.ItemIsTristate);
+            groupItem.setFlags(groupItem.flags() | QtCore.Qt.ItemIsTristate)
             for script in groupScripts:
                 scriptItem = QtGui.QTreeWidgetItem()
-                scriptItem.setFlags(scriptItem.flags() | QtCore.Qt.ItemIsUserCheckable);
-                scriptItem.setCheckState(0, QtCore.Qt.Checked);
+                scriptItem.setFlags(scriptItem.flags() | QtCore.Qt.ItemIsUserCheckable)
+                scriptItem.setCheckState(0, QtCore.Qt.Checked)
                 scriptItem.script = script
                 scriptItem.setText(0, script.name)
                 groupItem.addChild(scriptItem)
@@ -108,4 +109,3 @@ class ScriptSelector(BASE, WIDGET):
         except:
             return
         self.close()
-
