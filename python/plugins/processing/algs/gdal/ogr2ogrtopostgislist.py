@@ -233,9 +233,12 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
             arguments.append(pkstring)
         elif primary_key is not None:
             arguments.append("-lco FID=" + primary_key)
-        if len(table) > 0:
-            arguments.append('-nln')
-            arguments.append(table)
+        if len(table) == 0:
+            table = ogrLayerName(inLayer).lower()
+        if schema:
+            table = '{}.{}'.format(schema, table)
+        arguments.append('-nln')
+        arguments.append(table)
         if len(ssrs) > 0:
             arguments.append('-s_srs')
             arguments.append(ssrs)
