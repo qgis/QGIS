@@ -377,12 +377,6 @@
     <layout class="QHBoxLayout" name="horizontalLayout_7">
      <item>
       <widget class="QPushButton" name="reset">
-       <property name="maximumSize">
-        <size>
-         <width>50</width>
-         <height>16777215</height>
-        </size>
-       </property>
        <property name="text">
         <string>&amp;Reset</string>
        </property>
