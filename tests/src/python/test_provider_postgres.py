@@ -231,6 +231,44 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             if 'precision' in e:
                 self.assertEqual(fields.at(fields.indexFromName(f)).precision(), e['precision'])
 
+    def testRenameAttributes(self):
+        ''' Test renameAttributes() '''
+        vl = QgsVectorLayer('%s table="qgis_test"."rename_table" sql=' % (self.dbconn), "renames", "postgres")
+        provider = vl.dataProvider()
+        provider.renameAttributes({1: 'field1', 2: 'field2'})
+
+        # bad rename
+        self.assertFalse(provider.renameAttributes({-1: 'not_a_field'}))
+        self.assertFalse(provider.renameAttributes({100: 'not_a_field'}))
+        # already exists
+        self.assertFalse(provider.renameAttributes({1: 'field2'}))
+
+        # rename one field
+        self.assertTrue(provider.renameAttributes({1: 'newname'}))
+        self.assertEqual(provider.fields().at(1).name(), 'newname')
+        vl.updateFields()
+        fet = next(vl.getFeatures())
+        self.assertEqual(fet.fields()[1].name(), 'newname')
+
+        # rename two fields
+        self.assertTrue(provider.renameAttributes({1: 'newname2', 2: 'another'}))
+        self.assertEqual(provider.fields().at(1).name(), 'newname2')
+        self.assertEqual(provider.fields().at(2).name(), 'another')
+        vl.updateFields()
+        fet = next(vl.getFeatures())
+        self.assertEqual(fet.fields()[1].name(), 'newname2')
+        self.assertEqual(fet.fields()[2].name(), 'another')
+
+        # close layer and reopen, then recheck to confirm that changes were saved to db
+        del vl
+        vl = None
+        vl = QgsVectorLayer('%s table="qgis_test"."rename_table" sql=' % (self.dbconn), "renames", "postgres")
+        provider = vl.dataProvider()
+        self.assertEqual(provider.fields().at(1).name(), 'newname2')
+        self.assertEqual(provider.fields().at(2).name(), 'another')
+        fet = next(vl.getFeatures())
+        self.assertEqual(fet.fields()[1].name(), 'newname2')
+        self.assertEqual(fet.fields()[2].name(), 'another')
 
 if __name__ == '__main__':
     unittest.main()

@@ -196,15 +196,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       @return true in case of success and false in case of failure*/
     bool deleteFeatures( const QgsFeatureIds & id ) override;
 
-    /** Adds new attributes
-      @param name map with attribute name as key and type as value
-      @return true in case of success and false in case of failure*/
     bool addAttributes( const QList<QgsField> &attributes ) override;
-
-    /** Deletes existing attributes
-      @param names of the attributes to delete
-      @return true in case of success and false in case of failure*/
     bool deleteAttributes( const QgsAttributeIds &name ) override;
+    virtual bool renameAttributes( const QgsFieldNameMap& renamedAttributes ) override;
 
     /** Changes attribute values of existing features
       @param attr_map a map containing the new attributes. The integer is the feature id,
