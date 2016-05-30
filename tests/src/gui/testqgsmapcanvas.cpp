@@ -440,8 +440,8 @@ void TestQgsMapCanvas::testShiftZoom()
                    Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   mCanvas->mouseReleaseEvent( &e );
 
-  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().width(), originalWidth / 2.0, 0.1 ) );
-  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().height(), originalHeight / 2.0, 0.1 ) );
+  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().width(), originalWidth / 2.0, 0.2 ) );
+  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().height(), originalHeight / 2.0, 0.2 ) );
 
   //reset
   mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
