@@ -27,8 +27,9 @@ import os
 from collections import defaultdict
 from processing.core.alglist import algList
 
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
-    os.path.join(os.path.dirname(__file__), 'scriptselector.ui'))
+    os.path.join(pluginPath, 'ui', 'DlgConfig.ui'))
 
 class ScriptSelector(BASE, WIDGET):
 
