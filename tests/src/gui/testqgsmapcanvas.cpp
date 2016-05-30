@@ -34,6 +34,17 @@ namespace QTest
   }
 }
 
+inline bool qgsDoubleNearDebug( double a, double b, double epsilon = 4 * DBL_EPSILON )
+{
+  if ( !qgsDoubleNear( a, b, epsilon ) )
+  {
+    qDebug( "Expecting %f got %f (diff %f > %f)", a, b, qAbs( a - b ), epsilon );
+    return false;
+  }
+  return true;
+}
+
+
 class QgsMapToolTest : public QgsMapTool
 {
   public:
@@ -429,8 +440,8 @@ void TestQgsMapCanvas::testShiftZoom()
                    Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   mCanvas->mouseReleaseEvent( &e );
 
-  QVERIFY( qgsDoubleNear( mCanvas->extent().width(), originalWidth / 2.0, 0.1 ) );
-  QVERIFY( qgsDoubleNear( mCanvas->extent().height(), originalHeight / 2.0, 0.1 ) );
+  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().width(), originalWidth / 2.0, 0.1 ) );
+  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().height(), originalHeight / 2.0, 0.1 ) );
 
   //reset
   mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
@@ -446,8 +457,8 @@ void TestQgsMapCanvas::testShiftZoom()
                    Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   mCanvas->mouseReleaseEvent( &e );
 
-  QVERIFY( qgsDoubleNear( mCanvas->extent().width(), originalWidth, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( mCanvas->extent().height(), originalHeight, 0.0001 ) );
+  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().width(), originalWidth, 0.0001 ) );
+  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().height(), originalHeight, 0.0001 ) );
 
   //reset
   mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
@@ -466,8 +477,8 @@ void TestQgsMapCanvas::testShiftZoom()
                    Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   mCanvas->mouseReleaseEvent( &e );
 
-  QVERIFY( qgsDoubleNear( mCanvas->extent().width(), originalWidth, 0.00001 ) );
-  QVERIFY( qgsDoubleNear( mCanvas->extent().height(), originalHeight, 0.00001 ) );
+  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().width(), originalWidth, 0.00001 ) );
+  QVERIFY( qgsDoubleNearDebug( mCanvas->extent().height(), originalHeight, 0.00001 ) );
 }
 
 QTEST_MAIN( TestQgsMapCanvas )
