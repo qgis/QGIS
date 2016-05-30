@@ -28,7 +28,7 @@ from collections import defaultdict
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QTreeWidgetItem, QFileDialog,
+from qgis.PyQt.QtWidgets import QTreeWidgetItem, QFileDialog
 
 from processing.core.alglist import algList
 
