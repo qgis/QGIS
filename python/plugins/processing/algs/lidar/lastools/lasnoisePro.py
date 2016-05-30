@@ -4,7 +4,7 @@
 ***************************************************************************
     lasnoisePro.py
     ---------------------
-    Date                 : October 2014
+    Date                 : October 2014 and May 2016
     Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -44,6 +44,8 @@ class lasnoisePro(LAStoolsAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('lasnoisePro')
         self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
+        self.addParametersIgnoreClass1GUI()
+        self.addParametersIgnoreClass2GUI()
         self.addParameter(ParameterNumber(lasnoisePro.ISOLATED,
                                           self.tr("isolated if surrounding cells have only"), 0, None, 5))
         self.addParameter(ParameterNumber(lasnoisePro.STEP_XY,
@@ -65,6 +67,8 @@ class lasnoisePro(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasnoise")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
+        self.addParametersIgnoreClass1Commands(commands)
+        self.addParametersIgnoreClass2Commands(commands)
         isolated = self.getParameterValue(lasnoisePro.ISOLATED)
         commands.append("-isolated")
         commands.append(unicode(isolated))
