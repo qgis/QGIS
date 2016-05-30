@@ -1315,6 +1315,48 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
 #endif
 }
 
+bool QgsOgrProvider::renameAttributes( const QgsFieldNameMap& renamedAttributes )
+{
+  if ( !doInitialActionsForEdition() )
+    return false;
+
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1900
+  QgsFieldNameMap::const_iterator renameIt = renamedAttributes.constBegin();
+  bool result = true;
+  for ( ; renameIt != renamedAttributes.constEnd(); ++renameIt )
+  {
+    int fieldIndex = renameIt.key();
+    if ( fieldIndex < 0 || fieldIndex >= mAttributeFields.count() )
+    {
+      pushError( tr( "Invalid attribute index" ) );
+      result = false;
+      continue;
+    }
+    if ( mAttributeFields.indexFromName( renameIt.value() ) >= 0 )
+    {
+      //field name already in use
+      pushError( tr( "Error renaming field %1: name '%2' already exists" ).arg( fieldIndex ).arg( renameIt.value() ) );
+      result = false;
+      continue;
+    }
+
+    //type does not matter, it will not be used
+    OGRFieldDefnH fld = OGR_Fld_Create( mEncoding->fromUnicode( renameIt.value() ), OFTReal );
+    if ( OGR_L_AlterFieldDefn( ogrLayer, fieldIndex, fld, ALTER_NAME_FLAG ) != OGRERR_NONE )
+    {
+      pushError( tr( "OGR error renaming field %1: %2" ).arg( fieldIndex ).arg( CPLGetLastErrorMsg() ) );
+      result = false;
+    }
+  }
+  loadFields();
+  return result;
+#else
+  Q_UNUSED( attributes );
+  pushError( tr( "Renaming fields is not supported prior to GDAL 1.9.0" ) );
+  return false;
+#endif
+}
+
 
 bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
@@ -1722,6 +1764,11 @@ void QgsOgrProvider::computeCapabilities()
     if ( mWriteAccessPossible && OGR_L_TestCapability( ogrLayer, "DeleteField" ) )
     {
       ability |= DeleteAttributes;
+    }
+
+    if ( mWriteAccessPossible && OGR_L_TestCapability( ogrLayer, "AlterFieldDefn" ) )
+    {
+      ability |= RenameAttributes;
     }
 
 #if defined(OLCStringsAsUTF8)
