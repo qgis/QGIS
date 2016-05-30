@@ -554,8 +554,18 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
         }
         else
         {
-          double value = values.value( bandNo ).toDouble();
-          valueString = QgsRasterBlock::printValue( value );
+          QVariant value( values.value( bandNo ) );
+          // The cast is legit. Quoting QT doc :
+          // "Although this function is declared as returning QVariant::Type,
+          // the return value should be interpreted as QMetaType::Type"
+          if ( static_cast<QMetaType::Type>( value.type() ) == QMetaType::Float )
+          {
+            valueString = QgsRasterBlock::printValue( value.toFloat() );
+          }
+          else
+          {
+            valueString = QgsRasterBlock::printValue( value.toDouble() );
+          }
         }
         attributes.insert( dprovider->generateBandName( bandNo ), valueString );
       }
