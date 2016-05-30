@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <limits>
+
 #include "qgsraster.h"
 
 QString QgsRaster::contrastEnhancementLimitsAsString( ContrastEnhancementLimits theLimits )
