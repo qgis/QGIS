@@ -24,36 +24,51 @@
 
 class QgsMapCanvasItem;
 
-/** Billboard items stored in the QgsBillBoardRegistry */
+/** \ingroup core
+ * \class QgsBillBoardItem
+ * \note added in QGIS 2.16
+ * A billboard item stored in the QgsBillBoardRegistry.
+ */
 class CORE_EXPORT QgsBillBoardItem
 {
   public:
-    QImage image; /* The image of the billboard */
-    QgsPoint worldPos; /* The WGS84 world position of the billboard */
-    QString layerId; /* The layer which the image is part of, if any */
+    //! The image of the billboard
+    QImage image;
+    //! The WGS84 world position of the billboard
+    QgsPoint worldPos;
+    //! The layer which the image is part of, if any
+    QString layerId;
 };
 
-/**
+/** \ingroup core
+ * \class QgsBillBoardRegistry
+ * \note added in QGIS 2.16
  * @brief The QgsBillBoardRegistry class stores images which should
  * be displayed as billboards in the globe plugin.
  * Map canvas items and layers may decide to add items which should
  * be drawn as billboards in the globe.
  *
- * Retreive the instance pointer to a QgsBillBoardRegistry for a
+ * Retrieve the instance pointer to a QgsBillBoardRegistry for a
  * project via QgsProject::instance()->billboardRegistry().
  */
 class CORE_EXPORT QgsBillBoardRegistry : public QObject
 {
     Q_OBJECT
   public:
+
+    ~QgsBillBoardRegistry();
+
     /**
-     * @brief Adds a billboard to the registry
-     * @param parent The parent (i.e. a QgsMapLayer or a QgsMapCanvasItem) which is creating the billboard
+     * @brief Adds a billboard to the registry.
+     * @param parent The parent (i.e. a QgsMapLayer or a QgsMapCanvasItem) which is creating the billboard.
+     * Each parent can only have a single billboard - if a billboard for the parent already exists, it will
+     * be updated to match to new image and settings.
      * @param image The billboard image
      * @param worldPos The geo position of the image, in WGS84
      * @param layerId The id of the layer to which the item belongs, if any
      */
     void addItem( void* parent, const QImage& image, const QgsPoint& worldPos, const QString& layerId = QString() );
+
     /**
      * @brief Removes all billboards which were created by the specified parent
      * @param parent The parent
@@ -74,7 +89,7 @@ class CORE_EXPORT QgsBillBoardRegistry : public QObject
 
   private:
     friend class QgsProject; // Only QgsProject is allowed to construct this class
-    QgsBillBoardRegistry( QObject* parent = 0 ) : QObject( parent ) {}
+    QgsBillBoardRegistry( QObject* parent = nullptr ) : QObject( parent ) {}
 
     QMap<void*, QgsBillBoardItem*> mItems;
 };

@@ -329,10 +329,16 @@ class GUI_EXPORT QgisInterface : public QObject
     /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded) */
     virtual bool unregisterMainWindowAction( QAction* action ) = 0;
 
-    /** Register a new tab in the vector layer properties dialog */
+    /** Register a new tab in the vector layer properties dialog.
+     * @note added in QGIS 2.16
+     * @see unregisterMapLayerPropertiesFactory()
+    */
     virtual void registerMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory* factory ) = 0;
 
-    /** Unregister a previously registered tab in the layer properties dialog */
+    /** Unregister a previously registered tab in the vector layer properties dialog.
+     * @note added in QGIS 2.16
+     * @see registerMapLayerPropertiesFactory()
+    */
     virtual void unregisterMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory* factory ) = 0;
 
     // @todo is this deprecated in favour of QgsContextHelp?

@@ -622,7 +622,7 @@ void QgsVectorLayerProperties::apply()
   diagramPropertiesDialog->apply();
 
   // apply all plugin dialogs
-  foreach ( QgsVectorLayerPropertiesPage* page, mLayerPropertiesPages )
+  Q_FOREACH ( QgsVectorLayerPropertiesPage* page, mLayerPropertiesPages )
   {
     page->apply();
   }

@@ -381,6 +381,7 @@ QgsProject::~QgsProject()
   delete mBadLayerHandler;
   delete mRelationManager;
   delete mRootGroup;
+  delete mBillboardRegistry;
 
   // note that QScopedPointer automatically deletes imp_ when it's destroyed
 } // QgsProject dtor

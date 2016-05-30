@@ -11031,7 +11031,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
 #else
     QgsVectorLayerProperties *vlp = new QgsVectorLayerProperties( vlayer, this );
 #endif
-    foreach ( QgsMapLayerPropertiesFactory* factory, mMapLayerPropertiesFactories )
+    Q_FOREACH ( QgsMapLayerPropertiesFactory* factory, mMapLayerPropertiesFactories )
     {
       vlp->addPropertiesPageFactory( factory );
     }

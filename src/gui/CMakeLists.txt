@@ -613,6 +613,7 @@ SET(QGIS_GUI_HDRS
   qgsmapcanvassnapper.h
   qgsmapcanvassnappingutils.h
   qgsmapcanvastracer.h
+  qgsmaplayerpropertiesfactory.h
   qgsmapmouseevent.h
   qgsmaptip.h
   qgsnumericsortlistviewitem.h

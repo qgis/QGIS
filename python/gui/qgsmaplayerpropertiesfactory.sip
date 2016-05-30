@@ -1,5 +1,7 @@
 /** \ingroup gui
- * \note added in 2.1
+ * \class QgsMapLayerPropertiesFactory
+ * \note added in QGIS 2.16
+ * Factory class for creating custom map layer property pages
  */
 class QgsMapLayerPropertiesFactory
 {
@@ -28,5 +30,5 @@ class QgsMapLayerPropertiesFactory
      * @param view The parent QListView
      * @return The QListWidgetItem for the properties page
      */
-    virtual QListWidgetItem* createVectorLayerPropertiesItem( QgsVectorLayer* layer, QListWidget* view ) = 0;
+    virtual QListWidgetItem* createVectorLayerPropertiesItem( QgsVectorLayer* layer, QListWidget* view ) = 0 /Factory/;
 };

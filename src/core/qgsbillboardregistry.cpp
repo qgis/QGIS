@@ -17,6 +17,11 @@
 
 #include "qgsbillboardregistry.h"
 
+QgsBillBoardRegistry::~QgsBillBoardRegistry()
+{
+  qDeleteAll( mItems );
+}
+
 void QgsBillBoardRegistry::addItem( void* parent, const QImage &image, const QgsPoint &worldPos , const QString &layerId )
 {
   QMap<void*, QgsBillBoardItem*>::iterator it = mItems.find( parent );
