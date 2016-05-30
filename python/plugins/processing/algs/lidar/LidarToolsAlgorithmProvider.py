@@ -8,8 +8,8 @@
     Copyright            : (C) 2012 by Victor Olaya
     Email                : volayaf at gmail dot com
     ---------------------
-    Date                 : April, October 2014
-    Copyright            : (C) 2014 by Martin Isenburg
+    Date                 : April, October 2014 and May 2016
+    Copyright            : (C) 2014 - 2016 by Martin Isenburg
     Email                : martin near rapidlasso point com
     ---------------------
     Date                 : June 2014
@@ -24,7 +24,6 @@
 *                                                                         *
 ***************************************************************************
 """
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -76,6 +75,11 @@ from .lastools.lassplit import lassplit
 from .lastools.lascanopy import lascanopy
 from .lastools.lasoverage import lasoverage
 from .lastools.lasoverlap import lasoverlap
+from .lastools.laspublish import laspublish
+from .lastools.lasground_new import lasground_new
+from .lastools.lascontrol import lascontrol
+from .lastools.lasdiff import lasdiff
+from .lastools.lasheight_classify import lasheight_classify
 
 from .lastools.lastilePro import lastilePro
 from .lastools.lasgroundPro import lasgroundPro
@@ -104,6 +108,9 @@ from .lastools.lasvalidatePro import lasvalidatePro
 from .lastools.lasmergePro import lasmergePro
 from .lastools.lasviewPro import lasviewPro
 from .lastools.lasoverlapPro import lasoverlapPro
+from .lastools.laspublishPro import laspublishPro
+from .lastools.lasgroundPro_new import lasgroundPro_new
+from .lastools.lasheightPro_classify import lasheightPro_classify
 
 from .lastools.flightlinesToDTMandDSM import flightlinesToDTMandDSM
 from .lastools.flightlinesToCHM import flightlinesToCHM
@@ -156,13 +163,14 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
                 lasindex(), lasthin(), lassort(), lascanopy(), lasmerge(),
                 las2shp(), shp2las(), lasnoise(), lassplit(), las2las_filter(),
                 las2las_project(), las2las_transform(), lasoverage(), lasoverlap(),
-                lasquery()
+                lasquery(), laspublish(), lasground_new(), lascontrol(), lasdiff(),
+                lasheight_classify()
             ]
         else:
             lastools = [
                 lasinfo(), lasprecision(), lasvalidate(), las2txt(), txt2las(),
                 laszip(), lasindex(), lasmerge(), las2las_filter(), las2las_project(),
-                las2las_transform(), lasquery()
+                las2las_transform(), lasquery(), lasdiff()
             ]
         self.algs.extend(lastools)
 
@@ -175,7 +183,8 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
                 lasnoisePro(), lasindexPro(), lascanopyPro(), blast2demPro(), lasboundaryPro(),
                 lasinfoPro(), las2lasPro_filter(), las2lasPro_project(), las2lasPro_transform(),
                 lasoveragePro(), txt2lasPro(), las2txtPro(), blast2isoPro(), lasvalidatePro(),
-                lasmergePro(), lasviewPro(), lasoverlapPro()
+                lasmergePro(), lasviewPro(), lasoverlapPro(), laspublishPro(), lasgroundPro_new(),
+                lasheightPro_classify()
             ]
         else:
             lastoolsPro = [
