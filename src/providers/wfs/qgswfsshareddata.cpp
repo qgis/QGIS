@@ -884,7 +884,7 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
       if ( localComputedExtent.isNull() )
         localComputedExtent = bBox;
       else
-        localComputedExtent.combineExtentWith( &bBox );
+        localComputedExtent.combineExtentWith( bBox );
       QgsGeometry* polyBoundingBox = QgsGeometry::fromRect( bBox );
       cachedFeature.setGeometry( polyBoundingBox );
     }

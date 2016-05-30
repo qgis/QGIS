@@ -706,7 +706,7 @@ QgsRectangle QgsWFSProvider::extent()
     return computedExtent;
   }
 
-  computedExtent.combineExtentWith( &mShared->mCapabilityExtent );
+  computedExtent.combineExtentWith( mShared->mCapabilityExtent );
   return computedExtent;
 }
 
