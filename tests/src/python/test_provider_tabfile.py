@@ -13,7 +13,7 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
-
+import tempfile
 from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsVectorDataProvider
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
 from qgis.testing import (
@@ -22,6 +22,9 @@ from qgis.testing import (
 )
 import osgeo.gdal
 from utilities import unitTestDataPath
+import tempfile
+import shutil
+import glob
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -30,6 +33,18 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsTabfileProvider(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        cls.basetestpath = tempfile.mkdtemp()
+        cls.dirs_to_cleanup = [cls.basetestpath]
+
+    @classmethod
+    def tearDownClass(cls):
+        """Run after all tests"""
+        for dirname in cls.dirs_to_cleanup:
+            shutil.rmtree(dirname, True)
 
     def testDateTimeFormats(self):
         # check that date and time formats are correctly interpreted
@@ -74,6 +89,7 @@ class TestPyQgsTabfileProvider(unittest.TestCase):
         self.assertTrue(vl.commitChanges())
         self.assertEquals(vl.dataProvider().property("_debug_open_mode"), "read-only")
         self.assertTrue(vl.dataProvider().isValid())
+
 
 if __name__ == '__main__':
     unittest.main()
