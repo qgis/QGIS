@@ -174,6 +174,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     virtual void setEncoding( const QString& e ) override;
 
+    virtual bool enterUpdateMode() override;
+
+    virtual bool leaveUpdateMode() override;
 
     /** Return vector file filter string
      *
@@ -271,6 +274,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     void forceReload() override;
 
+    /** Closes and re-open the datasource */
+    void reloadData() override;
+
   protected:
     /** Loads fields from input file to member attributeFields */
     void loadFields();
@@ -287,7 +293,15 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /** Clean shapefile from features which are marked as deleted */
     void repack();
 
-    void open();
+    enum OpenMode
+    {
+      OpenModeInitial,
+      OpenModeSameAsCurrent,
+      OpenModeForceReadOnly,
+      OpenModeForceUpdate,
+    };
+
+    void open( OpenMode mode );
     void close();
 
   private:
@@ -355,7 +369,24 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /** Whether the file is opened in write mode*/
     bool mWriteAccess;
 
+    /** Whether the file can potentially be opened in write mode (but not necessarily currently) */
+    bool mWriteAccessPossible;
+
+    /** Whether the open mode of the datasource changes w.r.t calls to enterUpdateMode() / leaveUpdateMode() */
+    bool mDynamicWriteAccess;
+
     bool mShapefileMayBeCorrupted;
+
+    /** Converts the geometry to the layer type if necessary. Takes ownership of the passed geometry */
+    OGRGeometryH ConvertGeometryIfNecessary( OGRGeometryH );
+
+    int mUpdateModeStackDepth;
+
+    void computeCapabilities();
+
+    int mCapabilities;
+
+    bool doInitialActionsForEdition();
 };
 
 
