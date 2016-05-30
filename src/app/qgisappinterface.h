@@ -290,8 +290,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     /** Register a new tab in the vector layer properties dialog.
      * @note added in QGIS 2.16
-     * @see unregisterMapLayerPropertiesFactory()
-    */
+     * @note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * @see unregisterMapLayerPropertiesFactory() */
     virtual void registerMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory* factory ) override;
 
     /** Unregister a previously registered tab in the vector layer properties dialog.

@@ -281,8 +281,9 @@ class QgisInterface : QObject
 
     /** Register a new tab in the vector layer properties dialog.
      * @note added in QGIS 2.16
-     * @see unregisterMapLayerPropertiesFactory()
-    */
+     * @note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * @see unregisterMapLayerPropertiesFactory() */
     virtual void registerMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory* factory ) = 0;
 
     /** Unregister a previously registered tab in the vector layer properties dialog.
