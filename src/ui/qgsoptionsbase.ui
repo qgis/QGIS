@@ -58,6 +58,9 @@
         <number>0</number>
        </property>
        <item>
+        <widget class="QgsFilterLineEdit" name="mSearchLineEdit"/>
+       </item>
+       <item>
         <widget class="QListWidget" name="mOptionsListWidget">
          <property name="minimumSize">
           <size>
@@ -1803,6 +1806,16 @@
                    <widget class="QCheckBox" name="cbxCompileExpressions">
                     <property name="text">
                      <string>Execute expressions on server-side if possible</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="cbxEvaluateDefaultValues">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When digitizing a new feature, default values are retrieved from the database. With this option turned on, the default values will be evaluated at the time of digitizing. With this option turned off, the default values will be evaluated at the time of saving.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="text">
+                     <string>Evaluate default values</string>
                     </property>
                    </widget>
                   </item>
@@ -5465,6 +5478,11 @@
    <extends>QTabWidget</extends>
    <header>qgsautheditorwidgets.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

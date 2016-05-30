@@ -18,16 +18,49 @@
 #define QGSOPTIONSDIALOGBASE_H
 
 #include "qgisgui.h"
+#include <functional>
 
 #include <QDialog>
 #include <QPointer>
 #include <QSettings>
+#include <QStyledItemDelegate>
 #include "qgis_gui.h"
+
 
 class QDialogButtonBox;
 class QListWidget;
+class QModelIndex;
+class QPalette;
+class QPainter;
 class QStackedWidget;
+class QStyleOptionViewItem;
 class QSplitter;
+
+class QgsFilterLineEdit;
+
+
+class GUI_EXPORT QgsSearchHighlightOptionWidget
+{
+  public:
+    explicit QgsSearchHighlightOptionWidget( QWidget* widget = 0 );
+    ~QgsSearchHighlightOptionWidget();
+
+    bool isValid();
+
+    bool searchHighlight( QString searchText );
+
+    void reset();
+
+    QString widgetName();
+
+  private:
+    QWidget* mWidget;
+    QPalette mOriginalPalette;
+    QPalette::ColorRole mColorRole;
+    QColor mColor;
+    std::function < QString( QWidget* ) > mText;
+};
+
 
 /** \ingroup gui
  * \class QgsOptionsDialogBase
@@ -80,6 +113,14 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      */
     bool iconOnly() {return mIconOnly;}
 
+  public slots:
+
+    /**
+     * searchText searches for a text in all the pages of the stacked widget and highlight the results
+     * @param text the text to search
+     */
+    void searchText( QString text );
+
   protected slots:
     void updateOptionsListVerticalTabs();
     void optionsStackedWidget_CurrentChanged( int indx );
@@ -92,12 +133,17 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
 
     virtual void updateWindowTitle();
 
+    void registerTextSearch();
+
+    QList< QPair< QgsSearchHighlightOptionWidget, int > > mRegisteredSearchWidgets;
+
     QString mOptsKey;
     bool mInit;
     QListWidget* mOptListWidget;
     QStackedWidget* mOptStackedWidget;
     QSplitter* mOptSplitter;
     QDialogButtonBox* mOptButtonBox;
+    QgsFilterLineEdit* mSearchLineEdit;
     QString mDialogTitle;
     bool mIconOnly;
     // pointer to app or custom, external QSettings
