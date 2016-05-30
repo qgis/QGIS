@@ -106,6 +106,8 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
      */
     void setMapCanvas( QgsMapCanvas* canvas );
 
+    QgsSymbolV2* symbol() { return mSymbol; }
+
   protected:
     //! Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent * event ) override;

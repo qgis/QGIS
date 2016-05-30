@@ -26,6 +26,7 @@ class QgsFeatureRendererV2;
 class QgsSymbolV2SelectorDialog;
 class QgsMapCanvas;
 
+
 /**
   Base class for renderer settings widgets
 
@@ -87,6 +88,8 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
      * All widgets will fire this event to notify of an internal change.
      */
     void widgetChanged();
+
+    void panelOpened( bool opened );
 
   protected:
     QgsVectorLayer* mLayer;
