@@ -81,6 +81,12 @@ bool QgsVectorDataProvider::deleteAttributes( const QgsAttributeIds &attributes 
   return false;
 }
 
+bool QgsVectorDataProvider::renameAttributes( const QgsFieldNameMap& renamedAttributes )
+{
+  Q_UNUSED( renamedAttributes );
+  return false;
+}
+
 bool QgsVectorDataProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
   Q_UNUSED( attr_map );

@@ -89,6 +89,8 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      */
     virtual bool addAttributes( const QList<QgsField> &attributes ) override;
 
+    virtual bool renameAttributes( const QgsFieldNameMap& renamedAttributes ) override;
+
     /**
      * Deletes existing attributes
      * @param attributes a set containing names of attributes
@@ -131,7 +133,6 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     be prudent to check this value per intended operation.
      */
     virtual int capabilities() const override;
-
 
     /* Implementation of functions from QgsDataProvider */
 

@@ -375,7 +375,6 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
 {
   for ( QList<QgsField>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
-    // Why are attributes restricted to int,double and string only?
     switch ( it->type() )
     {
       case QVariant::Int:
@@ -402,6 +401,30 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
     }
   }
   return true;
+}
+
+bool QgsMemoryProvider::renameAttributes( const QgsFieldNameMap& renamedAttributes )
+{
+  QgsFieldNameMap::const_iterator renameIt = renamedAttributes.constBegin();
+  bool result = true;
+  for ( ; renameIt != renamedAttributes.constEnd(); ++renameIt )
+  {
+    int fieldIndex = renameIt.key();
+    if ( fieldIndex < 0 || fieldIndex >= mFields.count() )
+    {
+      result = false;
+      continue;
+    }
+    if ( mFields.indexFromName( renameIt.value() ) >= 0 )
+    {
+      //field name already in use
+      result = false;
+      continue;
+    }
+
+    mFields[ fieldIndex ].setName( renameIt.value() );
+  }
+  return result;
 }
 
 bool QgsMemoryProvider::deleteAttributes( const QgsAttributeIds& attributes )
@@ -506,7 +529,7 @@ bool QgsMemoryProvider::createSpatialIndex()
 int QgsMemoryProvider::capabilities() const
 {
   return AddFeatures | DeleteFeatures | ChangeGeometries |
-         ChangeAttributeValues | AddAttributes | DeleteAttributes | CreateSpatialIndex |
+         ChangeAttributeValues | AddAttributes | DeleteAttributes | RenameAttributes | CreateSpatialIndex |
          SelectAtId | SelectGeometryAtId | CircularGeometries;
 }
 

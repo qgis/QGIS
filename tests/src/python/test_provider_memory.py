@@ -262,6 +262,44 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         for f in myFields:
             assert f == importedFields.field(f.name())
 
+    def testRenameAttributes(self):
+        layer = QgsVectorLayer("Point", "test", "memory")
+        provider = layer.dataProvider()
+
+        res = provider.addAttributes([QgsField("name", QVariant.String, ),
+                                      QgsField("age", QVariant.Int),
+                                      QgsField("size", QVariant.Double)])
+        layer.updateFields()
+        assert res, "Failed to add attributes"
+        ft = QgsFeature()
+        ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
+        ft.setAttributes(["Johny",
+                          20,
+                          0.3])
+        res, t = provider.addFeatures([ft])
+
+        # bad rename
+        self.assertFalse(provider.renameAttributes({-1: 'not_a_field'}))
+        self.assertFalse(provider.renameAttributes({100: 'not_a_field'}))
+        # already exists
+        self.assertFalse(provider.renameAttributes({1: 'name'}))
+
+        # rename one field
+        self.assertTrue(provider.renameAttributes({1: 'this_is_the_new_age'}))
+        self.assertEqual(provider.fields().at(1).name(), 'this_is_the_new_age')
+        layer.updateFields()
+        fet = next(layer.getFeatures())
+        self.assertEqual(fet.fields()[1].name(), 'this_is_the_new_age')
+
+        # rename two fields
+        self.assertTrue(provider.renameAttributes({1: 'mapinfo_is_the_stone_age', 2: 'super_size'}))
+        self.assertEqual(provider.fields().at(1).name(), 'mapinfo_is_the_stone_age')
+        self.assertEqual(provider.fields().at(2).name(), 'super_size')
+        layer.updateFields()
+        fet = next(layer.getFeatures())
+        self.assertEqual(fet.fields()[1].name(), 'mapinfo_is_the_stone_age')
+        self.assertEqual(fet.fields()[2].name(), 'super_size')
+
 
 class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
 
