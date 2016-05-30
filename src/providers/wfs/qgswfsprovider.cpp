@@ -59,6 +59,7 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri, const QgsWFSCapabilities::Ca
 {
   mShared->mCaps = caps;
   connect( mShared.data(), SIGNAL( raiseError( const QString& ) ), this, SLOT( pushErrorSlot( const QString& ) ) );
+  connect( mShared.data(), SIGNAL( extentUpdated() ), this, SIGNAL( fullExtentCalculated() ) );
 
   if ( uri.isEmpty() )
   {
@@ -684,7 +685,29 @@ QgsCoordinateReferenceSystem QgsWFSProvider::crs()
 
 QgsRectangle QgsWFSProvider::extent()
 {
-  return mExtent;
+  // Some servers return completely buggy extent in their capabilities response
+  // so mix it with the extent actually got from the downloaded features
+  QgsRectangle computedExtent( mShared->computedExtent() );
+  QgsDebugMsg( "computedExtent: " + computedExtent.toString() );
+  QgsDebugMsg( "mCapabilityExtent: " + mShared->mCapabilityExtent.toString() );
+
+  // If we didn't get any feature, then return capabilities extent.
+  if ( computedExtent.isNull() )
+    return mShared->mCapabilityExtent;
+
+  // If the capabilities extent is completely off from the features, then
+  // use feature extent.
+  // Case of standplaats layer of http://geodata.nationaalgeoregister.nl/bag/wfs
+  if ( !computedExtent.intersects( mShared->mCapabilityExtent ) )
+    return computedExtent;
+
+  if ( mShared->downloadFinished() )
+  {
+    return computedExtent;
+  }
+
+  computedExtent.combineExtentWith( &mShared->mCapabilityExtent );
+  return computedExtent;
 }
 
 bool QgsWFSProvider::isValid()
@@ -1378,9 +1401,9 @@ bool QgsWFSProvider::getCapabilities()
         QgsDebugMsg( "src:" + src.authid() );
         QgsDebugMsg( "dst:" + mShared->mSourceCRS.authid() );
 
-        mExtent = ct.transformBoundingBox( r, QgsCoordinateTransform::ForwardTransform );
+        mShared->mCapabilityExtent = ct.transformBoundingBox( r, QgsCoordinateTransform::ForwardTransform );
 
-        QgsDebugMsg( "layer ext:" + mExtent.toString() );
+        QgsDebugMsg( "layer ext:" + mShared->mCapabilityExtent.toString() );
       }
       if ( mShared->mCaps.featureTypes[i].insertCap )
       {

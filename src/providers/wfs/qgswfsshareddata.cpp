@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <math.h> // M_PI
+
 #include "qgswfsconstants.h"
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
@@ -34,6 +36,7 @@
 
 #include <QCryptographicHash>
 
+
 QgsWFSSharedData::QgsWFSSharedData( const QString& uri )
     : mURI( uri )
     , mSourceCRS( 0 )
@@ -48,6 +51,7 @@ QgsWFSSharedData::QgsWFSSharedData( const QString& uri )
     , mFeatureCountExact( false )
     , mGetFeatureHitsIssued( false )
     , mTotalFeaturesAttemptedToBeCached( 0 )
+    , mTryFetchingOneFeature( false )
 {
   // Needed because used by a signal
   qRegisterMetaType< QVector<QgsWFSFeatureGmlIdPair> >( "QVector<QgsWFSFeatureGmlIdPair>" );
@@ -514,6 +518,7 @@ int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator* iterator, QgsRecta
     delete mDownloader;
     mMutex.lock();
     mDownloadFinished = false;
+    mComputedExtent = QgsRectangle();
     mDownloader = new QgsWFSThreadedFeatureDownloader( this );
     QEventLoop loop;
     connect( mDownloader, SIGNAL( ready() ), &loop, SLOT( quit() ) );
@@ -826,6 +831,7 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
     existingGmlIds = getExistingCachedGmlIds( featureList );
   QVector<QgsWFSFeatureGmlIdPair> updatedFeatureList;
 
+  QgsRectangle localComputedExtent( mComputedExtent );
   Q_FOREACH ( QgsWFSFeatureGmlIdPair featPair, featureList )
   {
     const QgsFeature& gmlFeature = featPair.first;
@@ -874,8 +880,13 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
 
       cachedFeature.setAttribute( hexwkbGeomIdx, QVariant( QString( array.toHex().data() ) ) );
 
-      QgsGeometry* polyBoudingBox = QgsGeometry::fromRect( geometry->boundingBox() );
-      cachedFeature.setGeometry( polyBoudingBox );
+      QgsRectangle bBox( geometry->boundingBox() );
+      if ( localComputedExtent.isNull() )
+        localComputedExtent = bBox;
+      else
+        localComputedExtent.combineExtentWith( &bBox );
+      QgsGeometry* polyBoundingBox = QgsGeometry::fromRect( bBox );
+      cachedFeature.setGeometry( polyBoundingBox );
     }
     else
     {
@@ -936,13 +947,28 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
       if ( !mFeatureCountExact )
         mFeatureCount += featureListToCache.size();
       mTotalFeaturesAttemptedToBeCached += featureListToCache.size();
+      if ( !localComputedExtent.isNull() && mComputedExtent.isNull() && !mTryFetchingOneFeature &&
+           !localComputedExtent.intersects( mCapabilityExtent ) )
+      {
+        QgsMessageLog::logMessage( tr( "Layer extent reported by the server is not correct. "
+                                       "You may need to zoom again on layer while features are being downloaded" ), tr( "WFS" ) );
+      }
+      mComputedExtent = localComputedExtent;
     }
   }
 
   featureList = updatedFeatureList;
 
+  emit extentUpdated();
+
   QgsDebugMsg( QString( "end %1" ).arg( featureList.size() ) );
 
+}
+
+QgsRectangle QgsWFSSharedData::computedExtent()
+{
+  QMutexLocker locker( &mMutex );
+  return mComputedExtent;
 }
 
 void QgsWFSSharedData::pushError( const QString& errorMsg )
@@ -970,6 +996,36 @@ void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
   mDownloadFinished = true;
   if ( success && !mRect.isEmpty() )
   {
+    // In the case we requested an extent that includes the extent reported by GetCapabilities response,
+    // that we have no filter and we got no features, then it is not unlikely that the capabilities
+    // might be wrong. In which case, query one feature so that we got a beginning of extent from
+    // which the user will be able to zoom out. This is far from being ideal...
+    if ( featureCount == 0 && mRect.contains( mCapabilityExtent ) && mWFSFilter.isEmpty() &&
+         mCaps.supportsHits && !mGeometryAttribute.isEmpty() && !mTryFetchingOneFeature )
+    {
+      QgsDebugMsg( "Capability extent is probably wrong. Starting a new request with one feature limit to get at least one feature" );
+      mTryFetchingOneFeature = true;
+      QgsWFSSingleFeatureRequest request( this );
+      mComputedExtent = request.getExtent();
+      if ( !mComputedExtent.isNull() )
+      {
+        // Grow the extent by ~ 50 km (completely arbitrary number if you wonder!)
+        // so that it is sufficiently zoomed out
+        if ( mSourceCRS.mapUnits() == QGis::Meters )
+          mComputedExtent.grow( 50. * 1000. );
+        else if ( mSourceCRS.mapUnits() == QGis::Degrees )
+          mComputedExtent.grow( 50. / 110 );
+        QgsMessageLog::logMessage( tr( "Layer extent reported by the server is not correct. You may need to zoom on layer and then zoom out to see all fetchures" ), tr( "WFS" ) );
+      }
+      mMutex.unlock();
+      if ( !mComputedExtent.isNull() )
+      {
+        emit extentUpdated();
+      }
+      mMutex.lock();
+      return;
+    }
+
     // Arbitrary threshold to avoid the cache of BBOX to grow out of control.
     // Note: we could be smarter and keep some BBOXes, but the saturation is
     // unlikely to happen in practice, so just clear everything.
@@ -1099,6 +1155,41 @@ int QgsWFSSharedData::getFeatureCount( bool issueRequestIfNeeded )
   return mFeatureCount;
 }
 
+QgsGmlStreamingParser* QgsWFSSharedData::createParser()
+{
+  QgsGmlStreamingParser::AxisOrientationLogic axisOrientationLogic( QgsGmlStreamingParser::Honour_EPSG_if_urn );
+  if ( mURI.ignoreAxisOrientation() )
+  {
+    axisOrientationLogic = QgsGmlStreamingParser::Ignore_EPSG;
+  }
+
+  if ( mLayerPropertiesList.size() )
+  {
+    QList< QgsGmlStreamingParser::LayerProperties > layerPropertiesList;
+    Q_FOREACH ( QgsOgcUtils::LayerProperties layerProperties, mLayerPropertiesList )
+    {
+      QgsGmlStreamingParser::LayerProperties layerPropertiesOut;
+      layerPropertiesOut.mName = layerProperties.mName;
+      layerPropertiesOut.mGeometryAttribute = layerProperties.mGeometryAttribute;
+      layerPropertiesList << layerPropertiesOut;
+    }
+
+    return new QgsGmlStreamingParser( layerPropertiesList,
+                                      mFields,
+                                      mMapFieldNameToSrcLayerNameFieldName,
+                                      axisOrientationLogic,
+                                      mURI.invertAxisOrientation() );
+  }
+  else
+  {
+    return new QgsGmlStreamingParser( mURI.typeName(),
+                                      mGeometryAttribute,
+                                      mFields,
+                                      axisOrientationLogic,
+                                      mURI.invertAxisOrientation() );
+  }
+}
+
 
 // -------------------------
 
@@ -1164,4 +1255,69 @@ QString QgsWFSFeatureHitsRequest::errorMessageWithReason( const QString& reason 
 {
   return tr( "Download of feature count failed: %1" ).arg( reason );
 }
+
+
+// -------------------------
+
+
+QgsWFSSingleFeatureRequest::QgsWFSSingleFeatureRequest( QgsWFSSharedData* shared )
+    : QgsWFSRequest( shared->mURI.uri() ), mShared( shared )
+{
+}
+
+QgsWFSSingleFeatureRequest::~QgsWFSSingleFeatureRequest()
+{
+}
+
+QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
+{
+  QUrl getFeatureUrl( mUri.baseURL() );
+  getFeatureUrl.addQueryItem( "REQUEST", "GetFeature" );
+  getFeatureUrl.addQueryItem( "VERSION",  mShared->mWFSVersion );
+  if ( mShared->mWFSVersion .startsWith( "2.0" ) )
+    getFeatureUrl.addQueryItem( "TYPENAMES", mUri.typeName() );
+  else
+    getFeatureUrl.addQueryItem( "TYPENAME", mUri.typeName() );
+  if ( mShared->mWFSVersion .startsWith( "2.0" ) )
+    getFeatureUrl.addQueryItem( "COUNT", QString::number( 1 ) );
+  else
+    getFeatureUrl.addQueryItem( "MAXFEATURES", QString::number( 1 ) );
+
+  if ( !sendGET( getFeatureUrl, true ) )
+    return -1;
+
+  const QByteArray& buffer = response();
+
+  QgsDebugMsg( "parsing QgsWFSSingleFeatureRequest: " + buffer );
+
+  // parse XML
+  QgsGmlStreamingParser* parser = mShared->createParser();
+  QString gmlProcessErrorMsg;
+  QgsRectangle extent;
+  if ( parser->processData( buffer, true, gmlProcessErrorMsg ) )
+  {
+    QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> featurePtrList =
+      parser->getAndStealReadyFeatures();
+    QVector<QgsWFSFeatureGmlIdPair> featureList;
+    for ( int i = 0;i < featurePtrList.size();i++ )
+    {
+      QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair& featPair = featurePtrList[i];
+      QgsFeature f( *( featPair.first ) );
+      const QgsGeometry* geometry = f.constGeometry();
+      if ( geometry )
+      {
+        extent = geometry->boundingBox();
+      }
+      delete featPair.first;
+    }
+  }
+  delete parser;
+  return extent;
+}
+
+QString QgsWFSSingleFeatureRequest::errorMessageWithReason( const QString& reason )
+{
+  return tr( "Download of feature failed: %1" ).arg( reason );
+}
+
 

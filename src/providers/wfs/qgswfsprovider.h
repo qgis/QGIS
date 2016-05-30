@@ -153,8 +153,6 @@ class QgsWFSProvider : public QgsVectorDataProvider
     //! String used to define a subset of the layer
     QString mSubsetString;
 
-    /** Bounding box for the layer*/
-    QgsRectangle mExtent;
     /** Geometry type of the features in this layer*/
     mutable QGis::WkbType mWKBType;
     /** Flag if provider is valid*/

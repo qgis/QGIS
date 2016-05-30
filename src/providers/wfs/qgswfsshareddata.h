@@ -97,18 +97,28 @@ class QgsWFSSharedData : public QObject
     /** Compute WFS filter from the sql or filter in the URI */
     bool computeFilter( QString& errorMsg );
 
+    /** Return extent computed from currently downloaded features */
+    QgsRectangle computedExtent();
+
     /** Return srsName */
     QString srsName() const;
+
+    /** Return whether the feature download is finished */
+    bool downloadFinished() const { return mDownloadFinished; }
 
   signals:
 
     /** Raise error */
     void raiseError( const QString& errorMsg );
 
+    /** Extent has been updated */
+    void extentUpdated();
+
   protected:
     friend class QgsWFSFeatureIterator;
     friend class QgsWFSFeatureDownloader;
     friend class QgsWFSProvider;
+    friend class QgsWFSSingleFeatureRequest;
 
     /** Datasource URI */
     QgsWFSDataSourceURI mURI;
@@ -149,6 +159,12 @@ class QgsWFSSharedData : public QObject
     /** SELECT DISTINCT */
     bool mDistinctSelect;
 
+    /** Bounding box for the layer as returned by GetCapabilities */
+    QgsRectangle mCapabilityExtent;
+
+    /** Create GML parser */
+    QgsGmlStreamingParser* createParser();
+
   private:
 
     /** Main mutex to protect most data members that can be modified concurrently */
@@ -185,6 +201,9 @@ class QgsWFSSharedData : public QObject
     /** Whether mFeatureCount value is exact or approximate / in construction */
     bool mFeatureCountExact;
 
+    /** Extent computed from downloaded features */
+    QgsRectangle mComputedExtent;
+
     /** Filename of the on-disk cache */
     QString mCacheDbname;
 
@@ -202,6 +221,9 @@ class QgsWFSSharedData : public QObject
 
     /** Number of features that have been cached, or attempted to be cached */
     int mTotalFeaturesAttemptedToBeCached;
+
+    /** Whether we have already tried fetching one feature after realizing that the capabilities extent is wrong */
+    bool mTryFetchingOneFeature;
 
     /** Returns the set of gmlIds that have already been downloaded and
         cached, so as to avoid to cache duplicates. */
@@ -231,6 +253,25 @@ class QgsWFSFeatureHitsRequest: public QgsWFSRequest
 
   protected:
     virtual QString errorMessageWithReason( const QString& reason ) override;
+};
+
+/** Utility class to issue a GetFeature requets with maxfeatures/count=1
+ * Used by QgsWFSSharedData::endOfDownload() when capabilities extent are likely wrong */
+class QgsWFSSingleFeatureRequest: public QgsWFSRequest
+{
+    Q_OBJECT
+  public:
+    explicit QgsWFSSingleFeatureRequest( QgsWFSSharedData* shared );
+    ~QgsWFSSingleFeatureRequest();
+
+    /** Return the feature  extent of the single feature requested */
+    QgsRectangle getExtent();
+
+  protected:
+    virtual QString errorMessageWithReason( const QString& reason ) override;
+
+  private:
+    QgsWFSSharedData* mShared;
 };
 
 #endif // QGSWFSSHAREDDATA_H
