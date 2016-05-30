@@ -10,17 +10,22 @@ class QgsImageFetcher : QObject
 #include <qgsrasterdataprovider.h>
 %End
   public:
-
+    /** Constructor */
     QgsImageFetcher( QObject* parent = 0 );
+    /** Destructor */
     virtual ~QgsImageFetcher();
 
-    // Make sure to connect to "finish" and "error" before starting
+    /** Starts the image download
+     * @note Make sure to connect to "finish" and "error" before starting */
     virtual void start() = 0;
 
   signals:
-
+    /** Emitted when the download completes
+     *  @param legend The downloaded legend image */
     void finish( const QImage& legend );
+    /** Emitted to report progress */
     void progress( qint64 received, qint64 total );
+    /** Emitted when an error occurs */
     void error( const QString& msg );
 };
 

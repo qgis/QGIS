@@ -60,17 +60,22 @@ class CORE_EXPORT QgsImageFetcher : public QObject
 {
     Q_OBJECT
   public:
-
+    /** Constructor */
     QgsImageFetcher( QObject* parent = 0 ) : QObject( parent ) {}
+    /** Destructor */
     virtual ~QgsImageFetcher() {}
 
-    // Make sure to connect to "finish" and "error" before starting
+    /** Starts the image download
+     * @note Make sure to connect to "finish" and "error" before starting */
     virtual void start() = 0;
 
   signals:
-
+    /** Emitted when the download completes
+     *  @param legend The downloaded legend image */
     void finish( const QImage& legend );
+    /** Emitted to report progress */
     void progress( qint64 received, qint64 total );
+    /** Emitted when an error occurs */
     void error( const QString& msg );
 };
 
