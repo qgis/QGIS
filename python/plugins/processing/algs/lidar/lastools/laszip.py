@@ -51,7 +51,7 @@ class laszip(LAStoolsAlgorithm):
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-	if (LAStoolsUtils.hasWine()):
+        if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip")]

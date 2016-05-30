@@ -44,8 +44,8 @@ class lasheightPro(LAStoolsAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('lasheightPro')
         self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
-	self.addParametersIgnoreClass1GUI()
-	self.addParametersIgnoreClass2GUI()
+        self.addParametersIgnoreClass1GUI()
+        self.addParametersIgnoreClass2GUI()
         self.addParameter(ParameterBoolean(lasheightPro.REPLACE_Z,
                                            self.tr("replace z"), False))
         self.addParameter(ParameterBoolean(lasheightPro.DROP_ABOVE,
@@ -67,8 +67,8 @@ class lasheightPro(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
- 	self.addParametersIgnoreClass1Commands(commands)
-	self.addParametersIgnoreClass2Commands(commands)
+        self.addParametersIgnoreClass1Commands(commands)
+        self.addParametersIgnoreClass2Commands(commands)
         if self.getParameterValue(lasheightPro.REPLACE_Z):
             commands.append("-replace_z")
         if self.getParameterValue(lasheightPro.DROP_ABOVE):

@@ -74,21 +74,21 @@ class lasground_new(LAStoolsAlgorithm):
         self.addParametersHorizontalAndVerticalFeetCommands(commands)
         method = self.getParameterValue(lasground_new.TERRAIN)
         if (method == 5):
-	    commands.append("-step")
+            commands.append("-step")
             commands.append(unicode(self.getParameterValue(lasground_new.STEP)))
-	    commands.append("-bulge")
+            commands.append("-bulge")
             commands.append(unicode(self.getParameterValue(lasground_new.BULGE)))
-	    commands.append("-spike")
+            commands.append("-spike")
             commands.append(unicode(self.getParameterValue(lasground_new.SPIKE)))
-	    commands.append("-spike_down")
+            commands.append("-spike_down")
             commands.append(unicode(self.getParameterValue(lasground_new.DOWN_SPIKE)))
-	    commands.append("-offset")
+            commands.append("-offset")
             commands.append(unicode(self.getParameterValue(lasground_new.OFFSET)))
-	else:
+        else:
             commands.append("-" + lasground_new.TERRAINS[method])
         granularity = self.getParameterValue(lasground_new.GRANULARITY)
-	if (granularity != 1):
-	    commands.append("-" + lasground_new.GRANULARITIES[granularity])
+        if (granularity != 1):
+            commands.append("-" + lasground_new.GRANULARITIES[granularity])
         self.addParametersPointOutputCommands(commands)
         self.addParametersAdditionalCommands(commands)
 

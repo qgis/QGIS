@@ -41,7 +41,7 @@ class lasmergePro(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
 
     def processAlgorithm(self, progress):
-	if (LAStoolsUtils.hasWine()):
+        if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasmerge.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasmerge")]

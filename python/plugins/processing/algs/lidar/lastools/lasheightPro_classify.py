@@ -38,10 +38,10 @@ class lasheightPro_classify(LAStoolsAlgorithm):
     CLASSIFY_BELOW_HEIGHT = "CLASSIFY_BELOW_HEIGHT"
     CLASSIFY_BETWEEN1 = "CLASSIFY_BETWEEN1"
     CLASSIFY_BETWEEN1_HEIGHT_FROM = "CLASSIFY_BETWEEN1_HEIGHT_FROM"
-    CLASSIFY_BETWEEN1_HEIGHT_TO= "CLASSIFY_BETWEEN1_HEIGHT_TO"
+    CLASSIFY_BETWEEN1_HEIGHT_TO = "CLASSIFY_BETWEEN1_HEIGHT_TO"
     CLASSIFY_BETWEEN2 = "CLASSIFY_BETWEEN2"
     CLASSIFY_BETWEEN2_HEIGHT_FROM = "CLASSIFY_BETWEEN2_HEIGHT_FROM"
-    CLASSIFY_BETWEEN2_HEIGHT_TO= "CLASSIFY_BETWEEN2_HEIGHT_TO"
+    CLASSIFY_BETWEEN2_HEIGHT_TO = "CLASSIFY_BETWEEN2_HEIGHT_TO"
     CLASSIFY_ABOVE = "CLASSIFY_ABOVE"
     CLASSIFY_ABOVE_HEIGHT = "CLASSIFY_ABOVE_HEIGHT"
 
@@ -51,8 +51,8 @@ class lasheightPro_classify(LAStoolsAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('lasheightPro_classify')
         self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
-	self.addParametersIgnoreClass1GUI()
-	self.addParametersIgnoreClass2GUI()
+        self.addParametersIgnoreClass1GUI()
+        self.addParametersIgnoreClass2GUI()
         self.addParameter(ParameterBoolean(lasheightPro_classify.REPLACE_Z,
                                            self.tr("replace z"), False))
         self.addParameter(ParameterSelection(lasheightPro_classify.CLASSIFY_BELOW,
@@ -86,32 +86,32 @@ class lasheightPro_classify(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
-	self.addParametersIgnoreClass1Commands(commands)
-	self.addParametersIgnoreClass2Commands(commands)
+        self.addParametersIgnoreClass1Commands(commands)
+        self.addParametersIgnoreClass2Commands(commands)
         if self.getParameterValue(lasheightPro_classify.REPLACE_Z):
             commands.append("-replace_z")
         classify = self.getParameterValue(lasheightPro_classify.CLASSIFY_BELOW)
-	if (classify != 0):
+        if (classify != 0):
             commands.append("-classify_below")
             commands.append(unicode(self.getParameterValue(lasheightPro_classify.CLASSIFY_BELOW_HEIGHT)))
-	    commands.append(unicode(classify))
+            commands.append(unicode(classify))
         classify = self.getParameterValue(lasheightPro_classify.CLASSIFY_BETWEEN1)
-	if (classify != 0):
+        if (classify != 0):
             commands.append("-classify_between")
             commands.append(unicode(self.getParameterValue(lasheightPro_classify.CLASSIFY_BETWEEN1_HEIGHT_FROM)))
             commands.append(unicode(self.getParameterValue(lasheightPro_classify.CLASSIFY_BETWEEN1_HEIGHT_TO)))
-	    commands.append(unicode(classify))
+            commands.append(unicode(classify))
         classify = self.getParameterValue(lasheightPro_classify.CLASSIFY_BETWEEN2)
-	if (classify != 0):
+        if (classify != 0):
             commands.append("-classify_between")
             commands.append(unicode(self.getParameterValue(lasheightPro_classify.CLASSIFY_BETWEEN2_HEIGHT_FROM)))
             commands.append(unicode(self.getParameterValue(lasheightPro_classify.CLASSIFY_BETWEEN2_HEIGHT_TO)))
-	    commands.append(unicode(classify))
+            commands.append(unicode(classify))
         classify = self.getParameterValue(lasheightPro_classify.CLASSIFY_ABOVE)
-	if (classify != 0):
+        if (classify != 0):
             commands.append("-classify_above")
             commands.append(unicode(self.getParameterValue(lasheightPro_classify.CLASSIFY_ABOVE_HEIGHT)))
-	    commands.append(unicode(classify))
+            commands.append(unicode(classify))
         self.addParametersOutputDirectoryCommands(commands)
         self.addParametersOutputAppendixCommands(commands)
         self.addParametersPointOutputFormatCommands(commands)

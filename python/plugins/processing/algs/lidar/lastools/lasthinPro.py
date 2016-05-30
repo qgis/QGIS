@@ -46,8 +46,8 @@ class lasthinPro(LAStoolsAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('lasthinPro')
         self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
-	self.addParametersIgnoreClass1GUI()
-	self.addParametersIgnoreClass2GUI()
+        self.addParametersIgnoreClass1GUI()
+        self.addParametersIgnoreClass2GUI()
         self.addParameter(ParameterNumber(lasthinPro.THIN_STEP,
                                           self.tr("size of grid used for thinning"), 0, None, 1.0))
         self.addParameter(ParameterSelection(lasthinPro.OPERATION,
@@ -71,8 +71,8 @@ class lasthinPro(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasthin")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
-	self.addParametersIgnoreClass1Commands(commands)
-	self.addParametersIgnoreClass2Commands(commands)
+        self.addParametersIgnoreClass1Commands(commands)
+        self.addParametersIgnoreClass2Commands(commands)
         step = self.getParameterValue(lasthinPro.THIN_STEP)
         if step != 0.0:
             commands.append("-step")
@@ -80,7 +80,7 @@ class lasthinPro(LAStoolsAlgorithm):
         operation = self.getParameterValue(lasthinPro.OPERATION)
         if (operation != 0):
             commands.append("-" + self.OPERATIONS[operation])
-	    if (operation >= 4):
+        if (operation >= 4):
                 commands.append(unicode(self.getParameterValue(lasthinPro.THRESHOLD_OR_INTERVAL)))
         if self.getParameterValue(lasthinPro.WITHHELD):
             commands.append("-withheld")
