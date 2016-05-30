@@ -9,6 +9,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/providers/wms
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
@@ -83,6 +84,14 @@ SET_TARGET_PROPERTIES(qgis_wcsprovidertest PROPERTIES
 )
 
 ADD_QGIS_TEST(gdalprovidertest testqgsgdalprovider.cpp)
+
+ADD_QGIS_TEST(wmscapabilititestest
+              testqgswmscapabilities.cpp)
+TARGET_LINK_LIBRARIES(qgis_wmscapabilititestest wmsprovider_a)
+
+ADD_QGIS_TEST(wmsprovidertest
+              testqgswmsprovider.cpp)
+TARGET_LINK_LIBRARIES(qgis_wmsprovidertest wmsprovider_a)
 
 #############################################################
 # WCS public servers test:
