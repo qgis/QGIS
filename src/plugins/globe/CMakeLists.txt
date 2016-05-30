@@ -12,7 +12,6 @@ SET (GLOBE_PLUGIN_SRCS
     globe_plugin.cpp
     qgsglobetilesource.cpp
     qgsglobeplugindialog.cpp
-    qgsglobeinterface.cpp
     qgsglobevectorlayerproperties.cpp
     qgsglobefeatureidentify.cpp
     qgsglobefrustumhighlight.cpp
@@ -27,14 +26,12 @@ SET (GLOBE_PLUGIN_UIS
 SET (GLOBE_PLUGIN_MOC_HDRS
     globe_plugin.h
     qgsglobeplugindialog.h
-    qgsglobeinterface.h
     qgsglobevectorlayerproperties.h
     qgsglobetilesource.h
     qgsglobewidget.h
 )
 
 SET (GLOBE_PLUGIN_HDRS
-    qgsglobeinterface.h
     qgsglobevectorlayerproperties.h
     qgsglobefeatureidentify.h
     qgsglobefrustumhighlight.h
@@ -92,11 +89,6 @@ TARGET_LINK_LIBRARIES(globeplugin
   ${OPENTHREADS_LIBRARY}
 )
 
-IF (WITH_BINDINGS)
-  # Restore default CXX flags (without visibility=hidden, which breaks python bindings)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_OLD}")
-  ADD_SUBDIRECTORY(python)
-ENDIF (WITH_BINDINGS)
 ADD_SUBDIRECTORY(featuresource)
 
 ########################################################

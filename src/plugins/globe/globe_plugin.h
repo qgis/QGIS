@@ -24,7 +24,6 @@
 #include <osg/ref_ptr>
 #include <osgEarth/Version>
 
-#include "qgsglobeinterface.h"
 #include "qgsglobeplugindialog.h"
 #include "qgsrectangle.h"
 
@@ -35,7 +34,6 @@ class QgsAnnotationItem;
 class QgsBillBoardItem;
 class QgsGlobeAnnotation;
 class QgsGlobeLayerPropertiesFactory;
-class QgsGlobeInterface;
 class QgsGlobePluginDialog;
 class QgsGlobeWidget;
 class QgsMapLayer;
@@ -85,8 +83,6 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     GlobePlugin( QgisInterface* theQgisInterface );
     ~GlobePlugin();
 
-    //! offer an interface for python plugins
-    virtual QgsPluginInterface* pluginInterface();
     //! init the gui
     virtual void initGui() override;
     //! unload the plugin
@@ -130,8 +126,6 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     osgEarth::QtGui::ViewerWidget* mViewerWidget;
     QgsGlobeWidget* mDockWidget;
     QgsGlobePluginDialog* mSettingsDialog;
-
-    QgsGlobeInterface mGlobeInterface;
     QString mBaseLayerUrl;
     QList<QgsGlobePluginDialog::LayerDataSource> mImagerySources;
     QList<QgsGlobePluginDialog::LayerDataSource> mElevationSources;

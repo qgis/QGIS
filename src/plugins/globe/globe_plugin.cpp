@@ -18,8 +18,6 @@
 
 // Include this first to avoid _POSIX_C_SOURCE redefined warnings
 // see http://bytes.com/topic/python/answers/30009-warning-_posix_c_source-redefined
-#include "qgsglobeinterface.h"
-
 #include "globe_plugin.h"
 #include "qgsglobeplugindialog.h"
 #include "qgsglobefeatureidentify.h"
@@ -238,7 +236,6 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
     , mViewerWidget( 0 )
     , mDockWidget( 0 )
     , mSettingsDialog( 0 )
-    , mGlobeInterface( this )
     , mSelectedLat( 0. )
     , mSelectedLon( 0. )
     , mSelectedElevation( 0. )
@@ -1294,9 +1291,4 @@ QGISEXTERN QString experimental()
 QGISEXTERN void unload( QgisPlugin * thePluginPointer )
 {
   delete thePluginPointer;
-}
-
-QgsPluginInterface* GlobePlugin::pluginInterface()
-{
-  return &mGlobeInterface;
 }
