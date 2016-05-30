@@ -95,8 +95,13 @@ bool QgsRasterChecker::runTest( const QString& theVerifiedKey, QString theVerifi
     compare( "Source data type", verifiedProvider->srcDataType( band ), expectedProvider->srcDataType( band ), mReport, typesOk );
     compare( "Data type", verifiedProvider->dataType( band ), expectedProvider->dataType( band ), mReport, typesOk );
 
-    // TODO: not yet sure if noDataValue() should exist at all
-    //compare( "No data (NULL) value", verifiedProvider->noDataValue( band ), expectedProvider->noDataValue( band ), mReport, typesOk );
+    // Check nodata
+    bool noDataOk = true;
+    compare( "No data (NULL) value existence flag", verifiedProvider->srcHasNoDataValue( band ), expectedProvider->srcHasNoDataValue( band ), mReport, noDataOk );
+    if ( verifiedProvider->srcHasNoDataValue( band ) && expectedProvider->srcHasNoDataValue( band ) )
+    {
+      compare( "No data (NULL) value", verifiedProvider->srcNoDataValue( band ), expectedProvider->srcNoDataValue( band ), mReport, noDataOk );
+    }
 
     bool statsOk = true;
     QgsRasterBandStats verifiedStats =  verifiedProvider->bandStatistics( band );
@@ -122,7 +127,7 @@ bool QgsRasterChecker::runTest( const QString& theVerifiedKey, QString theVerifi
     mReport += "</table>";
     mReport += "<br>";
 
-    if ( !statsOk || !typesOk )
+    if ( !statsOk || !typesOk || !noDataOk )
     {
       allOk = false;
       // create values table anyway so that values are available

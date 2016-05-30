@@ -342,7 +342,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
   {
     iter->startRasterRead( i, nCols, nRows, outputExtent );
     blockList.push_back( nullptr );
-    if ( destProvider ) // no tiles
+    if ( destProvider && destHasNoDataValueList.value( i - 1 ) ) // no tiles
     {
       destProvider->setNoDataValue( i, destNoDataValueList.value( i - 1 ) );
     }
@@ -436,7 +436,10 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
         //write data to output file. todo: loop over the data list
         for ( int i = 1; i <= nBands; ++i )
         {
-          partDestProvider->setNoDataValue( i, destNoDataValueList.value( i - 1 ) );
+          if ( destHasNoDataValueList.value( i - 1 ) )
+          {
+            partDestProvider->setNoDataValue( i, destNoDataValueList.value( i - 1 ) );
+          }
           partDestProvider->write( destBlockList[i - 1]->bits( 0 ), i, iterCols, iterRows, 0, 0 );
           delete destBlockList[i - 1];
           addToVRT( partFileName( fileIndex ), i, iterCols, iterRows, iterLeft, iterTop );
