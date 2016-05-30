@@ -22,9 +22,14 @@ __date__ = 'May 2016'
 __copyright__ = '(C) 2016, Victor Olaya'
 
 # This will get replaced with a git SHA1 when you do a git archive
-from PyQt4 import QtGui, uic, QtCore
+
 import os
 from collections import defaultdict
+
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QTreeWidgetItem, QFileDialog,
+
 from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -35,7 +40,7 @@ WIDGET, BASE = uic.loadUiType(
 class ScriptSelector(BASE, WIDGET):
 
     def __init__(self):
-        QtGui.QDialog.__init__(self)
+        super(ScriptSelector, self).__init__(None)
         self.setupUi(self)
 
         self.scripts = None
@@ -46,13 +51,13 @@ class ScriptSelector(BASE, WIDGET):
             allScripts[script.group].append(script)
 
         for group, groupScripts in allScripts.iteritems():
-            groupItem = QtGui.QTreeWidgetItem()
+            groupItem = QTreeWidgetItem()
             groupItem.setText(0, group)
-            groupItem.setFlags(groupItem.flags() | QtCore.Qt.ItemIsTristate)
+            groupItem.setFlags(groupItem.flags() | Qt.ItemIsTristate)
             for script in groupScripts:
-                scriptItem = QtGui.QTreeWidgetItem()
-                scriptItem.setFlags(scriptItem.flags() | QtCore.Qt.ItemIsUserCheckable)
-                scriptItem.setCheckState(0, QtCore.Qt.Checked)
+                scriptItem = QTreeWidgetItem()
+                scriptItem.setFlags(scriptItem.flags() | Qt.ItemIsUserCheckable)
+                scriptItem.setCheckState(0, Qt.Checked)
                 scriptItem.script = script
                 scriptItem.setText(0, script.name)
                 groupItem.addChild(scriptItem)
@@ -69,12 +74,12 @@ class ScriptSelector(BASE, WIDGET):
         self.buttonBox.rejected.connect(self.cancelPressed)
 
     def selectFolder(self):
-        folder = QtGui.QFileDialog.getExistingDirectory(self, 'Select folder')
+        folder = QFileDialog.getExistingDirectory(self, 'Select folder')
         if folder:
             self.folderBox.setText(folder)
 
     def checkScripts(self, b):
-        state = QtCore.Qt.Checked if b else QtCore.Qt.Unchecked
+        state = Qt.Checked if b else Qt.Unchecked
         for i in xrange(self.scriptsTree.topLevelItemCount()):
             item = self.scriptsTree.topLevelItem(i)
             for j in xrange(item.childCount()):
@@ -98,7 +103,7 @@ class ScriptSelector(BASE, WIDGET):
             groupItem = self.scriptsTree.topLevelItem(i)
             for j in xrange(groupItem.childCount()):
                 scriptItem = groupItem.child(j)
-                if scriptItem.checkState(0) == QtCore.Qt.Checked:
+                if scriptItem.checkState(0) == Qt.Checked:
                     self.scripts.append(scriptItem.script)
         self.folder = self._getValue(self.folderBox)
         try:
