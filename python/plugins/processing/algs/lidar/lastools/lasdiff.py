@@ -36,7 +36,7 @@ class lasdiff(LAStoolsAlgorithm):
     OTHER_POINT_FILE = "OTHER_POINT_FILE"
     CREATE_DIFFERENCE_FILE = "CREATE_DIFFERENCE_FILE"
     SHUTUP = "SHUTUP"
-    SHUTUP_AFTER = ["5", "10", "50", "100", "1000", "10000", "50000"]    
+    SHUTUP_AFTER = ["5", "10", "50", "100", "1000", "10000", "50000"]
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('lasdiff')
@@ -53,7 +53,7 @@ class lasdiff(LAStoolsAlgorithm):
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-	if (LAStoolsUtils.hasWine()):
+        if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasdiff.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasdiff")]
@@ -65,7 +65,7 @@ class lasdiff(LAStoolsAlgorithm):
             commands.append('"' + file + '"')
         shutup = self.getParameterValue(lasdiff.SHUTUP)
         if (shutup != 0):
-	    commands.append("-shutup")
+            commands.append("-shutup")
             commands.append(lasdiff.SHUTUP_AFTER[shutup])
         if self.getParameterValue(lasdiff.CREATE_DIFFERENCE_FILE):
             self.addParametersPointOutputCommands(commands)

@@ -91,11 +91,11 @@ class laspublish(LAStoolsAlgorithm):
             commands.append("-no_edl")
         if not self.getParameterValue(laspublish.SHOW_SKYBOX):
             commands.append("-no_skybox")
-	portal_directory = self.getParameterValue(laspublish.PORTAL_DIRECTORY)
+        portal_directory = self.getParameterValue(laspublish.PORTAL_DIRECTORY)
         if portal_directory != "":
             commands.append("-odir")
             commands.append('"' + portal_directory + '"')
-	copy_or_move = self.getParameterValue(laspublish.COPY_OR_MOVE)
+        copy_or_move = self.getParameterValue(laspublish.COPY_OR_MOVE)
         if (copy_or_move == 0):
             commands.append("-copy_source_files")
         elif (copy_or_move == 1):
@@ -103,15 +103,15 @@ class laspublish(LAStoolsAlgorithm):
             commands.append("-really_move")
         if self.getParameterValue(laspublish.OVERWRITE_EXISTING):
             commands.append("-overwrite")
-	portal_html_page = self.getParameterValue(laspublish.PORTAL_HTML_PAGE)
+        portal_html_page = self.getParameterValue(laspublish.PORTAL_HTML_PAGE)
         if portal_html_page != "":
             commands.append("-o")
             commands.append('"' + portal_html_page + '"')
-	title = self.getParameterValue(laspublish.PORTAL_TITLE)
+        title = self.getParameterValue(laspublish.PORTAL_TITLE)
         if title != "":
             commands.append("-title")
             commands.append('"' + title + '"')
-	description = self.getParameterValue(laspublish.PORTAL_DESCRIPTION)
+        description = self.getParameterValue(laspublish.PORTAL_DESCRIPTION)
         if description != "":
             commands.append("-description")
             commands.append('"' + description + '"')
