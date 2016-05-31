@@ -257,6 +257,7 @@ void QgsFieldsProperties::loadRows()
 
   mFieldsList->resizeColumnsToContents();
   connect( mFieldsList, SIGNAL( cellChanged( int, int ) ), this, SLOT( attributesListCellChanged( int, int ) ) );
+  updateFieldRenamingStatus();
 }
 
 void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
@@ -306,6 +307,12 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
 
   for ( int i = 0; i < attrCommentCol; i++ )
     mFieldsList->item( row, i )->setFlags( mFieldsList->item( row, i )->flags() & ~Qt::ItemIsEditable );
+
+  bool canRenameFields = mLayer->isEditable() && ( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::RenameAttributes ) && !mLayer->readOnly();
+  if ( canRenameFields )
+    mFieldsList->item( row, attrNameCol )->setFlags( mFieldsList->item( row, attrNameCol )->flags() | Qt::ItemIsEditable );
+  else
+    mFieldsList->item( row, attrNameCol )->setFlags( mFieldsList->item( row, attrNameCol )->flags() & ~Qt::ItemIsEditable );
 
   FieldConfig cfg( mLayer, idx );
   QPushButton *pb;
@@ -596,6 +603,7 @@ bool QgsFieldsProperties::addAttribute( const QgsField &field )
 void QgsFieldsProperties::editingToggled()
 {
   updateButtons();
+  updateFieldRenamingStatus();
 }
 
 QgsFieldsProperties::FieldConfig QgsFieldsProperties::configForRow( int row )
@@ -709,7 +717,7 @@ void QgsFieldsProperties::updateButtons()
 
 void QgsFieldsProperties::attributesListCellChanged( int row, int column )
 {
-  if ( column == attrAliasCol && mLayer ) //only consider attribute aliases in this function
+  if ( column == attrAliasCol && mLayer )
   {
     int idx = mFieldsList->item( row, attrIdCol )->text().toInt();
 
@@ -731,6 +739,14 @@ void QgsFieldsProperties::attributesListCellChanged( int row, int column )
       {
         mLayer->remAttributeAlias( idx );
       }
+    }
+  }
+  else if ( column == attrNameCol && mLayer && mLayer->isEditable() )
+  {
+    QTableWidgetItem *nameItem = mFieldsList->item( row, column );
+    if ( nameItem && !nameItem->text().isEmpty() )
+    {
+      mLayer->renameAttribute( row,  nameItem->text() );
     }
   }
 }
@@ -806,6 +822,19 @@ void QgsFieldsProperties::setupEditTypes()
 QString QgsFieldsProperties::editTypeButtonText( QgsVectorLayer::EditType type )
 {
   return editTypeMap[ type ];
+}
+
+void QgsFieldsProperties::updateFieldRenamingStatus()
+{
+  bool canRenameFields = mLayer->isEditable() && ( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::RenameAttributes ) && !mLayer->readOnly();
+
+  for ( int row = 0; row < mFieldsList->rowCount(); ++row )
+  {
+    if ( canRenameFields )
+      mFieldsList->item( row, attrNameCol )->setFlags( mFieldsList->item( row, attrNameCol )->flags() | Qt::ItemIsEditable );
+    else
+      mFieldsList->item( row, attrNameCol )->setFlags( mFieldsList->item( row, attrNameCol )->flags() & ~Qt::ItemIsEditable );
+  }
 }
 
 QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent )
