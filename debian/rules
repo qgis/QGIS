@@ -50,6 +50,8 @@ QGIS_ABI=$(QGIS_MAJOR).$(QGIS_MINOR).$(QGIS_PATCH)
 GRASS=grass$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2))
 GRASSVER=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1))
 
+WITH_GLOBE=$(shell dpkg --compare-versions "$$(dpkg-query -W --showformat='$${Version}' libosgearth-dev)" lt 2.7 && echo 1)
+
 CMAKE_OPTS := \
 	-DBUILDNAME=$(DEB_BUILD_NAME) \
 	-DCMAKE_VERBOSE_MAKEFILE=1 \
@@ -63,7 +65,6 @@ CMAKE_OPTS := \
 	-DQGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
 	-DWITH_APIDOC=TRUE \
 	-DWITH_CUSTOM_WIDGETS=TRUE \
-	-DWITH_GLOBE=TRUE \
 	-DWITH_INTERNAL_HTTPLIB2=FALSE \
 	-DWITH_INTERNAL_JINJA2=FALSE \
 	-DWITH_INTERNAL_MARKUPSAFE=FALSE \
@@ -95,6 +96,10 @@ ifneq (,$(findstring $(DISTRIBUTION),"precise"))
 	CMAKE_OPTS += -DWITH_INTERNAL_NOSE2=TRUE -DWITH_INTERNAL_SIX=TRUE
 else
 	CMAKE_OPTS += -DWITH_INTERNAL_NOSE2=FALSE -DWITH_INTERNAL_SIX=FALSE
+endif
+
+ifneq (,$(WITH_GLOBE))
+	CMAKE_OPTS += -DWITH_GLOBE=TRUE
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"wheezy precise"))
@@ -180,6 +185,10 @@ endif
 # - remove remaining comments
 
 CONTROL_EXPRESSIONS = $(DISTRIBUTION) grass$(GRASSVER)
+
+ifneq (,$(WITH_GLOBE))
+	CONTROL_EXPRESSIONS += globe
+endif
 
 ifneq (,$(WITH_ORACLE))
 	CONTROL_EXPRESSIONS += oracle

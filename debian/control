@@ -31,6 +31,7 @@ Build-Depends:
  python-dev,
  python-qt4-dev (>= 4.1.0),
  python-sip-dev (>= 4.5.0) | python-sip4-dev (>= 4.5.0) | sip4 (>= 4.5),
+ libosgearth-dev,
  git,
  txt2tags,
  doxygen
