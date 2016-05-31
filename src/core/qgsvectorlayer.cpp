@@ -2360,6 +2360,14 @@ void QgsVectorLayer::remAttributeAlias( int attIndex )
   }
 }
 
+bool QgsVectorLayer::renameAttribute( int attIndex, const QString& newName )
+{
+  if ( !mEditBuffer || !mDataProvider )
+    return false;
+
+  return mEditBuffer->renameAttribute( attIndex, newName );
+}
+
 void QgsVectorLayer::addAttributeAlias( int attIndex, const QString& aliasString )
 {
   if ( attIndex < 0 || attIndex >= fields().count() )

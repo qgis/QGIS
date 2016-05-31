@@ -1316,6 +1316,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Removes an alias (a display name) for attributes to display in dialogs */
     void remAttributeAlias( int attIndex );
 
+    /** Renames an attribute field  (but does not commit it).
+     * @param attIndex attribute index
+     * @param newName new name of field
+     * @note added in QGIS 2.16
+    */
+    bool renameAttribute( int attIndex, const QString& newName );
+
     /**
      * Adds a tab (for the attribute editor form) holding groups and fields
      *
