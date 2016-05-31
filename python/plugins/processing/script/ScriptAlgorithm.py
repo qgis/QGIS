@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import re
+import json
 from qgis.core import QgsExpressionContextUtils, QgsExpressionContext
 from qgis.PyQt.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -378,5 +379,5 @@ class ScriptAlgorithm(GeoAlgorithm):
                         if param.name in descriptions:
                             descs[param.name] = unicode(descriptions[param.name])
                 except:
-                    return None
+                    return descs
         return descs
