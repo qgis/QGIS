@@ -735,6 +735,9 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
     mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, 1 );
   }
 
+  // Collection of markers to paint, only used for no curve types.
+  QPolygonF markers;
+
   switch ( QgsWKBTypes::flatType( segmentizedGeometry->geometry()->wkbType() ) )
   {
     case QgsWKBTypes::Point:
@@ -757,6 +760,11 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
         context.painter()->setBrush( QColor( 255, 0, 0, 100 ) );
         context.painter()->drawRect( static_cast<QgsMarkerSymbolV2*>( this )->bounds( pt, context, feature ) );
       }
+
+      if ( drawVertexMarker && !deleteSegmentizedGeometry )
+      {
+        markers << pt;
+      }
     }
     break;
     case QgsWKBTypes::LineString:
@@ -770,6 +778,11 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
       QgsConstWkbSimplifierPtr wkbPtr( segmentizedGeometry->asWkb(), segmentizedGeometry->wkbSize(), context.vectorSimplifyMethod() );
       _getLineString( pts, context, wkbPtr, !tileMapRendering && clipFeaturesToExtent() );
       static_cast<QgsLineSymbolV2*>( this )->renderPolyline( pts, &feature, context, layer, selected );
+
+      if ( drawVertexMarker && !deleteSegmentizedGeometry )
+      {
+        markers = pts;
+      }
     }
     break;
     case QgsWKBTypes::Polygon:
@@ -784,6 +797,16 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
       QgsConstWkbSimplifierPtr wkbPtr( segmentizedGeometry->asWkb(), segmentizedGeometry->wkbSize(), context.vectorSimplifyMethod() );
       _getPolygon( pts, holes, context, wkbPtr, !tileMapRendering && clipFeaturesToExtent() );
       static_cast<QgsFillSymbolV2*>( this )->renderPolygon( pts, ( !holes.isEmpty() ? &holes : nullptr ), &feature, context, layer, selected );
+
+      if ( drawVertexMarker && !deleteSegmentizedGeometry )
+      {
+        markers = pts;
+
+        Q_FOREACH ( const QPolygonF& hole, holes )
+        {
+          markers << hole;
+        }
+      }
     }
     break;
 
@@ -799,6 +822,11 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
       QgsMultiPointV2* mp = static_cast< QgsMultiPointV2* >( segmentizedGeometry->geometry() );
 
+      if ( drawVertexMarker && !deleteSegmentizedGeometry )
+      {
+        markers.reserve( mp->numGeometries() );
+      }
+
       for ( int i = 0; i < mp->numGeometries(); ++i )
       {
         mSymbolRenderContext->setGeometryPartNum( i + 1 );
@@ -807,6 +835,11 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
         const QgsPointV2* point = static_cast< const QgsPointV2* >( mp->geometryN( i ) );
         _getPoint( pt, context, point );
         static_cast<QgsMarkerSymbolV2*>( this )->renderPoint( pt, &feature, context, layer, selected );
+
+        if ( drawVertexMarker && !deleteSegmentizedGeometry )
+        {
+          markers.append( pt );
+        }
       }
     }
     break;
@@ -844,6 +877,18 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
           break;
         }
         static_cast<QgsLineSymbolV2*>( this )->renderPolyline( pts, &feature, context, layer, selected );
+
+        if ( drawVertexMarker && !deleteSegmentizedGeometry )
+        {
+          if ( i == 0 )
+          {
+            markers = pts;
+          }
+          else
+          {
+            markers << pts;
+          }
+        }
       }
     }
     break;
@@ -882,6 +927,23 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
           break;
         }
         static_cast<QgsFillSymbolV2*>( this )->renderPolygon( pts, ( !holes.isEmpty() ? &holes : nullptr ), &feature, context, layer, selected );
+
+        if ( drawVertexMarker && !deleteSegmentizedGeometry )
+        {
+          if ( i == 0 )
+          {
+            markers = pts;
+          }
+          else
+          {
+            markers << pts;
+          }
+
+          Q_FOREACH ( const QPolygonF& hole, holes )
+          {
+            markers << hole;
+          }
+        }
       }
       break;
     }
@@ -910,27 +972,37 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
   if ( drawVertexMarker )
   {
-    const QgsCoordinateTransform* ct = context.coordinateTransform();
-    const QgsMapToPixel& mtp = context.mapToPixel();
-
-    QgsPointV2 vertexPoint;
-    QgsVertexId vertexId;
-    double x, y, z;
-    QPointF mapPoint;
-    while ( geom->geometry()->nextVertex( vertexId, vertexPoint ) )
+    if ( markers.size() > 0 )
     {
-      //transform
-      x = vertexPoint.x();
-      y = vertexPoint.y();
-      z = vertexPoint.z();
-      if ( ct )
+      Q_FOREACH ( QPointF marker, markers )
       {
-        ct->transformInPlace( x, y, z );
+        renderVertexMarker( marker, context, currentVertexMarkerType, currentVertexMarkerSize );
       }
-      mapPoint.setX( x );
-      mapPoint.setY( y );
-      mtp.transformInPlace( mapPoint.rx(), mapPoint.ry() );
-      renderVertexMarker( mapPoint, context, currentVertexMarkerType, currentVertexMarkerSize );
+    }
+    else
+    {
+      const QgsCoordinateTransform* ct = context.coordinateTransform();
+      const QgsMapToPixel& mtp = context.mapToPixel();
+
+      QgsPointV2 vertexPoint;
+      QgsVertexId vertexId;
+      double x, y, z;
+      QPointF mapPoint;
+      while ( geom->geometry()->nextVertex( vertexId, vertexPoint ) )
+      {
+        //transform
+        x = vertexPoint.x();
+        y = vertexPoint.y();
+        z = vertexPoint.z();
+        if ( ct )
+        {
+          ct->transformInPlace( x, y, z );
+        }
+        mapPoint.setX( x );
+        mapPoint.setY( y );
+        mtp.transformInPlace( mapPoint.rx(), mapPoint.ry() );
+        renderVertexMarker( mapPoint, context, currentVertexMarkerType, currentVertexMarkerSize );
+      }
     }
   }
 
