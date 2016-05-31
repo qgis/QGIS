@@ -921,6 +921,12 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QgsMessageLog::logMessage( tr( "QGIS Ready!" ), QString::null, QgsMessageLog::INFO );
 
   mMapTipsVisible = false;
+  // This turns on the map tip if they where active in the last session
+  if ( settings.value( "/qgis/enableMapTips", false ).toBool() )
+  {
+    mActionMapTips->trigger();
+  }
+
   mTrustedMacros = false;
 
   // setup drag drop
@@ -7426,6 +7432,9 @@ void QgisApp::canvasRefreshFinished()
 void QgisApp::toggleMapTips()
 {
   mMapTipsVisible = !mMapTipsVisible;
+  // Store if maptips are active
+  QSettings().setValue( "/qgis/enableMapTips", mMapTipsVisible );
+
   // if off, stop the timer
   if ( !mMapTipsVisible )
   {
