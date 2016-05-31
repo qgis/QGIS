@@ -62,7 +62,7 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
 {
   if ( !layer || !layer->isSpatial() )
   {
-    mLayerTitleLabel->clear();
+    mLayerTitle->setText( QString() );
     mStackedWidget->setCurrentIndex( mNotSupportedPage );
     return;
   }
@@ -177,7 +177,7 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
 
   mUndoWidget->setUndoStack( layer->undoStackStyles() );
 
-  mLayerTitleLabel->setText( layer->name() );
+  mLayerTitle->setText( layer->name() );
 
   if ( layer->type() == QgsMapLayer::VectorLayer )
   {
