@@ -40,6 +40,8 @@ QgsHillshadeRendererWidget::QgsHillshadeRendererWidget( QgsRasterLayer *layer, c
   mZFactor->setValue( 1 );
   mZFactor->setClearValue( 1 );
 
+  mMultiDirection->setChecked( false );
+
   if ( mRasterLayer )
   {
     QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
@@ -63,6 +65,7 @@ QgsHillshadeRendererWidget::QgsHillshadeRendererWidget( QgsRasterLayer *layer, c
   connect( mLightAzimuth, SIGNAL( valueChanged( double ) ), this, SLOT( on_mLightAzimuth_updated( double ) ) );
   connect( mLightAzimuthDial, SIGNAL( valueChanged( int ) ), this, SLOT( on_mLightAzimuthDail_updated( int ) ) );
   connect( mZFactor, SIGNAL( valueChanged( double ) ), this, SIGNAL( widgetChanged() ) );
+  connect( mMultiDirection, SIGNAL( stateChanged( int )), this, SIGNAL( widgetChanged() ) );
 
   QgsBilinearRasterResampler* zoomedInResampler = new QgsBilinearRasterResampler();
   layer->resampleFilter()->setZoomedInResampler( zoomedInResampler );
@@ -91,6 +94,7 @@ QgsRasterRenderer *QgsHillshadeRendererWidget::renderer()
   QgsHillshadeRenderer* renderer = new QgsHillshadeRenderer( provider, band, mLightAzimuth->value(), mLightAngle->value() );
   double value = mZFactor->value();
   renderer->setZFactor( value );
+  renderer->setMultiDirectional( mMultiDirection->checkState() );
   return renderer;
 }
 
@@ -103,6 +107,7 @@ void QgsHillshadeRendererWidget::setFromRenderer( const QgsRasterRenderer *rende
     mLightAngle->setValue( r->altitude() );
     mLightAzimuth->setValue( r->azimuth() );
     mZFactor->setValue( r->zFactor() );
+    mMultiDirection->setChecked( r->multiDirectional() );
   }
 }
 
@@ -119,6 +124,11 @@ void QgsHillshadeRendererWidget::setAzimuth( double azimuth )
 void QgsHillshadeRendererWidget::setZFactor( double zfactor )
 {
   mZFactor->setValue( zfactor );
+}
+
+void QgsHillshadeRendererWidget::setMultiDirectional(bool isMultiDirectional )
+{
+    mMultiDirection->setChecked( isMultiDirectional );
 }
 
 void QgsHillshadeRendererWidget::on_mLightAzimuth_updated( double value )
@@ -152,4 +162,9 @@ double QgsHillshadeRendererWidget::altitude() const
 double QgsHillshadeRendererWidget::zFactor() const
 {
   return mZFactor->value();
+}
+
+bool QgsHillshadeRendererWidget::multiDirectional() const
+{
+    return mMultiDirection->isChecked();
 }
