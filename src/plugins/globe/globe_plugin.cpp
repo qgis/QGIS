@@ -798,7 +798,7 @@ void GlobePlugin::addModelLayer( QgsVectorLayer* vLayer, QgsGlobeVectorLayerConf
       {
         osgEarth::LineSymbol* ls = style.getOrCreateSymbol<osgEarth::LineSymbol>();
         QColor color = sym->color();
-        ls->stroke()->color() = osg::Vec4f( color.redF(), color.greenF(), color.blueF(), color.alphaF() * ( 255.f - vLayer->layerTransparency() ) / 255.f );
+        ls->stroke()->color() = osg::Vec4f( color.redF(), color.greenF(), color.blueF(), color.alphaF() * ( 100.f - vLayer->layerTransparency() ) / 100.f );
         ls->stroke()->width() = 1.0f;
       }
       else if ( sym->type() == QgsSymbolV2::Fill )
@@ -806,7 +806,7 @@ void GlobePlugin::addModelLayer( QgsVectorLayer* vLayer, QgsGlobeVectorLayerConf
         // TODO access border color, etc.
         osgEarth::PolygonSymbol* poly = style.getOrCreateSymbol<osgEarth::PolygonSymbol>();
         QColor color = sym->color();
-        poly->fill()->color() = osg::Vec4f( color.redF(), color.greenF(), color.blueF(), color.alphaF() * ( 255.f - vLayer->layerTransparency() ) / 255.f );
+        poly->fill()->color() = osg::Vec4f( color.redF(), color.greenF(), color.blueF(), color.alphaF() * ( 100.f - vLayer->layerTransparency() ) / 100.f );
         style.addSymbol( poly );
       }
     }
