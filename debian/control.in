@@ -84,9 +84,9 @@ Depends:
  qgis-providers (= ${binary:Version}),
  qgis-common (= ${source:Version})
 Recommends:
+#globe# qgis-plugin-globe
  qgis-plugin-grass,
- qgis-provider-grass,
- qgis-plugin-globe
+ qgis-provider-grass
 Suggests: gpsbabel
 Conflicts: uim-qt3
 Description: Geographic Information System (GIS)
@@ -341,32 +341,32 @@ Description: GRASS plugin for QGIS - architecture-independent data
  This package contains architecture-independent supporting data files for use
  with the QGIS GRASS plugin.
 
-Package: qgis-plugin-globe
-Architecture: any
-Depends:
- qgis (= ${binary:Version}),
- qgis-plugin-globe-common (= ${source:Version}),
- openscenegraph-plugin-osgearth,
- ${shlibs:Depends},
- ${misc:Depends}
-Description: OSG globe plugin for QGIS
- QGIS is a Geographic Information System (GIS) which manages, analyzes and
- display databases of geographic information.
- .
- This plugin enables 3D viewing using OSG globe in the QGIS.
-
-Package: qgis-plugin-globe-common
-Architecture: all
-Depends:
- osgearth-data,
- ${misc:Depends}
-Description: OSG globe plugin for QGIS - architecture-independent data
- QGIS is a Geographic Information System (GIS) which manages, analyzes and
- display databases of geographic information.
- .
- This package contains architecture-independent supporting data files for use
- with the QGIS GLOBE plugin.
-
+#globe#Package: qgis-plugin-globe
+#globe#Architecture: any
+#globe#Depends:
+#globe# qgis (= ${binary:Version}),
+#globe# qgis-plugin-globe-common (= ${source:Version}),
+#globe# openscenegraph-plugin-osgearth,
+#globe# ${shlibs:Depends},
+#globe# ${misc:Depends}
+#globe#Description: OSG globe plugin for QGIS
+#globe# QGIS is a Geographic Information System (GIS) which manages, analyzes and
+#globe# display databases of geographic information.
+#globe# .
+#globe# This plugin enables 3D viewing using OSG globe in the QGIS.
+#globe#
+#globe#Package: qgis-plugin-globe-common
+#globe#Architecture: all
+#globe#Depends:
+#globe# osgearth-data,
+#globe# ${misc:Depends}
+#globe#Description: OSG globe plugin for QGIS - architecture-independent data
+#globe# QGIS is a Geographic Information System (GIS) which manages, analyzes and
+#globe# display databases of geographic information.
+#globe# .
+#globe# This package contains architecture-independent supporting data files for use
+#globe# with the QGIS GLOBE plugin.
+#globe#
 Package: python-qgis
 Architecture: any
 Section: python
