@@ -26,7 +26,7 @@ class QDomDocument;
 class QDomElement;
 class QListWidgetItem;
 
-struct QgsGlobeVectorLayerConfig : public QObject
+class QgsGlobeVectorLayerConfig : public QObject
 {
 public:
   enum RenderingMode

@@ -26,7 +26,7 @@ namespace osgEarth
   class SpatialReference;
 }
 
-struct QgsGlobeFrustumHighlightCallback : public osg::NodeCallback
+class QgsGlobeFrustumHighlightCallback : public osg::NodeCallback
 {
 public:
   QgsGlobeFrustumHighlightCallback( osg::View* view, osgEarth::Terrain* terrain, QgsMapCanvas* mapCanvas, QColor color );
