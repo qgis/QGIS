@@ -26,6 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import json
 
 from PyQt4.QtGui import QIcon
 
@@ -458,7 +459,7 @@ class RAlgorithm(GeoAlgorithm):
                         if param.name in descriptions:
                             descs[param.name] = unicode(descriptions[param.name])
                 except:
-                    return None
+                    return descs
         return descs
 
     def checkBeforeOpeningParametersDialog(self):

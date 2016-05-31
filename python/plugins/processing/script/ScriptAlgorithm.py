@@ -27,6 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 from PyQt4 import QtGui
+import re
+import json
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.Help2Html import getHtmlFromHelpFile
 from processing.core.parameters import ParameterRaster
@@ -358,5 +360,5 @@ class ScriptAlgorithm(GeoAlgorithm):
                         if param.name in descriptions:
                             descs[param.name] = unicode(descriptions[param.name])
                 except:
-                    return None
+                    return descs
         return descs
