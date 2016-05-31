@@ -41,7 +41,7 @@ bool QgsWFSCapabilities::requestCapabilities( bool synchronous )
 
   const QString& version = mUri.version();
   if ( version == QgsWFSConstants::VERSION_AUTO )
-    // MapServer honours the order with the first value being the prefered one
+    // MapServer honours the order with the first value being the preferred one
     url.addQueryItem( "ACCEPTVERSIONS", "2.0.0,1.1.0,1.0.0" );
   else
     url.addQueryItem( "VERSION", version );

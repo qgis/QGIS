@@ -96,7 +96,7 @@ This release has following new features:
 - QGIS Server : STARTINDEX param in WFS GetFeature Request
 - QGIS Server : showFeatureCount in GetLegendGraphic
 - QGIS Server : Enhance store project keyword list
-- QGIS Server : Option to avoid rendering artefacts at edges of tiles
+- QGIS Server : Option to avoid rendering artifacts at edges of tiles
 - QGIS Server : WMS INSPIRE Capabilities
 - QGIS Server : Configuration checker in project properties
 - QGIS Server : Add short name to layers, groups and project

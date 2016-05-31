@@ -454,7 +454,7 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>If checked, a seperate world file which georeferences exported images will be created</string>
+             <string>If checked, a separate world file which georeferences exported images will be created</string>
             </property>
             <property name="text">
              <string>Save world file</string>

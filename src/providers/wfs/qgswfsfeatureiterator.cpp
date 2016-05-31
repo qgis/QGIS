@@ -830,7 +830,7 @@ void QgsWFSFeatureIterator::featureReceivedSynchronous( QVector<QgsWFSFeatureGml
     thisStr.sprintf( "%p", this );
     ++ mCounter;
     mWriterFilename = QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QString( "iterator_%1_%2.bin" ).arg( thisStr ).arg( mCounter ) );
-    QgsDebugMsg( QString( "Transfering feature iterator cache to %1" ).arg( mWriterFilename ) );
+    QgsDebugMsg( QString( "Transferring feature iterator cache to %1" ).arg( mWriterFilename ) );
     mWriterFile = new QFile( mWriterFilename );
     if ( !mWriterFile->open( QIODevice::WriteOnly ) )
     {

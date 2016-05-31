@@ -118,7 +118,7 @@ QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget * parent, Qt::WindowFlags fl
 
 QgsSQLComposerDialog::~QgsSQLComposerDialog()
 {
-  // Besides avoid memory leaks, this is usefull since QSciAPIs::prepare()
+  // Besides avoid memory leaks, this is useful since QSciAPIs::prepare()
   // starts a thread. If the dialog was killed before the thread had started,
   // he could run against a dead widget. This can happen in unit tests.
   delete mQueryEdit->lexer()->apis();
@@ -162,7 +162,7 @@ void QgsSQLComposerDialog::accept()
     if ( !mSQLValidatorCallback->isValid( sql(), errorMsg ) )
     {
       if ( errorMsg.isEmpty() )
-        errorMsg = tr( "An error occured during evaluation of the SQL statement" );
+        errorMsg = tr( "An error occurred during evaluation of the SQL statement" );
       QMessageBox::critical( this, tr( "SQL error" ), errorMsg );
       return;
     }

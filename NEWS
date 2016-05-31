@@ -1,6 +1,6 @@
 QGIS News
 Change history for the QGIS Project
-Tuesday April 12, 2016
+Tuesday May 31, 2016
 
 
 ------------------------------------------------------------------------
@@ -38,8 +38,8 @@ Tuesday April 12, 2016
 ------------------------------------------------------------------------
 
 
-Last Updated: Tuesday April 12, 2016
-Last Change : Wednesday April 06, 2016
+Last Updated: Tuesday May 31, 2016
+Last Change : Tuesday May 31, 2016
 
 
   1. What's new in Version 2.14 'Essen'?
@@ -101,7 +101,7 @@ This release has following new features:
 - QGIS Server : STARTINDEX param in WFS GetFeature Request
 - QGIS Server : showFeatureCount in GetLegendGraphic
 - QGIS Server : Enhance store project keyword list
-- QGIS Server : Option to avoid rendering artefacts at edges of tiles
+- QGIS Server : Option to avoid rendering artifacts at edges of tiles
 - QGIS Server : WMS INSPIRE Capabilities
 - QGIS Server : Configuration checker in project properties
 - QGIS Server : Add short name to layers, groups and project

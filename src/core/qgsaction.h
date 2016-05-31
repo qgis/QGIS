@@ -114,7 +114,7 @@ class CORE_EXPORT QgsAction
     //! Whether to capture output for display when this action is run
     bool capture() const { return mCaptureOutput; }
 
-    //! Wheter this action should be shown on the attribute table
+    //! Whether this action should be shown on the attribute table
     bool showInAttributeTable() const { return mShowInAttributeTable; }
 
     //! Checks if the action is runable on the current platform

@@ -78,7 +78,7 @@ QgsSearchWidgetWrapper::FilterFlags QgsValueMapSearchWidgetWrapper::defaultFlags
 
 QString QgsValueMapSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const
 {
-  //if unselect value, always pass
+  //if deselect value, always pass
   if ( mComboBox->currentIndex() == 0 )
     return QString();
 

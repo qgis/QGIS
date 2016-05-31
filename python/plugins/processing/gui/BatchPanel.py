@@ -216,7 +216,7 @@ class BatchPanel(BASE, WIDGET):
             QMessageBox.critical(
                 self,
                 self.tr('Error'),
-                self.tr('An error occured while reading your file.'))
+                self.tr('An error occurred while reading your file.'))
 
     def setValueInWidget(self, widget, value):
         if isinstance(widget, (BatchInputSelectionPanel, QLineEdit, FileSelectionPanel)):

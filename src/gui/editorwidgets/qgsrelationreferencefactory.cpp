@@ -130,13 +130,13 @@ QString QgsRelationReferenceFactory::representValue( QgsVectorLayer* vl, int fie
   QgsVectorLayer* referencingLayer = relation.referencingLayer();
   if ( vl != referencingLayer )
   {
-    QgsDebugMsg( "representValue() with inconsistant vl parameter w.r.t relation referencingLayer" );
+    QgsDebugMsg( "representValue() with inconsistent vl parameter w.r.t relation referencingLayer" );
     return value.toString();
   }
   int referencingFieldIdx = referencingLayer->fieldNameIndex( relation.fieldPairs().at( 0 ).first );
   if ( referencingFieldIdx != fieldIdx )
   {
-    QgsDebugMsg( "representValue() with inconsistant fieldIdx parameter w.r.t relation referencingFieldIdx" );
+    QgsDebugMsg( "representValue() with inconsistent fieldIdx parameter w.r.t relation referencingFieldIdx" );
     return value.toString();
   }
   QgsVectorLayer* referencedLayer = relation.referencedLayer();

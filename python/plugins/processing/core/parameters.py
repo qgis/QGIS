@@ -359,7 +359,7 @@ class ParameterMultipleInput(ParameterDataObject):
             return True
 
         if _minNumInputs < 1 and not self.optional:
-            # dont allow to set negative or null number of inputs if parameter isn't optional
+            # don't allow to set negative or null number of inputs if parameter isn't optional
             return False
 
         self.minNumInputs = int(_minNumInputs)

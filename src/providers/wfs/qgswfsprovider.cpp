@@ -1425,7 +1425,7 @@ bool QgsWFSProvider::getCapabilities()
 
   if ( !foundLayer )
   {
-    QgsMessageLog::logMessage( tr( "Could not find typename %1 in capabilites for url %2" ).
+    QgsMessageLog::logMessage( tr( "Could not find typename %1 in capabilities for url %2" ).
                                arg( thisLayerName ).arg( dataSourceUri() ), tr( "WFS" ) );
   }
 

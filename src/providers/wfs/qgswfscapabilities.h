@@ -105,7 +105,7 @@ class QgsWFSCapabilities : public QgsWFSRequest
     const Capabilities& capabilities() const { return mCaps; }
 
   signals:
-    //! emitted when the capabilities have been fully parsed, or an error occured */
+    //! emitted when the capabilities have been fully parsed, or an error occurred */
     void gotCapabilities();
 
   private slots:
