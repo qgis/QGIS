@@ -1144,13 +1144,14 @@ void QgsAttributeForm::init()
         w = formWidget;
         mFormEditorWidgets.insert( idx, formWidget );
         formWidget->createSearchWidgetWrappers( widgetType, idx, widgetConfig, mContext );
+
+        l->setBuddy( eww->widget() );
       }
       else
       {
         w = new QLabel( QString( "<p style=\"color: red; font-style: italic;\">Failed to create widget with type '%1'</p>" ).arg( widgetType ) );
       }
 
-      l->setBuddy( eww->widget() );
 
       if ( w )
         w->setObjectName( field.name() );
