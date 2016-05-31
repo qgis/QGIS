@@ -352,7 +352,9 @@ class RAlgorithm(GeoAlgorithm):
             elif isinstance(param, ParameterExtent):
                 if param.value:
                     tokens = unicode(param.value).split(',')
-                    commands.append(param.name + ' = extent(' + tokens[0] + ',' + tokens[2] + ',' + tokens[1] + ',' + tokens[3] + ')')
+                    # Extent from raster package is "xmin, xmax, ymin, ymax" like in Processing
+                    # http://www.inside-r.org/packages/cran/raster/docs/Extent
+                    commands.append(param.name + ' = extent(' + tokens[0] + ',' + tokens[1] + ',' + tokens[2] + ',' + tokens[3] + ')')
                 else:
                     commands.append(param.name + ' = NULL')
             elif isinstance(param, ParameterCrs):
