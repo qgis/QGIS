@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -29,10 +30,13 @@ from qgis.PyQt.QtCore import Qt, QUrl, QMetaObject
 from qgis.PyQt.QtWidgets import (QDialog, QDialogButtonBox, QLabel, QLineEdit,
                                  QFrame, QPushButton, QSizePolicy, QVBoxLayout,
                                  QHBoxLayout, QTabWidget, QWidget, QScrollArea,
-                                 QComboBox, QTableWidgetItem, QMessageBox)
+                                 QComboBox, QTableWidgetItem, QMessageBox,
+                                 QTextBrowser)
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
 from qgis.core import QgsNetworkAccessManager
+
+from qgis.gui import QgsMessageBar
 
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
@@ -82,13 +86,13 @@ class ModelerParametersDialog(QDialog):
     def __init__(self, alg, model, algName=None):
         QDialog.__init__(self)
         self.setModal(True)
-        #The algorithm to define in this dialog. It is an instance of GeoAlgorithm
+        # The algorithm to define in this dialog. It is an instance of GeoAlgorithm
         self._alg = alg
-        #The resulting algorithm after the user clicks on OK. it is an instance of the container Algorithm class
+        # The resulting algorithm after the user clicks on OK. it is an instance of the container Algorithm class
         self.alg = None
-        #The model this algorithm is going to be added to
+        # The model this algorithm is going to be added to
         self.model = model
-        #The name of the algorithm in the model, in case we are editing it and not defining it for the first time
+        # The name of the algorithm in the model, in case we are editing it and not defining it for the first time
         self._algName = algName
         self.setupUi()
         self.params = None
@@ -111,6 +115,10 @@ class ModelerParametersDialog(QDialog):
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setSpacing(5)
         self.verticalLayout.setMargin(20)
+
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.verticalLayout.addWidget(self.bar)
 
         hLayout = QHBoxLayout()
         hLayout.setSpacing(5)
@@ -203,7 +211,6 @@ class ModelerParametersDialog(QDialog):
         self.txtHelp = QTextBrowser()
 
         html = None
-        url = None
         isText, algHelp = self._alg.help()
         if algHelp is not None:
             algHelp = algHelp if isText else QUrl(algHelp)
@@ -526,6 +533,8 @@ class ModelerParametersDialog(QDialog):
             if param.hidden:
                 continue
             if not self.setParamValue(alg, param, self.valueItems[param.name]):
+                self.bar.pushMessage("Error", "Wrong or missing value for parameter '%s'" % param.description,
+                                     level=QgsMessageBar.WARNING)
                 return None
         for output in outputs:
             if not output.hidden:
@@ -732,9 +741,7 @@ class ModelerParametersDialog(QDialog):
         self.alg = self.createAlgorithm()
         if self.alg is not None:
             self.close()
-        else:
-            QMessageBox.warning(self, self.tr('Unable to add algorithm'),
-                                self.tr('Wrong or missing parameter values'))
+
 
     def cancelPressed(self):
         self.alg = None
