@@ -350,12 +350,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! set wheel zoom factor (should be greater than 1)
     void setWheelFactor( double factor );
 
-    //! Zoom in with fixed factor
-    void zoomIn();
-
-    //! Zoom out with fixed factor
-    void zoomOut();
-
     //! Zoom to a specific scale
     void zoomScale( double scale );
 
@@ -536,6 +530,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.16
     //! @see scaleLocked()
     void setScaleLocked( bool isLocked );
+
+    //! Zoom in with fixed factor
+    void zoomIn();
+
+    //! Zoom out with fixed factor
+    void zoomOut();
 
   private slots:
     //! called when current maptool is destroyed

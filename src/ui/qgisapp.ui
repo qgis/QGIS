@@ -933,7 +933,7 @@
     <string>Zoom In</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl++</string>
+    <string>Ctrl+Alt++</string>
    </property>
   </action>
   <action name="mActionZoomOut">
@@ -948,7 +948,7 @@
     <string>Zoom Out</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+-</string>
+    <string>Ctrl+Alt+-</string>
    </property>
   </action>
   <action name="mActionSelectFeatures">

@@ -279,12 +279,6 @@ class QgsMapCanvas : QGraphicsView
     //! set the wheel zoom factor
     void setWheelFactor( double factor );
 
-    //! Zoom in with fixed factor
-    void zoomIn();
-
-    //! Zoom out with fixed factor
-    void zoomOut();
-
     //! Zoom to a specific scale
     void zoomScale( double scale );
 
@@ -465,6 +459,12 @@ class QgsMapCanvas : QGraphicsView
     //! @note added in 2.16
     //! @see scaleLocked()
     void setScaleLocked( bool isLocked );
+
+    //! Zoom in with fixed factor
+    void zoomIn();
+
+    //! Zoom out with fixed factor
+    void zoomOut();
 
   signals:
     /** Let the owner know how far we are with render operations */

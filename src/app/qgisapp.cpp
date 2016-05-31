@@ -54,6 +54,7 @@
 #include <QRegExp>
 #include <QRegExpValidator>
 #include <QSettings>
+#include <QShortcut>
 #include <QSpinBox>
 #include <QSplashScreen>
 #ifndef QT_NO_OPENSSL
@@ -935,6 +936,14 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mMapCanvas->clearExtentHistory(); // reset zoomnext/zoomlast
   mLastComposerId = 0;
 
+  QAction* zoomAction = new QAction( this );
+  connect( zoomAction, SIGNAL( triggered( bool ) ), mMapCanvas, SLOT( zoomIn() ) );
+  zoomAction->setShortcut( QKeySequence( "Ctrl++" ) );
+  QShortcut* zoomShortCut = new QShortcut( QKeySequence( tr( "Ctrl+=" ) ), this );
+  connect( zoomShortCut, SIGNAL( activated() ), mMapCanvas, SLOT( zoomIn() ) );
+  QAction* zoomOutAction = new QAction( this );
+  connect( zoomOutAction, SIGNAL( triggered( bool ) ), mMapCanvas, SLOT( zoomOut() ) );
+  zoomOutAction->setShortcut( QKeySequence( "Ctrl+-" ) );
 
   // Show a nice tip of the day
   if ( settings.value( QString( "/qgis/showTips%1" ).arg( QGis::QGIS_VERSION_INT / 100 ), true ).toBool() )
