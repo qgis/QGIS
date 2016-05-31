@@ -832,6 +832,181 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer.commitChanges()
         checkAfter2()
 
+    # RENAME ATTRIBUTE
+
+    def test_RenameAttribute(self):
+        layer = createLayerWithOnePoint()
+
+        # without editing mode
+        self.assertFalse(layer.renameAttribute(0, 'renamed'))
+
+        def checkFieldNames(names):
+            flds = layer.fields()
+            f = next(layer.getFeatures())
+            self.assertEqual(flds.count(), len(names))
+            self.assertEqual(f.fields().count(), len(names))
+
+            for idx, expected_name in enumerate(names):
+                self.assertEqual(flds[idx].name(), expected_name)
+                self.assertEqual(f.fields().at(idx).name(), expected_name)
+
+        layer.startEditing()
+
+        checkFieldNames(['fldtxt', 'fldint'])
+
+        self.assertFalse(layer.renameAttribute(-1, 'fldtxt2'))
+        self.assertFalse(layer.renameAttribute(10, 'fldtxt2'))
+        self.assertFalse(layer.renameAttribute(0, 'fldint')) # duplicate name
+
+        self.assertTrue(layer.renameAttribute(0, 'fldtxt2'))
+        checkFieldNames(['fldtxt2', 'fldint'])
+
+        layer.undoStack().undo()
+        checkFieldNames(['fldtxt', 'fldint'])
+        layer.undoStack().redo()
+        checkFieldNames(['fldtxt2', 'fldint'])
+
+        # change two fields
+        self.assertTrue(layer.renameAttribute(1, 'fldint2'))
+        checkFieldNames(['fldtxt2', 'fldint2'])
+        layer.undoStack().undo()
+        checkFieldNames(['fldtxt2', 'fldint'])
+        layer.undoStack().undo()
+        checkFieldNames(['fldtxt', 'fldint'])
+        layer.undoStack().redo()
+        checkFieldNames(['fldtxt2', 'fldint'])
+        layer.undoStack().redo()
+        checkFieldNames(['fldtxt2', 'fldint2'])
+
+        # two renames
+        self.assertTrue(layer.renameAttribute(0, 'fldtxt3'))
+        checkFieldNames(['fldtxt3', 'fldint2'])
+        self.assertTrue(layer.renameAttribute(0, 'fldtxt4'))
+        checkFieldNames(['fldtxt4', 'fldint2'])
+        layer.undoStack().undo()
+        checkFieldNames(['fldtxt3', 'fldint2'])
+        layer.undoStack().undo()
+        checkFieldNames(['fldtxt2', 'fldint2'])
+        layer.undoStack().redo()
+        checkFieldNames(['fldtxt3', 'fldint2'])
+        layer.undoStack().redo()
+        checkFieldNames(['fldtxt4', 'fldint2'])
+
+    def test_RenameAttributeAfterAdd(self):
+        layer = createLayerWithOnePoint()
+
+        def checkFieldNames(names):
+            flds = layer.fields()
+            f = next(layer.getFeatures())
+            self.assertEqual(flds.count(), len(names))
+            self.assertEqual(f.fields().count(), len(names))
+
+            for idx, expected_name in enumerate(names):
+                self.assertEqual(flds[idx].name(), expected_name)
+                self.assertEqual(f.fields().at(idx).name(), expected_name)
+
+        layer.startEditing()
+
+        checkFieldNames(['fldtxt', 'fldint'])
+        self.assertTrue(layer.renameAttribute(1, 'fldint2'))
+        checkFieldNames(['fldtxt', 'fldint2'])
+        #add an attribute
+        self.assertTrue(layer.addAttribute(QgsField("flddouble", QVariant.Double, "double")))
+        checkFieldNames(['fldtxt', 'fldint2', 'flddouble'])
+        # rename it
+        self.assertTrue(layer.renameAttribute(2, 'flddouble2'))
+        checkFieldNames(['fldtxt', 'fldint2', 'flddouble2'])
+        self.assertTrue(layer.addAttribute(QgsField("flddate", QVariant.Date, "date")))
+        checkFieldNames(['fldtxt', 'fldint2', 'flddouble2', 'flddate'])
+        self.assertTrue(layer.renameAttribute(2, 'flddouble3'))
+        checkFieldNames(['fldtxt', 'fldint2', 'flddouble3', 'flddate'])
+        self.assertTrue(layer.renameAttribute(3, 'flddate2'))
+        checkFieldNames(['fldtxt', 'fldint2', 'flddouble3', 'flddate2'])
+
+        layer.undoStack().undo()
+        checkFieldNames(['fldtxt', 'fldint2', 'flddouble3', 'flddate'])
+        layer.undoStack().undo()
+        checkFieldNames(['fldtxt', 'fldint2', 'flddouble2', 'flddate'])
+        layer.undoStack().undo()
+        checkFieldNames(['fldtxt', 'fldint2', 'flddouble2'])
+        layer.undoStack().undo()
+        checkFieldNames(['fldtxt', 'fldint2', 'flddouble'])
+        layer.undoStack().undo()
+        checkFieldNames(['fldtxt', 'fldint2'])
+        layer.undoStack().undo()
+        checkFieldNames(['fldtxt', 'fldint'])
+
+        layer.undoStack().redo()
+        checkFieldNames(['fldtxt', 'fldint2'])
+        layer.undoStack().redo()
+        checkFieldNames(['fldtxt', 'fldint2', 'flddouble'])
+        layer.undoStack().redo()
+        checkFieldNames(['fldtxt', 'fldint2', 'flddouble2'])
+        layer.undoStack().redo()
+        checkFieldNames(['fldtxt', 'fldint2', 'flddouble2', 'flddate'])
+        layer.undoStack().redo()
+        checkFieldNames(['fldtxt', 'fldint2', 'flddouble3', 'flddate'])
+        layer.undoStack().redo()
+        checkFieldNames(['fldtxt', 'fldint2', 'flddouble3', 'flddate2'])
+
+    def test_RenameAttributeAndDelete(self):
+        layer = createLayerWithOnePoint()
+        layer.dataProvider().addAttributes(
+            [QgsField("flddouble", QVariant.Double, "double")])
+        layer.updateFields()
+
+        def checkFieldNames(names):
+            flds = layer.fields()
+            f = next(layer.getFeatures())
+            self.assertEqual(flds.count(), len(names))
+            self.assertEqual(f.fields().count(), len(names))
+
+            for idx, expected_name in enumerate(names):
+                self.assertEqual(flds[idx].name(), expected_name)
+                self.assertEqual(f.fields().at(idx).name(), expected_name)
+
+        layer.startEditing()
+
+        checkFieldNames(['fldtxt', 'fldint', 'flddouble'])
+        self.assertTrue(layer.renameAttribute(0, 'fldtxt2'))
+        checkFieldNames(['fldtxt2', 'fldint', 'flddouble'])
+        self.assertTrue(layer.renameAttribute(2, 'flddouble2'))
+        checkFieldNames(['fldtxt2', 'fldint', 'flddouble2'])
+
+        #delete an attribute
+        self.assertTrue(layer.deleteAttribute(0))
+        checkFieldNames(['fldint', 'flddouble2'])
+        # rename remaining
+        self.assertTrue(layer.renameAttribute(0, 'fldint2'))
+        checkFieldNames(['fldint2', 'flddouble2'])
+        self.assertTrue(layer.renameAttribute(1, 'flddouble3'))
+        checkFieldNames(['fldint2', 'flddouble3'])
+        #delete an attribute
+        self.assertTrue(layer.deleteAttribute(0))
+        checkFieldNames(['flddouble3'])
+        self.assertTrue(layer.renameAttribute(0, 'flddouble4'))
+        checkFieldNames(['flddouble4'])
+
+        layer.undoStack().undo()
+        checkFieldNames(['flddouble3'])
+        layer.undoStack().undo()
+        checkFieldNames(['fldint2', 'flddouble3'])
+        layer.undoStack().undo()
+        checkFieldNames(['fldint2', 'flddouble2'])
+        layer.undoStack().undo()
+        checkFieldNames(['fldint', 'flddouble2'])
+        layer.undoStack().undo()
+        checkFieldNames(['fldtxt2', 'fldint', 'flddouble2'])
+        layer.undoStack().undo()
+        checkFieldNames(['fldtxt2', 'fldint', 'flddouble'])
+        layer.undoStack().undo()
+        checkFieldNames(['fldtxt', 'fldint', 'flddouble'])
+
+        #layer.undoStack().redo()
+        #checkFieldNames(['fldtxt2', 'fldint'])
+        #layer.undoStack().redo()
+        #checkFieldNames(['fldint'])
+
     def test_fields(self):
         layer = createLayerWithOnePoint()
 

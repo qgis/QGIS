@@ -133,6 +133,19 @@ bool QgsVectorLayerEditPassthrough::deleteAttribute( int attr )
   return false;
 }
 
+bool QgsVectorLayerEditPassthrough::renameAttribute( int attr, const QString& newName )
+{
+  QgsFieldNameMap map;
+  map[ attr ] = newName;
+  if ( L->dataProvider()->renameAttributes( map ) )
+  {
+    mModified = true;
+    emit attributeRenamed( attr, newName );
+    return true;
+  }
+  return false;
+}
+
 bool QgsVectorLayerEditPassthrough::commitChanges( QStringList& /*commitErrors*/ )
 {
   mModified = false;
