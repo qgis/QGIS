@@ -150,6 +150,7 @@
 %Include qgssearchquerybuilder.sip
 %Include qgsshortcutsmanager.sip
 %Include qgsslider.sip
+%Include qgssourceselectdialog.sip
 %Include qgssublayersdialog.sip
 %Include qgssvgannotationitem.sip
 %Include qgstablewidgetitem.sip
