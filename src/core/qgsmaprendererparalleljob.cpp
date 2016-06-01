@@ -75,6 +75,14 @@ void QgsMapRendererParallelJob::start()
   }
 
   mLayerJobs = prepareJobs( nullptr, mLabelingEngine, mLabelingEngineV2 );
+  // prepareJobs calls mapLayer->createMapRenderer may involve cloning a RasterDataProvider,
+  // whose constructor may need to download some data (i.e. WMS, AMS) and doing so runs a
+  // QEventLoop waiting for the network request to complete. If unluckily someone calls
+  // mapCanvas->refresh() while this is happening, QgsMapRendererCustomPainterJob::cancel is
+  // called, deleting the QgsMapRendererCustomPainterJob while this function is running.
+  // Hence we need to check whether the job is still active before proceeding
+  if ( !isActive() )
+    return;
 
   QgsDebugMsg( QString( "QThreadPool max thread count is %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
 
