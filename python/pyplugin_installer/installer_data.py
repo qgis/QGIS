@@ -23,7 +23,9 @@
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import pyqtSignal, QObject, QCoreApplication, QFile, QDir, QDirIterator, QSettings, QDate, QUrl, QFileInfo, QLocale, QByteArray
+from qgis.PyQt.QtCore import (pyqtSignal, QObject, QCoreApplication, QFile,
+                              QDir, QDirIterator, QSettings, QDate, QUrl,
+                              QFileInfo, QLocale, QByteArray)
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 import sys
@@ -77,6 +79,7 @@ mPlugins = dict of dicts {id : {
     "error_details" unicode,                    # error description
     "experimental" boolean,                     # true if experimental, false if stable
     "deprecated" boolean,                       # true if deprected, false if actual
+    "trusted" boolean,                          # true if trusted, false if not trusted
     "version_available" unicode,                # available version
     "zip_repository" unicode,                   # the remote repository id
     "download_url" unicode,                     # url for downloading the plugin
@@ -408,6 +411,9 @@ class Repositories(QObject):
                     deprecated = False
                     if pluginNodes.item(i).firstChildElement("deprecated").text().strip().upper() in ["TRUE", "YES"]:
                         deprecated = True
+                    trusted = False
+                    if pluginNodes.item(i).firstChildElement("trusted").text().strip().upper() in ["TRUE", "YES"]:
+                        trusted = True
                     icon = pluginNodes.item(i).firstChildElement("icon").text().strip()
                     if icon and not icon.startswith("http"):
                         icon = "http://%s/%s" % (QUrl(self.mRepositories[reposName]["url"]).host(), icon)
@@ -439,6 +445,7 @@ class Repositories(QObject):
                         "icon": icon,
                         "experimental": experimental,
                         "deprecated": deprecated,
+                        "trusted": trusted,
                         "filename": fileName,
                         "installed": False,
                         "available": True,
@@ -667,6 +674,7 @@ class Plugins(QObject):
             "pythonic": True,
             "experimental": pluginMetadata("experimental").strip().upper() in ["TRUE", "YES"],
             "deprecated": pluginMetadata("deprecated").strip().upper() in ["TRUE", "YES"],
+            "trusted": False,
             "version_available": "",
             "zip_repository": "",
             "download_url": path,      # warning: local path as url!
