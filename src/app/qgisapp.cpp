@@ -936,14 +936,17 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mMapCanvas->clearExtentHistory(); // reset zoomnext/zoomlast
   mLastComposerId = 0;
 
-  QAction* zoomAction = new QAction( this );
-  connect( zoomAction, SIGNAL( triggered( bool ) ), mMapCanvas, SLOT( zoomIn() ) );
-  zoomAction->setShortcut( QKeySequence( "Ctrl++" ) );
-  QShortcut* zoomShortCut = new QShortcut( QKeySequence( tr( "Ctrl+=" ) ), this );
-  connect( zoomShortCut, SIGNAL( activated() ), mMapCanvas, SLOT( zoomIn() ) );
-  QAction* zoomOutAction = new QAction( this );
-  connect( zoomOutAction, SIGNAL( triggered( bool ) ), mMapCanvas, SLOT( zoomOut() ) );
-  zoomOutAction->setShortcut( QKeySequence( "Ctrl+-" ) );
+  QShortcut* zoomInShortCut = new QShortcut( QKeySequence( tr( "Ctrl++" ) ), this );
+  connect( zoomInShortCut, SIGNAL( activated() ), mMapCanvas, SLOT( zoomIn() ) );
+  QShortcut* zoomShortCut2 = new QShortcut( QKeySequence( tr( "Ctrl+=" ) ), this );
+  connect( zoomShortCut2, SIGNAL( activated() ), mMapCanvas, SLOT( zoomIn() ) );
+  QShortcut* zoomOutShortCut = new QShortcut( QKeySequence( tr( "Ctrl+-" ) ), this );
+  connect( zoomOutShortCut, SIGNAL( activated() ), mMapCanvas, SLOT( zoomOut() ) );
+
+  //also make ctrl+alt+= a shortcut to switch to zoom in map tool
+  QShortcut* zoomInToolShortCut = new QShortcut( QKeySequence( tr( "Ctrl+Alt+=" ) ), this );
+  connect( zoomInToolShortCut, SIGNAL( activated() ), this, SLOT( zoomIn() ) );
+
 
   // Show a nice tip of the day
   if ( settings.value( QString( "/qgis/showTips%1" ).arg( QGis::QGIS_VERSION_INT / 100 ), true ).toBool() )
