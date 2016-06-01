@@ -86,7 +86,7 @@ class Processing:
         """Use this method to add algorithms from external providers.
         """
 
-        if provider.getName() in [p.getName for p in algList.providers]:
+        if provider.getName() in [p.getName() for p in algList.providers]:
             return
         try:
             provider.initializeSettings()
