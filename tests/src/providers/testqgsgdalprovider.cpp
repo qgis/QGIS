@@ -117,7 +117,10 @@ void TestQgsGdalProvider::noData()
   QVERIFY( provider->isValid() );
   QgsRasterDataProvider* rp = dynamic_cast< QgsRasterDataProvider* >( provider );
   QVERIFY( rp );
-  QCOMPARE( rp->srcNoDataValue( 1 ), static_cast<double>( 255 ) );
+  if ( rp )
+  {
+    QCOMPARE( rp->srcNoDataValue( 1 ), static_cast<double>( 255 ) );
+  }
   delete provider;
 }
 
@@ -128,7 +131,10 @@ void TestQgsGdalProvider::invalidNoDataInSourceIgnored()
   QVERIFY( provider->isValid() );
   QgsRasterDataProvider* rp = dynamic_cast< QgsRasterDataProvider* >( provider );
   QVERIFY( rp );
-  QCOMPARE( rp->srcHasNoDataValue( 1 ), false );
+  if ( rp )
+  {
+    QCOMPARE( rp->srcHasNoDataValue( 1 ), false );
+  }
   delete provider;
 }
 

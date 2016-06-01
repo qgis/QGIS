@@ -432,7 +432,8 @@ void TestQgsOgcUtils::testExpressionToOgcFilterWFS11_data()
 static QString normalizeXML( const QString& xmlText )
 {
   QDomDocument doc;
-  doc.setContent( xmlText, true );
+  if ( !doc.setContent( xmlText, true ) )
+    return QString();
   return doc.toString( -1 );
 }
 
