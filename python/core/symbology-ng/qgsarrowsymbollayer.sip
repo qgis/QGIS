@@ -85,6 +85,11 @@ class QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     /** Set whether it is a curved arrow or a straight one */
     void setIsCurved( bool isCurved );
 
+    /** Return whether the arrow is repeated along the line or not */
+    bool isRepeated() const;
+    /** Set whether the arrow is repeated along the line */
+    void setIsRepeated( bool isRepeated );
+
     /** Possible head types */
     enum HeadType
     {

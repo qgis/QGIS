@@ -105,6 +105,11 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     /** Set whether it is a curved arrow or a straight one */
     void setIsCurved( bool isCurved ) { mIsCurved = isCurved; }
 
+    /** Return whether the arrow is repeated along the line or not */
+    bool isRepeated() const { return mIsRepeated; }
+    /** Set whether the arrow is repeated along the line */
+    void setIsRepeated( bool isRepeated ) { mIsRepeated = isRepeated; }
+
     /** Possible head types */
     enum HeadType
     {
@@ -178,6 +183,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     HeadType mHeadType;
     ArrowType mArrowType;
     bool mIsCurved;
+    bool mIsRepeated;
 
     double mScaledArrowWidth;
     double mScaledArrowStartWidth;
