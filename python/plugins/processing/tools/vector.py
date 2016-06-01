@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.algs.qgis import postgis_utils
-from processing.algs.qgis import spatialite_utils
 
 __author__ = 'Victor Olaya'
 __date__ = 'February 2013'
@@ -43,7 +41,7 @@ from qgis.core import (QGis, QgsFields, QgsField, QgsGeometry, QgsRectangle,
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.tools import dataobjects
+from processing.tools import dataobjects, spatialite, postgis
 
 
 GEOM_TYPE_MAP = {
@@ -581,16 +579,16 @@ class VectorWriter:
                 raise GeoAlgorithmExecutionException("Couldn't connect to database")
             print uri.uri()
             try:
-                db = postgis_utils.GeoDB(host=uri.host(), port=int(uri.port()),
+                db = postgis.GeoDB(host=uri.host(), port=int(uri.port()),
                                          dbname=uri.database(), user=user, passwd=passwd)
-            except postgis_utils.DbError as e:
+            except postgis.DbError as e:
                 raise GeoAlgorithmExecutionException(
                     "Couldn't connect to database:\n%s" % e.message)
 
             def _runSQL(sql):
                 try:
                     db._exec_sql_and_commit(unicode(sql))
-                except postgis_utils.DbError as e:
+                except postgis.DbError as e:
                     raise GeoAlgorithmExecutionException(
                         'Error creating output PostGIS table:\n%s' % e.message)
 
@@ -612,15 +610,15 @@ class VectorWriter:
             uri = QgsDataSourceURI(self.destination[len(self.SPATIALITE_LAYER_PREFIX):])
             print uri.uri()
             try:
-                db = spatialite_utils.GeoDB(uri=uri)
-            except spatialite_utils.DbError as e:
+                db = spatialite.GeoDB(uri=uri)
+            except spatialite.DbError as e:
                 raise GeoAlgorithmExecutionException(
                     "Couldn't connect to database:\n%s" % e.message)
 
             def _runSQL(sql):
                 try:
                     db._exec_sql_and_commit(unicode(sql))
-                except spatialite_utils.DbError as e:
+                except spatialite.DbError as e:
                     raise GeoAlgorithmExecutionException(
                         'Error creating output Spatialite table:\n%s' % unicode(e))
 

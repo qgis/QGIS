@@ -31,8 +31,8 @@ from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QTreeWidgetItem, QMessageBox
 from qgis.PyQt import uic
-from processing.algs.qgis.postgis_utils import GeoDB
 from qgis.core import QgsDataSourceURI, QgsCredentials
+from processing.tools.postgis import GeoDB
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(

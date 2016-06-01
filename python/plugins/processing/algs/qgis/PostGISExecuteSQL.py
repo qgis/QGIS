@@ -30,7 +30,7 @@ from qgis.PyQt.QtCore import QSettings
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterString
-from processing.algs.qgis import postgis_utils
+from processing.tools import postgis
 
 
 class PostGISExecuteSQL(GeoAlgorithm):
@@ -58,15 +58,15 @@ class PostGISExecuteSQL(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Wrong database connection name: %s' % connection))
         try:
-            self.db = postgis_utils.GeoDB(host=host, port=port,
+            self.db = postgis.GeoDB(host=host, port=port,
                                           dbname=database, user=username, passwd=password)
-        except postgis_utils.DbError as e:
+        except postgis.DbError as e:
             raise GeoAlgorithmExecutionException(
                 self.tr("Couldn't connect to database:\n%s") % unicode(e))
 
         sql = self.getParameterValue(self.SQL).replace('\n', ' ')
         try:
             self.db._exec_sql_and_commit(unicode(sql))
-        except postgis_utils.DbError as e:
+        except postgis.DbError as e:
             raise GeoAlgorithmExecutionException(
                 self.tr('Error executing SQL:\n%s') % unicode(e))

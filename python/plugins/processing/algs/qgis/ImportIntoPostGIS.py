@@ -35,8 +35,7 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
-from processing.tools import dataobjects
-from processing.algs.qgis import postgis_utils
+from processing.tools import dataobjects, postgis
 
 
 class ImportIntoPostGIS(GeoAlgorithm):
@@ -117,9 +116,9 @@ class ImportIntoPostGIS(GeoAlgorithm):
         providerName = 'postgres'
 
         try:
-            db = postgis_utils.GeoDB(host=host, port=port, dbname=database,
+            db = postgis.GeoDB(host=host, port=port, dbname=database,
                                      user=username, passwd=password)
-        except postgis_utils.DbError as e:
+        except postgis.DbError as e:
             raise GeoAlgorithmExecutionException(
                 self.tr("Couldn't connect to database:\n%s") % unicode(e))
 

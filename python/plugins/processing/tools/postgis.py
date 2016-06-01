@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    postgis_utils.py
+    postgis.py
     ---------------------
     Date                 : November 2012
     Copyright            : (C) 2012 by Martin Dobias

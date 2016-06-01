@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    spatialite_utils.py
+    spatialite.py
     ---------------------
     Date                 : November 2015
     Copyright            : (C) 2015 by René-Luc Dhont
