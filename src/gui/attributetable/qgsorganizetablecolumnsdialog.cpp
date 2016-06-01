@@ -45,6 +45,10 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
     : QDialog( parent, flags )
 {
   setupUi( this );
+
+  connect( mShowAllButton, SIGNAL( clicked( bool ) ), this, SLOT( showAll() ) );
+  connect( mHideAllButton, SIGNAL( clicked( bool ) ), this, SLOT( hideAll() ) );
+
   if ( vl )
   {
     mConfig = vl->attributeTableConfig();
@@ -86,6 +90,13 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
     }
   }
 
+  if ( !vl || mConfig.columns().count() < 7 )
+  {
+    mShowAllButton->hide();
+    mHideAllButton->hide();
+  }
+
+
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/QgsOrganizeTableColumnsDialog/geometry" ).toByteArray() );
 }
@@ -113,4 +124,20 @@ QgsAttributeTableConfig QgsOrganizeTableColumnsDialog::config() const
   QgsAttributeTableConfig config = mConfig;
   config.setColumns( columns );
   return config;
+}
+
+void QgsOrganizeTableColumnsDialog::showAll()
+{
+  for ( int i = 0 ; i < mFieldsList->count() ; i++ )
+  {
+    mFieldsList->item( i )->setCheckState( Qt::Checked );
+  }
+}
+
+void QgsOrganizeTableColumnsDialog::hideAll()
+{
+  for ( int i = 0 ; i < mFieldsList->count() ; i++ )
+  {
+    mFieldsList->item( i )->setCheckState( Qt::Unchecked );
+  }
 }
