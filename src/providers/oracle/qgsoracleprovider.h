@@ -271,6 +271,11 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     static bool exec( QSqlQuery &qry, QString sql );
 
+    /**
+     * It returns true. Saving style to db is supported by this provider
+     */
+    virtual bool isSaveAndLoadStyleToDBSupported() override { return true; }
+
   private:
     QString whereClause( QgsFeatureId featureId ) const;
     QString pkParamWhereClause() const;

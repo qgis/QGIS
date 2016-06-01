@@ -37,6 +37,7 @@
 
 #include <QSqlRecord>
 #include <QSqlField>
+#include <QMessageBox>
 
 #include "ocispatial/wkbptr.h"
 
@@ -2975,7 +2976,7 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause )
   QString tableName = dsUri.table();
   QString geometryCol = dsUri.geometryColumn();
 
-  QgsOracleConn* conn = QgsOracleConn::connectDb( dsUri );
+  QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -3106,6 +3107,334 @@ QVariant QgsOracleSharedData::lookupKey( QgsFeatureId featureId )
   if ( it != mFidToKey.constEnd() )
     return it.value();
   return QVariant();
+}
+
+QGISEXTERN bool saveStyle( const QString &uri,
+                           const QString &qmlStyle,
+                           const QString &sldStyle,
+                           const QString &styleName,
+                           const QString &styleDescription,
+                           const QString &uiFileContent,
+                           bool useAsDefault,
+                           QString &errCause )
+{
+  QgsDataSourceURI dsUri( uri );
+
+  QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Could not connect to database" );
+    return false;
+  }
+
+  QSqlQuery qry = QSqlQuery( *conn );
+  if ( !qry.exec( "SELECT COUNT(*) FROM user_tables WHERE table_name='LAYER_STYLES'" ) || !qry.next() )
+  {
+    errCause = QObject::tr( "Unable to check layer style existence [%1]" ).arg( qry.lastError().text() );
+    conn->disconnect();
+    return false;
+  }
+  else if ( qry.value( 0 ).toInt() == 0 )
+  {
+    QgsDebugMsg( "Creating layer style table." );
+
+    if ( !qry.exec( "CREATE TABLE layer_styles("
+                    "id INTEGER PRIMARY KEY,"
+                    "f_table_catalog VARCHAR2(30) NOT NULL,"
+                    "f_table_schema VARCHAR2(30) NOT NULL,"
+                    "f_table_name VARCHAR2(30) NOT NULL,"
+                    "f_geometry_column VARCHAR2(30) NOT NULL,"
+                    "stylename VARCHAR2(2047),"
+                    "styleqml CLOB,"
+                    "stylesld CLOB,"
+                    "useasdefault INTEGER,"
+                    "description VARCHAR2(2047),"
+                    "owner VARCHAR2(30),"
+                    "ui CLOB,"
+                    "update_time timestamp"
+                    ")" ) )
+    {
+      errCause = QObject::tr( "Unable to create layer style table [%1]" ).arg( qry.lastError().text() );
+      conn->disconnect();
+      return false;
+    }
+  }
+
+  int id;
+  QString sql;
+
+  sql = QString( "SELECT id,stylename"
+                 " FROM layer_styles"
+                 " WHERE f_table_catalog=%1"
+                 " AND f_table_schema=%2"
+                 " AND f_table_name=%3"
+                 " AND f_geometry_column=%4"
+                 " AND styleName=%5" )
+        .arg( QgsOracleConn::quotedValue( dsUri.database() ) )
+        .arg( QgsOracleConn::quotedValue( dsUri.schema() ) )
+        .arg( QgsOracleConn::quotedValue( dsUri.table() ) )
+        .arg( QgsOracleConn::quotedValue( dsUri.geometryColumn() ) )
+        .arg( QgsOracleConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) );
+
+  if ( !qry.exec( sql ) )
+  {
+    errCause = QObject::tr( "Unable to check style existences [%1]" ).arg( qry.lastError().text() );
+    conn->disconnect();
+    return false;
+  }
+  else if ( qry.next() )
+  {
+    if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
+                                QObject::tr( "A style named \"%1\" already exists in the database for this layer. Do you want to overwrite it?" )
+                                .arg( styleName.isEmpty() ? dsUri.table() : styleName ),
+                                QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+    {
+      errCause = QObject::tr( "Operation aborted. No changes were made in the database" );
+      conn->disconnect();
+      return false;
+    }
+
+    id = qry.value( 0 ).toInt();
+
+    sql = QString( "UPDATE layer_styles"
+                   " SET update_time=(select current_timestamp from dual),"
+                   "f_table_catalog=?,"
+                   "f_table_schema=?,"
+                   "f_table_name=?,"
+                   "f_geometry_column=?,"
+                   "styleName=?,"
+                   "styleQML=?,"
+                   "styleSLD=?,"
+                   "useAsDefault=?,"
+                   "description=?,"
+                   "owner=?"
+                   "%1"
+                   " WHERE id=%2" )
+          .arg( uiFileContent.isEmpty() ? "" : ",ui=?" )
+          .arg( id );
+  }
+  else if ( qry.exec( "select coalesce(max(id)+1,0) FROM layer_styles" ) && qry.next() )
+  {
+    id = qry.value( 0 ).toInt();
+
+    sql = QString( "INSERT INTO layer_styles("
+                   "id,update_time,f_table_catalog,f_table_schema,f_table_name,f_geometry_column,styleName,styleQML,styleSLD,useAsDefault,description,owner%1"
+                   ") VALUES ("
+                   "%2,"
+                   "(select current_timestamp from dual)"
+                   "%3"
+                   ")" )
+          .arg( uiFileContent.isEmpty() ? "" : ",ui" )
+          .arg( id )
+          .arg( QString( ",?" ).repeated( uiFileContent.isEmpty() ? 10 : 11 ) );
+  }
+  else
+  {
+    errCause = QObject::tr( "Cannot fetch new layer style id." );
+    conn->disconnect();
+    return false;
+  }
+
+  if ( !qry.prepare( sql ) )
+  {
+    errCause = QObject::tr( "Could not prepare insert/update [%1]" ).arg( qry.lastError().text() );
+    QgsDebugMsg( "prepare insert/update failed" );
+    conn->disconnect();
+    return false;
+  }
+
+  qry.addBindValue( dsUri.database() );
+  qry.addBindValue( dsUri.schema() );
+  qry.addBindValue( dsUri.table() );
+  qry.addBindValue( dsUri.geometryColumn() );
+  qry.addBindValue( styleName.isEmpty() ? dsUri.table() : styleName );
+  qry.addBindValue( qmlStyle );
+  qry.addBindValue( sldStyle );
+  qry.addBindValue( useAsDefault ? 1 : 0 );
+  qry.addBindValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription );
+  qry.addBindValue( dsUri.username() );
+  if ( !uiFileContent.isEmpty() )
+    qry.addBindValue( uiFileContent );
+
+  if ( !qry.exec() )
+  {
+    errCause = QObject::tr( "Could not execute insert/update [%1]" ).arg( qry.lastError().text() );
+    QgsDebugMsg( "execute insert/update failed" );
+    conn->disconnect();
+    return false;
+  }
+
+  if ( useAsDefault )
+  {
+    if ( !qry.exec( QString( "UPDATE layer_styles"
+                             " SET useasdefault=0,update_time=(select current_timestamp from dual)"
+                             " WHERE f_table_catalog=%1"
+                             " AND f_table_schema=%2"
+                             " AND f_table_name=%3"
+                             " AND f_geometry_column=%4"
+                             " AND id<>%5" )
+                    .arg( QgsOracleConn::quotedValue( dsUri.database() ) )
+                    .arg( QgsOracleConn::quotedValue( dsUri.schema() ) )
+                    .arg( QgsOracleConn::quotedValue( dsUri.table() ) )
+                    .arg( QgsOracleConn::quotedValue( dsUri.geometryColumn() ) )
+                    .arg( id ) ) )
+    {
+      errCause = QObject::tr( "Could not reset default status [%1]" ).arg( qry.lastError().text() );
+      QgsDebugMsg( "execute update failed" );
+      conn->disconnect();
+      return false;
+    }
+  }
+
+  conn->disconnect();
+
+  return true;
+}
+
+QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
+{
+  QgsDataSourceURI dsUri( uri );
+
+  QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Could not connect to database" );
+    return false;
+  }
+
+  QSqlQuery qry( *conn );
+
+  QString style;
+  if ( !qry.exec( QString( "SELECT styleQML FROM ("
+                           "SELECT styleQML"
+                           " FROM layer_styles"
+                           " WHERE f_table_catalog=%1"
+                           " AND f_table_schema=%2"
+                           " AND f_table_name=%3"
+                           " AND f_geometry_column=%4"
+                           " ORDER BY useAsDefault DESC"
+                           ") WHERE rownum=1" )
+                  .arg( QgsOracleConn::quotedValue( dsUri.database() ) )
+                  .arg( QgsOracleConn::quotedValue( dsUri.schema() ) )
+                  .arg( QgsOracleConn::quotedValue( dsUri.table() ) )
+                  .arg( QgsOracleConn::quotedValue( dsUri.geometryColumn() ) ) ) )
+  {
+    errCause = QObject::tr( "Could not retrieve style [%1]" ).arg( qry.lastError().text() );
+  }
+  else if ( !qry.next() )
+  {
+    errCause = QObject::tr( "Style not found" );
+  }
+  else
+  {
+    style = qry.value( 0 ).toString();
+  }
+
+  conn->disconnect();
+
+  return style;
+}
+
+QGISEXTERN int listStyles( const QString &uri,
+                           QStringList &ids,
+                           QStringList &names,
+                           QStringList &descriptions,
+                           QString &errCause )
+{
+  QgsDataSourceURI dsUri( uri );
+
+  QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Could not connect to database" );
+    return -1;
+  }
+
+  QSqlQuery qry( *conn );
+
+  int res = -1;
+  if ( !qry.exec( "SELECT count(*) FROM user_tables WHERE table_name='LAYER_STYLES'" ) || !qry.next() )
+  {
+    errCause = QObject::tr( "Could not verify existence of layer style table [%1]" ).arg( qry.lastError().text() );
+  }
+  else if ( qry.value( 0 ).toInt() == 0 )
+  {
+    errCause = QObject::tr( "Layer style table does not exists [%1]" ).arg( qry.value( 0 ).toString() );
+  }
+  else
+  {
+    if ( !qry.exec( QString( "SELECT id,styleName,description FROM layer_styles WHERE f_table_catalog=%1 AND f_table_schema=%2 AND f_table_name=%3 AND f_geometry_column=%4" )
+                    .arg( QgsOracleConn::quotedValue( dsUri.database() ) )
+                    .arg( QgsOracleConn::quotedValue( dsUri.schema() ) )
+                    .arg( QgsOracleConn::quotedValue( dsUri.table() ) )
+                    .arg( QgsOracleConn::quotedValue( dsUri.geometryColumn() ) ) ) )
+    {
+      errCause = QObject::tr( "No style for layer found" );
+    }
+    else
+    {
+      res = 0;
+      while ( qry.next() )
+      {
+        ids << qry.value( 0 ).toString();
+        names << qry.value( 1 ).toString();
+        descriptions << qry.value( 2 ).toString();
+        res++;
+      }
+
+      qry.finish();
+
+      if ( qry.exec( QString( "SELECT id,styleName,description FROM layer_styles WHERE NOT (f_table_catalog=%1 AND f_table_schema=%2 AND f_table_name=%3 AND f_geometry_column=%4) ORDER BY update_time DESC" )
+                     .arg( QgsOracleConn::quotedValue( dsUri.database() ) )
+                     .arg( QgsOracleConn::quotedValue( dsUri.schema() ) )
+                     .arg( QgsOracleConn::quotedValue( dsUri.table() ) )
+                     .arg( QgsOracleConn::quotedValue( dsUri.geometryColumn() ) ) ) )
+      {
+        while ( qry.next() )
+        {
+          ids << qry.value( 0 ).toString();
+          names << qry.value( 1 ).toString();
+          descriptions << qry.value( 2 ).toString();
+        }
+      }
+    }
+  }
+
+  conn->disconnect();
+
+  return res;
+}
+
+QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& errCause )
+{
+  QString style;
+  QgsDataSourceURI dsUri( uri );
+
+  QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Could not connect to database" );
+    return style;
+  }
+
+  QSqlQuery qry( *conn );
+
+  if ( !qry.exec( QString( "SELECT styleQml FROM layer_styles WHERE id=%1" ).arg( QgsOracleConn::quotedValue( styleId ) ) ) )
+  {
+    errCause = QObject::tr( "Could load layer style table [%1]" ).arg( qry.lastError().text() );
+  }
+  else if ( !qry.next() )
+  {
+    errCause = QObject::tr( "No styles found in layer table [%1]" ).arg( qry.lastError().text() );
+  }
+  else
+  {
+    style = qry.value( 0 ).toString();
+  }
+
+  conn->disconnect();
+
+  return style;
 }
 
 // vim: set sw=2 :
