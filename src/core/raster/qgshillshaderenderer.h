@@ -85,6 +85,12 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
     double zFactor()  const { return mZFactor; }
 
     /**
+     * @brief Is Multi Directional
+     * @return Is Multi Directional
+     */
+    bool multiDirectional() const { return mMultiDirectional; }
+
+    /**
      * @brief Set the azimith of the light source.
      * @param azimuth The azimuth of the light source.
      */
@@ -102,11 +108,18 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
      */
     void setZFactor( double zfactor ) { mZFactor = zfactor; }
 
+    /**
+     * @brief Set Is Multi Directional
+     * @param isMultiDirectional Is multi directional
+     */
+    void setMultiDirectional( bool isMultiDirectional ){ mMultiDirectional = isMultiDirectional; }
+
   private:
     int mBand;
     double mZFactor;
     double mLightAngle;
     double mLightAzimuth;
+    bool   mMultiDirectional;
 
     /** Calculates the first order derivative in x-direction according to Horn (1981)*/
     double calcFirstDerX( double x11, double x21, double x31, double x12, double x22, double x32, double x13, double x23, double x33 , double cellsize );

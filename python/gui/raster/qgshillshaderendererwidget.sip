@@ -51,6 +51,12 @@ class QgsHillshadeRendererWidget: QgsRasterRendererWidget
      */
     double zFactor()  const;
 
+    /**
+     * @brief multiDirectional
+     * @return multiDirectional
+     */
+    bool multiDirectional() const;
+
   public slots:
     /**
      * @brief Set the altitude of the light source
@@ -69,4 +75,10 @@ class QgsHillshadeRendererWidget: QgsRasterRendererWidget
      * @param zfactor The z factor.
      */
     void setZFactor( double zfactor );
+
+    /**
+     * @brief set MultiDirectional
+     * @param isMultiDirectional
+     */
+    void setMultiDirectional( bool isMultiDirectional);
 };

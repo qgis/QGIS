@@ -46,6 +46,12 @@ class QgsHillshadeRenderer : QgsRasterRenderer
      */
     double zFactor()  const;
 
+    /**
+     * @brief Is Multi Directional
+     * @return Is Multi Directional
+     */
+    bool multiDirectional() const;
+
 
     /**
      * @brief Set the azimith of the light source.
@@ -64,4 +70,10 @@ class QgsHillshadeRenderer : QgsRasterRenderer
      * @param zfactor The z factor.
      */
     void setZFactor( double zfactor );
+
+    /**
+     * @brief Set Is Multi Directional
+     * @param isMultiDirectional Is multi directional
+     */
+    void setMultiDirectional( bool isMultiDirectional );
 };
