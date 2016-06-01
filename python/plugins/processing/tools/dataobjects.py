@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 
 import os
 import re
-from qgis.core import QGis, QgsProject, QgsVectorFileWriter, QgsMapLayer, QgsRasterLayer, QgsVectorLayer, QgsMapLayerRegistry, QgsCoordinateReferenceSystem
+from qgis.core import QGis, QgsProject, QgsVectorFileWriter, QgsMapLayer, QgsRasterLayer, \
+                        QgsVectorLayer, QgsMapLayerRegistry, QgsCoordinateReferenceSystem
 from qgis.gui import QgsSublayersDialog
 from qgis.PyQt.QtCore import QSettings
 from qgis.utils import iface
@@ -318,7 +319,7 @@ def exportVectorLayer(layer, supported=None):
             unicode(layer.source()).decode('ascii')
         except UnicodeEncodeError:
             isASCII = False
-        if not os.path.splitext()[1].lower() in supported or not isASCII:
+        if not os.path.splitext(layer.source())[1].lower() in supported or not isASCII:
             writer = QgsVectorFileWriter(
                 output, systemEncoding,
                 layer.pendingFields(), provider.geometryType(),
