@@ -1985,22 +1985,22 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
   }
   if ( query.isActive() && query.next() && query.value( 0 ).toInt() == 0 )
   {
-     QgsDebugMsg( "Need to create styles table" );
-     bool execOk = query.exec( QString( "CREATE TABLE [dbo].[layer_styles]("
-               "[id] int IDENTITY(1,1) PRIMARY KEY,"
-               "[f_table_catalog] [varchar](1024) NULL,"
-               "[f_table_schema] [varchar](1024) NULL,"
-               "[f_table_name] [varchar](1024) NULL,"
-               "[f_geometry_column] [varchar](1024) NULL,"
-               "[styleName] [varchar](1024) NULL,"
-               "[styleQML] [text] NULL,"
-               "[styleSLD] [text] NULL,"
-               "[useAsDefault] [int] NULL,"
-               "[description] [text] NULL,"
-               "[owner] [varchar](1024) NULL,"
-               "[ui] [text] NULL,"
-               "[update_time] [datetime] NULL"
-        ") ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]" ));
+    QgsDebugMsg( "Need to create styles table" );
+    bool execOk = query.exec( QString( "CREATE TABLE [dbo].[layer_styles]("
+                                       "[id] int IDENTITY(1,1) PRIMARY KEY,"
+                                       "[f_table_catalog] [varchar](1024) NULL,"
+                                       "[f_table_schema] [varchar](1024) NULL,"
+                                       "[f_table_name] [varchar](1024) NULL,"
+                                       "[f_geometry_column] [varchar](1024) NULL,"
+                                       "[styleName] [varchar](1024) NULL,"
+                                       "[styleQML] [text] NULL,"
+                                       "[styleSLD] [text] NULL,"
+                                       "[useAsDefault] [int] NULL,"
+                                       "[description] [text] NULL,"
+                                       "[owner] [varchar](1024) NULL,"
+                                       "[ui] [text] NULL,"
+                                       "[update_time] [datetime] NULL"
+                                       ") ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]" ) );
     if ( !execOk )
     {
       errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database. Maybe this is due to table permissions. Please contact your database admin" );
@@ -2036,8 +2036,8 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                 .arg( QgsMssqlProvider::quotedValue( qmlStyle ) )
                 .arg( QgsMssqlProvider::quotedValue( sldStyle ) )
                 .arg( useAsDefault ? "1" : "0" )
-                .arg(  QgsMssqlProvider::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
-                .arg(  QgsMssqlProvider::quotedValue( dsUri.username() ) )
+                .arg( QgsMssqlProvider::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
+                .arg( QgsMssqlProvider::quotedValue( dsUri.username() ) )
                 .arg( uiFileColumn )
                 .arg( uiFileValue );
 
@@ -2048,31 +2048,31 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                                 " AND f_table_name=%3"
                                 " AND f_geometry_column=%4"
                                 " AND styleName=%5" )
-                       .arg( QgsMssqlProvider::quotedValue(dsUri.database() ) )
-                       .arg( QgsMssqlProvider::quotedValue(dsUri.schema() ) )
-                       .arg( QgsMssqlProvider::quotedValue(dsUri.table() ) )
-                       .arg( QgsMssqlProvider::quotedValue(dsUri.geometryColumn() ) )
-                       .arg( QgsMssqlProvider::quotedValue(styleName.isEmpty() ? dsUri.table() : styleName  ) );
+                       .arg( QgsMssqlProvider::quotedValue( dsUri.database() ) )
+                       .arg( QgsMssqlProvider::quotedValue( dsUri.schema() ) )
+                       .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
+                       .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) )
+                       .arg( QgsMssqlProvider::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) );
 
   if ( !query.exec( checkQuery ) )
   {
     QgsDebugMsg( query.lastError().text() );
-    QgsDebugMsg("Check Query failed");
+    QgsDebugMsg( "Check Query failed" );
     return false;
   }
   if ( query.isActive() && query.next() && query.value( 0 ).toString() == styleName )
-    {
-      if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
+  {
+    if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
                                 QObject::tr( "A style named \"%1\" already exists in the database for this layer. Do you want to overwrite it?" )
                                 .arg( styleName.isEmpty() ? dsUri.table() : styleName ),
                                 QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
-      {
-        errCause = QObject::tr( "Operation aborted. No changes were made in the database" );
-        QgsDebugMsg("User selected not to overwrite styles");
-        return false;
-      }
+    {
+      errCause = QObject::tr( "Operation aborted. No changes were made in the database" );
+      QgsDebugMsg( "User selected not to overwrite styles" );
+      return false;
+    }
 
-    QgsDebugMsg("Updating styles");
+    QgsDebugMsg( "Updating styles" );
     sql = QString( "UPDATE layer_styles "
                    " SET useAsDefault=%1"
                    ",styleQML=%2"
@@ -2110,8 +2110,8 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
     sql = QString( "%1; %2;" ).arg( removeDefaultSql, sql );
   }
 
-  QgsDebugMsg("Inserting styles");
-  QgsDebugMsg(sql);
+  QgsDebugMsg( "Inserting styles" );
+  QgsDebugMsg( sql );
   bool execOk = query.exec( sql );
 
   if ( !execOk )
@@ -2151,20 +2151,20 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
                            .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
                            .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) );
 
-   if ( !query.exec( selectQmlQuery ) )
-   {
-     QgsDebugMsg("Load of style failed");
-     QString msg = query.lastError().text();
-     errCause = msg;
-     QgsDebugMsg( msg );
-     return QString();
-   }
-   if ( query.isActive() && query.next())
-   {
-     QString style = query.value( 0 ).toString();
-     return style;
-   }
-   return QString();
+  if ( !query.exec( selectQmlQuery ) )
+  {
+    QgsDebugMsg( "Load of style failed" );
+    QString msg = query.lastError().text();
+    errCause = msg;
+    QgsDebugMsg( msg );
+    return QString();
+  }
+  if ( query.isActive() && query.next() )
+  {
+    QString style = query.value( 0 ).toString();
+    return style;
+  }
+  return QString();
 }
 
 QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &names,
@@ -2208,19 +2208,19 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
                                .arg( QgsMssqlProvider::quotedValue( dsUri.schema() ) )
                                .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
                                .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) );
-  bool queryOk = query.exec(selectRelatedQuery);
-  if(!queryOk)
+  bool queryOk = query.exec( selectRelatedQuery );
+  if ( !queryOk )
   {
     QgsDebugMsg( query.lastError().text() );
     return -1;
   }
   int numberOfRelatedStyles = 0;
-  while( query.isActive() && query.next())
+  while ( query.isActive() && query.next() )
   {
-    QgsDebugMsg(query.value(1).toString());
-    ids.append( query.value(0).toString() );
-    names.append(  query.value(1).toString() );
-    descriptions.append(  query.value(2).toString() );
+    QgsDebugMsg( query.value( 1 ).toString() );
+    ids.append( query.value( 0 ).toString() );
+    names.append( query.value( 1 ).toString() );
+    descriptions.append( query.value( 2 ).toString() );
     numberOfRelatedStyles = numberOfRelatedStyles + 1;
   }
   QString selectOthersQuery = QString( "SELECT id,styleName,description"
@@ -2231,20 +2231,20 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
                               .arg( QgsMssqlProvider::quotedValue( dsUri.schema() ) )
                               .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
                               .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) );
-  QgsDebugMsg(selectOthersQuery);
-  queryOk = query.exec(selectOthersQuery);
-  if(!queryOk)
+  QgsDebugMsg( selectOthersQuery );
+  queryOk = query.exec( selectOthersQuery );
+  if ( !queryOk )
   {
     QString msg = query.lastError().text();
     QgsDebugMsg( msg );
     return -1;
   }
-  QgsDebugMsg(query.isActive() && query.size());
-  while(query.next())
+  QgsDebugMsg( query.isActive() && query.size() );
+  while ( query.next() )
   {
-    ids.append( query.value(0).toString() );
-    names.append( query.value(1).toString() );
-    descriptions.append( query.value(2).toString() );
+    ids.append( query.value( 0 ).toString() );
+    names.append( query.value( 1 ).toString() );
+    descriptions.append( query.value( 2 ).toString() );
   }
   return numberOfRelatedStyles;
 }
@@ -2266,17 +2266,17 @@ QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& e
 
   QString style = "";
   QString selectQmlQuery = QString( "SELECT styleQml FROM layer_styles WHERE id=%1" ).arg( QgsMssqlProvider::quotedValue( styleId ) );
-  bool queryOk = query.exec(selectQmlQuery);
-  if(!queryOk)
+  bool queryOk = query.exec( selectQmlQuery );
+  if ( !queryOk )
   {
     QString msg = query.lastError().text();
     QgsDebugMsg( msg );
     errCause = query.lastError().text();
     return QString( );
   }
-  while(query.next())
+  while ( query.next() )
   {
-    style = query.value(0).toString();
+    style = query.value( 0 ).toString();
   }
   return style;
 }

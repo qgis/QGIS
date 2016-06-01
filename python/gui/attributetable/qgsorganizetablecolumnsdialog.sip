@@ -23,7 +23,7 @@ class QgsOrganizeTableColumnsDialog : QDialog
      * Get the updated configuration
      */
     QgsAttributeTableConfig config() const;
-    
+
   public slots:
     /**
      * showAll checks all the  fields to show them all in the attribute table
@@ -33,5 +33,5 @@ class QgsOrganizeTableColumnsDialog : QDialog
     /**
      * hideAll unchecks all the fields to hide them all in the attribute table
      */
-    void hideAll();    
+    void hideAll();
 };

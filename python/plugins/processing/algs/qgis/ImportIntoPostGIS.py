@@ -117,7 +117,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
 
         try:
             db = postgis.GeoDB(host=host, port=port, dbname=database,
-                                     user=username, passwd=password)
+                               user=username, passwd=password)
         except postgis.DbError as e:
             raise GeoAlgorithmExecutionException(
                 self.tr("Couldn't connect to database:\n%s") % unicode(e))

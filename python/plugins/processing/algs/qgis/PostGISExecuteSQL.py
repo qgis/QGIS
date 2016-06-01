@@ -59,7 +59,7 @@ class PostGISExecuteSQL(GeoAlgorithm):
                 self.tr('Wrong database connection name: %s' % connection))
         try:
             self.db = postgis.GeoDB(host=host, port=port,
-                                          dbname=database, user=username, passwd=password)
+                                    dbname=database, user=username, passwd=password)
         except postgis.DbError as e:
             raise GeoAlgorithmExecutionException(
                 self.tr("Couldn't connect to database:\n%s") % unicode(e))

@@ -580,7 +580,7 @@ class VectorWriter:
             print uri.uri()
             try:
                 db = postgis.GeoDB(host=uri.host(), port=int(uri.port()),
-                                         dbname=uri.database(), user=user, passwd=passwd)
+                                   dbname=uri.database(), user=user, passwd=passwd)
             except postgis.DbError as e:
                 raise GeoAlgorithmExecutionException(
                     "Couldn't connect to database:\n%s" % e.message)
