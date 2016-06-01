@@ -1287,11 +1287,18 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
   qSort( attrsLst.begin(), attrsLst.end(), qGreater<int>() );
   Q_FOREACH ( int attr, attrsLst )
   {
-    if ( attr == 0 && mFirstFieldIsFid )
+    if ( mFirstFieldIsFid )
     {
-      pushError( tr( "Cannot delete feature id column" ) );
-      res = false;
-      break;
+      if ( attr == 0 )
+      {
+        pushError( tr( "Cannot delete feature id column" ) );
+        res = false;
+        break;
+      }
+      else
+      {
+        --attr;
+      }
     }
     if ( OGR_L_DeleteField( ogrLayer, attr ) != OGRERR_NONE )
     {
