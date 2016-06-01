@@ -21,6 +21,7 @@
 #include "qgsattributeeditorcontext.h"
 
 #include <QWidget>
+#include <QLabel>
 #include <QDialogButtonBox>
 
 class QgsAttributeFormInterface;
@@ -233,7 +234,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void onAttributeAdded( int idx );
     void onAttributeDeleted( int idx );
     void onUpdatedFields();
-
+    void onConstraintStatusChanged( const QString& constraint,
+                                    const QString &description, const QString& err, bool ok );
     void preventFeatureRefresh();
     void synchronizeEnabledState();
     void layerSelectionChanged();
@@ -282,7 +284,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * Called once maximally.
      */
     void createWrappers();
-    void connectWrappers();
+    void afterWidgetInit();
 
     void scanForEqualAttributes( QgsFeatureIterator& fit, QSet< int >& mixedValueFields, QHash< int, QVariant >& fieldSharedValues ) const;
 
@@ -296,11 +298,22 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     QString createFilterExpression() const;
 
+    //! constraints management
+    void updateAllConstaints();
+    void updateConstraints( QgsEditorWidgetWrapper *w );
+    bool currentFormFeature( QgsFeature &feature );
+    bool currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions );
+    void constraintDependencies( QgsEditorWidgetWrapper *w, QList<QgsEditorWidgetWrapper*> &wDeps );
+    void clearInvalidConstraintsMessage();
+    void displayInvalidConstraintMessage( const QStringList &invalidFields,
+                                          const QStringList &description );
+
     QgsVectorLayer* mLayer;
     QgsFeature mFeature;
     QgsMessageBar* mMessageBar;
     QgsMessageBarItem* mMultiEditUnsavedMessageBarItem;
     QgsMessageBarItem* mMultiEditMessageBarItem;
+    QLabel* mInvalidConstraintMessage;
     QList<QgsWidgetWrapper*> mWidgets;
     QgsAttributeEditorContext mContext;
     QDialogButtonBox* mButtonBox;
@@ -330,7 +343,11 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     Mode mMode;
 
+    //! Backlinks widgets to buddies.
+    QMap<QWidget*, QLabel*> mBuddyMap;
+
     friend class TestQgsDualView;
+    friend class TestQgsAttributeForm;
 };
 
 #endif // QGSATTRIBUTEFORM_H

@@ -110,6 +110,21 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     virtual void showIndeterminateState() {}
 
+    /**
+     * Update constraint.
+     * @param featureContext the feature to use to evaluate the constraint
+     * @note added in QGIS 2.16
+     */
+    void updateConstraint( const QgsFeature &featureContext );
+
+    /**
+     * Get the current constraint status.
+     * @return true if the constraint is valid or if there's not constraint,
+     * false otherwise
+     * @note added in QGIS 2.16
+     */
+    bool isValidConstraint() const;
+
   signals:
     /**
      * Emit this signal, whenever the value changed.
@@ -117,6 +132,16 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * @param value The new value
      */
     void valueChanged( const QVariant& value );
+
+    /**
+     * Emit this signal when the constraint status changed.
+     * @brief constraintStatusChanged
+     * @param constraint represented as a string
+     * @param desc is the constraint description
+     * @param err the error represented as a string. Empty if none.
+     * @param status
+     */
+    void constraintStatusChanged( const QString& constraint, const QString &desc, const QString& err, bool status );
 
   public slots:
     /**
@@ -185,8 +210,28 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     void valueChanged();
 
+  protected:
+    /**
+     * This should update the widget with a visual cue if a constraint status
+     * changed.
+     *
+     * By default a stylesheet will be applied on the widget that changes the
+     * background color to red.
+     *
+     * This can be overwritten in subclasses to allow individual widgets to
+     * change the visual cue.
+     * @note added in QGIS 2.16
+     */
+    virtual void updateConstraintWidgetStatus();
+
+    /**
+     * Boolean storing the current validity of the constraint for this widget.
+     */
+    bool mValidConstraint;
+
   private:
     int mFieldIdx;
+    QgsFeature mFeature;
 };
 
 // We'll use this class inside a QVariant in the widgets properties

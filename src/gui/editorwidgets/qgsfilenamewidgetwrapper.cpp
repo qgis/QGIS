@@ -151,3 +151,16 @@ void QgsFileNameWidgetWrapper::selectFileName()
   if ( mLabel )
     mLineEdit->setText( fileName );
 }
+
+void QgsFileNameWidgetWrapper::updateConstraintWidgetStatus()
+{
+  if ( mLineEdit )
+  {
+    if ( mValidConstraint )
+      mLineEdit->setStyleSheet( QString() );
+    else
+    {
+      mLineEdit->setStyleSheet( "QgsFilterLineEdit { background-color: #dd7777; }" );
+    }
+  }
+}

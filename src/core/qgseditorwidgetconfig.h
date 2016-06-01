@@ -16,6 +16,8 @@
 #include <QString>
 #include <QVariant>
 
+#ifndef QGSEDITORWIDGETCONFIG_H
+#define QGSEDITORWIDGETCONFIG_H
 
 /**
  * Holds a set of configuration parameters for a editor widget wrapper.
@@ -30,4 +32,6 @@
  * You get these passed, for every new widget wrapper.
  */
 
-typedef QMap<QString, QVariant> QgsEditorWidgetConfig;
+typedef QVariantMap QgsEditorWidgetConfig;
+
+#endif // QGSEDITORWIDGETCONFIG_H
