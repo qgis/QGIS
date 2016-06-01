@@ -190,6 +190,7 @@ SET(QGIS_GUI_SRCS
   qgscomposerruler.cpp
   qgscomposerview.cpp
   qgscompoundcolorwidget.cpp
+  qgsconfigureshortcutsdialog.cpp
   qgscredentialdialog.cpp
   qgscursors.cpp
   qgsdatadefinedbutton.cpp
@@ -283,6 +284,7 @@ SET(QGIS_GUI_SRCS
   qgsscalevisibilitydialog.cpp
   qgsscalewidget.cpp
   qgssearchquerybuilder.cpp
+  qgsshortcutsmanager.cpp
   qgsslider.cpp
   qgssublayersdialog.cpp
   qgssqlcomposerdialog.cpp
@@ -343,6 +345,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgscomposerruler.h
   qgscomposerview.h
   qgscompoundcolorwidget.h
+  qgsconfigureshortcutsdialog.h
   qgscredentialdialog.h
   qgsdatadefinedbutton.h
   qgsdatumtransformdialog.h
@@ -427,6 +430,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsscalevisibilitydialog.h
   qgsscalewidget.h
   qgssearchquerybuilder.h
+  qgsshortcutsmanager.h
   qgsslider.h
   qgssqlcomposerdialog.h
   qgssublayersdialog.h

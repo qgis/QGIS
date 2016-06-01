@@ -938,15 +938,22 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   QShortcut* zoomInShortCut = new QShortcut( QKeySequence( tr( "Ctrl++" ) ), this );
   connect( zoomInShortCut, SIGNAL( activated() ), mMapCanvas, SLOT( zoomIn() ) );
+  zoomInShortCut->setObjectName( "ZoomInToCanvas" );
+  zoomInShortCut->setWhatsThis( "Zoom in to canvas" );
   QShortcut* zoomShortCut2 = new QShortcut( QKeySequence( tr( "Ctrl+=" ) ), this );
   connect( zoomShortCut2, SIGNAL( activated() ), mMapCanvas, SLOT( zoomIn() ) );
+  zoomShortCut2->setObjectName( "ZoomInToCanvas2" );
+  zoomShortCut2->setWhatsThis( "Zoom in to canvas (secondary)" );
   QShortcut* zoomOutShortCut = new QShortcut( QKeySequence( tr( "Ctrl+-" ) ), this );
   connect( zoomOutShortCut, SIGNAL( activated() ), mMapCanvas, SLOT( zoomOut() ) );
+  zoomOutShortCut->setObjectName( "ZoomOutOfCanvas" );
+  zoomOutShortCut->setWhatsThis( "Zoom out of canvas" );
 
   //also make ctrl+alt+= a shortcut to switch to zoom in map tool
   QShortcut* zoomInToolShortCut = new QShortcut( QKeySequence( tr( "Ctrl+Alt+=" ) ), this );
   connect( zoomInToolShortCut, SIGNAL( activated() ), this, SLOT( zoomIn() ) );
-
+  zoomInToolShortCut->setObjectName( "Zoom in" );
+  zoomInToolShortCut->setWhatsThis( "Zoom in (secondary)" );
 
   // Show a nice tip of the day
   if ( settings.value( QString( "/qgis/showTips%1" ).arg( QGis::QGIS_VERSION_INT / 100 ), true ).toBool() )
@@ -970,7 +977,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 #endif
 
   // supposedly all actions have been added, now register them to the shortcut manager
-  QgsShortcutsManager::instance()->registerAllChildrenActions( this );
+  QgsShortcutsManager::instance()->registerAllChildren( this );
 
   QgsProviderRegistry::instance()->registerGuis( this );
 
@@ -8526,7 +8533,7 @@ void QgisApp::versionReplyFinished()
 
 void QgisApp::configureShortcuts()
 {
-  QgsConfigureShortcutsDialog dlg;
+  QgsConfigureShortcutsDialog dlg( this );
   dlg.exec();
 }
 
