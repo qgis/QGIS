@@ -65,7 +65,7 @@ QgsHillshadeRendererWidget::QgsHillshadeRendererWidget( QgsRasterLayer *layer, c
   connect( mLightAzimuth, SIGNAL( valueChanged( double ) ), this, SLOT( on_mLightAzimuth_updated( double ) ) );
   connect( mLightAzimuthDial, SIGNAL( valueChanged( int ) ), this, SLOT( on_mLightAzimuthDail_updated( int ) ) );
   connect( mZFactor, SIGNAL( valueChanged( double ) ), this, SIGNAL( widgetChanged() ) );
-  connect( mMultiDirection, SIGNAL( stateChanged( int )), this, SIGNAL( widgetChanged() ) );
+  connect( mMultiDirection, SIGNAL( toggled( bool ) ), this, SIGNAL( widgetChanged() ) );
 
   QgsBilinearRasterResampler* zoomedInResampler = new QgsBilinearRasterResampler();
   layer->resampleFilter()->setZoomedInResampler( zoomedInResampler );
@@ -126,9 +126,9 @@ void QgsHillshadeRendererWidget::setZFactor( double zfactor )
   mZFactor->setValue( zfactor );
 }
 
-void QgsHillshadeRendererWidget::setMultiDirectional(bool isMultiDirectional )
+void QgsHillshadeRendererWidget::setMultiDirectional( bool isMultiDirectional )
 {
-    mMultiDirection->setChecked( isMultiDirectional );
+  mMultiDirection->setChecked( isMultiDirectional );
 }
 
 void QgsHillshadeRendererWidget::on_mLightAzimuth_updated( double value )
@@ -166,5 +166,5 @@ double QgsHillshadeRendererWidget::zFactor() const
 
 bool QgsHillshadeRendererWidget::multiDirectional() const
 {
-    return mMultiDirection->isChecked();
+  return mMultiDirection->isChecked();
 }

@@ -1,5 +1,7 @@
 /**
  * @brief Renderer widget for the hill shade renderer.
+ * @ingroup gui
+ * @note added in QGIS 2.16
  */
 class QgsHillshadeRendererWidget: QgsRasterRendererWidget
 {
@@ -34,51 +36,53 @@ class QgsHillshadeRendererWidget: QgsRasterRendererWidget
     void setFromRenderer( const QgsRasterRenderer* r );
 
     /**
-     * @brief The direction of the light over the raster between 0-360
-     * @return The direction of the light over the raster
+     * Returns the direction of the light over the raster between 0-360.
+     * @see setAzimuth()
      */
     double azimuth() const;
 
-    /**
-     * @brief The angle of the light source over the raster
-     * @return The angle of the light source over the raster
+    /** Returns the angle of the light source over the raster.
+     * @see setAltitude()
      */
     double altitude()  const;
 
-    /**
-     * @brief Z Factor
-     * @return Z Factor
+    /** Returns the Z scaling factor.
+     * @see setZFactor()
      */
     double zFactor()  const;
 
     /**
-     * @brief multiDirectional
-     * @return multiDirectional
+     * Returns true if the renderer should use the multi-directional hillshade algorithm.
+     * @see setMultiDirectional()
      */
     bool multiDirectional() const;
 
   public slots:
+
     /**
      * @brief Set the altitude of the light source
-     * @param altitude The altitude
+     * @param altitude the altitude
+     * @see altitude()
      */
     void setAltitude( double altitude );
 
     /**
-     * @brief Set the azimith of the light source.
-     * @param azimuth The azimuth of the light source.
+     * @brief Set the azimuth of the light source.
+     * @param azimuth The azimuth of the light source, between 0 and 360.0
+     * @see azimuth()
      */
     void setAzimuth( double azimuth );
 
     /**
-     * @brief Set the Z factor of the result image.
-     * @param zfactor The z factor.
+     * @brief Set the Z scaling factor of the result image.
+     * @param zfactor The z factor
+     * @see zFactor()
      */
     void setZFactor( double zfactor );
 
-    /**
-     * @brief set MultiDirectional
-     * @param isMultiDirectional
+    /** Sets whether to render using a multi-directional hillshade algorithm.
+     * @param isMultiDirectional set to true to use multi directional rendering
+     * @see multiDirectional()
      */
     void setMultiDirectional( bool isMultiDirectional);
 };
