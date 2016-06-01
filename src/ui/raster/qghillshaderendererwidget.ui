@@ -130,6 +130,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="decimals">
+      <number>8</number>
+     </property>
      <property name="value">
       <double>1.000000000000000</double>
      </property>
