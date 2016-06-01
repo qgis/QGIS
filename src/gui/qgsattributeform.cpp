@@ -70,12 +70,6 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &featur
   initPython();
   setFeature( feature );
 
-  // Using attributeAdded() attributeDeleted() are not emitted on all fields changes (e.g. layer fields changed,
-  // joined fields changed) -> use updatedFields() instead
-#if 0
-  connect( vl, SIGNAL( attributeAdded( int ) ), this, SLOT( onAttributeAdded( int ) ) );
-  connect( vl, SIGNAL( attributeDeleted( int ) ), this, SLOT( onAttributeDeleted( int ) ) );
-#endif
   connect( vl, SIGNAL( updatedFields() ), this, SLOT( onUpdatedFields() ) );
   connect( vl, SIGNAL( beforeAddingExpressionField( QString ) ), this, SLOT( preventFeatureRefresh() ) );
   connect( vl, SIGNAL( beforeRemovingExpressionField( int ) ), this, SLOT( preventFeatureRefresh() ) );
