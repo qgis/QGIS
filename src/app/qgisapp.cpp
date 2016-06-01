@@ -2815,6 +2815,7 @@ void QgisApp::initLayerTreeView()
   model->setFlag( QgsLayerTreeModel::AllowNodeRename );
   model->setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility );
   model->setFlag( QgsLayerTreeModel::ShowLegendAsTree );
+  model->setFlag( QgsLayerTreeModel::UseEmbeddedWidgets );
   model->setAutoCollapseLegendNodes( 10 );
 
   mLayerTreeView->setModel( model );
