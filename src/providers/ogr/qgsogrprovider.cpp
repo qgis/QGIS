@@ -1332,14 +1332,26 @@ bool QgsOgrProvider::renameAttributes( const QgsFieldNameMap& renamedAttributes 
       result = false;
       continue;
     }
+    int ogrFieldIndex = fieldIndex;
+    if ( mFirstFieldIsFid )
+    {
+      ogrFieldIndex -= 1;
+      if ( ogrFieldIndex < 0 )
+      {
+        pushError( tr( "Invalid attribute index" ) );
+        result = false;
+        continue;
+      }
+    }
 
     //type does not matter, it will not be used
     OGRFieldDefnH fld = OGR_Fld_Create( mEncoding->fromUnicode( renameIt.value() ), OFTReal );
-    if ( OGR_L_AlterFieldDefn( ogrLayer, fieldIndex, fld, ALTER_NAME_FLAG ) != OGRERR_NONE )
+    if ( OGR_L_AlterFieldDefn( ogrLayer, ogrFieldIndex, fld, ALTER_NAME_FLAG ) != OGRERR_NONE )
     {
       pushError( tr( "OGR error renaming field %1: %2" ).arg( fieldIndex ).arg( CPLGetLastErrorMsg() ) );
       result = false;
     }
+    OGR_Fld_Destroy( fld );
   }
   loadFields();
   return result;
