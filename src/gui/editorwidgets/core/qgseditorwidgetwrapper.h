@@ -224,14 +224,15 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     virtual void updateConstraintWidgetStatus();
 
+  private:
     /**
      * Boolean storing the current validity of the constraint for this widget.
      */
     bool mValidConstraint;
 
-  private:
     int mFieldIdx;
     QgsFeature mFeature;
+    mutable QVariant mDefaultValue; // Cache default value, we don't want to retrieve different serial numbers if called repeatedly
 };
 
 // We'll use this class inside a QVariant in the widgets properties

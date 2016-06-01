@@ -42,7 +42,9 @@ QgsField QgsEditorWidgetWrapper::field() const
 
 QVariant QgsEditorWidgetWrapper::defaultValue() const
 {
-  return layer()->dataProvider()->defaultValue( mFieldIdx );
+  mDefaultValue = layer()->dataProvider()->defaultValue( mFieldIdx );
+
+  return mDefaultValue;
 }
 
 QgsEditorWidgetWrapper* QgsEditorWidgetWrapper::fromWidget( QWidget* widget )
