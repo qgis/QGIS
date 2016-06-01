@@ -82,7 +82,7 @@ Depends:
  qgis-providers (= ${binary:Version}),
  qgis-common (= ${source:Version})
 Recommends:
-#globe# qgis-plugin-globe
+#globe# qgis-plugin-globe,
  qgis-plugin-grass,
  qgis-provider-grass
 Suggests: gpsbabel
