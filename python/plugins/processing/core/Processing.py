@@ -112,9 +112,12 @@ class Processing:
         """
         try:
             provider.unload()
-            Processing.providers.remove(provider)
-            algList.remove(provider.getName())
-            del Processing.actions[provider.getName()]
+            for p in Processing.providers:
+                if p.getName() == provider.getName():
+                    Processing.providers.remove(p)
+            algList.removeProvider(provider.getName())
+            if provider.getName() in Processing.actions:
+                del Processing.actions[provider.getName()]
             for act in provider.contextMenuActions:
                 Processing.contextMenuActions.remove(act)
         except:
@@ -131,7 +134,7 @@ class Processing:
 
     @staticmethod
     def initialize():
-        if Processing.providers:
+        if "model" in [p.getName() for p in Processing.providers]:
             return
         # Add the basic providers
         for c in AlgorithmProvider.__subclasses__():
