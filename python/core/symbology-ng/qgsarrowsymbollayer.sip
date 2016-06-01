@@ -54,18 +54,31 @@ class QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     /** Set the scale for the arrow start width */
     void setArrowStartWidthUnitScale( const QgsMapUnitScale& s );
 
-    /** Get the current arrow head size */
-    double headSize() const;
-    /** Set the arrow head size */
-    void setHeadSize( double s );
-    /** Get the unit for the head size */
-    QgsSymbolV2::OutputUnit headSizeUnit() const;
-    /** Set the unit for the head size */
-    void setHeadSizeUnit( QgsSymbolV2::OutputUnit u );
-    /** Get the scale for the head size */
-    QgsMapUnitScale headSizeUnitScale() const;
-    /** Set the scale for the head size */
-    void setHeadSizeUnitScale( const QgsMapUnitScale& s );
+    /** Get the current arrow head width */
+    double headWidth() const;
+    /** Set the arrow head width */
+    void setHeadWidth( double s );
+    /** Get the unit for the head width */
+    QgsSymbolV2::OutputUnit headWidthUnit() const;
+    /** Set the unit for the head width */
+    void setHeadWidthUnit( QgsSymbolV2::OutputUnit u );
+    /** Get the scale for the head width */
+    QgsMapUnitScale headWidthUnitScale() const;
+    /** Set the scale for the head width */
+    void setHeadWidthUnitScale( const QgsMapUnitScale& s );
+
+    /** Get the current arrow head height */
+    double headHeight() const;
+    /** Set the arrow head height */
+    void setHeadHeight( double s );
+    /** Get the unit for the head height */
+    QgsSymbolV2::OutputUnit headHeightUnit() const;
+    /** Set the unit for the head height */
+    void setHeadHeightUnit( QgsSymbolV2::OutputUnit u );
+    /** Get the scale for the head height */
+    QgsMapUnitScale headHeightUnitScale() const;
+    /** Set the scale for the head height */
+    void setHeadHeightUnitScale( const QgsMapUnitScale& s );
 
     /** Return whether it is a curved arrow or a straight one */
     bool isCurved() const;
@@ -84,6 +97,19 @@ class QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     HeadType headType() const;
     /** Set the head type */
     void setHeadType( HeadType t );
+
+    /** Possible arrow types */
+    enum ArrowType
+    {
+      ArrowPlain,     //< Regular arrow
+      ArrowLeftHalf,  //< Halved arrow, only the left side of the arrow is rendered (for straight arrows) or the side toward the exterior (for curved arrows)
+      ArrowRightHalf  //< Halved arrow, only the right side of the arrow is rendered (for straight arrows) or the side toward the interior (for curved arrows)
+    };
+
+    /** Get the current arrow type */
+    ArrowType arrowType() const;
+    /** Set the arrow type */
+    void setArrowType( ArrowType t );
 
     /**
      * Should be reimplemented by subclasses to return a string map that

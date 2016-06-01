@@ -74,18 +74,31 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     /** Set the scale for the arrow start width */
     void setArrowStartWidthUnitScale( const QgsMapUnitScale& s ) { mArrowStartWidthUnitScale = s; }
 
-    /** Get the current arrow head size */
-    double headSize() const { return mHeadSize; }
-    /** Set the arrow head size */
-    void setHeadSize( double s ) { mHeadSize = s; }
-    /** Get the unit for the head size */
-    QgsSymbolV2::OutputUnit headSizeUnit() const { return mHeadSizeUnit; }
-    /** Set the unit for the head size */
-    void setHeadSizeUnit( QgsSymbolV2::OutputUnit u ) { mHeadSizeUnit = u; }
-    /** Get the scale for the head size */
-    QgsMapUnitScale headSizeUnitScale() const { return mHeadSizeUnitScale; }
-    /** Set the scale for the head size */
-    void setHeadSizeUnitScale( const QgsMapUnitScale& s ) { mHeadSizeUnitScale = s; }
+    /** Get the current arrow head width */
+    double headWidth() const { return mHeadWidth; }
+    /** Set the arrow head width */
+    void setHeadWidth( double s ) { mHeadWidth = s; }
+    /** Get the unit for the head width */
+    QgsSymbolV2::OutputUnit headWidthUnit() const { return mHeadWidthUnit; }
+    /** Set the unit for the head width */
+    void setHeadWidthUnit( QgsSymbolV2::OutputUnit u ) { mHeadWidthUnit = u; }
+    /** Get the scale for the head width */
+    QgsMapUnitScale headWidthUnitScale() const { return mHeadWidthUnitScale; }
+    /** Set the scale for the head width */
+    void setHeadWidthUnitScale( const QgsMapUnitScale& s ) { mHeadWidthUnitScale = s; }
+
+    /** Get the current arrow head height */
+    double headHeight() const { return mHeadHeight; }
+    /** Set the arrow head height */
+    void setHeadHeight( double s ) { mHeadHeight = s; }
+    /** Get the unit for the head height */
+    QgsSymbolV2::OutputUnit headHeightUnit() const { return mHeadHeightUnit; }
+    /** Set the unit for the head height */
+    void setHeadHeightUnit( QgsSymbolV2::OutputUnit u ) { mHeadHeightUnit = u; }
+    /** Get the scale for the head height */
+    QgsMapUnitScale headHeightUnitScale() const { return mHeadHeightUnitScale; }
+    /** Set the scale for the head height */
+    void setHeadHeightUnitScale( const QgsMapUnitScale& s ) { mHeadHeightUnitScale = s; }
 
     /** Return whether it is a curved arrow or a straight one */
     bool isCurved() const { return mIsCurved; }
@@ -104,6 +117,19 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     HeadType headType() const { return mHeadType; }
     /** Set the head type */
     void setHeadType( HeadType t ) { mHeadType = t; }
+
+    /** Possible arrow types */
+    enum ArrowType
+    {
+      ArrowPlain,     //< Regular arrow
+      ArrowLeftHalf,  //< Halved arrow, only the left side of the arrow is rendered (for straight arrows) or the side toward the exterior (for curved arrows)
+      ArrowRightHalf  //< Halved arrow, only the right side of the arrow is rendered (for straight arrows) or the side toward the interior (for curved arrows)
+    };
+
+    /** Get the current arrow type */
+    ArrowType arrowType() const { return mArrowType; }
+    /** Set the arrow type */
+    void setArrowType( ArrowType t ) { mArrowType = t; }
 
     /**
      * Should be reimplemented by subclasses to return a string map that
@@ -142,17 +168,24 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     QgsSymbolV2::OutputUnit mArrowStartWidthUnit;
     QgsMapUnitScale mArrowStartWidthUnitScale;
 
-    double mHeadSize;
-    QgsSymbolV2::OutputUnit mHeadSizeUnit;
-    QgsMapUnitScale mHeadSizeUnitScale;
+    double mHeadWidth;
+    QgsSymbolV2::OutputUnit mHeadWidthUnit;
+    QgsMapUnitScale mHeadWidthUnitScale;
+    double mHeadHeight;
+    QgsSymbolV2::OutputUnit mHeadHeightUnit;
+    QgsMapUnitScale mHeadHeightUnitScale;
+
     HeadType mHeadType;
+    ArrowType mArrowType;
     bool mIsCurved;
 
     double mScaledArrowWidth;
     double mScaledArrowStartWidth;
-    double mScaledHeadSize;
+    double mScaledHeadWidth;
+    double mScaledHeadHeight;
     double mScaledOffset;
     HeadType mComputedHeadType;
+    ArrowType mComputedArrowType;
 
     QScopedPointer<QgsExpressionContextScope> mExpressionScope;
 
