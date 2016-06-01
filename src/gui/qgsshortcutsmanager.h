@@ -48,26 +48,29 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     /** Automatically registers all QActions and QShortcuts which are children of the
      * passed object.
      * @param object parent object containing actions and shortcuts to register
+     * @param recursive set to true to recursively add child actions and shortcuts
      * @see registerAllChildActions()
      * @see registerAllChildShortcuts()
      */
-    void registerAllChildren( QObject* object );
+    void registerAllChildren( QObject* object, bool recursive = false );
 
     /** Automatically registers all QActions which are children of the passed object.
      * @param object parent object containing actions to register
+     * @param recursive set to true to recursively add child actions
      * @see registerAction()
      * @see registerAllChildren()
      * @see registerAllChildShortcuts()
      */
-    void registerAllChildActions( QObject* object );
+    void registerAllChildActions( QObject* object, bool recursive = false );
 
     /** Automatically registers all QShortcuts which are children of the passed object.
      * @param object parent object containing shortcuts to register
+     * @param recursive set to true to recursively add child shortcuts
      * @see registerShortcut()
      * @see registerAllChildren()
      * @see registerAllChildActions()
      */
-    void registerAllChildShortcuts( QObject* object );
+    void registerAllChildShortcuts( QObject* object, bool recursive = false );
 
     /** Registers an action with the manager so the shortcut can be configured in GUI.
      * @param action action to register. The action must have a unique text string for

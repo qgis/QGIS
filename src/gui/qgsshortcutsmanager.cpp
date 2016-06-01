@@ -34,30 +34,52 @@ QgsShortcutsManager::QgsShortcutsManager( QObject *parent, const QString& settin
 {
 }
 
-void QgsShortcutsManager::registerAllChildren( QObject* object )
+void QgsShortcutsManager::registerAllChildren( QObject* object, bool recursive )
 {
-  registerAllChildActions( object );
-  registerAllChildShortcuts( object );
+  registerAllChildActions( object, recursive );
+  registerAllChildShortcuts( object, recursive );
 }
 
-void QgsShortcutsManager::registerAllChildActions( QObject* object )
+void QgsShortcutsManager::registerAllChildActions( QObject* object, bool recursive )
 {
-  Q_FOREACH ( QObject* child, object->children() )
+  if ( recursive )
   {
-    if ( QAction* a = qobject_cast<QAction*>( child ) )
+    QList< QAction* > actions = object->findChildren< QAction* >();
+    Q_FOREACH ( QAction* a, actions )
     {
       registerAction( a, a->shortcut() );
     }
   }
+  else
+  {
+    Q_FOREACH ( QObject* child, object->children() )
+    {
+      if ( QAction* a = qobject_cast<QAction*>( child ) )
+      {
+        registerAction( a, a->shortcut() );
+      }
+    }
+  }
 }
 
-void QgsShortcutsManager::registerAllChildShortcuts( QObject* object )
+void QgsShortcutsManager::registerAllChildShortcuts( QObject* object, bool recursive )
 {
-  Q_FOREACH ( QObject* child, object->children() )
+  if ( recursive )
   {
-    if ( QShortcut* s = qobject_cast<QShortcut*>( child ) )
+    QList< QShortcut* > shortcuts = object->findChildren< QShortcut* >();
+    Q_FOREACH ( QShortcut* s, shortcuts )
     {
       registerShortcut( s, s->key() );
+    }
+  }
+  else
+  {
+    Q_FOREACH ( QObject* child, object->children() )
+    {
+      if ( QShortcut* s = qobject_cast<QShortcut*>( child ) )
+      {
+        registerShortcut( s, s->key() );
+      }
     }
   }
 }
