@@ -54,6 +54,7 @@
 %Include qgscomposerruler.sip
 %Include qgscomposerview.sip
 %Include qgscompoundcolorwidget.sip
+%Include qgsconfigureshortcutsdialog.sip
 %Include qgscredentialdialog.sip
 %Include qgsdatadefinedbutton.sip
 %Include qgsdetaileditemdata.sip
@@ -147,6 +148,7 @@
 %Include qgsscalevisibilitydialog.sip
 %Include qgsscalewidget.sip
 %Include qgssearchquerybuilder.sip
+%Include qgsshortcutsmanager.sip
 %Include qgsslider.sip
 %Include qgssublayersdialog.sip
 %Include qgssvgannotationitem.sip
