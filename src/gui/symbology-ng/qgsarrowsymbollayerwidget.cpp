@@ -25,7 +25,8 @@ QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( const QgsVectorLayer* vl, 
 
   mArrowWidthUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
   mArrowStartWidthUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
-  mHeadSizeUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
+  mHeadWidthUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
+  mHeadHeightUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
   mOffsetUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
 
   mOffsetSpin->setClearValue( 0.0 );
@@ -48,11 +49,15 @@ void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mArrowStartWidthUnitWidget->setUnit( mLayer->arrowStartWidthUnit() );
   mArrowStartWidthUnitWidget->setMapUnitScale( mLayer->arrowStartWidthUnitScale() );
 
-  mHeadSizeSpin->setValue( mLayer->headSize() );
-  mHeadSizeUnitWidget->setUnit( mLayer->headSizeUnit() );
-  mHeadSizeUnitWidget->setMapUnitScale( mLayer->headSizeUnitScale() );
+  mHeadWidthSpin->setValue( mLayer->headWidth() );
+  mHeadWidthUnitWidget->setUnit( mLayer->headWidthUnit() );
+  mHeadWidthUnitWidget->setMapUnitScale( mLayer->headWidthUnitScale() );
+  mHeadHeightSpin->setValue( mLayer->headHeight() );
+  mHeadHeightUnitWidget->setUnit( mLayer->headHeightUnit() );
+  mHeadHeightUnitWidget->setMapUnitScale( mLayer->headHeightUnitScale() );
 
   mHeadTypeCombo->setCurrentIndex( mLayer->headType() );
+  mArrowTypeCombo->setCurrentIndex( mLayer->arrowType() );
 
   mOffsetSpin->setValue( mLayer->offset() );
   mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
@@ -62,8 +67,10 @@ void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
 
   registerDataDefinedButton( mArrowWidthDDBtn, "arrow_width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
   registerDataDefinedButton( mArrowStartWidthDDBtn, "arrow_start_width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mHeadSizeDDBtn, "head_size", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mHeadWidthDDBtn, "head_width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mHeadHeightDDBtn, "head_height", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
   registerDataDefinedButton( mHeadTypeDDBtn, "head_type", QgsDataDefinedButton::Int, QgsDataDefinedButton::intDesc() );
+  registerDataDefinedButton( mArrowTypeDDBtn, "arrow_type", QgsDataDefinedButton::Int, QgsDataDefinedButton::intDesc() );
   registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::String, QgsDataDefinedButton::doubleDesc() );
 }
 
@@ -91,12 +98,21 @@ void QgsArrowSymbolLayerWidget::on_mArrowStartWidthSpin_valueChanged( double d )
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mHeadSizeSpin_valueChanged( double d )
+void QgsArrowSymbolLayerWidget::on_mHeadWidthSpin_valueChanged( double d )
 {
   if ( !mLayer )
     return;
 
-  mLayer->setHeadSize( d );
+  mLayer->setHeadWidth( d );
+  emit changed();
+}
+
+void QgsArrowSymbolLayerWidget::on_mHeadHeightSpin_valueChanged( double d )
+{
+  if ( !mLayer )
+    return;
+
+  mLayer->setHeadHeight( d );
   emit changed();
 }
 
@@ -120,13 +136,23 @@ void QgsArrowSymbolLayerWidget::on_mArrowStartWidthUnitWidget_changed()
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mHeadSizeUnitWidget_changed()
+void QgsArrowSymbolLayerWidget::on_mHeadWidthUnitWidget_changed()
 {
   if ( !mLayer )
     return;
 
-  mLayer->setHeadSizeUnit( mHeadSizeUnitWidget->unit() );
-  mLayer->setHeadSizeUnitScale( mHeadSizeUnitWidget->getMapUnitScale() );
+  mLayer->setHeadWidthUnit( mHeadWidthUnitWidget->unit() );
+  mLayer->setHeadWidthUnitScale( mHeadWidthUnitWidget->getMapUnitScale() );
+  emit changed();
+}
+
+void QgsArrowSymbolLayerWidget::on_mHeadHeightUnitWidget_changed()
+{
+  if ( !mLayer )
+    return;
+
+  mLayer->setHeadHeightUnit( mHeadHeightUnitWidget->unit() );
+  mLayer->setHeadHeightUnitScale( mHeadHeightUnitWidget->getMapUnitScale() );
   emit changed();
 }
 
@@ -141,6 +167,16 @@ void QgsArrowSymbolLayerWidget::on_mHeadTypeCombo_currentIndexChanged( int idx )
   mArrowStartWidthDDBtn->setEnabled( isSingle );
   mArrowStartWidthSpin->setEnabled( isSingle );
   mArrowStartWidthUnitWidget->setEnabled( isSingle );
+  emit changed();
+}
+
+void QgsArrowSymbolLayerWidget::on_mArrowTypeCombo_currentIndexChanged( int idx )
+{
+  if ( !mLayer )
+    return;
+
+  QgsArrowSymbolLayer::ArrowType t = static_cast<QgsArrowSymbolLayer::ArrowType>( idx );
+  mLayer->setArrowType( t );
   emit changed();
 }
 
@@ -171,4 +207,3 @@ void QgsArrowSymbolLayerWidget::on_mCurvedArrowChck_stateChanged( int state )
   mLayer->setIsCurved( state == Qt::Checked );
   emit changed();
 }
-
