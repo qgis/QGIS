@@ -4062,11 +4062,6 @@ void QgisApp::addWcsLayer()
 
 void QgisApp::addWfsLayer()
 {
-  if ( !mMapCanvas )
-  {
-    return;
-  }
-
   QgsDebugMsg( "about to addWfsLayer" );
 
   // TODO: QDialog for now, switch to QWidget in future
@@ -4079,17 +4074,7 @@ void QgisApp::addWfsLayer()
   connect( wfss, SIGNAL( addWfsLayer( QString, QString ) ),
            this, SLOT( addWfsLayer( QString, QString ) ) );
 
-  //re-enable wfs with extent setting: pass canvas info to source select
-  wfss->setProperty( "MapExtent", mMapCanvas->extent().toString() );
-  if ( mMapCanvas->mapSettings().hasCrsTransformEnabled() )
-  { //if "on the fly" reprojection is active, pass canvas CRS
-    wfss->setProperty( "MapCRS", mMapCanvas->mapSettings().destinationCrs().authid() );
-  }
-
-  bool bkRenderFlag = mMapCanvas->renderFlag();
-  mMapCanvas->setRenderFlag( false );
   wfss->exec();
-  mMapCanvas->setRenderFlag( bkRenderFlag );
   delete wfss;
 }
 
