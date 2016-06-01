@@ -69,6 +69,7 @@ class ProcessingScriptCollectionPlugin:
         Processing.removeScripts(os.path.join(os.path.dirname(__file__), "scripts"))
 '''
 
+
 class CreateScriptCollectionPluginAction(ToolboxAction):
 
     def __init__(self):
@@ -99,4 +100,3 @@ class CreateScriptCollectionPluginAction(ToolboxAction):
                 scriptFile = os.path.join(scriptsFolder, os.path.basename(script.descriptionFile))
                 with open(scriptFile, "w") as f:
                     f.write(script.script)
-

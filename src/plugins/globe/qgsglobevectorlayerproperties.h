@@ -28,54 +28,54 @@ class QListWidgetItem;
 
 class QgsGlobeVectorLayerConfig : public QObject
 {
-public:
-  enum RenderingMode
-  {
-    RenderingModeRasterized,
-    RenderingModeModelSimple,
-    RenderingModeModelAdvanced
-  };
+  public:
+    enum RenderingMode
+    {
+      RenderingModeRasterized,
+      RenderingModeModelSimple,
+      RenderingModeModelAdvanced
+    };
 
-  QgsGlobeVectorLayerConfig( QObject* parent = 0 )
-      : QObject( parent )
-      , renderingMode( RenderingModeRasterized )
-      , altitudeClamping( osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN )
-      , altitudeTechnique( osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE )
-      , altitudeBinding( osgEarth::Symbology::AltitudeSymbol::BINDING_VERTEX )
-      , verticalOffset( 0.0 )
-      , verticalScale( 0.0 )
-      , clampingResolution( 0.0 )
-      , extrusionEnabled( false )
-      , extrusionHeight( "10" )
-      , extrusionFlatten( false )
-      , extrusionWallGradient( 0.5 )
-      , labelingEnabled( false )
-      , labelingDeclutter( false )
-      , lightingEnabled( true )
-  {
-  }
+    QgsGlobeVectorLayerConfig( QObject* parent = 0 )
+        : QObject( parent )
+        , renderingMode( RenderingModeRasterized )
+        , altitudeClamping( osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN )
+        , altitudeTechnique( osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE )
+        , altitudeBinding( osgEarth::Symbology::AltitudeSymbol::BINDING_VERTEX )
+        , verticalOffset( 0.0 )
+        , verticalScale( 0.0 )
+        , clampingResolution( 0.0 )
+        , extrusionEnabled( false )
+        , extrusionHeight( "10" )
+        , extrusionFlatten( false )
+        , extrusionWallGradient( 0.5 )
+        , labelingEnabled( false )
+        , labelingDeclutter( false )
+        , lightingEnabled( true )
+    {
+    }
 
-  RenderingMode renderingMode;
-  osgEarth::Symbology::AltitudeSymbol::Clamping altitudeClamping;
-  osgEarth::Symbology::AltitudeSymbol::Technique altitudeTechnique;
-  osgEarth::Symbology::AltitudeSymbol::Binding altitudeBinding;
+    RenderingMode renderingMode;
+    osgEarth::Symbology::AltitudeSymbol::Clamping altitudeClamping;
+    osgEarth::Symbology::AltitudeSymbol::Technique altitudeTechnique;
+    osgEarth::Symbology::AltitudeSymbol::Binding altitudeBinding;
 
-  float verticalOffset;
-  float verticalScale;
-  float clampingResolution;
+    float verticalOffset;
+    float verticalScale;
+    float clampingResolution;
 
-  bool extrusionEnabled;
-  QString extrusionHeight;
-  bool extrusionFlatten;
-  float extrusionWallGradient;
+    bool extrusionEnabled;
+    QString extrusionHeight;
+    bool extrusionFlatten;
+    float extrusionWallGradient;
 
-  bool labelingEnabled;
-  QString labelingField;
-  bool labelingDeclutter;
+    bool labelingEnabled;
+    QString labelingField;
+    bool labelingDeclutter;
 
-  bool lightingEnabled;
+    bool lightingEnabled;
 
-  static QgsGlobeVectorLayerConfig* getConfig( QgsVectorLayer* layer );
+    static QgsGlobeVectorLayerConfig* getConfig( QgsVectorLayer* layer );
 };
 
 

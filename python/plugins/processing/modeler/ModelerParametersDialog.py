@@ -742,7 +742,6 @@ class ModelerParametersDialog(QDialog):
         if self.alg is not None:
             self.close()
 
-
     def cancelPressed(self):
         self.alg = None
         self.close()

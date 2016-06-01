@@ -50,7 +50,7 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
                                                    CreateNewScriptAction.SCRIPT_PYTHON),
                              AddScriptFromFileAction(),
                              GetScriptsAction(),
-                             CreateScriptCollectionPluginAction(),])
+                             CreateScriptCollectionPluginAction(), ])
         self.contextMenuActions = \
             [EditScriptAction(EditScriptAction.SCRIPT_PYTHON),
              DeleteScriptAction(DeleteScriptAction.SCRIPT_PYTHON)]
