@@ -78,7 +78,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
      """
 
     def testBinding(self):
-        """Test python bindings existance."""
+        """Test python bindings existence."""
         mType = type(QgsSymbolLayerV2)
         mExpectedType = pyqtWrapperType
         mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)

@@ -15,11 +15,12 @@
 
 #include "qgsglobefeatureidentify.h"
 #include "qgsmapcanvas.h"
-#include "featuresource/qgsglobefeaturesource.h"
-
 #include <qgsmaplayerregistry.h>
 #include <qgsrubberband.h>
 #include <qgsvectorlayer.h>
+
+#include "featuresource/qgsglobefeaturesource.h"
+
 #include <osg/ValueObject>
 #include <osgEarth/Registry>
 
