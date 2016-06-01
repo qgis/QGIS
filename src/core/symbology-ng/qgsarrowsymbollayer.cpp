@@ -28,6 +28,7 @@ QgsArrowSymbolLayer::QgsArrowSymbolLayer()
     , mHeadType( HeadSingle )
     , mArrowType( ArrowPlain )
     , mIsCurved( true )
+    , mIsRepeated( true )
     , mScaledArrowWidth( 1.0 )
     , mScaledArrowStartWidth( 1.0 )
     , mScaledHeadWidth( 1.5 )
@@ -77,6 +78,9 @@ QgsSymbolLayerV2* QgsArrowSymbolLayer::create( const QgsStringMap& props )
 
   if ( props.contains( "is_curved" ) )
     l->setIsCurved( props["is_curved"].toInt() == 1 );
+
+  if ( props.contains( "is_repeated" ) )
+    l->setIsRepeated( props["is_repeated"].toInt() == 1 );
 
   if ( props.contains( "head_width" ) )
     l->setHeadWidth( props["head_width"].toDouble() );
@@ -145,6 +149,7 @@ QgsStringMap QgsArrowSymbolLayer::properties() const
   map["arrow_start_width_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( arrowStartWidthUnitScale() );
 
   map["is_curved"] = QString::number( isCurved() ? 1 : 0 );
+  map["is_repeated"] = QString::number( isRepeated() ? 1 : 0 );
 
   map["head_width"] = QString::number( headWidth() );
   map["head_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( headWidthUnit() );
@@ -689,26 +694,89 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbolV2Re
   mExpressionScope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, 1 );
   if ( isCurved() )
   {
-    for ( int pIdx = 0; pIdx < points.size() - 1; pIdx += 2 )
-    {
-      mExpressionScope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, pIdx + 1 );
-      _resolveDataDefined( context );
+    _resolveDataDefined( context );
 
-      if ( points.size() - pIdx >= 3 )
+    if ( ! isRepeated() )
+    {
+      if ( points.size() >= 3 )
       {
         // origin point
-        QPointF po( points.at( pIdx ) );
+        QPointF po( points.at( 0 ) );
         // middle point
-        QPointF pm( points.at( pIdx + 1 ) );
+        QPointF pm( points.at( points.size() / 2 ) );
         // destination point
-        QPointF pd( points.at( pIdx + 2 ) );
+        QPointF pd( points.back() );
 
         QPolygonF poly = curvedArrow( po, pm, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadWidth, mScaledHeadHeight, mComputedHeadType, mComputedArrowType, mScaledOffset );
         mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext() );
       }
       // straight arrow
-      else if ( points.size() - pIdx == 2 )
+      else if ( points.size() == 2 )
       {
+        // origin point
+        QPointF po( points.at( 0 ) );
+        // destination point
+        QPointF pd( points.at( 1 ) );
+
+        QPolygonF poly = straightArrow( po, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadWidth, mScaledHeadHeight, mComputedHeadType, mComputedArrowType, mScaledOffset );
+        mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext() );
+      }
+    }
+    else
+    {
+      for ( int pIdx = 0; pIdx < points.size() - 1; pIdx += 2 )
+      {
+        mExpressionScope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, pIdx + 1 );
+        _resolveDataDefined( context );
+
+        if ( points.size() - pIdx >= 3 )
+        {
+          // origin point
+          QPointF po( points.at( pIdx ) );
+          // middle point
+          QPointF pm( points.at( pIdx + 1 ) );
+          // destination point
+          QPointF pd( points.at( pIdx + 2 ) );
+
+          QPolygonF poly = curvedArrow( po, pm, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadWidth, mScaledHeadHeight, mComputedHeadType, mComputedArrowType, mScaledOffset );
+          mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext() );
+        }
+        // straight arrow
+        else if ( points.size() - pIdx == 2 )
+        {
+          // origin point
+          QPointF po( points.at( pIdx ) );
+          // destination point
+          QPointF pd( points.at( pIdx + 1 ) );
+
+          QPolygonF poly = straightArrow( po, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadWidth, mScaledHeadHeight, mComputedHeadType, mComputedArrowType, mScaledOffset );
+          mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext() );
+        }
+      }
+    }
+  }
+  else
+  {
+    if ( !isRepeated() )
+    {
+      _resolveDataDefined( context );
+
+      // origin point
+      QPointF po( points.at( 0 ) );
+      // destination point
+      QPointF pd( points.back() );
+
+      QPolygonF poly = straightArrow( po, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadWidth, mScaledHeadHeight, mComputedHeadType, mComputedArrowType, mScaledOffset );
+      mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext() );
+    }
+    else
+    {
+      // only straight arrows
+      for ( int pIdx = 0; pIdx < points.size() - 1; pIdx++ )
+      {
+        mExpressionScope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, pIdx + 1 );
+        _resolveDataDefined( context );
+
         // origin point
         QPointF po( points.at( pIdx ) );
         // destination point
@@ -717,23 +785,6 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbolV2Re
         QPolygonF poly = straightArrow( po, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadWidth, mScaledHeadHeight, mComputedHeadType, mComputedArrowType, mScaledOffset );
         mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext() );
       }
-    }
-  }
-  else
-  {
-    // only straight arrows
-    for ( int pIdx = 0; pIdx < points.size() - 1; pIdx++ )
-    {
-      mExpressionScope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, pIdx + 1 );
-      _resolveDataDefined( context );
-
-      // origin point
-      QPointF po( points.at( pIdx ) );
-      // destination point
-      QPointF pd( points.at( pIdx + 1 ) );
-
-      QPolygonF poly = straightArrow( po, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadWidth, mScaledHeadHeight, mComputedHeadType, mComputedArrowType, mScaledOffset );
-      mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext() );
     }
   }
   context.renderContext().expressionContext().popScope();

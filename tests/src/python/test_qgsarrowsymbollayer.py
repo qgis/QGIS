@@ -130,6 +130,26 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         renderchecker.setControlName('expected_arrowsymbollayer_3')
         self.assertTrue(renderchecker.runTest('arrowsymbollayer_3'))
 
+    def test_unrepeated(self):
+        sym = self.lines_layer.rendererV2().symbol()
+        # double headed
+        sym_layer = QgsArrowSymbolLayer.create({'arrow_width': '7', 'head_width': '6', 'head_height': '8', 'head_type': '0', 'arrow_type': '0'})
+        # no repetition
+        sym_layer.setIsRepeated(False)
+        fill_sym = QgsFillSymbolV2.createSimple({'color': '#8bcfff', 'outline_color': '#000000', 'outline_style': 'solid', 'outline_width': '1'})
+        sym_layer.setSubSymbol(fill_sym)
+        sym.changeSymbolLayer(0, sym_layer)
+
+        rendered_layers = [self.lines_layer.id()]
+        self.mapsettings.setLayers(rendered_layers)
+
+        renderchecker = QgsMultiRenderChecker()
+        ms = self.mapsettings
+        ms.setExtent(QgsRectangle(-119, 17, -82, 50))
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlName('expected_arrowsymbollayer_4')
+        self.assertTrue(renderchecker.runTest('arrowsymbollayer_4'))
+
     def testColors(self):
         """
         Test colors, need to make sure colors are passed/retrieved from subsymbol

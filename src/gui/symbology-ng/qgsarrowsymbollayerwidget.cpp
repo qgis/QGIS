@@ -64,6 +64,7 @@ void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
 
   mCurvedArrowChck->setChecked( mLayer->isCurved() );
+  mRepeatArrowChck->setChecked( mLayer->isRepeated() );
 
   registerDataDefinedButton( mArrowWidthDDBtn, "arrow_width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
   registerDataDefinedButton( mArrowStartWidthDDBtn, "arrow_start_width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
@@ -205,5 +206,14 @@ void QgsArrowSymbolLayerWidget::on_mCurvedArrowChck_stateChanged( int state )
     return;
 
   mLayer->setIsCurved( state == Qt::Checked );
+  emit changed();
+}
+
+void QgsArrowSymbolLayerWidget::on_mRepeatArrowChck_stateChanged( int state )
+{
+  if ( ! mLayer )
+    return;
+
+  mLayer->setIsRepeated( state == Qt::Checked );
   emit changed();
 }

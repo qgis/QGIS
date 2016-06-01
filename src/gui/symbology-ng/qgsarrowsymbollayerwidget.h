@@ -63,6 +63,7 @@ class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerV2Widget, priva
     void on_mOffsetUnitWidget_changed();
 
     void on_mCurvedArrowChck_stateChanged( int );
+    void on_mRepeatArrowChck_stateChanged( int );
 };
 
 #endif
