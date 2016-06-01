@@ -2153,8 +2153,10 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
 
    if ( !query.exec( selectQmlQuery ) )
    {
-     QgsDebugMsg( query.lastError().text() );
-     QgsDebugMsg("Load of Style failed");
+     QgsDebugMsg("Load of style failed");
+     QString msg = query.lastError().text();
+     errCause = msg;
+     QgsDebugMsg( msg );
      return QString();
    }
    if ( query.isActive() && query.next())
