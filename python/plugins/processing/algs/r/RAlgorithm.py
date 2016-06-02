@@ -43,6 +43,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterTableMultipleField
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterFile
@@ -231,6 +232,15 @@ class RAlgorithm(GeoAlgorithm):
                     break
             if found:
                 param = ParameterTableField(name, desc, field)
+	elif token.lower().strip().startswith('multiple field'):
+            field = token.strip()[len('multiple field') + 1:]
+            found = False
+            for p in self.parameters:
+                if p.name == field:
+                    found = True
+                    break
+            if found:
+                param = ParameterTableMultipleField(token, desc, field)
         elif token.lower().strip() == 'extent':
             param = ParameterExtent(name, desc)
         elif token.lower().strip() == 'point':
@@ -401,7 +411,7 @@ class RAlgorithm(GeoAlgorithm):
                     commands.append(param.name + ' = NULL')
             elif isinstance(param, ParameterCrs):
                 commands.append(param.name + ' = "' + param.value + '"')
-            elif isinstance(param, (ParameterTableField, ParameterString,
+            elif isinstance(param, (ParameterTableField, ParameterTableMultipleField, ParameterString,
                                     ParameterFile)):
                 commands.append(param.name + '="' + param.value + '"')
             elif isinstance(param, (ParameterNumber, ParameterSelection)):
