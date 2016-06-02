@@ -220,7 +220,7 @@ class FieldsMappingModel(QAbstractTableModel):
                 'type': field.type(),
                 'length': field.length(),
                 'precision': field.precision(),
-                'expression': field.name()}
+                'expression': QgsExpression.quotedColumnRef(field.name())}
 
     def loadLayerFields(self, layer):
         self.beginResetModel()
@@ -292,7 +292,10 @@ class FieldDelegate(QStyledItemDelegate):
 
         elif fieldType == QgsExpression:
             (value, isExpression, isValid) = editor.currentField()
-            model.setData(index, value)
+            if isExpression is True:
+                model.setData(index, value)
+            else:
+                model.setData(index, QgsExpression.quotedColumnRef(value))
 
         else:
             QStyledItemDelegate.setModelData(self, editor, model, index)
