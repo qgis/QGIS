@@ -57,7 +57,6 @@ QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
   addImageryMenu->addAction( tr( "WMS" ) )->setMenu( wmsImageryMenu );
 
   QMenu* fileImageryMenu = new QMenu( this );
-//  fileImageryMenu->addAction("world.tif", this, SLOT(addRasterImagery()));
   fileImageryMenu->addAction( tr( "Custom..." ), this, SLOT( addCustomRasterImagery() ) );
   addImageryMenu->addAction( tr( "Raster" ) )->setMenu( fileImageryMenu );
 
