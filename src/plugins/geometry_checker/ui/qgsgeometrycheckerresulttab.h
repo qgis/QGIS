@@ -34,7 +34,7 @@ class QgsGeometryCheckerResultTab : public QWidget
   public:
     QgsGeometryCheckerResultTab( QgisInterface* iface, QgsGeometryChecker* checker, QgsFeaturePool *featurePool, QTabWidget *tabWidget, QWidget* parent = nullptr );
     ~QgsGeometryCheckerResultTab();
-    void showCheckMessages();
+    void finalize();
     bool isCloseable() const { return mCloseable; }
 
     static QString sSettingsGroup;
