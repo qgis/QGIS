@@ -77,8 +77,6 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
     QLabel* mLabel;
     //! Widget that will live on the statusbar to display scale value
     QgsScaleComboBox* mScale;
-    //! The validator for the mScaleEdit
-    QValidator* mScaleEditValidator;
 };
 
 #endif // QGSSTATUSBARSCALEWIDGET_H

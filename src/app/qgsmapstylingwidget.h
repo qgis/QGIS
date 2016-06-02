@@ -59,11 +59,6 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget, private Ui::QgsMapStyling
     void pushUndoItem( const QString& name );
     int mNotSupportedPage;
     int mLayerPage;
-    int mVectorStyleTabIndex;
-    int mVectorLabelTabIndex;
-    int mRasterStyleTabIndex;
-    int mRasterTransTabIndex;
-    int mRasterHistogramTabIndex;
     QTimer* mAutoApplyTimer;
     QDomNode mLastStyleXml;
     QgsMapCanvas* mMapCanvas;
