@@ -31,7 +31,7 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
     return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
 
 
-class TestPyQgsOGRProviderGpkg(unittest.TestCase):
+class TestPyQgsOGRProviderSqlite(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
