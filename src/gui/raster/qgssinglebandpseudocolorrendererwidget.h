@@ -67,7 +67,6 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void on_mLoadFromFileButton_clicked();
     void on_mExportToFileButton_clicked();
     void on_mUnitLineEdit_textEdited( const QString & text ) { Q_UNUSED( text ); autoLabel(); }
-    void on_mColorInterpolationComboBox_currentIndexChanged();
     void on_mColormapTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column );
     void mColormapTreeWidget_itemEdited( QTreeWidgetItem* item, int column );
     void on_mBandComboBox_currentIndexChanged( int index );
