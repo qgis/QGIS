@@ -247,7 +247,6 @@
                 <grass name="r.topidx"/>
                 <grass name="r.basins.fill"/>
                 <grass name="r.water.outlet"/>
-
             </section>
         </section>
         <section label="Change category values and labels">
@@ -272,7 +271,7 @@
                 <grass name="r.surf.gauss"/>
                 <grass name="r.plane"/>
                 <grass name="r.surf.random"/>
-				<grass name="r.latitude"/>
+                <grass name="r.latitude"/>
                 <grass name="r.longitude"/>
             </section>
             <section label="Generate vector contour lines">
@@ -308,7 +307,7 @@
                 <grass name="r.covar"/>
                 <grass name="r.regression.line"/>
 				<grass name="r.regression.multi" version_min="7"/>
-                <grass name="r.coin"/>
+				<grass name="r.coin"/>
                 <grass name="r.distance"/>
             </section>
         </section>
@@ -477,7 +476,7 @@
         </section>
         <section label="Vegetation indices">
             <grass name="i.albedo" version_min="7"/>
-			<grass name="i.biomass" version_min="7"/>
+            <grass name="i.biomass" version_min="7"/>
             <grass name="i.tasscap4"/>
             <grass name="i.tasscap5"/>
             <grass name="i.tasscap7"/>
