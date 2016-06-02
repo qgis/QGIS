@@ -92,11 +92,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      */
     void on_mReloadButton_clicked();
     /**
-     * Filter the columns (open a dialog, ...)
-     */
-    void on_mFilterTableFields_clicked();
-
-    /**
      * Inverts selection
      */
     void on_mInvertSelectionButton_clicked();
@@ -155,8 +150,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void on_mAddFeature_clicked();
 
     void on_mHelpButton_clicked() { QgsContextHelp::run( metaObject()->className() ); }
-
-    void on_mSortButton_clicked();
 
     void on_mExpressionSelectButton_clicked();
     void filterColumnChanged( QObject* filterAction );

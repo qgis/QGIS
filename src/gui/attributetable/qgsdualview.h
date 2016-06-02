@@ -273,6 +273,12 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void viewWillShowContextMenu( QMenu* menu, const QModelIndex& atIndex );
 
+    void showViewHeaderMenu( QPoint point );
+
+    void organizeColumns();
+
+    void modifySort();
+
     void previewExpressionChanged( const QString& expression );
 
     void sortByPreviewExpression();
@@ -312,6 +318,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QgsAttributeForm* mAttributeForm;
     QSignalMapper* mPreviewActionMapper;
     QMenu* mPreviewColumnsMenu;
+    QMenu* mHorizontalHeaderMenu;
     QgsVectorLayerCache* mLayerCache;
     QProgressDialog* mProgressDlg;
     QgsIFeatureSelectionManager* mFeatureSelectionManager;

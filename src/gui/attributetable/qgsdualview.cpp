@@ -25,6 +25,7 @@
 #include "qgsmessagelog.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayercache.h"
+#include "qgsorganizetablecolumnsdialog.h"
 
 #include <QClipboard>
 #include <QDialog>
@@ -32,6 +33,7 @@
 #include <QMessageBox>
 #include <QProgressDialog>
 #include <QSettings>
+#include <QGroupBox>
 
 QgsDualView::QgsDualView( QWidget* parent )
     : QStackedWidget( parent )
@@ -40,6 +42,7 @@ QgsDualView::QgsDualView( QWidget* parent )
     , mFilterModel( nullptr )
     , mFeatureListModel( nullptr )
     , mAttributeForm( nullptr )
+    , mHorizontalHeaderMenu( nullptr )
     , mLayerCache( nullptr )
     , mProgressDlg( nullptr )
     , mFeatureSelectionManager( nullptr )
@@ -67,6 +70,8 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const Qg
   mEditorContext = context;
 
   connect( mTableView, SIGNAL( willShowContextMenu( QMenu*, QModelIndex ) ), this, SLOT( viewWillShowContextMenu( QMenu*, QModelIndex ) ) );
+  mTableView->horizontalHeader()->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( mTableView->horizontalHeader(), SIGNAL( customContextMenuRequested( QPoint ) ), this, SLOT( showViewHeaderMenu( QPoint ) ) );
 
   initLayerCache( layer, !request.filterRect().isNull() );
   initModels( mapCanvas, request );
@@ -451,6 +456,89 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, const QModelIndex& atInd
   menu->addSeparator();
   QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ), this, -1, sourceIndex );
   menu->addAction( tr( "Open form" ), a, SLOT( featureForm() ) );
+}
+
+void QgsDualView::showViewHeaderMenu( QPoint point )
+{
+  delete mHorizontalHeaderMenu;
+  mHorizontalHeaderMenu = new QMenu( this );
+  QAction* organize = new QAction( tr( "&Organize columns..." ), mHorizontalHeaderMenu );
+  connect( organize, SIGNAL( triggered( bool ) ), this, SLOT( organizeColumns() ) );
+  mHorizontalHeaderMenu->addAction( organize );
+  QAction* sort = new QAction( tr( "&Sort..." ), mHorizontalHeaderMenu );
+  connect( sort, SIGNAL( triggered( bool ) ), this, SLOT( modifySort() ) );
+  mHorizontalHeaderMenu->addAction( sort );
+  mHorizontalHeaderMenu->popup( mTableView->horizontalHeader()->mapToGlobal( point ) );
+}
+
+void QgsDualView::organizeColumns()
+{
+  if ( !mLayerCache->layer() )
+  {
+    return;
+  }
+
+  QgsOrganizeTableColumnsDialog dialog( mLayerCache->layer(), this );
+  if ( dialog.exec() == QDialog::Accepted )
+  {
+    QgsAttributeTableConfig config = dialog.config();
+    mLayerCache->layer()->setAttributeTableConfig( config );
+    setAttributeTableConfig( config );
+  }
+}
+
+void QgsDualView::modifySort()
+{
+  QgsVectorLayer* layer = mLayerCache->layer();
+  if ( !layer )
+    return;
+
+  QgsAttributeTableConfig config = layer->attributeTableConfig();
+
+  QDialog orderByDlg;
+  orderByDlg.setWindowTitle( tr( "Configure attribute table sort order" ) );
+  QDialogButtonBox* dialogButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  QGridLayout* layout = new QGridLayout();
+  connect( dialogButtonBox, SIGNAL( accepted() ), &orderByDlg, SLOT( accept() ) );
+  connect( dialogButtonBox, SIGNAL( rejected() ), &orderByDlg, SLOT( reject() ) );
+  orderByDlg.setLayout( layout );
+
+  QGroupBox* sortingGroupBox = new QGroupBox();
+  sortingGroupBox->setTitle( tr( "Enable sorting order in attribute table" ) );
+  sortingGroupBox->setCheckable( true );
+  sortingGroupBox->setChecked( !sortExpression().isEmpty() );
+  layout->addWidget( sortingGroupBox );
+  sortingGroupBox->setLayout( new QGridLayout() );
+
+  QgsExpressionBuilderWidget* expressionBuilder = new QgsExpressionBuilderWidget();
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( layer );
+  expressionBuilder->setExpressionContext( context );
+  expressionBuilder->setLayer( layer );
+  expressionBuilder->loadFieldNames();
+  expressionBuilder->loadRecent( "generic" );
+  expressionBuilder->setExpressionText( sortExpression().isEmpty() ? layer->displayExpression() : sortExpression() );
+
+  sortingGroupBox->layout()->addWidget( expressionBuilder );
+
+  layout->addWidget( dialogButtonBox );
+  if ( orderByDlg.exec() )
+  {
+    if ( sortingGroupBox->isChecked() )
+    {
+      setSortExpression( expressionBuilder->expressionText() );
+      config.setSortExpression( expressionBuilder->expressionText() );
+    }
+    else
+    {
+      setSortExpression( QString() );
+      config.setSortExpression( QString() );
+    }
+
+    layer->setAttributeTableConfig( config );
+  }
 }
 
 void QgsDualView::zoomToCurrentFeature()

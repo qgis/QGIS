@@ -631,52 +631,6 @@ void QgsAttributeTableDialog::on_mAddFeature_clicked()
   }
 }
 
-void QgsAttributeTableDialog::on_mSortButton_clicked()
-{
-  QgsAttributeTableConfig config = mLayer->attributeTableConfig();
-
-  QDialog orderByDlg;
-  orderByDlg.setWindowTitle( tr( "Configure attribute table sort order" ) );
-  QDialogButtonBox* dialogButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
-  QGridLayout* layout = new QGridLayout();
-  connect( dialogButtonBox, SIGNAL( accepted() ), &orderByDlg, SLOT( accept() ) );
-  connect( dialogButtonBox, SIGNAL( rejected() ), &orderByDlg, SLOT( reject() ) );
-  orderByDlg.setLayout( layout );
-
-  QGroupBox* sortingGroupBox = new QGroupBox();
-  sortingGroupBox->setTitle( tr( "Enable sorting order in attribute table" ) );
-  sortingGroupBox->setCheckable( true );
-  sortingGroupBox->setChecked( !mMainView->sortExpression().isEmpty() );
-  layout->addWidget( sortingGroupBox );
-  sortingGroupBox->setLayout( new QGridLayout() );
-
-  QgsExpressionBuilderWidget* expressionBuilder = new QgsExpressionBuilderWidget();
-  expressionBuilder->setExpressionText( mMainView->sortExpression().isEmpty() ? mLayer->displayExpression() : mMainView->sortExpression() );
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
-  expressionBuilder->setExpressionContext( context );
-  expressionBuilder->setLayer( mLayer );
-  sortingGroupBox->layout()->addWidget( expressionBuilder );
-
-  layout->addWidget( dialogButtonBox );
-  if ( orderByDlg.exec() )
-  {
-    if ( sortingGroupBox->isChecked() )
-    {
-      mMainView->setSortExpression( expressionBuilder->expressionText() );
-      config.setSortExpression( expressionBuilder->expressionText() );
-    }
-    else
-    {
-      mMainView->setSortExpression( QString() );
-      config.setSortExpression( QString() );
-    }
-
-    mLayer->setAttributeTableConfig( config );
-  }
-}
-
 void QgsAttributeTableDialog::on_mExpressionSelectButton_clicked()
 {
   QgsExpressionSelectionDialog* dlg = new QgsExpressionSelectionDialog( mLayer );
@@ -835,22 +789,6 @@ void QgsAttributeTableDialog::on_mRemoveAttribute_clicked()
     // update model - a field has been added or updated
     masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
     columnBoxInit();
-  }
-}
-
-void QgsAttributeTableDialog::on_mFilterTableFields_clicked()
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  QgsOrganizeTableColumnsDialog dialog( mLayer, this );
-  if ( dialog.exec() == QDialog::Accepted )
-  {
-    QgsAttributeTableConfig config = dialog.config();
-    mLayer->setAttributeTableConfig( config );
-    mMainView->setAttributeTableConfig( config );
   }
 }
 
