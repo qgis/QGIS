@@ -133,6 +133,13 @@ class Processing:
         return algList.getProviderFromName(name)
 
     @staticmethod
+    def activateProvider(providerOrName, activate=True):
+        providerName = providerOrName.getName() if isinstance(providerOrName, AlgorithmProvider) else providerOrName
+        name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
+        ProcessingConfig.setSettingValue(name, activate)
+        algList.providerUpdated.emit(providerName)
+
+    @staticmethod
     def initialize():
         if "model" in [p.getName() for p in Processing.providers]:
             return
