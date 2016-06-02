@@ -155,6 +155,7 @@ SET(QGIS_GUI_SRCS
   layertree/qgscustomlayerorderwidget.cpp
   layertree/qgslayertreeembeddedconfigwidget.cpp
   layertree/qgslayertreeembeddedwidgetregistry.cpp
+  layertree/qgslayertreeembeddedwidgetsimpl.cpp
   layertree/qgslayertreemapcanvasbridge.cpp
   layertree/qgslayertreeview.cpp
   layertree/qgslayertreeviewdefaultactions.cpp
@@ -577,7 +578,7 @@ SET(QGIS_GUI_MOC_HDRS
 
   layertree/qgscustomlayerorderwidget.h
   layertree/qgslayertreeembeddedconfigwidget.h
-  layertree/qgslayertreeembeddedwidgetregistry.h
+  layertree/qgslayertreeembeddedwidgetsimpl.h
   layertree/qgslayertreemapcanvasbridge.h
   layertree/qgslayertreeview.h
   layertree/qgslayertreeviewdefaultactions.h

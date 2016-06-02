@@ -19,14 +19,6 @@
 #include <QMap>
 #include <QWidget>
 
-#if 0
-/** Base class for embedded widgets */
-class QgsLayerTreeEmbeddedWidget : public QWidget
-{
-  public:
-
-};
-#endif
 
 class QgsMapLayer;
 
@@ -38,6 +30,9 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetProvider
 
     //! unique name of the provider (among other providers)
     virtual QString id() const = 0;
+
+    //! human readable name - may be translatable with tr()
+    virtual QString name() const = 0;
 
     //! factory to create widgets
     virtual QWidget* createWidget( QgsMapLayer* layer, QMap<QString, QString> properties ) = 0;
@@ -77,32 +72,6 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
     //! storage of all the providers
     QMap<QString, QgsLayerTreeEmbeddedWidgetProvider*> mProviders;
 };
-
-
-////
-
-
-// TMP
-class QSlider;
-class QgsMapLayer;
-#include <QWidget>
-class TransparencyWidget : public QWidget
-{
-    Q_OBJECT
-  public:
-    TransparencyWidget( QgsMapLayer* layer );
-
-    virtual QSize sizeHint() const override;
-
-  public slots:
-    void sliderValueChanged( int value );
-    void layerTrChanged();
-
-  private:
-    QgsMapLayer* mLayer;
-    QSlider* mSlider;
-};
-
 
 
 #endif // QGSLAYERTREEEMBEDDEDWIDGETREGISTRY_H
