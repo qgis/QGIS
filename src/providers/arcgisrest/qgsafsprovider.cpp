@@ -220,7 +220,7 @@ bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fet
     if ( !fetchAttribIdx.isEmpty() )
     {
       QVariantMap attributesData = featureData["attributes"].toMap();
-      feature.setFields( &mFields );
+      feature.setFields( mFields );
       QgsAttributes attributes( mFields.size() );
       foreach ( int idx, fetchAttribIdx )
       {
