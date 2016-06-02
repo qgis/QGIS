@@ -485,6 +485,16 @@ void QgisAppInterface::unregisterMapLayerPropertiesFactory( QgsMapLayerPropertie
   qgis->unregisterMapLayerPropertiesFactory( factory );
 }
 
+void QgisAppInterface::registerMapStylePanelFactory(QgsMapStylePanelFactory *factory)
+{
+ qgis->registerMapStylePanelFactory( factory );
+}
+
+void QgisAppInterface::unregisterMapStylePanelFactory(QgsMapStylePanelFactory *factory)
+{
+ qgis->unregisterMapStylePanelFactory( factory );
+}
+
 //! Menus
 Q_DECL_DEPRECATED QMenu *QgisAppInterface::fileMenu() { return qgis->projectMenu(); }
 QMenu *QgisAppInterface::projectMenu() { return qgis->projectMenu(); }

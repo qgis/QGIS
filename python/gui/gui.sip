@@ -118,6 +118,7 @@
 %Include qgsmaptoolpan.sip
 %Include qgsmaptooltouch.sip
 %Include qgsmaptoolzoom.sip
+%Include qgsmapstylepanel.sip
 %Include qgsmessagebar.sip
 %Include qgsmessagebaritem.sip
 %Include qgsmessagelogviewer.sip
