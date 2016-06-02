@@ -56,6 +56,7 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QList<QgsMapStyl
   connect( mOptionsListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( updateCurrentWidgetLayer() ) );
   connect( mLiveApplyCheck, SIGNAL( toggled( bool ) ), mButtonBox->button( QDialogButtonBox::Apply ), SLOT( setDisabled( bool ) ) );
   connect( mButtonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
+  connect( mLayerCombo, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( setLayer( QgsMapLayer* ) ) );
 
   mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( false );
 }
@@ -64,7 +65,7 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
 {
   if ( !layer || !layer->isSpatial() )
   {
-    mLayerTitle->setText( QString() );
+    mLayerCombo->setLayer( nullptr );
     mStackedWidget->setCurrentIndex( mNotSupportedPage );
     return;
   }
@@ -188,7 +189,7 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
 
   mUndoWidget->setUndoStack( layer->undoStackStyles() );
 
-  mLayerTitle->setText( layer->name() );
+  whileBlocking( mLayerCombo )->setLayer( layer );
 
   int row = mOptionsListWidget->currentIndex().row();
 
