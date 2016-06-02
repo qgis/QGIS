@@ -485,14 +485,14 @@ void QgisAppInterface::unregisterMapLayerPropertiesFactory( QgsMapLayerPropertie
   qgis->unregisterMapLayerPropertiesFactory( factory );
 }
 
-void QgisAppInterface::registerMapStylePanelFactory(QgsMapStylePanelFactory *factory)
+void QgisAppInterface::registerMapStylePanelFactory( QgsMapStylePanelFactory *factory )
 {
- qgis->registerMapStylePanelFactory( factory );
+  qgis->registerMapStylePanelFactory( factory );
 }
 
-void QgisAppInterface::unregisterMapStylePanelFactory(QgsMapStylePanelFactory *factory)
+void QgisAppInterface::unregisterMapStylePanelFactory( QgsMapStylePanelFactory *factory )
 {
- qgis->unregisterMapStylePanelFactory( factory );
+  qgis->unregisterMapStylePanelFactory( factory );
 }
 
 //! Menus

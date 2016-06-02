@@ -160,7 +160,7 @@ bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fet
   if ( it != mCache.end() )
   {
     f = it.value();
-    return filterRect.isNull() || f.geometry()->intersects(filterRect);
+    return filterRect.isNull() || f.geometry()->intersects( filterRect );
   }
 
   // Determine attributes to fetch
@@ -243,7 +243,7 @@ bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fet
   }
   f = mCache[id];
   Q_ASSERT( f.isValid() );
-  return filterRect.isNull() || f.geometry()->intersects(filterRect);
+  return filterRect.isNull() || f.geometry()->intersects( filterRect );
 }
 
 void QgsAfsProvider::setDataSourceUri( const QString &uri )

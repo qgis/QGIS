@@ -1,6 +1,6 @@
 #include "qgsmapstylepanel.h"
 
-QgsMapStylePanel::QgsMapStylePanel( QgsMapLayer * /*layer*/, QgsMapCanvas * /*canvas*/, QWidget *parent )
+QgsMapStylePanel::QgsMapStylePanel( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
     : QWidget( parent )
 {
 

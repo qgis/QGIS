@@ -90,7 +90,7 @@ class QgsAction
     //! Whether to capture output for display when this action is run
     bool capture() const;
 
-    //! Wheter this action should be shown on the attribute table
+    //! Whether this action should be shown on the attribute table
     bool showInAttributeTable() const;
 
     //! Whether the action is runable on the current platform

@@ -751,9 +751,9 @@ void QgsFieldsProperties::attributesListCellChanged( int row, int column )
   {
     QTableWidgetItem *nameItem = mFieldsList->item( row, column );
     if ( !nameItem ||
-	nameItem->text().isEmpty() ||
-	!mLayer->fields().exists( row ) ||
-	mLayer->fields().at( row ).name() == nameItem->text() )
+         nameItem->text().isEmpty() ||
+         !mLayer->fields().exists( row ) ||
+         mLayer->fields().at( row ).name() == nameItem->text() )
       return;
 
     mLayer->beginEditCommand( tr( "Rename attribute" ) );
