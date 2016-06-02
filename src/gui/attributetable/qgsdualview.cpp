@@ -387,10 +387,7 @@ void QgsDualView::copyCellContent() const
   if ( action && action->data().isValid() && action->data().canConvert<QModelIndex>() )
   {
     QModelIndex index = action->data().value<QModelIndex>();
-
-    QgsFeature f = masterModel()->feature( index );
-    int attrIndex = mMasterModel->fieldIdx( index.column() );
-    QVariant var = f.attributes().at( attrIndex );
+    QVariant var = masterModel()->data( index, Qt::DisplayRole );
     QApplication::clipboard()->setText( var.toString() );
   }
 }
