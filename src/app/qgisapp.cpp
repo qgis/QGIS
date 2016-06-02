@@ -925,7 +925,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   // This turns on the map tip if they where active in the last session
   if ( settings.value( "/qgis/enableMapTips", false ).toBool() )
   {
-    mActionMapTips->trigger();
+    toggleMapTips( true );
   }
 
   mTrustedMacros = false;
@@ -1455,7 +1455,7 @@ void QgisApp::createActions()
   connect( mActionZoomLast, SIGNAL( triggered() ), this, SLOT( zoomToPrevious() ) );
   connect( mActionZoomNext, SIGNAL( triggered() ), this, SLOT( zoomToNext() ) );
   connect( mActionZoomActualSize, SIGNAL( triggered() ), this, SLOT( zoomActualSize() ) );
-  connect( mActionMapTips, SIGNAL( triggered() ), this, SLOT( toggleMapTips() ) );
+  connect( mActionMapTips, SIGNAL( toggled( bool ) ), this, SLOT( toggleMapTips( bool ) ) );
   connect( mActionNewBookmark, SIGNAL( triggered() ), this, SLOT( newBookmark() ) );
   connect( mActionShowBookmarks, SIGNAL( triggered() ), this, SLOT( showBookmarks() ) );
   connect( mActionDraw, SIGNAL( triggered() ), this, SLOT( refreshMapCanvas() ) );
@@ -7433,9 +7433,9 @@ void QgisApp::canvasRefreshFinished()
   showProgress( 0, 0 ); // stop the busy indicator
 }
 
-void QgisApp::toggleMapTips()
+void QgisApp::toggleMapTips( bool enabled )
 {
-  mMapTipsVisible = !mMapTipsVisible;
+  mMapTipsVisible = enabled;
   // Store if maptips are active
   QSettings().setValue( "/qgis/enableMapTips", mMapTipsVisible );
 
@@ -7444,6 +7444,9 @@ void QgisApp::toggleMapTips()
   {
     mpMapTipsTimer->stop();
   }
+
+  if ( mActionMapTips->isChecked() != mMapTipsVisible )
+    mActionMapTips->setChecked( mMapTipsVisible );
 }
 
 void QgisApp::toggleEditing()

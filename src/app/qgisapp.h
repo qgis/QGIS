@@ -1208,7 +1208,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void oldProjectVersionWarning( const QString& );
 
     //! Toggle map tips on/off
-    void toggleMapTips();
+    void toggleMapTips( bool enabled );
 
     //! Show the map tip
     void showMapTip();
