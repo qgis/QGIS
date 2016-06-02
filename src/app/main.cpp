@@ -1145,10 +1145,7 @@ int main( int argc, char *argv[] )
     //replace backslashes with forward slashes
     pythonfile.replace( '\\', '/' );
 #endif
-    QFile f( pythonfile );
-    QTextStream in( &f );
-    QgsPythonRunner::run( QString( "code = compile('%1', '%2', 'exec')" ).arg( in.readAll(), pythonfile ) );
-    QgsPythonRunner::run( QString( "exec(code, global_vars, local_vars)" ) );
+    QgsPythonRunner::run( QString( "exec(open('%1').read())" ).arg( pythonfile ) );
   }
 
   /////////////////////////////////`////////////////////////////////////

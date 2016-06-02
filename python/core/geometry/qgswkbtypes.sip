@@ -96,6 +96,9 @@ class QgsWKBTypes
      */
     static Type flatType( Type type );
 
+    /** Returns the modified input geometry type according to hasZ / hasM */
+    static Type zmType( Type type, bool hasZ, bool hasM );
+
     /** Attempts to extract the WKB type from a WKT string.
      * @param wktStr a valid WKT string
      */

@@ -4,7 +4,7 @@
 ***************************************************************************
     lasthinPro.py
     ---------------------
-    Date                 : October 2014
+    Date                 : October 2014 and May 2016
     Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -36,7 +36,8 @@ class lasthinPro(LAStoolsAlgorithm):
 
     THIN_STEP = "THIN_STEP"
     OPERATION = "OPERATION"
-    OPERATIONS = ["lowest", "random", "highest"]
+    OPERATIONS = ["lowest", "random", "highest", "central", "adaptive", "contours"]
+    THRESHOLD_OR_INTERVAL = "THRESHOLD_OR_INTERVAL"
     WITHHELD = "WITHHELD"
     CLASSIFY_AS = "CLASSIFY_AS"
     CLASSIFY_AS_CLASS = "CLASSIFY_AS_CLASS"
@@ -45,10 +46,14 @@ class lasthinPro(LAStoolsAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('lasthinPro')
         self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
+        self.addParametersIgnoreClass1GUI()
+        self.addParametersIgnoreClass2GUI()
         self.addParameter(ParameterNumber(lasthinPro.THIN_STEP,
                                           self.tr("size of grid used for thinning"), 0, None, 1.0))
         self.addParameter(ParameterSelection(lasthinPro.OPERATION,
                                              self.tr("keep particular point per cell"), lasthinPro.OPERATIONS, 0))
+        self.addParameter(ParameterNumber(lasthinPro.THRESHOLD_OR_INTERVAL,
+                                          self.tr("vertical threshold or contour intervals (only for 'adaptive' or 'contours' thinning)"), 0, None, 0.1))
         self.addParameter(ParameterBoolean(lasthinPro.WITHHELD,
                                            self.tr("mark thinned-away points as withheld"), False))
         self.addParameter(ParameterBoolean(lasthinPro.CLASSIFY_AS,
@@ -66,13 +71,17 @@ class lasthinPro(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasthin")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
+        self.addParametersIgnoreClass1Commands(commands)
+        self.addParametersIgnoreClass2Commands(commands)
         step = self.getParameterValue(lasthinPro.THIN_STEP)
         if step != 0.0:
             commands.append("-step")
             commands.append(unicode(step))
         operation = self.getParameterValue(lasthinPro.OPERATION)
-        if operation != 0:
+        if (operation != 0):
             commands.append("-" + self.OPERATIONS[operation])
+        if (operation >= 4):
+            commands.append(unicode(self.getParameterValue(lasthinPro.THRESHOLD_OR_INTERVAL)))
         if self.getParameterValue(lasthinPro.WITHHELD):
             commands.append("-withheld")
         if self.getParameterValue(lasthinPro.CLASSIFY_AS):

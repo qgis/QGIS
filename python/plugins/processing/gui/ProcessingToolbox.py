@@ -308,9 +308,8 @@ class ProcessingToolbox(BASE, WIDGET):
 
     def addProvider(self, providerName):
         name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
-        providerItem = TreeProviderItem(providerName, None, self)
+        providerItem = TreeProviderItem(providerName, self.algorithmTree, self)
         if not ProcessingConfig.getSetting(name):
-            providerItem = TreeProviderItem(providerName, None, self)
             providerItem.setHidden(True)
             self.disabledProviderItems[providerName] = providerItem
 

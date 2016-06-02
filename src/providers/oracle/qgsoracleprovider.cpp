@@ -764,6 +764,7 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
                               |  QgsVectorDataProvider::AddAttributes
                               |  QgsVectorDataProvider::DeleteAttributes
                               |  QgsVectorDataProvider::ChangeGeometries
+                              |  QgsVectorDataProvider::RenameAttributes
                               ;
     }
     else if ( exec( qry, QString( "SELECT privilege FROM all_tab_privs WHERE table_schema=%1 AND table_name=%2 AND privilege IN ('DELETE','UPDATE','INSERT','ALTER TABLE')" )
@@ -788,7 +789,7 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
         }
         else if ( priv == "ALTER TABLE" )
         {
-          mEnabledCapabilities |= QgsVectorDataProvider::AddAttributes | QgsVectorDataProvider::DeleteAttributes;
+          mEnabledCapabilities |= QgsVectorDataProvider::AddAttributes | QgsVectorDataProvider::DeleteAttributes | QgsVectorDataProvider::RenameAttributes;
         }
       }
 
@@ -1006,6 +1007,9 @@ bool QgsOracleProvider::uniqueData( QString query, QString colName )
 // Returns the minimum value of an attribute
 QVariant QgsOracleProvider::minimumValue( int index )
 {
+  if ( !mConnection )
+    return QVariant( QString::null );
+
   try
   {
     // get the field name
@@ -1044,6 +1048,9 @@ QVariant QgsOracleProvider::minimumValue( int index )
 // Returns the list of unique values of an attribute
 void QgsOracleProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit )
 {
+  if ( !mConnection )
+    return;
+
   uniqueValues.clear();
 
   try
@@ -1090,6 +1097,9 @@ void QgsOracleProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, 
 // Returns the maximum value of an attribute
 QVariant QgsOracleProvider::maximumValue( int index )
 {
+  if ( !mConnection )
+    return QVariant();
+
   try
   {
     // get the field name
@@ -1165,7 +1175,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
   if ( flist.size() == 0 )
     return true;
 
-  if ( mIsQuery )
+  if ( mIsQuery || !mConnection )
     return false;
 
   bool returnvalue = true;
@@ -1414,7 +1424,7 @@ bool QgsOracleProvider::deleteFeatures( const QgsFeatureIds & id )
 {
   bool returnvalue = true;
 
-  if ( mIsQuery )
+  if ( mIsQuery || !mConnection )
     return false;
 
   QSqlDatabase db( *mConnection );
@@ -1464,7 +1474,7 @@ bool QgsOracleProvider::addAttributes( const QList<QgsField> &attributes )
 {
   bool returnvalue = true;
 
-  if ( mIsQuery )
+  if ( mIsQuery || !mConnection )
     return false;
 
   QSqlDatabase db( *mConnection );
@@ -1545,7 +1555,7 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds& ids )
 {
   bool returnvalue = true;
 
-  if ( mIsQuery )
+  if ( mIsQuery || !mConnection )
     return false;
 
   QSqlDatabase db( *mConnection );
@@ -1604,11 +1614,89 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds& ids )
   return returnvalue;
 }
 
+bool QgsOracleProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes )
+{
+  if ( mIsQuery || !mConnection )
+    return false;
+
+  QgsFieldNameMap::const_iterator renameIt = renamedAttributes.constBegin();
+  for ( ; renameIt != renamedAttributes.constEnd(); ++renameIt )
+  {
+    int fieldIndex = renameIt.key();
+    if ( fieldIndex < 0 || fieldIndex >= mAttributeFields.count() )
+    {
+      pushError( tr( "Invalid attribute index: %1" ).arg( fieldIndex ) );
+      return false;
+    }
+    if ( mAttributeFields.indexFromName( renameIt.value() ) >= 0 )
+    {
+      //field name already in use
+      pushError( tr( "Error renaming field %1: name '%2' already exists" ).arg( fieldIndex ).arg( renameIt.value() ) );
+      return false;
+    }
+  }
+
+  QSqlDatabase db( *mConnection );
+
+  bool returnvalue = true;
+
+  try
+  {
+    QSqlQuery qry( db );
+
+    if ( !db.transaction() )
+    {
+      throw OracleException( tr( "Could not start transaction" ), db );
+    }
+
+    qry.finish();
+
+    for ( renameIt = renamedAttributes.constBegin(); renameIt != renamedAttributes.constEnd(); ++renameIt )
+    {
+      QString src( mAttributeFields.at( renameIt.key() ).name() );
+
+      if ( !exec( qry, QString( "ALTER TABLE %1 RENAME COLUMN %2 TO %3" )
+                  .arg( mQuery,
+                        quotedIdentifier( src ),
+                        quotedIdentifier( renameIt.value() ) ) ) )
+      {
+        throw OracleException( tr( "Renaming column %1 to %2 failed" )
+                               .arg( quotedIdentifier( src ),
+                                     quotedIdentifier( renameIt.value() ) ),
+                               qry );
+      }
+    }
+
+    if ( !db.commit() )
+    {
+      throw OracleException( tr( "Could not commit transaction" ), db );
+    }
+  }
+  catch ( OracleException &e )
+  {
+    pushError( tr( "Oracle error while renaming attributes: %1" ).arg( e.errorMessage() ) );
+    if ( !db.rollback() )
+    {
+      QgsMessageLog::logMessage( tr( "Could not rollback transaction" ), tr( "Oracle" ) );
+    }
+    returnvalue = false;
+  }
+
+  if ( !loadFields() )
+  {
+    QgsMessageLog::logMessage( tr( "Could not reload fields." ), tr( "Oracle" ) );
+    returnvalue = false;
+  }
+
+  return returnvalue;
+}
+
+
 bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
   bool returnvalue = true;
 
-  if ( mIsQuery )
+  if ( mIsQuery || !mConnection )
     return false;
 
   if ( attr_map.isEmpty() )
@@ -1897,7 +1985,7 @@ bool QgsOracleProvider::changeGeometryValues( const QgsGeometryMap &geometry_map
 {
   QgsDebugMsg( "entering." );
 
-  if ( mIsQuery || mGeometryColumn.isNull() )
+  if ( mIsQuery || mGeometryColumn.isNull() || !mConnection )
     return false;
 
   QSqlDatabase db( *mConnection );
@@ -1963,6 +2051,9 @@ int QgsOracleProvider::capabilities() const
 
 bool QgsOracleProvider::setSubsetString( const QString& theSQL, bool updateFeatureCount )
 {
+  if ( !mConnection )
+    return false;
+
   QString prevWhere = mSqlWhereClause;
 
   mSqlWhereClause = theSQL.trimmed();
@@ -2014,7 +2105,7 @@ bool QgsOracleProvider::setSubsetString( const QString& theSQL, bool updateFeatu
  */
 long QgsOracleProvider::featureCount() const
 {
-  if ( mFeaturesCounted >= 0 )
+  if ( mFeaturesCounted >= 0 || !mConnection )
     return mFeaturesCounted;
 
   // get total number of features
@@ -2053,7 +2144,7 @@ long QgsOracleProvider::featureCount() const
 
 QgsRectangle QgsOracleProvider::extent()
 {
-  if ( mGeometryColumn.isNull() )
+  if ( mGeometryColumn.isNull() || !mConnection )
     return QgsRectangle();
 
   if ( mLayerExtent.isEmpty() )
@@ -2321,6 +2412,9 @@ bool QgsOracleProvider::getGeometryDetails()
 
 bool QgsOracleProvider::createSpatialIndex()
 {
+  if ( !mConnection )
+    return false;
+
   QSqlQuery qry( *mConnection );
 
   if ( !crs().geographicFlag() )
@@ -2844,6 +2938,9 @@ QgsCoordinateReferenceSystem QgsOracleProvider::crs()
 {
   QgsCoordinateReferenceSystem srs;
 
+  if ( !mConnection )
+    return srs;
+
   QSqlQuery qry( *mConnection );
 
   // apparently some EPSG codes don't have the auth_name setup in cs_srs
@@ -3299,7 +3396,7 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
   if ( !conn )
   {
     errCause = QObject::tr( "Could not connect to database" );
-    return false;
+    return QString::null;
   }
 
   QSqlQuery qry( *conn );

@@ -292,6 +292,12 @@ class QgisInterface : QObject
     */
     virtual void unregisterMapLayerPropertiesFactory( QgsMapLayerPropertiesFactory* factory ) = 0;
 
+    /** Register a new tab in the layer properties dialog */
+    virtual void registerMapStylePanelFactory( QgsMapStylePanelFactory* factory ) = 0;
+
+    /** Unregister a previously registered tab in the layer properties dialog */
+    virtual void unregisterMapStylePanelFactory( QgsMapStylePanelFactory* factory ) = 0;
+
     // @todo is this deprecated in favour of QgsContextHelp?
     /** Open a url in the users browser. By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed
@@ -423,6 +429,10 @@ class QgisInterface : QObject
     virtual QAction *actionAddRasterLayer() = 0;
     virtual QAction *actionAddPgLayer() = 0;
     virtual QAction *actionAddWmsLayer() = 0;
+    /** Get access to the native Add ArcGIS FeatureServer action. */
+    virtual QAction *actionAddAfsLayer() = 0;
+    /** Get access to the native Add ArcGIS MapServer action. */
+    virtual QAction *actionAddAmsLayer() = 0;
     virtual QAction *actionCopyLayerStyle() = 0;
     virtual QAction *actionPasteLayerStyle() = 0;
     virtual QAction *actionOpenTable() = 0;

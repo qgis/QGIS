@@ -101,7 +101,11 @@ QgsGlobeVectorLayerPropertiesPage::QgsGlobeVectorLayerPropertiesPage( QgsVectorL
   groupBoxLabelingEnabled->setChecked( layerConfig->labelingEnabled );
   checkBoxLabelingDeclutter->setChecked( layerConfig->labelingDeclutter );
 #else
+#ifdef _MSC_VER
 #pragma message("TODO: labeling broken with osgEarth 2.7")
+#else
+#warning "TODO: labeling broken with osgEarth 2.7"
+#endif
   groupBoxLabelingEnabled->setChecked( false );
   checkBoxLabelingDeclutter->setChecked( false );
   groupBoxLabelingEnabled->setVisible( false );

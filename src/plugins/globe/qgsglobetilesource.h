@@ -112,13 +112,13 @@ class QgsGlobeTileSource : public osgEarth::TileSource
   public:
     QgsGlobeTileSource( QgsMapCanvas* canvas, const osgEarth::TileSourceOptions& options = osgEarth::TileSourceOptions() );
     Status initialize( const osgDB::Options *dbOptions ) override;
-    osg::Image* createImage( const osgEarth::TileKey& key, osgEarth::ProgressCallback* progress );
-    osg::HeightField* createHeightField( const osgEarth::TileKey &/*key*/, osgEarth::ProgressCallback* /*progress*/ ) { return 0; }
+    osg::Image* createImage( const osgEarth::TileKey& key, osgEarth::ProgressCallback* progress ) override;
+    osg::HeightField* createHeightField( const osgEarth::TileKey &/*key*/, osgEarth::ProgressCallback* /*progress*/ ) override { return 0; }
     bool hasDataInExtent( const osgEarth::GeoExtent &extent ) const override;
     bool hasData( const osgEarth::TileKey& key ) const override;
 
-    bool isDynamic() const { return true; }
-    osgEarth::TimeStamp getLastModifiedTime() const { return mLastModifiedTime; }
+    bool isDynamic() const override { return true; }
+    osgEarth::TimeStamp getLastModifiedTime() const override { return mLastModifiedTime; }
 
     void refresh( const QgsRectangle &updateExtent );
     void setLayerSet( const QStringList& layerSet );

@@ -750,9 +750,21 @@ void QgsFieldsProperties::attributesListCellChanged( int row, int column )
   else if ( column == attrNameCol && mLayer && mLayer->isEditable() )
   {
     QTableWidgetItem *nameItem = mFieldsList->item( row, column );
-    if ( nameItem && !nameItem->text().isEmpty() )
+    if ( !nameItem ||
+	nameItem->text().isEmpty() ||
+	!mLayer->fields().exists( row ) ||
+	mLayer->fields().at( row ).name() == nameItem->text() )
+      return;
+
+    mLayer->beginEditCommand( tr( "Rename attribute" ) );
+    if ( mLayer->renameAttribute( row,  nameItem->text() ) )
     {
-      mLayer->renameAttribute( row,  nameItem->text() );
+      mLayer->endEditCommand();
+    }
+    else
+    {
+      mLayer->destroyEditCommand();
+      QMessageBox::critical( this, tr( "Failed to rename field" ), tr( "Failed to rename field to '%1'. Is the field name unique?" ).arg( nameItem->text() ) );
     }
   }
 }

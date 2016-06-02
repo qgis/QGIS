@@ -30,6 +30,12 @@ QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent )
 
 void QgsMapLayerComboBox::setLayer( QgsMapLayer *layer )
 {
+  if ( !layer )
+  {
+    setCurrentIndex( -1 );
+    return;
+  }
+
   QModelIndex idx = mProxyModel->sourceLayerModel()->indexFromLayer( layer );
   if ( idx.isValid() )
   {

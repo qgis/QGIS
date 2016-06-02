@@ -17,4 +17,6 @@ usr/lib/qgis/plugins/libvirtuallayerprovider.so
 usr/lib/qgis/plugins/libwcsprovider.so
 usr/lib/qgis/plugins/libwfsprovider.so
 usr/lib/qgis/plugins/libwmsprovider.so
+#sid stretch jessie wheezy trusty wily xenial#usr/lib/qgis/plugins/libarcgismapserverprovider.so
+#sid stretch jessie wheezy trusty wily xenial#usr/lib/qgis/plugins/libarcgisfeatureserverprovider.so
 {QT_PLUGIN_DIR}/sqldrivers/libqsqlspatialite.so

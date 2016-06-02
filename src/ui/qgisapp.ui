@@ -152,9 +152,11 @@
      <addaction name="mActionAddDb2Layer"/>
      <addaction name="mActionAddOracleLayer"/>
      <addaction name="mActionAddWmsLayer"/>
+     <addaction name="mActionAddAmsLayer"/>
      <addaction name="mActionAddLayerSeparator"/>
      <addaction name="mActionAddWcsLayer"/>
      <addaction name="mActionAddWfsLayer"/>
+     <addaction name="mActionAddAfsLayer"/>
      <addaction name="mActionAddDelimitedText"/>
      <addaction name="mActionAddVirtualLayer"/>
     </widget>
@@ -2498,6 +2500,30 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Modify the Attributes of all Selected Features Simultaneously</string>
+   </property>
+  </action>
+    <action name="mActionAddAmsLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddAmsLayer.svg</normaloff>:/images/themes/default/mActionAddAmsLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Arc&amp;GIS MapServer Layer...</string>
+   </property>
+   <property name="toolTip">
+    <string>Add ArcGIS MapServer Layer</string>
+   </property>
+  </action>
+  <action name="mActionAddAfsLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddAfsLayer.svg</normaloff>:/images/themes/default/mActionAddAfsLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Ar&amp;cGIS FeatureServer Layer...</string>
+   </property>
+   <property name="toolTip">
+    <string>Add ArcGIS FeatureServer Layer</string>
    </property>
   </action>
  </widget>
