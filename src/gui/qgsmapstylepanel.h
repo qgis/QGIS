@@ -9,7 +9,8 @@
 class QgsMapCanvas;
 
 /** \ingroup gui
- * \class A panel widget that can be shown in the map style dock
+ * \class QgsMapStylePanel
+ * \brief A panel widget that can be shown in the map style dock
  * \note added in QGIS 2.16
  */
 class GUI_EXPORT QgsMapStylePanel : public QWidget
@@ -65,7 +66,7 @@ class GUI_EXPORT QgsMapStylePanelFactory
     virtual QIcon icon() = 0;
 
     /**
-     * @brief The title of the panel..
+     * @brief The title of the panel.
      * @note This may or may not be shown to the user.
      * @return Title of the panel
      */

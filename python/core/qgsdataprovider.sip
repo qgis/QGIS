@@ -250,7 +250,7 @@ class QgsDataProvider : QObject
      *
      * This is aimed at providers that can open differently the connection to
      * the datasource, according it to be in update mode or in read-only mode.
-     * This method shall be balanced with a succesful call to enterUpdateMode().
+     * This method shall be balanced with a successful call to enterUpdateMode().
      *
      * Most providers will have an empty implementation for that method.
      *

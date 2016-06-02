@@ -75,7 +75,7 @@ class QgsActionManager
      * @param index action index
      * @param feature feature to run action for
      * @param context expression context to evalute expressions under
-     * @param substitutionMap deprecated - kept for compatibilty with projects, will be removed for 3.0
+     * @param substitutionMap deprecated - kept for compatibility with projects, will be removed for 3.0
      */
     // TODO QGIS 3.0 remove substition map - force use of expression variables
     void doAction( int index,
