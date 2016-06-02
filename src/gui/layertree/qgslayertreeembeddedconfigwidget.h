@@ -3,23 +3,24 @@
 
 #include "ui_qgslayertreeembeddedconfigwidget.h"
 
-class QgsLayerTreeLayer;
+class QgsMapLayer;
 
 class GUI_EXPORT QgsLayerTreeEmbeddedConfigWidget : public QWidget, protected Ui::QgsLayerTreeEmbeddedConfigWidget
 {
     Q_OBJECT
   public:
-    QgsLayerTreeEmbeddedConfigWidget( QgsLayerTreeLayer* nodeLayer, QWidget* parent = nullptr );
+    QgsLayerTreeEmbeddedConfigWidget( QWidget* parent = nullptr );
+
+    void setLayer( QgsMapLayer* layer );
+
+    void applyToLayer();
 
   private slots:
     void onAddClicked();
     void onRemoveClicked();
 
   private:
-    void updateCustomProperties();
-
-  private:
-    QgsLayerTreeLayer* mNodeLayer;
+    QgsMapLayer* mLayer;
 };
 
 #endif // QGSLAYERTREEEMBEDDEDCONFIGWIDGET_H

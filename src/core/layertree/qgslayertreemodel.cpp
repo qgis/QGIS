@@ -1186,7 +1186,7 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer* nodeL )
 
   if ( testFlag( UseEmbeddedWidgets ) )
   {
-    int widgetsCount = nodeL->customProperty( "embeddedWidgets/count", 0 ).toInt();
+    int widgetsCount = ml->customProperty( "embeddedWidgets/count", 0 ).toInt();
     while ( widgetsCount > 0 )
     {
       lstNew.insert( 0, new EmbeddedWidgetLegendNode( nodeL ) );

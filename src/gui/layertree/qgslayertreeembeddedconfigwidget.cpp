@@ -1,16 +1,21 @@
 #include "qgslayertreeembeddedconfigwidget.h"
 
-#include "qgslayertree.h"
+#include "qgsmaplayer.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
 
 #include <QStringListModel>
 #include <QStandardItemModel>
 
-QgsLayerTreeEmbeddedConfigWidget::QgsLayerTreeEmbeddedConfigWidget( QgsLayerTreeLayer* nodeLayer, QWidget* parent )
+QgsLayerTreeEmbeddedConfigWidget::QgsLayerTreeEmbeddedConfigWidget( QWidget* parent )
     : QWidget( parent )
-    , mNodeLayer( nodeLayer )
+    , mLayer( nullptr )
 {
   setupUi( this );
+}
+
+void QgsLayerTreeEmbeddedConfigWidget::setLayer( QgsMapLayer* layer )
+{
+  mLayer = layer;
 
   connect( mBtnAdd, SIGNAL( clicked( bool ) ), this, SLOT( onAddClicked() ) );
   connect( mBtnRemove, SIGNAL( clicked( bool ) ), this, SLOT( onRemoveClicked() ) );
@@ -23,19 +28,21 @@ QgsLayerTreeEmbeddedConfigWidget::QgsLayerTreeEmbeddedConfigWidget( QgsLayerTree
   {
     QgsLayerTreeEmbeddedWidgetProvider* provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId );
     QStandardItem* item = new QStandardItem( provider->name() );
+    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     item->setData( provider->id(), Qt::UserRole + 1 );
     modelAvailable->appendRow( item );
   }
   mListAvailable->setModel( modelAvailable );
 
   // populate used
-  int widgetsCount = nodeLayer->customProperty( "embeddedWidgets/count", 0 ).toInt();
+  int widgetsCount = layer->customProperty( "embeddedWidgets/count", 0 ).toInt();
   for ( int i = 0; i < widgetsCount; ++i )
   {
-    QString providerId = nodeLayer->customProperty( QString( "embeddedWidgets/%1/id" ).arg( i ) ).toString();
+    QString providerId = layer->customProperty( QString( "embeddedWidgets/%1/id" ).arg( i ) ).toString();
     if ( QgsLayerTreeEmbeddedWidgetProvider* provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId ) )
     {
       QStandardItem* item = new QStandardItem( provider->name() );
+      item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       item->setData( provider->id(), Qt::UserRole + 1 );
       modelUsed->appendRow( item );
     }
@@ -56,11 +63,10 @@ void QgsLayerTreeEmbeddedConfigWidget::onAddClicked()
   if ( QStandardItemModel* model = qobject_cast<QStandardItemModel*>( mListUsed->model() ) )
   {
     QStandardItem* item = new QStandardItem( provider->name() );
+    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     item->setData( provider->id(), Qt::UserRole + 1 );
     model->appendRow( item );
   }
-
-  updateCustomProperties();
 }
 
 void QgsLayerTreeEmbeddedConfigWidget::onRemoveClicked()
@@ -70,25 +76,26 @@ void QgsLayerTreeEmbeddedConfigWidget::onRemoveClicked()
 
   int row = mListUsed->currentIndex().row();
   mListUsed->model()->removeRow( row );
-
-  updateCustomProperties();
 }
 
-void QgsLayerTreeEmbeddedConfigWidget::updateCustomProperties()
+void QgsLayerTreeEmbeddedConfigWidget::applyToLayer()
 {
+  if ( !mLayer )
+    return;
+
   // clear old properties
-  int widgetsCount = mNodeLayer->customProperty( "embeddedWidgets/count", 0 ).toInt();
+  int widgetsCount = mLayer->customProperty( "embeddedWidgets/count", 0 ).toInt();
   for ( int i = 0; i < widgetsCount; ++i )
   {
-    mNodeLayer->removeCustomProperty( QString( "embeddedWidgets/%1/id" ).arg( i ) );
+    mLayer->removeCustomProperty( QString( "embeddedWidgets/%1/id" ).arg( i ) );
   }
 
   // setup new properties
   int newCount = mListUsed->model()->rowCount();
-  mNodeLayer->setCustomProperty( "embeddedWidgets/count", newCount );
+  mLayer->setCustomProperty( "embeddedWidgets/count", newCount );
   for ( int i = 0; i < newCount; ++i )
   {
     QString providerId = mListUsed->model()->data( mListUsed->model()->index( i, 0 ), Qt::UserRole + 1 ).toString();
-    mNodeLayer->setCustomProperty( QString( "embeddedWidgets/%1/id" ).arg( i ), providerId );
+    mLayer->setCustomProperty( QString( "embeddedWidgets/%1/id" ).arg( i ), providerId );
   }
 }

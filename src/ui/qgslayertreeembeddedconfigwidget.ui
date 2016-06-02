@@ -51,12 +51,20 @@
        <property name="text">
         <string>-&gt;</string>
        </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionArrowRight.png</normaloff>:/images/themes/default/mActionArrowRight.png</iconset>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QToolButton" name="mBtnRemove">
        <property name="text">
         <string>&lt;-</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionArrowLeft.png</normaloff>:/images/themes/default/mActionArrowLeft.png</iconset>
        </property>
       </widget>
      </item>
@@ -80,6 +88,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

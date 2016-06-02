@@ -69,7 +69,6 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
     void setVectorSymbolColor( const QColor &color );
     void editSymbolLegendNodeSymbol();
     void setSymbolLegendNodeColor( const QColor &color );
-    void editEmbeddedWidgets();
 };
 
 #endif // QGSAPPLAYERTREEVIEWMENUPROVIDER_H

@@ -237,9 +237,6 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         duplicateLayersAction->setEnabled( false );
       }
 
-      QAction* embeddedAction = menu->addAction( tr( "Embedded widgets..."), this, SLOT( editEmbeddedWidgets() ) );
-      embeddedAction->setProperty( "layerId", layer->id() );
-
       addCustomLayerActions( menu, layer );
 
       if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
@@ -557,27 +554,4 @@ void QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor( const QColor &co
   QgsSymbolV2* newSymbol = originalSymbol->clone();
   newSymbol->setColor( color );
   node->setSymbol( newSymbol );
-}
-
-#include "qgslayertreeembeddedconfigwidget.h"
-void QgsAppLayerTreeViewMenuProvider::editEmbeddedWidgets()
-{
-  QAction* action = qobject_cast< QAction*>( sender() );
-  if ( !action )
-    return;
-
-  QString layerId = action->property( "layerId" ).toString();
-  QgsLayerTreeLayer* nodeLayer = QgsProject::instance()->layerTreeRoot()->findLayer( layerId );
-  if ( !nodeLayer )
-    return;
-
-  QDialog d;
-  QgsLayerTreeEmbeddedConfigWidget* widget = new QgsLayerTreeEmbeddedConfigWidget(nodeLayer, &d);
-
-  QLayout* l = new QVBoxLayout(&d);
-  l->addWidget(widget);
-  d.setLayout(l);
-  d.exec();
-
-  mView->layerTreeModel()->refreshLayerLegend( nodeLayer );
 }

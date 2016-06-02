@@ -58,7 +58,6 @@ class QDomElement;
  * - "embedded_project" - path to the external project (embedded root node only)
  * - "legend/..." - properties for legend appearance customization
  * - "expandedLegendNodes" - list of layer's legend nodes' rules in expanded state
- * - "embeddedWidgets/..." - properties for embedded widgets (layer node only)
  *
  * @see also QgsLayerTree, QgsLayerTreeLayer, QgsLayerTreeGroup
  * @note added in 2.4

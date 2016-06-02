@@ -137,12 +137,12 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex& index, int start, i
     QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( parentNode );
     if ( QgsMapLayer* layer = nodeLayer->layer() )
     {
-      int widgetsCount = nodeLayer->customProperty( "embeddedWidgets/count", 0 ).toInt();
+      int widgetsCount = layer->customProperty( "embeddedWidgets/count", 0 ).toInt();
       QList<QgsLayerTreeModelLegendNode*> legendNodes = layerTreeModel()->layerLegendNodes( nodeLayer );
       for ( int i = 0; i < widgetsCount; ++i )
       {
         // TODO: check that the legend nodes are actually the placeholders for embedded widgets
-        QString providerId = nodeLayer->customProperty( QString( "embeddedWidgets/%1/id" ).arg( i ) ).toString();
+        QString providerId = layer->customProperty( QString( "embeddedWidgets/%1/id" ).arg( i ) ).toString();
         if ( QgsLayerTreeEmbeddedWidgetProvider* provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId ) )
         {
           QModelIndex index = layerTreeModel()->legendNode2index( legendNodes[i] );

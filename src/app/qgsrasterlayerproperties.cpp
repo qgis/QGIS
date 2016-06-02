@@ -797,6 +797,12 @@ void QgsRasterLayerProperties::sync()
 
   mLayerLegendUrlLineEdit->setText( mRasterLayer->legendUrl() );
   mLayerLegendUrlFormatComboBox->setCurrentIndex( mLayerLegendUrlFormatComboBox->findText( mRasterLayer->legendUrlFormat() ) );
+
+  /*
+   * Legend Tab
+   */
+  mLegendConfigEmbeddedWidget->setLayer( mRasterLayer );
+
 } // QgsRasterLayerProperties::sync()
 
 /*
@@ -806,6 +812,11 @@ void QgsRasterLayerProperties::sync()
  */
 void QgsRasterLayerProperties::apply()
 {
+  /*
+   * Legend Tab
+   */
+  mLegendConfigEmbeddedWidget->applyToLayer();
+
   QgsDebugMsg( "apply processing symbology tab" );
   /*
    * Symbology Tab
