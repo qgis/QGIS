@@ -42,6 +42,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterTableMultipleField
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterPoint
@@ -243,14 +244,49 @@ class ScriptAlgorithm(GeoAlgorithm):
             else:
                 param = ParameterNumber(name, descName)
         elif token.lower().strip().startswith('field'):
-            field = token.strip()[len('field') + 1:]
+            if token.lower().strip().startswith('field number'):
+                field = token.strip()[len('field number') + 1:]
+                datatype = ParameterTableField.DATA_TYPE_NUMBER
+            elif token.lower().strip().startswith('field string'):
+                field = token.strip()[len('field string') + 1:]
+                datatype = ParameterTableField.DATA_TYPE_STRING
+            else:
+                field = token.strip()[len('field') + 1:]
+                datatype = ParameterTableField.DATA_TYPE_ANY
             found = False
             for p in self.parameters:
                 if p.name == field:
                     found = True
                     break
             if found:
-                param = ParameterTableField(name, descName, field)
+                param = ParameterTableField(
+                    name=name,
+                    description=descName,
+                    parent=field,
+                    datatype=datatype
+                )
+        elif token.lower().strip().startswith('multiple field'):
+            if token.lower().strip().startswith('multiple field number'):
+                field = token.strip()[len('multiple field number') + 1:]
+                datatype = ParameterTableMultipleField.DATA_TYPE_NUMBER
+            elif token.lower().strip().startswith('multiple field string'):
+                field = token.strip()[len('multiple field string') + 1:]
+                datatype = ParameterTableMultipleField.DATA_TYPE_STRING
+            else:
+                field = token.strip()[len('multiple field') + 1:]
+                datatype = ParameterTableMultipleField.DATA_TYPE_ANY
+            found = False
+            for p in self.parameters:
+                if p.name == field:
+                    found = True
+                    break
+            if found:
+                param = ParameterTableMultipleField(
+                    name=name,
+                    description=descName,
+                    parent=field,
+                    datatype=datatype
+                )
         elif token.lower().strip().startswith('string'):
             default = token.strip()[len('string') + 1:]
             if default:

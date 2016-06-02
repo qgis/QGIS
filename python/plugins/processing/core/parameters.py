@@ -898,6 +898,72 @@ class ParameterTableField(Parameter):
         return '##' + self.name + '=' + param_type + self.parent
 
 
+class ParameterTableMultipleField(Parameter):
+    """A parameter representing several table fields.
+        Its value is a string with items separated by semicolons, each of
+        which represents the name of each field.
+
+        In a script you can use it with
+        ##Fields=[optional] multiple field [number|string] Parentinput
+
+        In the batch runner simply use a string with items separated by
+        semicolons, each of which represents the name of each field.
+
+        see algs.qgis.DeleteColumn.py for an usage example
+    """
+
+    DATA_TYPE_NUMBER = 0
+    DATA_TYPE_STRING = 1
+    DATA_TYPE_ANY = -1
+
+    def __init__(self, name='', description='', parent=None, datatype=-1,
+                 optional=False):
+        Parameter.__init__(self, name, description, None, optional)
+        self.parent = parent
+        self.datatype = int(datatype)
+
+    def getValueAsCommandLineParameter(self):
+        return '"' + unicode(self.value) + '"' if self.value is not None else unicode(None)
+
+    def setValue(self, obj):
+        if obj is None:
+            if self.optional:
+                self.value = None
+                return True
+            return False
+
+        if isinstance(obj, list):
+            if len(obj) == 0:
+                if self.optional:
+                    self.value = None
+                    return True
+                return False
+            self.value = ";".join(obj)
+            return True
+        else:
+            self.value = unicode(obj)
+            return True
+
+    def __str__(self):
+        return self.name + ' <' + self.__module__.split('.')[-1] + ' from ' \
+            + self.parent + '>'
+
+    def dataType(self):
+        if self.datatype == self.DATA_TYPE_NUMBER:
+            return 'numeric'
+        elif self.datatype == self.DATA_TYPE_STRING:
+            return 'string'
+        else:
+            return 'any'
+
+    def getAsScriptCode(self):
+        param_type = ''
+        if self.optional:
+            param_type += 'optional '
+        param_type += 'multiple field '
+        return '##' + self.name + '=' + param_type + self.parent
+
+
 class ParameterVector(ParameterDataObject):
 
     VECTOR_TYPE_POINT = 0
