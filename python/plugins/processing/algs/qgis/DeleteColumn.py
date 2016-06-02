@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import QgsFeature
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterTableMultipleField
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
@@ -36,30 +36,33 @@ from processing.tools import dataobjects, vector
 class DeleteColumn(GeoAlgorithm):
 
     INPUT = 'INPUT'
-    COLUMN = 'COLUMN'
+    COLUMNS = 'COLUMNS'
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Delete column')
+        self.name, self.i18n_name = self.trAlgorithm('Delete columns')
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(self.COLUMN,
-                                              self.tr('Field to delete'), self.INPUT))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Deleted column')))
+        self.addParameter(ParameterVector(
+            self.INPUT, self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableMultipleField(
+            self.COLUMNS, self.tr('Fields to delete'), self.INPUT))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('New file')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
-        idx = layer.fieldNameIndex(self.getParameterValue(self.COLUMN))
 
         fields = layer.pendingFields()
-        fields.remove(idx)
+        columns = self.getParameterValue(self.COLUMNS).split(';')
+
+        for col in columns:
+            index = fields.fieldNameIndex(col)
+            fields.remove(index)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     layer.wkbType(), layer.crs())
-
+                                                                     layer.wkbType(),
+                                                                     layer.crs())
         features = vector.features(layer)
         total = 100.0 / len(features)
 
@@ -67,7 +70,9 @@ class DeleteColumn(GeoAlgorithm):
         for current, f in enumerate(features):
             feat.setGeometry(f.geometry())
             attributes = f.attributes()
-            del attributes[idx]
+            for col in columns:
+                index = fields.fieldNameIndex(col)
+                del attributes[index]
             feat.setAttributes(attributes)
             writer.addFeature(feat)
 
