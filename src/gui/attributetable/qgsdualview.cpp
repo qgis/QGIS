@@ -26,6 +26,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayercache.h"
 
+#include <QClipboard>
 #include <QDialog>
 #include <QMenu>
 #include <QMessageBox>
@@ -379,12 +380,31 @@ int QgsDualView::filteredFeatureCount()
   return mFilterModel->rowCount();
 }
 
+void QgsDualView::copyCellContent() const
+{
+  QAction* action = qobject_cast<QAction*>( sender() );
+
+  if ( action && action->data().isValid() && action->data().canConvert<QModelIndex>() )
+  {
+    QModelIndex index = action->data().value<QModelIndex>();
+
+    QgsFeature f = masterModel()->feature( index );
+    QVariant var = f.attributes().at( index.column() );
+    QApplication::clipboard()->setText( var.toString() );
+  }
+}
+
 void QgsDualView::viewWillShowContextMenu( QMenu* menu, const QModelIndex& atIndex )
 {
   if ( !menu )
   {
     return;
   }
+
+  QAction *copyContentAction = new QAction( tr( "Copy cell content" ), this );
+  copyContentAction->setData( QVariant::fromValue<QModelIndex>( atIndex ) );
+  menu->addAction( copyContentAction );
+  connect( copyContentAction, SIGNAL( triggered() ), this, SLOT( copyCellContent() ) );
 
   QgsVectorLayer* vl = mFilterModel->layer();
   QgsMapCanvas* canvas = mFilterModel->mapCanvas();

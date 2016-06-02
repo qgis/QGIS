@@ -189,6 +189,12 @@ class QgsDualView : QStackedWidget
      */
     void toggleSearchMode( bool enabled );
 
+    /**
+     * Copy the content of the selected cell in the clipboard.
+     * @note added in QGIS 1.16
+     */
+    void copyCellContent() const;
+
   signals:
     /**
      * Is emitted, whenever the display expression is successfully changed
