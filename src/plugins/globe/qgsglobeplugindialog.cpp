@@ -90,6 +90,7 @@ QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
 #endif
 
   connect( checkBoxSkyAutoAmbient, SIGNAL( toggled( bool ) ), horizontalSliderMinAmbient, SLOT( setEnabled( bool ) ) );
+  connect( checkBoxDateTime, SIGNAL( toggled( bool ) ), dateTimeEditSky, SLOT( setEnabled( bool ) ) );
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked( bool ) ), this, SLOT( apply() ) );
 
   restoreSavedSettings();
@@ -120,6 +121,9 @@ void QgsGlobePluginDialog::restoreSavedSettings()
       osg::DisplaySettings::instance()->getSplitStereoVerticalEyeMapping() ).toInt() );
   groupBoxAntiAliasing->setChecked( settings.value( "/Plugin-Globe/anti-aliasing", false ).toBool() );
   lineEditAASamples->setText( settings.value( "/Plugin-Globe/anti-aliasing-level", "" ).toString() );
+
+  horizontalSliderMinAmbient->setEnabled( checkBoxSkyAutoAmbient->isChecked() );
+  dateTimeEditSky->setEnabled( checkBoxDateTime->isChecked() );
 
   // Advanced
   sliderScrollSensitivity->setValue( settings.value( "/Plugin-Globe/scrollSensitivity", 20 ).toInt() );
@@ -224,6 +228,7 @@ void QgsGlobePluginDialog::readProjectSettings()
 
   // Map settings
   groupBoxSky->setChecked( QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/skyEnabled", true ) );
+  checkBoxDateTime->setChecked( QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/overrideDateTime", false ) );
   dateTimeEditSky->setDateTime( QDateTime::fromString( QgsProject::instance()->readEntry( "Globe-Plugin", "/skyDateTime", QDateTime::currentDateTime().toString() ) ) );
   checkBoxSkyAutoAmbient->setChecked( QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/skyAutoAmbient", true ) );
   horizontalSliderMinAmbient->setValue( QgsProject::instance()->readDoubleEntry( "Globe-Plugin", "/skyMinAmbient", 30. ) );
@@ -257,6 +262,7 @@ void QgsGlobePluginDialog::writeProjectSettings()
 
   // Map settings
   QgsProject::instance()->writeEntry( "Globe-Plugin", "/skyEnabled/", groupBoxSky->isChecked() );
+  QgsProject::instance()->writeEntry( "Globe-Plugin", "/overrideDateTime/", checkBoxDateTime->isChecked() );
   QgsProject::instance()->writeEntry( "Globe-Plugin", "/skyDateTime/", dateTimeEditSky->dateTime().toString() );
   QgsProject::instance()->writeEntry( "Globe-Plugin", "/skyAutoAmbient/", checkBoxSkyAutoAmbient->isChecked() );
   QgsProject::instance()->writeEntry( "Globe-Plugin", "/skyMinAmbient/", horizontalSliderMinAmbient->value() );
@@ -460,7 +466,15 @@ bool QgsGlobePluginDialog::getSkyEnabled() const
 
 QDateTime QgsGlobePluginDialog::getSkyDateTime() const
 {
-  return QDateTime::fromString( QgsProject::instance()->readEntry( "Globe-Plugin", "/skyDateTime", QDateTime::currentDateTime().toString() ) );
+  bool overrideDateTime = QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/overrideDateTime", false );
+  if ( overrideDateTime )
+  {
+    return QDateTime::fromString( QgsProject::instance()->readEntry( "Globe-Plugin", "/skyDateTime", QDateTime::currentDateTime().toString() ) );
+  }
+  else
+  {
+    return QDateTime::currentDateTime();
+  }
 }
 
 bool QgsGlobePluginDialog::getSkyAutoAmbience() const
