@@ -744,7 +744,7 @@ void QgsAttributeTableModel::prefetchColumnData( int column )
   }
   else
   {
-    prefetchSortData( mLayerCache->layer()->fields().at( mAttributes.at( column ) ).name() );
+    prefetchSortData( QgsExpression::quotedColumnRef( mLayerCache->layer()->fields().at( mAttributes.at( column ) ).name() ) );
   }
 }
 
