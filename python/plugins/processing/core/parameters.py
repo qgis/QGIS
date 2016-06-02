@@ -140,7 +140,11 @@ class ParameterBoolean(Parameter):
         return True
 
     def getAsScriptCode(self):
-        return '##' + self.name + '=boolean ' + str(self.default)
+        param_type = ''
+        if self.optional:
+            param_type += 'optional '
+        param_type += 'boolean '
+        return '##' + self.name + '=' + param_type + str(self.default)
 
 
 class ParameterCrs(Parameter):
@@ -167,7 +171,11 @@ class ParameterCrs(Parameter):
         return '"' + unicode(self.value) + '"'
 
     def getAsScriptCode(self):
-        return '##' + self.name + '=crs ' + str(self.default)
+        param_type = ''
+        if self.optional:
+            param_type += 'optional '
+        param_type += 'crs '
+        return '##' + self.name + '=' + param_type + str(self.default)
 
 
 class ParameterDataObject(Parameter):
@@ -213,7 +221,12 @@ class ParameterExtent(Parameter):
         return '"' + unicode(self.value) + '"'
 
     def getAsScriptCode(self):
-        return '##' + self.name + '=extent'
+        param_type = ''
+        if self.optional:
+            param_type += 'optional '
+        param_type += 'extent'
+        return '##' + self.name + '=' + param_type
+
 
 
 class ParameterPoint(Parameter):
@@ -244,7 +257,11 @@ class ParameterPoint(Parameter):
         return '"' + unicode(self.value) + '"'
 
     def getAsScriptCode(self):
-        return '##' + self.name + '=point'
+        param_type = ''
+        if self.optional:
+            param_type += 'optional '
+        param_type += 'point'
+        return '##' + self.name + '=' + param_type
 
 
 class ParameterFile(Parameter):
@@ -276,10 +293,14 @@ class ParameterFile(Parameter):
             return 'file'
 
     def getAsScriptCode(self):
+        param_type = ''
+        if self.optional:
+            param_type += 'optional '
         if self.isFolder:
-            return '##' + self.name + '=folder'
+            param_type += 'folder'
         else:
-            return '##' + self.name + '=file'
+            param_type += 'file'
+        return '##' + self.name + '=' + param_type
 
 
 class ParameterFixedTable(Parameter):
@@ -501,12 +522,16 @@ class ParameterMultipleInput(ParameterDataObject):
             return 'any vectors'
 
     def getAsScriptCode(self):
+        param_type = ''
+        if self.optional:
+            param_type += 'optional '
         if self.datatype == self.TYPE_RASTER:
-            return '##' + self.name + '=multiple raster'
+            param_type += 'multiple raster'
         if self.datatype == self.TYPE_FILE:
-            return '##' + self.name + '=multiple file'
+            param_type += 'multiple file'
         else:
-            return '##' + self.name + '=multiple vector'
+            param_type += 'multiple vector'
+        return '##' + self.name + '=' + param_type
 
 
 class ParameterNumber(Parameter):
@@ -559,7 +584,11 @@ class ParameterNumber(Parameter):
             return False
 
     def getAsScriptCode(self):
-        return '##' + self.name + '=number ' + str(self.default)
+        param_type = ''
+        if self.optional:
+            param_type += 'optional '
+        param_type += 'number'
+        return '##' + self.name + '=' + param_type + str(self.default)
 
 
 class ParameterRange(Parameter):
@@ -657,7 +686,11 @@ class ParameterRaster(ParameterDataObject):
         return ';;'.join(exts)
 
     def getAsScriptCode(self):
-        return '##' + self.name + '=raster'
+        param_type = ''
+        if self.optional:
+            param_type += 'optional '
+        param_type += 'raster'
+        return '##' + self.name + '=' + param_type
 
 
 class ParameterSelection(Parameter):
@@ -733,7 +766,11 @@ class ParameterString(Parameter):
                 if self.value is not None else unicode(None))
 
     def getAsScriptCode(self):
-        return '##' + self.name + '=string ' + self.default
+        param_type = ''
+        if self.optional:
+            param_type += 'optional '
+        param_type += 'string'
+        return '##' + self.name + '=' + param_type + self.default
 
 
 class ParameterTable(ParameterDataObject):
@@ -801,10 +838,20 @@ class ParameterTable(ParameterDataObject):
         return ';;'.join(exts)
 
     def getAsScriptCode(self):
-        return '##' + self.name + '=table'
+        param_type = ''
+        if self.optional:
+            param_type += 'optional '
+        param_type += 'table'
+        return '##' + self.name + '=' + param_type
 
 
 class ParameterTableField(Parameter):
+    """A parameter representing a table field.
+    Its value is a string that represents the name of the field.
+
+    In a script you can use it with
+    ##Field=[optional] field [number|string] Parentinput
+    """
 
     DATA_TYPE_NUMBER = 0
     DATA_TYPE_STRING = 1
@@ -844,7 +891,11 @@ class ParameterTableField(Parameter):
             return 'any'
 
     def getAsScriptCode(self):
-        return '##' + self.name + '=field ' + self.parent
+        param_type = ''
+        if self.optional:
+            param_type += 'optional '
+        param_type += 'field'
+        return '##' + self.name + '=' + param_type + self.parent
 
 
 class ParameterVector(ParameterDataObject):
@@ -932,7 +983,11 @@ class ParameterVector(ParameterDataObject):
         return types[:-2]
 
     def getAsScriptCode(self):
-        return '##' + self.name + '=vector'
+        param_type = ''
+        if self.optional:
+            param_type += 'optional '
+        param_type += 'vector'
+        return '##' + self.name + '=' + param_type
 
 
 class ParameterGeometryPredicate(Parameter):
