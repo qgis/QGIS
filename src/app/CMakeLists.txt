@@ -657,7 +657,7 @@ IF (POSTGRES_FOUND)
 ENDIF (POSTGRES_FOUND)
 
 IF(MSVC)
-  INSTALL(FILES qgis.ico DESTINATION ${CMAKE_INSTALL_PREFIX}/icons)
+  INSTALL(FILES qgis.ico qgis-mime.ico qgis-qgs.ico qgis-qlr.ico qgis-qml.ico qgis-qpt.ico DESTINATION ${CMAKE_INSTALL_PREFIX}/icons)
 ENDIF(MSVC)
 
 INSTALL(TARGETS qgis_app
