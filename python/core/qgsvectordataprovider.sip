@@ -89,7 +89,7 @@ class QgsVectorDataProvider : QgsDataProvider
      * @note added in 2.4
      * @return new instance of QgsAbstractFeatureSource (caller is responsible for deleting it)
      */
-    virtual QgsAbstractFeatureSource* featureSource() const /Factory/;
+    virtual QgsAbstractFeatureSource *featureSource() const = 0 /Factory/;
 
     /**
      * Returns the permanent storage type for this layer as a friendly name.
@@ -291,7 +291,7 @@ class QgsVectorDataProvider : QgsDataProvider
     /**
      * Return list of indexes to fetch all attributes in nextFeature()
      */
-    QList<int> attributeIndexes();
+    virtual QList<int> attributeIndexes();
 
     /**
      * Return list of indexes of fields that make up the primary key
@@ -330,7 +330,7 @@ class QgsVectorDataProvider : QgsDataProvider
      * Returns true if the provider is strict about the type of inserted features
      * (e.g. no multipolygon in a polygon layer)
      */
-    bool doesStrictFeatureTypeCheck() const;
+    virtual bool doesStrictFeatureTypeCheck() const;
 
     /** Returns a list of available encodings */
     static const QStringList &availableEncodings();

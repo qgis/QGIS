@@ -24,7 +24,7 @@ class QgsGlobeFeatureSource : public QObject, public osgEarth::Features::Feature
     const char* className() const override { return "QGISFeatureSource"; }
     const char* libraryName() const override { return "QGIS"; }
 
-    void initialize( const osgDB::Options* dbOptions );
+    void initialize( const osgDB::Options* dbOptions ) override;
 
   protected:
     const osgEarth::Features::FeatureProfile* createFeatureProfile() override { return mProfile; }
