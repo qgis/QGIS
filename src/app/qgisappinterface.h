@@ -403,6 +403,10 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual QAction *actionAddRasterLayer() override;
     virtual QAction *actionAddPgLayer() override;
     virtual QAction *actionAddWmsLayer() override;
+    /** Get access to the native Add ArcGIS FeatureServer action. */
+    virtual QAction *actionAddAfsLayer() override;
+    /** Get access to the native Add ArcGIS MapServer action. */
+    virtual QAction *actionAddAmsLayer() override;
     virtual QAction *actionCopyLayerStyle() override;
     virtual QAction *actionPasteLayerStyle() override;
     virtual QAction *actionOpenTable() override;

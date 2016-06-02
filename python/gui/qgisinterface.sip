@@ -429,6 +429,10 @@ class QgisInterface : QObject
     virtual QAction *actionAddRasterLayer() = 0;
     virtual QAction *actionAddPgLayer() = 0;
     virtual QAction *actionAddWmsLayer() = 0;
+    /** Get access to the native Add ArcGIS FeatureServer action. */
+    virtual QAction *actionAddAfsLayer() = 0;
+    /** Get access to the native Add ArcGIS MapServer action. */
+    virtual QAction *actionAddAmsLayer() = 0;
     virtual QAction *actionCopyLayerStyle() = 0;
     virtual QAction *actionPasteLayerStyle() = 0;
     virtual QAction *actionOpenTable() = 0;

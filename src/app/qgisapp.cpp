@@ -211,6 +211,7 @@
 #include "qgsshortcutsmanager.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssnappingdialog.h"
+#include "qgssourceselectdialog.h"
 #include "qgssponsors.h"
 #include "qgsstatisticalsummarydockwidget.h"
 #include "qgsstatusbarcoordinateswidget.h"
@@ -1487,6 +1488,8 @@ void QgisApp::createActions()
   connect( mActionAddWmsLayer, SIGNAL( triggered() ), this, SLOT( addWmsLayer() ) );
   connect( mActionAddWcsLayer, SIGNAL( triggered() ), this, SLOT( addWcsLayer() ) );
   connect( mActionAddWfsLayer, SIGNAL( triggered() ), this, SLOT( addWfsLayer() ) );
+  connect( mActionAddAfsLayer, SIGNAL( triggered() ), this, SLOT( addAfsLayer() ) );
+  connect( mActionAddAmsLayer, SIGNAL( triggered() ), this, SLOT( addAmsLayer() ) );
   connect( mActionAddDelimitedText, SIGNAL( triggered() ), this, SLOT( addDelimitedTextLayer() ) );
   connect( mActionAddVirtualLayer, SIGNAL( triggered() ), this, SLOT( addVirtualLayer() ) );
   connect( mActionOpenTable, SIGNAL( triggered() ), this, SLOT( attributeTable() ) );
@@ -2060,6 +2063,48 @@ void QgisApp::createToolBars()
   newLayerAction->setObjectName( "ActionNewLayer" );
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
 
+  // map service tool button
+  bt = new QToolButton();
+  bt->setPopupMode( QToolButton::MenuButtonPopup );
+  bt->addAction( mActionAddWmsLayer );
+  bt->addAction( mActionAddAmsLayer );
+  QAction* defMapServiceAction = mActionAddWmsLayer;
+  switch ( settings.value( "/UI/defaultMapService", 0 ).toInt() )
+  {
+    case 0:
+      defMapServiceAction = mActionAddWmsLayer;
+      break;
+    case 1:
+      defMapServiceAction = mActionAddAmsLayer;
+      break;
+  };
+  bt->setDefaultAction( defMapServiceAction );
+  QAction* mapServiceAction = mLayerToolBar->insertWidget( mActionAddWmsLayer, bt );
+  mLayerToolBar->removeAction( mActionAddWmsLayer );
+  mapServiceAction->setObjectName( "ActionMapService" );
+  connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
+
+  // feature service tool button
+  bt = new QToolButton();
+  bt->setPopupMode( QToolButton::MenuButtonPopup );
+  bt->addAction( mActionAddWfsLayer );
+  bt->addAction( mActionAddAfsLayer );
+  QAction* defFeatureServiceAction = mActionAddWfsLayer;
+  switch ( settings.value( "/UI/defaultFeatureService", 0 ).toInt() )
+  {
+    case 0:
+      defFeatureServiceAction = mActionAddWfsLayer;
+      break;
+    case 1:
+      defFeatureServiceAction = mActionAddAfsLayer;
+      break;
+  };
+  bt->setDefaultAction( defFeatureServiceAction );
+  QAction* featureServiceAction = mLayerToolBar->insertWidget( mActionAddWfsLayer, bt );
+  mLayerToolBar->removeAction( mActionAddWfsLayer );
+  featureServiceAction->setObjectName( "ActionFeatureService" );
+  connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
+
   // add db layer button
   bt = new QToolButton();
   bt->setPopupMode( QToolButton::MenuButtonPopup );
@@ -2437,6 +2482,8 @@ void QgisApp::setTheme( const QString& theThemeName )
   mActionAddWmsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWmsLayer.svg" ) );
   mActionAddWcsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWcsLayer.svg" ) );
   mActionAddWfsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWfsLayer.svg" ) );
+  mActionAddAfsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddAfsLayer.svg" ) );
+  mActionAddAmsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddAmsLayer.svg" ) );
   mActionAddToOverview->setIcon( QgsApplication::getThemeIcon( "/mActionInOverview.svg" ) );
   mActionAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionAnnotation.png" ) );
   mActionFormAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionFormAnnotation.png" ) );
@@ -4097,6 +4144,71 @@ void QgisApp::addWfsLayer( const QString& uri, const QString& typeName )
   addVectorLayer( uri, typeName, "WFS" );
 }
 
+void QgisApp::addAfsLayer()
+{
+  if ( !mapCanvas() )
+  {
+    return;
+  }
+
+  QgsDebugMsg( "about to addAfsLayer" );
+
+  // TODO: QDialog for now, switch to QWidget in future
+  QgsSourceSelectDialog *afss = dynamic_cast<QgsSourceSelectDialog*>( QgsProviderRegistry::instance()->selectWidget( "arcgisfeatureserver", this ) );
+  if ( !afss )
+  {
+    QMessageBox::warning( this, tr( "ArcGIS Feature Server" ), tr( "Cannot get ArcGIS Feature Server select dialog from provider." ) );
+    return;
+  }
+  afss->setCurrentExtentAndCrs( mapCanvas()->extent(), mapCanvas()->mapSettings().destinationCrs() );
+  connect( afss, SIGNAL( addLayer( QString, QString ) ),
+           this, SLOT( addAfsLayer( QString, QString ) ) );
+
+  bool bkRenderFlag = mapCanvas()->renderFlag();
+  mapCanvas()->setRenderFlag( false );
+  afss->exec();
+  mapCanvas()->setRenderFlag( bkRenderFlag );
+  delete afss;
+}
+
+void QgisApp::addAfsLayer( const QString &uri, const QString &typeName )
+{
+  // TODO: this should be eventually moved to a more reasonable place
+  addVectorLayer( uri, typeName, "arcgisfeatureserver" );
+}
+
+void QgisApp::addAmsLayer()
+{
+  if ( !mapCanvas() )
+  {
+    return;
+  }
+
+  QgsDebugMsg( "about to addAmsLayer" );
+
+  // TODO: QDialog for now, switch to QWidget in future
+  QgsSourceSelectDialog *amss = dynamic_cast<QgsSourceSelectDialog*>( QgsProviderRegistry::instance()->selectWidget( "arcgismapserver", this ) );
+  if ( !amss )
+  {
+    QMessageBox::warning( this, tr( "ArcGIS Map Server" ), tr( "Cannot get ArcGIS Map Server select dialog from provider." ) );
+    return;
+  }
+  amss->setCurrentExtentAndCrs( mapCanvas()->extent(), mapCanvas()->mapSettings().destinationCrs() );
+  connect( amss, SIGNAL( addLayer( QString, QString ) ),
+           this, SLOT( addAmsLayer( QString, QString ) ) );
+
+  bool bkRenderFlag = mapCanvas()->renderFlag();
+  mapCanvas()->setRenderFlag( false );
+  amss->exec();
+  mapCanvas()->setRenderFlag( bkRenderFlag );
+  delete amss;
+}
+
+void QgisApp::addAmsLayer( const QString& uri, const QString& typeName )
+{
+  // TODO: this should be eventually moved to a more reasonable place
+  addRasterLayer( uri, typeName, QString( "arcgismapserver" ) );
+}
 
 void QgisApp::fileExit()
 {
@@ -11429,6 +11541,14 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( "/UI/defaultAddDbLayerAction", 2 );
   else if ( mActionAddOracleLayer && action == mActionAddOracleLayer )
     settings.setValue( "/UI/defaultAddDbLayerAction", 3 );
+  else if ( action == mActionAddWfsLayer )
+    settings.setValue( "/UI/defaultFeatureService", 0 );
+  else if ( action == mActionAddAfsLayer )
+    settings.setValue( "/UI/defaultFeatureService", 1 );
+  else if ( action == mActionAddWmsLayer )
+    settings.setValue( "/UI/defaultMapService", 0 );
+  else if ( action == mActionAddAmsLayer )
+    settings.setValue( "/UI/defaultMapService", 1 );
 
   bt->setDefaultAction( action );
 }
