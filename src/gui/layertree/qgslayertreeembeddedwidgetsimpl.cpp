@@ -88,16 +88,16 @@ QString QgsLayerTreeTransparencyWidget::Provider::id() const
 
 QString QgsLayerTreeTransparencyWidget::Provider::name() const
 {
-  return tr("Transparency slider");
+  return tr( "Transparency slider" );
 }
 
-QgsLayerTreeTransparencyWidget* QgsLayerTreeTransparencyWidget::Provider::createWidget(QgsMapLayer* layer, QMap<QString, QString> properties)
+QgsLayerTreeTransparencyWidget* QgsLayerTreeTransparencyWidget::Provider::createWidget( QgsMapLayer* layer, int widgetIndex )
 {
-  Q_UNUSED( properties );
+  Q_UNUSED( widgetIndex );
   return new QgsLayerTreeTransparencyWidget( layer );
 }
 
-bool QgsLayerTreeTransparencyWidget::Provider::supportsLayer(QgsMapLayer* layer)
+bool QgsLayerTreeTransparencyWidget::Provider::supportsLayer( QgsMapLayer* layer )
 {
   return layer->type() == QgsMapLayer::VectorLayer || layer->type() == QgsMapLayer::RasterLayer;
 }

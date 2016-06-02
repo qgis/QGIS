@@ -145,7 +145,7 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex& index, int start, i
         if ( QgsLayerTreeEmbeddedWidgetProvider* provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId ) )
         {
           QModelIndex index = layerTreeModel()->legendNode2index( legendNodes[i] );
-          setIndexWidget( index, provider->createWidget( layer, QMap<QString, QString>() ) );
+          setIndexWidget( index, provider->createWidget( layer, i ) );
         }
       }
     }
