@@ -536,6 +536,7 @@ void TestQgsComposition::georeference()
   QVERIFY( qgsDoubleNear( t[3], 3200, 1 ) );
   QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
   QVERIFY( qgsDoubleNear( t[5], -0.211694, 0.0001 ) );
+  delete[] t;
 
   // don't specify map
   composition->setWorldFileMap( map );
@@ -546,6 +547,7 @@ void TestQgsComposition::georeference()
   QVERIFY( qgsDoubleNear( t[3], 3200, 1 ) );
   QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
   QVERIFY( qgsDoubleNear( t[5], -0.211694, 0.0001 ) );
+  delete[] t;
 
   // specify extent
   t = composition->computeGeoTransform( map, QRectF( 70, 100, 50, 60 ) );
@@ -555,6 +557,7 @@ void TestQgsComposition::georeference()
   QVERIFY( qgsDoubleNear( t[3], 2950, 1 ) );
   QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
   QVERIFY( qgsDoubleNear( t[5], -0.211864, 0.0001 ) );
+  delete[] t;
 
   // specify dpi
   t = composition->computeGeoTransform( map, QRectF(), 75 );
@@ -564,6 +567,7 @@ void TestQgsComposition::georeference()
   QVERIFY( qgsDoubleNear( t[3], 3200.0, 1 ) );
   QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
   QVERIFY( qgsDoubleNear( t[5], -0.846774, 0.0001 ) );
+  delete[] t;
 
   // rotation
   map->setMapRotation( 45 );
@@ -574,6 +578,7 @@ void TestQgsComposition::georeference()
   QVERIFY( qgsDoubleNear( t[3], 2889.64, 1 ) );
   QVERIFY( qgsDoubleNear( t[4], 0.14969, 0.0001 ) );
   QVERIFY( qgsDoubleNear( t[5], -0.14969, 0.0001 ) );
+  delete[] t;
 
   delete composition;
 }
