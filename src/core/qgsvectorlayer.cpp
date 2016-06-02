@@ -3752,7 +3752,11 @@ QgsAttributeTableConfig QgsVectorLayer::attributeTableConfig() const
 
 void QgsVectorLayer::setAttributeTableConfig( const QgsAttributeTableConfig& attributeTableConfig )
 {
-  mAttributeTableConfig = attributeTableConfig;
+  if ( mAttributeTableConfig != attributeTableConfig )
+  {
+    mAttributeTableConfig = attributeTableConfig;
+    emit configChanged();
+  }
 }
 
 void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings& s )

@@ -116,13 +116,6 @@ class CORE_EXPORT QgsProject : public QObject
      */
     Q_DECL_DEPRECATED inline void dirty( bool b ) { setDirty( b ); }
 
-    /**
-     * Flag the project as dirty (modified). If this flag is set, the user will
-     * be asked to save changes to the project before closing the current project.
-     *
-     * @note added in 2.4
-     */
-    void setDirty( bool b );
     //@}
 
 
@@ -469,6 +462,17 @@ class CORE_EXPORT QgsProject : public QObject
 
     //! Emitted when the list of layer which are excluded from map identification changes
     void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
+
+  public slots:
+
+    /**
+     * Flag the project as dirty (modified). If this flag is set, the user will
+     * be asked to save changes to the project before closing the current project.
+     *
+     * @note added in 2.4
+     * @note promoted to public slot in 2.16
+     */
+    void setDirty( bool b = true );
 
   private slots:
     void onMapLayersAdded( const QList<QgsMapLayer*>& layers );

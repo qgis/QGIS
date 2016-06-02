@@ -1050,6 +1050,8 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer*>& layers )
       }
       vlayer->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, evaluateDefaultValues() );
     }
+
+    connect( layer, SIGNAL( configChanged() ), this, SLOT( setDirty() ) );
   }
 }
 

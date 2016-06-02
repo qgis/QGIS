@@ -52,6 +52,8 @@ class CORE_EXPORT QgsAttributeTableConfig
           , width( -1 )
       {}
 
+      bool operator== ( const ColumnConfig& other ) const;
+
       Type type;    //!< The type of this column.
       QString name; //!< The name of the attribute if this column represents a field
       bool hidden;  //!< Flag that controls if the column is hidden
@@ -164,6 +166,11 @@ class CORE_EXPORT QgsAttributeTableConfig
      * @see columnHidden()
      */
     void setColumnHidden( int column, bool hidden );
+
+    /**
+     * Compare this configuration to other.
+     */
+    bool operator!= ( const QgsAttributeTableConfig& other ) const;
 
   private:
     QVector<ColumnConfig> mColumns;
