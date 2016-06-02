@@ -43,6 +43,9 @@
        </property>
        <item row="2" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="spacing">
+          <number>6</number>
+         </property>
          <item>
           <widget class="QToolButton" name="mUndoButton">
            <property name="text">
@@ -82,6 +85,19 @@
           <widget class="QDialogButtonBox" name="mButtonBox">
            <property name="standardButtons">
             <set>QDialogButtonBox::Apply</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="mLiveApplyCheck">
+           <property name="text">
+            <string>Live update</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+           <property name="autoRepeat">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -161,19 +177,6 @@
            </property>
            <property name="sizeAdjustPolicy">
             <enum>QComboBox::AdjustToMinimumContentsLength</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="mLiveApplyCheck">
-           <property name="text">
-            <string>Live update</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-           <property name="autoRepeat">
-            <bool>false</bool>
            </property>
           </widget>
          </item>
