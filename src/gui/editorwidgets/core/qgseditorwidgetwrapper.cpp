@@ -97,9 +97,9 @@ void QgsEditorWidgetWrapper::valueChanged()
   emit valueChanged( value() );
 }
 
-void QgsEditorWidgetWrapper::updateConstraintWidgetStatus()
+void QgsEditorWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid )
 {
-  if ( mValidConstraint )
+  if ( constraintValid )
     widget()->setStyleSheet( QString() );
   else
     widget()->setStyleSheet( "background-color: #dd7777;" );
@@ -162,7 +162,7 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
 
   if ( toEmit )
   {
-    updateConstraintWidgetStatus();
+    updateConstraintWidgetStatus( mValidConstraint );
     emit constraintStatusChanged( expression, description, errStr, mValidConstraint );
   }
 }

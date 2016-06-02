@@ -189,11 +189,11 @@ void QgsWebViewWidgetWrapper::selectFileName()
     mLineEdit->setText( filePath );
 }
 
-void QgsWebViewWidgetWrapper::updateConstraintWidgetStatus()
+void QgsWebViewWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid )
 {
   if ( mLineEdit )
   {
-    if ( mValidConstraint )
+    if ( constraintValid )
       mLineEdit->setStyleSheet( QString() );
     else
     {

@@ -267,11 +267,11 @@ void QgsPhotoWidgetWrapper::setEnabled( bool enabled )
     mButton->setEnabled( enabled );
 }
 
-void QgsPhotoWidgetWrapper::updateConstraintWidgetStatus()
+void QgsPhotoWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid )
 {
   if ( mLineEdit )
   {
-    if ( mValidConstraint )
+    if ( constraintValid )
       mLineEdit->setStyleSheet( QString() );
     else
     {

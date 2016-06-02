@@ -78,7 +78,7 @@ void QgsColorWidgetWrapper::setValue( const QVariant& value )
     mColorButton->setColor( !value.isNull() ? QColor( value.toString() ) : QColor() );
 }
 
-void QgsColorWidgetWrapper::updateConstraintWidgetStatus()
+void QgsColorWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid )
 {
   // nothing
 }

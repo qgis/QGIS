@@ -34,5 +34,5 @@ class QgsRelationReferenceWidgetWrapper : QgsEditorWidgetWrapper
      * change the visual cue.
      * @note added in QGIS 2.16
      */
-    void updateConstraintWidgetStatus();
+    void updateConstraintWidgetStatus( bool constraintValid ) override;
 };

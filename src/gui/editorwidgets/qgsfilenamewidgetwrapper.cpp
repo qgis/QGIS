@@ -152,11 +152,11 @@ void QgsFileNameWidgetWrapper::selectFileName()
     mLineEdit->setText( fileName );
 }
 
-void QgsFileNameWidgetWrapper::updateConstraintWidgetStatus()
+void QgsFileNameWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid )
 {
   if ( mLineEdit )
   {
-    if ( mValidConstraint )
+    if ( constraintValid )
       mLineEdit->setStyleSheet( QString() );
     else
     {

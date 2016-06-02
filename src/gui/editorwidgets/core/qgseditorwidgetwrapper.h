@@ -220,11 +220,15 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      *
      * This can be overwritten in subclasses to allow individual widgets to
      * change the visual cue.
+     *
+     * @param constraintValid The current constraint status.
+     *
      * @note added in QGIS 2.16
      */
-    virtual void updateConstraintWidgetStatus();
+    virtual void updateConstraintWidgetStatus( bool constraintValid );
 
   private:
+
     /**
      * Boolean storing the current validity of the constraint for this widget.
      */

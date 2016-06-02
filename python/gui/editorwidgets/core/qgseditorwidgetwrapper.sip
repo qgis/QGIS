@@ -199,5 +199,5 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
      * This can be overwritten in subclasses to allow individual widgets to
      * change the visual cue.
      */
-    virtual void updateConstraintWidgetStatus();
+    virtual void updateConstraintWidgetStatus( bool contraintValid );
 };

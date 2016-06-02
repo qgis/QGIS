@@ -71,7 +71,7 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
      * change the visual cue.
      * @note added in QGIS 2.16
      */
-    void updateConstraintWidgetStatus() override;
+    void updateConstraintWidgetStatus( bool constraintValid ) override;
 
   private:
     QgsRelationReferenceWidget* mWidget;

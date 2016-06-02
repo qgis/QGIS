@@ -53,7 +53,7 @@ class GUI_EXPORT QgsWebViewWidgetWrapper : public QgsEditorWidgetWrapper
     void selectFileName();
 
   private:
-    void updateConstraintWidgetStatus() override;
+    void updateConstraintWidgetStatus( bool constraintValid ) override;
 
     //! This label is used as a container to display the picture
     QWebView* mWebView;

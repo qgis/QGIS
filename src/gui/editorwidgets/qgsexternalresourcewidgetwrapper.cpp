@@ -188,11 +188,11 @@ void QgsExternalResourceWidgetWrapper::setEnabled( bool enabled )
     mQgsWidget->setReadOnly( !enabled );
 }
 
-void QgsExternalResourceWidgetWrapper::updateConstraintWidgetStatus()
+void QgsExternalResourceWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid )
 {
   if ( mLineEdit )
   {
-    if ( mValidConstraint )
+    if ( constraintValid )
       mLineEdit->setStyleSheet( QString() );
     else
       mLineEdit->setStyleSheet( "QgsFilterLineEdit { background-color: #dd7777; }" );

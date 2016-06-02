@@ -65,7 +65,7 @@ class GUI_EXPORT QgsPhotoWidgetWrapper : public QgsEditorWidgetWrapper
     void loadPixmap( const QString& fileName );
 
   private:
-    void updateConstraintWidgetStatus() override;
+    void updateConstraintWidgetStatus( bool constraintValid ) override;
 
     //! This label is used as a container to display the picture
     QLabel* mPhotoLabel;
