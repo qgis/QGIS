@@ -81,7 +81,7 @@ class lasthinPro(LAStoolsAlgorithm):
         if (operation != 0):
             commands.append("-" + self.OPERATIONS[operation])
         if (operation >= 4):
-                commands.append(unicode(self.getParameterValue(lasthinPro.THRESHOLD_OR_INTERVAL)))
+            commands.append(unicode(self.getParameterValue(lasthinPro.THRESHOLD_OR_INTERVAL)))
         if self.getParameterValue(lasthinPro.WITHHELD):
             commands.append("-withheld")
         if self.getParameterValue(lasthinPro.CLASSIFY_AS):

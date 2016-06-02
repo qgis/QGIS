@@ -30,6 +30,7 @@ from .LAStoolsAlgorithm import LAStoolsAlgorithm
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 
+
 class lastile(LAStoolsAlgorithm):
 
     TILE_SIZE = "TILE_SIZE"
@@ -49,9 +50,9 @@ class lastile(LAStoolsAlgorithm):
                                           self.tr("buffer around each tile"),
                                           0.0, None, 25.0))
         self.addParameter(ParameterBoolean(lastile.FLAG_AS_WITHHELD,
-                                          self.tr("flag buffer points as 'withheld' for easier removal later"), True))
+                                           self.tr("flag buffer points as 'withheld' for easier removal later"), True))
         self.addParameter(ParameterBoolean(lastile.REVERSIBLE,
-                                          self.tr("make tiling reversible (advanced, usually not needed)"), False))
+                                           self.tr("make tiling reversible (advanced, usually not needed)"), False))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

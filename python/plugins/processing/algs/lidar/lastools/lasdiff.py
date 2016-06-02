@@ -31,6 +31,7 @@ from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 
+
 class lasdiff(LAStoolsAlgorithm):
 
     OTHER_POINT_FILE = "OTHER_POINT_FILE"
@@ -44,7 +45,7 @@ class lasdiff(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterFile(lasdiff.OTHER_POINT_FILE,
-                                          self.tr("other input LAS/LAZ file"), False, False))
+                                        self.tr("other input LAS/LAZ file"), False, False))
         self.addParameter(ParameterSelection(lasdiff.SHUTUP,
                                              self.tr("stop reporting difference after this many points"), lasdiff.SHUTUP_AFTER, 0))
         self.addParameter(ParameterBoolean(lasdiff.CREATE_DIFFERENCE_FILE,

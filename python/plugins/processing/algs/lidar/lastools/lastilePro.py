@@ -31,6 +31,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterString
 
+
 class lastilePro(LAStoolsAlgorithm):
 
     TILE_SIZE = "TILE_SIZE"
@@ -52,7 +53,7 @@ class lastilePro(LAStoolsAlgorithm):
                                           self.tr("buffer around each tile (avoids edge artifacts)"),
                                           0.0, None, 25.0))
         self.addParameter(ParameterBoolean(lastilePro.FLAG_AS_WITHHELD,
-                                          self.tr("flag buffer points as 'withheld' for easier removal later"), True))
+                                           self.tr("flag buffer points as 'withheld' for easier removal later"), True))
         self.addParameter(ParameterBoolean(lastilePro.EXTRA_PASS,
                                            self.tr("more than 2000 tiles"), False))
         self.addParametersOutputDirectoryGUI()

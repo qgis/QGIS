@@ -32,6 +32,7 @@ from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 
+
 class lascontrol(LAStoolsAlgorithm):
 
     CONTROL_POINT_FILE = "CONTROL_POINT_FILE"
@@ -46,9 +47,9 @@ class lascontrol(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterFile(lascontrol.CONTROL_POINT_FILE,
-                                          self.tr("ASCII text file of control points"), False, False))
+                                        self.tr("ASCII text file of control points"), False, False))
         self.addParameter(ParameterString(lascontrol.PARSE_STRING,
-                                           self.tr("parse string marking which columns are xyz (use 's' for skip)"), "sxyz", False, False))
+                                          self.tr("parse string marking which columns are xyz (use 's' for skip)"), "sxyz", False, False))
         self.addParameter(ParameterSelection(lascontrol.USE_POINTS,
                                              self.tr("which points to use for elevation checks"), lascontrol.USE_POINTS_LIST, 0))
         self.addParameter(ParameterBoolean(lascontrol.ADJUST_Z,

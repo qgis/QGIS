@@ -31,6 +31,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 
+
 class lasheight_classify(LAStoolsAlgorithm):
 
     REPLACE_Z = "REPLACE_Z"

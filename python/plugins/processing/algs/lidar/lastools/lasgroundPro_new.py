@@ -54,15 +54,15 @@ class lasgroundPro_new(LAStoolsAlgorithm):
         self.addParameter(ParameterSelection(lasgroundPro_new.GRANULARITY,
                                              self.tr("preprocessing"), lasgroundPro_new.GRANULARITIES, 1))
         self.addParameter(ParameterNumber(lasgroundPro_new.STEP,
-                                             self.tr("step (for 'custom' terrain only)"), 25.0))
+                                          self.tr("step (for 'custom' terrain only)"), 25.0))
         self.addParameter(ParameterNumber(lasgroundPro_new.BULGE,
-                                             self.tr("bulge (for 'custom' terrain only)"), 2.0))
+                                          self.tr("bulge (for 'custom' terrain only)"), 2.0))
         self.addParameter(ParameterNumber(lasgroundPro_new.SPIKE,
-                                             self.tr("spike (for 'custom' terrain only)"), 1.0))
+                                          self.tr("spike (for 'custom' terrain only)"), 1.0))
         self.addParameter(ParameterNumber(lasgroundPro_new.DOWN_SPIKE,
-                                             self.tr("down spike (for 'custom' terrain only)"), 1.0))
+                                          self.tr("down spike (for 'custom' terrain only)"), 1.0))
         self.addParameter(ParameterNumber(lasgroundPro_new.OFFSET,
-                                             self.tr("offset (for 'custom' terrain only)"), 0.05))
+                                          self.tr("offset (for 'custom' terrain only)"), 0.05))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()

@@ -32,6 +32,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterFile
 
+
 class laspublishPro(LAStoolsAlgorithm):
 
     MODE = "MODE"
@@ -69,7 +70,7 @@ class laspublishPro(LAStoolsAlgorithm):
         self.addParameter(ParameterBoolean(laspublishPro.OVERWRITE_EXISTING,
                                            self.tr("overwrite existing files"), True))
         self.addParameter(ParameterString(laspublishPro.PORTAL_HTML_PAGE,
-                                        self.tr("portal HTML page"), "portal.html", False))
+                                          self.tr("portal HTML page"), "portal.html", False))
         self.addParameter(ParameterString(laspublishPro.PORTAL_TITLE,
                                           self.tr("portal title"), "My LiDAR Portal"))
         self.addParameter(ParameterString(laspublishPro.PORTAL_DESCRIPTION,
