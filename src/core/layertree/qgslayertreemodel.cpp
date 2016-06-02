@@ -33,6 +33,27 @@
 #include "qgsvectorlayer.h"
 
 
+/** In order to support embedded widgets in layer tree view, the model
+ * generates one placeholder legend node for each embedded widget.
+ * The placeholder will be replaced by an embedded widget in QgsLayerTreeView
+ */
+class EmbeddedWidgetLegendNode : public QgsLayerTreeModelLegendNode
+{
+  public:
+    EmbeddedWidgetLegendNode( QgsLayerTreeLayer* nodeL )
+        : QgsLayerTreeModelLegendNode( nodeL )
+    {
+    }
+
+    virtual QVariant data( int role ) const override
+    {
+      Q_UNUSED( role );
+      return QVariant();
+    }
+};
+
+
+
 QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *parent )
     : QAbstractItemModel( parent )
     , mRootNode( rootNode )
@@ -1149,21 +1170,6 @@ void QgsLayerTreeModel::removeLegendFromLayer( QgsLayerTreeLayer* nodeLayer )
   }
 }
 
-class EmbeddedWidgetLegendNode : public QgsLayerTreeModelLegendNode
-{
-  public:
-    EmbeddedWidgetLegendNode( QgsLayerTreeLayer* nodeL )
-        : QgsLayerTreeModelLegendNode( nodeL )
-    {
-    }
-
-    virtual QVariant data( int role ) const override
-    {
-      Q_UNUSED( role );
-      return QVariant();
-    }
-
-};
 
 void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer* nodeL )
 {
@@ -1186,6 +1192,7 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer* nodeL )
 
   if ( testFlag( UseEmbeddedWidgets ) )
   {
+    // generate placeholder legend nodes that will be replaced by widgets in QgsLayerTreeView
     int widgetsCount = ml->customProperty( "embeddedWidgets/count", 0 ).toInt();
     while ( widgetsCount > 0 )
     {

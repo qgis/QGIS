@@ -131,7 +131,7 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex& index, int start, i
   if ( !parentNode )
     return;
 
-  // EMBEDDED WIDGETS
+  // Embedded widgets - replace placeholders in the model by actual widgets
   if ( layerTreeModel()->testFlag( QgsLayerTreeModel::UseEmbeddedWidgets ) && QgsLayerTree::isLayer( parentNode ) )
   {
     QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( parentNode );
@@ -141,7 +141,6 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex& index, int start, i
       QList<QgsLayerTreeModelLegendNode*> legendNodes = layerTreeModel()->layerLegendNodes( nodeLayer );
       for ( int i = 0; i < widgetsCount; ++i )
       {
-        // TODO: check that the legend nodes are actually the placeholders for embedded widgets
         QString providerId = layer->customProperty( QString( "embeddedWidgets/%1/id" ).arg( i ) ).toString();
         if ( QgsLayerTreeEmbeddedWidgetProvider* provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId ) )
         {

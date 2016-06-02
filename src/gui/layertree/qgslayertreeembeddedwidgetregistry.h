@@ -22,7 +22,13 @@
 
 class QgsMapLayer;
 
-/** Provider interface to be implemented */
+/** \ingroup gui
+ * \class QgsLayerTreeEmbeddedWidgetProvider
+ * Provider interface to be implemented in order to introduce new kinds of embedded widgets for use in layer tree.
+ * Embedded widgets are assigned per individual map layers and they are shown before any legend entries.
+ * @see QgsLayerTreeEmbeddedWidgetRegistry
+ * @note introduced in QGIS 2.16
+ */
 class GUI_EXPORT QgsLayerTreeEmbeddedWidgetProvider
 {
   public:
@@ -42,7 +48,15 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetProvider
 
 };
 
-/** Singleton registry */
+/** \ingroup gui
+ * \class QgsLayerTreeEmbeddedWidgetRegistry
+ * Registry of widgets that may be embedded into layer tree view.
+ * Embedded widgets are assigned per individual map layers and they are shown before any legend entries.
+ * Layer tree must have UseEmbeddedWidgets flag enabled in order to show assigned widgets.
+ *
+ * @see QgsLayerTreeEmbeddedWidgetRegistry
+ * @note introduced in QGIS 2.16
+ */
 class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
 {
   public:
@@ -52,6 +66,7 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
 
     ~QgsLayerTreeEmbeddedWidgetRegistry();
 
+    /** Return list of all registered providers */
     QStringList providers() const;
 
     /** Get provider object from the provider's ID */
@@ -66,8 +81,8 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
     bool removeProvider( const QString& providerId );
 
   protected:
+    //! Protected constructor - use instance() to access the registry.
     QgsLayerTreeEmbeddedWidgetRegistry();
-
 
     //! storage of all the providers
     QMap<QString, QgsLayerTreeEmbeddedWidgetProvider*> mProviders;
