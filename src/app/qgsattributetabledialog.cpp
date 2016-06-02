@@ -845,7 +845,7 @@ void QgsAttributeTableDialog::on_mFilterTableFields_clicked()
     return;
   }
 
-  QgsOrganizeTableColumnsDialog dialog( mLayer );
+  QgsOrganizeTableColumnsDialog dialog( mLayer, this );
   if ( dialog.exec() == QDialog::Accepted )
   {
     QgsAttributeTableConfig config = dialog.config();

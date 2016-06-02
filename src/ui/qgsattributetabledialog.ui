@@ -584,7 +584,7 @@
      <item>
       <widget class="QToolButton" name="mFilterTableFields">
        <property name="toolTip">
-        <string>Hide some fields</string>
+        <string>Organize table columns</string>
        </property>
        <property name="text">
         <string>...</string>

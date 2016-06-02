@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>392</width>
+    <width>393</width>
     <height>357</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Filter table column</string>
+   <string>Organize table columns</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="2" column="3">
@@ -27,7 +27,7 @@
    <item row="2" column="0">
     <widget class="QPushButton" name="mShowAllButton">
      <property name="text">
-      <string>select all</string>
+      <string>Select all</string>
      </property>
     </widget>
    </item>
@@ -44,7 +44,7 @@
    <item row="2" column="1">
     <widget class="QPushButton" name="mHideAllButton">
      <property name="text">
-      <string>unselect all</string>
+      <string>Unselect all</string>
      </property>
     </widget>
    </item>
