@@ -389,7 +389,8 @@ void QgsDualView::copyCellContent() const
     QModelIndex index = action->data().value<QModelIndex>();
 
     QgsFeature f = masterModel()->feature( index );
-    QVariant var = f.attributes().at( index.column() );
+    int attrIndex = mMasterModel->fieldIdx( index.column() );
+    QVariant var = f.attributes().at( attrIndex );
     QApplication::clipboard()->setText( var.toString() );
   }
 }
@@ -401,8 +402,11 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, const QModelIndex& atInd
     return;
   }
 
+
+  QModelIndex sourceIndex = mFilterModel->mapToSource( atIndex );
+
   QAction *copyContentAction = new QAction( tr( "Copy cell content" ), this );
-  copyContentAction->setData( QVariant::fromValue<QModelIndex>( atIndex ) );
+  copyContentAction->setData( QVariant::fromValue<QModelIndex>( sourceIndex ) );
   menu->addAction( copyContentAction );
   connect( copyContentAction, SIGNAL( triggered() ), this, SLOT( copyCellContent() ) );
 
@@ -412,8 +416,6 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, const QModelIndex& atInd
   {
     menu->addAction( tr( "Zoom to feature" ), this, SLOT( zoomToCurrentFeature() ) );
   }
-
-  QModelIndex sourceIndex = mFilterModel->mapToSource( atIndex );
 
   //add user-defined actions to context menu
   if ( mLayerCache->layer()->actions()->size() != 0 )
