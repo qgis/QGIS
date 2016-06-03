@@ -1,11 +1,11 @@
-class QgsRendererRasterPropertiesWidget : QWidget
+class QgsRendererRasterPropertiesWidget : QgsMapStylePanel
 {
 %TypeHeaderCode
 #include <qgsrendererrasterpropertieswidget.h>
 %End
 
   public:
-    QgsRendererRasterPropertiesWidget( QgsMapCanvas* canvas, QWidget* parent );
+    QgsRendererRasterPropertiesWidget( QgsMapLayer* layer, QgsMapCanvas* canvas, QWidget* parent );
     ~QgsRendererRasterPropertiesWidget();
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current

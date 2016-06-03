@@ -176,11 +176,6 @@ void QgsMapStylingWidget::apply()
     undoName = QString( "Style Change - %1" ).arg( m->visibleName() );
     styleWasChanged = true;
   }
-  else if ( QgsRendererRasterPropertiesWidget* widget = qobject_cast<QgsRendererRasterPropertiesWidget*>( current ) )
-  {
-    widget->apply();
-    styleWasChanged = true;
-  }
   else if ( QgsRasterTransparencyWidget* widget = qobject_cast<QgsRasterTransparencyWidget*>( current ) )
   {
     widget->apply();
@@ -297,8 +292,7 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
     switch ( row )
     {
       case 0: // Style
-        mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( mMapCanvas, mWidgetArea );
-        mRasterStyleWidget->syncToLayer( rlayer );
+        mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, mWidgetArea );
         connect( mRasterStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
 
         mWidgetArea->setWidget( mRasterStyleWidget );
@@ -317,7 +311,7 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
           mRasterStyleWidget->deleteLater();
           delete mRasterStyleWidget;
         }
-        mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( mMapCanvas, mWidgetArea );
+        mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, mWidgetArea );
         mRasterStyleWidget->syncToLayer( rlayer );
         connect( mRasterStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
 

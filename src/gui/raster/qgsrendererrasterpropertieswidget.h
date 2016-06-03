@@ -20,11 +20,14 @@
 
 #include "ui_qgsrendererrasterpropswidgetbase.h"
 
+#include "qgsmapstylepanel.h"
+
+
 class QgsRasterLayer;
 class QgsMapCanvas;
 class QgsRasterRendererWidget;
 
-class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QWidget, private Ui::QgsRendererRasterPropsWidgetBase
+class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapStylePanel, private Ui::QgsRendererRasterPropsWidgetBase
 {
     Q_OBJECT
 
@@ -34,7 +37,7 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QWidget, private Ui:
      * @param canvas The canvas object used to calculate the max and min values from the extent.
      * @param parent Parent object
      */
-    QgsRendererRasterPropertiesWidget( QgsMapCanvas *canvas, QWidget *parent = 0 );
+    QgsRendererRasterPropertiesWidget( QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
     ~QgsRendererRasterPropertiesWidget();
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
@@ -48,14 +51,6 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QWidget, private Ui:
      * Return the active render widget. Can be null.
      */
     QgsRasterRendererWidget* currentRenderWidget() { return mRendererWidget; }
-
-  signals:
-
-    /**
-     * Emitted when something on the widget has changed.
-     * All widgets will fire this event to notify of an internal change.
-     */
-    void widgetChanged();
 
   public slots:
     //! called when user changes renderer type
@@ -83,7 +78,6 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QWidget, private Ui:
     void setRendererWidget( const QString& rendererName );
 
     QgsRasterLayer* mRasterLayer;
-    QgsMapCanvas* mMapCanvas;
     QgsRasterRendererWidget* mRendererWidget;
 };
 
