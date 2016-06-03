@@ -95,7 +95,10 @@ QVariant QgsAttributeTableFilterModel::headerData( int section, Qt::Orientation 
       return QSortFilterProxyModel::headerData( section, orientation, role );
   }
   else
-    return QSortFilterProxyModel::headerData( section, orientation, role );
+  {
+    int sourceSection = mapToSource( index( section, mColumnMapping.at( 0 ) == -1 ? 1 : 0 ) ).row();
+    return sourceModel()->headerData( sourceSection, orientation, role );
+  }
 }
 
 int QgsAttributeTableFilterModel::actionColumnIndex() const
