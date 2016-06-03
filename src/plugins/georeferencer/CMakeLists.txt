@@ -77,8 +77,9 @@ ADD_LIBRARY (georefplugin MODULE ${GEOREF_SRCS} ${GEOREF_MOC_SRCS} ${GEOREF_RCC_
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}
      ${CMAKE_CURRENT_BINARY_DIR}
+     ${CMAKE_CURRENT_BINARY_DIR}/../../ui
      ../../core ../../core/geometry ../../core/raster ../../core/composer
-     ../../gui  ../../gui/editorwidgets
+     ../../gui  ../../gui/editorwidgets ../../gui/layertree
      ..
 )
 INCLUDE_DIRECTORIES(SYSTEM

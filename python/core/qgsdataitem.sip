@@ -75,7 +75,7 @@ class QgsDataItem : QObject
 
     /** Create children. Children are not expected to have parent set.
      * This method MUST BE THREAD SAFE. */
-    virtual QVector<QgsDataItem*> createChildren();
+    virtual QVector<QgsDataItem*> createChildren() /Factory/;
 
     enum State
     {

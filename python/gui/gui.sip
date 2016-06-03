@@ -198,6 +198,8 @@
 %Include auth/qgsauthtrustedcasdialog.sip
 
 %Include layertree/qgscustomlayerorderwidget.sip
+%Include layertree/qgslayertreeembeddedconfigwidget.sip
+%Include layertree/qgslayertreeembeddedwidgetregistry.sip
 %Include layertree/qgslayertreemapcanvasbridge.sip
 %Include layertree/qgslayertreeview.sip
 %Include layertree/qgslayertreeviewdefaultactions.sip

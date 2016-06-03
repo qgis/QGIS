@@ -251,6 +251,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   diagLayout->addWidget( diagramPropertiesDialog );
   mDiagramFrame->setLayout( diagLayout );
 
+  // Legend tab
+  mLegendConfigEmbeddedWidget->setLayer( mLayer );
+
   // WMS Name as layer short name
   mLayerShortNameLineEdit->setText( mLayer->shortName() );
   // WMS Name validator
@@ -534,6 +537,9 @@ void QgsVectorLayerProperties::apply()
   {
     labelingDialog->writeSettingsToLayer();
   }
+
+  // apply legend settings
+  mLegendConfigEmbeddedWidget->applyToLayer();
 
   //
   // Set up sql subset query if applicable
