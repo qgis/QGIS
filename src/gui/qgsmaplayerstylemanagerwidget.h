@@ -53,6 +53,8 @@ class GUI_EXPORT QgsMapLayerStyleManagerWidget : public QgsMapStylePanel
     void styleRenamed( QString oldname, QString newname );
     void addStyle();
     void removeStyle();
+    void saveAsDefault();
+    void loadDefault();
 
   private:
     QStandardItemModel* mModel;

@@ -16,6 +16,7 @@
 #include <QVBoxLayout>
 #include <QToolBar>
 #include <QInputDialog>
+#include <QMessageBox>
 
 #include "qgsmaplayerstylemanagerwidget.h"
 #include "qgslogger.h"
@@ -23,6 +24,10 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapstylepanel.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsvectordataprovider.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
 
 
 QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget *parent )
@@ -39,6 +44,10 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer* layer
   connect( addAction, SIGNAL( triggered() ), this, SLOT( addStyle() ) );
   QAction* removeAction = toolbar->addAction( tr( "Remove Current" ) );
   connect( removeAction, SIGNAL( triggered() ), this, SLOT( removeStyle() ) );
+  QAction* saveAsDefaultAction = toolbar->addAction( tr( "Save as default" ) );
+  connect( saveAsDefaultAction, SIGNAL( triggered() ), this, SLOT( saveAsDefault() ) );
+  QAction* loadDefaultAction = toolbar->addAction( tr( "Load default" ) );
+  connect( loadDefaultAction, SIGNAL( triggered() ), this, SLOT( loadDefault() ) );
 
   connect( canvas, SIGNAL( mapCanvasRefreshed() ), this, SLOT( updateCurrent() ) );
 
@@ -154,6 +163,112 @@ void QgsMapLayerStyleManagerWidget::removeStyle()
   else
   {
     QgsDebugMsg( "Failed to remove current style" );
+  }
+
+}
+
+void QgsMapLayerStyleManagerWidget::saveAsDefault()
+{
+  QString errorMsg;
+
+  if ( QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mLayer ) )
+  {
+    if ( layer->dataProvider()->isSaveAndLoadStyleToDBSupported() )
+    {
+      QMessageBox askToUser;
+      askToUser.setText( tr( "Save default style to: " ) );
+      askToUser.setIcon( QMessageBox::Question );
+      askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole );
+      askToUser.addButton( tr( "Local database" ), QMessageBox::NoRole );
+      askToUser.addButton( tr( "Datasource database" ), QMessageBox::YesRole );
+
+      switch ( askToUser.exec() )
+      {
+        case 0:
+          return;
+        case 2:
+          layer->saveStyleToDatabase( "", "", true, "", errorMsg );
+          if ( errorMsg.isNull() )
+          {
+            return;
+          }
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  bool defaultSavedFlag = false;
+  errorMsg = mLayer->saveDefaultStyle( defaultSavedFlag );
+  if ( !defaultSavedFlag )
+  {
+    QMessageBox::warning( this, tr( "Default Style" ), errorMsg );
+  }
+
+}
+
+void QgsMapLayerStyleManagerWidget::loadDefault()
+{
+  QString msg;
+  bool defaultLoadedFlag = false;
+
+  if ( QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mLayer ) )
+  {
+    if ( layer->dataProvider()->isSaveAndLoadStyleToDBSupported() )
+    {
+      QMessageBox askToUser;
+      askToUser.setText( tr( "Load default style from: " ) );
+      askToUser.setIcon( QMessageBox::Question );
+      askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole );
+      askToUser.addButton( tr( "Local database" ), QMessageBox::NoRole );
+      askToUser.addButton( tr( "Datasource database" ), QMessageBox::YesRole );
+
+      switch ( askToUser.exec() )
+      {
+        case 0:
+          return;
+        case 2:
+          msg = layer->loadNamedStyle( mLayer->styleURI(), defaultLoadedFlag );
+          if ( !defaultLoadedFlag )
+          {
+            //something went wrong - let them know why
+            QMessageBox::information( this, tr( "Default Style" ), msg );
+          }
+          if ( msg.compare( tr( "Loaded from Provider" ) ) )
+          {
+            QMessageBox::information( this, tr( "Default Style" ),
+                                      tr( "No default style was found for this layer" ) );
+          }
+          return;
+        default:
+          break;
+      }
+    }
+  }
+
+  QString myMessage;
+  if ( QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mLayer ) )
+  {
+    myMessage = layer->loadNamedStyle( mLayer->styleURI(), defaultLoadedFlag, true );
+  }
+  if ( QgsRasterLayer* layer = qobject_cast<QgsRasterLayer*>( mLayer ) )
+  {
+    myMessage = layer->loadNamedStyle( mLayer->styleURI(), defaultLoadedFlag );
+  }
+
+//  QString myMessage = layer->loadDefaultStyle( defaultLoadedFlag );
+  //reset if the default style was loaded ok only
+
+
+  if ( !defaultLoadedFlag )
+  {
+    //something went wrong - let them know why
+    QMessageBox::information( this, tr( "Default Style" ), myMessage );
+  }
+  else
+  {
+    emit widgetChanged();
   }
 
 }
