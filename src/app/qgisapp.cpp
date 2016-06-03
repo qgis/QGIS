@@ -2175,6 +2175,8 @@ void QgisApp::createToolBars()
   mLayerToolBar->removeAction( mActionAddWfsLayer );
   featureServiceAction->setObjectName( "ActionFeatureService" );
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
+#else
+  QAction* mapServiceAction = mActionAddWmsLayer;
 #endif
 
   // add db layer button
@@ -2206,7 +2208,7 @@ void QgisApp::createToolBars()
   }
   if ( defAddDbLayerAction )
     bt->setDefaultAction( defAddDbLayerAction );
-  QAction* addDbLayerAction = mLayerToolBar->insertWidget( mActionAddWmsLayer, bt );
+  QAction* addDbLayerAction = mLayerToolBar->insertWidget( mapServiceAction, bt );
   addDbLayerAction->setObjectName( "ActionAddDbLayer" );
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
 
