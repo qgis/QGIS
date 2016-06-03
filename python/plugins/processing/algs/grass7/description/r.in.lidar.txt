@@ -1,0 +1,18 @@
+r.in.lidar
+Creates a raster map from LAS LiDAR points using univariate statistics.
+Raster (r.*)
+ParameterFile|input|LAS input file|False|False
+ParameterSelection|method|Statistic to use for raster values|n;min;max;range;sum;mean;stddev;variance;coeff_var;median;percentile;skewness;trimmean|5
+ParameterSelection|type|Storage type for resultant raster map|CELL;FCELL;DCELL|1
+ParameterString|zrange|Filter range for z data (min, max)|None|False|True
+ParameterNumber|zscale|Scale to apply to z data|0.0|None|1.0|True
+ParameterNumber|percent|Percent of map to keep in memory|1|100|100|True
+ParameterString|pth|pth percentile of the values (between 1 and 100)|None|False|True
+ParameterString|trim|Discard <trim> percent of the smallest and <trim> percent of the largest observations (0-50)|None|False|True
+ParameterString|resolution|Output raster resolution|None|False|True
+ParameterString|return_filter|Only import points of selected return type Options: first, last, mid|None|False|True
+ParameterString|class_filter|Only import points of selected class(es) (comma separated integers)|None|False|True
+*ParameterBoolean|-i|Import intensity values rather than z values|False
+*ParameterBoolean|-e|Extend region extents based on new dataset|True
+*ParameterBoolean|-o|Override dataset projection (use location's projection)|True
+OutputRaster|output|Lidar Raster
