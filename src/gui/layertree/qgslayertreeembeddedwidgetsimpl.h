@@ -24,6 +24,7 @@ class QSlider;
 class QTimer;
 class QgsMapLayer;
 
+///@cond PRIVATE
 /**
  * @brief Implementation of simple transparency widget to be used in layer tree view
  *
@@ -56,5 +57,5 @@ class QgsLayerTreeTransparencyWidget : public QWidget
     QSlider* mSlider;
     QTimer* mTimer;
 };
-
+///@endcond
 #endif // QGSLAYERTREEEMBEDDEDWIDGETSIMPL_H

@@ -32,6 +32,7 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorlayer.h"
 
+///@cond PRIVATE
 
 /** In order to support embedded widgets in layer tree view, the model
  * generates one placeholder legend node for each embedded widget.
@@ -52,7 +53,7 @@ class EmbeddedWidgetLegendNode : public QgsLayerTreeModelLegendNode
     }
 };
 
-
+///@endcond
 
 QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *parent )
     : QAbstractItemModel( parent )
