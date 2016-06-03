@@ -122,6 +122,7 @@
 %Include qgsrenderchecker.sip
 %Include qgsrendercontext.sip
 %Include qgsrunprocess.sip
+%Include qgsruntimeprofiler.sip
 %Include qgsscalecalculator.sip
 %Include qgsscaleexpression.sip
 %Include qgsscaleutils.sip
