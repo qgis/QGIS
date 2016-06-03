@@ -10,7 +10,7 @@ class QgsMapLayerStyleManagerWidget : QgsMapStylePanel
   public:
 
   /**
-     * @brief Style manager widget to mange the layers styles.
+     * @brief Style manager widget to manage the layers styles.
      * @param layer The layer for the widget
      * @param canvas The canvas object.
      * @param parent The parent.
