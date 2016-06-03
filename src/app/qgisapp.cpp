@@ -1676,6 +1676,13 @@ void QgisApp::createActions()
   mActionAddPgLayer = 0;
 #endif
 
+#ifndef WITH_ARCGIS
+  delete mActionAddAfsLayer;
+  mActionAddAfsLayer = 0;
+  delete mActionAddAmsLayer;
+  mActionAddAmsLayer = 0;
+#endif
+
 #ifndef HAVE_ORACLE
   delete mActionAddOracleLayer;
   mActionAddOracleLayer = nullptr;
@@ -2126,6 +2133,7 @@ void QgisApp::createToolBars()
   newLayerAction->setObjectName( "ActionNewLayer" );
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
 
+#ifdef WITH_ARCGIS
   // map service tool button
   bt = new QToolButton();
   bt->setPopupMode( QToolButton::MenuButtonPopup );
@@ -2167,6 +2175,7 @@ void QgisApp::createToolBars()
   mLayerToolBar->removeAction( mActionAddWfsLayer );
   featureServiceAction->setObjectName( "ActionFeatureService" );
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
+#endif
 
   // add db layer button
   bt = new QToolButton();
@@ -2545,8 +2554,10 @@ void QgisApp::setTheme( const QString& theThemeName )
   mActionAddWmsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWmsLayer.svg" ) );
   mActionAddWcsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWcsLayer.svg" ) );
   mActionAddWfsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWfsLayer.svg" ) );
+#ifdef WITH_ARCGIS
   mActionAddAfsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddAfsLayer.svg" ) );
   mActionAddAmsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddAmsLayer.svg" ) );
+#endif
   mActionAddToOverview->setIcon( QgsApplication::getThemeIcon( "/mActionInOverview.svg" ) );
   mActionAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionAnnotation.png" ) );
   mActionFormAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionFormAnnotation.png" ) );
