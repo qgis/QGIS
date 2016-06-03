@@ -43,6 +43,10 @@ class GUI_EXPORT QgsMapStylePanel : public QWidget
      * Will be called when live update is enabled.
      */
     virtual void apply() = 0;
+
+  protected:
+    QgsMapLayer* mLayer;
+    QgsMapCanvas* mMapCanvas;
 };
 
 
@@ -53,6 +57,8 @@ class GUI_EXPORT QgsMapStylePanel : public QWidget
 class GUI_EXPORT QgsMapStylePanelFactory
 {
   public:
+    Q_DECLARE_FLAGS( LayerTypesFlags, QgsMapLayer::LayerType )
+
     /** Constructor */
     QgsMapStylePanelFactory();
 
@@ -76,7 +82,7 @@ class GUI_EXPORT QgsMapStylePanelFactory
      * @brief Supported layer type for the widget.
      * @return The layer type this widget is supported for.
      */
-    virtual QgsMapLayer::LayerType layerType() = 0;
+    virtual LayerTypesFlags layerType() = 0;
 
     /**
      * @brief Factory fucntion to create the widget on demand as needed by the dock.

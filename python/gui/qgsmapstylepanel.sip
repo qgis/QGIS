@@ -47,6 +47,8 @@ class QgsMapStylePanelFactory
 #include <qgsmapstylepanel.h>
 %End
   public:
+    typedef QFlags<QgsMapLayer::LayerType> LayerTypesFlags;
+
     /** Constructor */
     QgsMapStylePanelFactory();
 
@@ -70,7 +72,7 @@ class QgsMapStylePanelFactory
      * @brief Supported layer type for the widget.
      * @return The layer type this widget is supported for.
      */
-    virtual QgsMapLayer::LayerType layerType() = 0;
+    virtual LayerTypesFlags layerType() = 0;
 
     /**
      * @brief Factory fucntion to create the widget on demand as needed by the dock.

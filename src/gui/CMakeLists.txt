@@ -242,6 +242,7 @@ SET(QGIS_GUI_SRCS
   qgsmaplayermodel.cpp
   qgsmaplayerpropertiesfactory.cpp
   qgsmaplayerproxymodel.cpp
+  qgsmaplayerstylemanagerwidget.cpp
   qgsmapmouseevent.cpp
   qgsmapoverviewcanvas.cpp
   qgsmaptip.cpp
@@ -392,6 +393,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsmaplayercombobox.h
   qgsmaplayermodel.h
   qgsmaplayerproxymodel.h
+  qgsmaplayerstylemanagerwidget.h
   qgsmapoverviewcanvas.h
   qgsmaptool.h
   qgsmaptooladvanceddigitizing.h

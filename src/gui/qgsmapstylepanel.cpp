@@ -2,9 +2,10 @@
 
 QgsMapStylePanel::QgsMapStylePanel( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
     : QWidget( parent )
+    , mLayer( layer )
+    , mMapCanvas( canvas )
 {
-  Q_UNUSED( layer );
-  Q_UNUSED( canvas );
+
 }
 
 QgsMapStylePanelFactory::QgsMapStylePanelFactory()

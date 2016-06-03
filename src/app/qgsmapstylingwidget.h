@@ -13,6 +13,7 @@
 #include <QTimer>
 
 #include "ui_qgsmapstylingwidgetbase.h"
+#include "qgsmapstylepanel.h"
 
 class QgsLabelingWidget;
 class QgsMapLayer;
@@ -22,6 +23,16 @@ class QgsRendererRasterPropertiesWidget;
 class QgsUndoWidget;
 class QgsRasterHistogramWidget;
 class QgsMapStylePanelFactory;
+class QgsMapLayerStyleManagerWidget;
+
+class APP_EXPORT QgsMapLayerStyleManagerWidgetFactory : public QgsMapStylePanelFactory
+{
+  public:
+    QIcon icon() override;
+    QString title() override;
+    QgsMapStylePanel *createPanel( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent ) override;
+    LayerTypesFlags layerType() override;
+};
 
 class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
 {
@@ -42,9 +53,10 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget, private Ui::QgsMapStyling
     Q_OBJECT
   public:
     QgsMapStylingWidget( QgsMapCanvas *canvas, QList<QgsMapStylePanelFactory *> pages, QWidget *parent = 0 );
+    ~QgsMapStylingWidget();
     QgsMapLayer* layer() { return mCurrentLayer; }
 
-    void setPageFactories( QList<QgsMapStylePanelFactory*> factories ) { mPageFactories = factories; }
+    void setPageFactories( QList<QgsMapStylePanelFactory*> factories );
 
   signals:
     void styleChanged( QgsMapLayer* layer );
@@ -73,6 +85,7 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget, private Ui::QgsMapStyling
     QgsRendererRasterPropertiesWidget* mRasterStyleWidget;
     QList<QgsMapStylePanelFactory*> mPageFactories;
     QMap<int, QgsMapStylePanelFactory*> mUserPages;
+    QgsMapLayerStyleManagerWidgetFactory* mStyleManagerFactory;
 };
 
 #endif // QGSMAPSTYLESDOCK_H

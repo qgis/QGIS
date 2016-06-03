@@ -25,6 +25,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
 #include "qgsmapstylepanel.h"
+#include "qgsmaplayerstylemanagerwidget.h"
 
 QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QList<QgsMapStylePanelFactory*> pages, QWidget *parent )
     : QWidget( parent )
@@ -48,6 +49,9 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QList<QgsMapStyl
   mUndoWidget = new QgsUndoWidget( this, mMapCanvas );
   mUndoWidget->setObjectName( "Undo Styles" );
   mUndoWidget->hide();
+
+  mStyleManagerFactory = new QgsMapLayerStyleManagerWidgetFactory();
+
   connect( mUndoButton, SIGNAL( pressed() ), mUndoWidget, SLOT( undo() ) );
   connect( mRedoButton, SIGNAL( pressed() ), mUndoWidget, SLOT( redo() ) );
 
@@ -59,6 +63,18 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QList<QgsMapStyl
   connect( mLayerCombo, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( setLayer( QgsMapLayer* ) ) );
 
   mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( false );
+}
+
+QgsMapStylingWidget::~QgsMapStylingWidget()
+{
+  delete mStyleManagerFactory;
+}
+
+void QgsMapStylingWidget::setPageFactories( QList<QgsMapStylePanelFactory *> factories )
+{
+  mPageFactories = factories;
+  // Always append the style manager factory at the bottom of the list
+  mPageFactories.append( mStyleManagerFactory );
 }
 
 void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
@@ -95,7 +111,7 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
 
   Q_FOREACH ( QgsMapStylePanelFactory* factory, mPageFactories )
   {
-    if ( factory->layerType() == layer->type() )
+    if ( factory->layerType().testFlag( layer->type() ) )
     {
       QListWidgetItem* item =  new QListWidgetItem( factory->icon(), "" );
       mOptionsListWidget->addItem( item );
@@ -362,4 +378,25 @@ void QgsMapLayerStyleCommand::redo()
   QString error;
   mLayer->readStyle( mXml, error );
   mLayer->triggerRepaint();
+}
+
+QIcon QgsMapLayerStyleManagerWidgetFactory::icon()
+{
+  return  QgsApplication::getThemeIcon( "propertyicons/symbology.png" );
+}
+
+QString QgsMapLayerStyleManagerWidgetFactory::title()
+{
+  return QString();
+}
+
+QgsMapStylePanel *QgsMapLayerStyleManagerWidgetFactory::createPanel( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
+{
+  return new QgsMapLayerStyleManagerWidget( layer,  canvas, parent );
+
+}
+
+QgsMapStylePanelFactory::LayerTypesFlags QgsMapLayerStyleManagerWidgetFactory::layerType()
+{
+  return QgsMapLayer::VectorLayer;
 }

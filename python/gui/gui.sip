@@ -21,6 +21,7 @@
 
 %Include qgsblendmodecombobox.sip
 
+
 %Include qgisinterface.sip
 %Include qgsactionmenu.sip
 %Include qgsadvanceddigitizingcanvasitem.sip
@@ -119,6 +120,7 @@
 %Include qgsmaptooltouch.sip
 %Include qgsmaptoolzoom.sip
 %Include qgsmapstylepanel.sip
+%Include qgsmaplayerstylemanagerwidget.sip
 %Include qgsmessagebar.sip
 %Include qgsmessagebaritem.sip
 %Include qgsmessagelogviewer.sip
