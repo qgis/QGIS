@@ -106,6 +106,10 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
      */
     void setMapCanvas( QgsMapCanvas* canvas );
 
+    /**
+     * @brief Return the symbol that is currently active in the widget. Can be null.
+     * @return The active symbol.
+     */
     QgsSymbolV2* symbol() { return mSymbol; }
 
   protected:

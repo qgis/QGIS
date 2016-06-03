@@ -53,6 +53,10 @@ class GUI_EXPORT QgsRendererWidgetContainer : public QWidget, private Ui::QgsRen
   public slots:
 
   protected:
+    /**
+     * @brief Overriden key press event to handle the esc event on the widget.
+     * @param event The key event
+     */
     void keyPressEvent( QKeyEvent* event );
 
 };
