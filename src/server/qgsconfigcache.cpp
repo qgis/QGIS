@@ -207,3 +207,10 @@ void QgsConfigCache::removeChangedEntry( const QString& path )
 
   mFileSystemWatcher.removePath( path );
 }
+
+
+void QgsConfigCache::removeEntry( const QString& path )
+{
+   removeChangedEntry( path );
+}
+
