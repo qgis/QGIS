@@ -43,7 +43,6 @@
 #include <symbology-ng/qgsrendererv2.h>
 #include <symbology-ng/qgssymbolv2.h>
 #include <qgspallabeling.h>
-#include <qgsbillboardregistry.h>
 
 #include <QAction>
 #include <QDir>
@@ -67,8 +66,6 @@
 #include <osgEarth/Registry>
 #include <osgEarth/TileSource>
 #include <osgEarth/Version>
-#include <osgEarthAnnotation/AnnotationSettings>
-#include <osgEarthAnnotation/PlaceNode>
 #include <osgEarthDrivers/engine_mp/MPTerrainEngineOptions>
 #include <osgEarthUtil/Controls>
 #include <osgEarthUtil/EarthManipulator>
@@ -278,9 +275,6 @@ void GlobePlugin::initGui()
   mQGisIface->registerMapLayerPropertiesFactory( mLayerPropertiesFactory );
 
   connect( mActionToggleGlobe, SIGNAL( triggered( bool ) ), this, SLOT( setGlobeEnabled( bool ) ) );
-//  connect( mQGisIface->mapCanvas(), SIGNAL( annotationItemChanged( QgsAnnotationItem* ) ), this, SLOT( updateAnnotationItem( QgsAnnotationItem* ) ) );
-  connect( QgsProject::instance()->billboardRegistry(), SIGNAL( itemAdded( QgsBillBoardItem* ) ), this, SLOT( addBillboard( QgsBillBoardItem* ) ) );
-  connect( QgsProject::instance()->billboardRegistry(), SIGNAL( itemRemoved( QgsBillBoardItem* ) ), this, SLOT( removeBillboard( QgsBillBoardItem* ) ) );
   connect( mLayerPropertiesFactory, SIGNAL( layerSettingsChanged( QgsMapLayer* ) ), this, SLOT( layerChanged( QgsMapLayer* ) ) );
   connect( this, SIGNAL( xyCoordinates( const QgsPoint & ) ), mQGisIface->mapCanvas(), SIGNAL( xyCoordinates( const QgsPoint & ) ) );
   connect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
@@ -386,14 +380,6 @@ void GlobePlugin::run()
   }
 
   mRootNode->addChild( osgEarth::Util::Controls::ControlCanvas::get( mOsgViewer ) );
-
-  mAnnotationsGroup = new osg::Group();
-  mRootNode->addChild( mAnnotationsGroup );
-  foreach ( QgsBillBoardItem* item, QgsProject::instance()->billboardRegistry()->items() )
-  {
-    addBillboard( item );
-  }
-  osgEarth::Annotation::AnnotationSettings::setOcclusionCullingHeightAdjustment( 50 );
 
   mOsgViewer->setSceneData( mRootNode );
 
@@ -959,17 +945,6 @@ void GlobePlugin::updateLayers()
         }
       }
     }
-    foreach ( const QString& layerId, mAnnotations.keys() )
-    {
-      if ( !layerId.isEmpty() )
-      {
-        bool visible = selectedLayers.contains( layerId );
-        foreach ( const osg::ref_ptr<osgEarth::Annotation::PlaceNode>& node, mAnnotations[layerId].values() )
-        {
-          node->setNodeMask( visible ? ~0 : 0 );
-        }
-      }
-    }
 
     mTileSource->setLayerSet( drapedLayers );
     refreshQGISMapLayer( fullExtent );
@@ -1039,44 +1014,6 @@ void GlobePlugin::layerChanged( QgsMapLayer* mapLayer )
   }
 }
 
-void GlobePlugin::addBillboard( QgsBillBoardItem* item )
-{
-  if ( mOsgViewer )
-  {
-    if ( mAnnotations.contains( item->layerId ) )
-    {
-      mAnnotationsGroup->removeChild( mAnnotations[item->layerId][item] );
-      mAnnotations[item->layerId].take( item ) = 0;
-    }
-    const QgsPoint& p = item->worldPos;
-    osgEarth::GeoPoint geop( osgEarth::SpatialReference::get( "wgs84" ), p.x(), p.y(), 0, osgEarth::ALTMODE_RELATIVE );
-
-    const QImage& image = item->image;
-    unsigned char* imgbuf = new unsigned char[image.bytesPerLine() * image.height()];
-    std::memcpy( imgbuf, image.bits(), image.bytesPerLine() * image.height() );
-    osg::Image* osgImage = new osg::Image;
-    osgImage->setImage( image.width(), image.height(), 1, 4, // width, height, depth, internal_format
-                        GL_BGRA, GL_UNSIGNED_BYTE, imgbuf, osg::Image::USE_NEW_DELETE );
-    osgImage->flipVertical();
-    osgEarth::Style pin;
-    pin.getOrCreateSymbol<osgEarth::IconSymbol>()->setImage( osgImage );
-
-    osg::ref_ptr<osgEarth::Annotation::PlaceNode> placeNode = new osgEarth::Annotation::PlaceNode( mMapNode, geop, "", pin );
-    placeNode->setOcclusionCulling( true );
-    mAnnotations[item->layerId][item] = placeNode;
-    mAnnotationsGroup->addChild( placeNode );
-  }
-}
-
-void GlobePlugin::removeBillboard( QgsBillBoardItem* item )
-{
-  if ( mOsgViewer && mAnnotations.contains( item->layerId ) )
-  {
-    mAnnotationsGroup->removeChild( mAnnotations[item->layerId][item] );
-    mAnnotations[item->layerId].take( item ) = 0;
-  }
-}
-
 void GlobePlugin::setGlobeEnabled( bool enabled )
 {
   if ( enabled )
@@ -1112,7 +1049,6 @@ void GlobePlugin::reset()
   mFeatureQueryTool = 0;
   mViewerWidget = 0;
   mDockWidget = 0;
-  mAnnotationsGroup = 0;
   mImagerySources.clear();
   mElevationSources.clear();
 #ifdef GLOBE_SHOW_TILE_STATS

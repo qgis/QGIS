@@ -31,7 +31,6 @@ class QAction;
 class QDateTime;
 class QDockWidget;
 class QgsAnnotationItem;
-class QgsBillBoardItem;
 class QgsGlobeAnnotation;
 class QgsGlobeLayerPropertiesFactory;
 class QgsGlobePluginDialog;
@@ -152,9 +151,6 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     osg::ref_ptr<osgEarth::Util::FeatureQueryTool> mFeatureQueryTool;
     osg::ref_ptr<osgEarth::Util::Controls::LabelControl> mStatsLabel;
 
-    osg::Group* mAnnotationsGroup;
-    QMap<QString, QMap<QgsBillBoardItem*, osg::ref_ptr<osgEarth::Annotation::PlaceNode> > > mAnnotations;
-
     void setupProxy();
     void addControl( osgEarth::Util::Controls::Control* control, int x, int y, int w, int h, osgEarth::Util::Controls::ControlEventHandler* handler );
     void addImageControl( const std::string &imgPath, int x, int y, osgEarth::Util::Controls::ControlEventHandler* handler = 0 );
@@ -168,8 +164,6 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     void projectRead();
     void applySettings();
     void layerChanged( QgsMapLayer* mapLayer = 0 );
-    void addBillboard( QgsBillBoardItem* item );
-    void removeBillboard( QgsBillBoardItem* item );
     void refreshQGISMapLayer( QgsRectangle rect = QgsRectangle() );
     void updateTileStats( int queued, int tot );
 
