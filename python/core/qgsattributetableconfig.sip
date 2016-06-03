@@ -42,7 +42,7 @@ class QgsAttributeTableConfig
     {
       //! Constructor for ColumnConfig
       ColumnConfig();
-      Type type;    //!< The type of this column.
+      QgsAttributeTableConfig::Type type;    //!< The type of this column.
       QString name; //!< The name of the attribute if this column represents a field
       bool hidden;  //!< Flag that controls if the column is hidden
       int width; //!< Width of column, or -1 for default width
