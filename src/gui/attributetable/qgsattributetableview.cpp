@@ -98,6 +98,9 @@ void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConf
   int i = 0;
   Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig& columnConfig, config.columns() )
   {
+    if ( columnConfig.hidden )
+      continue;
+
     if ( columnConfig.width >= 0 )
     {
       setColumnWidth( i, columnConfig.width );

@@ -358,7 +358,9 @@ void QgsAttributeTableFilterModel::onColumnsChanged()
 int QgsAttributeTableFilterModel::mapColumnToSource( int column ) const
 {
   if ( mColumnMapping.isEmpty() )
-    return 0;
+    return column;
+  if ( column < 0 || column >= mColumnMapping.size() )
+    return -1;
   else
     return mColumnMapping.at( column );
 }

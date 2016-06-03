@@ -125,7 +125,11 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   // Initialize dual view
   mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, mEditorContext );
-  mMainView->setAttributeTableConfig( mLayer->attributeTableConfig() );
+
+  QgsAttributeTableConfig config = mLayer->attributeTableConfig();
+  if ( config.isEmpty() )
+    config.update( mLayer->fields() );
+  mMainView->setAttributeTableConfig( config );
 
   // Initialize filter gui elements
   mFilterActionMapper = new QSignalMapper( this );

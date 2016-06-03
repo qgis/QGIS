@@ -279,6 +279,12 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void tableColumnResized( int column, int width );
 
+    void hideColumn();
+
+    void resizeColumn();
+
+    void autosizeColumn();
+
     void modifySort();
 
     void previewExpressionChanged( const QString& expression );
@@ -326,6 +332,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QgsIFeatureSelectionManager* mFeatureSelectionManager;
     QgsDistanceArea mDistanceArea;
     QString mDisplayExpression;
+    QgsAttributeTableConfig mConfig;
 
     friend class TestQgsDualView;
 };

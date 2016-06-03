@@ -65,6 +65,16 @@ class QgsAttributeTableConfig
      */
     QVector<QgsAttributeTableConfig::ColumnConfig> columns() const;
 
+    /** Returns true if the configuration is empty, ie it contains no columns.
+     */
+    bool isEmpty() const;
+
+    /** Maps a visible column index to its original column index.
+     * @param visibleColumn index of visible column
+     * @returns corresponding index when hidden columns are considered
+     */
+    int mapVisibleColumnToIndex( int visibleColumn ) const;
+
     /**
      * Set the list of columns visible in the attribute table.
      * The list order defines the order of appearance.
@@ -131,4 +141,17 @@ class QgsAttributeTableConfig
      * @see columnWidth()
      */
     void setColumnWidth( int column, int width );
+
+    /** Returns true if the specified column is hidden.
+     * @param column column index
+     * @see setColumnHidden()
+     */
+    bool columnHidden( int column ) const;
+
+    /** Sets whether the specified column should be hidden.
+     * @param column column index
+     * @param hidden set to true to hide column
+     * @see columnHidden()
+     */
+    void setColumnHidden( int column, bool hidden );
 };

@@ -34,6 +34,7 @@
 #include <QProgressDialog>
 #include <QSettings>
 #include <QGroupBox>
+#include <QInputDialog>
 
 QgsDualView::QgsDualView( QWidget* parent )
     : QStackedWidget( parent )
@@ -461,14 +462,32 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, const QModelIndex& atInd
 
 void QgsDualView::showViewHeaderMenu( QPoint point )
 {
+  int col = mTableView->columnAt( point.x() );
+
   delete mHorizontalHeaderMenu;
   mHorizontalHeaderMenu = new QMenu( this );
+
+  QAction* hide = new QAction( tr( "&Hide column" ), mHorizontalHeaderMenu );
+  connect( hide, SIGNAL( triggered( bool ) ), this, SLOT( hideColumn() ) );
+  hide->setData( col );
+  mHorizontalHeaderMenu->addAction( hide );
+  QAction* setWidth = new QAction( tr( "&Set width..." ), mHorizontalHeaderMenu );
+  connect( setWidth, SIGNAL( triggered( bool ) ), this, SLOT( resizeColumn() ) );
+  setWidth->setData( col );
+  mHorizontalHeaderMenu->addAction( setWidth );
+  QAction* optimizeWidth = new QAction( tr( "&Autosize" ), mHorizontalHeaderMenu );
+  connect( optimizeWidth, SIGNAL( triggered( bool ) ), this, SLOT( autosizeColumn() ) );
+  optimizeWidth->setData( col );
+  mHorizontalHeaderMenu->addAction( optimizeWidth );
+
+  mHorizontalHeaderMenu->addSeparator();
   QAction* organize = new QAction( tr( "&Organize columns..." ), mHorizontalHeaderMenu );
   connect( organize, SIGNAL( triggered( bool ) ), this, SLOT( organizeColumns() ) );
   mHorizontalHeaderMenu->addAction( organize );
   QAction* sort = new QAction( tr( "&Sort..." ), mHorizontalHeaderMenu );
   connect( sort, SIGNAL( triggered( bool ) ), this, SLOT( modifySort() ) );
   mHorizontalHeaderMenu->addAction( sort );
+
   mHorizontalHeaderMenu->popup( mTableView->horizontalHeader()->mapToGlobal( point ) );
 }
 
@@ -490,9 +509,59 @@ void QgsDualView::organizeColumns()
 
 void QgsDualView::tableColumnResized( int column, int width )
 {
-  QgsAttributeTableConfig config = mLayerCache->layer()->attributeTableConfig();
-  config.setColumnWidth( column, width );
-  mLayerCache->layer()->setAttributeTableConfig( config );
+  QgsAttributeTableConfig config = mConfig;
+  int sourceCol = config.mapVisibleColumnToIndex( column );
+  if ( sourceCol >= 0 )
+  {
+    config.setColumnWidth( sourceCol, width );
+    mLayerCache->layer()->setAttributeTableConfig( config );
+    mConfig = config;
+  }
+}
+
+void QgsDualView::hideColumn()
+{
+  QAction* action = qobject_cast<QAction*>( sender() );
+  int col = action->data().toInt();
+  QgsAttributeTableConfig config = mConfig;
+  int sourceCol = mConfig.mapVisibleColumnToIndex( col );
+  if ( sourceCol >= 0 )
+  {
+    config.setColumnHidden( sourceCol, true );
+    mLayerCache->layer()->setAttributeTableConfig( config );
+    setAttributeTableConfig( config );
+  }
+}
+
+void QgsDualView::resizeColumn()
+{
+  QAction* action = qobject_cast<QAction*>( sender() );
+  int col = action->data().toInt();
+  if ( col < 0 )
+    return;
+
+  QgsAttributeTableConfig config = mConfig;
+  int sourceCol = config.mapVisibleColumnToIndex( col );
+  if ( sourceCol >= 0 )
+  {
+    bool ok = false;
+    int width = QInputDialog::getInt( this, tr( "Set column width" ), tr( "Enter column width" ),
+                                      mTableView->columnWidth( col ),
+                                      0, 1000, 10, &ok );
+    if ( ok )
+    {
+      config.setColumnWidth( sourceCol, width );
+      mLayerCache->layer()->setAttributeTableConfig( config );
+      setAttributeTableConfig( config );
+    }
+  }
+}
+
+void QgsDualView::autosizeColumn()
+{
+  QAction* action = qobject_cast<QAction*>( sender() );
+  int col = action->data().toInt();
+  mTableView->resizeColumnToContents( col );
 }
 
 void QgsDualView::modifySort()
@@ -501,7 +570,7 @@ void QgsDualView::modifySort()
   if ( !layer )
     return;
 
-  QgsAttributeTableConfig config = layer->attributeTableConfig();
+  QgsAttributeTableConfig config = mConfig;
 
   QDialog orderByDlg;
   orderByDlg.setWindowTitle( tr( "Configure attribute table sort order" ) );
@@ -546,6 +615,7 @@ void QgsDualView::modifySort()
     }
 
     layer->setAttributeTableConfig( config );
+    mConfig = config;
   }
 }
 
@@ -606,6 +676,7 @@ void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig& config
 {
   mFilterModel->setAttributeTableConfig( config );
   mTableView->setAttributeTableConfig( config );
+  mConfig = config;
 }
 
 void QgsDualView::setSortExpression( const QString& sortExpression )

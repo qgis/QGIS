@@ -28,6 +28,26 @@ QVector<QgsAttributeTableConfig::ColumnConfig> QgsAttributeTableConfig::columns(
   return mColumns;
 }
 
+bool QgsAttributeTableConfig::isEmpty() const
+{
+  return mColumns.isEmpty();
+}
+
+int QgsAttributeTableConfig::mapVisibleColumnToIndex( int visibleColumn ) const
+{
+  for ( int i = 0; i < mColumns.size(); ++i )
+  {
+    if ( mColumns.at( i ).hidden )
+    {
+      visibleColumn++;
+      continue;
+    }
+    if ( visibleColumn == i )
+      return i;
+  }
+  return -1;
+}
+
 void QgsAttributeTableConfig::setColumns( const QVector<ColumnConfig>& columns )
 {
   mColumns = columns;
@@ -196,6 +216,16 @@ int QgsAttributeTableConfig::columnWidth( int column ) const
 void QgsAttributeTableConfig::setColumnWidth( int column, int width )
 {
   mColumns[ column ].width = width;
+}
+
+bool QgsAttributeTableConfig::columnHidden( int column ) const
+{
+  return mColumns.at( column ).hidden;
+}
+
+void QgsAttributeTableConfig::setColumnHidden( int column, bool hidden )
+{
+  mColumns[ column ].hidden = hidden;
 }
 
 void QgsAttributeTableConfig::writeXml( QDomNode& node ) const
