@@ -17,6 +17,8 @@
 #include <QToolBar>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QSettings>
+#include <QFileDialog>
 
 #include "qgsmaplayerstylemanagerwidget.h"
 #include "qgslogger.h"
@@ -46,8 +48,14 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer* layer
   connect( removeAction, SIGNAL( triggered() ), this, SLOT( removeStyle() ) );
   QAction* saveAsDefaultAction = toolbar->addAction( tr( "Save as default" ) );
   connect( saveAsDefaultAction, SIGNAL( triggered() ), this, SLOT( saveAsDefault() ) );
-  QAction* loadDefaultAction = toolbar->addAction( tr( "Load default" ) );
+  QAction* loadDefaultAction = toolbar->addAction( tr( "Restore default" ) );
   connect( loadDefaultAction, SIGNAL( triggered() ), this, SLOT( loadDefault() ) );
+
+  QAction* loadFromFileAction = toolbar->addAction( tr( "Load Style" ) );
+  connect( loadFromFileAction, SIGNAL( triggered() ), this, SLOT( loadStyle() ) );
+
+  QAction* saveToFileAction = toolbar->addAction( tr( "Save Style" ) );
+  connect( saveToFileAction, SIGNAL( triggered() ), this, SLOT( saveStyle() ) );
 
   connect( canvas, SIGNAL( mapCanvasRefreshed() ), this, SLOT( updateCurrent() ) );
 
@@ -270,5 +278,51 @@ void QgsMapLayerStyleManagerWidget::loadDefault()
   {
     emit widgetChanged();
   }
+
+}
+
+void QgsMapLayerStyleManagerWidget::saveStyle()
+{
+
+}
+
+void QgsMapLayerStyleManagerWidget::loadStyle()
+{
+  QSettings myQSettings;  // where we keep last used filter in persistent state
+  QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", QDir::homePath() ).toString();
+
+  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file" ), myLastUsedDir,
+                       tr( "QGIS Layer Style File" ) + " (*.qml);;" + tr( "SLD File" ) + " (*.sld)" );
+  if ( myFileName.isNull() )
+  {
+    return;
+  }
+
+  QString myMessage;
+  bool defaultLoadedFlag = false;
+
+  if ( myFileName.endsWith( ".sld", Qt::CaseInsensitive ) )
+  {
+    // load from SLD
+    myMessage = mLayer->loadSldStyle( myFileName, defaultLoadedFlag );
+  }
+  else
+  {
+    myMessage = mLayer->loadNamedStyle( myFileName, defaultLoadedFlag );
+  }
+  //reset if the default style was loaded ok only
+  if ( defaultLoadedFlag )
+  {
+    emit widgetChanged();
+  }
+  else
+  {
+    //let the user know what went wrong
+    QMessageBox::warning( this, tr( "Load Style" ), myMessage );
+  }
+
+  QFileInfo myFI( myFileName );
+  QString myPath = myFI.path();
+  myQSettings.setValue( "style/lastStyleDir", myPath );
 
 }
