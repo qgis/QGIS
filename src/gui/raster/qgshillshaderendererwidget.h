@@ -18,7 +18,7 @@
 #ifndef QGSHILLSHADERENDERERWIDGET_H
 #define QGSHILLSHADERENDERERWIDGET_H
 
-#include "ui_qghillshaderendererwidget.h"
+#include "ui_qgshillshaderendererwidget.h"
 
 #include <QDoubleSpinBox>
 

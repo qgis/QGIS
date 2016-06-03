@@ -5,7 +5,7 @@
 class QgsRendererWidgetContainer : QWidget
 {
 %TypeHeaderCode
-#include <qgsrendererwidgetcontainer.h>
+#include "qgsrendererwidgetcontainer.h"
 %End
   public:
     /**
@@ -29,9 +29,6 @@ class QgsRendererWidgetContainer : QWidget
       */
     void accepted();
 
-  public slots:
-
   protected:
     void keyPressEvent( QKeyEvent* event );
-
 };

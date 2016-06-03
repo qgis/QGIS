@@ -602,7 +602,6 @@ void QgsCategorizedSymbolRendererV2Widget::categoriesDoubleClicked( const QModel
 
 void QgsCategorizedSymbolRendererV2Widget::changeCategorySymbol()
 {
-  int catIdx = currentCategoryRow();
   QgsRendererCategoryV2 category = mRenderer->categories().value( currentCategoryRow() );
 
   QgsSymbolV2 *symbol = category.symbol();
