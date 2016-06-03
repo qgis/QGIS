@@ -1157,13 +1157,6 @@ void DesignerTree::dragMoveEvent( QDragMoveEvent *event )
     QDataStream stream( &itemData, QIODevice::ReadOnly );
     stream >> itemElement;
 
-    // Forbid dropping fields on root item
-    if ( itemElement.type() == QgsFieldsProperties::DesignerTreeItemData::Field && !targetItem )
-    {
-      event->ignore();
-      return;
-    }
-
     // Inner drag and drop actions are always MoveAction
     if ( event->source() == this )
     {
@@ -1203,10 +1196,10 @@ bool DesignerTree::dropMimeData( QTreeWidgetItem* parent, int index, const QMime
         addItem( parent, itemElement );
         bDropSuccessful = true;
       }
-      else // Should never happen as we ignore drops of fields onto the root element in dragMoveEvent, but actually does happen. Qt?
+      else
       {
-        // addItem( invisibleRootItem(), itemName );
-        // bDropSuccessful = true;
+        addItem( invisibleRootItem(), itemElement );
+        bDropSuccessful = true;
       }
     }
   }

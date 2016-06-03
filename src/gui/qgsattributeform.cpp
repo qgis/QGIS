@@ -1059,22 +1059,31 @@ void QgsAttributeForm::init()
     }
   }
 
+  QTabWidget* tabWidget = nullptr;
+
   // Tab layout
   if ( !formWidget && mLayer->editFormConfig()->layout() == QgsEditFormConfig::TabLayout )
   {
-    QTabWidget* tabWidget = new QTabWidget();
-    layout->addWidget( tabWidget );
+    int row = 0;
+    int column = 0;
+    int columnCount = 1;
 
     Q_FOREACH ( QgsAttributeEditorElement* widgDef, mLayer->editFormConfig()->tabs() )
     {
-      QWidget* tabPage = new QWidget( tabWidget );
-
-      tabWidget->addTab( tabPage, widgDef->name() );
-      QGridLayout* tabPageLayout = new QGridLayout();
-      tabPage->setLayout( tabPageLayout );
-
       if ( widgDef->type() == QgsAttributeEditorElement::AeTypeContainer )
       {
+        if ( !tabWidget )
+        {
+          tabWidget = new QTabWidget();
+          layout->addWidget( tabWidget, row, column, 1, 2 );
+        }
+
+        QWidget* tabPage = new QWidget( tabWidget );
+
+        tabWidget->addTab( tabPage, widgDef->name() );
+        QGridLayout* tabPageLayout = new QGridLayout();
+        tabPage->setLayout( tabPageLayout );
+
         QgsAttributeEditorContainer* containerDef = dynamic_cast<QgsAttributeEditorContainer*>( widgDef );
         if ( !containerDef )
           continue;
@@ -1085,10 +1094,39 @@ void QgsAttributeForm::init()
       }
       else
       {
-        QgsDebugMsg( "No support for fields in attribute editor on top level" );
+        tabWidget = nullptr;
+        WidgetInfo widgetInfo = createWidgetFromDef( widgDef, container, mLayer, mContext );
+        QLabel* label = new QLabel( widgetInfo.labelText );
+        if ( columnCount > 1 && !widgetInfo.labelOnTop )
+        {
+          label->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
+        }
+
+        label->setBuddy( widgetInfo.widget );
+
+        if ( widgetInfo.labelOnTop )
+        {
+          QVBoxLayout* c = new QVBoxLayout();
+          label->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+          c->layout()->addWidget( label );
+          c->layout()->addWidget( widgetInfo.widget );
+          layout->addLayout( c, row, column, 1, 2 );
+          column += 2;
+        }
+        else
+        {
+          layout->addWidget( label, row, column++ );
+          layout->addWidget( widgetInfo.widget, row, column++ );
+        }
+      }
+
+      if ( column >= columnCount * 2 )
+      {
+        column = 0;
+        row += 1;
       }
     }
-    formWidget = tabWidget;
+    formWidget = container;
   }
 
   // Autogenerate Layout
@@ -1188,7 +1226,7 @@ void QgsAttributeForm::init()
   {
     mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
     mButtonBox->setObjectName( "buttonBox" );
-    layout->addWidget( mButtonBox );
+    layout->addWidget( mButtonBox, layout->rowCount(), 0, 1, layout->columnCount() );
   }
   mButtonBox->setVisible( buttonBoxVisible );
 
