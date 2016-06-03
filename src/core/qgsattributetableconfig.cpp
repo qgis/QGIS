@@ -271,5 +271,5 @@ void QgsAttributeTableConfig::writeXml( QDomNode& node ) const
 
 bool QgsAttributeTableConfig::ColumnConfig::operator== ( const ColumnConfig& other ) const
 {
-  return type == other.type && name == other.name && hidden == other.hidden;
+  return type == other.type && name == other.name && hidden == other.hidden && width == other.width;
 }
