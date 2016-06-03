@@ -63,8 +63,9 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
 
 void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )
 {
-  masterModel()->prefetchColumnData( column );
-  QSortFilterProxyModel::sort( column, order );
+  int myColumn = mColumnMapping.at( column );
+  masterModel()->prefetchColumnData( myColumn );
+  QSortFilterProxyModel::sort( myColumn, order );
 }
 
 QVariant QgsAttributeTableFilterModel::data( const QModelIndex& index, int role ) const
