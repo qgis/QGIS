@@ -10,16 +10,14 @@ class CORE_EXPORT QgsRuntimeProfiler
 {
   public:
     /**
-     * @brief Instance of the run time profiler. To use the main profiler
-     * use this instance.
-     * @return The instance of the run time profiler
+     * Constructor to create a new runtime profiler.
      */
     QgsRuntimeProfiler();
 
     /**
-     * @brief Begin the group for the profiler. Groups will append {GroupName}/ to the
-     * front of the profile tag set using start.
-     * @param name The name of the group.
+     * @brief Instance of the run time profiler. To use the main profiler
+     * use this instance.
+     * @return The instance of the run time profiler
      */
     static QgsRuntimeProfiler * instance();
 

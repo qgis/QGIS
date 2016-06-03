@@ -34,6 +34,7 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapStylePanel, pr
   public:
     /**
      * A widget to hold the renderer properties for a raster layer.
+     * @param layer The raster layer to style
      * @param canvas The canvas object used to calculate the max and min values from the extent.
      * @param parent Parent object
      */
