@@ -18,6 +18,8 @@ cd build
 
 ln -s ${HOME}/osgeo4travis/bin/ccache ${HOME}/osgeo4travis/bin/clang++-${LLVM_VERSION}
 ln -s ${HOME}/osgeo4travis/bin/ccache ${HOME}/osgeo4travis/bin/clang-${LLVM_VERSION}
+ln -s ${HOME}/osgeo4travis/bin/ccache ${HOME}/osgeo4travis/bin/g++-6
+ln -s ${HOME}/osgeo4travis/bin/ccache ${HOME}/osgeo4travis/bin/gcc-6
 
 ccache -s
 
@@ -35,7 +37,10 @@ ${CXX} --version
 # CLANG_WARNINGS="-Wimplicit-fallthrough"
 CLANG_WARNINGS=""
 
-cmake -DWITH_SERVER=ON \
+# Include this line for debug reasons
+#      -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+#
+cmake \
       -DCMAKE_PREFIX_PATH=/home/travis/osgeo4travis \
       -DWITH_STAGED_PLUGINS=ON \
       -DWITH_GRASS=ON \
@@ -46,6 +51,7 @@ cmake -DWITH_SERVER=ON \
       -DWITH_QWTPOLAR=OFF \
       -DWITH_APIDOC=ON \
       -DWITH_ASTYLE=ON \
+      -DWITH_SERVER=ON \
       -DWITH_PYSPATIALITE=ON \
       -DGRASS_PREFIX7=/usr/lib/grass70 \
       -DGRASS_INCLUDE_DIR7=/usr/lib/grass70/include \

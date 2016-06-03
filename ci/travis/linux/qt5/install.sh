@@ -18,6 +18,8 @@ cd build
 
 ln -s ${HOME}/osgeo4travis/bin/ccache ${HOME}/osgeo4travis/bin/clang++-${LLVM_VERSION}
 ln -s ${HOME}/osgeo4travis/bin/ccache ${HOME}/osgeo4travis/bin/clang-${LLVM_VERSION}
+ln -s ${HOME}/osgeo4travis/bin/ccache ${HOME}/osgeo4travis/bin/g++-6
+ln -s ${HOME}/osgeo4travis/bin/ccache ${HOME}/osgeo4travis/bin/gcc-6
 
 ccache -s
 
