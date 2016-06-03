@@ -34,6 +34,7 @@ class QgsSymbolV2SelectorDialog : QDialog
      */
     void setMapCanvas( QgsMapCanvas* canvas );
 
+    QgsSymbolV2* symbol();
   protected:
     //! Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent * event );

@@ -652,6 +652,12 @@ class QgsMapLayer : QObject
      */
     void legendChanged();
 
+    /**
+     * Emitted whenever the configuration is changed. The project listens to this signal
+     * to be marked as dirty.
+     */
+    void configChanged();
+
   protected:
     /** Set the extent */
     virtual void setExtent( const QgsRectangle &rect );

@@ -43,6 +43,12 @@ class QgsRuntimeProfiler
     void end();
 
     /**
+     * @brief Return all the current profile times.
+     * @return A list of profile event names and times.
+     */
+    // const QList<QPair<QString, double>> profileTimes() const;
+
+    /**
      * @brief clear Clear all profile data.
      */
     void clear();

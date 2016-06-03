@@ -53,6 +53,7 @@ class QgsRendererV2Widget : QWidget
      */
     void widgetChanged();
 
+    void panelOpened( bool opened );
   protected:
     /** Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
       and by connecting the slot contextMenuViewCategories(const QPoint&)*/
