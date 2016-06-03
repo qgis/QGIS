@@ -26,7 +26,9 @@
 #include <QToolTip>
 #include <QSettings>
 #include <QLabel>
+#if WITH_QTWEBKIT
 #include <QWebElement>
+#endif
 #include <QHBoxLayout>
 
 
@@ -128,6 +130,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
   mWidget->show();
 
+#if WITH_QTWEBKIT
   int scrollbarWidth = mWebView->page()->mainFrame()->scrollBarGeometry(
                          Qt::Vertical ).width();
   int scrollbarHeight = mWebView->page()->mainFrame()->scrollBarGeometry(
@@ -143,6 +146,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
     mWidget->resize( width, height );
   }
+#endif
 }
 
 void QgsMapTip::clear( QgsMapCanvas * )
