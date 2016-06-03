@@ -586,9 +586,9 @@ void QgsVectorLayerProperties::apply()
 
   for ( int i = 0; i < columns.size(); ++i )
   {
-    if ( columns.at( i ).mType == QgsAttributeTableConfig::Action )
+    if ( columns.at( i ).type == QgsAttributeTableConfig::Action )
     {
-      columns[i].mHidden = !mActionDialog->showWidgetInAttributeTable();
+      columns[i].hidden = !mActionDialog->showWidgetInAttributeTable();
     }
   }
 

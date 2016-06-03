@@ -42,18 +42,18 @@ void QgsAttributeTableConfig::update( const QgsFields& fields )
   for ( int i = mColumns.count() - 1; i >= 0; --i )
   {
     const ColumnConfig& column = mColumns.at( i );
-    if ( column.mType == Field )
+    if ( column.type == Field )
     {
-      if ( fields.fieldNameIndex( column.mName ) == -1 )
+      if ( fields.fieldNameIndex( column.name ) == -1 )
       {
         mColumns.remove( i );
       }
       else
       {
-        columns.append( column.mName );
+        columns.append( column.name );
       }
     }
-    else if ( column.mType == Action )
+    else if ( column.type == Action )
     {
       containsActionColumn = true;
     }
@@ -64,9 +64,9 @@ void QgsAttributeTableConfig::update( const QgsFields& fields )
     if ( !columns.contains( field.name() ) )
     {
       ColumnConfig newColumn;
-      newColumn.mHidden = false;
-      newColumn.mType = Field;
-      newColumn.mName = field.name();
+      newColumn.hidden = false;
+      newColumn.type = Field;
+      newColumn.name = field.name();
 
       mColumns.append( newColumn );
     }
@@ -76,8 +76,8 @@ void QgsAttributeTableConfig::update( const QgsFields& fields )
   {
     ColumnConfig actionConfig;
 
-    actionConfig.mType = Action;
-    actionConfig.mHidden = true;
+    actionConfig.type = Action;
+    actionConfig.hidden = true;
 
     mColumns.append( actionConfig );
   }
@@ -87,7 +87,7 @@ bool QgsAttributeTableConfig::actionWidgetVisible() const
 {
   Q_FOREACH ( const ColumnConfig& columnConfig, mColumns )
   {
-    if ( columnConfig.mType == Action && columnConfig.mHidden == false )
+    if ( columnConfig.type == Action && columnConfig.hidden == false )
       return true;
   }
   return false;
@@ -97,9 +97,9 @@ void QgsAttributeTableConfig::setActionWidgetVisible( bool visible )
 {
   for ( int i = 0; i < mColumns.size(); ++i )
   {
-    if ( mColumns.at( i ).mType == Action )
+    if ( mColumns.at( i ).type == Action )
     {
-      mColumns[i].mHidden = !visible;
+      mColumns[i].hidden = !visible;
     }
   }
 }
@@ -134,15 +134,16 @@ void QgsAttributeTableConfig::readXml( const QDomNode& node )
 
       if ( columnElement.attribute( "type" ) == "actions" )
       {
-        column.mType = Action;
+        column.type = Action;
       }
       else
       {
-        column.mType = Field;
-        column.mName = columnElement.attribute( "name" );
+        column.type = Field;
+        column.name = columnElement.attribute( "name" );
       }
 
-      column.mHidden = columnElement.attribute( "hidden" ) == "1";
+      column.hidden = columnElement.attribute( "hidden" ) == "1";
+      column.width = columnElement.attribute( "width", "-1" ).toDouble();
 
       mColumns.append( column );
     }
@@ -166,9 +167,9 @@ void QgsAttributeTableConfig::readXml( const QDomNode& node )
       {
         ColumnConfig column;
 
-        column.mName = editTypeElement.attribute( "name" );
-        column.mHidden = true;
-        column.mType = Field;
+        column.name = editTypeElement.attribute( "name" );
+        column.hidden = true;
+        column.type = Field;
         mColumns.append( column );
       }
     }
@@ -187,6 +188,16 @@ void QgsAttributeTableConfig::setSortExpression( const QString& sortExpression )
   mSortExpression = sortExpression;
 }
 
+int QgsAttributeTableConfig::columnWidth( int column ) const
+{
+  return mColumns.at( column ).width;
+}
+
+void QgsAttributeTableConfig::setColumnWidth( int column, int width )
+{
+  mColumns[ column ].width = width;
+}
+
 void QgsAttributeTableConfig::writeXml( QDomNode& node ) const
 {
   QDomDocument doc( node.ownerDocument() );
@@ -202,17 +213,18 @@ void QgsAttributeTableConfig::writeXml( QDomNode& node ) const
   {
     QDomElement columnElement = doc.createElement( "column" );
 
-    if ( column.mType == Action )
+    if ( column.type == Action )
     {
       columnElement.setAttribute( "type", "actions" );
     }
     else
     {
       columnElement.setAttribute( "type", "field" );
-      columnElement.setAttribute( "name", column.mName );
+      columnElement.setAttribute( "name", column.name );
     }
 
-    columnElement.setAttribute( "hidden", column.mHidden );
+    columnElement.setAttribute( "hidden", column.hidden );
+    columnElement.setAttribute( "width", QString::number( column.width ) );
 
     columnsElement.appendChild( columnElement );
   }

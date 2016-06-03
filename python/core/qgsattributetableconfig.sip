@@ -17,6 +17,7 @@
 /**
  * This is a container for configuration of the attribute table.
  * The configuration is specific for one vector layer.
+ * \note added in QGIS 2.16
  */
 
 class QgsAttributeTableConfig
@@ -39,9 +40,12 @@ class QgsAttributeTableConfig
      */
     struct ColumnConfig
     {
-      QgsAttributeTableConfig::Type mType;    //!< The type of this column.
-      QString mName; //!< The name of the attribute if this column represents a field
-      bool mHidden;  //!< Flag that controls if the column is hidden
+      //! Constructor for ColumnConfig
+      ColumnConfig();
+      Type type;    //!< The type of this column.
+      QString name; //!< The name of the attribute if this column represents a field
+      bool hidden;  //!< Flag that controls if the column is hidden
+      int width; //!< Width of column, or -1 for default width
     };
 
     /**
@@ -115,4 +119,16 @@ class QgsAttributeTableConfig
      */
     void setSortExpression( const QString& sortExpression );
 
+    /** Returns the width of a column, or -1 if column should use default width.
+     * @param column column index
+     * @see setColumnWidth()
+     */
+    int columnWidth( int column ) const;
+
+    /** Sets the width of a column.
+     * @param column column index
+     * @param width column width in pixels, or -1 if column should use default width
+     * @see columnWidth()
+     */
+    void setColumnWidth( int column, int width );
 };

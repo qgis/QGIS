@@ -119,11 +119,11 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
   Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig& columnConfig, mConfig.columns() )
   {
     // Hidden? Forget about this column
-    if ( columnConfig.mHidden )
+    if ( columnConfig.hidden )
       continue;
 
     // The new value for the mapping (field index or -1 for action column)
-    int newValue = ( columnConfig.mType == QgsAttributeTableConfig::Action ) ? -1 : layer()->fieldNameIndex( columnConfig.mName );
+    int newValue = ( columnConfig.type == QgsAttributeTableConfig::Action ) ? -1 : layer()->fieldNameIndex( columnConfig.name );
     newColumnMapping << newValue;
   }
 

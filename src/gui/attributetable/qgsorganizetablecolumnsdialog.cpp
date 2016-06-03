@@ -59,14 +59,14 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
     Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig& columnConfig, mConfig.columns() )
     {
       QListWidgetItem* item;
-      if ( columnConfig.mType == QgsAttributeTableConfig::Action )
+      if ( columnConfig.type == QgsAttributeTableConfig::Action )
       {
         item = new QListWidgetItem( tr( "[Action Widget]" ), mFieldsList );
         item->setIcon( QgsApplication::getThemeIcon( "/propertyicons/action.svg" ) );
       }
       else
       {
-        int idx = vl->fieldNameIndex( columnConfig.mName );
+        int idx = vl->fieldNameIndex( columnConfig.name );
         item = new QListWidgetItem( vl->attributeDisplayName( idx ), mFieldsList );
 
         switch ( vl->fields().fieldOrigin( idx ) )
@@ -85,7 +85,7 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
         }
       }
 
-      item->setCheckState( columnConfig.mHidden ? Qt::Unchecked : Qt::Checked );
+      item->setCheckState( columnConfig.hidden ? Qt::Unchecked : Qt::Checked );
       item->setData( Qt::UserRole, QVariant::fromValue( columnConfig ) );
     }
   }
@@ -116,7 +116,7 @@ QgsAttributeTableConfig QgsOrganizeTableColumnsDialog::config() const
     const QListWidgetItem* item = mFieldsList->item( i );
     QgsAttributeTableConfig::ColumnConfig columnConfig = item->data( Qt::UserRole ).value<QgsAttributeTableConfig::ColumnConfig>();
 
-    columnConfig.mHidden = item->checkState() == Qt::Unchecked;
+    columnConfig.hidden = item->checkState() == Qt::Unchecked;
 
     columns.append( columnConfig );
   }

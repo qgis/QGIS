@@ -93,6 +93,23 @@ bool QgsAttributeTableView::eventFilter( QObject *object, QEvent *event )
   return false;
 }
 
+void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConfig& config )
+{
+  int i = 0;
+  Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig& columnConfig, config.columns() )
+  {
+    if ( columnConfig.width >= 0 )
+    {
+      setColumnWidth( i, columnConfig.width );
+    }
+    else
+    {
+      setColumnWidth( i, horizontalHeader()->defaultSectionSize() );
+    }
+    i++;
+  }
+}
+
 void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel* filterModel )
 {
   if ( mFilterModel )
@@ -385,6 +402,7 @@ void QgsAttributeTableView::columnSizeChanged( int index, int oldWidth, int newW
     mActionWidget->resize( newWidth, mActionWidget->height() );
     updateActionImage( mActionWidget );
   }
+  emit columnResized( index, newWidth );
 }
 
 void QgsAttributeTableView::updateActionImage( QWidget* widget )

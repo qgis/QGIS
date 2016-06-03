@@ -72,6 +72,7 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const Qg
   connect( mTableView, SIGNAL( willShowContextMenu( QMenu*, QModelIndex ) ), this, SLOT( viewWillShowContextMenu( QMenu*, QModelIndex ) ) );
   mTableView->horizontalHeader()->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( mTableView->horizontalHeader(), SIGNAL( customContextMenuRequested( QPoint ) ), this, SLOT( showViewHeaderMenu( QPoint ) ) );
+  connect( mTableView, SIGNAL( columnResized( int, int ) ), this, SLOT( tableColumnResized( int, int ) ) );
 
   initLayerCache( layer, !request.filterRect().isNull() );
   initModels( mapCanvas, request );
@@ -487,6 +488,13 @@ void QgsDualView::organizeColumns()
   }
 }
 
+void QgsDualView::tableColumnResized( int column, int width )
+{
+  QgsAttributeTableConfig config = mLayerCache->layer()->attributeTableConfig();
+  config.setColumnWidth( column, width );
+  mLayerCache->layer()->setAttributeTableConfig( config );
+}
+
 void QgsDualView::modifySort()
 {
   QgsVectorLayer* layer = mLayerCache->layer();
@@ -597,6 +605,7 @@ void QgsDualView::setFeatureSelectionManager( QgsIFeatureSelectionManager* featu
 void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig& config )
 {
   mFilterModel->setAttributeTableConfig( config );
+  mTableView->setAttributeTableConfig( config );
 }
 
 void QgsDualView::setSortExpression( const QString& sortExpression )

@@ -277,6 +277,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void organizeColumns();
 
+    void tableColumnResized( int column, int width );
+
     void modifySort();
 
     void previewExpressionChanged( const QString& expression );
