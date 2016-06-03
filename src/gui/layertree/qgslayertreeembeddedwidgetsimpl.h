@@ -21,6 +21,7 @@
 
 
 class QSlider;
+class QTimer;
 class QgsMapLayer;
 
 /**
@@ -47,11 +48,13 @@ class QgsLayerTreeTransparencyWidget : public QWidget
 
   public slots:
     void sliderValueChanged( int value );
+    void updateTransparencyFromSlider();
     void layerTrChanged();
 
   private:
     QgsMapLayer* mLayer;
     QSlider* mSlider;
+    QTimer* mTimer;
 };
 
 #endif // QGSLAYERTREEEMBEDDEDWIDGETSIMPL_H

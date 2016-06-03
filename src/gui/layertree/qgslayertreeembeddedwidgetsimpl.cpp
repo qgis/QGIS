@@ -15,9 +15,11 @@
 
 #include "qgslayertreeembeddedwidgetsimpl.h"
 
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QSlider>
-#include <QHBoxLayout>
+#include <QTimer>
+
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
 #include "qgsvectorlayer.h"
@@ -36,6 +38,12 @@ QgsLayerTreeTransparencyWidget::QgsLayerTreeTransparencyWidget( QgsMapLayer* lay
   lay->addWidget( l );
   lay->addWidget( mSlider );
   setLayout( lay );
+
+  // timer for delayed transparency update - for more responsive GUI
+  mTimer = new QTimer( this );
+  mTimer->setSingleShot( true );
+  mTimer->setInterval( 100 );
+  connect( mTimer, SIGNAL( timeout() ), this, SLOT( updateTransparencyFromSlider() ) );
 
   connect( mSlider, SIGNAL( valueChanged( int ) ), this, SLOT( sliderValueChanged( int ) ) );
 
@@ -60,6 +68,17 @@ QSize QgsLayerTreeTransparencyWidget::sizeHint() const
 
 void QgsLayerTreeTransparencyWidget::sliderValueChanged( int value )
 {
+  Q_UNUSED( value );
+
+  if ( mTimer->isActive() )
+    return;
+  mTimer->start();
+}
+
+void QgsLayerTreeTransparencyWidget::updateTransparencyFromSlider()
+{
+  int value = mSlider->value();
+
   if ( mLayer->type() == QgsMapLayer::VectorLayer )
   {
     qobject_cast<QgsVectorLayer*>( mLayer )->setLayerTransparency( value );
