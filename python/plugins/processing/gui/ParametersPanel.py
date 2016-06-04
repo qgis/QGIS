@@ -368,6 +368,21 @@ class ParametersPanel(BASE, WIDGET):
                 if param.optional and isinstance(param, ParameterTableField):
                     item.addItem(self.tr('[not set]'))
                 item.addItems(self.getFields(layers[0], param.datatype))
+        elif isinstance(param, ParameterTableMultipleField):
+            item = ListMultiSelectWidget()
+            if param.parent in self.dependentItems:
+                items = self.dependentItems[param.parent]
+            else:
+                items = []
+                self.dependentItems[param.parent] = items
+            items.append(param.name)
+            parent = self.alg.getParameterFromName(param.parent)
+            if isinstance(parent, ParameterVector):
+                layers = dataobjects.getVectorLayers(parent.shapetype)
+            else:
+                layers = dataobjects.getTables()
+            if len(layers) > 0:
+                item.addItems(self.getFields(layers[0], param.datatype))
         elif isinstance(param, ParameterSelection):
             item = QComboBox()
             item.addItems(param.options)
