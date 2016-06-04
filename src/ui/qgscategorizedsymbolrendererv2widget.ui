@@ -206,21 +206,17 @@
     </layout>
    </item>
   </layout>
-  <zorder></zorder>
   <zorder>viewCategories</zorder>
   <zorder>btnChangeCategorizedSymbol</zorder>
   <zorder>label_9</zorder>
   <zorder>label_10</zorder>
   <zorder>mExpressionWidget</zorder>
-  <zorder></zorder>
   <zorder>label_3</zorder>
-  <zorder></zorder>
   <zorder>viewCategories</zorder>
   <zorder>btnChangeCategorizedSymbol</zorder>
   <zorder>label_9</zorder>
   <zorder>label_10</zorder>
   <zorder>mExpressionWidget</zorder>
-  <zorder></zorder>
   <zorder>label_3</zorder>
  </widget>
  <customwidgets>
