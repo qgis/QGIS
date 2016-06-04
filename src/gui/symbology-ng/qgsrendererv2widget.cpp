@@ -25,11 +25,14 @@
 #include <QMenu>
 
 QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style )
-    : QWidget()
+    : QStackedWidget()
     , mLayer( layer )
     , mStyle( style )
     , mMapCanvas( nullptr )
 {
+  mWidgetPage = new QWidget();
+  this->addWidget( mWidgetPage );
+
   contextMenu = new QMenu( tr( "Renderer Options" ), this );
 
   mCopyAction = contextMenu->addAction( tr( "Copy" ), this, SLOT( copy() ) );
@@ -269,6 +272,13 @@ const QgsMapCanvas* QgsRendererV2Widget::mapCanvas() const
 void QgsRendererV2Widget::applyChanges()
 {
   apply();
+}
+
+void QgsRendererV2Widget::showPanel( QWidget* container )
+{
+  int page = this->addWidget( container );
+  this->setCurrentIndex( page );
+  emit panelOpened( true );
 }
 
 

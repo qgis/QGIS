@@ -77,6 +77,8 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QList<QgsMapStyl
   connect( mLayerCombo, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( setLayer( QgsMapLayer* ) ) );
 
   mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( false );
+
+  mStackedWidget->setCurrentIndex( 0 );
 }
 
 QgsMapStylingWidget::~QgsMapStylingWidget()

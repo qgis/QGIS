@@ -17,6 +17,7 @@
 
 #include <QWidget>
 #include <QMenu>
+#include <QStackedWidget>
 #include "qgssymbolv2.h"
 #include "qgsdatadefined.h"
 
@@ -37,7 +38,7 @@ WORKFLOW:
 - on any change of renderer type, create some default (dummy?) version and change the stacked widget
 - when clicked ok/apply, get the renderer from active widget and clone it for the layer
 */
-class GUI_EXPORT QgsRendererV2Widget : public QWidget
+class GUI_EXPORT QgsRendererV2Widget : public QStackedWidget
 {
     Q_OBJECT
   public:
@@ -75,6 +76,8 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
      */
     void applyChanges();
 
+    void showPanel( QWidget *container );
+
   signals:
     /**
      * Emitted when expression context variables on the associated
@@ -97,6 +100,7 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
     void panelOpened( bool opened );
 
   protected:
+    QWidget* mWidgetPage;
     QgsVectorLayer* mLayer;
     QgsStyleV2* mStyle;
     QMenu* contextMenu;

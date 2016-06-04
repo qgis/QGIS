@@ -37,7 +37,7 @@ QgsNullSymbolRendererWidget::QgsNullSymbolRendererWidget( QgsVectorLayer* layer,
     mRenderer = new QgsNullSymbolRenderer();
   }
 
-  QGridLayout* layout = new QGridLayout( this );
+  QGridLayout* layout = new QGridLayout( mWidgetPage );
   QLabel* label = new QLabel( tr( "No symbols will be rendered for features in this layer." ) );
   layout->addWidget( label );
 }

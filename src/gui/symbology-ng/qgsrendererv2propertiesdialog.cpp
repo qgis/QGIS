@@ -270,7 +270,6 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
       connect( mActiveWidget, SIGNAL( layerVariablesChanged() ), this, SIGNAL( layerVariablesChanged() ) );
     }
     connect( mActiveWidget, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
-    connect( mActiveWidget, SIGNAL( panelOpened(bool)), this, SLOT( updateUIState(bool) ));
   }
   else
   {
@@ -332,7 +331,7 @@ void QgsRendererV2PropertiesDialog::changeOrderBy( const QgsFeatureRequest::Orde
   checkboxEnableOrderBy->setChecked( orderByEnabled );
 }
 
-void QgsRendererV2PropertiesDialog::updateUIState(bool hidden)
+void QgsRendererV2PropertiesDialog::updateUIState( bool hidden )
 {
   groupBox->setHidden( hidden );
   cboRenderers->setHidden( hidden );

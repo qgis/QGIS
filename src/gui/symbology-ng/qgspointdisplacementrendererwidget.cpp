@@ -48,7 +48,9 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
     setupBlankUi( layer->name() );
     return;
   }
-  setupUi( this );
+  setupUi( mWidgetPage );
+  QMetaObject::connectSlotsByName( this );
+
   mDistanceUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
 
   if ( renderer )
@@ -381,7 +383,9 @@ void QgsPointDisplacementRendererWidget::updateCenterIcon()
 
 void QgsPointDisplacementRendererWidget::setupBlankUi( const QString& layerName )
 {
-  QGridLayout* layout = new QGridLayout( this );
   QLabel* label = new QLabel( tr( "The point displacement renderer only applies to (single) point layers. \n'%1' is not a point layer and cannot be displayed by the point displacement renderer" ).arg( layerName ), this );
-  layout->addWidget( label );
+  QVBoxLayout* layout = new QVBoxLayout;
+  layout->setContentsMargins( 0, 0, 0, 0 );
+  mWidgetPage->setLayout( layout );
+  mWidgetPage->layout()->addWidget( label );
 }
