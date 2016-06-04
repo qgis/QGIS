@@ -92,7 +92,7 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
     /**
      * @brief Emitted when a sub panel for the widget is opened.
      * The renderer can open inline sub panels instead of dialogs.
-     * @param opened
+     * @param opened True of the a sub panel is opened.
      */
     void panelOpened( bool opened );
 

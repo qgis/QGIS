@@ -45,7 +45,7 @@ class APP_EXPORT QgsMapLayerStyleManagerWidgetFactory : public QgsMapStylePanelF
     QIcon icon() override;
     QString title() override;
     QgsMapStylePanel *createPanel( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent ) override;
-    LayerTypesFlags layerType() override;
+    bool supportsLayer( QgsMapLayer *layer ) override;
 };
 
 class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand

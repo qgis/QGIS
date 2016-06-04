@@ -69,10 +69,10 @@ class QgsMapStylePanelFactory
     virtual QString title() = 0;
 
     /**
-     * @brief Supported layer type for the widget.
-     * @return The layer type this widget is supported for.
+     * @brief Check if the layer is supported for this widget.
+     * @return True if this layer is supported for this widget
      */
-    virtual LayerTypesFlags layerType() = 0;
+    virtual bool supportsLayer( QgsMapLayer *layer ) = 0;
 
     /**
      * @brief Factory fucntion to create the widget on demand as needed by the dock.

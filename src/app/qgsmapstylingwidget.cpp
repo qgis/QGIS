@@ -125,7 +125,7 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
 
   Q_FOREACH ( QgsMapStylePanelFactory* factory, mPageFactories )
   {
-    if ( factory->layerType().testFlag( layer->type() ) )
+    if ( factory->supportsLayer( layer ) )
     {
       QListWidgetItem* item =  new QListWidgetItem( factory->icon(), "" );
       mOptionsListWidget->addItem( item );
@@ -404,7 +404,7 @@ QgsMapStylePanel *QgsMapLayerStyleManagerWidgetFactory::createPanel( QgsMapLayer
 
 }
 
-QgsMapStylePanelFactory::LayerTypesFlags QgsMapLayerStyleManagerWidgetFactory::layerType()
+bool QgsMapLayerStyleManagerWidgetFactory::supportsLayer( QgsMapLayer *layer )
 {
-  return QgsMapLayer::VectorLayer;
+  return ( layer->type() == QgsMapLayer::VectorLayer || layer->type() == QgsMapLayer::RasterLayer );
 }
