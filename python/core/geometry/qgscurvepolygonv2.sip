@@ -11,6 +11,7 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
     ~QgsCurvePolygonV2();
 
     virtual QString geometryType() const;
+    virtual QgsWKBTypes::Type flatWkbType() const;
     virtual int dimension() const;
     virtual QgsCurvePolygonV2* clone() const;
     void clear();

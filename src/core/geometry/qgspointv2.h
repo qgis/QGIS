@@ -153,6 +153,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
     //implementation of inherited methods
     virtual QgsRectangle boundingBox() const override { return QgsRectangle( mX, mY, mX, mY ); }
     virtual QString geometryType() const override { return "Point"; }
+    virtual QgsWKBTypes::Type flatWkbType() const override { return QgsWKBTypes::Point; }
     virtual int dimension() const override { return 0; }
     virtual QgsPointV2* clone() const override;
     void clear() override;

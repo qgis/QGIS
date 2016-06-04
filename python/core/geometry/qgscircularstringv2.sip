@@ -12,6 +12,7 @@ class QgsCircularStringV2: public QgsCurveV2
     virtual bool operator!=( const QgsCurveV2& other ) const;
 
     virtual QString geometryType() const;
+    virtual QgsWKBTypes::Type flatWkbType() const;
     virtual int dimension() const;
     virtual QgsCircularStringV2* clone() const;
     virtual void clear();

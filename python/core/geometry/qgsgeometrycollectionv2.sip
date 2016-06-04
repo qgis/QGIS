@@ -29,6 +29,7 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     //methods inherited from QgsAbstractGeometry
     virtual int dimension() const;
     virtual QString geometryType() const;
+    virtual QgsWKBTypes::Type flatWkbType() const;
     virtual void clear();
 
     /** Adds a geometry and takes ownership. Returns true in case of success.*/

@@ -491,7 +491,7 @@ bool QgsGeometryCollectionV2::fromCollectionWkt( const QString &wkt, const QList
 
   QPair<QgsWKBTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
-  if ( QgsWKBTypes::flatType( parts.first ) != QgsWKBTypes::parseType( geometryType() ) )
+  if ( QgsWKBTypes::flatType( parts.first ) != flatWkbType() )
     return false;
   mWkbType = parts.first;
 
@@ -504,7 +504,7 @@ bool QgsGeometryCollectionV2::fromCollectionWkt( const QString &wkt, const QList
     bool success = false;
     Q_FOREACH ( const QgsAbstractGeometryV2* geom, subtypes )
     {
-      if ( QgsWKBTypes::flatType( childParts.first ) == QgsWKBTypes::parseType( geom->geometryType() ) )
+      if ( QgsWKBTypes::flatType( childParts.first ) == geom->flatWkbType() )
       {
         mGeometries.append( geom->clone() );
         if ( mGeometries.back()->fromWkt( childWkt ) )

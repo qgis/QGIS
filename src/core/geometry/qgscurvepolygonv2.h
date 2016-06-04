@@ -37,6 +37,7 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     ~QgsCurvePolygonV2();
 
     virtual QString geometryType() const override { return "CurvePolygon"; }
+    virtual QgsWKBTypes::Type flatWkbType() const override { return QgsWKBTypes::CurvePolygon; }
     virtual int dimension() const override { return 2; }
     virtual QgsCurvePolygonV2* clone() const override;
     void clear() override;

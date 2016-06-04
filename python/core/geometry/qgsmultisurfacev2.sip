@@ -5,6 +5,7 @@ class QgsMultiSurfaceV2: public QgsGeometryCollectionV2
 %End
   public:
     virtual QString geometryType() const;
+    virtual QgsWKBTypes::Type flatWkbType() const;
     virtual QgsMultiSurfaceV2* clone() const;
 
     bool fromWkt( const QString& wkt );

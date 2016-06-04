@@ -28,6 +28,7 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurfaceV2
 {
   public:
     virtual QString geometryType() const override { return "MultiPolygon"; }
+    virtual QgsWKBTypes::Type flatWkbType() const override { return QgsWKBTypes::MultiPolygon; }
     QgsMultiPolygonV2* clone() const override;
 
     bool fromWkt( const QString& wkt ) override;

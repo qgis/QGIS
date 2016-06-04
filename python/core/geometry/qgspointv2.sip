@@ -141,6 +141,7 @@ class QgsPointV2: public QgsAbstractGeometryV2
     //implementation of inherited methods
     virtual QgsRectangle boundingBox() const;
     virtual QString geometryType() const;
+    virtual QgsWKBTypes::Type flatWkbType() const;
     virtual int dimension() const;
     virtual QgsPointV2* clone() const /Factory/;
     void clear();

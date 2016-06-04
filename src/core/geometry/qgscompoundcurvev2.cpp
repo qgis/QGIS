@@ -149,7 +149,7 @@ bool QgsCompoundCurveV2::fromWkt( const QString& wkt )
 
   QPair<QgsWKBTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
-  if ( QgsWKBTypes::flatType( parts.first ) != QgsWKBTypes::parseType( geometryType() ) )
+  if ( QgsWKBTypes::flatType( parts.first ) != QgsWKBTypes::CompoundCurve )
     return false;
   mWkbType = parts.first;
 
@@ -430,7 +430,7 @@ void QgsCompoundCurveV2::addVertex( const QgsPointV2& pt )
   }
 
   QgsLineStringV2* line = nullptr;
-  if ( !lastCurve || lastCurve->geometryType() != "LineString" )
+  if ( !lastCurve || QgsWKBTypes::flatType( lastCurve->wkbType() ) != QgsWKBTypes::LineString )
   {
     line = new QgsLineStringV2();
     mCurves.append( line );

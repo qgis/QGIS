@@ -139,6 +139,7 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
     //reimplemented methods
 
     virtual QString geometryType() const override { return "LineString"; }
+    virtual QgsWKBTypes::Type flatWkbType() const override { return QgsWKBTypes::LineString; }
     virtual int dimension() const override { return 1; }
     virtual QgsLineStringV2* clone() const override;
     virtual void clear() override;

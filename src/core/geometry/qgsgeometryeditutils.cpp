@@ -120,13 +120,14 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometryV2* geom, QgsAbstractGeome
   }
 
   bool added = false;
-  if ( geom->geometryType() == "MultiSurface" || geom->geometryType() == "MultiPolygon" )
+  if ( QgsWKBTypes::flatType( geom->wkbType() ) == QgsWKBTypes::MultiSurface
+       || QgsWKBTypes::flatType( geom->wkbType() ) == QgsWKBTypes::MultiPolygon )
   {
     QgsCurveV2* curve = dynamic_cast<QgsCurveV2*>( part );
     if ( curve && curve->isClosed() && curve->numPoints() >= 4 )
     {
       QgsCurvePolygonV2 *poly = nullptr;
-      if ( curve->geometryType() == "LineString" )
+      if ( QgsWKBTypes::flatType( curve->wkbType() ) == QgsWKBTypes::LineString )
       {
         poly = new QgsPolygonV2();
       }
@@ -137,11 +138,11 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometryV2* geom, QgsAbstractGeome
       poly->setExteriorRing( curve );
       added = geomCollection->addGeometry( poly );
     }
-    else if ( part->geometryType() == "Polygon" )
+    else if ( QgsWKBTypes::flatType( part->wkbType() ) == QgsWKBTypes::Polygon )
     {
       added = geomCollection->addGeometry( part );
     }
-    else if ( part->geometryType() == "MultiPolygon" )
+    else if ( QgsWKBTypes::flatType( part->wkbType() ) == QgsWKBTypes::MultiPolygon )
     {
       QgsGeometryCollectionV2 *parts = static_cast<QgsGeometryCollectionV2*>( part );
 

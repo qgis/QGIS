@@ -149,7 +149,7 @@ bool QgsCurvePolygonV2::fromWkt( const QString& wkt )
 
   QPair<QgsWKBTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
-  if ( QgsWKBTypes::flatType( parts.first ) != QgsWKBTypes::parseType( geometryType() ) )
+  if ( QgsWKBTypes::flatType( parts.first ) != QgsWKBTypes::Polygon )
     return false;
 
   mWkbType = parts.first;
@@ -466,11 +466,11 @@ void QgsCurvePolygonV2::setExteriorRing( QgsCurveV2* ring )
   mExteriorRing = ring;
 
   //set proper wkb type
-  if ( geometryType() == "Polygon" )
+  if ( QgsWKBTypes::flatType( wkbType() ) == QgsWKBTypes::Polygon )
   {
     setZMTypeFromSubGeometry( ring, QgsWKBTypes::Polygon );
   }
-  else if ( geometryType() == "CurvePolygon" )
+  else if ( QgsWKBTypes::flatType( wkbType() ) == QgsWKBTypes::CurvePolygon )
   {
     setZMTypeFromSubGeometry( ring, QgsWKBTypes::CurvePolygon );
   }

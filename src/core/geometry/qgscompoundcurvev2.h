@@ -38,6 +38,7 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
     virtual bool operator!=( const QgsCurveV2& other ) const override;
 
     virtual QString geometryType() const override { return "CompoundCurve"; }
+    virtual QgsWKBTypes::Type flatWkbType() const override { return QgsWKBTypes::CompoundCurve; }
     virtual int dimension() const override { return 1; }
     virtual QgsCompoundCurveV2* clone() const override;
     virtual void clear() override;
