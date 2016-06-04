@@ -232,7 +232,7 @@ class RAlgorithm(GeoAlgorithm):
                     break
             if found:
                 param = ParameterTableField(name, desc, field)
-	elif token.lower().strip().startswith('multiple field'):
+        elif token.lower().strip().startswith('multiple field'):
             field = token.strip()[len('multiple field') + 1:]
             found = False
             for p in self.parameters:
