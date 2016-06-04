@@ -76,6 +76,10 @@ class GUI_EXPORT QgsRendererV2Widget : public QStackedWidget
      */
     void applyChanges();
 
+    /** Shows a panel widget inside the renderer widget.
+     * @param container widget panel to show
+     * @note added in QGIS 2.16
+     */
     void showPanel( QWidget *container );
 
   signals:

@@ -25,7 +25,7 @@
 #include "qgsvectorlayer.h"
 
 
-
+///@cond PRIVATE
 
 QgsLayerTreeTransparencyWidget::QgsLayerTreeTransparencyWidget( QgsMapLayer* layer )
     : mLayer( layer )
@@ -120,3 +120,5 @@ bool QgsLayerTreeTransparencyWidget::Provider::supportsLayer( QgsMapLayer* layer
 {
   return layer->type() == QgsMapLayer::VectorLayer || layer->type() == QgsMapLayer::RasterLayer;
 }
+
+///@endcond
