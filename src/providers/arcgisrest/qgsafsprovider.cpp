@@ -34,6 +34,7 @@
 QgsAfsProvider::QgsAfsProvider( const QString& uri )
     : QgsVectorDataProvider( uri )
     , mValid( false )
+    , mObjectIdFieldIdx( -1 )
 {
   mDataSource = QgsDataSourceURI( uri );
 

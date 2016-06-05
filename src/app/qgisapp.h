@@ -1379,7 +1379,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void endProfile();
     void functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, QString name );
 
-    QgsRuntimeProfiler* profiler;
+    QgsRuntimeProfiler* mProfiler;
 
     /** This method will open a dialog so the user can select GDAL sublayers to load
      * @returns true if any items were loaded

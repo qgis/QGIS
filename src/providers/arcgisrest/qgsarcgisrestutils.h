@@ -48,7 +48,9 @@ class QgsArcGisAsyncQuery : public QObject
 {
     Q_OBJECT
   public:
-    QgsArcGisAsyncQuery( QObject* parent = 0 );
+    QgsArcGisAsyncQuery( QObject* parent = nullptr );
+    ~QgsArcGisAsyncQuery();
+
     void start( const QUrl& url, QByteArray* result, bool allowCache = false );
   signals:
     void finished();
@@ -65,7 +67,7 @@ class QgsArcGisAsyncParallelQuery : public QObject
 {
     Q_OBJECT
   public:
-    QgsArcGisAsyncParallelQuery( QObject* parent = 0 );
+    QgsArcGisAsyncParallelQuery( QObject* parent = nullptr );
     void start( const QVector<QUrl>& urls, QVector<QByteArray>* results, bool allowCache = false );
   signals:
     void finished( QStringList errors );

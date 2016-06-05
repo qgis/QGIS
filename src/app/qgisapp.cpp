@@ -544,6 +544,7 @@ QgisApp *QgisApp::smInstance = nullptr;
 // constructor starts here
 QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, QWidget * parent, Qt::WindowFlags fl )
     : QMainWindow( parent, fl )
+    , mProfiler( nullptr )
     , mNonEditMapTool( nullptr )
     , mScaleWidget( nullptr )
     , mMagnifierWidget( nullptr )
@@ -587,13 +588,13 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 
   smInstance = this;
-  profiler = QgsRuntimeProfiler::instance();
+  mProfiler = QgsRuntimeProfiler::instance();
 
   namSetup();
 
   // load GUI: actions, menus, toolbars
-  profiler->beginGroup( "qgisapp" );
-  profiler->beginGroup( "startup" );
+  mProfiler->beginGroup( "qgisapp" );
+  mProfiler->beginGroup( "startup" );
   startProfile( "Setting up UI" );
   setupUi( this );
   endProfile();
@@ -1054,14 +1055,14 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 #ifdef ANDROID
   toggleFullScreen();
 #endif
-  profiler->endGroup();
-  profiler->endGroup();
+  mProfiler->endGroup();
+  mProfiler->endGroup();
 
   QgsDebugMsg( "PROFILE TIMES" );
-  QgsDebugMsg( QString( "PROFILE TIMES TOTAL - %1 " ).arg( profiler->totalTime() ) );
+  QgsDebugMsg( QString( "PROFILE TIMES TOTAL - %1 " ).arg( mProfiler->totalTime() ) );
 #ifdef QGISDEBUG
-  QList<QPair<QString, double> >::const_iterator it = profiler->profileTimes().constBegin();
-  for ( ; it != profiler->profileTimes().constEnd(); ++it )
+  QList<QPair<QString, double> >::const_iterator it = mProfiler->profileTimes().constBegin();
+  for ( ; it != mProfiler->profileTimes().constEnd(); ++it )
   {
     QString name = ( *it ).first;
     double time = ( *it ).second;
@@ -1073,6 +1074,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
 QgisApp::QgisApp()
     : QMainWindow( nullptr, nullptr )
+    , mProfiler( nullptr )
     , mStyleSheetBuilder( nullptr )
     , mActionPluginSeparator1( nullptr )
     , mActionPluginSeparator2( nullptr )
@@ -11041,12 +11043,12 @@ void QgisApp::keyPressEvent( QKeyEvent * e )
 
 void QgisApp::startProfile( const QString& name )
 {
-  profiler->start( name );
+  mProfiler->start( name );
 }
 
 void QgisApp::endProfile()
 {
-  profiler->end();
+  mProfiler->end();
 }
 
 void QgisApp::functionProfile( void ( QgisApp::*fnc )(), QgisApp* instance, QString name )

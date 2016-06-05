@@ -482,7 +482,15 @@ QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, QString &erro
 
 QgsArcGisAsyncQuery::QgsArcGisAsyncQuery( QObject* parent )
     : QObject( parent )
+    , mReply( nullptr )
+    , mResult( nullptr )
 {
+}
+
+QgsArcGisAsyncQuery::~QgsArcGisAsyncQuery()
+{
+  if ( mReply )
+    mReply->deleteLater();
 }
 
 void QgsArcGisAsyncQuery::start( const QUrl &url, QByteArray *result, bool allowCache )
@@ -522,7 +530,7 @@ void QgsArcGisAsyncQuery::handleReply()
   }
 
   *mResult = mReply->readAll();
-  mResult = 0;
+  mResult = nullptr;
   emit finished();
 }
 
@@ -530,6 +538,8 @@ void QgsArcGisAsyncQuery::handleReply()
 
 QgsArcGisAsyncParallelQuery::QgsArcGisAsyncParallelQuery( QObject* parent )
     : QObject( parent )
+    , mResults( nullptr )
+    , mPendingRequests( 0 )
 {
 }
 
@@ -585,7 +595,7 @@ void QgsArcGisAsyncParallelQuery::handleReply()
   if ( mPendingRequests == 0 )
   {
     emit finished( mErrors );
-    mResults = 0;
+    mResults = nullptr;
     mErrors.clear();
   }
 }

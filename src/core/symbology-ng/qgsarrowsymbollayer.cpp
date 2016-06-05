@@ -35,6 +35,7 @@ QgsArrowSymbolLayer::QgsArrowSymbolLayer()
     , mScaledHeadHeight( 1.5 )
     , mScaledOffset( 0.0 )
     , mComputedHeadType( HeadSingle )
+    , mComputedArrowType( ArrowPlain )
 {
   /* default values */
   setOffset( 0.0 );
