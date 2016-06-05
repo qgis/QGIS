@@ -119,6 +119,9 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
   connect( checkboxEnableOrderBy, SIGNAL( toggled( bool ) ), btnOrderBy, SLOT( setEnabled( bool ) ) );
   connect( checkboxEnableOrderBy, SIGNAL( toggled( bool ) ), lineEditOrderBy, SLOT( setEnabled( bool ) ) );
   connect( btnOrderBy, SIGNAL( clicked( bool ) ), this, SLOT( showOrderByDialog() ) );
+  connect( mEffectWidget, SIGNAL( showPanel( QgsRendererWidgetContainer* ) ), this, SLOT( showPanel( QgsRendererWidgetContainer* ) ) );
+
+  mEffectWidget->setDockMode( true );
 
   syncToLayer();
 

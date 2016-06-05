@@ -92,10 +92,9 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
      */
     void widgetChanged();
 
-    /**
-     * @brief Emitted when a sub panel for the widget is opened.
-     * The renderer can open inline sub panels instead of dialogs.
-     * @param opened True of the a sub panel is opened.
+    /** Shows a panel widget inside the renderer widget.
+     * @param container widget panel to show
+     * @note added in QGIS 2.16
      */
     void showPanel( QgsRendererWidgetContainer* widget );
 

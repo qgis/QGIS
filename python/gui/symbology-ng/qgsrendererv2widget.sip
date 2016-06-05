@@ -39,12 +39,6 @@ class QgsRendererV2Widget : QWidget
      */
     void applyChanges();
 
-    /** Shows a panel widget inside the renderer widget.
-     * @param container widget panel to show
-     * @note added in QGIS 2.16
-     */
-    void showPanel( QWidget *container );
-
   signals:
     /**
      * Emitted when expression context variables on the associated
@@ -59,7 +53,12 @@ class QgsRendererV2Widget : QWidget
      */
     void widgetChanged();
 
+    /** Shows a panel widget inside the renderer widget.
+     * @param container widget panel to show
+     * @note added in QGIS 2.16
+     */
     void panelOpened( bool opened );
+
   protected:
     /** Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
       and by connecting the slot contextMenuViewCategories(const QPoint&)*/

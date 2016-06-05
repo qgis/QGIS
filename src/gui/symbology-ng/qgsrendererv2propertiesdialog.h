@@ -79,6 +79,10 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
      */
     void showPanel( QgsRendererWidgetContainer *container );
 
+    /**
+     * Closes the given panel in the stack of panels.
+     * @param container The container widget to close.
+     */
     void closePanel( QgsRendererWidgetContainer *container );
 
   private slots:

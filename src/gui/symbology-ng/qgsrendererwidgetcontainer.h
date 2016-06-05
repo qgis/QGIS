@@ -49,11 +49,24 @@ class GUI_EXPORT QgsRendererWidgetContainer : public QWidget, private Ui::QgsRen
       * Listen to this to clean up the callers state.
       */
     void accepted( QgsRendererWidgetContainer* container );
+
+    /**
+     * Emiited when the internal widget changes state.
+     * @param conatiner The container holding the widget that changed state.
+     */
     void widgetChanged( QgsRendererWidgetContainer* conatiner );
 
   public slots:
 
+    /**
+     * Accept the container. Causes accepted to be emiited.
+     */
     void accept();
+
+    /**
+     * Fire the widgetChanged event on the container. Connect your widgets dirty signal to
+     * this slot to fire the and listen to widgetChanged to handle the event.
+     */
     void emitWidgetChanged();
 
   protected:
