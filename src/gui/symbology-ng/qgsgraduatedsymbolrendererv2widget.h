@@ -119,9 +119,8 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     void refreshRanges( bool reset = false );
 
   private slots:
-
-    void cleanUpSymbolSelector();
-    void updateSymbolsFromWidget();
+    void cleanUpSymbolSelector( QgsRendererWidgetContainer* container );
+    void updateSymbolsFromWidget( QgsRendererWidgetContainer *container );
 
   protected:
     void updateUiFromRenderer( bool updateCount = true );

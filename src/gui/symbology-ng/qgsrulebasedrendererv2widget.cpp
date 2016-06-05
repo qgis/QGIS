@@ -63,8 +63,7 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
     mRenderer = new QgsRuleBasedRendererV2( symbol );
   }
 
-  setupUi( mWidgetPage );
-  QMetaObject::connectSlotsByName( this );
+  setupUi( this );
 
   mModel = new QgsRuleBasedRendererV2Model( mRenderer );
 #ifdef ENABLE_MODELTEST

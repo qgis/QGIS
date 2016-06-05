@@ -430,8 +430,7 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   mOldClassificationAttribute = attrName;
 
   // setup user interface
-  setupUi( mWidgetPage );
-  QMetaObject::connectSlotsByName( this );
+  setupUi( this );
 
   mExpressionWidget->setLayer( mLayer );
 
@@ -575,7 +574,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
   connect( dlg, SIGNAL( symbolModified() ), container, SLOT( emitWidgetChanged() ) );
   connect( container, SIGNAL( widgetChanged( QgsRendererWidgetContainer* ) ), this, SLOT( updateSymbolsFromWidget( QgsRendererWidgetContainer* ) ) );
   connect( container, SIGNAL( accepted( QgsRendererWidgetContainer* ) ), this, SLOT( cleanUpSymbolSelector( QgsRendererWidgetContainer* ) ) );
-  emit panelOpened( container );
+  emit showPanel( container );
 }
 
 void QgsCategorizedSymbolRendererV2Widget::updateCategorizedSymbolIcon()
@@ -621,7 +620,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorySymbol()
   connect( dlg, SIGNAL( symbolModified() ), container, SLOT( emitWidgetChanged() ) );
   connect( container, SIGNAL( widgetChanged( QgsRendererWidgetContainer* ) ), this, SLOT( updateSymbolsFromWidget( QgsRendererWidgetContainer* ) ) );
   connect( container, SIGNAL( accepted( QgsRendererWidgetContainer* ) ), this, SLOT( cleanUpSymbolSelector( QgsRendererWidgetContainer* ) ) );
-  emit panelOpened( container );
+  emit showPanel( container );
 }
 
 static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, QgsSymbolV2* symbol )
@@ -1005,7 +1004,6 @@ void QgsCategorizedSymbolRendererV2Widget::cleanUpSymbolSelector( QgsRendererWid
 
 void QgsCategorizedSymbolRendererV2Widget::updateSymbolsFromWidget( QgsRendererWidgetContainer* container )
 {
-  QgsDebugMsg( "UPDATE SYMBOL!!!" );
   QgsSymbolV2SelectorDialog* dlg = qobject_cast<QgsSymbolV2SelectorDialog*>( container->widget() );
   delete mCategorizedSymbol;
   mCategorizedSymbol = dlg->symbol()->clone();

@@ -46,12 +46,11 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
     QLabel* label = new QLabel( tr( "The inverted polygon renderer only applies to polygon and multipolygon layers. \n"
                                     "'%1' is not a polygon layer and then cannot be displayed" )
                                 .arg( layer->name() ), this );
-    mWidgetPage->setLayout( layout );
+    this->setLayout( layout );
     layout->addWidget( label );
     return;
   }
-  setupUi( mWidgetPage );
-  QMetaObject::connectSlotsByName( this );
+  setupUi( this );
 
   // try to recognize the previous renderer
   // (null renderer means "no previous renderer")
@@ -130,12 +129,12 @@ void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged(
     connect( mEmbeddedRendererWidget.data(), SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
     mEmbeddedRendererWidget->setMapCanvas( mMapCanvas );
 
-    if ( mWidgetPage->layout()->count() > 2 )
+    if ( layout()->count() > 2 )
     {
       // remove the current renderer widget
-      mWidgetPage->layout()->takeAt( 2 );
+      layout()->takeAt( 2 );
     }
-    mWidgetPage->layout()->addWidget( mEmbeddedRendererWidget.data() );
+    layout()->addWidget( mEmbeddedRendererWidget.data() );
   }
 }
 

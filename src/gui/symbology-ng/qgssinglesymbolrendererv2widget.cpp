@@ -54,9 +54,9 @@ QgsSingleSymbolRendererV2Widget::QgsSingleSymbolRendererV2Widget( QgsVectorLayer
   mSelector = new QgsSymbolV2SelectorDialog( mSingleSymbol, mStyle, mLayer, nullptr, true );
   connect( mSelector, SIGNAL( symbolModified() ), this, SLOT( changeSingleSymbol() ) );
 
-  QVBoxLayout* layout = new QVBoxLayout( mWidgetPage );
+  QVBoxLayout* layout = new QVBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
-  mWidgetPage->layout()->addWidget( mSelector );
+  layout->addWidget( mSelector );
 
   // advanced actions - data defined rendering
   QMenu* advMenu = mSelector->advancedMenu();

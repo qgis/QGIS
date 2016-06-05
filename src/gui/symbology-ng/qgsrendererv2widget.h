@@ -39,7 +39,7 @@ WORKFLOW:
 - on any change of renderer type, create some default (dummy?) version and change the stacked widget
 - when clicked ok/apply, get the renderer from active widget and clone it for the layer
 */
-class GUI_EXPORT QgsRendererV2Widget : public QStackedWidget
+class GUI_EXPORT QgsRendererV2Widget : public QWidget
 {
     Q_OBJECT
   public:
@@ -97,10 +97,9 @@ class GUI_EXPORT QgsRendererV2Widget : public QStackedWidget
      * The renderer can open inline sub panels instead of dialogs.
      * @param opened True of the a sub panel is opened.
      */
-    void panelOpened( QgsRendererWidgetContainer* widget );
+    void showPanel( QgsRendererWidgetContainer* widget );
 
   protected:
-    QWidget* mWidgetPage;
     QgsVectorLayer* mLayer;
     QgsStyleV2* mStyle;
     QMenu* contextMenu;

@@ -73,12 +73,11 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsSt
     QLabel* label = new QLabel( tr( "The heatmap renderer only applies to point and multipoint layers. \n"
                                     "'%1' is not a point layer and cannot be rendered as a heatmap." )
                                 .arg( layer->name() ), this );
-    mWidgetPage->layout()->addWidget( label );
+    layout()->addWidget( label );
     return;
   }
 
-  setupUi( mWidgetPage );
-  QMetaObject::connectSlotsByName( this );
+  setupUi( this );
 
   mRadiusUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::Pixel << QgsSymbolV2::MapUnit );
   mWeightExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );

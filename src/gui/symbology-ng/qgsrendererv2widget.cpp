@@ -25,14 +25,11 @@
 #include <QMenu>
 
 QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style )
-    : QStackedWidget()
+    : QWidget()
     , mLayer( layer )
     , mStyle( style )
     , mMapCanvas( nullptr )
 {
-  mWidgetPage = new QWidget();
-  this->addWidget( mWidgetPage );
-
   contextMenu = new QMenu( tr( "Renderer Options" ), this );
 
   mCopyAction = contextMenu->addAction( tr( "Copy" ), this, SLOT( copy() ) );
