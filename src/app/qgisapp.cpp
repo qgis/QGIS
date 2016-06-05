@@ -587,7 +587,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 
   smInstance = this;
-  profiler = QgsRuntimeProfiler::instance();
+  QgsRuntimeProfiler* profiler = QgsApplication::profiler();
 
   namSetup();
 
@@ -11041,12 +11041,12 @@ void QgisApp::keyPressEvent( QKeyEvent * e )
 
 void QgisApp::startProfile( const QString& name )
 {
-  profiler->start( name );
+  QgsApplication::profiler()->start( name );
 }
 
 void QgisApp::endProfile()
 {
-  profiler->end();
+  QgsApplication::profiler()->end();
 }
 
 void QgisApp::functionProfile( void ( QgisApp::*fnc )(), QgisApp* instance, QString name )

@@ -22,6 +22,8 @@
 #include <qgis.h>
 #include <qgsconfig.h>
 
+class QgsRuntimeProfiler;
+
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
  * as theme paths, database paths etc.
@@ -54,6 +56,8 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     //! Catch exceptions when sending event to receiver.
     virtual bool notify( QObject * receiver, QEvent * event ) override;
+
+    static QgsRuntimeProfiler* profiler();
 
     //! Set the FileOpen event receiver
     static void setFileOpenEventReceiver( QObject * receiver );
@@ -370,6 +374,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
   private:
     static void copyPath( const QString& src, const QString& dst );
+    static QgsRuntimeProfiler* ABISYM( mProfiler );
     static QObject* ABISYM( mFileOpenEventReceiver );
     static QStringList ABISYM( mFileOpenEventList );
 

@@ -2,15 +2,6 @@
 #include "qgslogger.h"
 
 
-QgsRuntimeProfiler* QgsRuntimeProfiler::mInstance = nullptr;
-
-QgsRuntimeProfiler* QgsRuntimeProfiler::instance()
-{
-  if ( !mInstance )
-    mInstance = new QgsRuntimeProfiler();
-  return mInstance;
-}
-
 QgsRuntimeProfiler::QgsRuntimeProfiler()
 {
 
