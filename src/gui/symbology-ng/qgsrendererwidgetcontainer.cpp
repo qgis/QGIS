@@ -19,6 +19,7 @@
 
 QgsRendererWidgetContainer::QgsRendererWidgetContainer( QWidget *widget, const QString& title, QWidget *parent )
     : QWidget( parent )
+    , mWidget( widget )
 {
   setupUi( this );
   mWidgetLayout->addWidget( widget );
@@ -26,18 +27,28 @@ QgsRendererWidgetContainer::QgsRendererWidgetContainer( QWidget *widget, const Q
   mTitleText->setText( title );
   QPushButton* button = mButtonBox->button( QDialogButtonBox::Close );
   button->setDefault( true );
-  connect( button, SIGNAL( pressed() ), this, SIGNAL( accepted() ) );
+  connect( button, SIGNAL( pressed() ), this, SLOT( accept() ) );
 }
 
 QWidget *QgsRendererWidgetContainer::widget()
 {
-  return mWidgetLayout->itemAt( 0 )->widget() ;
+  return mWidget;
+}
+
+void QgsRendererWidgetContainer::accept()
+{
+  emit accepted( this );
+}
+
+void QgsRendererWidgetContainer::emitWidgetChanged()
+{
+  emit widgetChanged( this );
 }
 
 void QgsRendererWidgetContainer::keyPressEvent( QKeyEvent *event )
 {
   if ( event->key() == Qt::Key_Escape )
   {
-    emit accepted();
+    accept();
   }
 }

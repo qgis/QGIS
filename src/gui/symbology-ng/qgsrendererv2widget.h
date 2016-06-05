@@ -26,6 +26,7 @@ class QgsStyleV2;
 class QgsFeatureRendererV2;
 class QgsSymbolV2SelectorDialog;
 class QgsMapCanvas;
+class QgsRendererWidgetContainer;
 
 
 /**
@@ -76,11 +77,6 @@ class GUI_EXPORT QgsRendererV2Widget : public QStackedWidget
      */
     void applyChanges();
 
-    /** Shows a panel widget inside the renderer widget.
-     * @param container widget panel to show
-     * @note added in QGIS 2.16
-     */
-    void showPanel( QWidget *container );
 
   signals:
     /**
@@ -101,7 +97,7 @@ class GUI_EXPORT QgsRendererV2Widget : public QStackedWidget
      * The renderer can open inline sub panels instead of dialogs.
      * @param opened True of the a sub panel is opened.
      */
-    void panelOpened( bool opened );
+    void panelOpened( QgsRendererWidgetContainer* widget );
 
   protected:
     QWidget* mWidgetPage;

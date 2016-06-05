@@ -699,7 +699,6 @@ void QgsGraduatedSymbolRendererV2Widget::cleanUpSymbolSelector()
     delete dlg->symbol();
     container->deleteLater();
     this->setCurrentIndex( 0 );
-    emit panelOpened( false );
   }
 }
 
@@ -841,9 +840,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
   QgsRendererWidgetContainer* container = new  QgsRendererWidgetContainer( dlg, "Select Symbol", nullptr );
   connect( dlg, SIGNAL( symbolModified() ), this, SLOT( updateSymbolsFromWidget() ) );
   connect( container, SIGNAL( accepted() ), this, SLOT( cleanUpSymbolSelector() ) );
-  int page = this->addWidget( container );
-  this->setCurrentIndex( page );
-  emit panelOpened( true );
+  emit panelOpened( container );
 }
 
 void QgsGraduatedSymbolRendererV2Widget::updateGraduatedSymbolIcon()
@@ -922,7 +919,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeRangeSymbol( int rangeIdx )
   QgsRendererWidgetContainer* container = new  QgsRendererWidgetContainer( dlg, "Select Symbol", nullptr );
   connect( dlg, SIGNAL( symbolModified() ), this, SLOT( updateSymbolsFromWidget() ) );
   connect( container, SIGNAL( accepted() ), this, SLOT( cleanUpSymbolSelector() ) );
-  this->showPanel( container );
+  emit panelOpened( container );
 }
 
 void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )

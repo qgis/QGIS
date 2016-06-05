@@ -48,9 +48,13 @@ class GUI_EXPORT QgsRendererWidgetContainer : public QWidget, private Ui::QgsRen
       * @brief Emitted when the container is accpeted and closed.
       * Listen to this to clean up the callers state.
       */
-    void accepted();
+    void accepted( QgsRendererWidgetContainer* container );
+    void widgetChanged( QgsRendererWidgetContainer* conatiner );
 
   public slots:
+
+    void accept();
+    void emitWidgetChanged();
 
   protected:
     /**
@@ -58,6 +62,9 @@ class GUI_EXPORT QgsRendererWidgetContainer : public QWidget, private Ui::QgsRen
      * @param event The key event
      */
     void keyPressEvent( QKeyEvent* event );
+
+  private:
+    QWidget* mWidget;
 
 };
 

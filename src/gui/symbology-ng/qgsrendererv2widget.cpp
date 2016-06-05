@@ -274,12 +274,6 @@ void QgsRendererV2Widget::applyChanges()
   apply();
 }
 
-void QgsRendererV2Widget::showPanel( QWidget* container )
-{
-  int page = this->addWidget( container );
-  this->setCurrentIndex( page );
-  emit panelOpened( true );
-}
 
 
 ////////////

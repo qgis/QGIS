@@ -27,6 +27,7 @@
 #include "qgsheatmaprendererwidget.h"
 #include "qgs25drendererwidget.h"
 #include "qgsnullsymbolrendererwidget.h"
+#include "qgsrendererwidgetcontainer.h"
 
 #include "qgsorderbydialog.h"
 #include "qgsapplication.h"
@@ -244,6 +245,7 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
       connect( mActiveWidget, SIGNAL( layerVariablesChanged() ), this, SIGNAL( layerVariablesChanged() ) );
     }
     connect( mActiveWidget, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
+    connect( mActiveWidget, SIGNAL( panelOpened( QgsRendererWidgetContainer* ) ), this, SLOT( showPanel( QgsRendererWidgetContainer* ) ) );
   }
   else
   {
@@ -284,6 +286,21 @@ void QgsRendererV2PropertiesDialog::onOK()
 {
   apply();
   accept();
+}
+
+void QgsRendererV2PropertiesDialog::showPanel( QgsRendererWidgetContainer *container )
+{
+  connect( container, SIGNAL( accepted( QgsRendererWidgetContainer* ) ), this, SLOT( closePanel( QgsRendererWidgetContainer* ) ) );
+
+  int page = this->mainStack->addWidget( container );
+  this->mainStack->setCurrentIndex( page );
+}
+
+void QgsRendererV2PropertiesDialog::closePanel( QgsRendererWidgetContainer *container )
+{
+  this->mainStack->removeWidget( container );
+  this->mainStack->setCurrentIndex( this->mainStack->currentIndex() - 1 );
+  container->deleteLater();
 }
 
 void QgsRendererV2PropertiesDialog::syncToLayer()
