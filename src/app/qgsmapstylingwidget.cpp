@@ -368,16 +368,6 @@ void QgsMapStylingWidget::layerAboutToBeRemoved( QgsMapLayer* layer )
   }
 }
 
-void QgsMapStylingWidget::syncWidgetState()
-{
-  QWidget* current = mWidgetArea->widget();
-
-  if ( QgsRendererV2PropertiesDialog* widget = qobject_cast<QgsRendererV2PropertiesDialog*>( current ) )
-  {
-    widget->syncToLayer();
-  }
-}
-
 void QgsMapStylingWidget::pushUndoItem( const QString &name )
 {
   QString errorMsg;

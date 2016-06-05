@@ -72,14 +72,14 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
     //! Apply and accept the changes for the dialog.
     void onOK();
 
-    void syncToLayer();
-
   private slots:
     void showOrderByDialog();
 
     void changeOrderBy( const QgsFeatureRequest::OrderBy& orderBy, bool orderByEnabled );
 
     void updateUIState( bool hidden );
+
+    void syncToLayer();
 
   protected:
     /**
@@ -91,8 +91,6 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
      * @param slot The slot to connect to the signals.
      */
     void connectValueChanged( QList<QWidget *> widgets, const char *slot );
-
-    void disconnectValueChanged( QList<QWidget *> widgets, const char *slot );
 
     //! Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent * event ) override;

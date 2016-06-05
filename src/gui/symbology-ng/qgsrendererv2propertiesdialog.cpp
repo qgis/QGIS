@@ -120,6 +120,18 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
   connect( btnOrderBy, SIGNAL( clicked( bool ) ), this, SLOT( showOrderByDialog() ) );
 
   syncToLayer();
+
+  QList<QWidget*> widgets;
+  widgets << mLayerTransparencySpnBx
+  << cboRenderers
+  << checkboxEnableOrderBy
+  << lineEditOrderBy
+  << mBlendModeComboBox
+  << mFeatureBlendComboBox
+  << mEffectWidget;
+
+
+  connectValueChanged( widgets, SIGNAL( widgetChanged() ) );
 }
 
 void QgsRendererV2PropertiesDialog::connectValueChanged( QList<QWidget *> widgets, const char *slot )
@@ -158,49 +170,13 @@ void QgsRendererV2PropertiesDialog::connectValueChanged( QList<QWidget *> widget
     else if ( QLineEdit* w =  qobject_cast<QLineEdit*>( widget ) )
     {
       connect( w, SIGNAL( textEdited( QString ) ), this, slot );
+      connect( w, SIGNAL( textChanged( QString ) ), this, slot );
+    }
+    else if ( QgsEffectStackCompactWidget* w = qobject_cast<QgsEffectStackCompactWidget*>( widget ) )
+    {
+      connect( w, SIGNAL( changed() ), this, slot );
     }
   }
-}
-
-void QgsRendererV2PropertiesDialog::disconnectValueChanged( QList<QWidget *> widgets, const char *slot )
-{
-  Q_FOREACH ( QWidget* widget, widgets )
-  {
-    if ( QgsDataDefinedButton* w = qobject_cast<QgsDataDefinedButton*>( widget ) )
-    {
-      disconnect( w, SIGNAL( dataDefinedActivated( bool ) ), this, slot );
-      disconnect( w, SIGNAL( dataDefinedChanged( QString ) ), this, slot );
-    }
-    else if ( QgsFieldExpressionWidget* w = qobject_cast<QgsFieldExpressionWidget*>( widget ) )
-    {
-      disconnect( w, SIGNAL( fieldChanged( QString ) ), this,  slot );
-    }
-    else if ( QComboBox* w =  qobject_cast<QComboBox*>( widget ) )
-    {
-      disconnect( w, SIGNAL( currentIndexChanged( int ) ), this, slot );
-    }
-    else if ( QSpinBox* w =  qobject_cast<QSpinBox*>( widget ) )
-    {
-      disconnect( w, SIGNAL( valueChanged( int ) ), this, slot );
-    }
-    else if ( QDoubleSpinBox* w =  qobject_cast<QDoubleSpinBox*>( widget ) )
-    {
-      disconnect( w , SIGNAL( valueChanged( double ) ), this, slot );
-    }
-    else if ( QgsColorButtonV2* w =  qobject_cast<QgsColorButtonV2*>( widget ) )
-    {
-      disconnect( w, SIGNAL( colorChanged( QColor ) ), this, slot );
-    }
-    else if ( QCheckBox* w =  qobject_cast<QCheckBox*>( widget ) )
-    {
-      disconnect( w, SIGNAL( toggled( bool ) ), this, slot );
-    }
-    else if ( QLineEdit* w =  qobject_cast<QLineEdit*>( widget ) )
-    {
-      disconnect( w, SIGNAL( textEdited( QString ) ), this, slot );
-    }
-  }
-
 }
 
 QgsRendererV2PropertiesDialog::~QgsRendererV2PropertiesDialog()
@@ -312,8 +288,6 @@ void QgsRendererV2PropertiesDialog::onOK()
 
 void QgsRendererV2PropertiesDialog::syncToLayer()
 {
-  QgsDebugMsg( "SYNC TO LAYER!!" );
-  disconnectValueChanged( findChildren<QWidget*>(), SIGNAL( widgetChanged() ) );
   // Blend mode
   mBlendModeComboBox->setBlendMode( mLayer->blendMode() );
 
@@ -324,7 +298,6 @@ void QgsRendererV2PropertiesDialog::syncToLayer()
   mLayerTransparencySlider->setValue( mLayer->layerTransparency() );
   mLayerTransparencySpnBx->setValue( mLayer->layerTransparency() );
 
-  QgsDebugMsg( QString( "VALUE: %1" ).arg( mLayer->layerTransparency() ) );
   //paint effect widget
   if ( mLayer->rendererV2() )
   {
@@ -362,7 +335,6 @@ void QgsRendererV2PropertiesDialog::syncToLayer()
   // no renderer found... this mustn't happen
   Q_ASSERT( rendererIdx != -1 && "there must be a renderer!" );
 
-  connectValueChanged( findChildren<QWidget*>(), SIGNAL( widgetChanged() ) );
 }
 
 void QgsRendererV2PropertiesDialog::showOrderByDialog()
