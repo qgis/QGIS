@@ -24,6 +24,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsproviderregistry.h"
 #include "qgsexpression.h"
+#include "qgsruntimeprofiler.h"
 
 #include <QDir>
 #include <QFile>
@@ -65,6 +66,7 @@ QString ABISYM( QgsApplication::mLibraryPath );
 QString ABISYM( QgsApplication::mLibexecPath );
 QString ABISYM( QgsApplication::mThemeName );
 QString ABISYM( QgsApplication::mUIThemeName );
+QgsRuntimeProfiler* ABISYM( QgsApplication::mProfiler );
 QStringList ABISYM( QgsApplication::mDefaultSvgPaths );
 QMap<QString, QString> ABISYM( QgsApplication::mSystemEnvVars );
 QString ABISYM( QgsApplication::mConfigPath );
@@ -300,6 +302,13 @@ bool QgsApplication::notify( QObject * receiver, QEvent * event )
   }
 
   return done;
+}
+
+QgsRuntimeProfiler *QgsApplication::profiler()
+{
+  if ( !ABISYM( mProfiler ) )
+    ABISYM( mProfiler ) = new QgsRuntimeProfiler();
+  return ABISYM( mProfiler );
 }
 
 void QgsApplication::setFileOpenEventReceiver( QObject * receiver )
