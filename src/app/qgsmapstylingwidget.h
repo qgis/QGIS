@@ -79,10 +79,13 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget, private Ui::QgsMapStyling
     void setLayer( QgsMapLayer* layer );
     void apply();
     void autoApply();
+    void undo();
+    void redo();
 
   private slots:
     void updateCurrentWidgetLayer();
     void layerAboutToBeRemoved( QgsMapLayer* layer );
+    void syncWidgetState();
 
   private:
     void pushUndoItem( const QString& name );
