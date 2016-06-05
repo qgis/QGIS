@@ -23,6 +23,7 @@
 #include <qgsconfig.h>
 
 class QgsActionScopeRegistry;
+class QgsRuntimeProfiler;
 
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
@@ -381,6 +382,12 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QgsActionScopeRegistry* actionScopeRegistry();
 
+    /**
+     * Returns the application runtime profiler.
+     * @note added in QGIS 3.0
+     */
+    static QgsRuntimeProfiler* profiler();
+
   public slots:
 
     /** Causes the application instance to emit the settingsChanged() signal. This should
@@ -448,6 +455,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     QMap<QString, QIcon> mIconCache;
 
     QgsActionScopeRegistry* mActionScopeRegistry;
+    QgsRuntimeProfiler* mProfiler;
 };
 
 #endif

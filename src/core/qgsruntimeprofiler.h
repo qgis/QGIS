@@ -18,13 +18,6 @@ class CORE_EXPORT QgsRuntimeProfiler
     QgsRuntimeProfiler();
 
     /**
-     * @brief Instance of the run time profiler. To use the main profiler
-     * use this instance.
-     * @return The instance of the run time profiler
-     */
-    static QgsRuntimeProfiler * instance();
-
-    /**
      * @brief Begin the group for the profiler. Groups will append {GroupName}/ to the
      * front of the profile tag set using start.
      * @param name The name of the group.
@@ -67,8 +60,6 @@ class CORE_EXPORT QgsRuntimeProfiler
     double totalTime();
 
   private:
-    static QgsRuntimeProfiler* mInstance;
-
     QString mGroupPrefix;
     QStack<QString> mGroupStack;
     QTime mProfileTime;

@@ -564,7 +564,6 @@ QgisApp *QgisApp::smInstance = nullptr;
 // constructor starts here
 QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, QWidget * parent, Qt::WindowFlags fl )
     : QMainWindow( parent, fl )
-    , mProfiler( nullptr )
     , mNonEditMapTool( nullptr )
     , mScaleWidget( nullptr )
     , mMagnifierWidget( nullptr )
@@ -609,13 +608,13 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 
   smInstance = this;
-  mProfiler = QgsRuntimeProfiler::instance();
+  QgsRuntimeProfiler* profiler = QgsApplication::profiler();
 
   namSetup();
 
   // load GUI: actions, menus, toolbars
-  mProfiler->beginGroup( QStringLiteral( "qgisapp" ) );
-  mProfiler->beginGroup( QStringLiteral( "startup" ) );
+  profiler->beginGroup( QStringLiteral( "qgisapp" ) );
+  profiler->beginGroup( QStringLiteral( "startup" ) );
   startProfile( QStringLiteral( "Setting up UI" ) );
   setupUi( this );
   endProfile();
@@ -1105,13 +1104,12 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 #ifdef ANDROID
   toggleFullScreen();
 #endif
-  mProfiler->endGroup();
-  mProfiler->endGroup();
+  profiler->endGroup();
 
   QgsDebugMsg( "PROFILE TIMES" );
-  QgsDebugMsg( QString( "PROFILE TIMES TOTAL - %1 " ).arg( mProfiler->totalTime() ) );
+  QgsDebugMsg( QString( "PROFILE TIMES TOTAL - %1 " ).arg( profiler->totalTime() ) );
 #ifdef QGISDEBUG
-  QList<QPair<QString, double> > profileTimes = mProfiler->profileTimes();
+  QList<QPair<QString, double> > profileTimes = profiler->profileTimes();
   QList<QPair<QString, double> >::const_iterator it = profileTimes.constBegin();
   for ( ; it != profileTimes.constEnd(); ++it )
   {
@@ -1125,7 +1123,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
 QgisApp::QgisApp()
     : QMainWindow( nullptr, 0 )
-    , mProfiler( nullptr )
     , mStyleSheetBuilder( nullptr )
     , mActionPluginSeparator1( nullptr )
     , mActionPluginSeparator2( nullptr )
@@ -11265,12 +11262,12 @@ void QgisApp::onSnappingConfigChanged()
 
 void QgisApp::startProfile( const QString& name )
 {
-  mProfiler->start( name );
+  QgsApplication::profiler()->start( name );
 }
 
 void QgisApp::endProfile()
 {
-  mProfiler->end();
+  QgsApplication::profiler()->end();
 }
 
 void QgisApp::functionProfile( void ( QgisApp::*fnc )(), QgisApp* instance, QString name )

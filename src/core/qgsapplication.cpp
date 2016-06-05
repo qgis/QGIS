@@ -24,6 +24,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsexpression.h"
 #include "qgsactionscoperegistry.h"
+#include "qgsruntimeprofiler.h"
 
 #include <QDir>
 #include <QFile>
@@ -104,6 +105,7 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, const
 {
   sPlatformName = platformName;
 
+  mProfiler = new QgsRuntimeProfiler();
   mActionScopeRegistry = new QgsActionScopeRegistry();
 
   init( customConfigPath ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
@@ -237,6 +239,7 @@ void QgsApplication::init( QString customConfigPath )
 QgsApplication::~QgsApplication()
 {
   delete mActionScopeRegistry;
+  delete mProfiler;
 }
 
 QgsApplication* QgsApplication::instance()
@@ -308,6 +311,11 @@ bool QgsApplication::notify( QObject * receiver, QEvent * event )
   }
 
   return done;
+}
+
+QgsRuntimeProfiler *QgsApplication::profiler()
+{
+  return instance()->mProfiler;
 }
 
 void QgsApplication::setFileOpenEventReceiver( QObject * receiver )

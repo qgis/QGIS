@@ -385,6 +385,12 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      */
     static QgsActionScopeRegistry* actionScopeRegistry();
 
+    /**
+     * Returns the application runtime profiler.
+     * @note added in QGIS 3.0
+     */
+    static QgsRuntimeProfiler* profiler();
+
   public slots:
 
     /** Causes the application instance to emit the settingsChanged() signal. This should

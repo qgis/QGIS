@@ -1363,6 +1363,10 @@ QgsRuleBasedRendererWidget        {#qgis_api_break_3_0_QgsRuleBasedRendererWidge
 
 - refineRuleCategoriesGui() and refineRuleRangesGui() no longer take a QModelIndexList argument.
 
+QgsRuntimeProfiler        {#qgis_api_break_3_0_QgsRuntimeProfiler}
+------------------
+
+- This class is no longer a singleton and instance() has been removed. Instead use QgsApplication::profiler() to access an application-wide profiler.
 
 QgsSimpleMarkerSymbolLayer        {#qgis_api_break_3_0_QgsSimpleMarkerSymbolLayer}
 --------------------------
