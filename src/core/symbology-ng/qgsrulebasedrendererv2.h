@@ -136,6 +136,11 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
          */
         QSet<QString> usedAttributes() const;
 
+        /**
+         * Returns true if this rule or one of its chilren needs the geometry to be applied.
+         */
+        bool needsGeometry() const;
+
         //! @note available in python bindings as symbol2
         QgsSymbolV2List symbols( const QgsRenderContext& context = QgsRenderContext() ) const;
 
@@ -427,6 +432,8 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     virtual QString filter( const QgsFields& fields = QgsFields() ) override;
 
     virtual QList<QString> usedAttributes() override;
+
+    virtual bool filterNeedsGeometry() const override;
 
     virtual QgsRuleBasedRendererV2* clone() const override;
 

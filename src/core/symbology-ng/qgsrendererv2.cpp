@@ -153,6 +153,11 @@ void QgsFeatureRendererV2::startRender( QgsRenderContext& context, const QgsVect
   startRender( context, vlayer->fields() );
 }
 
+bool QgsFeatureRendererV2::filterNeedsGeometry() const
+{
+  return false;
+}
+
 bool QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {
   QgsSymbolV2* symbol = symbolForFeature( feature, context );

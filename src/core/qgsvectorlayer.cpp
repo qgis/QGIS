@@ -881,7 +881,11 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   }
   int featuresCounted = 0;
 
-  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );
+  QgsFeatureRequest request;
+  if ( !mRendererV2->filterNeedsGeometry() )
+    request.setFlags( QgsFeatureRequest::NoGeometry );
+  request.setSubsetOfAttributes( mRendererV2->usedAttributes(), mUpdatedFields );
+  QgsFeatureIterator fit = getFeatures( request );
   QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures interruptionCheck( &progressDialog );
   if ( showProgress )
   {
