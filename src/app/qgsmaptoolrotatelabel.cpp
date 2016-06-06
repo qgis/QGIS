@@ -173,7 +173,7 @@ void QgsMapToolRotateLabel::canvasReleaseEvent( QgsMapMouseEvent* e )
   vlayer->beginEditCommand( tr( "Rotated label" ) + QString( " '%1'" ).arg( currentLabelText( 24 ) ) );
   vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rotationCol, rotation );
   vlayer->endEditCommand();
-  mCanvas->refresh();
+  vlayer->triggerRepaint();
 }
 
 int QgsMapToolRotateLabel::roundTo15Degrees( double n )
