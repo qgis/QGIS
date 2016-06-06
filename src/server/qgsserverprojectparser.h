@@ -67,7 +67,7 @@ class SERVER_EXPORT QgsServerProjectParser
 
     bool crsSetForLayer( const QDomElement& layerElement, QSet<QString> &crsSet ) const;
 
-    const QgsCoordinateReferenceSystem& projectCRS() const;
+    QgsCoordinateReferenceSystem projectCRS() const;
 
     QgsRectangle mapRectangle() const;
 

@@ -22,6 +22,7 @@
 #include "qgswmssourceselect.h"
 #include "qgsnewhttpconnection.h"
 #include "qgstilescalewidget.h"
+#include "qgscrscache.h"
 
 // ---------------------------------------------------------------------------
 QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri )
@@ -275,7 +276,7 @@ QString QgsWMSLayerItem::createUri()
   QgsCoordinateReferenceSystem testCrs;
   Q_FOREACH ( const QString& c, mLayerProperty.crs )
   {
-    testCrs.createFromOgcWmsCrs( c );
+    testCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( c );
     if ( testCrs.isValid() )
     {
       crs = c;

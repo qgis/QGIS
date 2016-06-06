@@ -29,6 +29,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsslconnect.h"
+#include "qgscrscache.h"
 
 #include "qgslogger.h"
 
@@ -74,8 +75,7 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   mOkButton->setEnabled( false );
 
   // Set the SRID box to a default of WGS84
-  QgsCoordinateReferenceSystem srs;
-  srs.createFromOgcWmsCrs( settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString() );
+  QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsByOgcWmsCrs( settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString() );
   srs.validate();
   mCrsId = srs.authid();
   leSRID->setText( srs.authid() + " - " + srs.description() );
@@ -244,8 +244,7 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
 
   if ( mySelector->exec() )
   {
-    QgsCoordinateReferenceSystem srs;
-    srs.createFromOgcWmsCrs( mySelector->selectedAuthId() );
+    QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsByOgcWmsCrs( mySelector->selectedAuthId() );
     QString crsId = srs.authid();
     if ( crsId != mCrsId )
     {

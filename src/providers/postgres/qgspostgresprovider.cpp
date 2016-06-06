@@ -37,6 +37,7 @@
 #include "qgspostgresfeatureiterator.h"
 #include "qgspostgrestransaction.h"
 #include "qgslogger.h"
+#include "qgscrscache.h"
 
 const QString POSTGRES_KEY = "postgres";
 const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
@@ -3700,7 +3701,7 @@ QgsCoordinateReferenceSystem QgsPostgresProvider::crs()
   {
     QgsPostgresResult result( connectionRO()->PQexec( QString( "SELECT proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( srid ) ) );
     if ( result.PQresultStatus() == PGRES_TUPLES_OK )
-      srs.createFromProj4( result.PQgetvalue( 0, 0 ) );
+      srs = QgsCRSCache::instance()->crsByProj4( result.PQgetvalue( 0, 0 ) );
   }
   return srs;
 }

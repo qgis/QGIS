@@ -85,7 +85,7 @@ void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDo
     return;
   }
 
-  const QgsCoordinateReferenceSystem& wgs84 = QgsCRSCache::instance()->crsByAuthId( GEO_EPSG_CRS_AUTHID );
+  QgsCoordinateReferenceSystem wgs84 = QgsCRSCache::instance()->crsByOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
 
   QString version = doc.documentElement().attribute( "version" );
 
@@ -186,7 +186,7 @@ void QgsConfigParserUtils::appendLayerBoundingBox( QDomElement& layerElem, QDomD
 
   QString version = doc.documentElement().attribute( "version" );
 
-  const QgsCoordinateReferenceSystem& crs = QgsCRSCache::instance()->crsByAuthId( crsText );
+  QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsByOgcWmsCrs( crsText );
 
   //transform the layers native CRS into CRS
   QgsRectangle crsExtent;

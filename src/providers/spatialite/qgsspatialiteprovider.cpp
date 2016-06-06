@@ -29,6 +29,7 @@ email                : a.furieri@lqt.it
 #include "qgsspatialiteprovider.h"
 #include "qgsspatialiteconnpool.h"
 #include "qgsspatialitefeatureiterator.h"
+#include "qgscrscache.h"
 
 #include <QMessageBox>
 #include <QFileInfo>
@@ -3325,11 +3326,10 @@ long QgsSpatiaLiteProvider::featureCount() const
 
 QgsCoordinateReferenceSystem QgsSpatiaLiteProvider::crs()
 {
-  QgsCoordinateReferenceSystem srs;
-  srs.createFromOgcWmsCrs( mAuthId );
+  QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsByOgcWmsCrs( mAuthId );
   if ( !srs.isValid() )
   {
-    srs.createFromProj4( mProj4text );
+    srs = QgsCRSCache::instance()->crsByProj4( mProj4text );
     //TODO: createFromProj4 used to save to the user database any new CRS
     // this behavior was changed in order to separate creation and saving.
     // Not sure if it necessary to save it here, should be checked by someone

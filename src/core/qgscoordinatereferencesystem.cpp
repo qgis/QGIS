@@ -263,7 +263,7 @@ void QgsCoordinateReferenceSystem::validate()
 
   if ( !d->mIsValid )
   {
-    *this = QgsCRSCache::instance()->crsByAuthId( GEO_EPSG_CRS_AUTHID );
+    *this = QgsCRSCache::instance()->crsByOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
   }
 }
 
@@ -1142,7 +1142,7 @@ bool QgsCoordinateReferenceSystem::readXML( const QDomNode & theNode )
       myNode = srsNode.namedItem( "authid" );
       if ( !myNode.isNull() )
       {
-        operator=( QgsCRSCache::instance()->crsByAuthId( myNode.toElement().text() ) );
+        operator=( QgsCRSCache::instance()->crsByOgcWmsCrs( myNode.toElement().text() ) );
         if ( isValid() )
         {
           initialized = true;

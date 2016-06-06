@@ -20,6 +20,7 @@
 #include "qgslogger.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayer.h"
+#include "qgscrscache.h"
 #include <QDomElement>
 
 QgsHostedVDSBuilder::QgsHostedVDSBuilder(): QgsMSLayerBuilder()
@@ -94,8 +95,7 @@ QgsMapLayer* QgsHostedVDSBuilder::createMapLayer( const QDomElement& elem,
       if ( conversionOk )
       {
         //set spatial ref sys
-        QgsCoordinateReferenceSystem srs;
-        srs.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgnr ) );
+        QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsByOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgnr ) );
         ml->setCrs( srs );
       }
     }

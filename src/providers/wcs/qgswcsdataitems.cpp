@@ -20,6 +20,7 @@
 #include "qgswcssourceselect.h"
 #include "qgsowsconnection.h"
 #include "qgsnewhttpconnection.h"
+#include "qgscrscache.h"
 
 #include <QFileInfo>
 #include <QSettings>
@@ -196,7 +197,7 @@ QString QgsWCSLayerItem::createUri()
   QgsCoordinateReferenceSystem testCrs;
   Q_FOREACH ( const QString& c, mCoverageSummary.supportedCrs )
   {
-    testCrs.createFromOgcWmsCrs( c );
+    testCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( c );
     if ( testCrs.isValid() )
     {
       crs = c;

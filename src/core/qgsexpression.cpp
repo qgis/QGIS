@@ -49,6 +49,7 @@
 #include "qgscurvepolygonv2.h"
 #include "qgsexpressionprivate.h"
 #include "qgsexpressionsorter.h"
+#include "qgscrscache.h"
 
 #if QT_VERSION < 0x050000
 #include <qtextdocument.h>
@@ -2974,11 +2975,11 @@ static QVariant fcnTransformGeometry( const QVariantList& values, const QgsExpre
   QString sAuthId = getStringValue( values.at( 1 ), parent );
   QString dAuthId = getStringValue( values.at( 2 ), parent );
 
-  QgsCoordinateReferenceSystem s;
-  if ( ! s.createFromOgcWmsCrs( sAuthId ) )
+  QgsCoordinateReferenceSystem s = QgsCRSCache::instance()->crsByOgcWmsCrs( sAuthId );
+  if ( ! s.isValid() )
     return QVariant::fromValue( fGeom );
-  QgsCoordinateReferenceSystem d;
-  if ( ! d.createFromOgcWmsCrs( dAuthId ) )
+  QgsCoordinateReferenceSystem d = QgsCRSCache::instance()->crsByOgcWmsCrs( dAuthId );
+  if ( ! d.isValid() )
     return QVariant::fromValue( fGeom );
 
   QgsCoordinateTransform t( s, d );
