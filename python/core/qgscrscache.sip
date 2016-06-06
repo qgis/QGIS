@@ -41,6 +41,9 @@ class QgsCRSCache
 
   public:
 
+    //! Returns a pointer to the QgsCRSCache singleton
+    static QgsCRSCache* instance();
+
     /** Returns the CRS for authid, e.g. 'EPSG:4326' (or an invalid CRS in case of error)
      * @deprecated use crsByOgcWmsCrs() instead
     */
