@@ -68,7 +68,7 @@ QgsServerProjectParser* QgsConfigCache::serverConfiguration( const QString& file
     QgsMessageLog::logMessage(
       QString(
         "\n========================================================================="
-        "\n= WARNING: This project file was saved by an defferent version of QGIS. ="
+        "\n= WARNING: This project file was saved by an different version of QGIS. ="
         "\n========================================================================="
       ), "Server", QgsMessageLog::WARNING
     );
@@ -238,6 +238,6 @@ void QgsConfigCache::removeChangedEntry( const QString& path )
 
 void QgsConfigCache::removeEntry( const QString& path )
 {
-   removeChangedEntry( path );
+  removeChangedEntry( path );
 }
 
