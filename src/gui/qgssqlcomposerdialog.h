@@ -62,7 +62,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
       public:
         virtual ~SQLValidatorCallback();
         //! method should return true if the SQL is valid. Otherwise return false and set the errorReason
-        virtual bool isValid( const QString& sql, QString& errorReason ) = 0;
+        virtual bool isValid( const QString& sql, QString& errorReason, QString& warningMsg ) = 0;
     };
 
     //! argument of a function
@@ -131,7 +131,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     void addApis( const QStringList& list );
 
     //! set if multiple tables/joins are supported. Default is false
-    void setSupportMultipleTables( bool );
+    void setSupportMultipleTables( bool bMultipleTables, QString mainTypename = QString() );
 
     /** Set a callback that will be called when a new table is selected, so
         that new column names can be added typically.

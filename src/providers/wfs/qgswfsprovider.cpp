@@ -86,7 +86,7 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri, const QgsWFSCapabilities::Ca
 
   if ( !mShared->mURI.sql().isEmpty() )
   {
-    if ( !processSQL( mShared->mURI.sql(), mProcessSQLErrorMsg ) )
+    if ( !processSQL( mShared->mURI.sql(), mProcessSQLErrorMsg, mProcessSQLWarningMsg ) )
     {
       QgsMessageLog::logMessage( mProcessSQLErrorMsg, tr( "WFS" ) );
       mValid = false;
@@ -270,10 +270,11 @@ void QgsWFSProviderSQLColumnRefValidator::visit( const QgsSQLStatement::NodeColu
 }
 
 
-bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg )
+bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QString& warningMsg )
 {
   QgsDebugMsg( QString( "Processing SQL: %1" ).arg( sqlString ) );
   errorMsg.clear();
+  warningMsg.clear();
   QgsSQLStatement sql( sqlString );
   if ( sql.hasParserError() )
   {
@@ -557,8 +558,17 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg )
         }
       }
     }
+    // Geometry field
+    else if ( mapTypenameToGeometryAttribute[columnTableTypename] == columnRef->name() )
+    {
+      if ( columnTableTypename != mShared->mURI.typeName() )
+      {
+        warningMsg = tr( "The geometry field of a typename that is not the main typename is ignored in the selected fields" );
+        QgsDebugMsg( warningMsg );
+      }
+    }
     // Regular field
-    else if ( mapTypenameToGeometryAttribute[columnTableTypename] != columnRef->name() )
+    else
     {
       const QgsFields tableFields = mapTypenameToFields[columnTableTypename];
       int idx = tableFields.fieldNameIndex( columnRef->name() );
@@ -633,8 +643,8 @@ bool QgsWFSProvider::setSubsetString( const QString& theSQL, bool updateFeatureC
   mShared->mDistinctSelect = false;
   if ( theSQL.startsWith( "SELECT ", Qt::CaseInsensitive ) )
   {
-    QString errorMsg;
-    if ( !processSQL( theSQL, errorMsg ) )
+    QString errorMsg, warningMsg;
+    if ( !processSQL( theSQL, errorMsg, warningMsg ) )
     {
       QgsMessageLog::logMessage( errorMsg, tr( "WFS" ) );
       return false;

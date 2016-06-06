@@ -101,6 +101,8 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     const QString processSQLErrorMsg() const { return mProcessSQLErrorMsg; }
 
+    const QString processSQLWarningMsg() const { return mProcessSQLWarningMsg; }
+
     //Editing operations
     /**
      * Adds a list of features
@@ -165,6 +167,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     QgsFields mThisTypenameFields;
 
     QString mProcessSQLErrorMsg;
+    QString mProcessSQLWarningMsg;
 
     /** Collects information about the field types. Is called internally from QgsWFSProvider ctor.
        The method gives back the name of
@@ -202,7 +205,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     /** Convert the value to its appropriate XML representation */
     QString convertToXML( const QVariant& value );
 
-    bool processSQL( const QString& sqlString, QString& errorMsg );
+    bool processSQL( const QString& sqlString, QString& errorMsg, QString& warningMsg );
 };
 
 #endif /* QGSWFSPROVIDER_H */

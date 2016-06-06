@@ -158,13 +158,17 @@ void QgsSQLComposerDialog::accept()
 {
   if ( mSQLValidatorCallback )
   {
-    QString errorMsg;
-    if ( !mSQLValidatorCallback->isValid( sql(), errorMsg ) )
+    QString errorMsg, warningMsg;
+    if ( !mSQLValidatorCallback->isValid( sql(), errorMsg, warningMsg ) )
     {
       if ( errorMsg.isEmpty() )
         errorMsg = tr( "An error occurred during evaluation of the SQL statement" );
       QMessageBox::critical( this, tr( "SQL error" ), errorMsg );
       return;
+    }
+    if ( !warningMsg.isEmpty() )
+    {
+      QMessageBox::warning( this, tr( "SQL warning" ), warningMsg );
     }
   }
   QDialog::accept();
@@ -710,11 +714,18 @@ void QgsSQLComposerDialog::addApis( const QStringList& list )
   mQueryEdit->lexer()->setAPIs( apis );
 }
 
-void QgsSQLComposerDialog::setSupportMultipleTables( bool on )
+void QgsSQLComposerDialog::setSupportMultipleTables( bool on, QString mainTypename )
 {
   mJoinsLabels->setVisible( on );
   mTableJoins->setVisible( on );
   mAddJoinButton->setVisible( on );
   mRemoveJoinButton->setVisible( on );
   mTablesCombo->setVisible( on );
+
+  QString mainTypenameFormatted;
+  if ( !mainTypename.isEmpty() )
+    mainTypenameFormatted = " (" + mainTypename + ")";
+  mQueryEdit->setToolTip( tr( "This is the SQL query editor. The SQL statement can select data from several tables, \n"
+                              "but it must compulsory include the main typename%1 in the selected tables, \n"
+                              "and only the geometry column of the main typename can be used as the geometry column of the resulting layer." ).arg( mainTypenameFormatted ) );
 }
