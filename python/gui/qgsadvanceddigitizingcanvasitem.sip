@@ -1,5 +1,5 @@
 /**
- * @brief The QgsAdvancedDigitizingCanvasItem class draws the graphical elements of the CAD tools (@see QgsAdvancedDigitizingDock) on the map canvas.
+ * @brief The QgsAdvancedDigitizingCanvasItem class draws the graphical elements of the CAD tools (@see QgsAdvancedDigitizingDockWidget) on the map canvas.
  */
 
 class QgsAdvancedDigitizingCanvasItem : QgsMapCanvasItem
