@@ -42,6 +42,7 @@ class TestQgsDistanceArea: public QObject
     void collections();
     void measureUnits();
     void measureAreaAndUnits();
+    void emptyPolygon();
 
 };
 
@@ -342,6 +343,17 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   area = da.convertAreaMeasurement( area, QgsUnitTypes::SquareYards );
   QgsDebugMsg( QString( "measured %1 in sq yrds" ).arg( area ) );
   QVERIFY( qgsDoubleNear( area, 220240.8172549, 0.00001 ) );
+}
+
+void TestQgsDistanceArea::emptyPolygon()
+{
+  QgsDistanceArea da;
+  da.setSourceCrs( 3452 );
+  da.setEllipsoidalMode( true );
+  da.setEllipsoid( "WGS84" );
+
+  //test that measuring an empty polygon doesn't crash
+  da.measurePolygon( QList< QgsPoint >() );
 }
 
 QTEST_MAIN( TestQgsDistanceArea )
