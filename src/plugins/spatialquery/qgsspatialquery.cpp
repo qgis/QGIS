@@ -276,8 +276,7 @@ void QgsSpatialQuery::populateIndexResult(
   QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, QgsGeometry * geomTarget,
   bool ( QgsGeometryEngine::* op )( const QgsAbstractGeometryV2&, QString* ) const )
 {
-  QList<QgsFeatureId> listIdReference;
-  listIdReference = mIndexReference.intersects( geomTarget->boundingBox() );
+  QgsFeatureIds listIdReference = mIndexReference.intersects( geomTarget->boundingBox() ).toSet();
   if ( listIdReference.isEmpty() )
   {
     return;
@@ -289,10 +288,10 @@ void QgsSpatialQuery::populateIndexResult(
 
   QgsFeature featureReference;
   const QgsGeometry * geomReference;
-  QList<QgsFeatureId>::iterator iterIdReference = listIdReference.begin();
-  for ( ; iterIdReference != listIdReference.end(); ++iterIdReference )
+  QgsFeatureIterator listIt = mLayerReference->getFeatures( QgsFeatureRequest().setFilterFids( listIdReference ) );
+
+  while ( listIt.nextFeature( featureReference ) )
   {
-    mLayerReference->getFeatures( QgsFeatureRequest().setFilterFid( *iterIdReference ) ).nextFeature( featureReference );
     geomReference = featureReference.constGeometry();
 
     if (( geomEngine->*op )( *( geomReference->geometry() ), 0 ) )
@@ -309,8 +308,7 @@ void QgsSpatialQuery::populateIndexResultDisjoint(
   QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, QgsGeometry * geomTarget,
   bool ( QgsGeometryEngine::* op )( const QgsAbstractGeometryV2&, QString* ) const )
 {
-  QList<QgsFeatureId> listIdReference;
-  listIdReference = mIndexReference.intersects( geomTarget->boundingBox() );
+  QgsFeatureIds listIdReference = mIndexReference.intersects( geomTarget->boundingBox() ).toSet();
   if ( listIdReference.isEmpty() )
   {
     qsetIndexResult.insert( idTarget );
@@ -323,11 +321,11 @@ void QgsSpatialQuery::populateIndexResultDisjoint(
 
   QgsFeature featureReference;
   const QgsGeometry * geomReference;
-  QList<QgsFeatureId>::iterator iterIdReference = listIdReference.begin();
+  QgsFeatureIterator listIt = mLayerReference->getFeatures( QgsFeatureRequest().setFilterFids( listIdReference ) );
+
   bool addIndex = true;
-  for ( ; iterIdReference != listIdReference.end(); ++iterIdReference )
+  while ( listIt.nextFeature( featureReference ) )
   {
-    mLayerReference->getFeatures( QgsFeatureRequest().setFilterFid( *iterIdReference ) ).nextFeature( featureReference );
     geomReference = featureReference.constGeometry();
     if (( geomEngine->*op )( *( geomReference->geometry() ), 0 ) )
     {
