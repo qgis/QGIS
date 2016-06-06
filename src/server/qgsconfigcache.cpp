@@ -67,9 +67,9 @@ QgsServerProjectParser* QgsConfigCache::serverConfiguration( const QString& file
   {
     QgsMessageLog::logMessage(
       QString(
-        "\n========================================================================="
-        "\n= WARNING: This project file was saved by an different version of QGIS. ="
-        "\n========================================================================="
+        "\n========================================================================"
+        "\n= WARNING: This project file was saved by a different version of QGIS. ="
+        "\n========================================================================"
       ), "Server", QgsMessageLog::WARNING
     );
   }
