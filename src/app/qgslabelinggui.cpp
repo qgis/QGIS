@@ -891,10 +891,7 @@ void QgsLabelingGui::apply()
   mFontMissingLabel->setVisible( false );
   QgisApp::instance()->markDirty();
   // trigger refresh
-  if ( mMapCanvas )
-  {
-    mMapCanvas->refresh();
-  }
+  mLayer->triggerRepaint();
 }
 
 void QgsLabelingGui::writeSettingsToLayer()

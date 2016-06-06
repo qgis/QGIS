@@ -182,7 +182,7 @@ void QgsMapToolSimplify::storeSimplified()
 
   clearSelection();
 
-  mCanvas->refresh();
+  vlayer->triggerRepaint();
 }
 
 

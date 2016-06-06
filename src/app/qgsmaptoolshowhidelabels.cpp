@@ -179,7 +179,7 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent * e )
   if ( labelChanged )
   {
     vlayer->endEditCommand();
-    mCanvas->refresh();
+    vlayer->triggerRepaint();
   }
   else
   {

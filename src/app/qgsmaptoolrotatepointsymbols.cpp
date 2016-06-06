@@ -199,7 +199,8 @@ void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QgsMapMouseEvent* e )
   mRotating = false;
   delete mRotationItem;
   mRotationItem = nullptr;
-  mCanvas->refresh();
+  if ( mActiveLayer )
+    mActiveLayer->triggerRepaint();
 }
 
 double QgsMapToolRotatePointSymbols::calculateAzimut( QPoint mousePos )

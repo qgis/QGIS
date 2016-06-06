@@ -5859,7 +5859,7 @@ void QgisApp::fieldCalculator()
   QgsFieldCalculator calc( myLayer, this );
   if ( calc.exec() )
   {
-    mMapCanvas->refresh();
+    myLayer->triggerRepaint();
   }
 }
 
@@ -6865,7 +6865,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
 
   if ( mapCanvas() )
   {
-    mapCanvas()->refresh();
+    vl->triggerRepaint();
   }
 }
 
@@ -7045,7 +7045,7 @@ void QgisApp::mergeSelectedFeatures()
 
   if ( mapCanvas() )
   {
-    mapCanvas()->refresh();
+    vl->triggerRepaint();
   }
 }
 
@@ -7367,7 +7367,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
                                QgsMessageBar::WARNING, messageTimeout() );
   }
 
-  mMapCanvas->refresh();
+  pasteVectorLayer->triggerRepaint();
 }
 
 void QgisApp::pasteAsNewVector()
@@ -7600,8 +7600,7 @@ void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
       }
 
       mLayerTreeView->refreshLayerSymbology( selectionLayer->id() );
-      mMapCanvas->clearCache();
-      mMapCanvas->refresh();
+      selectionLayer->triggerRepaint();
     }
   }
 }
@@ -8056,7 +8055,7 @@ void QgisApp::layerSubsetString()
   {
     if ( subsetBefore != qb->sql() )
     {
-      mMapCanvas->refresh();
+      vlayer->triggerRepaint();
       if ( mLayerTreeView )
       {
         mLayerTreeView->refreshLayerSymbology( vlayer->id() );
@@ -8878,7 +8877,7 @@ void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRaster::ContrastEnhance
 
   myRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, theLimits, myRectangle );
 
-  mMapCanvas->refresh();
+  myRasterLayer->triggerRepaint();
 }
 
 void QgisApp::increaseBrightness()

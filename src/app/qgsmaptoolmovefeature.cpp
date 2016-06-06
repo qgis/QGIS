@@ -166,8 +166,8 @@ void QgsMapToolMoveFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
   }
   delete mRubberBand;
   mRubberBand = nullptr;
-  mCanvas->refresh();
   vlayer->endEditCommand();
+  vlayer->triggerRepaint();
 }
 
 //! called when map tool is being deactivated

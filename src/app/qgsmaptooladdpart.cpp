@@ -192,7 +192,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
 
       vlayer->endEditCommand();
 
-      mCanvas->refresh();
+      vlayer->triggerRepaint();
       return;
     }
 

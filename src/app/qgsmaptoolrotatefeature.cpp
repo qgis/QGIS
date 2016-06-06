@@ -400,8 +400,8 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
   deleteRotationWidget();
   deleteRubberband();
 
-  mCanvas->refresh();
   vlayer->endEditCommand();
+  vlayer->triggerRepaint();
 }
 
 void QgsMapToolRotateFeature::activate()

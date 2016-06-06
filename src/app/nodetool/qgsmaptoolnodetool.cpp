@@ -502,7 +502,7 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QgsMapMouseEvent* e )
       }
 
       mSelectedFeature->moveSelectedVertexes( releaseLayerCoords - pressLayerCoords );
-      mCanvas->refresh();
+      vlayer->triggerRepaint();
     }
     else // selecting vertexes by rubberband
     {
@@ -646,7 +646,7 @@ void QgsMapToolNodeTool::canvasDoubleClickEvent( QgsMapMouseEvent* e )
   vlayer->endEditCommand();
 
   // make sure that new node gets its vertex marker
-  mCanvas->refresh();
+  vlayer->triggerRepaint();
 }
 
 void QgsMapToolNodeTool::deleteNodeSelection()
@@ -674,7 +674,7 @@ void QgsMapToolNodeTool::deleteNodeSelection()
 
       safeSelectVertex( nextVertexToSelect );
     }
-    mCanvas->refresh();
+    mSelectedFeature->vlayer()->triggerRepaint();
   }
 }
 

@@ -115,7 +115,7 @@ void QgsMapToolDeleteRing::canvasReleaseEvent( QgsMapMouseEvent* e )
     vlayer->beginEditCommand( tr( "Ring deleted" ) );
     vlayer->changeGeometry( mPressedFid, g );
     vlayer->endEditCommand();
-    mCanvas->refresh();
+    vlayer->triggerRepaint();
   }
 }
 
@@ -197,7 +197,7 @@ void QgsMapToolDeleteRing::deleteRing( QgsFeatureId fId, int beforeVertexNr, Qgs
     vlayer->beginEditCommand( tr( "Ring deleted" ) );
     vlayer->changeGeometry( fId, editableGeom );
     vlayer->endEditCommand();
-    mCanvas->refresh();
+    vlayer->triggerRepaint();
   }
 
 }

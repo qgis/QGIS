@@ -828,12 +828,8 @@ void QgsDiagramProperties::apply()
   mLayer->setDiagramLayerSettings( dls );
 
   // refresh
-  if ( mMapCanvas )
-  {
-    QgisApp::instance()->markDirty();
-    if ( mMapCanvas )
-      mMapCanvas->refresh();
-  }
+  QgisApp::instance()->markDirty();
+  mLayer->triggerRepaint();
 }
 
 void QgsDiagramProperties::showAddAttributeExpressionDialog()
