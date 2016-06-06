@@ -28,7 +28,7 @@
 
 QgsCurvePolygonV2::QgsCurvePolygonV2(): QgsSurfaceV2(), mExteriorRing( nullptr )
 {
-
+  mWkbType = QgsWKBTypes::CurvePolygon;
 }
 
 QgsCurvePolygonV2::~QgsCurvePolygonV2()
@@ -40,6 +40,7 @@ QgsCurvePolygonV2::QgsCurvePolygonV2( const QgsCurvePolygonV2& p )
     : QgsSurfaceV2( p )
     , mExteriorRing( nullptr )
 {
+  mWkbType = p.mWkbType;
   if ( p.mExteriorRing )
   {
     mExteriorRing = static_cast<QgsCurveV2*>( p.mExteriorRing->clone() );
@@ -77,11 +78,11 @@ QgsCurvePolygonV2* QgsCurvePolygonV2::clone() const
 
 void QgsCurvePolygonV2::clear()
 {
+  mWkbType = QgsWKBTypes::CurvePolygon;
   delete mExteriorRing;
   mExteriorRing = nullptr;
   qDeleteAll( mInteriorRings );
   mInteriorRings.clear();
-  mWkbType = QgsWKBTypes::Unknown;
   clearCache();
 }
 
@@ -149,7 +150,7 @@ bool QgsCurvePolygonV2::fromWkt( const QString& wkt )
 
   QPair<QgsWKBTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
-  if ( QgsWKBTypes::flatType( parts.first ) != QgsWKBTypes::Polygon )
+  if ( QgsWKBTypes::geometryType( parts.first ) != QgsWKBTypes::PolygonGeometry )
     return false;
 
   mWkbType = parts.first;

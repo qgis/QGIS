@@ -6,7 +6,6 @@ class QgsMultiCurveV2: public QgsGeometryCollectionV2
 
   public:
     virtual QString geometryType() const;
-    virtual QgsWKBTypes::Type flatWkbType() const;
     virtual QgsMultiCurveV2* clone() const;
 
     bool fromWkt( const QString& wkt );

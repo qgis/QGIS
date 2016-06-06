@@ -21,6 +21,12 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspolygonv2.h"
 #include "qgscurvepolygonv2.h"
 
+QgsMultiPolygonV2::QgsMultiPolygonV2()
+    : QgsMultiSurfaceV2()
+{
+  mWkbType = QgsWKBTypes::MultiPolygon;
+}
+
 QgsMultiPolygonV2 *QgsMultiPolygonV2::clone() const
 {
   return new QgsMultiPolygonV2( *this );

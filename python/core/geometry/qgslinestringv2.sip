@@ -113,7 +113,6 @@ class QgsLineStringV2: public QgsCurveV2
     //reimplemented methods
 
     virtual QString geometryType() const;
-    virtual QgsWKBTypes::Type flatWkbType() const;
     virtual int dimension() const;
     virtual QgsLineStringV2* clone() const /Factory/;
     virtual void clear();

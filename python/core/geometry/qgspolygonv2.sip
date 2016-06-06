@@ -11,8 +11,8 @@ class QgsPolygonV2: public QgsCurvePolygonV2
     bool operator!=( const QgsPolygonV2& other ) const;
 
     virtual QString geometryType() const;
-    virtual QgsWKBTypes::Type flatWkbType() const;
     virtual QgsPolygonV2* clone() const;
+    void clear();
 
     virtual bool fromWkb( QgsConstWkbPtr wkb );
 

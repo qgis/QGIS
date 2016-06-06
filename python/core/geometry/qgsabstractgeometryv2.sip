@@ -114,11 +114,6 @@ class QgsAbstractGeometryV2
      */
     QgsWKBTypes::Type wkbType() const;
 
-    /** Returns the flat WKB type of the geometry class. Corresponds to information obtained from
-     * geometryType().
-     */
-    virtual QgsWKBTypes::Type flatWkbType() const = 0;
-
     /** Returns the WKT type string of the geometry.
      * @see geometryType
      * @see wkbType

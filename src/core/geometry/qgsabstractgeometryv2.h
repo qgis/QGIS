@@ -75,22 +75,17 @@ class CORE_EXPORT QgsAbstractGeometryV2
     virtual int dimension() const = 0;
     //virtual int coordDim() const { return mCoordDimension; }
 
-    /** Returns a unique string representing the geometry class type.
+    /** Returns a unique string representing the geometry type.
      * @see wkbType
      * @see wktTypeStr
      */
     virtual QString geometryType() const = 0;
 
-    /** Returns the WKB type of the saved geometry.
+    /** Returns the WKB type of the geometry.
      * @see geometryType
      * @see wktTypeStr
      */
     QgsWKBTypes::Type wkbType() const { return mWkbType; }
-
-    /** Returns the flat WKB type of the geometry class. Corresponds to information obtained from
-     * geometryType().
-     */
-    virtual QgsWKBTypes::Type flatWkbType() const = 0;
 
     /** Returns the WKT type string of the geometry.
      * @see geometryType

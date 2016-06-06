@@ -514,7 +514,7 @@ void TestQgsGeometry::pointV2()
   //clear
   QgsPointV2 p11( 5.0, 6.0 );
   p11.clear();
-  QCOMPARE( p11.wkbType(), QgsWKBTypes::Unknown );
+  QCOMPARE( p11.wkbType(), QgsWKBTypes::Point );
   QCOMPARE( p11.x(), 0.0 );
   QCOMPARE( p11.y(), 0.0 );
 
@@ -538,14 +538,14 @@ void TestQgsGeometry::pointV2()
   //bad WKB - check for no crash
   p13 = QgsPointV2( 1, 2 );
   QVERIFY( !p13.fromWkb( QgsConstWkbPtr( nullptr, 0 ) ) );
-  QCOMPARE( p13.wkbType(), QgsWKBTypes::Unknown );
+  QCOMPARE( p13.wkbType(), QgsWKBTypes::Point );
   QgsLineStringV2 line;
   p13 = QgsPointV2( 1, 2 );
   wkb = line.asWkb( size );
   QVERIFY( !p13.fromWkb( QgsConstWkbPtr( wkb, size ) ) );
   delete[] wkb;
   wkb = 0;
-  QCOMPARE( p13.wkbType(), QgsWKBTypes::Unknown );
+  QCOMPARE( p13.wkbType(), QgsWKBTypes::Point );
 
   //to/from WKT
   p13 = QgsPointV2( QgsWKBTypes::PointZM, 1.0, 2.0, 3.0, -4.0 );
@@ -557,7 +557,6 @@ void TestQgsGeometry::pointV2()
 
   //bad WKT
   QVERIFY( !p14.fromWkt( "Polygon()" ) );
-  QCOMPARE( p14.wkbType(), QgsWKBTypes::Unknown );
 
   //asGML2
   QgsPointV2 exportPoint( 1, 2 );
@@ -873,7 +872,7 @@ void TestQgsGeometry::lineStringV2()
   QCOMPARE( l7.partCount(), 0 );
   QVERIFY( !l7.is3D() );
   QVERIFY( !l7.isMeasure() );
-  QCOMPARE( l7.wkbType(), QgsWKBTypes::Unknown );
+  QCOMPARE( l7.wkbType(), QgsWKBTypes::LineString );
 
   //setPoints
   QgsLineStringV2 l8;
@@ -897,7 +896,7 @@ void TestQgsGeometry::lineStringV2()
   QCOMPARE( l8.nCoordinates(), 0 );
   QCOMPARE( l8.ringCount(), 0 );
   QCOMPARE( l8.partCount(), 0 );
-  QCOMPARE( l8.wkbType(), QgsWKBTypes::Unknown );
+  QCOMPARE( l8.wkbType(), QgsWKBTypes::LineString );
 
   //setPoints with z
   l8.setPoints( QgsPointSequenceV2() << QgsPointV2( QgsWKBTypes::PointZ, 1, 2, 3 ) << QgsPointV2( QgsWKBTypes::PointZ, 2, 3, 4 ) );
@@ -1318,13 +1317,13 @@ void TestQgsGeometry::lineStringV2()
   QCOMPARE( cloned->numPoints(), 0 );
   QVERIFY( !cloned->is3D() );
   QVERIFY( !cloned->isMeasure() );
-  QCOMPARE( cloned->wkbType(), QgsWKBTypes::Unknown );
+  QCOMPARE( cloned->wkbType(), QgsWKBTypes::LineString );
   segmentized.reset( static_cast< QgsLineStringV2* >( l14.segmentize() ) );
   QVERIFY( segmentized->isEmpty() );
   QCOMPARE( segmentized->numPoints(), 0 );
   QVERIFY( !segmentized->is3D() );
   QVERIFY( !segmentized->isMeasure() );
-  QCOMPARE( segmentized->wkbType(), QgsWKBTypes::Unknown );
+  QCOMPARE( segmentized->wkbType(), QgsWKBTypes::LineString );
 
   //to/from WKB
   QgsLineStringV2 l15;
@@ -1355,13 +1354,13 @@ void TestQgsGeometry::lineStringV2()
   //bad WKB - check for no crash
   l16.clear();
   QVERIFY( !l16.fromWkb( QgsConstWkbPtr( nullptr, 0 ) ) );
-  QCOMPARE( l16.wkbType(), QgsWKBTypes::Unknown );
+  QCOMPARE( l16.wkbType(), QgsWKBTypes::LineString );
   QgsPointV2 point( 1, 2 );
   wkb = point.asWkb( size ) ;
   QVERIFY( !l16.fromWkb( QgsConstWkbPtr( wkb, size ) ) );
   delete[] wkb;
   wkb = 0;
-  QCOMPARE( l16.wkbType(), QgsWKBTypes::Unknown );
+  QCOMPARE( l16.wkbType(), QgsWKBTypes::LineString );
 
   //to/from WKT
   QgsLineStringV2 l17;
@@ -1389,7 +1388,7 @@ void TestQgsGeometry::lineStringV2()
   QCOMPARE( l18.numPoints(), 0 );
   QVERIFY( !l18.is3D() );
   QVERIFY( !l18.isMeasure() );
-  QCOMPARE( l18.wkbType(), QgsWKBTypes::Unknown );
+  QCOMPARE( l18.wkbType(), QgsWKBTypes::LineString );
 
   //asGML2
   QgsLineStringV2 exportLine;
@@ -2568,7 +2567,7 @@ void TestQgsGeometry::polygonV2()
   QCOMPARE( p9.partCount(), 0 );
   QVERIFY( !p9.is3D() );
   QVERIFY( !p9.isMeasure() );
-  QCOMPARE( p9.wkbType(), QgsWKBTypes::Unknown );
+  QCOMPARE( p9.wkbType(), QgsWKBTypes::Polygon );
 
   //equality operator
   QgsPolygonV2 p10;
@@ -2772,13 +2771,13 @@ void TestQgsGeometry::polygonV2()
   //bad WKB - check for no crash
   p17.clear();
   QVERIFY( !p17.fromWkb( QgsConstWkbPtr( nullptr, 0 ) ) );
-  QCOMPARE( p17.wkbType(), QgsWKBTypes::Unknown );
+  QCOMPARE( p17.wkbType(), QgsWKBTypes::Polygon );
   QgsPointV2 point( 1, 2 );
   wkb = point.asWkb( size ) ;
   QVERIFY( !p17.fromWkb( QgsConstWkbPtr( wkb, size ) ) );
   delete[] wkb;
   wkb = 0;
-  QCOMPARE( p17.wkbType(), QgsWKBTypes::Unknown );
+  QCOMPARE( p17.wkbType(), QgsWKBTypes::Polygon );
 
   //to/from WKT
   QgsPolygonV2 p18;
@@ -2806,7 +2805,7 @@ void TestQgsGeometry::polygonV2()
   QCOMPARE( p19.numInteriorRings(), 0 );
   QVERIFY( !p19.is3D() );
   QVERIFY( !p19.isMeasure() );
-  QCOMPARE( p19.wkbType(), QgsWKBTypes::Unknown );
+  QCOMPARE( p19.wkbType(), QgsWKBTypes::Polygon );
 
   //as JSON
   QgsPolygonV2 exportPolygon;

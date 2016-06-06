@@ -35,8 +35,8 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygonV2
     bool operator!=( const QgsPolygonV2& other ) const;
 
     virtual QString geometryType() const override { return "Polygon"; }
-    virtual QgsWKBTypes::Type flatWkbType() const override { return QgsWKBTypes::Polygon; }
     virtual QgsPolygonV2* clone() const override;
+    void clear() override;
 
     virtual bool fromWkb( QgsConstWkbPtr wkb ) override;
 

@@ -27,8 +27,8 @@ email                : marco.hugentobler at sourcepole dot com
 class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurfaceV2
 {
   public:
+    QgsMultiPolygonV2();
     virtual QString geometryType() const override { return "MultiPolygon"; }
-    virtual QgsWKBTypes::Type flatWkbType() const override { return QgsWKBTypes::MultiPolygon; }
     QgsMultiPolygonV2* clone() const override;
 
     bool fromWkt( const QString& wkt ) override;

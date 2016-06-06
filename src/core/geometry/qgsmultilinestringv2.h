@@ -27,8 +27,8 @@ email                : marco.hugentobler at sourcepole dot com
 class CORE_EXPORT QgsMultiLineStringV2: public QgsMultiCurveV2
 {
   public:
+    QgsMultiLineStringV2();
     virtual QString geometryType() const override { return "MultiLineString"; }
-    virtual QgsWKBTypes::Type flatWkbType() const override { return QgsWKBTypes::MultiLineString; }
     QgsMultiLineStringV2* clone() const override;
 
     bool fromWkt( const QString& wkt ) override;

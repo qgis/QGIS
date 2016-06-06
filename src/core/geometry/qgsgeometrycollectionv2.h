@@ -53,7 +53,6 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     //methods inherited from QgsAbstractGeometry
     virtual int dimension() const override;
     virtual QString geometryType() const override { return "GeometryCollection"; }
-    virtual QgsWKBTypes::Type flatWkbType() const override { return QgsWKBTypes::GeometryCollection; }
     virtual void clear() override;
 
     /** Adds a geometry and takes ownership. Returns true in case of success.*/

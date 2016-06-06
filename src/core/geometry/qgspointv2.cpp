@@ -253,7 +253,6 @@ void QgsPointV2::draw( QPainter& p ) const
 
 void QgsPointV2::clear()
 {
-  mWkbType = QgsWKBTypes::Unknown;
   mX = mY = mZ = mM = 0.;
   clearCache();
 }

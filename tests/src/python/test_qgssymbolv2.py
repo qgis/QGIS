@@ -104,7 +104,7 @@ class TestQgsSymbolV2(unittest.TestCase):
 
         for test in tests:
             geom = QgsGeometry.fromWkt(test['wkt'])
-            assert geom and not geom.isEmpty(), 'Could not create geometry'
+            assert geom and not geom.isEmpty(), 'Could not create geometry {}'.format(test['wkt'])
             rendered_image = self.renderGeometry(geom)
             assert self.imageCheck(test['name'], test['reference_image'], rendered_image)
 

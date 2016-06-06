@@ -87,7 +87,7 @@ void QgsLineStringV2::clear()
   mY.clear();
   mZ.clear();
   mM.clear();
-  mWkbType = QgsWKBTypes::Unknown;
+  mWkbType = QgsWKBTypes::LineString;
   clearCache();
 }
 
