@@ -68,9 +68,15 @@ class QgsEffectStackPropertiesWidget : QWidget
 
   signals:
     /**
-     * Emiited when something in the widget changes.
+     * Emitted when something in the widget changes.
      */
     void widgetChanged();
+
+    /** Emitted when a panel is shown in the widget.
+     * @param widget widget panel which was shown
+     * @note added in QGIS 2.16
+     */
+    void showPanel( QgsRendererWidgetContainer* widget );
 
   protected:
 

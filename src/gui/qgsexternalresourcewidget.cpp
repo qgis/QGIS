@@ -184,6 +184,7 @@ QString QgsExternalResourceWidget::resolvePath( const QString& path )
       return QDir( mDefaultRoot ).filePath( path );
       break;
   }
+  return QString(); // avoid warnings
 }
 
 QString QgsExternalResourceWidget::defaultRoot() const
