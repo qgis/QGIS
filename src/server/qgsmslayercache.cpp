@@ -230,5 +230,5 @@ void QgsMSLayerCache::logCacheContents() const
 
 void QgsMSLayerCache::removeProjectLayers( const QString& path )
 {
-    removeProjectFileLayers( path );
+  removeProjectFileLayers( path );
 }

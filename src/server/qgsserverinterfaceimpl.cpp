@@ -77,12 +77,12 @@ void QgsServerInterfaceImpl::registerAccessControl( QgsAccessControlFilter* acce
 
 void QgsServerInterfaceImpl::removeConfigCacheEntry( const QString& path )
 {
-    QgsConfigCache::instance()->removeEntry( path );
+  QgsConfigCache::instance()->removeEntry( path );
 }
 
 void QgsServerInterfaceImpl::removeProjectLayers( const QString& path )
 {
-    QgsMSLayerCache::instance()->removeProjectLayers( path );
+  QgsMSLayerCache::instance()->removeProjectLayers( path );
 }
 
 
