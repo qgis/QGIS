@@ -127,7 +127,6 @@ static QgsCircularStringV2* parseCircularString( const QVariantMap& curveData, Q
     QgsPointV2* point = parsePoint( coordData.toList(), pointType );
     if ( !point )
     {
-      delete point;
       return nullptr;
     }
     points.append( *point );
