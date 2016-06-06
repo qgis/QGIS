@@ -2042,6 +2042,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( QPointF point, QgsSymbolV2RenderCon
   }
 
   p->restore();
+  p->setRenderHint( QPainter::Antialiasing );
 }
 
 double QgsSvgMarkerSymbolLayerV2::calculateSize( QgsSymbolV2RenderContext& context, bool& hasDataDefinedSize ) const
