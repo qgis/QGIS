@@ -112,7 +112,7 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget* editor )
     }
     if ( config().contains( "DefaultRoot" ) )
     {
-      mQgsWidget->fileWidget()->setDefaultRoot( config( "DefaultRoot" ).toString() );
+      mQgsWidget->setDefaultRoot( config( "DefaultRoot" ).toString() );
     }
     if ( config().contains( "StorageMode" ) )
     {
@@ -120,7 +120,7 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget* editor )
     }
     if ( config().contains( "RelativeStorage" ) )
     {
-      mQgsWidget->fileWidget()->setRelativeStorage(( QgsFileWidget::RelativeStorage )config( "RelativeStorage" ).toInt() );
+      mQgsWidget->setRelativeStorage(( QgsFileWidget::RelativeStorage )config( "RelativeStorage" ).toInt() );
     }
     if ( config().contains( "FileWidget" ) )
     {
