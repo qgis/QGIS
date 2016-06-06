@@ -65,11 +65,9 @@ warnings.filterwarnings("ignore", "the sets module is deprecated")
 
 
 def showWarning(message, category, filename, lineno, file=None, line=None):
-    stk = ""
-    for s in traceback.format_stack()[:-2]:
-        stk += s.decode('utf-8', 'replace') if hasattr(s, 'decode') else s
+    stk = ''.join([s.decode(sys.getfilesystemencoding()) for s in traceback.format_stack()[:-2]])
     QgsMessageLog.logMessage(
-        "warning:%s\ntraceback:%s" % (warnings.formatwarning(message, category, filename, lineno), stk),
+        u"warning:{}\ntraceback:{}".format(warnings.formatwarning(message, category, filename.decode(sys.getfilesystemencoding()), lineno), stk),
         QCoreApplication.translate("Python", "Python warning")
     )
 
