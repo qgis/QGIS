@@ -47,6 +47,7 @@ QgsDualView::QgsDualView( QWidget* parent )
     , mLayerCache( nullptr )
     , mProgressDlg( nullptr )
     , mFeatureSelectionManager( nullptr )
+    , mAttributeEditorScrollArea( nullptr )
 {
   setupUi( this );
 
@@ -83,10 +84,17 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const Qg
   mTableView->setModel( mFilterModel );
   mFeatureList->setModel( mFeatureListModel );
   mAttributeForm = new QgsAttributeForm( layer, QgsFeature(), mEditorContext );
-  if ( !mAttributeEditorScrollArea->layout() )
-    mAttributeEditorScrollArea->setLayout( new QGridLayout() );
-  mAttributeEditorScrollArea->layout()->addWidget( mAttributeForm );
-  mAttributeEditorScrollArea->setWidget( mAttributeForm );
+  if ( !context.parentContext() )
+  {
+    mAttributeEditorScrollArea = new QScrollArea();
+    mAttributeEditorScrollArea->setWidgetResizable( true );
+    mAttributeEditor->layout()->addWidget( mAttributeEditorScrollArea );
+    mAttributeEditorScrollArea->setWidget( mAttributeForm );
+  }
+  else
+  {
+    mAttributeEditor->layout()->addWidget( mAttributeForm );
+  }
 
   mAttributeForm->hideButtonBox();
 

@@ -1137,15 +1137,21 @@ void QgsAttributeForm::init()
     QGridLayout* gridLayout = new QGridLayout( formWidget );
     formWidget->setLayout( gridLayout );
 
-    // put the form into a scroll area to nicely handle cases with lots of attributes
-
-    QScrollArea* scrollArea = new QScrollArea( this );
-    scrollArea->setWidget( formWidget );
-    scrollArea->setWidgetResizable( true );
-    scrollArea->setFrameShape( QFrame::NoFrame );
-    scrollArea->setFrameShadow( QFrame::Plain );
-    scrollArea->setFocusProxy( this );
-    layout->addWidget( scrollArea );
+    if ( mContext.formMode() != QgsAttributeEditorContext::Embed )
+    {
+      // put the form into a scroll area to nicely handle cases with lots of attributes
+      QScrollArea* scrollArea = new QScrollArea( this );
+      scrollArea->setWidget( formWidget );
+      scrollArea->setWidgetResizable( true );
+      scrollArea->setFrameShape( QFrame::NoFrame );
+      scrollArea->setFrameShadow( QFrame::Plain );
+      scrollArea->setFocusProxy( this );
+      layout->addWidget( scrollArea );
+    }
+    else
+    {
+      layout->addWidget( formWidget );
+    }
 
     int row = 0;
     Q_FOREACH ( const QgsField& field, mLayer->fields().toList() )
