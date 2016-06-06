@@ -707,7 +707,7 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature& feature )
   }
   else
   {
-    mComboBox->setCurrentIndex( mComboBox->findData( feature.attribute( mReferencedFieldIdx ), QgsAttributeTableModel::FeatureIdRole ) );
+    mComboBox->setCurrentIndex( mComboBox->findData( feature.id(), QgsAttributeTableModel::FeatureIdRole ) );
     mFeature = feature;
   }
 
