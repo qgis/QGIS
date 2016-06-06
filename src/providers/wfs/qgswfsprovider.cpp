@@ -278,7 +278,28 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
   QgsSQLStatement sql( sqlString );
   if ( sql.hasParserError() )
   {
-    errorMsg = tr( "SQL query is invalid: %1" ).arg( sql.parserErrorString() );
+    QString parserErrorString( sql.parserErrorString() );
+    QStringList parts( parserErrorString.split( "," ) );
+    parserErrorString = "";
+    Q_FOREACH ( const QString& part, parts )
+    {
+      QString newPart( part );
+      if ( part == "syntax error" )
+        newPart = tr( "Syntax error." );
+      else if ( part == " unexpected $end" )
+        newPart = tr( "Missing content at end of string." );
+      else if ( part.startsWith( " unexpected " ) )
+        newPart = tr( "%1 is unexpected." ).arg( part.mid( QString( " unexpected " ).size() ) );
+      else if ( part.startsWith( " expecting " ) )
+        newPart = tr( "%1 is expected instead." ).arg( part.mid( QString( " expecting " ).size() ) );
+      if ( !parserErrorString.isEmpty() )
+        parserErrorString += " ";
+      parserErrorString += newPart;
+    }
+    parserErrorString.replace( " or ", tr( "%1 or %2" ).arg( "", "" ) );
+    parserErrorString.replace( "COMMA", tr( "comma" ) );
+    parserErrorString.replace( "IDENTIFIER", tr( "an identifier" ) );
+    errorMsg = tr( "SQL query is invalid: %1" ).arg( parserErrorString );
     return false;
   }
   if ( !sql.doBasicValidationChecks( errorMsg ) )
