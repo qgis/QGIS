@@ -311,7 +311,14 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg )
     QString prefixedTypename( mShared->mCaps.addPrefixIfNeeded( table->name() ) );
     if ( prefixedTypename.isEmpty() )
     {
-      errorMsg = tr( "Typename '%1' is ambiguous without prefix" ).arg( table->name() );
+      if ( mShared->mCaps.setAmbiguousUnprefixedTypename.contains( table->name() ) )
+      {
+        errorMsg = tr( "Typename '%1' is ambiguous without prefix" ).arg( table->name() );
+      }
+      else
+      {
+        errorMsg = tr( "Typename '%1' is unknown" ).arg( table->name() );
+      }
       return false;
     }
     typenameList << prefixedTypename;
@@ -339,7 +346,14 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg )
     QString prefixedTypename( mShared->mCaps.addPrefixIfNeeded( table->name() ) );
     if ( prefixedTypename.isEmpty() )
     {
-      errorMsg = tr( "Typename '%1' is ambiguous without prefix" ).arg( table->name() );
+      if ( mShared->mCaps.setAmbiguousUnprefixedTypename.contains( table->name() ) )
+      {
+        errorMsg = tr( "Typename '%1' is ambiguous without prefix" ).arg( table->name() );
+      }
+      else
+      {
+        errorMsg = tr( "Typename '%1' is unknown" ).arg( table->name() );
+      }
       return false;
     }
     typenameList << prefixedTypename;
