@@ -2057,8 +2057,8 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
     return;
   }
 
-  const QgsCoordinateReferenceSystem& srcCRS = QgsCRSCache::instance()->crsByAuthId( srcAuthId );
-  const QgsCoordinateReferenceSystem& destCRS = QgsCRSCache::instance()->crsByAuthId( destAuthId );
+  QgsCoordinateReferenceSystem srcCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( srcAuthId );
+  QgsCoordinateReferenceSystem destCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( destAuthId );
 
   if ( !s.value( "/Projections/showDatumTransformDialog", false ).toBool() )
   {

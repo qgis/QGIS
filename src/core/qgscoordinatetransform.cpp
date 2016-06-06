@@ -175,7 +175,7 @@ void QgsCoordinateTransform::initialise()
   {
     //No destination projection is set so we set the default output projection to
     //be the same as input proj.
-    mDestCRS = QgsCRSCache::instance()->crsByAuthId( mSourceCRS.authid() );
+    mDestCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( mSourceCRS.authid() );
   }
 
   bool useDefaultDatumTransform = ( mSourceDatumTransform == - 1 && mDestinationDatumTransform == -1 );
@@ -1022,11 +1022,9 @@ bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& eps
   preferred = sqlite3_column_int( stmt, 5 ) != 0;
   deprecated = sqlite3_column_int( stmt, 6 ) != 0;
 
-  QgsCoordinateReferenceSystem srcCrs;
-  srcCrs.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( srcCrsId ) );
+  QgsCoordinateReferenceSystem srcCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( QString( "EPSG:%1" ).arg( srcCrsId ) );
   srcProjection = srcCrs.description();
-  QgsCoordinateReferenceSystem destCrs;
-  destCrs.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( destCrsId ) );
+  QgsCoordinateReferenceSystem destCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( QString( "EPSG:%1" ).arg( destCrsId ) );
   dstProjection = destCrs.description();
 
   sqlite3_finalize( stmt );

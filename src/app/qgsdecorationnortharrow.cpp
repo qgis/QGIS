@@ -31,6 +31,7 @@ email                : tim@linfiniti.com
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
+#include "qgscrscache.h"
 
 // qt includes
 #include <QPainter>
@@ -230,8 +231,7 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
     if ( outputCRS.isValid() && !outputCRS.geographicFlag() )
     {
       // Use a geographic CRS to get lat/long to work out direction
-      QgsCoordinateReferenceSystem ourCRS;
-      ourCRS.createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+      QgsCoordinateReferenceSystem ourCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
       assert( ourCRS.isValid() );
 
       QgsCoordinateTransform transform( outputCRS, ourCRS );

@@ -127,6 +127,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgscoordinateutils.h"
 #include "qgscredentialdialog.h"
+#include "qgscrscache.h"
 #include "qgscursors.h"
 #include "qgscustomization.h"
 #include "qgscustomlayerorderwidget.h"
@@ -494,8 +495,8 @@ void QgisApp::validateSrs( QgsCoordinateReferenceSystem &srs )
     if ( authid.isNull() )
       authid = QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().authid();
 
-    QgsCoordinateReferenceSystem defaultCrs;
-    if ( defaultCrs.createFromOgcWmsCrs( authid ) )
+    QgsCoordinateReferenceSystem defaultCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( authid );
+    if ( defaultCrs.isValid() )
     {
       mySelector->setSelectedCrsId( defaultCrs.srsid() );
     }
@@ -4379,8 +4380,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
 
   // set project CRS
   QString defCrs = settings.value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
-  QgsCoordinateReferenceSystem srs;
-  srs.createFromOgcWmsCrs( defCrs );
+  QgsCoordinateReferenceSystem srs = QgsCRSCache::instance()->crsByOgcWmsCrs( defCrs );
   mMapCanvas->setDestinationCrs( srs );
   // write the projections _proj string_ to project settings
   prj->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );

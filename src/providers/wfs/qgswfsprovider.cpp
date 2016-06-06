@@ -33,6 +33,7 @@
 #include "qgswfstransactionrequest.h"
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
+#include "qgscrscache.h"
 
 #include <QDomDocument>
 #include <QMessageBox>
@@ -72,9 +73,9 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri, const QgsWFSCapabilities::Ca
   if ( !srsname.isEmpty() )
   {
     if ( srsname == "EPSG:900913" )
-      mShared->mSourceCRS.createFromOgcWmsCrs( "EPSG:3857" );
+      mShared->mSourceCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( "EPSG:3857" );
     else
-      mShared->mSourceCRS.createFromOgcWmsCrs( srsname );
+      mShared->mSourceCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( srsname );
   }
 
   // Must be called first to establish the version, in case we are in auto-detection
@@ -1434,12 +1435,11 @@ bool QgsWFSProvider::getCapabilities()
       const QgsRectangle& r = mShared->mCaps.featureTypes[i].bboxLongLat;
       if ( mShared->mSourceCRS.authid().isEmpty() && mShared->mCaps.featureTypes[i].crslist.size() != 0 )
       {
-        mShared->mSourceCRS.createFromOgcWmsCrs( mShared->mCaps.featureTypes[i].crslist[0] );
+        mShared->mSourceCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( mShared->mCaps.featureTypes[i].crslist[0] );
       }
       if ( !r.isNull() )
       {
-        QgsCoordinateReferenceSystem src;
-        src.createFromOgcWmsCrs( "CRS:84" );
+        QgsCoordinateReferenceSystem src = QgsCRSCache::instance()->crsByOgcWmsCrs( "CRS:84" );
         QgsCoordinateTransform ct( src, mShared->mSourceCRS );
 
         QgsDebugMsg( "latlon ext:" + r.toString() );

@@ -2034,7 +2034,7 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
     QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectionsEnabled", 1 );
 
     //destination SRS
-    outputCRS = QgsCRSCache::instance()->crsByAuthId( crs );
+    outputCRS = QgsCRSCache::instance()->crsByOgcWmsCrs( crs );
     if ( !outputCRS.isValid() )
     {
       QgsMessageLog::logMessage( "Error, could not create output CRS from EPSG" );

@@ -55,8 +55,8 @@ const QgsCoordinateTransform* QgsCoordinateTransformCache::transform( const QStr
   }
 
   //not found, insert new value
-  const QgsCoordinateReferenceSystem& srcCrs = QgsCRSCache::instance()->crsByAuthId( srcAuthId );
-  const QgsCoordinateReferenceSystem& destCrs = QgsCRSCache::instance()->crsByAuthId( destAuthId );
+  QgsCoordinateReferenceSystem srcCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( srcAuthId );
+  QgsCoordinateReferenceSystem destCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( destAuthId );
   QgsCoordinateTransform* ct = new QgsCoordinateTransform( srcCrs, destCrs );
   ct->setSourceDatumTransform( srcDatumTransform );
   ct->setDestinationDatumTransform( destDatumTransform );
@@ -113,17 +113,22 @@ void QgsCRSCache::updateCRSCache( const QString& authid )
   QgsCoordinateTransformCache::instance()->invalidateCrs( authid );
 }
 
-const QgsCoordinateReferenceSystem& QgsCRSCache::crsByAuthId( const QString& authid )
+QgsCoordinateReferenceSystem QgsCRSCache::crsByAuthId( const QString& authid )
 {
-  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRS.constFind( authid );
+  return crsByOgcWmsCrs( authid );
+}
+
+QgsCoordinateReferenceSystem QgsCRSCache::crsByOgcWmsCrs( const QString& ogcCrs ) const
+{
+  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRS.constFind( ogcCrs );
   if ( crsIt == mCRS.constEnd() )
   {
     QgsCoordinateReferenceSystem s;
-    if ( ! s.createFromOgcWmsCrs( authid ) )
+    if ( ! s.createFromOgcWmsCrs( ogcCrs ) )
     {
-      return mInvalidCRS;
+      return mCRS.insert( ogcCrs, mInvalidCRS ).value();
     }
-    return mCRS.insert( authid, s ).value();
+    return mCRS.insert( ogcCrs, s ).value();
   }
   else
   {
@@ -131,7 +136,25 @@ const QgsCoordinateReferenceSystem& QgsCRSCache::crsByAuthId( const QString& aut
   }
 }
 
-const QgsCoordinateReferenceSystem& QgsCRSCache::crsByEpsgId( long epsg )
+QgsCoordinateReferenceSystem QgsCRSCache::crsByEpsgId( long epsg ) const
 {
-  return crsByAuthId( "EPSG:" + QString::number( epsg ) );
+  return crsByOgcWmsCrs( "EPSG:" + QString::number( epsg ) );
+}
+
+QgsCoordinateReferenceSystem QgsCRSCache::crsByProj4( const QString& proj4 ) const
+{
+  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRSProj4.find( proj4 );
+  if ( crsIt == mCRSProj4.constEnd() )
+  {
+    QgsCoordinateReferenceSystem s;
+    if ( ! s.createFromProj4( proj4 ) )
+    {
+      return mCRSProj4.insert( proj4, mInvalidCRS ).value();
+    }
+    return mCRSProj4.insert( proj4, s ).value();
+  }
+  else
+  {
+    return crsIt.value();
+  }
 }

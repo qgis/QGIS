@@ -23,6 +23,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
+#include "qgscrscache.h"
 
 #include <QPushButton>
 #include <QComboBox>
@@ -85,8 +86,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, const Qt::Win
 
   mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << "id" << "Integer" << "10" << "" ) );
 
-  QgsCoordinateReferenceSystem defaultCrs;
-  defaultCrs.createFromOgcWmsCrs( settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString() );
+  QgsCoordinateReferenceSystem defaultCrs = QgsCRSCache::instance()->crsByOgcWmsCrs( settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString() );
   defaultCrs.validate();
   mCrsSelector->setCrs( defaultCrs );
 
