@@ -361,6 +361,35 @@ void QgsSQLComposerDialog::addOperators( const QStringList& list )
   addApis( list );
 }
 
+static QString getFunctionAbbridgedParameters( const QgsSQLComposerDialog::Function& f )
+{
+  if ( f.minArgs >= 0 && f.maxArgs > f.minArgs )
+  {
+    return QObject::tr( "%1 to %2 arguments" ).arg( f.minArgs ).arg( f.maxArgs );
+  }
+  else if ( f.minArgs == 0 && f.maxArgs == 0 )
+  {
+  }
+  else if ( f.minArgs > 0 && f.maxArgs == f.minArgs )
+  {
+    if ( f.minArgs == 1 )
+      return QObject::tr( "1 argument" );
+    else
+      return QObject::tr( "%1 arguments" ).arg( f.minArgs );
+  }
+  else if ( f.minArgs >= 0 && f.maxArgs < 0 )
+  {
+    if ( f.minArgs > 1 )
+      return QObject::tr( "%1 arguments or more" ).arg( f.minArgs );
+    else if ( f.minArgs == 1 )
+      return QObject::tr( "1 argument or more" );
+    else
+      return QObject::tr( "0 argument or more" );
+  }
+  return QString();
+}
+
+
 void QgsSQLComposerDialog::getFunctionList( const QList<Function>& list,
     QStringList& listApi,
     QStringList& listCombo,
@@ -394,29 +423,16 @@ void QgsSQLComposerDialog::getFunctionList( const QList<Function>& list,
         }
         if ( f.minArgs >= 0 && i >= f.minArgs ) entryText += "]";
       }
+      if ( entryText.size() > 60 )
+      {
+        entryText = f.name ;
+        entryText += "(";
+        entryText += getFunctionAbbridgedParameters( f );
+      }
     }
-    else if ( f.minArgs >= 0 && f.maxArgs > f.minArgs )
+    else
     {
-      entryText += tr( "%1 to %2 arguments" ).arg( f.minArgs ).arg( f.maxArgs );
-    }
-    else if ( f.minArgs == 0 && f.maxArgs == 0 )
-    {
-    }
-    else if ( f.minArgs > 0 && f.maxArgs == f.minArgs )
-    {
-      if ( f.minArgs == 1 )
-        entryText += tr( "1 argument" );
-      else
-        entryText += tr( "%1 arguments" ).arg( f.minArgs );
-    }
-    else if ( f.minArgs >= 0 && f.maxArgs < 0 )
-    {
-      if ( f.minArgs > 1 )
-        entryText += tr( "%1 arguments or more" ).arg( f.minArgs );
-      else if ( f.minArgs == 1 )
-        entryText += tr( "1 argument or more" );
-      else
-        entryText += tr( "0 argument or more" );
+      entryText += getFunctionAbbridgedParameters( f );
     }
     entryText += ")";
     if ( !f.returnType.isEmpty() )
