@@ -134,15 +134,18 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
 
         QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerIds.at( i ) );
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
-        QString origLayerId = vl->id();
-        QgsVectorLayer* newLayer = copyVectorLayer( vl, db, dbPath );
-
-        if ( newLayer )
+        if ( vl )
         {
-          layerIdMapping.insert( origLayerId, newLayer );
-          // remove remote layer
-          QgsMapLayerRegistry::instance()->removeMapLayers(
-            QStringList() << origLayerId );
+          QString origLayerId = vl->id();
+          QgsVectorLayer* newLayer = copyVectorLayer( vl, db, dbPath );
+
+          if ( newLayer )
+          {
+            layerIdMapping.insert( origLayerId, newLayer );
+            // remove remote layer
+            QgsMapLayerRegistry::instance()->removeMapLayers(
+              QStringList() << origLayerId );
+          }
         }
       }
 
