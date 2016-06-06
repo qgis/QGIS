@@ -96,10 +96,13 @@ void Qgs25DRendererWidget::updateRenderer()
 
 void Qgs25DRendererWidget::apply()
 {
-  QgsExpressionContextUtils::setLayerVariable( mLayer, "qgis_25d_height", mHeightWidget->currentText() );
-  QgsExpressionContextUtils::setLayerVariable( mLayer, "qgis_25d_angle", mAngleWidget->value() );
+  if ( mHeightWidget )
+  {
+    QgsExpressionContextUtils::setLayerVariable( mLayer, "qgis_25d_height", mHeightWidget->currentText() );
+    QgsExpressionContextUtils::setLayerVariable( mLayer, "qgis_25d_angle", mAngleWidget->value() );
 
-  emit layerVariablesChanged();
+    emit layerVariablesChanged();
+  }
 }
 
 QgsRendererV2Widget* Qgs25DRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
