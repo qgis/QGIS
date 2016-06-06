@@ -211,6 +211,6 @@ void QgsConfigCache::removeChangedEntry( const QString& path )
 
 void QgsConfigCache::removeEntry( const QString& path )
 {
-   removeChangedEntry( path );
+  removeChangedEntry( path );
 }
 
