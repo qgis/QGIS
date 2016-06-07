@@ -73,6 +73,10 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
 
     virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol );
 
+    virtual bool legendSymbolItemsCheckable() const;
+    virtual bool legendSymbolItemChecked( const QString& key );
+    virtual void checkLegendSymbolItem( const QString& key, bool state = true );
+
     //! not available in python bindings
     //! @deprecated since 2.4
     // void setDisplacementGroups( const QList<QMap<QgsFeatureId, QgsFeature> >& list );

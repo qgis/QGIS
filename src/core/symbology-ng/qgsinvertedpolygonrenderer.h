@@ -123,6 +123,10 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
 
     virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol ) override;
 
+    virtual bool legendSymbolItemsCheckable() const override;
+    virtual bool legendSymbolItemChecked( const QString& key ) override;
+    virtual void checkLegendSymbolItem( const QString& key, bool state = true ) override;
+
     /** @returns true if the geometries are to be preprocessed (merged with an union) before rendering.*/
     bool preprocessingEnabled() const { return mPreprocessingEnabled; }
     /**

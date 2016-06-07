@@ -72,6 +72,30 @@ void QgsInvertedPolygonRenderer::setLegendSymbolItem( const QString& key, QgsSym
   mSubRenderer->setLegendSymbolItem( key, symbol );
 }
 
+bool QgsInvertedPolygonRenderer::legendSymbolItemsCheckable() const
+{
+  if ( !mSubRenderer )
+    return false;
+
+  return mSubRenderer->legendSymbolItemsCheckable();
+}
+
+bool QgsInvertedPolygonRenderer::legendSymbolItemChecked( const QString& key )
+{
+  if ( !mSubRenderer )
+    return false;
+
+  return mSubRenderer->legendSymbolItemChecked( key );
+}
+
+void QgsInvertedPolygonRenderer::checkLegendSymbolItem( const QString& key, bool state )
+{
+  if ( !mSubRenderer )
+    return;
+
+  return mSubRenderer->checkLegendSymbolItem( key, state );
+}
+
 void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
   if ( !mSubRenderer )

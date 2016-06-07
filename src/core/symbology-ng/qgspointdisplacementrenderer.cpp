@@ -235,6 +235,30 @@ void QgsPointDisplacementRenderer::setLegendSymbolItem( const QString& key, QgsS
   mRenderer->setLegendSymbolItem( key, symbol );
 }
 
+bool QgsPointDisplacementRenderer::legendSymbolItemsCheckable() const
+{
+  if ( !mRenderer )
+    return false;
+
+  return mRenderer->legendSymbolItemsCheckable();
+}
+
+bool QgsPointDisplacementRenderer::legendSymbolItemChecked( const QString& key )
+{
+  if ( !mRenderer )
+    return false;
+
+  return mRenderer->legendSymbolItemChecked( key );
+}
+
+void QgsPointDisplacementRenderer::checkLegendSymbolItem( const QString& key, bool state )
+{
+  if ( !mRenderer )
+    return;
+
+  return mRenderer->checkLegendSymbolItem( key, state );
+}
+
 QList<QString> QgsPointDisplacementRenderer::usedAttributes()
 {
   QList<QString> attributeList;
