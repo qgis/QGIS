@@ -1855,6 +1855,72 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         # Check that the approx extent contains the geometry
         assert vl.extent().contains(QgsPoint(2, 49))
 
+    def testGeomedia(self):
+        """Test various interoperability specifities that occur with Geomedia Web Server."""
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_geomedia'
+
+        with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?VERSION=2.0.0'), 'wb') as f:
+            f.write("""
+<wfs:WFS_Capabilities version="2.0.0" xmlns="http://www.opengis.net/wfs/2.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:gml="http://schemas.opengis.net/gml/3.2" xmlns:fes="http://www.opengis.net/fes/2.0">
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>my:typename</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::32631</DefaultCRS>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>0 40</ows:LowerCorner>
+        <ows:UpperCorner>15 50</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+    </FeatureType>
+  </FeatureTypeList>
+</wfs:WFS_Capabilities>""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename'), 'wb') as f:
+            f.write("""
+<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml"/>
+  <xsd:complexType name="typenameType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="intfield" nillable="true" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="geometryProperty" nillable="true" type="gmgml:Polygon_Surface_MultiSurface_CompositeSurfacePropertyType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
+</xsd:schema>
+""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631"""), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my">
+  <wfs:member>
+    <my:typename gml:id="typename.0">
+      <my:intfield>1</my:intfield>
+      <my:geometryProperty><gml:Polygon srsName="urn:ogc:def:crs:EPSG::32631" gml:id="typename.geom.0"><gml:exterior><gml:LinearRing><gml:posList>500000 4500000 500000 4510000 510000 4510000 510000 4500000 500000 4500000</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></my:geometryProperty>
+    </my:typename>
+  </wfs:member>
+</wfs:FeatureCollection>""".encode('UTF-8'))
+
+        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0'", u'test', u'WFS')
+        assert vl.isValid()
+        self.assertEqual(vl.wkbType(), QgsWKBTypes.MultiPolygon)
+
+        # Download all features
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+
+        reference = QgsGeometry.fromRect(QgsRectangle(500000, 4500000, 510000, 4510000))
+        vl_extent = QgsGeometry.fromRect(vl.extent())
+        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
+
 
 if __name__ == '__main__':
     unittest.main()

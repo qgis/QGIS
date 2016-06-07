@@ -1250,11 +1250,18 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc,
       }
     }
 
+    QRegExp gmlPT( "gml:(.*)PropertyType" );
+    // gmgml: is Geomedia Web Server
+    if ( type == "gmgml:Polygon_Surface_MultiSurface_CompositeSurfacePropertyType" )
+    {
+      foundGeometryAttribute = true;
+      geometryAttribute = name;
+      geomType = QGis::WKBMultiPolygon;
+    }
     //is it a geometry attribute?
     //MH 090428: sometimes the <element> tags for geometry attributes have only attribute ref="gml:polygonProperty" and no name
-    QRegExp gmlPT( "gml:(.*)PropertyType" );
     // the GeometryAssociationType has been seen in #11785
-    if ( type.indexOf( gmlPT ) == 0 || type == "gml:GeometryAssociationType" || name.isEmpty() )
+    else if ( type.indexOf( gmlPT ) == 0 || type == "gml:GeometryAssociationType" || name.isEmpty() )
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
