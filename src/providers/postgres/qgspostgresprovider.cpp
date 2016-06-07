@@ -42,17 +42,14 @@
 const QString POSTGRES_KEY = "postgres";
 const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
 
-// We convert signed 32bit integers to unsigned 64bit integers
-// to support the whole range of int32 values (including negative)
-// See http://hub.qgis.org/issues/14262
-inline uint64_t PKINT2FID( int32_t x )
+inline int64_t PKINT2FID( int32_t x )
 {
-  return static_cast<uint64_t>( x );
+  return QgsPostgresUtils::int32pk_to_fid( x );
 }
 
 inline int32_t FID2PKINT( int64_t x )
 {
-  return static_cast<int32_t>( x );
+  return QgsPostgresUtils::fid_to_int32pk( x );
 }
 
 

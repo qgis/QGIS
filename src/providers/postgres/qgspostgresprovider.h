@@ -502,6 +502,21 @@ class QgsPostgresUtils
                                 QSharedPointer<QgsPostgresSharedData> sharedData );
 
     static QString andWhereClauses( const QString& c1, const QString& c2 );
+
+    static const int64_t int32pk_offset = 4294967296;
+
+    // We shift negative 32bit integers to above the max 32bit
+    // positive integer to support the whole range of int32 values
+    // See http://hub.qgis.org/issues/14262
+    static int64_t int32pk_to_fid( int32_t x )
+    {
+      return x >= 0 ? x : x + int32pk_offset;
+    }
+
+    static int32_t fid_to_int32pk( int64_t x )
+    {
+      return x <= (( int32pk_offset ) / 2.0 ) ? x : -( int32pk_offset - x );
+    }
 };
 
 /** Data shared between provider class and its feature sources. Ideally there should
