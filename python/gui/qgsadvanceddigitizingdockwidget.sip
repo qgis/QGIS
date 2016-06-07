@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsadvanceddigitizingdockwidget.h  -  dock for CAD tools
+    qgsadvanceddigitizingdockwidget.sip  -  dock for CAD tools
     ----------------------
     begin                : October 2014
     copyright            : (C) Denis Rouzaud
