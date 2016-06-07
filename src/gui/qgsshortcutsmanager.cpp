@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsshortcutsmanager.h"
-
+#include "qgslogger.h"
 #include <QSettings>
 #include <QShortcut>
 
@@ -86,6 +86,12 @@ void QgsShortcutsManager::registerAllChildShortcuts( QObject* object, bool recur
 
 bool QgsShortcutsManager::registerAction( QAction* action, const QString& defaultSequence )
 {
+#ifdef QGISDEBUG
+  // if using a debug build, warn on duplicate actions
+  if ( actionByName( action->text() ) || shortcutByName( action->text() ) )
+    QgsLogger::warning( QString( "Duplicate shortcut registered: %1" ).arg( action->text() ) );
+#endif
+
   mActions.insert( action, defaultSequence );
   connect( action, SIGNAL( destroyed() ), this, SLOT( actionDestroyed() ) );
 
@@ -103,6 +109,12 @@ bool QgsShortcutsManager::registerAction( QAction* action, const QString& defaul
 
 bool QgsShortcutsManager::registerShortcut( QShortcut* shortcut, const QString& defaultSequence )
 {
+#ifdef QGISDEBUG
+  // if using a debug build, warn on duplicate actions
+  if ( actionByName( shortcut->objectName() ) || shortcutByName( shortcut->objectName() ) )
+    QgsLogger::warning( QString( "Duplicate shortcut registered: %1" ).arg( shortcut->objectName() ) );
+#endif
+
   mShortcuts.insert( shortcut, defaultSequence );
   connect( shortcut, SIGNAL( destroyed() ), this, SLOT( shortcutDestroyed() ) );
 

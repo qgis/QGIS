@@ -1009,7 +1009,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   //also make ctrl+alt+= a shortcut to switch to zoom in map tool
   QShortcut* zoomInToolShortCut = new QShortcut( QKeySequence( tr( "Ctrl+Alt+=" ) ), this );
   connect( zoomInToolShortCut, SIGNAL( activated() ), this, SLOT( zoomIn() ) );
-  zoomInToolShortCut->setObjectName( "Zoom in" );
+  zoomInToolShortCut->setObjectName( "ZoomIn2" );
   zoomInToolShortCut->setWhatsThis( "Zoom in (secondary)" );
 
   // Show a nice tip of the day
