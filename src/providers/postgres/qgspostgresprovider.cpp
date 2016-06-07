@@ -42,10 +42,20 @@
 const QString POSTGRES_KEY = "postgres";
 const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
 
-// Add this offset to the database integer primary keys
-// to support the whole range of values (including negative)
+// We convert signed 32bit integers to unsigned 64bit integers
+// to support the whole range of int32 values (including negative)
 // See http://hub.qgis.org/issues/14262
-#define PKINT_OFFSET (2^32)
+inline uint64_t PKINT2FID( int32_t x )
+{
+  return static_cast<uint64_t>( x );
+}
+
+inline int32_t FID2PKINT( int64_t x )
+{
+  return static_cast<int32_t>( x );
+}
+
+
 
 QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     : QgsVectorDataProvider( uri )
@@ -453,7 +463,7 @@ void QgsPostgresProvider::appendPkParams( QgsFeatureId featureId, QStringList &p
       break;
 
     case pktInt:
-      params << QString::number( featureId - PKINT_OFFSET );
+      params << QString::number( FID2PKINT( featureId ) );
       break;
 
     case pktTid:
@@ -518,7 +528,7 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields& 
 
     case pktInt:
       Q_ASSERT( pkAttrs.size() == 1 );
-      whereClause = QString( "%1=%2" ).arg( QgsPostgresConn::quotedIdentifier( fields[ pkAttrs[0] ].name() ) ).arg( featureId - PKINT_OFFSET );
+      whereClause = QString( "%1=%2" ).arg( QgsPostgresConn::quotedIdentifier( fields[ pkAttrs[0] ].name() ) ).arg( FID2PKINT( featureId ) );
       break;
 
     case pktUint64:
@@ -585,7 +595,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds& featureIds, const Qg
 
         Q_FOREACH ( const QgsFeatureId featureId, featureIds )
         {
-          expr += delim + FID_TO_STRING( pkType == pktOid ? featureId : pkType == pktUint64 ? featureId : featureId - PKINT_OFFSET );
+          expr += delim + FID_TO_STRING( pkType == pktOid ? featureId : pkType == pktUint64 ? featureId : FID2PKINT( featureId ) );
           delim = ',';
         }
         expr += ')';
@@ -2070,7 +2080,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         }
         else if ( mPrimaryKeyType == pktInt )
         {
-          features->setFeatureId( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) + PKINT_OFFSET );
+          features->setFeatureId( PKINT2FID( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) ) );
         }
         else
         {
