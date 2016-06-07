@@ -85,6 +85,8 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
     void setEmbeddedRenderer( QgsFeatureRendererV2* subRenderer /Transfer/ );
     const QgsFeatureRendererV2* embeddedRenderer() const;
 
+    virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol );
+
     /** @returns true if the geometries are to be preprocessed (merged with an union) before rendering.*/
     bool preprocessingEnabled() const;
     /**

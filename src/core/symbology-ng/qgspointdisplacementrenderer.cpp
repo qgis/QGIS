@@ -227,6 +227,14 @@ const QgsFeatureRendererV2* QgsPointDisplacementRenderer::embeddedRenderer() con
   return mRenderer;
 }
 
+void QgsPointDisplacementRenderer::setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol )
+{
+  if ( !mRenderer )
+    return;
+
+  mRenderer->setLegendSymbolItem( key, symbol );
+}
+
 QList<QString> QgsPointDisplacementRenderer::usedAttributes()
 {
   QList<QString> attributeList;

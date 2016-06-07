@@ -64,6 +64,14 @@ const QgsFeatureRendererV2* QgsInvertedPolygonRenderer::embeddedRenderer() const
   return mSubRenderer.data();
 }
 
+void QgsInvertedPolygonRenderer::setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol )
+{
+  if ( !mSubRenderer )
+    return;
+
+  mSubRenderer->setLegendSymbolItem( key, symbol );
+}
+
 void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
   if ( !mSubRenderer )
