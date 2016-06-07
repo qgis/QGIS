@@ -66,6 +66,12 @@ class QgsVectorLayerRendererInterruptionChecker: public QgsInterruptionChecker
 class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 {
   public:
+    /**
+     * Create a new renderer for a vector layer.
+     * 
+     * @param layer The layer to be rendered.
+     * @param context Contains additional information about the rendering environment.
+     */
     QgsVectorLayerRenderer( QgsVectorLayer* layer, const QgsRenderContext& context );
     ~QgsVectorLayerRenderer();
 
