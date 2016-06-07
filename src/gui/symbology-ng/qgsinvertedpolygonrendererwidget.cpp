@@ -69,14 +69,13 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
 
   int currentEmbeddedIdx = 0;
   //insert possible renderer types
-  QStringList rendererList = QgsRendererV2Registry::instance()->renderersList();
+  QStringList rendererList = QgsRendererV2Registry::instance()->renderersList( QgsRendererV2AbstractMetadata::PolygonLayer );
   QStringList::const_iterator it = rendererList.constBegin();
   int idx = 0;
   mRendererComboBox->blockSignals( true );
   for ( ; it != rendererList.constEnd(); ++it, ++idx )
   {
-    if (( *it != "invertedPolygonRenderer" ) && //< an inverted renderer cannot contain another inverted renderer
-        ( *it != "pointDisplacement" ) )        //< an inverted renderer can only contain a polygon renderer
+    if ( *it != "invertedPolygonRenderer" ) //< an inverted renderer cannot contain another inverted renderer
     {
       QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( *it );
       mRendererComboBox->addItem( m->icon(), m->visibleName(), /* data */ *it );

@@ -100,7 +100,7 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
   _initRendererWidgetFunctions();
 
   QgsRendererV2Registry* reg = QgsRendererV2Registry::instance();
-  QStringList renderers = reg->renderersList();
+  QStringList renderers = reg->renderersList( mLayer );
   Q_FOREACH ( const QString& name, renderers )
   {
     QgsRendererV2AbstractMetadata* m = reg->rendererMetadata( name );

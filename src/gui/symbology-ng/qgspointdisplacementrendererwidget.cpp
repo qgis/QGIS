@@ -87,11 +87,11 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   }
 
   //insert possible renderer types
-  QStringList rendererList = QgsRendererV2Registry::instance()->renderersList();
+  QStringList rendererList = QgsRendererV2Registry::instance()->renderersList( QgsRendererV2AbstractMetadata::PointLayer );
   QStringList::const_iterator it = rendererList.constBegin();
   for ( ; it != rendererList.constEnd(); ++it )
   {
-    if ( *it != "pointDisplacement" && *it != "heatmapRenderer" && *it != "invertedPolygonRenderer" )
+    if ( *it != "pointDisplacement" )
     {
       QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( *it );
       mRendererComboBox->addItem( m->icon(), m->visibleName(), *it );

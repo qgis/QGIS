@@ -36,6 +36,18 @@ class QgsRendererV2Widget;
 class CORE_EXPORT QgsRendererV2AbstractMetadata
 {
   public:
+
+    //! Layer types the renderer is compatible with
+    //! @note added in QGIS 2.16
+    enum LayerType
+    {
+      PointLayer = 1, //!< Compatible with point layers
+      LineLayer = 2, //!< Compatible with line layers
+      PolygonLayer = 4, //!< Compatible with polygon layers
+      All = PointLayer | LineLayer | PolygonLayer, //!< Compatible with all vector layers
+    };
+    Q_DECLARE_FLAGS( LayerTypes, LayerType )
+
     QgsRendererV2AbstractMetadata( const QString& name, const QString& visibleName, const QIcon& icon = QIcon() )
         : mName( name )
         , mVisibleName( visibleName )
@@ -48,6 +60,11 @@ class CORE_EXPORT QgsRendererV2AbstractMetadata
 
     QIcon icon() const { return mIcon; }
     void setIcon( const QIcon& icon ) { mIcon = icon; }
+
+    /** Returns flags indicating the types of layer the renderer is compatible with.
+     * @note added in QGIS 2.16
+     */
+    virtual LayerTypes compatibleLayerTypes() const { return All; }
 
     /** Return new instance of the renderer given the DOM element. Returns NULL on error.
      * Pure virtual function: must be implemented in derived classes.  */
@@ -75,6 +92,9 @@ class CORE_EXPORT QgsRendererV2AbstractMetadata
 };
 
 
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRendererV2AbstractMetadata::LayerTypes )
+
+
 typedef QgsFeatureRendererV2*( *QgsRendererV2CreateFunc )( QDomElement& );
 typedef QgsRendererV2Widget*( *QgsRendererV2WidgetFunc )( QgsVectorLayer*, QgsStyleV2*, QgsFeatureRendererV2* );
 typedef QgsFeatureRendererV2*( *QgsRendererV2CreateFromSldFunc )( QDomElement&, QGis::GeometryType geomType );
@@ -92,11 +112,13 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
                            const QString& visibleName,
                            QgsRendererV2CreateFunc pfCreate,
                            const QIcon& icon = QIcon(),
-                           QgsRendererV2WidgetFunc pfWidget = nullptr )
+                           QgsRendererV2WidgetFunc pfWidget = nullptr,
+                           QgsRendererV2AbstractMetadata::LayerTypes layerTypes = QgsRendererV2AbstractMetadata::All )
         : QgsRendererV2AbstractMetadata( name, visibleName, icon )
         , mCreateFunc( pfCreate )
         , mWidgetFunc( pfWidget )
         , mCreateFromSldFunc( nullptr )
+        , mLayerTypes( layerTypes )
     {}
 
     //! @note not available in python bindings
@@ -105,11 +127,13 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
                            QgsRendererV2CreateFunc pfCreate,
                            QgsRendererV2CreateFromSldFunc pfCreateFromSld,
                            const QIcon& icon = QIcon(),
-                           QgsRendererV2WidgetFunc pfWidget = nullptr )
+                           QgsRendererV2WidgetFunc pfWidget = nullptr,
+                           QgsRendererV2AbstractMetadata::LayerTypes layerTypes = QgsRendererV2AbstractMetadata::All )
         : QgsRendererV2AbstractMetadata( name, visibleName, icon )
         , mCreateFunc( pfCreate )
         , mWidgetFunc( pfWidget )
         , mCreateFromSldFunc( pfCreateFromSld )
+        , mLayerTypes( layerTypes )
     {}
 
     virtual ~QgsRendererV2Metadata();
@@ -130,6 +154,8 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
     //! @note not available in python bindings
     void setWidgetFunction( QgsRendererV2WidgetFunc f ) { mWidgetFunc = f; }
 
+    virtual QgsRendererV2AbstractMetadata::LayerTypes compatibleLayerTypes() const override { return mLayerTypes; }
+
   protected:
     //! pointer to function that creates an instance of the renderer when loading project / style
     QgsRendererV2CreateFunc mCreateFunc;
@@ -137,39 +163,61 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
     QgsRendererV2WidgetFunc mWidgetFunc;
     //! pointer to function that creates an instance of the renderer from SLD
     QgsRendererV2CreateFromSldFunc mCreateFromSldFunc;
+
+  private:
+
+    QgsRendererV2AbstractMetadata::LayerTypes mLayerTypes;
 };
 
-/**
-  Registry of renderers.
 
-  This is a singleton, renderers can be added / removed at any time
+/** \ingroup core
+ * \class QgsRendererV2Registry
+ * \brief Registry of renderers.
+ *
+ * This is a singleton, renderers can be added / removed at any time
  */
+
 class CORE_EXPORT QgsRendererV2Registry
 {
   public:
 
+    //! Returns a pointer to the QgsRendererV2Registry singleton
     static QgsRendererV2Registry* instance();
 
-    //! add a renderer to registry. Takes ownership of the metadata object.
+    //! Adds a renderer to the registry. Takes ownership of the metadata object.
+    //! @param metadata renderer metadata
+    //! @returns true if renderer was added successfully, or false if renderer could not
+    //! be added (eg a renderer with a duplicate name already exists)
     bool addRenderer( QgsRendererV2AbstractMetadata* metadata );
 
-    //! remove renderer from registry
+    //! Removes a renderer from registry.
+    //! @param rendererName name of renderer to remove from registry
+    //! @returns true if renderer was sucessfully removed, or false if matching
+    //! renderer could not be found
     bool removeRenderer( const QString& rendererName );
 
-    //! get metadata for particular renderer. Returns NULL if not found in registry.
+    //! Returns the metadata for a specified renderer. Returns NULL if a matching
+    //! renderer was not found in the registry.
     QgsRendererV2AbstractMetadata* rendererMetadata( const QString& rendererName );
 
-    //! return a list of available renderers
-    QStringList renderersList();
+    //! Returns a list of available renderers.
+    //! @param layerTypes flags to filter the renderers by compatible layer types
+    QStringList renderersList( QgsRendererV2AbstractMetadata::LayerTypes layerTypes = QgsRendererV2AbstractMetadata::All ) const;
+
+    //! Returns a list of available renderers which are compatible with a specified layer.
+    //! @param layer vector layer
+    //! @note added in QGIS 2.16
+    QStringList renderersList( const QgsVectorLayer* layer ) const;
 
   protected:
     //! protected constructor
     QgsRendererV2Registry();
     ~QgsRendererV2Registry();
 
+    //! Map of name to renderer
     QMap<QString, QgsRendererV2AbstractMetadata*> mRenderers;
 
-    //! list to keep order in which renderers have been added
+    //! List of renderers, maintained in the order that they have been added
     QStringList mRenderersOrder;
 
   private:
