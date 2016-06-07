@@ -3751,7 +3751,12 @@ void QgsVectorLayer::readSldLabeling( const QDomNode& node )
 
 QgsAttributeTableConfig QgsVectorLayer::attributeTableConfig() const
 {
-  return mAttributeTableConfig;
+  QgsAttributeTableConfig config = mAttributeTableConfig;
+
+  if ( config.isEmpty() )
+    config.update( fields() );
+
+  return config;
 }
 
 void QgsVectorLayer::setAttributeTableConfig( const QgsAttributeTableConfig& attributeTableConfig )
