@@ -169,7 +169,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                 self.assertEqual(f.attributes()[att_idx], val)
                 #self.assertEqual(f.id(), val)
             self.assertEqual(count, 1)
-        test_query_attribute(self.dbconn, '(SELECT -1::int4 i, NULL::geometry(Point) g)', 'i', -1, 1)
+        test_query_attribute(self.dbconn, '(SELECT -1::int4 i, NULL::geometry(Point) g)', 'i', -1, 4294967295)
         test_query_attribute(self.dbconn, '(SELECT -1::int2 i, NULL::geometry(Point) g)', 'i', -1, 1)
         test_query_attribute(self.dbconn, '(SELECT -1::int8 i, NULL::geometry(Point) g)', 'i', -1, 1)
         test_query_attribute(self.dbconn, '(SELECT -65535::int8 i, NULL::geometry(Point) g)', 'i', -65535, 1)
