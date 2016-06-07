@@ -41,7 +41,7 @@
 // - passing of cache to QgsVectorLayer
 
 
-QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRenderContext& context )
+QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, const QgsRenderContext& context )
     : QgsMapLayerRenderer( layer->id() )
     , mContext( context )
     , mInterruptionChecker( context )
