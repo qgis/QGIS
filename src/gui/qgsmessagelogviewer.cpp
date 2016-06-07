@@ -78,5 +78,6 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLo
 
 void QgsMessageLogViewer::closeTab( int index )
 {
-  tabWidget->removeTab( index );
+  if ( tabWidget->count() > 1 )
+    tabWidget->removeTab( index );
 }
