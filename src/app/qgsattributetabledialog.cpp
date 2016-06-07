@@ -127,8 +127,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, mEditorContext );
 
   QgsAttributeTableConfig config = mLayer->attributeTableConfig();
-  if ( config.isEmpty() )
-    config.update( mLayer->fields() );
   mMainView->setAttributeTableConfig( config );
 
   // Initialize filter gui elements
