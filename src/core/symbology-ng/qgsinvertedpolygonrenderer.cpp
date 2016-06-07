@@ -29,7 +29,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( const QgsFeatureRendererV2* subRenderer )
+QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( QgsFeatureRendererV2* subRenderer )
     : QgsFeatureRendererV2( "invertedPolygonRenderer" )
     , mPreprocessingEnabled( false )
 {
@@ -47,11 +47,11 @@ QgsInvertedPolygonRenderer::~QgsInvertedPolygonRenderer()
 {
 }
 
-void QgsInvertedPolygonRenderer::setEmbeddedRenderer( const QgsFeatureRendererV2* subRenderer )
+void QgsInvertedPolygonRenderer::setEmbeddedRenderer( QgsFeatureRendererV2* subRenderer )
 {
   if ( subRenderer )
   {
-    mSubRenderer.reset( const_cast<QgsFeatureRendererV2*>( subRenderer )->clone() );
+    mSubRenderer.reset( subRenderer );
   }
   else
   {
@@ -341,7 +341,7 @@ QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::clone() const
   }
   else
   {
-    newRenderer = new QgsInvertedPolygonRenderer( mSubRenderer.data() );
+    newRenderer = new QgsInvertedPolygonRenderer( mSubRenderer.data()->clone() );
   }
   newRenderer->setPreprocessingEnabled( preprocessingEnabled() );
   copyRendererData( newRenderer );
@@ -357,7 +357,6 @@ QgsFeatureRendererV2* QgsInvertedPolygonRenderer::create( QDomElement& element )
   {
     QgsFeatureRendererV2* renderer = QgsFeatureRendererV2::load( embeddedRendererElem );
     r->setEmbeddedRenderer( renderer );
-    delete renderer;
   }
   r->setPreprocessingEnabled( element.attribute( "preprocessing", "0" ).toInt() == 1 );
   return r;

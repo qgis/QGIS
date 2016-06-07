@@ -222,6 +222,11 @@ void QgsPointDisplacementRenderer::setEmbeddedRenderer( QgsFeatureRendererV2* r 
   mRenderer = r;
 }
 
+const QgsFeatureRendererV2* QgsPointDisplacementRenderer::embeddedRenderer() const
+{
+  return mRenderer;
+}
+
 QList<QString> QgsPointDisplacementRenderer::usedAttributes()
 {
   QList<QString> attributeList;
