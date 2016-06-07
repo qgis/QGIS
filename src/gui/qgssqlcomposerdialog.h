@@ -176,6 +176,8 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     QMap<QString, QString> mapColumnEntryTextToName;
     QMap<QString, QString> mapSpatialPredicateEntryTextToName;
     QMap<QString, QString> mapFunctionEntryTextToName;
+    QString lastSearchedText;
+
 
     void loadTableColumns( const QString& table );
     void functionCurrentIndexChanged( QComboBox* combo,

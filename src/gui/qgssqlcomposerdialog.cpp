@@ -22,6 +22,7 @@ email                : even.rouault at spatialys.com
 #include "qgssqlstatement.h"
 
 #include <QMessageBox>
+#include <QKeyEvent>
 
 #include <Qsci/qscilexer.h>
 
@@ -50,6 +51,8 @@ QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget * parent, Qt::WindowFlags fl
   mTableJoins->installEventFilter( this );
   mWhereEditor->installEventFilter( this );
   mOrderEditor->installEventFilter( this );
+  mTablesCombo->view()->installEventFilter( this );
+
 
   connect( mButtonBox->button( QDialogButtonBox::Reset ), SIGNAL( clicked() ),
            this, SLOT( reset() ) );
@@ -128,7 +131,56 @@ QgsSQLComposerDialog::~QgsSQLComposerDialog()
 bool QgsSQLComposerDialog::eventFilter( QObject *obj, QEvent *event )
 {
   if ( event->type() == QEvent::FocusIn )
-    mFocusedObject = obj;
+  {
+    if ( obj == mTablesCombo->view() )
+      lastSearchedText.clear();
+    else
+      mFocusedObject = obj;
+  }
+
+  // Custom search in table combobox
+  if ( event->type() == QEvent::KeyPress && obj == mTablesCombo->view() )
+  {
+    QString currentString = (( QKeyEvent* )event )->text();
+    if ( !currentString.isEmpty() && (( currentString[0] >= 'a' && currentString[0] <= 'z' ) ||
+                                      ( currentString[0] >= 'A' && currentString[0] <= 'Z' ) ||
+                                      ( currentString[0] >= '0' && currentString[0] <= '9' ) ||
+                                      currentString[0] == ':' || currentString[0] == '_' || currentString[0] == ' ' ||
+                                      currentString[0] == '(' || currentString[0] == ')' ) )
+    {
+      // First attempt is concatenation of existing search text
+      // Second attempt is just the new character
+      int attemptCount = ( lastSearchedText.isEmpty() ) ? 1 : 2;
+      for ( int attempt = 0; attempt < attemptCount; attempt ++ )
+      {
+        if ( attempt == 0 )
+          lastSearchedText += currentString;
+        else
+          lastSearchedText = currentString;
+
+        // Find the string that contains the searched text, and in case
+        // of several matches, pickup the one where the searched text is the
+        // most at the beginning.
+        int iBestCandidate = 0;
+        int idxInTextOfBestCandidate = 1000;
+        for ( int i = 1; i < mTablesCombo->count(); i++ )
+        {
+          int idxInText = mTablesCombo->itemText( i ).indexOf( lastSearchedText, Qt::CaseInsensitive );
+          if ( idxInText >= 0 && idxInText < idxInTextOfBestCandidate )
+          {
+            iBestCandidate = i;
+            idxInTextOfBestCandidate = idxInText;
+          }
+        }
+        if ( iBestCandidate > 0 )
+        {
+          mTablesCombo->view()->setCurrentIndex( mTablesCombo->model()->index( 0, 0 ).sibling( iBestCandidate, 0 ) );
+          return true;
+        }
+      }
+      lastSearchedText.clear();
+    }
+  }
 
   return QObject::eventFilter( obj, event );
 }
