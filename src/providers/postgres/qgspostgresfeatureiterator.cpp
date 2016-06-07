@@ -718,6 +718,10 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
     case pktInt:
     case pktUint64:
       fid = mConn->getBinaryInt( queryResult, row, col++ );
+      if ( mSource->mPrimaryKeyType == pktInt )
+      {
+        fid = QgsPostgresUtils::int32pk_to_fid( fid );
+      }
       if ( !subsetOfAttributes || fetchAttributes.contains( mSource->mPrimaryKeyAttrs.at( 0 ) ) )
       {
         feature.setAttribute( mSource->mPrimaryKeyAttrs[0], fid );
