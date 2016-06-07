@@ -27,6 +27,7 @@ from qgis.PyQt.QtCore import pyqtSignal
 
 
 class ListMultiSelectWidget(QGroupBox):
+
     """Widget to show two parallel lists and move elements between the two
 
     usage from code:

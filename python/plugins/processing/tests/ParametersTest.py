@@ -435,6 +435,7 @@ class ParameterTableFieldTest(unittest.TestCase):
 
 
 class ParameterTableMultipleFieldTest(unittest.TestCase):
+
     def setUp(self):
         self.parent_name = 'test_parent_layer'
         test_data = points2()

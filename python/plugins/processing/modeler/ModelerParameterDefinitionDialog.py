@@ -127,7 +127,7 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.horizontalLayoutParent.addWidget(self.state)
             self.verticalLayout.addLayout(self.horizontalLayoutParent)
         elif self.paramType in (
-                        ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD,
+            ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD,
                         ModelerParameterDefinitionDialog.PARAMETER_TABLE_MULTIPLE_FIELD)\
             or isinstance(self.param, (ParameterTableField,
                                        ParameterTableMultipleField)):
@@ -146,7 +146,7 @@ class ModelerParameterDefinitionDialog(QDialog):
 
             # add the datatype selector
             self.horizontalLayoutDatatype.addWidget(QLabel(self.tr('Allowed '
-                                                            'data type')))
+                                                                   'data type')))
             self.datatypeCombo = QComboBox()
             self.datatypeCombo.addItem(self.tr('Any'), -1)
             self.datatypeCombo.addItem(self.tr('Number'), 0)

@@ -457,8 +457,8 @@ class ParametersPanel(BASE, WIDGET):
                         not isinstance(child, ParameterTableMultipleField)):
                     widget.addItem(self.tr('[not set]'))
                 widget.addItems(
-                        self.getFields(layer, self.alg.getParameterFromName(
-                                child.name).datatype))
+                    self.getFields(layer, self.alg.getParameterFromName(
+                                   child.name).datatype))
             if isinstance(child, OutputVector):
                 child.base_layer = layer
 

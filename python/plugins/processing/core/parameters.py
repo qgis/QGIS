@@ -228,7 +228,6 @@ class ParameterExtent(Parameter):
         return '##' + self.name + '=' + param_type
 
 
-
 class ParameterPoint(Parameter):
 
     def __init__(self, name='', description='', default=None, optional=False):
@@ -846,6 +845,7 @@ class ParameterTable(ParameterDataObject):
 
 
 class ParameterTableField(Parameter):
+
     """A parameter representing a table field.
     Its value is a string that represents the name of the field.
 
@@ -899,6 +899,7 @@ class ParameterTableField(Parameter):
 
 
 class ParameterTableMultipleField(Parameter):
+
     """A parameter representing several table fields.
         Its value is a string with items separated by semicolons, each of
         which represents the name of each field.
