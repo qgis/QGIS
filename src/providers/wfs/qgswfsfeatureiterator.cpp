@@ -302,11 +302,15 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
     {
       invertAxis = !invertAxis;
     }
-    getFeatureUrl.addQueryItem( "BBOX",  QString(( invertAxis ) ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
-                                .arg( qgsDoubleToString( mShared->mRect.xMinimum() ),
-                                      qgsDoubleToString( mShared->mRect.yMinimum() ),
-                                      qgsDoubleToString( mShared->mRect.xMaximum() ),
-                                      qgsDoubleToString( mShared->mRect.yMaximum() ) ) );
+    QString bbox( QString(( invertAxis ) ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
+                  .arg( qgsDoubleToString( mShared->mRect.xMinimum() ),
+                        qgsDoubleToString( mShared->mRect.yMinimum() ),
+                        qgsDoubleToString( mShared->mRect.xMaximum() ),
+                        qgsDoubleToString( mShared->mRect.yMaximum() ) ) );
+    // Some servers like Geomedia need the srsname to be explictly appended
+    // otherwise they are confused and do not interpret it properly
+    bbox += "," + mShared->srsName();
+    getFeatureUrl.addQueryItem( "BBOX",  bbox );
   }
   else if ( !mShared->mWFSFilter.isEmpty() )
   {

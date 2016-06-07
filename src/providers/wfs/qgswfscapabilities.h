@@ -35,6 +35,9 @@ class QgsWFSCapabilities : public QgsWFSRequest
     //! description of a vector layer
     struct FeatureType
     {
+      //! Default constructor
+      FeatureType() : insertCap( false ), updateCap( false ), deleteCap( false ) {}
+
       QString name;
       QString title;
       QString abstract;
@@ -92,6 +95,7 @@ class QgsWFSCapabilities : public QgsWFSRequest
       QList<FeatureType> featureTypes;
       QList<Function> spatialPredicatesList;
       QList<Function> functionList;
+      bool useEPSGColumnFormat; // whether to use EPSG:XXXX srsname
 
       QSet< QString > setAllTypenames;
       QMap< QString, QString> mapUnprefixedTypenameToPrefixedTypename;

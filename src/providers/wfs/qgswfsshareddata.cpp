@@ -70,7 +70,9 @@ QString QgsWFSSharedData::srsName() const
   if ( !mSourceCRS.authid().isEmpty() )
   {
     if ( mWFSVersion.startsWith( "1.0" ) ||
-         !mSourceCRS.authid().startsWith( "EPSG:" ) )
+         !mSourceCRS.authid().startsWith( "EPSG:" ) ||
+         // For servers like Geomedia that advertize EPSG:XXXX in capabilities even in WFS 1.1 or 2.0
+         mCaps.useEPSGColumnFormat )
     {
       srsName = mSourceCRS.authid();
     }

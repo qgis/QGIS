@@ -72,6 +72,7 @@ void QgsWFSCapabilities::Capabilities::clear()
   setAllTypenames.clear();
   mapUnprefixedTypenameToPrefixedTypename.clear();
   setAmbiguousUnprefixedTypename.clear();
+  useEPSGColumnFormat = false;
 }
 
 QString QgsWFSCapabilities::Capabilities::addPrefixIfNeeded( const QString& name ) const
@@ -283,7 +284,11 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
       defaultCRSList = featureTypeElem.elementsByTagName( "DefaultCRS" );
     if ( defaultCRSList.length() > 0 )
     {
-      featureType.crslist.append( NormalizeSRSName( defaultCRSList.at( 0 ).toElement().text() ) );
+      QString srsname( defaultCRSList.at( 0 ).toElement().text() );
+      // Some servers like Geomedia advertize EPSG:XXXX even in WFS 1.1 or 2.0
+      if ( srsname.startsWith( "EPSG:" ) )
+        mCaps.useEPSGColumnFormat = true;
+      featureType.crslist.append( NormalizeSRSName( srsname ) );
     }
 
     //OtherSRS

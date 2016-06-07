@@ -842,7 +842,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         assert vl.isValid()
         self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
 
-        last_url = sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=my:typename&MAXFEATURES=2&SRSNAME=urn:ogc:def:crs:EPSG::4326&BBOX=60,-70,80,-60')
+        last_url = sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=my:typename&MAXFEATURES=2&SRSNAME=urn:ogc:def:crs:EPSG::4326&BBOX=60,-70,80,-60,urn:ogc:def:crs:EPSG::4326')
         with open(last_url, 'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs"
@@ -883,7 +883,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, [2])
 
         # Move to a neighbouring area, and reach the download limit
-        last_url = sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=my:typename&MAXFEATURES=2&SRSNAME=urn:ogc:def:crs:EPSG::4326&BBOX=65,-70,90,-60')
+        last_url = sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=my:typename&MAXFEATURES=2&SRSNAME=urn:ogc:def:crs:EPSG::4326&BBOX=65,-70,90,-60,urn:ogc:def:crs:EPSG::4326')
         with open(last_url, 'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs"
@@ -908,7 +908,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, [2, 3])
 
         # Zoom-in again, and bring more features
-        last_url = sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=my:typename&MAXFEATURES=2&SRSNAME=urn:ogc:def:crs:EPSG::4326&BBOX=66,-69,89,-61')
+        last_url = sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=my:typename&MAXFEATURES=2&SRSNAME=urn:ogc:def:crs:EPSG::4326&BBOX=66,-69,89,-61,urn:ogc:def:crs:EPSG::4326')
         with open(last_url, 'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs"
@@ -1823,7 +1823,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         assert vl.isValid()
 
         # First request that will be attempted
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&BBOX=-0.125,-0.125,1.125,1.125"""), 'wb') as f:
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&BBOX=-0.125,-0.125,1.125,1.125,urn:ogc:def:crs:EPSG::4326"""), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection
                        xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -1868,7 +1868,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
       <Name>my:typename</Name>
       <Title>Title</Title>
       <Abstract>Abstract</Abstract>
-      <DefaultCRS>urn:ogc:def:crs:EPSG::32631</DefaultCRS>
+      <DefaultCRS>EPSG:32631</DefaultCRS>
       <ows:WGS84BoundingBox>
         <ows:LowerCorner>0 40</ows:LowerCorner>
         <ows:UpperCorner>15 50</ows:UpperCorner>
@@ -1895,7 +1895,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </xsd:schema>
 """.encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631"""), 'wb') as f:
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=EPSG:32631"""), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection
                        xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -1904,7 +1904,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   <wfs:member>
     <my:typename gml:id="typename.0">
       <my:intfield>1</my:intfield>
-      <my:geometryProperty><gml:Polygon srsName="urn:ogc:def:crs:EPSG::32631" gml:id="typename.geom.0"><gml:exterior><gml:LinearRing><gml:posList>500000 4500000 500000 4510000 510000 4510000 510000 4500000 500000 4500000</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></my:geometryProperty>
+      <my:geometryProperty><gml:Polygon srsName="EPSG:32631" gml:id="typename.geom.0"><gml:exterior><gml:LinearRing><gml:posList>500000 4500000 500000 4510000 510000 4510000 510000 4500000 500000 4500000</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></my:geometryProperty>
     </my:typename>
   </wfs:member>
 </wfs:FeatureCollection>""".encode('UTF-8'))
