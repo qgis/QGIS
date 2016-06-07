@@ -64,6 +64,7 @@ class CORE_EXPORT QgsRenderContext
       DrawSelection            = 0x10,  //!< Whether vector selections should be shown in the rendered map
       DrawSymbolBounds         = 0x20,  //!< Draw bounds of symbols (for debugging/testing)
       RenderMapTile            = 0x40,  //!< Draw map such that there are no problems between adjacent tiles
+      Antialiasing             = 0x80,  //!< Use antialiasing while drawing
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
