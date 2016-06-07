@@ -465,6 +465,13 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   int logLevel = QgsServerLogger::instance()->logLevel();
   QTime time; //used for measuring request time if loglevel < 1
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
+
+  // Clean up  Expression Context
+  // because each call to QgsMapLayer::draw add items to QgsExpressionContext scope
+  // list. This prevent the scope list to grow indefinitely and seriously deteriorate
+  // performances and memory in the long run
+  sMapRenderer->rendererContext()->setExpressionContext( QgsExpressionContext() );
+   
   sQgsApplication->processEvents();
   if ( logLevel < 1 )
   {
