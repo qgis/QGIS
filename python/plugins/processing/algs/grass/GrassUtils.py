@@ -113,10 +113,10 @@ class GrassUtils:
         folder = ProcessingConfig.getSetting(GrassUtils.GRASS_WIN_SHELL) or ''
         if not os.path.exists(folder):
             folder = None
-        if folder is None:
+        if folder is None and GrassUtils.grassPath():
             folder = os.path.dirname(unicode(QgsApplication.prefixPath()))
             folder = os.path.join(folder, 'msys')
-        return folder
+        return folder or ''
 
     @staticmethod
     def grassDescriptionPath():
