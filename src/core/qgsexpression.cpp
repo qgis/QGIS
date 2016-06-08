@@ -116,14 +116,14 @@ inline bool isIntSafe( const QVariant& v )
   if ( v.type() == QVariant::String ) { bool ok; v.toString().toInt( &ok ); return ok; }
   return false;
 }
-inline bool isDoubleSafe( const QVariant& v )
+inline bool isDoubleSafe( const QVariant& v, bool acceptString = true )
 {
   if ( v.type() == QVariant::Double ) return true;
   if ( v.type() == QVariant::Int ) return true;
   if ( v.type() == QVariant::UInt ) return true;
   if ( v.type() == QVariant::LongLong ) return true;
   if ( v.type() == QVariant::ULongLong ) return true;
-  if ( v.type() == QVariant::String )
+  if ( acceptString && v.type() == QVariant::String )
   {
     bool ok;
     double val = v.toString().toDouble( &ok );
@@ -4161,7 +4161,7 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression *parent, const Q
       {
         return TVL_Unknown;
       }
-      else if ( isDoubleSafe( vL ) && isDoubleSafe( vR ) )
+      else if ( isDoubleSafe( vL, false ) && isDoubleSafe( vR, false ) )
       {
         // do numeric comparison if both operators can be converted to numbers
         double fL = getDoubleValue( vL, parent );
@@ -4190,7 +4190,7 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression *parent, const Q
       else // both operators non-null
       {
         bool equal = false;
-        if ( isDoubleSafe( vL ) && isDoubleSafe( vR ) )
+        if ( isDoubleSafe( vL, false ) && isDoubleSafe( vR, false ) )
         {
           double fL = getDoubleValue( vL, parent );
           ENSURE_NO_EVAL_ERROR;
