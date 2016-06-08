@@ -17,7 +17,6 @@
 #define QGSVECTORLAYERRENDERER_H
 
 class QgsFeatureRendererV2;
-class QgsRenderContext;
 class QgsVectorLayer;
 class QgsVectorLayerFeatureSource;
 
@@ -40,6 +39,7 @@ typedef QList<int> QgsAttributeList;
 #include "qgsvectorsimplifymethod.h"
 
 #include "qgsmaplayerrenderer.h"
+#include "qgsrendercontext.h"
 
 class QgsVectorLayerLabelProvider;
 class QgsVectorLayerDiagramProvider;
@@ -66,7 +66,13 @@ class QgsVectorLayerRendererInterruptionChecker: public QgsInterruptionChecker
 class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 {
   public:
-    QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRenderContext& context );
+    /**
+     * Create a new renderer for a vector layer.
+     * 
+     * @param layer The layer to be rendered.
+     * @param context Contains additional information about the rendering environment.
+     */
+    QgsVectorLayerRenderer( QgsVectorLayer* layer, const QgsRenderContext& context );
     ~QgsVectorLayerRenderer();
 
     virtual bool render() override;
@@ -98,7 +104,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
   protected:
 
-    QgsRenderContext& mContext;
+    QgsRenderContext mContext;
 
     QgsVectorLayerRendererInterruptionChecker mInterruptionChecker;
 
