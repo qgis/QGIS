@@ -101,6 +101,47 @@ QgsDataDefinedButton::~QgsDataDefinedButton()
   mCheckedWidgets.clear();
 }
 
+void QgsDataDefinedButton::updateFieldLists()
+{
+  mFieldNameList.clear();
+  mFieldTypeList.clear();
+
+  if ( mVectorLayer )
+  {
+    // store just a list of fields of unknown type or those that match the expected type
+    Q_FOREACH ( const QgsField& f, mVectorLayer->fields() )
+    {
+      bool fieldMatch = false;
+      // NOTE: these are the only QVariant enums supported at this time (see QgsField)
+      QString fieldType;
+      switch ( f.type() )
+      {
+        case QVariant::String:
+          fieldMatch = mDataTypes.testFlag( String );
+          fieldType = tr( "string" );
+          break;
+        case QVariant::Int:
+          fieldMatch = mDataTypes.testFlag( Int ) || mDataTypes.testFlag( Double );
+          fieldType = tr( "integer" );
+          break;
+        case QVariant::Double:
+          fieldMatch = mDataTypes.testFlag( Double );
+          fieldType = tr( "double" );
+          break;
+        case QVariant::Invalid:
+        default:
+          fieldMatch = true; // field type is unknown
+          fieldType = tr( "unknown type" );
+      }
+      if ( fieldMatch || mDataTypes.testFlag( AnyType ) )
+      {
+        mFieldNameList << f.name();
+        mFieldTypeList << fieldType;
+      }
+    }
+  }
+}
+
 void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
                                  const QgsDataDefined* datadefined,
                                  const DataTypes& datatypes,
@@ -155,43 +196,10 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
     mActionDataTypes->setText( tr( "Field type: " ) + mDataTypesString );
   }
 
-  if ( mVectorLayer )
-  {
-    // store just a list of fields of unknown type or those that match the expected type
-    Q_FOREACH ( const QgsField& f, mVectorLayer->fields() )
-    {
-      bool fieldMatch = false;
-      // NOTE: these are the only QVariant enums supported at this time (see QgsField)
-      QString fieldType;
-      switch ( f.type() )
-      {
-        case QVariant::String:
-          fieldMatch = mDataTypes.testFlag( String );
-          fieldType = tr( "string" );
-          break;
-        case QVariant::Int:
-          fieldMatch = mDataTypes.testFlag( Int ) || mDataTypes.testFlag( Double );
-          fieldType = tr( "integer" );
-          break;
-        case QVariant::Double:
-          fieldMatch = mDataTypes.testFlag( Double );
-          fieldType = tr( "double" );
-          break;
-        case QVariant::Invalid:
-        default:
-          fieldMatch = true; // field type is unknown
-          fieldType = tr( "unknown type" );
-      }
-      if ( fieldMatch || mDataTypes.testFlag( AnyType ) )
-      {
-        mFieldNameList << f.name();
-        mFieldTypeList << fieldType;
-      }
-    }
-  }
-
+  updateFieldLists();
   updateGui();
 }
+
 
 void QgsDataDefinedButton::updateDataDefined( QgsDataDefined *dd ) const
 {
@@ -230,6 +238,8 @@ void QgsDataDefinedButton::mouseReleaseEvent( QMouseEvent *event )
 void QgsDataDefinedButton::aboutToShowMenu()
 {
   mDefineMenu->clear();
+  // update fields so that changes made to layer's fields are reflected
+  updateFieldLists();
 
   bool hasExp = !getExpression().isEmpty();
   bool hasField = !getField().isEmpty();
