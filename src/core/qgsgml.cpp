@@ -411,6 +411,8 @@ QgsGmlStreamingParser::~QgsGmlStreamingParser()
   {
     delete featPair.first;
   }
+
+  delete mCurrentFeature;
 }
 
 bool QgsGmlStreamingParser::processData( const QByteArray& data, bool atEnd )

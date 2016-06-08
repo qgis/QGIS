@@ -72,6 +72,7 @@ class TestQgsGML : public QObject
     void testTuple();
     void testRenamedFields();
     void testTruncatedResponse();
+    void testPartialFeature();
 };
 
 const QString data1( "<myns:FeatureCollection "
@@ -1006,6 +1007,23 @@ void TestQgsGML::testTruncatedResponse()
                                    "<wfs:truncatedResponse/>"
                                    "</wfs:FeatureCollection>" ), true ), true );
   QCOMPARE( gmlParser.isTruncatedResponse(), true );
+}
+
+void TestQgsGML::testPartialFeature()
+{
+  QgsFields fields;
+  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
+                                   "xmlns:myns='http://myns' "
+                                   "xmlns:gml='http://www.opengis.net/gml'>"
+                                   "<gml:featureMember>"
+                                   "<myns:mytypename fid='mytypename.1'>"
+                                   "<myns:mygeom>"
+                                   "<gml:Point srsName='EPSG:27700'>"
+                                   "<gml:coordinates>10,20</gml:coordinates>"
+                                             ), true ), false );
+  QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
+  QCOMPARE( features.size(), 0 );
 }
 
 QTEST_MAIN( TestQgsGML )
