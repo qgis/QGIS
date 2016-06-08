@@ -190,7 +190,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # max positive signed 16bit integer
         test(self.dbconn, '(SELECT 32767::int2 i, NULL::geometry(Point) g)', 'i', 32767, 32767)
         # max negative signed 16bit integer
-        test(self.dbconn, '(SELECT -32767::int2 i, NULL::geometry(Point) g)', 'i', -32767, 4294934529)
+        test(self.dbconn, '(SELECT (-32768)::int2 i, NULL::geometry(Point) g)', 'i', -32768, 4294934528)
 
         #### --- INT32 ----
         # zero
@@ -202,7 +202,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # max positive signed 32bit integer
         test(self.dbconn, '(SELECT 2147483647::int4 i, NULL::geometry(Point) g)', 'i', 2147483647, 2147483647)
         # max negative signed 32bit integer
-        test(self.dbconn, '(SELECT -2147483647::int4 i, NULL::geometry(Point) g)', 'i', -2147483647, 2147483649)
+        test(self.dbconn, '(SELECT (-2147483648)::int4 i, NULL::geometry(Point) g)', 'i', -2147483648, 2147483648)
 
         #### --- INT64 (FIDs are always 1 because assigned ex-novo) ----
         # zero
@@ -214,7 +214,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # max positive signed 64bit integer
         test(self.dbconn, '(SELECT 9223372036854775807::int8 i, NULL::geometry(Point) g)', 'i', 9223372036854775807, 1)
         # max negative signed 32bit integer
-        test(self.dbconn, '(SELECT -9223372036854775807::int8 i, NULL::geometry(Point) g)', 'i', -9223372036854775807, 1)
+        test(self.dbconn, '(SELECT (-9223372036854775808)::int8 i, NULL::geometry(Point) g)', 'i', -9223372036854775808, 1)
 
     def testPktIntInsert(self):
         vl = QgsVectorLayer('{} table="qgis_test"."{}" key="pk" sql='.format(self.dbconn, 'bikes_view'), "bikes_view", "postgres")
