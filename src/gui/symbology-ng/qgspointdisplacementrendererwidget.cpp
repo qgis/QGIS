@@ -189,6 +189,7 @@ void QgsPointDisplacementRendererWidget::on_mLabelFieldComboBox_currentIndexChan
     {
       mRenderer->setLabelAttributeName( text );
     }
+    emit widgetChanged();
   }
 }
 
@@ -201,6 +202,7 @@ void QgsPointDisplacementRendererWidget::on_mRendererComboBox_currentIndexChange
     delete mEmbeddedRendererWidget;
     mEmbeddedRendererWidget = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
     mEmbeddedRendererWidget->setMapCanvas( mMapCanvas );
+    emit widgetChanged();
   }
 }
 
@@ -210,6 +212,7 @@ void QgsPointDisplacementRendererWidget::on_mPlacementComboBox_currentIndexChang
     return;
 
   mRenderer->setPlacement(( QgsPointDisplacementRenderer::Placement )mPlacementComboBox->itemData( index ).toInt() );
+  emit widgetChanged();
 }
 
 void QgsPointDisplacementRendererWidget::on_mRendererSettingsButton_clicked()
@@ -233,6 +236,7 @@ void QgsPointDisplacementRendererWidget::on_mRendererSettingsButton_clicked()
     d->exec();
     mEmbeddedRendererWidget->setParent( nullptr );
     delete d;
+    emit widgetChanged();
   }
 }
 
@@ -248,6 +252,7 @@ void QgsPointDisplacementRendererWidget::on_mLabelFontButton_clicked()
   if ( ok )
   {
     mRenderer->setLabelFont( newFont );
+    emit widgetChanged();
   }
 }
 
@@ -256,6 +261,7 @@ void QgsPointDisplacementRendererWidget::on_mCircleWidthSpinBox_valueChanged( do
   if ( mRenderer )
   {
     mRenderer->setCircleWidth( d );
+    emit widgetChanged();
   }
 }
 
@@ -267,6 +273,7 @@ void QgsPointDisplacementRendererWidget::on_mCircleColorButton_colorChanged( con
   }
 
   mRenderer->setCircleColor( newColor );
+  emit widgetChanged();
 }
 
 void QgsPointDisplacementRendererWidget::on_mLabelColorButton_colorChanged( const QColor& newColor )
@@ -277,6 +284,7 @@ void QgsPointDisplacementRendererWidget::on_mLabelColorButton_colorChanged( cons
   }
 
   mRenderer->setLabelColor( newColor );
+  emit widgetChanged();
 }
 
 void QgsPointDisplacementRendererWidget::on_mCircleModificationSpinBox_valueChanged( double d )
@@ -287,6 +295,7 @@ void QgsPointDisplacementRendererWidget::on_mCircleModificationSpinBox_valueChan
   }
 
   mRenderer->setCircleRadiusAddition( d );
+  emit widgetChanged();
 }
 
 void QgsPointDisplacementRendererWidget::on_mDistanceSpinBox_valueChanged( double d )
@@ -294,6 +303,7 @@ void QgsPointDisplacementRendererWidget::on_mDistanceSpinBox_valueChanged( doubl
   if ( mRenderer )
   {
     mRenderer->setTolerance( d );
+    emit widgetChanged();
   }
 }
 
@@ -303,6 +313,7 @@ void QgsPointDisplacementRendererWidget::on_mDistanceUnitWidget_changed()
   {
     mRenderer->setToleranceUnit( mDistanceUnitWidget->unit() );
     mRenderer->setToleranceMapUnitScale( mDistanceUnitWidget->getMapUnitScale() );
+    emit widgetChanged();
   }
 }
 
@@ -331,6 +342,7 @@ void QgsPointDisplacementRendererWidget::on_mMaxScaleDenominatorEdit_textChanged
   if ( ok )
   {
     mRenderer->setMaxLabelScaleDenominator( scaleDenominator );
+    emit widgetChanged();
   }
 }
 
@@ -367,6 +379,7 @@ void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
   }
   mRenderer->setCenterSymbol( markerSymbol );
   updateCenterIcon();
+  emit widgetChanged();
 }
 
 void QgsPointDisplacementRendererWidget::updateCenterIcon()

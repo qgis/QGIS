@@ -67,7 +67,8 @@ QgsPointDisplacementRenderer::~QgsPointDisplacementRenderer()
 QgsPointDisplacementRenderer* QgsPointDisplacementRenderer::clone() const
 {
   QgsPointDisplacementRenderer* r = new QgsPointDisplacementRenderer( mLabelAttributeName );
-  r->setEmbeddedRenderer( mRenderer->clone() );
+  if ( mRenderer )
+    r->setEmbeddedRenderer( mRenderer->clone() );
   r->setCircleWidth( mCircleWidth );
   r->setCircleColor( mCircleColor );
   r->setLabelFont( mLabelFont );

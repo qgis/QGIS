@@ -140,4 +140,5 @@ void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged(
 void QgsInvertedPolygonRendererWidget::on_mMergePolygonsCheckBox_stateChanged( int state )
 {
   mRenderer->setPreprocessingEnabled( state == Qt::Checked );
+  emit widgetChanged();
 }
