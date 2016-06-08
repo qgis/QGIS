@@ -350,8 +350,8 @@ int nmea_parse_GPRMC( const char *buff, int buff_sz, nmeaGPRMC *pack )
 
   if ( type != 'P' && type != 'N' )
   {
-      nmea_error( "G?RMC invalid type " );
-      return 0;
+    nmea_error( "G?RMC invalid type " );
+    return 0;
   }
 
   if ( 0 != _nmea_parse_time( &time_buff[0], ( int )strlen( &time_buff[0] ), &( pack->utc ) ) )

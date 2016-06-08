@@ -471,7 +471,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   // list. This prevent the scope list to grow indefinitely and seriously deteriorate
   // performances and memory in the long run
   sMapRenderer->rendererContext()->setExpressionContext( QgsExpressionContext() );
-   
+
   sQgsApplication->processEvents();
   if ( logLevel < 1 )
   {
