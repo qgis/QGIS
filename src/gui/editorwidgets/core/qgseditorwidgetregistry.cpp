@@ -79,6 +79,7 @@ QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
   connect( QgsProject::instance(), SIGNAL( readMapLayer( QgsMapLayer*, const QDomElement& ) ), this, SLOT( readMapLayer( QgsMapLayer*, const QDomElement& ) ) );
   // connect( QgsProject::instance(), SIGNAL( writeMapLayer( QgsMapLayer*, QDomElement&, QDomDocument& ) ), this, SLOT( writeMapLayer( QgsMapLayer*, QDomElement&, QDomDocument& ) ) );
 
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QgsMapLayer* ) ), this, SLOT( mapLayerWillBeRemoved( QgsMapLayer* ) ) );
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( mapLayerAdded( QgsMapLayer* ) ) );
 }
 
@@ -324,6 +325,17 @@ void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement&
   }
 
   layerElem.appendChild( editTypesNode );
+}
+
+void QgsEditorWidgetRegistry::mapLayerWillBeRemoved( QgsMapLayer* mapLayer )
+{
+  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( mapLayer );
+
+  if ( vl )
+  {
+    disconnect( vl, SIGNAL( readCustomSymbology( const QDomElement&, QString& ) ), this, SLOT( readSymbology( const QDomElement&, QString& ) ) );
+    disconnect( vl, SIGNAL( writeCustomSymbology( QDomElement&, QDomDocument&, QString& ) ), this, SLOT( writeSymbology( QDomElement&, QDomDocument&, QString& ) ) );
+  }
 }
 
 void QgsEditorWidgetRegistry::mapLayerAdded( QgsMapLayer* mapLayer )
