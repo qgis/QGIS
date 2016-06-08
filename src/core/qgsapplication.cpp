@@ -706,7 +706,7 @@ QStringList QgsApplication::svgPaths()
   //defined by user in options dialog
   QSettings settings;
   QStringList myPathList;
-  QString myPaths = settings.value( "svg/searchPathsForSVG", QDir::homePath() ).toString();
+  QString myPaths = settings.value( "svg/searchPathsForSVG", QString() ).toString();
   if ( !myPaths.isEmpty() )
   {
     myPathList = myPaths.split( '|' );
@@ -725,7 +725,7 @@ QStringList QgsApplication::composerTemplatePaths()
   //defined by user in options dialog
   QSettings settings;
   QStringList myPathList;
-  QString myPaths = settings.value( "composer/searchPathsForTemplates", QDir::homePath() ).toString();
+  QString myPaths = settings.value( "composer/searchPathsForTemplates", QString() ).toString();
   if ( !myPaths.isEmpty() )
   {
     myPathList = myPaths.split( '|' );
