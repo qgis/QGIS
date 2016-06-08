@@ -352,6 +352,17 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     bool parseDomainCheckConstraint( QStringList& enumValues, const QString& attributeName ) const;
 
+    /** Return the type of primary key for a PK field
+     *
+     * @param fld the field to determine PK type of
+     * @return the PrimaryKeyType
+     *
+     * @note that this only makes sense for single-field primary keys,
+     *       whereas multi-field keys always need the pktFidMap
+     *       primary key type.
+     */
+    QgsPostgresPrimaryKeyType pkType( const QgsField& fld ) const;
+
     QgsFields mAttributeFields;
     QString mDataComment;
 

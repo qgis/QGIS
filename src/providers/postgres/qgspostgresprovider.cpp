@@ -52,6 +52,26 @@ inline int32_t FID2PKINT( int64_t x )
   return QgsPostgresUtils::fid_to_int32pk( x );
 }
 
+QgsPostgresPrimaryKeyType
+QgsPostgresProvider::pkType( const QgsField& f ) const
+{
+  switch ( f.type() )
+  {
+    case QVariant::LongLong:
+      // unless we can guarantee all values are unsigned
+      // (in which case we could use pktUint64)
+      // we'll have to use a Map type.
+      // See http://hub.qgis.org/issues/14262
+      return pktFidMap; // pktUint64
+
+    case QVariant::Int:
+      return pktInt;
+
+    default:
+      return pktFidMap;
+  }
+}
+
 
 
 QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
@@ -1312,7 +1332,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
       QString primaryKey;
       QString delim = "";
 
-      mPrimaryKeyType = pktFidMap; // int by default, will downgrade if needed
+      mPrimaryKeyType = pktFidMap; // map by default, will downgrade if needed
       for ( int i = 0; i < res.PQntuples(); i++ )
       {
         QString name = res.PQgetvalue( i, 0 );
@@ -1333,22 +1353,8 @@ bool QgsPostgresProvider::determinePrimaryKey()
         }
         const QgsField& fld = mAttributeFields.at( idx );
 
-        if ( i )
-        {
-          mPrimaryKeyType = pktFidMap; // multi-field
-        }
-        else if ( fld.type() == QVariant::LongLong )
-        {
-          // unless we can guarantee all values are unsigned
-          // (in which case we could use pktUint64)
-          // we'll have to use a Map type.
-          // See http://hub.qgis.org/issues/14262
-          mPrimaryKeyType = pktFidMap; // pktUint64
-        }
-        else if ( fld.type() == QVariant::Int )
-        {
-          mPrimaryKeyType = pktInt;
-        }
+        // Always use pktFidMap for multi-field keys
+        mPrimaryKeyType = i ? pktFidMap : pkType( fld );
 
         mPrimaryKeyAttrs << idx;
       }
@@ -1444,14 +1450,7 @@ void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
         if ( mPrimaryKeyAttrs.size() == 1 )
         {
           const QgsField& fld = mAttributeFields.at( 0 );
-          if ( fld.type() == QVariant::LongLong )
-          {
-            mPrimaryKeyType = pktUint64; // 64bit integer
-          }
-          else if ( fld.type() == QVariant::Int )
-          {
-            mPrimaryKeyType = pktInt; // account for signed
-          }
+          mPrimaryKeyType = pkType( fld );
         }
       }
       else

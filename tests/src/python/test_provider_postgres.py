@@ -171,9 +171,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             self.assertEqual(count, 1)
         test_query_attribute(self.dbconn, '(SELECT -1::int4 i, NULL::geometry(Point) g)', 'i', -1, 4294967295)
         test_query_attribute(self.dbconn, '(SELECT -2::int2 i, NULL::geometry(Point) g)', 'i', -2, 4294967294)
-        # Unfortunately negative int8 identifiers are still not supported at this moment
-        # TODO: fix expected fidval to be positive !
-        test_query_attribute(self.dbconn, '(SELECT -3::int8 i, NULL::geometry(Point) g)', 'i', -3, -3)
+        test_query_attribute(self.dbconn, '(SELECT -3::int8 i, NULL::geometry(Point) g)', 'i', -3, 1)
 
     def testPktIntInsert(self):
         vl = QgsVectorLayer('{} table="qgis_test"."{}" key="pk" sql='.format(self.dbconn, 'bikes_view'), "bikes_view", "postgres")
