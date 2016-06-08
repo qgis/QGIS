@@ -157,7 +157,9 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         test_unique([f for f in vl.getFeatures()], 4)
 
     # See http://hub.qgis.org/issues/14262
+    # TODO: accept multi-featured layers, and an array of values/fids
     def testSignedIdentifiers(self):
+
         def test_layer(ql, att, val, fidval):
             self.assertTrue(ql.isValid())
             features = ql.getFeatures()
@@ -177,9 +179,42 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             # now with estimated metadata
             uri += ' estimatedmetadata="true"'
             test_layer(ql, att, val, fidval)
-        test(self.dbconn, '(SELECT -1::int4 i, NULL::geometry(Point) g)', 'i', -1, 4294967295)
-        test(self.dbconn, '(SELECT -2::int2 i, NULL::geometry(Point) g)', 'i', -2, 4294967294)
+
+        #### --- INT16 ----
+        # zero
+        test(self.dbconn, '(SELECT 0::int2 i, NULL::geometry(Point) g)', 'i', 0, 0)
+        # low positive
+        test(self.dbconn, '(SELECT 1::int2 i, NULL::geometry(Point) g)', 'i', 1, 1)
+        # low negative
+        test(self.dbconn, '(SELECT -1::int2 i, NULL::geometry(Point) g)', 'i', -1, 4294967295)
+        # max positive signed 16bit integer
+        test(self.dbconn, '(SELECT 32767::int2 i, NULL::geometry(Point) g)', 'i', 32767, 32767)
+        # max negative signed 16bit integer
+        test(self.dbconn, '(SELECT -32767::int2 i, NULL::geometry(Point) g)', 'i', -32767, 4294934529)
+
+        #### --- INT32 ----
+        # zero
+        test(self.dbconn, '(SELECT 0::int4 i, NULL::geometry(Point) g)', 'i', 0, 0)
+        # low positive
+        test(self.dbconn, '(SELECT 2::int4 i, NULL::geometry(Point) g)', 'i', 2, 2)
+        # low negative
+        test(self.dbconn, '(SELECT -2::int4 i, NULL::geometry(Point) g)', 'i', -2, 4294967294)
+        # max positive signed 32bit integer
+        test(self.dbconn, '(SELECT 2147483647::int4 i, NULL::geometry(Point) g)', 'i', 2147483647, 2147483647)
+        # max negative signed 32bit integer
+        test(self.dbconn, '(SELECT -2147483647::int4 i, NULL::geometry(Point) g)', 'i', -2147483647, 2147483649)
+
+        #### --- INT64 (FIDs are always 1 because assigned ex-novo) ----
+        # zero
+        test(self.dbconn, '(SELECT 0::int8 i, NULL::geometry(Point) g)', 'i', 0, 1)
+        # low positive
+        test(self.dbconn, '(SELECT 3::int8 i, NULL::geometry(Point) g)', 'i', 3, 1)
+        # low negative
         test(self.dbconn, '(SELECT -3::int8 i, NULL::geometry(Point) g)', 'i', -3, 1)
+        # max positive signed 64bit integer
+        test(self.dbconn, '(SELECT 9223372036854775807::int8 i, NULL::geometry(Point) g)', 'i', 9223372036854775807, 1)
+        # max negative signed 32bit integer
+        test(self.dbconn, '(SELECT -9223372036854775807::int8 i, NULL::geometry(Point) g)', 'i', -9223372036854775807, 1)
 
     def testPktIntInsert(self):
         vl = QgsVectorLayer('{} table="qgis_test"."{}" key="pk" sql='.format(self.dbconn, 'bikes_view'), "bikes_view", "postgres")
