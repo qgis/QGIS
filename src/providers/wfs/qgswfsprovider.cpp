@@ -45,6 +45,7 @@
 #include <QWidget>
 #include <QPair>
 #include <QTimer>
+#include <QSettings>
 
 #include <cfloat>
 
@@ -1440,6 +1441,14 @@ bool QgsWFSProvider::getCapabilities()
     mShared->mMaxFeatures = mShared->mURI.maxNumFeatures();
   else
     mShared->mMaxFeatures = mShared->mCaps.maxFeatures;
+
+  if ( mShared->mMaxFeatures <= 0 && mShared->mCaps.supportsPaging )
+  {
+    QSettings settings;
+    mShared->mMaxFeatures = settings.value( "wfs/max_feature_count_if_not_provided", "1000" ).toInt();
+    mShared->mMaxFeaturesWasSetFromDefaultForPaging = true;
+    QgsDebugMsg( QString( "Server declares paging but does not advertize max feature count and user did not specify it. Using %1" ).arg( mShared->mMaxFeatures ) );
+  }
 
   //find the <FeatureType> for this layer
   QString thisLayerName = mShared->mURI.typeName();

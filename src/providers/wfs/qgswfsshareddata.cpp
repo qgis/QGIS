@@ -34,16 +34,15 @@
 
 #include <sqlite3.h>
 
-#include <QCryptographicHash>
-
-
 QgsWFSSharedData::QgsWFSSharedData( const QString& uri )
     : mURI( uri )
     , mSourceCRS( 0 )
     , mCacheDataProvider( nullptr )
     , mMaxFeatures( 0 )
+    , mMaxFeaturesWasSetFromDefaultForPaging( false )
     , mHideProgressDialog( mURI.hideDownloadProgressDialog() )
     , mDistinctSelect( false )
+    , mHasWarnedAboutMissingFeatureId( false )
     , mDownloader( nullptr )
     , mDownloadFinished( false )
     , mGenCounter( 0 )
@@ -544,41 +543,6 @@ int QgsWFSSharedData::getUpdatedCounter()
   return mGenCounter ++;
 }
 
-static QString getMD5( const QgsFeature& f )
-{
-  const QgsAttributes attrs = f.attributes();
-  QCryptographicHash hash( QCryptographicHash::Md5 );
-  for ( int i = 0;i < attrs.size();i++ )
-  {
-    const QVariant &v = attrs[i];
-    hash.addData( QByteArray(( const char * )&i, sizeof( i ) ) );
-    if ( v.isNull() )
-    {
-      hash.addData( "#&~NULL#&~", static_cast<int>( strlen( "#&~NULL#&~" ) ) );
-    }
-    else if ( v.type() == QVariant::DateTime )
-    {
-      qint64 val = v.toDateTime().toMSecsSinceEpoch();
-      hash.addData( QByteArray(( const char * )&val, sizeof( val ) ) );
-    }
-    else if ( v.type() == QVariant::Int )
-    {
-      int val = v.toInt();
-      hash.addData( QByteArray(( const char * )&val, sizeof( val ) ) );
-    }
-    else if ( v.type() == QVariant::LongLong )
-    {
-      qint64 val = v.toLongLong();
-      hash.addData( QByteArray(( const char * )&val, sizeof( val ) ) );
-    }
-    else  if ( v.type() == QVariant::String )
-    {
-      hash.addData( v.toByteArray() );
-    }
-  }
-  return hash.result().toHex();
-}
-
 QSet<QString> QgsWFSSharedData::getExistingCachedGmlIds( const QVector<QgsWFSFeatureGmlIdPair>& featureList )
 {
   QString expr;
@@ -651,7 +615,7 @@ QSet<QString> QgsWFSSharedData::getExistingCachedMD5( const QVector<QgsWFSFeatur
       first = false;
     }
     expr += "'";
-    expr += getMD5( featureList[i].first );
+    expr += QgsWFSUtils::getMD5( featureList[i].first );
     expr += "'";
 
     if (( i > 0 && ( i % 1000 ) == 0 ) || i + 1 == featureList.size() )
@@ -842,7 +806,7 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
     QString md5;
     if ( mDistinctSelect )
     {
-      md5 = getMD5( gmlFeature );
+      md5 = QgsWFSUtils::getMD5( gmlFeature );
       if ( existingMD5s.contains( md5 ) )
         continue;
       existingMD5s.insert( md5 );

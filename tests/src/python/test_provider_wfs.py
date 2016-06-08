@@ -20,7 +20,7 @@ import shutil
 # Needed on Qt 5 so that the serialization of XML is consistant among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
-from qgis.PyQt.QtCore import Qt, QObject, QDateTime
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime, QSettings
 
 from qgis.core import (
     QgsWKBTypes,
@@ -37,8 +37,6 @@ from qgis.testing import (start_app,
                           unittest
                           )
 from providertestbase import ProviderTestCase
-
-start_app()
 
 
 def sanitize(endpoint, x):
@@ -77,6 +75,12 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+
+        QCoreApplication.setOrganizationName("QGIS_Test")
+        QCoreApplication.setOrganizationDomain("TestPyQgsWFSProvider.com")
+        QCoreApplication.setApplicationName("TestPyQgsWFSProvider")
+        QSettings().clear()
+        start_app()
 
         # On Windows we must make sure that any backslash in the path is
         # replaced by a forward slash so that QUrl can process it
@@ -332,6 +336,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
+        QSettings().clear()
         shutil.rmtree(cls.basetestpath, True)
         cls.vl = None # so as to properly close the provider and remove any temporary file
 
@@ -1863,6 +1868,12 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?VERSION=2.0.0'), 'wb') as f:
             f.write("""
 <wfs:WFS_Capabilities version="2.0.0" xmlns="http://www.opengis.net/wfs/2.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:gml="http://schemas.opengis.net/gml/3.2" xmlns:fes="http://www.opengis.net/fes/2.0">
+  <ows:OperationsMetadata>
+    <ows:Constraint name="ImplementsResultPaging">
+      <ows:NoValues/>
+      <ows:DefaultValue>TRUE</ows:DefaultValue>
+    </ows:Constraint>
+  </ows:OperationsMetadata>
   <FeatureTypeList>
     <FeatureType>
       <Name>my:typename</Name>
@@ -1895,6 +1906,35 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </xsd:schema>
 """.encode('UTF-8'))
 
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=EPSG:32631"""), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my">
+  <wfs:member>
+    <my:typename>
+      <my:intfield>1</my:intfield>
+      <my:geometryProperty><gml:Polygon srsName="EPSG:32631" gml:id="typename.geom.0"><gml:exterior><gml:LinearRing><gml:posList>500000 4500000 500000 4510000 510000 4510000 510000 4500000 500000 4500000</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></my:geometryProperty>
+    </my:typename>
+  </wfs:member>
+</wfs:FeatureCollection>""".encode('UTF-8'))
+
+        # Simulate improper paging support by returning same result set whatever the STARTINDEX is
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=1&COUNT=1&SRSNAME=EPSG:32631"""), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my">
+  <wfs:member>
+    <my:typename>
+      <my:intfield>1</my:intfield>
+      <my:geometryProperty><gml:Polygon srsName="EPSG:32631" gml:id="typename.geom.0"><gml:exterior><gml:LinearRing><gml:posList>500000 4500000 500000 4510000 510000 4510000 510000 4500000 500000 4500000</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></my:geometryProperty>
+    </my:typename>
+  </wfs:member>
+</wfs:FeatureCollection>""".encode('UTF-8'))
+
         with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=EPSG:32631"""), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection
@@ -1902,12 +1942,18 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
                        xmlns:gml="http://www.opengis.net/gml/3.2"
                        xmlns:my="http://my">
   <wfs:member>
-    <my:typename gml:id="typename.0">
+    <my:typename>
       <my:intfield>1</my:intfield>
+      <my:geometryProperty><gml:Polygon srsName="EPSG:32631" gml:id="typename.geom.0"><gml:exterior><gml:LinearRing><gml:posList>500000 4500000 500000 4510000 510000 4510000 510000 4500000 500000 4500000</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></my:geometryProperty>
+    </my:typename>
+    <my:typename>
+      <my:intfield>2</my:intfield>
       <my:geometryProperty><gml:Polygon srsName="EPSG:32631" gml:id="typename.geom.0"><gml:exterior><gml:LinearRing><gml:posList>500000 4500000 500000 4510000 510000 4510000 510000 4500000 500000 4500000</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></my:geometryProperty>
     </my:typename>
   </wfs:member>
 </wfs:FeatureCollection>""".encode('UTF-8'))
+
+        QSettings().setValue('wfs/max_feature_count_if_not_provided', '1')
 
         vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0'", u'test', u'WFS')
         assert vl.isValid()
@@ -1915,11 +1961,13 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         # Download all features
         features = [f for f in vl.getFeatures()]
-        self.assertEqual(len(features), 1)
+        self.assertEqual(len(features), 2)
 
         reference = QgsGeometry.fromRect(QgsRectangle(500000, 4500000, 510000, 4510000))
         vl_extent = QgsGeometry.fromRect(vl.extent())
+        self.assertEqual(features[0]['intfield'], 1)
         assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
+        self.assertEqual(features[1]['intfield'], 2)
 
 
 if __name__ == '__main__':

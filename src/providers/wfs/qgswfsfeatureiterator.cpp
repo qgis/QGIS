@@ -399,6 +399,9 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
   const int maxRetry = s.value( "/qgis/defaultTileMaxRetry", "3" ).toInt();
   int retryIter = 0;
   int lastValidTotalDownloadedFeatureCount = 0;
+  int pagingIter = 1;
+  QString gmlIdFirstFeatureFirstIter;
+  bool disablePaging = false;
   while ( true )
   {
     success = true;
@@ -418,7 +421,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
              true, /* forceRefresh */
              false /* cache */ );
 
-    int featureCount = 0;
+    int featureCountForThisResponse = 0;
     while ( true )
     {
       loop.exec( QEventLoop::ExcludeUserInputEvents );
@@ -528,7 +531,6 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
       QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> featurePtrList =
         parser->getAndStealReadyFeatures();
 
-      featureCount += featurePtrList.size();
       mTotalDownloadedFeatureCount += featurePtrList.size();
 
       if ( !mStop )
@@ -542,7 +544,29 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
         for ( int i = 0;i < featurePtrList.size();i++ )
         {
           QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair& featPair = featurePtrList[i];
-          featureList.push_back( QgsWFSFeatureGmlIdPair( *( featPair.first ), featPair.second ) );
+          const QgsFeature& f = *( featPair.first );
+          QString gmlId( featPair.second );
+          if ( gmlId.isEmpty() )
+          {
+            // Should normally not happen on sane WFS sources, but can happen with
+            // Geomedia
+            gmlId = QgsWFSUtils::getMD5( f );
+            if ( !mShared->mHasWarnedAboutMissingFeatureId )
+            {
+              QgsDebugMsg( "Server returns features without fid/gml:id. Computing a fake one using feature attributes" );
+              mShared->mHasWarnedAboutMissingFeatureId = true;
+            }
+          }
+          if ( pagingIter == 1 && featureCountForThisResponse == 0 )
+          {
+            gmlIdFirstFeatureFirstIter = gmlId;
+          }
+          else if ( pagingIter == 2 && featureCountForThisResponse == 0 && gmlIdFirstFeatureFirstIter == gmlId )
+          {
+            disablePaging = true;
+            QgsDebugMsg( "Server does not seem to properly support paging since it returned the same first feature for 2 different page requests. Disabling paging" );
+          }
+          featureList.push_back( QgsWFSFeatureGmlIdPair( f, gmlId ) );
           delete featPair.first;
           if (( i > 0 && ( i % 1000 ) == 0 ) || i + 1 == featurePtrList.size() )
           {
@@ -561,6 +585,8 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
 
             featureList.clear();
           }
+
+          featureCountForThisResponse ++;
         }
       }
 
@@ -584,7 +610,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
       if ( ++retryIter <= maxRetry )
       {
         QgsMessageLog::logMessage( tr( "Retrying request %1: %2/%3" ).arg( url.toString() ).arg( retryIter ).arg( maxRetry ), tr( "WFS" ) );
-        featureCount = 0;
+        featureCountForThisResponse = 0;
         mTotalDownloadedFeatureCount = lastValidTotalDownloadedFeatureCount;
         continue;
       }
@@ -600,8 +626,18 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
     if ( maxFeatures == 1 )
       break;
     // Detect if we are at the last page
-    if (( mShared->mMaxFeatures > 0 && featureCount < mShared->mMaxFeatures ) || featureCount == 0 )
+    if (( mShared->mMaxFeatures > 0 && featureCountForThisResponse < mShared->mMaxFeatures ) || featureCountForThisResponse == 0 )
       break;
+    ++ pagingIter;
+    if ( disablePaging )
+    {
+      mSupportsPaging = mShared->mCaps.supportsPaging = false;
+      mTotalDownloadedFeatureCount = 0;
+      if ( mShared->mMaxFeaturesWasSetFromDefaultForPaging )
+      {
+        mShared->mMaxFeatures = 0;
+      }
+    }
   }
 
   mStop = true;
