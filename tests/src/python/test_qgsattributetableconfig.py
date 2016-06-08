@@ -47,5 +47,72 @@ class TestQgsAttributeTableConfig(unittest.TestCase):
         self.assertEqual(config.columns()[0].name, 'fldint')
         self.assertEqual(config.columns()[1].name, 'fldtxt')
 
+    def testIsEmpty(self):
+        """ test isEmpty method """
+        config = QgsAttributeTableConfig()
+        self.assertTrue(config.isEmpty())
+
+        c = QgsAttributeTableConfig.ColumnConfig()
+        c.name = 'test'
+        config.setColumns([c])
+        self.assertFalse(config.isEmpty())
+
+    def testSetColumns(self):
+        """ test setting columns """
+        config = QgsAttributeTableConfig()
+        self.assertEqual(config.columns(), [])
+
+        c1 = QgsAttributeTableConfig.ColumnConfig()
+        c1.name = 'test'
+        c1.hidden = False
+        c1.width = 9
+        c2 = QgsAttributeTableConfig.ColumnConfig()
+        c2.name = 'test2'
+        c2.hidden = True
+        c2.width = 11
+        config.setColumns([c1, c2])
+        result = config.columns()
+        self.assertEqual(result[0].name, 'test')
+        self.assertEqual(result[1].name, 'test2')
+        self.assertEqual(result[0].hidden, False)
+        self.assertEqual(result[1].hidden, True)
+        self.assertEqual(result[0].width, 9)
+        self.assertEqual(result[1].width, 11)
+
+    def testColumnHidden(self):
+        """ test hiding columns """
+
+        config = QgsAttributeTableConfig()
+        c1 = QgsAttributeTableConfig.ColumnConfig()
+        c1.name = 'test'
+        c1.hidden = False
+        c2 = QgsAttributeTableConfig.ColumnConfig()
+        c2.name = 'test2'
+        c2.hidden = False
+        config.setColumns([c1, c2])
+
+        self.assertFalse(config.columnHidden(0))
+        self.assertFalse(config.columnHidden(1))
+
+        config.setColumnHidden(1, True)
+        self.assertFalse(config.columnHidden(0))
+        self.assertTrue(config.columnHidden(1))
+        self.assertFalse(config.columns()[0].hidden)
+        self.assertTrue(config.columns()[1].hidden)
+
+        config.setColumnHidden(0, True)
+        self.assertTrue(config.columnHidden(0))
+        self.assertTrue(config.columnHidden(1))
+        self.assertTrue(config.columns()[0].hidden)
+        self.assertTrue(config.columns()[1].hidden)
+
+        c2.hidden = True
+        config.setColumns([c1, c2])
+        self.assertFalse(config.columnHidden(0))
+        self.assertTrue(config.columnHidden(1))
+
+    def testMapVisibleColumn(self):
+        pass
+
 if __name__ == '__main__':
     unittest.main()
