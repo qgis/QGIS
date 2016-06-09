@@ -79,7 +79,7 @@ QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
   connect( QgsProject::instance(), SIGNAL( readMapLayer( QgsMapLayer*, const QDomElement& ) ), this, SLOT( readMapLayer( QgsMapLayer*, const QDomElement& ) ) );
   // connect( QgsProject::instance(), SIGNAL( writeMapLayer( QgsMapLayer*, QDomElement&, QDomDocument& ) ), this, SLOT( writeMapLayer( QgsMapLayer*, QDomElement&, QDomDocument& ) ) );
 
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QgsMapLayer* ) ), this, SLOT( mapLayerWillBeRemoved( QgsMapLayer* ) ) );
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( const QList<QgsMapLayer*>& ) ), this, SLOT( mapLayersWillBeRemoved( const QList<QgsMapLayer*>& ) ) );
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( mapLayerAdded( QgsMapLayer* ) ) );
 }
 
@@ -327,14 +327,16 @@ void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement&
   layerElem.appendChild( editTypesNode );
 }
 
-void QgsEditorWidgetRegistry::mapLayerWillBeRemoved( QgsMapLayer* mapLayer )
+void QgsEditorWidgetRegistry::mapLayersWillBeRemoved( const QList<QgsMapLayer*>&  layers )
 {
-  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( mapLayer );
-
-  if ( vl )
+  Q_FOREACH ( QgsMapLayer* layer, layers )
   {
-    disconnect( vl, SIGNAL( readCustomSymbology( const QDomElement&, QString& ) ), this, SLOT( readSymbology( const QDomElement&, QString& ) ) );
-    disconnect( vl, SIGNAL( writeCustomSymbology( QDomElement&, QDomDocument&, QString& ) ), this, SLOT( writeSymbology( QDomElement&, QDomDocument&, QString& ) ) );
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
+    if ( vl )
+    {
+      disconnect( vl, SIGNAL( readCustomSymbology( const QDomElement&, QString& ) ), this, SLOT( readSymbology( const QDomElement&, QString& ) ) );
+      disconnect( vl, SIGNAL( writeCustomSymbology( QDomElement&, QDomDocument&, QString& ) ), this, SLOT( writeSymbology( QDomElement&, QDomDocument&, QString& ) ) );
+    }
   }
 }
 

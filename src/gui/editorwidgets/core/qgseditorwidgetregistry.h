@@ -176,9 +176,9 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     /**
      * Will disconnect to appropriate signals from map layers to load and save style
      *
-     * @param mapLayer The layer to disconnect
+     * @param layers The list of layers to disconnect
      */
-    void mapLayerWillBeRemoved( QgsMapLayer* mapLayer );
+    void mapLayersWillBeRemoved( const QList<QgsMapLayer*>& layers );
 
     /**
      * Loads layer symbology for the layer that emitted the signal
