@@ -75,7 +75,7 @@ QgsAfsProvider::QgsAfsProvider( const QString& uri )
     mExtent.setYMaximum( layerExtentMap["ymax"].toDouble( &ymaxOk ) );
     if ( !xminOk || !yminOk || !xmaxOk || !ymaxOk )
     {
-      appendError( QgsErrorMessage( tr( "Could not retreive layer extent" ), "AFSProvider" ) );
+      appendError( QgsErrorMessage( tr( "Could not retrieve layer extent" ), "AFSProvider" ) );
       return;
     }
     QgsCoordinateReferenceSystem extentCrs = QgsArcGisRestUtils::parseSpatialReference( layerExtentMap["spatialReference"].toMap() );

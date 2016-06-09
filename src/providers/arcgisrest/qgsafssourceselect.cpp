@@ -40,7 +40,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOWSConnection &connection )
   QVariantMap serviceInfoMap = QgsArcGisRestUtils::getServiceInfo( connection.uri().param( "url" ), errorTitle, errorMessage );
   if ( serviceInfoMap.isEmpty() )
   {
-    QMessageBox::warning( this, tr( "Error" ), tr( "Failed to retreive service capabilities:\n%1: %2" ).arg( errorTitle ).arg( errorMessage ) );
+    QMessageBox::warning( this, tr( "Error" ), tr( "Failed to retrieve service capabilities:\n%1: %2" ).arg( errorTitle ).arg( errorMessage ) );
     return false;
   }
 

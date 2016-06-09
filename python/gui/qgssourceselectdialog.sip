@@ -15,7 +15,7 @@ class QgsSourceSelectDialog : public QDialog //, protected Ui::QgsSourceSelectBa
     QgsSourceSelectDialog( const QString& serviceName, ServiceType serviceType, QWidget* parent, Qt::WindowFlags fl );
     /** Destructor */
     ~QgsSourceSelectDialog();
-    /** Sets the current extent and CRS. Used to select an appropriate CRS and possibly to retreive data only in the current extent */
+    /** Sets the current extent and CRS. Used to select an appropriate CRS and possibly to retrieve data only in the current extent */
     void setCurrentExtentAndCrs( const QgsRectangle& canvasExtent, const QgsCoordinateReferenceSystem& canvasCrs );
 
   signals:
