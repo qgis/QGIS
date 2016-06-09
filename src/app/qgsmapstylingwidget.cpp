@@ -72,11 +72,8 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QList<QgsMapStyl
   connect( mAutoApplyTimer, SIGNAL( timeout() ), this, SLOT( apply() ) );
 
   connect( mOptionsListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( updateCurrentWidgetLayer() ) );
-  connect( mLiveApplyCheck, SIGNAL( toggled( bool ) ), mButtonBox->button( QDialogButtonBox::Apply ), SLOT( setDisabled( bool ) ) );
   connect( mButtonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
   connect( mLayerCombo, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( setLayer( QgsMapLayer* ) ) );
-
-  mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( false );
 
   mStackedWidget->setCurrentIndex( 0 );
 }
