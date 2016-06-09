@@ -108,8 +108,10 @@ void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, const
   layout()->setMargin( 0 );
   mTrackedVectorLayerTools.setVectorLayerTools( trackedContext.vectorLayerTools() );
   trackedContext.setVectorLayerTools( &mTrackedVectorLayerTools );
+  if ( showDialogButtons )
+    trackedContext.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
 
-  mAttributeForm = new QgsAttributeForm( layer, *feature, trackedContext, this, !showDialogButtons );
+  mAttributeForm = new QgsAttributeForm( layer, *feature, trackedContext, this );
   mAttributeForm->disconnectButtonBox();
   layout()->addWidget( mAttributeForm );
   QDialogButtonBox* buttonBox = mAttributeForm->findChild<QDialogButtonBox*>();
