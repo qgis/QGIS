@@ -73,6 +73,8 @@ class TestQgsGML : public QObject
     void testRenamedFields();
     void testTruncatedResponse();
     void testPartialFeature();
+    void testThroughOGRGeometry();
+    void testThroughOGRGeometry_urn_EPSG_4326();
 };
 
 const QString data1( "<myns:FeatureCollection "
@@ -1024,6 +1026,80 @@ void TestQgsGML::testPartialFeature()
                                              ), true ), false );
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
   QCOMPARE( features.size(), 0 );
+}
+
+void TestQgsGML::testThroughOGRGeometry()
+{
+  QgsFields fields;
+  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
+                                   "xmlns:myns='http://myns' "
+                                   "xmlns:gml='http://www.opengis.net/gml'>"
+                                   "<gml:featureMember>"
+                                   "<myns:mytypename fid='mytypename.1'>"
+                                   "<myns:mygeom>"
+                                   "<gml:CompositeSurface srsName='EPSG:27700'><gml:surfaceMember>"
+                                   "<gml:Polygon srsName='EPSG:27700'>"
+                                   "<gml:exterior>"
+                                   "<gml:LinearRing>"
+                                   "<gml:posList>0 0 0 10 10 10 10 0 0 0</gml:posList>"
+                                   "</gml:LinearRing>"
+                                   "</gml:exterior>"
+                                   "</gml:Polygon>"
+                                   "</gml:surfaceMember></gml:CompositeSurface>"
+                                   "</myns:mygeom>"
+                                   "</myns:mytypename>"
+                                   "</gml:featureMember>"
+                                   "</myns:FeatureCollection>" ), true ), true );
+  QCOMPARE( gmlParser.wkbType(), QGis::WKBPolygon );
+  QCOMPARE( gmlParser.getEPSGCode(), 27700 );
+  QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
+  QCOMPARE( features.size(), 1 );
+  QVERIFY( features[0].first->constGeometry() != nullptr );
+  QCOMPARE( features[0].first->constGeometry()->wkbType(), QGis::WKBMultiPolygon );
+  QgsMultiPolygon multi = features[0].first->constGeometry()->asMultiPolygon();
+  QCOMPARE( multi.size(), 1 );
+  QCOMPARE( multi[0].size(), 1 );
+  QCOMPARE( multi[0][0].size(), 5 );
+  delete features[0].first;
+}
+
+void TestQgsGML::testThroughOGRGeometry_urn_EPSG_4326()
+{
+  QgsFields fields;
+  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
+                                   "xmlns:myns='http://myns' "
+                                   "xmlns:gml='http://www.opengis.net/gml'>"
+                                   "<gml:featureMember>"
+                                   "<myns:mytypename fid='mytypename.1'>"
+                                   "<myns:mygeom>"
+                                   "<gml:CompositeSurface srsName='urn:ogc:def:crs:EPSG::4326'><gml:surfaceMember>"
+                                   "<gml:Polygon srsName='urn:ogc:def:crs:EPSG::4326'>"
+                                   "<gml:exterior>"
+                                   "<gml:LinearRing>"
+                                   "<gml:posList>49 2 49 3 59 3 49 2</gml:posList>"
+                                   "</gml:LinearRing>"
+                                   "</gml:exterior>"
+                                   "</gml:Polygon>"
+                                   "</gml:surfaceMember></gml:CompositeSurface>"
+                                   "</myns:mygeom>"
+                                   "</myns:mytypename>"
+                                   "</gml:featureMember>"
+                                   "</myns:FeatureCollection>" ), true ), true );
+  QCOMPARE( gmlParser.wkbType(), QGis::WKBPolygon );
+  QCOMPARE( gmlParser.getEPSGCode(), 4326 );
+  QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
+  QCOMPARE( features.size(), 1 );
+  QVERIFY( features[0].first->constGeometry() != nullptr );
+  QCOMPARE( features[0].first->constGeometry()->wkbType(), QGis::WKBMultiPolygon );
+  QgsMultiPolygon multi = features[0].first->constGeometry()->asMultiPolygon();
+  QCOMPARE( multi.size(), 1 );
+  QCOMPARE( multi[0].size(), 1 );
+  QCOMPARE( multi[0][0].size(), 4 );
+  QgsDebugMsg( multi[0][0][0].toString() );
+  QCOMPARE( multi[0][0][0], QgsPoint( 2, 49 ) );
+  delete features[0].first;
 }
 
 QTEST_MAIN( TestQgsGML )
