@@ -49,6 +49,7 @@ class QgsStatusBarMagnifierWidget;
 class QgsStatusBarScaleWidget;
 class QgsContrastEnhancement;
 class QgsCustomLayerOrderWidget;
+class QgsDockWidget;
 class QgsDoubleSpinBox;
 class QgsFeature;
 class QgsGeometry;
@@ -1730,7 +1731,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsSnappingDialog *mSnappingDialog;
 
     QgsPluginManager *mPluginManager;
-    QDockWidget *mMapStylingDock;
+    QgsDockWidget *mMapStylingDock;
     QgsMapStylingWidget* mMapStyleWidget;
 
     QgsComposerManager *mComposerManager;

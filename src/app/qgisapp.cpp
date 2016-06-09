@@ -135,6 +135,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgsdoublespinbox.h"
+#include "qgsdockwidget.h"
 #include "qgsdxfexport.h"
 #include "qgsdxfexportdialog.h"
 #include "qgsdecorationcopyright.h"
@@ -769,13 +770,13 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mUndoDock->hide();
 
   startProfile( "Map Style dock" );
-  mMapStylingDock = new QDockWidget( this );
+  mMapStylingDock = new QgsDockWidget( this );
   mMapStylingDock->setWindowTitle( tr( "Map Styling" ) );
   mMapStylingDock->setObjectName( "MapStyling" );
   mMapStyleWidget = new QgsMapStylingWidget( mMapCanvas, mMapStylePanelFactories );
   mMapStylingDock->setWidget( mMapStyleWidget );
   connect( mMapStyleWidget, SIGNAL( styleChanged( QgsMapLayer* ) ), this, SLOT( updateLabelToolButtons() ) );
-//  connect( mMapStylingDock, SIGNAL( visibilityChanged( bool ) ), mActionStyleDock, SLOT( setChecked( bool ) ) );
+  connect( mMapStylingDock, SIGNAL( visibilityChanged( bool ) ), mActionStyleDock, SLOT( setChecked( bool ) ) );
 
   addDockWidget( Qt::RightDockWidgetArea, mMapStylingDock );
   mMapStylingDock->hide();
@@ -5800,7 +5801,7 @@ void QgisApp::setMapStyleDockLayer( QgsMapLayer* layer )
 
 void QgisApp::mapStyleDock( bool enabled )
 {
-  mMapStylingDock->setVisible( enabled );
+  mMapStylingDock->setUserVisible( enabled );
   setMapStyleDockLayer( activeLayer() );
 }
 

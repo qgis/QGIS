@@ -63,6 +63,7 @@
 %Include qgsdetaileditemwidget.sip
 %Include qgsdial.sip
 %Include qgsdialog.sip
+%Include qgsdockwidget.sip
 %Include qgsencodingfiledialog.sip
 %Include qgserrordialog.sip
 %Include qgsexpressionbuilderdialog.sip

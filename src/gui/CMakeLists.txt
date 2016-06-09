@@ -204,6 +204,7 @@ SET(QGIS_GUI_SRCS
   qgsdetaileditemwidget.cpp
   qgsdial.cpp
   qgsdialog.cpp
+  qgsdockwidget.cpp
   qgsencodingfiledialog.cpp
   qgserrordialog.cpp
   qgsexpressionbuilderdialog.cpp
@@ -360,6 +361,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsdetaileditemwidget.h
   qgsdial.h
   qgsdialog.h
+  qgsdockwidget.h
   qgsencodingfiledialog.h
   qgserrordialog.h
   qgsexpressionbuilderdialog.h
