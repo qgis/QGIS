@@ -2999,6 +2999,7 @@ void QgisApp::initLayerTreeView()
   mActionStyleDock = new QAction( tr( "Map Styling" ), this );
   mActionStyleDock->setCheckable( true );
   mActionStyleDock->setToolTip( tr( "Open the map styling dock" ) );
+  mActionStyleDock->setShortcut( QString( "F7" ) );
   mActionStyleDock->setIcon( QgsApplication::getThemeIcon( "propertyicons/symbology.png" ) );
   connect( mActionStyleDock, SIGNAL( toggled( bool ) ), this, SLOT( mapStyleDock( bool ) ) );
 
