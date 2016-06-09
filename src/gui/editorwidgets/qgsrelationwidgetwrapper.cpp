@@ -39,6 +39,12 @@ void QgsRelationWidgetWrapper::setFeature( const QgsFeature& feature )
     mWidget->setFeature( feature );
 }
 
+void QgsRelationWidgetWrapper::setVisible( bool visible )
+{
+  if ( mWidget )
+    mWidget->setVisible( visible );
+}
+
 void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
 {
   QgsRelationEditorWidget* w = dynamic_cast<QgsRelationEditorWidget*>( editor );

@@ -38,6 +38,7 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
 
   public slots:
     void setFeature( const QgsFeature& feature ) override;
+    void setVisible( bool visible );
 
   private:
     QgsRelation mRelation;

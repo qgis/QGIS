@@ -174,6 +174,12 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
     }
   }
 
+  bool relationWidgetsVisible = ( mMode == QgsAttributeForm::SingleEditMode || mMode == QgsAttributeForm::AddFeatureMode );
+  Q_FOREACH ( QgsRelationWidgetWrapper* w, findChildren<  QgsRelationWidgetWrapper* >() )
+  {
+    w->setVisible( relationWidgetsVisible );
+  }
+
   switch ( mode )
   {
     case QgsAttributeForm::SingleEditMode:
