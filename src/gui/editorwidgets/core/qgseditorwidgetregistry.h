@@ -174,6 +174,13 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     void mapLayerAdded( QgsMapLayer* mapLayer );
 
     /**
+     * Will disconnect to appropriate signals from map layers to load and save style
+     *
+     * @param mapLayer The layer to disconnect
+     */
+    void mapLayerWillBeRemoved( QgsMapLayer* mapLayer );
+
+    /**
      * Loads layer symbology for the layer that emitted the signal
      *
      * @param element The XML element containing the style information
