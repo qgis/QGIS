@@ -267,6 +267,7 @@
         <file>themes/default/mActionOpenTable.png</file>
         <file>themes/default/mActionOpenTable.svg</file>
         <file>themes/default/mActionAddTable.svg</file>
+        <file>themes/default/mActionOffsetPointSymbols.svg</file>
         <file>themes/default/mActionOptions.svg</file>
         <file>themes/default/mActionPan.svg</file>
         <file>themes/default/mActionPanToSelected.svg</file>
@@ -292,6 +293,7 @@
         <file>themes/default/mActionRotateLabel.png</file>
         <file>themes/default/mActionRotateLabel.svg</file>
         <file>themes/default/mActionRotatePointSymbols.png</file>
+        <file>themes/default/mActionRotatePointSymbols.svg</file>
         <file>themes/default/mActionSaveAllEdits.svg</file>
         <file>themes/default/mActionSaveAsPDF.png</file>
         <file>themes/default/mActionSaveAsSVG.png</file>
