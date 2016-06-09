@@ -42,7 +42,17 @@ class QgsAttributeEditorContext
     const QgsRelation& relation() const;
     RelationMode relationMode() const;
 
+    /** Returns the form mode.
+     * @see setFormMode()
+     */
     FormMode formMode() const;
+
+    /** Sets the form mode.
+     * @param mode form mode
+     * @see formMode()
+     * @note added in QGIS 2.16
+     */
+    void setFormMode( FormMode mode );
 
     const QgsAttributeEditorContext* parentContext() const;
 };

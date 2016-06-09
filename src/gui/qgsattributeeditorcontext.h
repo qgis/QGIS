@@ -99,7 +99,17 @@ class GUI_EXPORT QgsAttributeEditorContext
     inline const QgsRelation& relation() const { return mRelation; }
     inline RelationMode relationMode() const { return mRelationMode; }
 
+    /** Returns the form mode.
+     * @see setFormMode()
+     */
     inline FormMode formMode() const { return mFormMode; }
+
+    /** Sets the form mode.
+     * @param mode form mode
+     * @see formMode()
+     * @note added in QGIS 2.16
+     */
+    inline void setFormMode( FormMode mode ) { mFormMode = mode; }
 
     inline const QgsAttributeEditorContext* parentContext() const { return mParentContext; }
 

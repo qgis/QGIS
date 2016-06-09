@@ -96,8 +96,6 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const Qg
     mAttributeEditor->layout()->addWidget( mAttributeForm );
   }
 
-  mAttributeForm->hideButtonBox();
-
   connect( mAttributeForm, SIGNAL( attributeChanged( QString, QVariant ) ), this, SLOT( featureFormAttributeChanged() ) );
   connect( mAttributeForm, SIGNAL( modeChanged( QgsAttributeForm::Mode ) ), this, SIGNAL( formModeChanged( QgsAttributeForm::Mode ) ) );
   connect( mMasterModel, SIGNAL( modelChanged() ), mAttributeForm, SLOT( refreshFeature() ) );

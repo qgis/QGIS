@@ -141,7 +141,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     void show( bool autoDelete = true );
 
   private:
-    void init( QgsVectorLayer* layer, QgsFeature* feature, const QgsAttributeEditorContext& context );
+    void init( QgsVectorLayer* layer, QgsFeature* feature, const QgsAttributeEditorContext& context, bool showDialogButtons );
 
     QString mSettingsPath;
     // Used to sync multiple widgets for the same field

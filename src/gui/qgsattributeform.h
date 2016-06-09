@@ -54,25 +54,31 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       FilterOr, /*!< Filter should be combined using "OR" */
     };
 
-    explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext(), QWidget *parent = nullptr );
+    explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature = QgsFeature(),
+                               const QgsAttributeEditorContext& context = QgsAttributeEditorContext(), QWidget *parent = nullptr );
     ~QgsAttributeForm();
 
     const QgsFeature& feature() { return mFeature; }
 
     /**
      * Hides the button box (Ok/Cancel) and enables auto-commit
+     * @note set Embed in QgsAttributeEditorContext in constructor instead
      */
+    // TODO QGIS 3.0 - make private
     void hideButtonBox();
 
     /**
      * Shows the button box (Ok/Cancel) and disables auto-commit
+     * @note set Embed in QgsAttributeEditorContext in constructor instead
      */
+    // TODO QGIS 3.0 - make private
     void showButtonBox();
 
     /**
      * Disconnects the button box (Ok/Cancel) from the accept/resetValues slots
      * If this method is called, you have to create these connections from outside
      */
+    // TODO QGIS 3.0 - make private
     void disconnectButtonBox();
 
     /**
