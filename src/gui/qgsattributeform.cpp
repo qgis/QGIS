@@ -179,22 +179,34 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
     case QgsAttributeForm::SingleEditMode:
       setFeature( mFeature );
       mSearchButtonBox->setVisible( false );
+      mInvalidConstraintMessage->show();
       break;
 
     case QgsAttributeForm::AddFeatureMode:
       synchronizeEnabledState();
       mSearchButtonBox->setVisible( false );
+      mInvalidConstraintMessage->show();
       break;
 
     case QgsAttributeForm::MultiEditMode:
       resetMultiEdit( false );
       synchronizeEnabledState();
       mSearchButtonBox->setVisible( false );
+      mInvalidConstraintMessage->show();
       break;
 
     case QgsAttributeForm::SearchMode:
       mSearchButtonBox->setVisible( true );
       hideButtonBox();
+      if ( mContext.formMode() != QgsAttributeEditorContext::Embed )
+      {
+        delete mInvalidConstraintMessage;
+        mInvalidConstraintMessage = nullptr;
+      }
+      else
+      {
+        mInvalidConstraintMessage->hide();
+      }
       break;
   }
 
@@ -763,7 +775,7 @@ bool QgsAttributeForm::currentFormFeature( QgsFeature &feature )
 void QgsAttributeForm::clearInvalidConstraintsMessage()
 {
   mInvalidConstraintMessage->clear();
-  mInvalidConstraintMessage->setStyleSheet( "" );
+  mInvalidConstraintMessage->setStyleSheet( QString() );
 }
 
 void QgsAttributeForm::displayInvalidConstraintMessage( const QStringList &f,
@@ -974,13 +986,16 @@ void QgsAttributeForm::synchronizeEnabledState()
   // push a message and disable the OK button if constraints are invalid
   clearInvalidConstraintsMessage();
 
-  QStringList invalidFields, descriptions;
-  bool validConstraint = currentFormValidConstraints( invalidFields, descriptions );
+  if ( mMode != SearchMode )
+  {
+    QStringList invalidFields, descriptions;
+    bool validConstraint = currentFormValidConstraints( invalidFields, descriptions );
 
-  if ( ! validConstraint )
-    displayInvalidConstraintMessage( invalidFields, descriptions );
+    if ( ! validConstraint )
+      displayInvalidConstraintMessage( invalidFields, descriptions );
 
-  isEditable = isEditable & validConstraint;
+    isEditable = isEditable & validConstraint;
+  }
 
   // change ok button status
   QPushButton* okButton = mButtonBox->button( QDialogButtonBox::Ok );
