@@ -30,7 +30,7 @@ import string
 from qgis._core import *
 
 
-def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
+def register_function(function, arg_count, group, usesgeometry=False, referenced_columns=[QgsFeatureRequest.AllAttributes], **kwargs):
     """
     Register a Python function to be used as a expression function.
 
@@ -59,8 +59,8 @@ def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
     """
     class QgsExpressionFunction(QgsExpression.Function):
 
-        def __init__(self, func, name, args, group, helptext='', usesgeometry=True, expandargs=False):
-            QgsExpression.Function.__init__(self, name, args, group, helptext, usesgeometry)
+        def __init__(self, func, name, args, group, helptext='', usesgeometry=True, referencedColumns=QgsFeatureRequest.AllAttributes, expandargs=False):
+            QgsExpression.Function.__init__(self, name, args, group, helptext, usesgeometry, referencedColumns)
             self.function = func
             self.expandargs = expandargs
 
@@ -100,7 +100,7 @@ def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
 
     function.__name__ = name
     helptext = helptemplate.safe_substitute(name=name, doc=helptext)
-    f = QgsExpressionFunction(function, name, arg_count, group, helptext, usesgeometry, expandargs)
+    f = QgsExpressionFunction(function, name, arg_count, group, helptext, usesgeometry, referenced_columns, expandargs)
 
     # This doesn't really make any sense here but does when used from a decorator context
     # so it can stay.
