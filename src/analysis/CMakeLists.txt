@@ -150,12 +150,11 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 
 IF (NOT MSVC)
-  ADD_DEFINITIONS("-UANALYSIS_EXPORT")
+  REMOVE_DEFINITIONS("-DANALYSIS_EXPORT")
   IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
   ENDIF()
 ENDIF (NOT MSVC)
-ADD_DEFINITIONS("\"-DANALYSIS_EXPORT=${DLLEXPORT}\"")
 
 #############################################################
 # qgis_analysis library
