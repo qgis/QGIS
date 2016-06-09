@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>354</width>
+    <width>370</width>
     <height>501</height>
    </rect>
   </property>
@@ -14,14 +14,32 @@
    <string>Renderer settings</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_5">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
     <widget class="QStackedWidget" name="mainStack">
      <widget class="QWidget" name="page">
       <layout class="QVBoxLayout" name="verticalLayout_4">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -49,7 +67,16 @@
              </sizepolicy>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout">
-             <property name="margin">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
               <number>0</number>
              </property>
              <item>
@@ -64,7 +91,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QgsCollapsibleGroupBox" name="groupBox">
+          <widget class="QgsCollapsibleGroupBox" name="mLayerRenderingGroupBox">
            <property name="title">
             <string>Layer rendering</string>
            </property>

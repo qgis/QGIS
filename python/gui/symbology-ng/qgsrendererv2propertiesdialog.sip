@@ -5,7 +5,16 @@ class QgsRendererV2PropertiesDialog : QDialog
 %End
 
   public:
-    QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyleV2* style, bool embedded = false );
+
+    /** Constructor for QgsRendererV2PropertiesDialog.
+     * @param layer associated layer
+     * @param style style collection
+     * @param embedded set to true to indicate that the dialog will be embedded in another widget, rather
+     * than shown as a dialog by itself
+     * @param parent parent widget
+     */
+    QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyleV2* style, bool embedded = false, QWidget* parent /TransferThis/ = nullptr );
+
     ~QgsRendererV2PropertiesDialog();
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current

@@ -79,14 +79,16 @@ static void _initRendererWidgetFunctions()
   initialized = true;
 }
 
-QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyleV2* style, bool embedded )
-    : mLayer( layer )
+QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyleV2* style, bool embedded, QWidget* parent )
+    : QDialog( parent )
+    , mLayer( layer )
     , mStyle( style )
     , mActiveWidget( nullptr )
     , mPaintEffect( nullptr )
     , mMapCanvas( nullptr )
 {
   setupUi( this );
+  mLayerRenderingGroupBox->setSettingGroup( "layerRenderingGroupBox" );
 
   // can be embedded in vector layer properties
   if ( embedded )
@@ -378,7 +380,7 @@ void QgsRendererV2PropertiesDialog::changeOrderBy( const QgsFeatureRequest::Orde
 
 void QgsRendererV2PropertiesDialog::updateUIState( bool hidden )
 {
-  groupBox->setHidden( hidden );
+  mLayerRenderingGroupBox->setHidden( hidden );
   cboRenderers->setHidden( hidden );
 }
 

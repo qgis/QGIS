@@ -281,7 +281,8 @@ void QgsMapStylingWidget::updateCurrentWidgetLayer()
     {
       case 0: // Style
       {
-        mVectorStyleWidget = new QgsRendererV2PropertiesDialog( vlayer, QgsStyleV2::defaultStyle(), true );
+        mVectorStyleWidget->deleteLater();
+        mVectorStyleWidget = new QgsRendererV2PropertiesDialog( vlayer, QgsStyleV2::defaultStyle(), true, mWidgetArea );
         connect( mVectorStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
         mWidgetArea->setWidget( mVectorStyleWidget );
         break;
