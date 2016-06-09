@@ -36,7 +36,7 @@ QgsComposerItemGroup::~QgsComposerItemGroup()
   //loop through group members and remove them from the scene
   Q_FOREACH ( QgsComposerItem* item, mItems )
   {
-    if ( !item )
+    if ( !item || item->isRemoved() )
       continue;
 
     //inform model that we are about to remove an item from the scene

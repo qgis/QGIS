@@ -33,6 +33,7 @@
 #include "qgscomposerattributetablev2.h"
 #include "qgsaddremovemultiframecommand.h"
 #include "qgscomposermultiframecommand.h"
+#include "qgsgroupungroupitemscommand.h"
 #include "qgspaintenginehack.h"
 #include "qgspaperitem.h"
 #include "qgsproject.h"
@@ -1515,6 +1516,10 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     QgsComposerItemGroup *newGroup = new QgsComposerItemGroup( this );
     newGroup->readXML( groupElem, doc );
     addItem( newGroup );
+    if ( addUndoCommands )
+    {
+      pushAddRemoveCommand( newGroup, tr( "Group added" ) );
+    }
   }
 
   //Since this function adds items grouped by type, and each item is added to end of
@@ -1940,14 +1945,28 @@ QgsComposerItemGroup *QgsComposition::groupItems( QList<QgsComposerItem *> items
   }
 
   QgsComposerItemGroup* itemGroup = new QgsComposerItemGroup( this );
+  QgsDebugMsg( QString( "itemgroup created with %1 items (%2 to be added)" ) .arg( itemGroup->items().size() ).arg( items.size() ) );
 
   QList<QgsComposerItem*>::iterator itemIter = items.begin();
   for ( ; itemIter != items.end(); ++itemIter )
   {
     itemGroup->addItem( *itemIter );
+    QgsDebugMsg( QString( "itemgroup now has %1" )
+                 .arg( itemGroup->items().size() ) );
   }
 
   addItem( itemGroup );
+
+  QgsGroupUngroupItemsCommand* c = new QgsGroupUngroupItemsCommand( QgsGroupUngroupItemsCommand::Grouped, itemGroup, this, tr( "Items grouped" ) );
+  QObject::connect( c, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SIGNAL( itemRemoved( QgsComposerItem* ) ) );
+  QObject::connect( c, SIGNAL( itemAdded( QgsComposerItem* ) ), this, SLOT( sendItemAddedSignal( QgsComposerItem* ) ) );
+
+  undoStack()->push( c );
+  QgsProject::instance()->setDirty( true );
+  //QgsDebugMsg( QString( "itemgroup after pushAddRemove has %1" ) .arg( itemGroup->items().size() ) );
+
+  emit composerItemGroupAdded( itemGroup );
+
   return itemGroup;
 }
 
@@ -1959,6 +1978,17 @@ QList<QgsComposerItem *> QgsComposition::ungroupItems( QgsComposerItemGroup* gro
     return ungroupedItems;
   }
 
+  // group ownership transferred to QgsGroupUngroupItemsCommand
+  // Call this before removing group items so it can keep note
+  // of contents
+  QgsGroupUngroupItemsCommand* c = new QgsGroupUngroupItemsCommand( QgsGroupUngroupItemsCommand::Ungrouped, group, this, tr( "Items ungrouped" ) );
+  QObject::connect( c, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SIGNAL( itemRemoved( QgsComposerItem* ) ) );
+  QObject::connect( c, SIGNAL( itemAdded( QgsComposerItem* ) ), this, SLOT( sendItemAddedSignal( QgsComposerItem* ) ) );
+
+  undoStack()->push( c );
+  QgsProject::instance()->setDirty( true );
+
+
   QSet<QgsComposerItem*> groupedItems = group->items();
   QSet<QgsComposerItem*>::iterator itemIt = groupedItems.begin();
   for ( ; itemIt != groupedItems.end(); ++itemIt )
@@ -1967,10 +1997,9 @@ QList<QgsComposerItem *> QgsComposition::ungroupItems( QgsComposerItemGroup* gro
   }
 
   group->removeItems();
-  removeComposerItem( group, false, false );
 
-  emit itemRemoved( group );
-  delete( group );
+  // note: emits itemRemoved
+  removeComposerItem( group, false, false );
 
   return ungroupedItems;
 }
@@ -2542,6 +2571,7 @@ void QgsComposition::addComposerTableFrame( QgsComposerAttributeTableV2 *table, 
   emit composerTableFrameAdded( table, frame );
 }
 
+/* public */
 void QgsComposition::removeComposerItem( QgsComposerItem* item, const bool createCommand, const bool removeGroupItems )
 {
   QgsComposerMap* map = dynamic_cast<QgsComposerMap *>( item );
@@ -2550,25 +2580,36 @@ void QgsComposition::removeComposerItem( QgsComposerItem* item, const bool creat
   {
     mItemsModel->setItemRemoved( item );
     removeItem( item );
+    emit itemRemoved( item );
+
+    QgsDebugMsg( QString( "removeComposerItem called, createCommand:%1 removeGroupItems:%2" )
+                 .arg( createCommand ).arg( removeGroupItems ) );
 
     QgsComposerItemGroup* itemGroup = dynamic_cast<QgsComposerItemGroup*>( item );
     if ( itemGroup && removeGroupItems )
     {
-      //add add/remove item command for every item in the group
-      QUndoCommand* parentCommand = new QUndoCommand( tr( "Remove item group" ) );
+      QgsDebugMsg( QString( "itemGroup && removeGroupItems" ) );
 
+      // Takes ownership of itemGroup
+      QgsAddRemoveItemCommand* parentCommand = new QgsAddRemoveItemCommand(
+        QgsAddRemoveItemCommand::Removed, itemGroup, this,
+        tr( "Remove item group" ) );
+      connectAddRemoveCommandSignals( parentCommand );
+
+      //add add/remove item command for every item in the group
       QSet<QgsComposerItem*> groupedItems = itemGroup->items();
+      QgsDebugMsg( QString( "itemGroup contains %1 items" ) .arg( groupedItems.size() ) );
       QSet<QgsComposerItem*>::iterator it = groupedItems.begin();
       for ( ; it != groupedItems.end(); ++it )
       {
+        mItemsModel->setItemRemoved( *it );
+        removeItem( *it );
         QgsAddRemoveItemCommand* subcommand = new QgsAddRemoveItemCommand( QgsAddRemoveItemCommand::Removed, *it, this, "", parentCommand );
         connectAddRemoveCommandSignals( subcommand );
         emit itemRemoved( *it );
       }
 
       undoStack()->push( parentCommand );
-      emit itemRemoved( itemGroup );
-      delete itemGroup;
     }
     else
     {
@@ -2580,18 +2621,12 @@ void QgsComposition::removeComposerItem( QgsComposerItem* item, const bool creat
         {
           multiFrame = static_cast<QgsComposerFrame*>( item )->multiFrame();
           item->beginItemCommand( tr( "Frame deleted" ) );
-          emit itemRemoved( item );
           item->endItemCommand();
         }
         else
         {
-          emit itemRemoved( item );
           pushAddRemoveCommand( item, tr( "Item deleted" ), QgsAddRemoveItemCommand::Removed );
         }
-      }
-      else
-      {
-        emit itemRemoved( item );
       }
 
       //check if there are frames left. If not, remove the multi frame
@@ -2714,6 +2749,11 @@ void QgsComposition::sendItemAddedSignal( QgsComposerItem* item )
     }
     emit selectedItemChanged( frame );
     return;
+  }
+  QgsComposerItemGroup* group = dynamic_cast<QgsComposerItemGroup*>( item );
+  if ( group )
+  {
+    emit composerItemGroupAdded( group );
   }
 }
 
