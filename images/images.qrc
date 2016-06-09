@@ -228,6 +228,7 @@
         <file>themes/default/mActionHideAllLayers.png</file>
         <file>themes/default/mActionHideAllLayers.svg</file>
         <file>themes/default/mActionHideSelectedLayers.png</file>
+        <file>themes/default/mActionHistory.svg</file>
         <file>themes/default/mActionIdentify.svg</file>
         <file>themes/default/mActionIncreaseBrightness.svg</file>
         <file>themes/default/mActionIncreaseContrast.svg</file>
@@ -277,6 +278,7 @@
         <file>themes/default/mActionPropertyItem.svg</file>
         <file>themes/default/mActionQgisHomePage.png</file>
         <file>themes/default/mActionRaiseItems.png</file>
+        <file>themes/default/mActionRedo.svg</file>
         <file>themes/default/mActionRedo.png</file>
         <file>themes/default/mActionRefresh.png</file>
         <file>themes/default/mActionRemove.png</file>
@@ -330,6 +332,7 @@
         <file>themes/default/mActionToggleEditing.svg</file>
         <file>themes/default/mActionTouch.svg</file>
         <file>themes/default/mActionTouch2.png</file>
+        <file>themes/default/mActionUndo.svg</file>
         <file>themes/default/mActionUndo.png</file>
         <file>themes/default/mActionUngroupItems.png</file>
         <file>themes/default/mActionUnselectAttributes.png</file>

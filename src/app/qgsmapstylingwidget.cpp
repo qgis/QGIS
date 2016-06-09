@@ -134,7 +134,7 @@ void QgsMapStylingWidget::setLayer( QgsMapLayer *layer )
       QgsDebugMsg( QString( "ROW IS %1" ).arg( row ) );
     }
   }
-  mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "mIconTreeView.png" ), "" ) );
+  mOptionsListWidget->addItem( new QListWidgetItem( QgsApplication::getThemeIcon( "mActionHistory.svg" ), "" ) );
 
   if ( sameLayerType )
   {

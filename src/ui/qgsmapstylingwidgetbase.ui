@@ -53,7 +53,7 @@
            </property>
            <property name="icon">
             <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/mActionUndo.png</normaloff>:/images/themes/default/mActionUndo.png</iconset>
+             <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
            </property>
           </widget>
          </item>
@@ -64,7 +64,7 @@
            </property>
            <property name="icon">
             <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/mActionRedo.png</normaloff>:/images/themes/default/mActionRedo.png</iconset>
+             <normaloff>:/images/themes/default/mActionRedo.svg</normaloff>:/images/themes/default/mActionRedo.svg</iconset>
            </property>
           </widget>
          </item>
@@ -75,18 +75,10 @@
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>40</width>
              <height>20</height>
             </size>
            </property>
           </spacer>
-         </item>
-         <item>
-          <widget class="QDialogButtonBox" name="mButtonBox">
-           <property name="standardButtons">
-            <set>QDialogButtonBox::Apply</set>
-           </property>
-          </widget>
          </item>
          <item>
           <widget class="QCheckBox" name="mLiveApplyCheck">
@@ -98,6 +90,19 @@
            </property>
            <property name="autoRepeat">
             <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDialogButtonBox" name="mButtonBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="standardButtons">
+            <set>QDialogButtonBox::Apply</set>
            </property>
           </widget>
          </item>
