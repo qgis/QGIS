@@ -38,6 +38,11 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
 
   public slots:
     void setFeature( const QgsFeature& feature ) override;
+
+    /** Sets the visibility of the wrapper's widget.
+     * @param visible set to true to show widget, false to hide widget
+     * @note added in QGIS 2.16
+     */
     void setVisible( bool visible );
 
   private:
