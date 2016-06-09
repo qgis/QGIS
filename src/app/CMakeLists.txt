@@ -113,6 +113,7 @@ SET(QGIS_APP_SRCS
   qgsrasterlayerproperties.cpp
   qgsrelationmanagerdialog.cpp
   qgsrelationadddlg.cpp
+  qgsselectbyformdialog.cpp
   qgsstatisticalsummarydockwidget.cpp
   qgstextannotationdialog.cpp
   qgssnappingdialog.cpp
@@ -287,6 +288,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsrasterlayerproperties.h
   qgsrelationmanagerdialog.h
   qgsrelationadddlg.h
+  qgsselectbyformdialog.h
   qgssnappingdialog.h
   qgssponsors.h
   qgsstatisticalsummarydockwidget.h

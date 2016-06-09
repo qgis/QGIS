@@ -147,6 +147,13 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void setMultiEditFeatureIds( const QgsFeatureIds& fids );
 
+    /** Sets the message bar to display feedback from the form in. This is used in the search/filter
+     * mode to display the count of selected features.
+     * @param messageBar target message bar
+     * @note added in QGIS 2.16
+     */
+    void setMessageBar( QgsMessageBar* messageBar );
+
   signals:
     /**
      * Notifies about changes of attributes
@@ -182,6 +189,11 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * @param mode new mode
      */
     void modeChanged( QgsAttributeForm::Mode mode );
+
+    /** Emitted when the user selects the close option from the form's button bar.
+     * @note added in QGIS 2.16
+     */
+    void closed();
 
   public slots:
     /**
@@ -317,6 +329,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QgsVectorLayer* mLayer;
     QgsFeature mFeature;
     QgsMessageBar* mMessageBar;
+    bool mOwnsMessageBar;
     QgsMessageBarItem* mMultiEditUnsavedMessageBarItem;
     QgsMessageBarItem* mMultiEditMessageBarItem;
     QLabel* mInvalidConstraintMessage;

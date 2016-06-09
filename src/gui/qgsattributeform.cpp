@@ -51,6 +51,7 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &featur
     : QWidget( parent )
     , mLayer( vl )
     , mMessageBar( nullptr )
+    , mOwnsMessageBar( true )
     , mMultiEditUnsavedMessageBarItem( nullptr )
     , mMultiEditMessageBarItem( nullptr )
     , mInvalidConstraintMessage( nullptr )
@@ -1296,7 +1297,7 @@ void QgsAttributeForm::init()
     else
     {
       QPushButton* closeButton = new QPushButton( tr( "Close" ), mSearchButtonBox );
-      connect( closeButton, SIGNAL( clicked( bool ) ), this, SLOT( close() ) );
+      connect( closeButton, SIGNAL( clicked( bool ) ), this, SIGNAL( closed() ) );
       closeButton->setShortcut( Qt::Key_Escape );
       boxLayout->addWidget( closeButton );
     }
@@ -1802,6 +1803,14 @@ void QgsAttributeForm::setMultiEditFeatureIds( const QgsFeatureIds& fids )
     }
   }
   mIsSettingMultiEditFeatures = false;
+}
+
+void QgsAttributeForm::setMessageBar( QgsMessageBar* messageBar )
+{
+  if ( mOwnsMessageBar )
+    delete mMessageBar;
+  mOwnsMessageBar = false;
+  mMessageBar = messageBar;
 }
 
 int QgsAttributeForm::messageTimeout()

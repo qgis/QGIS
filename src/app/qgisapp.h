@@ -1089,6 +1089,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! select features by expression
     void selectByExpression();
 
+    //! select features by form
+    void selectByForm();
+
     //! refresh map canvas
     void refreshMapCanvas();
 
