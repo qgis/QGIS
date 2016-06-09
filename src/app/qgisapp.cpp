@@ -2514,8 +2514,8 @@ void QgisApp::setTheme( const QString& theThemeName )
   mActionDeleteSelected->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteSelected.svg" ) );
   mActionNodeTool->setIcon( QgsApplication::getThemeIcon( "/mActionNodeTool.png" ) );
   mActionSimplifyFeature->setIcon( QgsApplication::getThemeIcon( "/mActionSimplify.png" ) );
-  mActionUndo->setIcon( QgsApplication::getThemeIcon( "/mActionUndo.png" ) );
-  mActionRedo->setIcon( QgsApplication::getThemeIcon( "/mActionRedo.png" ) );
+  mActionUndo->setIcon( QgsApplication::getThemeIcon( "/mActionUndo.svg" ) );
+  mActionRedo->setIcon( QgsApplication::getThemeIcon( "/mActionRedo.svg" ) );
   mActionAddRing->setIcon( QgsApplication::getThemeIcon( "/mActionAddRing.png" ) );
   mActionFillRing->setIcon( QgsApplication::getThemeIcon( "/mActionFillRing.svg" ) );
   mActionAddPart->setIcon( QgsApplication::getThemeIcon( "/mActionAddPart.png" ) );

@@ -638,7 +638,7 @@
   <action name="mActionUndo">
    <property name="icon">
     <iconset>
-     <normalon>:/images/themes/default/mActionUndo.png</normalon>
+     <normalon>:/images/themes/default/mActionUndo.svg</normalon>
     </iconset>
    </property>
    <property name="text">
@@ -654,7 +654,7 @@
   <action name="mActionRedo">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionRedo.png</normaloff>:/images/themes/default/mActionRedo.png</iconset>
+     <normaloff>:/images/themes/default/mActionRedo.svg</normaloff>:/images/themes/default/mActionRedo.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Redo</string>
