@@ -253,6 +253,7 @@ void QgsRendererV2Widget::showSymbolLevelsDialog( QgsFeatureRendererV2* r )
   if ( dlg.exec() )
   {
     r->setUsingSymbolLevels( dlg.usingLevels() );
+    emit widgetChanged();
   }
 }
 
