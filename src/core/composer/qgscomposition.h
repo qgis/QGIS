@@ -1061,6 +1061,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void composerArrowAdded( QgsComposerArrow* arrow );
     /** Is emitted when a new composer html has been added to the view*/
     void composerHtmlFrameAdded( QgsComposerHtml* html, QgsComposerFrame* frame );
+    /** Is emitted when a new item group has been added to the view*/
+    void composerItemGroupAdded( QgsComposerItemGroup* group );
     /** Is emitted when new composer label has been added to the view*/
     void composerLabelAdded( QgsComposerLabel* label );
     /** Is emitted when new composer map has been added to the view*/
