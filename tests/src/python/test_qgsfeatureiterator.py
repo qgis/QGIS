@@ -23,6 +23,7 @@ from PyQt4.QtCore import QVariant
 from utilities import (unitTestDataPath,
                        compareWkt
                        )
+
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
@@ -154,6 +155,91 @@ class TestQgsFeatureIterator(unittest.TestCase):
         # really just testing that this doesn't hang/crash... there's no good result here!
         fet = next(layer.getFeatures(QgsFeatureRequest().setSubsetOfAttributes(['exp2'], layer.fields())))
         self.assertEqual(fet['Class'], NULL)
+
+    def test_JoinUsingExpression(self):
+        """ test joining a layer using a virtual field """
+        joinLayer = QgsVectorLayer(
+            "Point?field=x:string&field=y:integer&field=z:integer",
+            "joinlayer", "memory")
+        pr = joinLayer.dataProvider()
+        f1 = QgsFeature()
+        f1.setAttributes(["foo", 246, 321])
+        f2 = QgsFeature()
+        f2.setAttributes(["bar", 456, 654])
+        self.assertTrue(pr.addFeatures([f1, f2]))
+
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                               "addfeat", "memory")
+        pr = layer.dataProvider()
+        f = QgsFeature()
+        f.setAttributes(["test", 123])
+        self.assertTrue(pr.addFeatures([f]))
+        layer.addExpressionField('"fldint"*2', QgsField('exp1', QVariant.LongLong))
+
+        QgsMapLayerRegistry.instance().addMapLayers([layer, joinLayer])
+
+        join = QgsVectorJoinInfo()
+        join.targetFieldName = "exp1"
+        join.joinLayerId = joinLayer.id()
+        join.joinFieldName = "y"
+        join.memoryCache = True
+        layer.addJoin(join)
+
+        f = QgsFeature()
+        fi = layer.getFeatures()
+        self.assertTrue(fi.nextFeature(f))
+        attrs = f.attributes()
+        self.assertEqual(attrs[0], "test")
+        self.assertEqual(attrs[1], 123)
+        self.assertEqual(attrs[2], "foo")
+        self.assertEqual(attrs[3], 321)
+        self.assertEqual(attrs[4], 246)
+        self.assertFalse(fi.nextFeature(f))
+
+        QgsMapLayerRegistry.instance().removeMapLayers([layer, joinLayer])
+
+    def test_JoinUsingExpression2(self):
+        """ test joining a layer using a virtual field (the other way!) """
+        joinLayer = QgsVectorLayer(
+            "Point?field=x:string&field=y:integer&field=z:integer",
+            "joinlayer", "memory")
+        pr = joinLayer.dataProvider()
+        f1 = QgsFeature()
+        f1.setAttributes(["foo", 246, 321])
+        f2 = QgsFeature()
+        f2.setAttributes(["bar", 456, 654])
+        self.assertTrue(pr.addFeatures([f1, f2]))
+        joinLayer.addExpressionField('"y"/2', QgsField('exp1', QVariant.LongLong))
+
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                               "addfeat", "memory")
+        pr = layer.dataProvider()
+        f = QgsFeature()
+        f.setAttributes(["test", 123])
+        self.assertTrue(pr.addFeatures([f]))
+
+        QgsMapLayerRegistry.instance().addMapLayers([layer, joinLayer])
+
+        join = QgsVectorJoinInfo()
+        join.targetFieldName = "fldint"
+        join.joinLayerId = joinLayer.id()
+        join.joinFieldName = "exp1"
+        join.memoryCache = True
+        layer.addJoin(join)
+
+        f = QgsFeature()
+        fi = layer.getFeatures()
+        self.assertTrue(fi.nextFeature(f))
+        attrs = f.attributes()
+        self.assertEqual(attrs[0], "test")
+        self.assertEqual(attrs[1], 123)
+        self.assertEqual(attrs[2], "foo")
+        self.assertEqual(attrs[3], 246)
+        self.assertEqual(attrs[4], 321)
+        self.assertFalse(fi.nextFeature(f))
+
+        QgsMapLayerRegistry.instance().removeMapLayers([layer, joinLayer])
+        # try the other way too
 
 
 if __name__ == '__main__':
