@@ -305,7 +305,14 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
     mFieldsList->setItem( row, attrCommentCol, new QTableWidgetItem( field.comment() ) );
   }
 
-  for ( int i = 0; i < attrCommentCol; i++ )
+  QList<int> notEditableCols = QList<int>()
+                               << attrIdCol
+                               << attrNameCol
+                               << attrTypeCol
+                               << attrTypeNameCol
+                               << attrLengthCol
+                               << attrPrecCol;
+  Q_FOREACH ( int i, notEditableCols )
     mFieldsList->item( row, i )->setFlags( mFieldsList->item( row, i )->flags() & ~Qt::ItemIsEditable );
 
   bool canRenameFields = mLayer->isEditable() && ( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::RenameAttributes ) && !mLayer->readOnly();
