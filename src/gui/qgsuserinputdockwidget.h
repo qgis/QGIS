@@ -18,7 +18,7 @@
 #ifndef QGSUSERINPUTDOCKWIDGET_H
 #define QGSUSERINPUTDOCKWIDGET_H
 
-#include <QDockWidget>
+#include "qgsdockwidget.h"
 #include <QMap>
 
 class QFrame;
@@ -31,7 +31,7 @@ class QBoxLayout;
  * Several widgets can be displayed at once, they will be separated by a separator. Widgets will be either layout horizontally or vertically.
  * The dock is automatically hidden if it contains no widget.
  */
-class GUI_EXPORT QgsUserInputDockWidget : public QDockWidget
+class GUI_EXPORT QgsUserInputDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:

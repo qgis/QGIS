@@ -50,7 +50,7 @@ class QAction;
 class QToolBar;
 class QToolButton;
 class QPushButton;
-class QDockWidget;
+class QgsDockWidget;
 class QLineEdit;
 class QIcon;
 class QLabel;
@@ -112,7 +112,7 @@ class CoordinateCapture: public QObject, public QgisPlugin
 
   private:
     //! Container for the coordinate info
-    QPointer<QDockWidget> mpDockWidget;
+    QPointer<QgsDockWidget> mpDockWidget;
 
     //!output display for user defined Coordinate Reference System
     QPointer<QLineEdit> mpUserCrsEdit;

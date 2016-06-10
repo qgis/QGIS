@@ -16,8 +16,7 @@
 #ifndef QGSADVANCEDDIGITIZINGDOCK
 #define QGSADVANCEDDIGITIZINGDOCK
 
-#include <QDockWidget>
-
+#include "qgsdockwidget.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmessagebaritem.h"
 
@@ -41,7 +40,7 @@ static const double SoftConstraintToleranceDegrees = 10;
  * It handles both the UI and the constraints. Constraints are applied
  * by implemeting filters called from QgsMapToolAdvancedDigitizing.
  */
-class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private Ui::QgsAdvancedDigitizingDockWidgetBase
+class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private Ui::QgsAdvancedDigitizingDockWidgetBase
 {
     Q_OBJECT
     Q_FLAGS( CadCapacities )

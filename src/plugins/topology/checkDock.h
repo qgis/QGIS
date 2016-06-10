@@ -18,7 +18,7 @@
 #ifndef CHECKDOCK_H
 #define CHECKDOCK_H
 
-#include <QDockWidget>
+#include "qgsdockwidget.h"
 
 #include <qgsvectorlayer.h>
 #include <qgsgeometry.h>
@@ -38,7 +38,7 @@ class QgisApp;
 class QgisInterface;
 class checkDock;
 
-class checkDock : public QDockWidget, private Ui::checkDock
+class checkDock : public QgsDockWidget, private Ui::checkDock
 {
     Q_OBJECT
 

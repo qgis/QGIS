@@ -69,7 +69,7 @@
 #include "qgsmessagebar.h"
 
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString & title, QWidget * parent, Qt::WindowFlags flags )
-    : QDockWidget( title, parent, flags )
+    : QgsDockWidget( title, parent, flags )
 {
   setObjectName( "GeorefDockWidget" ); // set object name so the position can be saved
 }

@@ -29,6 +29,7 @@
 #include <qgscoordinatereferencesystem.h>
 #include <qgscoordinatetransform.h>
 #include <qgsgenericprojectionselector.h>
+#include "qgsdockwidget.h"
 
 #include "coordinatecapture.h"
 #include "coordinatecapturegui.h"
@@ -39,7 +40,6 @@
 
 #include <QAction>
 #include <QToolBar>
-#include <QDockWidget>
 #include <QLayout>
 #include <QLineEdit>
 #include <QClipboard>
@@ -101,7 +101,7 @@ void CoordinateCapture::initGui()
   mUserCrsDisplayPrecision = ( mCrs.mapUnits() == QGis::Degrees ) ? 5 : 3; // precision depends on CRS units
 
   //create the dock widget
-  mpDockWidget = new QDockWidget( tr( "Coordinate Capture" ), mQGisIface->mainWindow() );
+  mpDockWidget = new QgsDockWidget( tr( "Coordinate Capture" ), mQGisIface->mainWindow() );
   mpDockWidget->setObjectName( "CoordinateCapture" );
   mpDockWidget->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mQGisIface->addDockWidget( Qt::LeftDockWidgetArea, mpDockWidget );

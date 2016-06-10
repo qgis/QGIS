@@ -27,7 +27,7 @@ class QAction;
 class QToolBar;
 class QPainter;
 class QgisInterface;
-class QDockWidget;
+class QgsDockWidget;
 
 //forward declarations RoadGraph plugins classes
 class QgsGraphDirector;

@@ -40,7 +40,7 @@ class QgsRasterLayer;
 class QgsRectangle;
 class QgsMessageBar;
 
-class QgsGeorefDockWidget : public QDockWidget
+class QgsGeorefDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:
@@ -256,7 +256,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     bool mGCPsDirty;
     bool mLoadInQgis;
 
-    QDockWidget* mDock;
+    QgsDockWidget* mDock;
     int messageTimeout();
 };
 

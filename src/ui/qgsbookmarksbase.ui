@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>QgsBookmarksBase</class>
- <widget class="QDockWidget" name="QgsBookmarksBase">
+ <widget class="QgsDockWidget" name="QgsBookmarksBase">
   <property name="geometry">
    <rect>
     <x>0</x>

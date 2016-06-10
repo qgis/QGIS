@@ -74,7 +74,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
 }
 
 QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *parent )
-    : QDockWidget( parent )
+    : QgsDockWidget( parent )
     , mLayer( nullptr )
 {
   setupUi( this );

@@ -88,7 +88,7 @@ bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPoint& ce
 
 
 QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* canvas, QWidget *parent )
-    : QDockWidget( parent )
+    : QgsDockWidget( parent )
     , mMapCanvas( canvas )
     , mCurrentMapToolSupportsCad( false )
     , mCadEnabled( false )

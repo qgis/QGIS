@@ -30,7 +30,7 @@
 #include "qgsvectorlayer.h" //QgsFeatureIds
 #include "qgsfieldmodel.h"
 #include "qgssearchwidgetwrapper.h"
-#include <QDockWidget>
+#include "qgsdockwidget.h"
 
 class QDialogButtonBox;
 class QPushButton;
@@ -214,7 +214,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QMenu* mMenuActions;
     QAction* mActionToggleEditing;
 
-    QDockWidget* mDock;
+    QgsDockWidget* mDock;
     QgsDistanceArea* myDa;
 
 
@@ -235,7 +235,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 };
 
 
-class QgsAttributeTableDock : public QDockWidget
+class QgsAttributeTableDock : public QgsDockWidget
 {
     Q_OBJECT
 

@@ -18,6 +18,7 @@
 #include "qgsmessagelogviewer.h"
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
+#include "qgsdockwidget.h"
 
 #include <QFile>
 #include <QDateTime>
@@ -25,7 +26,6 @@
 #include <QToolButton>
 #include <QStatusBar>
 #include <QToolTip>
-#include <QDockWidget>
 #include <QPlainTextEdit>
 #include <QScrollBar>
 

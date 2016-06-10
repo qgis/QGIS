@@ -55,7 +55,7 @@
 //standard includes
 
 RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin *thePlugin )
-    : QDockWidget( theParent )
+    : QgsDockWidget( theParent )
     , mPlugin( thePlugin )
 {
   setWindowTitle( tr( "Shortest path" ) );

@@ -14,13 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDockWidget>
 #include <QMessageBox>
 
 #include "qgsorganizetablecolumnsdialog.h"
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetableview.h"
+#include "qgsdockwidget.h"
 
 #include <qgsapplication.h>
 #include <qgsvectordataprovider.h>

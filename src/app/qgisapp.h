@@ -250,7 +250,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * After adding the dock widget to the ui (by delegating to the QMainWindow
      * parent class, it will also add it to the View menu list of docks.*/
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget );
-    void removeDockWidget( QDockWidget *dockwidget );
+    void removeDockWidget( QDockWidget* dockwidget );
     /** Add a toolbar to the main window. Overloaded from QMainWindow.
      * After adding the toolbar to the ui (by delegating to the QMainWindow
      * parent class, it will also add it to the View menu list of toolbars.*/
@@ -1505,11 +1505,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *mToolbarMenu;
 
     // docks ------------------------------------------
-    QDockWidget *mLayerTreeDock;
-    QDockWidget *mLayerOrderDock;
-    QDockWidget *mOverviewDock;
-    QDockWidget *mpGpsDock;
-    QDockWidget *mLogDock;
+    QgsDockWidget *mLayerTreeDock;
+    QgsDockWidget *mLayerOrderDock;
+    QgsDockWidget *mOverviewDock;
+    QgsDockWidget *mpGpsDock;
+    QgsDockWidget *mLogDock;
 
 #ifdef Q_OS_MAC
     //! Window menu action to select this window
@@ -1722,7 +1722,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     static QgisApp *smInstance;
 
     QgsUndoWidget *mUndoWidget;
-    QDockWidget *mUndoDock;
+    QgsDockWidget *mUndoDock;
 
     QgsBrowserDockWidget *mBrowserWidget;
     QgsBrowserDockWidget *mBrowserWidget2;

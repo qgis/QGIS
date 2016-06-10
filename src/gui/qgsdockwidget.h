@@ -14,12 +14,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef QGSDOCKWIDGET_H
+#define QGSDOCKWIDGET_H
 
 #include <QDockWidget>
 
 /** \ingroup gui
  * \class QgsDockWidget
- * QDockWidget subclass with more fine-grained control over how the widget is closed or opened.
+ * QgsDockWidget subclass with more fine-grained control over how the widget is closed or opened.
  * \note added in 2.16
  */
 
@@ -31,8 +33,16 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
 
     /** Constructor for QgsDockWidget.
      * @param parent parent widget
+     * @param flags window flags
      */
-    explicit QgsDockWidget( QWidget* parent = nullptr );
+    explicit QgsDockWidget( QWidget* parent = nullptr, Qt::WindowFlags flags = 0 );
+
+    /** Constructor for QgsDockWidget.
+     * @param title dock title
+     * @param parent parent widget
+     * @param flags window flags
+     */
+    explicit QgsDockWidget( const QString &title, QWidget* parent = nullptr, Qt::WindowFlags flags = 0 );
 
   public slots:
 
@@ -84,3 +94,4 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
     bool mVisibleAndActive;
 
 };
+#endif //QGSDOCKWIDGET_H

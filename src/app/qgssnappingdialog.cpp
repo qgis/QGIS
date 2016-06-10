@@ -23,12 +23,12 @@
 #include "qgisapp.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
+#include "qgsdockwidget.h"
 
 #include <QCheckBox>
 #include <QDoubleValidator>
 #include <QComboBox>
 #include <QLineEdit>
-#include <QDockWidget>
 #include <QPushButton>
 #include <QDoubleSpinBox>
 
@@ -503,7 +503,7 @@ void QgsSnappingDialog::setSnappingMode()
 //
 
 QgsSnappingDock::QgsSnappingDock( const QString& title, QWidget* parent, Qt::WindowFlags flags )
-    : QDockWidget( title, parent, flags )
+    : QgsDockWidget( title, parent, flags )
 {
   setObjectName( "Snapping and Digitizing Options" ); // set object name so the position can be saved
 }

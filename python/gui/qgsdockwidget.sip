@@ -14,8 +14,16 @@ class QgsDockWidget : QDockWidget
 
     /** Constructor for QgsDockWidget.
      * @param parent parent widget
+     * @param flags window flags
      */
-    explicit QgsDockWidget( QWidget* parent /TransferThis/ = nullptr );
+    explicit QgsDockWidget( QWidget* parent /TransferThis/ = nullptr, Qt::WindowFlags flags = 0 );
+
+    /** Constructor for QgsDockWidget.
+     * @param title dock title
+     * @param parent parent widget
+     * @param flags window flags
+     */
+    explicit QgsDockWidget( const QString &title, QWidget* parent /TransferThis/ = nullptr, Qt::WindowFlags flags = 0 );
 
   public slots:
 

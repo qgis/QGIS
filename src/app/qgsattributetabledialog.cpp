@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDockWidget>
 #include <QMessageBox>
 #include <QGridLayout>
 #include <QDialogButtonBox>
@@ -33,6 +32,7 @@
 #include "qgisapp.h"
 #include "qgsaddattrdialog.h"
 #include "qgsdelattrdialog.h"
+#include "qgsdockwidget.h"
 #include "qgssearchquerybuilder.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -946,7 +946,7 @@ void QgsAttributeTableDialog::setFilterExpression( const QString& filterString, 
 //
 
 QgsAttributeTableDock::QgsAttributeTableDock( const QString& title, QWidget* parent, Qt::WindowFlags flags )
-    : QDockWidget( title, parent, flags )
+    : QgsDockWidget( title, parent, flags )
 {
   setObjectName( "AttributeTable" ); // set object name so the position can be saved
 }

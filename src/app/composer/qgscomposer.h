@@ -19,7 +19,7 @@
 #include "ui_qgscomposerbase.h"
 #include "qgscomposermap.h"
 #include "qgscontexthelp.h"
-#include <QDockWidget>
+#include "qgsdockwidget.h"
 
 class QgisApp;
 class QgsComposerArrow;
@@ -592,11 +592,11 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! We load composer map content from project xml only on demand. Therefore we need to store the real preview mode type
     QMap< QgsComposerMap*, int > mMapsToRestore;
 
-    QDockWidget* mItemDock;
-    QDockWidget* mUndoDock;
-    QDockWidget* mGeneralDock;
-    QDockWidget* mAtlasDock;
-    QDockWidget* mItemsDock;
+    QgsDockWidget* mItemDock;
+    QgsDockWidget* mUndoDock;
+    QgsDockWidget* mGeneralDock;
+    QgsDockWidget* mAtlasDock;
+    QgsDockWidget* mItemsDock;
 
     QTreeView* mItemsTreeView;
 

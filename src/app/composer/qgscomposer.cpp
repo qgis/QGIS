@@ -572,21 +572,21 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   int minDockWidth( 335 );
 
   setTabPosition( Qt::AllDockWidgetAreas, QTabWidget::North );
-  mGeneralDock = new QDockWidget( tr( "Composition" ), this );
+  mGeneralDock = new QgsDockWidget( tr( "Composition" ), this );
   mGeneralDock->setObjectName( "CompositionDock" );
   mGeneralDock->setMinimumWidth( minDockWidth );
   mPanelMenu->addAction( mGeneralDock->toggleViewAction() );
-  mItemDock = new QDockWidget( tr( "Item properties" ), this );
+  mItemDock = new QgsDockWidget( tr( "Item properties" ), this );
   mItemDock->setObjectName( "ItemDock" );
   mItemDock->setMinimumWidth( minDockWidth );
   mPanelMenu->addAction( mItemDock->toggleViewAction() );
-  mUndoDock = new QDockWidget( tr( "Command history" ), this );
+  mUndoDock = new QgsDockWidget( tr( "Command history" ), this );
   mUndoDock->setObjectName( "CommandDock" );
   mPanelMenu->addAction( mUndoDock->toggleViewAction() );
-  mAtlasDock = new QDockWidget( tr( "Atlas generation" ), this );
+  mAtlasDock = new QgsDockWidget( tr( "Atlas generation" ), this );
   mAtlasDock->setObjectName( "AtlasDock" );
   mPanelMenu->addAction( mAtlasDock->toggleViewAction() );
-  mItemsDock = new QDockWidget( tr( "Items" ), this );
+  mItemsDock = new QgsDockWidget( tr( "Items" ), this );
   mItemsDock->setObjectName( "ItemsDock" );
   mPanelMenu->addAction( mItemsDock->toggleViewAction() );
 
