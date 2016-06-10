@@ -93,6 +93,17 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     , mFetchedFid( false )
     , mInterruptionChecker( nullptr )
 {
+  //ensure that all fields required for filter expressions are prepared
+  if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
+  {
+    Q_FOREACH ( const QString& field, mRequest.filterExpression()->referencedColumns() )
+    {
+      int attrIdx = mSource->mFields.fieldNameIndex( field );
+      if ( !mRequest.subsetOfAttributes().contains( attrIdx ) )
+        mRequest.setSubsetOfAttributes( mRequest.subsetOfAttributes() << attrIdx );
+    }
+  }
+
   prepareFields();
 
   mHasVirtualAttributes = !mFetchJoinInfo.isEmpty() || !mExpressionFieldInfo.isEmpty();
