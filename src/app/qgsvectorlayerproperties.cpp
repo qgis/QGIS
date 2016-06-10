@@ -1156,13 +1156,18 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
 void QgsVectorLayerProperties::on_mButtonEditJoin_clicked()
 {
   QTreeWidgetItem* currentJoinItem = mJoinTreeWidget->currentItem();
-  if ( !mLayer || !currentJoinItem )
+  on_mJoinTreeWidget_itemDoubleClicked( currentJoinItem, 0 );
+}
+
+void QgsVectorLayerProperties::on_mJoinTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int )
+{
+  if ( !mLayer || !item )
   {
     return;
   }
 
   QList<QgsMapLayer*> joinedLayers;
-  QString joinLayerId = currentJoinItem->data( 0, Qt::UserRole ).toString();
+  QString joinLayerId = item->data( 0, Qt::UserRole ).toString();
   const QList< QgsVectorJoinInfo >& joins = mLayer->vectorJoins();
   int j = -1;
   for ( int i = 0; i < joins.size(); ++i )
@@ -1191,7 +1196,7 @@ void QgsVectorLayerProperties::on_mButtonEditJoin_clicked()
 
     // remove old join
     mLayer->removeJoin( joinLayerId );
-    int idx = mJoinTreeWidget->indexOfTopLevelItem( currentJoinItem );
+    int idx = mJoinTreeWidget->indexOfTopLevelItem( item );
     mJoinTreeWidget->takeTopLevelItem( idx );
 
     // add the new edited
