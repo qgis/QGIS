@@ -196,7 +196,7 @@ class TestQgsFeatureIterator(unittest.TestCase):
         self.assertEqual(attrs[4], 246)
         self.assertFalse(fi.nextFeature(f))
 
-        QgsMapLayerRegistry.instance().removeMapLayers([layer, joinLayer])
+        QgsMapLayerRegistry.instance().removeMapLayers([layer.id(), joinLayer.id()])
 
     def test_JoinUsingExpression2(self):
         """ test joining a layer using a virtual field (the other way!) """
@@ -238,7 +238,7 @@ class TestQgsFeatureIterator(unittest.TestCase):
         self.assertEqual(attrs[4], 321)
         self.assertFalse(fi.nextFeature(f))
 
-        QgsMapLayerRegistry.instance().removeMapLayers([layer, joinLayer])
+        QgsMapLayerRegistry.instance().removeMapLayers([layer.id(), joinLayer.id()])
         # try the other way too
 
 
