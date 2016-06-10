@@ -93,6 +93,23 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     , mFetchedFid( false )
     , mInterruptionChecker( nullptr )
 {
+  if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
+  {
+    mRequest.expressionContext()->setFields( mSource->mFields );
+    mRequest.filterExpression()->prepare( mRequest.expressionContext() );
+
+    if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
+    {
+      //ensure that all fields required for filter expressions are prepared
+      Q_FOREACH ( const QString& field, mRequest.filterExpression()->referencedColumns() )
+      {
+        int attrIdx = mSource->mFields.fieldNameIndex( field );
+        if ( !mRequest.subsetOfAttributes().contains( attrIdx ) )
+          mRequest.setSubsetOfAttributes( mRequest.subsetOfAttributes() << attrIdx );
+      }
+    }
+  }
+
   prepareFields();
 
   mHasVirtualAttributes = !mFetchJoinInfo.isEmpty() || !mExpressionFieldInfo.isEmpty();
@@ -172,12 +189,6 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     }
 
     rewindEditBuffer();
-  }
-
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
-  {
-    mRequest.expressionContext()->setFields( mSource->mFields );
-    mRequest.filterExpression()->prepare( mRequest.expressionContext() );
   }
 }
 
