@@ -42,12 +42,12 @@
 const QString POSTGRES_KEY = "postgres";
 const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
 
-inline int64_t PKINT2FID( int32_t x )
+inline qint64 PKINT2FID( qint32 x )
 {
   return QgsPostgresUtils::int32pk_to_fid( x );
 }
 
-inline int32_t FID2PKINT( int64_t x )
+inline qint32 FID2PKINT( qint64 x )
 {
   return QgsPostgresUtils::fid_to_int32pk( x );
 }
