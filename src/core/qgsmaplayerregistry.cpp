@@ -144,10 +144,10 @@ void QgsMapLayerRegistry::removeMapLayers( const QList<QgsMapLayer*>& layers )
       continue;
 
     QString myId( lyr->id() );
+    emit layerWillBeRemoved( myId );
+    emit layerWillBeRemoved( lyr );
     if ( mOwnedLayers.contains( lyr ) )
     {
-      emit layerWillBeRemoved( myId );
-      emit layerWillBeRemoved( lyr );
       delete lyr;
       mOwnedLayers.remove( lyr );
     }
