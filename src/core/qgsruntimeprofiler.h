@@ -50,7 +50,7 @@ class CORE_EXPORT QgsRuntimeProfiler
      * @return A list of profile event names and times.
      * @note not available in python bindings
      */
-    const QList<QPair<QString, double>> profileTimes() const { return mProfileTimes; }
+    const QList<QPair<QString, double > > profileTimes() const { return mProfileTimes; }
 
     /**
      * @brief clear Clear all profile data.
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsRuntimeProfiler
     QStack<QString> mGroupStack;
     QTime mProfileTime;
     QString mCurrentName;
-    QList<QPair<QString, double>> mProfileTimes;
+    QList<QPair<QString, double > > mProfileTimes;
 };
 
 #endif // QGSRUNTIMEPROFILER_H
