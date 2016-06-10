@@ -487,7 +487,7 @@ class DBModel(QAbstractItemModel):
             if prevPopulated or force:
                 if item.populate():
                     for child in item.childItems:
-                        child.itemChanged.connect(partial(self.refreshItem, item))
+                        child.itemChanged.connect(partial(self.refreshItem, child))
                     self._onDataChanged(index)
                 else:
                     self.notPopulated.emit(index)
