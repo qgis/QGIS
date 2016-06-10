@@ -1308,10 +1308,10 @@ int FeaturePart::createCandidates( QList< LabelPosition*>& lPos,
     switch ( type )
     {
       case GEOS_POINT:
-        if ( mLF->layer()->arrangement() == QgsPalLayerSettings::OverPoint || mLF->hasFixedQuadrant() )
-          createCandidatesOverPoint( x[0], y[0], lPos, angle );
-        else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::OrderedPositionsAroundPoint )
+        if ( mLF->layer()->arrangement() == QgsPalLayerSettings::OrderedPositionsAroundPoint )
           createCandidatesAtOrderedPositionsOverPoint( x[0], y[0], lPos, angle );
+        else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::OverPoint || mLF->hasFixedQuadrant() )
+          createCandidatesOverPoint( x[0], y[0], lPos, angle );
         else
           createCandidatesAroundPoint( x[0], y[0], lPos, angle );
         break;
