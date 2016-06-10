@@ -462,7 +462,15 @@ void TestQgsOgcUtils::testExpressionToOgcFilterWFS20()
   qDebug( "SRSNAME: %s", srsName.toAscii().data() );
   qDebug( "OGC : %s", doc.toString( -1 ).toAscii().data() );
 
-  QCOMPARE( normalizeXML( xmlText ), normalizeXML( doc.toString( -1 ) ) );
+  QString normalizedExpected( normalizeXML( xmlText ) );
+  QString normalizedGot( normalizeXML( doc.toString( -1 ) ) );
+
+  if ( normalizedExpected != normalizedGot )
+  {
+    qDebug( "Normalized expected: %s", normalizedExpected.toAscii().data() );
+    qDebug( "Normalized got: %s", normalizedGot.toAscii().data() );
+  }
+  QCOMPARE( normalizedExpected, normalizedGot );
 }
 
 void TestQgsOgcUtils::testExpressionToOgcFilterWFS20_data()
@@ -562,7 +570,15 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter()
           filterVersion == QgsOgcUtils::FILTER_FES_2_0 ? "FES 2.0" : "unknown" );
   qDebug( "OGC :   %s", doc.toString( -1 ).toAscii().data() );
 
-  QCOMPARE( normalizeXML( xmlText ), normalizeXML( doc.toString( -1 ) ) );
+  QString normalizedExpected( normalizeXML( xmlText ) );
+  QString normalizedGot( normalizeXML( doc.toString( -1 ) ) );
+
+  if ( normalizedExpected != normalizedGot )
+  {
+    qDebug( "Normalized expected: %s", normalizedExpected.toAscii().data() );
+    qDebug( "Normalized got: %s", normalizedGot.toAscii().data() );
+  }
+  QCOMPARE( normalizedExpected, normalizedGot );
 }
 
 void TestQgsOgcUtils::testSQLStatementToOgcFilter_data()
