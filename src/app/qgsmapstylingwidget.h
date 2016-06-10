@@ -85,6 +85,7 @@ class APP_EXPORT QgsMapStylingWidget : public QWidget, private Ui::QgsMapStyling
   private slots:
     void updateCurrentWidgetLayer();
     void layerAboutToBeRemoved( QgsMapLayer* layer );
+    void liveApplyToggled( bool value );
 
   private:
     void pushUndoItem( const QString& name );

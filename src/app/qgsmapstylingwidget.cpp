@@ -57,6 +57,9 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QList<QgsMapStyl
 
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QgsMapLayer* ) ), this, SLOT( layerAboutToBeRemoved( QgsMapLayer* ) ) );
 
+  QSettings settings;
+  mLiveApplyCheck->setChecked( settings.value( "UI/autoApplyStyling", true ).toBool() );
+
   mAutoApplyTimer = new QTimer( this );
   mAutoApplyTimer->setSingleShot( true );
 
@@ -74,6 +77,7 @@ QgsMapStylingWidget::QgsMapStylingWidget( QgsMapCanvas* canvas, QList<QgsMapStyl
   connect( mOptionsListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( updateCurrentWidgetLayer() ) );
   connect( mButtonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
   connect( mLayerCombo, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( setLayer( QgsMapLayer* ) ) );
+  connect( mLiveApplyCheck, SIGNAL( toggled( bool ) ), this, SLOT( liveApplyToggled( bool ) ) );
 
   mStackedWidget->setCurrentIndex( 0 );
 }
@@ -364,6 +368,12 @@ void QgsMapStylingWidget::layerAboutToBeRemoved( QgsMapLayer* layer )
     mStackedWidget->setCurrentIndex( mNotSupportedPage );
     mCurrentLayer = nullptr;
   }
+}
+
+void QgsMapStylingWidget::liveApplyToggled( bool value )
+{
+  QSettings settings;
+  settings.setValue( "UI/autoApplyStyling", value );
 }
 
 void QgsMapStylingWidget::pushUndoItem( const QString &name )
