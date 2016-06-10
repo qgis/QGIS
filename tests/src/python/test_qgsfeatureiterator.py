@@ -239,44 +239,7 @@ class TestQgsFeatureIterator(unittest.TestCase):
         self.assertFalse(fi.nextFeature(f))
 
         QgsMapLayerRegistry.instance().removeMapLayers([layer.id(), joinLayer.id()])
-
-    def test_JoinUsingFeatureRequestExpression(self):
-        """ test requesting features using a filter expression which requires joined columns """
-        joinLayer = QgsVectorLayer(
-            "Point?field=x:string&field=y:integer&field=z:integer",
-            "joinlayer", "memory")
-        pr = joinLayer.dataProvider()
-        f1 = QgsFeature()
-        f1.setAttributes(["foo", 123, 321])
-        f2 = QgsFeature()
-        f2.setAttributes(["bar", 124, 654])
-        self.assertTrue(pr.addFeatures([f1, f2]))
-
-        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
-                               "addfeat", "memory")
-        pr = layer.dataProvider()
-        f1 = QgsFeature()
-        f1.setAttributes(["test", 123])
-        f2 = QgsFeature()
-        f2.setAttributes(["test", 124])
-        self.assertTrue(pr.addFeatures([f1, f2]))
-
-        QgsMapLayerRegistry.instance().addMapLayers([layer, joinLayer])
-
-        join = QgsVectorJoinInfo()
-        join.targetFieldName = "fldint"
-        join.joinLayerId = joinLayer.id()
-        join.joinFieldName = "y"
-        join.memoryCache = True
-        layer.addJoin(join)
-
-        f = QgsFeature()
-        fi = layer.getFeatures(QgsFeatureRequest().setFilterExpression('joinlayer_z=654'))
-        self.assertTrue(fi.nextFeature(f))
-        self.assertEqual(f['fldint'], 124)
-        self.assertEqual(f['joinlayer_z'], 654)
-
-        QgsMapLayerRegistry.instance().removeMapLayers([layer.id(), joinLayer.id()])
+        # try the other way too
 
 
 if __name__ == '__main__':
