@@ -21,7 +21,7 @@ email                : brush.tyler@gmail.com
 """
 
 from functools import partial
-from qgis.PyQt.QtCore import Qt, QObject, qDebug, QByteArray, QMimeData, QDataStream, QIODevice, QFileInfo, QAbstractItemModel, QModelIndex, pyqtSignal, pyqtSlot
+from qgis.PyQt.QtCore import Qt, QObject, qDebug, QByteArray, QMimeData, QDataStream, QIODevice, QFileInfo, QAbstractItemModel, QModelIndex, pyqtSignal
 from qgis.PyQt.QtWidgets import QApplication, QMessageBox
 from qgis.PyQt.QtGui import QIcon
 
