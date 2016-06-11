@@ -34,6 +34,8 @@
 #include <QStack>
 #include <QVector>
 
+#include <string>
+
 /** This class builds features from GML data in a streaming way. The caller must call processData()
  * as soon it has new content from the source. At any point, it can call
  * getAndStealReadyFeatures() to collect the features that have been completely
@@ -296,6 +298,10 @@ class CORE_EXPORT QgsGmlStreamingParser
     int mNumberReturned;
     /** WFS 2.0 "numberMatched" attribute, or -1 if invalid/not found */
     int mNumberMatched;
+    /** XML blob containing geometry */
+    std::string mGeometryString;
+    /** Whether we found a unhandled geometry element */
+    bool mFoundUnhandledGeometryElement;
 };
 
 

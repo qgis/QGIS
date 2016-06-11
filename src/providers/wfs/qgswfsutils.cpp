@@ -16,6 +16,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgswfsutils.h"
+#include "qgsgeometry.h"
 
 // 1 minute
 #define KEEP_ALIVE_DELAY        (60 * 1000)
@@ -26,6 +27,7 @@
 #include <QSharedMemory>
 #include <QDateTime>
 #include <QSettings>
+#include <QCryptographicHash>
 
 QMutex QgsWFSUtils::gmMutex;
 QThread* QgsWFSUtils::gmThread = nullptr;
@@ -314,4 +316,51 @@ QString QgsWFSUtils::nameSpacePrefix( const QString& tname )
     return QString();
   }
   return splitList.at( 0 );
+}
+
+
+QString QgsWFSUtils::getMD5( const QgsFeature& f )
+{
+  const QgsAttributes attrs = f.attributes();
+  QCryptographicHash hash( QCryptographicHash::Md5 );
+  for ( int i = 0;i < attrs.size();i++ )
+  {
+    const QVariant &v = attrs[i];
+    hash.addData( QByteArray(( const char * )&i, sizeof( i ) ) );
+    if ( v.isNull() )
+    {
+      // nothing to do
+    }
+    else if ( v.type() == QVariant::DateTime )
+    {
+      qint64 val = v.toDateTime().toMSecsSinceEpoch();
+      hash.addData( QByteArray(( const char * )&val, sizeof( val ) ) );
+    }
+    else if ( v.type() == QVariant::Int )
+    {
+      int val = v.toInt();
+      hash.addData( QByteArray(( const char * )&val, sizeof( val ) ) );
+    }
+    else if ( v.type() == QVariant::LongLong )
+    {
+      qint64 val = v.toLongLong();
+      hash.addData( QByteArray(( const char * )&val, sizeof( val ) ) );
+    }
+    else  if ( v.type() == QVariant::String )
+    {
+      hash.addData( v.toByteArray() );
+    }
+  }
+
+  const int attrCount = attrs.size();
+  hash.addData( QByteArray(( const char * )&attrCount, sizeof( attrCount ) ) );
+  const QgsGeometry* geometry = f.constGeometry();
+  if ( geometry )
+  {
+    const unsigned char *geom = geometry->asWkb();
+    int geomSize = geometry->wkbSize();
+    hash.addData( QByteArray(( const char* )geom, geomSize ) );
+  }
+
+  return hash.result().toHex();
 }

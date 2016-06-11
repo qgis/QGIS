@@ -45,6 +45,7 @@
 #include <QWidget>
 #include <QPair>
 #include <QTimer>
+#include <QSettings>
 
 #include <cfloat>
 
@@ -1250,11 +1251,18 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc,
       }
     }
 
+    QRegExp gmlPT( "gml:(.*)PropertyType" );
+    // gmgml: is Geomedia Web Server
+    if ( type == "gmgml:Polygon_Surface_MultiSurface_CompositeSurfacePropertyType" )
+    {
+      foundGeometryAttribute = true;
+      geometryAttribute = name;
+      geomType = QGis::WKBMultiPolygon;
+    }
     //is it a geometry attribute?
     //MH 090428: sometimes the <element> tags for geometry attributes have only attribute ref="gml:polygonProperty" and no name
-    QRegExp gmlPT( "gml:(.*)PropertyType" );
     // the GeometryAssociationType has been seen in #11785
-    if ( type.indexOf( gmlPT ) == 0 || type == "gml:GeometryAssociationType" || name.isEmpty() )
+    else if ( type.indexOf( gmlPT ) == 0 || type == "gml:GeometryAssociationType" || name.isEmpty() )
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
@@ -1433,6 +1441,14 @@ bool QgsWFSProvider::getCapabilities()
     mShared->mMaxFeatures = mShared->mURI.maxNumFeatures();
   else
     mShared->mMaxFeatures = mShared->mCaps.maxFeatures;
+
+  if ( mShared->mMaxFeatures <= 0 && mShared->mCaps.supportsPaging )
+  {
+    QSettings settings;
+    mShared->mMaxFeatures = settings.value( "wfs/max_feature_count_if_not_provided", "1000" ).toInt();
+    mShared->mMaxFeaturesWasSetFromDefaultForPaging = true;
+    QgsDebugMsg( QString( "Server declares paging but does not advertize max feature count and user did not specify it. Using %1" ).arg( mShared->mMaxFeatures ) );
+  }
 
   //find the <FeatureType> for this layer
   QString thisLayerName = mShared->mURI.typeName();

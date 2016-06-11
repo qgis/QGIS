@@ -15,6 +15,8 @@
 #ifndef QGSWFSUTILS_H
 #define QGSWFSUTILS_H
 
+#include "qgsfeature.h"
+
 #include <QString>
 #include <QThread>
 #include <QMutex>
@@ -38,6 +40,9 @@ class QgsWFSUtils
     static QString removeNamespacePrefix( const QString& tname );
     /** Returns namespace prefix (or an empty string if there is no prefix)*/
     static QString nameSpacePrefix( const QString& tname );
+
+    /** Return a unique identifier made from feature content */
+    static QString getMD5( const QgsFeature& f );
 
   protected:
     friend class QgsWFSUtilsKeepAlive;

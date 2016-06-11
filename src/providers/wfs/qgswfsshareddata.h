@@ -150,6 +150,9 @@ class QgsWFSSharedData : public QObject
     /** Server-side or user-side limit of downloaded features (in a single GetFeature()). Valid if > 0 */
     int mMaxFeatures;
 
+    /** Whether mMaxFeatures was set to a non 0 value for the purpose of paging */
+    bool mMaxFeaturesWasSetFromDefaultForPaging;
+
     /** Server capabilities */
     QgsWFSCapabilities::Capabilities mCaps;
 
@@ -161,6 +164,9 @@ class QgsWFSSharedData : public QObject
 
     /** Bounding box for the layer as returned by GetCapabilities */
     QgsRectangle mCapabilityExtent;
+
+    /** If we have already issued a warning about missing feature ids */
+    bool mHasWarnedAboutMissingFeatureId;
 
     /** Create GML parser */
     QgsGmlStreamingParser* createParser();
