@@ -439,6 +439,7 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   if ( randomIndex != -1 )
   {
     cboCategorizedColorRamp->setCurrentIndex( randomIndex );
+    mButtonEditRamp->setEnabled( false );
   }
 
   // set project default color ramp
@@ -802,6 +803,11 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
 
 void QgsCategorizedSymbolRendererV2Widget::applyColorRamp()
 {
+  if ( cboCategorizedColorRamp->currentText() == tr( "Random colors" ) )
+    mButtonEditRamp->setEnabled( false );
+  else
+    mButtonEditRamp->setEnabled( true );
+
   QgsVectorColorRampV2* ramp = getColorRamp();
   if ( ramp )
   {
