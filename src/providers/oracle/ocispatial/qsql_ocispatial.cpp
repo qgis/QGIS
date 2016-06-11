@@ -3163,9 +3163,7 @@ bool QOCISpatialResult::exec()
     qOraWarning( "Unable to get statement type:", d->err );
     setLastError( qMakeError( QCoreApplication::translate( "QOCISpatialResult",
                               "Unable to get statement type" ), QSqlError::StatementError, d->err ) );
-#ifdef QOCISPATIAL_DEBUG
-    qDebug() << "lastQuery()" << lastQuery();
-#endif
+    qWarning( "type retrieval failed with statement:%s", lastQuery().toLocal8Bit().constData() );
     return false;
   }
 
@@ -3189,9 +3187,7 @@ bool QOCISpatialResult::exec()
     qOraWarning( "unable to bind value: ", d->err );
     setLastError( qMakeError( QCoreApplication::translate( "QOCISpatialResult", "Unable to bind value" ),
                               QSqlError::StatementError, d->err ) );
-#ifdef QOCISPATIAL_DEBUG
-    qDebug() << "lastQuery()" << lastQuery();
-#endif
+    qWarning( "bind failed with statement:%s", lastQuery().toLocal8Bit().constData() );
     return false;
   }
 
@@ -3202,9 +3198,7 @@ bool QOCISpatialResult::exec()
     qOraWarning( "unable to execute statement:", d->err );
     setLastError( qMakeError( QCoreApplication::translate( "QOCISpatialResult",
                               "Unable to execute statement" ), QSqlError::StatementError, d->err ) );
-#ifdef QOCISPATIAL_DEBUG
-    qDebug() << "lastQuery()" << lastQuery();
-#endif
+    qWarning( "execution failed with statement:%s", lastQuery().toLocal8Bit().constData() );
     return false;
   }
 
