@@ -585,12 +585,11 @@ ELSE (ANDROID)
 ENDIF (ANDROID)
 
 IF (NOT MSVC)
-  ADD_DEFINITIONS("-UAPP_EXPORT")
+  REMOVE_DEFINITIONS("-DAPP_EXPORT")
   IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
   ENDIF()
 ENDIF (NOT MSVC)
-ADD_DEFINITIONS("\"-DAPP_EXPORT=${DLLEXPORT}\"")
 
 # Putting IMAGE_RCC_SRCS into qgis_app lib is cousing problems when the lib is loaded (by plugin for example) in test unit (qgis_composerpicturetest).
 ADD_LIBRARY(qgis_app SHARED ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${QGIS_APP_HDRS} ${QGIS_APP_MOC_HDRS})
